@@ -41,6 +41,22 @@ Start a file watcher that also pushes when an `origin` remote exists:
 powershell.exe -ExecutionPolicy Bypass -File .\scripts\start_git_autosave.ps1 -Push
 ```
 
+## Installed Automation
+
+The Windows scheduled task below starts the watcher after user logon:
+
+```text
+CVS-RFFI Git AutoSave
+```
+
+It runs:
+
+```powershell
+powershell.exe -NoProfile -ExecutionPolicy Bypass -WindowStyle Hidden -File C:\Users\lh594\Desktop\CVS-RFFI\scripts\start_git_autosave.ps1 -Push
+```
+
+The watcher has also been started for the current session.
+
 ## Remote Push Setup
 
 Auto-push needs a configured remote and working credentials. Add a remote with:
