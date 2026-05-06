@@ -3003,6 +3003,8 @@ def main():
     parser.add_argument("--sat_train_scenario", type=str, default="clear_leo")
     parser.add_argument("--train_sat_scenario", type=str, default="",
                         help="Alias for --sat_train_scenario used by SGC scripts.")
+    parser.add_argument("--sat_view_source", type=str, default="main", choices=["clean", "main"],
+                        help="Input used to build the satellite-ground training view: clean raw IQ or the main augmented view.")
     parser.add_argument("--lambda_sat_cons", type=float, default=0.0,
                         help="Cosine-distance consistency weight between clean and satellite z_id features.")
     parser.add_argument("--lambda_sat_cls", type=float, default=0.0,
@@ -3151,6 +3153,7 @@ def main():
     if bool(args.use_sat_consistency):
         print(
             f"[SAT-TRAIN] scenario={args.sat_train_scenario} "
+            f"view_source={args.sat_view_source} "
             f"lambda_cons={args.lambda_sat_cons:.4f} lambda_cls={args.lambda_sat_cls:.4f} "
             f"start_epoch={args.sat_cons_start_epoch}",
             flush=True,
@@ -3548,8 +3551,9 @@ def main():
                 )
                 if use_sat_train:
                     with torch.no_grad():
+                        sat_view_base = x_main if str(args.sat_view_source).lower() == "main" else x
                         x_sat_train, _ = apply_sat_channel_for_scenario(
-                            x,
+                            sat_view_base,
                             args.sat_train_scenario,
                             args,
                             gen=None,

@@ -27,6 +27,10 @@ Satellite-channel augmentation:
 bash run_sgc_experiments.sh augment
 ```
 
+This stage adds an explicit satellite-ground channel training view. By default
+the view is built from the main augmented IQ view and then passed through
+`apply_sat_gnd_channel_batch(...)`.
+
 Adapter-only adaptation:
 
 ```bash
@@ -52,7 +56,7 @@ python train.py --preset sgc_lite_b_no_dac --stage source --epochs 200 --wisig_t
 ```
 
 ```bash
-python train.py --preset sgc_lite_b_no_dac --stage sgc_augment --source_ckpt sgc_runs/sgc_lite_b_no_dac/source/best_model.pth --train_sat_channel --train_sat_scenario mixed_orbit --lambda_feat 1.0 --lambda_res 0.01 --epochs 100 --wisig_train_ratio 0.2
+python train.py --preset sgc_lite_b_no_dac --stage sgc_augment --source_ckpt sgc_runs/sgc_lite_b_no_dac/source/best_model.pth --train_sat_channel --train_sat_scenario mixed_orbit --sat_view_source main --lambda_feat 1.0 --lambda_res 0.01 --epochs 100 --wisig_train_ratio 0.2
 ```
 
 ```bash

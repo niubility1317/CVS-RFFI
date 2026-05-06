@@ -230,7 +230,7 @@ SGC02_no_freq_source|Batch6 SGC ablation: no frequency compensation.|--preset sg
 SGC03_no_spec_source|Batch6 SGC ablation: no spectral suppression.|--preset sgc_lite_b_no_dac_no_spec --stage source --epochs 200 --wisig_train_ratio 0.2 --primary_udu_weight 0.65
 SGC04_no_res_source|Batch6 SGC ablation: no residual compensation.|--preset sgc_lite_b_no_dac_no_res --stage source --epochs 200 --wisig_train_ratio 0.2 --primary_udu_weight 0.65
 SGC05_no_adapter_source|Batch6 SGC baseline: no adapter.|--preset sgc_baseline_no_adapter --stage source --epochs 200 --wisig_train_ratio 0.2 --primary_udu_weight 0.65
-SGC06_full_augment|Batch6 SGC augment: full SGC with mixed-orbit channel consistency.|--preset sgc_lite_b_no_dac --stage sgc_augment --train_sat_channel --train_sat_scenario mixed_orbit --lambda_feat 1.0 --lambda_res 0.01 --epochs 100 --wisig_train_ratio 0.2 --primary_udu_weight 0.65
+SGC06_full_augment|Batch6 SGC augment: full SGC with mixed-orbit channel consistency.|--preset sgc_lite_b_no_dac --stage sgc_augment --train_sat_channel --train_sat_scenario mixed_orbit --sat_view_source main --lambda_feat 1.0 --lambda_res 0.01 --epochs 100 --wisig_train_ratio 0.2 --primary_udu_weight 0.65
 SGC07_full_adapt|Batch6 SGC adapt: adapter-only update from augmented checkpoint path.|--preset sgc_lite_b_no_dac --stage sgc_adapt --source_ckpt sgc_runs/sgc_lite_b_no_dac/augment/best_model.pth --adapt_lr 1e-4 --adapt_epochs 50 --lambda_res 0.01 --wisig_train_ratio 0.2 --primary_udu_weight 0.65
 EOF
 

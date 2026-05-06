@@ -61,6 +61,7 @@ run_one() {
         --source_ckpt "${SOURCE_CKPT}" \
         --train_sat_channel \
         --train_sat_scenario "${SAT_SCENARIO}" \
+        --sat_view_source main \
         --lambda_feat 1.0 \
         --lambda_res 0.01 \
         --epochs "${EPOCHS_AUGMENT}" \
