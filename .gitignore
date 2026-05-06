@@ -1,0 +1,38 @@
+# Local caches and Python build artifacts
+__pycache__/
+.pytest_cache/
+*.py[cod]
+*.pyo
+
+# Local environments
+.venv/
+venv/
+env/
+.conda/
+
+# Datasets, logs, and model artifacts
+Dataset_*/
+data/
+logs/
+checkpoints/
+sat_ablation_runs/
+*.pth
+*.pt
+*.ckpt
+*.pkl
+*.npy
+*.npz
+
+# Top-level request scope: keep child experiment snapshots out of this repo.
+type10-4/
+type10-6-sat/
+type10-7/
+unkown/
+
+# OS/editor noise
+.DS_Store
+Thumbs.db
+desktop.ini
+.idea/
+.vscode/
+.claude/settings.local.json
