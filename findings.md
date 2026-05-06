@@ -16,3 +16,9 @@
 - DAC-only auxiliary view and DAC auxiliary losses: not needed for `no_dac` models; the code already disables them through `align_training_with_branch_ablation()` and `zero_dac_path()`.
 - DAC-style random impairment inside general augmentation: only useful as a low-probability robustness stressor, not as a dedicated DAC branch/view. For strict no-DAC slimming presets, keep `aug_p_dac=0`.
 
+## SSDG SSL Design
+
+- SSDG is safest as an opt-in training path, not an architecture change: the dual-network disentangled model stays unchanged and unlabeled batches enter only through additional loss terms.
+- Labeled WiSig train ratio is forced to 0.1 under SSDG. Validation remains the tail split; unlabeled samples are the train-days/train-RXs pool minus labeled train and validation.
+- Unlabeled samples hide transmitter labels from training but keep receiver/date domain labels and store true transmitter labels only for pseudo-label audit logging.
+- Pseudo-label noise is suppressed by combining instant confidence, EMA confidence, repeated same-class streak, and weak/strong perturbation agreement.
