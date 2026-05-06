@@ -1445,6 +1445,170 @@ def apply_slim_ablation_preset(args):
     cfg["sgc_adapter_kwargs"] = {}
     cfg["desc"] = "R19 Lite-B no-DAC baseline without SGC-Adapter."
     table["sgc_baseline_no_adapter"] = cfg
+    table.update({
+        "slim_r19_anchor": {
+            "model_variant": "lite_b",
+            "branch_ablation": "no_dac",
+            "domain_branch_ablation": "no_stats",
+            "domain_enhancer": "rcn_stats",
+            "exp_group": "s3_rxrobust_no_dac",
+            "use_mixstyle": True,
+            "mixstyle_layers": "time_down,t1",
+            "mixstyle_mix": "same_tx_crossdomain",
+            "mixstyle_fallback": "skip",
+            "mixstyle_strength": 0.65,
+            "mixstyle_p": 0.15,
+            "mixstyle_late_start": 110,
+            "mixstyle_late_ramp_epochs": 35,
+            "mixstyle_late_min_p": 0.05,
+            "mixstyle_late_min_strength": 0.35,
+            "desc": "R19 anchor: best balanced Lite-B no-DAC route.",
+        },
+        "slim_r19_groupce006": {
+            "model_variant": "lite_b",
+            "branch_ablation": "no_dac",
+            "domain_branch_ablation": "no_stats",
+            "domain_enhancer": "rcn_stats",
+            "exp_group": "s3_rxrobust_no_dac",
+            "use_mixstyle": True,
+            "mixstyle_layers": "time_down,t1",
+            "mixstyle_mix": "same_tx_crossdomain",
+            "mixstyle_fallback": "skip",
+            "mixstyle_strength": 0.75,
+            "mixstyle_p": 0.25,
+            "desc": "R21-style Worst-RX route: Lite-B no-DAC with weaker GroupCE.",
+        },
+        "slim_r19_fishr002": {
+            "model_variant": "lite_b",
+            "branch_ablation": "no_dac",
+            "domain_branch_ablation": "no_stats",
+            "domain_enhancer": "rcn_stats",
+            "exp_group": "s3_rxrobust_no_dac",
+            "use_mixstyle": True,
+            "mixstyle_layers": "time_down,t1",
+            "mixstyle_mix": "same_tx_crossdomain",
+            "mixstyle_fallback": "skip",
+            "mixstyle_strength": 0.65,
+            "mixstyle_p": 0.15,
+            "desc": "SAT37-style OOD route: R19 anchor plus Fishr gradient variance matching.",
+        },
+        "slim_r25_compact": {
+            "model_variant": "lite_d",
+            "branch_ablation": "no_dac",
+            "domain_branch_ablation": "no_stats",
+            "domain_enhancer": "rcn_stats",
+            "exp_group": "s3_rxrobust_no_dac",
+            "use_mixstyle": True,
+            "mixstyle_layers": "time_down,t1",
+            "mixstyle_mix": "same_tx_crossdomain",
+            "mixstyle_fallback": "skip",
+            "mixstyle_strength": 0.70,
+            "mixstyle_p": 0.18,
+            "mixstyle_late_start": 110,
+            "mixstyle_late_ramp_epochs": 40,
+            "mixstyle_late_min_p": 0.05,
+            "mixstyle_late_min_strength": 0.32,
+            "desc": "R25 compact route: best parameter efficiency without DAC.",
+        },
+        "slim_r25_fishr002": {
+            "model_variant": "lite_d",
+            "branch_ablation": "no_dac",
+            "domain_branch_ablation": "no_stats",
+            "domain_enhancer": "rcn_stats",
+            "exp_group": "s3_rxrobust_no_dac",
+            "use_mixstyle": True,
+            "mixstyle_layers": "time_down,t1",
+            "mixstyle_mix": "same_tx_crossdomain",
+            "mixstyle_fallback": "skip",
+            "mixstyle_strength": 0.70,
+            "mixstyle_p": 0.18,
+            "desc": "Compact R25 plus Fishr; tests whether OOD gain survives smaller width.",
+        },
+        "slim_lite_d_lowmix": {
+            "model_variant": "lite_d",
+            "branch_ablation": "no_dac",
+            "domain_branch_ablation": "no_stats",
+            "domain_enhancer": "rcn_stats",
+            "exp_group": "s3_rxrobust_no_dac",
+            "use_mixstyle": True,
+            "mixstyle_layers": "time_down,t1",
+            "mixstyle_mix": "same_tx_crossdomain",
+            "mixstyle_fallback": "skip",
+            "mixstyle_strength": 0.60,
+            "mixstyle_p": 0.10,
+            "desc": "R26-style low MixStyle compact boundary.",
+        },
+        "slim_lite_e_no_dac_probe": {
+            "model_variant": "lite_e",
+            "branch_ablation": "no_dac",
+            "domain_branch_ablation": "no_stats",
+            "domain_enhancer": "rcn_stats",
+            "exp_group": "s3_stable_no_dac",
+            "use_mixstyle": True,
+            "mixstyle_layers": "time_down,t1",
+            "mixstyle_mix": "same_tx_crossdomain",
+            "mixstyle_fallback": "skip",
+            "mixstyle_strength": 0.55,
+            "mixstyle_p": 0.08,
+            "desc": "Aggressive Lite-E no-DAC probe; likely needs KD if accuracy drops.",
+        },
+        "slim_no_dac_no_pa_probe": {
+            "model_variant": "lite_b",
+            "branch_ablation": "no_dac,no_pa",
+            "domain_branch_ablation": "no_stats",
+            "domain_enhancer": "rcn_stats",
+            "exp_group": "s1_core_only",
+            "use_mixstyle": True,
+            "mixstyle_layers": "time_down,t1",
+            "mixstyle_mix": "same_tx_crossdomain",
+            "mixstyle_fallback": "skip",
+            "mixstyle_strength": 0.60,
+            "mixstyle_p": 0.12,
+            "desc": "High-risk defect-branch removal probe: keep time/freq/stats only.",
+        },
+        "slim_no_dac_no_stats_guard": {
+            "model_variant": "lite_b",
+            "branch_ablation": "no_dac,no_stats",
+            "domain_branch_ablation": "no_stats",
+            "domain_enhancer": "rcn_stats",
+            "exp_group": "s3_rxrobust_no_dac",
+            "use_mixstyle": True,
+            "mixstyle_layers": "time_down,t1",
+            "mixstyle_mix": "same_tx_crossdomain",
+            "mixstyle_fallback": "skip",
+            "mixstyle_strength": 0.65,
+            "mixstyle_p": 0.15,
+            "desc": "Guardrail control: expected drop when stats are removed with DAC.",
+        },
+        "slim_no_domain_enhancer": {
+            "model_variant": "lite_b",
+            "branch_ablation": "no_dac",
+            "domain_branch_ablation": "no_stats",
+            "domain_enhancer": "off",
+            "exp_group": "s3_rxrobust_no_dac",
+            "use_mixstyle": True,
+            "mixstyle_layers": "time_down,t1",
+            "mixstyle_mix": "same_tx_crossdomain",
+            "mixstyle_fallback": "skip",
+            "mixstyle_strength": 0.65,
+            "mixstyle_p": 0.15,
+            "desc": "Training-overhead probe: remove RCN domain feature enhancer.",
+        },
+        "slim_full_upper_bound": {
+            "model_variant": "lite_c",
+            "branch_ablation": "none",
+            "domain_branch_ablation": "no_stats",
+            "domain_enhancer": "rcn_stats",
+            "exp_group": "s4_rxrobust_full",
+            "use_mixstyle": True,
+            "mixstyle_layers": "time_down,t1",
+            "mixstyle_mix": "same_tx_crossdomain",
+            "mixstyle_fallback": "skip",
+            "mixstyle_strength": 0.75,
+            "mixstyle_p": 0.25,
+            "desc": "Full-branch upper bound control; not a deployment slimming target.",
+        },
+    })
     for name, group_ce, desc in [
         ("rxrobust_lite_b_no_dac_gce006", 0.06, "R05 refined with weaker hard-domain CE."),
         ("rxrobust_lite_b_no_dac_gce014", 0.14, "R05 refined with stronger hard-domain CE."),
@@ -1473,6 +1637,21 @@ def apply_slim_post_preset_overrides(args):
         args.lambda_group_ce = 0.06
     elif g == "rxrobust_lite_b_no_dac_gce014":
         args.lambda_group_ce = 0.14
+    elif g == "slim_r19_groupce006":
+        args.lambda_group_ce = 0.06
+        args.group_ce_top_frac = 0.35
+        args.group_ce_min_domains = 4
+    elif g in ("slim_r19_fishr002", "slim_r25_fishr002"):
+        args.lambda_fishr = 0.02
+        args.fishr_min_domains = 4
+        args.lambda_group_ce = 0.08
+    elif g == "slim_no_dac_no_pa_probe":
+        args.enable_pa_aux = False
+        args.aug_enable_pa_normal = False
+        args.aug_p_pa = 0.0
+        args.lambda_group_ce = 0.0
+    elif g == "slim_no_domain_enhancer":
+        args.lambda_group_ce = 0.08
     return args
 
 
@@ -2743,6 +2922,11 @@ def main():
             "sgc_lite_b_no_dac", "sgc_lite_b_no_dac_no_amp",
             "sgc_lite_b_no_dac_no_freq", "sgc_lite_b_no_dac_no_spec",
             "sgc_lite_b_no_dac_no_res", "sgc_baseline_no_adapter",
+            "slim_r19_anchor", "slim_r19_groupce006", "slim_r19_fishr002",
+            "slim_r25_compact", "slim_r25_fishr002", "slim_lite_d_lowmix",
+            "slim_lite_e_no_dac_probe", "slim_no_dac_no_pa_probe",
+            "slim_no_dac_no_stats_guard", "slim_no_domain_enhancer",
+            "slim_full_upper_bound",
         ],
         help="瘦身/时延消融预设组，会联合覆盖 model_variant、branch_ablation、exp_group 和 MixStyle。",
     )
