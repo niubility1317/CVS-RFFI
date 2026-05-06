@@ -213,6 +213,62 @@ SAT_CHANNEL_SCENARIO_CONFIGS: Dict[str, Dict[str, object]] = {
 }
 
 
+SGC_ADAPTER_FULL_KWARGS: Dict[str, object] = {
+    "use_amp_norm": True,
+    "use_freq_comp": True,
+    "use_spectral_suppressor": True,
+    "use_residual_comp": True,
+    "freq_hidden_dim": 32,
+    "max_norm_freq_offset": 0.05,
+    "spectral_hidden_dim": 32,
+    "spectral_residual_alpha": 0.5,
+    "residual_channels": 32,
+    "residual_blocks": 2,
+    "residual_kernel_size": 5,
+    "residual_init_gamma": 0.0,
+}
+
+
+SGC_EXPERIMENT_PRESETS: Dict[str, Dict[str, object]] = {
+    "sgc_lite_b_no_dac": {
+        "desc": "Full SGC-Adapter on Lite-B no-DAC baseline.",
+        "slim_group": "sgc_lite_b_no_dac",
+        "sgc_adapter": True,
+        "sgc_adapter_kwargs": dict(SGC_ADAPTER_FULL_KWARGS),
+    },
+    "sgc_lite_b_no_dac_no_amp": {
+        "desc": "Ablation without amplitude normalization.",
+        "slim_group": "sgc_lite_b_no_dac_no_amp",
+        "sgc_adapter": True,
+        "sgc_adapter_kwargs": {**SGC_ADAPTER_FULL_KWARGS, "use_amp_norm": False},
+    },
+    "sgc_lite_b_no_dac_no_freq": {
+        "desc": "Ablation without frequency offset compensation.",
+        "slim_group": "sgc_lite_b_no_dac_no_freq",
+        "sgc_adapter": True,
+        "sgc_adapter_kwargs": {**SGC_ADAPTER_FULL_KWARGS, "use_freq_comp": False},
+    },
+    "sgc_lite_b_no_dac_no_spec": {
+        "desc": "Ablation without spectral interference suppression.",
+        "slim_group": "sgc_lite_b_no_dac_no_spec",
+        "sgc_adapter": True,
+        "sgc_adapter_kwargs": {**SGC_ADAPTER_FULL_KWARGS, "use_spectral_suppressor": False},
+    },
+    "sgc_lite_b_no_dac_no_res": {
+        "desc": "Ablation without residual channel compensation.",
+        "slim_group": "sgc_lite_b_no_dac_no_res",
+        "sgc_adapter": True,
+        "sgc_adapter_kwargs": {**SGC_ADAPTER_FULL_KWARGS, "use_residual_comp": False},
+    },
+    "sgc_baseline_no_adapter": {
+        "desc": "Lite-B no-DAC baseline without SGC-Adapter.",
+        "slim_group": "sgc_baseline_no_adapter",
+        "sgc_adapter": False,
+        "sgc_adapter_kwargs": {},
+    },
+}
+
+
 def parse_sat_scenarios(raw: str) -> List[str]:
     """Parse a comma/semicolon/plus separated satellite scenario list."""
     seen = set()

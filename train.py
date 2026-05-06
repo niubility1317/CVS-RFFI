@@ -1,6 +1,7 @@
 import math
 import time
 import argparse
+import json
 import random
 from copy import deepcopy
 from datetime import datetime
@@ -30,6 +31,10 @@ try:
 except Exception:
     SatSimConfig = None
     apply_sat_gnd_channel_batch = None
+try:
+    from sgc_losses import residual_regularization
+except Exception:
+    residual_regularization = None
 
 
 def set_seed(seed: int = 1337):
@@ -1126,6 +1131,20 @@ def apply_experiment_preset(args):
 
 def apply_slim_ablation_preset(args):
     g = str(getattr(args, "slim_group", "none") or "none").lower().strip()
+    sgc_full_kwargs = {
+        "use_amp_norm": True,
+        "use_freq_comp": True,
+        "use_spectral_suppressor": True,
+        "use_residual_comp": True,
+        "freq_hidden_dim": 32,
+        "max_norm_freq_offset": 0.05,
+        "spectral_hidden_dim": 32,
+        "spectral_residual_alpha": 0.5,
+        "residual_channels": 32,
+        "residual_blocks": 2,
+        "residual_kernel_size": 5,
+        "residual_init_gamma": 0.0,
+    }
     table = {
         "none": {
             "desc": "不额外覆盖结构预设，完全使用手动配置。",
@@ -1386,6 +1405,46 @@ def apply_slim_ablation_preset(args):
             "desc": "R06 refined compact route with gentler MixStyle for lower latency models.",
         },
     })
+    sgc_base = {
+        "model_variant": "lite_b",
+        "branch_ablation": "no_dac",
+        "domain_branch_ablation": "no_stats",
+        "domain_enhancer": "rcn_stats",
+        "exp_group": "s3_rxrobust_no_dac",
+        "sgc_adapter": True,
+        "sgc_adapter_kwargs": sgc_full_kwargs,
+        "use_mixstyle": True,
+        "mixstyle_layers": "time_down,t1",
+        "mixstyle_mix": "same_tx_crossdomain",
+        "mixstyle_fallback": "skip",
+        "mixstyle_strength": 0.65,
+        "mixstyle_p": 0.15,
+        "mixstyle_late_start": 110,
+        "mixstyle_late_ramp_epochs": 35,
+        "mixstyle_late_min_p": 0.05,
+        "mixstyle_late_min_strength": 0.35,
+    }
+    table["sgc_lite_b_no_dac"] = {
+        **sgc_base,
+        "desc": "SGC-Adapter full module on the R19 Lite-B no-DAC baseline.",
+    }
+    for suffix, key, desc in [
+        ("no_amp", "use_amp_norm", "SGC ablation without RMS amplitude normalization."),
+        ("no_freq", "use_freq_comp", "SGC ablation without CFO/Doppler compensation."),
+        ("no_spec", "use_spectral_suppressor", "SGC ablation without FFT-domain interference suppression."),
+        ("no_res", "use_residual_comp", "SGC ablation without residual channel compensation."),
+    ]:
+        cfg = dict(sgc_base)
+        kwargs = dict(sgc_full_kwargs)
+        kwargs[key] = False
+        cfg["sgc_adapter_kwargs"] = kwargs
+        cfg["desc"] = desc
+        table[f"sgc_lite_b_no_dac_{suffix}"] = cfg
+    cfg = dict(sgc_base)
+    cfg["sgc_adapter"] = False
+    cfg["sgc_adapter_kwargs"] = {}
+    cfg["desc"] = "R19 Lite-B no-DAC baseline without SGC-Adapter."
+    table["sgc_baseline_no_adapter"] = cfg
     for name, group_ce, desc in [
         ("rxrobust_lite_b_no_dac_gce006", 0.06, "R05 refined with weaker hard-domain CE."),
         ("rxrobust_lite_b_no_dac_gce014", 0.14, "R05 refined with stronger hard-domain CE."),
@@ -1679,6 +1738,67 @@ def count_parameters(model) -> Tuple[int, int]:
     total = sum(int(p.numel()) for p in raw_model.parameters())
     trainable = sum(int(p.numel()) for p in raw_model.parameters() if p.requires_grad)
     return total, trainable
+
+
+def unwrap_model(model):
+    return getattr(model, "_orig_mod", model)
+
+
+def parse_json_dict(raw, name: str) -> Dict[str, Any]:
+    if isinstance(raw, dict):
+        return dict(raw)
+    text = str(raw or "").strip()
+    if text == "":
+        return {}
+    try:
+        parsed = json.loads(text)
+    except json.JSONDecodeError as exc:
+        raise ValueError(f"--{name} must be a JSON object, got: {text}") from exc
+    if not isinstance(parsed, dict):
+        raise ValueError(f"--{name} must decode to a JSON object, got {type(parsed).__name__}")
+    return parsed
+
+
+def load_checkpoint_model_state(path: str, device) -> Optional[Dict[str, torch.Tensor]]:
+    ckpt_path = str(path or "").strip()
+    if ckpt_path == "":
+        return None
+    if not os.path.exists(ckpt_path):
+        raise FileNotFoundError(f"--source_ckpt not found: {ckpt_path}")
+    ckpt = torch.load(ckpt_path, map_location=device)
+    if isinstance(ckpt, dict):
+        for key in ("model", "state_dict", "model_state_dict"):
+            state = ckpt.get(key)
+            if isinstance(state, dict):
+                return state
+        return ckpt
+    raise ValueError(f"Unsupported checkpoint format in {ckpt_path}")
+
+
+def configure_sgc_trainable_params(model, args):
+    raw_model = unwrap_model(model)
+    adapter = getattr(raw_model, "sgc_adapter", None)
+    if str(getattr(args, "stage", "source")).lower() != "sgc_adapt":
+        return None
+    if adapter is None:
+        raise ValueError("--stage sgc_adapt requires --sgc_adapter or an SGC preset")
+    for p in raw_model.parameters():
+        p.requires_grad = False
+    for p in adapter.parameters():
+        p.requires_grad = True
+    trainable = [p for p in adapter.parameters() if p.requires_grad]
+    if not trainable:
+        raise RuntimeError("SGC adaptation has no trainable adapter parameters")
+    return trainable
+
+
+def sgc_residual_loss_from_output(out: Dict[str, Any], ref: torch.Tensor) -> torch.Tensor:
+    if residual_regularization is None or not isinstance(out, dict):
+        return ref.new_tensor(0.0)
+    loss = residual_regularization(out.get("sgc_aux", {}))
+    if torch.is_tensor(loss):
+        return loss.to(device=ref.device, dtype=ref.dtype)
+    return ref.new_tensor(float(loss))
 
 
 def configure_augmentor_for_epoch(augmentor, base_cfg: Dict[str, Any], epoch: int, args):
@@ -2546,7 +2666,8 @@ def format_epoch_block(
     lines.append(
         "[LOSS-DG]   "
         f"proto={meters['proto'].avg:.4f} proto_cos={meters['proto_pull_cos'].avg:.4f} "
-        f"supcon={meters['supcon'].avg:.4f} fishr={meters['fishr'].avg:.4f}"
+        f"supcon={meters['supcon'].avg:.4f} fishr={meters['fishr'].avg:.4f} "
+        f"sgc_res={meters['sgc_res'].avg:.4f}"
     )
     lines.append(
         "[TRAIN] "
@@ -2619,9 +2740,14 @@ def main():
             "rxrobust_lite_b_no_dac_refined", "rxrobust_lite_b_no_dac_mix015",
             "rxrobust_lite_b_no_dac_domain020", "rxrobust_lite_d_no_dac_refined",
             "rxrobust_lite_b_no_dac_gce006", "rxrobust_lite_b_no_dac_gce014",
+            "sgc_lite_b_no_dac", "sgc_lite_b_no_dac_no_amp",
+            "sgc_lite_b_no_dac_no_freq", "sgc_lite_b_no_dac_no_spec",
+            "sgc_lite_b_no_dac_no_res", "sgc_baseline_no_adapter",
         ],
         help="瘦身/时延消融预设组，会联合覆盖 model_variant、branch_ablation、exp_group 和 MixStyle。",
     )
+    parser.add_argument("--preset", type=str, default="",
+                        help="Alias for --slim_group, kept for SGC launch scripts.")
     parser.add_argument(
         "--branch_ablation",
         type=str,
@@ -2644,6 +2770,28 @@ def main():
     add_bool_arg(parser, "fast_infer_when_no_aux", True,
                  "Skip the second/domain backbone when model(..., return_aux=False)",
                  "Always run both backbones even when return_aux=False")
+    parser.add_argument("--stage", type=str, default="source",
+                        choices=["source", "sgc_augment", "sgc_adapt"],
+                        help="SGC training stage.")
+    add_bool_arg(parser, "sgc_adapter", False,
+                 "Enable SGC-Adapter before the dual backbones",
+                 "Disable SGC-Adapter")
+    parser.add_argument("--sgc_adapter_kwargs", type=str, default="{}",
+                        help="JSON object passed to SGCAdapter.")
+    parser.add_argument("--source_ckpt", type=str, default="",
+                        help="Checkpoint used to initialize sgc_augment or sgc_adapt stages.")
+    parser.add_argument("--pseudo_label_threshold", type=float, default=0.85,
+                        help="Reserved threshold for target-domain pseudo labels.")
+    parser.add_argument("--lambda_feat", type=float, default=1.0,
+                        help="Convenience alias for satellite feature consistency in sgc_augment.")
+    parser.add_argument("--lambda_ent", type=float, default=0.01,
+                        help="Reserved entropy weight for target-domain adaptation.")
+    parser.add_argument("--lambda_res", type=float, default=0.01,
+                        help="Residual regularization weight for SGC-Adapter auxiliary output.")
+    parser.add_argument("--adapt_lr", type=float, default=1e-4,
+                        help="Optimizer learning rate for --stage sgc_adapt.")
+    parser.add_argument("--adapt_epochs", type=int, default=50,
+                        help="Epoch count override for --stage sgc_adapt.")
     add_bool_arg(parser, "use_mixstyle", False, "Enable MixStyle1D on the ID backbone time branch", "Disable MixStyle1D")
     parser.add_argument("--mixstyle_p", type=float, default=0.3)
     parser.add_argument("--mixstyle_alpha", type=float, default=0.1)
@@ -2849,7 +2997,12 @@ def main():
     add_bool_arg(parser, "use_sat_consistency", False,
                  "Enable clean-to-satellite consistency training",
                  "Disable clean-to-satellite consistency training")
+    add_bool_arg(parser, "train_sat_channel", False,
+                 "Alias for enabling SGC satellite-channel augmentation training",
+                 "Disable SGC satellite-channel augmentation training")
     parser.add_argument("--sat_train_scenario", type=str, default="clear_leo")
+    parser.add_argument("--train_sat_scenario", type=str, default="",
+                        help="Alias for --sat_train_scenario used by SGC scripts.")
     parser.add_argument("--lambda_sat_cons", type=float, default=0.0,
                         help="Cosine-distance consistency weight between clean and satellite z_id features.")
     parser.add_argument("--lambda_sat_cls", type=float, default=0.0,
@@ -2909,11 +3062,39 @@ def main():
                         help="Collect epochs whose primary OOD score is within this margin of the best-so-far score.")
     parser.add_argument("--swad_save_path", type=str, default="")
     args = parser.parse_args()
+    if str(getattr(args, "preset", "") or "").strip():
+        args.slim_group = str(args.preset).strip()
+    args.stage = str(getattr(args, "stage", "source") or "source").lower().strip()
+    if args.stage == "sgc_adapt":
+        args.sgc_adapter = True
+        args.epochs = int(args.adapt_epochs)
+        args.lr = float(args.adapt_lr)
+    if str(getattr(args, "train_sat_scenario", "") or "").strip():
+        args.sat_train_scenario = str(args.train_sat_scenario).strip()
+    if args.stage == "sgc_augment":
+        args.sgc_adapter = True
+        args.train_sat_channel = True
+        if float(args.lambda_sat_cons) <= 0.0:
+            args.lambda_sat_cons = float(args.lambda_feat)
+        if float(args.lambda_sat_cls) <= 0.0:
+            args.lambda_sat_cls = 1.0
+    if bool(getattr(args, "train_sat_channel", False)):
+        args.use_sat_consistency = True
     args = apply_slim_ablation_preset(args)
     args = apply_experiment_preset(args)
     args = apply_slim_post_preset_overrides(args)
     args = apply_model_variant_training_defaults(args)
     args = align_training_with_branch_ablation(args)
+    args.sgc_adapter_kwargs = parse_json_dict(args.sgc_adapter_kwargs, "sgc_adapter_kwargs")
+    if args.stage in ("sgc_augment", "sgc_adapt"):
+        args.sgc_adapter = True
+    if args.stage == "sgc_adapt":
+        args.epochs = int(args.adapt_epochs)
+        args.lr = float(args.adapt_lr)
+    if args.stage == "sgc_augment" and float(args.lambda_sat_cons) <= 0.0:
+        args.lambda_sat_cons = float(args.lambda_feat)
+    if bool(getattr(args, "train_sat_channel", False)):
+        args.use_sat_consistency = True
 
     # Auto-derive extra checkpoint paths after preset application.
     if str(args.best_test_save_path).strip() == "":
@@ -3090,7 +3271,18 @@ def main():
                              domain_branch_ablation=str(args.domain_branch_ablation),
                              domain_enhancer=str(args.domain_enhancer),
                              domain_enhancer_strength=float(args.domain_enhancer_strength),
-                             fast_infer_when_no_aux=bool(args.fast_infer_when_no_aux)).to(device)
+                             fast_infer_when_no_aux=bool(args.fast_infer_when_no_aux),
+                             sgc_adapter=bool(args.sgc_adapter),
+                             sgc_adapter_kwargs=args.sgc_adapter_kwargs).to(device)
+    if str(args.source_ckpt).strip():
+        state = load_checkpoint_model_state(args.source_ckpt, device)
+        missing, unexpected = model.load_state_dict(state, strict=False)
+        print(
+            f"[SGC-CKPT] loaded source_ckpt={args.source_ckpt} "
+            f"missing={len(missing)} unexpected={len(unexpected)}",
+            flush=True,
+        )
+    sgc_train_params = configure_sgc_trainable_params(model, args)
     model_emb_dim = getattr(model, "emb_dim", "unknown")
     n_total, n_trainable = count_parameters(model)
     if bool(args.compile_model):
@@ -3100,6 +3292,16 @@ def main():
         except Exception as exc:
             print(f"[MODEL-WARN] torch.compile failed, fallback to eager: {exc}")
     print(f"[MODEL] DualCVSincNetDisentangle variant={args.model_variant} branch_ablation={args.branch_ablation} emb_dim={model_emb_dim} num_domains={num_domains} params={n_total:,} trainable={n_trainable:,}")
+    raw_model = unwrap_model(model)
+    if hasattr(raw_model, "sgc_adapter") and raw_model.sgc_adapter is not None:
+        sgc_params = sum(p.numel() for p in raw_model.sgc_adapter.parameters())
+        print(
+            f"[SGC-ADAPTER] enabled=True stage={args.stage} params={sgc_params:,} "
+            f"submodules={raw_model.sgc_adapter.submodule_status}",
+            flush=True,
+        )
+    else:
+        print(f"[SGC-ADAPTER] enabled=False stage={args.stage}", flush=True)
     print(
         "[MIXSTYLE] "
         f"on={int(args.use_mixstyle)} p={args.mixstyle_p:.3f} alpha={args.mixstyle_alpha:.3f} "
@@ -3130,7 +3332,8 @@ def main():
             f"curve={args.aug_ramp_curve:.2f} | base_p_dac={args.aug_p_dac:.2f} base_p_pa={args.aug_p_pa:.2f}"
         )
 
-    optimizer = torch.optim.AdamW(model.parameters(), lr=args.lr, weight_decay=args.wd)
+    optimizer_params = sgc_train_params if sgc_train_params is not None else model.parameters()
+    optimizer = torch.optim.AdamW(optimizer_params, lr=args.lr, weight_decay=args.wd)
     scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=max(1, args.epochs), eta_min=args.lr_min)
     scaler = torch.cuda.amp.GradScaler(enabled=use_amp)
     ce_tx = nn.CrossEntropyLoss(label_smoothing=float(args.label_smoothing))
@@ -3201,7 +3404,7 @@ def main():
             "dac_reg", "pa_reg",
             "gap_dac", "gap_pa", "cos_joint_pa", "cos_imp_pa",
             "sat_cls", "sat_cons", "sat_cos",
-            "proto", "proto_pull_cos", "supcon", "fishr",
+            "proto", "proto_pull_cos", "supcon", "fishr", "sgc_res",
             "grad_total", "grad_backbone", "grad_aux", "grad_domain",
         ]}
         m_domacc = NanMeter()
@@ -3377,6 +3580,7 @@ def main():
                         d,
                         min_domains=int(args.fishr_min_domains),
                     )
+                loss_sgc_res = sgc_residual_loss_from_output(out_main, z_id)
 
                 loss_cls = core["loss_cls"]
                 loss_dom = core["loss_dom"]
@@ -3419,6 +3623,7 @@ def main():
                     + float(args.lambda_proto) * sanitize_loss("proto", loss_proto, z_id, loss_warn_counts)
                     + float(args.lambda_supcon_id) * sanitize_loss("supcon", loss_supcon, z_id, loss_warn_counts)
                     + float(args.lambda_fishr) * sanitize_loss("fishr", loss_fishr, z_id, loss_warn_counts)
+                    + float(args.lambda_res) * sanitize_loss("sgc_res", loss_sgc_res, z_id, loss_warn_counts)
                 )
 
             stepped, grad_stats = safe_backward_step(model, optimizer, scaler, loss, args, use_amp)
@@ -3457,6 +3662,7 @@ def main():
             meters["proto_pull_cos"].update(proto_info.get("proto_pull_cos", float("nan")), bsz)
             meters["supcon"].update(loss_supcon.item(), bsz)
             meters["fishr"].update(loss_fishr.item(), bsz)
+            meters["sgc_res"].update(loss_sgc_res.item(), bsz)
             meters["grad_total"].update(grad_stats["grad_total"], bsz)
             meters["grad_backbone"].update(grad_stats["grad_backbone"], bsz)
             meters["grad_aux"].update(grad_stats["grad_aux"], bsz)
