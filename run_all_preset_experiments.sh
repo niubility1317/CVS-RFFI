@@ -13,7 +13,7 @@ set -euo pipefail
 
 PYTHON_BIN="${PYTHON_BIN:-python}"
 GPU_IDS_CSV="${GPU_IDS:-0,1,2,3,4,5,6,7}"
-PRESET_GROUPS_CSV="${PRESET_GROUPS:-sgc,slim,ssdg}"
+PRESET_GROUPS_CSV="${PRESET_GROUPS:-sgc}"
 STOP_ON_FAIL="${STOP_ON_FAIL:-0}"
 DRY_RUN="${DRY_RUN:-0}"
 
@@ -29,16 +29,24 @@ EPOCHS_SGC_AUGMENT="${EPOCHS_SGC_AUGMENT:-100}"
 ADAPT_EPOCHS="${ADAPT_EPOCHS:-50}"
 SAT_SCENARIO="${SAT_SCENARIO:-mixed_orbit}"
 PSEUDO_THRESHOLD="${PSEUDO_THRESHOLD:-0.85}"
+ENABLE_SAT_TARGET_EVAL="${ENABLE_SAT_TARGET_EVAL:-1}"
+SAT_TARGET_ON="${SAT_TARGET_ON:-test_unseen_day_unseen_rx}"
+SAT_TARGET_SCENARIOS="${SAT_TARGET_SCENARIOS:-clear_leo,low_elev_leo,rain_leo,storm_mp,mixed_orbit}"
+SAT_TARGET_MAX_BATCHES="${SAT_TARGET_MAX_BATCHES:--1}"
 
 SGC_STAGES_CSV="${SGC_STAGES:-source}"
 
-SGC_PRESETS="${SGC_PRESETS:-sgc_lite_b_no_dac,sgc_lite_b_no_dac_no_amp,sgc_lite_b_no_dac_no_freq,sgc_lite_b_no_dac_no_spec,sgc_lite_b_no_dac_no_res,sgc_baseline_no_adapter}"
+SGC_PRESETS="${SGC_PRESETS:-sgc_lite_b_no_dac,sgc_lite_b_no_dac_no_amp,sgc_lite_b_no_dac_no_freq,sgc_lite_b_no_dac_no_spec,sgc_lite_b_no_dac_no_res,sgc_lite_b_no_dac_no_amp_freq,sgc_lite_b_no_dac_residual_only,sgc_lite_b_no_dac_light,sgc_lite_d_no_dac,sgc_lite_d_no_dac_light,sgc_baseline_no_adapter}"
 SLIM_PRESETS="${SLIM_PRESETS:-slim_r19_anchor,slim_r25_compact,slim_r19_groupce006,slim_r19_fishr002,slim_r25_fishr002,slim_no_domain_enhancer,slim_lite_d_lowmix,slim_lite_e_no_dac_probe,slim_no_dac_no_pa_probe,slim_no_dac_no_stats_guard,slim_full_upper_bound}"
 SSDG_PRESETS="${SSDG_PRESETS:-ssdg_r19_pseudo_cons,ssdg_r19_pseudo_cons_strict,ssdg_r25_pseudo_cons,ssdg_r19_pseudo_cons_fishr}"
 
 mkdir -p logs all_preset_runs sgc_runs slimming_runs ssdg_runs
 IFS=',' read -r -a GPU_LIST <<< "${GPU_IDS_CSV}"
 IFS=',' read -r -a PRESET_GROUP_LIST <<< "${PRESET_GROUPS_CSV}"
+
+if [ "${ENABLE_SAT_TARGET_EVAL}" = "1" ]; then
+  SGC_BASE_ARGS="${SGC_BASE_ARGS} --eval_sat_channel --eval_sat_on ${SAT_TARGET_ON} --eval_sat_scenarios ${SAT_TARGET_SCENARIOS} --sat_eval_max_batches ${SAT_TARGET_MAX_BATCHES}"
+fi
 
 if [ "${#GPU_LIST[@]}" -lt 1 ]; then
   echo "GPU_IDS is empty." >&2
@@ -143,6 +151,10 @@ run_sgc_stage() {
         2>&1 | tee "${log_path}"
       ;;
     adapt|sgc_adapt)
+      if [ "${preset}" = "sgc_baseline_no_adapter" ]; then
+        echo "[ALL][sgc] skip adapter-only adapt for ${preset}: no SGC-Adapter parameters by design."
+        return 0
+      fi
       echo "[ALL][sgc] preset=${preset} stage=adapt gpu=${gpu_id} log=${log_path}"
       run_or_print "${gpu_id}" "${PYTHON_BIN}" -u train.py \
         ${SGC_BASE_ARGS} \

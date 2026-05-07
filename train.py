@@ -14,12 +14,7 @@ import torch.nn.functional as F
 from torch.utils.data import DataLoader
 
 from dataset import WiFiRFFIDataset
-from dataset_wisig import (
-    WiSigUnlabeledSubsetDataset,
-    build_unlabeled_indices_from_splits,
-    load_wisig_compact_pkl,
-    make_wisig_trainval_test_by_day_rx,
-)
+from dataset_wisig import load_wisig_compact_pkl, make_wisig_trainval_test_by_day_rx
 try:
     from model_dual_cvsincnet import build_dual_model
 except Exception:
@@ -108,21 +103,6 @@ def extract_domain_from_extra(extra, device) -> Optional[torch.Tensor]:
         return d0.to(device, non_blocking=True).view(-1)
     try:
         return torch.as_tensor(d0, device=device).view(-1)
-    except Exception:
-        return None
-
-
-def extract_meta_tensor_from_extra(extra, key: str, device) -> Optional[torch.Tensor]:
-    if extra is None or len(extra) < 2:
-        return None
-    meta = extra[1]
-    if not isinstance(meta, dict) or key not in meta:
-        return None
-    value = meta[key]
-    if torch.is_tensor(value):
-        return value.to(device, non_blocking=True).view(-1)
-    try:
-        return torch.as_tensor(value, device=device).view(-1)
     except Exception:
         return None
 
@@ -688,6 +668,21 @@ def add_bool_arg(parser: argparse.ArgumentParser, name: str, default: bool, help
     parser.set_defaults(**{name.replace('-', '_'): default})
 
 
+def parse_json_dict(value, name: str) -> Dict[str, Any]:
+    if isinstance(value, dict):
+        return value
+    text = str(value or "{}").strip()
+    if text == "":
+        return {}
+    try:
+        parsed = json.loads(text)
+    except json.JSONDecodeError as exc:
+        raise ValueError(f"--{name} must be valid JSON object text: {exc}") from exc
+    if not isinstance(parsed, dict):
+        raise ValueError(f"--{name} must decode to a JSON object")
+    return parsed
+
+
 def safe_nan(v: float) -> str:
     return "nan" if (v is None or (isinstance(v, float) and math.isnan(v))) else f"{v:.2f}"
 
@@ -764,168 +759,6 @@ def safe_batch_std(x: torch.Tensor, dim: int = 0, eps: float = 1e-6) -> torch.Te
 
 def safe_iq_tensor(x: torch.Tensor, clamp: float = 8.0) -> torch.Tensor:
     return torch.nan_to_num(x, nan=0.0, posinf=float(clamp), neginf=-float(clamp)).clamp(-float(clamp), float(clamp))
-
-
-class SSDGPseudoLabelMemory:
-    """Per-sample EMA and streak tracker for conservative SSDG pseudo labels."""
-
-    def __init__(self, num_classes: int, momentum: float = 0.8):
-        self.num_classes = int(num_classes)
-        self.momentum = float(momentum)
-        self._ema_probs: Dict[int, torch.Tensor] = {}
-        self._last_pred: Dict[int, int] = {}
-        self._streak: Dict[int, int] = {}
-
-    @torch.no_grad()
-    def update(
-        self,
-        sample_ids: Optional[torch.Tensor],
-        probs: torch.Tensor,
-        *,
-        confidence_threshold: float,
-    ) -> Tuple[torch.Tensor, torch.Tensor, torch.Tensor]:
-        probs_det = torch.nan_to_num(probs.detach().float(), nan=0.0, posinf=0.0, neginf=0.0)
-        inst_conf, inst_pred = probs_det.max(dim=1)
-        if sample_ids is None:
-            return inst_pred, inst_conf, torch.zeros_like(inst_pred, dtype=torch.long)
-
-        ids = sample_ids.detach().view(-1).cpu().tolist()
-        probs_cpu = probs_det.cpu()
-        ema_preds: List[int] = []
-        ema_confs: List[float] = []
-        streaks: List[int] = []
-        conf_thr = float(confidence_threshold)
-        for row_idx, raw_id in enumerate(ids):
-            sid = int(raw_id)
-            p = probs_cpu[row_idx]
-            prev = self._ema_probs.get(sid)
-            if prev is None:
-                ema = p.clone()
-            else:
-                ema = (self.momentum * prev + (1.0 - self.momentum) * p).clamp_min(0.0)
-                ema = ema / ema.sum().clamp_min(1e-12)
-            self._ema_probs[sid] = ema
-
-            ema_conf, ema_pred = ema.max(dim=0)
-            pred_i = int(ema_pred.item())
-            stable_now = int(inst_pred[row_idx].item()) == pred_i and float(inst_conf[row_idx].item()) >= conf_thr
-            if stable_now:
-                last = self._last_pred.get(sid, None)
-                self._streak[sid] = (self._streak.get(sid, 0) + 1) if last == pred_i else 1
-                self._last_pred[sid] = pred_i
-            else:
-                self._streak[sid] = 0
-                self._last_pred[sid] = pred_i
-            ema_preds.append(pred_i)
-            ema_confs.append(float(ema_conf.item()))
-            streaks.append(int(self._streak[sid]))
-
-        device = probs.device
-        return (
-            torch.as_tensor(ema_preds, device=device, dtype=torch.long),
-            torch.as_tensor(ema_confs, device=device, dtype=probs_det.dtype),
-            torch.as_tensor(streaks, device=device, dtype=torch.long),
-        )
-
-
-def ssl_iq_consistency_perturb(x: torch.Tensor, args) -> torch.Tensor:
-    x_aug = safe_iq_tensor(x).clone()
-    bsz = int(x_aug.size(0))
-    if bsz <= 0:
-        return x_aug
-
-    p_shift = float(getattr(args, "ssl_p_time_shift", 0.5))
-    max_shift = int(getattr(args, "ssl_max_time_shift", 16))
-    if x_aug.dim() >= 3 and max_shift > 0 and p_shift > 0.0:
-        do_shift = torch.rand(bsz, device=x_aug.device) < min(1.0, max(0.0, p_shift))
-        shifts = torch.randint(-max_shift, max_shift + 1, (bsz,), device=x_aug.device)
-        for i in range(bsz):
-            if bool(do_shift[i]) and int(shifts[i].item()) != 0:
-                x_aug[i] = torch.roll(x_aug[i], shifts=int(shifts[i].item()), dims=-1)
-
-    amp_jitter = float(getattr(args, "ssl_amp_jitter", 0.08))
-    if amp_jitter > 0.0:
-        amp = 1.0 + (2.0 * torch.rand(bsz, 1, 1, device=x_aug.device, dtype=x_aug.dtype) - 1.0) * amp_jitter
-        x_aug = x_aug * amp
-
-    phase_jitter = float(getattr(args, "ssl_phase_jitter", 0.20))
-    if x_aug.dim() >= 3 and x_aug.size(1) >= 2 and phase_jitter > 0.0:
-        theta = (2.0 * torch.rand(bsz, 1, device=x_aug.device, dtype=x_aug.dtype) - 1.0) * phase_jitter
-        c = torch.cos(theta).unsqueeze(-1)
-        s = torch.sin(theta).unsqueeze(-1)
-        i0 = x_aug[:, 0:1, :].clone()
-        q0 = x_aug[:, 1:2, :].clone()
-        x_aug[:, 0:1, :] = i0 * c - q0 * s
-        x_aug[:, 1:2, :] = i0 * s + q0 * c
-
-    noise_std = float(getattr(args, "ssl_noise_std", 0.015))
-    if noise_std > 0.0:
-        rms = torch.sqrt(x_aug.pow(2).mean(dim=tuple(range(1, x_aug.dim())), keepdim=True).clamp_min(1e-8))
-        x_aug = x_aug + torch.randn_like(x_aug) * (noise_std * rms)
-    return safe_iq_tensor(x_aug)
-
-
-def compute_ssdg_ssl_losses(
-    model,
-    batch,
-    args,
-    memory: SSDGPseudoLabelMemory,
-    device,
-    grl_lambda: float,
-) -> Dict[str, Any]:
-    x_u, _, extra_u = unpack_batch(batch)
-    x_u = x_u.to(device, non_blocking=True)
-    d_u_raw = extract_domain_from_extra(extra_u, device)
-    sample_ids = extract_meta_tensor_from_extra(extra_u, "global_index", device)
-    true_y = extract_meta_tensor_from_extra(extra_u, "true_tx_i", device)
-
-    x_weak = safe_iq_tensor(x_u)
-    x_strong = ssl_iq_consistency_perturb(x_u, args)
-    with torch.no_grad():
-        out_weak = forward_main(model, x_weak, None, grl_lambda, domain_labels=d_u_raw)
-        probs_weak = F.softmax(out_weak["tx_logits"].float(), dim=1)
-        conf_weak, pseudo = probs_weak.max(dim=1)
-        ema_pred, ema_conf, streak = memory.update(
-            sample_ids,
-            probs_weak,
-            confidence_threshold=float(args.ssl_pseudo_threshold),
-        )
-
-    out_strong = forward_main(model, x_strong, None, grl_lambda, domain_labels=d_u_raw)
-    logits_strong = out_strong["tx_logits"].float()
-    probs_strong = F.softmax(logits_strong, dim=1)
-    conf_strong, pred_strong = probs_strong.detach().max(dim=1)
-
-    mask = (
-        (conf_weak >= float(args.ssl_pseudo_threshold))
-        & (conf_strong >= float(args.ssl_consistency_threshold))
-        & (pred_strong == pseudo)
-        & (ema_pred == pseudo)
-        & (ema_conf >= float(args.ssl_ema_threshold))
-        & (streak >= int(args.ssl_min_streak))
-    )
-
-    ref = logits_strong.sum() * 0.0
-    if bool(mask.any()):
-        loss_pl = F.cross_entropy(logits_strong[mask], pseudo[mask].detach())
-        loss_cons = F.mse_loss(probs_strong[mask].float(), probs_weak[mask].detach().float())
-    else:
-        loss_pl = ref
-        loss_cons = ref
-
-    selected = int(mask.sum().item())
-    correct = 0
-    if true_y is not None and true_y.numel() == pseudo.numel() and selected > 0:
-        correct = int((pseudo[mask] == true_y.long()[mask]).sum().item())
-    return {
-        "loss_pl": loss_pl,
-        "loss_cons": loss_cons,
-        "selected": selected,
-        "correct": correct,
-        "seen": int(x_u.size(0)),
-        "mean_conf": float(conf_weak.detach().mean().item()) if conf_weak.numel() > 0 else float("nan"),
-        "mean_ema_conf": float(ema_conf.detach().mean().item()) if ema_conf.numel() > 0 else float("nan"),
-    }
 
 
 def batch_domain_stats(d: Optional[torch.Tensor], y: torch.Tensor, num_domains: int) -> Dict[str, Any]:
@@ -1587,6 +1420,14 @@ def apply_slim_ablation_preset(args):
             "desc": "R06 refined compact route with gentler MixStyle for lower latency models.",
         },
     })
+    for name, group_ce, desc in [
+        ("rxrobust_lite_b_no_dac_gce006", 0.06, "R05 refined with weaker hard-domain CE."),
+        ("rxrobust_lite_b_no_dac_gce014", 0.14, "R05 refined with stronger hard-domain CE."),
+    ]:
+        cfg = dict(table["rxrobust_lite_b_no_dac_refined"])
+        cfg["lambda_group_ce"] = float(group_ce)
+        cfg["desc"] = desc
+        table[name] = cfg
     sgc_base = {
         "model_variant": "lite_b",
         "branch_ablation": "no_dac",
@@ -1622,237 +1463,52 @@ def apply_slim_ablation_preset(args):
         cfg["sgc_adapter_kwargs"] = kwargs
         cfg["desc"] = desc
         table[f"sgc_lite_b_no_dac_{suffix}"] = cfg
+    for name, kwargs_update, desc in [
+        (
+            "sgc_lite_b_no_dac_no_amp_freq",
+            {"use_amp_norm": False, "use_freq_comp": False},
+            "SGC combined ablation without amplitude normalization and CFO/Doppler compensation.",
+        ),
+        (
+            "sgc_lite_b_no_dac_residual_only",
+            {"use_amp_norm": False, "use_freq_comp": False, "use_spectral_suppressor": False, "use_residual_comp": True},
+            "SGC residual-only control for checking whether learned residual compensation alone is enough.",
+        ),
+        (
+            "sgc_lite_b_no_dac_light",
+            {"freq_hidden_dim": 16, "spectral_hidden_dim": 16, "spectral_residual_alpha": 0.35, "residual_channels": 16, "residual_blocks": 1},
+            "SGC light adapter with a smaller parameter budget for satellite-side deployment.",
+        ),
+    ]:
+        cfg = dict(sgc_base)
+        kwargs = dict(sgc_full_kwargs)
+        kwargs.update(kwargs_update)
+        cfg["sgc_adapter_kwargs"] = kwargs
+        cfg["desc"] = desc
+        table[name] = cfg
+    lite_d_cfg = dict(sgc_base)
+    lite_d_cfg["model_variant"] = "lite_d"
+    lite_d_cfg["mixstyle_strength"] = 0.70
+    lite_d_cfg["mixstyle_p"] = 0.18
+    lite_d_cfg["desc"] = "SGC full adapter on the compact Lite-D no-DAC backbone."
+    table["sgc_lite_d_no_dac"] = lite_d_cfg
+    lite_d_light = dict(lite_d_cfg)
+    lite_d_light_kwargs = dict(sgc_full_kwargs)
+    lite_d_light_kwargs.update({
+        "freq_hidden_dim": 16,
+        "spectral_hidden_dim": 16,
+        "spectral_residual_alpha": 0.35,
+        "residual_channels": 16,
+        "residual_blocks": 1,
+    })
+    lite_d_light["sgc_adapter_kwargs"] = lite_d_light_kwargs
+    lite_d_light["desc"] = "SGC light adapter on Lite-D for the most compact deployable candidate."
+    table["sgc_lite_d_no_dac_light"] = lite_d_light
     cfg = dict(sgc_base)
     cfg["sgc_adapter"] = False
     cfg["sgc_adapter_kwargs"] = {}
     cfg["desc"] = "R19 Lite-B no-DAC baseline without SGC-Adapter."
     table["sgc_baseline_no_adapter"] = cfg
-    table.update({
-        "slim_r19_anchor": {
-            "model_variant": "lite_b",
-            "branch_ablation": "no_dac",
-            "domain_branch_ablation": "no_stats",
-            "domain_enhancer": "rcn_stats",
-            "exp_group": "s3_rxrobust_no_dac",
-            "use_mixstyle": True,
-            "mixstyle_layers": "time_down,t1",
-            "mixstyle_mix": "same_tx_crossdomain",
-            "mixstyle_fallback": "skip",
-            "mixstyle_strength": 0.65,
-            "mixstyle_p": 0.15,
-            "mixstyle_late_start": 110,
-            "mixstyle_late_ramp_epochs": 35,
-            "mixstyle_late_min_p": 0.05,
-            "mixstyle_late_min_strength": 0.35,
-            "desc": "R19 anchor: best balanced Lite-B no-DAC route.",
-        },
-        "slim_r19_groupce006": {
-            "model_variant": "lite_b",
-            "branch_ablation": "no_dac",
-            "domain_branch_ablation": "no_stats",
-            "domain_enhancer": "rcn_stats",
-            "exp_group": "s3_rxrobust_no_dac",
-            "use_mixstyle": True,
-            "mixstyle_layers": "time_down,t1",
-            "mixstyle_mix": "same_tx_crossdomain",
-            "mixstyle_fallback": "skip",
-            "mixstyle_strength": 0.75,
-            "mixstyle_p": 0.25,
-            "desc": "R21-style Worst-RX route: Lite-B no-DAC with weaker GroupCE.",
-        },
-        "slim_r19_fishr002": {
-            "model_variant": "lite_b",
-            "branch_ablation": "no_dac",
-            "domain_branch_ablation": "no_stats",
-            "domain_enhancer": "rcn_stats",
-            "exp_group": "s3_rxrobust_no_dac",
-            "use_mixstyle": True,
-            "mixstyle_layers": "time_down,t1",
-            "mixstyle_mix": "same_tx_crossdomain",
-            "mixstyle_fallback": "skip",
-            "mixstyle_strength": 0.65,
-            "mixstyle_p": 0.15,
-            "desc": "SAT37-style OOD route: R19 anchor plus Fishr gradient variance matching.",
-        },
-        "slim_r25_compact": {
-            "model_variant": "lite_d",
-            "branch_ablation": "no_dac",
-            "domain_branch_ablation": "no_stats",
-            "domain_enhancer": "rcn_stats",
-            "exp_group": "s3_rxrobust_no_dac",
-            "use_mixstyle": True,
-            "mixstyle_layers": "time_down,t1",
-            "mixstyle_mix": "same_tx_crossdomain",
-            "mixstyle_fallback": "skip",
-            "mixstyle_strength": 0.70,
-            "mixstyle_p": 0.18,
-            "mixstyle_late_start": 110,
-            "mixstyle_late_ramp_epochs": 40,
-            "mixstyle_late_min_p": 0.05,
-            "mixstyle_late_min_strength": 0.32,
-            "desc": "R25 compact route: best parameter efficiency without DAC.",
-        },
-        "slim_r25_fishr002": {
-            "model_variant": "lite_d",
-            "branch_ablation": "no_dac",
-            "domain_branch_ablation": "no_stats",
-            "domain_enhancer": "rcn_stats",
-            "exp_group": "s3_rxrobust_no_dac",
-            "use_mixstyle": True,
-            "mixstyle_layers": "time_down,t1",
-            "mixstyle_mix": "same_tx_crossdomain",
-            "mixstyle_fallback": "skip",
-            "mixstyle_strength": 0.70,
-            "mixstyle_p": 0.18,
-            "desc": "Compact R25 plus Fishr; tests whether OOD gain survives smaller width.",
-        },
-        "slim_lite_d_lowmix": {
-            "model_variant": "lite_d",
-            "branch_ablation": "no_dac",
-            "domain_branch_ablation": "no_stats",
-            "domain_enhancer": "rcn_stats",
-            "exp_group": "s3_rxrobust_no_dac",
-            "use_mixstyle": True,
-            "mixstyle_layers": "time_down,t1",
-            "mixstyle_mix": "same_tx_crossdomain",
-            "mixstyle_fallback": "skip",
-            "mixstyle_strength": 0.60,
-            "mixstyle_p": 0.10,
-            "desc": "R26-style low MixStyle compact boundary.",
-        },
-        "slim_lite_e_no_dac_probe": {
-            "model_variant": "lite_e",
-            "branch_ablation": "no_dac",
-            "domain_branch_ablation": "no_stats",
-            "domain_enhancer": "rcn_stats",
-            "exp_group": "s3_stable_no_dac",
-            "use_mixstyle": True,
-            "mixstyle_layers": "time_down,t1",
-            "mixstyle_mix": "same_tx_crossdomain",
-            "mixstyle_fallback": "skip",
-            "mixstyle_strength": 0.55,
-            "mixstyle_p": 0.08,
-            "desc": "Aggressive Lite-E no-DAC probe; likely needs KD if accuracy drops.",
-        },
-        "slim_no_dac_no_pa_probe": {
-            "model_variant": "lite_b",
-            "branch_ablation": "no_dac,no_pa",
-            "domain_branch_ablation": "no_stats",
-            "domain_enhancer": "rcn_stats",
-            "exp_group": "s1_core_only",
-            "use_mixstyle": True,
-            "mixstyle_layers": "time_down,t1",
-            "mixstyle_mix": "same_tx_crossdomain",
-            "mixstyle_fallback": "skip",
-            "mixstyle_strength": 0.60,
-            "mixstyle_p": 0.12,
-            "desc": "High-risk defect-branch removal probe: keep time/freq/stats only.",
-        },
-        "slim_no_dac_no_stats_guard": {
-            "model_variant": "lite_b",
-            "branch_ablation": "no_dac,no_stats",
-            "domain_branch_ablation": "no_stats",
-            "domain_enhancer": "rcn_stats",
-            "exp_group": "s3_rxrobust_no_dac",
-            "use_mixstyle": True,
-            "mixstyle_layers": "time_down,t1",
-            "mixstyle_mix": "same_tx_crossdomain",
-            "mixstyle_fallback": "skip",
-            "mixstyle_strength": 0.65,
-            "mixstyle_p": 0.15,
-            "desc": "Guardrail control: expected drop when stats are removed with DAC.",
-        },
-        "slim_no_domain_enhancer": {
-            "model_variant": "lite_b",
-            "branch_ablation": "no_dac",
-            "domain_branch_ablation": "no_stats",
-            "domain_enhancer": "off",
-            "exp_group": "s3_rxrobust_no_dac",
-            "use_mixstyle": True,
-            "mixstyle_layers": "time_down,t1",
-            "mixstyle_mix": "same_tx_crossdomain",
-            "mixstyle_fallback": "skip",
-            "mixstyle_strength": 0.65,
-            "mixstyle_p": 0.15,
-            "desc": "Training-overhead probe: remove RCN domain feature enhancer.",
-        },
-        "slim_full_upper_bound": {
-            "model_variant": "lite_c",
-            "branch_ablation": "none",
-            "domain_branch_ablation": "no_stats",
-            "domain_enhancer": "rcn_stats",
-            "exp_group": "s4_rxrobust_full",
-            "use_mixstyle": True,
-            "mixstyle_layers": "time_down,t1",
-            "mixstyle_mix": "same_tx_crossdomain",
-            "mixstyle_fallback": "skip",
-            "mixstyle_strength": 0.75,
-            "mixstyle_p": 0.25,
-            "desc": "Full-branch upper bound control; not a deployment slimming target.",
-        },
-    })
-    ssdg_r19 = dict(table["slim_r19_anchor"])
-    ssdg_r19.update({
-        "use_ssdg_ssl": True,
-        "ssdg_train_ratio": 0.1,
-        "lambda_ssl_pl": 0.45,
-        "lambda_ssl_cons": 0.08,
-        "ssl_pseudo_threshold": 0.92,
-        "ssl_ema_threshold": 0.90,
-        "ssl_consistency_threshold": 0.86,
-        "ssl_min_streak": 2,
-        "ssl_warmup_epochs": 5,
-        "ssl_memory_momentum": 0.8,
-        "desc": "SSDG R19: Lite-B no-DAC with conservative pseudo labels plus weak/strong consistency.",
-    })
-    table["ssdg_r19_pseudo_cons"] = ssdg_r19
-
-    ssdg_strict = dict(ssdg_r19)
-    ssdg_strict.update({
-        "lambda_ssl_pl": 0.35,
-        "lambda_ssl_cons": 0.06,
-        "ssl_pseudo_threshold": 0.95,
-        "ssl_ema_threshold": 0.94,
-        "ssl_consistency_threshold": 0.90,
-        "ssl_min_streak": 3,
-        "ssl_warmup_epochs": 8,
-        "desc": "SSDG strict: slower pseudo-label admission for noisy unlabeled pools.",
-    })
-    table["ssdg_r19_pseudo_cons_strict"] = ssdg_strict
-
-    ssdg_r25 = dict(table["slim_r25_compact"])
-    ssdg_r25.update({
-        "use_ssdg_ssl": True,
-        "ssdg_train_ratio": 0.1,
-        "lambda_ssl_pl": 0.40,
-        "lambda_ssl_cons": 0.08,
-        "ssl_pseudo_threshold": 0.93,
-        "ssl_ema_threshold": 0.91,
-        "ssl_consistency_threshold": 0.87,
-        "ssl_min_streak": 2,
-        "ssl_warmup_epochs": 6,
-        "ssl_memory_momentum": 0.82,
-        "desc": "SSDG R25: compact Lite-D no-DAC route with pseudo-label consistency.",
-    })
-    table["ssdg_r25_pseudo_cons"] = ssdg_r25
-
-    ssdg_fishr = dict(ssdg_r19)
-    ssdg_fishr.update({
-        "lambda_fishr": 0.02,
-        "fishr_min_domains": 4,
-        "lambda_group_ce": 0.08,
-        "desc": "SSDG R19 plus Fishr: tests whether SSL and gradient variance alignment are complementary.",
-    })
-    table["ssdg_r19_pseudo_cons_fishr"] = ssdg_fishr
-
-    for name, group_ce, desc in [
-        ("rxrobust_lite_b_no_dac_gce006", 0.06, "R05 refined with weaker hard-domain CE."),
-        ("rxrobust_lite_b_no_dac_gce014", 0.14, "R05 refined with stronger hard-domain CE."),
-    ]:
-        cfg = dict(table["rxrobust_lite_b_no_dac_refined"])
-        cfg["lambda_group_ce"] = float(group_ce)
-        cfg["desc"] = desc
-        table[name] = cfg
     if g not in table:
         valid = ", ".join(sorted(table.keys()))
         raise ValueError(f"Unknown slim_group={g}. Valid values: {valid}")
@@ -1873,29 +1529,6 @@ def apply_slim_post_preset_overrides(args):
         args.lambda_group_ce = 0.06
     elif g == "rxrobust_lite_b_no_dac_gce014":
         args.lambda_group_ce = 0.14
-    elif g == "slim_r19_groupce006":
-        args.lambda_group_ce = 0.06
-        args.group_ce_top_frac = 0.35
-        args.group_ce_min_domains = 4
-    elif g in ("slim_r19_fishr002", "slim_r25_fishr002"):
-        args.lambda_fishr = 0.02
-        args.fishr_min_domains = 4
-        args.lambda_group_ce = 0.08
-    elif g == "slim_no_dac_no_pa_probe":
-        args.enable_pa_aux = False
-        args.aug_enable_pa_normal = False
-        args.aug_p_pa = 0.0
-        args.lambda_group_ce = 0.0
-    elif g == "slim_no_domain_enhancer":
-        args.lambda_group_ce = 0.08
-    elif g in ("ssdg_r19_pseudo_cons", "ssdg_r19_pseudo_cons_strict", "ssdg_r25_pseudo_cons", "ssdg_r19_pseudo_cons_fishr"):
-        args.use_ssdg_ssl = True
-        args.ssdg_train_ratio = 0.1
-        args.wisig_train_ratio = 0.1
-        args.wisig_val_ratio = -1.0
-        if g == "ssdg_r19_pseudo_cons_fishr":
-            args.lambda_fishr = 0.02
-            args.fishr_min_domains = 4
     return args
 
 
@@ -2167,24 +1800,9 @@ def unwrap_model(model):
     return getattr(model, "_orig_mod", model)
 
 
-def parse_json_dict(raw, name: str) -> Dict[str, Any]:
-    if isinstance(raw, dict):
-        return dict(raw)
-    text = str(raw or "").strip()
-    if text == "":
-        return {}
-    try:
-        parsed = json.loads(text)
-    except json.JSONDecodeError as exc:
-        raise ValueError(f"--{name} must be a JSON object, got: {text}") from exc
-    if not isinstance(parsed, dict):
-        raise ValueError(f"--{name} must decode to a JSON object, got {type(parsed).__name__}")
-    return parsed
-
-
-def load_checkpoint_model_state(path: str, device) -> Optional[Dict[str, torch.Tensor]]:
-    ckpt_path = str(path or "").strip()
-    if ckpt_path == "":
+def load_checkpoint_model_state(ckpt_path: str, device) -> Dict[str, torch.Tensor]:
+    ckpt_path = str(ckpt_path).strip()
+    if not ckpt_path:
         return None
     if not os.path.exists(ckpt_path):
         raise FileNotFoundError(f"--source_ckpt not found: {ckpt_path}")
@@ -2194,8 +1812,9 @@ def load_checkpoint_model_state(path: str, device) -> Optional[Dict[str, torch.T
             state = ckpt.get(key)
             if isinstance(state, dict):
                 return state
+    if isinstance(ckpt, dict) and all(torch.is_tensor(v) for v in ckpt.values()):
         return ckpt
-    raise ValueError(f"Unsupported checkpoint format in {ckpt_path}")
+    raise ValueError(f"Cannot find model state dict in checkpoint: {ckpt_path}")
 
 
 def configure_sgc_trainable_params(model, args):
@@ -3092,17 +2711,6 @@ def format_epoch_block(
         f"supcon={meters['supcon'].avg:.4f} fishr={meters['fishr'].avg:.4f} "
         f"sgc_res={meters['sgc_res'].avg:.4f}"
     )
-    if "ssl_selected" in meters and meters["ssl_seen"].sum > 0:
-        ssl_selected = int(round(meters["ssl_selected"].sum))
-        ssl_correct = int(round(meters["ssl_correct"].sum))
-        ssl_ratio = 100.0 * float(ssl_correct) / float(max(1, ssl_selected))
-        lines.append(
-            "[SSDG-SSL] "
-            f"pl={meters['ssl_pl'].avg:.4f} cons={meters['ssl_cons'].avg:.4f} "
-            f"seen={int(round(meters['ssl_seen'].sum))} selected={ssl_selected} "
-            f"correct={ssl_correct} correct_ratio={ssl_ratio:.2f}% "
-            f"conf={meters['ssl_conf'].avg:.3f} ema_conf={meters['ssl_ema_conf'].avg:.3f}"
-        )
     lines.append(
         "[TRAIN] "
         f"tx={meters['txacc'].avg:.2f}% dom={safe_nan(m_domacc.avg)}% cons_cos={cons_cos_epoch:.4f}"
@@ -3177,13 +2785,8 @@ def main():
             "sgc_lite_b_no_dac", "sgc_lite_b_no_dac_no_amp",
             "sgc_lite_b_no_dac_no_freq", "sgc_lite_b_no_dac_no_spec",
             "sgc_lite_b_no_dac_no_res", "sgc_baseline_no_adapter",
-            "slim_r19_anchor", "slim_r19_groupce006", "slim_r19_fishr002",
-            "slim_r25_compact", "slim_r25_fishr002", "slim_lite_d_lowmix",
-            "slim_lite_e_no_dac_probe", "slim_no_dac_no_pa_probe",
-            "slim_no_dac_no_stats_guard", "slim_no_domain_enhancer",
-            "slim_full_upper_bound",
-            "ssdg_r19_pseudo_cons", "ssdg_r19_pseudo_cons_strict",
-            "ssdg_r25_pseudo_cons", "ssdg_r19_pseudo_cons_fishr",
+            "sgc_lite_b_no_dac_no_amp_freq", "sgc_lite_b_no_dac_residual_only",
+            "sgc_lite_b_no_dac_light", "sgc_lite_d_no_dac", "sgc_lite_d_no_dac_light",
         ],
         help="瘦身/时延消融预设组，会联合覆盖 model_variant、branch_ablation、exp_group 和 MixStyle。",
     )
@@ -3223,29 +2826,6 @@ def main():
                         help="Checkpoint used to initialize sgc_augment or sgc_adapt stages.")
     parser.add_argument("--pseudo_label_threshold", type=float, default=0.85,
                         help="Reserved threshold for target-domain pseudo labels.")
-    add_bool_arg(parser, "use_ssdg_ssl", False,
-                 "Enable SSDG semi-supervised pseudo-label and consistency training",
-                 "Disable SSDG semi-supervised training")
-    parser.add_argument("--ssdg_train_ratio", type=float, default=0.1,
-                        help="Labeled WiSig train ratio used by SSDG; remaining trainval samples except validation become unlabeled.")
-    parser.add_argument("--ssl_unlabeled_batch_size", type=int, default=0,
-                        help="Unlabeled batch size for SSDG. <=0 reuses --batch_size.")
-    parser.add_argument("--lambda_ssl_pl", type=float, default=0.0,
-                        help="Pseudo-label CE weight for SSDG unlabeled samples.")
-    parser.add_argument("--lambda_ssl_cons", type=float, default=0.0,
-                        help="Weak/strong consistency weight for SSDG unlabeled samples.")
-    parser.add_argument("--ssl_pseudo_threshold", type=float, default=0.92)
-    parser.add_argument("--ssl_ema_threshold", type=float, default=0.90)
-    parser.add_argument("--ssl_consistency_threshold", type=float, default=0.85)
-    parser.add_argument("--ssl_min_streak", type=int, default=2,
-                        help="Minimum repeated high-confidence rounds for the same pseudo class.")
-    parser.add_argument("--ssl_warmup_epochs", type=int, default=5)
-    parser.add_argument("--ssl_memory_momentum", type=float, default=0.8)
-    parser.add_argument("--ssl_p_time_shift", type=float, default=0.5)
-    parser.add_argument("--ssl_max_time_shift", type=int, default=16)
-    parser.add_argument("--ssl_amp_jitter", type=float, default=0.08)
-    parser.add_argument("--ssl_phase_jitter", type=float, default=0.20)
-    parser.add_argument("--ssl_noise_std", type=float, default=0.015)
     parser.add_argument("--lambda_feat", type=float, default=1.0,
                         help="Convenience alias for satellite feature consistency in sgc_augment.")
     parser.add_argument("--lambda_ent", type=float, default=0.01,
@@ -3552,7 +3132,8 @@ def main():
     args = apply_model_variant_training_defaults(args)
     args = align_training_with_branch_ablation(args)
     args.sgc_adapter_kwargs = parse_json_dict(args.sgc_adapter_kwargs, "sgc_adapter_kwargs")
-    if args.stage in ("sgc_augment", "sgc_adapt"):
+    explicit_no_sgc = str(getattr(args, "slim_group", "")).lower().strip() == "sgc_baseline_no_adapter"
+    if args.stage in ("sgc_augment", "sgc_adapt") and not explicit_no_sgc:
         args.sgc_adapter = True
     if args.stage == "sgc_adapt":
         args.epochs = int(args.adapt_epochs)
@@ -3591,11 +3172,6 @@ def main():
             sat_channel_config_for_scenario(scenario)
     if bool(args.use_sat_consistency):
         sat_channel_config_for_scenario(args.sat_train_scenario)
-    if bool(getattr(args, "use_ssdg_ssl", False)):
-        if str(args.dataset).lower() != "wisig":
-            raise ValueError("--use_ssdg_ssl is currently implemented for --dataset wisig only.")
-        args.wisig_val_ratio = -1.0
-        args.wisig_train_ratio = float(args.ssdg_train_ratio)
 
     set_seed(args.seed)
     device = torch.device(args.device if torch.cuda.is_available() else "cpu")
@@ -3627,15 +3203,6 @@ def main():
             f"start_epoch={args.sat_cons_start_epoch}",
             flush=True,
         )
-    if bool(args.use_ssdg_ssl):
-        print(
-            f"[SSDG] enabled train_ratio={args.wisig_train_ratio:.3f} "
-            f"lambda_pl={args.lambda_ssl_pl:.4f} lambda_cons={args.lambda_ssl_cons:.4f} "
-            f"thr={args.ssl_pseudo_threshold:.2f} ema_thr={args.ssl_ema_threshold:.2f} "
-            f"cons_thr={args.ssl_consistency_threshold:.2f} min_streak={args.ssl_min_streak} "
-            f"warmup={args.ssl_warmup_epochs}",
-            flush=True,
-        )
     print(f"[EXP] pa_main={args.aug_enable_pa_normal} pa_aux={args.enable_pa_aux} dac_aux={args.enable_dac_aux} | aug_p_pa={args.aug_p_pa:.3f} aug_p_dac={args.aug_p_dac:.3f}")
     print(f"[EXP] pure_views: dac_only(channel={args.aug_dac_only_apply_channel}, anti={args.aug_dac_only_apply_anti_shortcut}) | pa_only(channel={args.aug_pa_only_apply_channel}, anti={args.aug_pa_only_apply_anti_shortcut})")
     print(f"[EXP] stage schedule: stage1<=E{args.stage1_epochs}, stage2<=E{args.stage2_epochs}, stage3 ramp={args.stage3_ramp_epochs}")
@@ -3659,7 +3226,6 @@ def main():
     input_len = 1024
     val_ds = None
     test_ds = None
-    unlabeled_ds = None
     named_tests = {}
     named_test_meta = {}
 
@@ -3710,29 +3276,6 @@ def main():
         )
         print(f"[WISIG] named_test_sizes={split_info['named_test_sizes']}")
         print(f"[WISIG] split_info={split_info}")
-        if bool(args.use_ssdg_ssl):
-            if not hasattr(train_ds, "selected") or not hasattr(val_ds, "selected") or not hasattr(train_ds, "base"):
-                raise RuntimeError("SSDG requires WiSigSubsetDataset train/val splits with selected indices.")
-            unlabeled_sel = build_unlabeled_indices_from_splits(
-                pool_size=len(train_ds.base),
-                train_selected=train_ds.selected,
-                val_selected=val_ds.selected,
-            )
-            unlabeled_ds = WiSigUnlabeledSubsetDataset(
-                train_ds.base,
-                unlabeled_sel,
-                split_source="ssdg_unlabeled_pool_without_tx_labels",
-                transform=None,
-            )
-            split_info["ssdg_unlabeled_size"] = len(unlabeled_ds)
-            split_info["ssdg_labeled_train_ratio"] = float(args.wisig_train_ratio)
-            split_info["ssdg_unlabeled_source"] = "train_days_train_rxs_minus_labeled_train_and_validation"
-            print(
-                f"[SSDG-SPLIT] labeled={len(train_ds)} val={len(val_ds)} "
-                f"unlabeled={len(unlabeled_ds)} trainval_pool={len(train_ds.base)} "
-                "unlabeled_tx_label=hidden rx/day_domain=kept",
-                flush=True,
-            )
     else:
         train_ds = WiFiRFFIDataset(args.dataset_dir, mode="train", run_name=args.run_name)
         test_ds = WiFiRFFIDataset(args.dataset_dir, mode="test", run_name=args.run_name)
@@ -3748,12 +3291,6 @@ def main():
         print("[WARN] ORALCE currently has no separate val set in this script; val=test only for compatibility.")
 
     train_loader = make_loader(train_ds, args.batch_size, True, args.num_workers, device, True, args.prefetch_factor)
-    unlabeled_loader = None
-    if bool(args.use_ssdg_ssl):
-        if unlabeled_ds is None or len(unlabeled_ds) == 0:
-            raise RuntimeError("SSDG SSL is enabled but the unlabeled pool is empty.")
-        ssl_batch_size = int(args.ssl_unlabeled_batch_size) if int(args.ssl_unlabeled_batch_size) > 0 else int(args.batch_size)
-        unlabeled_loader = make_loader(unlabeled_ds, ssl_batch_size, True, args.num_workers, device, False, args.prefetch_factor)
     val_loader = make_loader(val_ds, args.eval_batch_size, False, args.num_workers, device, False, args.prefetch_factor)
     named_test_loaders = {
         k: make_loader(ds, args.eval_batch_size, False, args.num_workers, device, False, args.prefetch_factor)
@@ -3904,10 +3441,6 @@ def main():
     ema_avg = AveragedModelState("ema", decay=float(args.ema_decay)) if bool(args.use_ema_ckpt) else None
     swa_avg = AveragedModelState("swa") if bool(args.use_swa_ckpt) else None
     swad_avg = AveragedModelState("swad") if bool(args.use_swad_ckpt) else None
-    ssdg_memory = SSDGPseudoLabelMemory(
-        int(args.num_classes),
-        momentum=float(args.ssl_memory_momentum),
-    ) if bool(args.use_ssdg_ssl) else None
 
     for epoch in range(1, args.epochs + 1):
         model.train()
@@ -3920,12 +3453,10 @@ def main():
             "gap_dac", "gap_pa", "cos_joint_pa", "cos_imp_pa",
             "sat_cls", "sat_cons", "sat_cos",
             "proto", "proto_pull_cos", "supcon", "fishr", "sgc_res",
-            "ssl_pl", "ssl_cons", "ssl_selected", "ssl_correct", "ssl_seen", "ssl_conf", "ssl_ema_conf",
             "grad_total", "grad_backbone", "grad_aux", "grad_domain",
         ]}
         m_domacc = NanMeter()
         cons_cos_vals = []
-        unlabeled_iter = iter(unlabeled_loader) if unlabeled_loader is not None else None
         mixstyle_state = configure_mixstyle_for_epoch(model, args, epoch)
         aug_state = configure_augmentor_for_epoch(augmentor, aug_base_cfg, epoch, args) if augmentor is not None else None
         aux_scale = ramp_value(epoch, args.epochs, int(args.aux_warmup_epochs), int(args.aux_ramp_epochs), 0.0, 1.0, 1.0)
@@ -4014,19 +3545,6 @@ def main():
             else:
                 anchor = None
 
-            ssl_batch = None
-            if (
-                ssdg_memory is not None
-                and unlabeled_iter is not None
-                and epoch >= int(args.ssl_warmup_epochs)
-                and (float(args.lambda_ssl_pl) > 0.0 or float(args.lambda_ssl_cons) > 0.0)
-            ):
-                try:
-                    ssl_batch = next(unlabeled_iter)
-                except StopIteration:
-                    unlabeled_iter = iter(unlabeled_loader)
-                    ssl_batch = next(unlabeled_iter)
-
             optimizer.zero_grad(set_to_none=True)
             with torch.cuda.amp.autocast(enabled=use_amp):
                 out_main = forward_main(model, x_main, y, float(args.grl_lambda), domain_labels=d_raw)
@@ -4112,26 +3630,6 @@ def main():
                         min_domains=int(args.fishr_min_domains),
                     )
                 loss_sgc_res = sgc_residual_loss_from_output(out_main, z_id)
-                ssl_info = {
-                    "loss_pl": z_id.new_tensor(0.0),
-                    "loss_cons": z_id.new_tensor(0.0),
-                    "selected": 0,
-                    "correct": 0,
-                    "seen": 0,
-                    "mean_conf": float("nan"),
-                    "mean_ema_conf": float("nan"),
-                }
-                if ssl_batch is not None and ssdg_memory is not None:
-                    ssl_info = compute_ssdg_ssl_losses(
-                        model,
-                        ssl_batch,
-                        args,
-                        ssdg_memory,
-                        device,
-                        float(args.grl_lambda),
-                    )
-                loss_ssl_pl = ssl_info["loss_pl"]
-                loss_ssl_cons = ssl_info["loss_cons"]
 
                 loss_cls = core["loss_cls"]
                 loss_dom = core["loss_dom"]
@@ -4175,8 +3673,6 @@ def main():
                     + float(args.lambda_supcon_id) * sanitize_loss("supcon", loss_supcon, z_id, loss_warn_counts)
                     + float(args.lambda_fishr) * sanitize_loss("fishr", loss_fishr, z_id, loss_warn_counts)
                     + float(args.lambda_res) * sanitize_loss("sgc_res", loss_sgc_res, z_id, loss_warn_counts)
-                    + float(args.lambda_ssl_pl) * sanitize_loss("ssl_pl", loss_ssl_pl, z_id, loss_warn_counts)
-                    + float(args.lambda_ssl_cons) * sanitize_loss("ssl_cons", loss_ssl_cons, z_id, loss_warn_counts)
                 )
 
             stepped, grad_stats = safe_backward_step(model, optimizer, scaler, loss, args, use_amp)
@@ -4216,13 +3712,6 @@ def main():
             meters["supcon"].update(loss_supcon.item(), bsz)
             meters["fishr"].update(loss_fishr.item(), bsz)
             meters["sgc_res"].update(loss_sgc_res.item(), bsz)
-            meters["ssl_pl"].update(loss_ssl_pl.item(), max(1, int(ssl_info.get("seen", 0))))
-            meters["ssl_cons"].update(loss_ssl_cons.item(), max(1, int(ssl_info.get("seen", 0))))
-            meters["ssl_selected"].update(int(ssl_info.get("selected", 0)), 1)
-            meters["ssl_correct"].update(int(ssl_info.get("correct", 0)), 1)
-            meters["ssl_seen"].update(int(ssl_info.get("seen", 0)), 1)
-            meters["ssl_conf"].update(ssl_info.get("mean_conf", float("nan")), max(1, int(ssl_info.get("seen", 0))))
-            meters["ssl_ema_conf"].update(ssl_info.get("mean_ema_conf", float("nan")), max(1, int(ssl_info.get("seen", 0))))
             meters["grad_total"].update(grad_stats["grad_total"], bsz)
             meters["grad_backbone"].update(grad_stats["grad_backbone"], bsz)
             meters["grad_aux"].update(grad_stats["grad_aux"], bsz)
@@ -4312,9 +3801,7 @@ def main():
             "train_proto_loss": meters["proto"].avg,
             "train_supcon_loss": meters["supcon"].avg,
             "train_fishr_loss": meters["fishr"].avg,
-            "ssdg_ssl_seen": int(round(meters["ssl_seen"].sum)),
-            "ssdg_pseudo_selected": int(round(meters["ssl_selected"].sum)),
-            "ssdg_pseudo_correct": int(round(meters["ssl_correct"].sum)),
+            "train_sgc_res_loss": meters["sgc_res"].avg,
             "test_named": named_test_stats,
             "sat_test_named": sat_test_stats,
             "aux_scale": aux_scale,
@@ -4430,9 +3917,7 @@ def main():
                                 "train_proto_loss": meters["proto"].avg,
                                 "train_supcon_loss": meters["supcon"].avg,
                                 "train_fishr_loss": meters["fishr"].avg,
-                                "ssdg_ssl_seen": int(round(meters["ssl_seen"].sum)),
-                                "ssdg_pseudo_selected": int(round(meters["ssl_selected"].sum)),
-                                "ssdg_pseudo_correct": int(round(meters["ssl_correct"].sum)),
+                                "train_sgc_res_loss": meters["sgc_res"].avg,
                                 "val_tx_acc": val_stats["tx_acc"],
                                 "val_dom_acc": val_stats["dom_acc"],
                                 "val_probe_dom_acc": val_stats["probe_dom_acc"],

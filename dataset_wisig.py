@@ -242,61 +242,12 @@ class WiSigSubsetDataset(Dataset):
         return int(self.selected.shape[0])
 
     def __getitem__(self, k: int):
-        global_index = int(self.selected[k])
-        x, y, d, meta = self.base[global_index]
+        x, y, d, meta = self.base[int(self.selected[k])]
         if self.transform is not None:
             x = self.transform(x)
         meta = dict(meta)
         meta["split_source"] = self.split_source
-        meta["global_index"] = global_index
-        meta["has_tx_label"] = True
         return x, y, d, meta
-
-
-class WiSigUnlabeledSubsetDataset(Dataset):
-    """WiSig view for SSDG/SSL: hide TX label, keep RX/day domain and truth meta for auditing."""
-
-    def __init__(
-        self,
-        base: WiSigCompactDataset,
-        selected: Sequence[int],
-        split_source: str = "ssdg_unlabeled_pool",
-        transform: Optional[Callable[[torch.Tensor], torch.Tensor]] = None,
-    ):
-        self.base = base
-        self.selected = np.asarray(selected, dtype=np.int64)
-        self.split_source = str(split_source)
-        self.transform = transform
-        self.index = [base.index[int(i)] for i in self.selected.tolist()]
-        self._domain_lut = getattr(base, "_domain_lut", None)
-        self.tx_list = getattr(base, "tx_list", None)
-        self.rx_list = getattr(base, "rx_list", None)
-        self.day_list = getattr(base, "day_list", None)
-
-    def __len__(self) -> int:
-        return int(self.selected.shape[0])
-
-    def __getitem__(self, k: int):
-        global_index = int(self.selected[k])
-        x, y_true, d, meta = self.base[global_index]
-        if self.transform is not None:
-            x = self.transform(x)
-        meta = dict(meta)
-        meta["split_source"] = self.split_source
-        meta["global_index"] = global_index
-        meta["true_tx_i"] = int(y_true)
-        meta["has_tx_label"] = False
-        return x, -1, d, meta
-
-
-def build_unlabeled_indices_from_splits(
-    pool_size: int,
-    train_selected: Sequence[int],
-    val_selected: Sequence[int],
-) -> List[int]:
-    labeled = {int(i) for i in train_selected}
-    validation = {int(i) for i in val_selected}
-    return [int(i) for i in range(int(pool_size)) if i not in labeled and i not in validation]
 
 
 class WiSigConcatDataset(Dataset):

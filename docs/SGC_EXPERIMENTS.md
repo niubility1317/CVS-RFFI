@@ -11,6 +11,11 @@ This root-level CVS-RFFI workspace supports SGC-Adapter through `train.py`.
 | `sgc_lite_b_no_dac_no_freq` | Disable CFO/Doppler compensation. |
 | `sgc_lite_b_no_dac_no_spec` | Disable spectral interference suppression. |
 | `sgc_lite_b_no_dac_no_res` | Disable residual channel compensation. |
+| `sgc_lite_b_no_dac_no_amp_freq` | Combined amplitude + frequency compensation ablation. |
+| `sgc_lite_b_no_dac_residual_only` | Residual compensation only; disables explicit channel-front-end blocks. |
+| `sgc_lite_b_no_dac_light` | Smaller SGC-Adapter on Lite-B for satellite-side parameter budget checks. |
+| `sgc_lite_d_no_dac` | Full SGC-Adapter on compact Lite-D no-DAC backbone. |
+| `sgc_lite_d_no_dac_light` | Smallest SGC candidate: Lite-D plus light SGC-Adapter. |
 | `sgc_baseline_no_adapter` | Lite-B no-DAC baseline without SGC-Adapter. |
 
 ## Three Stages
@@ -47,6 +52,27 @@ Run all SGC presets for one stage:
 
 ```bash
 RUN_ALL_ABLATIONS=1 bash run_sgc_experiments.sh source
+```
+
+By default the launcher evaluates target-domain loaders with overlaid
+satellite-ground channels and prints `[SAT-TEST]` lines each epoch. Disable it with:
+
+```bash
+ENABLE_SAT_TARGET_EVAL=0 bash run_sgc_experiments.sh source
+```
+
+Run a full source -> augment -> adapt chain for every SGC preset:
+
+```bash
+PRESET_GROUPS=sgc SGC_STAGES=source,augment,adapt bash run_all_preset_experiments.sh
+```
+
+Use a focused quick matrix:
+
+```bash
+SGC_PRESETS=sgc_lite_b_no_dac,sgc_lite_b_no_dac_light,sgc_baseline_no_adapter \
+EPOCHS_SGC_SOURCE=20 EPOCHS_SGC_AUGMENT=10 ADAPT_EPOCHS=5 \
+bash run_all_preset_experiments.sh
 ```
 
 ## Direct Train.py Examples

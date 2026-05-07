@@ -119,9 +119,15 @@ Run one preset:
 SLIM_PRESETS=slim_r25_compact bash run_model_slimming_experiments.sh
 ```
 
+The slimming launcher now evaluates target-domain loaders with an overlaid
+satellite-ground channel by default and prints `[SAT-TARGET]` each epoch:
+
+```bash
+SAT_TARGET_ON=target_strict SAT_TARGET_SCENARIOS=mixed_orbit bash run_model_slimming_experiments.sh
+```
+
 Use SGC satellite-channel view on top of a slimming preset:
 
 ```bash
 python train.py --preset slim_r19_anchor --stage sgc_augment --train_sat_channel --train_sat_scenario mixed_orbit --sat_view_source main --lambda_feat 1.0 --lambda_res 0.01 --epochs 100 --wisig_train_ratio 0.2
 ```
-

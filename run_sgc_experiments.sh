@@ -23,6 +23,15 @@ AUGMENT_CKPT="${AUGMENT_CKPT:-sgc_runs/${SGC_PRESET}/augment/best_model.pth}"
 SAT_SCENARIO="${SAT_SCENARIO:-mixed_orbit}"
 PSEUDO_THRESHOLD="${PSEUDO_THRESHOLD:-0.85}"
 RUN_ALL_ABLATIONS="${RUN_ALL_ABLATIONS:-0}"
+ENABLE_SAT_TARGET_EVAL="${ENABLE_SAT_TARGET_EVAL:-1}"
+SAT_TARGET_ON="${SAT_TARGET_ON:-test_unseen_day_unseen_rx}"
+SAT_TARGET_SCENARIOS="${SAT_TARGET_SCENARIOS:-clear_leo,low_elev_leo,rain_leo,storm_mp,mixed_orbit}"
+SAT_TARGET_MAX_BATCHES="${SAT_TARGET_MAX_BATCHES:--1}"
+
+SAT_EVAL_ARGS=""
+if [ "${ENABLE_SAT_TARGET_EVAL}" = "1" ]; then
+  SAT_EVAL_ARGS="--eval_sat_channel --eval_sat_on ${SAT_TARGET_ON} --eval_sat_scenarios ${SAT_TARGET_SCENARIOS} --sat_eval_max_batches ${SAT_TARGET_MAX_BATCHES}"
+fi
 
 PRESETS=(
   "sgc_lite_b_no_dac"
@@ -30,6 +39,11 @@ PRESETS=(
   "sgc_lite_b_no_dac_no_freq"
   "sgc_lite_b_no_dac_no_spec"
   "sgc_lite_b_no_dac_no_res"
+  "sgc_lite_b_no_dac_no_amp_freq"
+  "sgc_lite_b_no_dac_residual_only"
+  "sgc_lite_b_no_dac_light"
+  "sgc_lite_d_no_dac"
+  "sgc_lite_d_no_dac_light"
   "sgc_baseline_no_adapter"
 )
 
@@ -48,6 +62,7 @@ run_one() {
         ${BASE_ARGS} \
         --preset "${preset}" \
         --stage source \
+        ${SAT_EVAL_ARGS} \
         --epochs "${EPOCHS_SOURCE}" \
         --latest_save_path "${run_dir}/latest_model.pth" \
         --best_save_path "${run_dir}/best_model.pth" \
@@ -62,6 +77,7 @@ run_one() {
         --train_sat_channel \
         --train_sat_scenario "${SAT_SCENARIO}" \
         --sat_view_source main \
+        ${SAT_EVAL_ARGS} \
         --lambda_feat 1.0 \
         --lambda_res 0.01 \
         --epochs "${EPOCHS_AUGMENT}" \
@@ -70,12 +86,17 @@ run_one() {
         2>&1 | tee "${log_path}"
       ;;
     adapt|sgc_adapt)
+      if [ "${preset}" = "sgc_baseline_no_adapter" ]; then
+        echo "[SGC] skip adapter-only adapt for ${preset}: no SGC-Adapter parameters by design."
+        return 0
+      fi
       CUDA_VISIBLE_DEVICES="${GPU_ID}" PYTHONUNBUFFERED=1 "${PYTHON_BIN}" -u train.py \
         ${BASE_ARGS} \
         --preset "${preset}" \
         --stage sgc_adapt \
         --source_ckpt "${AUGMENT_CKPT}" \
         --pseudo_label_threshold "${PSEUDO_THRESHOLD}" \
+        ${SAT_EVAL_ARGS} \
         --lambda_proto 1.0 \
         --lambda_cons 0.5 \
         --lambda_ent 0.01 \

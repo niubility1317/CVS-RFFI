@@ -223,17 +223,6 @@ SAT39_r19_combo_best_guess|Batch5 combined candidate: mixed satellite consistenc
 SAT40_r19_groupdro_smooth|Batch5 alias/control: Smooth GroupDRO run kept for parser/tests and direct comparison naming.|--slim_group rxrobust_lite_b_no_dac_mix015 --epochs 200 --wisig_train_ratio 0.2 --primary_udu_weight 0.65 --group_ce_mode smooth_dro --groupdro_tau 0.45 --groupdro_momentum 0.95
 EOF
 
-read -r -d '' SAT_BATCH_6 <<'EOF' || true
-SGC00_full_source|Batch6 SGC source: full SGC-Adapter on Lite-B no-DAC.|--preset sgc_lite_b_no_dac --stage source --epochs 200 --wisig_train_ratio 0.2 --primary_udu_weight 0.65
-SGC01_no_amp_source|Batch6 SGC ablation: no amplitude normalization.|--preset sgc_lite_b_no_dac_no_amp --stage source --epochs 200 --wisig_train_ratio 0.2 --primary_udu_weight 0.65
-SGC02_no_freq_source|Batch6 SGC ablation: no frequency compensation.|--preset sgc_lite_b_no_dac_no_freq --stage source --epochs 200 --wisig_train_ratio 0.2 --primary_udu_weight 0.65
-SGC03_no_spec_source|Batch6 SGC ablation: no spectral suppression.|--preset sgc_lite_b_no_dac_no_spec --stage source --epochs 200 --wisig_train_ratio 0.2 --primary_udu_weight 0.65
-SGC04_no_res_source|Batch6 SGC ablation: no residual compensation.|--preset sgc_lite_b_no_dac_no_res --stage source --epochs 200 --wisig_train_ratio 0.2 --primary_udu_weight 0.65
-SGC05_no_adapter_source|Batch6 SGC baseline: no adapter.|--preset sgc_baseline_no_adapter --stage source --epochs 200 --wisig_train_ratio 0.2 --primary_udu_weight 0.65
-SGC06_full_augment|Batch6 SGC augment: full SGC with mixed-orbit channel consistency.|--preset sgc_lite_b_no_dac --stage sgc_augment --train_sat_channel --train_sat_scenario mixed_orbit --sat_view_source main --lambda_feat 1.0 --lambda_res 0.01 --epochs 100 --wisig_train_ratio 0.2 --primary_udu_weight 0.65
-SGC07_full_adapt|Batch6 SGC adapt: adapter-only update from augmented checkpoint path.|--preset sgc_lite_b_no_dac --stage sgc_adapt --source_ckpt sgc_runs/sgc_lite_b_no_dac/augment/best_model.pth --adapt_lr 1e-4 --adapt_epochs 50 --lambda_res 0.01 --wisig_train_ratio 0.2 --primary_udu_weight 0.65
-EOF
-
 log_msg "================================"
 log_msg "8-GPU satellite channel multi-batch ablation launcher"
 log_msg "SCHED_LOG => ${SCHED_LOG}"
@@ -279,13 +268,6 @@ fi
 
 if should_run_batch 5; then
   run_batch "5" "${SAT_BATCH_5}" || overall_status=1
-  if [ "$overall_status" -ne 0 ] && [ "$STOP_ON_FAIL" = "1" ]; then
-    exit 1
-  fi
-fi
-
-if should_run_batch 6; then
-  run_batch "6" "${SAT_BATCH_6}" || overall_status=1
   if [ "$overall_status" -ne 0 ] && [ "$STOP_ON_FAIL" = "1" ]; then
     exit 1
   fi

@@ -38,12 +38,22 @@ Run one preset:
 SSDG_PRESETS=ssdg_r19_pseudo_cons_strict bash run_ssdg_experiments.sh
 ```
 
+The SSDG launcher also evaluates target-domain loaders with an overlaid
+satellite-ground channel by default. Use this to change the target scope:
+
+```bash
+SAT_TARGET_ON=target_strict SAT_TARGET_SCENARIOS=mixed_orbit bash run_ssdg_experiments.sh
+```
+
 Manual command:
 
 ```bash
 python -u train.py \
   --dataset wisig \
   --wisig_domain rx_day \
+  --eval_sat_target_channel \
+  --eval_sat_target_on target \
+  --eval_sat_target_scenarios mixed_orbit \
   --preset ssdg_r19_pseudo_cons \
   --epochs 200 \
   --batch_size 256 \
