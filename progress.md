@@ -29,3 +29,11 @@
 - Wrote `docs/final_best_sgc_experiment_groups_20260507.md` defining Phase A best-model exploration and Phase B SGC/residual mechanism checks.
 - Added `run_final_best_sgc_queue.sh`, an 8-GPU queue launcher. Default is now `PHASES=A`, so it runs best-model exploration first; SGC/residual runs only when `PHASES=B` or `PHASES=A,B` is set.
 - Verified `run_final_best_sgc_queue.sh` with `bash -n`, Phase A dry-run, and full `PHASES=A,B` dry-run.
+
+## 2026-05-08
+- Parsed the new `5.8/logs` seed-1337 experiment set: 19 logs, all complete.
+- Generated managed 5.8 artifacts: `5.8/metrics/experiment_metrics.csv`, `5.8/metrics/experiment_metrics.json`, `5.8/reports/5_8_training_analysis_20260508.md`, and `5.8/README.md`.
+- Key 5.8 result: `E2_residual_only_std_res001` is the best development candidate, with primary score 88.24, strict UDU 86.92, worst-RX 86.99, and SAT Avg 41.58.
+- Important rigor note: 5.8 primary rankings and Phase-E source selection use test-derived metrics, so they are development evidence rather than final unbiased test results.
+- Verification passed: `python -m py_compile train.py dataset_wisig.py sgc_adapter.py sgc_losses.py sat_channel.py training_controls.py`, `bash -n run_final_best_sgc_queue.sh run_cvs_baseline_queue.sh run_baselines_after_wait.sh`, and CSV/JSON 5.8 metric row-count checks.
+- GitHub CLI is installed and authenticated as `niubility1317`.

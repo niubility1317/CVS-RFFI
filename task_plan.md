@@ -40,3 +40,18 @@ Study the local SGC satellite-ground channel processing implementation and expla
 | 2. Extract SGC mechanisms | complete | Found four adapter blocks, residual blending/compensation, residual loss, staged training. |
 | 3. Compare communication vs RFFI processing | complete | Separate code recovery objectives from fingerprint preservation. |
 | 4. Produce Chinese explanation | complete | Ground claims in local files and give practical recommendations. |
+
+## Current Task: 5.8 Log Analysis and GitHub Preservation
+
+### Goal
+Analyze the latest `5.8` training logs, organize the folder with readable and machine-readable summaries, and preserve the current CVS-RFFI version on GitHub.
+
+### Phases
+
+| Phase | Status | Notes |
+|---|---|---|
+| 1. Inventory 5.8 logs and git state | complete | Found 19 complete experiment logs plus launcher nohup log; worktree contains code, baseline, and report changes. |
+| 2. Parse 5.8 metrics | complete | Generated CSV/JSON metrics under `5.8/metrics`. |
+| 3. Write 5.8 analysis report | complete | Generated `5.8/reports/5_8_training_analysis_20260508.md` and `5.8/README.md`. |
+| 4. Verify source and artifacts | complete | Python compile, shell syntax, metric CSV/JSON checks, and GitHub auth passed. |
+| 5. Commit and push to GitHub | in_progress | Stage intended files, commit, and push current version. |

@@ -88,6 +88,72 @@ class NanMeter:
         return len(self.values)
 
 
+def ecc_tau_for_epoch(
+    epoch: int,
+    tau_start: float,
+    tau_end: float,
+    ecc_epochs: int,
+    start_epoch: int = 1,
+    schedule: str = "cosine",
+) -> float:
+    """Confidence cap threshold schedule used by Early Confidence Cap loss."""
+    start_epoch = int(start_epoch)
+    ecc_epochs = max(1, int(ecc_epochs))
+    if int(epoch) <= start_epoch:
+        return float(tau_start)
+    if int(epoch) >= start_epoch + ecc_epochs:
+        return float(tau_end)
+    t = (float(epoch) - float(start_epoch)) / float(ecc_epochs)
+    t = max(0.0, min(1.0, t))
+    if str(schedule).lower().strip() == "linear":
+        a = t
+    else:
+        a = 0.5 - 0.5 * math.cos(math.pi * t)
+    return float(tau_start) + (float(tau_end) - float(tau_start)) * a
+
+
+def ecc_weight_for_epoch(
+    epoch: int,
+    lambda_ecc: float,
+    ecc_epochs: int,
+    start_epoch: int = 1,
+    schedule: str = "cosine",
+) -> float:
+    """Decay ECC strength so it regularizes early learning and turns off later."""
+    base = float(lambda_ecc)
+    if base <= 0.0:
+        return 0.0
+    start_epoch = int(start_epoch)
+    ecc_epochs = max(1, int(ecc_epochs))
+    if int(epoch) < start_epoch or int(epoch) >= start_epoch + ecc_epochs:
+        return 0.0
+    t = (float(epoch) - float(start_epoch)) / float(ecc_epochs)
+    t = max(0.0, min(1.0, t))
+    if str(schedule).lower().strip() == "linear":
+        return base * (1.0 - t)
+    return base * (0.5 + 0.5 * math.cos(math.pi * t))
+
+
+def compute_ecc_loss(
+    logits: torch.Tensor,
+    tau: float,
+    gate: Optional[torch.Tensor] = None,
+) -> Tuple[torch.Tensor, float]:
+    """Penalize over-confident predictions above a scheduled probability cap."""
+    probs = torch.softmax(logits.float(), dim=1)
+    max_prob = probs.max(dim=1).values
+    penalty = torch.relu(max_prob - float(tau)).pow(2)
+    if gate is not None:
+        gate_f = gate.to(device=penalty.device, dtype=penalty.dtype).view(-1)
+        if gate_f.numel() != penalty.numel():
+            raise ValueError(f"ECC gate shape mismatch: gate={tuple(gate_f.shape)} penalty={tuple(penalty.shape)}")
+        denom = gate_f.sum().clamp_min(1.0)
+        loss = (penalty * gate_f).sum() / denom
+    else:
+        loss = penalty.mean()
+    return loss, float(max_prob.detach().mean().item())
+
+
 def unpack_batch(batch):
     x = batch[0]
     y = batch[1]
@@ -556,6 +622,55 @@ class PrototypeMemoryBank:
                         safe_l2_normalize(self.domain_proto[cls_int, dom_int].view(1, -1), dim=1).squeeze(0)
                     )
                 self.domain_count[cls_int, dom_int] += int(dm.sum().item())
+
+
+class SSDGPseudoLabelMemory:
+    """Track stable pseudo-label predictions for unlabeled SSDG samples."""
+
+    def __init__(self, num_classes: int, momentum: float = 0.9):
+        self.num_classes = int(num_classes)
+        self.momentum = float(momentum)
+        self.probs: Dict[int, torch.Tensor] = {}
+        self.pred: Dict[int, int] = {}
+        self.streak: Dict[int, int] = {}
+
+    @torch.no_grad()
+    def update(self, sample_ids: torch.Tensor, probs: torch.Tensor, confidence_threshold: float = 0.9):
+        ids = sample_ids.detach().view(-1).long().cpu()
+        p = torch.nan_to_num(probs.detach().float().cpu(), nan=0.0, posinf=1.0, neginf=0.0)
+        p = p[:, : self.num_classes]
+        if int(p.numel()) == 0:
+            empty_long = torch.empty(0, dtype=torch.long)
+            return empty_long, torch.empty(0, dtype=torch.float32), empty_long
+        p = p / p.sum(dim=1, keepdim=True).clamp_min(1e-12)
+        preds = []
+        confs = []
+        streaks = []
+        for i, sid_t in enumerate(ids):
+            sid = int(sid_t.item())
+            cur = p[i]
+            if sid in self.probs:
+                cur = self.momentum * self.probs[sid] + (1.0 - self.momentum) * cur
+                cur = cur / cur.sum().clamp_min(1e-12)
+            pred = int(cur.argmax().item())
+            conf = float(cur[pred].item())
+            if conf >= float(confidence_threshold) and self.pred.get(sid) == pred:
+                stable = self.streak.get(sid, 0) + 1
+            elif conf >= float(confidence_threshold):
+                stable = 1
+            else:
+                stable = 0
+            self.probs[sid] = cur
+            self.pred[sid] = pred
+            self.streak[sid] = stable
+            preds.append(pred)
+            confs.append(conf)
+            streaks.append(stable)
+        return (
+            torch.tensor(preds, dtype=torch.long),
+            torch.tensor(confs, dtype=torch.float32),
+            torch.tensor(streaks, dtype=torch.long),
+        )
 
 
 class AveragedModelState:
@@ -1776,9 +1891,11 @@ def resolve_sat_eval_loader_names(named_loaders: Dict[str, DataLoader], spec: st
     raw = str(spec or "test_unseen_day_unseen_rx").strip().lower()
     if raw in ("all", "all_named", "*"):
         return list(named_loaders.keys())
-    if raw in ("main", "main_ood", "ood"):
+    if raw in ("main", "main_ood", "ood", "target", "targets", "target_ood"):
         wanted = ["test_unseen_day_seen_rx", "test_seen_day_unseen_rx", "test_unseen_day_unseen_rx"]
         return [k for k in wanted if k in named_loaders]
+    if raw in ("strict", "target_strict", "strict_target", "udu", "unseen_day_unseen_rx"):
+        return ["test_unseen_day_unseen_rx"] if "test_unseen_day_unseen_rx" in named_loaders else []
     names = []
     for item in raw.replace(";", ",").replace("+", ",").split(","):
         name = item.strip()
@@ -2712,6 +2829,11 @@ def format_epoch_block(
         f"sgc_res={meters['sgc_res'].avg:.4f}"
     )
     lines.append(
+        "[LOSS-CAL]  "
+        f"ecc={meters['ecc'].avg:.4f} ecc_w={meters['ecc_w'].avg:.4f} "
+        f"ecc_tau={meters['ecc_tau'].avg:.4f} ecc_maxp={meters['ecc_maxp'].avg:.4f}"
+    )
+    lines.append(
         "[TRAIN] "
         f"tx={meters['txacc'].avg:.2f}% dom={safe_nan(m_domacc.avg)}% cons_cos={cons_cos_epoch:.4f}"
     )
@@ -2811,6 +2933,12 @@ def main():
     parser.add_argument("--domain_enhancer", type=str, default="rcn_stats", choices=["off", "rcn_stats"],
                         help="Second-backbone RCN enhancement module for receiver/channel/noise domain cues.")
     parser.add_argument("--domain_enhancer_strength", type=float, default=0.35)
+    parser.add_argument("--force_domain_branch_ablation", type=str, default="",
+                        help="Late override for domain_branch_ablation after slim/experiment presets.")
+    parser.add_argument("--force_domain_enhancer", type=str, default="", choices=["", "off", "rcn_stats"],
+                        help="Late override for domain_enhancer after slim/experiment presets.")
+    parser.add_argument("--force_domain_enhancer_strength", type=float, default=-1.0,
+                        help="Late override for domain_enhancer_strength when >=0.")
     add_bool_arg(parser, "fast_infer_when_no_aux", True,
                  "Skip the second/domain backbone when model(..., return_aux=False)",
                  "Always run both backbones even when return_aux=False")
@@ -2861,6 +2989,12 @@ def main():
     parser.add_argument("--lambda_adv", type=float, default=0.5)
     parser.add_argument("--lambda_orth", type=float, default=0.05)
     parser.add_argument("--lambda_cons", type=float, default=0.1)
+    parser.add_argument("--force_lambda_adv", type=float, default=None,
+                        help="Late override for lambda_adv after experiment presets.")
+    parser.add_argument("--force_lambda_orth", type=float, default=None,
+                        help="Late override for lambda_orth after experiment presets.")
+    parser.add_argument("--force_lambda_cons", type=float, default=None,
+                        help="Late override for lambda_cons after experiment presets.")
     parser.add_argument("--lambda_group_ce", type=float, default=0.0,
                         help="Hard-domain CE weight. Optimizes high-loss train rx/day groups for receiver robustness.")
     parser.add_argument("--group_ce_top_frac", type=float, default=0.35,
@@ -3054,6 +3188,21 @@ def main():
     parser.add_argument("--lambda_sat_cls", type=float, default=0.0,
                         help="Classification CE weight on satellite-channel augmented samples.")
     parser.add_argument("--sat_cons_start_epoch", type=int, default=1)
+    parser.add_argument("--lambda_ecc", type=float, default=0.0,
+                        help="Early Confidence Cap loss weight. >0 penalizes early over-confident TX predictions.")
+    parser.add_argument("--ecc_start_epoch", type=int, default=1,
+                        help="First epoch where Early Confidence Cap can be active.")
+    parser.add_argument("--ecc_epochs", type=int, default=60,
+                        help="Number of epochs used for ECC tau ramp and weight decay.")
+    parser.add_argument("--ecc_tau_start", type=float, default=0.65,
+                        help="Initial max-probability cap for ECC.")
+    parser.add_argument("--ecc_tau_end", type=float, default=0.95,
+                        help="Final max-probability cap for ECC.")
+    parser.add_argument("--ecc_schedule", type=str, default="cosine", choices=["cosine", "linear"],
+                        help="Schedule shape used by ECC tau ramp and weight decay.")
+    parser.add_argument("--ecc_apply_to", type=str, default="sat",
+                        choices=["sat", "main", "sat_main"],
+                        help="Logits regularized by ECC: SAT view, main augmented view, or both.")
 
     parser.add_argument("--amp", dest="amp", action="store_true")
     parser.add_argument("--no_amp", dest="amp", action="store_false")
@@ -3131,6 +3280,18 @@ def main():
     args = apply_slim_post_preset_overrides(args)
     args = apply_model_variant_training_defaults(args)
     args = align_training_with_branch_ablation(args)
+    if str(getattr(args, "force_domain_branch_ablation", "") or "").strip():
+        args.domain_branch_ablation = str(args.force_domain_branch_ablation).strip()
+    if str(getattr(args, "force_domain_enhancer", "") or "").strip():
+        args.domain_enhancer = str(args.force_domain_enhancer).strip()
+    if float(getattr(args, "force_domain_enhancer_strength", -1.0)) >= 0.0:
+        args.domain_enhancer_strength = float(args.force_domain_enhancer_strength)
+    if getattr(args, "force_lambda_adv", None) is not None:
+        args.lambda_adv = float(args.force_lambda_adv)
+    if getattr(args, "force_lambda_orth", None) is not None:
+        args.lambda_orth = float(args.force_lambda_orth)
+    if getattr(args, "force_lambda_cons", None) is not None:
+        args.lambda_cons = float(args.force_lambda_cons)
     args.sgc_adapter_kwargs = parse_json_dict(args.sgc_adapter_kwargs, "sgc_adapter_kwargs")
     explicit_no_sgc = str(getattr(args, "slim_group", "")).lower().strip() == "sgc_baseline_no_adapter"
     if args.stage in ("sgc_augment", "sgc_adapt") and not explicit_no_sgc:
@@ -3201,6 +3362,13 @@ def main():
             f"view_source={args.sat_view_source} "
             f"lambda_cons={args.lambda_sat_cons:.4f} lambda_cls={args.lambda_sat_cls:.4f} "
             f"start_epoch={args.sat_cons_start_epoch}",
+            flush=True,
+        )
+    if float(args.lambda_ecc) > 0.0:
+        print(
+            f"[ECC] lambda={args.lambda_ecc:.4f} apply_to={args.ecc_apply_to} "
+            f"tau={args.ecc_tau_start:.3f}->{args.ecc_tau_end:.3f} "
+            f"start_epoch={args.ecc_start_epoch} epochs={args.ecc_epochs} schedule={args.ecc_schedule}",
             flush=True,
         )
     print(f"[EXP] pa_main={args.aug_enable_pa_normal} pa_aux={args.enable_pa_aux} dac_aux={args.enable_dac_aux} | aug_p_pa={args.aug_p_pa:.3f} aug_p_dac={args.aug_p_dac:.3f}")
@@ -3453,6 +3621,7 @@ def main():
             "gap_dac", "gap_pa", "cos_joint_pa", "cos_imp_pa",
             "sat_cls", "sat_cons", "sat_cos",
             "proto", "proto_pull_cos", "supcon", "fishr", "sgc_res",
+            "ecc", "ecc_w", "ecc_tau", "ecc_maxp",
             "grad_total", "grad_backbone", "grad_aux", "grad_domain",
         ]}
         m_domacc = NanMeter()
@@ -3590,7 +3759,25 @@ def main():
 
                 loss_sat_cls = z_id.new_tensor(0.0)
                 loss_sat_cons = z_id.new_tensor(0.0)
+                loss_ecc = z_id.new_tensor(0.0)
                 sat_cos = float("nan")
+                ecc_maxp = float("nan")
+                ecc_tau = ecc_tau_for_epoch(
+                    epoch,
+                    float(args.ecc_tau_start),
+                    float(args.ecc_tau_end),
+                    int(args.ecc_epochs),
+                    int(args.ecc_start_epoch),
+                    str(args.ecc_schedule),
+                )
+                ecc_w = ecc_weight_for_epoch(
+                    epoch,
+                    float(args.lambda_ecc),
+                    int(args.ecc_epochs),
+                    int(args.ecc_start_epoch),
+                    str(args.ecc_schedule),
+                )
+                out_sat = None
                 use_sat_train = bool(args.use_sat_consistency) and epoch >= int(args.sat_cons_start_epoch) and (
                     float(args.lambda_sat_cons) > 0.0 or float(args.lambda_sat_cls) > 0.0
                 )
@@ -3607,6 +3794,21 @@ def main():
                     out_sat = forward_main(model, x_sat_train, y, float(args.grl_lambda), domain_labels=d_raw)
                     loss_sat_cls = ce_tx(out_sat["tx_logits"].float(), y)
                     loss_sat_cons, sat_cos = cosine_consistency_loss(out_sat["z_id"], z_id.detach())
+                if ecc_w > 0.0:
+                    ecc_losses = []
+                    ecc_maxps = []
+                    ecc_apply = str(args.ecc_apply_to).lower().strip()
+                    if ecc_apply in ("main", "sat_main"):
+                        cur_loss_ecc, cur_maxp = compute_ecc_loss(tx_logits, tau=float(ecc_tau))
+                        ecc_losses.append(cur_loss_ecc)
+                        ecc_maxps.append(cur_maxp)
+                    if ecc_apply in ("sat", "sat_main") and out_sat is not None:
+                        cur_loss_ecc, cur_maxp = compute_ecc_loss(out_sat["tx_logits"], tau=float(ecc_tau))
+                        ecc_losses.append(cur_loss_ecc)
+                        ecc_maxps.append(cur_maxp)
+                    if ecc_losses:
+                        loss_ecc = torch.stack(ecc_losses).mean()
+                        ecc_maxp = float(sum(ecc_maxps) / len(ecc_maxps))
 
                 dg_feat = select_generalization_feature(out_main, str(args.generalization_feature))
                 loss_proto = z_id.new_tensor(0.0)
@@ -3673,6 +3875,7 @@ def main():
                     + float(args.lambda_supcon_id) * sanitize_loss("supcon", loss_supcon, z_id, loss_warn_counts)
                     + float(args.lambda_fishr) * sanitize_loss("fishr", loss_fishr, z_id, loss_warn_counts)
                     + float(args.lambda_res) * sanitize_loss("sgc_res", loss_sgc_res, z_id, loss_warn_counts)
+                    + float(ecc_w) * sanitize_loss("ecc", loss_ecc, z_id, loss_warn_counts)
                 )
 
             stepped, grad_stats = safe_backward_step(model, optimizer, scaler, loss, args, use_amp)
@@ -3712,6 +3915,10 @@ def main():
             meters["supcon"].update(loss_supcon.item(), bsz)
             meters["fishr"].update(loss_fishr.item(), bsz)
             meters["sgc_res"].update(loss_sgc_res.item(), bsz)
+            meters["ecc"].update(loss_ecc.item(), bsz)
+            meters["ecc_w"].update(ecc_w, bsz)
+            meters["ecc_tau"].update(ecc_tau, bsz)
+            meters["ecc_maxp"].update(ecc_maxp, bsz)
             meters["grad_total"].update(grad_stats["grad_total"], bsz)
             meters["grad_backbone"].update(grad_stats["grad_backbone"], bsz)
             meters["grad_aux"].update(grad_stats["grad_aux"], bsz)

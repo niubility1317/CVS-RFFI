@@ -47,3 +47,13 @@ This file stores extracted evidence for the CVS-RFFI version/log analysis.
 - `no_amp` is the only Lite-B SGC augment variant with weak positive clean/UDU signal versus no-adapter augment: Primary +0.24, strict UDU +0.63, but worst-RX -4.32 and SAT Avg -0.58.
 - Current `sgc_adapt` is not validated: it freezes non-adapter params, trains only adapter params, and logs `LOSS-SAT cls_sat=0.0000 sat_cons=0.0000`; average adapt metrics are below augment.
 - Residual is not inert: `residual_only - no_res` gives source SAT Avg +8.52 and augment SAT Avg +1.44, with small Primary improvements, but still hurts worst-RX. Residual should be studied as a conservative gated mechanism after a strong backbone checkpoint.
+
+## 2026-05-08 5.8 Evidence
+- `5.8/logs` contains 19 complete seed-1337 logs: 4 B-group model/SAT-label-smoothing variants, 4 C-group ECC variants, 6 D-group domain disentanglement ablations, and 5 E-group SGC follow-ups.
+- Best development primary score is `E2_residual_only_std_res001`: Primary 88.24, overall 90.70, strict UDU 86.92, worst-RX 86.99, SAT Avg 41.58.
+- Best pre-SGC source by primary is `D1_domain_enhancer_off`: Primary 87.87, overall 90.52, strict UDU 86.45. The automatic SGC source selector chose this checkpoint as SRC-P.
+- `D4_domain_no_pa_no_stats` is also strong: Primary 87.65, overall 90.75, strict UDU 85.99, worst-RX 86.13. This challenges the prior assumption that PA auxiliary loss is always necessary.
+- ECC did not win: `C2_A1_ecc003_satmain` is only slightly better than B1 on primary (+0.10), and `C4_A2_ecc003_satmain` strongly hurts SAT Avg.
+- Residual-only SGC is the useful SGC direction in 5.8: `E2` improves over `E0_no_adapter_continue` by +0.40 primary, +0.45 strict UDU, +0.48 worst-RX, and +0.73 SAT Avg.
+- Full SGC remains negative in this setup: `E4_full_sgc_mild_res001` trails E0 by -0.23 primary and -0.56 worst-RX.
+- Rigor warning: 5.8 primary rankings and Phase-E source selection use test-derived metrics. They are valid for development analysis but should not be reported as final unbiased test results.

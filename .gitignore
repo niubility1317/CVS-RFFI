@@ -24,6 +24,8 @@ sgc_runs/
 slimming_runs/
 ssdg_runs/
 finalist_runs/
+baseline_runs/
+baseline_logs/
 *.log
 *.pid
 *.lock
@@ -35,6 +37,15 @@ nohup.out
 *.pkl
 *.npy
 *.npz
+
+# Curated experiment archive explicitly preserved in source history.
+!5.8/
+!5.8/logs/
+!5.8/logs/*.log
+!5.8/metrics/
+!5.8/metrics/*
+!5.8/reports/
+!5.8/reports/*
 
 # Top-level experiment snapshots kept outside this repository's source history.
 5.7/

@@ -1,17 +1,24 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# Queue launcher for the 2026-05-07 best-model + SGC residual experiment set.
-# GPU0-7 are used by default. By default this runs Phase A only, so the first
-# pass explores the best-model candidates before any SGC/residual jobs.
-# Use PHASES=A,B when you want fully automatic best-model exploration first,
-# then SGC/residual jobs last.
+# Queue launcher for the post-Phase-A experiment plan.
+# Default order is B,C,D,E:
+#   B: stability / label-smoothing calibration proxy
+#   C: new ECC-SAT training mode
+#   D: second-domain-backbone disentanglement validation
+#   E: SGC / residual adapter validation, always last
+#
+# Example:
+#   PHASES=B,C,D,E GPU_IDS=0,1,2,3,4,5,6,7 nohup bash run_final_best_sgc_queue.sh \
+#     > logs/next_round_$(date +%Y%m%d_%H%M%S).nohup.log 2>&1 &
 
 PYTHON_BIN="${PYTHON_BIN:-python}"
 GPU_IDS_CSV="${GPU_IDS:-0,1,2,3,4,5,6,7}"
-PHASES_CSV="${PHASES:-A}"
+PHASES_CSV="${PHASES:-B,C,D,E}"
 STOP_ON_FAIL="${STOP_ON_FAIL:-0}"
 DRY_RUN="${DRY_RUN:-0}"
+GLOBAL_SEED="${SEED:-1337}"
+MERGE_PRE_SGC_PHASES="${MERGE_PRE_SGC_PHASES:-1}"
 
 DATASET="${DATASET:-wisig}"
 WISIG_DOMAIN="${WISIG_DOMAIN:-rx_day}"
@@ -21,23 +28,21 @@ PRIMARY_UDU_WEIGHT="${PRIMARY_UDU_WEIGHT:-0.65}"
 MAIN_EPOCHS="${MAIN_EPOCHS:-200}"
 SGC_EPOCHS="${SGC_EPOCHS:-60}"
 SGC_FT_LR="${SGC_FT_LR:-5e-5}"
-SGC_LAMBDA_RES="${SGC_LAMBDA_RES:-0.02}"
+SGC_LAMBDA_RES="${SGC_LAMBDA_RES:-}"
 SAT_SCENARIO="${SAT_SCENARIO:-mixed_orbit}"
 SAT_EVAL_ON="${SAT_EVAL_ON:-test_unseen_day_unseen_rx}"
 SAT_EVAL_SCENARIOS="${SAT_EVAL_SCENARIOS:-clear_leo,low_elev_leo,rain_leo,storm_mp,mixed_orbit}"
 SAT_EVAL_MAX_BATCHES="${SAT_EVAL_MAX_BATCHES:--1}"
+RUN_SGC_EXTENDED="${RUN_SGC_EXTENDED:-0}"
 
-MIN_PRIMARY="${MIN_PRIMARY:-87.80}"
-MIN_UDU="${MIN_UDU:-86.20}"
-MIN_OVERALL="${MIN_OVERALL:-90.50}"
-MIN_SAT_AVG="${MIN_SAT_AVG:-41.50}"
-
+MIN_SGC_SAT_PRIMARY="${MIN_SGC_SAT_PRIMARY:-87.50}"
 ROOT_DIR="$(pwd)"
 RUN_ROOT="${RUN_ROOT:-finalist_runs}"
 LOG_DIR="${LOG_DIR:-logs}"
-QUEUE_DIR="${QUEUE_DIR:-${RUN_ROOT}/queue_state_$(date +%Y%m%d_%H%M%S)_$$}"
+QUEUE_DIR="${QUEUE_DIR:-${RUN_ROOT}/queue_state_next_$(date +%Y%m%d_%H%M%S)_$$}"
 
 mkdir -p "${RUN_ROOT}" "${LOG_DIR}" "${QUEUE_DIR}"
+: > "${QUEUE_DIR}/main_manifest.tsv"
 
 IFS=',' read -r -a GPU_LIST <<< "${GPU_IDS_CSV}"
 IFS=',' read -r -a PHASE_LIST <<< "${PHASES_CSV}"
@@ -52,6 +57,17 @@ trim() {
   value="${value#"${value%%[![:space:]]*}"}"
   value="${value%"${value##*[![:space:]]}"}"
   printf '%s' "${value}"
+}
+
+append_extra_args() {
+  local array_name="$1"
+  local extra="${2:-}"
+  local -n target_array="${array_name}"
+  local extra_args=()
+  if [ -n "$(trim "${extra}")" ]; then
+    read -r -a extra_args <<< "${extra}"
+    target_array+=("${extra_args[@]}")
+  fi
 }
 
 sat_eval_args=(
@@ -91,6 +107,7 @@ run_main_job() {
   local sat_start="$7"
   local fishr="$8"
   local use_sat="$9"
+  local extra="${10:-}"
 
   local run_dir="${RUN_ROOT}/${name}"
   local log_path="${LOG_DIR}/${name}_seed${seed}.log"
@@ -122,8 +139,9 @@ run_main_job() {
       --lambda_sat_cons "${sat_cons}"
     )
   fi
+  append_extra_args cmd "${extra}"
 
-  printf '%s\t%s\t%s\n' "${name}" "${log_path}" "${run_dir}/best_model_primary_ood.pth" >> "${QUEUE_DIR}/phase_a_manifest.tsv"
+  printf '%s\t%s\t%s\n' "${name}" "${log_path}" "${run_dir}/best_model_primary_ood.pth" >> "${QUEUE_DIR}/main_manifest.tsv"
   run_cmd "${gpu}" "${log_path}" "${cmd[@]}"
 }
 
@@ -135,6 +153,7 @@ run_continue_job() {
   local sat_cls="$5"
   local sat_cons="$6"
   local sat_start="$7"
+  local extra="${8:-}"
 
   local run_dir="${RUN_ROOT}/${name}"
   local log_path="${LOG_DIR}/${name}.log"
@@ -146,6 +165,7 @@ run_continue_job() {
     --slim_group rxrobust_lite_b_no_dac_mix015
     --source_ckpt "${source_ckpt}"
     --epochs "${epochs}"
+    --seed "${GLOBAL_SEED}"
     --lr "${SGC_FT_LR}"
     --use_sat_consistency
     --sat_train_scenario "${SAT_SCENARIO}"
@@ -162,7 +182,7 @@ run_continue_job() {
     --best_unseen_day_unseen_rx_save_path "${run_dir}/best_model_strict_udu.pth"
     --best_worst_rx_save_path "${run_dir}/best_model_worst_rx.pth"
   )
-
+  append_extra_args cmd "${extra}"
   run_cmd "${gpu}" "${log_path}" "${cmd[@]}"
 }
 
@@ -175,6 +195,7 @@ run_sgc_job() {
   local sat_cons="$6"
   local sat_start="$7"
   local adapter_json="$8"
+  local extra="${9:-}"
 
   local run_dir="${RUN_ROOT}/${name}"
   local log_path="${LOG_DIR}/${name}.log"
@@ -191,11 +212,11 @@ run_sgc_job() {
     --train_sat_scenario "${SAT_SCENARIO}"
     --sat_view_source main
     --epochs "${epochs}"
+    --seed "${GLOBAL_SEED}"
     --lr "${SGC_FT_LR}"
     --sat_cons_start_epoch "${sat_start}"
     --lambda_sat_cls "${sat_cls}"
     --lambda_sat_cons "${sat_cons}"
-    --lambda_res "${SGC_LAMBDA_RES}"
     --lambda_fishr 0.02
     --fishr_min_domains 4
     "${sat_eval_args[@]}"
@@ -206,7 +227,10 @@ run_sgc_job() {
     --best_unseen_day_unseen_rx_save_path "${run_dir}/best_model_strict_udu.pth"
     --best_worst_rx_save_path "${run_dir}/best_model_worst_rx.pth"
   )
-
+  if [ -n "${SGC_LAMBDA_RES}" ] && [[ " ${extra} " != *" --lambda_res "* ]]; then
+    cmd+=(--lambda_res "${SGC_LAMBDA_RES}")
+  fi
+  append_extra_args cmd "${extra}"
   run_cmd "${gpu}" "${log_path}" "${cmd[@]}"
 }
 
@@ -236,23 +260,23 @@ worker_loop() {
   local queue_file="$3"
   local lock_file="$4"
   local abort_file="$5"
-  local line kind
+  local line kind rc
 
   while line="$(claim_next_job "${queue_file}" "${lock_file}" "${abort_file}")"; do
-    IFS='|' read -r kind f1 f2 f3 f4 f5 f6 f7 f8 <<< "${line}"
+    IFS='|' read -r kind f1 f2 f3 f4 f5 f6 f7 f8 f9 <<< "${line}"
     echo "[QUEUE][phase ${phase}][GPU ${gpu}] start ${kind}:${f1}"
     set +e
     case "${kind}" in
       main)
-        run_main_job "${gpu}" "${f1}" "${f2}" "${f3}" "${f4}" "${f5}" "${f6}" "${f7}" "${f8}"
+        run_main_job "${gpu}" "${f1}" "${f2}" "${f3}" "${f4}" "${f5}" "${f6}" "${f7}" "${f8}" "${f9:-}"
         rc="$?"
         ;;
       cont)
-        run_continue_job "${gpu}" "${f1}" "${f2}" "${f3}" "${f4}" "${f5}" "${f6}"
+        run_continue_job "${gpu}" "${f1}" "${f2}" "${f3}" "${f4}" "${f5}" "${f6}" "${f7:-}"
         rc="$?"
         ;;
       sgc)
-        run_sgc_job "${gpu}" "${f1}" "${f2}" "${f3}" "${f4}" "${f5}" "${f6}" "${f7}"
+        run_sgc_job "${gpu}" "${f1}" "${f2}" "${f3}" "${f4}" "${f5}" "${f6}" "${f7}" "${f8:-}"
         rc="$?"
         ;;
       *)
@@ -306,150 +330,193 @@ run_phase_queue() {
 write_phase_a_queue() {
   local queue_file="$1"
   : > "${queue_file}"
-  : > "${QUEUE_DIR}/phase_a_manifest.tsv"
-
   cat >> "${queue_file}" <<EOF_JOBS
-main|A0_fishr_only_ref|1337|${MAIN_EPOCHS}|0|0|0|0.02|0
-main|A1_fishr_sat_mild_v1|1337|${MAIN_EPOCHS}|0.08|0.04|20|0.02|1
-main|A2_fishr_sat_light_v2|1337|${MAIN_EPOCHS}|0.05|0.02|20|0.02|1
-main|A3_fishr_sat_mid_v3|1337|${MAIN_EPOCHS}|0.12|0.06|20|0.02|1
-main|A4_fishr_sat_delayed_v4|1337|${MAIN_EPOCHS}|0.08|0.04|60|0.02|1
-main|A5_sat_mild_no_fishr_ablation|1337|${MAIN_EPOCHS}|0.08|0.04|20|0.00|1
-main|A6_fishr_sat_mild_seed2026|2026|${MAIN_EPOCHS}|0.08|0.04|20|0.02|1
-main|A7_fishr_sat_mild_seed3407|3407|${MAIN_EPOCHS}|0.08|0.04|20|0.02|1
+main|A0_fishr_only_ref|1337|${MAIN_EPOCHS}|0|0|0|0.02|0|
+main|A1_fishr_sat_mild_v1|1337|${MAIN_EPOCHS}|0.08|0.04|20|0.02|1|
+main|A2_fishr_sat_light_v2|1337|${MAIN_EPOCHS}|0.05|0.02|20|0.02|1|
+main|A3_fishr_sat_mid_v3|1337|${MAIN_EPOCHS}|0.12|0.06|20|0.02|1|
+main|A4_fishr_sat_delayed_v4|1337|${MAIN_EPOCHS}|0.08|0.04|60|0.02|1|
+main|A5_sat_mild_no_fishr_ablation|1337|${MAIN_EPOCHS}|0.08|0.04|20|0.00|1|
+main|A6_fishr_sat_mild_seed2026|2026|${MAIN_EPOCHS}|0.08|0.04|20|0.02|1|
+main|A7_fishr_sat_mild_seed3407|3407|${MAIN_EPOCHS}|0.08|0.04|20|0.02|1|
 EOF_JOBS
 }
 
-select_phase_a_checkpoint() {
-  local forced="${PHASE_B_SOURCE_CKPT:-}"
-  local selected_file="${QUEUE_DIR}/selected_phase_a_ckpt.txt"
-  if [ -n "${forced}" ]; then
-    printf '%s\n' "${forced}" > "${selected_file}"
-    echo "[QUEUE] using forced PHASE_B_SOURCE_CKPT=${forced}"
+write_phase_b_queue() {
+  local queue_file="$1"
+  : > "${queue_file}"
+  cat >> "${queue_file}" <<EOF_JOBS
+main|B1_A1_mild_seed${GLOBAL_SEED}|${GLOBAL_SEED}|${MAIN_EPOCHS}|0.08|0.04|20|0.02|1|
+main|B2_A2_light_seed${GLOBAL_SEED}|${GLOBAL_SEED}|${MAIN_EPOCHS}|0.05|0.02|20|0.02|1|
+main|B3_A1_ls002_seed${GLOBAL_SEED}|${GLOBAL_SEED}|${MAIN_EPOCHS}|0.08|0.04|20|0.02|1|--label_smoothing 0.02
+main|B4_A2_ls002_seed${GLOBAL_SEED}|${GLOBAL_SEED}|${MAIN_EPOCHS}|0.05|0.02|20|0.02|1|--label_smoothing 0.02
+EOF_JOBS
+}
+
+write_phase_c_queue() {
+  local queue_file="$1"
+  local ecc_sat_002="--lambda_ecc 0.02 --ecc_apply_to sat --ecc_tau_start 0.65 --ecc_tau_end 0.95 --ecc_epochs 60 --ecc_start_epoch 1"
+  local ecc_satmain_003="--lambda_ecc 0.03 --ecc_apply_to sat_main --ecc_tau_start 0.65 --ecc_tau_end 0.95 --ecc_epochs 60 --ecc_start_epoch 1"
+  local ecc_satmain_cons="--lambda_ecc 0.03 --ecc_apply_to sat_main --ecc_tau_start 0.70 --ecc_tau_end 0.95 --ecc_epochs 40 --ecc_start_epoch 1"
+  : > "${queue_file}"
+  cat >> "${queue_file}" <<EOF_JOBS
+main|C1_A1_ecc002_sat_seed${GLOBAL_SEED}|${GLOBAL_SEED}|${MAIN_EPOCHS}|0.08|0.04|20|0.02|1|${ecc_sat_002}
+main|C2_A1_ecc003_satmain_seed${GLOBAL_SEED}|${GLOBAL_SEED}|${MAIN_EPOCHS}|0.08|0.04|20|0.02|1|${ecc_satmain_003}
+main|C3_A1_ecc003_conservative_seed${GLOBAL_SEED}|${GLOBAL_SEED}|${MAIN_EPOCHS}|0.08|0.04|20|0.02|1|${ecc_satmain_cons}
+main|C4_A2_ecc003_satmain_seed${GLOBAL_SEED}|${GLOBAL_SEED}|${MAIN_EPOCHS}|0.05|0.02|20|0.02|1|${ecc_satmain_003}
+EOF_JOBS
+}
+
+write_phase_d_queue() {
+  local queue_file="$1"
+  : > "${queue_file}"
+  cat >> "${queue_file}" <<EOF_JOBS
+main|D1_domain_enhancer_off_seed${GLOBAL_SEED}|${GLOBAL_SEED}|${MAIN_EPOCHS}|0.08|0.04|20|0.02|1|--force_domain_enhancer off
+main|D2_domain_rcn020_seed${GLOBAL_SEED}|${GLOBAL_SEED}|${MAIN_EPOCHS}|0.08|0.04|20|0.02|1|--force_domain_enhancer_strength 0.20
+main|D3_domain_branch_same_seed${GLOBAL_SEED}|${GLOBAL_SEED}|${MAIN_EPOCHS}|0.08|0.04|20|0.02|1|--force_domain_branch_ablation same
+main|D4_domain_no_pa_no_stats_seed${GLOBAL_SEED}|${GLOBAL_SEED}|${MAIN_EPOCHS}|0.08|0.04|20|0.02|1|--force_domain_branch_ablation no_pa,no_stats
+main|D5_no_grl_adv_seed${GLOBAL_SEED}|${GLOBAL_SEED}|${MAIN_EPOCHS}|0.08|0.04|20|0.02|1|--force_lambda_adv 0.0
+main|D6_no_orth_seed${GLOBAL_SEED}|${GLOBAL_SEED}|${MAIN_EPOCHS}|0.08|0.04|20|0.02|1|--force_lambda_orth 0.0
+EOF_JOBS
+}
+
+select_sgc_sources() {
+  local primary_file="${QUEUE_DIR}/selected_sgc_primary_ckpt.txt"
+  local sat_file="${QUEUE_DIR}/selected_sgc_sat_ckpt.txt"
+  local forced_primary="${PHASE_E_SOURCE_CKPT:-}"
+  local forced_sat="${PHASE_E_SAT_SOURCE_CKPT:-}"
+
+  if [ -n "${forced_primary}" ]; then
+    printf '%s\n' "${forced_primary}" > "${primary_file}"
+    printf '%s\n' "${forced_sat:-${forced_primary}}" > "${sat_file}"
+    echo "[QUEUE] using forced PHASE_E_SOURCE_CKPT=${forced_primary}"
     return 0
   fi
 
   if [ "${DRY_RUN}" = "1" ]; then
-    local dry_ckpt="${RUN_ROOT}/A1_fishr_sat_mild_v1/best_model_primary_ood.pth"
-    printf '%s\n' "${dry_ckpt}" > "${selected_file}"
-    echo "[QUEUE][DRY-RUN] selected ${dry_ckpt}"
+    printf '%s\n' "${RUN_ROOT}/A1_fishr_sat_mild_v1/best_model_primary_ood.pth" > "${primary_file}"
+    printf '%s\n' "${RUN_ROOT}/A3_fishr_sat_mid_v3/best_model_primary_ood.pth" > "${sat_file}"
+    echo "[QUEUE][DRY-RUN] selected placeholder SGC sources."
     return 0
   fi
 
-  "${PYTHON_BIN}" - "${QUEUE_DIR}/phase_a_manifest.tsv" "${selected_file}" "${MIN_PRIMARY}" "${MIN_UDU}" "${MIN_OVERALL}" "${MIN_SAT_AVG}" <<'PY'
+  "${PYTHON_BIN}" - "${QUEUE_DIR}/main_manifest.tsv" "${LOG_DIR}" "${primary_file}" "${sat_file}" "${RUN_ROOT}/A1_fishr_sat_mild_v1/best_model_primary_ood.pth" "${MIN_SGC_SAT_PRIMARY}" <<'PY'
+import glob
 import re
 import sys
 from pathlib import Path
 
 manifest = Path(sys.argv[1])
-selected_file = Path(sys.argv[2])
-min_primary = float(sys.argv[3])
-min_udu = float(sys.argv[4])
-min_overall = float(sys.argv[5])
-min_sat = float(sys.argv[6])
+log_dir = Path(sys.argv[2])
+primary_file = Path(sys.argv[3])
+sat_file = Path(sys.argv[4])
+fallback_ckpt = Path(sys.argv[5])
+min_sat_primary = float(sys.argv[6])
+
+items = {}
+
+def add_item(name, log_path, ckpt_path):
+    log = Path(log_path)
+    if not log.exists():
+        return
+    key = str(log.resolve())
+    items[key] = {"name": name, "log": log, "ckpt": Path(ckpt_path)}
+
+if manifest.exists():
+    for line in manifest.read_text(errors="ignore").splitlines():
+        if not line.strip():
+            continue
+        parts = line.split("\t")
+        if len(parts) >= 3:
+            add_item(parts[0], parts[1], parts[2])
+
+for pattern in ("A*.log", "B*.log", "C*.log", "D*.log"):
+    for raw in glob.glob(str(log_dir / pattern)):
+        log = Path(raw)
+        text = log.read_text(errors="ignore")
+        m = re.search(r"Training finished\. best_primary_ood_score=.*? -> (\S+)", text)
+        if m:
+            add_item(log.stem, str(log), m.group(1))
 
 rows = []
-for line in manifest.read_text(errors="ignore").splitlines():
-    if not line.strip():
-        continue
-    name, log_path, ckpt_path = line.split("\t")
-    log = Path(log_path)
-    ckpt = Path(ckpt_path)
-    if not log.exists():
-        continue
-    text = log.read_text(errors="ignore")
+for item in items.values():
+    text = item["log"].read_text(errors="ignore")
     m = re.search(
         r"\[FINAL-PRIMARY\] val_tx=([0-9.]+)% \| test_overall_tx=([0-9.]+)% \| strict_udu=([0-9.]+)% \| score=([0-9.]+)",
         text,
     )
     if not m:
         continue
-    overall = float(m.group(2))
-    udu = float(m.group(3))
-    primary = float(m.group(4))
     sat_vals = [
         float(x)
-        for x in re.findall(
-            r"\[FINAL-PRIMARY\] \[SAT-TEST\].*?strict_udu=([0-9.]+)%",
-            text,
-        )
+        for x in re.findall(r"\[FINAL-PRIMARY\] \[SAT-TEST\].*?strict_udu=([0-9.]+)%", text)
     ]
-    sat_avg = sum(sat_vals) / len(sat_vals) if sat_vals else -1.0
-    skipped = None
-    sm = re.search(r"skipped_backward_batches=([0-9]+)", text)
-    if sm:
-        skipped = int(sm.group(1))
-    passed = (
-        primary >= min_primary
-        and udu >= min_udu
-        and overall >= min_overall
-        and sat_avg >= min_sat
-        and (skipped is None or skipped <= 50)
-        and ckpt.exists()
-    )
-    rows.append(
-        {
-            "name": name,
-            "log": log_path,
-            "ckpt": ckpt_path,
-            "primary": primary,
-            "udu": udu,
-            "overall": overall,
-            "sat_avg": sat_avg,
-            "skipped": skipped,
-            "passed": passed,
-            "ckpt_exists": ckpt.exists(),
-        }
-    )
+    rows.append({
+        "name": item["name"],
+        "log": str(item["log"]),
+        "ckpt": str(item["ckpt"]),
+        "ckpt_exists": item["ckpt"].exists(),
+        "overall": float(m.group(2)),
+        "udu": float(m.group(3)),
+        "primary": float(m.group(4)),
+        "sat_avg": sum(sat_vals) / len(sat_vals) if sat_vals else -1.0,
+    })
 
-if not rows:
-    raise SystemExit("No parsable Phase A logs; cannot select Phase B checkpoint.")
+eligible = [r for r in rows if r["ckpt_exists"]]
+if not eligible and fallback_ckpt.exists():
+    primary_file.write_text(str(fallback_ckpt) + "\n")
+    sat_file.write_text(str(fallback_ckpt) + "\n")
+    print(f"[QUEUE] no parsed B/C/D candidates; fallback SGC source={fallback_ckpt}")
+    raise SystemExit(0)
+if not eligible:
+    raise SystemExit("No valid checkpoint found for Phase E. Set PHASE_E_SOURCE_CKPT=/path/to/best_model_primary_ood.pth.")
 
-passed_rows = [r for r in rows if r["passed"]]
-pool = passed_rows if passed_rows else [r for r in rows if r["ckpt_exists"]]
-if not pool:
-    raise SystemExit("No Phase A checkpoint exists; cannot select Phase B checkpoint.")
+best_primary = max(eligible, key=lambda r: (r["primary"], r["udu"], r["overall"], r["sat_avg"]))
+sat_pool = [r for r in eligible if r["primary"] >= min_sat_primary and r["sat_avg"] >= 0.0]
+best_sat = max(sat_pool, key=lambda r: (r["sat_avg"], r["primary"], r["udu"])) if sat_pool else best_primary
 
-best = max(pool, key=lambda r: (r["primary"], r["udu"], r["overall"], r["sat_avg"]))
-selected_file.write_text(best["ckpt"] + "\n")
+primary_file.write_text(best_primary["ckpt"] + "\n")
+sat_file.write_text(best_sat["ckpt"] + "\n")
 
-print("[QUEUE] Phase A candidates:")
-for r in sorted(rows, key=lambda x: x["primary"], reverse=True):
-    status = "PASS" if r["passed"] else "FALLBACK-CANDIDATE" if r["ckpt_exists"] else "NO-CKPT"
+print("[QUEUE] SGC source candidates:")
+for r in sorted(eligible, key=lambda x: x["primary"], reverse=True):
     print(
-        f"  {status} {r['name']}: Primary={r['primary']:.2f} "
-        f"UDU={r['udu']:.2f} Overall={r['overall']:.2f} "
-        f"SATAvg={r['sat_avg']:.2f} skipped={r['skipped']} ckpt={r['ckpt']}"
+        f"  {r['name']}: Primary={r['primary']:.2f} UDU={r['udu']:.2f} "
+        f"Overall={r['overall']:.2f} SATAvg={r['sat_avg']:.2f} ckpt={r['ckpt']}"
     )
-print(f"[QUEUE] Selected Phase B source checkpoint: {best['ckpt']} ({best['name']})")
+print(f"[QUEUE] Selected SRC-P: {best_primary['ckpt']} ({best_primary['name']})")
+print(f"[QUEUE] Selected SRC-S: {best_sat['ckpt']} ({best_sat['name']})")
 PY
 }
 
-write_phase_b_queue() {
+append_sgc_suite() {
   local queue_file="$1"
-  local selected_ckpt="$2"
-  : > "${queue_file}"
-
+  local prefix="$2"
+  local source_ckpt="$3"
   local residual_only_std='{"use_amp_norm":false,"use_freq_comp":false,"use_spectral_suppressor":false,"use_residual_comp":true,"residual_channels":32,"residual_blocks":2,"residual_kernel_size":5,"residual_init_gamma":0.0}'
-  local residual_only_small='{"use_amp_norm":false,"use_freq_comp":false,"use_spectral_suppressor":false,"use_residual_comp":true,"residual_channels":16,"residual_blocks":1,"residual_kernel_size":5,"residual_init_gamma":0.0}'
-  local residual_only_wide='{"use_amp_norm":false,"use_freq_comp":false,"use_spectral_suppressor":false,"use_residual_comp":true,"residual_channels":48,"residual_blocks":2,"residual_kernel_size":5,"residual_init_gamma":0.0}'
   local no_res_control='{"use_amp_norm":true,"use_freq_comp":true,"use_spectral_suppressor":true,"use_residual_comp":false,"freq_hidden_dim":32,"spectral_hidden_dim":32,"spectral_residual_alpha":0.35}'
-  local no_amp_residual_full='{"use_amp_norm":false,"use_freq_comp":true,"use_spectral_suppressor":true,"use_residual_comp":true,"freq_hidden_dim":32,"spectral_hidden_dim":32,"spectral_residual_alpha":0.35,"residual_channels":32,"residual_blocks":2,"residual_kernel_size":5,"residual_init_gamma":0.0}'
-  local no_amp_no_res_control='{"use_amp_norm":false,"use_freq_comp":true,"use_spectral_suppressor":true,"use_residual_comp":false,"freq_hidden_dim":32,"spectral_hidden_dim":32,"spectral_residual_alpha":0.35}'
   local full_sgc_mild='{"use_amp_norm":true,"use_freq_comp":true,"use_spectral_suppressor":true,"use_residual_comp":true,"freq_hidden_dim":32,"spectral_hidden_dim":32,"spectral_residual_alpha":0.35,"residual_channels":32,"residual_blocks":2,"residual_kernel_size":5,"residual_init_gamma":0.0}'
-  local no_amp_freq_probe='{"use_amp_norm":false,"use_freq_comp":false,"use_spectral_suppressor":true,"use_residual_comp":true,"spectral_hidden_dim":32,"spectral_residual_alpha":0.35,"residual_channels":32,"residual_blocks":2,"residual_kernel_size":5,"residual_init_gamma":0.0}'
 
   cat >> "${queue_file}" <<EOF_JOBS
-cont|B0_no_adapter_sat_continue|${selected_ckpt}|${SGC_EPOCHS}|0.08|0.04|20
-sgc|B1_residual_only_std|${selected_ckpt}|${SGC_EPOCHS}|0.08|0.04|20|${residual_only_std}
-sgc|B2_residual_only_small|${selected_ckpt}|${SGC_EPOCHS}|0.08|0.04|20|${residual_only_small}
-sgc|B3_residual_only_wide|${selected_ckpt}|${SGC_EPOCHS}|0.08|0.04|20|${residual_only_wide}
-sgc|B4_no_res_control|${selected_ckpt}|${SGC_EPOCHS}|0.08|0.04|20|${no_res_control}
-sgc|B5_no_amp_residual_full|${selected_ckpt}|${SGC_EPOCHS}|0.08|0.04|20|${no_amp_residual_full}
-sgc|B6_no_amp_no_res_control|${selected_ckpt}|${SGC_EPOCHS}|0.08|0.04|20|${no_amp_no_res_control}
-sgc|B7_full_sgc_mild|${selected_ckpt}|${SGC_EPOCHS}|0.08|0.04|20|${full_sgc_mild}
-sgc|B8_no_amp_freq_sat_probe|${selected_ckpt}|${SGC_EPOCHS}|0.08|0.04|20|${no_amp_freq_probe}
+cont|${prefix}0_no_adapter_continue|${source_ckpt}|${SGC_EPOCHS}|0.08|0.04|20|
+sgc|${prefix}1_residual_only_std|${source_ckpt}|${SGC_EPOCHS}|0.08|0.04|20|${residual_only_std}|
+sgc|${prefix}2_residual_only_std_res001|${source_ckpt}|${SGC_EPOCHS}|0.08|0.04|20|${residual_only_std}|--lambda_res 0.01
+sgc|${prefix}3_no_res_control|${source_ckpt}|${SGC_EPOCHS}|0.08|0.04|20|${no_res_control}|
+sgc|${prefix}4_full_sgc_mild_res001|${source_ckpt}|${SGC_EPOCHS}|0.08|0.04|20|${full_sgc_mild}|--lambda_res 0.01
 EOF_JOBS
+}
+
+write_phase_e_queue() {
+  local queue_file="$1"
+  local source_primary="$2"
+  local source_sat="$3"
+  : > "${queue_file}"
+  append_sgc_suite "${queue_file}" "E" "${source_primary}"
+  if [ "${RUN_SGC_EXTENDED}" = "1" ] && [ "${source_sat}" != "${source_primary}" ]; then
+    append_sgc_suite "${queue_file}" "ES" "${source_sat}"
+  else
+    echo "[QUEUE][phase E] extended SGC suite skipped: RUN_SGC_EXTENDED=${RUN_SGC_EXTENDED}, SRC-P=${source_primary}, SRC-S=${source_sat}"
+  fi
 }
 
 phase_enabled() {
@@ -466,7 +533,7 @@ phase_enabled() {
 
 echo "[QUEUE] root=${ROOT_DIR}"
 echo "[QUEUE] queue_state=${QUEUE_DIR}"
-echo "[QUEUE] GPUs=${GPU_IDS_CSV} phases=${PHASES_CSV} dry_run=${DRY_RUN}"
+echo "[QUEUE] GPUs=${GPU_IDS_CSV} phases=${PHASES_CSV} seed=${GLOBAL_SEED} merge_pre_sgc=${MERGE_PRE_SGC_PHASES} dry_run=${DRY_RUN}"
 
 if phase_enabled "A"; then
   phase_a_queue="${QUEUE_DIR}/phase_A.queue"
@@ -474,16 +541,62 @@ if phase_enabled "A"; then
   run_phase_queue "A" "${phase_a_queue}"
 fi
 
-if phase_enabled "B"; then
-  select_phase_a_checkpoint
-  selected_ckpt="$(cat "${QUEUE_DIR}/selected_phase_a_ckpt.txt")"
-  if [ "${DRY_RUN}" != "1" ] && [ ! -f "${selected_ckpt}" ]; then
-    echo "[QUEUE] selected checkpoint does not exist: ${selected_ckpt}" >&2
+if [ "${MERGE_PRE_SGC_PHASES}" = "1" ]; then
+  phase_pre_queue="${QUEUE_DIR}/phase_PRE.queue"
+  : > "${phase_pre_queue}"
+  if phase_enabled "B"; then
+    phase_b_queue="${QUEUE_DIR}/phase_B.queue"
+    write_phase_b_queue "${phase_b_queue}"
+    cat "${phase_b_queue}" >> "${phase_pre_queue}"
+  fi
+  if phase_enabled "C"; then
+    phase_c_queue="${QUEUE_DIR}/phase_C.queue"
+    write_phase_c_queue "${phase_c_queue}"
+    cat "${phase_c_queue}" >> "${phase_pre_queue}"
+  fi
+  if phase_enabled "D"; then
+    phase_d_queue="${QUEUE_DIR}/phase_D.queue"
+    write_phase_d_queue "${phase_d_queue}"
+    cat "${phase_d_queue}" >> "${phase_pre_queue}"
+  fi
+  if [ -s "${phase_pre_queue}" ]; then
+    run_phase_queue "PRE" "${phase_pre_queue}"
+  fi
+else
+  if phase_enabled "B"; then
+    phase_b_queue="${QUEUE_DIR}/phase_B.queue"
+    write_phase_b_queue "${phase_b_queue}"
+    run_phase_queue "B" "${phase_b_queue}"
+  fi
+
+  if phase_enabled "C"; then
+    phase_c_queue="${QUEUE_DIR}/phase_C.queue"
+    write_phase_c_queue "${phase_c_queue}"
+    run_phase_queue "C" "${phase_c_queue}"
+  fi
+
+  if phase_enabled "D"; then
+    phase_d_queue="${QUEUE_DIR}/phase_D.queue"
+    write_phase_d_queue "${phase_d_queue}"
+    run_phase_queue "D" "${phase_d_queue}"
+  fi
+fi
+
+if phase_enabled "E"; then
+  select_sgc_sources
+  source_primary="$(cat "${QUEUE_DIR}/selected_sgc_primary_ckpt.txt")"
+  source_sat="$(cat "${QUEUE_DIR}/selected_sgc_sat_ckpt.txt")"
+  if [ "${DRY_RUN}" != "1" ] && [ ! -f "${source_primary}" ]; then
+    echo "[QUEUE] selected primary SGC checkpoint does not exist: ${source_primary}" >&2
     exit 1
   fi
-  phase_b_queue="${QUEUE_DIR}/phase_B.queue"
-  write_phase_b_queue "${phase_b_queue}" "${selected_ckpt}"
-  run_phase_queue "B" "${phase_b_queue}"
+  if [ "${DRY_RUN}" != "1" ] && [ ! -f "${source_sat}" ]; then
+    echo "[QUEUE] selected SAT SGC checkpoint does not exist: ${source_sat}" >&2
+    exit 1
+  fi
+  phase_e_queue="${QUEUE_DIR}/phase_E.queue"
+  write_phase_e_queue "${phase_e_queue}" "${source_primary}" "${source_sat}"
+  run_phase_queue "E" "${phase_e_queue}"
 fi
 
 echo "[QUEUE] all requested phases finished. Logs are in ${LOG_DIR}; queue state is in ${QUEUE_DIR}."
