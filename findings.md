@@ -57,3 +57,9 @@ This file stores extracted evidence for the CVS-RFFI version/log analysis.
 - Residual-only SGC is the useful SGC direction in 5.8: `E2` improves over `E0_no_adapter_continue` by +0.40 primary, +0.45 strict UDU, +0.48 worst-RX, and +0.73 SAT Avg.
 - Full SGC remains negative in this setup: `E4_full_sgc_mild_res001` trails E0 by -0.23 primary and -0.56 worst-RX.
 - Rigor warning: 5.8 primary rankings and Phase-E source selection use test-derived metrics. They are valid for development analysis but should not be reported as final unbiased test results.
+
+## 2026-05-08 SGC Optimization Evidence
+- User clarified that SGC must do more than improve SAT overlay accuracy: it should suppress satellite-ground channel interference and support on-orbit target-domain adaptation with unlabeled target samples.
+- Literature direction: Radio Transformer Networks and DeepRx support learnable receiver/channel transformations, but their communication objectives differ from RFFI; SGC needs fingerprint-preserving residual constraints.
+- RFFI domain-generalization/source-free adaptation literature supports using unlabeled target receiver/domain samples, but final evaluation data must be separated from calibration/adaptation data to avoid leakage.
+- Code change direction: SAT evaluation should default to all named test loaders and report per-split SAT results; residual-only SGC should be expanded with bounded gamma, multiscale residual kernels, channel-stat gating, and residual diagnostics.

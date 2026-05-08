@@ -1888,7 +1888,7 @@ def apply_sat_channel_for_scenario(
 
 
 def resolve_sat_eval_loader_names(named_loaders: Dict[str, DataLoader], spec: str) -> List[str]:
-    raw = str(spec or "test_unseen_day_unseen_rx").strip().lower()
+    raw = str(spec or "all").strip().lower()
     if raw in ("all", "all_named", "*"):
         return list(named_loaders.keys())
     if raw in ("main", "main_ood", "ood", "target", "targets", "target_ood"):
@@ -1901,8 +1901,8 @@ def resolve_sat_eval_loader_names(named_loaders: Dict[str, DataLoader], spec: st
         name = item.strip()
         if name and name in named_loaders and name not in names:
             names.append(name)
-    if not names and "test_unseen_day_unseen_rx" in named_loaders:
-        names.append("test_unseen_day_unseen_rx")
+    if not names:
+        names = list(named_loaders.keys())
     return names
 
 
@@ -2666,7 +2666,7 @@ def evaluate_sat_scenarios(
     args,
     max_batches: int = 0,
 ):
-    selected_names = resolve_sat_eval_loader_names(named_loaders, getattr(args, "eval_sat_on", "test_unseen_day_unseen_rx"))
+    selected_names = resolve_sat_eval_loader_names(named_loaders, getattr(args, "eval_sat_on", "all"))
     out = {}
     for si, scenario in enumerate(scenario_names):
         named_stats = {}
@@ -2685,9 +2685,11 @@ def evaluate_sat_scenarios(
         if not main_keys:
             main_keys = list(named_stats.keys())
         aggregate = aggregate_named_stats(named_stats, main_keys)
+        all_named_aggregate = aggregate_named_stats(named_stats, list(named_stats.keys()))
         strict = named_stats.get("test_unseen_day_unseen_rx", {}).get("tx_acc", float("nan"))
         out[scenario] = {
             "aggregate": aggregate,
+            "all_named_aggregate": all_named_aggregate,
             "strict_udu": strict,
             "named": named_stats,
             "selected_names": list(selected_names),
@@ -2695,18 +2697,37 @@ def evaluate_sat_scenarios(
     return out
 
 
-def format_sat_test_lines(sat_stats: Dict[str, Dict[str, Any]]) -> List[str]:
+def format_sat_test_lines(
+    sat_stats: Dict[str, Dict[str, Any]],
+    named_test_meta: Optional[Dict[str, Dict[str, Any]]] = None,
+) -> List[str]:
     lines = []
+    named_test_meta = named_test_meta or {}
     for scenario, stats in sat_stats.items():
         agg = stats.get("aggregate", {})
+        all_agg = stats.get("all_named_aggregate", {})
         strict = stats.get("strict_udu", float("nan"))
         selected = ",".join(stats.get("selected_names", []))
         lines.append(
             f"[SAT-TEST] scenario={scenario} selected={selected} "
             f"overall_tx={agg.get('tx_acc', float('nan')):.2f}% "
+            f"all_named_tx={all_agg.get('tx_acc', float('nan')):.2f}% "
             f"strict_udu={safe_nan(strict)}% "
             f"({int(agg.get('tx_correct', 0))}/{int(agg.get('tx_total', 0))})"
         )
+        named = stats.get("named", {})
+        if named:
+            ordered_names = list(named.keys())
+            priority = ["test_unseen_day_seen_rx", "test_seen_day_unseen_rx", "test_unseen_day_unseen_rx"]
+            ordered_names = [k for k in priority if k in named] + [k for k in ordered_names if k not in priority]
+            for name in ordered_names:
+                cur = named[name]
+                label = make_test_subset_label(name, named_test_meta.get(name, {}))
+                lines.append(
+                    f"[SAT-TEST-SPLIT] scenario={scenario} {label}: "
+                    f"tx={cur.get('tx_acc', float('nan')):.2f}% "
+                    f"({int(cur.get('tx_correct', 0))}/{int(cur.get('tx_total', 0))})"
+                )
     return lines
 
 
@@ -3165,8 +3186,8 @@ def main():
     parser.add_argument("--eval_sat_scenarios", type=str,
                         default="clear_leo,low_elev_leo,rain_leo,storm_mp,mixed_orbit",
                         help="Satellite scenarios to evaluate. Built-ins: clear_leo,low_elev_leo,rain_leo,storm_mp,geo_clear,mixed_orbit.")
-    parser.add_argument("--eval_sat_on", type=str, default="test_unseen_day_unseen_rx",
-                        help="Named test loaders for satellite evaluation: test_unseen_day_unseen_rx, main, all, or comma-separated names.")
+    parser.add_argument("--eval_sat_on", type=str, default="all",
+                        help="Named test loaders for satellite evaluation: all, main, strict/test_unseen_day_unseen_rx, or comma-separated names.")
     parser.add_argument("--sat_eval_max_batches", type=int, default=-1,
                         help="Max batches for satellite evaluation. <0 reuses --eval_max_batches.")
     parser.add_argument("--sat_seed", type=int, default=2027)
@@ -4171,7 +4192,7 @@ def main():
                                  args.latest_save_path, args.best_save_path, is_best, aug_state, aux_scale,
                                  stage_state, mixstyle_state, collapse_guard, latest_saved),
               flush=True)
-        for sat_line in format_sat_test_lines(sat_test_stats):
+        for sat_line in format_sat_test_lines(sat_test_stats, named_test_meta):
             print(sat_line, flush=True)
         print(
             f"[BEST-TEST] overall={best_test_tx:.2f}% @ E{best_test_epoch:03d} -> {args.best_test_save_path} | "
@@ -4223,7 +4244,7 @@ def main():
                 args=args,
                 max_batches=sat_eval_max_batches,
             )
-            for line in format_sat_test_lines(final_sat):
+            for line in format_sat_test_lines(final_sat, named_test_meta):
                 print(f"[FINAL-BEST] {line}", flush=True)
     except Exception as e:
         print(f"[WARN] final best-checkpoint test failed: {e}", flush=True)
@@ -4253,7 +4274,7 @@ def main():
                 args=args,
                 max_batches=sat_eval_max_batches,
             )
-            for line in format_sat_test_lines(primary_sat):
+            for line in format_sat_test_lines(primary_sat, named_test_meta):
                 print(f"[FINAL-PRIMARY] {line}", flush=True)
     except Exception as e:
         print(f"[WARN] final primary-checkpoint test failed: {e}", flush=True)
@@ -4312,7 +4333,7 @@ def main():
                         args=args,
                         max_batches=sat_eval_max_batches,
                     )
-                    for line in format_sat_test_lines(avg_sat):
+                    for line in format_sat_test_lines(avg_sat, named_test_meta):
                         print(f"[FINAL-AVG][{avg_name}] {line}", flush=True)
             except Exception as e:
                 print(f"[WARN] final {avg_name} averaged-checkpoint test failed: {e}", flush=True)

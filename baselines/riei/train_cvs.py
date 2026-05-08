@@ -8,7 +8,6 @@ from baselines.common.cvs_data import add_cvs_data_args, build_cvs_loaders
 from baselines.common.cvs_sat_eval import (
     add_cvs_sat_eval_args,
     evaluate_sat_scenarios,
-    format_sat_test_lines,
     parse_and_validate_sat_scenarios,
 )
 from baselines.common.cvs_trainer import run_validation_gated_training
@@ -36,6 +35,11 @@ def main() -> None:
 
     set_seed(args.seed)
     device = torch.device(args.device if torch.cuda.is_available() and args.device.startswith("cuda") else "cpu")
+    print(
+        f"[START] method=riei seed={args.seed} device={device} epochs={args.epochs} "
+        f"sat_eval={int(bool(sat_scenarios))} output_dir={args.output_dir}",
+        flush=True,
+    )
     loaders = build_cvs_loaders(args, device)
     model = RIEIModel(
         loaders.split.num_classes,
@@ -72,8 +76,6 @@ def main() -> None:
             forward_fn=forward_eval,
             max_batches=max(0, int(args.sat_eval_max_batches)),
         )
-        for line in format_sat_test_lines(sat_stats):
-            print(line, flush=True)
         return {"sat_channel": sat_stats}
 
     run_validation_gated_training(

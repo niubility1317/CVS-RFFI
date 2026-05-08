@@ -54,8 +54,9 @@ Run all SGC presets for one stage:
 RUN_ALL_ABLATIONS=1 bash run_sgc_experiments.sh source
 ```
 
-By default the launcher evaluates target-domain loaders with overlaid
-satellite-ground channels and prints `[SAT-TEST]` lines each epoch. Disable it with:
+By default the launcher evaluates all named target-domain loaders with overlaid
+satellite-ground channels and prints `[SAT-TEST]` plus per-split
+`[SAT-TEST-SPLIT]` lines each epoch. Disable it with:
 
 ```bash
 ENABLE_SAT_TARGET_EVAL=0 bash run_sgc_experiments.sh source
@@ -87,4 +88,21 @@ python train.py --preset sgc_lite_b_no_dac --stage sgc_augment --source_ckpt sgc
 
 ```bash
 python train.py --preset sgc_lite_b_no_dac --stage sgc_adapt --source_ckpt sgc_runs/sgc_lite_b_no_dac/augment/best_model.pth --pseudo_label_threshold 0.85 --lambda_proto 1.0 --lambda_cons 0.5 --lambda_ent 0.01 --lambda_res 0.01 --adapt_lr 1e-4 --adapt_epochs 50 --wisig_train_ratio 0.2
+```
+
+## Residual Adapter Modes
+
+`--sgc_adapter_kwargs` can select conservative residual designs without enabling
+the stronger explicit amplitude/CFO/spectral blocks:
+
+```bash
+--sgc_adapter_kwargs '{"use_amp_norm":false,"use_freq_comp":false,"use_spectral_suppressor":false,"use_residual_comp":true,"residual_mode":"plain","residual_max_gamma":0.20,"residual_dropout":0.05}'
+```
+
+```bash
+--sgc_adapter_kwargs '{"use_amp_norm":false,"use_freq_comp":false,"use_spectral_suppressor":false,"use_residual_comp":true,"residual_mode":"multiscale","residual_kernel_sizes":[3,5,9],"residual_dilations":[1,2,4],"residual_max_gamma":0.20,"residual_dropout":0.05}'
+```
+
+```bash
+--sgc_adapter_kwargs '{"use_amp_norm":false,"use_freq_comp":false,"use_spectral_suppressor":false,"use_residual_comp":true,"residual_mode":"gated_multiscale","residual_kernel_sizes":[3,5,9],"residual_dilations":[1,2,4],"residual_max_gamma":0.15,"residual_dropout":0.05,"residual_stat_gate":true}'
 ```

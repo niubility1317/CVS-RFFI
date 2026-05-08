@@ -37,3 +37,9 @@
 - Important rigor note: 5.8 primary rankings and Phase-E source selection use test-derived metrics, so they are development evidence rather than final unbiased test results.
 - Verification passed: `python -m py_compile train.py dataset_wisig.py sgc_adapter.py sgc_losses.py sat_channel.py training_controls.py`, `bash -n run_final_best_sgc_queue.sh run_cvs_baseline_queue.sh run_baselines_after_wait.sh`, and CSV/JSON 5.8 metric row-count checks.
 - GitHub CLI is installed and authenticated as `niubility1317`.
+- Started SGC optimization pass after user clarified target-domain deployment goal.
+- Updated `train.py` so SAT evaluation defaults to all named splits and prints per-split `[SAT-TEST-SPLIT]` metrics.
+- Added bounded, multiscale, and gated multiscale residual SGC modes in `sgc_adapter.py`, plus residual diagnostics for gamma, delta RMS, and gate mean.
+- Updated `sgc_losses.py` residual regularization to constrain both effective gamma and normalized residual delta.
+- Extended `run_final_best_sgc_queue.sh` with E5/E6/E7 residual SGC experiments and default `SAT_EVAL_ON=all`.
+- Wrote `5.8/reports/sgc_optimization_literature_20260508.md` with literature-grounded SGC-TADA proposal and experiment matrix.

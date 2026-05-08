@@ -105,6 +105,30 @@ def format_named_test_lines(named_stats: Dict[str, Dict[str, float]]) -> list[st
     return lines
 
 
+def format_extra_test_lines(extra_tests: Dict[str, Any]) -> list[str]:
+    sat_stats = extra_tests.get("sat_channel") if isinstance(extra_tests, dict) else None
+    if not isinstance(sat_stats, dict):
+        return []
+    lines = []
+    for scenario, stats in sat_stats.items():
+        if not isinstance(stats, dict):
+            continue
+        agg = stats.get("aggregate", {})
+        selected = ",".join(stats.get("selected_names", []))
+        strict = stats.get("strict_udu", float("nan"))
+        try:
+            strict_text = f"{float(strict):.2f}%"
+        except Exception:
+            strict_text = "nan%"
+        lines.append(
+            f"[SAT-TEST] scenario={scenario} selected={selected} "
+            f"overall_tx={agg.get('tx_acc', float('nan')):.2f}% "
+            f"strict_udu={strict_text} "
+            f"({int(agg.get('tx_correct', 0))}/{int(agg.get('tx_total', 0))})"
+        )
+    return lines
+
+
 @dataclass
 class BestValTestGate:
     best_val: float = -math.inf
@@ -223,6 +247,7 @@ def run_validation_gated_training(
     best_path = os.path.join(output_dir, checkpoint_name)
     step = 0
     for epoch in range(1, int(epochs) + 1):
+        print(f"[Epoch {epoch:03d}/{int(epochs):03d}][START]", flush=True)
         model.train()
         loss_sum = 0.0
         n_batches = 0
@@ -265,25 +290,11 @@ def run_validation_gated_training(
                 for name, loader in named_test_loaders.items()
             }
             aggregate = aggregate_named_stats(named_stats, test_keys)
-            extra_tests = extra_test_fn(model, device) if extra_test_fn is not None else {}
             epoch_stats.update({
                 "tested": True,
                 "test_named": named_stats,
                 "test_overall": aggregate,
-                "extra_tests": extra_tests,
             })
-            history.best = {
-                "epoch": epoch,
-                "best_rule": "val_tx_loss" if best_metric == "loss" else "val_tx_acc",
-                "val": val_stats,
-                "test_named": named_stats,
-                "test_overall": aggregate,
-                "extra_tests": extra_tests,
-                "checkpoint": best_path,
-            }
-            torch.save({"model": model.state_dict(), "epoch": epoch, "stats": history.best}, best_path)
-        history.epochs.append(epoch_stats)
-        save_json({"epochs": history.epochs, "best": history.best}, os.path.join(output_dir, "metrics.json"))
         print(
             f"[Epoch {epoch:03d}/{int(epochs):03d}] train_loss={epoch_stats['train_loss']:.4f} "
             f"val_tx={val_stats['tx_acc']:.2f}% tested={int(epoch_stats['tested'])}",
@@ -293,6 +304,22 @@ def run_validation_gated_training(
             print(f"[BEST-VAL-TEST] overall_tx={epoch_stats['test_overall']['tx_acc']:.2f}%", flush=True)
             for line in format_named_test_lines(epoch_stats["test_named"]):
                 print(line, flush=True)
+            extra_tests = extra_test_fn(model, device) if extra_test_fn is not None else {}
+            epoch_stats["extra_tests"] = extra_tests
+            for line in format_extra_test_lines(extra_tests):
+                print(line, flush=True)
+            history.best = {
+                "epoch": epoch,
+                "best_rule": "val_tx_loss" if best_metric == "loss" else "val_tx_acc",
+                "val": val_stats,
+                "test_named": epoch_stats["test_named"],
+                "test_overall": epoch_stats["test_overall"],
+                "extra_tests": epoch_stats.get("extra_tests", {}),
+                "checkpoint": best_path,
+            }
+            torch.save({"model": model.state_dict(), "epoch": epoch, "stats": history.best}, best_path)
+        history.epochs.append(epoch_stats)
+        save_json({"epochs": history.epochs, "best": history.best}, os.path.join(output_dir, "metrics.json"))
         if plateau_stats is not None and plateau_stats.stop_training:
             print(
                 f"[EARLY-STOP] validation loss did not improve for {plateau_stats.bad_epochs} epochs.",

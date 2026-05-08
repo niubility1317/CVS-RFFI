@@ -30,7 +30,7 @@ SGC_EPOCHS="${SGC_EPOCHS:-60}"
 SGC_FT_LR="${SGC_FT_LR:-5e-5}"
 SGC_LAMBDA_RES="${SGC_LAMBDA_RES:-}"
 SAT_SCENARIO="${SAT_SCENARIO:-mixed_orbit}"
-SAT_EVAL_ON="${SAT_EVAL_ON:-test_unseen_day_unseen_rx}"
+SAT_EVAL_ON="${SAT_EVAL_ON:-all}"
 SAT_EVAL_SCENARIOS="${SAT_EVAL_SCENARIOS:-clear_leo,low_elev_leo,rain_leo,storm_mp,mixed_orbit}"
 SAT_EVAL_MAX_BATCHES="${SAT_EVAL_MAX_BATCHES:--1}"
 RUN_SGC_EXTENDED="${RUN_SGC_EXTENDED:-0}"
@@ -494,6 +494,9 @@ append_sgc_suite() {
   local prefix="$2"
   local source_ckpt="$3"
   local residual_only_std='{"use_amp_norm":false,"use_freq_comp":false,"use_spectral_suppressor":false,"use_residual_comp":true,"residual_channels":32,"residual_blocks":2,"residual_kernel_size":5,"residual_init_gamma":0.0}'
+  local residual_only_bounded='{"use_amp_norm":false,"use_freq_comp":false,"use_spectral_suppressor":false,"use_residual_comp":true,"residual_mode":"plain","residual_channels":32,"residual_blocks":2,"residual_kernel_size":5,"residual_init_gamma":0.0,"residual_max_gamma":0.20,"residual_dropout":0.05}'
+  local residual_only_multiscale='{"use_amp_norm":false,"use_freq_comp":false,"use_spectral_suppressor":false,"use_residual_comp":true,"residual_mode":"multiscale","residual_channels":32,"residual_kernel_sizes":[3,5,9],"residual_dilations":[1,2,4],"residual_init_gamma":0.0,"residual_max_gamma":0.20,"residual_dropout":0.05}'
+  local residual_only_msgated='{"use_amp_norm":false,"use_freq_comp":false,"use_spectral_suppressor":false,"use_residual_comp":true,"residual_mode":"gated_multiscale","residual_channels":32,"residual_kernel_sizes":[3,5,9],"residual_dilations":[1,2,4],"residual_init_gamma":0.0,"residual_max_gamma":0.15,"residual_dropout":0.05,"residual_stat_gate":true}'
   local no_res_control='{"use_amp_norm":true,"use_freq_comp":true,"use_spectral_suppressor":true,"use_residual_comp":false,"freq_hidden_dim":32,"spectral_hidden_dim":32,"spectral_residual_alpha":0.35}'
   local full_sgc_mild='{"use_amp_norm":true,"use_freq_comp":true,"use_spectral_suppressor":true,"use_residual_comp":true,"freq_hidden_dim":32,"spectral_hidden_dim":32,"spectral_residual_alpha":0.35,"residual_channels":32,"residual_blocks":2,"residual_kernel_size":5,"residual_init_gamma":0.0}'
 
@@ -503,6 +506,9 @@ sgc|${prefix}1_residual_only_std|${source_ckpt}|${SGC_EPOCHS}|0.08|0.04|20|${res
 sgc|${prefix}2_residual_only_std_res001|${source_ckpt}|${SGC_EPOCHS}|0.08|0.04|20|${residual_only_std}|--lambda_res 0.01
 sgc|${prefix}3_no_res_control|${source_ckpt}|${SGC_EPOCHS}|0.08|0.04|20|${no_res_control}|
 sgc|${prefix}4_full_sgc_mild_res001|${source_ckpt}|${SGC_EPOCHS}|0.08|0.04|20|${full_sgc_mild}|--lambda_res 0.01
+sgc|${prefix}5_residual_bounded_res001|${source_ckpt}|${SGC_EPOCHS}|0.08|0.04|20|${residual_only_bounded}|--lambda_res 0.01
+sgc|${prefix}6_residual_multiscale_res001|${source_ckpt}|${SGC_EPOCHS}|0.08|0.04|20|${residual_only_multiscale}|--lambda_res 0.01
+sgc|${prefix}7_residual_msgated_res001|${source_ckpt}|${SGC_EPOCHS}|0.08|0.04|20|${residual_only_msgated}|--lambda_res 0.01
 EOF_JOBS
 }
 

@@ -9,7 +9,6 @@ from baselines.common.cvs_data import add_cvs_data_args, build_cvs_loaders
 from baselines.common.cvs_sat_eval import (
     add_cvs_sat_eval_args,
     evaluate_sat_scenarios,
-    format_sat_test_lines,
     parse_and_validate_sat_scenarios,
 )
 from baselines.common.cvs_trainer import (
@@ -52,6 +51,11 @@ def main() -> None:
 
     set_seed(args.seed)
     device = torch.device(args.device if torch.cuda.is_available() and args.device.startswith("cuda") else "cpu")
+    print(
+        f"[START] method=receiver_agnostic seed={args.seed} device={device} epochs={args.epochs} "
+        f"sat_eval={int(bool(sat_scenarios))} output_dir={args.output_dir}",
+        flush=True,
+    )
     spec = SpectrogramTransform(n_fft=args.n_fft, hop_length=args.hop_length, win_length=args.n_fft)
     aug = OnlineRFChannelAugment(sample_rate=args.sample_rate, max_taps=4, p=1.0)
     loaders = build_cvs_loaders(args, device, transform_train=lambda x: spec(aug(x)), transform_eval=spec)
@@ -109,8 +113,6 @@ def main() -> None:
             input_transform=spec,
             max_batches=max(0, int(args.sat_eval_max_batches)),
         )
-        for line in format_sat_test_lines(sat_stats):
-            print(line, flush=True)
         return {"sat_channel": sat_stats}
 
     run_validation_gated_training(

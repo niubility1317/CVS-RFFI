@@ -40,6 +40,33 @@ class TestPaperBaselineParity(unittest.TestCase):
 
         self.assertTrue(torch.allclose(loss, torch.tensor(5.0)))
 
+    def test_drift_negative_mse_is_bounded_when_normalized(self):
+        from baselines.drift.losses import negative_mse_separation
+
+        z_tx = torch.tensor([[1000.0, 0.0], [0.0, 1000.0]])
+        z_rx = torch.tensor([[-1000.0, 0.0], [0.0, -1000.0]])
+
+        loss = negative_mse_separation(z_tx, z_rx, normalize=True)
+
+        self.assertGreaterEqual(float(loss), -4.0)
+        self.assertLessEqual(float(loss), 0.0)
+
+    def test_drift_total_loss_uses_bounded_separation_by_default(self):
+        from baselines.drift.losses import compute_drift_loss
+
+        outputs = {
+            "tx_logits": torch.tensor([[5.0, -5.0], [-5.0, 5.0]]),
+            "rx_logits": torch.tensor([[5.0, -5.0], [-5.0, 5.0]]),
+            "domain_logits": torch.tensor([[5.0, -5.0], [-5.0, 5.0]]),
+            "z_tx": torch.tensor([[1000.0, 0.0], [0.0, 1000.0]]),
+            "z_rx": torch.tensor([[-1000.0, 0.0], [0.0, -1000.0]]),
+        }
+        labels = torch.tensor([0, 1])
+
+        losses = compute_drift_loss(outputs, labels, labels, lambda_mse=0.02)
+
+        self.assertGreater(float(losses["loss"]), -1.0)
+
     def test_best_val_gate_runs_tests_only_on_improvement(self):
         from baselines.common.cvs_trainer import BestValTestGate
 

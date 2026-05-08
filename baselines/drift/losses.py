@@ -49,7 +49,7 @@ def compute_drift_loss(
     use_grl: bool = True,
     use_center: bool = True,
     use_mse: bool = True,
-    normalize_features_for_mse: bool = False,
+    normalize_features_for_mse: bool = True,
 ):
     loss_ce_tx = F.cross_entropy(outputs["tx_logits"], tx_label)
     loss_ce_rx = F.cross_entropy(outputs["rx_logits"], rx_label)

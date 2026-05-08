@@ -91,12 +91,25 @@ def entropy_minimization(logits: torch.Tensor, mask: torch.Tensor = None) -> tor
 def residual_regularization(adapter_aux: Dict[str, torch.Tensor]) -> torch.Tensor:
     if not adapter_aux:
         return torch.tensor(0.0, requires_grad=True)
-    gamma = adapter_aux.get("residual_gamma")
+    terms = []
+    gamma = adapter_aux.get("residual_effective_gamma")
+    if not torch.is_tensor(gamma):
+        gamma = adapter_aux.get("residual_gamma")
     if torch.is_tensor(gamma):
-        return gamma.mean()
-    delta_rms = adapter_aux.get("adapter_delta_rms")
+        terms.append(gamma.mean())
+
+    delta_rms = adapter_aux.get("residual_delta_rms")
+    if not torch.is_tensor(delta_rms):
+        delta_rms = adapter_aux.get("adapter_delta_rms")
+    input_rms = adapter_aux.get("adapter_input_rms")
     if torch.is_tensor(delta_rms):
-        return delta_rms.mean()
+        if torch.is_tensor(input_rms):
+            terms.append(0.05 * (delta_rms / input_rms.clamp_min(1e-6)).mean())
+        elif not terms:
+            terms.append(delta_rms.mean())
+
+    if terms:
+        return torch.stack([t.reshape(()) for t in terms]).sum()
     ref = next((v for v in adapter_aux.values() if torch.is_tensor(v)), None)
     if ref is not None:
         return ref.sum() * 0.0
