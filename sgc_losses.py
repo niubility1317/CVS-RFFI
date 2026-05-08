@@ -88,6 +88,64 @@ def entropy_minimization(logits: torch.Tensor, mask: torch.Tensor = None) -> tor
     return ent.mean()
 
 
+def fpcr_physics_preservation_loss(
+    adapter_aux: Dict[str, torch.Tensor],
+    relative_eps: float = 1e-4,
+) -> torch.Tensor:
+    """Keep transmitter-related physical statistics stable after FPCR.
+
+    These terms intentionally compare the reconstructed signal to its input
+    for fingerprint-like statistics rather than forcing waveform identity. The
+    channel projector may change smooth channel envelope components, while PA
+    spectral regrowth, IQ image leakage, cepstral detail, and cubic nonlinear
+    proxies should move conservatively.
+    """
+    if not adapter_aux:
+        return torch.tensor(0.0, requires_grad=True)
+
+    pairs = [
+        ("fpcr_spectral_regrowth_ratio_in", "fpcr_spectral_regrowth_ratio_out"),
+        ("fpcr_iq_image_ratio_in", "fpcr_iq_image_ratio_out"),
+        ("fpcr_cepstral_detail_energy_in", "fpcr_cepstral_detail_energy_out"),
+        ("fpcr_cubic_nonlinearity_corr_in", "fpcr_cubic_nonlinearity_corr_out"),
+    ]
+    terms = []
+    for in_key, out_key in pairs:
+        ref = adapter_aux.get(in_key)
+        cur = adapter_aux.get(out_key)
+        if torch.is_tensor(ref) and torch.is_tensor(cur):
+            ref_detached = ref.detach()
+            denom = ref_detached.abs().clamp_min(float(relative_eps))
+            terms.append(F.smooth_l1_loss(cur / denom, ref_detached / denom))
+    if terms:
+        return torch.stack([t.reshape(()) for t in terms]).mean()
+
+    ref_tensor = next((v for v in adapter_aux.values() if torch.is_tensor(v)), None)
+    if ref_tensor is not None:
+        return ref_tensor.sum() * 0.0
+    return torch.tensor(0.0, requires_grad=True)
+
+
+def fpcr_budget_regularization(adapter_aux: Dict[str, torch.Tensor]) -> torch.Tensor:
+    """Penalize FPCR learned residuals that exceed their explicit ratio budget."""
+    if not adapter_aux:
+        return torch.tensor(0.0, requires_grad=True)
+    terms = []
+    budget_loss = adapter_aux.get("fpcr_budget_loss")
+    if torch.is_tensor(budget_loss):
+        terms.append(budget_loss.mean())
+    ratio = adapter_aux.get("fpcr_residual_ratio")
+    budget = adapter_aux.get("fpcr_residual_budget")
+    if torch.is_tensor(ratio) and torch.is_tensor(budget):
+        terms.append(torch.relu(ratio - budget).mean())
+    if terms:
+        return torch.stack([t.reshape(()) for t in terms]).sum()
+    ref = next((v for v in adapter_aux.values() if torch.is_tensor(v)), None)
+    if ref is not None:
+        return ref.sum() * 0.0
+    return torch.tensor(0.0, requires_grad=True)
+
+
 def residual_regularization(adapter_aux: Dict[str, torch.Tensor]) -> torch.Tensor:
     if not adapter_aux:
         return torch.tensor(0.0, requires_grad=True)
@@ -95,18 +153,28 @@ def residual_regularization(adapter_aux: Dict[str, torch.Tensor]) -> torch.Tenso
     gamma = adapter_aux.get("residual_effective_gamma")
     if not torch.is_tensor(gamma):
         gamma = adapter_aux.get("residual_gamma")
+    if not torch.is_tensor(gamma):
+        gamma = adapter_aux.get("fpcr_effective_gamma")
     if torch.is_tensor(gamma):
         terms.append(gamma.mean())
 
     delta_rms = adapter_aux.get("residual_delta_rms")
     if not torch.is_tensor(delta_rms):
         delta_rms = adapter_aux.get("adapter_delta_rms")
+    if not torch.is_tensor(delta_rms):
+        delta_rms = adapter_aux.get("fpcr_residual_delta_rms")
     input_rms = adapter_aux.get("adapter_input_rms")
+    if not torch.is_tensor(input_rms):
+        input_rms = adapter_aux.get("fpcr_projected_input_rms")
     if torch.is_tensor(delta_rms):
         if torch.is_tensor(input_rms):
             terms.append(0.05 * (delta_rms / input_rms.clamp_min(1e-6)).mean())
         elif not terms:
             terms.append(delta_rms.mean())
+
+    fpcr_budget = fpcr_budget_regularization(adapter_aux)
+    if torch.is_tensor(fpcr_budget):
+        terms.append(fpcr_budget)
 
     if terms:
         return torch.stack([t.reshape(()) for t in terms]).sum()

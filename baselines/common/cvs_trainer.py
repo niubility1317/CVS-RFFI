@@ -114,6 +114,7 @@ def format_extra_test_lines(extra_tests: Dict[str, Any]) -> list[str]:
         if not isinstance(stats, dict):
             continue
         agg = stats.get("aggregate", {})
+        all_agg = stats.get("all_named_aggregate", {})
         selected = ",".join(stats.get("selected_names", []))
         strict = stats.get("strict_udu", float("nan"))
         try:
@@ -123,9 +124,21 @@ def format_extra_test_lines(extra_tests: Dict[str, Any]) -> list[str]:
         lines.append(
             f"[SAT-TEST] scenario={scenario} selected={selected} "
             f"overall_tx={agg.get('tx_acc', float('nan')):.2f}% "
+            f"all_named_tx={all_agg.get('tx_acc', float('nan')):.2f}% "
             f"strict_udu={strict_text} "
             f"({int(agg.get('tx_correct', 0))}/{int(agg.get('tx_total', 0))})"
         )
+        named = stats.get("named", {})
+        if isinstance(named, dict):
+            priority = ["test_unseen_day_seen_rx", "test_seen_day_unseen_rx", "test_unseen_day_unseen_rx"]
+            ordered = [k for k in priority if k in named] + [k for k in named if k not in priority]
+            for name in ordered:
+                cur = named[name]
+                lines.append(
+                    f"[SAT-TEST-SPLIT] scenario={scenario} {name}: "
+                    f"tx={cur.get('tx_acc', float('nan')):.2f}% "
+                    f"({int(cur.get('tx_correct', 0))}/{int(cur.get('tx_total', 0))})"
+                )
     return lines
 
 

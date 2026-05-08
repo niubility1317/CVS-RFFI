@@ -77,12 +77,24 @@ class TestPaperBaselineParity(unittest.TestCase):
         self.assertTrue(gate.should_test(10.1))
 
     def test_cvcnn_baseline_forward_outputs_logits(self):
-        from baselines.cvcnn.model import BasicCVCNN
+        from baselines.cvcnn.model import BasicCVCNN, SincCVCNN
 
         model = BasicCVCNN(num_classes=5, input_len=128, base_channels=8, embedding_dim=16)
         logits = model(torch.randn(4, 2, 128))
 
         self.assertEqual(tuple(logits.shape), (4, 5))
+
+        sinc_model = SincCVCNN(
+            num_classes=5,
+            input_len=128,
+            base_channels=8,
+            embedding_dim=16,
+            sinc_kernel_size=31,
+            sample_rate_hz=25e6,
+        )
+        sinc_logits = sinc_model(torch.randn(4, 2, 128))
+        self.assertEqual(tuple(sinc_logits.shape), (4, 5))
+        self.assertEqual(len(model.tail), len(sinc_model.tail))
 
     def test_each_cvs_baseline_has_own_train_module(self):
         modules = [

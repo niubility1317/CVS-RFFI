@@ -20,13 +20,14 @@ def add_cvs_sat_eval_args(parser: argparse.ArgumentParser) -> argparse.ArgumentP
     parser.add_argument(
         "--eval_sat_scenarios",
         type=str,
-        default="clear_leo,low_elev_leo,rain_leo,storm_mp,mixed_orbit",
+        default="simple_leo",
     )
-    parser.add_argument("--eval_sat_on", type=str, default="main")
+    parser.add_argument("--eval_sat_on", type=str, default="all")
     parser.add_argument("--sat_eval_max_batches", type=int, default=0)
     parser.add_argument("--sat_seed", type=int, default=2027)
     parser.add_argument("--sat_fs_hz", type=float, default=25e6)
     parser.add_argument("--sat_fc_hz", type=float, default=2.462e9)
+    parser.add_argument("--sat_eval_log_interval", type=int, default=100)
     return parser
 
 
@@ -67,7 +68,7 @@ def apply_sat_channel_for_scenario(
 
 
 def resolve_sat_eval_loader_names(named_loaders: Dict[str, Any], spec: str) -> List[str]:
-    raw = str(spec or "test_unseen_day_unseen_rx").strip().lower()
+    raw = str(spec or "all").strip().lower()
     if raw in ("all", "all_named", "*"):
         return list(named_loaders.keys())
     if raw in ("main", "main_ood", "ood", "target", "targets", "target_ood"):
@@ -80,8 +81,8 @@ def resolve_sat_eval_loader_names(named_loaders: Dict[str, Any], spec: str) -> L
         name = item.strip()
         if name and name in named_loaders and name not in names:
             names.append(name)
-    if not names and "test_unseen_day_unseen_rx" in named_loaders:
-        names.append("test_unseen_day_unseen_rx")
+    if not names:
+        names = list(named_loaders.keys())
     return names
 
 
@@ -103,11 +104,21 @@ def evaluate_loader_sat_channel(
     input_transform: Optional[Callable[[torch.Tensor], torch.Tensor]] = None,
     max_batches: int = 0,
     seed: int = 0,
+    progress_prefix: str = "",
+    log_interval: int = 0,
 ) -> Dict[str, float]:
     model.eval()
     correct = 0
     total = 0
     gen = make_torch_generator(device, int(seed))
+    try:
+        total_batches = len(loader)
+    except Exception:
+        total_batches = 0
+    if progress_prefix:
+        limit = int(max_batches) if max_batches else total_batches
+        limit_text = str(limit) if limit else "unknown"
+        print(f"{progress_prefix}[START] batches={limit_text}", flush=True)
     for batch_i, batch in enumerate(loader):
         if max_batches and batch_i >= int(max_batches):
             break
@@ -124,6 +135,20 @@ def evaluate_loader_sat_channel(
         counts = accuracy_counts(logits, y)
         correct += int(counts["tx_correct"])
         total += int(counts["tx_total"])
+        if progress_prefix and int(log_interval) > 0 and (batch_i + 1) % int(log_interval) == 0:
+            denom = int(max_batches) if max_batches else total_batches
+            denom_text = str(denom) if denom else "?"
+            print(
+                f"{progress_prefix}[BATCH {batch_i + 1}/{denom_text}] "
+                f"tx={100.0 * correct / max(1, total):.2f}% n={total}",
+                flush=True,
+            )
+    if progress_prefix:
+        print(
+            f"{progress_prefix}[DONE] tx={100.0 * correct / max(1, total):.2f}% "
+            f"({correct}/{total})",
+            flush=True,
+        )
     return {"tx_acc": 100.0 * correct / max(1, total), "tx_correct": correct, "tx_total": total}
 
 
@@ -139,10 +164,18 @@ def evaluate_sat_scenarios(
     input_transform: Optional[Callable[[torch.Tensor], torch.Tensor]] = None,
     max_batches: int = 0,
 ) -> Dict[str, Dict[str, Any]]:
-    selected_names = resolve_sat_eval_loader_names(named_loaders, getattr(args, "eval_sat_on", "main"))
+    scenario_list = list(scenario_names)
+    selected_names = resolve_sat_eval_loader_names(named_loaders, getattr(args, "eval_sat_on", "all"))
     out: Dict[str, Dict[str, Any]] = {}
-    for si, scenario in enumerate(scenario_names):
+    log_interval = max(0, int(getattr(args, "sat_eval_log_interval", 100)))
+    print(
+        f"[SAT-TEST-START] scenarios={','.join(scenario_list)} "
+        f"selected={','.join(selected_names)} max_batches={int(max_batches)}",
+        flush=True,
+    )
+    for si, scenario in enumerate(scenario_list):
         named_stats = {}
+        print(f"[SAT-TEST-SCENARIO-START] scenario={scenario}", flush=True)
         for li, name in enumerate(selected_names):
             named_stats[name] = evaluate_loader_sat_channel(
                 model,
@@ -154,17 +187,22 @@ def evaluate_sat_scenarios(
                 input_transform=input_transform,
                 max_batches=max_batches,
                 seed=int(getattr(args, "sat_seed", 2027)) + si * 1009 + li * 97,
+                progress_prefix=f"[SAT-TEST-LOADER] scenario={scenario} split={name} ",
+                log_interval=log_interval,
             )
         main_keys = [k for k in ["test_unseen_day_seen_rx", "test_seen_day_unseen_rx", "test_unseen_day_unseen_rx"] if k in named_stats]
         if not main_keys:
             main_keys = list(named_stats.keys())
         aggregate = aggregate_named_stats(named_stats, main_keys)
+        all_named_aggregate = aggregate_named_stats(named_stats, list(named_stats.keys()))
         out[scenario] = {
             "aggregate": aggregate,
+            "all_named_aggregate": all_named_aggregate,
             "strict_udu": named_stats.get("test_unseen_day_unseen_rx", {}).get("tx_acc", float("nan")),
             "named": named_stats,
             "selected_names": list(selected_names),
         }
+        print(f"[SAT-TEST-SCENARIO-DONE] scenario={scenario}", flush=True)
     return out
 
 
@@ -172,14 +210,27 @@ def format_sat_test_lines(sat_stats: Dict[str, Dict[str, Any]]) -> List[str]:
     lines = []
     for scenario, stats in sat_stats.items():
         agg = stats.get("aggregate", {})
+        all_agg = stats.get("all_named_aggregate", {})
         selected = ",".join(stats.get("selected_names", []))
         strict = stats.get("strict_udu", float("nan"))
         lines.append(
             f"[SAT-TEST] scenario={scenario} selected={selected} "
             f"overall_tx={agg.get('tx_acc', float('nan')):.2f}% "
+            f"all_named_tx={all_agg.get('tx_acc', float('nan')):.2f}% "
             f"strict_udu={float(strict):.2f}% "
             f"({int(agg.get('tx_correct', 0))}/{int(agg.get('tx_total', 0))})"
         )
+        named = stats.get("named", {})
+        if isinstance(named, dict):
+            priority = ["test_unseen_day_seen_rx", "test_seen_day_unseen_rx", "test_unseen_day_unseen_rx"]
+            ordered = [k for k in priority if k in named] + [k for k in named if k not in priority]
+            for name in ordered:
+                cur = named[name]
+                lines.append(
+                    f"[SAT-TEST-SPLIT] scenario={scenario} {name}: "
+                    f"tx={cur.get('tx_acc', float('nan')):.2f}% "
+                    f"({int(cur.get('tx_correct', 0))}/{int(cur.get('tx_total', 0))})"
+                )
     return lines
 
 

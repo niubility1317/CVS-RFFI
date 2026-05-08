@@ -115,9 +115,124 @@ class SatSimConfig:
     num_taps: Tuple[int, int] = (2, 5)
     max_delay_samp: int = 6
     pwr_decay: float = 0.8
+    channel_model: str = "full"
+    pathloss_alpha: float = 2.0
+    shadow_mu_db: float = 0.0
+    shadow_sigma_db: float = 4.0
+    simple_ref_h_km: float = 1000.0
+    simple_ref_theta_deg: float = 60.0
+    simple_agc: bool = True
 
 def _default_orbit_probs() -> Dict[str, float]:
     return {"LEO": 0.7, "MEO": 0.2, "GEO": 0.1}
+
+
+def _sample_orbits_and_geometry(B: int, cfg: SatSimConfig, device, gen: Optional[torch.Generator] = None):
+    probs = cfg.orbit_probs or _default_orbit_probs()
+    orbit_keys = ["LEO", "MEO", "GEO"]
+    p = torch.tensor([probs.get(k, 0.0) for k in orbit_keys], device=device, dtype=torch.float32)
+    p = p / p.sum().clamp_min(1e-12)
+    orbits = categorical_sample(p.expand(B, -1), gen=gen)
+
+    u = torch.rand((B,), device=device, dtype=torch.float32, generator=gen)
+    h_km = torch.empty((B,), device=device, dtype=torch.float32)
+    m = (orbits == 0)
+    if m.any():
+        lo, hi = cfg.leo_h_km
+        h_km[m] = lo + (hi - lo) * u[m]
+    m = (orbits == 1)
+    if m.any():
+        lo, hi = cfg.meo_h_km
+        h_km[m] = lo + (hi - lo) * u[m]
+    m = (orbits == 2)
+    if m.any():
+        lo, hi = cfg.geo_h_km
+        h_km[m] = lo + (hi - lo) * u[m]
+
+    h_m = h_km * 1e3
+    tlo, thi = cfg.theta_deg
+    theta = tlo + (thi - tlo) * torch.rand((B,), device=device, dtype=torch.float32, generator=gen)
+    d_m = slant_range_from_elevation(theta, h_m)
+    return orbits, h_km, h_m, theta, d_m
+
+
+def apply_simple_sat_channel_batch(
+    x_iq: torch.Tensor,
+    cfg: SatSimConfig,
+    *,
+    gen: Optional[torch.Generator] = None,
+    return_meta: bool = False,
+):
+    """Simplified LEO satellite channel from the presentation formula.
+
+    h(t) = L(t) * xi(t) * exp(j * phi(t))
+    y(t) = h(t) * x(t) + n(t)
+
+    Kept effects: distance path loss, lognormal shadowing, Doppler phase, AWGN.
+    Excluded effects: Rician/Rayleigh state switching, multipath, IQ imbalance,
+    phase noise, atmospheric complex fading, and receiver-chain impairments.
+    """
+    assert x_iq.ndim == 3 and x_iq.shape[1] == 2
+    device = x_iq.device
+    x = x_iq.to(torch.float32)
+    B, _, T = x.shape
+    fs = float(cfg.fs_hz)
+    fc = float(cfg.fc_hz)
+    xc = (x[:, 0] + 1j * x[:, 1]).to(torch.complex64)
+
+    orbits, h_km, h_m, theta, d_m = _sample_orbits_and_geometry(B, cfg, device, gen=gen)
+    ref_h_m = torch.full((1,), float(cfg.simple_ref_h_km) * 1e3, device=device, dtype=torch.float32)
+    ref_theta = torch.full((1,), float(cfg.simple_ref_theta_deg), device=device, dtype=torch.float32)
+    d0 = slant_range_from_elevation(ref_theta, ref_h_m)[0].clamp_min(1.0)
+
+    # Figure convention: L(t)=(d0/d(t))^(alpha/2), an amplitude gain.
+    L_gain = (d0 / d_m.clamp_min(1.0)).clamp(1e-4, 1e4) ** (float(cfg.pathloss_alpha) / 2.0)
+    shadow_db = torch.normal(
+        mean=float(cfg.shadow_mu_db),
+        std=float(cfg.shadow_sigma_db),
+        size=(B,),
+        device=device,
+        dtype=torch.float32,
+        generator=gen,
+    )
+    xi = 10.0 ** (shadow_db / 20.0)
+
+    v = orbital_speed_circular(h_m).to(torch.float32)
+    sgn = torch.where(torch.rand((B,), device=device, generator=gen) < 0.5, -1.0, 1.0)
+    vr = sgn * v * torch.cos(torch.deg2rad(theta))
+    fD = (vr / C) * fc
+    n = torch.arange(T, device=device, dtype=torch.float32).unsqueeze(0)
+    phi = 2.0 * math.pi * fD.unsqueeze(1) * n / fs
+    doppler_phase = torch.exp(1j * phi.to(torch.complex64))
+
+    h = (L_gain * xi).to(torch.complex64).unsqueeze(1) * doppler_phase
+    yc = h * xc
+
+    if bool(cfg.simple_agc):
+        ag_lo, ag_hi = cfg.agc_resid_db
+        resid = ag_lo + (ag_hi - ag_lo) * torch.rand((B,), device=device, dtype=torch.float32, generator=gen)
+        yc = apply_mild_agc(yc, target_rms=1.0, resid_db=resid)
+
+    sn_lo, sn_hi = cfg.snr_db
+    snr = sn_lo + (sn_hi - sn_lo) * torch.rand((B,), device=device, dtype=torch.float32, generator=gen)
+    yc = complex_awgn_like(yc, snr, gen=gen)
+    y_iq = torch.stack([yc.real, yc.imag], dim=1).to(torch.float32)
+
+    meta = None
+    if return_meta:
+        meta = {
+            "channel_model": "simple_leo",
+            "orbit": orbits.detach().cpu(),
+            "h_km": h_km.detach().cpu(),
+            "theta_deg": theta.detach().cpu(),
+            "d_km": (d_m / 1e3).detach().cpu(),
+            "L_gain": L_gain.detach().cpu(),
+            "shadow_db": shadow_db.detach().cpu(),
+            "fD_hz": fD.detach().cpu(),
+            "snr_db": snr.detach().cpu(),
+        }
+    return y_iq, meta, None
+
 
 @torch.no_grad()
 def apply_sat_gnd_channel_batch(
@@ -129,6 +244,9 @@ def apply_sat_gnd_channel_batch(
     return_meta: bool = False,
 ):
     assert x_iq.ndim == 3 and x_iq.shape[1] == 2
+    if str(getattr(cfg, "channel_model", "full")).lower().strip() in ("simple", "simple_leo", "presentation"):
+        return apply_simple_sat_channel_batch(x_iq, cfg, gen=gen, return_meta=return_meta)
+
     device = x_iq.device
     x = x_iq.to(torch.float32)
     B, _, T = x.shape

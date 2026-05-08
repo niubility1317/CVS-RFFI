@@ -32,8 +32,14 @@ except Exception:
     SatSimConfig = None
     apply_sat_gnd_channel_batch = None
 try:
-    from sgc_losses import residual_regularization
+    from sgc_losses import (
+        fpcr_budget_regularization,
+        fpcr_physics_preservation_loss,
+        residual_regularization,
+    )
 except Exception:
+    fpcr_budget_regularization = None
+    fpcr_physics_preservation_loss = None
     residual_regularization = None
 
 
@@ -1275,6 +1281,21 @@ def apply_slim_ablation_preset(args):
         "residual_kernel_size": 5,
         "residual_init_gamma": 0.0,
     }
+    fpcr_kwargs = {
+        "adapter_mode": "fpcr",
+        "fpcr_shrinkage": 0.35,
+        "fpcr_cepstral_lifter": 8,
+        "fpcr_occupied_band_fraction": 0.70,
+        "fpcr_log_correction_clip": 1.25,
+        "fpcr_use_learned_residual": True,
+        "fpcr_residual_channels": 24,
+        "fpcr_residual_blocks": 2,
+        "fpcr_residual_kernel_size": 5,
+        "fpcr_max_residual_ratio": 0.06,
+        "fpcr_residual_max_gamma": 0.25,
+        "fpcr_residual_init_gamma": 0.0,
+        "fpcr_residual_dropout": 0.05,
+    }
     table = {
         "none": {
             "desc": "不额外覆盖结构预设，完全使用手动配置。",
@@ -1601,6 +1622,13 @@ def apply_slim_ablation_preset(args):
         cfg["sgc_adapter_kwargs"] = kwargs
         cfg["desc"] = desc
         table[name] = cfg
+    cfg = dict(sgc_base)
+    cfg["sgc_adapter_kwargs"] = dict(fpcr_kwargs)
+    cfg["lambda_res"] = 0.01
+    cfg["lambda_fpcr_phys"] = 0.02
+    cfg["lambda_fpcr_budget"] = 0.50
+    cfg["desc"] = "FPCR-SGC fingerprint-preserving constrained reconstruction: smooth channel projection + bounded residual."
+    table["sgc_lite_b_no_dac_fpcr"] = cfg
     lite_d_cfg = dict(sgc_base)
     lite_d_cfg["model_variant"] = "lite_d"
     lite_d_cfg["mixstyle_strength"] = 0.70
@@ -1955,6 +1983,24 @@ def sgc_residual_loss_from_output(out: Dict[str, Any], ref: torch.Tensor) -> tor
     if residual_regularization is None or not isinstance(out, dict):
         return ref.new_tensor(0.0)
     loss = residual_regularization(out.get("sgc_aux", {}))
+    if torch.is_tensor(loss):
+        return loss.to(device=ref.device, dtype=ref.dtype)
+    return ref.new_tensor(float(loss))
+
+
+def fpcr_physics_loss_from_output(out: Dict[str, Any], ref: torch.Tensor) -> torch.Tensor:
+    if fpcr_physics_preservation_loss is None or not isinstance(out, dict):
+        return ref.new_tensor(0.0)
+    loss = fpcr_physics_preservation_loss(out.get("sgc_aux", {}))
+    if torch.is_tensor(loss):
+        return loss.to(device=ref.device, dtype=ref.dtype)
+    return ref.new_tensor(float(loss))
+
+
+def fpcr_budget_loss_from_output(out: Dict[str, Any], ref: torch.Tensor) -> torch.Tensor:
+    if fpcr_budget_regularization is None or not isinstance(out, dict):
+        return ref.new_tensor(0.0)
+    loss = fpcr_budget_regularization(out.get("sgc_aux", {}))
     if torch.is_tensor(loss):
         return loss.to(device=ref.device, dtype=ref.dtype)
     return ref.new_tensor(float(loss))
@@ -2847,7 +2893,8 @@ def format_epoch_block(
         "[LOSS-DG]   "
         f"proto={meters['proto'].avg:.4f} proto_cos={meters['proto_pull_cos'].avg:.4f} "
         f"supcon={meters['supcon'].avg:.4f} fishr={meters['fishr'].avg:.4f} "
-        f"sgc_res={meters['sgc_res'].avg:.4f}"
+        f"sgc_res={meters['sgc_res'].avg:.4f} "
+        f"fpcr_phys={meters['fpcr_phys'].avg:.4f} fpcr_budget={meters['fpcr_budget'].avg:.4f}"
     )
     lines.append(
         "[LOSS-CAL]  "
@@ -2929,7 +2976,8 @@ def main():
             "sgc_lite_b_no_dac_no_freq", "sgc_lite_b_no_dac_no_spec",
             "sgc_lite_b_no_dac_no_res", "sgc_baseline_no_adapter",
             "sgc_lite_b_no_dac_no_amp_freq", "sgc_lite_b_no_dac_residual_only",
-            "sgc_lite_b_no_dac_light", "sgc_lite_d_no_dac", "sgc_lite_d_no_dac_light",
+            "sgc_lite_b_no_dac_light", "sgc_lite_b_no_dac_fpcr",
+            "sgc_lite_d_no_dac", "sgc_lite_d_no_dac_light",
         ],
         help="瘦身/时延消融预设组，会联合覆盖 model_variant、branch_ablation、exp_group 和 MixStyle。",
     )
@@ -2981,6 +3029,10 @@ def main():
                         help="Reserved entropy weight for target-domain adaptation.")
     parser.add_argument("--lambda_res", type=float, default=0.01,
                         help="Residual regularization weight for SGC-Adapter auxiliary output.")
+    parser.add_argument("--lambda_fpcr_phys", type=float, default=0.0,
+                        help="FPCR physical fingerprint-stat preservation weight.")
+    parser.add_argument("--lambda_fpcr_budget", type=float, default=0.0,
+                        help="FPCR explicit residual-budget penalty weight.")
     parser.add_argument("--adapt_lr", type=float, default=1e-4,
                         help="Optimizer learning rate for --stage sgc_adapt.")
     parser.add_argument("--adapt_epochs", type=int, default=50,
@@ -3184,8 +3236,8 @@ def main():
                  "Enable satellite-channel OOD evaluation after each epoch",
                  "Disable satellite-channel OOD evaluation")
     parser.add_argument("--eval_sat_scenarios", type=str,
-                        default="clear_leo,low_elev_leo,rain_leo,storm_mp,mixed_orbit",
-                        help="Satellite scenarios to evaluate. Built-ins: clear_leo,low_elev_leo,rain_leo,storm_mp,geo_clear,mixed_orbit.")
+                        default="simple_leo",
+                        help="Satellite scenarios to evaluate. Default is simplified LEO SAT from the presentation formula. Built-ins: simple_leo,simple_leo_clear,simple_leo_hard,clear_leo,low_elev_leo,rain_leo,storm_leo_mp,storm_mp,geo_clear,mixed_orbit.")
     parser.add_argument("--eval_sat_on", type=str, default="all",
                         help="Named test loaders for satellite evaluation: all, main, strict/test_unseen_day_unseen_rx, or comma-separated names.")
     parser.add_argument("--sat_eval_max_batches", type=int, default=-1,
@@ -3199,7 +3251,7 @@ def main():
     add_bool_arg(parser, "train_sat_channel", False,
                  "Alias for enabling SGC satellite-channel augmentation training",
                  "Disable SGC satellite-channel augmentation training")
-    parser.add_argument("--sat_train_scenario", type=str, default="clear_leo")
+    parser.add_argument("--sat_train_scenario", type=str, default="simple_leo")
     parser.add_argument("--train_sat_scenario", type=str, default="",
                         help="Alias for --sat_train_scenario used by SGC scripts.")
     parser.add_argument("--sat_view_source", type=str, default="main", choices=["clean", "main"],
@@ -3346,7 +3398,7 @@ def main():
         args.swad_save_path = derive_checkpoint_path(args.best_save_path, "swad")
 
     args.eval_sat_scenario_list = parse_sat_scenarios(args.eval_sat_scenarios) if bool(args.eval_sat_channel) else []
-    args.sat_train_scenario = str(args.sat_train_scenario or "clear_leo").strip().lower().replace("-", "_")
+    args.sat_train_scenario = str(args.sat_train_scenario or "simple_leo").strip().lower().replace("-", "_")
     if (bool(args.eval_sat_channel) or bool(args.use_sat_consistency)) and SatSimConfig is None:
         raise ImportError("sat_channel.py is required when --eval_sat_channel or --use_sat_consistency is enabled.")
     if bool(args.eval_sat_channel):
@@ -3641,7 +3693,7 @@ def main():
             "dac_reg", "pa_reg",
             "gap_dac", "gap_pa", "cos_joint_pa", "cos_imp_pa",
             "sat_cls", "sat_cons", "sat_cos",
-            "proto", "proto_pull_cos", "supcon", "fishr", "sgc_res",
+            "proto", "proto_pull_cos", "supcon", "fishr", "sgc_res", "fpcr_phys", "fpcr_budget",
             "ecc", "ecc_w", "ecc_tau", "ecc_maxp",
             "grad_total", "grad_backbone", "grad_aux", "grad_domain",
         ]}
@@ -3853,6 +3905,15 @@ def main():
                         min_domains=int(args.fishr_min_domains),
                     )
                 loss_sgc_res = sgc_residual_loss_from_output(out_main, z_id)
+                loss_fpcr_phys = fpcr_physics_loss_from_output(out_main, z_id)
+                loss_fpcr_budget = fpcr_budget_loss_from_output(out_main, z_id)
+                if out_sat is not None:
+                    loss_fpcr_phys = 0.5 * (
+                        loss_fpcr_phys + fpcr_physics_loss_from_output(out_sat, z_id)
+                    )
+                    loss_fpcr_budget = 0.5 * (
+                        loss_fpcr_budget + fpcr_budget_loss_from_output(out_sat, z_id)
+                    )
 
                 loss_cls = core["loss_cls"]
                 loss_dom = core["loss_dom"]
@@ -3896,6 +3957,8 @@ def main():
                     + float(args.lambda_supcon_id) * sanitize_loss("supcon", loss_supcon, z_id, loss_warn_counts)
                     + float(args.lambda_fishr) * sanitize_loss("fishr", loss_fishr, z_id, loss_warn_counts)
                     + float(args.lambda_res) * sanitize_loss("sgc_res", loss_sgc_res, z_id, loss_warn_counts)
+                    + float(args.lambda_fpcr_phys) * sanitize_loss("fpcr_phys", loss_fpcr_phys, z_id, loss_warn_counts)
+                    + float(args.lambda_fpcr_budget) * sanitize_loss("fpcr_budget", loss_fpcr_budget, z_id, loss_warn_counts)
                     + float(ecc_w) * sanitize_loss("ecc", loss_ecc, z_id, loss_warn_counts)
                 )
 
@@ -3936,6 +3999,8 @@ def main():
             meters["supcon"].update(loss_supcon.item(), bsz)
             meters["fishr"].update(loss_fishr.item(), bsz)
             meters["sgc_res"].update(loss_sgc_res.item(), bsz)
+            meters["fpcr_phys"].update(loss_fpcr_phys.item(), bsz)
+            meters["fpcr_budget"].update(loss_fpcr_budget.item(), bsz)
             meters["ecc"].update(loss_ecc.item(), bsz)
             meters["ecc_w"].update(ecc_w, bsz)
             meters["ecc_tau"].update(ecc_tau, bsz)
@@ -4030,6 +4095,8 @@ def main():
             "train_supcon_loss": meters["supcon"].avg,
             "train_fishr_loss": meters["fishr"].avg,
             "train_sgc_res_loss": meters["sgc_res"].avg,
+            "train_fpcr_phys_loss": meters["fpcr_phys"].avg,
+            "train_fpcr_budget_loss": meters["fpcr_budget"].avg,
             "test_named": named_test_stats,
             "sat_test_named": sat_test_stats,
             "aux_scale": aux_scale,
@@ -4146,6 +4213,8 @@ def main():
                                 "train_supcon_loss": meters["supcon"].avg,
                                 "train_fishr_loss": meters["fishr"].avg,
                                 "train_sgc_res_loss": meters["sgc_res"].avg,
+                                "train_fpcr_phys_loss": meters["fpcr_phys"].avg,
+                                "train_fpcr_budget_loss": meters["fpcr_budget"].avg,
                                 "val_tx_acc": val_stats["tx_acc"],
                                 "val_dom_acc": val_stats["dom_acc"],
                                 "val_probe_dom_acc": val_stats["probe_dom_acc"],

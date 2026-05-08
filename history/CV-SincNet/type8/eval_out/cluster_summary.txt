@@ -1,0 +1,23 @@
+samples_used=6000
+feature_dim=256
+kmeans_k=16 iters=30 seed=0
+
+Cluster summary (by TRUE label):
+  cluster 00: size=  291  majority_true= 0  majority_cnt=  291  purity=1.000
+  cluster 01: size=  122  majority_true= 0  majority_cnt=  122  purity=1.000
+  cluster 02: size=  408  majority_true= 0  majority_cnt=  408  purity=1.000
+  cluster 03: size=  611  majority_true= 0  majority_cnt=  611  purity=1.000
+  cluster 04: size=  326  majority_true= 0  majority_cnt=  326  purity=1.000
+  cluster 05: size=  380  majority_true= 0  majority_cnt=  380  purity=1.000
+  cluster 06: size=  645  majority_true= 0  majority_cnt=  645  purity=1.000
+  cluster 07: size=  477  majority_true= 0  majority_cnt=  477  purity=1.000
+  cluster 08: size=  201  majority_true= 0  majority_cnt=  201  purity=1.000
+  cluster 09: size=  438  majority_true= 0  majority_cnt=  438  purity=1.000
+  cluster 10: size=  484  majority_true= 0  majority_cnt=  484  purity=1.000
+  cluster 11: size=  335  majority_true= 0  majority_cnt=  335  purity=1.000
+  cluster 12: size=  473  majority_true= 0  majority_cnt=  473  purity=1.000
+  cluster 13: size=  336  majority_true= 0  majority_cnt=  336  purity=1.000
+  cluster 14: size=  322  majority_true= 0  majority_cnt=  322  purity=1.000
+  cluster 15: size=  151  majority_true= 0  majority_cnt=  151  purity=1.000
+
+Overall purity (sum majority / N): 1.0000

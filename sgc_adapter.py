@@ -7,6 +7,24 @@ import torch
 import torch.nn as nn
 
 
+def _iq_to_complex(x: torch.Tensor) -> torch.Tensor:
+    AmplitudeNormalizer._check_iq(x)
+    real = x[:, 0, :]
+    imag = x[:, 1, :]
+    if real.dtype not in (torch.float32, torch.float64):
+        real = real.float()
+        imag = imag.float()
+    return torch.complex(real, imag)
+
+
+def _complex_to_iq(z: torch.Tensor, dtype: torch.dtype) -> torch.Tensor:
+    return torch.stack([z.real, z.imag], dim=1).to(dtype=dtype)
+
+
+def _safe_rms(x: torch.Tensor, eps: float = 1e-12) -> torch.Tensor:
+    return torch.sqrt(torch.mean(x.square()) + float(eps))
+
+
 class AmplitudeNormalizer(nn.Module):
     """Per-sample RMS normalization for two-channel IQ tensors."""
 
@@ -266,12 +284,287 @@ class MultiScaleResidualChannelCompensator(nn.Module):
         return x + delta
 
 
+class FingerprintPreservingChannelProjector(nn.Module):
+    """Conservative frequency-domain channel projection for FPCR-SGC.
+
+    The projector estimates only a low-quefrency log-spectral envelope,
+    which corresponds to a smooth multiplicative channel term. The correction
+    is shrinkage-limited so high-order transmitter details such as spectral
+    regrowth and IQ image leakage are not aggressively equalized away.
+    """
+
+    def __init__(
+        self,
+        shrinkage: float = 0.35,
+        cepstral_lifter: int = 8,
+        occupied_band_fraction: float = 0.70,
+        log_correction_clip: float = 1.25,
+        eps: float = 1e-6,
+    ):
+        super().__init__()
+        self.shrinkage = float(shrinkage)
+        self.cepstral_lifter = int(cepstral_lifter)
+        self.occupied_band_fraction = float(occupied_band_fraction)
+        self.log_correction_clip = float(log_correction_clip)
+        self.eps = float(eps)
+
+    def _low_quefrency_envelope(self, log_mag: torch.Tensor) -> torch.Tensor:
+        length = int(log_mag.size(-1))
+        lifter = max(1, min(int(self.cepstral_lifter), max(1, length // 2)))
+        cep = torch.fft.ifft(torch.complex(log_mag, torch.zeros_like(log_mag)), dim=-1).real
+        idx = torch.arange(length, device=log_mag.device)
+        mask = ((idx <= lifter) | (idx >= length - lifter)).to(dtype=log_mag.dtype)
+        cep_low = cep * mask.view(1, -1)
+        return torch.fft.fft(torch.complex(cep_low, torch.zeros_like(cep_low)), dim=-1).real
+
+    def _fingerprint_stats(self, x: torch.Tensor, spectrum: torch.Tensor, log_mag: torch.Tensor) -> Dict[str, torch.Tensor]:
+        length = int(spectrum.size(-1))
+        power = spectrum.real.square() + spectrum.imag.square()
+        shifted = torch.fft.fftshift(power, dim=-1)
+        band_fraction = min(0.98, max(0.05, float(self.occupied_band_fraction)))
+        band_bins = max(1, min(length, int(round(length * band_fraction))))
+        start = max(0, (length - band_bins) // 2)
+        stop = min(length, start + band_bins)
+        inband = shifted[:, start:stop].sum(dim=-1)
+        total = shifted.sum(dim=-1)
+        outband = (total - inband).clamp_min(0.0)
+        spectral_regrowth = (outband / inband.clamp_min(self.eps)).mean()
+
+        mirror = torch.flip(torch.conj(spectrum), dims=(-1,))
+        image_num = torch.abs(spectrum * mirror).sum(dim=-1)
+        image_den = power.sum(dim=-1).clamp_min(self.eps)
+        iq_image = (image_num / image_den).mean()
+
+        cep = torch.fft.ifft(torch.complex(log_mag, torch.zeros_like(log_mag)), dim=-1).real
+        lifter = max(1, min(int(self.cepstral_lifter), max(1, length // 2)))
+        idx = torch.arange(length, device=x.device)
+        detail_mask = ((idx > lifter + 1) & (idx < length - lifter - 1)).to(dtype=x.dtype)
+        cep_detail = torch.sqrt((cep.square() * detail_mask.view(1, -1)).sum(dim=-1).clamp_min(self.eps)).mean()
+
+        z = _iq_to_complex(x)
+        cubic = (torch.abs(z).square() * z)
+        cubic_corr = torch.abs((z.conj() * cubic).mean(dim=-1)) / (
+            torch.sqrt((torch.abs(z).square().mean(dim=-1) * torch.abs(cubic).square().mean(dim=-1)).clamp_min(self.eps))
+        )
+        return {
+            "spectral_regrowth_ratio": spectral_regrowth,
+            "iq_image_ratio": iq_image,
+            "cepstral_detail_energy": cep_detail,
+            "cubic_nonlinearity_corr": cubic_corr.mean(),
+        }
+
+    def forward(
+        self,
+        x: torch.Tensor,
+        return_aux: bool = False,
+    ) -> Tuple[torch.Tensor, Optional[Dict[str, torch.Tensor]]]:
+        AmplitudeNormalizer._check_iq(x)
+        z = _iq_to_complex(x)
+        spectrum = torch.fft.fft(z, dim=-1)
+        log_mag = torch.log(torch.abs(spectrum).clamp_min(self.eps))
+        smooth_log = self._low_quefrency_envelope(log_mag)
+        smooth_centered = smooth_log - smooth_log.mean(dim=-1, keepdim=True)
+        correction_log = (-float(self.shrinkage) * smooth_centered).clamp(
+            min=-float(self.log_correction_clip),
+            max=float(self.log_correction_clip),
+        )
+        projected_spectrum = spectrum * torch.exp(correction_log)
+        projected = torch.fft.ifft(projected_spectrum, dim=-1)
+        x_projected = _complex_to_iq(projected, x.dtype)
+
+        if not return_aux:
+            return x_projected, None
+
+        out_log_mag = torch.log(torch.abs(projected_spectrum).clamp_min(self.eps))
+        stats_in = self._fingerprint_stats(x, spectrum, log_mag)
+        stats_out = self._fingerprint_stats(x_projected, projected_spectrum, out_log_mag)
+        delta_rms = _safe_rms(x_projected - x)
+        input_rms = _safe_rms(x)
+        aux: Dict[str, torch.Tensor] = {
+            "fpcr_projected": x_projected,
+            "fpcr_smooth_log_channel": smooth_log,
+            "fpcr_projection_delta_rms": delta_rms,
+            "fpcr_projection_ratio": delta_rms / input_rms.clamp_min(self.eps),
+            "fpcr_projection_shrinkage": x.new_tensor(float(self.shrinkage)),
+        }
+        for key, value in stats_in.items():
+            aux[f"fpcr_{key}_in"] = value
+        for key, value in stats_out.items():
+            aux[f"fpcr_{key}_out"] = value
+        return x_projected, aux
+
+
+class BoundedFingerprintResidual(nn.Module):
+    """Small TCN residual branch with an explicit L2 budget."""
+
+    def __init__(
+        self,
+        in_channels: int = 2,
+        hidden_channels: int = 24,
+        num_blocks: int = 2,
+        kernel_size: int = 5,
+        max_residual_ratio: float = 0.06,
+        max_gamma: float = 0.25,
+        init_gamma: float = 0.0,
+        dropout: float = 0.0,
+        eps: float = 1e-6,
+    ):
+        super().__init__()
+        self.max_residual_ratio = float(max_residual_ratio)
+        self.max_gamma = float(max_gamma)
+        self.eps = float(eps)
+        layers: List[nn.Module] = []
+        ch = int(in_channels)
+        hidden = int(hidden_channels)
+        blocks = max(1, int(num_blocks))
+        for idx in range(blocks):
+            dilation = 2 ** idx
+            pad = dilation * (int(kernel_size) // 2)
+            out_ch = hidden if idx < blocks - 1 else int(in_channels)
+            layers.extend(
+                [
+                    nn.Conv1d(ch, ch, kernel_size=kernel_size, padding=pad, dilation=dilation, groups=ch, bias=False),
+                    nn.BatchNorm1d(ch),
+                    nn.SiLU(inplace=True),
+                    nn.Conv1d(ch, out_ch, kernel_size=1, bias=False),
+                    nn.BatchNorm1d(out_ch),
+                    nn.SiLU(inplace=True) if idx < blocks - 1 else nn.Identity(),
+                ]
+            )
+            if float(dropout) > 0.0 and idx < blocks - 1:
+                layers.append(nn.Dropout(p=min(0.5, max(0.0, float(dropout)))))
+            ch = out_ch
+        self.net = nn.Sequential(*layers)
+        self.gamma = nn.Parameter(torch.tensor(float(init_gamma)))
+
+    def effective_gamma(self) -> torch.Tensor:
+        if self.max_gamma <= 0.0:
+            return self.gamma
+        return torch.tanh(self.gamma) * self.max_gamma
+
+    def forward(
+        self,
+        x: torch.Tensor,
+        return_aux: bool = False,
+    ) -> Tuple[torch.Tensor, Optional[Dict[str, torch.Tensor]]]:
+        AmplitudeNormalizer._check_iq(x)
+        raw_delta = self.effective_gamma() * self.net(x)
+        delta_rms = _safe_rms(raw_delta, self.eps)
+        input_rms = _safe_rms(x, self.eps)
+        raw_ratio = delta_rms / input_rms.clamp_min(self.eps)
+        if self.max_residual_ratio > 0.0:
+            budget_scale = torch.clamp(x.new_tensor(float(self.max_residual_ratio)) / raw_ratio.clamp_min(self.eps), max=1.0)
+        else:
+            budget_scale = x.new_tensor(1.0)
+        delta = raw_delta * budget_scale
+        out = x + delta
+        if not return_aux:
+            return out, None
+        final_delta_rms = _safe_rms(delta, self.eps)
+        final_ratio = final_delta_rms / input_rms.clamp_min(self.eps)
+        aux = {
+            "fpcr_residual_delta_rms": final_delta_rms,
+            "fpcr_residual_raw_ratio": raw_ratio,
+            "fpcr_residual_ratio": final_ratio,
+            "fpcr_residual_budget": x.new_tensor(float(self.max_residual_ratio)),
+            "fpcr_residual_budget_scale": budget_scale,
+            "fpcr_effective_gamma": self.effective_gamma().abs(),
+            "fpcr_budget_loss": torch.relu(final_ratio - x.new_tensor(float(self.max_residual_ratio))),
+        }
+        return out, aux
+
+
+class FPCRSGCReconstructor(nn.Module):
+    """Fingerprint-Preserving Constrained Reconstruction for SGC inputs."""
+
+    def __init__(
+        self,
+        in_channels: int = 2,
+        shrinkage: float = 0.35,
+        cepstral_lifter: int = 8,
+        occupied_band_fraction: float = 0.70,
+        log_correction_clip: float = 1.25,
+        use_learned_residual: bool = True,
+        residual_channels: int = 24,
+        residual_blocks: int = 2,
+        residual_kernel_size: int = 5,
+        max_residual_ratio: float = 0.06,
+        residual_max_gamma: float = 0.25,
+        residual_init_gamma: float = 0.0,
+        residual_dropout: float = 0.0,
+        eps: float = 1e-6,
+    ):
+        super().__init__()
+        if int(in_channels) != 2:
+            raise ValueError("FPCRSGCReconstructor expects two IQ channels")
+        self.projector = FingerprintPreservingChannelProjector(
+            shrinkage=shrinkage,
+            cepstral_lifter=cepstral_lifter,
+            occupied_band_fraction=occupied_band_fraction,
+            log_correction_clip=log_correction_clip,
+            eps=eps,
+        )
+        self.use_learned_residual = bool(use_learned_residual)
+        self.residual = (
+            BoundedFingerprintResidual(
+                in_channels=in_channels,
+                hidden_channels=residual_channels,
+                num_blocks=residual_blocks,
+                kernel_size=residual_kernel_size,
+                max_residual_ratio=max_residual_ratio,
+                max_gamma=residual_max_gamma,
+                init_gamma=residual_init_gamma,
+                dropout=residual_dropout,
+                eps=eps,
+            )
+            if self.use_learned_residual
+            else nn.Identity()
+        )
+        self.eps = float(eps)
+
+    def forward(
+        self,
+        x: torch.Tensor,
+        return_aux: bool = False,
+    ) -> Tuple[torch.Tensor, Optional[Dict[str, torch.Tensor]]]:
+        AmplitudeNormalizer._check_iq(x)
+        projected, proj_aux = self.projector(x, return_aux=True)
+        if self.use_learned_residual:
+            out, res_aux = self.residual(projected, return_aux=True)
+        else:
+            out, res_aux = projected, {
+                "fpcr_residual_delta_rms": x.new_tensor(0.0),
+                "fpcr_residual_ratio": x.new_tensor(0.0),
+                "fpcr_residual_budget": x.new_tensor(0.0),
+                "fpcr_budget_loss": x.new_tensor(0.0),
+            }
+
+        if not return_aux:
+            return out, None
+        aux: Dict[str, torch.Tensor] = {}
+        aux.update(proj_aux or {})
+        aux.update(res_aux or {})
+        aux.update(
+            {
+                "adapter_input": x,
+                "adapter_output": out,
+                "adapter_delta_rms": _safe_rms(out - x, self.eps),
+                "adapter_input_rms": _safe_rms(x, self.eps),
+                "fpcr_projected_input_rms": _safe_rms(projected, self.eps),
+                "fpcr_total_ratio": _safe_rms(out - x, self.eps) / _safe_rms(x, self.eps).clamp_min(self.eps),
+            }
+        )
+        return out, aux
+
+
 class SGCAdapter(nn.Module):
     """Satellite-ground-channel-aware adapter for IQ inputs."""
 
     def __init__(
         self,
         in_channels: int = 2,
+        adapter_mode: str = "legacy",
+        use_fpcr: bool = False,
         use_amp_norm: bool = True,
         use_freq_comp: bool = True,
         use_spectral_suppressor: bool = True,
@@ -290,15 +583,54 @@ class SGCAdapter(nn.Module):
         residual_dropout: float = 0.0,
         residual_mode: str = "plain",
         residual_stat_gate: bool = False,
+        fpcr_shrinkage: float = 0.35,
+        fpcr_cepstral_lifter: int = 8,
+        fpcr_occupied_band_fraction: float = 0.70,
+        fpcr_log_correction_clip: float = 1.25,
+        fpcr_use_learned_residual: bool = True,
+        fpcr_residual_channels: int = 24,
+        fpcr_residual_blocks: int = 2,
+        fpcr_residual_kernel_size: int = 5,
+        fpcr_max_residual_ratio: float = 0.06,
+        fpcr_residual_max_gamma: float = 0.25,
+        fpcr_residual_init_gamma: float = 0.0,
+        fpcr_residual_dropout: float = 0.0,
         eps: float = 1e-6,
     ):
         super().__init__()
+        self.adapter_mode = "fpcr" if bool(use_fpcr) else str(adapter_mode or "legacy").lower().strip()
+        if self.adapter_mode not in ("legacy", "fpcr"):
+            raise ValueError(f"Unknown SGC adapter_mode={adapter_mode}")
         self.use_amp_norm = bool(use_amp_norm)
         self.use_freq_comp = bool(use_freq_comp)
         self.use_spectral_suppressor = bool(use_spectral_suppressor)
         self.use_residual_comp = bool(use_residual_comp)
         self.residual_mode = str(residual_mode or "plain").lower().strip()
 
+        if self.adapter_mode == "fpcr":
+            self.fpcr_reconstructor = FPCRSGCReconstructor(
+                in_channels=in_channels,
+                shrinkage=fpcr_shrinkage,
+                cepstral_lifter=fpcr_cepstral_lifter,
+                occupied_band_fraction=fpcr_occupied_band_fraction,
+                log_correction_clip=fpcr_log_correction_clip,
+                use_learned_residual=fpcr_use_learned_residual,
+                residual_channels=fpcr_residual_channels,
+                residual_blocks=fpcr_residual_blocks,
+                residual_kernel_size=fpcr_residual_kernel_size,
+                max_residual_ratio=fpcr_max_residual_ratio,
+                residual_max_gamma=fpcr_residual_max_gamma,
+                residual_init_gamma=fpcr_residual_init_gamma,
+                residual_dropout=fpcr_residual_dropout,
+                eps=eps,
+            )
+            self.amp_norm = nn.Identity()
+            self.freq_comp = nn.Identity()
+            self.spectral_sup = nn.Identity()
+            self.residual_comp = nn.Identity()
+            return
+
+        self.fpcr_reconstructor = None
         self.amp_norm = AmplitudeNormalizer(eps=eps) if self.use_amp_norm else nn.Identity()
         self.freq_comp = (
             FrequencyOffsetCompensator(in_channels, freq_hidden_dim, max_norm_freq_offset)
@@ -343,6 +675,9 @@ class SGCAdapter(nn.Module):
         return_aux: bool = False,
     ) -> Tuple[torch.Tensor, Optional[Dict[str, torch.Tensor]]]:
         AmplitudeNormalizer._check_iq(x)
+        if self.adapter_mode == "fpcr":
+            return self.fpcr_reconstructor(x, return_aux=return_aux)
+
         x_in = x
         x = self.amp_norm(x)
         x = self.freq_comp(x)
@@ -375,6 +710,7 @@ class SGCAdapter(nn.Module):
     @property
     def submodule_status(self) -> Dict[str, bool]:
         return {
+            "adapter_mode": self.adapter_mode,
             "amp_norm": self.use_amp_norm,
             "freq_comp": self.use_freq_comp,
             "spectral_suppressor": self.use_spectral_suppressor,

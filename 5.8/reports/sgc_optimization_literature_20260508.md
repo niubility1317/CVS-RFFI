@@ -45,7 +45,13 @@ SGC 的目标不应只写成：
 
 ### 4.1 SAT 评估口径修正
 
-已将 `train.py` 的 `--eval_sat_on` 默认值改为 `all`，不再只评估 `test_unseen_day_unseen_rx`。新的 SAT 输出包括：
+已将 `train.py` 的 `--eval_sat_on` 默认值改为 `all`，不再只评估 `test_unseen_day_unseen_rx`。同时默认 SAT 测试场景改为 `simple_leo`，即基于汇报图公式的简化星地信道：
+
+`h(t)=L(t) * xi(t) * exp(j phi(t))`
+
+其中 `L(t)` 为距离路径损耗，`xi(t)` 为对数正态阴影衰落，`phi(t)` 为 LEO 多普勒相位，最终 `y(t)=h(t)x(t)+n(t)`。该测试不再默认叠加 Rician/Rayleigh 状态、多径、IQ imbalance、phase noise 等复杂项。
+
+新的 SAT 输出包括：
 
 - `[SAT-TEST]`：保留原有 primary OOD 聚合 `overall_tx`，新增 `all_named_tx`。
 - `[SAT-TEST-SPLIT]`：对每个 scenario 输出每个 named split，包括 `test_unseen_day_seen_rx`、`test_seen_day_unseen_rx`、`test_unseen_day_unseen_rx`、`test_day_*`、`test_rx_*`。
@@ -175,8 +181,7 @@ SGC-TADA 进入主线必须满足：
 
 - 对 `E0_no_adapter_continue`，primary OOD 不下降超过 0.10；
 - strict UDU 或 worst-RX 至少提升 0.30；
-- SAT Avg 至少提升 0.80，且 storm_mp/low_elev_leo 至少一个提升明显；
+- SAT Avg 至少提升 0.80，且 storm_leo_mp/low_elev_leo 至少一个提升明显；
 - all split SAT 没有出现单个核心 split 大幅下跌；
 - residual ratio 保持小于 5%-8%，证明是去扰动而不是重写输入；
 - 目标域 adaptation 只用 calibration buffer，holdout 上提升，且没有使用测试标签。
-

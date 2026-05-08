@@ -13,7 +13,7 @@ from baselines.common.cvs_sat_eval import (
 )
 from baselines.common.cvs_trainer import run_validation_gated_training
 from baselines.common.io import set_seed
-from baselines.cvcnn.model import BasicCVCNN
+from baselines.cvcnn.model import BasicCVCNN, SincCVCNN
 
 
 def main() -> None:
@@ -27,27 +27,42 @@ def main() -> None:
     parser.add_argument("--base_channels", type=int, default=32)
     parser.add_argument("--embedding_dim", type=int, default=128)
     parser.add_argument("--dropout", type=float, default=0.0)
+    parser.add_argument("--front_end", type=str, default="conv", choices=["conv", "sinc"])
+    parser.add_argument("--sinc_kernel_size", type=int, default=79)
+    parser.add_argument("--sample_rate_hz", type=float, default=25e6)
     parser.add_argument("--seed", type=int, default=1337)
     parser.add_argument("--device", type=str, default="cuda")
     parser.add_argument("--output_dir", type=str, default="baseline_runs/cvcnn")
     args = parser.parse_args()
+    if args.front_end == "sinc" and args.output_dir == "baseline_runs/cvcnn":
+        args.output_dir = "baseline_runs/cvcnn_sinc"
     sat_scenarios = parse_and_validate_sat_scenarios(args) if args.eval_sat_channel else []
 
     set_seed(args.seed)
     device = torch.device(args.device if torch.cuda.is_available() and args.device.startswith("cuda") else "cpu")
     print(
-        f"[START] method=cvcnn seed={args.seed} device={device} epochs={args.epochs} "
+        f"[START] method=cvcnn front_end={args.front_end} seed={args.seed} device={device} epochs={args.epochs} "
         f"sat_eval={int(bool(sat_scenarios))} output_dir={args.output_dir}",
         flush=True,
     )
     loaders = build_cvs_loaders(args, device)
-    model = BasicCVCNN(
-        num_classes=loaders.split.num_classes,
-        input_len=loaders.split.input_len,
-        base_channels=args.base_channels,
-        embedding_dim=args.embedding_dim,
-        dropout=args.dropout,
-    ).to(device)
+    model_cls = SincCVCNN if args.front_end == "sinc" else BasicCVCNN
+    model_kwargs = {
+        "num_classes": loaders.split.num_classes,
+        "input_len": loaders.split.input_len,
+        "base_channels": args.base_channels,
+        "embedding_dim": args.embedding_dim,
+        "dropout": args.dropout,
+    }
+    if args.front_end == "sinc":
+        model_kwargs.update({
+            "sinc_kernel_size": args.sinc_kernel_size,
+            "sample_rate_hz": args.sample_rate_hz,
+        })
+    model = model_cls(**model_kwargs).to(device)
+    total_params = sum(int(p.numel()) for p in model.parameters())
+    trainable_params = sum(int(p.numel()) for p in model.parameters() if p.requires_grad)
+    print(f"[MODEL] {model.__class__.__name__} params={total_params:,} trainable={trainable_params:,}", flush=True)
     optimizer = torch.optim.AdamW(model.parameters(), lr=args.lr, weight_decay=args.wd)
     scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=max(1, args.epochs), eta_min=args.lr_min)
 

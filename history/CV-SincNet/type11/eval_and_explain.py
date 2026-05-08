@@ -1,0 +1,1446 @@
+# eval_and_explain.py
+# -*- coding: utf-8 -*-
+"""
+WiFi RFFI: evaluate CV-SincNet weights and generate analysis outputs.
+- Confusion matrix + classification report (NO sklearn required)
+- Optional confusion-matrix image (PNG if matplotlib exists, else SVG)
+- Optional branch-only eval (time-only / freq-only) if model has t_proj/f_proj/fuse/cls_head
+- Saliency (time + freq + mirror asymmetry) (NO matplotlib required; if available, also save PNG)
+- NEW: Clustering distribution plots (PCA-2D + KMeans) (PNG if matplotlib exists, else SVG)
+- NEW: t-SNE 2D visualization (requires scikit-learn)
+
+Run:
+  python eval_and_explain.py
+or:
+  python eval_and_explain.py --weights ./weight/xxx.pth --data ./Dataset_ORALCE --out ./eval_out
+"""
+
+import os
+import math
+import argparse
+import inspect
+from typing import Dict, Tuple, Optional, Any
+
+import numpy as np
+import torch
+from torch.utils.data import DataLoader
+
+from dataset import WiFiRFFIDataset
+from model import CVSincNet, build_model as build_single_model
+from model_dual_cvsincnet import build_dual_model
+
+try:
+    from dataset_wisig_modified import load_wisig_compact_pkl, make_day123_randomsplit_plus_day4_test
+except Exception:
+    try:
+        from dataset_wisig import load_wisig_compact_pkl, make_day123_randomsplit_plus_day4_test
+    except Exception:
+        load_wisig_compact_pkl = None
+        make_day123_randomsplit_plus_day4_test = None
+
+
+# ===================== 淇敼鍖猴紙浣犲彧闇€瑕佹敼杩欏嚑椤癸級 =====================
+WEIGHTS_PATH = "./best_model_v10.pth"   # 鉁?鏉冮噸鍦板潃
+DATASET_DIR  = "./Dataset_ORALCE"                            # 鉁?鏁版嵁闆嗘牴鐩綍
+OUT_DIR      = "./eval_out"
+BATCH_SIZE   = 128
+NUM_WORKERS  = 4
+MAX_SALIENCY_SAMPLES = 4096
+SAMPLE_RATE_HZ = 5e6
+DATASET_TYPE = "wisig"
+MODEL_SIZE = "M"
+INPUT_LEN_ORALCE = 1024
+
+# NEW: 鑱氱被鍒嗗竷鍥惧弬鏁?MAX_CLUSTER_SAMPLES = 6000      # 寤鸿 2k~10k锛屽お澶т細寰堟參/鏂囦欢寰堝ぇ
+CLUSTER_K = 16                 # 榛樿=绫诲埆鏁帮紙鍙懡浠よ瑕嗙洊锛?CLUSTER_SEED = 0
+KMEANS_ITERS = 30
+
+# NEW: t-SNE 鍙鍖栧弬鏁帮紙榛樿涓嶅紑鍚紝鍛戒护琛?--tsne 鎵嶈繍琛岋級
+MAX_TSNE_SAMPLES = 3500         # t-SNE 澶嶆潅搴﹂珮锛岄粯璁?<= 4k
+TSNE_PERPLEXITY = 30.0
+TSNE_ITERS = 1200
+TSNE_PCA_DIM = 50               # t-SNE 鍓嶅厛 PCA 鍒?50 缁存洿绋虫洿蹇?TSNE_FEAT = "feat_cls"          # 鍙€? base / feat_cls / feat_con
+TSNE_SEED = 0
+# =====================================================================
+
+
+# -------- optional deps (matplotlib) --------
+_HAS_MPL = False
+try:
+    import matplotlib
+    matplotlib.use("Agg")
+    import matplotlib.pyplot as plt
+    _HAS_MPL = True
+except Exception:
+    _HAS_MPL = False
+
+
+# -------- optional deps (scikit-learn for t-SNE) --------
+_HAS_SKLEARN = False
+try:
+    from sklearn.manifold import TSNE
+    from sklearn.decomposition import PCA as _SKPCA
+    _HAS_SKLEARN = True
+except Exception:
+    _HAS_SKLEARN = False
+
+
+# -------------------- small utilities --------------------
+def _ensure_dir(p: str):
+    os.makedirs(p, exist_ok=True)
+
+
+def _parse_days(s: str):
+    s = str(s).strip()
+    if s == "":
+        return None
+    out = []
+    for item in s.split(","):
+        item = item.strip()
+        if item == "":
+            continue
+        try:
+            out.append(int(item))
+        except Exception:
+            out.append(item)
+    return out if len(out) > 0 else None
+
+
+def _unpack_xy(batch):
+    if isinstance(batch, (tuple, list)):
+        return batch[0], batch[1]
+    raise TypeError(f"Unsupported batch type: {type(batch)}")
+
+
+def _is_dual_state_dict(sd: Dict[str, torch.Tensor]) -> bool:
+    return any(k.startswith("id_backbone.") or k.startswith("dom_backbone.") for k in sd.keys())
+
+
+def _infer_num_classes_from_sd(sd: Dict[str, torch.Tensor], default_nc: int) -> int:
+    keys = [
+        "id_backbone.cls_head.head.weight",
+        "id_backbone.cls_head.weight",
+        "cls_head.head.weight",
+        "cls_head.weight",
+        "classifier.weight",
+    ]
+    for k in keys:
+        if k in sd and torch.is_tensor(sd[k]) and sd[k].ndim == 2:
+            return int(sd[k].shape[0])
+    return int(default_nc)
+
+
+def _infer_num_domains_from_sd(sd: Dict[str, torch.Tensor], default_nd: int) -> int:
+    keys = ["dom_head.net.3.weight", "dom_head.net.3.bias", "dom_head.net.0.weight"]
+    for k in keys:
+        if k in sd and torch.is_tensor(sd[k]) and sd[k].ndim >= 1:
+            return int(sd[k].shape[0])
+    return int(default_nd)
+
+
+def _get_backbone(model: torch.nn.Module) -> torch.nn.Module:
+    if hasattr(model, "id_backbone"):
+        return getattr(model, "id_backbone")
+    return model
+
+
+def _strip_module_prefix(sd: Dict[str, torch.Tensor]) -> Dict[str, torch.Tensor]:
+    if not any(k.startswith("module.") for k in sd.keys()):
+        return sd
+    return {k.replace("module.", "", 1): v for k, v in sd.items()}
+
+
+def _load_state_dict(weights_path: str) -> Dict[str, torch.Tensor]:
+    ckpt = torch.load(weights_path, map_location="cpu")
+
+    if isinstance(ckpt, dict):
+        for key in ["state_dict", "model", "model_state", "net", "weights"]:
+            if key in ckpt and isinstance(ckpt[key], dict):
+                sd = ckpt[key]
+                return _strip_module_prefix(sd)
+
+        # pure state_dict
+        if any(isinstance(v, torch.Tensor) for v in ckpt.values()):
+            return _strip_module_prefix(ckpt)
+
+    raise ValueError(f"Unrecognized checkpoint format: {weights_path}")
+
+
+def _find_key(sd: Dict[str, torch.Tensor], candidates) -> Optional[str]:
+    for k in candidates:
+        if k in sd:
+            return k
+    return None
+
+
+def _find_head_weight_key(sd: Dict[str, torch.Tensor]) -> Optional[str]:
+    """Find the classification head weight key in a checkpoint state_dict.
+
+    This repo has used multiple head naming conventions over time:
+      - Linear head:        cls_head.weight / classifier.weight / head.weight
+      - CosFace head:       cls_head.head.weight / classifier.head.weight
+    We use this key to infer (num_classes, emb_dim) and to sanity-check loading.
+    """
+    # Most common / preferred candidates first
+    candidates = [
+        "cls_head.head.weight",
+        "classifier.head.weight",
+        "cls_head.weight",
+        "classifier.weight",
+        "head.weight",
+    ]
+    k = _find_key(sd, candidates)
+    if k is not None:
+        return k
+
+    # Fallback: search any reasonable 2D weight that looks like a head
+    for kk, vv in sd.items():
+        try:
+            nd = vv.ndim
+        except Exception:
+            continue
+        if nd != 2:
+            continue
+        if not kk.endswith("weight"):
+            continue
+        # heuristics: contains head-ish path
+        if ("cls_head" in kk or "classifier" in kk or kk.split(".")[0] in ("head", "fc", "linear")) and (
+            ".head." in kk or kk.endswith(".weight")
+        ):
+            return kk
+
+    return None
+
+
+
+def _infer_model_hparams(sd: Dict[str, torch.Tensor]) -> Dict[str, Any]:
+    """
+    浠?checkpoint 鍙嶆帹妯″瀷瓒呭弬锛堜互 checkpoint 涓哄噯锛?
+    娉ㄦ剰锛氫綘鐨?model.py 浣跨敤鐨勬槸 DACAwareClassifier + CosFaceHead锛?    鍥犳鍒嗙被澶存潈閲?key 閫氬父鏄?`cls_head.head.weight`锛岃€屼笉鏄?`cls_head.weight`銆?    鏈嚱鏁颁細鍏煎澶氱鍘嗗彶鍛藉悕锛岄伩鍏?eval 鍥?KeyError 鐩存帴涓柇銆?    """
+    head_w_key = _find_head_weight_key(sd)
+    if head_w_key is None:
+        raise KeyError(
+            "Cannot find head weight in checkpoint. Tried keys like "
+            "`cls_head.head.weight`, `cls_head.weight`, `classifier.weight`, `head.weight`."
+        )
+
+    # head weight: (num_classes, emb_dim)
+    if sd[head_w_key].ndim != 2:
+        raise KeyError(f"Found head key={head_w_key} but it is not a 2D weight tensor: shape={tuple(sd[head_w_key].shape)}")
+
+    num_classes = int(sd[head_w_key].shape[0])
+    emb_dim = int(sd[head_w_key].shape[1])
+
+    sinc_out_key = _find_key(sd, ["sinc.low_hz_", "sinc.band_hz_", "sinc.low_hz", "sinc.band_hz"])
+    if sinc_out_key is None:
+        raise KeyError("Cannot find sinc.low_hz_ / sinc.band_hz_ in checkpoint to infer sinc_out.")
+    sinc_out = int(sd[sinc_out_key].shape[0])
+
+    tf_key = _find_key(sd, ["time_fuse.0.weight", "time_fuse.weight"])
+    if tf_key is None:
+        for k, v in sd.items():
+            if "time_fuse" in k and k.endswith("weight") and v.ndim == 3 and v.shape[-1] == 1 and v.shape[0] == v.shape[1]:
+                tf_key = k
+                break
+    if tf_key is None:
+        raise KeyError("Cannot find time_fuse conv weight in checkpoint.")
+    time_in = int(sd[tf_key].shape[1])
+
+    sinc_kernel = None
+    for k in ["sinc.window_", "sinc.t_", "sinc.kernel_", "sinc.filters_"]:
+        if k in sd and hasattr(sd[k], "ndim") and sd[k].ndim >= 1:
+            sinc_kernel = int(sd[k].shape[-1])
+            break
+    if sinc_kernel is None:
+        sinc_kernel = 129
+
+    extra = 4
+    basis_factor = (time_in - extra) / max(1, sinc_out)
+
+    return {
+        "num_classes": num_classes,
+        "emb_dim": emb_dim,
+        "sinc_out": sinc_out,
+        "sinc_kernel": sinc_kernel,
+        "time_in": time_in,
+        "basis_factor_x": float(basis_factor),
+        "head_w_key": head_w_key,
+    }
+
+
+
+def _filter_kwargs_for_init(cls, kwargs: Dict) -> Dict:
+    sig = inspect.signature(cls.__init__)
+    accepted = set(sig.parameters.keys()) - {"self"}
+    return {k: v for k, v in kwargs.items() if k in accepted}
+
+
+def _align_state_dict_keys(sd: Dict[str, torch.Tensor], model: torch.nn.Module) -> Dict[str, torch.Tensor]:
+    """Align checkpoint keys to current model keys for common head naming differences."""
+    mkeys = set(model.state_dict().keys())
+    sd2 = dict(sd)
+
+    # ---- Linear head: cls_head <-> classifier ----
+    if "cls_head.weight" in sd2 and "cls_head.weight" not in mkeys and "classifier.weight" in mkeys:
+        sd2["classifier.weight"] = sd2.pop("cls_head.weight")
+        if "cls_head.bias" in sd2 and "classifier.bias" in mkeys:
+            sd2["classifier.bias"] = sd2.pop("cls_head.bias")
+
+    if "classifier.weight" in sd2 and "classifier.weight" not in mkeys and "cls_head.weight" in mkeys:
+        sd2["cls_head.weight"] = sd2.pop("classifier.weight")
+        if "classifier.bias" in sd2 and "cls_head.bias" in mkeys:
+            sd2["cls_head.bias"] = sd2.pop("classifier.bias")
+
+    # ---- CosFace head: cls_head.head <-> classifier.head ----
+    if "cls_head.head.weight" in sd2 and "cls_head.head.weight" not in mkeys and "classifier.head.weight" in mkeys:
+        sd2["classifier.head.weight"] = sd2.pop("cls_head.head.weight")
+
+    if "classifier.head.weight" in sd2 and "classifier.head.weight" not in mkeys and "cls_head.head.weight" in mkeys:
+        sd2["cls_head.head.weight"] = sd2.pop("classifier.head.weight")
+
+    return sd2
+
+
+
+def build_model_from_weights(
+    weights_path: str,
+    device: torch.device,
+    dataset: str,
+    model_size: str,
+    input_len: int,
+    sample_rate_hz: float,
+    num_classes: int = 16,
+    num_domains: int = 1,
+    force_single: bool = False,
+    force_dual: bool = False,
+    detach_imp_gate: bool = True,
+    disable_freq_stats_to_shared: bool = True,
+):
+    sd = _load_state_dict(weights_path)
+    is_dual = _is_dual_state_dict(sd)
+    if force_single:
+        is_dual = False
+    if force_dual:
+        is_dual = True
+
+    if is_dual:
+        nc = _infer_num_classes_from_sd(sd, num_classes)
+        nd = _infer_num_domains_from_sd(sd, num_domains)
+        model = build_dual_model(
+            num_classes=nc,
+            num_domains=nd,
+            model_size=model_size,
+            dataset=dataset,
+            input_len=input_len,
+            sample_rate_hz=sample_rate_hz,
+            detach_imp_gate=bool(detach_imp_gate),
+            disable_freq_stats_to_shared=bool(disable_freq_stats_to_shared),
+        )
+        print(f"[MODEL] dual | num_classes={nc} num_domains={nd} model_size={model_size}", flush=True)
+    else:
+        hp = _infer_model_hparams(sd)
+        nc = hp["num_classes"]
+        model = build_single_model(
+            num_classes=nc,
+            model_size=model_size,
+            dataset=dataset,
+            input_len=input_len,
+            sample_rate_hz=sample_rate_hz,
+            detach_imp_gate=bool(detach_imp_gate),
+            disable_freq_stats_to_shared=bool(disable_freq_stats_to_shared),
+        )
+        print(
+            f"[MODEL] single | num_classes={nc} emb_dim={hp['emb_dim']} sinc_out={hp['sinc_out']} "
+            f"sinc_kernel={hp['sinc_kernel']} model_size={model_size}",
+            flush=True,
+        )
+
+    sd = _align_state_dict_keys(sd, model)
+    model_sd = model.state_dict()
+    filtered = {}
+    skipped = []
+    for k, v in sd.items():
+        if k in model_sd and tuple(v.shape) == tuple(model_sd[k].shape):
+            filtered[k] = v
+        elif k in model_sd:
+            skipped.append((k, tuple(v.shape), tuple(model_sd[k].shape)))
+
+    missing, unexpected = model.load_state_dict(filtered, strict=False)
+    print(f"[LOAD] loaded={len(filtered)} keys, skipped_shape_mismatch={len(skipped)}", flush=True)
+    if skipped:
+        print("[LOAD] first 10 skipped keys (ckpt_shape -> model_shape):", flush=True)
+        for item in skipped[:10]:
+            print("   ", item, flush=True)
+    if missing or unexpected:
+        print(f"[WARN] load_state_dict missing={missing} unexpected={unexpected}", flush=True)
+
+    model.to(device)
+    model.eval()
+    return model
+
+
+def make_test_loader(args, batch_size: int, num_workers: int, device: torch.device) -> DataLoader:
+    if str(args.dataset).lower() == "wisig":
+        if load_wisig_compact_pkl is None or make_day123_randomsplit_plus_day4_test is None:
+            raise RuntimeError("WiSig dataset loader import failed; cannot build WISIG loader.")
+        ds_w = load_wisig_compact_pkl(args.wisig_pkl)
+        eq2 = "both" if str(args.wisig_equalized).lower() == "both" else int(args.wisig_equalized)
+        max_tr = None if int(args.wisig_max_train_per_combo) <= 0 else int(args.wisig_max_train_per_combo)
+        max_te = None if int(args.wisig_max_test_per_combo) <= 0 else int(args.wisig_max_test_per_combo)
+        _train_ds, test_ds, split_info = make_day123_randomsplit_plus_day4_test(
+            ds_w,
+            equalized=eq2,
+            out_len=int(args.wisig_out_len),
+            domain=str(args.wisig_domain),
+            normalize=True,
+            crop_mode="center",
+            transform=None,
+            train_ratio=float(args.wisig_train_ratio),
+            train_days=_parse_days(args.wisig_train_days),
+            full_test_days=_parse_days(args.wisig_full_test_days),
+            max_samples_per_combo_train=max_tr,
+            max_samples_per_combo_test=max_te,
+            seed=int(args.seed),
+        )
+        del _train_ds
+        print(f"[WISIG] test loader ready | split={split_info}", flush=True)
+        ds = test_ds
+    else:
+        ds = WiFiRFFIDataset(args.data, mode="test", run_name=args.run_name)
+
+    dl = DataLoader(
+        ds,
+        batch_size=batch_size,
+        shuffle=False,
+        num_workers=num_workers,
+        pin_memory=(device.type == "cuda"),
+        drop_last=False,
+        persistent_workers=(num_workers > 0),
+    )
+    return dl
+
+
+# -------------------- metrics (numpy only) --------------------
+def confusion_matrix_np(y_true: np.ndarray, y_pred: np.ndarray, num_classes: int) -> np.ndarray:
+    cm = np.zeros((num_classes, num_classes), dtype=np.int64)
+    np.add.at(cm, (y_true, y_pred), 1)
+    return cm
+
+
+def classification_report_np(y_true: np.ndarray, y_pred: np.ndarray, num_classes: int) -> str:
+    eps = 1e-12
+    lines = []
+    header = f"{'class':>8} {'precision':>10} {'recall':>10} {'f1':>10} {'support':>10}"
+    lines.append(header)
+    lines.append("-" * len(header))
+
+    supports = []
+    precisions = []
+    recalls = []
+    f1s = []
+
+    for c in range(num_classes):
+        tp = np.sum((y_true == c) & (y_pred == c))
+        fp = np.sum((y_true != c) & (y_pred == c))
+        fn = np.sum((y_true == c) & (y_pred != c))
+        sup = np.sum(y_true == c)
+
+        prec = tp / (tp + fp + eps)
+        rec  = tp / (tp + fn + eps)
+        f1   = 2 * prec * rec / (prec + rec + eps)
+
+        supports.append(sup)
+        precisions.append(prec)
+        recalls.append(rec)
+        f1s.append(f1)
+
+        lines.append(f"{c:>8d} {prec:>10.4f} {rec:>10.4f} {f1:>10.4f} {sup:>10d}")
+
+    supports = np.array(supports, dtype=np.float64)
+    precisions = np.array(precisions)
+    recalls = np.array(recalls)
+    f1s = np.array(f1s)
+    total = supports.sum() + eps
+
+    acc = float(np.mean(y_true == y_pred))
+    macro = (precisions.mean(), recalls.mean(), f1s.mean())
+    weighted = (
+        float((precisions * supports).sum() / total),
+        float((recalls * supports).sum() / total),
+        float((f1s * supports).sum() / total),
+    )
+
+    lines.append("")
+    lines.append(f"accuracy: {acc:.4f}")
+    lines.append(f"macro avg: precision={macro[0]:.4f} recall={macro[1]:.4f} f1={macro[2]:.4f}")
+    lines.append(f"weighted avg: precision={weighted[0]:.4f} recall={weighted[1]:.4f} f1={weighted[2]:.4f}")
+    return "\n".join(lines)
+
+
+
+def _extract_logits(out: Any) -> torch.Tensor:
+    """Robustly extract logits tensor from common model output conventions."""
+    if torch.is_tensor(out):
+        return out
+    if isinstance(out, dict):
+        for k in ("tx_logits", "logits", "pred", "y_pred", "out"):
+            if k in out and torch.is_tensor(out[k]):
+                return out[k]
+        raise RuntimeError(f"Dict output has no logits tensor. Keys={list(out.keys())}")
+    if isinstance(out, (tuple, list)):
+        if len(out) == 0:
+            raise RuntimeError("Empty tuple/list output from model.")
+        if torch.is_tensor(out[0]):
+            return out[0]
+        raise RuntimeError(f"Tuple/list output[0] is not a tensor: type(out[0])={type(out[0])}")
+    raise RuntimeError(f"Unsupported model output type: {type(out)}")
+
+
+# -------------------- evaluation --------------------
+@torch.no_grad()
+def eval_full(model: torch.nn.Module, loader: DataLoader, device: torch.device) -> Tuple[np.ndarray, np.ndarray]:
+    y_true, y_pred = [], []
+    for batch in loader:
+        xb, yb = _unpack_xy(batch)
+        xb = xb.to(device, non_blocking=True)
+        yb = yb.to(device, non_blocking=True)
+        out = model(xb)
+        logits = _extract_logits(out)
+        pred = logits.argmax(dim=1)
+        y_true.append(yb.detach().cpu().numpy())
+        y_pred.append(pred.detach().cpu().numpy())
+    return np.concatenate(y_true), np.concatenate(y_pred)
+
+
+def _get_module(model: torch.nn.Module, names) -> Optional[torch.nn.Module]:
+    for n in names:
+        if hasattr(model, n):
+            return getattr(model, n)
+    return None
+
+
+def _get_embeddings(model: torch.nn.Module, x: torch.Tensor) -> Tuple[torch.Tensor, torch.Tensor]:
+    cache = {}
+    t_proj = _get_module(model, ["t_proj", "time_proj", "proj_t"])
+    f_proj = _get_module(model, ["f_proj", "freq_proj", "proj_f"])
+    if t_proj is None or f_proj is None:
+        raise AttributeError("Model has no t_proj/f_proj (cannot do branch-only eval).")
+
+    def hook_t(_m, _inp, out): cache["t"] = out
+    def hook_f(_m, _inp, out): cache["f"] = out
+
+    ht = t_proj.register_forward_hook(hook_t)
+    hf = f_proj.register_forward_hook(hook_f)
+    _ = model(x)
+    ht.remove(); hf.remove()
+
+    return cache["t"], cache["f"]
+
+
+@torch.no_grad()
+def eval_branch_only(model: torch.nn.Module, loader: DataLoader, device: torch.device, branch: str) -> Tuple[np.ndarray, np.ndarray]:
+    assert branch in ["time", "freq"]
+    core = _get_backbone(model)
+    fuse = _get_module(core, ["fuse", "fusion", "feat_fuse"])
+    head = _get_module(core, ["cls_head", "classifier", "head"])
+    if fuse is None or head is None:
+        raise AttributeError("Model has no fuse/head (cannot do branch-only eval).")
+
+    y_true, y_pred = [], []
+    for batch in loader:
+        xb, yb = _unpack_xy(batch)
+        xb = xb.to(device, non_blocking=True)
+        yb = yb.to(device, non_blocking=True)
+
+        # Prefer return_aux path for modern model interfaces.
+        rho = None
+        dac_local = None
+        pa_local = None
+        out_aux = None
+        try:
+            out_aux = core(xb, return_aux=True)
+        except TypeError:
+            out_aux = None
+
+        if isinstance(out_aux, dict) and torch.is_tensor(out_aux.get("t_emb")) and torch.is_tensor(out_aux.get("f_emb")):
+            t_emb = out_aux["t_emb"]
+            f_emb = out_aux["f_emb"]
+            rho = out_aux.get("rho", None)
+            dac_local = out_aux.get("dac_local", None)
+            pa_local = out_aux.get("pa_local", None)
+        else:
+            # backward-compatible fallback
+            t_emb, f_emb = _get_embeddings(core, xb)
+            if getattr(core, "use_circularity", False) and hasattr(core, "_mirror_compressed_features"):
+                try:
+                    _feat_f, rho, _f_stats, _p_stats = core._mirror_compressed_features(xb)
+                except Exception:
+                    rho = None
+
+        if branch == "time":
+            f_emb = torch.zeros_like(f_emb)
+        else:
+            t_emb = torch.zeros_like(t_emb)
+
+        if rho is not None and torch.is_tensor(rho):
+            base_in = torch.cat([t_emb, f_emb, rho], dim=1)
+        else:
+            base_in = torch.cat([t_emb, f_emb], dim=1)
+
+        feat = fuse(base_in)
+
+        # New classifier head may require DAC/PA embeddings.
+        if torch.is_tensor(dac_local):
+            dac_zero = torch.zeros_like(dac_local)
+        else:
+            dac_zero = torch.zeros_like(feat)
+        if torch.is_tensor(pa_local):
+            pa_zero = torch.zeros_like(pa_local)
+        else:
+            pa_zero = torch.zeros_like(feat)
+
+        try:
+            out = head(feat, dac_local=dac_zero, pa_local=pa_zero, labels=None, return_emb=False)
+        except TypeError:
+            out = head(feat)  # legacy head
+
+        logits = _extract_logits(out)
+        pred = logits.argmax(dim=1)
+
+        y_true.append(yb.detach().cpu().numpy())
+        y_pred.append(pred.detach().cpu().numpy())
+
+    return np.concatenate(y_true), np.concatenate(y_pred)
+
+
+# -------------------- plotting helpers (PNG if mpl else SVG) --------------------
+_PALETTE = [
+    "#1f77b4", "#ff7f0e", "#2ca02c", "#d62728", "#9467bd", "#8c564b",
+    "#e377c2", "#7f7f7f", "#bcbd22", "#17becf", "#393b79", "#637939",
+    "#8c6d31", "#8DFF582A", "#7b4173", "#3182bd", "#31a354", "#756bb1",
+    "#636363", "#e6550d", "#969696", "#9c9ede", "#cedb9c", "#F2944313"
+]
+
+
+def _svg_escape(s: str) -> str:
+    return s.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
+
+
+def save_confusion_matrix_image(cm: np.ndarray, out_path_base: str, title: str = "Confusion Matrix"):
+    """
+    Save confusion matrix heatmap:
+    - if matplotlib available -> PNG
+    - else -> SVG
+    """
+    n = cm.shape[0]
+    cm_max = float(cm.max()) if cm.size else 1.0
+    if cm_max <= 0:
+        cm_max = 1.0
+
+    if _HAS_MPL:
+        plt.figure(figsize=(9, 8))
+        plt.imshow(cm, aspect="auto")
+        plt.title(title)
+        plt.xlabel("Predicted")
+        plt.ylabel("True")
+        plt.colorbar()
+        step = max(1, n // 16)
+        ticks = np.arange(0, n, step)
+        plt.xticks(ticks, ticks)
+        plt.yticks(ticks, ticks)
+        plt.tight_layout()
+        plt.savefig(out_path_base + ".png", dpi=200)
+        plt.close()
+        return
+
+    # SVG fallback
+    W, H = 900, 820
+    pad_l, pad_t, pad_r, pad_b = 80, 60, 40, 60
+    grid_w = W - pad_l - pad_r
+    grid_h = H - pad_t - pad_b
+    cell_w = grid_w / n
+    cell_h = grid_h / n
+
+    def gray(v):
+        # map 0..cm_max -> 255..0
+        t = max(0.0, min(1.0, v / cm_max))
+        g = int(round(255 * (1 - t)))
+        return f"rgb({g},{g},{g})"
+
+    parts = []
+    parts.append(f'<svg xmlns="http://www.w3.org/2000/svg" width="{W}" height="{H}">')
+    parts.append(f'<rect x="0" y="0" width="{W}" height="{H}" fill="white"/>')
+    parts.append(f'<text x="{W/2}" y="30" text-anchor="middle" font-size="18" font-family="Arial">{_svg_escape(title)}</text>')
+
+    # cells
+    for i in range(n):
+        for j in range(n):
+            x = pad_l + j * cell_w
+            y = pad_t + i * cell_h
+            parts.append(f'<rect x="{x:.2f}" y="{y:.2f}" width="{cell_w:.2f}" height="{cell_h:.2f}" fill="{gray(float(cm[i,j]))}" stroke="white" stroke-width="0.5"/>')
+
+    parts.append(f'<text x="{W/2}" y="{H-20}" text-anchor="middle" font-size="14" font-family="Arial">Predicted</text>')
+    parts.append(f'<text x="20" y="{H/2}" text-anchor="middle" font-size="14" font-family="Arial" transform="rotate(-90 20 {H/2})">True</text>')
+    parts.append("</svg>")
+
+    with open(out_path_base + ".svg", "w", encoding="utf-8") as f:
+        f.write("\n".join(parts))
+
+
+def save_scatter_pca_svg(xy: np.ndarray, color_idx: np.ndarray, out_svg: str, title: str):
+    """
+    Minimal SVG scatter (no external deps).
+    xy: (N,2)
+    color_idx: (N,) integers -> palette
+    """
+    W, H = 1100, 700
+    pad = 60
+
+    x = xy[:, 0]
+    y = xy[:, 1]
+    xmin, xmax = float(x.min()), float(x.max())
+    ymin, ymax = float(y.min()), float(y.max())
+    if xmax - xmin < 1e-12:
+        xmax = xmin + 1.0
+    if ymax - ymin < 1e-12:
+        ymax = ymin + 1.0
+
+    def tx(v):
+        return pad + (v - xmin) / (xmax - xmin) * (W - 2 * pad)
+
+    def ty(v):
+        # invert y for screen
+        return H - pad - (v - ymin) / (ymax - ymin) * (H - 2 * pad)
+
+    parts = []
+    parts.append(f'<svg xmlns="http://www.w3.org/2000/svg" width="{W}" height="{H}">')
+    parts.append(f'<rect x="0" y="0" width="{W}" height="{H}" fill="white"/>')
+    parts.append(f'<text x="{W/2}" y="30" text-anchor="middle" font-size="18" font-family="Arial">{_svg_escape(title)}</text>')
+    parts.append(f'<rect x="{pad}" y="{pad}" width="{W-2*pad}" height="{H-2*pad}" fill="none" stroke="#333" stroke-width="1"/>')
+
+    # points
+    N = xy.shape[0]
+    r = 2.0 if N <= 6000 else 1.5
+    op = 0.55 if N <= 6000 else 0.35
+    for i in range(N):
+        c = _PALETTE[int(color_idx[i]) % len(_PALETTE)]
+        parts.append(f'<circle cx="{tx(x[i]):.2f}" cy="{ty(y[i]):.2f}" r="{r}" fill="{c}" fill-opacity="{op}"/>')
+
+    parts.append("</svg>")
+
+    with open(out_svg, "w", encoding="utf-8") as f:
+        f.write("\n".join(parts))
+
+
+def save_scatter_pca_png(xy: np.ndarray, color_idx: np.ndarray, out_png: str, title: str):
+    if not _HAS_MPL:
+        return
+    plt.figure(figsize=(11, 6))
+    # simple palette mapping
+    colors = [ _PALETTE[int(i) % len(_PALETTE)] for i in color_idx ]
+    plt.scatter(xy[:, 0], xy[:, 1], s=6, c=colors, alpha=0.55, linewidths=0)
+    plt.title(title)
+    plt.xlabel("PC1")
+    plt.ylabel("PC2")
+    plt.tight_layout()
+    plt.savefig(out_png, dpi=200)
+    plt.close()
+
+
+def save_scatter_tsne_png(xy: np.ndarray, color_idx: np.ndarray, out_png: str, title: str):
+    """t-SNE scatter (PNG)"""
+    if not _HAS_MPL:
+        return
+    plt.figure(figsize=(11, 6))
+    colors = [_PALETTE[int(i) % len(_PALETTE)] for i in color_idx]
+    plt.scatter(xy[:, 0], xy[:, 1], s=6, c=colors, alpha=0.55, linewidths=0)
+    plt.title(title)
+    plt.xlabel("t-SNE1")
+    plt.ylabel("t-SNE2")
+    plt.tight_layout()
+    plt.savefig(out_png, dpi=200)
+    plt.close()
+
+
+def save_scatter_tsne_svg(xy: np.ndarray, color_idx: np.ndarray, out_svg: str, title: str):
+    """t-SNE scatter (SVG) - reuse minimal SVG painter (no axis labels)."""
+    save_scatter_pca_svg(xy, color_idx, out_svg, title)
+
+
+# -------------------- saliency --------------------
+def _pos_hz_axis(L: int, fs: float) -> np.ndarray:
+    return np.arange(L // 2 + 1) * (fs / L)
+
+
+def saliency_explain(
+    model: torch.nn.Module,
+    loader: DataLoader,
+    device: torch.device,
+    max_samples: int,
+    out_dir: str,
+    sample_rate_hz: float,
+):
+    """
+    淇濆瓨锛?      - time_importance_full.npy
+      - freq_importance_fullfft_full.npy
+      - mirror_asymmetry_full.npy
+    濡傛灉 matplotlib 鍙敤锛屽啀棰濆淇濆瓨 png 鍥俱€?    """
+    time_sum = None
+    freq_sum = None
+    seen = 0
+
+    for batch in loader:
+        xb, yb = _unpack_xy(batch)
+        if seen >= max_samples:
+            break
+
+        xb = xb.to(device)
+        yb = yb.to(device)
+
+        take = min(xb.size(0), max_samples - seen)
+        xb = xb[:take].contiguous().detach()
+        yb = yb[:take].contiguous()
+
+        xb.requires_grad_(True)
+        model.zero_grad(set_to_none=True)
+
+        logits = model(xb)
+        sel = logits.gather(1, yb.view(-1, 1)).sum()
+        sel.backward()
+
+        g = xb.grad.detach()  # (B,2,L)
+        g_abs = g.abs().sum(dim=1)               # (B,L)
+        t_imp = g_abs.sum(dim=0).cpu().numpy()   # (L,)
+
+        g_c = torch.complex(g[:, 0, :], g[:, 1, :])  # (B,L)
+        G = torch.fft.fft(g_c, dim=-1)               # (B,L)
+        f_imp = torch.abs(G).sum(dim=0).cpu().numpy()  # (L,)
+
+        if time_sum is None:
+            time_sum = t_imp
+            freq_sum = f_imp
+        else:
+            time_sum += t_imp
+            freq_sum += f_imp
+
+        seen += take
+
+    time_avg = time_sum / max(1, seen)
+    freq_avg = freq_sum / max(1, seen)
+
+    np.save(os.path.join(out_dir, "time_importance_full.npy"), time_avg)
+    np.save(os.path.join(out_dir, "freq_importance_fullfft_full.npy"), freq_avg)
+
+    L = len(freq_avg)
+    ks = np.arange(1, L // 2)
+    pos = freq_avg[ks]
+    neg = freq_avg[L - ks]
+    asym = np.abs(pos - neg) / (pos + neg + 1e-12)
+    np.save(os.path.join(out_dir, "mirror_asymmetry_full.npy"), asym)
+
+    print(f"[SAL] saved npy (samples_used={seen})", flush=True)
+
+    if _HAS_MPL:
+        # time plot
+        plt.figure(figsize=(11, 3))
+        plt.plot(time_avg)
+        plt.title("Time importance (|dlogit/dx|) [full]")
+        plt.xlabel("sample index"); plt.ylabel("avg importance")
+        plt.tight_layout()
+        plt.savefig(os.path.join(out_dir, "time_importance_full.png"), dpi=200)
+        plt.close()
+
+        # freq plot (pos)
+        f_pos = freq_avg[: (L // 2 + 1)]
+        hz_mhz = _pos_hz_axis(L, float(sample_rate_hz)) / 1e6
+        plt.figure(figsize=(11, 3))
+        plt.plot(hz_mhz, f_pos)
+        plt.title("Frequency importance (|FFT(grad)|) [full]")
+        plt.xlabel("frequency (MHz)"); plt.ylabel("avg importance")
+        plt.tight_layout()
+        plt.savefig(os.path.join(out_dir, "freq_importance_full.png"), dpi=200)
+        plt.close()
+
+        # asym plot
+        plt.figure(figsize=(11, 3))
+        plt.plot(hz_mhz[1:L//2], asym)
+        plt.title("Mirror-frequency asymmetry |pos-neg|/(pos+neg) [full]")
+        plt.xlabel("frequency (MHz)"); plt.ylabel("asymmetry")
+        plt.ylim(0, 1.0)
+        plt.tight_layout()
+        plt.savefig(os.path.join(out_dir, "mirror_asymmetry_full.png"), dpi=200)
+        plt.close()
+    else:
+        print("[SAL] matplotlib not found -> skip png plotting (only .npy saved).", flush=True)
+
+
+# -------------------- NEW: clustering distribution --------------------
+def _pca_2d(X: np.ndarray) -> Tuple[np.ndarray, np.ndarray]:
+    """
+    PCA to 2D using SVD. Returns (coords2d, components2xD)
+    """
+    X = X.astype(np.float64, copy=False)
+    Xc = X - X.mean(axis=0, keepdims=True)
+    # SVD: Xc = U S Vt
+    # components are rows of Vt
+    _, _, Vt = np.linalg.svd(Xc, full_matrices=False)
+    comps = Vt[:2, :]
+    coords = Xc @ comps.T
+    return coords.astype(np.float32), comps.astype(np.float32)
+
+
+def _kmeans_np(X: np.ndarray, k: int, iters: int = 30, seed: int = 0) -> Tuple[np.ndarray, np.ndarray]:
+    """
+    Simple KMeans (L2) in numpy.
+    Returns: (assignments N,), (centers kxD)
+    """
+    rng = np.random.default_rng(seed)
+    N, D = X.shape
+    k = int(max(1, min(k, N)))
+
+    # init centers: choose random points
+    idx = rng.choice(N, size=k, replace=False)
+    centers = X[idx].copy()
+
+    for _ in range(iters):
+        # assign
+        # dist^2 = ||x||^2 + ||c||^2 - 2 x路c
+        x2 = np.sum(X * X, axis=1, keepdims=True)         # Nx1
+        c2 = np.sum(centers * centers, axis=1)[None, :]   # 1xk
+        dist = x2 + c2 - 2.0 * (X @ centers.T)            # Nxk
+        a = np.argmin(dist, axis=1)
+
+        # update
+        new_centers = np.zeros_like(centers)
+        counts = np.zeros((k,), dtype=np.int64)
+        for i in range(N):
+            new_centers[a[i]] += X[i]
+            counts[a[i]] += 1
+        for j in range(k):
+            if counts[j] > 0:
+                new_centers[j] /= counts[j]
+            else:
+                # re-init empty cluster
+                new_centers[j] = X[rng.integers(0, N)]
+        centers = new_centers
+
+    # final assign
+    x2 = np.sum(X * X, axis=1, keepdims=True)
+    c2 = np.sum(centers * centers, axis=1)[None, :]
+    dist = x2 + c2 - 2.0 * (X @ centers.T)
+    a = np.argmin(dist, axis=1)
+    return a.astype(np.int32), centers.astype(np.float32)
+
+
+@torch.no_grad()
+def _extract_features_logits_preds(
+    model: torch.nn.Module, x: torch.Tensor
+) -> Tuple[torch.Tensor, torch.Tensor, torch.Tensor]:
+    """
+    Try to extract penultimate features:
+    - if model has cls_head/classifier/head: capture its input via pre-hook as feature
+    - else fallback feature = logits
+    returns: (feat, logits, pred)
+    """
+    core = _get_backbone(model)
+    head = _get_module(core, ["cls_head", "classifier", "head"])
+    cache = {}
+
+    h = None
+    if head is not None:
+        def pre_hook(_m, inp):
+            # inp is tuple, first is feature
+            cache["feat"] = inp[0].detach()
+        h = head.register_forward_pre_hook(pre_hook)
+
+    out = core(x)
+    logits = _extract_logits(out)
+    if h is not None:
+        h.remove()
+
+    feat = cache.get("feat", logits.detach())
+    pred = logits.argmax(dim=1)
+    return feat.detach(), logits.detach(), pred.detach()
+
+
+def clustering_distribution(
+    model: torch.nn.Module,
+    loader: DataLoader,
+    device: torch.device,
+    out_dir: str,
+    max_samples: int,
+    k: int,
+    seed: int,
+    iters: int,
+):
+    """
+    Outputs:
+      - cluster_features.npy (N,D)
+      - cluster_pca2d.npy (N,2)
+      - cluster_true.npy / cluster_pred.npy / cluster_id.npy
+      - cluster_counts_true.csv (C x K)
+      - cluster_summary.txt
+      - cluster_pca_true.(png/svg)
+      - cluster_pca_pred.(png/svg)
+      - cluster_pca_cluster.(png/svg)
+    """
+    feats_list = []
+    y_list = []
+    p_list = []
+    used = 0
+
+    for batch in loader:
+        xb, yb = _unpack_xy(batch)
+        if used >= max_samples:
+            break
+        take = min(xb.size(0), max_samples - used)
+        xb = xb[:take].to(device, non_blocking=True)
+        yb = yb[:take].to(device, non_blocking=True)
+
+        feat, _logits, pred = _extract_features_logits_preds(model, xb)
+
+        feats_list.append(feat.cpu().numpy())
+        y_list.append(yb.cpu().numpy())
+        p_list.append(pred.cpu().numpy())
+        used += take
+
+    X = np.concatenate(feats_list, axis=0)
+    y = np.concatenate(y_list, axis=0).astype(np.int64)
+    p = np.concatenate(p_list, axis=0).astype(np.int64)
+
+    # normalize features helps clustering
+    Xn = X.astype(np.float32, copy=False)
+    norm = np.linalg.norm(Xn, axis=1, keepdims=True) + 1e-12
+    Xn = Xn / norm
+
+    coords, comps = _pca_2d(Xn)
+    cid, centers = _kmeans_np(Xn, k=int(k), iters=int(iters), seed=int(seed))
+
+    np.save(os.path.join(out_dir, "cluster_features.npy"), Xn)
+    np.save(os.path.join(out_dir, "cluster_pca2d.npy"), coords)
+    np.save(os.path.join(out_dir, "cluster_true.npy"), y)
+    np.save(os.path.join(out_dir, "cluster_pred.npy"), p)
+    np.save(os.path.join(out_dir, "cluster_id.npy"), cid)
+    np.save(os.path.join(out_dir, "cluster_pca_components.npy"), comps)
+    np.save(os.path.join(out_dir, "cluster_centers.npy"), centers)
+
+    C = int(max(y.max(), p.max()) + 1)
+    K = int(max(cid.max() + 1, 1))
+
+    # counts: C x K
+    counts_true = np.zeros((C, K), dtype=np.int64)
+    counts_pred = np.zeros((C, K), dtype=np.int64)
+    np.add.at(counts_true, (y, cid), 1)
+    np.add.at(counts_pred, (p, cid), 1)
+
+    np.savetxt(os.path.join(out_dir, "cluster_counts_true.csv"), counts_true, fmt="%d", delimiter=",")
+    np.savetxt(os.path.join(out_dir, "cluster_counts_pred.csv"), counts_pred, fmt="%d", delimiter=",")
+
+    # cluster purity summary
+    lines = []
+    lines.append(f"samples_used={used}")
+    lines.append(f"feature_dim={Xn.shape[1]}")
+    lines.append(f"kmeans_k={K} iters={iters} seed={seed}")
+    lines.append("")
+    lines.append("Cluster summary (by TRUE label):")
+    total_correct = 0
+    for j in range(K):
+        idx = np.where(cid == j)[0]
+        if idx.size == 0:
+            lines.append(f"  cluster {j:02d}: size=0")
+            continue
+        vals, cnts = np.unique(y[idx], return_counts=True)
+        best_i = int(np.argmax(cnts))
+        maj = int(vals[best_i])
+        maj_cnt = int(cnts[best_i])
+        purity = maj_cnt / max(1, idx.size)
+        total_correct += maj_cnt
+        lines.append(f"  cluster {j:02d}: size={idx.size:5d}  majority_true={maj:2d}  majority_cnt={maj_cnt:5d}  purity={purity:.3f}")
+    overall_purity = total_correct / max(1, used)
+    lines.append("")
+    lines.append(f"Overall purity (sum majority / N): {overall_purity:.4f}")
+    with open(os.path.join(out_dir, "cluster_summary.txt"), "w", encoding="utf-8") as f:
+        f.write("\n".join(lines))
+
+    print(f"[CLUSTER] saved clustering outputs (samples_used={used}, K={K}, purity={overall_purity:.4f})", flush=True)
+
+    # plots
+    # true label plot
+    if _HAS_MPL:
+        save_scatter_pca_png(coords, y, os.path.join(out_dir, "cluster_pca_true.png"), "PCA(2D) colored by TRUE label")
+        save_scatter_pca_png(coords, p, os.path.join(out_dir, "cluster_pca_pred.png"), "PCA(2D) colored by PRED label")
+        save_scatter_pca_png(coords, cid, os.path.join(out_dir, "cluster_pca_cluster.png"), "PCA(2D) colored by KMeans cluster")
+    else:
+        save_scatter_pca_svg(coords, y, os.path.join(out_dir, "cluster_pca_true.svg"), "PCA(2D) colored by TRUE label")
+        save_scatter_pca_svg(coords, p, os.path.join(out_dir, "cluster_pca_pred.svg"), "PCA(2D) colored by PRED label")
+        save_scatter_pca_svg(coords, cid, os.path.join(out_dir, "cluster_pca_cluster.svg"), "PCA(2D) colored by KMeans cluster")
+        print("[CLUSTER] matplotlib not found -> saved SVG plots instead of PNG.", flush=True)
+
+
+# -------------------- NEW: t-SNE visualization --------------------
+def _forward_return_aux_if_possible(model: torch.nn.Module, x: torch.Tensor) -> Optional[Any]:
+    """Try forward(..., return_aux=True) / forward(..., return_dict=True) for feature extraction."""
+    core = _get_backbone(model)
+    try:
+        sig = inspect.signature(core.forward)
+    except Exception:
+        return None
+
+    if "return_aux" not in sig.parameters:
+        return None
+
+    kwargs = {"return_aux": True}
+    # keep compatibility with different forward signatures
+    if "y" in sig.parameters:
+        kwargs["y"] = None
+    if "labels" in sig.parameters:
+        kwargs["labels"] = None
+    if "y_tx" in sig.parameters:
+        kwargs["y_tx"] = None
+    try:
+        return core(x, **kwargs)
+    except Exception:
+        return None
+
+
+@torch.no_grad()
+def _extract_features_for_vis(
+    model: torch.nn.Module,
+    x: torch.Tensor,
+    feat_mode: str = "feat_cls",
+) -> Tuple[torch.Tensor, torch.Tensor, torch.Tensor]:
+    """
+    feat_mode:
+      - 'base'     : penultimate feature (captured from head input)
+      - 'feat_cls' : model-returned feature (if return_aux supported)
+      - 'feat_con' : model-returned contrastive feature (if return_aux supported)
+    Falls back to 'base' if selected feature is not available.
+    """
+    feat_mode = (feat_mode or "base").lower()
+
+    if feat_mode in ("feat_cls", "feat_con"):
+        out = _forward_return_aux_if_possible(model, x)
+        if isinstance(out, dict):
+            if feat_mode in out and torch.is_tensor(out[feat_mode]):
+                logits = _extract_logits(out)
+                pred = logits.argmax(dim=1)
+                return out[feat_mode].detach(), logits.detach(), pred.detach()
+            aux_id = out.get("aux_id", None)
+            if isinstance(aux_id, dict) and feat_mode in aux_id and torch.is_tensor(aux_id[feat_mode]):
+                logits = _extract_logits(out)
+                pred = logits.argmax(dim=1)
+                return aux_id[feat_mode].detach(), logits.detach(), pred.detach()
+
+    # fallback: capture head input as base embedding
+    return _extract_features_logits_preds(model, x)
+
+
+def _balanced_subsample_indices(y: np.ndarray, max_n: int, seed: int = 0) -> np.ndarray:
+    """Balanced subsample across classes to make t-SNE plots more interpretable."""
+    y = y.astype(np.int64, copy=False)
+    N = y.shape[0]
+    max_n = int(min(max(1, max_n), N))
+    rng = np.random.default_rng(seed)
+    classes = np.unique(y)
+    C = int(len(classes))
+    if C <= 1:
+        idx = np.arange(N)
+        if idx.size > max_n:
+            idx = rng.choice(idx, size=max_n, replace=False)
+        return np.sort(idx)
+
+    per = int(math.ceil(max_n / C))
+    picked = []
+    for c in classes:
+        ids = np.where(y == c)[0]
+        if ids.size == 0:
+            continue
+        take = min(per, ids.size)
+        choose = rng.choice(ids, size=take, replace=False)
+        picked.append(choose)
+    idx = np.concatenate(picked, axis=0) if picked else np.arange(N)
+    if idx.size > max_n:
+        idx = rng.choice(idx, size=max_n, replace=False)
+    return np.sort(idx)
+
+
+def tsne_visualization(
+    model: torch.nn.Module,
+    loader: DataLoader,
+    device: torch.device,
+    out_dir: str,
+    feat_mode: str,
+    max_tsne: int,
+    perplexity: float,
+    n_iter: int,
+    pca_dim: int,
+    seed: int,
+    n_jobs: int = 1,
+):
+    """
+    Save:
+      - tsne_features.npy (N,D)
+      - tsne_true.npy / tsne_pred.npy
+      - tsne_2d.npy
+      - tsne_true.(png/svg), tsne_pred.(png/svg)
+    """
+    if not _HAS_SKLEARN:
+        print("[TSNE] scikit-learn not found -> skip t-SNE.", flush=True)
+        return
+
+    # collect a bit more than max_tsne for balanced subsample
+    max_collect = int(min(max_tsne * 3, max_tsne + 8000))
+
+    feats_list, y_list, p_list = [], [], []
+    used = 0
+    for batch in loader:
+        xb, yb = _unpack_xy(batch)
+        if used >= max_collect:
+            break
+        take = min(xb.size(0), max_collect - used)
+        xb = xb[:take].to(device, non_blocking=True)
+        yb = yb[:take].to(device, non_blocking=True)
+
+        feat, _logits, pred = _extract_features_for_vis(model, xb, feat_mode=feat_mode)
+        feats_list.append(feat.detach().cpu().float().numpy())
+        y_list.append(yb.detach().cpu().numpy())
+        p_list.append(pred.detach().cpu().numpy())
+        used += take
+
+    if not feats_list:
+        print("[TSNE] no samples collected -> skip.", flush=True)
+        return
+
+    X = np.concatenate(feats_list, axis=0).astype(np.float32, copy=False)
+    y = np.concatenate(y_list, axis=0).astype(np.int64, copy=False)
+    p = np.concatenate(p_list, axis=0).astype(np.int64, copy=False)
+
+    # L2 normalize improves distance geometry for TSNE
+    norm = np.linalg.norm(X, axis=1, keepdims=True) + 1e-12
+    X = X / norm
+
+    idx = _balanced_subsample_indices(y, max_n=max_tsne, seed=seed)
+    Xs, ys, ps = X[idx], y[idx], p[idx]
+
+    # perplexity must be < n_samples
+    n = Xs.shape[0]
+    per = float(perplexity)
+    if n <= 5:
+        print(f"[TSNE] too few points (n={n}) -> skip.", flush=True)
+        return
+    per = min(per, max(2.0, (n - 1) / 3.0))
+
+    X_in = Xs
+    if int(pca_dim) > 0 and X_in.shape[1] > int(pca_dim):
+        n_comp = min(int(pca_dim), X_in.shape[1])
+        X_in = _SKPCA(n_components=n_comp, random_state=seed).fit_transform(X_in)
+
+    print(f"[TSNE] running t-SNE on n={n}, dim_in={X_in.shape[1]}, perplexity={per:.2f}, iters={n_iter}, feat={feat_mode}", flush=True)
+
+    tsne = TSNE(
+        n_components=2,
+        perplexity=per,
+        learning_rate="auto",
+        n_iter=int(n_iter),
+        init="pca",
+        random_state=int(seed),
+        verbose=1,
+        method="barnes_hut",
+        angle=0.5,
+        n_jobs=(None if int(n_jobs) == 0 else int(n_jobs)),
+    )
+    xy = tsne.fit_transform(X_in).astype(np.float32)
+
+    np.save(os.path.join(out_dir, "tsne_features.npy"), Xs)
+    np.save(os.path.join(out_dir, "tsne_true.npy"), ys)
+    np.save(os.path.join(out_dir, "tsne_pred.npy"), ps)
+    np.save(os.path.join(out_dir, "tsne_2d.npy"), xy)
+    np.save(os.path.join(out_dir, "tsne_indices.npy"), idx)
+
+    title_base = f"t-SNE(2D) feat={feat_mode} n={n} per={per:.1f}"
+    if _HAS_MPL:
+        save_scatter_tsne_png(xy, ys, os.path.join(out_dir, "tsne_true.png"), title_base + " | TRUE")
+        save_scatter_tsne_png(xy, ps, os.path.join(out_dir, "tsne_pred.png"), title_base + " | PRED")
+    else:
+        save_scatter_tsne_svg(xy, ys, os.path.join(out_dir, "tsne_true.svg"), title_base + " | TRUE")
+        save_scatter_tsne_svg(xy, ps, os.path.join(out_dir, "tsne_pred.svg"), title_base + " | PRED")
+
+    print(f"[TSNE] saved to {out_dir}", flush=True)
+
+
+# -------------------- main --------------------
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--weights", type=str, default=WEIGHTS_PATH)
+    parser.add_argument("--dataset", type=str, default=DATASET_TYPE, choices=["wisig", "oralce"])
+    parser.add_argument("--data", type=str, default=DATASET_DIR)
+    parser.add_argument("--run_name", type=str, default="run1")
+    parser.add_argument("--input_len_oralce", type=int, default=INPUT_LEN_ORALCE)
+    parser.add_argument("--sample_rate_hz", type=float, default=0.0)
+    parser.add_argument("--model_size", type=str, default=MODEL_SIZE)
+    parser.add_argument("--num_classes", type=int, default=16)
+    parser.add_argument("--num_domains", type=int, default=1)
+    parser.add_argument("--force_single_model", action="store_true")
+    parser.add_argument("--force_dual_model", action="store_true")
+    parser.add_argument("--detach_imp_gate", dest="detach_imp_gate", action="store_true")
+    parser.add_argument("--no_detach_imp_gate", dest="detach_imp_gate", action="store_false")
+    parser.set_defaults(detach_imp_gate=True)
+    parser.add_argument("--disable_freq_stats_to_shared", dest="disable_freq_stats_to_shared", action="store_true")
+    parser.add_argument("--enable_freq_stats_to_shared", dest="disable_freq_stats_to_shared", action="store_false")
+    parser.set_defaults(disable_freq_stats_to_shared=True)
+
+    parser.add_argument("--wisig_pkl", type=str, default="./Dataset_WigSig/ManySig.pkl")
+    parser.add_argument("--wisig_equalized", type=str, default="1")
+    parser.add_argument("--wisig_domain", type=str, default="day", choices=["day", "rx", "rx_day"])
+    parser.add_argument("--wisig_out_len", type=int, default=256)
+    parser.add_argument("--wisig_train_ratio", type=float, default=0.8)
+    parser.add_argument("--wisig_train_days", type=str, default="0,1,2")
+    parser.add_argument("--wisig_full_test_days", type=str, default="3")
+    parser.add_argument("--wisig_max_train_per_combo", type=int, default=0)
+    parser.add_argument("--wisig_max_test_per_combo", type=int, default=0)
+    parser.add_argument("--seed", type=int, default=1337)
+
+    parser.add_argument("--out", type=str, default=OUT_DIR)
+    parser.add_argument("--batch_size", type=int, default=BATCH_SIZE)
+    parser.add_argument("--workers", type=int, default=NUM_WORKERS)
+    parser.add_argument("--max_saliency", type=int, default=MAX_SALIENCY_SAMPLES)
+
+    # NEW: clustering args
+    parser.add_argument("--max_cluster", type=int, default=MAX_CLUSTER_SAMPLES)
+    parser.add_argument("--cluster_k", type=int, default=CLUSTER_K)
+    parser.add_argument("--cluster_seed", type=int, default=CLUSTER_SEED)
+    parser.add_argument("--kmeans_iters", type=int, default=KMEANS_ITERS)
+
+    # NEW: t-SNE args
+    parser.add_argument("--tsne", action="store_true", help="Run t-SNE visualization (requires scikit-learn).")
+    parser.add_argument("--max_tsne", type=int, default=MAX_TSNE_SAMPLES)
+    parser.add_argument("--tsne_feat", type=str, default=TSNE_FEAT, choices=["base", "feat_cls", "feat_con"])
+    parser.add_argument("--tsne_perplexity", type=float, default=TSNE_PERPLEXITY)
+    parser.add_argument("--tsne_iters", type=int, default=TSNE_ITERS)
+    parser.add_argument("--tsne_pca_dim", type=int, default=TSNE_PCA_DIM)
+    parser.add_argument("--tsne_seed", type=int, default=TSNE_SEED)
+    parser.add_argument("--tsne_n_jobs", type=int, default=1, help="TSNE n_jobs; set -1 for all cores, 1 for single.")
+
+    args = parser.parse_args()
+
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    _ensure_dir(args.out)
+
+    dataset = str(args.dataset).lower()
+    sample_rate_hz = float(args.sample_rate_hz) if float(args.sample_rate_hz) > 0 else (25e6 if dataset == "wisig" else 5e6)
+    input_len = int(args.wisig_out_len) if dataset == "wisig" else int(args.input_len_oralce)
+
+    print(f"[CFG] weights={args.weights}", flush=True)
+    print(f"[CFG] dataset={dataset}", flush=True)
+    print(f"[CFG] data={args.data}", flush=True)
+    print(f"[CFG] out={args.out}", flush=True)
+    print(f"[CFG] device={device}", flush=True)
+    print(f"[CFG] sample_rate_hz={sample_rate_hz} input_len={input_len}", flush=True)
+
+    model = build_model_from_weights(
+        weights_path=args.weights,
+        device=device,
+        dataset=dataset,
+        model_size=str(args.model_size),
+        input_len=int(input_len),
+        sample_rate_hz=float(sample_rate_hz),
+        num_classes=int(args.num_classes),
+        num_domains=int(args.num_domains),
+        force_single=bool(args.force_single_model),
+        force_dual=bool(args.force_dual_model),
+        detach_imp_gate=bool(args.detach_imp_gate),
+        disable_freq_stats_to_shared=bool(args.disable_freq_stats_to_shared),
+    )
+    test_loader = make_test_loader(args, args.batch_size, args.workers, device)
+
+    # 1) Full evaluation
+    y_true, y_pred = eval_full(model, test_loader, device)
+    num_classes = max(
+        int(max(y_true.max(), y_pred.max()) + 1),
+        int(_infer_num_classes_from_sd(model.state_dict(), int(args.num_classes))),
+    )
+    cm = confusion_matrix_np(y_true, y_pred, num_classes)
+    acc = float((y_true == y_pred).mean() * 100.0)
+
+    print(f"[FULL] Acc = {acc:.2f}%", flush=True)
+    print("[FULL] Confusion matrix:\n", cm, flush=True)
+
+    report = classification_report_np(y_true, y_pred, num_classes)
+    print("[FULL] Classification report:\n", report, flush=True)
+
+    np.save(os.path.join(args.out, "confusion_matrix_full.npy"), cm)
+    np.savetxt(os.path.join(args.out, "confusion_matrix_full.txt"), cm, fmt="%d")
+    with open(os.path.join(args.out, "classification_report_full.txt"), "w", encoding="utf-8") as f:
+        f.write(report)
+
+    # Confusion matrix image (NEW)
+    save_confusion_matrix_image(
+        cm,
+        out_path_base=os.path.join(args.out, "confusion_matrix_full"),
+        title=f"Confusion Matrix (Acc={acc:.2f}%)"
+    )
+
+    # 2) Branch-only eval (optional)
+    try:
+        for branch in ["time", "freq"]:
+            yt, yp = eval_branch_only(model, test_loader, device, branch=branch)
+            nc = max(
+                int(max(yt.max(), yp.max()) + 1),
+                int(_infer_num_classes_from_sd(model.state_dict(), int(args.num_classes))),
+            )
+            cm_b = confusion_matrix_np(yt, yp, nc)
+            acc_b = float((yt == yp).mean() * 100.0)
+            print(f"[{branch.upper()}-ONLY] Acc = {acc_b:.2f}%", flush=True)
+
+            np.save(os.path.join(args.out, f"confusion_{branch}_only.npy"), cm_b)
+            np.savetxt(os.path.join(args.out, f"confusion_{branch}_only.txt"), cm_b, fmt="%d")
+            rep_b = classification_report_np(yt, yp, nc)
+            with open(os.path.join(args.out, f"classification_report_{branch}_only.txt"), "w", encoding="utf-8") as f:
+                f.write(rep_b)
+
+            # optional image
+            save_confusion_matrix_image(
+                cm_b,
+                out_path_base=os.path.join(args.out, f"confusion_{branch}_only"),
+                title=f"{branch.upper()}-ONLY Confusion (Acc={acc_b:.2f}%)"
+            )
+    except Exception as e:
+        print(f"[WARN] branch-only eval skipped: {e}", flush=True)
+
+    # 3) Saliency explanation (full)
+    saliency_explain(model, test_loader, device, args.max_saliency, args.out, sample_rate_hz=sample_rate_hz)
+
+    # 4) NEW: Clustering distribution plots
+    clustering_distribution(
+        model=model,
+        loader=test_loader,
+        device=device,
+        out_dir=args.out,
+        max_samples=args.max_cluster,
+        k=args.cluster_k,
+        seed=args.cluster_seed,
+        iters=args.kmeans_iters,
+    )
+
+    # 5) NEW: t-SNE visualization (optional)
+    if args.tsne:
+        tsne_visualization(
+            model=model,
+            loader=test_loader,
+            device=device,
+            out_dir=args.out,
+            feat_mode=args.tsne_feat,
+            max_tsne=args.max_tsne,
+            perplexity=args.tsne_perplexity,
+            n_iter=args.tsne_iters,
+            pca_dim=args.tsne_pca_dim,
+            seed=args.tsne_seed,
+            n_jobs=args.tsne_n_jobs,
+        )
+
+    print("[DONE] All results saved to:", os.path.abspath(args.out), flush=True)
+
+
+if __name__ == "__main__":
+    main()
+

@@ -24,6 +24,20 @@ from baselines.tifs2025_channel_receiver_rffi.losses import NTXentLoss, siamese_
 from baselines.tifs2025_channel_receiver_rffi.models import ProjectionHead, ResNetRFF, SiameseRFF
 
 
+def make_tifs_loader(dataset, *, batch_size: int, shuffle: bool, num_workers: int, drop_last: bool, prefetch_factor: int):
+    kwargs = {
+        "batch_size": int(batch_size),
+        "shuffle": bool(shuffle),
+        "num_workers": int(num_workers),
+        "drop_last": bool(drop_last),
+        "pin_memory": torch.cuda.is_available(),
+    }
+    if int(num_workers) > 0:
+        kwargs["persistent_workers"] = True
+        kwargs["prefetch_factor"] = max(1, int(prefetch_factor))
+    return DataLoader(dataset, **kwargs)
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description="TIFS2025 channel/receiver robust CVS training")
     add_cvs_data_args(parser)
@@ -44,6 +58,7 @@ def main() -> None:
     parser.add_argument("--sample_rate", type=float, default=1_000_000.0)
     parser.add_argument("--n_fft", type=int, default=128)
     parser.add_argument("--hop_length", type=int, default=64)
+    parser.add_argument("--pretrain_log_interval", type=int, default=100)
     parser.add_argument("--seed", type=int, default=1337)
     parser.add_argument("--device", type=str, default="cuda")
     parser.add_argument("--output_dir", type=str, default="baseline_runs/tifs2025_channel_receiver_rffi")
@@ -68,7 +83,14 @@ def main() -> None:
     backbone = ResNetRFF(num_classes=raw_split.num_classes, feature_dim=args.feature_dim).to(device)
     projector = ProjectionHead(in_dim=args.feature_dim, projection_dim=args.projection_dim).to(device)
     pretrain_ds = PretrainDataset(raw_split.train, augment=augment, spec_transform=spec)
-    pretrain_loader = DataLoader(pretrain_ds, batch_size=args.batch_size, shuffle=True, num_workers=args.num_workers, drop_last=True)
+    pretrain_loader = make_tifs_loader(
+        pretrain_ds,
+        batch_size=args.batch_size,
+        shuffle=True,
+        num_workers=args.num_workers,
+        drop_last=True,
+        prefetch_factor=args.prefetch_factor,
+    )
     pretrain_opt = torch.optim.Adam(list(backbone.parameters()) + list(projector.parameters()), lr=args.pretrain_lr)
     ntxent = NTXentLoss(temperature=args.temperature)
 
@@ -77,6 +99,15 @@ def main() -> None:
         projector.train()
         loss_sum = 0.0
         n_batches = 0
+        try:
+            total_batches = len(pretrain_loader)
+        except Exception:
+            total_batches = 0
+        print(
+            f"[PRETRAIN {epoch:03d}/{int(args.pretrain_epochs):03d}][START] "
+            f"batches={total_batches if total_batches else 'unknown'} batch_size={int(args.batch_size)}",
+            flush=True,
+        )
         for v1, v2 in pretrain_loader:
             x = torch.cat([v1, v2], dim=0).to(device)
             _, z = backbone(x)
@@ -86,6 +117,13 @@ def main() -> None:
             pretrain_opt.step()
             loss_sum += float(loss.detach().cpu())
             n_batches += 1
+            if int(args.pretrain_log_interval) > 0 and n_batches % int(args.pretrain_log_interval) == 0:
+                denom = total_batches if total_batches else "?"
+                print(
+                    f"[PRETRAIN {epoch:03d}/{int(args.pretrain_epochs):03d}]"
+                    f"[BATCH {n_batches}/{denom}] ntxent={loss_sum / max(1, n_batches):.4f}",
+                    flush=True,
+                )
         print(f"[PRETRAIN {epoch:03d}/{int(args.pretrain_epochs):03d}] ntxent={loss_sum / max(1, n_batches):.4f}", flush=True)
     torch.save(
         {"model": backbone.state_dict(), "projector": projector.state_dict(), "epoch": int(args.pretrain_epochs)},
@@ -98,7 +136,14 @@ def main() -> None:
         f"[TIFS-PAIRS] mode={pair_ds.pair_mode} aligned_pairs={pair_ds.aligned_pair_count} total_pairs={len(pair_ds)}",
         flush=True,
     )
-    pair_loader = DataLoader(pair_ds, batch_size=args.batch_size, shuffle=True, num_workers=args.num_workers, drop_last=True)
+    pair_loader = make_tifs_loader(
+        pair_ds,
+        batch_size=args.batch_size,
+        shuffle=True,
+        num_workers=args.num_workers,
+        drop_last=True,
+        prefetch_factor=args.prefetch_factor,
+    )
     opt = torch.optim.Adam(siamese.parameters(), lr=args.lr)
     plateau = ValidationLossPlateauController(
         opt,
