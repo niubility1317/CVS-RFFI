@@ -1,0 +1,28 @@
+sgc_v3:
+  scenario_dim: 16
+  num_experts: 5
+  adapter_rank: 16
+  adapter_hidden_dim: 128
+  epsilon_z: 0.02
+  logit_hidden_dim: 128
+  topk_only: 3
+  epsilon_logit: 0.5
+  high_conf_prob: 0.9
+  high_conf_margin: 1.0
+  uncertainty_margin: 0.5
+  uncertainty_entropy: 0.8
+  psc_cfo_betas: [0.0, 0.25, 0.5, -0.25, -0.5]
+  psc_shifts: [-1, 0, 1]
+  psc_envelope_gammas: [0.0, 0.15]
+
+loss:
+  clean_kl: 2.0
+  clean_feat: 1.0
+  clean_margin: 1.0
+  clean_gate: 1.0
+  pair_feat: 1.0
+  pair_logit: 1.0
+  proto: 0.5
+  sat_ce: 0.3
+  residual_z: 0.1
+  residual_logit: 0.1

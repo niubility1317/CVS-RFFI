@@ -1,0 +1,29 @@
+{
+  "baseline": "feature_separation_crossrx",
+  "paper_title": "Few-shot Cross-Receiver Radio Frequency Fingerprinting Identification Based on Feature Separation",
+  "protocol": "paper-original",
+  "dataset": "WiSig ManySig",
+  "input_representation": "3x256 I/Q plus Welch PSD",
+  "source_receivers": "two source receivers",
+  "target_receiver": "held-out target receiver",
+  "train_samples_per_transmitter": 30,
+  "fine_tune_samples_per_class": 25,
+  "target_day_split": "6:2:2",
+  "optimizer": "Adam",
+  "learning_rate": 0.005,
+  "batch_size": 256,
+  "augmentation": {
+    "gaussian_noise_snr_db": [15, 30],
+    "doppler_hz": [-15, 15],
+    "multipath": true
+  },
+  "lambda_similarity": "paper-unspecified",
+  "lambda_tx_entropy": "paper-unspecified",
+  "lambda_rx_entropy": "paper-unspecified",
+  "epochs": "paper-unspecified",
+  "seed": "paper-unspecified",
+  "commands": [
+    "python -m paper_reproduction.feature_separation_crossrx.train --config paper_reproduction/configs/feature_separation_crossrx_wisig.json"
+  ],
+  "implementation_choice": "Lambda, epoch, seed, and exact fine-tuning freeze policy remain paper-unspecified."
+}

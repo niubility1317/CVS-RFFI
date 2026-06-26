@@ -1,0 +1,19 @@
+sgc_v3:
+  scenario_dim: 16
+  num_experts: 5
+  adapter_rank: 16
+  epsilon_z: 0.02
+  topk_only: 3
+  epsilon_logit: 0.5
+
+target_adapt:
+  enabled: true
+  conf_threshold: 0.95
+  margin_threshold: 0.5
+  view_agreement_threshold: 0.8
+  prototype_threshold_percentile: 80
+  class_balance: true
+  ema_decay: 0.99
+  update_modules: [feature_adapter, logit_calibrator, gate, norm_affine]
+  freeze_backbone: true
+  freeze_base_classifier: true

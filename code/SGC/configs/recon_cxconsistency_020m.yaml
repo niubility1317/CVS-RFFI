@@ -1,0 +1,43 @@
+name: PhyCon-CxRCM-SGC-020M-Consistency
+seed: 1337
+
+model:
+  type: cx_residual_consistency_unet_1d
+  target_params: 0.20M
+  input_len: 256
+  in_channels: 2
+  condition_dim: 24
+  time_embed_dim: 64
+  channels: [32, 48, 64, 72]
+  kernel_size: 5
+  stem_kernel_size: 7
+  group_norm_groups: 8
+  bottleneck_attention: true
+  output_activation: tanh
+
+consistency:
+  enabled: true
+  steps_train: [1, 2, 4]
+  steps_eval: [1, 2, 4]
+  ema_decay: 0.9995
+  loss_type: pseudo_huber
+
+residual:
+  rho_max: 0.15
+  r_max_late: 0.15
+
+loss:
+  lambda_cm: 1.0
+  lambda_teacher: 0.5
+  lambda_chan: 0.0
+  lambda_id: 0.5
+  lambda_res: 2.0
+  lambda_tf: 0.2
+
+optim:
+  optimizer: AdamW
+  lr: 1.0e-4
+  weight_decay: 1.0e-4
+  grad_clip: 1.0
+  epochs: 50
+  amp: true

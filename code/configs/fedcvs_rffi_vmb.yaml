@@ -1,0 +1,260 @@
+# FedCVS-RFFI-VMB local template.
+# This repo currently launches via train.py CLI, so keep this file as the
+# auditable source for command construction, ablations, and report fields.
+
+method: FedCVS-RFFI-VMB
+objective: Receiver-generalized RFFI with virtual multi-domain synchronized gradients.
+
+hard_constraints:
+  wisig_train_ratio: 0.1
+  fl_rounds: 200
+  epochs: 200
+  fl_client_key: receiver
+  local_first_then_scp: true
+
+recommended_command:
+  cwd: E:/type10-7/code
+  conda_env: ssr-gpu
+  argv:
+    - python
+    - train.py
+    - --dataset
+    - wisig
+    - --train_mode
+    - fedcvs_vmb
+    - --fl_local_objective
+    - receiver_agnostic_bex02
+    - --wisig_train_ratio
+    - "0.1"
+    - --epochs
+    - "200"
+    - --fl_rounds
+    - "200"
+    - --fl_test_eval_interval
+    - "0"
+    - --fl_test_eval_last_n
+    - "0"
+    - --fl_test_eval_final_offsets
+    - "5,3,1"
+    - --fl_client_key
+    - receiver
+    - --fl_clients_per_round
+    - "1.0"
+    - --fl_vmb_stage
+    - auto
+    - --fl_vmb_pretrain_rounds
+    - "20"
+    - --fl_vmb_stage1_local_steps
+    - "1"
+    - --fl_vmb_stage1_objective
+    - ce
+    # For the CEN_A31-inspired VMB route, prefer:
+    # --fl_vmb_cen_a31_profile --fl_vmb_stage1_objective receiver_style_pretrain
+    # This keeps TX CE as the anchor while allowing receiver/domain extraction,
+    # VMB TX/RX prototype evidence, SupCon, GroupCE/Fishr, and all-stage SAT CE-only.
+    - --fl_vmb_stage1_lr_mult
+    - "1.5"
+    - --fl_vmb_batches_per_client
+    - "1"
+    - --fl_conflict_agg
+    - cosine_clip
+    - --fl_vmb_domain_balanced_sampling
+    - --fl_vmb_domain_balanced_aggregation
+    - --fl_vmb_transmitter_balanced_batch
+    - --fl_vmb_freeze_rx_stage2
+    - --fl_vmb_server_lr
+    - "0.01"
+    - --fl_vmb_server_momentum
+    - "0.9"
+    - --fl_vmb_prototype_ema
+    - "0.95"
+    - --fl_vmb_prototype_clip_norm
+    - "1.0"
+    - --tau_vmb_tx
+    - "0.1"
+    - --tau_vmb_rx
+    - "0.1"
+    - --lambda_vmb_tx_proto
+    - "0.1"
+    - --lambda_vmb_rx_proto
+    - "0.1"
+    - --lambda_tx_adv_r
+    - "0.1"
+    - --lambda_rx_adv
+    - "0.1"
+    - --lambda_orth
+    - "0.1"
+    - --use_logit_anchors
+    - --lambda_logit_kd
+    - "0.05"
+    - --activation_token_route
+    - quantized
+    - --token_quant_bits
+    - "8"
+    - --fl_style_code_dim
+    - "8"
+    - --use_tx_adv_on_zdom
+
+architecture:
+  final_classifier: C_t(z_t)
+  receiver_feature_role: prototype_sampling_orthogonal_adversarial_only
+  optional_tx_adversary_on_z_r: true
+  normalization_recommendation:
+    z_t: l2_normalize_before_prototype_loss
+    z_r: l2_normalize_before_prototype_loss
+    legacy_model_defaults_changed: false
+
+vmb:
+  # A5 two-stage validation uses a short CE-only warmup, then VMB gradients.
+  # Explicit --fl_vmb_stage stage2 remains available for the pure MVP-1 check.
+  stage: auto
+  pretrain_rounds_when_auto: 20
+  stage1_local_steps: 1
+  stage1_objective: ce
+  stage1_use_aux_losses: false
+  cen_a31_inspired_stage1_objective: receiver_style_pretrain
+  cen_a31_profile_flag: --fl_vmb_cen_a31_profile
+  stage1_lr_mult: 1.5
+  batches_per_client: 1
+  synchronized_global_start: true
+  domain_balanced_sampling: true
+  domain_balanced_aggregation: true
+  transmitter_balanced_batch: true
+  freeze_rx_stage2: true
+  server_optimizer:
+    type: sgd
+    lr: 0.01
+    momentum: 0.9
+    weight_decay: 0.0
+  prototypes:
+    tx_bank: class_ema
+    rx_bank: receiver_client_ema
+    ema_alpha: 0.95
+    clip_norm: 1.0
+    raw_iq_upload: false
+    embedding_upload: false
+    secure_aggregation: optional
+    gaussian_noise: optional
+  conflict_aggregation:
+    default: cosine_clip
+    alternatives: [none, cosine_clip, pcgrad]
+    logs:
+      - vmb_conflicts_detected
+      - vmb_conflicts_resolved
+      - vmb_grad_cos_mean_before_conflict
+      - vmb_grad_cos_mean_after_conflict
+
+split_bex02_compression:
+  claim: compressed_feature_token_approximation_not_strict_centralized_bex02
+  train_mode: split_bex02
+  activation_token_routes: [none, quantized, sketch, lowrank]
+  default_route: quantized
+  default_quant_bits: 8
+  payload_logs:
+    - activation_token_payload_bytes
+    - activation_token_compression_ratio
+    - activation_token_quant_error
+
+distillation:
+  use_logit_anchors: optional
+  lambda_logit_kd: 0.05
+  kd_temperature: 2.0
+  kd_reliability_gate: 0.7
+  kd_margin_min: 0.1
+  kd_anchor_ema: 0.9
+  claim: confidence_gated_anchor_upload_not_unconditional_teacher_copy
+
+style_code_bank:
+  fl_style_code_dim: 8
+  claim: compact_rf_style_statistics_not_raw_iq_or_full_embedding
+
+losses:
+  transmitter_ce: mandatory
+  tx_prototype_alignment:
+    lambda_vmb_tx_proto: 0.1
+    temperature: 0.1
+  rx_prototype_alignment:
+    lambda_vmb_rx_proto: 0.1
+    temperature: 0.1
+  receiver_adversary_on_z_t:
+    lambda_rx_adv: 0.1
+  transmitter_adversary_on_z_r:
+    lambda_tx_adv_r: 0.1
+  orthogonality:
+    lambda_orth: 0.1
+  consistency:
+    use_sat_consistency: optional_after_full_vmb_is_stable
+    physical_augmentation: optional_after_full_vmb_beats_fedprox
+
+evaluation:
+  split: leave_one_receiver_out
+  heavy_eval_schedule:
+    default_on: true
+    interval_rounds: 0
+    last_n_rounds_every_round: 0
+    final_offset_rounds_from_end: [5, 3, 1]
+    resolved_default_for_200_rounds: [196, 198, 200]
+    scope: named_test + satellite_extra_eval + ProtoBank_fusion_eval + StyleBank_collab_eval
+    always_every_round: validation_loader
+  metrics:
+    - unseen_receiver_accuracy
+    - worst_receiver_accuracy
+    - seen_unseen_gap
+    - acc_y_given_zt
+    - acc_d_given_zt
+    - acc_d_given_zr
+    - acc_y_given_zr
+    - prototype_drift
+    - gradient_cosine_mean
+    - client_drift_norm
+    - per_domain_loss_variance
+    - communication_payload_bytes
+    - logit_anchor_payload_bytes
+    - activation_token_payload_bytes
+    - activation_token_compression_ratio
+    - vmb_conflicts_detected
+    - vmb_conflicts_resolved
+  probe_script: evaluation/fedcvs_vmb_probe.py
+  analysis_script: evaluation/fedcvs_vmb_analysis.py
+  success_criteria:
+    - unseen receiver accuracy improves over FedProx
+    - worst receiver accuracy improves
+    - seen-unseen gap narrows
+    - acc_y_given_zt high and acc_d_given_zt low
+    - acc_d_given_zr high and acc_y_given_zr low
+    - receiver prototypes are stable
+    - one-batch VMB stage2 beats multi-local-step FedProx
+
+ablation_plan:
+  A0: FedAvg baseline
+  A1: FedProx strong baseline
+  A2: SCAFFOLD client-drift correction baseline
+  A3: FedBN or Local-BN feature-shift baseline
+  A4: Original CVS-RFFI plus FedProx, no VMB
+  A5: CVS-RFFI plus VMB, no dual-backbone pretraining
+  A6: Dual-backbone pretraining, no VMB
+  A7: Dual-backbone pretraining plus VMB full method
+  A8: A7 without receiver prototype
+  A9: A7 without transmitter prototype
+  A10: A7 without z_t receiver adversarial loss
+  A11: A7 without z_r transmitter adversarial loss
+  A12: A7 without orthogonal loss
+  A13: Stage 2 local steps greater than 1
+  A14: z_t classifier versus [z_t,z_r] classifier shortcut check
+
+minimum_pragmatic_sequence:
+  - A1
+  - A5
+  - A7
+  - A8
+  - A9
+  - A10
+  - A11
+  - A12
+  - A13
+  - A14
+
+reporting:
+  required_local_report_dir: E:/type10-7/automation_reports/CV-SincNet/<timestamp-or-run-id>/report.md
+  record_local_version_before_sync: true
+  snapshot_before_remote_use: E:/type10-7/code/snapshots/<timestamp-or-run-id>/

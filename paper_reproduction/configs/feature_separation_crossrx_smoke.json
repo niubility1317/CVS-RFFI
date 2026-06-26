@@ -1,0 +1,18 @@
+{
+  "baseline": "feature_separation_crossrx",
+  "paper_title": "Few-shot Cross-Receiver Radio Frequency Fingerprinting Identification Based on Feature Separation",
+  "protocol": "paper-original",
+  "dataset": "WiSig ManySig",
+  "source_receivers": "two source receivers",
+  "target_receiver": "held-out target receiver",
+  "train_samples_per_transmitter": 30,
+  "fine_tune_samples_per_class": 25,
+  "optimizer": "Adam",
+  "learning_rate": 0.005,
+  "batch_size": 256,
+  "input_representation": "3x256 I/Q plus Welch PSD",
+  "lambda_similarity": "paper-unspecified",
+  "lambda_tx_entropy": "paper-unspecified",
+  "lambda_rx_entropy": "paper-unspecified",
+  "implementation_choice": "This config is a snapshot template only; formal runs must replace paper-unspecified fields with paper-confirmed values."
+}

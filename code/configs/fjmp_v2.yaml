@@ -1,0 +1,119 @@
+experiment: FJMP_V2_K3_SAFE_RESIDUAL
+fjmp_v2:
+  enabled: true
+  name: base_anchored_safe_residual_proto
+
+  base:
+    freeze_backbone: true
+    freeze_base_classifier: true
+    detach_base_logits: true
+
+  proto_head:
+    K: 3
+    proto_dim: 256
+    zdom_mode: zero
+    use_zdom_in_proto: false
+    proto_dropout: 0.10
+    logit_scale:
+      init: 10.0
+      min: 3.0
+      max: 20.0
+
+  fusion:
+    type: residual_logit
+    formula: "stopgrad(base_logits) + rho * clip(proto_logits - stopgrad(base_logits))"
+    rho_max: 0.15
+    delta_clip: 3.0
+    gate_input:
+      - proto_feature
+      - base_confidence
+      - base_margin
+
+  loss:
+    boundary_trimmed_ce:
+      enabled: true
+      weight: 1.0
+      margin_threshold: 3.0
+      margin_temperature: 0.75
+      rescue_weight_for_base_wrong: 0.5
+    selective_kd:
+      enabled: true
+      weight: 0.3
+      temperature: 2.0
+    proto_angular_div:
+      enabled: true
+      weight: 0.01
+      tau_div: 0.55
+    proto_usage:
+      enabled: true
+      weight: 0.005
+      tau_assign: 0.75
+      use_ema: true
+      ema_momentum: 0.95
+    assign_entropy:
+      enabled: true
+      weight: 0.001
+      target_entropy_ratio: 0.5
+    delta_reg:
+      enabled: true
+      weight: 0.01
+      ratio_max: 0.10
+      bound_weight: 5.0
+    logit_residual:
+      enabled: true
+      weight: 0.01
+      target_norm: 3.0
+    gate_reg:
+      enabled: true
+      weight: 0.003
+      type: l2
+
+  remove_losses:
+    - margin_preserve
+    - gate_view_gap
+    - worst_domain_view
+    - proto_sgv
+    - sgv_safe
+    - sgv_margin
+    - pres_clean
+    - pres_sat
+    - strong_harm_loss
+    - old_sep
+    - old_usage
+
+  schedule:
+    total_epochs: 12
+    stage1:
+      epochs: [1, 2]
+      rho_max: 0.03
+      ce_trim_weight: 0.3
+    stage2:
+      epochs: [3, 8]
+      rho_max_start: 0.03
+      rho_max_end: 0.15
+      ce_trim_weight: 1.0
+    stage3:
+      epochs: [9, 12]
+      freeze_prototypes: true
+      freeze_id_proj: true
+      freeze_delta: true
+      train_gate_only: true
+      ce_trim_weight: 0.2
+
+  metrics:
+    - loss_ce_trim
+    - loss_kd_selective
+    - loss_logit_residual
+    - loss_delta
+    - loss_gate
+    - rho_mean
+    - rho_p95
+    - delta_ratio_mean
+    - delta_ratio_p95
+    - proto_pairwise_cos_mean
+    - proto_pairwise_cos_max
+    - usage_entropy_mean
+    - dead_proto_rate
+    - harm_rate
+    - rescue_rate
+    - net_gain

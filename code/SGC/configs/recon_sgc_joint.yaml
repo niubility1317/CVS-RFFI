@@ -1,0 +1,24 @@
+name: PhyCon-CxRCM-SGC-Joint
+seed: 1337
+
+joint_finetune:
+  epochs: 20
+  lr_recon: 2.0e-5
+  lr_sgc: 5.0e-5
+  rho_max: 0.10
+  r_max: 0.10
+
+loss:
+  lambda_id: 0.8
+  lambda_res: 3.0
+  lambda_clean_preserve: 1.0
+  lambda_sgc: 1.0
+
+trainable:
+  recon_head: true
+  residual_gate: true
+  sgc_adapter: true
+  sgc_gate: true
+  backbone: false
+  base_classifier: false
+  front_feature_extractor: false

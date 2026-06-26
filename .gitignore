@@ -1,52 +1,58 @@
-# Local caches and Python build artifacts
-__pycache__/
-.pytest_cache/
-*.py[cod]
-*.pyo
+# Local secrets and machine state
+.env
+.env.*
+*.pem
+*.key
+*.ppk
+.ssh/
+.claude/
+.codex-remote-attachments/
 
-# Local environments
-.venv/
-venv/
-env/
-.conda/
-
-# JavaScript dependencies and generated package caches
-node_modules/
-
-# Datasets, logs, and model artifacts
-Dataset_*/
+# Data, checkpoints, and experiment outputs
+Dataset*/
 data/
+datasets/
+runs/
 logs/
-checkpoints/
-sat_ablation_runs/
-all_preset_runs/
-sgc_runs/
-slimming_runs/
-ssdg_runs/
-finalist_runs/
-*.log
-*.pid
-*.lock
-*.queue
-nohup.out
+outputs/
+remote_artifacts/
+automation_reports/
+server_log_backups/
+analysis_tmp/
+tmp/
+tmp*/
+code/snapshots/
 *.pth
 *.pt
 *.ckpt
-*.pkl
-*.npy
 *.npz
+*.npy
+*.pkl
+*.pickle
+*.onnx
 
-# Top-level experiment snapshots kept outside this repository's source history.
-5.7/
-type10-4/
-type10-6-sat/
-type10-7/
-unkown/
+# Archives and generated media
+*.tar
+*.tar.gz
+*.tgz
+*.zip
+*.7z
+*.rar
+*.pptx
+*.docx
+*.xlsx
+*.pdf
 
-# OS/editor noise
+# Python/cache
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.ipynb_checkpoints/
+
+# OS/editor
 .DS_Store
 Thumbs.db
-desktop.ini
-.idea/
 .vscode/
-.claude/settings.local.json
+.idea/

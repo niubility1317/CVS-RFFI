@@ -1,0 +1,1578 @@
+from __future__ import annotations
+
+import argparse
+import csv
+import json
+import math
+from collections import defaultdict
+from copy import deepcopy
+import sys
+from pathlib import Path
+from typing import Any, Dict, List, Mapping, Sequence, Tuple
+
+if __package__ in (None, ""):
+    sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+
+from post_stage_cli import add_common_data_args, add_sat_eval_args, str2bool
+
+try:
+    import torch
+    import torch.nn.functional as F
+    from torch.cuda.amp import GradScaler, autocast
+
+    from dataset_wisig import (
+        WiSigCompactDataset,
+        WiSigSubsetDataset,
+        _resolve_days,
+        _resolve_rxs,
+        load_wisig_compact_pkl,
+        make_wisig_trainval_test_by_day_rx,
+    )
+    from post_stage_common import (
+        build_baseline_model,
+        domain_from_extra,
+        ensure_dir,
+        load_checkpoint,
+        mean_logs,
+        merge_checkpoint_args,
+        move_batch,
+        resolve_device,
+        save_payload,
+        set_seed,
+    )
+    from training_controls import parse_sat_scenarios
+    from cvsrffi.tensors import build_domain_label_map
+    from cvsrffi.eval import (
+        aggregate_named_stats,
+        apply_sat_channel_for_scenario,
+        evaluate_loader,
+        evaluate_named_loaders,
+        evaluate_sat_scenarios,
+        format_named_test_lines,
+        format_sat_test_lines,
+        make_loader,
+    )
+    from cvsrffi.losses import compute_core_losses, fishr_logit_gradient_variance_loss
+    from cvsrffi.schedule import (
+        build_aug_base_cfg,
+        build_stage_state,
+        configure_augmentor_for_epoch,
+        configure_mixstyle_for_epoch,
+        format_stage_state,
+        make_augmentor,
+    )
+    from cvsrffi.tensors import make_torch_generator, parse_csv_indices
+except ModuleNotFoundError:
+    torch = None
+    F = None
+    GradScaler = autocast = None
+    WiSigCompactDataset = WiSigSubsetDataset = None
+    _resolve_days = _resolve_rxs = load_wisig_compact_pkl = make_wisig_trainval_test_by_day_rx = None
+    build_baseline_model = domain_from_extra = ensure_dir = load_checkpoint = None
+    mean_logs = merge_checkpoint_args = move_batch = resolve_device = save_payload = set_seed = None
+    parse_sat_scenarios = None
+    build_domain_label_map = evaluate_loader = evaluate_named_loaders = make_loader = parse_csv_indices = None
+    apply_sat_channel_for_scenario = fishr_logit_gradient_variance_loss = make_torch_generator = None
+    aggregate_named_stats = compute_core_losses = evaluate_sat_scenarios = None
+    build_aug_base_cfg = build_stage_state = configure_augmentor_for_epoch = configure_mixstyle_for_epoch = None
+    format_stage_state = make_augmentor = None
+    format_named_test_lines = format_sat_test_lines = None
+
+
+def build_arg_parser() -> argparse.ArgumentParser:
+    parser = argparse.ArgumentParser(description="Train two-stage SSDG from a Stable-SAT baseline checkpoint.")
+    parser.add_argument("--baseline_ckpt", type=str, default="", help="Optional checkpoint. Empty means train SSDG from scratch.")
+    parser.add_argument("--from_scratch", type=str2bool, default=True)
+    parser.add_argument("--split_mode", type=str, default="tx_rx_day_1_6_3", choices=["tx_rx_day_1_6_3", "tx_rx_day_1_7_2"])
+    parser.add_argument("--labeled_ratio", type=float, default=0.10)
+    parser.add_argument("--unlabeled_ratio", type=float, default=0.60)
+    parser.add_argument("--source_val_ratio", type=float, default=0.30)
+    parser.add_argument("--pseudo_threshold_mode", type=str, default="rx_day_quantile", choices=["global", "rx_day_quantile"])
+    parser.add_argument("--pseudo_quantile", type=float, default=0.70)
+    parser.add_argument("--tau_conf", type=float, default=0.0, help="Alias for --tau_min used by older launchers.")
+    parser.add_argument("--tau_min", type=float, default=0.80)
+    parser.add_argument("--tau_max", type=float, default=0.97)
+    parser.add_argument("--label_epochs", type=int, default=170)
+    parser.add_argument("--pseudo_epochs", type=int, default=100)
+    parser.add_argument("--output_dir", type=str, required=True)
+    parser.add_argument(
+        "--metrics_csv",
+        type=str,
+        default="",
+        help="Optional per-epoch telemetry CSV path. Defaults to output_dir/metrics_epoch.csv.",
+    )
+    parser.add_argument(
+        "--metrics_jsonl",
+        type=str,
+        default="",
+        help="Optional per-epoch telemetry JSONL path. Defaults to output_dir/metrics_epoch.jsonl.",
+    )
+    parser.add_argument("--epochs", type=int, default=0, help="Compatibility alias: when >0, sets total epochs.")
+    parser.add_argument("--lr", type=float, default=2e-4)
+    parser.add_argument("--weight_decay", type=float, default=1e-4)
+    parser.add_argument("--label_smoothing", type=float, default=0.01)
+    parser.add_argument("--lambda_u", type=float, default=1.0)
+    parser.add_argument("--lambda_ent", type=float, default=0.01)
+    parser.add_argument("--lambda_domain", "--lambda_dom", dest="lambda_domain", type=float, default=1.0)
+    parser.add_argument("--lambda_adv", type=float, default=0.45)
+    parser.add_argument("--lambda_orth", type=float, default=0.05)
+    parser.add_argument("--lambda_cons", type=float, default=0.08)
+    parser.add_argument("--lambda_group_ce", type=float, default=0.10)
+    parser.add_argument("--group_ce_top_frac", type=float, default=0.35)
+    parser.add_argument("--group_ce_min_domains", type=int, default=4)
+    parser.add_argument("--group_ce_mode", type=str, default="hard")
+    parser.add_argument("--lambda_fishr", type=float, default=0.02)
+    parser.add_argument("--fishr_min_domains", type=int, default=4)
+    parser.add_argument("--strong_noise_std", type=float, default=0.015)
+    parser.add_argument("--use_unlabeled", type=str2bool, default=True)
+    parser.add_argument("--pseudo_domain_gate", type=str2bool, default=True)
+    parser.add_argument("--pseudo_temporal_gate", type=str2bool, default=True)
+    parser.add_argument("--pseudo_temporal_window", type=int, default=2)
+    parser.add_argument("--pseudo_temporal_min_conf", type=float, default=0.80)
+    parser.add_argument("--pseudo_strong_agreement", type=str2bool, default=True)
+    parser.add_argument("--use_ema_teacher", type=str2bool, default=False)
+    parser.add_argument("--ema_decay", type=float, default=0.999)
+    parser.add_argument("--use_sat_consistency", dest="use_sat_consistency", action="store_true", default=True)
+    parser.add_argument("--no_use_sat_consistency", dest="use_sat_consistency", action="store_false")
+    parser.add_argument("--sat_train_scenario", type=str, default="mixed_orbit")
+    parser.add_argument("--lambda_sat_cls", type=float, default=0.10)
+    parser.add_argument("--lambda_sat_cons", type=float, default=0.0)
+    parser.add_argument("--sat_cons_start_epoch", type=int, default=20)
+    parser.add_argument(
+        "--best_metric",
+        type=str,
+        default="clean_val_tx",
+        choices=["clean_val_tx", "test_overall_tx", "sat_mean_tx", "sat_worst_tx"],
+        help="Metric used to update the best SSDG checkpoint.",
+    )
+    parser.add_argument("--freeze_backbone", type=str2bool, default=False)
+    parser.add_argument("--model_size", type=str, default="M")
+    parser.add_argument("--model_variant", type=str, default="lite_d")
+    parser.add_argument("--branch_ablation", type=str, default="no_dac")
+    parser.add_argument("--domain_branch_ablation", type=str, default="no_stats")
+    parser.add_argument("--domain_enhancer", type=str, default="rcn_stats")
+    parser.add_argument("--domain_enhancer_strength", type=float, default=0.35)
+    parser.add_argument("--use_mixstyle", type=str2bool, default=True)
+    parser.add_argument("--mixstyle_p", type=float, default=0.18)
+    parser.add_argument("--mixstyle_alpha", type=float, default=0.10)
+    parser.add_argument("--mixstyle_eps", type=float, default=1e-6)
+    parser.add_argument("--mixstyle_layers", type=str, default="time_down,t1")
+    parser.add_argument("--mixstyle_use_domain_label", type=str2bool, default=True)
+    parser.add_argument("--mixstyle_mix", type=str, default="same_tx_crossdomain")
+    parser.add_argument("--mixstyle_strength", type=float, default=0.70)
+    parser.add_argument("--mixstyle_fallback", type=str, default="skip")
+    parser.add_argument("--mixstyle_late_start", type=int, default=110)
+    parser.add_argument("--mixstyle_late_ramp_epochs", type=int, default=40)
+    parser.add_argument("--mixstyle_late_min_p", type=float, default=0.05)
+    parser.add_argument("--mixstyle_late_min_strength", type=float, default=0.32)
+    parser.add_argument("--mixstyle_stop_epoch", type=int, default=0)
+    parser.add_argument("--stage1_epochs", type=int, default=16)
+    parser.add_argument("--stage2_epochs", type=int, default=68)
+    parser.add_argument("--stage3_ramp_epochs", type=int, default=17)
+    parser.add_argument("--late_stable_start", type=int, default=0)
+    parser.add_argument("--late_stable_ramp_epochs", type=int, default=12)
+    parser.add_argument("--use_aug", type=str2bool, default=True)
+    parser.add_argument("--aug_enable_class_signature", type=str2bool, default=False)
+    parser.add_argument("--aug_enable_pa_normal", type=str2bool, default=True)
+    parser.add_argument("--aug_dac_only_apply_anti_shortcut", type=str2bool, default=False)
+    parser.add_argument("--aug_dac_only_apply_channel", type=str2bool, default=False)
+    parser.add_argument("--aug_pa_only_apply_anti_shortcut", type=str2bool, default=False)
+    parser.add_argument("--aug_pa_only_apply_channel", type=str2bool, default=False)
+    parser.add_argument("--aug_dac_pa_apply_anti_shortcut", type=str2bool, default=True)
+    parser.add_argument("--aug_dac_pa_apply_channel", type=str2bool, default=True)
+    parser.add_argument("--aug_scale_min", type=float, default=0.10)
+    parser.add_argument("--aug_scale_max", type=float, default=0.35)
+    parser.add_argument("--aug_warmup_epochs", type=int, default=3)
+    parser.add_argument("--aug_ramp_epochs", type=int, default=15)
+    parser.add_argument("--aug_ramp_curve", type=float, default=1.25)
+    parser.add_argument("--aug_p_dac", type=float, default=0.0)
+    parser.add_argument("--aug_p_pa", type=float, default=0.14)
+    parser.add_argument("--aug_class_sig_mix", type=float, default=0.1)
+    parser.add_argument("--aug_p_time_shift", type=float, default=0.35)
+    parser.add_argument("--aug_max_time_shift", type=int, default=32)
+    parser.add_argument("--aug_p_amp_scale", type=float, default=0.45)
+    parser.add_argument("--aug_amp_min", type=float, default=0.90)
+    parser.add_argument("--aug_amp_max", type=float, default=1.10)
+    parser.add_argument("--aug_p_phase_rot", type=float, default=0.45)
+    parser.add_argument("--aug_p_cfo", type=float, default=0.35)
+    parser.add_argument("--aug_cfo_max", type=float, default=4e-4)
+    parser.add_argument("--aug_p_phase_noise", type=float, default=0.30)
+    parser.add_argument("--aug_phase_noise_sigma_max", type=float, default=0.006)
+    parser.add_argument("--aug_p_awgn", type=float, default=0.40)
+    parser.add_argument("--aug_snr_min_db", type=float, default=20.0)
+    parser.add_argument("--aug_snr_max_db", type=float, default=36.0)
+    parser.add_argument("--aug_p_multipath", type=float, default=0.18)
+    parser.add_argument("--aug_mp_taps_min", type=int, default=2)
+    parser.add_argument("--aug_mp_taps_max", type=int, default=4)
+    parser.add_argument("--aug_mp_delay_max", type=int, default=4)
+    parser.add_argument("--aug_p_dc_offset", type=float, default=0.30)
+    parser.add_argument("--aug_dc_offset_max", type=float, default=0.02)
+    parser.add_argument("--aug_p_bandedge_taper", type=float, default=0.25)
+    parser.add_argument("--aug_taper_alpha_min", type=float, default=0.02)
+    parser.add_argument("--aug_taper_alpha_max", type=float, default=0.10)
+    parser.add_argument("--aug_dac_jitter_max", type=float, default=0.002)
+    parser.add_argument("--aug_dac_poly_a3", type=float, default=0.12)
+    parser.add_argument("--aug_dac_poly_a5", type=float, default=0.03)
+    parser.add_argument("--aug_dac_iq_img_max", type=float, default=0.04)
+    parser.add_argument("--aug_dac_inter_gain_max", type=float, default=0.03)
+    parser.add_argument("--aug_dac_inter_off_max", type=float, default=0.008)
+    parser.add_argument("--aug_dac_inter_skew_max", type=float, default=0.05)
+    parser.add_argument("--aug_dac_dither", type=float, default=0.002)
+    parser.add_argument("--aug_dac_inl_warp", type=float, default=0.03)
+    parser.add_argument("--aug_dac_spur_amp_max", type=float, default=0.012)
+    parser.add_argument("--aug_dac_slew_max", type=float, default=0.18)
+    parser.add_argument("--aug_pa_mp_sigma", type=float, default=0.05)
+    parser.add_argument("--aug_pa_mem_sigma", type=float, default=0.04)
+    parser.add_argument("--aug_pa_ampm_max", type=float, default=0.20)
+    parser.add_argument("--aug_pa_iq_img_max", type=float, default=0.02)
+    parser.add_argument("--amp", type=str2bool, default=True)
+    parser.add_argument("--dry_run", action="store_true")
+    add_common_data_args(parser)
+    add_sat_eval_args(parser)
+    return parser
+
+
+def split_tx_rx_day_1_7_2(
+    dataset,
+    *,
+    labeled_ratio: float = 0.10,
+    unlabeled_ratio: float = 0.70,
+    source_val_ratio: float = 0.20,
+) -> Tuple[List[int], List[int], List[int]]:
+    total = float(labeled_ratio) + float(unlabeled_ratio) + float(source_val_ratio)
+    if abs(total - 1.0) > 1e-6:
+        raise ValueError(f"split ratios must sum to 1.0, got {total}")
+    groups: Dict[Tuple[int, int, int, int], List[Tuple[int, int]]] = defaultdict(list)
+    for global_i, item in enumerate(dataset.index):
+        key = (int(item.tx_i), int(item.rx_i), int(item.day_i), int(getattr(item, "eq_i", 0)))
+        groups[key].append((int(getattr(item, "sig_i", global_i)), int(global_i)))
+
+    labeled: List[int] = []
+    unlabeled: List[int] = []
+    val: List[int] = []
+    for _, pairs in sorted(groups.items()):
+        ordered = [idx for _, idx in sorted(pairs, key=lambda z: z[0])]
+        n = len(ordered)
+        if n == 0:
+            continue
+        n_l = int(round(n * float(labeled_ratio)))
+        n_u = int(round(n * float(unlabeled_ratio)))
+        if labeled_ratio > 0 and n_l == 0 and n >= 3:
+            n_l = 1
+        if unlabeled_ratio > 0 and n_u == 0 and n >= 3:
+            n_u = 1
+        if n_l + n_u > n:
+            n_u = max(0, n - n_l)
+        n_v = n - n_l - n_u
+        if source_val_ratio > 0 and n_v == 0 and n >= 3:
+            if n_u > 1:
+                n_u -= 1
+                n_v = 1
+            elif n_l > 1:
+                n_l -= 1
+                n_v = 1
+        labeled.extend(ordered[:n_l])
+        unlabeled.extend(ordered[n_l : n_l + n_u])
+        val.extend(ordered[n_l + n_u :])
+    return sorted(labeled), sorted(unlabeled), sorted(val)
+
+
+def split_tx_rx_day_1_6_3(
+    dataset,
+    *,
+    labeled_ratio: float = 0.10,
+    unlabeled_ratio: float = 0.60,
+    source_val_ratio: float = 0.30,
+) -> Tuple[List[int], List[int], List[int]]:
+    return split_tx_rx_day_1_7_2(
+        dataset,
+        labeled_ratio=labeled_ratio,
+        unlabeled_ratio=unlabeled_ratio,
+        source_val_ratio=source_val_ratio,
+    )
+
+
+def _as_plain_list(value: Any) -> List[Any]:
+    if value is None:
+        return []
+    if hasattr(value, "detach"):
+        value = value.detach().cpu()
+    if hasattr(value, "tolist"):
+        out = value.tolist()
+        return out if isinstance(out, list) else [out]
+    if isinstance(value, (list, tuple)):
+        return list(value)
+    return [value]
+
+
+def temporal_neighbor_agreement_mask(
+    pseudo: Sequence[Any],
+    conf: Sequence[Any],
+    meta: Mapping[str, Any] | None,
+    *,
+    window: int = 1,
+    min_conf: float = 0.0,
+) -> List[bool]:
+    pseudo_l = [int(v) for v in _as_plain_list(pseudo)]
+    conf_l = [float(v) for v in _as_plain_list(conf)]
+    n = min(len(pseudo_l), len(conf_l))
+    if meta is None or n == 0:
+        return [False for _ in range(n)]
+
+    rx_l = _as_plain_list(meta.get("rx_i"))
+    day_l = _as_plain_list(meta.get("day_i"))
+    eq_l = _as_plain_list(meta.get("eq_i"))
+    sig_l = _as_plain_list(meta.get("sig_i"))
+    order_l = _as_plain_list(meta.get("base_index"))
+    if len(order_l) < n:
+        order_l = sig_l
+    if min(len(rx_l), len(day_l), len(eq_l), len(sig_l)) < n:
+        return [False for _ in range(n)]
+
+    streams: Dict[Tuple[int, int, int], List[int]] = defaultdict(list)
+    for i in range(n):
+        key = (int(rx_l[i]), int(day_l[i]), int(eq_l[i]))
+        streams[key].append(i)
+
+    mask = [False for _ in range(n)]
+    max_gap = max(1, int(window))
+    for indices in streams.values():
+        for i in indices:
+            if conf_l[i] < float(min_conf):
+                continue
+            sig_i = int(sig_l[i])
+            for j in indices:
+                if i == j or conf_l[j] < float(min_conf):
+                    continue
+                order_gap = abs(int(order_l[i]) - int(order_l[j]))
+                sig_gap = abs(sig_i - int(sig_l[j]))
+                if pseudo_l[i] == pseudo_l[j] and sig_gap <= max_gap and order_gap <= max_gap:
+                    mask[i] = True
+                    break
+    return mask
+
+
+def _meta_from_extra(extra) -> Mapping[str, Any] | None:
+    if extra is None or len(extra) < 2:
+        return None
+    meta = extra[1]
+    return meta if isinstance(meta, Mapping) else None
+
+
+def _temporal_mask_tensor(pseudo, conf, extra, args, device):
+    meta = _meta_from_extra(extra)
+    mask = temporal_neighbor_agreement_mask(
+        pseudo,
+        conf,
+        meta,
+        window=int(args.pseudo_temporal_window),
+        min_conf=float(args.pseudo_temporal_min_conf),
+    )
+    return torch.as_tensor(mask, dtype=torch.bool, device=device)
+
+
+def _update_ema_model(ema_model, model, decay: float) -> None:
+    with torch.no_grad():
+        for ema_p, p in zip(ema_model.parameters(), model.parameters()):
+            ema_p.data.mul_(float(decay)).add_(p.data, alpha=1.0 - float(decay))
+        for ema_b, b in zip(ema_model.buffers(), model.buffers()):
+            ema_b.copy_(b)
+
+
+def _resolve_epoch_schedule(args) -> int:
+    """Resolve label/pseudo epochs, treating --epochs as total epochs."""
+    if int(args.epochs) > 0:
+        total_epochs = max(0, int(args.epochs))
+        label_epochs = min(max(0, int(args.label_epochs)), total_epochs)
+        args.label_epochs = label_epochs
+        args.pseudo_epochs = max(0, total_epochs - label_epochs)
+        return total_epochs
+    args.label_epochs = max(0, int(args.label_epochs))
+    args.pseudo_epochs = max(0, int(args.pseudo_epochs))
+    return int(args.label_epochs) + int(args.pseudo_epochs)
+
+
+def _apply_model_cli_args(model_args, args):
+    for key in (
+        "model_size",
+        "model_variant",
+        "branch_ablation",
+        "domain_branch_ablation",
+        "domain_enhancer",
+        "domain_enhancer_strength",
+        "use_mixstyle",
+        "mixstyle_p",
+        "mixstyle_alpha",
+        "mixstyle_eps",
+        "mixstyle_layers",
+        "mixstyle_use_domain_label",
+        "mixstyle_mix",
+        "mixstyle_strength",
+        "mixstyle_fallback",
+    ):
+        if hasattr(args, key):
+            setattr(model_args, key, getattr(args, key))
+    return model_args
+
+
+def _build_ssdg_wisig_data(args, device: torch.device):
+    ds_w = load_wisig_compact_pkl(args.wisig_pkl)
+    infer_nc = len(ds_w.get("tx_list", []))
+    if infer_nc > 0:
+        args.num_classes = infer_nc
+    eq = "both" if str(args.wisig_equalized).lower() == "both" else int(args.wisig_equalized)
+    day_list = list(ds_w.get("capture_date_list", []))
+    rx_list = list(ds_w.get("rx_list", []))
+    train_days = _resolve_days(day_list, parse_csv_indices(args.wisig_train_days), list(range(min(3, len(day_list)))))
+    test_days = _resolve_days(day_list, parse_csv_indices(args.wisig_test_days), [len(day_list) - 1])
+    train_rxs = _resolve_rxs(rx_list, parse_csv_indices(args.wisig_train_rxs), list(range(len(rx_list))))
+    test_rxs = _resolve_rxs(rx_list, parse_csv_indices(args.wisig_test_rxs), [])
+    train_days = [d for d in train_days if d not in test_days]
+    train_rxs = [r for r in train_rxs if r not in test_rxs]
+
+    source_base = WiSigCompactDataset(
+        ds_w,
+        out_len=int(args.wisig_out_len),
+        crop_mode="center",
+        normalize=True,
+        equalized=eq,
+        day_keep=train_days,
+        rx_keep=train_rxs,
+        domain=str(args.wisig_domain),
+        max_samples_per_combo=None if int(args.wisig_max_day123_per_combo) <= 0 else int(args.wisig_max_day123_per_combo),
+        seed=int(args.seed),
+        build_index=True,
+    )
+    split_fn = split_tx_rx_day_1_6_3 if str(args.split_mode) == "tx_rx_day_1_6_3" else split_tx_rx_day_1_7_2
+    labeled_idx, unlabeled_idx, val_idx = split_fn(
+        source_base,
+        labeled_ratio=float(args.labeled_ratio),
+        unlabeled_ratio=float(args.unlabeled_ratio),
+        source_val_ratio=float(args.source_val_ratio),
+    )
+    labeled_ds = WiSigSubsetDataset(source_base, labeled_idx, split_source="ssdg_labeled_tx_visible")
+    unlabeled_ds = WiSigSubsetDataset(source_base, unlabeled_idx, split_source="ssdg_unlabeled_tx_hidden")
+    val_ds = WiSigSubsetDataset(source_base, val_idx, split_source="ssdg_source_val")
+
+    _, _, _, named_tests, named_meta, test_split_info = make_wisig_trainval_test_by_day_rx(
+        ds_w,
+        equalized=eq,
+        out_len=int(args.wisig_out_len),
+        domain=str(args.wisig_domain),
+        normalize=True,
+        crop_mode="center",
+        train_ratio=0.5,
+        guard_gap=int(args.wisig_guard_gap),
+        train_days=train_days,
+        test_days=test_days,
+        train_rxs=train_rxs,
+        test_rxs=test_rxs,
+        max_samples_per_combo_test=None if int(args.wisig_max_test_per_combo) <= 0 else int(args.wisig_max_test_per_combo),
+        seed=int(args.seed),
+    )
+    labeled_loader = make_loader(labeled_ds, int(args.batch_size), True, int(args.num_workers), device, True, int(args.prefetch_factor))
+    unlabeled_loader = make_loader(unlabeled_ds, int(args.batch_size), False, int(args.num_workers), device, True, int(args.prefetch_factor))
+    val_loader = make_loader(val_ds, int(args.eval_batch_size), False, int(args.num_workers), device, False, int(args.prefetch_factor))
+    named_test_loaders = {
+        name: make_loader(ds, int(args.eval_batch_size), False, int(args.num_workers), device, False, int(args.prefetch_factor))
+        for name, ds in named_tests.items()
+    }
+    domain_label_map = build_domain_label_map(source_base)
+    return {
+        "train_loader": labeled_loader,
+        "unlabeled_loader": unlabeled_loader,
+        "val_loader": val_loader,
+        "named_test_loaders": named_test_loaders,
+        "domain_label_map": domain_label_map,
+        "num_domains": max(1, len(domain_label_map)),
+        "input_len": int(args.wisig_out_len),
+        "split_info": {
+            "mode": str(args.split_mode),
+            "labeled_size": len(labeled_ds),
+            "unlabeled_size": len(unlabeled_ds),
+            "source_val_size": len(val_ds),
+            "test": test_split_info,
+            "named_test_meta": named_meta,
+        },
+    }
+
+
+def _strong_augment(x: torch.Tensor, std: float) -> torch.Tensor:
+    if float(std) <= 0:
+        return x
+    noise = torch.randn_like(x) * float(std)
+    return torch.nan_to_num(x + noise, nan=0.0, posinf=0.0, neginf=0.0)
+
+
+def _threshold_mask(conf: torch.Tensor, domains: torch.Tensor | None, args) -> torch.Tensor:
+    tau_min = float(args.tau_min)
+    tau_max = float(args.tau_max)
+    if str(args.pseudo_threshold_mode) == "global" or domains is None:
+        return conf >= tau_min
+    mask = torch.zeros_like(conf, dtype=torch.bool)
+    for domain in domains.unique():
+        idx = domains == domain
+        if not bool(idx.any()):
+            continue
+        q = torch.quantile(conf[idx].float(), float(args.pseudo_quantile)).clamp(tau_min, tau_max)
+        mask[idx] = conf[idx] >= q
+    return mask
+
+
+def _evaluate(model, data_ctx, device, max_batches: int):
+    val = evaluate_loader(model, data_ctx["val_loader"], device, data_ctx["domain_label_map"], max_batches=max_batches)
+    named = evaluate_named_loaders(model, data_ctx["named_test_loaders"], device, data_ctx["domain_label_map"], max_batches=max_batches)
+    return val, named
+
+
+def _aggregate_main_test(named_stats: Mapping[str, Mapping[str, Any]], dataset: str) -> Dict[str, float]:
+    if str(dataset).lower() == "wisig":
+        keys = ["test_unseen_day_seen_rx", "test_seen_day_unseen_rx", "test_unseen_day_unseen_rx"]
+    else:
+        keys = list(named_stats.keys())
+    return aggregate_named_stats(dict(named_stats), keys)
+
+
+def _satellite_tx_scores(sat_test_stats: Mapping[str, Mapping[str, Any]]) -> List[float]:
+    scores: List[float] = []
+    for stats in (sat_test_stats or {}).values():
+        agg = stats.get("aggregate", {}) if isinstance(stats, Mapping) else {}
+        try:
+            scores.append(float(agg.get("tx_acc")))
+        except Exception:
+            continue
+    return scores
+
+
+def _best_score(
+    val_stats: Mapping[str, Any],
+    test_stats: Mapping[str, Any],
+    sat_test_stats: Mapping[str, Mapping[str, Any]],
+    metric: str,
+) -> float:
+    metric = str(metric or "clean_val_tx")
+    if metric == "clean_val_tx":
+        return float(val_stats.get("tx_acc", float("-inf")))
+    if metric == "test_overall_tx":
+        return float(test_stats.get("tx_acc", float("-inf")))
+    sat_scores = _satellite_tx_scores(sat_test_stats)
+    if not sat_scores:
+        return float(val_stats.get("tx_acc", float("-inf")))
+    if metric == "sat_mean_tx":
+        return sum(sat_scores) / len(sat_scores)
+    if metric == "sat_worst_tx":
+        return min(sat_scores)
+    raise ValueError(f"Unknown SSDG best_metric={metric}")
+
+
+def _resolve_sat_eval_max_batches(args) -> int:
+    sat_eval_max_batches = int(getattr(args, "sat_eval_max_batches", -1))
+    if sat_eval_max_batches < 0:
+        sat_eval_max_batches = int(getattr(args, "eval_max_batches", 0))
+    return sat_eval_max_batches
+
+
+def _evaluate_sat_if_enabled(model, data_ctx, device, args) -> Dict[str, Dict[str, Any]]:
+    if not bool(getattr(args, "eval_sat_channel", False)):
+        return {}
+    scenarios = list(getattr(args, "eval_sat_scenario_list", []))
+    if not scenarios:
+        return {}
+    return evaluate_sat_scenarios(
+        model,
+        data_ctx["named_test_loaders"],
+        device,
+        data_ctx["domain_label_map"],
+        scenario_names=scenarios,
+        args=args,
+        max_batches=_resolve_sat_eval_max_batches(args),
+    )
+
+
+def _loss_weights(args, stage_state: Mapping[str, Any] | None) -> Dict[str, float]:
+    stage_state = stage_state or {}
+    return {
+        "dom": float(getattr(args, "lambda_domain", 0.0)) * float(stage_state.get("dom_scale", 1.0)),
+        "adv": float(getattr(args, "lambda_adv", 0.0)) * float(stage_state.get("adv_scale", 1.0)),
+        "orth": float(getattr(args, "lambda_orth", 0.0)) * float(stage_state.get("orth_scale", 1.0)),
+        "cons": float(getattr(args, "lambda_cons", 0.0)) * float(stage_state.get("cons_scale", 0.0)),
+        "group_ce": float(getattr(args, "lambda_group_ce", 0.0)) * float(stage_state.get("group_ce_scale", 1.0)),
+        "fishr": float(getattr(args, "lambda_fishr", 0.0)),
+        "sat_cls": float(getattr(args, "lambda_sat_cls", 0.0)),
+        "sat_cons": float(getattr(args, "lambda_sat_cons", 0.0)),
+    }
+
+
+def _format_loss_top(values: Mapping[str, float], *, limit: int = 8) -> str:
+    finite_values: List[Tuple[float, str, float]] = []
+    for key, value in values.items():
+        try:
+            fv = float(value)
+        except Exception:
+            continue
+        if fv == fv and abs(fv) > 0.0:
+            finite_values.append((abs(fv), key, fv))
+    finite_values.sort(reverse=True)
+    if not finite_values:
+        return "[LOSS-TOP] none"
+    return "[LOSS-TOP] " + " | ".join(f"{key}={value:.4f}" for _, key, value in finite_values[: int(limit)])
+
+
+def _fallback_stage_state(phase: str) -> Dict[str, float]:
+    if str(phase) == "label":
+        name = "S1_core"
+    else:
+        name = "SSDG_pseudo"
+    return {
+        "phase": name,
+        "use_aux_views": 0.0,
+        "dom_scale": 1.0,
+        "adv_scale": 0.70,
+        "orth_scale": 0.50,
+        "cons_scale": 0.0,
+        "cls_aux_scale": 0.0,
+        "reg_aux_scale": 0.0,
+        "joint_inv_scale": 0.0,
+        "kl_scale": 0.0,
+        "group_ce_scale": 0.50,
+    }
+
+
+def _stage_state_for_epoch(epoch: int, args, phase: str) -> Dict[str, float]:
+    if build_stage_state is None:
+        return _fallback_stage_state(phase)
+    try:
+        state = dict(build_stage_state(int(epoch), args))
+    except Exception:
+        state = _fallback_stage_state(phase)
+    if str(phase) == "pseudo":
+        state["phase"] = "SSDG_pseudo"
+    return state
+
+
+def _format_stage_line(stage_state: Mapping[str, Any], phase: str) -> str:
+    if format_stage_state is not None:
+        try:
+            return f"phase={phase} train_phase={format_stage_state(dict(stage_state))}"
+        except Exception:
+            pass
+    return (
+        f"phase={phase} | use_aux={float(stage_state.get('use_aux_views', 0.0)):.1f} "
+        f"cons={float(stage_state.get('cons_scale', 0.0)):.2f} "
+        f"cls_aux={float(stage_state.get('cls_aux_scale', 0.0)):.2f} "
+        f"reg={float(stage_state.get('reg_aux_scale', 0.0)):.2f} "
+        f"joint_inv={float(stage_state.get('joint_inv_scale', 0.0)):.2f} "
+        f"kl={float(stage_state.get('kl_scale', 0.0)):.2f} "
+        f"group_ce={float(stage_state.get('group_ce_scale', 0.0)):.2f}"
+    )
+
+
+def _fallback_mixstyle_state(args) -> Dict[str, Any]:
+    enabled = bool(getattr(args, "use_mixstyle", False))
+    return {
+        "phase": "base" if enabled else "disabled",
+        "enabled": enabled,
+        "p": float(getattr(args, "mixstyle_p", 0.0)) if enabled else 0.0,
+        "strength": float(getattr(args, "mixstyle_strength", 0.0)) if enabled else 0.0,
+        "anneal_t": 0.0,
+    }
+
+
+def _fallback_aug_state(args) -> Dict[str, Any] | None:
+    if not bool(getattr(args, "use_aug", True)):
+        return None
+    scale = float(getattr(args, "aug_scale_min", 0.10))
+    return {
+        "scale": scale,
+        "p_dac": float(getattr(args, "aug_p_dac", 0.0)) * scale,
+        "p_pa": float(getattr(args, "aug_p_pa", 0.14)) * scale,
+        "p_time_shift": float(getattr(args, "aug_p_time_shift", 0.35)) * scale,
+        "p_cfo": float(getattr(args, "aug_p_cfo", 0.35)) * scale,
+        "p_awgn": float(getattr(args, "aug_p_awgn", 0.40)) * scale,
+        "p_multipath": float(getattr(args, "aug_p_multipath", 0.18)) * scale,
+        "max_time_shift": int(round(float(getattr(args, "aug_max_time_shift", 32)) * scale)),
+        "cfo_max": float(getattr(args, "aug_cfo_max", 4e-4)) * scale,
+        "phase_noise_sigma_max": float(getattr(args, "aug_phase_noise_sigma_max", 0.006)) * scale,
+    }
+
+
+def _grad_norm(model, name_filter=None) -> float:
+    if torch is None:
+        return float("nan")
+    total = 0.0
+    seen = 0
+    for name, param in model.named_parameters():
+        if param.grad is None:
+            continue
+        if name_filter is not None and not name_filter(name):
+            continue
+        value = float(param.grad.detach().float().norm(2).item())
+        total += value * value
+        seen += 1
+    return total ** 0.5 if seen > 0 else float("nan")
+
+
+def _grads_are_finite(model) -> bool:
+    if torch is None:
+        return True
+    for param in model.parameters():
+        if param.grad is None:
+            continue
+        if not bool(torch.isfinite(param.grad.detach()).all().item()):
+            return False
+    return True
+
+
+def _log_value(logs: Mapping[str, Any], key: str, default: float = 0.0) -> float:
+    try:
+        return float(logs.get(key, default))
+    except Exception:
+        return float(default)
+
+
+def _sum_log_values(log_items: Sequence[Mapping[str, Any]], key: str) -> float:
+    total = 0.0
+    for logs in log_items:
+        total += _log_value(logs, key)
+    return total
+
+
+def _safe_percent(value: Any) -> str:
+    try:
+        return f"{float(value):.2f}"
+    except Exception:
+        return "nan"
+
+
+def _telemetry_field_name(name: str) -> str:
+    safe = []
+    for ch in str(name):
+        if ch.isalnum() or ch == "_":
+            safe.append(ch)
+        else:
+            safe.append("_")
+    return "_".join(part for part in "".join(safe).split("_") if part)
+
+
+def _telemetry_scalar(value: Any) -> Any:
+    if hasattr(value, "detach"):
+        value = value.detach()
+    if hasattr(value, "cpu") and hasattr(value, "numel"):
+        if int(value.numel()) == 1:
+            value = value.cpu().item()
+        else:
+            return str(tuple(int(v) for v in value.shape))
+    if isinstance(value, (str, bool)) or value is None:
+        return value
+    if isinstance(value, int):
+        return int(value)
+    if isinstance(value, float):
+        return float(value) if math.isfinite(float(value)) else None
+    try:
+        numeric = float(value)
+    except Exception:
+        return str(value)
+    return float(numeric) if math.isfinite(numeric) else None
+
+
+def _flatten_telemetry(row: Dict[str, Any], prefix: str, values: Mapping[str, Any] | None) -> None:
+    for key, value in (values or {}).items():
+        if isinstance(value, Mapping):
+            _flatten_telemetry(row, f"{prefix}_{key}", value)
+            continue
+        raw_key = str(key)
+        field_key = raw_key if raw_key.startswith(f"{prefix}/") or raw_key.startswith(f"{prefix}_") else f"{prefix}_{raw_key}"
+        row[_telemetry_field_name(field_key)] = _telemetry_scalar(value)
+
+
+def _count_nonfinite(values: Mapping[str, Any] | None) -> int:
+    count = 0
+    for value in (values or {}).values():
+        if hasattr(value, "detach"):
+            value = value.detach()
+        try:
+            numeric = float(value)
+        except Exception:
+            continue
+        if not math.isfinite(numeric):
+            count += 1
+    return count
+
+
+def _build_ssdg_epoch_telemetry_row(
+    *,
+    args,
+    epoch: int,
+    epochs: int,
+    lr: float,
+    epoch_time_s: float,
+    phase: str,
+    train_logs: Mapping[str, Any],
+    val_stats: Mapping[str, Any],
+    test_stats: Mapping[str, Any],
+    named_test_stats: Mapping[str, Mapping[str, Any]],
+    sat_test_stats: Mapping[str, Mapping[str, Any]],
+    stage_state: Mapping[str, Any],
+    mixstyle_state: Mapping[str, Any],
+    aug_state: Mapping[str, Any] | None,
+    loss_weights: Mapping[str, float],
+    best_score: float,
+    best_val: float,
+    best_test: float,
+    best_epoch: int,
+    latest_path: str,
+    best_path: str,
+    is_best: bool,
+) -> Dict[str, Any]:
+    row: Dict[str, Any] = {
+        "schema": "ssdg_epoch_telemetry_v1",
+        "epoch": int(epoch),
+        "epochs": int(epochs),
+        "phase": str(phase),
+        "lr": float(lr),
+        "weight_decay": float(getattr(args, "weight_decay", 0.0)),
+        "epoch_time_s": float(epoch_time_s),
+        "seed": int(getattr(args, "seed", 0)),
+        "output_dir": str(getattr(args, "output_dir", "")),
+        "baseline_ckpt": str(getattr(args, "baseline_ckpt", "")),
+        "from_scratch": bool(getattr(args, "from_scratch", False)),
+        "dataset": str(getattr(args, "dataset", "wisig")),
+        "split_mode": str(getattr(args, "split_mode", "")),
+        "labeled_ratio": float(getattr(args, "labeled_ratio", 0.0)),
+        "unlabeled_ratio": float(getattr(args, "unlabeled_ratio", 0.0)),
+        "source_val_ratio": float(getattr(args, "source_val_ratio", 0.0)),
+        "label_epochs": int(getattr(args, "label_epochs", 0)),
+        "pseudo_epochs": int(getattr(args, "pseudo_epochs", 0)),
+        "optimizer": "AdamW",
+        "amp": bool(getattr(args, "amp", False)),
+        "best_metric": str(getattr(args, "best_metric", "")),
+        "best_score": _telemetry_scalar(best_score),
+        "best_val_tx": _telemetry_scalar(best_val),
+        "best_test_tx": _telemetry_scalar(best_test),
+        "best_epoch": int(best_epoch),
+        "latest_path": str(latest_path),
+        "best_path": str(best_path),
+        "is_best": bool(is_best),
+        "use_unlabeled": bool(getattr(args, "use_unlabeled", False)),
+        "lambda_u": float(getattr(args, "lambda_u", 0.0)),
+        "lambda_ent": float(getattr(args, "lambda_ent", 0.0)),
+        "pseudo_threshold_mode": str(getattr(args, "pseudo_threshold_mode", "")),
+        "tau_min": float(getattr(args, "tau_min", 0.0)),
+        "tau_max": float(getattr(args, "tau_max", 0.0)),
+        "pseudo_quantile": float(getattr(args, "pseudo_quantile", 0.0)),
+        "pseudo_domain_gate": bool(getattr(args, "pseudo_domain_gate", False)),
+        "pseudo_temporal_gate": bool(getattr(args, "pseudo_temporal_gate", False)),
+        "pseudo_strong_agreement": bool(getattr(args, "pseudo_strong_agreement", False)),
+        "use_ema_teacher": bool(getattr(args, "use_ema_teacher", False)),
+        "use_sat_consistency": bool(getattr(args, "use_sat_consistency", False)),
+        "sat_train_scenario": str(getattr(args, "sat_train_scenario", "")),
+        "eval_sat_channel": bool(getattr(args, "eval_sat_channel", False)),
+        "eval_sat_scenarios": str(getattr(args, "eval_sat_scenarios", "")),
+        "nonfinite_train_metric_count": _count_nonfinite(train_logs),
+        "nonfinite_val_metric_count": _count_nonfinite(val_stats),
+        "nonfinite_test_metric_count": _count_nonfinite(test_stats),
+    }
+    for name in (
+        "lambda_domain",
+        "lambda_adv",
+        "lambda_orth",
+        "lambda_cons",
+        "lambda_group_ce",
+        "lambda_fishr",
+        "lambda_sat_cls",
+        "lambda_sat_cons",
+        "label_smoothing",
+        "group_ce_top_frac",
+        "strong_noise_std",
+    ):
+        row[name] = _telemetry_scalar(getattr(args, name, None))
+    _flatten_telemetry(row, "stage", stage_state)
+    _flatten_telemetry(row, "mixstyle", mixstyle_state)
+    _flatten_telemetry(row, "aug", aug_state or {"enabled": False})
+    _flatten_telemetry(row, "loss_weight", loss_weights)
+    _flatten_telemetry(row, "train", train_logs)
+    _flatten_telemetry(row, "val", val_stats)
+    _flatten_telemetry(row, "test", test_stats)
+    for name, stats in (named_test_stats or {}).items():
+        _flatten_telemetry(row, f"named_test_{name}", stats)
+    for scenario, stats in (sat_test_stats or {}).items():
+        _flatten_telemetry(row, f"sat_test_{scenario}", stats)
+    return row
+
+
+def _write_ssdg_epoch_telemetry(
+    csv_path: Path | str | None,
+    jsonl_path: Path | str | None,
+    rows: Sequence[Mapping[str, Any]],
+) -> None:
+    if not rows:
+        return
+    fieldnames: List[str] = []
+    seen = set()
+    for row in rows:
+        for key in row.keys():
+            if key not in seen:
+                seen.add(key)
+                fieldnames.append(key)
+    if csv_path:
+        path = Path(csv_path)
+        path.parent.mkdir(parents=True, exist_ok=True)
+        with path.open("w", encoding="utf-8", newline="") as handle:
+            writer = csv.DictWriter(handle, fieldnames=fieldnames, extrasaction="ignore")
+            writer.writeheader()
+            for row in rows:
+                writer.writerow(dict(row))
+    if jsonl_path:
+        path = Path(jsonl_path)
+        path.parent.mkdir(parents=True, exist_ok=True)
+        with path.open("w", encoding="utf-8") as handle:
+            for row in rows:
+                handle.write(json.dumps(dict(row), ensure_ascii=True, sort_keys=True, allow_nan=False) + "\n")
+
+
+def _format_named_test_lines(named_test_stats: Mapping[str, Mapping[str, Any]], named_test_meta: Mapping[str, Mapping[str, Any]]) -> List[str]:
+    if format_named_test_lines is not None:
+        return format_named_test_lines(dict(named_test_stats), dict(named_test_meta))
+    lines = []
+    for name, stats in named_test_stats.items():
+        lines.append(
+            f"          {name}: tx={_safe_percent(stats.get('tx_acc'))}% "
+            f"({int(stats.get('tx_correct', 0))}/{int(stats.get('tx_total', 0))})"
+        )
+    return lines
+
+
+def _format_sat_test_lines(sat_test_stats: Mapping[str, Mapping[str, Any]]) -> List[str]:
+    if format_sat_test_lines is not None:
+        return format_sat_test_lines(dict(sat_test_stats))
+    lines = []
+    for scenario, stats in sat_test_stats.items():
+        agg = stats.get("aggregate", {})
+        selected = ",".join(stats.get("selected_names", []))
+        lines.append(
+            f"[SAT-TEST] scenario={scenario} selected={selected} "
+            f"overall_tx={_safe_percent(agg.get('tx_acc'))}% "
+            f"strict_udu={_safe_percent(stats.get('strict_udu'))}% "
+            f"({int(agg.get('tx_correct', 0))}/{int(agg.get('tx_total', 0))})"
+        )
+    return lines
+
+
+def format_ssdg_epoch_block(
+    *,
+    epoch: int,
+    epochs: int,
+    lr: float,
+    epoch_time_s: float,
+    phase: str,
+    train_logs: Mapping[str, Any],
+    val_stats: Mapping[str, Any],
+    test_stats: Mapping[str, Any] | None = None,
+    named_test_stats: Mapping[str, Mapping[str, Any]] | None = None,
+    named_test_meta: Mapping[str, Mapping[str, Any]] | None = None,
+    sat_test_stats: Mapping[str, Mapping[str, Any]] | None = None,
+    stage_state: Mapping[str, Any] | None = None,
+    mixstyle_state: Mapping[str, Any] | None = None,
+    aug_state: Mapping[str, Any] | None = None,
+    loss_weights: Mapping[str, float] | None = None,
+    best_val: float,
+    best_test: float = float("nan"),
+    best_epoch: int | None = None,
+    latest_path: str,
+    best_path: str,
+    is_best: bool,
+) -> str:
+    sep = "=" * 132
+    minor = "-" * 132
+    loss_total = _log_value(train_logs, "train/loss")
+    loss_cls = _log_value(train_logs, "train/loss_tx_labeled")
+    loss_dom = _log_value(train_logs, "train/loss_domain_labeled")
+    loss_adv = _log_value(train_logs, "train/loss_adv_labeled")
+    loss_orth = _log_value(train_logs, "train/loss_orth_labeled")
+    loss_group_ce = _log_value(train_logs, "train/loss_group_ce_labeled")
+    loss_sat = _log_value(train_logs, "train/loss_sat_cls_labeled")
+    loss_sat_cons = _log_value(train_logs, "train/loss_sat_cons_labeled")
+    loss_fishr = _log_value(train_logs, "train/loss_fishr_labeled")
+    loss_cons = _log_value(train_logs, "train/loss_cons_labeled")
+    loss_u = _log_value(train_logs, "train/loss_unlabeled")
+    w_cls = _log_value(train_logs, "train/w_loss_tx_labeled", loss_cls)
+    w_dom = _log_value(train_logs, "train/w_loss_domain_labeled", loss_dom)
+    w_adv = _log_value(train_logs, "train/w_loss_adv_labeled", loss_adv)
+    w_orth = _log_value(train_logs, "train/w_loss_orth_labeled", loss_orth)
+    w_cons = _log_value(train_logs, "train/w_loss_cons_labeled", 0.0)
+    w_group_ce = _log_value(train_logs, "train/w_loss_group_ce_labeled", loss_group_ce)
+    w_sat = _log_value(train_logs, "train/w_loss_sat_cls_labeled", loss_sat)
+    w_sat_cons = _log_value(train_logs, "train/w_loss_sat_cons_labeled", loss_sat_cons)
+    w_fishr = _log_value(train_logs, "train/w_loss_fishr_labeled", loss_fishr)
+    reliable = _log_value(train_logs, "train/reliable_ratio")
+    pseudo_conf = _log_value(train_logs, "train/pseudo_conf")
+    domain_pass = _log_value(train_logs, "train/domain_pass")
+    temporal_pass = _log_value(train_logs, "train/temporal_pass")
+    strong_pass = _log_value(train_logs, "train/strong_pass")
+    pseudo_total = int(round(_log_value(train_logs, "train/pseudo_total")))
+    pseudo_selected = int(round(_log_value(train_logs, "train/pseudo_selected")))
+    pseudo_correct = int(round(_log_value(train_logs, "train/pseudo_correct")))
+    pseudo_precision = 100.0 * pseudo_correct / max(1, pseudo_selected)
+    test_stats = test_stats or {}
+    named_test_stats = named_test_stats or {}
+    named_test_meta = named_test_meta or {}
+    sat_test_stats = sat_test_stats or {}
+    if best_epoch is None:
+        best_epoch = int(epoch)
+    if stage_state is None:
+        stage_state = _fallback_stage_state(phase)
+    if mixstyle_state is None:
+        mixstyle_state = _fallback_mixstyle_state(type("Args", (), {"use_mixstyle": True, "mixstyle_p": 0.18, "mixstyle_strength": 0.70})())
+    if aug_state is None:
+        aug_state = _fallback_aug_state(type("Args", (), {})())
+    loss_weights = dict(loss_weights or {})
+    lines = [sep]
+    lines.append(f"[EPOCH-BEGIN] E{int(epoch):03d}/{int(epochs):03d} | time={float(epoch_time_s):.1f}s | lr={float(lr):.2e} | aux_scale=0.000")
+    lines.append(f"[STAGE] {_format_stage_line(stage_state, phase)} label_stage={int(str(phase) == 'label')} pseudo_stage={int(str(phase) == 'pseudo')}")
+    lines.append(
+        "[MIXSTYLE-EPOCH] "
+        f"phase={mixstyle_state.get('phase', 'unknown')} enabled={int(bool(mixstyle_state.get('enabled', False)))} "
+        f"p={float(mixstyle_state.get('p', 0.0)):.3f} "
+        f"strength={float(mixstyle_state.get('strength', 0.0)):.3f} "
+        f"anneal_t={float(mixstyle_state.get('anneal_t', 0.0)):.3f}"
+    )
+    if aug_state is not None:
+        lines.append(
+            "[AUG] "
+            f"scale={float(aug_state.get('scale', 0.0)):.3f} | "
+            f"p_dac={float(aug_state.get('p_dac', 0.0)):.3f} "
+            f"p_pa={float(aug_state.get('p_pa', 0.0)):.3f} "
+            f"p_shift={float(aug_state.get('p_time_shift', 0.0)):.3f} "
+            f"p_cfo={float(aug_state.get('p_cfo', 0.0)):.3f} "
+            f"p_awgn={float(aug_state.get('p_awgn', 0.0)):.3f} "
+            f"p_mp={float(aug_state.get('p_multipath', 0.0)):.3f} | "
+            f"max_shift={int(aug_state.get('max_time_shift', 0))} "
+            f"cfo_max={float(aug_state.get('cfo_max', 0.0)):.4g} "
+            f"pn_max={float(aug_state.get('phase_noise_sigma_max', 0.0)):.4g}"
+        )
+    else:
+        lines.append("[AUG] disabled")
+    lines.append(minor)
+    lines.append(
+        "[LOSS-CORE-RAW] "
+        f"total={loss_total:.4f} cls={loss_cls:.4f} dom={loss_dom:.4f} "
+        f"adv={loss_adv:.4f} orth={loss_orth:.4f} cons={loss_cons:.4f} group_ce={loss_group_ce:.4f}"
+    )
+    lines.append(
+        "[LOSS-CORE-W]   "
+        f"cls={w_cls:.4f} dom={w_dom:.4f} adv={w_adv:.4f} "
+        f"orth={w_orth:.4f} cons={w_cons:.4f} group_ce={w_group_ce:.4f}"
+    )
+    lines.append("[LOSS-AUX-RAW]  cls_pa=0.0000 cls_dac=0.0000 pa_joint_inv=0.0000 pa_kl=0.0000 dac_reg=0.0000 pa_reg=0.0000")
+    lines.append("[LOSS-AUX-W]    cls_pa=0.0000 cls_dac=0.0000 pa_joint_inv=0.0000 pa_kl=0.0000 dac_reg=0.0000 pa_reg=0.0000")
+    lines.append(f"[LOSS-SAT-RAW]  cls_sat={loss_sat:.4f} sat_cons={loss_sat_cons:.4f} sat_cos=nan")
+    lines.append(f"[LOSS-SAT-W]    cls_sat={w_sat:.4f} sat_cons={w_sat_cons:.4f}")
+    lines.append(f"[LOSS-DG-RAW]   proto=0.0000 proto_cos=nan supcon=0.0000 fishr={loss_fishr:.4f}")
+    lines.append(f"[LOSS-DG-W]     proto=0.0000 supcon=0.0000 fishr={w_fishr:.4f}")
+    lines.append(
+        "[LOSS-WEIGHT] "
+        f"dom={float(stage_state.get('dom_scale', loss_weights.get('dom', 0.0))):.3f} "
+        f"adv={float(stage_state.get('adv_scale', loss_weights.get('adv', 0.0))):.3f} "
+        f"orth={float(stage_state.get('orth_scale', loss_weights.get('orth', 0.0))):.3f} "
+        f"cons={float(stage_state.get('cons_scale', loss_weights.get('cons', 0.0))):.3f} "
+        f"group_ce={float(stage_state.get('group_ce_scale', loss_weights.get('group_ce', 0.0))):.3f} "
+        "aux_scale=0.000"
+    )
+    lines.append(
+        _format_loss_top(
+            {
+                "cls": w_cls,
+                "dom": w_dom,
+                "adv": w_adv,
+                "orth": w_orth,
+                "cons": w_cons,
+                "group_ce": w_group_ce,
+                "cls_sat": w_sat,
+                "sat_cons": w_sat_cons,
+                "fishr": w_fishr,
+            }
+        )
+    )
+    lines.append(
+        "[LOSS-PSEUDO]   "
+        f"u={loss_u:.4f} reliable={reliable:.3f} conf={pseudo_conf:.3f} "
+        f"domain_pass={domain_pass:.3f} temporal_pass={temporal_pass:.3f} strong_pass={strong_pass:.3f} "
+        f"total={pseudo_total} selected={pseudo_selected}/{pseudo_total} correct={pseudo_correct} "
+        f"precision={pseudo_precision:.3f}%"
+    )
+    lines.append(minor)
+    lines.append(
+        f"[TRAIN] tx={_safe_percent(train_logs.get('train/tx_acc'))}% "
+        f"dom={_safe_percent(train_logs.get('train/dom_acc'))}% "
+        f"cons_cos={_log_value(train_logs, 'train/cons_cos'):.4f}"
+    )
+    lines.append(
+        f"[GRAD]  total={_log_value(train_logs, 'train/grad_total'):.3f} "
+        f"backbone={_log_value(train_logs, 'train/grad_backbone'):.3f} "
+        f"aux={_log_value(train_logs, 'train/grad_aux'):.3f} "
+        f"domain={_log_value(train_logs, 'train/grad_domain'):.3f}"
+    )
+    lines.append(f"[VAL]   tx={_safe_percent(val_stats.get('tx_acc'))}% dom={_safe_percent(val_stats.get('dom_acc'))}%")
+    lines.append(
+        f"[TEST]  overall_tx={_safe_percent(test_stats.get('tx_acc'))}% "
+        f"({int(test_stats.get('tx_correct', 0))}/{int(test_stats.get('tx_total', 0))})"
+    )
+    lines.append("[TEST-SPLIT]")
+    lines.extend(_format_named_test_lines(named_test_stats, named_test_meta))
+    if sat_test_stats:
+        lines.extend(_format_sat_test_lines(sat_test_stats))
+    lines.append(f"[BEST-JOINT]  val_tx={float(best_val):.2f}% & test_tx={float(best_test):.2f}% @ E{int(best_epoch):03d}")
+    lines.append(f"[CKPT]  latest -> {latest_path} (saved) | best -> {best_path}{' (updated: val improved)' if is_best else ''}")
+    lines.append(f"[EPOCH-END] E{int(epoch):03d}/{int(epochs):03d}")
+    lines.append(sep)
+    return "\n".join(lines)
+
+
+def train(args) -> int:
+    total_epochs = _resolve_epoch_schedule(args)
+    args.epochs = total_epochs
+    args.lambda_dom = float(args.lambda_domain)
+    if float(args.tau_conf) > 0.0:
+        args.tau_min = float(args.tau_conf)
+    if not bool(args.use_unlabeled):
+        args.lambda_u = 0.0
+    if args.dry_run:
+        print(
+            f"[DRY-RUN] Parsed arguments and skipped data/model construction. "
+            f"label_epochs={args.label_epochs} pseudo_epochs={args.pseudo_epochs} total_epochs={total_epochs}",
+            flush=True,
+        )
+        return 0
+    if torch is None:
+        raise ModuleNotFoundError("PyTorch is required to run SSDG.train_ssdg training.")
+    if str(args.dataset).lower() != "wisig":
+        raise ValueError("SSDG.train_ssdg currently implements the WiSig tx_rx_day_1_7_2 protocol.")
+    set_seed(int(args.seed))
+    args.eval_sat_scenario_list = parse_sat_scenarios(args.eval_sat_scenarios) if bool(args.eval_sat_channel) else []
+    device = resolve_device(args.device)
+    out_dir = ensure_dir(args.output_dir)
+    metrics_csv_path = Path(str(args.metrics_csv).strip()) if str(args.metrics_csv).strip() else out_dir / "metrics_epoch.csv"
+    metrics_jsonl_path = Path(str(args.metrics_jsonl).strip()) if str(args.metrics_jsonl).strip() else out_dir / "metrics_epoch.jsonl"
+    data_ctx = _build_ssdg_wisig_data(args, device)
+    use_ckpt = bool(str(args.baseline_ckpt).strip()) and not bool(args.from_scratch)
+    ckpt = load_checkpoint(args.baseline_ckpt, device) if use_ckpt else {"model": None, "args": {}, "stats": {}, "split_info": None}
+    model_args = merge_checkpoint_args(ckpt, args, input_len=int(data_ctx["input_len"]), num_domains=int(data_ctx["num_domains"]))
+    model_args = _apply_model_cli_args(model_args, args)
+    model = build_baseline_model(model_args, device)
+    if use_ckpt:
+        model.load_state_dict(ckpt["model"], strict=False)
+    if bool(args.freeze_backbone):
+        for name, param in model.named_parameters():
+            param.requires_grad = any(key in name for key in ("cls_head", "dom_head", "adv_head"))
+    trainable_params = int(sum(p.numel() for p in model.parameters() if p.requires_grad))
+    total_params = int(sum(p.numel() for p in model.parameters()))
+    ema_model = None
+    if bool(args.use_ema_teacher):
+        ema_model = deepcopy(model).to(device)
+        ema_model.eval()
+        for param in ema_model.parameters():
+            param.requires_grad = False
+    optimizer = torch.optim.AdamW([p for p in model.parameters() if p.requires_grad], lr=float(args.lr), weight_decay=float(args.weight_decay))
+    scaler = GradScaler(enabled=bool(args.amp and device.type == "cuda"))
+    sat_gen = make_torch_generator(device, int(args.seed) + 991) if make_torch_generator is not None else None
+    aug_base_cfg = build_aug_base_cfg(args) if bool(args.use_aug) and build_aug_base_cfg is not None else None
+    augmentor = make_augmentor(aug_base_cfg) if aug_base_cfg is not None and make_augmentor is not None else None
+    print(
+        "\n".join(
+            [
+                "[CONFIG-RUN] schema=ssdg_config_v1 "
+                f"seed={int(args.seed)} device={device} output_dir={out_dir} baseline_ckpt={args.baseline_ckpt or '<scratch>'} "
+                f"from_scratch={int(bool(args.from_scratch))} freeze_backbone={int(bool(args.freeze_backbone))}",
+                "[CONFIG-DATA] "
+                f"dataset={getattr(args, 'dataset', 'wisig')} split_mode={args.split_mode} "
+                f"L/U/V={data_ctx['split_info']['labeled_size']}/{data_ctx['split_info']['unlabeled_size']}/{data_ctx['split_info']['source_val_size']} "
+                f"ratios={float(args.labeled_ratio):.3f}/{float(args.unlabeled_ratio):.3f}/{float(args.source_val_ratio):.3f}",
+                "[CONFIG-OPT] "
+                f"optimizer=AdamW lr={float(args.lr):.6g} weight_decay={float(args.weight_decay):.6g} amp={int(bool(args.amp))} "
+                f"params_trainable={trainable_params} params_total={total_params} "
+                f"label_epochs={int(args.label_epochs)} pseudo_epochs={int(args.pseudo_epochs)} total_epochs={int(total_epochs)} "
+                f"best_metric={args.best_metric}",
+                "[CONFIG-LOSS] "
+                f"lambda_domain={float(args.lambda_domain):.6g} lambda_adv={float(args.lambda_adv):.6g} "
+                f"lambda_orth={float(args.lambda_orth):.6g} lambda_cons={float(args.lambda_cons):.6g} "
+                f"lambda_group_ce={float(args.lambda_group_ce):.6g} lambda_fishr={float(args.lambda_fishr):.6g} "
+                f"lambda_sat_cls={float(args.lambda_sat_cls):.6g} lambda_sat_cons={float(args.lambda_sat_cons):.6g} "
+                f"lambda_u={float(args.lambda_u):.6g} lambda_ent={float(args.lambda_ent):.6g} "
+                f"label_smoothing={float(args.label_smoothing):.6g}",
+                "[CONFIG-PSEUDO] "
+                f"use_unlabeled={int(bool(args.use_unlabeled))} threshold_mode={args.pseudo_threshold_mode} "
+                f"tau_min={float(args.tau_min):.6g} tau_max={float(args.tau_max):.6g} quantile={float(args.pseudo_quantile):.6g} "
+                f"domain_gate={int(bool(args.pseudo_domain_gate))} temporal_gate={int(bool(args.pseudo_temporal_gate))} "
+                f"strong_agreement={int(bool(args.pseudo_strong_agreement))} ema={int(bool(args.use_ema_teacher))}",
+                "[CONFIG-SAT] "
+                f"use_sat_consistency={int(bool(args.use_sat_consistency))} train_scenario={args.sat_train_scenario} "
+                f"sat_cons_start_epoch={int(args.sat_cons_start_epoch)} eval_sat_channel={int(bool(args.eval_sat_channel))} "
+                f"eval_sat_scenarios={args.eval_sat_scenarios}",
+                "[CONFIG-TELEMETRY] "
+                f"metrics_csv={metrics_csv_path} metrics_jsonl={metrics_jsonl_path} "
+                "per_epoch_loss_terms=raw_and_weighted",
+            ]
+        ),
+        flush=True,
+    )
+    print(
+        f"[SSDG-TRAIN] init={'scratch' if not use_ckpt else args.baseline_ckpt} split={data_ctx['split_info']['mode']} "
+        f"L/U/V={data_ctx['split_info']['labeled_size']}/{data_ctx['split_info']['unlabeled_size']}/{data_ctx['split_info']['source_val_size']} "
+        f"label_epochs={args.label_epochs} pseudo_epochs={args.pseudo_epochs} "
+        f"lambda_domain={float(args.lambda_domain):.3f} lambda_fishr={float(args.lambda_fishr):.3f} "
+        f"threshold={args.pseudo_threshold_mode} domain_gate={int(args.pseudo_domain_gate)} "
+        f"temporal_gate={int(args.pseudo_temporal_gate)} ema={int(args.use_ema_teacher)} "
+        f"best_metric={args.best_metric} output={out_dir}",
+        flush=True,
+    )
+    print(
+        "[TELEMETRY] schema=ssdg_epoch_telemetry_v1 "
+        f"metrics_csv={metrics_csv_path} metrics_jsonl={metrics_jsonl_path} "
+        "loss_terms=loss,loss_labeled,loss_tx,loss_domain,loss_adv,loss_cons,"
+        "loss_orth,loss_group_ce,loss_fishr,loss_sat_cls,loss_sat_cons,"
+        "loss_unlabeled,weighted_losses,grad_norms,pseudo_stats,eval_stats",
+        flush=True,
+    )
+
+    best_score = float("-inf")
+    best_val = float("-inf")
+    best_test = float("nan")
+    best_epoch = 0
+    telemetry_rows: List[Dict[str, Any]] = []
+    for epoch in range(1, total_epochs + 1):
+        import time
+
+        t0 = time.time()
+        phase = "label" if epoch <= int(args.label_epochs) else "pseudo"
+        stage_state = _stage_state_for_epoch(epoch, args, phase)
+        cur_w = _loss_weights(args, stage_state)
+        if configure_mixstyle_for_epoch is not None:
+            mixstyle_state = configure_mixstyle_for_epoch(model, args, epoch)
+        else:
+            mixstyle_state = _fallback_mixstyle_state(args)
+        if augmentor is not None and configure_augmentor_for_epoch is not None:
+            aug_state = configure_augmentor_for_epoch(augmentor, aug_base_cfg, min(epoch, int(args.label_epochs)), args)
+        else:
+            aug_state = _fallback_aug_state(args)
+        model.train()
+        epoch_logs = []
+        unlabeled_iter = iter(data_ctx["unlabeled_loader"]) if phase == "pseudo" and bool(args.use_unlabeled) else None
+        for labeled_batch in data_ctx["train_loader"]:
+            x_l, y_l, extra_l = move_batch(labeled_batch, device)
+            d_l = domain_from_extra(extra_l, data_ctx["domain_label_map"], device)
+            if augmentor is not None:
+                x_l_main = torch.nan_to_num(
+                    augmentor(x_l, labels=y_l, no_pa=(not bool(args.aug_enable_pa_normal))),
+                    nan=0.0,
+                    posinf=0.0,
+                    neginf=0.0,
+                )
+            else:
+                x_l_main = x_l
+            optimizer.zero_grad(set_to_none=True)
+            with autocast(enabled=bool(args.amp and device.type == "cuda")):
+                out_l = model(x_l_main, y_tx=y_l, grl_lambda=1.0, return_aux=True, domain_labels=d_l)
+                domain_stats = {"valid": (d_l >= 0) if d_l is not None else None}
+                domain_gates = {
+                    "dom": d_l is not None and "dom_logits" in out_l and cur_w["dom"] > 0.0,
+                    "adv": d_l is not None and "adv_dom_logits" in out_l and cur_w["adv"] > 0.0,
+                    "cons": d_l is not None and cur_w["cons"] > 0.0,
+                    "group_ce": d_l is not None and cur_w["group_ce"] > 0.0,
+                }
+                core_losses = compute_core_losses(
+                    out_l,
+                    y_l,
+                    d_l,
+                    domain_stats,
+                    domain_gates,
+                    lambda logits, target: F.cross_entropy(logits, target, label_smoothing=float(args.label_smoothing)),
+                    lambda logits, target: F.cross_entropy(logits, target),
+                    label_smoothing=float(args.label_smoothing),
+                    group_top_frac=float(args.group_ce_top_frac),
+                    group_min_domains=int(args.group_ce_min_domains),
+                    group_ce_mode=str(args.group_ce_mode),
+                )
+                loss_tx_l = core_losses["loss_cls"]
+                loss_dom_l = core_losses["loss_dom"]
+                loss_adv_l = core_losses["loss_adv"]
+                loss_cons_l = core_losses["loss_cons"]
+                loss_orth_l = core_losses["loss_orth"] if cur_w["orth"] > 0.0 else out_l["tx_logits"].sum() * 0.0
+                loss_group_ce_l = core_losses["loss_group_ce"]
+                if d_l is not None and cur_w["fishr"] > 0.0:
+                    loss_fishr_l = fishr_logit_gradient_variance_loss(
+                        out_l["tx_logits"],
+                        y_l,
+                        d_l,
+                        min_domains=int(args.fishr_min_domains),
+                    )
+                else:
+                    loss_fishr_l = out_l["tx_logits"].sum() * 0.0
+                use_sat_train = bool(args.use_sat_consistency) and epoch >= int(args.sat_cons_start_epoch) and (
+                    cur_w["sat_cls"] > 0.0 or cur_w["sat_cons"] > 0.0
+                )
+                if use_sat_train:
+                    if apply_sat_channel_for_scenario is None:
+                        raise ImportError("sat_channel.py support is required when --use_sat_consistency is enabled.")
+                    with torch.no_grad():
+                        x_sat, _ = apply_sat_channel_for_scenario(
+                            x_l,
+                            str(args.sat_train_scenario),
+                            args,
+                            gen=sat_gen,
+                            return_meta=False,
+                        )
+                    out_sat = model(x_sat, y_tx=y_l, grl_lambda=1.0, return_aux=True, domain_labels=d_l)
+                    loss_sat_cls_l = (
+                        F.cross_entropy(out_sat["tx_logits"], y_l)
+                        if cur_w["sat_cls"] > 0.0
+                        else out_l["tx_logits"].sum() * 0.0
+                    )
+                    clean_prob = out_l["tx_logits"].detach().softmax(dim=1)
+                    loss_sat_cons_l = F.kl_div(
+                        F.log_softmax(out_sat["tx_logits"], dim=1),
+                        clean_prob,
+                        reduction="batchmean",
+                    )
+                else:
+                    loss_sat_cls_l = out_l["tx_logits"].sum() * 0.0
+                    loss_sat_cons_l = out_l["tx_logits"].sum() * 0.0
+                loss_l = (
+                    loss_tx_l
+                    + cur_w["dom"] * loss_dom_l
+                    + cur_w["adv"] * loss_adv_l
+                    + cur_w["orth"] * loss_orth_l
+                    + cur_w["cons"] * loss_cons_l
+                    + cur_w["group_ce"] * loss_group_ce_l
+                    + cur_w["fishr"] * loss_fishr_l
+                    + cur_w["sat_cls"] * loss_sat_cls_l
+                    + cur_w["sat_cons"] * loss_sat_cons_l
+                )
+                if phase == "pseudo" and bool(args.use_unlabeled):
+                    try:
+                        unlabeled_batch = next(unlabeled_iter)
+                    except StopIteration:
+                        unlabeled_iter = iter(data_ctx["unlabeled_loader"])
+                        unlabeled_batch = next(unlabeled_iter)
+                    x_u, y_u, extra_u = move_batch(unlabeled_batch, device)
+                    d_u = domain_from_extra(extra_u, data_ctx["domain_label_map"], device)
+                    pseudo_source = ema_model if ema_model is not None else model
+                    with torch.no_grad():
+                        pseudo_source.eval()
+                        out_w = pseudo_source(x_u, y_tx=None, grl_lambda=1.0, return_aux=True)
+                        if ema_model is None:
+                            model.train()
+                        prob_w = out_w["tx_logits"].softmax(dim=1)
+                        conf, pseudo = prob_w.max(dim=1)
+                        conf_mask = _threshold_mask(conf, d_u, args)
+                        if bool(args.pseudo_domain_gate):
+                            if d_u is None or "dom_logits" not in out_w:
+                                domain_mask = torch.zeros_like(conf_mask)
+                            else:
+                                domain_mask = out_w["dom_logits"].argmax(dim=1) == d_u
+                        else:
+                            domain_mask = torch.ones_like(conf_mask)
+                        if bool(args.pseudo_temporal_gate):
+                            temporal_mask = _temporal_mask_tensor(pseudo, conf, extra_u, args, device)
+                        else:
+                            temporal_mask = torch.ones_like(conf_mask)
+                        base_mask = conf_mask & domain_mask & temporal_mask
+                    x_s = _strong_augment(x_u, float(args.strong_noise_std))
+                    out_s = model(x_s, y_tx=None, grl_lambda=1.0, return_aux=True)
+                    if bool(args.pseudo_strong_agreement):
+                        strong_mask = out_s["tx_logits"].argmax(dim=1) == pseudo
+                    else:
+                        strong_mask = torch.ones_like(base_mask)
+                    mask = base_mask & strong_mask
+                    pseudo_total = int(pseudo.numel())
+                    pseudo_selected = int(mask.sum().detach().item())
+                    pseudo_correct = int(((pseudo == y_u) & mask).sum().detach().item())
+                    if bool(mask.any()):
+                        loss_u = F.cross_entropy(out_s["tx_logits"][mask], pseudo[mask])
+                    else:
+                        loss_u = out_s["tx_logits"].sum() * 0.0
+                    prob_s = out_s["tx_logits"].softmax(dim=1)
+                    loss_ent = -(prob_s * prob_s.clamp_min(1e-8).log()).sum(dim=1).mean()
+                    reliable_ratio = mask.float().mean()
+                    pseudo_conf = conf.mean()
+                    domain_pass = domain_mask.float().mean()
+                    temporal_pass = temporal_mask.float().mean()
+                    strong_pass = strong_mask.float().mean()
+                else:
+                    z = out_l["tx_logits"].sum() * 0.0
+                    loss_u = z
+                    loss_ent = z
+                    reliable_ratio = z.detach()
+                    pseudo_conf = z.detach()
+                    domain_pass = z.detach()
+                    temporal_pass = z.detach()
+                    strong_pass = z.detach()
+                    pseudo_total = 0
+                    pseudo_selected = 0
+                    pseudo_correct = 0
+                loss = loss_l + float(args.lambda_u) * loss_u + float(args.lambda_ent) * loss_ent
+            loss_is_finite = bool(torch.isfinite(loss.detach()).item())
+            skipped_nonfinite_loss = 0
+            skipped_nonfinite_grad = 0
+            if loss_is_finite:
+                scaler.scale(loss).backward()
+                scaler.unscale_(optimizer)
+                grad_total = _grad_norm(model)
+                grad_backbone = _grad_norm(model, lambda name: "backbone" in name)
+                grad_aux = _grad_norm(model, lambda name: "aux" in name)
+                grad_domain = _grad_norm(model, lambda name: "dom" in name or "domain" in name)
+                grads_finite = _grads_are_finite(model)
+                if grads_finite:
+                    scaler.step(optimizer)
+                    if ema_model is not None:
+                        _update_ema_model(ema_model, model, float(args.ema_decay))
+                else:
+                    skipped_nonfinite_grad = 1
+                    optimizer.zero_grad(set_to_none=True)
+                scaler.update()
+            else:
+                skipped_nonfinite_loss = 1
+                optimizer.zero_grad(set_to_none=True)
+                grad_total = float("nan")
+                grad_backbone = float("nan")
+                grad_aux = float("nan")
+                grad_domain = float("nan")
+            epoch_logs.append(
+                {
+                    "train/loss": loss.detach(),
+                    "train/loss_labeled": loss_l.detach(),
+                    "train/loss_tx_labeled": loss_tx_l.detach(),
+                    "train/loss_domain_labeled": loss_dom_l.detach(),
+                    "train/loss_adv_labeled": loss_adv_l.detach(),
+                    "train/loss_cons_labeled": loss_cons_l.detach(),
+                    "train/loss_orth_labeled": loss_orth_l.detach(),
+                    "train/loss_group_ce_labeled": loss_group_ce_l.detach(),
+                    "train/loss_fishr_labeled": loss_fishr_l.detach(),
+                    "train/loss_sat_cls_labeled": loss_sat_cls_l.detach(),
+                    "train/loss_sat_cons_labeled": loss_sat_cons_l.detach(),
+                    "train/w_loss_tx_labeled": loss_tx_l.detach(),
+                    "train/w_loss_domain_labeled": (cur_w["dom"] * loss_dom_l).detach(),
+                    "train/w_loss_adv_labeled": (cur_w["adv"] * loss_adv_l).detach(),
+                    "train/w_loss_cons_labeled": (cur_w["cons"] * loss_cons_l).detach(),
+                    "train/w_loss_orth_labeled": (cur_w["orth"] * loss_orth_l).detach(),
+                    "train/w_loss_group_ce_labeled": (cur_w["group_ce"] * loss_group_ce_l).detach(),
+                    "train/w_loss_fishr_labeled": (cur_w["fishr"] * loss_fishr_l).detach(),
+                    "train/w_loss_sat_cls_labeled": (cur_w["sat_cls"] * loss_sat_cls_l).detach(),
+                    "train/w_loss_sat_cons_labeled": (cur_w["sat_cons"] * loss_sat_cons_l).detach(),
+                    "train/loss_unlabeled": loss_u.detach(),
+                    "train/tx_acc": 100.0 * (out_l["tx_logits"].argmax(dim=1) == y_l).float().mean().detach(),
+                    "train/dom_acc": core_losses.get("dom_acc", float("nan")),
+                    "train/cons_cos": core_losses.get("cons_cos", float("nan")),
+                    "train/grad_total": grad_total,
+                    "train/grad_backbone": grad_backbone,
+                    "train/grad_aux": grad_aux,
+                    "train/grad_domain": grad_domain,
+                    "train/skipped_nonfinite_loss": skipped_nonfinite_loss,
+                    "train/skipped_nonfinite_grad": skipped_nonfinite_grad,
+                    "train/reliable_ratio": reliable_ratio.detach(),
+                    "train/pseudo_conf": pseudo_conf.detach(),
+                    "train/domain_pass": domain_pass.detach(),
+                    "train/temporal_pass": temporal_pass.detach(),
+                    "train/strong_pass": strong_pass.detach(),
+                    "train/pseudo_total": pseudo_total,
+                    "train/pseudo_selected": pseudo_selected,
+                    "train/pseudo_correct": pseudo_correct,
+                }
+            )
+
+        val_stats, named_stats = _evaluate(model, data_ctx, device, int(args.eval_max_batches))
+        train_logs = mean_logs(epoch_logs)
+        train_logs["train/pseudo_total"] = _sum_log_values(epoch_logs, "train/pseudo_total")
+        train_logs["train/pseudo_selected"] = _sum_log_values(epoch_logs, "train/pseudo_selected")
+        train_logs["train/pseudo_correct"] = _sum_log_values(epoch_logs, "train/pseudo_correct")
+        test_stats = _aggregate_main_test(named_stats, str(args.dataset))
+        sat_test_stats = _evaluate_sat_if_enabled(model, data_ctx, device, args)
+        stats = {"train": train_logs, "val": val_stats, "named_test": named_stats, "test": test_stats, "sat_test_named": sat_test_stats}
+        payload = {
+            "model": model.state_dict(),
+            "ema_model": ema_model.state_dict() if ema_model is not None else None,
+            "baseline_ckpt": args.baseline_ckpt,
+            "epoch": epoch,
+            "phase": phase,
+            "args": vars(args),
+            "baseline_args": vars(model_args),
+            "split_info": data_ctx["split_info"],
+            "stats": stats,
+        }
+        latest_path = out_dir / "latest_ssdg.pth"
+        best_path = out_dir / f"best_{args.best_metric}_ssdg.pth"
+        save_payload(latest_path, payload)
+        is_best = False
+        current_best_score = _best_score(val_stats, test_stats, sat_test_stats, str(args.best_metric))
+        if current_best_score > best_score:
+            best_score = float(current_best_score)
+            best_val = float(val_stats["tx_acc"])
+            best_test = float(test_stats["tx_acc"])
+            best_epoch = int(epoch)
+            payload["best_metric"] = str(args.best_metric)
+            payload["best_score"] = best_score
+            save_payload(best_path, payload)
+            is_best = True
+        elapsed = time.time() - t0
+        telemetry_rows.append(
+            _build_ssdg_epoch_telemetry_row(
+                args=args,
+                epoch=epoch,
+                epochs=total_epochs,
+                lr=float(optimizer.param_groups[0]["lr"]),
+                epoch_time_s=elapsed,
+                phase=phase,
+                train_logs=train_logs,
+                val_stats=val_stats,
+                test_stats=test_stats,
+                named_test_stats=named_stats,
+                sat_test_stats=sat_test_stats,
+                stage_state=stage_state,
+                mixstyle_state=mixstyle_state,
+                aug_state=aug_state,
+                loss_weights=cur_w,
+                best_score=best_score,
+                best_val=best_val,
+                best_test=best_test,
+                best_epoch=best_epoch,
+                latest_path=str(latest_path),
+                best_path=str(best_path),
+                is_best=is_best,
+            )
+        )
+        _write_ssdg_epoch_telemetry(metrics_csv_path, metrics_jsonl_path, telemetry_rows)
+        print(
+            format_ssdg_epoch_block(
+                epoch=epoch,
+                epochs=total_epochs,
+                lr=float(optimizer.param_groups[0]["lr"]),
+                epoch_time_s=elapsed,
+                phase=phase,
+                train_logs=train_logs,
+                val_stats=val_stats,
+                test_stats=test_stats,
+                named_test_stats=named_stats,
+                named_test_meta=data_ctx["split_info"].get("named_test_meta", {}),
+                sat_test_stats=sat_test_stats,
+                stage_state=stage_state,
+                mixstyle_state=mixstyle_state,
+                aug_state=aug_state,
+                loss_weights=cur_w,
+                best_val=best_val,
+                best_test=best_test,
+                best_epoch=best_epoch,
+                latest_path=str(latest_path),
+                best_path=str(best_path),
+                is_best=is_best,
+            ),
+            flush=True,
+        )
+    return 0
+
+
+def main() -> int:
+    args = build_arg_parser().parse_args()
+    return train(args)
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

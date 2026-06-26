@@ -1,0 +1,64 @@
+name: PhyCon-CxRCM-SGC-020M-Diffusion-Channel
+seed: 1337
+
+data:
+  dataset: wisig
+  input_len: 256
+  train_ratio: 0.2
+  train_days: [0, 1]
+  test_days: [2, 3]
+  train_rxs: [0, 1, 2, 3, 4, 5, 6]
+  test_rxs: [7, 8, 9, 10, 11]
+  batch_size: 256
+  eval_batch_size: 256
+  num_workers: 4
+  prefetch_factor: 2
+
+sat_channel:
+  fs_hz: 25.0e6
+  fc_hz: 2.462e9
+  train_scenario: mixed_orbit
+
+model:
+  type: cx_residual_consistency_unet_1d
+  target_params: 0.20M
+  input_len: 256
+  in_channels: 2
+  condition_dim: 24
+  time_embed_dim: 64
+  channels: [32, 48, 64, 72]
+  kernel_size: 5
+  stem_kernel_size: 7
+  group_norm_groups: 8
+  bottleneck_attention: true
+  output_activation: tanh
+
+residual:
+  rho_start: 0.05
+  rho_mid: 0.10
+  rho_max: 0.15
+  r_max_start: 0.05
+  r_max_mid: 0.10
+  r_max_late: 0.15
+
+diffusion:
+  train_timesteps: 1000
+  noise_schedule: cosine
+  prediction_type: v_prediction
+  ema_decay: 0.999
+
+loss:
+  lambda_diff: 1.0
+  lambda_pair: 0.2
+  lambda_chan: 0.5
+  lambda_id: 0.5
+  lambda_res: 1.5
+  lambda_tf: 0.2
+
+optim:
+  optimizer: AdamW
+  lr: 2.0e-4
+  weight_decay: 1.0e-4
+  grad_clip: 1.0
+  epochs: 80
+  amp: true
