@@ -99,6 +99,8 @@ bash run_cvs_baseline_queue.sh \
   --wisig-protocol drift_day1 \
   --gpu-ids 1 \
   --dry-run
+
+bash baselines/scripts/run_riei_original_table3_queue.sh --dry-run
 ```
 
 When the dataset path and GPU allocation are verified, remove `--dry-run`.

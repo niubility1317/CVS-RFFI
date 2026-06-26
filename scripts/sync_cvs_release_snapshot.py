@@ -77,6 +77,10 @@ CORE_TREE_MIRRORS = [
     ("tests", "tests"),
 ]
 
+PRESERVE_RELEASE_DESTS = {
+    "baselines/README.md",
+}
+
 ROOT_MARKDOWN_FILES = [
     "AUDIT_CVS_RFFI_GROUND_TO_SPACE_FSL.md",
     "EXPERIMENT_DESIGN.md",
@@ -261,17 +265,29 @@ def mirror_tree(
             src = current_path / file_name
             rel = src.relative_to(source_dir)
             rel_str = rel.as_posix()
+            dst = dest_dir / rel
+            dst_rel = dst.relative_to(repo_root).as_posix()
+            if dst_rel in PRESERVE_RELEASE_DESTS:
+                included_rel.add(rel_str)
+                manifest["skipped"].append(
+                    {
+                        "source": src.relative_to(source_root).as_posix(),
+                        "dest": dst_rel,
+                        "reason": "preserved release-maintained file",
+                    }
+                )
+                continue
             if allowed_suffix_set and src.suffix.lower() not in allowed_suffix_set:
                 if not any(fnmatch.fnmatch(file_name, pat) for pat in allow_pattern_list):
                     manifest["skipped"].append(
                         {
                             "source": src.relative_to(source_root).as_posix(),
-                            "dest": (dest_dir / rel).relative_to(repo_root).as_posix(),
+                            "dest": dst_rel,
                             "reason": "suffix not allowlisted",
                         }
                     )
                     continue
-            if copy_file(src, dest_dir / rel, source_root, repo_root, max_bytes, manifest, category):
+            if copy_file(src, dst, source_root, repo_root, max_bytes, manifest, category):
                 included_rel.add(rel_str)
     if dest_dir.exists():
         for current, dirs, files in os.walk(dest_dir):
