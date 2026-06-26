@@ -79,6 +79,11 @@ CORE_TREE_MIRRORS = [
 
 PRESERVE_RELEASE_DESTS = {
     "baselines/README.md",
+    "baselines/PAPER_RERUN_REPORT_TEMPLATE.md",
+    "baselines/scripts/run_riei_original_table3_queue.sh",
+    "baselines/scripts/run_wisig_paper_scope_queue.sh",
+    "scripts/launchers/run_cvs_baseline_queue.sh",
+    "tests/test_baseline_paper_launchers.py",
 }
 
 ROOT_MARKDOWN_FILES = [
@@ -340,6 +345,17 @@ def copy_core_sources(args: argparse.Namespace, manifest: Dict[str, Any]) -> Non
     included = set()
     for launcher in launchers:
         dst = dest_dir / launcher.name
+        dst_rel = dst.relative_to(repo_root).as_posix()
+        if dst_rel in PRESERVE_RELEASE_DESTS:
+            included.add(launcher.name)
+            manifest["skipped"].append(
+                {
+                    "source": launcher.relative_to(source_root).as_posix(),
+                    "dest": dst_rel,
+                    "reason": "preserved release-maintained launcher",
+                }
+            )
+            continue
         if copy_file(launcher, dst, source_root, repo_root, max_bytes, manifest, "launchers"):
             included.add(launcher.name)
     for target in dest_dir.glob("run_*.sh"):

@@ -3,24 +3,23 @@ set -uo pipefail
 
 # CVS-RFFI paper-baseline queue launcher.
 #
-# This public launcher executes from the repository root even though it lives in
-# scripts/launchers/. It writes run outputs only under runs/ and logs/, both
-# ignored by git.
+# This script makes the baseline audit experiments in
+# baselines/PAPER_CODE_AUDIT.md executable from the public repository. It writes
+# run outputs only under runs/ and logs/, both ignored by git.
 #
 # Typical uses:
 #   conda activate ssr-gpu
-#   bash scripts/launchers/run_cvs_baseline_queue.sh --dry-run
-#   bash scripts/launchers/run_cvs_baseline_queue.sh --methods riei_fd --wisig-protocol riei_original
-#   bash scripts/launchers/run_cvs_baseline_queue.sh --methods drift --wisig-protocol drift_day1
+#   bash run_cvs_baseline_queue.sh --dry-run
+#   bash run_cvs_baseline_queue.sh --methods riei_fd --wisig-protocol riei_original
+#   bash run_cvs_baseline_queue.sh --methods drift --wisig-protocol drift_day1
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-REPO_ROOT="$(cd "${SCRIPT_DIR}/../.." && pwd)"
-cd "${REPO_ROOT}" || exit 1
+cd "${SCRIPT_DIR}" || exit 1
 
 METHODS_CSV="${METHODS:-riei_fd,drift}"
 GPU_IDS_CSV="${GPU_IDS:-0,1}"
 PYTHON_BIN="${PYTHON_BIN:-}"
-WISIG_PKL="${WISIG_PKL:-${REPO_ROOT}/Dataset_WigSig/ManySig.pkl}"
+WISIG_PKL="${WISIG_PKL:-./Dataset_WigSig/ManySig.pkl}"
 WISIG_PROTOCOL="${WISIG_PROTOCOL:-cvs_day_rx}"
 RUN_ROOT="${RUN_ROOT:-}"
 LOG_ROOT="${LOG_ROOT:-}"
@@ -137,8 +136,8 @@ elif [ "${WISIG_PROTOCOL}" = "riei_original" ]; then
   PAPER_TEST_SAMPLES_PER_COMBO="800"
 fi
 
-RUN_ROOT="${RUN_ROOT:-${REPO_ROOT}/runs/baseline_paper_audit_${WISIG_PROTOCOL}_seed${SEED}}"
-LOG_ROOT="${LOG_ROOT:-${REPO_ROOT}/logs/baseline_paper_audit_${WISIG_PROTOCOL}_seed${SEED}}"
+RUN_ROOT="${RUN_ROOT:-${SCRIPT_DIR}/runs/baseline_paper_audit_${WISIG_PROTOCOL}_seed${SEED}}"
+LOG_ROOT="${LOG_ROOT:-${SCRIPT_DIR}/logs/baseline_paper_audit_${WISIG_PROTOCOL}_seed${SEED}}"
 
 if [ -z "${PYTHON_BIN}" ]; then
   for candidate in python3 python python.exe py; do
@@ -170,7 +169,7 @@ if [ "${DRY_RUN}" != "1" ] && [ "${CONDA_DEFAULT_ENV:-}" != "ssr-gpu" ]; then
   echo "WARNING: CONDA_DEFAULT_ENV='${CONDA_DEFAULT_ENV:-}'. Project instructions expect: conda activate ssr-gpu" >&2
 fi
 
-export PYTHONPATH="${REPO_ROOT}:${REPO_ROOT}/code:${PYTHONPATH:-}"
+export PYTHONPATH="${SCRIPT_DIR}:${SCRIPT_DIR}/code:${PYTHONPATH:-}"
 mkdir -p "${RUN_ROOT}" "${LOG_ROOT}"
 STAMP="$(date +%Y%m%d_%H%M%S)"
 SCHED_LOG="${LOG_ROOT}/scheduler_${STAMP}.log"
@@ -299,7 +298,7 @@ run_one() {
 IFS=',' read -r -a METHODS <<< "${METHODS_CSV}"
 : > "${MANIFEST}"
 
-log_msg "[BASELINE-QUEUE] root=${REPO_ROOT}"
+log_msg "[BASELINE-QUEUE] root=${SCRIPT_DIR}"
 log_msg "[BASELINE-QUEUE] run_root=${RUN_ROOT}"
 log_msg "[BASELINE-QUEUE] log_root=${LOG_ROOT}"
 log_msg "[BASELINE-QUEUE] methods=${METHODS_CSV}"

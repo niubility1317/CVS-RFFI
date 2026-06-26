@@ -104,8 +104,8 @@ python -m pytest tests\test_paper_reproduction_protonet.py tests\test_paper_repr
 论文baseline审计实验入口：
 
 ```powershell
-bash run_cvs_baseline_queue.sh --methods riei_fd --wisig-protocol riei_original --dry-run
-bash run_cvs_baseline_queue.sh --methods drift --wisig-protocol drift_day1 --dry-run
+bash scripts/launchers/run_cvs_baseline_queue.sh --methods riei_fd --wisig-protocol riei_original --dry-run
+bash scripts/launchers/run_cvs_baseline_queue.sh --methods drift --wisig-protocol drift_day1 --dry-run
 ```
 
 完整运行前需提供真实`Dataset_WigSig/ManySig.pkl`路径并移除`--dry-run`。RIEI original使用`riei_last10`统计，DRIFT-Day1使用`drift_last5`统计；详细命令、超参数对照和声明边界见`baselines/README.md`。

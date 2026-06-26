@@ -63,7 +63,7 @@ evidence.
 ```bash
 METHODS=cvcnn_ce,riei_fd,drift,ra_collab \
 GPU_IDS=0,1,2,3 \
-nohup bash run_cvs_baseline_queue.sh > logs/wisig_baselines_seed1337_ratio010_satview/nohup_$(date +%Y%m%d_%H%M%S).out 2>&1 &
+nohup bash scripts/launchers/run_cvs_baseline_queue.sh > logs/wisig_baselines_seed1337_ratio010_satview/nohup_$(date +%Y%m%d_%H%M%S).out 2>&1 &
 ```
 
 The launcher enables CVS-RFFI-style satellite-channel OOD evaluation by
@@ -88,13 +88,13 @@ that require real WiSig/ManySig data and long training rather than synthetic
 smoke tests. Dry-run them first to inspect the exact commands:
 
 ```bash
-bash run_cvs_baseline_queue.sh \
+bash scripts/launchers/run_cvs_baseline_queue.sh \
   --methods riei_fd \
   --wisig-protocol riei_original \
   --gpu-ids 0 \
   --dry-run
 
-bash run_cvs_baseline_queue.sh \
+bash scripts/launchers/run_cvs_baseline_queue.sh \
   --methods drift \
   --wisig-protocol drift_day1 \
   --gpu-ids 1 \
@@ -116,7 +116,7 @@ For a CVS-aligned comparison across all four baselines, keep the default
 ```bash
 METHODS=cvcnn_ce,riei_fd,drift,ra_collab \
 GPU_IDS=0,1,2,3 \
-bash run_cvs_baseline_queue.sh --wisig-protocol cvs_day_rx --dry-run
+bash scripts/launchers/run_cvs_baseline_queue.sh --wisig-protocol cvs_day_rx --dry-run
 ```
 
 These commands set up experiments; they do not by themselves constitute

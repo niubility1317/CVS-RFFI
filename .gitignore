@@ -11,6 +11,7 @@
 
 # Root-level launcher copies are staged under scripts/launchers/.
 /run_*.sh
+!/run_cvs_baseline_queue.sh
 
 # Data, checkpoints, and experiment outputs
 Dataset*/

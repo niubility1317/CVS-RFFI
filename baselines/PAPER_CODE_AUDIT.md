@@ -508,3 +508,24 @@ class ValidationLossPlateauController:
 | RA-Collab | `ra_collab/model.py` | `ra_collab/losses.py` | `ra_collab/train_cvs.py` | `ra_collab/collaborative_inference.py` |
 | CVCNN-CE | `cvcnn_ce/model.py` | — (仅CE) | `cvcnn_ce/train_cvs.py` | — |
 | 通用 | `common/resnet1d.py` `common/resnet2d.py` | `common/grl.py` | `common/cvs_trainer.py` | `common/cvs_sat_eval.py` |
+
+---
+
+## 9. 2026-06-26落实状态
+
+本节用于避免后续把ChatGPT Pro旧版建议、已采纳修复和仍需真实训练验证的项目混淆。状态只描述代码/文档/入口是否已落实，不把dry-run或静态测试写成论文结果。
+
+| ID | 建议或差异 | 处理状态 | 落地位置 | 后续边界 |
+|---|---|---|---|---|
+| AUD-01 | DRIFT U-Net/DeConv补齐 | 不采纳 | 本文第7.1节 | DRIFT目标原文不包含该模块，不能为追赶性能加入非原文结构 |
+| AUD-02 | DRIFT `L_dmi`补齐 | 不采纳 | 本文第7.1节 | 旧版误判，不作为论文复现目标 |
+| AUD-03 | DRIFT默认DANN schedule | 不采纳默认化，保留消融开关 | `baselines/drift/train.py`与本文第7.2节 | 默认仍为constant GRL；`--grl_schedule dann`只作消融 |
+| AUD-04 | RIEI改成2D CNN/2层MLP | 不采纳 | 本文第7.1节 | RIEI WiSig目标仍为ResNet1D-18与3-layer classifier |
+| AUD-05 | RIEI original Table III协议入口 | 已落实入口，待真实训练验证 | `scripts/launchers/run_cvs_baseline_queue.sh`；`baselines/scripts/run_riei_original_table3_queue.sh` | 需真实ManySig数据、完整训练、同row指标后才能写结果声明 |
+| AUD-06 | DRIFT Day1协议入口 | 已落实入口，待真实训练验证 | `scripts/launchers/run_cvs_baseline_queue.sh` | 需真实ManySig Day1训练与`drift_last5`统计后才能写结果声明 |
+| AUD-07 | 日志与manifest可追踪性 | 已落实 | `scripts/launchers/run_cvs_baseline_queue.sh`；`baselines/PAPER_RERUN_REPORT_TEMPLATE.md` | 报告必须绑定run目录、split、seed和完整同row指标 |
+| AUD-08 | README实验落地命令 | 已落实 | `README.md`；`baselines/README.md` | dry-run只证明命令可生成，不代表训练完成 |
+| AUD-09 | 超参数对照表 | 已落实 | `baselines/README.md` | 表内值用于入口默认与论文边界说明 |
+| AUD-10 | CVCNN SincConv1d路径说明 | 已落实 | `baselines/README.md` | CVCNN仍为CE-only baseline，不新增论文外辅助损失 |
+| AUD-11 | RA-Collab是否并入纸面复现 | 不采纳为RIEI/DRIFT纸面复现项 | `baselines/README.md` | RA-Collab只用于CVS-aligned comparison |
+| AUD-12 | 作者未公开细节导致的RIEI/DRIFT ResNet差异 | 待真实训练验证 | `baselines/PAPER_RERUN_REPORT_TEMPLATE.md` | 只能由完整复现实验结果判断，不能由静态代码直接宣称完全一致 |
