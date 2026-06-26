@@ -8,7 +8,8 @@ set -euo pipefail
 # Default split is the project CVS-RFFI ratio-0.1 WiSig split:
 #   train days 0,1; test days 2,3; train receivers 0..6; test receivers 7..11.
 
-ROOT="${ROOT:-$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)}"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+ROOT="${ROOT:-$(cd "${SCRIPT_DIR}/../.." && pwd)}"
 cd "${ROOT}" || exit 1
 
 PLAN="${PLAN:-all}"

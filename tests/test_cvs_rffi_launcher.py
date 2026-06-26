@@ -36,7 +36,7 @@ class CvsRffiLauncherTest(unittest.TestCase):
             command = (
                 f'LOG_ROOT="{tmp_posix}/logs" '
                 f'RUN_ROOT="{tmp_posix}/runs" '
-                f'bash run_cvs_baseline_queue.sh --python "{python_bin}" --dry-run'
+                f'bash scripts/launchers/run_cvs_baseline_queue.sh --python "{python_bin}" --dry-run'
             )
 
             proc = subprocess.run(
@@ -74,7 +74,7 @@ class CvsRffiLauncherTest(unittest.TestCase):
             command = (
                 f'LOG_ROOT="{tmp_posix}/logs" '
                 f'RUN_ROOT="{tmp_posix}/runs" '
-                f'bash run_cvs_baseline_queue.sh --python "{python_bin}" '
+                f'bash scripts/launchers/run_cvs_baseline_queue.sh --python "{python_bin}" '
                 "--methods cvcnn_ce,riei_fd,ra_collab --dry-run"
             )
 
@@ -92,9 +92,9 @@ class CvsRffiLauncherTest(unittest.TestCase):
 
         output = proc.stdout + proc.stderr
         self.assertEqual(proc.returncode, 0, output)
-        self.assertIn("cvcnn_ce_seed1337", output)
-        self.assertIn("riei_fd_seed1337", output)
-        self.assertIn("ra_collab_seed1337", output)
+        self.assertIn("cvcnn_ce_cvs_day_rx_seed1337", output)
+        self.assertIn("riei_fd_cvs_day_rx_seed1337", output)
+        self.assertIn("ra_collab_cvs_day_rx_seed1337", output)
 
     def test_r010_cvsrffi_riei_drift_queue_exposes_split_matrix_and_ablations(self):
         bash = _find_bash()
@@ -108,7 +108,7 @@ class CvsRffiLauncherTest(unittest.TestCase):
             command = (
                 f'LOG_ROOT="{tmp_posix}/logs" '
                 f'RUN_ROOT="{tmp_posix}/runs" '
-                f'bash run_cvsrffi_riei_drift_r010_queue.sh --python "{python_bin}" '
+                f'bash scripts/launchers/run_cvsrffi_riei_drift_r010_queue.sh --python "{python_bin}" '
                 "--dry-run --splits rx3_d0,rx7_d012 "
                 "--methods riei_fd,drfit,cvs_full,cvs_no_satboost,cvs_no_mixstyle,"
                 "cvs_no_fishr,cvs_no_group_ce,cvs_no_proto_supcon,cvs_no_dsq --gpu-ids 0,1"
@@ -166,7 +166,7 @@ class CvsRffiLauncherTest(unittest.TestCase):
             command = (
                 f'LOG_ROOT="{tmp_posix}/logs" '
                 f'RUN_ROOT="{tmp_posix}/runs" '
-                f'bash run_cvsrffi_riei_drift_r010_queue.sh --python "{python_bin}" '
+                f'bash scripts/launchers/run_cvsrffi_riei_drift_r010_queue.sh --python "{python_bin}" '
                 "--dry-run --plan comparison_plus_ablation --splits rx3_d0,rx7_d01 "
                 "--ablation-splits rx7_d01 --gpu-ids 0,1"
             )
@@ -208,7 +208,7 @@ class CvsRffiLauncherTest(unittest.TestCase):
             command = (
                 f'LOG_ROOT="{tmp_posix}/logs" '
                 f'RUN_ROOT="{tmp_posix}/runs" '
-                f'bash run_cvsrffi_riei_drift_r010_queue.sh --python "{python_bin}" '
+                f'bash scripts/launchers/run_cvsrffi_riei_drift_r010_queue.sh --python "{python_bin}" '
                 "--dry-run --plan sat_comparison --splits rx3_d0,rx7_d01 --gpu-ids 0,1"
             )
 
@@ -250,7 +250,7 @@ class CvsRffiLauncherTest(unittest.TestCase):
             command = (
                 f'LOG_ROOT="{tmp_posix}/logs" '
                 f'RUN_ROOT="{tmp_posix}/runs" '
-                f'bash run_cvsrffi_riei_drift_r010_queue.sh --python "{python_bin}" '
+                f'bash scripts/launchers/run_cvsrffi_riei_drift_r010_queue.sh --python "{python_bin}" '
                 "--dry-run --plan comparison "
                 "--splits rx2lo_d0,rx2sp_d01,rx4hi_d012,rx6sp_d0 --gpu-ids 0,1,2"
             )
@@ -295,8 +295,8 @@ class CvsRffiLauncherTest(unittest.TestCase):
                 f'RUN_ROOT="{tmp_posix}/runs" '
                 f'WISIG_PKL="{tmp_posix}/fake.pkl" '
                 "PYTHON_BIN=true "
-                "CVS_TRAIN_SCRIPT=run_cvsrffi_riei_drift_r010_queue.sh "
-                "bash run_cvsrffi_riei_drift_r010_queue.sh "
+                "CVS_TRAIN_SCRIPT=scripts/launchers/run_cvsrffi_riei_drift_r010_queue.sh "
+                "bash scripts/launchers/run_cvsrffi_riei_drift_r010_queue.sh "
                 "--plan comparison --splits rx3_d0 --methods riei_fd,drift,cvs_full "
                 "--gpu-ids 0 --no-skip-done; sleep 1"
             )
@@ -335,7 +335,7 @@ class CvsRffiLauncherTest(unittest.TestCase):
             command = (
                 f'LOG_ROOT="{tmp_posix}/logs" '
                 f'RUN_ROOT="{tmp_posix}/runs" '
-                f'bash run_cvsrffi_riei_drift_r010_queue.sh --python "{python_bin}" '
+                f'bash scripts/launchers/run_cvsrffi_riei_drift_r010_queue.sh --python "{python_bin}" '
                 "--dry-run --jobs rx7_d01:riei_fd,rx7_d012:cvs_full --gpu-ids 0,1"
             )
 

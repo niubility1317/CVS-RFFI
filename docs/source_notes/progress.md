@@ -14,7 +14,7 @@
 - Read the main CVS training entry points for RIEI, DRIFT, receiver-agnostic RFFI, CVCNN, and receiver-agnostic fine-tuning.
 - Confirmed all main baseline trainers share the same validation-gated test path.
 - Parsed historical baseline `metrics.json` files and log tails to confirm final epochs were not tested after training completion.
-- Found the documented root `run_cvs_baseline_queue.sh` is absent from the current workspace.
+- Superseded on 2026-06-26: root-level `run_cvs_baseline_queue.sh` is now only a compatibility wrapper; the canonical implementation is `scripts/launchers/run_cvs_baseline_queue.sh`.
 - Proposed focused fix design to user: central final test/satellite evaluation in `cvs_trainer.py`, batched TIFS2025 augmentation/spectrogram path, and fine-tune satellite consistency.
 - User approved the design.
 - Added RED regression tests in `tests/test_baseline_training_behaviors.py`.
@@ -389,10 +389,10 @@
 - Searched conversation index for CVS-RFFI paper/baseline reproduction history and found prior baseline audit, baseline-vs-CVS satellite-view analysis, and earlier baseline-matched CVS-RFFI experiment requests.
 - Added a new active addendum to `task_plan.md` and created `analysis/cvsrffi_paper_reproduction_traceability_20260601.md` for paper-setting parity tracking.
 - Inventory found the current active baseline methods under `baselines/`: `cvcnn_ce`, `riei_fd`, `drift`, and `ra_collab`; old `tifs2025` artifacts remain under `baselines/baseline_runs` but no current trainer directory is present in the active baseline package.
-- Critical paper-parity trap: `run_cvs_baseline_queue.sh` defaults to `SAT_VIEW_AUG=1` with `mixed_orbit`; that must be disabled for original paper-style reproduction training. Satellite evaluation can be retained only as an additional project metric.
+- Superseded on 2026-06-26: `scripts/launchers/run_cvs_baseline_queue.sh` now defaults to `SAT_VIEW_AUG=0`; training-time satellite view augmentation is enabled only by `--sat-view-aug`. Satellite evaluation remains an additional project metric, not original paper-style training evidence.
 - Another trap: individual trainers default to `wisig_train_ratio=0.2`, while the queue defaults to ratio `0.1` and val `0.9`; the reproduction commands must set the CVS-RFFI data split explicitly.
 - Dispatched three read-only review subagents: paper-setting parity, code/launcher parity, and prior-run exclusion. They converged on the current runnable baseline set `cvcnn_ce/riei_fd/drift/ra_collab`, with FedRIEI blocked by no runnable entrypoint and old TIFS2025 only present as artifacts.
-- Local verification under `ssr-gpu`: all four trainer `--help` commands exited 0; Python baseline modules passed `py_compile`; `bash -n run_cvs_baseline_queue.sh` passed; exact queue dry-run with `--no-sat-view-aug` and `RA_COLLAB_EPOCHS=100` exited 0 and showed `sat_view_aug=0`.
+- Historical verification under `ssr-gpu`: all four trainer `--help` commands exited 0; Python baseline modules passed `py_compile`; launcher syntax and exact queue dry-run passed with `sat_view_aug=0`.
 - Created experiment report `automation_reports/CV-SincNet/20260601_152529_paper_exact_baselines_r010/report.md` before any N607 launch.
 - N607 preflight passed; initial remote inventory showed all 8 GPUs idle and target exact run/log roots absent, but remote baseline package was stale/missing current `cvcnn_ce`, `riei_fd`, and `ra_collab` directories.
 - Created local snapshot under `code/snapshots/20260601_152529_paper_exact_baselines_r010/`, created remote pre-sync backup, synced the current verified baseline directories and launcher with direct `scp`, then verified remote hashes, `bash -n`, `py_compile`, and remote dry-run. Post-SSH/SCP cleanup checks showed no lingering local SSH connection.
@@ -408,8 +408,8 @@
 - User further clarified that papers without WiSig data should align to the original settings of papers that do use WiSig.
 - Implemented the first executable WiSig original-paper protocol: `--wisig_protocol drift_day1`, matching DRIFT's WiSig/ManySig Day1 receiver-disjoint setup with train receivers `1-1,14-7,7-7`, test receivers `1-19,19-2,2-1,2-19,20-1,7-14,8-8`, and 800/200 train/test sample counts.
 - Added `paper_eval_window` last-N reporting so DRIFT can report `last5`, RIEI can report `last10`, and non-WiSig methods aligned to the WiSig protocol can report `aligned_wisig_last5`.
-- Updated `run_cvs_baseline_queue.sh` to pass the explicit protocol, receiver groups, sample counts, disabled satellite train augmentation, and method-specific last-N windows.
-- Local verification under `ssr-gpu` passed: touched Python `py_compile`, `BaselineWiSigPaperProtocolTest`, full `tests.test_baseline_training_behaviors`, `bash -n run_cvs_baseline_queue.sh`, and `drift_day1` dry-run.
+- Updated the baseline queue launcher to pass the explicit protocol, receiver groups, sample counts, disabled satellite train augmentation, and method-specific last-N windows.
+- Local verification under `ssr-gpu` passed: touched Python `py_compile`, `BaselineWiSigPaperProtocolTest`, full `tests.test_baseline_training_behaviors`, launcher syntax, and `drift_day1` dry-run.
 - Created N607 gate report `E:\type10-7\automation_reports\CV-SincNet\20260601_160423_wisig_drift_day1_original_protocol\report.md`.
 - N607 preflight passed; GPU 4-7 were free while the earlier auxiliary CVS-RFFI-config jobs remained on GPU 0-3.
 - Synced verified files to N607 after remote backup `snapshots/20260601_160423_wisig_drift_day1_original_protocol_pre_sync`.

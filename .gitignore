@@ -9,7 +9,8 @@
 .claude/
 .codex-remote-attachments/
 
-# Root-level launcher copies are staged under scripts/launchers/.
+# Root-level launcher compatibility wrappers may be tracked.
+# Full launcher implementations are staged under scripts/launchers/.
 /run_*.sh
 !/run_cvs_baseline_queue.sh
 

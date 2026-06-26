@@ -23,7 +23,7 @@
     - `riei_seed1337`: 200 epochs, 14 tested epochs, last epoch 200 `tested=False`, best epoch 36.
     - `tifs2025_seed1337`: 60 epochs due to early stop, 6 tested epochs, last epoch 60 `tested=False`, best epoch 30.
   - Historical `receiver_agnostic_seed1337` run directory is empty and the manifest points to a log file that is absent, so that comparison result was not produced in the inspected run.
-  - No root-level `run_cvs_baseline_queue.sh` is present in the current workspace although `baselines/README.md` documents it.
+  - Superseded on 2026-06-26: root-level `run_cvs_baseline_queue.sh` is now only a compatibility wrapper; the canonical implementation is `scripts/launchers/run_cvs_baseline_queue.sh`.
 
 ## Star-ground baseline vs CVS-RFFI comparison - 2026-05-25
 - User asked to design related comparison experiments and connect by SSH to implement.
