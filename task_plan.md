@@ -46,12 +46,13 @@ Study the local SGC satellite-ground channel processing implementation and expla
 ### Goal
 把 Phase 2 在轨部署诊断转成 Codex 可执行工程计划：少样本域适应、新类注册、未知类拒识、TX/RX 双向解耦、域骨干使用方式、SGC no_amp 路线和角空间诊断。
 
-### Primary Doc
+### Primary Docs
 
 Read first:
 
 ```text
 docs/PHASE2_OPEN_WORLD_DIAGNOSIS_AND_CODEX_PLAN_20260626.md
+docs/PHASE2_FULL_PROTOTYPE_MASK_OPENWORLD_IMPLEMENTATION_20260626.md
 ```
 
 ### Key Takeaways
@@ -62,19 +63,23 @@ docs/PHASE2_OPEN_WORLD_DIAGNOSIS_AND_CODEX_PLAN_20260626.md
 - 地面基模需要按角空间诊断：class radius、inter-class angle、effective rank、TX/RX ANOVA、known-vs-unknown AUROC/FPR95/OSCR。
 - SGC 后续优先 `no_amp`；full per-channel amplitude normalization 可能抹掉 IQ imbalance/PA/RX 线索。
 - 目标 RX 必须包含旧已知 TX 锚点，否则 TX 与 RX 效应不可分。
+- 完整实现蓝图已拆成：TX/RX/TX-domain prototype banks、feature masks、TX×RX geometry losses、balanced sampler、multi-prototype open-world head、`phase2_adapt.py`。
 
 ### Codex Phases
 
 | Phase | Status | Notes |
 |---|---|---|
 | P0. Diagnostics | planned | Extend `eval_feature_diagnosis.py` with angular geometry, effective rank, TX/RX ANOVA, domain leakage probes, and open-set metrics. |
-| P1. Sampler/loss | planned | Add balanced TX×RX sampler, rectangle losses, real-gradient prototype margin, and TX adversary on domain feature. |
-| P2. Domain backbone | planned | Split/structure domain feature as `z_rx/z_env/z_int`; use domain context for residual correction/threshold calibration, not direct TX evidence. |
-| P3. Phase2 entry | planned | Add independent `phase2_adapt.py`, `open_world_head.py`, `open_world_memory.py`, and `eval_open_world.py`. |
+| P1. Prototype banks | planned | Add `phase2_prototypes.py` with TX, domain, TX-domain local prototype banks and radius tracker. |
+| P2. Sampler/loss | planned | Add balanced TX×RX sampler, rectangle losses, real-gradient prototype margin, and TX adversary on domain feature. |
+| P3. Feature masks | planned | Add `feature_masks.py`; learn `M_tx/M_rx/M_int` with overlap/coverage/binary/balance regularizers. |
+| P4. Multi-prototype head | planned | Add `open_world_head.py` for old/new class prototypes, radii, energy, multiview agreement, and unknown rejection. |
+| P5. Phase2 entry | planned | Add independent `phase2_adapt.py`, `open_world_head.py`, `open_world_memory.py`, and `eval_open_world.py`. |
 
 ### Do Not Do
 
 - Do not directly concatenate `z_dom` into TX classifier.
+- Do not let domain prototypes act as direct TX evidence.
 - Do not rely only on max-softmax threshold for unknown rejection.
 - Do not continue full SGC from source as the default route.
 - Do not apply ordinary entropy minimization to uncertain/unknown target samples.
