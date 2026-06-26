@@ -29,3 +29,9 @@
 - Wrote `docs/final_best_sgc_experiment_groups_20260507.md` defining Phase A best-model exploration and Phase B SGC/residual mechanism checks.
 - Added `run_final_best_sgc_queue.sh`, an 8-GPU queue launcher. Default is now `PHASES=A`, so it runs best-model exploration first; SGC/residual runs only when `PHASES=B` or `PHASES=A,B` is set.
 - Verified `run_final_best_sgc_queue.sh` with `bash -n`, Phase A dry-run, and full `PHASES=A,B` dry-run.
+
+## 2026-06-26
+- Added `docs/PHASE2_OPEN_WORLD_DIAGNOSIS_AND_CODEX_PLAN_20260626.md` as the Codex-readable Phase 2 handoff for in-orbit few-shot domain adaptation, new-class registration, unknown rejection, TX/RX geometry, domain-backbone use, and SGC no_amp direction.
+- Updated `task_plan.md` with a `CODEX-PHASE2-OPENWORLD` section so local Codex can discover the new handoff from the standard planning entrypoint.
+- Marked priority implementation phases: diagnostics first, then TX×RX balanced sampler/losses, then structured domain context, then a separate `phase2_adapt.py` open-world entrypoint.
+- Recorded critical guardrails: current `sgc_adapt` is not full Phase 2, do not concatenate `z_dom` directly into TX classifier, do not rely on max-softmax-only rejection, and require target-RX old-known anchor coverage.
