@@ -308,3 +308,4 @@ def training_stage_controller(epoch: int, args, domain_stats: Dict[str, Any], nu
     if not gates.get("group_ce", False):
         cur_w["group_ce"] = 0.0
     return stage_state, cur_w, gates
+

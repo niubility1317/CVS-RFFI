@@ -1,0 +1,146 @@
+# cvs_cen51_branch_dataflow.md
+- source: C:\Users\lh594\Desktop\CVS报告\cvs_cen51_branch_dataflow.md
+- chars: 44669
+- lines: 1850
+
+- L1: # CVS/CEN51 网络分支结构、数据流与张量形状说明
+- L20: ## 1. 总体结构
+- L52: ## 2. 输入与训练前的数据变化
+- L75: ## 3. ID Backbone：身份骨干
+- L86: ### 3.1 Time 分支
+- L135: ### 3.2 Freq 分支
+- L139: #### 3.2.1 4 通道频谱特征
+- L177: #### 3.2.2 ID Freq 分支形状
+- L207: #### 3.2.3 ID 频谱统计
+- L230: ### 3.3 PA 分支
+- L285: ### 3.4 DAC 分支
+- L314: ### 3.5 ID Backbone 融合与分类器
+- L357: ## 4. Domain Backbone：域骨干
+- L369: ### 4.1 Domain Time 分支
+- L389: ### 4.2 Domain Freq 分支和 DSQ 稳定残差
+- L446: ### 4.3 Domain DAC 分支
+- L473: ### 4.4 Domain PA 分支
+- L503: ### 4.5 Domain 融合、RCN 增强与域分类
+- L550: ## 5. GRL 对抗分支
+- L574: ## 6. 损失函数如何作用到各分支
+- L599: ## 7. CEN51 一次前向的完整形状总表
+- L603: ### ID Backbone
+- L633: ### Domain Backbone
+- L669: ### 顶层输出
+- L681: ## 8. 一句话总结每条分支
+- L693: ## 9. 逐部件计算公式和操作
+- L697: ### 9.1 Raw IQ 表示
+- L713: ### 9.2 SincConv IQ 滤波器组
+- L772: ### 9.3 Time 分支计算
+- L943: ### 9.4 Freq 分支计算
+- L1032: ### 9.5 Domain DSQ 稳定残差
+- L1076: ### 9.6 PA 分支计算
+- L1214: ### 9.7 Domain DAC 分支计算
+- L1265: ### 9.8 融合层和 PhysicalAwareClassifier
+- L1353: ### 9.9 CosFace TX 分类头
+- L1383: ### 9.10 RCN Domain enhancer
+- L1430: ### 9.11 GRL 域对抗
+- L1456: ### 9.12 主要损失的公式
+- L1588: ## 10. 用户问题补充与回答
+- L1592: ### 10.1 问题：`z*|z|^2` 到底怎么算？
+- L1662: ### 10.2 问题：DSConv 是什么？
+- L1750: ### 10.3 问题：DilatedConv 是什么？
+- L1824: ### 10.4 DSConv 和 DilatedConv 的区别
+- L1843: ## 11. 最容易混淆的点
+
+# cvs_fewshot_loss_functions_20260610.md
+- source: C:\Users\lh594\Desktop\CVS报告\cvs_fewshot_loss_functions_20260610.md
+- chars: 35829
+- lines: 1096
+
+- L14: ## 1. 少样本协议边界
+- L18: ### 1.1 Per-combo cap 协议
+- L41: ### 1.2 严格 per-class K-shot 协议
+- L65: ## 2. 统一符号与代码字段映射
+- L69: ### 2.1 核心符号表
+- L90: ### 2.2 权重和门控符号表
+- L103: ### 2.3 模型输出
+- L129: ## 3. 总损失
+- L177: ### 3.1 损失项总表
+- L195: ### 3.2 低样本权重设置总览
+- L204: ### 3.3 公式级符号说明表
+- L311: ## 4. 三阶段权重调度
+- L323: ## 5. Domain loss gate
+- L348: ## 6. 基础 TX 分类损失
+- L362: ## 7. Domain 分类损失
+- L380: ## 8. GRL domain adversarial 损失
+- L410: ## 9. Orthogonal/covariance 解耦损失
+- L435: ## 10. Same-TX cross-domain consistency
+- L471: ## 11. GroupCE / Smooth GroupDRO
+- L473: ### 11.1 Hard-domain CE
+- L506: ### 11.2 Smooth GroupDRO capped
+- L549: ## 12. Auxiliary DAC/PA 损失
+- L612: ## 13. Satellite 训练损失
+- L616: ### 13.1 Concat satellite supervised view
+- L628: ### 13.2 CE-only satellite view
+- L648: ### 13.3 Clean-to-sat consistency
+- L675: ## 14. Prototype memory loss
+- L683: ### 14.1 Pull
+- L695: ### 14.2 Domain alignment
+- L705: ### 14.3 Class push
+- L738: ## 15. Domain-aware SupCon
+- L782: ## 16. Fishr-style logit gradient variance loss
+- L820: ## 17. Feature-norm guard
+- L832: ### 17.1 `l2`
+- L842: ### 17.2 `mean_norm`
+- L851: ### 17.3 `hinge`
+- L861: ### 17.4 `target`
+- L882: ## 18. RIEI 对照公式
+- L953: ## 19. 当前少样本参数族
+- L955: ### 19.1 原始 CEN51_R04 ratio path
+- L977: ### 19.2 Pure K-shot low-RXGRL
+- L1000: ### 19.3 Strong RIEI-like constraint
+- L1017: ### 19.4 Shot-aware LACSR/FDG
+- L1035: ## 20. Checkpoint 选择损失之外也很重要
+- L1057: ## 21. 实践结论
+- L1067: ## 22. 可直接引用的紧凑公式
+
+# satellite_ground_channel_augmentation_principles.md
+- source: C:\Users\lh594\Desktop\CVS报告\satellite_ground_channel_augmentation_principles.md
+- chars: 13286
+- lines: 787
+
+- L1: # 星地信道增强：原理、公式、符号与 IQ 作用总结
+- L12: ## 1. 总体模型
+- L100: ## 2. 星地信道增强分为哪几项
+- L113: ## 3. 作用在 IQ 上的基本数学规则
+- L139: ### 本节符号
+- L152: ## 4. 几何路径与路径损耗
+- L154: ### 4.1 斜距
+- L167: ### 4.2 自由空间路径损耗
+- L184: ### 4.3 对 IQ 的作用
+- L202: ### 本节符号
+- L217: ## 5. 大气衰落
+- L235: ### 对 IQ 的作用
+- L259: ### 本节符号
+- L270: ## 6. Rician / Rayleigh / LOO 小尺度衰落
+- L298: ### 6.1 Rician：有稳定主径
+- L314: ### 6.2 Rayleigh：无稳定主径
+- L326: ### 6.3 LOO：视距被部分遮挡
+- L346: ### 6.4 对 IQ 的作用
+- L368: ### 本节符号
+- L389: ## 7. 多径
+- L407: ### 对 IQ 的作用
+- L440: ### 本节符号
+- L454: ## 8. 多普勒、CFO 与相位噪声
+- L456: ### 8.1 多普勒
+- L486: ### 8.2 相位噪声
+- L505: ### 8.3 对 IQ 的作用
+- L531: ### 本节符号
+- L549: ## 9. AGC 与 AWGN
+- L551: ### 9.1 AGC
+- L565: ### 9.2 AWGN
+- L589: ### 对 IQ 的作用
+- L601: ### 本节符号
+- L616: ## 10. I/Q 失衡
+- L642: ### 对 IQ 的作用
+- L674: ### 本节符号
+- L690: ## 11. 场景参数
+- L705: ## 12. 训练增强中的角色
+- L767: ### 本节符号
+- L785: ## 13. 一句话总结

@@ -1,0 +1,318 @@
+{
+  "best_joint": [
+    {
+      "candidate_id": "OA_MSE_SOFTVOID128_GPU6_E_MSE_SUBSPACE_KOLD10_KNEW0",
+      "coverage": 0.608,
+      "full_accuracy": 0.3319999873638153,
+      "new_class_accuracy": null,
+      "old_class_accuracy": 0.38333332538604736,
+      "unknown_false_accept_rate": 0.49000000953674316,
+      "unknown_rejection_rate": 0.5099999904632568
+    },
+    {
+      "candidate_id": "OA_MSE_SOFTVOID128_GPU5_O_MSE_SUBSPACE_KOLD20_KNEW0",
+      "coverage": 0.638,
+      "full_accuracy": 0.30000001192092896,
+      "new_class_accuracy": null,
+      "old_class_accuracy": 0.3566666543483734,
+      "unknown_false_accept_rate": 0.5699999928474426,
+      "unknown_rejection_rate": 0.4300000071525574
+    },
+    {
+      "candidate_id": "OA_MSE_SOFTVOID128_GPU7_G_MSE_SUBSPACE_KOLD20_KNEW0",
+      "coverage": 0.798,
+      "full_accuracy": 0.3400000035762787,
+      "new_class_accuracy": null,
+      "old_class_accuracy": 0.44999998807907104,
+      "unknown_false_accept_rate": 0.6500000059604645,
+      "unknown_rejection_rate": 0.3499999940395355
+    },
+    {
+      "candidate_id": "OA_MSE_SOFTVOID128_GPU6_M_MSE_SUBSPACE_KOLD10_KNEW0",
+      "coverage": 0.378,
+      "full_accuracy": 0.3540000021457672,
+      "new_class_accuracy": null,
+      "old_class_accuracy": 0.3266666531562805,
+      "unknown_false_accept_rate": 0.20999997854232788,
+      "unknown_rejection_rate": 0.7900000214576721
+    },
+    {
+      "candidate_id": "OA_MSE_SOFTVOID128_GPU6_O_MSE_SUBSPACE_KOLD20_KNEW0",
+      "coverage": 0.758,
+      "full_accuracy": 0.33399999141693115,
+      "new_class_accuracy": null,
+      "old_class_accuracy": 0.44999998807907104,
+      "unknown_false_accept_rate": 0.6800000071525574,
+      "unknown_rejection_rate": 0.3199999928474426
+    },
+    {
+      "candidate_id": "OA_MSE_SOFTVOID128_GPU5_E_MSE_SUBSPACE_KOLD10_KNEW0",
+      "coverage": 0.388,
+      "full_accuracy": 0.335999995470047,
+      "new_class_accuracy": null,
+      "old_class_accuracy": 0.3166666626930237,
+      "unknown_false_accept_rate": 0.26999998092651367,
+      "unknown_rejection_rate": 0.7300000190734863
+    },
+    {
+      "candidate_id": "OA_MSE_SOFTVOID128_GPU3_M_MSE_SUBSPACE_KOLD10_KNEW0",
+      "coverage": 0.444,
+      "full_accuracy": 0.3199999928474426,
+      "new_class_accuracy": null,
+      "old_class_accuracy": 0.31333333253860474,
+      "unknown_false_accept_rate": 0.3399999737739563,
+      "unknown_rejection_rate": 0.6600000262260437
+    },
+    {
+      "candidate_id": "OA_MSE_SOFTVOID128_GPU2_O_MSE_SUBSPACE_KOLD20_KNEW0",
+      "coverage": 0.792,
+      "full_accuracy": 0.3319999873638153,
+      "new_class_accuracy": null,
+      "old_class_accuracy": 0.44999998807907104,
+      "unknown_false_accept_rate": 0.6899999976158142,
+      "unknown_rejection_rate": 0.3100000023841858
+    },
+    {
+      "candidate_id": "OA_MSE_SOFTVOID128_GPU1_E_MSE_SUBSPACE_KOLD10_KNEW0",
+      "coverage": 0.372,
+      "full_accuracy": 0.3319999873638153,
+      "new_class_accuracy": null,
+      "old_class_accuracy": 0.2966666519641876,
+      "unknown_false_accept_rate": 0.23000001907348633,
+      "unknown_rejection_rate": 0.7699999809265137
+    },
+    {
+      "candidate_id": "OA_MSE_SOFTVOID128_GPU4_O_MSE_SUBSPACE_KOLD20_KNEW0",
+      "coverage": 0.804,
+      "full_accuracy": 0.3100000023841858,
+      "new_class_accuracy": null,
+      "old_class_accuracy": 0.41999998688697815,
+      "unknown_false_accept_rate": 0.7100000083446503,
+      "unknown_rejection_rate": 0.28999999165534973
+    }
+  ],
+  "best_old": [
+    {
+      "candidate_id": "OA_MSE_SOFTVOID128_GPU3_G_MSE_SUBSPACE_KOLD20_KNEW0",
+      "coverage": 0.938,
+      "full_accuracy": 0.335999995470047,
+      "new_class_accuracy": null,
+      "old_class_accuracy": 0.5366666913032532,
+      "unknown_false_accept_rate": 0.9299999997019768,
+      "unknown_rejection_rate": 0.07000000029802322
+    },
+    {
+      "candidate_id": "OA_MSE_SOFTVOID128_GPU4_G_MSE_SUBSPACE_KOLD20_KNEW0",
+      "coverage": 0.958,
+      "full_accuracy": 0.3160000145435333,
+      "new_class_accuracy": null,
+      "old_class_accuracy": 0.5166666507720947,
+      "unknown_false_accept_rate": 0.9700000006705523,
+      "unknown_rejection_rate": 0.029999999329447746
+    },
+    {
+      "candidate_id": "OA_MSE_SOFTVOID128_GPU6_G_MSE_SUBSPACE_KOLD20_KNEW0",
+      "coverage": 0.95,
+      "full_accuracy": 0.3160000145435333,
+      "new_class_accuracy": null,
+      "old_class_accuracy": 0.5099999904632568,
+      "unknown_false_accept_rate": 0.9499999992549419,
+      "unknown_rejection_rate": 0.05000000074505806
+    },
+    {
+      "candidate_id": "OA_MSE_SOFTVOID128_GPU1_G_MSE_SUBSPACE_KOLD20_KNEW0",
+      "coverage": 0.908,
+      "full_accuracy": 0.3240000009536743,
+      "new_class_accuracy": null,
+      "old_class_accuracy": 0.5,
+      "unknown_false_accept_rate": 0.880000002682209,
+      "unknown_rejection_rate": 0.11999999731779099
+    },
+    {
+      "candidate_id": "OA_MSE_SOFTVOID128_GPU7_O_MSE_SUBSPACE_KOLD20_KNEW0",
+      "coverage": 0.9,
+      "full_accuracy": 0.335999995470047,
+      "new_class_accuracy": null,
+      "old_class_accuracy": 0.5,
+      "unknown_false_accept_rate": 0.8199999928474426,
+      "unknown_rejection_rate": 0.18000000715255737
+    },
+    {
+      "candidate_id": "OA_MSE_SOFTVOID128_GPU5_G_MSE_SUBSPACE_KOLD20_KNEW0",
+      "coverage": 0.914,
+      "full_accuracy": 0.3160000145435333,
+      "new_class_accuracy": null,
+      "old_class_accuracy": 0.49666666984558105,
+      "unknown_false_accept_rate": 0.9099999964237213,
+      "unknown_rejection_rate": 0.09000000357627869
+    },
+    {
+      "candidate_id": "OA_MSE_SOFTVOID128_GPU0_G_MSE_SUBSPACE_KOLD20_KNEW0",
+      "coverage": 0.894,
+      "full_accuracy": 0.32199999690055847,
+      "new_class_accuracy": null,
+      "old_class_accuracy": 0.476666659116745,
+      "unknown_false_accept_rate": 0.8199999928474426,
+      "unknown_rejection_rate": 0.18000000715255737
+    },
+    {
+      "candidate_id": "OA_MSE_SOFTVOID128_GPU2_G_MSE_SUBSPACE_KOLD20_KNEW0",
+      "coverage": 0.942,
+      "full_accuracy": 0.3019999861717224,
+      "new_class_accuracy": null,
+      "old_class_accuracy": 0.476666659116745,
+      "unknown_false_accept_rate": 0.9200000017881393,
+      "unknown_rejection_rate": 0.07999999821186066
+    },
+    {
+      "candidate_id": "OA_MSE_SOFTVOID128_GPU2_H_OA_MSE_HEAD_KOLD20_KNEW20",
+      "coverage": 0.97,
+      "full_accuracy": 0.34200000762939453,
+      "new_class_accuracy": 0.23000000417232513,
+      "old_class_accuracy": 0.4699999988079071,
+      "unknown_false_accept_rate": 0.9299999997019768,
+      "unknown_rejection_rate": 0.07000000029802322
+    },
+    {
+      "candidate_id": "OA_MSE_SOFTVOID128_GPU3_O_MSE_SUBSPACE_KOLD20_KNEW0",
+      "coverage": 0.818,
+      "full_accuracy": 0.3319999873638153,
+      "new_class_accuracy": null,
+      "old_class_accuracy": 0.4699999988079071,
+      "unknown_false_accept_rate": 0.75,
+      "unknown_rejection_rate": 0.25
+    }
+  ],
+  "best_unknown": [
+    {
+      "candidate_id": "OA_MSE_SOFTVOID128_GPU0_A_MSE_SUBSPACE_KOLD2_KNEW0",
+      "coverage": 0.0,
+      "full_accuracy": 0.20000000298023224,
+      "new_class_accuracy": null,
+      "old_class_accuracy": 0.0,
+      "unknown_false_accept_rate": 0.0,
+      "unknown_rejection_rate": 1.0
+    },
+    {
+      "candidate_id": "OA_MSE_SOFTVOID128_GPU0_B_OA_MSE_HEAD_KOLD2_KNEW2",
+      "coverage": 0.0,
+      "full_accuracy": 0.20000000298023224,
+      "new_class_accuracy": 0.0,
+      "old_class_accuracy": 0.0,
+      "unknown_false_accept_rate": 0.0,
+      "unknown_rejection_rate": 1.0
+    },
+    {
+      "candidate_id": "OA_MSE_SOFTVOID128_GPU0_I_MSE_SUBSPACE_KOLD2_KNEW0",
+      "coverage": 0.0,
+      "full_accuracy": 0.20000000298023224,
+      "new_class_accuracy": null,
+      "old_class_accuracy": 0.0,
+      "unknown_false_accept_rate": 0.0,
+      "unknown_rejection_rate": 1.0
+    },
+    {
+      "candidate_id": "OA_MSE_SOFTVOID128_GPU0_J_OA_MSE_HEAD_KOLD2_KNEW2",
+      "coverage": 0.0,
+      "full_accuracy": 0.20000000298023224,
+      "new_class_accuracy": 0.0,
+      "old_class_accuracy": 0.0,
+      "unknown_false_accept_rate": 0.0,
+      "unknown_rejection_rate": 1.0
+    },
+    {
+      "candidate_id": "OA_MSE_SOFTVOID128_GPU0_K_MSE_SUBSPACE_KOLD5_KNEW0",
+      "coverage": 0.0,
+      "full_accuracy": 0.20000000298023224,
+      "new_class_accuracy": null,
+      "old_class_accuracy": 0.0,
+      "unknown_false_accept_rate": 0.0,
+      "unknown_rejection_rate": 1.0
+    },
+    {
+      "candidate_id": "OA_MSE_SOFTVOID128_GPU1_A_MSE_SUBSPACE_KOLD2_KNEW0",
+      "coverage": 0.0,
+      "full_accuracy": 0.20000000298023224,
+      "new_class_accuracy": null,
+      "old_class_accuracy": 0.0,
+      "unknown_false_accept_rate": 0.0,
+      "unknown_rejection_rate": 1.0
+    },
+    {
+      "candidate_id": "OA_MSE_SOFTVOID128_GPU1_I_MSE_SUBSPACE_KOLD2_KNEW0",
+      "coverage": 0.0,
+      "full_accuracy": 0.20000000298023224,
+      "new_class_accuracy": null,
+      "old_class_accuracy": 0.0,
+      "unknown_false_accept_rate": 0.0,
+      "unknown_rejection_rate": 1.0
+    },
+    {
+      "candidate_id": "OA_MSE_SOFTVOID128_GPU1_J_OA_MSE_HEAD_KOLD2_KNEW2",
+      "coverage": 0.0,
+      "full_accuracy": 0.20000000298023224,
+      "new_class_accuracy": 0.0,
+      "old_class_accuracy": 0.0,
+      "unknown_false_accept_rate": 0.0,
+      "unknown_rejection_rate": 1.0
+    },
+    {
+      "candidate_id": "OA_MSE_SOFTVOID128_GPU1_K_MSE_SUBSPACE_KOLD5_KNEW0",
+      "coverage": 0.0,
+      "full_accuracy": 0.20000000298023224,
+      "new_class_accuracy": null,
+      "old_class_accuracy": 0.0,
+      "unknown_false_accept_rate": 0.0,
+      "unknown_rejection_rate": 1.0
+    },
+    {
+      "candidate_id": "OA_MSE_SOFTVOID128_GPU2_A_MSE_SUBSPACE_KOLD2_KNEW0",
+      "coverage": 0.0,
+      "full_accuracy": 0.20000000298023224,
+      "new_class_accuracy": null,
+      "old_class_accuracy": 0.0,
+      "unknown_false_accept_rate": 0.0,
+      "unknown_rejection_rate": 1.0
+    }
+  ],
+  "coverage": {
+    "count": 109,
+    "max": 0.986,
+    "mean": 0.42554128440366973,
+    "min": 0.0
+  },
+  "full_accuracy": {
+    "count": 109,
+    "max": 0.3540000021457672,
+    "mean": 0.25948623971107904,
+    "min": 0.17599999904632568
+  },
+  "load_error_count": 0,
+  "metric_count": 109,
+  "new_class_accuracy": {
+    "count": 55,
+    "max": 0.4000000059604645,
+    "mean": 0.12109090889042073,
+    "min": 0.0
+  },
+  "old_class_accuracy": {
+    "count": 109,
+    "max": 0.5366666913032532,
+    "mean": 0.21076452561628517,
+    "min": 0.0
+  },
+  "run_id": "stage2_spaceborne_next128dz_20260623_230632",
+  "target_hit_count": 0,
+  "unknown_false_accept_rate": {
+    "count": 109,
+    "max": 1.0,
+    "mean": 0.3959633009251925,
+    "min": 0.0
+  },
+  "unknown_rejection_rate": {
+    "count": 109,
+    "max": 1.0,
+    "mean": 0.6040366990748075,
+    "min": 0.0
+  }
+}

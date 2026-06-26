@@ -151,3 +151,4 @@ def evaluate_rollback_gate(
         skipped_rules=skipped,
         rules=[asdict(rule) for rule in normalized_rules],
     )
+

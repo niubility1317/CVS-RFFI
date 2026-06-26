@@ -34,3 +34,4 @@
 |优化器|Adam，lr 0.005，batch size 256。|配置记录Adam、0.005、batch size 256。|
 |epoch/seed/lambda|原文未完整说明。|`paper-unspecified`；配置中的lambda是implementation choice，不能写成论文设定。|
 |指标|Accuracy均值和论文表格。|结果尚未生成；不得声称正式复现完成。|
+

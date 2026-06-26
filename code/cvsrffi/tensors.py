@@ -180,3 +180,4 @@ def build_domain_label_map(dataset) -> Dict[int, int]:
         return {}
     raw_labels = sorted({int(obj._domain_lut[(it.rx_i, it.day_i)]) for it in obj.index})
     return {raw: idx for idx, raw in enumerate(raw_labels)}
+

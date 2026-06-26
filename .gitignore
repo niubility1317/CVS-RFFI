@@ -5,8 +5,12 @@
 *.key
 *.ppk
 .ssh/
+.local/
 .claude/
 .codex-remote-attachments/
+
+# Root-level launcher copies are staged under scripts/launchers/.
+/run_*.sh
 
 # Data, checkpoints, and experiment outputs
 Dataset*/

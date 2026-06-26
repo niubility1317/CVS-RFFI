@@ -1,0 +1,14 @@
+{
+  "run_root": "runs/paper_reproduction_full_clean_sat_20260626_110328",
+  "log_root": "logs/paper_reproduction_full_clean_sat_20260626_110328",
+  "cvs_extension": true,
+  "uses_cen51": false,
+  "training_origin": "paper_baseline_random_init",
+  "adaptation_mode": "support_prototype_registration",
+  "branches": {
+    "protonet_cda_clean_seed1337": {"pid": 3208999, "gpu": 0, "channel_line": "clean_all"},
+    "protonet_cda_satellite_seed1337": {"pid": 3209002, "gpu": 1, "channel_line": "satellite_all"},
+    "feature_separation_clean_seed1337": {"pid": 3209005, "gpu": 2, "channel_line": "clean_all"},
+    "feature_separation_satellite_seed1337": {"pid": 3209008, "gpu": 3, "channel_line": "satellite_all"}
+  }
+}

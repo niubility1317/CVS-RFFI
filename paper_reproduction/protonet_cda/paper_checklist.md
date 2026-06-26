@@ -33,3 +33,4 @@
 
 - 本轮按用户指定使用WiSig，而不是同时跑ORACLE/CORES。
 - `cosine`和`sqeuclidean`仅保留为代码扩展选项；论文主配置不得启用。
+

@@ -57,6 +57,8 @@ docs/
   GROUND_TRAINING.md
   DEPLOYMENT_PHASES.md
   PUBLISH_SCOPE.md
+experiment_records/
+  CV-SincNet/                 # 十二小时快照、最近实验指标清单和有界报告证据
 ```
 
 ## 环境
@@ -99,6 +101,15 @@ python -m pytest tests\test_paper_reproduction_protonet.py tests\test_paper_repr
 
 这些命令用于验证入口、协议字段和小规模smoke，不代表完整论文复现实验或部署成功。
 
+论文baseline审计实验入口：
+
+```powershell
+bash run_cvs_baseline_queue.sh --methods riei_fd --wisig-protocol riei_original --dry-run
+bash run_cvs_baseline_queue.sh --methods drift --wisig-protocol drift_day1 --dry-run
+```
+
+完整运行前需提供真实`Dataset_WigSig/ManySig.pkl`路径并移除`--dry-run`。RIEI original使用`riei_last10`统计，DRIFT-Day1使用`drift_last5`统计；详细命令、超参数对照和声明边界见`baselines/README.md`。
+
 ## 关键声明
 
 - `rho_label<=0.1`是地面弱标注训练的核心约束。
@@ -111,6 +122,10 @@ python -m pytest tests\test_paper_reproduction_protonet.py tests\test_paper_repr
 - 本仓库不含真实数据、权重或远端运行证据；任何结果声明必须绑定具体run、split、K-shot、satellite/LEO view和完整同row指标。
 
 更多协议细节见`docs/PROJECT_PROTOCOL.md`、`docs/GROUND_TRAINING.md`和`docs/DEPLOYMENT_PHASES.md`。
+
+## 十二小时自动整理
+
+本仓库包含自动整理脚本`scripts/run_cvs_snapshot_cycle.ps1`。该脚本从`E:\type10-7`同步核心代码、协议、工具、launcher和最近实验指标，生成`experiment_records/CV-SincNet/LATEST_SNAPSHOT.md`、`metrics_inventory.csv`和`docs/analysis_requests/latest_chatgpt_pro_prompt.md`，然后提交并推送到GitHub。详细边界见`docs/AUTOMATION_GITHUB_REVIEW.md`。
 
 ## 变更纪律
 

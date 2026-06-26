@@ -1,0 +1,113 @@
+#!/usr/bin/env bash
+# Generated locally for next64cy: current-run full 64-row matrix with Phase1 Safe-SSDG local-verify defers and 56 resolved ManyTx OA-MSE Phase2 rows.
+set -euo pipefail
+
+ROOT="${ROOT:-/home/szu2070436088/2510044040/CV-SincNet}"
+PYTHON="${PYTHON:-/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python}"
+RUN_ID="${RUN_ID:-stage2_spaceborne_next64cy_20260622_174811}"
+RUNS_ROOT="${RUNS_ROOT:-${ROOT}/runs/${RUN_ID}}"
+LOG_ROOT="${LOG_ROOT:-${ROOT}/logs/${RUN_ID}}"
+TEACHER_CKPT="${TEACHER_CKPT:-${ROOT}/runs/best_base_explore/BEX02_fishr002_mixed_e170/latest_model.pth}"
+WISIG_PKL="${WISIG_PKL:-${ROOT}/Dataset_WigSig/ManySig.pkl}"
+NEW_WISIG_PKL="${NEW_WISIG_PKL:-${ROOT}/Dataset_WigSig/ManyTx.pkl}"
+SOURCE_TX_IDS="${SOURCE_TX_IDS:-0,1,2,3,4,5}"
+TARGET_OLD_TX_IDS="${TARGET_OLD_TX_IDS:-0,1,2,3,4,5}"
+CEN51_TRAIN_RXS="${CEN51_TRAIN_RXS:-0,1,2,3,4,5,6}"
+STAGE2_MAX_ACTIVE_PER_GPU="${STAGE2_MAX_ACTIVE_PER_GPU:-3}"
+PHASE1_MAX_ACTIVE_PER_GPU="${PHASE1_MAX_ACTIVE_PER_GPU:-1}"
+PHASE2_MAX_ACTIVE_PER_GPU="${PHASE2_MAX_ACTIVE_PER_GPU:-3}"
+COMBINED_MAX_ACTIVE_PER_GPU="${COMBINED_MAX_ACTIVE_PER_GPU:-4}"
+STAGE2_MAX_SCHEDULER_SECONDS="${STAGE2_MAX_SCHEDULER_SECONDS:-5400}"
+STAGE2_EXPECTED_CANDIDATE_MAX_SECONDS="${STAGE2_EXPECTED_CANDIDATE_MAX_SECONDS:-1200}"
+PHASE1_LANE_ACTIVE="${PHASE1_LANE_ACTIVE:-0}"
+PHASE2_LANE_ACTIVE="${PHASE2_LANE_ACTIVE:-0}"
+PHASE2_LOCAL_PATCH_REQUIRED="${PHASE2_LOCAL_PATCH_REQUIRED:-0}"
+DRY_RUN="${DRY_RUN:-0}"
+
+for arg in "$@"; do
+  case "${arg}" in
+    --dry-run) DRY_RUN=1 ;;
+    *) echo "[ERROR] unknown argument: ${arg}" >&2; exit 2 ;;
+  esac
+done
+
+SCHED_LOG="${LOG_ROOT}/scheduler.out"
+EVENTS_TSV="${LOG_ROOT}/scheduler_events.tsv"
+if [[ "${DRY_RUN}" != "1" ]]; then
+  mkdir -p "${RUNS_ROOT}" "${LOG_ROOT}"
+  : > "${SCHED_LOG}"
+  : > "${EVENTS_TSV}"
+fi
+
+log_msg() { if [[ "${DRY_RUN}" == "1" ]]; then echo "$@"; else echo "$@" | tee -a "${SCHED_LOG}"; fi; }
+event_row() { local row; row="$(printf "%s	%s	%s	%s	%s	%s" "$(date -Is)" "$1" "$2" "$3" "$4" "$5")"; if [[ "${DRY_RUN}" == "1" ]]; then echo "${row}"; else echo "${row}" | tee -a "${EVENTS_TSV}" | tee -a "${SCHED_LOG}"; fi; }
+
+declare -a CAND_ID=('S2N118_GPU0_A_SAFE_SSDG_LOCAL_VERIFY_A0_CEN51_R04_repro' 'S2N118_GPU1_A_SAFE_SSDG_LOCAL_VERIFY_A1_U_forward_no_loss' 'S2N118_GPU2_A_SAFE_SSDG_LOCAL_VERIFY_A2_BN_stat_protect' 'S2N118_GPU3_A_SAFE_SSDG_LOCAL_VERIFY_B1_frozen_anchor_kd' 'S2N118_GPU4_A_SAFE_SSDG_LOCAL_VERIFY_B2_kd_weakstrong' 'S2N118_GPU5_A_SAFE_SSDG_LOCAL_VERIFY_C1_late_strict_pl_gate' 'S2N118_GPU6_A_SAFE_SSDG_LOCAL_VERIFY_C2_proto_receiver_quota' 'S2N118_GPU7_A_SAFE_SSDG_LOCAL_VERIFY_D1_swad_worst_receiver' 'S2N118_GPU0_B_OA_MSE_20X1_MSE_LITE_OA_MSE_SOURCE_OPEN_EVAL_ONLY_B' 'S2N118_GPU0_C_OA_MSE_3X19_MSE_LITE_OA_MSE_MARGIN_SOURCE_OPEN_CONTROL_C' 'S2N118_GPU0_D_OA_MSE_7X14_MSE_SUBSPACE_OA_MSE_TARGET_OLD_K1_RADIUS_D' 'S2N118_GPU0_E_OA_MSE_7X7_MSE_SUBSPACE_OA_MSE_TARGET_OLD_K2_RADIUS_E' 'S2N118_GPU0_F_OA_MSE_8X8_MSE_SUBSPACE_OA_MSE_TARGET_OLD_K5_DENSITY_F' 'S2N118_GPU0_G_OA_MSE_20X1_OA_MSE_HEAD_OA_MSE_SEEN_NEW_K2_REGISTRATION_G' 'S2N118_GPU0_H_OA_MSE_3X19_OA_MSE_HEAD_OA_MSE_SEEN_NEW_K5_QUALITY_DEFER_H' 'S2N118_GPU1_B_OA_MSE_3X19_MSE_LITE_OA_MSE_SOURCE_OPEN_EVAL_ONLY_B' 'S2N118_GPU1_C_OA_MSE_7X14_MSE_LITE_OA_MSE_MARGIN_SOURCE_OPEN_CONTROL_C' 'S2N118_GPU1_D_OA_MSE_7X7_MSE_SUBSPACE_OA_MSE_TARGET_OLD_K1_RADIUS_D' 'S2N118_GPU1_E_OA_MSE_8X8_MSE_SUBSPACE_OA_MSE_TARGET_OLD_K2_RADIUS_E' 'S2N118_GPU1_F_OA_MSE_20X1_MSE_SUBSPACE_OA_MSE_TARGET_OLD_K5_DENSITY_F' 'S2N118_GPU1_G_OA_MSE_3X19_OA_MSE_HEAD_OA_MSE_SEEN_NEW_K2_REGISTRATION_G' 'S2N118_GPU1_H_OA_MSE_7X14_OA_MSE_HEAD_OA_MSE_SEEN_NEW_K5_QUALITY_DEFER_H' 'S2N118_GPU2_B_OA_MSE_7X14_MSE_LITE_OA_MSE_SOURCE_OPEN_EVAL_ONLY_B' 'S2N118_GPU2_C_OA_MSE_7X7_MSE_LITE_OA_MSE_MARGIN_SOURCE_OPEN_CONTROL_C' 'S2N118_GPU2_D_OA_MSE_8X8_MSE_SUBSPACE_OA_MSE_TARGET_OLD_K1_RADIUS_D' 'S2N118_GPU2_E_OA_MSE_20X1_MSE_SUBSPACE_OA_MSE_TARGET_OLD_K2_RADIUS_E' 'S2N118_GPU2_F_OA_MSE_3X19_MSE_SUBSPACE_OA_MSE_TARGET_OLD_K5_DENSITY_F' 'S2N118_GPU2_G_OA_MSE_7X14_OA_MSE_HEAD_OA_MSE_SEEN_NEW_K2_REGISTRATION_G' 'S2N118_GPU2_H_OA_MSE_7X7_OA_MSE_HEAD_OA_MSE_SEEN_NEW_K5_QUALITY_DEFER_H' 'S2N118_GPU3_B_OA_MSE_7X7_MSE_LITE_OA_MSE_SOURCE_OPEN_EVAL_ONLY_B' 'S2N118_GPU3_C_OA_MSE_8X8_MSE_LITE_OA_MSE_MARGIN_SOURCE_OPEN_CONTROL_C' 'S2N118_GPU3_D_OA_MSE_20X1_MSE_SUBSPACE_OA_MSE_TARGET_OLD_K1_RADIUS_D' 'S2N118_GPU3_E_OA_MSE_3X19_MSE_SUBSPACE_OA_MSE_TARGET_OLD_K2_RADIUS_E' 'S2N118_GPU3_F_OA_MSE_7X14_MSE_SUBSPACE_OA_MSE_TARGET_OLD_K5_DENSITY_F' 'S2N118_GPU3_G_OA_MSE_7X7_OA_MSE_HEAD_OA_MSE_SEEN_NEW_K2_REGISTRATION_G' 'S2N118_GPU3_H_OA_MSE_8X8_OA_MSE_HEAD_OA_MSE_SEEN_NEW_K5_QUALITY_DEFER_H' 'S2N118_GPU4_B_OA_MSE_8X8_MSE_LITE_OA_MSE_SOURCE_OPEN_EVAL_ONLY_B' 'S2N118_GPU4_C_OA_MSE_20X1_MSE_LITE_OA_MSE_MARGIN_SOURCE_OPEN_CONTROL_C' 'S2N118_GPU4_D_OA_MSE_3X19_MSE_SUBSPACE_OA_MSE_TARGET_OLD_K1_RADIUS_D' 'S2N118_GPU4_E_OA_MSE_7X14_MSE_SUBSPACE_OA_MSE_TARGET_OLD_K2_RADIUS_E' 'S2N118_GPU4_F_OA_MSE_7X7_MSE_SUBSPACE_OA_MSE_TARGET_OLD_K5_DENSITY_F' 'S2N118_GPU4_G_OA_MSE_8X8_OA_MSE_HEAD_OA_MSE_SEEN_NEW_K2_REGISTRATION_G' 'S2N118_GPU4_H_OA_MSE_20X1_OA_MSE_HEAD_OA_MSE_SEEN_NEW_K5_QUALITY_DEFER_H' 'S2N118_GPU5_B_OA_MSE_20X1_MSE_LITE_OA_MSE_SOURCE_OPEN_EVAL_ONLY_B' 'S2N118_GPU5_C_OA_MSE_3X19_MSE_LITE_OA_MSE_MARGIN_SOURCE_OPEN_CONTROL_C' 'S2N118_GPU5_D_OA_MSE_7X14_MSE_SUBSPACE_OA_MSE_TARGET_OLD_K1_RADIUS_D' 'S2N118_GPU5_E_OA_MSE_7X7_MSE_SUBSPACE_OA_MSE_TARGET_OLD_K2_RADIUS_E' 'S2N118_GPU5_F_OA_MSE_8X8_MSE_SUBSPACE_OA_MSE_TARGET_OLD_K5_DENSITY_F' 'S2N118_GPU5_G_OA_MSE_20X1_OA_MSE_HEAD_OA_MSE_SEEN_NEW_K2_REGISTRATION_G' 'S2N118_GPU5_H_OA_MSE_3X19_OA_MSE_HEAD_OA_MSE_SEEN_NEW_K5_QUALITY_DEFER_H' 'S2N118_GPU6_B_OA_MSE_3X19_MSE_LITE_OA_MSE_SOURCE_OPEN_EVAL_ONLY_B' 'S2N118_GPU6_C_OA_MSE_7X14_MSE_LITE_OA_MSE_MARGIN_SOURCE_OPEN_CONTROL_C' 'S2N118_GPU6_D_OA_MSE_7X7_MSE_SUBSPACE_OA_MSE_TARGET_OLD_K1_RADIUS_D' 'S2N118_GPU6_E_OA_MSE_8X8_MSE_SUBSPACE_OA_MSE_TARGET_OLD_K2_RADIUS_E' 'S2N118_GPU6_F_OA_MSE_20X1_MSE_SUBSPACE_OA_MSE_TARGET_OLD_K5_DENSITY_F' 'S2N118_GPU6_G_OA_MSE_3X19_OA_MSE_HEAD_OA_MSE_SEEN_NEW_K2_REGISTRATION_G' 'S2N118_GPU6_H_OA_MSE_7X14_OA_MSE_HEAD_OA_MSE_SEEN_NEW_K5_QUALITY_DEFER_H' 'S2N118_GPU7_B_OA_MSE_7X14_MSE_LITE_OA_MSE_SOURCE_OPEN_EVAL_ONLY_B' 'S2N118_GPU7_C_OA_MSE_7X7_MSE_LITE_OA_MSE_MARGIN_SOURCE_OPEN_CONTROL_C' 'S2N118_GPU7_D_OA_MSE_8X8_MSE_SUBSPACE_OA_MSE_TARGET_OLD_K1_RADIUS_D' 'S2N118_GPU7_E_OA_MSE_20X1_MSE_SUBSPACE_OA_MSE_TARGET_OLD_K2_RADIUS_E' 'S2N118_GPU7_F_OA_MSE_3X19_MSE_SUBSPACE_OA_MSE_TARGET_OLD_K5_DENSITY_F' 'S2N118_GPU7_G_OA_MSE_7X14_OA_MSE_HEAD_OA_MSE_SEEN_NEW_K2_REGISTRATION_G' 'S2N118_GPU7_H_OA_MSE_7X7_OA_MSE_HEAD_OA_MSE_SEEN_NEW_K5_QUALITY_DEFER_H')
+declare -a CAND_GPU=('0' '1' '2' '3' '4' '5' '6' '7' '0' '0' '0' '0' '0' '0' '0' '1' '1' '1' '1' '1' '1' '1' '2' '2' '2' '2' '2' '2' '2' '3' '3' '3' '3' '3' '3' '3' '4' '4' '4' '4' '4' '4' '4' '5' '5' '5' '5' '5' '5' '5' '6' '6' '6' '6' '6' '6' '6' '7' '7' '7' '7' '7' '7' '7')
+declare -a CAND_KIND=('phase1_deferred' 'phase1_deferred' 'phase1_deferred' 'phase1_deferred' 'phase1_deferred' 'phase1_deferred' 'phase1_deferred' 'phase1_deferred' 'oa_mse' 'oa_mse' 'oa_mse' 'oa_mse' 'oa_mse' 'oa_mse' 'oa_mse' 'oa_mse' 'oa_mse' 'oa_mse' 'oa_mse' 'oa_mse' 'oa_mse' 'oa_mse' 'oa_mse' 'oa_mse' 'oa_mse' 'oa_mse' 'oa_mse' 'oa_mse' 'oa_mse' 'oa_mse' 'oa_mse' 'oa_mse' 'oa_mse' 'oa_mse' 'oa_mse' 'oa_mse' 'oa_mse' 'oa_mse' 'oa_mse' 'oa_mse' 'oa_mse' 'oa_mse' 'oa_mse' 'oa_mse' 'oa_mse' 'oa_mse' 'oa_mse' 'oa_mse' 'oa_mse' 'oa_mse' 'oa_mse' 'oa_mse' 'oa_mse' 'oa_mse' 'oa_mse' 'oa_mse' 'oa_mse' 'oa_mse' 'oa_mse' 'oa_mse' 'oa_mse' 'oa_mse' 'oa_mse' 'oa_mse')
+declare -a CAND_SLOT=('GPU0/A' 'GPU1/A' 'GPU2/A' 'GPU3/A' 'GPU4/A' 'GPU5/A' 'GPU6/A' 'GPU7/A' 'GPU0/B' 'GPU0/C' 'GPU0/D' 'GPU0/E' 'GPU0/F' 'GPU0/G' 'GPU0/H' 'GPU1/B' 'GPU1/C' 'GPU1/D' 'GPU1/E' 'GPU1/F' 'GPU1/G' 'GPU1/H' 'GPU2/B' 'GPU2/C' 'GPU2/D' 'GPU2/E' 'GPU2/F' 'GPU2/G' 'GPU2/H' 'GPU3/B' 'GPU3/C' 'GPU3/D' 'GPU3/E' 'GPU3/F' 'GPU3/G' 'GPU3/H' 'GPU4/B' 'GPU4/C' 'GPU4/D' 'GPU4/E' 'GPU4/F' 'GPU4/G' 'GPU4/H' 'GPU5/B' 'GPU5/C' 'GPU5/D' 'GPU5/E' 'GPU5/F' 'GPU5/G' 'GPU5/H' 'GPU6/B' 'GPU6/C' 'GPU6/D' 'GPU6/E' 'GPU6/F' 'GPU6/G' 'GPU6/H' 'GPU7/B' 'GPU7/C' 'GPU7/D' 'GPU7/E' 'GPU7/F' 'GPU7/G' 'GPU7/H')
+declare -a CAND_LANE=('phase1' 'phase1' 'phase1' 'phase1' 'phase1' 'phase1' 'phase1' 'phase1' 'phase2' 'phase2' 'phase2' 'phase2' 'phase2' 'phase2' 'phase2' 'phase2' 'phase2' 'phase2' 'phase2' 'phase2' 'phase2' 'phase2' 'phase2' 'phase2' 'phase2' 'phase2' 'phase2' 'phase2' 'phase2' 'phase2' 'phase2' 'phase2' 'phase2' 'phase2' 'phase2' 'phase2' 'phase2' 'phase2' 'phase2' 'phase2' 'phase2' 'phase2' 'phase2' 'phase2' 'phase2' 'phase2' 'phase2' 'phase2' 'phase2' 'phase2' 'phase2' 'phase2' 'phase2' 'phase2' 'phase2' 'phase2' 'phase2' 'phase2' 'phase2' 'phase2' 'phase2' 'phase2' 'phase2' 'phase2')
+declare -a ROW_STAGE=('deferred' 'deferred' 'deferred' 'deferred' 'deferred' 'deferred' 'deferred' 'deferred' 'mse_lite' 'mse_lite' 'mse_subspace' 'mse_subspace' 'mse_subspace' 'oa_mse_head' 'oa_mse_head' 'mse_lite' 'mse_lite' 'mse_subspace' 'mse_subspace' 'mse_subspace' 'oa_mse_head' 'oa_mse_head' 'mse_lite' 'mse_lite' 'mse_subspace' 'mse_subspace' 'mse_subspace' 'oa_mse_head' 'oa_mse_head' 'mse_lite' 'mse_lite' 'mse_subspace' 'mse_subspace' 'mse_subspace' 'oa_mse_head' 'oa_mse_head' 'mse_lite' 'mse_lite' 'mse_subspace' 'mse_subspace' 'mse_subspace' 'oa_mse_head' 'oa_mse_head' 'mse_lite' 'mse_lite' 'mse_subspace' 'mse_subspace' 'mse_subspace' 'oa_mse_head' 'oa_mse_head' 'mse_lite' 'mse_lite' 'mse_subspace' 'mse_subspace' 'mse_subspace' 'oa_mse_head' 'oa_mse_head' 'mse_lite' 'mse_lite' 'mse_subspace' 'mse_subspace' 'mse_subspace' 'oa_mse_head' 'oa_mse_head')
+declare -a ROW_PROTOCOL=('deferred' 'deferred' 'deferred' 'deferred' 'deferred' 'deferred' 'deferred' 'deferred' 'source_open_set' 'source_open_set' 'ftrc' 'ftrc' 'ftrc' 'sfe' 'sfe' 'source_open_set' 'source_open_set' 'ftrc' 'ftrc' 'ftrc' 'sfe' 'sfe' 'source_open_set' 'source_open_set' 'ftrc' 'ftrc' 'ftrc' 'sfe' 'sfe' 'source_open_set' 'source_open_set' 'ftrc' 'ftrc' 'ftrc' 'sfe' 'sfe' 'source_open_set' 'source_open_set' 'ftrc' 'ftrc' 'ftrc' 'sfe' 'sfe' 'source_open_set' 'source_open_set' 'ftrc' 'ftrc' 'ftrc' 'sfe' 'sfe' 'source_open_set' 'source_open_set' 'ftrc' 'ftrc' 'ftrc' 'sfe' 'sfe' 'source_open_set' 'source_open_set' 'ftrc' 'ftrc' 'ftrc' 'sfe' 'sfe')
+declare -a ROW_TARGET_RX=('NA' 'NA' 'NA' 'NA' 'NA' 'NA' 'NA' 'NA' '20-1' '3-19' '7-14' '7-7' '8-8' '20-1' '3-19' '3-19' '7-14' '7-7' '8-8' '20-1' '3-19' '7-14' '7-14' '7-7' '8-8' '20-1' '3-19' '7-14' '7-7' '7-7' '8-8' '20-1' '3-19' '7-14' '7-7' '8-8' '8-8' '20-1' '3-19' '7-14' '7-7' '8-8' '20-1' '20-1' '3-19' '7-14' '7-7' '8-8' '20-1' '3-19' '3-19' '7-14' '7-7' '8-8' '20-1' '3-19' '7-14' '7-14' '7-7' '8-8' '20-1' '3-19' '7-14' '7-7')
+declare -a ROW_NEW_TX=('NA' 'NA' 'NA' 'NA' 'NA' 'NA' 'NA' 'NA' '1-10,1-12' '1-10,1-12' '1-10,1-12' '1-10,1-12' '1-10,1-12' '1-10,1-12' '1-10,1-12' '1-10,1-12' '1-10,1-12' '1-10,1-12' '1-10,1-12' '1-10,1-12' '1-10,1-12' '1-10,1-12' '1-10,1-12' '1-10,1-12' '1-10,1-12' '1-10,1-12' '1-10,1-12' '1-10,1-12' '1-10,1-12' '1-10,1-12' '1-10,1-12' '1-10,1-12' '1-10,1-12' '1-10,1-12' '1-10,1-12' '1-10,1-12' '1-10,1-12' '1-10,1-12' '1-10,1-12' '1-10,1-12' '1-10,1-12' '1-10,1-12' '1-10,1-12' '1-10,1-12' '1-10,1-12' '1-10,1-12' '1-10,1-12' '1-10,1-12' '1-10,1-12' '1-10,1-12' '1-10,1-12' '1-10,1-12' '1-10,1-12' '1-10,1-12' '1-10,1-12' '1-10,1-12' '1-10,1-12' '1-10,1-12' '1-10,1-12' '1-10,1-12' '1-10,1-12' '1-10,1-12' '1-10,1-12' '1-10,1-12')
+declare -a ROW_UNKNOWN_TX=('NA' 'NA' 'NA' 'NA' 'NA' 'NA' 'NA' 'NA' '1-14,1-16' '1-14,1-16' '1-14,1-16' '1-14,1-16' '1-14,1-16' '1-14,1-16' '1-14,1-16' '1-14,1-16' '1-14,1-16' '1-14,1-16' '1-14,1-16' '1-14,1-16' '1-14,1-16' '1-14,1-16' '1-14,1-16' '1-14,1-16' '1-14,1-16' '1-14,1-16' '1-14,1-16' '1-14,1-16' '1-14,1-16' '1-14,1-16' '1-14,1-16' '1-14,1-16' '1-14,1-16' '1-14,1-16' '1-14,1-16' '1-14,1-16' '1-14,1-16' '1-14,1-16' '1-14,1-16' '1-14,1-16' '1-14,1-16' '1-14,1-16' '1-14,1-16' '1-14,1-16' '1-14,1-16' '1-14,1-16' '1-14,1-16' '1-14,1-16' '1-14,1-16' '1-14,1-16' '1-14,1-16' '1-14,1-16' '1-14,1-16' '1-14,1-16' '1-14,1-16' '1-14,1-16' '1-14,1-16' '1-14,1-16' '1-14,1-16' '1-14,1-16' '1-14,1-16' '1-14,1-16' '1-14,1-16' '1-14,1-16')
+declare -a ROW_K_OLD=('0' '0' '0' '0' '0' '0' '0' '0' '0' '0' '1' '2' '5' '2' '2' '0' '0' '1' '2' '5' '2' '2' '0' '0' '1' '2' '5' '2' '2' '0' '0' '1' '2' '5' '2' '2' '0' '0' '1' '2' '5' '2' '2' '0' '0' '1' '2' '5' '2' '2' '0' '0' '1' '2' '5' '2' '2' '0' '0' '1' '2' '5' '2' '2')
+declare -a ROW_K_NEW=('0' '0' '0' '0' '0' '0' '0' '0' '0' '0' '0' '0' '0' '2' '5' '0' '0' '0' '0' '0' '2' '5' '0' '0' '0' '0' '0' '2' '5' '0' '0' '0' '0' '0' '2' '5' '0' '0' '0' '0' '0' '2' '5' '0' '0' '0' '0' '0' '2' '5' '0' '0' '0' '0' '0' '2' '5' '0' '0' '0' '0' '0' '2' '5')
+declare -a ROW_SEED=('91000' '91001' '91002' '91003' '91004' '91005' '91006' '91007' '93001' '93002' '93003' '93004' '93005' '93006' '93007' '93101' '93102' '93103' '93104' '93105' '93106' '93107' '93201' '93202' '93203' '93204' '93205' '93206' '93207' '93301' '93302' '93303' '93304' '93305' '93306' '93307' '93401' '93402' '93403' '93404' '93405' '93406' '93407' '93501' '93502' '93503' '93504' '93505' '93506' '93507' '93601' '93602' '93603' '93604' '93605' '93606' '93607' '93701' '93702' '93703' '93704' '93705' '93706' '93707')
+declare -a CAND_STATUS=()
+declare -a CAND_PID=()
+for _ in "${CAND_ID[@]}"; do CAND_STATUS+=("queued"); CAND_PID+=(""); done
+
+run_phase2_oa_mse_candidate() {
+  local i="$1" cid gpu protocol rx new_tx unknown_tx k_old k_new seed out_dir query_per_tx max_samples
+  cid="${CAND_ID[$i]}"; gpu="${CAND_GPU[$i]}"; protocol="${ROW_PROTOCOL[$i]}"; rx="${ROW_TARGET_RX[$i]}"; new_tx="${ROW_NEW_TX[$i]}"; unknown_tx="${ROW_UNKNOWN_TX[$i]}"; k_old="${ROW_K_OLD[$i]}"; k_new="${ROW_K_NEW[$i]}"; seed="${ROW_SEED[$i]}"
+  out_dir="${RUNS_ROOT}/${cid}"
+  query_per_tx=50
+  max_samples=200
+  mkdir -p "${out_dir}"
+  echo "[S2-OA-MSE-BEGIN] cid=${cid} protocol=${protocol} rx=${rx} new=${new_tx} unknown=${unknown_tx} k_old=${k_old} k_new=${k_new} seed=${seed}"
+  env PYTHONPATH="${ROOT}/code:${ROOT}:${PYTHONPATH:-}" CUDA_VISIBLE_DEVICES="${gpu}" "${PYTHON}" -u "${ROOT}/code/export_spaceborne_features.py"     --ckpt "${TEACHER_CKPT}" --wisig_pkl "${WISIG_PKL}" --new_wisig_pkl "${NEW_WISIG_PKL}"     --out_npz "${out_dir}/features.npz" --feature_name z_id     --source_tx_ids "${SOURCE_TX_IDS}" --source_rxs "${CEN51_TRAIN_RXS}"     --target_old_tx_ids "${TARGET_OLD_TX_IDS}" --target_old_rxs "${rx}" --target_old_channel_view satellite     --target_old_sat_scenarios clear_leo,low_elev_leo,rain_leo,storm_mp,mixed_orbit --target_old_sat_seed "$((seed + 111))"     --new_tx_ids "${new_tx}" --new_rxs "${rx}" --unknown_tx_ids "${unknown_tx}"     --target_new_channel_view satellite --target_new_sat_scenarios clear_leo,low_elev_leo,rain_leo,storm_mp,mixed_orbit --target_new_sat_seed "$((seed + 222))"     --wisig_equalized 1 --wisig_domain rx_day --wisig_out_len 256 --max_samples_per_combo 0 --max_samples_per_tx "${max_samples}" --batch_size 512 --device cuda:0 --seed "${seed}"
+  local eval_cmd=(env PYTHONPATH="${ROOT}/code:${ROOT}:${PYTHONPATH:-}" CUDA_VISIBLE_DEVICES="${gpu}" "${PYTHON}" -u "${ROOT}/code/eval_spaceborne_fewshot.py"     --protocol "${protocol}" --feature_npz "${out_dir}/features.npz" --output_json "${out_dir}/metrics.json" --manifest_json "${out_dir}/manifest.json" --score_table_csv "${out_dir}/score_table.csv"     --source_tx_ids "${SOURCE_TX_IDS}" --target_old_tx_ids "${TARGET_OLD_TX_IDS}" --new_tx_ids "${new_tx}" --unknown_tx_ids "${unknown_tx}"     --target_old_support_per_tx "${k_old}" --target_old_query_per_tx "${query_per_tx}" --shots "${k_new}" --source_proto_per_tx 20 --source_query_per_tx 20 --query_per_tx "${query_per_tx}"     --unknown_threshold 0.7 --gate_mode oa_mse --openmax_tail_size 20 --openmax_quantile 1.0 --openmax_min_threshold 0.02     --oa_mse_adapter_rank 2 --oa_mse_adapter_steps 40 --old_acc_target 0.9 --seen_new_acc_target 0.75 --seed "${seed}")
+  "${eval_cmd[@]}"
+  echo "[S2-OA-MSE-END] cid=${cid}"
+}
+
+launch_candidate() {
+  local i="$1" cid gpu kind log_path pid
+  cid="${CAND_ID[$i]}"; gpu="${CAND_GPU[$i]}"; kind="${CAND_KIND[$i]}"
+  log_path="${LOG_ROOT}/${cid}.out"
+  if [[ "${kind}" == "phase1_deferred" ]]; then
+    CAND_STATUS[$i]="deferred_phase1_local_verify"
+    event_row "${cid}" "DEFERRED_RETRY_LOCAL_VERIFY" "gpu=${gpu}" "lane=phase1" "reason=safe_ssdg_launcher_schema_local_verify_required"
+    return 0
+  fi
+  if [[ "${PHASE2_LANE_ACTIVE}" != "0" ]]; then
+    CAND_STATUS[$i]="deferred_phase2_active"
+    event_row "${cid}" "DEFERRED_RETRY_CAPACITY" "gpu=${gpu}" "lane=phase2" "reason=phase2_lane_active"
+    return 0
+  fi
+  if [[ "${PHASE2_LOCAL_PATCH_REQUIRED}" == "1" ]]; then
+    CAND_STATUS[$i]="deferred_phase2_local_verify"
+    event_row "${cid}" "DEFERRED_RETRY_LOCAL_VERIFY" "gpu=${gpu}" "lane=phase2" "reason=phase2_local_patch_required"
+    return 0
+  fi
+  if [[ "${DRY_RUN}" == "1" ]]; then
+    echo "[S2-DRY-RUN] cid=${cid} slot=${CAND_SLOT[$i]} gpu=${gpu} kind=${kind} lane=${CAND_LANE[$i]} protocol=${ROW_PROTOCOL[$i]} rx=${ROW_TARGET_RX[$i]} new=${ROW_NEW_TX[$i]} unknown=${ROW_UNKNOWN_TX[$i]} log=${log_path}"
+    CAND_STATUS[$i]="dry_run"
+    return 0
+  fi
+  (run_phase2_oa_mse_candidate "${i}" > "${log_path}" 2>&1) &
+  pid="$!"
+  CAND_PID[$i]="${pid}"
+  CAND_STATUS[$i]="running"
+  event_row "${cid}" "LAUNCHED" "gpu=${gpu}" "lane=phase2" "pid=${pid};log=${log_path}"
+}
+
+log_msg "[S2-SCHEDULER] run_id=${RUN_ID} dry_run=${DRY_RUN} candidates=${#CAND_ID[@]} phase1=deferred_local_verify phase2=resolved_manytx_oa_mse"
+for i in "${!CAND_ID[@]}"; do
+  log_msg "[S2-CANDIDATE] idx=${i} id=${CAND_ID[$i]} slot=${CAND_SLOT[$i]} gpu=${CAND_GPU[$i]} kind=${CAND_KIND[$i]} lane=${CAND_LANE[$i]} rx=${ROW_TARGET_RX[$i]} new=${ROW_NEW_TX[$i]} unknown=${ROW_UNKNOWN_TX[$i]}"
+done
+
+source "${ROOT}/tools/stage2_queue_runner_template.sh"
+stage2_run_queue_scheduler

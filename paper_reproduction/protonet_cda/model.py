@@ -69,3 +69,4 @@ def prototypical_nll(
     loss = F.cross_entropy(logits, target)
     pred = class_ids[logits.argmax(dim=1)]
     return loss, pred
+

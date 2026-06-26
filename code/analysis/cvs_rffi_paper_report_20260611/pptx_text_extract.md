@@ -1,0 +1,635 @@
+# PPTX text extract: CVS-RFFI_model_design_notes - 副本.pptx
+
+- source: C:\Users\lh594\Desktop\CVS-RFFI_model_design_notes - 副本.pptx
+- slides: 16
+
+## Slide 1
+- 天基射频指纹识别汇报
+
+## Slide 2
+- 01
+- 研究背景与问题定义
+- 无线设备的射频指纹识别（
+- Radio Frequency Fingerprint Identification, RFFI
+- ）利用发射机模拟前端的非理想硬件失真作为设备身份特征，例如功放非线性、
+- I/Q
+- 不平衡等。
+- RFFI
+- 不需要改造发射端，主要在接收端完成识别，适合物联网、
+- LoRa
+- 、
+- WiFi
+- 、无人机、车联网和频谱监管等场景。
+- 1
+- DAC
+- （数模转换器）
+- 量化噪声
+- 采样时钟抖动
+- 非线性失真
+- 3
+- 混频器
+- I/Q幅相不平衡
+- 镜像泄漏
+- 本振泄漏
+- 2
+- 振荡器
+- 相位噪声
+- 频率偏移
+- 短期漂移
+- 4
+- 滤波器
+- 插损起伏
+- 群时延失真
+- 阻抗失配
+- 5
+- 功率放大器（PA）
+- AM/AM
+- AM/PM
+- 非线性
+- 记忆效应
+- 原始基带信号
+- 基于深度学习的射频指纹识别
+- 考虑接收机接收到的信号为
+- 学习任务可以建模为：
+- ：特征提取器
+- ：分类头
+- 为模型参数
+- ：发射机
+- 硬件非理想特性
+- ：无线信道冲激响应
+- ：接收机硬件链路效应
+- 噪声
+
+## Slide 3
+- 0
+- 2
+- 天基射频指纹识别
+- 地面接收
+- 局部
+- 较近距离
+- 视野受限
+- 卫星接收
+- 广域
+- 远距
+- 视野优势
+- 蜂窝通信设备
+- IoT
+- 设备
+- 广播信号
+- ADS-B
+- 等空中辐射源
+- 船载通信终端
+- 无人机链路
+
+## Slide 4
+- 0
+- 3
+- 天基射频指纹识别
+- 的现实难题
+- 无法完成星上训练
+- 且有轻量化需求
+- 非合作条件下，数据标注比较困难，标签数据有限
+- 星地信道的多普勒效应
+- /
+- 时延破坏发射机硬件特征
+- 星上算力受限
+- 数据标注困难
+- 星地信道干扰
+- 地面训练，天上部署
+- 跨接收机，跨日
+- (
+- 信道环境
+- )
+- 采用域泛化策略
+- 增强模型在星地信道下的鲁棒性
+- 采用小样本学习
+- 域泛化需要学习稳定的跨域特征
+- 小样本会使模型学习可以利用的特征
+
+## Slide 5
+- 0
+- 4
+- 现有方法调
+- 研
+- 域泛化方法
+- 核心思想
+- 数据增强
+- /
+- 域扩展
+- 通过显式制造“更多可能的域”来逼迫模型不要只记住训练环境的
+- shortcut
+- 实现直接，不改变模型结构
+- 构造的扰动和真实物理域可能不同
+- 域不变表示学习
+- /
+- 特征解耦
+- 将发射机特征和接收链路域特征在表示空间里尽量分开
+- 符合
+- RFF
+- 物理直觉
+- 解耦通过损失间接逼近，不保证语义完全可分
+- 对抗
+- /
+- 分布对齐
+- /
+- 统计正则
+- 通过域判别器、协方差对齐、熵正则、互独立约束等办法，把不同域的表示分布拉近
+- 理论、方法成熟
+- 强行对齐可能伤害发射机可分性
+- 元学习
+- 在训练时主动模拟“源域
+- —
+- 伪目标域”切换，让模型学会对“未见域”保持稳健
+- 贴近源域训练，目标域部署的场景
+- 对源域数据需求大，容易退化成伪多域训练
+- 采取域泛化方法是为应对数据的分布偏移
+
+## Slide 6
+- 0
+- 5
+- 现有方法调
+- 研
+- 小样本学习
+- 核心思想
+- 数据增强
+- /
+- 生成
+- /
+- 插值
+- 样本合成、数据混合和特征扰动
+- 直接增加样本多样性，缓解过拟合
+- 可能破坏干净样本中的发射机分类信息
+- 度量学习
+- /
+- 原型网络
+- 将发射机特征和接收链路域特征在表示空间里尽量分开
+- 适合新类别样本数少
+- 对提取网络要求高
+- 自监督预训练
+- 用大量无标签样本学到稳定表征，再把少量标签用于轻量适配
+- 缓解标注困难
+- 预训练目标若与下游身份判别不匹配，可能学到错误表征
+- 元学习
+- 显示训练模型使得易于微调的初始化，让模型能够用极少样本快速适配新任务
+- 任务适应速度快
+- 若任务分布定义得不稳定，元学习收益会迅速下降
+- RFFI
+- 中小样本学习：
+- 先用预训练使得模型学习特征表征，再用目标小样本快速学习
+- 在极少标签下完成判别
+
+## Slide 7
+- 0
+- 6
+- 现有方法调
+- 研
+- 域泛化
+- 跨接收机
+- /
+- 跨日期
+- /
+- 跨信道
+- 特征对齐、解耦、域对抗
+- 目标：未见域仍能识别
+- 小样本学习
+- 少量标注设备样本
+- 原型
+- /
+- 度量、迁移
+- 、
+- 数据
+- 增强
+- 目标：新设备快速建模
+- 未有相关工作
+- RFFI + 域泛化 + 小样本
+- 缺统一任务定义
+- 缺同一 benchmark
+- 缺跨接收机 x K-shot 评测
+- 关于
+- few-shot DG
+- 在
+- 医学影像识别
+- /
+- 分割中
+- 有
+- 组合
+- 工作
+- Domain Generalizer (2020)
+- 医学影像 DG + few-shot adaptation
+- FAMNet (AAAI 2025)
+- 频域匹配应对跨域少样本分割
+- DSM (TIP 2025)
+- 动态语义匹配处理未见域
+- RobustEMD (AIM 2025)
+- EMD 匹配增强跨域泛化
+
+## Slide 8
+- 0
+- 7
+- 模型设计
+- WiSig
+- RFFI dataset
+- Raw IQ signals
+- [B,2,256]
+- TX labels
+- [B] / 16 classes
+- Domain labels
+- rx_day [B] / 14
+- 预处理 / 增强
+- pad / crop to 256
+- mix + noise + fading
+- satellite channel view
+- Input
+- Data
+- [B,2,256]
+- ID Backbone 主干: 身份路径
+- Time
+- 7 layers
+- Freq
+- 6 layers
+- PA
+- 7 layers
+- 1x1
+- Conv+GN+ReLU
+- AvgPool
+- downsample
+- DSConv
+- t1,t2,t3
+- GAP + Linear
+- proj
+- Mirror FFT features
+- FreqBandGate
+- DSConv
+- f1,f2,f3
+- GAP + Linear
+- proj
+- MemoryPolynomial
+- EnvelopeGate
+- DilatedConv b1,b2,b3
+- GAP + Linear proj
+- Domain Backbone
+- 域骨
+- 干
+- Time
+- 7 layers
+- Freq+DSQ
+- 7 layers
+- PA
+- 7 layers
+- 1x1 Conv+GN+ReLU
+- AvgPool
+- DSConv t1,t2,t3
+- Mirror FFT
+- DSQ residual cues
+- FreqGate + f1..f3
+- GAP + Linear proj
+- MemoryPolynomial
+- EnvelopeGate
+- DilatedConv b1..b3
+- GAP + Linear proj
+- Classifier
+- z_id
+- [B,160]
+- TX logits
+- z_dom
+- [B,160]
+- Domain logits
+- GRL
+- Domain logits
+- 损失函数
+- TX
+- 分类损失
+- Domain
+- 分类损失
+- GRL
+- 域对抗损失
+- TX/RX
+- 正交损失
+- TX
+- 对比损失
+- Feature
+- 正则损失
+- Time 路径
+- SincConv+HF+DSConv 提取瞬态波形、相位/时序细节，池化后形成 t_emb，进入身份融合特征。
+- Freq 路径
+- 镜像 FFT 计算 logP+/logP-/logR/asym；FreqBandGate 选择有效频带。HF ratio、HF asym、flatness 经 MLP 加到 f_emb。
+- PA 路径
+- MemoryPoly 计算 x[n-m]*|x|^(p-1), p=1/3/5；EnvelopeGate 按幅度门控。edge ratio、regrowth、kurtosis 以 0.25*pa_delta 加到 pa_local。
+- RCN 统计量
+- 从原始 I/Q 统计 mean/std/abs、幅度/功率、I-Q 相关、I/Q 失衡、差分与相位增量；经 gate 注入 z_dom。
+- 解耦输出
+- z_id 接 TX 分类；GRL(z_id) 压制 RX/day 信息。z_dom 接 Domain 分类，吸收接收机、日期、信道偏置。
+
+## Slide 9
+- 0
+- 7
+- 模型设计
+- ID Backbone 主干: 身份路径
+- Time
+- 7 layers
+- Freq
+- 6 layers
+- PA
+- 7 layers
+- 1x1
+- Conv+GN+ReLU
+- AvgPool
+- downsample
+- DSConv
+- t1,t2,t3
+- GAP + Linear
+- proj
+- Mirror FFT features
+- FreqBandGate
+- DSConv
+- f1,f2,f3
+- GAP + Linear
+- proj
+- MemoryPolynomial
+- EnvelopeGate
+- DilatedConv b1,b2,b3
+- GAP + Linear proj
+- Domain Backbone
+- 域骨
+- 干
+- Time
+- 7 layers
+- Freq+DSQ
+- 7 layers
+- PA
+- 7 layers
+- 1x1 Conv+GN+ReLU
+- AvgPool
+- DSConv t1,t2,t3
+- Mirror FFT
+- DSQ residual cues
+- FreqGate + f1..f3
+- GAP + Linear proj
+- MemoryPolynomial
+- EnvelopeGate
+- DilatedConv b1..b3
+- GAP + Linear proj
+- 时域分支
+- 捕捉
+- I/Q
+- 样本中的瞬时波形、
+- I/Q
+- 时序局部纹理、相位
+- /
+- 包络变化、高频边沿和短时瞬态。
+- 频域分支
+- 对
+- I/Q
+- 做
+- FFT
+- ，计算频谱特征
+- (
+- 正
+- /
+- 负频普能量，正负频谱相对强弱以及不对称度
+- )
+- ，捕捉
+- I/Q
+- 样本的镜像不对称、高频能量占比、频谱平坦度、边缘能量、谱再生、谱峰峭度等。
+- 域骨干中额外计算
+- DSQ
+- 稳定残差，对频域四通道做局部平滑，使用原值减去平滑值，看相对局部平滑背景的偏离
+- PA
+- 分支
+- 捕捉功放非线性、记忆效应、包络相关调制、谱再生、边缘能量比例、
+- kurtosis
+- 等
+- PA
+- 痕迹。
+
+## Slide 10
+- 0
+- 8
+- CVS
+- 损失函数
+- 主要
+- 辅助项
+- 交叉熵
+- 发射机跨域约束
+- Tx
+- 域对抗
+- 困难域损失
+- Tx/Rx
+- 正交解耦
+- Tx
+- 特征约束
+- 主要
+- 辅助项
+- 交叉熵
+- 发射机跨域约束
+- Tx
+- 域对抗
+- 困难域损失
+- Tx/Rx
+- 正交解耦
+- Tx
+- 特征约束
+- CVS
+- 前期先学习稳定的
+- Tx
+- 表征，建立稳定的分类边界线，利用
+- Tx
+- 特征约束防止
+- 靠范数膨胀绕过域约束，是小样本下稳定模型学习的关键。
+- 中后期逐步解锁跨域约束，并缓慢提升强度，使得模型学习到跨域的
+
+## Slide 11
+- 0
+- 9
+- 仿真实验
+- Wisig
+- 数据集
+- 发射机数量
+- 6
+- 接收机数量
+- 12
+- 采集天数
+- 4
+- 单信号长度
+- 256
+- 训练天数
+- DAY1,DAY2
+- 训练接收机
+- RX0-RX6
+- 测试日期
+- DAY3,DAY4
+- 测试接收机
+- RX7-RX11
+- 每类样本数
+- 10
+- ，
+- 20
+- ，
+- 30
+- ，
+- 50
+- ，
+- 100
+- 对比方法
+- RIEI
+- [1]
+- ,DRIFT
+- [
+- 2
+- ]
+- [1]Liu, Hongli, et al. "Receiver-agnostic radio frequency fingerprint identification via feature disentanglement." 2023 IEEE 24th International Workshop on Signal Processing Advances in Wireless Communications (SPAWC). IEEE, 2023.
+- [2]Pan, Yuhao, et al. "Cross-Receiver Generalization for RF Fingerprint Identification via Feature Disentanglement and Adversarial Training."
+- arXiv
+- preprint arXiv:2510.09405 (2025).
+- 星地信道增强设置
+- 按轨道高度与仰角推导斜距、路径损耗和多普勒，再叠加天气、噪声与多径。
+- 参数
+- 当前设置
+- 采样/载频
+- Fs=25 MHz；Fc=2.462 GHz
+- 轨道高度
+- LEO 500-2000 km；
+- 星地斜距
+- LEO 500-4435 km；
+- 卫星速度
+- LEO 6.90-7.62 km/s；
+- 俯仰角θ
+- 10°-90°；clear LEO 30°-90°，low-elev 10°-30°
+- SNR/CFO
+- SNR 8-30 dB；CFO std 100-400 Hz
+- 相位/IQ
+- 相位噪声 0-4e-3 rad/sample；IQ ±0.3 dB、±3°
+- 多径
+- storm: 2-5 taps, delay≤6；mixed: 2-4 taps, delay≤5
+
+## Slide 12
+- 1
+- 0
+- 对比方法
+- [1]Liu, Hongli, et al. "Receiver-agnostic radio frequency fingerprint identification via feature disentanglement." 2023 IEEE 24th International Workshop on Signal Processing Advances in Wireless Communications (SPAWC). IEEE, 2023.
+- [2]Pan, Yuhao, et al. "Cross-Receiver Generalization for RF Fingerprint Identification via Feature Disentanglement and Adversarial Training."
+- arXiv
+- preprint arXiv:2510.09405 (2025).
+- 同样使用
+- ResNet-18
+- 将输入
+- x
+- 分解为
+- Tx
+- 相关特征
+- 和
+- Rx
+- 相关特征
+- ，在特征解耦基础上进一步引入
+- GRL
+- 对抗训练、中心约束、负
+- MSE
+- 特征分离。
+- 1.
+- 交叉熵损失
+- 2.GRL
+- 梯度反转对抗损失
+- 3.
+- 中心约束正则
+- 同一
+- 4.
+- 负
+- MSE
+- 类间特征分离
+- RIEI
+- DRIFT
+- 使用
+- ResNet-18
+- 将输入
+- x
+- 分解为
+- Tx
+- 相关特征
+- 和
+- Rx
+- 相关特征
+- 1.
+- 发射机
+- /
+- 接收机分类损失
+- 2.
+- 互独立损失
+- 3.
+- 信息熵损失
+- RIEI
+- 采集交替训练与中间更新策略
+- 更新分类器与
+- FED
+- 的
+- CE
+- 部分：
+- 固定更新后的分类器，继续更新
+- FED
+- ：
+
+## Slide 13
+- 11
+- 仿真实验
+- Wisig
+- 数据集
+- 发射机数量
+- 6
+- 接收机数量
+- 12
+- 采集天数
+- 4
+- 单信号长度
+- 256
+- 训练天数
+- DAY1,DAY2
+- 训练接收机
+- RX0-RX6
+- 测试日期
+- DAY3,DAY4
+- 测试接收机
+- RX7-RX11
+- 每类样本数
+- 10
+- ，
+- 20
+- ，
+- 30
+- ，
+- 50
+- ，
+- 100
+- 对比方法
+- RIEI,DRIFT
+
+## Slide 14
+- 12
+- 实验结果分析
+- RIEI 与 DRIFT 走势为何不同
+- RIEI 更依赖身份/域信息的解耦约束；样本增多后，源域日别与接收机结构也更充分，身份分支仍可能携带域统计。
+- DRIFT 的对抗与中心约束依赖稳定梯度；小样本时域梯度噪声大，样本增加后 strict UDU 往往改善。
+- 二者优化目标不同，所以随 K 增大不会呈现同一种单调趋势。
+- 星地增强为何可能变弱
+- 增强同时引入多普勒、CFO、相位噪声、低 SNR、天气衰落和多径，改变了 PA、I/Q、频谱细节等指纹线索。
+- 若增强过早或过强，模型会优先学习抗信道扰动，而不是稳定的发射机身份边界。
+- 因此 satellite robustness 可能提升，但 clean OOD 测试成绩会被拉低。
+- RIEI/DRIFT 将星地信道更多作为外部扰动处理；CVS 在身份-域解耦框架内吸收扰动，因而 clean OOD 与 satellite robustness 的冲突更小。
+- CVS 为什么更强
+- CVS 把物理先验写进特征：Sinc/Freq/PA 分支直接刻画硬件相关频谱和非线性线索。
+- 双骨干把 z_id 留给 TX，把 z_dom 留给 RX/day/channel；GRL、正交与一致性损失共同压制域泄漏。
+- 少样本阶段用 GroupCE、Proto、SupCon 与 Feature Norm Guard 稳住特征几何，再受控引入星地扰动。
+
+## Slide 15
+- 13
+- 下一步计划
+- 目前对比的实验比较单一，设计更多实验对比不同方法的性能
+- 由于
+- CVS
+- 模型计算的统计量比较多，导致模型虽然参数量少，但是推理延迟相对较高
+- (12ms),
+- 后续计划对模型进行剪枝或探索模型蒸馏
+- 虽然
+- CVS
+- 默认使用了星地信道视图增强，但是面对叠加星地信道测试样本的性能依然较低，后续探索星地信道鲁棒相关。
+
+## Slide 16
+- 请老师、同学批评指正

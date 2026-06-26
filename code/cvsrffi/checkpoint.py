@@ -87,3 +87,4 @@ def derive_checkpoint_path(base_path: str, suffix: str) -> str:
 
 def default_is_path(p: str, default_name: str) -> bool:
     return str(p).strip() == default_name
+

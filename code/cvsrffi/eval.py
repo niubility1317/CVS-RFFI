@@ -267,3 +267,4 @@ def format_sat_test_lines(sat_stats: Dict[str, Dict[str, Any]]) -> List[str]:
             f"({int(agg.get('tx_correct', 0))}/{int(agg.get('tx_total', 0))})"
         )
     return lines
+

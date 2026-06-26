@@ -377,3 +377,4 @@ def format_epoch_block(
     lines.append(f"[EPOCH-END] E{epoch:03d}/{epochs:03d}")
     lines.append(sep)
     return "\n".join(lines)
+

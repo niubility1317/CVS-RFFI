@@ -1,0 +1,31 @@
+claim,evidence_type,file_path,line_or_key,summary,confidence
+"研究场景被定义为地面训练、星上部署两阶段",document,analysis/spaceborne_rffi_dg_fsl_recalibration_20260611.md,"489-499","文档明确区分训练阶段 source-only DG 与部署阶段 few-shot/new-class/target calibration。",high
+"目标样本一旦用于 prototype、adapter 或阈值就不能放入 strict DG 主表",document,analysis/spaceborne_rffi_dg_fsl_recalibration_20260611.md,"554-559,594","已有方法学文档明确 DG/FSL/DA 边界。",high
+"WiSig 数据集支持多源域 domain id",code,code/dataset_wisig.py,"107,165-183","WiSigCompactDataset 支持 day/rx/rx_day 域标签并返回 domain id。",high
+"主训练默认 WiSig train_ratio 为 0.1",code,code/train.py,"1092-1101","train.py 默认 wisig_domain=rx_day、wisig_train_ratio=0.1，与项目硬约束一致。",high
+"post-stage CLI 默认 train_ratio 为 0.2，和当前硬约束存在口径风险",code,code/post_stage_cli.py,"28-36,64","post_stage_cli 默认 wisig_train_ratio=0.2，若用于 N607 论文口径需显式覆盖为 0.1。",high
+"CVS backbone 输出 z_id/z_dom 和域对抗 logits",code,code/model_dual_cvsincnet.py,"390,471,503,596-631","DualCVSincNetDisentangle 双骨干输出身份/域 embedding 与分类 logits。",high
+"地面 DG loss 已接入训练",code,code/cvsrffi/losses.py,"567","compute_core_losses 集成 CE、域损失、跨域一致性、GroupCE、正交等；启用由配置决定。",high
+"地面 DG loss 有域数量 gate，避免无效域损失",code,code/cvsrffi/schedule.py,"18-31","domain_loss_gates 按有效域和跨域 pair 决定损失是否启用。",high
+"prototype/SupCon/Fishr 已接入主训练路径但需看具体 lambda",code,code/train.py,"2726-2734,2932-2949,2984-2996","PrototypeMemoryBank、SupCon、Fishr 进入总 loss；默认/launcher 可能关闭部分项。",medium
+"星地信道仿真器覆盖 Doppler/CFO/相位/多径/IQ/AWGN 等",code,code/sat_channel.py,"95,123,243-289","SatSimConfig 和 apply_sat_gnd_channel_batch 实现物理启发仿真信道。",high
+"卫星 stress 接入训练/评估",code,code/train.py,"1956-1970,2138-2161,2222,2901","eval_sat_channel、sat consistency、concat sat augment 已有接入点。",high
+"SFE payload 强制 source/new/unknown TX 不重叠",code,code/cvsrffi/wisig_fewshot_payload.py,"46-58,107-145","assert_disjoint_tx_sets 与 build_sfe_payload_from_feature_arrays 审计 TX split。",high
+"SFE manifest 声明 new/unknown TX 与 support/query 结构",code,code/cvsrffi/wisig_fewshot_payload.py,"249-268","manifest 包含 protocol、target_visibility、source/new/unknown TX、query_per_tx 等字段。",high
+"SFE 实现 prototype、Mahalanobis/OpenMax/combined gate 和生命周期",code,code/cvsrffi/spaceborne_fewshot.py,"25,96,212,341,422-458","OpenSetGateConfig、NewClassLifecycleManager、build/predict/metrics 已实现。",high
+"SFE/FTRC evaluator 支持 unknown_tx_ids 和 gate CLI",code,code/eval_spaceborne_fewshot.py,"31-55,88-94,151-175,225-236","CLI 支持 protocol、gate_mode、unknown IDs，并调用 SFE/FTRC 流程。",high
+"adapter/LoRA 是独立 sidecar，不是 train.py 默认主路径",code,code/target_domain_adaptation.py,"77-143,228-264","实现 logit LoRA 和 feature residual adapter；从 build_target_adapter 构建。",high
+"FTRC 训练使用 rollback gate 选择可部署 checkpoint",code,code/train_target_adapt.py,"421-432,613-641,668","训练后 evaluate_rollback_gate 决定 deployable；无通过时提示部署 teacher。",high
+"rollback 规则覆盖 old-class drop 和 unknown false accept",code,code/cvsrffi/adaptation_safety.py,"40-50,91-127","DEFAULT_SFE_ROLLBACK_RULES 与 DEFAULT_TARGET_ROLLBACK_RULES 已实现。",high
+"Card8 SFE 最佳 K20 full=50.56 old=92.50 new=17.00 unknown=n/a",result,automation_reports/CV-SincNet/spaceborne_fewshot_enhanced_card8_20260613/report.md,"161-168,214-217","结果表给出 6 个 SFE gate；K20 最佳但新类低且 unknown 未评估。",high
+"Card8 FTRC adapter/LoRA 未产生可部署 best checkpoint",result,automation_reports/CV-SincNet/spaceborne_fewshot_enhanced_card8_20260613/result_audit_20260613.md,"163-186","feature residual 42.20->42.11，logit LoRA 42.20->42.16，best_target_adapt 缺失。",high
+"Card9 true open-set 已设计并审计 unknown TX，但未启动",result,automation_reports/CV-SincNet/spaceborne_fewshot_openset_card9_20260613/report.md,"7-10,16-29,53-58,139-143,155","UNKNOWN_TX_IDS=6,7 审计不重叠；状态 DEFERRED_RETRY_CAPACITY，无 metrics。",high
+"highratio 当前阶段 best completed 是 R030_K225_RATIO_STRICT",result,automation_reports/CV-SincNet/status_fewshot_deploy_20260613_2033/report.md,"35-45","strict UDU 85.17、primary 85.23、overall 86.19，但 latest drop 明显。",high
+"highratio 仍有 4 个 R050/K500 候选未完成",result,automation_reports/CV-SincNet/status_fewshot_deploy_20260613_2033/report.md,"22-33","32 finished、4 unfinished，最终全矩阵 best 仍需完成后重解析。",high
+"CEN51 full-DG few-shot comprehensive 16/16 完成但 0/16 promotion",result,automation_reports/CV-SincNet/cen51_fulldg_fewshot_comprehensive_20260610_223000/report.md,"11-16,221-223,237-255","多 seed anchor confirmation 完成，但 seed variance、rx floor、sat floor 阻止 promotion。",high
+"项目论文草稿声称 CVS full Overall 91.01 / UDU 86.90 / OOD 88.34",document,paper/experiments_cn.md,"37,45-52","显式论文指标属于已有草稿目标/声称，需要和当前 r010 协议分开。",high
+"项目论文草稿声称星地信道 38-45%、sat avg 42.1",document,paper/abstract_cn.md;paper/experiments_cn.md,"abstract_cn.md:3; experiments_cn.md:127","星地信道目标来自仿真压力测试，不是真实在轨 IQ。",high
+"open-set 和真实在轨验证在论文讨论中被列为未来工作",document,paper/discussion_cn.md,"15-17","讨论明确未来扩展开集识别和真实卫星链路验证。",high
+"部署参数量约 0.63M 是显式论文声称，但缺端侧延迟/功耗实测",document,paper/experiments_cn.md,"135","草稿声称部署丢弃域骨干后约 0.63M；未找到 P95 latency/FLOPs/功耗验收。",medium
+"顶层不是 git repository，无法记录 commit hash",command,git status --short,"fatal: not a git repository","审计命令显示 E:/type10-7 顶层无 git 仓库。",high
+"未找到 environment.yml/requirements.txt 等环境锁定文件",command,"rg --files -g requirements.txt -g environment.yml -g Dockerfile -g pyproject.toml -g setup.py","only unrelated toml/lock results","环境复现缺少标准依赖锁定文件。",high
