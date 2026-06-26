@@ -35,3 +35,5 @@
 - Updated `task_plan.md` with a `CODEX-PHASE2-OPENWORLD` section so local Codex can discover the new handoff from the standard planning entrypoint.
 - Marked priority implementation phases: diagnostics first, then TX×RX balanced sampler/losses, then structured domain context, then a separate `phase2_adapt.py` open-world entrypoint.
 - Recorded critical guardrails: current `sgc_adapt` is not full Phase 2, do not concatenate `z_dom` directly into TX classifier, do not rely on max-softmax-only rejection, and require target-RX old-known anchor coverage.
+- Added `docs/PHASE2_FULL_PROTOTYPE_MASK_OPENWORLD_IMPLEMENTATION_20260626.md`, a detailed implementation blueprint for TX/domain/TX-domain prototype banks, feature masks, relationship masks, balanced TX×RX sampler, prototype/domain-shift losses, multi-prototype open-world head, and `phase2_adapt.py` flow.
+- Updated `task_plan.md` again so Codex can find both the diagnostic handoff and the complete prototype/mask/open-world implementation blueprint.
