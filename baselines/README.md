@@ -81,37 +81,11 @@ This reports the three main named dimensions:
 `test_unseen_day_unseen_rx`, plus satellite-channel aggregates for the same
 dimensions.
 
-## Paper-Audit Experiment Protocols
+## CVS-Aligned Baseline Protocol
 
-`baselines/PAPER_CODE_AUDIT.md` identifies two formal paper-alignment checks
-that require real WiSig/ManySig data and long training rather than synthetic
-smoke tests. Dry-run them first to inspect the exact commands:
-
-```bash
-bash scripts/launchers/run_cvs_baseline_queue.sh \
-  --methods riei_fd \
-  --wisig-protocol riei_original \
-  --gpu-ids 0 \
-  --dry-run
-
-bash scripts/launchers/run_cvs_baseline_queue.sh \
-  --methods drift \
-  --wisig-protocol drift_day1 \
-  --gpu-ids 1 \
-  --dry-run
-
-bash baselines/scripts/run_riei_original_table3_queue.sh --dry-run
-```
-
-When the dataset path and GPU allocation are verified, remove `--dry-run`.
-The RIEI protocol uses receiver-holdout settings and writes
-`paper_eval_window.name=riei_last10` under `metrics.json["final"]`; the DRIFT
-Day1 protocol uses source/test receivers from Day 1 and writes
-`paper_eval_window.name=drift_last5`. Both commands also preserve the
-same-row named-test context under `metrics.json["final"]["test_named"]`.
-
-For a CVS-aligned comparison across all four baselines, keep the default
-`cvs_day_rx` protocol:
+RIEI/DRIFT are kept in the GitHub release only as CVS comparison baselines.
+Use the default `cvs_day_rx` protocol for CVS-aligned comparison across the
+published baseline set:
 
 ```bash
 METHODS=cvcnn_ce,riei_fd,drift,ra_collab \
@@ -119,9 +93,11 @@ GPU_IDS=0,1,2,3 \
 bash scripts/launchers/run_cvs_baseline_queue.sh --wisig-protocol cvs_day_rx --dry-run
 ```
 
-These commands set up experiments; they do not by themselves constitute
-deployment success. Any reported result must name the run directory, split,
-protocol, seed, satellite/stress view, and full metric row.
+This command sets up experiments; it does not by itself constitute deployment
+success. Any reported result must name the run directory, CVS split, protocol,
+seed, satellite/stress view, and full metric row. Paper-only RIEI/DRIFT
+Table-style launchers and rerun templates are outside this CVS-only GitHub
+release scope.
 
 ## LEO Satellite-Channel View Augmentation
 
@@ -183,10 +159,11 @@ unchanged.
 
 ## Smoke Commands
 
-The older commands below remain synthetic smoke tests for API checks. Use an environment that has PyTorch installed:
+The command below remains a synthetic smoke test for CVS-aligned API checks.
+Use an environment that has PyTorch installed:
 
 ```bash
-python -m pytest tests/test_paper_reproduction_paper_parity.py tests/test_paper_reproduction_cvs_aligned.py -q
+python -m pytest tests/test_paper_reproduction_cvs_aligned.py -q
 python -m baselines.riei_fd.train --help
 python -m baselines.drift.train --help
 python -m baselines.ra_collab.train --help

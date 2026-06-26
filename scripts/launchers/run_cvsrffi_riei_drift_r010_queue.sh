@@ -146,7 +146,7 @@ METHODS_CSV="${METHODS_CSV:-${DEFAULT_METHODS}}"
 
 if [ "${WISIG_PROTOCOL}" != "cvs_day_rx" ]; then
   echo "ERROR: this ratio-0.1 queue intentionally supports WISIG_PROTOCOL=cvs_day_rx only; got ${WISIG_PROTOCOL}" >&2
-  echo "Use run_wisig_paper_scope_queue.sh for DRIFT/RIEI original-paper fixed-sample protocols." >&2
+  echo "Paper-only DRIFT/RIEI fixed-sample protocols are outside this CVS-only GitHub release." >&2
   exit 2
 fi
 if [ "${TRAIN_RATIO}" != "0.1" ]; then

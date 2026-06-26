@@ -1108,6 +1108,57 @@ class SpaceborneFewShotDaMatrixTest(unittest.TestCase):
         result = validate(rows, expected_count=48, matrix_root=payload, launcher_text=launcher)
         self.assertEqual("PASS", result["verdict"], result["issues"])
 
+    def test_h06_rollsafe48_repairs_rollback_safe_old_retention_without_seen_new(self):
+        from collections import Counter
+
+        from optimizer_validate_matrix import validate
+        from spaceborne_fewshot_da_matrix import make_candidates, matrix_payload, render_launcher
+
+        candidates = make_candidates(plan="OA_MSE_H06_ROLLSAFE48")
+        payload = matrix_payload("spaceborne_fewshot_h06_rollsafe48_test", candidates)
+        rows = payload["candidates"]
+        launcher = render_launcher("spaceborne_fewshot_h06_rollsafe48_test", candidates)
+
+        self.assertEqual(48, len(candidates))
+        self.assertEqual(Counter(c.gpu for c in candidates), {gpu: 6 for gpu in range(8)})
+        self.assertEqual(
+            Counter(c.optimization_category for c in candidates),
+            {"rollback_safe_retention": 24, "deployment_gate_rescue": 24},
+        )
+        self.assertEqual(
+            Counter(c.oa_mse_adapter_selection_policy for c in candidates),
+            {"constrained_retention_risk": 24, "identity_preserving_risk": 24},
+        )
+        self.assertEqual({c.target_new_support_per_tx for c in candidates}, {0})
+        self.assertEqual({c.new_tx_ids for c in candidates}, {"__NONE__"})
+        self.assertTrue(all(c.oa_mse_support_center_ce_weight > 0 for c in candidates))
+        self.assertTrue(all(c.oa_mse_multiproto_score for c in candidates))
+        self.assertTrue(all(c.oa_mse_mixture_consistency_gate for c in candidates))
+        self.assertTrue(all(c.oa_mse_two_branch_background_guard for c in candidates))
+        self.assertTrue(all(c.oa_mse_pre_reject_defer_arbitration for c in candidates))
+        self.assertTrue(all(c.pre_reject_support_neighborhood_retention for c in candidates))
+        self.assertTrue(all(c.oa_mse_retention_rescue_gate for c in candidates))
+        self.assertTrue(all(c.retention_rescue_candidate_only for c in candidates))
+        self.assertTrue(all(c.oa_mse_source_looo_risk_arbitration for c in candidates))
+        self.assertTrue(all(c.oa_mse_old_unknown_acceptance_guard for c in candidates))
+        self.assertTrue(all(c.oa_mse_support_retention_guard for c in candidates))
+        self.assertTrue(all(not c.oa_mse_old_primary_gate for c in candidates))
+        self.assertTrue(all("rollback_safe_retention" in item["fusion_inputs"] for item in rows))
+        self.assertTrue(all("defer_first_deployment_gate" in item["fusion_inputs"] for item in rows))
+        self.assertTrue(all("H06_ROLLSAFE48" in item["candidate_id"] for item in rows))
+        self.assertTrue(all("h06_rollback_safe_retention" in item["update_module"] for item in rows))
+        self.assertEqual({item["target_new_tx_labels"] for item in rows}, {""})
+        self.assertEqual({item["target_new_leo_query"] for item in rows}, {"not_applicable_old_unknown_only"})
+        self.assertIn("OA_MSE_H06_ROLLSAFE48", launcher)
+        self.assertIn("--oa_mse_two_branch_background_guard", launcher)
+        self.assertIn("--oa_mse_retention_rescue_gate", launcher)
+        self.assertIn("--retention_rescue_candidate_only", launcher)
+        self.assertIn("--pre_reject_support_neighborhood_retention", launcher)
+        self.assertIn("--oa_mse_old_unknown_acceptance_guard", launcher)
+
+        result = validate(rows, expected_count=48, matrix_root=payload, launcher_text=launcher)
+        self.assertEqual("PASS", result["verdict"], result["issues"])
+
     def test_oa_mse_payload_carries_resolved_manytx_tx_and_rx_labels(self):
         from spaceborne_fewshot_da_matrix import make_candidates, matrix_payload
 

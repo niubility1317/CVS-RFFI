@@ -48,7 +48,7 @@ paper_reproduction/
   cvs_aligned/                 # CVS Stage2-B/C协议扩展评估层
   configs/                     # 脱敏示例配置
 baselines/
-  common/、cvcnn_ce/、drift/、riei_fd/、ra_collab/、paper_resnet/
+  common/、cvcnn_ce/、drift/、riei_fd/、ra_collab/
 tests/
   test_paper_reproduction_*.py
   test_spaceborne_fewshot.py
@@ -57,8 +57,8 @@ docs/
   GROUND_TRAINING.md
   DEPLOYMENT_PHASES.md
   PUBLISH_SCOPE.md
-experiment_records/
-  CV-SincNet/                 # 十二小时快照、最近实验指标清单和有界报告证据
+  RELEASE_SNAPSHOT.md         # CVS-only发布快照摘要
+  release_manifest_latest.json # 发布文件清单
 ```
 
 ## 环境
@@ -93,10 +93,10 @@ python code\train.py --dataset wisig --wisig_pkl <path-to-ManySig-or-WiSig-pkl> 
 python code\train.py --dataset wisig --wisig_pkl <path-to-ManySig-or-WiSig-pkl> --use_meta_ssl_cvs --meta_ssl_protocol_check_only --use_meta_rxday_episodes --wisig_train_ratio 0.1
 ```
 
-论文复现和CVS扩展测试：
+CVS扩展测试：
 
 ```powershell
-python -m pytest tests\test_paper_reproduction_protonet.py tests\test_paper_reproduction_feature_separation.py tests\test_paper_reproduction_cvs_aligned.py -q
+python -m pytest tests\test_paper_reproduction_cvs_aligned.py -q
 ```
 
 这些命令用于验证入口、协议字段和小规模smoke，不代表完整论文复现实验或部署成功。
@@ -123,9 +123,9 @@ bash scripts/launchers/run_cvs_baseline_queue.sh --methods drift --wisig-protoco
 
 更多协议细节见`docs/PROJECT_PROTOCOL.md`、`docs/GROUND_TRAINING.md`和`docs/DEPLOYMENT_PHASES.md`。
 
-## 十二小时自动整理
+## CVS-only自动整理
 
-本仓库包含自动整理脚本`scripts/run_cvs_snapshot_cycle.ps1`。该脚本从`E:\type10-7`同步核心代码、协议、工具、launcher和最近实验指标，生成`experiment_records/CV-SincNet/LATEST_SNAPSHOT.md`、`metrics_inventory.csv`和`docs/analysis_requests/latest_chatgpt_pro_prompt.md`，然后提交并推送到GitHub。详细边界见`docs/AUTOMATION_GITHUB_REVIEW.md`。
+本仓库包含自动整理脚本`scripts/run_cvs_snapshot_cycle.ps1`。该脚本从`E:\type10-7`同步CVS相关核心代码、协议、工具、launcher、测试和必要发布说明，生成`docs/RELEASE_SNAPSHOT.md`和`docs/release_manifest_latest.json`，然后按参数提交并推送到GitHub。脚本不会上传`experiment_records/`、本地工作区笔记、AI审查提示/输出或baseline历史运行产物。详细边界见`docs/AUTOMATION_GITHUB_REVIEW.md`和`docs/PUBLISH_SCOPE.md`。
 
 ## 变更纪律
 

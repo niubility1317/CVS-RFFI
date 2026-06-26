@@ -215,6 +215,8 @@ def category_for(item: Mapping[str, Any]) -> str:
         return value
     if value in {"oldqual_oldrisk_fusion", "rollback_calibration"}:
         return value
+    if value in {"rollback_safe_retention", "deployment_gate_rescue"}:
+        return value
     candidate = str(item.get("candidate_id") or "")
     if re.search(r"_R\d+", candidate):
         return "conservative"
@@ -898,7 +900,7 @@ def oa_mse_required_field_issues(item: Mapping[str, Any]) -> List[Dict[str, Any]
     cid_upper = str(cid).upper()
     explicit_old_unknown_only = (
         "old_unknown_only" in normalized_status(item.get("k_shot_interpretation"))
-        or any(token in cid_upper for token in ("OLDUNK", "BGTRAIN", "RETOLD", "OLDFIRST", "OLDRELAX", "OLDGEOM", "OLDCONF", "OLDBUDGET", "OLDQUAL", "OLDRISK", "OLDFUSE"))
+        or any(token in cid_upper for token in ("OLDUNK", "BGTRAIN", "RETOLD", "OLDFIRST", "OLDRELAX", "OLDGEOM", "OLDCONF", "OLDBUDGET", "OLDQUAL", "OLDRISK", "OLDFUSE", "ROLLSAFE"))
         or normalized_status(item.get("target_new_leo_query")) == "not_applicable_old_unknown_only"
     )
     old_unknown_only = explicit_old_unknown_only and target_new_k_value == 0 and not target_new_ids_text
@@ -1140,7 +1142,7 @@ def stage2_sample_protocol_issues(item: Mapping[str, Any], sample_protocol: Opti
         target_new_support_k = int(item.get("target_new_support_per_tx") or item.get("target_new_k") or 0)
     except (TypeError, ValueError):
         target_new_support_k = -1
-    old_unknown_only_plan = any(token in str(cid).upper() for token in ("OLDUNK", "BGTRAIN", "RETOLD", "OLDFIRST", "OLDRELAX", "OLDGEOM", "OLDCONF", "OLDBUDGET", "OLDQUAL", "OLDRISK", "OLDFUSE"))
+    old_unknown_only_plan = any(token in str(cid).upper() for token in ("OLDUNK", "BGTRAIN", "RETOLD", "OLDFIRST", "OLDRELAX", "OLDGEOM", "OLDCONF", "OLDBUDGET", "OLDQUAL", "OLDRISK", "OLDFUSE", "ROLLSAFE"))
     old_unknown_only_target = (
         target_new_support_k == 0
         and old_unknown_only_plan
@@ -2233,13 +2235,14 @@ def validate(
     issues.extend(phase1_server_landed_training_issues(items, expected_count))
     issues.extend(command_registry_uniqueness_issues(items, expected_count))
     categories = Counter(category_for(item) for item in items)
-    for key in ("conservative", "aggressive", "old_retention", "unknown_boundary", "seen_new_rescue", "support_quality", "prototype_geometry", "query_free_background_risk", "unknown_separability", "oldqual_oldrisk_fusion", "rollback_calibration", "unknown"):
+    for key in ("conservative", "aggressive", "old_retention", "unknown_boundary", "seen_new_rescue", "support_quality", "prototype_geometry", "query_free_background_risk", "unknown_separability", "oldqual_oldrisk_fusion", "rollback_calibration", "rollback_safe_retention", "deployment_gate_rescue", "unknown"):
         categories.setdefault(key, 0)
     expected_per_category = expected_count // 2 if expected_count % 2 == 0 else None
     triage_categories = {"old_retention", "unknown_boundary", "seen_new_rescue"}
     support_quality_categories = {"support_quality", "prototype_geometry"}
     background_risk_categories = {"query_free_background_risk", "unknown_separability"}
     oldfuse_categories = {"oldqual_oldrisk_fusion", "rollback_calibration"}
+    rollsafe_categories = {"rollback_safe_retention", "deployment_gate_rescue"}
     if any(categories[key] for key in triage_categories):
         expected_per_triage_category = expected_count // 3 if expected_count % 3 == 0 else None
         if (
@@ -2250,6 +2253,7 @@ def validate(
             or any(categories[key] > 0 for key in support_quality_categories)
             or any(categories[key] > 0 for key in background_risk_categories)
             or any(categories[key] > 0 for key in oldfuse_categories)
+            or any(categories[key] > 0 for key in rollsafe_categories)
             or categories["unknown"] > 0
         ):
             issues.append(
@@ -2270,6 +2274,7 @@ def validate(
             or any(categories[key] > 0 for key in triage_categories)
             or any(categories[key] > 0 for key in background_risk_categories)
             or any(categories[key] > 0 for key in oldfuse_categories)
+            or any(categories[key] > 0 for key in rollsafe_categories)
             or categories["unknown"] > 0
         ):
             issues.append(
@@ -2290,6 +2295,7 @@ def validate(
             or any(categories[key] > 0 for key in triage_categories)
             or any(categories[key] > 0 for key in support_quality_categories)
             or any(categories[key] > 0 for key in oldfuse_categories)
+            or any(categories[key] > 0 for key in rollsafe_categories)
             or categories["unknown"] > 0
         ):
             issues.append(
@@ -2310,6 +2316,7 @@ def validate(
             or any(categories[key] > 0 for key in triage_categories)
             or any(categories[key] > 0 for key in support_quality_categories)
             or any(categories[key] > 0 for key in background_risk_categories)
+            or any(categories[key] > 0 for key in rollsafe_categories)
             or categories["unknown"] > 0
         ):
             issues.append(
@@ -2317,6 +2324,27 @@ def validate(
                     "scope": "matrix",
                     "issue": "oldfuse_category_count_not_balanced",
                     "expected_per_oldfuse_category": expected_per_oldfuse_category,
+                    "categories": dict(categories),
+                }
+            )
+    elif any(categories[key] for key in rollsafe_categories):
+        expected_per_rollsafe_category = expected_count // 2 if expected_count % 2 == 0 else None
+        if (
+            expected_per_rollsafe_category is None
+            or any(categories[key] != expected_per_rollsafe_category for key in rollsafe_categories)
+            or categories["conservative"] > 0
+            or categories["aggressive"] > 0
+            or any(categories[key] > 0 for key in triage_categories)
+            or any(categories[key] > 0 for key in support_quality_categories)
+            or any(categories[key] > 0 for key in background_risk_categories)
+            or any(categories[key] > 0 for key in oldfuse_categories)
+            or categories["unknown"] > 0
+        ):
+            issues.append(
+                {
+                    "scope": "matrix",
+                    "issue": "rollsafe_category_count_not_balanced",
+                    "expected_per_rollsafe_category": expected_per_rollsafe_category,
                     "categories": dict(categories),
                 }
             )

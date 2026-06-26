@@ -23,11 +23,17 @@ logs/
 outputs/
 remote_artifacts/
 automation_reports/
+experiment_records/
 server_log_backups/
 analysis_tmp/
 tmp/
 tmp*/
 code/snapshots/
+baselines/baseline_runs/
+docs/source_notes/
+docs/source_workspace_docs/
+docs/analysis_requests/
+docs/ai_review/
 *.pth
 *.pt
 *.ckpt

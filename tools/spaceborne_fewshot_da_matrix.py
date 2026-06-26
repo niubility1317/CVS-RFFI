@@ -4608,6 +4608,202 @@ def _oa_mse_h06_oldfuse48_stage_specs() -> list[dict]:
     return specs
 
 
+def _oa_mse_h06_rollsafe48_stage_specs() -> list[dict]:
+    """H06 rollback-safe old-retention repair after OLDFUSE all-rollback."""
+
+    specs = [dict(spec) for spec in _oa_mse_h06_oldfuse48_stage_specs()]
+    arms = (
+        "retention_rescue_k5",
+        "support_evidence_k5",
+        "defer_bias_k5",
+        "deployment_gate_k5",
+        "hmean_probe_k10",
+        "rollback_floor_k10",
+    )
+    for idx, spec in enumerate(specs):
+        strictness = idx % 3
+        gate_arm = idx >= (len(specs) // 2)
+        arm = arms[idx % len(arms)]
+        k_old = 10 if arm.endswith("k10") else 5
+        spec["stage"] = "mse_subspace"
+        spec["eval_protocol"] = "ftrc"
+        spec["k_old"] = k_old
+        spec["k_new"] = 0
+        spec["category"] = "deployment_gate_rescue" if gate_arm else "rollback_safe_retention"
+        spec["optimization_category"] = spec["category"]
+        spec["route_suffix"] = f"h06_rollsafe_retention_repair_{arm}"
+        spec["ablation_arm"] = arm
+        spec["target_new_leo_support"] = False
+        spec["source_proto_per_tx"] = 20 if k_old == 5 else 22
+        spec["source_query_per_tx"] = 38 if k_old == 5 else 40
+        spec["sfe_max_samples_per_tx"] = 58 if k_old == 5 else 62
+        spec["query_per_tx"] = 30
+        spec["target_old_query_per_tx"] = 30
+        spec["stage2_max_active_per_gpu"] = 2
+        spec["adapter_kind"] = "low_rank" if not gate_arm else "residual_mlp"
+        spec["adapter_selection_policy"] = (
+            "constrained_retention_risk" if not gate_arm else "identity_preserving_risk"
+        )
+        spec["steps"] = (96, 108, 120)[strictness] if not gate_arm else (104, 116, 128)[strictness]
+        spec["align"] = round(0.115 + 0.010 * strictness + (0.005 if gate_arm else 0.0), 3)
+        spec["norm"] = round(0.020 + 0.002 * strictness, 3)
+        spec["bce"] = round(0.032 + 0.004 * strictness, 3)
+        spec["unknown"] = round(0.038 + 0.006 * strictness + (0.008 if gate_arm else 0.0), 3)
+        spec["pl"] = round(0.018 + 0.003 * strictness, 3)
+        spec["maha"] = round(0.22 + 0.020 * strictness, 3)
+        spec["unknown_moat"] = round(0.17 + 0.030 * strictness + (0.030 if gate_arm else 0.0), 3)
+        spec["unknown_margin"] = round(0.20 + 0.045 * strictness + (0.060 if gate_arm else 0.0), 3)
+        spec["negative_anchor_weight"] = round(0.075 + 0.020 * strictness + (0.025 if gate_arm else 0.0), 3)
+        spec["negative_anchor_margin"] = round(0.16 + 0.030 * strictness + (0.030 if gate_arm else 0.0), 3)
+        spec["negative_anchor_temperature"] = round(0.15 - 0.012 * min(strictness, 2), 3)
+        spec["negative_anchor_max_anchors"] = 256 if not gate_arm else 288
+        spec["void_background"] = round(0.025 + 0.010 * strictness + (0.018 if gate_arm else 0.0), 3)
+        spec["void_gate"] = bool(gate_arm or strictness >= 2)
+        spec["void_gate_min_score"] = round(0.62 + 0.030 * strictness + (0.030 if gate_arm else 0.0), 3)
+        spec["void_gate_min_margin"] = round(-0.08 + 0.030 * strictness + (0.025 if gate_arm else 0.0), 3)
+        spec["source_looo_unknown_weight"] = round(0.070 + 0.026 * strictness + (0.030 if gate_arm else 0.0), 3)
+        spec["source_looo_unknown_margin"] = round(0.28 + 0.045 * strictness + (0.045 if gate_arm else 0.0), 3)
+        spec["source_looo_interclass_margin"] = round(0.09 + 0.012 * strictness, 3)
+        spec["source_looo_max_samples_per_class"] = 48 if not gate_arm else 52
+        spec["source_looo_risk_arbitration"] = True
+        spec["source_looo_risk_quantile"] = round(0.80 + 0.020 * strictness + (0.015 if gate_arm else 0.0), 3)
+        spec["source_looo_risk_slack"] = round(0.040 + 0.012 * strictness, 3)
+        spec["source_looo_risk_min_score_margin"] = round(0.010 + 0.018 * strictness, 3)
+        spec["source_looo_risk_min_known_evidence_delta"] = round(-0.18 + 0.030 * strictness, 3)
+        spec["source_looo_risk_background_score"] = round(0.58 + 0.030 * strictness + (0.035 if gate_arm else 0.0), 3)
+        spec["source_looo_risk_background_margin"] = round(-0.10 + 0.030 * strictness + (0.030 if gate_arm else 0.0), 3)
+        spec["source_looo_risk_reject_min_failures"] = 4 if not gate_arm else 3 + min(strictness, 1)
+        spec["source_looo_risk_reject_action"] = "defer"
+        spec["two_branch_background_guard"] = True
+        spec["two_branch_bg_min_score"] = round(0.52 + 0.035 * strictness + (0.045 if gate_arm else 0.0), 3)
+        spec["two_branch_bg_min_margin"] = round(-0.14 + 0.035 * strictness + (0.035 if gate_arm else 0.0), 3)
+        spec["two_branch_old_support_evidence_delta"] = round(-0.18 + 0.030 * strictness, 3)
+        spec["two_branch_old_anchor_delta"] = round(-0.14 + 0.025 * strictness, 3)
+        spec["two_branch_old_anchor_margin"] = round(-0.02 + 0.015 * strictness, 3)
+        spec["two_branch_seen_new_evidence_delta"] = 0.0
+        spec["two_branch_seen_new_anchor_delta"] = 0.0
+        spec["pre_reject_defer_arbitration"] = True
+        spec["pre_reject_defer_action"] = "defer"
+        spec["pre_reject_max_background_score"] = round(0.76 + 0.025 * strictness + (0.020 if gate_arm else 0.0), 3)
+        spec["pre_reject_max_background_margin"] = round(0.02 + 0.025 * strictness + (0.020 if gate_arm else 0.0), 3)
+        spec["pre_reject_defer_background_score"] = round(0.56 + 0.030 * strictness + (0.025 if gate_arm else 0.0), 3)
+        spec["pre_reject_defer_background_margin"] = round(-0.12 + 0.030 * strictness + (0.025 if gate_arm else 0.0), 3)
+        spec["pre_reject_reject_background_score"] = round(0.82 + 0.025 * strictness + (0.025 if gate_arm else 0.0), 3)
+        spec["pre_reject_reject_background_margin"] = round(0.06 + 0.030 * strictness + (0.025 if gate_arm else 0.0), 3)
+        spec["pre_reject_support_neighborhood_retention"] = True
+        spec["pre_reject_support_retention_old_min_evidence_delta"] = (
+            (-0.14, -0.10, -0.06)[strictness] if not gate_arm else (-0.08, -0.04, 0.00)[strictness]
+        )
+        spec["pre_reject_support_retention_old_min_anchor_delta"] = (
+            (-0.18, -0.14, -0.10)[strictness] if not gate_arm else (-0.12, -0.08, -0.04)[strictness]
+        )
+        spec["pre_reject_support_retention_old_min_anchor_margin"] = (
+            (-0.10, -0.07, -0.04)[strictness] if not gate_arm else (-0.06, -0.03, 0.00)[strictness]
+        )
+        spec["pre_reject_support_retention_old_min_score_margin"] = (
+            (-0.20, -0.16, -0.12)[strictness] if not gate_arm else (-0.14, -0.10, -0.06)[strictness]
+        )
+        spec["pre_reject_support_retention_max_background_score"] = (
+            (0.96, 0.93, 0.90)[strictness] if not gate_arm else (0.88, 0.84, 0.80)[strictness]
+        )
+        spec["pre_reject_support_retention_max_background_margin"] = (
+            (0.24, 0.18, 0.12)[strictness] if not gate_arm else (0.12, 0.06, 0.00)[strictness]
+        )
+        spec["pre_reject_support_retention_require_source_looo_pass"] = bool(gate_arm and strictness >= 1)
+        spec["pre_reject_support_retention_source_looo_max_failures"] = 2 if gate_arm else 3
+        spec["support_retention_guard"] = True
+        spec["support_retention_guard_quantile"] = round(0.030 + 0.010 * strictness, 3)
+        spec["support_retention_guard_slack"] = round(0.16 + 0.020 * strictness, 3)
+        spec["support_center_ce"] = round(0.14 + 0.018 * strictness + (0.010 if not gate_arm else 0.0), 3)
+        spec["support_center_temperature"] = round(0.54 - 0.035 * strictness, 3)
+        spec["support_center_margin"] = round(0.08 + 0.015 * strictness, 3)
+        spec["support_contrast"] = round(0.030 + 0.005 * strictness, 3)
+        spec["known_coverage_weight"] = round(0.14 + 0.016 * strictness + (0.010 if not gate_arm else 0.0), 3)
+        spec["known_coverage_margin"] = round(0.06 + 0.012 * strictness, 3)
+        spec["known_coverage_min_affinity"] = round(0.16 + 0.018 * strictness, 3)
+        spec["multiproto_score"] = True
+        spec["multiproto_topk"] = 5 if k_old == 10 else 4
+        spec["multiproto_temperature"] = round(0.52 - 0.025 * strictness, 3)
+        spec["multiproto_score_weight"] = round(0.14 + 0.015 * strictness, 3)
+        spec["soft_proto"] = round(0.14 + 0.014 * strictness, 3)
+        spec["soft_proto_topk"] = spec["multiproto_topk"]
+        spec["soft_proto_temperature"] = round(0.50 - 0.025 * strictness, 3)
+        spec["soft_proto_boundary"] = round(0.06 + 0.010 * strictness, 3)
+        spec["soft_proto_boundary_margin"] = round(0.07 + 0.012 * strictness, 3)
+        spec["mixture_consistency_gate"] = True
+        spec["mixture_consistency_min_cos"] = round(0.46 + 0.020 * strictness, 3)
+        spec["mixture_consistency_max_residual"] = round(0.46 - 0.018 * strictness, 3)
+        spec["mixture_consistency_min_margin"] = round(0.020 + 0.010 * strictness, 3)
+        spec["mixture_consistency_action"] = "uncertain"
+        spec["class_envelope_gate"] = True
+        spec["class_envelope_action"] = "uncertain"
+        spec["class_envelope_min_failures"] = 3
+        spec["old_primary_gate"] = False
+        spec["old_primary_require_soft_mixture"] = False
+        spec["old_primary_require_support_knn"] = False
+        spec["old_primary_require_class_envelope"] = False
+        spec["old_primary_promote_rescue_candidates"] = False
+        spec["retention_rescue_gate"] = True
+        spec["retention_rescue_candidate_only"] = True
+        spec["retention_rescue_old_min_evidence_delta"] = (
+            (-0.10, -0.06, -0.02)[strictness] if not gate_arm else (-0.04, 0.00, 0.04)[strictness]
+        )
+        spec["retention_rescue_old_min_anchor_delta"] = (
+            (-0.14, -0.10, -0.06)[strictness] if not gate_arm else (-0.08, -0.04, 0.00)[strictness]
+        )
+        spec["retention_rescue_old_min_anchor_margin"] = (
+            (-0.08, -0.05, -0.02)[strictness] if not gate_arm else (-0.04, -0.01, 0.02)[strictness]
+        )
+        spec["retention_rescue_old_min_score_margin"] = (
+            (-0.16, -0.12, -0.08)[strictness] if not gate_arm else (-0.10, -0.06, -0.02)[strictness]
+        )
+        spec["retention_rescue_max_background_score"] = (
+            (0.92, 0.88, 0.84)[strictness] if not gate_arm else (0.80, 0.74, 0.68)[strictness]
+        )
+        spec["retention_rescue_max_background_margin"] = (
+            (0.18, 0.12, 0.06)[strictness] if not gate_arm else (0.08, 0.02, -0.04)[strictness]
+        )
+        spec["support_conformal_arbitration"] = True
+        spec["support_conformal_alpha"] = round(0.14 - 0.015 * strictness, 3)
+        spec["support_conformal_min_support"] = 3 if k_old == 5 else 5
+        spec["support_conformal_reject_action"] = "defer"
+        spec["support_reconstruction_arbitration"] = True
+        spec["support_reconstruction_max"] = round(0.56 - 0.025 * strictness, 3)
+        spec["support_reconstruction_min_gap"] = round(0.020 + 0.008 * strictness, 3)
+        spec["support_reconstruction_reject_action"] = "defer"
+        spec["old_unknown_acceptance_guard"] = True
+        spec["guard_min_old_support_evidence_delta"] = round(-0.18 + 0.030 * strictness, 3)
+        spec["guard_min_old_surrogate_reject_delta"] = round(-0.08 + 0.025 * strictness, 3)
+        spec["guard_min_energy_delta"] = round(-8.0 + 2.5 * strictness, 3)
+        spec["guard_min_mahalanobis_delta"] = round(-22.0 + 4.0 * strictness, 3)
+        spec["guard_min_accept_delta"] = round(-18.0 + 3.5 * strictness, 3)
+        spec["guard_min_old_support_anchor_margin"] = round(0.000 + 0.010 * strictness, 3)
+        spec["guard_min_best_old_score"] = round(-2.0 + 0.22 * strictness, 3)
+        spec["guard_min_margin"] = round(0.14 + 0.040 * strictness + (0.040 if gate_arm else 0.0), 3)
+        spec["guard_min_failures"] = 4 if not gate_arm else 3 + min(strictness, 1)
+        spec["seen_new_registration_override"] = False
+        spec["old_acc_target"] = 0.90
+        spec["seen_new_acc_target"] = 0.75
+        spec["risk_note"] = (
+            "OLDFUSE completed as a negative diagnostic with rollback on every row and no target hits. "
+            "This route lowers hard reject pressure, enables candidate-only retention rescue, and keeps "
+            "background/deployment gates as defer-first checks so old-retention signal is visible."
+        )
+        spec["description"] = (
+            "Stage2-B H06 rollback-safe old-retention repair after OLDFUSE all-rollback; target-new "
+            "support remains excluded, unknown transmitters remain query-only, and all accept/defer "
+            "decisions use source/target-old support evidence without unknown-query threshold fitting."
+        )
+        spec["evidence_ref"] = (
+            "oldfuse_negative_old_mean_0p025_unknown_far_0p000_rollback48_target_hit0;"
+            "oldfuse_all_rollback_not_promotable;"
+            "fresh_h06_rollback_safe_retention_repair;"
+            "stage2b_old_unknown_only_target_new_excluded"
+        )
+        spec["seed_offset"] = int(spec.get("seed_offset", 0)) + 4210 + idx * 23
+    return specs
+
+
 def _oa_mse_neganchor48_stage_specs() -> list[dict]:
     """48-row negative-anchor background-basin route after next48ew."""
 
@@ -4972,6 +5168,7 @@ def make_candidates(*, plan: str = "SMOKE") -> list[Candidate]:
         "OA_MSE_H06_OLDQUAL48",
         "OA_MSE_H06_OLDRISK48",
         "OA_MSE_H06_OLDFUSE48",
+        "OA_MSE_H06_ROLLSAFE48",
     }:
         base = {
             "protocol": "CVS-OA-MSE",
@@ -4984,12 +5181,12 @@ def make_candidates(*, plan: str = "SMOKE") -> list[Candidate]:
             "target_receiver_ids": "${TARGET_RECEIVER_IDS}",
             "ground_model_label": (
                 "CEN51_R04_H06_LOW_PROB_HYBRID_R010"
-                if plan in {"OA_MSE_H06_EVID48", "OA_MSE_H06_ARB48", "OA_MSE_H06_OLDUNK48", "OA_MSE_H06_BGTRAIN48", "OA_MSE_H06_RETOLD48", "OA_MSE_H06_OLDFIRST48", "OA_MSE_H06_OLDRELAX48", "OA_MSE_H06_OLDGEOM48", "OA_MSE_H06_OLDCONF48", "OA_MSE_H06_OLDBUDGET48", "OA_MSE_H06_OLDQUAL48", "OA_MSE_H06_OLDRISK48", "OA_MSE_H06_OLDFUSE48"}
+                if plan in {"OA_MSE_H06_EVID48", "OA_MSE_H06_ARB48", "OA_MSE_H06_OLDUNK48", "OA_MSE_H06_BGTRAIN48", "OA_MSE_H06_RETOLD48", "OA_MSE_H06_OLDFIRST48", "OA_MSE_H06_OLDRELAX48", "OA_MSE_H06_OLDGEOM48", "OA_MSE_H06_OLDCONF48", "OA_MSE_H06_OLDBUDGET48", "OA_MSE_H06_OLDQUAL48", "OA_MSE_H06_OLDRISK48", "OA_MSE_H06_OLDFUSE48", "OA_MSE_H06_ROLLSAFE48"}
                 else "BEX02_fishr002_mixed_e170"
             ),
             "ground_model_default_ckpt": (
                 H06_LOW_PROB_HYBRID_LATEST_CKPT
-                if plan in {"OA_MSE_H06_EVID48", "OA_MSE_H06_ARB48", "OA_MSE_H06_OLDUNK48", "OA_MSE_H06_BGTRAIN48", "OA_MSE_H06_RETOLD48", "OA_MSE_H06_OLDFIRST48", "OA_MSE_H06_OLDRELAX48", "OA_MSE_H06_OLDGEOM48", "OA_MSE_H06_OLDCONF48", "OA_MSE_H06_OLDBUDGET48", "OA_MSE_H06_OLDQUAL48", "OA_MSE_H06_OLDRISK48", "OA_MSE_H06_OLDFUSE48"}
+                if plan in {"OA_MSE_H06_EVID48", "OA_MSE_H06_ARB48", "OA_MSE_H06_OLDUNK48", "OA_MSE_H06_BGTRAIN48", "OA_MSE_H06_RETOLD48", "OA_MSE_H06_OLDFIRST48", "OA_MSE_H06_OLDRELAX48", "OA_MSE_H06_OLDGEOM48", "OA_MSE_H06_OLDCONF48", "OA_MSE_H06_OLDBUDGET48", "OA_MSE_H06_OLDQUAL48", "OA_MSE_H06_OLDRISK48", "OA_MSE_H06_OLDFUSE48", "OA_MSE_H06_ROLLSAFE48"}
                 else DEFAULT_BEX02_TEACHER_CKPT
             ),
             "unknown_leo_query": True,
@@ -5394,6 +5591,7 @@ def make_candidates(*, plan: str = "SMOKE") -> list[Candidate]:
                     "OA_MSE_H06_OLDQUAL48",
                     "OA_MSE_H06_OLDRISK48",
                     "OA_MSE_H06_OLDFUSE48",
+                    "OA_MSE_H06_ROLLSAFE48",
                 }:
             stage_specs = [
                 {
@@ -5785,6 +5983,8 @@ def make_candidates(*, plan: str = "SMOKE") -> list[Candidate]:
                 stage_specs = _oa_mse_h06_oldrisk48_stage_specs()
             if plan == "OA_MSE_H06_OLDFUSE48":
                 stage_specs = _oa_mse_h06_oldfuse48_stage_specs()
+            if plan == "OA_MSE_H06_ROLLSAFE48":
+                stage_specs = _oa_mse_h06_rollsafe48_stage_specs()
             elif plan == "OA_MSE_BGCAP48":
                 stage_specs = _oa_mse_bgcap48_stage_specs()
             elif plan == "OA_MSE_SUPPORTCV48":
@@ -5905,7 +6105,7 @@ def make_candidates(*, plan: str = "SMOKE") -> list[Candidate]:
                 for spec in stage_specs:
                     spec["soft_proto_boundary"] = 0.0
                     spec["soft_proto_boundary_margin"] = 0.15
-            elif plan not in {"OA_MSE_STRUCT48", "OA_MSE_SIMPLIFIED48", "OA_MSE_RETENTION48", "OA_MSE_SUPPORTRET48", "OA_MSE_TWOBRANCH48", "OA_MSE_REGHEAD48", "OA_MSE_LOOO48", "OA_MSE_CONSTRAIN48", "OA_MSE_ENVELOPE48", "OA_MSE_RESCUE48", "OA_MSE_PREREJECT48", "OA_MSE_THREEWAY48", "OA_MSE_COVFLOOR48", "OA_MSE_CLASSFIRST48", "OA_MSE_EVIBG48", "OA_MSE_SOFTTARGET48", "OA_MSE_NEGANCHOR48", "OA_MSE_DENSHELL48", "OA_MSE_IDCONS48", "OA_MSE_CONFORM48", "OA_MSE_RECON48", "OA_MSE_SOURCERISK48", "OA_MSE_SUPPORTCV48", "OA_MSE_BGCAP48", "OA_MSE_KRET48", "OA_MSE_RISKRET48", "OA_MSE_MANIFOLD48", "OA_MSE_H06_EVID48", "OA_MSE_H06_ARB48", "OA_MSE_H06_OLDUNK48", "OA_MSE_H06_BGTRAIN48", "OA_MSE_H06_RETOLD48", "OA_MSE_H06_OLDFIRST48", "OA_MSE_H06_OLDRELAX48", "OA_MSE_H06_OLDGEOM48", "OA_MSE_H06_OLDCONF48", "OA_MSE_H06_OLDBUDGET48", "OA_MSE_H06_OLDQUAL48", "OA_MSE_H06_OLDRISK48", "OA_MSE_H06_OLDFUSE48"}:
+            elif plan not in {"OA_MSE_STRUCT48", "OA_MSE_SIMPLIFIED48", "OA_MSE_RETENTION48", "OA_MSE_SUPPORTRET48", "OA_MSE_TWOBRANCH48", "OA_MSE_REGHEAD48", "OA_MSE_LOOO48", "OA_MSE_CONSTRAIN48", "OA_MSE_ENVELOPE48", "OA_MSE_RESCUE48", "OA_MSE_PREREJECT48", "OA_MSE_THREEWAY48", "OA_MSE_COVFLOOR48", "OA_MSE_CLASSFIRST48", "OA_MSE_EVIBG48", "OA_MSE_SOFTTARGET48", "OA_MSE_NEGANCHOR48", "OA_MSE_DENSHELL48", "OA_MSE_IDCONS48", "OA_MSE_CONFORM48", "OA_MSE_RECON48", "OA_MSE_SOURCERISK48", "OA_MSE_SUPPORTCV48", "OA_MSE_BGCAP48", "OA_MSE_KRET48", "OA_MSE_RISKRET48", "OA_MSE_MANIFOLD48", "OA_MSE_H06_EVID48", "OA_MSE_H06_ARB48", "OA_MSE_H06_OLDUNK48", "OA_MSE_H06_BGTRAIN48", "OA_MSE_H06_RETOLD48", "OA_MSE_H06_OLDFIRST48", "OA_MSE_H06_OLDRELAX48", "OA_MSE_H06_OLDGEOM48", "OA_MSE_H06_OLDCONF48", "OA_MSE_H06_OLDBUDGET48", "OA_MSE_H06_OLDQUAL48", "OA_MSE_H06_OLDRISK48", "OA_MSE_H06_OLDFUSE48", "OA_MSE_H06_ROLLSAFE48"}:
                 for spec in stage_specs:
                     spec["description"] = (
                         "Soft-mix prototype boundary OA-MSE: train the adapter toward convex same-class "
@@ -5932,7 +6132,7 @@ def make_candidates(*, plan: str = "SMOKE") -> list[Candidate]:
             "OA_MSE_REGHEAD48",
         }:
             for spec in stage_specs:
-                if plan not in {"OA_MSE_BALANCE64", "OA_MSE_MIXHEAD128", "OA_MSE_STRUCT48", "OA_MSE_SIMPLIFIED48", "OA_MSE_RETENTION48", "OA_MSE_SUPPORTRET48", "OA_MSE_TWOBRANCH48", "OA_MSE_REGHEAD48", "OA_MSE_LOOO48", "OA_MSE_CONSTRAIN48", "OA_MSE_ENVELOPE48", "OA_MSE_RESCUE48", "OA_MSE_PREREJECT48", "OA_MSE_THREEWAY48", "OA_MSE_COVFLOOR48", "OA_MSE_CLASSFIRST48", "OA_MSE_EVIBG48", "OA_MSE_SOFTTARGET48", "OA_MSE_NEGANCHOR48", "OA_MSE_DENSHELL48", "OA_MSE_IDCONS48", "OA_MSE_CONFORM48", "OA_MSE_RECON48", "OA_MSE_SOURCERISK48", "OA_MSE_SUPPORTCV48", "OA_MSE_BGCAP48", "OA_MSE_KRET48", "OA_MSE_RISKRET48", "OA_MSE_MANIFOLD48", "OA_MSE_H06_EVID48", "OA_MSE_H06_ARB48", "OA_MSE_H06_OLDUNK48", "OA_MSE_H06_BGTRAIN48", "OA_MSE_H06_RETOLD48", "OA_MSE_H06_OLDFIRST48", "OA_MSE_H06_OLDRELAX48", "OA_MSE_H06_OLDGEOM48", "OA_MSE_H06_OLDCONF48", "OA_MSE_H06_OLDBUDGET48", "OA_MSE_H06_OLDQUAL48", "OA_MSE_H06_OLDRISK48", "OA_MSE_H06_OLDFUSE48"}:
+                if plan not in {"OA_MSE_BALANCE64", "OA_MSE_MIXHEAD128", "OA_MSE_STRUCT48", "OA_MSE_SIMPLIFIED48", "OA_MSE_RETENTION48", "OA_MSE_SUPPORTRET48", "OA_MSE_TWOBRANCH48", "OA_MSE_REGHEAD48", "OA_MSE_LOOO48", "OA_MSE_CONSTRAIN48", "OA_MSE_ENVELOPE48", "OA_MSE_RESCUE48", "OA_MSE_PREREJECT48", "OA_MSE_THREEWAY48", "OA_MSE_COVFLOOR48", "OA_MSE_CLASSFIRST48", "OA_MSE_EVIBG48", "OA_MSE_SOFTTARGET48", "OA_MSE_NEGANCHOR48", "OA_MSE_DENSHELL48", "OA_MSE_IDCONS48", "OA_MSE_CONFORM48", "OA_MSE_RECON48", "OA_MSE_SOURCERISK48", "OA_MSE_SUPPORTCV48", "OA_MSE_BGCAP48", "OA_MSE_KRET48", "OA_MSE_RISKRET48", "OA_MSE_MANIFOLD48", "OA_MSE_H06_EVID48", "OA_MSE_H06_ARB48", "OA_MSE_H06_OLDUNK48", "OA_MSE_H06_BGTRAIN48", "OA_MSE_H06_RETOLD48", "OA_MSE_H06_OLDFIRST48", "OA_MSE_H06_OLDRELAX48", "OA_MSE_H06_OLDGEOM48", "OA_MSE_H06_OLDCONF48", "OA_MSE_H06_OLDBUDGET48", "OA_MSE_H06_OLDQUAL48", "OA_MSE_H06_OLDRISK48", "OA_MSE_H06_OLDFUSE48", "OA_MSE_H06_ROLLSAFE48"}:
                     spec["description"] = (
                         "Boundary-guard alpha selection with stronger class-constrained soft prototype mixture, "
                         "old-retention anchors, and protocol-safe pseudo-unknown pressure."
@@ -6472,7 +6672,7 @@ def make_candidates(*, plan: str = "SMOKE") -> list[Candidate]:
                         "seen_new_acc_target": float(spec.get("seen_new_acc_target", base["seen_new_acc_target"])),
                     }
                 )
-                if plan in {"OA_MSE_H06_OLDUNK48", "OA_MSE_H06_BGTRAIN48", "OA_MSE_H06_RETOLD48", "OA_MSE_H06_OLDFIRST48", "OA_MSE_H06_OLDRELAX48", "OA_MSE_H06_OLDGEOM48", "OA_MSE_H06_OLDCONF48", "OA_MSE_H06_OLDBUDGET48", "OA_MSE_H06_OLDQUAL48", "OA_MSE_H06_OLDRISK48", "OA_MSE_H06_OLDFUSE48"}:
+                if plan in {"OA_MSE_H06_OLDUNK48", "OA_MSE_H06_BGTRAIN48", "OA_MSE_H06_RETOLD48", "OA_MSE_H06_OLDFIRST48", "OA_MSE_H06_OLDRELAX48", "OA_MSE_H06_OLDGEOM48", "OA_MSE_H06_OLDCONF48", "OA_MSE_H06_OLDBUDGET48", "OA_MSE_H06_OLDQUAL48", "OA_MSE_H06_OLDRISK48", "OA_MSE_H06_OLDFUSE48", "OA_MSE_H06_ROLLSAFE48"}:
                     candidate_kwargs["new_tx_ids"] = "__NONE__"
                 rows.append(
                     Candidate(
@@ -6609,6 +6809,9 @@ def make_candidates(*, plan: str = "SMOKE") -> list[Candidate]:
                             f"OA_MSE_H06_OLDFUSE48_GPU{gpu}_{slot}_{spec['stage'].upper()}_KOLD{k_old}_KNEW{k_new}"
                             if plan == "OA_MSE_H06_OLDFUSE48"
                             else
+                            f"OA_MSE_H06_ROLLSAFE48_GPU{gpu}_{slot}_{spec['stage'].upper()}_KOLD{k_old}_KNEW{k_new}"
+                            if plan == "OA_MSE_H06_ROLLSAFE48"
+                            else
                             f"OA_MSE_H06_RETOLD48_GPU{gpu}_{slot}_{spec['stage'].upper()}_KOLD{k_old}_KNEW{k_new}"
                             if plan == "OA_MSE_H06_RETOLD48"
                             else
@@ -6730,6 +6933,8 @@ def make_candidates(*, plan: str = "SMOKE") -> list[Candidate]:
                                 if plan == "OA_MSE_H06_OLDRISK48"
                                 else "h06_oldqual_oldrisk_fusion_rollback_calibration_repair"
                                 if plan == "OA_MSE_H06_OLDFUSE48"
+                                else "h06_rollback_safe_retention_repair"
+                                if plan == "OA_MSE_H06_ROLLSAFE48"
                                 else "h06_old_retention_first_calibrated_unknown_veto"
                                 if plan == "OA_MSE_H06_RETOLD48"
                                 else "support_background_cap_identity_oa_mse_head"
@@ -6832,6 +7037,8 @@ def make_candidates(*, plan: str = "SMOKE") -> list[Candidate]:
                                 if plan == "OA_MSE_H06_OLDRISK48"
                                 else "h06_oldqual_oldrisk_fusion_rollback_calibration_mse_subspace"
                                 if plan == "OA_MSE_H06_OLDFUSE48"
+                                else "h06_rollback_safe_retention_mse_subspace"
+                                if plan == "OA_MSE_H06_ROLLSAFE48"
                                 else "h06_old_retention_first_calibrated_unknown_veto_mse_subspace"
                                 if plan == "OA_MSE_H06_RETOLD48"
                                 else "support_background_cap_identity_mse_subspace"
@@ -6946,6 +7153,8 @@ def make_candidates(*, plan: str = "SMOKE") -> list[Candidate]:
                             if plan == "OA_MSE_H06_OLDRISK48"
                             else "h06_latest_source_prototypes,target_old_support_only,no_target_new_support,old_class_radius,U_orbit,oldqual_oldrisk_fusion,oldqual_support_quality,oldrisk_query_free_background_risk,rollback_calibration,pre_reject_defer,source_looo_risk,two_branch_pseudo_background_guard,old_unknown_acceptance_guard,soft_multi_prototype_score_head,unknown_query_eval_only,simplified_leo_residual_channel"
                             if plan == "OA_MSE_H06_OLDFUSE48"
+                            else "h06_latest_source_prototypes,target_old_support_only,no_target_new_support,old_class_radius,U_orbit,rollback_safe_retention,retention_rescue_candidate_only,defer_first_deployment_gate,pre_reject_support_retention,source_looo_risk,two_branch_pseudo_background_guard,old_unknown_acceptance_guard,soft_multi_prototype_score_head,unknown_query_eval_only,simplified_leo_residual_channel"
+                            if plan == "OA_MSE_H06_ROLLSAFE48"
                             else "h06_latest_source_prototypes,target_old_support_only,no_target_new_support,old_proof_first,old_drift_support_quality,identity_consensus_background_cap,three_way_background_prob_as_soft_risk,unknown_score_joint_veto,support_reconstruction_conformal_defer_only,simplified_leo_residual_channel"
                             if plan == "OA_MSE_H06_RETOLD48"
                             else "source_old_prototypes,target_old_support,seen_new_support,U_orbit,class_masks,energy_gate,support_calibrated_background_cap,identity_consensus_arbitration,prototype_mixture_soft_target,soft_multi_prototype_score_head,known_coverage_margin_loss,retention_rescue,negative_anchor_background_basin,simplified_leo_residual_channel,multi_target_receiver_pool"
@@ -7069,6 +7278,8 @@ def make_candidates(*, plan: str = "SMOKE") -> list[Candidate]:
                             if plan == "OA_MSE_H06_OLDRISK48"
                             else "h06_latest_source_prototypes,target_old_support_only,no_target_new_support,old_class_radius,U_orbit,oldqual_oldrisk_fusion,oldqual_support_quality,oldrisk_query_free_background_risk,rollback_calibration,pre_reject_defer,source_looo_risk,two_branch_pseudo_background_guard,old_unknown_acceptance_guard,soft_multi_prototype_score_head,unknown_query_eval_only,simplified_leo_residual_channel"
                             if plan == "OA_MSE_H06_OLDFUSE48"
+                            else "h06_latest_source_prototypes,target_old_support_only,no_target_new_support,old_class_radius,U_orbit,rollback_safe_retention,retention_rescue_candidate_only,defer_first_deployment_gate,pre_reject_support_retention,source_looo_risk,two_branch_pseudo_background_guard,old_unknown_acceptance_guard,soft_multi_prototype_score_head,unknown_query_eval_only,simplified_leo_residual_channel"
+                            if plan == "OA_MSE_H06_ROLLSAFE48"
                             else "h06_latest_source_prototypes,target_old_support_only,no_target_new_support,old_class_radius,U_orbit,old_proof_first,old_drift_support_quality,identity_consensus_background_cap,three_way_background_prob_as_soft_risk,unknown_score_joint_veto,support_reconstruction_conformal_defer_only,simplified_leo_residual_channel"
                             if plan == "OA_MSE_H06_RETOLD48"
                                 else "source_old_prototypes,target_old_support,old_class_radius,U_orbit,support_calibrated_background_cap,identity_consensus_arbitration,prototype_mixture_soft_target,soft_multi_prototype_score_head,known_coverage_margin_loss,retention_rescue,negative_anchor_background_basin,simplified_leo_residual_channel,multi_target_receiver_pool"
@@ -7127,7 +7338,7 @@ def make_candidates(*, plan: str = "SMOKE") -> list[Candidate]:
                             else 4
                             if plan in {"OA_MSE_BALANCE64", "OA_MSE_SOFTMIX64", "OA_MSE_VOID64", "OA_MSE_ANCHORGUARD128", "OA_MSE_MIXHEAD128", "OA_MSE_STRUCT48", "OA_MSE_SIMPLIFIED48"}
                             else 2
-                            if plan in {"OA_MSE_RETENTION48", "OA_MSE_SUPPORTRET48", "OA_MSE_TWOBRANCH48", "OA_MSE_REGHEAD48", "OA_MSE_GEOM48", "OA_MSE_TRIAGE48", "OA_MSE_LOOO48", "OA_MSE_CONSTRAIN48", "OA_MSE_ENVELOPE48", "OA_MSE_RESCUE48", "OA_MSE_PREREJECT48", "OA_MSE_THREEWAY48", "OA_MSE_COVFLOOR48", "OA_MSE_CLASSFIRST48", "OA_MSE_EVIBG48", "OA_MSE_SOFTTARGET48", "OA_MSE_NEGANCHOR48", "OA_MSE_DENSHELL48", "OA_MSE_IDCONS48", "OA_MSE_CONFORM48", "OA_MSE_RECON48", "OA_MSE_SOURCERISK48", "OA_MSE_SUPPORTCV48", "OA_MSE_BGCAP48", "OA_MSE_KRET48", "OA_MSE_RISKRET48", "OA_MSE_MANIFOLD48", "OA_MSE_H06_EVID48", "OA_MSE_H06_ARB48", "OA_MSE_H06_OLDUNK48", "OA_MSE_H06_BGTRAIN48", "OA_MSE_H06_RETOLD48", "OA_MSE_H06_OLDFIRST48", "OA_MSE_H06_OLDRELAX48", "OA_MSE_H06_OLDGEOM48", "OA_MSE_H06_OLDCONF48", "OA_MSE_H06_OLDBUDGET48", "OA_MSE_H06_OLDQUAL48", "OA_MSE_H06_OLDRISK48", "OA_MSE_H06_OLDFUSE48"}
+                            if plan in {"OA_MSE_RETENTION48", "OA_MSE_SUPPORTRET48", "OA_MSE_TWOBRANCH48", "OA_MSE_REGHEAD48", "OA_MSE_GEOM48", "OA_MSE_TRIAGE48", "OA_MSE_LOOO48", "OA_MSE_CONSTRAIN48", "OA_MSE_ENVELOPE48", "OA_MSE_RESCUE48", "OA_MSE_PREREJECT48", "OA_MSE_THREEWAY48", "OA_MSE_COVFLOOR48", "OA_MSE_CLASSFIRST48", "OA_MSE_EVIBG48", "OA_MSE_SOFTTARGET48", "OA_MSE_NEGANCHOR48", "OA_MSE_DENSHELL48", "OA_MSE_IDCONS48", "OA_MSE_CONFORM48", "OA_MSE_RECON48", "OA_MSE_SOURCERISK48", "OA_MSE_SUPPORTCV48", "OA_MSE_BGCAP48", "OA_MSE_KRET48", "OA_MSE_RISKRET48", "OA_MSE_MANIFOLD48", "OA_MSE_H06_EVID48", "OA_MSE_H06_ARB48", "OA_MSE_H06_OLDUNK48", "OA_MSE_H06_BGTRAIN48", "OA_MSE_H06_RETOLD48", "OA_MSE_H06_OLDFIRST48", "OA_MSE_H06_OLDRELAX48", "OA_MSE_H06_OLDGEOM48", "OA_MSE_H06_OLDCONF48", "OA_MSE_H06_OLDBUDGET48", "OA_MSE_H06_OLDQUAL48", "OA_MSE_H06_OLDRISK48", "OA_MSE_H06_OLDFUSE48", "OA_MSE_H06_ROLLSAFE48"}
                             else None
                         ),
                         seed=seed + int(spec.get("seed_offset", 0)),
@@ -8569,7 +8780,7 @@ def matrix_payload(run_id: str, candidates: Sequence[Candidate]) -> dict:
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--run-id", default=None)
-    parser.add_argument("--plan", default="SMOKE", choices=["SMOKE", "CORE", "WISIG_NEWCLASS", "WISIG_NEWCLASS_CARD8", "WISIG_ENHANCED_CARD8", "OA_MSE_CARD3", "OA_MSE_PROXY32", "OA_MSE_BOUNDARY32", "OA_MSE_UNCERTAIN32", "OA_MSE_VETO32", "OA_MSE_CLASSCOND32", "OA_MSE_CALGUARD32", "OA_MSE_BALANCE64", "OA_MSE_SOFTMIX64", "OA_MSE_VOID64", "OA_MSE_SOFTVOID128", "OA_MSE_ANCHORGUARD128", "OA_MSE_MIXHEAD128", "OA_MSE_STRUCT48", "OA_MSE_SIMPLIFIED48", "OA_MSE_RETENTION48", "OA_MSE_SUPPORTRET48", "OA_MSE_TWOBRANCH48", "OA_MSE_REGHEAD48", "OA_MSE_GEOM48", "OA_MSE_TRIAGE48", "OA_MSE_LOOO48", "OA_MSE_CONSTRAIN48", "OA_MSE_ENVELOPE48", "OA_MSE_RESCUE48", "OA_MSE_PREREJECT48", "OA_MSE_THREEWAY48", "OA_MSE_COVFLOOR48", "OA_MSE_CLASSFIRST48", "OA_MSE_EVIBG48", "OA_MSE_SOFTTARGET48", "OA_MSE_NEGANCHOR48", "OA_MSE_DENSHELL48", "OA_MSE_IDCONS48", "OA_MSE_CONFORM48", "OA_MSE_RECON48", "OA_MSE_SOURCERISK48", "OA_MSE_SUPPORTCV48", "OA_MSE_BGCAP48", "OA_MSE_KRET48", "OA_MSE_RISKRET48", "OA_MSE_MANIFOLD48", "OA_MSE_H06_EVID48", "OA_MSE_H06_ARB48", "OA_MSE_H06_OLDUNK48", "OA_MSE_H06_BGTRAIN48", "OA_MSE_H06_RETOLD48", "OA_MSE_H06_OLDFIRST48", "OA_MSE_H06_OLDRELAX48", "OA_MSE_H06_OLDGEOM48", "OA_MSE_H06_OLDCONF48", "OA_MSE_H06_OLDBUDGET48", "OA_MSE_H06_OLDQUAL48", "OA_MSE_H06_OLDRISK48", "OA_MSE_H06_OLDFUSE48"])
+    parser.add_argument("--plan", default="SMOKE", choices=["SMOKE", "CORE", "WISIG_NEWCLASS", "WISIG_NEWCLASS_CARD8", "WISIG_ENHANCED_CARD8", "OA_MSE_CARD3", "OA_MSE_PROXY32", "OA_MSE_BOUNDARY32", "OA_MSE_UNCERTAIN32", "OA_MSE_VETO32", "OA_MSE_CLASSCOND32", "OA_MSE_CALGUARD32", "OA_MSE_BALANCE64", "OA_MSE_SOFTMIX64", "OA_MSE_VOID64", "OA_MSE_SOFTVOID128", "OA_MSE_ANCHORGUARD128", "OA_MSE_MIXHEAD128", "OA_MSE_STRUCT48", "OA_MSE_SIMPLIFIED48", "OA_MSE_RETENTION48", "OA_MSE_SUPPORTRET48", "OA_MSE_TWOBRANCH48", "OA_MSE_REGHEAD48", "OA_MSE_GEOM48", "OA_MSE_TRIAGE48", "OA_MSE_LOOO48", "OA_MSE_CONSTRAIN48", "OA_MSE_ENVELOPE48", "OA_MSE_RESCUE48", "OA_MSE_PREREJECT48", "OA_MSE_THREEWAY48", "OA_MSE_COVFLOOR48", "OA_MSE_CLASSFIRST48", "OA_MSE_EVIBG48", "OA_MSE_SOFTTARGET48", "OA_MSE_NEGANCHOR48", "OA_MSE_DENSHELL48", "OA_MSE_IDCONS48", "OA_MSE_CONFORM48", "OA_MSE_RECON48", "OA_MSE_SOURCERISK48", "OA_MSE_SUPPORTCV48", "OA_MSE_BGCAP48", "OA_MSE_KRET48", "OA_MSE_RISKRET48", "OA_MSE_MANIFOLD48", "OA_MSE_H06_EVID48", "OA_MSE_H06_ARB48", "OA_MSE_H06_OLDUNK48", "OA_MSE_H06_BGTRAIN48", "OA_MSE_H06_RETOLD48", "OA_MSE_H06_OLDFIRST48", "OA_MSE_H06_OLDRELAX48", "OA_MSE_H06_OLDGEOM48", "OA_MSE_H06_OLDCONF48", "OA_MSE_H06_OLDBUDGET48", "OA_MSE_H06_OLDQUAL48", "OA_MSE_H06_OLDRISK48", "OA_MSE_H06_OLDFUSE48", "OA_MSE_H06_ROLLSAFE48"])
     parser.add_argument("--output-root", type=Path, default=REPO_ROOT / "automation_reports" / "CV-SincNet")
     parser.add_argument("--scripts-dir", type=Path, default=REPO_ROOT / "code" / "scripts")
     return parser.parse_args()
