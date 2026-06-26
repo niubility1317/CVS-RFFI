@@ -40,3 +40,42 @@ Study the local SGC satellite-ground channel processing implementation and expla
 | 2. Extract SGC mechanisms | complete | Found four adapter blocks, residual blending/compensation, residual loss, staged training. |
 | 3. Compare communication vs RFFI processing | complete | Separate code recovery objectives from fingerprint preservation. |
 | 4. Produce Chinese explanation | complete | Ground claims in local files and give practical recommendations. |
+
+## CODEX-PHASE2-OPENWORLD: Current Handoff
+
+### Goal
+把 Phase 2 在轨部署诊断转成 Codex 可执行工程计划：少样本域适应、新类注册、未知类拒识、TX/RX 双向解耦、域骨干使用方式、SGC no_amp 路线和角空间诊断。
+
+### Primary Doc
+
+Read first:
+
+```text
+docs/PHASE2_OPEN_WORLD_DIAGNOSIS_AND_CODEX_PLAN_20260626.md
+```
+
+### Key Takeaways
+
+- 当前 `source/sgc_augment/sgc_adapt` 不是完整 open-world Phase 2。
+- 当前 `sgc_adapt` 只训练小 adapter，不应被视为最终在轨适配路线。
+- 当前解耦主要是 `z_id` 去 RX/day，缺少 `z_dom/z_rx` 去 TX、TX×RX 四角约束和 open-set 校准。
+- 地面基模需要按角空间诊断：class radius、inter-class angle、effective rank、TX/RX ANOVA、known-vs-unknown AUROC/FPR95/OSCR。
+- SGC 后续优先 `no_amp`；full per-channel amplitude normalization 可能抹掉 IQ imbalance/PA/RX 线索。
+- 目标 RX 必须包含旧已知 TX 锚点，否则 TX 与 RX 效应不可分。
+
+### Codex Phases
+
+| Phase | Status | Notes |
+|---|---|---|
+| P0. Diagnostics | planned | Extend `eval_feature_diagnosis.py` with angular geometry, effective rank, TX/RX ANOVA, domain leakage probes, and open-set metrics. |
+| P1. Sampler/loss | planned | Add balanced TX×RX sampler, rectangle losses, real-gradient prototype margin, and TX adversary on domain feature. |
+| P2. Domain backbone | planned | Split/structure domain feature as `z_rx/z_env/z_int`; use domain context for residual correction/threshold calibration, not direct TX evidence. |
+| P3. Phase2 entry | planned | Add independent `phase2_adapt.py`, `open_world_head.py`, `open_world_memory.py`, and `eval_open_world.py`. |
+
+### Do Not Do
+
+- Do not directly concatenate `z_dom` into TX classifier.
+- Do not rely only on max-softmax threshold for unknown rejection.
+- Do not continue full SGC from source as the default route.
+- Do not apply ordinary entropy minimization to uncertain/unknown target samples.
+- Do not ignore target RX old-known anchor coverage.
