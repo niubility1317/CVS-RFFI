@@ -82,3 +82,13 @@ raw IQ -> CV-SincNet/CVS -> z_id, z_dom
 - Stage2-A/B拒识结果就是seen-new identity accuracy。
 - `R_t`与`R_s`重叠后仍称部署泛化。
 - 缺少target-old或target-new样本覆盖时仍声称完整Stage2-C。
+
+## Git与Markdown同步
+
+任何CVS项目相关改动都必须进入Git可追踪流程。改动前必须运行`git status -sb`，改动后必须检查`git diff`/`git status -sb`、完成必要验证，并提交本次意图明确的变更，除非用户明确要求不要提交。
+
+项目相关Markdown必须随代码、配置、脚本、矩阵、prompt、报告模板或协议改动同步检查：
+
+- 工作流、Git、协作或安全规则改动，更新`AGENTS.md`。
+- CVS科学场景、数据协议、receiver/TX划分、`rho_label`、Stage2-A/B/C边界、K-shot、satellite/LEO视图、指标或声明口径改动，先更新本文件。
+- README、docs、实验报告或发布说明涉及的用法、结果解释、发布范围和复现边界变化时，更新对应Markdown。

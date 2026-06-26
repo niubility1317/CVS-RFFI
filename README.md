@@ -111,3 +111,7 @@ python -m pytest tests\test_paper_reproduction_protonet.py tests\test_paper_repr
 - 本仓库不含真实数据、权重或远端运行证据；任何结果声明必须绑定具体run、split、K-shot、satellite/LEO view和完整同row指标。
 
 更多协议细节见`docs/PROJECT_PROTOCOL.md`、`docs/GROUND_TRAINING.md`和`docs/DEPLOYMENT_PHASES.md`。
+
+## 变更纪律
+
+项目相关改动必须进入Git流程。改动前检查`git status -sb`，改动后检查`git diff`/`git status -sb`并运行必要验证；完成后提交到明确分支，除非用户明确要求不要提交。每次代码、配置、脚本或协议变更都要同步检查`AGENTS.md`、`docs/PROJECT_PROTOCOL.md`、README、docs和报告类Markdown是否需要更新。
