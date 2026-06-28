@@ -117,6 +117,8 @@ bash code/scripts/launch_phase1_gpu0_jointsafe36_queue_20260629_0930.sh --dry-ru
 
 Results: `py_compile` passed; focused tests passed (`14 passed`, one `.pytest_cache` permission warning); validator returned `PASS` with 36 launchable rows; `bash -n` passed; launcher dry-run printed 36 commands without launching.
 
+Scheduler PID correction: before remote launch, the generated launcher was tightened to start `"${CMD[@]}"` directly in the background instead of through a parenthesized subshell. This keeps the recorded PID aligned with the training process for per-GPU queue accounting. Local re-verification after this change: `py_compile` passed, focused tests passed (`14 passed`), `bash -n` passed, and dry-run counted 36 candidates.
+
 Planned remote sync:
 
 | Local | Remote |

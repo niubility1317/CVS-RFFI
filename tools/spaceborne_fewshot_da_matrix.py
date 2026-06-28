@@ -8935,7 +8935,7 @@ def render_launcher(run_id: str, candidates: Sequence[Candidate]) -> str:
                 'if [[ "${DRY_RUN}" != "1" ]]; then',
                 '  wait_for_gpu_slot "${GPU}"',
                 f'  mkdir -p "${{RUNS_ROOT}}/{candidate.cid}"',
-                f'  ("${{CMD[@]}}" > "${{LOG_ROOT}}/{candidate.cid}.out" 2>&1) &',
+                f'  "${{CMD[@]}}" > "${{LOG_ROOT}}/{candidate.cid}.out" 2>&1 &',
                 '  pid="$!"',
                 '  PIDS+=("${pid}")',
                 f'  NAMES+=("{candidate.cid}")',

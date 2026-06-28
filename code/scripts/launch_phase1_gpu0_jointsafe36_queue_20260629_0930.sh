@@ -116,7 +116,7 @@ printf "[SPACEBORNE-FSDA-CMD] "; printf "%q " "${CMD[@]}"; printf "\n"
 if [[ "${DRY_RUN}" != "1" ]]; then
   wait_for_gpu_slot "${GPU}"
   mkdir -p "${RUNS_ROOT}/PHASE1_GPU0_JOINTSAFE36_SOFTPSEUDO_190X10_BASE_S0"
-  ("${CMD[@]}" > "${LOG_ROOT}/PHASE1_GPU0_JOINTSAFE36_SOFTPSEUDO_190X10_BASE_S0.out" 2>&1) &
+  "${CMD[@]}" > "${LOG_ROOT}/PHASE1_GPU0_JOINTSAFE36_SOFTPSEUDO_190X10_BASE_S0.out" 2>&1 &
   pid="$!"
   PIDS+=("${pid}")
   NAMES+=("PHASE1_GPU0_JOINTSAFE36_SOFTPSEUDO_190X10_BASE_S0")
@@ -131,7 +131,7 @@ printf "[SPACEBORNE-FSDA-CMD] "; printf "%q " "${CMD[@]}"; printf "\n"
 if [[ "${DRY_RUN}" != "1" ]]; then
   wait_for_gpu_slot "${GPU}"
   mkdir -p "${RUNS_ROOT}/PHASE1_GPU0_JOINTSAFE36_SOFTPSEUDO_190X10_SEED_S1"
-  ("${CMD[@]}" > "${LOG_ROOT}/PHASE1_GPU0_JOINTSAFE36_SOFTPSEUDO_190X10_SEED_S1.out" 2>&1) &
+  "${CMD[@]}" > "${LOG_ROOT}/PHASE1_GPU0_JOINTSAFE36_SOFTPSEUDO_190X10_SEED_S1.out" 2>&1 &
   pid="$!"
   PIDS+=("${pid}")
   NAMES+=("PHASE1_GPU0_JOINTSAFE36_SOFTPSEUDO_190X10_SEED_S1")
@@ -146,7 +146,7 @@ printf "[SPACEBORNE-FSDA-CMD] "; printf "%q " "${CMD[@]}"; printf "\n"
 if [[ "${DRY_RUN}" != "1" ]]; then
   wait_for_gpu_slot "${GPU}"
   mkdir -p "${RUNS_ROOT}/PHASE1_GPU0_JOINTSAFE36_SOFTPSEUDO_190X10_TAU88_S2"
-  ("${CMD[@]}" > "${LOG_ROOT}/PHASE1_GPU0_JOINTSAFE36_SOFTPSEUDO_190X10_TAU88_S2.out" 2>&1) &
+  "${CMD[@]}" > "${LOG_ROOT}/PHASE1_GPU0_JOINTSAFE36_SOFTPSEUDO_190X10_TAU88_S2.out" 2>&1 &
   pid="$!"
   PIDS+=("${pid}")
   NAMES+=("PHASE1_GPU0_JOINTSAFE36_SOFTPSEUDO_190X10_TAU88_S2")
@@ -161,7 +161,7 @@ printf "[SPACEBORNE-FSDA-CMD] "; printf "%q " "${CMD[@]}"; printf "\n"
 if [[ "${DRY_RUN}" != "1" ]]; then
   wait_for_gpu_slot "${GPU}"
   mkdir -p "${RUNS_ROOT}/PHASE1_GPU0_JOINTSAFE36_SOFTPSEUDO_190X10_SHORT195_S3"
-  ("${CMD[@]}" > "${LOG_ROOT}/PHASE1_GPU0_JOINTSAFE36_SOFTPSEUDO_190X10_SHORT195_S3.out" 2>&1) &
+  "${CMD[@]}" > "${LOG_ROOT}/PHASE1_GPU0_JOINTSAFE36_SOFTPSEUDO_190X10_SHORT195_S3.out" 2>&1 &
   pid="$!"
   PIDS+=("${pid}")
   NAMES+=("PHASE1_GPU0_JOINTSAFE36_SOFTPSEUDO_190X10_SHORT195_S3")
@@ -176,7 +176,7 @@ printf "[SPACEBORNE-FSDA-CMD] "; printf "%q " "${CMD[@]}"; printf "\n"
 if [[ "${DRY_RUN}" != "1" ]]; then
   wait_for_gpu_slot "${GPU}"
   mkdir -p "${RUNS_ROOT}/PHASE1_GPU0_JOINTSAFE36_SOFTPSEUDO_190X10_MID188_S4"
-  ("${CMD[@]}" > "${LOG_ROOT}/PHASE1_GPU0_JOINTSAFE36_SOFTPSEUDO_190X10_MID188_S4.out" 2>&1) &
+  "${CMD[@]}" > "${LOG_ROOT}/PHASE1_GPU0_JOINTSAFE36_SOFTPSEUDO_190X10_MID188_S4.out" 2>&1 &
   pid="$!"
   PIDS+=("${pid}")
   NAMES+=("PHASE1_GPU0_JOINTSAFE36_SOFTPSEUDO_190X10_MID188_S4")
@@ -191,7 +191,7 @@ printf "[SPACEBORNE-FSDA-CMD] "; printf "%q " "${CMD[@]}"; printf "\n"
 if [[ "${DRY_RUN}" != "1" ]]; then
   wait_for_gpu_slot "${GPU}"
   mkdir -p "${RUNS_ROOT}/PHASE1_GPU0_JOINTSAFE36_SOFTPSEUDO_190X10_SATLOW_S5"
-  ("${CMD[@]}" > "${LOG_ROOT}/PHASE1_GPU0_JOINTSAFE36_SOFTPSEUDO_190X10_SATLOW_S5.out" 2>&1) &
+  "${CMD[@]}" > "${LOG_ROOT}/PHASE1_GPU0_JOINTSAFE36_SOFTPSEUDO_190X10_SATLOW_S5.out" 2>&1 &
   pid="$!"
   PIDS+=("${pid}")
   NAMES+=("PHASE1_GPU0_JOINTSAFE36_SOFTPSEUDO_190X10_SATLOW_S5")
@@ -206,7 +206,7 @@ printf "[SPACEBORNE-FSDA-CMD] "; printf "%q " "${CMD[@]}"; printf "\n"
 if [[ "${DRY_RUN}" != "1" ]]; then
   wait_for_gpu_slot "${GPU}"
   mkdir -p "${RUNS_ROOT}/PHASE1_GPU0_JOINTSAFE36_SOFTPSEUDO_190X10_DOMAINSOFT_S6"
-  ("${CMD[@]}" > "${LOG_ROOT}/PHASE1_GPU0_JOINTSAFE36_SOFTPSEUDO_190X10_DOMAINSOFT_S6.out" 2>&1) &
+  "${CMD[@]}" > "${LOG_ROOT}/PHASE1_GPU0_JOINTSAFE36_SOFTPSEUDO_190X10_DOMAINSOFT_S6.out" 2>&1 &
   pid="$!"
   PIDS+=("${pid}")
   NAMES+=("PHASE1_GPU0_JOINTSAFE36_SOFTPSEUDO_190X10_DOMAINSOFT_S6")
@@ -221,7 +221,7 @@ printf "[SPACEBORNE-FSDA-CMD] "; printf "%q " "${CMD[@]}"; printf "\n"
 if [[ "${DRY_RUN}" != "1" ]]; then
   wait_for_gpu_slot "${GPU}"
   mkdir -p "${RUNS_ROOT}/PHASE1_GPU0_JOINTSAFE36_SOFTPSEUDO_190X10_DOMAINFIRM_S7"
-  ("${CMD[@]}" > "${LOG_ROOT}/PHASE1_GPU0_JOINTSAFE36_SOFTPSEUDO_190X10_DOMAINFIRM_S7.out" 2>&1) &
+  "${CMD[@]}" > "${LOG_ROOT}/PHASE1_GPU0_JOINTSAFE36_SOFTPSEUDO_190X10_DOMAINFIRM_S7.out" 2>&1 &
   pid="$!"
   PIDS+=("${pid}")
   NAMES+=("PHASE1_GPU0_JOINTSAFE36_SOFTPSEUDO_190X10_DOMAINFIRM_S7")
@@ -236,7 +236,7 @@ printf "[SPACEBORNE-FSDA-CMD] "; printf "%q " "${CMD[@]}"; printf "\n"
 if [[ "${DRY_RUN}" != "1" ]]; then
   wait_for_gpu_slot "${GPU}"
   mkdir -p "${RUNS_ROOT}/PHASE1_GPU0_JOINTSAFE36_SOFTPSEUDO_190X10_FISHRSOFT_S8"
-  ("${CMD[@]}" > "${LOG_ROOT}/PHASE1_GPU0_JOINTSAFE36_SOFTPSEUDO_190X10_FISHRSOFT_S8.out" 2>&1) &
+  "${CMD[@]}" > "${LOG_ROOT}/PHASE1_GPU0_JOINTSAFE36_SOFTPSEUDO_190X10_FISHRSOFT_S8.out" 2>&1 &
   pid="$!"
   PIDS+=("${pid}")
   NAMES+=("PHASE1_GPU0_JOINTSAFE36_SOFTPSEUDO_190X10_FISHRSOFT_S8")
@@ -251,7 +251,7 @@ printf "[SPACEBORNE-FSDA-CMD] "; printf "%q " "${CMD[@]}"; printf "\n"
 if [[ "${DRY_RUN}" != "1" ]]; then
   wait_for_gpu_slot "${GPU}"
   mkdir -p "${RUNS_ROOT}/PHASE1_GPU0_JOINTSAFE36_EMA_KEEP15_BASE_S0"
-  ("${CMD[@]}" > "${LOG_ROOT}/PHASE1_GPU0_JOINTSAFE36_EMA_KEEP15_BASE_S0.out" 2>&1) &
+  "${CMD[@]}" > "${LOG_ROOT}/PHASE1_GPU0_JOINTSAFE36_EMA_KEEP15_BASE_S0.out" 2>&1 &
   pid="$!"
   PIDS+=("${pid}")
   NAMES+=("PHASE1_GPU0_JOINTSAFE36_EMA_KEEP15_BASE_S0")
@@ -266,7 +266,7 @@ printf "[SPACEBORNE-FSDA-CMD] "; printf "%q " "${CMD[@]}"; printf "\n"
 if [[ "${DRY_RUN}" != "1" ]]; then
   wait_for_gpu_slot "${GPU}"
   mkdir -p "${RUNS_ROOT}/PHASE1_GPU0_JOINTSAFE36_EMA_KEEP15_SEED_S1"
-  ("${CMD[@]}" > "${LOG_ROOT}/PHASE1_GPU0_JOINTSAFE36_EMA_KEEP15_SEED_S1.out" 2>&1) &
+  "${CMD[@]}" > "${LOG_ROOT}/PHASE1_GPU0_JOINTSAFE36_EMA_KEEP15_SEED_S1.out" 2>&1 &
   pid="$!"
   PIDS+=("${pid}")
   NAMES+=("PHASE1_GPU0_JOINTSAFE36_EMA_KEEP15_SEED_S1")
@@ -281,7 +281,7 @@ printf "[SPACEBORNE-FSDA-CMD] "; printf "%q " "${CMD[@]}"; printf "\n"
 if [[ "${DRY_RUN}" != "1" ]]; then
   wait_for_gpu_slot "${GPU}"
   mkdir -p "${RUNS_ROOT}/PHASE1_GPU0_JOINTSAFE36_EMA_KEEP15_TAU88_S2"
-  ("${CMD[@]}" > "${LOG_ROOT}/PHASE1_GPU0_JOINTSAFE36_EMA_KEEP15_TAU88_S2.out" 2>&1) &
+  "${CMD[@]}" > "${LOG_ROOT}/PHASE1_GPU0_JOINTSAFE36_EMA_KEEP15_TAU88_S2.out" 2>&1 &
   pid="$!"
   PIDS+=("${pid}")
   NAMES+=("PHASE1_GPU0_JOINTSAFE36_EMA_KEEP15_TAU88_S2")
@@ -296,7 +296,7 @@ printf "[SPACEBORNE-FSDA-CMD] "; printf "%q " "${CMD[@]}"; printf "\n"
 if [[ "${DRY_RUN}" != "1" ]]; then
   wait_for_gpu_slot "${GPU}"
   mkdir -p "${RUNS_ROOT}/PHASE1_GPU0_JOINTSAFE36_EMA_KEEP15_SHORT195_S3"
-  ("${CMD[@]}" > "${LOG_ROOT}/PHASE1_GPU0_JOINTSAFE36_EMA_KEEP15_SHORT195_S3.out" 2>&1) &
+  "${CMD[@]}" > "${LOG_ROOT}/PHASE1_GPU0_JOINTSAFE36_EMA_KEEP15_SHORT195_S3.out" 2>&1 &
   pid="$!"
   PIDS+=("${pid}")
   NAMES+=("PHASE1_GPU0_JOINTSAFE36_EMA_KEEP15_SHORT195_S3")
@@ -311,7 +311,7 @@ printf "[SPACEBORNE-FSDA-CMD] "; printf "%q " "${CMD[@]}"; printf "\n"
 if [[ "${DRY_RUN}" != "1" ]]; then
   wait_for_gpu_slot "${GPU}"
   mkdir -p "${RUNS_ROOT}/PHASE1_GPU0_JOINTSAFE36_EMA_KEEP15_MID188_S4"
-  ("${CMD[@]}" > "${LOG_ROOT}/PHASE1_GPU0_JOINTSAFE36_EMA_KEEP15_MID188_S4.out" 2>&1) &
+  "${CMD[@]}" > "${LOG_ROOT}/PHASE1_GPU0_JOINTSAFE36_EMA_KEEP15_MID188_S4.out" 2>&1 &
   pid="$!"
   PIDS+=("${pid}")
   NAMES+=("PHASE1_GPU0_JOINTSAFE36_EMA_KEEP15_MID188_S4")
@@ -326,7 +326,7 @@ printf "[SPACEBORNE-FSDA-CMD] "; printf "%q " "${CMD[@]}"; printf "\n"
 if [[ "${DRY_RUN}" != "1" ]]; then
   wait_for_gpu_slot "${GPU}"
   mkdir -p "${RUNS_ROOT}/PHASE1_GPU0_JOINTSAFE36_EMA_KEEP15_SATLOW_S5"
-  ("${CMD[@]}" > "${LOG_ROOT}/PHASE1_GPU0_JOINTSAFE36_EMA_KEEP15_SATLOW_S5.out" 2>&1) &
+  "${CMD[@]}" > "${LOG_ROOT}/PHASE1_GPU0_JOINTSAFE36_EMA_KEEP15_SATLOW_S5.out" 2>&1 &
   pid="$!"
   PIDS+=("${pid}")
   NAMES+=("PHASE1_GPU0_JOINTSAFE36_EMA_KEEP15_SATLOW_S5")
@@ -341,7 +341,7 @@ printf "[SPACEBORNE-FSDA-CMD] "; printf "%q " "${CMD[@]}"; printf "\n"
 if [[ "${DRY_RUN}" != "1" ]]; then
   wait_for_gpu_slot "${GPU}"
   mkdir -p "${RUNS_ROOT}/PHASE1_GPU0_JOINTSAFE36_EMA_KEEP15_DOMAINSOFT_S6"
-  ("${CMD[@]}" > "${LOG_ROOT}/PHASE1_GPU0_JOINTSAFE36_EMA_KEEP15_DOMAINSOFT_S6.out" 2>&1) &
+  "${CMD[@]}" > "${LOG_ROOT}/PHASE1_GPU0_JOINTSAFE36_EMA_KEEP15_DOMAINSOFT_S6.out" 2>&1 &
   pid="$!"
   PIDS+=("${pid}")
   NAMES+=("PHASE1_GPU0_JOINTSAFE36_EMA_KEEP15_DOMAINSOFT_S6")
@@ -356,7 +356,7 @@ printf "[SPACEBORNE-FSDA-CMD] "; printf "%q " "${CMD[@]}"; printf "\n"
 if [[ "${DRY_RUN}" != "1" ]]; then
   wait_for_gpu_slot "${GPU}"
   mkdir -p "${RUNS_ROOT}/PHASE1_GPU0_JOINTSAFE36_EMA_KEEP15_DOMAINFIRM_S7"
-  ("${CMD[@]}" > "${LOG_ROOT}/PHASE1_GPU0_JOINTSAFE36_EMA_KEEP15_DOMAINFIRM_S7.out" 2>&1) &
+  "${CMD[@]}" > "${LOG_ROOT}/PHASE1_GPU0_JOINTSAFE36_EMA_KEEP15_DOMAINFIRM_S7.out" 2>&1 &
   pid="$!"
   PIDS+=("${pid}")
   NAMES+=("PHASE1_GPU0_JOINTSAFE36_EMA_KEEP15_DOMAINFIRM_S7")
@@ -371,7 +371,7 @@ printf "[SPACEBORNE-FSDA-CMD] "; printf "%q " "${CMD[@]}"; printf "\n"
 if [[ "${DRY_RUN}" != "1" ]]; then
   wait_for_gpu_slot "${GPU}"
   mkdir -p "${RUNS_ROOT}/PHASE1_GPU0_JOINTSAFE36_EMA_KEEP15_FISHRSOFT_S8"
-  ("${CMD[@]}" > "${LOG_ROOT}/PHASE1_GPU0_JOINTSAFE36_EMA_KEEP15_FISHRSOFT_S8.out" 2>&1) &
+  "${CMD[@]}" > "${LOG_ROOT}/PHASE1_GPU0_JOINTSAFE36_EMA_KEEP15_FISHRSOFT_S8.out" 2>&1 &
   pid="$!"
   PIDS+=("${pid}")
   NAMES+=("PHASE1_GPU0_JOINTSAFE36_EMA_KEEP15_FISHRSOFT_S8")
@@ -386,7 +386,7 @@ printf "[SPACEBORNE-FSDA-CMD] "; printf "%q " "${CMD[@]}"; printf "\n"
 if [[ "${DRY_RUN}" != "1" ]]; then
   wait_for_gpu_slot "${GPU}"
   mkdir -p "${RUNS_ROOT}/PHASE1_GPU0_JOINTSAFE36_SATSOFT_NO_CONS_BASE_S0"
-  ("${CMD[@]}" > "${LOG_ROOT}/PHASE1_GPU0_JOINTSAFE36_SATSOFT_NO_CONS_BASE_S0.out" 2>&1) &
+  "${CMD[@]}" > "${LOG_ROOT}/PHASE1_GPU0_JOINTSAFE36_SATSOFT_NO_CONS_BASE_S0.out" 2>&1 &
   pid="$!"
   PIDS+=("${pid}")
   NAMES+=("PHASE1_GPU0_JOINTSAFE36_SATSOFT_NO_CONS_BASE_S0")
@@ -401,7 +401,7 @@ printf "[SPACEBORNE-FSDA-CMD] "; printf "%q " "${CMD[@]}"; printf "\n"
 if [[ "${DRY_RUN}" != "1" ]]; then
   wait_for_gpu_slot "${GPU}"
   mkdir -p "${RUNS_ROOT}/PHASE1_GPU0_JOINTSAFE36_SATSOFT_NO_CONS_SEED_S1"
-  ("${CMD[@]}" > "${LOG_ROOT}/PHASE1_GPU0_JOINTSAFE36_SATSOFT_NO_CONS_SEED_S1.out" 2>&1) &
+  "${CMD[@]}" > "${LOG_ROOT}/PHASE1_GPU0_JOINTSAFE36_SATSOFT_NO_CONS_SEED_S1.out" 2>&1 &
   pid="$!"
   PIDS+=("${pid}")
   NAMES+=("PHASE1_GPU0_JOINTSAFE36_SATSOFT_NO_CONS_SEED_S1")
@@ -416,7 +416,7 @@ printf "[SPACEBORNE-FSDA-CMD] "; printf "%q " "${CMD[@]}"; printf "\n"
 if [[ "${DRY_RUN}" != "1" ]]; then
   wait_for_gpu_slot "${GPU}"
   mkdir -p "${RUNS_ROOT}/PHASE1_GPU0_JOINTSAFE36_SATSOFT_NO_CONS_TAU88_S2"
-  ("${CMD[@]}" > "${LOG_ROOT}/PHASE1_GPU0_JOINTSAFE36_SATSOFT_NO_CONS_TAU88_S2.out" 2>&1) &
+  "${CMD[@]}" > "${LOG_ROOT}/PHASE1_GPU0_JOINTSAFE36_SATSOFT_NO_CONS_TAU88_S2.out" 2>&1 &
   pid="$!"
   PIDS+=("${pid}")
   NAMES+=("PHASE1_GPU0_JOINTSAFE36_SATSOFT_NO_CONS_TAU88_S2")
@@ -431,7 +431,7 @@ printf "[SPACEBORNE-FSDA-CMD] "; printf "%q " "${CMD[@]}"; printf "\n"
 if [[ "${DRY_RUN}" != "1" ]]; then
   wait_for_gpu_slot "${GPU}"
   mkdir -p "${RUNS_ROOT}/PHASE1_GPU0_JOINTSAFE36_SATSOFT_NO_CONS_SHORT195_S3"
-  ("${CMD[@]}" > "${LOG_ROOT}/PHASE1_GPU0_JOINTSAFE36_SATSOFT_NO_CONS_SHORT195_S3.out" 2>&1) &
+  "${CMD[@]}" > "${LOG_ROOT}/PHASE1_GPU0_JOINTSAFE36_SATSOFT_NO_CONS_SHORT195_S3.out" 2>&1 &
   pid="$!"
   PIDS+=("${pid}")
   NAMES+=("PHASE1_GPU0_JOINTSAFE36_SATSOFT_NO_CONS_SHORT195_S3")
@@ -446,7 +446,7 @@ printf "[SPACEBORNE-FSDA-CMD] "; printf "%q " "${CMD[@]}"; printf "\n"
 if [[ "${DRY_RUN}" != "1" ]]; then
   wait_for_gpu_slot "${GPU}"
   mkdir -p "${RUNS_ROOT}/PHASE1_GPU0_JOINTSAFE36_SATSOFT_NO_CONS_MID188_S4"
-  ("${CMD[@]}" > "${LOG_ROOT}/PHASE1_GPU0_JOINTSAFE36_SATSOFT_NO_CONS_MID188_S4.out" 2>&1) &
+  "${CMD[@]}" > "${LOG_ROOT}/PHASE1_GPU0_JOINTSAFE36_SATSOFT_NO_CONS_MID188_S4.out" 2>&1 &
   pid="$!"
   PIDS+=("${pid}")
   NAMES+=("PHASE1_GPU0_JOINTSAFE36_SATSOFT_NO_CONS_MID188_S4")
@@ -461,7 +461,7 @@ printf "[SPACEBORNE-FSDA-CMD] "; printf "%q " "${CMD[@]}"; printf "\n"
 if [[ "${DRY_RUN}" != "1" ]]; then
   wait_for_gpu_slot "${GPU}"
   mkdir -p "${RUNS_ROOT}/PHASE1_GPU0_JOINTSAFE36_SATSOFT_NO_CONS_SATLOW_S5"
-  ("${CMD[@]}" > "${LOG_ROOT}/PHASE1_GPU0_JOINTSAFE36_SATSOFT_NO_CONS_SATLOW_S5.out" 2>&1) &
+  "${CMD[@]}" > "${LOG_ROOT}/PHASE1_GPU0_JOINTSAFE36_SATSOFT_NO_CONS_SATLOW_S5.out" 2>&1 &
   pid="$!"
   PIDS+=("${pid}")
   NAMES+=("PHASE1_GPU0_JOINTSAFE36_SATSOFT_NO_CONS_SATLOW_S5")
@@ -476,7 +476,7 @@ printf "[SPACEBORNE-FSDA-CMD] "; printf "%q " "${CMD[@]}"; printf "\n"
 if [[ "${DRY_RUN}" != "1" ]]; then
   wait_for_gpu_slot "${GPU}"
   mkdir -p "${RUNS_ROOT}/PHASE1_GPU0_JOINTSAFE36_SATSOFT_NO_CONS_DOMAINSOFT_S6"
-  ("${CMD[@]}" > "${LOG_ROOT}/PHASE1_GPU0_JOINTSAFE36_SATSOFT_NO_CONS_DOMAINSOFT_S6.out" 2>&1) &
+  "${CMD[@]}" > "${LOG_ROOT}/PHASE1_GPU0_JOINTSAFE36_SATSOFT_NO_CONS_DOMAINSOFT_S6.out" 2>&1 &
   pid="$!"
   PIDS+=("${pid}")
   NAMES+=("PHASE1_GPU0_JOINTSAFE36_SATSOFT_NO_CONS_DOMAINSOFT_S6")
@@ -491,7 +491,7 @@ printf "[SPACEBORNE-FSDA-CMD] "; printf "%q " "${CMD[@]}"; printf "\n"
 if [[ "${DRY_RUN}" != "1" ]]; then
   wait_for_gpu_slot "${GPU}"
   mkdir -p "${RUNS_ROOT}/PHASE1_GPU0_JOINTSAFE36_SATSOFT_NO_CONS_DOMAINFIRM_S7"
-  ("${CMD[@]}" > "${LOG_ROOT}/PHASE1_GPU0_JOINTSAFE36_SATSOFT_NO_CONS_DOMAINFIRM_S7.out" 2>&1) &
+  "${CMD[@]}" > "${LOG_ROOT}/PHASE1_GPU0_JOINTSAFE36_SATSOFT_NO_CONS_DOMAINFIRM_S7.out" 2>&1 &
   pid="$!"
   PIDS+=("${pid}")
   NAMES+=("PHASE1_GPU0_JOINTSAFE36_SATSOFT_NO_CONS_DOMAINFIRM_S7")
@@ -506,7 +506,7 @@ printf "[SPACEBORNE-FSDA-CMD] "; printf "%q " "${CMD[@]}"; printf "\n"
 if [[ "${DRY_RUN}" != "1" ]]; then
   wait_for_gpu_slot "${GPU}"
   mkdir -p "${RUNS_ROOT}/PHASE1_GPU0_JOINTSAFE36_SATSOFT_NO_CONS_FISHRSOFT_S8"
-  ("${CMD[@]}" > "${LOG_ROOT}/PHASE1_GPU0_JOINTSAFE36_SATSOFT_NO_CONS_FISHRSOFT_S8.out" 2>&1) &
+  "${CMD[@]}" > "${LOG_ROOT}/PHASE1_GPU0_JOINTSAFE36_SATSOFT_NO_CONS_FISHRSOFT_S8.out" 2>&1 &
   pid="$!"
   PIDS+=("${pid}")
   NAMES+=("PHASE1_GPU0_JOINTSAFE36_SATSOFT_NO_CONS_FISHRSOFT_S8")
@@ -521,7 +521,7 @@ printf "[SPACEBORNE-FSDA-CMD] "; printf "%q " "${CMD[@]}"; printf "\n"
 if [[ "${DRY_RUN}" != "1" ]]; then
   wait_for_gpu_slot "${GPU}"
   mkdir -p "${RUNS_ROOT}/PHASE1_GPU0_JOINTSAFE36_GROUPSOFT_190X10_BASE_S0"
-  ("${CMD[@]}" > "${LOG_ROOT}/PHASE1_GPU0_JOINTSAFE36_GROUPSOFT_190X10_BASE_S0.out" 2>&1) &
+  "${CMD[@]}" > "${LOG_ROOT}/PHASE1_GPU0_JOINTSAFE36_GROUPSOFT_190X10_BASE_S0.out" 2>&1 &
   pid="$!"
   PIDS+=("${pid}")
   NAMES+=("PHASE1_GPU0_JOINTSAFE36_GROUPSOFT_190X10_BASE_S0")
@@ -536,7 +536,7 @@ printf "[SPACEBORNE-FSDA-CMD] "; printf "%q " "${CMD[@]}"; printf "\n"
 if [[ "${DRY_RUN}" != "1" ]]; then
   wait_for_gpu_slot "${GPU}"
   mkdir -p "${RUNS_ROOT}/PHASE1_GPU0_JOINTSAFE36_GROUPSOFT_190X10_SEED_S1"
-  ("${CMD[@]}" > "${LOG_ROOT}/PHASE1_GPU0_JOINTSAFE36_GROUPSOFT_190X10_SEED_S1.out" 2>&1) &
+  "${CMD[@]}" > "${LOG_ROOT}/PHASE1_GPU0_JOINTSAFE36_GROUPSOFT_190X10_SEED_S1.out" 2>&1 &
   pid="$!"
   PIDS+=("${pid}")
   NAMES+=("PHASE1_GPU0_JOINTSAFE36_GROUPSOFT_190X10_SEED_S1")
@@ -551,7 +551,7 @@ printf "[SPACEBORNE-FSDA-CMD] "; printf "%q " "${CMD[@]}"; printf "\n"
 if [[ "${DRY_RUN}" != "1" ]]; then
   wait_for_gpu_slot "${GPU}"
   mkdir -p "${RUNS_ROOT}/PHASE1_GPU0_JOINTSAFE36_GROUPSOFT_190X10_TAU88_S2"
-  ("${CMD[@]}" > "${LOG_ROOT}/PHASE1_GPU0_JOINTSAFE36_GROUPSOFT_190X10_TAU88_S2.out" 2>&1) &
+  "${CMD[@]}" > "${LOG_ROOT}/PHASE1_GPU0_JOINTSAFE36_GROUPSOFT_190X10_TAU88_S2.out" 2>&1 &
   pid="$!"
   PIDS+=("${pid}")
   NAMES+=("PHASE1_GPU0_JOINTSAFE36_GROUPSOFT_190X10_TAU88_S2")
@@ -566,7 +566,7 @@ printf "[SPACEBORNE-FSDA-CMD] "; printf "%q " "${CMD[@]}"; printf "\n"
 if [[ "${DRY_RUN}" != "1" ]]; then
   wait_for_gpu_slot "${GPU}"
   mkdir -p "${RUNS_ROOT}/PHASE1_GPU0_JOINTSAFE36_GROUPSOFT_190X10_SHORT195_S3"
-  ("${CMD[@]}" > "${LOG_ROOT}/PHASE1_GPU0_JOINTSAFE36_GROUPSOFT_190X10_SHORT195_S3.out" 2>&1) &
+  "${CMD[@]}" > "${LOG_ROOT}/PHASE1_GPU0_JOINTSAFE36_GROUPSOFT_190X10_SHORT195_S3.out" 2>&1 &
   pid="$!"
   PIDS+=("${pid}")
   NAMES+=("PHASE1_GPU0_JOINTSAFE36_GROUPSOFT_190X10_SHORT195_S3")
@@ -581,7 +581,7 @@ printf "[SPACEBORNE-FSDA-CMD] "; printf "%q " "${CMD[@]}"; printf "\n"
 if [[ "${DRY_RUN}" != "1" ]]; then
   wait_for_gpu_slot "${GPU}"
   mkdir -p "${RUNS_ROOT}/PHASE1_GPU0_JOINTSAFE36_GROUPSOFT_190X10_MID188_S4"
-  ("${CMD[@]}" > "${LOG_ROOT}/PHASE1_GPU0_JOINTSAFE36_GROUPSOFT_190X10_MID188_S4.out" 2>&1) &
+  "${CMD[@]}" > "${LOG_ROOT}/PHASE1_GPU0_JOINTSAFE36_GROUPSOFT_190X10_MID188_S4.out" 2>&1 &
   pid="$!"
   PIDS+=("${pid}")
   NAMES+=("PHASE1_GPU0_JOINTSAFE36_GROUPSOFT_190X10_MID188_S4")
@@ -596,7 +596,7 @@ printf "[SPACEBORNE-FSDA-CMD] "; printf "%q " "${CMD[@]}"; printf "\n"
 if [[ "${DRY_RUN}" != "1" ]]; then
   wait_for_gpu_slot "${GPU}"
   mkdir -p "${RUNS_ROOT}/PHASE1_GPU0_JOINTSAFE36_GROUPSOFT_190X10_SATLOW_S5"
-  ("${CMD[@]}" > "${LOG_ROOT}/PHASE1_GPU0_JOINTSAFE36_GROUPSOFT_190X10_SATLOW_S5.out" 2>&1) &
+  "${CMD[@]}" > "${LOG_ROOT}/PHASE1_GPU0_JOINTSAFE36_GROUPSOFT_190X10_SATLOW_S5.out" 2>&1 &
   pid="$!"
   PIDS+=("${pid}")
   NAMES+=("PHASE1_GPU0_JOINTSAFE36_GROUPSOFT_190X10_SATLOW_S5")
@@ -611,7 +611,7 @@ printf "[SPACEBORNE-FSDA-CMD] "; printf "%q " "${CMD[@]}"; printf "\n"
 if [[ "${DRY_RUN}" != "1" ]]; then
   wait_for_gpu_slot "${GPU}"
   mkdir -p "${RUNS_ROOT}/PHASE1_GPU0_JOINTSAFE36_GROUPSOFT_190X10_DOMAINSOFT_S6"
-  ("${CMD[@]}" > "${LOG_ROOT}/PHASE1_GPU0_JOINTSAFE36_GROUPSOFT_190X10_DOMAINSOFT_S6.out" 2>&1) &
+  "${CMD[@]}" > "${LOG_ROOT}/PHASE1_GPU0_JOINTSAFE36_GROUPSOFT_190X10_DOMAINSOFT_S6.out" 2>&1 &
   pid="$!"
   PIDS+=("${pid}")
   NAMES+=("PHASE1_GPU0_JOINTSAFE36_GROUPSOFT_190X10_DOMAINSOFT_S6")
@@ -626,7 +626,7 @@ printf "[SPACEBORNE-FSDA-CMD] "; printf "%q " "${CMD[@]}"; printf "\n"
 if [[ "${DRY_RUN}" != "1" ]]; then
   wait_for_gpu_slot "${GPU}"
   mkdir -p "${RUNS_ROOT}/PHASE1_GPU0_JOINTSAFE36_GROUPSOFT_190X10_DOMAINFIRM_S7"
-  ("${CMD[@]}" > "${LOG_ROOT}/PHASE1_GPU0_JOINTSAFE36_GROUPSOFT_190X10_DOMAINFIRM_S7.out" 2>&1) &
+  "${CMD[@]}" > "${LOG_ROOT}/PHASE1_GPU0_JOINTSAFE36_GROUPSOFT_190X10_DOMAINFIRM_S7.out" 2>&1 &
   pid="$!"
   PIDS+=("${pid}")
   NAMES+=("PHASE1_GPU0_JOINTSAFE36_GROUPSOFT_190X10_DOMAINFIRM_S7")
@@ -641,7 +641,7 @@ printf "[SPACEBORNE-FSDA-CMD] "; printf "%q " "${CMD[@]}"; printf "\n"
 if [[ "${DRY_RUN}" != "1" ]]; then
   wait_for_gpu_slot "${GPU}"
   mkdir -p "${RUNS_ROOT}/PHASE1_GPU0_JOINTSAFE36_GROUPSOFT_190X10_FISHRSOFT_S8"
-  ("${CMD[@]}" > "${LOG_ROOT}/PHASE1_GPU0_JOINTSAFE36_GROUPSOFT_190X10_FISHRSOFT_S8.out" 2>&1) &
+  "${CMD[@]}" > "${LOG_ROOT}/PHASE1_GPU0_JOINTSAFE36_GROUPSOFT_190X10_FISHRSOFT_S8.out" 2>&1 &
   pid="$!"
   PIDS+=("${pid}")
   NAMES+=("PHASE1_GPU0_JOINTSAFE36_GROUPSOFT_190X10_FISHRSOFT_S8")
