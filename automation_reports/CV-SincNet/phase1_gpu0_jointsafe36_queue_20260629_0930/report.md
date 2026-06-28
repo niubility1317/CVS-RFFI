@@ -141,3 +141,76 @@ RUN_ID=phase1_gpu0_jointsafe36_queue_20260629_0930 STAGE2_MAX_ACTIVE_PER_GPU=2 I
 nohup bash code/scripts/launch_phase1_gpu0_jointsafe36_queue_20260629_0930.sh \
 > logs/phase1_gpu0_jointsafe36_queue_20260629_0930/scheduler.out 2>&1 & echo $!
 ```
+
+## Remote Launch Record
+
+Remote launch timestamp: 2026-06-29 local host time, after N607 direct preflight.
+
+N607 preflight and initial occupancy:
+
+| Check | Result |
+|---|---|
+| Direct SSH preflight | PASS; N607 reachable directly, project root visible, 8 RTX3090 GPUs visible. |
+| Existing training occupancy | One active `stage2_spaceborne_h06_phase1_floorrepair_20260628_221940` `train_ssdg.py` compute process per GPU. |
+| Queue capacity rule | Keep at most two GPU compute training processes per GPU including existing external `C` processes from `nvidia-smi pmon`. |
+| Initial launch decision | Launch one new queued candidate per GPU; keep the remaining 28 candidates queued behind the per-GPU cap. |
+
+Remote sync and verification:
+
+| Item | Result |
+|---|---|
+| Synced files | Training entrypoint, `cvsrffi` guard/prototype/mask/geometry modules, matrix generator, validator, queue launcher, matrix, and report. |
+| Remote `py_compile` | PASS. |
+| Remote matrix validator | PASS, 36 launchable rows, 0 issues. |
+| Remote `bash -n` | PASS. |
+| Remote launcher dry-run | PASS, 36 candidates printed without launching. |
+
+The live scheduler was launched with `setsid` so the queue remains on N607 after the bounded SSH command exits:
+
+```bash
+cd /home/szu2070436088/2510044040/CV-SincNet && \
+mkdir -p logs/phase1_gpu0_jointsafe36_queue_20260629_0930 && \
+setsid env RUN_ID=phase1_gpu0_jointsafe36_queue_20260629_0930 STAGE2_MAX_ACTIVE_PER_GPU=2 INCLUDE_EXTERNAL_GPU_PROCS=1 \
+bash code/scripts/launch_phase1_gpu0_jointsafe36_queue_20260629_0930.sh \
+> logs/phase1_gpu0_jointsafe36_queue_20260629_0930/scheduler.out 2>&1 < /dev/null &
+```
+
+Live scheduler state:
+
+| Field | Value |
+|---|---|
+| Scheduler process | `706167 bash code/scripts/launch_phase1_gpu0_jointsafe36_queue_20260629_0930.sh` |
+| Scheduler log | `/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_gpu0_jointsafe36_queue_20260629_0930/scheduler.out` |
+| Launched candidates so far | 8 |
+| Queue wait marker | `[SPACEBORNE-FSDA-WAIT] gpu=0 active=1 external=1 total=2 max=2` |
+| Interpretation | The queue is working as intended: GPU0 already has one queued training process plus one existing external training process, so the next GPU0 candidate waits until a slot frees. |
+
+Initial launched candidates:
+
+| GPU | Candidate | PID | Log |
+|---|---|---:|---|
+| 0 | `PHASE1_GPU0_JOINTSAFE36_SOFTPSEUDO_190X10_BASE_S0` | 706177 | `logs/phase1_gpu0_jointsafe36_queue_20260629_0930/PHASE1_GPU0_JOINTSAFE36_SOFTPSEUDO_190X10_BASE_S0.out` |
+| 1 | `PHASE1_GPU0_JOINTSAFE36_SOFTPSEUDO_190X10_SEED_S1` | 706186 | `logs/phase1_gpu0_jointsafe36_queue_20260629_0930/PHASE1_GPU0_JOINTSAFE36_SOFTPSEUDO_190X10_SEED_S1.out` |
+| 2 | `PHASE1_GPU0_JOINTSAFE36_SOFTPSEUDO_190X10_TAU88_S2` | 706195 | `logs/phase1_gpu0_jointsafe36_queue_20260629_0930/PHASE1_GPU0_JOINTSAFE36_SOFTPSEUDO_190X10_TAU88_S2.out` |
+| 3 | `PHASE1_GPU0_JOINTSAFE36_SOFTPSEUDO_190X10_SHORT195_S3` | 706204 | `logs/phase1_gpu0_jointsafe36_queue_20260629_0930/PHASE1_GPU0_JOINTSAFE36_SOFTPSEUDO_190X10_SHORT195_S3.out` |
+| 4 | `PHASE1_GPU0_JOINTSAFE36_SOFTPSEUDO_190X10_MID188_S4` | 706213 | `logs/phase1_gpu0_jointsafe36_queue_20260629_0930/PHASE1_GPU0_JOINTSAFE36_SOFTPSEUDO_190X10_MID188_S4.out` |
+| 5 | `PHASE1_GPU0_JOINTSAFE36_SOFTPSEUDO_190X10_SATLOW_S5` | 706222 | `logs/phase1_gpu0_jointsafe36_queue_20260629_0930/PHASE1_GPU0_JOINTSAFE36_SOFTPSEUDO_190X10_SATLOW_S5.out` |
+| 6 | `PHASE1_GPU0_JOINTSAFE36_SOFTPSEUDO_190X10_DOMAINSOFT_S6` | 706294 | `logs/phase1_gpu0_jointsafe36_queue_20260629_0930/PHASE1_GPU0_JOINTSAFE36_SOFTPSEUDO_190X10_DOMAINSOFT_S6.out` |
+| 7 | `PHASE1_GPU0_JOINTSAFE36_SOFTPSEUDO_190X10_DOMAINFIRM_S7` | 706366 | `logs/phase1_gpu0_jointsafe36_queue_20260629_0930/PHASE1_GPU0_JOINTSAFE36_SOFTPSEUDO_190X10_DOMAINFIRM_S7.out` |
+
+N607 `nvidia-smi pmon -c 1` startup snapshot showed exactly two compute `C` processes per GPU: the existing floorrepair process and the newly launched queued process. The display `Xorg` process appears as type `G` and is intentionally ignored by the training concurrency guard.
+
+Startup log health:
+
+| Check | Result |
+|---|---|
+| First 8 log files | Present. |
+| Required config markers | `[CONFIG-JOINT-SAFE]`, `[CONFIG-PROTO-MASK]`, `[CONFIG-SAT]`, `[CONFIG-PSEUDO]`, `[CONFIG-LOSS]`, and `[SAFE-CKPT]` found. |
+| Startup errors searched | No `Traceback`, `RuntimeError`, `unrecognized arguments`, CUDA OOM, or NaN markers found in the inspected head/tail windows. |
+| Prototype/mask/geometry status | Audit-only telemetry is enabled; active prototype/mask/geometry loss weights remain zero. |
+
+SSH cleanup:
+
+- Two early remote launch attempts timed out because the detached command did not return cleanly through the Windows SSH client. Local stale `ssh.exe` clients were identified and closed before continuing.
+- After the successful bounded checks, the remaining remote long-lived processes are the intended scheduler and training jobs on N607, not local SSH shells.
+- No experiment result or deployment success claim is made here; this record only confirms queue launch and startup health.
