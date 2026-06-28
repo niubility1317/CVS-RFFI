@@ -37,6 +37,81 @@ PHASE2_UNKNOWN_TX_LABELS = "10-1,10-10"
 STAR_GROUND_CHANNEL_IMPL = "simplified_leo_residual"
 SIMPLIFIED_LEO_SCENARIOS = "leo_clear_weak,leo_low_elev_weak,leo_rain_weak"
 LEGACY_LEO_SCENARIOS = "clear_leo,low_elev_leo,rain_leo,storm_mp,mixed_orbit"
+PHASE1_PAIC_SAT_VIEW_SCHEDULE = (
+    "1@0.30:leo_clear_weak;"
+    "41@0.60:leo_low_elev_weak,leo_rain_weak;"
+    "91@0.80:leo_clear_weak,leo_low_elev_weak,leo_rain_weak"
+)
+PHASE1_GROUND_PROTO_MASK_MODULES = (
+    "phase2_prototypes,feature_masks,tx_rx_geometry,"
+    "balanced_tx_rx_sampler,open_world_head"
+)
+PHASE1_CEN51_NON_REGRESSION_FLOORS = (
+    "overall>=88.57; strict_udu>=84.87; receiver_floor>=79.53; "
+    "sat_mean_5>=46.564; sat_floor_5>=41.52"
+)
+PHASE1_GPU0_JOINTSAFE_VARIANTS = {
+    "softpseudo_190x10": {
+        "label_epochs": 190,
+        "pseudo_epochs": 10,
+        "lambda_u": 0.20,
+        "tau_min": 0.92,
+        "tau_max": 0.97,
+        "pseudo_quantile": 0.86,
+        "use_ema_teacher": True,
+        "lambda_sat_cls": 0.60,
+        "lambda_sat_cons": 0.0,
+        "lambda_group_ce": 0.16,
+        "lambda_fishr": 0.04,
+        "lambda_domain": 1.0,
+        "description": "GPU0_A soft pseudo 190+10 with EMA and lower PAIC pressure",
+    },
+    "ema_keep15": {
+        "label_epochs": 185,
+        "pseudo_epochs": 15,
+        "lambda_u": 0.25,
+        "tau_min": 0.91,
+        "tau_max": 0.97,
+        "pseudo_quantile": 0.85,
+        "use_ema_teacher": True,
+        "lambda_sat_cls": 0.65,
+        "lambda_sat_cons": 0.005,
+        "lambda_group_ce": 0.16,
+        "lambda_fishr": 0.04,
+        "lambda_domain": 1.15,
+        "description": "GPU0_A 185+15 with EMA teacher and guarded pseudo stage",
+    },
+    "satsoft_no_cons": {
+        "label_epochs": 185,
+        "pseudo_epochs": 15,
+        "lambda_u": 0.25,
+        "tau_min": 0.90,
+        "tau_max": 0.97,
+        "pseudo_quantile": 0.84,
+        "use_ema_teacher": False,
+        "lambda_sat_cls": 0.55,
+        "lambda_sat_cons": 0.0,
+        "lambda_group_ce": 0.18,
+        "lambda_fishr": 0.04,
+        "lambda_domain": 1.0,
+        "description": "GPU0_A satellite objective softened with consistency disabled",
+    },
+    "groupsoft_190x10": {
+        "label_epochs": 190,
+        "pseudo_epochs": 10,
+        "lambda_u": 0.25,
+        "tau_min": 0.92,
+        "tau_max": 0.985,
+        "pseudo_quantile": 0.86,
+        "use_ema_teacher": False,
+        "lambda_sat_cls": 0.60,
+        "lambda_sat_cons": 0.0,
+        "lambda_group_ce": 0.14,
+        "lambda_fishr": 0.035,
+        "lambda_domain": 1.0,
+        "description": "GPU0_A group/Fishr pressure softened with 190+10 schedule",
+    },
+}
 DEFAULT_BEX02_TEACHER_CKPT = "${ROOT}/runs/best_base_explore/BEX02_fishr002_mixed_e170/latest_model.pth"
 H06_LOW_PROB_HYBRID_LATEST_CKPT = (
     "${ROOT}/runs/cen51_r04_hybrid8_strong_leo_residual_20260624_1545/"
@@ -250,6 +325,9 @@ class Candidate:
     seen_new_override_min_support_knn_margin: float | None = None
     old_acc_target: float = 0.90
     seen_new_acc_target: float = 0.75
+    stage2_priority_phase: str = ""
+    old_acc_phase_gate: float = 0.0
+    secondary_objectives_after_old_gate: str = ""
     optimization_category: str = "conservative"
     oa_mse_adapter_kind: str = "low_rank"
     oa_mse_anchor_density_gate: bool = False
@@ -415,6 +493,14 @@ class Candidate:
     siamese_verifier_required: bool = True
     accepted_only_online_update_required: bool = True
     oa_mse_onboard_adaptation_bundle: str = ONBOARD_ADAPTATION_BUNDLE
+    lane: str = "phase2_spaceborne_fsl"
+    phase_axis: str = "Phase2-Spaceborne-FSL"
+    phase1_variant: str = ""
+    phase1_design_report_ref: str = ""
+    phase1_enable_ground_prototype_stats: bool = False
+    phase1_enable_feature_distribution_audit: bool = False
+    phase1_enable_feature_masks_aux: bool = False
+    phase1_enable_txrx_geometry_audit: bool = False
 
 
 def _oa_mse_struct48_stage_specs() -> list[dict]:
@@ -4782,17 +4868,21 @@ def _oa_mse_h06_rollsafe48_stage_specs() -> list[dict]:
         spec["guard_min_margin"] = round(0.14 + 0.040 * strictness + (0.040 if gate_arm else 0.0), 3)
         spec["guard_min_failures"] = 4 if not gate_arm else 3 + min(strictness, 1)
         spec["seen_new_registration_override"] = False
-        spec["old_acc_target"] = 0.90
+        spec["old_acc_target"] = 0.80
         spec["seen_new_acc_target"] = 0.75
+        spec["stage2_priority_phase"] = "OLD80_FIRST"
+        spec["old_acc_phase_gate"] = 0.80
+        spec["secondary_objectives_after_old_gate"] = "NEXT_PHASE_SECONDARY_OBJECTIVES"
         spec["risk_note"] = (
             "OLDFUSE completed as a negative diagnostic with rollback on every row and no target hits. "
             "This route lowers hard reject pressure, enables candidate-only retention rescue, and keeps "
-            "background/deployment gates as defer-first checks so old-retention signal is visible."
+            "background/deployment gates as defer-first checks so old-retention signal can first reach "
+            "the OLD80 gate before the next open-world objective phase."
         )
         spec["description"] = (
-            "Stage2-B H06 rollback-safe old-retention repair after OLDFUSE all-rollback; target-new "
-            "support remains excluded, unknown transmitters remain query-only, and all accept/defer "
-            "decisions use source/target-old support evidence without unknown-query threshold fitting."
+            "Stage2-B H06 OLD80_FIRST rollback-safe old-retention repair after OLDFUSE all-rollback; "
+            "target-new support remains excluded, unknown transmitters remain query-only, and this "
+            "stage first seeks old_acc>=0.80 before the next open-world objective phase."
         )
         spec["evidence_ref"] = (
             "oldfuse_negative_old_mean_0p025_unknown_far_0p000_rollback48_target_hit0;"
@@ -4801,6 +4891,563 @@ def _oa_mse_h06_rollsafe48_stage_specs() -> list[dict]:
             "stage2b_old_unknown_only_target_new_excluded"
         )
         spec["seed_offset"] = int(spec.get("seed_offset", 0)) + 4210 + idx * 23
+    return specs
+
+
+def _oa_mse_h06_oldhead48_stage_specs() -> list[dict]:
+    """H06 OLD80 boundary repair from old-head sweep evidence."""
+
+    specs = [dict(spec) for spec in _oa_mse_h06_rollsafe48_stage_specs()]
+    arms = (
+        ("oldhead_ridge_bridge", "ridge_k10"),
+        ("oldhead_ridge_bridge", "ridge_k20"),
+        ("oldhead_ridge_bridge", "ridge_k50_saturation"),
+        ("oldhead_knn_density_guard", "knn_k10"),
+        ("oldhead_knn_density_guard", "knn_k20"),
+        ("oldhead_knn_density_guard", "knn_k50_saturation"),
+    )
+    for idx, spec in enumerate(specs):
+        category, arm = arms[idx]
+        strictness = idx % 3
+        saturation = arm.endswith("saturation")
+        k_old = (10, 20, 50)[strictness]
+        ridge_bridge = category == "oldhead_ridge_bridge"
+        spec["stage"] = "mse_subspace"
+        spec["eval_protocol"] = "ftrc"
+        spec["k_old"] = k_old
+        spec["k_new"] = 0
+        spec["category"] = category
+        spec["optimization_category"] = category
+        spec["route_suffix"] = f"h06_oldhead_boundary_repair_{arm}"
+        spec["ablation_arm"] = arm
+        spec["target_new_leo_support"] = False
+        spec["source_proto_per_tx"] = 24 if saturation else 22
+        spec["source_query_per_tx"] = 42 if saturation else 40
+        spec["sfe_max_samples_per_tx"] = 88 if saturation else 68
+        spec["query_per_tx"] = 30
+        spec["target_old_query_per_tx"] = 30
+        spec["stage2_max_active_per_gpu"] = 2
+        spec["adapter_kind"] = "low_rank" if ridge_bridge else "residual_mlp"
+        spec["adapter_selection_policy"] = (
+            "support_cv_constrained" if ridge_bridge else "support_cv_risk_balanced"
+        )
+        spec["steps"] = (112, 124, 136)[strictness] if ridge_bridge else (104, 116, 128)[strictness]
+        spec["align"] = round(0.125 + 0.010 * strictness + (0.008 if ridge_bridge else 0.0), 3)
+        spec["norm"] = round(0.018 + 0.002 * strictness, 3)
+        spec["bce"] = round(0.034 + 0.004 * strictness, 3)
+        spec["unknown"] = round(0.052 + 0.010 * strictness + (0.020 if not ridge_bridge else 0.0), 3)
+        spec["pl"] = round(0.016 + 0.003 * strictness, 3)
+        spec["maha"] = round(0.24 + 0.025 * strictness, 3)
+        spec["unknown_moat"] = round(0.20 + 0.035 * strictness + (0.045 if not ridge_bridge else 0.0), 3)
+        spec["unknown_margin"] = round(0.24 + 0.050 * strictness + (0.065 if not ridge_bridge else 0.0), 3)
+        spec["negative_anchor_weight"] = round(0.070 + 0.020 * strictness + (0.040 if not ridge_bridge else 0.0), 3)
+        spec["negative_anchor_margin"] = round(0.18 + 0.030 * strictness + (0.045 if not ridge_bridge else 0.0), 3)
+        spec["negative_anchor_temperature"] = round(0.14 - 0.012 * min(strictness, 2), 3)
+        spec["negative_anchor_max_anchors"] = 288 if ridge_bridge else 320
+        spec["void_background"] = round(0.020 + 0.008 * strictness + (0.030 if not ridge_bridge else 0.0), 3)
+        spec["void_gate"] = bool(not ridge_bridge or strictness >= 2)
+        spec["void_gate_min_score"] = round(0.64 + 0.030 * strictness + (0.050 if not ridge_bridge else 0.0), 3)
+        spec["void_gate_min_margin"] = round(-0.06 + 0.025 * strictness + (0.040 if not ridge_bridge else 0.0), 3)
+        spec["source_looo_unknown_weight"] = round(0.080 + 0.030 * strictness + (0.040 if not ridge_bridge else 0.0), 3)
+        spec["source_looo_unknown_margin"] = round(0.30 + 0.050 * strictness + (0.060 if not ridge_bridge else 0.0), 3)
+        spec["source_looo_interclass_margin"] = round(0.10 + 0.015 * strictness, 3)
+        spec["source_looo_max_samples_per_class"] = 54 if ridge_bridge else 58
+        spec["source_looo_risk_arbitration"] = True
+        spec["source_looo_risk_quantile"] = round(0.78 + 0.025 * strictness + (0.030 if not ridge_bridge else 0.0), 3)
+        spec["source_looo_risk_slack"] = round(0.035 + 0.012 * strictness, 3)
+        spec["source_looo_risk_min_score_margin"] = round(0.000 + 0.015 * strictness, 3)
+        spec["source_looo_risk_min_known_evidence_delta"] = round(-0.22 + 0.035 * strictness, 3)
+        spec["source_looo_risk_background_score"] = round(0.56 + 0.035 * strictness + (0.055 if not ridge_bridge else 0.0), 3)
+        spec["source_looo_risk_background_margin"] = round(-0.12 + 0.035 * strictness + (0.050 if not ridge_bridge else 0.0), 3)
+        spec["source_looo_risk_reject_min_failures"] = 4 if ridge_bridge else 3 + min(strictness, 1)
+        spec["source_looo_risk_reject_action"] = "defer"
+        spec["two_branch_background_guard"] = True
+        spec["two_branch_bg_min_score"] = round(0.50 + 0.035 * strictness + (0.060 if not ridge_bridge else 0.0), 3)
+        spec["two_branch_bg_min_margin"] = round(-0.16 + 0.035 * strictness + (0.055 if not ridge_bridge else 0.0), 3)
+        spec["two_branch_old_support_evidence_delta"] = round(-0.20 + 0.030 * strictness, 3)
+        spec["two_branch_old_anchor_delta"] = round(-0.16 + 0.025 * strictness, 3)
+        spec["two_branch_old_anchor_margin"] = round(-0.03 + 0.015 * strictness, 3)
+        spec["two_branch_seen_new_evidence_delta"] = 0.0
+        spec["two_branch_seen_new_anchor_delta"] = 0.0
+        spec["pre_reject_defer_arbitration"] = True
+        spec["pre_reject_defer_action"] = "defer"
+        spec["pre_reject_max_background_score"] = round(0.82 + 0.025 * strictness if ridge_bridge else 0.76 + 0.020 * strictness, 3)
+        spec["pre_reject_max_background_margin"] = round(0.08 + 0.025 * strictness if ridge_bridge else 0.02 + 0.020 * strictness, 3)
+        spec["pre_reject_defer_background_score"] = round(0.58 + 0.030 * strictness + (0.045 if not ridge_bridge else 0.0), 3)
+        spec["pre_reject_defer_background_margin"] = round(-0.10 + 0.030 * strictness + (0.040 if not ridge_bridge else 0.0), 3)
+        spec["pre_reject_reject_background_score"] = round(0.84 + 0.025 * strictness + (0.030 if not ridge_bridge else 0.0), 3)
+        spec["pre_reject_reject_background_margin"] = round(0.06 + 0.030 * strictness + (0.030 if not ridge_bridge else 0.0), 3)
+        spec["pre_reject_support_neighborhood_retention"] = True
+        spec["pre_reject_support_retention_old_min_evidence_delta"] = (
+            (-0.12, -0.08, -0.04)[strictness] if ridge_bridge else (-0.08, -0.04, 0.00)[strictness]
+        )
+        spec["pre_reject_support_retention_old_min_anchor_delta"] = (
+            (-0.16, -0.12, -0.08)[strictness] if ridge_bridge else (-0.12, -0.08, -0.04)[strictness]
+        )
+        spec["pre_reject_support_retention_old_min_anchor_margin"] = (
+            (-0.08, -0.05, -0.02)[strictness] if ridge_bridge else (-0.04, -0.02, 0.00)[strictness]
+        )
+        spec["pre_reject_support_retention_old_min_score_margin"] = (
+            (-0.18, -0.14, -0.10)[strictness] if ridge_bridge else (-0.12, -0.08, -0.04)[strictness]
+        )
+        spec["pre_reject_support_retention_max_background_score"] = (
+            (0.94, 0.90, 0.86)[strictness] if ridge_bridge else (0.84, 0.78, 0.72)[strictness]
+        )
+        spec["pre_reject_support_retention_max_background_margin"] = (
+            (0.20, 0.14, 0.08)[strictness] if ridge_bridge else (0.10, 0.04, -0.02)[strictness]
+        )
+        spec["pre_reject_support_retention_require_source_looo_pass"] = bool(not ridge_bridge and strictness >= 1)
+        spec["pre_reject_support_retention_source_looo_max_failures"] = 3 if ridge_bridge else 2
+        spec["support_retention_guard"] = True
+        spec["support_retention_guard_quantile"] = round(0.025 + 0.010 * strictness, 3)
+        spec["support_retention_guard_slack"] = round(0.14 + 0.020 * strictness, 3)
+        spec["support_center_ce"] = round(0.16 + 0.018 * strictness + (0.010 if ridge_bridge else 0.0), 3)
+        spec["support_center_temperature"] = round(0.52 - 0.035 * strictness, 3)
+        spec["support_center_margin"] = round(0.09 + 0.015 * strictness, 3)
+        spec["support_contrast"] = round(0.035 + 0.005 * strictness, 3)
+        spec["known_coverage_weight"] = round(0.15 + 0.016 * strictness + (0.010 if ridge_bridge else 0.0), 3)
+        spec["known_coverage_margin"] = round(0.07 + 0.012 * strictness, 3)
+        spec["known_coverage_min_affinity"] = round(0.18 + 0.018 * strictness, 3)
+        spec["multiproto_score"] = True
+        spec["multiproto_topk"] = 6 if saturation else 5
+        spec["multiproto_temperature"] = round(0.50 - 0.025 * strictness, 3)
+        spec["multiproto_score_weight"] = round(0.15 + 0.015 * strictness, 3)
+        spec["soft_proto"] = round(0.15 + 0.014 * strictness, 3)
+        spec["soft_proto_topk"] = spec["multiproto_topk"]
+        spec["soft_proto_temperature"] = round(0.48 - 0.025 * strictness, 3)
+        spec["soft_proto_boundary"] = round(0.07 + 0.010 * strictness, 3)
+        spec["soft_proto_boundary_margin"] = round(0.08 + 0.012 * strictness, 3)
+        spec["mixture_consistency_gate"] = True
+        spec["mixture_consistency_min_cos"] = round(0.48 + 0.020 * strictness, 3)
+        spec["mixture_consistency_max_residual"] = round(0.44 - 0.018 * strictness, 3)
+        spec["mixture_consistency_min_margin"] = round(0.025 + 0.010 * strictness, 3)
+        spec["mixture_consistency_action"] = "uncertain"
+        spec["density_shell_gate"] = True
+        spec["density_shell_old_min_evidence_delta"] = (
+            (-0.12, -0.08, -0.04)[strictness] if ridge_bridge else (-0.08, -0.04, 0.00)[strictness]
+        )
+        spec["density_shell_old_min_anchor_delta"] = (
+            (-0.16, -0.12, -0.08)[strictness] if ridge_bridge else (-0.12, -0.08, -0.04)[strictness]
+        )
+        spec["density_shell_old_min_density_delta"] = (
+            (-0.12, -0.08, -0.04)[strictness] if ridge_bridge else (-0.06, -0.02, 0.02)[strictness]
+        )
+        spec["density_shell_accept_background_margin"] = (
+            (0.26, 0.22, 0.18)[strictness] if ridge_bridge else (0.20, 0.14, 0.08)[strictness]
+        )
+        spec["density_shell_reject_background_score"] = (
+            (0.90, 0.88, 0.86)[strictness] if ridge_bridge else (0.84, 0.80, 0.76)[strictness]
+        )
+        spec["density_shell_reject_background_margin"] = (
+            (0.18, 0.14, 0.10)[strictness] if ridge_bridge else (0.12, 0.08, 0.04)[strictness]
+        )
+        spec["density_shell_reject_min_failed_shells"] = 3 if ridge_bridge else 2
+        spec["anchor_density_gate"] = True
+        spec["anchor_density_action"] = "uncertain" if ridge_bridge else "reject"
+        spec["anchor_density_topk"] = 5 if saturation else 4
+        spec["anchor_density_temperature"] = round(0.12 - 0.020 * strictness, 3)
+        spec["anchor_density_quantile"] = round(0.020 + 0.020 * strictness + (0.020 if not ridge_bridge else 0.0), 3)
+        spec["anchor_density_margin_quantile"] = round(0.020 + 0.015 * strictness + (0.020 if not ridge_bridge else 0.0), 3)
+        spec["class_envelope_gate"] = True
+        spec["class_envelope_action"] = "uncertain"
+        spec["class_envelope_min_failures"] = 3
+        spec["old_primary_gate"] = False
+        spec["old_primary_require_soft_mixture"] = False
+        spec["old_primary_require_support_knn"] = False
+        spec["old_primary_require_class_envelope"] = False
+        spec["old_primary_promote_rescue_candidates"] = False
+        spec["retention_rescue_gate"] = True
+        spec["retention_rescue_candidate_only"] = True
+        spec["retention_rescue_old_min_evidence_delta"] = (
+            (-0.08, -0.04, 0.00)[strictness] if ridge_bridge else (-0.04, 0.00, 0.04)[strictness]
+        )
+        spec["retention_rescue_old_min_anchor_delta"] = (
+            (-0.12, -0.08, -0.04)[strictness] if ridge_bridge else (-0.08, -0.04, 0.00)[strictness]
+        )
+        spec["retention_rescue_old_min_anchor_margin"] = (
+            (-0.06, -0.03, 0.00)[strictness] if ridge_bridge else (-0.03, 0.00, 0.03)[strictness]
+        )
+        spec["retention_rescue_old_min_score_margin"] = (
+            (-0.14, -0.10, -0.06)[strictness] if ridge_bridge else (-0.08, -0.04, 0.00)[strictness]
+        )
+        spec["retention_rescue_max_background_score"] = (
+            (0.88, 0.84, 0.80)[strictness] if ridge_bridge else (0.76, 0.70, 0.64)[strictness]
+        )
+        spec["retention_rescue_max_background_margin"] = (
+            (0.14, 0.08, 0.02)[strictness] if ridge_bridge else (0.04, -0.02, -0.08)[strictness]
+        )
+        spec["support_conformal_arbitration"] = True
+        spec["support_conformal_calibration_quantile"] = round(0.12 - 0.015 * strictness, 3)
+        spec["support_conformal_conformity_slack"] = round(0.14 + 0.015 * strictness, 3)
+        spec["support_conformal_anchor_margin_slack"] = round(0.06 + 0.012 * strictness, 3)
+        spec["support_conformal_background_score"] = round(0.82 + 0.025 * strictness if ridge_bridge else 0.74 + 0.025 * strictness, 3)
+        spec["support_conformal_background_margin"] = round(0.08 + 0.020 * strictness if ridge_bridge else 0.02 + 0.020 * strictness, 3)
+        spec["support_conformal_hard_reject_margin"] = round(0.20 + 0.030 * strictness if ridge_bridge else 0.12 + 0.025 * strictness, 3)
+        spec["support_conformal_reject_min_failures"] = 3 if ridge_bridge else 2
+        spec["support_conformal_reject_action"] = "defer"
+        spec["support_reconstruction_arbitration"] = True
+        spec["support_reconstruction_rank"] = 3 if saturation else 2
+        spec["support_reconstruction_residual_quantile"] = round(0.94 - 0.015 * strictness, 3)
+        spec["support_reconstruction_residual_slack"] = round(0.045 + 0.012 * strictness, 3)
+        spec["support_reconstruction_min_residual_floor"] = round(0.030 + 0.010 * strictness, 3)
+        spec["support_reconstruction_negative_scale"] = round(0.54 + 0.040 * strictness, 3)
+        spec["support_reconstruction_negative_margin"] = round(-0.04 + 0.020 * strictness, 3)
+        spec["support_reconstruction_hard_residual_margin"] = round(0.08 + 0.020 * strictness, 3)
+        spec["support_reconstruction_background_score"] = round(0.82 + 0.030 * strictness if ridge_bridge else 0.74 + 0.030 * strictness, 3)
+        spec["support_reconstruction_background_margin"] = round(0.08 + 0.025 * strictness if ridge_bridge else 0.02 + 0.025 * strictness, 3)
+        spec["support_reconstruction_reject_min_failures"] = 3 if ridge_bridge else 2
+        spec["support_reconstruction_reject_action"] = "defer"
+        spec["three_way_decision_head"] = True
+        spec["three_way_head_weight"] = round(0.040 + 0.010 * strictness + (0.012 if not ridge_bridge else 0.0), 3)
+        spec["three_way_head_temperature"] = round(0.13 - 0.014 * strictness, 3)
+        spec["three_way_head_known_margin"] = round(0.08 + 0.012 * strictness, 3)
+        spec["three_way_head_background_margin"] = round(0.07 + 0.018 * strictness + (0.020 if not ridge_bridge else 0.0), 3)
+        spec["three_way_decision_policy"] = "class_first" if ridge_bridge else "evidence_balanced"
+        spec["three_way_accept_prob"] = round(0.48 + 0.025 * strictness, 3)
+        spec["three_way_reject_prob"] = round(0.60 + 0.035 * strictness + (0.035 if not ridge_bridge else 0.0), 3)
+        spec["three_way_defer_prob"] = round(0.44 + 0.025 * strictness, 3)
+        spec["three_way_known_background_margin"] = round(0.00 + 0.025 * strictness, 3)
+        spec["three_way_reject_margin"] = round(0.04 + 0.025 * strictness + (0.030 if not ridge_bridge else 0.0), 3)
+        spec["three_way_defer_action"] = "defer"
+        spec["three_way_known_floor"] = True
+        spec["three_way_known_floor_action"] = "accept" if ridge_bridge else "defer"
+        spec["three_way_known_floor_old_min_evidence_delta"] = (
+            (0.00, -0.04, -0.08)[strictness] if ridge_bridge else (-0.04, -0.08, -0.12)[strictness]
+        )
+        spec["three_way_known_floor_old_min_anchor_delta"] = (
+            (-0.04, -0.08, -0.12)[strictness] if ridge_bridge else (-0.08, -0.12, -0.16)[strictness]
+        )
+        spec["three_way_known_floor_old_min_anchor_margin"] = (
+            (0.00, -0.03, -0.06)[strictness] if ridge_bridge else (-0.04, -0.08, -0.12)[strictness]
+        )
+        spec["three_way_known_floor_old_min_score_margin"] = (
+            (-0.06, -0.10, -0.14)[strictness] if ridge_bridge else (-0.12, -0.18, -0.24)[strictness]
+        )
+        spec["three_way_known_floor_background_override_prob"] = (
+            (0.998, 0.996, 0.994)[strictness] if ridge_bridge else (0.996, 0.992, 0.988)[strictness]
+        )
+        spec["three_way_known_floor_background_override_margin"] = (
+            (1.20, 0.90, 0.65)[strictness] if ridge_bridge else (0.90, 0.65, 0.45)[strictness]
+        )
+        spec["old_unknown_acceptance_guard"] = True
+        spec["guard_min_old_support_evidence_delta"] = (
+            (-0.18, -0.14, -0.10)[strictness] if ridge_bridge else (-0.12, -0.08, -0.04)[strictness]
+        )
+        spec["guard_min_old_surrogate_reject_delta"] = (
+            (-0.08, -0.04, 0.00)[strictness] if ridge_bridge else (-0.04, 0.00, 0.04)[strictness]
+        )
+        spec["guard_min_energy_delta"] = round(-8.5 + 2.5 * strictness + (2.0 if not ridge_bridge else 0.0), 3)
+        spec["guard_min_mahalanobis_delta"] = round(-24.0 + 4.5 * strictness + (4.0 if not ridge_bridge else 0.0), 3)
+        spec["guard_min_accept_delta"] = round(-19.0 + 3.5 * strictness + (4.0 if not ridge_bridge else 0.0), 3)
+        spec["guard_min_old_support_anchor_margin"] = round(0.000 + 0.010 * strictness + (0.010 if not ridge_bridge else 0.0), 3)
+        spec["guard_min_best_old_score"] = round(-2.1 + 0.24 * strictness + (0.20 if not ridge_bridge else 0.0), 3)
+        spec["guard_min_margin"] = round(0.12 + 0.045 * strictness + (0.055 if not ridge_bridge else 0.0), 3)
+        spec["guard_min_failures"] = 4 if ridge_bridge else 3 + min(strictness, 1)
+        spec["seen_new_registration_override"] = False
+        spec["old_acc_target"] = 0.80
+        spec["seen_new_acc_target"] = 0.75
+        spec["stage2_priority_phase"] = "OLD80_FIRST"
+        spec["old_acc_phase_gate"] = 0.80
+        spec["secondary_objectives_after_old_gate"] = "NEXT_PHASE_SECONDARY_OBJECTIVES"
+        spec["risk_note"] = (
+            "Old-head sweep showed ridge can preserve target-old recoverability near OLD80 at K50 but leaks "
+            "unknowns, while KNN lowers FAR with weak old correct accept. This route combines old-head proof "
+            "with query-free density, conformal, reconstruction, and source-risk boundary checks."
+        )
+        spec["description"] = (
+            "Stage2-B H06 OLD80_FIRST old-head boundary repair beyond support threshold sweep; target-new "
+            "support/query remain excluded, unknown query is eval-only, and K50 rows are higher-shot saturation "
+            "diagnostics rather than strict few-shot claims."
+        )
+        spec["evidence_ref"] = (
+            "oldhead_sweep_ridge_k50_old_full_mean_0p7374_max_0p8333_far_high;"
+            "oldhead_sweep_knn_k50_far_lower_old_correct_accept_unstable;"
+            "fresh_h06_oldhead_boundary_representation_repair;"
+            "stage2b_old_unknown_only_target_new_excluded_unknown_query_eval_only"
+        )
+        spec["seed_offset"] = int(spec.get("seed_offset", 0)) + 4670 + idx * 29
+    return specs
+
+
+def _oa_mse_h06_oldheadfar48_stage_specs() -> list[dict]:
+    """H06 support-CV stability repair from OLDHEAD samplecap negative evidence."""
+
+    specs = [dict(spec) for spec in _oa_mse_h06_oldhead48_stage_specs()]
+    for idx, spec in enumerate(specs):
+        strictness = idx % 3
+        k_old = int(spec["k_old"])
+        saturation = k_old >= 50
+        far_stability = idx >= (len(specs) // 2)
+        spec["category"] = "oldhead_far_stability" if far_stability else "oldhead_support_cv_stability"
+        spec["route_suffix"] = "h06_oldheadfar_support_cv_stability_repair_after_oldhead_negative"
+        spec["adapter_kind"] = "residual_mlp" if far_stability else "low_rank"
+        spec["adapter_selection_policy"] = "identity_preserving_risk_cv" if far_stability else "identity_preserving_cv"
+        spec["steps"] = 34 + 4 * strictness + (6 if far_stability else 0) + (4 if saturation else 0)
+        spec["unknown_threshold"] = round(0.988 + 0.003 * strictness + (0.004 if far_stability else 0.0), 3)
+        spec["openmax_min_threshold"] = round(0.18 + 0.025 * strictness + (0.03 if far_stability else 0.0), 3)
+        spec["source_ce"] = round(0.18 + 0.025 * strictness + (0.030 if far_stability else 0.0), 3)
+        spec["unknown_moat"] = round(0.07 + 0.018 * strictness + (0.060 if far_stability else 0.0), 3)
+        spec["unknown_margin"] = round(0.30 + 0.035 * strictness + (0.090 if far_stability else 0.0), 3)
+        spec["boundary_samples"] = 2 + strictness + (2 if far_stability else 0)
+        spec["boundary_offset"] = round(0.13 + 0.020 * strictness + (0.050 if far_stability else 0.0), 3)
+        spec["source_boundary_samples"] = 1 + strictness + (1 if far_stability else 0)
+        spec["source_boundary_offset"] = round(0.12 + 0.020 * strictness + (0.035 if far_stability else 0.0), 3)
+        spec["target_shift_samples"] = 1 + strictness
+        spec["target_shift_offset"] = round(0.14 + 0.018 * strictness + (0.020 if far_stability else 0.0), 3)
+        spec["target_halo_samples"] = 1 + strictness
+        spec["target_halo_offset"] = round(0.22 + 0.025 * strictness + (0.040 if far_stability else 0.0), 3)
+        spec["target_ring_samples"] = 1 + strictness + (1 if far_stability else 0)
+        spec["target_ring_offset"] = round(0.30 + 0.035 * strictness + (0.070 if far_stability else 0.0), 3)
+        spec["support_contrast"] = round(0.11 + 0.018 * strictness + (0.015 if far_stability else 0.0), 3)
+        spec["old_bridge"] = round(0.12 + 0.020 * strictness, 3)
+        spec["old_neighborhood"] = round(0.13 + 0.020 * strictness + (0.012 if saturation else 0.0), 3)
+        spec["support_center_ce"] = round(0.10 + 0.020 * strictness + (0.020 if far_stability else 0.0), 3)
+        spec["support_center_margin_weight"] = round(0.08 + 0.015 * strictness + (0.015 if far_stability else 0.0), 3)
+        spec["support_center_margin"] = round(0.08 + 0.020 * strictness + (0.030 if far_stability else 0.0), 3)
+        spec["known_coverage_weight"] = round(0.015 + 0.008 * strictness, 3)
+        spec["known_coverage_min_margin"] = round(-0.08 + 0.020 * strictness, 3)
+        spec["known_coverage_background_margin"] = round(0.30 + 0.040 * strictness + (0.080 if far_stability else 0.0), 3)
+        spec["multiproto_score"] = True
+        spec["multiproto_topk"] = 5 if saturation else 4
+        spec["multiproto_temperature"] = round(0.11 - 0.012 * strictness, 3)
+        spec["multiproto_score_weight"] = round(0.12 + 0.020 * strictness + (0.010 if far_stability else 0.0), 3)
+        spec["soft_proto"] = round(0.12 + 0.020 * strictness, 3)
+        spec["soft_proto_topk"] = spec["multiproto_topk"]
+        spec["soft_proto_temperature"] = round(0.44 - 0.020 * strictness, 3)
+        spec["soft_proto_boundary"] = round(0.04 + 0.010 * strictness, 3)
+        spec["soft_proto_boundary_margin"] = round(0.06 + 0.012 * strictness + (0.010 if far_stability else 0.0), 3)
+        spec["mixture_consistency_gate"] = True
+        spec["mixture_consistency_min_cos"] = round(0.42 + 0.020 * strictness + (0.020 if far_stability else 0.0), 3)
+        spec["mixture_consistency_max_residual"] = round(0.48 - 0.018 * strictness - (0.030 if far_stability else 0.0), 3)
+        spec["mixture_consistency_min_margin"] = round(0.015 + 0.010 * strictness + (0.010 if far_stability else 0.0), 3)
+        spec["mixture_consistency_action"] = "uncertain"
+        spec["density_shell_gate"] = True
+        spec["density_shell_old_min_evidence_delta"] = (-0.18, -0.14, -0.10)[strictness] if not far_stability else (-0.10, -0.06, -0.02)[strictness]
+        spec["density_shell_old_min_anchor_delta"] = (-0.20, -0.16, -0.12)[strictness] if not far_stability else (-0.14, -0.10, -0.06)[strictness]
+        spec["density_shell_old_min_density_delta"] = (-0.18, -0.14, -0.10)[strictness] if not far_stability else (-0.10, -0.06, -0.02)[strictness]
+        spec["density_shell_accept_background_margin"] = (0.32, 0.28, 0.24)[strictness] if not far_stability else (0.22, 0.16, 0.10)[strictness]
+        spec["density_shell_reject_background_score"] = (0.94, 0.92, 0.90)[strictness] if not far_stability else (0.86, 0.82, 0.78)[strictness]
+        spec["density_shell_reject_background_margin"] = (0.22, 0.18, 0.14)[strictness] if not far_stability else (0.16, 0.10, 0.04)[strictness]
+        spec["density_shell_reject_min_failed_shells"] = 3 if not far_stability else 2
+        spec["anchor_density_gate"] = True
+        spec["anchor_density_action"] = "uncertain"
+        spec["anchor_density_topk"] = 5 if saturation else 4
+        spec["anchor_density_temperature"] = round(0.12 - 0.020 * strictness, 3)
+        spec["anchor_density_quantile"] = round(0.015 + 0.015 * strictness + (0.020 if far_stability else 0.0), 3)
+        spec["anchor_density_margin_quantile"] = round(0.015 + 0.015 * strictness + (0.020 if far_stability else 0.0), 3)
+        spec["class_envelope_gate"] = True
+        spec["class_envelope_action"] = "uncertain"
+        spec["class_envelope_min_failures"] = 3 if not far_stability else 2
+        spec["retention_rescue_gate"] = True
+        spec["retention_rescue_candidate_only"] = True
+        spec["retention_rescue_old_min_evidence_delta"] = (-0.16, -0.12, -0.08)[strictness] if not far_stability else (-0.10, -0.06, -0.02)[strictness]
+        spec["retention_rescue_old_min_anchor_delta"] = (-0.18, -0.14, -0.10)[strictness] if not far_stability else (-0.12, -0.08, -0.04)[strictness]
+        spec["retention_rescue_old_min_anchor_margin"] = (-0.10, -0.07, -0.04)[strictness] if not far_stability else (-0.06, -0.03, 0.00)[strictness]
+        spec["retention_rescue_old_min_score_margin"] = (-0.18, -0.14, -0.10)[strictness] if not far_stability else (-0.10, -0.06, -0.02)[strictness]
+        spec["retention_rescue_max_background_score"] = (0.90, 0.86, 0.82)[strictness] if not far_stability else (0.78, 0.72, 0.66)[strictness]
+        spec["retention_rescue_max_background_margin"] = (0.18, 0.12, 0.06)[strictness] if not far_stability else (0.06, 0.00, -0.06)[strictness]
+        spec["identity_consensus_arbitration"] = True
+        spec["identity_consensus_support_background_cap"] = True
+        spec["identity_consensus_support_background_cap_quantile"] = round(0.82 - 0.020 * strictness - (0.030 if far_stability else 0.0), 3)
+        spec["identity_consensus_support_background_cap_slack"] = round(0.10 + 0.020 * strictness + (0.020 if far_stability else 0.0), 3)
+        spec["identity_consensus_support_background_cap_min_anchors"] = 3 if saturation else 2
+        spec["identity_consensus_background_accept_margin"] = (0.24, 0.20, 0.16)[strictness] if not far_stability else (0.16, 0.10, 0.04)[strictness]
+        spec["identity_consensus_reject_background_score"] = (0.94, 0.92, 0.90)[strictness] if not far_stability else (0.88, 0.84, 0.80)[strictness]
+        spec["identity_consensus_reject_background_margin"] = (0.24, 0.20, 0.16)[strictness] if not far_stability else (0.16, 0.10, 0.04)[strictness]
+        spec["identity_consensus_reject_min_failures"] = 3 if not far_stability else 2
+        spec["support_conformal_arbitration"] = True
+        spec["support_conformal_calibration_quantile"] = round(0.08 - 0.010 * strictness, 3)
+        spec["support_conformal_conformity_slack"] = round(0.18 + 0.020 * strictness + (0.010 if far_stability else 0.0), 3)
+        spec["support_conformal_anchor_margin_slack"] = round(0.08 + 0.014 * strictness, 3)
+        spec["support_conformal_background_score"] = round(0.86 + 0.020 * strictness if not far_stability else 0.78 + 0.025 * strictness, 3)
+        spec["support_conformal_background_margin"] = round(0.12 + 0.020 * strictness if not far_stability else 0.04 + 0.020 * strictness, 3)
+        spec["support_conformal_hard_reject_margin"] = round(0.24 + 0.030 * strictness if not far_stability else 0.16 + 0.025 * strictness, 3)
+        spec["support_conformal_reject_min_failures"] = 3 if not far_stability else 2
+        spec["support_conformal_reject_action"] = "defer"
+        spec["support_reconstruction_arbitration"] = True
+        spec["support_reconstruction_rank"] = 3 if saturation else 2
+        spec["support_reconstruction_residual_quantile"] = round(0.96 - 0.010 * strictness, 3)
+        spec["support_reconstruction_residual_slack"] = round(0.055 + 0.012 * strictness, 3)
+        spec["support_reconstruction_min_residual_floor"] = round(0.030 + 0.010 * strictness, 3)
+        spec["support_reconstruction_negative_scale"] = round(0.48 + 0.035 * strictness + (0.050 if far_stability else 0.0), 3)
+        spec["support_reconstruction_negative_margin"] = round(-0.08 + 0.020 * strictness + (0.030 if far_stability else 0.0), 3)
+        spec["support_reconstruction_hard_residual_margin"] = round(0.10 + 0.020 * strictness, 3)
+        spec["support_reconstruction_background_score"] = round(0.86 + 0.025 * strictness if not far_stability else 0.78 + 0.030 * strictness, 3)
+        spec["support_reconstruction_background_margin"] = round(0.12 + 0.020 * strictness if not far_stability else 0.04 + 0.025 * strictness, 3)
+        spec["support_reconstruction_reject_min_failures"] = 3 if not far_stability else 2
+        spec["support_reconstruction_reject_action"] = "defer"
+        spec["three_way_decision_head"] = True
+        spec["three_way_head_weight"] = round(0.035 + 0.010 * strictness + (0.015 if far_stability else 0.0), 3)
+        spec["three_way_head_temperature"] = round(0.14 - 0.012 * strictness, 3)
+        spec["three_way_head_known_margin"] = round(0.06 + 0.012 * strictness, 3)
+        spec["three_way_head_background_margin"] = round(0.06 + 0.018 * strictness + (0.020 if far_stability else 0.0), 3)
+        spec["three_way_decision_policy"] = "class_first" if not far_stability else "evidence_balanced"
+        spec["three_way_accept_prob"] = round(0.42 + 0.025 * strictness if not far_stability else 0.34 + 0.025 * strictness, 3)
+        spec["three_way_reject_prob"] = round(0.62 + 0.035 * strictness if not far_stability else 0.70 + 0.040 * strictness, 3)
+        spec["three_way_defer_prob"] = round(0.46 + 0.025 * strictness, 3)
+        spec["three_way_known_background_margin"] = round(0.00 + 0.020 * strictness + (0.020 if far_stability else 0.0), 3)
+        spec["three_way_reject_margin"] = round(0.04 + 0.025 * strictness + (0.030 if far_stability else 0.0), 3)
+        spec["three_way_defer_action"] = "defer"
+        spec["three_way_known_floor"] = True
+        spec["three_way_known_floor_action"] = "accept" if not far_stability else "defer"
+        spec["three_way_known_floor_old_min_evidence_delta"] = (-0.12, -0.16, -0.20)[strictness] if not far_stability else (-0.06, -0.10, -0.14)[strictness]
+        spec["three_way_known_floor_old_min_anchor_delta"] = (-0.14, -0.18, -0.22)[strictness] if not far_stability else (-0.10, -0.14, -0.18)[strictness]
+        spec["three_way_known_floor_old_min_anchor_margin"] = (-0.08, -0.11, -0.14)[strictness] if not far_stability else (-0.04, -0.07, -0.10)[strictness]
+        spec["three_way_known_floor_old_min_score_margin"] = (-0.18, -0.22, -0.26)[strictness] if not far_stability else (-0.10, -0.14, -0.18)[strictness]
+        spec["three_way_known_floor_background_override_prob"] = (0.999, 0.998, 0.997)[strictness] if not far_stability else (0.996, 0.993, 0.990)[strictness]
+        spec["three_way_known_floor_background_override_margin"] = (1.30, 1.00, 0.75)[strictness] if not far_stability else (0.85, 0.60, 0.40)[strictness]
+        spec["pre_reject_defer_arbitration"] = True
+        spec["pre_reject_support_neighborhood_retention"] = True
+        spec["pre_reject_support_retention_require_source_looo_pass"] = far_stability and strictness >= 1
+        spec["pre_reject_support_retention_source_looo_max_failures"] = 1 if far_stability else 2
+        spec["pre_reject_support_retention_max_background_score"] = (0.96, 0.94, 0.92)[strictness] if not far_stability else (0.88, 0.84, 0.80)[strictness]
+        spec["pre_reject_support_retention_max_background_margin"] = (0.36, 0.30, 0.24)[strictness] if not far_stability else (0.18, 0.12, 0.06)[strictness]
+        spec["source_looo_risk_arbitration"] = True
+        spec["source_looo_risk_reject_action"] = "defer"
+        spec["source_looo_reject_min_failures"] = 4 if not far_stability else 3
+        spec["two_branch_background_guard"] = True
+        spec["two_branch_bg_min_score"] = (0.76, 0.80, 0.84)[strictness] if not far_stability else (0.66, 0.70, 0.74)[strictness]
+        spec["two_branch_bg_min_margin"] = (0.06, 0.10, 0.14)[strictness] if not far_stability else (-0.02, 0.02, 0.06)[strictness]
+        spec["old_unknown_acceptance_guard"] = True
+        spec["guard_min_old_support_evidence_delta"] = (-0.22, -0.18, -0.14)[strictness] if not far_stability else (-0.12, -0.08, -0.04)[strictness]
+        spec["guard_min_old_surrogate_reject_delta"] = (-0.12, -0.08, -0.04)[strictness] if not far_stability else (-0.04, 0.00, 0.04)[strictness]
+        spec["guard_min_energy_delta"] = round(-10.0 + 2.5 * strictness + (3.0 if far_stability else 0.0), 3)
+        spec["guard_min_mahalanobis_delta"] = round(-30.0 + 5.0 * strictness + (6.0 if far_stability else 0.0), 3)
+        spec["guard_min_accept_delta"] = round(-24.0 + 4.0 * strictness + (5.0 if far_stability else 0.0), 3)
+        spec["guard_min_old_support_anchor_margin"] = round(-0.010 + 0.010 * strictness + (0.020 if far_stability else 0.0), 3)
+        spec["guard_min_best_old_score"] = round(-2.4 + 0.25 * strictness + (0.30 if far_stability else 0.0), 3)
+        spec["guard_min_margin"] = round(0.08 + 0.040 * strictness + (0.050 if far_stability else 0.0), 3)
+        spec["guard_min_failures"] = 5 if not far_stability else 3 + min(strictness, 1)
+        spec["seen_new_registration_override"] = False
+        spec["old_acc_target"] = 0.80
+        spec["seen_new_acc_target"] = 0.75
+        spec["stage2_priority_phase"] = "OLD80_FIRST"
+        spec["old_acc_phase_gate"] = 0.80
+        spec["secondary_objectives_after_old_gate"] = "UNKNOWN_FAR_AFTER_OLD80"
+        spec["risk_note"] = (
+            "OLDHEAD samplecap completed 48/48 but reached old80_count=0. This fresh route keeps "
+            "target-old support-only calibration and changes the head selector to support-CV stability proof "
+            "plus FAR-aware background caps, without using unknown query for fitting."
+        )
+        spec["description"] = (
+            "Stage2-B H06 OLDHEADFAR support-CV stability repair: preserve old-head recoverability through "
+            "target-old leave-one-out/stability proof first, then apply support-only background caps for unknown FAR. "
+            "Target-new remains excluded and unknown query is eval-only."
+        )
+        spec["evidence_ref"] = (
+            "oldhead_samplecap_complete_48of48_old80_count_0_old_max_0p2389_far_tradeoff;"
+            "target_only_old_signal_exists_ridge_k50_old_max_0p8333_not_deployment_evidence;"
+            "fresh_support_cv_stability_head_unknown_far_repair;"
+            "stage2b_old_unknown_only_target_new_excluded_unknown_query_eval_only"
+        )
+        spec["seed_offset"] = int(spec.get("seed_offset", 0)) + 5190 + idx * 31
+    return specs
+
+
+def _oa_mse_h06_oldrecov48_stage_specs() -> list[dict]:
+    """H06 target-old recoverability repair after OLDHEADFAR negative diagnosis."""
+
+    specs = [dict(spec) for spec in _oa_mse_h06_oldhead48_stage_specs()]
+    arms = (
+        ("oldrecov_ridge_head", "ridge_head_k10"),
+        ("oldrecov_ridge_head", "ridge_head_k20"),
+        ("oldrecov_ridge_head", "ridge_head_k50_saturation"),
+        ("oldrecov_proto_bridge", "proto_bridge_k10"),
+        ("oldrecov_proto_bridge", "proto_bridge_k20"),
+        ("oldrecov_proto_bridge", "proto_bridge_k50_saturation"),
+    )
+    for idx, spec in enumerate(specs):
+        category, arm = arms[idx]
+        strictness = idx % 3
+        saturation = arm.endswith("saturation")
+        ridge_head = category == "oldrecov_ridge_head"
+        spec["category"] = category
+        spec["optimization_category"] = category
+        spec["route_suffix"] = f"h06_oldrecov_target_old_recoverability_{arm}"
+        spec["ablation_arm"] = arm
+        spec["adapter_kind"] = "low_rank" if ridge_head else "residual_mlp"
+        spec["adapter_selection_policy"] = "support_cv_constrained" if ridge_head else "identity_preserving"
+        spec["steps"] = (118, 130, 142)[strictness] if ridge_head else (102, 114, 126)[strictness]
+        spec["source_proto_per_tx"] = 26 if saturation and ridge_head else 24
+        spec["source_query_per_tx"] = 44 if saturation else 40
+        spec["sfe_max_samples_per_tx"] = 92 if saturation else 72
+        spec["unknown_moat"] = round(0.045 + 0.014 * strictness + (0.018 if not ridge_head else 0.0), 3)
+        spec["unknown_margin"] = round(0.24 + 0.030 * strictness + (0.045 if not ridge_head else 0.0), 3)
+        spec["negative_anchor_weight"] = round(0.030 + 0.012 * strictness + (0.020 if not ridge_head else 0.0), 3)
+        spec["negative_anchor_margin"] = round(0.12 + 0.020 * strictness + (0.030 if not ridge_head else 0.0), 3)
+        spec["void_background"] = round(0.010 + 0.006 * strictness + (0.016 if not ridge_head else 0.0), 3)
+        spec["void_gate"] = False
+        spec["known_coverage_weight"] = round(0.22 + 0.024 * strictness + (0.018 if ridge_head else 0.0), 3)
+        spec["known_coverage_margin"] = round(0.08 + 0.014 * strictness, 3)
+        spec["known_coverage_min_affinity"] = round(0.20 + 0.018 * strictness, 3)
+        spec["support_center_ce"] = round(0.20 + 0.020 * strictness + (0.020 if ridge_head else 0.0), 3)
+        spec["support_center_temperature"] = round(0.54 - 0.035 * strictness, 3)
+        spec["support_center_margin"] = round(0.10 + 0.014 * strictness, 3)
+        spec["support_contrast"] = round(0.060 + 0.010 * strictness + (0.015 if ridge_head else 0.0), 3)
+        spec["old_bridge"] = round(0.18 + 0.022 * strictness + (0.025 if ridge_head else 0.0), 3)
+        spec["old_neighborhood"] = round(0.16 + 0.020 * strictness + (0.012 if saturation else 0.0), 3)
+        spec["multiproto_score"] = True
+        spec["multiproto_topk"] = 6 if saturation else 5
+        spec["multiproto_temperature"] = round(0.52 - 0.025 * strictness, 3)
+        spec["multiproto_score_weight"] = round(0.18 + 0.016 * strictness + (0.018 if not ridge_head else 0.0), 3)
+        spec["soft_proto"] = round(0.18 + 0.016 * strictness + (0.018 if not ridge_head else 0.0), 3)
+        spec["soft_proto_topk"] = spec["multiproto_topk"]
+        spec["soft_proto_temperature"] = round(0.50 - 0.025 * strictness, 3)
+        spec["soft_proto_boundary"] = round(0.08 + 0.010 * strictness, 3)
+        spec["soft_proto_boundary_margin"] = round(0.08 + 0.012 * strictness, 3)
+        spec["density_shell_reject_min_failed_shells"] = 4 if ridge_head else 3
+        spec["anchor_density_action"] = "uncertain"
+        spec["class_envelope_action"] = "uncertain"
+        spec["retention_rescue_gate"] = True
+        spec["retention_rescue_candidate_only"] = True
+        spec["support_conformal_arbitration"] = True
+        spec["support_conformal_reject_action"] = "defer"
+        spec["support_reconstruction_arbitration"] = True
+        spec["support_reconstruction_reject_action"] = "defer"
+        spec["three_way_decision_head"] = True
+        spec["three_way_decision_policy"] = "class_first" if ridge_head else "evidence_balanced"
+        spec["three_way_known_floor"] = True
+        spec["three_way_known_floor_action"] = "accept" if ridge_head else "defer"
+        spec["pre_reject_defer_arbitration"] = True
+        spec["pre_reject_support_neighborhood_retention"] = True
+        spec["source_looo_risk_arbitration"] = True
+        spec["source_looo_risk_reject_action"] = "defer"
+        spec["source_looo_reject_min_failures"] = 4 if ridge_head else 3
+        spec["two_branch_background_guard"] = True
+        spec["two_branch_bg_min_score"] = (0.82, 0.84, 0.86)[strictness] if ridge_head else (0.76, 0.79, 0.82)[strictness]
+        spec["two_branch_bg_min_margin"] = (0.08, 0.11, 0.14)[strictness] if ridge_head else (0.02, 0.05, 0.08)[strictness]
+        spec["old_unknown_acceptance_guard"] = True
+        spec["guard_min_old_support_evidence_delta"] = (-0.24, -0.20, -0.16)[strictness] if ridge_head else (-0.18, -0.14, -0.10)[strictness]
+        spec["guard_min_old_surrogate_reject_delta"] = (-0.14, -0.10, -0.06)[strictness] if ridge_head else (-0.10, -0.06, -0.02)[strictness]
+        spec["guard_min_energy_delta"] = round(-12.0 + 2.5 * strictness + (2.0 if not ridge_head else 0.0), 3)
+        spec["guard_min_mahalanobis_delta"] = round(-34.0 + 5.0 * strictness + (4.0 if not ridge_head else 0.0), 3)
+        spec["guard_min_accept_delta"] = round(-26.0 + 4.0 * strictness + (3.0 if not ridge_head else 0.0), 3)
+        spec["guard_min_old_support_anchor_margin"] = round(-0.020 + 0.010 * strictness + (0.010 if not ridge_head else 0.0), 3)
+        spec["guard_min_best_old_score"] = round(-2.7 + 0.26 * strictness + (0.18 if not ridge_head else 0.0), 3)
+        spec["guard_min_margin"] = round(0.06 + 0.035 * strictness + (0.035 if not ridge_head else 0.0), 3)
+        spec["guard_min_failures"] = 5 if ridge_head else 4
+        spec["seen_new_registration_override"] = False
+        spec["old_acc_target"] = 0.80
+        spec["seen_new_acc_target"] = 0.75
+        spec["stage2_priority_phase"] = "OLD80_FIRST"
+        spec["old_acc_phase_gate"] = 0.80
+        spec["secondary_objectives_after_old_gate"] = "UNKNOWN_FAR_AFTER_OLD80"
+        spec["risk_note"] = (
+            "OLDHEADFAR completed as a negative diagnostic: unknown FAR improved only with collapsed target-old "
+            "accuracy and coverage. This route restores target-old support/query recoverability first, then treats "
+            "unknown FAR as a post-OLD80 secondary objective."
+        )
+        spec["description"] = (
+            "Stage2-B H06 OLDRECOV target-old recoverability repair after OLDHEADFAR: target-new support remains "
+            "excluded, unknown query remains eval-only, and K50 rows are higher-shot saturation diagnostics."
+        )
+        spec["evidence_ref"] = (
+            "oldheadfar_negative_old_mean_0p0163_old_max_0p1111_old80_count0;"
+            "target_old_only_ridge_k50_old_max_0p8333_upper_bound_not_deployment;"
+            "fresh_h06_target_old_recoverability_first_repair;"
+            "stage2b_old_unknown_only_target_new_excluded_unknown_query_eval_only"
+        )
+        spec["seed_offset"] = int(spec.get("seed_offset", 0)) + 6210 + idx * 37
     return specs
 
 
@@ -4858,8 +5505,134 @@ def _receiver_spec_for_candidate(index: int) -> dict:
     return dict(PHASE2_TARGET_RECEIVER_POOL[int(index) % len(PHASE2_TARGET_RECEIVER_POOL)])
 
 
+def _candidate_category_pair(rows: Sequence[Candidate]) -> tuple[str, str] | None:
+    counts: dict[str, int] = {}
+    for candidate in rows:
+        category = str(candidate.optimization_category or "unknown")
+        counts[category] = counts.get(category, 0) + 1
+    nonzero = [(category, count) for category, count in counts.items() if count > 0]
+    if len(nonzero) != 2:
+        return None
+    nonzero.sort(key=lambda item: (-item[1], item[0]))
+    return nonzero[0][0], nonzero[1][0]
+
+
+def _phase1_ground_training_candidates(plan: str, base_rows: Sequence[Candidate]) -> list[Candidate]:
+    category_pair = _candidate_category_pair(base_rows) or ("conservative", "aggressive")
+    rows: list[Candidate] = []
+    for gpu in range(8):
+        category = category_pair[gpu % 2]
+        variant = "source_prototype_geometry" if gpu % 2 == 0 else "receiver_distribution_mask_audit"
+        rows.append(
+            Candidate(
+                cid=f"PHASE1_GROUND_PROTO_MASK_{plan}_GPU{gpu}_A",
+                protocol="Safe-SSDG-CVS-R01",
+                k=0,
+                target_visibility="source_only_ground_training_no_target_receiver",
+                label_set_relation="Y_old_source_only",
+                update_module=(
+                    "source_domain_tx_prototypes+receiver_domain_feature_distribution+"
+                    "mask_auxiliary_geometry_audit"
+                ),
+                metrics=(
+                    "strict_udu,worst_receiver,sat_mean_5,sat_floor_5,"
+                    "prototype_radius,tx_margin_violation,rx_probe_on_z_tx,tx_probe_on_z_rx"
+                ),
+                command_kind="phase1_safe_ssdg_ground_train",
+                gpu=gpu,
+                description=(
+                    "Source-only Phase1 ground DG optimization row: use CEN51 as non-regression "
+                    "experience while adding prototype/mask/feature-distribution evidence; target receiver "
+                    "samples remain forbidden for training and threshold fitting."
+                ),
+                slot=f"GPU{gpu}/A",
+                epochs=200,
+                seed=260627 + gpu,
+                source_tx_ids="0,1,2,3,4,5",
+                source_rxs="${CEN51_TRAIN_RXS}",
+                target_receiver_ids="",
+                new_tx_ids="__NONE__",
+                unknown_tx_ids="__NONE__",
+                route_family="SAFE_SSDG_CVS_R01",
+                loss_profile="safe_ssdg_source_only_paic_plus_prototype_mask_distribution_audit",
+                optimization_category=category,
+                lane="phase1_ground_dg",
+                phase_axis="Phase1-GroundDG",
+                phase1_variant=variant,
+                phase1_design_report_ref=(
+                    "C:/Users/lh594/Downloads/"
+                    "PHASE2_FULL_PROTOTYPE_MASK_OPENWORLD_IMPLEMENTATION_20260626.md"
+                ),
+                phase1_enable_ground_prototype_stats=True,
+                phase1_enable_feature_distribution_audit=True,
+                phase1_enable_feature_masks_aux=True,
+                phase1_enable_txrx_geometry_audit=True,
+            )
+        )
+    return rows
+
+
+def _phase1_gpu0_jointsafe_candidates() -> list[Candidate]:
+    rows: list[Candidate] = []
+    for idx, (variant, spec) in enumerate(PHASE1_GPU0_JOINTSAFE_VARIANTS.items()):
+        rows.append(
+            Candidate(
+                cid=f"PHASE1_GPU0_JOINTSAFE_{variant.upper()}",
+                protocol="Safe-SSDG-CVS-R01",
+                k=0,
+                target_visibility="source_only_ground_training_no_target_receiver",
+                label_set_relation="Y_old_source_only",
+                update_module="gpu0_a_late_pseudo_repair+joint_safe_checkpoint+phase1_proto_mask_audit",
+                metrics=(
+                    "joint_safe_score,strict_udu,receiver_floor,sat_mean_3,sat_floor_3,"
+                    "sat_strict_mean_3,pseudo_precision,paic_guard"
+                ),
+                command_kind="phase1_safe_ssdg_ground_train",
+                gpu=idx,
+                description=str(spec["description"]),
+                slot=f"GPU{idx}/A",
+                epochs=int(spec["label_epochs"]) + int(spec["pseudo_epochs"]),
+                seed=260629 + idx,
+                source_tx_ids="0,1,2,3,4,5",
+                source_rxs="${CEN51_TRAIN_RXS}",
+                target_receiver_ids="",
+                new_tx_ids="__NONE__",
+                unknown_tx_ids="__NONE__",
+                route_family="SAFE_SSDG_CVS_R01",
+                loss_profile="gpu0_a_joint_safe_paic_guard_plus_prototype_mask_audit_only",
+                optimization_category="conservative" if idx < 2 else "aggressive",
+                lane="phase1_ground_dg",
+                phase_axis="Phase1-GroundDG",
+                phase1_variant=variant,
+                phase1_design_report_ref=(
+                    "C:/Users/lh594/Downloads/"
+                    "PHASE2_FULL_PROTOTYPE_MASK_OPENWORLD_IMPLEMENTATION_20260626.md"
+                ),
+                phase1_enable_ground_prototype_stats=True,
+                phase1_enable_feature_distribution_audit=True,
+                phase1_enable_feature_masks_aux=True,
+                phase1_enable_txrx_geometry_audit=True,
+            )
+        )
+    return rows
+
+
+def _with_phase1_ground_rows(plan: str, rows: list[Candidate]) -> list[Candidate]:
+    if not rows:
+        return rows
+    if not str(plan).upper().startswith("OA_MSE_"):
+        return rows
+    if len(rows) != 48:
+        return rows
+    if _candidate_category_pair(rows) is None:
+        return rows
+    return _phase1_ground_training_candidates(plan, rows) + rows
+
+
 def make_candidates(*, plan: str = "SMOKE") -> list[Candidate]:
     plan = str(plan).upper()
+    if plan == "PHASE1_GPU0_JOINTSAFE4":
+        return _phase1_gpu0_jointsafe_candidates()
     if plan == "SMOKE":
         return [
             Candidate(
@@ -5169,6 +5942,9 @@ def make_candidates(*, plan: str = "SMOKE") -> list[Candidate]:
         "OA_MSE_H06_OLDRISK48",
         "OA_MSE_H06_OLDFUSE48",
         "OA_MSE_H06_ROLLSAFE48",
+        "OA_MSE_H06_OLDHEAD48",
+        "OA_MSE_H06_OLDHEADFAR48",
+        "OA_MSE_H06_OLDRECOV48",
     }:
         base = {
             "protocol": "CVS-OA-MSE",
@@ -5181,12 +5957,12 @@ def make_candidates(*, plan: str = "SMOKE") -> list[Candidate]:
             "target_receiver_ids": "${TARGET_RECEIVER_IDS}",
             "ground_model_label": (
                 "CEN51_R04_H06_LOW_PROB_HYBRID_R010"
-                if plan in {"OA_MSE_H06_EVID48", "OA_MSE_H06_ARB48", "OA_MSE_H06_OLDUNK48", "OA_MSE_H06_BGTRAIN48", "OA_MSE_H06_RETOLD48", "OA_MSE_H06_OLDFIRST48", "OA_MSE_H06_OLDRELAX48", "OA_MSE_H06_OLDGEOM48", "OA_MSE_H06_OLDCONF48", "OA_MSE_H06_OLDBUDGET48", "OA_MSE_H06_OLDQUAL48", "OA_MSE_H06_OLDRISK48", "OA_MSE_H06_OLDFUSE48", "OA_MSE_H06_ROLLSAFE48"}
+                if plan in {"OA_MSE_H06_EVID48", "OA_MSE_H06_ARB48", "OA_MSE_H06_OLDUNK48", "OA_MSE_H06_BGTRAIN48", "OA_MSE_H06_RETOLD48", "OA_MSE_H06_OLDFIRST48", "OA_MSE_H06_OLDRELAX48", "OA_MSE_H06_OLDGEOM48", "OA_MSE_H06_OLDCONF48", "OA_MSE_H06_OLDBUDGET48", "OA_MSE_H06_OLDQUAL48", "OA_MSE_H06_OLDRISK48", "OA_MSE_H06_OLDFUSE48", "OA_MSE_H06_ROLLSAFE48", "OA_MSE_H06_OLDHEAD48", "OA_MSE_H06_OLDHEADFAR48", "OA_MSE_H06_OLDRECOV48"}
                 else "BEX02_fishr002_mixed_e170"
             ),
             "ground_model_default_ckpt": (
                 H06_LOW_PROB_HYBRID_LATEST_CKPT
-                if plan in {"OA_MSE_H06_EVID48", "OA_MSE_H06_ARB48", "OA_MSE_H06_OLDUNK48", "OA_MSE_H06_BGTRAIN48", "OA_MSE_H06_RETOLD48", "OA_MSE_H06_OLDFIRST48", "OA_MSE_H06_OLDRELAX48", "OA_MSE_H06_OLDGEOM48", "OA_MSE_H06_OLDCONF48", "OA_MSE_H06_OLDBUDGET48", "OA_MSE_H06_OLDQUAL48", "OA_MSE_H06_OLDRISK48", "OA_MSE_H06_OLDFUSE48", "OA_MSE_H06_ROLLSAFE48"}
+                if plan in {"OA_MSE_H06_EVID48", "OA_MSE_H06_ARB48", "OA_MSE_H06_OLDUNK48", "OA_MSE_H06_BGTRAIN48", "OA_MSE_H06_RETOLD48", "OA_MSE_H06_OLDFIRST48", "OA_MSE_H06_OLDRELAX48", "OA_MSE_H06_OLDGEOM48", "OA_MSE_H06_OLDCONF48", "OA_MSE_H06_OLDBUDGET48", "OA_MSE_H06_OLDQUAL48", "OA_MSE_H06_OLDRISK48", "OA_MSE_H06_OLDFUSE48", "OA_MSE_H06_ROLLSAFE48", "OA_MSE_H06_OLDHEAD48", "OA_MSE_H06_OLDHEADFAR48", "OA_MSE_H06_OLDRECOV48"}
                 else DEFAULT_BEX02_TEACHER_CKPT
             ),
             "unknown_leo_query": True,
@@ -5592,6 +6368,9 @@ def make_candidates(*, plan: str = "SMOKE") -> list[Candidate]:
                     "OA_MSE_H06_OLDRISK48",
                     "OA_MSE_H06_OLDFUSE48",
                     "OA_MSE_H06_ROLLSAFE48",
+                    "OA_MSE_H06_OLDHEAD48",
+                    "OA_MSE_H06_OLDHEADFAR48",
+                    "OA_MSE_H06_OLDRECOV48",
                 }:
             stage_specs = [
                 {
@@ -5985,6 +6764,12 @@ def make_candidates(*, plan: str = "SMOKE") -> list[Candidate]:
                 stage_specs = _oa_mse_h06_oldfuse48_stage_specs()
             if plan == "OA_MSE_H06_ROLLSAFE48":
                 stage_specs = _oa_mse_h06_rollsafe48_stage_specs()
+            if plan == "OA_MSE_H06_OLDHEAD48":
+                stage_specs = _oa_mse_h06_oldhead48_stage_specs()
+            if plan == "OA_MSE_H06_OLDHEADFAR48":
+                stage_specs = _oa_mse_h06_oldheadfar48_stage_specs()
+            if plan == "OA_MSE_H06_OLDRECOV48":
+                stage_specs = _oa_mse_h06_oldrecov48_stage_specs()
             elif plan == "OA_MSE_BGCAP48":
                 stage_specs = _oa_mse_bgcap48_stage_specs()
             elif plan == "OA_MSE_SUPPORTCV48":
@@ -6105,7 +6890,7 @@ def make_candidates(*, plan: str = "SMOKE") -> list[Candidate]:
                 for spec in stage_specs:
                     spec["soft_proto_boundary"] = 0.0
                     spec["soft_proto_boundary_margin"] = 0.15
-            elif plan not in {"OA_MSE_STRUCT48", "OA_MSE_SIMPLIFIED48", "OA_MSE_RETENTION48", "OA_MSE_SUPPORTRET48", "OA_MSE_TWOBRANCH48", "OA_MSE_REGHEAD48", "OA_MSE_LOOO48", "OA_MSE_CONSTRAIN48", "OA_MSE_ENVELOPE48", "OA_MSE_RESCUE48", "OA_MSE_PREREJECT48", "OA_MSE_THREEWAY48", "OA_MSE_COVFLOOR48", "OA_MSE_CLASSFIRST48", "OA_MSE_EVIBG48", "OA_MSE_SOFTTARGET48", "OA_MSE_NEGANCHOR48", "OA_MSE_DENSHELL48", "OA_MSE_IDCONS48", "OA_MSE_CONFORM48", "OA_MSE_RECON48", "OA_MSE_SOURCERISK48", "OA_MSE_SUPPORTCV48", "OA_MSE_BGCAP48", "OA_MSE_KRET48", "OA_MSE_RISKRET48", "OA_MSE_MANIFOLD48", "OA_MSE_H06_EVID48", "OA_MSE_H06_ARB48", "OA_MSE_H06_OLDUNK48", "OA_MSE_H06_BGTRAIN48", "OA_MSE_H06_RETOLD48", "OA_MSE_H06_OLDFIRST48", "OA_MSE_H06_OLDRELAX48", "OA_MSE_H06_OLDGEOM48", "OA_MSE_H06_OLDCONF48", "OA_MSE_H06_OLDBUDGET48", "OA_MSE_H06_OLDQUAL48", "OA_MSE_H06_OLDRISK48", "OA_MSE_H06_OLDFUSE48", "OA_MSE_H06_ROLLSAFE48"}:
+            elif plan not in {"OA_MSE_STRUCT48", "OA_MSE_SIMPLIFIED48", "OA_MSE_RETENTION48", "OA_MSE_SUPPORTRET48", "OA_MSE_TWOBRANCH48", "OA_MSE_REGHEAD48", "OA_MSE_LOOO48", "OA_MSE_CONSTRAIN48", "OA_MSE_ENVELOPE48", "OA_MSE_RESCUE48", "OA_MSE_PREREJECT48", "OA_MSE_THREEWAY48", "OA_MSE_COVFLOOR48", "OA_MSE_CLASSFIRST48", "OA_MSE_EVIBG48", "OA_MSE_SOFTTARGET48", "OA_MSE_NEGANCHOR48", "OA_MSE_DENSHELL48", "OA_MSE_IDCONS48", "OA_MSE_CONFORM48", "OA_MSE_RECON48", "OA_MSE_SOURCERISK48", "OA_MSE_SUPPORTCV48", "OA_MSE_BGCAP48", "OA_MSE_KRET48", "OA_MSE_RISKRET48", "OA_MSE_MANIFOLD48", "OA_MSE_H06_EVID48", "OA_MSE_H06_ARB48", "OA_MSE_H06_OLDUNK48", "OA_MSE_H06_BGTRAIN48", "OA_MSE_H06_RETOLD48", "OA_MSE_H06_OLDFIRST48", "OA_MSE_H06_OLDRELAX48", "OA_MSE_H06_OLDGEOM48", "OA_MSE_H06_OLDCONF48", "OA_MSE_H06_OLDBUDGET48", "OA_MSE_H06_OLDQUAL48", "OA_MSE_H06_OLDRISK48", "OA_MSE_H06_OLDFUSE48", "OA_MSE_H06_ROLLSAFE48", "OA_MSE_H06_OLDHEAD48", "OA_MSE_H06_OLDHEADFAR48", "OA_MSE_H06_OLDRECOV48"}:
                 for spec in stage_specs:
                     spec["description"] = (
                         "Soft-mix prototype boundary OA-MSE: train the adapter toward convex same-class "
@@ -6670,9 +7455,12 @@ def make_candidates(*, plan: str = "SMOKE") -> list[Candidate]:
                         ),
                         "old_acc_target": float(spec.get("old_acc_target", base["old_acc_target"])),
                         "seen_new_acc_target": float(spec.get("seen_new_acc_target", base["seen_new_acc_target"])),
+                        "stage2_priority_phase": str(spec.get("stage2_priority_phase", "")),
+                        "old_acc_phase_gate": float(spec.get("old_acc_phase_gate", 0.0)),
+                        "secondary_objectives_after_old_gate": str(spec.get("secondary_objectives_after_old_gate", "")),
                     }
                 )
-                if plan in {"OA_MSE_H06_OLDUNK48", "OA_MSE_H06_BGTRAIN48", "OA_MSE_H06_RETOLD48", "OA_MSE_H06_OLDFIRST48", "OA_MSE_H06_OLDRELAX48", "OA_MSE_H06_OLDGEOM48", "OA_MSE_H06_OLDCONF48", "OA_MSE_H06_OLDBUDGET48", "OA_MSE_H06_OLDQUAL48", "OA_MSE_H06_OLDRISK48", "OA_MSE_H06_OLDFUSE48", "OA_MSE_H06_ROLLSAFE48"}:
+                if plan in {"OA_MSE_H06_OLDUNK48", "OA_MSE_H06_BGTRAIN48", "OA_MSE_H06_RETOLD48", "OA_MSE_H06_OLDFIRST48", "OA_MSE_H06_OLDRELAX48", "OA_MSE_H06_OLDGEOM48", "OA_MSE_H06_OLDCONF48", "OA_MSE_H06_OLDBUDGET48", "OA_MSE_H06_OLDQUAL48", "OA_MSE_H06_OLDRISK48", "OA_MSE_H06_OLDFUSE48", "OA_MSE_H06_ROLLSAFE48", "OA_MSE_H06_OLDHEAD48", "OA_MSE_H06_OLDHEADFAR48", "OA_MSE_H06_OLDRECOV48"}:
                     candidate_kwargs["new_tx_ids"] = "__NONE__"
                 rows.append(
                     Candidate(
@@ -6812,6 +7600,15 @@ def make_candidates(*, plan: str = "SMOKE") -> list[Candidate]:
                             f"OA_MSE_H06_ROLLSAFE48_GPU{gpu}_{slot}_{spec['stage'].upper()}_KOLD{k_old}_KNEW{k_new}"
                             if plan == "OA_MSE_H06_ROLLSAFE48"
                             else
+                            f"OA_MSE_H06_OLDHEAD48_GPU{gpu}_{slot}_{spec['stage'].upper()}_KOLD{k_old}_KNEW{k_new}"
+                            if plan == "OA_MSE_H06_OLDHEAD48"
+                            else
+                            f"OA_MSE_H06_OLDHEADFAR48_GPU{gpu}_{slot}_{spec['stage'].upper()}_KOLD{k_old}_KNEW{k_new}"
+                            if plan == "OA_MSE_H06_OLDHEADFAR48"
+                            else
+                            f"OA_MSE_H06_OLDRECOV48_GPU{gpu}_{slot}_{spec['stage'].upper()}_KOLD{k_old}_KNEW{k_new}"
+                            if plan == "OA_MSE_H06_OLDRECOV48"
+                            else
                             f"OA_MSE_H06_RETOLD48_GPU{gpu}_{slot}_{spec['stage'].upper()}_KOLD{k_old}_KNEW{k_new}"
                             if plan == "OA_MSE_H06_RETOLD48"
                             else
@@ -6935,6 +7732,12 @@ def make_candidates(*, plan: str = "SMOKE") -> list[Candidate]:
                                 if plan == "OA_MSE_H06_OLDFUSE48"
                                 else "h06_rollback_safe_retention_repair"
                                 if plan == "OA_MSE_H06_ROLLSAFE48"
+                                else "h06_oldhead_boundary_repair"
+                                if plan == "OA_MSE_H06_OLDHEAD48"
+                                else "h06_oldheadfar_support_cv_stability_repair"
+                                if plan == "OA_MSE_H06_OLDHEADFAR48"
+                                else "h06_oldrecov_target_old_recoverability_repair"
+                                if plan == "OA_MSE_H06_OLDRECOV48"
                                 else "h06_old_retention_first_calibrated_unknown_veto"
                                 if plan == "OA_MSE_H06_RETOLD48"
                                 else "support_background_cap_identity_oa_mse_head"
@@ -7039,6 +7842,12 @@ def make_candidates(*, plan: str = "SMOKE") -> list[Candidate]:
                                 if plan == "OA_MSE_H06_OLDFUSE48"
                                 else "h06_rollback_safe_retention_mse_subspace"
                                 if plan == "OA_MSE_H06_ROLLSAFE48"
+                                else "h06_oldhead_boundary_repair_mse_subspace"
+                                if plan == "OA_MSE_H06_OLDHEAD48"
+                                else "h06_oldheadfar_support_cv_stability_mse_subspace"
+                                if plan == "OA_MSE_H06_OLDHEADFAR48"
+                                else "h06_oldrecov_target_old_recoverability_mse_subspace"
+                                if plan == "OA_MSE_H06_OLDRECOV48"
                                 else "h06_old_retention_first_calibrated_unknown_veto_mse_subspace"
                                 if plan == "OA_MSE_H06_RETOLD48"
                                 else "support_background_cap_identity_mse_subspace"
@@ -7155,6 +7964,12 @@ def make_candidates(*, plan: str = "SMOKE") -> list[Candidate]:
                             if plan == "OA_MSE_H06_OLDFUSE48"
                             else "h06_latest_source_prototypes,target_old_support_only,no_target_new_support,old_class_radius,U_orbit,rollback_safe_retention,retention_rescue_candidate_only,defer_first_deployment_gate,pre_reject_support_retention,source_looo_risk,two_branch_pseudo_background_guard,old_unknown_acceptance_guard,soft_multi_prototype_score_head,unknown_query_eval_only,simplified_leo_residual_channel"
                             if plan == "OA_MSE_H06_ROLLSAFE48"
+                            else "h06_latest_source_prototypes,target_old_support_only,no_target_new_support,old_class_radius,U_orbit,oldhead_ridge_recoverability,knn_density_boundary_risk,density_shell_guard,support_conformal_reconstruction,three_way_old_background_head,retention_rescue_candidate_only,source_looo_risk,two_branch_pseudo_background_guard,old_unknown_acceptance_guard,unknown_query_eval_only,simplified_leo_residual_channel"
+                            if plan == "OA_MSE_H06_OLDHEAD48"
+                            else "h06_latest_source_prototypes,target_old_support_only,no_target_new_support,old_class_radius,U_orbit,support_cv_stability_head,identity_preserving_cv_selector,support_background_cap,density_shell_guard,support_conformal_reconstruction,three_way_old_background_head,retention_rescue_candidate_only,source_looo_risk,two_branch_pseudo_background_guard,old_unknown_acceptance_guard,unknown_query_eval_only,simplified_leo_residual_channel"
+                            if plan == "OA_MSE_H06_OLDHEADFAR48"
+                            else "h06_latest_source_prototypes,target_old_support_only,no_target_new_support,old_class_radius,U_orbit,target_old_recoverability_first,target_only_ridge_upper_bound,oldrecov_ridge_head,oldrecov_proto_bridge,support_conformal_reconstruction_defer,retention_rescue_candidate_only,source_looo_risk,two_branch_pseudo_background_guard,old_unknown_acceptance_guard,unknown_query_eval_only,simplified_leo_residual_channel"
+                            if plan == "OA_MSE_H06_OLDRECOV48"
                             else "h06_latest_source_prototypes,target_old_support_only,no_target_new_support,old_proof_first,old_drift_support_quality,identity_consensus_background_cap,three_way_background_prob_as_soft_risk,unknown_score_joint_veto,support_reconstruction_conformal_defer_only,simplified_leo_residual_channel"
                             if plan == "OA_MSE_H06_RETOLD48"
                             else "source_old_prototypes,target_old_support,seen_new_support,U_orbit,class_masks,energy_gate,support_calibrated_background_cap,identity_consensus_arbitration,prototype_mixture_soft_target,soft_multi_prototype_score_head,known_coverage_margin_loss,retention_rescue,negative_anchor_background_basin,simplified_leo_residual_channel,multi_target_receiver_pool"
@@ -7280,6 +8095,12 @@ def make_candidates(*, plan: str = "SMOKE") -> list[Candidate]:
                             if plan == "OA_MSE_H06_OLDFUSE48"
                             else "h06_latest_source_prototypes,target_old_support_only,no_target_new_support,old_class_radius,U_orbit,rollback_safe_retention,retention_rescue_candidate_only,defer_first_deployment_gate,pre_reject_support_retention,source_looo_risk,two_branch_pseudo_background_guard,old_unknown_acceptance_guard,soft_multi_prototype_score_head,unknown_query_eval_only,simplified_leo_residual_channel"
                             if plan == "OA_MSE_H06_ROLLSAFE48"
+                            else "h06_latest_source_prototypes,target_old_support_only,no_target_new_support,old_class_radius,U_orbit,oldhead_ridge_recoverability,knn_density_boundary_risk,density_shell_guard,support_conformal_reconstruction,three_way_old_background_head,retention_rescue_candidate_only,source_looo_risk,two_branch_pseudo_background_guard,old_unknown_acceptance_guard,unknown_query_eval_only,simplified_leo_residual_channel"
+                            if plan == "OA_MSE_H06_OLDHEAD48"
+                            else "h06_latest_source_prototypes,target_old_support_only,no_target_new_support,old_class_radius,U_orbit,support_cv_stability_head,identity_preserving_cv_selector,support_background_cap,density_shell_guard,support_conformal_reconstruction,three_way_old_background_head,retention_rescue_candidate_only,source_looo_risk,two_branch_pseudo_background_guard,old_unknown_acceptance_guard,unknown_query_eval_only,simplified_leo_residual_channel"
+                            if plan == "OA_MSE_H06_OLDHEADFAR48"
+                            else "h06_latest_source_prototypes,target_old_support_only,no_target_new_support,old_class_radius,U_orbit,target_old_recoverability_first,target_only_ridge_upper_bound,oldrecov_ridge_head,oldrecov_proto_bridge,support_conformal_reconstruction_defer,retention_rescue_candidate_only,source_looo_risk,two_branch_pseudo_background_guard,old_unknown_acceptance_guard,unknown_query_eval_only,simplified_leo_residual_channel"
+                            if plan == "OA_MSE_H06_OLDRECOV48"
                             else "h06_latest_source_prototypes,target_old_support_only,no_target_new_support,old_class_radius,U_orbit,old_proof_first,old_drift_support_quality,identity_consensus_background_cap,three_way_background_prob_as_soft_risk,unknown_score_joint_veto,support_reconstruction_conformal_defer_only,simplified_leo_residual_channel"
                             if plan == "OA_MSE_H06_RETOLD48"
                                 else "source_old_prototypes,target_old_support,old_class_radius,U_orbit,support_calibrated_background_cap,identity_consensus_arbitration,prototype_mixture_soft_target,soft_multi_prototype_score_head,known_coverage_margin_loss,retention_rescue,negative_anchor_background_basin,simplified_leo_residual_channel,multi_target_receiver_pool"
@@ -7338,18 +8159,69 @@ def make_candidates(*, plan: str = "SMOKE") -> list[Candidate]:
                             else 4
                             if plan in {"OA_MSE_BALANCE64", "OA_MSE_SOFTMIX64", "OA_MSE_VOID64", "OA_MSE_ANCHORGUARD128", "OA_MSE_MIXHEAD128", "OA_MSE_STRUCT48", "OA_MSE_SIMPLIFIED48"}
                             else 2
-                            if plan in {"OA_MSE_RETENTION48", "OA_MSE_SUPPORTRET48", "OA_MSE_TWOBRANCH48", "OA_MSE_REGHEAD48", "OA_MSE_GEOM48", "OA_MSE_TRIAGE48", "OA_MSE_LOOO48", "OA_MSE_CONSTRAIN48", "OA_MSE_ENVELOPE48", "OA_MSE_RESCUE48", "OA_MSE_PREREJECT48", "OA_MSE_THREEWAY48", "OA_MSE_COVFLOOR48", "OA_MSE_CLASSFIRST48", "OA_MSE_EVIBG48", "OA_MSE_SOFTTARGET48", "OA_MSE_NEGANCHOR48", "OA_MSE_DENSHELL48", "OA_MSE_IDCONS48", "OA_MSE_CONFORM48", "OA_MSE_RECON48", "OA_MSE_SOURCERISK48", "OA_MSE_SUPPORTCV48", "OA_MSE_BGCAP48", "OA_MSE_KRET48", "OA_MSE_RISKRET48", "OA_MSE_MANIFOLD48", "OA_MSE_H06_EVID48", "OA_MSE_H06_ARB48", "OA_MSE_H06_OLDUNK48", "OA_MSE_H06_BGTRAIN48", "OA_MSE_H06_RETOLD48", "OA_MSE_H06_OLDFIRST48", "OA_MSE_H06_OLDRELAX48", "OA_MSE_H06_OLDGEOM48", "OA_MSE_H06_OLDCONF48", "OA_MSE_H06_OLDBUDGET48", "OA_MSE_H06_OLDQUAL48", "OA_MSE_H06_OLDRISK48", "OA_MSE_H06_OLDFUSE48", "OA_MSE_H06_ROLLSAFE48"}
+                            if plan in {"OA_MSE_RETENTION48", "OA_MSE_SUPPORTRET48", "OA_MSE_TWOBRANCH48", "OA_MSE_REGHEAD48", "OA_MSE_GEOM48", "OA_MSE_TRIAGE48", "OA_MSE_LOOO48", "OA_MSE_CONSTRAIN48", "OA_MSE_ENVELOPE48", "OA_MSE_RESCUE48", "OA_MSE_PREREJECT48", "OA_MSE_THREEWAY48", "OA_MSE_COVFLOOR48", "OA_MSE_CLASSFIRST48", "OA_MSE_EVIBG48", "OA_MSE_SOFTTARGET48", "OA_MSE_NEGANCHOR48", "OA_MSE_DENSHELL48", "OA_MSE_IDCONS48", "OA_MSE_CONFORM48", "OA_MSE_RECON48", "OA_MSE_SOURCERISK48", "OA_MSE_SUPPORTCV48", "OA_MSE_BGCAP48", "OA_MSE_KRET48", "OA_MSE_RISKRET48", "OA_MSE_MANIFOLD48", "OA_MSE_H06_EVID48", "OA_MSE_H06_ARB48", "OA_MSE_H06_OLDUNK48", "OA_MSE_H06_BGTRAIN48", "OA_MSE_H06_RETOLD48", "OA_MSE_H06_OLDFIRST48", "OA_MSE_H06_OLDRELAX48", "OA_MSE_H06_OLDGEOM48", "OA_MSE_H06_OLDCONF48", "OA_MSE_H06_OLDBUDGET48", "OA_MSE_H06_OLDQUAL48", "OA_MSE_H06_OLDRISK48", "OA_MSE_H06_OLDFUSE48", "OA_MSE_H06_ROLLSAFE48", "OA_MSE_H06_OLDHEAD48", "OA_MSE_H06_OLDHEADFAR48", "OA_MSE_H06_OLDRECOV48"}
                             else None
                         ),
                         seed=seed + int(spec.get("seed_offset", 0)),
                         **candidate_kwargs,
                     )
                 )
-        return rows
+        return _with_phase1_ground_rows(plan, rows)
     raise ValueError(f"unknown plan: {plan}")
 
 
 def _candidate_command(candidate: Candidate) -> str:
+    if candidate.command_kind == "phase1_safe_ssdg_ground_train":
+        epochs = int(candidate.epochs or 200)
+        variant_spec = PHASE1_GPU0_JOINTSAFE_VARIANTS.get(str(candidate.phase1_variant or "").lower())
+        if variant_spec is not None:
+            label_epochs = int(variant_spec["label_epochs"])
+            pseudo_epochs = int(variant_spec["pseudo_epochs"])
+            ema = "true" if bool(variant_spec["use_ema_teacher"]) else "false"
+            return (
+                "env PYTHONPATH=\"${ROOT}/code:${ROOT}:${PYTHONPATH:-}\" CUDA_VISIBLE_DEVICES=\"${GPU}\" "
+                "\"${PYTHON}\" -u \"${ROOT}/code/SSDG/train_ssdg.py\" "
+                "--wisig_pkl \"${WISIG_PKL}\" --split_mode tx_rx_day_1_7_2 "
+                "--labeled_ratio 0.10 --unlabeled_ratio 0.70 --source_val_ratio 0.20 "
+                f"--output_dir \"${{RUNS_ROOT}}/{candidate.cid}\" --epochs {epochs} "
+                f"--label_epochs {label_epochs} --pseudo_epochs {pseudo_epochs} --from_scratch true "
+                "--best_metric joint_safe --enable_joint_safe_guard true "
+                "--one_epoch_drop_guard_pp 2.0 --paic_guard_enabled true "
+                "--paic_guard_sat_ce_delta 0.12 --paic_guard_grad_delta 3.0 "
+                "--paic_guard_reliable_drop 0.01 --paic_guard_cooldown_epochs 1 --paic_guard_sat_scale 0.75 "
+                "--use_phase2_ground_prototypes true --use_feature_masks true --use_txrx_geometry_losses true "
+                "--use_tx_rx_balanced_sampler false --phase1_distribution_audit_only true "
+                "--lambda_tx_proto 0 --lambda_rx_proto 0 --lambda_mask_aux 0 "
+                "--lambda_tx_supcon_masked 0 --lambda_rx_supcon_masked 0 --lambda_txrx_rect 0 "
+                "--use_sat_consistency --use_concat_sat_channel_aug --concat_sat_ce_only "
+                f"--sat_train_scenario leo_clear_weak --sat_train_scenarios {SIMPLIFIED_LEO_SCENARIOS} "
+                f"--sat_view_schedule \"{PHASE1_PAIC_SAT_VIEW_SCHEDULE}\" "
+                f"--sat_cons_start_epoch 80 --lambda_sat_cls {float(variant_spec['lambda_sat_cls']):.6g} "
+                f"--lambda_sat_cons {float(variant_spec['lambda_sat_cons']):.6g} "
+                f"--lambda_u {float(variant_spec['lambda_u']):.6g} --lambda_ent 0.01 "
+                f"--lambda_domain {float(variant_spec['lambda_domain']):.6g} --lambda_adv 0.35 "
+                f"--lambda_group_ce {float(variant_spec['lambda_group_ce']):.6g} "
+                f"--lambda_fishr {float(variant_spec['lambda_fishr']):.6g} "
+                f"--tau_min {float(variant_spec['tau_min']):.6g} --tau_max {float(variant_spec['tau_max']):.6g} "
+                f"--pseudo_quantile {float(variant_spec['pseudo_quantile']):.6g} --use_ema_teacher {ema} "
+                f"--eval_sat_channel true --eval_sat_scenarios {SIMPLIFIED_LEO_SCENARIOS} "
+                "--sat_eval_max_batches -1 --device cuda:0 "
+                f"--seed {int(candidate.seed)}"
+            )
+        return (
+            "env PYTHONPATH=\"${ROOT}/code:${ROOT}:${PYTHONPATH:-}\" CUDA_VISIBLE_DEVICES=\"${GPU}\" "
+            "\"${PYTHON}\" -u \"${ROOT}/code/SSDG/train_ssdg.py\" "
+            "--wisig_pkl \"${WISIG_PKL}\" --split_mode tx_rx_day_1_7_2 "
+            "--labeled_ratio 0.10 --unlabeled_ratio 0.70 --source_val_ratio 0.20 "
+            f"--output_dir \"${{RUNS_ROOT}}/{candidate.cid}\" --epochs {epochs} --from_scratch true "
+            "--use_sat_consistency --use_concat_sat_channel_aug --concat_sat_ce_only "
+            f"--sat_train_scenario leo_clear_weak --sat_train_scenarios {SIMPLIFIED_LEO_SCENARIOS} "
+            f"--sat_view_schedule \"{PHASE1_PAIC_SAT_VIEW_SCHEDULE}\" "
+            "--sat_cons_start_epoch 60 --lambda_sat_cls 1.0 --lambda_sat_cons 0.03 "
+            f"--eval_sat_channel true --eval_sat_scenarios {SIMPLIFIED_LEO_SCENARIOS} "
+            "--sat_eval_max_batches -1 --device cuda:0 "
+            f"--seed {int(candidate.seed)}"
+        )
     if candidate.command_kind == "feature_sfe_synthetic":
         return (
             "env PYTHONPATH=\"${ROOT}/code:${ROOT}:${PYTHONPATH:-}\" "
@@ -8014,6 +8886,7 @@ def render_launcher(run_id: str, candidates: Sequence[Candidate]) -> str:
 
 def render_report(run_id: str, candidates: Sequence[Candidate]) -> str:
     ground_models = sorted({f"{c.ground_model_label} ({c.ground_model_default_ckpt})" for c in candidates})
+    phase1_count = sum(1 for c in candidates if c.command_kind == "phase1_safe_ssdg_ground_train")
     rows = [
         "| ID | GPU | protocol | K | gate/adapter | target_visibility | label_set_relation | update_module | metrics |",
         "|---|---:|---|---:|---|---|---|---|---|",
@@ -8029,8 +8902,18 @@ def render_report(run_id: str, candidates: Sequence[Candidate]) -> str:
             "",
             "## Objective",
             "",
-            "Validate the two deployment-time few-shot adaptation paths from the spaceborne CVS-RFFI design:",
-            "new-TX enrollment (`CVS-SFE`) and target receiver calibration (`CVS-FTRC`).",
+            (
+                "Validate Phase1 source-only ground DG representation optimization together with "
+                "deployment-time Phase2 few-shot adaptation paths."
+                if phase1_count
+                else "Validate the two deployment-time few-shot adaptation paths from the spaceborne CVS-RFFI design:"
+            ),
+            (
+                "Phase1 rows track source-domain TX prototypes, receiver feature distribution, mask auxiliaries, "
+                "and TX/RX geometry without using target receiver samples."
+                if phase1_count
+                else "new-TX enrollment (`CVS-SFE`) and target receiver calibration (`CVS-FTRC`)."
+            ),
             f"Ground model default: {', '.join(ground_models)}.",
             "",
             "## Candidate Matrix",
@@ -8074,7 +8957,201 @@ def _oa_mse_stage2_mode(candidate: Candidate) -> str:
     return "Phase2_spaceborne_fewshot_adaptation"
 
 
+def _phase1_optimizer_matrix_item(run_id: str, candidate: Candidate, idx: int) -> dict:
+    exact_command = _candidate_command(candidate)
+    command_hash = hashlib.sha256(exact_command.encode("utf-8")).hexdigest()[:16]
+    variant_spec = PHASE1_GPU0_JOINTSAFE_VARIANTS.get(str(candidate.phase1_variant or "").lower())
+    parameters = {
+        "epochs": int(candidate.epochs or 200),
+        "phase1_candidate": "Safe-SSDG-CVS-R01",
+        "entrypoint": "python ${ROOT}/code/SSDG/train_ssdg.py",
+        "split_mode": "tx_rx_day_1_7_2",
+        "labeled_ratio": 0.10,
+        "unlabeled_ratio": 0.70,
+        "source_val_ratio": 0.20,
+        "phase1_design_report_ref": candidate.phase1_design_report_ref,
+        "prototype_mask_modules": PHASE1_GROUND_PROTO_MASK_MODULES,
+        "phase1_enable_ground_prototype_stats": True,
+        "phase1_enable_feature_distribution_audit": True,
+        "phase1_enable_feature_masks_aux": True,
+        "phase1_enable_txrx_geometry_audit": True,
+        "phase1_prototype_loss_weight": 0.0,
+        "phase1_mask_aux_loss_weight": 0.0,
+        "phase1_geometry_loss_weight": 0.0,
+        "phase1_distribution_audit_only": True,
+        "phase1_star_ground_aug_default_enabled": True,
+        "phase1_star_ground_aug_route_family": "CVS-SAT-PAIC",
+        "phase1_star_ground_aug_mode": "concat_sat_ce_only_paic_curriculum",
+        "star_ground_channel_impl": STAR_GROUND_CHANNEL_IMPL,
+        "use_concat_sat_channel_aug": True,
+        "concat_sat_ce_only": True,
+        "use_sat_consistency": True,
+        "sat_train_scenarios": SIMPLIFIED_LEO_SCENARIOS,
+        "sat_view_schedule": PHASE1_PAIC_SAT_VIEW_SCHEDULE,
+        "best_metric": "joint_safe" if variant_spec is not None else "clean_val_tx",
+        "joint_checkpoint_policy": "joint_safe_guarded" if variant_spec is not None else "legacy_best_metric",
+        "protected_metrics": (
+            "strict_udu,receiver_floor,sat_mean_tx,sat_floor_tx,sat_strict_mean,sat_strict_floor,val_tx"
+            if variant_spec is not None
+            else ""
+        ),
+        "one_epoch_drop_guard": True if variant_spec is not None else False,
+        "one_epoch_drop_guard_pp": 2.0 if variant_spec is not None else 0.0,
+        "paic_late_variance_guard": True if variant_spec is not None else False,
+        "paic_guard_sat_ce_delta": 0.12 if variant_spec is not None else 0.0,
+        "paic_guard_grad_delta": 3.0 if variant_spec is not None else 0.0,
+        "paic_guard_reliable_drop": 0.01 if variant_spec is not None else 0.0,
+        "safe_best_path": "best_joint_safe_ssdg.pth" if variant_spec is not None else "",
+        "safe_latest_path": "latest_safe_ssdg.pth" if variant_spec is not None else "",
+        "active_loss_markers_expected": (
+            "[JOINT-GUARD],[SAFE-CKPT],[PROTO-TX],[PROTO-RX],[MASK],[BATCH-GEOM],[TXRX-ANOVA]"
+            if variant_spec is not None
+            else ""
+        ),
+        "zero_weight_telemetry_expected": True,
+    }
+    if variant_spec is not None:
+        parameters.update(
+            {
+                "label_epochs": int(variant_spec["label_epochs"]),
+                "pseudo_epochs": int(variant_spec["pseudo_epochs"]),
+                "lambda_u": float(variant_spec["lambda_u"]),
+                "tau_min": float(variant_spec["tau_min"]),
+                "tau_max": float(variant_spec["tau_max"]),
+                "pseudo_quantile": float(variant_spec["pseudo_quantile"]),
+                "use_ema_teacher": bool(variant_spec["use_ema_teacher"]),
+                "lambda_sat_cls": float(variant_spec["lambda_sat_cls"]),
+                "lambda_sat_cons": float(variant_spec["lambda_sat_cons"]),
+                "lambda_group_ce": float(variant_spec["lambda_group_ce"]),
+                "lambda_fishr": float(variant_spec["lambda_fishr"]),
+                "lambda_domain": float(variant_spec["lambda_domain"]),
+            }
+        )
+    item = asdict(candidate)
+    item.update(
+        {
+            "candidate_id": candidate.cid,
+            "slot": candidate.slot,
+            "category": str(candidate.optimization_category),
+            "lane": "phase1_ground_dg",
+            "phase_axis": "Phase1-GroundDG",
+            "stage2_mode": "NOT_APPLICABLE",
+            "parent_run": run_id,
+            "lineage": f"{run_id}:phase1_ground_proto_mask",
+            "route_signature": (
+                f"safe_ssdg_cvs_r01_phase1_ground_proto_mask_{candidate.phase1_variant}_{candidate.gpu}"
+            ).lower(),
+            "retirement_status": "not_retired",
+            "invalidity_status": "not_invalidated",
+            "principle_rejection_ref": "none",
+            "experimental_rejection_ref": "none",
+            "retirement_evidence_count": 0,
+            "retirement_evidence_refs": [],
+            "replacement_reason": "enable_phase1_ground_prototype_mask_feature_distribution_lane",
+            "hypothesis": candidate.description,
+            "control": (
+                "source-only ground DG; CEN51 success is non-regression baseline, "
+                "not a narrowed route family; target receiver and unknown query are forbidden in training"
+            ),
+            "key_changes": [
+                "joint_safe_checkpoint_guard" if variant_spec is not None else "source_domain_tx_prototypes",
+                "paic_late_variance_guard" if variant_spec is not None else "receiver_domain_feature_distribution_audit",
+                "prototype_mask_geometry_audit_only",
+                "gpu0_a_late_pseudo_repair" if variant_spec is not None else "tx_rx_geometry_audit",
+            ],
+            "parameters": parameters,
+            "estimated_run_path": f"/home/szu2070436088/2510044040/CV-SincNet/runs/{run_id}/{candidate.cid}",
+            "estimated_log_path": f"/home/szu2070436088/2510044040/CV-SincNet/logs/{run_id}/{candidate.cid}.out",
+            "cross_domain_target_metric": (
+                "strict_udu,worst_receiver,source_receiver_floor,prototype_radius,"
+                "tx_margin_violation,rx_probe_leakage"
+            ),
+            "satellite_channel_target_metric": "sat_mean_5,sat_floor_5 with no CEN51 floor regression",
+            "allowed_tradeoff": "no target receiver training use; no unknown query threshold fit; no full strong-loss enablement",
+            "must_not_regress_floor": PHASE1_CEN51_NON_REGRESSION_FLOORS,
+            "comparability_status": "CEN51_COMPARABLE_SOURCE_ONLY_NON_REGRESSION",
+            "expected_failure_signals": (
+                "prototype_radius_expands,tx_margin_violation_increases,rx_probe_on_z_tx_high,"
+                "tx_probe_on_z_rx_high,sat_floor_5_regresses,worst_receiver_regresses"
+            ),
+            "fallback_or_alternative": (
+                "keep Phase1 losses at zero-weight audit; only promote prototype/mask/geometry losses after "
+                "source-only diagnostics beat CEN51 non-regression floors"
+            ),
+            "exact_command": exact_command,
+            "launchability_status": "phase1_launchable_training_candidate_full_200e_pending_remote_gates",
+            "runtime_class": "phase1_training",
+            "registry_key": f"{run_id}:{candidate.cid}",
+            "command_hash": command_hash,
+            "ground_dg_claim_scope": "source_only",
+            "source_ssl_split": "L_s/U_s/Val_s source receivers only; rho_label=0.10; no target receiver samples",
+            "no_target_receiver_in_training": True,
+            "cen51_base_checkpoint_or_config": (
+                "matched_CEN51_R04 source-only split and CEN51 success experience; "
+                "used as non-regression/comparison, not as route restriction"
+            ),
+            "cen51_parent_run_or_control": "matched_CEN51_R04_control",
+            "phase1_non_regression_target": "matched_CEN51_R04",
+            "optimization_target": (
+                "exceed matched CEN51_R04 on source-only DG and satellite-channel metrics while improving "
+                "feature-space prototype/radius/receiver-distribution diagnostics"
+            ),
+            "target_lift_over_cen51": (
+                "sat_mean_5_delta_pp>0; sat_floor_5_delta_pp>0; strict_udu_delta_pp>=0; "
+                "receiver_floor_delta_pp>=0; prototype_radius_not_expanded"
+            ),
+            "satellite_channel_lift_target": "sat_mean_5_delta_pp>0; sat_floor_5_delta_pp>0",
+            "pseudo_precision_audit_target": "precision>=0.95; coverage_by_class_receiver_reported_as_risk_metric",
+            "CEN51_COMPARABLE": True,
+            "pseudo_coverage_is_risk_metric": True,
+            "satellite_channel_primary_metric": True,
+            "forbid_meta_learning_dg_mainline": True,
+            "phase1_star_ground_aug_policy": "default_on",
+            "phase1_star_ground_aug_default_enabled": True,
+            "phase1_star_ground_aug_route_family": "CVS-SAT-PAIC",
+            "phase1_star_ground_aug_mode": "concat_sat_ce_only_paic_curriculum",
+            "use_concat_sat_channel_aug": True,
+            "concat_sat_ce_only": True,
+            "use_sat_consistency": True,
+            "sat_view_schedule": PHASE1_PAIC_SAT_VIEW_SCHEDULE,
+            "best_metric": "joint_safe" if variant_spec is not None else "clean_val_tx",
+            "joint_checkpoint_policy": "joint_safe_guarded" if variant_spec is not None else "legacy_best_metric",
+            "protected_metrics": parameters["protected_metrics"],
+            "one_epoch_drop_guard": bool(variant_spec is not None),
+            "rollback_policy": "block_unsafe_best_and_keep_latest_safe_checkpoint" if variant_spec is not None else "not_enabled",
+            "paic_late_variance_guard": bool(variant_spec is not None),
+            "sat_cons_start_epoch": 80 if variant_spec is not None else 60,
+            "lambda_sat_cls": float(variant_spec["lambda_sat_cls"]) if variant_spec is not None else 1.0,
+            "lambda_sat_cons": float(variant_spec["lambda_sat_cons"]) if variant_spec is not None else 0.03,
+            "star_ground_aug_exploration_axis": (
+                "GPU0_A joint-safe late pseudo repair plus source-domain prototype/mask/feature-distribution audit"
+                if variant_spec is not None
+                else "late weak z_id consistency plus source-domain prototype/mask/feature-distribution audit"
+            ),
+            "phase1_ground_prototype_mask_openworld_enabled": True,
+            "phase1_ground_feature_distribution_objective": True,
+            "source_domain_prototype_outputs_required": True,
+            "phase1_prototype_loss_weight": 0.0,
+            "phase1_mask_aux_loss_weight": 0.0,
+            "phase1_geometry_loss_weight": 0.0,
+            "phase1_distribution_audit_only": True,
+            "active_loss_markers_expected": parameters["active_loss_markers_expected"],
+            "zero_weight_telemetry_expected": True,
+            "target_receiver_usage": "forbidden_in_phase1",
+            "unknown_query_role": "eval_only_not_available_in_phase1_training",
+            "clean_view_role": "control_only",
+            "dataset_role": "terrestrial_source_proxy",
+            "evidence_level": "source_receiver_x_transmitter_ground_dg_proxy_non_deployment_claim",
+            "deployment_success_claim_allowed": False,
+        }
+    )
+    return item
+
+
 def _optimizer_matrix_item(run_id: str, candidate: Candidate, idx: int) -> dict:
+    if candidate.command_kind == "phase1_safe_ssdg_ground_train":
+        return _phase1_optimizer_matrix_item(run_id, candidate, idx)
+
     item = asdict(candidate)
     mode = _oa_mse_stage2_mode(candidate)
     target_receiver_label = candidate.target_receiver_label or PHASE2_TARGET_RECEIVER_LABEL
@@ -8138,6 +9215,9 @@ def _optimizer_matrix_item(run_id: str, candidate: Candidate, idx: int) -> dict:
             "candidate_id": candidate.cid,
             "slot": candidate.slot,
             "category": str(candidate.optimization_category),
+            "stage2_priority_phase": candidate.stage2_priority_phase,
+            "old_acc_phase_gate": candidate.old_acc_phase_gate,
+            "secondary_objectives_after_old_gate": candidate.secondary_objectives_after_old_gate,
             "lane": "phase2_spaceborne_fsl",
             "phase_axis": "Phase2-Spaceborne-FSL",
             "stage2_mode": mode,
@@ -8158,6 +9238,9 @@ def _optimizer_matrix_item(run_id: str, candidate: Candidate, idx: int) -> dict:
                 "gate_mode": candidate.gate_mode,
                 "oa_mse_stage": candidate.oa_mse_stage,
                 "optimization_category": candidate.optimization_category,
+                "stage2_priority_phase": candidate.stage2_priority_phase,
+                "old_acc_phase_gate": candidate.old_acc_phase_gate,
+                "secondary_objectives_after_old_gate": candidate.secondary_objectives_after_old_gate,
                 "oa_mse_adapter_kind": candidate.oa_mse_adapter_kind,
                 "max_adapt_steps": candidate.max_adapt_steps,
                 "oa_mse_source_anchor_weight": candidate.oa_mse_source_anchor_weight,
@@ -8429,6 +9512,9 @@ def _optimizer_matrix_item(run_id: str, candidate: Candidate, idx: int) -> dict:
                 "target_old_k": candidate.target_old_support_per_tx,
                 "target_new_k": candidate.target_new_support_per_tx,
                 "k_shot_interpretation": (
+                    "Stage2-B old/unknown-only higher-shot/saturation diagnostic: target-new support and query are excluded"
+                    if new_tx_disabled and candidate.target_old_support_per_tx > 20
+                    else
                     "Stage2-B old/unknown-only: target-new support and query are excluded"
                     if new_tx_disabled
                     else "Stage2-C uses symmetric target-old and seen-new support K; Stage2-B records old support K only"
@@ -8449,7 +9535,12 @@ def _optimizer_matrix_item(run_id: str, candidate: Candidate, idx: int) -> dict:
                 else "unknown_FAR<=0.05 with per-scenario satellite/LEO score table"
             ),
             "allowed_tradeoff": "bounded coverage/defer is allowed only if unknown_FAR and old retention remain within gates",
-            "must_not_regress_floor": "old_acc>=0.90; seen_new_acc>=0.75 for Stage2-C; unknown_FAR<=0.05",
+            "must_not_regress_floor": (
+                "OLD80_FIRST phase gate: old_acc>=0.80 before next open-world objectives; "
+                "unknown_FAR<=0.05; no seen-new claim in Stage2-B"
+                if candidate.stage2_priority_phase == "OLD80_FIRST"
+                else "old_acc>=0.90; seen_new_acc>=0.75 for Stage2-C; unknown_FAR<=0.05"
+            ),
             "comparability_status": f"COMPARABLE_STAGE2_TARGET_RECEIVER_{target_receiver_label}",
             "expected_failure_signals": "unknown_FAR>0.05; old-class forgetting; excessive uncertain/defer; adapter cost blow-up",
             "fallback_or_alternative": "downgrade to local repair if ManyTx tx_list labels or receiver-specific sample availability drift",
@@ -8581,6 +9672,9 @@ def _optimizer_matrix_item(run_id: str, candidate: Candidate, idx: int) -> dict:
             "target_old_k": candidate.target_old_support_per_tx,
             "target_new_k": candidate.target_new_support_per_tx,
             "k_shot_interpretation": (
+                "Stage2-B old/unknown-only higher-shot/saturation diagnostic: target-new support and query are excluded"
+                if new_tx_disabled and candidate.target_old_support_per_tx > 20
+                else
                 "Stage2-B old/unknown-only: target-new support and query are excluded"
                 if new_tx_disabled
                 else "Stage2-C symmetric target-old and seen-new support; Stage2-A has no target support; Stage2-B old support only"
@@ -8736,28 +9830,42 @@ def _optimizer_matrix_item(run_id: str, candidate: Candidate, idx: int) -> dict:
 
 
 def matrix_payload(run_id: str, candidates: Sequence[Candidate]) -> dict:
-    phase2_only = bool(candidates) and all("oa_mse" in c.command_kind for c in candidates)
+    phase1_count = sum(1 for c in candidates if c.command_kind == "phase1_safe_ssdg_ground_train")
+    phase2_candidates = [c for c in candidates if c.command_kind != "phase1_safe_ssdg_ground_train"]
+    phase2_count = len(phase2_candidates)
+    phase1_only = bool(candidates) and phase1_count > 0 and phase2_count == 0
+    phase2_only = bool(candidates) and phase1_count == 0 and all("oa_mse" in c.command_kind for c in candidates)
     target_new_disabled = bool(candidates) and all(
         str(c.new_tx_ids or "").strip().upper() in {"__NONE__", "NONE", "OLD_UNKNOWN_ONLY"}
         for c in candidates
     )
+    policy_candidate = phase2_candidates[0] if phase2_candidates else (candidates[0] if candidates else None)
     return {
         "run_id": run_id,
         "n607_run_id": run_id,
         "expected_count": len(candidates),
-        "lane_quota_mode": "phase2_only" if phase2_only else "canonical_mixed",
-        "phase1_rows_expected": 0 if phase2_only else 8,
-        "phase2_rows_expected": len(candidates) if phase2_only else max(len(candidates) - 8, 0),
+        "lane_quota_mode": "phase1_retry_only" if phase1_only else ("phase2_only" if phase2_only else "canonical_mixed"),
+        "phase1_rows_expected": phase1_count,
+        "phase2_rows_expected": phase2_count,
         "phase2_gpu_utilization_policy": {
             "phase2_only": phase2_only,
-            "max_active_per_gpu": candidates[0].stage2_max_active_per_gpu if candidates else None,
-            "queued_rows_per_gpu": len(candidates) // 8 if candidates and len(candidates) % 8 == 0 else None,
+            "max_active_per_gpu": policy_candidate.stage2_max_active_per_gpu if policy_candidate else None,
+            "queued_rows_per_gpu": phase2_count // 8 if phase2_count and phase2_count % 8 == 0 else None,
         },
         "star_ground_channel_policy": {
-            "default_impl": candidates[0].star_ground_channel_impl if candidates else STAR_GROUND_CHANNEL_IMPL,
+            "default_impl": policy_candidate.star_ground_channel_impl if policy_candidate else STAR_GROUND_CHANNEL_IMPL,
             "target_channel_view": "satellite/LEO",
-            "target_channel_scenarios": candidates[0].target_channel_scenarios if candidates else SIMPLIFIED_LEO_SCENARIOS,
+            "target_channel_scenarios": policy_candidate.target_channel_scenarios if policy_candidate else SIMPLIFIED_LEO_SCENARIOS,
             "legacy_scenarios": LEGACY_LEO_SCENARIOS,
+        },
+        "phase1_ground_dg_policy": {
+            "status": "enabled" if phase1_count else "not_included_for_this_plan",
+            "rows": phase1_count,
+            "source_only": True,
+            "cen51_role": "non_regression_experience_not_route_narrowing",
+            "prototype_mask_modules": PHASE1_GROUND_PROTO_MASK_MODULES,
+            "feature_distribution_objective": bool(phase1_count),
+            "target_receiver_usage": "forbidden_in_phase1_training",
         },
         "stage2_sample_protocol": {
             "status": "active",
@@ -8780,7 +9888,12 @@ def matrix_payload(run_id: str, candidates: Sequence[Candidate]) -> dict:
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--run-id", default=None)
-    parser.add_argument("--plan", default="SMOKE", choices=["SMOKE", "CORE", "WISIG_NEWCLASS", "WISIG_NEWCLASS_CARD8", "WISIG_ENHANCED_CARD8", "OA_MSE_CARD3", "OA_MSE_PROXY32", "OA_MSE_BOUNDARY32", "OA_MSE_UNCERTAIN32", "OA_MSE_VETO32", "OA_MSE_CLASSCOND32", "OA_MSE_CALGUARD32", "OA_MSE_BALANCE64", "OA_MSE_SOFTMIX64", "OA_MSE_VOID64", "OA_MSE_SOFTVOID128", "OA_MSE_ANCHORGUARD128", "OA_MSE_MIXHEAD128", "OA_MSE_STRUCT48", "OA_MSE_SIMPLIFIED48", "OA_MSE_RETENTION48", "OA_MSE_SUPPORTRET48", "OA_MSE_TWOBRANCH48", "OA_MSE_REGHEAD48", "OA_MSE_GEOM48", "OA_MSE_TRIAGE48", "OA_MSE_LOOO48", "OA_MSE_CONSTRAIN48", "OA_MSE_ENVELOPE48", "OA_MSE_RESCUE48", "OA_MSE_PREREJECT48", "OA_MSE_THREEWAY48", "OA_MSE_COVFLOOR48", "OA_MSE_CLASSFIRST48", "OA_MSE_EVIBG48", "OA_MSE_SOFTTARGET48", "OA_MSE_NEGANCHOR48", "OA_MSE_DENSHELL48", "OA_MSE_IDCONS48", "OA_MSE_CONFORM48", "OA_MSE_RECON48", "OA_MSE_SOURCERISK48", "OA_MSE_SUPPORTCV48", "OA_MSE_BGCAP48", "OA_MSE_KRET48", "OA_MSE_RISKRET48", "OA_MSE_MANIFOLD48", "OA_MSE_H06_EVID48", "OA_MSE_H06_ARB48", "OA_MSE_H06_OLDUNK48", "OA_MSE_H06_BGTRAIN48", "OA_MSE_H06_RETOLD48", "OA_MSE_H06_OLDFIRST48", "OA_MSE_H06_OLDRELAX48", "OA_MSE_H06_OLDGEOM48", "OA_MSE_H06_OLDCONF48", "OA_MSE_H06_OLDBUDGET48", "OA_MSE_H06_OLDQUAL48", "OA_MSE_H06_OLDRISK48", "OA_MSE_H06_OLDFUSE48", "OA_MSE_H06_ROLLSAFE48"])
+    parser.add_argument("--plan", default="SMOKE", choices=["SMOKE", "CORE", "WISIG_NEWCLASS", "WISIG_NEWCLASS_CARD8", "WISIG_ENHANCED_CARD8", "PHASE1_GPU0_JOINTSAFE4", "OA_MSE_CARD3", "OA_MSE_PROXY32", "OA_MSE_BOUNDARY32", "OA_MSE_UNCERTAIN32", "OA_MSE_VETO32", "OA_MSE_CLASSCOND32", "OA_MSE_CALGUARD32", "OA_MSE_BALANCE64", "OA_MSE_SOFTMIX64", "OA_MSE_VOID64", "OA_MSE_SOFTVOID128", "OA_MSE_ANCHORGUARD128", "OA_MSE_MIXHEAD128", "OA_MSE_STRUCT48", "OA_MSE_SIMPLIFIED48", "OA_MSE_RETENTION48", "OA_MSE_SUPPORTRET48", "OA_MSE_TWOBRANCH48", "OA_MSE_REGHEAD48", "OA_MSE_GEOM48", "OA_MSE_TRIAGE48", "OA_MSE_LOOO48", "OA_MSE_CONSTRAIN48", "OA_MSE_ENVELOPE48", "OA_MSE_RESCUE48", "OA_MSE_PREREJECT48", "OA_MSE_THREEWAY48", "OA_MSE_COVFLOOR48", "OA_MSE_CLASSFIRST48", "OA_MSE_EVIBG48", "OA_MSE_SOFTTARGET48", "OA_MSE_NEGANCHOR48", "OA_MSE_DENSHELL48", "OA_MSE_IDCONS48", "OA_MSE_CONFORM48", "OA_MSE_RECON48", "OA_MSE_SOURCERISK48", "OA_MSE_SUPPORTCV48", "OA_MSE_BGCAP48", "OA_MSE_KRET48", "OA_MSE_RISKRET48", "OA_MSE_MANIFOLD48", "OA_MSE_H06_EVID48", "OA_MSE_H06_ARB48", "OA_MSE_H06_OLDUNK48", "OA_MSE_H06_BGTRAIN48", "OA_MSE_H06_RETOLD48", "OA_MSE_H06_OLDFIRST48", "OA_MSE_H06_OLDRELAX48", "OA_MSE_H06_OLDGEOM48", "OA_MSE_H06_OLDCONF48", "OA_MSE_H06_OLDBUDGET48", "OA_MSE_H06_OLDQUAL48", "OA_MSE_H06_OLDRISK48", "OA_MSE_H06_OLDFUSE48", "OA_MSE_H06_ROLLSAFE48", "OA_MSE_H06_OLDHEAD48", "OA_MSE_H06_OLDHEADFAR48", "OA_MSE_H06_OLDRECOV48"])
+    parser.add_argument(
+        "--phase1-only",
+        action="store_true",
+        help="Emit only the eight Phase1 Safe-SSDG rows for a retry run; intended for state-authorized Phase1 repair after a completed mixed run.",
+    )
     parser.add_argument("--output-root", type=Path, default=REPO_ROOT / "automation_reports" / "CV-SincNet")
     parser.add_argument("--scripts-dir", type=Path, default=REPO_ROOT / "code" / "scripts")
     return parser.parse_args()
@@ -8790,6 +9903,10 @@ def main() -> int:
     args = parse_args()
     run_id = args.run_id or f"spaceborne_fewshot_da_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
     candidates = make_candidates(plan=args.plan)
+    if args.phase1_only:
+        candidates = [c for c in candidates if c.command_kind == "phase1_safe_ssdg_ground_train"]
+        if not candidates:
+            raise ValueError(f"plan {args.plan} has no Phase1 Safe-SSDG rows for --phase1-only")
     report_dir = args.output_root / run_id
     report_dir.mkdir(parents=True, exist_ok=True)
     args.scripts_dir.mkdir(parents=True, exist_ok=True)

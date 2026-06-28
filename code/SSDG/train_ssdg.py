@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import argparse
 import csv
+import importlib
 import json
 import math
 from collections import defaultdict
@@ -41,6 +42,7 @@ try:
         set_seed,
     )
     from training_controls import parse_sat_scenarios
+    from baseline_origin_sat_view import parse_sat_view_schedule
     from cvsrffi.tensors import build_domain_label_map
     from cvsrffi.eval import (
         aggregate_named_stats,
@@ -53,6 +55,14 @@ try:
         make_loader,
     )
     from cvsrffi.losses import compute_core_losses, fishr_logit_gradient_variance_loss
+    from cvsrffi.ssdg_guard import (
+        detect_one_epoch_drop,
+        detect_paic_variance_guard,
+        guard_minimums_from_args,
+        joint_safe_score,
+        missing_joint_safe_metrics,
+        protected_metric_snapshot,
+    )
     from cvsrffi.schedule import (
         build_aug_base_cfg,
         build_stage_state,
@@ -71,9 +81,12 @@ except ModuleNotFoundError:
     build_baseline_model = domain_from_extra = ensure_dir = load_checkpoint = None
     mean_logs = merge_checkpoint_args = move_batch = resolve_device = save_payload = set_seed = None
     parse_sat_scenarios = None
+    parse_sat_view_schedule = None
     build_domain_label_map = evaluate_loader = evaluate_named_loaders = make_loader = parse_csv_indices = None
     apply_sat_channel_for_scenario = fishr_logit_gradient_variance_loss = make_torch_generator = None
     aggregate_named_stats = compute_core_losses = evaluate_sat_scenarios = None
+    detect_one_epoch_drop = detect_paic_variance_guard = guard_minimums_from_args = None
+    joint_safe_score = missing_joint_safe_metrics = protected_metric_snapshot = None
     build_aug_base_cfg = build_stage_state = configure_augmentor_for_epoch = configure_mixstyle_for_epoch = None
     format_stage_state = make_augmentor = None
     format_named_test_lines = format_sat_test_lines = None
@@ -135,6 +148,13 @@ def build_arg_parser() -> argparse.ArgumentParser:
     parser.add_argument("--use_sat_consistency", dest="use_sat_consistency", action="store_true", default=True)
     parser.add_argument("--no_use_sat_consistency", dest="use_sat_consistency", action="store_false")
     parser.add_argument("--sat_train_scenario", type=str, default="mixed_orbit")
+    parser.add_argument("--sat_train_scenarios", type=str, default="")
+    parser.add_argument("--sat_view_schedule", type=str, default="")
+    parser.add_argument("--use_concat_sat_channel_aug", dest="use_concat_sat_channel_aug", action="store_true", default=False)
+    parser.add_argument("--no_use_concat_sat_channel_aug", dest="use_concat_sat_channel_aug", action="store_false")
+    parser.add_argument("--concat_sat_ce_only", dest="concat_sat_ce_only", action="store_true", default=False)
+    parser.add_argument("--no_concat_sat_ce_only", dest="concat_sat_ce_only", action="store_false")
+    parser.add_argument("--concat_sat_ce_weight", type=float, default=1.0)
     parser.add_argument("--lambda_sat_cls", type=float, default=0.10)
     parser.add_argument("--lambda_sat_cons", type=float, default=0.0)
     parser.add_argument("--sat_cons_start_epoch", type=int, default=20)
@@ -142,9 +162,40 @@ def build_arg_parser() -> argparse.ArgumentParser:
         "--best_metric",
         type=str,
         default="clean_val_tx",
-        choices=["clean_val_tx", "test_overall_tx", "sat_mean_tx", "sat_worst_tx"],
+        choices=["clean_val_tx", "test_overall_tx", "sat_mean_tx", "sat_worst_tx", "joint_safe"],
         help="Metric used to update the best SSDG checkpoint.",
     )
+    parser.add_argument("--safe_best_path", type=str, default="", help="Optional path for the guarded best checkpoint.")
+    parser.add_argument("--safe_latest_path", type=str, default="", help="Optional path for the latest guarded checkpoint.")
+    parser.add_argument("--enable_joint_safe_guard", type=str2bool, default=False)
+    parser.add_argument("--joint_guard_require_satellite", type=str2bool, default=True)
+    parser.add_argument("--joint_guard_min_strict_udu", type=float, default=0.0)
+    parser.add_argument("--joint_guard_min_receiver_floor", type=float, default=0.0)
+    parser.add_argument("--joint_guard_min_sat_mean", type=float, default=0.0)
+    parser.add_argument("--joint_guard_min_sat_floor", type=float, default=0.0)
+    parser.add_argument("--joint_guard_min_sat_strict_mean", type=float, default=0.0)
+    parser.add_argument("--joint_guard_min_sat_strict_floor", type=float, default=0.0)
+    parser.add_argument("--one_epoch_drop_guard_pp", type=float, default=2.0)
+    parser.add_argument("--paic_guard_enabled", type=str2bool, default=False)
+    parser.add_argument("--paic_guard_sat_ce_delta", type=float, default=0.12)
+    parser.add_argument("--paic_guard_grad_delta", type=float, default=3.0)
+    parser.add_argument("--paic_guard_reliable_drop", type=float, default=0.01)
+    parser.add_argument("--paic_guard_domain_delta", type=float, default=0.0)
+    parser.add_argument("--paic_guard_sat_cons_delta", type=float, default=0.0)
+    parser.add_argument("--paic_guard_block_best", type=str2bool, default=True)
+    parser.add_argument("--paic_guard_cooldown_epochs", type=int, default=1)
+    parser.add_argument("--paic_guard_sat_scale", type=float, default=0.75)
+    parser.add_argument("--use_phase2_ground_prototypes", type=str2bool, default=False)
+    parser.add_argument("--use_feature_masks", type=str2bool, default=False)
+    parser.add_argument("--use_txrx_geometry_losses", type=str2bool, default=False)
+    parser.add_argument("--use_tx_rx_balanced_sampler", type=str2bool, default=False)
+    parser.add_argument("--phase1_distribution_audit_only", type=str2bool, default=True)
+    parser.add_argument("--lambda_tx_proto", type=float, default=0.0)
+    parser.add_argument("--lambda_rx_proto", type=float, default=0.0)
+    parser.add_argument("--lambda_mask_aux", type=float, default=0.0)
+    parser.add_argument("--lambda_tx_supcon_masked", type=float, default=0.0)
+    parser.add_argument("--lambda_rx_supcon_masked", type=float, default=0.0)
+    parser.add_argument("--lambda_txrx_rect", type=float, default=0.0)
     parser.add_argument("--freeze_backbone", type=str2bool, default=False)
     parser.add_argument("--model_size", type=str, default="M")
     parser.add_argument("--model_variant", type=str, default="lite_d")
@@ -549,12 +600,31 @@ def _best_score(
     test_stats: Mapping[str, Any],
     sat_test_stats: Mapping[str, Mapping[str, Any]],
     metric: str,
+    named_test_stats: Mapping[str, Mapping[str, Any]] | None = None,
+    args: Any | None = None,
 ) -> float:
     metric = str(metric or "clean_val_tx")
     if metric == "clean_val_tx":
         return float(val_stats.get("tx_acc", float("-inf")))
     if metric == "test_overall_tx":
         return float(test_stats.get("tx_acc", float("-inf")))
+    if metric == "joint_safe":
+        if protected_metric_snapshot is None or joint_safe_score is None:
+            raise ImportError("cvsrffi.ssdg_guard is required for --best_metric joint_safe.")
+        protected = protected_metric_snapshot(
+            val_stats=val_stats,
+            test_stats=test_stats,
+            named_test_stats=named_test_stats or {},
+            sat_test_stats=sat_test_stats,
+        )
+        minimums = guard_minimums_from_args(args) if guard_minimums_from_args is not None and args is not None else {}
+        return float(
+            joint_safe_score(
+                protected,
+                minimums=minimums,
+                require_satellite=bool(getattr(args, "joint_guard_require_satellite", True)) if args is not None else False,
+            )
+        )
     sat_scores = _satellite_tx_scores(sat_test_stats)
     if not sat_scores:
         return float(val_stats.get("tx_acc", float("-inf")))
@@ -563,6 +633,80 @@ def _best_score(
     if metric == "sat_worst_tx":
         return min(sat_scores)
     raise ValueError(f"Unknown SSDG best_metric={metric}")
+
+
+def _joint_safe_guard_enabled(args) -> bool:
+    return bool(getattr(args, "enable_joint_safe_guard", False)) or str(getattr(args, "best_metric", "")) == "joint_safe"
+
+
+def _paic_guard_enabled(args) -> bool:
+    return bool(getattr(args, "paic_guard_enabled", False)) or _joint_safe_guard_enabled(args)
+
+
+def _phase2_audit_requested(args) -> bool:
+    flags = (
+        "use_phase2_ground_prototypes",
+        "use_feature_masks",
+        "use_txrx_geometry_losses",
+        "use_tx_rx_balanced_sampler",
+    )
+    weights = (
+        "lambda_tx_proto",
+        "lambda_rx_proto",
+        "lambda_mask_aux",
+        "lambda_tx_supcon_masked",
+        "lambda_rx_supcon_masked",
+        "lambda_txrx_rect",
+    )
+    return any(bool(getattr(args, key, False)) for key in flags) or any(float(getattr(args, key, 0.0)) > 0.0 for key in weights)
+
+
+def _phase2_audit_state(args) -> Dict[str, Any]:
+    requested = _phase2_audit_requested(args)
+    modules = {
+        "phase2_prototypes": "cvsrffi.phase2_prototypes",
+        "feature_masks": "cvsrffi.feature_masks",
+        "tx_rx_geometry": "cvsrffi.tx_rx_geometry",
+        "balanced_tx_rx_sampler": "cvsrffi.balanced_tx_rx_sampler",
+        "open_world_head": "cvsrffi.open_world_head",
+    }
+    import_status: Dict[str, int] = {}
+    missing: list[str] = []
+    if requested:
+        for name, module in modules.items():
+            try:
+                importlib.import_module(module)
+                import_status[name] = 1
+            except Exception:
+                import_status[name] = 0
+                missing.append(name)
+        if missing:
+            raise ImportError(f"Phase1 prototype/mask audit requested but modules are unavailable: {','.join(missing)}")
+    weights = {
+        "tx_proto": float(getattr(args, "lambda_tx_proto", 0.0)),
+        "rx_proto": float(getattr(args, "lambda_rx_proto", 0.0)),
+        "mask_aux": float(getattr(args, "lambda_mask_aux", 0.0)),
+        "tx_supcon_masked": float(getattr(args, "lambda_tx_supcon_masked", 0.0)),
+        "rx_supcon_masked": float(getattr(args, "lambda_rx_supcon_masked", 0.0)),
+        "txrx_rect": float(getattr(args, "lambda_txrx_rect", 0.0)),
+    }
+    active_loss = any(value > 0.0 for value in weights.values())
+    if active_loss:
+        raise NotImplementedError(
+            "Non-zero Phase1 prototype/mask/geometry losses are not wired into SSDG training yet. "
+            "Use zero weights with --phase1_distribution_audit_only true for Stage A telemetry."
+        )
+    return {
+        "requested": bool(requested),
+        "audit_only": bool(getattr(args, "phase1_distribution_audit_only", True)) and not active_loss,
+        "active_loss": bool(active_loss),
+        "use_phase2_ground_prototypes": bool(getattr(args, "use_phase2_ground_prototypes", False)),
+        "use_feature_masks": bool(getattr(args, "use_feature_masks", False)),
+        "use_txrx_geometry_losses": bool(getattr(args, "use_txrx_geometry_losses", False)),
+        "use_tx_rx_balanced_sampler": bool(getattr(args, "use_tx_rx_balanced_sampler", False)),
+        "imports": import_status,
+        "weights": weights,
+    }
 
 
 def _resolve_sat_eval_max_batches(args) -> int:
@@ -823,6 +967,12 @@ def _build_ssdg_epoch_telemetry_row(
     latest_path: str,
     best_path: str,
     is_best: bool,
+    protected_metrics: Mapping[str, Any] | None = None,
+    guard_state: Mapping[str, Any] | None = None,
+    phase2_audit_state: Mapping[str, Any] | None = None,
+    safe_latest_path: str = "",
+    safe_best_path: str = "",
+    safe_checkpoint_saved: bool = False,
 ) -> Dict[str, Any]:
     row: Dict[str, Any] = {
         "schema": "ssdg_epoch_telemetry_v1",
@@ -852,6 +1002,9 @@ def _build_ssdg_epoch_telemetry_row(
         "best_epoch": int(best_epoch),
         "latest_path": str(latest_path),
         "best_path": str(best_path),
+        "safe_latest_path": str(safe_latest_path),
+        "safe_best_path": str(safe_best_path),
+        "safe_checkpoint_saved": bool(safe_checkpoint_saved),
         "is_best": bool(is_best),
         "use_unlabeled": bool(getattr(args, "use_unlabeled", False)),
         "lambda_u": float(getattr(args, "lambda_u", 0.0)),
@@ -866,12 +1019,19 @@ def _build_ssdg_epoch_telemetry_row(
         "use_ema_teacher": bool(getattr(args, "use_ema_teacher", False)),
         "use_sat_consistency": bool(getattr(args, "use_sat_consistency", False)),
         "sat_train_scenario": str(getattr(args, "sat_train_scenario", "")),
+        "sat_train_scenarios": ",".join(getattr(args, "sat_train_scenario_list", []) or []),
+        "sat_view_schedule": str(getattr(args, "sat_view_schedule", "") or ""),
+        "use_concat_sat_channel_aug": bool(getattr(args, "use_concat_sat_channel_aug", False)),
+        "concat_sat_ce_only": bool(getattr(args, "concat_sat_ce_only", False)),
         "eval_sat_channel": bool(getattr(args, "eval_sat_channel", False)),
         "eval_sat_scenarios": str(getattr(args, "eval_sat_scenarios", "")),
         "nonfinite_train_metric_count": _count_nonfinite(train_logs),
         "nonfinite_val_metric_count": _count_nonfinite(val_stats),
         "nonfinite_test_metric_count": _count_nonfinite(test_stats),
     }
+    _flatten_telemetry(row, "protected", protected_metrics or {})
+    _flatten_telemetry(row, "joint_guard", guard_state or {})
+    _flatten_telemetry(row, "phase2_audit", phase2_audit_state or {})
     for name in (
         "lambda_domain",
         "lambda_adv",
@@ -981,6 +1141,12 @@ def format_ssdg_epoch_block(
     latest_path: str,
     best_path: str,
     is_best: bool,
+    protected_metrics: Mapping[str, Any] | None = None,
+    guard_state: Mapping[str, Any] | None = None,
+    phase2_audit_state: Mapping[str, Any] | None = None,
+    safe_latest_path: str = "",
+    safe_best_path: str = "",
+    safe_checkpoint_saved: bool = False,
 ) -> str:
     sep = "=" * 132
     minor = "-" * 132
@@ -1017,6 +1183,9 @@ def format_ssdg_epoch_block(
     named_test_stats = named_test_stats or {}
     named_test_meta = named_test_meta or {}
     sat_test_stats = sat_test_stats or {}
+    protected_metrics = protected_metrics or {}
+    guard_state = guard_state or {}
+    phase2_audit_state = phase2_audit_state or {}
     if best_epoch is None:
         best_epoch = int(epoch)
     if stage_state is None:
@@ -1121,8 +1290,70 @@ def format_ssdg_epoch_block(
     lines.extend(_format_named_test_lines(named_test_stats, named_test_meta))
     if sat_test_stats:
         lines.extend(_format_sat_test_lines(sat_test_stats))
+    if protected_metrics:
+        lines.append(
+            "[JOINT-METRIC] "
+            f"strict_udu={_safe_percent(protected_metrics.get('strict_udu'))}% "
+            f"receiver_floor={_safe_percent(protected_metrics.get('receiver_floor'))}% "
+            f"sat_mean={_safe_percent(protected_metrics.get('sat_mean_tx'))}% "
+            f"sat_floor={_safe_percent(protected_metrics.get('sat_floor_tx'))}% "
+            f"sat_strict_mean={_safe_percent(protected_metrics.get('sat_strict_mean'))}% "
+            f"sat_strict_floor={_safe_percent(protected_metrics.get('sat_strict_floor'))}%"
+        )
+    if guard_state:
+        lines.append(
+            "[JOINT-GUARD] "
+            f"enabled={int(bool(guard_state.get('enabled', False)))} "
+            f"safe={int(bool(guard_state.get('checkpoint_safe', True)))} "
+            f"missing_required={int(guard_state.get('missing_required_metric_count', 0))} "
+            f"drop={int(bool(guard_state.get('drop_guard_fired', False)))} "
+            f"paic={int(bool(guard_state.get('paic_guard_fired', False)))} "
+            f"cooldown_active={int(bool(guard_state.get('paic_cooldown_active', False)))} "
+            f"reason={guard_state.get('reason', '')}"
+        )
+    if phase2_audit_state and bool(phase2_audit_state.get("requested", False)):
+        imports = phase2_audit_state.get("imports", {}) if isinstance(phase2_audit_state.get("imports"), Mapping) else {}
+        weights = phase2_audit_state.get("weights", {}) if isinstance(phase2_audit_state.get("weights"), Mapping) else {}
+        lines.append(
+            "[PROTO-TX] "
+            f"enabled={int(bool(phase2_audit_state.get('use_phase2_ground_prototypes', False)))} "
+            f"audit_only={int(bool(phase2_audit_state.get('audit_only', True)))} "
+            f"lambda_tx_proto={float(weights.get('tx_proto', 0.0)):.6g} "
+            f"module_import={int(bool(imports.get('phase2_prototypes', 0)))}"
+        )
+        lines.append(
+            "[PROTO-RX] "
+            f"enabled={int(bool(phase2_audit_state.get('use_phase2_ground_prototypes', False)))} "
+            f"lambda_rx_proto={float(weights.get('rx_proto', 0.0)):.6g} "
+            f"module_import={int(bool(imports.get('phase2_prototypes', 0)))}"
+        )
+        lines.append(
+            "[MASK] "
+            f"enabled={int(bool(phase2_audit_state.get('use_feature_masks', False)))} "
+            f"lambda_mask_aux={float(weights.get('mask_aux', 0.0)):.6g} "
+            f"module_import={int(bool(imports.get('feature_masks', 0)))}"
+        )
+        lines.append(
+            "[BATCH-GEOM] "
+            f"balanced_sampler={int(bool(phase2_audit_state.get('use_tx_rx_balanced_sampler', False)))} "
+            f"geometry_losses={int(bool(phase2_audit_state.get('use_txrx_geometry_losses', False)))} "
+            f"lambda_txrx_rect={float(weights.get('txrx_rect', 0.0)):.6g} "
+            f"sampler_import={int(bool(imports.get('balanced_tx_rx_sampler', 0)))} "
+            f"geometry_import={int(bool(imports.get('tx_rx_geometry', 0)))}"
+        )
+        lines.append(
+            "[TXRX-ANOVA] "
+            "status=audit_marker_only "
+            f"active_loss={int(bool(phase2_audit_state.get('active_loss', False)))}"
+        )
     lines.append(f"[BEST-JOINT]  val_tx={float(best_val):.2f}% & test_tx={float(best_test):.2f}% @ E{int(best_epoch):03d}")
-    lines.append(f"[CKPT]  latest -> {latest_path} (saved) | best -> {best_path}{' (updated: val improved)' if is_best else ''}")
+    if bool(guard_state.get("enabled", False)) and (safe_latest_path or safe_best_path):
+        safe_note = "saved" if safe_checkpoint_saved else "protected"
+        lines.append(
+            f"[SAFE-CKPT] latest_safe -> {safe_latest_path or '-'} ({safe_note}) | "
+            f"best_safe -> {safe_best_path or '-'}"
+        )
+    lines.append(f"[CKPT]  latest -> {latest_path} (saved) | best -> {best_path}{' (updated)' if is_best else ''}")
     lines.append(f"[EPOCH-END] E{int(epoch):03d}/{int(epochs):03d}")
     lines.append(sep)
     return "\n".join(lines)
@@ -1136,6 +1367,25 @@ def train(args) -> int:
         args.tau_min = float(args.tau_conf)
     if not bool(args.use_unlabeled):
         args.lambda_u = 0.0
+    args.sat_train_scenario = str(args.sat_train_scenario or "mixed_orbit").strip().lower().replace("-", "_")
+    sat_train_spec = str(getattr(args, "sat_train_scenarios", "") or "").strip()
+    if sat_train_spec:
+        if parse_sat_scenarios is not None:
+            args.sat_train_scenario_list = list(parse_sat_scenarios(sat_train_spec))
+        else:
+            args.sat_train_scenario_list = [
+                part.strip().lower().replace("-", "_") for part in sat_train_spec.split(",") if part.strip()
+            ]
+    else:
+        args.sat_train_scenario_list = [args.sat_train_scenario]
+    if not args.sat_train_scenario_list:
+        args.sat_train_scenario_list = [args.sat_train_scenario]
+    args.sat_train_scenario = args.sat_train_scenario_list[0]
+    args.sat_view_schedule = str(getattr(args, "sat_view_schedule", "") or "").strip()
+    if args.sat_view_schedule and parse_sat_view_schedule is not None:
+        args.sat_view_stages = tuple(parse_sat_view_schedule(args.sat_view_schedule, default_prob=1.0))
+    else:
+        args.sat_view_stages = tuple()
     if args.dry_run:
         print(
             f"[DRY-RUN] Parsed arguments and skipped data/model construction. "
@@ -1153,6 +1403,10 @@ def train(args) -> int:
     out_dir = ensure_dir(args.output_dir)
     metrics_csv_path = Path(str(args.metrics_csv).strip()) if str(args.metrics_csv).strip() else out_dir / "metrics_epoch.csv"
     metrics_jsonl_path = Path(str(args.metrics_jsonl).strip()) if str(args.metrics_jsonl).strip() else out_dir / "metrics_epoch.jsonl"
+    default_safe_best_name = f"best_{args.best_metric}_ssdg.pth" if _joint_safe_guard_enabled(args) else f"best_{args.best_metric}_safe_ssdg.pth"
+    safe_best_path = Path(str(args.safe_best_path).strip()) if str(args.safe_best_path).strip() else out_dir / default_safe_best_name
+    safe_latest_path = Path(str(args.safe_latest_path).strip()) if str(args.safe_latest_path).strip() else out_dir / "latest_safe_ssdg.pth"
+    phase2_audit_state = _phase2_audit_state(args)
     data_ctx = _build_ssdg_wisig_data(args, device)
     use_ckpt = bool(str(args.baseline_ckpt).strip()) and not bool(args.from_scratch)
     ckpt = load_checkpoint(args.baseline_ckpt, device) if use_ckpt else {"model": None, "args": {}, "stats": {}, "split_info": None}
@@ -1206,11 +1460,36 @@ def train(args) -> int:
                 f"strong_agreement={int(bool(args.pseudo_strong_agreement))} ema={int(bool(args.use_ema_teacher))}",
                 "[CONFIG-SAT] "
                 f"use_sat_consistency={int(bool(args.use_sat_consistency))} train_scenario={args.sat_train_scenario} "
+                f"train_scenarios={','.join(getattr(args, 'sat_train_scenario_list', [args.sat_train_scenario]))} "
+                f"use_concat_sat_channel_aug={int(bool(getattr(args, 'use_concat_sat_channel_aug', False)))} "
+                f"concat_sat_ce_only={int(bool(getattr(args, 'concat_sat_ce_only', False)))} "
+                f"sat_view_schedule={getattr(args, 'sat_view_schedule', '') or '<none>'} "
                 f"sat_cons_start_epoch={int(args.sat_cons_start_epoch)} eval_sat_channel={int(bool(args.eval_sat_channel))} "
                 f"eval_sat_scenarios={args.eval_sat_scenarios}",
                 "[CONFIG-TELEMETRY] "
                 f"metrics_csv={metrics_csv_path} metrics_jsonl={metrics_jsonl_path} "
                 "per_epoch_loss_terms=raw_and_weighted",
+                "[CONFIG-JOINT-SAFE] "
+                f"enabled={int(_joint_safe_guard_enabled(args))} best_metric={args.best_metric} "
+                f"safe_best_path={safe_best_path} safe_latest_path={safe_latest_path} "
+                f"drop_guard_pp={float(args.one_epoch_drop_guard_pp):.6g} "
+                f"paic_guard={int(_paic_guard_enabled(args))} "
+                f"paic_sat_ce_delta={float(args.paic_guard_sat_ce_delta):.6g} "
+                f"paic_grad_delta={float(args.paic_guard_grad_delta):.6g} "
+                f"paic_reliable_drop={float(args.paic_guard_reliable_drop):.6g} "
+                f"paic_sat_scale={float(args.paic_guard_sat_scale):.6g}",
+                "[CONFIG-PROTO-MASK] "
+                f"requested={int(bool(phase2_audit_state.get('requested', False)))} "
+                f"audit_only={int(bool(phase2_audit_state.get('audit_only', True)))} "
+                f"active_loss={int(bool(phase2_audit_state.get('active_loss', False)))} "
+                f"use_prototypes={int(bool(args.use_phase2_ground_prototypes))} "
+                f"use_masks={int(bool(args.use_feature_masks))} "
+                f"use_geometry={int(bool(args.use_txrx_geometry_losses))} "
+                f"use_balanced_sampler={int(bool(args.use_tx_rx_balanced_sampler))} "
+                f"lambda_tx_proto={float(args.lambda_tx_proto):.6g} "
+                f"lambda_rx_proto={float(args.lambda_rx_proto):.6g} "
+                f"lambda_mask_aux={float(args.lambda_mask_aux):.6g} "
+                f"lambda_txrx_rect={float(args.lambda_txrx_rect):.6g}",
             ]
         ),
         flush=True,
@@ -1239,6 +1518,9 @@ def train(args) -> int:
     best_test = float("nan")
     best_epoch = 0
     telemetry_rows: List[Dict[str, Any]] = []
+    previous_protected_metrics: Dict[str, float] | None = None
+    previous_train_logs: Dict[str, Any] | None = None
+    paic_cooldown_remaining = 0
     for epoch in range(1, total_epochs + 1):
         import time
 
@@ -1246,6 +1528,16 @@ def train(args) -> int:
         phase = "label" if epoch <= int(args.label_epochs) else "pseudo"
         stage_state = _stage_state_for_epoch(epoch, args, phase)
         cur_w = _loss_weights(args, stage_state)
+        paic_cooldown_active = bool(phase == "pseudo" and paic_cooldown_remaining > 0)
+        if paic_cooldown_active:
+            scale = max(0.0, min(1.0, float(args.paic_guard_sat_scale)))
+            cur_w["sat_cls"] *= scale
+            cur_w["sat_cons"] *= scale
+            stage_state["paic_guard_cooldown_active"] = 1.0
+            stage_state["paic_guard_sat_scale"] = scale
+            paic_cooldown_remaining = max(0, paic_cooldown_remaining - 1)
+        else:
+            stage_state["paic_guard_cooldown_active"] = 0.0
         if configure_mixstyle_for_epoch is not None:
             mixstyle_state = configure_mixstyle_for_epoch(model, args, epoch)
         else:
@@ -1257,7 +1549,7 @@ def train(args) -> int:
         model.train()
         epoch_logs = []
         unlabeled_iter = iter(data_ctx["unlabeled_loader"]) if phase == "pseudo" and bool(args.use_unlabeled) else None
-        for labeled_batch in data_ctx["train_loader"]:
+        for batch_idx, labeled_batch in enumerate(data_ctx["train_loader"], start=1):
             x_l, y_l, extra_l = move_batch(labeled_batch, device)
             d_l = domain_from_extra(extra_l, data_ctx["domain_label_map"], device)
             if augmentor is not None:
@@ -1313,10 +1605,23 @@ def train(args) -> int:
                 if use_sat_train:
                     if apply_sat_channel_for_scenario is None:
                         raise ImportError("sat_channel.py support is required when --use_sat_consistency is enabled.")
+                    sat_train_scenarios = list(getattr(args, "sat_train_scenario_list", [args.sat_train_scenario]))
+                    sat_view_stages = tuple(getattr(args, "sat_view_stages", tuple()))
+                    if sat_view_stages:
+                        active_stage = sat_view_stages[0]
+                        for stage in sat_view_stages:
+                            if epoch >= int(stage.start_epoch):
+                                active_stage = stage
+                            else:
+                                break
+                        sat_train_scenarios = list(active_stage.scenarios) or sat_train_scenarios
+                    sat_train_scenario = sat_train_scenarios[
+                        (int(epoch) + int(batch_idx) - 2) % max(1, len(sat_train_scenarios))
+                    ]
                     with torch.no_grad():
                         x_sat, _ = apply_sat_channel_for_scenario(
                             x_l,
-                            str(args.sat_train_scenario),
+                            str(sat_train_scenario),
                             args,
                             gen=sat_gen,
                             return_meta=False,
@@ -1501,16 +1806,91 @@ def train(args) -> int:
         latest_path = out_dir / "latest_ssdg.pth"
         best_path = out_dir / f"best_{args.best_metric}_ssdg.pth"
         save_payload(latest_path, payload)
+        protected_metrics = protected_metric_snapshot(
+            val_stats=val_stats,
+            test_stats=test_stats,
+            named_test_stats=named_stats,
+            sat_test_stats=sat_test_stats,
+        )
+        drop_decision = detect_one_epoch_drop(
+            protected_metrics,
+            previous_protected_metrics,
+            threshold_pp=float(args.one_epoch_drop_guard_pp),
+        ) if _joint_safe_guard_enabled(args) and phase == "pseudo" else None
+        paic_decision = detect_paic_variance_guard(
+            train_logs,
+            previous_train_logs,
+            sat_ce_delta=float(args.paic_guard_sat_ce_delta),
+            grad_delta=float(args.paic_guard_grad_delta),
+            reliable_drop=float(args.paic_guard_reliable_drop),
+            domain_delta=float(args.paic_guard_domain_delta),
+            sat_cons_delta=float(args.paic_guard_sat_cons_delta),
+        ) if _paic_guard_enabled(args) and phase == "pseudo" else None
+        drop_guard_fired = bool(drop_decision and drop_decision.fired)
+        paic_guard_fired = bool(paic_decision and paic_decision.fired)
+        guard_enabled = _joint_safe_guard_enabled(args)
+        missing_required_metrics = (
+            tuple(
+                missing_joint_safe_metrics(
+                    protected_metrics,
+                    require_satellite=bool(getattr(args, "joint_guard_require_satellite", True)),
+                )
+            )
+            if guard_enabled and missing_joint_safe_metrics is not None
+            else tuple()
+        )
+        missing_required_guard_fired = bool(missing_required_metrics)
+        checkpoint_safe = not bool(
+            guard_enabled and (missing_required_guard_fired or drop_guard_fired or paic_guard_fired)
+        )
+        if paic_guard_fired:
+            paic_cooldown_remaining = max(paic_cooldown_remaining, max(0, int(args.paic_guard_cooldown_epochs)))
+        guard_reasons = []
+        if missing_required_guard_fired:
+            guard_reasons.append("missing_required_metrics:" + ",".join(missing_required_metrics))
+        if drop_guard_fired:
+            guard_reasons.append(drop_decision.reason)
+        if paic_guard_fired:
+            guard_reasons.append(paic_decision.reason)
+        guard_state = {
+            "enabled": bool(guard_enabled),
+            "checkpoint_safe": bool(checkpoint_safe),
+            "missing_required_guard_fired": bool(missing_required_guard_fired),
+            "missing_required_metric_count": int(len(missing_required_metrics)),
+            "missing_required_metrics": ",".join(missing_required_metrics),
+            "drop_guard_fired": bool(drop_guard_fired),
+            "paic_guard_fired": bool(paic_guard_fired),
+            "paic_cooldown_active": bool(paic_cooldown_active),
+            "paic_cooldown_remaining": int(paic_cooldown_remaining),
+            "reason": ";".join(guard_reasons),
+        }
+        if drop_decision is not None:
+            guard_state.update({f"drop_{key}": value for key, value in drop_decision.details.items()})
+        if paic_decision is not None:
+            guard_state.update({f"paic_{key}": value for key, value in paic_decision.details.items()})
+        safe_checkpoint_saved = False
+        if guard_enabled and checkpoint_safe:
+            save_payload(safe_latest_path, payload)
+            safe_checkpoint_saved = True
         is_best = False
-        current_best_score = _best_score(val_stats, test_stats, sat_test_stats, str(args.best_metric))
-        if current_best_score > best_score:
+        current_best_score = _best_score(val_stats, test_stats, sat_test_stats, str(args.best_metric), named_stats, args)
+        allow_best_update = (not missing_required_guard_fired) and (not drop_guard_fired) and (
+            checkpoint_safe or (paic_guard_fired and not bool(getattr(args, "paic_guard_block_best", True)))
+        )
+        if allow_best_update and current_best_score > best_score:
             best_score = float(current_best_score)
             best_val = float(val_stats["tx_acc"])
             best_test = float(test_stats["tx_acc"])
             best_epoch = int(epoch)
             payload["best_metric"] = str(args.best_metric)
             payload["best_score"] = best_score
+            payload["protected_metrics"] = dict(protected_metrics)
+            payload["joint_guard"] = dict(guard_state)
             save_payload(best_path, payload)
+            if guard_enabled and Path(best_path) != Path(safe_best_path):
+                save_payload(safe_best_path, payload)
+            elif guard_enabled:
+                safe_checkpoint_saved = True
             is_best = True
         elapsed = time.time() - t0
         telemetry_rows.append(
@@ -1537,6 +1917,12 @@ def train(args) -> int:
                 latest_path=str(latest_path),
                 best_path=str(best_path),
                 is_best=is_best,
+                protected_metrics=protected_metrics,
+                guard_state=guard_state,
+                phase2_audit_state=phase2_audit_state,
+                safe_latest_path=str(safe_latest_path),
+                safe_best_path=str(safe_best_path),
+                safe_checkpoint_saved=safe_checkpoint_saved,
             )
         )
         _write_ssdg_epoch_telemetry(metrics_csv_path, metrics_jsonl_path, telemetry_rows)
@@ -1563,9 +1949,17 @@ def train(args) -> int:
                 latest_path=str(latest_path),
                 best_path=str(best_path),
                 is_best=is_best,
+                protected_metrics=protected_metrics,
+                guard_state=guard_state,
+                phase2_audit_state=phase2_audit_state,
+                safe_latest_path=str(safe_latest_path),
+                safe_best_path=str(safe_best_path),
+                safe_checkpoint_saved=safe_checkpoint_saved,
             ),
             flush=True,
         )
+        previous_protected_metrics = dict(protected_metrics)
+        previous_train_logs = dict(train_logs)
     return 0
 
 

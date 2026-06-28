@@ -106,9 +106,9 @@ PHASE1_LEGACY_ALLOWED_TOKENS = (
 )
 PHASE1_PAIC_ROUTE_FAMILY = "CVS-SAT-PAIC"
 PHASE1_PAIC_SAT_VIEW_SCHEDULE = (
-    "1@0.30:mixed_orbit;"
-    "41@0.60:mixed_orbit*2,low_elev_leo,rain_leo;"
-    "91@0.80:mixed_orbit,low_elev_leo,rain_leo,storm_mp"
+    "1@0.30:leo_clear_weak;"
+    "41@0.60:leo_low_elev_weak,leo_rain_weak;"
+    "91@0.80:leo_clear_weak,leo_low_elev_weak,leo_rain_weak"
 )
 PHASE1_PAIC_CONTROL_EXEMPTION_TOKENS = (
     "explicit_cen51_refresh_control",
@@ -141,6 +141,20 @@ PHASE1_SAFE_SSDG_LOCAL_VERIFY_DEFER_TOKENS = (
 PHASE1_SAFE_SSDG_INVALID_CLI_TOKENS = (
     "--use_safe_ssdg_cvs",
     "use_safe_ssdg_cvs",
+)
+PHASE1_GROUND_PROTO_MASK_TOKENS = (
+    "phase1_ground_proto_mask",
+    "ground_proto_mask",
+    "phase1_ground_prototype_mask",
+    "source_domain_tx_prototypes",
+    "feature_distribution_objective",
+    "receiver_domain_feature_distribution",
+    "phase2_full_prototype_mask_openworld",
+)
+PHASE1_GROUND_PROTO_MASK_MODULE_TOKENS = (
+    "phase2_prototypes",
+    "feature_masks",
+    "tx_rx_geometry",
 )
 
 CANONICAL_STAGE2_GPU_COUNT = 8
@@ -202,7 +216,7 @@ def expected_count_for_matrix(root: Any, cli_value: Optional[int]) -> int:
 
 
 def category_for(item: Mapping[str, Any]) -> str:
-    value = str(item.get("category") or item.get("type") or "").lower()
+    value = str(item.get("category") or item.get("optimization_category") or item.get("type") or "").lower()
     if value in {"conservative", "robust"}:
         return "conservative"
     if value == "aggressive":
@@ -216,6 +230,15 @@ def category_for(item: Mapping[str, Any]) -> str:
     if value in {"oldqual_oldrisk_fusion", "rollback_calibration"}:
         return value
     if value in {"rollback_safe_retention", "deployment_gate_rescue"}:
+        return value
+    if value in {
+        "oldhead_ridge_bridge",
+        "oldhead_knn_density_guard",
+        "oldhead_support_cv_stability",
+        "oldhead_far_stability",
+        "oldrecov_ridge_head",
+        "oldrecov_proto_bridge",
+    }:
         return value
     candidate = str(item.get("candidate_id") or "")
     if re.search(r"_R\d+", candidate):
@@ -900,7 +923,7 @@ def oa_mse_required_field_issues(item: Mapping[str, Any]) -> List[Dict[str, Any]
     cid_upper = str(cid).upper()
     explicit_old_unknown_only = (
         "old_unknown_only" in normalized_status(item.get("k_shot_interpretation"))
-        or any(token in cid_upper for token in ("OLDUNK", "BGTRAIN", "RETOLD", "OLDFIRST", "OLDRELAX", "OLDGEOM", "OLDCONF", "OLDBUDGET", "OLDQUAL", "OLDRISK", "OLDFUSE", "ROLLSAFE"))
+        or any(token in cid_upper for token in ("OLDUNK", "BGTRAIN", "RETOLD", "OLDFIRST", "OLDRELAX", "OLDGEOM", "OLDCONF", "OLDBUDGET", "OLDQUAL", "OLDRISK", "OLDFUSE", "ROLLSAFE", "OLDHEAD"))
         or normalized_status(item.get("target_new_leo_query")) == "not_applicable_old_unknown_only"
     )
     old_unknown_only = explicit_old_unknown_only and target_new_k_value == 0 and not target_new_ids_text
@@ -1142,7 +1165,7 @@ def stage2_sample_protocol_issues(item: Mapping[str, Any], sample_protocol: Opti
         target_new_support_k = int(item.get("target_new_support_per_tx") or item.get("target_new_k") or 0)
     except (TypeError, ValueError):
         target_new_support_k = -1
-    old_unknown_only_plan = any(token in str(cid).upper() for token in ("OLDUNK", "BGTRAIN", "RETOLD", "OLDFIRST", "OLDRELAX", "OLDGEOM", "OLDCONF", "OLDBUDGET", "OLDQUAL", "OLDRISK", "OLDFUSE", "ROLLSAFE"))
+    old_unknown_only_plan = any(token in str(cid).upper() for token in ("OLDUNK", "BGTRAIN", "RETOLD", "OLDFIRST", "OLDRELAX", "OLDGEOM", "OLDCONF", "OLDBUDGET", "OLDQUAL", "OLDRISK", "OLDFUSE", "ROLLSAFE", "OLDHEAD", "OLDRECOV"))
     old_unknown_only_target = (
         target_new_support_k == 0
         and old_unknown_only_plan
@@ -1494,7 +1517,15 @@ def stage2_sample_protocol_issues(item: Mapping[str, Any], sample_protocol: Opti
             old_acc_target = float(item.get("old_acc_target"))
         except (TypeError, ValueError):
             old_acc_target = float("nan")
-        if not (old_acc_target >= 0.90):
+        priority_phase = normalized_status(item.get("stage2_priority_phase"))
+        old80_allowed = (
+            "old80_first" in priority_phase
+            and not is_true_like(item.get("deployment_success_claim_allowed"))
+        )
+        if old80_allowed:
+            if not (old_acc_target >= 0.80):
+                issues.append({"candidate_id": cid, "issue": "phase2_old80_first_target_must_be_at_least_0p80", "old_acc_target": item.get("old_acc_target")})
+        elif not (old_acc_target >= 0.90):
             issues.append({"candidate_id": cid, "issue": "phase2_old_acc_target_must_be_at_least_0p90", "old_acc_target": item.get("old_acc_target")})
     if item.get("seen_new_acc_target") not in (None, "", []):
         try:
@@ -1601,6 +1632,13 @@ def truthy_candidate_or_parameter(item: Mapping[str, Any], field: str) -> bool:
     return truthy_candidate_value(candidate_or_parameter_value(item, field))
 
 
+def float_candidate_or_parameter(item: Mapping[str, Any], field: str, default: float = 0.0) -> float:
+    try:
+        return float(candidate_or_parameter_value(item, field))
+    except Exception:
+        return float(default)
+
+
 def phase1_paic_control_exemption(item: Mapping[str, Any]) -> bool:
     policy = candidate_value_text(
         first_present(
@@ -1625,10 +1663,9 @@ def phase1_paic_schedule_is_canonical(value: Any) -> bool:
         "1@0.30",
         "41@0.60",
         "91@0.80",
-        "mixed_orbit",
-        "low_elev_leo",
-        "rain_leo",
-        "storm_mp",
+        "leo_clear_weak",
+        "leo_low_elev_weak",
+        "leo_rain_weak",
     )
     return all(token in text for token in required_tokens)
 
@@ -1739,7 +1776,7 @@ def phase1_safe_ssdg_executable_default_issues(item: Mapping[str, Any]) -> List[
             {
                 "candidate_id": cid,
                 "issue": "phase1_safe_ssdg_default_must_be_executable",
-                "required": "Use run_phase1_safe_ssdg_candidate or python -m SSDG.train_ssdg; do not default future Phase1 Safe-SSDG rows to local schema deferred.",
+                "required": "Use run_phase1_safe_ssdg_candidate or python ${ROOT}/code/SSDG/train_ssdg.py; do not default future Phase1 Safe-SSDG rows to local schema deferred.",
             }
         )
 
@@ -1749,7 +1786,7 @@ def phase1_safe_ssdg_executable_default_issues(item: Mapping[str, Any]) -> List[
                 "candidate_id": cid,
                 "issue": "phase1_safe_ssdg_unknown_train_py_flag",
                 "forbidden": "--use_safe_ssdg_cvs",
-                "required_entrypoint": "python -m SSDG.train_ssdg or run_phase1_safe_ssdg_candidate",
+                "required_entrypoint": "python ${ROOT}/code/SSDG/train_ssdg.py or run_phase1_safe_ssdg_candidate",
             }
         )
 
@@ -1837,6 +1874,188 @@ def phase1_safe_ssdg_required_field_issues(item: Mapping[str, Any]) -> List[Dict
     issues.extend(phase1_star_ground_aug_default_issues(item))
     issues.extend(phase1_safe_ssdg_executable_default_issues(item))
 
+    return issues
+
+
+def is_phase1_ground_proto_mask_row(item: Mapping[str, Any]) -> bool:
+    if not is_phase1_row(item):
+        return False
+    text = candidate_search_text(item)
+    return any(token in text for token in PHASE1_GROUND_PROTO_MASK_TOKENS)
+
+
+def phase1_ground_proto_mask_required_field_issues(item: Mapping[str, Any]) -> List[Dict[str, Any]]:
+    if not is_phase1_ground_proto_mask_row(item):
+        return []
+
+    cid = str(item.get("candidate_id") or "UNKNOWN")
+    issues: List[Dict[str, Any]] = []
+    required_true = (
+        "phase1_ground_prototype_mask_openworld_enabled",
+        "phase1_ground_feature_distribution_objective",
+        "source_domain_prototype_outputs_required",
+        "phase1_enable_ground_prototype_stats",
+        "phase1_enable_feature_distribution_audit",
+        "phase1_enable_feature_masks_aux",
+        "phase1_enable_txrx_geometry_audit",
+    )
+    for field in required_true:
+        if not truthy_candidate_or_parameter(item, field):
+            issues.append({"candidate_id": cid, "issue": f"phase1_ground_proto_mask_requires_{field}"})
+
+    module_text = candidate_value_text(
+        first_present(item, ["prototype_mask_modules", "phase1_prototype_mask_modules"])
+    )
+    params = item.get("parameters")
+    if isinstance(params, Mapping):
+        module_text = " ".join((module_text, candidate_value_text(params.get("prototype_mask_modules"))))
+    for token in PHASE1_GROUND_PROTO_MASK_MODULE_TOKENS:
+        if token not in module_text:
+            issues.append(
+                {
+                    "candidate_id": cid,
+                    "issue": "phase1_ground_proto_mask_missing_module_token",
+                    "module_token": token,
+                }
+            )
+
+    target_usage = normalized_status(item.get("target_receiver_usage"))
+    unknown_role = normalized_status(item.get("unknown_query_role"))
+    if "forbidden" not in target_usage:
+        issues.append({"candidate_id": cid, "issue": "phase1_ground_proto_mask_requires_target_receiver_forbidden"})
+    if "eval_only" not in unknown_role:
+        issues.append({"candidate_id": cid, "issue": "phase1_ground_proto_mask_requires_unknown_query_eval_only"})
+    if truthy_candidate_value(item.get("deployment_success_claim_allowed")):
+        issues.append({"candidate_id": cid, "issue": "phase1_ground_proto_mask_forbids_deployment_success_preclaim"})
+
+    cen51_text = " ".join(
+        candidate_value_text(first_present(item, [field]))
+        for field in (
+            "control",
+            "cen51_base_checkpoint_or_config",
+            "phase1_ground_dg_policy",
+            "optimization_target",
+        )
+    )
+    if "non" not in cen51_text or "regression" not in cen51_text or "not" not in cen51_text:
+        issues.append({"candidate_id": cid, "issue": "phase1_ground_proto_mask_requires_cen51_non_regression_not_narrowing"})
+
+    return issues
+
+
+def phase1_ground_proto_mask_audit_loss_state_issues(item: Mapping[str, Any]) -> List[Dict[str, Any]]:
+    if not is_phase1_ground_proto_mask_row(item):
+        return []
+    cid = str(item.get("candidate_id") or "UNKNOWN")
+    issues: List[Dict[str, Any]] = []
+    proto_w = float_candidate_or_parameter(item, "phase1_prototype_loss_weight", 0.0)
+    mask_w = float_candidate_or_parameter(item, "phase1_mask_aux_loss_weight", 0.0)
+    geom_w = float_candidate_or_parameter(item, "phase1_geometry_loss_weight", 0.0)
+    tx_proto_w = float_candidate_or_parameter(item, "lambda_tx_proto", 0.0)
+    rx_proto_w = float_candidate_or_parameter(item, "lambda_rx_proto", 0.0)
+    mask_aux_w = float_candidate_or_parameter(item, "lambda_mask_aux", 0.0)
+    tx_supcon_masked_w = float_candidate_or_parameter(item, "lambda_tx_supcon_masked", 0.0)
+    rx_supcon_masked_w = float_candidate_or_parameter(item, "lambda_rx_supcon_masked", 0.0)
+    txrx_rect_w = float_candidate_or_parameter(item, "lambda_txrx_rect", 0.0)
+    active_weight = any(
+        value > 0.0
+        for value in (
+            proto_w,
+            mask_w,
+            geom_w,
+            tx_proto_w,
+            rx_proto_w,
+            mask_aux_w,
+            tx_supcon_masked_w,
+            rx_supcon_masked_w,
+            txrx_rect_w,
+        )
+    )
+    audit_only = truthy_candidate_or_parameter(item, "phase1_distribution_audit_only")
+    if not active_weight and not audit_only:
+        issues.append(
+            {
+                "candidate_id": cid,
+                "issue": "phase1_ground_proto_mask_zero_weight_requires_audit_only_true",
+            }
+        )
+    if active_weight and audit_only:
+        issues.append(
+            {
+                "candidate_id": cid,
+                "issue": "phase1_ground_proto_mask_active_loss_must_not_be_audit_only",
+            }
+        )
+    if active_weight and not truthy_candidate_or_parameter(item, "phase1_active_loss_implementation_verified"):
+        issues.append(
+            {
+                "candidate_id": cid,
+                "issue": "phase1_ground_proto_mask_active_loss_requires_verified_training_wiring",
+            }
+        )
+
+    marker_text = candidate_value_text(candidate_or_parameter_value(item, "active_loss_markers_expected"))
+    exact_command = str(item.get("exact_command") or "").lower()
+    if marker_text:
+        required_markers = ("[proto-tx]", "[proto-rx]", "[mask]", "[batch-geom]", "[txrx-anova]")
+        for marker in required_markers:
+            if marker not in marker_text:
+                issues.append(
+                    {
+                        "candidate_id": cid,
+                        "issue": "phase1_ground_proto_mask_missing_expected_log_marker",
+                        "marker": marker,
+                    }
+                )
+        if "[proto-tx]" in marker_text and "--use_phase2_ground_prototypes true" not in exact_command:
+            issues.append({"candidate_id": cid, "issue": "phase1_ground_proto_mask_command_missing_prototype_audit_flag"})
+        if "[mask]" in marker_text and "--use_feature_masks true" not in exact_command:
+            issues.append({"candidate_id": cid, "issue": "phase1_ground_proto_mask_command_missing_mask_audit_flag"})
+        if "[batch-geom]" in marker_text and "--use_txrx_geometry_losses true" not in exact_command:
+            issues.append({"candidate_id": cid, "issue": "phase1_ground_proto_mask_command_missing_geometry_audit_flag"})
+    return issues
+
+
+def phase1_joint_safe_checkpoint_issues(item: Mapping[str, Any]) -> List[Dict[str, Any]]:
+    if not is_phase1_row(item):
+        return []
+    best_metric = normalized_status(candidate_or_parameter_value(item, "best_metric"))
+    policy = normalized_status(candidate_or_parameter_value(item, "joint_checkpoint_policy"))
+    if best_metric != "joint_safe" and "joint_safe" not in policy:
+        return []
+    cid = str(item.get("candidate_id") or "UNKNOWN")
+    issues: List[Dict[str, Any]] = []
+    exact_command = str(item.get("exact_command") or "").lower()
+    required_flags = (
+        "--best_metric joint_safe",
+        "--enable_joint_safe_guard true",
+        "--one_epoch_drop_guard_pp",
+        "--paic_guard_enabled true",
+        "--paic_guard_sat_ce_delta",
+        "--paic_guard_grad_delta",
+        "--paic_guard_reliable_drop",
+    )
+    for flag in required_flags:
+        if flag not in exact_command:
+            issues.append(
+                {
+                    "candidate_id": cid,
+                    "issue": "phase1_joint_safe_command_missing_required_flag",
+                    "missing_flag": flag,
+                }
+            )
+    protected = candidate_value_text(candidate_or_parameter_value(item, "protected_metrics"))
+    for token in ("strict_udu", "receiver_floor", "sat_mean", "sat_floor", "sat_strict", "val_tx"):
+        if token not in protected:
+            issues.append(
+                {
+                    "candidate_id": cid,
+                    "issue": "phase1_joint_safe_missing_protected_metric",
+                    "metric_token": token,
+                }
+            )
+    if truthy_candidate_or_parameter(item, "deployment_success_claim_allowed"):
+        issues.append({"candidate_id": cid, "issue": "phase1_joint_safe_forbids_deployment_success_preclaim"})
     return issues
 
 
@@ -2232,10 +2451,13 @@ def validate(
     issues.extend(current_run_identity_issues(items, matrix_root, launcher_text, launcher_path))
     for item in items:
         issues.extend(phase1_safe_ssdg_required_field_issues(item))
+        issues.extend(phase1_ground_proto_mask_required_field_issues(item))
+        issues.extend(phase1_ground_proto_mask_audit_loss_state_issues(item))
+        issues.extend(phase1_joint_safe_checkpoint_issues(item))
     issues.extend(phase1_server_landed_training_issues(items, expected_count))
     issues.extend(command_registry_uniqueness_issues(items, expected_count))
     categories = Counter(category_for(item) for item in items)
-    for key in ("conservative", "aggressive", "old_retention", "unknown_boundary", "seen_new_rescue", "support_quality", "prototype_geometry", "query_free_background_risk", "unknown_separability", "oldqual_oldrisk_fusion", "rollback_calibration", "rollback_safe_retention", "deployment_gate_rescue", "unknown"):
+    for key in ("conservative", "aggressive", "old_retention", "unknown_boundary", "seen_new_rescue", "support_quality", "prototype_geometry", "query_free_background_risk", "unknown_separability", "oldqual_oldrisk_fusion", "rollback_calibration", "rollback_safe_retention", "deployment_gate_rescue", "oldhead_ridge_bridge", "oldhead_knn_density_guard", "oldhead_support_cv_stability", "oldhead_far_stability", "oldrecov_ridge_head", "oldrecov_proto_bridge", "unknown"):
         categories.setdefault(key, 0)
     expected_per_category = expected_count // 2 if expected_count % 2 == 0 else None
     triage_categories = {"old_retention", "unknown_boundary", "seen_new_rescue"}
@@ -2243,6 +2465,9 @@ def validate(
     background_risk_categories = {"query_free_background_risk", "unknown_separability"}
     oldfuse_categories = {"oldqual_oldrisk_fusion", "rollback_calibration"}
     rollsafe_categories = {"rollback_safe_retention", "deployment_gate_rescue"}
+    oldhead_categories = {"oldhead_ridge_bridge", "oldhead_knn_density_guard"}
+    oldheadfar_categories = {"oldhead_support_cv_stability", "oldhead_far_stability"}
+    oldrecov_categories = {"oldrecov_ridge_head", "oldrecov_proto_bridge"}
     if any(categories[key] for key in triage_categories):
         expected_per_triage_category = expected_count // 3 if expected_count % 3 == 0 else None
         if (
@@ -2254,6 +2479,9 @@ def validate(
             or any(categories[key] > 0 for key in background_risk_categories)
             or any(categories[key] > 0 for key in oldfuse_categories)
             or any(categories[key] > 0 for key in rollsafe_categories)
+            or any(categories[key] > 0 for key in oldhead_categories)
+            or any(categories[key] > 0 for key in oldheadfar_categories)
+            or any(categories[key] > 0 for key in oldrecov_categories)
             or categories["unknown"] > 0
         ):
             issues.append(
@@ -2275,6 +2503,9 @@ def validate(
             or any(categories[key] > 0 for key in background_risk_categories)
             or any(categories[key] > 0 for key in oldfuse_categories)
             or any(categories[key] > 0 for key in rollsafe_categories)
+            or any(categories[key] > 0 for key in oldhead_categories)
+            or any(categories[key] > 0 for key in oldheadfar_categories)
+            or any(categories[key] > 0 for key in oldrecov_categories)
             or categories["unknown"] > 0
         ):
             issues.append(
@@ -2296,6 +2527,9 @@ def validate(
             or any(categories[key] > 0 for key in support_quality_categories)
             or any(categories[key] > 0 for key in oldfuse_categories)
             or any(categories[key] > 0 for key in rollsafe_categories)
+            or any(categories[key] > 0 for key in oldhead_categories)
+            or any(categories[key] > 0 for key in oldheadfar_categories)
+            or any(categories[key] > 0 for key in oldrecov_categories)
             or categories["unknown"] > 0
         ):
             issues.append(
@@ -2317,6 +2551,9 @@ def validate(
             or any(categories[key] > 0 for key in support_quality_categories)
             or any(categories[key] > 0 for key in background_risk_categories)
             or any(categories[key] > 0 for key in rollsafe_categories)
+            or any(categories[key] > 0 for key in oldhead_categories)
+            or any(categories[key] > 0 for key in oldheadfar_categories)
+            or any(categories[key] > 0 for key in oldrecov_categories)
             or categories["unknown"] > 0
         ):
             issues.append(
@@ -2338,6 +2575,9 @@ def validate(
             or any(categories[key] > 0 for key in support_quality_categories)
             or any(categories[key] > 0 for key in background_risk_categories)
             or any(categories[key] > 0 for key in oldfuse_categories)
+            or any(categories[key] > 0 for key in oldhead_categories)
+            or any(categories[key] > 0 for key in oldheadfar_categories)
+            or any(categories[key] > 0 for key in oldrecov_categories)
             or categories["unknown"] > 0
         ):
             issues.append(
@@ -2345,6 +2585,78 @@ def validate(
                     "scope": "matrix",
                     "issue": "rollsafe_category_count_not_balanced",
                     "expected_per_rollsafe_category": expected_per_rollsafe_category,
+                    "categories": dict(categories),
+                }
+            )
+    elif any(categories[key] for key in oldhead_categories):
+        expected_per_oldhead_category = expected_count // 2 if expected_count % 2 == 0 else None
+        if (
+            expected_per_oldhead_category is None
+            or any(categories[key] != expected_per_oldhead_category for key in oldhead_categories)
+            or categories["conservative"] > 0
+            or categories["aggressive"] > 0
+            or any(categories[key] > 0 for key in triage_categories)
+            or any(categories[key] > 0 for key in support_quality_categories)
+            or any(categories[key] > 0 for key in background_risk_categories)
+            or any(categories[key] > 0 for key in oldfuse_categories)
+            or any(categories[key] > 0 for key in rollsafe_categories)
+            or any(categories[key] > 0 for key in oldheadfar_categories)
+            or any(categories[key] > 0 for key in oldrecov_categories)
+            or categories["unknown"] > 0
+        ):
+            issues.append(
+                {
+                    "scope": "matrix",
+                    "issue": "oldhead_category_count_not_balanced",
+                    "expected_per_oldhead_category": expected_per_oldhead_category,
+                    "categories": dict(categories),
+                }
+            )
+    elif any(categories[key] for key in oldheadfar_categories):
+        expected_per_oldheadfar_category = expected_count // 2 if expected_count % 2 == 0 else None
+        if (
+            expected_per_oldheadfar_category is None
+            or any(categories[key] != expected_per_oldheadfar_category for key in oldheadfar_categories)
+            or categories["conservative"] > 0
+            or categories["aggressive"] > 0
+            or any(categories[key] > 0 for key in triage_categories)
+            or any(categories[key] > 0 for key in support_quality_categories)
+            or any(categories[key] > 0 for key in background_risk_categories)
+            or any(categories[key] > 0 for key in oldfuse_categories)
+            or any(categories[key] > 0 for key in rollsafe_categories)
+            or any(categories[key] > 0 for key in oldhead_categories)
+            or any(categories[key] > 0 for key in oldrecov_categories)
+            or categories["unknown"] > 0
+        ):
+            issues.append(
+                {
+                    "scope": "matrix",
+                    "issue": "oldheadfar_category_count_not_balanced",
+                    "expected_per_oldheadfar_category": expected_per_oldheadfar_category,
+                    "categories": dict(categories),
+                }
+            )
+    elif any(categories[key] for key in oldrecov_categories):
+        expected_per_oldrecov_category = expected_count // 2 if expected_count % 2 == 0 else None
+        if (
+            expected_per_oldrecov_category is None
+            or any(categories[key] != expected_per_oldrecov_category for key in oldrecov_categories)
+            or categories["conservative"] > 0
+            or categories["aggressive"] > 0
+            or any(categories[key] > 0 for key in triage_categories)
+            or any(categories[key] > 0 for key in support_quality_categories)
+            or any(categories[key] > 0 for key in background_risk_categories)
+            or any(categories[key] > 0 for key in oldfuse_categories)
+            or any(categories[key] > 0 for key in rollsafe_categories)
+            or any(categories[key] > 0 for key in oldhead_categories)
+            or any(categories[key] > 0 for key in oldheadfar_categories)
+            or categories["unknown"] > 0
+        ):
+            issues.append(
+                {
+                    "scope": "matrix",
+                    "issue": "oldrecov_category_count_not_balanced",
+                    "expected_per_oldrecov_category": expected_per_oldrecov_category,
                     "categories": dict(categories),
                 }
             )
