@@ -102,6 +102,48 @@ def test_phase1_gpu0_jointsafe4_matrix_has_guarded_audit_only_rows():
     assert validation["verdict"] == "PASS", validation["issues"]
 
 
+def test_phase1_gpu0_jointsafe36_matrix_queues_two_per_gpu():
+    candidates = matrix_gen.make_candidates(plan="PHASE1_GPU0_JOINTSAFE36")
+    payload = matrix_gen.matrix_payload("unit_phase1_gpu0_jointsafe36", candidates)
+    rows = payload["candidates"]
+    launcher = matrix_gen.render_launcher("unit_phase1_gpu0_jointsafe36", candidates)
+
+    assert len(rows) == 36
+    assert payload["phase1_rows_expected"] == 36
+    assert payload["phase2_rows_expected"] == 0
+    assert payload["phase1_ground_dg_policy"]["queue_max_active_per_gpu"] == 2
+    assert set(payload["phase1_ground_dg_policy"]["queued_rows_per_gpu"].values()) == {4, 5}
+    assert 'STAGE2_MAX_ACTIVE_PER_GPU="${STAGE2_MAX_ACTIVE_PER_GPU:-2}"' in launcher
+    assert "external_active_for_gpu" in launcher
+    assert "[SPACEBORNE-FSDA-WAIT]" in launcher
+
+    by_gpu = {}
+    for row in rows:
+        gpu = int(row["gpu"])
+        by_gpu.setdefault(gpu, []).append(row)
+        assert row["stage2_max_active_per_gpu"] == 2
+        assert row["best_metric"] == "joint_safe"
+        assert row["phase1_distribution_audit_only"] is True
+        assert "--best_metric joint_safe" in row["exact_command"]
+        assert "--paic_guard_enabled true" in row["exact_command"]
+        assert "--lambda_tx_supcon_masked 0" in row["exact_command"]
+
+    assert sorted(by_gpu) == list(range(8))
+    assert {gpu: len(gpu_rows) for gpu, gpu_rows in by_gpu.items()} == {
+        0: 5,
+        1: 5,
+        2: 5,
+        3: 5,
+        4: 4,
+        5: 4,
+        6: 4,
+        7: 4,
+    }
+
+    validation = validator.validate(rows, payload["expected_count"], matrix_root=payload, launcher_text=launcher)
+    assert validation["verdict"] == "PASS", validation["issues"]
+
+
 def test_validator_rejects_joint_safe_row_missing_guard_cli():
     candidates = matrix_gen.make_candidates(plan="PHASE1_GPU0_JOINTSAFE4")
     payload = matrix_gen.matrix_payload("unit_phase1_gpu0_jointsafe4_negative", candidates)

@@ -50,7 +50,7 @@ PHASE1_CEN51_NON_REGRESSION_FLOORS = (
     "overall>=88.57; strict_udu>=84.87; receiver_floor>=79.53; "
     "sat_mean_5>=46.564; sat_floor_5>=41.52"
 )
-PHASE1_GPU0_JOINTSAFE_VARIANTS = {
+PHASE1_GPU0_JOINTSAFE4_VARIANTS = {
     "softpseudo_190x10": {
         "label_epochs": 190,
         "pseudo_epochs": 10,
@@ -111,6 +111,43 @@ PHASE1_GPU0_JOINTSAFE_VARIANTS = {
         "lambda_domain": 1.0,
         "description": "GPU0_A group/Fishr pressure softened with 190+10 schedule",
     },
+}
+
+
+def _phase1_gpu0_jointsafe36_variants() -> dict[str, dict]:
+    sweeps = (
+        ("base_s0", {}),
+        ("seed_s1", {}),
+        ("tau88_s2", {"tau_min_delta": 0.01, "tau_max": 0.985, "pseudo_quantile_delta": 0.02}),
+        ("short195_s3", {"label_epochs": 195, "pseudo_epochs": 5, "lambda_u_delta": -0.04}),
+        ("mid188_s4", {"label_epochs": 188, "pseudo_epochs": 12, "lambda_u_delta": -0.02}),
+        ("satlow_s5", {"lambda_sat_cls_delta": -0.08, "lambda_sat_cons": 0.0}),
+        ("domainsoft_s6", {"lambda_domain_delta": -0.15, "lambda_adv": 0.30}),
+        ("domainfirm_s7", {"lambda_domain_delta": 0.10, "lambda_group_ce_delta": -0.01}),
+        ("fishrsoft_s8", {"lambda_fishr_delta": -0.01, "lambda_group_ce_delta": -0.02}),
+    )
+    variants: dict[str, dict] = {}
+    for base_name, base_spec in PHASE1_GPU0_JOINTSAFE4_VARIANTS.items():
+        for sweep_name, delta in sweeps:
+            spec = dict(base_spec)
+            for key, value in delta.items():
+                if key.endswith("_delta"):
+                    target = key[: -len("_delta")]
+                    spec[target] = float(spec[target]) + float(value)
+                else:
+                    spec[key] = value
+            spec["label_epochs"] = int(spec["label_epochs"])
+            spec["pseudo_epochs"] = int(spec["pseudo_epochs"])
+            spec["lambda_adv"] = float(spec.get("lambda_adv", 0.35))
+            spec["description"] = f"{base_spec['description']} sweep={sweep_name}"
+            variants[f"{base_name}_{sweep_name}"] = spec
+    return variants
+
+
+PHASE1_GPU0_JOINTSAFE36_VARIANTS = _phase1_gpu0_jointsafe36_variants()
+PHASE1_GPU0_JOINTSAFE_VARIANTS = {
+    **PHASE1_GPU0_JOINTSAFE4_VARIANTS,
+    **PHASE1_GPU0_JOINTSAFE36_VARIANTS,
 }
 DEFAULT_BEX02_TEACHER_CKPT = "${ROOT}/runs/best_base_explore/BEX02_fishr002_mixed_e170/latest_model.pth"
 H06_LOW_PROB_HYBRID_LATEST_CKPT = (
@@ -5572,12 +5609,22 @@ def _phase1_ground_training_candidates(plan: str, base_rows: Sequence[Candidate]
     return rows
 
 
-def _phase1_gpu0_jointsafe_candidates() -> list[Candidate]:
+def _phase1_gpu0_jointsafe_candidates(
+    *,
+    variants: dict[str, dict] | None = None,
+    prefix: str = "PHASE1_GPU0_JOINTSAFE",
+    seed_base: int = 260629,
+    queue_two_per_gpu: bool = False,
+) -> list[Candidate]:
+    variant_items = list((variants or PHASE1_GPU0_JOINTSAFE4_VARIANTS).items())
     rows: list[Candidate] = []
-    for idx, (variant, spec) in enumerate(PHASE1_GPU0_JOINTSAFE_VARIANTS.items()):
+    for idx, (variant, spec) in enumerate(variant_items):
+        gpu = idx % 8 if queue_two_per_gpu else idx
+        slot_rank = idx // 8 if queue_two_per_gpu else 0
+        slot = chr(ord("A") + slot_rank)
         rows.append(
             Candidate(
-                cid=f"PHASE1_GPU0_JOINTSAFE_{variant.upper()}",
+                cid=f"{prefix}_{variant.upper()}",
                 protocol="Safe-SSDG-CVS-R01",
                 k=0,
                 target_visibility="source_only_ground_training_no_target_receiver",
@@ -5588,11 +5635,11 @@ def _phase1_gpu0_jointsafe_candidates() -> list[Candidate]:
                     "sat_strict_mean_3,pseudo_precision,paic_guard"
                 ),
                 command_kind="phase1_safe_ssdg_ground_train",
-                gpu=idx,
+                gpu=gpu,
                 description=str(spec["description"]),
-                slot=f"GPU{idx}/A",
+                slot=f"GPU{gpu}/{slot}",
                 epochs=int(spec["label_epochs"]) + int(spec["pseudo_epochs"]),
-                seed=260629 + idx,
+                seed=seed_base + idx,
                 source_tx_ids="0,1,2,3,4,5",
                 source_rxs="${CEN51_TRAIN_RXS}",
                 target_receiver_ids="",
@@ -5600,10 +5647,11 @@ def _phase1_gpu0_jointsafe_candidates() -> list[Candidate]:
                 unknown_tx_ids="__NONE__",
                 route_family="SAFE_SSDG_CVS_R01",
                 loss_profile="gpu0_a_joint_safe_paic_guard_plus_prototype_mask_audit_only",
-                optimization_category="conservative" if idx < 2 else "aggressive",
+                optimization_category="conservative" if idx % 2 == 0 else "aggressive",
                 lane="phase1_ground_dg",
                 phase_axis="Phase1-GroundDG",
                 phase1_variant=variant,
+                stage2_max_active_per_gpu=2 if queue_two_per_gpu else None,
                 phase1_design_report_ref=(
                     "C:/Users/lh594/Downloads/"
                     "PHASE2_FULL_PROTOTYPE_MASK_OPENWORLD_IMPLEMENTATION_20260626.md"
@@ -5632,7 +5680,14 @@ def _with_phase1_ground_rows(plan: str, rows: list[Candidate]) -> list[Candidate
 def make_candidates(*, plan: str = "SMOKE") -> list[Candidate]:
     plan = str(plan).upper()
     if plan == "PHASE1_GPU0_JOINTSAFE4":
-        return _phase1_gpu0_jointsafe_candidates()
+        return _phase1_gpu0_jointsafe_candidates(variants=PHASE1_GPU0_JOINTSAFE4_VARIANTS)
+    if plan == "PHASE1_GPU0_JOINTSAFE36":
+        return _phase1_gpu0_jointsafe_candidates(
+            variants=PHASE1_GPU0_JOINTSAFE36_VARIANTS,
+            prefix="PHASE1_GPU0_JOINTSAFE36",
+            seed_base=260700,
+            queue_two_per_gpu=True,
+        )
     if plan == "SMOKE":
         return [
             Candidate(
@@ -8199,7 +8254,8 @@ def _candidate_command(candidate: Candidate) -> str:
                 f"--sat_cons_start_epoch 80 --lambda_sat_cls {float(variant_spec['lambda_sat_cls']):.6g} "
                 f"--lambda_sat_cons {float(variant_spec['lambda_sat_cons']):.6g} "
                 f"--lambda_u {float(variant_spec['lambda_u']):.6g} --lambda_ent 0.01 "
-                f"--lambda_domain {float(variant_spec['lambda_domain']):.6g} --lambda_adv 0.35 "
+                f"--lambda_domain {float(variant_spec['lambda_domain']):.6g} "
+                f"--lambda_adv {float(variant_spec.get('lambda_adv', 0.35)):.6g} "
                 f"--lambda_group_ce {float(variant_spec['lambda_group_ce']):.6g} "
                 f"--lambda_fishr {float(variant_spec['lambda_fishr']):.6g} "
                 f"--tau_min {float(variant_spec['tau_min']):.6g} --tau_max {float(variant_spec['tau_max']):.6g} "
@@ -8781,6 +8837,7 @@ def render_launcher(run_id: str, candidates: Sequence[Candidate]) -> str:
         'SFE_SOURCE_QUERY_PER_TX="${SFE_SOURCE_QUERY_PER_TX:-20}"',
         'SFE_QUERY_PER_TX="${SFE_QUERY_PER_TX:-50}"',
         f'STAGE2_MAX_ACTIVE_PER_GPU="${{STAGE2_MAX_ACTIVE_PER_GPU:-{stage2_max_active_default}}}"',
+        'INCLUDE_EXTERNAL_GPU_PROCS="${INCLUDE_EXTERNAL_GPU_PROCS:-1}"',
         'DRY_RUN="${DRY_RUN:-0}"',
         "",
         'for arg in "$@"; do',
@@ -8827,15 +8884,41 @@ def render_launcher(run_id: str, candidates: Sequence[Candidate]) -> str:
         '  echo "${count}"',
         "}",
         "",
+        "is_own_pid() {",
+        "  local probe=\"$1\" idx",
+        '  for idx in "${!PIDS[@]}"; do',
+        '    if [[ -n "${PIDS[${idx}]}" && "${PIDS[${idx}]}" == "${probe}" ]]; then',
+        "      return 0",
+        "    fi",
+        "  done",
+        "  return 1",
+        "}",
+        "",
+        "external_active_for_gpu() {",
+        "  local gpu=\"$1\" pid count=0",
+        '  if [[ "${INCLUDE_EXTERNAL_GPU_PROCS}" != "1" ]] || ! command -v nvidia-smi >/dev/null 2>&1; then',
+        "    echo 0",
+        "    return 0",
+        "  fi",
+        '  while read -r pid; do',
+        '    if [[ -n "${pid}" ]] && ! is_own_pid "${pid}"; then',
+        "      count=$((count + 1))",
+        "    fi",
+        '  done < <(nvidia-smi pmon -c 1 2>/dev/null | awk -v g="${gpu}" \'$1 == g && $2 ~ /^[0-9]+$/ {print $2}\')',
+        '  echo "${count}"',
+        "}",
+        "",
         "wait_for_gpu_slot() {",
-        "  local gpu=\"$1\" active",
+        "  local gpu=\"$1\" active external total",
         "  while true; do",
         "    reap_finished",
         '    active="$(active_for_gpu "${gpu}")"',
-        '    if (( active < STAGE2_MAX_ACTIVE_PER_GPU )); then',
+        '    external="$(external_active_for_gpu "${gpu}")"',
+        "    total=$((active + external))",
+        '    if (( total < STAGE2_MAX_ACTIVE_PER_GPU )); then',
         "      break",
         "    fi",
-        '    echo "[SPACEBORNE-FSDA-WAIT] gpu=${gpu} active=${active} max=${STAGE2_MAX_ACTIVE_PER_GPU}"',
+        '    echo "[SPACEBORNE-FSDA-WAIT] gpu=${gpu} active=${active} external=${external} total=${total} max=${STAGE2_MAX_ACTIVE_PER_GPU}"',
         "    sleep 5",
         "  done",
         "}",
@@ -9840,6 +9923,11 @@ def matrix_payload(run_id: str, candidates: Sequence[Candidate]) -> dict:
         for c in candidates
     )
     policy_candidate = phase2_candidates[0] if phase2_candidates else (candidates[0] if candidates else None)
+    gpu_values = sorted({int(c.gpu) for c in candidates}) if candidates else []
+    phase1_queued_rows_per_gpu = {
+        f"GPU{gpu}": sum(1 for c in candidates if c.command_kind == "phase1_safe_ssdg_ground_train" and int(c.gpu) == gpu)
+        for gpu in gpu_values
+    }
     return {
         "run_id": run_id,
         "n607_run_id": run_id,
@@ -9862,6 +9950,8 @@ def matrix_payload(run_id: str, candidates: Sequence[Candidate]) -> dict:
             "status": "enabled" if phase1_count else "not_included_for_this_plan",
             "rows": phase1_count,
             "source_only": True,
+            "queue_max_active_per_gpu": policy_candidate.stage2_max_active_per_gpu if phase1_only and policy_candidate else None,
+            "queued_rows_per_gpu": phase1_queued_rows_per_gpu if phase1_only else {},
             "cen51_role": "non_regression_experience_not_route_narrowing",
             "prototype_mask_modules": PHASE1_GROUND_PROTO_MASK_MODULES,
             "feature_distribution_objective": bool(phase1_count),
@@ -9888,7 +9978,7 @@ def matrix_payload(run_id: str, candidates: Sequence[Candidate]) -> dict:
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--run-id", default=None)
-    parser.add_argument("--plan", default="SMOKE", choices=["SMOKE", "CORE", "WISIG_NEWCLASS", "WISIG_NEWCLASS_CARD8", "WISIG_ENHANCED_CARD8", "PHASE1_GPU0_JOINTSAFE4", "OA_MSE_CARD3", "OA_MSE_PROXY32", "OA_MSE_BOUNDARY32", "OA_MSE_UNCERTAIN32", "OA_MSE_VETO32", "OA_MSE_CLASSCOND32", "OA_MSE_CALGUARD32", "OA_MSE_BALANCE64", "OA_MSE_SOFTMIX64", "OA_MSE_VOID64", "OA_MSE_SOFTVOID128", "OA_MSE_ANCHORGUARD128", "OA_MSE_MIXHEAD128", "OA_MSE_STRUCT48", "OA_MSE_SIMPLIFIED48", "OA_MSE_RETENTION48", "OA_MSE_SUPPORTRET48", "OA_MSE_TWOBRANCH48", "OA_MSE_REGHEAD48", "OA_MSE_GEOM48", "OA_MSE_TRIAGE48", "OA_MSE_LOOO48", "OA_MSE_CONSTRAIN48", "OA_MSE_ENVELOPE48", "OA_MSE_RESCUE48", "OA_MSE_PREREJECT48", "OA_MSE_THREEWAY48", "OA_MSE_COVFLOOR48", "OA_MSE_CLASSFIRST48", "OA_MSE_EVIBG48", "OA_MSE_SOFTTARGET48", "OA_MSE_NEGANCHOR48", "OA_MSE_DENSHELL48", "OA_MSE_IDCONS48", "OA_MSE_CONFORM48", "OA_MSE_RECON48", "OA_MSE_SOURCERISK48", "OA_MSE_SUPPORTCV48", "OA_MSE_BGCAP48", "OA_MSE_KRET48", "OA_MSE_RISKRET48", "OA_MSE_MANIFOLD48", "OA_MSE_H06_EVID48", "OA_MSE_H06_ARB48", "OA_MSE_H06_OLDUNK48", "OA_MSE_H06_BGTRAIN48", "OA_MSE_H06_RETOLD48", "OA_MSE_H06_OLDFIRST48", "OA_MSE_H06_OLDRELAX48", "OA_MSE_H06_OLDGEOM48", "OA_MSE_H06_OLDCONF48", "OA_MSE_H06_OLDBUDGET48", "OA_MSE_H06_OLDQUAL48", "OA_MSE_H06_OLDRISK48", "OA_MSE_H06_OLDFUSE48", "OA_MSE_H06_ROLLSAFE48", "OA_MSE_H06_OLDHEAD48", "OA_MSE_H06_OLDHEADFAR48", "OA_MSE_H06_OLDRECOV48"])
+    parser.add_argument("--plan", default="SMOKE", choices=["SMOKE", "CORE", "WISIG_NEWCLASS", "WISIG_NEWCLASS_CARD8", "WISIG_ENHANCED_CARD8", "PHASE1_GPU0_JOINTSAFE4", "PHASE1_GPU0_JOINTSAFE36", "OA_MSE_CARD3", "OA_MSE_PROXY32", "OA_MSE_BOUNDARY32", "OA_MSE_UNCERTAIN32", "OA_MSE_VETO32", "OA_MSE_CLASSCOND32", "OA_MSE_CALGUARD32", "OA_MSE_BALANCE64", "OA_MSE_SOFTMIX64", "OA_MSE_VOID64", "OA_MSE_SOFTVOID128", "OA_MSE_ANCHORGUARD128", "OA_MSE_MIXHEAD128", "OA_MSE_STRUCT48", "OA_MSE_SIMPLIFIED48", "OA_MSE_RETENTION48", "OA_MSE_SUPPORTRET48", "OA_MSE_TWOBRANCH48", "OA_MSE_REGHEAD48", "OA_MSE_GEOM48", "OA_MSE_TRIAGE48", "OA_MSE_LOOO48", "OA_MSE_CONSTRAIN48", "OA_MSE_ENVELOPE48", "OA_MSE_RESCUE48", "OA_MSE_PREREJECT48", "OA_MSE_THREEWAY48", "OA_MSE_COVFLOOR48", "OA_MSE_CLASSFIRST48", "OA_MSE_EVIBG48", "OA_MSE_SOFTTARGET48", "OA_MSE_NEGANCHOR48", "OA_MSE_DENSHELL48", "OA_MSE_IDCONS48", "OA_MSE_CONFORM48", "OA_MSE_RECON48", "OA_MSE_SOURCERISK48", "OA_MSE_SUPPORTCV48", "OA_MSE_BGCAP48", "OA_MSE_KRET48", "OA_MSE_RISKRET48", "OA_MSE_MANIFOLD48", "OA_MSE_H06_EVID48", "OA_MSE_H06_ARB48", "OA_MSE_H06_OLDUNK48", "OA_MSE_H06_BGTRAIN48", "OA_MSE_H06_RETOLD48", "OA_MSE_H06_OLDFIRST48", "OA_MSE_H06_OLDRELAX48", "OA_MSE_H06_OLDGEOM48", "OA_MSE_H06_OLDCONF48", "OA_MSE_H06_OLDBUDGET48", "OA_MSE_H06_OLDQUAL48", "OA_MSE_H06_OLDRISK48", "OA_MSE_H06_OLDFUSE48", "OA_MSE_H06_ROLLSAFE48", "OA_MSE_H06_OLDHEAD48", "OA_MSE_H06_OLDHEADFAR48", "OA_MSE_H06_OLDRECOV48"])
     parser.add_argument(
         "--phase1-only",
         action="store_true",
