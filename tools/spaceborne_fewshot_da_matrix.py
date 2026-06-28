@@ -8904,7 +8904,7 @@ def render_launcher(run_id: str, candidates: Sequence[Candidate]) -> str:
         '    if [[ -n "${pid}" ]] && ! is_own_pid "${pid}"; then',
         "      count=$((count + 1))",
         "    fi",
-        '  done < <(nvidia-smi pmon -c 1 2>/dev/null | awk -v g="${gpu}" \'$1 == g && $2 ~ /^[0-9]+$/ {print $2}\')',
+        '  done < <(nvidia-smi pmon -c 1 2>/dev/null | awk -v g="${gpu}" \'$1 == g && $2 ~ /^[0-9]+$/ && $3 == "C" {print $2}\')',
         '  echo "${count}"',
         "}",
         "",

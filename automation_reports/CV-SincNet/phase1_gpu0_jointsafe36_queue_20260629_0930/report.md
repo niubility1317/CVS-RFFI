@@ -119,6 +119,8 @@ Results: `py_compile` passed; focused tests passed (`14 passed`, one `.pytest_ca
 
 Scheduler PID correction: before remote launch, the generated launcher was tightened to start `"${CMD[@]}"` directly in the background instead of through a parenthesized subshell. This keeps the recorded PID aligned with the training process for per-GPU queue accounting. Local re-verification after this change: `py_compile` passed, focused tests passed (`14 passed`), `bash -n` passed, and dry-run counted 36 candidates.
 
+Remote scheduler correction: first remote start showed `[SPACEBORNE-FSDA-WAIT] gpu=0 active=0 external=2 total=2 max=2` before launching any candidate because `nvidia-smi pmon` counted the display `Xorg` process. The launcher was corrected to count only pmon rows with type `C`, so graphics processes no longer consume the training concurrency budget.
+
 Planned remote sync:
 
 | Local | Remote |
