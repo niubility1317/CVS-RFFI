@@ -250,3 +250,41 @@ Active launched jobs by family and progress:
 | `EMA_KEEP15` | 7 | E120 to E123 |
 
 No inspected launched log tail contained `Traceback`, `RuntimeError`, `unrecognized arguments`, CUDA OOM, or NaN markers. This snapshot is a monitor-only status check, not a completion report.
+
+## Monitor Snapshot 2026-06-29 10:24 CST
+
+User question: whether the 36-experiment queue has finished.
+
+Read-only N607 monitor result:
+
+| Field | Value |
+|---|---:|
+| Matrix candidates | 36 |
+| Launched by scheduler | 20 |
+| Scheduler-complete markers | 4 |
+| Scheduler-failed markers | 0 |
+| Active launched jobs | 16 |
+| Ended but unreported jobs | 0 |
+| Pending not launched | 16 |
+| GPU compute rows from `nvidia-smi pmon` | 16 |
+
+Interpretation: the experiment queue has not finished. Four jobs have completed successfully, sixteen jobs are currently running, and sixteen candidates have not started yet. The scheduler is still enforcing the two-active-jobs-per-GPU cap.
+
+Completed candidates:
+
+| Candidate | Final epoch |
+|---|---:|
+| `PHASE1_GPU0_JOINTSAFE36_SOFTPSEUDO_190X10_BASE_S0` | 200 |
+| `PHASE1_GPU0_JOINTSAFE36_SOFTPSEUDO_190X10_SEED_S1` | 200 |
+| `PHASE1_GPU0_JOINTSAFE36_SOFTPSEUDO_190X10_SHORT195_S3` | 200 |
+| `PHASE1_GPU0_JOINTSAFE36_SOFTPSEUDO_190X10_TAU88_S2` | 200 |
+
+Active progress summary:
+
+| Group | Active jobs | Current epoch range |
+|---|---:|---|
+| `SOFTPSEUDO_190X10` still active | 5 | E148 to E199 |
+| `EMA_KEEP15` active | 9 | startup to E149 |
+| `SATSOFT_NO_CONS` active | 2 | startup |
+
+No inspected launched log tail contained `Traceback`, `RuntimeError`, `unrecognized arguments`, CUDA OOM, or NaN markers. This snapshot is a monitor-only status check, not a completion report.
