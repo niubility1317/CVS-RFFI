@@ -106,7 +106,7 @@
 |---|---|---|---|---|---|---|
 | R0 | 用户Local-first | 先审计本地项目，先写适配矩阵 | `docs/PHASE2_LOCAL_FIT_MATRIX.md` | verified | 本文件和矩阵已建立 | 未实现功能代码。 |
 | R1 | `AGENTS.md`/`项目.md` | 保持CVS科学场景和Stage2边界 | `项目.md`、Phase2 docs | verified | 已读取并纳入矩阵 | `z_dom`不得进入TX距离。 |
-| R2 | 用户命令清单 | 执行并记录本地审计命令 | 原始日志和有界`rg`复核 | verified with caveat | 原始日志路径已记录 | 全树grep因历史产物超时。 |
+| R2 | 用户命令清单 | 执行并记录本地审计命令 | 原始日志、逐条重跑日志和有界`rg`复核 | verified | 原始日志和逐条重跑summary路径已记录 | 全树grep因历史产物超时，已记录退出码并用当前代码面复核。 |
 | R3 | 用户forward硬规则 | 查清`return_aux`输出后才可写特征提取 | `code/model_dual_cvsincnet.py` | verified | 已确认`return_aux=True`输出键 | 本轮未写`extract_phase2_features`。 |
 | R4 | 用户loader硬规则 | 查清dataloader batch格式后才可改loader | `code/cvsrffi/tensors.py`、`code/train.py` | verified | 已确认`unpack_batch`和domain extra | 本轮未改loader。 |
 | R5 | 用户checkpoint硬规则 | 查清checkpoint字段后才可写加载逻辑 | `code/cvsrffi/checkpoint.py`、`code/train.py` | verified | 已确认`model`、`args`、`stats`等字段 | 本轮未写load helper。 |
@@ -116,7 +116,11 @@
 | R9 | 设计报告P0/P1 | 原型导出、半径、class-domain统计 | `code/cvsrffi/phase2_prototypes.py` | deferred | 矩阵已给出落点 | 需下一阶段实现。 |
 | R10 | 设计报告open-world | 新类注册和unknown拒识 | `code/cvsrffi/open_world_head.py` | deferred | 矩阵已给出落点 | 扩展已有类。 |
 | R11 | 设计报告meta/refiner | episodic meta-learning和协方差估计 | 暂无稳定落点 | deferred | 风险已记录 | 延期到P6。 |
-| R12 | 用户默认行为规则 | 新CLI默认关闭，不改训练结果 | `code/train.py` | verified as plan | 计划已写明 | 本轮未新增CLI。 |
+| R12 | 用户默认行为规则 | 新CLI默认关闭，不改训练结果 | `code/train.py` | verified | 计划已写明 | 本轮未新增CLI。 |
+| R13 | 用户防孤岛规则 | 不新建与现有`phase2_prototypes.py`平行的原型模块 | `code/cvsrffi/phase2_prototypes.py` | rejected | 矩阵已指定扩展现有模块 | 拒绝平行孤岛模块。 |
+| R14 | 用户防孤岛规则 | 不新建与现有`open_world_head.py`平行的open-world头 | `code/cvsrffi/open_world_head.py` | rejected | 矩阵已指定扩展现有类 | 拒绝平行孤岛头。 |
+| R15 | `项目.md`协议 | unknown query不得进入伪标签训练或阈值选择 | Phase2评估/适配计划 | rejected | 禁止项已写入计划和拒绝清单 | 只允许评估和缓存复核。 |
+| R16 | 用户forward硬规则 | 不使用`return_aux=False`导出Phase2特征 | `code/model_dual_cvsincnet.py` | rejected | forward审计已确认该路径不稳定暴露特征 | 后续导出必须使用`return_aux=True`。 |
 
 ## 已拒绝或延期的设计项
 
