@@ -214,3 +214,39 @@ SSH cleanup:
 - Two early remote launch attempts timed out because the detached command did not return cleanly through the Windows SSH client. Local stale `ssh.exe` clients were identified and closed before continuing.
 - After the successful bounded checks, the remaining remote long-lived processes are the intended scheduler and training jobs on N607, not local SSH shells.
 - No experiment result or deployment success claim is made here; this record only confirms queue launch and startup health.
+
+## Monitor Snapshot 2026-06-29 09:25 CST
+
+User question: whether the 36-experiment queue has finished.
+
+Read-only N607 monitor result:
+
+| Field | Value |
+|---|---:|
+| Matrix candidates | 36 |
+| Launched by scheduler | 16 |
+| Scheduler-complete markers | 0 |
+| Scheduler-failed markers | 0 |
+| Active launched jobs | 16 |
+| Ended but unreported jobs | 0 |
+| Pending not launched | 20 |
+| GPU compute rows from `nvidia-smi pmon` | 16 |
+
+Interpretation: the experiment queue has not finished. It is currently using the full allowed queue capacity, two active queued jobs per GPU, and has 20 candidates still waiting.
+
+Scheduler tail showed repeated:
+
+```text
+[SPACEBORNE-FSDA-WAIT] gpu=0 active=2 external=0 total=2 max=2
+```
+
+This means the earlier external floorrepair processes have ended or are no longer visible as external compute rows, and the queue has filled both allowed slots per GPU with its own candidates.
+
+Active launched jobs by family and progress:
+
+| Family | Active jobs | Current epoch range |
+|---|---:|---|
+| `SOFTPSEUDO_190X10` | 9 | E122 to E175 |
+| `EMA_KEEP15` | 7 | E120 to E123 |
+
+No inspected launched log tail contained `Traceback`, `RuntimeError`, `unrecognized arguments`, CUDA OOM, or NaN markers. This snapshot is a monitor-only status check, not a completion report.
