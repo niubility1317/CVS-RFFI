@@ -37,3 +37,6 @@
 - Recorded critical guardrails: current `sgc_adapt` is not full Phase 2, do not concatenate `z_dom` directly into TX classifier, do not rely on max-softmax-only rejection, and require target-RX old-known anchor coverage.
 - Added `docs/PHASE2_FULL_PROTOTYPE_MASK_OPENWORLD_IMPLEMENTATION_20260626.md`, a detailed implementation blueprint for TX/domain/TX-domain prototype banks, feature masks, relationship masks, balanced TX×RX sampler, prototype/domain-shift losses, multi-prototype open-world head, and `phase2_adapt.py` flow.
 - Updated `task_plan.md` again so Codex can find both the diagnostic handoff and the complete prototype/mask/open-world implementation blueprint.
+- Added `docs/PHASE2_PROTOTYPE_DISTANCE_BOUNDS_AND_NEW_CLASS_PRIORS_20260626.md` to require ground training export of per-class/per-domain prototype distance bounds, including p95/p99/max/robust_max/top-k distances for unknown rejection.
+- Added new-class few-shot prior design: use ground prototype radius/tail priors, nearest old-class neighborhood priors, target-domain drift priors, shrinkage radius estimation, and multiview stability, while avoiding pulling new-class identity direction toward old classes.
+- Updated `task_plan.md` to list prototype bounds export and new-class priors as explicit Codex phases.
