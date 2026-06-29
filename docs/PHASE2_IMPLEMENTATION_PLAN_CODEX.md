@@ -1,16 +1,16 @@
 # Phase2本地实现计划
 
 生成时间：2026-06-29  
-状态：P1/P2已按本地代码事实落地；P3以后仍为计划。
+状态：P1/P2和地面特征空间优化已按本地代码事实落地；完整P3评估CLI以后仍为计划。
 最高约束：本地代码事实优先，`项目.md`优先于设计报告和历史记忆。
 
 ## 目标与非目标
 
-目标是在不改变默认训练行为的前提下，为CVS-RFFI Phase2建立可测试、可回滚、可审计的离线原型导出和open-world评估路径。设计报告中的模块名只能作为候选，不直接决定本地文件结构。
+目标是在不改变默认训练行为的前提下，为CVS-RFFI Phase2建立可测试、可回滚、可审计的离线原型导出、open-world评估路径和地面训练特征空间优化入口。设计报告中的模块名只能作为候选，不直接决定本地文件结构。
 
 本轮非目标：
 
-- 不改`train.py`训练主循环。
+- 不改变`train.py`默认训练结果；新增训练期特征空间损失必须默认关闭。
 - 不新增N607启动、同步或远程运行。
 - 不实现高斯协方差、episodic meta-learning、unknown buffer或prototype refiner。
 - 不把target query用于训练、阈值选择或model selection。
@@ -23,6 +23,7 @@
 4. checkpoint由`code/cvsrffi/checkpoint.py::save_checkpoint`保存，核心字段为`model`、`optimizer`、`scheduler`、`scaler`、`epoch`、`args`、`split_info`、`stats`。
 5. 训练时原型正则由`code/cvsrffi/losses.py::PrototypeMemoryBank`承担；离线Phase2原型应落在`code/cvsrffi/phase2_prototypes.py`。
 6. open-world判定已有基础类`code/cvsrffi/open_world_head.py::OpenWorldMultiPrototypeHead`，后续必须扩展它而不是新增平行头。
+7. 地面特征空间优化接在`code/train.py::select_generalization_feature`之后，默认使用`z_id`，与`PrototypeMemoryBank`和`domain_aware_supcon_loss`共用同一identity特征链路。
 
 ## 分阶段计划
 
@@ -99,7 +100,37 @@
 
 ### P3：离线open-world评估
 
-状态：head级P1包接入和overlap安全注册已实现；完整离线评估CLI仍延期。
+状态：head级P1包接入、overlap安全注册和训练期特征空间优化已实现；完整离线评估CLI仍延期。
+
+#### P3-A：地面训练特征空间优化
+
+状态：已实现并验证，默认关闭。
+
+落点：
+
+- `code/cvsrffi/losses.py`
+- `code/train.py`
+- `code/cvsrffi/logging.py`
+- `code/tests/test_open_world_feature_space_loss.py`
+- `docs/PHASE2_FEATURE_SPACE_OPTIMIZATION.md`
+
+已落地功能：
+
+- 新增`open_world_feature_space_loss`，包含类内角半径、类中心角间隔、样本到最近负类中心margin和可选同类跨domain中心对齐。
+- 新增`--lambda_open_world_feat`，默认`0.0`；新增`--ow_feat_radius_deg`、`--ow_feat_inter_margin_deg`、`--ow_feat_sample_margin_deg`、`--ow_feat_domain_align_weight`、`--ow_feat_min_classes`、`--ow_feat_min_samples_per_class`。
+- 该损失只在`--lambda_open_world_feat>0`时计算，使用`select_generalization_feature`得到的identity特征，默认仍为`z_id`。
+- 新增训练日志`[LOSS-OW-FEAT]`和checkpoint/centralized metrics字段，包括`train_ow_feat_compact`、`train_ow_feat_inter`、`train_ow_feat_sample_margin`、`train_ow_feat_domain_align`和角度诊断。
+
+协议约束：
+
+- 不使用target receiver样本、unknown query或target query调参。
+- 不把`z_dom`并入TX prototype距离。
+- 不新建训练时memory bank；与现有`PrototypeMemoryBank`并列为可选loss项。
+
+验证：
+
+- `conda activate ssr-gpu; python -m pytest code\tests\test_open_world_feature_space_loss.py code\tests\test_phase2_train_cli.py -q`
+- 结果：5 passed。
 
 落点：
 
@@ -193,6 +224,7 @@
 conda activate ssr-gpu
 python -m py_compile code/cvsrffi/phase2_prototypes.py code/cvsrffi/open_world_head.py code/model_dual_cvsincnet.py code/eval_feature_diagnosis.py
 python -m pytest code/tests/test_phase2_prototypes.py code/tests/test_open_world_head.py -q
+python -m pytest code/tests/test_open_world_feature_space_loss.py code/tests/test_phase2_train_cli.py -q
 ```
 
 如改动`train.py`，额外执行：
@@ -200,6 +232,7 @@ python -m pytest code/tests/test_phase2_prototypes.py code/tests/test_open_world
 ```powershell
 conda activate ssr-gpu
 python -m py_compile code/train.py
+python -m py_compile code/cvsrffi/losses.py code/cvsrffi/logging.py code/train.py
 ```
 
 本轮已执行：
@@ -209,6 +242,7 @@ conda activate ssr-gpu
 python -m pytest code\tests\test_phase2_prototypes.py code\tests\test_phase2_train_cli.py -q
 python -m py_compile code\cvsrffi\phase2_prototypes.py code\train.py
 python code\train.py --help | Select-String -Pattern "phase2_export"
+python -m pytest code\tests\test_open_world_feature_space_loss.py code\tests\test_phase2_train_cli.py -q
 ```
 
 ## 发布策略

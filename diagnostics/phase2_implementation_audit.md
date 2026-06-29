@@ -3,7 +3,7 @@
 生成时间：2026-06-29  
 审计对象：`E:\type10-7`本地CVS-RFFI项目  
 原始命令日志：`E:\codex\home\tmp\phase2_local_audit_raw_commands_20260629.log`  
-状态：P1/P2最小闭环已实现；P3以后仍按风险延期。
+状态：P1/P2最小闭环和P3-A地面特征空间优化已实现；完整P3评估CLI以后仍按风险延期。
 
 ## 权威文件
 
@@ -107,9 +107,13 @@
 | `code/cvsrffi/phase2_prototypes.py` | 新增`extract_phase2_features`、`build_phase2_prototype_export`、`save_phase2_prototype_export`、`export_phase2_prototypes`；扩展`PrototypeRadiusTracker`支持p99/max和`sigma_tensor` | 复用`BalancedPrototypeBank`、`TxDomainPrototypeBank`、`PrototypeRadiusTracker`、`unpack_batch`、`extract_domain_from_extra`；通过`return_aux=True`读取模型aux输出。 |
 | `code/train.py` | 新增默认关闭Phase2导出CLI和`maybe_export_phase2_prototypes` | 复用已有`best_primary_save_path`、checkpoint字段`model`、`train_loader`/`val_loader`、训练结束final区；导出失败只给warning，不改变训练结果。 |
 | `code/cvsrffi/open_world_head.py` | 新增`from_phase2_export`；`register_new_class`新增默认关闭的`overlap_margin`拒绝逻辑和`status`字段 | 复用现有`OpenWorldMultiPrototypeHead`、`add_old_classes`、`decide`和半径门控；不新增平行open-world头。 |
+| `code/cvsrffi/losses.py` | 新增`open_world_feature_space_loss` | 复用`safe_l2_normalize`和现有loss工具；在batch内优化identity特征的类内角半径、类间角间隔、样本负类margin和可选跨domain中心对齐；不新增训练时memory bank。 |
+| `code/cvsrffi/logging.py` | 新增`[LOSS-OW-FEAT]`日志和weighted loss top项 | 复用现有`AverageMeter`/`meter_avg`日志体系，展示open-world特征几何诊断，不改变训练控制流。 |
+| `docs/PHASE2_FEATURE_SPACE_OPTIMIZATION.md` | 新增文献筛选、公式、接入点和延期项说明 | 把SupCon、ArcFace、Center Loss、Prototype/OpenMax/Mahalanobis/Energy等文献方向映射到本地可落地方案。 |
 | `code/tests/test_phase2_prototypes.py` | 新增synthetic tensor导出测试 | 覆盖feature extraction、domain label、`P_tx`、`P_tx_dom`、radii、`.pt`/`.json`。 |
 | `code/tests/test_phase2_train_cli.py` | 新增CLI默认关闭接入测试 | 检查`train.py`中默认关闭参数和导出钩子可达。 |
 | `code/tests/test_open_world_head.py` | 新增P1包加载和overlap rejection测试 | 覆盖head级P3接入，完整Stage2评估CLI仍延期。 |
+| `code/tests/test_open_world_feature_space_loss.py` | 新增synthetic tensor特征空间测试 | 覆盖塌缩类几何惩罚、domain中心错位指标、类别不足时graph-safe zero。 |
 
 ## Traceability表
 
@@ -134,6 +138,8 @@
 | R16 | 用户forward硬规则 | 不使用`return_aux=False`导出Phase2特征 | `code/model_dual_cvsincnet.py` | rejected | forward审计已确认该路径不稳定暴露特征 | 后续导出必须使用`return_aux=True`。 |
 | R17 | 设计报告P2 | 训练后可选导出CLI | `code/train.py` | verified | `pytest code\tests\test_phase2_train_cli.py`、`py_compile`、`train.py --help`通过 | 默认关闭，显式开启时默认读取`best_primary_save_path`。 |
 | R18 | 设计报告P3局部 | open-world头消费P1原型包并拒绝重叠新类 | `code/cvsrffi/open_world_head.py` | verified | `pytest code\tests\test_open_world_head.py`通过 | 只落地head级接入和overlap安全，不声明完整Stage2评估CLI。 |
+| R19 | 用户特征空间优化要求 | 搜索并筛选高效特征空间优化方法，特别服务开放世界、新类识别和未知拒识 | `docs/PHASE2_FEATURE_SPACE_OPTIMIZATION.md` | verified | 文档列出文献、筛选结论、公式和延期项 | 训练期先优化`z_id`几何；Mahalanobis/OpenMax/Energy保留为拒识评分层。 |
+| R20 | 用户落地实现要求 | 实现本地可接入的特征空间方法 | `code/cvsrffi/losses.py`、`code/train.py`、`code/cvsrffi/logging.py` | verified | `pytest code\tests\test_open_world_feature_space_loss.py code\tests\test_phase2_train_cli.py -q`通过 | `--lambda_open_world_feat`默认`0.0`，不改变默认训练。 |
 
 ## 已拒绝或延期的设计项
 
@@ -147,6 +153,7 @@
 
 - `docs/PHASE2_LOCAL_FIT_MATRIX.md`
 - `docs/PHASE2_IMPLEMENTATION_PLAN_CODEX.md`
+- `docs/PHASE2_FEATURE_SPACE_OPTIMIZATION.md`
 - `diagnostics/phase2_implementation_audit.md`
 
 同名文件将同步到`github_publish/CVS-RFFI-repo/`用于Git提交。本轮没有N607访问、没有SCP、没有远程实验、没有训练运行。
@@ -157,7 +164,9 @@
 conda activate ssr-gpu
 python -m pytest code\tests\test_phase2_prototypes.py code\tests\test_phase2_train_cli.py -q
 python -m pytest code\tests\test_open_world_head.py code\tests\test_phase2_prototypes.py code\tests\test_phase2_train_cli.py -q
+python -m pytest code\tests\test_open_world_feature_space_loss.py code\tests\test_phase2_train_cli.py -q
 python -m py_compile code\cvsrffi\phase2_prototypes.py code\train.py
+python -m py_compile code\cvsrffi\losses.py code\cvsrffi\logging.py code\train.py
 python code\train.py --help | Select-String -Pattern "phase2_export"
 ```
 

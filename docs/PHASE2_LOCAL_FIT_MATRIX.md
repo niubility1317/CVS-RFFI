@@ -30,6 +30,8 @@
 - `code/tests/test_phase2_train_cli.py`新增默认关闭CLI接入测试。
 - `code/cvsrffi/open_world_head.py`新增`from_phase2_export`，可直接消费P1导出的prototype package；`register_new_class`新增默认关闭的`overlap_margin`拒绝逻辑，避免新类support与old类半径重叠时被注册。
 - `code/tests/test_open_world_head.py`新增package加载和overlap rejection测试。
+- `code/cvsrffi/losses.py`新增`open_world_feature_space_loss`，在已有`z_id`/`--generalization_feature`链路上增加默认关闭的角度特征空间优化；`code/train.py`新增`--lambda_open_world_feat`和`--ow_feat_*`参数，默认`0.0`不改变训练结果。
+- `docs/PHASE2_FEATURE_SPACE_OPTIMIZATION.md`记录文献筛选、公式、接入点、推荐实验入口和延期项。
 
 ## 适配矩阵
 
@@ -37,6 +39,7 @@
 |---|---|---|---|---|---|---|---|---|
 | Phase2特征提取`z_id`/`z_dom` | 已有稳定接口 | `code/model_dual_cvsincnet.py`、`code/eval_feature_diagnosis.py`、`code/train.py` | `DualCVSincNet.forward(return_aux=True,domain_labels,grl_lambda)`、`collect_feature_dict`、`extract_split_features`、`select_generalization_feature` | 复用现有`return_aux=True`路径；后续只允许封装薄helper，禁止用`return_aux=False`导出特征 | 否 | 低 | 新增或扩展`code/tests/test_phase2_prototypes.py` | 否 |
 | 训练时`PrototypeMemoryBank` | 已有 | `code/cvsrffi/losses.py`、`code/train.py` | `PrototypeMemoryBank.loss/update`、`--lambda_proto`、`--proto_momentum`、`--proto_domain_align_weight` | 仅复用为训练正则；不改造成Phase2离线导出器，避免训练态与评估态耦合 | 否 | 中 | 现有训练损失测试可后补 | 否 |
+| 地面训练特征空间优化 | 已有SupCon/PrototypeMemoryBank半成品，已新增无状态角度几何损失 | `code/cvsrffi/losses.py`、`code/train.py`、`code/cvsrffi/logging.py` | `domain_aware_supcon_loss`、`PrototypeMemoryBank`、`open_world_feature_space_loss`、`--lambda_open_world_feat`、`--ow_feat_radius_deg`、`--ow_feat_inter_margin_deg`、`--ow_feat_sample_margin_deg`、`--ow_feat_domain_align_weight` | 扩展已有loss链路；不新增memory bank；默认关闭；仅作用于`select_generalization_feature`得到的identity特征 | 默认关闭，不改变默认训练行为 | 中 | `code/tests/test_open_world_feature_space_loss.py`、`code/tests/test_phase2_train_cli.py` | 否 |
 | 离线TX原型导出`P_tx` | 已落地最小闭环 | `code/cvsrffi/phase2_prototypes.py` | `extract_phase2_features`、`build_phase2_prototype_export`、`export_phase2_prototypes`、`BalancedPrototypeBank.update_from_features` | 扩展现有模块，增加eval-mode导出器、元数据、协议摘要和文件保存 | 默认关闭 | 中 | `code/tests/test_phase2_prototypes.py` | 否 |
 | class-domain原型`P_tx_dom` | 已落地诊断包 | `code/cvsrffi/phase2_prototypes.py` | `TxDomainPrototypeBank.update`、`compute_domain_shifts`、`build_phase2_prototype_export` | 用domain label生成`P_tx_dom`和domain shift诊断；不把`z_dom`并入TX距离 | 默认关闭 | 中 | `code/tests/test_phase2_prototypes.py` | 否 |
 | 距离边界、半径、robust max | 已落地基础统计 | `code/cvsrffi/phase2_prototypes.py` | `PrototypeRadiusTracker.radius`、`radii_tensor`、`sigma_tensor`、`prototype_geometry_summary` | 已支持p95/p99/max/robust_max；安全边界仍作为后续open-world策略扩展 | 默认关闭 | 中 | `code/tests/test_phase2_prototypes.py` | 否 |

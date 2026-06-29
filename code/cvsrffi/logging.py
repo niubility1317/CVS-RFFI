@@ -322,7 +322,15 @@ def format_epoch_block(
     lines.append(
         "[LOSS-DG-W]     "
         f"proto={meter_avg(meters, 'w_proto'):.4f} supcon={meter_avg(meters, 'w_supcon'):.4f} "
-        f"fishr={meter_avg(meters, 'w_fishr'):.6e} feature_norm={meter_avg(meters, 'w_feature_norm'):.6e}"
+        f"fishr={meter_avg(meters, 'w_fishr'):.6e} ow_feat={meter_avg(meters, 'w_open_world_feat'):.6e} "
+        f"feature_norm={meter_avg(meters, 'w_feature_norm'):.6e}"
+    )
+    lines.append(
+        "[LOSS-OW-FEAT] "
+        f"loss={meter_avg(meters, 'open_world_feat'):.6e} compact={meter_avg(meters, 'ow_feat_compact'):.6e} "
+        f"inter={meter_avg(meters, 'ow_feat_inter'):.6e} sample_margin={meter_avg(meters, 'ow_feat_sample_margin'):.6e} "
+        f"domain_align={meter_avg(meters, 'ow_feat_domain_align'):.4f} active_cls={meter_avg(meters, 'ow_feat_active_classes'):.2f} "
+        f"pos_deg={meter_avg(meters, 'ow_feat_pos_angle_deg'):.2f} min_inter_deg={meter_avg(meters, 'ow_feat_min_inter_deg'):.2f}"
     )
     lines.append(
         "[LOSS-META-SSL] "
@@ -348,7 +356,7 @@ def format_epoch_block(
     lines.append(format_weighted_loss_top(meters, [
         "w_cls", "w_dom", "w_adv", "w_orth", "w_cons", "w_group_ce",
         "w_cls_pa", "w_cls_dac", "w_pa_joint_inv", "w_pa_kl", "w_dac_reg", "w_pa_reg",
-        "w_sat_cls", "w_sat_cons", "w_proto", "w_supcon", "w_fishr", "w_feature_norm",
+        "w_sat_cls", "w_sat_cons", "w_proto", "w_supcon", "w_fishr", "w_open_world_feat", "w_feature_norm",
         "w_meta_ssl_tx", "w_meta_ssl_proto", "w_meta_ssl_dom", "w_meta_ssl_adv",
     ], limit=10))
     lines.append(minor)

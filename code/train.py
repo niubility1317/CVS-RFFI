@@ -109,6 +109,7 @@ from cvsrffi.losses import (
     hard_domain_ce_loss,
     one_way_kl_from_teacher,
     masked_pseudo_label_ce_loss,
+    open_world_feature_space_loss,
     prototype_agreement_pull_loss,
     same_tx_cross_domain_consistency,
     sanitize_loss,
@@ -1324,6 +1325,7 @@ PRESET_SENSITIVE_EXPLICIT_FLAGS = {
     "--lambda_proto": "lambda_proto",
     "--lambda_supcon_id": "lambda_supcon_id",
     "--lambda_fishr": "lambda_fishr",
+    "--lambda_open_world_feat": "lambda_open_world_feat",
     "--lambda_sat_cls": "lambda_sat_cls",
     "--lambda_sat_cons": "lambda_sat_cons",
     "--lambda_feature_norm_guard": "lambda_feature_norm_guard",
@@ -1345,6 +1347,10 @@ PRESET_SENSITIVE_EXPLICIT_FLAGS = {
     "--mixstyle_late_min_strength": "mixstyle_late_min_strength",
     "--feature_norm_guard_mode": "feature_norm_guard_mode",
     "--feature_norm_guard_target": "feature_norm_guard_target",
+    "--ow_feat_radius_deg": "ow_feat_radius_deg",
+    "--ow_feat_inter_margin_deg": "ow_feat_inter_margin_deg",
+    "--ow_feat_sample_margin_deg": "ow_feat_sample_margin_deg",
+    "--ow_feat_domain_align_weight": "ow_feat_domain_align_weight",
     "--use_aug": "use_aug",
     "--no_use_aug": "use_aug",
     "--use_mixstyle": "use_mixstyle",
@@ -1444,6 +1450,7 @@ def apply_force_ce_grl_only(args):
     args.lambda_fishr = 0.0
     args.lambda_proto = 0.0
     args.lambda_supcon_id = 0.0
+    args.lambda_open_world_feat = 0.0
     args.lambda_sat_cls = 0.0
     args.lambda_sat_cons = 0.0
     args.concat_sat_ce_weight = 0.0
@@ -2232,6 +2239,20 @@ def main():
     parser.add_argument("--supcon_temp", type=float, default=0.12)
     parser.add_argument("--lambda_fishr", type=float, default=0.0)
     parser.add_argument("--fishr_min_domains", type=int, default=2)
+    parser.add_argument("--lambda_open_world_feat", type=float, default=0.0,
+                        help="Default-off angular feature-space loss for source-only open-world prototype readiness.")
+    parser.add_argument("--ow_feat_radius_deg", type=float, default=12.0,
+                        help="Allowed same-class angular radius in degrees for --lambda_open_world_feat.")
+    parser.add_argument("--ow_feat_inter_margin_deg", type=float, default=55.0,
+                        help="Minimum class-center angular margin in degrees for --lambda_open_world_feat.")
+    parser.add_argument("--ow_feat_sample_margin_deg", type=float, default=5.0,
+                        help="Per-sample positive-vs-nearest-negative angular margin in degrees.")
+    parser.add_argument("--ow_feat_domain_align_weight", type=float, default=0.0,
+                        help="Optional same-TX cross-domain center alignment weight inside the open-world feature loss.")
+    parser.add_argument("--ow_feat_min_classes", type=int, default=2,
+                        help="Minimum active TX classes in a batch before the open-world feature loss is enabled.")
+    parser.add_argument("--ow_feat_min_samples_per_class", type=int, default=1,
+                        help="Minimum labeled samples per TX required to form a batch class center.")
     parser.add_argument("--lambda_feature_norm_guard", type=float, default=0.0,
                         help="RIEI-style low-shot guard on the identity embedding norm.")
     parser.add_argument("--feature_norm_guard_mode", type=str, default="l2",
@@ -3288,13 +3309,17 @@ def main():
             "dac_reg", "pa_reg",
             "gap_dac", "gap_pa", "cos_joint_pa", "cos_imp_pa",
             "sat_cls", "sat_cons", "sat_cos",
-            "proto", "proto_pull_cos", "supcon", "fishr", "feature_norm", "zid_norm",
+            "proto", "proto_pull_cos", "supcon", "fishr",
+            "open_world_feat", "ow_feat_compact", "ow_feat_inter", "ow_feat_sample_margin",
+            "ow_feat_domain_align", "ow_feat_active_classes", "ow_feat_pos_angle_deg",
+            "ow_feat_min_inter_deg",
+            "feature_norm", "zid_norm",
             "meta_ssl_tx", "meta_ssl_proto", "meta_ssl_dom", "meta_ssl_adv",
             "meta_ssl_coverage", "meta_ssl_accept", "meta_ssl_proto_agree", "meta_ssl_teacher_conf",
             "meta_ssl_proto_active",
             "w_cls", "w_dom", "w_adv", "w_orth", "w_cons", "w_group_ce",
             "w_cls_pa", "w_cls_dac", "w_pa_joint_inv", "w_pa_kl", "w_dac_reg", "w_pa_reg",
-            "w_sat_cls", "w_sat_cons", "w_proto", "w_supcon", "w_fishr", "w_feature_norm",
+            "w_sat_cls", "w_sat_cons", "w_proto", "w_supcon", "w_fishr", "w_open_world_feat", "w_feature_norm",
             "w_meta_ssl_tx", "w_meta_ssl_proto", "w_meta_ssl_dom", "w_meta_ssl_adv",
             "grad_total", "grad_backbone", "grad_aux", "grad_domain",
         ]}
@@ -3537,6 +3562,28 @@ def main():
                         d,
                         min_domains=int(args.fishr_min_domains),
                     )
+                loss_open_world_feat = z_id.new_tensor(0.0)
+                ow_feat_info = {
+                    "compact": 0.0,
+                    "inter": 0.0,
+                    "sample_margin": 0.0,
+                    "domain_align": 0.0,
+                    "active_classes": 0.0,
+                    "pos_angle_deg": float("nan"),
+                    "min_inter_angle_deg": float("nan"),
+                }
+                if float(args.lambda_open_world_feat) > 0.0:
+                    loss_open_world_feat, ow_feat_info = open_world_feature_space_loss(
+                        dg_feat,
+                        y,
+                        d,
+                        radius_rad=math.radians(float(args.ow_feat_radius_deg)),
+                        inter_margin_rad=math.radians(float(args.ow_feat_inter_margin_deg)),
+                        sample_margin_rad=math.radians(float(args.ow_feat_sample_margin_deg)),
+                        domain_align_weight=float(args.ow_feat_domain_align_weight),
+                        min_classes=int(args.ow_feat_min_classes),
+                        min_samples_per_class=int(args.ow_feat_min_samples_per_class),
+                    )
                 loss_feature_norm, zid_norm_mean = feature_norm_guard_loss(
                     z_id,
                     mode=str(args.feature_norm_guard_mode),
@@ -3621,6 +3668,7 @@ def main():
                     + float(args.lambda_proto) * sanitize_loss("proto", loss_proto, z_id, loss_warn_counts)
                     + float(args.lambda_supcon_id) * sanitize_loss("supcon", loss_supcon, z_id, loss_warn_counts)
                     + float(args.lambda_fishr) * sanitize_loss("fishr", loss_fishr, z_id, loss_warn_counts)
+                    + float(args.lambda_open_world_feat) * sanitize_loss("open_world_feat", loss_open_world_feat, z_id, loss_warn_counts)
                     + float(args.lambda_feature_norm_guard) * sanitize_loss("feature_norm", loss_feature_norm, z_id, loss_warn_counts)
                     + float(args.lambda_ssl_tx) * sanitize_loss("meta_ssl_tx", loss_meta_ssl_tx, z_id, loss_warn_counts)
                     + float(args.lambda_ssl_proto) * sanitize_loss("meta_ssl_proto", loss_meta_ssl_proto, z_id, loss_warn_counts)
@@ -3666,6 +3714,14 @@ def main():
             meters["proto_pull_cos"].update(proto_info.get("proto_pull_cos", float("nan")), bsz)
             meters["supcon"].update(loss_supcon.item(), bsz)
             meters["fishr"].update(loss_fishr.item(), bsz)
+            meters["open_world_feat"].update(loss_open_world_feat.item(), bsz)
+            meters["ow_feat_compact"].update(ow_feat_info.get("compact", float("nan")), bsz)
+            meters["ow_feat_inter"].update(ow_feat_info.get("inter", float("nan")), bsz)
+            meters["ow_feat_sample_margin"].update(ow_feat_info.get("sample_margin", float("nan")), bsz)
+            meters["ow_feat_domain_align"].update(ow_feat_info.get("domain_align", float("nan")), bsz)
+            meters["ow_feat_active_classes"].update(ow_feat_info.get("active_classes", float("nan")), bsz)
+            meters["ow_feat_pos_angle_deg"].update(ow_feat_info.get("pos_angle_deg", float("nan")), bsz)
+            meters["ow_feat_min_inter_deg"].update(ow_feat_info.get("min_inter_angle_deg", float("nan")), bsz)
             meters["feature_norm"].update(loss_feature_norm.item(), bsz)
             meters["zid_norm"].update(zid_norm_mean, bsz)
             meters["meta_ssl_tx"].update(loss_meta_ssl_tx.item(), bsz)
@@ -3694,6 +3750,7 @@ def main():
             meters["w_proto"].update(float(args.lambda_proto) * loss_proto.item(), bsz)
             meters["w_supcon"].update(float(args.lambda_supcon_id) * loss_supcon.item(), bsz)
             meters["w_fishr"].update(float(args.lambda_fishr) * loss_fishr.item(), bsz)
+            meters["w_open_world_feat"].update(float(args.lambda_open_world_feat) * loss_open_world_feat.item(), bsz)
             meters["w_feature_norm"].update(float(args.lambda_feature_norm_guard) * loss_feature_norm.item(), bsz)
             meters["w_meta_ssl_tx"].update(float(args.lambda_ssl_tx) * loss_meta_ssl_tx.item(), bsz)
             meters["w_meta_ssl_proto"].update(float(args.lambda_ssl_proto) * loss_meta_ssl_proto.item(), bsz)
@@ -3831,6 +3888,14 @@ def main():
             "train_proto_loss": meters["proto"].avg,
             "train_supcon_loss": meters["supcon"].avg,
             "train_fishr_loss": meters["fishr"].avg,
+            "train_open_world_feat_loss": meters["open_world_feat"].avg,
+            "train_ow_feat_compact": meters["ow_feat_compact"].avg,
+            "train_ow_feat_inter": meters["ow_feat_inter"].avg,
+            "train_ow_feat_sample_margin": meters["ow_feat_sample_margin"].avg,
+            "train_ow_feat_domain_align": meters["ow_feat_domain_align"].avg,
+            "train_ow_feat_active_classes": meters["ow_feat_active_classes"].avg,
+            "train_ow_feat_pos_angle_deg": meters["ow_feat_pos_angle_deg"].avg,
+            "train_ow_feat_min_inter_deg": meters["ow_feat_min_inter_deg"].avg,
             "train_feature_norm_loss": meters["feature_norm"].avg,
             "train_meta_ssl_tx_loss": meters["meta_ssl_tx"].avg,
             "train_meta_ssl_proto_loss": meters["meta_ssl_proto"].avg,
@@ -3877,6 +3942,14 @@ def main():
             "train_proto_loss": meters["proto"].avg,
             "train_supcon_loss": meters["supcon"].avg,
             "train_fishr_loss": meters["fishr"].avg,
+            "train_open_world_feat_loss": meters["open_world_feat"].avg,
+            "train_ow_feat_compact": meters["ow_feat_compact"].avg,
+            "train_ow_feat_inter": meters["ow_feat_inter"].avg,
+            "train_ow_feat_sample_margin": meters["ow_feat_sample_margin"].avg,
+            "train_ow_feat_domain_align": meters["ow_feat_domain_align"].avg,
+            "train_ow_feat_active_classes": meters["ow_feat_active_classes"].avg,
+            "train_ow_feat_pos_angle_deg": meters["ow_feat_pos_angle_deg"].avg,
+            "train_ow_feat_min_inter_deg": meters["ow_feat_min_inter_deg"].avg,
             "train_feature_norm_loss": meters["feature_norm"].avg,
             "train_meta_ssl_tx_loss": meters["meta_ssl_tx"].avg,
             "train_meta_ssl_proto_loss": meters["meta_ssl_proto"].avg,
@@ -4011,6 +4084,14 @@ def main():
                                 "train_proto_loss": meters["proto"].avg,
                                 "train_supcon_loss": meters["supcon"].avg,
                                 "train_fishr_loss": meters["fishr"].avg,
+                                "train_open_world_feat_loss": meters["open_world_feat"].avg,
+                                "train_ow_feat_compact": meters["ow_feat_compact"].avg,
+                                "train_ow_feat_inter": meters["ow_feat_inter"].avg,
+                                "train_ow_feat_sample_margin": meters["ow_feat_sample_margin"].avg,
+                                "train_ow_feat_domain_align": meters["ow_feat_domain_align"].avg,
+                                "train_ow_feat_active_classes": meters["ow_feat_active_classes"].avg,
+                                "train_ow_feat_pos_angle_deg": meters["ow_feat_pos_angle_deg"].avg,
+                                "train_ow_feat_min_inter_deg": meters["ow_feat_min_inter_deg"].avg,
                                 "train_feature_norm_loss": meters["feature_norm"].avg,
                                 "train_meta_ssl_tx_loss": meters["meta_ssl_tx"].avg,
                                 "train_meta_ssl_proto_loss": meters["meta_ssl_proto"].avg,

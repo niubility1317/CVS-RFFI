@@ -335,6 +335,135 @@ def domain_aware_supcon_loss(
     return -pos_log_prob[has_pos].mean()
 
 
+def _safe_angle_from_cos(cos: torch.Tensor) -> torch.Tensor:
+    return torch.acos(torch.clamp(cos, -1.0 + 1e-6, 1.0 - 1e-6))
+
+
+def _scalar_metric(value: torch.Tensor) -> float:
+    if not torch.is_tensor(value):
+        return float(value)
+    if value.numel() == 0:
+        return float("nan")
+    detached = value.detach()
+    if not torch.isfinite(detached).all():
+        return float("nan")
+    return float(detached.float().mean().item())
+
+
+def open_world_feature_space_loss(
+    z: torch.Tensor,
+    y: torch.Tensor,
+    d: Optional[torch.Tensor] = None,
+    *,
+    radius_rad: float = math.radians(12.0),
+    inter_margin_rad: float = math.radians(55.0),
+    sample_margin_rad: float = math.radians(5.0),
+    domain_align_weight: float = 0.0,
+    min_classes: int = 2,
+    min_samples_per_class: int = 1,
+) -> Tuple[torch.Tensor, Dict[str, float]]:
+    """Batch-level angular geometry loss for open-world identity embeddings.
+
+    The loss is intentionally stateless: it optimizes the selected identity
+    feature used by the existing prototype/SupCon path without creating a
+    second training-time memory bank.
+    """
+    default_metrics = {
+        "compact": 0.0,
+        "inter": 0.0,
+        "sample_margin": 0.0,
+        "domain_align": 0.0,
+        "active_classes": 0.0,
+        "pos_angle_deg": float("nan"),
+        "min_inter_angle_deg": float("nan"),
+    }
+    if z is None or not torch.is_tensor(z) or z.numel() == 0:
+        ref = torch.tensor(0.0)
+        return ref, default_metrics
+    if z.dim() != 2:
+        raise ValueError(f"open_world_feature_space_loss expects 2D features, got shape={tuple(z.shape)}")
+    if y is None or not torch.is_tensor(y):
+        raise ValueError("open_world_feature_space_loss expects tensor labels")
+    labels = y.view(-1).long()
+    if labels.numel() != z.size(0):
+        raise ValueError(f"label count {labels.numel()} does not match feature batch {z.size(0)}")
+
+    z_norm = safe_l2_normalize(torch.nan_to_num(z.float(), nan=0.0, posinf=0.0, neginf=0.0), dim=1)
+    valid_y = labels >= 0
+    if not bool(valid_y.any()):
+        return zero_like_with_grad(z), default_metrics
+
+    centers = []
+    class_ids = []
+    sample_mask = torch.zeros(labels.shape, device=labels.device, dtype=torch.bool)
+    min_count = max(1, int(min_samples_per_class))
+    for cls in torch.unique(labels[valid_y]):
+        cls_mask = valid_y & labels.eq(cls)
+        if int(cls_mask.sum().item()) < min_count:
+            continue
+        center = safe_l2_normalize(z_norm[cls_mask].mean(dim=0, keepdim=True), dim=1).squeeze(0)
+        centers.append(center)
+        class_ids.append(cls)
+        sample_mask = sample_mask | cls_mask
+
+    active_classes = len(centers)
+    default_metrics["active_classes"] = float(active_classes)
+    if active_classes < max(1, int(min_classes)):
+        return zero_like_with_grad(z), default_metrics
+
+    proto = torch.stack(centers, dim=0)
+    center_labels = torch.stack(class_ids, dim=0).to(device=labels.device)
+    sample_z = z_norm[sample_mask]
+    sample_labels = labels[sample_mask]
+    sample_angles = _safe_angle_from_cos(sample_z @ proto.t())
+    own_center = sample_labels.view(-1, 1).eq(center_labels.view(1, -1))
+    pos_angles = sample_angles[own_center]
+
+    compact = F.relu(pos_angles - max(0.0, float(radius_rad))).pow(2).mean()
+    sample_margin = z.new_tensor(0.0)
+    if active_classes > 1:
+        neg_angles = sample_angles.masked_fill(own_center, float("inf")).min(dim=1).values
+        sample_margin = F.relu(pos_angles + max(0.0, float(sample_margin_rad)) - neg_angles).pow(2).mean()
+
+    inter = z.new_tensor(0.0)
+    min_inter_angle = z.new_tensor(float("nan"))
+    if active_classes > 1:
+        proto_angles = _safe_angle_from_cos(proto @ proto.t())
+        tri = torch.triu_indices(active_classes, active_classes, offset=1, device=proto.device)
+        pair_angles = proto_angles[tri[0], tri[1]]
+        inter = F.relu(max(0.0, float(inter_margin_rad)) - pair_angles).pow(2).mean()
+        min_inter_angle = pair_angles.min()
+
+    domain_align = z.new_tensor(0.0)
+    if d is not None and torch.is_tensor(d):
+        domains = d.view(-1).long()
+        if domains.numel() != z.size(0):
+            raise ValueError(f"domain count {domains.numel()} does not match feature batch {z.size(0)}")
+        domain_terms = []
+        for cls, center in zip(center_labels, proto):
+            cls_mask = labels.eq(cls) & (domains >= 0)
+            for dom in torch.unique(domains[cls_mask]):
+                dom_mask = cls_mask & domains.eq(dom)
+                if not bool(dom_mask.any()):
+                    continue
+                dom_center = safe_l2_normalize(z_norm[dom_mask].mean(dim=0, keepdim=True), dim=1).squeeze(0)
+                domain_terms.append(_safe_angle_from_cos((dom_center * center.detach()).sum()))
+        if domain_terms:
+            domain_align = torch.stack(domain_terms).mean()
+
+    loss = compact + inter + sample_margin + max(0.0, float(domain_align_weight)) * domain_align
+    metrics = {
+        "compact": _scalar_metric(compact),
+        "inter": _scalar_metric(inter),
+        "sample_margin": _scalar_metric(sample_margin),
+        "domain_align": _scalar_metric(domain_align),
+        "active_classes": float(active_classes),
+        "pos_angle_deg": math.degrees(_scalar_metric(pos_angles)),
+        "min_inter_angle_deg": math.degrees(_scalar_metric(min_inter_angle)),
+    }
+    return loss, metrics
+
+
 def fishr_logit_gradient_variance_loss(
     logits: torch.Tensor,
     y: torch.Tensor,
