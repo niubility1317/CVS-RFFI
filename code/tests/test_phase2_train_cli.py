@@ -44,3 +44,19 @@ def test_ssdg_cli_exposes_dense_tail_test_eval_schedule():
     assert '"--test_eval_final_window"' in text
     assert '"--test_eval_final_interval"' in text
     assert "test_eval_skipped_guard_block" in text
+
+
+def test_ssdg_cli_exposes_default_off_zid_feature_space_bridge_and_export():
+    text = (PROJECT_ROOT / "code" / "SSDG" / "train_ssdg.py").read_text(encoding="utf-8")
+
+    assert '"--use_proto_memory"' in text
+    assert '"--lambda_proto"' in text
+    assert "default=0.0" in text
+    assert '"--lambda_open_world_feat"' in text
+    assert '"--ow_feat_radius_deg"' in text
+    assert '"--phase2_export_prototypes"' in text
+    assert '"--phase2_export_feature_key"' in text
+    assert "PrototypeMemoryBank(" in text
+    assert "open_world_feature_space_loss(" in text
+    assert "export_phase2_prototypes(" in text
+    assert "Non-zero legacy Phase1 prototype/mask/geometry audit losses" in text

@@ -9,7 +9,7 @@ from collections import defaultdict
 from copy import deepcopy
 import sys
 from pathlib import Path
-from typing import Any, Dict, List, Mapping, Sequence, Tuple
+from typing import Any, Dict, List, Mapping, Optional, Sequence, Tuple
 
 if __package__ in (None, ""):
     sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
@@ -55,7 +55,14 @@ try:
         format_sat_test_lines,
         make_loader,
     )
-    from cvsrffi.losses import compute_core_losses, fishr_logit_gradient_variance_loss
+    from cvsrffi.losses import (
+        PrototypeMemoryBank,
+        compute_core_losses,
+        fishr_logit_gradient_variance_loss,
+        open_world_feature_space_loss,
+        sanitize_loss,
+    )
+    from cvsrffi.phase2_prototypes import export_phase2_prototypes
     from cvsrffi.ssdg_guard import (
         detect_one_epoch_drop,
         detect_paic_variance_guard,
@@ -78,6 +85,10 @@ except ModuleNotFoundError:
     F = None
     GradScaler = autocast = None
     WiSigCompactDataset = WiSigSubsetDataset = None
+    PrototypeMemoryBank = None
+    open_world_feature_space_loss = None
+    sanitize_loss = None
+    export_phase2_prototypes = None
     _resolve_days = _resolve_rxs = load_wisig_compact_pkl = make_wisig_trainval_test_by_day_rx = None
     build_baseline_model = domain_from_extra = ensure_dir = load_checkpoint = None
     mean_logs = merge_checkpoint_args = move_batch = resolve_device = save_payload = set_seed = None
@@ -229,6 +240,31 @@ def build_arg_parser() -> argparse.ArgumentParser:
     parser.add_argument("--lambda_tx_supcon_masked", type=float, default=0.0)
     parser.add_argument("--lambda_rx_supcon_masked", type=float, default=0.0)
     parser.add_argument("--lambda_txrx_rect", type=float, default=0.0)
+    parser.add_argument("--use_proto_memory", type=str2bool, default=False)
+    parser.add_argument("--lambda_proto", type=float, default=0.0)
+    parser.add_argument("--proto_momentum", type=float, default=0.95)
+    parser.add_argument("--proto_margin", type=float, default=0.15)
+    parser.add_argument("--proto_domain_align_weight", type=float, default=0.5)
+    parser.add_argument("--proto_push_weight", type=float, default=0.1)
+    parser.add_argument("--proto_min_count", type=int, default=2)
+    parser.add_argument("--lambda_open_world_feat", type=float, default=0.0)
+    parser.add_argument("--ow_feat_radius_deg", type=float, default=12.0)
+    parser.add_argument("--ow_feat_inter_margin_deg", type=float, default=55.0)
+    parser.add_argument("--ow_feat_sample_margin_deg", type=float, default=5.0)
+    parser.add_argument("--ow_feat_domain_align_weight", type=float, default=0.0)
+    parser.add_argument("--ow_feat_min_classes", type=int, default=2)
+    parser.add_argument("--ow_feat_min_samples_per_class", type=int, default=1)
+    parser.add_argument("--phase2_export_prototypes", type=str2bool, default=False)
+    parser.add_argument("--phase2_export_path", type=str, default="")
+    parser.add_argument("--phase2_export_checkpoint", type=str, default="")
+    parser.add_argument(
+        "--phase2_export_feature_key",
+        type=str,
+        default="z_id",
+        choices=["z_id", "id_feat_joint", "feat_joint", "id_feat_pa", "id_feat_dac"],
+    )
+    parser.add_argument("--phase2_export_split", type=str, default="train", choices=["train", "val"])
+    parser.add_argument("--phase2_export_max_batches", type=int, default=0)
     parser.add_argument("--freeze_backbone", type=str2bool, default=False)
     parser.add_argument("--model_size", type=str, default="M")
     parser.add_argument("--model_variant", type=str, default="lite_d")
@@ -682,6 +718,8 @@ def _phase2_audit_requested(args) -> bool:
         "use_feature_masks",
         "use_txrx_geometry_losses",
         "use_tx_rx_balanced_sampler",
+        "use_proto_memory",
+        "phase2_export_prototypes",
     )
     weights = (
         "lambda_tx_proto",
@@ -690,6 +728,8 @@ def _phase2_audit_requested(args) -> bool:
         "lambda_tx_supcon_masked",
         "lambda_rx_supcon_masked",
         "lambda_txrx_rect",
+        "lambda_proto",
+        "lambda_open_world_feat",
     )
     return any(bool(getattr(args, key, False)) for key in flags) or any(float(getattr(args, key, 0.0)) > 0.0 for key in weights)
 
@@ -722,13 +762,24 @@ def _phase2_audit_state(args) -> Dict[str, Any]:
         "tx_supcon_masked": float(getattr(args, "lambda_tx_supcon_masked", 0.0)),
         "rx_supcon_masked": float(getattr(args, "lambda_rx_supcon_masked", 0.0)),
         "txrx_rect": float(getattr(args, "lambda_txrx_rect", 0.0)),
+        "proto_memory": float(getattr(args, "lambda_proto", 0.0)),
+        "open_world_feat": float(getattr(args, "lambda_open_world_feat", 0.0)),
     }
-    active_loss = any(value > 0.0 for value in weights.values())
-    if active_loss:
+    legacy_unwired = {
+        key: value
+        for key, value in weights.items()
+        if key in {"tx_proto", "rx_proto", "mask_aux", "tx_supcon_masked", "rx_supcon_masked", "txrx_rect"} and value > 0.0
+    }
+    if legacy_unwired:
         raise NotImplementedError(
-            "Non-zero Phase1 prototype/mask/geometry losses are not wired into SSDG training yet. "
-            "Use zero weights with --phase1_distribution_audit_only true for Stage A telemetry."
+            "Non-zero legacy Phase1 prototype/mask/geometry audit losses are not wired into SSDG training yet. "
+            "Use zero weights for --lambda_tx_proto/--lambda_rx_proto/--lambda_mask_aux/"
+            "--lambda_tx_supcon_masked/--lambda_rx_supcon_masked/--lambda_txrx_rect, and use "
+            "--lambda_proto or --lambda_open_world_feat for the default-off active z_id feature-space bridge."
         )
+    active_loss = bool(getattr(args, "use_proto_memory", False)) or any(
+        value > 0.0 for key, value in weights.items() if key in {"proto_memory", "open_world_feat"}
+    )
     return {
         "requested": bool(requested),
         "audit_only": bool(getattr(args, "phase1_distribution_audit_only", True)) and not active_loss,
@@ -737,6 +788,9 @@ def _phase2_audit_state(args) -> Dict[str, Any]:
         "use_feature_masks": bool(getattr(args, "use_feature_masks", False)),
         "use_txrx_geometry_losses": bool(getattr(args, "use_txrx_geometry_losses", False)),
         "use_tx_rx_balanced_sampler": bool(getattr(args, "use_tx_rx_balanced_sampler", False)),
+        "use_proto_memory": bool(getattr(args, "use_proto_memory", False)) or float(getattr(args, "lambda_proto", 0.0)) > 0.0,
+        "use_open_world_feature_loss": float(getattr(args, "lambda_open_world_feat", 0.0)) > 0.0,
+        "phase2_export_prototypes": bool(getattr(args, "phase2_export_prototypes", False)),
         "imports": import_status,
         "weights": weights,
     }
@@ -747,6 +801,74 @@ def _resolve_sat_eval_max_batches(args) -> int:
     if sat_eval_max_batches < 0:
         sat_eval_max_batches = int(getattr(args, "eval_max_batches", 0))
     return sat_eval_max_batches
+
+
+def _derive_phase2_export_path(checkpoint_path: str | Path) -> str:
+    path = Path(str(checkpoint_path).strip() or "best_joint_safe_ssdg.pth")
+    return str(path.with_name(f"{path.stem}_phase2_prototypes.pt"))
+
+
+def _maybe_export_phase2_prototypes_ssdg(
+    args,
+    model,
+    data_ctx: Mapping[str, Any],
+    device,
+    *,
+    default_checkpoint: str | Path,
+) -> Optional[Dict[str, Any]]:
+    if not bool(getattr(args, "phase2_export_prototypes", False)):
+        return None
+    if export_phase2_prototypes is None:
+        raise ImportError("cvsrffi.phase2_prototypes export support is required for --phase2_export_prototypes")
+    loader_name = str(getattr(args, "phase2_export_split", "train") or "train").strip().lower()
+    if loader_name == "train":
+        loader = data_ctx["train_loader"]
+    elif loader_name == "val":
+        loader = data_ctx["val_loader"]
+    else:
+        raise ValueError(f"Unsupported --phase2_export_split: {loader_name}")
+    checkpoint_path = str(getattr(args, "phase2_export_checkpoint", "") or "").strip()
+    if not checkpoint_path:
+        checkpoint_path = str(default_checkpoint)
+    output_path = str(getattr(args, "phase2_export_path", "") or "").strip()
+    if not output_path:
+        output_path = _derive_phase2_export_path(checkpoint_path)
+
+    restore_state = deepcopy(getattr(model, "_orig_mod", model).state_dict())
+    try:
+        if checkpoint_path:
+            ckpt = torch.load(checkpoint_path, map_location=device)
+            if not isinstance(ckpt, dict) or "model" not in ckpt:
+                raise ValueError(f"Phase2 export checkpoint must contain a 'model' field: {checkpoint_path}")
+            model.load_state_dict(ckpt["model"], strict=False)
+        package = export_phase2_prototypes(
+            model,
+            loader,
+            output_path=output_path,
+            device=device,
+            feature_key=str(getattr(args, "phase2_export_feature_key", "z_id") or "z_id"),
+            max_batches=int(getattr(args, "phase2_export_max_batches", 0) or 0),
+            metadata={
+                "checkpoint_path": checkpoint_path,
+                "loader_split": loader_name,
+                "dataset": str(getattr(args, "dataset", "")),
+                "split_mode": str(getattr(args, "split_mode", "")),
+                "split_info": data_ctx.get("split_info", {}),
+                "source": "SSDG.train_ssdg default-off Phase2 export hook",
+                "base_protocol": "Safe-SSDG-CVS-R01",
+                "default_training_behavior_changed": False,
+            },
+        )
+        paths = package.get("paths", {}) if isinstance(package, dict) else {}
+        print(
+            f"[PHASE2-EXPORT] wrote prototypes={paths.get('pt_path', output_path)} "
+            f"json={paths.get('json_path', '')} feature={getattr(args, 'phase2_export_feature_key', 'z_id')} "
+            f"split={loader_name}",
+            flush=True,
+        )
+        return package
+    finally:
+        model.load_state_dict(restore_state, strict=False)
 
 
 def _evaluate_sat_if_enabled(model, data_ctx, device, args) -> Dict[str, Dict[str, Any]]:
@@ -777,6 +899,8 @@ def _loss_weights(args, stage_state: Mapping[str, Any] | None) -> Dict[str, floa
         "fishr": float(getattr(args, "lambda_fishr", 0.0)),
         "sat_cls": float(getattr(args, "lambda_sat_cls", 0.0)),
         "sat_cons": float(getattr(args, "lambda_sat_cons", 0.0)),
+        "proto": float(getattr(args, "lambda_proto", 0.0)),
+        "open_world_feat": float(getattr(args, "lambda_open_world_feat", 0.0)),
     }
 
 
@@ -1074,6 +1198,13 @@ def _build_ssdg_epoch_telemetry_row(
         "lambda_fishr",
         "lambda_sat_cls",
         "lambda_sat_cons",
+        "lambda_proto",
+        "lambda_open_world_feat",
+        "proto_domain_align_weight",
+        "ow_feat_radius_deg",
+        "ow_feat_inter_margin_deg",
+        "ow_feat_sample_margin_deg",
+        "ow_feat_domain_align_weight",
         "label_smoothing",
         "group_ce_top_frac",
         "strong_noise_std",
@@ -1192,6 +1323,8 @@ def format_ssdg_epoch_block(
     loss_sat = _log_value(train_logs, "train/loss_sat_cls_labeled")
     loss_sat_cons = _log_value(train_logs, "train/loss_sat_cons_labeled")
     loss_fishr = _log_value(train_logs, "train/loss_fishr_labeled")
+    loss_proto = _log_value(train_logs, "train/loss_proto_labeled")
+    loss_ow_feat = _log_value(train_logs, "train/loss_open_world_feat")
     loss_cons = _log_value(train_logs, "train/loss_cons_labeled")
     loss_u = _log_value(train_logs, "train/loss_unlabeled")
     w_cls = _log_value(train_logs, "train/w_loss_tx_labeled", loss_cls)
@@ -1203,6 +1336,8 @@ def format_ssdg_epoch_block(
     w_sat = _log_value(train_logs, "train/w_loss_sat_cls_labeled", loss_sat)
     w_sat_cons = _log_value(train_logs, "train/w_loss_sat_cons_labeled", loss_sat_cons)
     w_fishr = _log_value(train_logs, "train/w_loss_fishr_labeled", loss_fishr)
+    w_proto = _log_value(train_logs, "train/w_loss_proto_labeled", loss_proto)
+    w_ow_feat = _log_value(train_logs, "train/w_loss_open_world_feat", loss_ow_feat)
     reliable = _log_value(train_logs, "train/reliable_ratio")
     pseudo_conf = _log_value(train_logs, "train/pseudo_conf")
     domain_pass = _log_value(train_logs, "train/domain_pass")
@@ -1269,8 +1404,23 @@ def format_ssdg_epoch_block(
     lines.append("[LOSS-AUX-W]    cls_pa=0.0000 cls_dac=0.0000 pa_joint_inv=0.0000 pa_kl=0.0000 dac_reg=0.0000 pa_reg=0.0000")
     lines.append(f"[LOSS-SAT-RAW]  cls_sat={loss_sat:.4f} sat_cons={loss_sat_cons:.4f} sat_cos=nan")
     lines.append(f"[LOSS-SAT-W]    cls_sat={w_sat:.4f} sat_cons={w_sat_cons:.4f}")
-    lines.append(f"[LOSS-DG-RAW]   proto=0.0000 proto_cos=nan supcon=0.0000 fishr={loss_fishr:.4f}")
-    lines.append(f"[LOSS-DG-W]     proto=0.0000 supcon=0.0000 fishr={w_fishr:.4f}")
+    lines.append(
+        f"[LOSS-DG-RAW]   proto={loss_proto:.4f} "
+        f"proto_cos={_log_value(train_logs, 'train/proto_pull_cos'):.4f} "
+        f"supcon=0.0000 fishr={loss_fishr:.4f} ow_feat={loss_ow_feat:.4f}"
+    )
+    lines.append(f"[LOSS-DG-W]     proto={w_proto:.4f} supcon=0.0000 fishr={w_fishr:.4f} ow_feat={w_ow_feat:.4f}")
+    lines.append(
+        "[OW-FEAT] "
+        f"active_classes={_log_value(train_logs, 'train/ow_feat_active_classes'):.1f} "
+        f"compact={_log_value(train_logs, 'train/ow_feat_compact'):.4f} "
+        f"inter={_log_value(train_logs, 'train/ow_feat_inter'):.4f} "
+        f"sample_margin={_log_value(train_logs, 'train/ow_feat_sample_margin'):.4f} "
+        f"domain_align={_log_value(train_logs, 'train/ow_feat_domain_align'):.4f} "
+        f"pos_angle={_log_value(train_logs, 'train/ow_feat_pos_angle_deg'):.2f}deg "
+        f"min_inter={_log_value(train_logs, 'train/ow_feat_min_inter_deg'):.2f}deg "
+        f"proto_active={_log_value(train_logs, 'train/proto_active_classes'):.1f}"
+    )
     lines.append(
         "[LOSS-WEIGHT] "
         f"dom={float(stage_state.get('dom_scale', loss_weights.get('dom', 0.0))):.3f} "
@@ -1278,6 +1428,8 @@ def format_ssdg_epoch_block(
         f"orth={float(stage_state.get('orth_scale', loss_weights.get('orth', 0.0))):.3f} "
         f"cons={float(stage_state.get('cons_scale', loss_weights.get('cons', 0.0))):.3f} "
         f"group_ce={float(stage_state.get('group_ce_scale', loss_weights.get('group_ce', 0.0))):.3f} "
+        f"proto={float(loss_weights.get('proto', 0.0)):.6g} "
+        f"ow_feat={float(loss_weights.get('open_world_feat', 0.0)):.6g} "
         "aux_scale=0.000"
     )
     lines.append(
@@ -1292,6 +1444,8 @@ def format_ssdg_epoch_block(
                 "cls_sat": w_sat,
                 "sat_cons": w_sat_cons,
                 "fishr": w_fishr,
+                "proto": w_proto,
+                "ow_feat": w_ow_feat,
             }
         )
     )
@@ -1379,6 +1533,14 @@ def format_ssdg_epoch_block(
             "status=audit_marker_only "
             f"active_loss={int(bool(phase2_audit_state.get('active_loss', False)))}"
         )
+        lines.append(
+            "[ZID-FEATURE-SPACE] "
+            f"proto_memory={int(bool(phase2_audit_state.get('use_proto_memory', False)))} "
+            f"lambda_proto={float(weights.get('proto_memory', 0.0)):.6g} "
+            f"open_world_feat={int(bool(phase2_audit_state.get('use_open_world_feature_loss', False)))} "
+            f"lambda_open_world_feat={float(weights.get('open_world_feat', 0.0)):.6g} "
+            f"phase2_export={int(bool(phase2_audit_state.get('phase2_export_prototypes', False)))}"
+        )
     lines.append(f"[BEST-JOINT]  val_tx={float(best_val):.2f}% & test_tx={float(best_test):.2f}% @ E{int(best_epoch):03d}")
     if bool(guard_state.get("enabled", False)) and (safe_latest_path or safe_best_path):
         safe_note = "saved" if safe_checkpoint_saved else "protected"
@@ -1461,6 +1623,20 @@ def train(args) -> int:
             param.requires_grad = False
     optimizer = torch.optim.AdamW([p for p in model.parameters() if p.requires_grad], lr=float(args.lr), weight_decay=float(args.weight_decay))
     scaler = GradScaler(enabled=bool(args.amp and device.type == "cuda"))
+    proto_bank = None
+    if bool(getattr(args, "use_proto_memory", False)) or float(getattr(args, "lambda_proto", 0.0)) > 0.0:
+        if PrototypeMemoryBank is None:
+            raise ImportError("cvsrffi.losses.PrototypeMemoryBank is required for --use_proto_memory/--lambda_proto")
+        proto_bank = PrototypeMemoryBank(
+            int(getattr(args, "num_classes", 0)),
+            int(data_ctx["num_domains"]),
+            momentum=float(args.proto_momentum),
+            margin=float(args.proto_margin),
+            domain_align_weight=float(args.proto_domain_align_weight),
+            push_weight=float(args.proto_push_weight),
+            min_count=int(args.proto_min_count),
+        )
+    loss_warn_counts: Dict[str, int] = {}
     sat_gen = make_torch_generator(device, int(args.seed) + 991) if make_torch_generator is not None else None
     aug_base_cfg = build_aug_base_cfg(args) if bool(args.use_aug) and build_aug_base_cfg is not None else None
     augmentor = make_augmentor(aug_base_cfg) if aug_base_cfg is not None and make_augmentor is not None else None
@@ -1484,6 +1660,7 @@ def train(args) -> int:
                 f"lambda_orth={float(args.lambda_orth):.6g} lambda_cons={float(args.lambda_cons):.6g} "
                 f"lambda_group_ce={float(args.lambda_group_ce):.6g} lambda_fishr={float(args.lambda_fishr):.6g} "
                 f"lambda_sat_cls={float(args.lambda_sat_cls):.6g} lambda_sat_cons={float(args.lambda_sat_cons):.6g} "
+                f"lambda_proto={float(args.lambda_proto):.6g} lambda_open_world_feat={float(args.lambda_open_world_feat):.6g} "
                 f"lambda_u={float(args.lambda_u):.6g} lambda_ent={float(args.lambda_ent):.6g} "
                 f"label_smoothing={float(args.label_smoothing):.6g}",
                 "[CONFIG-PSEUDO] "
@@ -1522,7 +1699,11 @@ def train(args) -> int:
                 f"lambda_tx_proto={float(args.lambda_tx_proto):.6g} "
                 f"lambda_rx_proto={float(args.lambda_rx_proto):.6g} "
                 f"lambda_mask_aux={float(args.lambda_mask_aux):.6g} "
-                f"lambda_txrx_rect={float(args.lambda_txrx_rect):.6g}",
+                f"lambda_txrx_rect={float(args.lambda_txrx_rect):.6g} "
+                f"use_proto_memory={int(bool(proto_bank is not None))} "
+                f"lambda_proto={float(args.lambda_proto):.6g} "
+                f"lambda_open_world_feat={float(args.lambda_open_world_feat):.6g} "
+                f"phase2_export={int(bool(args.phase2_export_prototypes))}",
             ]
         ),
         flush=True,
@@ -1632,6 +1813,42 @@ def train(args) -> int:
                     )
                 else:
                     loss_fishr_l = out_l["tx_logits"].sum() * 0.0
+                z_id_l = out_l["z_id"]
+                loss_proto_l = z_id_l.sum() * 0.0
+                proto_info: Dict[str, float] = {
+                    "proto_pull_cos": float("nan"),
+                    "proto_push": 0.0,
+                    "proto_active_classes": 0.0,
+                }
+                if proto_bank is not None:
+                    loss_proto_l, proto_info = proto_bank.loss(z_id_l, y_l, d_l)
+                    if proto_bank.class_count is not None:
+                        active = proto_bank.class_count >= int(args.proto_min_count)
+                        proto_info["proto_active_classes"] = float(int(active.sum().detach().item()))
+                loss_open_world_feat_l = z_id_l.sum() * 0.0
+                ow_feat_info: Dict[str, float] = {
+                    "compact": 0.0,
+                    "inter": 0.0,
+                    "sample_margin": 0.0,
+                    "domain_align": 0.0,
+                    "active_classes": 0.0,
+                    "pos_angle_deg": float("nan"),
+                    "min_inter_angle_deg": float("nan"),
+                }
+                if float(args.lambda_open_world_feat) > 0.0:
+                    if open_world_feature_space_loss is None:
+                        raise ImportError("cvsrffi.losses.open_world_feature_space_loss is required for --lambda_open_world_feat")
+                    loss_open_world_feat_l, ow_feat_info = open_world_feature_space_loss(
+                        z_id_l,
+                        y_l,
+                        d_l,
+                        radius_rad=math.radians(float(args.ow_feat_radius_deg)),
+                        inter_margin_rad=math.radians(float(args.ow_feat_inter_margin_deg)),
+                        sample_margin_rad=math.radians(float(args.ow_feat_sample_margin_deg)),
+                        domain_align_weight=float(args.ow_feat_domain_align_weight),
+                        min_classes=int(args.ow_feat_min_classes),
+                        min_samples_per_class=int(args.ow_feat_min_samples_per_class),
+                    )
                 use_sat_train = bool(args.use_sat_consistency) and epoch >= int(args.sat_cons_start_epoch) and (
                     cur_w["sat_cls"] > 0.0 or cur_w["sat_cons"] > 0.0
                 )
@@ -1682,6 +1899,8 @@ def train(args) -> int:
                     + cur_w["cons"] * loss_cons_l
                     + cur_w["group_ce"] * loss_group_ce_l
                     + cur_w["fishr"] * loss_fishr_l
+                    + cur_w["proto"] * sanitize_loss("ssdg_proto", loss_proto_l, z_id_l, loss_warn_counts)
+                    + cur_w["open_world_feat"] * sanitize_loss("ssdg_open_world_feat", loss_open_world_feat_l, z_id_l, loss_warn_counts)
                     + cur_w["sat_cls"] * loss_sat_cls_l
                     + cur_w["sat_cons"] * loss_sat_cons_l
                 )
@@ -1751,6 +1970,7 @@ def train(args) -> int:
             loss_is_finite = bool(torch.isfinite(loss.detach()).item())
             skipped_nonfinite_loss = 0
             skipped_nonfinite_grad = 0
+            optimizer_step_applied = False
             if loss_is_finite:
                 scaler.scale(loss).backward()
                 scaler.unscale_(optimizer)
@@ -1761,6 +1981,7 @@ def train(args) -> int:
                 grads_finite = _grads_are_finite(model)
                 if grads_finite:
                     scaler.step(optimizer)
+                    optimizer_step_applied = True
                     if ema_model is not None:
                         _update_ema_model(ema_model, model, float(args.ema_decay))
                 else:
@@ -1774,6 +1995,11 @@ def train(args) -> int:
                 grad_backbone = float("nan")
                 grad_aux = float("nan")
                 grad_domain = float("nan")
+            if proto_bank is not None and optimizer_step_applied:
+                proto_bank.update(out_l["z_id"].detach(), y_l.detach(), d_l.detach() if d_l is not None else None)
+                if proto_bank.class_count is not None:
+                    active = proto_bank.class_count >= int(args.proto_min_count)
+                    proto_info["proto_active_classes"] = float(int(active.sum().detach().item()))
             epoch_logs.append(
                 {
                     "train/loss": loss.detach(),
@@ -1785,6 +2011,8 @@ def train(args) -> int:
                     "train/loss_orth_labeled": loss_orth_l.detach(),
                     "train/loss_group_ce_labeled": loss_group_ce_l.detach(),
                     "train/loss_fishr_labeled": loss_fishr_l.detach(),
+                    "train/loss_proto_labeled": loss_proto_l.detach(),
+                    "train/loss_open_world_feat": loss_open_world_feat_l.detach(),
                     "train/loss_sat_cls_labeled": loss_sat_cls_l.detach(),
                     "train/loss_sat_cons_labeled": loss_sat_cons_l.detach(),
                     "train/w_loss_tx_labeled": loss_tx_l.detach(),
@@ -1794,6 +2022,8 @@ def train(args) -> int:
                     "train/w_loss_orth_labeled": (cur_w["orth"] * loss_orth_l).detach(),
                     "train/w_loss_group_ce_labeled": (cur_w["group_ce"] * loss_group_ce_l).detach(),
                     "train/w_loss_fishr_labeled": (cur_w["fishr"] * loss_fishr_l).detach(),
+                    "train/w_loss_proto_labeled": (cur_w["proto"] * loss_proto_l).detach(),
+                    "train/w_loss_open_world_feat": (cur_w["open_world_feat"] * loss_open_world_feat_l).detach(),
                     "train/w_loss_sat_cls_labeled": (cur_w["sat_cls"] * loss_sat_cls_l).detach(),
                     "train/w_loss_sat_cons_labeled": (cur_w["sat_cons"] * loss_sat_cons_l).detach(),
                     "train/loss_unlabeled": loss_u.detach(),
@@ -1814,6 +2044,16 @@ def train(args) -> int:
                     "train/pseudo_total": pseudo_total,
                     "train/pseudo_selected": pseudo_selected,
                     "train/pseudo_correct": pseudo_correct,
+                    "train/proto_pull_cos": proto_info.get("proto_pull_cos", float("nan")),
+                    "train/proto_push": proto_info.get("proto_push", float("nan")),
+                    "train/proto_active_classes": proto_info.get("proto_active_classes", float("nan")),
+                    "train/ow_feat_compact": ow_feat_info.get("compact", float("nan")),
+                    "train/ow_feat_inter": ow_feat_info.get("inter", float("nan")),
+                    "train/ow_feat_sample_margin": ow_feat_info.get("sample_margin", float("nan")),
+                    "train/ow_feat_domain_align": ow_feat_info.get("domain_align", float("nan")),
+                    "train/ow_feat_active_classes": ow_feat_info.get("active_classes", float("nan")),
+                    "train/ow_feat_pos_angle_deg": ow_feat_info.get("pos_angle_deg", float("nan")),
+                    "train/ow_feat_min_inter_deg": ow_feat_info.get("min_inter_angle_deg", float("nan")),
                 }
             )
 
@@ -2038,6 +2278,17 @@ def train(args) -> int:
         if test_ran_this_epoch:
             previous_protected_metrics = dict(protected_metrics)
         previous_train_logs = dict(train_logs)
+    try:
+        default_export_checkpoint = safe_best_path if _joint_safe_guard_enabled(args) else out_dir / f"best_{args.best_metric}_ssdg.pth"
+        _maybe_export_phase2_prototypes_ssdg(
+            args,
+            model,
+            data_ctx,
+            device,
+            default_checkpoint=default_export_checkpoint,
+        )
+    except Exception as exc:
+        print(f"[WARN] optional SSDG Phase2 prototype export failed: {exc}", flush=True)
     return 0
 
 
