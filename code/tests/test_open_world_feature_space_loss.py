@@ -72,6 +72,30 @@ def test_open_world_feature_space_loss_reports_domain_center_misalignment():
     assert metrics["active_classes"] == 1.0
 
 
+def test_open_world_feature_space_loss_has_finite_gradients_on_near_duplicate_features():
+    torch.manual_seed(7)
+    base = torch.randn(1, 16)
+    features = (base.repeat(12, 1) + 1e-4 * torch.randn(12, 16)).requires_grad_(True)
+    labels = torch.tensor([0, 0, 1, 1, 2, 2, 3, 3, 4, 4, 5, 5])
+    domains = torch.tensor([0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1])
+
+    loss, metrics = open_world_feature_space_loss(
+        features,
+        labels,
+        domains,
+        radius_rad=math.radians(12.0),
+        inter_margin_rad=math.radians(55.0),
+        sample_margin_rad=math.radians(5.0),
+        domain_align_weight=0.03,
+    )
+    loss.backward()
+
+    assert torch.isfinite(loss)
+    assert features.grad is not None
+    assert torch.isfinite(features.grad).all()
+    assert metrics["active_classes"] == 6.0
+
+
 def test_open_world_feature_space_loss_returns_graph_safe_zero_without_enough_classes():
     features = torch.randn(3, 4, requires_grad=True)
     labels = torch.tensor([0, 0, 0])

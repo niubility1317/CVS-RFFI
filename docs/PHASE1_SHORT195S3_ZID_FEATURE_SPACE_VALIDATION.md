@@ -34,7 +34,7 @@
 | Phase2原型导出 | `code/cvsrffi/phase2_prototypes.py::export_phase2_prototypes` | `--phase2_export_prototypes`、`--phase2_export_*` | 默认关闭 |
 | dense-tail测试调度 | `code/training_test_eval.py::should_run_training_test` | `--test_eval_policy interval_final --test_eval_interval 10 --test_eval_final_window 20 --test_eval_final_interval 2` | 默认仍every_epoch |
 
-旧的`--lambda_tx_proto`、`--lambda_rx_proto`、`--lambda_mask_aux`、`--lambda_txrx_rect`仍是未接线audit权重；非零时继续报错，避免把旧审计字段静默解释成新的loss。
+旧的`--lambda_tx_proto`、`--lambda_rx_proto`、`--lambda_mask_aux`、`--lambda_txrx_rect`仍是未接线audit权重；非零时继续报错，避免把旧审计字段静默解释成新的loss。`open_world_feature_space_loss`的训练主项使用cosine-margin hinge，角度值只作为detach后的日志指标，避免真实batch上`acos`反传导致非有限梯度。
 
 ## 候选矩阵
 
@@ -44,12 +44,17 @@ run_id：`phase1_short195s3_zidbridge_20260630_0030`
 
 所有候选继承SHORT195_S3的损失、伪标签、星地增强和joint-safe设置，但不强制固定200 epoch。默认先跑E160快速筛选，即`SCREEN_EPOCHS=160`、`SCREEN_LABEL_EPOCHS=150`、`SCREEN_PSEUDO_EPOCHS=10`；脚本允许用环境变量覆写epoch设置。E160结果只作为机制筛选和稳定性证据，不直接等同于E200基线的最终性能证据。筛选通过的最多2个候选再扩展到E200/E220确认。
 
-| ID | GPU | 作用 | 新增主动项 |
+根据当前验证目标，GPU1-GPU7全部用于联合机制探索，不再启动控制组或单机制消融。历史SHORT195_S3 E200结果作为唯一外部基线。每个候选都同时启用训练期原型记忆、open-world角度特征空间约束、域对齐项和Phase2 `z_id`原型导出，只改变联合强度。
+
+| ID | GPU | 联合机制强度 | 新增主动项 |
 |---|---:|---|---|
-| `PHASE1_SHORT195S3_ZIDBRIDGE_C0_EXPORT_E160` | 1 | 控制组：只验证dense-tail调度和Phase2导出不改训练损失 | 无 |
-| `PHASE1_SHORT195S3_ZIDBRIDGE_C1_PROTO_LOW_E160` | 2 | 低权重训练期原型记忆 | `--use_proto_memory true --lambda_proto 0.004` |
-| `PHASE1_SHORT195S3_ZIDBRIDGE_C2_OWFEAT_LOW_E160` | 3 | 低权重open-world角度几何 | `--lambda_open_world_feat 0.004 --ow_feat_domain_align_weight 0.01` |
-| `PHASE1_SHORT195S3_ZIDBRIDGE_C3_PROTO_OWFEAT_LOW_E160` | 4 | 原型记忆+角度几何联合 | `--lambda_proto 0.004 --lambda_open_world_feat 0.004` |
+| `PHASE1_SHORT195S3_ZIDJOINT_C0_CONSERVE_E160` | 1 | 保守联合 | `--use_proto_memory true --lambda_proto 0.003 --lambda_open_world_feat 0.003 --proto_domain_align_weight 0.15 --ow_feat_domain_align_weight 0.01` |
+| `PHASE1_SHORT195S3_ZIDJOINT_C1_LOW_E160` | 2 | 低强度均衡联合 | `--lambda_proto 0.004 --lambda_open_world_feat 0.004 --proto_domain_align_weight 0.25 --ow_feat_domain_align_weight 0.01` |
+| `PHASE1_SHORT195S3_ZIDJOINT_C2_GEOM_E160` | 3 | 特征几何偏强 | `--lambda_proto 0.004 --lambda_open_world_feat 0.006 --proto_domain_align_weight 0.25 --ow_feat_domain_align_weight 0.02` |
+| `PHASE1_SHORT195S3_ZIDJOINT_C3_PROTO_E160` | 4 | 原型约束偏强 | `--lambda_proto 0.006 --lambda_open_world_feat 0.004 --proto_domain_align_weight 0.35 --ow_feat_domain_align_weight 0.01` |
+| `PHASE1_SHORT195S3_ZIDJOINT_C4_BALANCED_E160` | 5 | 中强度均衡联合 | `--lambda_proto 0.006 --lambda_open_world_feat 0.006 --proto_domain_align_weight 0.25 --ow_feat_domain_align_weight 0.02` |
+| `PHASE1_SHORT195S3_ZIDJOINT_C5_DOMAIN_E160` | 6 | 域对齐偏强联合 | `--lambda_proto 0.004 --lambda_open_world_feat 0.005 --proto_domain_align_weight 0.50 --ow_feat_domain_align_weight 0.03` |
+| `PHASE1_SHORT195S3_ZIDJOINT_C6_STRONG_E160` | 7 | 强联合压力测试 | `--lambda_proto 0.008 --lambda_open_world_feat 0.006 --proto_domain_align_weight 0.35 --ow_feat_domain_align_weight 0.03` |
 
 ## 验证标准
 
@@ -65,4 +70,4 @@ run_id：`phase1_short195s3_zidbridge_20260630_0030`
 
 ## 与Meta-SSL的关系
 
-本轮按用户指定的SSDG基线做同入口地面验证。Meta-SSL完整实现仍在`code/train.py`的`--use_meta_ssl_cvs`路径；当前SSDG桥接不伪造Meta-SSL参数。若C1-C3至少一行保持source/sat不退化，再将同一基线指标作为控制，启动`code/train.py`的Meta-SSL+PrototypeMemoryBank+open-world feature loss机制验证，避免把不同入口的结果混成同一个证据等级。
+本轮按用户指定的SSDG基线做同入口地面验证。Meta-SSL和few-shot适配属于后续支持集/部署适配链路，不能在Phase1 source-only地面训练中读取target receiver、Stage2 support/query或unknown query。当前安排先让全部GPU1-GPU7候选产出联合优化后的`z_id`表示和Phase2原型包；通过稳定性筛选后，再把晋级候选接入Stage2-B的few-shot/meta-learning验证，避免把地面训练证据和部署适配证据混成同一级别。

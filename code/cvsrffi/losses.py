@@ -415,31 +415,36 @@ def open_world_feature_space_loss(
     center_labels = torch.stack(class_ids, dim=0).to(device=labels.device)
     sample_z = z_norm[sample_mask]
     sample_labels = labels[sample_mask]
-    sample_angles = _safe_angle_from_cos(sample_z @ proto.t())
+    sample_cos = (sample_z @ proto.t()).clamp(-1.0 + 1e-4, 1.0 - 1e-4)
     own_center = sample_labels.view(-1, 1).eq(center_labels.view(1, -1))
-    pos_angles = sample_angles[own_center]
+    pos_cos = sample_cos[own_center]
 
-    compact = F.relu(pos_angles - max(0.0, float(radius_rad))).pow(2).mean()
+    cos_radius = math.cos(max(0.0, float(radius_rad)))
+    compact = F.relu(float(cos_radius) - pos_cos).pow(2).mean()
     sample_margin = z.new_tensor(0.0)
     if active_classes > 1:
-        neg_angles = sample_angles.masked_fill(own_center, float("inf")).min(dim=1).values
-        sample_margin = F.relu(pos_angles + max(0.0, float(sample_margin_rad)) - neg_angles).pow(2).mean()
+        neg_cos = sample_cos.masked_fill(own_center, -float("inf")).max(dim=1).values
+        cos_gap = 1.0 - math.cos(max(0.0, float(sample_margin_rad)))
+        sample_margin = F.relu(neg_cos + float(cos_gap) - pos_cos).pow(2).mean()
 
     inter = z.new_tensor(0.0)
     min_inter_angle = z.new_tensor(float("nan"))
     if active_classes > 1:
-        proto_angles = _safe_angle_from_cos(proto @ proto.t())
+        proto_cos = (proto @ proto.t()).clamp(-1.0 + 1e-4, 1.0 - 1e-4)
         tri = torch.triu_indices(active_classes, active_classes, offset=1, device=proto.device)
-        pair_angles = proto_angles[tri[0], tri[1]]
-        inter = F.relu(max(0.0, float(inter_margin_rad)) - pair_angles).pow(2).mean()
-        min_inter_angle = pair_angles.min()
+        pair_cos = proto_cos[tri[0], tri[1]]
+        cos_inter_margin = math.cos(max(0.0, float(inter_margin_rad)))
+        inter = F.relu(pair_cos - float(cos_inter_margin)).pow(2).mean()
+        min_inter_angle = _safe_angle_from_cos(pair_cos.detach()).min()
 
     domain_align = z.new_tensor(0.0)
+    domain_align_angle = z.new_tensor(0.0)
     if d is not None and torch.is_tensor(d):
         domains = d.view(-1).long()
         if domains.numel() != z.size(0):
             raise ValueError(f"domain count {domains.numel()} does not match feature batch {z.size(0)}")
         domain_terms = []
+        domain_angle_terms = []
         for cls, center in zip(center_labels, proto):
             cls_mask = labels.eq(cls) & (domains >= 0)
             for dom in torch.unique(domains[cls_mask]):
@@ -447,16 +452,20 @@ def open_world_feature_space_loss(
                 if not bool(dom_mask.any()):
                     continue
                 dom_center = safe_l2_normalize(z_norm[dom_mask].mean(dim=0, keepdim=True), dim=1).squeeze(0)
-                domain_terms.append(_safe_angle_from_cos((dom_center * center.detach()).sum()))
+                dom_cos = (dom_center * center.detach()).sum().clamp(-1.0 + 1e-4, 1.0 - 1e-4)
+                domain_terms.append(1.0 - dom_cos)
+                domain_angle_terms.append(_safe_angle_from_cos(dom_cos.detach()))
         if domain_terms:
             domain_align = torch.stack(domain_terms).mean()
+            domain_align_angle = torch.stack(domain_angle_terms).mean()
 
     loss = compact + inter + sample_margin + max(0.0, float(domain_align_weight)) * domain_align
+    pos_angles = _safe_angle_from_cos(pos_cos.detach())
     metrics = {
         "compact": _scalar_metric(compact),
         "inter": _scalar_metric(inter),
         "sample_margin": _scalar_metric(sample_margin),
-        "domain_align": _scalar_metric(domain_align),
+        "domain_align": _scalar_metric(domain_align_angle),
         "active_classes": float(active_classes),
         "pos_angle_deg": math.degrees(_scalar_metric(pos_angles)),
         "min_inter_angle_deg": math.degrees(_scalar_metric(min_inter_angle)),
