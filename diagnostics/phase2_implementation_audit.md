@@ -18,6 +18,26 @@
 
 用户要求的命令已经尝试执行。由于`E:\type10-7`包含历史报告、node_modules、缓存和不可读目录，原始全树`grep -R`在扫描大量非项目文件时超时。为避免把缓存和历史生成物当作当前代码事实，随后使用`rg`对`code/`、`tests/`、`docs/`和Git镜像进行有界复核。
 
+补充执行记录：为避免一条全树`grep -R`超时阻断后续命令，已在2026-06-29用5秒受控窗口逐条重跑用户列出的原始命令。summary位于`E:\codex\home\tmp\phase2_required_command_rerun_20260629_ps2\summary.tsv`，单条日志位于同目录。退出码`124`表示该原始命令在全树扫描中触发受控超时；退出码`2`来自根目录无`train.py`或grep路径错误；这些结果与当前仓库结构一致，并由下表的有界代码面复核补足有效证据。
+
+| 逐条重跑ID | 命令 | 退出码 | 记录字节数 | 解释 |
+|---|---|---:|---:|---|
+| 01 | `git status` | 128 | 176 | 根目录不是Git仓库。 |
+| 02 | `find . -maxdepth 2 -type f` | 1 | 28048 | 存在不可读缓存目录，但已有部分输出。 |
+| 03 | `find . -maxdepth 3 -type f | sort` | 0 | 168946 | 完整完成。 |
+| 04 | `grep -R "class PrototypeMemoryBank" -n .` | 124 | 51638129 | 全树扫描超时；有界复核命中当前实现。 |
+| 05 | `grep -R "return_aux" -n .` | 124 | 12486 | 全树扫描超时；有界复核命中当前实现。 |
+| 06 | `grep -R "z_id" -n .` | 124 | 15824608 | 全树扫描超时；有界复核命中当前实现。 |
+| 07 | `grep -R "z_dom" -n .` | 124 | 148323 | 全树扫描超时；有界复核命中当前实现。 |
+| 08 | `grep -R "generalization_feature" -n .` | 124 | 132255 | 全树扫描超时；有界复核命中当前实现。 |
+| 09 | `grep -R "sgc_augment" -n .` | 124 | 90 | 全树扫描超时；当前`code/train.py`无同名阶段。 |
+| 10 | `grep -R "sgc_adapt" -n .` | 124 | 88 | 全树扫描超时；当前`code/train.py`无同名阶段。 |
+| 11 | `grep -R "pseudo_label_threshold" -n .` | 124 | 101 | 全树扫描超时；当前训练入口无同名参数。 |
+| 12 | `grep -R "lambda_ent" -n .` | 124 | 89 | 全树扫描超时；当前训练入口无同名参数。 |
+| 13 | `grep -R "argparse" -n train.py` | 2 | 95 | 根目录无`train.py`；当前入口为`code/train.py`。 |
+| 14 | `grep -R "best_primary" -n .` | 124 | 61369175 | 全树扫描超时；有界复核命中当前实现。 |
+| 15 | `grep -R "checkpoint" -n train.py` | 2 | 97 | 根目录无`train.py`；当前checkpoint逻辑在`code/`。 |
+
 | 命令 | 结果 | 记录/补充证据 |
 |---|---|---|
 | `git status` | 根目录退出128，提示不是Git仓库 | Git镜像`github_publish/CVS-RFFI-repo`为分支`codex/cvs-rffi-release-20260626`，相对远端ahead 7。 |
