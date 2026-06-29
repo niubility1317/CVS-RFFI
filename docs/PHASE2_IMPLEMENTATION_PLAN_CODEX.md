@@ -1,0 +1,189 @@
+# Phase2本地实现计划
+
+生成时间：2026-06-29  
+状态：计划文档，不包含功能实现。  
+最高约束：本地代码事实优先，`项目.md`优先于设计报告和历史记忆。
+
+## 目标与非目标
+
+目标是在不改变默认训练行为的前提下，为CVS-RFFI Phase2建立可测试、可回滚、可审计的离线原型导出和open-world评估路径。设计报告中的模块名只能作为候选，不直接决定本地文件结构。
+
+本轮非目标：
+
+- 不改`train.py`训练主循环。
+- 不新增`extract_phase2_features`实现。
+- 不新增N607启动、同步或远程运行。
+- 不实现高斯协方差、episodic meta-learning、unknown buffer或prototype refiner。
+- 不把target query用于训练、阈值选择或model selection。
+
+## 当前本地数据流
+
+1. 训练入口是`code/train.py`，Git镜像为`github_publish/CVS-RFFI-repo/code/train.py`。
+2. 模型入口是`code/model_dual_cvsincnet.py`的`DualCVSincNet.forward`。Phase2必须使用`return_aux=True`读取`z_id`，不能依赖`return_aux=False`。
+3. batch格式由`code/cvsrffi/tensors.py`定义：`batch[0]`为输入，`batch[1]`为TX label，`batch[2:]`中首个tensor-like值为domain label。
+4. checkpoint由`code/cvsrffi/checkpoint.py::save_checkpoint`保存，核心字段为`model`、`optimizer`、`scheduler`、`scaler`、`epoch`、`args`、`split_info`、`stats`。
+5. 训练时原型正则由`code/cvsrffi/losses.py::PrototypeMemoryBank`承担；离线Phase2原型应落在`code/cvsrffi/phase2_prototypes.py`。
+6. open-world判定已有基础类`code/cvsrffi/open_world_head.py::OpenWorldMultiPrototypeHead`，后续必须扩展它而不是新增平行头。
+
+## 分阶段计划
+
+### P0：审计和矩阵落地
+
+产物：
+
+- `docs/PHASE2_LOCAL_FIT_MATRIX.md`
+- `docs/PHASE2_IMPLEMENTATION_PLAN_CODEX.md`
+- `diagnostics/phase2_implementation_audit.md`
+
+验收：
+
+- 每个设计项都对应本地文件、类/函数/参数、处理方式、默认行为影响、风险、测试位置和延期判定。
+- 不包含功能代码修改。
+
+### P1：离线Phase2原型导出
+
+落点：
+
+- 扩展`code/cvsrffi/phase2_prototypes.py`
+- 需要时保留根级shim`code/phase2_prototypes.py`兼容导入
+- 测试扩展`code/tests/test_phase2_prototypes.py`
+
+最小功能：
+
+- `extract_phase2_features`只在此阶段实现，必须调用`model(...,return_aux=True,domain_labels=...)`。
+- 复用`unpack_batch`和`extract_domain_from_extra`解析loader batch。
+- 基于`z_id`导出`P_tx`，基于domain label导出`P_tx_dom`诊断，不把`z_dom`并入TX距离。
+- 基于`PrototypeRadiusTracker`扩展p95/p99/max/robust_max/safety_margin。
+- 输出`.pt`和`.json`元数据，记录source receiver、TX集合、feature key、checkpoint path、split_info和协议摘要。
+
+默认行为：
+
+- 不接入`train.py`默认流程。
+- 不改变现有训练损失、loader、scheduler、checkpoint保存。
+
+验证：
+
+- `conda activate ssr-gpu; python -m pytest code/tests/test_phase2_prototypes.py -q`
+- synthetic mock model必须覆盖`return_aux=True`、domain label、空类、单样本类、归一化和半径统计。
+
+### P2：训练后可选导出CLI
+
+落点：
+
+- `code/train.py`
+- `code/tests`新增CLI解析或smoke测试
+
+新增参数必须默认关闭，例如：
+
+- `--phase2_export_prototypes`默认`False`
+- `--phase2_export_path`默认空
+- `--phase2_export_feature_key`默认`z_id`
+- `--phase2_export_checkpoint`默认使用`best_primary_save_path`或显式路径
+
+接入规则：
+
+- 只在训练完全结束后执行。
+- 只读取已保存checkpoint的`model`字段。
+- 失败时不改变训练结果判定，必须作为导出失败单独报告。
+- 不改变N607并发、远程同步和实验注册逻辑。
+
+验证：
+
+- `conda activate ssr-gpu; python -m py_compile code/train.py code/cvsrffi/phase2_prototypes.py`
+- CLI默认参数检查必须证明默认不导出。
+
+### P3：离线open-world评估
+
+落点：
+
+- 扩展`code/cvsrffi/open_world_head.py`
+- 新增`code/eval_open_world.py`或在`code/eval_spaceborne_fewshot.py`外层加薄adapter，最终选择取决于现有Stage2脚本接口复杂度
+- 测试新增`code/tests/test_eval_open_world.py`或扩展`code/tests/test_open_world_head.py`
+
+功能：
+
+- 从P1原型包加载old TX原型和半径。
+- 对target receiver support注册seen-new TX。
+- 对query输出old/seen-new/unknown决策、gate reason、distance、energy、radius margin。
+- 结果表必须同一行绑定candidate、receiver/TX split、K-shot、seed、old/seen-new/unknown指标，禁止单独最大值冒充整体结果。
+
+协议约束：
+
+- Stage2-B只能声明target-old校准。
+- Stage2-C必须同时报告old、seen-new和unknown拒识。
+- unknown query只用于评估，不能用于训练或阈值选择。
+
+### P4：新类注册和target old-anchor校准
+
+落点：
+
+- `code/cvsrffi/open_world_head.py`
+- `code/cvsrffi/phase2_prototypes.py`
+- 必要时新增`code/cvsrffi/phase2_adapt.py`作为离线adapter，不进入默认训练
+
+功能：
+
+- 在`register_new_class`中加入old邻居prior、target receiver shift、support增强一致性和overlap检查。
+- 校准只使用协议允许的target-old support和new-class support。
+- 所有注册状态必须显式记录为`provisional`、`confirmed`或`rejected`。
+
+风险控制：
+
+- 若support/query权限不清楚，直接阻断并要求协议修正。
+- 若与`项目.md`冲突，禁止实现。
+
+### P5：unknown buffer
+
+落点：
+
+- 新增`code/cvsrffi/unknown_buffer.py`
+- 新增`code/tests/test_unknown_buffer.py`
+
+功能：
+
+- 缓存高不确定样本的feature、score、gate reason和元数据。
+- 支持容量限制、重复过滤、简单聚类摘要。
+- 默认不参与训练，不触发熵最小化，不改变伪标签池。
+
+延期理由：
+
+- 本地已有伪标签和target adaptation逻辑，但unknown buffer语义不同；必须先完成P3评估闭环，避免unknown被错误纳入known-class适配。
+
+### P6：meta-learning/refiner/协方差估计
+
+状态：延期。
+
+延期理由：
+
+- 当前本地open-world头以cosine/angular/radius/energy为主，设计报告中的Gaussian full covariance、Mahalanobis、episodic refiner会显著改变方法声明。
+- 需要先有P1-P3的可复现离线结果，再判断是否值得引入高风险模块。
+
+## 文档和报告同步
+
+每次后续代码变更必须同步：
+
+- `docs/PHASE2_LOCAL_FIT_MATRIX.md`：若设计项状态、风险或落点改变。
+- `docs/PHASE2_IMPLEMENTATION_PLAN_CODEX.md`：若阶段顺序或默认行为改变。
+- `diagnostics/phase2_implementation_audit.md`：若新增命令证据或偏离计划。
+- N607实验报告：只有真正设计并运行N607实验时才写入`automation_reports/CV-SincNet/<run-id>/report.md`。
+
+## 最小验证命令
+
+后续任何P1/P2代码改动后，至少执行：
+
+```powershell
+conda activate ssr-gpu
+python -m py_compile code/cvsrffi/phase2_prototypes.py code/cvsrffi/open_world_head.py code/model_dual_cvsincnet.py code/eval_feature_diagnosis.py
+python -m pytest code/tests/test_phase2_prototypes.py code/tests/test_open_world_head.py -q
+```
+
+如改动`train.py`，额外执行：
+
+```powershell
+conda activate ssr-gpu
+python -m py_compile code/train.py
+```
+
+## 发布策略
+
+根目录不是Git仓库，因此本轮文档同时写入根目录和`github_publish/CVS-RFFI-repo/`镜像。Git镜像提交只包含审计/计划/诊断文档，不包含功能代码。
