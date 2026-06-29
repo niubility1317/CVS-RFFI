@@ -2518,6 +2518,18 @@ def main():
         default=0,
         help="For --test_eval_policy interval_final, run named test-set and satellite evaluation every N epochs plus the final epoch.",
     )
+    parser.add_argument(
+        "--test_eval_final_window",
+        type=int,
+        default=0,
+        help="For --test_eval_policy interval_final, use a denser test interval inside the final N epochs; 0 disables.",
+    )
+    parser.add_argument(
+        "--test_eval_final_interval",
+        type=int,
+        default=0,
+        help="For --test_eval_policy interval_final, run named test-set and satellite evaluation every N epochs inside --test_eval_final_window; final epoch still runs.",
+    )
     parser.add_argument("--best_save_path", type=str, default="best_model.pth",
                         help="按 VAL tx_acc 最优保存的权重路径。")
     parser.add_argument("--latest_save_path", type=str, default="latest_model.pth",
@@ -3783,6 +3795,8 @@ def main():
             val_improved=is_best,
             start_epoch=args.test_eval_start_epoch,
             interval=args.test_eval_interval,
+            final_window=args.test_eval_final_window,
+            final_interval=args.test_eval_final_interval,
         )
         test_time_s = 0.0
         if test_ran_this_epoch:

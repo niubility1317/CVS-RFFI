@@ -27,6 +27,8 @@ def should_run_training_test(
     val_improved: bool,
     start_epoch: int = 1,
     interval: int = 0,
+    final_window: int = 0,
+    final_interval: int = 0,
 ) -> bool:
     normalized = str(policy or "every_epoch").strip().lower()
     if normalized == "interval_final":
@@ -34,6 +36,12 @@ def should_run_training_test(
             return True
         if int(epoch) < int(start_epoch):
             return False
+        tail_window = max(0, int(final_window or 0))
+        tail_step = max(0, int(final_interval or 0))
+        if tail_window > 0 and tail_step > 0:
+            tail_start = max(int(start_epoch), int(epochs) - tail_window + 1)
+            if int(epoch) >= tail_start:
+                return int(epoch) % tail_step == 0
         step = max(0, int(interval or 0))
         return step > 0 and int(epoch) % step == 0
     if int(epoch) < int(start_epoch):

@@ -84,6 +84,8 @@ V1-B不得绕过`train_ssdg.py`当前保护：现有非零`lambda_tx_proto/lambd
 - 数据：ManySig source receivers；`labeled_ratio=0.10`、`unlabeled_ratio=0.70`、`source_val_ratio=0.20`。
 - 特征：`--generalization_feature z_id`。
 - 禁止：target receiver、Stage2 support/query、unknown query进入训练、阈值拟合或模型选择。
+- 重测试调度：显式使用`--test_eval_policy interval_final --test_eval_start_epoch 1 --test_eval_interval 10 --test_eval_final_window 20 --test_eval_final_interval 2`；即常规阶段每10轮跑named test和satellite evaluation，最后20轮每2轮跑一次，最终epoch必跑。
+- 跳过重测试的epoch只做val、训练loss telemetry和latest checkpoint；依赖test/satellite的best和joint-safe guard只能在重测试epoch更新。
 - 每行训练结束后显式开启`--phase2_export_prototypes --phase2_export_feature_key z_id`，导出`P_tx/P_tx_dom`。
 - 每行保留完整loss telemetry，不能用最终epoch单点替代曲线。
 
@@ -185,7 +187,8 @@ V1-B不得绕过`train_ssdg.py`当前保护：现有非零`lambda_tx_proto/lambd
 conda activate ssr-gpu
 python -m py_compile code\train.py code\cvsrffi\losses.py code\cvsrffi\phase2_prototypes.py code\cvsrffi\open_world_head.py
 python -m pytest code\tests\test_phase2_prototypes.py code\tests\test_open_world_head.py code\tests\test_open_world_feature_space_loss.py code\tests\test_phase2_train_cli.py -q
-python code\train.py --help | Select-String -Pattern "use_meta_ssl_cvs|lambda_meta_ssl|use_proto_memory|lambda_proto|lambda_open_world_feat|phase2_export"
+python -m pytest code\tests\test_training_test_eval.py -q
+python code\train.py --help | Select-String -Pattern "use_meta_ssl_cvs|lambda_meta_ssl|use_proto_memory|lambda_proto|lambda_open_world_feat|phase2_export|test_eval_final"
 ```
 
 若新增SSDG桥接：
@@ -193,7 +196,7 @@ python code\train.py --help | Select-String -Pattern "use_meta_ssl_cvs|lambda_me
 ```powershell
 conda activate ssr-gpu
 python -m py_compile code\SSDG\train_ssdg.py
-python code\SSDG\train_ssdg.py --help | Select-String -Pattern "phase2_ground_prototypes|feature_masks|txrx_geometry|open_world"
+python code\SSDG\train_ssdg.py --help | Select-String -Pattern "phase2_ground_prototypes|feature_masks|txrx_geometry|open_world|test_eval_final"
 ```
 
 ## 当前决策

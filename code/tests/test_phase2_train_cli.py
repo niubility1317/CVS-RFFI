@@ -25,3 +25,22 @@ def test_train_cli_exposes_default_off_open_world_feature_space_loss():
     assert '"--ow_feat_sample_margin_deg"' in text
     assert '"--ow_feat_domain_align_weight"' in text
     assert "open_world_feature_space_loss(" in text
+
+
+def test_train_cli_exposes_dense_tail_test_eval_schedule():
+    text = (PROJECT_ROOT / "code" / "train.py").read_text(encoding="utf-8")
+
+    assert '"--test_eval_final_window"' in text
+    assert '"--test_eval_final_interval"' in text
+    assert "final_window=args.test_eval_final_window" in text
+    assert "final_interval=args.test_eval_final_interval" in text
+
+
+def test_ssdg_cli_exposes_dense_tail_test_eval_schedule():
+    text = (PROJECT_ROOT / "code" / "SSDG" / "train_ssdg.py").read_text(encoding="utf-8")
+
+    assert '"--test_eval_policy"' in text
+    assert '"--test_eval_interval"' in text
+    assert '"--test_eval_final_window"' in text
+    assert '"--test_eval_final_interval"' in text
+    assert "test_eval_skipped_guard_block" in text

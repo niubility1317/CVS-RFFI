@@ -43,6 +43,7 @@ try:
     )
     from training_controls import parse_sat_scenarios
     from baseline_origin_sat_view import parse_sat_view_schedule
+    from training_test_eval import should_run_training_test
     from cvsrffi.tensors import build_domain_label_map
     from cvsrffi.eval import (
         aggregate_named_stats,
@@ -82,6 +83,7 @@ except ModuleNotFoundError:
     mean_logs = merge_checkpoint_args = move_batch = resolve_device = save_payload = set_seed = None
     parse_sat_scenarios = None
     parse_sat_view_schedule = None
+    should_run_training_test = None
     build_domain_label_map = evaluate_loader = evaluate_named_loaders = make_loader = parse_csv_indices = None
     apply_sat_channel_for_scenario = fishr_logit_gradient_variance_loss = make_torch_generator = None
     aggregate_named_stats = compute_core_losses = evaluate_sat_scenarios = None
@@ -167,6 +169,37 @@ def build_arg_parser() -> argparse.ArgumentParser:
     )
     parser.add_argument("--safe_best_path", type=str, default="", help="Optional path for the guarded best checkpoint.")
     parser.add_argument("--safe_latest_path", type=str, default="", help="Optional path for the latest guarded checkpoint.")
+    parser.add_argument(
+        "--test_eval_policy",
+        type=str,
+        default="every_epoch",
+        choices=["every_epoch", "val_improved_final", "interval_final"],
+        help="When to run named test-set and satellite evaluation during SSDG training.",
+    )
+    parser.add_argument(
+        "--test_eval_start_epoch",
+        type=int,
+        default=1,
+        help="First epoch allowed to run named test-set and satellite evaluation during SSDG training.",
+    )
+    parser.add_argument(
+        "--test_eval_interval",
+        type=int,
+        default=0,
+        help="For --test_eval_policy interval_final, run named test-set and satellite evaluation every N epochs plus final.",
+    )
+    parser.add_argument(
+        "--test_eval_final_window",
+        type=int,
+        default=0,
+        help="For --test_eval_policy interval_final, use a denser interval inside the final N epochs; 0 disables.",
+    )
+    parser.add_argument(
+        "--test_eval_final_interval",
+        type=int,
+        default=0,
+        help="For --test_eval_policy interval_final, run named test-set and satellite evaluation every N epochs inside --test_eval_final_window; final epoch still runs.",
+    )
     parser.add_argument("--enable_joint_safe_guard", type=str2bool, default=False)
     parser.add_argument("--joint_guard_require_satellite", type=str2bool, default=True)
     parser.add_argument("--joint_guard_min_strict_udu", type=float, default=0.0)
@@ -1784,13 +1817,46 @@ def train(args) -> int:
                 }
             )
 
-        val_stats, named_stats = _evaluate(model, data_ctx, device, int(args.eval_max_batches))
+        val_stats = evaluate_loader(model, data_ctx["val_loader"], device, data_ctx["domain_label_map"], max_batches=int(args.eval_max_batches))
+        val_improved = float(val_stats.get("tx_acc", float("nan"))) > float(best_val)
+        test_ran_this_epoch = (
+            should_run_training_test(
+                str(args.test_eval_policy),
+                epoch=epoch,
+                epochs=total_epochs,
+                val_improved=bool(val_improved),
+                start_epoch=int(args.test_eval_start_epoch),
+                interval=int(args.test_eval_interval),
+                final_window=int(args.test_eval_final_window),
+                final_interval=int(args.test_eval_final_interval),
+            )
+            if should_run_training_test is not None
+            else True
+        )
+        if test_ran_this_epoch:
+            named_stats = evaluate_named_loaders(
+                model,
+                data_ctx["named_test_loaders"],
+                device,
+                data_ctx["domain_label_map"],
+                max_batches=int(args.eval_max_batches),
+            )
+        else:
+            named_stats = {}
         train_logs = mean_logs(epoch_logs)
         train_logs["train/pseudo_total"] = _sum_log_values(epoch_logs, "train/pseudo_total")
         train_logs["train/pseudo_selected"] = _sum_log_values(epoch_logs, "train/pseudo_selected")
         train_logs["train/pseudo_correct"] = _sum_log_values(epoch_logs, "train/pseudo_correct")
-        test_stats = _aggregate_main_test(named_stats, str(args.dataset))
-        sat_test_stats = _evaluate_sat_if_enabled(model, data_ctx, device, args)
+        test_stats = _aggregate_main_test(named_stats, str(args.dataset)) if test_ran_this_epoch else {
+            "tx_acc": float("nan"),
+            "tx_correct": 0,
+            "tx_total": 0,
+        }
+        sat_test_stats = _evaluate_sat_if_enabled(model, data_ctx, device, args) if test_ran_this_epoch else {}
+        stage_state["test_eval_ran"] = 1.0 if test_ran_this_epoch else 0.0
+        stage_state["test_eval_interval"] = float(getattr(args, "test_eval_interval", 0))
+        stage_state["test_eval_final_window"] = float(getattr(args, "test_eval_final_window", 0))
+        stage_state["test_eval_final_interval"] = float(getattr(args, "test_eval_final_interval", 0))
         stats = {"train": train_logs, "val": val_stats, "named_test": named_stats, "test": test_stats, "sat_test_named": sat_test_stats}
         payload = {
             "model": model.state_dict(),
@@ -1816,7 +1882,7 @@ def train(args) -> int:
             protected_metrics,
             previous_protected_metrics,
             threshold_pp=float(args.one_epoch_drop_guard_pp),
-        ) if _joint_safe_guard_enabled(args) and phase == "pseudo" else None
+        ) if _joint_safe_guard_enabled(args) and phase == "pseudo" and test_ran_this_epoch else None
         paic_decision = detect_paic_variance_guard(
             train_logs,
             previous_train_logs,
@@ -1829,6 +1895,7 @@ def train(args) -> int:
         drop_guard_fired = bool(drop_decision and drop_decision.fired)
         paic_guard_fired = bool(paic_decision and paic_decision.fired)
         guard_enabled = _joint_safe_guard_enabled(args)
+        test_eval_skipped_guard_block = bool(_joint_safe_guard_enabled(args) and phase == "pseudo" and not test_ran_this_epoch)
         missing_required_metrics = (
             tuple(
                 missing_joint_safe_metrics(
@@ -1836,16 +1903,18 @@ def train(args) -> int:
                     require_satellite=bool(getattr(args, "joint_guard_require_satellite", True)),
                 )
             )
-            if guard_enabled and missing_joint_safe_metrics is not None
+            if guard_enabled and test_ran_this_epoch and missing_joint_safe_metrics is not None
             else tuple()
         )
         missing_required_guard_fired = bool(missing_required_metrics)
         checkpoint_safe = not bool(
-            guard_enabled and (missing_required_guard_fired or drop_guard_fired or paic_guard_fired)
+            guard_enabled and (test_eval_skipped_guard_block or missing_required_guard_fired or drop_guard_fired or paic_guard_fired)
         )
         if paic_guard_fired:
             paic_cooldown_remaining = max(paic_cooldown_remaining, max(0, int(args.paic_guard_cooldown_epochs)))
         guard_reasons = []
+        if test_eval_skipped_guard_block:
+            guard_reasons.append("test_eval_skipped")
         if missing_required_guard_fired:
             guard_reasons.append("missing_required_metrics:" + ",".join(missing_required_metrics))
         if drop_guard_fired:
@@ -1858,6 +1927,8 @@ def train(args) -> int:
             "missing_required_guard_fired": bool(missing_required_guard_fired),
             "missing_required_metric_count": int(len(missing_required_metrics)),
             "missing_required_metrics": ",".join(missing_required_metrics),
+            "test_eval_ran": bool(test_ran_this_epoch),
+            "test_eval_skipped_guard_block": bool(test_eval_skipped_guard_block),
             "drop_guard_fired": bool(drop_guard_fired),
             "paic_guard_fired": bool(paic_guard_fired),
             "paic_cooldown_active": bool(paic_cooldown_active),
@@ -1873,8 +1944,14 @@ def train(args) -> int:
             save_payload(safe_latest_path, payload)
             safe_checkpoint_saved = True
         is_best = False
-        current_best_score = _best_score(val_stats, test_stats, sat_test_stats, str(args.best_metric), named_stats, args)
-        allow_best_update = (not missing_required_guard_fired) and (not drop_guard_fired) and (
+        best_metric_name = str(args.best_metric)
+        best_metric_needs_test = best_metric_name != "clean_val_tx"
+        current_best_score = (
+            _best_score(val_stats, test_stats, sat_test_stats, best_metric_name, named_stats, args)
+            if (test_ran_this_epoch or not best_metric_needs_test)
+            else float("-inf")
+        )
+        allow_best_update = (test_ran_this_epoch or not best_metric_needs_test) and (not test_eval_skipped_guard_block) and (not missing_required_guard_fired) and (not drop_guard_fired) and (
             checkpoint_safe or (paic_guard_fired and not bool(getattr(args, "paic_guard_block_best", True)))
         )
         if allow_best_update and current_best_score > best_score:
@@ -1958,7 +2035,8 @@ def train(args) -> int:
             ),
             flush=True,
         )
-        previous_protected_metrics = dict(protected_metrics)
+        if test_ran_this_epoch:
+            previous_protected_metrics = dict(protected_metrics)
         previous_train_logs = dict(train_logs)
     return 0
 
