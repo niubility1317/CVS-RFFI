@@ -1,12 +1,16 @@
 from __future__ import annotations
 
+import json
 import math
 from collections import defaultdict
 from dataclasses import dataclass
-from typing import Dict, Iterable, Mapping, Optional
+from pathlib import Path
+from typing import Any, Dict, Iterable, Mapping, Optional
 
 import torch
 import torch.nn.functional as F
+
+from cvsrffi.tensors import extract_domain_from_extra, get_nested_tensor, unpack_batch
 
 
 def _normalize(x: torch.Tensor, dim: int = -1, eps: float = 1e-6) -> torch.Tensor:
@@ -277,7 +281,15 @@ class PrototypeRadiusTracker:
         vals = self._angles.get(int(class_id), [])
         if not vals:
             return float("nan")
-        q = 0.95 if str(quantile).lower() == "p95" else float(quantile)
+        q_name = str(quantile).lower()
+        if q_name == "p95":
+            q = 0.95
+        elif q_name == "p99":
+            q = 0.99
+        elif q_name in ("max", "p100"):
+            q = 1.0
+        else:
+            q = float(quantile)
         t = torch.tensor(vals, dtype=torch.float32)
         return float(torch.quantile(t, max(0.0, min(1.0, q))).item())
 
@@ -289,6 +301,10 @@ class PrototypeRadiusTracker:
 
     def radii_tensor(self, *, quantile: str | float = "p95", device=None) -> torch.Tensor:
         vals = [self.radius(i, quantile=quantile) for i in range(self.num_classes)]
+        return torch.tensor(vals, dtype=torch.float32, device=device)
+
+    def sigma_tensor(self, *, device=None) -> torch.Tensor:
+        vals = [self.sigma(i) for i in range(self.num_classes)]
         return torch.tensor(vals, dtype=torch.float32, device=device)
 
 
@@ -325,3 +341,265 @@ def prototype_geometry_summary(
         min_interclass_angle_deg=math.degrees(float(pair_angles.min().item())),
         margin_violation_pairs=violations,
     )
+
+
+def _select_phase2_feature(out: Mapping[str, Any], feature_key: str) -> torch.Tensor:
+    key = str(feature_key or "z_id").strip()
+    if key in out and torch.is_tensor(out[key]):
+        return out[key]
+    name = key.lower()
+    if name in ("id_feat_joint", "feat_joint", "joint"):
+        return get_nested_tensor(dict(out), "id_feat_joint", "aux_id", "feat_joint")
+    if name in ("id_feat_pa", "feat_pa", "pa"):
+        return get_nested_tensor(dict(out), "id_feat_pa", "aux_id", "feat_pa")
+    if name in ("id_feat_dac", "feat_dac", "dac"):
+        return get_nested_tensor(dict(out), "id_feat_dac", "aux_id", "feat_dac")
+    raise KeyError(f"Phase2 feature key not found in model output: {feature_key}")
+
+
+@torch.no_grad()
+def extract_phase2_features(
+    model,
+    loader: Iterable,
+    *,
+    device=None,
+    feature_key: str = "z_id",
+    max_batches: int = 0,
+    grl_lambda: float = 1.0,
+) -> Dict[str, torch.Tensor | str]:
+    """Extract Phase2 features through the existing CVS auxiliary forward path.
+
+    This intentionally reuses ``unpack_batch`` and ``extract_domain_from_extra``
+    from the training/evaluation stack so Phase2 export follows the same batch
+    contract as ``train.py``. The model is always called with ``return_aux=True``;
+    ``return_aux=False`` does not guarantee that ``z_id`` exists.
+    """
+
+    dev = torch.device(device) if device is not None else next(model.parameters()).device
+    was_training = bool(getattr(model, "training", False))
+    model.eval()
+    feats = []
+    labels = []
+    domains = []
+    try:
+        for batch_idx, batch in enumerate(loader):
+            if int(max_batches) > 0 and batch_idx >= int(max_batches):
+                break
+            x, y, extra = unpack_batch(batch)
+            x = x.to(dev, non_blocking=True)
+            y = y.to(dev, non_blocking=True).view(-1).long()
+            d = extract_domain_from_extra(extra, dev)
+            out = model(x, y_tx=y, grl_lambda=float(grl_lambda), return_aux=True, domain_labels=d)
+            z = _select_phase2_feature(out, feature_key)
+            if z.ndim != 2:
+                raise ValueError(f"Phase2 feature {feature_key} must have shape [N, D], got {tuple(z.shape)}")
+            if z.size(0) != y.numel():
+                raise ValueError("Phase2 feature batch size must match labels")
+            if d is None:
+                d_cpu = torch.full((y.numel(),), -1, dtype=torch.long)
+            else:
+                d_cpu = d.detach().view(-1).long().cpu()
+                if d_cpu.numel() != y.numel():
+                    raise ValueError("domain_labels must have one value per sample")
+            feats.append(z.detach().float().cpu())
+            labels.append(y.detach().cpu())
+            domains.append(d_cpu)
+    finally:
+        if was_training:
+            model.train()
+    if not feats:
+        raise ValueError("No batches were available for Phase2 feature extraction")
+    return {
+        "features": torch.cat(feats, dim=0),
+        "labels": torch.cat(labels, dim=0).long(),
+        "domains": torch.cat(domains, dim=0).long(),
+        "feature_key": str(feature_key),
+    }
+
+
+def _valid_label_count(labels: torch.Tensor) -> int:
+    valid = labels.view(-1).long()
+    valid = valid[valid >= 0]
+    if valid.numel() == 0:
+        raise ValueError("Phase2 prototype export requires at least one non-negative TX label")
+    return int(valid.max().item()) + 1
+
+
+def _valid_domain_count(domains: Optional[torch.Tensor]) -> int:
+    if domains is None:
+        return 0
+    valid = domains.view(-1).long()
+    valid = valid[valid >= 0]
+    return int(valid.max().item()) + 1 if valid.numel() else 0
+
+
+def _as_jsonable(obj: Any) -> Any:
+    if torch.is_tensor(obj):
+        return obj.detach().cpu().tolist()
+    if isinstance(obj, PrototypeGeometrySummary):
+        return {
+            "initialized": obj.initialized,
+            "radius_p95_mean_deg": obj.radius_p95_mean_deg,
+            "min_interclass_angle_deg": obj.min_interclass_angle_deg,
+            "margin_violation_pairs": obj.margin_violation_pairs,
+        }
+    if isinstance(obj, Mapping):
+        return {str(k): _as_jsonable(v) for k, v in obj.items()}
+    if isinstance(obj, (list, tuple)):
+        return [_as_jsonable(v) for v in obj]
+    return obj
+
+
+def build_phase2_prototype_export(
+    features: torch.Tensor,
+    labels: torch.Tensor,
+    domains: Optional[torch.Tensor] = None,
+    *,
+    feature_key: str = "z_id",
+    metadata: Optional[Mapping[str, Any]] = None,
+    min_count_per_update: int = 1,
+    max_samples_per_class: int = 4096,
+    robust_sigma_scale: float = 1.0,
+) -> Dict[str, Any]:
+    """Build an offline Phase2 prototype package from extracted ``z_id`` features.
+
+    ``features`` are used for TX identity geometry. Domain labels only balance
+    source prototype updates and build ``P_tx_dom`` diagnostics; ``z_dom`` is not
+    part of the TX distance surface.
+    """
+
+    if features.ndim != 2:
+        raise ValueError("features must have shape [N, D]")
+    y = labels.view(-1).long()
+    if y.numel() != features.size(0):
+        raise ValueError("labels must have one value per feature")
+    d = domains.view(-1).long() if domains is not None else None
+    if d is not None and d.numel() != features.size(0):
+        raise ValueError("domains must have one value per feature")
+
+    feat = features.detach().float().cpu()
+    y_cpu = y.detach().cpu()
+    d_cpu = d.detach().cpu() if d is not None else None
+    num_tx = _valid_label_count(y_cpu)
+    num_domains = _valid_domain_count(d_cpu)
+    feat_dim = int(feat.size(1))
+
+    tx_bank = BalancedPrototypeBank(
+        num_items=num_tx,
+        feat_dim=feat_dim,
+        momentum=0.0,
+        min_count_per_update=min_count_per_update,
+    )
+    group_labels = d_cpu if num_domains > 0 else None
+    tx_stats = tx_bank.update_from_features(feat, y_cpu, group_labels=group_labels)
+
+    if num_domains > 0:
+        tx_domain_bank = TxDomainPrototypeBank(
+            num_tx=num_tx,
+            num_domains=num_domains,
+            feat_dim=feat_dim,
+            momentum=0.0,
+            min_count_per_update=1,
+        )
+        tx_domain_stats = tx_domain_bank.update(feat, y_cpu, d_cpu)
+        tx_domain_prototypes = tx_domain_bank.prototypes.detach().clone()
+        tx_domain_counts = tx_domain_bank.counts.detach().clone()
+        domain_shifts = tx_domain_bank.compute_domain_shifts(tx_bank)
+    else:
+        tx_domain_stats = {"updated": 0.0, "initialized": 0.0}
+        tx_domain_prototypes = torch.zeros(num_tx, 0, feat_dim, dtype=feat.dtype)
+        tx_domain_counts = torch.zeros(num_tx, 0, dtype=torch.long)
+        domain_shifts = {}
+
+    tracker = PrototypeRadiusTracker(num_classes=num_tx, max_samples_per_class=max_samples_per_class)
+    tracker.update(feat, y_cpu, tx_bank.get())
+    radii_p95 = tracker.radii_tensor(quantile="p95")
+    radii_p99 = tracker.radii_tensor(quantile="p99")
+    radii_max = tracker.radii_tensor(quantile="max")
+    sigma = tracker.sigma_tensor()
+    robust = torch.minimum(
+        radii_max,
+        torch.nan_to_num(radii_p99, nan=0.0) + float(robust_sigma_scale) * torch.nan_to_num(sigma, nan=0.0),
+    )
+    geometry = prototype_geometry_summary(
+        tx_bank.get(),
+        radii_p95,
+        initialized=tx_bank.initialized_mask(),
+    )
+
+    meta = dict(metadata or {})
+    meta.update(
+        {
+            "feature_key": str(feature_key),
+            "num_samples": int(feat.size(0)),
+            "num_tx": int(num_tx),
+            "num_domains": int(num_domains),
+            "feat_dim": int(feat_dim),
+            "default_training_behavior_changed": False,
+        }
+    )
+    return {
+        "schema_version": 1,
+        "feature_key": str(feature_key),
+        "prototypes": tx_bank.get().detach().clone(),
+        "prototype_counts": tx_bank.counts.detach().clone(),
+        "tx_domain_prototypes": tx_domain_prototypes,
+        "tx_domain_counts": tx_domain_counts,
+        "domain_shifts": {k: v.detach().clone() if torch.is_tensor(v) else v for k, v in domain_shifts.items()},
+        "radii": {
+            "p95": radii_p95,
+            "p99": radii_p99,
+            "max": radii_max,
+            "robust_max": robust,
+        },
+        "radius_sigma": sigma,
+        "geometry": _as_jsonable(geometry),
+        "stats": {
+            "tx_bank": tx_stats,
+            "tx_domain_bank": tx_domain_stats,
+        },
+        "metadata": meta,
+    }
+
+
+def save_phase2_prototype_export(package: Mapping[str, Any], output_path: str | Path) -> Dict[str, str]:
+    out = Path(output_path)
+    out.parent.mkdir(parents=True, exist_ok=True)
+    torch.save(dict(package), out)
+    sidecar = out.with_suffix(".json")
+    with sidecar.open("w", encoding="utf-8") as f:
+        json.dump(_as_jsonable(package), f, ensure_ascii=False, indent=2, sort_keys=True)
+    return {"pt_path": str(out), "json_path": str(sidecar)}
+
+
+def export_phase2_prototypes(
+    model,
+    loader: Iterable,
+    *,
+    output_path: str | Path | None = None,
+    device=None,
+    feature_key: str = "z_id",
+    metadata: Optional[Mapping[str, Any]] = None,
+    max_batches: int = 0,
+    grl_lambda: float = 1.0,
+) -> Dict[str, Any]:
+    extracted = extract_phase2_features(
+        model,
+        loader,
+        device=device,
+        feature_key=feature_key,
+        max_batches=max_batches,
+        grl_lambda=grl_lambda,
+    )
+    package = build_phase2_prototype_export(
+        extracted["features"],
+        extracted["labels"],
+        extracted["domains"],
+        feature_key=str(extracted["feature_key"]),
+        metadata=metadata,
+    )
+    if output_path is not None and str(output_path).strip() != "":
+        paths = save_phase2_prototype_export(package, output_path)
+        package = dict(package)
+        package["paths"] = paths
+    return package

@@ -118,6 +118,7 @@ from cvsrffi.losses import (
     cosine_distance_per_sample,
     smooth_strength_loss,
 )
+from cvsrffi.phase2_prototypes import export_phase2_prototypes
 from cvsrffi.presets import (
     align_training_with_branch_ablation,
     apply_experiment_preset,
@@ -265,6 +266,65 @@ def forward_anchor_eval(
     if was_training:
         model.train()
     return out
+
+
+def derive_phase2_export_path(best_primary_path: str) -> str:
+    root, _ = os.path.splitext(str(best_primary_path).strip() or "best_model_primary_ood.pth")
+    return f"{root}_phase2_prototypes.pt"
+
+
+def maybe_export_phase2_prototypes(args, model, train_loader, val_loader, device, split_info) -> Optional[Dict[str, Any]]:
+    if not bool(getattr(args, "phase2_export_prototypes", False)):
+        return None
+    loader_name = str(getattr(args, "phase2_export_split", "train") or "train").strip().lower()
+    if loader_name == "train":
+        loader = train_loader
+    elif loader_name == "val":
+        loader = val_loader
+    else:
+        raise ValueError(f"Unsupported --phase2_export_split: {loader_name}")
+
+    checkpoint_path = str(getattr(args, "phase2_export_checkpoint", "") or "").strip()
+    if checkpoint_path == "":
+        checkpoint_path = str(args.best_primary_save_path)
+    output_path = str(getattr(args, "phase2_export_path", "") or "").strip()
+    if output_path == "":
+        output_path = derive_phase2_export_path(checkpoint_path)
+
+    restore_state = deepcopy(getattr(model, "_orig_mod", model).state_dict())
+    try:
+        if checkpoint_path:
+            ckpt = torch.load(checkpoint_path, map_location=device)
+            if not isinstance(ckpt, dict) or "model" not in ckpt:
+                raise ValueError(f"Phase2 export checkpoint must contain a 'model' field: {checkpoint_path}")
+            model.load_state_dict(ckpt["model"], strict=False)
+        package = export_phase2_prototypes(
+            model,
+            loader,
+            output_path=output_path,
+            device=device,
+            feature_key=str(getattr(args, "phase2_export_feature_key", "z_id") or "z_id"),
+            max_batches=int(getattr(args, "phase2_export_max_batches", 0) or 0),
+            metadata={
+                "checkpoint_path": checkpoint_path,
+                "loader_split": loader_name,
+                "run_name": str(getattr(args, "run_name", "")),
+                "dataset": str(getattr(args, "dataset", "")),
+                "wisig_protocol": str(getattr(args, "wisig_protocol", "")),
+                "split_info": split_info,
+                "source": "train.py default-off Phase2 export hook",
+            },
+        )
+        paths = package.get("paths", {}) if isinstance(package, dict) else {}
+        print(
+            f"[PHASE2-EXPORT] wrote prototypes={paths.get('pt_path', output_path)} "
+            f"json={paths.get('json_path', '')} feature={getattr(args, 'phase2_export_feature_key', 'z_id')} "
+            f"split={loader_name}",
+            flush=True,
+        )
+        return package
+    finally:
+        model.load_state_dict(restore_state, strict=False)
 
 
 def run_meta_ssl_protocol_check(args, ds_w: Dict[str, Any]) -> Dict[str, Any]:
@@ -2447,6 +2507,20 @@ def main():
                         help="Best checkpoint by primary OOD score: (1-w)*overall + w*unseen_day_unseen_rx.")
     parser.add_argument("--primary_udu_weight", type=float, default=0.5,
                         help="Weight of unseen_day_unseen_rx in the primary OOD checkpoint score.")
+    add_bool_arg(parser, "phase2_export_prototypes", False,
+                 "Export default-off Phase2 z_id prototype package after training",
+                 "Do not export Phase2 prototype package")
+    parser.add_argument("--phase2_export_path", type=str, default="",
+                        help="Output .pt path for optional Phase2 prototype export. Empty derives from best primary checkpoint.")
+    parser.add_argument("--phase2_export_checkpoint", type=str, default="",
+                        help="Checkpoint used for optional Phase2 prototype export. Empty uses best_primary_save_path.")
+    parser.add_argument("--phase2_export_feature_key", type=str, default="z_id",
+                        choices=["z_id", "id_feat_joint", "feat_joint", "id_feat_pa", "id_feat_dac"],
+                        help="Auxiliary model feature used by optional Phase2 prototype export.")
+    parser.add_argument("--phase2_export_split", type=str, default="train", choices=["train", "val"],
+                        help="Local loader used by optional Phase2 prototype export.")
+    parser.add_argument("--phase2_export_max_batches", type=int, default=0,
+                        help="Limit optional Phase2 prototype export batches; 0 means all batches.")
     parser.add_argument("--best_unseen_day_unseen_rx_save_path", type=str, default="best_test_model.pth",
                         help="按 test_unseen_day_unseen_rx 最优保存的权重路径；这是最严格跨日期+跨接收机指标。")
     parser.add_argument("--best_unseen_day_seen_rx_save_path", type=str, default="",
@@ -4145,6 +4219,11 @@ def main():
             except Exception as e:
                 print(f"[WARN] final {avg_name} averaged-checkpoint test failed: {e}", flush=True)
         model.load_state_dict(restore_state, strict=False)
+
+    try:
+        maybe_export_phase2_prototypes(args, model, train_loader, val_loader, device, split_info)
+    except Exception as e:
+        print(f"[WARN] optional Phase2 prototype export failed: {e}", flush=True)
 
 
 if __name__ == "__main__":

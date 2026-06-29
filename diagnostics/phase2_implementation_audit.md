@@ -3,7 +3,7 @@
 生成时间：2026-06-29  
 审计对象：`E:\type10-7`本地CVS-RFFI项目  
 原始命令日志：`E:\codex\home\tmp\phase2_local_audit_raw_commands_20260629.log`  
-状态：审计完成，功能实现延期到矩阵确认之后。
+状态：P1/P2最小闭环已实现；P3以后仍按风险延期。
 
 ## 权威文件
 
@@ -100,6 +100,17 @@
 
 结论：后续Phase2新增功能适合用synthetic tensor测试覆盖，不必依赖真实WiSig数据启动。
 
+## 代码落地记录
+
+| 文件 | 变更 | 与本地既有数据流的关系 |
+|---|---|---|
+| `code/cvsrffi/phase2_prototypes.py` | 新增`extract_phase2_features`、`build_phase2_prototype_export`、`save_phase2_prototype_export`、`export_phase2_prototypes`；扩展`PrototypeRadiusTracker`支持p99/max和`sigma_tensor` | 复用`BalancedPrototypeBank`、`TxDomainPrototypeBank`、`PrototypeRadiusTracker`、`unpack_batch`、`extract_domain_from_extra`；通过`return_aux=True`读取模型aux输出。 |
+| `code/train.py` | 新增默认关闭Phase2导出CLI和`maybe_export_phase2_prototypes` | 复用已有`best_primary_save_path`、checkpoint字段`model`、`train_loader`/`val_loader`、训练结束final区；导出失败只给warning，不改变训练结果。 |
+| `code/cvsrffi/open_world_head.py` | 新增`from_phase2_export`；`register_new_class`新增默认关闭的`overlap_margin`拒绝逻辑和`status`字段 | 复用现有`OpenWorldMultiPrototypeHead`、`add_old_classes`、`decide`和半径门控；不新增平行open-world头。 |
+| `code/tests/test_phase2_prototypes.py` | 新增synthetic tensor导出测试 | 覆盖feature extraction、domain label、`P_tx`、`P_tx_dom`、radii、`.pt`/`.json`。 |
+| `code/tests/test_phase2_train_cli.py` | 新增CLI默认关闭接入测试 | 检查`train.py`中默认关闭参数和导出钩子可达。 |
+| `code/tests/test_open_world_head.py` | 新增P1包加载和overlap rejection测试 | 覆盖head级P3接入，完整Stage2评估CLI仍延期。 |
+
 ## Traceability表
 
 | ID | 来源 | 要求 | 本地目标 | 状态 | 验证 | 备注 |
@@ -113,14 +124,16 @@
 | R6 | 用户prototype硬规则 | 查清已有`PrototypeMemoryBank`后才可设计原型 | `code/cvsrffi/losses.py` | verified | 已确认训练态EMA bank | 决定不复用为离线导出器。 |
 | R7 | 用户eval诊断要求 | 检查`eval_feature_diagnosis.py` | `code/eval_feature_diagnosis.py` | verified | 已确认特征提取、NCM和domain诊断 | 可作为P1证据链。 |
 | R8 | 用户测试要求 | 检查tests风格 | `tests/`、`code/tests/` | verified | 已确认pytest synthetic测试 | 后续测试落在`code/tests`。 |
-| R9 | 设计报告P0/P1 | 原型导出、半径、class-domain统计 | `code/cvsrffi/phase2_prototypes.py` | deferred | 矩阵已给出落点 | 需下一阶段实现。 |
+| R9 | 设计报告P0/P1 | 原型导出、半径、class-domain统计 | `code/cvsrffi/phase2_prototypes.py` | verified | `pytest code\tests\test_phase2_prototypes.py`通过 | 已实现离线P1最小闭环。 |
 | R10 | 设计报告open-world | 新类注册和unknown拒识 | `code/cvsrffi/open_world_head.py` | deferred | 矩阵已给出落点 | 扩展已有类。 |
 | R11 | 设计报告meta/refiner | episodic meta-learning和协方差估计 | 暂无稳定落点 | deferred | 风险已记录 | 延期到P6。 |
-| R12 | 用户默认行为规则 | 新CLI默认关闭，不改训练结果 | `code/train.py` | verified | 计划已写明 | 本轮未新增CLI。 |
+| R12 | 用户默认行为规则 | 新CLI默认关闭，不改训练结果 | `code/train.py` | verified | `train.py --help`和CLI测试已确认 | 新CLI默认关闭，训练结束后才可选执行。 |
 | R13 | 用户防孤岛规则 | 不新建与现有`phase2_prototypes.py`平行的原型模块 | `code/cvsrffi/phase2_prototypes.py` | rejected | 矩阵已指定扩展现有模块 | 拒绝平行孤岛模块。 |
 | R14 | 用户防孤岛规则 | 不新建与现有`open_world_head.py`平行的open-world头 | `code/cvsrffi/open_world_head.py` | rejected | 矩阵已指定扩展现有类 | 拒绝平行孤岛头。 |
 | R15 | `项目.md`协议 | unknown query不得进入伪标签训练或阈值选择 | Phase2评估/适配计划 | rejected | 禁止项已写入计划和拒绝清单 | 只允许评估和缓存复核。 |
 | R16 | 用户forward硬规则 | 不使用`return_aux=False`导出Phase2特征 | `code/model_dual_cvsincnet.py` | rejected | forward审计已确认该路径不稳定暴露特征 | 后续导出必须使用`return_aux=True`。 |
+| R17 | 设计报告P2 | 训练后可选导出CLI | `code/train.py` | verified | `pytest code\tests\test_phase2_train_cli.py`、`py_compile`、`train.py --help`通过 | 默认关闭，显式开启时默认读取`best_primary_save_path`。 |
+| R18 | 设计报告P3局部 | open-world头消费P1原型包并拒绝重叠新类 | `code/cvsrffi/open_world_head.py` | verified | `pytest code\tests\test_open_world_head.py`通过 | 只落地head级接入和overlap安全，不声明完整Stage2评估CLI。 |
 
 ## 已拒绝或延期的设计项
 
@@ -137,3 +150,15 @@
 - `diagnostics/phase2_implementation_audit.md`
 
 同名文件将同步到`github_publish/CVS-RFFI-repo/`用于Git提交。本轮没有N607访问、没有SCP、没有远程实验、没有训练运行。
+
+## 本轮验证命令
+
+```powershell
+conda activate ssr-gpu
+python -m pytest code\tests\test_phase2_prototypes.py code\tests\test_phase2_train_cli.py -q
+python -m pytest code\tests\test_open_world_head.py code\tests\test_phase2_prototypes.py code\tests\test_phase2_train_cli.py -q
+python -m py_compile code\cvsrffi\phase2_prototypes.py code\train.py
+python code\train.py --help | Select-String -Pattern "phase2_export"
+```
+
+验证边界：这是P1/P2本地最小闭环加P3 head级接入，不是设计报告全量严格等价实现。高斯协方差、episodic meta-learning、unknown buffer、prototype refiner和完整open-world评估CLI仍为延期项。

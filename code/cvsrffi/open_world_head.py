@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Dict, Iterable, List, Mapping, Optional
+from typing import Any, Dict, Iterable, List, Mapping, Optional
 
 import torch
 from torch import nn
@@ -46,6 +46,35 @@ class OpenWorldMultiPrototypeHead(nn.Module):
     @property
     def class_ids(self) -> List[int]:
         return sorted(self._prototypes)
+
+    @classmethod
+    def from_phase2_export(
+        cls,
+        package: Mapping[str, Any],
+        *,
+        radius_key: str = "robust_max",
+        score_temperature: float = 0.10,
+        energy_temperature: float = 1.0,
+    ) -> "OpenWorldMultiPrototypeHead":
+        prototypes = package.get("prototypes")
+        if not torch.is_tensor(prototypes) or prototypes.ndim != 2:
+            raise ValueError("Phase2 export package must contain prototypes with shape [C, D]")
+        radii_obj = package.get("radii", {})
+        if isinstance(radii_obj, Mapping):
+            radii = radii_obj.get(radius_key)
+            if radii is None:
+                raise KeyError(f"Phase2 export radii missing key: {radius_key}")
+        else:
+            radii = radii_obj
+        if not torch.is_tensor(radii):
+            radii = torch.as_tensor(radii, dtype=torch.float32)
+        head = cls(
+            feat_dim=int(prototypes.size(1)),
+            score_temperature=score_temperature,
+            energy_temperature=energy_temperature,
+        )
+        head.add_old_classes(prototypes.float(), radii.float())
+        return head
 
     def add_old_classes(self, prototypes: torch.Tensor, radii: torch.Tensor, sigmas: Optional[torch.Tensor] = None) -> None:
         if prototypes.ndim != 2:
@@ -98,6 +127,7 @@ class OpenWorldMultiPrototypeHead(nn.Module):
         radius_prior: Optional[float] = None,
         *,
         shrinkage: float = 0.50,
+        overlap_margin: Optional[float] = None,
     ) -> Dict[str, float]:
         if support_features.ndim != 2 or support_features.size(1) != self.feat_dim:
             raise ValueError("support_features must have shape [K, feat_dim]")
@@ -116,8 +146,34 @@ class OpenWorldMultiPrototypeHead(nn.Module):
             radius = empirical
         else:
             radius = float(shrinkage) * empirical + (1.0 - float(shrinkage)) * float(radius_prior)
+        overlap_class = -1
+        overlap_clearance = float("nan")
+        if overlap_margin is not None and self._prototypes:
+            class_ids, old_proto, old_radii = self._stack(proto.device, proto.dtype)
+            old_scores = (proto @ old_proto.t()).squeeze(0).clamp(-1.0, 1.0)
+            old_angles = torch.arccos(old_scores)
+            clearance = old_angles - old_radii - float(radius)
+            min_clearance, min_idx = clearance.min(dim=0)
+            overlap_clearance = float(min_clearance.detach().cpu().item())
+            overlap_class = int(class_ids[min_idx].detach().cpu().item())
+            if overlap_clearance <= float(overlap_margin):
+                return {
+                    "support_count": float(support_features.size(0)),
+                    "radius": float(radius),
+                    "empirical_radius": float(empirical),
+                    "status": "rejected_overlap",
+                    "overlap_class": float(overlap_class),
+                    "overlap_clearance": float(overlap_clearance),
+                }
         self.add_target_prototypes([int(class_id)], proto, radii=torch.tensor([radius], device=proto.device), proto_type="seen_new")
-        return {"support_count": float(support_features.size(0)), "radius": float(radius), "empirical_radius": float(empirical)}
+        return {
+            "support_count": float(support_features.size(0)),
+            "radius": float(radius),
+            "empirical_radius": float(empirical),
+            "status": "confirmed",
+            "overlap_class": float(overlap_class),
+            "overlap_clearance": float(overlap_clearance),
+        }
 
     def _stack(self, device, dtype) -> tuple[torch.Tensor, torch.Tensor, torch.Tensor]:
         if not self._prototypes:

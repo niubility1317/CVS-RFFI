@@ -1,7 +1,7 @@
 # Phase2本地实现计划
 
 生成时间：2026-06-29  
-状态：计划文档，不包含功能实现。  
+状态：P1/P2已按本地代码事实落地；P3以后仍为计划。
 最高约束：本地代码事实优先，`项目.md`优先于设计报告和历史记忆。
 
 ## 目标与非目标
@@ -11,7 +11,6 @@
 本轮非目标：
 
 - 不改`train.py`训练主循环。
-- 不新增`extract_phase2_features`实现。
 - 不新增N607启动、同步或远程运行。
 - 不实现高斯协方差、episodic meta-learning、unknown buffer或prototype refiner。
 - 不把target query用于训练、阈值选择或model selection。
@@ -42,19 +41,21 @@
 
 ### P1：离线Phase2原型导出
 
+状态：已实现并验证。
+
 落点：
 
 - 扩展`code/cvsrffi/phase2_prototypes.py`
 - 需要时保留根级shim`code/phase2_prototypes.py`兼容导入
 - 测试扩展`code/tests/test_phase2_prototypes.py`
 
-最小功能：
+已落地功能：
 
-- `extract_phase2_features`只在此阶段实现，必须调用`model(...,return_aux=True,domain_labels=...)`。
+- `extract_phase2_features`调用`model(...,return_aux=True,domain_labels=...)`。
 - 复用`unpack_batch`和`extract_domain_from_extra`解析loader batch。
-- 基于`z_id`导出`P_tx`，基于domain label导出`P_tx_dom`诊断，不把`z_dom`并入TX距离。
-- 基于`PrototypeRadiusTracker`扩展p95/p99/max/robust_max/safety_margin。
-- 输出`.pt`和`.json`元数据，记录source receiver、TX集合、feature key、checkpoint path、split_info和协议摘要。
+- 基于`z_id`或显式feature key导出`P_tx`，基于domain label导出`P_tx_dom`诊断，不把`z_dom`并入TX距离。
+- 基于`PrototypeRadiusTracker`输出p95/p99/max/robust_max和geometry summary。
+- 输出`.pt`和`.json`元数据，记录feature key、checkpoint path、loader split、run/dataset/protocol和split_info。
 
 默认行为：
 
@@ -68,17 +69,21 @@
 
 ### P2：训练后可选导出CLI
 
+状态：已实现并验证。
+
 落点：
 
 - `code/train.py`
 - `code/tests`新增CLI解析或smoke测试
 
-新增参数必须默认关闭，例如：
+已新增参数，全部默认关闭或空值：
 
 - `--phase2_export_prototypes`默认`False`
 - `--phase2_export_path`默认空
 - `--phase2_export_feature_key`默认`z_id`
 - `--phase2_export_checkpoint`默认使用`best_primary_save_path`或显式路径
+- `--phase2_export_split`默认`train`
+- `--phase2_export_max_batches`默认`0`
 
 接入规则：
 
@@ -94,6 +99,8 @@
 
 ### P3：离线open-world评估
 
+状态：head级P1包接入和overlap安全注册已实现；完整离线评估CLI仍延期。
+
 落点：
 
 - 扩展`code/cvsrffi/open_world_head.py`
@@ -106,6 +113,17 @@
 - 对target receiver support注册seen-new TX。
 - 对query输出old/seen-new/unknown决策、gate reason、distance、energy、radius margin。
 - 结果表必须同一行绑定candidate、receiver/TX split、K-shot、seed、old/seen-new/unknown指标，禁止单独最大值冒充整体结果。
+
+已落地：
+
+- `OpenWorldMultiPrototypeHead.from_phase2_export`可从P1 package加载old TX原型和指定半径。
+- `register_new_class(...,overlap_margin=...)`可在显式开启时拒绝与现有old/new原型半径重叠的新类注册，并返回`status="rejected_overlap"`。
+
+仍延期：
+
+- 独立`eval_open_world.py`或Stage2外层adapter。
+- 同一行绑定old/seen-new/unknown指标的完整评估表。
+- target receiver shift、provisional/confirmed状态机和unknown buffer。
 
 协议约束：
 
@@ -184,6 +202,15 @@ conda activate ssr-gpu
 python -m py_compile code/train.py
 ```
 
+本轮已执行：
+
+```powershell
+conda activate ssr-gpu
+python -m pytest code\tests\test_phase2_prototypes.py code\tests\test_phase2_train_cli.py -q
+python -m py_compile code\cvsrffi\phase2_prototypes.py code\train.py
+python code\train.py --help | Select-String -Pattern "phase2_export"
+```
+
 ## 发布策略
 
-根目录不是Git仓库，因此本轮文档同时写入根目录和`github_publish/CVS-RFFI-repo/`镜像。Git镜像提交只包含审计/计划/诊断文档，不包含功能代码。
+根目录不是Git仓库，因此文档和代码变更同时写入根目录和`github_publish/CVS-RFFI-repo/`镜像。Git镜像是版本管理表面。

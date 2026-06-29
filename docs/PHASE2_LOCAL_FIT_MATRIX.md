@@ -2,7 +2,7 @@
 
 生成时间：2026-06-29  
 工作目录：`E:\type10-7`  
-当前判定：只完成本地审计和适配矩阵，不实现功能代码。
+当前判定：已在本地代码事实约束下落地P1/P2最小闭环；高风险设计项仍延期。
 
 ## 审计边界
 
@@ -22,24 +22,33 @@
 - `code/eval_feature_diagnosis.py`已有`collect_feature_dict`、`extract_split_features`、NCM原型和domain诊断，可复用为离线特征审计依据。
 - `tests/`和`code/tests/`已有pytest风格synthetic tensor测试，适合继续加入Phase2原型和open-world测试。
 
+## 2026-06-29落地变更
+
+- `code/cvsrffi/phase2_prototypes.py`新增`extract_phase2_features`、`build_phase2_prototype_export`、`save_phase2_prototype_export`和`export_phase2_prototypes`。这些函数复用`cvsrffi.tensors.unpack_batch`和`extract_domain_from_extra`，并强制通过`model(...,return_aux=True,domain_labels=...)`读取`z_id`等aux特征。
+- `code/train.py`新增默认关闭的`--phase2_export_prototypes`以及导出路径、checkpoint、feature key、split和max batches参数。默认不开启，不改变训练、验证、checkpoint或N607行为；显式开启时默认读取`best_primary_save_path`。
+- `code/tests/test_phase2_prototypes.py`新增synthetic tensor测试，覆盖`return_aux=True`调用、domain label传递、TX/domain原型、半径统计、`.pt`和`.json`导出。
+- `code/tests/test_phase2_train_cli.py`新增默认关闭CLI接入测试。
+- `code/cvsrffi/open_world_head.py`新增`from_phase2_export`，可直接消费P1导出的prototype package；`register_new_class`新增默认关闭的`overlap_margin`拒绝逻辑，避免新类support与old类半径重叠时被注册。
+- `code/tests/test_open_world_head.py`新增package加载和overlap rejection测试。
+
 ## 适配矩阵
 
 | 设计项 | 本地是否已有近似能力 | 具体本地文件路径 | 具体类/函数/参数名 | 处理方式 | 是否改变默认训练行为 | 风险等级 | 测试文件 | 是否延期 |
 |---|---|---|---|---|---|---|---|---|
 | Phase2特征提取`z_id`/`z_dom` | 已有稳定接口 | `code/model_dual_cvsincnet.py`、`code/eval_feature_diagnosis.py`、`code/train.py` | `DualCVSincNet.forward(return_aux=True,domain_labels,grl_lambda)`、`collect_feature_dict`、`extract_split_features`、`select_generalization_feature` | 复用现有`return_aux=True`路径；后续只允许封装薄helper，禁止用`return_aux=False`导出特征 | 否 | 低 | 新增或扩展`code/tests/test_phase2_prototypes.py` | 否 |
 | 训练时`PrototypeMemoryBank` | 已有 | `code/cvsrffi/losses.py`、`code/train.py` | `PrototypeMemoryBank.loss/update`、`--lambda_proto`、`--proto_momentum`、`--proto_domain_align_weight` | 仅复用为训练正则；不改造成Phase2离线导出器，避免训练态与评估态耦合 | 否 | 中 | 现有训练损失测试可后补 | 否 |
-| 离线TX原型导出`P_tx` | 半成品 | `code/cvsrffi/phase2_prototypes.py` | `BalancedPrototypeBank.update_from_features`、`state_dict`、`load_state_dict` | 最小扩展现有模块，增加eval-mode导出器、元数据、协议校验和文件保存 | 默认关闭 | 中 | `code/tests/test_phase2_prototypes.py` | 否 |
-| class-domain原型`P_tx_dom` | 半成品 | `code/cvsrffi/phase2_prototypes.py` | `TxDomainPrototypeBank.update_from_features`、`domain_shift_summary` | 扩展为诊断和接收机偏移校准输入；不把`z_dom`并入TX距离 | 默认关闭 | 中 | `code/tests/test_phase2_prototypes.py` | 否 |
-| 距离边界、半径、robust max | 部分已有 | `code/cvsrffi/phase2_prototypes.py` | `PrototypeRadiusTracker.quantile`、`radii_tensor`、`prototype_geometry_summary` | 扩展`PrototypeRadiusTracker`，增加p95/p99/max/robust_max/safety_margin等离线统计 | 默认关闭 | 中 | `code/tests/test_phase2_prototypes.py` | 否 |
+| 离线TX原型导出`P_tx` | 已落地最小闭环 | `code/cvsrffi/phase2_prototypes.py` | `extract_phase2_features`、`build_phase2_prototype_export`、`export_phase2_prototypes`、`BalancedPrototypeBank.update_from_features` | 扩展现有模块，增加eval-mode导出器、元数据、协议摘要和文件保存 | 默认关闭 | 中 | `code/tests/test_phase2_prototypes.py` | 否 |
+| class-domain原型`P_tx_dom` | 已落地诊断包 | `code/cvsrffi/phase2_prototypes.py` | `TxDomainPrototypeBank.update`、`compute_domain_shifts`、`build_phase2_prototype_export` | 用domain label生成`P_tx_dom`和domain shift诊断；不把`z_dom`并入TX距离 | 默认关闭 | 中 | `code/tests/test_phase2_prototypes.py` | 否 |
+| 距离边界、半径、robust max | 已落地基础统计 | `code/cvsrffi/phase2_prototypes.py` | `PrototypeRadiusTracker.radius`、`radii_tensor`、`sigma_tensor`、`prototype_geometry_summary` | 已支持p95/p99/max/robust_max；安全边界仍作为后续open-world策略扩展 | 默认关闭 | 中 | `code/tests/test_phase2_prototypes.py` | 否 |
 | 残差/近邻样本库 | 缺失 | 建议`code/cvsrffi/phase2_prototypes.py`内新增离线组件 | 可新增`PrototypeResidualBank` | 新增独立离线组件，不接入训练循环；用于open-world校准和重叠检查 | 默认关闭 | 中高 | 新增`code/tests/test_phase2_prototypes.py`用synthetic tensor | 否 |
-| 多原型open-world头 | 半成品 | `code/cvsrffi/open_world_head.py` | `OpenWorldMultiPrototypeHead.add_old_classes`、`add_target_prototypes`、`forward`、`decide` | 扩展已有类，不新增平行`open_world_head`；保留现有API兼容 | 默认关闭 | 中高 | `code/tests/test_open_world_head.py` | 否 |
-| few-shot新类注册 | 部分已有 | `code/cvsrffi/open_world_head.py`、可能配合`code/cvsrffi/phase2_prototypes.py` | `register_new_class(class_id,support_features,support_aug_features,radius_prior,shrinkage)` | 扩展现有注册逻辑，加入old邻居prior、目标接收机shift、overlap检查和状态字段 | 默认关闭 | 高 | `code/tests/test_open_world_head.py` | 分阶段 |
-| old/new/unknown联合拒识决策 | 部分已有 | `code/cvsrffi/open_world_head.py`、`code/eval_spaceborne_fewshot.py` | `unknown_scores`、`decide`、Stage2评估脚本 | 先做离线评估CLI，再考虑接入Stage2脚本；必须保留Stage2-B/C声明边界 | 默认关闭 | 高 | 新增`code/tests/test_eval_open_world.py`或扩展现有Stage2测试 | 否 |
+| 多原型open-world头 | 已部分落地 | `code/cvsrffi/open_world_head.py` | `OpenWorldMultiPrototypeHead.from_phase2_export`、`add_old_classes`、`add_target_prototypes`、`forward`、`decide` | 扩展已有类，可直接加载P1导出包；未新增平行`open_world_head` | 默认不影响训练 | 中高 | `code/tests/test_open_world_head.py` | 否 |
+| few-shot新类注册 | 已部分落地 | `code/cvsrffi/open_world_head.py`、`code/cvsrffi/phase2_prototypes.py` | `register_new_class(...,overlap_margin=None)` | 新增默认关闭overlap rejection和`status`字段；target receiver shift和provisional状态机仍延期 | 默认不启用overlap拒绝 | 高 | `code/tests/test_open_world_head.py` | 分阶段 |
+| old/new/unknown联合拒识决策 | 部分已有 | `code/cvsrffi/open_world_head.py`、`code/eval_spaceborne_fewshot.py` | `unknown_scores`、`decide`、Stage2评估脚本 | 已具备head级决策和P1包接入；完整离线评估CLI/Stage2结果表仍延期 | 默认关闭 | 高 | 新增`code/tests/test_eval_open_world.py`或扩展现有Stage2测试 | 分阶段 |
 | target receiver old-anchor校准 | 半成品但语义不同 | `code/target_domain_adaptation.py`、`code/cvsrffi/spaceborne_fewshot.py` | `TargetAdaptationConfig`、`compute_target_adaptation_loss`、few-shot流程 | 只能做显式adapter层；禁止把target query用于训练或model selection | 默认关闭 | 高 | `tests/test_target_domain_adaptation.py`、新Stage2协议测试 | 分阶段 |
 | unknown buffer | 缺失 | 建议`code/cvsrffi/unknown_buffer.py` | 可新增`UnknownBuffer` | 新增独立模块；只缓存高不确定样本用于聚类/人工复核，不参与默认熵最小化 | 默认关闭 | 中高 | 新增`code/tests/test_unknown_buffer.py` | 是，排在P5 |
 | episodic meta-learning/refiner/covariance/threshold estimator | 基本缺失 | 无稳定落点 | 设计报告中的`prototype_refiner`、covariance estimator、threshold estimator | 暂不实现；需先完成离线原型导出和open-world评估闭环 | 默认关闭 | 高 | 暂无 | 是 |
 | 高斯协方差/Mahalanobis/PCA三重门 | 缺失，当前几何以cosine/angular为主 | `code/cvsrffi/open_world_head.py`可扩展，但不宜直接替换 | 现有`cosine`、`angular distance`、`radius_margin`、`energy` | 暂作为离线实验扩展，不替代现有open-world判定；先保留cosine/radius主线 | 默认关闭 | 高 | 新增专项synthetic测试 | 是 |
-| `train.py`原型导出CLI | 缺失 | `code/train.py` | 现有parser、`--best_primary_save_path`、checkpoint保存/读取逻辑 | P1模块稳定后增加opt-in参数；默认不导出、不改变训练结果 | 默认关闭 | 中 | CLI解析测试或py_compile+smoke | 否 |
+| `train.py`原型导出CLI | 已落地默认关闭 | `code/train.py` | `--phase2_export_prototypes`、`--phase2_export_path`、`--phase2_export_checkpoint`、`--phase2_export_feature_key`、`--phase2_export_split`、`--phase2_export_max_batches`、`maybe_export_phase2_prototypes` | 训练结束后可选导出；默认不导出，不改变训练结果；显式开启时默认使用`best_primary_save_path` | 默认关闭 | 中 | `code/tests/test_phase2_train_cli.py`、`py_compile`、`--help` | 否 |
 | checkpoint加载假设 | 已查清核心字段 | `code/cvsrffi/checkpoint.py`、`code/train.py` | `save_checkpoint`保存`model`、`optimizer`、`epoch`、`args`、`split_info`、`stats`；`load_init_checkpoint_weights` | 后续加载best模型必须优先读`model`字段，不假设裸state_dict | 否 | 中 | 新增checkpoint synthetic测试 | 否 |
 | dataloader batch格式 | 已查清 | `code/cvsrffi/tensors.py`、`code/train.py`、`code/cvsrffi/eval.py` | `unpack_batch`、`extract_domain_from_extra`、`remap_domain_tensor` | 后续导出器复用这些函数；不得另写不兼容batch解析 | 否 | 低 | `code/tests`新增mock loader测试 | 否 |
 | balanced TX/RX sampler | 已有 | `code/cvsrffi/balanced_tx_rx_sampler.py` | `BalancedTxDomainBatchSampler` | P0/P1不必改；episodic训练时再复用 | 否 | 中 | `code/tests/test_balanced_tx_rx_sampler.py` | 阶段性延期 |
@@ -49,8 +58,8 @@
 
 ## 当前结论
 
-1. 设计报告中的P0/P1方向与本地项目大体兼容，但不能新建一套孤立`phase2_prototypes/open_world_head`。本地已经有`code/cvsrffi/phase2_prototypes.py`和`code/cvsrffi/open_world_head.py`，后续应在这些文件上最小扩展。
+1. 设计报告中的P0/P1方向与本地项目大体兼容，已优先扩展`code/cvsrffi/phase2_prototypes.py`和`code/train.py`，没有新建孤岛原型模块。
 2. 当前`PrototypeMemoryBank`是训练损失组件，不应承担离线Phase2导出、拒识和注册职责。
 3. `eval_feature_diagnosis.py`已验证可取`z_id`/`z_dom`并做NCM/domain诊断，后续Phase2导出器应复用其证据链或抽取共享helper。
 4. 所有新增CLI必须默认关闭，不能改变`train.py`默认训练、验证、checkpoint和N607运行行为。
-5. 高斯协方差、episodic meta-learning、unknown buffer和refiner属于高风险扩展，必须在离线原型导出和open-world评估闭环通过后再做。
+5. 高斯协方差、episodic meta-learning、unknown buffer和refiner属于高风险扩展，必须在当前离线原型导出基础上完成open-world评估闭环后再做。
