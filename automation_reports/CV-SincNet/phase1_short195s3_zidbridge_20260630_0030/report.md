@@ -139,3 +139,17 @@ Corrected launch status at 2026-06-30 00:55 CST:
 | Run root | `/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_short195s3_zidjoint_lossfix7_20260630_0058/` |
 | Early health | Seven metric files present by E005; `proto_active=6.0` for all candidates; open-world weighted loss nonzero; `stage_test_eval_ran=0.0` before E010, so heavy test is not running every epoch. |
 | Remaining watch item | C2/C3/C4/C6 show `train_skipped_nonfinite_grad=0.01538` at E005, i.e. a small batch-level skip rate rather than full-epoch failure. Monitor at E010/E020 before promotion decisions. |
+
+E010 checkpoint at 2026-06-30 00:58 CST confirmed the requested test cadence and stable joint loss:
+
+| Candidate | E010 val_tx | E010 test_tx | skip_grad | proto_active | weighted open-world loss |
+|---|---:|---:|---:|---:|---:|
+| `PHASE1_SHORT195S3_ZIDJOINT_C0_CONSERVE_E160` | 88.08 | 78.59 | 0.0 | 6.0 | 0.000306 |
+| `PHASE1_SHORT195S3_ZIDJOINT_C1_LOW_E160` | 90.57 | 81.57 | 0.0 | 6.0 | 0.000429 |
+| `PHASE1_SHORT195S3_ZIDJOINT_C2_GEOM_E160` | 89.61 | 77.65 | 0.0 | 6.0 | 0.000640 |
+| `PHASE1_SHORT195S3_ZIDJOINT_C3_PROTO_E160` | 91.39 | 79.11 | 0.0 | 6.0 | 0.000422 |
+| `PHASE1_SHORT195S3_ZIDJOINT_C4_BALANCED_E160` | 92.71 | 81.48 | 0.0 | 6.0 | 0.000616 |
+| `PHASE1_SHORT195S3_ZIDJOINT_C5_DOMAIN_E160` | 91.61 | 79.73 | 0.0 | 6.0 | 0.000555 |
+| `PHASE1_SHORT195S3_ZIDJOINT_C6_STRONG_E160` | 90.52 | 78.90 | 0.0 | 6.0 | 0.000634 |
+
+Metrics rows through E012/E013 show `stage_test_eval_ran` only at E010 so far, matching the requested schedule: every 10 epochs during the main run and every 2 epochs only inside the final 20 epochs. These E010 values are startup/trajectory evidence, not final E160 selection evidence.
