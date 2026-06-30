@@ -130,3 +130,5 @@ bash scripts/launchers/run_cvs_baseline_queue.sh --methods drift --wisig-protoco
 ## 变更纪律
 
 项目相关改动必须进入Git流程。改动前检查`git status -sb`，改动后检查`git diff`/`git status -sb`并运行必要验证；完成后提交到明确分支，除非用户明确要求不要提交。每次代码、配置、脚本或协议变更都要同步检查`AGENTS.md`、`docs/PROJECT_PROTOCOL.md`、README、docs和报告类Markdown是否需要更新。
+
+协作输出规则：DO NOT send optional commentary。

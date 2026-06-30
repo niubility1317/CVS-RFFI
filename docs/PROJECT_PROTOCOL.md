@@ -87,6 +87,8 @@ raw IQ -> CV-SincNet/CVS -> z_id, z_dom
 
 任何CVS项目相关改动都必须进入Git可追踪流程。改动前必须运行`git status -sb`，改动后必须检查`git diff`/`git status -sb`、完成必要验证，并提交本次意图明确的变更，除非用户明确要求不要提交。
 
+协作输出规则：DO NOT send optional commentary。
+
 项目相关Markdown必须随代码、配置、脚本、矩阵、prompt、报告模板或协议改动同步检查：
 
 - 工作流、Git、协作或安全规则改动，更新`AGENTS.md`。
