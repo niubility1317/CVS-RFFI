@@ -369,6 +369,27 @@ query on R_t:
 
 Stage2-C 是主线目标，但只有在 `Y_new` 与 `Y_old` 不相交、`R_t` 与 `R_s` 不相交、并且 target-old 与 target-new support/query 都来自 `R_t` 时才成立。
 
+### 9.4 当前阶段化优化优先级：OLD80_FIRST
+
+当前H06/Phase2修复路线采用阶段化优化顺序：
+
+1. 先提升旧类目标域准确率，阶段门槛为`old_acc>=0.80`。该门槛用于判定是否进入下一阶段优化，不等同于部署成功、论文主结论或Stage2-C成功。
+2. 在同一协议边界下达到`old_acc>=0.80`后，才在该基础上继续优化另外两项open-world性能：Stage2-C的`seen_new_acc`与unknown拒识性能（`unknown_FAR`/`unknown_rejection`）。
+3. 若当前row仍是Stage2-B old/unknown-only，则不得报告`seen_new_acc`，此时只能把下一阶段写成“OLD80达成后进入Stage2-C seen-new enrollment优化”。Stage2-B阶段可同步观察unknown FAR，但不得为了unknown FAR牺牲旧类准确率到80%以下后仍称为完成第一阶段。
+4. OLD80_FIRST是当前工程/实验优先级，不会放宽`R_t`/`R_s`不相交、`Y_old`/`Y_new`/`Y_unknown`互斥、unknown query不参与阈值拟合、clean view不代表部署成功等协议约束。
+
+### 9.5 目标域旧类微调上限诊断：TARGET_OLD_ONLY_FT_DIAG
+
+当OLD80_FIRST路线未达到`old_acc>=0.80`时，可以追加一个诊断性实验：只使用目标接收机域`R_t`中的旧类`Y_old`带标签样本，在目标域内部划分support/query，评估target-only微调或线性头/小adapter对旧类query准确率的上限提升。
+
+该诊断的边界如下：
+
+1. 该诊断只回答“如果暂时不考虑FAR、新类和未知拒识，目标域旧类样本本身能把旧类性能提升到什么程度”。
+2. support和query必须都来自`R_t`中的`Y_old`，且query不能与support重叠。可以使用`K`或train-per-TX网格记录目标域样本量。
+3. 该诊断不使用`Y_new`support，不使用`Y_unknown`query调阈值，也不报告`seen_new_acc`、unknown FAR或部署成功。
+4. 该诊断可使用feature-level classifier/head/adapter微调或full-model target-only fine-tune，但必须标为`NON_DEPLOYMENT_DIAGNOSTIC`或`TARGET_OLD_ONLY_UPPER_BOUND_DIAGNOSTIC`。如果使用full-model fine-tune，还必须单独报告其星上不可部署或需离线重训练的边界。
+5. 若该诊断达到`old_acc>=0.80`，只能说明旧类目标域样本中存在可利用的判别信号；后续仍需回到Stage2-B/Stage2-C协议中重新加入unknown拒识和seen-new注册门槛。
+
 ## 10. 指标与成功判据
 
 ### 10.1 地面训练阶段
@@ -386,9 +407,11 @@ Stage2-C 是主线目标，但只有在 `Y_new` 与 `Y_old` 不相交、`R_t` �
 - target-old accepted accuracy + coverage。
 - old_acc_delta_pp。
 - rescue / harm / net_gain。
+- OLD80_FIRST阶段门槛：`old_acc>=0.80`，仅表示旧类校准阶段可继续进入后续优化。
 - unknown_FAR <= 0.05。
 - FPR95 / AUROC。
 - rollback trigger rate。
+- TARGET_OLD_ONLY_FT_DIAG诊断指标：target-old query accuracy、相对source-only baseline的delta、support/query划分、train-per-TX，不报告FAR或seen-new。
 
 ### 10.3 Stage2-C
 
@@ -399,6 +422,7 @@ Stage2-C 是主线目标，但只有在 `Y_new` 与 `Y_old` 不相交、`R_t` �
 - new_acc_drop_pp <= 2 pp，或明确标为 exploratory。
 - old->new, new->old, unknown->new confusion。
 - latency / memory / prototype storage。
+- 当前优化顺序必须先满足旧类`old_acc>=0.80`阶段门槛，再优化`seen_new_acc`和unknown拒识；未达OLD80时不得把seen-new或low-FAR单点作为主线成功。
 
 ## 11. 论文与报告声明边界
 

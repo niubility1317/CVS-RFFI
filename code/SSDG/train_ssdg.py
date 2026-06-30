@@ -60,9 +60,12 @@ try:
         compute_core_losses,
         fishr_logit_gradient_variance_loss,
         open_world_feature_space_loss,
+        proxy_unknown_energy_loss,
         sanitize_loss,
+        source_episode_three_sigma_loss,
+        zid_compactness_loss,
     )
-    from cvsrffi.phase2_prototypes import export_phase2_prototypes
+    from cvsrffi.phase2_prototypes import PrototypeFusionConfig, export_phase2_prototypes, fuse_tx_domain_prototypes, save_phase2_prototype_export
     from cvsrffi.ssdg_guard import (
         detect_one_epoch_drop,
         detect_paic_variance_guard,
@@ -87,8 +90,14 @@ except ModuleNotFoundError:
     WiSigCompactDataset = WiSigSubsetDataset = None
     PrototypeMemoryBank = None
     open_world_feature_space_loss = None
+    proxy_unknown_energy_loss = None
     sanitize_loss = None
+    source_episode_three_sigma_loss = None
+    zid_compactness_loss = None
     export_phase2_prototypes = None
+    fuse_tx_domain_prototypes = None
+    save_phase2_prototype_export = None
+    PrototypeFusionConfig = None
     _resolve_days = _resolve_rxs = load_wisig_compact_pkl = make_wisig_trainval_test_by_day_rx = None
     build_baseline_model = domain_from_extra = ensure_dir = load_checkpoint = None
     mean_logs = merge_checkpoint_args = move_batch = resolve_device = save_payload = set_seed = None
@@ -248,12 +257,41 @@ def build_arg_parser() -> argparse.ArgumentParser:
     parser.add_argument("--proto_push_weight", type=float, default=0.1)
     parser.add_argument("--proto_min_count", type=int, default=2)
     parser.add_argument("--lambda_open_world_feat", type=float, default=0.0)
+    parser.add_argument("--ow_feat_start_epoch", type=int, default=1)
+    parser.add_argument("--ow_feat_warmup_epochs", type=int, default=0)
     parser.add_argument("--ow_feat_radius_deg", type=float, default=12.0)
     parser.add_argument("--ow_feat_inter_margin_deg", type=float, default=55.0)
     parser.add_argument("--ow_feat_sample_margin_deg", type=float, default=5.0)
     parser.add_argument("--ow_feat_domain_align_weight", type=float, default=0.0)
     parser.add_argument("--ow_feat_min_classes", type=int, default=2)
     parser.add_argument("--ow_feat_min_samples_per_class", type=int, default=1)
+    parser.add_argument("--ow_feat_tail_mode", type=str, default="none", choices=["none", "robust_3sigma"])
+    parser.add_argument("--ow_feat_tail_weight", type=float, default=0.0)
+    parser.add_argument("--ow_feat_cvar_alpha", type=float, default=0.95)
+    parser.add_argument("--ow_feat_soft_gate", type=str2bool, default=False)
+    parser.add_argument("--ow_feat_gate_floor", type=float, default=0.25)
+    parser.add_argument("--lambda_zid_compact", type=float, default=0.0)
+    parser.add_argument("--zid_compact_start_epoch", type=int, default=1)
+    parser.add_argument("--zid_compact_supcon_weight", type=float, default=0.35)
+    parser.add_argument("--zid_compact_radius_weight", type=float, default=0.35)
+    parser.add_argument("--zid_compact_cvar_weight", type=float, default=0.30)
+    parser.add_argument("--zid_compact_cvar_alpha", type=float, default=0.90)
+    parser.add_argument("--zid_compact_radius_deg", type=float, default=40.0)
+    parser.add_argument("--zid_compact_warmup_epochs", type=int, default=30)
+    parser.add_argument("--zid_compact_domain_aware", type=str2bool, default=True)
+    parser.add_argument("--lambda_proxy_unknown", type=float, default=0.0)
+    parser.add_argument("--proxy_unknown_start_epoch", type=int, default=40)
+    parser.add_argument("--proxy_unknown_warmup_epochs", type=int, default=0)
+    parser.add_argument("--proxy_unknown_holdout_tx_per_batch", type=int, default=1)
+    parser.add_argument("--proxy_unknown_virtual_count", type=int, default=16)
+    parser.add_argument("--proxy_unknown_energy_margin", type=float, default=1.0)
+    parser.add_argument("--proxy_unknown_placeholder_weight", type=float, default=0.5)
+    parser.add_argument("--proxy_unknown_virtual_detach", type=str2bool, default=True)
+    parser.add_argument("--lambda_source_episode", type=float, default=0.0)
+    parser.add_argument("--source_episode_start_epoch", type=int, default=1)
+    parser.add_argument("--source_episode_warmup_epochs", type=int, default=0)
+    parser.add_argument("--source_episode_min_domains", type=int, default=2)
+    parser.add_argument("--source_episode_radius_cap_deg", type=float, default=30.0)
     parser.add_argument("--phase2_export_prototypes", type=str2bool, default=False)
     parser.add_argument("--phase2_export_path", type=str, default="")
     parser.add_argument("--phase2_export_checkpoint", type=str, default="")
@@ -265,6 +303,16 @@ def build_arg_parser() -> argparse.ArgumentParser:
     )
     parser.add_argument("--phase2_export_split", type=str, default="train", choices=["train", "val"])
     parser.add_argument("--phase2_export_max_batches", type=int, default=0)
+    parser.add_argument("--phase2_fuse_prototypes", type=str2bool, default=False)
+    parser.add_argument("--phase2_fuse_max_components", type=int, default=4)
+    parser.add_argument("--phase2_fuse_merge_angle_deg", type=float, default=6.0)
+    parser.add_argument("--phase2_fuse_radius_cap_deg", type=float, default=25.0)
+    parser.add_argument("--phase2_fuse_tail_abs_deg", type=float, default=30.0)
+    parser.add_argument("--phase2_fuse_accept_policy", type=str, default="local_component")
+    parser.add_argument("--phase2_fuse_accept_radius_key", type=str, default="p95")
+    parser.add_argument("--phase2_fuse_max_p95_increase_deg", type=float, default=2.0)
+    parser.add_argument("--phase2_fuse_keep_tail_sentinel", type=str2bool, default=True)
+    parser.add_argument("--phase2_fuse_global_ball_accept", type=str2bool, default=False)
     parser.add_argument("--freeze_backbone", type=str2bool, default=False)
     parser.add_argument("--model_size", type=str, default="M")
     parser.add_argument("--model_variant", type=str, default="lite_d")
@@ -730,6 +778,9 @@ def _phase2_audit_requested(args) -> bool:
         "lambda_txrx_rect",
         "lambda_proto",
         "lambda_open_world_feat",
+        "lambda_zid_compact",
+        "lambda_proxy_unknown",
+        "lambda_source_episode",
     )
     return any(bool(getattr(args, key, False)) for key in flags) or any(float(getattr(args, key, 0.0)) > 0.0 for key in weights)
 
@@ -764,6 +815,9 @@ def _phase2_audit_state(args) -> Dict[str, Any]:
         "txrx_rect": float(getattr(args, "lambda_txrx_rect", 0.0)),
         "proto_memory": float(getattr(args, "lambda_proto", 0.0)),
         "open_world_feat": float(getattr(args, "lambda_open_world_feat", 0.0)),
+        "zid_compact": float(getattr(args, "lambda_zid_compact", 0.0)),
+        "proxy_unknown": float(getattr(args, "lambda_proxy_unknown", 0.0)),
+        "source_episode": float(getattr(args, "lambda_source_episode", 0.0)),
     }
     legacy_unwired = {
         key: value
@@ -775,10 +829,13 @@ def _phase2_audit_state(args) -> Dict[str, Any]:
             "Non-zero legacy Phase1 prototype/mask/geometry audit losses are not wired into SSDG training yet. "
             "Use zero weights for --lambda_tx_proto/--lambda_rx_proto/--lambda_mask_aux/"
             "--lambda_tx_supcon_masked/--lambda_rx_supcon_masked/--lambda_txrx_rect, and use "
-            "--lambda_proto or --lambda_open_world_feat for the default-off active z_id feature-space bridge."
+            "--lambda_proto, --lambda_open_world_feat, --lambda_zid_compact, --lambda_proxy_unknown, "
+            "or --lambda_source_episode for the default-off active z_id feature-space bridge."
         )
     active_loss = bool(getattr(args, "use_proto_memory", False)) or any(
-        value > 0.0 for key, value in weights.items() if key in {"proto_memory", "open_world_feat"}
+        value > 0.0
+        for key, value in weights.items()
+        if key in {"proto_memory", "open_world_feat", "zid_compact", "proxy_unknown", "source_episode"}
     )
     return {
         "requested": bool(requested),
@@ -790,6 +847,9 @@ def _phase2_audit_state(args) -> Dict[str, Any]:
         "use_tx_rx_balanced_sampler": bool(getattr(args, "use_tx_rx_balanced_sampler", False)),
         "use_proto_memory": bool(getattr(args, "use_proto_memory", False)) or float(getattr(args, "lambda_proto", 0.0)) > 0.0,
         "use_open_world_feature_loss": float(getattr(args, "lambda_open_world_feat", 0.0)) > 0.0,
+        "use_zid_compactness_loss": float(getattr(args, "lambda_zid_compact", 0.0)) > 0.0,
+        "use_proxy_unknown_loss": float(getattr(args, "lambda_proxy_unknown", 0.0)) > 0.0,
+        "use_source_episode_loss": float(getattr(args, "lambda_source_episode", 0.0)) > 0.0,
         "phase2_export_prototypes": bool(getattr(args, "phase2_export_prototypes", False)),
         "imports": import_status,
         "weights": weights,
@@ -859,11 +919,31 @@ def _maybe_export_phase2_prototypes_ssdg(
                 "default_training_behavior_changed": False,
             },
         )
+        if bool(getattr(args, "phase2_fuse_prototypes", False)):
+            if fuse_tx_domain_prototypes is None or PrototypeFusionConfig is None or save_phase2_prototype_export is None:
+                raise ImportError("cvsrffi.phase2_prototypes fusion support is required for --phase2_fuse_prototypes")
+                package = fuse_tx_domain_prototypes(
+                    package,
+                    PrototypeFusionConfig(
+                        max_components_per_tx=int(getattr(args, "phase2_fuse_max_components", 4)),
+                        merge_angle_deg=float(getattr(args, "phase2_fuse_merge_angle_deg", 6.0)),
+                        radius_cap_deg=float(getattr(args, "phase2_fuse_radius_cap_deg", 25.0)),
+                        tail_abs_deg=float(getattr(args, "phase2_fuse_tail_abs_deg", 30.0)),
+                        accept_policy=str(getattr(args, "phase2_fuse_accept_policy", "local_component")),
+                        accept_radius_key=str(getattr(args, "phase2_fuse_accept_radius_key", "p95")),
+                        max_p95_increase_deg=float(getattr(args, "phase2_fuse_max_p95_increase_deg", 2.0)),
+                        keep_tail_sentinel=bool(getattr(args, "phase2_fuse_keep_tail_sentinel", True)),
+                        global_ball_accept=bool(getattr(args, "phase2_fuse_global_ball_accept", False)),
+                    ),
+                )
+            paths = save_phase2_prototype_export(package, output_path)
+            package = dict(package)
+            package["paths"] = paths
         paths = package.get("paths", {}) if isinstance(package, dict) else {}
         print(
             f"[PHASE2-EXPORT] wrote prototypes={paths.get('pt_path', output_path)} "
             f"json={paths.get('json_path', '')} feature={getattr(args, 'phase2_export_feature_key', 'z_id')} "
-            f"split={loader_name}",
+            f"split={loader_name} fused={int(bool(getattr(args, 'phase2_fuse_prototypes', False)))}",
             flush=True,
         )
         return package
@@ -901,7 +981,20 @@ def _loss_weights(args, stage_state: Mapping[str, Any] | None) -> Dict[str, floa
         "sat_cons": float(getattr(args, "lambda_sat_cons", 0.0)),
         "proto": float(getattr(args, "lambda_proto", 0.0)),
         "open_world_feat": float(getattr(args, "lambda_open_world_feat", 0.0)),
+        "zid_compact": float(getattr(args, "lambda_zid_compact", 0.0)),
+        "proxy_unknown": float(getattr(args, "lambda_proxy_unknown", 0.0)),
+        "source_episode": float(getattr(args, "lambda_source_episode", 0.0)),
     }
+
+
+def _stage_gate_scale(epoch: int, *, start_epoch: int = 1, warmup_epochs: int = 0) -> float:
+    start = max(1, int(start_epoch))
+    if int(epoch) < start:
+        return 0.0
+    warm = max(0, int(warmup_epochs))
+    if warm <= 0:
+        return 1.0
+    return min(1.0, max(0.0, float(int(epoch) - start + 1) / float(warm)))
 
 
 def _format_loss_top(values: Mapping[str, float], *, limit: int = 8) -> str:
@@ -1205,6 +1298,9 @@ def _build_ssdg_epoch_telemetry_row(
         "ow_feat_inter_margin_deg",
         "ow_feat_sample_margin_deg",
         "ow_feat_domain_align_weight",
+        "ow_feat_tail_weight",
+        "ow_feat_cvar_alpha",
+        "lambda_source_episode",
         "label_smoothing",
         "group_ce_top_frac",
         "strong_noise_std",
@@ -1325,6 +1421,7 @@ def format_ssdg_epoch_block(
     loss_fishr = _log_value(train_logs, "train/loss_fishr_labeled")
     loss_proto = _log_value(train_logs, "train/loss_proto_labeled")
     loss_ow_feat = _log_value(train_logs, "train/loss_open_world_feat")
+    loss_source_episode = _log_value(train_logs, "train/loss_source_episode")
     loss_cons = _log_value(train_logs, "train/loss_cons_labeled")
     loss_u = _log_value(train_logs, "train/loss_unlabeled")
     w_cls = _log_value(train_logs, "train/w_loss_tx_labeled", loss_cls)
@@ -1338,6 +1435,7 @@ def format_ssdg_epoch_block(
     w_fishr = _log_value(train_logs, "train/w_loss_fishr_labeled", loss_fishr)
     w_proto = _log_value(train_logs, "train/w_loss_proto_labeled", loss_proto)
     w_ow_feat = _log_value(train_logs, "train/w_loss_open_world_feat", loss_ow_feat)
+    w_source_episode = _log_value(train_logs, "train/w_loss_source_episode", loss_source_episode)
     reliable = _log_value(train_logs, "train/reliable_ratio")
     pseudo_conf = _log_value(train_logs, "train/pseudo_conf")
     domain_pass = _log_value(train_logs, "train/domain_pass")
@@ -1407,9 +1505,12 @@ def format_ssdg_epoch_block(
     lines.append(
         f"[LOSS-DG-RAW]   proto={loss_proto:.4f} "
         f"proto_cos={_log_value(train_logs, 'train/proto_pull_cos'):.4f} "
-        f"supcon=0.0000 fishr={loss_fishr:.4f} ow_feat={loss_ow_feat:.4f}"
+        f"supcon=0.0000 fishr={loss_fishr:.4f} ow_feat={loss_ow_feat:.4f} source_episode={loss_source_episode:.4f}"
     )
-    lines.append(f"[LOSS-DG-W]     proto={w_proto:.4f} supcon=0.0000 fishr={w_fishr:.4f} ow_feat={w_ow_feat:.4f}")
+    lines.append(
+        f"[LOSS-DG-W]     proto={w_proto:.4f} supcon=0.0000 fishr={w_fishr:.4f} "
+        f"ow_feat={w_ow_feat:.4f} source_episode={w_source_episode:.4f}"
+    )
     lines.append(
         "[OW-FEAT] "
         f"active_classes={_log_value(train_logs, 'train/ow_feat_active_classes'):.1f} "
@@ -1418,8 +1519,18 @@ def format_ssdg_epoch_block(
         f"sample_margin={_log_value(train_logs, 'train/ow_feat_sample_margin'):.4f} "
         f"domain_align={_log_value(train_logs, 'train/ow_feat_domain_align'):.4f} "
         f"pos_angle={_log_value(train_logs, 'train/ow_feat_pos_angle_deg'):.2f}deg "
+        f"p95={_log_value(train_logs, 'train/ow_feat_pos_angle_p95_deg'):.2f}deg "
+        f"tail3s={_log_value(train_logs, 'train/ow_feat_tail_frac_gt_3sigma'):.4f} "
         f"min_inter={_log_value(train_logs, 'train/ow_feat_min_inter_deg'):.2f}deg "
         f"proto_active={_log_value(train_logs, 'train/proto_active_classes'):.1f}"
+    )
+    lines.append(
+        "[SOURCE-EP] "
+        f"classes={_log_value(train_logs, 'train/source_episode_classes'):.1f} "
+        f"domains={_log_value(train_logs, 'train/source_episode_domains'):.1f} "
+        f"overflow={_log_value(train_logs, 'train/source_episode_overflow_rate'):.4f} "
+        f"r3s={_log_value(train_logs, 'train/source_episode_radius_3sigma_deg'):.2f}deg "
+        f"val_angle={_log_value(train_logs, 'train/source_episode_val_angle_deg'):.2f}deg"
     )
     lines.append(
         "[LOSS-WEIGHT] "
@@ -1430,6 +1541,7 @@ def format_ssdg_epoch_block(
         f"group_ce={float(stage_state.get('group_ce_scale', loss_weights.get('group_ce', 0.0))):.3f} "
         f"proto={float(loss_weights.get('proto', 0.0)):.6g} "
         f"ow_feat={float(loss_weights.get('open_world_feat', 0.0)):.6g} "
+        f"source_episode={float(loss_weights.get('source_episode', 0.0)):.6g} "
         "aux_scale=0.000"
     )
     lines.append(
@@ -1539,6 +1651,8 @@ def format_ssdg_epoch_block(
             f"lambda_proto={float(weights.get('proto_memory', 0.0)):.6g} "
             f"open_world_feat={int(bool(phase2_audit_state.get('use_open_world_feature_loss', False)))} "
             f"lambda_open_world_feat={float(weights.get('open_world_feat', 0.0)):.6g} "
+            f"source_episode={int(bool(phase2_audit_state.get('use_source_episode_loss', False)))} "
+            f"lambda_source_episode={float(weights.get('source_episode', 0.0)):.6g} "
             f"phase2_export={int(bool(phase2_audit_state.get('phase2_export_prototypes', False)))}"
         )
     lines.append(f"[BEST-JOINT]  val_tx={float(best_val):.2f}% & test_tx={float(best_test):.2f}% @ E{int(best_epoch):03d}")
@@ -1661,6 +1775,7 @@ def train(args) -> int:
                 f"lambda_group_ce={float(args.lambda_group_ce):.6g} lambda_fishr={float(args.lambda_fishr):.6g} "
                 f"lambda_sat_cls={float(args.lambda_sat_cls):.6g} lambda_sat_cons={float(args.lambda_sat_cons):.6g} "
                 f"lambda_proto={float(args.lambda_proto):.6g} lambda_open_world_feat={float(args.lambda_open_world_feat):.6g} "
+                f"lambda_source_episode={float(args.lambda_source_episode):.6g} "
                 f"lambda_u={float(args.lambda_u):.6g} lambda_ent={float(args.lambda_ent):.6g} "
                 f"label_smoothing={float(args.label_smoothing):.6g}",
                 "[CONFIG-PSEUDO] "
@@ -1703,6 +1818,7 @@ def train(args) -> int:
                 f"use_proto_memory={int(bool(proto_bank is not None))} "
                 f"lambda_proto={float(args.lambda_proto):.6g} "
                 f"lambda_open_world_feat={float(args.lambda_open_world_feat):.6g} "
+                f"lambda_source_episode={float(args.lambda_source_episode):.6g} "
                 f"phase2_export={int(bool(args.phase2_export_prototypes))}",
             ]
         ),
@@ -1826,6 +1942,11 @@ def train(args) -> int:
                         active = proto_bank.class_count >= int(args.proto_min_count)
                         proto_info["proto_active_classes"] = float(int(active.sum().detach().item()))
                 loss_open_world_feat_l = z_id_l.sum() * 0.0
+                ow_feat_stage_scale = _stage_gate_scale(
+                    epoch,
+                    start_epoch=int(getattr(args, "ow_feat_start_epoch", 1)),
+                    warmup_epochs=int(getattr(args, "ow_feat_warmup_epochs", 0)),
+                )
                 ow_feat_info: Dict[str, float] = {
                     "compact": 0.0,
                     "inter": 0.0,
@@ -1834,8 +1955,16 @@ def train(args) -> int:
                     "active_classes": 0.0,
                     "pos_angle_deg": float("nan"),
                     "min_inter_angle_deg": float("nan"),
+                    "pos_angle_p50_deg": float("nan"),
+                    "pos_angle_p95_deg": float("nan"),
+                    "pos_angle_p99_deg": float("nan"),
+                    "pos_angle_max_deg": float("nan"),
+                    "tail_loss": 0.0,
+                    "tail_cvar_deg": float("nan"),
+                    "tail_frac_gt_3sigma": 0.0,
+                    "tail_radius_3sigma_deg": float("nan"),
                 }
-                if float(args.lambda_open_world_feat) > 0.0:
+                if float(args.lambda_open_world_feat) > 0.0 and ow_feat_stage_scale > 0.0:
                     if open_world_feature_space_loss is None:
                         raise ImportError("cvsrffi.losses.open_world_feature_space_loss is required for --lambda_open_world_feat")
                     loss_open_world_feat_l, ow_feat_info = open_world_feature_space_loss(
@@ -1848,6 +1977,100 @@ def train(args) -> int:
                         domain_align_weight=float(args.ow_feat_domain_align_weight),
                         min_classes=int(args.ow_feat_min_classes),
                         min_samples_per_class=int(args.ow_feat_min_samples_per_class),
+                        tail_mode=str(args.ow_feat_tail_mode),
+                        tail_weight=float(args.ow_feat_tail_weight),
+                        cvar_alpha=float(args.ow_feat_cvar_alpha),
+                    )
+                loss_zid_compact_l = z_id_l.sum() * 0.0
+                zid_compact_info: Dict[str, float] = {
+                    "supcon": 0.0,
+                    "radius": 0.0,
+                    "tail_cvar": 0.0,
+                    "active_classes": 0.0,
+                    "pos_angle_p50_deg": float("nan"),
+                    "pos_angle_p95_deg": float("nan"),
+                    "pos_angle_p99_deg": float("nan"),
+                    "tail_cvar_deg": float("nan"),
+                }
+                zid_warm = _stage_gate_scale(
+                    epoch,
+                    start_epoch=int(getattr(args, "zid_compact_start_epoch", 1)),
+                    warmup_epochs=int(getattr(args, "zid_compact_warmup_epochs", 0)),
+                )
+                if float(args.lambda_zid_compact) > 0.0 and zid_warm > 0.0:
+                    if zid_compactness_loss is None:
+                        raise ImportError("cvsrffi.losses.zid_compactness_loss is required for --lambda_zid_compact")
+                    loss_zid_compact_l, zid_compact_info = zid_compactness_loss(
+                        z_id_l,
+                        y_l,
+                        d_l,
+                        radius_rad=math.radians(float(args.zid_compact_radius_deg)),
+                        cvar_alpha=float(args.zid_compact_cvar_alpha),
+                        supcon_weight=float(args.zid_compact_supcon_weight),
+                        radius_weight=float(args.zid_compact_radius_weight),
+                        cvar_weight=float(args.zid_compact_cvar_weight),
+                        domain_aware=bool(args.zid_compact_domain_aware),
+                    )
+                loss_proxy_unknown_l = z_id_l.sum() * 0.0
+                proxy_unknown_info: Dict[str, float] = {
+                    "active": 0.0,
+                    "known_count": 0.0,
+                    "proxy_unknown_count": 0.0,
+                    "virtual_count": 0.0,
+                    "energy_known": float("nan"),
+                    "energy_proxy": float("nan"),
+                    "energy_virtual": float("nan"),
+                    "energy_margin": float("nan"),
+                    "proxy_unknown_auc": float("nan"),
+                    "virtual_accept_rate": float("nan"),
+                }
+                proxy_stage_scale = _stage_gate_scale(
+                    epoch,
+                    start_epoch=int(getattr(args, "proxy_unknown_start_epoch", 40)),
+                    warmup_epochs=int(getattr(args, "proxy_unknown_warmup_epochs", 0)),
+                )
+                proxy_active = float(args.lambda_proxy_unknown) > 0.0 and proxy_stage_scale > 0.0
+                if proxy_active:
+                    if proxy_unknown_energy_loss is None:
+                        raise ImportError("cvsrffi.losses.proxy_unknown_energy_loss is required for --lambda_proxy_unknown")
+                    valid_y = torch.unique(y_l[y_l >= 0])
+                    if valid_y.numel() > 0:
+                        holdout_idx = (int(epoch) + int(batch_idx)) % int(valid_y.numel())
+                        holdout_label = int(valid_y[holdout_idx].detach().item())
+                    else:
+                        holdout_label = None
+                    loss_proxy_unknown_l, proxy_unknown_info = proxy_unknown_energy_loss(
+                        z_id_l,
+                        y_l,
+                        holdout_label=holdout_label,
+                        virtual_count=int(args.proxy_unknown_virtual_count),
+                        energy_margin=float(args.proxy_unknown_energy_margin),
+                        placeholder_weight=float(args.proxy_unknown_placeholder_weight),
+                        virtual_detach=bool(args.proxy_unknown_virtual_detach),
+                    )
+                loss_source_episode_l = z_id_l.sum() * 0.0
+                source_episode_stage_scale = _stage_gate_scale(
+                    epoch,
+                    start_epoch=int(getattr(args, "source_episode_start_epoch", 1)),
+                    warmup_epochs=int(getattr(args, "source_episode_warmup_epochs", 0)),
+                )
+                source_episode_info: Dict[str, float] = {
+                    "source_episode_loss": 0.0,
+                    "source_episode_overflow_rate": 0.0,
+                    "source_episode_radius_3sigma_deg": float("nan"),
+                    "source_episode_val_angle_deg": float("nan"),
+                    "source_episode_classes": 0.0,
+                    "source_episode_domains": 0.0,
+                }
+                if float(args.lambda_source_episode) > 0.0 and source_episode_stage_scale > 0.0:
+                    if source_episode_three_sigma_loss is None:
+                        raise ImportError("cvsrffi.losses.source_episode_three_sigma_loss is required for --lambda_source_episode")
+                    loss_source_episode_l, source_episode_info = source_episode_three_sigma_loss(
+                        z_id_l,
+                        y_l,
+                        d_l,
+                        min_domains=int(args.source_episode_min_domains),
+                        radius_cap_rad=math.radians(float(args.source_episode_radius_cap_deg)),
                     )
                 use_sat_train = bool(args.use_sat_consistency) and epoch >= int(args.sat_cons_start_epoch) and (
                     cur_w["sat_cls"] > 0.0 or cur_w["sat_cons"] > 0.0
@@ -1900,7 +2123,10 @@ def train(args) -> int:
                     + cur_w["group_ce"] * loss_group_ce_l
                     + cur_w["fishr"] * loss_fishr_l
                     + cur_w["proto"] * sanitize_loss("ssdg_proto", loss_proto_l, z_id_l, loss_warn_counts)
-                    + cur_w["open_world_feat"] * sanitize_loss("ssdg_open_world_feat", loss_open_world_feat_l, z_id_l, loss_warn_counts)
+                    + (cur_w["open_world_feat"] * ow_feat_stage_scale) * sanitize_loss("ssdg_open_world_feat", loss_open_world_feat_l, z_id_l, loss_warn_counts)
+                    + (cur_w["zid_compact"] * zid_warm) * sanitize_loss("ssdg_zid_compact", loss_zid_compact_l, z_id_l, loss_warn_counts)
+                    + (cur_w["proxy_unknown"] * proxy_stage_scale) * sanitize_loss("ssdg_proxy_unknown", loss_proxy_unknown_l, z_id_l, loss_warn_counts)
+                    + (cur_w["source_episode"] * source_episode_stage_scale) * sanitize_loss("ssdg_source_episode", loss_source_episode_l, z_id_l, loss_warn_counts)
                     + cur_w["sat_cls"] * loss_sat_cls_l
                     + cur_w["sat_cons"] * loss_sat_cons_l
                 )
@@ -2013,6 +2239,9 @@ def train(args) -> int:
                     "train/loss_fishr_labeled": loss_fishr_l.detach(),
                     "train/loss_proto_labeled": loss_proto_l.detach(),
                     "train/loss_open_world_feat": loss_open_world_feat_l.detach(),
+                    "train/loss_zid_compact": loss_zid_compact_l.detach(),
+                    "train/loss_proxy_unknown": loss_proxy_unknown_l.detach(),
+                    "train/loss_source_episode": loss_source_episode_l.detach(),
                     "train/loss_sat_cls_labeled": loss_sat_cls_l.detach(),
                     "train/loss_sat_cons_labeled": loss_sat_cons_l.detach(),
                     "train/w_loss_tx_labeled": loss_tx_l.detach(),
@@ -2023,7 +2252,10 @@ def train(args) -> int:
                     "train/w_loss_group_ce_labeled": (cur_w["group_ce"] * loss_group_ce_l).detach(),
                     "train/w_loss_fishr_labeled": (cur_w["fishr"] * loss_fishr_l).detach(),
                     "train/w_loss_proto_labeled": (cur_w["proto"] * loss_proto_l).detach(),
-                    "train/w_loss_open_world_feat": (cur_w["open_world_feat"] * loss_open_world_feat_l).detach(),
+                    "train/w_loss_open_world_feat": ((cur_w["open_world_feat"] * ow_feat_stage_scale) * loss_open_world_feat_l).detach(),
+                    "train/w_loss_zid_compact": ((cur_w["zid_compact"] * zid_warm) * loss_zid_compact_l).detach(),
+                    "train/w_loss_proxy_unknown": ((cur_w["proxy_unknown"] * proxy_stage_scale) * loss_proxy_unknown_l).detach(),
+                    "train/w_loss_source_episode": ((cur_w["source_episode"] * source_episode_stage_scale) * loss_source_episode_l).detach(),
                     "train/w_loss_sat_cls_labeled": (cur_w["sat_cls"] * loss_sat_cls_l).detach(),
                     "train/w_loss_sat_cons_labeled": (cur_w["sat_cons"] * loss_sat_cons_l).detach(),
                     "train/loss_unlabeled": loss_u.detach(),
@@ -2054,6 +2286,42 @@ def train(args) -> int:
                     "train/ow_feat_active_classes": ow_feat_info.get("active_classes", float("nan")),
                     "train/ow_feat_pos_angle_deg": ow_feat_info.get("pos_angle_deg", float("nan")),
                     "train/ow_feat_min_inter_deg": ow_feat_info.get("min_inter_angle_deg", float("nan")),
+                    "train/ow_feat_pos_angle_p50_deg": ow_feat_info.get("pos_angle_p50_deg", float("nan")),
+                    "train/ow_feat_pos_angle_p95_deg": ow_feat_info.get("pos_angle_p95_deg", float("nan")),
+                    "train/ow_feat_pos_angle_p99_deg": ow_feat_info.get("pos_angle_p99_deg", float("nan")),
+                    "train/ow_feat_pos_angle_max_deg": ow_feat_info.get("pos_angle_max_deg", float("nan")),
+                    "train/ow_feat_tail_loss": ow_feat_info.get("tail_loss", float("nan")),
+                    "train/ow_feat_tail_cvar_deg": ow_feat_info.get("tail_cvar_deg", float("nan")),
+                    "train/ow_feat_tail_frac_gt_3sigma": ow_feat_info.get("tail_frac_gt_3sigma", float("nan")),
+                    "train/ow_feat_tail_radius_3sigma_deg": ow_feat_info.get("tail_radius_3sigma_deg", float("nan")),
+                    "train/ow_feat_stage_scale": float(ow_feat_stage_scale),
+                    "train/zid_compact_supcon": zid_compact_info.get("supcon", float("nan")),
+                    "train/zid_compact_radius": zid_compact_info.get("radius", float("nan")),
+                    "train/zid_compact_tail_cvar": zid_compact_info.get("tail_cvar", float("nan")),
+                    "train/zid_compact_active_classes": zid_compact_info.get("active_classes", float("nan")),
+                    "train/zid_compact_pos_angle_p50_deg": zid_compact_info.get("pos_angle_p50_deg", float("nan")),
+                    "train/zid_compact_pos_angle_p95_deg": zid_compact_info.get("pos_angle_p95_deg", float("nan")),
+                    "train/zid_compact_pos_angle_p99_deg": zid_compact_info.get("pos_angle_p99_deg", float("nan")),
+                    "train/zid_compact_tail_cvar_deg": zid_compact_info.get("tail_cvar_deg", float("nan")),
+                    "train/zid_compact_warmup_scale": float(zid_warm),
+                    "train/proxy_unknown_active": proxy_unknown_info.get("active", float("nan")),
+                    "train/proxy_unknown_known_count": proxy_unknown_info.get("known_count", float("nan")),
+                    "train/proxy_unknown_count": proxy_unknown_info.get("proxy_unknown_count", float("nan")),
+                    "train/proxy_unknown_virtual_count": proxy_unknown_info.get("virtual_count", float("nan")),
+                    "train/proxy_unknown_energy_known": proxy_unknown_info.get("energy_known", float("nan")),
+                    "train/proxy_unknown_energy_proxy": proxy_unknown_info.get("energy_proxy", float("nan")),
+                    "train/proxy_unknown_energy_virtual": proxy_unknown_info.get("energy_virtual", float("nan")),
+                    "train/proxy_unknown_margin": proxy_unknown_info.get("energy_margin", float("nan")),
+                    "train/proxy_unknown_auc_proxy": proxy_unknown_info.get("proxy_unknown_auc", float("nan")),
+                    "train/proxy_unknown_virtual_accept_rate": proxy_unknown_info.get("virtual_accept_rate", float("nan")),
+                    "train/proxy_unknown_stage_scale": float(proxy_stage_scale),
+                    "train/source_episode_loss": source_episode_info.get("source_episode_loss", float("nan")),
+                    "train/source_episode_overflow_rate": source_episode_info.get("source_episode_overflow_rate", float("nan")),
+                    "train/source_episode_radius_3sigma_deg": source_episode_info.get("source_episode_radius_3sigma_deg", float("nan")),
+                    "train/source_episode_val_angle_deg": source_episode_info.get("source_episode_val_angle_deg", float("nan")),
+                    "train/source_episode_classes": source_episode_info.get("source_episode_classes", float("nan")),
+                    "train/source_episode_domains": source_episode_info.get("source_episode_domains", float("nan")),
+                    "train/source_episode_stage_scale": float(source_episode_stage_scale),
                 }
             )
 

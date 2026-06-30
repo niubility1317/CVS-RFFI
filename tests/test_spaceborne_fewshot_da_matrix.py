@@ -1145,6 +1145,8 @@ class SpaceborneFewShotDaMatrixTest(unittest.TestCase):
         self.assertTrue(all(not c.oa_mse_old_primary_gate for c in candidates))
         self.assertTrue(all("rollback_safe_retention" in item["fusion_inputs"] for item in rows))
         self.assertTrue(all("defer_first_deployment_gate" in item["fusion_inputs"] for item in rows))
+        self.assertEqual({item["stage2_priority_phase"] for item in rows}, {"OLD80_FIRST"})
+        self.assertEqual({item["old_acc_phase_gate"] for item in rows}, {0.80})
         self.assertTrue(all("H06_ROLLSAFE48" in item["candidate_id"] for item in rows))
         self.assertTrue(all("h06_rollback_safe_retention" in item["update_module"] for item in rows))
         self.assertEqual({item["target_new_tx_labels"] for item in rows}, {""})
@@ -1157,6 +1159,266 @@ class SpaceborneFewShotDaMatrixTest(unittest.TestCase):
         self.assertIn("--oa_mse_old_unknown_acceptance_guard", launcher)
 
         result = validate(rows, expected_count=48, matrix_root=payload, launcher_text=launcher)
+        self.assertEqual("PASS", result["verdict"], result["issues"])
+
+    def test_h06_oldhead48_repairs_old80_boundary_without_seen_new(self):
+        from collections import Counter
+
+        from optimizer_validate_matrix import validate
+        from spaceborne_fewshot_da_matrix import make_candidates, matrix_payload, render_launcher
+
+        candidates = make_candidates(plan="OA_MSE_H06_OLDHEAD48")
+        payload = matrix_payload("spaceborne_fewshot_h06_oldhead48_test", candidates)
+        rows = payload["candidates"]
+        launcher = render_launcher("spaceborne_fewshot_h06_oldhead48_test", candidates)
+
+        self.assertEqual(48, len(candidates))
+        self.assertEqual(Counter(c.gpu for c in candidates), {gpu: 6 for gpu in range(8)})
+        self.assertEqual(
+            Counter(c.optimization_category for c in candidates),
+            {"oldhead_ridge_bridge": 24, "oldhead_knn_density_guard": 24},
+        )
+        self.assertEqual(
+            Counter(c.oa_mse_adapter_selection_policy for c in candidates),
+            {"support_cv_constrained": 24, "support_cv_risk_balanced": 24},
+        )
+        self.assertEqual({c.target_old_support_per_tx for c in candidates}, {10, 20, 50})
+        self.assertEqual({c.target_new_support_per_tx for c in candidates}, {0})
+        self.assertEqual({c.new_tx_ids for c in candidates}, {"__NONE__"})
+        self.assertTrue(
+            all(c.sfe_max_samples_per_tx >= c.target_old_support_per_tx + c.target_old_query_per_tx for c in candidates)
+        )
+        self.assertTrue(all(c.oa_mse_three_way_decision_head for c in candidates))
+        self.assertTrue(all(c.oa_mse_density_shell_gate for c in candidates))
+        self.assertTrue(all(c.oa_mse_support_conformal_arbitration for c in candidates))
+        self.assertTrue(all(c.oa_mse_support_reconstruction_arbitration for c in candidates))
+        self.assertTrue(all(c.oa_mse_pre_reject_defer_arbitration for c in candidates))
+        self.assertTrue(all(c.oa_mse_retention_rescue_gate for c in candidates))
+        self.assertTrue(all(c.retention_rescue_candidate_only for c in candidates))
+        self.assertTrue(all(c.oa_mse_source_looo_risk_arbitration for c in candidates))
+        self.assertTrue(all(c.oa_mse_two_branch_background_guard for c in candidates))
+        self.assertTrue(all(c.oa_mse_old_unknown_acceptance_guard for c in candidates))
+        self.assertTrue(all(c.oa_mse_support_retention_guard for c in candidates))
+        self.assertTrue(all(not c.oa_mse_old_primary_gate for c in candidates))
+        self.assertEqual({item["stage2_priority_phase"] for item in rows}, {"OLD80_FIRST"})
+        self.assertEqual({item["old_acc_phase_gate"] for item in rows}, {0.80})
+        self.assertTrue(all("H06_OLDHEAD48" in item["candidate_id"] for item in rows))
+        self.assertTrue(all("h06_oldhead_boundary_repair" in item["update_module"] for item in rows))
+        self.assertTrue(all("oldhead_ridge_recoverability" in item["fusion_inputs"] for item in rows))
+        self.assertTrue(all("knn_density_boundary_risk" in item["fusion_inputs"] for item in rows))
+        self.assertEqual({item["target_new_tx_labels"] for item in rows}, {""})
+        self.assertEqual({item["target_new_leo_query"] for item in rows}, {"not_applicable_old_unknown_only"})
+        self.assertTrue(
+            all("higher-shot/saturation" in item["k_shot_interpretation"] for item in rows if item["target_old_k"] == 50)
+        )
+        self.assertIn("OA_MSE_H06_OLDHEAD48", launcher)
+        self.assertIn("--oa_mse_three_way_decision_head", launcher)
+        self.assertIn("--oa_mse_density_shell_gate", launcher)
+        self.assertIn("--oa_mse_support_conformal_arbitration", launcher)
+        self.assertIn("--oa_mse_support_reconstruction_arbitration", launcher)
+        self.assertIn("--oa_mse_old_unknown_acceptance_guard", launcher)
+        self.assertIn("--oa_mse_adapter_selection_policy support_cv_constrained", launcher)
+        self.assertIn("--oa_mse_adapter_selection_policy support_cv_risk_balanced", launcher)
+
+        result = validate(rows, expected_count=48, matrix_root=payload, launcher_text=launcher)
+        self.assertEqual("PASS", result["verdict"], result["issues"])
+
+    def test_h06_oldheadfar48_uses_support_cv_stability_without_seen_new(self):
+        from collections import Counter
+
+        from optimizer_validate_matrix import validate
+        from spaceborne_fewshot_da_matrix import make_candidates, matrix_payload, render_launcher
+
+        candidates = make_candidates(plan="OA_MSE_H06_OLDHEADFAR48")
+        payload = matrix_payload("spaceborne_fewshot_h06_oldheadfar48_test", candidates)
+        rows = payload["candidates"]
+        launcher = render_launcher("spaceborne_fewshot_h06_oldheadfar48_test", candidates)
+        phase1_candidates = [c for c in candidates if c.command_kind == "phase1_safe_ssdg_ground_train"]
+        phase2_candidates = [c for c in candidates if c.command_kind != "phase1_safe_ssdg_ground_train"]
+        phase1_rows = [item for item in rows if item["lane"] == "phase1_ground_dg"]
+        phase2_rows = [item for item in rows if item["lane"] == "phase2_spaceborne_fsl"]
+        simplified_scenarios = "leo_clear_weak,leo_low_elev_weak,leo_rain_weak"
+        simplified_schedule = (
+            "1@0.30:leo_clear_weak;"
+            "41@0.60:leo_low_elev_weak,leo_rain_weak;"
+            "91@0.80:leo_clear_weak,leo_low_elev_weak,leo_rain_weak"
+        )
+
+        self.assertEqual(56, len(candidates))
+        self.assertEqual(8, len(phase1_candidates))
+        self.assertEqual(48, len(phase2_candidates))
+        self.assertEqual(Counter(c.gpu for c in phase1_candidates), {gpu: 1 for gpu in range(8)})
+        self.assertEqual(Counter(c.gpu for c in phase2_candidates), {gpu: 6 for gpu in range(8)})
+        self.assertEqual(
+            Counter(c.optimization_category for c in phase2_candidates),
+            {"oldhead_support_cv_stability": 24, "oldhead_far_stability": 24},
+        )
+        self.assertEqual(
+            Counter(c.oa_mse_adapter_selection_policy for c in phase2_candidates),
+            {"identity_preserving_cv": 24, "identity_preserving_risk_cv": 24},
+        )
+        self.assertEqual({c.target_old_support_per_tx for c in phase2_candidates}, {10, 20, 50})
+        self.assertEqual({c.target_new_support_per_tx for c in phase2_candidates}, {0})
+        self.assertEqual({c.new_tx_ids for c in phase2_candidates}, {"__NONE__"})
+        self.assertTrue(all(c.identity_consensus_support_background_cap for c in phase2_candidates))
+        self.assertTrue(all(c.oa_mse_three_way_decision_head for c in phase2_candidates))
+        self.assertTrue(all(c.oa_mse_density_shell_gate for c in phase2_candidates))
+        self.assertTrue(all(c.oa_mse_support_conformal_arbitration for c in phase2_candidates))
+        self.assertTrue(all(c.oa_mse_support_reconstruction_arbitration for c in phase2_candidates))
+        self.assertTrue(all(c.oa_mse_pre_reject_defer_arbitration for c in phase2_candidates))
+        self.assertTrue(all(c.oa_mse_retention_rescue_gate for c in phase2_candidates))
+        self.assertTrue(all(c.retention_rescue_candidate_only for c in phase2_candidates))
+        self.assertTrue(all(c.oa_mse_source_looo_risk_arbitration for c in phase2_candidates))
+        self.assertTrue(all(c.oa_mse_two_branch_background_guard for c in phase2_candidates))
+        self.assertTrue(all(c.oa_mse_old_unknown_acceptance_guard for c in phase2_candidates))
+        self.assertTrue(all(c.oa_mse_support_retention_guard for c in phase2_candidates))
+        self.assertTrue(all(not c.oa_mse_old_primary_gate for c in phase2_candidates))
+        self.assertEqual({item["stage2_priority_phase"] for item in phase2_rows}, {"OLD80_FIRST"})
+        self.assertEqual({item["old_acc_phase_gate"] for item in phase2_rows}, {0.80})
+        self.assertEqual({item["secondary_objectives_after_old_gate"] for item in phase2_rows}, {"UNKNOWN_FAR_AFTER_OLD80"})
+        self.assertTrue(all("H06_OLDHEADFAR48" in item["candidate_id"] for item in phase2_rows))
+        self.assertTrue(all("h06_oldheadfar_support_cv_stability" in item["update_module"] for item in phase2_rows))
+        self.assertTrue(all("support_cv_stability_head" in item["fusion_inputs"] for item in phase2_rows))
+        self.assertTrue(all("identity_preserving_cv_selector" in item["fusion_inputs"] for item in phase2_rows))
+        self.assertEqual({item["target_new_tx_labels"] for item in phase2_rows}, {""})
+        self.assertEqual({item["target_new_leo_query"] for item in phase2_rows}, {"not_applicable_old_unknown_only"})
+        self.assertTrue(
+            all(
+                "higher-shot/saturation" in item["k_shot_interpretation"]
+                for item in phase2_rows
+                if item["target_old_k"] == 50
+            )
+        )
+        self.assertEqual({item["stage2_mode"] for item in phase1_rows}, {"NOT_APPLICABLE"})
+        self.assertEqual({item["ground_dg_claim_scope"] for item in phase1_rows}, {"source_only"})
+        self.assertEqual({item["target_receiver_usage"] for item in phase1_rows}, {"forbidden_in_phase1"})
+        self.assertEqual({item["star_ground_channel_impl"] for item in phase1_rows}, {"simplified_leo_residual"})
+        self.assertEqual({item["sat_view_schedule"] for item in phase1_rows}, {simplified_schedule})
+        self.assertEqual({item["parameters"]["sat_train_scenarios"] for item in phase1_rows}, {simplified_scenarios})
+        self.assertEqual({item["parameters"]["star_ground_channel_impl"] for item in phase1_rows}, {"simplified_leo_residual"})
+        self.assertTrue(all(item["parameters"]["use_concat_sat_channel_aug"] for item in phase1_rows))
+        self.assertTrue(all(item["parameters"]["concat_sat_ce_only"] for item in phase1_rows))
+        for item in phase1_rows:
+            command = item["exact_command"]
+            self.assertIn("--use_concat_sat_channel_aug", command)
+            self.assertIn("--concat_sat_ce_only", command)
+            self.assertIn("--sat_view_schedule", command)
+            self.assertIn("--use_sat_consistency", command)
+            self.assertIn(simplified_scenarios, command)
+            self.assertNotIn("mixed_orbit", command)
+        self.assertIn("OA_MSE_H06_OLDHEADFAR48", launcher)
+        self.assertIn("--identity_consensus_support_background_cap", launcher)
+        self.assertIn("--oa_mse_three_way_decision_head", launcher)
+        self.assertIn("--oa_mse_density_shell_gate", launcher)
+        self.assertIn("--oa_mse_support_conformal_arbitration", launcher)
+        self.assertIn("--oa_mse_support_reconstruction_arbitration", launcher)
+        self.assertIn("--oa_mse_old_unknown_acceptance_guard", launcher)
+        self.assertIn("--oa_mse_adapter_selection_policy identity_preserving_cv", launcher)
+        self.assertIn("--oa_mse_adapter_selection_policy identity_preserving_risk_cv", launcher)
+        self.assertIn("--use_concat_sat_channel_aug", launcher)
+        self.assertIn("--concat_sat_ce_only", launcher)
+        self.assertIn("--sat_view_schedule", launcher)
+        self.assertIn(simplified_scenarios, launcher)
+
+        result = validate(rows, expected_count=56, matrix_root=payload, launcher_text=launcher)
+        self.assertEqual("PASS", result["verdict"], result["issues"])
+
+    def test_h06_oldrecov48_restores_target_old_recoverability_first_without_seen_new(self):
+        from collections import Counter
+
+        from optimizer_validate_matrix import validate
+        from spaceborne_fewshot_da_matrix import make_candidates, matrix_payload, render_launcher
+
+        candidates = make_candidates(plan="OA_MSE_H06_OLDRECOV48")
+        payload = matrix_payload("spaceborne_fewshot_h06_oldrecov48_test", candidates)
+        rows = payload["candidates"]
+        launcher = render_launcher("spaceborne_fewshot_h06_oldrecov48_test", candidates)
+        phase1_candidates = [c for c in candidates if c.command_kind == "phase1_safe_ssdg_ground_train"]
+        phase2_candidates = [c for c in candidates if c.command_kind != "phase1_safe_ssdg_ground_train"]
+        phase1_rows = [item for item in rows if item["lane"] == "phase1_ground_dg"]
+        phase2_rows = [item for item in rows if item["lane"] == "phase2_spaceborne_fsl"]
+        simplified_scenarios = "leo_clear_weak,leo_low_elev_weak,leo_rain_weak"
+        simplified_schedule = (
+            "1@0.30:leo_clear_weak;"
+            "41@0.60:leo_low_elev_weak,leo_rain_weak;"
+            "91@0.80:leo_clear_weak,leo_low_elev_weak,leo_rain_weak"
+        )
+
+        self.assertEqual(56, len(candidates))
+        self.assertEqual(8, len(phase1_candidates))
+        self.assertEqual(48, len(phase2_candidates))
+        self.assertEqual(Counter(c.gpu for c in phase1_candidates), {gpu: 1 for gpu in range(8)})
+        self.assertEqual(Counter(c.gpu for c in phase2_candidates), {gpu: 6 for gpu in range(8)})
+        self.assertEqual(
+            Counter(c.optimization_category for c in phase2_candidates),
+            {"oldrecov_ridge_head": 24, "oldrecov_proto_bridge": 24},
+        )
+        self.assertEqual(
+            Counter(c.oa_mse_adapter_selection_policy for c in phase2_candidates),
+            {"support_cv_constrained": 24, "identity_preserving": 24},
+        )
+        self.assertEqual({c.target_old_support_per_tx for c in phase2_candidates}, {10, 20, 50})
+        self.assertEqual({c.target_new_support_per_tx for c in phase2_candidates}, {0})
+        self.assertEqual({c.new_tx_ids for c in phase2_candidates}, {"__NONE__"})
+        self.assertTrue(all(c.oa_mse_three_way_decision_head for c in phase2_candidates))
+        self.assertTrue(all(c.oa_mse_density_shell_gate for c in phase2_candidates))
+        self.assertTrue(all(c.oa_mse_support_conformal_arbitration for c in phase2_candidates))
+        self.assertTrue(all(c.oa_mse_support_reconstruction_arbitration for c in phase2_candidates))
+        self.assertTrue(all(c.oa_mse_pre_reject_defer_arbitration for c in phase2_candidates))
+        self.assertTrue(all(c.oa_mse_retention_rescue_gate for c in phase2_candidates))
+        self.assertTrue(all(c.retention_rescue_candidate_only for c in phase2_candidates))
+        self.assertTrue(all(c.oa_mse_source_looo_risk_arbitration for c in phase2_candidates))
+        self.assertTrue(all(c.oa_mse_two_branch_background_guard for c in phase2_candidates))
+        self.assertTrue(all(c.oa_mse_old_unknown_acceptance_guard for c in phase2_candidates))
+        self.assertTrue(all(c.oa_mse_support_retention_guard for c in phase2_candidates))
+        self.assertTrue(all(not c.oa_mse_old_primary_gate for c in phase2_candidates))
+        self.assertEqual({item["stage2_priority_phase"] for item in phase2_rows}, {"OLD80_FIRST"})
+        self.assertEqual({item["old_acc_phase_gate"] for item in phase2_rows}, {0.80})
+        self.assertEqual({item["secondary_objectives_after_old_gate"] for item in phase2_rows}, {"UNKNOWN_FAR_AFTER_OLD80"})
+        self.assertTrue(all("H06_OLDRECOV48" in item["candidate_id"] for item in phase2_rows))
+        self.assertTrue(all("h06_oldrecov_target_old_recoverability" in item["update_module"] for item in phase2_rows))
+        self.assertTrue(all("target_old_recoverability_first" in item["fusion_inputs"] for item in phase2_rows))
+        self.assertTrue(all("target_only_ridge_upper_bound" in item["fusion_inputs"] for item in phase2_rows))
+        self.assertEqual({item["target_new_tx_labels"] for item in phase2_rows}, {""})
+        self.assertEqual({item["target_new_leo_query"] for item in phase2_rows}, {"not_applicable_old_unknown_only"})
+        self.assertTrue(
+            all(
+                "higher-shot/saturation" in item["k_shot_interpretation"]
+                for item in phase2_rows
+                if item["target_old_k"] == 50
+            )
+        )
+        self.assertEqual({item["stage2_mode"] for item in phase1_rows}, {"NOT_APPLICABLE"})
+        self.assertEqual({item["ground_dg_claim_scope"] for item in phase1_rows}, {"source_only"})
+        self.assertEqual({item["target_receiver_usage"] for item in phase1_rows}, {"forbidden_in_phase1"})
+        self.assertEqual({item["star_ground_channel_impl"] for item in phase1_rows}, {"simplified_leo_residual"})
+        self.assertEqual({item["sat_view_schedule"] for item in phase1_rows}, {simplified_schedule})
+        self.assertEqual({item["parameters"]["sat_train_scenarios"] for item in phase1_rows}, {simplified_scenarios})
+        self.assertEqual({item["parameters"]["star_ground_channel_impl"] for item in phase1_rows}, {"simplified_leo_residual"})
+        self.assertTrue(all(item["parameters"]["use_concat_sat_channel_aug"] for item in phase1_rows))
+        self.assertTrue(all(item["parameters"]["concat_sat_ce_only"] for item in phase1_rows))
+        for item in phase1_rows:
+            command = item["exact_command"]
+            self.assertIn("--use_concat_sat_channel_aug", command)
+            self.assertIn("--concat_sat_ce_only", command)
+            self.assertIn("--sat_view_schedule", command)
+            self.assertIn("--use_sat_consistency", command)
+            self.assertIn(simplified_scenarios, command)
+            self.assertNotIn("mixed_orbit", command)
+        self.assertIn("OA_MSE_H06_OLDRECOV48", launcher)
+        self.assertIn("--oa_mse_three_way_decision_head", launcher)
+        self.assertIn("--oa_mse_density_shell_gate", launcher)
+        self.assertIn("--oa_mse_support_conformal_arbitration", launcher)
+        self.assertIn("--oa_mse_support_reconstruction_arbitration", launcher)
+        self.assertIn("--oa_mse_old_unknown_acceptance_guard", launcher)
+        self.assertIn("--oa_mse_adapter_selection_policy support_cv_constrained", launcher)
+        self.assertIn("--oa_mse_adapter_selection_policy identity_preserving", launcher)
+        self.assertIn("--use_concat_sat_channel_aug", launcher)
+        self.assertIn("--concat_sat_ce_only", launcher)
+        self.assertIn("--sat_view_schedule", launcher)
+        self.assertIn(simplified_scenarios, launcher)
+
+        result = validate(rows, expected_count=56, matrix_root=payload, launcher_text=launcher)
         self.assertEqual("PASS", result["verdict"], result["issues"])
 
     def test_oa_mse_payload_carries_resolved_manytx_tx_and_rx_labels(self):

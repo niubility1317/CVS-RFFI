@@ -11,9 +11,11 @@ sys.path.insert(0, str(PROJECT_ROOT / "code"))
 
 from cvsrffi.phase2_prototypes import (  # noqa: E402
     BalancedPrototypeBank,
+    PrototypeFusionConfig,
     build_phase2_prototype_export,
     export_phase2_prototypes,
     extract_phase2_features,
+    fuse_tx_domain_prototypes,
     PrototypeRadiusTracker,
     save_phase2_prototype_export,
     TxDomainPrototypeBank,
@@ -73,6 +75,23 @@ def test_radius_tracker_and_geometry_summary_report_margin_violations():
     assert summary.initialized == 2
     assert summary.margin_violation_pairs == 1
     assert summary.min_interclass_angle_deg > 0.0
+
+
+def test_radius_tracker_reports_robust_three_sigma_tail_without_max_inflation():
+    tracker = PrototypeRadiusTracker(num_classes=1)
+    proto = torch.tensor([[1.0, 0.0]], dtype=torch.float32)
+    features = torch.tensor(
+        [[1.0, 0.0], [0.996, 0.087], [0.985, 0.174], [0.0, 1.0]],
+        dtype=torch.float32,
+    )
+    tracker.update(features, torch.zeros(4, dtype=torch.long), proto)
+
+    stats = tracker.robust_stats(0)
+
+    assert stats["max"] > math.radians(80.0)
+    assert stats["robust_sigma"] < math.radians(8.0)
+    assert stats["r_3sigma"] < stats["max"]
+    assert stats["tail_count_gt_3sigma"] >= 1
 
 
 def test_proto_loss_returns_graph_safe_zero_when_no_initialized_class():
@@ -145,9 +164,46 @@ def test_build_phase2_export_contains_tx_domain_bounds_and_geometry():
     assert package["feature_key"] == "z_id"
     assert package["prototypes"].shape == (2, 2)
     assert package["tx_domain_prototypes"].shape == (2, 2, 2)
-    assert set(package["radii"].keys()) == {"p95", "p99", "max", "robust_max"}
+    assert set(package["radii"].keys()) == {"p95", "p99", "max", "robust_max", "r_1sigma", "r_2sigma", "r_3sigma"}
+    assert "radius_robust_sigma" in package
+    assert "radius_tail_stats" in package
     assert "geometry" in package
     assert package["metadata"]["checkpoint_path"] == "best_primary_ood_model.pth"
+
+
+def test_fuse_tx_domain_prototypes_reduces_redundant_domains_and_preserves_tail_audit():
+    package = {
+        "feature_key": "z_id",
+        "prototypes": torch.tensor([[1.0, 0.0], [0.0, 1.0]], dtype=torch.float32),
+        "prototype_counts": torch.tensor([40, 40]),
+        "tx_domain_prototypes": torch.tensor(
+            [
+                [[1.0, 0.0], [0.996, 0.087], [0.0, 1.0]],
+                [[0.0, 1.0], [0.087, 0.996], [1.0, 0.0]],
+            ],
+            dtype=torch.float32,
+        ),
+        "tx_domain_counts": torch.tensor([[10, 12, 2], [10, 11, 2]]),
+        "radii": {
+            "p95": torch.tensor([math.radians(5.0), math.radians(5.0)]),
+            "p99": torch.tensor([math.radians(8.0), math.radians(8.0)]),
+            "max": torch.tensor([math.radians(90.0), math.radians(90.0)]),
+            "r_3sigma": torch.tensor([math.radians(12.0), math.radians(12.0)]),
+        },
+        "radius_robust_sigma": torch.tensor([math.radians(2.0), math.radians(2.0)]),
+        "metadata": {},
+    }
+
+    fused = fuse_tx_domain_prototypes(
+        package,
+        PrototypeFusionConfig(max_components_per_tx=2, merge_angle_deg=8.0, tail_abs_deg=30.0),
+    )
+
+    assert fused["fused_tx_prototypes"].shape == (2, 2, 2)
+    assert fused["fused_tx_mask"].sum(dim=1).tolist() == [2, 2]
+    assert fused["fusion_components"][0][0]["domains"] == [0, 1]
+    assert fused["fusion_components"][0][1]["tail_sentinel"] is True
+    assert fused["fusion_metadata"]["default_training_behavior_changed"] is False
 
 
 def test_export_phase2_prototypes_saves_pt_and_json_sidecar(tmp_path):

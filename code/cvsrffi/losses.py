@@ -361,6 +361,9 @@ def open_world_feature_space_loss(
     domain_align_weight: float = 0.0,
     min_classes: int = 2,
     min_samples_per_class: int = 1,
+    tail_mode: str = "none",
+    tail_weight: float = 0.0,
+    cvar_alpha: float = 0.95,
 ) -> Tuple[torch.Tensor, Dict[str, float]]:
     """Batch-level angular geometry loss for open-world identity embeddings.
 
@@ -376,6 +379,14 @@ def open_world_feature_space_loss(
         "active_classes": 0.0,
         "pos_angle_deg": float("nan"),
         "min_inter_angle_deg": float("nan"),
+        "pos_angle_p50_deg": float("nan"),
+        "pos_angle_p95_deg": float("nan"),
+        "pos_angle_p99_deg": float("nan"),
+        "pos_angle_max_deg": float("nan"),
+        "tail_loss": 0.0,
+        "tail_cvar_deg": float("nan"),
+        "tail_frac_gt_3sigma": 0.0,
+        "tail_radius_3sigma_deg": float("nan"),
     }
     if z is None or not torch.is_tensor(z) or z.numel() == 0:
         ref = torch.tensor(0.0)
@@ -459,8 +470,59 @@ def open_world_feature_space_loss(
             domain_align = torch.stack(domain_terms).mean()
             domain_align_angle = torch.stack(domain_angle_terms).mean()
 
-    loss = compact + inter + sample_margin + max(0.0, float(domain_align_weight)) * domain_align
     pos_angles = _safe_angle_from_cos(pos_cos.detach())
+    pos_angles_train = _safe_angle_from_cos(pos_cos)
+    tail_mode_l = str(tail_mode or "none").lower().strip()
+    tail_loss = z.new_tensor(0.0)
+    tail_cvar = z.new_tensor(float("nan"))
+    tail_frac = 0.0
+    tail_radius_mean = z.new_tensor(float("nan"))
+    if tail_mode_l not in ("none", "off", "false", "0") and float(tail_weight) > 0.0:
+        class_tail_losses = []
+        class_cvar = []
+        class_tail_frac = []
+        class_radius = []
+        alpha = max(0.0, min(0.999, float(cvar_alpha)))
+        for cls in center_labels:
+            cls_mask = sample_labels.eq(cls)
+            if int(cls_mask.sum().item()) <= 1:
+                continue
+            angles_c = pos_angles_train[cls_mask]
+            angles_c_det = angles_c.detach()
+            median = torch.quantile(angles_c_det, 0.50)
+            mad = torch.quantile((angles_c_det - median).abs(), 0.50)
+            q25 = torch.quantile(angles_c_det, 0.25)
+            q75 = torch.quantile(angles_c_det, 0.75)
+            iqr = q75 - q25
+            robust_sigma = 1.4826 * mad
+            if float(robust_sigma.item()) <= 0.0:
+                robust_sigma = 0.7413 * iqr
+            if float(robust_sigma.item()) <= 0.0 and angles_c_det.numel() > 1:
+                robust_sigma = angles_c_det.std(unbiased=False)
+            radius_3s = torch.minimum(angles_c_det.max(), median + 3.0 * robust_sigma)
+            overflow = torch.relu(angles_c - radius_3s)
+            class_tail_losses.append(overflow.pow(2).mean())
+            k = max(1, int(math.ceil(float(angles_c.numel()) * (1.0 - alpha))))
+            class_cvar.append(torch.topk(angles_c, k=k, largest=True).values.mean())
+            class_tail_frac.append(float((angles_c_det > radius_3s).float().mean().item()))
+            class_radius.append(radius_3s)
+        if class_tail_losses:
+            tail_loss = torch.stack(class_tail_losses).mean()
+            tail_cvar = torch.stack(class_cvar).mean()
+            tail_frac = float(np.mean(class_tail_frac))
+            tail_radius_mean = torch.stack(class_radius).mean()
+
+    loss = (
+        compact
+        + inter
+        + sample_margin
+        + max(0.0, float(domain_align_weight)) * domain_align
+        + max(0.0, float(tail_weight)) * tail_loss
+    )
+    q50 = torch.quantile(pos_angles, 0.50) if pos_angles.numel() else z.new_tensor(float("nan"))
+    q95 = torch.quantile(pos_angles, 0.95) if pos_angles.numel() else z.new_tensor(float("nan"))
+    q99 = torch.quantile(pos_angles, 0.99) if pos_angles.numel() else z.new_tensor(float("nan"))
+    qmax = torch.quantile(pos_angles, 1.0) if pos_angles.numel() else z.new_tensor(float("nan"))
     metrics = {
         "compact": _scalar_metric(compact),
         "inter": _scalar_metric(inter),
@@ -469,6 +531,359 @@ def open_world_feature_space_loss(
         "active_classes": float(active_classes),
         "pos_angle_deg": math.degrees(_scalar_metric(pos_angles)),
         "min_inter_angle_deg": math.degrees(_scalar_metric(min_inter_angle)),
+        "pos_angle_p50_deg": math.degrees(_scalar_metric(q50)),
+        "pos_angle_p95_deg": math.degrees(_scalar_metric(q95)),
+        "pos_angle_p99_deg": math.degrees(_scalar_metric(q99)),
+        "pos_angle_max_deg": math.degrees(_scalar_metric(qmax)),
+        "tail_loss": _scalar_metric(tail_loss),
+        "tail_cvar_deg": math.degrees(_scalar_metric(tail_cvar)),
+        "tail_frac_gt_3sigma": float(tail_frac),
+        "tail_radius_3sigma_deg": math.degrees(_scalar_metric(tail_radius_mean)),
+    }
+    return loss, metrics
+
+
+def zid_compactness_loss(
+    z: torch.Tensor,
+    y: torch.Tensor,
+    d: Optional[torch.Tensor] = None,
+    *,
+    radius_rad: float = math.radians(40.0),
+    cvar_alpha: float = 0.90,
+    supcon_weight: float = 0.35,
+    radius_weight: float = 0.35,
+    cvar_weight: float = 0.30,
+    temperature: float = 0.12,
+    min_classes: int = 2,
+    min_samples_per_class: int = 1,
+    domain_aware: bool = True,
+) -> Tuple[torch.Tensor, Dict[str, float]]:
+    """Unified z_id compactness objective: SupCon + angular radius + tail CVaR."""
+    default_metrics = {
+        "supcon": 0.0,
+        "radius": 0.0,
+        "tail_cvar": 0.0,
+        "active_classes": 0.0,
+        "pos_angle_p50_deg": float("nan"),
+        "pos_angle_p95_deg": float("nan"),
+        "pos_angle_p99_deg": float("nan"),
+        "tail_cvar_deg": float("nan"),
+    }
+    if z is None or not torch.is_tensor(z) or z.numel() == 0:
+        ref = torch.tensor(0.0)
+        return ref, default_metrics
+    if z.dim() != 2:
+        raise ValueError(f"zid_compactness_loss expects 2D features, got shape={tuple(z.shape)}")
+    labels = y.view(-1).long()
+    if labels.numel() != z.size(0):
+        raise ValueError(f"label count {labels.numel()} does not match feature batch {z.size(0)}")
+
+    z_norm = safe_l2_normalize(torch.nan_to_num(z.float(), nan=0.0, posinf=0.0, neginf=0.0), dim=1)
+    valid = labels >= 0
+    centers = []
+    class_ids = []
+    sample_mask = torch.zeros(labels.shape, device=labels.device, dtype=torch.bool)
+    min_count = max(1, int(min_samples_per_class))
+    for cls in torch.unique(labels[valid]):
+        cls_mask = valid & labels.eq(cls)
+        if int(cls_mask.sum().item()) < min_count:
+            continue
+        centers.append(safe_l2_normalize(z_norm[cls_mask].mean(dim=0, keepdim=True), dim=1).squeeze(0))
+        class_ids.append(cls)
+        sample_mask = sample_mask | cls_mask
+
+    active_classes = len(centers)
+    default_metrics["active_classes"] = float(active_classes)
+    if active_classes < max(1, int(min_classes)):
+        return zero_like_with_grad(z), default_metrics
+
+    proto = torch.stack(centers, dim=0)
+    center_labels = torch.stack(class_ids, dim=0).to(device=labels.device)
+    sample_z = z_norm[sample_mask]
+    sample_labels = labels[sample_mask]
+    sample_cos = (sample_z @ proto.t()).clamp(-1.0 + 1e-6, 1.0 - 1e-6)
+    own_center = sample_labels.view(-1, 1).eq(center_labels.view(1, -1))
+    pos_cos = sample_cos[own_center]
+    pos_angles = _safe_angle_from_cos(pos_cos)
+    pos_angles_det = pos_angles.detach()
+
+    radius_loss = F.relu(pos_angles - max(0.0, float(radius_rad))).pow(2).mean()
+    alpha = max(0.0, min(0.999, float(cvar_alpha)))
+    class_cvars = []
+    for cls in center_labels:
+        angles_c = pos_angles[sample_labels.eq(cls)]
+        if angles_c.numel() == 0:
+            continue
+        k = max(1, int(math.ceil(float(angles_c.numel()) * (1.0 - alpha))))
+        class_cvars.append(torch.topk(angles_c, k=k, largest=True).values.mean())
+    tail_cvar = torch.stack(class_cvars).mean() if class_cvars else z.new_tensor(0.0)
+
+    if float(supcon_weight) > 0.0:
+        supcon = domain_aware_supcon_loss(z_norm, labels, d if bool(domain_aware) else None, temperature=float(temperature))
+        if (not bool(domain_aware)) and float(supcon.detach().abs().item()) == 0.0:
+            supcon = _plain_supcon_loss(z_norm, labels, temperature=float(temperature))
+    else:
+        supcon = z.new_tensor(0.0)
+
+    loss = (
+        max(0.0, float(supcon_weight)) * supcon
+        + max(0.0, float(radius_weight)) * radius_loss
+        + max(0.0, float(cvar_weight)) * tail_cvar
+    )
+    q50 = torch.quantile(pos_angles_det, 0.50) if pos_angles_det.numel() else z.new_tensor(float("nan"))
+    q95 = torch.quantile(pos_angles_det, 0.95) if pos_angles_det.numel() else z.new_tensor(float("nan"))
+    q99 = torch.quantile(pos_angles_det, 0.99) if pos_angles_det.numel() else z.new_tensor(float("nan"))
+    metrics = {
+        "supcon": _scalar_metric(supcon),
+        "radius": _scalar_metric(radius_loss),
+        "tail_cvar": _scalar_metric(tail_cvar),
+        "active_classes": float(active_classes),
+        "pos_angle_p50_deg": math.degrees(_scalar_metric(q50)),
+        "pos_angle_p95_deg": math.degrees(_scalar_metric(q95)),
+        "pos_angle_p99_deg": math.degrees(_scalar_metric(q99)),
+        "tail_cvar_deg": math.degrees(_scalar_metric(tail_cvar.detach())),
+    }
+    return loss, metrics
+
+
+def _plain_supcon_loss(z: torch.Tensor, y: torch.Tensor, *, temperature: float = 0.12) -> torch.Tensor:
+    if z is None or z.size(0) <= 1:
+        return z.new_tensor(0.0)
+    labels = y.view(-1).long()
+    valid = labels >= 0
+    if int(valid.sum().item()) <= 1:
+        return z.new_tensor(0.0)
+    z = safe_l2_normalize(z, dim=1)
+    logits = (z @ z.t()) / max(1e-4, float(temperature))
+    logits = logits - logits.detach().max(dim=1, keepdim=True).values
+    eye = torch.eye(z.size(0), device=z.device, dtype=torch.bool)
+    valid_pair = valid.view(-1, 1) & valid.view(1, -1) & (~eye)
+    pos = labels.view(-1, 1).eq(labels.view(1, -1)) & valid_pair
+    has_pos = pos.sum(dim=1) > 0
+    if not bool(has_pos.any()):
+        return z.new_tensor(0.0)
+    exp_logits = torch.exp(logits) * valid_pair.float()
+    log_prob = logits - torch.log(exp_logits.sum(dim=1, keepdim=True).clamp_min(1e-12))
+    pos_log_prob = (log_prob * pos.float()).sum(dim=1) / pos.float().sum(dim=1).clamp_min(1.0)
+    return -pos_log_prob[has_pos].mean()
+
+
+def proxy_unknown_energy_loss(
+    z: torch.Tensor,
+    y: torch.Tensor,
+    *,
+    holdout_label: Optional[int] = None,
+    virtual_count: int = 16,
+    energy_margin: float = 1.0,
+    placeholder_weight: float = 0.5,
+    virtual_detach: bool = True,
+) -> Tuple[torch.Tensor, Dict[str, float]]:
+    """Source-only proxy unknown loss using leave-one-TX-out and feature outliers."""
+    default_metrics = {
+        "active": 0.0,
+        "known_count": 0.0,
+        "proxy_unknown_count": 0.0,
+        "virtual_count": 0.0,
+        "energy_known": float("nan"),
+        "energy_proxy": float("nan"),
+        "energy_virtual": float("nan"),
+        "energy_margin": float("nan"),
+        "proxy_unknown_auc": float("nan"),
+        "virtual_accept_rate": float("nan"),
+    }
+    if z is None or not torch.is_tensor(z) or z.numel() == 0:
+        ref = torch.tensor(0.0)
+        return ref, default_metrics
+    if z.dim() != 2:
+        raise ValueError(f"proxy_unknown_energy_loss expects 2D features, got shape={tuple(z.shape)}")
+    labels = y.view(-1).long()
+    if labels.numel() != z.size(0):
+        raise ValueError(f"label count {labels.numel()} does not match feature batch {z.size(0)}")
+    valid_labels = torch.unique(labels[labels >= 0])
+    if valid_labels.numel() < 2:
+        return zero_like_with_grad(z), default_metrics
+    if holdout_label is None:
+        holdout = int(valid_labels[-1].detach().item())
+    else:
+        holdout = int(holdout_label)
+    proxy_mask = labels.eq(holdout)
+    known_mask = (labels >= 0) & (~proxy_mask)
+    if not bool(proxy_mask.any()) or not bool(known_mask.any()):
+        return zero_like_with_grad(z), default_metrics
+
+    z_norm = safe_l2_normalize(torch.nan_to_num(z.float(), nan=0.0, posinf=0.0, neginf=0.0), dim=1)
+    known_labels = torch.unique(labels[known_mask])
+    centers = []
+    for cls in known_labels:
+        cls_mask = known_mask & labels.eq(cls)
+        if bool(cls_mask.any()):
+            centers.append(safe_l2_normalize(z_norm[cls_mask].mean(dim=0, keepdim=True), dim=1).squeeze(0))
+    if len(centers) <= 0:
+        return zero_like_with_grad(z), default_metrics
+    proto = torch.stack(centers, dim=0)
+
+    def energy(feat: torch.Tensor) -> torch.Tensor:
+        scores = safe_l2_normalize(feat, dim=1) @ proto.t()
+        return -torch.logsumexp(scores, dim=1)
+
+    e_known = energy(z_norm[known_mask])
+    e_proxy = energy(z_norm[proxy_mask])
+    virtual = _make_virtual_outliers(z_norm[known_mask], proto, count=max(0, int(virtual_count)))
+    if bool(virtual_detach):
+        virtual = virtual.detach()
+    e_virtual = energy(virtual) if virtual.numel() else z.new_zeros((0,))
+
+    proxy_target = torch.cat([e_proxy, e_virtual], dim=0)
+    margin_loss = F.relu(float(energy_margin) - (proxy_target.mean() - e_known.mean())).pow(2)
+    logits_known = -e_known
+    logits_unknown = torch.cat([e_proxy, e_virtual], dim=0)
+    placeholder = (
+        F.softplus(-logits_known).mean()
+        + F.softplus(-logits_unknown).mean()
+    ) if logits_unknown.numel() else z.new_tensor(0.0)
+    loss = margin_loss + max(0.0, float(placeholder_weight)) * placeholder
+
+    with torch.no_grad():
+        known_scores = e_known.detach()
+        unknown_scores = torch.cat([e_proxy.detach(), e_virtual.detach()], dim=0)
+        auc = _binary_auc(known_scores, unknown_scores)
+        known_accept_threshold = torch.quantile(known_scores, 0.95) if known_scores.numel() else z.new_tensor(float("nan"))
+        virtual_accept = (
+            float((e_virtual.detach() <= known_accept_threshold).float().mean().item())
+            if e_virtual.numel() and torch.isfinite(known_accept_threshold)
+            else float("nan")
+        )
+    metrics = {
+        "active": 1.0,
+        "known_count": float(int(known_mask.sum().item())),
+        "proxy_unknown_count": float(int(proxy_mask.sum().item())),
+        "virtual_count": float(int(e_virtual.numel())),
+        "energy_known": _scalar_metric(e_known),
+        "energy_proxy": _scalar_metric(e_proxy),
+        "energy_virtual": _scalar_metric(e_virtual) if e_virtual.numel() else float("nan"),
+        "energy_margin": _scalar_metric(e_proxy.mean() - e_known.mean()),
+        "proxy_unknown_auc": float(auc),
+        "virtual_accept_rate": float(virtual_accept),
+    }
+    return loss, metrics
+
+
+def _make_virtual_outliers(z_known: torch.Tensor, proto: torch.Tensor, *, count: int) -> torch.Tensor:
+    if count <= 0 or z_known.numel() == 0:
+        return z_known.new_zeros((0, z_known.size(1)))
+    base = z_known[:count]
+    if base.size(0) < count:
+        reps = int(math.ceil(count / max(1, base.size(0))))
+        base = base.repeat(reps, 1)[:count]
+    nearest = proto[(base @ proto.t()).argmax(dim=1)]
+    out = safe_l2_normalize(base + 0.75 * (base - nearest), dim=1)
+    if proto.size(0) >= 2:
+        idx = torch.arange(count, device=proto.device)
+        p1 = proto[idx % proto.size(0)]
+        p2 = proto[(idx + 1) % proto.size(0)]
+        interp = safe_l2_normalize(0.5 * (p1 + p2), dim=1)
+        out = safe_l2_normalize(0.5 * out + 0.5 * interp, dim=1)
+    return out
+
+
+def _binary_auc(known_scores: torch.Tensor, unknown_scores: torch.Tensor) -> float:
+    if known_scores.numel() == 0 or unknown_scores.numel() == 0:
+        return float("nan")
+    return float((unknown_scores.view(-1, 1) > known_scores.view(1, -1)).float().mean().item())
+
+
+def source_episode_three_sigma_loss(
+    z: torch.Tensor,
+    y: torch.Tensor,
+    d: Optional[torch.Tensor],
+    *,
+    min_domains: int = 2,
+    min_samples_per_class_domain: int = 1,
+    radius_cap_rad: float = math.radians(30.0),
+    min_sigma_rad: float = math.radians(3.0),
+) -> Tuple[torch.Tensor, Dict[str, float]]:
+    """Source-only leave-domain angular shell objective.
+
+    This is a Phase1 proxy objective: all support/query roles are drawn from
+    source domains in the current batch. It must not be interpreted as Stage2
+    target-new or unknown rejection evidence.
+    """
+    default_metrics = {
+        "source_episode_loss": 0.0,
+        "source_episode_overflow_rate": 0.0,
+        "source_episode_radius_3sigma_deg": float("nan"),
+        "source_episode_val_angle_deg": float("nan"),
+        "source_episode_classes": 0.0,
+        "source_episode_domains": 0.0,
+    }
+    if z is None or not torch.is_tensor(z) or z.numel() == 0:
+        ref = torch.tensor(0.0)
+        return ref, default_metrics
+    if d is None or not torch.is_tensor(d):
+        return zero_like_with_grad(z), default_metrics
+    labels = y.view(-1).long()
+    domains = d.view(-1).long()
+    if labels.numel() != z.size(0) or domains.numel() != z.size(0):
+        raise ValueError("source_episode_three_sigma_loss expects one label/domain per feature")
+
+    z_norm = safe_l2_normalize(torch.nan_to_num(z.float(), nan=0.0, posinf=0.0, neginf=0.0), dim=1)
+    valid = (labels >= 0) & (domains >= 0)
+    losses = []
+    overflow_rates = []
+    radii = []
+    val_angles_all = []
+    used_classes = set()
+    used_domains = set()
+    min_cell = max(1, int(min_samples_per_class_domain))
+    for cls in torch.unique(labels[valid]):
+        cls_mask = valid & labels.eq(cls)
+        doms = [dom for dom in torch.unique(domains[cls_mask]) if int((cls_mask & domains.eq(dom)).sum().item()) >= min_cell]
+        if len(doms) < max(2, int(min_domains)):
+            continue
+        for val_dom in doms:
+            train_mask = cls_mask & domains.ne(val_dom)
+            val_mask = cls_mask & domains.eq(val_dom)
+            if int(train_mask.sum().item()) < min_cell or int(val_mask.sum().item()) < min_cell:
+                continue
+            center = safe_l2_normalize(z_norm[train_mask].mean(dim=0, keepdim=True), dim=1).squeeze(0)
+            train_cos = (z_norm[train_mask] * center.view(1, -1)).sum(dim=1).clamp(-1.0 + 1e-6, 1.0 - 1e-6)
+            train_angles = _safe_angle_from_cos(train_cos.detach())
+            median = torch.quantile(train_angles, 0.50)
+            mad = torch.quantile((train_angles - median).abs(), 0.50)
+            q25 = torch.quantile(train_angles, 0.25)
+            q75 = torch.quantile(train_angles, 0.75)
+            robust_sigma = 1.4826 * mad
+            if float(robust_sigma.item()) <= 0.0:
+                robust_sigma = 0.7413 * (q75 - q25)
+            if float(robust_sigma.item()) <= 0.0 and train_angles.numel() > 1:
+                robust_sigma = train_angles.std(unbiased=False)
+            robust_sigma = torch.maximum(robust_sigma, train_angles.new_tensor(max(0.0, float(min_sigma_rad))))
+            radius = torch.minimum(
+                train_angles.new_tensor(float(radius_cap_rad)),
+                torch.minimum(
+                    train_angles.max() + 3.0 * robust_sigma,
+                    median + 3.0 * robust_sigma,
+                ),
+            )
+            val_cos = (z_norm[val_mask] * center.view(1, -1)).sum(dim=1).clamp(-1.0 + 1e-6, 1.0 - 1e-6)
+            val_angles = _safe_angle_from_cos(val_cos)
+            overflow = torch.relu(val_angles - radius)
+            losses.append(overflow.pow(2).mean())
+            overflow_rates.append(float((val_angles.detach() > radius).float().mean().item()))
+            radii.append(radius.detach())
+            val_angles_all.append(val_angles.detach().mean())
+            used_classes.add(int(cls.item()))
+            used_domains.add(int(val_dom.item()))
+    if not losses:
+        return zero_like_with_grad(z), default_metrics
+    loss = torch.stack(losses).mean()
+    metrics = {
+        "source_episode_loss": _scalar_metric(loss),
+        "source_episode_overflow_rate": float(np.mean(overflow_rates)) if overflow_rates else 0.0,
+        "source_episode_radius_3sigma_deg": math.degrees(_scalar_metric(torch.stack(radii))),
+        "source_episode_val_angle_deg": math.degrees(_scalar_metric(torch.stack(val_angles_all))),
+        "source_episode_classes": float(len(used_classes)),
+        "source_episode_domains": float(len(used_domains)),
     }
     return loss, metrics
 

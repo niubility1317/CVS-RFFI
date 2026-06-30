@@ -372,6 +372,22 @@ Phase1 Safe-SSDG rows must additionally include:
 - `pseudo_coverage_is_risk_metric=true`
 - `forbid_meta_learning_dg_mainline=true`
 
+Phase1 ground prototype/mask/feature-distribution rows additionally require:
+
+- `phase1_ground_prototype_mask_openworld_enabled=true`
+- `phase1_ground_feature_distribution_objective=true`
+- `source_domain_prototype_outputs_required=true`
+- `phase1_enable_ground_prototype_stats=true`
+- `phase1_enable_feature_distribution_audit=true`
+- `phase1_enable_feature_masks_aux=true`
+- `phase1_enable_txrx_geometry_audit=true`
+- `prototype_mask_modules` containing at least `phase2_prototypes`,
+  `feature_masks`, and `tx_rx_geometry`
+- `target_receiver_usage=forbidden_in_phase1`
+- `unknown_query_role` remaining eval-only or not available in Phase1 training
+- CEN51 must be declared as non-regression/comparison experience and not as a
+  narrowed route family.
+
 If any required comparability or non-regression field is missing, the Phase1
 row must be `NOT_CEN51_COMPARABLE`, `LOCAL_PATCH_REQUIRED`, or
 `NON_LAUNCH_DIAGNOSTIC`, not launchable. Startup PASS, protocol PASS, high
@@ -401,7 +417,7 @@ Safe-SSDG row must not use row-scoped
 as its normal result. The generated launcher must expose
 `run_phase1_safe_ssdg_candidate`, and row-level commands must point to that
 launcher entrypoint or the executable direct entrypoint
-`python -m SSDG.train_ssdg`. The nonexistent `code/train.py
+`python ${ROOT}/code/SSDG/train_ssdg.py`. The nonexistent `code/train.py
 --use_safe_ssdg_cvs` path is not a valid launch command. Phase1 Safe-SSDG may
 defer only for real capacity/runtime budget, active same-lane process,
 repair-failed local verification after an actual executable branch exists,
@@ -426,7 +442,10 @@ OA-MSE rows must additionally include:
   update constraints
 - `adapter_trainable_params_cap`
 - `max_adapt_steps`
-- `old_acc_target>=0.90`
+- `old_acc_target>=0.90`, except rows explicitly marked
+  `stage2_priority_phase=OLD80_FIRST`, where `old_acc_target>=0.80` is allowed
+  only as an intermediate old-class recovery gate and never as deployment
+  success
 - `seen_new_acc_target>=0.75`
 - `weibull_evt_required=true`
 - `target_adapter_required=true`
@@ -649,6 +668,19 @@ acceptance:
 
 Exploratory FAR stress up to `0.10` must be labeled stress and cannot be
 reported as deployable success.
+
+Current H06/Phase2 optimization order is `OLD80_FIRST`:
+
+- First recover target-old performance to `old_acc>=0.80` under the applicable
+  Stage2-B or Stage2-C protocol.
+- Only after the OLD80 gate is reached may the optimizer treat `seen_new_acc`
+  and unknown rejection/FAR as the next primary objectives.
+- Stage2-B old/unknown-only rows may carry the OLD80 gate and monitor
+  `unknown_FAR`, but they must not claim `seen_new_acc`; seen-new optimization
+  requires Stage2-C with target-new support/query legality.
+- OLD80 is an intermediate route-selection gate. It does not weaken
+  deployment success requirements, Stage2-C success requirements, target split
+  rules, unknown-query calibration bans, or clean-view claim boundaries.
 
 ## Deployment View
 

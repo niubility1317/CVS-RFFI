@@ -32,6 +32,21 @@ class PrototypeGeometrySummary:
     margin_violation_pairs: int
 
 
+@dataclass(frozen=True)
+class PrototypeFusionConfig:
+    max_components_per_tx: int = 4
+    merge_angle_deg: float = 6.0
+    radius_cap_deg: float = 25.0
+    tail_abs_deg: float = 30.0
+    accept_policy: str = "local_component"
+    accept_radius_key: str = "p95"
+    max_p95_increase_deg: float = 2.0
+    keep_tail_sentinel: bool = True
+    global_ball_accept: bool = False
+    min_count: int = 1
+    eps: float = 1e-6
+
+
 class BalancedPrototypeBank:
     """Momentum prototype bank with optional group-balanced updates.
 
@@ -299,6 +314,59 @@ class PrototypeRadiusTracker:
             return float("nan")
         return float(torch.tensor(vals, dtype=torch.float32).std(unbiased=False).item())
 
+    def robust_stats(self, class_id: int) -> Dict[str, float]:
+        vals = self._angles.get(int(class_id), [])
+        if not vals:
+            return {
+                "median": float("nan"),
+                "mad": float("nan"),
+                "iqr": float("nan"),
+                "robust_sigma": float("nan"),
+                "r_1sigma": float("nan"),
+                "r_2sigma": float("nan"),
+                "r_3sigma": float("nan"),
+                "tail_count_gt_3sigma": 0.0,
+                "tail_frac_gt_3sigma": float("nan"),
+                "p95": float("nan"),
+                "p99": float("nan"),
+                "max": float("nan"),
+            }
+        t = torch.tensor(vals, dtype=torch.float32)
+        median = torch.quantile(t, 0.50)
+        mad = torch.quantile((t - median).abs(), 0.50)
+        q25 = torch.quantile(t, 0.25)
+        q75 = torch.quantile(t, 0.75)
+        iqr = q75 - q25
+        mad_sigma = 1.4826 * mad
+        iqr_sigma = 0.7413 * iqr
+        if float(mad_sigma.item()) > 0.0:
+            robust_sigma = mad_sigma
+        elif float(iqr_sigma.item()) > 0.0:
+            robust_sigma = iqr_sigma
+        else:
+            robust_sigma = t.std(unbiased=False) if t.numel() > 1 else t.new_tensor(0.0)
+        p95 = torch.quantile(t, 0.95)
+        p99 = torch.quantile(t, 0.99)
+        max_v = torch.quantile(t, 1.0)
+        r1 = median + robust_sigma
+        r2 = median + 2.0 * robust_sigma
+        r3 = torch.minimum(max_v, median + 3.0 * robust_sigma)
+        tail = t > r3
+        return {
+            "median": float(median.item()),
+            "mad": float(mad.item()),
+            "iqr": float(iqr.item()),
+            "robust_sigma": float(robust_sigma.item()),
+            "r_1sigma": float(torch.minimum(max_v, r1).item()),
+            "r_2sigma": float(torch.minimum(max_v, r2).item()),
+            "r_3sigma": float(r3.item()),
+            "tail_count_gt_3sigma": float(int(tail.sum().item())),
+            "tail_frac_gt_3sigma": float(tail.float().mean().item()),
+            "p95": float(p95.item()),
+            "p99": float(p99.item()),
+            "max": float(max_v.item()),
+        }
+
     def radii_tensor(self, *, quantile: str | float = "p95", device=None) -> torch.Tensor:
         vals = [self.radius(i, quantile=quantile) for i in range(self.num_classes)]
         return torch.tensor(vals, dtype=torch.float32, device=device)
@@ -306,6 +374,27 @@ class PrototypeRadiusTracker:
     def sigma_tensor(self, *, device=None) -> torch.Tensor:
         vals = [self.sigma(i) for i in range(self.num_classes)]
         return torch.tensor(vals, dtype=torch.float32, device=device)
+
+    def robust_stats_tensor(self, key: str, *, device=None) -> torch.Tensor:
+        vals = [self.robust_stats(i).get(str(key), float("nan")) for i in range(self.num_classes)]
+        return torch.tensor(vals, dtype=torch.float32, device=device)
+
+    def robust_stats_table(self) -> Dict[str, list[float]]:
+        keys = [
+            "median",
+            "mad",
+            "iqr",
+            "robust_sigma",
+            "r_1sigma",
+            "r_2sigma",
+            "r_3sigma",
+            "tail_count_gt_3sigma",
+            "tail_frac_gt_3sigma",
+            "p95",
+            "p99",
+            "max",
+        ]
+        return {key: [self.robust_stats(i).get(key, float("nan")) for i in range(self.num_classes)] for key in keys}
 
 
 def prototype_geometry_summary(
@@ -341,6 +430,197 @@ def prototype_geometry_summary(
         min_interclass_angle_deg=math.degrees(float(pair_angles.min().item())),
         margin_violation_pairs=violations,
     )
+
+
+def _angle_between(a: torch.Tensor, b: torch.Tensor) -> float:
+    aa = _normalize(a.view(1, -1), dim=1).squeeze(0)
+    bb = _normalize(b.view(1, -1), dim=1).squeeze(0)
+    cos = float((aa * bb).sum().clamp(-1.0, 1.0).item())
+    return float(math.acos(cos))
+
+
+def _component_center(vectors: torch.Tensor, counts: torch.Tensor, eps: float = 1e-6) -> torch.Tensor:
+    weights = torch.sqrt(torch.clamp(counts.float(), min=1.0)).to(device=vectors.device, dtype=vectors.dtype)
+    center = (vectors * weights.view(-1, 1)).sum(dim=0, keepdim=True) / weights.sum().clamp_min(float(eps))
+    return _normalize(center, dim=1).squeeze(0)
+
+
+def fuse_tx_domain_prototypes(package: Mapping[str, Any], config: PrototypeFusionConfig | None = None) -> Dict[str, Any]:
+    """Compress redundant per-domain TX prototypes into local angular components.
+
+    The fusion operates only on exported ``z_id`` prototype tensors. Domain ids
+    are used as grouping metadata; no ``z_dom`` representation is read.
+    """
+    cfg = config or PrototypeFusionConfig()
+    tx_domain = package.get("tx_domain_prototypes")
+    tx_counts = package.get("tx_domain_counts")
+    global_proto = package.get("prototypes")
+    if not torch.is_tensor(tx_domain) or tx_domain.ndim != 3:
+        raise ValueError("package must contain tx_domain_prototypes with shape [num_tx, num_domains, feat_dim]")
+    if not torch.is_tensor(tx_counts) or tx_counts.shape[:2] != tx_domain.shape[:2]:
+        raise ValueError("package must contain tx_domain_counts matching tx_domain_prototypes")
+    if not torch.is_tensor(global_proto) or global_proto.ndim != 2 or global_proto.size(0) != tx_domain.size(0):
+        raise ValueError("package must contain prototypes with shape [num_tx, feat_dim]")
+
+    local = _normalize(tx_domain.detach().float().cpu(), dim=2)
+    counts = tx_counts.detach().long().cpu()
+    gproto = _normalize(global_proto.detach().float().cpu(), dim=1)
+    num_tx, _num_domains, feat_dim = local.shape
+    max_components = max(1, int(cfg.max_components_per_tx))
+    merge_angle = math.radians(max(0.0, float(cfg.merge_angle_deg)))
+    tail_abs = math.radians(max(0.0, float(cfg.tail_abs_deg)))
+    cap = math.radians(max(0.0, float(cfg.radius_cap_deg)))
+    min_count = max(1, int(cfg.min_count))
+
+    radii_obj = package.get("radii", {}) if isinstance(package.get("radii", {}), Mapping) else {}
+    base_radius = radii_obj.get("r_3sigma", radii_obj.get("p99", radii_obj.get("p95")))
+    accept_base = radii_obj.get(str(cfg.accept_radius_key), radii_obj.get("p95", base_radius))
+    if torch.is_tensor(base_radius) and base_radius.numel() >= num_tx:
+        base_radius_t = base_radius.detach().float().cpu()
+    else:
+        base_radius_t = torch.zeros(num_tx, dtype=torch.float32)
+    if torch.is_tensor(accept_base) and accept_base.numel() >= num_tx:
+        accept_base_t = accept_base.detach().float().cpu()
+    else:
+        accept_base_t = base_radius_t.clone()
+
+    fused_proto = torch.zeros(num_tx, max_components, feat_dim, dtype=local.dtype)
+    fused_radii = torch.zeros(num_tx, max_components, dtype=torch.float32)
+    fused_accept_radii = torch.zeros(num_tx, max_components, dtype=torch.float32)
+    fused_evidence_radii = torch.zeros(num_tx, max_components, dtype=torch.float32)
+    fused_counts = torch.zeros(num_tx, max_components, dtype=torch.long)
+    fused_mask = torch.zeros(num_tx, max_components, dtype=torch.bool)
+    domain_to_component = torch.full((num_tx, local.size(1)), -1, dtype=torch.long)
+    components: list[list[Dict[str, Any]]] = []
+
+    for tx in range(num_tx):
+        active_domains = [int(i) for i in torch.where(counts[tx] >= min_count)[0].tolist()]
+        if not active_domains:
+            components.append([])
+            continue
+        parent = {d: d for d in active_domains}
+
+        def find(x: int) -> int:
+            while parent[x] != x:
+                parent[x] = parent[parent[x]]
+                x = parent[x]
+            return x
+
+        def union(a: int, b: int) -> None:
+            ra = find(a)
+            rb = find(b)
+            if ra != rb:
+                parent[rb] = ra
+
+        for i, dom_i in enumerate(active_domains):
+            for dom_j in active_domains[i + 1:]:
+                angle = _angle_between(local[tx, dom_i], local[tx, dom_j])
+                if angle <= merge_angle:
+                    union(dom_i, dom_j)
+        grouped: Dict[int, list[int]] = defaultdict(list)
+        for dom in active_domains:
+            grouped[find(dom)].append(dom)
+
+        comp_rows = []
+        for domains in grouped.values():
+            doms = sorted(int(d) for d in domains)
+            vecs = local[tx, doms]
+            cts = counts[tx, doms]
+            center = _component_center(vecs, cts, eps=float(cfg.eps))
+            domain_angles = [_angle_between(local[tx, d], center) for d in doms]
+            global_angle = _angle_between(center, gproto[tx])
+            tail_sentinel = bool(global_angle > tail_abs)
+            max_domain_angle = max(domain_angles) if domain_angles else 0.0
+            evidence_radius = min(cap, float(base_radius_t[tx].item()) + max_domain_angle)
+            accept_radius = min(cap, float(accept_base_t[tx].item()), float(evidence_radius))
+            p95_delta = max(0.0, float(evidence_radius) - float(accept_base_t[tx].item()))
+            over_fused = bool(math.degrees(p95_delta) > float(cfg.max_p95_increase_deg))
+            comp_rows.append(
+                {
+                    "domains": doms,
+                    "count": int(cts.sum().item()),
+                    "center": center,
+                    "radius": float(evidence_radius),
+                    "evidence_radius": float(evidence_radius),
+                    "accept_radius": float(accept_radius),
+                    "p95_delta": float(p95_delta),
+                    "over_fused": bool(over_fused),
+                    "tail_sentinel": tail_sentinel,
+                    "global_angle": float(global_angle),
+                    "max_domain_angle": float(max_domain_angle),
+                }
+            )
+        comp_rows.sort(key=lambda row: (bool(row["tail_sentinel"]), -int(row["count"]), row["domains"][0]))
+        kept = comp_rows[:max_components]
+        if bool(cfg.keep_tail_sentinel):
+            kept_ids = {tuple(row["domains"]) for row in kept}
+            tail_rows = [row for row in comp_rows if bool(row["tail_sentinel"])]
+            if tail_rows and not any(bool(row["tail_sentinel"]) for row in kept):
+                kept[-1] = tail_rows[0]
+            elif tail_rows:
+                for tail_row in tail_rows:
+                    if tuple(tail_row["domains"]) not in kept_ids and len(kept) < max_components:
+                        kept.append(tail_row)
+        tx_components = []
+        for comp_idx, row in enumerate(kept):
+            fused_proto[tx, comp_idx] = row["center"]
+            fused_radii[tx, comp_idx] = float(row["radius"])
+            fused_evidence_radii[tx, comp_idx] = float(row["evidence_radius"])
+            fused_accept_radii[tx, comp_idx] = float(row["accept_radius"])
+            fused_counts[tx, comp_idx] = int(row["count"])
+            fused_mask[tx, comp_idx] = True
+            for dom in row["domains"]:
+                domain_to_component[tx, int(dom)] = int(comp_idx)
+            tx_components.append(
+                {
+                    "domains": list(row["domains"]),
+                    "count": int(row["count"]),
+                    "radius_deg": math.degrees(float(row["radius"])),
+                    "component_evidence_radius_deg": math.degrees(float(row["evidence_radius"])),
+                    "component_accept_radius_deg": math.degrees(float(row["accept_radius"])),
+                    "evidence_radius_deg": math.degrees(float(row["evidence_radius"])),
+                    "accept_radius_deg": math.degrees(float(row["accept_radius"])),
+                    "component_p95_delta_deg": math.degrees(float(row["p95_delta"])),
+                    "over_fused": bool(row["over_fused"]),
+                    "tail_sentinel": bool(row["tail_sentinel"]),
+                    "component_tail_sentinel": bool(row["tail_sentinel"]),
+                    "global_angle_deg": math.degrees(float(row["global_angle"])),
+                    "max_domain_angle_deg": math.degrees(float(row["max_domain_angle"])),
+                }
+            )
+        components.append(tx_components)
+
+    fused_package = dict(package)
+    fused_package.update(
+        {
+            "fused_tx_prototypes": fused_proto,
+            "fused_tx_radii": fused_radii,
+            "fused_tx_accept_radii": fused_accept_radii,
+            "fused_tx_evidence_radii": fused_evidence_radii,
+            "fused_tx_counts": fused_counts,
+            "fused_tx_mask": fused_mask,
+            "fusion_components": components,
+            "domain_to_fused_component": domain_to_component,
+            "fusion_accept_policy": str(cfg.accept_policy),
+            "global_fused_radius_is_accept_region": bool(cfg.global_ball_accept),
+            "fusion_metadata": {
+                "schema": "tx_domain_prototype_fusion_v2",
+                "feature_key": str(package.get("feature_key", "z_id")),
+                "max_components_per_tx": int(max_components),
+                "merge_angle_deg": float(cfg.merge_angle_deg),
+                "radius_cap_deg": float(cfg.radius_cap_deg),
+                "tail_abs_deg": float(cfg.tail_abs_deg),
+                "accept_policy": str(cfg.accept_policy),
+                "accept_radius_key": str(cfg.accept_radius_key),
+                "max_p95_increase_deg": float(cfg.max_p95_increase_deg),
+                "keep_tail_sentinel": bool(cfg.keep_tail_sentinel),
+                "global_fused_radius_is_accept_region": bool(cfg.global_ball_accept),
+                "fused_tx_radii_semantics": "legacy_evidence_radius_not_accept_region",
+                "default_training_behavior_changed": False,
+            },
+        }
+    )
+    return fused_package
 
 
 def _select_phase2_feature(out: Mapping[str, Any], feature_key: str) -> torch.Tensor:
@@ -517,6 +797,10 @@ def build_phase2_prototype_export(
     radii_p99 = tracker.radii_tensor(quantile="p99")
     radii_max = tracker.radii_tensor(quantile="max")
     sigma = tracker.sigma_tensor()
+    robust_sigma = tracker.robust_stats_tensor("robust_sigma")
+    r_1sigma = tracker.robust_stats_tensor("r_1sigma")
+    r_2sigma = tracker.robust_stats_tensor("r_2sigma")
+    r_3sigma = tracker.robust_stats_tensor("r_3sigma")
     robust = torch.minimum(
         radii_max,
         torch.nan_to_num(radii_p99, nan=0.0) + float(robust_sigma_scale) * torch.nan_to_num(sigma, nan=0.0),
@@ -551,8 +835,13 @@ def build_phase2_prototype_export(
             "p99": radii_p99,
             "max": radii_max,
             "robust_max": robust,
+            "r_1sigma": r_1sigma,
+            "r_2sigma": r_2sigma,
+            "r_3sigma": r_3sigma,
         },
         "radius_sigma": sigma,
+        "radius_robust_sigma": robust_sigma,
+        "radius_tail_stats": tracker.robust_stats_table(),
         "geometry": _as_jsonable(geometry),
         "stats": {
             "tx_bank": tx_stats,

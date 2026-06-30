@@ -5,13 +5,13 @@ import torch.nn.functional as F
 
 
 def similarity_loss(tx_features: torch.Tensor, rx_features: torch.Tensor) -> torch.Tensor:
-    """Paper-style Frobenius norm of C = X_tx^T X_rx."""
+    """Paper-style normalized Frobenius norm of C = X_tx^T X_rx."""
     if tx_features.ndim != 2 or rx_features.ndim != 2:
         raise ValueError("features must be 2-D tensors")
     if tx_features.shape[0] != rx_features.shape[0]:
         raise ValueError("feature batches must have the same length")
     c = tx_features.t().matmul(rx_features)
-    return torch.linalg.matrix_norm(c, ord="fro")
+    return torch.linalg.matrix_norm(c, ord="fro") / max(1, int(tx_features.shape[0]))
 
 
 def correlation_penalty(tx_features: torch.Tensor, rx_features: torch.Tensor, eps: float = 1e-8) -> torch.Tensor:
@@ -39,9 +39,9 @@ def feature_separation_loss(
     tx_ce = F.cross_entropy(outputs["tx_logits"], tx_labels)
     rx_ce = F.cross_entropy(outputs["rx_logits"], rx_labels)
     sim = similarity_loss(outputs["tx_features"], outputs["rx_features"])
-    tx_entropy = entropy_loss(outputs["tx_logits"])
-    rx_entropy = entropy_loss(outputs["rx_logits"])
-    total = tx_ce + rx_ce + lambda_similarity * sim + lambda_tx_entropy * tx_entropy + lambda_rx_entropy * rx_entropy
+    tx_entropy = entropy_loss(outputs["tx_from_rx_logits"])
+    rx_entropy = entropy_loss(outputs["rx_from_tx_logits"])
+    total = tx_ce + rx_ce + lambda_similarity * sim - lambda_tx_entropy * tx_entropy - lambda_rx_entropy * rx_entropy
     terms = {
         "tx_ce": tx_ce.detach(),
         "rx_ce": rx_ce.detach(),

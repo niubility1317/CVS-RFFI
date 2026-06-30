@@ -146,6 +146,14 @@ def _train_scenarios(config: dict[str, Any]) -> list[str]:
     return scenarios or ["leo_clear_weak", "leo_low_elev_weak", "leo_rain_weak"]
 
 
+def _scenario_counts_for_steps(scenarios: list[str], steps: int) -> dict[str, int]:
+    counts = {scenario: 0 for scenario in scenarios}
+    for step in range(max(0, int(steps))):
+        scenario = scenarios[step % len(scenarios)]
+        counts[scenario] = counts.get(scenario, 0) + 1
+    return counts
+
+
 def _apply_scenario(x: torch.Tensor, scenario: str, *, seed: int) -> torch.Tensor:
     if str(scenario) == "clean":
         return x
@@ -167,6 +175,7 @@ def _train_model(config: dict[str, Any], manysig: dict[str, Any], device: torch.
         rng = random.Random(seed)
         n_way = min(int(config.get("n_way", 6)), len(groups))
         scenarios = _train_scenarios(config)
+        scenario_counts = {scenario: 0 for scenario in scenarios}
         for step in range(max_steps):
             sx, sy, qx, qy = _sample_episode(
                 source_ds,
@@ -178,6 +187,7 @@ def _train_model(config: dict[str, Any], manysig: dict[str, Any], device: torch.
                 device=device,
             )
             scenario = scenarios[step % len(scenarios)]
+            scenario_counts[scenario] = scenario_counts.get(scenario, 0) + 1
             sx = _apply_scenario(sx, scenario, seed=seed + 10_000 + step)
             qx = _apply_scenario(qx, scenario, seed=seed + 20_000 + step)
             opt.zero_grad(set_to_none=True)
@@ -192,7 +202,15 @@ def _train_model(config: dict[str, Any], manysig: dict[str, Any], device: torch.
             loss = F.cross_entropy(logits, compact)
             loss.backward()
             opt.step()
-        return model, {"source_train_size": len(source_ds), "steps": max_steps, "train_channel_scenarios": scenarios}
+        return model, {
+            "source_train_size": len(source_ds),
+            "steps": max_steps,
+            "train_channel_view": str(config.get("train_channel_view", config.get("target_channel_view", "clean"))),
+            "train_channel_scenarios": scenarios,
+            "train_channel_scenario_counts": scenario_counts,
+            "satellite_train_augmentation_enabled": any(scenario != "clean" for scenario in scenarios),
+            "training_origin": "paper_baseline_random_init",
+        }
 
     if baseline == "feature_separation_crossrx":
         model = FeatureSeparationNet(
@@ -211,22 +229,45 @@ def _train_model(config: dict[str, Any], manysig: dict[str, Any], device: torch.
         )
         steps = 0
         scenarios = _train_scenarios(config)
+        scenario_counts = {scenario: 0 for scenario in scenarios}
         while steps < max_steps:
             for batch in loader:
                 scenario = scenarios[steps % len(scenarios)]
+                scenario_counts[scenario] = scenario_counts.get(scenario, 0) + 1
                 iq = _apply_scenario(batch["iq"].to(device), scenario, seed=seed + 30_000 + steps)
                 x = build_wisig_fusion_representation(iq)
                 y = batch["label"].to(device)
                 r = batch["domain"].to(device)
                 opt.zero_grad(set_to_none=True)
                 out = model(x)
-                loss, _ = feature_separation_loss(out, y, r)
+                loss, _ = feature_separation_loss(
+                    out,
+                    y,
+                    r,
+                    lambda_similarity=float(config.get("lambda_similarity", 1.0)),
+                    lambda_tx_entropy=float(config.get("lambda_tx_entropy", 1.0)),
+                    lambda_rx_entropy=float(config.get("lambda_rx_entropy", 1.0)),
+                )
                 loss.backward()
                 opt.step()
                 steps += 1
                 if steps >= max_steps:
                     break
-        return model, {"source_train_size": len(source_ds), "steps": steps, "train_channel_scenarios": scenarios}
+        return model, {
+            "source_train_size": len(source_ds),
+            "steps": steps,
+            "train_channel_view": str(config.get("train_channel_view", config.get("target_channel_view", "clean"))),
+            "train_channel_scenarios": scenarios,
+            "train_channel_scenario_counts": scenario_counts,
+            "satellite_train_augmentation_enabled": any(scenario != "clean" for scenario in scenarios),
+            "training_origin": "paper_baseline_random_init",
+            "feature_separation_loss": {
+                "lambda_similarity": float(config.get("lambda_similarity", 1.0)),
+                "lambda_tx_entropy": float(config.get("lambda_tx_entropy", 1.0)),
+                "lambda_rx_entropy": float(config.get("lambda_rx_entropy", 1.0)),
+                "entropy_target": "cross_branch_logits",
+            },
+        }
     raise ValueError(f"unsupported baseline: {baseline}")
 
 
@@ -474,10 +515,12 @@ def _run(config: dict[str, Any], args: argparse.Namespace) -> dict[str, Any]:
     tensors = _build_stage2_tensors(config, manysig, manytx)
 
     baseline = str(config["baseline"])
+    target_scenarios = _target_scenarios(config)
+    support_query_satellite = any(scenario != "clean" for scenario in target_scenarios)
     metrics_by_scenario: dict[str, Any] = {}
     score_rows: list[dict[str, Any]] = []
     t0 = time.perf_counter()
-    for si, scenario in enumerate(_target_scenarios(config)):
+    for si, scenario in enumerate(target_scenarios):
         support_x = _apply_scenario(tensors["support_x"].to(device), str(scenario), seed=seed + 1000 + si).cpu()
         query_x = _apply_scenario(tensors["query_x"].to(device), str(scenario), seed=seed + 2000 + si).cpu()
         support_z = _embed(model, baseline, support_x, device)
@@ -553,6 +596,11 @@ def _run(config: dict[str, Any], args: argparse.Namespace) -> dict[str, Any]:
         "unknown_query_sample_ids": [m["sample_id"] for m in tensors["query_meta"] if m["role"] == "target_unknown_query"],
         "support_query_overlap": tensors["support_query_overlap"],
         "all_support_query_from_R_t": True,
+        "support_query_channel_view": str(config.get("target_channel_view", "clean")),
+        "support_query_channel_scenarios": target_scenarios,
+        "support_query_satellite_augmentation_enabled": support_query_satellite,
+        "target_support_satellite_augmentation_enabled": support_query_satellite,
+        "target_query_satellite_augmentation_enabled": support_query_satellite,
         "gate_method": str(gate_info["gate_method"]),
         "threshold_fit_scope": config.get("threshold_scope", "support_only_no_unknown_query"),
         "label_scope": "old_and_seen_new_support; unknown_query_eval_only",
@@ -578,6 +626,11 @@ def _run(config: dict[str, Any], args: argparse.Namespace) -> dict[str, Any]:
             "required_metric_bundle": ["old_acc", "seen_new_acc", "H_old_new", "unknown_FAR", "FPR95", "AUROC"],
             "gate_method": str(gate_info["gate_method"]),
             "unknown_score_kind": str(gate_info["unknown_score_kind"]),
+            "support_query_channel_view": str(config.get("target_channel_view", "clean")),
+            "support_query_channel_scenarios": target_scenarios,
+            "support_query_satellite_augmentation_enabled": support_query_satellite,
+            "target_support_satellite_augmentation_enabled": support_query_satellite,
+            "target_query_satellite_augmentation_enabled": support_query_satellite,
         },
     }
     out_dir = Path(args.run_dir)

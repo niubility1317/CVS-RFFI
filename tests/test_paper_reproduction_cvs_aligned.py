@@ -6,7 +6,12 @@ from pathlib import Path
 import torch
 
 from paper_reproduction.cvs_aligned.metrics import compute_cvs_stage2_metrics
-from paper_reproduction.cvs_aligned.evaluate import _filter_kwargs_for_callable, _prototype_predict, _support_head_finetune_predict
+from paper_reproduction.cvs_aligned.evaluate import (
+    _filter_kwargs_for_callable,
+    _prototype_predict,
+    _scenario_counts_for_steps,
+    _support_head_finetune_predict,
+)
 from paper_reproduction.cvs_aligned.protocol import validate_stage2_protocol_payload
 
 
@@ -85,6 +90,21 @@ def test_stage2_protocol_payload_requires_disjoint_receivers_and_tx_sets():
         assert "Y_new and Y_unknown" in str(exc)
     else:
         raise AssertionError("overlapping Y_new/Y_unknown should be rejected")
+
+
+def test_satellite_train_scenario_counts_are_round_robin_and_auditable():
+    scenarios = ["leo_clear_weak", "leo_low_elev_weak", "leo_rain_weak"]
+
+    assert _scenario_counts_for_steps(scenarios, 200) == {
+        "leo_clear_weak": 67,
+        "leo_low_elev_weak": 67,
+        "leo_rain_weak": 66,
+    }
+    assert _scenario_counts_for_steps(scenarios, 600) == {
+        "leo_clear_weak": 200,
+        "leo_low_elev_weak": 200,
+        "leo_rain_weak": 200,
+    }
 
 
 def test_stage2_protocol_allows_clean_control_line_without_deployment_primary_claim():

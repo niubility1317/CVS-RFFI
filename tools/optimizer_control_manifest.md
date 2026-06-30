@@ -79,8 +79,16 @@ Rule ownership is separate from load order:
   owns the execution step, the contract and validator forbid default
   `DEFERRED_RETRY_LOCAL_VERIFY` local-schema placeholders, generated launchers
   must expose `run_phase1_safe_ssdg_candidate`, row-level commands must point at
-  `python -m SSDG.train_ssdg` or that launcher entrypoint, and the state file
+  `python ${ROOT}/code/SSDG/train_ssdg.py` or that launcher entrypoint, and the state file
   owns the current machine-readable execution policy.
+- Phase1 ground prototype/mask/feature-distribution optimization is split this
+  way: the active prompt owns the design intent and multi-role review, the
+  contract and validator own required row fields such as
+  `phase1_ground_feature_distribution_objective`,
+  `source_domain_prototype_outputs_required`, source-only target receiver
+  leakage guards, and CEN51-as-non-regression semantics, and the state file owns
+  the current machine-readable default policy. Updating only one surface is
+  control-plane drift.
 - read-only local preflight is split this way: `tools/optimizer_preflight_decision.py`
   owns the compact local decision bundle over control-file readability,
   current-state view, matrix validation, launcher identity, and duplicate
@@ -149,7 +157,7 @@ The loop is:
    a blocker.
 8. Run the N607 runner for safe launchable rows. Phase1 Safe-SSDG rows default
    executable through `run_phase1_safe_ssdg_candidate` / `python -m
-   SSDG.train_ssdg`; do not default them to local-schema deferred placeholders.
+   `python ${ROOT}/code/SSDG/train_ssdg.py`; do not default them to local-schema deferred placeholders.
 9. Record startup health, state, registry, report, and SSH cleanup.
 10. Continue monitoring.
 

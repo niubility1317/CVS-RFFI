@@ -1,10 +1,10 @@
 # CVS GitHub发布快照
 
-- 生成时间：2026-06-26T07:49:38Z UTC
-- 本地时间戳：`20260626_154938`
+- 生成时间：2026-06-30T16:24:20Z UTC
+- 本地时间戳：`20260701_002420`
 - 来源工作区：`E:\type10-7`
 - GitHub发布工作区：`E:\type10-7\github_publish\CVS-RFFI-repo`
-- 同步文件数：712
+- 同步文件数：777
 - 跳过文件数：58
 - 生成文件清单：`docs/release_manifest_latest.json`
 

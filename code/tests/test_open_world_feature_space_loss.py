@@ -10,7 +10,7 @@ CODE_ROOT = PROJECT_ROOT / "code"
 if str(CODE_ROOT) not in sys.path:
     sys.path.insert(0, str(CODE_ROOT))
 
-from cvsrffi.losses import open_world_feature_space_loss  # noqa: E402
+from cvsrffi.losses import open_world_feature_space_loss, source_episode_three_sigma_loss  # noqa: E402
 
 
 def test_open_world_feature_space_loss_penalizes_collapsed_class_geometry():
@@ -106,3 +106,71 @@ def test_open_world_feature_space_loss_returns_graph_safe_zero_without_enough_cl
     assert loss.item() == 0.0
     assert features.grad is not None
     assert metrics["active_classes"] == 1.0
+
+
+def test_open_world_feature_space_loss_tail_mode_penalizes_class_tail_and_reports_three_sigma():
+    labels = torch.tensor([0, 0, 0, 0, 1, 1, 1, 1])
+    compact = torch.tensor(
+        [[1.0, 0.0], [0.996, 0.087], [0.985, 0.174], [0.966, 0.259],
+         [0.0, 1.0], [0.087, 0.996], [0.174, 0.985], [0.259, 0.966]],
+        dtype=torch.float32,
+        requires_grad=True,
+    )
+    tail = torch.tensor(
+        [[1.0, 0.0], [0.996, 0.087], [0.985, 0.174], [0.0, 1.0],
+         [0.0, 1.0], [0.087, 0.996], [0.174, 0.985], [1.0, 0.0]],
+        dtype=torch.float32,
+        requires_grad=True,
+    )
+
+    compact_loss, compact_metrics = open_world_feature_space_loss(
+        compact,
+        labels,
+        min_classes=2,
+        tail_mode="robust_3sigma",
+        tail_weight=1.0,
+        cvar_alpha=0.75,
+    )
+    tail_loss, tail_metrics = open_world_feature_space_loss(
+        tail,
+        labels,
+        min_classes=2,
+        tail_mode="robust_3sigma",
+        tail_weight=1.0,
+        cvar_alpha=0.75,
+    )
+    tail_loss.backward()
+
+    assert tail_loss.item() > compact_loss.item()
+    assert tail_metrics["tail_loss"] > compact_metrics["tail_loss"]
+    assert tail_metrics["tail_frac_gt_3sigma"] > compact_metrics["tail_frac_gt_3sigma"]
+    assert tail_metrics["pos_angle_p95_deg"] >= tail_metrics["pos_angle_p50_deg"]
+    assert tail.grad is not None
+    assert torch.isfinite(tail.grad).all()
+
+
+def test_source_episode_three_sigma_loss_penalizes_leave_domain_tail_without_target_data():
+    labels = torch.tensor([0, 0, 0, 0, 1, 1, 1, 1])
+    domains = torch.tensor([0, 0, 1, 1, 0, 0, 1, 1])
+    good = torch.tensor(
+        [[1.0, 0.0], [0.996, 0.087], [0.985, 0.174], [0.966, 0.259],
+         [0.0, 1.0], [0.087, 0.996], [0.174, 0.985], [0.259, 0.966]],
+        dtype=torch.float32,
+        requires_grad=True,
+    )
+    bad = torch.tensor(
+        [[1.0, 0.0], [0.996, 0.087], [0.0, 1.0], [0.087, 0.996],
+         [0.0, 1.0], [0.087, 0.996], [1.0, 0.0], [0.996, 0.087]],
+        dtype=torch.float32,
+        requires_grad=True,
+    )
+
+    good_loss, good_metrics = source_episode_three_sigma_loss(good, labels, domains, min_domains=2)
+    bad_loss, bad_metrics = source_episode_three_sigma_loss(bad, labels, domains, min_domains=2)
+    bad_loss.backward()
+
+    assert bad_loss.item() > good_loss.item()
+    assert bad_metrics["source_episode_overflow_rate"] > good_metrics["source_episode_overflow_rate"]
+    assert bad_metrics["source_episode_domains"] == 2.0
+    assert bad.grad is not None
+    assert torch.isfinite(bad.grad).all()

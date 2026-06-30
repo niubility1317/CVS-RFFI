@@ -312,7 +312,7 @@ def _phase1_training_item(gpu_idx, idx):
             "use_concat_sat_channel_aug": True,
             "concat_sat_ce_only": True,
             "use_sat_consistency": True,
-            "sat_view_schedule": "1@0.30:mixed_orbit;41@0.60:mixed_orbit*2,low_elev_leo,rain_leo;91@0.80:mixed_orbit,low_elev_leo,rain_leo,storm_mp",
+            "sat_view_schedule": "1@0.30:leo_clear_weak;41@0.60:leo_low_elev_weak,leo_rain_weak;91@0.80:leo_clear_weak,leo_low_elev_weak,leo_rain_weak",
             "sat_cons_start_epoch": 60,
             "lambda_sat_cls": 1.0,
             "lambda_sat_cons": 0.03,
@@ -325,7 +325,7 @@ def _phase1_training_item(gpu_idx, idx):
             "parameters": {
                 "epochs": 200,
                 "phase1_candidate": "Safe-SSDG-CVS-R01",
-                "entrypoint": "python -m SSDG.train_ssdg",
+                "entrypoint": "python ${ROOT}/code/SSDG/train_ssdg.py",
                 "split_mode": "tx_rx_day_1_7_2",
                 "labeled_ratio": 0.1,
                 "unlabeled_ratio": 0.7,
@@ -335,16 +335,18 @@ def _phase1_training_item(gpu_idx, idx):
                 "use_concat_sat_channel_aug": True,
                 "concat_sat_ce_only": True,
                 "use_sat_consistency": True,
-                "sat_view_schedule": "1@0.30:mixed_orbit;41@0.60:mixed_orbit*2,low_elev_leo,rain_leo;91@0.80:mixed_orbit,low_elev_leo,rain_leo,storm_mp",
+                "sat_view_schedule": "1@0.30:leo_clear_weak;41@0.60:leo_low_elev_weak,leo_rain_weak;91@0.80:leo_clear_weak,leo_low_elev_weak,leo_rain_weak",
             },
             "exact_command": (
                 "cd /home/szu2070436088/2510044040/CV-SincNet && "
                 f"PYTHONPATH=/home/szu2070436088/2510044040/CV-SincNet/code:/home/szu2070436088/2510044040/CV-SincNet "
-                f"CUDA_VISIBLE_DEVICES={gpu_idx} python -u -m SSDG.train_ssdg "
+                f"CUDA_VISIBLE_DEVICES={gpu_idx} python -u /home/szu2070436088/2510044040/CV-SincNet/code/SSDG/train_ssdg.py "
                 "--wisig_pkl /home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl "
                 "--split_mode tx_rx_day_1_7_2 --labeled_ratio 0.1 --unlabeled_ratio 0.7 --source_val_ratio 0.2 "
                 f"--output_dir /home/szu2070436088/2510044040/CV-SincNet/runs/test_phase1/{gpu_idx}_{idx} "
-                "--epochs 200 --use_sat_consistency --sat_train_scenario mixed_orbit "
+                "--epochs 200 --use_sat_consistency --use_concat_sat_channel_aug --concat_sat_ce_only "
+                "--sat_train_scenario leo_clear_weak --sat_train_scenarios leo_clear_weak,leo_low_elev_weak,leo_rain_weak "
+                "--sat_view_schedule '1@0.30:leo_clear_weak;41@0.60:leo_low_elev_weak,leo_rain_weak;91@0.80:leo_clear_weak,leo_low_elev_weak,leo_rain_weak' "
                 "--sat_cons_start_epoch 60 --lambda_sat_cls 1.0 --lambda_sat_cons 0.03 --device cuda:0"
             ),
             "launchability_status": "DEFERRED_RETRY_CAPACITY_WITH_EXACT_FULL_200E_TRAINING_COMMAND",
@@ -437,7 +439,7 @@ def test_validate_matrix_rejects_phase1_safe_ssdg_local_verify_defer():
             "--epochs 200 --use_safe_ssdg_cvs --wisig_train_ratio 0.1 "
             "--ssl_labeled_ratio 0.1 --ssl_unlabeled_ratio 0.7 --ssl_val_ratio 0.2 "
             "--use_concat_sat_channel_aug --concat_sat_ce_only "
-            "--sat_view_schedule '1@0.30:mixed_orbit;41@0.60:mixed_orbit*2,low_elev_leo,rain_leo;91@0.80:mixed_orbit,low_elev_leo,rain_leo,storm_mp' "
+            "--sat_view_schedule '1@0.30:leo_clear_weak;41@0.60:leo_low_elev_weak,leo_rain_weak;91@0.80:leo_clear_weak,leo_low_elev_weak,leo_rain_weak' "
             "--use_sat_consistency"
         )
         items.append(phase1)
@@ -1196,12 +1198,12 @@ def test_phase1_control_surfaces_require_executable_safe_ssdg_default():
     for surface in (prompt, contract, manifest):
         assert "Phase1 Safe-SSDG rows default executable" in surface
         assert "run_phase1_safe_ssdg_candidate" in surface
-        assert "python -m SSDG.train_ssdg" in surface
+        assert "code/SSDG/train_ssdg.py" in surface
 
     policy = state["phase1_ground_dg_direction"]["phase1_safe_ssdg_execution_policy"]
     assert policy["status"] == "PHASE1_SAFE_SSDG_EXECUTABLE_BY_DEFAULT"
     assert policy["row_launcher_entrypoint"] == "run_phase1_safe_ssdg_candidate"
-    assert policy["direct_training_entrypoint"] == "python -m SSDG.train_ssdg"
+    assert policy["direct_training_entrypoint"] == "python ${ROOT}/code/SSDG/train_ssdg.py"
     assert policy["local_schema_defer_allowed_by_default"] is False
 
 
@@ -1251,13 +1253,24 @@ def test_optimizer_control_surfaces_require_idle_lane_repair_until_launch():
 
     policy = state["idle_lane_execution_policy"]
     assert policy["schema"] == "idle_lane_execution_policy_v1"
-    assert policy["status"] == "REPAIR_UNTIL_RUNNER_EXECUTES" or policy["status"].startswith("RUNNER_EXECUTED_CURRENT_MATRIX_")
+    allowed_status = (
+        policy["status"] == "REPAIR_UNTIL_RUNNER_EXECUTES"
+        or policy["status"].startswith("RUNNER_EXECUTED_CURRENT_MATRIX_")
+        or policy["status"] == "MONITOR_ONLY_PHASE1_ACTIVE_PHASE2_IDLE"
+    )
+    assert allowed_status
     assert policy["idle_lane_must_execute_experiment"] is True
     if policy["status"] == "REPAIR_UNTIL_RUNNER_EXECUTES":
         assert policy["repair_until_runner_executes"] is True
-    else:
+    elif policy["status"].startswith("RUNNER_EXECUTED_CURRENT_MATRIX_"):
         assert policy["repair_until_runner_executes"] is False
         assert policy["latest_execution_n607_run_id"].startswith("stage2_spaceborne_")
+    else:
+        assert policy["repair_until_runner_executes"] is False
+        assert state["required_next_action"] == "MONITOR_PHASE1_RETRY_TO_COMPLETION_AND_ANALYZE_FULL_TRAINING_LOGS"
+        assert state["latest_two_lane_monitor_result"]["phase1_monitor_state"] == 0
+        assert state["latest_two_lane_monitor_result"]["phase2_monitor_state"] == 1
+        assert "active_same_lane_or_unsafe_ambiguous_process" in policy["terminal_blockers"]
     assert "NO_CURRENT_MATRIX_VALIDATION" in policy["disallowed_terminal_outcomes_for_idle_lane"]
     assert "NOT_RUN_NO_CURRENT_REPAIRED_MATRIX" in policy["disallowed_terminal_outcomes_for_idle_lane"]
     assert "DEFERRED_RETRY_LOCAL_VERIFY_ROUTE_REPAIR_REQUIRED_NO_REMOTE_ACTION" in policy["disallowed_terminal_outcomes_for_idle_lane"]

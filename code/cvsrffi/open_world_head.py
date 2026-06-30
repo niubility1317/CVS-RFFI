@@ -16,6 +16,26 @@ def _norm(x: torch.Tensor, dim: int = -1) -> torch.Tensor:
     return F.normalize(x, dim=dim, eps=1e-6)
 
 
+def open_world_energy_from_scores(
+    class_scores: torch.Tensor,
+    *,
+    energy_temperature: float = 1.0,
+    class_mask: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    """Compute the shared open-world energy used by Phase1/Phase2 helpers."""
+    if class_scores.ndim != 2:
+        raise ValueError("class_scores must have shape [N, C]")
+    scores = torch.nan_to_num(class_scores.float(), nan=-1.0e6, posinf=1.0e6, neginf=-1.0e6)
+    if class_mask is not None:
+        mask = class_mask.to(device=scores.device, dtype=torch.bool)
+        if mask.ndim == 1:
+            mask = mask.view(1, -1).expand_as(scores)
+        if mask.shape != scores.shape:
+            raise ValueError("class_mask must have shape [C] or [N, C]")
+        scores = scores.masked_fill(~mask, -1.0e6)
+    return -torch.logsumexp(scores / max(1e-4, float(energy_temperature)), dim=1)
+
+
 @dataclass
 class OpenWorldDecision:
     predicted_labels: torch.Tensor
@@ -41,6 +61,7 @@ class OpenWorldMultiPrototypeHead(nn.Module):
         self.energy_temperature = float(energy_temperature)
         self._prototypes: Dict[int, torch.Tensor] = {}
         self._radii: Dict[int, float] = {}
+        self._proto_radii: Dict[int, torch.Tensor] = {}
         self._groups: Dict[int, str] = {}
 
     @property
@@ -56,24 +77,37 @@ class OpenWorldMultiPrototypeHead(nn.Module):
         score_temperature: float = 0.10,
         energy_temperature: float = 1.0,
     ) -> "OpenWorldMultiPrototypeHead":
-        prototypes = package.get("prototypes")
-        if not torch.is_tensor(prototypes) or prototypes.ndim != 2:
-            raise ValueError("Phase2 export package must contain prototypes with shape [C, D]")
-        radii_obj = package.get("radii", {})
-        if isinstance(radii_obj, Mapping):
-            radii = radii_obj.get(radius_key)
-            if radii is None:
-                raise KeyError(f"Phase2 export radii missing key: {radius_key}")
+        fused_proto = package.get("fused_tx_prototypes")
+        fused_mask = package.get("fused_tx_mask")
+        fused_accept = package.get("fused_tx_accept_radii")
+        if torch.is_tensor(fused_proto) and fused_proto.ndim == 3 and torch.is_tensor(fused_mask):
+            mask = fused_mask.bool()
+            prototypes = fused_proto[mask].float()
+            class_ids = torch.arange(fused_proto.size(0)).view(-1, 1).expand_as(mask)[mask].long()
+            if torch.is_tensor(fused_accept) and fused_accept.shape == fused_mask.shape:
+                radii = fused_accept[mask].float()
+            else:
+                radii = package.get("fused_tx_radii")[mask].float()
         else:
-            radii = radii_obj
-        if not torch.is_tensor(radii):
-            radii = torch.as_tensor(radii, dtype=torch.float32)
+            prototypes = package.get("prototypes")
+            if not torch.is_tensor(prototypes) or prototypes.ndim != 2:
+                raise ValueError("Phase2 export package must contain prototypes with shape [C, D]")
+            class_ids = torch.arange(prototypes.size(0), dtype=torch.long)
+            radii_obj = package.get("radii", {})
+            if isinstance(radii_obj, Mapping):
+                radii = radii_obj.get(radius_key)
+                if radii is None:
+                    raise KeyError(f"Phase2 export radii missing key: {radius_key}")
+            else:
+                radii = radii_obj
+            if not torch.is_tensor(radii):
+                radii = torch.as_tensor(radii, dtype=torch.float32)
         head = cls(
             feat_dim=int(prototypes.size(1)),
             score_temperature=score_temperature,
             energy_temperature=energy_temperature,
         )
-        head.add_old_classes(prototypes.float(), radii.float())
+        head.add_target_prototypes(class_ids.tolist(), prototypes.float(), radii=radii.float(), proto_type="source_old")
         return head
 
     def add_old_classes(self, prototypes: torch.Tensor, radii: torch.Tensor, sigmas: Optional[torch.Tensor] = None) -> None:
@@ -113,9 +147,11 @@ class OpenWorldMultiPrototypeHead(nn.Module):
             p = _norm(prototypes[row : row + 1], dim=1).detach().cpu()
             if cid in self._prototypes:
                 self._prototypes[cid] = torch.cat([self._prototypes[cid], p], dim=0)
+                self._proto_radii[cid] = torch.cat([self._proto_radii[cid], r[row : row + 1].detach().cpu()], dim=0)
                 self._radii[cid] = max(float(self._radii[cid]), float(r[row].detach().cpu().item()))
             else:
                 self._prototypes[cid] = p
+                self._proto_radii[cid] = r[row : row + 1].detach().cpu()
                 self._radii[cid] = float(r[row].detach().cpu().item())
             self._groups[cid] = str(proto_type)
 
@@ -185,7 +221,11 @@ class OpenWorldMultiPrototypeHead(nn.Module):
             p = self._prototypes[cid].to(device=device, dtype=dtype)
             proto_rows.append(_norm(p, dim=1))
             class_ids.extend([cid] * p.size(0))
-            radius_rows.extend([self._radii[cid]] * p.size(0))
+            pr = self._proto_radii.get(cid)
+            if pr is not None and pr.numel() == p.size(0):
+                radius_rows.extend(float(v) for v in pr.view(-1).detach().cpu().tolist())
+            else:
+                radius_rows.extend([self._radii[cid]] * p.size(0))
         return (
             torch.tensor(class_ids, device=device, dtype=torch.long),
             torch.cat(proto_rows, dim=0),
@@ -220,7 +260,7 @@ class OpenWorldMultiPrototypeHead(nn.Module):
         for col, cid in enumerate(self.class_ids):
             m = class_ids == int(cid)
             class_scores[:, col] = proto_scores[:, m].max(dim=1).values
-        energy = -torch.logsumexp(class_scores / max(1e-4, float(self.energy_temperature)), dim=1)
+        energy = open_world_energy_from_scores(class_scores, energy_temperature=float(self.energy_temperature))
         out = {
             "class_scores": class_scores,
             "class_ids": torch.tensor(self.class_ids, device=z.device, dtype=torch.long),
@@ -294,11 +334,17 @@ class OpenWorldMultiPrototypeHead(nn.Module):
             "energy_temperature": self.energy_temperature,
             "prototypes": {cid: p.clone() for cid, p in self._prototypes.items()},
             "radii": dict(self._radii),
+            "proto_radii": {cid: r.clone() for cid, r in self._proto_radii.items()},
             "groups": dict(self._groups),
         }
 
     def load_state_dict(self, state_dict, strict: bool = True):  # type: ignore[override]
         self._prototypes = {int(cid): tensor.clone().detach().cpu() for cid, tensor in state_dict["prototypes"].items()}
         self._radii = {int(cid): float(v) for cid, v in state_dict["radii"].items()}
+        proto_radii = state_dict.get("proto_radii", {})
+        self._proto_radii = {int(cid): tensor.clone().detach().cpu().float() for cid, tensor in proto_radii.items()}
+        for cid, proto in self._prototypes.items():
+            if cid not in self._proto_radii:
+                self._proto_radii[cid] = torch.full((proto.size(0),), float(self._radii.get(cid, 0.35)))
         self._groups = {int(cid): str(v) for cid, v in state_dict.get("groups", {}).items()}
         return nn.modules.module._IncompatibleKeys([], [])
