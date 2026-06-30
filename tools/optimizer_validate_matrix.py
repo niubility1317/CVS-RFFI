@@ -170,6 +170,30 @@ REQUIRED_ONBOARD_ADAPTATION_BUNDLE_TOKENS = (
     "accepted_only_online_update",
     "stage2_receiver_domain",
 )
+REQUIRED_OPGAC_METRIC_BUNDLE_TOKENS = (
+    "old_acc",
+    "old80_gap",
+    "unknown_far",
+    "old_unknown_hmean",
+    "coverage",
+    "old_frr",
+    "rollback",
+    "defer",
+    "auroc",
+    "fpr95",
+    "same_row_rank",
+)
+REQUIRED_OPGAC_SCORE_TABLE_TOKENS = (
+    "candidate_label",
+    "best_old_score",
+    "best_seen_new_score",
+    "best_reject_score",
+    "top2_margin",
+    "threshold_delta",
+    "opgac_old_score",
+    "opgac_new_score",
+)
+STAGE2_OPGAC_BASE_MODEL_ID = "JREF_C9_MULTICOMP_M2_E220"
 K_SHOT_FIELDS = (
     "k_shot",
     "k",
@@ -865,6 +889,161 @@ def is_true_like(value: Any) -> bool:
     return normalized_status(value) in {"true", "1", "yes", "y", "on"}
 
 
+def is_opgac_row(item: Mapping[str, Any]) -> bool:
+    text = candidate_value_text(item)
+    return (
+        normalized_status(item.get("route_family")) == "opgac_net"
+        or normalized_status(item.get("gate_mode")) == "opgac"
+        or normalized_status(item.get("opgac_stage")) not in {"", "none", "not_applicable"}
+        or "opgac" in text
+    )
+
+
+def opgac_required_field_issues(item: Mapping[str, Any]) -> List[Dict[str, Any]]:
+    if not is_opgac_row(item):
+        return []
+    cid = str(item.get("candidate_id") or "UNKNOWN")
+    required = [
+        "route_family",
+        "stage2_base_model_id",
+        "stage2_base_model_role",
+        "opgac_stage",
+        "opgac_memory_policy",
+        "opgac_local_code_hook",
+        "opgac_eval_tool",
+        "opgac_query_update_forbidden",
+        "unknown_query_eval_only",
+        "target_new_query_not_threshold_fit",
+        "model_output_semantics",
+        "opgac_overlap_policy",
+        "opgac_rollback_policy",
+        "opgac_metric_bundle",
+        "opgac_primary_selection_metric",
+        "opgac_same_row_ranking_required",
+        "opgac_score_table_required_columns",
+        "stage2_priority_phase",
+        "old_acc_target",
+        "deployment_success_claim_allowed",
+    ]
+    issues: List[Dict[str, Any]] = []
+    missing = [field for field in required if item.get(field) in (None, "", [])]
+    if missing:
+        issues.append({"candidate_id": cid, "issue": "opgac_missing_required_fields", "fields": missing})
+
+    if normalized_status(item.get("route_family")) != "opgac_net":
+        issues.append({"candidate_id": cid, "issue": "opgac_route_family_must_be_opgac_net", "route_family": item.get("route_family")})
+    if str(item.get("stage2_base_model_id") or "").strip() != STAGE2_OPGAC_BASE_MODEL_ID:
+        issues.append(
+            {
+                "candidate_id": cid,
+                "issue": "opgac_stage2_base_model_must_be_jref_c9_multicomp_m2_e220",
+                "stage2_base_model_id": item.get("stage2_base_model_id"),
+            }
+        )
+
+    base_role = normalized_status(item.get("stage2_base_model_role"))
+    if base_role and ("receiver_floor" not in base_role or "diagnostic" not in base_role):
+        issues.append(
+            {
+                "candidate_id": cid,
+                "issue": "opgac_base_role_must_preserve_jref_c9_receiver_floor_diagnostic_boundary",
+                "stage2_base_model_role": item.get("stage2_base_model_role"),
+            }
+        )
+    if "support_only" not in normalized_status(item.get("opgac_memory_policy")):
+        issues.append({"candidate_id": cid, "issue": "opgac_memory_policy_must_be_support_only", "opgac_memory_policy": item.get("opgac_memory_policy")})
+    if "code/cvsrffi/opgac_net.py" not in normalized_status(item.get("opgac_local_code_hook")).replace("\\", "/"):
+        issues.append({"candidate_id": cid, "issue": "opgac_local_code_hook_must_name_opgac_net_py", "opgac_local_code_hook": item.get("opgac_local_code_hook")})
+    if "tools/evaluate_opgac_stage2.py" not in normalized_status(item.get("opgac_eval_tool")).replace("\\", "/"):
+        issues.append({"candidate_id": cid, "issue": "opgac_eval_tool_must_name_evaluate_opgac_stage2", "opgac_eval_tool": item.get("opgac_eval_tool")})
+    if not is_true_like(item.get("opgac_query_update_forbidden")):
+        issues.append(
+            {
+                "candidate_id": cid,
+                "issue": "opgac_query_update_must_be_forbidden",
+                "opgac_query_update_forbidden": item.get("opgac_query_update_forbidden"),
+            }
+        )
+    if not is_true_like(item.get("opgac_same_row_ranking_required")):
+        issues.append(
+            {
+                "candidate_id": cid,
+                "issue": "opgac_same_row_ranking_must_be_required",
+                "opgac_same_row_ranking_required": item.get("opgac_same_row_ranking_required"),
+            }
+        )
+
+    semantics = normalized_status(item.get("model_output_semantics"))
+    if not semantics or not all(token in semantics for token in ("old", "reject")) or not any(token in semantics for token in ("ambiguous", "uncertain", "defer")):
+        issues.append(
+            {
+                "candidate_id": cid,
+                "issue": "opgac_output_semantics_must_distinguish_old_reject_ambiguous",
+                "model_output_semantics": item.get("model_output_semantics"),
+            }
+        )
+
+    metric_bundle = normalized_status(item.get("opgac_metric_bundle"))
+    missing_metric_tokens = [token for token in REQUIRED_OPGAC_METRIC_BUNDLE_TOKENS if token not in metric_bundle]
+    if missing_metric_tokens:
+        issues.append(
+            {
+                "candidate_id": cid,
+                "issue": "opgac_metric_bundle_incomplete",
+                "missing_tokens": missing_metric_tokens,
+                "opgac_metric_bundle": item.get("opgac_metric_bundle"),
+            }
+        )
+    score_columns = normalized_status(item.get("opgac_score_table_required_columns"))
+    missing_score_tokens = [token for token in REQUIRED_OPGAC_SCORE_TABLE_TOKENS if token not in score_columns]
+    if missing_score_tokens:
+        issues.append(
+            {
+                "candidate_id": cid,
+                "issue": "opgac_score_table_required_columns_incomplete",
+                "missing_tokens": missing_score_tokens,
+                "opgac_score_table_required_columns": item.get("opgac_score_table_required_columns"),
+            }
+        )
+
+    mode_text = stage2_mode_text(item)
+    if "stage2-c" in mode_text or "old_new_enrollment" in mode_text or "seen_new" in mode_text or "seen-new" in mode_text:
+        missing_stage2c_tokens = [token for token in ("seen_new_acc", "h_old_new", "unknown_to_seen_new") if token not in metric_bundle]
+        if missing_stage2c_tokens:
+            issues.append(
+                {
+                    "candidate_id": cid,
+                    "issue": "opgac_stage2c_metric_bundle_incomplete",
+                    "missing_tokens": missing_stage2c_tokens,
+                    "opgac_metric_bundle": item.get("opgac_metric_bundle"),
+                }
+            )
+
+    priority_phase = normalized_status(item.get("stage2_priority_phase"))
+    if "old80_first" in priority_phase:
+        if is_true_like(item.get("deployment_success_claim_allowed")):
+            issues.append(
+                {
+                    "candidate_id": cid,
+                    "issue": "opgac_old80_first_must_not_allow_deployment_success_claim",
+                    "deployment_success_claim_allowed": item.get("deployment_success_claim_allowed"),
+                }
+            )
+        try:
+            old_acc_target = float(item.get("old_acc_target"))
+        except (TypeError, ValueError):
+            old_acc_target = float("nan")
+        if not (old_acc_target >= 0.80):
+            issues.append(
+                {
+                    "candidate_id": cid,
+                    "issue": "opgac_old80_first_target_must_be_at_least_0p80",
+                    "old_acc_target": item.get("old_acc_target"),
+                }
+            )
+    return issues
+
+
 def is_oa_mse_row(item: Mapping[str, Any]) -> bool:
     text = candidate_value_text(item)
     return (
@@ -1534,6 +1713,7 @@ def stage2_sample_protocol_issues(item: Mapping[str, Any], sample_protocol: Opti
             seen_new_acc_target = float("nan")
         if not (seen_new_acc_target >= 0.75):
             issues.append({"candidate_id": cid, "issue": "phase2_seen_new_acc_target_must_be_at_least_0p75", "seen_new_acc_target": item.get("seen_new_acc_target")})
+    issues.extend(opgac_required_field_issues(item))
     issues.extend(oa_mse_required_field_issues(item))
 
     target_view = normalized_status(item.get("target_channel_view"))

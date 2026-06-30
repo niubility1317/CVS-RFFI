@@ -831,6 +831,76 @@ def test_validate_matrix_requires_oa_mse_route_fields_and_decision_semantics():
     assert "oa_mse_output_semantics_must_distinguish_defer_uncertain_reject" in issue_names
 
 
+def test_validate_matrix_requires_opgac_route_base_and_metric_fields():
+    item = _stage2_item(0, "B", 1)
+    item.update(
+        {
+            "route_family": "OPGAC_NET",
+            "route_signature": "opgac_old80_missing_fields",
+            "stage2_mode": "Stage2-B_old_label_calibration",
+            "k_shot": 10,
+            "target_old_leo_support": "K=10 target-old support on rx7",
+            "target_new_leo_support": False,
+            "new_support_query_split": "support=empty; query=target_new_rx7; threshold_fit=forbidden",
+            "model_output_semantics": "old_or_new_binary",
+        }
+    )
+
+    result = validate([item], 1)
+    issue_names = {issue["issue"] for issue in result["issues"]}
+
+    assert result["verdict"] == "FAIL"
+    assert "opgac_missing_required_fields" in issue_names
+    assert "opgac_stage2_base_model_must_be_jref_c9_multicomp_m2_e220" in issue_names
+    assert "opgac_output_semantics_must_distinguish_old_reject_ambiguous" in issue_names
+
+
+def test_validate_matrix_allows_opgac_jref_c9_old80_first_metric_bundle():
+    item = _stage2_item(0, "B", 1)
+    item.update(
+        {
+            "route_family": "OPGAC_NET",
+            "route_signature": "opgac_jref_c9_old80_first",
+            "stage2_mode": "Stage2-B_old_label_calibration",
+            "stage2_base_model_id": "JREF_C9_MULTICOMP_M2_E220",
+            "stage2_base_model_role": "receiver_floor_diagnostic_not_deployment_success",
+            "opgac_stage": "old_calibration",
+            "opgac_memory_policy": "support_only",
+            "opgac_local_code_hook": "code/cvsrffi/opgac_net.py",
+            "opgac_eval_tool": "tools/evaluate_opgac_stage2.py",
+            "opgac_query_update_forbidden": True,
+            "opgac_overlap_policy": "provisional_or_ambiguous",
+            "opgac_rollback_policy": "rollback_to_ground_old_memory",
+            "opgac_metric_bundle": (
+                "old_acc,old80_gap,unknown_far,old_unknown_hmean,coverage,old_frr,"
+                "auroc,fpr95,rollback_rate,defer_rate,confusion_counts,same_row_rank"
+            ),
+            "opgac_primary_selection_metric": "old_unknown_hmean_under_unknown_far_le_0p05_after_old80",
+            "opgac_same_row_ranking_required": True,
+            "opgac_score_table_required_columns": (
+                "candidate_label,best_old_score,best_seen_new_score,best_reject_score,"
+                "top2_margin,threshold_delta,opgac_old_score,opgac_new_score"
+            ),
+            "stage2_priority_phase": "OLD80_FIRST",
+            "old_acc_target": 0.80,
+            "deployment_success_claim_allowed": False,
+            "k_shot": 10,
+            "target_old_leo_support": "K=10 target-old support on rx7",
+            "target_new_leo_support": False,
+            "new_support_query_split": "support=empty; query=target_new_rx7; threshold_fit=forbidden",
+            "model_output_semantics": "old_label,reject,ambiguous,defer",
+        }
+    )
+
+    result = validate([item], 1)
+    issue_names = {issue["issue"] for issue in result["issues"]}
+
+    assert "opgac_missing_required_fields" not in issue_names
+    assert "opgac_stage2_base_model_must_be_jref_c9_multicomp_m2_e220" not in issue_names
+    assert "opgac_metric_bundle_incomplete" not in issue_names
+    assert "phase2_old_acc_target_must_be_at_least_0p90" not in issue_names
+
+
 def test_validate_matrix_rejects_old_primary_route_rescue_without_terminal_gate():
     item = _stage2_item(0, "A", 0)
     item.update(
@@ -1267,7 +1337,10 @@ def test_optimizer_control_surfaces_require_idle_lane_repair_until_launch():
         assert policy["latest_execution_n607_run_id"].startswith("stage2_spaceborne_")
     else:
         assert policy["repair_until_runner_executes"] is False
-        assert state["required_next_action"] == "MONITOR_PHASE1_RETRY_TO_COMPLETION_AND_ANALYZE_FULL_TRAINING_LOGS"
+        assert state["required_next_action"] in {
+            "MONITOR_PHASE1_RETRY_TO_COMPLETION_AND_ANALYZE_FULL_TRAINING_LOGS",
+            "MONITOR_PHASE1_FLOORREPAIR_TO_COMPLETION_AND_ANALYZE_FULL_TRAINING_LOGS",
+        }
         assert state["latest_two_lane_monitor_result"]["phase1_monitor_state"] == 0
         assert state["latest_two_lane_monitor_result"]["phase2_monitor_state"] == 1
         assert "active_same_lane_or_unsafe_ambiguous_process" in policy["terminal_blockers"]

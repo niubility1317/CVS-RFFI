@@ -302,7 +302,7 @@ Each candidate must include:
 - `parent_run`
 - `lineage`
 - `route_signature`
-- `route_family` for mechanism families such as `OA_MSE_HEAD`
+- `route_family` for mechanism families such as `OPGAC_NET` or `OA_MSE_HEAD`
 - `hypothesis`
 - `control`
 - `key_changes`
@@ -424,6 +424,45 @@ repair-failed local verification after an actual executable branch exists,
 `AGENTS.md`/`项目.md` safety or protocol conflict, SSH/N607 gate failure, or
 explicit user pause.
 
+OPGAC rows must additionally include:
+
+- `route_family=OPGAC_NET`
+- `stage2_base_model_id=JREF_C9_MULTICOMP_M2_E220`
+- `stage2_base_model_role=receiver_floor_diagnostic_not_deployment_success`
+- `opgac_stage` (`old_calibration`, `old_new_enrollment`,
+  `strict_eval`, or `confirm_new_sensitivity`)
+- `opgac_memory_policy=support_only`
+- `opgac_local_code_hook=code/cvsrffi/opgac_net.py`
+- `opgac_eval_tool=tools/evaluate_opgac_stage2.py`
+- `opgac_query_update_forbidden=true`
+- `unknown_query_eval_only=true`
+- `target_new_query_not_threshold_fit=true`
+- `model_output_semantics`, explicitly distinguishing old label, seen-new
+  label when Stage2-C is legal, reject, ambiguous, and defer
+- `opgac_overlap_policy`, requiring provisional or ambiguous handling for old
+  versus seen-new overlap rather than forced registration
+- `opgac_rollback_policy`, requiring rollback to ground-old memory or the
+  previous support-only snapshot on drift/FAR harm
+- `opgac_metric_bundle`, containing at least `old_acc`, `old80_gap`,
+  `unknown_FAR`, `old_unknown_hmean`, `coverage`, `old_FRR`, `AUROC`, `FPR95`,
+  rollback rate, defer rate, confusion counts, and `same_row_rank`
+- `opgac_primary_selection_metric`, such as constrained OLD80-first
+  same-row score or `old_unknown_hmean` under `unknown_FAR<=0.05`
+- `opgac_same_row_ranking_required=true`
+- `opgac_score_table_required_columns`, containing at least candidate label,
+  best old score, best seen-new score, best reject score, top-2 margin,
+  threshold delta, `opgac_old_score`, and `opgac_new_score`
+- `stage2_priority_phase=OLD80_FIRST`
+- `old_acc_target>=0.80`, only as an intermediate old-class recovery gate
+- `deployment_success_claim_allowed=false` while using the OLD80 intermediate
+  gate
+
+Current OPGAC rows use `JREF_C9_MULTICOMP_M2_E220` as the Stage2 base because
+recent JREF evidence shows it is the strongest local-mode receiver-floor
+diagnostic. This does not promote JREF as Phase1 mainline success, does not
+replace the project protocol, and does not create deployment evidence by
+itself.
+
 OA-MSE rows must additionally include:
 
 - `oa_mse_stage` (`mse_lite`, `mse_subspace`, or `oa_mse_head`)
@@ -495,11 +534,16 @@ Phase2 launchable rows must obey the corrected 2026-06-18 sample boundary.
 
 ### Base Model
 
-- Use the strongest-generalization CEN51 checkpoint for on-orbit inference.
-- Selection must prefer strict cross-receiver/day generalization, receiver
-  floor, and satellite/LEO validation-control evidence.
+- Current Phase2 OPGAC rows use `JREF_C9_MULTICOMP_M2_E220` for on-orbit
+  inference/adaptation. Selection is explicit user direction plus recent JREF
+  evidence that this row best preserves local receiver modes and receiver-floor
+  behavior among the JREF diagnostics.
+- Treat `JREF_C9_MULTICOMP_M2_E220` as a Stage2 base-model choice, not as a
+  Phase1 mainline replacement, paper success, or deployment evidence.
 - Do not select a checkpoint only because it is newest.
-- Candidate field: `cen51_base_checkpoint_or_config`.
+- Candidate fields: `stage2_base_model_id`,
+  `stage2_base_model_role`, and `cen51_base_checkpoint_or_config` or an
+  equivalent checkpoint/config pointer.
 
 ### Receiver Split
 
@@ -568,6 +612,9 @@ The sample grain is `target receiver x transmitter`.
 - Output space: old classes plus rejection.
 - Allowed claims: old target recognition and non-old rejection.
 - Forbidden claims: new identity recognition and target-label threshold fitting.
+- OPGAC mapping: build memory from ground/source old prototypes only; evaluate
+  target-old query and reject target-new/unknown query. No target support,
+  target threshold fitting, memory update, or query-driven overlap repair.
 - OA-MSE mapping: source-only MSE-lite or source-calibrated open gate only.
   `U_orbit`, target-old fusion, and target-new registration are unavailable.
 
@@ -580,6 +627,10 @@ The sample grain is `target receiver x transmitter`.
 - Allowed claims: old target lift, old retention, unknown FAR/rejection,
   rollback, and deployment cost.
 - Forbidden claims: seen-new identity accuracy.
+- OPGAC mapping: target-old support may update support-only old Gaussian
+  calibration, radii, and rollback/defer thresholds under the same target
+  receiver domain. Target-new support is forbidden; target-new/unknown query is
+  rejection evaluation only.
 - OA-MSE mapping: target-old support may update old prototype/mask/radius,
   estimate shared `U_orbit`, and calibrate old energy/OpenMax/Mahalanobis
   gates. Target-new support is forbidden.
@@ -595,11 +646,17 @@ The sample grain is `target receiver x transmitter`.
 - OA-MSE mapping: full old calibration plus seen-new registration is allowed
   only when target-new support is explicit. Unknown query remains evaluation
   only and cannot fit thresholds.
+- OPGAC mapping: target-old support calibrates old Gaussian memory and
+  target-new support registers seen-new Gaussian states. Unknown query remains
+  evaluation only and cannot fit thresholds, overlap policies, rollback
+  triggers, or memory updates.
 
 ### Required Phase2 Fields
 
 Launchable Phase2 rows and reports must expose:
 
+- `stage2_base_model_id`
+- `stage2_base_model_role`
 - `cen51_base_checkpoint_or_config`
 - `cen51_train_rxs`
 - `target_receiver_ids`
@@ -638,6 +695,12 @@ Launchable Phase2 rows and reports must expose:
 - score-table diagnostics: candidate label/group, best old score, best
   seen-new score, seen-new-minus-old contrast, threshold deltas, and
   seen-new anchor similarity/delta
+- OPGAC score-table diagnostics when `route_family=OPGAC_NET`: candidate
+  label, best old score, best seen-new score, best reject score, top-2 margin,
+  threshold delta, `opgac_old_score`, and `opgac_new_score`
+- OPGAC optimizer metrics when `route_family=OPGAC_NET`: `old80_gap`,
+  `old_unknown_hmean`, same-row rank, metric deficit vector, rollback rate,
+  defer rate, `old_FRR`, AUROC, FPR95, and confusion counts
 - `rescue`, `harm`, `net_gain`, `changed_pred_rate`
 - rollback and deployed FAR status
 
@@ -655,6 +718,18 @@ launch it as a Stage2 job.
 - `H_old_new = 2*old_acc*seen_new_acc/(old_acc+seen_new_acc)`.
 - Optional `H_open` may include unknown rejection, but it must be labeled
   separately and not confused with `H_old_new`.
+- `old80_gap = max(0, 0.80 - old_acc)` for current OLD80_FIRST route
+  selection. It is a repair deficit, not a deployment-success score.
+- `old_unknown_hmean = 2*old_acc*(1-unknown_FAR)/(old_acc+1-unknown_FAR)`.
+  Use it only as a constrained Stage2-B/old-unknown selector; it must not
+  replace Stage2-C `H_old_new`.
+- `opgac_same_row_rank` ranks complete candidate rows using metrics from the
+  same run/candidate. Do not combine a best old accuracy from one row with a
+  best FAR, AUROC, or coverage from another row.
+- `opgac_metric_deficit_vector` records the active repair deficits, such as
+  old80, FAR, coverage, old_FRR, rollback/defer, AUROC/FPR95, and scenario
+  harm. Optimizer actions should target the deficit vector rather than a
+  single decorative aggregate.
 
 Stage2-C deployable success requires constrained improvement, not raw
 acceptance:
@@ -678,6 +753,11 @@ Current H06/Phase2 optimization order is `OLD80_FIRST`:
 - Stage2-B old/unknown-only rows may carry the OLD80 gate and monitor
   `unknown_FAR`, but they must not claim `seen_new_acc`; seen-new optimization
   requires Stage2-C with target-new support/query legality.
+- For current OPGAC rows, OLD80_FIRST means first reduce `old80_gap` using
+  support-only old Gaussian calibration under `JREF_C9_MULTICOMP_M2_E220`.
+  A low `unknown_FAR`, high AUROC, or high coverage row that keeps
+  `old_acc<0.80` is diagnostic-negative for the current priority, not a
+  promotable route.
 - OLD80 is an intermediate route-selection gate. It does not weaken
   deployment success requirements, Stage2-C success requirements, target split
   rules, unknown-query calibration bans, or clean-view claim boundaries.

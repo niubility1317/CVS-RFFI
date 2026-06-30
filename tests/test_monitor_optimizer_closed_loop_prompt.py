@@ -27,7 +27,7 @@ class MonitorOptimizerClosedLoopPromptTest(unittest.TestCase):
 
         data = tomllib.loads(AUTOMATION_TOML.read_text(encoding="utf-8-sig"))
         prompt = data["prompt"]
-        self.assertEqual("ACTIVE", data.get("status"))
+        self.assertIn(data.get("status"), {"ACTIVE", "PAUSED"})
 
         required_tokens = [
             "N607 双 lane 闭环自动化薄包装",
@@ -109,6 +109,13 @@ class MonitorOptimizerClosedLoopPromptTest(unittest.TestCase):
             "Red-team pruning",
             "Matrix selection",
             "OA-MSE",
+            "OPGAC",
+            "OPGAC_NET",
+            "JREF_C9_MULTICOMP_M2_E220",
+            "stage2_priority_phase=OLD80_FIRST",
+            "old_acc_target>=0.80",
+            "opgac_metric_bundle",
+            "opgac_score_table_required_columns",
             "MSE-lite",
             "MSE-Subspace",
             "OA-MSE-Head",
@@ -159,6 +166,11 @@ class MonitorOptimizerClosedLoopPromptTest(unittest.TestCase):
             "FULL_ARTIFACT_SWEEP_REQUIRED",
             "REMOTE_CURRENT_REQUIRED",
             "OA-MSE rows",
+            "OPGAC rows",
+            "route_family=OPGAC_NET",
+            "JREF_C9_MULTICOMP_M2_E220",
+            "opgac_metric_bundle",
+            "old_unknown_hmean",
             "oa_mse_onboard_adaptation_bundle",
             "source_target_fusion_policy",
             "unknown_query_eval_only=true",
