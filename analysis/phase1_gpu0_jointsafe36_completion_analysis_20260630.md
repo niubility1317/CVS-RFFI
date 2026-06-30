@@ -1,7 +1,7 @@
 # PHASE1_GPU0_JOINTSAFE36同批完成分析
 
-生成时间：2026-06-30 10:16-10:35 CST  
-批次：`phase1_gpu0_jointsafe36_queue_20260629_0930`  
+生成时间：2026-06-30 10:16-10:35 CST
+批次：`phase1_gpu0_jointsafe36_queue_20260629_0930`
 锚点：`PHASE1_GPU0_JOINTSAFE36_SOFTPSEUDO_190X10_SHORT195_S3`
 
 ## 证据范围
