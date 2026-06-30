@@ -15,9 +15,14 @@ from torch.utils.data import DataLoader
 
 CODE_ROOT = Path(__file__).resolve().parent
 REPO_ROOT = CODE_ROOT.parent
+# Keep CODE_ROOT ahead of the legacy top-level package directory. When this
+# script is executed directly, CODE_ROOT may already be sys.path[0]; remove both
+# candidates first so the final order is deterministic.
 for path in (str(CODE_ROOT), str(REPO_ROOT)):
-    if path not in sys.path:
-        sys.path.insert(0, path)
+    while path in sys.path:
+        sys.path.remove(path)
+for path in (str(REPO_ROOT), str(CODE_ROOT)):
+    sys.path.insert(0, path)
 
 from cvsrffi.wisig_fewshot_payload import assert_disjoint_tx_sets, canonical_tx_id, parse_tx_id_list
 from cvsrffi.eval import apply_sat_channel_for_scenario
