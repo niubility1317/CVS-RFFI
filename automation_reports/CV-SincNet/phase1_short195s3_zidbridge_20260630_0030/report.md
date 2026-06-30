@@ -153,3 +153,45 @@ E010 checkpoint at 2026-06-30 00:58 CST confirmed the requested test cadence and
 | `PHASE1_SHORT195S3_ZIDJOINT_C6_STRONG_E160` | 90.52 | 78.90 | 0.0 | 6.0 | 0.000634 |
 
 Metrics rows through E012/E013 show `stage_test_eval_ran` only at E010 so far, matching the requested schedule: every 10 epochs during the main run and every 2 epochs only inside the final 20 epochs. These E010 values are startup/trajectory evidence, not final E160 selection evidence.
+
+## Completion Analysis 2026-06-30 09:51 CST
+
+N607 direct inventory at `2026-06-30T09:51:00+0800` showed no active classified CVS-RFFI training process. A separate GPU-resident process was present, but it was not this experiment: `python main.py --opts dataset celeba train False eval True compute_metrics True solve_inverse_problem False`; it was not touched.
+
+The corrected seven-candidate run `phase1_short195s3_zidjoint_lossfix7_20260630_0058` is complete. Every candidate wrote 160 epoch rows, reached `E160/160`, wrote `best_joint_safe_ssdg.pth`, `latest_ssdg.pth`, `metrics_epoch.csv`, `metrics_epoch.jsonl`, `phase2_zid_prototypes.pt`, and `phase2_zid_prototypes.json`. Full per-candidate stdout logs had 6364 lines each and no `Traceback`, `RuntimeError`, OOM, or killed marker. `stage_test_eval_ran` occurred exactly at epochs `10,20,30,40,50,60,70,80,90,100,110,120,130,140,142,144,146,148,150,152,154,156,158,160`; there were no missing or extra heavy-test epochs.
+
+Baseline comparison target remains `PHASE1_GPU0_JOINTSAFE36_SOFTPSEUDO_190X10_SHORT195_S3` at E200: score 84.9483, test_tx 90.34, strict_udu 84.14, receiver_floor 76.24, sat_mean/sat_floor 76.62/75.39, sat_strict_mean/sat_strict_floor 70.45/69.24.
+
+| Rank | Candidate | Mechanism | GPU | Seed | Best epoch | Score | Δscore | Test TX | Strict UDU | Receiver floor | Sat mean/floor | Sat strict mean/floor | Verdict |
+|---:|---|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---|
+| 1 | `C5_DOMAIN` | all-joint, domain-align leaning | 6 | 360753 | 160 | 83.5329 | -1.4154 | 88.7873 | 82.8483 | 75.3167 | 73.1415/72.0069 | 67.5050/66.6167 | Best in this screen, but below baseline and satellite gate. |
+| 2 | `C3_PROTO` | all-joint, prototype leaning | 4 | 360733 | 148 | 83.5274 | -1.4209 | 88.6951 | 83.7617 | 73.5083 | 74.2753/72.8716 | 67.2161/65.9550 | Near-tie with C5; strict close, receiver/sat still worse. |
+| 3 | `C4_BALANCED` | all-joint, mid balanced | 5 | 360743 | 144 | 83.1531 | -1.7952 | 89.0775 | 84.1017 | 74.9833 | 69.7765/68.6083 | 64.3828/63.2650 | Strict nearly baseline, but satellite collapse is too large. |
+| 4 | `C6_STRONG` | all-joint, strong pressure | 7 | 360763 | 156 | 82.9151 | -2.0332 | 88.5088 | 83.6683 | 74.3833 | 70.9721/69.9701 | 63.1056/62.4183 | Stronger weights did not help. |
+| 5 | `C2_GEOM` | all-joint, geometry leaning | 3 | 360723 | 160 | 82.8088 | -2.1395 | 88.3966 | 82.5117 | 74.6333 | 72.2235/71.2966 | 63.8306/62.8100 | Geometry pressure underperforms. |
+| 6 | `C1_LOW` | all-joint, low balanced | 2 | 360713 | 154 | 82.0929 | -2.8554 | 87.6093 | 82.4067 | 68.8167 | 73.6340/72.6324 | 66.6444/65.7133 | Receiver floor regression is unacceptable. |
+| 7 | `C0_CONSERVE` | all-joint, conservative | 1 | 360703 | 142 | 81.6933 | -3.2550 | 87.3309 | 81.3600 | 72.2417 | 70.4386/69.4069 | 63.6417/62.7083 | Not promotable. |
+
+Detailed per-candidate Phase1 evidence:
+
+| Candidate | Phase/split/K-shot | Open-world old/new/unknown fields | Generalization splits at selected epoch | Satellite scenario TX | Feature-space telemetry at E160 | Pseudo-label telemetry at E160 | Stability |
+|---|---|---|---|---|---|---|---|
+| `C5_DOMAIN` | Phase1 source-only ground training; K-shot N/A | N/A; Stage2 rejection not run | unseen-day seen-rx 92.5381; seen-day unseen-rx 89.4750; unseen-day unseen-rx 82.8483 | clear 75.1990; low-elev 72.2186; rain 72.0069 | proto loss/w 0.232230/0.000929; ow loss/w 0.073811/0.000369; min inter 77.6061°; pos angle 34.1374° | 7457 selected, 7455 correct, conf 0.9975, total 8320 | small skipped-grad epochs 10, max 0.0308; logs clean |
+| `C3_PROTO` | Phase1 source-only ground training; K-shot N/A | N/A; Stage2 rejection not run | unseen-day seen-rx 92.1667; seen-day unseen-rx 88.7683; unseen-day unseen-rx 83.7617 | clear 76.5657; low-elev 73.3887; rain 72.8716 | proto loss/w 0.224102/0.001345; ow loss/w 0.075682/0.000303; min inter 78.3676°; pos angle 34.5878° | 7472 selected, 7470 correct, conf 0.9983, total 8320 | small skipped-grad epochs 9, max 0.0308; logs clean |
+| `C4_BALANCED` | Phase1 source-only ground training; K-shot N/A | N/A; Stage2 rejection not run | unseen-day seen-rx 92.2286; seen-day unseen-rx 89.6417; unseen-day unseen-rx 84.1017 | clear 71.7627; low-elev 68.9583; rain 68.6083 | proto loss/w 0.202595/0.001216; ow loss/w 0.064213/0.000385; min inter 82.0218°; pos angle 33.3341° | 7459 selected, 7458 correct, conf 0.9963, total 8320 | small skipped-grad epochs 8, max 0.0154; logs clean |
+| `C6_STRONG` | Phase1 source-only ground training; K-shot N/A | N/A; Stage2 rejection not run | unseen-day seen-rx 92.9440; seen-day unseen-rx 87.1400; unseen-day unseen-rx 83.6683 | clear 72.9637; low-elev 69.9824; rain 69.9701 | proto loss/w 0.222330/0.001779; ow loss/w 0.077282/0.000464; min inter 78.6181°; pos angle 34.6194° | 7427 selected, 7423 correct, conf 0.9972, total 8320 | small skipped-grad epochs 7, max 0.0308; logs clean |
+| `C2_GEOM` | Phase1 source-only ground training; K-shot N/A | N/A; Stage2 rejection not run | unseen-day seen-rx 92.8881; seen-day unseen-rx 87.9933; unseen-day unseen-rx 82.5117 | clear 74.0368; low-elev 71.2966; rain 71.3373 | proto loss/w 0.240253/0.000961; ow loss/w 0.083241/0.000499; min inter 76.6712°; pos angle 35.5496° | 7397 selected, 7394 correct, conf 0.9970, total 8320 | small skipped-grad epochs 10, max 0.0308; logs clean |
+| `C1_LOW` | Phase1 source-only ground training; K-shot N/A | N/A; Stage2 rejection not run | unseen-day seen-rx 91.3048; seen-day unseen-rx 87.6383; unseen-day unseen-rx 82.4067 | clear 75.3583; low-elev 72.9113; rain 72.6324 | proto loss/w 0.208887/0.000836; ow loss/w 0.068600/0.000274; min inter 79.8909°; pos angle 33.8092° | 7388 selected, 7388 correct, conf 0.9978, total 8320 | small skipped-grad epochs 9, max 0.0154; logs clean |
+| `C0_CONSERVE` | Phase1 source-only ground training; K-shot N/A | N/A; Stage2 rejection not run | unseen-day seen-rx 92.1655; seen-day unseen-rx 86.5333; unseen-day unseen-rx 81.3600 | clear 72.2377; low-elev 69.6711; rain 69.4069 | proto loss/w 0.210352/0.000631; ow loss/w 0.067424/0.000202; min inter 80.6250°; pos angle 33.8143° | 7465 selected, 7462 correct, conf 0.9972, total 8320 | small skipped-grad epochs 9, max 0.0154; logs clean |
+
+Interpretation:
+
+1. The latest implementation is technically exercised end-to-end: multi-prototype memory, open-world feature-space loss, pseudo-label continuation, dense-tail test scheduling, and `z_id` prototype export are all active and finite.
+2. The feature-space additions did not beat the requested SHORT195_S3 baseline in this E160 screen. The best two rows, C5 and C3, are separated by only 0.0054 score points, so the practical ranking is a tie, but both are still about 1.42 score points below baseline.
+3. The main failure is not source validation. Validation TX stays around 98.24-98.65. The regression appears on held-out receiver/day and especially satellite robustness: even the best C5 loses 3.48pp sat_mean and 3.38pp sat_floor versus baseline. C4 almost preserves strict_udu but loses 6.84pp sat_mean, so it is not promotable.
+4. The small skipped-gradient rates after the cosine-margin fix are batch-level events rather than the earlier full-epoch `train_skipped_nonfinite_grad=1.0` failure. They do not invalidate the run, but they remain a stability signal to track before any longer run.
+5. No candidate should be promoted to Stage2-B old/unknown rejection validation yet. This run validates that the implementation path is executable, but it does not validate the joint mechanism as an improvement over the current Phase1 baseline.
+
+Recommended next action:
+
+Do not spend Stage2/unknown-rejection budget on these checkpoints. The next ground-training experiment should keep the code path but reduce satellite-destructive feature-space pressure: keep C5/C3 as reference settings, lower or warm up `lambda_open_world_feat`/domain-align weights, and add a satellite-preservation gate during selection. If only one confirmation run is allowed, C5 is the better E200/E220 candidate by final score and receiver floor; if the goal is strict_udu preservation, C3 is the better reference. Neither should be claimed as stronger than `SHORT195_S3` without a new run that clears the satellite gate.
