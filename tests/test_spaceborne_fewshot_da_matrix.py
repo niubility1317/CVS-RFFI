@@ -11,6 +11,29 @@ if str(TOOLS) not in sys.path:
 
 
 class SpaceborneFewShotDaMatrixTest(unittest.TestCase):
+    def _assert_phase1_plus_phase2(self, candidates, rows, payload):
+        from collections import Counter
+
+        phase1_candidates = [c for c in candidates if c.command_kind == "phase1_safe_ssdg_ground_train"]
+        phase2_candidates = [c for c in candidates if c.command_kind != "phase1_safe_ssdg_ground_train"]
+        phase1_rows = [item for item in rows if item["lane"] == "phase1_ground_dg"]
+        phase2_rows = [item for item in rows if item["lane"] == "phase2_spaceborne_fsl"]
+
+        self.assertEqual(56, len(candidates))
+        self.assertEqual(8, len(phase1_candidates))
+        self.assertEqual(48, len(phase2_candidates))
+        self.assertEqual(Counter(c.gpu for c in phase1_candidates), {gpu: 1 for gpu in range(8)})
+        self.assertEqual(Counter(c.gpu for c in phase2_candidates), {gpu: 6 for gpu in range(8)})
+        self.assertEqual(payload["phase1_rows_expected"], 8)
+        self.assertEqual(payload["phase2_rows_expected"], 48)
+        self.assertEqual({item["stage2_mode"] for item in phase1_rows}, {"NOT_APPLICABLE"})
+        self.assertEqual({item["ground_dg_claim_scope"] for item in phase1_rows}, {"source_only"})
+        self.assertEqual({item["target_receiver_usage"] for item in phase1_rows}, {"forbidden_in_phase1"})
+        self.assertEqual({item["star_ground_channel_impl"] for item in phase1_rows}, {"simplified_leo_residual"})
+        self.assertTrue(all(item["parameters"]["use_concat_sat_channel_aug"] for item in phase1_rows))
+        self.assertTrue(all(item["parameters"]["concat_sat_ce_only"] for item in phase1_rows))
+        return phase2_candidates, phase2_rows
+
     def test_smoke_matrix_has_separate_sfe_and_ftrc_candidates(self):
         from spaceborne_fewshot_da_matrix import make_candidates
 
@@ -571,12 +594,13 @@ class SpaceborneFewShotDaMatrixTest(unittest.TestCase):
         launcher = render_launcher("spaceborne_fewshot_struct48_test", candidates)
         payload = matrix_payload("spaceborne_fewshot_struct48_test", candidates)
         rows = payload["candidates"]
+        candidates, rows = self._assert_phase1_plus_phase2(candidates, rows, payload)
 
         self.assertEqual(48, len(candidates))
         self.assertEqual(Counter(c.gpu for c in candidates), {gpu: 6 for gpu in range(8)})
         self.assertEqual(Counter(c.optimization_category for c in candidates), {"conservative": 24, "aggressive": 24})
         self.assertEqual({c.stage2_max_active_per_gpu for c in candidates}, {4})
-        self.assertEqual(payload["phase1_rows_expected"], 0)
+        self.assertEqual(payload["phase1_rows_expected"], 8)
         self.assertEqual(payload["phase2_rows_expected"], 48)
         self.assertEqual(payload["phase2_gpu_utilization_policy"]["queued_rows_per_gpu"], 6)
         self.assertTrue(all(c.oa_mse_anchor_density_gate for c in candidates))
@@ -598,6 +622,7 @@ class SpaceborneFewShotDaMatrixTest(unittest.TestCase):
         launcher = render_launcher("spaceborne_fewshot_simplified48_test", candidates)
         payload = matrix_payload("spaceborne_fewshot_simplified48_test", candidates)
         rows = payload["candidates"]
+        candidates, rows = self._assert_phase1_plus_phase2(candidates, rows, payload)
 
         self.assertEqual(48, len(candidates))
         self.assertEqual(Counter(c.gpu for c in candidates), {gpu: 6 for gpu in range(8)})
@@ -628,12 +653,13 @@ class SpaceborneFewShotDaMatrixTest(unittest.TestCase):
         launcher = render_launcher("spaceborne_fewshot_reghead48_test", candidates)
         payload = matrix_payload("spaceborne_fewshot_reghead48_test", candidates)
         rows = payload["candidates"]
+        candidates, rows = self._assert_phase1_plus_phase2(candidates, rows, payload)
 
         self.assertEqual(48, len(candidates))
         self.assertEqual(Counter(c.gpu for c in candidates), {gpu: 6 for gpu in range(8)})
         self.assertEqual(Counter(c.optimization_category for c in candidates), {"conservative": 24, "aggressive": 24})
         self.assertEqual({c.stage2_max_active_per_gpu for c in candidates}, {2})
-        self.assertEqual(payload["phase1_rows_expected"], 0)
+        self.assertEqual(payload["phase1_rows_expected"], 8)
         self.assertEqual(payload["phase2_rows_expected"], 48)
         self.assertEqual(payload["phase2_gpu_utilization_policy"]["max_active_per_gpu"], 2)
         self.assertEqual(payload["star_ground_channel_policy"]["default_impl"], "simplified_leo_residual")
@@ -663,6 +689,7 @@ class SpaceborneFewShotDaMatrixTest(unittest.TestCase):
         launcher = render_launcher("spaceborne_fewshot_geom48_test", candidates)
         payload = matrix_payload("spaceborne_fewshot_geom48_test", candidates)
         rows = payload["candidates"]
+        candidates, rows = self._assert_phase1_plus_phase2(candidates, rows, payload)
 
         self.assertEqual(48, len(candidates))
         self.assertEqual(Counter(c.gpu for c in candidates), {gpu: 6 for gpu in range(8)})
@@ -750,6 +777,7 @@ class SpaceborneFewShotDaMatrixTest(unittest.TestCase):
         launcher = render_launcher("spaceborne_fewshot_looo48_test", candidates)
         payload = matrix_payload("spaceborne_fewshot_looo48_test", candidates)
         rows = payload["candidates"]
+        candidates, rows = self._assert_phase1_plus_phase2(candidates, rows, payload)
 
         self.assertEqual(48, len(candidates))
         self.assertEqual(Counter(c.gpu for c in candidates), {gpu: 6 for gpu in range(8)})
@@ -779,6 +807,7 @@ class SpaceborneFewShotDaMatrixTest(unittest.TestCase):
         launcher = render_launcher("spaceborne_fewshot_supportcv48_test", candidates)
         payload = matrix_payload("spaceborne_fewshot_supportcv48_test", candidates)
         rows = payload["candidates"]
+        candidates, rows = self._assert_phase1_plus_phase2(candidates, rows, payload)
 
         self.assertEqual(48, len(candidates))
         self.assertEqual(Counter(c.gpu for c in candidates), {gpu: 6 for gpu in range(8)})
@@ -816,6 +845,7 @@ class SpaceborneFewShotDaMatrixTest(unittest.TestCase):
         launcher = render_launcher("spaceborne_fewshot_bgcap48_test", candidates)
         payload = matrix_payload("spaceborne_fewshot_bgcap48_test", candidates)
         rows = payload["candidates"]
+        candidates, rows = self._assert_phase1_plus_phase2(candidates, rows, payload)
 
         self.assertEqual(48, len(candidates))
         self.assertEqual(Counter(c.gpu for c in candidates), {gpu: 6 for gpu in range(8)})
@@ -843,6 +873,7 @@ class SpaceborneFewShotDaMatrixTest(unittest.TestCase):
         launcher = render_launcher("spaceborne_fewshot_kret48_test", candidates)
         payload = matrix_payload("spaceborne_fewshot_kret48_test", candidates)
         rows = payload["candidates"]
+        candidates, rows = self._assert_phase1_plus_phase2(candidates, rows, payload)
 
         self.assertEqual(48, len(candidates))
         self.assertEqual(Counter(c.gpu for c in candidates), {gpu: 6 for gpu in range(8)})
@@ -872,6 +903,7 @@ class SpaceborneFewShotDaMatrixTest(unittest.TestCase):
         launcher = render_launcher("spaceborne_fewshot_riskret48_test", candidates)
         payload = matrix_payload("spaceborne_fewshot_riskret48_test", candidates)
         rows = payload["candidates"]
+        candidates, rows = self._assert_phase1_plus_phase2(candidates, rows, payload)
 
         self.assertEqual(48, len(candidates))
         self.assertEqual(Counter(c.gpu for c in candidates), {gpu: 6 for gpu in range(8)})
@@ -902,6 +934,7 @@ class SpaceborneFewShotDaMatrixTest(unittest.TestCase):
         launcher = render_launcher("spaceborne_fewshot_constrain48_test", candidates)
         payload = matrix_payload("spaceborne_fewshot_constrain48_test", candidates)
         rows = payload["candidates"]
+        candidates, rows = self._assert_phase1_plus_phase2(candidates, rows, payload)
 
         self.assertEqual(48, len(candidates))
         self.assertEqual(Counter(c.gpu for c in candidates), {gpu: 6 for gpu in range(8)})
@@ -962,6 +995,7 @@ class SpaceborneFewShotDaMatrixTest(unittest.TestCase):
         payload = matrix_payload("spaceborne_fewshot_h06_oldrelax48_test", candidates)
         rows = payload["candidates"]
         launcher = render_launcher("spaceborne_fewshot_h06_oldrelax48_test", candidates)
+        candidates, rows = self._assert_phase1_plus_phase2(candidates, rows, payload)
 
         self.assertEqual(48, len(candidates))
         self.assertEqual(Counter(c.gpu for c in candidates), {gpu: 6 for gpu in range(8)})
@@ -1002,6 +1036,7 @@ class SpaceborneFewShotDaMatrixTest(unittest.TestCase):
         payload = matrix_payload("spaceborne_fewshot_h06_oldqual48_test", candidates)
         rows = payload["candidates"]
         launcher = render_launcher("spaceborne_fewshot_h06_oldqual48_test", candidates)
+        candidates, rows = self._assert_phase1_plus_phase2(candidates, rows, payload)
 
         self.assertEqual(48, len(candidates))
         self.assertEqual(Counter(c.gpu for c in candidates), {gpu: 6 for gpu in range(8)})
@@ -1036,6 +1071,7 @@ class SpaceborneFewShotDaMatrixTest(unittest.TestCase):
         payload = matrix_payload("spaceborne_fewshot_h06_oldrisk48_test", candidates)
         rows = payload["candidates"]
         launcher = render_launcher("spaceborne_fewshot_h06_oldrisk48_test", candidates)
+        candidates, rows = self._assert_phase1_plus_phase2(candidates, rows, payload)
 
         self.assertEqual(48, len(candidates))
         self.assertEqual(Counter(c.gpu for c in candidates), {gpu: 6 for gpu in range(8)})
@@ -1075,6 +1111,7 @@ class SpaceborneFewShotDaMatrixTest(unittest.TestCase):
         payload = matrix_payload("spaceborne_fewshot_h06_oldfuse48_test", candidates)
         rows = payload["candidates"]
         launcher = render_launcher("spaceborne_fewshot_h06_oldfuse48_test", candidates)
+        candidates, rows = self._assert_phase1_plus_phase2(candidates, rows, payload)
 
         self.assertEqual(48, len(candidates))
         self.assertEqual(Counter(c.gpu for c in candidates), {gpu: 6 for gpu in range(8)})
@@ -1118,6 +1155,7 @@ class SpaceborneFewShotDaMatrixTest(unittest.TestCase):
         payload = matrix_payload("spaceborne_fewshot_h06_rollsafe48_test", candidates)
         rows = payload["candidates"]
         launcher = render_launcher("spaceborne_fewshot_h06_rollsafe48_test", candidates)
+        candidates, rows = self._assert_phase1_plus_phase2(candidates, rows, payload)
 
         self.assertEqual(48, len(candidates))
         self.assertEqual(Counter(c.gpu for c in candidates), {gpu: 6 for gpu in range(8)})
@@ -1171,6 +1209,7 @@ class SpaceborneFewShotDaMatrixTest(unittest.TestCase):
         payload = matrix_payload("spaceborne_fewshot_h06_oldhead48_test", candidates)
         rows = payload["candidates"]
         launcher = render_launcher("spaceborne_fewshot_h06_oldhead48_test", candidates)
+        candidates, rows = self._assert_phase1_plus_phase2(candidates, rows, payload)
 
         self.assertEqual(48, len(candidates))
         self.assertEqual(Counter(c.gpu for c in candidates), {gpu: 6 for gpu in range(8)})
