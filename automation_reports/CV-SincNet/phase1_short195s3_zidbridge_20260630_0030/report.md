@@ -195,3 +195,52 @@ Interpretation:
 Recommended next action:
 
 Do not spend Stage2/unknown-rejection budget on these checkpoints. The next ground-training experiment should keep the code path but reduce satellite-destructive feature-space pressure: keep C5/C3 as reference settings, lower or warm up `lambda_open_world_feat`/domain-align weights, and add a satellite-preservation gate during selection. If only one confirmation run is allowed, C5 is the better E200/E220 candidate by final score and receiver floor; if the goal is strict_udu preservation, C3 is the better reference. Neither should be claimed as stronger than `SHORT195_S3` without a new run that clears the satellite gate.
+
+## Prototype Geometry Detail 2026-06-30 10:20 CST
+
+Source artifact: N607 run root `/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_short195s3_zidjoint_lossfix7_20260630_0058/*/phase2_zid_prototypes.json`. All values below are from exported `z_id` prototype packages and final E160 training telemetry.
+
+Export schema note: each candidate has 6 global `P_tx` transmitter prototypes, plus 84 active `P_tx_dom[t,d]` transmitter-domain prototypes. The JSON tensor keeps 26 possible domain slots, but only 14 domain slots are active for each TX in this source split: `0,1,4,5,8,9,12,13,16,17,20,21,24,25`. Therefore each TX has 15 active prototypes when counting `1 P_tx + 14 P_tx_dom`; each candidate has 90 active prototypes total. These are old/source TX prototypes only; no target receiver support/query or unknown query is used.
+
+| Candidate | Global `P_tx` | Active `P_tx_dom` | Total active prototypes | Export p95 radius mean | Export min interclass angle | Nearest TX pair | Margin violation pairs | E160 open-world loss/weighted | E160 proto loss/weighted |
+|---|---:|---:|---:|---:|---:|---|---:|---:|---:|
+| `C0_CONSERVE` | 6 | 84 | 90 | 9.69° | 88.67° | 1-3 | 0 | 0.067424/0.000202 | 0.210352/0.000631 |
+| `C1_LOW` | 6 | 84 | 90 | 8.39° | 88.21° | 4-5 | 0 | 0.068600/0.000274 | 0.208887/0.000836 |
+| `C2_GEOM` | 6 | 84 | 90 | 6.81° | 87.46° | 1-5 | 0 | 0.083241/0.000499 | 0.240253/0.000961 |
+| `C3_PROTO` | 6 | 84 | 90 | 8.11° | 88.89° | 1-3 | 0 | 0.075682/0.000303 | 0.224102/0.001345 |
+| `C4_BALANCED` | 6 | 84 | 90 | 8.13° | 88.67° | 1-3 | 0 | 0.064213/0.000385 | 0.202595/0.001216 |
+| `C5_DOMAIN` | 6 | 84 | 90 | 7.21° | 89.03° | 1-3 | 0 | 0.073811/0.000369 | 0.232230/0.000929 |
+| `C6_STRONG` | 6 | 84 | 90 | 6.94° | 89.05° | 3-4 | 0 | 0.077282/0.000464 | 0.222330/0.001779 |
+
+Rank-1 candidate `C5_DOMAIN` per-TX prototype detail:
+
+| TX | Samples | `P_tx` | Active `P_tx_dom` | Total prototypes | Active domains | p95 radius | p99 radius | max radius | robust max | sigma | Domain shift mean/max | Domain sample min/max |
+|---:|---:|---:|---:|---:|---|---:|---:|---:|---:|---:|---:|---:|
+| 0 | 1393 | 1 | 14 | 15 | `0,1,4,5,8,9,12,13,16,17,20,21,24,25` | 6.19° | 61.30° | 89.93° | 70.44° | 9.14° | 1.68°/2.94° | 98/100 |
+| 1 | 1388 | 1 | 14 | 15 | `0,1,4,5,8,9,12,13,16,17,20,21,24,25` | 15.18° | 89.31° | 89.88° | 89.88° | 11.45° | 2.97°/8.15° | 97/100 |
+| 2 | 1389 | 1 | 14 | 15 | `0,1,4,5,8,9,12,13,16,17,20,21,24,25` | 3.78° | 35.38° | 89.82° | 43.98° | 8.60° | 1.69°/2.90° | 97/100 |
+| 3 | 1387 | 1 | 14 | 15 | `0,1,4,5,8,9,12,13,16,17,20,21,24,25` | 8.16° | 88.93° | 89.90° | 89.90° | 10.96° | 2.60°/5.92° | 98/100 |
+| 4 | 1376 | 1 | 14 | 15 | `0,1,4,5,8,9,12,13,16,17,20,21,24,25` | 4.48° | 38.77° | 89.80° | 46.19° | 7.41° | 1.53°/4.57° | 95/100 |
+| 5 | 1387 | 1 | 14 | 15 | `0,1,4,5,8,9,12,13,16,17,20,21,24,25` | 5.49° | 18.10° | 89.84° | 25.02° | 6.93° | 2.13°/3.58° | 97/100 |
+
+Interpretation of these prototype numbers:
+
+1. The prototype package is not empty and not single-prototype-only. It contains one global source TX identity prototype per class and one local source domain prototype for each active TX-domain cell. This is the current local implementation's multi-prototype form: `P_tx` for identity center plus `P_tx_dom` for receiver/day/domain mode diagnostics and later deployment-side evidence.
+2. C5 has a good exported global separation surface: nearest global TX pair is 1-3 at 89.03°, and `margin_violation_pairs=0`. This means the exported global centers are not the immediate problem.
+3. The weak point is radius tail, not center separation. C5's mean p95 radius is only 7.21°, but TX1 and TX3 have p99/max near 89°, indicating a small but severe tail of source samples far from their class center. That tail explains why open-world/new-class rejection should not be promoted from this checkpoint without a radius/overlap audit.
+4. Domain shifts of active `P_tx_dom` against `P_tx` are modest on average, about 1.53°-2.97° for C5, but TX1 reaches 8.15° and TX3 reaches 5.92°. This is compatible with the final result: domain alignment is partly working, but not enough to preserve satellite robustness.
+
+`train_ow_feat_*` interpretation for C5:
+
+| Field | C5 value | Meaning |
+|---|---:|---|
+| `train_ow_feat_active_classes` | 6.0 | The batch-level geometry loss saw all 6 source TX classes on average; it was active, not skipped due to missing classes. |
+| `train_ow_feat_compact` | 0.059466 | Squared hinge penalty for samples outside the desired class angular radius. Nonzero means many batch samples remain wider than the configured 12° radius. |
+| `train_ow_feat_inter` | 0.001830 | Squared hinge penalty for class centers closer than the configured 55° margin in some batches. Small but nonzero; not a collapse signal. |
+| `train_ow_feat_sample_margin` | 0.008342 | Per-sample own-center versus nearest-negative-center margin penalty. Nonzero means some samples are still too close to another TX center. |
+| `train_ow_feat_domain_align` | 0.489642 rad, about 28.05° | Logged domain-center angular misalignment metric. It is not directly the weighted loss term; the actual loss uses a cosine-distance form internally. |
+| `train_ow_feat_pos_angle_deg` | 34.14° | Mean sample-to-own-class-center angle across E160 batches. This is much larger than the target radius and explains the compactness penalty. |
+| `train_ow_feat_min_inter_deg` | 77.61° | Mean batch-level minimum inter-class center angle. It is comfortably above the 55° margin on average, so class center separation is not the bottleneck. |
+| `train_loss_open_world_feat`/`train_w_loss_open_world_feat` | 0.073811/0.000369 | Raw open-world feature-space loss and its weighted contribution with `lambda_open_world_feat=0.005`; finite and active but intentionally small relative to main CE/DG losses. |
+
+Important distinction: exported prototype geometry is computed after extracting the full selected split into one package; `train_ow_feat_*` is averaged over E160 training batches. Therefore C5 can simultaneously show exported `min_interclass_angle=89.03°` and training `train_ow_feat_min_inter_deg=77.61°`; they are different aggregation surfaces.
