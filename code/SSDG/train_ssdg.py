@@ -299,6 +299,8 @@ def build_arg_parser() -> argparse.ArgumentParser:
     parser.add_argument("--proxy_unknown_vacuum_hard_k", type=int, default=2)
     parser.add_argument("--proxy_unknown_vacuum_radius_deg", type=float, default=40.0)
     parser.add_argument("--lambda_soft_unknown_mixup", type=float, default=0.0)
+    parser.add_argument("--soft_unknown_mixup_start_epoch", type=int, default=-1)
+    parser.add_argument("--soft_unknown_mixup_warmup_epochs", type=int, default=-1)
     parser.add_argument("--soft_unknown_mixup_count", type=int, default=16)
     parser.add_argument("--soft_unknown_mixup_order", type=int, default=3)
     parser.add_argument("--soft_unknown_mixup_alpha", type=float, default=0.5)
@@ -2172,6 +2174,12 @@ def train(args) -> int:
                     start_epoch=int(getattr(args, "source_episode_start_epoch", 1)),
                     warmup_epochs=int(getattr(args, "source_episode_warmup_epochs", 0)),
                 )
+                soft_mixup_start_epoch = int(getattr(args, "soft_unknown_mixup_start_epoch", -1))
+                if soft_mixup_start_epoch <= 0:
+                    soft_mixup_start_epoch = int(getattr(args, "proxy_unknown_start_epoch", 40))
+                soft_mixup_warmup_epochs = int(getattr(args, "soft_unknown_mixup_warmup_epochs", -1))
+                if soft_mixup_warmup_epochs < 0:
+                    soft_mixup_warmup_epochs = int(getattr(args, "proxy_unknown_warmup_epochs", 0))
                 loss_soft_unknown_mixup_l = z_id_l.sum() * 0.0
                 soft_unknown_mixup_info: Dict[str, float] = {
                     "soft_unknown_mixup_count": 0.0,
@@ -2183,7 +2191,11 @@ def train(args) -> int:
                     "soft_unknown_mixup_vacuum_violation": 0.0,
                 }
                 soft_unknown_mixup_batch = None
-                soft_unknown_mixup_stage_scale = proxy_stage_scale
+                soft_unknown_mixup_stage_scale = _stage_gate_scale(
+                    epoch,
+                    start_epoch=soft_mixup_start_epoch,
+                    warmup_epochs=soft_mixup_warmup_epochs,
+                )
                 soft_mixup_needed = (
                     (float(getattr(args, "lambda_soft_unknown_mixup", 0.0)) > 0.0 and soft_unknown_mixup_stage_scale > 0.0)
                     or (
