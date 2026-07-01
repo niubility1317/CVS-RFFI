@@ -259,3 +259,16 @@ Local verification:
 | `bash ./code/scripts/launch_phase2_old80first_head48_sched_20260702_0055.sh --dry-run` | PASS, emitted 48 candidate command blocks and exited |
 
 N607 action boundary: the scheduler-safe launcher has not been submitted because the previous OLD80_FIRST launcher is already alive and waiting. Starting a second launcher against the same candidate family would risk duplicate outputs. The current safe action is monitor-only until the existing launcher either starts candidates, finishes, or is explicitly superseded.
+
+Latest monitor update: 2026-07-02 01:00 Asia/Hong_Kong
+
+| Item | Value |
+|---|---|
+| Launcher PID | `2887894` still alive |
+| Launcher elapsed | about 10 minutes 53 seconds |
+| Latest launcher state | still repeated `[SPACEBORNE-FSDA-WAIT] gpu=0 active=0 external=2 total=2 max=2` |
+| Candidate logs | 0 |
+| Completed `metrics.json` | 0 |
+| Local SSH cleanup | verified `ssh_processes=none` and `n607_established=none` |
+
+Status interpretation: no OLD80_FIRST metric evidence is available yet. The run is resource-queued, not failed.
