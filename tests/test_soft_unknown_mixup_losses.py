@@ -115,3 +115,112 @@ def test_source_episode_three_sigma_loss_penalizes_mixup_overflow():
     assert info["source_episode_mixup_order"] == 3.0
     assert info["source_episode_mixup_loss"] > 0.0
     assert info["source_episode_mixup_overflow_rate"] > 0.0
+
+
+def test_proxy_unknown_vaccept_surrogate_penalizes_accepted_unknown_more():
+    from cvsrffi.losses import proxy_unknown_energy_loss
+
+    known = torch.tensor(
+        [
+            [1.00, 0.00],
+            [0.99, 0.02],
+            [0.00, 1.00],
+            [0.02, 0.99],
+        ],
+        dtype=torch.float32,
+    )
+    near_unknown = torch.tensor([[0.98, 0.03], [0.97, 0.04]], dtype=torch.float32)
+    far_unknown = torch.tensor([[-1.00, 0.00], [-0.99, -0.02]], dtype=torch.float32)
+    y = torch.tensor([0, 0, 1, 1, 2, 2])
+
+    z_near = torch.cat([known, near_unknown], dim=0).requires_grad_(True)
+    near_loss, near_info = proxy_unknown_energy_loss(
+        z_near,
+        y,
+        holdout_label=2,
+        virtual_count=0,
+        energy_margin=0.0,
+        placeholder_weight=0.0,
+        core_quantile=0.80,
+        accept_quantile=0.80,
+        vaccept_weight=1.0,
+        core_accept_weight=0.25,
+        component_gate_weight=0.5,
+        vaccept_cvar_alpha=0.5,
+        unknown_margin=0.05,
+        energy_softplus_temperature=0.05,
+    )
+
+    z_far = torch.cat([known, far_unknown], dim=0).requires_grad_(True)
+    far_loss, far_info = proxy_unknown_energy_loss(
+        z_far,
+        y,
+        holdout_label=2,
+        virtual_count=0,
+        energy_margin=0.0,
+        placeholder_weight=0.0,
+        core_quantile=0.80,
+        accept_quantile=0.80,
+        vaccept_weight=1.0,
+        core_accept_weight=0.25,
+        component_gate_weight=0.5,
+        vaccept_cvar_alpha=0.5,
+        unknown_margin=0.05,
+        energy_softplus_temperature=0.05,
+    )
+
+    assert near_info["vaccept_surrogate"] > far_info["vaccept_surrogate"]
+    assert near_info["hard_proxy_accept_rate"] >= far_info["hard_proxy_accept_rate"]
+    assert near_loss.item() > far_loss.item()
+    near_loss.backward()
+    assert z_near.grad is not None
+    assert torch.isfinite(z_near.grad).all()
+
+
+def test_proxy_unknown_hard_virtual_pool_reports_gate_metrics():
+    from cvsrffi.losses import proxy_unknown_energy_loss
+
+    z = torch.tensor(
+        [
+            [1.00, 0.00],
+            [0.99, 0.04],
+            [0.98, -0.03],
+            [0.00, 1.00],
+            [0.04, 0.99],
+            [-0.03, 0.98],
+            [-1.00, 0.00],
+            [-0.99, 0.04],
+            [-0.98, -0.03],
+        ],
+        dtype=torch.float32,
+        requires_grad=True,
+    )
+    y = torch.tensor([0, 0, 0, 1, 1, 1, 2, 2, 2])
+
+    loss, info = proxy_unknown_energy_loss(
+        z,
+        y,
+        holdout_label=2,
+        virtual_count=9,
+        virtual_mode="hard",
+        energy_margin=0.0,
+        placeholder_weight=0.0,
+        core_quantile=0.80,
+        accept_quantile=0.80,
+        vaccept_weight=1.0,
+        component_gate_weight=1.0,
+        tail_quarantine_weight=0.1,
+        source_safe_weight=0.1,
+        vaccept_cvar_alpha=0.30,
+        energy_softplus_temperature=0.05,
+    )
+
+    assert loss.item() > 0.0
+    loss.backward()
+    assert z.grad is not None
+    assert torch.isfinite(z.grad).all()
+    assert info["virtual_count"] == 9.0
+    assert info["vaccept_surrogate"] > 0.0
+    assert info["component_gate_unknown"] >= 0.0
+    for key in ("shell_accept_rate", "bridge_accept_rate", "outward_accept_rate", "hard_proxy_accept_rate"):
+        assert 0.0 <= info[key] <= 1.0

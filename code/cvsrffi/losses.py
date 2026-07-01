@@ -835,6 +835,16 @@ def _energy_to_centers(features: torch.Tensor, centers: torch.Tensor) -> torch.T
     return -torch.logsumexp(scores, dim=1)
 
 
+def _top_cvar_mean(values: torch.Tensor, alpha: float) -> torch.Tensor:
+    """Mean of the largest alpha fraction, preserving gradients."""
+    if values.numel() == 0:
+        return values.new_tensor(0.0)
+    flat = values.reshape(-1)
+    frac = max(1e-6, min(1.0, float(alpha)))
+    k = max(1, int(math.ceil(float(flat.numel()) * frac)))
+    return torch.topk(flat, k=k, largest=True).values.mean()
+
+
 def soft_unknown_mixup_loss(
     z: torch.Tensor,
     labels: torch.Tensor,
@@ -951,13 +961,32 @@ def proxy_unknown_energy_loss(
     *,
     holdout_label: Optional[int] = None,
     virtual_count: int = 16,
+    virtual_mode: str = "legacy",
     energy_margin: float = 1.0,
+    energy_temperature: float = 1.0,
     placeholder_weight: float = 0.5,
     virtual_detach: bool = True,
     vacuum_weight: float = 0.0,
     vacuum_width_rad: float = math.radians(4.0),
     vacuum_hard_k: int = 2,
     vacuum_radius_rad: float = math.radians(40.0),
+    core_quantile: float = 0.90,
+    accept_quantile: float = 0.95,
+    tail_quantile: float = 0.95,
+    overflow_quantile: float = 0.99,
+    vaccept_weight: float = 0.0,
+    core_accept_weight: float = 0.0,
+    component_gate_weight: float = 0.0,
+    tail_quarantine_weight: float = 0.0,
+    source_safe_weight: float = 0.0,
+    vaccept_cvar_alpha: float = 0.25,
+    unknown_margin: float = 0.08,
+    known_margin: float = 0.05,
+    energy_softplus_temperature: float = 0.04,
+    component_temperature_rad: float = math.radians(3.0),
+    component_margin_rad: float = math.radians(4.0),
+    component_margin_temperature_rad: float = math.radians(3.0),
+    shell_width_rad: float = math.radians(4.0),
 ) -> Tuple[torch.Tensor, Dict[str, float]]:
     """Source-only proxy unknown loss using leave-one-TX-out and feature outliers."""
     default_metrics = {
@@ -965,12 +994,30 @@ def proxy_unknown_energy_loss(
         "known_count": 0.0,
         "proxy_unknown_count": 0.0,
         "virtual_count": 0.0,
+        "core_count": 0.0,
+        "tail_count": 0.0,
+        "overflow_count": 0.0,
         "energy_known": float("nan"),
         "energy_proxy": float("nan"),
         "energy_virtual": float("nan"),
         "energy_margin": float("nan"),
+        "accept_energy_threshold": float("nan"),
+        "core_energy_threshold": float("nan"),
+        "vaccept_surrogate": 0.0,
+        "core_accept_loss": 0.0,
+        "component_gate_unknown": 0.0,
+        "component_gate_accept_prob": float("nan"),
+        "component_gate_accept_prob_max": float("nan"),
+        "tail_quarantine_loss": 0.0,
+        "source_safe_loss": 0.0,
         "proxy_unknown_auc": float("nan"),
         "virtual_accept_rate": float("nan"),
+        "virtual_accept_rate_core": float("nan"),
+        "proxy_accept_rate": float("nan"),
+        "hard_proxy_accept_rate": float("nan"),
+        "shell_accept_rate": float("nan"),
+        "bridge_accept_rate": float("nan"),
+        "outward_accept_rate": float("nan"),
         "vacuum_loss": 0.0,
         "vacuum_violation_rate": 0.0,
         "vacuum_margin_deg": float("nan"),
@@ -1016,16 +1063,30 @@ def proxy_unknown_energy_loss(
         return zero_like_with_grad(z), default_metrics
     proto = torch.stack(centers, dim=0)
     radius_vec = torch.stack(class_radii, dim=0).to(device=proto.device, dtype=proto.dtype)
+    z_known = z_norm[known_mask]
+    y_known = labels[known_mask]
 
     def energy(feat: torch.Tensor) -> torch.Tensor:
-        scores = safe_l2_normalize(feat, dim=1) @ proto.t()
+        scores = (safe_l2_normalize(feat, dim=1) @ proto.t()) / max(1e-4, float(energy_temperature))
         return -torch.logsumexp(scores, dim=1)
 
-    e_known = energy(z_norm[known_mask])
+    e_known = energy(z_known)
     e_proxy = energy(z_norm[proxy_mask])
-    virtual = _make_virtual_outliers(z_norm[known_mask], proto, count=max(0, int(virtual_count)))
+    virtual_parts = _make_proxy_virtual_unknown_pool(
+        z_known,
+        y_known,
+        known_labels,
+        proto,
+        radius_vec,
+        count=max(0, int(virtual_count)),
+        mode=str(virtual_mode or "legacy"),
+        shell_width_rad=float(shell_width_rad),
+    )
+    virtual_tensors = [part for part in virtual_parts.values() if part.numel() > 0]
+    virtual = torch.cat(virtual_tensors, dim=0) if virtual_tensors else z.new_zeros((0, z.size(1)))
     if bool(virtual_detach):
         virtual = virtual.detach()
+        virtual_parts = {name: part.detach() for name, part in virtual_parts.items()}
     e_virtual = energy(virtual) if virtual.numel() else z.new_zeros((0,))
 
     proxy_target = torch.cat([e_proxy, e_virtual], dim=0)
@@ -1036,6 +1097,66 @@ def proxy_unknown_energy_loss(
         F.softplus(-logits_known).mean()
         + F.softplus(-logits_unknown).mean()
     ) if logits_unknown.numel() else z.new_tensor(0.0)
+
+    core_q = max(0.0, min(1.0, float(core_quantile)))
+    tail_q = max(core_q, min(1.0, float(tail_quantile)))
+    overflow_q = max(tail_q, min(1.0, float(overflow_quantile)))
+    known_angles = z_known.new_zeros((z_known.size(0),))
+    core_mask_local = torch.zeros((z_known.size(0),), device=z_known.device, dtype=torch.bool)
+    tail_mask_local = torch.zeros_like(core_mask_local)
+    overflow_mask_local = torch.zeros_like(core_mask_local)
+    for proto_idx, cls in enumerate(known_labels):
+        local_mask = y_known.eq(cls)
+        if not bool(local_mask.any()):
+            continue
+        cls_cos = (z_known[local_mask] * proto[proto_idx].view(1, -1)).sum(dim=1).clamp(-1.0 + 1e-6, 1.0 - 1e-6)
+        cls_angles = _safe_angle_from_cos(cls_cos)
+        known_angles[local_mask] = cls_angles
+        cls_det = cls_angles.detach()
+        core_radius = torch.quantile(cls_det, core_q) if cls_det.numel() > 1 else cls_det.max()
+        tail_radius = torch.quantile(cls_det, tail_q) if cls_det.numel() > 1 else cls_det.max()
+        overflow_radius = torch.quantile(cls_det, overflow_q) if cls_det.numel() > 1 else cls_det.max()
+        core_mask_local |= local_mask & (known_angles <= core_radius)
+        tail_mask_local |= local_mask & (known_angles > core_radius) & (known_angles <= tail_radius)
+        overflow_mask_local |= local_mask & (known_angles > overflow_radius)
+    if not bool(core_mask_local.any()):
+        core_mask_local = torch.ones_like(core_mask_local)
+    e_core = e_known[core_mask_local]
+    accept_q = max(0.0, min(1.0, float(accept_quantile)))
+    t_core = torch.quantile(e_core.detach(), accept_q) if e_core.numel() > 1 else e_core.detach().mean()
+    tau_e = max(1e-4, float(energy_softplus_temperature))
+    alpha = max(1e-6, min(1.0, float(vaccept_cvar_alpha)))
+    vaccept_terms = F.softplus((t_core + float(unknown_margin) - proxy_target) / tau_e) if proxy_target.numel() else z.new_zeros((0,))
+    vaccept_loss = _top_cvar_mean(vaccept_terms, alpha) if vaccept_terms.numel() else z.new_tensor(0.0)
+    core_accept_loss = F.softplus((e_core - (t_core - float(known_margin))) / tau_e).mean() if e_core.numel() else z.new_tensor(0.0)
+    e_tail = e_known[tail_mask_local]
+    tail_terms = F.softplus((t_core + float(unknown_margin) - e_tail) / tau_e) if e_tail.numel() else z.new_zeros((0,))
+    tail_quarantine_loss = _top_cvar_mean(tail_terms, alpha) if tail_terms.numel() else z.new_tensor(0.0)
+    e_overflow = e_known[overflow_mask_local]
+    source_safe_terms = F.softplus((t_core + float(unknown_margin) - e_overflow) / tau_e) if e_overflow.numel() else z.new_zeros((0,))
+    source_safe_loss = _top_cvar_mean(source_safe_terms, alpha) if source_safe_terms.numel() else z.new_tensor(0.0)
+
+    component_gate_loss = z.new_tensor(0.0)
+    component_accept_prob = z.new_tensor(float("nan"))
+    component_accept_prob_max = z.new_tensor(float("nan"))
+    unknown_feat_all = torch.cat([z_norm[proxy_mask], virtual], dim=0)
+    if unknown_feat_all.numel():
+        unknown_cos_all = (safe_l2_normalize(unknown_feat_all, dim=1) @ proto.t()).clamp(-1.0 + 1e-6, 1.0 - 1e-6)
+        unknown_angles_all = _safe_angle_from_cos(unknown_cos_all)
+        radius_gate = torch.sigmoid((radius_vec.detach().view(1, -1) - unknown_angles_all) / max(1e-4, float(component_temperature_rad)))
+        energy_gate = torch.sigmoid((t_core - proxy_target) / tau_e).view(-1, 1)
+        if unknown_angles_all.size(1) > 1:
+            sorted_angles = torch.sort(unknown_angles_all.detach(), dim=1).values
+            class_gap = sorted_angles[:, 1] - sorted_angles[:, 0]
+            margin_gate = torch.sigmoid(
+                (class_gap - float(component_margin_rad)) / max(1e-4, float(component_margin_temperature_rad))
+            ).view(-1, 1)
+        else:
+            margin_gate = torch.ones((unknown_angles_all.size(0), 1), device=unknown_angles_all.device, dtype=unknown_angles_all.dtype)
+        accept_prob = (radius_gate * energy_gate * margin_gate).max(dim=1).values
+        component_gate_loss = _top_cvar_mean(accept_prob, alpha)
+        component_accept_prob = accept_prob.detach().mean()
+        component_accept_prob_max = accept_prob.detach().max()
 
     vacuum_loss = z.new_tensor(0.0)
     vacuum_violation_rate = 0.0
@@ -1062,6 +1183,11 @@ def proxy_unknown_energy_loss(
         margin_loss
         + max(0.0, float(placeholder_weight)) * placeholder
         + max(0.0, float(vacuum_weight)) * vacuum_loss
+        + max(0.0, float(vaccept_weight)) * vaccept_loss
+        + max(0.0, float(core_accept_weight)) * core_accept_loss
+        + max(0.0, float(component_gate_weight)) * component_gate_loss
+        + max(0.0, float(tail_quarantine_weight)) * tail_quarantine_loss
+        + max(0.0, float(source_safe_weight)) * source_safe_loss
     )
 
     with torch.no_grad():
@@ -1069,22 +1195,64 @@ def proxy_unknown_energy_loss(
         unknown_scores = torch.cat([e_proxy.detach(), e_virtual.detach()], dim=0)
         auc = _binary_auc(known_scores, unknown_scores)
         known_accept_threshold = torch.quantile(known_scores, 0.95) if known_scores.numel() else z.new_tensor(float("nan"))
+        core_accept_threshold = t_core.detach()
         virtual_accept = (
             float((e_virtual.detach() <= known_accept_threshold).float().mean().item())
             if e_virtual.numel() and torch.isfinite(known_accept_threshold)
             else float("nan")
         )
+        virtual_accept_core = (
+            float((e_virtual.detach() <= core_accept_threshold).float().mean().item())
+            if e_virtual.numel() and torch.isfinite(core_accept_threshold)
+            else float("nan")
+        )
+        proxy_accept = (
+            float((e_proxy.detach() <= core_accept_threshold).float().mean().item())
+            if e_proxy.numel() and torch.isfinite(core_accept_threshold)
+            else float("nan")
+        )
+        hard_proxy_accept = (
+            float((unknown_scores <= core_accept_threshold).float().mean().item())
+            if unknown_scores.numel() and torch.isfinite(core_accept_threshold)
+            else float("nan")
+        )
+
+        def _part_accept_rate(name: str) -> float:
+            part = virtual_parts.get(name)
+            if part is None or part.numel() == 0 or not torch.isfinite(core_accept_threshold):
+                return float("nan")
+            part_energy = energy(part).detach()
+            return float((part_energy <= core_accept_threshold).float().mean().item())
+
     metrics = {
         "active": 1.0,
         "known_count": float(int(known_mask.sum().item())),
         "proxy_unknown_count": float(int(proxy_mask.sum().item())),
         "virtual_count": float(int(e_virtual.numel())),
+        "core_count": float(int(core_mask_local.sum().item())),
+        "tail_count": float(int(tail_mask_local.sum().item())),
+        "overflow_count": float(int(overflow_mask_local.sum().item())),
         "energy_known": _scalar_metric(e_known),
         "energy_proxy": _scalar_metric(e_proxy),
         "energy_virtual": _scalar_metric(e_virtual) if e_virtual.numel() else float("nan"),
         "energy_margin": _scalar_metric(e_proxy.mean() - e_known.mean()),
+        "accept_energy_threshold": _scalar_metric(known_accept_threshold),
+        "core_energy_threshold": _scalar_metric(t_core),
+        "vaccept_surrogate": _scalar_metric(vaccept_loss),
+        "core_accept_loss": _scalar_metric(core_accept_loss),
+        "component_gate_unknown": _scalar_metric(component_gate_loss),
+        "component_gate_accept_prob": _scalar_metric(component_accept_prob),
+        "component_gate_accept_prob_max": _scalar_metric(component_accept_prob_max),
+        "tail_quarantine_loss": _scalar_metric(tail_quarantine_loss),
+        "source_safe_loss": _scalar_metric(source_safe_loss),
         "proxy_unknown_auc": float(auc),
         "virtual_accept_rate": float(virtual_accept),
+        "virtual_accept_rate_core": float(virtual_accept_core),
+        "proxy_accept_rate": float(proxy_accept),
+        "hard_proxy_accept_rate": float(hard_proxy_accept),
+        "shell_accept_rate": _part_accept_rate("shell"),
+        "bridge_accept_rate": _part_accept_rate("bridge"),
+        "outward_accept_rate": _part_accept_rate("outward"),
         "vacuum_loss": _scalar_metric(vacuum_loss),
         "vacuum_violation_rate": float(vacuum_violation_rate),
         "vacuum_margin_deg": math.degrees(_scalar_metric(vacuum_margin_mean)),
@@ -1109,6 +1277,111 @@ def _make_virtual_outliers(z_known: torch.Tensor, proto: torch.Tensor, *, count:
         interp = safe_l2_normalize(0.5 * (p1 + p2), dim=1)
         out = safe_l2_normalize(0.5 * out + 0.5 * interp, dim=1)
     return out
+
+
+def _make_component_shell_outliers(
+    z_known: torch.Tensor,
+    y_known: torch.Tensor,
+    class_ids: torch.Tensor,
+    proto: torch.Tensor,
+    radius_vec: torch.Tensor,
+    *,
+    count: int,
+    shell_width_rad: float,
+) -> torch.Tensor:
+    if count <= 0 or z_known.numel() == 0 or proto.numel() == 0:
+        return z_known.new_zeros((0, z_known.size(1)))
+    out = []
+    n_proto = proto.size(0)
+    for i in range(int(count)):
+        proto_idx = i % n_proto
+        cls = class_ids[proto_idx]
+        cls_idx = torch.nonzero(y_known.eq(cls), as_tuple=False).flatten()
+        if cls_idx.numel() == 0:
+            base = proto[proto_idx]
+        else:
+            base = z_known[cls_idx[i % cls_idx.numel()]]
+        center = proto[proto_idx]
+        tangent = base - (base * center).sum() * center
+        if float(torch.linalg.vector_norm(tangent).detach().item()) <= 1e-6 and n_proto > 1:
+            tangent = proto[(proto_idx + 1) % n_proto] - (proto[(proto_idx + 1) % n_proto] * center).sum() * center
+        tangent = safe_l2_normalize(tangent.view(1, -1), dim=1).squeeze(0)
+        theta = torch.clamp(radius_vec[proto_idx].detach() + max(0.0, float(shell_width_rad)), 1e-4, math.pi - 1e-4)
+        shell = torch.cos(theta) * center + torch.sin(theta) * tangent
+        out.append(shell)
+    return safe_l2_normalize(torch.stack(out, dim=0), dim=1)
+
+
+def _make_interclass_bridge_outliers(proto: torch.Tensor, *, count: int) -> torch.Tensor:
+    if count <= 0 or proto.numel() == 0 or proto.size(0) < 2:
+        feat_dim = proto.size(1) if proto.dim() == 2 else 0
+        return proto.new_zeros((0, feat_dim))
+    out = []
+    n_proto = proto.size(0)
+    for i in range(int(count)):
+        p1 = proto[i % n_proto]
+        p2 = proto[(i + 1 + (i // n_proto)) % n_proto]
+        out.append(p1 + p2)
+    return safe_l2_normalize(torch.stack(out, dim=0), dim=1)
+
+
+def _make_tail_outward_outliers(z_known: torch.Tensor, proto: torch.Tensor, *, count: int) -> torch.Tensor:
+    if count <= 0 or z_known.numel() == 0 or proto.numel() == 0:
+        return z_known.new_zeros((0, z_known.size(1)))
+    sim = z_known @ proto.t()
+    nearest_idx = sim.argmax(dim=1)
+    nearest_sim = sim.max(dim=1).values
+    order = torch.argsort(nearest_sim, descending=False)
+    base = z_known[order[: min(int(count), order.numel())]]
+    if base.size(0) < int(count):
+        reps = int(math.ceil(int(count) / max(1, base.size(0))))
+        base = base.repeat(reps, 1)[: int(count)]
+        nearest_idx = nearest_idx[order[: min(order.numel(), int(count))]].repeat(reps)[: int(count)]
+    else:
+        nearest_idx = nearest_idx[order[: int(count)]]
+    nearest = proto[nearest_idx]
+    return safe_l2_normalize(base + 1.25 * (base - nearest), dim=1)
+
+
+def _make_proxy_virtual_unknown_pool(
+    z_known: torch.Tensor,
+    y_known: torch.Tensor,
+    class_ids: torch.Tensor,
+    proto: torch.Tensor,
+    radius_vec: torch.Tensor,
+    *,
+    count: int,
+    mode: str,
+    shell_width_rad: float,
+) -> Dict[str, torch.Tensor]:
+    count = max(0, int(count))
+    feat_dim = z_known.size(1) if z_known.dim() == 2 else proto.size(1)
+    empty = z_known.new_zeros((0, feat_dim))
+    if count <= 0:
+        return {"legacy": empty}
+    mode_l = str(mode or "legacy").lower().strip()
+    if mode_l in {"legacy", "old"}:
+        return {"legacy": _make_virtual_outliers(z_known, proto, count=count)}
+
+    shell_n = int(math.ceil(count / 3.0))
+    bridge_n = int(math.ceil(count / 3.0))
+    outward_n = max(0, count - shell_n - bridge_n)
+    parts = {
+        "shell": _make_component_shell_outliers(
+            z_known,
+            y_known,
+            class_ids,
+            proto,
+            radius_vec,
+            count=shell_n,
+            shell_width_rad=shell_width_rad,
+        ),
+        "bridge": _make_interclass_bridge_outliers(proto, count=bridge_n),
+        "outward": _make_tail_outward_outliers(z_known, proto, count=outward_n),
+    }
+    if mode_l in {"mixed", "hybrid", "legacy_hard"}:
+        parts["legacy"] = _make_virtual_outliers(z_known, proto, count=count)
+    return parts
 
 
 def _binary_auc(known_scores: torch.Tensor, unknown_scores: torch.Tensor) -> float:

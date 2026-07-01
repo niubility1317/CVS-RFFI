@@ -291,13 +291,32 @@ def build_arg_parser() -> argparse.ArgumentParser:
     parser.add_argument("--proxy_unknown_warmup_epochs", type=int, default=0)
     parser.add_argument("--proxy_unknown_holdout_tx_per_batch", type=int, default=1)
     parser.add_argument("--proxy_unknown_virtual_count", type=int, default=16)
+    parser.add_argument("--proxy_unknown_virtual_mode", type=str, default="legacy", choices=["legacy", "hard", "mixed", "legacy_hard"])
     parser.add_argument("--proxy_unknown_energy_margin", type=float, default=1.0)
+    parser.add_argument("--proxy_unknown_energy_temperature", type=float, default=1.0)
     parser.add_argument("--proxy_unknown_placeholder_weight", type=float, default=0.5)
     parser.add_argument("--proxy_unknown_virtual_detach", type=str2bool, default=True)
     parser.add_argument("--proxy_unknown_vacuum_weight", type=float, default=0.0)
     parser.add_argument("--proxy_unknown_vacuum_width_deg", type=float, default=4.0)
     parser.add_argument("--proxy_unknown_vacuum_hard_k", type=int, default=2)
     parser.add_argument("--proxy_unknown_vacuum_radius_deg", type=float, default=40.0)
+    parser.add_argument("--proxy_unknown_core_quantile", type=float, default=0.90)
+    parser.add_argument("--proxy_unknown_accept_quantile", type=float, default=0.95)
+    parser.add_argument("--proxy_unknown_tail_quantile", type=float, default=0.95)
+    parser.add_argument("--proxy_unknown_overflow_quantile", type=float, default=0.99)
+    parser.add_argument("--proxy_unknown_vaccept_weight", type=float, default=0.0)
+    parser.add_argument("--proxy_unknown_core_accept_weight", type=float, default=0.0)
+    parser.add_argument("--proxy_unknown_component_gate_weight", type=float, default=0.0)
+    parser.add_argument("--proxy_unknown_tail_quarantine_weight", type=float, default=0.0)
+    parser.add_argument("--proxy_unknown_source_safe_weight", type=float, default=0.0)
+    parser.add_argument("--proxy_unknown_vaccept_cvar_alpha", type=float, default=0.25)
+    parser.add_argument("--proxy_unknown_unknown_margin", type=float, default=0.08)
+    parser.add_argument("--proxy_unknown_known_margin", type=float, default=0.05)
+    parser.add_argument("--proxy_unknown_energy_softplus_temperature", type=float, default=0.04)
+    parser.add_argument("--proxy_unknown_component_temperature_deg", type=float, default=3.0)
+    parser.add_argument("--proxy_unknown_component_margin_deg", type=float, default=4.0)
+    parser.add_argument("--proxy_unknown_component_margin_temperature_deg", type=float, default=3.0)
+    parser.add_argument("--proxy_unknown_shell_width_deg", type=float, default=4.0)
     parser.add_argument("--lambda_soft_unknown_mixup", type=float, default=0.0)
     parser.add_argument("--soft_unknown_mixup_start_epoch", type=int, default=-1)
     parser.add_argument("--soft_unknown_mixup_warmup_epochs", type=int, default=-1)
@@ -1617,8 +1636,17 @@ def format_ssdg_epoch_block(
         f"known={_log_value(train_logs, 'train/proxy_unknown_known_count'):.0f} "
         f"proxy={_log_value(train_logs, 'train/proxy_unknown_count'):.0f} "
         f"virtual={_log_value(train_logs, 'train/proxy_unknown_virtual_count'):.0f} "
+        f"core={_log_value(train_logs, 'train/proxy_unknown_core_count'):.0f} "
+        f"tail={_log_value(train_logs, 'train/proxy_unknown_tail_count'):.0f} "
         f"auc={_log_value(train_logs, 'train/proxy_unknown_auc_proxy'):.4f} "
         f"vaccept={_log_value(train_logs, 'train/proxy_unknown_virtual_accept_rate'):.4f} "
+        f"core_accept={_log_value(train_logs, 'train/proxy_unknown_virtual_accept_rate_core'):.4f} "
+        f"hard_accept={_log_value(train_logs, 'train/proxy_unknown_hard_proxy_accept_rate'):.4f} "
+        f"vaccept_surr={_log_value(train_logs, 'train/proxy_unknown_vaccept_surrogate'):.4f} "
+        f"gate={_log_value(train_logs, 'train/proxy_unknown_component_gate_unknown'):.4f} "
+        f"shell={_log_value(train_logs, 'train/proxy_unknown_shell_accept_rate'):.4f} "
+        f"bridge={_log_value(train_logs, 'train/proxy_unknown_bridge_accept_rate'):.4f} "
+        f"outward={_log_value(train_logs, 'train/proxy_unknown_outward_accept_rate'):.4f} "
         f"vac={_log_value(train_logs, 'train/proxy_unknown_vacuum_loss'):.4f} "
         f"vac_rate={_log_value(train_logs, 'train/proxy_unknown_vacuum_violation_rate'):.4f} "
         f"vac_gap={_log_value(train_logs, 'train/proxy_unknown_vacuum_margin_deg'):.2f}deg"
@@ -1899,6 +1927,8 @@ def train(args) -> int:
                 f"lambda_sat_cls={float(args.lambda_sat_cls):.6g} lambda_sat_cons={float(args.lambda_sat_cons):.6g} "
                 f"lambda_proto={float(args.lambda_proto):.6g} lambda_open_world_feat={float(args.lambda_open_world_feat):.6g} "
                 f"lambda_zid_compact={float(args.lambda_zid_compact):.6g} lambda_proxy_unknown={float(args.lambda_proxy_unknown):.6g} "
+                f"proxy_virtual_mode={args.proxy_unknown_virtual_mode} proxy_vaccept_w={float(args.proxy_unknown_vaccept_weight):.6g} "
+                f"proxy_gate_w={float(args.proxy_unknown_component_gate_weight):.6g} "
                 f"lambda_soft_unknown_mixup={float(args.lambda_soft_unknown_mixup):.6g} "
                 f"lambda_source_episode={float(args.lambda_source_episode):.6g} "
                 f"lambda_u={float(args.lambda_u):.6g} lambda_ent={float(args.lambda_ent):.6g} "
@@ -2153,12 +2183,30 @@ def train(args) -> int:
                     "known_count": 0.0,
                     "proxy_unknown_count": 0.0,
                     "virtual_count": 0.0,
+                    "core_count": 0.0,
+                    "tail_count": 0.0,
+                    "overflow_count": 0.0,
                     "energy_known": float("nan"),
                     "energy_proxy": float("nan"),
                     "energy_virtual": float("nan"),
                     "energy_margin": float("nan"),
+                    "accept_energy_threshold": float("nan"),
+                    "core_energy_threshold": float("nan"),
+                    "vaccept_surrogate": 0.0,
+                    "core_accept_loss": 0.0,
+                    "component_gate_unknown": 0.0,
+                    "component_gate_accept_prob": float("nan"),
+                    "component_gate_accept_prob_max": float("nan"),
+                    "tail_quarantine_loss": 0.0,
+                    "source_safe_loss": 0.0,
                     "proxy_unknown_auc": float("nan"),
                     "virtual_accept_rate": float("nan"),
+                    "virtual_accept_rate_core": float("nan"),
+                    "proxy_accept_rate": float("nan"),
+                    "hard_proxy_accept_rate": float("nan"),
+                    "shell_accept_rate": float("nan"),
+                    "bridge_accept_rate": float("nan"),
+                    "outward_accept_rate": float("nan"),
                     "vacuum_loss": 0.0,
                     "vacuum_violation_rate": 0.0,
                     "vacuum_margin_deg": float("nan"),
@@ -2229,13 +2277,32 @@ def train(args) -> int:
                         y_l,
                         holdout_label=holdout_label,
                         virtual_count=int(args.proxy_unknown_virtual_count),
+                        virtual_mode=str(args.proxy_unknown_virtual_mode),
                         energy_margin=float(args.proxy_unknown_energy_margin),
+                        energy_temperature=float(args.proxy_unknown_energy_temperature),
                         placeholder_weight=float(args.proxy_unknown_placeholder_weight),
                         virtual_detach=bool(args.proxy_unknown_virtual_detach),
                         vacuum_weight=float(args.proxy_unknown_vacuum_weight),
                         vacuum_width_rad=math.radians(float(args.proxy_unknown_vacuum_width_deg)),
                         vacuum_hard_k=int(args.proxy_unknown_vacuum_hard_k),
                         vacuum_radius_rad=math.radians(float(args.proxy_unknown_vacuum_radius_deg)),
+                        core_quantile=float(args.proxy_unknown_core_quantile),
+                        accept_quantile=float(args.proxy_unknown_accept_quantile),
+                        tail_quantile=float(args.proxy_unknown_tail_quantile),
+                        overflow_quantile=float(args.proxy_unknown_overflow_quantile),
+                        vaccept_weight=float(args.proxy_unknown_vaccept_weight),
+                        core_accept_weight=float(args.proxy_unknown_core_accept_weight),
+                        component_gate_weight=float(args.proxy_unknown_component_gate_weight),
+                        tail_quarantine_weight=float(args.proxy_unknown_tail_quarantine_weight),
+                        source_safe_weight=float(args.proxy_unknown_source_safe_weight),
+                        vaccept_cvar_alpha=float(args.proxy_unknown_vaccept_cvar_alpha),
+                        unknown_margin=float(args.proxy_unknown_unknown_margin),
+                        known_margin=float(args.proxy_unknown_known_margin),
+                        energy_softplus_temperature=float(args.proxy_unknown_energy_softplus_temperature),
+                        component_temperature_rad=math.radians(float(args.proxy_unknown_component_temperature_deg)),
+                        component_margin_rad=math.radians(float(args.proxy_unknown_component_margin_deg)),
+                        component_margin_temperature_rad=math.radians(float(args.proxy_unknown_component_margin_temperature_deg)),
+                        shell_width_rad=math.radians(float(args.proxy_unknown_shell_width_deg)),
                     )
                 if float(getattr(args, "lambda_soft_unknown_mixup", 0.0)) > 0.0 and soft_unknown_mixup_stage_scale > 0.0:
                     if soft_unknown_mixup_loss is None:
@@ -2528,12 +2595,30 @@ def train(args) -> int:
                     "train/proxy_unknown_known_count": proxy_unknown_info.get("known_count", float("nan")),
                     "train/proxy_unknown_count": proxy_unknown_info.get("proxy_unknown_count", float("nan")),
                     "train/proxy_unknown_virtual_count": proxy_unknown_info.get("virtual_count", float("nan")),
+                    "train/proxy_unknown_core_count": proxy_unknown_info.get("core_count", float("nan")),
+                    "train/proxy_unknown_tail_count": proxy_unknown_info.get("tail_count", float("nan")),
+                    "train/proxy_unknown_overflow_count": proxy_unknown_info.get("overflow_count", float("nan")),
                     "train/proxy_unknown_energy_known": proxy_unknown_info.get("energy_known", float("nan")),
                     "train/proxy_unknown_energy_proxy": proxy_unknown_info.get("energy_proxy", float("nan")),
                     "train/proxy_unknown_energy_virtual": proxy_unknown_info.get("energy_virtual", float("nan")),
                     "train/proxy_unknown_margin": proxy_unknown_info.get("energy_margin", float("nan")),
+                    "train/proxy_unknown_accept_energy_threshold": proxy_unknown_info.get("accept_energy_threshold", float("nan")),
+                    "train/proxy_unknown_core_energy_threshold": proxy_unknown_info.get("core_energy_threshold", float("nan")),
+                    "train/proxy_unknown_vaccept_surrogate": proxy_unknown_info.get("vaccept_surrogate", float("nan")),
+                    "train/proxy_unknown_core_accept_loss": proxy_unknown_info.get("core_accept_loss", float("nan")),
+                    "train/proxy_unknown_component_gate_unknown": proxy_unknown_info.get("component_gate_unknown", float("nan")),
+                    "train/proxy_unknown_component_gate_accept_prob": proxy_unknown_info.get("component_gate_accept_prob", float("nan")),
+                    "train/proxy_unknown_component_gate_accept_prob_max": proxy_unknown_info.get("component_gate_accept_prob_max", float("nan")),
+                    "train/proxy_unknown_tail_quarantine_loss": proxy_unknown_info.get("tail_quarantine_loss", float("nan")),
+                    "train/proxy_unknown_source_safe_loss": proxy_unknown_info.get("source_safe_loss", float("nan")),
                     "train/proxy_unknown_auc_proxy": proxy_unknown_info.get("proxy_unknown_auc", float("nan")),
                     "train/proxy_unknown_virtual_accept_rate": proxy_unknown_info.get("virtual_accept_rate", float("nan")),
+                    "train/proxy_unknown_virtual_accept_rate_core": proxy_unknown_info.get("virtual_accept_rate_core", float("nan")),
+                    "train/proxy_unknown_proxy_accept_rate": proxy_unknown_info.get("proxy_accept_rate", float("nan")),
+                    "train/proxy_unknown_hard_proxy_accept_rate": proxy_unknown_info.get("hard_proxy_accept_rate", float("nan")),
+                    "train/proxy_unknown_shell_accept_rate": proxy_unknown_info.get("shell_accept_rate", float("nan")),
+                    "train/proxy_unknown_bridge_accept_rate": proxy_unknown_info.get("bridge_accept_rate", float("nan")),
+                    "train/proxy_unknown_outward_accept_rate": proxy_unknown_info.get("outward_accept_rate", float("nan")),
                     "train/proxy_unknown_vacuum_loss": proxy_unknown_info.get("vacuum_loss", float("nan")),
                     "train/proxy_unknown_vacuum_violation_rate": proxy_unknown_info.get("vacuum_violation_rate", float("nan")),
                     "train/proxy_unknown_vacuum_margin_deg": proxy_unknown_info.get("vacuum_margin_deg", float("nan")),
