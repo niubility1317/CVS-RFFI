@@ -100,10 +100,10 @@ nohup bash code/scripts/launch_phase1_accept_domain_verify_20260701.sh > logs/ph
 | --- | --- | --- |
 | 本地脚本创建 | DONE | `code/scripts/launch_phase1_accept_domain_verify_20260701.sh` |
 | 本地验证 | DONE | `bash -n`通过；`--dry-run`展开14个候选；GPU0候选0条；GPU1-GPU7各2条；`py_compile`通过。 |
-| Git/快照 | PENDING | 待执行 |
-| N607预检 | PENDING | 待执行 |
-| N607同步 | PENDING | 待执行 |
-| N607启动 | PENDING | 待执行 |
+| Git/快照 | DONE | 快照`E:\type10-7\code\snapshots\phase1_accept_domain_verify_20260701_130328\`；Git提交`fb3de83`。 |
+| N607预检 | DONE | 直连预检通过；训练清单为空；GPU1-GPU7可提交。 |
+| N607同步 | DONE | 4个文件已同步，远端`bash -n`、`py_compile`、干跑计数和SHA256验证通过。 |
+| N607启动 | SUBMITTED | scheduler PID`2548586`；`submit_complete=1`；14条候选全部提交；GPU1-GPU7各2条；GPU计算PID数14。 |
 
 ## 本地验证记录
 
@@ -124,3 +124,93 @@ nohup bash code/scripts/launch_phase1_accept_domain_verify_20260701.sh > logs/ph
 | `code/cvsrffi/losses.py` | `C74BEB4CF156320E21865AD53BA0A22319745A88AD7A09F5CE455448B86D5C8F` |
 
 快照路径：`E:\type10-7\code\snapshots\phase1_accept_domain_verify_20260701_130328\`。
+
+Git发布树提交：`fb3de83 Add accept-domain validation launch matrix`。
+
+## N607预检和占用
+
+| 检查 | 结果 |
+| --- | --- |
+| `powershell -ExecutionPolicy Bypass -File tools\n607_ssh_preflight.ps1` | PASS，直连`N607`；服务器`dell-DSS8440`；项目根目录`/home/szu2070436088/2510044040/CV-SincNet`可见；GPU0-GPU7均为RTX3090。 |
+| 预检后本地SSH清理 | `ssh_process_count=0`，`n607_or_bridge_established_count=0`。 |
+| `conda run --no-capture-output -n ssr-gpu python tools/n607_training_inventory.py --direct-only --pretty` | PASS，`gpu_compute=[]`，`active_training_processes=[]`，`route_used=direct`。 |
+| 清单后本地SSH清理 | `ssh_process_count=0`，`n607_or_bridge_established_count=0`。 |
+
+## N607同步和远端验证
+
+| 本地文件 | N607目标 |
+| --- | --- |
+| `code/scripts/launch_phase1_accept_domain_verify_20260701.sh` | `/home/szu2070436088/2510044040/CV-SincNet/code/scripts/launch_phase1_accept_domain_verify_20260701.sh` |
+| `code/SSDG/train_ssdg.py` | `/home/szu2070436088/2510044040/CV-SincNet/code/SSDG/train_ssdg.py` |
+| `code/cvsrffi/phase2_prototypes.py` | `/home/szu2070436088/2510044040/CV-SincNet/code/cvsrffi/phase2_prototypes.py` |
+| `code/cvsrffi/losses.py` | `/home/szu2070436088/2510044040/CV-SincNet/code/cvsrffi/losses.py` |
+
+远端验证：
+
+| 检查 | 结果 |
+| --- | --- |
+| `bash -n code/scripts/launch_phase1_accept_domain_verify_20260701.sh` | PASS |
+| `/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -m py_compile code/SSDG/train_ssdg.py code/cvsrffi/phase2_prototypes.py code/cvsrffi/losses.py` | PASS |
+| 远端干跑计数 | `remote_candidate_lines=14`，`remote_gpu0_candidate_lines=0`，`remote_gpu1=2`，`remote_gpu2=2`，`remote_gpu3=2`，`remote_gpu4=2`，`remote_gpu5=2`，`remote_gpu6=2`，`remote_gpu7=2`。 |
+| 远端SHA256 | 与本地快照一致：`6b821cf9...`、`64e50640...`、`d0a5c59c...`、`c74beb4c...`。 |
+| 同步/验证后本地SSH清理 | 每次检查均为`ssh_process_count=0`，`n607_or_bridge_established_count=0`。 |
+
+## N607启动记录
+
+启动时间：`2026-07-01 13:11:36 CST`。
+
+工作目录：`/home/szu2070436088/2510044040/CV-SincNet`。
+
+服务端命令：
+
+```bash
+cd /home/szu2070436088/2510044040/CV-SincNet
+RUN_ID=phase1_accept_domain_verify_20260701_130328
+mkdir -p logs/$RUN_ID
+nohup bash code/scripts/launch_phase1_accept_domain_verify_20260701.sh > logs/$RUN_ID/scheduler.out 2>&1 & echo $!
+```
+
+调度器PID：`2548586`。
+
+调度器日志：`/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_accept_domain_verify_20260701_130328/scheduler.out`。
+
+run root：`/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_accept_domain_verify_20260701_130328`。
+
+提交核对：
+
+| 证据 | 值 |
+| --- | --- |
+| `submit_complete` | `1` |
+| `launched_total` | `14` |
+| `launched_gpu1` | `2` |
+| `launched_gpu2` | `2` |
+| `launched_gpu3` | `2` |
+| `launched_gpu4` | `2` |
+| `launched_gpu5` | `2` |
+| `launched_gpu6` | `2` |
+| `launched_gpu7` | `2` |
+| `run_dir_count` | `14` |
+| `log_count` | `14` |
+| `gpu_compute_count` | `14` |
+| `gpu_compute_pids` | `2548665,2552044,2548646,2552028,2548641,2552020,2548662,2552040,2548651,2552038,2548653,2552024,2548661,2552033` |
+
+候选PID：
+
+| GPU | 候选 | PID | log |
+| --- | --- | ---: | --- |
+| 1 | `ADV2_R17_CORESTRICT_E260` | 2548665 | `logs/phase1_accept_domain_verify_20260701_130328/ADV2_R17_CORESTRICT_E260.out` |
+| 1 | `ADV2_R17_PROXYHI_E260` | 2552044 | `logs/phase1_accept_domain_verify_20260701_130328/ADV2_R17_PROXYHI_E260.out` |
+| 2 | `ADV2_R20_SAT70_E260` | 2548646 | `logs/phase1_accept_domain_verify_20260701_130328/ADV2_R20_SAT70_E260.out` |
+| 2 | `ADV2_R20_VACMID_E260` | 2552028 | `logs/phase1_accept_domain_verify_20260701_130328/ADV2_R20_VACMID_E260.out` |
+| 3 | `ADV2_R28_PROXYLOW_E260` | 2548641 | `logs/phase1_accept_domain_verify_20260701_130328/ADV2_R28_PROXYLOW_E260.out` |
+| 3 | `ADV2_R28_FUSE6_E260` | 2552020 | `logs/phase1_accept_domain_verify_20260701_130328/ADV2_R28_FUSE6_E260.out` |
+| 4 | `ADV2_T13_CONSERVE_E260` | 2548662 | `logs/phase1_accept_domain_verify_20260701_130328/ADV2_T13_CONSERVE_E260.out` |
+| 4 | `ADV2_T13_TAILGUARD_E260` | 2552040 | `logs/phase1_accept_domain_verify_20260701_130328/ADV2_T13_TAILGUARD_E260.out` |
+| 5 | `ADV2_SRCLOW_R17_E260` | 2548651 | `logs/phase1_accept_domain_verify_20260701_130328/ADV2_SRCLOW_R17_E260.out` |
+| 5 | `ADV2_SOURCECAP32_R20_E260` | 2552038 | `logs/phase1_accept_domain_verify_20260701_130328/ADV2_SOURCECAP32_R20_E260.out` |
+| 6 | `ADV2_FUSE6_R17_E260` | 2548653 | `logs/phase1_accept_domain_verify_20260701_130328/ADV2_FUSE6_R17_E260.out` |
+| 6 | `ADV2_FUSE5_R20_E260` | 2552024 | `logs/phase1_accept_domain_verify_20260701_130328/ADV2_FUSE5_R20_E260.out` |
+| 7 | `ADV2_TAILCV_R17_E260` | 2548661 | `logs/phase1_accept_domain_verify_20260701_130328/ADV2_TAILCV_R17_E260.out` |
+| 7 | `ADV2_TAILCV_R20_E260` | 2552033 | `logs/phase1_accept_domain_verify_20260701_130328/ADV2_TAILCV_R20_E260.out` |
+
+状态边界：本轮已经完成本地设计、验证、同步和N607提交；这不是训练完成、指标达标或部署成功声明。后续完成后需追加同候选同排指标表，至少包含`best_joint_test_tx`、`final_strict_udu`、`receiver_floor`、`sat_strict_floor`、`p95/p99/min_inter`、`proxy_vac_rate`、`source_episode_overflow`、导出原型文件状态和最终判定。
