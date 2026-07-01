@@ -214,3 +214,20 @@ Latest monitor update: 2026-07-02 01:15 Asia/Hong_Kong
 | Local SSH cleanup | verified `ssh_processes=none`, `n607_established=none`, and `bridge_established=none` |
 
 Status interpretation: OLD80_FIRST remains queued behind existing Phase1 training occupancy. No old-class recovery evidence is available yet, so the OLD80_FIRST objective remains unverified and should not be judged by FAR or any missing metrics.
+
+Latest monitor update: 2026-07-02 01:19 Asia/Hong_Kong
+
+| Item | Value |
+|---|---|
+| Launcher PID | `2896435` still alive |
+| Launcher elapsed | about 15 minutes 08 seconds |
+| Current scheduler state | repeated `[SPACEBORNE-FSDA-WAIT-ANY] remaining=48 max=2` |
+| Candidate logs | 0 |
+| Completed `metrics.json` | 0 |
+| Run directories | 0 |
+| GPU compute process count | 16 |
+| GPU occupancy | each RTX 3090 still has 2 active Python compute processes, matching the `STAGE2_MAX_ACTIVE_PER_GPU=2` cap |
+| Recent errors | none found in scheduler grep for Traceback/ERROR/RuntimeError/unrecognized arguments/CUDA OOM/Killed |
+| Local SSH cleanup | verified `ssh_processes=none`, `n607_established=none`, and `bridge_established=none` |
+
+Status interpretation: the scheduler is healthy and waiting, but there is still no candidate output to analyze. This is now a repeated external-capacity blocker: OLD80_FIRST cannot produce target-old recovery evidence until at least one GPU drops below the two-process cap or the user explicitly changes the capacity/intervention policy.
