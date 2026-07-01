@@ -272,3 +272,18 @@ Latest monitor update: 2026-07-02 01:00 Asia/Hong_Kong
 | Local SSH cleanup | verified `ssh_processes=none` and `n607_established=none` |
 
 Status interpretation: no OLD80_FIRST metric evidence is available yet. The run is resource-queued, not failed.
+
+Supersede update: 2026-07-02 01:02 Asia/Hong_Kong
+
+| Item | Evidence |
+|---|---|
+| Old launcher PID | `2887894` |
+| Safety check before termination | old launcher had only one `sleep 5` child; candidate logs=0, metrics=0, run dirs=0 |
+| Reason | generated launcher had GPU0 head-of-line blocking and had not started any candidate |
+| Action | terminated only the OLD80_FIRST waiting bash launcher and its sleep child; no Python training process was killed |
+| Replacement run | `phase2_old80first_head48_sched_20260702_0055` |
+| Replacement launcher PID | `2896435` |
+| Replacement state | `[SPACEBORNE-FSDA-WAIT-ANY] remaining=48 max=2`, candidate logs=0, metrics=0 |
+| Local SSH cleanup | verified `ssh_processes=none` and `n607_established=none` after replacement monitor |
+
+Final status for this run ID: superseded before any candidate started. Use `phase2_old80first_head48_sched_20260702_0055` for continuing OLD80_FIRST evidence collection.

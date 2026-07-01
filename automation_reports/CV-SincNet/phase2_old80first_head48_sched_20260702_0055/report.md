@@ -78,3 +78,75 @@ bash code/scripts/launch_phase2_old80first_head48_sched_20260702_0055.sh --dry-r
 ```
 
 After N607 preflight and capacity check, run without `--dry-run` only if active jobs leave safe capacity.
+
+## N607 Sync, Verification, And Launch Handoff
+
+Timestamp: 2026-07-02 01:02 Asia/Hong_Kong  
+Operator: Codex  
+Objective: replace the GPU0-blocked OLD80_FIRST launcher with a scheduler-safe launcher that scans all remaining candidate GPUs before sleeping.
+
+Preflight and occupancy:
+
+| Item | Evidence |
+|---|---|
+| Preflight | direct `N607` preflight PASS |
+| Remote host | `dell-DSS8440` |
+| Remote project root | `/home/szu2070436088/2510044040/CV-SincNet` |
+| GPU state | 8 RTX 3090 GPUs visible; each GPU still had 2 active Python compute processes |
+| Capacity rule | `STAGE2_MAX_ACTIVE_PER_GPU=2`, `INCLUDE_EXTERNAL_GPU_PROCS=1`; no candidate starts until some GPU has fewer than 2 external compute processes |
+
+Remote sync destinations:
+
+| Local file | Remote file |
+|---|---|
+| `E:\type10-7\tools\spaceborne_fewshot_da_matrix.py` | `/home/szu2070436088/2510044040/CV-SincNet/tools/spaceborne_fewshot_da_matrix.py` |
+| `E:\type10-7\tests\test_spaceborne_fewshot_da_matrix.py` | `/home/szu2070436088/2510044040/CV-SincNet/tests/test_spaceborne_fewshot_da_matrix.py` |
+| `E:\type10-7\code\scripts\launch_phase2_old80first_head48_sched_20260702_0055.sh` | `/home/szu2070436088/2510044040/CV-SincNet/code/scripts/launch_phase2_old80first_head48_sched_20260702_0055.sh` |
+| `E:\type10-7\automation_reports\CV-SincNet\phase2_old80first_head48_sched_20260702_0055\matrix.json` | `/home/szu2070436088/2510044040/CV-SincNet/automation_reports/CV-SincNet/phase2_old80first_head48_sched_20260702_0055/matrix.json` |
+| `E:\type10-7\automation_reports\CV-SincNet\phase2_old80first_head48_sched_20260702_0055\report.md` | `/home/szu2070436088/2510044040/CV-SincNet/automation_reports/CV-SincNet/phase2_old80first_head48_sched_20260702_0055/report.md` |
+
+Remote verification:
+
+| Command | Result |
+|---|---|
+| `/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -m py_compile tools/spaceborne_fewshot_da_matrix.py` | PASS |
+| `/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python tools/optimizer_validate_matrix.py automation_reports/CV-SincNet/phase2_old80first_head48_sched_20260702_0055/matrix.json` | PASS: 48 launchable rows, 0 issues |
+| `bash -n code/scripts/launch_phase2_old80first_head48_sched_20260702_0055.sh` | PASS |
+| `grep -q "SPACEBORNE-FSDA-WAIT-ANY" code/scripts/launch_phase2_old80first_head48_sched_20260702_0055.sh` | PASS |
+
+Remote hashes:
+
+| File | SHA256 |
+|---|---|
+| `tools/spaceborne_fewshot_da_matrix.py` | `6a7d285a4f1e10d4619d7a3831ee3e6268a2f6e661ce1721c648109b895895d6` |
+| `code/scripts/launch_phase2_old80first_head48_sched_20260702_0055.sh` | `f0d0949bd7d90c221406fc7d56bb0c9b91187b9a76b1ba08ba9da46f7600f87c` |
+| `automation_reports/CV-SincNet/phase2_old80first_head48_sched_20260702_0055/matrix.json` | `f53516c9a694854429086f755f71f20d5a548f42228062d1afc334769ed3f53b` |
+
+Superseded old launcher:
+
+| Item | Value |
+|---|---|
+| Old run ID | `phase2_old80first_head48_20260702_004317` |
+| Old launcher PID | `2887894` |
+| Safety check | only one `sleep 5` child; candidate logs=0, metrics=0, run dirs=0 |
+| Action | terminated only the waiting bash launcher and sleep child; no Python training process was killed |
+
+Launch command:
+
+```bash
+cd /home/szu2070436088/2510044040/CV-SincNet
+nohup env STAGE2_MAX_ACTIVE_PER_GPU=2 INCLUDE_EXTERNAL_GPU_PROCS=1 SCHEDULER_POLL_SECONDS=5 bash code/scripts/launch_phase2_old80first_head48_sched_20260702_0055.sh > logs/phase2_old80first_head48_sched_20260702_0055/launcher_submit.out 2>&1 &
+```
+
+Launch status:
+
+| Item | Value |
+|---|---|
+| Launcher PID | `2896435` |
+| Submit log | `/home/szu2070436088/2510044040/CV-SincNet/logs/phase2_old80first_head48_sched_20260702_0055/launcher_submit.out` |
+| Current scheduler state | `[SPACEBORNE-FSDA-WAIT-ANY] remaining=48 max=2` |
+| Candidate logs at first monitor | 0 |
+| Completed `metrics.json` at first monitor | 0 |
+| Local SSH cleanup | verified `ssh_processes=none` and `n607_established=none` after replacement monitor |
+
+Interpretation boundary: no OLD80_FIRST metric evidence is available yet. This run is correctly queued behind the two-process-per-GPU safety rule and will start when any GPU has capacity, without waiting specifically for GPU0.
