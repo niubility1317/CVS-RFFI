@@ -214,3 +214,29 @@ run root：`/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_accept_domain_
 | 7 | `ADV2_TAILCV_R20_E260` | 2552033 | `logs/phase1_accept_domain_verify_20260701_130328/ADV2_TAILCV_R20_E260.out` |
 
 状态边界：本轮已经完成本地设计、验证、同步和N607提交；这不是训练完成、指标达标或部署成功声明。后续完成后需追加同候选同排指标表，至少包含`best_joint_test_tx`、`final_strict_udu`、`receiver_floor`、`sat_strict_floor`、`p95/p99/min_inter`、`proxy_vac_rate`、`source_episode_overflow`、导出原型文件状态和最终判定。
+
+## 完成后分析更新
+
+更新时间：`2026-07-01 17:18 Asia/Hong_Kong`。
+
+最终状态：14/14候选完成260个epoch，14/14导出`metrics_epoch.csv/jsonl`、`phase2_zid_prototypes.json/pt`，fatal总数0。日志中存在`NAN_SKIPPED_TEST_PLACEHOLDER`和`NAN_AUX_GRAD_TELEMETRY`，但未发现影响最终指标的`NAN_REAL_LOSS`、`NAN_REAL_METRIC`或`NAN_FATAL`。
+
+完整分析报告：`E:\type10-7\automation_reports\CV-SincNet\phase1_accept_domain_verify_20260701_130328\adv2_full_analysis_report.md`。
+
+结构化表格目录：`E:\type10-7\automation_reports\CV-SincNet\phase1_accept_domain_verify_20260701_130328\adv2_analysis_outputs\`。
+
+复核脚本：`E:\type10-7\automation_reports\CV-SincNet\phase1_accept_domain_verify_20260701_130328\adv2_analysis_outputs\generate_adv2_analysis.py`。
+
+核心结论：
+
+| 项目 | 结论 |
+| --- | --- |
+| 协议边界 | 本轮仍是Phase1 source-only地面训练，不含真实`Y_unknown` query，不能声明`unknown_FAR`、`FPR95`、真实unknown AUROC或Stage2-C成功。 |
+| 闭集均值 | ADV2`final_overall_tx`均值86.92%，相对lateopt变化+0.48pp，相对vacuum32变化-0.31pp；`final_strict_udu`均值80.09%，相对lateopt变化-0.15pp，相对vacuum32变化-0.62pp。 |
+| proxy失败面 | `final_proxy_vaccept`均值0.9995，virtual unknown几乎仍被接收，不能作为unknown拒识成功证据。 |
+| 几何风险 | `final_p95`均值52.20deg略低于vacuum32，但`final_p99`均值75.78deg、source overflow均值0.3442，说明极端尾部和跨域越界仍是主要风险。 |
+| fusion审计 | 14/14原型JSON包含`fusion_components`、`fused_tx_prototypes`和`fusion_config`，`global_ball_accept=False`、`tail_auto_accept=False`；这证明fusion字段已导出，但不证明local component gate已部署成功。 |
+| 主推进候选 | `ADV2_SRCLOW_R17_E260`、`ADV2_FUSE5_R20_E260`、`ADV2_R28_FUSE6_E260`。 |
+| 下一步 | 优先做不重训local component hard gate dry-run、shell/inter/bridge negative评估和真实Stage2-A/C unknown评估，再决定是否重训negative-space filling。 |
+
+Git发布树记录：`E:\type10-7\github_publish\CVS-RFFI-repo\automation_reports\CV-SincNet\phase1_accept_domain_verify_20260701_130328\adv2_full_analysis_report.md`，提交`0669fab Add ADV2 analysis report`。
