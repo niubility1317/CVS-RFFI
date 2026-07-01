@@ -59,9 +59,11 @@ try:
         PrototypeMemoryBank,
         compute_core_losses,
         fishr_logit_gradient_variance_loss,
+        make_soft_unknown_mixup,
         open_world_feature_space_loss,
         proxy_unknown_energy_loss,
         sanitize_loss,
+        soft_unknown_mixup_loss,
         source_episode_three_sigma_loss,
         zid_compactness_loss,
     )
@@ -89,9 +91,11 @@ except ModuleNotFoundError:
     GradScaler = autocast = None
     WiSigCompactDataset = WiSigSubsetDataset = None
     PrototypeMemoryBank = None
+    make_soft_unknown_mixup = None
     open_world_feature_space_loss = None
     proxy_unknown_energy_loss = None
     sanitize_loss = None
+    soft_unknown_mixup_loss = None
     source_episode_three_sigma_loss = None
     zid_compactness_loss = None
     export_phase2_prototypes = None
@@ -294,11 +298,24 @@ def build_arg_parser() -> argparse.ArgumentParser:
     parser.add_argument("--proxy_unknown_vacuum_width_deg", type=float, default=4.0)
     parser.add_argument("--proxy_unknown_vacuum_hard_k", type=int, default=2)
     parser.add_argument("--proxy_unknown_vacuum_radius_deg", type=float, default=40.0)
+    parser.add_argument("--lambda_soft_unknown_mixup", type=float, default=0.0)
+    parser.add_argument("--soft_unknown_mixup_count", type=int, default=16)
+    parser.add_argument("--soft_unknown_mixup_order", type=int, default=3)
+    parser.add_argument("--soft_unknown_mixup_alpha", type=float, default=0.5)
+    parser.add_argument("--soft_unknown_mixup_energy_margin", type=float, default=1.0)
+    parser.add_argument("--soft_unknown_mixup_ce_weight", type=float, default=1.0)
+    parser.add_argument("--soft_unknown_mixup_energy_weight", type=float, default=1.0)
+    parser.add_argument("--soft_unknown_mixup_vacuum_weight", type=float, default=0.0)
+    parser.add_argument("--soft_unknown_mixup_vacuum_width_deg", type=float, default=6.0)
+    parser.add_argument("--soft_unknown_mixup_vacuum_hard_k", type=int, default=2)
+    parser.add_argument("--soft_unknown_mixup_detach", type=str2bool, default=False)
     parser.add_argument("--lambda_source_episode", type=float, default=0.0)
     parser.add_argument("--source_episode_start_epoch", type=int, default=1)
     parser.add_argument("--source_episode_warmup_epochs", type=int, default=0)
     parser.add_argument("--source_episode_min_domains", type=int, default=2)
     parser.add_argument("--source_episode_radius_cap_deg", type=float, default=30.0)
+    parser.add_argument("--source_episode_mixup_weight", type=float, default=0.0)
+    parser.add_argument("--source_episode_mixup_hard_k", type=int, default=2)
     parser.add_argument("--run_id", type=str, default="")
     parser.add_argument("--candidate_id", type=str, default="")
     parser.add_argument("--base_candidate", type=str, default="")
@@ -820,6 +837,7 @@ def _phase2_audit_requested(args) -> bool:
         "lambda_open_world_feat",
         "lambda_zid_compact",
         "lambda_proxy_unknown",
+        "lambda_soft_unknown_mixup",
         "lambda_source_episode",
     )
     return any(bool(getattr(args, key, False)) for key in flags) or any(float(getattr(args, key, 0.0)) > 0.0 for key in weights)
@@ -857,6 +875,7 @@ def _phase2_audit_state(args) -> Dict[str, Any]:
         "open_world_feat": float(getattr(args, "lambda_open_world_feat", 0.0)),
         "zid_compact": float(getattr(args, "lambda_zid_compact", 0.0)),
         "proxy_unknown": float(getattr(args, "lambda_proxy_unknown", 0.0)),
+        "soft_unknown_mixup": float(getattr(args, "lambda_soft_unknown_mixup", 0.0)),
         "source_episode": float(getattr(args, "lambda_source_episode", 0.0)),
     }
     legacy_unwired = {
@@ -870,12 +889,12 @@ def _phase2_audit_state(args) -> Dict[str, Any]:
             "Use zero weights for --lambda_tx_proto/--lambda_rx_proto/--lambda_mask_aux/"
             "--lambda_tx_supcon_masked/--lambda_rx_supcon_masked/--lambda_txrx_rect, and use "
             "--lambda_proto, --lambda_open_world_feat, --lambda_zid_compact, --lambda_proxy_unknown, "
-            "or --lambda_source_episode for the default-off active z_id feature-space bridge."
+            "--lambda_soft_unknown_mixup, or --lambda_source_episode for the default-off active z_id feature-space bridge."
         )
     active_loss = bool(getattr(args, "use_proto_memory", False)) or any(
         value > 0.0
         for key, value in weights.items()
-        if key in {"proto_memory", "open_world_feat", "zid_compact", "proxy_unknown", "source_episode"}
+        if key in {"proto_memory", "open_world_feat", "zid_compact", "proxy_unknown", "soft_unknown_mixup", "source_episode"}
     )
     return {
         "requested": bool(requested),
@@ -889,6 +908,7 @@ def _phase2_audit_state(args) -> Dict[str, Any]:
         "use_open_world_feature_loss": float(getattr(args, "lambda_open_world_feat", 0.0)) > 0.0,
         "use_zid_compactness_loss": float(getattr(args, "lambda_zid_compact", 0.0)) > 0.0,
         "use_proxy_unknown_loss": float(getattr(args, "lambda_proxy_unknown", 0.0)) > 0.0,
+        "use_soft_unknown_mixup_loss": float(getattr(args, "lambda_soft_unknown_mixup", 0.0)) > 0.0,
         "use_source_episode_loss": float(getattr(args, "lambda_source_episode", 0.0)) > 0.0,
         "phase2_export_prototypes": bool(getattr(args, "phase2_export_prototypes", False)),
         "imports": import_status,
@@ -1023,6 +1043,7 @@ def _loss_weights(args, stage_state: Mapping[str, Any] | None) -> Dict[str, floa
         "open_world_feat": float(getattr(args, "lambda_open_world_feat", 0.0)),
         "zid_compact": float(getattr(args, "lambda_zid_compact", 0.0)),
         "proxy_unknown": float(getattr(args, "lambda_proxy_unknown", 0.0)),
+        "soft_unknown_mixup": float(getattr(args, "lambda_soft_unknown_mixup", 0.0)),
         "source_episode": float(getattr(args, "lambda_source_episode", 0.0)),
     }
 
@@ -1333,6 +1354,9 @@ def _build_ssdg_epoch_telemetry_row(
         "lambda_sat_cons",
         "lambda_proto",
         "lambda_open_world_feat",
+        "lambda_zid_compact",
+        "lambda_proxy_unknown",
+        "lambda_soft_unknown_mixup",
         "proto_domain_align_weight",
         "ow_feat_radius_deg",
         "ow_feat_inter_margin_deg",
@@ -1340,7 +1364,18 @@ def _build_ssdg_epoch_telemetry_row(
         "ow_feat_domain_align_weight",
         "ow_feat_tail_weight",
         "ow_feat_cvar_alpha",
+        "soft_unknown_mixup_count",
+        "soft_unknown_mixup_order",
+        "soft_unknown_mixup_alpha",
+        "soft_unknown_mixup_energy_margin",
+        "soft_unknown_mixup_ce_weight",
+        "soft_unknown_mixup_energy_weight",
+        "soft_unknown_mixup_vacuum_weight",
+        "soft_unknown_mixup_vacuum_width_deg",
+        "soft_unknown_mixup_vacuum_hard_k",
         "lambda_source_episode",
+        "source_episode_mixup_weight",
+        "source_episode_mixup_hard_k",
         "ow_feat_vacuum_weight",
         "ow_feat_vacuum_width_deg",
         "proxy_unknown_vacuum_weight",
@@ -1465,6 +1500,7 @@ def format_ssdg_epoch_block(
     loss_fishr = _log_value(train_logs, "train/loss_fishr_labeled")
     loss_proto = _log_value(train_logs, "train/loss_proto_labeled")
     loss_ow_feat = _log_value(train_logs, "train/loss_open_world_feat")
+    loss_soft_unknown_mixup = _log_value(train_logs, "train/loss_soft_unknown_mixup")
     loss_source_episode = _log_value(train_logs, "train/loss_source_episode")
     loss_cons = _log_value(train_logs, "train/loss_cons_labeled")
     loss_u = _log_value(train_logs, "train/loss_unlabeled")
@@ -1479,6 +1515,7 @@ def format_ssdg_epoch_block(
     w_fishr = _log_value(train_logs, "train/w_loss_fishr_labeled", loss_fishr)
     w_proto = _log_value(train_logs, "train/w_loss_proto_labeled", loss_proto)
     w_ow_feat = _log_value(train_logs, "train/w_loss_open_world_feat", loss_ow_feat)
+    w_soft_unknown_mixup = _log_value(train_logs, "train/w_loss_soft_unknown_mixup", loss_soft_unknown_mixup)
     w_source_episode = _log_value(train_logs, "train/w_loss_source_episode", loss_source_episode)
     reliable = _log_value(train_logs, "train/reliable_ratio")
     pseudo_conf = _log_value(train_logs, "train/pseudo_conf")
@@ -1549,11 +1586,12 @@ def format_ssdg_epoch_block(
     lines.append(
         f"[LOSS-DG-RAW]   proto={loss_proto:.4f} "
         f"proto_cos={_log_value(train_logs, 'train/proto_pull_cos'):.4f} "
-        f"supcon=0.0000 fishr={loss_fishr:.4f} ow_feat={loss_ow_feat:.4f} source_episode={loss_source_episode:.4f}"
+        f"supcon=0.0000 fishr={loss_fishr:.4f} ow_feat={loss_ow_feat:.4f} "
+        f"soft_unknown_mixup={loss_soft_unknown_mixup:.4f} source_episode={loss_source_episode:.4f}"
     )
     lines.append(
         f"[LOSS-DG-W]     proto={w_proto:.4f} supcon=0.0000 fishr={w_fishr:.4f} "
-        f"ow_feat={w_ow_feat:.4f} source_episode={w_source_episode:.4f}"
+        f"ow_feat={w_ow_feat:.4f} soft_unknown_mixup={w_soft_unknown_mixup:.4f} source_episode={w_source_episode:.4f}"
     )
     lines.append(
         "[OW-FEAT] "
@@ -1584,12 +1622,27 @@ def format_ssdg_epoch_block(
         f"vac_gap={_log_value(train_logs, 'train/proxy_unknown_vacuum_margin_deg'):.2f}deg"
     )
     lines.append(
+        "[SOFT-UNK-MIX] "
+        f"count={_log_value(train_logs, 'train/soft_unknown_mixup_count'):.0f} "
+        f"order={_log_value(train_logs, 'train/soft_unknown_mixup_order'):.0f} "
+        f"ce={_log_value(train_logs, 'train/soft_unknown_mixup_ce'):.4f} "
+        f"energy={_log_value(train_logs, 'train/soft_unknown_mixup_energy'):.4f} "
+        f"vac={_log_value(train_logs, 'train/soft_unknown_mixup_vacuum'):.4f} "
+        f"vaccept={_log_value(train_logs, 'train/soft_unknown_mixup_virtual_accept_rate'):.4f} "
+        f"vac_rate={_log_value(train_logs, 'train/soft_unknown_mixup_vacuum_violation'):.4f}"
+    )
+    lines.append(
         "[SOURCE-EP] "
         f"classes={_log_value(train_logs, 'train/source_episode_classes'):.1f} "
         f"domains={_log_value(train_logs, 'train/source_episode_domains'):.1f} "
         f"overflow={_log_value(train_logs, 'train/source_episode_overflow_rate'):.4f} "
         f"r3s={_log_value(train_logs, 'train/source_episode_radius_3sigma_deg'):.2f}deg "
-        f"val_angle={_log_value(train_logs, 'train/source_episode_val_angle_deg'):.2f}deg"
+        f"val_angle={_log_value(train_logs, 'train/source_episode_val_angle_deg'):.2f}deg "
+        f"mix_count={_log_value(train_logs, 'train/source_episode_mixup_count'):.0f} "
+        f"mix_order={_log_value(train_logs, 'train/source_episode_mixup_order'):.0f} "
+        f"mix_loss={_log_value(train_logs, 'train/source_episode_mixup_loss'):.4f} "
+        f"mix_overflow={_log_value(train_logs, 'train/source_episode_mixup_overflow_rate'):.4f} "
+        f"mix_gap={_log_value(train_logs, 'train/source_episode_mixup_margin_deg'):.2f}deg"
     )
     lines.append(
         "[LOSS-WEIGHT] "
@@ -1600,6 +1653,7 @@ def format_ssdg_epoch_block(
         f"group_ce={float(stage_state.get('group_ce_scale', loss_weights.get('group_ce', 0.0))):.3f} "
         f"proto={float(loss_weights.get('proto', 0.0)):.6g} "
         f"ow_feat={float(loss_weights.get('open_world_feat', 0.0)):.6g} "
+        f"soft_unknown_mixup={float(loss_weights.get('soft_unknown_mixup', 0.0)):.6g} "
         f"source_episode={float(loss_weights.get('source_episode', 0.0)):.6g} "
         "aux_scale=0.000"
     )
@@ -1617,6 +1671,8 @@ def format_ssdg_epoch_block(
                 "fishr": w_fishr,
                 "proto": w_proto,
                 "ow_feat": w_ow_feat,
+                "soft_unknown_mixup": w_soft_unknown_mixup,
+                "source_episode": w_source_episode,
             }
         )
     )
@@ -1710,6 +1766,12 @@ def format_ssdg_epoch_block(
             f"lambda_proto={float(weights.get('proto_memory', 0.0)):.6g} "
             f"open_world_feat={int(bool(phase2_audit_state.get('use_open_world_feature_loss', False)))} "
             f"lambda_open_world_feat={float(weights.get('open_world_feat', 0.0)):.6g} "
+            f"zid_compact={int(bool(phase2_audit_state.get('use_zid_compactness_loss', False)))} "
+            f"lambda_zid_compact={float(weights.get('zid_compact', 0.0)):.6g} "
+            f"proxy_unknown={int(bool(phase2_audit_state.get('use_proxy_unknown_loss', False)))} "
+            f"lambda_proxy_unknown={float(weights.get('proxy_unknown', 0.0)):.6g} "
+            f"soft_unknown_mixup={int(bool(phase2_audit_state.get('use_soft_unknown_mixup_loss', False)))} "
+            f"lambda_soft_unknown_mixup={float(weights.get('soft_unknown_mixup', 0.0)):.6g} "
             f"source_episode={int(bool(phase2_audit_state.get('use_source_episode_loss', False)))} "
             f"lambda_source_episode={float(weights.get('source_episode', 0.0)):.6g} "
             f"phase2_export={int(bool(phase2_audit_state.get('phase2_export_prototypes', False)))}"
@@ -1834,6 +1896,8 @@ def train(args) -> int:
                 f"lambda_group_ce={float(args.lambda_group_ce):.6g} lambda_fishr={float(args.lambda_fishr):.6g} "
                 f"lambda_sat_cls={float(args.lambda_sat_cls):.6g} lambda_sat_cons={float(args.lambda_sat_cons):.6g} "
                 f"lambda_proto={float(args.lambda_proto):.6g} lambda_open_world_feat={float(args.lambda_open_world_feat):.6g} "
+                f"lambda_zid_compact={float(args.lambda_zid_compact):.6g} lambda_proxy_unknown={float(args.lambda_proxy_unknown):.6g} "
+                f"lambda_soft_unknown_mixup={float(args.lambda_soft_unknown_mixup):.6g} "
                 f"lambda_source_episode={float(args.lambda_source_episode):.6g} "
                 f"lambda_u={float(args.lambda_u):.6g} lambda_ent={float(args.lambda_ent):.6g} "
                 f"label_smoothing={float(args.label_smoothing):.6g}",
@@ -1877,6 +1941,9 @@ def train(args) -> int:
                 f"use_proto_memory={int(bool(proto_bank is not None))} "
                 f"lambda_proto={float(args.lambda_proto):.6g} "
                 f"lambda_open_world_feat={float(args.lambda_open_world_feat):.6g} "
+                f"lambda_zid_compact={float(args.lambda_zid_compact):.6g} "
+                f"lambda_proxy_unknown={float(args.lambda_proxy_unknown):.6g} "
+                f"lambda_soft_unknown_mixup={float(args.lambda_soft_unknown_mixup):.6g} "
                 f"lambda_source_episode={float(args.lambda_source_episode):.6g} "
                 f"phase2_export={int(bool(args.phase2_export_prototypes))}",
             ]
@@ -2100,6 +2167,41 @@ def train(args) -> int:
                     start_epoch=int(getattr(args, "proxy_unknown_start_epoch", 40)),
                     warmup_epochs=int(getattr(args, "proxy_unknown_warmup_epochs", 0)),
                 )
+                source_episode_stage_scale = _stage_gate_scale(
+                    epoch,
+                    start_epoch=int(getattr(args, "source_episode_start_epoch", 1)),
+                    warmup_epochs=int(getattr(args, "source_episode_warmup_epochs", 0)),
+                )
+                loss_soft_unknown_mixup_l = z_id_l.sum() * 0.0
+                soft_unknown_mixup_info: Dict[str, float] = {
+                    "soft_unknown_mixup_count": 0.0,
+                    "soft_unknown_mixup_order": float(max(2, int(getattr(args, "soft_unknown_mixup_order", 3)))),
+                    "soft_unknown_mixup_ce": 0.0,
+                    "soft_unknown_mixup_energy": 0.0,
+                    "soft_unknown_mixup_vacuum": 0.0,
+                    "soft_unknown_mixup_virtual_accept_rate": 0.0,
+                    "soft_unknown_mixup_vacuum_violation": 0.0,
+                }
+                soft_unknown_mixup_batch = None
+                soft_unknown_mixup_stage_scale = proxy_stage_scale
+                soft_mixup_needed = (
+                    (float(getattr(args, "lambda_soft_unknown_mixup", 0.0)) > 0.0 and soft_unknown_mixup_stage_scale > 0.0)
+                    or (
+                        float(args.lambda_source_episode) > 0.0
+                        and source_episode_stage_scale > 0.0
+                        and float(getattr(args, "source_episode_mixup_weight", 0.0)) > 0.0
+                    )
+                )
+                if soft_mixup_needed:
+                    if make_soft_unknown_mixup is None:
+                        raise ImportError("cvsrffi.losses.make_soft_unknown_mixup is required for soft unknown mixup")
+                    soft_unknown_mixup_batch = make_soft_unknown_mixup(
+                        z_id_l,
+                        y_l,
+                        mixup_count=int(args.soft_unknown_mixup_count),
+                        mixup_order=int(args.soft_unknown_mixup_order),
+                        alpha=float(args.soft_unknown_mixup_alpha),
+                    )
                 proxy_active = float(args.lambda_proxy_unknown) > 0.0 and proxy_stage_scale > 0.0
                 if proxy_active:
                     if proxy_unknown_energy_loss is None:
@@ -2123,12 +2225,26 @@ def train(args) -> int:
                         vacuum_hard_k=int(args.proxy_unknown_vacuum_hard_k),
                         vacuum_radius_rad=math.radians(float(args.proxy_unknown_vacuum_radius_deg)),
                     )
+                if float(getattr(args, "lambda_soft_unknown_mixup", 0.0)) > 0.0 and soft_unknown_mixup_stage_scale > 0.0:
+                    if soft_unknown_mixup_loss is None:
+                        raise ImportError("cvsrffi.losses.soft_unknown_mixup_loss is required for --lambda_soft_unknown_mixup")
+                    loss_soft_unknown_mixup_l, soft_unknown_mixup_info = soft_unknown_mixup_loss(
+                        z_id_l,
+                        y_l,
+                        logits=out_l["tx_logits"],
+                        mixup=soft_unknown_mixup_batch,
+                        mixup_count=int(args.soft_unknown_mixup_count),
+                        mixup_order=int(args.soft_unknown_mixup_order),
+                        alpha=float(args.soft_unknown_mixup_alpha),
+                        energy_margin=float(args.soft_unknown_mixup_energy_margin),
+                        ce_weight=float(args.soft_unknown_mixup_ce_weight),
+                        energy_weight=float(args.soft_unknown_mixup_energy_weight),
+                        vacuum_weight=float(args.soft_unknown_mixup_vacuum_weight),
+                        vacuum_width_rad=math.radians(float(args.soft_unknown_mixup_vacuum_width_deg)),
+                        vacuum_hard_k=int(args.soft_unknown_mixup_vacuum_hard_k),
+                        detach_mixup=bool(args.soft_unknown_mixup_detach),
+                    )
                 loss_source_episode_l = z_id_l.sum() * 0.0
-                source_episode_stage_scale = _stage_gate_scale(
-                    epoch,
-                    start_epoch=int(getattr(args, "source_episode_start_epoch", 1)),
-                    warmup_epochs=int(getattr(args, "source_episode_warmup_epochs", 0)),
-                )
                 source_episode_info: Dict[str, float] = {
                     "source_episode_loss": 0.0,
                     "source_episode_overflow_rate": 0.0,
@@ -2136,6 +2252,11 @@ def train(args) -> int:
                     "source_episode_val_angle_deg": float("nan"),
                     "source_episode_classes": 0.0,
                     "source_episode_domains": 0.0,
+                    "source_episode_mixup_count": 0.0,
+                    "source_episode_mixup_order": float(max(2, int(getattr(args, "soft_unknown_mixup_order", 3)))),
+                    "source_episode_mixup_loss": 0.0,
+                    "source_episode_mixup_overflow_rate": 0.0,
+                    "source_episode_mixup_margin_deg": float("nan"),
                 }
                 if float(args.lambda_source_episode) > 0.0 and source_episode_stage_scale > 0.0:
                     if source_episode_three_sigma_loss is None:
@@ -2146,6 +2267,10 @@ def train(args) -> int:
                         d_l,
                         min_domains=int(args.source_episode_min_domains),
                         radius_cap_rad=math.radians(float(args.source_episode_radius_cap_deg)),
+                        mixup_features=soft_unknown_mixup_batch.features if soft_unknown_mixup_batch is not None else None,
+                        mixup_weight=float(args.source_episode_mixup_weight),
+                        mixup_order=int(args.soft_unknown_mixup_order),
+                        mixup_hard_k=int(args.source_episode_mixup_hard_k),
                     )
                 use_sat_train = bool(args.use_sat_consistency) and epoch >= int(args.sat_cons_start_epoch) and (
                     cur_w["sat_cls"] > 0.0 or cur_w["sat_cons"] > 0.0
@@ -2201,6 +2326,7 @@ def train(args) -> int:
                     + (cur_w["open_world_feat"] * ow_feat_stage_scale) * sanitize_loss("ssdg_open_world_feat", loss_open_world_feat_l, z_id_l, loss_warn_counts)
                     + (cur_w["zid_compact"] * zid_warm) * sanitize_loss("ssdg_zid_compact", loss_zid_compact_l, z_id_l, loss_warn_counts)
                     + (cur_w["proxy_unknown"] * proxy_stage_scale) * sanitize_loss("ssdg_proxy_unknown", loss_proxy_unknown_l, z_id_l, loss_warn_counts)
+                    + (cur_w["soft_unknown_mixup"] * soft_unknown_mixup_stage_scale) * sanitize_loss("ssdg_soft_unknown_mixup", loss_soft_unknown_mixup_l, z_id_l, loss_warn_counts)
                     + (cur_w["source_episode"] * source_episode_stage_scale) * sanitize_loss("ssdg_source_episode", loss_source_episode_l, z_id_l, loss_warn_counts)
                     + cur_w["sat_cls"] * loss_sat_cls_l
                     + cur_w["sat_cons"] * loss_sat_cons_l
@@ -2316,6 +2442,7 @@ def train(args) -> int:
                     "train/loss_open_world_feat": loss_open_world_feat_l.detach(),
                     "train/loss_zid_compact": loss_zid_compact_l.detach(),
                     "train/loss_proxy_unknown": loss_proxy_unknown_l.detach(),
+                    "train/loss_soft_unknown_mixup": loss_soft_unknown_mixup_l.detach(),
                     "train/loss_source_episode": loss_source_episode_l.detach(),
                     "train/loss_sat_cls_labeled": loss_sat_cls_l.detach(),
                     "train/loss_sat_cons_labeled": loss_sat_cons_l.detach(),
@@ -2330,6 +2457,7 @@ def train(args) -> int:
                     "train/w_loss_open_world_feat": ((cur_w["open_world_feat"] * ow_feat_stage_scale) * loss_open_world_feat_l).detach(),
                     "train/w_loss_zid_compact": ((cur_w["zid_compact"] * zid_warm) * loss_zid_compact_l).detach(),
                     "train/w_loss_proxy_unknown": ((cur_w["proxy_unknown"] * proxy_stage_scale) * loss_proxy_unknown_l).detach(),
+                    "train/w_loss_soft_unknown_mixup": ((cur_w["soft_unknown_mixup"] * soft_unknown_mixup_stage_scale) * loss_soft_unknown_mixup_l).detach(),
                     "train/w_loss_source_episode": ((cur_w["source_episode"] * source_episode_stage_scale) * loss_source_episode_l).detach(),
                     "train/w_loss_sat_cls_labeled": (cur_w["sat_cls"] * loss_sat_cls_l).detach(),
                     "train/w_loss_sat_cons_labeled": (cur_w["sat_cons"] * loss_sat_cons_l).detach(),
@@ -2399,12 +2527,25 @@ def train(args) -> int:
                     "train/proxy_unknown_vacuum_margin_deg": proxy_unknown_info.get("vacuum_margin_deg", float("nan")),
                     "train/proxy_unknown_vacuum_min_angle_deg": proxy_unknown_info.get("vacuum_min_angle_deg", float("nan")),
                     "train/proxy_unknown_stage_scale": float(proxy_stage_scale),
+                    "train/soft_unknown_mixup_count": soft_unknown_mixup_info.get("soft_unknown_mixup_count", float("nan")),
+                    "train/soft_unknown_mixup_order": soft_unknown_mixup_info.get("soft_unknown_mixup_order", float("nan")),
+                    "train/soft_unknown_mixup_ce": soft_unknown_mixup_info.get("soft_unknown_mixup_ce", float("nan")),
+                    "train/soft_unknown_mixup_energy": soft_unknown_mixup_info.get("soft_unknown_mixup_energy", float("nan")),
+                    "train/soft_unknown_mixup_vacuum": soft_unknown_mixup_info.get("soft_unknown_mixup_vacuum", float("nan")),
+                    "train/soft_unknown_mixup_virtual_accept_rate": soft_unknown_mixup_info.get("soft_unknown_mixup_virtual_accept_rate", float("nan")),
+                    "train/soft_unknown_mixup_vacuum_violation": soft_unknown_mixup_info.get("soft_unknown_mixup_vacuum_violation", float("nan")),
+                    "train/soft_unknown_mixup_stage_scale": float(soft_unknown_mixup_stage_scale),
                     "train/source_episode_loss": source_episode_info.get("source_episode_loss", float("nan")),
                     "train/source_episode_overflow_rate": source_episode_info.get("source_episode_overflow_rate", float("nan")),
                     "train/source_episode_radius_3sigma_deg": source_episode_info.get("source_episode_radius_3sigma_deg", float("nan")),
                     "train/source_episode_val_angle_deg": source_episode_info.get("source_episode_val_angle_deg", float("nan")),
                     "train/source_episode_classes": source_episode_info.get("source_episode_classes", float("nan")),
                     "train/source_episode_domains": source_episode_info.get("source_episode_domains", float("nan")),
+                    "train/source_episode_mixup_count": source_episode_info.get("source_episode_mixup_count", float("nan")),
+                    "train/source_episode_mixup_order": source_episode_info.get("source_episode_mixup_order", float("nan")),
+                    "train/source_episode_mixup_loss": source_episode_info.get("source_episode_mixup_loss", float("nan")),
+                    "train/source_episode_mixup_overflow_rate": source_episode_info.get("source_episode_mixup_overflow_rate", float("nan")),
+                    "train/source_episode_mixup_margin_deg": source_episode_info.get("source_episode_mixup_margin_deg", float("nan")),
                     "train/source_episode_stage_scale": float(source_episode_stage_scale),
                 }
             )

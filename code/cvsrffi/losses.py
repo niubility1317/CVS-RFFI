@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import math
+from dataclasses import dataclass
 from typing import Any, Dict, Optional, Tuple
 
 import numpy as np
@@ -730,6 +731,220 @@ def _plain_supcon_loss(z: torch.Tensor, y: torch.Tensor, *, temperature: float =
     return -pos_log_prob[has_pos].mean()
 
 
+@dataclass(frozen=True)
+class SoftUnknownMixupBatch:
+    """Synthetic low-density samples mixed from multiple TX classes."""
+
+    features: torch.Tensor
+    source_indices: torch.Tensor
+    source_labels: torch.Tensor
+    weights: torch.Tensor
+    class_ids: torch.Tensor
+
+
+def make_soft_unknown_mixup(
+    z: torch.Tensor,
+    labels: torch.Tensor,
+    *,
+    mixup_count: int = 16,
+    count: Optional[int] = None,
+    mixup_order: int = 3,
+    alpha: float = 0.5,
+    generator: Optional[torch.Generator] = None,
+) -> SoftUnknownMixupBatch:
+    """Build virtual unknown samples by mixing samples from distinct TX classes."""
+
+    device = z.device
+    z_norm = safe_l2_normalize(torch.nan_to_num(z.float(), nan=0.0, posinf=0.0, neginf=0.0), dim=1)
+    labels = labels.view(-1).long()
+    if labels.numel() != z_norm.size(0):
+        raise ValueError(f"label count {labels.numel()} does not match feature batch {z_norm.size(0)}")
+    if count is not None:
+        mixup_count = int(count)
+    mixup_order = int(max(2, mixup_order))
+    mixup_count = int(max(0, mixup_count))
+    valid = labels >= 0
+    unique_labels = torch.unique(labels[valid])
+
+    if mixup_count == 0 or unique_labels.numel() < mixup_order:
+        empty_idx = torch.empty((0, mixup_order), device=device, dtype=torch.long)
+        return SoftUnknownMixupBatch(
+            features=z_norm.new_zeros((0, z_norm.shape[1])),
+            source_indices=empty_idx,
+            source_labels=empty_idx.clone(),
+            weights=z_norm.new_zeros((0, mixup_order)),
+            class_ids=unique_labels,
+        )
+
+    by_label: Dict[int, torch.Tensor] = {
+        int(label.item()): torch.nonzero(labels == label, as_tuple=False).flatten()
+        for label in unique_labels
+    }
+    alpha = float(max(alpha, 1e-4))
+    inv_alpha = 1.0 / alpha
+    mixed_features = []
+    source_indices = []
+    source_labels = []
+    source_weights = []
+
+    for _ in range(mixup_count):
+        label_perm = torch.randperm(unique_labels.numel(), device=device, generator=generator)[:mixup_order]
+        chosen_labels = unique_labels[label_perm].long()
+        chosen_indices = []
+        for label in chosen_labels:
+            candidates = by_label[int(label.item())]
+            pick = torch.randint(candidates.numel(), (1,), device=device, generator=generator)
+            chosen_indices.append(candidates[pick].reshape(()))
+        idx = torch.stack(chosen_indices)
+        weights = torch.rand((mixup_order,), device=device, dtype=z_norm.dtype, generator=generator).clamp_min(1e-6)
+        weights = weights.pow(inv_alpha)
+        weights = weights / weights.sum().clamp_min(1e-6)
+        mixed = (z_norm[idx] * weights.unsqueeze(1)).sum(dim=0)
+        mixed_features.append(mixed)
+        source_indices.append(idx)
+        source_labels.append(chosen_labels)
+        source_weights.append(weights)
+
+    features = safe_l2_normalize(torch.stack(mixed_features, dim=0), dim=1)
+    return SoftUnknownMixupBatch(
+        features=features,
+        source_indices=torch.stack(source_indices, dim=0),
+        source_labels=torch.stack(source_labels, dim=0),
+        weights=torch.stack(source_weights, dim=0),
+        class_ids=unique_labels,
+    )
+
+
+def _soft_targets_from_mixup(
+    mixup: SoftUnknownMixupBatch,
+    num_classes: int,
+    *,
+    device: torch.device,
+    dtype: torch.dtype,
+) -> torch.Tensor:
+    targets = torch.zeros((mixup.features.shape[0], num_classes), device=device, dtype=dtype)
+    if mixup.features.numel() == 0 or num_classes <= 0:
+        return targets
+    labels = mixup.source_labels.clamp(min=0, max=num_classes - 1).long()
+    targets.scatter_add_(1, labels, mixup.weights.to(device=device, dtype=dtype))
+    return targets
+
+
+def _energy_to_centers(features: torch.Tensor, centers: torch.Tensor) -> torch.Tensor:
+    scores = safe_l2_normalize(features, dim=1) @ centers.t()
+    return -torch.logsumexp(scores, dim=1)
+
+
+def soft_unknown_mixup_loss(
+    z: torch.Tensor,
+    labels: torch.Tensor,
+    *,
+    logits: Optional[torch.Tensor] = None,
+    mixup: Optional[SoftUnknownMixupBatch] = None,
+    mixup_count: int = 16,
+    mixup_order: int = 3,
+    alpha: float = 0.5,
+    energy_margin: float = 1.0,
+    ce_weight: float = 1.0,
+    energy_weight: float = 1.0,
+    vacuum_weight: float = 0.0,
+    vacuum_width_rad: float = math.radians(6.0),
+    vacuum_hard_k: int = 2,
+    detach_mixup: bool = False,
+    generator: Optional[torch.Generator] = None,
+) -> Tuple[torch.Tensor, Dict[str, float]]:
+    """Proxy-unknown loss using soft-label multi-TX mixup samples."""
+
+    metrics: Dict[str, float] = {
+        "soft_unknown_mixup_count": 0.0,
+        "soft_unknown_mixup_order": float(max(2, mixup_order)),
+        "soft_unknown_mixup_ce": 0.0,
+        "soft_unknown_mixup_energy": 0.0,
+        "soft_unknown_mixup_vacuum": 0.0,
+        "soft_unknown_mixup_virtual_accept_rate": 0.0,
+        "soft_unknown_mixup_vacuum_violation": 0.0,
+    }
+    if z is None or not torch.is_tensor(z) or z.numel() == 0:
+        ref = torch.tensor(0.0)
+        return ref, metrics
+    labels = labels.view(-1).long()
+    if labels.numel() != z.size(0):
+        raise ValueError(f"label count {labels.numel()} does not match feature batch {z.size(0)}")
+    if mixup is None:
+        mixup = make_soft_unknown_mixup(
+            z,
+            labels,
+            mixup_count=mixup_count,
+            mixup_order=mixup_order,
+            alpha=alpha,
+            generator=generator,
+        )
+    if mixup.features.numel() == 0:
+        return zero_like_with_grad(z), metrics
+
+    mix_features = mixup.features.detach() if bool(detach_mixup) else mixup.features
+    z_norm = safe_l2_normalize(torch.nan_to_num(z.float(), nan=0.0, posinf=0.0, neginf=0.0), dim=1)
+    valid = labels >= 0
+    classes = []
+    centers = []
+    radii = []
+    for cls in torch.unique(labels[valid]):
+        cls_mask = valid & labels.eq(cls)
+        if int(cls_mask.sum().item()) < 2:
+            continue
+        center = safe_l2_normalize(z_norm[cls_mask].mean(dim=0, keepdim=True), dim=1).squeeze(0)
+        own_cos = (z_norm[cls_mask] * center.view(1, -1)).sum(dim=1).clamp(-1.0 + 1e-4, 1.0 - 1e-4)
+        centers.append(center)
+        radii.append(
+            _robust_three_sigma_radius_from_angles(
+                _safe_angle_from_cos(own_cos.detach()),
+                fallback_rad=math.radians(40.0),
+            )
+        )
+        classes.append(cls)
+    if len(centers) < 2:
+        return zero_like_with_grad(z), metrics
+
+    proto = torch.stack(centers, dim=0)
+    radius_vec = torch.stack(radii, dim=0).to(device=proto.device, dtype=proto.dtype)
+    metrics["soft_unknown_mixup_count"] = float(mix_features.shape[0])
+    metrics["soft_unknown_mixup_order"] = float(mixup.source_labels.shape[1])
+
+    energy_known = _energy_to_centers(z_norm[valid], proto)
+    energy_mix = _energy_to_centers(mix_features, proto)
+    threshold = torch.quantile(energy_known.detach(), 0.95) if energy_known.numel() > 1 else energy_known.detach().mean()
+    energy_loss = F.relu(float(energy_margin) - (energy_mix.mean() - energy_known.mean())).pow(2)
+    metrics["soft_unknown_mixup_energy"] = _scalar_metric(energy_loss)
+    metrics["soft_unknown_mixup_virtual_accept_rate"] = float(
+        (energy_mix.detach() <= threshold).float().mean().item()
+    )
+
+    ce_loss = z.new_tensor(0.0)
+    if logits is not None and torch.is_tensor(logits) and logits.numel() > 0 and float(ce_weight) > 0.0:
+        idx = mixup.source_indices.clamp(min=0, max=logits.shape[0] - 1).long()
+        mix_logits = (logits[idx] * mixup.weights.to(device=logits.device, dtype=logits.dtype).unsqueeze(-1)).sum(dim=1)
+        targets = _soft_targets_from_mixup(mixup, logits.shape[1], device=logits.device, dtype=logits.dtype)
+        ce_loss = -(targets * F.log_softmax(mix_logits, dim=1)).sum(dim=1).mean()
+        metrics["soft_unknown_mixup_ce"] = _scalar_metric(ce_loss)
+
+    vacuum_loss = z.new_tensor(0.0)
+    if float(vacuum_weight) > 0.0:
+        angles = _safe_angle_from_cos((mix_features @ proto.t()).clamp(-1.0 + 1e-4, 1.0 - 1e-4))
+        boundary = radius_vec.view(1, -1) + max(0.0, float(vacuum_width_rad))
+        violation = F.relu(boundary - angles).pow(2)
+        hard_k = max(1, min(int(vacuum_hard_k), proto.size(0)))
+        vacuum_loss = violation.topk(k=hard_k, dim=1, largest=True).values.mean()
+        metrics["soft_unknown_mixup_vacuum"] = _scalar_metric(vacuum_loss)
+        metrics["soft_unknown_mixup_vacuum_violation"] = float((violation.detach() > 0.0).float().mean().item())
+
+    total = (
+        max(0.0, float(ce_weight)) * ce_loss
+        + max(0.0, float(energy_weight)) * energy_loss
+        + max(0.0, float(vacuum_weight)) * vacuum_loss
+    )
+    return total, metrics
+
+
 def proxy_unknown_energy_loss(
     z: torch.Tensor,
     y: torch.Tensor,
@@ -911,6 +1126,10 @@ def source_episode_three_sigma_loss(
     min_samples_per_class_domain: int = 1,
     radius_cap_rad: float = math.radians(30.0),
     min_sigma_rad: float = math.radians(3.0),
+    mixup_features: Optional[torch.Tensor] = None,
+    mixup_weight: float = 0.0,
+    mixup_order: int = 3,
+    mixup_hard_k: int = 2,
 ) -> Tuple[torch.Tensor, Dict[str, float]]:
     """Source-only leave-domain angular shell objective.
 
@@ -925,6 +1144,11 @@ def source_episode_three_sigma_loss(
         "source_episode_val_angle_deg": float("nan"),
         "source_episode_classes": 0.0,
         "source_episode_domains": 0.0,
+        "source_episode_mixup_count": 0.0,
+        "source_episode_mixup_order": float(max(2, int(mixup_order))),
+        "source_episode_mixup_loss": 0.0,
+        "source_episode_mixup_overflow_rate": 0.0,
+        "source_episode_mixup_margin_deg": float("nan"),
     }
     if z is None or not torch.is_tensor(z) or z.numel() == 0:
         ref = torch.tensor(0.0)
@@ -942,6 +1166,8 @@ def source_episode_three_sigma_loss(
     overflow_rates = []
     radii = []
     val_angles_all = []
+    episode_centers = []
+    episode_radii = []
     used_classes = set()
     used_domains = set()
     min_cell = max(1, int(min_samples_per_class_domain))
@@ -982,18 +1208,54 @@ def source_episode_three_sigma_loss(
             overflow_rates.append(float((val_angles.detach() > radius).float().mean().item()))
             radii.append(radius.detach())
             val_angles_all.append(val_angles.detach().mean())
+            episode_centers.append(center)
+            episode_radii.append(radius.detach())
             used_classes.add(int(cls.item()))
             used_domains.add(int(val_dom.item()))
     if not losses:
         return zero_like_with_grad(z), default_metrics
-    loss = torch.stack(losses).mean()
+    source_loss = torch.stack(losses).mean()
+    mixup_loss = z.new_tensor(0.0)
+    mixup_overflow_rate = 0.0
+    mixup_margin = z.new_tensor(float("nan"))
+    mixup_count = 0.0
+    if (
+        mixup_features is not None
+        and torch.is_tensor(mixup_features)
+        and mixup_features.numel() > 0
+        and float(mixup_weight) > 0.0
+        and episode_centers
+    ):
+        mix_norm = safe_l2_normalize(
+            torch.nan_to_num(mixup_features.float(), nan=0.0, posinf=0.0, neginf=0.0),
+            dim=1,
+        )
+        ep_proto = torch.stack(episode_centers, dim=0)
+        ep_radii = torch.stack(episode_radii, dim=0).to(device=ep_proto.device, dtype=ep_proto.dtype)
+        mix_cos = (mix_norm @ ep_proto.t()).clamp(-1.0 + 1e-6, 1.0 - 1e-6)
+        mix_angles = _safe_angle_from_cos(mix_cos)
+        inside = F.relu(ep_radii.view(1, -1) - mix_angles)
+        hard_k = max(1, min(int(mixup_hard_k), inside.size(1)))
+        mixup_loss = inside.pow(2).topk(k=hard_k, dim=1, largest=True).values.mean()
+        with torch.no_grad():
+            margins = mix_angles.detach() - ep_radii.detach().view(1, -1)
+            nearest_margin = margins.min(dim=1).values
+            mixup_overflow_rate = float((nearest_margin < 0.0).float().mean().item())
+            mixup_margin = nearest_margin.mean()
+            mixup_count = float(mix_norm.size(0))
+    loss = source_loss + max(0.0, float(mixup_weight)) * mixup_loss
     metrics = {
-        "source_episode_loss": _scalar_metric(loss),
+        "source_episode_loss": _scalar_metric(source_loss),
         "source_episode_overflow_rate": float(np.mean(overflow_rates)) if overflow_rates else 0.0,
         "source_episode_radius_3sigma_deg": math.degrees(_scalar_metric(torch.stack(radii))),
         "source_episode_val_angle_deg": math.degrees(_scalar_metric(torch.stack(val_angles_all))),
         "source_episode_classes": float(len(used_classes)),
         "source_episode_domains": float(len(used_domains)),
+        "source_episode_mixup_count": mixup_count,
+        "source_episode_mixup_order": float(max(2, int(mixup_order))),
+        "source_episode_mixup_loss": _scalar_metric(mixup_loss),
+        "source_episode_mixup_overflow_rate": float(mixup_overflow_rate),
+        "source_episode_mixup_margin_deg": math.degrees(_scalar_metric(mixup_margin)),
     }
     return loss, metrics
 
