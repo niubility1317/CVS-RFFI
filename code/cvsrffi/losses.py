@@ -350,6 +350,26 @@ def _scalar_metric(value: torch.Tensor) -> float:
     return float(detached.float().mean().item())
 
 
+def _robust_three_sigma_radius_from_angles(angles: torch.Tensor, *, fallback_rad: float) -> torch.Tensor:
+    """Detached angular radius used as a source-only class-tail boundary."""
+    if angles.numel() <= 1:
+        return angles.new_tensor(max(0.0, float(fallback_rad)))
+    angles_det = angles.detach()
+    median = torch.quantile(angles_det, 0.50)
+    mad = torch.quantile((angles_det - median).abs(), 0.50)
+    q25 = torch.quantile(angles_det, 0.25)
+    q75 = torch.quantile(angles_det, 0.75)
+    iqr = q75 - q25
+    robust_sigma = 1.4826 * mad
+    if float(robust_sigma.item()) <= 0.0:
+        robust_sigma = 0.7413 * iqr
+    if float(robust_sigma.item()) <= 0.0 and angles_det.numel() > 1:
+        robust_sigma = angles_det.std(unbiased=False)
+    if float(robust_sigma.item()) <= 0.0:
+        return torch.maximum(angles_det.max(), angles.new_tensor(max(0.0, float(fallback_rad))))
+    return torch.minimum(angles_det.max(), median + 3.0 * robust_sigma)
+
+
 def open_world_feature_space_loss(
     z: torch.Tensor,
     y: torch.Tensor,
@@ -364,6 +384,9 @@ def open_world_feature_space_loss(
     tail_mode: str = "none",
     tail_weight: float = 0.0,
     cvar_alpha: float = 0.95,
+    vacuum_weight: float = 0.0,
+    vacuum_width_rad: float = math.radians(4.0),
+    vacuum_hard_k: int = 2,
 ) -> Tuple[torch.Tensor, Dict[str, float]]:
     """Batch-level angular geometry loss for open-world identity embeddings.
 
@@ -387,6 +410,11 @@ def open_world_feature_space_loss(
         "tail_cvar_deg": float("nan"),
         "tail_frac_gt_3sigma": 0.0,
         "tail_radius_3sigma_deg": float("nan"),
+        "vacuum_loss": 0.0,
+        "vacuum_violation_rate": 0.0,
+        "vacuum_min_neg_angle_deg": float("nan"),
+        "vacuum_margin_deg": float("nan"),
+        "vacuum_boundary_deg": float("nan"),
     }
     if z is None or not torch.is_tensor(z) or z.numel() == 0:
         ref = torch.tensor(0.0)
@@ -512,12 +540,41 @@ def open_world_feature_space_loss(
             tail_frac = float(np.mean(class_tail_frac))
             tail_radius_mean = torch.stack(class_radius).mean()
 
+    vacuum_loss = z.new_tensor(0.0)
+    vacuum_violation_rate = 0.0
+    vacuum_min_neg_angle = z.new_tensor(float("nan"))
+    vacuum_margin_mean = z.new_tensor(float("nan"))
+    vacuum_boundary_mean = z.new_tensor(float("nan"))
+    if active_classes > 1 and float(vacuum_weight) > 0.0:
+        class_radii = []
+        for cls in center_labels:
+            cls_mask = sample_labels.eq(cls)
+            angles_c = pos_angles_train[cls_mask]
+            class_radii.append(_robust_three_sigma_radius_from_angles(angles_c, fallback_rad=radius_rad))
+        radius_vec = torch.stack(class_radii, dim=0).to(device=sample_cos.device, dtype=sample_cos.dtype)
+        all_angles = _safe_angle_from_cos(sample_cos)
+        boundary = (radius_vec + max(0.0, float(vacuum_width_rad))).view(1, -1)
+        foreign_mask = ~own_center
+        violation = F.relu(boundary - all_angles).pow(2).masked_fill(~foreign_mask, 0.0)
+        hard_k = max(1, min(int(vacuum_hard_k), active_classes - 1))
+        vacuum_loss = violation.topk(k=hard_k, dim=1, largest=True).values.mean()
+        with torch.no_grad():
+            margins = (all_angles.detach() - boundary.detach())[foreign_mask]
+            foreign_angles = all_angles.detach()[foreign_mask]
+            foreign_boundary = boundary.detach().expand_as(all_angles)[foreign_mask]
+            if margins.numel():
+                vacuum_violation_rate = float((margins < 0.0).float().mean().item())
+                vacuum_min_neg_angle = foreign_angles.min()
+                vacuum_margin_mean = margins.mean()
+                vacuum_boundary_mean = foreign_boundary.mean()
+
     loss = (
         compact
         + inter
         + sample_margin
         + max(0.0, float(domain_align_weight)) * domain_align
         + max(0.0, float(tail_weight)) * tail_loss
+        + max(0.0, float(vacuum_weight)) * vacuum_loss
     )
     q50 = torch.quantile(pos_angles, 0.50) if pos_angles.numel() else z.new_tensor(float("nan"))
     q95 = torch.quantile(pos_angles, 0.95) if pos_angles.numel() else z.new_tensor(float("nan"))
@@ -539,6 +596,11 @@ def open_world_feature_space_loss(
         "tail_cvar_deg": math.degrees(_scalar_metric(tail_cvar)),
         "tail_frac_gt_3sigma": float(tail_frac),
         "tail_radius_3sigma_deg": math.degrees(_scalar_metric(tail_radius_mean)),
+        "vacuum_loss": _scalar_metric(vacuum_loss),
+        "vacuum_violation_rate": float(vacuum_violation_rate),
+        "vacuum_min_neg_angle_deg": math.degrees(_scalar_metric(vacuum_min_neg_angle)),
+        "vacuum_margin_deg": math.degrees(_scalar_metric(vacuum_margin_mean)),
+        "vacuum_boundary_deg": math.degrees(_scalar_metric(vacuum_boundary_mean)),
     }
     return loss, metrics
 
@@ -677,6 +739,10 @@ def proxy_unknown_energy_loss(
     energy_margin: float = 1.0,
     placeholder_weight: float = 0.5,
     virtual_detach: bool = True,
+    vacuum_weight: float = 0.0,
+    vacuum_width_rad: float = math.radians(4.0),
+    vacuum_hard_k: int = 2,
+    vacuum_radius_rad: float = math.radians(40.0),
 ) -> Tuple[torch.Tensor, Dict[str, float]]:
     """Source-only proxy unknown loss using leave-one-TX-out and feature outliers."""
     default_metrics = {
@@ -690,6 +756,10 @@ def proxy_unknown_energy_loss(
         "energy_margin": float("nan"),
         "proxy_unknown_auc": float("nan"),
         "virtual_accept_rate": float("nan"),
+        "vacuum_loss": 0.0,
+        "vacuum_violation_rate": 0.0,
+        "vacuum_margin_deg": float("nan"),
+        "vacuum_min_angle_deg": float("nan"),
     }
     if z is None or not torch.is_tensor(z) or z.numel() == 0:
         ref = torch.tensor(0.0)
@@ -714,13 +784,23 @@ def proxy_unknown_energy_loss(
     z_norm = safe_l2_normalize(torch.nan_to_num(z.float(), nan=0.0, posinf=0.0, neginf=0.0), dim=1)
     known_labels = torch.unique(labels[known_mask])
     centers = []
+    class_radii = []
     for cls in known_labels:
         cls_mask = known_mask & labels.eq(cls)
         if bool(cls_mask.any()):
-            centers.append(safe_l2_normalize(z_norm[cls_mask].mean(dim=0, keepdim=True), dim=1).squeeze(0))
+            center = safe_l2_normalize(z_norm[cls_mask].mean(dim=0, keepdim=True), dim=1).squeeze(0)
+            centers.append(center)
+            own_cos = (z_norm[cls_mask] * center.view(1, -1)).sum(dim=1).clamp(-1.0 + 1e-4, 1.0 - 1e-4)
+            class_radii.append(
+                _robust_three_sigma_radius_from_angles(
+                    _safe_angle_from_cos(own_cos),
+                    fallback_rad=vacuum_radius_rad,
+                )
+            )
     if len(centers) <= 0:
         return zero_like_with_grad(z), default_metrics
     proto = torch.stack(centers, dim=0)
+    radius_vec = torch.stack(class_radii, dim=0).to(device=proto.device, dtype=proto.dtype)
 
     def energy(feat: torch.Tensor) -> torch.Tensor:
         scores = safe_l2_normalize(feat, dim=1) @ proto.t()
@@ -741,7 +821,33 @@ def proxy_unknown_energy_loss(
         F.softplus(-logits_known).mean()
         + F.softplus(-logits_unknown).mean()
     ) if logits_unknown.numel() else z.new_tensor(0.0)
-    loss = margin_loss + max(0.0, float(placeholder_weight)) * placeholder
+
+    vacuum_loss = z.new_tensor(0.0)
+    vacuum_violation_rate = 0.0
+    vacuum_margin_mean = z.new_tensor(float("nan"))
+    vacuum_min_angle = z.new_tensor(float("nan"))
+    if float(vacuum_weight) > 0.0:
+        unknown_feat = torch.cat([z_norm[proxy_mask], virtual], dim=0)
+        if unknown_feat.numel():
+            unknown_cos = (safe_l2_normalize(unknown_feat, dim=1) @ proto.t()).clamp(-1.0 + 1e-4, 1.0 - 1e-4)
+            unknown_angles = _safe_angle_from_cos(unknown_cos)
+            boundary = (radius_vec + max(0.0, float(vacuum_width_rad))).view(1, -1)
+            violation = F.relu(boundary - unknown_angles).pow(2)
+            hard_k = max(1, min(int(vacuum_hard_k), proto.size(0)))
+            vacuum_loss = violation.topk(k=hard_k, dim=1, largest=True).values.mean()
+            with torch.no_grad():
+                margins = unknown_angles.detach() - boundary.detach()
+                if margins.numel():
+                    nearest_margin = margins.min(dim=1).values
+                    vacuum_violation_rate = float((nearest_margin < 0.0).float().mean().item())
+                    vacuum_margin_mean = nearest_margin.mean()
+                    vacuum_min_angle = unknown_angles.detach().min()
+
+    loss = (
+        margin_loss
+        + max(0.0, float(placeholder_weight)) * placeholder
+        + max(0.0, float(vacuum_weight)) * vacuum_loss
+    )
 
     with torch.no_grad():
         known_scores = e_known.detach()
@@ -764,6 +870,10 @@ def proxy_unknown_energy_loss(
         "energy_margin": _scalar_metric(e_proxy.mean() - e_known.mean()),
         "proxy_unknown_auc": float(auc),
         "virtual_accept_rate": float(virtual_accept),
+        "vacuum_loss": _scalar_metric(vacuum_loss),
+        "vacuum_violation_rate": float(vacuum_violation_rate),
+        "vacuum_margin_deg": math.degrees(_scalar_metric(vacuum_margin_mean)),
+        "vacuum_min_angle_deg": math.degrees(_scalar_metric(vacuum_min_angle)),
     }
     return loss, metrics
 
@@ -1072,6 +1182,70 @@ def finite_or_zero(t: Optional[torch.Tensor], ref: torch.Tensor) -> torch.Tensor
     if not torch.isfinite(t.detach()).all():
         return zero_like_with_grad(ref)
     return t
+
+
+def energy_from_logits(logits: torch.Tensor, temperature: float = 1.0) -> torch.Tensor:
+    return -float(temperature) * torch.logsumexp(logits.float() / float(temperature), dim=-1)
+
+
+def energy_in_out_loss(
+    known_core_logits: torch.Tensor,
+    negative_logits: torch.Tensor,
+    m_in: float = -8.0,
+    m_out: float = -2.0,
+    temperature: float = 1.0,
+) -> Tuple[torch.Tensor, Dict[str, float]]:
+    ref = known_core_logits if torch.is_tensor(known_core_logits) else negative_logits
+    terms = []
+    metrics: Dict[str, float] = {
+        "known_count": 0.0,
+        "negative_count": 0.0,
+        "energy_known": float("nan"),
+        "energy_negative": float("nan"),
+    }
+    if torch.is_tensor(known_core_logits) and known_core_logits.numel() > 0:
+        e_in = energy_from_logits(known_core_logits, temperature=temperature)
+        terms.append(torch.relu(e_in - float(m_in)).mean())
+        metrics["known_count"] = float(known_core_logits.size(0))
+        metrics["energy_known"] = float(e_in.detach().mean().item())
+    if torch.is_tensor(negative_logits) and negative_logits.numel() > 0:
+        e_out = energy_from_logits(negative_logits, temperature=temperature)
+        terms.append(torch.relu(float(m_out) - e_out).mean())
+        metrics["negative_count"] = float(negative_logits.size(0))
+        metrics["energy_negative"] = float(e_out.detach().mean().item())
+    if not terms:
+        return zero_like_with_grad(ref), metrics
+    return finite_or_zero(torch.stack(terms).sum(), ref), metrics
+
+
+def reject_negative_loss(
+    negative_logits: torch.Tensor,
+    reject_class_index: int = -1,
+) -> Tuple[torch.Tensor, Dict[str, float]]:
+    if negative_logits is None or negative_logits.numel() == 0:
+        ref = negative_logits if torch.is_tensor(negative_logits) else torch.tensor(0.0)
+        return zero_like_with_grad(ref), {"negative_count": 0.0, "reject_acc": float("nan")}
+    logits = negative_logits.float()
+    idx = int(reject_class_index)
+    if idx < 0:
+        idx = logits.size(1) + idx
+    target = torch.full((logits.size(0),), idx, dtype=torch.long, device=logits.device)
+    loss = F.cross_entropy(logits, target)
+    pred = logits.argmax(dim=1)
+    return loss, {"negative_count": float(logits.size(0)), "reject_acc": float((pred == target).float().mean().item())}
+
+
+def negative_entropy_or_margin_loss(
+    negative_logits: torch.Tensor,
+    max_known_prob: float = 0.2,
+) -> Tuple[torch.Tensor, Dict[str, float]]:
+    if negative_logits is None or negative_logits.numel() == 0:
+        ref = negative_logits if torch.is_tensor(negative_logits) else torch.tensor(0.0)
+        return zero_like_with_grad(ref), {"negative_count": 0.0, "neg_max_known_prob": float("nan")}
+    probs = negative_logits.float().softmax(dim=-1)
+    max_prob = probs.max(dim=-1).values
+    loss = torch.relu(max_prob - float(max_known_prob)).mean()
+    return loss, {"negative_count": float(negative_logits.size(0)), "neg_max_known_prob": float(max_prob.detach().mean().item())}
 
 
 def sanitize_loss(

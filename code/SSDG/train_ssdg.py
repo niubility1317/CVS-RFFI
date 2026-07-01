@@ -268,6 +268,9 @@ def build_arg_parser() -> argparse.ArgumentParser:
     parser.add_argument("--ow_feat_tail_mode", type=str, default="none", choices=["none", "robust_3sigma"])
     parser.add_argument("--ow_feat_tail_weight", type=float, default=0.0)
     parser.add_argument("--ow_feat_cvar_alpha", type=float, default=0.95)
+    parser.add_argument("--ow_feat_vacuum_weight", type=float, default=0.0)
+    parser.add_argument("--ow_feat_vacuum_width_deg", type=float, default=4.0)
+    parser.add_argument("--ow_feat_vacuum_hard_k", type=int, default=2)
     parser.add_argument("--ow_feat_soft_gate", type=str2bool, default=False)
     parser.add_argument("--ow_feat_gate_floor", type=float, default=0.25)
     parser.add_argument("--lambda_zid_compact", type=float, default=0.0)
@@ -287,11 +290,48 @@ def build_arg_parser() -> argparse.ArgumentParser:
     parser.add_argument("--proxy_unknown_energy_margin", type=float, default=1.0)
     parser.add_argument("--proxy_unknown_placeholder_weight", type=float, default=0.5)
     parser.add_argument("--proxy_unknown_virtual_detach", type=str2bool, default=True)
+    parser.add_argument("--proxy_unknown_vacuum_weight", type=float, default=0.0)
+    parser.add_argument("--proxy_unknown_vacuum_width_deg", type=float, default=4.0)
+    parser.add_argument("--proxy_unknown_vacuum_hard_k", type=int, default=2)
+    parser.add_argument("--proxy_unknown_vacuum_radius_deg", type=float, default=40.0)
     parser.add_argument("--lambda_source_episode", type=float, default=0.0)
     parser.add_argument("--source_episode_start_epoch", type=int, default=1)
     parser.add_argument("--source_episode_warmup_epochs", type=int, default=0)
     parser.add_argument("--source_episode_min_domains", type=int, default=2)
     parser.add_argument("--source_episode_radius_cap_deg", type=float, default=30.0)
+    parser.add_argument("--run_id", type=str, default="")
+    parser.add_argument("--candidate_id", type=str, default="")
+    parser.add_argument("--base_candidate", type=str, default="")
+    parser.add_argument("--reject_head", type=str2bool, default=False)
+    parser.add_argument("--reject_class_index", type=int, default=-1)
+    parser.add_argument("--lambda_energy_in", type=float, default=0.0)
+    parser.add_argument("--lambda_energy_out", type=float, default=0.0)
+    parser.add_argument("--lambda_reject_neg", type=float, default=0.0)
+    parser.add_argument("--lambda_inter_neg", type=float, default=0.0)
+    parser.add_argument("--lambda_shell_neg", type=float, default=0.0)
+    parser.add_argument("--lambda_tail_outward_neg", type=float, default=0.0)
+    parser.add_argument("--lambda_bridge_neg", type=float, default=0.0)
+    parser.add_argument("--neg_shell_ratio", type=float, default=0.0)
+    parser.add_argument("--neg_inter_ratio", type=float, default=0.0)
+    parser.add_argument("--neg_tail_outward_ratio", type=float, default=0.0)
+    parser.add_argument("--neg_bridge_ratio", type=float, default=0.0)
+    parser.add_argument("--energy_in_margin", type=float, default=-10.0)
+    parser.add_argument("--energy_out_margin", type=float, default=10.0)
+    parser.add_argument("--tail_quarantine", type=str2bool, default=False)
+    parser.add_argument("--tail_core_quantile", type=float, default=0.80)
+    parser.add_argument("--tail_accept_quantile", type=float, default=0.92)
+    parser.add_argument("--tail_extreme_quantile", type=float, default=0.95)
+    parser.add_argument("--tail_soft_ce_weight", type=float, default=0.25)
+    parser.add_argument("--tail_extreme_ce_weight", type=float, default=0.05)
+    parser.add_argument("--lambda_tail_cvar", type=float, default=0.0)
+    parser.add_argument("--lambda_overflow_cap", type=float, default=0.0)
+    parser.add_argument("--unlabeled_risk_buffer", type=str2bool, default=False)
+    parser.add_argument("--pseudo_known_requires_density", type=str2bool, default=True)
+    parser.add_argument("--pseudo_known_maxprob_min", type=float, default=0.90)
+    parser.add_argument("--risk_maxprob_min", type=float, default=0.70)
+    parser.add_argument("--risk_density_percentile", type=float, default=10.0)
+    parser.add_argument("--risk_geo_margin_min_deg", type=float, default=2.0)
+    parser.add_argument("--lambda_risk_energy_out", type=float, default=0.0)
     parser.add_argument("--phase2_export_prototypes", type=str2bool, default=False)
     parser.add_argument("--phase2_export_path", type=str, default="")
     parser.add_argument("--phase2_export_checkpoint", type=str, default="")
@@ -922,20 +962,20 @@ def _maybe_export_phase2_prototypes_ssdg(
         if bool(getattr(args, "phase2_fuse_prototypes", False)):
             if fuse_tx_domain_prototypes is None or PrototypeFusionConfig is None or save_phase2_prototype_export is None:
                 raise ImportError("cvsrffi.phase2_prototypes fusion support is required for --phase2_fuse_prototypes")
-                package = fuse_tx_domain_prototypes(
-                    package,
-                    PrototypeFusionConfig(
-                        max_components_per_tx=int(getattr(args, "phase2_fuse_max_components", 4)),
-                        merge_angle_deg=float(getattr(args, "phase2_fuse_merge_angle_deg", 6.0)),
-                        radius_cap_deg=float(getattr(args, "phase2_fuse_radius_cap_deg", 25.0)),
-                        tail_abs_deg=float(getattr(args, "phase2_fuse_tail_abs_deg", 30.0)),
-                        accept_policy=str(getattr(args, "phase2_fuse_accept_policy", "local_component")),
-                        accept_radius_key=str(getattr(args, "phase2_fuse_accept_radius_key", "p95")),
-                        max_p95_increase_deg=float(getattr(args, "phase2_fuse_max_p95_increase_deg", 2.0)),
-                        keep_tail_sentinel=bool(getattr(args, "phase2_fuse_keep_tail_sentinel", True)),
-                        global_ball_accept=bool(getattr(args, "phase2_fuse_global_ball_accept", False)),
-                    ),
-                )
+            package = fuse_tx_domain_prototypes(
+                package,
+                PrototypeFusionConfig(
+                    max_components_per_tx=int(getattr(args, "phase2_fuse_max_components", 4)),
+                    merge_angle_deg=float(getattr(args, "phase2_fuse_merge_angle_deg", 6.0)),
+                    radius_cap_deg=float(getattr(args, "phase2_fuse_radius_cap_deg", 25.0)),
+                    tail_abs_deg=float(getattr(args, "phase2_fuse_tail_abs_deg", 30.0)),
+                    accept_policy=str(getattr(args, "phase2_fuse_accept_policy", "local_component")),
+                    accept_radius_key=str(getattr(args, "phase2_fuse_accept_radius_key", "p95")),
+                    max_p95_increase_deg=float(getattr(args, "phase2_fuse_max_p95_increase_deg", 2.0)),
+                    keep_tail_sentinel=bool(getattr(args, "phase2_fuse_keep_tail_sentinel", True)),
+                    global_ball_accept=bool(getattr(args, "phase2_fuse_global_ball_accept", False)),
+                ),
+            )
             paths = save_phase2_prototype_export(package, output_path)
             package = dict(package)
             package["paths"] = paths
@@ -1301,6 +1341,10 @@ def _build_ssdg_epoch_telemetry_row(
         "ow_feat_tail_weight",
         "ow_feat_cvar_alpha",
         "lambda_source_episode",
+        "ow_feat_vacuum_weight",
+        "ow_feat_vacuum_width_deg",
+        "proxy_unknown_vacuum_weight",
+        "proxy_unknown_vacuum_width_deg",
         "label_smoothing",
         "group_ce_top_frac",
         "strong_noise_std",
@@ -1522,7 +1566,22 @@ def format_ssdg_epoch_block(
         f"p95={_log_value(train_logs, 'train/ow_feat_pos_angle_p95_deg'):.2f}deg "
         f"tail3s={_log_value(train_logs, 'train/ow_feat_tail_frac_gt_3sigma'):.4f} "
         f"min_inter={_log_value(train_logs, 'train/ow_feat_min_inter_deg'):.2f}deg "
+        f"vac={_log_value(train_logs, 'train/ow_feat_vacuum_loss'):.4f} "
+        f"vac_rate={_log_value(train_logs, 'train/ow_feat_vacuum_violation_rate'):.4f} "
+        f"vac_gap={_log_value(train_logs, 'train/ow_feat_vacuum_margin_deg'):.2f}deg "
         f"proto_active={_log_value(train_logs, 'train/proto_active_classes'):.1f}"
+    )
+    lines.append(
+        "[PROXY-UNK] "
+        f"active={_log_value(train_logs, 'train/proxy_unknown_active'):.1f} "
+        f"known={_log_value(train_logs, 'train/proxy_unknown_known_count'):.0f} "
+        f"proxy={_log_value(train_logs, 'train/proxy_unknown_count'):.0f} "
+        f"virtual={_log_value(train_logs, 'train/proxy_unknown_virtual_count'):.0f} "
+        f"auc={_log_value(train_logs, 'train/proxy_unknown_auc_proxy'):.4f} "
+        f"vaccept={_log_value(train_logs, 'train/proxy_unknown_virtual_accept_rate'):.4f} "
+        f"vac={_log_value(train_logs, 'train/proxy_unknown_vacuum_loss'):.4f} "
+        f"vac_rate={_log_value(train_logs, 'train/proxy_unknown_vacuum_violation_rate'):.4f} "
+        f"vac_gap={_log_value(train_logs, 'train/proxy_unknown_vacuum_margin_deg'):.2f}deg"
     )
     lines.append(
         "[SOURCE-EP] "
@@ -1963,6 +2022,11 @@ def train(args) -> int:
                     "tail_cvar_deg": float("nan"),
                     "tail_frac_gt_3sigma": 0.0,
                     "tail_radius_3sigma_deg": float("nan"),
+                    "vacuum_loss": 0.0,
+                    "vacuum_violation_rate": 0.0,
+                    "vacuum_min_neg_angle_deg": float("nan"),
+                    "vacuum_margin_deg": float("nan"),
+                    "vacuum_boundary_deg": float("nan"),
                 }
                 if float(args.lambda_open_world_feat) > 0.0 and ow_feat_stage_scale > 0.0:
                     if open_world_feature_space_loss is None:
@@ -1980,6 +2044,9 @@ def train(args) -> int:
                         tail_mode=str(args.ow_feat_tail_mode),
                         tail_weight=float(args.ow_feat_tail_weight),
                         cvar_alpha=float(args.ow_feat_cvar_alpha),
+                        vacuum_weight=float(args.ow_feat_vacuum_weight),
+                        vacuum_width_rad=math.radians(float(args.ow_feat_vacuum_width_deg)),
+                        vacuum_hard_k=int(args.ow_feat_vacuum_hard_k),
                     )
                 loss_zid_compact_l = z_id_l.sum() * 0.0
                 zid_compact_info: Dict[str, float] = {
@@ -2023,6 +2090,10 @@ def train(args) -> int:
                     "energy_margin": float("nan"),
                     "proxy_unknown_auc": float("nan"),
                     "virtual_accept_rate": float("nan"),
+                    "vacuum_loss": 0.0,
+                    "vacuum_violation_rate": 0.0,
+                    "vacuum_margin_deg": float("nan"),
+                    "vacuum_min_angle_deg": float("nan"),
                 }
                 proxy_stage_scale = _stage_gate_scale(
                     epoch,
@@ -2047,6 +2118,10 @@ def train(args) -> int:
                         energy_margin=float(args.proxy_unknown_energy_margin),
                         placeholder_weight=float(args.proxy_unknown_placeholder_weight),
                         virtual_detach=bool(args.proxy_unknown_virtual_detach),
+                        vacuum_weight=float(args.proxy_unknown_vacuum_weight),
+                        vacuum_width_rad=math.radians(float(args.proxy_unknown_vacuum_width_deg)),
+                        vacuum_hard_k=int(args.proxy_unknown_vacuum_hard_k),
+                        vacuum_radius_rad=math.radians(float(args.proxy_unknown_vacuum_radius_deg)),
                     )
                 loss_source_episode_l = z_id_l.sum() * 0.0
                 source_episode_stage_scale = _stage_gate_scale(
@@ -2294,6 +2369,11 @@ def train(args) -> int:
                     "train/ow_feat_tail_cvar_deg": ow_feat_info.get("tail_cvar_deg", float("nan")),
                     "train/ow_feat_tail_frac_gt_3sigma": ow_feat_info.get("tail_frac_gt_3sigma", float("nan")),
                     "train/ow_feat_tail_radius_3sigma_deg": ow_feat_info.get("tail_radius_3sigma_deg", float("nan")),
+                    "train/ow_feat_vacuum_loss": ow_feat_info.get("vacuum_loss", float("nan")),
+                    "train/ow_feat_vacuum_violation_rate": ow_feat_info.get("vacuum_violation_rate", float("nan")),
+                    "train/ow_feat_vacuum_min_neg_angle_deg": ow_feat_info.get("vacuum_min_neg_angle_deg", float("nan")),
+                    "train/ow_feat_vacuum_margin_deg": ow_feat_info.get("vacuum_margin_deg", float("nan")),
+                    "train/ow_feat_vacuum_boundary_deg": ow_feat_info.get("vacuum_boundary_deg", float("nan")),
                     "train/ow_feat_stage_scale": float(ow_feat_stage_scale),
                     "train/zid_compact_supcon": zid_compact_info.get("supcon", float("nan")),
                     "train/zid_compact_radius": zid_compact_info.get("radius", float("nan")),
@@ -2314,6 +2394,10 @@ def train(args) -> int:
                     "train/proxy_unknown_margin": proxy_unknown_info.get("energy_margin", float("nan")),
                     "train/proxy_unknown_auc_proxy": proxy_unknown_info.get("proxy_unknown_auc", float("nan")),
                     "train/proxy_unknown_virtual_accept_rate": proxy_unknown_info.get("virtual_accept_rate", float("nan")),
+                    "train/proxy_unknown_vacuum_loss": proxy_unknown_info.get("vacuum_loss", float("nan")),
+                    "train/proxy_unknown_vacuum_violation_rate": proxy_unknown_info.get("vacuum_violation_rate", float("nan")),
+                    "train/proxy_unknown_vacuum_margin_deg": proxy_unknown_info.get("vacuum_margin_deg", float("nan")),
+                    "train/proxy_unknown_vacuum_min_angle_deg": proxy_unknown_info.get("vacuum_min_angle_deg", float("nan")),
                     "train/proxy_unknown_stage_scale": float(proxy_stage_scale),
                     "train/source_episode_loss": source_episode_info.get("source_episode_loss", float("nan")),
                     "train/source_episode_overflow_rate": source_episode_info.get("source_episode_overflow_rate", float("nan")),

@@ -43,6 +43,7 @@ class PrototypeFusionConfig:
     max_p95_increase_deg: float = 2.0
     keep_tail_sentinel: bool = True
     global_ball_accept: bool = False
+    tail_auto_accept: bool = False
     min_count: int = 1
     eps: float = 1e-6
 
@@ -573,6 +574,20 @@ def fuse_tx_domain_prototypes(package: Mapping[str, Any], config: PrototypeFusio
                 domain_to_component[tx, int(dom)] = int(comp_idx)
             tx_components.append(
                 {
+                    "component_id": int(comp_idx),
+                    "source_domains": list(row["domains"]),
+                    "n_samples": int(row["count"]),
+                    "mu": row["center"].detach().clone(),
+                    "r_core_deg": math.degrees(float(row["accept_radius"])) * 0.8,
+                    "r_accept_deg": math.degrees(float(row["accept_radius"])),
+                    "r_tail_deg": math.degrees(float(row["radius"])),
+                    "r_vac_deg": max(math.degrees(float(row["radius"])), math.degrees(float(row["accept_radius"])) + 4.0),
+                    "density_p05": None,
+                    "density_p10": None,
+                    "nll_p95": None,
+                    "nll_tail_p95": None,
+                    "nearest_other_deg": None,
+                    "accept_enabled": True,
                     "domains": list(row["domains"]),
                     "count": int(row["count"]),
                     "radius_deg": math.degrees(float(row["radius"])),
@@ -590,6 +605,21 @@ def fuse_tx_domain_prototypes(package: Mapping[str, Any], config: PrototypeFusio
             )
         components.append(tx_components)
 
+    active_centers: list[tuple[int, int, torch.Tensor]] = []
+    for tx in range(num_tx):
+        for comp_idx in range(max_components):
+            if bool(fused_mask[tx, comp_idx].item()):
+                active_centers.append((tx, comp_idx, fused_proto[tx, comp_idx]))
+    for tx, comp_idx, center in active_centers:
+        nearest = None
+        for other_tx, _other_idx, other_center in active_centers:
+            if int(other_tx) == int(tx):
+                continue
+            angle = math.degrees(_angle_between(center, other_center))
+            nearest = angle if nearest is None else min(nearest, angle)
+        if comp_idx < len(components[tx]):
+            components[tx][comp_idx]["nearest_other_deg"] = nearest
+
     fused_package = dict(package)
     fused_package.update(
         {
@@ -603,6 +633,20 @@ def fuse_tx_domain_prototypes(package: Mapping[str, Any], config: PrototypeFusio
             "domain_to_fused_component": domain_to_component,
             "fusion_accept_policy": str(cfg.accept_policy),
             "global_fused_radius_is_accept_region": bool(cfg.global_ball_accept),
+            "fusion_config": {
+                "enabled": True,
+                "method": "tx_domain_to_local_components",
+                "mode": "tx_domain_to_local_components",
+                "accept_policy": str(cfg.accept_policy),
+                "global_ball_accept": bool(cfg.global_ball_accept),
+                "tail_auto_accept": bool(cfg.tail_auto_accept),
+                "feature_key": str(package.get("feature_key", "z_id")),
+                "max_components_per_class": int(max_components),
+                "max_components_per_tx": int(max_components),
+                "min_component_samples": int(min_count),
+                "radius_quantile_core": 0.80,
+                "accept_radius_key": str(cfg.accept_radius_key),
+            },
             "fusion_metadata": {
                 "schema": "tx_domain_prototype_fusion_v2",
                 "feature_key": str(package.get("feature_key", "z_id")),
@@ -615,6 +659,7 @@ def fuse_tx_domain_prototypes(package: Mapping[str, Any], config: PrototypeFusio
                 "max_p95_increase_deg": float(cfg.max_p95_increase_deg),
                 "keep_tail_sentinel": bool(cfg.keep_tail_sentinel),
                 "global_fused_radius_is_accept_region": bool(cfg.global_ball_accept),
+                "tail_auto_accept": bool(cfg.tail_auto_accept),
                 "fused_tx_radii_semantics": "legacy_evidence_radius_not_accept_region",
                 "default_training_behavior_changed": False,
             },
