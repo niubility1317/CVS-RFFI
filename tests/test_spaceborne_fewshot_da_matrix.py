@@ -110,6 +110,11 @@ class SpaceborneFewShotDaMatrixTest(unittest.TestCase):
 
         self.assertIn("PIDS=()", launcher)
         self.assertIn("NAMES=()", launcher)
+        self.assertIn("DONE=()", launcher)
+        self.assertIn("REMAINING=", launcher)
+        self.assertIn("gpu_slot_available()", launcher)
+        self.assertIn("[SPACEBORNE-FSDA-WAIT-ANY]", launcher)
+        self.assertNotIn("wait_for_gpu_slot", launcher)
         self.assertIn("[SPACEBORNE-FSDA-LAUNCHED]", launcher)
         self.assertIn("wait \"${PIDS[${idx}]}\"", launcher)
         self.assertIn("[SPACEBORNE-FSDA-COMPLETE]", launcher)
