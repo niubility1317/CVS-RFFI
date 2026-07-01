@@ -124,6 +124,29 @@ cd /home/szu2070436088/2510044040/CV-SincNet && RUN_ID=phase1_early_reject_curri
 
 当前GPU状态:GPU1-7每卡2个本轮训练进程;GPU0保留既有`phase1_soft_unknown_mixup_gpu0_20260701_1605`两条训练,未新增GPU0任务。
 
+## 2026-07-01 17:48 ETA监控
+
+只读监控时间:`2026-07-01 17:48:42`。N607上本轮`phase1_early_reject_curriculum_gpu1_7_20260701_1643`仍有14个训练进程,日志扫描未发现Traceback、RuntimeError、unrecognized arguments或OOM。ETA按各候选最近epoch耗时与全局均值加权估算;最后20个epoch存在更密集评估,实际完成时间可能比表中晚约10-40分钟。
+
+|候选ID|当前epoch|估算秒/epoch|剩余时间|预计完成|
+|---|---:|---:|---:|---|
+|`E120_EARLY_LITE`|E65/120|60.9s|0.95h|07-01 18:45|
+|`E160_EARLY_MAIN`|E65/160|59.5s|1.59h|07-01 19:23|
+|`E200_LATE_CONTROL`|E98/200|38.1s|1.09h|07-01 18:54|
+|`E200_MID_CURRIC`|E75/200|58.1s|2.03h|07-01 19:50|
+|`E200_CE_HEAVY_MIX`|E66/200|60.4s|2.26h|07-01 20:04|
+|`E200_EARLY_MAIN`|E66/200|61.0s|2.29h|07-01 20:05|
+|`E200_ENERGY_HEAVY`|E62/200|61.1s|2.36h|07-01 20:10|
+|`E200_PROXY_DOMINANT`|E61/200|60.9s|2.37h|07-01 20:10|
+|`E200_MIXUP_DOMINANT`|E63/200|62.2s|2.38h|07-01 20:11|
+|`E200_VERYEARLY_STRONG`|E59/200|62.3s|2.46h|07-01 20:16|
+|`E220_VACUUM_STRONG`|E68/220|60.3s|2.56h|07-01 20:22|
+|`E220_3SIGMA_STRONG`|E61/220|60.9s|2.71h|07-01 20:31|
+|`E240_EARLY_MAIN`|E65/240|60.6s|2.96h|07-01 20:46|
+|`E300_EARLY_CONSOL`|E68/300|60.2s|3.90h|07-01 21:42|
+
+整批完成受`E300_EARLY_CONSOL`限制,点估计约`2026-07-01 21:42`,保守窗口为`2026-07-01 22:00-22:30`。
+
 ## 风险
 
 强vacuum和三西格玛隔离可能损害旧类准确率;长训300epoch占用时间更长;如果GPU1-7已有其他训练进程,launcher将按每卡最多2个训练进程等待而不是强行超额提交。
