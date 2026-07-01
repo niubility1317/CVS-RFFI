@@ -164,3 +164,18 @@ Latest monitor update: 2026-07-02 01:06 Asia/Hong_Kong
 | Local SSH cleanup | verified `ssh_processes=none` and `n607_established=none` |
 
 Status interpretation: the scheduler repair is active and healthy, but no OLD80_FIRST metric evidence is available yet because no GPU has fallen below the two-process cap.
+
+Latest monitor update: 2026-07-02 01:09 Asia/Hong_Kong
+
+| Item | Value |
+|---|---|
+| Launcher PID | `2896435` still alive |
+| Launcher elapsed | about 5 minutes 58 seconds |
+| Current scheduler state | repeated `[SPACEBORNE-FSDA-WAIT-ANY] remaining=48 max=2` |
+| Candidate logs | 0 |
+| Completed `metrics.json` | 0 |
+| Run directories | 0 |
+| GPU occupancy | 16 active Python compute processes, 2 on each RTX 3090 GPU |
+| Local SSH cleanup | verified `ssh_processes=none` and `n607_established=none` |
+
+Status interpretation: no candidate has started and no metric evidence exists yet. This is not a candidate failure; the scheduler is correctly waiting because every GPU is already at the two-process safety cap.
