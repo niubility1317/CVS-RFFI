@@ -1,0 +1,20 @@
+﻿pair,pearson,spearman,n
+final_strict_udu vs final_source_overflow,-0.15083679579558468,-0.2,14
+final_strict_udu vs final_p95,-0.16026743171788238,-0.04175824175824176,14
+final_strict_udu vs final_proxy_vac_rate,-0.4754744159141443,-0.3538461538461538,14
+final_strict_udu vs final_proxy_auc,0.11154078945275966,0.13406593406593406,14
+final_receiver_floor vs final_source_overflow,0.009972158203413474,-0.02857142857142857,14
+final_p95 vs final_proxy_vac_rate,0.6150151100530147,0.6439560439560439,14
+final_p95 vs final_proxy_auc,-0.3004738857308627,-0.3010989010989011,14
+final_p95 vs final_source_overflow,0.14252327990646765,0.1824175824175824,14
+final_min_inter vs final_proxy_vac_rate,-0.6431875329079781,-0.5340659340659341,14
+final_min_inter vs final_proxy_auc,0.2271270224273806,0.2087912087912088,14
+final_min_inter vs final_source_overflow,-0.46914844127470356,-0.6351648351648352,14
+final_ow_vac_rate vs final_proxy_vac_rate,0.6848372224688335,0.5340659340659341,14
+final_ow_vac_rate vs final_source_overflow,0.6121471089751575,0.7186813186813187,14
+best_joint_test_tx vs final_strict_udu,0.44769682723978604,0.4021978021978022,14
+best_joint_test_tx vs final_receiver_floor,0.589402085707778,0.5780219780219781,14
+expected_epochs vs final_overall_tx,,,14
+expected_epochs vs final_strict_udu,,,14
+prototype_radius_p95_mean_deg vs final_p95,0.01527689819693884,-0.1076923076923077,14
+tx_domain_components_mean vs prototype_radius_p95_mean_deg,-0.057943803566788944,0.024612443189547285,14

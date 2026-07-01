@@ -1,0 +1,15 @@
+﻿candidate_id,completed,expected_epochs,last_epoch,max_epoch_begin,last_epoch_end,phase2_export,fatal_count,fatal_samples,skipped_test_placeholder_nan_lines,nan_aux_grad_lines,inf_grad_lines,nan_real_loss_lines,nan_real_metric_final,health_status,notes
+ADV2_FUSE5_R20_E260,True,260,260,260,260,True,0,,226,260,5,0,0,PASS_WITH_TELEMETRY_NAN,跳过测试占位NaN和辅助梯度NaN存在；最终指标有限且训练完成。
+ADV2_FUSE6_R17_E260,True,260,260,260,260,True,0,,226,260,5,0,0,PASS_WITH_TELEMETRY_NAN,跳过测试占位NaN和辅助梯度NaN存在；最终指标有限且训练完成。
+ADV2_R17_CORESTRICT_E260,True,260,260,260,260,True,0,,226,260,4,0,0,PASS_WITH_TELEMETRY_NAN,跳过测试占位NaN和辅助梯度NaN存在；最终指标有限且训练完成。
+ADV2_R17_PROXYHI_E260,True,260,260,260,260,True,0,,226,260,6,0,0,PASS_WITH_TELEMETRY_NAN,跳过测试占位NaN和辅助梯度NaN存在；最终指标有限且训练完成。
+ADV2_R20_SAT70_E260,True,260,260,260,260,True,0,,226,260,7,0,0,PASS_WITH_TELEMETRY_NAN,跳过测试占位NaN和辅助梯度NaN存在；最终指标有限且训练完成。
+ADV2_R20_VACMID_E260,True,260,260,260,260,True,0,,226,260,5,0,0,PASS_WITH_TELEMETRY_NAN,跳过测试占位NaN和辅助梯度NaN存在；最终指标有限且训练完成。
+ADV2_R28_FUSE6_E260,True,260,260,260,260,True,0,,226,260,6,0,0,PASS_WITH_TELEMETRY_NAN,跳过测试占位NaN和辅助梯度NaN存在；最终指标有限且训练完成。
+ADV2_R28_PROXYLOW_E260,True,260,260,260,260,True,0,,226,260,6,0,0,PASS_WITH_TELEMETRY_NAN,跳过测试占位NaN和辅助梯度NaN存在；最终指标有限且训练完成。
+ADV2_SOURCECAP32_R20_E260,True,260,260,260,260,True,0,,226,260,6,0,0,PASS_WITH_TELEMETRY_NAN,跳过测试占位NaN和辅助梯度NaN存在；最终指标有限且训练完成。
+ADV2_SRCLOW_R17_E260,True,260,260,260,260,True,0,,226,260,6,0,0,PASS_WITH_TELEMETRY_NAN,跳过测试占位NaN和辅助梯度NaN存在；最终指标有限且训练完成。
+ADV2_T13_CONSERVE_E260,True,260,260,260,260,True,0,,226,260,5,0,0,PASS_WITH_TELEMETRY_NAN,跳过测试占位NaN和辅助梯度NaN存在；最终指标有限且训练完成。
+ADV2_T13_TAILGUARD_E260,True,260,260,260,260,True,0,,226,260,4,0,0,PASS_WITH_TELEMETRY_NAN,跳过测试占位NaN和辅助梯度NaN存在；最终指标有限且训练完成。
+ADV2_TAILCV_R17_E260,True,260,260,260,260,True,0,,226,260,4,0,0,PASS_WITH_TELEMETRY_NAN,跳过测试占位NaN和辅助梯度NaN存在；最终指标有限且训练完成。
+ADV2_TAILCV_R20_E260,True,260,260,260,260,True,0,,226,260,3,0,0,PASS_WITH_TELEMETRY_NAN,跳过测试占位NaN和辅助梯度NaN存在；最终指标有限且训练完成。

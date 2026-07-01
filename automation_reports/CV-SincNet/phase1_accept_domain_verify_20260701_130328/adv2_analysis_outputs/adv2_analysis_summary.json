@@ -1,0 +1,39 @@
+{
+  "run_id": "phase1_accept_domain_verify_20260701_130328",
+  "evidence_root": "E:\\type10-7\\automation_reports\\CV-SincNet\\phase1_accept_domain_verify_20260701_130328\\adv2_full_analysis_artifacts",
+  "candidates": 14,
+  "completed": 14,
+  "phase2_export": 14,
+  "fatal_total": 0,
+  "fusion_json_count": 14,
+  "adv2_mean": {
+    "final_overall_tx": 86.92114845938373,
+    "final_strict_udu": 80.08666666666669,
+    "final_receiver_floor": 69.07142857142857,
+    "final_sat_mean": 75.97994864612512,
+    "final_sat_strict_floor": 67.83369047619048,
+    "best_joint_test_tx": 88.02720588235294,
+    "best_joint_epoch": 246.42857142857142,
+    "final_pos_angle": 31.690629942026963,
+    "final_p95": 52.19514415231054,
+    "final_p99": 75.7844040388443,
+    "final_min_inter": 83.31069482969076,
+    "final_ow_vac_rate": 0.017838255801125493,
+    "final_proxy_auc": 0.5679396670598249,
+    "final_proxy_vac_rate": 0.3487511610796491,
+    "final_proxy_vaccept": 0.9994505494505493,
+    "final_source_overflow": 0.34420322004798226
+  },
+  "best_closed_candidate": "ADV2_SRCLOW_R17_E260",
+  "main_promotion_candidates": [
+    "ADV2_SRCLOW_R17_E260",
+    "ADV2_FUSE5_R20_E260",
+    "ADV2_R28_FUSE6_E260"
+  ],
+  "limitations": [
+    "source-only Phase1",
+    "no real Y_unknown query",
+    "no unknown_FAR/FPR95/real unknown AUROC",
+    "hard gate dry-run not yet run"
+  ]
+}

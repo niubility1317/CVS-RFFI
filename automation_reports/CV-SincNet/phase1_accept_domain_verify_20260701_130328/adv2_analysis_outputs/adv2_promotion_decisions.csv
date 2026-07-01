@@ -1,0 +1,15 @@
+﻿candidate_id,category,promote_to_stage2,use_for_mechanism,reject_or_risk_reason,required_followup
+ADV2_FUSE5_R20_E260,Stage2真实unknown评估主推进候选,True,False,闭集/receiver floor/对照价值较强，但必须真实unknown验证。proxy_vaccept仍接近1。,local hard gate dry-run+真实Stage2 unknown评估
+ADV2_FUSE6_R17_E260,机制诊断候选,False,True,用于隔离proxy/vacuum、fusion、source episode或tail压力机制，不应直接声明部署成功。proxy_vaccept仍接近1。,机制隔离或负例分析
+ADV2_R17_CORESTRICT_E260,机制诊断候选,False,True,用于隔离proxy/vacuum、fusion、source episode或tail压力机制，不应直接声明部署成功。proxy_vaccept仍接近1。receiver floor不足。,机制隔离或负例分析
+ADV2_R17_PROXYHI_E260,不建议直接推进,False,False,proxy_vaccept仍接近1。receiver floor不足。,机制隔离或负例分析
+ADV2_R20_SAT70_E260,不建议直接推进,False,False,proxy_vaccept仍接近1。receiver floor不足。,机制隔离或负例分析
+ADV2_R20_VACMID_E260,不建议直接推进,False,False,proxy_vaccept仍接近1。receiver floor不足。,机制隔离或负例分析
+ADV2_R28_FUSE6_E260,Stage2真实unknown评估主推进候选,True,False,闭集/receiver floor/对照价值较强，但必须真实unknown验证。proxy_vaccept仍接近1。,local hard gate dry-run+真实Stage2 unknown评估
+ADV2_R28_PROXYLOW_E260,机制诊断候选,False,True,用于隔离proxy/vacuum、fusion、source episode或tail压力机制，不应直接声明部署成功。proxy_vaccept仍接近1。,机制隔离或负例分析
+ADV2_SOURCECAP32_R20_E260,高风险机制/负例候选,False,True,用于隔离proxy/vacuum、fusion、source episode或tail压力机制，不应直接声明部署成功。proxy_vaccept仍接近1。source_overflow过高。receiver floor不足。,机制隔离或负例分析
+ADV2_SRCLOW_R17_E260,Stage2真实unknown评估主推进候选,True,False,闭集/receiver floor/对照价值较强，但必须真实unknown验证。proxy_vaccept仍接近1。,local hard gate dry-run+真实Stage2 unknown评估
+ADV2_T13_CONSERVE_E260,机制诊断候选,False,True,用于隔离proxy/vacuum、fusion、source episode或tail压力机制，不应直接声明部署成功。proxy_vaccept仍接近1。receiver floor不足。,机制隔离或负例分析
+ADV2_T13_TAILGUARD_E260,机制诊断候选,False,True,用于隔离proxy/vacuum、fusion、source episode或tail压力机制，不应直接声明部署成功。proxy_vaccept仍接近1。receiver floor不足。,机制隔离或负例分析
+ADV2_TAILCV_R17_E260,高风险机制/负例候选,False,True,用于隔离proxy/vacuum、fusion、source episode或tail压力机制，不应直接声明部署成功。proxy_vaccept仍接近1。source_overflow过高。receiver floor不足。,机制隔离或负例分析
+ADV2_TAILCV_R20_E260,机制诊断候选,False,True,用于隔离proxy/vacuum、fusion、source episode或tail压力机制，不应直接声明部署成功。proxy_vaccept仍接近1。receiver floor不足。,机制隔离或负例分析
