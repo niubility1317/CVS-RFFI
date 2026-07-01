@@ -112,3 +112,42 @@ RUN_ID=phase1_soft_unknown_mixup_gpu0_20260701_1605 STAGE2_MAX_ACTIVE_PER_GPU=2 
 ## 风险与停止条件
 
 风险是隔离过强导致旧类准确率、satellite stress或joint-safe指标下降。若启动日志出现unrecognized argument、Traceback、OOM、NaN、无`[EPOCH-BEGIN]`或GPU0无利用率,先看日志根因,不得删除旧run/log或中断GPU1-7旧任务。
+
+## 完成后分析更新
+
+更新时间：`2026-07-01 20:19 Asia/Hong_Kong`。
+
+证据范围：完整解析N607上的2个stdout日志和2个`metrics_epoch.csv`，并复制到本地`artifacts/`保留。两个候选均完成E200/200，均导出`metrics_epoch.csv/jsonl`、`phase2_zid_prototypes.json/pt`和checkpoint，fatal扫描未发现`Traceback`、`RuntimeError`、OOM或unrecognized arguments。
+
+### 主结论
+
+1. 真实未知类拒识是否改善：**尚不能证明**。本批Phase1训练没有真实`Y_unknown` query评估列，没有`unknown_FAR`、`FPR95`或真实unknown AUROC，只能观察训练代理未知指标。
+2. 代理未知拒识是否改善：**基本没有实质改善**。最终`proxy_unknown_virtual_accept_rate`仍为`0.9990/1.0000`，`soft_unknown_mixup_virtual_accept_rate`仍为`0.9875/0.9929`。这说明混合/virtual样本几乎仍会被旧类接受。
+3. 新机制是否有用：**作为未知拒识机制还不够有效**；但`SOFTUNK_A_BALANCED_E200`对闭集和satellite stress有正则收益，可能说明适度mixup增强有利于特征稳健性。`SOFTUNK_A_STRONGISO_E200`更强隔离反而降低主性能。
+4. 这支持后续早期课程假设：GPU0实验把open-world/source从E121、proxy/soft-mix从E141才打开，介入太晚；它没有改变已形成的旧类接受区域。
+
+### 同排结果
+
+|候选|best epoch|best score|final overall tx|final strict UDU|receiver floor|sat mean|sat strict floor|final proxy vaccept|final soft-mix vaccept|final source overflow|判定|
+|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---|
+|`SOFTUNK_A_BALANCED_E200`|192|83.7173|87.6819|81.6067|71.5833|77.4477|69.5483|0.9990|0.9875|0.4012|闭集/stress略好,拒识未解决|
+|`SOFTUNK_A_STRONGISO_E200`|192|82.1609|86.1613|79.4117|67.0917|75.9462|68.0400|1.0000|0.9929|0.4837|强隔离损害主性能,拒识未解决|
+
+对照ADV2旧矩阵均值：`final_overall_tx=86.9211`，`final_strict_udu=80.0867`，`final_receiver_floor=69.0714`，`final_sat_mean=75.9799`，`final_sat_strict_floor=67.8337`，`final_proxy_vaccept=0.9995`，`final_proxy_auc=0.5679`，`final_source_overflow=0.3442`。Balanced相对ADV2均值的闭集/stress指标更好，但`proxy_vaccept`只从0.9995到0.9990，幅度约0.04pp，不能视为拒识能力改善。
+
+### 曲线证据
+
+|候选|窗口|proxy vaccept|proxy AUC|soft-mix vaccept|soft-mix vacuum violation|source mix overflow|zid p95/p99|
+|---|---|---:|---:|---:|---:|---:|---|
+|Balanced|E141-E160|0.9999|0.5691|0.9895|0.2280|0.2665|58.13/79.88|
+|Balanced|E181-E200|0.9997|0.5677|0.9879|0.2046|0.2801|56.14/79.10|
+|StrongIso|E141-E160|0.9999|0.5685|0.9892|0.2261|0.2138|57.48/79.36|
+|StrongIso|E181-E200|0.9998|0.5692|0.9895|0.2044|0.2270|54.62/77.78|
+
+趋势解读：vacuum violation和zid p95/p99有下降，说明隔离/紧致约束确实在动；但proxy和soft-mix接受率始终接近1，说明它没有把混合未知样本真正推到旧类拒识区。StrongIso虽然几何更紧，但牺牲`strict UDU`、`receiver floor`和sat mean，收益不成立。
+
+### 机制判断
+
+`soft_unknown_mixup_loss`当前更像“尾部/低密度正则化”，不是有效未知拒识器。软标签CE会把混合样本仍然锚在旧类组合附近，energy/vacuum权重又到E141后才生效，模型的旧类接受区域已经形成。结果是几何半径略收紧、sat stress略有变化，但旧类接受头仍然接收混合样本。
+
+下一步不应继续只加大GPU0这类后期权重。更合理的是继续观察已启动的GPU1-7早期课程矩阵；若要直接验证真实未知拒识，还需要用这两个GPU0 prototype做Stage2-A/C的`Y_unknown` query评估，报告`unknown_FAR/FPR95/AUROC`后才能回答部署意义上的拒识是否改善。

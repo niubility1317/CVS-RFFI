@@ -1,0 +1,249 @@
+{
+  "candidate_rows": [
+    {
+      "candidate_id": "SOFTUNK_A_BALANCED_E200",
+      "completed_epochs": 200,
+      "best_epoch": 192,
+      "best_score": 83.71731746031746,
+      "final_overall_tx": 87.68186274509804,
+      "final_strict_udu": 81.60666666666667,
+      "final_receiver_floor": 71.58333333333333,
+      "final_sat_mean": 77.44771241830064,
+      "final_sat_strict_floor": 69.54833333333333,
+      "best_overall_tx": 87.68676470588235,
+      "best_strict_udu": 82.835,
+      "best_receiver_floor": 73.64166666666667,
+      "best_sat_mean": 76.98202614379086,
+      "best_sat_strict_floor": 69.53833333333333,
+      "final_proxy_vaccept": 0.9990384615384615,
+      "final_proxy_auc": 0.5730625423101279,
+      "final_proxy_vac_rate": 0.365329802265534,
+      "final_soft_mix_vaccept": 0.9875,
+      "final_soft_mix_vac_rate": 0.1947115428172625,
+      "final_source_mix_overflow": 0.28076923076923077,
+      "final_source_overflow": 0.40124781635160894,
+      "final_zid_p95": 53.6208133581698,
+      "final_zid_p99": 78.95986646564137,
+      "fatal_count": 0,
+      "log_soft_lines": 200,
+      "log_source_lines": 200
+    },
+    {
+      "candidate_id": "SOFTUNK_A_STRONGISO_E200",
+      "completed_epochs": 200,
+      "best_epoch": 192,
+      "best_score": 82.16089005602242,
+      "final_overall_tx": 86.16127450980392,
+      "final_strict_udu": 79.41166666666666,
+      "final_receiver_floor": 67.09166666666667,
+      "final_sat_mean": 75.94624183006536,
+      "final_sat_strict_floor": 68.04,
+      "best_overall_tx": 86.65,
+      "best_strict_udu": 80.85666666666667,
+      "best_receiver_floor": 69.99166666666666,
+      "best_sat_mean": 75.6767973856209,
+      "best_sat_strict_floor": 67.59166666666667,
+      "final_proxy_vaccept": 1.0,
+      "final_proxy_auc": 0.574867001405129,
+      "final_proxy_vac_rate": 0.3556749287706155,
+      "final_soft_mix_vaccept": 0.9929487246733445,
+      "final_soft_mix_vac_rate": 0.191132480937701,
+      "final_source_mix_overflow": 0.23589744212535713,
+      "final_source_overflow": 0.4836770608000529,
+      "final_zid_p95": 52.579785609929395,
+      "final_zid_p99": 77.05199860402763,
+      "fatal_count": 0,
+      "log_soft_lines": 200,
+      "log_source_lines": 200
+    }
+  ],
+  "window_rows": [
+    {
+      "candidate_id": "SOFTUNK_A_BALANCED_E200",
+      "window": "E1-120",
+      "proxy_vaccept_mean": NaN,
+      "proxy_auc_mean": NaN,
+      "proxy_vac_rate_mean": 0.0,
+      "soft_mix_vaccept_mean": 0.0,
+      "soft_mix_vac_rate_mean": 0.0,
+      "source_mix_overflow_mean": 0.0,
+      "source_overflow_mean": 0.0,
+      "zid_p95_mean": NaN,
+      "zid_p99_mean": NaN
+    },
+    {
+      "candidate_id": "SOFTUNK_A_BALANCED_E200",
+      "window": "E121-140",
+      "proxy_vaccept_mean": NaN,
+      "proxy_auc_mean": NaN,
+      "proxy_vac_rate_mean": 0.0,
+      "soft_mix_vaccept_mean": 0.0,
+      "soft_mix_vac_rate_mean": 0.0,
+      "source_mix_overflow_mean": 0.2582692307692308,
+      "source_overflow_mean": 0.4822818737496165,
+      "zid_p95_mean": 60.53620100489936,
+      "zid_p99_mean": 80.20788814839204
+    },
+    {
+      "candidate_id": "SOFTUNK_A_BALANCED_E200",
+      "window": "E141-160",
+      "proxy_vaccept_mean": 0.9999038461538461,
+      "proxy_auc_mean": 0.5691406811200656,
+      "proxy_vac_rate_mean": 0.43598510638165927,
+      "soft_mix_vaccept_mean": 0.9895192307692309,
+      "soft_mix_vac_rate_mean": 0.22798878835370906,
+      "source_mix_overflow_mean": 0.26649038461538466,
+      "source_overflow_mean": 0.45242980054525905,
+      "zid_p95_mean": 58.13414413960555,
+      "zid_p99_mean": 79.87539129262896
+    },
+    {
+      "candidate_id": "SOFTUNK_A_BALANCED_E200",
+      "window": "E161-180",
+      "proxy_vaccept_mean": 0.9998076923076923,
+      "proxy_auc_mean": 0.5654733003905187,
+      "proxy_vac_rate_mean": 0.4105053636489006,
+      "soft_mix_vaccept_mean": 0.9892307692307692,
+      "soft_mix_vac_rate_mean": 0.21683494206231374,
+      "source_mix_overflow_mean": 0.275,
+      "source_overflow_mean": 0.4365732883872561,
+      "zid_p95_mean": 56.9784002512647,
+      "zid_p99_mean": 79.28106743896728
+    },
+    {
+      "candidate_id": "SOFTUNK_A_BALANCED_E200",
+      "window": "E181-200",
+      "proxy_vaccept_mean": 0.9996634615384614,
+      "proxy_auc_mean": 0.5677360800481759,
+      "proxy_vac_rate_mean": 0.39247899647228995,
+      "soft_mix_vaccept_mean": 0.9879326923076924,
+      "soft_mix_vac_rate_mean": 0.2045512877805875,
+      "source_mix_overflow_mean": 0.28009615384615383,
+      "source_overflow_mean": 0.4162590621405771,
+      "zid_p95_mean": 56.13718300674261,
+      "zid_p99_mean": 79.09547237679288
+    },
+    {
+      "candidate_id": "SOFTUNK_A_STRONGISO_E200",
+      "window": "E1-120",
+      "proxy_vaccept_mean": NaN,
+      "proxy_auc_mean": NaN,
+      "proxy_vac_rate_mean": 0.0,
+      "soft_mix_vaccept_mean": 0.0,
+      "soft_mix_vac_rate_mean": 0.0,
+      "source_mix_overflow_mean": 0.0,
+      "source_overflow_mean": 0.0,
+      "zid_p95_mean": NaN,
+      "zid_p99_mean": NaN
+    },
+    {
+      "candidate_id": "SOFTUNK_A_STRONGISO_E200",
+      "window": "E121-140",
+      "proxy_vaccept_mean": NaN,
+      "proxy_auc_mean": NaN,
+      "proxy_vac_rate_mean": 0.0,
+      "soft_mix_vaccept_mean": 0.0,
+      "soft_mix_vac_rate_mean": 0.0,
+      "source_mix_overflow_mean": 0.20483974972023417,
+      "source_overflow_mean": 0.5676376405807292,
+      "zid_p95_mean": 59.4644385350021,
+      "zid_p99_mean": 79.9613341391235
+    },
+    {
+      "candidate_id": "SOFTUNK_A_STRONGISO_E200",
+      "window": "E141-160",
+      "proxy_vaccept_mean": 0.9999038461538461,
+      "proxy_auc_mean": 0.5684863869960491,
+      "proxy_vac_rate_mean": 0.4270814214216975,
+      "soft_mix_vaccept_mean": 0.9891666753933979,
+      "soft_mix_vac_rate_mean": 0.2260683783201071,
+      "source_mix_overflow_mean": 0.21384616029377165,
+      "source_overflow_mean": 0.540066109002869,
+      "zid_p95_mean": 57.48274258333761,
+      "zid_p99_mean": 79.35808651458841
+    },
+    {
+      "candidate_id": "SOFTUNK_A_STRONGISO_E200",
+      "window": "E161-180",
+      "proxy_vaccept_mean": 0.9998557692307692,
+      "proxy_auc_mean": 0.567870038174666,
+      "proxy_vac_rate_mean": 0.41421603571050436,
+      "soft_mix_vaccept_mean": 0.9895192387012335,
+      "soft_mix_vac_rate_mean": 0.21899572904293355,
+      "source_mix_overflow_mean": 0.22147436543439442,
+      "source_overflow_mean": 0.5257807430310855,
+      "zid_p95_mean": 56.869470568619235,
+      "zid_p99_mean": 79.14571645937258
+    },
+    {
+      "candidate_id": "SOFTUNK_A_STRONGISO_E200",
+      "window": "E181-200",
+      "proxy_vaccept_mean": 0.9998076923076923,
+      "proxy_auc_mean": 0.5691701144209275,
+      "proxy_vac_rate_mean": 0.3870076351354902,
+      "soft_mix_vaccept_mean": 0.9894871878165465,
+      "soft_mix_vac_rate_mean": 0.20435897663808786,
+      "source_mix_overflow_mean": 0.22695513498324615,
+      "source_overflow_mean": 0.5038160280738042,
+      "zid_p95_mean": 54.61954297956837,
+      "zid_p99_mean": 77.77986207374315
+    }
+  ],
+  "adv2_ref": {
+    "final_overall_tx": {
+      "mean": 86.92114845938374,
+      "min": 85.39264705882353,
+      "max": 88.86225490196078
+    },
+    "final_strict_udu": {
+      "mean": 80.08666666666667,
+      "min": 76.30666666666667,
+      "max": 82.75333333333333
+    },
+    "final_receiver_floor": {
+      "mean": 69.07142857142857,
+      "min": 61.875,
+      "max": 75.18333333333334
+    },
+    "final_sat_mean": {
+      "mean": 75.97994864612511,
+      "min": 73.89509803921568,
+      "max": 78.58758169934642
+    },
+    "final_sat_strict_floor": {
+      "mean": 67.83369047619047,
+      "min": 64.78,
+      "max": 71.33166666666666
+    },
+    "final_proxy_vaccept": {
+      "mean": 0.9994505494505495,
+      "min": 0.9980769230769232,
+      "max": 1.0
+    },
+    "final_proxy_auc": {
+      "mean": 0.567939667059825,
+      "min": 0.5606328129768372,
+      "max": 0.5755867366607372
+    },
+    "final_proxy_vac_rate": {
+      "mean": 0.3487511610796491,
+      "min": 0.3049878549117308,
+      "max": 0.3991142348601268
+    },
+    "final_source_overflow": {
+      "mean": 0.3442032200479822,
+      "min": 0.2107563105053217,
+      "max": 0.4737926159721694
+    },
+    "final_p95": {
+      "mean": 52.19514415231053,
+      "min": 49.570269076416096,
+      "max": 54.58802210313804
+    },
+    "final_p99": {
+      "mean": 75.78440403884431,
+      "min": 72.62360710151069,
+      "max": 78.72166451151574
+    }
+  }
+}
