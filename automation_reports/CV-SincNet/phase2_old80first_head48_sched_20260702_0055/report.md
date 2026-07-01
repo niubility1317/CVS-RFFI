@@ -150,3 +150,17 @@ Launch status:
 | Local SSH cleanup | verified `ssh_processes=none` and `n607_established=none` after replacement monitor |
 
 Interpretation boundary: no OLD80_FIRST metric evidence is available yet. This run is correctly queued behind the two-process-per-GPU safety rule and will start when any GPU has capacity, without waiting specifically for GPU0.
+
+Latest monitor update: 2026-07-02 01:06 Asia/Hong_Kong
+
+| Item | Value |
+|---|---|
+| Launcher PID | `2896435` still alive |
+| Launcher elapsed | about 2 minutes 13 seconds |
+| Current scheduler state | repeated `[SPACEBORNE-FSDA-WAIT-ANY] remaining=48 max=2` |
+| Candidate logs | 0 |
+| Completed `metrics.json` | 0 |
+| Old launcher PID `2887894` | not alive |
+| Local SSH cleanup | verified `ssh_processes=none` and `n607_established=none` |
+
+Status interpretation: the scheduler repair is active and healthy, but no OLD80_FIRST metric evidence is available yet because no GPU has fallen below the two-process cap.
