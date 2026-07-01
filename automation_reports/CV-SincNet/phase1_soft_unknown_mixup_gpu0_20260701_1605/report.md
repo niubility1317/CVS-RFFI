@@ -47,6 +47,13 @@
 |`bash -n code/scripts/launch_phase1_soft_unknown_mixup_gpu0_20260701.sh`|通过|
 |`bash code/scripts/launch_phase1_soft_unknown_mixup_gpu0_20260701.sh --dry-run`|通过,仅生成两个GPU0候选,均为`--epochs 200`和`--soft_unknown_mixup_order 3`|
 
+Git发布仓库提交:
+
+|commit|内容|
+|---|---|
+|`b430263`|实现3-TX软未知mixup loss、训练接线和单测|
+|`d5ad5df`|新增GPU0双实验launcher和本报告|
+
 ## N607预检与占用
 
 |检查|结果|
@@ -60,9 +67,21 @@
 |本地路径|远端路径|
 |---|---|
 |`code/cvsrffi/losses.py`|`/home/szu2070436088/2510044040/CV-SincNet/code/cvsrffi/losses.py`|
+|`code/cvsrffi/losses.py`|`/home/szu2070436088/2510044040/CV-SincNet/cvsrffi/losses.py`|
 |`code/SSDG/train_ssdg.py`|`/home/szu2070436088/2510044040/CV-SincNet/code/SSDG/train_ssdg.py`|
 |`tests/test_soft_unknown_mixup_losses.py`|`/home/szu2070436088/2510044040/CV-SincNet/tests/test_soft_unknown_mixup_losses.py`|
 |`code/scripts/launch_phase1_soft_unknown_mixup_gpu0_20260701.sh`|`/home/szu2070436088/2510044040/CV-SincNet/code/scripts/launch_phase1_soft_unknown_mixup_gpu0_20260701.sh`|
+
+远端验证:
+
+|命令/检查|结果|
+|---|---|
+|`sha256sum cvsrffi/losses.py code/cvsrffi/losses.py code/SSDG/train_ssdg.py code/scripts/launch_phase1_soft_unknown_mixup_gpu0_20260701.sh`|根包与`code`包`losses.py` hash一致|
+|`/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -m py_compile cvsrffi/losses.py code/cvsrffi/losses.py code/SSDG/train_ssdg.py`|通过|
+|远端`pytest tests/test_soft_unknown_mixup_losses.py`|未执行,远端`CVS-RFFI`环境缺少`pytest`模块|
+|内联Python soft-unknown mixup反向传播烟测|通过,输出`INLINE_SOFT_UNKNOWN_MIXUP_OK 4.0 3.0`|
+|`bash -n code/scripts/launch_phase1_soft_unknown_mixup_gpu0_20260701.sh`|通过|
+|远端launcher `--dry-run`|通过,仅两个GPU0候选|
 
 ## 远端启动命令
 
@@ -73,8 +92,18 @@ RUN_ID=phase1_soft_unknown_mixup_gpu0_20260701_1605 STAGE2_MAX_ACTIVE_PER_GPU=2 
 
 |候选|远端日志|远端输出目录|PID|
 |---|---|---|---|
-|`SOFTUNK_A_BALANCED_E200`|`/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_soft_unknown_mixup_gpu0_20260701_1605/SOFTUNK_A_BALANCED_E200.out`|`/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_soft_unknown_mixup_gpu0_20260701_1605/SOFTUNK_A_BALANCED_E200`|待启动回填|
-|`SOFTUNK_A_STRONGISO_E200`|`/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_soft_unknown_mixup_gpu0_20260701_1605/SOFTUNK_A_STRONGISO_E200.out`|`/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_soft_unknown_mixup_gpu0_20260701_1605/SOFTUNK_A_STRONGISO_E200`|待启动回填|
+|`SOFTUNK_A_BALANCED_E200`|`/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_soft_unknown_mixup_gpu0_20260701_1605/SOFTUNK_A_BALANCED_E200.out`|`/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_soft_unknown_mixup_gpu0_20260701_1605/SOFTUNK_A_BALANCED_E200`|2632783|
+|`SOFTUNK_A_STRONGISO_E200`|`/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_soft_unknown_mixup_gpu0_20260701_1605/SOFTUNK_A_STRONGISO_E200.out`|`/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_soft_unknown_mixup_gpu0_20260701_1605/SOFTUNK_A_STRONGISO_E200`|2633189|
+
+## 启动健康检查
+
+|时间点|结果|
+|---|---|
+|启动前|GPU0为0%利用率、10MiB显存,仅Xorg,无训练计算进程|
+|启动后约1分钟|两个PID均存活,GPU0约96%利用率、4308MiB显存;日志进入E004-E006附近,无Traceback/OOM/unrecognized参数|
+|启动后约4-5分钟|两个PID均存活,GPU0约96%利用率、4436MiB显存;两个候选均到E009/200;错误扫描为空|
+
+启动后日志确认`[CONFIG-LOSS]`中包含`lambda_soft_unknown_mixup`,并出现`[SOFT-UNK-MIX]`与`[SOURCE-EP]`指标行。由于本批将open-world、zid compact、source episode从epoch121启动,proxy/soft unknown从epoch141启动,早期E001-E009的mixup指标为0属于预期。
 
 ## 观察指标
 
