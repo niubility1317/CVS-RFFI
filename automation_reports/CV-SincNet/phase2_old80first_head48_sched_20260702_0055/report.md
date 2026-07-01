@@ -195,3 +195,22 @@ Latest monitor update: 2026-07-02 01:12 Asia/Hong_Kong
 | Local SSH cleanup | verified `ssh_processes=none`, `n607_established=none`, and `bridge_established=none` |
 
 Status interpretation: the OLD80_FIRST queue is still healthy but has not produced evidence. The next decision point remains the first completed candidate metrics row; until then the old-class recovery objective is unverified.
+
+Latest monitor update: 2026-07-02 01:15 Asia/Hong_Kong
+
+| Item | Value |
+|---|---|
+| Launcher PID | `2896435` still alive |
+| Launcher elapsed | about 11 minutes 33 seconds |
+| Current scheduler state | repeated `[SPACEBORNE-FSDA-WAIT-ANY] remaining=48 max=2` |
+| Candidate logs | 0 |
+| Completed `metrics.json` | 0 |
+| Run directories | 0 |
+| GPU occupancy | 16 active Python compute processes, 2 on each RTX 3090 GPU |
+| Occupying run family | `phase1_adv3_mechanism32_queue_20260701` training jobs, not OLD80_FIRST candidates |
+| Example occupying candidates | `ADV3B25_SOURCE_MIX075_E200`, `ADV3B09_HARD48_E200`, `ADV3B21_SOFTCE_LOW_E200`, `ADV3B01_CORE80_STRICT_E200`, `ADV3B31_BAL_MAIN_E160` |
+| Recent errors | none found in scheduler grep for Traceback/ERROR/RuntimeError/unrecognized arguments/CUDA OOM/Killed |
+| Monitor note | one exploratory GPU process command probe had a shell syntax error after printing queue status; a smaller one-line read-only process query then succeeded |
+| Local SSH cleanup | verified `ssh_processes=none`, `n607_established=none`, and `bridge_established=none` |
+
+Status interpretation: OLD80_FIRST remains queued behind existing Phase1 training occupancy. No old-class recovery evidence is available yet, so the OLD80_FIRST objective remains unverified and should not be judged by FAR or any missing metrics.
