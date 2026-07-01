@@ -3606,6 +3606,247 @@ def predict_with_oa_mse_head(
     )
 
 
+def _old80_first_head_scores(
+    features: torch.Tensor,
+    class_states: Mapping[int, ClassState],
+    *,
+    mode: str,
+    fusion_rho: float,
+    knn_k: int,
+) -> tuple[torch.Tensor, torch.Tensor, torch.Tensor, torch.Tensor, dict[str, float]]:
+    mode = str(mode).lower()
+    if mode == "support_cv_select":
+        mode, cv_stats = _select_old80_first_head_mode(
+            class_states,
+            fusion_rho=float(fusion_rho),
+            knn_k=int(knn_k),
+        )
+    else:
+        cv_stats = {"support_cv_acc": float("nan"), "support_cv_count": 0.0}
+    old_items = [
+        (int(label), state)
+        for label, state in sorted(class_states.items())
+        if str(state.group) == "old"
+    ]
+    if not old_items:
+        raise ValueError("OLD80_FIRST head requires at least one old class state")
+    x = normalize_rows(torch.as_tensor(features).float())
+    device = x.device
+    labels = torch.tensor([label for label, _ in old_items], dtype=torch.long, device=device)
+
+    if mode.startswith("support_knn"):
+        anchors = []
+        anchor_labels = []
+        for label, state in old_items:
+            support = getattr(state, "support_anchors", None)
+            if support is None or int(torch.as_tensor(support).numel()) == 0:
+                support = torch.as_tensor(state.prototype).float().view(1, -1)
+            support = normalize_rows(torch.as_tensor(support).float()).to(device)
+            anchors.append(support)
+            anchor_labels.extend([int(label)] * int(support.shape[0]))
+        anchor_matrix = torch.cat(anchors, dim=0)
+        anchor_label_tensor = torch.tensor(anchor_labels, dtype=torch.long, device=device)
+        sims = x @ anchor_matrix.T
+        k = min(max(1, int(knn_k)), int(anchor_matrix.shape[0]))
+        top = sims.topk(k, dim=1)
+        class_scores = []
+        for label in labels.tolist():
+            label_match = anchor_label_tensor[top.indices] == int(label)
+            label_scores = torch.where(label_match, top.values, torch.full_like(top.values, -float("inf")))
+            class_scores.append(label_scores.max(dim=1).values)
+        score_matrix = torch.stack(class_scores, dim=1)
+    else:
+        vectors = []
+        for _, state in old_items:
+            proto = normalize_rows(torch.as_tensor(state.prototype).float().view(1, -1)).squeeze(0)
+            support = getattr(state, "support_anchors", None)
+            if support is not None and int(torch.as_tensor(support).numel()) > 0 and mode in {"support_centroid", "fused_centroid"}:
+                support_mean = normalize_rows(torch.as_tensor(support).float().mean(dim=0, keepdim=True)).squeeze(0)
+                if mode == "support_centroid":
+                    proto = support_mean
+                else:
+                    rho = max(0.0, min(1.0, float(fusion_rho)))
+                    proto = normalize_rows((rho * support_mean + (1.0 - rho) * proto).view(1, -1)).squeeze(0)
+            vectors.append(proto.to(device))
+        proto_matrix = normalize_rows(torch.stack(vectors, dim=0))
+        score_matrix = x @ proto_matrix.T
+
+    topk = score_matrix.topk(min(2, score_matrix.size(1)), dim=1)
+    scores = topk.values[:, 0]
+    indices = topk.indices[:, 0]
+    margins = topk.values[:, 0] - topk.values[:, 1] if topk.values.size(1) > 1 else topk.values[:, 0]
+    return labels[indices], scores, margins, labels, {
+        **cv_stats,
+        "selected_mode_code": float(
+            {
+                "fused_centroid": 1,
+                "support_centroid": 2,
+                "support_knn1": 3,
+                "support_knn3": 4,
+            }.get(mode, 0)
+        ),
+    }
+
+
+def _old80_first_support_cv_accuracy(
+    class_states: Mapping[int, ClassState],
+    *,
+    mode: str,
+    fusion_rho: float,
+    knn_k: int,
+) -> tuple[float, int]:
+    support_rows = []
+    support_labels = []
+    for label, state in sorted(class_states.items()):
+        if str(state.group) != "old":
+            continue
+        support = getattr(state, "support_anchors", None)
+        if support is None or int(torch.as_tensor(support).numel()) == 0:
+            continue
+        support = normalize_rows(torch.as_tensor(support).float())
+        support_rows.append(support)
+        support_labels.extend([int(label)] * int(support.shape[0]))
+    if not support_rows:
+        return float("nan"), 0
+    support_matrix = torch.cat(support_rows, dim=0)
+    label_tensor = torch.tensor(support_labels, dtype=torch.long)
+    correct = 0
+    evaluated = 0
+    for row in range(int(support_matrix.shape[0])):
+        cv_states = {}
+        for label, state in class_states.items():
+            if str(state.group) != "old":
+                continue
+            anchors = getattr(state, "support_anchors", None)
+            if anchors is None or int(torch.as_tensor(anchors).numel()) == 0:
+                cv_states[int(label)] = state
+                continue
+            anchors = normalize_rows(torch.as_tensor(anchors).float())
+            keep = torch.ones(int(anchors.shape[0]), dtype=torch.bool)
+            if int(label) == int(label_tensor[row].item()):
+                class_index = int((label_tensor[:row] == int(label)).sum().item())
+                if class_index < int(keep.numel()):
+                    keep[class_index] = False
+            cv_states[int(label)] = replace(state, support_anchors=anchors[keep] if bool(keep.any().item()) else None)
+        pred_labels, _, _, _, _ = _old80_first_head_scores(
+            support_matrix[row : row + 1],
+            cv_states,
+            mode=mode,
+            fusion_rho=float(fusion_rho),
+            knn_k=int(knn_k),
+        )
+        correct += int(int(pred_labels[0].item()) == int(label_tensor[row].item()))
+        evaluated += 1
+    return float(correct / max(1, evaluated)), evaluated
+
+
+def _select_old80_first_head_mode(
+    class_states: Mapping[int, ClassState],
+    *,
+    fusion_rho: float,
+    knn_k: int,
+) -> tuple[str, dict[str, float]]:
+    candidates = ("fused_centroid", "support_centroid", "support_knn3")
+    rows = []
+    for idx, mode in enumerate(candidates):
+        acc, count = _old80_first_support_cv_accuracy(
+            class_states,
+            mode=mode,
+            fusion_rho=float(fusion_rho),
+            knn_k=int(knn_k),
+        )
+        score = -1.0 if math.isnan(acc) else float(acc)
+        rows.append((score, -idx, mode, count))
+    best_score, _, best_mode, count = max(rows)
+    return best_mode, {
+        "support_cv_acc": float("nan") if best_score < 0.0 else float(best_score),
+        "support_cv_count": float(count),
+    }
+
+
+def apply_old80_first_head(
+    features: torch.Tensor,
+    result: PredictionResult,
+    class_states: Mapping[int, ClassState],
+    *,
+    mode: str = "disabled",
+    apply_policy: str = "replace_all",
+    fusion_rho: float = 0.75,
+    knn_k: int = 3,
+) -> PredictionResult:
+    """OLD80_FIRST old-class head using only source old states and target-old support."""
+
+    mode = str(mode).lower()
+    if mode in {"", "disabled", "none"}:
+        return result
+    labels, scores, margins, _, stats = _old80_first_head_scores(
+        features,
+        class_states,
+        mode=mode,
+        fusion_rho=float(fusion_rho),
+        knn_k=int(knn_k),
+    )
+    predicted = result.predicted_labels.detach().cpu().clone()
+    accepted = result.accepted.detach().cpu().clone().bool()
+    candidate = (
+        result.candidate_labels.detach().cpu().clone()
+        if result.candidate_labels is not None
+        else predicted.clone()
+    )
+    out_scores = result.scores.detach().cpu().clone()
+    out_margins = (
+        result.margins.detach().cpu().clone()
+        if result.margins is not None
+        else torch.full_like(out_scores, float("nan"))
+    )
+    policy = str(apply_policy).lower()
+    if policy == "replace_all":
+        apply_mask = torch.ones_like(accepted, dtype=torch.bool)
+    elif policy == "rescue_rejected":
+        apply_mask = (~accepted) | (predicted == UNKNOWN_LABEL)
+    elif policy == "replace_unknown":
+        apply_mask = predicted == UNKNOWN_LABEL
+    else:
+        raise ValueError(f"unknown OLD80_FIRST apply_policy: {apply_policy}")
+    labels = labels.detach().cpu()
+    scores = scores.detach().cpu()
+    margins = margins.detach().cpu()
+    predicted[apply_mask] = labels[apply_mask]
+    candidate[apply_mask] = labels[apply_mask]
+    accepted[apply_mask] = True
+    out_scores[apply_mask] = scores[apply_mask]
+    out_margins[apply_mask] = margins[apply_mask]
+    decisions = list(result.decisions or [])
+    if len(decisions) != int(accepted.numel()):
+        decisions = ["accept" if bool(v) else "reject" for v in result.accepted.detach().cpu().tolist()]
+    reasons = list(result.gate_reasons or [])
+    if len(reasons) != int(accepted.numel()):
+        reasons = ["accepted" if bool(v) else "rejected" for v in result.accepted.detach().cpu().tolist()]
+    for row in torch.nonzero(apply_mask, as_tuple=False).flatten().tolist():
+        decisions[int(row)] = "accept"
+        reasons[int(row)] = f"old80_first_{mode}"
+    diagnostics = dict(result.diagnostics or {})
+    n = int(accepted.numel())
+    diagnostics["old80_first_label"] = labels
+    diagnostics["old80_first_score"] = scores
+    diagnostics["old80_first_margin"] = margins
+    diagnostics["old80_first_applied_mask"] = apply_mask.detach().cpu()
+    diagnostics["old80_first_support_cv_acc"] = torch.full((n,), float(stats.get("support_cv_acc", float("nan"))))
+    diagnostics["old80_first_support_cv_count"] = torch.full((n,), float(stats.get("support_cv_count", 0.0)))
+    diagnostics["old80_first_mode_code"] = torch.full((n,), float(stats.get("selected_mode_code", 0.0)))
+    return replace(
+        result,
+        predicted_labels=predicted,
+        candidate_labels=candidate,
+        scores=out_scores,
+        margins=out_margins,
+        accepted=accepted,
+        decisions=decisions,
+        gate_reasons=reasons,
+        diagnostics=diagnostics,
+    )
+
+
 def _resolve_gate_config(
     unknown_threshold: float | None,
     gate_config: OpenSetGateConfig | None,

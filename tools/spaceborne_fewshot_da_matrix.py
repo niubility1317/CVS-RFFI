@@ -333,6 +333,10 @@ class Candidate:
     oa_mse_old_unknown_guard_min_best_old_score: float | None = None
     oa_mse_old_unknown_guard_min_margin: float | None = None
     oa_mse_old_unknown_guard_min_failures: int = 1
+    oa_mse_old80_head_mode: str = "disabled"
+    old80_head_apply_policy: str = "replace_all"
+    old80_head_fusion_rho: float = 0.75
+    old80_head_knn_k: int = 3
     stage2_max_active_per_gpu: int | None = None
     oa_mse_adapter_selection_policy: str = "final"
     oa_mse_adapter_alpha_eval_sweep: bool = False
@@ -5488,6 +5492,114 @@ def _oa_mse_h06_oldrecov48_stage_specs() -> list[dict]:
     return specs
 
 
+def _oa_mse_h06_old80first_head48_stage_specs() -> list[dict]:
+    """H06 OLD80_FIRST head-first repair: recover target-old before restoring open-set gates."""
+
+    specs = [dict(spec) for spec in _oa_mse_h06_oldrecov48_stage_specs()]
+    arms = (
+        (2, "support_cv_select", 0.75, 3, "k02_support_cv"),
+        (3, "support_cv_select", 0.75, 3, "k03_support_cv"),
+        (5, "fused_centroid", 0.75, 3, "k05_fused_centroid"),
+        (10, "support_knn3", 0.75, 3, "k10_support_knn3"),
+        (5, "support_centroid", 0.85, 3, "k05_support_centroid"),
+        (10, "support_cv_select", 0.85, 3, "k10_support_cv"),
+    )
+    for idx, spec in enumerate(specs):
+        k_old, head_mode, rho, knn_k, arm = arms[idx]
+        spec["category"] = "old80_first_old_head"
+        spec["optimization_category"] = "old80_first_old_head"
+        spec["route_suffix"] = f"h06_old80first_head_{arm}"
+        spec["ablation_arm"] = arm
+        spec["stage"] = "mse_subspace"
+        spec["eval_protocol"] = "ftrc"
+        spec["k_old"] = int(k_old)
+        spec["k_new"] = 0
+        spec["target_new_leo_support"] = False
+        spec["source_proto_per_tx"] = 24
+        spec["source_query_per_tx"] = 40
+        spec["sfe_max_samples_per_tx"] = 80
+        spec["query_per_tx"] = 40
+        spec["target_old_query_per_tx"] = 40
+        spec["stage2_max_active_per_gpu"] = 2
+        spec["adapter_kind"] = "low_rank"
+        spec["adapter_selection_policy"] = "identity_preserving_cv"
+        spec["steps"] = 24 + 4 * min(idx, 3)
+        spec["unknown_threshold"] = 0.96
+        spec["openmax_quantile"] = 1.0
+        spec["openmax_min_threshold"] = 0.10
+        spec["unknown_moat"] = 0.0
+        spec["unknown_margin"] = 0.20
+        spec["negative_anchor_weight"] = 0.0
+        spec["void_background"] = 0.0
+        spec["void_gate"] = False
+        spec["known_coverage_weight"] = 0.28 if k_old <= 3 else 0.24
+        spec["known_coverage_margin"] = 0.04
+        spec["known_coverage_min_affinity"] = 0.18
+        spec["support_center_ce"] = 0.22 if k_old <= 3 else 0.18
+        spec["support_center_temperature"] = 0.50 if k_old <= 3 else 0.46
+        spec["support_center_margin"] = 0.06
+        spec["support_contrast"] = 0.04
+        spec["old_bridge"] = 0.20 if k_old <= 3 else 0.16
+        spec["old_neighborhood"] = 0.18 if k_old <= 3 else 0.14
+        spec["multiproto_score"] = False
+        spec["soft_proto"] = 0.0
+        spec["soft_proto_boundary"] = 0.0
+        spec["anchor_density_gate"] = False
+        spec["class_envelope_gate"] = False
+        spec["density_shell_gate"] = False
+        spec["identity_consensus_arbitration"] = False
+        spec["support_conformal_arbitration"] = False
+        spec["support_reconstruction_arbitration"] = False
+        spec["three_way_decision_head"] = False
+        spec["pre_reject_defer_arbitration"] = False
+        spec["pre_reject_support_neighborhood_retention"] = False
+        spec["retention_rescue_gate"] = False
+        spec["source_looo_risk_arbitration"] = False
+        spec["two_branch_background_guard"] = False
+        spec["old_primary_gate"] = False
+        spec["old_unknown_acceptance_guard"] = False
+        spec["support_retention_guard"] = False
+        spec["seen_new_registration_override"] = False
+        spec["old80_head_mode"] = head_mode
+        spec["old80_head_apply_policy"] = "replace_all"
+        spec["old80_head_fusion_rho"] = float(rho)
+        spec["old80_head_knn_k"] = int(knn_k)
+        spec["old_acc_target"] = 0.80
+        spec["seen_new_acc_target"] = 0.75
+        spec["stage2_priority_phase"] = "OLD80_FIRST"
+        spec["old_acc_phase_gate"] = 0.80
+        spec["secondary_objectives_after_old_gate"] = "UNKNOWN_FAR_AFTER_OLD80"
+        spec["weibull_evt_required"] = False
+        spec["pseudo_unknown_energy_required"] = False
+        spec["seen_new_evidence_gate_required"] = False
+        spec["seen_new_anchor_gate_required"] = False
+        spec["siamese_verifier_required"] = False
+        spec["accepted_only_online_update_required"] = False
+        spec["oa_mse_onboard_adaptation_bundle"] = (
+            "target_adapter+target_old_support_old80_head;"
+            "no_unknown_query_threshold_tuning;"
+            "open_set_gates_restore_after_old80"
+        )
+        spec["risk_note"] = (
+            "Current Phase2 gate collapses target-old accuracy while improving unknown FAR. "
+            "This candidate deliberately ignores unknown FAR as an optimization target and uses only "
+            "source old prototypes plus target-old support to recover old accuracy first."
+        )
+        spec["description"] = (
+            "Stage2-B H06 OLD80_FIRST head-first repair: no target-new support, unknown query eval-only, "
+            f"K={k_old} target-old support per class, old80_head={head_mode}, and open-set gates restored "
+            "only after target-old old_acc reaches the OLD80 phase gate."
+        )
+        spec["evidence_ref"] = (
+            "phase2_gate_old_accuracy_collapse_20p83_to_27p50;"
+            "target_old_only_mean_ge72_available_not_gate_bound;"
+            "old80_first_no_unknown_query_threshold_tuning;"
+            "stage2b_old_unknown_only_target_new_excluded"
+        )
+        spec["seed_offset"] = int(spec.get("seed_offset", 0)) + 7010 + idx * 41
+    return specs
+
+
 def _oa_mse_neganchor48_stage_specs() -> list[dict]:
     """48-row negative-anchor background-basin route after next48ew."""
 
@@ -6000,6 +6112,7 @@ def make_candidates(*, plan: str = "SMOKE") -> list[Candidate]:
         "OA_MSE_H06_OLDHEAD48",
         "OA_MSE_H06_OLDHEADFAR48",
         "OA_MSE_H06_OLDRECOV48",
+        "OA_MSE_H06_OLD80FIRST_HEAD48",
     }:
         base = {
             "protocol": "CVS-OA-MSE",
@@ -6012,12 +6125,12 @@ def make_candidates(*, plan: str = "SMOKE") -> list[Candidate]:
             "target_receiver_ids": "${TARGET_RECEIVER_IDS}",
             "ground_model_label": (
                 "CEN51_R04_H06_LOW_PROB_HYBRID_R010"
-                if plan in {"OA_MSE_H06_EVID48", "OA_MSE_H06_ARB48", "OA_MSE_H06_OLDUNK48", "OA_MSE_H06_BGTRAIN48", "OA_MSE_H06_RETOLD48", "OA_MSE_H06_OLDFIRST48", "OA_MSE_H06_OLDRELAX48", "OA_MSE_H06_OLDGEOM48", "OA_MSE_H06_OLDCONF48", "OA_MSE_H06_OLDBUDGET48", "OA_MSE_H06_OLDQUAL48", "OA_MSE_H06_OLDRISK48", "OA_MSE_H06_OLDFUSE48", "OA_MSE_H06_ROLLSAFE48", "OA_MSE_H06_OLDHEAD48", "OA_MSE_H06_OLDHEADFAR48", "OA_MSE_H06_OLDRECOV48"}
+                if plan in {"OA_MSE_H06_EVID48", "OA_MSE_H06_ARB48", "OA_MSE_H06_OLDUNK48", "OA_MSE_H06_BGTRAIN48", "OA_MSE_H06_RETOLD48", "OA_MSE_H06_OLDFIRST48", "OA_MSE_H06_OLDRELAX48", "OA_MSE_H06_OLDGEOM48", "OA_MSE_H06_OLDCONF48", "OA_MSE_H06_OLDBUDGET48", "OA_MSE_H06_OLDQUAL48", "OA_MSE_H06_OLDRISK48", "OA_MSE_H06_OLDFUSE48", "OA_MSE_H06_ROLLSAFE48", "OA_MSE_H06_OLDHEAD48", "OA_MSE_H06_OLDHEADFAR48", "OA_MSE_H06_OLDRECOV48", "OA_MSE_H06_OLD80FIRST_HEAD48"}
                 else "BEX02_fishr002_mixed_e170"
             ),
             "ground_model_default_ckpt": (
                 H06_LOW_PROB_HYBRID_LATEST_CKPT
-                if plan in {"OA_MSE_H06_EVID48", "OA_MSE_H06_ARB48", "OA_MSE_H06_OLDUNK48", "OA_MSE_H06_BGTRAIN48", "OA_MSE_H06_RETOLD48", "OA_MSE_H06_OLDFIRST48", "OA_MSE_H06_OLDRELAX48", "OA_MSE_H06_OLDGEOM48", "OA_MSE_H06_OLDCONF48", "OA_MSE_H06_OLDBUDGET48", "OA_MSE_H06_OLDQUAL48", "OA_MSE_H06_OLDRISK48", "OA_MSE_H06_OLDFUSE48", "OA_MSE_H06_ROLLSAFE48", "OA_MSE_H06_OLDHEAD48", "OA_MSE_H06_OLDHEADFAR48", "OA_MSE_H06_OLDRECOV48"}
+                if plan in {"OA_MSE_H06_EVID48", "OA_MSE_H06_ARB48", "OA_MSE_H06_OLDUNK48", "OA_MSE_H06_BGTRAIN48", "OA_MSE_H06_RETOLD48", "OA_MSE_H06_OLDFIRST48", "OA_MSE_H06_OLDRELAX48", "OA_MSE_H06_OLDGEOM48", "OA_MSE_H06_OLDCONF48", "OA_MSE_H06_OLDBUDGET48", "OA_MSE_H06_OLDQUAL48", "OA_MSE_H06_OLDRISK48", "OA_MSE_H06_OLDFUSE48", "OA_MSE_H06_ROLLSAFE48", "OA_MSE_H06_OLDHEAD48", "OA_MSE_H06_OLDHEADFAR48", "OA_MSE_H06_OLDRECOV48", "OA_MSE_H06_OLD80FIRST_HEAD48"}
                 else DEFAULT_BEX02_TEACHER_CKPT
             ),
             "unknown_leo_query": True,
@@ -6426,6 +6539,7 @@ def make_candidates(*, plan: str = "SMOKE") -> list[Candidate]:
                     "OA_MSE_H06_OLDHEAD48",
                     "OA_MSE_H06_OLDHEADFAR48",
                     "OA_MSE_H06_OLDRECOV48",
+                    "OA_MSE_H06_OLD80FIRST_HEAD48",
                 }:
             stage_specs = [
                 {
@@ -6825,6 +6939,8 @@ def make_candidates(*, plan: str = "SMOKE") -> list[Candidate]:
                 stage_specs = _oa_mse_h06_oldheadfar48_stage_specs()
             if plan == "OA_MSE_H06_OLDRECOV48":
                 stage_specs = _oa_mse_h06_oldrecov48_stage_specs()
+            if plan == "OA_MSE_H06_OLD80FIRST_HEAD48":
+                stage_specs = _oa_mse_h06_old80first_head48_stage_specs()
             elif plan == "OA_MSE_BGCAP48":
                 stage_specs = _oa_mse_bgcap48_stage_specs()
             elif plan == "OA_MSE_SUPPORTCV48":
@@ -6945,7 +7061,7 @@ def make_candidates(*, plan: str = "SMOKE") -> list[Candidate]:
                 for spec in stage_specs:
                     spec["soft_proto_boundary"] = 0.0
                     spec["soft_proto_boundary_margin"] = 0.15
-            elif plan not in {"OA_MSE_STRUCT48", "OA_MSE_SIMPLIFIED48", "OA_MSE_RETENTION48", "OA_MSE_SUPPORTRET48", "OA_MSE_TWOBRANCH48", "OA_MSE_REGHEAD48", "OA_MSE_LOOO48", "OA_MSE_CONSTRAIN48", "OA_MSE_ENVELOPE48", "OA_MSE_RESCUE48", "OA_MSE_PREREJECT48", "OA_MSE_THREEWAY48", "OA_MSE_COVFLOOR48", "OA_MSE_CLASSFIRST48", "OA_MSE_EVIBG48", "OA_MSE_SOFTTARGET48", "OA_MSE_NEGANCHOR48", "OA_MSE_DENSHELL48", "OA_MSE_IDCONS48", "OA_MSE_CONFORM48", "OA_MSE_RECON48", "OA_MSE_SOURCERISK48", "OA_MSE_SUPPORTCV48", "OA_MSE_BGCAP48", "OA_MSE_KRET48", "OA_MSE_RISKRET48", "OA_MSE_MANIFOLD48", "OA_MSE_H06_EVID48", "OA_MSE_H06_ARB48", "OA_MSE_H06_OLDUNK48", "OA_MSE_H06_BGTRAIN48", "OA_MSE_H06_RETOLD48", "OA_MSE_H06_OLDFIRST48", "OA_MSE_H06_OLDRELAX48", "OA_MSE_H06_OLDGEOM48", "OA_MSE_H06_OLDCONF48", "OA_MSE_H06_OLDBUDGET48", "OA_MSE_H06_OLDQUAL48", "OA_MSE_H06_OLDRISK48", "OA_MSE_H06_OLDFUSE48", "OA_MSE_H06_ROLLSAFE48", "OA_MSE_H06_OLDHEAD48", "OA_MSE_H06_OLDHEADFAR48", "OA_MSE_H06_OLDRECOV48"}:
+            elif plan not in {"OA_MSE_STRUCT48", "OA_MSE_SIMPLIFIED48", "OA_MSE_RETENTION48", "OA_MSE_SUPPORTRET48", "OA_MSE_TWOBRANCH48", "OA_MSE_REGHEAD48", "OA_MSE_LOOO48", "OA_MSE_CONSTRAIN48", "OA_MSE_ENVELOPE48", "OA_MSE_RESCUE48", "OA_MSE_PREREJECT48", "OA_MSE_THREEWAY48", "OA_MSE_COVFLOOR48", "OA_MSE_CLASSFIRST48", "OA_MSE_EVIBG48", "OA_MSE_SOFTTARGET48", "OA_MSE_NEGANCHOR48", "OA_MSE_DENSHELL48", "OA_MSE_IDCONS48", "OA_MSE_CONFORM48", "OA_MSE_RECON48", "OA_MSE_SOURCERISK48", "OA_MSE_SUPPORTCV48", "OA_MSE_BGCAP48", "OA_MSE_KRET48", "OA_MSE_RISKRET48", "OA_MSE_MANIFOLD48", "OA_MSE_H06_EVID48", "OA_MSE_H06_ARB48", "OA_MSE_H06_OLDUNK48", "OA_MSE_H06_BGTRAIN48", "OA_MSE_H06_RETOLD48", "OA_MSE_H06_OLDFIRST48", "OA_MSE_H06_OLDRELAX48", "OA_MSE_H06_OLDGEOM48", "OA_MSE_H06_OLDCONF48", "OA_MSE_H06_OLDBUDGET48", "OA_MSE_H06_OLDQUAL48", "OA_MSE_H06_OLDRISK48", "OA_MSE_H06_OLDFUSE48", "OA_MSE_H06_ROLLSAFE48", "OA_MSE_H06_OLDHEAD48", "OA_MSE_H06_OLDHEADFAR48", "OA_MSE_H06_OLDRECOV48", "OA_MSE_H06_OLD80FIRST_HEAD48"}:
                 for spec in stage_specs:
                     spec["description"] = (
                         "Soft-mix prototype boundary OA-MSE: train the adapter toward convex same-class "
@@ -7449,6 +7565,10 @@ def make_candidates(*, plan: str = "SMOKE") -> list[Candidate]:
                         "oa_mse_old_unknown_guard_min_best_old_score": spec.get("guard_min_best_old_score"),
                         "oa_mse_old_unknown_guard_min_margin": spec.get("guard_min_margin"),
                         "oa_mse_old_unknown_guard_min_failures": int(spec.get("guard_min_failures", 1)),
+                        "oa_mse_old80_head_mode": str(spec.get("old80_head_mode", "disabled")),
+                        "old80_head_apply_policy": str(spec.get("old80_head_apply_policy", "replace_all")),
+                        "old80_head_fusion_rho": float(spec.get("old80_head_fusion_rho", 0.75)),
+                        "old80_head_knn_k": int(spec.get("old80_head_knn_k", 3)),
                         "old_anchor_override_min_quality": float(
                             spec.get("old_anchor_override_min_quality", 0.55 if is_seen_new else 0.60)
                         ),
@@ -7513,9 +7633,34 @@ def make_candidates(*, plan: str = "SMOKE") -> list[Candidate]:
                         "stage2_priority_phase": str(spec.get("stage2_priority_phase", "")),
                         "old_acc_phase_gate": float(spec.get("old_acc_phase_gate", 0.0)),
                         "secondary_objectives_after_old_gate": str(spec.get("secondary_objectives_after_old_gate", "")),
+                        "weibull_evt_required": bool(spec.get("weibull_evt_required", base["weibull_evt_required"])),
+                        "target_adapter_required": bool(
+                            spec.get("target_adapter_required", base["target_adapter_required"])
+                        ),
+                        "pseudo_unknown_energy_required": bool(
+                            spec.get("pseudo_unknown_energy_required", base["pseudo_unknown_energy_required"])
+                        ),
+                        "seen_new_evidence_gate_required": bool(
+                            spec.get("seen_new_evidence_gate_required", base["seen_new_evidence_gate_required"])
+                        ),
+                        "seen_new_anchor_gate_required": bool(
+                            spec.get("seen_new_anchor_gate_required", base["seen_new_anchor_gate_required"])
+                        ),
+                        "siamese_verifier_required": bool(
+                            spec.get("siamese_verifier_required", base["siamese_verifier_required"])
+                        ),
+                        "accepted_only_online_update_required": bool(
+                            spec.get(
+                                "accepted_only_online_update_required",
+                                base["accepted_only_online_update_required"],
+                            )
+                        ),
+                        "oa_mse_onboard_adaptation_bundle": str(
+                            spec.get("oa_mse_onboard_adaptation_bundle", base["oa_mse_onboard_adaptation_bundle"])
+                        ),
                     }
                 )
-                if plan in {"OA_MSE_H06_OLDUNK48", "OA_MSE_H06_BGTRAIN48", "OA_MSE_H06_RETOLD48", "OA_MSE_H06_OLDFIRST48", "OA_MSE_H06_OLDRELAX48", "OA_MSE_H06_OLDGEOM48", "OA_MSE_H06_OLDCONF48", "OA_MSE_H06_OLDBUDGET48", "OA_MSE_H06_OLDQUAL48", "OA_MSE_H06_OLDRISK48", "OA_MSE_H06_OLDFUSE48", "OA_MSE_H06_ROLLSAFE48", "OA_MSE_H06_OLDHEAD48", "OA_MSE_H06_OLDHEADFAR48", "OA_MSE_H06_OLDRECOV48"}:
+                if plan in {"OA_MSE_H06_OLDUNK48", "OA_MSE_H06_BGTRAIN48", "OA_MSE_H06_RETOLD48", "OA_MSE_H06_OLDFIRST48", "OA_MSE_H06_OLDRELAX48", "OA_MSE_H06_OLDGEOM48", "OA_MSE_H06_OLDCONF48", "OA_MSE_H06_OLDBUDGET48", "OA_MSE_H06_OLDQUAL48", "OA_MSE_H06_OLDRISK48", "OA_MSE_H06_OLDFUSE48", "OA_MSE_H06_ROLLSAFE48", "OA_MSE_H06_OLDHEAD48", "OA_MSE_H06_OLDHEADFAR48", "OA_MSE_H06_OLDRECOV48", "OA_MSE_H06_OLD80FIRST_HEAD48"}:
                     candidate_kwargs["new_tx_ids"] = "__NONE__"
                 rows.append(
                     Candidate(
@@ -7661,6 +7806,9 @@ def make_candidates(*, plan: str = "SMOKE") -> list[Candidate]:
                             f"OA_MSE_H06_OLDHEADFAR48_GPU{gpu}_{slot}_{spec['stage'].upper()}_KOLD{k_old}_KNEW{k_new}"
                             if plan == "OA_MSE_H06_OLDHEADFAR48"
                             else
+                            f"OA_MSE_H06_OLD80FIRST_HEAD48_GPU{gpu}_{slot}_{spec['stage'].upper()}_KOLD{k_old}_KNEW{k_new}"
+                            if plan == "OA_MSE_H06_OLD80FIRST_HEAD48"
+                            else
                             f"OA_MSE_H06_OLDRECOV48_GPU{gpu}_{slot}_{spec['stage'].upper()}_KOLD{k_old}_KNEW{k_new}"
                             if plan == "OA_MSE_H06_OLDRECOV48"
                             else
@@ -7791,6 +7939,8 @@ def make_candidates(*, plan: str = "SMOKE") -> list[Candidate]:
                                 if plan == "OA_MSE_H06_OLDHEAD48"
                                 else "h06_oldheadfar_support_cv_stability_repair"
                                 if plan == "OA_MSE_H06_OLDHEADFAR48"
+                                else "h06_old80_first_head_first_recovery"
+                                if plan == "OA_MSE_H06_OLD80FIRST_HEAD48"
                                 else "h06_oldrecov_target_old_recoverability_repair"
                                 if plan == "OA_MSE_H06_OLDRECOV48"
                                 else "h06_old_retention_first_calibrated_unknown_veto"
@@ -7901,6 +8051,8 @@ def make_candidates(*, plan: str = "SMOKE") -> list[Candidate]:
                                 if plan == "OA_MSE_H06_OLDHEAD48"
                                 else "h06_oldheadfar_support_cv_stability_mse_subspace"
                                 if plan == "OA_MSE_H06_OLDHEADFAR48"
+                                else "h06_old80_first_head_first_recovery_mse_subspace"
+                                if plan == "OA_MSE_H06_OLD80FIRST_HEAD48"
                                 else "h06_oldrecov_target_old_recoverability_mse_subspace"
                                 if plan == "OA_MSE_H06_OLDRECOV48"
                                 else "h06_old_retention_first_calibrated_unknown_veto_mse_subspace"
@@ -8023,6 +8175,8 @@ def make_candidates(*, plan: str = "SMOKE") -> list[Candidate]:
                             if plan == "OA_MSE_H06_OLDHEAD48"
                             else "h06_latest_source_prototypes,target_old_support_only,no_target_new_support,old_class_radius,U_orbit,support_cv_stability_head,identity_preserving_cv_selector,support_background_cap,density_shell_guard,support_conformal_reconstruction,three_way_old_background_head,retention_rescue_candidate_only,source_looo_risk,two_branch_pseudo_background_guard,old_unknown_acceptance_guard,unknown_query_eval_only,simplified_leo_residual_channel"
                             if plan == "OA_MSE_H06_OLDHEADFAR48"
+                            else "h06_latest_source_prototypes,target_old_support_only,no_target_new_support,old80_first_head_first,support_cv_or_centroid_or_knn_old_head,no_unknown_query_threshold_tuning,unknown_query_eval_only,simplified_leo_residual_channel"
+                            if plan == "OA_MSE_H06_OLD80FIRST_HEAD48"
                             else "h06_latest_source_prototypes,target_old_support_only,no_target_new_support,old_class_radius,U_orbit,target_old_recoverability_first,target_only_ridge_upper_bound,oldrecov_ridge_head,oldrecov_proto_bridge,support_conformal_reconstruction_defer,retention_rescue_candidate_only,source_looo_risk,two_branch_pseudo_background_guard,old_unknown_acceptance_guard,unknown_query_eval_only,simplified_leo_residual_channel"
                             if plan == "OA_MSE_H06_OLDRECOV48"
                             else "h06_latest_source_prototypes,target_old_support_only,no_target_new_support,old_proof_first,old_drift_support_quality,identity_consensus_background_cap,three_way_background_prob_as_soft_risk,unknown_score_joint_veto,support_reconstruction_conformal_defer_only,simplified_leo_residual_channel"
@@ -8154,6 +8308,8 @@ def make_candidates(*, plan: str = "SMOKE") -> list[Candidate]:
                             if plan == "OA_MSE_H06_OLDHEAD48"
                             else "h06_latest_source_prototypes,target_old_support_only,no_target_new_support,old_class_radius,U_orbit,support_cv_stability_head,identity_preserving_cv_selector,support_background_cap,density_shell_guard,support_conformal_reconstruction,three_way_old_background_head,retention_rescue_candidate_only,source_looo_risk,two_branch_pseudo_background_guard,old_unknown_acceptance_guard,unknown_query_eval_only,simplified_leo_residual_channel"
                             if plan == "OA_MSE_H06_OLDHEADFAR48"
+                            else "h06_latest_source_prototypes,target_old_support_only,no_target_new_support,old80_first_head_first,support_cv_or_centroid_or_knn_old_head,no_unknown_query_threshold_tuning,unknown_query_eval_only,simplified_leo_residual_channel"
+                            if plan == "OA_MSE_H06_OLD80FIRST_HEAD48"
                             else "h06_latest_source_prototypes,target_old_support_only,no_target_new_support,old_class_radius,U_orbit,target_old_recoverability_first,target_only_ridge_upper_bound,oldrecov_ridge_head,oldrecov_proto_bridge,support_conformal_reconstruction_defer,retention_rescue_candidate_only,source_looo_risk,two_branch_pseudo_background_guard,old_unknown_acceptance_guard,unknown_query_eval_only,simplified_leo_residual_channel"
                             if plan == "OA_MSE_H06_OLDRECOV48"
                             else "h06_latest_source_prototypes,target_old_support_only,no_target_new_support,old_class_radius,U_orbit,old_proof_first,old_drift_support_quality,identity_consensus_background_cap,three_way_background_prob_as_soft_risk,unknown_score_joint_veto,support_reconstruction_conformal_defer_only,simplified_leo_residual_channel"
@@ -8214,7 +8370,7 @@ def make_candidates(*, plan: str = "SMOKE") -> list[Candidate]:
                             else 4
                             if plan in {"OA_MSE_BALANCE64", "OA_MSE_SOFTMIX64", "OA_MSE_VOID64", "OA_MSE_ANCHORGUARD128", "OA_MSE_MIXHEAD128", "OA_MSE_STRUCT48", "OA_MSE_SIMPLIFIED48"}
                             else 2
-                            if plan in {"OA_MSE_RETENTION48", "OA_MSE_SUPPORTRET48", "OA_MSE_TWOBRANCH48", "OA_MSE_REGHEAD48", "OA_MSE_GEOM48", "OA_MSE_TRIAGE48", "OA_MSE_LOOO48", "OA_MSE_CONSTRAIN48", "OA_MSE_ENVELOPE48", "OA_MSE_RESCUE48", "OA_MSE_PREREJECT48", "OA_MSE_THREEWAY48", "OA_MSE_COVFLOOR48", "OA_MSE_CLASSFIRST48", "OA_MSE_EVIBG48", "OA_MSE_SOFTTARGET48", "OA_MSE_NEGANCHOR48", "OA_MSE_DENSHELL48", "OA_MSE_IDCONS48", "OA_MSE_CONFORM48", "OA_MSE_RECON48", "OA_MSE_SOURCERISK48", "OA_MSE_SUPPORTCV48", "OA_MSE_BGCAP48", "OA_MSE_KRET48", "OA_MSE_RISKRET48", "OA_MSE_MANIFOLD48", "OA_MSE_H06_EVID48", "OA_MSE_H06_ARB48", "OA_MSE_H06_OLDUNK48", "OA_MSE_H06_BGTRAIN48", "OA_MSE_H06_RETOLD48", "OA_MSE_H06_OLDFIRST48", "OA_MSE_H06_OLDRELAX48", "OA_MSE_H06_OLDGEOM48", "OA_MSE_H06_OLDCONF48", "OA_MSE_H06_OLDBUDGET48", "OA_MSE_H06_OLDQUAL48", "OA_MSE_H06_OLDRISK48", "OA_MSE_H06_OLDFUSE48", "OA_MSE_H06_ROLLSAFE48", "OA_MSE_H06_OLDHEAD48", "OA_MSE_H06_OLDHEADFAR48", "OA_MSE_H06_OLDRECOV48"}
+                            if plan in {"OA_MSE_RETENTION48", "OA_MSE_SUPPORTRET48", "OA_MSE_TWOBRANCH48", "OA_MSE_REGHEAD48", "OA_MSE_GEOM48", "OA_MSE_TRIAGE48", "OA_MSE_LOOO48", "OA_MSE_CONSTRAIN48", "OA_MSE_ENVELOPE48", "OA_MSE_RESCUE48", "OA_MSE_PREREJECT48", "OA_MSE_THREEWAY48", "OA_MSE_COVFLOOR48", "OA_MSE_CLASSFIRST48", "OA_MSE_EVIBG48", "OA_MSE_SOFTTARGET48", "OA_MSE_NEGANCHOR48", "OA_MSE_DENSHELL48", "OA_MSE_IDCONS48", "OA_MSE_CONFORM48", "OA_MSE_RECON48", "OA_MSE_SOURCERISK48", "OA_MSE_SUPPORTCV48", "OA_MSE_BGCAP48", "OA_MSE_KRET48", "OA_MSE_RISKRET48", "OA_MSE_MANIFOLD48", "OA_MSE_H06_EVID48", "OA_MSE_H06_ARB48", "OA_MSE_H06_OLDUNK48", "OA_MSE_H06_BGTRAIN48", "OA_MSE_H06_RETOLD48", "OA_MSE_H06_OLDFIRST48", "OA_MSE_H06_OLDRELAX48", "OA_MSE_H06_OLDGEOM48", "OA_MSE_H06_OLDCONF48", "OA_MSE_H06_OLDBUDGET48", "OA_MSE_H06_OLDQUAL48", "OA_MSE_H06_OLDRISK48", "OA_MSE_H06_OLDFUSE48", "OA_MSE_H06_ROLLSAFE48", "OA_MSE_H06_OLDHEAD48", "OA_MSE_H06_OLDHEADFAR48", "OA_MSE_H06_OLDRECOV48", "OA_MSE_H06_OLD80FIRST_HEAD48"}
                             else None
                         ),
                         seed=seed + int(spec.get("seed_offset", 0)),
@@ -8459,6 +8615,22 @@ def _candidate_command(candidate: Candidate) -> str:
             old_unknown_guard_args += (
                 "--oa_mse_old_unknown_guard_min_failures "
                 + str(int(candidate.oa_mse_old_unknown_guard_min_failures))
+                + " "
+            )
+        old80_head_args = ""
+        if str(candidate.oa_mse_old80_head_mode).lower() not in {"", "disabled", "none"}:
+            old80_head_args = (
+                "--oa_mse_old80_head_mode "
+                + str(candidate.oa_mse_old80_head_mode)
+                + " "
+                "--old80_head_apply_policy "
+                + str(candidate.old80_head_apply_policy)
+                + " "
+                "--old80_head_fusion_rho "
+                + str(float(candidate.old80_head_fusion_rho))
+                + " "
+                "--old80_head_knn_k "
+                + str(int(candidate.old80_head_knn_k))
                 + " "
             )
         void_gate_args = "--oa_mse_void_gate " if bool(candidate.oa_mse_void_gate) else ""
@@ -8759,6 +8931,7 @@ def _candidate_command(candidate: Candidate) -> str:
             "--oa_mse_siamese_accept_threshold " + str(float(candidate.oa_mse_siamese_accept_threshold)) + " "
             + siamese_veto_args +
             old_unknown_guard_args +
+            old80_head_args +
             "--old_anchor_override_min_quality " + str(float(candidate.old_anchor_override_min_quality)) + " "
             "--old_retention_quantile " + str(float(candidate.old_retention_quantile)) + " "
             + ("--oa_mse_support_retention_guard " if bool(candidate.oa_mse_support_retention_guard) else "")
@@ -8970,6 +9143,10 @@ def render_launcher(run_id: str, candidates: Sequence[Candidate]) -> str:
 def render_report(run_id: str, candidates: Sequence[Candidate]) -> str:
     ground_models = sorted({f"{c.ground_model_label} ({c.ground_model_default_ckpt})" for c in candidates})
     phase1_count = sum(1 for c in candidates if c.command_kind == "phase1_safe_ssdg_ground_train")
+    old80_first_only = bool(candidates) and all(
+        c.stage2_priority_phase == "OLD80_FIRST" and c.oa_mse_old80_head_mode not in {"", "disabled", "none"}
+        for c in candidates
+    )
     rows = [
         "| ID | GPU | protocol | K | gate/adapter | target_visibility | label_set_relation | update_module | metrics |",
         "|---|---:|---|---:|---|---|---|---|---|",
@@ -8979,12 +9156,22 @@ def render_report(run_id: str, candidates: Sequence[Candidate]) -> str:
         rows.append(
             f"| `{c.cid}` | {c.gpu} | {c.protocol} | {c.k} | `{gate_or_adapter}` | `{c.target_visibility}` | `{c.label_set_relation}` | `{c.update_module}` | {c.metrics} |"
         )
-    return "\n".join(
-        [
-            f"# {run_id}",
-            "",
-            "## Objective",
-            "",
+    if old80_first_only:
+        objective_lines = [
+            "Validate OLD80_FIRST Phase2 target-old recovery before re-enabling open-set rejection optimization.",
+            "This matrix covers K=2/3/5/10 target-old support per class, excludes target-new support, keeps unknown query eval-only, and does not tune unknown query thresholds.",
+        ]
+        contract_lines = [
+            "- Framework match: the ground-stage model is the existing generalized CVS-RFFI metric space checkpoint; this launcher only covers satellite-deployed target-old few-shot recovery.",
+            "- OLD80_FIRST phase gate: target-old old_class_accuracy must first recover to at least 0.72 and preferably reach 0.80 before unknown-FAR/open-set gate optimization is restored.",
+            "- Unknown query samples are eval-only. They must not fit thresholds, select heads, choose rollback, or become the primary objective in this phase.",
+            "- Target-new support and target-new claims are excluded in this matrix; every row is Stage2-B old/unknown-only FTRC.",
+            "- The active adaptation bundle is target adapter plus target-old support OLD80 head; Weibull/seen-new/Siamese/accepted-only open-set gates are deferred until the OLD80 phase gate is met.",
+            "- Report result tables by same-row metrics: candidate ID, K-shot, old80 head mode, old_class_accuracy, coverage, unknown_false_accept_rate, rollback/defer fields, and final verdict.",
+            "- Satellite metrics are stress-test metrics unless real in-orbit IQ is explicitly used.",
+        ]
+    else:
+        objective_lines = [
             (
                 "Validate Phase1 source-only ground DG representation optimization together with "
                 "deployment-time Phase2 few-shot adaptation paths."
@@ -8997,14 +9184,8 @@ def render_report(run_id: str, candidates: Sequence[Candidate]) -> str:
                 if phase1_count
                 else "new-TX enrollment (`CVS-SFE`) and target receiver calibration (`CVS-FTRC`)."
             ),
-            f"Ground model default: {', '.join(ground_models)}.",
-            "",
-            "## Candidate Matrix",
-            "",
-            *rows,
-            "",
-            "## Verification Contract",
-            "",
+        ]
+        contract_lines = [
             "- Framework match: the ground-stage model is the existing generalized CVS-RFFI metric space checkpoint; this launcher only covers satellite-deployed few-shot procedures.",
             "- No semi-supervised target adaptation is used: target receiver adaptation is labeled-only and commands set `--entropy_weight 0`, `--consistency_weight 0`, and `--pseudo_weight 0`.",
             "- `CVS-SFE` is a feature-level validation over frozen `z_id` prototypes; the support features stand for samples already affected by `H_sg o R_sat`, and it must report `full_accuracy`, `accepted_accuracy`, `coverage`, `new_class_accuracy`, `old_class_accuracy`, and `unknown_rejection_rate`.",
@@ -9015,6 +9196,23 @@ def render_report(run_id: str, candidates: Sequence[Candidate]) -> str:
             "- Gate and adapter variants must record their candidate-level parameters in `matrix.json`; rollback decisions are deployment gates, not post-hoc notes.",
             "- Any accepted-only metric must be shown with its full denominator and coverage.",
             "- Satellite metrics are stress-test metrics unless real in-orbit IQ is explicitly used.",
+        ]
+    return "\n".join(
+        [
+            f"# {run_id}",
+            "",
+            "## Objective",
+            "",
+            *objective_lines,
+            f"Ground model default: {', '.join(ground_models)}.",
+            "",
+            "## Candidate Matrix",
+            "",
+            *rows,
+            "",
+            "## Verification Contract",
+            "",
+            *contract_lines,
             "",
             "## Launch",
             "",
@@ -9423,6 +9621,10 @@ def _optimizer_matrix_item(run_id: str, candidate: Candidate, idx: int) -> dict:
                 "oa_mse_old_unknown_guard_min_best_old_score": candidate.oa_mse_old_unknown_guard_min_best_old_score,
                 "oa_mse_old_unknown_guard_min_margin": candidate.oa_mse_old_unknown_guard_min_margin,
                 "oa_mse_old_unknown_guard_min_failures": candidate.oa_mse_old_unknown_guard_min_failures,
+                "oa_mse_old80_head_mode": candidate.oa_mse_old80_head_mode,
+                "old80_head_apply_policy": candidate.old80_head_apply_policy,
+                "old80_head_fusion_rho": candidate.old80_head_fusion_rho,
+                "old80_head_knn_k": candidate.old80_head_knn_k,
                 "stage2_max_active_per_gpu": candidate.stage2_max_active_per_gpu,
                 "oa_mse_adapter_selection_policy": candidate.oa_mse_adapter_selection_policy,
                 "oa_mse_adapter_alpha_eval_sweep": candidate.oa_mse_adapter_alpha_eval_sweep,
@@ -9737,7 +9939,11 @@ def _optimizer_matrix_item(run_id: str, candidate: Candidate, idx: int) -> dict:
                     f"{candidate.pre_reject_support_retention_old_min_evidence_delta}:"
                     f"{candidate.pre_reject_support_retention_seen_new_min_evidence_delta}:"
                     f"{candidate.pre_reject_support_retention_max_background_score}:"
-                    f"{candidate.pre_reject_support_retention_max_background_margin}"
+                    f"{candidate.pre_reject_support_retention_max_background_margin}:"
+                    f"{candidate.oa_mse_old80_head_mode}:"
+                    f"{candidate.old80_head_apply_policy}:"
+                    f"{candidate.old80_head_fusion_rho}:"
+                    f"{candidate.old80_head_knn_k}"
                 ).encode("utf-8")
             ).hexdigest()[:16],
             "launchability_status": "phase2_launchable_wisig_manytx_resolved_labels_verified_sample_pool",
@@ -9978,7 +10184,7 @@ def matrix_payload(run_id: str, candidates: Sequence[Candidate]) -> dict:
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--run-id", default=None)
-    parser.add_argument("--plan", default="SMOKE", choices=["SMOKE", "CORE", "WISIG_NEWCLASS", "WISIG_NEWCLASS_CARD8", "WISIG_ENHANCED_CARD8", "PHASE1_GPU0_JOINTSAFE4", "PHASE1_GPU0_JOINTSAFE36", "OA_MSE_CARD3", "OA_MSE_PROXY32", "OA_MSE_BOUNDARY32", "OA_MSE_UNCERTAIN32", "OA_MSE_VETO32", "OA_MSE_CLASSCOND32", "OA_MSE_CALGUARD32", "OA_MSE_BALANCE64", "OA_MSE_SOFTMIX64", "OA_MSE_VOID64", "OA_MSE_SOFTVOID128", "OA_MSE_ANCHORGUARD128", "OA_MSE_MIXHEAD128", "OA_MSE_STRUCT48", "OA_MSE_SIMPLIFIED48", "OA_MSE_RETENTION48", "OA_MSE_SUPPORTRET48", "OA_MSE_TWOBRANCH48", "OA_MSE_REGHEAD48", "OA_MSE_GEOM48", "OA_MSE_TRIAGE48", "OA_MSE_LOOO48", "OA_MSE_CONSTRAIN48", "OA_MSE_ENVELOPE48", "OA_MSE_RESCUE48", "OA_MSE_PREREJECT48", "OA_MSE_THREEWAY48", "OA_MSE_COVFLOOR48", "OA_MSE_CLASSFIRST48", "OA_MSE_EVIBG48", "OA_MSE_SOFTTARGET48", "OA_MSE_NEGANCHOR48", "OA_MSE_DENSHELL48", "OA_MSE_IDCONS48", "OA_MSE_CONFORM48", "OA_MSE_RECON48", "OA_MSE_SOURCERISK48", "OA_MSE_SUPPORTCV48", "OA_MSE_BGCAP48", "OA_MSE_KRET48", "OA_MSE_RISKRET48", "OA_MSE_MANIFOLD48", "OA_MSE_H06_EVID48", "OA_MSE_H06_ARB48", "OA_MSE_H06_OLDUNK48", "OA_MSE_H06_BGTRAIN48", "OA_MSE_H06_RETOLD48", "OA_MSE_H06_OLDFIRST48", "OA_MSE_H06_OLDRELAX48", "OA_MSE_H06_OLDGEOM48", "OA_MSE_H06_OLDCONF48", "OA_MSE_H06_OLDBUDGET48", "OA_MSE_H06_OLDQUAL48", "OA_MSE_H06_OLDRISK48", "OA_MSE_H06_OLDFUSE48", "OA_MSE_H06_ROLLSAFE48", "OA_MSE_H06_OLDHEAD48", "OA_MSE_H06_OLDHEADFAR48", "OA_MSE_H06_OLDRECOV48"])
+    parser.add_argument("--plan", default="SMOKE", choices=["SMOKE", "CORE", "WISIG_NEWCLASS", "WISIG_NEWCLASS_CARD8", "WISIG_ENHANCED_CARD8", "PHASE1_GPU0_JOINTSAFE4", "PHASE1_GPU0_JOINTSAFE36", "OA_MSE_CARD3", "OA_MSE_PROXY32", "OA_MSE_BOUNDARY32", "OA_MSE_UNCERTAIN32", "OA_MSE_VETO32", "OA_MSE_CLASSCOND32", "OA_MSE_CALGUARD32", "OA_MSE_BALANCE64", "OA_MSE_SOFTMIX64", "OA_MSE_VOID64", "OA_MSE_SOFTVOID128", "OA_MSE_ANCHORGUARD128", "OA_MSE_MIXHEAD128", "OA_MSE_STRUCT48", "OA_MSE_SIMPLIFIED48", "OA_MSE_RETENTION48", "OA_MSE_SUPPORTRET48", "OA_MSE_TWOBRANCH48", "OA_MSE_REGHEAD48", "OA_MSE_GEOM48", "OA_MSE_TRIAGE48", "OA_MSE_LOOO48", "OA_MSE_CONSTRAIN48", "OA_MSE_ENVELOPE48", "OA_MSE_RESCUE48", "OA_MSE_PREREJECT48", "OA_MSE_THREEWAY48", "OA_MSE_COVFLOOR48", "OA_MSE_CLASSFIRST48", "OA_MSE_EVIBG48", "OA_MSE_SOFTTARGET48", "OA_MSE_NEGANCHOR48", "OA_MSE_DENSHELL48", "OA_MSE_IDCONS48", "OA_MSE_CONFORM48", "OA_MSE_RECON48", "OA_MSE_SOURCERISK48", "OA_MSE_SUPPORTCV48", "OA_MSE_BGCAP48", "OA_MSE_KRET48", "OA_MSE_RISKRET48", "OA_MSE_MANIFOLD48", "OA_MSE_H06_EVID48", "OA_MSE_H06_ARB48", "OA_MSE_H06_OLDUNK48", "OA_MSE_H06_BGTRAIN48", "OA_MSE_H06_RETOLD48", "OA_MSE_H06_OLDFIRST48", "OA_MSE_H06_OLDRELAX48", "OA_MSE_H06_OLDGEOM48", "OA_MSE_H06_OLDCONF48", "OA_MSE_H06_OLDBUDGET48", "OA_MSE_H06_OLDQUAL48", "OA_MSE_H06_OLDRISK48", "OA_MSE_H06_OLDFUSE48", "OA_MSE_H06_ROLLSAFE48", "OA_MSE_H06_OLDHEAD48", "OA_MSE_H06_OLDHEADFAR48", "OA_MSE_H06_OLDRECOV48", "OA_MSE_H06_OLD80FIRST_HEAD48"])
     parser.add_argument(
         "--phase1-only",
         action="store_true",

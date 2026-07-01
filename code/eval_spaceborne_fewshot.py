@@ -45,6 +45,7 @@ from cvsrffi.spaceborne_fewshot import (
     fit_low_compute_target_adapter,
     fit_siamese_verifier,
     generate_pseudo_unknown_features,
+    apply_old80_first_head,
     predict_with_prototypes,
     predict_with_oa_mse_head,
     register_new_classes,
@@ -336,6 +337,18 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--oa_mse_old_unknown_guard_min_best_old_score", type=float, default=None)
     parser.add_argument("--oa_mse_old_unknown_guard_min_margin", type=float, default=None)
     parser.add_argument("--oa_mse_old_unknown_guard_min_failures", type=int, default=1)
+    parser.add_argument(
+        "--oa_mse_old80_head_mode",
+        default="disabled",
+        choices=["disabled", "fused_centroid", "support_centroid", "support_knn1", "support_knn3", "support_cv_select"],
+    )
+    parser.add_argument(
+        "--old80_head_apply_policy",
+        default="replace_all",
+        choices=["replace_all", "rescue_rejected", "replace_unknown"],
+    )
+    parser.add_argument("--old80_head_fusion_rho", type=float, default=0.75)
+    parser.add_argument("--old80_head_knn_k", type=int, default=3)
     parser.add_argument("--old_anchor_override_min_quality", type=float, default=0.55)
     parser.add_argument("--old_retention_quantile", type=float, default=0.95)
     parser.add_argument("--oa_mse_support_retention_guard", action="store_true")
@@ -805,6 +818,13 @@ def _write_score_table(path: Path, payload: dict[str, np.ndarray], query_labels:
         "old_primary_blocked_accept",
         "old_primary_rescue_promoted",
         "old_primary_rescue_blocked",
+        "old80_first_label",
+        "old80_first_score",
+        "old80_first_margin",
+        "old80_first_applied",
+        "old80_first_support_cv_acc",
+        "old80_first_support_cv_count",
+        "old80_first_mode_code",
         "density_shell_old_label",
         "density_shell_seen_new_label",
         "density_shell_chosen_label",
@@ -1091,6 +1111,13 @@ def _write_score_table(path: Path, payload: dict[str, np.ndarray], query_labels:
                     "old_primary_rescue_blocked": value_at(
                         diagnostics.get("old_primary_rescue_blocked_mask"), i
                     ),
+                    "old80_first_label": value_at(diagnostics.get("old80_first_label"), i),
+                    "old80_first_score": value_at(diagnostics.get("old80_first_score"), i),
+                    "old80_first_margin": value_at(diagnostics.get("old80_first_margin"), i),
+                    "old80_first_applied": value_at(diagnostics.get("old80_first_applied_mask"), i),
+                    "old80_first_support_cv_acc": value_at(diagnostics.get("old80_first_support_cv_acc"), i),
+                    "old80_first_support_cv_count": value_at(diagnostics.get("old80_first_support_cv_count"), i),
+                    "old80_first_mode_code": value_at(diagnostics.get("old80_first_mode_code"), i),
                     "density_shell_old_label": value_at(diagnostics.get("density_shell_old_label"), i),
                     "density_shell_seen_new_label": value_at(diagnostics.get("density_shell_seen_new_label"), i),
                     "density_shell_chosen_label": value_at(diagnostics.get("density_shell_chosen_label"), i),
@@ -1774,6 +1801,10 @@ def _run_oa_mse_protocol(
     old_unknown_guard_min_best_old_score: float | None = None,
     old_unknown_guard_min_margin: float | None = None,
     old_unknown_guard_min_failures: int = 1,
+    old80_head_mode: str = "disabled",
+    old80_head_apply_policy: str = "replace_all",
+    old80_head_fusion_rho: float = 0.75,
+    old80_head_knn_k: int = 3,
     old_anchor_override_min_quality: float = 0.55,
     old_retention_quantile: float = 0.95,
     support_retention_guard: bool = False,
@@ -2934,6 +2965,36 @@ def _run_oa_mse_protocol(
             "promote_rescue_candidates": bool(old_primary_promote_rescue_candidates),
         },
     }
+    before_old80_accepts = int(pred.accepted.sum().item())
+    pred = apply_old80_first_head(
+        query_for_head,
+        pred,
+        class_states,
+        mode=str(old80_head_mode),
+        apply_policy=str(old80_head_apply_policy),
+        fusion_rho=float(old80_head_fusion_rho),
+        knn_k=int(old80_head_knn_k),
+    )
+    old80_applied_mask = pred.diagnostics.get("old80_first_applied_mask") if isinstance(pred.diagnostics, dict) else None
+    old80_support_cv_acc = pred.diagnostics.get("old80_first_support_cv_acc") if isinstance(pred.diagnostics, dict) else None
+    old80_mode_code = pred.diagnostics.get("old80_first_mode_code") if isinstance(pred.diagnostics, dict) else None
+    onboard_telemetry["old80_first_head"] = {
+        "enabled": str(old80_head_mode).lower() not in {"", "disabled", "none"},
+        "scope": "terminal_old_class_recovery_before_online_update_and_before_restoring_open_set_gate",
+        "unknown_query_threshold_calibration": False,
+        "fit_source": "source_old_prototypes_and_target_old_support_only",
+        "mode": str(old80_head_mode),
+        "apply_policy": str(old80_head_apply_policy),
+        "fusion_rho": float(old80_head_fusion_rho),
+        "knn_k": int(old80_head_knn_k),
+        "accept_count_before": int(before_old80_accepts),
+        "accept_count_after": int(pred.accepted.sum().item()),
+        "applied_count": int(old80_applied_mask.sum().item()) if hasattr(old80_applied_mask, "sum") else 0,
+        "support_cv_acc": float(old80_support_cv_acc[0].item()) if hasattr(old80_support_cv_acc, "numel") and int(old80_support_cv_acc.numel()) else None,
+        "mode_code": float(old80_mode_code[0].item()) if hasattr(old80_mode_code, "numel") and int(old80_mode_code.numel()) else None,
+        "phase_gate": "OLD80_FIRST",
+        "secondary_objective_policy": "restore_unknown_gate_after_target_old_accuracy_reaches_gate",
+    }
     _, online_update = accepted_only_online_update(class_states, query_for_head, pred, momentum=0.05)
     onboard_telemetry["online_update"] = online_update
     metrics = compute_open_set_metrics(
@@ -3420,6 +3481,10 @@ def main() -> int:
             old_unknown_guard_min_best_old_score=args.oa_mse_old_unknown_guard_min_best_old_score,
             old_unknown_guard_min_margin=args.oa_mse_old_unknown_guard_min_margin,
             old_unknown_guard_min_failures=int(args.oa_mse_old_unknown_guard_min_failures),
+            old80_head_mode=str(args.oa_mse_old80_head_mode),
+            old80_head_apply_policy=str(args.old80_head_apply_policy),
+            old80_head_fusion_rho=float(args.old80_head_fusion_rho),
+            old80_head_knn_k=int(args.old80_head_knn_k),
             old_anchor_override_min_quality=float(args.old_anchor_override_min_quality),
             old_retention_quantile=float(args.old_retention_quantile),
             support_retention_guard=bool(args.oa_mse_support_retention_guard),

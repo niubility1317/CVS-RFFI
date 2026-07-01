@@ -19,6 +19,7 @@ from cvsrffi.spaceborne_fewshot import (  # noqa: E402
     apply_density_shell_inlier_gate,
     apply_identity_consensus_arbitration,
     apply_seen_new_registration_override,
+    apply_old80_first_head,
     apply_old_unknown_acceptance_guard,
     apply_old_primary_acceptance_gate,
     apply_pseudo_unknown_void_gate,
@@ -74,6 +75,41 @@ def test_oa_mse_multiproto_score_uses_same_class_support_anchor_mixture():
 
     assert int(result.candidate_labels[0].item()) == 0
     assert result.diagnostics["best_old_score"][0].item() > 0.9
+
+
+def test_old80_first_head_recovers_rejected_old_queries_from_support_only():
+    class0 = _state(0, [1.0, 0.0])
+    class0.support_anchors = torch.tensor([[0.0, 1.0], [0.05, 0.95]], dtype=torch.float32)
+    class1 = _state(1, [0.0, 1.0])
+    class1.support_anchors = torch.tensor([[1.0, 0.0], [0.95, 0.05]], dtype=torch.float32)
+    states = {0: class0, 1: class1}
+    query = torch.tensor([[0.0, 1.0], [1.0, 0.0]], dtype=torch.float32)
+    base = PredictionResult(
+        predicted_labels=torch.tensor([UNKNOWN_LABEL, UNKNOWN_LABEL], dtype=torch.long),
+        candidate_labels=torch.tensor([0, 1], dtype=torch.long),
+        scores=torch.tensor([0.1, 0.1], dtype=torch.float32),
+        accepted=torch.tensor([False, False]),
+        diagnostics={},
+        decisions=["reject", "reject"],
+        gate_reasons=["default_gate_reject", "default_gate_reject"],
+    )
+
+    result = apply_old80_first_head(
+        query,
+        base,
+        states,
+        mode="support_cv_select",
+        apply_policy="replace_all",
+        fusion_rho=0.75,
+        knn_k=3,
+    )
+
+    assert result.accepted.tolist() == [True, True]
+    assert result.predicted_labels.tolist() == [0, 1]
+    assert result.gate_reasons == ["old80_first_support_cv_select", "old80_first_support_cv_select"]
+    assert "old80_first_support_cv_acc" in result.diagnostics
+    assert result.diagnostics["old80_first_support_cv_count"][0].item() == 4
+    assert result.diagnostics["old80_first_applied_mask"].tolist() == [True, True]
 
 
 def test_source_looo_unknown_risk_rejects_impostor_accept_without_unknown_labels():

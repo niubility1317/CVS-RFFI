@@ -1460,6 +1460,66 @@ class SpaceborneFewShotDaMatrixTest(unittest.TestCase):
         result = validate(rows, expected_count=56, matrix_root=payload, launcher_text=launcher)
         self.assertEqual("PASS", result["verdict"], result["issues"])
 
+    def test_h06_old80first_head48_prioritizes_old_accuracy_before_unknown_gate(self):
+        from collections import Counter
+
+        from optimizer_validate_matrix import validate
+        from spaceborne_fewshot_da_matrix import make_candidates, matrix_payload, render_launcher, render_report
+
+        candidates = make_candidates(plan="OA_MSE_H06_OLD80FIRST_HEAD48")
+        payload = matrix_payload("spaceborne_fewshot_h06_old80first_head48_test", candidates)
+        rows = payload["candidates"]
+        launcher = render_launcher("spaceborne_fewshot_h06_old80first_head48_test", candidates)
+        report = render_report("spaceborne_fewshot_h06_old80first_head48_test", candidates)
+        phase1_candidates = [c for c in candidates if c.command_kind == "phase1_safe_ssdg_ground_train"]
+        phase2_candidates = [c for c in candidates if c.command_kind != "phase1_safe_ssdg_ground_train"]
+        phase2_rows = [item for item in rows if item["lane"] == "phase2_spaceborne_fsl"]
+
+        self.assertEqual(48, len(candidates))
+        self.assertEqual(0, len(phase1_candidates))
+        self.assertEqual(48, len(phase2_candidates))
+        self.assertEqual(Counter(c.gpu for c in phase2_candidates), {gpu: 6 for gpu in range(8)})
+        self.assertEqual({c.target_old_support_per_tx for c in phase2_candidates}, {2, 3, 5, 10})
+        self.assertEqual({c.target_new_support_per_tx for c in phase2_candidates}, {0})
+        self.assertEqual({c.new_tx_ids for c in phase2_candidates}, {"__NONE__"})
+        self.assertEqual({c.oa_mse_old80_head_mode for c in phase2_candidates}, {"support_cv_select", "fused_centroid", "support_knn3", "support_centroid"})
+        self.assertTrue(all(c.old80_head_apply_policy == "replace_all" for c in phase2_candidates))
+        self.assertEqual({c.unknown_threshold for c in phase2_candidates}, {0.96})
+        self.assertEqual({c.openmax_quantile for c in phase2_candidates}, {1.0})
+        self.assertEqual({c.openmax_min_threshold for c in phase2_candidates}, {0.10})
+        self.assertTrue(all(not c.oa_mse_old_unknown_acceptance_guard for c in phase2_candidates))
+        self.assertTrue(all(not c.oa_mse_void_gate for c in phase2_candidates))
+        self.assertTrue(all(not c.oa_mse_three_way_decision_head for c in phase2_candidates))
+        self.assertTrue(all(c.target_adapter_required for c in phase2_candidates))
+        self.assertTrue(all(not c.weibull_evt_required for c in phase2_candidates))
+        self.assertTrue(all(not c.pseudo_unknown_energy_required for c in phase2_candidates))
+        self.assertTrue(all(not c.seen_new_evidence_gate_required for c in phase2_candidates))
+        self.assertTrue(all(not c.siamese_verifier_required for c in phase2_candidates))
+        self.assertTrue(all(not c.accepted_only_online_update_required for c in phase2_candidates))
+        self.assertEqual({item["stage2_priority_phase"] for item in phase2_rows}, {"OLD80_FIRST"})
+        self.assertEqual({item["old_acc_phase_gate"] for item in phase2_rows}, {0.80})
+        self.assertEqual({item["secondary_objectives_after_old_gate"] for item in phase2_rows}, {"UNKNOWN_FAR_AFTER_OLD80"})
+        self.assertEqual({item["unknown_threshold"] for item in phase2_rows}, {0.96})
+        self.assertEqual({item["weibull_evt_required"] for item in phase2_rows}, {False})
+        self.assertEqual({item["pseudo_unknown_energy_required"] for item in phase2_rows}, {False})
+        self.assertEqual({item["seen_new_evidence_gate_required"] for item in phase2_rows}, {False})
+        self.assertEqual({item["accepted_only_online_update_required"] for item in phase2_rows}, {False})
+        self.assertTrue(all("OLD80FIRST_HEAD48" in item["candidate_id"] for item in phase2_rows))
+        self.assertTrue(all("h06_old80_first_head_first" in item["update_module"] for item in phase2_rows))
+        self.assertTrue(all("old80_first_head_first" in item["fusion_inputs"] for item in phase2_rows))
+        self.assertTrue(all(item["parameters"]["oa_mse_old80_head_mode"] != "disabled" for item in phase2_rows))
+        self.assertTrue(all(item["parameters"]["oa_mse_old_unknown_acceptance_guard"] is False for item in phase2_rows))
+        self.assertIn("OA_MSE_H06_OLD80FIRST_HEAD48", launcher)
+        self.assertIn("--oa_mse_old80_head_mode support_cv_select", launcher)
+        self.assertIn("--old80_head_apply_policy replace_all", launcher)
+        self.assertNotIn("--oa_mse_old_unknown_acceptance_guard", launcher)
+        self.assertIn("Validate OLD80_FIRST Phase2 target-old recovery before re-enabling open-set rejection optimization.", report)
+        self.assertIn("Unknown query samples are eval-only. They must not fit thresholds", report)
+        self.assertIn("Weibull/seen-new/Siamese/accepted-only open-set gates are deferred", report)
+
+        result = validate(rows, expected_count=48, matrix_root=payload, launcher_text=launcher)
+        self.assertEqual("PASS", result["verdict"], result["issues"])
+
     def test_oa_mse_payload_carries_resolved_manytx_tx_and_rx_labels(self):
         from spaceborne_fewshot_da_matrix import make_candidates, matrix_payload
 

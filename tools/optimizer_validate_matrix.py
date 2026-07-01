@@ -170,6 +170,12 @@ REQUIRED_ONBOARD_ADAPTATION_BUNDLE_TOKENS = (
     "accepted_only_online_update",
     "stage2_receiver_domain",
 )
+REQUIRED_OLD80_FIRST_BUNDLE_TOKENS = (
+    "target_adapter",
+    "target_old_support_old80_head",
+    "no_unknown_query_threshold_tuning",
+    "open_set_gates_restore_after_old80",
+)
 REQUIRED_OPGAC_METRIC_BUNDLE_TOKENS = (
     "old_acc",
     "old80_gap",
@@ -262,6 +268,7 @@ def category_for(item: Mapping[str, Any]) -> str:
         "oldhead_far_stability",
         "oldrecov_ridge_head",
         "oldrecov_proto_bridge",
+        "old80_first_old_head",
     }:
         return value
     candidate = str(item.get("candidate_id") or "")
@@ -899,6 +906,15 @@ def is_opgac_row(item: Mapping[str, Any]) -> bool:
     )
 
 
+def is_old80_first_head_row(item: Mapping[str, Any]) -> bool:
+    text = candidate_value_text(item)
+    return (
+        normalized_status(item.get("optimization_category")) == "old80_first_old_head"
+        or "old80first_head" in text
+        or "old80_first_head_first" in text
+    )
+
+
 def opgac_required_field_issues(item: Mapping[str, Any]) -> List[Dict[str, Any]]:
     if not is_opgac_row(item):
         return []
@@ -1284,6 +1300,11 @@ def stage2_sample_protocol_issues(item: Mapping[str, Any], sample_protocol: Opti
     train_rx = parse_receiver_set(train_rx_value or DEFAULT_STAGE2_SAMPLE_PROTOCOL["cen51_train_receiver_ids"])
 
     cid = str(item.get("candidate_id") or "UNKNOWN")
+    priority_phase = normalized_status(item.get("stage2_priority_phase"))
+    old80_phase_allowed = "old80_first" in priority_phase and not is_true_like(
+        item.get("deployment_success_claim_allowed")
+    )
+    old80_head_bundle_allowed = old80_phase_allowed and is_old80_first_head_row(item)
     issues: List[Dict[str, Any]] = []
 
     clean_view_role = normalized_status(item.get("clean_view_role"))
@@ -1344,7 +1365,7 @@ def stage2_sample_protocol_issues(item: Mapping[str, Any], sample_protocol: Opti
         target_new_support_k = int(item.get("target_new_support_per_tx") or item.get("target_new_k") or 0)
     except (TypeError, ValueError):
         target_new_support_k = -1
-    old_unknown_only_plan = any(token in str(cid).upper() for token in ("OLDUNK", "BGTRAIN", "RETOLD", "OLDFIRST", "OLDRELAX", "OLDGEOM", "OLDCONF", "OLDBUDGET", "OLDQUAL", "OLDRISK", "OLDFUSE", "ROLLSAFE", "OLDHEAD", "OLDRECOV"))
+    old_unknown_only_plan = any(token in str(cid).upper() for token in ("OLDUNK", "BGTRAIN", "RETOLD", "OLDFIRST", "OLDRELAX", "OLDGEOM", "OLDCONF", "OLDBUDGET", "OLDQUAL", "OLDRISK", "OLDFUSE", "ROLLSAFE", "OLDHEAD", "OLDRECOV", "OLD80FIRST"))
     old_unknown_only_target = (
         target_new_support_k == 0
         and old_unknown_only_plan
@@ -1667,21 +1688,31 @@ def stage2_sample_protocol_issues(item: Mapping[str, Any], sample_protocol: Opti
     missing_low_compute = [field for field in low_compute_required if item.get(field) in (None, "", [])]
     if missing_low_compute:
         issues.append({"candidate_id": cid, "issue": "missing_onboard_low_compute_training_fields", "fields": missing_low_compute})
-    for field in (
-        "onboard_low_compute_training",
-        "weibull_evt_required",
-        "target_adapter_required",
-        "pseudo_unknown_energy_required",
-        "seen_new_evidence_gate_required",
-        "seen_new_anchor_gate_required",
-        "siamese_verifier_required",
-        "accepted_only_online_update_required",
-    ):
+    true_required_fields = (
+        ("onboard_low_compute_training", "target_adapter_required")
+        if old80_head_bundle_allowed
+        else (
+            "onboard_low_compute_training",
+            "weibull_evt_required",
+            "target_adapter_required",
+            "pseudo_unknown_energy_required",
+            "seen_new_evidence_gate_required",
+            "seen_new_anchor_gate_required",
+            "siamese_verifier_required",
+            "accepted_only_online_update_required",
+        )
+    )
+    for field in true_required_fields:
         if item.get(field) not in (None, "", []) and not is_true_like(item.get(field)):
             issues.append({"candidate_id": cid, "issue": f"{field}_must_be_true", field: item.get(field)})
     bundle = normalized_status(item.get("oa_mse_onboard_adaptation_bundle"))
     if bundle:
-        missing_bundle_tokens = [token for token in REQUIRED_ONBOARD_ADAPTATION_BUNDLE_TOKENS if token not in bundle]
+        required_bundle_tokens = (
+            REQUIRED_OLD80_FIRST_BUNDLE_TOKENS
+            if old80_head_bundle_allowed
+            else REQUIRED_ONBOARD_ADAPTATION_BUNDLE_TOKENS
+        )
+        missing_bundle_tokens = [token for token in required_bundle_tokens if token not in bundle]
         if missing_bundle_tokens:
             issues.append(
                 {
@@ -1696,12 +1727,7 @@ def stage2_sample_protocol_issues(item: Mapping[str, Any], sample_protocol: Opti
             old_acc_target = float(item.get("old_acc_target"))
         except (TypeError, ValueError):
             old_acc_target = float("nan")
-        priority_phase = normalized_status(item.get("stage2_priority_phase"))
-        old80_allowed = (
-            "old80_first" in priority_phase
-            and not is_true_like(item.get("deployment_success_claim_allowed"))
-        )
-        if old80_allowed:
+        if old80_phase_allowed:
             if not (old_acc_target >= 0.80):
                 issues.append({"candidate_id": cid, "issue": "phase2_old80_first_target_must_be_at_least_0p80", "old_acc_target": item.get("old_acc_target")})
         elif not (old_acc_target >= 0.90):
@@ -2637,7 +2663,7 @@ def validate(
     issues.extend(phase1_server_landed_training_issues(items, expected_count))
     issues.extend(command_registry_uniqueness_issues(items, expected_count))
     categories = Counter(category_for(item) for item in items)
-    for key in ("conservative", "aggressive", "old_retention", "unknown_boundary", "seen_new_rescue", "support_quality", "prototype_geometry", "query_free_background_risk", "unknown_separability", "oldqual_oldrisk_fusion", "rollback_calibration", "rollback_safe_retention", "deployment_gate_rescue", "oldhead_ridge_bridge", "oldhead_knn_density_guard", "oldhead_support_cv_stability", "oldhead_far_stability", "oldrecov_ridge_head", "oldrecov_proto_bridge", "unknown"):
+    for key in ("conservative", "aggressive", "old_retention", "unknown_boundary", "seen_new_rescue", "support_quality", "prototype_geometry", "query_free_background_risk", "unknown_separability", "oldqual_oldrisk_fusion", "rollback_calibration", "rollback_safe_retention", "deployment_gate_rescue", "oldhead_ridge_bridge", "oldhead_knn_density_guard", "oldhead_support_cv_stability", "oldhead_far_stability", "oldrecov_ridge_head", "oldrecov_proto_bridge", "old80_first_old_head", "unknown"):
         categories.setdefault(key, 0)
     expected_per_category = expected_count // 2 if expected_count % 2 == 0 else None
     triage_categories = {"old_retention", "unknown_boundary", "seen_new_rescue"}
@@ -2648,6 +2674,7 @@ def validate(
     oldhead_categories = {"oldhead_ridge_bridge", "oldhead_knn_density_guard"}
     oldheadfar_categories = {"oldhead_support_cv_stability", "oldhead_far_stability"}
     oldrecov_categories = {"oldrecov_ridge_head", "oldrecov_proto_bridge"}
+    old80_categories = {"old80_first_old_head"}
     if any(categories[key] for key in triage_categories):
         expected_per_triage_category = expected_count // 3 if expected_count % 3 == 0 else None
         if (
@@ -2837,6 +2864,29 @@ def validate(
                     "scope": "matrix",
                     "issue": "oldrecov_category_count_not_balanced",
                     "expected_per_oldrecov_category": expected_per_oldrecov_category,
+                    "categories": dict(categories),
+                }
+            )
+    elif any(categories[key] for key in old80_categories):
+        if (
+            categories["old80_first_old_head"] != expected_count
+            or categories["conservative"] > 0
+            or categories["aggressive"] > 0
+            or any(categories[key] > 0 for key in triage_categories)
+            or any(categories[key] > 0 for key in support_quality_categories)
+            or any(categories[key] > 0 for key in background_risk_categories)
+            or any(categories[key] > 0 for key in oldfuse_categories)
+            or any(categories[key] > 0 for key in rollsafe_categories)
+            or any(categories[key] > 0 for key in oldhead_categories)
+            or any(categories[key] > 0 for key in oldheadfar_categories)
+            or any(categories[key] > 0 for key in oldrecov_categories)
+            or categories["unknown"] > 0
+        ):
+            issues.append(
+                {
+                    "scope": "matrix",
+                    "issue": "old80_first_category_count_not_single_phase",
+                    "expected_old80_first_count": expected_count,
                     "categories": dict(categories),
                 }
             )
