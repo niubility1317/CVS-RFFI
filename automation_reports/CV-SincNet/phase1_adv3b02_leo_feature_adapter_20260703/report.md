@@ -935,3 +935,43 @@ Current status after V11:
 | 目标2: `unknown_FAR<=0.05` with old drop`<=2pp` | Not achieved | V3-V11 all have dual pass 0; V11 combined 120 rows also dual pass 0 |
 
 Next route should stop treating`ADV3B02_CORE90_SOFT_E200phase1`as a sufficient frozen feature basis for this sat-only unknown rejection target. The remaining aligned route is to train a new Phase1 base with open-set/source non-old negatives and LEO identity-retention built into the representation objective, then repeat the same sat-only rejection audit. Under the current frozen Phase1 base, the tested post-adapter, IQ-pre-adapter, K+1, multi-score, class-conditional, K-shot and oracle threshold routes have all failed the joint target.
+
+## V12 Heterogeneous Decision-Fusion Design
+
+V12 tests whether the failure is caused by using a single repair branch. It does not retrain features and does not retune thresholds on target labels. Each branch keeps its own existing source/proxy calibrated accept/reject threshold; V12 only fuses branch decisions on target query samples by vote/quorum.
+
+Protocol boundary:
+
+| Item | V12 setting |
+|---|---|
+| Phase1 backbone | Frozen`ADV3B02_CORE90_SOFT_E200phase1` |
+| Branches | V3 feature adapters plus V11 IQ pre-adapters |
+| Threshold source | Existing per-branch source old + source proxy_unknown calibration |
+| Target clean | Not used |
+| Target labels in threshold | Not used |
+| Unknown query threshold fitting | Not used |
+| Fusion | Accept if at least K of N branch decisions accept |
+| Classification source | Explicit primary branch per row; old drop compares that branch before/after reject |
+
+New files:
+
+| File | Purpose | SHA256 |
+|---|---|---|
+| `E:\type10-7\code\scripts\eval_phase1_decision_fusion_reject_20260703.py` | Fuse existing branch decisions and compute same-row old/FAR metrics | `5FA678232515C17B4FDB6819CB998426C8EEEC6793C7F58D06A104E53B0185F2` |
+| `E:\type10-7\code\scripts\sweep_phase1_adv3b02_decision_fusion_v12_20260703.sh` | N607 launcher and best-row summarizer for V12 | `FC92AA022B0263EAD5DF4DD42B37C0E43506C35CD7098AF7F3038532CC4574CF` |
+
+Local verification:
+
+| Command | Result |
+|---|---|
+| `C:\Users\lh594\.conda\envs\ssr-gpu\python.exe -m py_compile E:\type10-7\code\scripts\eval_phase1_decision_fusion_reject_20260703.py` | PASS |
+| `bash -lc "bash -n /mnt/e/type10-7/code/scripts/sweep_phase1_adv3b02_decision_fusion_v12_20260703.sh"` | PASS |
+| LF line-ending audit | PASS |
+
+Planned remote output:
+
+| Artifact | Remote path |
+|---|---|
+| V12 summary CSV | `/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_adv3b02_decision_fusion_v12_20260703/decision_fusion_v12_summary.csv` |
+| V12 best JSON | `/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_adv3b02_decision_fusion_v12_20260703/decision_fusion_v12_best.json` |
+| V12 driver | `/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_adv3b02_decision_fusion_v12_20260703/driver.out` |
