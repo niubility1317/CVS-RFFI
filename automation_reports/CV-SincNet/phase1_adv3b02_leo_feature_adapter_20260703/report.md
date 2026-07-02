@@ -877,3 +877,61 @@ Planned N607 variants:
 | `v11b` | 1 | `alpha=0.40`,`hidden_dim=48`,`epochs=55` | `/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_adv3b02_iqpre_v11b_matrix_20260703/iqpre_v11b_sweep_summary.csv` |
 
 Success criteria remain unchanged:`unknown_FAR<=0.05`and old-class performance drop`<=2pp`on sat-only target query, without target clean or target unknown threshold tuning.
+
+## V11 Completion Results
+
+V11 completed two IQ pre-adapter variants on N607:
+
+| Variant | Rows | Dual pass | FAR-only pass | Old-drop-only pass | Status |
+|---|---:|---:|---:|---:|---|
+| `v11a` | 60 | 0 | 2 | 22 | Completed negative |
+| `v11b` | 60 | 0 | 2 | 18 | Completed negative |
+| Combined | 120 | 0 | 4 | 40 | Completed negative |
+
+Remote execution:
+
+| Variant | PID | GPU | Completion | Remote summary |
+|---|---:|---:|---|---|
+| `v11a` | `1090324` | 0 | `2026-07-03T03:30:49+08:00` | `/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_adv3b02_iqpre_v11a_matrix_20260703/iqpre_v11a_sweep_summary.csv` |
+| `v11b` | `1090325` | 1 | `2026-07-03T03:30:56+08:00` | `/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_adv3b02_iqpre_v11b_matrix_20260703/iqpre_v11b_sweep_summary.csv` |
+
+Local artifacts:
+
+| Artifact | Local path | SHA256 |
+|---|---|---|
+| V11a summary | `E:\type10-7\automation_reports\CV-SincNet\phase1_adv3b02_leo_feature_adapter_20260703\artifacts\iqpre_v11a_sweep_summary.csv` | `BDAFC9ACEE7F6645E812CBC39A6EF8E9634780D837F0BD012F80FAFE33DE0329` |
+| V11a driver | `E:\type10-7\automation_reports\CV-SincNet\phase1_adv3b02_leo_feature_adapter_20260703\artifacts\iqpre_v11a_driver.out` | `06585FDC16B81F1F630C67D60DE52226B6A37ED89D8CEB321C3CD5B73A6056D4` |
+| V11a train/export log | `E:\type10-7\automation_reports\CV-SincNet\phase1_adv3b02_leo_feature_adapter_20260703\artifacts\iqpre_v11a_train_export.out` | `5834D96B52D19FCF8C584253AA2B6A313048FC7A893F2EC7D705D2D39A94625F` |
+| V11b summary | `E:\type10-7\automation_reports\CV-SincNet\phase1_adv3b02_leo_feature_adapter_20260703\artifacts\iqpre_v11b_sweep_summary.csv` | `30F226B1D9DEEFA882E6A30D4A9085140B7470A41CC74DD083A13CFCEA6BCBAD` |
+| V11b driver | `E:\type10-7\automation_reports\CV-SincNet\phase1_adv3b02_leo_feature_adapter_20260703\artifacts\iqpre_v11b_driver.out` | `50E569A862B852BCC4A41C8CF1FF50DCAEAA4F11FB86FCEB27E396CBA98BE96B` |
+| V11b train/export log | `E:\type10-7\automation_reports\CV-SincNet\phase1_adv3b02_leo_feature_adapter_20260703\artifacts\iqpre_v11b_train_export.out` | `23035A3CB03D51538C017857E0EB3A0403589CFC8562337512B43F835247A36D` |
+
+Best same-row outcomes:
+
+| Selection rule | Variant | Run | Policy | unknown_FAR | Old drop pp | Closed old acc | Final old acc | Coverage | Verdict |
+|---|---|---|---|---:|---:|---:|---:|---:|---|
+| Best FAR with old drop`<=2pp` | `v11a` | `rx3_19_u10` | `IQPRE_LIN_SRC1000` | 0.9268 | 0.25 | 0.5442 | 0.5417 | 0.9958 | FAR fails badly |
+| Best old retention with FAR`<=5%` | `v11a` | `rx20_1_u1` | `IQPRE_LIN_MIN05`/`PROXY05` | 0.0252 | 39.42 | 0.6033 | 0.2092 | 0.3025 | Old-class performance fails |
+| Lowest FAR overall | `v11b` | `rx20_1_u1` | `IQPRE_LIN_MIN05`/`PROXY05` | 0.0196 | 41.58 | 0.6075 | 0.1917 | 0.2892 | Old-class performance fails |
+| Nearest joint row | `v11a` | `rx20_1_u1` | `IQPRE_MLP64_MIN05`/`PROXY05` | 0.0644 | 32.17 | 0.6033 | 0.2817 | 0.4308 | Misses both, especially old retention |
+| Best old retention overall | `v11a` | `rx20_1_u1` | `IQPRE_LIN_SRC9999` | 0.9328 | 0.00 | 0.6033 | 0.6033 | 0.9975 | Old retention passes, FAR fails badly |
+
+Training behavior:
+
+| Variant | First reported epoch | Final epoch | Final loss | Final MSE | Final cosine loss | Final CE | Final residual |
+|---|---:|---:|---:|---:|---:|---:|---:|
+| `v11a` | 5 | 45 | 1.3370 | 0.0712 | 0.2059 | 1.4190 | 0.0872 |
+| `v11b` | 5 | 55 | 1.3351 | 0.0707 | 0.2148 | 1.3869 | 0.0890 |
+
+Interpretation:
+
+V11 did not solve the joint objective. The IQ pre-adapter can preserve or slightly improve old closed-set accuracy in some cells, but the source/proxy rejection scores still show the same tradeoff: high-retention thresholds accept nearly all unknowns, while low-FAR thresholds reject most old target samples. This extends the V3-V10 conclusion from feature-space/post-hoc adapters to a source-only IQ pre-adapter in front of the frozen Phase1 model.
+
+Current status after V11:
+
+| Target | Status | Evidence |
+|---|---|---|
+| 目标1: source-only LEO repair | Still achieved by V3/V9b; V11 is an additional IQ-front-end diagnostic | V11 trains and exports sat-only IQ-pre-adapted features without target clean/labels |
+| 目标2: `unknown_FAR<=0.05` with old drop`<=2pp` | Not achieved | V3-V11 all have dual pass 0; V11 combined 120 rows also dual pass 0 |
+
+Next route should stop treating`ADV3B02_CORE90_SOFT_E200phase1`as a sufficient frozen feature basis for this sat-only unknown rejection target. The remaining aligned route is to train a new Phase1 base with open-set/source non-old negatives and LEO identity-retention built into the representation objective, then repeat the same sat-only rejection audit. Under the current frozen Phase1 base, the tested post-adapter, IQ-pre-adapter, K+1, multi-score, class-conditional, K-shot and oracle threshold routes have all failed the joint target.
