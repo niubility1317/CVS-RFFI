@@ -177,6 +177,43 @@ def _meta_to_list(meta: Any, key: str, n: int) -> list[str]:
     return [canonical_tx_id(value)] * int(n)
 
 
+def _to_complex_iq(x: torch.Tensor) -> torch.Tensor:
+    if torch.is_complex(x):
+        return x
+    if x.dim() < 3 or x.size(1) != 2:
+        raise ValueError("IQ tensor must be complex or real shaped [B,2,T]")
+    return torch.complex(x[:, 0].float(), x[:, 1].float())
+
+
+def _from_complex_iq(z: torch.Tensor, like: torch.Tensor) -> torch.Tensor:
+    if torch.is_complex(like):
+        return z
+    return torch.stack([z.real, z.imag], dim=1).to(dtype=like.dtype)
+
+
+def _satellite_tta_views(x_sat: torch.Tensor, policy: str) -> list[tuple[str, torch.Tensor]]:
+    mode = str(policy or "none").strip().lower()
+    if mode in {"", "none", "off", "0"}:
+        return [("single", x_sat)]
+    if mode != "rx_light5":
+        raise ValueError(f"unknown satellite_tta_policy={policy!r}")
+    z = _to_complex_iq(x_sat)
+    steps = int(z.shape[-1])
+    n = torch.arange(steps, device=z.device, dtype=torch.float32).view(1, -1)
+
+    def cfo_view(delta: float) -> torch.Tensor:
+        phase = 2.0 * torch.pi * float(delta) * n
+        return _from_complex_iq(z * torch.exp(1j * phase), x_sat)
+
+    return [
+        ("rx_base", x_sat),
+        ("rx_shift_m2", torch.roll(x_sat, shifts=-2, dims=-1)),
+        ("rx_shift_p2", torch.roll(x_sat, shifts=2, dims=-1)),
+        ("rx_cfo_m1e4", cfo_view(-1.0e-4)),
+        ("rx_cfo_p1e4", cfo_view(1.0e-4)),
+    ]
+
+
 @torch.no_grad()
 def extract_features_with_metadata(
     model,
@@ -189,6 +226,7 @@ def extract_features_with_metadata(
     sat_scenarios: Sequence[str] | None = None,
     sat_args: argparse.Namespace | None = None,
     sat_seed: int = 0,
+    satellite_tta_policy: str = "none",
 ):
     feature_buf: list[np.ndarray] = []
     tx_logit_buf: list[np.ndarray] = []
@@ -220,28 +258,35 @@ def extract_features_with_metadata(
             if sat_args is None:
                 raise ValueError("sat_args is required for satellite feature export")
             x, _ = apply_sat_channel_for_scenario(x, scenario, sat_args, gen=sat_gen, return_meta=False)
-        out = model(x, y_tx=None, grl_lambda=1.0, return_aux=True)
-        feats = collect_feature_dict(out)
-        if feature_name not in feats:
-            raise KeyError(f"feature {feature_name!r} not found; available={sorted(feats.keys())}")
-        z = feats[feature_name].detach().cpu().float().numpy()
-        logits_obj = out.get("tx_logits", out.get("logits")) if isinstance(out, dict) else None
-        if logits_obj is None:
-            raise KeyError("model output does not include tx_logits/logits for Phase1 classifier audit")
-        tx_logits = logits_obj.detach().cpu().float().numpy()
-        n = int(z.shape[0])
-        feature_buf.append(z)
-        tx_logit_buf.append(tx_logits)
-        label_buf.extend([int(v) for v in y.detach().cpu().reshape(-1).tolist()])
-        domain_buf.extend([int(v) for v in d.detach().cpu().reshape(-1).tolist()])
-        tx_buf.extend(_meta_to_list(meta, "tx", n))
-        rx_buf.extend(_meta_to_list(meta, "rx", n))
-        day_buf.extend(_meta_to_list(meta, "day", n))
-        eq_buf.extend(_meta_to_list(meta, "equalized", n))
-        sig_buf.extend(_meta_to_list(meta, "sig_i", n))
-        role_buf.extend([role] * n)
-        channel_view_buf.extend([view] * n)
-        sat_scenario_buf.extend([scenario] * n)
+        n = int(x.shape[0])
+        meta_tx = _meta_to_list(meta, "tx", n)
+        meta_rx = _meta_to_list(meta, "rx", n)
+        meta_day = _meta_to_list(meta, "day", n)
+        meta_eq = _meta_to_list(meta, "equalized", n)
+        meta_sig = _meta_to_list(meta, "sig_i", n)
+        tta_views = _satellite_tta_views(x, satellite_tta_policy if view == "satellite" else "none")
+        for tta_name, x_view in tta_views:
+            out = model(x_view, y_tx=None, grl_lambda=1.0, return_aux=True)
+            feats = collect_feature_dict(out)
+            if feature_name not in feats:
+                raise KeyError(f"feature {feature_name!r} not found; available={sorted(feats.keys())}")
+            z = feats[feature_name].detach().cpu().float().numpy()
+            logits_obj = out.get("tx_logits", out.get("logits")) if isinstance(out, dict) else None
+            if logits_obj is None:
+                raise KeyError("model output does not include tx_logits/logits for Phase1 classifier audit")
+            tx_logits = logits_obj.detach().cpu().float().numpy()
+            feature_buf.append(z)
+            tx_logit_buf.append(tx_logits)
+            label_buf.extend([int(v) for v in y.detach().cpu().reshape(-1).tolist()])
+            domain_buf.extend([int(v) for v in d.detach().cpu().reshape(-1).tolist()])
+            tx_buf.extend(meta_tx)
+            rx_buf.extend(meta_rx)
+            day_buf.extend(meta_day)
+            eq_buf.extend(meta_eq)
+            sig_buf.extend(meta_sig)
+            role_buf.extend([role] * n)
+            channel_view_buf.extend([tta_name if view == "satellite" else view] * n)
+            sat_scenario_buf.extend([scenario] * n)
     if not feature_buf:
         raise ValueError(f"dataset role={role} produced no features")
     return {
@@ -333,6 +378,12 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--proxy_unknown_channel_view", default="clean", choices=["clean", "satellite"])
     parser.add_argument("--proxy_unknown_sat_scenarios", default=None)
     parser.add_argument("--proxy_unknown_sat_seed", type=int, default=None)
+    parser.add_argument(
+        "--satellite_tta_policy",
+        default="none",
+        choices=["none", "rx_light5"],
+        help="Receive-side TTA views generated after one satellite channel observation; default keeps one view.",
+    )
     parser.add_argument(
         "--star_ground_channel_impl",
         default="legacy_satellite",
@@ -499,6 +550,7 @@ def main() -> int:
         sat_scenarios=source_scenarios,
         sat_args=args,
         sat_seed=source_seed,
+        satellite_tta_policy=str(args.satellite_tta_policy),
     )
     source_channel_profile = {
         "view": source_view,
@@ -540,6 +592,7 @@ def main() -> int:
             sat_scenarios=proxy_unknown_scenarios,
             sat_args=args,
             sat_seed=proxy_unknown_seed,
+            satellite_tta_policy=str(args.satellite_tta_policy),
         )
         proxy_unknown_channel_profile = {
             "view": proxy_unknown_view,
@@ -590,6 +643,7 @@ def main() -> int:
             sat_scenarios=target_old_scenarios,
             sat_args=args,
             sat_seed=target_old_seed,
+            satellite_tta_policy=str(args.satellite_tta_policy),
         )
         target_old_channel_profile = {
             "view": target_old_view,
@@ -615,6 +669,7 @@ def main() -> int:
             sat_scenarios=target_new_scenarios,
             sat_args=args,
             sat_seed=int(args.target_new_sat_seed if args.target_new_sat_seed is not None else int(args.seed) + 911),
+            satellite_tta_policy=str(args.satellite_tta_policy),
         )
     unknown_payload = None
     target_unknown_view = target_new_view
@@ -635,6 +690,7 @@ def main() -> int:
             sat_scenarios=target_unknown_scenarios,
             sat_args=args,
             sat_seed=target_unknown_seed,
+            satellite_tta_policy=str(args.satellite_tta_policy),
         )
     payload_parts = [source_payload]
     if proxy_unknown_payload is not None:
@@ -682,6 +738,8 @@ def main() -> int:
         "target_channel_view": "satellite/LEO" if target_unknown_view == "satellite" else "clean",
         "star_ground_channel_impl": star_ground_impl,
         "target_channel_scenarios": target_unknown_scenarios,
+        "satellite_tta_policy": str(args.satellite_tta_policy),
+        "satellite_tta_view_count": 5 if str(args.satellite_tta_policy) == "rx_light5" else 1,
         "deployment_primary_view": (
             "satellite/LEO target view" if target_unknown_view == "satellite" else "clean control/source reference"
         ),

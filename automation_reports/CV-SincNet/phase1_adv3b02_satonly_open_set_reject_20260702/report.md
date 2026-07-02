@@ -304,3 +304,65 @@ Remote verification before launch:
 | `/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -m py_compile code/scripts/eval_phase1_prototype_reject.py code/scripts/eval_phase1_multiview_reject.py code/tests/test_phase1_multiview_reject_eval.py` | PASS |
 | `bash -n code/scripts/sweep_phase1_adv3b02_satunknown_singleview_20260702.sh` | PASS |
 | `sha256sum` for synced code/report | PASS; report hash `df32374483df768c58308066fba49d768a2a991c2c8ea61e7a010018df2870f5` |
+
+Corrected single-observation result:
+
+| Policy | Cells | Mean unknown_FAR | Max unknown_FAR | Mean old drop pp | Max old drop pp | Dual pass |
+|---|---:|---:|---:|---:|---:|---:|
+| `SATUNK_LIN_SRC9999` | 10 | 0.9804 | 1.0000 | 0.06 | 0.15 | 0/10 |
+| `SATUNK_LIN_SRC1000` | 10 | 0.9827 | 1.0000 | 0.05 | 0.15 | 0/10 |
+| `SATUNK_MLP64_SRC9999` | 10 | 0.8800 | 0.9614 | 1.93 | 4.53 | 0/10 |
+| `SATUNK_MLP64_SRC1000` | 10 | 0.9063 | 0.9657 | 1.31 | 3.24 | 0/10 |
+| `SATUNK_PROTO_COS_SRC9999` | 10 | 0.9915 | 1.0000 | 0.07 | 0.29 | 0/10 |
+| `SATUNK_PROTO_COS_SRC1000` | 10 | 0.9917 | 1.0000 | 0.06 | 0.24 | 0/10 |
+| `SATUNK_PROTO_MAH_SRC9999` | 10 | 0.9899 | 1.0000 | 0.22 | 0.47 | 0/10 |
+| `SATUNK_PROTO_MAH_SRC1000` | 10 | 0.9899 | 1.0000 | 0.22 | 0.47 | 0/10 |
+
+Artifacts:
+
+| Artifact | Local path |
+|---|---|
+| Single-observation summary | `E:\type10-7\automation_reports\CV-SincNet\phase1_adv3b02_satonly_open_set_reject_20260702\artifacts\satunknown_singleview_sweep_summary.csv` |
+| Single-observation driver log | `E:\type10-7\automation_reports\CV-SincNet\phase1_adv3b02_satonly_open_set_reject_20260702\artifacts\satunknown_singleview_driver.out` |
+
+Interpretation: after correcting the protocol to one unknown LEO observation per sample, the previous head/threshold/prototype families collapse on FAR. The old-class drop stays small for linear/prototype routes only because the threshold accepts almost all samples, including unknowns. Therefore this baseline does not satisfy the objective and should be treated as the corrected negative control. The next aligned route is receive-side TTA multi-view: generate one `x_sat`, then derive identity-preserving views from that received signal using small time shifts, residual CFO/phase hypotheses, and normalization variants.
+
+## Receive-Side TTA Multi-View Route
+
+Protocol: generate exactly one satellite observation `x_sat` for each raw WiSig sample, then derive multiple test-time views from that received signal. This avoids the invalid counterfactual pattern of feeding separate `leo_clear_weak`, `leo_low_elev_weak`, and `leo_rain_weak` versions of the same clean sample to the evaluator.
+
+Implemented TTA policy:
+
+| Policy | Views | Description |
+|---|---:|---|
+| `rx_light5` | 5 | `rx_base`, `rx_shift_m2`, `rx_shift_p2`, `rx_cfo_m1e4`, `rx_cfo_p1e4` |
+
+Rationale: small time shifts and residual CFO correction hypotheses are receiver-side synchronization/preprocessing alternatives that can be derived from one received satellite signal. They do not reapply a new LEO channel and do not require knowing whether the original channel was clear, low-elevation, or rain.
+
+New local files/changes:
+
+| File | Purpose |
+|---|---|
+| `E:\type10-7\code\export_spaceborne_features.py` | Adds `--satellite_tta_policy rx_light5`, applied after `apply_sat_channel_for_scenario` and before model feature extraction. Default remains `none`. |
+| `E:\type10-7\code\scripts\sweep_phase1_adv3b02_sattta_rxlight_20260702.sh` | Re-exports Phase1 frozen features with receive-side TTA and evaluates `SATTA_LIN_*` and `SATTA_MLP64_*`. |
+
+Local verification:
+
+| Command | Result |
+|---|---|
+| `C:\Users\lh594\.conda\envs\ssr-gpu\python.exe -m py_compile code\export_spaceborne_features.py code\scripts\eval_phase1_multiview_reject.py code\scripts\eval_phase1_prototype_reject.py code\tests\test_phase1_multiview_reject_eval.py` | PASS |
+| `bash -n code/scripts/sweep_phase1_adv3b02_sattta_rxlight_20260702.sh` | PASS |
+| Minimal `_satellite_tta_views(torch.randn(3,2,16),'rx_light5')` shape check | PASS, 5 views, all shape `(3,2,16)` |
+| `C:\Users\lh594\.conda\envs\ssr-gpu\python.exe -m pytest code\tests\test_phase1_multiview_reject_eval.py -q` | PASS, 2 tests; `.pytest_cache` permission warning only |
+
+Planned N607 command:
+
+```bash
+cd /home/szu2070436088/2510044040/CV-SincNet && bash code/scripts/sweep_phase1_adv3b02_sattta_rxlight_20260702.sh
+```
+
+Expected TTA summary:
+
+```text
+/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_adv3b02_sattta_rxlight_matrix_20260702/sattta_rxlight_sweep_summary.csv
+```
