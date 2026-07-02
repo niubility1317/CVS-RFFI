@@ -224,3 +224,128 @@ def test_proxy_unknown_hard_virtual_pool_reports_gate_metrics():
     assert info["component_gate_unknown"] >= 0.0
     for key in ("shell_accept_rate", "bridge_accept_rate", "outward_accept_rate", "hard_proxy_accept_rate"):
         assert 0.0 <= info[key] <= 1.0
+
+
+def test_proxy_unknown_bridge_governance_adds_loss_without_relaxing_vaccept():
+    from cvsrffi.losses import proxy_unknown_energy_loss
+
+    z = torch.tensor(
+        [
+            [1.00, 0.00],
+            [0.99, 0.04],
+            [0.98, -0.03],
+            [0.00, 1.00],
+            [0.04, 0.99],
+            [-0.03, 0.98],
+            [-1.00, 0.00],
+            [-0.99, 0.04],
+            [-0.98, -0.03],
+        ],
+        dtype=torch.float32,
+    )
+    y = torch.tensor([0, 0, 0, 1, 1, 1, 2, 2, 2])
+
+    base_loss, base_info = proxy_unknown_energy_loss(
+        z.clone().requires_grad_(True),
+        y,
+        holdout_label=2,
+        virtual_count=9,
+        virtual_mode="hard",
+        energy_margin=0.0,
+        placeholder_weight=0.0,
+        core_quantile=0.80,
+        accept_quantile=0.80,
+        vaccept_weight=1.0,
+        bridge_accept_weight=0.0,
+        vaccept_cvar_alpha=0.30,
+        energy_softplus_temperature=0.05,
+    )
+    bridge_loss, bridge_info = proxy_unknown_energy_loss(
+        z.clone().requires_grad_(True),
+        y,
+        holdout_label=2,
+        virtual_count=9,
+        virtual_mode="hard",
+        energy_margin=0.0,
+        placeholder_weight=0.0,
+        core_quantile=0.80,
+        accept_quantile=0.80,
+        vaccept_weight=1.0,
+        bridge_accept_weight=2.0,
+        bridge_accept_target=0.10,
+        vaccept_cvar_alpha=0.30,
+        energy_softplus_temperature=0.05,
+    )
+
+    assert bridge_info["vaccept_surrogate"] >= base_info["vaccept_surrogate"]
+    assert bridge_info["bridge_governance_loss"] > 0.0
+    assert bridge_loss.item() > base_loss.item()
+
+
+def test_proxy_unknown_adg_exports_tail_density_energy_and_radius_metrics():
+    from cvsrffi.losses import proxy_unknown_energy_loss
+
+    z = torch.tensor(
+        [
+            [1.00, 0.00],
+            [0.98, 0.15],
+            [0.90, 0.44],
+            [0.00, 1.00],
+            [0.15, 0.98],
+            [0.44, 0.90],
+            [-1.00, 0.00],
+            [-0.99, 0.04],
+            [-0.98, -0.03],
+        ],
+        dtype=torch.float32,
+        requires_grad=True,
+    )
+    y = torch.tensor([0, 0, 0, 1, 1, 1, 2, 2, 2])
+
+    loss, info = proxy_unknown_energy_loss(
+        z,
+        y,
+        holdout_label=2,
+        virtual_count=9,
+        virtual_mode="hard",
+        energy_margin=0.0,
+        placeholder_weight=0.0,
+        core_quantile=0.50,
+        accept_quantile=0.80,
+        tail_quantile=0.67,
+        overflow_quantile=0.67,
+        vaccept_weight=1.0,
+        tail_quarantine_weight=0.5,
+        source_safe_weight=0.5,
+        low_density_accept_weight=0.5,
+        energy_margin_quantile_weight=0.5,
+        radius_budget_weight=0.5,
+        radius_inter_ratio_weight=0.5,
+        bridge_accept_weight=0.5,
+        shell_outward_accept_weight=0.5,
+        radius_budget_rad=math.radians(8.0),
+        radius_inter_ratio_target=0.10,
+        energy_margin_q=0.10,
+        energy_margin_target=0.05,
+        energy_softplus_temperature=0.05,
+    )
+
+    assert loss.item() > 0.0
+    loss.backward()
+    assert z.grad is not None
+    assert torch.isfinite(z.grad).all()
+    for key in (
+        "low_density_accept_loss",
+        "energy_margin_quantile_loss",
+        "radius_budget_loss",
+        "radius_inter_ratio_loss",
+        "tail_accept_loss",
+        "overflow_accept_loss",
+        "shell_outward_accept_loss",
+    ):
+        assert info[key] >= 0.0
+    assert math.isfinite(info["energy_margin_q05"])
+    assert math.isfinite(info["energy_margin_q10"])
+    assert info["component_radius_p95_deg"] >= 0.0
+    assert info["component_radius_max_deg"] >= 0.0
+    assert info["radius_inter_ratio"] >= 0.0

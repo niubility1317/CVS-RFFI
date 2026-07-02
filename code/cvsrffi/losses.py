@@ -979,10 +979,27 @@ def proxy_unknown_energy_loss(
     component_gate_weight: float = 0.0,
     tail_quarantine_weight: float = 0.0,
     source_safe_weight: float = 0.0,
+    bridge_accept_weight: float = 0.0,
+    shell_outward_accept_weight: float = 0.0,
+    low_density_accept_weight: float = 0.0,
+    energy_margin_quantile_weight: float = 0.0,
+    radius_budget_weight: float = 0.0,
+    radius_inter_ratio_weight: float = 0.0,
     vaccept_cvar_alpha: float = 0.25,
     unknown_margin: float = 0.08,
     known_margin: float = 0.05,
     energy_softplus_temperature: float = 0.04,
+    accept_softplus_temperature: float = 0.04,
+    bridge_accept_target: float = 0.20,
+    shell_outward_accept_target: float = 0.25,
+    tail_accept_target: float = 0.45,
+    overflow_accept_target: float = 0.25,
+    energy_margin_q: float = 0.10,
+    energy_margin_target: float = 0.08,
+    radius_budget_rad: float = math.radians(10.0),
+    radius_max_budget_rad: float = math.radians(15.0),
+    radius_inter_ratio_target: float = 0.25,
+    density_temperature_rad: float = math.radians(3.0),
     component_temperature_rad: float = math.radians(3.0),
     component_margin_rad: float = math.radians(4.0),
     component_margin_temperature_rad: float = math.radians(3.0),
@@ -1010,6 +1027,20 @@ def proxy_unknown_energy_loss(
         "component_gate_accept_prob_max": float("nan"),
         "tail_quarantine_loss": 0.0,
         "source_safe_loss": 0.0,
+        "bridge_governance_loss": 0.0,
+        "shell_outward_accept_loss": 0.0,
+        "low_density_accept_loss": 0.0,
+        "energy_margin_quantile_loss": 0.0,
+        "radius_budget_loss": 0.0,
+        "radius_inter_ratio_loss": 0.0,
+        "tail_accept_loss": 0.0,
+        "overflow_accept_loss": 0.0,
+        "energy_margin_q05": float("nan"),
+        "energy_margin_q10": float("nan"),
+        "component_radius_p95_deg": float("nan"),
+        "component_radius_max_deg": float("nan"),
+        "radius_inter_ratio": float("nan"),
+        "low_density_accept_prob": float("nan"),
         "proxy_unknown_auc": float("nan"),
         "virtual_accept_rate": float("nan"),
         "virtual_accept_rate_core": float("nan"),
@@ -1102,6 +1133,7 @@ def proxy_unknown_energy_loss(
     tail_q = max(core_q, min(1.0, float(tail_quantile)))
     overflow_q = max(tail_q, min(1.0, float(overflow_quantile)))
     known_angles = z_known.new_zeros((z_known.size(0),))
+    known_proto_indices = torch.zeros((z_known.size(0),), device=z_known.device, dtype=torch.long)
     core_mask_local = torch.zeros((z_known.size(0),), device=z_known.device, dtype=torch.bool)
     tail_mask_local = torch.zeros_like(core_mask_local)
     overflow_mask_local = torch.zeros_like(core_mask_local)
@@ -1112,6 +1144,7 @@ def proxy_unknown_energy_loss(
         cls_cos = (z_known[local_mask] * proto[proto_idx].view(1, -1)).sum(dim=1).clamp(-1.0 + 1e-6, 1.0 - 1e-6)
         cls_angles = _safe_angle_from_cos(cls_cos)
         known_angles[local_mask] = cls_angles
+        known_proto_indices[local_mask] = int(proto_idx)
         cls_det = cls_angles.detach()
         core_radius = torch.quantile(cls_det, core_q) if cls_det.numel() > 1 else cls_det.max()
         tail_radius = torch.quantile(cls_det, tail_q) if cls_det.numel() > 1 else cls_det.max()
@@ -1125,38 +1158,151 @@ def proxy_unknown_energy_loss(
     accept_q = max(0.0, min(1.0, float(accept_quantile)))
     t_core = torch.quantile(e_core.detach(), accept_q) if e_core.numel() > 1 else e_core.detach().mean()
     tau_e = max(1e-4, float(energy_softplus_temperature))
+    tau_a = max(1e-4, float(accept_softplus_temperature))
+    tau_density = max(1e-4, float(density_temperature_rad))
+    tau_ratio = max(1e-4, float(component_margin_temperature_rad))
     alpha = max(1e-6, min(1.0, float(vaccept_cvar_alpha)))
     vaccept_terms = F.softplus((t_core + float(unknown_margin) - proxy_target) / tau_e) if proxy_target.numel() else z.new_zeros((0,))
     vaccept_loss = _top_cvar_mean(vaccept_terms, alpha) if vaccept_terms.numel() else z.new_tensor(0.0)
     core_accept_loss = F.softplus((e_core - (t_core - float(known_margin))) / tau_e).mean() if e_core.numel() else z.new_tensor(0.0)
-    e_tail = e_known[tail_mask_local]
-    tail_terms = F.softplus((t_core + float(unknown_margin) - e_tail) / tau_e) if e_tail.numel() else z.new_zeros((0,))
-    tail_quarantine_loss = _top_cvar_mean(tail_terms, alpha) if tail_terms.numel() else z.new_tensor(0.0)
-    e_overflow = e_known[overflow_mask_local]
-    source_safe_terms = F.softplus((t_core + float(unknown_margin) - e_overflow) / tau_e) if e_overflow.numel() else z.new_zeros((0,))
-    source_safe_loss = _top_cvar_mean(source_safe_terms, alpha) if source_safe_terms.numel() else z.new_tensor(0.0)
 
-    component_gate_loss = z.new_tensor(0.0)
-    component_accept_prob = z.new_tensor(float("nan"))
-    component_accept_prob_max = z.new_tensor(float("nan"))
-    unknown_feat_all = torch.cat([z_norm[proxy_mask], virtual], dim=0)
-    if unknown_feat_all.numel():
-        unknown_cos_all = (safe_l2_normalize(unknown_feat_all, dim=1) @ proto.t()).clamp(-1.0 + 1e-6, 1.0 - 1e-6)
-        unknown_angles_all = _safe_angle_from_cos(unknown_cos_all)
-        radius_gate = torch.sigmoid((radius_vec.detach().view(1, -1) - unknown_angles_all) / max(1e-4, float(component_temperature_rad)))
-        energy_gate = torch.sigmoid((t_core - proxy_target) / tau_e).view(-1, 1)
-        if unknown_angles_all.size(1) > 1:
-            sorted_angles = torch.sort(unknown_angles_all.detach(), dim=1).values
+    z_core_density = z_known[core_mask_local]
+    if z_core_density.numel() and bool(core_mask_local.any()):
+        density_radius = torch.quantile(known_angles[core_mask_local].detach(), min(0.95, max(0.50, core_q)))
+    else:
+        density_radius = radius_vec.detach().median() if radius_vec.numel() else z.new_tensor(float(vacuum_radius_rad))
+
+    def _soft_accept_prob(feat: torch.Tensor, feat_energy: Optional[torch.Tensor] = None) -> Tuple[torch.Tensor, torch.Tensor]:
+        if feat is None or feat.numel() == 0:
+            return z.new_zeros((0,)), z.new_zeros((0,))
+        feat_norm = safe_l2_normalize(feat, dim=1)
+        feat_cos = (feat_norm @ proto.t()).clamp(-1.0 + 1e-6, 1.0 - 1e-6)
+        feat_angles = _safe_angle_from_cos(feat_cos)
+        if feat_energy is None or feat_energy.numel() != feat_norm.size(0):
+            feat_energy = energy(feat_norm)
+        radius_gate = torch.sigmoid(
+            (radius_vec.detach().view(1, -1) - feat_angles) / max(1e-4, float(component_temperature_rad))
+        )
+        energy_gate = torch.sigmoid((t_core - feat_energy) / tau_e).view(-1, 1)
+        if feat_angles.size(1) > 1:
+            sorted_angles = torch.sort(feat_angles.detach(), dim=1).values
             class_gap = sorted_angles[:, 1] - sorted_angles[:, 0]
             margin_gate = torch.sigmoid(
                 (class_gap - float(component_margin_rad)) / max(1e-4, float(component_margin_temperature_rad))
             ).view(-1, 1)
         else:
-            margin_gate = torch.ones((unknown_angles_all.size(0), 1), device=unknown_angles_all.device, dtype=unknown_angles_all.dtype)
-        accept_prob = (radius_gate * energy_gate * margin_gate).max(dim=1).values
-        component_gate_loss = _top_cvar_mean(accept_prob, alpha)
-        component_accept_prob = accept_prob.detach().mean()
-        component_accept_prob_max = accept_prob.detach().max()
+            margin_gate = torch.ones((feat_angles.size(0), 1), device=feat_angles.device, dtype=feat_angles.dtype)
+        if z_core_density.numel():
+            core_cos = (feat_norm @ z_core_density.detach().t()).clamp(-1.0 + 1e-6, 1.0 - 1e-6)
+            nearest_core_angle = _safe_angle_from_cos(core_cos.max(dim=1).values)
+            density_gate = torch.sigmoid((density_radius - nearest_core_angle) / tau_density).view(-1, 1)
+            low_density_prob = torch.sigmoid((nearest_core_angle - density_radius) / tau_density)
+        else:
+            density_gate = torch.ones((feat_angles.size(0), 1), device=feat_angles.device, dtype=feat_angles.dtype)
+            low_density_prob = torch.zeros((feat_angles.size(0),), device=feat_angles.device, dtype=feat_angles.dtype)
+        accept_prob = (radius_gate * energy_gate * margin_gate * density_gate).max(dim=1).values
+        return accept_prob, low_density_prob
+
+    def _accept_cvar_loss(prob: torch.Tensor, target: float) -> torch.Tensor:
+        if prob.numel() == 0:
+            return z.new_tensor(0.0)
+        terms = F.softplus((prob - float(target)) / tau_a)
+        return _top_cvar_mean(terms, alpha)
+
+    e_tail = e_known[tail_mask_local]
+    tail_energy_terms = F.softplus((t_core + float(unknown_margin) - e_tail) / tau_e) if e_tail.numel() else z.new_zeros((0,))
+    tail_energy_loss = _top_cvar_mean(tail_energy_terms, alpha) if tail_energy_terms.numel() else z.new_tensor(0.0)
+    tail_accept_prob, _tail_low_density = _soft_accept_prob(z_known[tail_mask_local], e_tail)
+    tail_accept_loss = _accept_cvar_loss(tail_accept_prob, float(tail_accept_target))
+    tail_quarantine_loss = tail_energy_loss + tail_accept_loss
+    e_overflow = e_known[overflow_mask_local]
+    source_safe_energy_terms = F.softplus((t_core + float(unknown_margin) - e_overflow) / tau_e) if e_overflow.numel() else z.new_zeros((0,))
+    source_safe_energy_loss = _top_cvar_mean(source_safe_energy_terms, alpha) if source_safe_energy_terms.numel() else z.new_tensor(0.0)
+    overflow_accept_prob, _overflow_low_density = _soft_accept_prob(z_known[overflow_mask_local], e_overflow)
+    overflow_accept_loss = _accept_cvar_loss(overflow_accept_prob, float(overflow_accept_target))
+    source_safe_loss = source_safe_energy_loss + overflow_accept_loss
+
+    component_gate_loss = z.new_tensor(0.0)
+    component_accept_prob = z.new_tensor(float("nan"))
+    component_accept_prob_max = z.new_tensor(float("nan"))
+    unknown_feat_all = torch.cat([z_norm[proxy_mask], virtual], dim=0)
+    unknown_accept_prob = z.new_zeros((0,))
+    unknown_low_density_prob = z.new_zeros((0,))
+    if unknown_feat_all.numel():
+        unknown_accept_prob, unknown_low_density_prob = _soft_accept_prob(unknown_feat_all, proxy_target)
+        component_gate_loss = _top_cvar_mean(unknown_accept_prob, alpha)
+        component_accept_prob = unknown_accept_prob.detach().mean()
+        component_accept_prob_max = unknown_accept_prob.detach().max()
+
+    def _part_accept_loss(name: str, target: float) -> torch.Tensor:
+        part = virtual_parts.get(name)
+        if part is None or part.numel() == 0:
+            return z.new_tensor(0.0)
+        part_energy = energy(part)
+        part_prob, _ = _soft_accept_prob(part, part_energy)
+        accept_loss = _accept_cvar_loss(part_prob, target)
+        delta = part_energy - t_core
+        energy_terms = F.softplus((float(energy_margin_target) - delta) / tau_e)
+        return accept_loss + _top_cvar_mean(energy_terms, alpha)
+
+    bridge_governance_loss = _part_accept_loss("bridge", float(bridge_accept_target))
+    shell_outward_losses = [
+        _part_accept_loss("shell", float(shell_outward_accept_target)),
+        _part_accept_loss("outward", float(shell_outward_accept_target)),
+    ]
+    shell_outward_accept_loss = torch.stack(shell_outward_losses).mean() if shell_outward_losses else z.new_tensor(0.0)
+
+    density_feats = [unknown_feat_all]
+    density_energy = [proxy_target]
+    if e_tail.numel():
+        density_feats.append(z_known[tail_mask_local])
+        density_energy.append(e_tail)
+    if e_overflow.numel():
+        density_feats.append(z_known[overflow_mask_local])
+        density_energy.append(e_overflow)
+    if density_feats and sum(int(t.numel()) for t in density_feats) > 0:
+        density_feat_all = torch.cat([t for t in density_feats if t.numel() > 0], dim=0)
+        density_energy_all = torch.cat([t for t in density_energy if t.numel() > 0], dim=0)
+        density_accept_prob, density_low_prob = _soft_accept_prob(density_feat_all, density_energy_all)
+        low_density_terms = density_accept_prob * density_low_prob
+        low_density_accept_loss = _top_cvar_mean(low_density_terms, alpha) if low_density_terms.numel() else z.new_tensor(0.0)
+        low_density_accept_prob = low_density_terms.detach().mean() if low_density_terms.numel() else z.new_tensor(float("nan"))
+    else:
+        low_density_accept_loss = z.new_tensor(0.0)
+        low_density_accept_prob = z.new_tensor(float("nan"))
+
+    energy_margin_loss = z.new_tensor(0.0)
+    energy_margin_q05 = z.new_tensor(float("nan"))
+    energy_margin_q10 = z.new_tensor(float("nan"))
+    if proxy_target.numel():
+        delta_e = proxy_target - t_core
+        energy_q_alpha = max(1e-6, min(1.0, float(energy_margin_q)))
+        energy_margin_terms = F.softplus((float(energy_margin_target) - delta_e) / tau_e)
+        energy_margin_loss = _top_cvar_mean(energy_margin_terms, energy_q_alpha)
+        delta_det = delta_e.detach()
+        energy_margin_q05 = torch.quantile(delta_det, 0.05) if delta_det.numel() > 1 else delta_det.mean()
+        energy_margin_q10 = torch.quantile(delta_det, 0.10) if delta_det.numel() > 1 else delta_det.mean()
+
+    component_radius_p95 = torch.quantile(known_angles.detach(), 0.95) if known_angles.numel() > 1 else known_angles.detach().mean()
+    component_radius_max = known_angles.detach().max() if known_angles.numel() else z.new_tensor(float("nan"))
+    radius_budget_terms = F.softplus((known_angles - float(radius_budget_rad)) / max(1e-4, float(component_temperature_rad)))
+    radius_budget_loss = _top_cvar_mean(radius_budget_terms, alpha) if radius_budget_terms.numel() else z.new_tensor(0.0)
+    if known_angles.numel():
+        radius_max_terms = F.softplus((known_angles - float(radius_max_budget_rad)) / max(1e-4, float(component_temperature_rad)))
+        radius_budget_loss = radius_budget_loss + _top_cvar_mean(radius_max_terms, alpha)
+
+    radius_inter_ratio_loss = z.new_tensor(0.0)
+    radius_inter_ratio_metric = z.new_tensor(float("nan"))
+    if proto.size(0) > 1 and known_angles.numel():
+        inter_angles = _safe_angle_from_cos((proto @ proto.t()).clamp(-1.0 + 1e-6, 1.0 - 1e-6))
+        inf_diag = torch.eye(inter_angles.size(0), device=inter_angles.device, dtype=torch.bool)
+        inter_angles = inter_angles.masked_fill(inf_diag, float("inf"))
+        nearest_inter = inter_angles.min(dim=1).values.detach().clamp_min(1e-4)
+        sample_inter = nearest_inter[known_proto_indices]
+        ratio = known_angles / sample_inter
+        radius_inter_ratio_metric = ratio.detach().max() if ratio.numel() else z.new_tensor(float("nan"))
+        ratio_terms = F.softplus((ratio - float(radius_inter_ratio_target)) / tau_ratio)
+        radius_inter_ratio_loss = _top_cvar_mean(ratio_terms, alpha)
 
     vacuum_loss = z.new_tensor(0.0)
     vacuum_violation_rate = 0.0
@@ -1188,6 +1334,12 @@ def proxy_unknown_energy_loss(
         + max(0.0, float(component_gate_weight)) * component_gate_loss
         + max(0.0, float(tail_quarantine_weight)) * tail_quarantine_loss
         + max(0.0, float(source_safe_weight)) * source_safe_loss
+        + max(0.0, float(bridge_accept_weight)) * bridge_governance_loss
+        + max(0.0, float(shell_outward_accept_weight)) * shell_outward_accept_loss
+        + max(0.0, float(low_density_accept_weight)) * low_density_accept_loss
+        + max(0.0, float(energy_margin_quantile_weight)) * energy_margin_loss
+        + max(0.0, float(radius_budget_weight)) * radius_budget_loss
+        + max(0.0, float(radius_inter_ratio_weight)) * radius_inter_ratio_loss
     )
 
     with torch.no_grad():
@@ -1245,6 +1397,20 @@ def proxy_unknown_energy_loss(
         "component_gate_accept_prob_max": _scalar_metric(component_accept_prob_max),
         "tail_quarantine_loss": _scalar_metric(tail_quarantine_loss),
         "source_safe_loss": _scalar_metric(source_safe_loss),
+        "bridge_governance_loss": _scalar_metric(bridge_governance_loss),
+        "shell_outward_accept_loss": _scalar_metric(shell_outward_accept_loss),
+        "low_density_accept_loss": _scalar_metric(low_density_accept_loss),
+        "energy_margin_quantile_loss": _scalar_metric(energy_margin_loss),
+        "radius_budget_loss": _scalar_metric(radius_budget_loss),
+        "radius_inter_ratio_loss": _scalar_metric(radius_inter_ratio_loss),
+        "tail_accept_loss": _scalar_metric(tail_accept_loss),
+        "overflow_accept_loss": _scalar_metric(overflow_accept_loss),
+        "energy_margin_q05": _scalar_metric(energy_margin_q05),
+        "energy_margin_q10": _scalar_metric(energy_margin_q10),
+        "component_radius_p95_deg": math.degrees(_scalar_metric(component_radius_p95)),
+        "component_radius_max_deg": math.degrees(_scalar_metric(component_radius_max)),
+        "radius_inter_ratio": _scalar_metric(radius_inter_ratio_metric),
+        "low_density_accept_prob": _scalar_metric(low_density_accept_prob),
         "proxy_unknown_auc": float(auc),
         "virtual_accept_rate": float(virtual_accept),
         "virtual_accept_rate_core": float(virtual_accept_core),
