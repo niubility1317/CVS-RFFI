@@ -258,11 +258,52 @@ def _blind_phase_correct_iq(x_sat: torch.Tensor, *, residual_delta: float = 0.0)
     return _from_complex_iq(y, x_sat)
 
 
+def _local_power_smooth(z: torch.Tensor, *, radius: int = 4) -> torch.Tensor:
+    power = torch.abs(z) ** 2
+    acc = power
+    count = 1
+    for shift in range(1, int(radius) + 1):
+        acc = acc + torch.roll(power, shifts=shift, dims=-1) + torch.roll(power, shifts=-shift, dims=-1)
+        count += 2
+    return acc / float(count)
+
+
+def _amplitude_envelope_repair_iq(
+    x_sat: torch.Tensor,
+    *,
+    radius: int = 4,
+    strength: float = 0.5,
+    gain_floor: float = 0.55,
+    gain_ceil: float = 1.80,
+) -> torch.Tensor:
+    z = _to_complex_iq(x_sat)
+    local_rms = torch.sqrt(_local_power_smooth(z, radius=int(radius)).clamp_min(1e-8))
+    global_rms = torch.sqrt(torch.mean(torch.abs(z) ** 2, dim=-1, keepdim=True).clamp_min(1e-8))
+    gain = torch.pow(global_rms / local_rms, float(strength)).clamp(float(gain_floor), float(gain_ceil))
+    y = z * gain
+    return _from_complex_iq(_rms_normalize_iq(y), x_sat)
+
+
+def _spectral_soft_denoise_iq(x_sat: torch.Tensor, *, noise_q: float = 0.20, floor: float = 0.15) -> torch.Tensor:
+    z = _to_complex_iq(x_sat)
+    spec = torch.fft.fft(z, dim=-1)
+    power = torch.abs(spec) ** 2
+    noise = torch.quantile(power, float(noise_q), dim=-1, keepdim=True).clamp_min(1e-8)
+    shrink = (power / (power + noise)).clamp_min(float(floor)).clamp_max(1.0)
+    y = torch.fft.ifft(spec * shrink, dim=-1)
+    return _from_complex_iq(_rms_normalize_iq(y), x_sat)
+
+
+def _leo_repair_canonical_iq(x_sat: torch.Tensor, *, residual_delta: float = 0.0) -> torch.Tensor:
+    repaired = _blind_phase_correct_iq(_dc_remove_iq(x_sat), residual_delta=float(residual_delta))
+    return _rms_normalize_iq(repaired, clip_sigma=2.2)
+
+
 def _satellite_tta_views(x_sat: torch.Tensor, policy: str) -> list[tuple[str, torch.Tensor]]:
     mode = str(policy or "none").strip().lower()
     if mode in {"", "none", "off", "0"}:
         return [("single", x_sat)]
-    if mode not in {"rx_light5", "sat_rx_phys11", "sat_rx_blind15"}:
+    if mode not in {"rx_light5", "sat_rx_phys11", "sat_rx_blind15", "sat_rx_repair9"}:
         raise ValueError(f"unknown satellite_tta_policy={policy!r}")
     z = _to_complex_iq(x_sat)
     steps = int(z.shape[-1])
@@ -300,6 +341,23 @@ def _satellite_tta_views(x_sat: torch.Tensor, policy: str) -> list[tuple[str, to
             ("rx_short_fir", _short_fir_smooth_iq(x_sat)),
         ]
 
+    if mode == "sat_rx_repair9":
+        canonical = _leo_repair_canonical_iq(x_sat)
+        amp = _amplitude_envelope_repair_iq(canonical, radius=4, strength=0.55)
+        denoise = _spectral_soft_denoise_iq(canonical, noise_q=0.20, floor=0.18)
+        fir = _rms_normalize_iq(_short_fir_smooth_iq(canonical), clip_sigma=2.2)
+        return [
+            ("repair_canonical", canonical),
+            ("repair_amp_flat", amp),
+            ("repair_spectral", denoise),
+            ("repair_amp_spectral", _spectral_soft_denoise_iq(amp, noise_q=0.20, floor=0.18)),
+            ("repair_short_fir", fir),
+            ("repair_fir_amp", _amplitude_envelope_repair_iq(fir, radius=4, strength=0.45)),
+            ("repair_cfo_m1e4", _leo_repair_canonical_iq(x_sat, residual_delta=-1.0e-4)),
+            ("repair_cfo_p1e4", _leo_repair_canonical_iq(x_sat, residual_delta=1.0e-4)),
+            ("repair_iq_standard", _iq_channel_standardize(canonical)),
+        ]
+
     blind = _blind_phase_correct_iq(x_sat)
     blind_dc = _dc_remove_iq(blind)
     blind_agc = _rms_normalize_iq(blind, clip_sigma=2.0)
@@ -332,6 +390,8 @@ def _satellite_tta_view_count(policy: str) -> int:
         return 11
     if mode == "sat_rx_blind15":
         return 15
+    if mode == "sat_rx_repair9":
+        return 9
     raise ValueError(f"unknown satellite_tta_policy={policy!r}")
 
 
@@ -502,8 +562,8 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--satellite_tta_policy",
         default="none",
-        choices=["none", "rx_light5", "sat_rx_phys11", "sat_rx_blind15"],
-        help="Receive-side TTA views generated after one satellite channel observation; default keeps one view.",
+        choices=["none", "rx_light5", "sat_rx_phys11", "sat_rx_blind15", "sat_rx_repair9"],
+        help="Receive-side repair/TTA views generated after one satellite channel observation; default keeps one view.",
     )
     parser.add_argument(
         "--star_ground_channel_impl",

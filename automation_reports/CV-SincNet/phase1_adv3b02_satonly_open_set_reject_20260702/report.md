@@ -928,3 +928,72 @@ Best old-retention rows:
 | `phase1_adv3b02_satblind15_rx7_14_u1_20260702` | `SATBLIND15_LIN_SRC999` | 0.9875 | 0.08 | 0.4642 | 0.4633 | 0.9925 | false |
 
 Interpretation: `sat_rx_blind15` is the most protocol-faithful multi-view route tested so far because its views are derived from one received satellite-impaired observation rather than from clean counterfactual channel replays. It improves the low-FAR/old-drop tradeoff relative to `sat_rx_phys11` in the sense that proxy-threshold rows need about 21-35pp old drop instead of 45-55pp to reach low FAR. It still does not meet the requested operating point: rows near or below 5% FAR reject most old-class target samples, while rows preserving old-class accuracy keep FAR extremely high. The same frozen Phase1 feature/score space therefore still lacks a source-only threshold boundary satisfying `unknown_FAR<5%` and old-performance drop `<2pp` under strict single-observation LEO target queries.
+
+## LEO Repair Multi-View Sweep Plan
+
+Objective: follow the reverse-thinking route proposed after `sat_rx_blind15`: do not synthesize harder views and do not replay multiple counterfactual LEO channels. Instead, try to repair losses introduced by the single observed simplified-LEO channel before extracting Phase1 features.
+
+Mechanism: `sat_rx_repair9` derives nine conservative repair hypotheses from the same already-satellite-impaired observation:
+
+| Repair family | Views | Intended LEO impairment addressed |
+|---|---|---|
+| Canonical residual correction | `repair_canonical`, `repair_cfo_m1e4`, `repair_cfo_p1e4` | residual CFO / phase drift after coarse synchronization |
+| Amplitude/envelope repair | `repair_amp_flat`, `repair_fir_amp` | flat/Rician fading and AGC/envelope fluctuation |
+| Noise repair | `repair_spectral`, `repair_amp_spectral`, `repair_short_fir` | AWGN / weak phase noise / weak front-end smoothing |
+| Receiver normalization | `repair_iq_standard` | DC/IQ scale mismatch after channel repair |
+
+Protocol boundary: this is still single-observation deployment-primary LEO evaluation. No clean view is exported; no target labels, target support, or unknown-query statistics are used to choose thresholds; `proxy_unknown` remains source-side satellite-stressed calibration only.
+
+Planned matrix:
+
+| Field | Value |
+|---|---|
+| Base checkpoint | `ADV3B02_CORE90_SOFT_E200phase1` via `/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3_mechanism32_queue_20260701/ADV3B02_CORE90_SOFT_E200/best_joint_safe_ssdg.pth` |
+| Target receiver / unknown cells | same 10 strict cells as `satblind15` |
+| Feature policy | `--satellite_tta_policy sat_rx_repair9` |
+| Feature file per cell | `ADV3B02_CORE90_SOFT_E200_PHASE1_SATREPAIR9/features_satrepair9.npz` |
+| Reject policies | same 14 source/proxy calibrated linear/MLP policies as `satblind15` |
+| Expected summary rows | 140 rows |
+| Success gate | same-row `unknown_FAR <= 0.05` and `old_drop_pp_vs_closed <= 2.0` |
+
+Local changed files:
+
+| File | Purpose | SHA256 |
+|---|---|---|
+| `E:\type10-7\code\export_spaceborne_features.py` | add `sat_rx_repair9` LEO repair views | `5A74B9D56C69E11D59E9BAEBF62D6B6607CF93DA7F1307E74AA466C8D484D94D` |
+| `E:\type10-7\code\scripts\sweep_phase1_adv3b02_satrepair9_20260702.sh` | export `sat_rx_repair9` features and evaluate 10 x 14 rejection policies | `26AF62C208C8892694D58095FA0AC4E0564DC68135B19B15AE0BAAE91190D8CF` |
+
+Local non-Git snapshot:
+
+```text
+E:\type10-7\code\snapshots\phase1_adv3b02_satrepair9_20260702\
+```
+
+Local verification:
+
+| Command | Result |
+|---|---|
+| `C:\Users\lh594\.conda\envs\ssr-gpu\python.exe -m py_compile code\export_spaceborne_features.py` | PASS |
+| `bash -n code/scripts/sweep_phase1_adv3b02_satrepair9_20260702.sh` | PASS |
+| script line-ending audit | PASS, LF-only: `crlf_count=0`, `cr_count=0`, `lf_count=178` |
+| `sat_rx_repair9` import/smoke test | PASS, 9 views, count=9, all tensors same shape and finite |
+
+Planned sync mapping:
+
+| Local | Remote |
+|---|---|
+| `E:\type10-7\code\export_spaceborne_features.py` | `/home/szu2070436088/2510044040/CV-SincNet/code/export_spaceborne_features.py` |
+| `E:\type10-7\code\scripts\sweep_phase1_adv3b02_satrepair9_20260702.sh` | `/home/szu2070436088/2510044040/CV-SincNet/code/scripts/sweep_phase1_adv3b02_satrepair9_20260702.sh` |
+
+Planned remote command:
+
+```bash
+cd /home/szu2070436088/2510044040/CV-SincNet && mkdir -p logs/phase1_adv3b02_satrepair9_matrix_20260702 && nohup env GPU=6 bash code/scripts/sweep_phase1_adv3b02_satrepair9_20260702.sh > logs/phase1_adv3b02_satrepair9_matrix_20260702/driver.out 2>&1 < /dev/null &
+```
+
+Expected remote artifacts:
+
+| Artifact | Path |
+|---|---|
+| Driver log | `/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_adv3b02_satrepair9_matrix_20260702/driver.out` |
+| Summary CSV | `/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_adv3b02_satrepair9_matrix_20260702/satrepair9_sweep_summary.csv` |
