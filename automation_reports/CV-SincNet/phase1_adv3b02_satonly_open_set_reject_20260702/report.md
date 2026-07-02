@@ -1243,3 +1243,32 @@ Best old-retention rows:
 | `phase1_adv3b02_satrepair_anchor7_rx7_7_u1_20260702` | `SATREPAIRA7_LIN_SRC9999` | 0.9700 | 0.25 | 0.5633 | 0.5608 | 0.9975 | false |
 
 Interpretation: the identity anchor did what it was meant to do: mean closed old accuracy improved to 51.58%, compared with about 31%-32% for the best individual `satrepair9` views. However, the open-set tradeoff remains unresolved. Low-FAR rows still achieve FAR by rejecting most old-class samples, while source-accept rows keep old classes but accept almost all unknowns. The source-calibrated rescue audit attempted after this run did not produce a valid CSV because a heredoc SSH timeout orphaned the diagnostic process; that exact orphan was cleaned up and is not used as evidence.
+
+## Anchor-view rescue follow-up
+
+Objective: test the user's reverse-direction hypothesis without generating harder augmented views. The follow-up keeps the `sat_rx_repair_anchor7` feature export fixed and adds a source-calibrated receive-side rescue gate: first accept high-confidence `anchor_base` old-class observations, then leave the original repair-head rejection decision for the remaining low-confidence samples.
+
+Design:
+
+| Field | Value |
+|---|---|
+| Evaluator | `code/scripts/eval_phase1_anchor_rescue_reject.py` |
+| Sweep launcher | `code/scripts/sweep_phase1_adv3b02_anchor_rescue_20260702.sh` |
+| Input features | existing `features_satrepair_anchor7.npz` from all 10 strict satellite-only cells |
+| Input reject heads | existing `SATREPAIRA7_MLP_M50_PROXY02`, `SATREPAIRA7_MLP_M50_COR_PROXY05`, `SATREPAIRA7_LIN_PROXY05`, `SATREPAIRA7_MLP_M50_PROXY05` score tables |
+| Calibration data | source-old `anchor_base` groups only, and only source groups correctly classified by the frozen Phase1 classifier |
+| Target labels/support | not used |
+| Unknown query samples | evaluation-only, not used for threshold selection |
+| Rescue thresholds | confidence quantiles `0.00,0.25,0.50,0.75,0.90,0.95,0.98,0.99`; margin and energy gates disabled for the first sweep |
+| Rescue variants | with and without requiring `anchor_base` prediction to match the multiview repair prediction |
+| Success criteria | `unknown_FAR<=0.05` and old drop vs closed old accuracy `<=2pp` |
+
+Local verification before N607 sync:
+
+| Check | Result |
+|---|---|
+| Python syntax | PASS: `C:\Users\lh594\.conda\envs\ssr-gpu\python.exe -m py_compile E:\type10-7\code\scripts\eval_phase1_anchor_rescue_reject.py` |
+| Bash syntax | PASS: `bash -n code/scripts/sweep_phase1_adv3b02_anchor_rescue_20260702.sh` |
+| Line endings | PASS: LF-only for both new files |
+| Local snapshot | `E:\type10-7\code\snapshots\phase1_adv3b02_anchor_rescue_20260702\` |
+| SHA256 | `eval_phase1_anchor_rescue_reject.py=CD628DECACF53A6C700F8CBB61A6079CD1C79496534F48C125CFC569F8157564`; `sweep_phase1_adv3b02_anchor_rescue_20260702.sh=0BFF03BC4385ADC01465E17B3B81682649970C31C90A3CDD154C04E8E35CE054` |
