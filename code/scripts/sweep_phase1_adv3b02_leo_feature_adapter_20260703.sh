@@ -6,6 +6,9 @@ PYTHON="${PYTHON:-/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python}"
 MATRIX_LOG_ROOT="${MATRIX_LOG_ROOT:-${ROOT}/logs/phase1_adv3b02_leo_feature_adapter_matrix_20260703}"
 SOURCE_TX_IDS="${SOURCE_TX_IDS:-14-10,14-7,20-15,20-19,6-15,8-20}"
 SEED="${SEED:-4070301}"
+GPU="${GPU:-0}"
+CELL_SHARD_INDEX="${CELL_SHARD_INDEX:-0}"
+CELL_SHARD_COUNT="${CELL_SHARD_COUNT:-1}"
 
 mkdir -p "${MATRIX_LOG_ROOT}"
 
@@ -43,8 +46,12 @@ declare -a PROTO_POLICIES=(
   "ADAPT_PROTO_MAH_MIN05 diag_mahalanobis 0.0 0.0 0.0 min_source_proxy 1.0000 0.05"
 )
 
-echo "[PHASE1-LEO-FEATURE-ADAPTER-SWEEP] start=$(date -Is) seed=${SEED}"
-for cell in "${CELLS[@]}"; do
+echo "[PHASE1-LEO-FEATURE-ADAPTER-SWEEP] start=$(date -Is) seed=${SEED} gpu=${GPU} shard=${CELL_SHARD_INDEX}/${CELL_SHARD_COUNT}"
+for cell_idx in "${!CELLS[@]}"; do
+  if (( CELL_SHARD_COUNT > 1 && (cell_idx % CELL_SHARD_COUNT) != CELL_SHARD_INDEX )); then
+    continue
+  fi
+  cell="${CELLS[$cell_idx]}"
   read -r RUN_ID UNKNOWN_TX_IDS <<<"${cell}"
   RUNS_ROOT="${ROOT}/runs/${RUN_ID}"
   LOG_ROOT="${ROOT}/logs/${RUN_ID}"
@@ -60,7 +67,7 @@ for cell in "${CELLS[@]}"; do
     ADAPT_DIR="${RUNS_ROOT}/${ADAPT_NAME}"
     ADAPT_NPZ="${ADAPT_DIR}/features_leo_repaired.npz"
     mkdir -p "${ADAPT_DIR}" "${LOG_ROOT}"
-    env "PYTHONPATH=${ROOT}/code:${ROOT}:${PYTHONPATH:-}" \
+    env "PYTHONPATH=${ROOT}/code:${ROOT}:${PYTHONPATH:-}" "CUDA_VISIBLE_DEVICES=${GPU}" \
       "${PYTHON}" -u "${ROOT}/code/scripts/fit_apply_phase1_leo_feature_adapter.py" \
       --clean_npz "${CLEAN_NPZ}" \
       --sat_npz "${SAT_NPZ}" \

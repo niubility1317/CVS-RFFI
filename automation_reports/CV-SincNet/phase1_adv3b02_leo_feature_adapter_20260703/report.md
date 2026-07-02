@@ -47,6 +47,7 @@ After fitting on source pairs, the same adapter is applied to the complete satel
 |---|---|
 | `C:\Users\lh594\.conda\envs\ssr-gpu\python.exe -m py_compile E:\type10-7\code\scripts\fit_apply_phase1_leo_feature_adapter.py` | PASS |
 | `bash -n code/scripts/sweep_phase1_adv3b02_leo_feature_adapter_20260703.sh` | PASS |
+| `bash -n code/scripts/sweep_phase1_adv3b02_leo_feature_adapter_20260703.sh` after adding GPU/cell sharding | PASS |
 | local synthetic NPZ smoke for`fit_apply_phase1_leo_feature_adapter.py` | PASS: output rows`48`, source pairs`16`, `uses_target_clean=false`, val pair MSE after`0.007531` |
 
 ## Local Version State
@@ -56,7 +57,7 @@ After fitting on source pairs, the same adapter is applied to the complete satel
 | File | SHA256 |
 |---|---|
 | `E:\type10-7\code\scripts\fit_apply_phase1_leo_feature_adapter.py` | `A048D11006FA5E13619C8AABEE54982CB8555B4BCDEFB9EC73DC4FA38D274F8A` |
-| `E:\type10-7\code\scripts\sweep_phase1_adv3b02_leo_feature_adapter_20260703.sh` | `AA8C883F196F950F7D6DD11AA73BE47F899A0AE8EFD93ADBE9AA6EB331049FE2` |
+| `E:\type10-7\code\scripts\sweep_phase1_adv3b02_leo_feature_adapter_20260703.sh` | `79279146CAE5BF6276A81F806C02779AFCF40285FCB7A536146AD0A6D1079D31` |
 
 ## Planned N607 Matrix
 
@@ -67,7 +68,7 @@ After fitting on source pairs, the same adapter is applied to the complete satel
 | Matrix log root | `/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_adv3b02_leo_feature_adapter_matrix_20260703` |
 | Expected summary | `/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_adv3b02_leo_feature_adapter_matrix_20260703/leo_feature_adapter_summary.csv` |
 | Expected rows | 350 rows: 10 cells x 5 adapter variants x 7 rejection policies |
-| GPU allocation | One bounded launcher process, using the script`GPU/CUDA_VISIBLE_DEVICES` environment if set; adapter fitting uses CUDA when available |
+| GPU allocation | Up to 8 bounded shard processes: `CELL_SHARD_INDEX=0..7`, `CELL_SHARD_COUNT=8`, `GPU=0..7`; adapter fitting uses each shard's `CUDA_VISIBLE_DEVICES` |
 
 ## Adapter Variants
 
