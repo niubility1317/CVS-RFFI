@@ -1099,3 +1099,67 @@ Mean target-old closed accuracy by repair view:
 | `repair_fir_amp` | 0.2288 | 0.1933 | 0.2600 |
 
 Interpretation of view audit: the destructive part is visible before any rejection threshold is applied. Even the best repair views only preserve about 32% target-old closed accuracy, and amplitude-envelope repair is worse. Therefore the current LEO repair operator is not a viable drop-in fix for the frozen Phase1 model. The next aligned route is not stronger repair, but a much lighter compensator that keeps the original Phase1 identity manifold: residual-CFO correction and mild spectral denoise only, with no amplitude flattening and no FIR-amplitude stack.
+
+## Anchored Light-Repair Sweep Plan
+
+Objective: keep the reverse-thinking direction but reduce repair strength. `sat_rx_repair_anchor7` keeps the original LEO observation as the identity anchor and adds only light correction views. It explicitly removes the destructive amplitude-flattening and FIR-amplitude stack that hurt old-class closed accuracy in `sat_rx_repair9`.
+
+Mechanism:
+
+| View | Role |
+|---|---|
+| `anchor_base` | original single LEO observation; identity anchor |
+| `anchor_dc` | DC-offset removal only |
+| `anchor_rms` | conservative RMS/clip normalization |
+| `repair_canonical` | DC + residual phase/CFO correction |
+| `repair_cfo_m1e4` | mild negative residual-CFO correction hypothesis |
+| `repair_cfo_p1e4` | mild positive residual-CFO correction hypothesis |
+| `repair_spectral_light` | light spectral soft denoise with higher floor, no amplitude flattening |
+
+Protocol boundary: single-observation LEO target query, no `clean` view, no target support, no target labels, and no unknown-query threshold tuning. The original observation is preserved as a first-class view rather than replaced by repair.
+
+Planned matrix:
+
+| Field | Value |
+|---|---|
+| Feature policy | `--satellite_tta_policy sat_rx_repair_anchor7` |
+| Feature file per cell | `ADV3B02_CORE90_SOFT_E200_PHASE1_SATREPAIRA7/features_satrepair_anchor7.npz` |
+| Cells | same 10 strict target receiver / unknown TX cells |
+| Reject policies | same 14 source/proxy calibrated policies |
+| Expected summary rows | 140 |
+| Success gate | same-row `unknown_FAR <= 0.05` and `old_drop_pp_vs_closed <= 2.0` |
+
+Local changed files:
+
+| File | Purpose | SHA256 |
+|---|---|---|
+| `E:\type10-7\code\export_spaceborne_features.py` | add anchored light-repair policy `sat_rx_repair_anchor7` | `F07ED341A17920BEB9701AD4BC456A96106D7C08AC3192807658F928E379AFE4` |
+| `E:\type10-7\code\scripts\sweep_phase1_adv3b02_satrepair_anchor7_20260702.sh` | export anchored light-repair features and evaluate 10 x 14 rejection policies | `4FE839103B9C0A3F6F4A9649A366205F9157822344E525D63237BDE984E75E17` |
+
+Local non-Git snapshot:
+
+```text
+E:\type10-7\code\snapshots\phase1_adv3b02_satrepair_anchor7_20260702\
+```
+
+Local verification:
+
+| Command | Result |
+|---|---|
+| `C:\Users\lh594\.conda\envs\ssr-gpu\python.exe -m py_compile code\export_spaceborne_features.py` | PASS |
+| `bash -n code/scripts/sweep_phase1_adv3b02_satrepair_anchor7_20260702.sh` | PASS |
+| script line-ending audit | PASS, LF-only: `crlf_count=0`, `cr_count=0`, `lf_count=178` |
+| `sat_rx_repair_anchor7` import/smoke test | PASS, 7 views, count=7, all tensors same shape and finite |
+
+Planned sync mapping:
+
+| Local | Remote |
+|---|---|
+| `E:\type10-7\code\export_spaceborne_features.py` | `/home/szu2070436088/2510044040/CV-SincNet/code/export_spaceborne_features.py` |
+| `E:\type10-7\code\scripts\sweep_phase1_adv3b02_satrepair_anchor7_20260702.sh` | `/home/szu2070436088/2510044040/CV-SincNet/code/scripts/sweep_phase1_adv3b02_satrepair_anchor7_20260702.sh` |
+
+Planned remote command:
+
+```bash
+cd /home/szu2070436088/2510044040/CV-SincNet && mkdir -p logs/phase1_adv3b02_satrepair_anchor7_matrix_20260702 && nohup env GPU=7 bash code/scripts/sweep_phase1_adv3b02_satrepair_anchor7_20260702.sh > logs/phase1_adv3b02_satrepair_anchor7_matrix_20260702/driver.out 2>&1 < /dev/null &
+```

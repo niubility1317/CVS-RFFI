@@ -303,7 +303,7 @@ def _satellite_tta_views(x_sat: torch.Tensor, policy: str) -> list[tuple[str, to
     mode = str(policy or "none").strip().lower()
     if mode in {"", "none", "off", "0"}:
         return [("single", x_sat)]
-    if mode not in {"rx_light5", "sat_rx_phys11", "sat_rx_blind15", "sat_rx_repair9"}:
+    if mode not in {"rx_light5", "sat_rx_phys11", "sat_rx_blind15", "sat_rx_repair9", "sat_rx_repair_anchor7"}:
         raise ValueError(f"unknown satellite_tta_policy={policy!r}")
     z = _to_complex_iq(x_sat)
     steps = int(z.shape[-1])
@@ -358,6 +358,20 @@ def _satellite_tta_views(x_sat: torch.Tensor, policy: str) -> list[tuple[str, to
             ("repair_iq_standard", _iq_channel_standardize(canonical)),
         ]
 
+    if mode == "sat_rx_repair_anchor7":
+        dc = _dc_remove_iq(x_sat)
+        base_rms = _rms_normalize_iq(x_sat, clip_sigma=2.8)
+        canonical = _leo_repair_canonical_iq(x_sat)
+        return [
+            ("anchor_base", x_sat),
+            ("anchor_dc", dc),
+            ("anchor_rms", base_rms),
+            ("repair_canonical", canonical),
+            ("repair_cfo_m1e4", _leo_repair_canonical_iq(x_sat, residual_delta=-1.0e-4)),
+            ("repair_cfo_p1e4", _leo_repair_canonical_iq(x_sat, residual_delta=1.0e-4)),
+            ("repair_spectral_light", _spectral_soft_denoise_iq(canonical, noise_q=0.10, floor=0.35)),
+        ]
+
     blind = _blind_phase_correct_iq(x_sat)
     blind_dc = _dc_remove_iq(blind)
     blind_agc = _rms_normalize_iq(blind, clip_sigma=2.0)
@@ -392,6 +406,8 @@ def _satellite_tta_view_count(policy: str) -> int:
         return 15
     if mode == "sat_rx_repair9":
         return 9
+    if mode == "sat_rx_repair_anchor7":
+        return 7
     raise ValueError(f"unknown satellite_tta_policy={policy!r}")
 
 
@@ -562,7 +578,14 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--satellite_tta_policy",
         default="none",
-        choices=["none", "rx_light5", "sat_rx_phys11", "sat_rx_blind15", "sat_rx_repair9"],
+        choices=[
+            "none",
+            "rx_light5",
+            "sat_rx_phys11",
+            "sat_rx_blind15",
+            "sat_rx_repair9",
+            "sat_rx_repair_anchor7",
+        ],
         help="Receive-side repair/TTA views generated after one satellite channel observation; default keeps one view.",
     )
     parser.add_argument(
