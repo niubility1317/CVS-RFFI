@@ -18,28 +18,32 @@ env "PYTHONPATH=${ROOT}/code:${ROOT}:${PYTHONPATH:-}" \
   > "${LOG_ROOT}/driver.out" 2>&1
 
 "${PYTHON}" - <<'PY' "${OUT_CSV}" "${LOG_ROOT}/decision_fusion_v12_best.json"
+import csv
 import json
 import sys
-import pandas as pd
 from pathlib import Path
 
 csv_path = Path(sys.argv[1])
 out_json = Path(sys.argv[2])
-df = pd.read_csv(csv_path)
-for col in ["unknown_FAR", "old_drop_pp_vs_closed", "known_closed_accuracy_no_reject", "known_full_accuracy_after_reject", "known_coverage"]:
-    df[col] = pd.to_numeric(df[col], errors="coerce")
-dual = df[(df["unknown_FAR"] <= 0.05) & (df["old_drop_pp_vs_closed"] <= 2.0)]
-far_pass = df[df["unknown_FAR"] <= 0.05]
-old_pass = df[df["old_drop_pp_vs_closed"] <= 2.0]
-df["joint_penalty"] = (df["unknown_FAR"] / 0.05 - 1).clip(lower=0) + (df["old_drop_pp_vs_closed"] / 2.0 - 1).clip(lower=0)
+rows = []
+with csv_path.open("r", encoding="utf-8", newline="") as f:
+    for row in csv.DictReader(f):
+        for col in ["unknown_FAR", "old_drop_pp_vs_closed", "known_closed_accuracy_no_reject", "known_full_accuracy_after_reject", "known_coverage"]:
+            try:
+                row[col] = float(row[col])
+            except Exception:
+                row[col] = float("nan")
+        row["joint_penalty"] = max(0.0, row["unknown_FAR"] / 0.05 - 1.0) + max(0.0, row["old_drop_pp_vs_closed"] / 2.0 - 1.0)
+        rows.append(row)
+dual = [r for r in rows if r["unknown_FAR"] <= 0.05 and r["old_drop_pp_vs_closed"] <= 2.0]
+far_pass = [r for r in rows if r["unknown_FAR"] <= 0.05]
+old_pass = [r for r in rows if r["old_drop_pp_vs_closed"] <= 2.0]
 
 def records(frame, order, n=10):
-    if frame.empty:
-        return []
-    return frame.sort_values(order).head(n).to_dict(orient="records")
+    return sorted(frame, key=lambda r: tuple(r[k] for k in order))[:n]
 
 summary = {
-    "rows": int(len(df)),
+    "rows": int(len(rows)),
     "dual_pass": int(len(dual)),
     "far_only_pass": int(len(far_pass)),
     "old_drop_only_pass": int(len(old_pass)),

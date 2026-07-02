@@ -958,7 +958,7 @@ New files:
 | File | Purpose | SHA256 |
 |---|---|---|
 | `E:\type10-7\code\scripts\eval_phase1_decision_fusion_reject_20260703.py` | Fuse existing branch decisions and compute same-row old/FAR metrics | `5FA678232515C17B4FDB6819CB998426C8EEEC6793C7F58D06A104E53B0185F2` |
-| `E:\type10-7\code\scripts\sweep_phase1_adv3b02_decision_fusion_v12_20260703.sh` | N607 launcher and best-row summarizer for V12 | `FC92AA022B0263EAD5DF4DD42B37C0E43506C35CD7098AF7F3038532CC4574CF` |
+| `E:\type10-7\code\scripts\sweep_phase1_adv3b02_decision_fusion_v12_20260703.sh` | N607 launcher and best-row summarizer for V12 | `7178091B98D1D62A3135E8A3B9C0B7870152DDC833ABA58E5BD28381E1A24F4D` |
 
 Local verification:
 
@@ -975,3 +975,55 @@ Planned remote output:
 | V12 summary CSV | `/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_adv3b02_decision_fusion_v12_20260703/decision_fusion_v12_summary.csv` |
 | V12 best JSON | `/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_adv3b02_decision_fusion_v12_20260703/decision_fusion_v12_best.json` |
 | V12 driver | `/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_adv3b02_decision_fusion_v12_20260703/driver.out` |
+
+## V12 Completion Results
+
+V12 completed on N607 as a CPU-only evaluation. The first run produced the main CSV but the launcher-side best-row postprocessor failed because the remote environment lacked`pandas`; the postprocessor was patched to standard-library CSV/JSON and rerun against the completed CSV. The main V12 evaluation itself was not rerun.
+
+Artifacts:
+
+| Artifact | Local path | SHA256 |
+|---|---|---|
+| V12 summary CSV | `E:\type10-7\automation_reports\CV-SincNet\phase1_adv3b02_leo_feature_adapter_20260703\artifacts\decision_fusion_v12_summary.csv` | `5FD72BBDB463BA4102E74862F03EB47BF6178F63C9114BD14E4BB9D0CA45834A` |
+| V12 best JSON | `E:\type10-7\automation_reports\CV-SincNet\phase1_adv3b02_leo_feature_adapter_20260703\artifacts\decision_fusion_v12_best.json` | `AF519F69C820A61EC680D96538B458E54229BB5B80FF465A2D2B03CF8321E95E` |
+| V12 driver | `E:\type10-7\automation_reports\CV-SincNet\phase1_adv3b02_leo_feature_adapter_20260703\artifacts\decision_fusion_v12_driver.out` | `00FFFC446B59D681F075C4919793203041EA124E4FE29B5EBEC07B48273B86CF` |
+
+Overall result:
+
+| Rows | Dual pass | FAR-only pass | Old-drop-only pass |
+|---:|---:|---:|---:|
+| 1600 | 0 | 224 | 800 |
+
+Best same-row outcomes:
+
+| Selection rule | Cell | Branch set | Primary branch | Fusion rule | unknown_FAR | Old drop pp | Closed old acc | Final old acc | Coverage | Verdict |
+|---|---|---|---|---|---:|---:|---:|---:|---:|---|
+| Best FAR with old drop`<=2pp` | `rx3_19_u10` | `retention4` | `v11b_ret` | `min_accepts_4_of_4` | 0.8157 | 0.00 | 0.6023 | 0.6023 | 0.9942 | FAR fails badly |
+| Best old retention with FAR`<=5%` | `rx20_1_u1` | `strict4` | `v3_lcos_strict` | `min_accepts_3_of_4` | 0.0168 | 36.84 | 0.5497 | 0.1813 | 0.2573 | Old-class performance fails |
+| Lowest FAR overall | `rx20_1_u1` | `strict4`/`all8` | `v3_lcos_strict` | `min_accepts_4_of_4`/`8_of_8` | 0.0056 | 43.27 | 0.5497 | 0.1170 | 0.1579 | Old-class performance fails |
+| Nearest joint row | `rx20_1_u1` | `all8` | `v3_lcos_ret` | `min_accepts_5_of_8` | 0.1232 | 16.37 | 0.5497 | 0.3860 | 0.6608 | Misses both |
+
+Branch-set summary:
+
+| Branch set | Rows | Min FAR | Min old drop pp | Dual pass |
+|---|---:|---:|---:|---:|
+| `all8` | 640 | 0.0056 | 0.00 | 0 |
+| `hetero_mixed4a` | 160 | 0.0112 | 0.00 | 0 |
+| `hetero_mixed4b` | 160 | 0.0112 | 0.00 | 0 |
+| `iqpre_mixed4` | 160 | 0.0448 | 0.00 | 0 |
+| `retention4` | 160 | 0.8157 | 0.00 | 0 |
+| `strict4` | 160 | 0.0056 | 16.37 | 0 |
+| `v3_mixed4` | 160 | 0.0168 | 0.00 | 0 |
+
+Interpretation:
+
+Decision fusion confirms that the tradeoff is not a single-branch threshold artifact. Retention-oriented branches preserve old-class accuracy but accept most unknowns. Strict branches and all-branch quorum can force`unknown_FAR`well below5%, but only by rejecting a large fraction of correctly classified old target samples. The best joint row remains at`unknown_FAR=12.32%`and old drop`16.37pp`, far from the requested`unknown_FAR<5%`and old drop`<2pp`.
+
+Current status after V12:
+
+| Target | Status | Evidence |
+|---|---|---|
+| 目标1: source-only LEO repair | Achieved by V3/V9b; V11/V12 add diagnostic coverage | V3 source-pair adapters repair source LEO features; V11 IQ pre-adapter and V12 fusion do not use target clean/labels |
+| 目标2: `unknown_FAR<=0.05` with old drop`<=2pp` | Not achieved | V3-V12 all have dual pass 0; V12 1600-row heterogeneous decision fusion also dual pass 0 |
+
+The remaining route that still moves toward the original target is no longer another frozen-Phase1 threshold or adapter combination. The evidence now points to representation-level retraining under the Phase1 protocol: source-side non-old/open-set negatives and LEO identity-retention must be learned inside the base representation, after which the same sat-only audit should be repeated.
