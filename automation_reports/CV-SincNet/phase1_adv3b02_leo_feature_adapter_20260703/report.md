@@ -40,6 +40,7 @@ After fitting on source pairs, the same adapter is applied to the complete satel
 |---|---|
 | `E:\type10-7\code\scripts\fit_apply_phase1_leo_feature_adapter.py` | Fits a source-only LEO feature repair adapter and writes an adapted satellite-only feature NPZ. |
 | `E:\type10-7\code\scripts\sweep_phase1_adv3b02_leo_feature_adapter_20260703.sh` | Runs 10 strict satellite single-observation cells with 5 adapter variants and 7 rejection policies. |
+| `E:\type10-7\code\scripts\launch_phase1_adv3b02_leo_feature_adapter_shards_20260703.sh` | Launches the matrix as 8 bounded GPU/cell shards without relying on interactive shell quoting. |
 
 ## Local Verification
 
@@ -48,6 +49,7 @@ After fitting on source pairs, the same adapter is applied to the complete satel
 | `C:\Users\lh594\.conda\envs\ssr-gpu\python.exe -m py_compile E:\type10-7\code\scripts\fit_apply_phase1_leo_feature_adapter.py` | PASS |
 | `bash -n code/scripts/sweep_phase1_adv3b02_leo_feature_adapter_20260703.sh` | PASS |
 | `bash -n code/scripts/sweep_phase1_adv3b02_leo_feature_adapter_20260703.sh` after adding GPU/cell sharding | PASS |
+| `bash -n code/scripts/launch_phase1_adv3b02_leo_feature_adapter_shards_20260703.sh` | PASS |
 | local synthetic NPZ smoke for`fit_apply_phase1_leo_feature_adapter.py` | PASS: output rows`48`, source pairs`16`, `uses_target_clean=false`, val pair MSE after`0.007531` |
 
 ## Local Version State
@@ -58,6 +60,7 @@ After fitting on source pairs, the same adapter is applied to the complete satel
 |---|---|
 | `E:\type10-7\code\scripts\fit_apply_phase1_leo_feature_adapter.py` | `A048D11006FA5E13619C8AABEE54982CB8555B4BCDEFB9EC73DC4FA38D274F8A` |
 | `E:\type10-7\code\scripts\sweep_phase1_adv3b02_leo_feature_adapter_20260703.sh` | `79279146CAE5BF6276A81F806C02779AFCF40285FCB7A536146AD0A6D1079D31` |
+| `E:\type10-7\code\scripts\launch_phase1_adv3b02_leo_feature_adapter_shards_20260703.sh` | `BD08226DCE960D04B74339B72496701C4EF0C64C9F385FDE0EA0DDD4167A66A3` |
 
 ## Planned N607 Matrix
 
@@ -65,10 +68,12 @@ After fitting on source pairs, the same adapter is applied to the complete satel
 |---|---|
 | Remote root | `/home/szu2070436088/2510044040/CV-SincNet` |
 | Remote script | `/home/szu2070436088/2510044040/CV-SincNet/code/scripts/sweep_phase1_adv3b02_leo_feature_adapter_20260703.sh` |
+| Remote shard launcher | `/home/szu2070436088/2510044040/CV-SincNet/code/scripts/launch_phase1_adv3b02_leo_feature_adapter_shards_20260703.sh` |
 | Matrix log root | `/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_adv3b02_leo_feature_adapter_matrix_20260703` |
 | Expected summary | `/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_adv3b02_leo_feature_adapter_matrix_20260703/leo_feature_adapter_summary.csv` |
 | Expected rows | 350 rows: 10 cells x 5 adapter variants x 7 rejection policies |
 | GPU allocation | Up to 8 bounded shard processes: `CELL_SHARD_INDEX=0..7`, `CELL_SHARD_COUNT=8`, `GPU=0..7`; adapter fitting uses each shard's `CUDA_VISIBLE_DEVICES` |
+| Launch command | `cd /home/szu2070436088/2510044040/CV-SincNet && bash code/scripts/launch_phase1_adv3b02_leo_feature_adapter_shards_20260703.sh` |
 
 ## Adapter Variants
 
