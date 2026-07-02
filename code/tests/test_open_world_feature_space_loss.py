@@ -204,8 +204,8 @@ def test_source_episode_three_sigma_loss_penalizes_leave_domain_tail_without_tar
         requires_grad=True,
     )
 
-    good_loss, good_metrics = source_episode_three_sigma_loss(good, labels, domains, min_domains=2)
-    bad_loss, bad_metrics = source_episode_three_sigma_loss(bad, labels, domains, min_domains=2)
+    good_loss, good_metrics = source_episode_three_sigma_loss(good, labels, domains, min_domains=2, radius_mode="three_sigma")
+    bad_loss, bad_metrics = source_episode_three_sigma_loss(bad, labels, domains, min_domains=2, radius_mode="three_sigma")
     bad_loss.backward()
 
     assert bad_loss.item() > good_loss.item()
@@ -256,3 +256,44 @@ def test_source_episode_core_quantile_mode_does_not_let_tail_define_safe_shell()
     assert core_loss.item() > shell_loss.item()
     assert features.grad is not None
     assert torch.isfinite(features.grad).all()
+
+
+def test_source_episode_default_radius_is_core_safe_not_three_sigma_shell():
+    labels = torch.tensor([0, 0, 0, 0, 0, 0])
+    domains = torch.tensor([0, 0, 0, 1, 1, 1])
+    features = torch.tensor(
+        [
+            [1.0, 0.0],
+            [0.996, 0.087],
+            [0.0, 1.0],
+            [1.0, 0.0],
+            [0.966, 0.259],
+            [0.906, 0.423],
+        ],
+        dtype=torch.float32,
+        requires_grad=True,
+    )
+
+    default_loss, default_metrics = source_episode_three_sigma_loss(
+        features,
+        labels,
+        domains,
+        min_domains=2,
+        core_quantile=0.50,
+        radius_cap_rad=math.radians(90.0),
+    )
+    _, shell_metrics = source_episode_three_sigma_loss(
+        features,
+        labels,
+        domains,
+        min_domains=2,
+        radius_mode="three_sigma",
+        core_quantile=0.50,
+        radius_cap_rad=math.radians(90.0),
+    )
+    default_loss.backward()
+
+    assert default_metrics["source_episode_radius_mode_code"] == 2.0
+    assert default_metrics["source_episode_radius_safe_deg"] < shell_metrics["source_episode_radius_safe_deg"]
+    assert default_metrics["source_overflow"] == default_metrics["source_episode_overflow_rate"]
+    assert torch.isfinite(default_loss)

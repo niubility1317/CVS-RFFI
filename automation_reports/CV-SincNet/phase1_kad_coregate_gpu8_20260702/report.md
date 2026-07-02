@@ -88,6 +88,14 @@ dry-run输出归档:`E:\type10-7\automation_reports\CV-SincNet\phase1_kad_corega
 
 远程root:`/home/szu2070436088/2510044040/CV-SincNet`
 
+N607 preflight:
+
+- direct preflight:`tools\n607_ssh_preflight.ps1`失败，原因是direct TCP/SSH path连接拒绝；SSH config和identity检查通过。
+- bridge preflight:通过，`user=szu2070436088`，`host=dell-DSS8440`，project_root存在。
+- GPU占用:8张RTX3090均为`0%`，显存约`10/24576MiB`；`nvidia-smi pmon`仅有Xorg，无训练计算进程。
+- 目标run/log目录:`runs/phase1_kad_coregate_gpu8_20260702`和`logs/phase1_kad_coregate_gpu8_20260702`均不存在。
+- Git-backed commit:`b7b915b Add Phase1 known accept domain governance`
+
 需同步文件:
 
 |local|remote|
@@ -103,7 +111,21 @@ dry-run输出归档:`E:\type10-7\automation_reports\CV-SincNet\phase1_kad_corega
 cd /home/szu2070436088/2510044040/CV-SincNet/code && bash scripts/launch_phase1_kad_coregate_gpu8_20260702.sh
 ```
 
+实际启动命令:
+
+```bash
+mkdir -p /home/szu2070436088/2510044040/CV-SincNet/logs/phase1_kad_coregate_gpu8_20260702 && cd /home/szu2070436088/2510044040/CV-SincNet/code && nohup bash scripts/launch_phase1_kad_coregate_gpu8_20260702.sh > /home/szu2070436088/2510044040/CV-SincNet/logs/phase1_kad_coregate_gpu8_20260702/launcher.out 2>&1 & echo launcher_pid=$!
+```
+
 启动前必须完成:N607 direct preflight、GPU占用记录、本地快照、scp同步、远程hash/语法检查、无覆盖检查。
+
+远程备份命令:
+
+```bash
+cd /home/szu2070436088/2510044040/CV-SincNet && mkdir -p code/snapshots/phase1_kad_coregate_20260702_remote_before_sync/{cvsrffi,SSDG,scripts} && cp -p code/cvsrffi/losses.py code/snapshots/phase1_kad_coregate_20260702_remote_before_sync/cvsrffi/losses.py && cp -p code/cvsrffi/phase2_prototypes.py code/snapshots/phase1_kad_coregate_20260702_remote_before_sync/cvsrffi/phase2_prototypes.py && cp -p code/SSDG/train_ssdg.py code/snapshots/phase1_kad_coregate_20260702_remote_before_sync/SSDG/train_ssdg.py && if [ -f code/scripts/launch_phase1_kad_coregate_gpu8_20260702.sh ]; then cp -p code/scripts/launch_phase1_kad_coregate_gpu8_20260702.sh code/snapshots/phase1_kad_coregate_20260702_remote_before_sync/scripts/launch_phase1_kad_coregate_gpu8_20260702.sh; fi
+```
+
+同步命令使用bridge `scp`，逐文件同步上述4个训练文件到对应远程路径。
 
 ## 当前状态
 
@@ -111,5 +133,28 @@ cd /home/szu2070436088/2510044040/CV-SincNet/code && bash scripts/launch_phase1_
 - local tests:通过
 - dry-run:通过
 - local snapshot:完成，路径`E:\type10-7\code\snapshots\phase1_kad_coregate_20260702\SHA256SUMS.txt`
-- Git-backed mirror/commit:镜像验证通过，待提交
-- N607 sync/launch:待preflight后决定
+- Git-backed mirror/commit:已提交`b7b915b`
+- N607 sync/launch:已启动8个KAD8候选；后续accept gate hardening补丁尚未同步远程
+
+## 2026-07-02 accept gate hardening本地补丁
+
+用户要求针对三个误用风险继续优化:three-sigma半径作为accept gate、tail sentinel自动接收、proxy_vaccept改善即被解释成真实拒识改善。
+
+本补丁只修改本地与Git-backed发布仓库，不同步N607，不影响当前已启动的`phase1_kad_coregate_gpu8_20260702`远程作业。远程作业完成后再决定是否用该补丁生成新run_id重跑。
+
+|风险点|修改|
+|---|---|
+|three-sigma半径作为accept gate|`proxy_unknown_energy_loss`默认`component_radius_mode`从`three_sigma`改为`core_quantile`；`source_episode_three_sigma_loss`默认`radius_mode`从`three_sigma`改为`min_three_sigma_core`。显式`three_sigma`仍保留为诊断对照，不作为默认路径。|
+|tail sentinel自动接收|`fuse_tx_domain_prototypes`中tail sentinel的`accept_enabled`强制为`false`；`tail_auto_accept`仅记录为请求字段，新增`tail_auto_accept_requested`和`tail_auto_accept_effective=false`。|
+|proxy_vaccept被当作真实拒识改善|新增`proxy_vaccept_proxy_only`和`proxy_reject_claim_allowed=0`，训练日志新增`train/proxy_unknown_proxy_reject_claim_allowed`，stdout显示`reject_claim=0`。|
+
+本地验证:
+
+|命令|结果|
+|---|---|
+|`C:\Users\lh594\.conda\envs\ssr-gpu\python.exe -B -m pytest -q -p no:cacheprovider tests/test_proxy_unknown_loss.py tests/test_open_world_feature_space_loss.py tests/test_phase2_prototypes.py tests/test_phase2_train_cli.py`|`33 passed in 3.31s`|
+|`C:\Users\lh594\.conda\envs\ssr-gpu\python.exe -B -m pytest -q -p no:cacheprovider tests/test_open_world_feature_space_loss.py tests/test_proxy_unknown_loss.py tests/test_phase2_train_cli.py tests/test_phase2_prototypes.py tests/test_phase2_prototype_fusion_export.py tests/test_local_component_hard_gate.py tests/test_vacuum_gaussian_prototype_bank.py tests/test_zid_compactness_loss.py tests/test_reject_energy_losses.py tests/test_log_nan_parser.py`|`45 passed in 3.76s`|
+|`C:\Users\lh594\.conda\envs\ssr-gpu\python.exe -m py_compile cvsrffi\losses.py cvsrffi\phase2_prototypes.py SSDG\train_ssdg.py`|通过|
+|Git-backed镜像路径同组pytest和`py_compile`|通过|
+
+本地快照:`E:\type10-7\code\snapshots\accept_gate_hardening_20260702\SHA256SUMS.txt`

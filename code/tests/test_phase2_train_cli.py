@@ -111,11 +111,13 @@ def test_ssdg_cli_exposes_core_safe_accept_domain_controls():
     text = (PROJECT_ROOT / "code" / "SSDG" / "train_ssdg.py").read_text(encoding="utf-8")
 
     assert '"--source_episode_radius_mode"' in text
+    assert 'default="min_three_sigma_core"' in text
     assert '"core_quantile"' in text
     assert '"min_three_sigma_core"' in text
     assert '"--source_episode_core_quantile"' in text
     assert '"--source_episode_min_sigma_deg"' in text
     assert '"--proxy_unknown_component_radius_mode"' in text
+    assert 'default="core_quantile"' in text
     assert '"--proxy_unknown_component_radius_quantile"' in text
     assert '"--phase2_fuse_tail_auto_accept"' in text
     assert "radius_mode=str(args.source_episode_radius_mode)" in text

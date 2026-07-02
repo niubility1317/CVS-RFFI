@@ -162,6 +162,51 @@ def test_proxy_unknown_core_radius_mode_reports_smaller_accept_gate_than_three_s
     assert core_metrics["radius_to_inter_ratio"] == core_metrics["radius_inter_ratio"]
     assert core_metrics["vaccept_surrogate_CVaR"] == core_metrics["vaccept_surrogate"]
     assert core_metrics["proxy_vaccept"] == core_metrics["virtual_accept_rate"]
+    assert core_metrics["proxy_vaccept_proxy_only"] == core_metrics["virtual_accept_rate"]
+    assert core_metrics["proxy_reject_claim_allowed"] == 0.0
     assert torch.isfinite(core_loss)
     assert features.grad is not None
     assert torch.isfinite(features.grad).all()
+
+
+def test_proxy_unknown_default_accept_gate_uses_core_radius_not_three_sigma_tail():
+    labels = torch.tensor([0, 0, 0, 1, 1, 1, 2, 2])
+    features = torch.tensor(
+        [
+            [1.0, 0.0],
+            [0.996, 0.087],
+            [0.0, 1.0],
+            [0.0, 1.0],
+            [0.087, 0.996],
+            [1.0, 0.0],
+            [-1.0, 0.0],
+            [-0.996, 0.087],
+        ],
+        dtype=torch.float32,
+        requires_grad=True,
+    )
+
+    default_loss, default_metrics = proxy_unknown_energy_loss(
+        features,
+        labels,
+        holdout_label=2,
+        virtual_count=6,
+        virtual_mode="hard",
+        component_radius_quantile=0.50,
+        core_quantile=0.50,
+    )
+    _, three_sigma_metrics = proxy_unknown_energy_loss(
+        features,
+        labels,
+        holdout_label=2,
+        virtual_count=6,
+        virtual_mode="hard",
+        component_radius_mode="three_sigma",
+        component_radius_quantile=0.50,
+        core_quantile=0.50,
+    )
+    default_loss.backward()
+
+    assert default_metrics["component_radius_mode_code"] == 1.0
+    assert default_metrics["component_gate_radius_p95_deg"] < three_sigma_metrics["component_gate_radius_p95_deg"]
+    assert torch.isfinite(default_loss)

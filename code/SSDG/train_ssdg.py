@@ -307,7 +307,7 @@ def build_arg_parser() -> argparse.ArgumentParser:
     parser.add_argument(
         "--proxy_unknown_component_radius_mode",
         type=str,
-        default="three_sigma",
+        default="core_quantile",
         choices=["three_sigma", "core_quantile", "accept_quantile", "min_three_sigma_core", "min_three_sigma_quantile"],
     )
     parser.add_argument("--proxy_unknown_component_radius_quantile", type=float, default=0.80)
@@ -362,7 +362,7 @@ def build_arg_parser() -> argparse.ArgumentParser:
     parser.add_argument(
         "--source_episode_radius_mode",
         type=str,
-        default="three_sigma",
+        default="min_three_sigma_core",
         choices=["three_sigma", "core_quantile", "min_three_sigma_core"],
     )
     parser.add_argument("--source_episode_core_quantile", type=float, default=0.80)
@@ -1692,6 +1692,7 @@ def format_ssdg_epoch_block(
         f"tail={_log_value(train_logs, 'train/proxy_unknown_tail_count'):.0f} "
         f"auc={_log_value(train_logs, 'train/proxy_unknown_auc_proxy'):.4f} "
         f"vaccept={_log_value(train_logs, 'train/proxy_unknown_virtual_accept_rate'):.4f} "
+        f"reject_claim={_log_value(train_logs, 'train/proxy_unknown_proxy_reject_claim_allowed'):.0f} "
         f"core_accept={_log_value(train_logs, 'train/proxy_unknown_virtual_accept_rate_core'):.4f} "
         f"hard_accept={_log_value(train_logs, 'train/proxy_unknown_hard_proxy_accept_rate'):.4f} "
         f"vaccept_surr={_log_value(train_logs, 'train/proxy_unknown_vaccept_surrogate'):.4f} "
@@ -2292,6 +2293,7 @@ def train(args) -> int:
                     "energy_margin_q10": float("nan"),
                     "component_radius_p95_deg": float("nan"),
                     "component_radius_max_deg": float("nan"),
+                    "component_radius_mode_code": 1.0,
                     "component_gate_radius_p95_deg": float("nan"),
                     "component_gate_radius_max_deg": float("nan"),
                     "radius_inter_ratio": float("nan"),
@@ -2301,6 +2303,8 @@ def train(args) -> int:
                     "proxy_unknown_auc": float("nan"),
                     "virtual_accept_rate": float("nan"),
                     "proxy_vaccept": float("nan"),
+                    "proxy_vaccept_proxy_only": float("nan"),
+                    "proxy_reject_claim_allowed": 0.0,
                     "virtual_accept_rate_core": float("nan"),
                     "proxy_accept_rate": float("nan"),
                     "hard_proxy_accept_rate": float("nan"),
@@ -2450,6 +2454,7 @@ def train(args) -> int:
                     "source_episode_radius_3sigma_deg": float("nan"),
                     "source_episode_radius_core_deg": float("nan"),
                     "source_episode_radius_safe_deg": float("nan"),
+                    "source_episode_radius_mode_code": 2.0,
                     "source_episode_val_angle_deg": float("nan"),
                     "source_episode_tail_query_rate": 0.0,
                     "source_episode_classes": 0.0,
@@ -2750,6 +2755,7 @@ def train(args) -> int:
                     "train/proxy_unknown_energy_margin_q10": proxy_unknown_info.get("energy_margin_q10", float("nan")),
                     "train/proxy_unknown_component_radius_p95_deg": proxy_unknown_info.get("component_radius_p95_deg", float("nan")),
                     "train/proxy_unknown_component_radius_max_deg": proxy_unknown_info.get("component_radius_max_deg", float("nan")),
+                    "train/proxy_unknown_component_radius_mode_code": proxy_unknown_info.get("component_radius_mode_code", float("nan")),
                     "train/proxy_unknown_component_gate_radius_p95_deg": proxy_unknown_info.get("component_gate_radius_p95_deg", float("nan")),
                     "train/proxy_unknown_component_gate_radius_max_deg": proxy_unknown_info.get("component_gate_radius_max_deg", float("nan")),
                     "train/proxy_unknown_radius_inter_ratio": proxy_unknown_info.get("radius_inter_ratio", float("nan")),
@@ -2759,6 +2765,8 @@ def train(args) -> int:
                     "train/proxy_unknown_auc_proxy": proxy_unknown_info.get("proxy_unknown_auc", float("nan")),
                     "train/proxy_unknown_virtual_accept_rate": proxy_unknown_info.get("virtual_accept_rate", float("nan")),
                     "train/proxy_unknown_proxy_vaccept": proxy_unknown_info.get("proxy_vaccept", proxy_unknown_info.get("virtual_accept_rate", float("nan"))),
+                    "train/proxy_unknown_proxy_vaccept_proxy_only": proxy_unknown_info.get("proxy_vaccept_proxy_only", proxy_unknown_info.get("virtual_accept_rate", float("nan"))),
+                    "train/proxy_unknown_proxy_reject_claim_allowed": proxy_unknown_info.get("proxy_reject_claim_allowed", 0.0),
                     "train/proxy_unknown_virtual_accept_rate_core": proxy_unknown_info.get("virtual_accept_rate_core", float("nan")),
                     "train/proxy_unknown_proxy_accept_rate": proxy_unknown_info.get("proxy_accept_rate", float("nan")),
                     "train/proxy_unknown_hard_proxy_accept_rate": proxy_unknown_info.get("hard_proxy_accept_rate", float("nan")),
@@ -2784,6 +2792,7 @@ def train(args) -> int:
                     "train/source_episode_radius_3sigma_deg": source_episode_info.get("source_episode_radius_3sigma_deg", float("nan")),
                     "train/source_episode_radius_core_deg": source_episode_info.get("source_episode_radius_core_deg", float("nan")),
                     "train/source_episode_radius_safe_deg": source_episode_info.get("source_episode_radius_safe_deg", float("nan")),
+                    "train/source_episode_radius_mode_code": source_episode_info.get("source_episode_radius_mode_code", float("nan")),
                     "train/source_episode_tail_query_rate": source_episode_info.get("source_episode_tail_query_rate", float("nan")),
                     "train/source_episode_val_angle_deg": source_episode_info.get("source_episode_val_angle_deg", float("nan")),
                     "train/source_episode_classes": source_episode_info.get("source_episode_classes", float("nan")),

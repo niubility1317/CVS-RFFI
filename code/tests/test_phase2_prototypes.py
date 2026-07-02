@@ -245,6 +245,44 @@ def test_fuse_tx_domain_prototypes_can_exclude_tail_sentinel_from_accept_compone
     assert fused["fusion_config"]["keep_tail_sentinel"] is False
 
 
+def test_tail_auto_accept_request_does_not_enable_tail_sentinel_acceptance():
+    package = {
+        "feature_key": "z_id",
+        "prototypes": torch.tensor([[1.0, 0.0]], dtype=torch.float32),
+        "prototype_counts": torch.tensor([40]),
+        "tx_domain_prototypes": torch.tensor(
+            [[[1.0, 0.0], [0.996, 0.087], [0.0, 1.0]]],
+            dtype=torch.float32,
+        ),
+        "tx_domain_counts": torch.tensor([[10, 12, 2]]),
+        "radii": {
+            "p80": torch.tensor([math.radians(4.0)]),
+            "p95": torch.tensor([math.radians(5.0)]),
+            "p99": torch.tensor([math.radians(8.0)]),
+            "r_3sigma": torch.tensor([math.radians(12.0)]),
+        },
+        "metadata": {},
+    }
+
+    fused = fuse_tx_domain_prototypes(
+        package,
+        PrototypeFusionConfig(
+            max_components_per_tx=2,
+            merge_angle_deg=8.0,
+            tail_abs_deg=30.0,
+            accept_radius_key="p80",
+            keep_tail_sentinel=True,
+            tail_auto_accept=True,
+        ),
+    )
+
+    tail_components = [comp for comp in fused["fusion_components"][0] if comp["tail_sentinel"]]
+    assert tail_components
+    assert all(comp["accept_enabled"] is False for comp in tail_components)
+    assert fused["fusion_config"]["tail_auto_accept_requested"] is True
+    assert fused["fusion_config"]["tail_auto_accept_effective"] is False
+
+
 def test_export_phase2_prototypes_saves_pt_and_json_sidecar(tmp_path):
     model = _AuxRecordingModel()
     loader = [
