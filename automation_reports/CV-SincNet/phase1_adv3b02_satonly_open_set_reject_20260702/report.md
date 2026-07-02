@@ -1272,3 +1272,73 @@ Local verification before N607 sync:
 | Line endings | PASS: LF-only for both new files |
 | Local snapshot | `E:\type10-7\code\snapshots\phase1_adv3b02_anchor_rescue_20260702\` |
 | SHA256 | `eval_phase1_anchor_rescue_reject.py=CD628DECACF53A6C700F8CBB61A6079CD1C79496534F48C125CFC569F8157564`; `sweep_phase1_adv3b02_anchor_rescue_20260702.sh=0BFF03BC4385ADC01465E17B3B81682649970C31C90A3CDD154C04E8E35CE054` |
+
+Remote sync and launch status:
+
+| Field | Value |
+|---|---|
+| Git mirror commit | `30c1b29 Add anchor rescue rejection sweep` |
+| Remote sync | completed with direct `scp -F tools\n607_ssh_config` |
+| Remote Python syntax | PASS: `/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -m py_compile code/scripts/eval_phase1_anchor_rescue_reject.py` |
+| Remote bash syntax | PASS: `bash -n code/scripts/sweep_phase1_adv3b02_anchor_rescue_20260702.sh` |
+| Remote hashes | `eval_phase1_anchor_rescue_reject.py=cd628decacf53a6c700f8cbb61a6079cd1c79496534f48c125cfc569f8157564`; `sweep_phase1_adv3b02_anchor_rescue_20260702.sh=0bff03bc4385adc01465e17b3b81682649970c31c90a3cdd154c04e8e35ce054` |
+| Remote line endings | PASS, LF-only for both synced files |
+| Launch time | `2026-07-02T20:28:00+08:00` on N607 |
+| GPU allocation | CPU/feature-table evaluation only; no CUDA allocation requested |
+| Driver path | `/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_adv3b02_anchor_rescue_matrix_20260702/driver.out` |
+| Summary path | `/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_adv3b02_anchor_rescue_matrix_20260702/anchor_rescue_sweep_summary.csv` |
+| Landed process | shell script PID `144322`; evaluator PID observed as `144796` |
+
+Completion status:
+
+| Field | Value |
+|---|---|
+| Completion time | `2026-07-02T20:57:46+08:00` |
+| Completed rows | 640 rows, 10 cells x 4 base policies x 8 confidence quantiles x 2 match variants |
+| Driver status | `[PHASE1-ANCHOR-RESCUE-SWEEP-DONE]` observed |
+| Local summary artifact | `E:\type10-7\automation_reports\CV-SincNet\phase1_adv3b02_satonly_open_set_reject_20260702\artifacts\anchor_rescue_sweep_summary.csv` |
+| Local driver artifact | `E:\type10-7\automation_reports\CV-SincNet\phase1_adv3b02_satonly_open_set_reject_20260702\artifacts\anchor_rescue_driver.out` |
+| Artifact hashes | `anchor_rescue_sweep_summary.csv=5087321293779C24226852E3FFDCCBD5E69E7FBB65F59E16793537E72954174C`; `anchor_rescue_driver.out=4A91289E929017DAD2E3C948288CCF185B7D5AE5B2EB814C75889069059B8BD4` |
+
+Overall result:
+
+| Metric | Value |
+|---|---:|
+| Rows | 640 |
+| Dual pass (`unknown_FAR<=0.05` and old drop `<=2pp`) | 0 |
+| FAR-only pass | 0 |
+| Old-drop-only pass | 132 |
+
+Best aggregate low-FAR rows:
+
+| Base policy | Confidence q | Anchor/table match | Cells | Mean unknown_FAR | Max unknown_FAR | Mean old drop pp | Max old drop pp | Dual pass | Mean coverage | Mean rescued old query | Mean rescued unknown query |
+|---|---:|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+| `SATREPAIRA7_MLP_M50_COR_PROXY05` | 0.25 | true | 10 | 0.2733 | 0.4090 | 15.62 | 20.58 | 0/10 | 0.4007 | 247.0 | 75.7 |
+| `SATREPAIRA7_MLP_M50_COR_PROXY05` | 0.50 | true | 10 | 0.2733 | 0.4090 | 15.62 | 20.58 | 0/10 | 0.4007 | 247.0 | 75.7 |
+| `SATREPAIRA7_MLP_M50_COR_PROXY05` | 0.75 | true | 10 | 0.2733 | 0.4090 | 15.62 | 20.58 | 0/10 | 0.4007 | 247.0 | 75.7 |
+| `SATREPAIRA7_MLP_M50_COR_PROXY05` | 0.90 | true | 10 | 0.2733 | 0.4090 | 15.62 | 20.58 | 0/10 | 0.4007 | 247.0 | 75.7 |
+| `SATREPAIRA7_MLP_M50_COR_PROXY05` | 0.95 | true | 10 | 0.2733 | 0.4090 | 15.62 | 20.58 | 0/10 | 0.4007 | 247.0 | 75.7 |
+| `SATREPAIRA7_MLP_M50_COR_PROXY05` | 0.98 | true | 10 | 0.2733 | 0.4090 | 15.62 | 20.58 | 0/10 | 0.4007 | 247.0 | 75.7 |
+| `SATREPAIRA7_MLP_M50_COR_PROXY05` | 0.99 | true | 10 | 0.2733 | 0.4090 | 15.62 | 20.58 | 0/10 | 0.4007 | 247.0 | 75.7 |
+| `SATREPAIRA7_MLP_M50_PROXY02` | 0.25 | true | 10 | 0.2969 | 0.4090 | 16.08 | 20.42 | 0/10 | 0.4345 | 318.4 | 82.7 |
+
+Best low-FAR same-row candidates:
+
+| Run | Base policy | Rescue policy | unknown_FAR | Old drop pp | Closed old acc | Full old acc after reject | Coverage | Rescued old query | Rescued unknown query | Dual pass |
+|---|---|---|---:|---:|---:|---:|---:|---:|---:|---|
+| `phase1_adv3b02_satrepair_anchor7_rx3_19_u10_20260702` | `SATREPAIRA7_MLP_M50_COR_PROXY05` | `q0p25_match1` | 0.1491 | 20.58 | 0.4342 | 0.2283 | 0.2708 | 221 | 35 | false |
+| `phase1_adv3b02_satrepair_anchor7_rx3_19_u10_20260702` | `SATREPAIRA7_MLP_M50_COR_PROXY05` | `q0p50_match1` | 0.1491 | 20.58 | 0.4342 | 0.2283 | 0.2708 | 221 | 35 | false |
+| `phase1_adv3b02_satrepair_anchor7_rx3_19_u10_20260702` | `SATREPAIRA7_MLP_M50_COR_PROXY05` | `q0p75_match1` | 0.1491 | 20.58 | 0.4342 | 0.2283 | 0.2708 | 221 | 35 | false |
+| `phase1_adv3b02_satrepair_anchor7_rx3_19_u10_20260702` | `SATREPAIRA7_MLP_M50_COR_PROXY05` | `q0p90_match1` | 0.1491 | 20.58 | 0.4342 | 0.2283 | 0.2708 | 221 | 35 | false |
+| `phase1_adv3b02_satrepair_anchor7_rx7_7_u10_20260702` | `SATREPAIRA7_MLP_M50_COR_PROXY05` | `q0p25_match1` | 0.1631 | 14.58 | 0.5633 | 0.4175 | 0.4633 | 255 | 23 | false |
+
+Best old-retention same-row candidates:
+
+| Run | Base policy | Rescue policy | unknown_FAR | Old drop pp | Closed old acc | Full old acc after reject | Coverage | Rescued old query | Rescued unknown query | Dual pass |
+|---|---|---|---:|---:|---:|---:|---:|---:|---:|---|
+| `phase1_adv3b02_satrepair_anchor7_rx7_14_u10_20260702` | `SATREPAIRA7_MLP_M50_COR_PROXY05` | `q0p00_match0` | 0.9944 | -30.75 | 0.5783 | 0.8858 | 0.9992 | 918 | 163 | false |
+| `phase1_adv3b02_satrepair_anchor7_rx7_14_u1_20260702` | `SATREPAIRA7_MLP_M50_COR_PROXY05` | `q0p00_match0` | 1.0000 | -30.75 | 0.5783 | 0.8858 | 0.9992 | 918 | 382 | false |
+| `phase1_adv3b02_satrepair_anchor7_rx7_14_u10_20260702` | `SATREPAIRA7_MLP_M50_PROXY02` | `q0p00_match0` | 0.9889 | -27.42 | 0.5783 | 0.8525 | 0.9992 | 982 | 166 | false |
+| `phase1_adv3b02_satrepair_anchor7_rx7_14_u1_20260702` | `SATREPAIRA7_MLP_M50_PROXY02` | `q0p00_match0` | 1.0000 | -27.42 | 0.5783 | 0.8525 | 0.9992 | 982 | 379 | false |
+
+Interpretation: anchor-view rescue confirms the mechanism-level conflict. The rescue gate can recover many old-class samples, but those same high-confidence anchor decisions also accept many unknown transmitters. Requiring the anchor prediction to match the multiview repair prediction keeps unknown_FAR lower than the unconstrained rescue, but the best observed unknown_FAR is still 14.91%, and the corresponding old drop is 20.58pp. Therefore this repair-only post-processing route still does not meet the `unknown_FAR<5%` plus old-performance-retention target.
