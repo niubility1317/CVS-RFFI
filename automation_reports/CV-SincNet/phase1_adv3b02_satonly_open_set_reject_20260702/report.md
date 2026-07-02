@@ -742,3 +742,40 @@ Best low-FAR rows:
 | `phase1_adv3b02_satphysmv11_rx8_8_u10_20260702` | `SATPHY11C_MLP_M50_PROXY02` | 0.0216 | 46.58 | 0.7275 | 0.2617 | 0.2775 | false |
 
 Interpretation: increasing source-old penalty makes the tradeoff sharper but does not solve it. Proxy-threshold constrained heads can reduce mean FAR to about 5.9% and individual rows to about 1.4%-2.2%, but only by rejecting most old-class target samples. Source-accept constrained heads protect old classes better, including rows with old drop near 1.0pp, but FAR remains about 82%-92%. The frozen Phase1 feature space still lacks a source-only multi-view boundary that separates target unknown from target old under LEO impairment.
+
+## Old-Like Acceptance Audit
+
+Objective: test whether a direct source-calibrated old-like acceptance rule can outperform learned reject heads. This audit accepts a sample only if source-old thresholds say the sample is old-like in combinations of multi-view confidence, vote consistency, logit margin, view cosine consistency, entropy, and source class-prototype distances. It uses existing `sat_rx_phys11` features, no target support, and no target-query threshold tuning.
+
+Remote command:
+
+```bash
+cd /home/szu2070436088/2510044040/CV-SincNet && /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python code/scripts/analyze_satphysmv11_oldlike_acceptance_20260702.py
+```
+
+Artifact:
+
+| Artifact | Local path |
+|---|---|
+| Old-like acceptance audit | `E:\type10-7\automation_reports\CV-SincNet\phase1_adv3b02_satonly_open_set_reject_20260702\artifacts\satphysmv11_oldlike_acceptance_audit.csv` |
+
+Audit result:
+
+| Metric | Value |
+|---|---:|
+| Feature files | 10 |
+| Source-threshold rule rows | 490 |
+| Dual pass | 0 |
+| FAR-only pass | 0 |
+| Old-drop-only pass | 90 |
+
+Best rows:
+
+| Run | Rule family | Source accept q | unknown_FAR | Old drop pp | Known coverage | Closed old acc | Accepted old acc | Dual pass |
+|---|---|---:|---:|---:|---:|---:|---:|---|
+| `phase1_adv3b02_satphysmv11_rx3_19_u10_20260702` | `all_mah` | 0.90 | 0.0840 | 26.08 | 0.3867 | 0.5692 | 0.7974 | false |
+| `phase1_adv3b02_satphysmv11_rx3_19_u10_20260702` | `proto_mah` | 0.90 | 0.0949 | 25.17 | 0.4042 | 0.5692 | 0.7856 | false |
+| `phase1_adv3b02_satphysmv11_rx3_19_u10_20260702` | `proto_mah` | 0.95 | 0.1951 | 16.92 | 0.5667 | 0.5692 | 0.7059 | false |
+| `phase1_adv3b02_satphysmv11_rx3_19_u10_20260702` | `strict_all` | 0.90 | 0.0542 | 37.75 | 0.2292 | 0.5692 | 0.8364 | false |
+
+Interpretation: direct source-threshold acceptance confirms the same conflict without a learned reject head. The most favorable source-calibrated old-like rules still miss the FAR gate or reject too many target-old samples. Rows that pass old-drop-only do not pass FAR. This is strong evidence that the available Phase1 frozen score space is not sufficient for the requested dual constraint under strict single-observation LEO target queries.
