@@ -59,7 +59,7 @@ The prior two `20-1` runs are diagnostic-negative: simple multi-new Stage2-C pea
 | Snapshot under `code\snapshots` | PASS: launcher, report, and local dry-run evidence copied under `code\snapshots\phase2_adv3b02_rxsweep_2new_no_unknown_20260703_0050` |
 | Git-backed mirror commit | PASS: launcher, report, dry-run evidence, and `.gitattributes` entry included in the Git-backed change set before N607 sync |
 | N607 preflight/occupancy | PASS before sync/launch |
-| Remote syntax/hash/dry-run | pending |
+| Remote syntax/hash/dry-run | PASS |
 | Launch | pending |
 
 ## Local Verification Evidence
@@ -105,6 +105,17 @@ Planned launch command:
 ```bash
 ssh -F E:\type10-7\tools\n607_ssh_config -o BatchMode=yes N607 'cd /home/szu2070436088/2510044040/CV-SincNet && mkdir -p logs/phase2_adv3b02_rxsweep_2new_no_unknown_20260703_0050 automation_reports/CV-SincNet/phase2_adv3b02_rxsweep_2new_no_unknown_20260703_0050 && nohup env RUN_ID=phase2_adv3b02_rxsweep_2new_no_unknown_20260703_0050 bash code/scripts/launch_phase2_adv3b02_rxsweep_2new_no_unknown_20260703_0050.sh > logs/phase2_adv3b02_rxsweep_2new_no_unknown_20260703_0050/scheduler.out 2>&1 < /dev/null & echo scheduler_pid=$!'
 ```
+
+## Remote Verification Evidence
+
+| Check | Evidence |
+|---|---|
+| Remote launcher syntax | PASS via `bash -n` |
+| Remote launcher hash | `d993d7cd8fb431e45688a6abc0c0fcb71be971bbb4547bd0a8228ad5724daf4a` |
+| Remote report hash before launch | `22ef7c7b0e5fee1fe812f8ebf75264d485ed90472379f846c4e607c1fddf2318` |
+| Remote dry-run hash | `de0bb561ffee1070f8d896fac773aba7e43a3ab1d403045d43870190bb8fceaf` |
+| Remote dry-run audit | 8 candidates, actual `--unknown_tx_ids` count 0, `--oa_mse_old80_head_mode` count 4 |
+| SSH cleanup | local `ssh.exe` and established N607/bridge TCP checks clear after sync and remote verification |
 
 ## Expected Outputs
 
