@@ -72,8 +72,8 @@ The split preserves the core support/query boundary for the scoped task: `R_t` i
 | Git-backed release state | publish mirror pending commit; root `automation_reports/` is ignored by default |
 | Bash syntax | PASS locally for root launcher and publish mirror |
 | Dry-run | PASS locally: 4 candidates, target-new `1-16,1-18,1-14`, no `--unknown_tx_ids`, no `replace_all` |
-| N607 preflight | pending before any SSH/SCP |
-| N607 live occupancy | pending; if Phase2 is active, switch to monitor-only/no launch |
+| N607 preflight | PASS direct-only read-only preflight |
+| N607 live occupancy | PASS for launch: no GPU compute or active training processes detected |
 
 ## Planned Remote Sync
 
@@ -119,3 +119,39 @@ Dry-run audit:
 The no-unknown scope is therefore explicit in the generated commands, not only in this report.
 
 The report content itself is fixed by the Git-backed mirror and local snapshot rather than a self-referential hash.
+
+## N607 Preflight And Sync
+
+| Check | Evidence |
+|---|---|
+| Direct preflight | PASS via `tools\n607_ssh_preflight.ps1`; host `dell-DSS8440`, project root visible, 8 GPUs visible |
+| Live training occupancy | `tools\n607_training_inventory.py --direct-only --pretty`: no `gpu_compute`, no active training processes, no launcher context |
+| Target path conflict | no existing remote launcher, run root, or log root for this `RUN_ID` |
+| Disk | `/home` has 7.7T available, 26% used |
+| SSH cleanup | local `ssh_process_count=0`, `n607_or_bridge_established_count=0` after preflight, occupancy, path checks, and sync |
+
+Remote synchronized files:
+
+| Remote file | SHA256 / status |
+|---|---|
+| `/home/szu2070436088/2510044040/CV-SincNet/code/scripts/launch_phase2_adv3b02_stage2c_multinew_no_unknown_20260703_0004.sh` | `8c70a2fc8014dd8c93b93e570669a19620905d2b35c1c5cc11d234c26d91ec9a` |
+| `/home/szu2070436088/2510044040/CV-SincNet/automation_reports/CV-SincNet/phase2_adv3b02_stage2c_multinew_no_unknown_20260703_0004/report.md` | synced before launch verification |
+| remote `bash -n` | PASS |
+| remote dry-run | PASS; 4 candidates, `unknown_tx_ids_count=0`, `replace_all_count=0`, target-new line present |
+
+Planned bounded launch command:
+
+```bash
+ssh -F E:\type10-7\tools\n607_ssh_config -o BatchMode=yes N607 'cd /home/szu2070436088/2510044040/CV-SincNet && mkdir -p logs/phase2_adv3b02_stage2c_multinew_no_unknown_20260703_0004 automation_reports/CV-SincNet/phase2_adv3b02_stage2c_multinew_no_unknown_20260703_0004 && nohup env RUN_ID=phase2_adv3b02_stage2c_multinew_no_unknown_20260703_0004 bash code/scripts/launch_phase2_adv3b02_stage2c_multinew_no_unknown_20260703_0004.sh > logs/phase2_adv3b02_stage2c_multinew_no_unknown_20260703_0004/scheduler.out 2>&1 < /dev/null & echo scheduler_pid=$!'
+```
+
+Expected remote outputs:
+
+| Path | Purpose |
+|---|---|
+| `logs/phase2_adv3b02_stage2c_multinew_no_unknown_20260703_0004/scheduler.out` | parent launcher log |
+| `logs/phase2_adv3b02_stage2c_multinew_no_unknown_20260703_0004/<candidate>.out` | per-candidate export/eval log |
+| `runs/phase2_adv3b02_stage2c_multinew_no_unknown_20260703_0004/<candidate>/features.npz` | exported support/query feature bundle |
+| `runs/phase2_adv3b02_stage2c_multinew_no_unknown_20260703_0004/<candidate>/metrics.json` | candidate metrics |
+| `runs/phase2_adv3b02_stage2c_multinew_no_unknown_20260703_0004/<candidate>/manifest.json` | candidate split/config manifest |
+| `runs/phase2_adv3b02_stage2c_multinew_no_unknown_20260703_0004/<candidate>/score_table.csv` | row-level query score table |
