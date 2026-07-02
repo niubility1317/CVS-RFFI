@@ -486,3 +486,54 @@ Local verification:
 Planned remote output: `/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_adv3b02_multiscore_reject_20260703/multiscore_reject_summary.csv`.
 
 Remote startup fix: the first V6 run failed before producing a result because the remote PyTorch/NumPy combination returned an incompatible array from`tensor.numpy()`. The script was patched to convert scores through`tolist()` before building a NumPy array.
+
+## V6 Completion Result
+
+Artifacts:
+
+| Artifact | Local path | SHA256 |
+|---|---|---|
+| V6 multi-score summary | `E:\type10-7\automation_reports\CV-SincNet\phase1_adv3b02_leo_feature_adapter_20260703\artifacts\multiscore_reject_summary.csv` | `11D4105C327E368595C1659790B68194912247F694A10E31F18B3153584D64CA` |
+| V6 log | `E:\type10-7\automation_reports\CV-SincNet\phase1_adv3b02_leo_feature_adapter_20260703\artifacts\multiscore_reject.out` | pulled locally |
+
+V6 result:
+
+| Mode | Rows | Dual pass | Best nearest row |
+|---|---:|---:|---|
+| `source_proxy_train` | 2880 | 0 | `rx20_1_u1` + `LEOADAPT3_MLP_ID` + `all4` + linear: FAR 0.0924, old drop 22.76pp |
+| `target_label_oracle_multiscore` | 80 | 0 | `rx20_1_u1` + `LEOADAPT3_MLP_ID` + `lin_mlp_pmah` + linear: FAR 0.0784, old drop 34.00pp |
+
+Best source/proxy-trained multi-score rows:
+
+| Run | Adapter | Components | Model | unknown_FAR | Old drop pp | Verdict |
+|---|---|---|---|---:|---:|---|
+| `rx20_1_u1` | `LEOADAPT3_MLP_ID` | `all4` | linear | 0.0924 | 22.76 | Still far from dual target |
+| `rx20_1_u1` | `LEOADAPT3_LINR_COS` | `all4` | linear | 0.1261 | 19.88 | Still far from dual target |
+| `rx20_1_u1` | `LEOADAPT3_MLP_ID` | `lin_mlp_pmah` | linear | 0.0952 | 22.97 | Still far from dual target |
+
+V6 interpretation: combining existing scalar score tables is still insufficient. Even the invalid target-label multi-score oracle cannot satisfy the dual target. The next route must introduce a new rejection signal not present in the current score tables, such as repair residual, before/after feature movement, prototype-rank stability, or class-change consistency between raw satellite features and repaired features.
+
+## V7 Repair-Delta Rejector Design
+
+V7 introduces a new rejection signal not present in V3-V6 score tables. It reads the original strict satellite feature NPZ and the repaired feature NPZ, then builds before/after repair features:
+
+| Signal family | Examples |
+|---|---|
+| Repair magnitude | residual norm, residual/feature norm ratio, before-after cosine |
+| Prototype movement | distance/cosine to predicted source prototype before and after repair |
+| Logit/probability movement | confidence, entropy, margin before/after repair, probability-change norm |
+| Prediction stability | whether closed-set predicted TX changes after repair |
+
+New local file:
+
+| File | Purpose | SHA256 |
+|---|---|---|
+| `E:\type10-7\code\scripts\eval_phase1_repair_delta_reject_20260703.py` | Train/evaluate source/proxy and target-label oracle rejectors over repair-delta features from raw satellite and repaired V3 NPZ files | `DA6762371AEDD9CA9C8A3EB0CACC4C148089C64AD0013B6B8EE2F1FE056B3DBF` |
+
+Local verification:
+
+| Command | Result |
+|---|---|
+| `C:\Users\lh594\.conda\envs\ssr-gpu\python.exe -m py_compile E:\type10-7\code\scripts\eval_phase1_repair_delta_reject_20260703.py` | PASS |
+
+Planned remote output: `/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_adv3b02_repair_delta_reject_20260703/repair_delta_reject_summary.csv`.
