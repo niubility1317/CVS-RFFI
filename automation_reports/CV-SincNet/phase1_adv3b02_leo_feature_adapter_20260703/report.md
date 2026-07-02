@@ -255,7 +255,7 @@ New/changed local files:
 
 | File | Purpose | SHA256 |
 |---|---|---|
-| `E:\type10-7\code\scripts\export_phase1_source_leo_pair_features.py` | Export source-only clean and LEO paired Phase1 features from`ManySig.pkl` | `523355DF7DB96724AE1B51E6D40A67957F9EF50FC8FE889F00E66F7853E2C70E` |
+| `E:\type10-7\code\scripts\export_phase1_source_leo_pair_features.py` | Export source-only clean and LEO paired Phase1 features from`ManySig.pkl` | `AA22974E400A606431AD97C4AA50D35FA8A5DF6D71F35C51D8D76311EC8C7BD7` |
 | `E:\type10-7\code\scripts\sweep_phase1_adv3b02_global_source_leo_adapter_20260703.sh` | Run V3 source-pair export and global source-trained adapter matrix | `CA937A87E90774D838B9BAA069317FA0EAD7E06A33763D9DE1F9C48BFD1CA44C` |
 | `E:\type10-7\code\scripts\fit_apply_phase1_leo_feature_adapter.py` | Existing adapter/evaluator reused by V3 | `94C12E73C0D15E11FB2AEC344C985B4B0ADDA8EF1343B9D1719152CCDA5A10A5` |
 
@@ -266,6 +266,15 @@ Local verification:
 | `C:\Users\lh594\.conda\envs\ssr-gpu\python.exe -m py_compile E:\type10-7\code\scripts\export_phase1_source_leo_pair_features.py E:\type10-7\code\scripts\fit_apply_phase1_leo_feature_adapter.py` | PASS |
 | `bash -n code/scripts/sweep_phase1_adv3b02_global_source_leo_adapter_20260703.sh` | PASS |
 | `C:\Users\lh594\.conda\envs\ssr-gpu\python.exe E:\type10-7\code\scripts\export_phase1_source_leo_pair_features.py --help` | PASS |
+
+Remote pre-launch verification/fix:
+
+| Event | Result |
+|---|---|
+| N607 direct preflight | PASS; project root visible, 8 GPUs visible and idle |
+| Initial remote export attempt | Failed before feature export: exporter lacked standard`build_model_from_ckpt`CLI fields such as`dataset` |
+| Local fix | Added optional`dataset`, `num_classes`, `model_size`, `model_variant`, `branch_ablation`, and`sample_rate_hz`fields; checkpoint remains the default source of those values |
+| Re-verification | `py_compile`PASS; `--help`shows compatibility fields |
 
 Planned N607 execution:
 
