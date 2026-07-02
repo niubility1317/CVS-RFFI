@@ -291,3 +291,42 @@ startup health窗口内的同row早期闭集快照只用于确认训练在推进
 |7|`KAD16H7_HARDENED_COMBINED_SAT_E200`|10|92.55%|81.31%|checkpoint已写，进程存活|
 
 注意:`grep -i nan`在早期日志中命中过未激活或零样本评估字段，例如proxy尚未启用、`TEST overall_tx=nan% (0/0)`、`sat_cos=nan`、`aux=nan`和`gate_r95=nandeg`。这些不是startup fatal，但后续分析必须继续检查真实拒识代理、tail、overflow、energy margin和component radius指标，不能把早期闭集快照或proxy字段改善当作真实unknown拒识改善。
+
+## 2026-07-02 20:01完成度只读巡检
+
+用户询问“实验跑完了吗”。按N607 direct preflight后做只读监控，未启动、未停止、未修改远端任务。
+
+总体状态:
+
+- `phase1_kad_coregate_gpu8_20260702`即KAD8 slot A:8个候选均已到`E200/200`，日志fatal scan为OK，pmon中已无KAD8 compute进程；判定训练阶段已跑完，待做完整结果解析和Phase1双目标分析。
+- `phase1_kad_hardening_secondlane_gpu8_20260702`即KAD16H slot B:8个候选仍在运行，当前约`E142-E156/200`，日志fatal scan为OK；尚未跑完。
+- 当前pmon仅显示KAD16H 8个python compute进程，PID仍为slot B启动时记录的8个PID。
+- SSH收尾:只读探针后本地`ssh_process_count=0`，到N607或bridge的`ESTABLISHED:22`连接数为0。
+
+KAD8 slot A完成快照:
+
+|candidate|last epoch|日志错误扫描|best joint快照|
+|---|---:|---|---|
+|`KAD8G0_COREGATE_ANCHOR_E200`|200|OK|`val_tx=98.29%`、`test_tx=88.09%`@E196|
+|`KAD8G1_HOLDOUT_STRESS_E200`|200|OK|`val_tx=97.59%`、`test_tx=84.65%`@E050|
+|`KAD8G2_BRIDGE_CVAR_E200`|200|OK|`val_tx=97.30%`、`test_tx=83.34%`@E040|
+|`KAD8G3_SOURCE_OVERFLOW_E200`|200|OK|`val_tx=98.15%`、`test_tx=87.47%`@E182|
+|`KAD8G4_LOW_DENSITY_GATE_E200`|200|OK|`val_tx=98.32%`、`test_tx=87.09%`@E184|
+|`KAD8G5_ENERGY_MARGIN_Q05_E200`|200|OK|`val_tx=98.27%`、`test_tx=87.16%`@E120|
+|`KAD8G6_RADIUS_INTER_BUDGET_E200`|200|OK|`val_tx=97.48%`、`test_tx=85.98%`@E050|
+|`KAD8G7_COMBINED_SAT_REPAIR_E200`|200|OK|`val_tx=96.49%`、`test_tx=84.52%`@E040|
+
+KAD16H slot B运行中快照:
+
+|candidate|last epoch|日志错误扫描|best joint快照|
+|---|---:|---|---|
+|`KAD16H0_HARDENED_DEFAULT_ANCHOR_E200`|146|OK|`val_tx=98.14%`、`test_tx=85.60%`@E120|
+|`KAD16H1_THREESIGMA_NEGCTRL_E200`|149|OK|`val_tx=98.04%`、`test_tx=86.43%`@E120|
+|`KAD16H2_BRIDGE_COREQ75_E200`|155|OK|`val_tx=97.12%`、`test_tx=86.27%`@E040|
+|`KAD16H3_SOURCE_COREQ75_QUAR_E200`|142|OK|`val_tx=98.26%`、`test_tx=86.76%`@E140|
+|`KAD16H4_TAIL_SENTINEL_GUARD_E200`|144|OK|`val_tx=98.48%`、`test_tx=87.87%`@E130|
+|`KAD16H5_PROXY_ONLY_BOUNDARY_E200`|145|OK|`val_tx=98.18%`、`test_tx=84.53%`@E110|
+|`KAD16H6_P80_RADIUS_BUDGET_E200`|156|OK|`val_tx=97.03%`、`test_tx=83.08%`@E060|
+|`KAD16H7_HARDENED_COMBINED_SAT_E200`|151|OK|`val_tx=95.96%`、`test_tx=84.62%`@E030|
+
+解释边界:以上是完成度/健康巡检，不是Phase1最终排名。KAD8虽已结束，但还需要读取`metrics_epoch.csv`、prototype导出、tail/overflow/proxy/energy/component半径等同row指标后，才能判断泛化与拒识潜力是否同时改善。KAD16H还未结束，不能用当前中途best joint快照给出推进结论。
