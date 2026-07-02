@@ -191,6 +191,7 @@ def extract_features_with_metadata(
     sat_seed: int = 0,
 ):
     feature_buf: list[np.ndarray] = []
+    tx_logit_buf: list[np.ndarray] = []
     tx_buf: list[str] = []
     rx_buf: list[str] = []
     day_buf: list[str] = []
@@ -224,8 +225,13 @@ def extract_features_with_metadata(
         if feature_name not in feats:
             raise KeyError(f"feature {feature_name!r} not found; available={sorted(feats.keys())}")
         z = feats[feature_name].detach().cpu().float().numpy()
+        logits_obj = out.get("tx_logits", out.get("logits")) if isinstance(out, dict) else None
+        if logits_obj is None:
+            raise KeyError("model output does not include tx_logits/logits for Phase1 classifier audit")
+        tx_logits = logits_obj.detach().cpu().float().numpy()
         n = int(z.shape[0])
         feature_buf.append(z)
+        tx_logit_buf.append(tx_logits)
         label_buf.extend([int(v) for v in y.detach().cpu().reshape(-1).tolist()])
         domain_buf.extend([int(v) for v in d.detach().cpu().reshape(-1).tolist()])
         tx_buf.extend(_meta_to_list(meta, "tx", n))
@@ -240,6 +246,7 @@ def extract_features_with_metadata(
         raise ValueError(f"dataset role={role} produced no features")
     return {
         "features": np.concatenate(feature_buf, axis=0).astype(np.float32),
+        "tx_logits": np.concatenate(tx_logit_buf, axis=0).astype(np.float32),
         "raw_labels": np.asarray(label_buf, dtype=np.int64),
         "domain_labels": np.asarray(domain_buf, dtype=np.int64),
         "tx_ids": np.asarray(tx_buf),
