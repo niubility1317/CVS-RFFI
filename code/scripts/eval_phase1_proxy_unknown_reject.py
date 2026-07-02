@@ -109,6 +109,7 @@ def _train_linear_head(
     lr: float,
     l2: float,
     seed: int,
+    class_balance: str,
 ) -> tuple[torch.Tensor, torch.Tensor, list[float]]:
     torch.manual_seed(int(seed))
     w = torch.zeros((x.size(1), 1), dtype=torch.float32, requires_grad=True)
@@ -116,17 +117,43 @@ def _train_linear_head(
     opt = torch.optim.Adam([w, b], lr=float(lr))
     pos = float((y > 0.5).sum().item())
     neg = float((y <= 0.5).sum().item())
-    pos_weight = torch.tensor([max(1.0, neg / max(1.0, pos))], dtype=torch.float32)
+    loss_kwargs, sample_weight = _binary_loss_balance(y, class_balance=str(class_balance), pos=pos, neg=neg)
     losses: list[float] = []
     for _ in range(int(epochs)):
         opt.zero_grad(set_to_none=True)
         logits = x @ w + b
-        loss = F.binary_cross_entropy_with_logits(logits.reshape(-1), y.float(), pos_weight=pos_weight)
+        loss = F.binary_cross_entropy_with_logits(
+            logits.reshape(-1),
+            y.float(),
+            weight=sample_weight,
+            **loss_kwargs,
+        )
         loss = loss + float(l2) * (w.pow(2).mean())
         loss.backward()
         opt.step()
         losses.append(float(loss.detach().item()))
     return w.detach(), b.detach(), losses
+
+
+def _binary_loss_balance(
+    y: torch.Tensor,
+    *,
+    class_balance: str,
+    pos: float,
+    neg: float,
+) -> tuple[dict[str, torch.Tensor], torch.Tensor | None]:
+    mode = str(class_balance or "legacy").lower()
+    if mode == "legacy":
+        return {"pos_weight": torch.tensor([max(1.0, neg / max(1.0, pos))], dtype=torch.float32)}, None
+    if mode == "pos_weight":
+        return {"pos_weight": torch.tensor([max(1e-6, neg / max(1.0, pos))], dtype=torch.float32)}, None
+    if mode == "sample":
+        total = max(1.0, pos + neg)
+        pos_w = total / max(1.0, 2.0 * pos)
+        neg_w = total / max(1.0, 2.0 * neg)
+        weights = torch.where(y > 0.5, torch.full_like(y.float(), float(pos_w)), torch.full_like(y.float(), float(neg_w)))
+        return {}, weights
+    raise ValueError(f"unknown class_balance={class_balance!r}")
 
 
 def _train_head_scores(
@@ -140,12 +167,21 @@ def _train_head_scores(
     lr: float,
     l2: float,
     seed: int,
+    class_balance: str,
 ) -> tuple[np.ndarray, list[float], dict[str, Any]]:
     head = str(head_type).lower()
     if head == "linear":
-        w, b, losses = _train_linear_head(x_train, y_train, epochs=epochs, lr=lr, l2=l2, seed=seed)
+        w, b, losses = _train_linear_head(
+            x_train,
+            y_train,
+            epochs=epochs,
+            lr=lr,
+            l2=l2,
+            seed=seed,
+            class_balance=str(class_balance),
+        )
         scores = torch.sigmoid((x_all @ w + b).reshape(-1)).detach().cpu().numpy()
-        return scores, losses, {"head_type": "linear", "hidden_dim": 0}
+        return scores, losses, {"head_type": "linear", "hidden_dim": 0, "class_balance": str(class_balance)}
     if head != "mlp":
         raise ValueError(f"unknown head_type={head_type!r}")
     torch.manual_seed(int(seed))
@@ -157,18 +193,23 @@ def _train_head_scores(
     opt = torch.optim.Adam(model.parameters(), lr=float(lr), weight_decay=float(l2))
     pos = float((y_train > 0.5).sum().item())
     neg = float((y_train <= 0.5).sum().item())
-    pos_weight = torch.tensor([max(1.0, neg / max(1.0, pos))], dtype=torch.float32)
+    loss_kwargs, sample_weight = _binary_loss_balance(y_train, class_balance=str(class_balance), pos=pos, neg=neg)
     losses: list[float] = []
     for _ in range(int(epochs)):
         opt.zero_grad(set_to_none=True)
         logits = model(x_train).reshape(-1)
-        loss = F.binary_cross_entropy_with_logits(logits, y_train.float(), pos_weight=pos_weight)
+        loss = F.binary_cross_entropy_with_logits(
+            logits,
+            y_train.float(),
+            weight=sample_weight,
+            **loss_kwargs,
+        )
         loss.backward()
         opt.step()
         losses.append(float(loss.detach().item()))
     with torch.no_grad():
         scores = torch.sigmoid(model(x_all).reshape(-1)).detach().cpu().numpy()
-    return scores, losses, {"head_type": "mlp", "hidden_dim": int(hidden_dim)}
+    return scores, losses, {"head_type": "mlp", "hidden_dim": int(hidden_dim), "class_balance": str(class_balance)}
 
 
 def _threshold(
@@ -254,6 +295,7 @@ def evaluate(args: argparse.Namespace) -> dict[str, Any]:
         lr=float(args.lr),
         l2=float(args.l2),
         seed=int(args.seed),
+        class_balance=str(getattr(args, "class_balance", "legacy")),
     )
     threshold, th_info = _threshold(
         unknown_scores[train_known_mask.numpy()],
@@ -412,6 +454,7 @@ def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
     parser.add_argument("--l2", type=float, default=1e-4)
     parser.add_argument("--head_type", default="linear", choices=["linear", "mlp"])
     parser.add_argument("--hidden_dim", type=int, default=64)
+    parser.add_argument("--class_balance", default="legacy", choices=["legacy", "pos_weight", "sample"])
     parser.add_argument("--seed", type=int, default=4070203)
     parser.add_argument("--unknown_far_target", type=float, default=0.05)
     parser.add_argument("--max_old_drop_pp", type=float, default=3.0)
