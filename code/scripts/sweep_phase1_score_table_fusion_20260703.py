@@ -163,6 +163,11 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--runs_root", type=Path, required=True)
     parser.add_argument("--out_csv", type=Path, required=True)
     parser.add_argument("--adapters", default="LEOADAPT3_IDENTITY,LEOADAPT3_LINR_COS,LEOADAPT3_MLP_ID")
+    parser.add_argument("--component_sets", default=",".join(COMPONENT_SETS))
+    parser.add_argument("--fusion_methods", default="max,mean,min,top2mean")
+    parser.add_argument("--threshold_policies", default="source_accept,min_source_proxy,mean_source_proxy")
+    parser.add_argument("--source_qs", default="0.95,0.98,0.99,0.995,0.999,0.9999")
+    parser.add_argument("--proxy_qs", default="0.01,0.03,0.05,0.08,0.10,0.15,0.20,0.30")
     parser.add_argument("--run_glob", default="phase1_adv3b02_multiview_keepold_*_20260702")
     return parser.parse_args()
 
@@ -170,21 +175,24 @@ def parse_args() -> argparse.Namespace:
 def main() -> int:
     args = parse_args()
     adapters = [x.strip() for x in str(args.adapters).split(",") if x.strip()]
-    source_qs = [0.95, 0.98, 0.99, 0.995, 0.999, 0.9999]
-    proxy_qs = [0.01, 0.03, 0.05, 0.08, 0.10, 0.15, 0.20, 0.30]
-    threshold_policies = ["source_accept", "min_source_proxy", "mean_source_proxy"]
+    component_sets = [x.strip() for x in str(args.component_sets).split(",") if x.strip()]
+    fusion_methods = [x.strip() for x in str(args.fusion_methods).split(",") if x.strip()]
+    source_qs = [float(x.strip()) for x in str(args.source_qs).split(",") if x.strip()]
+    proxy_qs = [float(x.strip()) for x in str(args.proxy_qs).split(",") if x.strip()]
+    threshold_policies = [x.strip() for x in str(args.threshold_policies).split(",") if x.strip()]
     rows = []
     for run_dir in sorted(args.runs_root.glob(str(args.run_glob))):
         for adapter in adapters:
             adapter_dir = run_dir / adapter
             if not adapter_dir.is_dir():
                 continue
-            for component_set, comps in COMPONENT_SETS.items():
+            for component_set in component_sets:
+                comps = COMPONENT_SETS[component_set]
                 try:
                     merged = _merge_components(adapter_dir, comps)
                 except FileNotFoundError:
                     continue
-                for method in ["max", "mean", "min", "top2mean"]:
+                for method in fusion_methods:
                     for policy in threshold_policies:
                         for source_q in source_qs:
                             pqs = proxy_qs if policy != "source_accept" else [0.05]
