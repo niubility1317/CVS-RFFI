@@ -612,3 +612,68 @@ Best old-retention rows:
 | `phase1_adv3b02_satphysmv11_rx7_7_u1_20260702` | `SATPHY11_LIN_SRC999` | 0.9325 | 1.33 | 0.8167 | 0.8033 | 0.9808 | false |
 
 Interpretation: the physical receive-side multi-view route is protocol-correct and confirms that multi-view features contain some unknown signal: 4/100 rows pass the 5% FAR gate. However, every low-FAR row rejects too many old-class samples and damages old-class full accuracy by about 40pp. Conversely, rows that keep old drop under 2pp leave FAR between about 0.80 and 0.95. The current `ADV3B02_CORE90_SOFT_E200phase1` frozen feature space still does not satisfy the joint gate `unknown_FAR<=0.05` and old drop `<=2pp` under strict single-observation LEO deployment.
+
+## Physical Multi-View Guarded Diagnostics
+
+Two lightweight source-calibrated rescue diagnostics were run on the completed `sat_rx_phys11` score tables/features. They do not use target labels to define thresholds; they only test whether the already-computed low-FAR rows can recover old-class retention using source-old criteria.
+
+| Diagnostic | Input | Rule | Result |
+|---|---|---|---|
+| `analyze_satphysmv11_guarded_rescue_20260702.py` | `SATPHY11_*` score tables | Accept if original reject head accepts, or source-calibrated high confidence/vote/cosine multi-view stability rescues. | 0 dual-pass rows; best low-FAR rows regain old coverage only by raising FAR to 0.33-0.85. |
+| `analyze_satphysmv11_hybrid_proto_rescue_20260702.py` | `SATPHY11_*` score tables plus `features_satphysmv11.npz` | Accept if original reject head accepts, or source class-prototype distance says the sample is old-like. | 0 dual-pass rows; prototype rescue reduces old drop but raises FAR to 0.36-0.91. |
+
+Interpretation: post-hoc rescue is not enough. The low-FAR reject heads are not merely over-thresholded; the target-old samples they reject overlap strongly with unknown under both multi-view stability and source-prototype closeness. The next test should change the rejection-head training objective itself to penalize source-old rejection more strongly.
+
+## Physical Multi-View Constrained Head Sweep
+
+Objective: reuse existing `sat_rx_phys11` feature exports and train multi-view rejection heads with explicit source-old protection. This keeps the user-preferred multi-view rejection framework but changes the optimization objective from a balanced source/proxy separator to a constrained separator where source-old false rejection is expensive.
+
+Boundary:
+
+| Item | Setting |
+|---|---|
+| Feature input | existing `ADV3B02_CORE90_SOFT_E200_PHASE1_SATPHYSMV11/features_satphysmv11.npz` |
+| Re-export features | no |
+| Clean view | excluded |
+| Target support | none |
+| Threshold data | source old plus source-side proxy unknown only |
+| Unknown query usage | evaluation only, never threshold tuning |
+| Success gate | `unknown_FAR<=0.05` and `old_drop_pp_vs_closed<=2.0` |
+
+Planned policies:
+
+| Family | Purpose |
+|---|---|
+| `SATPHY11C_MLP_M{10,20,50,100}_PROXY05` | Increase source-old penalty under margin loss while preserving proxy-FAR threshold. |
+| `SATPHY11C_MLP_M{20,50}_PROXY02/MIN02` | Tighten proxy quantile to test lower FAR with constrained source loss. |
+| `SATPHY11C_MLP_M{20,50,100}_SRC9999` | Measure the old-retention floor when using source-accept thresholds. |
+| `SATPHY11C_LIN_M{20,50}_PROXY05` | Linear constrained control. |
+| `SATPHY11C_MLP_M{20,50}_COR_*` | Train only on source samples that the Phase1 closed classifier already predicts correctly. |
+
+Local files changed:
+
+| File | Purpose |
+|---|---|
+| `code/scripts/analyze_satphysmv11_guarded_rescue_20260702.py` | Source-calibrated confidence/vote/cosine rescue diagnostic. |
+| `code/scripts/analyze_satphysmv11_hybrid_proto_rescue_20260702.py` | Source-prototype rescue diagnostic. |
+| `code/scripts/sweep_phase1_adv3b02_satphysmv11_constrained_20260702.sh` | Reuse `sat_rx_phys11` features for constrained source-old-protected rejection heads. |
+
+Local verification:
+
+| Command | Result |
+|---|---|
+| `C:\Users\lh594\.conda\envs\ssr-gpu\python.exe -m py_compile code\scripts\analyze_satphysmv11_guarded_rescue_20260702.py` | PASS |
+| `C:\Users\lh594\.conda\envs\ssr-gpu\python.exe -m py_compile code\scripts\analyze_satphysmv11_hybrid_proto_rescue_20260702.py` | PASS |
+| `bash -n code/scripts/sweep_phase1_adv3b02_satphysmv11_constrained_20260702.sh` | PASS |
+
+Planned remote command:
+
+```bash
+cd /home/szu2070436088/2510044040/CV-SincNet && bash code/scripts/sweep_phase1_adv3b02_satphysmv11_constrained_20260702.sh
+```
+
+Expected constrained summary:
+
+```text
+/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_adv3b02_satphysmv11_constrained_matrix_20260702/satphysmv11_constrained_sweep_summary.csv
+```
