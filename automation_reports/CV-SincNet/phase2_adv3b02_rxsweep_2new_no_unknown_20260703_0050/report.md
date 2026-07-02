@@ -58,7 +58,7 @@ The prior two `20-1` runs are diagnostic-negative: simple multi-new Stage2-C pea
 | Dry-run audit | PASS: 8 candidates, actual `--unknown_tx_ids` count 0, 4 OLD80 rescue candidates, each receiver has 2 rows |
 | Snapshot under `code\snapshots` | PASS: launcher, report, and local dry-run evidence copied under `code\snapshots\phase2_adv3b02_rxsweep_2new_no_unknown_20260703_0050` |
 | Git-backed mirror commit | PASS: launcher, report, dry-run evidence, and `.gitattributes` entry included in the Git-backed change set before N607 sync |
-| N607 preflight/occupancy | pending |
+| N607 preflight/occupancy | PASS before sync/launch |
 | Remote syntax/hash/dry-run | pending |
 | Launch | pending |
 
@@ -81,6 +81,30 @@ Dry-run audit:
 | `target_receiver=7-14` candidate lines | 2 |
 | `target_receiver=7-7` candidate lines | 2 |
 | `target_receiver=8-8` candidate lines | 2 |
+
+## N607 Prelaunch Evidence
+
+| Check | Evidence |
+|---|---|
+| Git-backed version | `github_publish\CVS-RFFI-repo` commit `b6371cc` (`Add ADV3B02 receiver sweep launcher`) |
+| Direct preflight | PASS via `tools\n607_ssh_preflight.ps1`; project root visible; 8 GPUs visible |
+| Live occupancy | `tools\n607_training_inventory.py --direct-only --pretty`: `gpu_compute=[]`, `active_training_processes=[]`, no launcher context |
+| Target path conflict | no existing launcher, run root, log root, or remote report directory for this `RUN_ID` |
+| Disk | `/home` has 7.7T available, 26% used |
+| SSH cleanup | local `ssh.exe` and established N607/bridge TCP checks clear after preflight, occupancy, and path checks |
+
+Planned remote sync:
+
+| Local | Remote |
+|---|---|
+| `E:\type10-7\code\scripts\launch_phase2_adv3b02_rxsweep_2new_no_unknown_20260703_0050.sh` | `/home/szu2070436088/2510044040/CV-SincNet/code/scripts/launch_phase2_adv3b02_rxsweep_2new_no_unknown_20260703_0050.sh` |
+| `E:\type10-7\automation_reports\CV-SincNet\phase2_adv3b02_rxsweep_2new_no_unknown_20260703_0050\report.md` | `/home/szu2070436088/2510044040/CV-SincNet/automation_reports/CV-SincNet/phase2_adv3b02_rxsweep_2new_no_unknown_20260703_0050/report.md` |
+
+Planned launch command:
+
+```bash
+ssh -F E:\type10-7\tools\n607_ssh_config -o BatchMode=yes N607 'cd /home/szu2070436088/2510044040/CV-SincNet && mkdir -p logs/phase2_adv3b02_rxsweep_2new_no_unknown_20260703_0050 automation_reports/CV-SincNet/phase2_adv3b02_rxsweep_2new_no_unknown_20260703_0050 && nohup env RUN_ID=phase2_adv3b02_rxsweep_2new_no_unknown_20260703_0050 bash code/scripts/launch_phase2_adv3b02_rxsweep_2new_no_unknown_20260703_0050.sh > logs/phase2_adv3b02_rxsweep_2new_no_unknown_20260703_0050/scheduler.out 2>&1 < /dev/null & echo scheduler_pid=$!'
+```
 
 ## Expected Outputs
 
