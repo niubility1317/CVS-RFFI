@@ -217,11 +217,52 @@ def _short_fir_smooth_iq(x_sat: torch.Tensor) -> torch.Tensor:
     return _from_complex_iq(y, x_sat)
 
 
+def _dc_remove_iq(x_sat: torch.Tensor) -> torch.Tensor:
+    z = _to_complex_iq(x_sat)
+    y = z - z.mean(dim=-1, keepdim=True)
+    return _from_complex_iq(y, x_sat)
+
+
+def _iq_channel_standardize(x_sat: torch.Tensor) -> torch.Tensor:
+    if torch.is_complex(x_sat):
+        z = x_sat
+        y = z - z.mean(dim=-1, keepdim=True)
+        rms = torch.sqrt(torch.mean(torch.abs(y) ** 2, dim=-1, keepdim=True).clamp_min(1e-8))
+        return (y / rms).to(dtype=x_sat.dtype)
+    y = x_sat.float() - x_sat.float().mean(dim=-1, keepdim=True)
+    std = y.std(dim=-1, keepdim=True, unbiased=False).clamp_min(1e-6)
+    return (y / std).to(dtype=x_sat.dtype)
+
+
+def _highpass_residual_iq(x_sat: torch.Tensor) -> torch.Tensor:
+    z = _to_complex_iq(x_sat)
+    smooth = 0.5 * z + 0.25 * torch.roll(z, shifts=-1, dims=-1) + 0.25 * torch.roll(z, shifts=1, dims=-1)
+    y = z - smooth
+    return _from_complex_iq(_rms_normalize_iq(y), x_sat)
+
+
+def _estimate_phase_step(z: torch.Tensor) -> torch.Tensor:
+    if z.shape[-1] < 2:
+        return torch.zeros((z.shape[0], 1), device=z.device, dtype=torch.float32)
+    prod = z[:, 1:] * torch.conj(z[:, :-1])
+    mean_prod = prod.mean(dim=-1, keepdim=True)
+    return torch.angle(mean_prod).to(dtype=torch.float32)
+
+
+def _blind_phase_correct_iq(x_sat: torch.Tensor, *, residual_delta: float = 0.0) -> torch.Tensor:
+    z = _to_complex_iq(x_sat)
+    steps = int(z.shape[-1])
+    n = torch.arange(steps, device=z.device, dtype=torch.float32).view(1, -1)
+    phase_step = _estimate_phase_step(z) + 2.0 * torch.pi * float(residual_delta)
+    y = z * torch.exp(-1j * phase_step * n)
+    return _from_complex_iq(y, x_sat)
+
+
 def _satellite_tta_views(x_sat: torch.Tensor, policy: str) -> list[tuple[str, torch.Tensor]]:
     mode = str(policy or "none").strip().lower()
     if mode in {"", "none", "off", "0"}:
         return [("single", x_sat)]
-    if mode not in {"rx_light5", "sat_rx_phys11"}:
+    if mode not in {"rx_light5", "sat_rx_phys11", "sat_rx_blind15"}:
         raise ValueError(f"unknown satellite_tta_policy={policy!r}")
     z = _to_complex_iq(x_sat)
     steps = int(z.shape[-1])
@@ -244,18 +285,40 @@ def _satellite_tta_views(x_sat: torch.Tensor, policy: str) -> list[tuple[str, to
         phase = torch.tensor(float(theta), device=z.device, dtype=torch.float32)
         return _from_complex_iq(z * torch.exp(1j * phase), x_sat)
 
+    if mode == "sat_rx_phys11":
+        return [
+            ("rx_base", x_sat),
+            ("rx_cfo_m2e4", cfo_view(-2.0e-4)),
+            ("rx_cfo_m1e4", cfo_view(-1.0e-4)),
+            ("rx_cfo_p1e4", cfo_view(1.0e-4)),
+            ("rx_cfo_p2e4", cfo_view(2.0e-4)),
+            ("rx_shift_m1", torch.roll(x_sat, shifts=-1, dims=-1)),
+            ("rx_shift_p1", torch.roll(x_sat, shifts=1, dims=-1)),
+            ("rx_phase_m15deg", phase_view(-torch.pi / 12.0)),
+            ("rx_phase_p15deg", phase_view(torch.pi / 12.0)),
+            ("rx_agc_clip2p5", _rms_normalize_iq(x_sat, clip_sigma=2.5)),
+            ("rx_short_fir", _short_fir_smooth_iq(x_sat)),
+        ]
+
+    blind = _blind_phase_correct_iq(x_sat)
+    blind_dc = _dc_remove_iq(blind)
+    blind_agc = _rms_normalize_iq(blind, clip_sigma=2.0)
     return [
         ("rx_base", x_sat),
-        ("rx_cfo_m2e4", cfo_view(-2.0e-4)),
-        ("rx_cfo_m1e4", cfo_view(-1.0e-4)),
-        ("rx_cfo_p1e4", cfo_view(1.0e-4)),
-        ("rx_cfo_p2e4", cfo_view(2.0e-4)),
-        ("rx_shift_m1", torch.roll(x_sat, shifts=-1, dims=-1)),
-        ("rx_shift_p1", torch.roll(x_sat, shifts=1, dims=-1)),
-        ("rx_phase_m15deg", phase_view(-torch.pi / 12.0)),
-        ("rx_phase_p15deg", phase_view(torch.pi / 12.0)),
-        ("rx_agc_clip2p5", _rms_normalize_iq(x_sat, clip_sigma=2.5)),
-        ("rx_short_fir", _short_fir_smooth_iq(x_sat)),
+        ("rx_dc_remove", _dc_remove_iq(x_sat)),
+        ("rx_iq_standard", _iq_channel_standardize(x_sat)),
+        ("rx_blind_phase", blind),
+        ("rx_blind_phase_dc", blind_dc),
+        ("rx_blind_phase_agc2", blind_agc),
+        ("rx_blind_m2e4", _blind_phase_correct_iq(x_sat, residual_delta=-2.0e-4)),
+        ("rx_blind_m1e4", _blind_phase_correct_iq(x_sat, residual_delta=-1.0e-4)),
+        ("rx_blind_p1e4", _blind_phase_correct_iq(x_sat, residual_delta=1.0e-4)),
+        ("rx_blind_p2e4", _blind_phase_correct_iq(x_sat, residual_delta=2.0e-4)),
+        ("rx_blind_shift_m1", torch.roll(blind, shifts=-1, dims=-1)),
+        ("rx_blind_shift_p1", torch.roll(blind, shifts=1, dims=-1)),
+        ("rx_blind_short_fir", _short_fir_smooth_iq(blind)),
+        ("rx_highpass", _highpass_residual_iq(x_sat)),
+        ("rx_blind_highpass", _highpass_residual_iq(blind)),
     ]
 
 
@@ -267,6 +330,8 @@ def _satellite_tta_view_count(policy: str) -> int:
         return 5
     if mode == "sat_rx_phys11":
         return 11
+    if mode == "sat_rx_blind15":
+        return 15
     raise ValueError(f"unknown satellite_tta_policy={policy!r}")
 
 
@@ -437,7 +502,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--satellite_tta_policy",
         default="none",
-        choices=["none", "rx_light5", "sat_rx_phys11"],
+        choices=["none", "rx_light5", "sat_rx_phys11", "sat_rx_blind15"],
         help="Receive-side TTA views generated after one satellite channel observation; default keeps one view.",
     )
     parser.add_argument(

@@ -779,3 +779,72 @@ Best rows:
 | `phase1_adv3b02_satphysmv11_rx3_19_u10_20260702` | `strict_all` | 0.90 | 0.0542 | 37.75 | 0.2292 | 0.5692 | 0.8364 | false |
 
 Interpretation: direct source-threshold acceptance confirms the same conflict without a learned reject head. The most favorable source-calibrated old-like rules still miss the FAR gate or reject too many target-old samples. Rows that pass old-drop-only do not pass FAR. This is strong evidence that the available Phase1 frozen score space is not sufficient for the requested dual constraint under strict single-observation LEO target queries.
+
+## Blind Compensation Multi-View Sweep Plan
+
+Objective: test a stricter physical multi-view route that keeps the user's preferred multi-view rejection decision but derives every view from the single already-satellite-impaired observation. This avoids the invalid counterfactual setup where `clean.npz` is used to generate separate `leo_clear_weak` / `leo_low_elev_weak` / `leo_rain_weak` views for the same received query.
+
+Mechanism: `sat_rx_blind15` adds receive-side blind compensation/canonicalization views after one simplified LEO residual channel draw:
+
+| View family | Views | Protocol role |
+|---|---|---|
+| Original / normalization | `rx_base`, `rx_dc_remove`, `rx_iq_standard` | Preserve the observed satellite sample and remove receiver-side offsets without using labels |
+| Blind phase/CFO canonicalization | `rx_blind_phase`, `rx_blind_phase_dc`, `rx_blind_phase_agc2`, `rx_blind_m2e4`, `rx_blind_m1e4`, `rx_blind_p1e4`, `rx_blind_p2e4` | Estimate average phase step from the observed IQ itself, then test small residual-CFO hypotheses |
+| Timing / smoothing | `rx_blind_shift_m1`, `rx_blind_shift_p1`, `rx_blind_short_fir` | Test minor timing alignment and weak front-end bandwidth smoothing |
+| Residual emphasis | `rx_highpass`, `rx_blind_highpass` | Emphasize local residual structure after slow channel removal |
+
+Protocol boundary: all target-old and target-unknown query features are generated from satellite/LEO observations only; no `clean` view is exported; no target support, target labels, or unknown query statistics are used for fitting thresholds. `proxy_unknown` remains source-side, satellite-stressed calibration only.
+
+Planned matrix:
+
+| Field | Value |
+|---|---|
+| Base checkpoint | `ADV3B02_CORE90_SOFT_E200phase1` via `/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3_mechanism32_queue_20260701/ADV3B02_CORE90_SOFT_E200/best_joint_safe_ssdg.pth` |
+| Target receiver / unknown cells | same 10 strict cells used in the sat-only and physical-view sweeps |
+| Feature policy | `--satellite_tta_policy sat_rx_blind15` |
+| Feature file per cell | `ADV3B02_CORE90_SOFT_E200_PHASE1_SATBLIND15/features_satblind15.npz` |
+| Reject policies | 14 linear/MLP BCE/margin policies, including source-accept, proxy-FAR and min(source,proxy) threshold families |
+| Expected summary rows | 140 rows |
+| Success gate | `unknown_FAR <= 0.05` and `old_drop_pp_vs_closed <= 2.0` in the same row |
+
+Local changed files:
+
+| File | Purpose | SHA256 |
+|---|---|---|
+| `E:\type10-7\code\export_spaceborne_features.py` | add `sat_rx_blind15` receive-side blind compensation views and manifest count | `1A6F1ECAD3E911F6BE16F5B290F2A05CDA89B55B82EA041EEE024C4096656142` |
+| `E:\type10-7\code\scripts\sweep_phase1_adv3b02_satblind15_20260702.sh` | export `sat_rx_blind15` features and evaluate 10 x 14 rejection policies | `8886AA3EA237D133927126C51C19BAA57847E356D98A2939FB506265D1267D33` |
+
+Local non-Git snapshot:
+
+```text
+E:\type10-7\code\snapshots\phase1_adv3b02_satblind15_20260702\
+```
+
+Local verification:
+
+| Command | Result |
+|---|---|
+| `C:\Users\lh594\.conda\envs\ssr-gpu\python.exe -m py_compile code\export_spaceborne_features.py` | PASS |
+| `bash -n code/scripts/sweep_phase1_adv3b02_satblind15_20260702.sh` | PASS |
+| script line-ending audit | PASS, LF-only: `crlf_count=0`, `cr_count=0`, `lf_count=178` |
+| `sat_rx_blind15` import/smoke test | PASS, 15 views, count=15, all tensors same shape and finite |
+
+Planned sync mapping:
+
+| Local | Remote |
+|---|---|
+| `E:\type10-7\code\export_spaceborne_features.py` | `/home/szu2070436088/2510044040/CV-SincNet/code/export_spaceborne_features.py` |
+| `E:\type10-7\code\scripts\sweep_phase1_adv3b02_satblind15_20260702.sh` | `/home/szu2070436088/2510044040/CV-SincNet/code/scripts/sweep_phase1_adv3b02_satblind15_20260702.sh` |
+
+Planned remote command:
+
+```bash
+cd /home/szu2070436088/2510044040/CV-SincNet && mkdir -p logs/phase1_adv3b02_satblind15_matrix_20260702 && nohup env GPU=7 bash code/scripts/sweep_phase1_adv3b02_satblind15_20260702.sh > logs/phase1_adv3b02_satblind15_matrix_20260702/driver.out 2>&1 < /dev/null &
+```
+
+Expected remote artifacts:
+
+| Artifact | Path |
+|---|---|
+| Driver log | `/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_adv3b02_satblind15_matrix_20260702/driver.out` |
+| Summary CSV | `/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_adv3b02_satblind15_matrix_20260702/satblind15_sweep_summary.csv` |
