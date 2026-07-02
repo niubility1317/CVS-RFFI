@@ -11,6 +11,7 @@ PROTOTYPE_PACKAGE="${PROTOTYPE_PACKAGE:-${ROOT}/runs/phase1_adv3_mechanism32_que
 WISIG_PKL="${WISIG_PKL:-${ROOT}/Dataset_WigSig/ManySig.pkl}"
 NEW_WISIG_PKL="${NEW_WISIG_PKL:-${ROOT}/Dataset_WigSig/ManyTx.pkl}"
 SOURCE_TX_IDS="${SOURCE_TX_IDS:-0,1,2,3,4,5}"
+EVAL_SOURCE_TX_IDS="${EVAL_SOURCE_TX_IDS:-14-10,14-7,20-15,20-19,6-15,8-20}"
 TARGET_OLD_TX_IDS="${TARGET_OLD_TX_IDS:-0,1,2,3,4,5}"
 CEN51_TRAIN_RXS="${CEN51_TRAIN_RXS:-0,1,2,3,4,5,6}"
 TARGET_RECEIVER_IDS="${TARGET_RECEIVER_IDS:-20-1}"
@@ -20,6 +21,7 @@ DRY_RUN="${DRY_RUN:-0}"
 
 TARGET_RECEIVER_IDS="$(printf '%s' "${TARGET_RECEIVER_IDS}" | tr -d '\r')"
 UNKNOWN_TX_IDS="$(printf '%s' "${UNKNOWN_TX_IDS}" | tr -d '\r')"
+EVAL_SOURCE_TX_IDS="$(printf '%s' "${EVAL_SOURCE_TX_IDS}" | tr -d '\r')"
 
 for arg in "$@"; do
   case "${arg}" in
@@ -86,7 +88,7 @@ for row in "${POLICIES[@]}"; do
     "${PYTHON}" -u "${ROOT}/code/scripts/eval_phase1_open_set_reject.py"
     --feature_npz "${FEATURE_NPZ}"
     --prototype_package "${PROTOTYPE_PACKAGE}"
-    --source_tx_ids "${SOURCE_TX_IDS}"
+    --source_tx_ids "${EVAL_SOURCE_TX_IDS}"
     --unknown_tx_ids "${UNKNOWN_TX_IDS}"
     --known_query_roles target_old
     --unknown_query_roles target_unknown
