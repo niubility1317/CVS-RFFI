@@ -95,7 +95,28 @@ def test_ssdg_cli_exposes_default_off_v2_compactness_proxy_unknown_and_local_acc
     assert '"--proxy_unknown_start_epoch"' in text
     assert '"--proxy_unknown_warmup_epochs"' in text
     assert '"--proxy_unknown_virtual_count"' in text
+    assert '"--ow_feat_vacuum_weight"' in text
+    assert '"--ow_feat_vacuum_width_deg"' in text
+    assert '"--proxy_unknown_vacuum_weight"' in text
+    assert '"--proxy_unknown_vacuum_width_deg"' in text
     assert '"--phase2_fuse_accept_policy"' in text
     assert '"--phase2_fuse_global_ball_accept"' in text
     assert "zid_compactness_loss(" in text
     assert "proxy_unknown_energy_loss(" in text
+    assert "vacuum_weight=float(args.ow_feat_vacuum_weight)" in text
+    assert "vacuum_weight=float(args.proxy_unknown_vacuum_weight)" in text
+
+
+def test_ssdg_cli_exposes_core_safe_accept_domain_controls():
+    text = (PROJECT_ROOT / "code" / "SSDG" / "train_ssdg.py").read_text(encoding="utf-8")
+
+    assert '"--source_episode_radius_mode"' in text
+    assert '"core_quantile"' in text
+    assert '"min_three_sigma_core"' in text
+    assert '"--source_episode_core_quantile"' in text
+    assert '"--source_episode_min_sigma_deg"' in text
+    assert '"--proxy_unknown_component_radius_mode"' in text
+    assert '"--proxy_unknown_component_radius_quantile"' in text
+    assert '"--phase2_fuse_tail_auto_accept"' in text
+    assert "radius_mode=str(args.source_episode_radius_mode)" in text
+    assert "component_radius_mode=str(args.proxy_unknown_component_radius_mode)" in text

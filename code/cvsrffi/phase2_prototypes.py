@@ -298,7 +298,13 @@ class PrototypeRadiusTracker:
         if not vals:
             return float("nan")
         q_name = str(quantile).lower()
-        if q_name == "p95":
+        if q_name == "p50":
+            q = 0.50
+        elif q_name == "p80":
+            q = 0.80
+        elif q_name == "p90":
+            q = 0.90
+        elif q_name == "p95":
             q = 0.95
         elif q_name == "p99":
             q = 0.99
@@ -328,6 +334,9 @@ class PrototypeRadiusTracker:
                 "r_3sigma": float("nan"),
                 "tail_count_gt_3sigma": 0.0,
                 "tail_frac_gt_3sigma": float("nan"),
+                "p50": float("nan"),
+                "p80": float("nan"),
+                "p90": float("nan"),
                 "p95": float("nan"),
                 "p99": float("nan"),
                 "max": float("nan"),
@@ -363,6 +372,9 @@ class PrototypeRadiusTracker:
             "r_3sigma": float(r3.item()),
             "tail_count_gt_3sigma": float(int(tail.sum().item())),
             "tail_frac_gt_3sigma": float(tail.float().mean().item()),
+            "p50": float(torch.quantile(t, 0.50).item()),
+            "p80": float(torch.quantile(t, 0.80).item()),
+            "p90": float(torch.quantile(t, 0.90).item()),
             "p95": float(p95.item()),
             "p99": float(p99.item()),
             "max": float(max_v.item()),
@@ -391,6 +403,9 @@ class PrototypeRadiusTracker:
             "r_3sigma",
             "tail_count_gt_3sigma",
             "tail_frac_gt_3sigma",
+            "p50",
+            "p80",
+            "p90",
             "p95",
             "p99",
             "max",
@@ -587,7 +602,7 @@ def fuse_tx_domain_prototypes(package: Mapping[str, Any], config: PrototypeFusio
                     "nll_p95": None,
                     "nll_tail_p95": None,
                     "nearest_other_deg": None,
-                    "accept_enabled": True,
+                    "accept_enabled": (not bool(row["tail_sentinel"])) or bool(cfg.tail_auto_accept),
                     "domains": list(row["domains"]),
                     "count": int(row["count"]),
                     "radius_deg": math.degrees(float(row["radius"])),
@@ -646,6 +661,7 @@ def fuse_tx_domain_prototypes(package: Mapping[str, Any], config: PrototypeFusio
                 "min_component_samples": int(min_count),
                 "radius_quantile_core": 0.80,
                 "accept_radius_key": str(cfg.accept_radius_key),
+                "keep_tail_sentinel": bool(cfg.keep_tail_sentinel),
             },
             "fusion_metadata": {
                 "schema": "tx_domain_prototype_fusion_v2",
@@ -839,6 +855,9 @@ def build_phase2_prototype_export(
     tracker = PrototypeRadiusTracker(num_classes=num_tx, max_samples_per_class=max_samples_per_class)
     tracker.update(feat, y_cpu, tx_bank.get())
     radii_p95 = tracker.radii_tensor(quantile="p95")
+    radii_p50 = tracker.radii_tensor(quantile="p50")
+    radii_p80 = tracker.radii_tensor(quantile="p80")
+    radii_p90 = tracker.radii_tensor(quantile="p90")
     radii_p99 = tracker.radii_tensor(quantile="p99")
     radii_max = tracker.radii_tensor(quantile="max")
     sigma = tracker.sigma_tensor()
@@ -876,6 +895,9 @@ def build_phase2_prototype_export(
         "tx_domain_counts": tx_domain_counts,
         "domain_shifts": {k: v.detach().clone() if torch.is_tensor(v) else v for k, v in domain_shifts.items()},
         "radii": {
+            "p50": radii_p50,
+            "p80": radii_p80,
+            "p90": radii_p90,
             "p95": radii_p95,
             "p99": radii_p99,
             "max": radii_max,

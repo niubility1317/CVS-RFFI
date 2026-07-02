@@ -304,6 +304,13 @@ def build_arg_parser() -> argparse.ArgumentParser:
     parser.add_argument("--proxy_unknown_accept_quantile", type=float, default=0.95)
     parser.add_argument("--proxy_unknown_tail_quantile", type=float, default=0.95)
     parser.add_argument("--proxy_unknown_overflow_quantile", type=float, default=0.99)
+    parser.add_argument(
+        "--proxy_unknown_component_radius_mode",
+        type=str,
+        default="three_sigma",
+        choices=["three_sigma", "core_quantile", "accept_quantile", "min_three_sigma_core", "min_three_sigma_quantile"],
+    )
+    parser.add_argument("--proxy_unknown_component_radius_quantile", type=float, default=0.80)
     parser.add_argument("--proxy_unknown_vaccept_weight", type=float, default=0.0)
     parser.add_argument("--proxy_unknown_core_accept_weight", type=float, default=0.0)
     parser.add_argument("--proxy_unknown_component_gate_weight", type=float, default=0.0)
@@ -352,6 +359,14 @@ def build_arg_parser() -> argparse.ArgumentParser:
     parser.add_argument("--source_episode_warmup_epochs", type=int, default=0)
     parser.add_argument("--source_episode_min_domains", type=int, default=2)
     parser.add_argument("--source_episode_radius_cap_deg", type=float, default=30.0)
+    parser.add_argument(
+        "--source_episode_radius_mode",
+        type=str,
+        default="three_sigma",
+        choices=["three_sigma", "core_quantile", "min_three_sigma_core"],
+    )
+    parser.add_argument("--source_episode_core_quantile", type=float, default=0.80)
+    parser.add_argument("--source_episode_min_sigma_deg", type=float, default=3.0)
     parser.add_argument("--source_episode_mixup_weight", type=float, default=0.0)
     parser.add_argument("--source_episode_mixup_hard_k", type=int, default=2)
     parser.add_argument("--run_id", type=str, default="")
@@ -407,6 +422,7 @@ def build_arg_parser() -> argparse.ArgumentParser:
     parser.add_argument("--phase2_fuse_accept_radius_key", type=str, default="p95")
     parser.add_argument("--phase2_fuse_max_p95_increase_deg", type=float, default=2.0)
     parser.add_argument("--phase2_fuse_keep_tail_sentinel", type=str2bool, default=True)
+    parser.add_argument("--phase2_fuse_tail_auto_accept", type=str2bool, default=False)
     parser.add_argument("--phase2_fuse_global_ball_accept", type=str2bool, default=False)
     parser.add_argument("--freeze_backbone", type=str2bool, default=False)
     parser.add_argument("--model_size", type=str, default="M")
@@ -1032,6 +1048,7 @@ def _maybe_export_phase2_prototypes_ssdg(
                     max_p95_increase_deg=float(getattr(args, "phase2_fuse_max_p95_increase_deg", 2.0)),
                     keep_tail_sentinel=bool(getattr(args, "phase2_fuse_keep_tail_sentinel", True)),
                     global_ball_accept=bool(getattr(args, "phase2_fuse_global_ball_accept", False)),
+                    tail_auto_accept=bool(getattr(args, "phase2_fuse_tail_auto_accept", False)),
                 ),
             )
             paths = save_phase2_prototype_export(package, output_path)
@@ -1414,8 +1431,14 @@ def _build_ssdg_epoch_telemetry_row(
         "lambda_source_episode",
         "source_episode_mixup_weight",
         "source_episode_mixup_hard_k",
+        "source_episode_radius_mode",
+        "source_episode_core_quantile",
+        "source_episode_radius_cap_deg",
+        "source_episode_min_sigma_deg",
         "ow_feat_vacuum_weight",
         "ow_feat_vacuum_width_deg",
+        "proxy_unknown_component_radius_mode",
+        "proxy_unknown_component_radius_quantile",
         "proxy_unknown_vacuum_weight",
         "proxy_unknown_vacuum_width_deg",
         "proxy_unknown_bridge_accept_weight",
@@ -1690,6 +1713,9 @@ def format_ssdg_epoch_block(
         f"e_q10={_log_value(train_logs, 'train/proxy_unknown_energy_margin_q10'):.4f} "
         f"r_p95={_log_value(train_logs, 'train/proxy_unknown_component_radius_p95_deg'):.2f}deg "
         f"r_max={_log_value(train_logs, 'train/proxy_unknown_component_radius_max_deg'):.2f}deg "
+        f"gate_r95={_log_value(train_logs, 'train/proxy_unknown_component_gate_radius_p95_deg'):.2f}deg "
+        f"gate_rmax={_log_value(train_logs, 'train/proxy_unknown_component_gate_radius_max_deg'):.2f}deg "
+        f"low_den_rate={_log_value(train_logs, 'train/proxy_unknown_low_density_accept_rate'):.4f} "
         f"r_inter={_log_value(train_logs, 'train/proxy_unknown_radius_inter_ratio'):.4f}"
     )
     lines.append(
@@ -1708,6 +1734,9 @@ def format_ssdg_epoch_block(
         f"domains={_log_value(train_logs, 'train/source_episode_domains'):.1f} "
         f"overflow={_log_value(train_logs, 'train/source_episode_overflow_rate'):.4f} "
         f"r3s={_log_value(train_logs, 'train/source_episode_radius_3sigma_deg'):.2f}deg "
+        f"r_core={_log_value(train_logs, 'train/source_episode_radius_core_deg'):.2f}deg "
+        f"r_safe={_log_value(train_logs, 'train/source_episode_radius_safe_deg'):.2f}deg "
+        f"tail_q={_log_value(train_logs, 'train/source_episode_tail_query_rate'):.4f} "
         f"val_angle={_log_value(train_logs, 'train/source_episode_val_angle_deg'):.2f}deg "
         f"mix_count={_log_value(train_logs, 'train/source_episode_mixup_count'):.0f} "
         f"mix_order={_log_value(train_logs, 'train/source_episode_mixup_order'):.0f} "
@@ -2244,6 +2273,7 @@ def train(args) -> int:
                     "accept_energy_threshold": float("nan"),
                     "core_energy_threshold": float("nan"),
                     "vaccept_surrogate": 0.0,
+                    "vaccept_surrogate_CVaR": 0.0,
                     "core_accept_loss": 0.0,
                     "component_gate_unknown": 0.0,
                     "component_gate_accept_prob": float("nan"),
@@ -2262,10 +2292,15 @@ def train(args) -> int:
                     "energy_margin_q10": float("nan"),
                     "component_radius_p95_deg": float("nan"),
                     "component_radius_max_deg": float("nan"),
+                    "component_gate_radius_p95_deg": float("nan"),
+                    "component_gate_radius_max_deg": float("nan"),
                     "radius_inter_ratio": float("nan"),
+                    "radius_to_inter_ratio": float("nan"),
                     "low_density_accept_prob": float("nan"),
+                    "low_density_accept_rate": float("nan"),
                     "proxy_unknown_auc": float("nan"),
                     "virtual_accept_rate": float("nan"),
+                    "proxy_vaccept": float("nan"),
                     "virtual_accept_rate_core": float("nan"),
                     "proxy_accept_rate": float("nan"),
                     "hard_proxy_accept_rate": float("nan"),
@@ -2355,6 +2390,8 @@ def train(args) -> int:
                         accept_quantile=float(args.proxy_unknown_accept_quantile),
                         tail_quantile=float(args.proxy_unknown_tail_quantile),
                         overflow_quantile=float(args.proxy_unknown_overflow_quantile),
+                        component_radius_mode=str(args.proxy_unknown_component_radius_mode),
+                        component_radius_quantile=float(args.proxy_unknown_component_radius_quantile),
                         vaccept_weight=float(args.proxy_unknown_vaccept_weight),
                         core_accept_weight=float(args.proxy_unknown_core_accept_weight),
                         component_gate_weight=float(args.proxy_unknown_component_gate_weight),
@@ -2409,8 +2446,12 @@ def train(args) -> int:
                 source_episode_info: Dict[str, float] = {
                     "source_episode_loss": 0.0,
                     "source_episode_overflow_rate": 0.0,
+                    "source_overflow": 0.0,
                     "source_episode_radius_3sigma_deg": float("nan"),
+                    "source_episode_radius_core_deg": float("nan"),
+                    "source_episode_radius_safe_deg": float("nan"),
                     "source_episode_val_angle_deg": float("nan"),
+                    "source_episode_tail_query_rate": 0.0,
                     "source_episode_classes": 0.0,
                     "source_episode_domains": 0.0,
                     "source_episode_mixup_count": 0.0,
@@ -2428,6 +2469,9 @@ def train(args) -> int:
                         d_l,
                         min_domains=int(args.source_episode_min_domains),
                         radius_cap_rad=math.radians(float(args.source_episode_radius_cap_deg)),
+                        min_sigma_rad=math.radians(float(args.source_episode_min_sigma_deg)),
+                        radius_mode=str(args.source_episode_radius_mode),
+                        core_quantile=float(args.source_episode_core_quantile),
                         mixup_features=soft_unknown_mixup_batch.features if soft_unknown_mixup_batch is not None else None,
                         mixup_weight=float(args.source_episode_mixup_weight),
                         mixup_order=int(args.soft_unknown_mixup_order),
@@ -2687,6 +2731,7 @@ def train(args) -> int:
                     "train/proxy_unknown_accept_energy_threshold": proxy_unknown_info.get("accept_energy_threshold", float("nan")),
                     "train/proxy_unknown_core_energy_threshold": proxy_unknown_info.get("core_energy_threshold", float("nan")),
                     "train/proxy_unknown_vaccept_surrogate": proxy_unknown_info.get("vaccept_surrogate", float("nan")),
+                    "train/proxy_unknown_vaccept_surrogate_CVaR": proxy_unknown_info.get("vaccept_surrogate_CVaR", proxy_unknown_info.get("vaccept_surrogate", float("nan"))),
                     "train/proxy_unknown_core_accept_loss": proxy_unknown_info.get("core_accept_loss", float("nan")),
                     "train/proxy_unknown_component_gate_unknown": proxy_unknown_info.get("component_gate_unknown", float("nan")),
                     "train/proxy_unknown_component_gate_accept_prob": proxy_unknown_info.get("component_gate_accept_prob", float("nan")),
@@ -2705,10 +2750,15 @@ def train(args) -> int:
                     "train/proxy_unknown_energy_margin_q10": proxy_unknown_info.get("energy_margin_q10", float("nan")),
                     "train/proxy_unknown_component_radius_p95_deg": proxy_unknown_info.get("component_radius_p95_deg", float("nan")),
                     "train/proxy_unknown_component_radius_max_deg": proxy_unknown_info.get("component_radius_max_deg", float("nan")),
+                    "train/proxy_unknown_component_gate_radius_p95_deg": proxy_unknown_info.get("component_gate_radius_p95_deg", float("nan")),
+                    "train/proxy_unknown_component_gate_radius_max_deg": proxy_unknown_info.get("component_gate_radius_max_deg", float("nan")),
                     "train/proxy_unknown_radius_inter_ratio": proxy_unknown_info.get("radius_inter_ratio", float("nan")),
+                    "train/proxy_unknown_radius_to_inter_ratio": proxy_unknown_info.get("radius_to_inter_ratio", float("nan")),
                     "train/proxy_unknown_low_density_accept_prob": proxy_unknown_info.get("low_density_accept_prob", float("nan")),
+                    "train/proxy_unknown_low_density_accept_rate": proxy_unknown_info.get("low_density_accept_rate", float("nan")),
                     "train/proxy_unknown_auc_proxy": proxy_unknown_info.get("proxy_unknown_auc", float("nan")),
                     "train/proxy_unknown_virtual_accept_rate": proxy_unknown_info.get("virtual_accept_rate", float("nan")),
+                    "train/proxy_unknown_proxy_vaccept": proxy_unknown_info.get("proxy_vaccept", proxy_unknown_info.get("virtual_accept_rate", float("nan"))),
                     "train/proxy_unknown_virtual_accept_rate_core": proxy_unknown_info.get("virtual_accept_rate_core", float("nan")),
                     "train/proxy_unknown_proxy_accept_rate": proxy_unknown_info.get("proxy_accept_rate", float("nan")),
                     "train/proxy_unknown_hard_proxy_accept_rate": proxy_unknown_info.get("hard_proxy_accept_rate", float("nan")),
@@ -2730,7 +2780,11 @@ def train(args) -> int:
                     "train/soft_unknown_mixup_stage_scale": float(soft_unknown_mixup_stage_scale),
                     "train/source_episode_loss": source_episode_info.get("source_episode_loss", float("nan")),
                     "train/source_episode_overflow_rate": source_episode_info.get("source_episode_overflow_rate", float("nan")),
+                    "train/source_overflow": source_episode_info.get("source_overflow", source_episode_info.get("source_episode_overflow_rate", float("nan"))),
                     "train/source_episode_radius_3sigma_deg": source_episode_info.get("source_episode_radius_3sigma_deg", float("nan")),
+                    "train/source_episode_radius_core_deg": source_episode_info.get("source_episode_radius_core_deg", float("nan")),
+                    "train/source_episode_radius_safe_deg": source_episode_info.get("source_episode_radius_safe_deg", float("nan")),
+                    "train/source_episode_tail_query_rate": source_episode_info.get("source_episode_tail_query_rate", float("nan")),
                     "train/source_episode_val_angle_deg": source_episode_info.get("source_episode_val_angle_deg", float("nan")),
                     "train/source_episode_classes": source_episode_info.get("source_episode_classes", float("nan")),
                     "train/source_episode_domains": source_episode_info.get("source_episode_domains", float("nan")),

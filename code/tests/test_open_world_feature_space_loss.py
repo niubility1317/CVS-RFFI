@@ -149,6 +149,45 @@ def test_open_world_feature_space_loss_tail_mode_penalizes_class_tail_and_report
     assert torch.isfinite(tail.grad).all()
 
 
+def test_open_world_feature_space_loss_vacuum_penalizes_foreign_tail_intrusion():
+    labels = torch.tensor([0, 0, 1, 1])
+    separated = torch.tensor(
+        [[1.0, 0.0], [0.996, 0.087], [0.0, 1.0], [-0.087, 0.996]],
+        dtype=torch.float32,
+        requires_grad=True,
+    )
+    intruding = torch.tensor(
+        [[1.0, 0.0], [0.996, 0.087], [0.999, 0.035], [0.0, 1.0]],
+        dtype=torch.float32,
+        requires_grad=True,
+    )
+
+    good_loss, good_metrics = open_world_feature_space_loss(
+        separated,
+        labels,
+        min_classes=2,
+        vacuum_weight=1.0,
+        vacuum_width_rad=math.radians(5.0),
+        vacuum_hard_k=1,
+    )
+    bad_loss, bad_metrics = open_world_feature_space_loss(
+        intruding,
+        labels,
+        min_classes=2,
+        vacuum_weight=1.0,
+        vacuum_width_rad=math.radians(5.0),
+        vacuum_hard_k=1,
+    )
+    bad_loss.backward()
+
+    assert bad_metrics["vacuum_loss"] > good_metrics["vacuum_loss"]
+    assert bad_metrics["vacuum_violation_rate"] > good_metrics["vacuum_violation_rate"]
+    assert bad_metrics["vacuum_min_neg_angle_deg"] < bad_metrics["vacuum_boundary_deg"]
+    assert bad_loss.item() > good_loss.item()
+    assert intruding.grad is not None
+    assert torch.isfinite(intruding.grad).all()
+
+
 def test_source_episode_three_sigma_loss_penalizes_leave_domain_tail_without_target_data():
     labels = torch.tensor([0, 0, 0, 0, 1, 1, 1, 1])
     domains = torch.tensor([0, 0, 1, 1, 0, 0, 1, 1])
@@ -174,3 +213,46 @@ def test_source_episode_three_sigma_loss_penalizes_leave_domain_tail_without_tar
     assert bad_metrics["source_episode_domains"] == 2.0
     assert bad.grad is not None
     assert torch.isfinite(bad.grad).all()
+
+
+def test_source_episode_core_quantile_mode_does_not_let_tail_define_safe_shell():
+    labels = torch.tensor([0, 0, 0, 0, 0, 0])
+    domains = torch.tensor([0, 0, 0, 1, 1, 1])
+    features = torch.tensor(
+        [
+            [1.0, 0.0],
+            [0.996, 0.087],
+            [0.0, 1.0],
+            [1.0, 0.0],
+            [0.966, 0.259],
+            [0.906, 0.423],
+        ],
+        dtype=torch.float32,
+        requires_grad=True,
+    )
+
+    shell_loss, shell_metrics = source_episode_three_sigma_loss(
+        features,
+        labels,
+        domains,
+        min_domains=2,
+        radius_mode="three_sigma",
+        radius_cap_rad=math.radians(90.0),
+    )
+    core_loss, core_metrics = source_episode_three_sigma_loss(
+        features,
+        labels,
+        domains,
+        min_domains=2,
+        radius_mode="core_quantile",
+        core_quantile=0.50,
+        radius_cap_rad=math.radians(90.0),
+    )
+    core_loss.backward()
+
+    assert core_metrics["source_episode_radius_safe_deg"] < shell_metrics["source_episode_radius_safe_deg"]
+    assert core_metrics["source_episode_overflow_rate"] > shell_metrics["source_episode_overflow_rate"]
+    assert core_metrics["source_overflow"] == core_metrics["source_episode_overflow_rate"]
+    assert core_loss.item() > shell_loss.item()
+    assert features.grad is not None
+    assert torch.isfinite(features.grad).all()

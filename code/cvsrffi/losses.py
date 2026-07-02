@@ -974,6 +974,8 @@ def proxy_unknown_energy_loss(
     accept_quantile: float = 0.95,
     tail_quantile: float = 0.95,
     overflow_quantile: float = 0.99,
+    component_radius_mode: str = "three_sigma",
+    component_radius_quantile: float = 0.80,
     vaccept_weight: float = 0.0,
     core_accept_weight: float = 0.0,
     component_gate_weight: float = 0.0,
@@ -1021,6 +1023,7 @@ def proxy_unknown_energy_loss(
         "accept_energy_threshold": float("nan"),
         "core_energy_threshold": float("nan"),
         "vaccept_surrogate": 0.0,
+        "vaccept_surrogate_CVaR": 0.0,
         "core_accept_loss": 0.0,
         "component_gate_unknown": 0.0,
         "component_gate_accept_prob": float("nan"),
@@ -1039,10 +1042,15 @@ def proxy_unknown_energy_loss(
         "energy_margin_q10": float("nan"),
         "component_radius_p95_deg": float("nan"),
         "component_radius_max_deg": float("nan"),
+        "component_gate_radius_p95_deg": float("nan"),
+        "component_gate_radius_max_deg": float("nan"),
         "radius_inter_ratio": float("nan"),
+        "radius_to_inter_ratio": float("nan"),
         "low_density_accept_prob": float("nan"),
+        "low_density_accept_rate": float("nan"),
         "proxy_unknown_auc": float("nan"),
         "virtual_accept_rate": float("nan"),
+        "proxy_vaccept": float("nan"),
         "virtual_accept_rate_core": float("nan"),
         "proxy_accept_rate": float("nan"),
         "hard_proxy_accept_rate": float("nan"),
@@ -1078,17 +1086,39 @@ def proxy_unknown_energy_loss(
     known_labels = torch.unique(labels[known_mask])
     centers = []
     class_radii = []
+    radius_mode = str(component_radius_mode or "three_sigma").lower().strip()
+    radius_q = max(0.0, min(1.0, float(component_radius_quantile)))
     for cls in known_labels:
         cls_mask = known_mask & labels.eq(cls)
         if bool(cls_mask.any()):
             center = safe_l2_normalize(z_norm[cls_mask].mean(dim=0, keepdim=True), dim=1).squeeze(0)
             centers.append(center)
             own_cos = (z_norm[cls_mask] * center.view(1, -1)).sum(dim=1).clamp(-1.0 + 1e-4, 1.0 - 1e-4)
+            own_angles = _safe_angle_from_cos(own_cos)
+            robust_radius = _robust_three_sigma_radius_from_angles(
+                own_angles,
+                fallback_rad=vacuum_radius_rad,
+            )
+            if own_angles.numel() > 1:
+                quant_radius = torch.quantile(own_angles.detach(), radius_q)
+                core_radius = torch.quantile(own_angles.detach(), max(0.0, min(1.0, float(core_quantile))))
+                accept_radius = torch.quantile(own_angles.detach(), max(0.0, min(1.0, float(accept_quantile))))
+            else:
+                quant_radius = own_angles.detach().max()
+                core_radius = own_angles.detach().max()
+                accept_radius = own_angles.detach().max()
+            if radius_mode in {"core", "core_quantile", "strict_core"}:
+                gate_radius = quant_radius
+            elif radius_mode in {"accept", "accept_quantile"}:
+                gate_radius = accept_radius
+            elif radius_mode in {"min_three_sigma_core", "min_core_three_sigma", "core_safe"}:
+                gate_radius = torch.minimum(robust_radius, core_radius)
+            elif radius_mode in {"min_three_sigma_quantile", "min_quantile_three_sigma"}:
+                gate_radius = torch.minimum(robust_radius, quant_radius)
+            else:
+                gate_radius = robust_radius
             class_radii.append(
-                _robust_three_sigma_radius_from_angles(
-                    _safe_angle_from_cos(own_cos),
-                    fallback_rad=vacuum_radius_rad,
-                )
+                torch.clamp(gate_radius, min=0.0)
             )
     if len(centers) <= 0:
         return zero_like_with_grad(z), default_metrics
@@ -1285,6 +1315,8 @@ def proxy_unknown_energy_loss(
 
     component_radius_p95 = torch.quantile(known_angles.detach(), 0.95) if known_angles.numel() > 1 else known_angles.detach().mean()
     component_radius_max = known_angles.detach().max() if known_angles.numel() else z.new_tensor(float("nan"))
+    component_gate_radius_p95 = torch.quantile(radius_vec.detach(), 0.95) if radius_vec.numel() > 1 else radius_vec.detach().mean()
+    component_gate_radius_max = radius_vec.detach().max() if radius_vec.numel() else z.new_tensor(float("nan"))
     radius_budget_terms = F.softplus((known_angles - float(radius_budget_rad)) / max(1e-4, float(component_temperature_rad)))
     radius_budget_loss = _top_cvar_mean(radius_budget_terms, alpha) if radius_budget_terms.numel() else z.new_tensor(0.0)
     if known_angles.numel():
@@ -1391,6 +1423,7 @@ def proxy_unknown_energy_loss(
         "accept_energy_threshold": _scalar_metric(known_accept_threshold),
         "core_energy_threshold": _scalar_metric(t_core),
         "vaccept_surrogate": _scalar_metric(vaccept_loss),
+        "vaccept_surrogate_CVaR": _scalar_metric(vaccept_loss),
         "core_accept_loss": _scalar_metric(core_accept_loss),
         "component_gate_unknown": _scalar_metric(component_gate_loss),
         "component_gate_accept_prob": _scalar_metric(component_accept_prob),
@@ -1409,10 +1442,15 @@ def proxy_unknown_energy_loss(
         "energy_margin_q10": _scalar_metric(energy_margin_q10),
         "component_radius_p95_deg": math.degrees(_scalar_metric(component_radius_p95)),
         "component_radius_max_deg": math.degrees(_scalar_metric(component_radius_max)),
+        "component_gate_radius_p95_deg": math.degrees(_scalar_metric(component_gate_radius_p95)),
+        "component_gate_radius_max_deg": math.degrees(_scalar_metric(component_gate_radius_max)),
         "radius_inter_ratio": _scalar_metric(radius_inter_ratio_metric),
+        "radius_to_inter_ratio": _scalar_metric(radius_inter_ratio_metric),
         "low_density_accept_prob": _scalar_metric(low_density_accept_prob),
+        "low_density_accept_rate": _scalar_metric(low_density_accept_prob),
         "proxy_unknown_auc": float(auc),
         "virtual_accept_rate": float(virtual_accept),
+        "proxy_vaccept": float(virtual_accept),
         "virtual_accept_rate_core": float(virtual_accept_core),
         "proxy_accept_rate": float(proxy_accept),
         "hard_proxy_accept_rate": float(hard_proxy_accept),
@@ -1565,6 +1603,8 @@ def source_episode_three_sigma_loss(
     min_samples_per_class_domain: int = 1,
     radius_cap_rad: float = math.radians(30.0),
     min_sigma_rad: float = math.radians(3.0),
+    radius_mode: str = "three_sigma",
+    core_quantile: float = 0.80,
     mixup_features: Optional[torch.Tensor] = None,
     mixup_weight: float = 0.0,
     mixup_order: int = 3,
@@ -1579,8 +1619,12 @@ def source_episode_three_sigma_loss(
     default_metrics = {
         "source_episode_loss": 0.0,
         "source_episode_overflow_rate": 0.0,
+        "source_overflow": 0.0,
         "source_episode_radius_3sigma_deg": float("nan"),
+        "source_episode_radius_core_deg": float("nan"),
+        "source_episode_radius_safe_deg": float("nan"),
         "source_episode_val_angle_deg": float("nan"),
+        "source_episode_tail_query_rate": 0.0,
         "source_episode_classes": 0.0,
         "source_episode_domains": 0.0,
         "source_episode_mixup_count": 0.0,
@@ -1604,7 +1648,10 @@ def source_episode_three_sigma_loss(
     losses = []
     overflow_rates = []
     radii = []
+    core_radii = []
+    safe_radii = []
     val_angles_all = []
+    tail_query_rates = []
     episode_centers = []
     episode_radii = []
     used_classes = set()
@@ -1633,20 +1680,33 @@ def source_episode_three_sigma_loss(
             if float(robust_sigma.item()) <= 0.0 and train_angles.numel() > 1:
                 robust_sigma = train_angles.std(unbiased=False)
             robust_sigma = torch.maximum(robust_sigma, train_angles.new_tensor(max(0.0, float(min_sigma_rad))))
-            radius = torch.minimum(
+            radius_3sigma = torch.minimum(
                 train_angles.new_tensor(float(radius_cap_rad)),
                 torch.minimum(
                     train_angles.max() + 3.0 * robust_sigma,
                     median + 3.0 * robust_sigma,
                 ),
             )
+            core_q = max(0.0, min(1.0, float(core_quantile)))
+            radius_core = torch.quantile(train_angles, core_q) if train_angles.numel() > 1 else train_angles.max()
+            radius_core = torch.minimum(train_angles.new_tensor(float(radius_cap_rad)), radius_core)
+            mode_l = str(radius_mode or "three_sigma").lower().strip()
+            if mode_l in {"core", "core_quantile", "strict_core"}:
+                radius = radius_core
+            elif mode_l in {"min_three_sigma_core", "min_core_three_sigma", "core_safe"}:
+                radius = torch.minimum(radius_3sigma, radius_core)
+            else:
+                radius = radius_3sigma
             val_cos = (z_norm[val_mask] * center.view(1, -1)).sum(dim=1).clamp(-1.0 + 1e-6, 1.0 - 1e-6)
             val_angles = _safe_angle_from_cos(val_cos)
             overflow = torch.relu(val_angles - radius)
             losses.append(overflow.pow(2).mean())
             overflow_rates.append(float((val_angles.detach() > radius).float().mean().item()))
-            radii.append(radius.detach())
+            radii.append(radius_3sigma.detach())
+            core_radii.append(radius_core.detach())
+            safe_radii.append(radius.detach())
             val_angles_all.append(val_angles.detach().mean())
+            tail_query_rates.append(float((val_angles.detach() > radius_core).float().mean().item()))
             episode_centers.append(center)
             episode_radii.append(radius.detach())
             used_classes.add(int(cls.item()))
@@ -1686,8 +1746,12 @@ def source_episode_three_sigma_loss(
     metrics = {
         "source_episode_loss": _scalar_metric(source_loss),
         "source_episode_overflow_rate": float(np.mean(overflow_rates)) if overflow_rates else 0.0,
+        "source_overflow": float(np.mean(overflow_rates)) if overflow_rates else 0.0,
         "source_episode_radius_3sigma_deg": math.degrees(_scalar_metric(torch.stack(radii))),
+        "source_episode_radius_core_deg": math.degrees(_scalar_metric(torch.stack(core_radii))),
+        "source_episode_radius_safe_deg": math.degrees(_scalar_metric(torch.stack(safe_radii))),
         "source_episode_val_angle_deg": math.degrees(_scalar_metric(torch.stack(val_angles_all))),
+        "source_episode_tail_query_rate": float(np.mean(tail_query_rates)) if tail_query_rates else 0.0,
         "source_episode_classes": float(len(used_classes)),
         "source_episode_domains": float(len(used_domains)),
         "source_episode_mixup_count": mixup_count,

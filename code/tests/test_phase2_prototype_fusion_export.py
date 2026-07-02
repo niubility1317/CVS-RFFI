@@ -67,7 +67,10 @@ def test_fuse_tx_domain_prototypes_exports_v2_gate_schema():
             assert "density_p05" in comp
             assert "nll_p95" in comp
             assert "nearest_other_deg" in comp
-            assert comp["accept_enabled"] is True
+            if comp.get("tail_sentinel"):
+                assert comp["accept_enabled"] is False
+            else:
+                assert comp["accept_enabled"] is True
 
 
 def test_ssdg_phase2_export_executes_fusion_when_flag_enabled(monkeypatch, tmp_path):
@@ -135,4 +138,3 @@ def test_ssdg_phase2_export_executes_fusion_when_flag_enabled(monkeypatch, tmp_p
 
     assert calls == {"fuse": 1, "save": 1}
     assert out["fusion_config"]["enabled"] is True
-

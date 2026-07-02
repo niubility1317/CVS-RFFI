@@ -164,7 +164,7 @@ def test_build_phase2_export_contains_tx_domain_bounds_and_geometry():
     assert package["feature_key"] == "z_id"
     assert package["prototypes"].shape == (2, 2)
     assert package["tx_domain_prototypes"].shape == (2, 2, 2)
-    assert set(package["radii"].keys()) == {"p95", "p99", "max", "robust_max", "r_1sigma", "r_2sigma", "r_3sigma"}
+    assert set(package["radii"].keys()) == {"p50", "p80", "p90", "p95", "p99", "max", "robust_max", "r_1sigma", "r_2sigma", "r_3sigma"}
     assert "radius_robust_sigma" in package
     assert "radius_tail_stats" in package
     assert "geometry" in package
@@ -204,6 +204,45 @@ def test_fuse_tx_domain_prototypes_reduces_redundant_domains_and_preserves_tail_
     assert fused["fusion_components"][0][0]["domains"] == [0, 1]
     assert fused["fusion_components"][0][1]["tail_sentinel"] is True
     assert fused["fusion_metadata"]["default_training_behavior_changed"] is False
+
+
+def test_fuse_tx_domain_prototypes_can_exclude_tail_sentinel_from_accept_components():
+    package = {
+        "feature_key": "z_id",
+        "prototypes": torch.tensor([[1.0, 0.0]], dtype=torch.float32),
+        "prototype_counts": torch.tensor([40]),
+        "tx_domain_prototypes": torch.tensor(
+            [[[1.0, 0.0], [0.996, 0.087], [0.0, 1.0]]],
+            dtype=torch.float32,
+        ),
+        "tx_domain_counts": torch.tensor([[10, 12, 2]]),
+        "radii": {
+            "p50": torch.tensor([math.radians(3.0)]),
+            "p80": torch.tensor([math.radians(4.0)]),
+            "p95": torch.tensor([math.radians(5.0)]),
+            "p99": torch.tensor([math.radians(8.0)]),
+            "r_3sigma": torch.tensor([math.radians(12.0)]),
+        },
+        "metadata": {},
+    }
+
+    fused = fuse_tx_domain_prototypes(
+        package,
+        PrototypeFusionConfig(
+            max_components_per_tx=1,
+            merge_angle_deg=8.0,
+            tail_abs_deg=30.0,
+            accept_radius_key="p80",
+            keep_tail_sentinel=False,
+            tail_auto_accept=False,
+        ),
+    )
+
+    comp = fused["fusion_components"][0][0]
+    assert comp["tail_sentinel"] is False
+    assert comp["accept_enabled"] is True
+    assert fused["fusion_config"]["tail_auto_accept"] is False
+    assert fused["fusion_config"]["keep_tail_sentinel"] is False
 
 
 def test_export_phase2_prototypes_saves_pt_and_json_sidecar(tmp_path):
