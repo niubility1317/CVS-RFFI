@@ -1342,3 +1342,33 @@ Best old-retention same-row candidates:
 | `phase1_adv3b02_satrepair_anchor7_rx7_14_u1_20260702` | `SATREPAIRA7_MLP_M50_PROXY02` | `q0p00_match0` | 1.0000 | -27.42 | 0.5783 | 0.8525 | 0.9992 | 982 | 379 | false |
 
 Interpretation: anchor-view rescue confirms the mechanism-level conflict. The rescue gate can recover many old-class samples, but those same high-confidence anchor decisions also accept many unknown transmitters. Requiring the anchor prediction to match the multiview repair prediction keeps unknown_FAR lower than the unconstrained rescue, but the best observed unknown_FAR is still 14.91%, and the corresponding old drop is 20.58pp. Therefore this repair-only post-processing route still does not meet the `unknown_FAR<5%` plus old-performance-retention target.
+
+## Class-conditional score-table recalibration follow-up
+
+Objective: test whether the previous global reject threshold is hiding class-specific old-class score distributions. This follow-up does not regenerate features and does not train a new neural head. It reads existing strict satellite-only `score_table.csv` files and recalibrates the accept/reject threshold per predicted Phase1 old TX class, using only source-old and source-proxy-unknown rows.
+
+Design:
+
+| Field | Value |
+|---|---|
+| Evaluator | `code/scripts/eval_phase1_scoretable_classcond_reject.py` |
+| Sweep launcher | `code/scripts/sweep_phase1_adv3b02_classcond_reject_20260702.sh` |
+| Input score tables | existing `satrepair_anchor7` and `satrepair9` score tables |
+| Families | `satrepair_anchor7`, `satrepair9` |
+| Base policies | `MLP_M50_PROXY02`, `MLP_M50_COR_PROXY05`, `MLP_M50_PROXY05`, `LIN_PROXY05`, `LIN_SRC9999`, `MLP_M50_SRC9999` |
+| Threshold policies | `min_class_source_proxy`, `source_class_accept`, `proxy_class_far` |
+| Quantiles | source q `0.999,1.000`; proxy q `0.02,0.05,0.10` |
+| Source calibration variants | all source-old rows, and correctly classified source-old rows only |
+| Target labels/support | not used |
+| Unknown query samples | evaluation-only, not used for threshold selection |
+| Success criteria | `unknown_FAR<=0.05` and old drop vs closed old accuracy `<=2pp` |
+
+Local verification before N607 sync:
+
+| Check | Result |
+|---|---|
+| Python syntax | PASS: `C:\Users\lh594\.conda\envs\ssr-gpu\python.exe -m py_compile E:\type10-7\code\scripts\eval_phase1_scoretable_classcond_reject.py` |
+| Bash syntax | PASS: `bash -n code/scripts/sweep_phase1_adv3b02_classcond_reject_20260702.sh` |
+| Line endings | PASS: LF-only for both new files |
+| Local snapshot | `E:\type10-7\code\snapshots\phase1_adv3b02_classcond_reject_20260702\` |
+| SHA256 | `eval_phase1_scoretable_classcond_reject.py=9AE5A681B86D5CFDDBC3A2270D7CF9847364DD01A77CAB81C306F1B094815DD8`; `sweep_phase1_adv3b02_classcond_reject_20260702.sh=DC7078C7604C04AE53D4F6527A1ECA286E99EE0E12ED322C3AD0DDB7C6A6E027` |
