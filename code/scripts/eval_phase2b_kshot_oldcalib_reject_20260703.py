@@ -200,25 +200,53 @@ def _joint_excess(row: dict) -> float:
 
 
 def _target_label_oracle(score: np.ndarray, known: np.ndarray, unknown: np.ndarray, closed: np.ndarray) -> tuple[dict, float]:
-    candidates = np.unique(score[np.isfinite(score)])
-    if candidates.size == 0:
+    valid = np.isfinite(score)
+    if not valid.any():
         return _metrics(np.zeros_like(score, dtype=bool), known, unknown, closed), float("nan")
-    best = None
-    best_threshold = float(candidates[0])
-    for threshold in candidates:
-        accept = score >= float(threshold)
-        row = _metrics(accept, known, unknown, closed)
-        key = (
-            _joint_excess(row),
-            max(0.0, float(row["unknown_FAR"]) - 0.05),
-            max(0.0, float(row["old_drop_pp_vs_closed"]) - 2.0),
-            -float(row["known_full_accuracy_after_reject"]),
-        )
-        if best is None or key < best[0]:
-            best = (key, row)
-            best_threshold = float(threshold)
-    assert best is not None
-    return best[1], best_threshold
+    s = score[valid]
+    k = known[valid].astype(np.int64)
+    u = unknown[valid].astype(np.int64)
+    c = (known[valid] & closed[valid]).astype(np.int64)
+    order = np.argsort(-s)
+    s = s[order]
+    k = k[order]
+    u = u[order]
+    c = c[order]
+    # A threshold accepts all rows with score >= threshold. Evaluate only at
+    # the last index of each tied score so all ties are handled consistently.
+    last = np.r_[np.where(s[:-1] != s[1:])[0], len(s) - 1]
+    ck = np.cumsum(k)[last].astype(np.float64)
+    cu = np.cumsum(u)[last].astype(np.float64)
+    cc = np.cumsum(c)[last].astype(np.float64)
+    known_total = float(known.sum())
+    unknown_total = float(unknown.sum())
+    known_closed = float((known & closed).sum())
+    closed_acc = np.nan if known_total <= 0 else known_closed / known_total
+    far = np.full_like(cu, np.nan, dtype=np.float64) if unknown_total <= 0 else cu / unknown_total
+    full = np.full_like(cc, np.nan, dtype=np.float64) if known_total <= 0 else cc / known_total
+    drop = 100.0 * (closed_acc - full)
+    coverage = np.full_like(ck, np.nan, dtype=np.float64) if known_total <= 0 else ck / known_total
+    accepted_acc = np.divide(cc, ck, out=np.full_like(cc, np.nan, dtype=np.float64), where=ck > 0)
+    far_excess = np.maximum(0.0, far - 0.05)
+    drop_excess = np.maximum(0.0, drop - 2.0) / 100.0
+    # Lexicographic choice: nearest dual objective, then lower FAR excess,
+    # lower old-drop excess, higher full old accuracy.
+    keys = np.lexsort((-full, drop_excess, far_excess, far_excess + drop_excess))
+    best_i = int(keys[0])
+    row = {
+        "unknown_FAR": float(far[best_i]),
+        "known_closed_accuracy_no_reject": float(closed_acc),
+        "known_full_accuracy_after_reject": float(full[best_i]),
+        "old_drop_pp_vs_closed": float(drop[best_i]),
+        "known_coverage": float(coverage[best_i]),
+        "known_accepted_accuracy": float(accepted_acc[best_i]),
+        "known_query_count": int(known.sum()),
+        "unknown_query_count": int(unknown.sum()),
+        "passes_unknown_far_target": bool(float(far[best_i]) <= 0.05),
+        "passes_old_drop_target": bool(float(drop[best_i]) <= 2.0),
+        "passes_dual_target": bool(float(far[best_i]) <= 0.05 and float(drop[best_i]) <= 2.0),
+    }
+    return row, float(s[last[best_i]])
 
 
 def _run_one(npz_path: Path, feature_tag: str, source_tx_ids: list[str], args: argparse.Namespace) -> list[dict]:
