@@ -817,3 +817,61 @@ Current conclusion after V10:
 | 目标2: `unknown_FAR<=0.05` with old drop`<=2pp` | Not achieved | V3-V10 all have dual pass 0; V10 target-label oracle also has dual pass 0 |
 
 Next technically aligned action must move below post-export scoring. Either retrain a Phase1-compatible representation with explicit source non-old/open-set negatives and old retention, or add a raw-IQ level denoising/equalization front-end before feature extraction. Continuing to sweep thresholds, shallow heads, or K-shot prototype gates on the current exported feature space is unlikely to satisfy the objective.
+
+## V11 IQ Pre-Adapter Design
+
+V11 moves below post-export feature scoring. It trains a lightweight residual IQ pre-adapter before the frozen`ADV3B02_CORE90_SOFT_E200phase1`backbone, using only source old clean/LEO paired supervision. Target receiver old/unknown samples are exported only after training for sat-only evaluation.
+
+Protocol boundary:
+
+| Item | V11 setting |
+|---|---|
+| Phase1 backbone | Frozen`ADV3B02_CORE90_SOFT_E200phase1` |
+| Train data | Source old ManySig rows from source receivers only |
+| Train channel | `leo_clear_weak`,`leo_low_elev_weak`,`leo_rain_weak`source-derived LEO views |
+| Target clean | Not used |
+| Target labels in training | Not used |
+| Unknown query threshold fitting | Not used |
+| Target query view | sat-only LEO after IQ pre-adapter |
+| Rejection calibration | Existing source old + source proxy_unknown roles only |
+
+Mechanism:
+
+1. Generate one LEO observation from each source clean IQ batch.
+2. Apply a small residual Conv1D IQ adapter.
+3. Pass clean and repaired IQ through the frozen Phase1 model.
+4. Optimize SmoothL1/cosine feature repair plus old-class prototype/logit CE, with a residual penalty to avoid over-editing IQ.
+5. Export target-old and target-unknown sat-only features for the same 10 receiver/unknown cells.
+6. Evaluate existing source/proxy rejection policies, including`IQPRE_LIN_SRC1000`as the direct analogue of the earlier multi-view`MV_LIN_SRC1000`high-retention threshold.
+
+New local files:
+
+| File | Purpose | SHA256 |
+|---|---|---|
+| `E:\type10-7\code\scripts\train_apply_phase1_iq_preadapter_20260703.py` | Train source-only IQ pre-adapter and export sat-only feature NPZs | `D6951E5ED7ED18708FBFA193C1D877A921F96840605AE735B0ADCBF1186A7605` |
+| `E:\type10-7\code\scripts\sweep_phase1_adv3b02_iqpre_v11_20260703.sh` | N607 launcher for V11 train/export/eval summary | `8FCC39B828AC7F27AA12901D845EFCBA51AFEFA80DE1745076C4CF32D65A03E6` |
+
+Local verification:
+
+| Command | Result |
+|---|---|
+| `C:\Users\lh594\.conda\envs\ssr-gpu\python.exe -m py_compile E:\type10-7\code\scripts\train_apply_phase1_iq_preadapter_20260703.py` | PASS |
+| `bash -lc "bash -n /mnt/e/type10-7/code/scripts/sweep_phase1_adv3b02_iqpre_v11_20260703.sh"` | PASS |
+| LF line-ending audit | PASS |
+
+Version/snapshot state:
+
+| Item | Path |
+|---|---|
+| Non-Git code snapshot | `E:\type10-7\code\snapshots\phase1_adv3b02_iqpre_v11_20260703\` |
+| Git mirror script path | `E:\type10-7\github_publish\CVS-RFFI-repo\code\scripts\train_apply_phase1_iq_preadapter_20260703.py` |
+| Git mirror launcher path | `E:\type10-7\github_publish\CVS-RFFI-repo\code\scripts\sweep_phase1_adv3b02_iqpre_v11_20260703.sh` |
+
+Planned N607 variants:
+
+| Variant | GPU | Key config | Remote summary |
+|---|---:|---|---|
+| `v11a` | 0 | `alpha=0.25`,`hidden_dim=32`,`epochs=45` | `/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_adv3b02_iqpre_v11a_matrix_20260703/iqpre_v11a_sweep_summary.csv` |
+| `v11b` | 1 | `alpha=0.40`,`hidden_dim=48`,`epochs=55` | `/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_adv3b02_iqpre_v11b_matrix_20260703/iqpre_v11b_sweep_summary.csv` |
+
+Success criteria remain unchanged:`unknown_FAR<=0.05`and old-class performance drop`<=2pp`on sat-only target query, without target clean or target unknown threshold tuning.
