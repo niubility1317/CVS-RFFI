@@ -304,6 +304,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--target_old_tx_ids", default=None)
     parser.add_argument("--new_tx_ids", required=False)
     parser.add_argument("--unknown_tx_ids", default=None)
+    parser.add_argument("--proxy_unknown_tx_ids", default=None)
     parser.add_argument("--wisig_equalized", default="1")
     parser.add_argument("--wisig_domain", default="rx_day")
     parser.add_argument("--wisig_out_len", type=int, default=256)
@@ -313,6 +314,8 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--target_old_rxs", default=None)
     parser.add_argument("--new_days", default=None)
     parser.add_argument("--new_rxs", default=None)
+    parser.add_argument("--proxy_unknown_days", default=None)
+    parser.add_argument("--proxy_unknown_rxs", default=None)
     parser.add_argument("--max_samples_per_combo", type=int, default=0)
     parser.add_argument("--max_samples_per_tx", type=int, default=400)
     parser.add_argument("--batch_size", type=int, default=512)
@@ -324,6 +327,9 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--target_old_channel_view", default=None, choices=["clean", "satellite"])
     parser.add_argument("--target_old_sat_scenarios", default=None)
     parser.add_argument("--target_old_sat_seed", type=int, default=None)
+    parser.add_argument("--proxy_unknown_channel_view", default="clean", choices=["clean", "satellite"])
+    parser.add_argument("--proxy_unknown_sat_scenarios", default=None)
+    parser.add_argument("--proxy_unknown_sat_seed", type=int, default=None)
     parser.add_argument(
         "--star_ground_channel_impl",
         default="legacy_satellite",
@@ -376,11 +382,27 @@ def main() -> int:
             args.unknown_tx_ids,
             field="unknown_tx_ids",
         )
+    resolved_proxy_unknown_labels: list[str] = []
+    if parse_tx_id_list(args.proxy_unknown_tx_ids):
+        _, resolved_proxy_unknown_labels = _resolve_tx_indices(
+            new_raw.get("tx_list", []),
+            args.proxy_unknown_tx_ids,
+            field="proxy_unknown_tx_ids",
+        )
     overlap_audit = assert_disjoint_tx_sets(
         source_tx_ids=source_info["tx_labels"],
         new_tx_ids=resolved_new_labels,
         unknown_tx_ids=resolved_unknown_labels,
     )
+    proxy_overlap_audit = {
+        "proxy_unknown_overlaps_source": sorted(set(resolved_proxy_unknown_labels).intersection(source_info["tx_labels"])),
+        "proxy_unknown_overlaps_target_unknown": sorted(
+            set(resolved_proxy_unknown_labels).intersection(resolved_unknown_labels)
+        ),
+        "proxy_unknown_overlaps_target_new": sorted(set(resolved_proxy_unknown_labels).intersection(resolved_new_labels)),
+    }
+    if proxy_overlap_audit["proxy_unknown_overlaps_source"]:
+        raise ValueError(f"proxy_unknown_tx_ids overlap source_tx_ids: {proxy_overlap_audit}")
     new_ds = None
     new_info = None
     if resolved_new_labels:
@@ -418,6 +440,22 @@ def main() -> int:
             max_samples_per_tx=int(args.max_samples_per_tx),
             seed=int(args.seed) + 31,
         )
+    proxy_unknown_ds = None
+    proxy_unknown_info = None
+    if resolved_proxy_unknown_labels:
+        proxy_unknown_ds, proxy_unknown_info = _build_wisig_dataset(
+            pkl_path=new_pkl_path,
+            tx_spec=",".join(resolved_proxy_unknown_labels),
+            role="proxy_unknown",
+            equalized=str(args.wisig_equalized),
+            out_len=int(args.wisig_out_len),
+            domain=str(args.wisig_domain),
+            days=args.proxy_unknown_days or args.new_days,
+            rxs=args.proxy_unknown_rxs or args.source_rxs,
+            max_samples_per_combo=int(args.max_samples_per_combo),
+            max_samples_per_tx=int(args.max_samples_per_tx),
+            seed=int(args.seed) + 43,
+        )
 
     ckpt = torch.load(args.ckpt, map_location="cpu")
     if "args" not in ckpt or "model" not in ckpt:
@@ -448,6 +486,47 @@ def main() -> int:
         role="source",
         channel_view="clean",
     )
+    proxy_unknown_payload = None
+    proxy_unknown_channel_profile = None
+    if proxy_unknown_ds is not None:
+        proxy_unknown_view = str(args.proxy_unknown_channel_view).lower()
+        proxy_unknown_scenarios = (
+            parse_sat_scenarios(str(args.proxy_unknown_sat_scenarios))
+            if proxy_unknown_view == "satellite"
+            else []
+        )
+        _validate_star_ground_impl(star_ground_impl, proxy_unknown_scenarios, field="proxy_unknown_sat_scenarios")
+        proxy_unknown_seed = int(
+            args.proxy_unknown_sat_seed if args.proxy_unknown_sat_seed is not None else int(args.seed) + 719
+        )
+        proxy_unknown_payload = extract_features_with_metadata(
+            model,
+            DataLoader(
+                proxy_unknown_ds,
+                batch_size=int(args.batch_size),
+                shuffle=False,
+                num_workers=0,
+                drop_last=False,
+            ),
+            device=device,
+            feature_name=str(args.feature_name),
+            role="proxy_unknown",
+            channel_view=proxy_unknown_view,
+            sat_scenarios=proxy_unknown_scenarios,
+            sat_args=args,
+            sat_seed=proxy_unknown_seed,
+        )
+        proxy_unknown_channel_profile = {
+            "view": proxy_unknown_view,
+            "applied_roles": ["proxy_unknown"] if proxy_unknown_view == "satellite" else [],
+            "downstream_roles": ["source_proxy_unknown_calibration"],
+            "scenarios": proxy_unknown_scenarios,
+            "scenario_configs": {name: sat_channel_config_for_scenario(name) for name in proxy_unknown_scenarios},
+            "star_ground_channel_impl": star_ground_impl,
+            "sat_seed": proxy_unknown_seed,
+            "fs_hz": float(args.sat_fs_hz),
+            "fc_hz": float(args.sat_fc_hz),
+        }
     target_old_payload = None
     target_old_info = None
     target_old_channel_profile = None
@@ -533,6 +612,8 @@ def main() -> int:
             sat_seed=target_unknown_seed,
         )
     payload_parts = [source_payload]
+    if proxy_unknown_payload is not None:
+        payload_parts.append(proxy_unknown_payload)
     if target_old_payload is not None:
         payload_parts.append(target_old_payload)
     if new_payload is not None:
@@ -583,17 +664,22 @@ def main() -> int:
         "target_old": target_old_info,
         "target_new": new_info,
         "target_unknown": unknown_info,
+        "proxy_unknown": proxy_unknown_info,
         "source_tx_ids": source_info["tx_labels"],
         "target_old_tx_ids": [] if target_old_info is None else target_old_info["tx_labels"],
         "new_tx_ids": resolved_new_labels,
         "unknown_tx_ids": resolved_unknown_labels,
+        "proxy_unknown_tx_ids": resolved_proxy_unknown_labels,
         "requested_source_tx_ids": parse_tx_id_list(args.source_tx_ids),
         "requested_target_old_tx_ids": parse_tx_id_list(args.target_old_tx_ids),
         "requested_new_tx_ids": parse_tx_id_list(args.new_tx_ids),
         "requested_unknown_tx_ids": parse_tx_id_list(args.unknown_tx_ids),
+        "requested_proxy_unknown_tx_ids": parse_tx_id_list(args.proxy_unknown_tx_ids),
         "overlap_audit": overlap_audit,
+        "proxy_overlap_audit": proxy_overlap_audit,
         "channel_profile": {
             "source": {"view": "clean", "applied_roles": []},
+            "proxy_unknown": proxy_unknown_channel_profile,
             "target_old": target_old_channel_profile,
             "target_new": target_new_channel_profile,
             "target_unknown": target_unknown_channel_profile,
