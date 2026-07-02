@@ -18,6 +18,7 @@ from typing import Any, Iterable, Mapping, Sequence
 
 import numpy as np
 import torch
+import torch.nn as nn
 import torch.nn.functional as F
 
 CODE_ROOT = Path(__file__).resolve().parents[1]
@@ -128,6 +129,48 @@ def _train_linear_head(
     return w.detach(), b.detach(), losses
 
 
+def _train_head_scores(
+    x_train: torch.Tensor,
+    y_train: torch.Tensor,
+    x_all: torch.Tensor,
+    *,
+    head_type: str,
+    hidden_dim: int,
+    epochs: int,
+    lr: float,
+    l2: float,
+    seed: int,
+) -> tuple[np.ndarray, list[float], dict[str, Any]]:
+    head = str(head_type).lower()
+    if head == "linear":
+        w, b, losses = _train_linear_head(x_train, y_train, epochs=epochs, lr=lr, l2=l2, seed=seed)
+        scores = torch.sigmoid((x_all @ w + b).reshape(-1)).detach().cpu().numpy()
+        return scores, losses, {"head_type": "linear", "hidden_dim": 0}
+    if head != "mlp":
+        raise ValueError(f"unknown head_type={head_type!r}")
+    torch.manual_seed(int(seed))
+    model = nn.Sequential(
+        nn.Linear(x_train.size(1), int(hidden_dim)),
+        nn.ReLU(),
+        nn.Linear(int(hidden_dim), 1),
+    )
+    opt = torch.optim.Adam(model.parameters(), lr=float(lr), weight_decay=float(l2))
+    pos = float((y_train > 0.5).sum().item())
+    neg = float((y_train <= 0.5).sum().item())
+    pos_weight = torch.tensor([max(1.0, neg / max(1.0, pos))], dtype=torch.float32)
+    losses: list[float] = []
+    for _ in range(int(epochs)):
+        opt.zero_grad(set_to_none=True)
+        logits = model(x_train).reshape(-1)
+        loss = F.binary_cross_entropy_with_logits(logits, y_train.float(), pos_weight=pos_weight)
+        loss.backward()
+        opt.step()
+        losses.append(float(loss.detach().item()))
+    with torch.no_grad():
+        scores = torch.sigmoid(model(x_all).reshape(-1)).detach().cpu().numpy()
+    return scores, losses, {"head_type": "mlp", "hidden_dim": int(hidden_dim)}
+
+
 def _threshold(
     source_scores: np.ndarray,
     proxy_scores: np.ndarray,
@@ -201,15 +244,17 @@ def evaluate(args: argparse.Namespace) -> dict[str, Any]:
     train_mask = train_known_mask | proxy_mask
     x_all, scale_info = _standardize(raw_x[train_mask], raw_x)
     y_train = torch.where(proxy_mask[train_mask], torch.ones_like(proxy_mask[train_mask], dtype=torch.float32), torch.zeros_like(proxy_mask[train_mask], dtype=torch.float32))
-    w, b, losses = _train_linear_head(
+    unknown_scores, losses, head_info = _train_head_scores(
         x_all[train_mask],
         y_train,
+        x_all,
+        head_type=str(getattr(args, "head_type", "linear")),
+        hidden_dim=int(getattr(args, "hidden_dim", 64)),
         epochs=int(args.epochs),
         lr=float(args.lr),
         l2=float(args.l2),
         seed=int(args.seed),
     )
-    unknown_scores = torch.sigmoid((x_all @ w + b).reshape(-1)).detach().cpu().numpy()
     threshold, th_info = _threshold(
         unknown_scores[train_known_mask.numpy()],
         unknown_scores[proxy_mask.numpy()],
@@ -295,6 +340,7 @@ def evaluate(args: argparse.Namespace) -> dict[str, Any]:
             "seed": int(args.seed),
             "loss_start": float(losses[0]) if losses else None,
             "loss_end": float(losses[-1]) if losses else None,
+            **head_info,
             **scale_info,
         },
         "threshold": th_info,
@@ -364,6 +410,8 @@ def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
     parser.add_argument("--epochs", type=int, default=500)
     parser.add_argument("--lr", type=float, default=0.02)
     parser.add_argument("--l2", type=float, default=1e-4)
+    parser.add_argument("--head_type", default="linear", choices=["linear", "mlp"])
+    parser.add_argument("--hidden_dim", type=int, default=64)
     parser.add_argument("--seed", type=int, default=4070203)
     parser.add_argument("--unknown_far_target", type=float, default=0.05)
     parser.add_argument("--max_old_drop_pp", type=float, default=3.0)
