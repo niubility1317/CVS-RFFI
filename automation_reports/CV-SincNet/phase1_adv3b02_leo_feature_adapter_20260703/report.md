@@ -878,46 +878,6 @@ Planned N607 variants:
 
 Success criteria remain unchanged:`unknown_FAR<=0.05`and old-class performance drop`<=2pp`on sat-only target query, without target clean or target unknown threshold tuning.
 
-## V15 Completion Results
-
-V15 completed on N607 as a bounded foreground command. It trained classwise clean<-LEO repair directions from source clean/LEO pairs only, then evaluated sat-only target old/unknown rows with source/proxy calibrated thresholds.
-
-Overall result:
-
-| Rows | Dual pass | FAR-only pass | Old-drop-only pass | Status |
-|---:|---:|---:|---:|---|
-| 48000 | 0 | 15440 | 2328 | Completed negative |
-
-Artifacts:
-
-| Artifact | Local path | SHA256 |
-|---|---|---|
-| V15 summary | `E:\type10-7\automation_reports\CV-SincNet\phase1_adv3b02_leo_feature_adapter_20260703\artifacts\classwise_repair_v15_summary.csv` | `F4775F8B4CC436EE3F5F3D417482FAE20D4BABD59F4985D312FB223E0763F85F` |
-| V15 best JSON | `E:\type10-7\automation_reports\CV-SincNet\phase1_adv3b02_leo_feature_adapter_20260703\artifacts\classwise_repair_v15_best.json` | `764B97FCDBF1DF7B9853FD1077C1CAE0F359DF7B80CE1D0F7E73F4F0866E8F51` |
-| V15 metrics JSON | `E:\type10-7\automation_reports\CV-SincNet\phase1_adv3b02_leo_feature_adapter_20260703\artifacts\classwise_repair_v15_metrics.json` | `FD197D3E177E3356C1D2F0552655250CA616ABD1D88FB3512E719E7CC12ED080` |
-| V15 run log | `E:\type10-7\automation_reports\CV-SincNet\phase1_adv3b02_leo_feature_adapter_20260703\artifacts\classwise_repair_v15.out` | `0F9E615B65AD759C46BEEF0D463B639420401F0F7C09BBA8E4B24CB067B4ECE3` |
-
-Best same-row outcomes:
-
-| Selection rule | Run | Score/policy | alpha | beta | unknown_FAR | Old drop pp | Closed old acc | Final old acc | Coverage | Verdict |
-|---|---|---|---:|---:|---:|---:|---:|---:|---:|---|
-| Best FAR with old drop`<=2pp` | `rx3_19_u10` | `neg_min_mah/source_accept q=0.01` | 1.00 | 0.05 | 0.7453 | 0.97 | 0.5482 | 0.5385 | 0.9694 | FAR fails badly |
-| Best old retention with FAR`<=5%` | `rx3_19_u10` | `neg_min_mah/mean_source_proxy q=0.05,p=0.99` | 0.75 | 0.00 | 0.0488 | 43.00 | 0.5482 | 0.1182 | 0.1394 | Old-class performance fails |
-| Nearest joint row | `rx3_19_u10` | `neg_min_mah/source_accept q=0.05` | 0.25 | 0.00 | 0.5041 | 7.62 | 0.5482 | 0.4721 | 0.7476 | Misses both |
-
-Interpretation:
-
-Classwise repair does not resolve the target overlap. It slightly changes the old-class closed-set reference but repeats the same accept/reject tradeoff: old-preserving thresholds accept roughly three quarters of unknown samples, while low-FAR thresholds reject most old target samples. This tests the main remaining hypothesis that global repair over-smoothed class-specific LEO damage; the hypothesis is not supported under the frozen Phase1 representation.
-
-Current status after V15:
-
-| Target | Status | Evidence |
-|---|---|---|
-| 目标1: source-only LEO repair | Achieved | V3/V9b and V15 all use source-only clean/LEO repair without target clean/labels |
-| 目标2: `unknown_FAR<=0.05` with old drop`<=2pp` | Not achieved | V3-V15 all have dual pass 0; V15 adds 48000 classwise repair rows with dual pass 0 |
-
-The evidence now covers global repair, classwise repair, IQ pre-adaptation, oldness gates, selective correctness gates, repair manifold scoring and decision fusion. Within the frozen`ADV3B02_CORE90_SOFT_E200phase1`feature basis, the requested joint target remains unproven and currently contradicted by all completed audits. The remaining technically aligned path is representation-level Phase1 training with source-side non-old/open-set negatives plus LEO identity-retention, followed by the same sat-only target audit.
-
 ## V11 Completion Results
 
 V11 completed two IQ pre-adapter variants on N607:
@@ -1304,3 +1264,43 @@ Planned N607 output:
 | V15 metrics JSON | `/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_adv3b02_classwise_repair_v15_20260703/classwise_repair_v15_metrics.json` |
 
 Success criteria remain unchanged:`unknown_FAR<=0.05`and old-class performance drop`<=2pp`on sat-only target query, without target clean or target unknown threshold tuning.
+
+## V15 Completion Results
+
+V15 completed on N607 as a bounded foreground command. It trained classwise clean<-LEO repair directions from source clean/LEO pairs only, then evaluated sat-only target old/unknown rows with source/proxy calibrated thresholds.
+
+Overall result:
+
+| Rows | Dual pass | FAR-only pass | Old-drop-only pass | Status |
+|---:|---:|---:|---:|---|
+| 48000 | 0 | 15440 | 2328 | Completed negative |
+
+Artifacts:
+
+| Artifact | Local path | SHA256 |
+|---|---|---|
+| V15 summary | `E:\type10-7\automation_reports\CV-SincNet\phase1_adv3b02_leo_feature_adapter_20260703\artifacts\classwise_repair_v15_summary.csv` | `F4775F8B4CC436EE3F5F3D417482FAE20D4BABD59F4985D312FB223E0763F85F` |
+| V15 best JSON | `E:\type10-7\automation_reports\CV-SincNet\phase1_adv3b02_leo_feature_adapter_20260703\artifacts\classwise_repair_v15_best.json` | `764B97FCDBF1DF7B9853FD1077C1CAE0F359DF7B80CE1D0F7E73F4F0866E8F51` |
+| V15 metrics JSON | `E:\type10-7\automation_reports\CV-SincNet\phase1_adv3b02_leo_feature_adapter_20260703\artifacts\classwise_repair_v15_metrics.json` | `FD197D3E177E3356C1D2F0552655250CA616ABD1D88FB3512E719E7CC12ED080` |
+| V15 run log | `E:\type10-7\automation_reports\CV-SincNet\phase1_adv3b02_leo_feature_adapter_20260703\artifacts\classwise_repair_v15.out` | `0F9E615B65AD759C46BEEF0D463B639420401F0F7C09BBA8E4B24CB067B4ECE3` |
+
+Best same-row outcomes:
+
+| Selection rule | Run | Score/policy | alpha | beta | unknown_FAR | Old drop pp | Closed old acc | Final old acc | Coverage | Verdict |
+|---|---|---|---:|---:|---:|---:|---:|---:|---:|---|
+| Best FAR with old drop`<=2pp` | `rx3_19_u10` | `neg_min_mah/source_accept q=0.01` | 1.00 | 0.05 | 0.7453 | 0.97 | 0.5482 | 0.5385 | 0.9694 | FAR fails badly |
+| Best old retention with FAR`<=5%` | `rx3_19_u10` | `neg_min_mah/mean_source_proxy q=0.05,p=0.99` | 0.75 | 0.00 | 0.0488 | 43.00 | 0.5482 | 0.1182 | 0.1394 | Old-class performance fails |
+| Nearest joint row | `rx3_19_u10` | `neg_min_mah/source_accept q=0.05` | 0.25 | 0.00 | 0.5041 | 7.62 | 0.5482 | 0.4721 | 0.7476 | Misses both |
+
+Interpretation:
+
+Classwise repair does not resolve the target overlap. It slightly changes the old-class closed-set reference but repeats the same accept/reject tradeoff: old-preserving thresholds accept roughly three quarters of unknown samples, while low-FAR thresholds reject most old target samples. This tests the main remaining hypothesis that global repair over-smoothed class-specific LEO damage; the hypothesis is not supported under the frozen Phase1 representation.
+
+Current status after V15:
+
+| Target | Status | Evidence |
+|---|---|---|
+| 目标1: source-only LEO repair | Achieved | V3/V9b and V15 all use source-only clean/LEO repair without target clean/labels |
+| 目标2: `unknown_FAR<=0.05` with old drop`<=2pp` | Not achieved | V3-V15 all have dual pass 0; V15 adds 48000 classwise repair rows with dual pass 0 |
+
+The evidence now covers global repair, classwise repair, IQ pre-adaptation, oldness gates, selective correctness gates, repair manifold scoring and decision fusion. Within the frozen`ADV3B02_CORE90_SOFT_E200phase1`feature basis, the requested joint target remains unproven and currently contradicted by all completed audits. The remaining technically aligned path is representation-level Phase1 training with source-side non-old/open-set negatives plus LEO identity-retention, followed by the same sat-only target audit.
