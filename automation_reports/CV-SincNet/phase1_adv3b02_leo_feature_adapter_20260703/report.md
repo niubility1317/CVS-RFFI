@@ -1075,3 +1075,51 @@ Planned N607 variants:
 | `v13b` | linear residual, MLP residual | `/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_adv3b02_repair_ensemble_v13b_20260703/repair_ensemble_v13b_summary.csv` |
 
 Success criteria remain unchanged:`unknown_FAR<=0.05`and old-class performance drop`<=2pp`on sat-only target query, without target clean or target unknown threshold tuning.
+
+## V13 Completion Results
+
+V13 completed two repair-ensemble manifold variants on N607. V13a was launched by the first background command; the local SSH command timed out and left a stale local`ssh.exe`, which was identified as PID`38736`, stopped locally, and verified clean before further SSH work. V13b was then run as a bounded foreground command. No target clean, target threshold labels, or unknown query threshold fitting were used.
+
+Overall result:
+
+| Variant | Rows | Dual pass | FAR-only pass | Old-drop-only pass | Status |
+|---|---:|---:|---:|---:|---|
+| `v13a` | 5600 | 0 | 1925 | 280 | Completed negative |
+| `v13b` | 5600 | 0 | 1948 | 298 | Completed negative |
+| Combined | 11200 | 0 | 3873 | 578 | Completed negative |
+
+Artifacts:
+
+| Artifact | Local path | SHA256 |
+|---|---|---|
+| V13a summary | `E:\type10-7\automation_reports\CV-SincNet\phase1_adv3b02_leo_feature_adapter_20260703\artifacts\repair_ensemble_v13a_summary.csv` | `D31BA606A66B6C55C9839BF4185B0D4269A6DD446B53BA0FD6374932D285E61E` |
+| V13a best JSON | `E:\type10-7\automation_reports\CV-SincNet\phase1_adv3b02_leo_feature_adapter_20260703\artifacts\repair_ensemble_v13a_best.json` | `BC35833B69DB2544D7153A72DB96C76E84D6ADF7ABB7EE1D90CE7C98E0B48DA5` |
+| V13a metrics JSON | `E:\type10-7\automation_reports\CV-SincNet\phase1_adv3b02_leo_feature_adapter_20260703\artifacts\repair_ensemble_v13a_metrics.json` | `DA46E0C7C38D65E71DF3FD90DACBE0422C80C27108FB35DF52530DDAD0364CCC` |
+| V13a driver | `E:\type10-7\automation_reports\CV-SincNet\phase1_adv3b02_leo_feature_adapter_20260703\artifacts\repair_ensemble_v13a_driver.out` | `522360E5C83DCE7A5AAA0B82F287FE9918C35DDD78B045E4C664A67E2BD81CF3` |
+| V13b summary | `E:\type10-7\automation_reports\CV-SincNet\phase1_adv3b02_leo_feature_adapter_20260703\artifacts\repair_ensemble_v13b_summary.csv` | `2CD382367E7A5701795915463A12FB584D3C0564429B366169DDFC96EB7DE85F` |
+| V13b best JSON | `E:\type10-7\automation_reports\CV-SincNet\phase1_adv3b02_leo_feature_adapter_20260703\artifacts\repair_ensemble_v13b_best.json` | `E6F148C4655AA178C34B79060FCAC2DC1EE7DA3F6A8A01D3131147BD73CAA8BF` |
+| V13b metrics JSON | `E:\type10-7\automation_reports\CV-SincNet\phase1_adv3b02_leo_feature_adapter_20260703\artifacts\repair_ensemble_v13b_metrics.json` | `01EEFC1058C530CA189955FCEFFE7A8178E46984E877FA5AB11AAE62A8B14489` |
+
+Best same-row outcomes:
+
+| Variant | Selection rule | Run | Score/policy | unknown_FAR | Old drop pp | Closed old acc | Final old acc | Coverage | Verdict |
+|---|---|---|---|---:|---:|---:|---:|---:|---|
+| `v13a` | Best FAR with old drop`<=2pp` | `rx3_19_u10` | `neg_mean_min_mah/source_accept q=0.005` | 0.6856 | 1.06 | 0.5321 | 0.5215 | 0.9732 | FAR fails badly |
+| `v13a` | Best old retention with FAR`<=5%` | `rx3_19_u10` | `mean_max_sim/mean_source_proxy q=0.05,p=0.95` | 0.0488 | 41.56 | 0.5321 | 0.1165 | 0.1356 | Old-class performance fails |
+| `v13a` | Nearest joint row | `rx3_19_u10` | `mean_max_sim/source_accept q=0.05` | 0.4092 | 9.35 | 0.5321 | 0.4385 | 0.6726 | Misses both |
+| `v13b` | Best FAR with old drop`<=2pp` | `rx3_19_u10` | `neg_mean_min_mah/source_accept q=0.005` | 0.6911 | 1.24 | 0.5076 | 0.4953 | 0.9603 | FAR fails badly |
+| `v13b` | Best old retention with FAR`<=5%` | `rx20_1_u10` | `mean_sim_margin/mean_source_proxy q=0.05,p=0.99` | 0.0498 | 34.35 | 0.5556 | 0.2121 | 0.2176 | Old-class performance fails |
+| `v13b` | Nearest joint row | `rx3_19_u10` | `mean_max_sim/source_accept q=0.05` | 0.4119 | 9.47 | 0.5076 | 0.4129 | 0.7012 | Misses both |
+
+Interpretation:
+
+Repair-ensemble manifold scoring did not solve the core overlap. Scores that preserve old-class performance still accept most unknowns. Scores and thresholds that push`unknown_FAR`below5% do so only by rejecting most correctly classified old target samples. This closes the main remaining frozen-base repair path: single repair adapter, IQ pre-adapter, oldness gate, heterogeneous decision fusion and repair-ensemble manifold gates all reproduce the same tradeoff under sat-only target query.
+
+Current status after V13:
+
+| Target | Status | Evidence |
+|---|---|---|
+| 目标1: source-only LEO repair | Achieved | V3/V9b source-only adapters repair source LEO features without target clean/labels |
+| 目标2: `unknown_FAR<=0.05` with old drop`<=2pp` | Not achieved | V3-V13 all have dual pass 0; V13 adds 11200 repair-ensemble manifold rows with dual pass 0 |
+
+The next meaningful route requires changing where separation is learned. Within the frozen Phase1 feature basis, every deployable source-only gate found so far exposes the same old/unknown overlap. The aligned next step is Phase1-level representation repair/retraining with source-side non-old/open-set negatives and LEO identity-retention inside the representation objective, then rerun the same sat-only audit.
