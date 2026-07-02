@@ -225,6 +225,14 @@ def _threshold(source_scores: np.ndarray, proxy_scores: np.ndarray, *, policy: s
         threshold = max(source_t, proxy_t)
     else:
         raise ValueError(f"unknown threshold_policy={policy!r}")
+
+    def _leq_rate(values: np.ndarray, limit: float) -> float:
+        flat = values.reshape(-1).tolist()
+        if not flat:
+            return 0.0
+        accepted = sum(1 for value in flat if float(value) <= limit)
+        return float(accepted / len(flat))
+
     return threshold, {
         "threshold_policy": policy,
         "unknown_score_threshold": float(threshold),
@@ -232,8 +240,8 @@ def _threshold(source_scores: np.ndarray, proxy_scores: np.ndarray, *, policy: s
         "proxy_far_quantile": float(proxy_q),
         "source_threshold": source_t,
         "proxy_threshold": proxy_t,
-        "source_accept_rate_at_threshold": float(np.mean(source_scores <= threshold)),
-        "proxy_false_accept_rate_at_threshold": float(np.mean(proxy_scores <= threshold)),
+        "source_accept_rate_at_threshold": _leq_rate(source_scores, threshold),
+        "proxy_false_accept_rate_at_threshold": _leq_rate(proxy_scores, threshold),
     }
 
 
