@@ -547,3 +547,68 @@ Expected physical multi-view summary:
 ```text
 /home/szu2070436088/2510044040/CV-SincNet/logs/phase1_adv3b02_satphysmv11_matrix_20260702/satphysmv11_sweep_summary.csv
 ```
+
+Launch and completion status:
+
+| Field | Value |
+|---|---|
+| Launch time | `2026-07-02T17:34:58+08:00` on N607 |
+| Remote driver PID | `4164199` |
+| GPU allocation | `GPU=7`, script uses `CUDA_VISIBLE_DEVICES=7` and `--device cuda:0` |
+| Remote command | `cd /home/szu2070436088/2510044040/CV-SincNet && nohup env GPU=7 bash code/scripts/sweep_phase1_adv3b02_satphysmv11_20260702.sh > logs/phase1_adv3b02_satphysmv11_matrix_20260702/driver.out 2>&1 &` |
+| Driver log | `/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_adv3b02_satphysmv11_matrix_20260702/driver.out` |
+| Summary CSV | `/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_adv3b02_satphysmv11_matrix_20260702/satphysmv11_sweep_summary.csv` |
+| Completion time | `2026-07-02T17:51:55+08:00` |
+| Summary rows | 100 rows, 10 cells x 10 policies |
+| Startup health | PASS; first cell exported and entered evaluator, no traceback/OOM/argparse error |
+| Final process cleanup | Remote experiment process ended; local SSH client cleaned up |
+
+Remote verification before launch:
+
+| Command | Result |
+|---|---|
+| `/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -m py_compile code/export_spaceborne_features.py` | PASS |
+| `bash -n code/scripts/sweep_phase1_adv3b02_satphysmv11_20260702.sh` | PASS |
+| `sha256sum` for synced code/report | PASS; `export_spaceborne_features.py` hash `5894b761eedae3a58c8b0b8c3f01991b74256eb3d7edc3c1c7b587a73b5e7e48`, sweep script hash `83ffd1227d965251ee63f72b7c5bdd4fd57f5a1c29cfe59a7db0893b22d65aa3`, report hash `360f7b68cc585c9eeadc28c3146528ab8fbe1205811dcb7f6d48291570c58bd1` |
+
+Artifacts:
+
+| Artifact | Local path |
+|---|---|
+| Physical multi-view summary | `E:\type10-7\automation_reports\CV-SincNet\phase1_adv3b02_satonly_open_set_reject_20260702\artifacts\satphysmv11_sweep_summary.csv` |
+| Physical multi-view driver log | `E:\type10-7\automation_reports\CV-SincNet\phase1_adv3b02_satonly_open_set_reject_20260702\artifacts\satphysmv11_driver.out` |
+
+Policy aggregate result:
+
+| Policy | Cells | Mean unknown_FAR | Max unknown_FAR | Mean old drop pp | Max old drop pp | Dual pass | Mean known coverage |
+|---|---:|---:|---:|---:|---:|---:|---:|
+| `SATPHY11_LIN_MIN05` | 10 | 0.1578 | 0.2333 | 44.30 | 51.33 | 0/10 | 0.3490 |
+| `SATPHY11_LIN_PROXY05` | 10 | 0.1578 | 0.2333 | 44.30 | 51.33 | 0/10 | 0.3490 |
+| `SATPHY11_MLP64_MARGIN_MIN05` | 10 | 0.1745 | 0.2675 | 40.43 | 44.75 | 0/10 | 0.3975 |
+| `SATPHY11_MLP64_MARGIN_PROXY05` | 10 | 0.1745 | 0.2675 | 40.43 | 44.75 | 0/10 | 0.3975 |
+| `SATPHY11_MLP64_MIN05` | 10 | 0.2510 | 0.3550 | 34.75 | 40.42 | 0/10 | 0.4743 |
+| `SATPHY11_MLP64_PROXY05` | 10 | 0.2510 | 0.3550 | 34.75 | 40.42 | 0/10 | 0.4743 |
+| `SATPHY11_MLP64_SRC9999` | 10 | 0.4745 | 0.6137 | 19.10 | 28.58 | 0/10 | 0.6962 |
+| `SATPHY11_MLP64_MARGIN_SRC5` | 10 | 0.5150 | 0.6953 | 17.05 | 28.25 | 0/10 | 0.7282 |
+| `SATPHY11_LIN_SRC999` | 10 | 0.8246 | 0.9333 | 3.65 | 8.00 | 0/10 | 0.9380 |
+| `SATPHY11_LIN_SRC9999` | 10 | 0.8336 | 0.9450 | 3.18 | 6.75 | 0/10 | 0.9452 |
+
+Best low-FAR rows:
+
+| Run | Policy | unknown_FAR | Old drop pp | Closed old acc | Full old acc after reject | Known coverage | Dual pass |
+|---|---|---:|---:|---:|---:|---:|---|
+| `phase1_adv3b02_satphysmv11_rx20_1_u1_20260702` | `SATPHY11_LIN_MIN05` | 0.0224 | 43.50 | 0.6408 | 0.2058 | 0.3150 | false |
+| `phase1_adv3b02_satphysmv11_rx20_1_u1_20260702` | `SATPHY11_LIN_PROXY05` | 0.0224 | 43.50 | 0.6408 | 0.2058 | 0.3150 | false |
+| `phase1_adv3b02_satphysmv11_rx20_1_u1_20260702` | `SATPHY11_MLP64_MARGIN_MIN05` | 0.0280 | 40.00 | 0.6408 | 0.2408 | 0.3517 | false |
+| `phase1_adv3b02_satphysmv11_rx20_1_u1_20260702` | `SATPHY11_MLP64_MARGIN_PROXY05` | 0.0280 | 40.00 | 0.6408 | 0.2408 | 0.3517 | false |
+
+Best old-retention rows:
+
+| Run | Policy | unknown_FAR | Old drop pp | Closed old acc | Full old acc after reject | Known coverage | Dual pass |
+|---|---|---:|---:|---:|---:|---:|---|
+| `phase1_adv3b02_satphysmv11_rx7_7_u10_20260702` | `SATPHY11_LIN_SRC9999` | 0.9142 | 1.17 | 0.8167 | 0.8050 | 0.9858 | false |
+| `phase1_adv3b02_satphysmv11_rx7_7_u1_20260702` | `SATPHY11_LIN_SRC9999` | 0.9450 | 1.17 | 0.8167 | 0.8050 | 0.9858 | false |
+| `phase1_adv3b02_satphysmv11_rx7_7_u10_20260702` | `SATPHY11_LIN_SRC999` | 0.9099 | 1.33 | 0.8167 | 0.8033 | 0.9808 | false |
+| `phase1_adv3b02_satphysmv11_rx7_7_u1_20260702` | `SATPHY11_LIN_SRC999` | 0.9325 | 1.33 | 0.8167 | 0.8033 | 0.9808 | false |
+
+Interpretation: the physical receive-side multi-view route is protocol-correct and confirms that multi-view features contain some unknown signal: 4/100 rows pass the 5% FAR gate. However, every low-FAR row rejects too many old-class samples and damages old-class full accuracy by about 40pp. Conversely, rows that keep old drop under 2pp leave FAR between about 0.80 and 0.95. The current `ADV3B02_CORE90_SOFT_E200phase1` frozen feature space still does not satisfy the joint gate `unknown_FAR<=0.05` and old drop `<=2pp` under strict single-observation LEO deployment.
