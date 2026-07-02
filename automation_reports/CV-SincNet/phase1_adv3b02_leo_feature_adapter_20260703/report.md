@@ -395,3 +395,23 @@ Planned V4 matrix:
 | Calibration | source/proxy rows only; target query labels not used for threshold calculation |
 
 Expected output: `/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_adv3b02_score_fusion_20260703/score_fusion_summary.csv`.
+
+## V4 Execution Status
+
+V4 did not produce a valid result table. Two remote attempts were launched:
+
+| Attempt | Output | Status |
+|---|---|---|
+| Full fusion grid | `logs/phase1_adv3b02_score_fusion_20260703/score_fusion_summary.csv` | No CSV produced; process was CPU-bound with empty log |
+| Narrow fusion grid | `logs/phase1_adv3b02_score_fusion_20260703/score_fusion_fast_summary.csv` | No CSV produced; process was CPU-bound with empty log |
+
+Both processes were confirmed to be the agent-launched V4 diagnostic commands and were stopped by exact PID only:
+
+| Remote PID | Command role |
+|---:|---|
+| 1039360 | full-grid Python process |
+| 1039357 | full-grid wrapper shell |
+| 1043733 | narrow-grid Python process |
+| 1043730 | narrow-grid wrapper shell |
+
+No other N607 training or evaluation process was killed. V4 is therefore an implementation-performance failure, not a scientific result. The current valid evidence for this task remains V3.
