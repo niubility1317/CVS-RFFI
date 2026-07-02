@@ -590,3 +590,55 @@ Local verification:
 | `C:\Users\lh594\.conda\envs\ssr-gpu\python.exe -m py_compile E:\type10-7\code\scripts\eval_phase1_kplus1_openset_reject_20260703.py` | PASS |
 
 Planned remote output: `/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_adv3b02_kplus1_reject_20260703/kplus1_reject_summary.csv`.
+
+## V8 Completion Result
+
+Remote verification and run command:
+
+| Item | Value |
+|---|---|
+| N607 preflight | PASS, direct`N607`, project root visible, 8xRTX3090 idle at preflight |
+| Remote cwd | `/home/szu2070436088/2510044040/CV-SincNet` |
+| Remote Python | `/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python` |
+| Remote command | `python -m py_compile code/scripts/eval_phase1_kplus1_openset_reject_20260703.py && python -u code/scripts/eval_phase1_kplus1_openset_reject_20260703.py --runs_root runs --out_csv logs/phase1_adv3b02_kplus1_reject_20260703/kplus1_reject_summary.csv --epochs 220` |
+| Remote output | `{'rows': 1440, 'dual_pass': 0, 'out_csv': 'logs/phase1_adv3b02_kplus1_reject_20260703/kplus1_reject_summary.csv'}` |
+| Local SSH cleanup | No local`ssh.exe`process and no ESTABLISHED connection to`172.31.111.215:22`after sync/run/pull |
+
+Artifacts:
+
+| Artifact | Local path | SHA256 |
+|---|---|---|
+| V8 K+1 summary | `E:\type10-7\automation_reports\CV-SincNet\phase1_adv3b02_leo_feature_adapter_20260703\artifacts\kplus1_reject_summary.csv` | `9EE018602209BC83E2BF46FA41FC4DDBBE0F8973CE0AADE963BD7DC75029B479` |
+| V8 log | `E:\type10-7\automation_reports\CV-SincNet\phase1_adv3b02_leo_feature_adapter_20260703\artifacts\kplus1_reject.out` | `4A38E4A5353D0AEFCD0E2CDF4B2047761905E46644F428D292AA5EBFA72A3B11` |
+
+V8 result summary:
+
+| Scope | Rows | Dual pass | Interpretation |
+|---|---:|---:|---|
+| Source-only K+1 open-set head over V3 repaired features | 1440 | 0 | No candidate satisfies`unknown_FAR<=0.05`and reject-induced old drop`<=2pp` |
+
+Best rows under the two constraints:
+
+| Selection rule | Adapter | Head | Threshold policy | unknown_FAR | Old drop pp vs K+1 closed | K+1 closed old acc | Final old acc after reject | Verdict |
+|---|---|---|---|---:|---:|---:|---:|---|
+| Best FAR with old drop`<=2pp` | `LEOADAPT3_LINR_COS` | linear | `mean_source_proxy` | 0.7500 | 1.94 | 0.7271 | 0.7076 | FAR far above 5% |
+| Best old retention with FAR`<=5%` | `LEOADAPT3_LINR_COS` | mlp | `min_source_proxy` | 0.0448 | 34.32 | 0.5765 | 0.2332 | Old-class performance collapses |
+| Nearest joint row | `LEOADAPT3_LINR_COS` | mlp | `mean_source_proxy` | 0.1961 | 15.26 | 0.5765 | 0.4238 | Still misses both constraints |
+
+Policy-level diagnostics:
+
+| Condition | Rows | Best available behavior |
+|---|---:|---|
+| `unknown_FAR<=0.05` | 128 | Minimum old drop remains 34.32pp; final old acc no higher than 0.2929 in these rows |
+| Reject-induced old drop`<=2pp` | 24 | Minimum unknown_FAR remains 0.7500 |
+
+Important metric boundary: V8's`old_drop_pp_vs_closed`measures rejection damage relative to the K+1 closed head, not relative to the original Phase1/V3 old-class baseline. Therefore the stricter user requirement of keeping original old-class performance is not met either; the low-FAR rows reduce final old acc to roughly 0.23-0.29, and the best old-retention rows still keep FAR around 0.75-0.90.
+
+Final route conclusion after V8:
+
+| Target | Status | Evidence |
+|---|---|---|
+| 目标1: source-only LEO feature repair | Achieved | V3 repaired features improve MSE and preserve prototype identity without target labels |
+| 目标2: `unknown_FAR<=0.05` while keeping old-class performance | Not achieved | V3, V5, V6, V7 and V8 all have dual pass 0; V8 confirms that simply adding a source-only K+1 unknown class on repaired features does not resolve the old/unknown overlap |
+
+Next route should no longer be another threshold-only or shallow head sweep on the same exported feature table. The remaining protocol-aligned options are to retrain the Phase1-compatible repair/open-set module with an explicit class-conditional retention objective, or to regenerate source-side LEO repair views with stronger identity-preserving constraints before exporting features. Any target-label oracle or target-statistics calibration can only be marked diagnostic, not deployable phase1-only evidence.
