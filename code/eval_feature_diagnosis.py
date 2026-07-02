@@ -645,7 +645,9 @@ def build_model_from_ckpt(ckpt_args: Dict[str, Any], cli_args, num_domains: int,
     model_size = str(cli_args.model_size or ckpt_args.get("model_size", "M"))
     model_variant = str(getattr(cli_args, "model_variant", None) or ckpt_args.get("model_variant", "base"))
     branch_ablation = str(getattr(cli_args, "branch_ablation", None) or ckpt_args.get("branch_ablation", "none"))
-    sample_rate_hz = float(cli_args.sample_rate_hz or ckpt_args.get("sample_rate_hz", 25e6 if dataset == "wisig" else 5e6))
+    sample_rate_hz = float(cli_args.sample_rate_hz or ckpt_args.get("sample_rate_hz", 0.0) or 0.0)
+    if sample_rate_hz <= 0.0:
+        sample_rate_hz = 25e6 if dataset == "wisig" else 5e6
 
     model = build_dual_model(
         num_classes=num_classes,
