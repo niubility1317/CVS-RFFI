@@ -848,3 +848,20 @@ Expected remote artifacts:
 |---|---|
 | Driver log | `/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_adv3b02_satblind15_matrix_20260702/driver.out` |
 | Summary CSV | `/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_adv3b02_satblind15_matrix_20260702/satblind15_sweep_summary.csv` |
+
+Remote sync and launch status:
+
+| Field | Value |
+|---|---|
+| Git mirror commit | `0627bc3 Add blind satellite multiview rejection sweep` |
+| Remote sync | completed with direct `scp -F tools\n607_ssh_config` |
+| Remote Python syntax | PASS: `/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -m py_compile code/export_spaceborne_features.py` |
+| Remote bash syntax | PASS: `bash -n code/scripts/sweep_phase1_adv3b02_satblind15_20260702.sh` |
+| Remote hashes | `export_spaceborne_features.py=1A6F1ECAD3E911F6BE16F5B290F2A05CDA89B55B82EA041EEE024C4096656142`; `sweep_phase1_adv3b02_satblind15_20260702.sh=8886AA3EA237D133927126C51C19BAA57847E356D98A2939FB506265D1267D33` |
+| Remote line endings | PASS, LF-only for both synced files |
+| Launch time | `2026-07-02T18:44:51+08:00` on N607 |
+| GPU allocation | `GPU=7` |
+| Submit note | local SSH submit timed out, but landed probe confirmed remote script running; stale local `ssh.exe` PID `38168` was closed and local TCP/SSH state returned to zero |
+| Landed process | shell script PID `39036`; current evaluator PID observed as `40057` during first cell |
+| Driver first lines | `[PHASE1-SATBLIND15-SWEEP] start=2026-07-02T18:44:51+08:00 gpu=7`; first cell `phase1_adv3b02_satblind15_rx20_1_u10_20260702` |
+| Startup status | feature export for first cell completed; run entered `eval_phase1_multiview_reject.py` policy evaluation |
