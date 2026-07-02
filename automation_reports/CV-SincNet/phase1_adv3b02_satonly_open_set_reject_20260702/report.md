@@ -1522,3 +1522,30 @@ Oracle family summary:
 | `satrepair_anchor7` | `class_conditional` | 140 | 0 | 0.0492 | 0.0472 | 28.90 | 19.75 | 0.2268 |
 
 Interpretation: the oracle diagnostic is decisive for existing score-table post-processing. Even when target query labels are illegally used to choose thresholds after the fact, none of the 680 score tables can achieve the joint target. All oracle rows can be forced under `unknown_FAR<=0.05`, but every such row loses far more than 2pp old-class accuracy; the best observed old drop is 11.75pp. Therefore the current score spaces do not contain a thresholding solution for the requested target. Further threshold sweeps, class-conditional recalibration, or anchor rescue on these score tables should be stopped; the next viable route must construct a different score from Phase1 features/logits or change the allowed protocol to Stage2-B old-class support.
+
+## Prototype/kNN density score follow-up
+
+Objective: construct new rejection scores from frozen Phase1 features instead of continuing threshold searches on score spaces that failed the oracle audit. This follow-up reuses existing strict satellite-only feature NPZs and does not regenerate features or use clean views.
+
+Design:
+
+| Field | Value |
+|---|---|
+| Sweep launcher | `code/scripts/sweep_phase1_adv3b02_density_reject_20260702.sh` |
+| Existing evaluators | `code/scripts/eval_phase1_prototype_reject.py`; `code/scripts/eval_phase1_knn_reject.py` |
+| Input feature families | `satblind15`; `satrepair_anchor7` |
+| Feature files | existing `features_satblind15.npz`; existing `features_satrepair_anchor7.npz` |
+| Prototype scores | cosine, Euclidean, diagonal Mahalanobis, plus confidence/entropy/margin-adjusted cosine variants |
+| kNN scores | cosine/euclidean kNN density with `k=1,3,5`, mean/best-confidence/median feature reduction, class-conditional thresholding |
+| Target labels/support | not used |
+| Unknown query samples | evaluation-only, not used for threshold selection |
+| Success criteria | `unknown_FAR<=0.05` and old drop vs closed old accuracy `<=2pp` |
+
+Local verification before N607 sync:
+
+| Check | Result |
+|---|---|
+| Bash syntax | PASS: `bash -n code/scripts/sweep_phase1_adv3b02_density_reject_20260702.sh` |
+| Line endings | PASS: LF-only |
+| Local snapshot | `E:\type10-7\code\snapshots\phase1_adv3b02_density_reject_20260702\` |
+| SHA256 | `sweep_phase1_adv3b02_density_reject_20260702.sh=9A9A0E35BFCC1B81830CB3A31910DF8173AB658539E335D04FCE6827DFC18D31` |
