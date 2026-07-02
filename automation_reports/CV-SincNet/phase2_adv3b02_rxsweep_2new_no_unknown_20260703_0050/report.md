@@ -33,7 +33,7 @@ The prior two `20-1` runs are diagnostic-negative: simple multi-new Stage2-C pea
 
 | Candidate | GPU | Target receiver | New TX | K-old | K-new | Strategy | Goal |
 |---|---:|---|---|---:|---:|---|---|
-| `ADV3B02_RXSWEEP_2NEW_RX3_19_BALANCED` | 0 | `3-19` | `1-16,1-18` | 10 | 10 | balanced, no OLD80 overwrite | preserve new-class accuracy |
+| `ADV3B02_RXSWEEP_2NEW_RX3_19_BALANCED` | 1 | `3-19` | `1-16,1-18` | 10 | 10 | balanced, no OLD80 overwrite | preserve new-class accuracy |
 | `ADV3B02_RXSWEEP_2NEW_RX3_19_OLDRESCUE` | 1 | `3-19` | `1-16,1-18` | 10 | 10 | OLD80 `support_cv_select` + `rescue_rejected` | recover old without replacing accepted new |
 | `ADV3B02_RXSWEEP_2NEW_RX7_14_BALANCED` | 2 | `7-14` | `1-16,1-18` | 10 | 10 | balanced, no OLD80 overwrite | preserve new-class accuracy |
 | `ADV3B02_RXSWEEP_2NEW_RX7_14_OLDRESCUE` | 3 | `7-14` | `1-16,1-18` | 10 | 10 | OLD80 `support_cv_select` + `rescue_rejected` | recover old without replacing accepted new |
@@ -55,19 +55,19 @@ The prior two `20-1` runs are diagnostic-negative: simple multi-new Stage2-C pea
 |---|---|
 | Git state before edit | root tree is not a Git repo; Git-backed mirror clean on branch `codex/cvs-rffi-release-20260626` before this launcher |
 | Bash syntax | PASS via `conda activate ssr-gpu; bash -n code/scripts/launch_phase2_adv3b02_rxsweep_2new_no_unknown_20260703_0050.sh` |
-| Dry-run audit | PASS: 8 candidates, actual `--unknown_tx_ids` count 0, 4 OLD80 rescue candidates, each receiver has 2 rows |
+| Dry-run audit | PASS after GPU0-avoid remap: 8 candidates, actual `--unknown_tx_ids` count 0, 4 OLD80 rescue candidates, GPU0 rows 0, GPU1 rows 2 |
 | Snapshot under `code\snapshots` | PASS: launcher, report, and local dry-run evidence copied under `code\snapshots\phase2_adv3b02_rxsweep_2new_no_unknown_20260703_0050` |
 | Git-backed mirror commit | PASS: launcher, report, dry-run evidence, and `.gitattributes` entry included in the Git-backed change set before N607 sync |
 | N607 preflight/occupancy | PASS before sync/launch |
-| Remote syntax/hash/dry-run | PASS |
+| Remote syntax/hash/dry-run | pending after GPU0-avoid remap |
 | Launch | pending |
 
 ## Local Verification Evidence
 
 | Artifact | SHA256 |
 |---|---|
-| `code/scripts/launch_phase2_adv3b02_rxsweep_2new_no_unknown_20260703_0050.sh` | `D993D7CD8FB431E45688A6ABC0C0FCB71BE971BBB4547BD0A8228AD5724DAF4A` |
-| `automation_reports/CV-SincNet/phase2_adv3b02_rxsweep_2new_no_unknown_20260703_0050/local_dry_run.out` | `2F5CA33737D9CFA8A7643DCDDF4F164F17CBD7F2A385C90961BB96CF1912DEC3` |
+| `code/scripts/launch_phase2_adv3b02_rxsweep_2new_no_unknown_20260703_0050.sh` | `02EA8837A812FE04BBEEDEE43F195FAECF0A4A6F68DF8ACDF442FF21B9DF949C` |
+| `automation_reports/CV-SincNet/phase2_adv3b02_rxsweep_2new_no_unknown_20260703_0050/local_dry_run.out` | `81DEEE2595023D312CA784E2CA49B1B98D242F510972A4D6F6B9D0DED212EC56` |
 
 Dry-run audit:
 
@@ -77,6 +77,8 @@ Dry-run audit:
 | Actual `--unknown_tx_ids` occurrences | 0 |
 | `--oa_mse_old80_head_mode` occurrences | 4 |
 | `--old80_head_apply_policy` occurrences | 4 |
+| GPU0 candidate lines | 0 |
+| GPU1 candidate lines | 2 |
 | `target_receiver=3-19` candidate lines | 2 |
 | `target_receiver=7-14` candidate lines | 2 |
 | `target_receiver=7-7` candidate lines | 2 |
@@ -88,10 +90,11 @@ Dry-run audit:
 |---|---|
 | Git-backed version | `github_publish\CVS-RFFI-repo` commit `b6371cc` (`Add ADV3B02 receiver sweep launcher`) |
 | Direct preflight | PASS via `tools\n607_ssh_preflight.ps1`; project root visible; 8 GPUs visible |
-| Live occupancy | `tools\n607_training_inventory.py --direct-only --pretty`: `gpu_compute=[]`, `active_training_processes=[]`, no launcher context |
+| Live occupancy | Latest `tools\n607_training_inventory.py --direct-only --pretty` showed one pre-existing project process on GPU0 (`fit_apply_phase1_leo_feature_adapter.py`, PID `934831`, GPU compute memory 348 MiB). The launcher was remapped to avoid GPU0. |
 | Target path conflict | no existing launcher, run root, log root, or remote report directory for this `RUN_ID` |
 | Disk | `/home` has 7.7T available, 26% used |
 | SSH cleanup | local `ssh.exe` and established N607/bridge TCP checks clear after preflight, occupancy, and path checks |
+| GPU allocation after remap | GPU0 unused by this launcher; GPU1 runs two `3-19` candidates; GPUs2-7 run one candidate each, staying within the default maximum of two concurrent experiments per GPU |
 
 Planned remote sync:
 
@@ -110,12 +113,7 @@ ssh -F E:\type10-7\tools\n607_ssh_config -o BatchMode=yes N607 'cd /home/szu2070
 
 | Check | Evidence |
 |---|---|
-| Remote launcher syntax | PASS via `bash -n` |
-| Remote launcher hash | `d993d7cd8fb431e45688a6abc0c0fcb71be971bbb4547bd0a8228ad5724daf4a` |
-| Remote report hash before launch | `22ef7c7b0e5fee1fe812f8ebf75264d485ed90472379f846c4e607c1fddf2318` |
-| Remote dry-run hash | `de0bb561ffee1070f8d896fac773aba7e43a3ab1d403045d43870190bb8fceaf` |
-| Remote dry-run audit | 8 candidates, actual `--unknown_tx_ids` count 0, `--oa_mse_old80_head_mode` count 4 |
-| SSH cleanup | local `ssh.exe` and established N607/bridge TCP checks clear after sync and remote verification |
+| Status | Pending after GPU0-avoid remap; previous remote verification was superseded because launcher GPU allocation changed |
 
 ## Expected Outputs
 

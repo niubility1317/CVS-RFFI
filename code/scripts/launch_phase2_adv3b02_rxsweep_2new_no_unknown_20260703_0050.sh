@@ -159,7 +159,7 @@ mkdir -p '${out_dir}'; \
   fi
 }
 
-run_case "ADV3B02_RXSWEEP_2NEW_RX3_19_BALANCED" "0" "412601" "3-19" "disabled" "rescue_rejected"
+run_case "ADV3B02_RXSWEEP_2NEW_RX3_19_BALANCED" "1" "412601" "3-19" "disabled" "rescue_rejected"
 run_case "ADV3B02_RXSWEEP_2NEW_RX3_19_OLDRESCUE" "1" "412602" "3-19" "support_cv_select" "rescue_rejected"
 run_case "ADV3B02_RXSWEEP_2NEW_RX7_14_BALANCED" "2" "412603" "7-14" "disabled" "rescue_rejected"
 run_case "ADV3B02_RXSWEEP_2NEW_RX7_14_OLDRESCUE" "3" "412604" "7-14" "support_cv_select" "rescue_rejected"
