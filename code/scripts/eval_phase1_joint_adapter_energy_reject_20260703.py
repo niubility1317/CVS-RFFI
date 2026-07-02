@@ -416,11 +416,21 @@ def _evaluate_run(run_dir: Path, adapter: nn.Module, head: nn.Module, prototypes
     known = np.asarray([bool(r["is_known_query"]) for r in rows], dtype=bool)
     unknown = np.asarray([bool(r["is_unknown_query"]) for r in rows], dtype=bool)
     closed = np.asarray([bool(r["closed_correct_known"]) for r in rows], dtype=bool)
+    pred_tx = np.asarray([str(r["pred_tx_id"]) for r in rows])
     target_rxs = sorted({r["rx_id"] for r in rows if r["role"] in {"target_old", "target_unknown"}})
     out = []
     for score_name in ["old_prob", "proto_max", "proto_margin", "fused_rank"]:
         score = np.asarray(scores[score_name], dtype=np.float64)
-        for policy in ["source_accept", "proxy_far", "max_source_proxy", "mean_source_proxy"]:
+        for policy in [
+            "source_accept",
+            "proxy_far",
+            "max_source_proxy",
+            "mean_source_proxy",
+            "class_source_accept",
+            "class_proxy_far",
+            "class_max_source_proxy",
+            "class_mean_source_proxy",
+        ]:
             for source_q in [0.001, 0.005, 0.010, 0.020]:
                 proxy_qs = [0.95] if policy == "source_accept" else [0.90, 0.95, 0.97, 0.99]
                 for proxy_q in proxy_qs:
@@ -432,9 +442,31 @@ def _evaluate_run(run_dir: Path, adapter: nn.Module, head: nn.Module, prototypes
                         threshold = proxy_t
                     elif policy == "max_source_proxy":
                         threshold = max(source_t, proxy_t)
-                    else:
+                    elif policy == "mean_source_proxy":
                         threshold = 0.5 * (source_t + proxy_t)
-                    accept = score >= threshold
+                    else:
+                        class_thresholds = {}
+                        for tx in source_tx_ids:
+                            sm = source & (pred_tx == tx)
+                            pm = proxy & (pred_tx == tx)
+                            st = float(np.quantile(score[sm], source_q)) if sm.any() else source_t
+                            pt = float(np.quantile(score[pm], proxy_q)) if pm.any() else proxy_t
+                            if policy == "class_source_accept":
+                                class_thresholds[tx] = st
+                            elif policy == "class_proxy_far":
+                                class_thresholds[tx] = pt
+                            elif policy == "class_max_source_proxy":
+                                class_thresholds[tx] = max(st, pt)
+                            elif policy == "class_mean_source_proxy":
+                                class_thresholds[tx] = 0.5 * (st + pt)
+                            else:
+                                raise ValueError(policy)
+                        threshold = float(np.mean(list(class_thresholds.values())))
+                    if policy.startswith("class_"):
+                        th_vec = np.asarray([class_thresholds.get(str(tx), threshold) for tx in pred_tx], dtype=np.float64)
+                        accept = score >= th_vec
+                    else:
+                        accept = score >= threshold
                     m = _metrics(accept, known, unknown, closed)
                     m.update({
                         "run_id": run_dir.name,
