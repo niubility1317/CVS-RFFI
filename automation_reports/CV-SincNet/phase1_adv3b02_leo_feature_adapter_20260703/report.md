@@ -433,3 +433,54 @@ Local verification:
 | `C:\Users\lh594\.conda\envs\ssr-gpu\python.exe -m py_compile E:\type10-7\code\scripts\diagnose_phase1_score_oracle_20260703.py` | PASS |
 
 Planned remote output: `/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_adv3b02_score_oracle_20260703/score_oracle_summary.csv`.
+
+## V5 Completion Result
+
+Artifacts:
+
+| Artifact | Local path | SHA256 |
+|---|---|---|
+| V5 oracle summary | `E:\type10-7\automation_reports\CV-SincNet\phase1_adv3b02_leo_feature_adapter_20260703\artifacts\score_oracle_summary.csv` | `4351E865AF2CE1345BD43C0707668AF1467938D061736B13D7A9409C2331D497` |
+| V5 oracle log | `E:\type10-7\automation_reports\CV-SincNet\phase1_adv3b02_leo_feature_adapter_20260703\artifacts\score_oracle.out` | pulled locally |
+
+V5 scanned 210 scalar score tables from the existing V3 outputs:
+
+| Metric | Value |
+|---|---:|
+| Score tables scanned | 210 |
+| Target-label oracle dual pass | 0 |
+| Best FAR under old drop`<=2pp` | 0.6531 |
+| Best old drop under`unknown_FAR<=0.05` | 26.24pp |
+
+Best oracle-nearest rows:
+
+| Run | Adapter | Score | Oracle nearest unknown_FAR | Oracle nearest old drop pp | Closed old acc | Full old acc | Verdict |
+|---|---|---|---:|---:|---:|---:|---|
+| `rx20_1_u1` | `LEOADAPT3_MLP_ID` | `ADAPT3_LIN_MIN05`/`SRC9999` | 0.0924 | 21.74 | 0.5412 | 0.3238 | Still far from dual target |
+| `rx20_1_u1` | `LEOADAPT3_LINR_COS` | `ADAPT3_LIN_MIN05`/`SRC9999` | 0.1092 | 20.41 | 0.5765 | 0.3724 | Still far from dual target |
+| `rx20_1_u1` | `LEOADAPT3_LINR_COS` | `ADAPT3_MLP64_MIN05`/`SRC9999` | 0.1373 | 20.21 | 0.5765 | 0.3744 | Still far from dual target |
+
+Diagnostic interpretation: V5 proves that the failure is not merely threshold calibration. For every existing scalar score in V3, even an invalid target-label oracle threshold cannot satisfy`unknown_FAR<=0.05`and old drop`<=2pp`. The next valid route must create a new rejection signal, not keep sweeping scalar thresholds from the same score tables.
+
+## V6 Multi-Score Rejector Design
+
+V6 tests whether multiple existing V3 scores can jointly create a better rejection signal. It has two modes:
+
+| Mode | Training signal | Deployable? | Purpose |
+|---|---|---|---|
+| `source_proxy_train` | source old vs source proxy unknown only | Yes | Real candidate for target2 |
+| `target_label_oracle_multiscore` | target closed-correct old vs target unknown | No | Diagnostic upper bound for multi-score separability |
+
+New local file:
+
+| File | Purpose | SHA256 |
+|---|---|---|
+| `E:\type10-7\code\scripts\eval_phase1_multiscore_reject_20260703.py` | Train/evaluate small linear/MLP rejectors over multiple V3 score tables with source/proxy calibration plus target-label oracle upper bound | `6DD423BE6072E14FB1D44A3722106AA4E378D6CD39E6597C8636D35C5E3A7EF9` |
+
+Local verification:
+
+| Command | Result |
+|---|---|
+| `C:\Users\lh594\.conda\envs\ssr-gpu\python.exe -m py_compile E:\type10-7\code\scripts\eval_phase1_multiscore_reject_20260703.py` | PASS |
+
+Planned remote output: `/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_adv3b02_multiscore_reject_20260703/multiscore_reject_summary.csv`.
