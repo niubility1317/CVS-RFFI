@@ -1123,3 +1123,47 @@ Current status after V13:
 | 目标2: `unknown_FAR<=0.05` with old drop`<=2pp` | Not achieved | V3-V13 all have dual pass 0; V13 adds 11200 repair-ensemble manifold rows with dual pass 0 |
 
 The next meaningful route requires changing where separation is learned. Within the frozen Phase1 feature basis, every deployable source-only gate found so far exposes the same old/unknown overlap. The aligned next step is Phase1-level representation repair/retraining with source-side non-old/open-set negatives and LEO identity-retention inside the representation objective, then rerun the same sat-only audit.
+
+## V14 Selective-Correctness Gate Design
+
+V14 keeps the frozen`ADV3B02_CORE90_SOFT_E200phase1`backbone and reuses source-only repaired features. It changes the gate objective from generic oldness to selective correctness: accept a sample only when the repaired ensemble predicts it as an old class with source-trained evidence resembling source LEO samples that are actually classified correctly. The aim is to protect closed-set-correct old target samples while rejecting unknown and unreliable samples.
+
+Training labels are source-only:
+
+| Row type | V14 training label |
+|---|---|
+| Source old LEO, repaired-ensemble prediction equals source TX | positive / correct-old |
+| Source old LEO, repaired-ensemble prediction differs from source TX | negative / unreliable-old |
+| Source proxy_unknown LEO | negative / non-old |
+| Target old/unknown | never used for training or threshold fitting |
+
+New files:
+
+| File | Purpose | SHA256 |
+|---|---|---|
+| `E:\type10-7\code\scripts\eval_phase1_selective_correctness_reject_20260703.py` | Train source-only selective-correctness gates and evaluate sat-only target old/unknown rows | `4A73374F0DFFFA3F1C478E9B72B8938611001C5C0674479F7E93E8D8EE00C066` |
+| `E:\type10-7\code\scripts\sweep_phase1_adv3b02_selective_correctness_v14_20260703.sh` | N607 launcher and best-row summarizer for V14a/V14b | `620740DE098C7138EBC703B3C21B62759639EB7C70C21051BD94E92C484C1AAB` |
+
+Local verification:
+
+| Command | Result |
+|---|---|
+| `C:\Users\lh594\.conda\envs\ssr-gpu\python.exe -m py_compile E:\type10-7\code\scripts\eval_phase1_selective_correctness_reject_20260703.py` | PASS |
+| `bash -lc "bash -n /mnt/e/type10-7/code/scripts/sweep_phase1_adv3b02_selective_correctness_v14_20260703.sh"` | PASS |
+
+Version/snapshot state:
+
+| Item | Path |
+|---|---|
+| Non-Git code snapshot | `E:\type10-7\code\snapshots\phase1_adv3b02_selective_correctness_v14_20260703\` |
+| Git mirror eval script path | `E:\type10-7\github_publish\CVS-RFFI-repo\code\scripts\eval_phase1_selective_correctness_reject_20260703.py` |
+| Git mirror launcher path | `E:\type10-7\github_publish\CVS-RFFI-repo\code\scripts\sweep_phase1_adv3b02_selective_correctness_v14_20260703.sh` |
+
+Planned N607 variants:
+
+| Variant | Adapter set | Remote summary |
+|---|---|---|
+| `v14a` | linear residual, MLP residual | `/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_adv3b02_selective_correctness_v14a_20260703/selective_correctness_v14a_summary.csv` |
+| `v14b` | identity, mean-shift, norm-shift, linear residual, MLP residual | `/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_adv3b02_selective_correctness_v14b_20260703/selective_correctness_v14b_summary.csv` |
+
+Success criteria remain unchanged:`unknown_FAR<=0.05`and old-class performance drop`<=2pp`on sat-only target query, without target clean or target unknown threshold tuning.
