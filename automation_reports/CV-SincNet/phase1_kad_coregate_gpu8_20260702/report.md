@@ -194,3 +194,100 @@ KAD16H启动前硬门槛:
 |`bash scripts/launch_phase1_kad_hardening_secondlane_gpu8_20260702.sh --dry-run`|通过，8个KAD16H候选均可展开|
 
 新增8行的核心目的不是补proxy unknown数量，而是验证三类修改后的机制:默认不再把three-sigma半径作为accept gate、tail sentinel即使命令请求也不能自动接收、proxy_vaccept改善必须被标记为proxy-only证据且不能直接声明真实unknown拒识改善。`phase2_export_prototypes`和`phase2_fuse_prototypes`只表示源域prototype导出和后续独立Stage2-A评估准备，不表示Stage2已经运行、Stage2成功或部署证据成立。
+
+## 2026-07-02 slot B启动执行记录
+
+用户明确要求启动slot B，即`phase1_kad_hardening_secondlane_gpu8_20260702`的8个KAD16H候选，每GPU第二槽一条。
+
+启动前本地状态:
+
+|项目|证据|
+|---|---|
+|协议边界|已重新读取`AGENTS.md`、`项目.md`和`cv-sincnet-n607-automation`技能；本次仍为Phase1 source-only，不声明真实`unknown_FAR`、`FPR95`或Stage2成功。|
+|Git-backed发布仓库|`E:\type10-7\github_publish\CVS-RFFI-repo`工作区干净；当前HEAD=`084e39e`；KAD16矩阵提交`a2408d3`已在当前历史中。|
+|本地验证|`py_compile cvsrffi\losses.py cvsrffi\phase2_prototypes.py SSDG\train_ssdg.py`通过；`bash -n scripts/launch_phase1_kad_hardening_secondlane_gpu8_20260702.sh`通过；slot B launcher dry-run展开8个KAD16H候选。|
+|本地SSH清理|preflight后发现2个旧bridge SSH进程，PID`23492`和`12748`，已关闭；复查`ssh_processes=none`，`n607_established_ssh=none`，`bridge_established_ssh=none`。|
+
+N607 direct preflight:
+
+- 时间:`2026-07-02T17:21:38+08:00`。
+- direct target:`N607`，user=`szu2070436088`，host=`dell-DSS8440`。
+- project root存在:`/home/szu2070436088/2510044040/CV-SincNet`。
+- GPU 0-7均为RTX3090，preflight时显存约`2379-2513MiB`，有KAD8训练占用。
+
+远端slot A/slot B状态:
+
+|GPU|KAD8主compute PID|candidate|slot B状态|
+|---|---:|---|---|
+|0|4063914|`KAD8G0_COREGATE_ANCHOR_E200`|可追加第二槽|
+|1|4059597|`KAD8G1_HOLDOUT_STRESS_E200`|可追加第二槽|
+|2|4059609|`KAD8G2_BRIDGE_CVAR_E200`|可追加第二槽|
+|3|4059602|`KAD8G3_SOURCE_OVERFLOW_E200`|可追加第二槽|
+|4|4059613|`KAD8G4_LOW_DENSITY_GATE_E200`|可追加第二槽|
+|5|4059619|`KAD8G5_ENERGY_MARGIN_Q05_E200`|可追加第二槽|
+|6|4059603|`KAD8G6_RADIUS_INTER_BUDGET_E200`|可追加第二槽|
+|7|4059620|`KAD8G7_COMBINED_SAT_REPAIR_E200`|可追加第二槽|
+
+远端目标目录检查:
+
+- `runs/phase1_kad_hardening_secondlane_gpu8_20260702`:不存在。
+- `logs/phase1_kad_hardening_secondlane_gpu8_20260702`:不存在。
+- `.launcher.lock`:不存在。
+- `code/scripts/launch_phase1_kad_hardening_secondlane_gpu8_20260702.sh`:启动前尚未同步。
+
+下一步动作:远端备份当前代码文件、同步本地硬化代码和slot B launcher、远端hash/语法/py_compile/dry-run验证，通过后启动slot B。
+
+同步与远端验证:
+
+|项目|证据|
+|---|---|
+|远端备份|`/home/szu2070436088/2510044040/CV-SincNet/code/snapshots/kad16_hardening_secondlane_remote_before_sync_20260702_1725`|
+|备份前远端hash|`losses.py=d2efb26e...`；`phase2_prototypes.py=8fee38f0...`；`train_ssdg.py=3b35c90f...`；slot B launcher启动前不存在。|
+|同步映射|`E:\type10-7\code\cvsrffi\losses.py` -> `/home/szu2070436088/2510044040/CV-SincNet/code/cvsrffi/losses.py`；`phase2_prototypes.py`同路径映射；`SSDG\train_ssdg.py`同路径映射；`scripts\launch_phase1_kad_hardening_secondlane_gpu8_20260702.sh` -> `/home/szu2070436088/2510044040/CV-SincNet/code/scripts/launch_phase1_kad_hardening_secondlane_gpu8_20260702.sh`。|
+|同步后远端hash|`losses.py=bf723258...`；`phase2_prototypes.py=8c5a3758...`；`train_ssdg.py=4bad0466...`；launcher=`57b38584...`，与本地SHA256一致。|
+|远端guard|`component_radius_default_ok`、`source_episode_default_ok`、`tail_effective_field_ok`、`proxy_claim_boundary_ok`、`launcher_lock_ok`均通过。|
+|远端语法/编译|`/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -m py_compile code/cvsrffi/losses.py code/cvsrffi/phase2_prototypes.py code/SSDG/train_ssdg.py`通过；`bash -n code/scripts/launch_phase1_kad_hardening_secondlane_gpu8_20260702.sh`通过。|
+|远端dry-run|`dryrun_candidate_count=8`，`[KAD16H-DONE] run_id=phase1_kad_hardening_secondlane_gpu8_20260702`。|
+|远端目标清洁|同步后启动前仍为`runs_missing_ok`、`logs_missing_ok`。|
+|SSH状态|远端验证后复查`ssh_processes=none`、`n607_established_ssh=none`。|
+
+slot B启动结果:
+
+- 本地启动SSH命令在30秒超时，不能直接作为成功/失败判据；随后关闭本地残留SSH PID`22844`并复查`n607_established_ssh=none`。
+- 远端只读探针确认slot B已启动，launcher日志已写出8个`[KAD16H-LAUNCHED]`。
+- 远端launcher父命令曾显示为PID`4153791`，主launcher脚本PID`4153793`，候选子launcher PID`4153802-4153809`。
+
+|GPU|candidate|PID|log|
+|---|---|---:|---|
+|0|`KAD16H0_HARDENED_DEFAULT_ANCHOR_E200`|4153878|`/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_kad_hardening_secondlane_gpu8_20260702/KAD16H0_HARDENED_DEFAULT_ANCHOR_E200.out`|
+|1|`KAD16H1_THREESIGMA_NEGCTRL_E200`|4153872|`/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_kad_hardening_secondlane_gpu8_20260702/KAD16H1_THREESIGMA_NEGCTRL_E200.out`|
+|2|`KAD16H2_BRIDGE_COREQ75_E200`|4153875|`/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_kad_hardening_secondlane_gpu8_20260702/KAD16H2_BRIDGE_COREQ75_E200.out`|
+|3|`KAD16H3_SOURCE_COREQ75_QUAR_E200`|4153863|`/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_kad_hardening_secondlane_gpu8_20260702/KAD16H3_SOURCE_COREQ75_QUAR_E200.out`|
+|4|`KAD16H4_TAIL_SENTINEL_GUARD_E200`|4153873|`/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_kad_hardening_secondlane_gpu8_20260702/KAD16H4_TAIL_SENTINEL_GUARD_E200.out`|
+|5|`KAD16H5_PROXY_ONLY_BOUNDARY_E200`|4153889|`/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_kad_hardening_secondlane_gpu8_20260702/KAD16H5_PROXY_ONLY_BOUNDARY_E200.out`|
+|6|`KAD16H6_P80_RADIUS_BUDGET_E200`|4153859|`/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_kad_hardening_secondlane_gpu8_20260702/KAD16H6_P80_RADIUS_BUDGET_E200.out`|
+|7|`KAD16H7_HARDENED_COMBINED_SAT_E200`|4153879|`/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_kad_hardening_secondlane_gpu8_20260702/KAD16H7_HARDENED_COMBINED_SAT_E200.out`|
+
+startup health检查:
+
+- 检查时间:`2026-07-02T17:32:59+08:00`至`2026-07-02T17:34:47+08:00`。
+- GPU状态:0-7每卡均有KAD8 slot A和KAD16H slot B各1个compute进程，符合每GPU两个训练实验的上限。
+- KAD16H liveness:8个`.pid`文件对应进程均存活，status均为`running`，启动时间均为`2026-07-02T17:26:59+08:00`，`evidence_role=diagnostic`且`promotion_allowed=false`。
+- 训练进度:8个候选均出现`[CONFIG-LOSS]`、`[CONFIG-SAT]`和`[EPOCH-BEGIN]`，启动健康窗口内已到约`E011/200`并写出checkpoint。
+- clean fatal scan:`Traceback|RuntimeError|unrecognized argument|CUDA out of memory|fatal|Killed|No such file|ImportError|ModuleNotFoundError`未命中，输出`fatal_scan_clean`。
+- SSH状态:启动和health探针后均已复查，本地`ssh_process_count=0`，到N607或bridge的`ESTABLISHED:22`连接数为0。
+
+startup health窗口内的同row早期闭集快照只用于确认训练在推进，不能作为最终排榜:
+
+|GPU|candidate|startup epoch|val_tx|test_tx|checkpoint/状态|
+|---|---|---:|---:|---:|---|
+|0|`KAD16H0_HARDENED_DEFAULT_ANCHOR_E200`|10|91.93%|80.29%|checkpoint已写，进程存活|
+|1|`KAD16H1_THREESIGMA_NEGCTRL_E200`|10|90.17%|78.96%|checkpoint已写，进程存活|
+|2|`KAD16H2_BRIDGE_COREQ75_E200`|10|90.33%|80.44%|checkpoint已写，进程存活|
+|3|`KAD16H3_SOURCE_COREQ75_QUAR_E200`|10|91.62%|80.90%|checkpoint已写，进程存活|
+|4|`KAD16H4_TAIL_SENTINEL_GUARD_E200`|10|87.01%|75.85%|checkpoint已写，进程存活|
+|5|`KAD16H5_PROXY_ONLY_BOUNDARY_E200`|10|89.89%|80.09%|checkpoint已写，进程存活|
+|6|`KAD16H6_P80_RADIUS_BUDGET_E200`|10|89.37%|75.82%|checkpoint已写，进程存活|
+|7|`KAD16H7_HARDENED_COMBINED_SAT_E200`|10|92.55%|81.31%|checkpoint已写，进程存活|
+
+注意:`grep -i nan`在早期日志中命中过未激活或零样本评估字段，例如proxy尚未启用、`TEST overall_tx=nan% (0/0)`、`sat_cos=nan`、`aux=nan`和`gate_r95=nandeg`。这些不是startup fatal，但后续分析必须继续检查真实拒识代理、tail、overflow、energy margin和component radius指标，不能把早期闭集快照或proxy字段改善当作真实unknown拒识改善。
