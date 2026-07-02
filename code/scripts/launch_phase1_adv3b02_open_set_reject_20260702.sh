@@ -18,6 +18,9 @@ UNKNOWN_TX_IDS="${UNKNOWN_TX_IDS:-10-1,10-10}"
 GPU="${GPU:-0}"
 DRY_RUN="${DRY_RUN:-0}"
 
+TARGET_RECEIVER_IDS="$(printf '%s' "${TARGET_RECEIVER_IDS}" | tr -d '\r')"
+UNKNOWN_TX_IDS="$(printf '%s' "${UNKNOWN_TX_IDS}" | tr -d '\r')"
+
 for arg in "$@"; do
   case "${arg}" in
     --dry-run) DRY_RUN=1 ;;
