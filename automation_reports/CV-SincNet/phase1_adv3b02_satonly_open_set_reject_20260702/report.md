@@ -366,3 +366,23 @@ Expected TTA summary:
 ```text
 /home/szu2070436088/2510044040/CV-SincNet/logs/phase1_adv3b02_sattta_rxlight_matrix_20260702/sattta_rxlight_sweep_summary.csv
 ```
+
+Launch status:
+
+| Field | Value |
+|---|---|
+| Launch time | `2026-07-02T16:50:06+08:00` on N607 |
+| Remote driver PID | `4107901` |
+| GPU allocation | `GPU=7`, script uses `CUDA_VISIBLE_DEVICES=7` and `--device cuda:0` |
+| Remote command | `cd /home/szu2070436088/2510044040/CV-SincNet && nohup env GPU=7 bash code/scripts/sweep_phase1_adv3b02_sattta_rxlight_20260702.sh > logs/phase1_adv3b02_sattta_rxlight_matrix_20260702/driver.out 2>&1 &` |
+| Driver log | `/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_adv3b02_sattta_rxlight_matrix_20260702/driver.out` |
+| Summary CSV | `/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_adv3b02_sattta_rxlight_matrix_20260702/sattta_rxlight_sweep_summary.csv` |
+| Startup health | PASS; entered second cell, GPU7 memory about `2421/24576 MiB`, no traceback in driver tail |
+
+Remote verification before launch:
+
+| Command | Result |
+|---|---|
+| `/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -m py_compile code/export_spaceborne_features.py code/scripts/eval_phase1_multiview_reject.py` | PASS |
+| `bash -n code/scripts/sweep_phase1_adv3b02_sattta_rxlight_20260702.sh` | PASS |
+| `sha256sum` for synced code/report | PASS; report hash `582bd9a0b781b404f0a6bffb5cb34f899456e6991c8b3ebaa1efa560eb1f01e9` before launch-status update |
