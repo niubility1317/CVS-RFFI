@@ -258,8 +258,13 @@ def fit_apply(args: argparse.Namespace) -> dict[str, Any]:
 
     all_features = torch.as_tensor(sat["features"], dtype=torch.float32, device=device)
     with torch.no_grad():
-        adapted = adapter(all_features).detach().cpu().numpy().astype(np.float32)
-        adapted_logits = _proto_logits(torch.as_tensor(adapted, dtype=torch.float32, device=device), prototypes, float(args.proto_temperature)).detach().cpu().numpy().astype(np.float32)
+        adapted_t = adapter(all_features).detach().float()
+        adapted_logits_t = _proto_logits(adapted_t, prototypes, float(args.proto_temperature)).detach().float()
+        # Some N607 PyTorch/NumPy combinations can expose tensor.numpy() as an
+        # object array. The list conversion is slower but robust for these
+        # bounded feature exports and keeps the saved NPZ strictly float32.
+        adapted = np.asarray(adapted_t.cpu().tolist(), dtype=np.float32)
+        adapted_logits = np.asarray(adapted_logits_t.cpu().tolist(), dtype=np.float32)
 
     out_arrays = dict(sat["arrays"])
     out_arrays["features"] = adapted
