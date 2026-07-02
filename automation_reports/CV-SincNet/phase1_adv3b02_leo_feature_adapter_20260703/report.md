@@ -732,3 +732,41 @@ Current conclusion after V9/V9b/V9b-class:
 | 目标2: `unknown_FAR<=0.05` with old performance drop`<=2pp` | Not achieved | V3-V9 all have dual pass 0; V9b-class still has either FAR 0.6275 under old retention or old drop 33.65pp under low FAR |
 
 Next route should change the evidence source rather than the threshold shape: the Phase1 feature space from `ADV3B02_CORE90_SOFT_E200phase1` does not currently expose a deployable source-only separation between target old and target unknown under LEO. The next aligned experiment is a true Phase1-side representation repair/retraining route, e.g. adding source-side non-old/open-set negatives and old-retention constraints during Phase1 training or during feature export, not another post-export gate.
+
+## V10 Phase2-B Old-Class K-Shot Calibration Design
+
+V10 changes the evidence boundary deliberately: it is no longer a zero-label/source-only rejection test. It is a Phase2-B-style diagnostic using target receiver old-class K-shot support, while still freezing the Phase1 base and using sat-only target features. It is included because V3-V9 showed that source-only post-export gates cannot separate target old from target unknown under LEO without losing old performance.
+
+Protocol boundary:
+
+| Item | V10 setting |
+|---|---|
+| Phase1 backbone | Frozen`ADV3B02_CORE90_SOFT_E200phase1`features |
+| Target clean | Not used |
+| Target unknown query for threshold | Not used |
+| Target labels used | Only`target_old`K-shot support per old TX |
+| Query | Held-out`target_old`query plus`target_unknown`query from same target receiver domain |
+| Interpretation | Phase2-B old-class calibration diagnostic, not source-only Stage2-A evidence |
+
+Mechanism:
+
+1. Group sat-only feature rows by role/TX/RX/day/signal.
+2. For each target receiver run and each old TX, choose deterministic K-shot target-old support.
+3. Build target-old prototypes from support, optionally shrink toward source old prototypes.
+4. Score held-out target-old query and target_unknown query by target-prototype cosine or negative L2.
+5. Choose thresholds from support scores and source proxy_unknown scores only.
+6. Report`unknown_FAR`, closed old accuracy, post-reject old accuracy, old drop, and dual-pass status.
+
+New local file:
+
+| File | Purpose | SHA256 |
+|---|---|---|
+| `E:\type10-7\code\scripts\eval_phase2b_kshot_oldcalib_reject_20260703.py` | Evaluate sat-only Phase2-B K-shot old-class calibration and unknown rejection over raw/V3 repaired Phase1 features | `6E00B843B6CC61908A08E814DD5318925D3FBAADD8F7F57986543B8FD55B1341` |
+
+Local verification:
+
+| Command | Result |
+|---|---|
+| `C:\Users\lh594\.conda\envs\ssr-gpu\python.exe -m py_compile E:\type10-7\code\scripts\eval_phase2b_kshot_oldcalib_reject_20260703.py` | PASS |
+
+Planned remote output: `/home/szu2070436088/2510044040/CV-SincNet/logs/phase2b_kshot_oldcalib_reject_20260703/kshot_oldcalib_reject_summary.csv`.
