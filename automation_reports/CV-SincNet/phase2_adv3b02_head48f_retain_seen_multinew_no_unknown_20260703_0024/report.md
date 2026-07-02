@@ -39,7 +39,7 @@ Continue the live ADV3B02 Phase2 goal after `phase2_adv3b02_stage2c_multinew_no_
 | Bash syntax | PASS for root and Git-backed mirror launchers |
 | Dry-run audit | PASS: 4 candidates, 0 actual `--unknown_tx_ids`, new OLD80 policy present |
 | Git-backed mirror | pending commit |
-| N607 preflight/occupancy | pending before sync/launch |
+| N607 preflight/occupancy | PASS before sync/launch |
 
 ## Claim Boundary
 
@@ -63,3 +63,28 @@ Dry-run audit:
 | 3-new candidate lines | 2 |
 
 The Git-backed launcher has path-scoped LF checkout policy in `.gitattributes`.
+
+## N607 Prelaunch Evidence
+
+| Check | Evidence |
+|---|---|
+| Direct preflight | PASS via `tools\n607_ssh_preflight.ps1`; project root visible; 8 GPUs visible |
+| Live occupancy | `tools\n607_training_inventory.py --direct-only --pretty`: no `gpu_compute`, no active training processes, no launcher context |
+| Target path conflict | no existing launcher, run root, or log root for this `RUN_ID` |
+| Disk | `/home` has 7.7T available, 26% used |
+| SSH cleanup | local `ssh_process_count=0`, `n607_or_bridge_established_count=0` after preflight, occupancy, and path checks |
+
+Planned remote sync:
+
+| Local | Remote |
+|---|---|
+| `code/cvsrffi/spaceborne_fewshot.py` | `/home/szu2070436088/2510044040/CV-SincNet/code/cvsrffi/spaceborne_fewshot.py` |
+| `code/eval_spaceborne_fewshot.py` | `/home/szu2070436088/2510044040/CV-SincNet/code/eval_spaceborne_fewshot.py` |
+| `code/scripts/launch_phase2_adv3b02_head48f_retain_seen_multinew_no_unknown_20260703_0024.sh` | `/home/szu2070436088/2510044040/CV-SincNet/code/scripts/launch_phase2_adv3b02_head48f_retain_seen_multinew_no_unknown_20260703_0024.sh` |
+| `automation_reports/CV-SincNet/phase2_adv3b02_head48f_retain_seen_multinew_no_unknown_20260703_0024/report.md` | `/home/szu2070436088/2510044040/CV-SincNet/automation_reports/CV-SincNet/phase2_adv3b02_head48f_retain_seen_multinew_no_unknown_20260703_0024/report.md` |
+
+Planned launch command:
+
+```bash
+ssh -F E:\type10-7\tools\n607_ssh_config -o BatchMode=yes N607 'cd /home/szu2070436088/2510044040/CV-SincNet && mkdir -p logs/phase2_adv3b02_head48f_retain_seen_multinew_no_unknown_20260703_0024 automation_reports/CV-SincNet/phase2_adv3b02_head48f_retain_seen_multinew_no_unknown_20260703_0024 && nohup env RUN_ID=phase2_adv3b02_head48f_retain_seen_multinew_no_unknown_20260703_0024 bash code/scripts/launch_phase2_adv3b02_head48f_retain_seen_multinew_no_unknown_20260703_0024.sh > logs/phase2_adv3b02_head48f_retain_seen_multinew_no_unknown_20260703_0024/scheduler.out 2>&1 < /dev/null & echo scheduler_pid=$!'
+```
