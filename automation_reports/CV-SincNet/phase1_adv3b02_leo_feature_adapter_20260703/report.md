@@ -1216,3 +1216,51 @@ Current status after V14:
 | 目标2: `unknown_FAR<=0.05` with old drop`<=2pp` | Not achieved | V3-V14 all have dual pass 0; V14 adds 6400 selective-correctness rows with dual pass 0 |
 
 The remaining aligned route is no longer a different frozen-feature gate. The separation needed for`unknown_FAR<5%`with old-class drop`<2pp`must be learned before or inside the Phase1 representation, using source-side non-old/open-set negatives and LEO identity-retention, then audited again with the same sat-only target protocol.
+
+## V15 Classwise LEO Repair Design
+
+V15 changes the repair mechanism rather than the rejection head. Previous source-only adapters were global or ensemble-level. V15 fits one clean<-LEO repair direction per old transmitter from source clean/LEO paired features, then applies the repair to each sat-only sample according to its predicted old class. The hypothesis is that class-conditional LEO damage may be over-smoothed by a global adapter; repairing each old-class manifold separately may preserve old target samples while leaving unknown samples less compatible with old prototypes.
+
+Protocol boundary:
+
+| Item | V15 setting |
+|---|---|
+| Phase1 backbone | Frozen`ADV3B02_CORE90_SOFT_E200phase1` |
+| Adapter training | Source clean/LEO paired features only |
+| Repair form | Per-old-TX mean clean-minus-LEO residual, applied by predicted old class |
+| Threshold source | Source old + source proxy_unknown rows after classwise repair |
+| Target clean | Not used |
+| Target labels in threshold | Not used |
+| Unknown query threshold fitting | Not used |
+
+New files:
+
+| File | Purpose | SHA256 |
+|---|---|---|
+| `E:\type10-7\code\scripts\eval_phase1_classwise_leo_repair_reject_20260703.py` | Fit classwise source-only LEO repair and evaluate sat-only rejection rows | `6D418D11F55D001FC775F5D9F32F05B82A37A4E8E80866949EAC0A2DE52C3BD7` |
+| `E:\type10-7\code\scripts\sweep_phase1_adv3b02_classwise_repair_v15_20260703.sh` | N607 launcher and best-row summarizer for V15 | `8D750EAAC9670144D7EE2F556870C4BAA7E2CDC131AD6D87B6EEF186D220CE28` |
+
+Local verification:
+
+| Command | Result |
+|---|---|
+| `C:\Users\lh594\.conda\envs\ssr-gpu\python.exe -m py_compile E:\type10-7\code\scripts\eval_phase1_classwise_leo_repair_reject_20260703.py` | PASS |
+| `bash -lc "bash -n /mnt/e/type10-7/code/scripts/sweep_phase1_adv3b02_classwise_repair_v15_20260703.sh"` | PASS |
+
+Version/snapshot state:
+
+| Item | Path |
+|---|---|
+| Non-Git code snapshot | `E:\type10-7\code\snapshots\phase1_adv3b02_classwise_repair_v15_20260703\` |
+| Git mirror eval script path | `E:\type10-7\github_publish\CVS-RFFI-repo\code\scripts\eval_phase1_classwise_leo_repair_reject_20260703.py` |
+| Git mirror launcher path | `E:\type10-7\github_publish\CVS-RFFI-repo\code\scripts\sweep_phase1_adv3b02_classwise_repair_v15_20260703.sh` |
+
+Planned N607 output:
+
+| Artifact | Remote path |
+|---|---|
+| V15 summary | `/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_adv3b02_classwise_repair_v15_20260703/classwise_repair_v15_summary.csv` |
+| V15 best JSON | `/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_adv3b02_classwise_repair_v15_20260703/classwise_repair_v15_best.json` |
+| V15 metrics JSON | `/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_adv3b02_classwise_repair_v15_20260703/classwise_repair_v15_metrics.json` |
+
+Success criteria remain unchanged:`unknown_FAR<=0.05`and old-class performance drop`<=2pp`on sat-only target query, without target clean or target unknown threshold tuning.
