@@ -373,13 +373,15 @@ New local file:
 
 | File | Purpose | SHA256 |
 |---|---|---|
-| `E:\type10-7\code\scripts\sweep_phase1_score_table_fusion_20260703.py` | Fuse V3 score tables from linear, MLP, prototype-cosine, and prototype-Mahalanobis scores using source/proxy calibration | `19A8E5E64B2C497ED5D4FCA280D3D20CB8EBFF4F3E48E0B43EBB0B7CA95DF3A3` |
+| `E:\type10-7\code\scripts\sweep_phase1_score_table_fusion_20260703.py` | Fuse V3 score tables from linear, MLP, prototype-cosine, and prototype-Mahalanobis scores using source/proxy calibration | `1A9B56F1E095F37E9F06806CFB014C55A78F61DFFDEA93F06075C4F956F457E6` |
 
 Local verification:
 
 | Command | Result |
 |---|---|
 | `C:\Users\lh594\.conda\envs\ssr-gpu\python.exe -m py_compile E:\type10-7\code\scripts\sweep_phase1_score_table_fusion_20260703.py` | PASS |
+
+Remote compatibility note: the first V4 attempt failed because the remote`CVS-RFFI`environment has no`pandas`. The script was revised to use only standard`csv`plus`numpy`, then locally recompiled.
 
 Planned V4 matrix:
 

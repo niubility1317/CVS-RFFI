@@ -9,7 +9,6 @@ from pathlib import Path
 from typing import Iterable
 
 import numpy as np
-import pandas as pd
 
 
 KEY_FIELDS = ["group", "role", "tx_id", "rx_id", "day_id", "sig_id"]
@@ -30,8 +29,8 @@ COMPONENT_SETS = {
 }
 
 
-def _as_bool(s: pd.Series) -> pd.Series:
-    return s.astype(str).str.lower().isin(["1", "true", "yes"])
+def _as_bool(value: object) -> bool:
+    return str(value).strip().lower() in {"1", "true", "yes"}
 
 
 def _rank_against_source(values: np.ndarray, source_values: np.ndarray) -> np.ndarray:
@@ -42,14 +41,23 @@ def _rank_against_source(values: np.ndarray, source_values: np.ndarray) -> np.nd
     return np.searchsorted(src, vals, side="right").astype(np.float64) / float(src.size)
 
 
-def _load_component(adapter_dir: Path, name: str) -> pd.DataFrame:
+def _load_component(adapter_dir: Path, name: str) -> dict[tuple[str, ...], dict]:
     path = adapter_dir / COMPONENTS[name]
     if not path.is_file():
         raise FileNotFoundError(path)
-    df = pd.read_csv(path)
-    df = df[KEY_FIELDS + ["unknown_score", "is_known_query", "is_unknown_query", "closed_correct_known"]].copy()
-    df[f"score_{name}"] = pd.to_numeric(df.pop("unknown_score"), errors="coerce")
-    return df
+    rows: dict[tuple[str, ...], dict] = {}
+    with path.open("r", encoding="utf-8", newline="") as f:
+        reader = csv.DictReader(f)
+        for row in reader:
+            key = tuple(str(row[field]) for field in KEY_FIELDS)
+            rows[key] = {
+                **{field: str(row[field]) for field in KEY_FIELDS},
+                "is_known_query": row.get("is_known_query", "0"),
+                "is_unknown_query": row.get("is_unknown_query", "0"),
+                "closed_correct_known": row.get("closed_correct_known", "0"),
+                f"score_{name}": float(row.get("unknown_score", "nan")),
+            }
+    return rows
 
 
 def _fuse(ranks: np.ndarray, method: str) -> np.ndarray:
@@ -66,7 +74,7 @@ def _fuse(ranks: np.ndarray, method: str) -> np.ndarray:
 
 
 def _evaluate(
-    merged: pd.DataFrame,
+    merged: list[dict],
     component_set: str,
     method: str,
     threshold_policy: str,
@@ -74,11 +82,12 @@ def _evaluate(
     proxy_q: float,
 ) -> dict:
     comps = COMPONENT_SETS[component_set]
-    source_mask = merged["role"].eq("source").to_numpy()
-    proxy_mask = merged["role"].eq("proxy_unknown").to_numpy()
+    roles = np.asarray([str(row["role"]) for row in merged])
+    source_mask = roles == "source"
+    proxy_mask = roles == "proxy_unknown"
     ranks = []
     for comp in comps:
-        score = merged[f"score_{comp}"].to_numpy(dtype=np.float64)
+        score = np.asarray([float(row[f"score_{comp}"]) for row in merged], dtype=np.float64)
         ranks.append(_rank_against_source(score, score[source_mask]))
     rank_mat = np.stack(ranks, axis=1)
     fused = _fuse(rank_mat, method)
@@ -94,9 +103,9 @@ def _evaluate(
         raise ValueError(f"unknown threshold policy: {threshold_policy}")
     accepted = fused <= threshold
 
-    known_mask = _as_bool(merged["is_known_query"]).to_numpy()
-    unknown_mask = _as_bool(merged["is_unknown_query"]).to_numpy()
-    closed_correct = _as_bool(merged["closed_correct_known"]).to_numpy()
+    known_mask = np.asarray([_as_bool(row["is_known_query"]) for row in merged], dtype=bool)
+    unknown_mask = np.asarray([_as_bool(row["is_unknown_query"]) for row in merged], dtype=bool)
+    closed_correct = np.asarray([_as_bool(row["closed_correct_known"]) for row in merged], dtype=bool)
     known_total = int(known_mask.sum())
     unknown_total = int(unknown_mask.sum())
     known_closed_correct = int((known_mask & closed_correct).sum())
@@ -130,17 +139,23 @@ def _evaluate(
     }
 
 
-def _merge_components(adapter_dir: Path, comps: Iterable[str]) -> pd.DataFrame:
-    base = None
+def _merge_components(adapter_dir: Path, comps: Iterable[str]) -> list[dict]:
+    base: dict[tuple[str, ...], dict] | None = None
     for comp in comps:
         df = _load_component(adapter_dir, comp)
         if base is None:
             base = df
         else:
-            base = base.merge(df[KEY_FIELDS + [f"score_{comp}"]], on=KEY_FIELDS, how="inner", validate="one_to_one")
+            common = sorted(set(base) & set(df))
+            merged = {}
+            for key in common:
+                row = dict(base[key])
+                row[f"score_{comp}"] = df[key][f"score_{comp}"]
+                merged[key] = row
+            base = merged
     if base is None:
         raise ValueError("empty component set")
-    return base
+    return [base[key] for key in sorted(base)]
 
 
 def parse_args() -> argparse.Namespace:
