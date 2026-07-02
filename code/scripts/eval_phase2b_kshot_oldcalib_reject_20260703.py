@@ -193,6 +193,34 @@ def _metrics(accept: np.ndarray, known: np.ndarray, unknown: np.ndarray, closed:
     }
 
 
+def _joint_excess(row: dict) -> float:
+    far = float(row.get("unknown_FAR", np.nan))
+    drop = float(row.get("old_drop_pp_vs_closed", np.nan))
+    return max(0.0, far - 0.05) + max(0.0, drop - 2.0) / 100.0
+
+
+def _target_label_oracle(score: np.ndarray, known: np.ndarray, unknown: np.ndarray, closed: np.ndarray) -> tuple[dict, float]:
+    candidates = np.unique(score[np.isfinite(score)])
+    if candidates.size == 0:
+        return _metrics(np.zeros_like(score, dtype=bool), known, unknown, closed), float("nan")
+    best = None
+    best_threshold = float(candidates[0])
+    for threshold in candidates:
+        accept = score >= float(threshold)
+        row = _metrics(accept, known, unknown, closed)
+        key = (
+            _joint_excess(row),
+            max(0.0, float(row["unknown_FAR"]) - 0.05),
+            max(0.0, float(row["old_drop_pp_vs_closed"]) - 2.0),
+            -float(row["known_full_accuracy_after_reject"]),
+        )
+        if best is None or key < best[0]:
+            best = (key, row)
+            best_threshold = float(threshold)
+    assert best is not None
+    return best[1], best_threshold
+
+
 def _run_one(npz_path: Path, feature_tag: str, source_tx_ids: list[str], args: argparse.Namespace) -> list[dict]:
     payload = _load_npz(npz_path)
     rows = _group_rows(payload, source_tx_ids)
@@ -222,6 +250,30 @@ def _run_one(npz_path: Path, feature_tag: str, source_tx_ids: list[str], args: a
                     ("max_score", max_score, cal_max),
                     ("margin", margin, cal_margin),
                 ]:
+                    oracle, oracle_threshold = _target_label_oracle(score, known, unknown, closed)
+                    oracle.update({
+                        "run_id": npz_path.parent.parent.name if npz_path.name.endswith(".npz") else npz_path.stem,
+                        "feature_tag": feature_tag,
+                        "target_rx": ",".join(target_rxs),
+                        "mode": "phase2b_target_old_kshot_calib_oracle",
+                        "k_shot": k,
+                        "support_count": int(support_idx.size),
+                        "target_old_query_count": int(target_query_idx.size),
+                        "source_proxy_count": int(proxy_idx.size),
+                        "shrink_to_source": shrink,
+                        "metric": metric,
+                        "score_name": score_name,
+                        "threshold_policy": "target_label_oracle",
+                        "support_accept_quantile": float("nan"),
+                        "proxy_far_quantile": float("nan"),
+                        "threshold": oracle_threshold,
+                        "support_threshold": float("nan"),
+                        "proxy_threshold": float("nan"),
+                        "uses_target_clean": False,
+                        "uses_target_old_support": True,
+                        "uses_unknown_query_for_threshold": True,
+                    })
+                    out.append(oracle)
                     support_scores = cal_score[cal_is_support]
                     proxy_scores = cal_score[cal_is_proxy]
                     for policy in ["support_accept", "proxy_far", "max_support_proxy", "mean_support_proxy"]:
