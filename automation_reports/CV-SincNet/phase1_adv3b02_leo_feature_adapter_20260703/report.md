@@ -761,7 +761,7 @@ New local file:
 
 | File | Purpose | SHA256 |
 |---|---|---|
-| `E:\type10-7\code\scripts\eval_phase2b_kshot_oldcalib_reject_20260703.py` | Evaluate sat-only Phase2-B K-shot old-class calibration and unknown rejection over raw/V3 repaired Phase1 features | `6E00B843B6CC61908A08E814DD5318925D3FBAADD8F7F57986543B8FD55B1341` |
+| `E:\type10-7\code\scripts\eval_phase2b_kshot_oldcalib_reject_20260703.py` | Evaluate sat-only Phase2-B K-shot old-class calibration and unknown rejection over raw/V3 repaired Phase1 features, including target-label oracle diagnostic rows | `378C0431CEB3A7321CE012502ACC5EE4B8C3F94D38B5A1CC7F684D71B279133D` |
 
 Local verification:
 
@@ -770,3 +770,50 @@ Local verification:
 | `C:\Users\lh594\.conda\envs\ssr-gpu\python.exe -m py_compile E:\type10-7\code\scripts\eval_phase2b_kshot_oldcalib_reject_20260703.py` | PASS |
 
 Planned remote output: `/home/szu2070436088/2510044040/CV-SincNet/logs/phase2b_kshot_oldcalib_reject_20260703/kshot_oldcalib_reject_summary.csv`.
+
+## V10 Completion Results
+
+V10 was run in two passes:
+
+| Pass | Rows | Dual pass | Boundary |
+|---|---:|---:|---|
+| Deployable support/proxy thresholds | 187200 | 0 | Uses target-old support and source proxy_unknown only for calibration; no unknown query threshold |
+| Target-label oracle diagnostic | 190080 | 0 | Adds oracle rows that use target labels/unknown query only to test whether a score-space threshold exists |
+
+Artifacts:
+
+| Artifact | Local path | SHA256 |
+|---|---|---|
+| V10 deployable summary | `E:\type10-7\automation_reports\CV-SincNet\phase1_adv3b02_leo_feature_adapter_20260703\artifacts\kshot_oldcalib_reject_summary.csv` | `817EC03344124423CE422DB1A38B4C8AB576FBB4A2986329C2592F93E14EDA40` |
+| V10 deployable log | `E:\type10-7\automation_reports\CV-SincNet\phase1_adv3b02_leo_feature_adapter_20260703\artifacts\kshot_oldcalib_reject.out` | `59BA9C89AC1D71669F8E9679C22A58730C96376FCDB38EFFE92F2ACE2BDDF22F` |
+| V10 oracle summary | `E:\type10-7\automation_reports\CV-SincNet\phase1_adv3b02_leo_feature_adapter_20260703\artifacts\kshot_oldcalib_reject_oracle_summary.csv` | `451371CC91A1AB01ECE508C2C50B8588BFCF02FAE924C8273F8084C94B3F7C69` |
+| V10 oracle log | `E:\type10-7\automation_reports\CV-SincNet\phase1_adv3b02_leo_feature_adapter_20260703\artifacts\kshot_oldcalib_reject_oracle.out` | `961DA6BBB0AC2C95B93115A400EBB49B265D6AED260B50F6BFC5AC4418FD44D1` |
+
+Best deployable same-row outcomes:
+
+| Selection rule | Run | Feature | K | Metric/score/policy | unknown_FAR | Old drop pp | Closed old acc | Final old acc | Verdict |
+|---|---|---|---:|---|---:|---:|---:|---:|---|
+| Best FAR with old drop`<=2pp` | `rx20_1_u1` | `LEOADAPT3_LINR_COS` | 20 | neg_l2/max_score/mean_support_proxy | 0.4174 | 1.86 | 0.6140 | 0.5954 | FAR fails |
+| Best old retention with FAR`<=5%` | `rx20_1_u1` | `LEOADAPT3_LINR_COS` | 1 | neg_l2/max_score/mean_support_proxy | 0.0476 | 23.01 | 0.4912 | 0.2610 | Old performance fails |
+| Nearest deployable joint row | `rx20_1_u1` | `LEOADAPT3_LINR_COS` | 1 | neg_l2/max_score/mean_support_proxy | 0.0840 | 17.83 | 0.4912 | 0.3129 | Still far from dual target |
+
+Best target-label oracle same-row outcomes:
+
+| Selection rule | Run | Feature | K | Metric/score | unknown_FAR | Old drop pp | Closed old acc | Final old acc | Verdict |
+|---|---|---|---:|---|---:|---:|---:|---:|---|
+| Best FAR with old drop`<=2pp` | `rx7_7_u1` | `LEOADAPT3_MLP_ID` | 10 | neg_l2/max_score | 0.5700 | 1.53 | 0.7521 | 0.7368 | Even oracle FAR fails |
+| Best old retention with FAR`<=5%` | `rx20_1_u10` | raw Phase1 sat-only | 2 | cosine/margin | 0.0498 | 23.32 | 0.4690 | 0.2358 | Old performance fails |
+| Nearest oracle row | `rx20_1_u1` | `LEOADAPT3_LINR_COS` | 1 | neg_l2/max_score | 0.0952 | 16.32 | 0.4912 | 0.3279 | Even oracle misses both |
+
+V10 interpretation:
+
+Target-old K-shot support improves closed old-class accuracy in some receiver cells, especially with raw Phase1 or `LEOADAPT3_LINR_COS` features at higher K. However, old/unknown score distributions still overlap heavily under sat-only LEO query. The target-label oracle result is decisive for this prototype-score route: even with an invalid oracle threshold chosen using target unknown labels, there is no row satisfying both`unknown_FAR<=0.05`and old drop`<=2pp`. Therefore the failure is not only support/proxy threshold calibration; the tested Phase1 feature/prototype score itself does not expose a sufficient separation surface.
+
+Current conclusion after V10:
+
+| Target | Status | Evidence |
+|---|---|---|
+| 目标1: source-only LEO repair | Achieved | V3/V9b retain valid source-only LEO repair evidence |
+| 目标2: `unknown_FAR<=0.05` with old drop`<=2pp` | Not achieved | V3-V10 all have dual pass 0; V10 target-label oracle also has dual pass 0 |
+
+Next technically aligned action must move below post-export scoring. Either retrain a Phase1-compatible representation with explicit source non-old/open-set negatives and old retention, or add a raw-IQ level denoising/equalization front-end before feature extraction. Continuing to sweep thresholds, shallow heads, or K-shot prototype gates on the current exported feature space is unlikely to satisfy the objective.
