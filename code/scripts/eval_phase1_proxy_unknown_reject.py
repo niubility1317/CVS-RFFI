@@ -149,6 +149,14 @@ def _threshold(
         threshold = max(source_t, proxy_t)
     else:
         raise ValueError(f"unknown threshold_policy={policy!r}")
+    source_accept = sum(1 for value in source_scores.tolist() if float(value) <= threshold) / max(
+        1,
+        int(source_scores.shape[0]),
+    )
+    proxy_accept = sum(1 for value in proxy_scores.tolist() if float(value) <= threshold) / max(
+        1,
+        int(proxy_scores.shape[0]),
+    )
     return threshold, {
         "threshold_policy": policy_text,
         "unknown_score_threshold": float(threshold),
@@ -156,8 +164,8 @@ def _threshold(
         "proxy_far_quantile": float(proxy_far_quantile),
         "source_threshold": source_t,
         "proxy_threshold": proxy_t,
-        "source_accept_rate_at_threshold": float((source_scores <= threshold).mean()),
-        "proxy_false_accept_rate_at_threshold": float((proxy_scores <= threshold).mean()),
+        "source_accept_rate_at_threshold": float(source_accept),
+        "proxy_false_accept_rate_at_threshold": float(proxy_accept),
     }
 
 
