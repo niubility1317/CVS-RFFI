@@ -1372,3 +1372,67 @@ Local verification before N607 sync:
 | Line endings | PASS: LF-only for both new files |
 | Local snapshot | `E:\type10-7\code\snapshots\phase1_adv3b02_classcond_reject_20260702\` |
 | SHA256 | `eval_phase1_scoretable_classcond_reject.py=9AE5A681B86D5CFDDBC3A2270D7CF9847364DD01A77CAB81C306F1B094815DD8`; `sweep_phase1_adv3b02_classcond_reject_20260702.sh=DC7078C7604C04AE53D4F6527A1ECA286E99EE0E12ED322C3AD0DDB7C6A6E027` |
+
+Remote sync and launch status:
+
+| Field | Value |
+|---|---|
+| Git mirror commit | `e37bc72 Add class conditional rejection recalibration` |
+| Remote sync | completed with direct `scp -F tools\n607_ssh_config` |
+| Remote Python syntax | PASS: `/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -m py_compile code/scripts/eval_phase1_scoretable_classcond_reject.py` |
+| Remote bash syntax | PASS: `bash -n code/scripts/sweep_phase1_adv3b02_classcond_reject_20260702.sh` |
+| Remote hashes | `eval_phase1_scoretable_classcond_reject.py=9ae5a681b86d5cfddbc3a2270d7cf9847364dd01a77cab81c306f1b094815dd8`; `sweep_phase1_adv3b02_classcond_reject_20260702.sh=dc7078c7604c04ae53d4f6527a1eca286e99ee0e12ed322c3ad0ddb7c6a6e027` |
+| Remote line endings | PASS, LF-only for both synced files |
+| Launch time | `2026-07-02T21:05:47+08:00` on N607 |
+| GPU allocation | CPU/score-table recalibration only; no CUDA allocation requested |
+| Driver path | `/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_adv3b02_classcond_reject_matrix_20260702/driver.out` |
+| Summary path | `/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_adv3b02_classcond_reject_matrix_20260702/classcond_reject_sweep_summary.csv` |
+| Landed process | shell script PID `234707` |
+
+Completion status:
+
+| Field | Value |
+|---|---|
+| Completion time | `2026-07-02T23:08:12+08:00` |
+| Completed rows | 4320 rows |
+| Driver status | `[PHASE1-CLASSCOND-SWEEP-DONE]` observed |
+| Local summary artifact | `E:\type10-7\automation_reports\CV-SincNet\phase1_adv3b02_satonly_open_set_reject_20260702\artifacts\classcond_reject_sweep_summary.csv` |
+| Local driver artifact | `E:\type10-7\automation_reports\CV-SincNet\phase1_adv3b02_satonly_open_set_reject_20260702\artifacts\classcond_reject_driver.out` |
+| Artifact hashes | `classcond_reject_sweep_summary.csv=0962E2D298713D2616D50671715094F824DB21BF34D147D9405F1EC2CFC05BF3`; `classcond_reject_driver.out=C376DE3F5213EA2EF0FE68D159777F85D89F52D5D06FD9FE7D17E7B08A67A082` |
+
+Overall result:
+
+| Metric | Value |
+|---|---:|
+| Rows | 4320 |
+| Dual pass (`unknown_FAR<=0.05` and old drop `<=2pp`) | 0 |
+| FAR-only pass | 802 |
+| Old-drop-only pass | 648 |
+
+Best aggregate low-FAR settings:
+
+| Family | Base policy | Threshold policy | Source q | Proxy q | Correct source only | Cells | Mean unknown_FAR | Max unknown_FAR | Mean old drop pp | Max old drop pp | Dual pass | Mean coverage |
+|---|---|---|---:|---:|---|---:|---:|---:|---:|---:|---:|---:|
+| `satrepair_anchor7` | `SATREPAIRA7_MLP_M50_COR_PROXY05` | `min_class_source_proxy` | 0.999 | 0.020 | false | 10 | 0.0187 | 0.0333 | 42.27 | 46.17 | 0/10 | 0.1023 |
+| `satrepair_anchor7` | `SATREPAIRA7_MLP_M50_COR_PROXY05` | `min_class_source_proxy` | 0.999 | 0.020 | true | 10 | 0.0187 | 0.0333 | 42.27 | 46.17 | 0/10 | 0.1023 |
+| `satrepair_anchor7` | `SATREPAIRA7_MLP_M50_COR_PROXY05` | `proxy_class_far` | 0.999 | 0.020 | false | 10 | 0.0187 | 0.0333 | 42.27 | 46.17 | 0/10 | 0.1023 |
+| `satrepair9` | `SATREPAIR9_MLP_M50_COR_PROXY05` | `min_class_source_proxy` | 0.999 | 0.020 | true | 10 | 0.0226 | 0.0386 | 27.32 | 29.17 | 0/10 | 0.0667 |
+| `satrepair9` | `SATREPAIR9_MLP_M50_COR_PROXY05` | `min_class_source_proxy` | 1.000 | 0.020 | true | 10 | 0.0226 | 0.0386 | 27.32 | 29.17 | 0/10 | 0.0667 |
+
+Best same-row low-FAR candidates:
+
+| Family | Run | Base policy | Threshold policy | Source q | Proxy q | unknown_FAR | Old drop pp | Closed old acc | Full old acc after reject | Coverage | Dual pass |
+|---|---|---|---|---:|---:|---:|---:|---:|---:|---:|---|
+| `satrepair_anchor7` | `phase1_adv3b02_satrepair_anchor7_rx20_1_u1_20260702` | `SATREPAIRA7_MLP_M50_COR_PROXY05` | `min_class_source_proxy` | 0.999 | 0.020 | 0.0028 | 40.58 | 0.4658 | 0.0600 | 0.0775 | false |
+| `satrepair_anchor7` | `phase1_adv3b02_satrepair_anchor7_rx20_1_u1_20260702` | `SATREPAIRA7_MLP_M50_COR_PROXY05` | `proxy_class_far` | 0.999 | 0.020 | 0.0028 | 40.58 | 0.4658 | 0.0600 | 0.0775 | false |
+| `satrepair_anchor7` | `phase1_adv3b02_satrepair_anchor7_rx20_1_u1_20260702` | `SATREPAIRA7_MLP_M50_PROXY02` | `min_class_source_proxy` | 0.999 | 0.020 | 0.0028 | 43.25 | 0.4658 | 0.0333 | 0.1008 | false |
+
+Nearest same-row candidates to the dual target:
+
+| Family | Run | Base policy | Threshold policy | Source q | Proxy q | unknown_FAR | Old drop pp | Closed old acc | Full old acc after reject | Coverage | Dual pass |
+|---|---|---|---|---:|---:|---:|---:|---:|---:|---:|---|
+| `satrepair9` | `phase1_adv3b02_satrepair9_rx7_14_u1_20260702` | `SATREPAIR9_MLP_M50_COR_PROXY05` | `min_class_source_proxy` | 1.000 | 0.100 | 0.0750 | 19.83 | 0.3483 | 0.1500 | 0.2600 | false |
+| `satrepair9` | `phase1_adv3b02_satrepair9_rx7_14_u1_20260702` | `SATREPAIR9_MLP_M50_COR_PROXY05` | `min_class_source_proxy` | 0.999 | 0.100 | 0.0750 | 19.83 | 0.3483 | 0.1500 | 0.2600 | false |
+| `satrepair9` | `phase1_adv3b02_satrepair9_rx7_14_u1_20260702` | `SATREPAIR9_MLP_M50_COR_PROXY05` | `proxy_class_far` | 0.999 | 0.100 | 0.0750 | 19.83 | 0.3483 | 0.1500 | 0.2600 | false |
+
+Interpretation: class-conditional recalibration confirms the same conflict at a finer granularity. It can make unknown_FAR very low, including aggregate mean FAR 1.87% and max FAR 3.33%, but only by accepting about 10% of known target-old samples and losing roughly 42pp of old-class accuracy. The nearest same-row candidates to the joint target still have unknown_FAR about 7.0%-7.5% and old drop about 20pp. Therefore the failure is not just a global-threshold artifact.
