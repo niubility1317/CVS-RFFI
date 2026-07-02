@@ -1027,3 +1027,51 @@ Current status after V12:
 | 目标2: `unknown_FAR<=0.05` with old drop`<=2pp` | Not achieved | V3-V12 all have dual pass 0; V12 1600-row heterogeneous decision fusion also dual pass 0 |
 
 The remaining route that still moves toward the original target is no longer another frozen-Phase1 threshold or adapter combination. The evidence now points to representation-level retraining under the Phase1 protocol: source-side non-old/open-set negatives and LEO identity-retention must be learned inside the base representation, after which the same sat-only audit should be repeated.
+
+## V13 Repair-Ensemble Manifold Design
+
+V13 keeps the frozen`ADV3B02_CORE90_SOFT_E200phase1`backbone and does not use target clean features. It tests a narrower repair-based hypothesis: old target LEO samples should land consistently on the source old manifold after source-only LEO repair, while unknown samples should show larger repaired-manifold distance or weaker repairer agreement. This is a reverse repair view rather than a stronger augmentation view.
+
+Protocol boundary:
+
+| Item | V13 setting |
+|---|---|
+| Phase1 backbone | Frozen`ADV3B02_CORE90_SOFT_E200phase1` |
+| Repair modules | Existing V3 source-only LEO adapters |
+| Training/fitting data | Source rows inside repaired feature NPZs only |
+| Negative calibration | `proxy_unknown` rows from source receiver/non-old LEO payloads |
+| Target clean | Not used |
+| Target labels in threshold | Not used |
+| Unknown query threshold fitting | Not used |
+| Accept rule | Source/proxy calibrated threshold on repaired-manifold oldness score |
+
+New files:
+
+| File | Purpose | SHA256 |
+|---|---|---|
+| `E:\type10-7\code\scripts\eval_phase1_repair_ensemble_manifold_reject_20260703.py` | Fit source old manifolds over repaired features and evaluate repair agreement/distance rejection | `E127200A0533367F20EAC29DF618D8AA4131C748D49C79F823B1CDA090C77C65` |
+| `E:\type10-7\code\scripts\sweep_phase1_adv3b02_repair_ensemble_v13_20260703.sh` | N607 launcher and best-row summarizer for V13a/V13b | `7A5D7D87A39E754CE3104F978A3F5CF9978FAEC3C8C306BAC5473DA71C62F0C9` |
+
+Local verification:
+
+| Command | Result |
+|---|---|
+| `C:\Users\lh594\.conda\envs\ssr-gpu\python.exe -m py_compile E:\type10-7\code\scripts\eval_phase1_repair_ensemble_manifold_reject_20260703.py` | PASS |
+| `bash -lc "bash -n /mnt/e/type10-7/code/scripts/sweep_phase1_adv3b02_repair_ensemble_v13_20260703.sh"` | PASS |
+
+Version/snapshot state:
+
+| Item | Path |
+|---|---|
+| Non-Git code snapshot | `E:\type10-7\code\snapshots\phase1_adv3b02_repair_ensemble_v13_20260703\` |
+| Git mirror eval script path | `E:\type10-7\github_publish\CVS-RFFI-repo\code\scripts\eval_phase1_repair_ensemble_manifold_reject_20260703.py` |
+| Git mirror launcher path | `E:\type10-7\github_publish\CVS-RFFI-repo\code\scripts\sweep_phase1_adv3b02_repair_ensemble_v13_20260703.sh` |
+
+Planned N607 variants:
+
+| Variant | Adapter set | Remote summary |
+|---|---|---|
+| `v13a` | identity, mean-shift, norm-shift, linear residual, MLP residual | `/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_adv3b02_repair_ensemble_v13a_20260703/repair_ensemble_v13a_summary.csv` |
+| `v13b` | linear residual, MLP residual | `/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_adv3b02_repair_ensemble_v13b_20260703/repair_ensemble_v13b_summary.csv` |
+
+Success criteria remain unchanged:`unknown_FAR<=0.05`and old-class performance drop`<=2pp`on sat-only target query, without target clean or target unknown threshold tuning.
