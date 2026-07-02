@@ -443,6 +443,8 @@ Status update: the ad-hoc remote proxy/prototype diagnostic command disconnected
 
 Objective: test a non-TTA rejection mechanism on the strict single-observation LEO feature files. The method freezes `ADV3B02_CORE90_SOFT_E200phase1`, keeps each target query as one hidden LEO observation, and rejects samples by kNN distance to source-old features of the predicted old TX class.
 
+Status update: this diagnostic was implemented and synced but not launched after the operator clarified that the preferred route remains multi-view rejection. It is retained as diagnostic code only and is not the active experiment path for the current objective.
+
 Boundary:
 
 | Item | Setting |
@@ -479,4 +481,69 @@ Expected KNN summary:
 
 ```text
 /home/szu2070436088/2510044040/CV-SincNet/logs/phase1_adv3b02_satunknown_knn_density_matrix_20260702/satunknown_knn_density_sweep_summary.csv
+```
+
+## Satellite Physical Multi-View Diagnostic
+
+Objective: keep the original multi-view rejection framework, but replace invalid counterfactual clean/LEO scenario views with receive-side views generated from a single already-LEO-observed `x_sat`. This is closer to Phase2 deployment: the test signal is known to include LEO star-ground impairment, but the receiver does not know whether it is clear, low-elevation, or rain.
+
+New view policy:
+
+| Policy | Views | Rationale |
+|---|---:|---|
+| `sat_rx_phys11` | 11 | Single-observation receive-side physical views: base, residual CFO grid, one-sample timing offsets, small constant phase offsets, AGC clipping normalization, and short-FIR smoothing. |
+
+View list:
+
+```text
+rx_base
+rx_cfo_m2e4
+rx_cfo_m1e4
+rx_cfo_p1e4
+rx_cfo_p2e4
+rx_shift_m1
+rx_shift_p1
+rx_phase_m15deg
+rx_phase_p15deg
+rx_agc_clip2p5
+rx_short_fir
+```
+
+Boundary:
+
+| Item | Setting |
+|---|---|
+| Feature input | one LEO observation per raw sample before receive-side view generation |
+| Clean view | excluded |
+| Target support | none |
+| Threshold data | source old plus source-side proxy unknown only |
+| Unknown query usage | evaluation only, never threshold tuning |
+| Evaluator | existing `eval_phase1_multiview_reject.py` consistency/rejection head |
+| Success gate | `unknown_FAR<=0.05` and `old_drop_pp_vs_closed<=2.0` |
+
+Local files changed:
+
+| File | Purpose |
+|---|---|
+| `code/export_spaceborne_features.py` | Add `sat_rx_phys11` receive-side physical multi-view policy and dynamic manifest view count. |
+| `code/scripts/sweep_phase1_adv3b02_satphysmv11_20260702.sh` | 10-cell sweep using the existing multi-view rejection evaluator with source/proxy threshold variants. |
+
+Local verification:
+
+| Command | Result |
+|---|---|
+| `C:\Users\lh594\.conda\envs\ssr-gpu\python.exe -m py_compile code\export_spaceborne_features.py` | PASS |
+| `bash -n code/scripts/sweep_phase1_adv3b02_satphysmv11_20260702.sh` | PASS |
+| importlib smoke test for `_satellite_tta_views(..., "sat_rx_phys11")` | PASS; 11 finite views, all shaped like input IQ |
+
+Planned remote command:
+
+```bash
+cd /home/szu2070436088/2510044040/CV-SincNet && bash code/scripts/sweep_phase1_adv3b02_satphysmv11_20260702.sh
+```
+
+Expected physical multi-view summary:
+
+```text
+/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_adv3b02_satphysmv11_matrix_20260702/satphysmv11_sweep_summary.csv
 ```

@@ -191,11 +191,37 @@ def _from_complex_iq(z: torch.Tensor, like: torch.Tensor) -> torch.Tensor:
     return torch.stack([z.real, z.imag], dim=1).to(dtype=like.dtype)
 
 
+def _rms_normalize_iq(x: torch.Tensor, *, clip_sigma: float | None = None) -> torch.Tensor:
+    if torch.is_complex(x):
+        z = x
+        rms = torch.sqrt(torch.mean(torch.abs(z) ** 2, dim=-1, keepdim=True).clamp_min(1e-8))
+        if clip_sigma is not None:
+            limit = float(clip_sigma) * rms
+            mag = torch.abs(z).clamp_min(1e-8)
+            z = z * torch.clamp(limit / mag, max=1.0)
+        out_rms = torch.sqrt(torch.mean(torch.abs(z) ** 2, dim=-1, keepdim=True).clamp_min(1e-8))
+        return (z / out_rms).to(dtype=x.dtype)
+    rms = torch.sqrt(torch.mean(x.float() ** 2, dim=(1, 2), keepdim=True).clamp_min(1e-8))
+    y = x.float()
+    if clip_sigma is not None:
+        y = torch.clamp(y, min=-float(clip_sigma) * rms, max=float(clip_sigma) * rms)
+    out_rms = torch.sqrt(torch.mean(y ** 2, dim=(1, 2), keepdim=True).clamp_min(1e-8))
+    return (y / out_rms).to(dtype=x.dtype)
+
+
+def _short_fir_smooth_iq(x_sat: torch.Tensor) -> torch.Tensor:
+    z = _to_complex_iq(x_sat)
+    # Conservative receive-side equalization hypothesis; no new channel is
+    # synthesized, only a local smoothing view of the same observation.
+    y = 0.5 * z + 0.25 * torch.roll(z, shifts=-1, dims=-1) + 0.25 * torch.roll(z, shifts=1, dims=-1)
+    return _from_complex_iq(y, x_sat)
+
+
 def _satellite_tta_views(x_sat: torch.Tensor, policy: str) -> list[tuple[str, torch.Tensor]]:
     mode = str(policy or "none").strip().lower()
     if mode in {"", "none", "off", "0"}:
         return [("single", x_sat)]
-    if mode != "rx_light5":
+    if mode not in {"rx_light5", "sat_rx_phys11"}:
         raise ValueError(f"unknown satellite_tta_policy={policy!r}")
     z = _to_complex_iq(x_sat)
     steps = int(z.shape[-1])
@@ -205,13 +231,43 @@ def _satellite_tta_views(x_sat: torch.Tensor, policy: str) -> list[tuple[str, to
         phase = 2.0 * torch.pi * float(delta) * n
         return _from_complex_iq(z * torch.exp(1j * phase), x_sat)
 
+    if mode == "rx_light5":
+        return [
+            ("rx_base", x_sat),
+            ("rx_shift_m2", torch.roll(x_sat, shifts=-2, dims=-1)),
+            ("rx_shift_p2", torch.roll(x_sat, shifts=2, dims=-1)),
+            ("rx_cfo_m1e4", cfo_view(-1.0e-4)),
+            ("rx_cfo_p1e4", cfo_view(1.0e-4)),
+        ]
+
+    def phase_view(theta: float) -> torch.Tensor:
+        phase = torch.tensor(float(theta), device=z.device, dtype=torch.float32)
+        return _from_complex_iq(z * torch.exp(1j * phase), x_sat)
+
     return [
         ("rx_base", x_sat),
-        ("rx_shift_m2", torch.roll(x_sat, shifts=-2, dims=-1)),
-        ("rx_shift_p2", torch.roll(x_sat, shifts=2, dims=-1)),
+        ("rx_cfo_m2e4", cfo_view(-2.0e-4)),
         ("rx_cfo_m1e4", cfo_view(-1.0e-4)),
         ("rx_cfo_p1e4", cfo_view(1.0e-4)),
+        ("rx_cfo_p2e4", cfo_view(2.0e-4)),
+        ("rx_shift_m1", torch.roll(x_sat, shifts=-1, dims=-1)),
+        ("rx_shift_p1", torch.roll(x_sat, shifts=1, dims=-1)),
+        ("rx_phase_m15deg", phase_view(-torch.pi / 12.0)),
+        ("rx_phase_p15deg", phase_view(torch.pi / 12.0)),
+        ("rx_agc_clip2p5", _rms_normalize_iq(x_sat, clip_sigma=2.5)),
+        ("rx_short_fir", _short_fir_smooth_iq(x_sat)),
     ]
+
+
+def _satellite_tta_view_count(policy: str) -> int:
+    mode = str(policy or "none").strip().lower()
+    if mode in {"", "none", "off", "0"}:
+        return 1
+    if mode == "rx_light5":
+        return 5
+    if mode == "sat_rx_phys11":
+        return 11
+    raise ValueError(f"unknown satellite_tta_policy={policy!r}")
 
 
 @torch.no_grad()
@@ -381,7 +437,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--satellite_tta_policy",
         default="none",
-        choices=["none", "rx_light5"],
+        choices=["none", "rx_light5", "sat_rx_phys11"],
         help="Receive-side TTA views generated after one satellite channel observation; default keeps one view.",
     )
     parser.add_argument(
@@ -739,7 +795,7 @@ def main() -> int:
         "star_ground_channel_impl": star_ground_impl,
         "target_channel_scenarios": target_unknown_scenarios,
         "satellite_tta_policy": str(args.satellite_tta_policy),
-        "satellite_tta_view_count": 5 if str(args.satellite_tta_policy) == "rx_light5" else 1,
+        "satellite_tta_view_count": _satellite_tta_view_count(str(args.satellite_tta_policy)),
         "deployment_primary_view": (
             "satellite/LEO target view" if target_unknown_view == "satellite" else "clean control/source reference"
         ),
