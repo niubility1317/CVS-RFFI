@@ -285,3 +285,22 @@ Expected corrected summary:
 ```
 
 Until this corrected single-observation matrix completes, no prior `SATMV_*` or `SATMARG_*` row should be described as satisfying the stricter “received signal has unknown LEO channel and no clean/counterfactual scenario views” condition.
+
+Launch status:
+
+| Field | Value |
+|---|---|
+| Launch time | `2026-07-02T16:32:46+08:00` on N607 |
+| Remote driver PID | `4090699` |
+| Remote command | `cd /home/szu2070436088/2510044040/CV-SincNet && nohup bash code/scripts/sweep_phase1_adv3b02_satunknown_singleview_20260702.sh > logs/phase1_adv3b02_satunknown_singleview_matrix_20260702/driver.out 2>&1 &` |
+| Driver log | `/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_adv3b02_satunknown_singleview_matrix_20260702/driver.out` |
+| Summary CSV | `/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_adv3b02_satunknown_singleview_matrix_20260702/satunknown_singleview_sweep_summary.csv` |
+| First-cell single-observation NPZ | `rows=15362`, `contains_clean_view=false`, scenario counts `leo_clear_weak=5141`, `leo_low_elev_weak=5141`, `leo_rain_weak=5080` |
+
+Remote verification before launch:
+
+| Command | Result |
+|---|---|
+| `/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -m py_compile code/scripts/eval_phase1_prototype_reject.py code/scripts/eval_phase1_multiview_reject.py code/tests/test_phase1_multiview_reject_eval.py` | PASS |
+| `bash -n code/scripts/sweep_phase1_adv3b02_satunknown_singleview_20260702.sh` | PASS |
+| `sha256sum` for synced code/report | PASS; report hash `df32374483df768c58308066fba49d768a2a991c2c8ea61e7a010018df2870f5` |
