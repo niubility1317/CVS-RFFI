@@ -116,3 +116,76 @@
 5. 启动后4-5分钟检查`[CONFIG-LOSS]`、`[CONFIG-ADG]`、`[PROXY-ADG]`、`[EPOCH-BEGIN]`和Traceback/OOM/NaN。
 
 当前未执行SCP，未启动N607实验。
+
+## N607启动记录
+
+|字段|内容|
+|---|---|
+|启动请求时间|2026-07-02 11:12 +08:00|
+|本地Git-backed状态|`E:\type10-7\github_publish\CVS-RFFI-repo`干净，最新提交`1e35f9c Add Phase1 ADG-V2 GPU8 experiment design`|
+|本地代码目录状态|`E:\type10-7`和`E:\type10-7\code`不是Git仓库；已使用`E:\type10-7\code\snapshots\phase1_adg_v2_gpu8_20260702\`快照|
+|本地验证|`py_compile`通过；launcher `bash -n`通过；dry-run为8候选、8命令、GPU0-7|
+|N607预检|`tools\n607_ssh_preflight.ps1`通过；远端host=`dell-DSS8440`；项目根存在；8张RTX3090可见|
+|N607训练库存|`tools\n607_training_inventory.py --direct-only --pretty`显示`gpu_compute=[]`、`active_training_processes=[]`、`centralized_active=false`|
+|启动策略|每GPU一个ADG实验；远端launcher默认`STAGE2_MAX_ACTIVE_PER_GPU=1`；不超过项目允许的每GPU两个训练上限|
+
+## 同步文件与哈希
+
+|本地文件|SHA256|远端目标|
+|---|---|---|
+|`E:\type10-7\code\cvsrffi\losses.py`|`6691760116019ED50159DA2C2DD6E72724CA1849BE8D5CC68A676A105315AD29`|`/home/szu2070436088/2510044040/CV-SincNet/code/cvsrffi/losses.py`|
+|`E:\type10-7\code\SSDG\train_ssdg.py`|`36513415781599DBD9FD56955B018AD42B85349642E41DB0397CF5416FEC9EEC`|`/home/szu2070436088/2510044040/CV-SincNet/code/SSDG/train_ssdg.py`|
+|`E:\type10-7\code\scripts\launch_phase1_adg_v2_gpu8_20260702.sh`|`80248591A13562D451B4E82C93ED620B8ABEFC554C43266E1F9348969176F4AC`|`/home/szu2070436088/2510044040/CV-SincNet/code/scripts/launch_phase1_adg_v2_gpu8_20260702.sh`|
+
+## 计划远端命令
+
+```bash
+cd /home/szu2070436088/2510044040/CV-SincNet
+mkdir -p logs/phase1_adg_v2_gpu8_20260702
+bash -n code/scripts/launch_phase1_adg_v2_gpu8_20260702.sh
+bash code/scripts/launch_phase1_adg_v2_gpu8_20260702.sh --dry-run
+nohup bash code/scripts/launch_phase1_adg_v2_gpu8_20260702.sh > logs/phase1_adg_v2_gpu8_20260702/scheduler.out 2>&1 &
+```
+
+## 远端同步与验证
+
+|项目|结果|
+|---|---|
+|远端预同步备份|`/home/szu2070436088/2510044040/CV-SincNet/code/snapshots/phase1_adg_v2_gpu8_20260702_remote_pre_sync_20260702_111404`|
+|SCP同步|`losses.py`、`train_ssdg.py`、`launch_phase1_adg_v2_gpu8_20260702.sh`已同步到计划远端路径|
+|远端SHA256|三文件与本地SHA256一致|
+|远端编译|`/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -m py_compile code/cvsrffi/losses.py code/SSDG/train_ssdg.py`通过|
+|远端launcher语法|`bash -n code/scripts/launch_phase1_adg_v2_gpu8_20260702.sh`通过|
+|远端dry-run|`dryrun_candidates=8`、`dryrun_commands=8`、`dryrun_gpus=0,1,2,3,4,5,6,7`|
+
+## 启动与健康检查
+
+|项目|结果|
+|---|---|
+|scheduler PID|`3791826`|
+|scheduler日志|`/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_adg_v2_gpu8_20260702/scheduler.out`|
+|启动时间|候选status记录均为`2026-07-02T11:14:56+08:00`|
+|4-5分钟健康检查|8/8候选仍在运行；8/8有GPU进程；8/8出现`[CONFIG-ADG]`、`[EPOCH-BEGIN]`、`[PROXY-ADG]`|
+|错误检查|未检出`Traceback`、`RuntimeError`、`unrecognized arguments`、`CUDA out of memory`、`Killed`或`NaN`|
+
+|GPU|candidate|PID|log|
+|---:|---|---:|---|
+|0|`ADG8G0_B02_ANCHOR_E200`|3791902|`logs/phase1_adg_v2_gpu8_20260702/ADG8G0_B02_ANCHOR_E200.out`|
+|1|`ADG8G1_BRIDGE_CVAR_E200`|3791903|`logs/phase1_adg_v2_gpu8_20260702/ADG8G1_BRIDGE_CVAR_E200.out`|
+|2|`ADG8G2_SHELL_LOW_DENS_E200`|3791916|`logs/phase1_adg_v2_gpu8_20260702/ADG8G2_SHELL_LOW_DENS_E200.out`|
+|3|`ADG8G3_ENERGY_Q10_E200`|3791914|`logs/phase1_adg_v2_gpu8_20260702/ADG8G3_ENERGY_Q10_E200.out`|
+|4|`ADG8G4_RADIUS_RATIO_E200`|3791898|`logs/phase1_adg_v2_gpu8_20260702/ADG8G4_RADIUS_RATIO_E200.out`|
+|5|`ADG8G5_TAIL_OVERFLOW_E200`|3791890|`logs/phase1_adg_v2_gpu8_20260702/ADG8G5_TAIL_OVERFLOW_E200.out`|
+|6|`ADG8G6_CONSERVATIVE_ALL_E200`|3791894|`logs/phase1_adg_v2_gpu8_20260702/ADG8G6_CONSERVATIVE_ALL_E200.out`|
+|7|`ADG8G7_STRONG_ALL_SAT_E200`|3791912|`logs/phase1_adg_v2_gpu8_20260702/ADG8G7_STRONG_ALL_SAT_E200.out`|
+
+|candidate|`[CONFIG-ADG]`|`[EPOCH-BEGIN]`|`[PROXY-ADG]`|
+|---|---:|---:|---:|
+|`ADG8G0_B02_ANCHOR_E200`|1|15|15|
+|`ADG8G1_BRIDGE_CVAR_E200`|1|15|15|
+|`ADG8G2_SHELL_LOW_DENS_E200`|1|15|15|
+|`ADG8G3_ENERGY_Q10_E200`|1|14|14|
+|`ADG8G4_RADIUS_RATIO_E200`|1|15|15|
+|`ADG8G5_TAIL_OVERFLOW_E200`|1|15|15|
+|`ADG8G6_CONSERVATIVE_ALL_E200`|1|15|15|
+|`ADG8G7_STRONG_ALL_SAT_E200`|1|15|15|
