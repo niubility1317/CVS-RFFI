@@ -63,6 +63,8 @@ def test_multiview_reject_groups_repeated_rows(tmp_path):
             proxy_unknown_roles="proxy_unknown",
             known_query_roles="target_old",
             unknown_query_roles="target_unknown",
+            train_known_correct_only=False,
+            source_incorrect_as_proxy=False,
             threshold_policy="source_accept",
             source_accept_quantile=1.0,
             proxy_far_quantile=0.05,

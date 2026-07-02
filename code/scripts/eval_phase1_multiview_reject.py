@@ -260,11 +260,21 @@ def evaluate(args: argparse.Namespace) -> dict[str, Any]:
     explicit_unknown = {canonical_tx_id(x) for x in parse_tx_id_list(args.unknown_tx_ids)}
 
     x_raw = torch.stack([g["features"] for g in groups], dim=0)
-    train_known_mask = torch.tensor(
+    source_train_base_mask = torch.tensor(
         [g["role"] in train_known_roles and canonical_tx_id(g["tx_id"]) in source_known for g in groups],
         dtype=torch.bool,
     )
+    source_closed_correct_mask = torch.tensor(
+        [
+            bool(class_to_tx.get(int(g["pred_class"]), str(g["pred_class"])) == canonical_tx_id(g["tx_id"]))
+            for g in groups
+        ],
+        dtype=torch.bool,
+    )
+    train_known_mask = source_train_base_mask & (source_closed_correct_mask if bool(args.train_known_correct_only) else torch.ones_like(source_train_base_mask, dtype=torch.bool))
     proxy_mask = torch.tensor([g["role"] in proxy_roles for g in groups], dtype=torch.bool)
+    if bool(args.source_incorrect_as_proxy):
+        proxy_mask = proxy_mask | (source_train_base_mask & ~source_closed_correct_mask)
     train_mask = train_known_mask | proxy_mask
     if not bool(train_known_mask.any()):
         raise ValueError("no train-known source groups found")
@@ -354,6 +364,10 @@ def evaluate(args: argparse.Namespace) -> dict[str, Any]:
         "feature_npz": str(args.feature_npz),
         "source_tx_ids": source_tx_ids,
         "group_count": len(groups),
+        "source_train_base_count": int(source_train_base_mask.sum().item()),
+        "source_train_closed_correct_count": int((source_train_base_mask & source_closed_correct_mask).sum().item()),
+        "train_known_correct_only": bool(args.train_known_correct_only),
+        "source_incorrect_as_proxy": bool(args.source_incorrect_as_proxy),
         "train_known_count": int(train_known_mask.sum().item()),
         "proxy_unknown_count": int(proxy_mask.sum().item()),
         "training": {
@@ -421,6 +435,8 @@ def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
     parser.add_argument("--proxy_unknown_roles", default="proxy_unknown")
     parser.add_argument("--known_query_roles", default="target_old")
     parser.add_argument("--unknown_query_roles", default="target_unknown")
+    parser.add_argument("--train_known_correct_only", action="store_true")
+    parser.add_argument("--source_incorrect_as_proxy", action="store_true")
     parser.add_argument("--threshold_policy", default="source_accept", choices=["source_accept", "proxy_far", "min_source_proxy", "max_source_proxy"])
     parser.add_argument("--source_accept_quantile", type=float, default=0.995)
     parser.add_argument("--proxy_far_quantile", type=float, default=0.05)
