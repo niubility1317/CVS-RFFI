@@ -878,6 +878,48 @@ Planned N607 variants:
 
 Success criteria remain unchanged:`unknown_FAR<=0.05`and old-class performance drop`<=2pp`on sat-only target query, without target clean or target unknown threshold tuning.
 
+## V16 Completion Results
+
+V16 completed on N607 as a bounded foreground command. It trained source-only classwise clean<-LEO repair statistics, calibrated source/proxy old-class tails, and evaluated sat-only target old/unknown rows.
+
+Overall result:
+
+| Rows | Dual pass | FAR-only pass | Old-drop-only pass | Status |
+|---:|---:|---:|---:|---|
+| 145200 | 0 | 37481 | 10390 | Completed negative |
+
+Artifacts:
+
+| Artifact | Local path | SHA256 |
+|---|---|---|
+| V16 summary | `E:\type10-7\automation_reports\CV-SincNet\phase1_adv3b02_leo_feature_adapter_20260703\artifacts\class_tail_v16_summary.csv` | `506191CA7E554E5F1F0815847A88C33379F045162A74D8C6499DF37601FAD34D` |
+| V16 best JSON | `E:\type10-7\automation_reports\CV-SincNet\phase1_adv3b02_leo_feature_adapter_20260703\artifacts\class_tail_v16_best.json` | `8770FDBA9921E2EEE7581FD28D412D89BDEB02A89D8FA022C33E1CB1FF480907` |
+| V16 metrics JSON | `E:\type10-7\automation_reports\CV-SincNet\phase1_adv3b02_leo_feature_adapter_20260703\artifacts\class_tail_v16_metrics.json` | `73444B2DF6F8097617997A0FF32F4DA88A3E6F9D4F50F3473B33F38A5D325DE5` |
+| V16 run log | `E:\type10-7\automation_reports\CV-SincNet\phase1_adv3b02_leo_feature_adapter_20260703\artifacts\class_tail_v16.out` | `0D06010A5DAAB96929FBB3E883E9EDA76D2667A6FA0C762958CF0485548326B7` |
+
+Best same-row outcomes:
+
+| Selection rule | Run | Score/policy | alpha | beta | unknown_FAR | Old drop pp | Closed old acc | Final old acc | Coverage | Verdict |
+|---|---|---|---:|---:|---:|---:|---:|---:|---:|---|
+| Best FAR with old drop`<=2pp` | `rx3_19_u10` | `neg_pred_mah_rank/class_source_accept q=0.01` | 0.50 | 0.10 | 0.7344 | 1.32 | 0.5482 | 0.5350 | 0.9635 | FAR fails badly |
+| Best old retention with FAR`<=5%` | `rx3_19_u10` | `neg_pred_mah_rank/global_mean_source_proxy q=0.02,p=0.99` | 1.00 | 0.05 | 0.0488 | 42.97 | 0.5482 | 0.1185 | 0.1426 | Old-class performance fails |
+| Nearest joint row | `rx3_19_u10` | `neg_pred_mah_rank/class_source_accept q=0.05` | 1.00 | 0.10 | 0.4526 | 8.06 | 0.5482 | 0.4676 | 0.7768 | Misses both |
+
+Interpretation:
+
+Class-local tail calibration improves the nearest joint row relative to V15 in FAR terms, but still misses the target by a wide margin. The same incompatibility remains: thresholds loose enough to preserve old-class performance accept most unknown samples, while thresholds strict enough to meet`unknown_FAR<=5%`reject most correct old target samples.
+
+Current status after V16:
+
+| Target | Status | Evidence |
+|---|---|---|
+| 目标1: source-only LEO repair | Achieved | Source-only clean<-LEO repair was trained from 28800 source pairs; no target clean/labels used |
+| 目标2: `unknown_FAR<=0.05` with old drop`<=2pp` | Not achieved | V3-V16 all have dual pass 0; V16 adds 145200 class-tail rows with dual pass 0 |
+
+Conclusion under the current constraint:
+
+The refreshed task has been completed as an audit, but the requested success target is not achieved under the frozen`ADV3B02_CORE90_SOFT_E200phase1`feature basis. The blocking evidence is now consistent across pooled thresholds, global repair, classwise repair, IQ pre-adaptation, decision fusion, repair-manifold scoring, selective-correctness gates and class-local tail calibration. The next scientifically valid route is to change the representation training objective itself: source-side non-old/open-set negatives plus LEO identity-retention in Phase1, then rerun the same sat-only target audit. That would be a new Phase1 training route, not a completed frozen-base rejection result.
+
 ## V11 Completion Results
 
 V11 completed two IQ pre-adapter variants on N607:
