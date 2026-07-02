@@ -294,3 +294,102 @@ Expected matrix:
 | Expected rows | 350 |
 
 Success criteria stay unchanged: target1 requires improved LEO-to-clean alignment without identity/prototype collapse; target2 requires same-row`unknown_FAR<=0.05`and old-class performance drop`<=2pp`.
+
+## V3 Completion Result
+
+Artifacts:
+
+| Artifact | Local path | SHA256 |
+|---|---|---|
+| V3 summary CSV | `E:\type10-7\automation_reports\CV-SincNet\phase1_adv3b02_leo_feature_adapter_20260703\artifacts\global_source_leo_adapter_summary.csv` | `BF84EA4D0F71E83CCD44A6484DCB7A18832E8B9AA0A7B0178492F1B96D3CBA5D` |
+| Source pair manifest | `E:\type10-7\automation_reports\CV-SincNet\phase1_adv3b02_leo_feature_adapter_20260703\artifacts\source_leo_pair_manifest.json` | `9D582E4178B8A26036EE5FA38FD8DAC4C37E33055F8CBA37220050AACE6810DE` |
+| V3 driver logs | `E:\type10-7\automation_reports\CV-SincNet\phase1_adv3b02_leo_feature_adapter_20260703\artifacts\driver_shard0.out` ... `driver_shard7.out` | pulled locally |
+
+Source pair export:
+
+| Field | Value |
+|---|---:|
+| Source clean samples | 9600 |
+| Source LEO scenario files | 3 |
+| Effective adapter source pairs | 28800 |
+| Target clean used | 0 |
+| Target label/support used | 0 |
+| Unknown query used for training | 0 |
+
+Overall V3 target2 result:
+
+| Metric | Value |
+|---|---:|
+| Rows | 350 |
+| Adapter runs | 50 |
+| Cells | 10 |
+| Dual pass (`unknown_FAR<=0.05` and old drop`<=2pp`) | 0 |
+| FAR-only pass | 85 |
+| Old-drop-only pass | 132 |
+
+Target1 alignment by adapter:
+
+| Adapter | Source pairs/cell | Val MSE before | Val MSE after | Val cosine before | Val cosine after | Val proto acc before | Val proto acc after | Verdict |
+|---|---:|---:|---:|---:|---:|---:|---:|---|
+| `LEOADAPT3_IDENTITY` | 28800 | 0.1566 | 0.1566 | 0.8573 | 0.8573 | 0.8690 | 0.8690 | Baseline |
+| `LEOADAPT3_LINR_COS` | 28800 | 0.1566 | 0.1127 | 0.8573 | 0.8558 | 0.8690 | 0.8795 | Target1 pass: MSE improves, cosine preserved, proto acc improves |
+| `LEOADAPT3_MLP_ID` | 28800 | 0.1566 | 0.1044 | 0.8573 | 0.8508 | 0.8690 | 0.8807 | Target1 pass: strongest MSE, small cosine drop, proto acc improves |
+| `LEOADAPT3_MEANSHIFT` | 28800 | 0.1566 | 0.1360 | 0.8573 | 0.7906 | 0.8690 | 0.7921 | Not acceptable: identity geometry drops |
+| `LEOADAPT3_NORMSHIFT` | 28800 | 0.1566 | 0.1853 | 0.8573 | 0.8208 | 0.8690 | 0.8178 | Worse than baseline |
+
+V3 finally satisfies目标1 for the two identity-constrained trainable adapters. The key change was not the adapter form alone; it was replacing the sparse`27`pair source view with a real`28800`pair source clean/LEO library. `LEOADAPT3_LINR_COS` and`LEOADAPT3_MLP_ID` both repair feature MSE without collapsing prototype identity.
+
+Target2 still fails. The best low-FAR rows still reject too many old-class samples:
+
+| Run | Adapter | Reject policy | unknown_FAR | Old drop pp | Closed old acc | Full old acc after reject | Verdict |
+|---|---|---|---:|---:|---:|---:|---|
+| `rx20_1_u1` | `LEOADAPT3_MEANSHIFT` | `ADAPT3_MLP64_MIN05` | 0.0420 | 29.68 | 0.4809 | 0.1841 | FAR passes, old retention fails |
+| `rx8_8_u10` | `LEOADAPT3_MEANSHIFT` | `ADAPT3_LIN_MIN05` | 0.0486 | 31.12 | 0.5968 | 0.2856 | FAR passes, old retention fails |
+| `rx20_1_u1` | `LEOADAPT3_MLP_ID` | `ADAPT3_MLP64_MIN05` | 0.0364 | 35.35 | 0.5412 | 0.1876 | FAR passes, old retention fails |
+
+The best old-retention rows still accept most unknown samples:
+
+| Run | Adapter | Reject policy | unknown_FAR | Old drop pp | Closed old acc | Full old acc after reject | Verdict |
+|---|---|---|---:|---:|---:|---:|---|
+| `rx20_1_u1` | `LEOADAPT3_MEANSHIFT` | `ADAPT3_MLP64_SRC9999` | 0.7395 | 1.88 | 0.4809 | 0.4621 | Old retention passes, FAR fails |
+| `rx8_8_u1` | `LEOADAPT3_MLP_ID` | `ADAPT3_MLP64_SRC9999` | 0.8275 | 1.00 | 0.7268 | 0.7168 | Old retention passes, FAR fails |
+| `rx8_8_u1` | `LEOADAPT3_IDENTITY` | `ADAPT3_MLP64_SRC9999` | 0.8325 | 0.47 | 0.7188 | 0.7141 | Old retention passes, FAR fails |
+
+V3 interpretation:
+
+| Claim | Status |
+|---|---|
+| Target1 source-only LEO feature repair | Achieved by`LEOADAPT3_LINR_COS` and`LEOADAPT3_MLP_ID` |
+| Target2 unknown rejection with old drop`<=2pp` | Not achieved |
+| Main remaining failure | Rejection score overlap, not feature repair alone |
+
+Next experiment should keep the V3 repaired features and change only the rejection decision. The current threshold families are one-dimensional and still show the same tradeoff: strict thresholds reach`unknown_FAR<=5%`only by rejecting 29-60pp old accuracy, while old-preserving thresholds keep FAR around 0.74-0.99.
+
+## V4 Score-Table Fusion Design
+
+V4 keeps all V3 repaired feature files and trained rejection score tables fixed. It does not retrain the base model, adapter, or rejection heads. It only tests whether source/proxy-calibrated fusion of multiple rejection scores can preserve old-class accuracy while reducing unknown acceptance.
+
+New local file:
+
+| File | Purpose | SHA256 |
+|---|---|---|
+| `E:\type10-7\code\scripts\sweep_phase1_score_table_fusion_20260703.py` | Fuse V3 score tables from linear, MLP, prototype-cosine, and prototype-Mahalanobis scores using source/proxy calibration | `19A8E5E64B2C497ED5D4FCA280D3D20CB8EBFF4F3E48E0B43EBB0B7CA95DF3A3` |
+
+Local verification:
+
+| Command | Result |
+|---|---|
+| `C:\Users\lh594\.conda\envs\ssr-gpu\python.exe -m py_compile E:\type10-7\code\scripts\sweep_phase1_score_table_fusion_20260703.py` | PASS |
+
+Planned V4 matrix:
+
+| Dimension | Values |
+|---|---|
+| Input | Existing V3 score tables only |
+| Adapters | `LEOADAPT3_IDENTITY`, `LEOADAPT3_LINR_COS`, `LEOADAPT3_MLP_ID` |
+| Component sets | `lin_mlp`, `lin_pcos`, `mlp_pcos`, `mlp_pmah`, `lin_mlp_pcos`, `lin_mlp_pmah`, `all4` |
+| Fusion methods | `max`, `mean`, `min`, `top2mean` |
+| Threshold policies | `source_accept`, `min_source_proxy`, `mean_source_proxy` |
+| Calibration | source/proxy rows only; target query labels not used for threshold calculation |
+
+Expected output: `/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_adv3b02_score_fusion_20260703/score_fusion_summary.csv`.
