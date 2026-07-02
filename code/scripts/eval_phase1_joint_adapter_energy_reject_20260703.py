@@ -438,6 +438,7 @@ def _evaluate_run(run_dir: Path, adapter: nn.Module, head: nn.Module, prototypes
                     m = _metrics(accept, known, unknown, closed)
                     m.update({
                         "run_id": run_dir.name,
+                        "run_tag": str(args.run_tag),
                         "target_rx": ",".join(target_rxs),
                         "mode": "joint_adapter_oldness_gate",
                         "score_name": score_name,
@@ -462,6 +463,7 @@ def parse_args() -> argparse.Namespace:
     p.add_argument("--proxy_npz", type=Path, action="append", required=True)
     p.add_argument("--out_csv", type=Path, required=True)
     p.add_argument("--metrics_json", type=Path, default=None)
+    p.add_argument("--run_tag", default="V9")
     p.add_argument("--run_glob", default="phase1_adv3b02_multiview_keepold_*_20260702")
     p.add_argument("--sat_npz_relpath", default="ADV3B02_CORE90_SOFT_E200_PHASE1_SATUNKNOWN_SINGLEVIEW/features_satunknown_singleview.npz")
     p.add_argument("--source_tx_ids", default="14-10,14-7,20-15,20-19,6-15,8-20")
@@ -519,6 +521,7 @@ def main() -> int:
         writer.writerows(rows)
     summary = {
         "phase": "phase1_source_only_joint_adapter_oldness_gate_v9",
+        "run_tag": str(args.run_tag),
         "rows": len(rows),
         "dual_pass": int(sum(1 for r in rows if bool(r.get("passes_dual_target")))),
         "out_csv": str(args.out_csv),
@@ -528,6 +531,26 @@ def main() -> int:
         "uses_target_clean": False,
         "uses_target_labels_for_training": False,
         "uses_unknown_query_for_threshold": False,
+        "config": {
+            "adapter_kind": str(args.adapter_kind),
+            "head_kind": str(args.head_kind),
+            "hidden_dim": int(args.hidden_dim),
+            "head_hidden_dim": int(args.head_hidden_dim),
+            "alpha": float(args.alpha),
+            "epochs": int(args.epochs),
+            "pair_weight": float(args.pair_weight),
+            "cos_weight": float(args.cos_weight),
+            "proto_ce_weight": float(args.proto_ce_weight),
+            "residual_weight": float(args.residual_weight),
+            "oldness_weight": float(args.oldness_weight),
+            "oldness_pos_weight": float(args.oldness_pos_weight),
+            "proxy_proto_weight": float(args.proxy_proto_weight),
+            "proxy_logit_cap": float(args.proxy_logit_cap),
+            "old_conf_weight": float(args.old_conf_weight),
+            "old_logit_floor": float(args.old_logit_floor),
+            "proto_temperature": float(args.proto_temperature),
+            "seed": int(args.seed),
+        },
         "train_metrics": train_metrics,
     }
     if args.metrics_json:
