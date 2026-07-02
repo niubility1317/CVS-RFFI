@@ -1180,3 +1180,66 @@ Remote sync and launch status:
 | Landed process | shell script PID `107763`; evaluator PID observed as `108908` during first cell |
 | Driver first lines | `[PHASE1-SATREPAIRA7-SWEEP] start=2026-07-02T19:50:24+08:00 gpu=7`; first cell `phase1_adv3b02_satrepair_anchor7_rx20_1_u10_20260702` |
 | Startup status | feature export for first cell completed; run entered `eval_phase1_multiview_reject.py` policy evaluation |
+
+Completion status:
+
+| Field | Value |
+|---|---|
+| Completion time | `2026-07-02T20:10:21+08:00` |
+| Completed rows | 140 rows, 10 cells x 14 policies |
+| Error scan | no `Traceback`, `RuntimeError`, OOM, argparse, `command not found`, or missing-file markers found |
+| Remote process cleanup | no `satrepair_anchor7` export/eval/sweep process remained after completion |
+| Local SSH cleanup | local `ssh.exe` and ESTABLISHED TCP connections to N607 were zero after probes |
+| Local summary artifact | `E:\type10-7\automation_reports\CV-SincNet\phase1_adv3b02_satonly_open_set_reject_20260702\artifacts\satrepair_anchor7_sweep_summary.csv` |
+| Local driver artifact | `E:\type10-7\automation_reports\CV-SincNet\phase1_adv3b02_satonly_open_set_reject_20260702\artifacts\satrepair_anchor7_driver.out` |
+| Artifact hashes | `satrepair_anchor7_sweep_summary.csv=AA0F2A6335B05F5556FF3486AFA3807383BE55E98F59EEDFCFFF4635DC861282`; `satrepair_anchor7_driver.out=3F1375B5F647D47C70B577AB97E6FE55217A5E95DA640CDEC1567360F75F3A8F` |
+
+Overall result:
+
+| Metric | Value |
+|---|---:|
+| Rows | 140 |
+| Dual pass (`unknown_FAR<=0.05` and old drop `<=2pp`) | 0 |
+| FAR-only pass | 9 |
+| Old-drop-only pass | 20 |
+
+Policy aggregate result:
+
+| Policy | Cells | Mean unknown_FAR | Max unknown_FAR | Mean old drop pp | Max old drop pp | Dual pass | Mean known coverage | Mean closed old acc |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|
+| `SATREPAIRA7_MLP_M50_COR_PROXY05` | 10 | 0.0591 | 0.0889 | 34.58 | 36.83 | 0/10 | 0.1948 | 0.5158 |
+| `SATREPAIRA7_MLP_M50_PROXY02` | 10 | 0.0599 | 0.0903 | 40.48 | 44.25 | 0/10 | 0.1692 | 0.5158 |
+| `SATREPAIRA7_MLP_M50_PROXY05` | 10 | 0.1195 | 0.1889 | 35.73 | 39.75 | 0/10 | 0.2623 | 0.5158 |
+| `SATREPAIRA7_LIN_MIN05` | 10 | 0.1340 | 0.2333 | 33.87 | 35.58 | 0/10 | 0.3035 | 0.5158 |
+| `SATREPAIRA7_LIN_PROXY05` | 10 | 0.1340 | 0.2333 | 33.87 | 35.58 | 0/10 | 0.3035 | 0.5158 |
+| `SATREPAIRA7_MLP_M20_PROXY05` | 10 | 0.1623 | 0.2446 | 33.92 | 37.08 | 0/10 | 0.3062 | 0.5158 |
+| `SATREPAIRA7_MLP64_MIN05` | 10 | 0.2309 | 0.3176 | 28.58 | 29.83 | 0/10 | 0.4160 | 0.5158 |
+| `SATREPAIRA7_MLP64_SRC9999` | 10 | 0.2309 | 0.3176 | 28.60 | 29.92 | 0/10 | 0.4157 | 0.5158 |
+| `SATREPAIRA7_MLP_M50_COR_SRC9999` | 10 | 0.2795 | 0.3500 | 15.62 | 19.33 | 0/10 | 0.4977 | 0.5158 |
+| `SATREPAIRA7_MLP64_PROXY05` | 10 | 0.3161 | 0.4444 | 24.10 | 25.25 | 0/10 | 0.5055 | 0.5158 |
+| `SATREPAIRA7_MLP_M20_SRC9999` | 10 | 0.4991 | 0.7500 | 15.15 | 17.17 | 0/10 | 0.6770 | 0.5158 |
+| `SATREPAIRA7_MLP_M50_SRC9999` | 10 | 0.7384 | 0.9278 | 6.68 | 7.67 | 0/10 | 0.8607 | 0.5158 |
+| `SATREPAIRA7_LIN_SRC999` | 10 | 0.9643 | 0.9975 | 0.40 | 0.67 | 0/10 | 0.9930 | 0.5158 |
+| `SATREPAIRA7_LIN_SRC9999` | 10 | 0.9651 | 0.9975 | 0.38 | 0.67 | 0/10 | 0.9932 | 0.5158 |
+
+Best low-FAR rows:
+
+| Run | Policy | unknown_FAR | Old drop pp | Closed old acc | Full old acc after reject | Known coverage | Dual pass |
+|---|---|---:|---:|---:|---:|---:|---|
+| `phase1_adv3b02_satrepair_anchor7_rx20_1_u1_20260702` | `SATREPAIRA7_MLP_M50_PROXY02` | 0.0056 | 40.42 | 0.4658 | 0.0617 | 0.1250 | false |
+| `phase1_adv3b02_satrepair_anchor7_rx20_1_u1_20260702` | `SATREPAIRA7_MLP_M50_PROXY05` | 0.0196 | 35.42 | 0.4658 | 0.1117 | 0.2183 | false |
+| `phase1_adv3b02_satrepair_anchor7_rx20_1_u1_20260702` | `SATREPAIRA7_LIN_MIN05` | 0.0224 | 34.75 | 0.4658 | 0.1183 | 0.2667 | false |
+| `phase1_adv3b02_satrepair_anchor7_rx20_1_u1_20260702` | `SATREPAIRA7_LIN_PROXY05` | 0.0224 | 34.75 | 0.4658 | 0.1183 | 0.2667 | false |
+| `phase1_adv3b02_satrepair_anchor7_rx20_1_u1_20260702` | `SATREPAIRA7_MLP_M50_COR_PROXY05` | 0.0280 | 34.75 | 0.4658 | 0.1183 | 0.1600 | false |
+
+Best old-retention rows:
+
+| Run | Policy | unknown_FAR | Old drop pp | Closed old acc | Full old acc after reject | Known coverage | Dual pass |
+|---|---|---:|---:|---:|---:|---:|---|
+| `phase1_adv3b02_satrepair_anchor7_rx8_8_u1_20260702` | `SATREPAIRA7_LIN_SRC999` | 0.9625 | 0.25 | 0.5375 | 0.5350 | 0.9950 | false |
+| `phase1_adv3b02_satrepair_anchor7_rx8_8_u1_20260702` | `SATREPAIRA7_LIN_SRC9999` | 0.9650 | 0.25 | 0.5375 | 0.5350 | 0.9950 | false |
+| `phase1_adv3b02_satrepair_anchor7_rx8_8_u10_20260702` | `SATREPAIRA7_LIN_SRC999` | 0.9784 | 0.25 | 0.5375 | 0.5350 | 0.9950 | false |
+| `phase1_adv3b02_satrepair_anchor7_rx8_8_u10_20260702` | `SATREPAIRA7_LIN_SRC9999` | 0.9784 | 0.25 | 0.5375 | 0.5350 | 0.9950 | false |
+| `phase1_adv3b02_satrepair_anchor7_rx7_7_u1_20260702` | `SATREPAIRA7_LIN_SRC9999` | 0.9700 | 0.25 | 0.5633 | 0.5608 | 0.9975 | false |
+
+Interpretation: the identity anchor did what it was meant to do: mean closed old accuracy improved to 51.58%, compared with about 31%-32% for the best individual `satrepair9` views. However, the open-set tradeoff remains unresolved. Low-FAR rows still achieve FAR by rejecting most old-class samples, while source-accept rows keep old classes but accept almost all unknowns. The source-calibrated rescue audit attempted after this run did not produce a valid CSV because a heredoc SSH timeout orphaned the diagnostic process; that exact orphan was cleaned up and is not used as evidence.
