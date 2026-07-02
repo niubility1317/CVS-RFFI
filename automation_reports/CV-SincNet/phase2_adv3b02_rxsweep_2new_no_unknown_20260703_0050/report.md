@@ -59,7 +59,7 @@ The prior two `20-1` runs are diagnostic-negative: simple multi-new Stage2-C pea
 | Snapshot under `code\snapshots` | PASS: launcher, report, and local dry-run evidence copied under `code\snapshots\phase2_adv3b02_rxsweep_2new_no_unknown_20260703_0050` |
 | Git-backed mirror commit | PASS: launcher, report, dry-run evidence, and `.gitattributes` entry included in the Git-backed change set before N607 sync |
 | N607 preflight/occupancy | PASS before sync/launch |
-| Remote syntax/hash/dry-run | pending after GPU0-avoid remap |
+| Remote syntax/hash/dry-run | PASS after GPU0-avoid remap |
 | Launch | pending |
 
 ## Local Verification Evidence
@@ -113,7 +113,12 @@ ssh -F E:\type10-7\tools\n607_ssh_config -o BatchMode=yes N607 'cd /home/szu2070
 
 | Check | Evidence |
 |---|---|
-| Status | Pending after GPU0-avoid remap; previous remote verification was superseded because launcher GPU allocation changed |
+| Remote launcher syntax | PASS via `bash -n` |
+| Remote launcher hash | `02ea8837a812fe04bbeedee43f195faecf0a4a6f68df8acdf442ff21b9df949c` |
+| Remote report hash before launch | `5c15236ad751732ff4b981eb8780c3ddd40a9c1622d1a6f65ca90dfaab0f3291` |
+| Remote dry-run hash | `81deee2595023d312ca784e2ca49b1b98d242f510972a4d6f6b9d0ded212ec56` |
+| Remote dry-run audit | 8 candidates, actual `--unknown_tx_ids` count 0, `--oa_mse_old80_head_mode` count 4, GPU0 candidate lines 0, GPU1 candidate lines 2 |
+| SSH cleanup | local `ssh.exe` and established N607/bridge TCP checks clear after remap sync and remote verification |
 
 ## Expected Outputs
 
