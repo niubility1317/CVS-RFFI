@@ -48,16 +48,16 @@ dry-run输出归档:`E:\type10-7\automation_reports\CV-SincNet\phase1_kad_corega
 
 ## 候选矩阵
 
-|candidate|泛化假设|拒识潜力机制|主要风险|可否Stage2真实unknown评估|下一步动作|
+|candidate|泛化假设|拒识潜力机制|主要风险|后续Stage2-A真实unknown评估资格边界（当前Phase1不产生unknown_FAR/FPR95）|下一步动作|
 |---|---|---|---|---|---|
-|KAD8G0_COREGATE_ANCHOR_E200|在ADV3B02附近保护strict UDU、receiver floor和satellite floor|p80 component gate、core-safe source episode、tail sentinel不自动接收|可能只降低导出半径，训练期bridge仍高|可以，完成后只作为Stage2-A评估候选，不直接promotion|作为KAD8主锚点，比较ADG8G0/ADV3B02|
-|KAD8G1_HOLDOUT_STRESS_E200|检验holdout从1到2是否仍能保持DG|观察extra holdout是否重现ADG source overflow|若overflow升高，说明“更多proxy”是负方向|可以，但预期更偏诊断|判定proxy扩张是否应被限制|
-|KAD8G2_BRIDGE_CVAR_E200|尽量不牺牲strict/receiver floor|直接压低same/inter bridge accept|bridge权重过高可能伤害跨receiver困难样本|可以，若bridge明显下降且DG不崩|作为bridge治理主诊断|
-|KAD8G3_SOURCE_OVERFLOW_E200|保留分类保真，减少source overflow撑边界|source-safe overflow、tail quarantine、core_quantile episode|source episode过窄可能伤害弱receiver|可以，重点看receiver floor|若overflow下降且floor稳定，进入下一轮主组合|
-|KAD8G4_LOW_DENSITY_GATE_E200|避免只改善平均值，治理低密度accept|density gate和shell/outward治理|density过严可能拒收old tail|可以，需同时看old closed-set和low_density_accept_rate|判断低密度gate是否必要|
-|KAD8G5_ENERGY_MARGIN_Q05_E200|保持闭集同时提升energy下分位安全边界|energy_margin_q05/q10和vaccept CVaR|可能只修proxy，不修source tail|可以，需看source_overflow和proxy_vaccept是否同降|验证energy quantile是否能补component gate|
-|KAD8G6_RADIUS_INTER_BUDGET_E200|保护类间分离和receiver floor|压component_radius_p95/max和radius_to_inter_ratio|半径预算过紧可能降低strict UDU|可以，若p99/tail不膨胀|判断导出半径预算是否可主推|
-|KAD8G7_COMBINED_SAT_REPAIR_E200|结合治理并保护satellite weak scenario floor|组合bridge、low-density、energy、radius和satellite stress|组合项可能过强，best/final gap或弱receiver退化|可以，但默认diagnostic|只有同row泛化和拒识代理都改善才推进|
+|KAD8G0_COREGATE_ANCHOR_E200|在ADV3B02附近保护strict UDU、receiver floor和satellite floor|p80 component gate、core-safe source episode、tail sentinel不自动接收|可能只降低导出半径，训练期bridge仍高|若完成后双目标达标，仅可列入后续独立Stage2-A评估候选，当前结果不得替代unknown_FAR/FPR95/AUROC|作为KAD8主锚点，比较ADG8G0/ADV3B02|
+|KAD8G1_HOLDOUT_STRESS_E200|检验holdout从1到2是否仍能保持DG|观察extra holdout是否重现ADG source overflow|若overflow升高，说明“更多proxy”是负方向|仅诊断proxy扩张风险；当前结果不得替代unknown_FAR/FPR95/AUROC|判定proxy扩张是否应被限制|
+|KAD8G2_BRIDGE_CVAR_E200|尽量不牺牲strict/receiver floor|直接压低same/inter bridge accept|bridge权重过高可能伤害跨receiver困难样本|若bridge明显下降且DG不崩，仅可作为后续独立Stage2-A评估候选|作为bridge治理主诊断|
+|KAD8G3_SOURCE_OVERFLOW_E200|保留分类保真，减少source overflow撑边界|source-safe overflow、tail quarantine、core_quantile episode|source episode过窄可能伤害弱receiver|若overflow下降且floor稳定，仅可列入后续独立Stage2-A评估候选|若overflow下降且floor稳定，进入下一轮主组合|
+|KAD8G4_LOW_DENSITY_GATE_E200|避免只改善平均值，治理低密度accept|density gate和shell/outward治理|density过严可能拒收old tail|需同时看old closed-set和low_density_accept_rate；当前只给Phase1代理证据|判断低密度gate是否必要|
+|KAD8G5_ENERGY_MARGIN_Q05_E200|保持闭集同时提升energy下分位安全边界|energy_margin_q05/q10和vaccept CVaR|可能只修proxy，不修source tail|proxy-only风险必须保留；当前结果不得替代unknown_FAR/FPR95/AUROC|验证energy quantile是否能补component gate|
+|KAD8G6_RADIUS_INTER_BUDGET_E200|保护类间分离和receiver floor|压component_radius_p95/max和radius_to_inter_ratio|半径预算过紧可能降低strict UDU|若p99/tail不膨胀，仅可作为后续独立Stage2-A评估候选|判断导出半径预算是否可主推|
+|KAD8G7_COMBINED_SAT_REPAIR_E200|结合治理并保护satellite weak scenario floor|组合bridge、low-density、energy、radius和satellite stress|组合项可能过强，best/final gap或弱receiver退化|只有同row泛化和拒识代理都改善，才列入后续独立Stage2-A评估候选|只有同row泛化和拒识代理都改善才推进|
 
 ## 监控主表字段
 
@@ -158,3 +158,39 @@ cd /home/szu2070436088/2510044040/CV-SincNet && mkdir -p code/snapshots/phase1_k
 |Git-backed镜像路径同组pytest和`py_compile`|通过|
 
 本地快照:`E:\type10-7\code\snapshots\accept_gate_hardening_20260702\SHA256SUMS.txt`
+
+## 2026-07-02 KAD16每GPU双槽实验设计
+
+用户要求设计16个实验，包括当前已启动的KAD8，并按每张卡两个实验组织。已新增本地矩阵报告:
+
+`E:\type10-7\automation_reports\CV-SincNet\phase1_kad_coregate_gpu8_20260702\kad16_hardening_matrix.md`
+
+当前边界:
+
+- KAD8:`phase1_kad_coregate_gpu8_20260702`，按启动记录已在N607启动8个候选，每GPU一条；该批次仍是accept gate hardening之前的远程代码证据。
+- KAD16H:`phase1_kad_hardening_secondlane_gpu8_20260702`，新增8个硬化验证候选，每GPU第二槽一条；本轮只完成本地launcher和矩阵设计，未同步N607、未启动。
+- 新launcher:`E:\type10-7\code\scripts\launch_phase1_kad_hardening_secondlane_gpu8_20260702.sh`。
+- dry-run归档:`E:\type10-7\automation_reports\CV-SincNet\phase1_kad_coregate_gpu8_20260702\dry_run_hardening_secondlane_20260702.txt`。
+
+新增launcher安全语义:
+
+- 非dry-run会创建`${LOG_ROOT}/.launcher.lock`，拒绝重复提交同一second-lane批次。
+- 非dry-run会拒绝`RUN_ID`、`RUNS_ROOT`或`LOG_ROOT`指向`phase1_kad_coregate_gpu8_20260702`，避免污染当前KAD8目录。
+- 若任一卡已有2条训练进程，launcher只等待，不应继续追加第三条。
+
+KAD16H启动前硬门槛:
+
+1. 先同步本地硬化补丁和新增launcher到N607，至少包括`cvsrffi/losses.py`、`cvsrffi/phase2_prototypes.py`、`SSDG/train_ssdg.py`、`code/scripts/launch_phase1_kad_hardening_secondlane_gpu8_20260702.sh`。
+2. 记录精确scp映射、远端SHA256、远端`py_compile`、远端`bash -n`、远端dry-run8候选计数和非dry-run guard结果。
+3. 记录当前KAD8真实compute进程证据:PID、cwd、cmdline、`CUDA_VISIBLE_DEVICES`、GPU号、log路径；不能只看旧preflight或launcher父进程。
+4. 确认远端`runs/phase1_kad_hardening_secondlane_gpu8_20260702`和`logs/phase1_kad_hardening_secondlane_gpu8_20260702`不存在；若存在candidate目录、`.out`、`.pid`、`launcher.out`或`.launcher.lock`，停止。
+5. 启动后补写远程命令、launcher PID、每候选PID/GPU/log、SSH/SCP断连清理、启动后4-5分钟startup health检查。
+
+本地验证:
+
+|命令|结果|
+|---|---|
+|`bash -n scripts/launch_phase1_kad_hardening_secondlane_gpu8_20260702.sh`|通过|
+|`bash scripts/launch_phase1_kad_hardening_secondlane_gpu8_20260702.sh --dry-run`|通过，8个KAD16H候选均可展开|
+
+新增8行的核心目的不是补proxy unknown数量，而是验证三类修改后的机制:默认不再把three-sigma半径作为accept gate、tail sentinel即使命令请求也不能自动接收、proxy_vaccept改善必须被标记为proxy-only证据且不能直接声明真实unknown拒识改善。`phase2_export_prototypes`和`phase2_fuse_prototypes`只表示源域prototype导出和后续独立Stage2-A评估准备，不表示Stage2已经运行、Stage2成功或部署证据成立。
