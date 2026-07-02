@@ -236,3 +236,52 @@ Nearest same-row candidates remain far from the dual target:
 | If old drop is kept near`<=2pp` | `unknown_FAR` remains around 0.78-0.99 |
 
 Conclusion: under the current available source-pair feature exports, a post-feature adapter trained only on sparse source clean/LEO pairs is insufficient. The next route should not continue small feature-space adapter sweeps. It should regenerate a real source paired dataset with many clean/LEO pairs per source TX/RX/day, then train either a raw-IQ前置去信道模块 or an identity-constrained feature adapter with explicit cosine/prototype-preservation validation before any rejection threshold is tuned.
+
+## V3 Global Source-Pair Route
+
+V3 responds to the V1/V2 root cause: both earlier matrices used only`27`paired source clean/LEO samples per cell, so the adapter training set was too sparse to represent the source-domain LEO residual. V3 first exports a real source-only clean/LEO feature library from`ManySig.pkl`, then trains one global adapter per satellite scenario pool and applies it to strict satellite single-observation target tests.
+
+Protocol boundary:
+
+| Boundary | V3 setting |
+|---|---|
+| Base model | `ADV3B02_CORE90_SOFT_E200phase1` frozen checkpoint |
+| Adapter training data | source training TX/RX only, clean paired with generated source LEO views |
+| Target evaluation data | existing strict satellite single-observation NPZ; no target clean |
+| Unknown threshold selection | no target unknown query tuning |
+| Phase2 few-shot | not used |
+
+New/changed local files:
+
+| File | Purpose | SHA256 |
+|---|---|---|
+| `E:\type10-7\code\scripts\export_phase1_source_leo_pair_features.py` | Export source-only clean and LEO paired Phase1 features from`ManySig.pkl` | `523355DF7DB96724AE1B51E6D40A67957F9EF50FC8FE889F00E66F7853E2C70E` |
+| `E:\type10-7\code\scripts\sweep_phase1_adv3b02_global_source_leo_adapter_20260703.sh` | Run V3 source-pair export and global source-trained adapter matrix | `CA937A87E90774D838B9BAA069317FA0EAD7E06A33763D9DE1F9C48BFD1CA44C` |
+| `E:\type10-7\code\scripts\fit_apply_phase1_leo_feature_adapter.py` | Existing adapter/evaluator reused by V3 | `94C12E73C0D15E11FB2AEC344C985B4B0ADDA8EF1343B9D1719152CCDA5A10A5` |
+
+Local verification:
+
+| Command | Result |
+|---|---|
+| `C:\Users\lh594\.conda\envs\ssr-gpu\python.exe -m py_compile E:\type10-7\code\scripts\export_phase1_source_leo_pair_features.py E:\type10-7\code\scripts\fit_apply_phase1_leo_feature_adapter.py` | PASS |
+| `bash -n code/scripts/sweep_phase1_adv3b02_global_source_leo_adapter_20260703.sh` | PASS |
+| `C:\Users\lh594\.conda\envs\ssr-gpu\python.exe E:\type10-7\code\scripts\export_phase1_source_leo_pair_features.py --help` | PASS |
+
+Planned N607 execution:
+
+| Stage | Command/log |
+|---|---|
+| Export source clean/LEO pairs | `DO_EXPORT=1 RUN_CELLS=0 GPU=0 bash code/scripts/sweep_phase1_adv3b02_global_source_leo_adapter_20260703.sh`; log root `/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_adv3b02_global_source_leo_adapter_matrix_20260703` |
+| Run target satellite cells | `SCRIPT=/home/szu2070436088/2510044040/CV-SincNet/code/scripts/sweep_phase1_adv3b02_global_source_leo_adapter_20260703.sh bash code/scripts/launch_phase1_adv3b02_leo_feature_adapter_shards_20260703.sh` |
+| Expected summary | `/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_adv3b02_global_source_leo_adapter_matrix_20260703/global_source_leo_adapter_summary.csv` |
+
+Expected matrix:
+
+| Dimension | Values |
+|---|---|
+| Cells | 10 strict satellite single-observation cells |
+| Adapters | `LEOADAPT3_IDENTITY`, `LEOADAPT3_MEANSHIFT`, `LEOADAPT3_NORMSHIFT`, `LEOADAPT3_LINR_COS`, `LEOADAPT3_MLP_ID` |
+| Reject policies | 4 head policies plus 3 prototype policies |
+| Expected rows | 350 |
+
+Success criteria stay unchanged: target1 requires improved LEO-to-clean alignment without identity/prototype collapse; target2 requires same-row`unknown_FAR<=0.05`and old-class performance drop`<=2pp`.
