@@ -189,3 +189,13 @@ nohup bash code/scripts/launch_phase1_adg_v2_gpu8_20260702.sh > logs/phase1_adg_
 |`ADG8G5_TAIL_OVERFLOW_E200`|1|15|15|
 |`ADG8G6_CONSERVATIVE_ALL_E200`|1|15|15|
 |`ADG8G7_STRONG_ALL_SAT_E200`|1|15|15|
+
+## 最终交接状态
+
+|项目|结果|
+|---|---|
+|最终库存时间|2026-07-02 11:21 +08:00|
+|远端运行状态|8个GPU compute进程仍在运行，PID为`3791902`、`3791903`、`3791916`、`3791914`、`3791898`、`3791890`、`3791894`、`3791912`|
+|库存分类说明|`n607_training_inventory.py`把当前ADG launcher归为unknown project GPU training，并为避免误入optimizer将centralized/federated/unknown均视作active；实际本轮只启动Phase1集中式ADG训练矩阵，没有启动联邦实验。|
+|本地SSH清理|`Get-Process ssh`无进程；到`172.31.111.215:22`无`ESTABLISHED`连接。|
+|下一次检查|读取`logs/phase1_adg_v2_gpu8_20260702/status/*.status`、各候选`metrics_epoch.csv`和`phase2_zid_prototypes.pt/json`；完成后按候选同一行比较泛化与开集代理指标。|
