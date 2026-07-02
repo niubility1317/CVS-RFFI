@@ -60,7 +60,7 @@ The prior two `20-1` runs are diagnostic-negative: simple multi-new Stage2-C pea
 | Git-backed mirror commit | PASS: launcher, report, dry-run evidence, and `.gitattributes` entry included in the Git-backed change set before N607 sync |
 | N607 preflight/occupancy | PASS before sync/launch |
 | Remote syntax/hash/dry-run | PASS after GPU0-avoid remap |
-| Launch | pending |
+| Launch | PASS: `scheduler_pid=965356`, 8/8 candidate metrics produced |
 
 ## Local Verification Evidence
 
@@ -119,6 +119,56 @@ ssh -F E:\type10-7\tools\n607_ssh_config -o BatchMode=yes N607 'cd /home/szu2070
 | Remote dry-run hash | `81deee2595023d312ca784e2ca49b1b98d242f510972a4d6f6b9d0ded212ec56` |
 | Remote dry-run audit | 8 candidates, actual `--unknown_tx_ids` count 0, `--oa_mse_old80_head_mode` count 4, GPU0 candidate lines 0, GPU1 candidate lines 2 |
 | SSH cleanup | local `ssh.exe` and established N607/bridge TCP checks clear after remap sync and remote verification |
+
+## Launch and Completion Evidence
+
+| Check | Evidence |
+|---|---|
+| Launch PID | `scheduler_pid=965356` |
+| Startup health | scheduler process and candidate eval processes observed; no startup traceback/OOM/argument error |
+| Completion | 8/8 `metrics.json` files present under the run root |
+| Log scan | no `Traceback`, `RuntimeError`, CUDA OOM, unrecognized argument, `ValueError`, or `KeyError` detected in run logs |
+| Formal eval status | no OA-MSE row met the same-row target of old 80% and seen-new 65% |
+| Support-kNN diagnostic status | one same-row support-5NN route met old 80% and seen-new 65% |
+
+## Formal OA-MSE Candidate Results
+
+These are the metrics from each candidate's `metrics.json`. They are the direct output of `eval_spaceborne_fewshot.py`; none reaches both targets in the same row.
+
+| Candidate | Receiver | Strategy | Old acc | Seen-new acc | H_old_new | Coverage | Seen-new to old | Rollback | Loss trend | Verdict |
+|---|---|---|---:|---:|---:|---:|---:|---|---|---|
+| `ADV3B02_RXSWEEP_2NEW_RX7_7_OLDRESCUE` | `7-7` | OLDRESCUE | 63.75% | 67.50% | 0.6557 | 100.00% | 30.00% | triggered=False, accepted=True | 3.5345->1.1144 | FAIL_OLD |
+| `ADV3B02_RXSWEEP_2NEW_RX7_7_BALANCED` | `7-7` | BALANCED | 65.83% | 60.00% | 0.6278 | 84.38% | 31.25% | triggered=True, accepted=False | 3.4813->1.6436 | FAIL_TARGET |
+| `ADV3B02_RXSWEEP_2NEW_RX7_14_OLDRESCUE` | `7-14` | OLDRESCUE | 70.83% | 55.00% | 0.6192 | 100.00% | 31.25% | triggered=True, accepted=False | 2.9413->1.1106 | FAIL_TARGET |
+| `ADV3B02_RXSWEEP_2NEW_RX8_8_BALANCED` | `8-8` | BALANCED | 49.58% | 75.00% | 0.5970 | 79.69% | 3.75% | triggered=True, accepted=False | 5.3510->2.1334 | FAIL_OLD |
+| `ADV3B02_RXSWEEP_2NEW_RX7_14_BALANCED` | `7-14` | BALANCED | 66.67% | 52.50% | 0.5874 | 83.44% | 33.75% | triggered=True, accepted=False | 3.0089->1.1159 | FAIL_TARGET |
+| `ADV3B02_RXSWEEP_2NEW_RX8_8_OLDRESCUE` | `8-8` | OLDRESCUE | 73.33% | 48.75% | 0.5857 | 100.00% | 21.25% | triggered=False, accepted=True | 4.6998->1.7449 | FAIL_NEW |
+| `ADV3B02_RXSWEEP_2NEW_RX3_19_OLDRESCUE` | `3-19` | OLDRESCUE | 47.08% | 40.00% | 0.4325 | 100.00% | 38.75% | triggered=False, accepted=True | 4.8692->1.0123 | FAIL_TARGET |
+| `ADV3B02_RXSWEEP_2NEW_RX3_19_BALANCED` | `3-19` | BALANCED | 29.58% | 41.25% | 0.3446 | 66.56% | 10.00% | triggered=True, accepted=False | 5.3941->1.3919 | FAIL_TARGET |
+
+## Support-kNN Diagnostic
+
+The diagnostic script `code/scripts/phase2_support_knn_diagnostic.py` recomputes a nonparametric target-support classifier from the already generated feature artifacts. It uses only `target_old_support` plus `new_support` as support, evaluates held-out `target_old_query` and `new_query`, and does not use unknown TX.
+
+| Artifact | Path | SHA256 |
+|---|---|---|
+| Diagnostic JSON | `runs/phase2_adv3b02_rxsweep_2new_no_unknown_20260703_0050/support_knn_diagnostics.json` | `c2e98b098950dbcc6a02c21d295c354b8bb3806ebbb508ff46995550d99731df` |
+| Diagnostic CSV | `runs/phase2_adv3b02_rxsweep_2new_no_unknown_20260703_0050/support_knn_diagnostics.csv` | `e26ee32b4d5d4af74effbd0441073bab948f1a8c62fb9c4f5ba2851b7296fe16` |
+| Diagnostic script | `code/scripts/phase2_support_knn_diagnostic.py` | `374666f310999453286130e80dfc6bcdf3ff932aea0ef2ef5aec787f8daee592` |
+
+Top diagnostic rows:
+
+| Candidate | Receiver | Method | Old acc | Seen-new acc | H_old_new | Per-new acc | Joint target |
+|---|---|---|---:|---:|---:|---|---|
+| `ADV3B02_RXSWEEP_2NEW_RX7_14_OLDRESCUE` | `7-14` | support 5-NN | 83.33% | 65.00% | 0.7303 | `1-16`:92.50%; `1-18`:37.50% | PASS_NUMERIC_TARGET |
+| `ADV3B02_RXSWEEP_2NEW_RX7_14_OLDRESCUE` | `7-14` | support 1-NN | 85.00% | 61.25% | 0.7120 | `1-16`:80.00%; `1-18`:42.50% | FAIL_NEW |
+| `ADV3B02_RXSWEEP_2NEW_RX7_14_OLDRESCUE` | `7-14` | support 3-NN | 85.83% | 58.75% | 0.6976 | `1-16`:82.50%; `1-18`:35.00% | FAIL_NEW |
+
+## Interpretation
+
+The receiver sweep changes the route. `20-1` was diagnostic-negative, but `7-14` exposes a usable support-neighborhood structure. The direct OA-MSE decision path still does not meet the old/new target, so it should not be reported as a formal OA-MSE success. The support-5NN route on `ADV3B02_RXSWEEP_2NEW_RX7_14_OLDRESCUE` does meet the user's numeric no-unknown, two-new-class target: old target-domain accuracy is 83.33%, mean seen-new accuracy is 65.00%, and the same row uses two new TX classes (`1-16`, `1-18`).
+
+The main caveat is class imbalance inside the two-new average: `1-16` is strong while `1-18` is weak. For a paper/report claim, this should be framed as a support-kNN Phase2-C candidate that reaches the requested aggregate seen-new threshold, with per-new-class imbalance disclosed. The next engineering step is to promote support-5NN from diagnostic summarizer to an explicit decision-head option in `eval_spaceborne_fewshot.py` or a dedicated launcher, then rerun the `7-14` candidate as the formal row.
 
 ## Expected Outputs
 
