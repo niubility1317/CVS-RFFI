@@ -330,3 +330,18 @@ KAD16H slot B运行中快照:
 |`KAD16H7_HARDENED_COMBINED_SAT_E200`|151|OK|`val_tx=95.96%`、`test_tx=84.62%`@E030|
 
 解释边界:以上是完成度/健康巡检，不是Phase1最终排名。KAD8虽已结束，但还需要读取`metrics_epoch.csv`、prototype导出、tail/overflow/proxy/energy/component半径等同row指标后，才能判断泛化与拒识潜力是否同时改善。KAD16H还未结束，不能用当前中途best joint快照给出推进结论。
+
+## 2026-07-02 KAD Phase1全量分析
+
+用户要求按Phase1“可拒识的跨域泛化表征”目标全面分析KAD实验。已完成N607只读preflight、全量stdout扫描、16个`metrics_epoch.csv`全行解析、prototype JSON字段核验和同row指标汇总。分析报告与机器可复查表已落地:
+
+- `E:\type10-7\automation_reports\CV-SincNet\phase1_kad_coregate_gpu8_20260702\kad_phase1_full_analysis_20260702.md`
+- `E:\type10-7\automation_reports\CV-SincNet\phase1_kad_coregate_gpu8_20260702\analysis_20260702_2344\kad_full_log_metrics_summary.json`
+- `E:\type10-7\automation_reports\CV-SincNet\phase1_kad_coregate_gpu8_20260702\analysis_20260702_2344\kad_generalization_table.csv`
+- `E:\type10-7\automation_reports\CV-SincNet\phase1_kad_coregate_gpu8_20260702\analysis_20260702_2344\kad_rejection_table.csv`
+- `E:\type10-7\automation_reports\CV-SincNet\phase1_kad_coregate_gpu8_20260702\analysis_20260702_2344\kad_pair_deltas.csv`
+- `E:\type10-7\automation_reports\CV-SincNet\phase1_kad_coregate_gpu8_20260702\analysis_20260702_2344\kad_health_table.csv`
+
+核心结论:KAD8G0仍是闭集DG最稳anchor；KAD16H只带来局部代理改善，没有出现“泛化提升且拒识风险下降”的主推进候选。所有候选`bridge_accept_rate=1.0`，proxy_vaccept仍偏高，source_episode_overflow普遍高。KAD16H1的satellite和proxy代理最好，但它是three-sigma负控且final guard失败，只能作为诊断性负例，不能作为Stage2推进证据。
+
+声明边界:本分析仍为Phase1 source-only证据，不声明真实`unknown_FAR`、`FPR95`、Stage2 `old_acc`、`seen_new_acc`或`H_old_new`改善。
