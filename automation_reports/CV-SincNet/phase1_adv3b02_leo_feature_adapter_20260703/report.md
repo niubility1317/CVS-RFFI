@@ -642,3 +642,48 @@ Final route conclusion after V8:
 | 目标2: `unknown_FAR<=0.05` while keeping old-class performance | Not achieved | V3, V5, V6, V7 and V8 all have dual pass 0; V8 confirms that simply adding a source-only K+1 unknown class on repaired features does not resolve the old/unknown overlap |
 
 Next route should no longer be another threshold-only or shallow head sweep on the same exported feature table. The remaining protocol-aligned options are to retrain the Phase1-compatible repair/open-set module with an explicit class-conditional retention objective, or to regenerate source-side LEO repair views with stronger identity-preserving constraints before exporting features. Any target-label oracle or target-statistics calibration can only be marked diagnostic, not deployable phase1-only evidence.
+
+## V9 Joint Adapter + Oldness Gate Design
+
+V9 moves beyond post-hoc threshold/head sweeps by jointly training a Phase1-compatible feature adapter and an oldness gate. It still freezes the Phase1 backbone and obeys the phase1-only boundary.
+
+Training data:
+
+| Source | Role | Use |
+|---|---|---|
+| `source_clean.npz` | source old clean | clean target for repair and clean prototype bank |
+| `source_leo_clear_weak.npz`, `source_leo_low_elev_weak.npz`, `source_leo_rain_weak.npz` | source old LEO | adapter input for clean/LEO feature repair |
+| `proxy_unknown` rows from sat-only feature NPZ | source receiver non-old LEO | open-set oldness negative class |
+
+Losses:
+
+| Loss | Purpose |
+|---|---|
+| SmoothL1 + cosine pair repair | make source LEO features approach clean features |
+| prototype CE to clean old prototypes | preserve old TX identity after repair |
+| small residual penalty | avoid unconstrained feature drift |
+| oldness BCE | separate source old from source proxy unknown |
+| proxy prototype cap | push proxy unknown away from old clean prototypes |
+| old confidence floor | keep old-class evidence high |
+
+New local file:
+
+| File | Purpose | SHA256 |
+|---|---|---|
+| `E:\type10-7\code\scripts\eval_phase1_joint_adapter_energy_reject_20260703.py` | Train/evaluate source-only joint adapter + oldness gate over sat-only target query NPZs | `7DD1B16E075EBD11ADEF1EEF01DBE45242276BCDA75AB5405BD57923FDF7AC2A` |
+
+Local verification:
+
+| Command | Result |
+|---|---|
+| `C:\Users\lh594\.conda\envs\ssr-gpu\python.exe -m py_compile E:\type10-7\code\scripts\eval_phase1_joint_adapter_energy_reject_20260703.py` | PASS |
+
+Planned remote output:
+
+| Artifact | Remote path |
+|---|---|
+| V9 summary | `/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_adv3b02_joint_adapter_reject_20260703/joint_adapter_reject_summary.csv` |
+| V9 metrics JSON | `/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_adv3b02_joint_adapter_reject_20260703/joint_adapter_reject_metrics.json` |
+| V9 log | `/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_adv3b02_joint_adapter_reject_20260703/joint_adapter_reject.out` |
+
+Success criteria remain unchanged: target sat-only unknown_FAR`<=0.05`and old-class performance drop`<=2pp`, with no target clean and no target labels in training or threshold calibration.
