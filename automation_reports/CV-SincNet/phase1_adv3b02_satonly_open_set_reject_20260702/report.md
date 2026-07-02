@@ -1436,3 +1436,30 @@ Nearest same-row candidates to the dual target:
 | `satrepair9` | `phase1_adv3b02_satrepair9_rx7_14_u1_20260702` | `SATREPAIR9_MLP_M50_COR_PROXY05` | `proxy_class_far` | 0.999 | 0.100 | 0.0750 | 19.83 | 0.3483 | 0.1500 | 0.2600 | false |
 
 Interpretation: class-conditional recalibration confirms the same conflict at a finer granularity. It can make unknown_FAR very low, including aggregate mean FAR 1.87% and max FAR 3.33%, but only by accepting about 10% of known target-old samples and losing roughly 42pp of old-class accuracy. The nearest same-row candidates to the joint target still have unknown_FAR about 7.0%-7.5% and old drop about 20pp. Therefore the failure is not just a global-threshold artifact.
+
+## Oracle score separability diagnostic
+
+Objective: determine whether the existing Phase1 rejection score tables contain any thresholding solution that could theoretically satisfy the joint target. This is a diagnostic upper bound, not a deployable method, because target query labels are used after the fact to choose oracle thresholds.
+
+Design:
+
+| Field | Value |
+|---|---|
+| Evaluator | `code/scripts/eval_phase1_scoretable_oracle_reject.py` |
+| Sweep launcher | `code/scripts/sweep_phase1_adv3b02_oracle_reject_20260702.sh` |
+| Input score tables | existing `score_table.csv` under `phase1_adv3b02_satrepair_anchor7`, `satrepair9`, `satblind15`, `satphysmv11`, `satphysmv11_constrained`, `sattta_rxlight`, and `satunknown_singleview` runs |
+| Oracle types | global single-threshold oracle; global best-under-FAR oracle; class-conditional per-predicted-old-class oracle |
+| Target labels/support | target query labels are used only for oracle threshold selection, so output is `NON_DEPLOYMENT_DIAGNOSTIC` |
+| Unknown query samples | used by oracle threshold selection; therefore not valid deployment evidence |
+| Success interpretation | if oracle has no dual pass, score-level post-processing cannot satisfy the target; if oracle has dual pass, a source-calibrated route may still be worth searching |
+| Success criteria | `unknown_FAR<=0.05` and old drop vs closed old accuracy `<=2pp` |
+
+Local verification before N607 sync:
+
+| Check | Result |
+|---|---|
+| Python syntax | PASS: `C:\Users\lh594\.conda\envs\ssr-gpu\python.exe -m py_compile E:\type10-7\code\scripts\eval_phase1_scoretable_oracle_reject.py` |
+| Bash syntax | PASS: `bash -n code/scripts/sweep_phase1_adv3b02_oracle_reject_20260702.sh` |
+| Line endings | PASS: LF-only for both new files |
+| Local snapshot | `E:\type10-7\code\snapshots\phase1_adv3b02_oracle_reject_20260702\` |
+| SHA256 | `eval_phase1_scoretable_oracle_reject.py=C89499373B0DCCF22B519A26FEE122A2794D9663DF001779B3C179E2BDD6D498`; `sweep_phase1_adv3b02_oracle_reject_20260702.sh=9D260865C5F480943A7E45D760F7AB9622F3FEEA06DEF5296681C70E836BB783` |
