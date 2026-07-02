@@ -115,6 +115,7 @@ After fitting on source pairs, the same adapter is applied to the complete satel
 | `2026-07-03T00:34+08:00` | FAILED_STARTUP | Dedicated shard launcher created PIDs`864506-864513`, but the first adapter fit failed on N607 because tensor-to-NumPy conversion produced an object array under the remote PyTorch/NumPy combination. |
 | `2026-07-03T00:40+08:00` | PATCHED_LOCAL | `fit_apply_phase1_leo_feature_adapter.py` now computes logits directly from the adapted tensor and converts saved arrays through `.tolist()` to guarantee float32 NPZ output. |
 | `2026-07-03T00:38-00:50+08:00` | COMPLETED_V1 | 8 shards completed, 50 adapter metrics and 350 rejection metrics produced. |
+| `2026-07-03T00:58-01:08+08:00` | COMPLETED_V2 | 8 shards completed, 40 adapter metrics and 280 rejection metrics produced. |
 
 ## V1 Completion Result
 
@@ -176,3 +177,62 @@ Planned V2 matrix:
 | Matrix log root | `/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_adv3b02_leo_feature_adapter_v2_matrix_20260703` |
 | Expected summary | `/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_adv3b02_leo_feature_adapter_v2_matrix_20260703/leo_feature_adapter_v2_summary.csv` |
 | Expected rows | 280 rows: 10 cells x 4 adapters x 7 rejection policies |
+
+## V2 Completion Result
+
+Artifacts:
+
+| Artifact | Local path | SHA256 |
+|---|---|---|
+| V2 summary CSV | `E:\type10-7\automation_reports\CV-SincNet\phase1_adv3b02_leo_feature_adapter_20260703\artifacts\leo_feature_adapter_v2_summary.csv` | `E5B470605D9539A9E02567CB42C3CDE32711D624F77F524B6083F29C3CA37470` |
+| V2 shard drivers | `E:\type10-7\automation_reports\CV-SincNet\phase1_adv3b02_leo_feature_adapter_20260703\artifacts\driver_v2_shard0.out` ... `driver_v2_shard7.out` | pulled locally |
+
+Overall:
+
+| Metric | Value |
+|---|---:|
+| Rows | 280 |
+| Adapter runs | 40 |
+| Cells | 10 |
+| Dual pass (`unknown_FAR<=0.05` and old drop`<=2pp`) | 0 |
+| FAR-only pass | 62 |
+| Old-drop-only pass | 104 |
+
+Target1 alignment by adapter:
+
+| Adapter | Source pairs/cell | Val MSE before | Val MSE after | Val cosine before | Val cosine after | Val proto acc before | Val proto acc after |
+|---|---:|---:|---:|---:|---:|---:|---:|
+| `LEOADAPT2_IDENTITY` | 27 | 0.1399 | 0.1399 | 0.8229 | 0.8229 | 0.8000 | 0.8000 |
+| `LEOADAPT2_MEANSHIFT` | 27 | 0.1399 | 0.1245 | 0.8229 | 0.7573 | 0.8000 | 0.8000 |
+| `LEOADAPT2_LINR_ID` | 27 | 0.1399 | 0.0992 | 0.8229 | 0.6909 | 0.8000 | 0.8000 |
+| `LEOADAPT2_NORMSHIFT` | 27 | 0.1399 | 0.2522 | 0.8229 | 0.7889 | 0.8000 | 0.8000 |
+
+V2 fixes the V1 identity-prototype collapse: prototype accuracy stays at`0.8000` for all V2 adapters. However, cosine still drops for all non-identity adapters. `mean_shift` is the best conservative repair: it improves MSE from`0.1399` to`0.1245` while preserving prototype accuracy, but it still weakens cosine from`0.8229` to`0.7573`.
+
+Target2 result:
+
+| Best family | Mean unknown_FAR | Max unknown_FAR | Mean old drop pp | Max old drop pp | Verdict |
+|---|---:|---:|---:|---:|---|
+| `LEOADAPT2_MEANSHIFT` + `ADAPT2_PROTO_MAH_MIN05` | 0.0281 | 0.0425 | 56.07 | 66.24 | FAR passes, old-class retention fails badly |
+| `LEOADAPT2_MEANSHIFT` + `ADAPT2_PROTO_COS_MIN05` | 0.0308 | 0.0500 | 53.43 | 63.12 | FAR nearly/passes, old-class retention fails badly |
+| `LEOADAPT2_MEANSHIFT` + `ADAPT2_MLP64_SRC9999` | 0.8888 | 0.9611 | 1.77 | 4.38 | Old retention near target, FAR fails badly |
+
+Nearest same-row candidates remain far from the dual target:
+
+| Run | Adapter | Reject policy | unknown_FAR | Old drop pp | Closed old acc | Full old acc after reject | Verdict |
+|---|---|---|---:|---:|---:|---:|---|
+| `rx20_1_u1` | `LEOADAPT2_MEANSHIFT` | `ADAPT2_MLP64_SRC9999` | 0.7759 | 1.76 | 0.5591 | 0.5415 | Old retention passes but FAR fails |
+| `rx20_1_u1` | `LEOADAPT2_MEANSHIFT` | `ADAPT2_MLP64_MIN05` | 0.0364 | 35.68 | 0.5591 | 0.2024 | FAR passes but old retention fails |
+| `rx3_19_u10` | `LEOADAPT2_MEANSHIFT` | `ADAPT2_PROTO_COS_MIN05` | 0.0000 | 48.06 | 0.4882 | 0.0076 | FAR passes but almost all old-correct samples are rejected |
+
+## Final Interpretation
+
+目标1已经实现为可复现实验工具链，但当前source-only后置feature repair没有达到可用质量。V2比V1更合理：它避免了prototype身份崩塌，并证明保守全局LEO残差修补能小幅降低MSE；但它仍然降低余弦方向一致性，且不能改善目标2的old/unknown可分性。
+
+目标2仍未达成。两个矩阵都显示同一个机制冲突：
+
+| If threshold is strict enough for `unknown_FAR<=5%` | Old-class accuracy drops by roughly 35-66pp |
+|---|---|
+| If old drop is kept near`<=2pp` | `unknown_FAR` remains around 0.78-0.99 |
+
+Conclusion: under the current available source-pair feature exports, a post-feature adapter trained only on sparse source clean/LEO pairs is insufficient. The next route should not continue small feature-space adapter sweeps. It should regenerate a real source paired dataset with many clean/LEO pairs per source TX/RX/day, then train either a raw-IQ前置去信道模块 or an identity-constrained feature adapter with explicit cosine/prototype-preservation validation before any rejection threshold is tuned.
