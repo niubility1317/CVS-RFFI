@@ -997,3 +997,20 @@ Expected remote artifacts:
 |---|---|
 | Driver log | `/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_adv3b02_satrepair9_matrix_20260702/driver.out` |
 | Summary CSV | `/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_adv3b02_satrepair9_matrix_20260702/satrepair9_sweep_summary.csv` |
+
+Remote sync and launch status:
+
+| Field | Value |
+|---|---|
+| Git mirror commit | `fe2398f Add LEO repair rejection sweep` |
+| Remote sync | completed with direct `scp -F tools\n607_ssh_config` |
+| Remote Python syntax | PASS: `/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -m py_compile code/export_spaceborne_features.py` |
+| Remote bash syntax | PASS: `bash -n code/scripts/sweep_phase1_adv3b02_satrepair9_20260702.sh` |
+| Remote hashes | `export_spaceborne_features.py=5A74B9D56C69E11D59E9BAEBF62D6B6607CF93DA7F1307E74AA466C8D484D94D`; `sweep_phase1_adv3b02_satrepair9_20260702.sh=26AF62C208C8892694D58095FA0AC4E0564DC68135B19B15AE0BAAE91190D8CF` |
+| Remote line endings | PASS, LF-only for both synced files |
+| Launch time | `2026-07-02T19:20:22+08:00` on N607 |
+| GPU allocation | `GPU=6` |
+| Submit note | local SSH submit timed out, but landed probe confirmed remote script running; stale local `ssh.exe` PID `42884` was closed and local TCP/SSH state returned to zero |
+| Landed process | shell script PID `74047`; current evaluator PID observed as `75058` during first cell |
+| Driver first lines | `[PHASE1-SATREPAIR9-SWEEP] start=2026-07-02T19:20:22+08:00 gpu=6`; first cell `phase1_adv3b02_satrepair9_rx20_1_u10_20260702` |
+| Startup status | feature export for first cell completed; run entered `eval_phase1_multiview_reject.py` policy evaluation |
