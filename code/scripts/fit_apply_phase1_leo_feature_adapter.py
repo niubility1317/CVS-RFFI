@@ -143,6 +143,21 @@ class AffineAdapter(nn.Module):
         return self.proj(x)
 
 
+class MeanShiftAdapter(nn.Module):
+    def __init__(self, delta: torch.Tensor, alpha: float, target_norm: float | None = None) -> None:
+        super().__init__()
+        self.register_buffer("delta", delta.detach().float().view(1, -1))
+        self.alpha = float(alpha)
+        self.target_norm = None if target_norm is None else float(target_norm)
+
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
+        y = x + self.alpha * self.delta.to(device=x.device, dtype=x.dtype)
+        if self.target_norm is not None:
+            norm = y.norm(dim=1, keepdim=True).clamp_min(1e-6)
+            y = y * (self.target_norm / norm)
+        return y
+
+
 def _build_adapter(kind: str, dim: int, hidden: int, alpha: float, dropout: float) -> nn.Module:
     mode = str(kind).lower()
     if mode == "linear_residual":
@@ -204,19 +219,30 @@ def fit_apply(args: argparse.Namespace) -> dict[str, Any]:
     np.random.seed(int(args.seed))
     clean = _load_npz(args.clean_npz)
     sat = _load_npz(args.sat_npz)
+    train_sat_paths = [str(p) for p in (args.train_sat_npz or [])] or [str(args.sat_npz)]
+    train_sats = [_load_npz(path) for path in train_sat_paths]
     source_tx_ids = parse_tx_id_list(args.source_tx_ids)
     if not source_tx_ids:
         raise ValueError("--source_tx_ids is required")
     source_roles = {x.strip() for x in str(args.source_roles).split(",") if x.strip()}
-    pairs = _source_pair_indices(clean, sat, source_roles)
-    clean_idx = [i for i, _ in pairs]
-    sat_idx = [j for _, j in pairs]
-    pair_keys = [_row_key(sat, j) for j in sat_idx]
+    clean_features = []
+    sat_features = []
+    source_labels_text: list[str] = []
+    pair_keys: list[tuple[str, ...]] = []
+    pair_count_by_train_npz: dict[str, int] = {}
+    for sat_i, train_sat in enumerate(train_sats):
+        pairs = _source_pair_indices(clean, train_sat, source_roles)
+        pair_count_by_train_npz[train_sat_paths[sat_i]] = len(pairs)
+        clean_idx = [i for i, _ in pairs]
+        sat_idx = [j for _, j in pairs]
+        clean_features.append(clean["features"][clean_idx])
+        sat_features.append(train_sat["features"][sat_idx])
+        source_labels_text.extend([canonical_tx_id(train_sat["tx_ids"][j]) for j in sat_idx])
+        pair_keys.extend([(f"train_sat_{sat_i}", *_row_key(train_sat, j)) for j in sat_idx])
 
     device = torch.device(args.device if torch.cuda.is_available() or not str(args.device).startswith("cuda") else "cpu")
-    clean_x = torch.as_tensor(clean["features"][clean_idx], dtype=torch.float32, device=device)
-    sat_x = torch.as_tensor(sat["features"][sat_idx], dtype=torch.float32, device=device)
-    source_labels_text = [canonical_tx_id(sat["tx_ids"][j]) for j in sat_idx]
+    clean_x = torch.as_tensor(np.concatenate(clean_features, axis=0), dtype=torch.float32, device=device)
+    sat_x = torch.as_tensor(np.concatenate(sat_features, axis=0), dtype=torch.float32, device=device)
     label_map = {canonical_tx_id(tx): i for i, tx in enumerate(source_tx_ids)}
     labels = torch.tensor([label_map[tx] for tx in source_labels_text], dtype=torch.long, device=device)
     prototypes = _make_clean_prototypes(clean_x, source_labels_text, source_tx_ids)
@@ -224,9 +250,15 @@ def fit_apply(args: argparse.Namespace) -> dict[str, Any]:
     train_idx_np, val_idx_np = _stable_split(pair_keys, float(args.val_fraction), int(args.seed))
     train_idx = torch.as_tensor(train_idx_np, dtype=torch.long, device=device)
     val_idx = torch.as_tensor(val_idx_np, dtype=torch.long, device=device)
-    adapter = _build_adapter(str(args.adapter_kind), int(sat_x.shape[1]), int(args.hidden_dim), float(args.alpha), float(args.dropout)).to(device)
+    adapter_kind = str(args.adapter_kind).lower()
+    if adapter_kind in {"mean_shift", "norm_mean_shift"}:
+        delta = (clean_x - sat_x).mean(dim=0)
+        target_norm = float(clean_x.norm(dim=1).mean().item()) if adapter_kind == "norm_mean_shift" else None
+        adapter = MeanShiftAdapter(delta, float(args.alpha), target_norm=target_norm).to(device)
+    else:
+        adapter = _build_adapter(str(args.adapter_kind), int(sat_x.shape[1]), int(args.hidden_dim), float(args.alpha), float(args.dropout)).to(device)
 
-    if str(args.adapter_kind).lower() != "identity":
+    if adapter_kind not in {"identity", "mean_shift", "norm_mean_shift"}:
         opt = torch.optim.AdamW(adapter.parameters(), lr=float(args.lr), weight_decay=float(args.weight_decay))
         for epoch in range(int(args.epochs)):
             adapter.train()
@@ -277,7 +309,7 @@ def fit_apply(args: argparse.Namespace) -> dict[str, Any]:
         "sat_npz": str(args.sat_npz),
         "adapter_kind": str(args.adapter_kind),
         "source_roles": sorted(source_roles),
-        "source_pair_count": len(pairs),
+        "source_pair_count": len(pair_keys),
         "train_pair_count": int(train_idx.numel()),
         "val_pair_count": int(val_idx.numel()),
         "uses_target_clean": False,
@@ -293,11 +325,13 @@ def fit_apply(args: argparse.Namespace) -> dict[str, Any]:
         "phase": "phase1_source_only_leo_feature_repair_adapter",
         "clean_npz": str(args.clean_npz),
         "sat_npz": str(args.sat_npz),
+        "train_sat_npz": train_sat_paths,
         "out_npz": str(args.out_npz),
         "source_tx_ids": source_tx_ids,
         "adapter_kind": str(args.adapter_kind),
         "feature_dim": int(sat_x.shape[1]),
-        "source_pair_count": len(pairs),
+        "source_pair_count": len(pair_keys),
+        "source_pair_count_by_train_npz": pair_count_by_train_npz,
         "train_pair_count": int(train_idx.numel()),
         "val_pair_count": int(val_idx.numel()),
         "loss_weights": {
@@ -338,10 +372,11 @@ def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--clean_npz", required=True)
     parser.add_argument("--sat_npz", required=True)
+    parser.add_argument("--train_sat_npz", action="append", default=[])
     parser.add_argument("--out_npz", required=True)
     parser.add_argument("--source_tx_ids", required=True)
     parser.add_argument("--source_roles", default="source")
-    parser.add_argument("--adapter_kind", default="mlp_residual", choices=["identity", "linear_residual", "mlp_residual", "affine"])
+    parser.add_argument("--adapter_kind", default="mlp_residual", choices=["identity", "linear_residual", "mlp_residual", "affine", "mean_shift", "norm_mean_shift"])
     parser.add_argument("--hidden_dim", type=int, default=64)
     parser.add_argument("--alpha", type=float, default=1.0)
     parser.add_argument("--dropout", type=float, default=0.05)

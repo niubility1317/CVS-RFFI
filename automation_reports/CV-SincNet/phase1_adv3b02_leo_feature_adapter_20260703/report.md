@@ -41,6 +41,7 @@ After fitting on source pairs, the same adapter is applied to the complete satel
 | `E:\type10-7\code\scripts\fit_apply_phase1_leo_feature_adapter.py` | Fits a source-only LEO feature repair adapter and writes an adapted satellite-only feature NPZ. |
 | `E:\type10-7\code\scripts\sweep_phase1_adv3b02_leo_feature_adapter_20260703.sh` | Runs 10 strict satellite single-observation cells with 5 adapter variants and 7 rejection policies. |
 | `E:\type10-7\code\scripts\launch_phase1_adv3b02_leo_feature_adapter_shards_20260703.sh` | Launches the matrix as 8 bounded GPU/cell shards without relying on interactive shell quoting. |
+| `E:\type10-7\code\scripts\sweep_phase1_adv3b02_leo_feature_adapter_v2_20260703.sh` | V2 matrix: trains adapters on all three source LEO scenario feature pairs while applying only to strict satellite single-observation test NPZs. |
 
 ## Local Verification
 
@@ -51,8 +52,10 @@ After fitting on source pairs, the same adapter is applied to the complete satel
 | `bash -n code/scripts/sweep_phase1_adv3b02_leo_feature_adapter_20260703.sh` | PASS |
 | `bash -n code/scripts/sweep_phase1_adv3b02_leo_feature_adapter_20260703.sh` after adding GPU/cell sharding | PASS |
 | `bash -n code/scripts/launch_phase1_adv3b02_leo_feature_adapter_shards_20260703.sh` | PASS |
+| `bash -n code/scripts/sweep_phase1_adv3b02_leo_feature_adapter_v2_20260703.sh` | PASS |
 | local synthetic NPZ smoke for`fit_apply_phase1_leo_feature_adapter.py` | PASS: output rows`48`, source pairs`16`, `uses_target_clean=false`, val pair MSE after`0.007531` |
 | local synthetic NPZ smoke after N607 NumPy compatibility patch | PASS: output rows`48`, features dtype`float32`, logits dtype`float32` |
+| local synthetic multi-train NPZ smoke after V2 patch | PASS: source pairs`32`, output dtype`float32`, val pair MSE before`0.013350`, after`0.000000` |
 
 ## Local Version State
 
@@ -60,9 +63,10 @@ After fitting on source pairs, the same adapter is applied to the complete satel
 
 | File | SHA256 |
 |---|---|
-| `E:\type10-7\code\scripts\fit_apply_phase1_leo_feature_adapter.py` | `31074E99A3B508CF322096CB71864F79898AEE9BC84A10FD63E2621EFA57BEA2` |
+| `E:\type10-7\code\scripts\fit_apply_phase1_leo_feature_adapter.py` | `94C12E73C0D15E11FB2AEC344C985B4B0ADDA8EF1343B9D1719152CCDA5A10A5` |
 | `E:\type10-7\code\scripts\sweep_phase1_adv3b02_leo_feature_adapter_20260703.sh` | `79279146CAE5BF6276A81F806C02779AFCF40285FCB7A536146AD0A6D1079D31` |
 | `E:\type10-7\code\scripts\launch_phase1_adv3b02_leo_feature_adapter_shards_20260703.sh` | `BD08226DCE960D04B74339B72496701C4EF0C64C9F385FDE0EA0DDD4167A66A3` |
+| `E:\type10-7\code\scripts\sweep_phase1_adv3b02_leo_feature_adapter_v2_20260703.sh` | `6AF54B5C1D35119CEF840DB4DF50707FEA6FB096DF86D20F2425E2EA4A5459AD` |
 
 ## Planned N607 Matrix
 
@@ -110,3 +114,65 @@ After fitting on source pairs, the same adapter is applied to the complete satel
 | `2026-07-03T00:30+08:00` | FAILED_STARTUP | Manual inline launch command had shell escaping errors; it wrote `driver_shard.out` with empty shard/GPU variables and did not create a valid matrix run. |
 | `2026-07-03T00:34+08:00` | FAILED_STARTUP | Dedicated shard launcher created PIDs`864506-864513`, but the first adapter fit failed on N607 because tensor-to-NumPy conversion produced an object array under the remote PyTorch/NumPy combination. |
 | `2026-07-03T00:40+08:00` | PATCHED_LOCAL | `fit_apply_phase1_leo_feature_adapter.py` now computes logits directly from the adapted tensor and converts saved arrays through `.tolist()` to guarantee float32 NPZ output. |
+| `2026-07-03T00:38-00:50+08:00` | COMPLETED_V1 | 8 shards completed, 50 adapter metrics and 350 rejection metrics produced. |
+
+## V1 Completion Result
+
+Artifacts:
+
+| Artifact | Local path | SHA256 |
+|---|---|---|
+| V1 summary CSV | `E:\type10-7\automation_reports\CV-SincNet\phase1_adv3b02_leo_feature_adapter_20260703\artifacts\leo_feature_adapter_summary.csv` | `76684A510D0C5EA5CCD667DD68BF7AE46D421C093D0D6E172E064DF290C9567B` |
+| V1 shard drivers | `E:\type10-7\automation_reports\CV-SincNet\phase1_adv3b02_leo_feature_adapter_20260703\artifacts\driver_shard0.out` ... `driver_shard7.out` | pulled locally |
+
+Overall:
+
+| Metric | Value |
+|---|---:|
+| Rows | 350 |
+| Adapter runs | 50 |
+| Cells | 10 |
+| Dual pass (`unknown_FAR<=0.05` and old drop`<=2pp`) | 0 |
+| FAR-only pass | 66 |
+| Old-drop-only pass | 134 |
+
+Target1 alignment by adapter:
+
+| Adapter | Source pairs/cell | Val MSE before | Val MSE after | Val cosine before | Val cosine after | Val proto acc before | Val proto acc after |
+|---|---:|---:|---:|---:|---:|---:|---:|
+| `LEOADAPT_IDENTITY` | 27 | 0.1544 | 0.1544 | 0.9064 | 0.9064 | 0.8333 | 0.8333 |
+| `LEOADAPT_AFFINE` | 27 | 0.1544 | 0.1172 | 0.9064 | 0.7239 | 0.8333 | 0.5000 |
+| `LEOADAPT_MLP128_CE` | 27 | 0.1544 | 0.1215 | 0.9064 | 0.6869 | 0.8333 | 0.5000 |
+| `LEOADAPT_LINR_COS` | 27 | 0.1544 | 0.1225 | 0.9064 | 0.7386 | 0.8333 | 0.5000 |
+| `LEOADAPT_MLP64_BAL` | 27 | 0.1544 | 0.1236 | 0.9064 | 0.6453 | 0.8333 | 0.5000 |
+
+Interpretation: V1 improves Euclidean/MSE alignment but damages the identity direction. It makes the adapted feature numerically closer to clean while making cosine alignment and source prototype identity worse. Therefore V1 does not satisfy the real target1 intent of “LEO样本特征和clean样本特征尽量一致” in an identity-preserving sense.
+
+Target2 summary:
+
+| Family | Mean unknown_FAR | Mean old drop pp | Failure mode |
+|---|---:|---:|---|
+| Low-FAR prototype/min-threshold rows | 0.038-0.065 | 53-60pp | FAR can be reduced only by rejecting most old-class queries. |
+| Old-retention rows | 0.88-0.99 | 0-2pp | Old performance is retained but unknown samples are mostly accepted. |
+
+Conclusion: V1 is a useful negative result. It confirms that a naive feature repair adapter can make the feature MSE look better while destroying the identity geometry needed by open-set rejection.
+
+## V2 Follow-up Design
+
+V2 keeps the same no-target-clean/no-target-label boundary but changes target1 training:
+
+| Change | Reason |
+|---|---|
+| Train on source`clean.npz` paired with source`sat_clear.npz`, `sat_low.npz`, and`sat_rain.npz` | V1 trained on only the hidden single-observation source subset, giving only 27 source pairs/cell. |
+| Add `mean_shift` and `norm_mean_shift` adapters | Test conservative global LEO residual repair without high-capacity distortion of identity direction. |
+| Retain a lower-alpha identity-weighted linear residual | Keep a trainable option but reduce drift from source identity prototypes. |
+| Apply only to strict satellite single-observation test NPZ | No target clean view enters evaluation. |
+
+Planned V2 matrix:
+
+| Field | Value |
+|---|---|
+| Remote script | `/home/szu2070436088/2510044040/CV-SincNet/code/scripts/sweep_phase1_adv3b02_leo_feature_adapter_v2_20260703.sh` |
+| Matrix log root | `/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_adv3b02_leo_feature_adapter_v2_matrix_20260703` |
+| Expected summary | `/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_adv3b02_leo_feature_adapter_v2_matrix_20260703/leo_feature_adapter_v2_summary.csv` |
+| Expected rows | 280 rows: 10 cells x 4 adapters x 7 rejection policies |
