@@ -415,3 +415,21 @@ Both processes were confirmed to be the agent-launched V4 diagnostic commands an
 | 1043730 | narrow-grid wrapper shell |
 
 No other N607 training or evaluation process was killed. V4 is therefore an implementation-performance failure, not a scientific result. The current valid evidence for this task remains V3.
+
+## V5 Scalar-Score Oracle Diagnostic Design
+
+V5 is a `NON_DEPLOYMENT_DIAGNOSTIC`. It uses target query labels only to test whether any scalar score table already produced by V3 contains a threshold that could satisfy the dual target. It does not define a deployable threshold and must not be reported as source-only rejection success.
+
+New local file:
+
+| File | Purpose | SHA256 |
+|---|---|---|
+| `E:\type10-7\code\scripts\diagnose_phase1_score_oracle_20260703.py` | Scan V3 score tables and compute target-label oracle thresholds for each scalar rejection score | `F424D3AC3FFE59365D791A28B39E180732CF725FA4D3570D3905D29242FA5494` |
+
+Local verification:
+
+| Command | Result |
+|---|---|
+| `C:\Users\lh594\.conda\envs\ssr-gpu\python.exe -m py_compile E:\type10-7\code\scripts\diagnose_phase1_score_oracle_20260703.py` | PASS |
+
+Planned remote output: `/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_adv3b02_score_oracle_20260703/score_oracle_summary.csv`.
