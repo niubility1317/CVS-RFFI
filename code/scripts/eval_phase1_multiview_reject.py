@@ -183,6 +183,10 @@ def _train_scores(
     x_all: torch.Tensor,
     *,
     head_type: str,
+    loss_mode: str,
+    source_loss_weight: float,
+    proxy_loss_weight: float,
+    margin: float,
     hidden_dim: int,
     epochs: int,
     lr: float,
@@ -200,16 +204,38 @@ def _train_scores(
     opt = torch.optim.Adam(model.parameters(), lr=float(lr), weight_decay=float(l2))
     weights = _loss_balance(y_train)
     losses: list[float] = []
+    source_mask = y_train <= 0.5
+    proxy_mask = y_train > 0.5
+    mode = str(loss_mode).lower()
     for _ in range(int(epochs)):
         opt.zero_grad(set_to_none=True)
         logits = model(x_train).reshape(-1)
-        loss = F.binary_cross_entropy_with_logits(logits, y_train.float(), weight=weights)
+        if mode == "bce":
+            loss = F.binary_cross_entropy_with_logits(logits, y_train.float(), weight=weights)
+        elif mode == "margin":
+            parts = []
+            if bool(source_mask.any()):
+                parts.append(float(source_loss_weight) * F.softplus(logits[source_mask] + float(margin)).mean())
+            if bool(proxy_mask.any()):
+                parts.append(float(proxy_loss_weight) * F.softplus(float(margin) - logits[proxy_mask]).mean())
+            if not parts:
+                raise ValueError("margin loss requires at least one source or proxy sample")
+            loss = torch.stack(parts).sum()
+        else:
+            raise ValueError(f"unknown loss_mode={loss_mode!r}")
         loss.backward()
         opt.step()
         losses.append(float(loss.detach().item()))
     with torch.no_grad():
         scores = torch.sigmoid(model(x_all).reshape(-1)).detach().cpu().numpy()
-    return scores, losses, {"head_type": head, "hidden_dim": int(hidden_dim) if head == "mlp" else 0}
+    return scores, losses, {
+        "head_type": head,
+        "hidden_dim": int(hidden_dim) if head == "mlp" else 0,
+        "loss_mode": mode,
+        "source_loss_weight": float(source_loss_weight),
+        "proxy_loss_weight": float(proxy_loss_weight),
+        "margin": float(margin),
+    }
 
 
 def _threshold(source_scores: np.ndarray, proxy_scores: np.ndarray, *, policy: str, source_q: float, proxy_q: float):
@@ -287,6 +313,10 @@ def evaluate(args: argparse.Namespace) -> dict[str, Any]:
         y_train,
         x_all,
         head_type=str(args.head_type),
+        loss_mode=str(args.loss_mode),
+        source_loss_weight=float(args.source_loss_weight),
+        proxy_loss_weight=float(args.proxy_loss_weight),
+        margin=float(args.margin),
         hidden_dim=int(args.hidden_dim),
         epochs=int(args.epochs),
         lr=float(args.lr),
@@ -441,6 +471,10 @@ def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
     parser.add_argument("--source_accept_quantile", type=float, default=0.995)
     parser.add_argument("--proxy_far_quantile", type=float, default=0.05)
     parser.add_argument("--head_type", default="linear", choices=["linear", "mlp"])
+    parser.add_argument("--loss_mode", default="bce", choices=["bce", "margin"])
+    parser.add_argument("--source_loss_weight", type=float, default=1.0)
+    parser.add_argument("--proxy_loss_weight", type=float, default=1.0)
+    parser.add_argument("--margin", type=float, default=1.0)
     parser.add_argument("--hidden_dim", type=int, default=64)
     parser.add_argument("--epochs", type=int, default=500)
     parser.add_argument("--lr", type=float, default=0.02)
