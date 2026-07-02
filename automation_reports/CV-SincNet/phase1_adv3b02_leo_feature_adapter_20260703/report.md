@@ -537,3 +537,38 @@ Local verification:
 | `C:\Users\lh594\.conda\envs\ssr-gpu\python.exe -m py_compile E:\type10-7\code\scripts\eval_phase1_repair_delta_reject_20260703.py` | PASS |
 
 Planned remote output: `/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_adv3b02_repair_delta_reject_20260703/repair_delta_reject_summary.csv`.
+
+## V7 Completion Result
+
+Artifacts:
+
+| Artifact | Local path | SHA256 |
+|---|---|---|
+| V7 repair-delta summary | `E:\type10-7\automation_reports\CV-SincNet\phase1_adv3b02_leo_feature_adapter_20260703\artifacts\repair_delta_reject_summary.csv` | `2143452DE510B041BEF7A68C90823741871D0E2DCF4B858F30A559D9562AD338` |
+| V7 log | `E:\type10-7\automation_reports\CV-SincNet\phase1_adv3b02_leo_feature_adapter_20260703\artifacts\repair_delta_reject.out` | pulled locally |
+
+V7 result:
+
+| Mode | Rows | Dual pass | Best nearest row |
+|---|---:|---:|---|
+| `source_proxy_train` | 1440 | 0 | `rx20_1_u1` + `LEOADAPT3_MLP_ID` + linear: FAR 0.1148, old drop 19.50pp |
+| `target_label_oracle_repair_delta` | 40 | 0 | `rx20_1_u1` + `LEOADAPT3_MLP_ID` + linear: FAR 0.1877, old drop 11.59pp |
+
+Best source/proxy-trained repair-delta rows:
+
+| Run | Adapter | Model | unknown_FAR | Old drop pp | Verdict |
+|---|---|---|---:|---:|---|
+| `rx20_1_u1` | `LEOADAPT3_MLP_ID` | linear | 0.1148 | 19.50 | Still far from dual target |
+| `rx20_1_u1` | `LEOADAPT3_MLP_ID` | linear | 0.0924 | 21.76 | Still far from dual target |
+| `rx20_1_u1` | `LEOADAPT3_MLP_ID` | linear | 0.0896 | 22.21 | Still far from dual target |
+
+V7 interpretation: repair-delta signals improve neither deployable rejection nor the target-label oracle enough to satisfy目标2. Combined with V5 and V6, this shows that the current Phase1 base plus post-hoc rejection surfaces do not contain a sufficient separation signal for strict sat-only unknown rejection under`old drop<=2pp`.
+
+Current route conclusion:
+
+| Target | Status | Evidence |
+|---|---|---|
+| 目标1: source-only LEO feature repair | Achieved | V3 `LEOADAPT3_LINR_COS` and `LEOADAPT3_MLP_ID` improve MSE while preserving cosine/prototype identity |
+| 目标2: `unknown_FAR<=0.05` and old drop`<=2pp` | Not achieved | V3 full matrix, V5 scalar oracle, V6 multi-score oracle, and V7 repair-delta oracle all have dual pass 0 |
+
+Next technically aligned route: stop adding post-hoc thresholds on this frozen score surface. The next experiment should modify training/evaluation features themselves, for example by adding source-side open-set negatives during Phase1-compatible adapter training, preserving pre/post residual channels in the feature NPZ, or training a source-only open-set head directly on repaired features with explicit class-conditional old retention loss and proxy unknown separation. This remains within the phase1-only boundary if it uses source old/source proxy unknown and no target labels.
