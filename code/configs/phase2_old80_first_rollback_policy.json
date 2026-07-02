@@ -1,0 +1,31 @@
+{
+  "name": "phase2_old80_first_rollback_policy",
+  "objective": "OLD80_FIRST: preserve target-old recovery before restoring unknown-query gate optimization.",
+  "rules": [
+    {
+      "metric": "old_class_accuracy",
+      "mode": "max_drop",
+      "threshold": 0.05,
+      "description": "old-class accuracy drop guard"
+    },
+    {
+      "metric": "known_accuracy",
+      "mode": "max_drop",
+      "threshold": 0.05,
+      "description": "known-class accuracy drop guard"
+    },
+    {
+      "metric": "coverage",
+      "mode": "min",
+      "threshold": 0.2,
+      "description": "coverage collapse guard"
+    }
+  ],
+  "eval_only_metrics": [
+    "unknown_false_accept_rate",
+    "unknown_rejection_rate",
+    "auroc",
+    "fpr95"
+  ],
+  "notes": "During OLD80_FIRST, unknown false-accept metrics are recorded but do not trigger rollback. Open-set rollback should be restored only after target-old accuracy is stable at the required threshold."
+}
