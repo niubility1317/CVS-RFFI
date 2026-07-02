@@ -1304,3 +1304,51 @@ Current status after V15:
 | 目标2: `unknown_FAR<=0.05` with old drop`<=2pp` | Not achieved | V3-V15 all have dual pass 0; V15 adds 48000 classwise repair rows with dual pass 0 |
 
 The evidence now covers global repair, classwise repair, IQ pre-adaptation, oldness gates, selective correctness gates, repair manifold scoring and decision fusion. Within the frozen`ADV3B02_CORE90_SOFT_E200phase1`feature basis, the requested joint target remains unproven and currently contradicted by all completed audits. The remaining technically aligned path is representation-level Phase1 training with source-side non-old/open-set negatives plus LEO identity-retention, followed by the same sat-only target audit.
+
+## V16 Class-Tail Repair-Reject Design
+
+V16 keeps the frozen`ADV3B02_CORE90_SOFT_E200phase1`backbone and reuses the source-only clean<-LEO classwise repair idea from V15, but changes the rejector from pooled oldness thresholds to per-old-class tail calibration. The hypothesis is that pooled thresholds hide class-specific LEO dispersion: an unknown sample may look old under a global score, but still fall outside the local source tail of the old class it is assigned to.
+
+Protocol boundary:
+
+| Item | V16 setting |
+|---|---|
+| Phase1 backbone | Frozen`ADV3B02_CORE90_SOFT_E200phase1` |
+| Adapter training | Source clean/LEO paired features only |
+| Repair form | Per-old-TX clean-minus-LEO residual, applied before tail scoring |
+| Tail calibration | Source old + source proxy_unknown rows, class-local where available |
+| Target clean | Not used |
+| Target labels in threshold | Not used |
+| Unknown query threshold fitting | Not used |
+
+New files:
+
+| File | Purpose | SHA256 |
+|---|---|---|
+| `E:\type10-7\code\scripts\eval_phase1_class_tail_reject_20260703.py` | Fit source-only classwise repair, compute class-local source tails, and evaluate sat-only old/unknown rejection | `BD5341F23A855FDF00DA70561514B6D05A5B1E53CFA68514E1971EA8A34D26F6` |
+| `E:\type10-7\code\scripts\sweep_phase1_adv3b02_class_tail_v16_20260703.sh` | N607 launcher and best-row summarizer for V16 | `3D88DB2A727AC476C40FBBE9C633A8D28C5A6DDF8DE4078E0A31A01A483B86B7` |
+
+Local verification:
+
+| Command | Result |
+|---|---|
+| `C:\Users\lh594\.conda\envs\ssr-gpu\python.exe -m py_compile E:\type10-7\code\scripts\eval_phase1_class_tail_reject_20260703.py` | PASS |
+| `bash -lc "bash -n /mnt/e/type10-7/code/scripts/sweep_phase1_adv3b02_class_tail_v16_20260703.sh"` | PASS |
+
+Version/snapshot state:
+
+| Item | Path |
+|---|---|
+| Non-Git code snapshot | `E:\type10-7\code\snapshots\phase1_adv3b02_class_tail_v16_20260703\` |
+| Git mirror eval script path | `E:\type10-7\github_publish\CVS-RFFI-repo\code\scripts\eval_phase1_class_tail_reject_20260703.py` |
+| Git mirror launcher path | `E:\type10-7\github_publish\CVS-RFFI-repo\code\scripts\sweep_phase1_adv3b02_class_tail_v16_20260703.sh` |
+
+Planned N607 output:
+
+| Artifact | Remote path |
+|---|---|
+| V16 summary | `/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_adv3b02_class_tail_v16_20260703/class_tail_v16_summary.csv` |
+| V16 best JSON | `/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_adv3b02_class_tail_v16_20260703/class_tail_v16_best.json` |
+| V16 metrics JSON | `/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_adv3b02_class_tail_v16_20260703/class_tail_v16_metrics.json` |
+
+Success criteria remain unchanged:`unknown_FAR<=0.05`and old-class performance drop`<=2pp`on sat-only target query, without target clean or target unknown threshold tuning.
