@@ -878,6 +878,55 @@ Planned N607 variants:
 
 Success criteria remain unchanged:`unknown_FAR<=0.05`and old-class performance drop`<=2pp`on sat-only target query, without target clean or target unknown threshold tuning.
 
+## V14 Completion Results
+
+V14 completed two selective-correctness variants on N607 as bounded foreground commands. Both variants train only on source repaired features and source proxy_unknown rows; target rows are used only for final sat-only metrics.
+
+Overall result:
+
+| Variant | Rows | Dual pass | FAR-only pass | Old-drop-only pass | Status |
+|---|---:|---:|---:|---:|---|
+| `v14a` | 3200 | 0 | 970 | 104 | Completed negative |
+| `v14b` | 3200 | 0 | 840 | 114 | Completed negative |
+| Combined | 6400 | 0 | 1810 | 218 | Completed negative |
+
+Artifacts:
+
+| Artifact | Local path | SHA256 |
+|---|---|---|
+| V14a summary | `E:\type10-7\automation_reports\CV-SincNet\phase1_adv3b02_leo_feature_adapter_20260703\artifacts\selective_correctness_v14a_summary.csv` | `14A64804B0A66F90CDE069431A834386AD07FBCEB9E027DBBC9BBA08A08BF39D` |
+| V14a best JSON | `E:\type10-7\automation_reports\CV-SincNet\phase1_adv3b02_leo_feature_adapter_20260703\artifacts\selective_correctness_v14a_best.json` | `FBFF4AF7CED4106BD6C1231E746B191DDB0F49AB68566FB9BFB2706D67EDBEE8` |
+| V14a metrics JSON | `E:\type10-7\automation_reports\CV-SincNet\phase1_adv3b02_leo_feature_adapter_20260703\artifacts\selective_correctness_v14a_metrics.json` | `F604262551CC15B73863BCF5FD9B1FFF4C14CFA3E59708F1063D28D88219DC0B` |
+| V14a run log | `E:\type10-7\automation_reports\CV-SincNet\phase1_adv3b02_leo_feature_adapter_20260703\artifacts\selective_correctness_v14a.out` | `186191F48FAA8832166B44302B53891A21D3406D0262A0A56E88A30CCA8D05C3` |
+| V14b summary | `E:\type10-7\automation_reports\CV-SincNet\phase1_adv3b02_leo_feature_adapter_20260703\artifacts\selective_correctness_v14b_summary.csv` | `D245F2C9F82C3C9BE0225932CE525F958CCC3134BB3CE5118EEC542E38D531C0` |
+| V14b best JSON | `E:\type10-7\automation_reports\CV-SincNet\phase1_adv3b02_leo_feature_adapter_20260703\artifacts\selective_correctness_v14b_best.json` | `C026A0709916AE723646660EC6771A3BFAE4F510732DD1A86E056B713D25AA5F` |
+| V14b metrics JSON | `E:\type10-7\automation_reports\CV-SincNet\phase1_adv3b02_leo_feature_adapter_20260703\artifacts\selective_correctness_v14b_metrics.json` | `3E5FDE9FC123C7BFFA3D8003CD1DCB390E526D768DF21766B8041AA4FF014853` |
+| V14b run log | `E:\type10-7\automation_reports\CV-SincNet\phase1_adv3b02_leo_feature_adapter_20260703\artifacts\selective_correctness_v14b.out` | `81B201EA2EDE2C7C38F96CABC623E7F755823F4A514273DBC055C94D5D3E6DE4` |
+
+Best same-row outcomes:
+
+| Variant | Selection rule | Run | Model/policy | unknown_FAR | Old drop pp | Closed old acc | Final old acc | Coverage | Verdict |
+|---|---|---|---|---:|---:|---:|---:|---:|---|
+| `v14a` | Best FAR with old drop`<=2pp` | `rx3_19_u10` | `linear/source_correct_accept q=0.005` | 0.7209 | 1.91 | 0.5076 | 0.4885 | 0.9079 | FAR fails badly |
+| `v14a` | Best old retention with FAR`<=5%` | `rx20_1_u1` | `mlp/proxy_far p=0.85` | 0.0364 | 35.88 | 0.5556 | 0.1968 | 0.3118 | Old-class performance fails |
+| `v14a` | Nearest joint row | `rx3_19_u10` | `mlp/source_correct_accept q=0.02` | 0.4363 | 7.56 | 0.5076 | 0.4321 | 0.7376 | Misses both |
+| `v14b` | Best FAR with old drop`<=2pp` | `rx3_19_u10` | `linear/source_correct_accept q=0.005` | 0.7182 | 1.94 | 0.5321 | 0.5126 | 0.9497 | FAR fails badly |
+| `v14b` | Best old retention with FAR`<=5%` | `rx20_1_u1` | `mlp/proxy_far p=0.85` | 0.0448 | 38.65 | 0.5976 | 0.2112 | 0.3212 | Old-class performance fails |
+| `v14b` | Nearest joint row | `rx3_19_u10` | `mlp/source_correct_accept q=0.01` | 0.5691 | 4.18 | 0.5321 | 0.4903 | 0.8641 | Misses both |
+
+Interpretation:
+
+Selective-correctness training reduced the objective mismatch relative to generic oldness, but did not create a usable deployable gate. The best old-preserving rows still accept roughly72% of unknowns. The low-FAR rows again reject most correct old target samples. This adds a direct selective-classification negative result to the frozen-base evidence: even when the gate is trained to preserve source closed-set correctness rather than class membership, target old and target unknown remain overlapping under LEO.
+
+Current status after V14:
+
+| Target | Status | Evidence |
+|---|---|---|
+| 目标1: source-only LEO repair | Achieved | V3/V9b source-only adapters repair source LEO features without target clean/labels |
+| 目标2: `unknown_FAR<=0.05` with old drop`<=2pp` | Not achieved | V3-V14 all have dual pass 0; V14 adds 6400 selective-correctness rows with dual pass 0 |
+
+The remaining aligned route is no longer a different frozen-feature gate. The separation needed for`unknown_FAR<5%`with old-class drop`<2pp`must be learned before or inside the Phase1 representation, using source-side non-old/open-set negatives and LEO identity-retention, then audited again with the same sat-only target protocol.
+
 ## V11 Completion Results
 
 V11 completed two IQ pre-adapter variants on N607:
