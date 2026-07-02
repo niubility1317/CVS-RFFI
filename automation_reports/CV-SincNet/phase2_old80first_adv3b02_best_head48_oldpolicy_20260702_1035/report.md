@@ -118,6 +118,28 @@ Top same-row candidate:
 |---|---:|---|---:|---:|---:|---:|---:|---:|---|
 | `OA_MSE_H06_OLD80FIRST_HEAD48_GPU2_F_MSE_SUBSPACE_KOLD10_KNEW0` | 10 | F | 77.50 | 32.50 | 58.13 | 100.00 | 71.20 | 75.83 | false |
 
+## Gate Failure Diagnosis
+
+The current OLD80_FIRST head is not a meaningful open-set gate. It uses `old80_head_apply_policy=replace_all`, so `apply_old80_first_head` applies the old-class head to every query row, forces `accepted=True`, and overwrites the gate reason with `old80_first_*`. On the two representative passing rows:
+
+| Candidate | K | Old rows accepted | Unknown rows accepted | Unknown predicted as old | Gate reason |
+|---|---:|---:|---:|---:|---|
+| `OA_MSE_H06_OLD80FIRST_HEAD48_GPU7_C_MSE_SUBSPACE_KOLD5_KNEW0` | 5 | 240/240 | 80/80 | 80/80 | `old80_first_fused_centroid` |
+| `OA_MSE_H06_OLD80FIRST_HEAD48_GPU2_F_MSE_SUBSPACE_KOLD10_KNEW0` | 10 | 240/240 | 80/80 | 80/80 | `old80_first_support_cv_select` |
+
+This means the run is valid only as an old-class recovery diagnostic. It must not be claimed as open-set rejection, gate restoration, or deployment success evidence.
+
+Post-hoc score sweeps were run on the completed `score_table.csv` artifacts to estimate whether any recorded score can recover unknown rejection while keeping old-class accuracy above the OLD80_FIRST floor. This is a non-deployment oracle diagnostic because thresholds were selected after looking at query labels.
+
+| Scope | Candidate | K | Constraint | Best score gate | Direction | Threshold | Old acc | Unknown FAR | Unknown reject | Full acc | Coverage |
+|---|---|---:|---|---|---|---:|---:|---:|---:|---:|---:|
+| top-by-K | `OA_MSE_H06_OLD80FIRST_HEAD48_GPU7_C_MSE_SUBSPACE_KOLD5_KNEW0` | 5 | old acc >= 72% | `margin` | low reject | 0.006592 | 72.08 | 95.00 | 5.00 | 55.31 | 97.81 |
+| top-by-K | `OA_MSE_H06_OLD80FIRST_HEAD48_GPU2_F_MSE_SUBSPACE_KOLD10_KNEW0` | 10 | old acc >= 72% | `cosine_unknown_score` | high reject | 0.107974 | 72.08 | 65.00 | 35.00 | 62.81 | 83.75 |
+| top-by-K | `OA_MSE_H06_OLD80FIRST_HEAD48_GPU2_F_MSE_SUBSPACE_KOLD10_KNEW0` | 10 | old acc >= 75% | `energy` | high reject | 1.919682 | 75.00 | 77.50 | 22.50 | 61.88 | 89.69 |
+| all48 | `OA_MSE_H06_OLD80FIRST_HEAD48_GPU6_D_MSE_SUBSPACE_KOLD10_KNEW0` | 10 | old acc >= 72% | `best_old_score` | low reject | -2.896687 | 72.08 | 62.50 | 37.50 | 63.44 | 85.62 |
+
+No candidate in this diagnostic produced a feasible old acc >= 80% gate-restoration point. Even with oracle query-label thresholding, the best old acc >= 72% tradeoff still leaves unknown FAR at 62.50%-65.00%. Therefore, the failure is not just rollback policy; the current OLD80_FIRST strategy structurally restores old accuracy by accepting all unknown samples, and the available score margins are only weakly separable.
+
 ## Interpretation
 
-This run reaches the OLD80_FIRST intent for K=5 and K=10, and it substantially improves K=2 and K=3, but K=2/K=3 are still below the 72% floor. Unknown FAR remains 100% because open-set gate restoration was intentionally deferred; this run should not be used as open-set rejection evidence. The next optimization should focus only on low-shot old-class recovery for K=2 and K=3, while keeping this OLD80_FIRST rollback policy in place.
+This run reaches the OLD80_FIRST old-class recovery intent for K=5 and K=10, and it substantially improves K=2 and K=3, but K=2/K=3 are still below the 72% floor. Unknown FAR remains 100% because the OLD80_FIRST head currently overrides the gate and accepts every query. The next strategy should split the work into two explicit tracks: keep improving K=2/K=3 old-class recovery, and create a separate gate-restoration matrix for K=5/K=10 that applies an unknown veto after the old-class head and is judged by same-row old acc plus unknown FAR. Until that second track passes, this result remains diagnostic-only for open-set rejection.
