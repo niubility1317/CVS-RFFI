@@ -321,6 +321,9 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--batch_size", type=int, default=512)
     parser.add_argument("--device", default="cuda:0")
     parser.add_argument("--seed", type=int, default=1337)
+    parser.add_argument("--source_channel_view", default="clean", choices=["clean", "satellite"])
+    parser.add_argument("--source_sat_scenarios", default=None)
+    parser.add_argument("--source_sat_seed", type=int, default=None)
     parser.add_argument("--target_new_channel_view", default="clean", choices=["clean", "satellite"])
     parser.add_argument("--target_new_sat_scenarios", default="clear_leo,low_elev_leo,rain_leo,storm_mp,mixed_orbit")
     parser.add_argument("--target_new_sat_seed", type=int, default=None)
@@ -474,6 +477,14 @@ def main() -> int:
         else None
     )
     star_ground_impl = str(args.star_ground_channel_impl)
+    source_view = str(args.source_channel_view).lower()
+    source_scenarios = (
+        parse_sat_scenarios(str(args.source_sat_scenarios))
+        if source_view == "satellite"
+        else []
+    )
+    _validate_star_ground_impl(star_ground_impl, source_scenarios, field="source_sat_scenarios")
+    source_seed = int(args.source_sat_seed if args.source_sat_seed is not None else int(args.seed) + 613)
     target_new_view = str(args.target_new_channel_view).lower()
     target_new_scenarios = parse_sat_scenarios(str(args.target_new_sat_scenarios)) if target_new_view == "satellite" else []
     if not old_unknown_only:
@@ -484,8 +495,22 @@ def main() -> int:
         device=device,
         feature_name=str(args.feature_name),
         role="source",
-        channel_view="clean",
+        channel_view=source_view,
+        sat_scenarios=source_scenarios,
+        sat_args=args,
+        sat_seed=source_seed,
     )
+    source_channel_profile = {
+        "view": source_view,
+        "applied_roles": ["source"] if source_view == "satellite" else [],
+        "downstream_roles": ["source_old_proxy_head_training"],
+        "scenarios": source_scenarios,
+        "scenario_configs": {name: sat_channel_config_for_scenario(name) for name in source_scenarios},
+        "star_ground_channel_impl": star_ground_impl,
+        "sat_seed": source_seed,
+        "fs_hz": float(args.sat_fs_hz),
+        "fc_hz": float(args.sat_fc_hz),
+    }
     proxy_unknown_payload = None
     proxy_unknown_channel_profile = None
     if proxy_unknown_ds is not None:
@@ -678,7 +703,7 @@ def main() -> int:
         "overlap_audit": overlap_audit,
         "proxy_overlap_audit": proxy_overlap_audit,
         "channel_profile": {
-            "source": {"view": "clean", "applied_roles": []},
+            "source": source_channel_profile,
             "proxy_unknown": proxy_unknown_channel_profile,
             "target_old": target_old_channel_profile,
             "target_new": target_new_channel_profile,
