@@ -345,7 +345,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--old80_head_apply_policy",
         default="replace_all",
-        choices=["replace_all", "rescue_rejected", "replace_unknown"],
+        choices=["replace_all", "replace_all_except_seen_new_override", "rescue_rejected", "replace_unknown"],
     )
     parser.add_argument("--old80_head_fusion_rho", type=float, default=0.75)
     parser.add_argument("--old80_head_knn_k", type=int, default=3)

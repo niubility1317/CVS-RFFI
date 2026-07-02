@@ -155,3 +155,46 @@ Expected remote outputs:
 | `runs/phase2_adv3b02_stage2c_multinew_no_unknown_20260703_0004/<candidate>/metrics.json` | candidate metrics |
 | `runs/phase2_adv3b02_stage2c_multinew_no_unknown_20260703_0004/<candidate>/manifest.json` | candidate split/config manifest |
 | `runs/phase2_adv3b02_stage2c_multinew_no_unknown_20260703_0004/<candidate>/score_table.csv` | row-level query score table |
+
+## Completion Results
+
+Remote launch landed despite the local SSH submit timeout. The stale local `ssh.exe` client was identified as PID `43948`, closed locally, and verified clean. Read-only probes then confirmed `runs/`, `logs/`, scheduler output, and candidate artifacts. All four candidates completed and each produced `features.npz`, `metrics.json`, `manifest.json`, and `score_table.csv`. Fatal log scan found no `Traceback`, `RuntimeError`, CUDA OOM, `Killed`, missing-file error, or `ValueError`.
+
+Main same-row result table:
+
+| Candidate | K | Mechanism | old80 | old_acc | seen_new_acc | H_old_new | coverage | old_reject | seen_new_reject | seen_new_to_old | unknown_FAR | loss | Verdict |
+|---|---:|---|---|---:|---:|---:|---:|---:|---:|---:|---|---|---|
+| `ADV3B02_STAGE2C_NOUNK_K10_BALANCED_3NEW` | 10 | balanced | disabled | 42.78% | 58.89% | 0.4956 | 88.89% | 13.33% | 6.67% | 14.44% | not in scope | 5.0536->1.5966 | FAIL_TARGET |
+| `ADV3B02_STAGE2C_NOUNK_K10_OLDRESCUE_3NEW` | 10 | oldrescue | `support_cv_select/rescue_rejected` | 50.56% | 47.78% | 0.4913 | 100.00% | 0.00% | 0.00% | 15.56% | not in scope | 5.9859->1.6390 | FAIL_TARGET |
+| `ADV3B02_STAGE2C_NOUNK_K20_BALANCED_3NEW` | 20 | balanced | disabled | 43.33% | 33.33% | 0.3768 | 96.30% | 4.44% | 2.22% | 11.11% | not in scope | 5.7790->2.1499 | FAIL_TARGET |
+| `ADV3B02_STAGE2C_NOUNK_K20_OLDRESCUE_3NEW` | 20 | oldrescue | `support_cv_select/rescue_rejected` | 50.56% | 32.22% | 0.3936 | 100.00% | 0.00% | 0.00% | 13.33% | not in scope | 5.9903->2.1217 | FAIL_TARGET |
+
+Per-new-class query accuracy:
+
+| Candidate | New TX | n | acc | dominant outcomes |
+|---|---|---:|---:|---|
+| `ADV3B02_STAGE2C_NOUNK_K10_BALANCED_3NEW` | `1-14` | 30 | 30.00% | `new_to_new:15`, `new_correct:9`, `new_to_old:5` |
+| `ADV3B02_STAGE2C_NOUNK_K10_BALANCED_3NEW` | `1-16` | 30 | 80.00% | `new_correct:24`, `new_rejected:3`, `new_to_old:2` |
+| `ADV3B02_STAGE2C_NOUNK_K10_BALANCED_3NEW` | `1-18` | 30 | 66.67% | `new_correct:20`, `new_to_old:6`, `new_rejected:2` |
+| `ADV3B02_STAGE2C_NOUNK_K10_OLDRESCUE_3NEW` | `1-14` | 30 | 10.00% | `new_to_new:24`, `new_correct:3`, `new_to_old:3` |
+| `ADV3B02_STAGE2C_NOUNK_K10_OLDRESCUE_3NEW` | `1-16` | 30 | 90.00% | `new_correct:27`, `new_to_new:3` |
+| `ADV3B02_STAGE2C_NOUNK_K10_OLDRESCUE_3NEW` | `1-18` | 30 | 43.33% | `new_correct:13`, `new_to_old:11`, `new_to_new:6` |
+| `ADV3B02_STAGE2C_NOUNK_K20_BALANCED_3NEW` | `1-14` | 30 | 76.67% | `new_correct:23`, `new_to_new:3`, `new_to_old:2` |
+| `ADV3B02_STAGE2C_NOUNK_K20_BALANCED_3NEW` | `1-16` | 30 | 0.00% | `new_to_new:30` |
+| `ADV3B02_STAGE2C_NOUNK_K20_BALANCED_3NEW` | `1-18` | 30 | 23.33% | `new_to_new:15`, `new_to_old:8`, `new_correct:7` |
+| `ADV3B02_STAGE2C_NOUNK_K20_OLDRESCUE_3NEW` | `1-14` | 30 | 93.33% | `new_correct:28`, `new_to_old:2` |
+| `ADV3B02_STAGE2C_NOUNK_K20_OLDRESCUE_3NEW` | `1-16` | 30 | 0.00% | `new_to_new:30` |
+| `ADV3B02_STAGE2C_NOUNK_K20_OLDRESCUE_3NEW` | `1-18` | 30 | 3.33% | `new_to_new:19`, `new_to_old:10`, `new_correct:1` |
+
+Rollback and interpretation:
+
+| Candidate | Rollback status | Baseline old | Candidate old | Interpretation |
+|---|---|---:|---:|---|
+| `K10_BALANCED` | triggered old-class accuracy drop guard | 55.56% | 42.78% | best seen-new row, but old target recovery too weak |
+| `K10_OLDRESCUE` | triggered old-class accuracy drop guard | 55.56% | 50.56% | old rescue improves old by 7.78 points vs balanced but damages seen-new by 11.11 points |
+| `K20_BALANCED` | triggered old-class accuracy drop guard | 53.89% | 43.33% | extra shots destabilize multi-new competition, especially `1-16` |
+| `K20_OLDRESCUE` | triggered old-class accuracy drop guard | 56.67% | 50.56% | old recovery remains far below 80% and seen-new collapses |
+
+No candidate satisfies the live target. The strongest row by seen-new is `K10_BALANCED` at 58.89% seen-new and 42.78% old. The strongest old rows are the OLDRESCUE variants at 50.56% old, still far from 80%. This is diagnostic-negative evidence, not a successful Phase2 route.
+
+Recommended next route: keep the 3-new-class scope and K10 first, but add an explicit old-vs-seen-new arbitration layer that can choose the OLD80 head for target-old samples only when seen-new evidence is weak, instead of `replace_all` or reject-only rescue. K20 should not be treated as a straightforward improvement because it collapsed `1-16` under the current multi-new competition.

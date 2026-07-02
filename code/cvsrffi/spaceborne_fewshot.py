@@ -3802,6 +3802,13 @@ def apply_old80_first_head(
     policy = str(apply_policy).lower()
     if policy == "replace_all":
         apply_mask = torch.ones_like(accepted, dtype=torch.bool)
+    elif policy == "replace_all_except_seen_new_override":
+        apply_mask = torch.ones_like(accepted, dtype=torch.bool)
+        seen_new_override = result.diagnostics.get("seen_new_registration_override_mask") if result.diagnostics else None
+        if torch.is_tensor(seen_new_override):
+            seen_new_override = seen_new_override.detach().cpu().bool().reshape(-1)
+            if int(seen_new_override.numel()) >= int(apply_mask.numel()):
+                apply_mask &= ~seen_new_override[: int(apply_mask.numel())]
     elif policy == "rescue_rejected":
         apply_mask = (~accepted) | (predicted == UNKNOWN_LABEL)
     elif policy == "replace_unknown":
