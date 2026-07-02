@@ -49,7 +49,7 @@ Launcher audit: 48/48 `eval_spaceborne_fewshot.py` commands contain `--rollback_
 | Root Git status | `E:\type10-7` is not a Git repository |
 | Local snapshot | `E:\type10-7\code\snapshots\phase2_old80first_adv3b02_best_head48_oldpolicy_20260702_1035` |
 | Git-backed mirror | `E:\type10-7\github_publish\CVS-RFFI-repo` |
-| Git-backed status before launch | new policy and launcher mirrored; report evidence pending final commit after launch update |
+| Git-backed policy commit | `fcc0d74` (`Add OLD80_FIRST rollback policy for Phase2`) |
 
 ## Sync Mapping
 
@@ -79,3 +79,45 @@ nohup env RUN_ID=phase2_old80first_adv3b02_best_head48_oldpolicy_20260702_1035 T
 ## Success Criteria
 
 Primary: deployed target-old `old_class_accuracy` reaches at least 72%, preferably 80%. Unknown FAR/AUROC/FPR95 remain recorded as eval-only context and do not override OLD80_FIRST deployment selection in this run.
+
+## Final Status
+
+| Item | Value |
+|---|---|
+| Completion | 48/48 candidates completed |
+| Failed candidates | 0 |
+| Active remote processes after completion | 0 |
+| Rollback triggered | 0/48 |
+| Summary CSV | `E:\type10-7\automation_reports\CV-SincNet\phase2_old80first_adv3b02_best_head48_oldpolicy_20260702_1035\summary_old80first_metrics.csv` |
+| Summary CSV SHA256 | `4c185d14cc0572092c38ace38071b44eae96c76ab0b4d488958ec988824d2d87` |
+
+## Result Summary
+
+The OLD80_FIRST rollback policy fixed the structural deployment issue: raw and deployed old-class accuracy now match because unknown FAR is recorded but no longer triggers rollback in this stage.
+
+| Metric | Max | Mean | Min |
+|---|---:|---:|---:|
+| Raw old acc | 77.50 | 66.62 | 56.25 |
+| Deployed old acc | 77.50 | 66.62 | 56.25 |
+| Baseline old acc | 37.92 | 28.93 | 16.25 |
+| Unknown FAR | 100.00 | 100.00 | 100.00 |
+| AUROC | 73.28 | 63.71 | 52.19 |
+
+Best deployed OLD80 rows by K:
+
+| K old support | Best candidate | Deployed old acc | Baseline old acc | Deployed full acc | Unknown FAR | AUROC | Verdict |
+|---:|---|---:|---:|---:|---:|---:|---|
+| 2 | `OA_MSE_H06_OLD80FIRST_HEAD48_GPU4_A_MSE_SUBSPACE_KOLD2_KNEW0` | 70.42 | 34.58 | 52.81 | 100.00 | 60.60 | improved, below 72 |
+| 3 | `OA_MSE_H06_OLD80FIRST_HEAD48_GPU5_B_MSE_SUBSPACE_KOLD3_KNEW0` | 70.00 | 33.33 | 52.50 | 100.00 | 62.77 | improved, below 72 |
+| 5 | `OA_MSE_H06_OLD80FIRST_HEAD48_GPU7_C_MSE_SUBSPACE_KOLD5_KNEW0` | 72.50 | 33.33 | 54.38 | 100.00 | 66.43 | passes 72 floor |
+| 10 | `OA_MSE_H06_OLD80FIRST_HEAD48_GPU2_F_MSE_SUBSPACE_KOLD10_KNEW0` | 77.50 | 32.50 | 58.13 | 100.00 | 71.20 | passes 72 floor, near 80 target |
+
+Top same-row candidate:
+
+| Candidate | K | Arm | Deployed old acc | Baseline old acc | Deployed full acc | Unknown FAR | AUROC | FPR95 | Rollback |
+|---|---:|---|---:|---:|---:|---:|---:|---:|---|
+| `OA_MSE_H06_OLD80FIRST_HEAD48_GPU2_F_MSE_SUBSPACE_KOLD10_KNEW0` | 10 | F | 77.50 | 32.50 | 58.13 | 100.00 | 71.20 | 75.83 | false |
+
+## Interpretation
+
+This run reaches the OLD80_FIRST intent for K=5 and K=10, and it substantially improves K=2 and K=3, but K=2/K=3 are still below the 72% floor. Unknown FAR remains 100% because open-set gate restoration was intentionally deferred; this run should not be used as open-set rejection evidence. The next optimization should focus only on low-shot old-class recovery for K=2 and K=3, while keeping this OLD80_FIRST rollback policy in place.
