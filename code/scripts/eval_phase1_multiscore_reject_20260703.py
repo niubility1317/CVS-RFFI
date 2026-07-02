@@ -112,7 +112,8 @@ def _train_scores(x: np.ndarray, train_mask: np.ndarray, y: np.ndarray, *, model
         loss.backward()
         opt.step()
     with torch.no_grad():
-        return torch.sigmoid(model(x_t)).detach().cpu().numpy().astype(np.float64)
+        values = torch.sigmoid(model(x_t)).detach().cpu().tolist()
+        return np.asarray(values, dtype=np.float64)
 
 
 def _threshold(scores: np.ndarray, source_mask: np.ndarray, proxy_mask: np.ndarray, policy: str, source_q: float, proxy_q: float) -> tuple[float, float, float]:

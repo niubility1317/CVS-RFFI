@@ -475,7 +475,7 @@ New local file:
 
 | File | Purpose | SHA256 |
 |---|---|---|
-| `E:\type10-7\code\scripts\eval_phase1_multiscore_reject_20260703.py` | Train/evaluate small linear/MLP rejectors over multiple V3 score tables with source/proxy calibration plus target-label oracle upper bound | `6DD423BE6072E14FB1D44A3722106AA4E378D6CD39E6597C8636D35C5E3A7EF9` |
+| `E:\type10-7\code\scripts\eval_phase1_multiscore_reject_20260703.py` | Train/evaluate small linear/MLP rejectors over multiple V3 score tables with source/proxy calibration plus target-label oracle upper bound | `5D4FAB2FD571D16E0BB974C3DD4E5B4A0C5BA4446164C829DB5EE45D2B982CC1` |
 
 Local verification:
 
@@ -484,3 +484,5 @@ Local verification:
 | `C:\Users\lh594\.conda\envs\ssr-gpu\python.exe -m py_compile E:\type10-7\code\scripts\eval_phase1_multiscore_reject_20260703.py` | PASS |
 
 Planned remote output: `/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_adv3b02_multiscore_reject_20260703/multiscore_reject_summary.csv`.
+
+Remote startup fix: the first V6 run failed before producing a result because the remote PyTorch/NumPy combination returned an incompatible array from`tensor.numpy()`. The script was patched to convert scores through`tolist()` before building a NumPy array.
