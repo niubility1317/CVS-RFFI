@@ -670,7 +670,7 @@ New local file:
 
 | File | Purpose | SHA256 |
 |---|---|---|
-| `E:\type10-7\code\scripts\eval_phase1_joint_adapter_energy_reject_20260703.py` | Train/evaluate source-only joint adapter + oldness gate over sat-only target query NPZs | `7DD1B16E075EBD11ADEF1EEF01DBE45242276BCDA75AB5405BD57923FDF7AC2A` |
+| `E:\type10-7\code\scripts\eval_phase1_joint_adapter_energy_reject_20260703.py` | Train/evaluate source-only joint adapter + oldness gate over sat-only target query NPZs, including global and class-conditional threshold policies | `7605211132074A61D8A7C319AE853DC0A119D8A7A8D7547945996FCCF891A839` |
 
 Local verification:
 
@@ -687,3 +687,48 @@ Planned remote output:
 | V9 log | `/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_adv3b02_joint_adapter_reject_20260703/joint_adapter_reject.out` |
 
 Success criteria remain unchanged: target sat-only unknown_FAR`<=0.05`and old-class performance drop`<=2pp`, with no target clean and no target labels in training or threshold calibration.
+
+## V9 Completion Results
+
+Three V9 variants were executed on N607:
+
+| Variant | Intent | Rows | Dual pass | Target1 repair status | Target2 status |
+|---|---|---:|---:|---|---|
+| `V9_joint_open` | stronger oldness/proxy separation | 2080 | 0 | Failed: val MSE 0.1571 -> 0.3235, cos 0.8623 -> 0.7086 | Failed |
+| `V9b_retention_balanced` | reduce open-set loss and preserve LEO repair | 2080 | 0 | Pass: val MSE 0.1571 -> 0.1223, cos 0.8623 -> 0.8528, proto acc 0.8741 -> 0.8858 | Failed |
+| `V9b_class_threshold` | same V9b model with class-conditional source/proxy thresholds | 4640 | 0 | Same as V9b | Failed |
+
+Artifacts:
+
+| Artifact | Local path | SHA256 |
+|---|---|---|
+| V9 summary | `E:\type10-7\automation_reports\CV-SincNet\phase1_adv3b02_leo_feature_adapter_20260703\artifacts\joint_adapter_reject_summary.csv` | `59BE74BFB42AEC04940B27124468369E785A240A56542473092F24CED996E2ED` |
+| V9 metrics | `E:\type10-7\automation_reports\CV-SincNet\phase1_adv3b02_leo_feature_adapter_20260703\artifacts\joint_adapter_reject_metrics.json` | `B4EFCEF45B4E726785DF0C7BB7A7AD849E85B70E972AFF956E2AB594FF1E6E57` |
+| V9b summary | `E:\type10-7\automation_reports\CV-SincNet\phase1_adv3b02_leo_feature_adapter_20260703\artifacts\joint_adapter_reject_v9b_summary.csv` | `4B0C49837F17E159C24CC84F3B43C82C946E0C4D573096B8C05F79DCCE105FCA` |
+| V9b metrics | `E:\type10-7\automation_reports\CV-SincNet\phase1_adv3b02_leo_feature_adapter_20260703\artifacts\joint_adapter_reject_v9b_metrics.json` | `EC59DCDEF662532B0C0EE4C28239751222060D73E76BCA66E1E29ED899E8F43E` |
+| V9b class-threshold summary | `E:\type10-7\automation_reports\CV-SincNet\phase1_adv3b02_leo_feature_adapter_20260703\artifacts\joint_adapter_reject_v9b_class_summary.csv` | `9BB005315C231C59078B68899ACC73FFBC98F86CD973A4703F8838266811FD7D` |
+| V9b class-threshold metrics | `E:\type10-7\automation_reports\CV-SincNet\phase1_adv3b02_leo_feature_adapter_20260703\artifacts\joint_adapter_reject_v9b_class_metrics.json` | `61C6234640519E2B56CC0CF9579E9FAB0646CB8E2425BD3E013702692DB43406` |
+
+Best same-row outcomes:
+
+| Variant | Selection rule | Score/policy | unknown_FAR | Old drop pp | Final old acc | Verdict |
+|---|---|---|---:|---:|---:|---|
+| V9 | Best FAR with old drop`<=2pp` | `old_prob/source_accept` | 0.8207 | 1.74 | 0.5182 | FAR fails badly |
+| V9 | Best old retention with FAR`<=5%` | `proto_max/proxy_far` | 0.0476 | 29.53 | 0.2403 | Old-class performance fails |
+| V9b | Best FAR with old drop`<=2pp` | `old_prob/source_accept` | 0.6275 | 1.38 | 0.5279 | FAR fails badly |
+| V9b | Best old retention with FAR`<=5%` | `old_prob/proxy_far` | 0.0336 | 33.32 | 0.2085 | Old-class performance fails |
+| V9b class | Best class-policy low FAR | `old_prob/class_proxy_far` | 0.0112 | 33.65 | 0.4415 | Old-class performance fails |
+| V9b class | Best class-policy old retention | `fused_rank/class_mean_source_proxy` | 0.1951 | 5.09 | 0.7650 | Both targets still fail |
+
+Interpretation:
+
+V9 confirms the suspected tradeoff. If the oldness/proxy loss is strong enough to move unknown_FAR toward the target, it destroys the repair objective and old-class retention. If the weights are adjusted so the adapter remains a valid LEO repair module, the old/proxy/target-unknown score overlap remains too large: source-calibrated thresholds either keep old classes and accept most unknowns, or reject unknowns and remove roughly one third of old-class performance.
+
+Current conclusion after V9/V9b/V9b-class:
+
+| Target | Status | Evidence |
+|---|---|---|
+| 目标1: source-only LEO repair | Achieved by V3 and preserved by V9b | V9b improves val MSE 0.1571 -> 0.1223 and proto acc 0.8741 -> 0.8858 without target clean/labels |
+| 目标2: `unknown_FAR<=0.05` with old performance drop`<=2pp` | Not achieved | V3-V9 all have dual pass 0; V9b-class still has either FAR 0.6275 under old retention or old drop 33.65pp under low FAR |
+
+Next route should change the evidence source rather than the threshold shape: the Phase1 feature space from `ADV3B02_CORE90_SOFT_E200phase1` does not currently expose a deployable source-only separation between target old and target unknown under LEO. The next aligned experiment is a true Phase1-side representation repair/retraining route, e.g. adding source-side non-old/open-set negatives and old-retention constraints during Phase1 training or during feature export, not another post-export gate.
