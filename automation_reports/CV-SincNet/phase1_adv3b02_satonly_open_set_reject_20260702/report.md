@@ -1463,3 +1463,62 @@ Local verification before N607 sync:
 | Line endings | PASS: LF-only for both new files |
 | Local snapshot | `E:\type10-7\code\snapshots\phase1_adv3b02_oracle_reject_20260702\` |
 | SHA256 | `eval_phase1_scoretable_oracle_reject.py=C89499373B0DCCF22B519A26FEE122A2794D9663DF001779B3C179E2BDD6D498`; `sweep_phase1_adv3b02_oracle_reject_20260702.sh=9D260865C5F480943A7E45D760F7AB9622F3FEEA06DEF5296681C70E836BB783` |
+
+Remote sync and launch status:
+
+| Field | Value |
+|---|---|
+| Git mirror commit | `1013e49 Add score table oracle separability audit` |
+| Remote sync | completed with direct `scp -F tools\n607_ssh_config` |
+| Remote Python syntax | PASS: `/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -m py_compile code/scripts/eval_phase1_scoretable_oracle_reject.py` |
+| Remote bash syntax | PASS: `bash -n code/scripts/sweep_phase1_adv3b02_oracle_reject_20260702.sh` |
+| Remote hashes | `eval_phase1_scoretable_oracle_reject.py=c89499373b0dccf22b519a26fee122a2794d9663df001779b3c179e2bdd6d498`; `sweep_phase1_adv3b02_oracle_reject_20260702.sh=9d260865c5f480943a7e45d760f7ab9622f3feea06def5296681c70e836bb783` |
+| Remote line endings | PASS, LF-only for both synced files |
+| Launch time | `2026-07-02T23:16:36+08:00` on N607 |
+| GPU allocation | CPU/score-table oracle diagnostic only; no CUDA allocation requested |
+| Driver path | `/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_adv3b02_oracle_reject_matrix_20260702/driver.out` |
+| Summary path | `/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_adv3b02_oracle_reject_matrix_20260702/oracle_reject_sweep_summary.csv` |
+| Landed process | shell script PID `781363` |
+
+Completion status:
+
+| Field | Value |
+|---|---|
+| Completion time | `2026-07-02T23:30:07+08:00` |
+| Completed score tables | 680 |
+| Completed oracle rows | 2040, three oracle rows per score table |
+| Driver status | `[PHASE1-ORACLE-REJECT-SWEEP-DONE]` observed |
+| Local summary artifact | `E:\type10-7\automation_reports\CV-SincNet\phase1_adv3b02_satonly_open_set_reject_20260702\artifacts\oracle_reject_sweep_summary.csv` |
+| Local driver artifact | `E:\type10-7\automation_reports\CV-SincNet\phase1_adv3b02_satonly_open_set_reject_20260702\artifacts\oracle_reject_driver.out` |
+| Artifact hashes | `oracle_reject_sweep_summary.csv=2A2398C9F89F7B7DAD49B4FADFAEEC954A5ED75479B67C7A46BD4FE87650D893`; `oracle_reject_driver.out=73F847B58A3F88ED360F80B69EADBC032448DDFEC85820557F624C55FAA9110A` |
+
+Overall oracle result:
+
+| Metric | Value |
+|---|---:|
+| Oracle rows | 2040 |
+| Score tables | 680 |
+| Dual pass (`unknown_FAR<=0.05` and old drop `<=2pp`) | 0 |
+| FAR-only pass | 2040 |
+| Old-drop-only pass | 0 |
+
+Best oracle rows nearest to the dual target:
+
+| Family | Run | Policy | Oracle type | unknown_FAR | Old drop pp | Closed old acc | Full old acc after reject | Coverage | Correct old accepted | Closed old correct | Unknown accepted | Dual pass |
+|---|---|---|---|---:|---:|---:|---:|---:|---:|---:|---:|---|
+| `satblind15` | `phase1_adv3b02_satblind15_rx7_14_u10_20260702` | `SATBLIND15_MLP_M50_COR_PROXY05` | `class_conditional` | 0.0500 | 11.75 | 0.4642 | 0.3467 | 0.4283 | 416 | 557 | 9 | false |
+| `satblind15` | `phase1_adv3b02_satblind15_rx7_14_u10_20260702` | `SATBLIND15_MLP_M50_COR_SRC9999` | `class_conditional` | 0.0500 | 11.75 | 0.4642 | 0.3467 | 0.4283 | 416 | 557 | 9 | false |
+| `satrepair9` | `phase1_adv3b02_satrepair9_rx7_14_u1_20260702` | `SATREPAIR9_MLP_M50_COR_SRC9999` | `class_conditional` | 0.0500 | 16.08 | 0.3483 | 0.1875 | 0.3092 | 225 | 418 | 20 | false |
+| `satrepair9` | `phase1_adv3b02_satrepair9_rx7_14_u1_20260702` | `SATREPAIR9_MLP_M50_COR_PROXY05` | `class_conditional` | 0.0500 | 16.08 | 0.3483 | 0.1875 | 0.3092 | 225 | 418 | 20 | false |
+
+Oracle family summary:
+
+| Family | Oracle type | Rows | Dual pass | Mean unknown_FAR | Min unknown_FAR | Mean old drop pp | Min old drop pp | Mean full old acc |
+|---|---|---:|---:|---:|---:|---:|---:|---:|
+| `satblind15` | `class_conditional` | 140 | 0 | 0.0492 | 0.0472 | 23.27 | 11.75 | 0.1848 |
+| `satrepair9` | `class_conditional` | 140 | 0 | 0.0491 | 0.0461 | 20.50 | 16.08 | 0.1015 |
+| `satrepair9` | `global` | 140 | 0 | 0.0481 | 0.0378 | 23.87 | 18.92 | 0.0678 |
+| `satphysmv11` | `class_conditional` | 260 | 0 | 0.0492 | 0.0472 | 32.61 | 19.50 | 0.3959 |
+| `satrepair_anchor7` | `class_conditional` | 140 | 0 | 0.0492 | 0.0472 | 28.90 | 19.75 | 0.2268 |
+
+Interpretation: the oracle diagnostic is decisive for existing score-table post-processing. Even when target query labels are illegally used to choose thresholds after the fact, none of the 680 score tables can achieve the joint target. All oracle rows can be forced under `unknown_FAR<=0.05`, but every such row loses far more than 2pp old-class accuracy; the best observed old drop is 11.75pp. Therefore the current score spaces do not contain a thresholding solution for the requested target. Further threshold sweeps, class-conditional recalibration, or anchor rescue on these score tables should be stopped; the next viable route must construct a different score from Phase1 features/logits or change the allowed protocol to Stage2-B old-class support.
