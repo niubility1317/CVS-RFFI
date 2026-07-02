@@ -848,7 +848,7 @@ New local files:
 
 | File | Purpose | SHA256 |
 |---|---|---|
-| `E:\type10-7\code\scripts\train_apply_phase1_iq_preadapter_20260703.py` | Train source-only IQ pre-adapter and export sat-only feature NPZs | `D6951E5ED7ED18708FBFA193C1D877A921F96840605AE735B0ADCBF1186A7605` |
+| `E:\type10-7\code\scripts\train_apply_phase1_iq_preadapter_20260703.py` | Train source-only IQ pre-adapter and export sat-only feature NPZs | `98459279CBE95266D97AD5A0001242A1544F655EBE5D859B3F2B3CB00596CBD1` |
 | `E:\type10-7\code\scripts\sweep_phase1_adv3b02_iqpre_v11_20260703.sh` | N607 launcher for V11 train/export/eval summary | `8FCC39B828AC7F27AA12901D845EFCBA51AFEFA80DE1745076C4CF32D65A03E6` |
 
 Local verification:
@@ -858,6 +858,8 @@ Local verification:
 | `C:\Users\lh594\.conda\envs\ssr-gpu\python.exe -m py_compile E:\type10-7\code\scripts\train_apply_phase1_iq_preadapter_20260703.py` | PASS |
 | `bash -lc "bash -n /mnt/e/type10-7/code/scripts/sweep_phase1_adv3b02_iqpre_v11_20260703.sh"` | PASS |
 | LF line-ending audit | PASS |
+
+Startup repair note: initial N607 launch attempt failed before training because the new script did not expose the `dataset/model_size/model_variant/branch_ablation/sample_rate_hz` compatibility fields expected by`build_model_from_ckpt`. The local script was patched, recompiled, and resynced before relaunch. No V11 training process remained active after the failed attempt.
 
 Version/snapshot state:
 
