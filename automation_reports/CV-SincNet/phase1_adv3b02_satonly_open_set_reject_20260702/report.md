@@ -424,3 +424,59 @@ Artifact:
 | Receive-side TTA low-quantile summary | `E:\type10-7\automation_reports\CV-SincNet\phase1_adv3b02_satonly_open_set_reject_20260702\artifacts\sattta_rxlight_lowq_summary.csv` |
 
 Interpretation: source-threshold tightening exposes the same tradeoff. Lower thresholds reduce FAR only to about 51% at best and already damage old classes by more than 11pp. Near the 2pp old-drop gate, FAR remains above 87%. Under the current frozen `ADV3B02_CORE90_SOFT_E200phase1` feature space, receive-side TTA plus post-hoc source thresholds is insufficient.
+
+## Receive-Side TTA Proxy/Prototype Diagnostic
+
+Planned diagnostic: reuse the completed `rx_light5` feature exports and evaluate source/proxy-only thresholds that were not covered by the first TTA run:
+
+| Family | Purpose |
+|---|---|
+| `SATTAD_MLP64_PROXY*` | Test whether proxy-unknown quantile thresholds can lower FAR without using target/unknown query tuning. |
+| `SATTAD_MLP64_MIN*` | Use the stricter of source-accept and proxy-FAR thresholds. |
+| `SATTAD_PROTO_*` | Test class-prototype TTA scores with source/proxy-only calibration. |
+
+Boundary: this diagnostic does not regenerate target query from clean, does not use target support, and does not use target-old or unknown query metrics to choose thresholds. It only checks whether the completed `rx_light5` feature space contains an exploitable source/proxy open-set boundary.
+
+Status update: the ad-hoc remote proxy/prototype diagnostic command disconnected before producing `sattta_rxlight_proxy_proto_summary.csv`; follow-up process checks found no remaining diagnostic process. This path is superseded by the stricter non-TTA KNN density sweep below because the current objective should not be limited to receive-side TTA.
+
+## Single-Observation KNN Density Diagnostic
+
+Objective: test a non-TTA rejection mechanism on the strict single-observation LEO feature files. The method freezes `ADV3B02_CORE90_SOFT_E200phase1`, keeps each target query as one hidden LEO observation, and rejects samples by kNN distance to source-old features of the predicted old TX class.
+
+Boundary:
+
+| Item | Setting |
+|---|---|
+| Feature input | `ADV3B02_CORE90_SOFT_E200_PHASE1_SATUNKNOWN_SINGLEVIEW/features_satunknown_singleview.npz` |
+| Clean view | excluded |
+| Per-sample observation count | 1 |
+| Target support | none |
+| Threshold data | source old plus source-side proxy unknown only |
+| Unknown query usage | evaluation only, never threshold tuning |
+| Success gate | `unknown_FAR<=0.05` and `old_drop_pp_vs_closed<=2.0` |
+
+Local files changed:
+
+| File | Purpose |
+|---|---|
+| `code/scripts/eval_phase1_knn_reject.py` | Frozen-feature kNN density evaluator with source/proxy-only thresholds. |
+| `code/scripts/sweep_phase1_adv3b02_satunknown_knn_density_20260702.sh` | 10-cell sweep over cosine/euclidean kNN, source/proxy thresholds, class-conditional thresholds, and source-incorrect proxy variants. |
+
+Local verification:
+
+| Command | Result |
+|---|---|
+| `C:\Users\lh594\.conda\envs\ssr-gpu\python.exe -m py_compile code\scripts\eval_phase1_knn_reject.py` | PASS |
+| `bash -n code/scripts/sweep_phase1_adv3b02_satunknown_knn_density_20260702.sh` | PASS |
+
+Planned remote command:
+
+```bash
+cd /home/szu2070436088/2510044040/CV-SincNet && bash code/scripts/sweep_phase1_adv3b02_satunknown_knn_density_20260702.sh
+```
+
+Expected KNN summary:
+
+```text
+/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_adv3b02_satunknown_knn_density_matrix_20260702/satunknown_knn_density_sweep_summary.csv
+```
