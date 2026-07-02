@@ -677,3 +677,68 @@ Expected constrained summary:
 ```text
 /home/szu2070436088/2510044040/CV-SincNet/logs/phase1_adv3b02_satphysmv11_constrained_matrix_20260702/satphysmv11_constrained_sweep_summary.csv
 ```
+
+Launch and completion status:
+
+| Field | Value |
+|---|---|
+| Launch time | `2026-07-02T18:08:01+08:00` on N607 |
+| Remote driver PID | `4194270` |
+| Feature export | reused existing `sat_rx_phys11` feature files; no re-export |
+| Remote command | `cd /home/szu2070436088/2510044040/CV-SincNet && nohup bash code/scripts/sweep_phase1_adv3b02_satphysmv11_constrained_20260702.sh > logs/phase1_adv3b02_satphysmv11_constrained_matrix_20260702/driver.out 2>&1 &` |
+| Driver log | `/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_adv3b02_satphysmv11_constrained_matrix_20260702/driver.out` |
+| Summary CSV | `/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_adv3b02_satphysmv11_constrained_matrix_20260702/satphysmv11_constrained_sweep_summary.csv` |
+| Completion time | `2026-07-02T18:31:15+08:00` |
+| Summary rows | 160 rows, 10 cells x 16 policies |
+| Final process cleanup | Remote experiment process ended; local SSH client cleaned up |
+
+Artifacts:
+
+| Artifact | Local path |
+|---|---|
+| Constrained head summary | `E:\type10-7\automation_reports\CV-SincNet\phase1_adv3b02_satonly_open_set_reject_20260702\artifacts\satphysmv11_constrained_sweep_summary.csv` |
+| Constrained head driver log | `E:\type10-7\automation_reports\CV-SincNet\phase1_adv3b02_satonly_open_set_reject_20260702\artifacts\satphysmv11_constrained_driver.out` |
+
+Policy aggregate result:
+
+| Policy | Cells | Mean unknown_FAR | Max unknown_FAR | Mean old drop pp | Max old drop pp | Dual pass | Mean known coverage |
+|---|---:|---:|---:|---:|---:|---:|---:|
+| `SATPHY11C_MLP_M50_MIN02` | 10 | 0.0591 | 0.1000 | 53.10 | 61.08 | 0/10 | 0.2218 |
+| `SATPHY11C_MLP_M50_PROXY02` | 10 | 0.0591 | 0.1000 | 53.10 | 61.08 | 0/10 | 0.2218 |
+| `SATPHY11C_MLP_M20_MIN02` | 10 | 0.0737 | 0.1425 | 52.60 | 60.33 | 0/10 | 0.2328 |
+| `SATPHY11C_MLP_M20_PROXY02` | 10 | 0.0737 | 0.1425 | 52.60 | 60.33 | 0/10 | 0.2328 |
+| `SATPHY11C_MLP_M100_PROXY05` | 10 | 0.0954 | 0.1525 | 48.68 | 56.25 | 0/10 | 0.2865 |
+| `SATPHY11C_MLP_M50_PROXY05` | 10 | 0.1062 | 0.1675 | 47.12 | 53.00 | 0/10 | 0.3058 |
+| `SATPHY11C_MLP_M20_PROXY05` | 10 | 0.1410 | 0.2425 | 44.58 | 49.33 | 0/10 | 0.3435 |
+| `SATPHY11C_MLP_M20_SRC9999` | 10 | 0.5768 | 0.7768 | 12.57 | 23.25 | 0/10 | 0.7908 |
+| `SATPHY11C_MLP_M50_SRC9999` | 10 | 0.6977 | 0.8584 | 6.20 | 10.83 | 0/10 | 0.8890 |
+| `SATPHY11C_MLP_M100_SRC9999` | 10 | 0.8127 | 0.9270 | 2.58 | 5.33 | 0/10 | 0.9427 |
+
+Best dual-objective rows:
+
+| Run | Policy | unknown_FAR | Old drop pp | Closed old acc | Full old acc after reject | Known coverage | Dual pass |
+|---|---|---:|---:|---:|---:|---:|---|
+| `phase1_adv3b02_satphysmv11_rx20_1_u1_20260702` | `SATPHY11C_MLP_M20_SRC9999` | 0.2605 | 14.00 | 0.6408 | 0.5008 | 0.7517 | false |
+| `phase1_adv3b02_satphysmv11_rx20_1_u1_20260702` | `SATPHY11C_MLP_M50_COR_SRC9999` | 0.3081 | 13.92 | 0.6408 | 0.5017 | 0.7333 | false |
+| `phase1_adv3b02_satphysmv11_rx8_8_u10_20260702` | `SATPHY11C_MLP_M20_COR_PROXY05` | 0.0865 | 36.67 | 0.7275 | 0.3608 | 0.3933 | false |
+| `phase1_adv3b02_satphysmv11_rx8_8_u10_20260702` | `SATPHY11C_MLP_M50_COR_PROXY05` | 0.0703 | 38.58 | 0.7275 | 0.3417 | 0.3675 | false |
+
+Best old-retention rows:
+
+| Run | Policy | unknown_FAR | Old drop pp | Closed old acc | Full old acc after reject | Known coverage | Dual pass |
+|---|---|---:|---:|---:|---:|---:|---|
+| `phase1_adv3b02_satphysmv11_rx8_8_u10_20260702` | `SATPHY11C_MLP_M100_SRC9999` | 0.8216 | 1.00 | 0.7275 | 0.7175 | 0.9433 | false |
+| `phase1_adv3b02_satphysmv11_rx8_8_u1_20260702` | `SATPHY11C_MLP_M100_SRC9999` | 0.8675 | 1.00 | 0.7275 | 0.7175 | 0.9433 | false |
+| `phase1_adv3b02_satphysmv11_rx7_14_u10_20260702` | `SATPHY11C_MLP_M100_SRC9999` | 0.8944 | 1.33 | 0.8558 | 0.8425 | 0.9800 | false |
+| `phase1_adv3b02_satphysmv11_rx7_14_u1_20260702` | `SATPHY11C_MLP_M100_SRC9999` | 0.9150 | 1.33 | 0.8558 | 0.8425 | 0.9800 | false |
+
+Best low-FAR rows:
+
+| Run | Policy | unknown_FAR | Old drop pp | Closed old acc | Full old acc after reject | Known coverage | Dual pass |
+|---|---|---:|---:|---:|---:|---:|---|
+| `phase1_adv3b02_satphysmv11_rx20_1_u1_20260702` | `SATPHY11C_MLP_M100_PROXY05` | 0.0140 | 47.08 | 0.6408 | 0.1700 | 0.2317 | false |
+| `phase1_adv3b02_satphysmv11_rx20_1_u1_20260702` | `SATPHY11C_MLP_M20_PROXY02` | 0.0140 | 50.42 | 0.6408 | 0.1367 | 0.1858 | false |
+| `phase1_adv3b02_satphysmv11_rx20_1_u1_20260702` | `SATPHY11C_MLP_M50_PROXY02` | 0.0140 | 51.25 | 0.6408 | 0.1283 | 0.1667 | false |
+| `phase1_adv3b02_satphysmv11_rx8_8_u10_20260702` | `SATPHY11C_MLP_M50_PROXY02` | 0.0216 | 46.58 | 0.7275 | 0.2617 | 0.2775 | false |
+
+Interpretation: increasing source-old penalty makes the tradeoff sharper but does not solve it. Proxy-threshold constrained heads can reduce mean FAR to about 5.9% and individual rows to about 1.4%-2.2%, but only by rejecting most old-class target samples. Source-accept constrained heads protect old classes better, including rows with old drop near 1.0pp, but FAR remains about 82%-92%. The frozen Phase1 feature space still lacks a source-only multi-view boundary that separates target unknown from target old under LEO impairment.
