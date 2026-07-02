@@ -386,3 +386,41 @@ Remote verification before launch:
 | `/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -m py_compile code/export_spaceborne_features.py code/scripts/eval_phase1_multiview_reject.py` | PASS |
 | `bash -n code/scripts/sweep_phase1_adv3b02_sattta_rxlight_20260702.sh` | PASS |
 | `sha256sum` for synced code/report | PASS; report hash `582bd9a0b781b404f0a6bffb5cb34f899456e6991c8b3ebaa1efa560eb1f01e9` before launch-status update |
+
+Receive-side TTA result:
+
+| Policy | Cells | Mean unknown_FAR | Max unknown_FAR | Mean old drop pp | Max old drop pp | Dual pass |
+|---|---:|---:|---:|---:|---:|---:|
+| `SATTA_LIN_SRC9999` | 10 | 0.9462 | 0.9889 | 0.40 | 0.75 | 0/10 |
+| `SATTA_LIN_SRC1000` | 10 | 0.9533 | 0.9925 | 0.28 | 0.67 | 0/10 |
+| `SATTA_MLP64_SRC9999` | 10 | 0.4712 | 0.5875 | 16.03 | 26.25 | 0/10 |
+| `SATTA_MLP64_SRC1000` | 10 | 0.4747 | 0.5925 | 15.95 | 26.25 | 0/10 |
+
+Artifacts:
+
+| Artifact | Local path |
+|---|---|
+| Receive-side TTA summary | `E:\type10-7\automation_reports\CV-SincNet\phase1_adv3b02_satonly_open_set_reject_20260702\artifacts\sattta_rxlight_sweep_summary.csv` |
+| Receive-side TTA driver log | `E:\type10-7\automation_reports\CV-SincNet\phase1_adv3b02_satonly_open_set_reject_20260702\artifacts\sattta_rxlight_driver.out` |
+
+Interpretation: receive-side TTA is protocol-correct and improves the MLP FAR relative to the single-observation baseline, but it still misses the 5% FAR target by a wide margin and the MLP family damages old-class retention far beyond 2pp. Linear heads retain old classes but accept almost all unknowns. The objective remains unachieved.
+
+Receive-side TTA low-quantile diagnostic:
+
+| Policy | Cells | Mean unknown_FAR | Max unknown_FAR | Mean old drop pp | Max old drop pp | Dual pass |
+|---|---:|---:|---:|---:|---:|---:|
+| `SATTA_LIN_SRC950` | 10 | 0.5124 | 0.7253 | 11.33 | 18.75 | 0/10 |
+| `SATTA_LIN_SRC980` | 10 | 0.6022 | 0.7940 | 6.93 | 12.83 | 0/10 |
+| `SATTA_LIN_SRC990` | 10 | 0.6728 | 0.8541 | 4.45 | 8.67 | 0/10 |
+| `SATTA_LIN_SRC995` | 10 | 0.7158 | 0.8884 | 3.70 | 7.00 | 0/10 |
+| `SATTA_LIN_SRC999` | 10 | 0.8773 | 0.9528 | 1.32 | 2.42 | 0/10 |
+| `SATTA_LIN_SRC9999` | 10 | 0.9462 | 0.9889 | 0.40 | 0.75 | 0/10 |
+| `SATTA_LIN_SRC1000` | 10 | 0.9533 | 0.9925 | 0.28 | 0.67 | 0/10 |
+
+Artifact:
+
+| Artifact | Local path |
+|---|---|
+| Receive-side TTA low-quantile summary | `E:\type10-7\automation_reports\CV-SincNet\phase1_adv3b02_satonly_open_set_reject_20260702\artifacts\sattta_rxlight_lowq_summary.csv` |
+
+Interpretation: source-threshold tightening exposes the same tradeoff. Lower thresholds reduce FAR only to about 51% at best and already damage old classes by more than 11pp. Near the 2pp old-drop gate, FAR remains above 87%. Under the current frozen `ADV3B02_CORE90_SOFT_E200phase1` feature space, receive-side TTA plus post-hoc source thresholds is insufficient.
