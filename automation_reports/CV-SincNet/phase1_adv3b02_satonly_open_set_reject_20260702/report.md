@@ -1163,3 +1163,20 @@ Planned remote command:
 ```bash
 cd /home/szu2070436088/2510044040/CV-SincNet && mkdir -p logs/phase1_adv3b02_satrepair_anchor7_matrix_20260702 && nohup env GPU=7 bash code/scripts/sweep_phase1_adv3b02_satrepair_anchor7_20260702.sh > logs/phase1_adv3b02_satrepair_anchor7_matrix_20260702/driver.out 2>&1 < /dev/null &
 ```
+
+Remote sync and launch status:
+
+| Field | Value |
+|---|---|
+| Git mirror commit | `5e5b332 Add anchored light LEO repair sweep` |
+| Remote sync | completed with direct `scp -F tools\n607_ssh_config` |
+| Remote Python syntax | PASS: `/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -m py_compile code/export_spaceborne_features.py` |
+| Remote bash syntax | PASS: `bash -n code/scripts/sweep_phase1_adv3b02_satrepair_anchor7_20260702.sh` |
+| Remote hashes | `export_spaceborne_features.py=F07ED341A17920BEB9701AD4BC456A96106D7C08AC3192807658F928E379AFE4`; `sweep_phase1_adv3b02_satrepair_anchor7_20260702.sh=4FE839103B9C0A3F6F4A9649A366205F9157822344E525D63237BDE984E75E17` |
+| Remote line endings | PASS, LF-only for both synced files |
+| Launch time | `2026-07-02T19:50:24+08:00` on N607 |
+| GPU allocation | `GPU=7` |
+| Submit note | local SSH submit timed out, but landed probe confirmed remote script running; stale local `ssh.exe` PID `43908` was closed and local TCP/SSH state returned to zero |
+| Landed process | shell script PID `107763`; evaluator PID observed as `108908` during first cell |
+| Driver first lines | `[PHASE1-SATREPAIRA7-SWEEP] start=2026-07-02T19:50:24+08:00 gpu=7`; first cell `phase1_adv3b02_satrepair_anchor7_rx20_1_u10_20260702` |
+| Startup status | feature export for first cell completed; run entered `eval_phase1_multiview_reject.py` policy evaluation |
