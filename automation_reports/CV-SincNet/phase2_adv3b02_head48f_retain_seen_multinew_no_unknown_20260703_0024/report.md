@@ -38,7 +38,7 @@ Continue the live ADV3B02 Phase2 goal after `phase2_adv3b02_stage2c_multinew_no_
 | Local Python compile | PASS for root and Git-backed mirror |
 | Bash syntax | PASS for root and Git-backed mirror launchers |
 | Dry-run audit | PASS: 4 candidates, 0 actual `--unknown_tx_ids`, new OLD80 policy present |
-| Git-backed mirror | pending commit |
+| Git-backed mirror | PASS, committed as `9ee545f` |
 | N607 preflight/occupancy | PASS before sync/launch |
 
 ## Claim Boundary
@@ -88,3 +88,54 @@ Planned launch command:
 ```bash
 ssh -F E:\type10-7\tools\n607_ssh_config -o BatchMode=yes N607 'cd /home/szu2070436088/2510044040/CV-SincNet && mkdir -p logs/phase2_adv3b02_head48f_retain_seen_multinew_no_unknown_20260703_0024 automation_reports/CV-SincNet/phase2_adv3b02_head48f_retain_seen_multinew_no_unknown_20260703_0024 && nohup env RUN_ID=phase2_adv3b02_head48f_retain_seen_multinew_no_unknown_20260703_0024 bash code/scripts/launch_phase2_adv3b02_head48f_retain_seen_multinew_no_unknown_20260703_0024.sh > logs/phase2_adv3b02_head48f_retain_seen_multinew_no_unknown_20260703_0024/scheduler.out 2>&1 < /dev/null & echo scheduler_pid=$!'
 ```
+
+## Remote Verification and Launch Evidence
+
+| Check | Evidence |
+|---|---|
+| Remote compile | PASS for `code/cvsrffi/spaceborne_fewshot.py` and `code/eval_spaceborne_fewshot.py` |
+| Remote launcher syntax | PASS via `bash -n` |
+| Remote dry-run | PASS: 4 candidates, actual `--unknown_tx_ids` count 0, 2 two-new rows, 2 three-new rows |
+| Remote code hash | `spaceborne_fewshot.py=28cab198ad1108bbcff403658700ed7e29b637e53981cbc1bf72028d0803b758`; `eval_spaceborne_fewshot.py=64921019b04a92916e96eaf3fdc422af09f38ac48b3a99c9c3e7b0cbddbc6906` |
+| Remote launcher hash | `fe75985f6366b657cff190b136e05ffad83751a4bf69ce47a45886abc9b10427` |
+| Launch | `scheduler_pid=880965` |
+| Startup health | PASS: 4 eval processes observed, feature files generated, no fatal log lines |
+| Final process state | COMPLETE: no remaining eval process for this run |
+| SSH cleanup | PASS: local `ssh.exe` and established N607/bridge TCP checks clear after bounded remote tasks |
+
+## Completion Results
+
+All rows failed the live same-row target of `old_acc>=80%` and `seen_new_acc>=65%`.
+
+| Candidate | New-class scope | Threshold mode | K-old | K-new | Old acc | Seen-new acc | Harmonic mean | Coverage | Seen-new to old | Rollback | Loss trend | Verdict |
+|---|---|---|---:|---:|---:|---:|---:|---:|---:|---|---|---|
+| `ADV3B02_HEAD48F_RETAIN_SEEN_K10_2NEW_RELAX` | 2 new | relaxed | 10 | 10 | 55.00% | 30.00% | 0.3882 | 100.00% | 70.00% | triggered=False, accepted=True | 4.3464->1.3118 | FAIL_TARGET |
+| `ADV3B02_HEAD48F_RETAIN_SEEN_K10_2NEW_STRICT` | 2 new | strict | 10 | 10 | 59.17% | 15.00% | 0.2393 | 100.00% | 85.00% | triggered=False, accepted=True | 5.4984->1.7087 | FAIL_TARGET |
+| `ADV3B02_HEAD48F_RETAIN_SEEN_K10_3NEW_RELAX` | 3 new | relaxed | 10 | 10 | 58.75% | 8.33% | 0.1460 | 100.00% | 60.00% | triggered=False, accepted=True | 4.4362->1.8484 | FAIL_TARGET |
+| `ADV3B02_HEAD48F_RETAIN_SEEN_K10_3NEW_STRICT` | 3 new | strict | 10 | 10 | 61.25% | 14.17% | 0.2301 | 100.00% | 73.33% | triggered=False, accepted=True | 5.5617->2.0031 | FAIL_TARGET |
+
+Per-new-class accuracy shows the old-retention policy preserves old labels by swallowing many target-new queries as old classes.
+
+| Candidate | `1-14` acc | `1-16` acc | `1-18` acc |
+|---|---:|---:|---:|
+| `ADV3B02_HEAD48F_RETAIN_SEEN_K10_2NEW_RELAX` | n/a | 0.00% | 60.00% |
+| `ADV3B02_HEAD48F_RETAIN_SEEN_K10_2NEW_STRICT` | n/a | 0.00% | 30.00% |
+| `ADV3B02_HEAD48F_RETAIN_SEEN_K10_3NEW_RELAX` | 0.00% | 0.00% | 25.00% |
+| `ADV3B02_HEAD48F_RETAIN_SEEN_K10_3NEW_STRICT` | 0.00% | 0.00% | 42.50% |
+
+## Post-hoc Diagnostic Checks
+
+These checks reused the completed feature artifacts and exact support/query manifests; they did not create a deployment-success claim.
+
+| Diagnostic | Best observed row | Interpretation |
+|---|---|---|
+| Target support prototype/kNN on first-run 3-new K10/K20 features | K20 `knn3`: old 69.44%, seen-new 55.56% | Target support evidence improves the balance but remains below both thresholds |
+| Target support prototype/kNN on second-run 2-new features | `knn3`: old 70.00%, seen-new 63.75%; `knn1`: old 63.75%, seen-new 67.50% | New-class target can approach 65%, but old target stays far below 80% |
+| ADV3B02 structural old logits on second-run 2-new features | old-only target accuracy 65.83%, seen-new 0.00% | The base old-class head is not an 80% old-domain anchor for this target receiver |
+| Old-logit plus support-similarity threshold sweep | Best tradeoffs included old 57.08%/seen-new 67.50% and old 53.75%/seen-new 75.00% | Even oracle post-hoc thresholds cannot give same-row old 80% and seen-new 65% on this receiver/class set |
+
+## Interpretation and Next Decision
+
+The `replace_all_except_seen_new_override` route is diagnostic-negative. It raises old accuracy only into the 55-61% range and severely suppresses new-class recognition, especially `1-16` and `1-14`. Combined with the first run, the current evidence says target receiver `20-1` with the tested ADV3B02 features does not expose a same-row 80% old / 65% multi-new solution through terminal thresholding or OLD80 retention.
+
+The next valid route is not another threshold-only tweak on `20-1`; it should be a receiver/new-class sweep under the same no-unknown, at-least-two-new-class scope to test whether another allowed Stage2-C target receiver gives a cleaner old/new separation from `ADV3B02_CORE90_SOFT_E200`.
