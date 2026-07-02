@@ -572,3 +572,21 @@ Current route conclusion:
 | 目标2: `unknown_FAR<=0.05` and old drop`<=2pp` | Not achieved | V3 full matrix, V5 scalar oracle, V6 multi-score oracle, and V7 repair-delta oracle all have dual pass 0 |
 
 Next technically aligned route: stop adding post-hoc thresholds on this frozen score surface. The next experiment should modify training/evaluation features themselves, for example by adding source-side open-set negatives during Phase1-compatible adapter training, preserving pre/post residual channels in the feature NPZ, or training a source-only open-set head directly on repaired features with explicit class-conditional old retention loss and proxy unknown separation. This remains within the phase1-only boundary if it uses source old/source proxy unknown and no target labels.
+
+## V8 K+1 Open-Set Head Design
+
+V8 trains a source-only open-set classifier directly on V3 repaired features. Instead of binary reject/accept, it learns`K+1`classes: six source old TX classes plus one source proxy unknown class. This changes the rejection signal itself while keeping the Phase1 backbone frozen and using no target labels for training.
+
+New local file:
+
+| File | Purpose | SHA256 |
+|---|---|---|
+| `E:\type10-7\code\scripts\eval_phase1_kplus1_openset_reject_20260703.py` | Train/evaluate source-only K+1 open-set heads on repaired features with source/proxy threshold calibration | `8F19197472B9F506F98729BA04CF3151B400536CBBE47E83D1A07B568C02A711` |
+
+Local verification:
+
+| Command | Result |
+|---|---|
+| `C:\Users\lh594\.conda\envs\ssr-gpu\python.exe -m py_compile E:\type10-7\code\scripts\eval_phase1_kplus1_openset_reject_20260703.py` | PASS |
+
+Planned remote output: `/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_adv3b02_kplus1_reject_20260703/kplus1_reject_summary.csv`.
