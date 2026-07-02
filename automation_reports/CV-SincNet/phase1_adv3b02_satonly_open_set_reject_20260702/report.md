@@ -865,3 +865,66 @@ Remote sync and launch status:
 | Landed process | shell script PID `39036`; current evaluator PID observed as `40057` during first cell |
 | Driver first lines | `[PHASE1-SATBLIND15-SWEEP] start=2026-07-02T18:44:51+08:00 gpu=7`; first cell `phase1_adv3b02_satblind15_rx20_1_u10_20260702` |
 | Startup status | feature export for first cell completed; run entered `eval_phase1_multiview_reject.py` policy evaluation |
+
+Completion status:
+
+| Field | Value |
+|---|---|
+| Completion time | `2026-07-02T19:09:24+08:00` |
+| Completed rows | 140 rows, 10 cells x 14 policies |
+| Error scan | no `Traceback`, `RuntimeError`, OOM, argparse, `command not found`, or missing-file markers found |
+| Remote process cleanup | no `satblind15` export/eval/sweep process remained after completion |
+| Local SSH cleanup | local `ssh.exe` and ESTABLISHED TCP connections to N607 were zero after probes |
+| Local summary artifact | `E:\type10-7\automation_reports\CV-SincNet\phase1_adv3b02_satonly_open_set_reject_20260702\artifacts\satblind15_sweep_summary.csv` |
+| Local driver artifact | `E:\type10-7\automation_reports\CV-SincNet\phase1_adv3b02_satonly_open_set_reject_20260702\artifacts\satblind15_driver.out` |
+| Artifact hashes | `satblind15_sweep_summary.csv=725B8241189EC4DDDA67BA5CF7EA584AD4564A7780ED4653180ADE5955F685DD`; `satblind15_driver.out=0FF87E77BE318FB81F2078B0D7E924B4FFB32257653679FFB2AD462C423F7931` |
+
+Overall result:
+
+| Metric | Value |
+|---|---:|
+| Rows | 140 |
+| Dual pass (`unknown_FAR<=0.05` and old drop `<=2pp`) | 0 |
+| FAR-only pass | 5 |
+| Old-drop-only pass | 22 |
+
+Policy aggregate result:
+
+| Policy | Cells | Mean unknown_FAR | Max unknown_FAR | Mean old drop pp | Max old drop pp | Dual pass | Mean known coverage |
+|---|---:|---:|---:|---:|---:|---:|---:|
+| `SATBLIND15_MLP_M50_PROXY02` | 10 | 0.0721 | 0.1056 | 29.05 | 34.67 | 0/10 | 0.2213 |
+| `SATBLIND15_MLP_M50_COR_PROXY05` | 10 | 0.0851 | 0.1300 | 21.82 | 24.25 | 0/10 | 0.2472 |
+| `SATBLIND15_MLP_M50_PROXY05` | 10 | 0.1285 | 0.1625 | 25.08 | 28.25 | 0/10 | 0.3173 |
+| `SATBLIND15_LIN_MIN05` | 10 | 0.1456 | 0.2167 | 23.45 | 24.92 | 0/10 | 0.3430 |
+| `SATBLIND15_LIN_PROXY05` | 10 | 0.1456 | 0.2167 | 23.45 | 24.92 | 0/10 | 0.3430 |
+| `SATBLIND15_MLP_M20_PROXY05` | 10 | 0.1636 | 0.2222 | 22.75 | 27.00 | 0/10 | 0.3758 |
+| `SATBLIND15_MLP64_MIN05` | 10 | 0.1815 | 0.2778 | 22.98 | 26.67 | 0/10 | 0.3917 |
+| `SATBLIND15_MLP64_SRC9999` | 10 | 0.1815 | 0.2778 | 23.00 | 26.67 | 0/10 | 0.3913 |
+| `SATBLIND15_MLP_M50_COR_SRC9999` | 10 | 0.2040 | 0.2925 | 14.68 | 17.75 | 0/10 | 0.3933 |
+| `SATBLIND15_MLP64_PROXY05` | 10 | 0.3716 | 0.4889 | 13.82 | 17.50 | 0/10 | 0.6297 |
+| `SATBLIND15_MLP_M20_SRC9999` | 10 | 0.4423 | 0.5322 | 10.98 | 13.08 | 0/10 | 0.7008 |
+| `SATBLIND15_MLP_M50_SRC9999` | 10 | 0.7486 | 0.8970 | 2.82 | 3.67 | 0/10 | 0.9148 |
+| `SATBLIND15_LIN_SRC999` | 10 | 0.9419 | 0.9925 | 0.40 | 0.58 | 0/10 | 0.9860 |
+| `SATBLIND15_LIN_SRC9999` | 10 | 0.9519 | 1.0000 | 0.27 | 0.42 | 0/10 | 0.9887 |
+
+Best low-FAR rows:
+
+| Run | Policy | unknown_FAR | Old drop pp | Closed old acc | Full old acc after reject | Known coverage | Dual pass |
+|---|---|---:|---:|---:|---:|---:|---|
+| `phase1_adv3b02_satblind15_rx20_1_u1_20260702` | `SATBLIND15_MLP_M50_PROXY02` | 0.0336 | 34.67 | 0.4283 | 0.0817 | 0.1675 | false |
+| `phase1_adv3b02_satblind15_rx3_19_u1_20260702` | `SATBLIND15_MLP_M50_PROXY02` | 0.0475 | 28.67 | 0.3217 | 0.0350 | 0.0875 | false |
+| `phase1_adv3b02_satblind15_rx20_1_u1_20260702` | `SATBLIND15_LIN_MIN05` | 0.0476 | 24.92 | 0.4283 | 0.1792 | 0.3242 | false |
+| `phase1_adv3b02_satblind15_rx20_1_u1_20260702` | `SATBLIND15_LIN_PROXY05` | 0.0476 | 24.92 | 0.4283 | 0.1792 | 0.3242 | false |
+| `phase1_adv3b02_satblind15_rx3_19_u10_20260702` | `SATBLIND15_MLP_M50_PROXY02` | 0.0488 | 28.67 | 0.3217 | 0.0350 | 0.0875 | false |
+
+Best old-retention rows:
+
+| Run | Policy | unknown_FAR | Old drop pp | Closed old acc | Full old acc after reject | Known coverage | Dual pass |
+|---|---|---:|---:|---:|---:|---:|---|
+| `phase1_adv3b02_satblind15_rx3_19_u10_20260702` | `SATBLIND15_LIN_SRC9999` | 0.7751 | 0.08 | 0.3217 | 0.3208 | 0.9808 | false |
+| `phase1_adv3b02_satblind15_rx3_19_u1_20260702` | `SATBLIND15_LIN_SRC9999` | 0.9500 | 0.08 | 0.3217 | 0.3208 | 0.9808 | false |
+| `phase1_adv3b02_satblind15_rx7_14_u10_20260702` | `SATBLIND15_LIN_SRC999` | 0.9833 | 0.08 | 0.4642 | 0.4633 | 0.9925 | false |
+| `phase1_adv3b02_satblind15_rx7_14_u10_20260702` | `SATBLIND15_LIN_SRC9999` | 0.9833 | 0.08 | 0.4642 | 0.4633 | 0.9925 | false |
+| `phase1_adv3b02_satblind15_rx7_14_u1_20260702` | `SATBLIND15_LIN_SRC999` | 0.9875 | 0.08 | 0.4642 | 0.4633 | 0.9925 | false |
+
+Interpretation: `sat_rx_blind15` is the most protocol-faithful multi-view route tested so far because its views are derived from one received satellite-impaired observation rather than from clean counterfactual channel replays. It improves the low-FAR/old-drop tradeoff relative to `sat_rx_phys11` in the sense that proxy-threshold rows need about 21-35pp old drop instead of 45-55pp to reach low FAR. It still does not meet the requested operating point: rows near or below 5% FAR reject most old-class target samples, while rows preserving old-class accuracy keep FAR extremely high. The same frozen Phase1 feature/score space therefore still lacks a source-only threshold boundary satisfying `unknown_FAR<5%` and old-performance drop `<2pp` under strict single-observation LEO target queries.
