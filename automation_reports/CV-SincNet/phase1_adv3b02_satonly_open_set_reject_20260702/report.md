@@ -1014,3 +1014,88 @@ Remote sync and launch status:
 | Landed process | shell script PID `74047`; current evaluator PID observed as `75058` during first cell |
 | Driver first lines | `[PHASE1-SATREPAIR9-SWEEP] start=2026-07-02T19:20:22+08:00 gpu=6`; first cell `phase1_adv3b02_satrepair9_rx20_1_u10_20260702` |
 | Startup status | feature export for first cell completed; run entered `eval_phase1_multiview_reject.py` policy evaluation |
+
+Completion status:
+
+| Field | Value |
+|---|---|
+| Completion time | `2026-07-02T19:41:34+08:00` |
+| Completed rows | 140 rows, 10 cells x 14 policies |
+| Error scan | no `Traceback`, `RuntimeError`, OOM, argparse, `command not found`, or missing-file markers found |
+| Remote process cleanup | no `satrepair9` export/eval/sweep process remained after completion |
+| Local SSH cleanup | local `ssh.exe` and ESTABLISHED TCP connections to N607 were zero after probes |
+| Local summary artifact | `E:\type10-7\automation_reports\CV-SincNet\phase1_adv3b02_satonly_open_set_reject_20260702\artifacts\satrepair9_sweep_summary.csv` |
+| Local driver artifact | `E:\type10-7\automation_reports\CV-SincNet\phase1_adv3b02_satonly_open_set_reject_20260702\artifacts\satrepair9_driver.out` |
+| Artifact hashes | `satrepair9_sweep_summary.csv=49318D63FF7E79079CCD9D4C514A3606463CA9D7AFB2D86C17C60A78228FE9BE`; `satrepair9_driver.out=03023C26B3E30C8AF5D085892FBF12DFEFE2F0FC37DBDCF96F7F2576449CEB61` |
+
+Overall result:
+
+| Metric | Value |
+|---|---:|
+| Rows | 140 |
+| Dual pass (`unknown_FAR<=0.05` and old drop `<=2pp`) | 0 |
+| FAR-only pass | 21 |
+| Old-drop-only pass | 30 |
+
+Policy aggregate result:
+
+| Policy | Cells | Mean unknown_FAR | Max unknown_FAR | Mean old drop pp | Max old drop pp | Dual pass | Mean known coverage |
+|---|---:|---:|---:|---:|---:|---:|---:|
+| `SATREPAIR9_MLP_M50_PROXY02` | 10 | 0.0307 | 0.0667 | 24.72 | 26.08 | 0/10 | 0.0828 |
+| `SATREPAIR9_MLP_M50_COR_PROXY05` | 10 | 0.0587 | 0.1000 | 21.28 | 22.33 | 0/10 | 0.1543 |
+| `SATREPAIR9_MLP_M50_PROXY05` | 10 | 0.0599 | 0.1111 | 22.48 | 23.50 | 0/10 | 0.1345 |
+| `SATREPAIR9_LIN_MIN05` | 10 | 0.0682 | 0.1056 | 22.58 | 24.08 | 0/10 | 0.1402 |
+| `SATREPAIR9_LIN_PROXY05` | 10 | 0.0682 | 0.1056 | 22.58 | 24.08 | 0/10 | 0.1402 |
+| `SATREPAIR9_MLP_M20_PROXY05` | 10 | 0.0848 | 0.1500 | 23.02 | 24.67 | 0/10 | 0.1418 |
+| `SATREPAIR9_MLP64_MIN05` | 10 | 0.2458 | 0.2710 | 17.23 | 19.08 | 0/10 | 0.3370 |
+| `SATREPAIR9_MLP64_PROXY05` | 10 | 0.2458 | 0.2710 | 17.23 | 19.08 | 0/10 | 0.3370 |
+| `SATREPAIR9_MLP_M50_COR_SRC9999` | 10 | 0.4725 | 0.5389 | 8.97 | 9.50 | 0/10 | 0.5765 |
+| `SATREPAIR9_MLP64_SRC9999` | 10 | 0.5328 | 0.5825 | 9.50 | 11.00 | 0/10 | 0.6263 |
+| `SATREPAIR9_MLP_M20_SRC9999` | 10 | 0.7647 | 0.8300 | 3.53 | 3.83 | 0/10 | 0.8495 |
+| `SATREPAIR9_MLP_M50_SRC9999` | 10 | 0.9006 | 0.9400 | 1.20 | 1.50 | 0/10 | 0.9432 |
+| `SATREPAIR9_LIN_SRC999` | 10 | 0.9713 | 0.9828 | 0.33 | 0.58 | 0/10 | 0.9762 |
+| `SATREPAIR9_LIN_SRC9999` | 10 | 0.9802 | 0.9900 | 0.18 | 0.42 | 0/10 | 0.9838 |
+
+Best low-FAR rows:
+
+| Run | Policy | unknown_FAR | Old drop pp | Closed old acc | Full old acc after reject | Known coverage | Dual pass |
+|---|---|---:|---:|---:|---:|---:|---|
+| `phase1_adv3b02_satrepair9_rx8_8_u10_20260702` | `SATREPAIR9_MLP_M50_PROXY02` | 0.0108 | 26.08 | 0.3425 | 0.0817 | 0.0992 | false |
+| `phase1_adv3b02_satrepair9_rx7_7_u1_20260702` | `SATREPAIR9_MLP_M50_PROXY02` | 0.0150 | 24.83 | 0.3058 | 0.0575 | 0.0792 | false |
+| `phase1_adv3b02_satrepair9_rx7_14_u1_20260702` | `SATREPAIR9_MLP_M50_PROXY02` | 0.0150 | 25.83 | 0.3483 | 0.0900 | 0.1217 | false |
+| `phase1_adv3b02_satrepair9_rx8_8_u1_20260702` | `SATREPAIR9_MLP_M50_PROXY02` | 0.0200 | 26.08 | 0.3425 | 0.0817 | 0.0992 | false |
+| `phase1_adv3b02_satrepair9_rx7_7_u1_20260702` | `SATREPAIR9_MLP_M50_PROXY05` | 0.0250 | 23.17 | 0.3058 | 0.0742 | 0.1267 | false |
+
+Best old-retention rows:
+
+| Run | Policy | unknown_FAR | Old drop pp | Closed old acc | Full old acc after reject | Known coverage | Dual pass |
+|---|---|---:|---:|---:|---:|---:|---|
+| `phase1_adv3b02_satrepair9_rx20_1_u1_20260702` | `SATREPAIR9_LIN_SRC9999` | 0.9664 | 0.08 | 0.2942 | 0.2933 | 0.9775 | false |
+| `phase1_adv3b02_satrepair9_rx7_7_u1_20260702` | `SATREPAIR9_LIN_SRC9999` | 0.9825 | 0.08 | 0.3058 | 0.3050 | 0.9867 | false |
+| `phase1_adv3b02_satrepair9_rx20_1_u10_20260702` | `SATREPAIR9_LIN_SRC9999` | 0.9844 | 0.08 | 0.2942 | 0.2933 | 0.9775 | false |
+| `phase1_adv3b02_satrepair9_rx7_7_u10_20260702` | `SATREPAIR9_LIN_SRC9999` | 0.9871 | 0.08 | 0.3058 | 0.3050 | 0.9867 | false |
+| `phase1_adv3b02_satrepair9_rx7_14_u10_20260702` | `SATREPAIR9_LIN_SRC9999` | 0.9722 | 0.17 | 0.3483 | 0.3467 | 0.9908 | false |
+
+Interpretation: the reverse-thinking repair route successfully shifts the FAR side of the tradeoff. `SATREPAIR9_MLP_M50_PROXY02` has mean FAR 3.07%, clearly below the 5% target on average, and 21 rows pass FAR-only. However, the same repair views reduce old-class retention sharply; low-FAR rows keep only about 5%-12% known coverage and lose about 22-26pp old accuracy. Old-retention rows still have FAR near 96%-99%. This means the current repair transforms are too destructive for the Phase1 identity representation: they repair channel nuisance enough to make unknowns easier to reject, but they also erase old-class identity evidence. The next repair experiment should therefore be a light-repair or per-view selection ablation, not a stronger repair stack.
+
+View-level closed-class audit:
+
+| Artifact | Local path | SHA256 |
+|---|---|---|
+| Repair view closed audit | `E:\type10-7\automation_reports\CV-SincNet\phase1_adv3b02_satonly_open_set_reject_20260702\artifacts\satrepair9_view_closed_audit.csv` | `54F653F32FD39D98A77B83F1ECC9FE90B954B5DDE7BF8E12CBF4E8886CFE0C5B` |
+
+Mean target-old closed accuracy by repair view:
+
+| Repair view | Mean target-old closed acc | Min | Max |
+|---|---:|---:|---:|
+| `repair_cfo_m1e4` | 0.3205 | 0.2475 | 0.3617 |
+| `repair_canonical` | 0.3198 | 0.2408 | 0.3617 |
+| `repair_iq_standard` | 0.3180 | 0.2450 | 0.3575 |
+| `repair_spectral` | 0.3170 | 0.2383 | 0.3675 |
+| `repair_cfo_p1e4` | 0.3148 | 0.2333 | 0.3567 |
+| `repair_short_fir` | 0.2803 | 0.2325 | 0.3208 |
+| `repair_amp_spectral` | 0.2652 | 0.2142 | 0.3167 |
+| `repair_amp_flat` | 0.2620 | 0.2075 | 0.3100 |
+| `repair_fir_amp` | 0.2288 | 0.1933 | 0.2600 |
+
+Interpretation of view audit: the destructive part is visible before any rejection threshold is applied. Even the best repair views only preserve about 32% target-old closed accuracy, and amplitude-envelope repair is worse. Therefore the current LEO repair operator is not a viable drop-in fix for the frozen Phase1 model. The next aligned route is not stronger repair, but a much lighter compensator that keeps the original Phase1 identity manifold: residual-CFO correction and mild spectral denoise only, with no amplitude flattening and no FIR-amplitude stack.
