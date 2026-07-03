@@ -468,6 +468,89 @@ class Phase2CollaborativeOpenSetQknnEvalTest(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "prototype_score_blend"):
             qknn_scores(memory, features, top_k=1, prototype_score_blend=-1.0)
 
+    def test_mahalanobis_score_blend_can_correct_local_neighbor_collision(self):
+        from phase2_collaborative_open_set_qknn_eval import build_qknn_memory, qknn_scores
+
+        features = np.asarray(
+            [
+                [0.8, 0.6, 0.0],
+                [0.8, -0.6, 0.0],
+                [0.96, 0.28, 0.0],
+                [0.96, 0.28, 0.0],
+            ],
+            dtype=np.float32,
+        )
+        memory = build_qknn_memory(
+            features,
+            ["old-a", "old-a", "new-a", "new-a"],
+            old_labels={"old-a"},
+        )
+
+        pred_neighbor_only, _, _, _, _, _, _, _ = qknn_scores(
+            memory,
+            np.asarray([[1.0, 0.0, 0.0]], dtype=np.float32),
+            top_k=1,
+        )
+        pred_blended, score, margin, _, support_neighbor_counts, support_densities, second_labels, _ = qknn_scores(
+            memory,
+            np.asarray([[1.0, 0.0, 0.0]], dtype=np.float32),
+            top_k=1,
+            mahalanobis_score_blend=2.0,
+        )
+
+        self.assertEqual(str(pred_neighbor_only[0]), "new-a")
+        self.assertEqual(str(pred_blended[0]), "old-a")
+        self.assertGreater(float(score[0]), 0.0)
+        self.assertGreater(float(margin[0]), 0.0)
+        self.assertEqual(int(support_neighbor_counts[0]), 0)
+        self.assertEqual(float(support_densities[0]), 0.0)
+        self.assertEqual(str(second_labels[0]), "new-a")
+
+    def test_mahalanobis_score_blend_uses_same_calibration_score_scale(self):
+        from phase2_collaborative_open_set_qknn_eval import build_qknn_memory, _threshold_from_calibration
+
+        features = np.asarray(
+            [
+                [0.8, 0.6, 0.0],
+                [0.8, -0.6, 0.0],
+                [0.96, 0.28, 0.0],
+                [0.96, 0.28, 0.0],
+            ],
+            dtype=np.float32,
+        )
+        memory = build_qknn_memory(features, ["old-a", "old-a", "new-a", "new-a"], old_labels={"old-a"})
+
+        threshold_default, _ = _threshold_from_calibration(
+            memory,
+            features,
+            None,
+            top_k=1,
+            support_quantile=0.5,
+            proxy_quantile=0.95,
+            support_calibration_mode="leave_one_out",
+        )
+        threshold_blended, _ = _threshold_from_calibration(
+            memory,
+            features,
+            None,
+            top_k=1,
+            support_quantile=0.5,
+            proxy_quantile=0.95,
+            support_calibration_mode="leave_one_out",
+            mahalanobis_score_blend=2.0,
+        )
+
+        self.assertNotAlmostEqual(threshold_default, threshold_blended, places=8)
+
+    def test_negative_mahalanobis_score_blend_is_rejected(self):
+        from phase2_collaborative_open_set_qknn_eval import build_qknn_memory, qknn_scores
+
+        features = np.asarray([[1.0, 0.0], [0.0, 1.0]], dtype=np.float32)
+        memory = build_qknn_memory(features, ["old-a", "new-a"], old_labels={"old-a"})
+
+        with self.assertRaisesRegex(ValueError, "mahalanobis_score_blend"):
+            qknn_scores(memory, features, top_k=1, mahalanobis_score_blend=-1.0)
+
     def test_support_density_reliability_is_recorded_in_evidence(self):
         from phase2_collaborative_open_set_qknn_eval import load_feature_npz, build_collaborative_evidence
 
@@ -516,6 +599,28 @@ class Phase2CollaborativeOpenSetQknnEvalTest(unittest.TestCase):
         self.assertIn("prototype_assisted", evidence[0])
         self.assertIn("prototype_only_top1", evidence[0])
 
+    def test_mahalanobis_score_assisted_qknn_is_marked_in_metadata_and_evidence(self):
+        from phase2_collaborative_open_set_qknn_eval import load_feature_npz, build_collaborative_evidence
+
+        with tempfile.TemporaryDirectory() as td:
+            npz = Path(td) / "features.npz"
+            _write_npz(npz)
+            evidence, metadata = build_collaborative_evidence(
+                load_feature_npz(npz),
+                k_shot=1,
+                query_per_class=2,
+                qknn_k=1,
+                mahalanobis_score_blend=0.5,
+                mahalanobis_score_temperature=0.2,
+            )
+
+        self.assertTrue(metadata["mahalanobis_score_assisted_qknn"])
+        self.assertAlmostEqual(metadata["mahalanobis_score_blend"], 0.5)
+        self.assertAlmostEqual(metadata["mahalanobis_score_temperature"], 0.2)
+        self.assertIn("mahalanobis_score_blend", evidence[0])
+        self.assertIn("mahalanobis_score_temperature", evidence[0])
+        self.assertIn("mahalanobis_score_assisted", evidence[0])
+
     def test_candidate_audit_gap_can_raise_unknown_risk(self):
         from phase2_collaborative_open_set_qknn_eval import load_feature_npz, build_collaborative_evidence
 
@@ -554,6 +659,7 @@ class Phase2CollaborativeOpenSetQknnEvalTest(unittest.TestCase):
                 old_bias=0.1,
                 candidate_class_top_m=2,
                 prototype_score_blend=0.2,
+                mahalanobis_score_blend=0.3,
                 support_calibration_mode="leave_one_out",
                 score_threshold_combine="qknn_only",
             )
@@ -563,6 +669,7 @@ class Phase2CollaborativeOpenSetQknnEvalTest(unittest.TestCase):
         self.assertAlmostEqual(metadata["old_bias"], 0.1)
         self.assertEqual(metadata["candidate_class_top_m"], 2)
         self.assertAlmostEqual(metadata["prototype_score_blend"], 0.2)
+        self.assertAlmostEqual(metadata["mahalanobis_score_blend"], 0.3)
         self.assertEqual(metadata["support_calibration_mode"], "leave_one_out")
         self.assertEqual(metadata["score_threshold_combine"], "qknn_only")
 

@@ -148,6 +148,23 @@ def _centroid_scores(memory: QknnMemory, query_features: np.ndarray) -> np.ndarr
     return _normalize_rows(query_features) @ memory.centroids.T
 
 
+def _mahalanobis_known_scores(memory: QknnMemory, query_features: np.ndarray, *, temperature: float) -> np.ndarray:
+    query = _normalize_rows(query_features)
+    temp = max(float(temperature), 1e-6)
+    out = np.zeros((query.shape[0], memory.centroid_labels.shape[0]), dtype=np.float64)
+    for pos, label_value in enumerate(memory.centroid_labels.tolist()):
+        label = str(label_value)
+        inv_var = memory.class_mahalanobis_inv_vars.get(label)
+        if inv_var is None:
+            continue
+        centroid = memory.centroids[pos]
+        distances = np.sqrt(np.mean(((query - centroid[None, :]) ** 2) * inv_var[None, :], axis=1))
+        threshold = float(memory.class_mahalanobis_thresholds.get(label, 1.0))
+        z = np.clip((distances - threshold) / temp, -60.0, 60.0)
+        out[:, pos] = 1.0 / (1.0 + np.exp(z))
+    return np.clip(out, 0.0, 1.0)
+
+
 def _support_envelope(
     features: np.ndarray,
     labels: np.ndarray,
@@ -380,13 +397,21 @@ def qknn_scores(
     candidate_class_top_m: int = 0,
     exclude_support_indices: Sequence[int] | None = None,
     prototype_score_blend: float = 0.0,
+    mahalanobis_score_blend: float = 0.0,
+    mahalanobis_score_temperature: float = 0.20,
 ) -> tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray, np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
     proto_blend = float(prototype_score_blend)
     if proto_blend < 0.0:
         raise ValueError("prototype_score_blend must be >= 0")
+    maha_blend = float(mahalanobis_score_blend)
+    if maha_blend < 0.0:
+        raise ValueError("mahalanobis_score_blend must be >= 0")
+    maha_temp = max(float(mahalanobis_score_temperature), 1e-6)
     query = _normalize_rows(query_features)
     support = _normalize_rows(memory.qfeatures.astype(np.float32) / float(memory.scale))
     centroid_scores = _centroid_scores(memory, query)
+    mahalanobis_scores = _mahalanobis_known_scores(memory, query, temperature=maha_temp) if maha_blend > 0.0 else None
+    class_to_pos = {str(label): int(pos) for pos, label in enumerate(memory.centroid_labels.tolist())}
     class_top_m = int(candidate_class_top_m)
     if class_top_m < 0:
         raise ValueError("candidate_class_top_m must be >= 0")
@@ -448,18 +473,24 @@ def qknn_scores(
             per_label_count[str(memory.labels[j])] += 1
         if proto_blend > 0.0:
             candidate_labels = sorted({str(label) for label in memory.labels[support_mask].tolist()})
-            class_to_pos = {str(label): int(pos) for pos, label in enumerate(memory.centroid_labels.tolist())}
             for label in candidate_labels:
                 pos = class_to_pos.get(label)
                 if pos is not None:
                     per_label[label] += proto_blend * max(0.0, float(centroid_scores[row_i, pos]))
+                    per_label_count.setdefault(label, 0)
+        if maha_blend > 0.0 and mahalanobis_scores is not None:
+            candidate_labels = sorted({str(label) for label in memory.labels[support_mask].tolist()})
+            for label in candidate_labels:
+                pos = class_to_pos.get(label)
+                if pos is not None:
+                    per_label[label] += maha_blend * max(0.0, float(mahalanobis_scores[row_i, pos]))
                     per_label_count.setdefault(label, 0)
         ranked = sorted(per_label.items(), key=lambda item: (item[1], item[0]), reverse=True)
         best_label, best_score = ranked[0]
         second_label = ranked[1][0] if len(ranked) > 1 else ""
         second = ranked[1][1] if len(ranked) > 1 else 0.0
         best_count = int(per_label_count.get(best_label, 0))
-        score_denom = max(float(row_k) + proto_blend, 1.0)
+        score_denom = max(float(row_k) + proto_blend + maha_blend, 1.0)
         out_labels.append(best_label)
         out_scores.append(float(best_score / score_denom))
         out_margins.append(float((best_score - second) / score_denom))
@@ -613,6 +644,8 @@ def _threshold_from_calibration(
     candidate_class_top_m: int = 0,
     support_calibration_mode: str = "self",
     prototype_score_blend: float = 0.0,
+    mahalanobis_score_blend: float = 0.0,
+    mahalanobis_score_temperature: float = 0.20,
 ) -> tuple[float, str]:
     calibration_mode = str(support_calibration_mode or "self").strip().lower()
     if calibration_mode not in {"self", "leave_one_out", "loo"}:
@@ -629,6 +662,8 @@ def _threshold_from_calibration(
         candidate_class_top_m=candidate_class_top_m,
         exclude_support_indices=exclude,
         prototype_score_blend=prototype_score_blend,
+        mahalanobis_score_blend=mahalanobis_score_blend,
+        mahalanobis_score_temperature=mahalanobis_score_temperature,
     )
     threshold = float(np.quantile(support_scores, float(support_quantile))) if support_scores.size else 0.0
     scope = "support_known_only"
@@ -643,6 +678,8 @@ def _threshold_from_calibration(
             old_bias=old_bias,
             candidate_class_top_m=candidate_class_top_m,
             prototype_score_blend=prototype_score_blend,
+            mahalanobis_score_blend=mahalanobis_score_blend,
+            mahalanobis_score_temperature=mahalanobis_score_temperature,
         )
         if proxy_scores.size:
             threshold = max(threshold, float(np.quantile(proxy_scores, float(proxy_quantile))))
@@ -865,6 +902,8 @@ def build_collaborative_evidence(
     evidence_packet_bytes: float = 40.0,
     receiver_reliability_policy: str = "deployment_prior",
     prototype_score_blend: float = 0.0,
+    mahalanobis_score_blend: float = 0.0,
+    mahalanobis_score_temperature: float = 0.20,
     candidate_audit_unknown_risk_enabled: bool = False,
     candidate_audit_disagreement_risk: float = 1.0,
     candidate_audit_min_gap: float = 0.0,
@@ -911,6 +950,10 @@ def build_collaborative_evidence(
     prototype_blend = float(prototype_score_blend)
     if prototype_blend < 0.0:
         raise ValueError("prototype_score_blend must be >= 0")
+    mahalanobis_blend = float(mahalanobis_score_blend)
+    if mahalanobis_blend < 0.0:
+        raise ValueError("mahalanobis_score_blend must be >= 0")
+    mahalanobis_score_temp = max(float(mahalanobis_score_temperature), 1e-6)
     t0 = time.perf_counter()
 
     for rx in target_receivers:
@@ -1023,6 +1066,8 @@ def build_collaborative_evidence(
             candidate_class_top_m=int(candidate_class_top_m),
             support_calibration_mode=str(support_calibration_mode),
             prototype_score_blend=prototype_blend,
+            mahalanobis_score_blend=mahalanobis_blend,
+            mahalanobis_score_temperature=mahalanobis_score_temp,
         )
         threshold_scope = scope if scope == "source_only" else threshold_scope
         receiver_memories[rx] = memory
@@ -1112,6 +1157,8 @@ def build_collaborative_evidence(
                         old_bias=float(old_bias),
                         candidate_class_top_m=int(candidate_class_top_m),
                         prototype_score_blend=prototype_blend,
+                        mahalanobis_score_blend=mahalanobis_blend,
+                        mahalanobis_score_temperature=mahalanobis_score_temp,
                     )
                     if int(candidate_class_top_m) > 0:
                         (
@@ -1133,6 +1180,8 @@ def build_collaborative_evidence(
                             old_bias=float(old_bias),
                             candidate_class_top_m=0,
                             prototype_score_blend=prototype_blend,
+                            mahalanobis_score_blend=mahalanobis_blend,
+                            mahalanobis_score_temperature=mahalanobis_score_temp,
                         )
                     else:
                         audit_pred = pred
@@ -1213,6 +1262,9 @@ def build_collaborative_evidence(
                             "prototype_score_blend": prototype_blend,
                             "prototype_assisted": int(prototype_blend > 0.0),
                             "prototype_only_top1": int(prototype_blend > 0.0 and int(support_neighbor_counts[0]) == 0),
+                            "mahalanobis_score_blend": mahalanobis_blend,
+                            "mahalanobis_score_temperature": mahalanobis_score_temp,
+                            "mahalanobis_score_assisted": int(mahalanobis_blend > 0.0),
                             "unknown_risk": float(unknown_risk_value),
                             "score_risk": float(score_risk_value),
                             "radius_risk": float(radius_risk[0]),
@@ -1262,6 +1314,9 @@ def build_collaborative_evidence(
         "receiver_reliability_policy": reliability_policy,
         "prototype_score_blend": prototype_blend,
         "prototype_assisted_qknn": prototype_blend > 0.0,
+        "mahalanobis_score_blend": mahalanobis_blend,
+        "mahalanobis_score_temperature": mahalanobis_score_temp,
+        "mahalanobis_score_assisted_qknn": mahalanobis_blend > 0.0,
         "candidate_audit_unknown_risk_enabled": bool(candidate_audit_unknown_risk_enabled),
         "candidate_audit_disagreement_risk": float(candidate_audit_disagreement_risk),
         "candidate_audit_min_gap": float(candidate_audit_min_gap),
@@ -1336,6 +1391,8 @@ def run_evaluation(args: argparse.Namespace) -> dict[str, Any]:
         evidence_packet_bytes=float(args.evidence_packet_bytes),
         receiver_reliability_policy=str(args.receiver_reliability_policy),
         prototype_score_blend=float(args.prototype_score_blend),
+        mahalanobis_score_blend=float(args.mahalanobis_score_blend),
+        mahalanobis_score_temperature=float(args.mahalanobis_score_temperature),
         candidate_audit_unknown_risk_enabled=bool(args.candidate_audit_unknown_risk_enabled),
         candidate_audit_disagreement_risk=float(args.candidate_audit_disagreement_risk),
         candidate_audit_min_gap=float(args.candidate_audit_min_gap),
@@ -1435,6 +1492,8 @@ def parse_args() -> argparse.Namespace:
     p.add_argument("--old_bias", type=float, default=0.0)
     p.add_argument("--candidate_class_top_m", type=int, default=0)
     p.add_argument("--prototype_score_blend", type=float, default=0.0)
+    p.add_argument("--mahalanobis_score_blend", type=float, default=0.0)
+    p.add_argument("--mahalanobis_score_temperature", type=float, default=0.20)
     p.add_argument("--candidate_audit_unknown_risk_enabled", action="store_true")
     p.add_argument("--candidate_audit_disagreement_risk", type=float, default=1.0)
     p.add_argument("--candidate_audit_min_gap", type=float, default=0.0)

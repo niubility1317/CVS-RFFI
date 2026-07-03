@@ -1619,3 +1619,37 @@ python code\tests\test_collaborative_open_set_qknn_eval.py
 |`prototype_blend_2p0_calibrated`|5|0.3846|0.0000|0.3000|0.0000|0.0000|0.7000|0.4130|4.1739|500.9|
 
 最终判断：当前最强同row候选仍是`prototype_blend_2p0_calibrated`预算4，用约`3.3182`个接收机、约`398.2 bytes/event`达到`seen_new_acc=0.5429`、`min_seen_new=0.3500`、`unknown_FAR=0.0000`，但`old_acc=0.3218`、`min_old=0.0000`，距离目标`old 99%/floor 95%`和`seen-new 97%/floor 93%`仍很远。此结果应记为有效诊断负证据和下一步算法依据，不是部署成功。
+
+## 2026-07-03Mahalanobis类得分融合
+
+目标：在`prototype_score_blend`只能带来有限提升后，继续推进文献建议的Gaussian/Mahalanobis prototype路线。此前Mahalanobis只作为unknown风险项参与拒识，不能改变qKNN候选排序；本轮新增`mahalanobis_score_blend`，将每类Mahalanobis envelope产生的known probability加入qKNN按类得分，使类条件分布信息直接参与旧类/新类候选排序与多接收机融合。
+
+资源约束说明：本轮在当前工作区没有定位到用户点名的`卫星协同射频指纹识别（RFFI）系统资源约束设计说明.md`文件；递归搜索命中了若干CVS/RFFI文档但未发现该精确文件。远端诊断将继续沿用现有协同推理资源面：`--collab_counts all`报告1到全体接收机、`--latency_budget_ms 12`、`--evidence_packet_bytes 120`，并在后续需要时继续使用`--max_event_bytes/--max_event_latency_ms`硬预算约束。
+
+本地改动：
+
+|文件|目的|
+|---|---|
+|`code/scripts/phase2_collaborative_open_set_qknn_eval.py`|新增`_mahalanobis_known_scores()`；`qknn_scores()`新增`mahalanobis_score_blend`和`mahalanobis_score_temperature`；support/proxy阈值校准、query证据生成、全类audit、metadata和CLI均使用同一得分口径。默认`0.0`不改变既有路径。|
+|`code/tests/test_phase2_collaborative_open_set_qknn_eval.py`|新增局部近邻碰撞校正、校准口径一致、负数拒绝、metadata/evidence标记测试。|
+
+本地与Git镜像验证：
+
+```powershell
+conda activate ssr-gpu
+python -m py_compile code\scripts\phase2_collaborative_open_set_qknn_eval.py code\evaluation\collaborative_open_set_qknn_eval.py
+python code\tests\test_phase2_collaborative_open_set_qknn_eval.py
+python code\tests\test_collaborative_open_set_qknn_eval.py
+```
+
+结果：`test_phase2_collaborative_open_set_qknn_eval.py`为27 tests OK，`test_collaborative_open_set_qknn_eval.py`为27 tests OK。局部合成测试显示：纯qKNN在邻居碰撞下把query判为`new-a`，`mahalanobis_score_blend=2.0`可拉回`old-a`；校准阈值随同一blend口径变化。
+
+计划远端验证：同步脚本和测试文件到N607，在`CVS-RFFI`环境复测后跑`--collab_counts all`，覆盖协同推理数量1到5。候选设置：
+
+|候选|新增参数|目的|
+|---|---|---|
+|`maha_score_0p5_calibrated`|`--mahalanobis_score_blend 0.5`|弱Mahalanobis类得分，检查是否改善旧类而不伤unknown FAR。|
+|`maha_score_1p0_calibrated`|`--mahalanobis_score_blend 1.0`|中等Mahalanobis类得分，检查旧类/seen-new排序改善。|
+|`proto2_maha1_calibrated`|`--prototype_score_blend 2.0 --mahalanobis_score_blend 1.0`|结合上一轮最强prototype权重与Mahalanobis分布得分，评估互补性。|
+
+风险：Mahalanobis类得分可能产生`support_neighbor_count=0`的distribution-assisted top1，报告中必须标为`mahalanobis_score_assisted_qknn`，不能写成纯qKNN8证据；若unknown FAR升高或min_old仍为0，只能作为诊断负证据。
