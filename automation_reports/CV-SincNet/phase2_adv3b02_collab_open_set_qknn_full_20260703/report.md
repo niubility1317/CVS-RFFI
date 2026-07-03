@@ -3994,6 +3994,43 @@ N607 preflight通过，直接SSH目标可达，项目根为`/home/szu2070436088/
 
 子agent审查要求已吸收：`collab_counts=all`报告中明确为观测`receiver_count=5`，不是默认假设；`support_calibrated`模式已fail closed，缺`receiver_class_reliability`或未启用`receiver_class_reliability_policy=support_calibrated`会报错；soft strong bypass被作为ablation风险记录，不作为成功证据。最终SSH/SCP后本地无`ssh.exe`残留，无N607和bridge 22端口ESTABLISHED连接。
 
+## 2026-07-04 ADV3B02 event_risk_only_support_calibrated计划
+
+### 设计依据
+
+上一轮`support_calibrated_soft_evt095`的逐事件复查显示，pairguard命中主要由`pvalue`和`margin`弱项触发，`receiver_class_reliability`基本不触发；而seen-new被命中的事件级`unknown_risk`均值明显低于unknown命中事件。说明上一轮“event/label/shell任一风险触发”过宽，会把label局部风险高但事件整体不危险的known样本也推入软惩罚。为避免继续用unknown query选label/receiver，本轮只改触发机制：保持support-calibrated弱证据判断，但边界触发只允许事件级`unknown_risk`极高时生效，即`candidate_set_pairguard_min_label_unknown_risk=1.0`、`candidate_set_pairguard_min_shell_risk=1.0`，并提高`candidate_set_pairguard_min_event_unknown_risk`。
+
+|route|关键参数|目的|
+|---|---|---|
+|`support_calibrated_event098`|`min_event_unknown_risk=0.98,min_label_unknown_risk=1.0,min_shell_risk=1.0,soft_penalty=0.20,soft_floor=0.03`|减少old/seen-new误命中，观察unknown_FAR是否仍受控。|
+|`support_calibrated_event099`|`min_event_unknown_risk=0.99,min_label_unknown_risk=1.0,min_shell_risk=1.0,soft_penalty=0.20,soft_floor=0.03`|更保守版本，用作known保留上界诊断。|
+
+这仍是diagnostic-only参数变体，不改变协议、不使用unknown query拟合阈值、不声明达标。成功判据仍是同一行old/seen-new/unknown联合指标，而不是单独降低FAR。
+
+### N607结果
+
+首次批量命令因本地PowerShell提前展开远端shell变量而失败，远端脚本只打印argparse帮助并报`--candidate_set_pairguard_min_event_unknown_risk: expected one argument`，未启动实验、未产生有效结果；失败后本地无`ssh.exe`残留。随后改为两个显式SSH命令分别运行`event098`和`event099`，并追加一次`event099_dualrescue`安全救援诊断。三组均使用`/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python`、GPU0、`features.npz`同一ADV3B02/qknn8星地特征包，运行后8张RTX3090仍为`10/24576MiB`、utilization`0%`。
+
+|route|JSON SHA256|CSV SHA256|receiver_count|group_count|
+|---|---|---|---:|---:|
+|`support_calibrated_event098`|`FC5EF85ADAD90E1B52FC5D1B298E4D9314EBA2D8BF8C65243EC98CD3F49D678D`|`1DC6DFEBD63F49F5F3B4625724A6270473DB71B77B8CAE19CD5F5E1182F12B7B`|5|302|
+|`support_calibrated_event099`|`250C7A5C95B628B36059D7719B65E135D9BADD3AD2C056CE7B94535F11AF0C4E`|`F3BF7E96806555A52F260F019DEFEB30DF590D2AB7FDD62D635AB163AF0CA46B`|5|302|
+|`support_calibrated_event099_dualrescue`|`6FA3CFC57568C6A7E24876B8C2F950F45CB54A6C6893A258F0DA305F85791590`|`399A2BE15EA0462C07E8DFABD918BA1AB042E170C8AE44829C01E00D8501C229`|5|311|
+
+|route|k|actual_rx_hist|old_acc|min_old|seen_new_acc|min_seen|unknown_FAR|unknown_reject|known_cov|soft_rate|dual_rescue|bytes/event|p95 ms|判定|
+|---|---:|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---|
+|`event098`|3|`{"3":200}`|0.5250|0.2000|0.6500|0.5000|0.1000|0.9000|0.6250|0.3550|0.0000|120.0|0.1350|known不足且FAR高|
+|`event098`|4|`{"3":52,"4":148}`|0.6750|0.3500|0.8500|0.8000|0.0500|0.9500|0.8000|0.2400|0.0000|149.6|0.1350|seen-new改善，old不足|
+|`event098`|5|`{"3":52,"4":50,"5":98}`|0.6917|0.3000|0.8000|0.7000|0.0000|1.0000|0.7875|0.2800|0.0000|169.2|0.1350|拒识达标但old/new未达标|
+|`event099`|3|`{"3":200}`|0.5250|0.2000|0.6500|0.5000|0.1000|0.9000|0.6250|0.3250|0.0000|120.0|0.1338|known不足且FAR高|
+|`event099`|4|`{"3":52,"4":148}`|0.6750|0.3500|0.8500|0.8000|0.0500|0.9500|0.8000|0.2400|0.0000|149.6|0.1338|seen-new改善，old不足|
+|`event099`|5|`{"3":52,"4":50,"5":98}`|0.6917|0.3000|0.8000|0.7000|0.0000|1.0000|0.7875|0.2700|0.0000|169.2|0.1338|拒识达标但old/new未达标|
+|`event099_dualrescue`|3|`{"3":200}`|0.6500|0.3500|0.7750|0.6500|0.2750|0.6750|0.7500|0.2400|0.2050|120.0|0.1839|救回known但unknown崩溃|
+|`event099_dualrescue`|4|`{"3":50,"4":150}`|0.7583|0.5000|0.8000|0.7000|0.1250|0.8000|0.8188|0.1150|0.1900|150.0|0.1839|old略回升但FAR不可用|
+|`event099_dualrescue`|5|`{"3":50,"4":61,"5":89}`|0.7417|0.4000|0.8000|0.7000|0.1500|0.8000|0.8250|0.1150|0.1650|167.8|0.1839|救援误接收unknown|
+
+判定：`event-risk-only`边界能显著减少seen-new误伤，k=4 seen-new达到`0.85`、k=5 unknown拒识达到`1.00`，但old仍只有`0.6917`，远低99%和每类95%。`dual_route_cvs`能提升old到`0.7583`附近，但unknown_FAR恶化到`0.125-0.150`，说明当前救援通道会把unknown false accept一起救回，不能作为正式路线。下一步不应继续只调pairguard阈值；需要把known救援条件改成“源于support/proxy-known的类级正证据+事件级unknown安全证据同时满足”，或者在证据生成阶段引入class-conditional negative prototype/virtual unknown边界，而不是在融合后救回。
+
 ## 2026-07-04 ORBIT按类诊断增强
 
 ### 目的
