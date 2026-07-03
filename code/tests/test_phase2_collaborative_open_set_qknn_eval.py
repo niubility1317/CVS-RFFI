@@ -387,8 +387,34 @@ class Phase2CollaborativeOpenSetQknnEvalTest(unittest.TestCase):
         self.assertIn("second_label", evidence[0])
         self.assertIn("second_score", evidence[0])
         self.assertIn("label_score_gap", evidence[0])
+        self.assertIn("audit_full_top1_label", evidence[0])
+        self.assertIn("audit_full_second_label", evidence[0])
+        self.assertIn("audit_full_label_score_gap", evidence[0])
+        self.assertIn("candidate_audit_disagreement", evidence[0])
+        self.assertIn("candidate_audit_risk", evidence[0])
         self.assertIn("class_radius_z", evidence[0])
         self.assertEqual(float(evidence[0]["reliability"]), float(evidence[0]["support_density"]))
+
+    def test_candidate_audit_gap_can_raise_unknown_risk(self):
+        from phase2_collaborative_open_set_qknn_eval import load_feature_npz, build_collaborative_evidence
+
+        with tempfile.TemporaryDirectory() as td:
+            npz = Path(td) / "features.npz"
+            _write_npz(npz)
+            evidence, metadata = build_collaborative_evidence(
+                load_feature_npz(npz),
+                k_shot=1,
+                query_per_class=2,
+                qknn_k=1,
+                candidate_class_top_m=1,
+                candidate_audit_unknown_risk_enabled=True,
+                candidate_audit_min_gap=2.0,
+                candidate_audit_gap_risk=0.99,
+            )
+
+        self.assertTrue(metadata["candidate_audit_unknown_risk_enabled"])
+        self.assertGreaterEqual(float(evidence[0]["candidate_audit_risk"]), 0.99)
+        self.assertGreaterEqual(float(evidence[0]["unknown_risk"]), 0.99)
 
     def test_scenario_aware_and_radius_norm_are_recorded_in_metadata(self):
         from phase2_collaborative_open_set_qknn_eval import load_feature_npz, build_collaborative_evidence

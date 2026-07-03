@@ -848,6 +848,10 @@ def build_collaborative_evidence(
     score_threshold_combine: str = "max",
     evidence_packet_bytes: float = 40.0,
     receiver_reliability_policy: str = "deployment_prior",
+    candidate_audit_unknown_risk_enabled: bool = False,
+    candidate_audit_disagreement_risk: float = 1.0,
+    candidate_audit_min_gap: float = 0.0,
+    candidate_audit_gap_risk: float = 0.0,
 ) -> tuple[list[dict[str, Any]], dict[str, Any]]:
     validate_required_roles(payload)
     roles = np.asarray(payload["dataset_role"]).astype(str)
@@ -1087,6 +1091,33 @@ def build_collaborative_evidence(
                         old_bias=float(old_bias),
                         candidate_class_top_m=int(candidate_class_top_m),
                     )
+                    if int(candidate_class_top_m) > 0:
+                        (
+                            audit_pred,
+                            audit_score,
+                            _audit_margin,
+                            _audit_candidate_counts,
+                            _audit_support_neighbor_counts,
+                            _audit_support_densities,
+                            audit_second_labels,
+                            audit_second_scores,
+                        ) = qknn_scores(
+                            memory,
+                            features[[idx]],
+                            top_k=qknn_k,
+                            query_scenarios=[_scenario_of(payload, idx)],
+                            scenario_aware=bool(scenario_aware),
+                            radius_norm=float(radius_norm),
+                            old_bias=float(old_bias),
+                            candidate_class_top_m=0,
+                        )
+                    else:
+                        audit_pred = pred
+                        audit_score = score
+                        audit_second_labels = second_labels
+                        audit_second_scores = second_scores
+                    audit_gap = float(audit_score[0] - audit_second_scores[0])
+                    candidate_audit_disagreement = str(audit_pred[0]) != str(pred[0])
                     support_density = float(support_densities[0])
                     if reliability_policy == "support_density":
                         reliability = support_density
@@ -1123,6 +1154,16 @@ def build_collaborative_evidence(
                         evt_temperature=evt_temperature,
                         oldness_temperature=oldness_temperature,
                     )
+                    candidate_audit_risk = 0.0
+                    if bool(candidate_audit_unknown_risk_enabled):
+                        if candidate_audit_disagreement:
+                            candidate_audit_risk = max(
+                                candidate_audit_risk,
+                                float(candidate_audit_disagreement_risk),
+                            )
+                        if float(candidate_audit_min_gap) > 0.0 and audit_gap < float(candidate_audit_min_gap):
+                            candidate_audit_risk = max(candidate_audit_risk, float(candidate_audit_gap_risk))
+                    unknown_risk_value = max(float(risk[0]), float(candidate_audit_risk))
                     evidence.append(
                         {
                             "event_id": event_id,
@@ -1133,12 +1174,19 @@ def build_collaborative_evidence(
                             "second_label": str(second_labels[0]),
                             "second_score": float(second_scores[0]),
                             "label_score_gap": float(score[0] - second_scores[0]),
+                            "audit_full_top1_label": str(audit_pred[0]),
+                            "audit_full_top1_score": float(audit_score[0]),
+                            "audit_full_second_label": str(audit_second_labels[0]),
+                            "audit_full_second_score": float(audit_second_scores[0]),
+                            "audit_full_label_score_gap": audit_gap,
+                            "candidate_audit_disagreement": int(candidate_audit_disagreement),
+                            "candidate_audit_risk": float(candidate_audit_risk),
                             "known_score": float(score[0]),
                             "known_margin": float(margin[0]),
                             "candidate_class_count": int(candidate_counts[0]),
                             "support_neighbor_count": int(support_neighbor_counts[0]),
                             "support_density": support_density,
-                            "unknown_risk": float(risk[0]),
+                            "unknown_risk": float(unknown_risk_value),
                             "score_risk": float(score_risk[0]),
                             "radius_risk": float(radius_risk[0]),
                             "margin_risk": float(margin_risk[0]),
@@ -1185,6 +1233,10 @@ def build_collaborative_evidence(
         "support_calibration_mode": str(support_calibration_mode),
         "score_threshold_combine": str(score_threshold_combine),
         "receiver_reliability_policy": reliability_policy,
+        "candidate_audit_unknown_risk_enabled": bool(candidate_audit_unknown_risk_enabled),
+        "candidate_audit_disagreement_risk": float(candidate_audit_disagreement_risk),
+        "candidate_audit_min_gap": float(candidate_audit_min_gap),
+        "candidate_audit_gap_risk": float(candidate_audit_gap_risk),
         "support_selection_policy": str(support_selection_policy),
         "unknown_gate_mode": str(unknown_gate_mode),
         "active_risk_components": _active_risk_components_for_gate_mode(unknown_gate_mode),
@@ -1254,6 +1306,10 @@ def run_evaluation(args: argparse.Namespace) -> dict[str, Any]:
         score_threshold_combine=str(args.score_threshold_combine),
         evidence_packet_bytes=float(args.evidence_packet_bytes),
         receiver_reliability_policy=str(args.receiver_reliability_policy),
+        candidate_audit_unknown_risk_enabled=bool(args.candidate_audit_unknown_risk_enabled),
+        candidate_audit_disagreement_risk=float(args.candidate_audit_disagreement_risk),
+        candidate_audit_min_gap=float(args.candidate_audit_min_gap),
+        candidate_audit_gap_risk=float(args.candidate_audit_gap_risk),
     )
     result = evaluate_collaborative_open_set_evidence(
         evidence,
@@ -1348,6 +1404,10 @@ def parse_args() -> argparse.Namespace:
     p.add_argument("--radius_norm", type=float, default=0.0)
     p.add_argument("--old_bias", type=float, default=0.0)
     p.add_argument("--candidate_class_top_m", type=int, default=0)
+    p.add_argument("--candidate_audit_unknown_risk_enabled", action="store_true")
+    p.add_argument("--candidate_audit_disagreement_risk", type=float, default=1.0)
+    p.add_argument("--candidate_audit_min_gap", type=float, default=0.0)
+    p.add_argument("--candidate_audit_gap_risk", type=float, default=0.0)
     p.add_argument("--support_calibration_mode", default="self", choices=["self", "leave_one_out", "loo"])
     p.add_argument(
         "--score_threshold_combine",
