@@ -219,6 +219,102 @@ python code/scripts/phase2_collaborative_open_set_qknn_eval.py \
 
 监督子agent指出：上一轮原型/Mahalanobis/per-label阈值增强主要闭环在`ADV3B02_CORE90_SOFT_E200`特征上，不能替代用户指定的`SA33_sa27_ch2_leo3_ce0p7_r010_20260527_204104`权重结果。因此本节用同一SA33星地特征复跑当前增强版协同推理。
 
+## 2026-07-03AWARE-CQKNN-Lite topM融合复跑
+
+本轮实现并同步了topM类条件conformal证据融合。Git镜像提交为`4744681 Add topM conformal evidence fusion for collaborative qKNN`，镜像分支当前仍领先远端275个提交。根目录`E:\type10-7\code`不是Git仓库，本轮通过`github_publish\CVS-RFFI-repo`完成代码版本闭环。
+
+本地验证：
+
+```powershell
+$env:PYTHONPATH='E:\type10-7\code'
+conda run -n ssr-gpu python -m py_compile code\evaluation\collaborative_open_set_qknn_eval.py code\scripts\phase2_collaborative_open_set_qknn_eval.py code\tests\test_collaborative_open_set_qknn_eval.py
+conda run -n ssr-gpu python -m unittest discover -s code\tests -p "test_collaborative_open_set_qknn_eval.py"
+conda run -n ssr-gpu python -m unittest discover -s code\tests -p "test_phase2_collaborative_open_set_qknn_eval.py"
+```
+
+结果：32 tests OK和37 tests OK。
+
+远端同步文件：
+
+|本地文件|N607目标|
+|---|---|
+|`code/evaluation/collaborative_open_set_qknn_eval.py`|`/home/szu2070436088/2510044040/CV-SincNet/code/evaluation/collaborative_open_set_qknn_eval.py`|
+|`code/tests/test_collaborative_open_set_qknn_eval.py`|`/home/szu2070436088/2510044040/CV-SincNet/code/tests/test_collaborative_open_set_qknn_eval.py`|
+
+远端文件SHA256：
+
+|文件|SHA256|
+|---|---|
+|`collaborative_open_set_qknn_eval.py`|`c452ea793715fc0d24d80c3429684cd98a8c04706554f2addcaaedcc17073d16`|
+|`test_collaborative_open_set_qknn_eval.py`|`477cfd163559014423946c1d9bfe3b0acb26ff8b944cc15fa271e9f90d402a03`|
+
+远端验证使用`/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python`。注意：N607项目根目录存在另一个`evaluation/`包，直接从项目根运行`unittest discover`会遮蔽`code/evaluation`。因此远端单测在`/home/szu2070436088/2510044040/CV-SincNet/code`目录下执行，结果为32 tests OK和37 tests OK。
+
+远端全量诊断命令使用已有SA33星地信道特征`runs/phase2_sa33_collab_open_set_qknn_full_20260703/features.npz`，该特征来自用户指定权重`SA33_sa27_ch2_leo3_ce0p7_r010_20260527_204104`对应checkpoint。启动前后8张RTX3090均为`10/24576MiB`，本轮使用GPU0且未增加显存占用。每个候选输出`receiver_count=5`、`group_count=308`、`evidence_row_count=1000`，`collab_counts=all`覆盖1到5个target receivers。按`项目.md`，这些是部署target receiver domain，不是source receiver；若要让source receiver参与Stage2协同，需要先修订协议以避免source leakage。
+
+关键命令参数：
+
+```bash
+cd /home/szu2070436088/2510044040/CV-SincNet
+CUDA_VISIBLE_DEVICES=0 /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python code/scripts/phase2_collaborative_open_set_qknn_eval.py \
+  --feature_npz runs/phase2_sa33_collab_open_set_qknn_full_20260703/features.npz \
+  --collab_counts all \
+  --k_shot 8 \
+  --query_per_class 20 \
+  --qknn_k 8 \
+  --candidate_class_top_m 2 \
+  --prototype_score_blend 2.0 \
+  --mahalanobis_score_blend 1.0 \
+  --support_calibration_mode leave_one_out \
+  --unknown_gate_mode support_envelope_evt \
+  --score_threshold_combine qknn_only \
+  --scenario_aware \
+  --radius_norm 0.3 \
+  --fusion_policy cp_set_cvs \
+  --collaboration_policy adaptive_gain \
+  --label_fusion_policy vote_margin \
+  --receiver_reliability_policy deployment_prior \
+  --adaptive_gain_min_risk 0.60 \
+  --accept_margin_threshold 0.03 \
+  --consensus_score_threshold 0.30 \
+  --scorer_component_vote_threshold 0.25 \
+  --latency_budget_ms 12 \
+  --evidence_packet_bytes 120 \
+  --event_alignment_policy receiver_domain_ranked \
+  --support_selection_policy stable_first \
+  --class_conformal_enabled \
+  --class_evidence_top_m 3 \
+  --class_set_gate_enabled
+```
+
+本轮仍是`receiver_domain_ranked`诊断；严格同事件协同在前序SA33报告中已因`NO_ALIGNED_COLLABORATIVE_EVENTS`被阻断。
+
+结果表：
+
+|候选|协同数|old_acc|min_old|seen_new_acc|min_seen|unknown_FAR|unknown_reject|defer|known_cov|avg_rx|bytes/event|p95_latency|
+|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+|`topm_p15`|1|0.0000|0.0000|0.3333|0.2500|0.1167|0.3667|0.6688|0.1895|1.0000|120.0000|0.1309|
+|`topm_p15`|2|0.1689|0.0000|0.1224|0.0500|0.0000|0.6809|0.4467|0.2589|1.9385|232.6230|0.1309|
+|`topm_p15`|3|0.3000|0.2000|0.1000|0.0000|0.0000|0.6250|0.5250|0.2875|2.8500|342.0000|0.1309|
+|`topm_p15`|4|0.5870|0.0000|0.2903|0.2000|0.0303|0.6364|0.3077|0.6667|3.6731|440.7692|0.1309|
+|`topm_p15`|5|0.6154|0.0000|0.1500|0.0000|0.0000|0.7500|0.2935|0.6806|4.2283|507.3913|0.1309|
+|`topm_p20`|1|0.0000|0.0000|0.3333|0.2500|0.1167|0.2500|0.6981|0.1895|1.0000|120.0000|0.1298|
+|`topm_p20`|2|0.1689|0.0000|0.1224|0.0500|0.0000|0.5532|0.5287|0.2589|1.9508|234.0984|0.1298|
+|`topm_p20`|3|0.3000|0.2000|0.1000|0.0000|0.0000|0.5750|0.5900|0.2875|2.8800|345.6000|0.1298|
+|`topm_p20`|4|0.5870|0.0000|0.2903|0.2000|0.0303|0.5152|0.3462|0.6667|3.7564|450.7692|0.1298|
+|`topm_p20`|5|0.6154|0.0000|0.1500|0.0000|0.0000|0.5500|0.3370|0.6806|4.3913|526.9565|0.1298|
+
+产物：
+
+|文件|SHA256|
+|---|---|
+|`collab_open_set_qknn_cp_set_cvs_topm_aware_p15_sa33.json`|`633D8E52090915BE0C02E230539915497547A7FF6E59EAFE884866CA51B349DB`|
+|`collab_open_set_qknn_cp_set_cvs_topm_aware_p15_sa33_evidence.csv`|`AB0DA77E1B6887E6BDC16180A44A013D89A59D30D2906A2557AB1AE3CD9EABF1`|
+|`collab_open_set_qknn_cp_set_cvs_topm_aware_p20_sa33.json`|`D18C993B7F98A7A0724BE04A383264297A4A45A17AA09240376F92430E998D42`|
+|`collab_open_set_qknn_cp_set_cvs_topm_aware_p20_sa33_evidence.csv`|`F1AC53C19100E8FE150B86F2638E0B99D954FBCD7237D742D6EB695DA0510BF2`|
+
+结论：topM类条件融合能把部分协同预算下的unknown FAR压到0，例如`topm_p15/p20`的协同2、3、5；但known性能仍远低于目标，最佳old_acc为0.6154，最佳seen_new_acc为0.3333，per-class floor仍为0。因此本轮未达到目标old 99%/floor95、seen-new 97%/floor93、unknown rejection 99%；不能写作Stage2-C成功、部署成功或论文主结论。下一步应优先修正known接受率：引入receiver-class可靠度`w_{r,y}`、per-label风险字段，或用set-valued输出保留候选而非过早defer。
+
 本地修正：
 
 |文件|修正|
@@ -419,3 +515,80 @@ SA33固定版CPR结果：
 |`collab_open_set_qknn_scorer_cvs_evt_adaptive_gain_vote_margin_sa33_cpr_p20_s04_vrisk2_proto2_maha1_qknnonly_fixed_evidence.csv`|`D3DD9AA7FCE4C53BDD5A4B32C7F430B9A7390DFA6313F6EE04C7399D2F0A8A2D`|
 |`collab_open_set_qknn_scorer_cvs_evt_adaptive_gain_vote_margin_sa33_cpr_p20_s05_proto2_maha1_qknnonly_fixed.json`|`1A2F7C4435055458137DBF305647582514C4CA08686213ABFE44D15B90D84872`|
 |`collab_open_set_qknn_scorer_cvs_evt_adaptive_gain_vote_margin_sa33_cpr_p20_s05_proto2_maha1_qknnonly_fixed_evidence.csv`|`0E957CF78F0A345D99CBE7DA9415646F79632CB9122D680C37C87DA4EADD0A18`|
+
+## 2026-07-03 RB-CAPR协同推理策略实现与SA33全量复跑
+
+目标：实现面向卫星群多target receiver的高效率协同推理策略`rb_capr_utility`。该策略不传原始IQ、不使用unknown query校准，只在每个receiver本地输出低带宽证据包后，由控制器根据class support、conformal p-value、old/seen-new角色平衡、unknown边界风险和通信/延迟成本选择是否继续请求下一个receiver。协同数量按CVS协议覆盖target receiver的1到5；source receiver数量为7，仅属于地面训练/源域统计，不作为Stage2-C部署协同节点。
+
+本地代码变更：
+
+|文件|变更|
+|---|---|
+|`code/evaluation/collaborative_open_set_qknn_eval.py`|新增`rb_capr_utility`策略、`_rb_capr_candidate_score()`和`_fuse_rb_capr_event()`；结果metadata记录RB-CAPR权重；stop reason统计接入`rb_capr_stop_reason`。|
+|`code/scripts/phase2_collaborative_open_set_qknn_eval.py`|CLI新增`--collaboration_policy rb_capr_utility`以及`--rb_capr_utility_min_delta`、`--rb_capr_seen_new_balance_weight`、`--rb_capr_old_floor_weight`、`--rb_capr_unknown_confirm_weight`、`--rb_capr_max_avg_rx_target`。|
+|`code/tests/test_collaborative_open_set_qknn_eval.py`|新增`test_rb_capr_utility_prefers_role_balanced_supported_receiver`，验证策略可按old/seen-new角色和support质量选择receiver。|
+
+版本状态与验证：
+
+|项目|结果|
+|---|---|
+|本地工作树|`E:\type10-7`不是Git仓库；已创建快照`E:\type10-7\code\snapshots\rb_capr_20260703_ssh\`。|
+|Git镜像|`E:\type10-7\github_publish\CVS-RFFI-repo`，提交`e192ee1 Add RB-CAPR collaborative inference policy`，分支ahead 284。|
+|本地验证|`conda run -n ssr-gpu python -m py_compile ...`通过；`test_collaborative_open_set_qknn_eval.py`为40 tests OK；`test_phase2_collaborative_open_set_qknn_eval.py`为44 tests OK。|
+|远端验证|N607直连预检通过；远端`/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python`为Python3.10.19；同两组单测为40 tests OK和44 tests OK。|
+
+同步到N607：
+
+|本地文件|远端路径|SHA256|
+|---|---|---|
+|`code/evaluation/collaborative_open_set_qknn_eval.py`|`/home/szu2070436088/2510044040/CV-SincNet/code/evaluation/collaborative_open_set_qknn_eval.py`|`8C866C4492E6ABF80F232542BDB0BBC9C66E616E1B8105EA6BE5F5E0D6934236`|
+|`code/scripts/phase2_collaborative_open_set_qknn_eval.py`|`/home/szu2070436088/2510044040/CV-SincNet/code/scripts/phase2_collaborative_open_set_qknn_eval.py`|`C631CC447636A5EE3DED67672C60102B3C9817F3AA1F493F8F60128386C98207`|
+|`code/tests/test_collaborative_open_set_qknn_eval.py`|`/home/szu2070436088/2510044040/CV-SincNet/code/tests/test_collaborative_open_set_qknn_eval.py`|`31DDDAEE099FEFDEC0BAB9CD4D87B9A521B9E17EAC9E814483FA651C131D7306`|
+
+远端输入与资源：使用指定权重链路`SA33_sa27_ch2_leo3_ce0p7_r010_20260527_204104`，checkpoint为`runs/cvs_sa27_optimization_central_20260527_204005/SA33_sa27_ch2_leo3_ce0p7_r010/best_strict_udu_model.pth`，SHA256为`0efd38621eda7bc18adec89827f366132977ce6e183a45e0d5cf16c22d80592d`；特征文件`runs/phase2_sa33_collab_open_set_qknn_full_20260703/features.npz`，SHA256为`fae6973e7f0ae01ed7a83fd34e35798a735fd045d32de59ee117cb628759e6c5`，覆盖`leo_clear_weak,leo_low_elev_weak,leo_rain_weak`星地信道视图。运行前后8张RTX3090均为`10 MiB/24576 MiB`；使用`CUDA_VISIBLE_DEVICES=0`但该评估为离线证据推理，未显著占用显存。SSH/SCP后本地检查无残留`ssh.exe`或N607/bridge的22端口`ESTABLISHED`连接。
+
+远端执行：在`/home/szu2070436088/2510044040/CV-SincNet`中使用`/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python code/scripts/phase2_collaborative_open_set_qknn_eval.py`前台运行，无后台PID和独立log文件；输出直接写入`runs/phase2_sa33_collab_open_set_qknn_full_20260703/`并已拉回`automation_reports/CV-SincNet/phase2_sa33_collab_open_set_qknn_full_20260703/artifacts/`。
+
+产物SHA256：
+
+|产物|SHA256|
+|---|---|
+|`collab_open_set_qknn_scorer_cvs_rb_capr_p20_s05_sa33_fixed.json`|`1C05EFCC62A854459B6B88EF21DCD374540C8AEB0D811170570D1E707D69B535`|
+|`collab_open_set_qknn_scorer_cvs_rb_capr_p20_s05_sa33_fixed_evidence.csv`|`3A96481F67633D8D390CEB9CEC8E2F214B4EDEB6125A5C0983B9A61D021C773C`|
+|`collab_open_set_qknn_cp_set_cvs_rb_capr_p20_s05_gate3_sa33.json`|`71039F6934C9A3E3770C5072423249FB2C1F0445B78E0428C37403A1133984D1`|
+|`collab_open_set_qknn_cp_set_cvs_rb_capr_p20_s05_gate3_sa33_evidence.csv`|`AD4292CA3D8D5FBCD0613D79AE86C08D170A75817F92030EDD9DC76D5ACDB958`|
+|`collab_open_set_qknn_cp_set_cvs_rb_capr_p15_s05_u098_gate3_sa33.json`|`EC54A50D7A65A2930A953108425C1C2204B098BADB984B78653EC8D00B2FE673`|
+|`collab_open_set_qknn_cp_set_cvs_rb_capr_p15_s05_u098_gate3_sa33_evidence.csv`|`057CA186B673757431C894EE7B9B252941A96F2DA336DE5247EF3D60BCB5E1C5`|
+
+RB-CAPR结果表：
+
+|候选|协同数|old_acc|min_old|seen_new_acc|min_seen|unknown_FAR|unknown_reject|defer|known_cov|avg_rx|p95_rx|max_rx|bytes/event|lat_p95|
+|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+|`rb_scorer_p20_s05_fixed`|1|0.0000|0.0000|0.2333|0.1750|0.2167|0.2500|0.7500|0.0992|1.0000|1.0000|1|40.0000|0.1036|
+|`rb_scorer_p20_s05_fixed`|2|0.0405|0.0000|0.2549|0.1935|0.1522|0.3696|0.7020|0.1508|1.4816|2.0000|2|59.2653|0.1036|
+|`rb_scorer_p20_s05_fixed`|3|0.0250|0.0000|0.3250|0.3000|0.1000|0.3750|0.7250|0.1562|1.9300|3.0000|3|77.2000|0.1036|
+|`rb_scorer_p20_s05_fixed`|4|0.2065|0.0000|0.2759|0.1111|0.1471|0.4412|0.5548|0.3388|2.6129|4.0000|4|104.5161|0.1036|
+|`rb_scorer_p20_s05_fixed`|5|0.1875|0.0000|0.3500|0.0000|0.1500|0.6000|0.4886|0.3971|3.0682|5.0000|5|122.7273|0.1036|
+|`rb_cp_p20_s05_gate3`|1|0.0000|0.0000|0.0000|0.0000|0.0000|0.1000|0.9519|0.0000|1.0000|1.0000|1|40.0000|0.1031|
+|`rb_cp_p20_s05_gate3`|2|0.0000|0.0000|0.0000|0.0000|0.0000|0.0870|0.9429|0.0000|1.5469|2.0000|2|61.8776|0.1031|
+|`rb_cp_p20_s05_gate3`|3|0.0000|0.0000|0.0000|0.0000|0.0000|0.1500|0.9500|0.0000|2.0400|3.0000|3|81.6000|0.1031|
+|`rb_cp_p20_s05_gate3`|4|0.0000|0.0000|0.0000|0.0000|0.0000|0.2941|0.9290|0.0000|2.7290|4.0000|4|109.1613|0.1031|
+|`rb_cp_p20_s05_gate3`|5|0.0000|0.0000|0.0000|0.0000|0.0000|0.5000|0.8864|0.0000|3.3182|5.0000|5|132.7273|0.1031|
+|`rb_cp_p15_s05_u098_gate3`|1|0.0000|0.0000|0.0000|0.0000|0.0000|0.1000|0.9519|0.0000|1.0000|1.0000|1|40.0000|0.1588|
+|`rb_cp_p15_s05_u098_gate3`|2|0.0000|0.0000|0.0000|0.0000|0.0000|0.0870|0.9429|0.0000|1.5469|2.0000|2|61.8776|0.1588|
+|`rb_cp_p15_s05_u098_gate3`|3|0.0000|0.0000|0.0000|0.0000|0.0000|0.1500|0.9500|0.0000|2.0400|3.0000|3|81.6000|0.1588|
+|`rb_cp_p15_s05_u098_gate3`|4|0.0000|0.0000|0.0000|0.0000|0.0000|0.2941|0.9290|0.0000|2.7290|4.0000|4|109.1613|0.1588|
+|`rb_cp_p15_s05_u098_gate3`|5|0.0000|0.0000|0.0000|0.0000|0.0000|0.5000|0.8864|0.0000|3.3182|5.0000|5|132.7273|0.1588|
+
+审计结论：`rb_capr_utility`达到了低通信和低显存目标，`rb_scorer_p20_s05_fixed`在协同3时平均仅`1.93`个receiver、`77.2 bytes/event`，比固定全5receiver更省；但性能不满足Stage2-C目标。CP-set gate3配置把unknown FAR压到0，但known覆盖为0，属于过度保守的诊断负例；scorer配置保留部分known接受，最佳seen-new为协同5的`0.3500`，最佳unknown FAR为协同3的`0.1000`，仍远低于old 99%/floor95、seen-new 97%/floor93、unknown拒识99%目标。该结果不能写作部署成功、严格同物理事件卫星群协同成功或论文主结论。
+
+多子agent审查记录：
+
+|角色|结论|处理|
+|---|---|---|
+|联网文献/方法|建议低通信证据包、class-conditional conformal/prototype routing、异步adapter/prototype轻量更新，避免原始IQ和全模型在线训练。|算法实现采用证据级路由；报告保持“星上只做推理、原型/阈值/adapter轻更新”的边界。|
+|高效率算法|提出RB-CAPR：按support质量、old floor、seen-new平衡、unknown确认和资源成本选择下一个receiver。|已落地为`rb_capr_utility`并接入CLI、metadata和单测。|
+|合理性监督|指出SA33权重链路、source/target receiver、严格同事件和部署声明必须分开。|本节显式记录SA33 checkpoint/feature hash；协同数量按target receiver 1到5解释；不声明source receiver 1到7部署协同。|
+|查漏补缺review|指出`receiver_domain_ranked`不是严格同事件，CP-set零FAR但known覆盖为0，资源指标只是离线proxy。|结论标为诊断负结果；资源只写bytes/latency proxy和显存读数；不写部署成功。|
+
+下一步建议：保留RB-CAPR路由框架，但把融合从硬门限`cp_set_cvs`改为set-valued输出和class-conditional conformal log-opinion pooling；对每个receiver维护`w_{r,y}`和receiver health，目标是先把known覆盖从0.15-0.40区间提高，再重新约束unknown FAR。在线微调只允许更新低秩adapter、prototype EMA、阈值摘要和hard negative统计，不能在星上重训主干。

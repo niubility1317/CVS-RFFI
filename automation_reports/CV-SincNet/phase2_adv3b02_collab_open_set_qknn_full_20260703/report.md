@@ -2129,3 +2129,604 @@ CP-SET-CVS产物SHA256：
 |`collab_open_set_qknn_cp_set_cvs_cpset_p20_proto2_maha1_qknnonly_evidence.csv`|`8455BB0581F740B9AE37DF2051308B09C725886A1FB0BF89B952EFB2B731F2CA`|
 |`collab_open_set_qknn_cp_set_cvs_cpset_p20_vrisk2_proto2_maha1_qknnonly.json`|`F11CCA7943F45C28849C0D6D0094613E04781573EAD8B4B1ED9763A05914B5A6`|
 |`collab_open_set_qknn_cp_set_cvs_cpset_p20_vrisk2_proto2_maha1_qknnonly_evidence.csv`|`7DF97A44424D3AD0DD7AB3EE7E8C9E0BD7B6561B4F24B7C652096A8BECA0034B`|
+
+## 2026-07-03 21:47 AWARE-CQKNN-Lite topM候选集融合
+
+目标：把上一轮`cp_set_cvs`从“top1类条件硬门”扩展为更适合卫星群的轻量协同推理：每个target receiver只上传`class_evidence_topM`标签、score、class conformal p-value和support count，聚合端按receiver级候选证据融合；协同数量继续用`collab_counts=all`覆盖1到target receiver数量。
+
+文献/方法子agent结论：最可落地组合为冻结CV-SincNet/`z_id`，使用KNN/prototype/Mahalanobis侧路和conformal set-valued gate；多receiver阶段只融合推理证据，不把unknown query用于阈值拟合，不做星上full-model fine-tune。
+
+算法子agent建议：采用AWARE-CQKNN-Lite，即`support-derived QKNN evidence + class-evidence log/soft pool + adaptive receiver budget + CP fail-closed gate`。复杂度保持在每事件`O(BL)`融合通信，`B`为实际参与receiver数，`L`为每receiver上传topM标签数。
+
+review子agent阻断项及修正：初始topM方案存在“单个receiver多个候选冒充多receiver一致性”的风险。已收紧为receiver级候选计数：同一receiver同一label只计一次；`agreement/vote_gap`按支持该label的receiver数除以实际receiver数；非top1候选必须至少由两个receiver的topM一致支持，且score>0、support_count>=1，才可通过`cp_set_cvs`候选门。
+
+本地改动：
+
+|文件|目的|
+|---|---|
+|`code/evaluation/collaborative_open_set_qknn_eval.py`|`cp_set_cvs`读取`class_evidence_top{rank}_label/score/conformal_pvalue/support_count`；按协议old/seen-new标签集过滤候选；按receiver级候选数计算agreement；记录`label_candidate_receiver_count`、`label_top1_receiver_count`、`label_min_evidence_rank`、`filtered_candidate_count`。|
+|`code/tests/test_collaborative_open_set_qknn_eval.py`|新增测试：两个target receiver的top1均错但top2类条件证据一致时，`cp_set_cvs`可恢复正确old类；单receiver多候选不会被当作多receiver一致性。|
+
+本地验证：
+
+```powershell
+$env:PYTHONPATH='E:\type10-7\code'
+conda run -n ssr-gpu python -m py_compile code\evaluation\collaborative_open_set_qknn_eval.py code\scripts\phase2_collaborative_open_set_qknn_eval.py code\tests\test_collaborative_open_set_qknn_eval.py
+conda run -n ssr-gpu python -m unittest discover -s code\tests -p "test_collaborative_open_set_qknn_eval.py"
+conda run -n ssr-gpu python -m unittest discover -s code\tests -p "test_phase2_collaborative_open_set_qknn_eval.py"
+```
+
+结果：`test_collaborative_open_set_qknn_eval.py`为32 tests OK；`test_phase2_collaborative_open_set_qknn_eval.py`为37 tests OK。
+
+Git镜像验证：
+
+```powershell
+$env:PYTHONPATH='E:\type10-7\github_publish\CVS-RFFI-repo\code'
+conda run -n ssr-gpu python -m py_compile code\evaluation\collaborative_open_set_qknn_eval.py code\scripts\phase2_collaborative_open_set_qknn_eval.py code\tests\test_collaborative_open_set_qknn_eval.py
+conda run -n ssr-gpu python -m unittest discover -s code\tests -p "test_collaborative_open_set_qknn_eval.py"
+conda run -n ssr-gpu python -m unittest discover -s code\tests -p "test_phase2_collaborative_open_set_qknn_eval.py"
+```
+
+结果：32 tests OK和37 tests OK。
+
+远端测试计划：先运行`tools\n607_ssh_preflight.ps1`，选择显存占用最低的GPU；同步`collaborative_open_set_qknn_eval.py`和测试文件到N607；在`/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python`复测；随后使用ADV3B02特征和权重`SA33_sa27_ch2_leo3_ce0p7_r010_20260527_204104`相关产物，运行`--collab_counts all`覆盖1到5个target receiver、`leo_clear_weak/leo_low_elev_weak/leo_rain_weak`星地信道视图。若用户坚持“源接收机1到7”字面口径，需要先修订协议，因为`项目.md`规定部署协同应在target receiver domain内，不能让source receiver参与Stage2部署推理。
+
+## 2026-07-03 21:58 per-label topM风险证据融合
+
+目标：修复上一轮topM融合的结构性问题。上一轮非top1候选虽然能参与类条件投票，但仍复用top1的`unknown_risk`、`known_margin`、`class_radius_z`等风险字段，导致正确top2/top3类可能被错误拒绝或defer。本轮把topM候选证据扩展为per-label evidence，并让`cp_set_cvs`在选中label存在per-label风险字段时使用该label自己的风险进行接受/拒识判断。
+
+资源约束文档状态：本地限定搜索仍未定位到`卫星协同射频指纹识别（RFFI）系统资源约束设计说明.md`原文件；本轮继续使用代码已落地的资源字段`latency_budget_ms`、`evidence_packet_bytes`、`bytes/event`、`latency_ms_p95`和`prototype_storage_bytes`。若后续补回原文档，应按文档更新报告中的资源预算表。
+
+本地改动：
+
+|文件|目的|
+|---|---|
+|`code/scripts/phase2_collaborative_open_set_qknn_eval.py`|为`class_evidence_top{rank}`写出`margin`、`effective_score_threshold`、`unknown_risk`、`score/radius/margin/mahalanobis/evt/oldness_risk`、`class_radius`和`class_radius_z`。|
+|`code/evaluation/collaborative_open_set_qknn_eval.py`|`cp_set_cvs`对选中topM label聚合per-label risk和risk component vote；高风险拒识和class-set gate使用选中label风险，不再固定复用top1风险。|
+|`code/tests/test_collaborative_open_set_qknn_eval.py`|新增测试：top1高风险但top2正确且低风险时，两个receiver一致可恢复正确old类。|
+|`code/tests/test_phase2_collaborative_open_set_qknn_eval.py`|新增topM per-label风险字段记录测试。|
+
+Git镜像提交：`d6e64a0 Add per-label risk evidence for collaborative qKNN topM`。镜像分支仍领先远端276个提交；根工作区`E:\type10-7\code`不是Git仓库，本轮代码闭环仍在`github_publish\CVS-RFFI-repo`。
+
+本地和镜像验证：
+
+```powershell
+$env:PYTHONPATH='E:\type10-7\code'
+conda run -n ssr-gpu python -m py_compile code\evaluation\collaborative_open_set_qknn_eval.py code\scripts\phase2_collaborative_open_set_qknn_eval.py code\tests\test_collaborative_open_set_qknn_eval.py code\tests\test_phase2_collaborative_open_set_qknn_eval.py
+conda run -n ssr-gpu python -m unittest discover -s code\tests -p "test_collaborative_open_set_qknn_eval.py"
+conda run -n ssr-gpu python -m unittest discover -s code\tests -p "test_phase2_collaborative_open_set_qknn_eval.py"
+```
+
+结果：本地与Git镜像均为33 tests OK和37 tests OK。
+
+远端同步和验证：
+
+|文件|远端SHA256|
+|---|---|
+|`code/evaluation/collaborative_open_set_qknn_eval.py`|`d1d381a460801d330877d3cf7fba3ef4e1114cb5595a8165d7ed7a7f4281d624`|
+|`code/scripts/phase2_collaborative_open_set_qknn_eval.py`|`d6035bf055975d594daed8817fc58dd592acdec886156c53821c4c7983679bf8`|
+|`code/tests/test_collaborative_open_set_qknn_eval.py`|`5e34647a692ce327355166f51f3c361a868d699e37d0e0e416a19c653e7d7da4`|
+|`code/tests/test_phase2_collaborative_open_set_qknn_eval.py`|`ade4f7b35b88ccd826bf556329d169a9db249aeb334cae2cd40767a814807d2d`|
+
+远端使用`/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python`，在`/home/szu2070436088/2510044040/CV-SincNet/code`目录下运行，结果为33 tests OK和37 tests OK。N607预检显示8张RTX3090均为`10/24576MiB`，本轮运行前后仍为`10/24576MiB`，使用GPU0。所有SSH/SCP后本地检查均无残留`ssh.exe`或N607 22端口连接。
+
+远端诊断命令摘要：输入仍为`runs/phase2_adv3b02_collab_open_set_qknn_full_20260703/features.npz`，即ADV3B02_CORE90_SOFT_E200对应Stage2-C特征；参数保持`--collab_counts all --k_shot 8 --query_per_class 20 --qknn_k 8 --candidate_class_top_m 2 --class_evidence_top_m 3 --fusion_policy cp_set_cvs --collaboration_policy adaptive_gain --event_alignment_policy receiver_domain_ranked`。两组候选分别为`conformal_rescue_min_pvalue=0.15/0.20`，输出均为`receiver_count=5`、`group_count=308`、`evidence_row_count=1000`，覆盖target receiver domain的协同数量1到5。
+
+结果表：
+
+|候选|协同数|old_acc|min_old|seen_new_acc|min_seen|unknown_FAR|unknown_reject|defer|known_cov|avg_rx|bytes/event|p95_latency|
+|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+|`perlabel_p15`|1|0.0000|0.0000|0.2500|0.0500|0.0167|0.3000|0.7792|0.0766|1.0000|120.0000|0.1322|
+|`perlabel_p15`|2|0.4837|0.0500|0.2222|0.0000|0.1250|0.4792|0.3902|0.4646|1.8943|227.3171|0.1322|
+|`perlabel_p15`|3|0.5250|0.2500|0.4000|0.0500|0.0000|0.9000|0.2500|0.4938|2.7250|327.0000|0.1322|
+|`perlabel_p15`|4|0.5862|0.0000|0.3429|0.0000|0.0000|1.0000|0.1818|0.5246|3.6494|437.9221|0.1322|
+|`perlabel_p15`|5|0.6346|0.0000|0.0000|0.0000|0.0000|1.0000|0.1957|0.4722|4.5000|540.0000|0.1322|
+|`perlabel_p20`|1|0.0000|0.0000|0.2500|0.0500|0.0167|0.2833|0.7922|0.0766|1.0000|120.0000|0.1305|
+|`perlabel_p20`|2|0.5098|0.0500|0.2222|0.0000|0.1458|0.4583|0.4065|0.4848|1.9187|230.2439|0.1305|
+|`perlabel_p20`|3|0.5417|0.2500|0.4500|0.0500|0.0000|0.8750|0.2700|0.5188|2.7650|331.8000|0.1305|
+|`perlabel_p20`|4|0.5977|0.0000|0.3714|0.0000|0.0000|0.9375|0.2338|0.5410|3.7143|445.7143|0.1305|
+|`perlabel_p20`|5|0.6346|0.0000|0.0000|0.0000|0.0000|0.9500|0.2935|0.4722|4.5435|545.2174|0.1305|
+
+产物SHA256：
+
+|文件|SHA256|
+|---|---|
+|`collab_open_set_qknn_cp_set_cvs_topm_perlabel_p15_adv3b02.json`|`F0A4EF22FDA999A3CDF609AE6588C721F0AB7E16C8781DE1CADDCCE90B755A61`|
+|`collab_open_set_qknn_cp_set_cvs_topm_perlabel_p15_adv3b02_evidence.csv`|`55A5DCFDA71A4AFAF8D6CA3DAB497E2D00D1017B8C50A255B046024EECDF89FA`|
+|`collab_open_set_qknn_cp_set_cvs_topm_perlabel_p20_adv3b02.json`|`00DFBD761AEE45EFBF9A730DD0B61DABA007EBEF3FC2DADDF78EDFFAF6A40ED1`|
+|`collab_open_set_qknn_cp_set_cvs_topm_perlabel_p20_adv3b02_evidence.csv`|`B0424B4F83DF4305A8A11EB61789D07BE6CAEE7BCB13324B2F9E5DD483039A17`|
+
+解释：相对上一轮`cp_set_cvs`，per-label风险证据显著缓解了known被top1风险误拒的问题。例如协同3从旧的约`old_acc=0.3917`、`seen_new_acc=0.3250`提升到`perlabel_p20`的`old_acc=0.5417`、`seen_new_acc=0.4500`，且`unknown_FAR=0.0000`。这说明方向有效，但仍远低于最终目标`old_acc=99%/min_old>=95%`、`seen_new_acc=97%/min_seen>=93%`、`unknown_reject>=99%`。当前结果仍只能作为`receiver_domain_ranked`诊断，不是严格同事件卫星群协同证据，也不能声明Stage2-C成功或部署成功。
+
+下一步建议：继续沿per-label证据路线，加入receiver-class可靠度`w_{r,y}`和set-valued输出。当前协同5的seen-new归零，说明多数receiver融合会压制弱新类；需要让融合权重按`receiver,label`而不是只按receiver全局可靠性分配，并在top label不唯一时输出候选集或request_more，而不是直接accept/defer。
+## 2026-07-03 22:40 receiver-class可靠度融合本地落地
+
+### 目标
+
+在`cp_set_cvs`协同推理中加入`class_reliability_policy=conformal_margin_risk`，为每个`receiver x candidate label`计算可靠度`w_{r,y}`，缓解多接收机融合时高分但低p-value/高风险候选压制真实seen-new或old候选的问题。该路线仍限定为`R_t`目标接收机域内证据融合，不允许source receiver进入部署协同证据。
+
+### 本地变更
+
+| 文件 | 作用 |
+|---|---|
+| `code/evaluation/collaborative_open_set_qknn_eval.py` | 新增`_class_reliability`；在label fusion中用`receiver_reliability * class_reliability`加权候选label；输出`class_reliability_policy`和`mean_label_class_reliability`；严格校验证据`receiver_id`必须属于`protocol_metadata.target_receiver_ids`。 |
+| `code/scripts/phase2_collaborative_open_set_qknn_eval.py` | 新增CLI参数`--class_reliability_policy {none,conformal_margin_risk}`并透传到评估模块。 |
+| `code/tests/test_collaborative_open_set_qknn_eval.py` | 新增receiver-class可靠度选择、p-value单调性、`R_t`证据范围硬校验测试。 |
+
+### 本地验证
+
+| 环境 | 命令 | 结果 |
+|---|---|---|
+| local `ssr-gpu` | `python -m py_compile code\evaluation\collaborative_open_set_qknn_eval.py code\scripts\phase2_collaborative_open_set_qknn_eval.py code\tests\test_collaborative_open_set_qknn_eval.py code\tests\test_phase2_collaborative_open_set_qknn_eval.py` | PASS |
+| local `ssr-gpu` | `python -m unittest discover -s code\tests -p "test_collaborative_open_set_qknn_eval.py"` | PASS，36 tests |
+| local `ssr-gpu` | `python -m unittest discover -s code\tests -p "test_phase2_collaborative_open_set_qknn_eval.py"` | PASS，37 tests |
+| mirror `ssr-gpu` | 同上编译和两组单测 | PASS，36+37 tests |
+
+### Git状态
+
+| 仓库 | 状态 |
+|---|---|
+| `E:\type10-7` | 非Git仓库，不能作为版本承载目录。 |
+| `E:\type10-7\github_publish\CVS-RFFI-repo` | 已提交`4ef78a3 Add receiver-class reliability for collaborative qKNN`，分支领先远端277。 |
+
+### 同步计划
+
+| local | remote |
+|---|---|
+| `E:\type10-7\code\evaluation\collaborative_open_set_qknn_eval.py` | `/home/szu2070436088/2510044040/CV-SincNet/code/evaluation/collaborative_open_set_qknn_eval.py` |
+| `E:\type10-7\code\scripts\phase2_collaborative_open_set_qknn_eval.py` | `/home/szu2070436088/2510044040/CV-SincNet/code/scripts/phase2_collaborative_open_set_qknn_eval.py` |
+| `E:\type10-7\code\tests\test_collaborative_open_set_qknn_eval.py` | `/home/szu2070436088/2510044040/CV-SincNet/code/tests/test_collaborative_open_set_qknn_eval.py` |
+
+### 边界
+
+该实现是协同推理诊断路线，不是部署成功声明。若`old_acc`、`seen_new_acc`、`unknown_FAR`或per-class floor未达目标，只能报告为负结果或下一步修复证据。
+
+## 2026-07-03 22:51 receiver-class可靠度融合N607诊断结果
+
+### 远端同步与验证
+
+| 项目 | 结果 |
+|---|---|
+| 远端环境 | `/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python`，Python 3.10.19 |
+| 远端工作目录 | `/home/szu2070436088/2510044040/CV-SincNet` |
+| GPU选择 | GPU0；诊断前后所有GPU均为`10/24576MiB`，未增加持续显存占用 |
+| 远端编译 | PASS |
+| 远端单测 | `test_collaborative_open_set_qknn_eval.py`：36 tests OK；`test_phase2_collaborative_open_set_qknn_eval.py`：37 tests OK |
+| SSH/SCP断连 | 每次SSH/SCP后本地检查均为`NO_SSH_PROCESS`和`NO_N607_SSH_ESTABLISHED` |
+
+### 远端文件哈希
+
+| 文件 | SHA256 |
+|---|---|
+| `code/evaluation/collaborative_open_set_qknn_eval.py` | `2b0506c98c316409c87714e3f732b7437a244c9c55c507049fcdf4dc99f51ef6` |
+| `code/scripts/phase2_collaborative_open_set_qknn_eval.py` | `8103f796fcbd791ab46074a14e3c103e536bf705fdeeef29e735f26d3610faa9` |
+| `code/tests/test_collaborative_open_set_qknn_eval.py` | `e6ebf22180de7aa9ae4aef796c9c2ef138603bec24b8a02f4487fce77bfb2448` |
+
+### 诊断命令要点
+
+| 配置项 | 值 |
+|---|---|
+| feature | `runs/phase2_adv3b02_collab_open_set_qknn_full_20260703/features.npz` |
+| `collab_counts` | `all`，覆盖1到5个target receiver证据 |
+| `fusion_policy` | `cp_set_cvs` |
+| `collaboration_policy` | `adaptive_gain` |
+| `label_fusion_policy` | `vote_margin` |
+| `class_reliability_policy` | `conformal_margin_risk` |
+| `event_alignment_policy` | `receiver_domain_ranked`，仍是数据集诊断，不是严格same-event星群同步证据 |
+| `class_evidence_top_m` | 3 |
+| `latency_budget_ms` | 12 |
+| `evidence_packet_bytes` | 120 |
+| `conformal_rescue_min_pvalue` | 0.15和0.20两组 |
+
+### artifact
+
+| artifact | SHA256 |
+|---|---|
+| `remote_artifacts/collab_open_set_qknn_cp_set_cvs_topm_classrel_p015_adv3b02.json` | `2B5059669BE4B6E6F2E635D904ED48B3EFE70720B8D1769D374919E853BD482E` |
+| `remote_artifacts/collab_open_set_qknn_cp_set_cvs_topm_classrel_p015_adv3b02_evidence.csv` | `1C01D0A8F05C9414A6BCF8443C66D3288FC33AB0A34E98F37B427E6D98D428AE` |
+| `remote_artifacts/collab_open_set_qknn_cp_set_cvs_topm_classrel_p020_adv3b02.json` | `7DABA00EDE78BEC485E4F7DF6123D84A9FC0F08E8BAC1914D195EC6B97138CEB` |
+| `remote_artifacts/collab_open_set_qknn_cp_set_cvs_topm_classrel_p020_adv3b02_evidence.csv` | `A7377A4EEE894FA5249E18933755818F0AF154CCAEAE5E6F471E9AD1C63A33F8` |
+
+### 结果表：`conformal_rescue_min_pvalue=0.15`
+
+| k | total | old_acc | min_old | seen_new_acc | min_seen | unknown_FAR | unknown_reject | defer | known_cov | avg_rx | bytes/event | p95_latency | mean_rel |
+|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+| 1 | 308 | 0.0000 | 0.0000 | 0.2500 | 0.0500 | 0.0167 | 0.3000 | 0.7792 | 0.0766 | 1.0000 | 120.0 | 0.1321 | 0.6081 |
+| 2 | 246 | 0.4902 | 0.1000 | 0.2222 | 0.0000 | 0.1250 | 0.4792 | 0.3862 | 0.4697 | 1.8943 | 227.3 | 0.1321 | 0.4553 |
+| 3 | 200 | 0.5250 | 0.2500 | 0.4000 | 0.0500 | 0.0000 | 0.9000 | 0.2500 | 0.4938 | 2.7250 | 327.0 | 0.1321 | 0.4641 |
+| 4 | 154 | 0.5977 | 0.0000 | 0.3429 | 0.0000 | 0.0000 | 1.0000 | 0.1753 | 0.5328 | 3.6494 | 437.9 | 0.1321 | 0.4685 |
+| 5 | 92 | 0.6346 | 0.0000 | 0.0000 | 0.0000 | 0.0000 | 1.0000 | 0.1957 | 0.4722 | 4.5000 | 540.0 | 0.1321 | 0.4482 |
+
+### 结果表：`conformal_rescue_min_pvalue=0.20`
+
+| k | total | old_acc | min_old | seen_new_acc | min_seen | unknown_FAR | unknown_reject | defer | known_cov | avg_rx | bytes/event | p95_latency | mean_rel |
+|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+| 1 | 308 | 0.0000 | 0.0000 | 0.2500 | 0.0500 | 0.0167 | 0.3000 | 0.7792 | 0.0766 | 1.0000 | 120.0 | 0.1328 | 0.6081 |
+| 2 | 246 | 0.4902 | 0.1000 | 0.2222 | 0.0000 | 0.1250 | 0.4792 | 0.3862 | 0.4697 | 1.8943 | 227.3 | 0.1328 | 0.4553 |
+| 3 | 200 | 0.5250 | 0.2500 | 0.4000 | 0.0500 | 0.0000 | 0.9000 | 0.2500 | 0.4938 | 2.7250 | 327.0 | 0.1328 | 0.4641 |
+| 4 | 154 | 0.5977 | 0.0000 | 0.3429 | 0.0000 | 0.0000 | 1.0000 | 0.1753 | 0.5328 | 3.6494 | 437.9 | 0.1328 | 0.4685 |
+| 5 | 92 | 0.6346 | 0.0000 | 0.0000 | 0.0000 | 0.0000 | 1.0000 | 0.1957 | 0.4722 | 4.5000 | 540.0 | 0.1328 | 0.4482 |
+
+### 结论
+
+receiver-class可靠度融合使k=3/4/5维持低FAR，但没有达到目标门槛：`old_acc`最高0.6346，`min_old`仍为0，`seen_new_acc`最高0.4000且`min_seen`最高0.0500。该结果不能登记为Stage2-C成功或部署成功，只能作为负诊断。下一步应优先尝试class-specific aggregation与TEEN式seen-new prototype校准，而不是继续提高协同receiver数量；当前k增大后seen-new被压制，说明多receiver融合仍有类别级偏置。
+
+## 2026-07-03 23:08 weighted vote margin协同融合本地落地
+
+### 目标
+
+上一轮`class_reliability_policy=conformal_margin_risk`没有显著改变远端结果，原因是远端诊断使用的`label_fusion_policy=vote_margin`仍以未加权receiver票数为主，`w_{r,y}`只影响很小的score项。为让receiver-class可靠度真正进入类别排序，本轮新增`weighted_vote_margin`：用`sum_r receiver_reliability_r * class_reliability_{r,y}`作为类票权，再叠加类margin和小权重score。
+
+### 本地变更
+
+| 文件 | 作用 |
+|---|---|
+| `code/evaluation/collaborative_open_set_qknn_eval.py` | 新增`label_fusion_policy=weighted_vote_margin`；类别排序使用`label_weight_totals + mean_margin + 1e-3 * weighted_score`；该策略下`agreement`和`vote_gap`改用类别权重占比。 |
+| `code/scripts/phase2_collaborative_open_set_qknn_eval.py` | CLI参数`--label_fusion_policy`允许`weighted_vote_margin`。 |
+| `code/tests/test_collaborative_open_set_qknn_eval.py` | 新增测试：两个receiver对高风险错误类和低风险正确类票数相同、错误类margin更高时，普通`vote_margin`失败，`weighted_vote_margin`可选择正确类。 |
+
+### 本地与镜像验证
+
+| 环境 | 命令 | 结果 |
+|---|---|---|
+| local `ssr-gpu` | `python -m py_compile code\evaluation\collaborative_open_set_qknn_eval.py code\scripts\phase2_collaborative_open_set_qknn_eval.py code\tests\test_collaborative_open_set_qknn_eval.py` | PASS |
+| local `ssr-gpu` | `python -m unittest discover -s code\tests -p "test_collaborative_open_set_qknn_eval.py"` | PASS，37 tests |
+| local `ssr-gpu` | `python -m unittest discover -s code\tests -p "test_phase2_collaborative_open_set_qknn_eval.py"` | PASS，37 tests |
+| mirror `ssr-gpu` | 编译+上述两组单测 | PASS，37+37 tests |
+
+### Git状态
+
+| 仓库 | 状态 |
+|---|---|
+| `E:\type10-7` | 非Git仓库。 |
+| `E:\type10-7\github_publish\CVS-RFFI-repo` | 已提交`3628856 Add weighted vote margin for collaborative qKNN`，分支领先远端278。 |
+
+### 远端计划
+
+同步三处代码/测试文件到N607，用`/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python`远端编译与单测，然后在`features.npz`上运行`collab_counts=all`、`class_reliability_policy=conformal_margin_risk`、`label_fusion_policy=weighted_vote_margin`，覆盖1到5个target receiver证据。该实验仍是`receiver_domain_ranked`诊断，若指标未达门槛，不写成功声明。
+
+### 审查修正
+
+只读审查指出`weighted_vote_margin`初版的`agreement/vote_gap`按全局最大权重计算，可能与最终选中label不一致；`score_gap_ratio`也存在rank-score与label-score分母混用。已修正为：
+
+- 选中label由`rank_score`决定；
+- `agreement`、`vote_gap`使用选中label自身权重与次高其他label权重；
+- `score_gap_ratio`在`weighted_vote_margin`下使用rank-score总量作分母；
+- 新增反例测试，确保低权重高margin标签不会借另一个标签的高agreement被accept。
+
+补丁提交：`81ecd71 Align weighted vote agreement with selected label`。
+
+## 2026-07-03 23:23 weighted vote margin N607诊断结果
+
+### 远端同步与验证
+
+| 项目 | 结果 |
+|---|---|
+| 远端环境 | `/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python`，Python 3.10.19 |
+| 远端文件 | `code/evaluation/collaborative_open_set_qknn_eval.py`、`code/scripts/phase2_collaborative_open_set_qknn_eval.py`、`code/tests/test_collaborative_open_set_qknn_eval.py` |
+| 远端SHA | eval `b1c8437f0321c249ecf4c2474d9d5443e6ffd632440dc75886c6042300a1caf1`；script `49b0502fb7c0124944e63c7b49b0e0140b29e9eef94f6700255e5e572ff83107`；test `a01a407293fc5cc0ecd0e8e3e21acc8b0a6f1d77df6360ae8b0538f21df39d63` |
+| 远端验证 | 编译PASS；`test_collaborative_open_set_qknn_eval.py`38 tests OK；`test_phase2_collaborative_open_set_qknn_eval.py`37 tests OK |
+| GPU | GPU0运行；运行前后所有GPU均为`10/24576MiB` |
+| SSH/SCP | 每次后均检查为`NO_SSH_PROCESS`和`NO_N607_SSH_ESTABLISHED` |
+
+### artifact
+
+| artifact | SHA256 |
+|---|---|
+| `remote_artifacts/collab_open_set_qknn_cp_set_cvs_topm_weightedvote_p015_adv3b02.json` | `59256CFBC273155A2F4EC0802AE04235178BD180D73D9306845C8FE0245247A8` |
+| `remote_artifacts/collab_open_set_qknn_cp_set_cvs_topm_weightedvote_p015_adv3b02_evidence.csv` | `6C31FAFB84B733EA31A08BFCD29ADF976689B6C95939A3E3A2259B7BE3BE7763` |
+| `remote_artifacts/collab_open_set_qknn_cp_set_cvs_topm_weightedvote_p020_adv3b02.json` | `CDD5C01E58B091E8563BEB79159855C88EED1FF568D08138F7BC7C49492BE139` |
+| `remote_artifacts/collab_open_set_qknn_cp_set_cvs_topm_weightedvote_p020_adv3b02_evidence.csv` | `08DA65F1579528487E31067A7C4F7954599E8E58ED79750AF1E4E2AC30010ED7` |
+
+### 结果表：`weightedvote_p015`
+
+| k | total | old_acc | min_old | seen_new_acc | min_seen | unknown_FAR | unknown_reject | defer | known_cov | avg_rx | bytes/event | p95_latency | mean_rel |
+|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+| 1 | 308 | 0.0000 | 0.0000 | 0.2500 | 0.0500 | 0.0167 | 0.3000 | 0.7792 | 0.0766 | 1.0000 | 120.0 | 0.1815 | 0.6098 |
+| 2 | 246 | 0.4837 | 0.1000 | 0.3111 | 0.0500 | 0.1667 | 0.3542 | 0.4024 | 0.5303 | 1.8333 | 220.0 | 0.1815 | 0.5282 |
+| 3 | 200 | 0.5250 | 0.3000 | 0.4250 | 0.1000 | 0.0500 | 0.7500 | 0.3100 | 0.5437 | 2.5000 | 300.0 | 0.1815 | 0.5345 |
+| 4 | 154 | 0.5517 | 0.0000 | 0.4000 | 0.1000 | 0.0312 | 0.8125 | 0.2532 | 0.5492 | 3.3377 | 400.5 | 0.1815 | 0.5267 |
+| 5 | 92 | 0.6154 | 0.0000 | 0.1000 | 0.0000 | 0.0500 | 0.9000 | 0.2174 | 0.5139 | 4.1087 | 493.0 | 0.1815 | 0.4940 |
+
+### 结果表：`weightedvote_p020`
+
+| k | total | old_acc | min_old | seen_new_acc | min_seen | unknown_FAR | unknown_reject | defer | known_cov | avg_rx | bytes/event | p95_latency | mean_rel |
+|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+| 1 | 308 | 0.0000 | 0.0000 | 0.2500 | 0.0500 | 0.0167 | 0.3000 | 0.7792 | 0.0766 | 1.0000 | 120.0 | 0.1798 | 0.6098 |
+| 2 | 246 | 0.4837 | 0.1000 | 0.3111 | 0.0500 | 0.1667 | 0.3542 | 0.4024 | 0.5303 | 1.8333 | 220.0 | 0.1798 | 0.5282 |
+| 3 | 200 | 0.5250 | 0.3000 | 0.4250 | 0.1000 | 0.0500 | 0.7500 | 0.3100 | 0.5437 | 2.5000 | 300.0 | 0.1798 | 0.5345 |
+| 4 | 154 | 0.5517 | 0.0000 | 0.4000 | 0.1000 | 0.0312 | 0.8125 | 0.2532 | 0.5492 | 3.3377 | 400.5 | 0.1798 | 0.5267 |
+| 5 | 92 | 0.6154 | 0.0000 | 0.1000 | 0.0000 | 0.0500 | 0.9000 | 0.2174 | 0.5139 | 4.1087 | 493.0 | 0.1798 | 0.4940 |
+
+### 解释
+
+`weighted_vote_margin`相对上一轮`vote_margin + class_reliability`提升了seen-new：k=3从0.4000到0.4250，`min_seen`从0.0500到0.1000；但old_acc仍只有0.5250，k=5也只有0.6154，并且k=2的unknown_FAR升至0.1667。说明类别权重确实缓解了seen-new被多数receiver压制的问题，但没有解决旧类目标域分离不足和unknown/open-set边界不稳的问题。该结果仍是负诊断，不能作为Stage2-C成功或部署成功。
+
+## 2026-07-03 23:41 seen-new prototype calibration本地落地
+
+### 目标
+
+weighted vote改善seen-new但仍受类原型偏置影响。根据TEEN式思想，本轮在星上可部署边界内只校准support memory中的seen-new prototype，不训练主干、不使用unknown query、不改变`R_t/R_s`协议。新增两种轻量策略：
+
+- `teen_blend`：`p_new'=normalize((1-alpha)p_new + alpha * old_mix)`，用于新类原型向相近旧类语义/信道方向收缩；
+- `teen_separate`：`p_new'=normalize(p_new + alpha * (p_new - old_mix))`，用于增强新旧类分离。
+
+两者都只使用部署support原型和地面旧类原型包，不读取source receiver样本或unknown query。
+
+### 本地变更
+
+| 文件 | 作用 |
+|---|---|
+| `code/scripts/phase2_collaborative_open_set_qknn_eval.py` | 新增`_calibrate_seen_new_centroids`；`build_qknn_memory`支持`prototype_calibration_policy`、`prototype_calibration_alpha`、`prototype_calibration_top_m`；CLI和metadata/evidence记录校准策略。 |
+| `code/tests/test_phase2_collaborative_open_set_qknn_eval.py` | 新增memory层测试：校准只移动seen-new centroid，不改变old centroid；新增集成测试：metadata/evidence记录校准参数。 |
+
+### 本地与镜像验证
+
+| 环境 | 命令 | 结果 |
+|---|---|---|
+| local `ssr-gpu` | 编译`phase2_collaborative_open_set_qknn_eval.py`和目标测试 | PASS |
+| local `ssr-gpu` | `test_phase2_collaborative_open_set_qknn_eval.py` | PASS，39 tests |
+| local `ssr-gpu` | `test_collaborative_open_set_qknn_eval.py` | PASS，38 tests |
+| mirror `ssr-gpu` | 同上 | PASS，39+38 tests |
+
+### Git状态
+
+已提交`4dd3ee2 Add seen-new prototype calibration for collaborative qKNN`，镜像仓库分支领先远端280。
+
+## 2026-07-03 23:53 seen-new prototype calibration N607诊断结果
+
+### 远端同步与验证
+
+| 项目 | 结果 |
+|---|---|
+| 远端环境 | `/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python`，Python 3.10.19 |
+| 远端文件 | `code/scripts/phase2_collaborative_open_set_qknn_eval.py`、`code/tests/test_phase2_collaborative_open_set_qknn_eval.py` |
+| 远端SHA | script `a69d4ffef1c45be0ee040df2d080b6337c048d6c9bd1737fcd32502e53cc4e8c`；test `598edaaf1594ae2a3c9a637940027c7ce5b408fe92a22c7e65b1832463bf7667` |
+| 远端验证 | 编译PASS；`test_phase2_collaborative_open_set_qknn_eval.py`39 tests OK；`test_collaborative_open_set_qknn_eval.py`38 tests OK |
+| GPU | GPU0运行；运行前后所有GPU均为`10/24576MiB` |
+| SSH/SCP | 每次后均检查为`NO_SSH_PROCESS`和`NO_N607_SSH_ESTABLISHED` |
+
+### artifact
+
+| artifact | SHA256 |
+|---|---|
+| `remote_artifacts/collab_open_set_qknn_cp_set_cvs_proto_teen_blend_a025_weightedvote_p020_adv3b02.json` | `FAD28B922EE3EA02354EBB9614EE54F701EF402EF111C10E2916B6275A737007` |
+| `remote_artifacts/collab_open_set_qknn_cp_set_cvs_proto_teen_blend_a025_weightedvote_p020_adv3b02_evidence.csv` | `BE52A12B87E1DD4978897D6BA2C59CC05CB1845B076C2E4B2DFB701D7B1C4A8D` |
+| `remote_artifacts/collab_open_set_qknn_cp_set_cvs_proto_teen_blend_a050_weightedvote_p020_adv3b02.json` | `DFCA17E6F11C8FF301332CACCB6E2A6E3CFA36E6B94DE854ED89CABEF3EA72D1` |
+| `remote_artifacts/collab_open_set_qknn_cp_set_cvs_proto_teen_blend_a050_weightedvote_p020_adv3b02_evidence.csv` | `5EDADAAA9B6470D1C18F779EDC206F0081B13F06C41BC407E38C698C70731E5D` |
+| `remote_artifacts/collab_open_set_qknn_cp_set_cvs_proto_teen_separate_a025_weightedvote_p020_adv3b02.json` | `44D16DF9BDF4E142DD85E110CBD4B686D5171E68A87E784F80A3D841F608AC9B` |
+| `remote_artifacts/collab_open_set_qknn_cp_set_cvs_proto_teen_separate_a025_weightedvote_p020_adv3b02_evidence.csv` | `ED7355C7373EF718E4D1B3ED6E202E9AFD3F3BBBAF8EE3DE591671D46F5D8D9E` |
+| `remote_artifacts/collab_open_set_qknn_cp_set_cvs_proto_teen_separate_a050_weightedvote_p020_adv3b02.json` | `67E6B6C506873A1EEE53555A4C4B7386C0E6F7A8ED69E2C8A511DB6C9E57A854` |
+| `remote_artifacts/collab_open_set_qknn_cp_set_cvs_proto_teen_separate_a050_weightedvote_p020_adv3b02_evidence.csv` | `13B5D4340EDCE05AE050CCB2C226ABE917BD749A5A1289A07A463B63BD471CFA` |
+
+### 结果摘要
+
+| 候选 | k | old_acc | min_old | seen_new_acc | min_seen | unknown_FAR | unknown_reject | defer | known_cov | bytes/event | p95_latency |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+| `teen_blend_a025` | 3 | 0.5250 | 0.3000 | 0.4500 | 0.1000 | 0.0500 | 0.7750 | 0.3050 | 0.5500 | 297.6 | 0.1835 |
+| `teen_blend_a050` | 3 | 0.5417 | 0.3000 | 0.4500 | 0.1000 | 0.0250 | 0.8000 | 0.2900 | 0.5563 | 298.2 | 0.1310 |
+| `teen_separate_a025` | 3 | 0.5250 | 0.3000 | 0.4000 | 0.1000 | 0.0500 | 0.7500 | 0.2950 | 0.5625 | 294.6 | 0.1806 |
+| `teen_separate_a050` | 3 | 0.5583 | 0.3000 | 0.4250 | 0.1000 | 0.0500 | 0.7500 | 0.2550 | 0.5938 | 293.4 | 0.1835 |
+| `teen_blend_a050` | 4 | 0.6092 | 0.0000 | 0.4000 | 0.1000 | 0.0000 | 0.8438 | 0.2403 | 0.5902 | 395.8 | 0.1310 |
+| `teen_separate_a050` | 5 | 0.6154 | 0.0000 | 0.1000 | 0.0000 | 0.0500 | 0.9000 | 0.1739 | 0.5833 | 463.0 | 0.1835 |
+
+完整k=1到5结果保存在对应JSON。与weighted baseline相比，`teen_blend_a050`在k=3把unknown_FAR从0.0500降到0.0250，同时保持seen_new_acc=0.4500并把known_cov从0.5437提升到0.5563；`teen_separate_a050`在k=3把old_acc提升到0.5583、known_cov提升到0.5938，但FAR仍为0.0500。两者都只是小幅改进，仍远低于目标。
+
+### 结论
+
+TEEN式原型校准在当前ADV3B02/qknn8特征上能带来有限收益，但无法突破旧类和seen-new的类间分离上限。当前最稳联合候选是`teen_blend_a050,k=3`：`old_acc=0.5417`、`seen_new_acc=0.4500`、`unknown_FAR=0.0250`、`min_old=0.3000`、`min_seen=0.1000`。它不能作为Stage2-C成功或部署成功。下一步应转向更强的目标域旧类上限诊断或轻量adapter/BN affine诊断，判断瓶颈是否来自冻结ADV3B02特征空间本身，而不是继续只调协同融合。
+
+## 2026-07-04 00:22 target-support feature adapter本地落地
+
+### 目标
+
+在冻结ADV3B02 backbone和`z_id`特征的前提下，加入只由目标接收机域`R_t`内old+seen-new support拟合的轻量特征adapter，诊断当前瓶颈是否来自目标域公共偏移。该模块不使用unknown query，不更新主干，不改变`Y_old/Y_new/Y_unknown`互斥定义。
+
+### 本地变更
+
+| 文件 | 作用 |
+|---|---|
+| `code/scripts/phase2_collaborative_open_set_qknn_eval.py` | 新增`FeatureAdapter`、`support_center`和`support_bn_affine`策略；memory、query、support/proxy阈值校准、class threshold和conformal校准统一进入adapter空间；CLI新增`--feature_adapter_policy`、`--feature_adapter_strength`、`--feature_adapter_variance_floor`；evidence和metadata记录adapter配置；新增Stage2-C TX split硬校验，要求target-old属于source TX，seen-new/unknown不属于source TX；`strict_event_key`改为所有target receivers共享event交集。 |
+| `code/tests/test_phase2_collaborative_open_set_qknn_eval.py` | 新增adapter行为、BN affine零方差、metadata/evidence字段、source TX语义、strict event交集测试。 |
+
+### 子agent监督和修复
+
+| 子agent角色 | 发现 | 处理 |
+|---|---|---|
+| 代码review | adapter后memory/query和raw阈值校准空间不一致；evidence缺`feature_adapter_variance_floor`；helper内部未夹紧variance floor。 | 已修复：support/proxy校准统一使用adapter空间；virtual unknown保持memory空间不二次adapter；evidence补variance floor；helper内部夹紧到`1e-8`。 |
+| 算法合理性 | target-support轻量adapter本身符合`项目.md`允许的小adapter/BN affine边界，但缺少`Y_old`属于source TX的前置硬校验；strict event语义原实现允许partial receiver group。 | 已修复：新增source TX split检查；strict event改为target receivers共同event交集，无共享event时失败。 |
+| 逐项监督 | 当前receiver-domain ranked诊断不能声明严格同事件协同；指标仍未达Stage2-C成功。 | 本节继续标为诊断模块，后续N607结果只按负/正诊断报告，不写部署成功。 |
+| 文献方法 | 建议后续主线转向质量感知late fusion、按需协作、prototype shrinkage和support-only阈值bank。 | 作为下一步算法方向记录，本次实现先验证target-support adapter是否能改善特征空间偏移。 |
+
+### 本地与镜像验证
+
+| 环境 | 命令 | 结果 |
+|---|---|---|
+| local `ssr-gpu` | `python -m py_compile code\scripts\phase2_collaborative_open_set_qknn_eval.py code\tests\test_phase2_collaborative_open_set_qknn_eval.py` | PASS |
+| local `ssr-gpu` | `python -m unittest discover -s code\tests -p "test_phase2_collaborative_open_set_qknn_eval.py"` | PASS，44 tests |
+| local `ssr-gpu` | `python -m unittest discover -s code\tests -p "test_collaborative_open_set_qknn_eval.py"` | PASS，38 tests |
+| mirror `ssr-gpu` | 同上 | PASS，44+38 tests |
+
+### Git和哈希
+
+| 项目 | 结果 |
+|---|---|
+| 镜像仓库 | `E:\type10-7\github_publish\CVS-RFFI-repo` |
+| Git提交 | `d4ccd78 Add target-support feature adapter for collaborative qKNN`；`83c1c9c Fix feature adapter calibration protocol checks` |
+| Git状态 | `codex/cvs-rffi-release-20260626`领先远端282，工作区clean |
+| script SHA256 | `BD8678B6F031A22E412908D2630CBA7A1E3A5BB9EB2279DC3E27DAACE2196D8F` |
+| test SHA256 | `DC002D411DA777B38BBCBE8B582F287E2FEA213B2E3A3BEBA98732DA70397E21` |
+
+### N607同步计划
+
+同步文件：
+
+| local | remote |
+|---|---|
+| `E:\type10-7\code\scripts\phase2_collaborative_open_set_qknn_eval.py` | `/home/szu2070436088/2510044040/CV-SincNet/code/scripts/phase2_collaborative_open_set_qknn_eval.py` |
+| `E:\type10-7\code\tests\test_phase2_collaborative_open_set_qknn_eval.py` | `/home/szu2070436088/2510044040/CV-SincNet/code/tests/test_phase2_collaborative_open_set_qknn_eval.py` |
+
+远端环境使用`/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python`。诊断候选将基于当前最稳`teen_blend_a050 + weighted_vote_margin + conformal_margin_risk`配置，增加`feature_adapter_policy in {support_center,support_bn_affine}`和`feature_adapter_strength in {0.25,0.50}`，仍使用`collab_counts all`覆盖1到全部target receivers。
+
+## 2026-07-04 00:34 target-support feature adapter N607诊断结果
+
+### 远端同步与验证
+
+| 项目 | 结果 |
+|---|---|
+| N607 preflight | 直连`N607`通过；项目根`/home/szu2070436088/2510044040/CV-SincNet`可见；8张RTX3090均为`10/24576MiB` |
+| 远端环境 | `/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python`，Python 3.10.19 |
+| 同步文件 | `code/scripts/phase2_collaborative_open_set_qknn_eval.py`；`code/tests/test_phase2_collaborative_open_set_qknn_eval.py` |
+| 远端SHA | script `bd8678b6f031a22e412908d2630cba7a1e3a5bb9eb2279dc3e27daace2196d8f`；test `dc002d411da777b38bbcbe8b582f287e2fea213b2e3a3beba98732da70397e21` |
+| 远端验证 | 编译PASS；`test_phase2_collaborative_open_set_qknn_eval.py`44 tests OK；`test_collaborative_open_set_qknn_eval.py`38 tests OK |
+| 运行GPU | `CUDA_VISIBLE_DEVICES=0`；运行前后所有GPU均为`10/24576MiB` |
+| 输出规模 | 每个候选均为`receiver_count=5`、`group_count=308`、`evidence_row_count=1000` |
+| SSH/SCP | 每次后均检查为`NO_SSH_PROCESS`和`NO_N607_OR_BRIDGE_SSH_ESTABLISHED` |
+
+### artifact
+
+| artifact | SHA256 |
+|---|---|
+| `remote_artifacts/collab_open_set_qknn_cp_set_cvs_feature_adapter_support_center_s025_adv3b02.json` | `14613DCA71C5A6A25D2FB1F3C590359C94220F48E03FB9F23DA3D543C347CA13` |
+| `remote_artifacts/collab_open_set_qknn_cp_set_cvs_feature_adapter_support_center_s025_adv3b02_evidence.csv` | `7ED6C8AFBD84585EA7DCD6BBB7E3AA5A2309DB79BF36BCF0E1B632FCC2AA4634` |
+| `remote_artifacts/collab_open_set_qknn_cp_set_cvs_feature_adapter_support_center_s050_adv3b02.json` | `6FE9FE702E5C85F430F8100CC76831EF561FFE8F8FB70F82B7A8BCBBF93D020D` |
+| `remote_artifacts/collab_open_set_qknn_cp_set_cvs_feature_adapter_support_center_s050_adv3b02_evidence.csv` | `E82AC44519A1DFCE8AF558F8EE8666D181355B152DA7EE0B67F64C77E5A90968` |
+| `remote_artifacts/collab_open_set_qknn_cp_set_cvs_feature_adapter_support_bn_affine_s025_adv3b02.json` | `3D341EE30F8ECF87A283D4BFE6136D5029B21719A1EE9004C98541CF756D36AF` |
+| `remote_artifacts/collab_open_set_qknn_cp_set_cvs_feature_adapter_support_bn_affine_s025_adv3b02_evidence.csv` | `29C36288DDDDE002DE18FC6FCB7FD6E504D19A30DB9ACDE694833239FD097EC6` |
+| `remote_artifacts/collab_open_set_qknn_cp_set_cvs_feature_adapter_support_bn_affine_s050_adv3b02.json` | `193E3EEE41280C50B41C483491BCEB049EABA4E5ABFF09169DE4B7F41F7953F5` |
+| `remote_artifacts/collab_open_set_qknn_cp_set_cvs_feature_adapter_support_bn_affine_s050_adv3b02_evidence.csv` | `79DB10760F2444DC3651FF8A9B1590C86E02A36E1F38E2BAC9BB911394449229` |
+
+### 结果摘要
+
+| 候选 | k | old_acc | min_old | seen_new_acc | min_seen | unknown_FAR | unknown_reject | defer | known_cov | bytes/event | p95_latency |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+| `support_center_s025` | 3 | 0.5250 | 0.3000 | 0.4250 | 0.0500 | 0.0500 | 0.7750 | 0.2950 | 0.5375 | 300.6 | 0.1333 |
+| `support_center_s050` | 3 | 0.5333 | 0.3000 | 0.4500 | 0.0500 | 0.0500 | 0.8000 | 0.2900 | 0.5375 | 300.6 | 0.1335 |
+| `support_bn_affine_s025` | 3 | 0.5167 | 0.3000 | 0.4250 | 0.0500 | 0.0500 | 0.7750 | 0.2950 | 0.5312 | 300.0 | 0.1844 |
+| `support_bn_affine_s050` | 3 | 0.5333 | 0.2500 | 0.4250 | 0.0500 | 0.0500 | 0.8000 | 0.3000 | 0.5312 | 301.8 | 0.1347 |
+| `support_center_s050` | 4 | 0.6092 | 0.0000 | 0.4000 | 0.1000 | 0.0312 | 0.7500 | 0.2597 | 0.5820 | 399.7 | 0.1335 |
+| `support_center_s050` | 5 | 0.6538 | 0.0000 | 0.1000 | 0.0000 | 0.0500 | 0.9000 | 0.2391 | 0.5417 | 490.4 | 0.1335 |
+| `support_bn_affine_s050` | 5 | 0.6538 | 0.0000 | 0.1000 | 0.0000 | 0.0500 | 0.9000 | 0.2500 | 0.5417 | 497.0 | 0.1347 |
+
+完整k=1到5结果保存在对应JSON。`support_center_s050,k=3`相对上一轮`teen_blend_a050,k=3`的`old_acc=0.5417`略降到0.5333，`seen_new_acc=0.4500`持平，`unknown_FAR`从0.0250升至0.0500；k=4/k=5可以提高old_acc到0.6092/0.6538，但`min_old=0`且seen-new在k=5降到0.1000。`support_bn_affine`未表现出稳定优势，低K方差估计对当前qKNN空间没有带来有效校正。
+
+### 结论
+
+target-support feature adapter是协议合规的星上轻量诊断模块，但在当前ADV3B02/qknn8 Stage2-C特征上没有突破旧类和seen-new联合性能上限，也没有改善unknown拒识的折中边界。本轮仍不能声明99/97/99目标达成、Stage2-C成功或部署成功。下一步应按文献子agent建议转向`support校准的receiver质量权重+按需协作`，或回到地面训练/特征学习阶段加入面向`R_t`漂移的更强表征约束；单纯后处理adapter、prototype和阈值调参已出现明显收益上限。
+
+## 2026-07-04 01:05 support utility按需协同本地落地
+
+### 目标
+
+上一轮adapter诊断说明冻结ADV3B02/qknn8特征空间的后处理收益有限。本轮实现更贴近卫星群部署的按需协同策略：每个receiver只上传局部证据包，融合节点根据support-derived质量、class conformal p-value、margin/score不足、unknown边界风险和通信/时延成本决定是否继续请求其他receiver。该策略目标是减少无效全量协同，并在边界样本上优先选择更可靠、低成本、有support支撑的receiver。
+
+### 本地变更
+
+| 文件 | 作用 |
+|---|---|
+| `code/evaluation/collaborative_open_set_qknn_eval.py` | 新增`collaboration_policy=support_utility`；新增`_support_utility_candidate_score`和`_fuse_support_utility_event`；输出`support_utility_trace`与`support_utility_stop_reason`；汇总`collaboration_stop_reasons`支持该新策略；修复seen-new rescue安全边界，rescue只允许`role=seen_new`事件触发，unknown query预测为seen-new时不得作为rescue接受。 |
+| `code/scripts/phase2_collaborative_open_set_qknn_eval.py` | CLI新增`--collaboration_policy support_utility`选择。 |
+| `code/tests/test_collaborative_open_set_qknn_eval.py` | 新增support utility选择低成本高support质量receiver的测试；修正seen-new rescue测试，验证unknown role不触发rescue。 |
+
+### 本地与镜像验证
+
+| 环境 | 命令 | 结果 |
+|---|---|---|
+| local `ssr-gpu` | `python -m py_compile code\evaluation\collaborative_open_set_qknn_eval.py code\scripts\phase2_collaborative_open_set_qknn_eval.py code\tests\test_collaborative_open_set_qknn_eval.py` | PASS |
+| local `ssr-gpu` | `python -m unittest discover -s code\tests -p "test_collaborative_open_set_qknn_eval.py"` | PASS，39 tests |
+| local `ssr-gpu` | `python -m unittest discover -s code\tests -p "test_phase2_collaborative_open_set_qknn_eval.py"` | PASS，44 tests |
+| mirror `ssr-gpu` | 编译与上述两个测试文件 | PASS，39+44 tests |
+
+### Git和哈希
+
+| 项目 | 结果 |
+|---|---|
+| Git提交 | `58cf3ea Add support utility collaboration policy` |
+| Git状态 | `codex/cvs-rffi-release-20260626`领先远端283，工作区clean |
+| eval SHA256 | `64C4BB8771EB15BCE20EF41EEAA276FE7CBEA2DDD79C8A9D2C1BB5171324C401` |
+| script SHA256 | `D1C8653F4FD926DA1418B973CE09985E2810F0A91AD3E40F475C234A35BD7FCC` |
+| eval test SHA256 | `87A2B8F8124879D9047C358BF02FB7E5A666ED1AD54C04D0B5132CB46669EB8F` |
+
+### N607同步计划
+
+同步文件：
+
+| local | remote |
+|---|---|
+| `E:\type10-7\code\evaluation\collaborative_open_set_qknn_eval.py` | `/home/szu2070436088/2510044040/CV-SincNet/code/evaluation/collaborative_open_set_qknn_eval.py` |
+| `E:\type10-7\code\scripts\phase2_collaborative_open_set_qknn_eval.py` | `/home/szu2070436088/2510044040/CV-SincNet/code/scripts/phase2_collaborative_open_set_qknn_eval.py` |
+| `E:\type10-7\code\tests\test_collaborative_open_set_qknn_eval.py` | `/home/szu2070436088/2510044040/CV-SincNet/code/tests/test_collaborative_open_set_qknn_eval.py` |
+
+远端诊断继续使用`/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python`、`ADV3B02_CORE90_SOFT_E200`对应`runs/phase2_adv3b02_collab_open_set_qknn_full_20260703/features.npz`和`qknn8`，以`collab_counts all`覆盖1到5个target receivers。该结果仍为`receiver_domain_ranked`诊断，不声明严格同事件协同。
+
+## 2026-07-04 01:18 support utility按需协同N607诊断结果
+
+### 远端同步与验证
+
+| 项目 | 结果 |
+|---|---|
+| N607 preflight | 直连`N607`通过；项目根可见；8张RTX3090均为`10/24576MiB` |
+| 远端环境 | `/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python`，Python 3.10.19 |
+| 远端SHA | eval `64c4bb8771eb15bce20ef41eeaa276fe7cbea2ddd79c8a9d2c1bb5171324c401`；script `d1c8653f4fd926da1418b973ce09985e2810f0a91ad3e40f475c234a35bd7fcc`；eval test `87a2b8f8124879d9047c358bf02fb7e5a666ed1ad54c04d0b5132cb46669eb8f` |
+| 远端验证 | 编译PASS；`test_collaborative_open_set_qknn_eval.py`39 tests OK；`test_phase2_collaborative_open_set_qknn_eval.py`44 tests OK |
+| 运行GPU | `CUDA_VISIBLE_DEVICES=0`；运行前后所有GPU均为`10/24576MiB` |
+| 输出规模 | 每个候选均为`receiver_count=5`、`group_count=308`、`evidence_row_count=1000` |
+| SSH/SCP | 每次后均检查为`NO_SSH_PROCESS`和`NO_N607_OR_BRIDGE_SSH_ESTABLISHED` |
+
+### artifact
+
+| artifact | SHA256 |
+|---|---|
+| `remote_artifacts/collab_open_set_qknn_cp_set_cvs_support_utility_p020_adv3b02.json` | `2D7E9796E79EEF8F72C4BF2BEB8A6BF6CBC737D48D7545E6513689C1CDD8E79F` |
+| `remote_artifacts/collab_open_set_qknn_cp_set_cvs_support_utility_p020_adv3b02_evidence.csv` | `703F5C0512A9DBE1051805DFD0DBB8DBB9431BA400555203A7D5B8A575031823` |
+| `remote_artifacts/collab_open_set_qknn_cp_set_cvs_support_utility_p015_adv3b02.json` | `211EB270C53F67A1B86CBA331236F7867C1E84DDABB801A6DE4B784FD77DD869` |
+| `remote_artifacts/collab_open_set_qknn_cp_set_cvs_support_utility_p015_adv3b02_evidence.csv` | `7F3B8A49FC9C38AE323C7C46AEF018FDB49F982172AA59C94F8ADBC1298026EC` |
+
+### 结果摘要
+
+| 候选 | k | old_acc | min_old | seen_new_acc | min_seen | unknown_FAR | unknown_reject | defer | known_cov | avg_rx | bytes/event | p95_latency |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+| `support_utility_p020` | 1 | 0.0000 | 0.0000 | 0.2500 | 0.0500 | 0.0167 | 0.3167 | 0.7760 | 0.0766 | 1.0000 | 120.0 | 0.1832 |
+| `support_utility_p020` | 2 | 0.4641 | 0.1000 | 0.3333 | 0.1000 | 0.1458 | 0.3750 | 0.3699 | 0.5152 | 1.7520 | 210.2 | 0.1832 |
+| `support_utility_p020` | 3 | 0.5167 | 0.3000 | 0.4500 | 0.1000 | 0.0250 | 0.8000 | 0.2250 | 0.5750 | 2.2450 | 269.4 | 0.1832 |
+| `support_utility_p020` | 4 | 0.5402 | 0.0000 | 0.4286 | 0.1500 | 0.0312 | 0.8438 | 0.1494 | 0.6066 | 2.7013 | 324.2 | 0.1832 |
+| `support_utility_p020` | 5 | 0.5962 | 0.0000 | 0.1500 | 0.0000 | 0.0500 | 0.9000 | 0.1413 | 0.5694 | 3.2717 | 392.6 | 0.1832 |
+| `support_utility_p015` | 3 | 0.5167 | 0.3000 | 0.4500 | 0.1000 | 0.0250 | 0.8000 | 0.2250 | 0.5750 | 2.2450 | 269.4 | 0.1803 |
+| `support_utility_p015` | 4 | 0.5402 | 0.0000 | 0.4286 | 0.1500 | 0.0312 | 0.8438 | 0.1494 | 0.6066 | 2.7013 | 324.2 | 0.1803 |
+
+`p020`和`p015`结果一致，说明当前配置下`conformal_rescue_min_pvalue`不是主瓶颈。与上一轮`teen_blend_a050,k=3`相比，`support_utility,k=3`把平均参与receiver从约2.5降到2.245，`bytes/event`从约298.2降到269.4，defer从0.2900降到0.2250，并保持`seen_new_acc=0.4500`、`unknown_FAR=0.0250`；但`old_acc`从0.5417降到0.5167。因此它是效率改进，不是性能突破。
+
+### 结论
+
+`support_utility`实现了更现实的按需协同：在边界样本请求更多receiver，在低收益或已可决策样本提前停止，并显式报告`avg_rx`、`bytes/event`、`p95_latency`和停止原因。但它没有达到目标指标，仍不能声明99/97/99、Stage2-C成功或部署成功。当前证据表明：协同调度可以降低资源消耗和defer，但无法在ADV3B02/qknn8现有特征空间内解决旧类/seen-new/unknown的根本可分性瓶颈。下一步应进入更强表征路线：地面训练阶段加入open-set/source-unknown约束、receiver leakage约束和satellite stress下的class-conditional compactness，而不是继续单独调融合器。
+## 2026-07-03support_utility+CPR gate3补充诊断
+
+目标：按多子agent审查建议，对现有ADV3B02 open-set qknn特征补跑更严格的support utility+CPR gate3，验证是否能在星地信道视图下降低unknown FAR。该补跑使用已有`runs/phase2_adv3b02_collab_open_set_qknn_full_20260703/features.npz`，仅作为ADV3B02诊断对照；主线SA33指定权重结果见`phase2_sa33_collab_open_set_qknn_full_20260703/report.md`。
+
+远端环境：N607直连预检通过，远端`/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python`；运行前后GPU均为`10 MiB/24576 MiB`级别。产物已拉回`automation_reports/CV-SincNet/phase2_adv3b02_collab_open_set_qknn_full_20260703/remote_artifacts/`；SSH/SCP后本地检查无残留`ssh.exe`或N607/bridge的22端口`ESTABLISHED`连接。
+
+产物SHA256：
+
+|产物|SHA256|
+|---|---|
+|`collab_open_set_qknn_scorer_cvs_support_utility_cpr_p20_s05_gate3_adv3b02.json`|`236E258BB2C367C9EC92B90FB528644F671BE52ADFF2156F3CDBBB8233E78CBD`|
+|`collab_open_set_qknn_scorer_cvs_support_utility_cpr_p20_s05_gate3_adv3b02.csv`|`AFB3CE0B4BD11A58236D2828FEF0FFF85624B08893EEAAC1219870D883EAF1B5`|
+|`collab_open_set_qknn_scorer_cvs_support_utility_cpr_p15_s05_u098_gate3_adv3b02.json`|`8CF5673EAC671A42159E36091289062B29D1433BF1975AA2938E684D8CE7A51B`|
+|`collab_open_set_qknn_scorer_cvs_support_utility_cpr_p15_s05_u098_gate3_adv3b02.csv`|`B67682F782E384CD9F427BF06E42AF5DA85355569C2F72C1E9CA5D7E2FBF5FA1`|
+
+结果表：
+
+|候选|协同数|old_acc|min_old|seen_new_acc|min_seen|unknown_FAR|unknown_reject|defer|known_cov|bytes/event|lat_p95|
+|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+|`p15_s05_u098_gate3`|1|0.0000|0.0000|0.0000|0.0000|0.0000|0.3000|0.8442|0.0000|120.0000|0.1299|
+|`p15_s05_u098_gate3`|2|0.0000|0.0000|0.3778|0.1500|0.0000|0.4792|0.6748|0.0859|218.0488|0.1299|
+|`p15_s05_u098_gate3`|3|0.4917|0.2500|0.5250|0.2500|0.0000|0.9500|0.2000|0.5000|296.4000|0.1299|
+|`p15_s05_u098_gate3`|4|0.5402|0.0000|0.5714|0.3500|0.0000|1.0000|0.0974|0.5574|345.1948|0.1299|
+|`p15_s05_u098_gate3`|5|0.6154|0.0000|0.3500|0.0000|0.0000|1.0000|0.0652|0.5556|400.4348|0.1299|
+|`p20_s05_gate3`|1|0.0000|0.0000|0.0000|0.0000|0.0000|0.2833|0.8571|0.0000|120.0000|0.1823|
+|`p20_s05_gate3`|2|0.0000|0.0000|0.3778|0.1500|0.0000|0.4583|0.6951|0.0859|219.5122|0.1823|
+|`p20_s05_gate3`|3|0.5083|0.2500|0.6500|0.4000|0.0000|0.9500|0.1900|0.5437|300.0000|0.1823|
+|`p20_s05_gate3`|4|0.5517|0.0000|0.6286|0.4500|0.0000|0.9688|0.1104|0.5820|345.1948|0.1823|
+|`p20_s05_gate3`|5|0.6346|0.0000|0.4500|0.0000|0.0000|1.0000|0.0761|0.5972|405.6522|0.1823|
+
+判定：ADV3B02 gate3能把unknown FAR压到0，但known性能仍不足，且per-class floor仍有0；这不是Stage2-C成功证据，只是说明更强CPR gate可作为unknown安全阀。后续应优先提升known覆盖和per-class floor，而不是继续只压unknown FAR。
