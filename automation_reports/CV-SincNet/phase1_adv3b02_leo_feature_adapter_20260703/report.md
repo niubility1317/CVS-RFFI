@@ -979,6 +979,20 @@ Planned N607 output:
 
 Decision rule before returning to target2: if V18 has`strong_target1_pass=0`, target1 remains not achieved and unknown rejection should not be re-optimized on top of that adapter.
 
+Launch status:
+
+| Item | Value |
+|---|---|
+| Launch time | 2026-07-03 10:11 CST |
+| Remote cwd | `/home/szu2070436088/2510044040/CV-SincNet` |
+| Command | `nohup env ROOT=/home/szu2070436088/2510044040/CV-SincNet PYTHON=/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python GPU=0 bash code/scripts/sweep_phase1_adv3b02_cleanid_target1_v18_20260703.sh > logs/phase1_adv3b02_cleanid_target1_v18_20260703/driver_nohup.out 2>&1 &` |
+| Driver PID | `1304297` |
+| First observed child PID | `1304302` |
+| GPU allocation | `GPU=0`, `CUDA_VISIBLE_DEVICES=0` inside launcher |
+| Driver log | `/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_adv3b02_cleanid_target1_v18_20260703/driver_nohup.out` |
+| Startup health | PASS: driver log shows V18 start and first cell; GPU0 memory/use rose to `393 MiB`/`9%`; no SSH connection left open locally |
+| Expected completion artifacts | `target1_strong_v18_summary.csv`, `target1_strong_v18_metrics.json`, `target1_strong_v18_best.json`, `target1_strong_v18_eval.out` under the V18 log root |
+
 ## V11 Completion Results
 
 V11 completed two IQ pre-adapter variants on N607:
