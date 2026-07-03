@@ -2360,7 +2360,28 @@ class CollaborativeOpenSetQknnEvalTest(unittest.TestCase):
         self.assertEqual(unguarded["counts"]["3"]["unknown_FAR"], 1.0)
         self.assertEqual(guarded["counts"]["3"]["unknown_FAR"], 0.0)
         self.assertEqual(guarded["counts"]["3"]["unknown_reject_rate"], 1.0)
+        self.assertEqual(guarded["counts"]["3"]["candidate_set_high_unknown_veto_count"], 1)
+        self.assertEqual(guarded["counts"]["3"]["candidate_set_high_unknown_veto_by_role"], {"unknown": 1})
         self.assertEqual(guarded["candidate_set_event_high_unknown_risk_veto"], 0.99)
+
+        with self.assertRaisesRegex(ValueError, "candidate_set_max_label_high_unknown_risk_fraction"):
+            evaluate_collaborative_open_set_evidence(
+                rows,
+                candidate_set_max_label_high_unknown_risk_fraction=1.5,
+                **common,
+            )
+        with self.assertRaisesRegex(ValueError, "candidate_set_high_unknown_risk_threshold"):
+            evaluate_collaborative_open_set_evidence(
+                rows,
+                candidate_set_high_unknown_risk_threshold=-0.1,
+                **common,
+            )
+        with self.assertRaisesRegex(ValueError, "candidate_set_event_high_unknown_risk_veto"):
+            evaluate_collaborative_open_set_evidence(
+                rows,
+                candidate_set_event_high_unknown_risk_veto=-1.0,
+                **common,
+            )
 
     def test_strict_protocol_metadata_validates_stage2_boundaries(self):
         from evaluation.collaborative_open_set_qknn_eval import evaluate_collaborative_open_set_evidence

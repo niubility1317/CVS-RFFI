@@ -85,6 +85,20 @@ def _float(row: Mapping[str, Any], key: str, default: float = 0.0) -> float:
     return value
 
 
+def _validate_unit_interval(value: float, name: str) -> float:
+    numeric = float(value)
+    if numeric < 0.0 or numeric > 1.0:
+        raise ValueError(f"{name} must be in [0, 1], got {numeric}")
+    return numeric
+
+
+def _validate_non_negative(value: float, name: str) -> float:
+    numeric = float(value)
+    if numeric < 0.0:
+        raise ValueError(f"{name} must be >= 0, got {numeric}")
+    return numeric
+
+
 def _has_finite_float(row: Mapping[str, Any], key: str) -> bool:
     if key not in row:
         return False
@@ -364,6 +378,18 @@ def _fuse_event(
     receiver_class_reliability_policy = _normalize_scope(receiver_class_reliability_policy or "none")
     if receiver_class_reliability_policy not in {"none", "support_calibrated"}:
         raise ValueError("receiver_class_reliability_policy must be none or support_calibrated")
+    candidate_set_event_high_unknown_risk_veto = _validate_non_negative(
+        candidate_set_event_high_unknown_risk_veto,
+        "candidate_set_event_high_unknown_risk_veto",
+    )
+    candidate_set_max_label_high_unknown_risk_fraction = _validate_unit_interval(
+        candidate_set_max_label_high_unknown_risk_fraction,
+        "candidate_set_max_label_high_unknown_risk_fraction",
+    )
+    candidate_set_high_unknown_risk_threshold = _validate_unit_interval(
+        candidate_set_high_unknown_risk_threshold,
+        "candidate_set_high_unknown_risk_threshold",
+    )
     label_scores: defaultdict[str, float] = defaultdict(float)
     label_raw_scores: defaultdict[str, float] = defaultdict(float)
     label_weight_totals: defaultdict[str, float] = defaultdict(float)
@@ -1901,6 +1927,8 @@ def _finalize_metrics(
     resource_budget_violations = 0
     adaptive_stop_reasons: defaultdict[str, int] = defaultdict(int)
     seen_new_rescue_total = 0
+    candidate_set_high_unknown_veto_total = 0
+    candidate_set_high_unknown_veto_by_role: defaultdict[str, int] = defaultdict(int)
 
     old_labels = set(expected_old_labels or set())
     seen_new_labels = set(expected_seen_new_labels or set())
@@ -1934,6 +1962,9 @@ def _finalize_metrics(
         if requested_more:
             request_more_total += 1
         resource_budget_violations += int(not bool(item.get("resource_budget_passed", True)))
+        if bool(item.get("candidate_set_high_unknown_veto", False)):
+            candidate_set_high_unknown_veto_total += 1
+            candidate_set_high_unknown_veto_by_role[role] += 1
         stop_reason = str(
             item.get("rb_capr_stop_reason")
             or item.get("support_utility_stop_reason")
@@ -2046,6 +2077,9 @@ def _finalize_metrics(
         "collaboration_stop_reasons": dict(sorted(adaptive_stop_reasons.items())),
         "seen_new_rescue_count": int(seen_new_rescue_total),
         "seen_new_rescue_rate": _safe_rate(seen_new_rescue_total, total_events),
+        "candidate_set_high_unknown_veto_count": int(candidate_set_high_unknown_veto_total),
+        "candidate_set_high_unknown_veto_rate": _safe_rate(candidate_set_high_unknown_veto_total, total_events),
+        "candidate_set_high_unknown_veto_by_role": dict(sorted(candidate_set_high_unknown_veto_by_role.items())),
     }
 
 
