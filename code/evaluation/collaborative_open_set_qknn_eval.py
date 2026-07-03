@@ -293,13 +293,28 @@ def _fuse_event(
     seen_new_gate_max_radius_z: float = 1.0e12,
 ) -> dict[str, Any]:
     active_components = _parse_risk_components(scorer_risk_components)
+    policy = _normalize_scope(fusion_policy)
     label_fusion_policy = _normalize_scope(label_fusion_policy)
     if label_fusion_policy not in {"score_sum", "vote_sum", "vote_margin", "max_score"}:
         raise ValueError("label_fusion_policy must be score_sum, vote_sum, vote_margin, or max_score")
     label_scores: defaultdict[str, float] = defaultdict(float)
+    label_raw_scores: defaultdict[str, float] = defaultdict(float)
     label_weight_totals: defaultdict[str, float] = defaultdict(float)
     label_margins: defaultdict[str, list[float]] = defaultdict(list)
     label_max_scores: defaultdict[str, float] = defaultdict(float)
+    label_support_density_values: defaultdict[str, list[float]] = defaultdict(list)
+    label_radius_z_values: defaultdict[str, list[float]] = defaultdict(list)
+    label_conformal_pvalues: defaultdict[str, list[float]] = defaultdict(list)
+    label_conformal_support_counts: defaultdict[str, list[float]] = defaultdict(list)
+    label_support_density_missing_values: defaultdict[str, list[bool]] = defaultdict(list)
+    label_radius_z_missing_values: defaultdict[str, list[bool]] = defaultdict(list)
+    label_candidate_receiver_counts: defaultdict[str, int] = defaultdict(int)
+    label_top1_receiver_counts: defaultdict[str, int] = defaultdict(int)
+    label_min_evidence_rank: defaultdict[str, int] = defaultdict(lambda: 10**9)
+    known_old_labels = set(str(item) for item in (old_labels or set()) if str(item))
+    known_seen_new_labels = set(str(item) for item in (seen_new_rescue_labels or set()) if str(item))
+    allowed_cp_set_labels = known_old_labels | known_seen_new_labels
+    filtered_candidate_count = 0
     weights = []
     risks = []
     margins = []
@@ -319,27 +334,124 @@ def _fuse_event(
     class_conformal_support_counts = []
     support_density_missing = []
     radius_z_missing = []
+
+    def _add_label_candidate(
+        *,
+        row_seen_labels: set[str],
+        label: str,
+        weight: float,
+        score_value: float,
+        margin_value: float,
+        support_density_value: float,
+        radius_z_value: float,
+        support_density_is_missing: bool,
+        radius_z_is_missing: bool,
+        conformal_pvalue: float,
+        conformal_support_count: float,
+        conformal_weighted: bool,
+        source_rank: int,
+    ) -> None:
+        nonlocal filtered_candidate_count
+        if not label or label == UNKNOWN_LABEL or label in row_seen_labels:
+            return
+        if policy == "cp_set_cvs" and allowed_cp_set_labels and label not in allowed_cp_set_labels:
+            filtered_candidate_count += 1
+            return
+        row_seen_labels.add(label)
+        pvalue = max(0.0, min(1.0, float(conformal_pvalue)))
+        candidate_score = max(0.0, float(score_value))
+        support_count = max(0.0, float(conformal_support_count))
+        if policy == "cp_set_cvs" and int(source_rank) > 1 and (candidate_score <= 0.0 or support_count < 1.0):
+            filtered_candidate_count += 1
+            return
+        if conformal_weighted:
+            candidate_score *= 0.5 + 0.5 * pvalue
+        label_scores[label] += weight * candidate_score
+        label_raw_scores[label] += weight * max(0.0, float(score_value))
+        label_weight_totals[label] += weight
+        label_margins[label].append(max(0.0, float(margin_value)))
+        label_max_scores[label] = max(label_max_scores[label], max(0.0, float(score_value)))
+        label_support_density_values[label].append(support_density_value)
+        label_radius_z_values[label].append(radius_z_value)
+        label_conformal_pvalues[label].append(pvalue)
+        label_conformal_support_counts[label].append(support_count)
+        label_support_density_missing_values[label].append(bool(support_density_is_missing))
+        label_radius_z_missing_values[label].append(bool(radius_z_is_missing))
+        label_candidate_receiver_counts[label] += 1
+        if int(source_rank) == 1:
+            label_top1_receiver_counts[label] += 1
+        label_min_evidence_rank[label] = min(label_min_evidence_rank[label], int(source_rank))
+
     for row in selected:
         weight = max(0.0, _float(row, "reliability", 1.0))
         label = _str(row, "predicted_label", "")
-        if label and label != UNKNOWN_LABEL:
-            score_value = max(0.0, _float(row, "known_score", 1.0))
-            margin_value = max(0.0, _float(row, "known_margin", 0.0))
-            label_scores[label] += weight * score_value
-            label_weight_totals[label] += weight
-            label_margins[label].append(margin_value)
-            label_max_scores[label] = max(label_max_scores[label], score_value)
-            predicted_labels.append(label)
-            scores.append(score_value)
         weights.append(weight)
         risks.append(_float(row, "unknown_risk", 0.0))
-        margins.append(_float(row, "known_margin", 0.0))
-        support_density_missing.append(not _has_finite_float(row, "support_density"))
-        radius_z_missing.append(not _has_finite_float(row, "class_radius_z"))
-        support_densities.append(_float(row, "support_density", 1.0))
-        radius_z_values.append(_float(row, "class_radius_z", 0.0))
-        class_conformal_pvalues.append(_float(row, "class_conformal_pvalue", 0.0))
-        class_conformal_support_counts.append(_float(row, "class_conformal_support_count", 0.0))
+        margin_value = max(0.0, _float(row, "known_margin", 0.0))
+        margins.append(margin_value)
+        support_density_is_missing = not _has_finite_float(row, "support_density")
+        radius_z_is_missing = not _has_finite_float(row, "class_radius_z")
+        support_density_value = _float(row, "support_density", 1.0)
+        radius_z_value = _float(row, "class_radius_z", 0.0)
+        class_conformal_pvalue = _float(row, "class_conformal_pvalue", 0.0)
+        class_conformal_support_count = _float(row, "class_conformal_support_count", 0.0)
+        support_density_missing.append(support_density_is_missing)
+        radius_z_missing.append(radius_z_is_missing)
+        support_densities.append(support_density_value)
+        radius_z_values.append(radius_z_value)
+        class_conformal_pvalues.append(class_conformal_pvalue)
+        class_conformal_support_counts.append(class_conformal_support_count)
+        row_seen_labels: set[str] = set()
+        if label and label != UNKNOWN_LABEL:
+            score_value = max(0.0, _float(row, "known_score", 1.0))
+            scores.append(score_value)
+            _add_label_candidate(
+                row_seen_labels=row_seen_labels,
+                label=label,
+                weight=weight,
+                score_value=score_value,
+                margin_value=margin_value,
+                support_density_value=support_density_value,
+                radius_z_value=radius_z_value,
+                support_density_is_missing=support_density_is_missing,
+                radius_z_is_missing=radius_z_is_missing,
+                conformal_pvalue=class_conformal_pvalue,
+                conformal_support_count=class_conformal_support_count,
+                conformal_weighted=policy == "cp_set_cvs",
+                source_rank=1,
+            )
+        if policy == "cp_set_cvs":
+            top_m = max(0, int(_float(row, "class_evidence_top_m", 0.0)))
+            for rank in range(1, top_m + 1):
+                top_label = _str(row, f"class_evidence_top{rank}_label", "")
+                if not top_label or top_label == UNKNOWN_LABEL:
+                    continue
+                top_score = _float(
+                    row,
+                    f"class_evidence_top{rank}_score",
+                    _float(row, "known_score", 0.0) if rank == 1 and top_label == label else 0.0,
+                )
+                top_pvalue = _float(row, f"class_evidence_top{rank}_conformal_pvalue", class_conformal_pvalue)
+                top_support_count = _float(
+                    row,
+                    f"class_evidence_top{rank}_support_count",
+                    class_conformal_support_count,
+                )
+                _add_label_candidate(
+                    row_seen_labels=row_seen_labels,
+                    label=top_label,
+                    weight=weight,
+                    score_value=top_score,
+                    margin_value=margin_value,
+                    support_density_value=support_density_value,
+                    radius_z_value=radius_z_value,
+                    support_density_is_missing=support_density_is_missing,
+                    radius_z_is_missing=radius_z_is_missing,
+                    conformal_pvalue=top_pvalue,
+                    conformal_support_count=top_support_count,
+                    conformal_weighted=True,
+                    source_rank=rank,
+                )
         score_risk_value = _float(row, "score_risk", _float(row, "unknown_risk", 0.0))
         radius_risk_value = _float(row, "radius_risk", _float(row, "unknown_risk", 0.0))
         margin_risk_value = _float(row, "margin_risk", _float(row, "unknown_risk", 0.0))
@@ -413,9 +525,7 @@ def _fuse_event(
     elif scores:
         mean_score = sum(scores) / len(scores)
 
-    label_count = defaultdict(int)
-    for item in predicted_labels:
-        label_count[item] += 1
+    label_count = defaultdict(int, label_candidate_receiver_counts)
     label_rank_scores = {}
     for item, weighted_score in label_scores.items():
         count = float(label_count[item])
@@ -435,6 +545,12 @@ def _fuse_event(
         score = label_scores[label]
     else:
         label, score = "", 0.0
+    if label:
+        label_weight_total = label_weight_totals[label]
+        if label_weight_total > 0.0:
+            mean_score = label_raw_scores[label] / max(label_weight_total, 1e-12)
+        if label_margins[label]:
+            mean_margin = sum(label_margins[label]) / len(label_margins[label])
     ranked_label_scores = sorted(label_rank_scores.values(), reverse=True)
     top_label_score = ranked_label_scores[0] if ranked_label_scores else 0.0
     second_label_score = ranked_label_scores[1] if len(ranked_label_scores) > 1 else 0.0
@@ -446,28 +562,21 @@ def _fuse_event(
     receiver_n = max(len(selected), 1)
     agreement = float(top_count) / float(receiver_n)
     vote_gap = float(top_count - second_count) / float(receiver_n)
-    label_support_density_values = [
-        value for value, row in zip(support_densities, selected) if _str(row, "predicted_label", "") == label
-    ]
-    label_radius_z_values = [
-        value for value, row in zip(radius_z_values, selected) if _str(row, "predicted_label", "") == label
-    ]
-    label_class_conformal_values = [
-        value for value, row in zip(class_conformal_pvalues, selected) if _str(row, "predicted_label", "") == label
-    ]
-    label_class_conformal_count_values = [
-        value for value, row in zip(class_conformal_support_counts, selected) if _str(row, "predicted_label", "") == label
-    ]
-    label_support_density_missing = any(
-        missing for missing, row in zip(support_density_missing, selected) if _str(row, "predicted_label", "") == label
-    )
-    label_radius_z_missing = any(
-        missing for missing, row in zip(radius_z_missing, selected) if _str(row, "predicted_label", "") == label
-    )
+    selected_label_top1_receivers = int(label_top1_receiver_counts[label]) if label else 0
+    selected_label_candidate_receivers = int(label_candidate_receiver_counts[label]) if label else 0
+    selected_label_min_evidence_rank = int(label_min_evidence_rank[label]) if label and label in label_min_evidence_rank else 0
+    selected_label_support_density_values = label_support_density_values[label]
+    selected_label_radius_z_values = label_radius_z_values[label]
+    label_class_conformal_values = label_conformal_pvalues[label]
+    label_class_conformal_count_values = label_conformal_support_counts[label]
+    label_support_density_missing = any(label_support_density_missing_values[label])
+    label_radius_z_missing = any(label_radius_z_missing_values[label])
     label_support_density = (
-        sum(label_support_density_values) / len(label_support_density_values) if label_support_density_values else 0.0
+        sum(selected_label_support_density_values) / len(selected_label_support_density_values)
+        if selected_label_support_density_values
+        else 0.0
     )
-    label_radius_z = max(label_radius_z_values) if label_radius_z_values else 0.0
+    label_radius_z = max(selected_label_radius_z_values) if selected_label_radius_z_values else 0.0
     label_class_conformal_pvalue = (
         sum(label_class_conformal_values) / len(label_class_conformal_values)
         if label_class_conformal_values
@@ -483,7 +592,6 @@ def _fuse_event(
         and latency_ms < float(latency_budget_ms)
     )
     rescue_labels = set(str(item) for item in (seen_new_rescue_labels or set()) if str(item))
-    known_old_labels = set(str(item) for item in (old_labels or set()) if str(item))
     rescue_enabled = bool(seen_new_rescue_enabled and rescue_labels)
     rescue_label_match = bool(label and label in rescue_labels)
     if label and label in rescue_labels:
@@ -527,7 +635,6 @@ def _fuse_event(
             reasons.append(f"radius_z:{label_radius_z:.6g}>{max_radius_z:.6g}")
         return not reasons, ",".join(reasons)
 
-    policy = _normalize_scope(fusion_policy)
     if policy == "consensus_veto":
         low_consensus = vote_gap <= float(consensus_gap_threshold)
         low_score = mean_score < float(consensus_score_threshold)
@@ -576,6 +683,7 @@ def _fuse_event(
             or (
                 output_label_set in {"old", "seen_new"}
                 and label_class_conformal_support_count >= 1.0
+                and (selected_label_top1_receivers >= 1 or selected_label_candidate_receivers >= 2)
                 and agreement >= float(conformal_rescue_min_agreement)
                 and label_class_conformal_pvalue >= float(conformal_rescue_min_pvalue)
             )
@@ -662,6 +770,10 @@ def _fuse_event(
         "conformal_rescue_applied": bool(locals().get("conformal_rescue_applied", False)),
         "label_class_conformal_pvalue": float(label_class_conformal_pvalue),
         "label_class_conformal_support_count": float(label_class_conformal_support_count),
+        "label_candidate_receiver_count": int(selected_label_candidate_receivers),
+        "label_top1_receiver_count": int(selected_label_top1_receivers),
+        "label_min_evidence_rank": int(selected_label_min_evidence_rank),
+        "filtered_candidate_count": int(filtered_candidate_count),
         "cp_set_gate_passed": bool(locals().get("cp_set_gate_passed", True)),
         "class_set_gate_applied": bool(class_set_gate_enabled and output_label_set in {"old", "seen_new"}),
         "class_set_gate_passed": bool(locals().get("gate_passed", True)),
