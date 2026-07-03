@@ -4065,6 +4065,41 @@ conda run --no-capture-output -n ssr-gpu python -m pytest code/tests/test_collab
 
 下一步决策：继续调融合阈值不会自然逼近99/97/99。需要回到节点级open-set风险建模：为每个receiver/class导出support-only或source/proxy-known校准的`evt_tail_prob`、class-conditional distance density、Mahalanobis/LOF或oldness gate，并在feature导出阶段区分old/seen-new支持集与unknown风险，不再用当前单一`unknown_risk`同时承担分类和拒识。现有结果仍为diagnostic-only。
 
+## 2026-07-04 Full Support Envelope Gate实现
+
+### 设计依据
+
+上一轮`support_router_cvs`证明聚合端强support门控能压低unknown_FAR，但known被误拒。继续只调融合阈值意义不大，本轮改节点级risk导出：新增`unknown_gate_mode=support_envelope_full`，把score、class radius、margin、Mahalanobis、EVT tail、oldness六个support/proxy-known校准风险统一成节点级open-set风险。该模式仍不使用unknown query拟合阈值，属于source/support校准的节点证据增强。
+
+### 本地改动与验证
+
+|文件|用途|SHA256|
+|---|---|---|
+|`code/scripts/phase2_collaborative_open_set_qknn_eval.py`|新增`support_envelope_full`，组合score/radius/margin/Mahalanobis/EVT/oldness风险，并暴露CLI。|`C17E8ADCDFD7E64C008CE62F30C07A57E8D95E735C7E3BBCE59B9E379C2BDA7E`|
+|`code/tests/test_phase2_collaborative_open_set_qknn_eval.py`|补充full envelope单测，验证metadata和六类风险字段。|`867A1AD52D418EAFAE8D60C05319A44972A82BC4C6A23991C69933C59715D915`|
+
+本地快照：`E:\type10-7\code\snapshots\phase2_full_envelope_gate_20260704\`。Git镜像提交：`d77a1b9 Add full support envelope gate`。
+
+验证：
+
+```text
+conda run --no-capture-output -n ssr-gpu python -m py_compile code/scripts/phase2_collaborative_open_set_qknn_eval.py code/evaluation/collaborative_open_set_qknn_eval.py
+conda run --no-capture-output -n ssr-gpu python -m pytest code/tests/test_phase2_collaborative_open_set_qknn_eval.py -q -p no:cacheprovider
+```
+
+结果：`py_compile`通过；`45 passed`。
+
+### N607执行计划
+
+计划在同一ADV3B02/qknn8 evidence流程上运行两组节点级风险增强诊断：
+
+|run|关键参数|目的|
+|---|---|---|
+|`fullenv_virtual_shell_support_router_adv3b02`|`--unknown_gate_mode support_envelope_full --virtual_unknown_risk_enabled --class_shell_unknown_risk_enabled --fusion_policy support_router_cvs`|验证六类support-calibrated风险加virtual boundary和class shell后，是否能在保持unknown_FAR低的同时恢复known接收。|
+|`fullenv_virtual_shell_candidate_adv3b02`|同一节点风险，但`--fusion_policy candidate_set_cvs`|验证更宽松candidate-set接收是否比support_router减少known误拒。|
+
+两组均覆盖`collab_counts all`，报告receiver数、bytes/event、latency p95和目标指标。成功标准仍为99/95、97/93、99拒识；未达到则diagnostic-only。
+
 ## 2026-07-04 SR-PairFuse软pairguard执行计划
 
 ### 设计依据
