@@ -3253,6 +3253,34 @@ class CollaborativeOpenSetQknnEvalTest(unittest.TestCase):
                 },
             )
 
+        with self.assertRaisesRegex(ValueError, "role TX sets"):
+            evaluate_collaborative_open_set_evidence(
+                [{**row, "role": "seen_new", "true_label": "13-20"}],
+                strict_protocol_metadata=True,
+                protocol_metadata={
+                    "source_receiver_ids": ["1-1"],
+                    "target_receiver_ids": ["20-1"],
+                    "old_tx_ids": ["14-10"],
+                    "seen_new_tx_ids": ["12-20"],
+                    "unknown_tx_ids": ["13-20"],
+                    "target_channel_view": "leo_clear_weak",
+                },
+            )
+
+        with self.assertRaisesRegex(ValueError, "role TX sets"):
+            evaluate_collaborative_open_set_evidence(
+                [{**row, "role": "old", "true_label": "12-20"}],
+                strict_protocol_metadata=True,
+                protocol_metadata={
+                    "source_receiver_ids": ["1-1"],
+                    "target_receiver_ids": ["20-1"],
+                    "old_tx_ids": ["14-10"],
+                    "seen_new_tx_ids": ["12-20"],
+                    "unknown_tx_ids": ["13-20"],
+                    "target_channel_view": "leo_clear_weak",
+                },
+            )
+
         result = evaluate_collaborative_open_set_evidence(
             [row],
             strict_protocol_metadata=True,
@@ -3266,6 +3294,32 @@ class CollaborativeOpenSetQknnEvalTest(unittest.TestCase):
             },
         )
         self.assertTrue(result["stage2_protocol"]["validated"])
+        self.assertEqual(result["stage2_protocol"]["seen_new_tx_ids"], ["12-20"])
+
+        unknown_result = evaluate_collaborative_open_set_evidence(
+            [
+                {
+                    "event_id": "unknown-placeholder",
+                    "receiver_id": "20-1",
+                    "role": "unknown",
+                    "true_label": "__unknown__",
+                    "predicted_label": "14-10",
+                    "known_score": 0.1,
+                    "known_margin": 0.0,
+                    "unknown_risk": 0.95,
+                }
+            ],
+            strict_protocol_metadata=True,
+            protocol_metadata={
+                "source_receiver_ids": ["1-1"],
+                "target_receiver_ids": ["20-1"],
+                "old_tx_ids": ["14-10"],
+                "seen_new_tx_ids": ["12-20"],
+                "unknown_tx_ids": ["13-20"],
+                "target_channel_view": "leo_clear_weak",
+            },
+        )
+        self.assertTrue(unknown_result["stage2_protocol"]["validated"])
 
     def test_seen_new_per_class_floor_does_not_depend_on_label_prefix(self):
         from evaluation.collaborative_open_set_qknn_eval import evaluate_collaborative_open_set_evidence
@@ -3325,6 +3379,67 @@ class CollaborativeOpenSetQknnEvalTest(unittest.TestCase):
         self.assertEqual(k1["missing_seen_new_classes"], ["new-missing"])
         self.assertEqual(k1["per_old_class_acc"]["old-missing"], 0.0)
         self.assertEqual(k1["min_old_class_acc"], 0.0)
+
+    def test_class_decision_and_unknown_false_accept_diagnostics_are_reported(self):
+        from evaluation.collaborative_open_set_qknn_eval import evaluate_collaborative_open_set_evidence
+
+        rows = [
+            {
+                "event_id": "old-ok",
+                "receiver_id": "rx-a",
+                "role": "old",
+                "true_label": "old-a",
+                "predicted_label": "old-a",
+                "known_score": 0.90,
+                "known_margin": 0.30,
+                "unknown_risk": 0.10,
+            },
+            {
+                "event_id": "old-reject",
+                "receiver_id": "rx-a",
+                "role": "old",
+                "true_label": "old-b",
+                "predicted_label": "old-b",
+                "known_score": 0.20,
+                "known_margin": 0.01,
+                "unknown_risk": 0.95,
+            },
+            {
+                "event_id": "unk-false-accept",
+                "receiver_id": "rx-a",
+                "role": "unknown",
+                "true_label": "__unknown__",
+                "predicted_label": "old-a",
+                "known_score": 0.92,
+                "known_margin": 0.30,
+                "unknown_risk": 0.05,
+            },
+        ]
+
+        result = evaluate_collaborative_open_set_evidence(
+            rows,
+            collab_counts="1",
+            unknown_risk_threshold=0.80,
+            consensus_score_threshold=0.50,
+            accept_margin_threshold=0.05,
+            strict_protocol_metadata=True,
+            protocol_metadata={
+                "source_receiver_ids": ["src-a"],
+                "target_receiver_ids": ["rx-a"],
+                "old_tx_ids": ["old-a", "old-b"],
+                "seen_new_tx_ids": ["new-a"],
+                "unknown_tx_ids": ["unk-a"],
+                "target_channel_view": "leo_clear_weak",
+            },
+        )
+
+        k1 = result["counts"]["1"]
+        self.assertEqual(k1["per_old_class_total"], {"old-a": 1, "old-b": 1})
+        self.assertEqual(k1["per_old_class_decision_counts"]["old-a"], {"accept": 1})
+        self.assertEqual(k1["per_old_class_decision_counts"]["old-b"], {"unknown_reject": 1})
+        self.assertEqual(k1["per_old_class_output_counts"]["old-a"], {"old-a": 1})
+        self.assertEqual(k1["per_old_class_output_counts"]["old-b"], {})
+        self.assertEqual(k1["unknown_false_accept_labels"], {"old-a": 1})
 
 
 if __name__ == "__main__":

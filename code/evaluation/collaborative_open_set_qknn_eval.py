@@ -2877,6 +2877,15 @@ def _finalize_metrics(
         "old": defaultdict(int),
         "seen_new": defaultdict(int),
     }
+    per_class_decision_counts: dict[str, defaultdict[str, defaultdict[str, int]]] = {
+        "old": defaultdict(lambda: defaultdict(int)),
+        "seen_new": defaultdict(lambda: defaultdict(int)),
+    }
+    per_class_output_counts: dict[str, defaultdict[str, defaultdict[str, int]]] = {
+        "old": defaultdict(lambda: defaultdict(int)),
+        "seen_new": defaultdict(lambda: defaultdict(int)),
+    }
+    unknown_false_accept_labels: defaultdict[str, int] = defaultdict(int)
     unknown_rejected = 0
     unknown_false_accept = 0
     unknown_defer = 0
@@ -2985,11 +2994,16 @@ def _finalize_metrics(
             role_correct[role] += int(accepted and output == truth)
             per_class_total[role][str(truth)] += 1
             per_class_correct[role][str(truth)] += int(accepted and output == truth)
+            per_class_decision_counts[role][str(truth)][str(decision)] += 1
+            if accepted:
+                per_class_output_counts[role][str(truth)][str(output)] += 1
         elif role == "unknown":
             unknown_rejected += int(decision == "unknown_reject")
             unknown_false_accept += int(accepted)
             unknown_defer += int(deferred)
             unknown_request_more += int(requested_more)
+            if accepted:
+                unknown_false_accept_labels[str(output)] += 1
 
     missing_old = sorted(label for label in old_labels if per_class_total["old"].get(label, 0) <= 0)
     missing_seen_new = sorted(label for label in seen_new_labels if per_class_total["seen_new"].get(label, 0) <= 0)
@@ -3000,6 +3014,36 @@ def _finalize_metrics(
     }
     new_class_rates = {
         label: _safe_rate(per_class_correct["seen_new"][label], per_class_total["seen_new"].get(label, 0))
+        for label in sorted(seen_new_labels)
+        if label
+    }
+    old_class_totals = {
+        label: int(per_class_total["old"].get(label, 0))
+        for label in sorted(old_labels)
+        if label
+    }
+    seen_new_class_totals = {
+        label: int(per_class_total["seen_new"].get(label, 0))
+        for label in sorted(seen_new_labels)
+        if label
+    }
+    old_class_decisions = {
+        label: dict(sorted(per_class_decision_counts["old"][label].items()))
+        for label in sorted(old_labels)
+        if label
+    }
+    seen_new_class_decisions = {
+        label: dict(sorted(per_class_decision_counts["seen_new"][label].items()))
+        for label in sorted(seen_new_labels)
+        if label
+    }
+    old_class_outputs = {
+        label: dict(sorted(per_class_output_counts["old"][label].items()))
+        for label in sorted(old_labels)
+        if label
+    }
+    seen_new_class_outputs = {
+        label: dict(sorted(per_class_output_counts["seen_new"][label].items()))
         for label in sorted(seen_new_labels)
         if label
     }
@@ -3051,12 +3095,18 @@ def _finalize_metrics(
         "old_correct": int(role_correct["old"]),
         "old_acc": _safe_rate(role_correct["old"], role_totals["old"]),
         "per_old_class_acc": old_class_rates,
+        "per_old_class_total": old_class_totals,
+        "per_old_class_decision_counts": old_class_decisions,
+        "per_old_class_output_counts": old_class_outputs,
         "missing_old_classes": missing_old,
         "min_old_class_acc": min(old_class_rates.values()) if old_class_rates else 0.0,
         "seen_new_total": int(role_totals["seen_new"]),
         "seen_new_correct": int(role_correct["seen_new"]),
         "seen_new_acc": _safe_rate(role_correct["seen_new"], role_totals["seen_new"]),
         "per_seen_new_class_acc": new_class_rates,
+        "per_seen_new_class_total": seen_new_class_totals,
+        "per_seen_new_class_decision_counts": seen_new_class_decisions,
+        "per_seen_new_class_output_counts": seen_new_class_outputs,
         "missing_seen_new_classes": missing_seen_new,
         "min_seen_new_class_acc": min(new_class_rates.values()) if new_class_rates else 0.0,
         "unknown_total": int(role_totals["unknown"]),
@@ -3067,6 +3117,7 @@ def _finalize_metrics(
         "unknown_defer_rate": _safe_rate(unknown_defer, role_totals["unknown"]),
         "unknown_request_more": int(unknown_request_more),
         "unknown_request_more_rate": _safe_rate(unknown_request_more, role_totals["unknown"]),
+        "unknown_false_accept_labels": dict(sorted(unknown_false_accept_labels.items())),
         "known_coverage": _safe_rate(known_accepted, known_total),
         "known_full_accuracy": _safe_rate(known_correct, known_total),
         "known_accepted_accuracy": _safe_rate(known_correct, known_accepted),
@@ -3203,6 +3254,11 @@ def _validate_protocol_metadata(metadata: Mapping[str, Any] | None, *, strict: b
         raise ValueError("protocol_metadata must include target_channel_view")
     return {
         "validated": True,
+        "source_receiver_ids": sorted(source_receivers),
+        "target_receiver_ids": sorted(target_receivers),
+        "old_tx_ids": sorted(old_tx),
+        "seen_new_tx_ids": sorted(seen_new_tx),
+        "unknown_tx_ids": sorted(unknown_tx),
         "source_receiver_count": len(source_receivers),
         "target_receiver_count": len(target_receivers),
         "old_tx_count": len(old_tx),
@@ -3210,6 +3266,34 @@ def _validate_protocol_metadata(metadata: Mapping[str, Any] | None, *, strict: b
         "unknown_tx_count": len(unknown_tx),
         "target_channel_view": channel_view,
     }
+
+
+def _validate_protocol_row_labels(rows: Sequence[Mapping[str, Any]], metadata: Mapping[str, Any] | None) -> None:
+    if not metadata:
+        return
+    expected_by_role = {
+        "old": _items(metadata.get("old_tx_ids")),
+        "seen_new": _items(metadata.get("seen_new_tx_ids", metadata.get("target_new_tx_ids"))),
+        "unknown": _items(metadata.get("unknown_tx_ids")),
+    }
+    unexpected: list[str] = []
+    for index, row in enumerate(rows):
+        role = _role(row.get("role"))
+        label = _str(row, "true_label", UNKNOWN_LABEL if role == "unknown" else "").strip()
+        if role == "unknown" and label in {"", UNKNOWN_LABEL}:
+            continue
+        expected = expected_by_role.get(role, set())
+        if label not in expected:
+            event_id = _str(row, "event_id", f"row-{index}")
+            unexpected.append(f"{event_id}:{role}:{label}")
+    if unexpected:
+        preview = ",".join(unexpected[:10])
+        suffix = "" if len(unexpected) <= 10 else f",...(+{len(unexpected) - 10})"
+        raise ValueError(
+            "evidence true_label values must match protocol_metadata role TX sets: "
+            + preview
+            + suffix
+        )
 
 
 def _validate_event_groups(groups: Mapping[str, Sequence[Mapping[str, Any]]]) -> None:
@@ -3377,6 +3461,8 @@ def evaluate_collaborative_open_set_evidence(
     protocol_report = _validate_protocol_metadata(protocol_metadata, strict=strict_protocol_metadata)
     target_receiver_scope = _items(protocol_metadata.get("target_receiver_ids") if protocol_metadata else None)
     _validate_target_receiver_scope(rows, target_receiver_scope)
+    if strict_protocol_metadata and bool(protocol_report.get("validated", False)):
+        _validate_protocol_row_labels(rows, protocol_metadata)
     expected_old_labels = _items(protocol_metadata.get("old_tx_ids") if protocol_metadata else None)
     expected_seen_new_labels = _items(
         protocol_metadata.get("seen_new_tx_ids", protocol_metadata.get("target_new_tx_ids"))

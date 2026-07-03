@@ -3916,6 +3916,96 @@ N607同步后远端哈希与本地一致；远端验证`52 tests OK`。实际运
 
 最终SSH/SCP后本地无`ssh.exe`残留，无N607和bridge 22端口ESTABLISHED连接。
 
+## 2026-07-04 ORBIT按类诊断增强
+
+### 目的
+
+上一轮`orbit_coproto_adv3b02`在k=4取得`old_acc=0.8182`、`seen_new_acc=0.7143`、`unknown_FAR=0.0294`，但`min_old_class_acc=0`，说明至少一个old类在协同决策中完全失效。既有JSON已有`per_old_class_acc/per_seen_new_class_acc`，但缺少按类决策分布和unknown误接收标签分布，无法区分“被unknown_reject拦截”“defer/request_more未解析”“被误判到其他类”三种失效模式。因此本轮先补诊断字段，不改变推理决策。
+
+### 本地改动与验证
+
+|文件|用途|SHA256|
+|---|---|---|
+|`code/evaluation/collaborative_open_set_qknn_eval.py`|在`_finalize_metrics`输出`per_old_class_total`、`per_old_class_decision_counts`、`per_old_class_output_counts`、`per_seen_new_class_total`、`per_seen_new_class_decision_counts`、`per_seen_new_class_output_counts`和`unknown_false_accept_labels`|`E1AF962CA6BFDB6A0C13FDE66A586E44345AC21017E99BE0AD19C0C944298BAC`|
+|`code/tests/test_collaborative_open_set_qknn_eval.py`|新增诊断字段单测，覆盖按类accept/unknown_reject和unknown false accept标签统计|`BC560EC34214E82081E8ADDD659812485272898C5B2F14675136F2D7902600CB`|
+
+本地快照：`E:\type10-7\code\snapshots\phase2_orbit_diagnostics_20260704_041728\`。
+
+验证：
+
+```text
+conda run --no-capture-output -n ssr-gpu python -m py_compile code\evaluation\collaborative_open_set_qknn_eval.py code\scripts\phase2_collaborative_open_set_qknn_eval.py
+conda run --no-capture-output -n ssr-gpu python -m pytest code\tests\test_collaborative_open_set_qknn_eval.py -q -p no:cacheprovider
+conda run --no-capture-output -n ssr-gpu python -m pytest code\tests\test_phase2_collaborative_open_set_qknn_eval.py -q -p no:cacheprovider
+```
+
+结果：`py_compile`通过；`test_collaborative_open_set_qknn_eval.py`为`55 passed`；`test_phase2_collaborative_open_set_qknn_eval.py`为`46 passed`。并行执行`conda run`时再次出现Windows临时文件锁，串行重跑通过，判定为本机Conda并发执行噪声，不作为实验失败。
+
+### Review吸收：严格协议逐行TX校验
+
+查漏补缺子agent指出：此前`strict_protocol_metadata=True`只校验`old_tx_ids/seen_new_tx_ids/unknown_tx_ids`集合互斥与receiver split，未逐行校验`role=true_label`是否落在对应TX集合，理论上会允许`role=seen_new`但`true_label in unknown_tx_ids`进入指标。已在`_validate_protocol_row_labels`中修复：严格协议模式下，`old`行必须属于`old_tx_ids`，`seen_new`行必须属于`seen_new_tx_ids/target_new_tx_ids`，`unknown`行若给出具体TX则必须属于`unknown_tx_ids`；`__unknown__`占位仍允许作为unknown query标签。`stage2_protocol`同时输出排序后的receiver/TX集合，便于报告审计。
+
+修复后哈希：
+
+|文件|用途|SHA256|
+|---|---|---|
+|`code/evaluation/collaborative_open_set_qknn_eval.py`|按类诊断字段+严格协议逐行TX集合校验|`E509491AFDD1B96C6FFFAC4316231ED6E734290A65782CDC9B9A9DE3CE5AA1D9`|
+|`code/tests/test_collaborative_open_set_qknn_eval.py`|新增按类诊断字段测试和协议错配负测|`85821B2AE5307CBD5BB506FFFC5EC916548A238AA6EB31561A0C6E79CCBA5C2A`|
+
+补充快照：`E:\type10-7\code\snapshots\phase2_orbit_protocol_diagnostics_20260704_0425\`。补充验证结果：`py_compile`通过；`test_collaborative_open_set_qknn_eval.py`为`55 passed`；`test_phase2_collaborative_open_set_qknn_eval.py`为`46 passed`。
+
+### N607计划
+
+同步本地验证后的两个文件到N607：
+
+|local|remote|
+|---|---|
+|`E:\type10-7\code\evaluation\collaborative_open_set_qknn_eval.py`|`/home/szu2070436088/2510044040/CV-SincNet/code/evaluation/collaborative_open_set_qknn_eval.py`|
+|`E:\type10-7\code\tests\test_collaborative_open_set_qknn_eval.py`|`/home/szu2070436088/2510044040/CV-SincNet/code/tests/test_collaborative_open_set_qknn_eval.py`|
+
+远端使用`/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python`，先做哈希和窄测试，再重跑`orbit_coproto_adv3b02_diag`的k=1..全体接收机全量诊断。该运行仅补充按类审计证据，不改变模型权重、support选择、星地信道、collab count范围或目标判据。
+
+### N607诊断结果
+
+同步后远端哈希与本地一致：
+
+|文件|远端SHA256|
+|---|---|
+|`code/evaluation/collaborative_open_set_qknn_eval.py`|`E509491AFDD1B96C6FFFAC4316231ED6E734290A65782CDC9B9A9DE3CE5AA1D9`|
+|`code/tests/test_collaborative_open_set_qknn_eval.py`|`85821B2AE5307CBD5BB506FFFC5EC916548A238AA6EB31561A0C6E79CCBA5C2A`|
+
+远端`CVS-RFFI`环境没有`pytest`，因此使用`PYTHONPATH=code /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python code/tests/test_collaborative_open_set_qknn_eval.py`执行`unittest`，结果为`Ran 55 tests ... OK`；`py_compile`通过。运行前preflight显示8张RTX3090均为`10/24576MiB`，运行后再次查询8张卡仍为`10/24576MiB`且utilization为`0%`。
+
+远端命令输出`receiver_count=5`、`group_count=307`、`evidence_row_count=1000`。产物已拉回本地`remote_artifacts`：
+
+|artifact|SHA256|
+|---|---|
+|`phase2_adv3b02_collab_open_set_qknn_orbit_coproto_adv3b02_diag_20260704.json`|`EB16804E200F5A28BAD1447620E8F35A9B82F4DE5EDD6019F60C6F9D8FD33707`|
+|`phase2_adv3b02_collab_open_set_qknn_orbit_coproto_adv3b02_diag_20260704_evidence.csv`|`94FEFFB7DD8D09AE0371758BC384E5325E9BBBF1CD252155D463D3E0A6F6CFD7`|
+
+`stage2_protocol.validated=true`，协议摘要为：source receivers`1-1,1-19,14-7,18-2,19-2,2-1,2-19`；target receivers`20-1,3-19,7-14,7-7,8-8`；old TX`14-10,14-7,20-15,20-19,6-15,8-20`；seen-new TX`19-3,3-8`；unknown TX`10-1,10-10`；target channel view为`leo_clear_weak,leo_low_elev_weak,leo_rain_weak`。
+
+|k|old_acc|min_old|seen_new_acc|min_seen|unknown_FAR|unknown_reject|defer|bytes/event|p95 ms|
+|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+|1|0.0000|0.0000|0.0000|0.0000|0.0000|0.5000|0.7655|40.0|0.1069|
+|2|0.3224|0.0000|0.3462|0.2500|0.0652|0.7609|0.2960|80.0|0.1069|
+|3|0.4833|0.1500|0.5500|0.5500|0.0250|0.8750|0.1000|120.0|0.1069|
+|4|0.8182|0.0000|0.7143|0.6500|0.0294|0.7941|0.0733|160.0|0.1069|
+|5|0.7925|0.0000|0.6000|0.0000|0.1000|0.9000|0.0323|200.0|0.1069|
+
+关键按类诊断：
+
+|k|old按类准确率|old按类失效说明|unknown误接收标签|
+|---:|---|---|---|
+|2|`14-10=0.10,14-7=0.3438,20-15=0.55,20-19=0.00,6-15=0.00,8-20=0.70`|`20-19`和`6-15`虽有accept但分别错到`14-7`和`3-8`，不是单纯拒识问题。|`14-7:2,19-3:1`|
+|3|`14-10=0.15,14-7=0.70,20-15=0.65,20-19=0.15,6-15=0.40,8-20=0.85`|`14-10`大量accept到`19-3`，`20-19`仍低且部分拒识。|`14-7:1`|
+|4|`14-10=0.65,14-7=0.875,20-15=0.00,20-19=0.65,6-15=0.95,8-20=1.00`|`20-15`在k=4匹配子集中无有效样本，导致`min_old=0`；这不是可由阈值救援直接修复的类别拒识，而是`receiver_domain_ranked`不同k分母不一致的证据。|`14-10:1`|
+|5|`14-10=0.60,14-7=0.00,20-15=0.00,20-19=0.75,6-15=0.95,8-20=0.8889`|`14-7`、`20-15`、seen-new`3-8`在k=5子集中无有效样本，分母不一致继续存在。|`6-15:2`|
+
+判定：ORBIT-COPROTO仍不能声明成功。k=4的联合均值是当前ORBIT较好点，但`min_old=0`来自分母缺失，且unknown_reject仅`0.7941`；k=3虽然每个old/seen-new类都有有效样本，但old/seen-new均值远低于目标。该结果强化了监督子agent结论：当前`receiver_domain_ranked`只能作为receiver-domain ensemble诊断，不能替代严格同物理事件卫星群协同。下一步若继续优化算法，应先解决同分母/strict event key或在报告中把所有k曲线显式标为不同分母诊断；若做Old-Floor-Aware ORBIT救援，必须仅基于support/proxy-known先验，不能用unknown false accept标签调门控。
+
+本轮所有SSH/SCP后本地均已确认无`ssh.exe`残留，无N607和bridge 22端口`ESTABLISHED`连接。
+
 ## 2026-07-04 SR-PairFuse soft floor/strong bypass实现
 
 ### 设计依据
