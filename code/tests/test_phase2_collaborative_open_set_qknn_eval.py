@@ -293,14 +293,14 @@ class Phase2CollaborativeOpenSetQknnEvalTest(unittest.TestCase):
             old_labels={"old-a"},
             support_scenarios=["leo_clear_weak", "leo_clear_weak", "leo_clear_weak", "leo_rain_weak"],
         )
-        pred_global, _, _, _ = qknn_scores(
+        pred_global, _, _, _, _, _ = qknn_scores(
             memory,
             np.asarray([[0.0, 1.0, 0.0]], dtype=np.float32),
             top_k=1,
             query_scenarios=["leo_clear_weak"],
             scenario_aware=False,
         )
-        pred_scenario, _, _, _ = qknn_scores(
+        pred_scenario, _, _, _, _, _ = qknn_scores(
             memory,
             np.asarray([[0.0, 1.0, 0.0]], dtype=np.float32),
             top_k=1,
@@ -329,8 +329,8 @@ class Phase2CollaborativeOpenSetQknnEvalTest(unittest.TestCase):
             old_labels={"old-a"},
             support_scenarios=["leo_clear_weak"] * 4,
         )
-        _, self_scores, _, _ = qknn_scores(memory, features, top_k=1)
-        _, loo_scores, _, _ = qknn_scores(memory, features, top_k=1, exclude_support_indices=range(features.shape[0]))
+        _, self_scores, _, _, _, _ = qknn_scores(memory, features, top_k=1)
+        _, loo_scores, _, _, _, _ = qknn_scores(memory, features, top_k=1, exclude_support_indices=range(features.shape[0]))
 
         self.assertLess(float(np.mean(loo_scores)), float(np.mean(self_scores)))
 
@@ -353,7 +353,7 @@ class Phase2CollaborativeOpenSetQknnEvalTest(unittest.TestCase):
             ["old-a", "old-a", "new-a", "new-a", "new-b", "new-b"],
             old_labels={"old-a"},
         )
-        pred, _, _, candidate_counts = qknn_scores(
+        pred, _, _, candidate_counts, support_neighbor_counts, support_densities = qknn_scores(
             memory,
             np.asarray([[0.0, 1.0, 0.0]], dtype=np.float32),
             top_k=2,
@@ -362,6 +362,27 @@ class Phase2CollaborativeOpenSetQknnEvalTest(unittest.TestCase):
 
         self.assertEqual(str(pred[0]), "new-a")
         self.assertEqual(int(candidate_counts[0]), 1)
+        self.assertEqual(int(support_neighbor_counts[0]), 2)
+        self.assertAlmostEqual(float(support_densities[0]), 1.0)
+
+    def test_support_density_reliability_is_recorded_in_evidence(self):
+        from phase2_collaborative_open_set_qknn_eval import load_feature_npz, build_collaborative_evidence
+
+        with tempfile.TemporaryDirectory() as td:
+            npz = Path(td) / "features.npz"
+            _write_npz(npz)
+            evidence, metadata = build_collaborative_evidence(
+                load_feature_npz(npz),
+                k_shot=1,
+                query_per_class=2,
+                qknn_k=1,
+                receiver_reliability_policy="support_density",
+            )
+
+        self.assertEqual(metadata["receiver_reliability_policy"], "support_density")
+        self.assertIn("support_neighbor_count", evidence[0])
+        self.assertIn("support_density", evidence[0])
+        self.assertEqual(float(evidence[0]["reliability"]), float(evidence[0]["support_density"]))
 
     def test_scenario_aware_and_radius_norm_are_recorded_in_metadata(self):
         from phase2_collaborative_open_set_qknn_eval import load_feature_npz, build_collaborative_evidence

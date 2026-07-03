@@ -379,7 +379,7 @@ def qknn_scores(
     old_bias: float = 0.0,
     candidate_class_top_m: int = 0,
     exclude_support_indices: Sequence[int] | None = None,
-) -> tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
+) -> tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
     query = _normalize_rows(query_features)
     support = _normalize_rows(memory.qfeatures.astype(np.float32) / float(memory.scale))
     centroid_scores = _centroid_scores(memory, query)
@@ -410,6 +410,8 @@ def qknn_scores(
     out_scores: list[float] = []
     out_margins: list[float] = []
     out_candidate_counts: list[int] = []
+    out_support_neighbor_counts: list[int] = []
+    out_support_densities: list[float] = []
     all_support_mask = np.ones(memory.labels.shape[0], dtype=bool)
     for row_i in range(scores.shape[0]):
         support_mask = all_support_mask.copy()
@@ -433,21 +435,28 @@ def qknn_scores(
         row_k = max(1, min(k, int(row_scores.shape[0])))
         idx = support_positions[np.argpartition(row_scores, -row_k)[-row_k:]]
         per_label: dict[str, float] = defaultdict(float)
+        per_label_count: dict[str, int] = defaultdict(int)
         for j in idx.tolist():
             score = float(scores[row_i, j])
             per_label[str(memory.labels[j])] += max(0.0, score)
+            per_label_count[str(memory.labels[j])] += 1
         ranked = sorted(per_label.items(), key=lambda item: (item[1], item[0]), reverse=True)
         best_label, best_score = ranked[0]
         second = ranked[1][1] if len(ranked) > 1 else 0.0
+        best_count = int(per_label_count.get(best_label, 0))
         out_labels.append(best_label)
         out_scores.append(float(best_score / max(row_k, 1)))
         out_margins.append(float((best_score - second) / max(row_k, 1)))
         out_candidate_counts.append(len(set(memory.labels[support_mask].tolist())))
+        out_support_neighbor_counts.append(best_count)
+        out_support_densities.append(float(best_count / max(row_k, 1)))
     return (
         np.asarray(out_labels, dtype=object),
         np.asarray(out_scores, dtype=np.float64),
         np.asarray(out_margins, dtype=np.float64),
         np.asarray(out_candidate_counts, dtype=np.int64),
+        np.asarray(out_support_neighbor_counts, dtype=np.int64),
+        np.asarray(out_support_densities, dtype=np.float64),
     )
 
 
@@ -588,7 +597,7 @@ def _threshold_from_calibration(
     if calibration_mode not in {"self", "leave_one_out", "loo"}:
         raise ValueError("support_calibration_mode must be self or leave_one_out")
     exclude = range(int(support_features.shape[0])) if calibration_mode in {"leave_one_out", "loo"} else None
-    _, support_scores, _, _ = qknn_scores(
+    _, support_scores, _, _, _, _ = qknn_scores(
         memory,
         support_features,
         top_k=top_k,
@@ -602,7 +611,7 @@ def _threshold_from_calibration(
     threshold = float(np.quantile(support_scores, float(support_quantile))) if support_scores.size else 0.0
     scope = "support_known_only"
     if proxy_features is not None and int(proxy_features.shape[0]) > 0:
-        _, proxy_scores, _, _ = qknn_scores(
+        _, proxy_scores, _, _, _, _ = qknn_scores(
             memory,
             proxy_features,
             top_k=top_k,
@@ -827,6 +836,7 @@ def build_collaborative_evidence(
     support_calibration_mode: str = "self",
     score_threshold_combine: str = "max",
     evidence_packet_bytes: float = 40.0,
+    receiver_reliability_policy: str = "deployment_prior",
 ) -> tuple[list[dict[str, Any]], dict[str, Any]]:
     validate_required_roles(payload)
     roles = np.asarray(payload["dataset_role"]).astype(str)
@@ -863,6 +873,9 @@ def build_collaborative_evidence(
     evidence: list[dict[str, Any]] = []
     receiver_query: dict[str, dict[str, list[int]]] = {}
     threshold_scope = "support_known_only"
+    reliability_policy = str(receiver_reliability_policy or "deployment_prior").strip().lower()
+    if reliability_policy not in {"deployment_prior", "support_density", "margin_density"}:
+        raise ValueError("receiver_reliability_policy must be deployment_prior, support_density, or margin_density")
     t0 = time.perf_counter()
 
     for rx in target_receivers:
@@ -1044,7 +1057,7 @@ def build_collaborative_evidence(
                 for rx in sorted(rx_to_idx):
                     idx = rx_to_idx[rx]
                     memory = receiver_memories[rx]
-                    pred, score, margin, candidate_counts = qknn_scores(
+                    pred, score, margin, candidate_counts, support_neighbor_counts, support_densities = qknn_scores(
                         memory,
                         features[[idx]],
                         top_k=qknn_k,
@@ -1054,6 +1067,13 @@ def build_collaborative_evidence(
                         old_bias=float(old_bias),
                         candidate_class_top_m=int(candidate_class_top_m),
                     )
+                    support_density = float(support_densities[0])
+                    if reliability_policy == "support_density":
+                        reliability = support_density
+                    elif reliability_policy == "margin_density":
+                        reliability = support_density * max(0.0, min(1.0, float(margin[0]) / max(memory.margin_threshold, 1e-6)))
+                    else:
+                        reliability = 1.0
                     (
                         risk,
                         score_risk,
@@ -1092,6 +1112,8 @@ def build_collaborative_evidence(
                             "known_score": float(score[0]),
                             "known_margin": float(margin[0]),
                             "candidate_class_count": int(candidate_counts[0]),
+                            "support_neighbor_count": int(support_neighbor_counts[0]),
+                            "support_density": support_density,
                             "unknown_risk": float(risk[0]),
                             "score_risk": float(score_risk[0]),
                             "radius_risk": float(radius_risk[0]),
@@ -1100,8 +1122,8 @@ def build_collaborative_evidence(
                             "evt_risk": float(evt_risk[0]),
                             "oldness_risk": float(oldness_risk[0]),
                             "class_radius": float(class_radius[0]),
-                            "reliability": 1.0,
-                            "reliability_source": "deployment_prior",
+                            "reliability": float(reliability),
+                            "reliability_source": reliability_policy,
                             "latency_ms": float(per_row_ms),
                             "bytes": float(evidence_packet_bytes),
                             "threshold_selection_label_scope": threshold_scope,
@@ -1137,6 +1159,7 @@ def build_collaborative_evidence(
         "threshold_scope": threshold_scope,
         "support_calibration_mode": str(support_calibration_mode),
         "score_threshold_combine": str(score_threshold_combine),
+        "receiver_reliability_policy": reliability_policy,
         "support_selection_policy": str(support_selection_policy),
         "unknown_gate_mode": str(unknown_gate_mode),
         "active_risk_components": _active_risk_components_for_gate_mode(unknown_gate_mode),
@@ -1205,6 +1228,7 @@ def run_evaluation(args: argparse.Namespace) -> dict[str, Any]:
         support_calibration_mode=str(args.support_calibration_mode),
         score_threshold_combine=str(args.score_threshold_combine),
         evidence_packet_bytes=float(args.evidence_packet_bytes),
+        receiver_reliability_policy=str(args.receiver_reliability_policy),
     )
     result = evaluate_collaborative_open_set_evidence(
         evidence,
@@ -1330,6 +1354,11 @@ def parse_args() -> argparse.Namespace:
     p.add_argument("--seen_new_gate_max_effective_unknown_risk", type=float, default=1.0)
     p.add_argument("--seen_new_gate_max_component_agreement", type=float, default=1.0)
     p.add_argument("--evidence_packet_bytes", type=float, default=40.0)
+    p.add_argument(
+        "--receiver_reliability_policy",
+        default="deployment_prior",
+        choices=["deployment_prior", "support_density", "margin_density"],
+    )
     p.add_argument("--receiver_selection_policy", default="fixed_receiver_order")
     p.add_argument(
         "--support_selection_policy",
