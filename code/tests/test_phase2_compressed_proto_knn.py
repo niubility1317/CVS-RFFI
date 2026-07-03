@@ -250,3 +250,23 @@ def test_quantized_knn_margin_gated_old_bias_preserves_confident_new_match():
     assert predict_quantized_knn_memory(memory, ambiguous_old, k=1, old_bias=0.08, old_bias_gate=0.01).tolist() == ["old-a"]
     assert predict_quantized_knn_memory(memory, confident_new, k=1, old_bias=0.08).tolist() == ["old-a"]
     assert predict_quantized_knn_memory(memory, confident_new, k=1, old_bias=0.08, old_bias_gate=0.01).tolist() == ["new-b"]
+
+
+def test_quantized_knn_margin_switch_uses_topk_only_when_top1_is_uncertain():
+    support = np.asarray(
+        [
+            [1.0, 0.0],
+            [0.99, 0.10],
+            [0.98, 0.15],
+        ],
+        dtype=np.float64,
+    )
+    labels = np.asarray(["old-a", "new-b", "new-b"], dtype=object)
+    uncertain_query = np.asarray([[1.0, 0.0]], dtype=np.float64)
+    confident_query = np.asarray([[1.0, -0.30]], dtype=np.float64)
+
+    memory = build_quantized_knn_memory(support, labels, old_labels={"old-a"}, quant_bits=8)
+
+    assert predict_quantized_knn_memory(memory, uncertain_query, k=1).tolist() == ["old-a"]
+    assert predict_quantized_knn_memory(memory, uncertain_query, k=3, margin_switch_gate=0.02).tolist() == ["new-b"]
+    assert predict_quantized_knn_memory(memory, confident_query, k=3, margin_switch_gate=0.02).tolist() == ["old-a"]

@@ -94,6 +94,22 @@ def _classwise_topk_predict(scores: np.ndarray, labels: np.ndarray, k: int) -> n
     return np.asarray(pred, dtype=object)
 
 
+def _margin_switch_topk_predict(scores: np.ndarray, labels: np.ndarray, k: int, gate: float) -> np.ndarray:
+    if scores.shape[1] <= 1:
+        return labels[np.argmax(scores, axis=1)]
+    top2 = np.argpartition(-scores, kth=1, axis=1)[:, :2]
+    top2_scores = np.take_along_axis(scores, top2, axis=1)
+    order = np.argsort(-top2_scores, axis=1)
+    best_idx = top2[np.arange(scores.shape[0]), order[:, 0]]
+    second_idx = top2[np.arange(scores.shape[0]), order[:, 1]]
+    margins = scores[np.arange(scores.shape[0]), best_idx] - scores[np.arange(scores.shape[0]), second_idx]
+    pred = labels[best_idx].astype(object)
+    switch = margins <= float(gate)
+    if np.any(switch):
+        pred[switch] = _classwise_topk_predict(scores[switch], labels, k)
+    return pred
+
+
 def _medoid_anchors(features: np.ndarray, count: int) -> list[np.ndarray]:
     features = _normalize_rows(features)
     count = max(1, min(int(count), int(features.shape[0])))
@@ -317,6 +333,7 @@ def predict_quantized_knn_memory(
     old_bias: float = 0.0,
     prototype_blend: float = 0.0,
     old_bias_gate: float | None = None,
+    margin_switch_gate: float | None = None,
 ) -> np.ndarray:
     query = _normalize_rows(query_features)
     support = memory.quantized_matrix.astype(np.float64) / float(memory.scale)
@@ -337,6 +354,8 @@ def predict_quantized_knn_memory(
             scores = scores + old_bias_mask * float(old_bias) * gated_rows[:, None]
         else:
             scores = scores + old_bias_mask * float(old_bias)
+    if margin_switch_gate is not None and int(k) > 1:
+        return _margin_switch_topk_predict(scores, memory.labels, k, float(margin_switch_gate))
     return _classwise_topk_predict(scores, memory.labels, k)
 
 
@@ -440,15 +459,23 @@ def _evaluate_combo(
             old_labels=old_labels,
             quant_bits=quant_bits,
         )
+        margin_switch_gate = weight_scale if prototype_weight_mode == "margin_switch" else None
+        old_bias_gate = (
+            weight_scale if prototype_weight_mode != "margin_switch" and float(weight_scale) > 0.0 else None
+        )
         pred = predict_quantized_knn_memory(
             memory,
             features[query_idx],
             k=prototypes_per_class,
             old_bias=old_bias,
             prototype_blend=radius_weight,
-            old_bias_gate=weight_scale if float(weight_scale) > 0.0 else None,
+            old_bias_gate=old_bias_gate,
+            margin_switch_gate=margin_switch_gate,
         )
-        gate_suffix = f"_ogate{weight_scale:g}" if float(weight_scale) > 0.0 else ""
+        if prototype_weight_mode == "margin_switch":
+            gate_suffix = f"_msw{weight_scale:g}"
+        else:
+            gate_suffix = f"_ogate{weight_scale:g}" if float(weight_scale) > 0.0 else ""
         method = f"qknn{quant_bits}_k{prototypes_per_class}_oldbias{old_bias:g}_pblend{radius_weight:g}{gate_suffix}"
         stored_prototype_count = int(len(memory.class_prototype_labels)) if float(radius_weight) != 0.0 else 0
         stored_weight_count = 0
