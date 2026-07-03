@@ -426,6 +426,37 @@ class Phase2CollaborativeOpenSetQknnEvalTest(unittest.TestCase):
         for left, right in zip(default, explicit_zero):
             np.testing.assert_array_equal(left, right)
 
+    def test_seen_new_prototype_calibration_moves_only_seen_new_centroid(self):
+        from phase2_collaborative_open_set_qknn_eval import build_qknn_memory
+
+        features = np.asarray(
+            [
+                [1.0, 0.0, 0.0],
+                [0.9, 0.1, 0.0],
+                [0.0, 1.0, 0.0],
+                [0.1, 0.9, 0.0],
+            ],
+            dtype=np.float32,
+        )
+        labels = ["old-a", "old-a", "new-a", "new-a"]
+        base = build_qknn_memory(features, labels, old_labels={"old-a"})
+        calibrated = build_qknn_memory(
+            features,
+            labels,
+            old_labels={"old-a"},
+            prototype_calibration_policy="teen_blend",
+            prototype_calibration_alpha=0.5,
+            prototype_calibration_top_m=1,
+        )
+        positions = {str(label): int(i) for i, label in enumerate(base.centroid_labels.tolist())}
+        old_pos = positions["old-a"]
+        new_pos = positions["new-a"]
+
+        np.testing.assert_allclose(base.centroids[old_pos], calibrated.centroids[old_pos])
+        base_similarity = float(base.centroids[new_pos] @ base.centroids[old_pos])
+        calibrated_similarity = float(calibrated.centroids[new_pos] @ calibrated.centroids[old_pos])
+        self.assertGreater(calibrated_similarity, base_similarity)
+
     def test_prototype_score_blend_uses_same_calibration_score_scale(self):
         from phase2_collaborative_open_set_qknn_eval import build_qknn_memory, _threshold_from_calibration
 
@@ -620,6 +651,29 @@ class Phase2CollaborativeOpenSetQknnEvalTest(unittest.TestCase):
         self.assertIn("prototype_score_blend", evidence[0])
         self.assertIn("prototype_assisted", evidence[0])
         self.assertIn("prototype_only_top1", evidence[0])
+
+    def test_prototype_calibration_is_marked_in_metadata_and_evidence(self):
+        from phase2_collaborative_open_set_qknn_eval import load_feature_npz, build_collaborative_evidence
+
+        with tempfile.TemporaryDirectory() as td:
+            npz = Path(td) / "features.npz"
+            _write_npz(npz)
+            evidence, metadata = build_collaborative_evidence(
+                load_feature_npz(npz),
+                k_shot=1,
+                query_per_class=2,
+                qknn_k=1,
+                prototype_calibration_policy="teen_blend",
+                prototype_calibration_alpha=0.25,
+                prototype_calibration_top_m=1,
+            )
+
+        self.assertEqual(metadata["prototype_calibration_policy"], "teen_blend")
+        self.assertAlmostEqual(metadata["prototype_calibration_alpha"], 0.25)
+        self.assertEqual(metadata["prototype_calibration_top_m"], 1)
+        self.assertIn("prototype_calibration_policy", evidence[0])
+        self.assertIn("prototype_calibration_alpha", evidence[0])
+        self.assertIn("prototype_calibration_top_m", evidence[0])
 
     def test_mahalanobis_score_assisted_qknn_is_marked_in_metadata_and_evidence(self):
         from phase2_collaborative_open_set_qknn_eval import load_feature_npz, build_collaborative_evidence

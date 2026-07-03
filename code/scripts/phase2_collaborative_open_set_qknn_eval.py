@@ -144,6 +144,49 @@ def _class_centroids(features: np.ndarray, labels: np.ndarray) -> tuple[np.ndarr
     return np.asarray(label_values, dtype=object), _normalize_rows(np.vstack(centroids))
 
 
+def _calibrate_seen_new_centroids(
+    centroid_labels: np.ndarray,
+    centroids: np.ndarray,
+    *,
+    old_labels: set[str],
+    policy: str,
+    alpha: float,
+    top_m: int,
+) -> tuple[np.ndarray, dict[str, float]]:
+    policy = str(policy or "none").strip().lower()
+    if policy not in {"none", "teen_blend", "teen_separate"}:
+        raise ValueError("prototype_calibration_policy must be none, teen_blend, or teen_separate")
+    if policy == "none":
+        return centroids, {}
+    alpha_value = float(np.clip(float(alpha), 0.0, 1.0))
+    if alpha_value <= 0.0:
+        return centroids, {}
+    labels = [str(label) for label in centroid_labels.tolist()]
+    old_positions = [i for i, label in enumerate(labels) if label in old_labels]
+    seen_positions = [i for i, label in enumerate(labels) if label not in old_labels]
+    if not old_positions or not seen_positions:
+        return centroids, {}
+    calibrated = np.asarray(centroids, dtype=np.float32).copy()
+    old_matrix = _normalize_rows(calibrated[old_positions])
+    applied: dict[str, float] = {}
+    m = max(1, int(top_m))
+    for pos in seen_positions:
+        original = calibrated[pos]
+        sims = old_matrix @ original
+        chosen_local = np.argsort(-sims)[: min(m, sims.shape[0])]
+        chosen_sims = sims[chosen_local]
+        weights = np.exp(chosen_sims - np.max(chosen_sims))
+        weights = weights / max(float(np.sum(weights)), 1e-12)
+        old_mix = _normalize_rows((weights[:, None] * old_matrix[chosen_local]).sum(axis=0, keepdims=True))[0]
+        if policy == "teen_blend":
+            updated = (1.0 - alpha_value) * original + alpha_value * old_mix
+        else:
+            updated = original + alpha_value * (original - old_mix)
+        calibrated[pos] = _normalize_rows(updated.reshape(1, -1))[0]
+        applied[labels[pos]] = alpha_value
+    return _normalize_rows(calibrated), applied
+
+
 def _centroid_scores(memory: QknnMemory, query_features: np.ndarray) -> np.ndarray:
     return _normalize_rows(query_features) @ memory.centroids.T
 
@@ -347,6 +390,9 @@ def build_qknn_memory(
     oldness_slack: float = 0.0,
     mahalanobis_variance_floor: float = 1e-4,
     evt_min_scale: float = 1e-3,
+    prototype_calibration_policy: str = "none",
+    prototype_calibration_alpha: float = 0.0,
+    prototype_calibration_top_m: int = 2,
 ) -> QknnMemory:
     normalized = _normalize_rows(features)
     scale = 127.0
@@ -359,6 +405,14 @@ def build_qknn_memory(
         if scenario_arr.shape[0] != labels_arr.shape[0]:
             raise ValueError("support_scenarios length must match labels")
     centroid_labels, centroids = _class_centroids(normalized, labels_arr)
+    centroids, _ = _calibrate_seen_new_centroids(
+        centroid_labels,
+        centroids,
+        old_labels=set(old_labels),
+        policy=prototype_calibration_policy,
+        alpha=prototype_calibration_alpha,
+        top_m=prototype_calibration_top_m,
+    )
     class_to_radius: dict[str, float] = {}
     for label in centroid_labels.tolist():
         label = str(label)
@@ -1217,6 +1271,9 @@ def build_collaborative_evidence(
     prototype_score_blend: float = 0.0,
     mahalanobis_score_blend: float = 0.0,
     mahalanobis_score_temperature: float = 0.20,
+    prototype_calibration_policy: str = "none",
+    prototype_calibration_alpha: float = 0.0,
+    prototype_calibration_top_m: int = 2,
     candidate_audit_unknown_risk_enabled: bool = False,
     candidate_audit_disagreement_risk: float = 1.0,
     candidate_audit_min_gap: float = 0.0,
@@ -1271,6 +1328,11 @@ def build_collaborative_evidence(
     if mahalanobis_blend < 0.0:
         raise ValueError("mahalanobis_score_blend must be >= 0")
     mahalanobis_score_temp = max(float(mahalanobis_score_temperature), 1e-6)
+    proto_cal_policy = str(prototype_calibration_policy or "none").strip().lower()
+    if proto_cal_policy not in {"none", "teen_blend", "teen_separate"}:
+        raise ValueError("prototype_calibration_policy must be none, teen_blend, or teen_separate")
+    proto_cal_alpha = float(np.clip(float(prototype_calibration_alpha), 0.0, 1.0))
+    proto_cal_top_m = max(1, int(prototype_calibration_top_m))
     t0 = time.perf_counter()
 
     for rx in target_receivers:
@@ -1366,6 +1428,9 @@ def build_collaborative_evidence(
             oldness_slack=oldness_slack,
             mahalanobis_variance_floor=mahalanobis_variance_floor,
             evt_min_scale=evt_min_scale,
+            prototype_calibration_policy=proto_cal_policy,
+            prototype_calibration_alpha=proto_cal_alpha,
+            prototype_calibration_top_m=proto_cal_top_m,
         )
         virtual_sample_count = 0
         if bool(virtual_unknown_calibration_enabled):
@@ -1798,6 +1863,9 @@ def build_collaborative_evidence(
                             "support_density": support_density,
                             "prototype_score_blend": prototype_blend,
                             "prototype_assisted": int(prototype_blend > 0.0),
+                            "prototype_calibration_policy": proto_cal_policy,
+                            "prototype_calibration_alpha": proto_cal_alpha,
+                            "prototype_calibration_top_m": proto_cal_top_m,
                             "prototype_only_top1": int(prototype_blend > 0.0 and int(support_neighbor_counts[0]) == 0),
                             "mahalanobis_score_blend": mahalanobis_blend,
                             "mahalanobis_score_temperature": mahalanobis_score_temp,
@@ -1875,6 +1943,9 @@ def build_collaborative_evidence(
         "receiver_reliability_policy": reliability_policy,
         "prototype_score_blend": prototype_blend,
         "prototype_assisted_qknn": prototype_blend > 0.0,
+        "prototype_calibration_policy": proto_cal_policy,
+        "prototype_calibration_alpha": proto_cal_alpha,
+        "prototype_calibration_top_m": proto_cal_top_m,
         "mahalanobis_score_blend": mahalanobis_blend,
         "mahalanobis_score_temperature": mahalanobis_score_temp,
         "mahalanobis_score_assisted_qknn": mahalanobis_blend > 0.0,
@@ -1970,6 +2041,9 @@ def run_evaluation(args: argparse.Namespace) -> dict[str, Any]:
         prototype_score_blend=float(args.prototype_score_blend),
         mahalanobis_score_blend=float(args.mahalanobis_score_blend),
         mahalanobis_score_temperature=float(args.mahalanobis_score_temperature),
+        prototype_calibration_policy=str(args.prototype_calibration_policy),
+        prototype_calibration_alpha=float(args.prototype_calibration_alpha),
+        prototype_calibration_top_m=int(args.prototype_calibration_top_m),
         candidate_audit_unknown_risk_enabled=bool(args.candidate_audit_unknown_risk_enabled),
         candidate_audit_disagreement_risk=float(args.candidate_audit_disagreement_risk),
         candidate_audit_min_gap=float(args.candidate_audit_min_gap),
@@ -2076,6 +2150,13 @@ def parse_args() -> argparse.Namespace:
     p.add_argument("--prototype_score_blend", type=float, default=0.0)
     p.add_argument("--mahalanobis_score_blend", type=float, default=0.0)
     p.add_argument("--mahalanobis_score_temperature", type=float, default=0.20)
+    p.add_argument(
+        "--prototype_calibration_policy",
+        default="none",
+        choices=["none", "teen_blend", "teen_separate"],
+    )
+    p.add_argument("--prototype_calibration_alpha", type=float, default=0.0)
+    p.add_argument("--prototype_calibration_top_m", type=int, default=2)
     p.add_argument("--candidate_audit_unknown_risk_enabled", action="store_true")
     p.add_argument("--candidate_audit_disagreement_risk", type=float, default=1.0)
     p.add_argument("--candidate_audit_min_gap", type=float, default=0.0)
