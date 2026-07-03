@@ -878,6 +878,43 @@ Planned N607 variants:
 
 Success criteria remain unchanged:`unknown_FAR<=0.05`and old-class performance drop`<=2pp`on sat-only target query, without target clean or target unknown threshold tuning.
 
+## Latest Status After V22
+
+This is the current decision boundary for the updated objective.
+
+Target1 is partially achieved, not globally achieved:
+
+| Target slice | Best V21 candidate | Old closed acc | Scenario floor | TX floor | Unknown safety | Strong target1 |
+|---|---|---:|---:|---:|---|---|
+| `rx7_14_u10` | `LEOADAPT5_MARGIN_UNK_MLP_BLEND200_CAP000` | 0.8700 | 0.8525 | 0.7106 | pass | pass |
+| `rx7_14_u1` | `LEOADAPT5_MARGIN_UNK_MLP_BLEND200_CAP000` | 0.8700 | 0.8525 | 0.7106 | fail | fail |
+| `rx7_7_u10` | `LEOADAPT5_ULTRAID_LINR_BLEND100_CAP000` | 0.7979 | 0.7783 | 0.6578 | pass | fail |
+| `rx7_7_u1` | `LEOADAPT5_ULTRAID_LINR_BLEND200_CAP000` | 0.7976 | 0.7756 | 0.6578 | pass | fail |
+| `rx8_8_u10` | `LEOADAPT5_MARGIN_UNK_MLP_BLEND350_CAP000` | 0.7238 | 0.6892 | 0.2032 | pass | fail |
+| `rx8_8_u1` | `LEOADAPT5_MARGIN_UNK_MLP_BLEND350_CAP000` | 0.7238 | 0.6892 | 0.2032 | fail | fail |
+| `rx20_1_u10` | `LEOADAPT5_MARGIN_UNK_LINR_BLEND100_CAP050` | 0.6203 | 0.6019 | 0.3622 | pass | fail |
+| `rx20_1_u1` | `LEOADAPT5_MARGIN_UNK_LINR_BLEND100_CAP050` | 0.6203 | 0.6019 | 0.3622 | pass | fail |
+| `rx3_19_u10` | `LEOADAPT5_MARGIN_UNK_MLP_BLEND350_CAP050` | 0.5553 | 0.5330 | 0.2669 | pass | fail |
+| `rx3_19_u1` | `LEOADAPT5_MARGIN_UNK_MLP_BLEND350_CAP050` | 0.5553 | 0.5330 | 0.2669 | pass | fail |
+
+Target2 remains not achieved:
+
+| Requirement | Status | Evidence |
+|---|---|---|
+| `unknown_FAR<5%` | Achievable alone | V22 best FAR row reaches 0.0389 |
+| Old performance drop`<2pp` | Achievable alone | V22 old-drop rows keep drop at 2.00pp |
+| Both in same row | Not achieved | V22 dual-pass rows = 0/7280 |
+
+V22 same-row boundary:
+
+| Selection | Adapter set | Score/policy | Unknown FAR | Old drop pp | Closed old acc | Final old acc | Coverage | Verdict |
+|---|---|---|---:|---:|---:|---:|---:|---|
+| Best FAR with deployable threshold | `lowfar650cap050` | `neg_mean_min_mah/proxy_far q=0.85` | 0.0389 | 55.09 | 0.8747 | 0.3238 | 0.3250 | FAR pass, old performance fails |
+| Best joint gap | `pass4` | `sim_mah_vote/mean_source_proxy source_q=0.01 proxy_q=0.99` | 0.1000 | 23.26 | 0.8765 | 0.6438 | 0.6612 | Misses both targets |
+| Best FAR while old drop`<=2pp` | `cap000_all_mlp` | `vote_agreement/source_accept q=0.05` | 0.8833 | 2.00 | 0.8753 | 0.8553 | 0.9541 | Old performance pass, FAR fails |
+
+The next valid work item is target1, not target2: improve worst-receiver/worst-TX LEO closed-set recovery without target clean/query tuning. Current evidence says oldness-only gating can protect unknown safety but does not recover hard receiver slices such as`rx3_19`and`rx20_1`.
+
 ## V21 Oldness-Capped Identity Fallback Design
 
 V21 follows the V20 finding that conservative blends can satisfy old recovery, clean fidelity, scenario/tx floors and margin jointly, while unknown safety remains the blocking constraint. It adds a label-free oldness cap after V20 feature export: for each sat-only sample, use the repaired/blended feature only if its source-prototype max logit is no more than the identity feature max logit plus a small cap; otherwise fall back to identity features.
@@ -1011,6 +1048,69 @@ Planned N607 output:
 | V22 combined summary | `/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_adv3b02_v21_reject_v22_20260703/v21_reject_v22_summary.csv` |
 | V22 best JSON | `/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_adv3b02_v21_reject_v22_20260703/v21_reject_v22_best.json` |
 | V22 per-set parts | `/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_adv3b02_v21_reject_v22_20260703/parts/` |
+
+## V22 V21-Feature Rejection Results
+
+Run status:
+
+| Item | Value |
+|---|---|
+| Remote command | `ROOT=/home/szu2070436088/2510044040/CV-SincNet PYTHON=/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python bash code/scripts/sweep_phase1_adv3b02_v21_reject_v22_20260703.sh` |
+| Remote start/end | `2026-07-03T11:12:51+08:00` to `2026-07-03T11:14:22+08:00` |
+| Rows | 7280 |
+| FAR-ok rows | 3250 |
+| Old-drop-ok rows | 1960 |
+| Dual-pass rows | 0 |
+
+Artifacts:
+
+| Artifact | Local path | SHA256 |
+|---|---|---|
+| V22 summary | `E:\type10-7\automation_reports\CV-SincNet\phase1_adv3b02_leo_feature_adapter_20260703\artifacts\v22_v21_reject\v21_reject_v22_summary.csv` | `20082AC2391A0FE708A916349139E84FB92D0B67BC2CB5FE7BD1E5414364B592` |
+| V22 best JSON | `E:\type10-7\automation_reports\CV-SincNet\phase1_adv3b02_leo_feature_adapter_20260703\artifacts\v22_v21_reject\v21_reject_v22_best.json` | `AC7433CBD63A0E9AD0D0B7D38C6E360FEE8777B681961A2D34913495AD854AAC` |
+| V22 adapter sets | `E:\type10-7\automation_reports\CV-SincNet\phase1_adv3b02_leo_feature_adapter_20260703\artifacts\v22_v21_reject\adapter_sets.tsv` | `C1CECE3C6F39147BC2A0690EE592E52EEB5F6AB7440C5B8AC9A2FCD1C77D80DA` |
+| V22 per-set archive | `E:\type10-7\automation_reports\CV-SincNet\phase1_adv3b02_leo_feature_adapter_20260703\artifacts\v22_v21_reject\parts.tgz` | `FE1780FB13D184E71BDFAEE79530B9257E4098C2DC44FB6D7CA450EF817CB046` |
+
+Key same-row outcomes:
+
+| Selection | Adapter set | Score/policy | Unknown FAR | Old drop pp | Closed old acc | Final old acc | Coverage | Verdict |
+|---|---|---|---:|---:|---:|---:|---:|---|
+| Best FAR with deployable threshold | `lowfar650cap050` | `neg_mean_min_mah/proxy_far q=0.85` | 0.0389 | 55.09 | 0.8747 | 0.3238 | 0.3250 | FAR pass, old performance fails |
+| Best joint gap | `pass4` | `sim_mah_vote/mean_source_proxy source_q=0.01 proxy_q=0.99` | 0.1000 | 23.26 | 0.8765 | 0.6438 | 0.6612 | Misses both targets |
+| Best FAR while old drop`<=2pp` | `cap000_all_mlp` | `vote_agreement/source_accept q=0.05` | 0.8833 | 2.00 | 0.8753 | 0.8553 | 0.9541 | Old performance pass, FAR fails |
+
+Interpretation:
+
+V22 confirms that V21 repaired features do not solve target2. The deployable source/proxy-only thresholds can push unknown FAR below`5%`, but only by rejecting most old target samples. Conversely, when old-class performance drop is kept within`2pp`, unknown FAR remains about`88.33%`. This is a same-row conflict, not a marginal maximum/minimum artifact.
+
+## Current Target Status After V22
+
+Target1 is partially achieved, not globally achieved:
+
+| Target slice | Best V21 candidate | Old closed acc | Scenario floor | TX floor | Unknown safety | Strong target1 |
+|---|---|---:|---:|---:|---|---|
+| `rx7_14_u10` | `LEOADAPT5_MARGIN_UNK_MLP_BLEND200_CAP000` | 0.8700 | 0.8525 | 0.7106 | pass | pass |
+| `rx7_14_u1` | `LEOADAPT5_MARGIN_UNK_MLP_BLEND200_CAP000` | 0.8700 | 0.8525 | 0.7106 | fail | fail |
+| `rx7_7_u10` | `LEOADAPT5_ULTRAID_LINR_BLEND100_CAP000` | 0.7979 | 0.7783 | 0.6578 | pass | fail |
+| `rx7_7_u1` | `LEOADAPT5_ULTRAID_LINR_BLEND200_CAP000` | 0.7976 | 0.7756 | 0.6578 | pass | fail |
+| `rx8_8_u10` | `LEOADAPT5_MARGIN_UNK_MLP_BLEND350_CAP000` | 0.7238 | 0.6892 | 0.2032 | pass | fail |
+| `rx8_8_u1` | `LEOADAPT5_MARGIN_UNK_MLP_BLEND350_CAP000` | 0.7238 | 0.6892 | 0.2032 | fail | fail |
+| `rx20_1_u10` | `LEOADAPT5_MARGIN_UNK_LINR_BLEND100_CAP050` | 0.6203 | 0.6019 | 0.3622 | pass | fail |
+| `rx20_1_u1` | `LEOADAPT5_MARGIN_UNK_LINR_BLEND100_CAP050` | 0.6203 | 0.6019 | 0.3622 | pass | fail |
+| `rx3_19_u10` | `LEOADAPT5_MARGIN_UNK_MLP_BLEND350_CAP050` | 0.5553 | 0.5330 | 0.2669 | pass | fail |
+| `rx3_19_u1` | `LEOADAPT5_MARGIN_UNK_MLP_BLEND350_CAP050` | 0.5553 | 0.5330 | 0.2669 | pass | fail |
+
+Target2 remains not achieved:
+
+| Requirement | Status | Evidence |
+|---|---|---|
+| `unknown_FAR<5%` | Achievable alone | V22 best FAR row reaches 0.0389 |
+| Old performance drop`<2pp` | Achievable alone | V22 old-drop rows keep drop at 2.00pp |
+| Both in same row | Not achieved | V22 dual-pass rows = 0/7280 |
+
+Next target1 implication:
+
+The remaining target1 blocker is not clean fidelity or average oldness; it is receiver/TX-specific LEO damage. A global source-only feature repair can preserve or slightly improve already-good slices, but does not recover hard slices such as`rx3_19`and`rx20_1`to the requested`80%`level. The next valid target1 route must explicitly improve worst-TX/worst-receiver floors without target clean/query tuning, for example source-side receiver-leaveout training with worst-TX margin retention and scenario-balanced LEO pair augmentation.
 
 ## V16 Completion Results
 
@@ -1810,3 +1910,40 @@ Planned N607 output:
 | V16 metrics JSON | `/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_adv3b02_class_tail_v16_20260703/class_tail_v16_metrics.json` |
 
 Success criteria remain unchanged:`unknown_FAR<=0.05`and old-class performance drop`<=2pp`on sat-only target query, without target clean or target unknown threshold tuning.
+
+## Latest Status After V22
+
+This is the current decision boundary for the updated objective.
+
+Target1 is partially achieved, not globally achieved:
+
+| Target slice | Best V21 candidate | Old closed acc | Scenario floor | TX floor | Unknown safety | Strong target1 |
+|---|---|---:|---:|---:|---|---|
+| `rx7_14_u10` | `LEOADAPT5_MARGIN_UNK_MLP_BLEND200_CAP000` | 0.8700 | 0.8525 | 0.7106 | pass | pass |
+| `rx7_14_u1` | `LEOADAPT5_MARGIN_UNK_MLP_BLEND200_CAP000` | 0.8700 | 0.8525 | 0.7106 | fail | fail |
+| `rx7_7_u10` | `LEOADAPT5_ULTRAID_LINR_BLEND100_CAP000` | 0.7979 | 0.7783 | 0.6578 | pass | fail |
+| `rx7_7_u1` | `LEOADAPT5_ULTRAID_LINR_BLEND200_CAP000` | 0.7976 | 0.7756 | 0.6578 | pass | fail |
+| `rx8_8_u10` | `LEOADAPT5_MARGIN_UNK_MLP_BLEND350_CAP000` | 0.7238 | 0.6892 | 0.2032 | pass | fail |
+| `rx8_8_u1` | `LEOADAPT5_MARGIN_UNK_MLP_BLEND350_CAP000` | 0.7238 | 0.6892 | 0.2032 | fail | fail |
+| `rx20_1_u10` | `LEOADAPT5_MARGIN_UNK_LINR_BLEND100_CAP050` | 0.6203 | 0.6019 | 0.3622 | pass | fail |
+| `rx20_1_u1` | `LEOADAPT5_MARGIN_UNK_LINR_BLEND100_CAP050` | 0.6203 | 0.6019 | 0.3622 | pass | fail |
+| `rx3_19_u10` | `LEOADAPT5_MARGIN_UNK_MLP_BLEND350_CAP050` | 0.5553 | 0.5330 | 0.2669 | pass | fail |
+| `rx3_19_u1` | `LEOADAPT5_MARGIN_UNK_MLP_BLEND350_CAP050` | 0.5553 | 0.5330 | 0.2669 | pass | fail |
+
+Target2 remains not achieved:
+
+| Requirement | Status | Evidence |
+|---|---|---|
+| `unknown_FAR<5%` | Achievable alone | V22 best FAR row reaches 0.0389 |
+| Old performance drop`<2pp` | Achievable alone | V22 old-drop rows keep drop at 2.00pp |
+| Both in same row | Not achieved | V22 dual-pass rows = 0/7280 |
+
+V22 same-row boundary:
+
+| Selection | Adapter set | Score/policy | Unknown FAR | Old drop pp | Closed old acc | Final old acc | Coverage | Verdict |
+|---|---|---|---:|---:|---:|---:|---:|---|
+| Best FAR with deployable threshold | `lowfar650cap050` | `neg_mean_min_mah/proxy_far q=0.85` | 0.0389 | 55.09 | 0.8747 | 0.3238 | 0.3250 | FAR pass, old performance fails |
+| Best joint gap | `pass4` | `sim_mah_vote/mean_source_proxy source_q=0.01 proxy_q=0.99` | 0.1000 | 23.26 | 0.8765 | 0.6438 | 0.6612 | Misses both targets |
+| Best FAR while old drop`<=2pp` | `cap000_all_mlp` | `vote_agreement/source_accept q=0.05` | 0.8833 | 2.00 | 0.8753 | 0.8553 | 0.9541 | Old performance pass, FAR fails |
+
+The next valid work item is target1, not target2: improve worst-receiver/worst-TX LEO closed-set recovery without target clean/query tuning. Current evidence says oldness-only gating can protect unknown safety but does not recover hard receiver slices such as`rx3_19`and`rx20_1`.
