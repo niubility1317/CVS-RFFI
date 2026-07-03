@@ -9,6 +9,7 @@ threshold calibration.
 from __future__ import annotations
 
 import argparse
+import itertools
 import json
 import sys
 from pathlib import Path
@@ -183,6 +184,26 @@ def _make_source_loader(args: argparse.Namespace):
     return DataLoader(source_ds, batch_size=int(args.batch_size), shuffle=True, num_workers=0, drop_last=False), source_ds, source_info
 
 
+def _make_proxy_unknown_train_loader(args: argparse.Namespace):
+    if float(args.proxy_unknown_separation_weight) <= 0:
+        return None, {}
+    proxy_ds, proxy_info = _build_wisig_dataset(
+        pkl_path=str(args.new_wisig_pkl),
+        tx_spec=str(args.proxy_unknown_tx_ids),
+        role="proxy_unknown_train",
+        equalized=str(args.wisig_equalized),
+        out_len=int(args.wisig_out_len),
+        domain=str(args.wisig_domain),
+        days=None,
+        rxs=str(args.proxy_unknown_rxs),
+        max_samples_per_combo=int(args.max_proxy_unknown_samples_per_combo),
+        max_samples_per_tx=int(args.max_proxy_unknown_train_samples_per_tx),
+        seed=int(args.seed) + 1801,
+    )
+    loader = DataLoader(proxy_ds, batch_size=int(args.batch_size), shuffle=True, num_workers=0, drop_last=False)
+    return loader, proxy_info
+
+
 def _proto_from_loader(model: nn.Module, loader: DataLoader, args: argparse.Namespace, device: torch.device) -> torch.Tensor:
     feat_parts: list[torch.Tensor] = []
     label_parts: list[torch.Tensor] = []
@@ -224,6 +245,12 @@ def _proto_margin_loss(z_ref: torch.Tensor, z_new: torch.Tensor, y: torch.Tensor
     return F.relu(ref_margin - new_margin - float(tolerance)).mean()
 
 
+def _proxy_unknown_separation_loss(z_unknown: torch.Tensor, protos: torch.Tensor, max_cos: float) -> torch.Tensor:
+    sims = F.normalize(z_unknown, dim=1) @ F.normalize(protos.detach(), dim=1).t()
+    nearest_old = sims.max(dim=1).values
+    return F.relu(nearest_old - float(max_cos)).square().mean()
+
+
 def train_adapter(
     args: argparse.Namespace,
     model: nn.Module,
@@ -235,6 +262,8 @@ def train_adapter(
     _validate_star_ground_impl(str(args.star_ground_channel_impl), scenarios, field="sat_scenarios")
     proto_loader = DataLoader(source_loader.dataset, batch_size=int(args.batch_size), shuffle=False, num_workers=0, drop_last=False)
     clean_protos = _proto_from_loader(teacher_model, proto_loader, args, device)
+    proxy_loader, proxy_info = _make_proxy_unknown_train_loader(args)
+    proxy_iter = itertools.cycle(proxy_loader) if proxy_loader is not None else None
     adapter: nn.Module
     if bool(args.input_adapter_enabled):
         adapter = IQResidualPreAdapter(hidden=int(args.hidden_dim), alpha=float(args.alpha)).to(device)
@@ -249,7 +278,7 @@ def train_adapter(
     history: list[dict[str, float]] = []
     step = 0
     for epoch in range(int(args.epochs)):
-        sums = {"loss": 0.0, "mse": 0.0, "cos": 0.0, "ce": 0.0, "clean": 0.0, "feat_margin": 0.0, "clean_margin": 0.0, "resid": 0.0}
+        sums = {"loss": 0.0, "mse": 0.0, "cos": 0.0, "ce": 0.0, "clean": 0.0, "feat_margin": 0.0, "clean_margin": 0.0, "proxy_unknown_sep": 0.0, "resid": 0.0}
         count = 0
         for x, y, _d, _meta in source_loader:
             x = x.to(device, non_blocking=True)
@@ -282,6 +311,17 @@ def train_adapter(
             clean_loss = clean_mse + float(args.clean_cos_weight) * clean_cos
             feat_margin = _proto_margin_loss(z_clean, z_rep, y, clean_protos, float(args.feature_margin_tolerance))
             clean_margin = _proto_margin_loss(z_clean, z_clean_rep, y, clean_protos, float(args.feature_margin_tolerance))
+            if proxy_iter is not None:
+                x_u, _y_u, _d_u, _meta_u = next(proxy_iter)
+                x_u = x_u.to(device, non_blocking=True)
+                scenario_u = _scenario_for_step(scenarios, step)
+                with torch.no_grad():
+                    x_u_sat, _ = apply_sat_channel_for_scenario(x_u, scenario_u, args, gen=gen, return_meta=False)
+                x_u_rep = adapter(_apply_input_repair(x_u_sat, str(args.input_repair)))
+                z_u_rep, _ = _feature_forward(model, x_u_rep, str(args.feature_name))
+                proxy_unknown_sep = _proxy_unknown_separation_loss(z_u_rep, clean_protos, float(args.proxy_unknown_max_cos))
+            else:
+                proxy_unknown_sep = z_rep.sum() * 0.0
             resid = (x_rep.float() - x_sat_in.float()).square().mean()
             loss = (
                 float(args.mse_weight) * mse
@@ -290,6 +330,7 @@ def train_adapter(
                 + float(args.clean_identity_weight) * clean_loss
                 + float(args.feature_margin_weight) * feat_margin
                 + float(args.clean_feature_margin_weight) * clean_margin
+                + float(args.proxy_unknown_separation_weight) * proxy_unknown_sep
                 + float(args.teacher_logit_distill_weight) * clean_kl
                 + float(args.residual_weight) * resid
             )
@@ -307,6 +348,7 @@ def train_adapter(
             sums["clean"] += float(clean_loss.detach().item()) * bs
             sums["feat_margin"] += float(feat_margin.detach().item()) * bs
             sums["clean_margin"] += float(clean_margin.detach().item()) * bs
+            sums["proxy_unknown_sep"] += float(proxy_unknown_sep.detach().item()) * bs
             sums["resid"] += float(resid.detach().item()) * bs
         row = {k: v / max(1, count) for k, v in sums.items()}
         row["epoch"] = float(epoch + 1)
@@ -323,6 +365,7 @@ def train_adapter(
         "input_adapter_enabled": bool(args.input_adapter_enabled),
         "clean_input_repair_mode": str(args.clean_input_repair_mode),
         "model_adapter": model_adapter,
+        "proxy_unknown_train": proxy_info,
         "loss_weights": {
             "mse": float(args.mse_weight),
             "cos": float(args.cos_weight),
@@ -331,6 +374,8 @@ def train_adapter(
             "clean_identity": float(args.clean_identity_weight),
             "feature_margin": float(args.feature_margin_weight),
             "clean_feature_margin": float(args.clean_feature_margin_weight),
+            "proxy_unknown_separation": float(args.proxy_unknown_separation_weight),
+            "proxy_unknown_max_cos": float(args.proxy_unknown_max_cos),
             "teacher_logit_distill": float(args.teacher_logit_distill_weight),
             "residual": float(args.residual_weight),
         },
@@ -551,6 +596,8 @@ def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
     p.add_argument("--wisig_out_len", type=int, default=256)
     p.add_argument("--max_samples_per_combo", type=int, default=0)
     p.add_argument("--max_source_samples_per_tx", type=int, default=1000)
+    p.add_argument("--max_proxy_unknown_train_samples_per_tx", type=int, default=600)
+    p.add_argument("--max_proxy_unknown_samples_per_combo", type=int, default=0)
     p.add_argument("--max_export_samples_per_tx", type=int, default=200)
     p.add_argument("--num_old_classes", type=int, default=6)
     p.add_argument("--sat_scenarios", default="leo_clear_weak,leo_low_elev_weak,leo_rain_weak")
@@ -576,6 +623,8 @@ def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
     p.add_argument("--feature_margin_weight", type=float, default=2.0)
     p.add_argument("--clean_feature_margin_weight", type=float, default=2.0)
     p.add_argument("--feature_margin_tolerance", type=float, default=0.01)
+    p.add_argument("--proxy_unknown_separation_weight", type=float, default=0.0)
+    p.add_argument("--proxy_unknown_max_cos", type=float, default=0.18)
     p.add_argument("--teacher_logit_distill_weight", type=float, default=0.0)
     p.add_argument("--distill_temperature", type=float, default=2.0)
     p.add_argument("--residual_weight", type=float, default=0.03)

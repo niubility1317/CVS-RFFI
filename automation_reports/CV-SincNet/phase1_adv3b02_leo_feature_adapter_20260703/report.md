@@ -2661,3 +2661,79 @@ Interpretation:
 Control boundary: the summary CSV contains `LEOADAPT3_IDENTITY` identity/control rows. Two identity rows for `rx7_14` satisfy the old-class geometry-oriented target1 audit, but they are not V29 correction candidates and still have very high unknown FAR. They are retained as baselines only, not as evidence that the model-adapter route succeeded.
 
 Current decision after V29: source-only category logit bias/scale is not a valid route, and the current feature-adapter implementation is still insufficient. The next route should stay feature-centered but move from simple source clean/LEO feature regression to a stronger representation objective that explicitly preserves per-TX separability and reduces unknown oldness, for example source-only class-conditional feature repair with anti-collapse inter-class constraints and open-set proxy unknown separation. No target receiver clean/query or unknown query may be used for training or threshold fitting.
+
+## V30 Source-Only Feature Separation Design
+
+V30 is a follow-up to the V29 failure and explicitly avoids category logit bias/scale. It keeps the same `ADV3B02_CORE90_SOFT_E200phase1`teacher/student setup, but adds feature-space constraints aimed at the two observed blockers: weak per-TX floor and high unknown oldness.
+
+Mechanism:
+
+```text
+old source clean teacher feature -> clean old prototype bank
+student(LEO old source) -> teacher(clean old source) feature alignment
+student(clean old source) -> teacher(clean old source) identity preservation
+student(LEO old source) -> clean old prototype margin / prototype CE
+student(LEO source/proxy unknown) -> far from clean old prototypes
+```
+
+Protocol boundary:
+
+| Item | V30 setting |
+|---|---|
+| Training old data | source receiver ManySig old TX only |
+| Training unknown-like data | source/proxy receiver ManyTx non-old TX only |
+| Target receiver old/unknown | evaluation/export only |
+| Target clean | evaluation/control only |
+| Unknown query threshold fitting | not used |
+| Classifier logit bias/scale | not trained |
+| CosFace classifier weight | frozen |
+
+New/modified local files:
+
+| File | Purpose | SHA256 |
+|---|---|---|
+| `E:\type10-7\code\scripts\train_apply_phase1_iq_preadapter_20260703.py` | Adds optional source/proxy unknown feature separation loss and proxy unknown train loader | `83C7DE4668578D24901D33D22846C3E10F07C43F681394E32E577C901B9F8923` |
+| `E:\type10-7\code\scripts\sweep_phase1_adv3b02_feature_sep_target1_v30_20260703.sh` | Runs eight feature-separation V30 variants and target1 audit | `43AD3221A665990BA72C4E5BA4F4FBC37492F9D8013FB1D888855279014E6DB5` |
+
+Local verification:
+
+| Command | Result |
+|---|---|
+| `C:\Users\lh594\.conda\envs\ssr-gpu\python.exe -m py_compile code\scripts\train_apply_phase1_iq_preadapter_20260703.py code\scripts\eval_phase1_target1_strong_repair_audit_20260703.py` | PASS |
+| `bash -lc "bash -n /mnt/e/type10-7/code/scripts/sweep_phase1_adv3b02_feature_sep_target1_v30_20260703.sh"` | PASS |
+| `python code\scripts\train_apply_phase1_iq_preadapter_20260703.py --help` filtered for new arguments | PASS; `--proxy_unknown_separation_weight`, `--proxy_unknown_max_cos`, `--max_proxy_unknown_train_samples_per_tx` recognized |
+
+Local non-Git code snapshot:
+
+| Snapshot | Files |
+|---|---|
+| `E:\type10-7\code\snapshots\phase1_adv3b02_feature_sep_target1_v30_20260703\scripts\` | V30 trainer and launcher |
+
+Planned N607 command:
+
+```bash
+cd /home/szu2070436088/2510044040/CV-SincNet && \
+bash code/scripts/sweep_phase1_adv3b02_feature_sep_target1_v30_20260703.sh
+```
+
+Planned N607 outputs:
+
+| Artifact | Remote path |
+|---|---|
+| V30 log root | `/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_adv3b02_feature_sep_target1_v30_20260703` |
+| V30 summary CSV | `/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_adv3b02_feature_sep_target1_v30_20260703/target1_strong_v30_summary.csv` |
+| V30 metrics JSON | `/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_adv3b02_feature_sep_target1_v30_20260703/target1_strong_v30_metrics.json` |
+| V30 best JSON | `/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_adv3b02_feature_sep_target1_v30_20260703/target1_strong_v30_best.json` |
+
+V30 variants:
+
+| Variant | Mode | Key feature objective |
+|---|---|---|
+| `LEOFEAT30_HEAD_PROTO_USEP` | `id_feature_head` | balanced prototype CE plus moderate proxy unknown separation |
+| `LEOFEAT30_HEAD_USEP_STRONG` | `id_feature_head` | stronger proxy unknown separation |
+| `LEOFEAT30_HEAD_DISTILL_USEP` | `id_feature_head` | moderate separation with teacher-logit distillation for old-class retention |
+| `LEOFEAT30_HEAD_PROTO_FLOOR` | `id_feature_head` | stronger prototype/margin pressure for TX floor |
+| `LEOFEAT30_LATE_PROTO_USEP` | `id_late_feature` | late-feature version of balanced prototype/separation |
+| `LEOFEAT30_LATE_USEP_STRONG` | `id_late_feature` | late-feature version with stronger unknown separation |
+| `LEOFEAT30_NORM_SAFE_USEP` | `id_norm_late_feature` | conservative norm/late-feature route with weak separation |
+| `LEOFEAT30_NORM_PROTO_USEP` | `id_norm_late_feature` | norm/late-feature route with prototype and moderate separation |
