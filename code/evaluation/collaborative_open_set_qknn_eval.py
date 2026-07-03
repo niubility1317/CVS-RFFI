@@ -55,6 +55,7 @@ FUSION_POLICIES = {
     "support_router_cvs",
     "orbit_coproto",
     "selective_confirm_cvs",
+    "known_guarded_rescue_cvs",
 }
 
 
@@ -746,14 +747,18 @@ def _fuse_event(
         receiver_class_reliability_for_quality = (
             1.0 if receiver_class_reliability_value is None else float(receiver_class_reliability_value)
         )
-        if policy in {"cp_set_cvs", "candidate_set_cvs", "selective_confirm_cvs"} and allowed_cp_set_labels and label not in allowed_cp_set_labels:
+        if (
+            policy in {"cp_set_cvs", "candidate_set_cvs", "selective_confirm_cvs", "known_guarded_rescue_cvs"}
+            and allowed_cp_set_labels
+            and label not in allowed_cp_set_labels
+        ):
             filtered_candidate_count += 1
             return
         row_seen_labels.add(label)
         pvalue = max(0.0, min(1.0, float(conformal_pvalue)))
         candidate_score = max(0.0, float(score_value))
         support_count = max(0.0, float(conformal_support_count))
-        if policy in {"cp_set_cvs", "candidate_set_cvs", "selective_confirm_cvs"} and int(source_rank) > 1 and (
+        if policy in {"cp_set_cvs", "candidate_set_cvs", "selective_confirm_cvs", "known_guarded_rescue_cvs"} and int(source_rank) > 1 and (
             candidate_score <= 0.0 or support_count < 1.0
         ):
             filtered_candidate_count += 1
@@ -1254,6 +1259,7 @@ def _fuse_event(
         "support_router_cvs",
         "orbit_coproto",
         "selective_confirm_cvs",
+        "known_guarded_rescue_cvs",
     }:
         strong_consensus = (
             vote_gap > float(consensus_gap_threshold) or score_gap_ratio > float(consensus_gap_threshold)
@@ -1310,6 +1316,12 @@ def _fuse_event(
                 label_risk_component_agreement,
                 risk_component_agreement,
             )
+        if policy == "known_guarded_rescue_cvs" and label:
+            decision_unknown_risk = max(label_unknown_risk, unknown_risk)
+            decision_risk_component_agreement = max(
+                label_risk_component_agreement,
+                risk_component_agreement,
+            )
         if policy == "orbit_coproto" and label:
             decision_unknown_risk = max(label_unknown_risk, unknown_risk)
             decision_risk_component_agreement = max(label_risk_component_agreement, risk_component_agreement)
@@ -1350,8 +1362,9 @@ def _fuse_event(
                 or decision_risk_component_agreement >= float(scorer_component_vote_threshold)
             )
         )
+        selective_like_policy = policy in {"selective_confirm_cvs", "known_guarded_rescue_cvs"}
         selective_confirm_accept = bool(
-            policy == "selective_confirm_cvs"
+            selective_like_policy
             and output_label_set in {"old", "seen_new"}
             and selected_label_candidate_receivers >= max(1, int(candidate_set_min_receivers))
             and selected_label_top1_receivers >= max(0, int(candidate_set_min_top1_receivers))
@@ -1369,7 +1382,7 @@ def _fuse_event(
             and gate_passed
         )
         selective_confirm_weak_label_evidence = bool(
-            policy == "selective_confirm_cvs"
+            selective_like_policy
             and (
                 not label
                 or output_label_set not in {"old", "seen_new"}
@@ -1387,7 +1400,7 @@ def _fuse_event(
             )
         )
         selective_confirm_risk_sources = []
-        if policy == "selective_confirm_cvs":
+        if selective_like_policy:
             if unknown_risk >= float(candidate_set_event_high_unknown_risk_veto):
                 selective_confirm_risk_sources.append("event_unknown_risk")
             if label_unknown_risk >= float(candidate_set_unknown_reject_risk):
@@ -1398,12 +1411,12 @@ def _fuse_event(
                 selective_confirm_risk_sources.append("risk_component_agreement")
         selective_confirm_unknown_evidence_source_count = len(set(selective_confirm_risk_sources))
         selective_confirm_unknown_evidence = bool(
-            policy == "selective_confirm_cvs"
+            selective_like_policy
             and selective_confirm_weak_label_evidence
             and selective_confirm_unknown_evidence_source_count >= 1
         )
         selective_confirm_unknown_reject_ready = bool(
-            policy == "selective_confirm_cvs"
+            selective_like_policy
             and selective_confirm_weak_label_evidence
             and selective_confirm_unknown_evidence_source_count >= 2
         )
@@ -1416,6 +1429,56 @@ def _fuse_event(
                 f"receiver_reliability={label_receiver_class_reliability:.6g},"
                 f"margin={mean_margin:.6g}"
             )
+        known_guarded_rescue_block_reasons: list[str] = []
+        known_guarded_rescue_unknown_guard_passed = bool(
+            not selective_confirm_unknown_reject_ready
+            and label_unknown_risk <= float(candidate_set_max_label_unknown_risk)
+            and unknown_risk <= float(candidate_set_max_event_unknown_risk)
+            and label_shell_risk <= float(candidate_set_max_label_shell_risk)
+            and label_risk_component_agreement
+            <= float(candidate_set_max_label_risk_component_agreement)
+        )
+        known_guarded_rescue_support_passed = bool(
+            label
+            and output_label_set in {"old", "seen_new"}
+            and selected_label_candidate_receivers >= max(1, int(candidate_set_min_receivers))
+            and selected_label_top1_receivers >= max(1, int(candidate_set_min_top1_receivers))
+            and label_class_conformal_pvalue >= float(candidate_set_min_conformal_pvalue)
+            and label_receiver_class_reliability
+            >= float(candidate_set_min_label_receiver_class_reliability)
+            and label_support_density >= float(old_gate_min_support_density)
+            and mean_margin >= float(accept_margin_threshold)
+            and score_gap_ratio >= float(candidate_set_min_score_gap)
+            and receiver_pair_label_disagreement
+            <= float(candidate_set_max_receiver_pair_label_disagreement)
+            and receiver_pair_unknown_risk_range
+            <= float(candidate_set_max_receiver_pair_unknown_risk_range)
+            and gate_passed
+        )
+        if policy == "known_guarded_rescue_cvs":
+            if not known_guarded_rescue_unknown_guard_passed:
+                known_guarded_rescue_block_reasons.append("unknown_guard")
+            if not known_guarded_rescue_support_passed:
+                known_guarded_rescue_block_reasons.append("support_or_consensus")
+        known_guarded_rescue_applied = bool(
+            policy == "known_guarded_rescue_cvs"
+            and not selective_confirm_accept
+            and known_guarded_rescue_unknown_guard_passed
+            and known_guarded_rescue_support_passed
+        )
+        known_guarded_rescue_block_reason = ",".join(known_guarded_rescue_block_reasons)
+        known_guarded_rescue_safety_route_decision = ""
+        if policy == "known_guarded_rescue_cvs":
+            if selective_confirm_unknown_evidence and within_request_budget:
+                known_guarded_rescue_safety_route_decision = "weak_unknown_request_more"
+            elif selective_confirm_unknown_reject_ready:
+                known_guarded_rescue_safety_route_decision = "weak_unknown_reject"
+            elif selective_confirm_unknown_evidence:
+                known_guarded_rescue_safety_route_decision = "single_unknown_evidence_defer"
+            elif within_request_budget:
+                known_guarded_rescue_safety_route_decision = "weak_evidence_request_more"
+            else:
+                known_guarded_rescue_safety_route_decision = "weak_evidence_defer"
         candidate_set_high_unknown_veto = bool(
             policy == "candidate_set_cvs"
             and label
@@ -1729,27 +1792,31 @@ def _fuse_event(
         elif policy == "support_router_cvs":
             decision = "defer"
             output_label = ""
-        elif policy == "selective_confirm_cvs" and selective_confirm_accept:
+        elif selective_like_policy and selective_confirm_accept:
             decision = "accept"
             output_label = label
             selective_confirm_decision_stage = "strong_known_accept"
-        elif policy == "selective_confirm_cvs" and selective_confirm_unknown_evidence and within_request_budget:
+        elif selective_like_policy and selective_confirm_unknown_evidence and within_request_budget:
             decision = "request_more"
             output_label = ""
             selective_confirm_decision_stage = "weak_unknown_request_more"
-        elif policy == "selective_confirm_cvs" and selective_confirm_unknown_reject_ready:
+        elif policy == "known_guarded_rescue_cvs" and known_guarded_rescue_applied:
+            decision = "accept"
+            output_label = label
+            selective_confirm_decision_stage = "known_guarded_rescue_accept"
+        elif selective_like_policy and selective_confirm_unknown_reject_ready:
             decision = "unknown_reject"
             output_label = UNKNOWN_LABEL
             selective_confirm_decision_stage = "weak_unknown_reject"
-        elif policy == "selective_confirm_cvs" and selective_confirm_unknown_evidence:
+        elif selective_like_policy and selective_confirm_unknown_evidence:
             decision = "defer"
             output_label = ""
             selective_confirm_decision_stage = "single_unknown_evidence_defer"
-        elif policy == "selective_confirm_cvs" and within_request_budget:
+        elif selective_like_policy and within_request_budget:
             decision = "request_more"
             output_label = ""
             selective_confirm_decision_stage = "weak_evidence_request_more"
-        elif policy == "selective_confirm_cvs":
+        elif selective_like_policy:
             decision = "defer"
             output_label = ""
             selective_confirm_decision_stage = "weak_evidence_defer"
@@ -1902,6 +1969,24 @@ def _fuse_event(
         "selective_confirm_request_more_available_receivers": bool(can_request_more),
         "selective_confirm_known_protection_reason": str(
             locals().get("selective_confirm_known_protection_reason", "")
+        ),
+        "known_guarded_rescue_applied": bool(
+            locals().get("known_guarded_rescue_applied", False)
+        ),
+        "known_guarded_rescue_label": str(
+            label if bool(locals().get("known_guarded_rescue_applied", False)) else ""
+        ),
+        "known_guarded_rescue_source": str(
+            "support_consensus" if bool(locals().get("known_guarded_rescue_applied", False)) else ""
+        ),
+        "known_guarded_rescue_block_reason": str(
+            locals().get("known_guarded_rescue_block_reason", "")
+        ),
+        "known_guarded_rescue_unknown_guard_passed": bool(
+            locals().get("known_guarded_rescue_unknown_guard_passed", False)
+        ),
+        "known_guarded_rescue_safety_route_decision": str(
+            locals().get("known_guarded_rescue_safety_route_decision", "")
         ),
         "orbit_coproto_accept": bool(locals().get("orbit_coproto_accept", False)),
         "orbit_old_floor_rescue_accept": bool(locals().get("orbit_old_floor_rescue_accept", False)),
@@ -3323,6 +3408,8 @@ def _finalize_metrics(
     selective_confirm_unknown_evidence_by_role: defaultdict[str, int] = defaultdict(int)
     selective_confirm_weak_label_evidence_total = 0
     selective_confirm_weak_label_evidence_by_role: defaultdict[str, int] = defaultdict(int)
+    known_guarded_rescue_total = 0
+    known_guarded_rescue_by_role: defaultdict[str, int] = defaultdict(int)
     orbit_old_floor_rescue_total = 0
     orbit_old_floor_rescue_by_role: defaultdict[str, int] = defaultdict(int)
     dual_route_rescue_total = 0
@@ -3402,6 +3489,9 @@ def _finalize_metrics(
         if bool(item.get("selective_confirm_weak_label_evidence", False)):
             selective_confirm_weak_label_evidence_total += 1
             selective_confirm_weak_label_evidence_by_role[role] += 1
+        if bool(item.get("known_guarded_rescue_applied", False)):
+            known_guarded_rescue_total += 1
+            known_guarded_rescue_by_role[role] += 1
         if bool(item.get("orbit_old_floor_rescue_accept", False)):
             orbit_old_floor_rescue_total += 1
             orbit_old_floor_rescue_by_role[role] += 1
@@ -3673,6 +3763,9 @@ def _finalize_metrics(
         "selective_confirm_weak_label_evidence_by_role": dict(
             sorted(selective_confirm_weak_label_evidence_by_role.items())
         ),
+        "known_guarded_rescue_count": int(known_guarded_rescue_total),
+        "known_guarded_rescue_rate": _safe_rate(known_guarded_rescue_total, total_events),
+        "known_guarded_rescue_by_role": dict(sorted(known_guarded_rescue_by_role.items())),
         "orbit_old_floor_rescue_count": int(orbit_old_floor_rescue_total),
         "orbit_old_floor_rescue_rate": _safe_rate(orbit_old_floor_rescue_total, total_events),
         "orbit_old_floor_rescue_by_role": dict(sorted(orbit_old_floor_rescue_by_role.items())),

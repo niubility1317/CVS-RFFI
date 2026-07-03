@@ -3916,6 +3916,51 @@ N607同步后远端哈希与本地一致；远端验证`52 tests OK`。实际运
 
 最终SSH/SCP后本地无`ssh.exe`残留，无N607和bridge 22端口ESTABLISHED连接。
 
+## 2026-07-04 known-guarded rescue协同救援计划
+
+### 目标
+
+上一轮`selective_confirm_cvs`的qknn8全量诊断显示，unknown误接收不是当前主因；k=5时`unknown_FAR=0`，但old和seen-new被大量`defer/unknown_reject`，导致`old_acc=0.6000`、`seen_new_acc=0.6000`。按`项目.md`的OLD80_FIRST顺序，本轮先提高known覆盖，不能牺牲unknown eval-only和target receiver边界。
+
+新增`fusion_policy=known_guarded_rescue_cvs`：先沿用selective-confirm安全路判断unknown风险；若安全路未确认多证据unknown，且事件本地已经无更多receiver可请求，则对old/seen-new候选执行known救援。救援要求support质量和接收机一致性同时过门槛：candidate/top1 receiver数、class conformal p-value、receiver-class reliability、support density、margin、score gap、pair label disagreement、pair unknown-risk range、class-set gate均满足。若unknown guard或support/consensus guard不通过，只能继续`reject/defer/request_more`。
+
+### 本地改动与验证
+
+|文件|用途|SHA256|
+|---|---|---|
+|`code/evaluation/collaborative_open_set_qknn_eval.py`|新增`known_guarded_rescue_cvs`策略、known救援门控、事件级审计字段和汇总计数。|`DE568FC68DA7418061E489550F7E86438A4D370F8D58241629F72B1B308D6085`|
+|`code/scripts/phase2_collaborative_open_set_qknn_eval.py`|CLI允许`--fusion_policy known_guarded_rescue_cvs`。|`C9698575FBA5F4D90789AE21E9E871AA913B90EB8DB6B008CCC58A8EFB2A4A17`|
+|`code/tests/test_collaborative_open_set_qknn_eval.py`|新增known救援正例和unknown保护反例，验证救援不会打开高风险unknown accept路径。|`529E746E108D3B4E4398393711AD2968B365CCD4074889DBE98E1467F420492D`|
+
+本地快照：`E:\type10-7\code\snapshots\phase2_adv3b02_known_guarded_rescue_20260704\`。
+
+验证命令：
+
+```text
+conda run --no-capture-output -n ssr-gpu python -m py_compile code\evaluation\collaborative_open_set_qknn_eval.py code\scripts\phase2_collaborative_open_set_qknn_eval.py
+conda run --no-capture-output -n ssr-gpu python -m pytest code\tests\test_collaborative_open_set_qknn_eval.py code\tests\test_phase2_collaborative_open_set_qknn_eval.py -q -p no:cacheprovider
+```
+
+结果：`py_compile`通过；第一次并行pytest触发Windows conda临时文件锁，串行重跑通过：`111 passed in 1.12s`。
+
+### N607计划
+
+远端继续使用`/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python`。同步3个文件和本报告后，先做远端hash、`py_compile`和`unittest`，再运行ADV3B02、qknn8、target receiver coalition k=1..5全量诊断。核心命令参数：
+
+```text
+--fusion_policy known_guarded_rescue_cvs
+--qknn_k 8
+--collab_counts all
+--collab_group_policy available_up_to_k
+--partial_collab_min_receivers 3
+--candidate_set_min_top1_receivers 2
+--candidate_set_min_conformal_pvalue 0.50
+--candidate_set_max_receiver_pair_label_disagreement 0.50
+--candidate_set_max_receiver_pair_unknown_risk_range 1.00
+```
+
+成功判据不变：old整体`>=0.99`且per-class`>=0.95`，seen-new整体`>=0.97`且per-class`>=0.93`，unknown reject`>=0.99`。未达到则继续标为diagnostic-only。
+
 ## 2026-07-04 selective-confirm qknn8全量执行与review修正结果
 
 ### review修正

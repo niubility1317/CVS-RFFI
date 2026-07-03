@@ -3144,6 +3144,7 @@ def parse_args() -> argparse.Namespace:
             "support_router_cvs",
             "orbit_coproto",
             "selective_confirm_cvs",
+            "known_guarded_rescue_cvs",
         ],
     )
     p.add_argument(
