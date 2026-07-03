@@ -181,6 +181,7 @@ def _build_active_splits(
     pool_per_class: int,
     policy: str,
     seed: int,
+    exclude_pool_from_query: bool,
 ) -> dict[str, tuple[np.ndarray, np.ndarray]]:
     splits: dict[str, tuple[np.ndarray, np.ndarray]] = {}
     for label in labels:
@@ -204,11 +205,89 @@ def _build_active_splits(
             seed=seed,
         )
         support_set = set(support)
-        query = np.asarray([int(idx) for idx in ordered.tolist() if int(idx) not in support_set], dtype=int)
+        if exclude_pool_from_query:
+            query = ordered[pool_n:].astype(int)
+        else:
+            query = np.asarray([int(idx) for idx in ordered.tolist() if int(idx) not in support_set], dtype=int)
         query = query[:query_per_class]
         if len(support) == k and query.size == query_per_class:
             splits[str(label)] = (np.asarray(support, dtype=int), query.astype(int))
     return splits
+
+
+def _mean_pairwise_cosine_distance(features: np.ndarray, indices: np.ndarray) -> float:
+    if indices.size < 2:
+        return 0.0
+    subset = features[indices]
+    sim = subset @ subset.T
+    upper = sim[np.triu_indices(indices.size, k=1)]
+    return float(np.mean(np.clip(1.0 - upper, 0.0, 2.0)) / 2.0)
+
+
+def _mean_centroid_similarity(features: np.ndarray, indices: np.ndarray) -> float:
+    if indices.size == 0:
+        return 0.0
+    subset = features[indices]
+    centroid = qknn._normalize_rows(subset.mean(axis=0, keepdims=True))[0]
+    return float(np.mean(subset @ centroid))
+
+
+def _support_quality_metrics(
+    *,
+    old_splits: dict[str, tuple[np.ndarray, np.ndarray]],
+    new_splits: dict[str, tuple[np.ndarray, np.ndarray]],
+    new_labels: tuple[str, ...],
+    features: np.ndarray,
+    scenarios: np.ndarray,
+    source_prototypes: dict[str, np.ndarray],
+    k_old: int,
+    k_new: int,
+) -> dict[str, float]:
+    old_proto_scores: list[float] = []
+    scenario_coverages: list[float] = []
+    diversities: list[float] = []
+    new_compactness: list[float] = []
+    all_scenario_count = max(1, len({str(value) for value in scenarios.tolist()}))
+
+    def add_common(indices: np.ndarray, k: int) -> None:
+        scenario_cap = max(1, min(int(k), all_scenario_count))
+        scenario_coverages.append(float(len({str(value) for value in scenarios[indices].tolist()}) / scenario_cap))
+        diversities.append(_mean_pairwise_cosine_distance(features, indices))
+
+    for label, (support, _) in old_splits.items():
+        add_common(support, k_old)
+        prototype = source_prototypes.get(str(label))
+        if prototype is not None and support.size:
+            old_proto_scores.append(float(np.mean(features[support] @ prototype)))
+
+    for label in new_labels:
+        support, _ = new_splits[str(label)]
+        add_common(support, k_new)
+        new_compactness.append(_mean_centroid_similarity(features, support))
+
+    old_proto_mean = float(np.mean(old_proto_scores)) if old_proto_scores else 0.0
+    old_proto_min = float(np.min(old_proto_scores)) if old_proto_scores else 0.0
+    scenario_coverage_mean = float(np.mean(scenario_coverages)) if scenario_coverages else 0.0
+    support_diversity_mean = float(np.mean(diversities)) if diversities else 0.0
+    new_compactness_mean = float(np.mean(new_compactness)) if new_compactness else 0.0
+    old_proto_mean_norm = (old_proto_mean + 1.0) / 2.0
+    old_proto_min_norm = (old_proto_min + 1.0) / 2.0
+    new_compactness_norm = (new_compactness_mean + 1.0) / 2.0
+    score = (
+        0.35 * old_proto_mean_norm
+        + 0.20 * old_proto_min_norm
+        + 0.25 * scenario_coverage_mean
+        + 0.10 * support_diversity_mean
+        + 0.10 * new_compactness_norm
+    )
+    return {
+        "support_quality_score": float(score),
+        "support_old_proto_mean": old_proto_mean,
+        "support_old_proto_min": old_proto_min,
+        "support_scenario_coverage_mean": scenario_coverage_mean,
+        "support_diversity_mean": support_diversity_mean,
+        "support_new_compactness_mean": new_compactness_mean,
+    }
 
 
 def main() -> None:
@@ -233,6 +312,7 @@ def main() -> None:
     parser.add_argument("--old_bias", type=float, default=0.0)
     parser.add_argument("--radius_norm", type=float, default=0.0)
     parser.add_argument("--scenario_aware", action="store_true")
+    parser.add_argument("--exclude_pool_from_query", action="store_true")
     parser.add_argument("--old_target", type=float, default=0.88)
     parser.add_argument("--old_floor", type=float, default=0.80)
     parser.add_argument("--seen_new_target", type=float, default=0.85)
@@ -288,6 +368,7 @@ def main() -> None:
                 pool_per_class=args.pool_per_old,
                 policy=policy,
                 seed=seed,
+                exclude_pool_from_query=bool(args.exclude_pool_from_query),
             )
             new_splits = _build_active_splits(
                 tx_ids=tx_ids,
@@ -304,6 +385,7 @@ def main() -> None:
                 pool_per_class=args.pool_per_new,
                 policy=policy,
                 seed=seed,
+                exclude_pool_from_query=bool(args.exclude_pool_from_query),
             )
             if set(old_splits) != set(old_labels):
                 continue
@@ -312,6 +394,16 @@ def main() -> None:
             else:
                 combos = list(itertools.combinations(sorted(new_splits), int(args.combo_size)))
             for combo in combos:
+                support_quality = _support_quality_metrics(
+                    old_splits=old_splits,
+                    new_splits=new_splits,
+                    new_labels=tuple(combo),
+                    features=features,
+                    scenarios=scenarios,
+                    source_prototypes=source_prototypes,
+                    k_old=args.k_old,
+                    k_new=args.k_new,
+                )
                 row = qknn._evaluate_row(
                     tuple(combo),
                     features=features,
@@ -339,7 +431,9 @@ def main() -> None:
                 row["support_selection_policy"] = policy
                 row["pool_per_old"] = int(args.pool_per_old)
                 row["pool_per_new"] = int(args.pool_per_new)
+                row["exclude_pool_from_query"] = bool(args.exclude_pool_from_query)
                 row["diagnostic_scope"] = "active_enrollment_pool_selection_no_query_correctness"
+                row.update(support_quality)
                 rows.append(row)
 
     rows.sort(
@@ -361,6 +455,8 @@ def main() -> None:
         "diagnostic_scope": "ACTIVE_ENROLLMENT_DIAGNOSTIC_not_strict_Kshot_when_pool_gt_K",
         "selection_uses_query_correctness": False,
         "selection_inputs": ["support/enrollment labels", "z_id feature geometry", "sat_scenarios", "source old-class logits", "source old-class prototypes"],
+        "support_quality_sort_uses_query_correctness": False,
+        "support_quality_score": "0.35*old_proto_mean_norm + 0.20*old_proto_min_norm + 0.25*scenario_coverage_mean + 0.10*support_diversity_mean + 0.10*new_compactness_norm",
         "feature_npz": str(args.feature_npz),
         "old_tx_ids": old_labels,
         "explicit_new_tx_ids": explicit_new_labels,
@@ -375,6 +471,7 @@ def main() -> None:
         "query_per_new": int(args.query_per_new),
         "pool_per_old": int(args.pool_per_old),
         "pool_per_new": int(args.pool_per_new),
+        "exclude_pool_from_query": bool(args.exclude_pool_from_query),
         "method": (
             f"active_select_qknn8_k{args.topk}_oldbias{args.old_bias:g}"
             f"_rnorm{args.radius_norm:g}{'_scenario' if args.scenario_aware else ''}"
@@ -385,6 +482,7 @@ def main() -> None:
         "seen_new_floor": float(args.seen_new_floor),
         "joint_pass_count": int(sum(1 for row in rows if row["passes_joint_target"])),
         "best": rows[:20],
+        "best_by_support_quality": sorted(rows, key=lambda row: row["support_quality_score"], reverse=True)[:20],
         "rows": rows,
     }
 
@@ -413,6 +511,13 @@ def main() -> None:
         "scenario_aware",
         "pool_per_old",
         "pool_per_new",
+        "exclude_pool_from_query",
+        "support_quality_score",
+        "support_old_proto_mean",
+        "support_old_proto_min",
+        "support_scenario_coverage_mean",
+        "support_diversity_mean",
+        "support_new_compactness_mean",
     ]
     with output_csv.open("w", encoding="utf-8", newline="") as handle:
         writer = csv.DictWriter(handle, fieldnames=fieldnames)
