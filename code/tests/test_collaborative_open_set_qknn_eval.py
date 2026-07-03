@@ -9,6 +9,110 @@ if str(ROOT) not in sys.path:
 
 
 class CollaborativeOpenSetQknnEvalTest(unittest.TestCase):
+    def test_orbit_coproto_trust_weighted_fusion_protects_known_and_rejects_unknown(self):
+        from evaluation.collaborative_open_set_qknn_eval import evaluate_collaborative_open_set_evidence
+
+        rows = [
+            {
+                "event_id": "old-1",
+                "receiver_id": "rx-a",
+                "role": "old",
+                "true_label": "old-a",
+                "predicted_label": "old-b",
+                "known_score": 0.95,
+                "known_margin": 0.20,
+                "unknown_risk": 0.15,
+                "radius_risk": 0.90,
+                "support_density": 0.05,
+                "class_conformal_pvalue": 0.05,
+                "receiver_class_reliability": 0.05,
+                "latency_ms": 2.0,
+                "bytes": 48,
+            },
+            {
+                "event_id": "old-1",
+                "receiver_id": "rx-b",
+                "role": "old",
+                "true_label": "old-a",
+                "predicted_label": "old-a",
+                "known_score": 0.72,
+                "known_margin": 0.22,
+                "unknown_risk": 0.12,
+                "radius_risk": 0.05,
+                "support_density": 0.95,
+                "class_conformal_pvalue": 0.95,
+                "receiver_class_reliability": 0.95,
+                "latency_ms": 4.0,
+                "bytes": 48,
+            },
+            {
+                "event_id": "unk-1",
+                "receiver_id": "rx-a",
+                "role": "unknown",
+                "true_label": "__unknown__",
+                "predicted_label": "old-a",
+                "known_score": 0.52,
+                "known_margin": 0.05,
+                "unknown_risk": 0.90,
+                "radius_risk": 0.85,
+                "support_density": 0.05,
+                "class_conformal_pvalue": 0.05,
+                "receiver_class_reliability": 0.10,
+                "latency_ms": 3.0,
+                "bytes": 48,
+            },
+            {
+                "event_id": "unk-1",
+                "receiver_id": "rx-b",
+                "role": "unknown",
+                "true_label": "__unknown__",
+                "predicted_label": "old-a",
+                "known_score": 0.50,
+                "known_margin": 0.04,
+                "unknown_risk": 0.88,
+                "radius_risk": 0.82,
+                "support_density": 0.05,
+                "class_conformal_pvalue": 0.05,
+                "receiver_class_reliability": 0.10,
+                "latency_ms": 5.0,
+                "bytes": 48,
+            },
+        ]
+
+        result = evaluate_collaborative_open_set_evidence(
+            rows,
+            collab_counts="2",
+            fusion_policy="orbit_coproto",
+            candidate_set_min_receivers=1,
+            candidate_set_max_label_unknown_risk=0.70,
+            candidate_set_unknown_reject_risk=0.80,
+            accept_margin_threshold=0.10,
+            consensus_score_threshold=0.10,
+            scorer_component_vote_threshold=0.75,
+            orbit_radius_risk_weight=1.0,
+            orbit_min_trust=0.10,
+            orbit_unknown_veto_risk=0.80,
+            protocol_metadata={
+                "target_receiver_ids": ["rx-a", "rx-b"],
+                "source_receiver_ids": ["src-a"],
+                "old_tx_ids": ["old-a"],
+                "target_new_tx_ids": [],
+                "unknown_tx_ids": ["unk-a"],
+                "target_channel_view": "satellite/LEO",
+            },
+            include_event_results=True,
+        )
+
+        metrics = result["counts"]["2"]
+        self.assertEqual(metrics["old_acc"], 1.0)
+        self.assertEqual(metrics["unknown_reject_rate"], 1.0)
+        self.assertEqual(metrics["unknown_FAR"], 0.0)
+        self.assertEqual(metrics["bytes_per_event"], 96.0)
+        old_event = metrics["event_results"][0]
+        self.assertTrue(old_event["orbit_coproto_accept"])
+        self.assertGreater(old_event["orbit_label_trust"], 0.10)
+        self.assertEqual(result["fusion_policy"], "orbit_coproto")
+
     def test_reports_counts_metrics_and_resource_telemetry_for_one_to_all_receivers(self):
         from evaluation.collaborative_open_set_qknn_eval import evaluate_collaborative_open_set_evidence
 

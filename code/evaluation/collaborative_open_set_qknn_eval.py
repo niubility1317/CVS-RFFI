@@ -45,6 +45,15 @@ RISK_COMPONENT_KEYS = {
     "class_shell": "class_shell_risk",
 }
 COLLAB_GROUP_POLICIES = {"exact_k", "available_up_to_k"}
+FUSION_POLICIES = {
+    "risk_margin",
+    "consensus_veto",
+    "scorer_cvs",
+    "cp_set_cvs",
+    "candidate_set_cvs",
+    "support_router_cvs",
+    "orbit_coproto",
+}
 
 
 def _parse_receiver_sets(value: object) -> list[frozenset[str]]:
@@ -190,6 +199,12 @@ def _weighted_quantile(values: Sequence[float], weights: Sequence[float], q: flo
 
 def _safe_rate(num: int, den: int) -> float:
     return 0.0 if den <= 0 else float(num) / float(den)
+
+
+def _unit_clamp(value: float) -> float:
+    if not math.isfinite(float(value)):
+        return 0.0
+    return max(0.0, min(1.0, float(value)))
 
 
 def _normalize_scope(value: object) -> str:
@@ -477,6 +492,11 @@ def _fuse_event(
     candidate_set_pairguard_soft_min_agreement: float = 0.0,
     candidate_set_pairguard_soft_min_pvalue: float = 0.0,
     candidate_set_pairguard_soft_min_reliability: float = 0.0,
+    orbit_latency_weight: float = 0.0,
+    orbit_radius_risk_weight: float = 0.5,
+    orbit_staleness_weight: float = 0.0,
+    orbit_min_trust: float = 0.10,
+    orbit_unknown_veto_risk: float = 0.80,
 ) -> dict[str, Any]:
     active_components = _parse_risk_components(scorer_risk_components)
     policy = _normalize_scope(fusion_policy)
@@ -491,6 +511,13 @@ def _fuse_event(
     receiver_class_reliability_policy = _normalize_scope(receiver_class_reliability_policy or "none")
     if receiver_class_reliability_policy not in {"none", "support_calibrated"}:
         raise ValueError("receiver_class_reliability_policy must be none or support_calibrated")
+    if policy not in FUSION_POLICIES:
+        raise ValueError(f"fusion_policy must be one of {', '.join(sorted(FUSION_POLICIES))}")
+    orbit_latency_weight = _validate_non_negative(orbit_latency_weight, "orbit_latency_weight")
+    orbit_radius_risk_weight = _validate_non_negative(orbit_radius_risk_weight, "orbit_radius_risk_weight")
+    orbit_staleness_weight = _validate_non_negative(orbit_staleness_weight, "orbit_staleness_weight")
+    orbit_min_trust = _validate_unit_interval(orbit_min_trust, "orbit_min_trust")
+    orbit_unknown_veto_risk = _validate_unit_interval(orbit_unknown_veto_risk, "orbit_unknown_veto_risk")
     candidate_set_event_high_unknown_risk_veto = _validate_non_negative(
         candidate_set_event_high_unknown_risk_veto,
         "candidate_set_event_high_unknown_risk_veto",
@@ -584,6 +611,7 @@ def _fuse_event(
     label_risk_component_votes: defaultdict[str, list[float]] = defaultdict(list)
     label_class_reliability_values: defaultdict[str, list[float]] = defaultdict(list)
     label_receiver_class_reliability_values: defaultdict[str, list[float]] = defaultdict(list)
+    label_orbit_trust_values: defaultdict[str, list[float]] = defaultdict(list)
     label_candidate_receiver_counts: defaultdict[str, int] = defaultdict(int)
     label_top1_receiver_counts: defaultdict[str, int] = defaultdict(int)
     label_min_evidence_rank: defaultdict[str, int] = defaultdict(lambda: 10**9)
@@ -637,6 +665,8 @@ def _fuse_event(
         class_shell_risk_value: float,
         class_shell_risk_is_missing: bool,
         receiver_class_reliability_value: float,
+        latency_ms_value: float,
+        staleness_value: float,
     ) -> None:
         nonlocal filtered_candidate_count
         if not label or label == UNKNOWN_LABEL or label in row_seen_labels:
@@ -668,7 +698,21 @@ def _fuse_event(
             policy=receiver_class_reliability_policy,
             value=receiver_class_reliability_value,
         )
-        candidate_weight = weight * class_weight * receiver_class_weight
+        orbit_support_quality = (
+            _unit_clamp(support_density_value)
+            + _unit_clamp(pvalue)
+            + _unit_clamp(receiver_class_reliability_value)
+        ) / 3.0
+        orbit_penalty = (
+            float(orbit_latency_weight) * max(0.0, float(latency_ms_value))
+            + float(orbit_radius_risk_weight) * _unit_clamp(radius_risk_value)
+            + float(orbit_staleness_weight) * max(0.0, float(staleness_value))
+        )
+        orbit_trust = _unit_clamp(weight * orbit_support_quality / (1.0 + orbit_penalty))
+        if policy == "orbit_coproto":
+            candidate_weight = orbit_trust
+        else:
+            candidate_weight = weight * class_weight * receiver_class_weight
         label_scores[label] += candidate_weight * candidate_score
         label_raw_scores[label] += candidate_weight * max(0.0, float(score_value))
         label_weight_totals[label] += candidate_weight
@@ -685,6 +729,7 @@ def _fuse_event(
         label_shell_risk_observed_values[label].append(not bool(class_shell_risk_is_missing))
         label_class_reliability_values[label].append(class_weight)
         label_receiver_class_reliability_values[label].append(receiver_class_weight)
+        label_orbit_trust_values[label].append(orbit_trust)
         row_component_values = {
             "score": float(score_risk_value),
             "radius": float(radius_risk_value),
@@ -766,6 +811,8 @@ def _fuse_event(
                 class_shell_risk_value=_float(row, "class_shell_risk", 0.0),
                 class_shell_risk_is_missing=not _has_finite_float(row, "class_shell_risk"),
                 receiver_class_reliability_value=_float(row, "receiver_class_reliability", 1.0),
+                latency_ms_value=_float(row, "latency_ms", 0.0),
+                staleness_value=_float(row, "prototype_staleness", _float(row, "support_age", 0.0)),
             )
         if policy in {"cp_set_cvs", "candidate_set_cvs"}:
             top_m = max(0, int(_float(row, "class_evidence_top_m", 0.0)))
@@ -819,6 +866,8 @@ def _fuse_event(
                         f"class_evidence_top{rank}_receiver_class_reliability",
                         _float(row, "receiver_class_reliability", 1.0),
                     ),
+                    latency_ms_value=_float(row, "latency_ms", 0.0),
+                    staleness_value=_float(row, "prototype_staleness", _float(row, "support_age", 0.0)),
                 )
         score_risk_value = _float(row, "score_risk", _float(row, "unknown_risk", 0.0))
         radius_risk_value = _float(row, "radius_risk", _float(row, "unknown_risk", 0.0))
@@ -969,6 +1018,7 @@ def _fuse_event(
     selected_label_risk_component_votes = label_risk_component_votes[label]
     selected_label_class_reliability_values = label_class_reliability_values[label]
     selected_label_receiver_class_reliability_values = label_receiver_class_reliability_values[label]
+    selected_label_orbit_trust_values = label_orbit_trust_values[label]
     selected_label_shell_risk_observed_values = label_shell_risk_observed_values[label]
     label_support_density_missing = any(label_support_density_missing_values[label])
     label_radius_z_missing = any(label_radius_z_missing_values[label])
@@ -1016,6 +1066,11 @@ def _fuse_event(
         / len(selected_label_receiver_class_reliability_values)
         if selected_label_receiver_class_reliability_values
         else 1.0
+    )
+    label_orbit_trust = (
+        sum(selected_label_orbit_trust_values) / len(selected_label_orbit_trust_values)
+        if selected_label_orbit_trust_values
+        else 0.0
     )
     latency_ms = float(max((_float(row, "latency_ms", 0.0) for row in selected), default=0.0))
     within_request_budget = bool(
@@ -1083,7 +1138,7 @@ def _fuse_event(
         else:
             decision = "defer"
             output_label = ""
-    elif policy in {"scorer_cvs", "cp_set_cvs", "candidate_set_cvs", "support_router_cvs"}:
+    elif policy in {"scorer_cvs", "cp_set_cvs", "candidate_set_cvs", "support_router_cvs", "orbit_coproto"}:
         strong_consensus = (
             vote_gap > float(consensus_gap_threshold) or score_gap_ratio > float(consensus_gap_threshold)
         ) and agreement >= 0.5
@@ -1133,6 +1188,9 @@ def _fuse_event(
         if policy == "candidate_set_cvs" and label:
             decision_unknown_risk = label_unknown_risk
             decision_risk_component_agreement = label_risk_component_agreement
+        if policy == "orbit_coproto" and label:
+            decision_unknown_risk = max(label_unknown_risk, unknown_risk)
+            decision_risk_component_agreement = max(label_risk_component_agreement, risk_component_agreement)
         if policy == "support_router_cvs" and label:
             decision_unknown_risk = max(label_unknown_risk, unknown_risk)
             decision_risk_component_agreement = max(
@@ -1364,6 +1422,26 @@ def _fuse_event(
             and score_gap_ratio >= float(candidate_set_min_score_gap)
             and candidate_set_pairguard_accept_passed
         )
+        orbit_coproto_accept = bool(
+            policy == "orbit_coproto"
+            and output_label_set in {"old", "seen_new"}
+            and selected_label_candidate_receivers >= max(1, int(candidate_set_min_receivers))
+            and label_orbit_trust >= float(orbit_min_trust)
+            and mean_score >= float(consensus_score_threshold)
+            and mean_margin >= float(accept_margin_threshold)
+            and label_unknown_risk <= float(candidate_set_max_label_unknown_risk)
+            and unknown_risk < float(orbit_unknown_veto_risk)
+            and decision_risk_component_agreement <= float(scorer_component_vote_threshold)
+            and gate_passed
+        )
+        orbit_coproto_unknown_evidence = bool(
+            policy == "orbit_coproto"
+            and (
+                unknown_risk >= float(orbit_unknown_veto_risk)
+                or label_unknown_risk >= float(candidate_set_unknown_reject_risk)
+                or decision_risk_component_agreement > float(scorer_component_vote_threshold)
+            )
+        )
         if policy == "support_router_cvs" and support_router_accept:
             decision = "accept"
             output_label = label
@@ -1382,6 +1460,21 @@ def _fuse_event(
         elif candidate_set_accept:
             decision = "accept"
             output_label = label
+        elif policy == "orbit_coproto" and orbit_coproto_accept:
+            decision = "accept"
+            output_label = label
+        elif policy == "orbit_coproto" and orbit_coproto_unknown_evidence and within_request_budget:
+            decision = "request_more"
+            output_label = ""
+        elif policy == "orbit_coproto" and orbit_coproto_unknown_evidence:
+            decision = "unknown_reject"
+            output_label = UNKNOWN_LABEL
+        elif policy == "orbit_coproto" and within_request_budget:
+            decision = "request_more"
+            output_label = ""
+        elif policy == "orbit_coproto":
+            decision = "defer"
+            output_label = ""
         elif policy == "candidate_set_cvs" and locals().get("candidate_set_pairguard_request_more", False):
             decision = "request_more"
             output_label = ""
@@ -1445,9 +1538,9 @@ def _fuse_event(
             decision = "defer"
             output_label = ""
     elif label:
-        raise ValueError("fusion_policy must be risk_margin, consensus_veto, scorer_cvs, cp_set_cvs, candidate_set_cvs, or support_router_cvs")
+        raise ValueError(f"fusion_policy must be one of {', '.join(sorted(FUSION_POLICIES))}")
     else:
-        raise ValueError("fusion_policy must be risk_margin, consensus_veto, scorer_cvs, cp_set_cvs, candidate_set_cvs, or support_router_cvs")
+        raise ValueError(f"fusion_policy must be one of {', '.join(sorted(FUSION_POLICIES))}")
 
     resource_budget_reason = _resource_budget_reason(
         selected,
@@ -1492,6 +1585,14 @@ def _fuse_event(
         "candidate_set_accept": bool(locals().get("candidate_set_accept", False)),
         "support_router_accept": bool(locals().get("support_router_accept", False)),
         "support_router_unknown_evidence": bool(locals().get("support_router_unknown_evidence", False)),
+        "orbit_coproto_accept": bool(locals().get("orbit_coproto_accept", False)),
+        "orbit_coproto_unknown_evidence": bool(locals().get("orbit_coproto_unknown_evidence", False)),
+        "orbit_label_trust": float(label_orbit_trust),
+        "orbit_latency_weight": float(orbit_latency_weight),
+        "orbit_radius_risk_weight": float(orbit_radius_risk_weight),
+        "orbit_staleness_weight": float(orbit_staleness_weight),
+        "orbit_min_trust": float(orbit_min_trust),
+        "orbit_unknown_veto_risk": float(orbit_unknown_veto_risk),
         "candidate_set_min_receivers": int(candidate_set_min_receivers),
         "candidate_set_min_top1_receivers": int(candidate_set_min_top1_receivers),
         "candidate_set_min_conformal_pvalue": float(candidate_set_min_conformal_pvalue),
@@ -2560,6 +2661,11 @@ def _fuse_dual_route_event(
     candidate_set_pairguard_soft_min_agreement: float = 0.0,
     candidate_set_pairguard_soft_min_pvalue: float = 0.0,
     candidate_set_pairguard_soft_min_reliability: float = 0.0,
+    orbit_latency_weight: float = 0.0,
+    orbit_radius_risk_weight: float = 0.5,
+    orbit_staleness_weight: float = 0.0,
+    orbit_min_trust: float = 0.10,
+    orbit_unknown_veto_risk: float = 0.80,
     dual_route_rescue_min_pvalue: float = 0.75,
     dual_route_rescue_min_receiver_class_reliability: float = 0.75,
     dual_route_rescue_max_label_unknown_risk: float = 0.60,
@@ -3227,6 +3333,11 @@ def evaluate_collaborative_open_set_evidence(
     candidate_set_pairguard_soft_min_agreement: float = 0.0,
     candidate_set_pairguard_soft_min_pvalue: float = 0.0,
     candidate_set_pairguard_soft_min_reliability: float = 0.0,
+    orbit_latency_weight: float = 0.0,
+    orbit_radius_risk_weight: float = 0.5,
+    orbit_staleness_weight: float = 0.0,
+    orbit_min_trust: float = 0.10,
+    orbit_unknown_veto_risk: float = 0.80,
     dual_route_rescue_min_pvalue: float = 0.75,
     dual_route_rescue_min_receiver_class_reliability: float = 0.75,
     dual_route_rescue_max_label_unknown_risk: float = 0.60,
@@ -3625,6 +3736,11 @@ def evaluate_collaborative_open_set_evidence(
                     candidate_set_pairguard_soft_min_agreement=candidate_set_pairguard_soft_min_agreement,
                     candidate_set_pairguard_soft_min_pvalue=candidate_set_pairguard_soft_min_pvalue,
                     candidate_set_pairguard_soft_min_reliability=candidate_set_pairguard_soft_min_reliability,
+                    orbit_latency_weight=orbit_latency_weight,
+                    orbit_radius_risk_weight=orbit_radius_risk_weight,
+                    orbit_staleness_weight=orbit_staleness_weight,
+                    orbit_min_trust=orbit_min_trust,
+                    orbit_unknown_veto_risk=orbit_unknown_veto_risk,
                 )
             first = selected[0]
             fused["role"] = _role(first.get("role"))
@@ -3767,6 +3883,11 @@ def evaluate_collaborative_open_set_evidence(
         "candidate_set_pairguard_receiver_sets": ";".join(
             "+".join(sorted(item)) for item in _parse_receiver_sets(candidate_set_pairguard_receiver_sets)
         ),
+        "orbit_latency_weight": float(orbit_latency_weight),
+        "orbit_radius_risk_weight": float(orbit_radius_risk_weight),
+        "orbit_staleness_weight": float(orbit_staleness_weight),
+        "orbit_min_trust": float(orbit_min_trust),
+        "orbit_unknown_veto_risk": float(orbit_unknown_veto_risk),
         "dual_route_rescue_min_pvalue": float(dual_route_rescue_min_pvalue),
         "dual_route_rescue_min_receiver_class_reliability": float(
             dual_route_rescue_min_receiver_class_reliability

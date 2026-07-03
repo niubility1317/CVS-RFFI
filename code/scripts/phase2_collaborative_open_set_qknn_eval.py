@@ -2398,6 +2398,11 @@ def run_evaluation(args: argparse.Namespace) -> dict[str, Any]:
         candidate_set_pairguard_soft_min_reliability=float(
             args.candidate_set_pairguard_soft_min_reliability
         ),
+        orbit_latency_weight=float(args.orbit_latency_weight),
+        orbit_radius_risk_weight=float(args.orbit_radius_risk_weight),
+        orbit_staleness_weight=float(args.orbit_staleness_weight),
+        orbit_min_trust=float(args.orbit_min_trust),
+        orbit_unknown_veto_risk=float(args.orbit_unknown_veto_risk),
         dual_route_rescue_min_pvalue=float(args.dual_route_rescue_min_pvalue),
         dual_route_rescue_min_receiver_class_reliability=float(
             args.dual_route_rescue_min_receiver_class_reliability
@@ -2544,6 +2549,7 @@ def parse_args() -> argparse.Namespace:
             "cp_set_cvs",
             "candidate_set_cvs",
             "support_router_cvs",
+            "orbit_coproto",
         ],
     )
     p.add_argument(
@@ -2646,6 +2652,11 @@ def parse_args() -> argparse.Namespace:
     p.add_argument("--candidate_set_pairguard_soft_min_agreement", type=float, default=0.0)
     p.add_argument("--candidate_set_pairguard_soft_min_pvalue", type=float, default=0.0)
     p.add_argument("--candidate_set_pairguard_soft_min_reliability", type=float, default=0.0)
+    p.add_argument("--orbit_latency_weight", type=float, default=0.0)
+    p.add_argument("--orbit_radius_risk_weight", type=float, default=0.5)
+    p.add_argument("--orbit_staleness_weight", type=float, default=0.0)
+    p.add_argument("--orbit_min_trust", type=float, default=0.10)
+    p.add_argument("--orbit_unknown_veto_risk", type=float, default=0.80)
     p.add_argument("--include_event_results", action="store_true")
     p.add_argument("--dual_route_rescue_min_pvalue", type=float, default=0.75)
     p.add_argument("--dual_route_rescue_min_receiver_class_reliability", type=float, default=0.75)

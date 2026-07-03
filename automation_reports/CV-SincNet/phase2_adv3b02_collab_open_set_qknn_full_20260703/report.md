@@ -4196,6 +4196,109 @@ accept = S(y_hat)>=tau_y_hat and margin>=m_y_hat and radius(z,p_fused(y_hat))<=R
 
 其中`p_k(y)`只由source prototype、target-old support和target-new support形成；`Y_unknown`query仅用于评估。通信按top-k证据包估算约`6*c*k+header`bytes/event，prototype同步按`changed_classes*Kp*D*2B`估算。该路线更符合卫星端实时轻量更新：冻结CVS/CV-SincNet主干，只更新prototype、温度、阈值、类半径、EVT尾部参数或小adapter/BN affine。
 
+## 2026-07-04 ORBIT-CoProto最小融合实现
+
+### 设计依据
+
+上轮full envelope、class shell和virtual unknown证明硬门控会用known误拒换取low FAR；去掉这些代理unknown后，old/seen-new恢复但unknown_FAR升高。本轮不再扩大hard reject，而是在现有ADV3B02/qknn8 offline evidence链路中新增`fusion_policy=orbit_coproto`。该策略保持CVS/CV-SincNet主干冻结，unknown query仍仅用于最终评估；每个receiver只上传top-k证据、support质量、类半径风险、latency、bytes和prototype版本/陈旧度等轻量统计。
+
+ORBIT-CoProto的最小实现公式：
+
+```text
+trust_k(y)=clip(reliability_k * mean(support_density_k(y), conformal_pvalue_k(y), receiver_class_reliability_k(y)) / (1 + a_latency*latency_k + a_radius*radius_risk_k(y) + a_stale*staleness_k(y)))
+S(y|C)=sum_{k in C} trust_k(y) * score_k(y)
+accept = trust_y>=trust_min and margin>=m_y and S(y)>=tau_y and label_unknown_risk<=risk_y and event_unknown_risk<veto_risk
+reject = event_unknown_risk>=veto_risk or label_unknown_risk>=reject_risk or risk_component_agreement>component_vote_threshold
+```
+
+这仍是证据融合层的最小闭环，不声称完成严格同事件卫星群协同；若输入仍为`receiver_domain_ranked`，结果必须继续写作receiver-domain ensemble诊断。
+
+### 本地改动与验证
+
+|文件|用途|SHA256|
+|---|---|---|
+|`code/evaluation/collaborative_open_set_qknn_eval.py`|新增`orbit_coproto`融合策略、trust-weighted label score、`orbit_label_trust`和ORBIT参数审计字段。|`60E77DA8FD946064312AF369D3A3C1CF5156DF9D8B3E926B0E1EF5C9D20A9AEA`|
+|`code/scripts/phase2_collaborative_open_set_qknn_eval.py`|CLI新增`--fusion_policy orbit_coproto`和`--orbit_*`参数，并传入评估器。|`904F68310B8B383AD137C4CAD77267F34D97FF8D133496B34239BB7FF48A4A9E`|
+|`code/tests/test_collaborative_open_set_qknn_eval.py`|新增ORBIT-CoProto单测，覆盖低trust错误receiver降权、known保护、unknown拒识和bytes/event资源字段。|`97C10CFE0236E24DF44DD1F285C702D66914B7D6D124D978FBD6FABC11E66A5F`|
+
+本地快照：`E:\type10-7\code\snapshots\phase2_orbit_coproto_20260704\`。
+
+验证：
+
+```text
+conda run --no-capture-output -n ssr-gpu python -m py_compile code\evaluation\collaborative_open_set_qknn_eval.py code\scripts\phase2_collaborative_open_set_qknn_eval.py
+conda run --no-capture-output -n ssr-gpu python -m pytest code\tests\test_collaborative_open_set_qknn_eval.py -q -p no:cacheprovider
+conda run --no-capture-output -n ssr-gpu python -m pytest code\tests\test_phase2_collaborative_open_set_qknn_eval.py -q -p no:cacheprovider
+```
+
+结果：`py_compile`通过；`test_collaborative_open_set_qknn_eval.py`为`54 passed`；`test_phase2_collaborative_open_set_qknn_eval.py`为`46 passed`。并行`conda run`曾触发Windows临时文件锁，串行重跑后通过；该现象不是实验失败。
+
+### N607计划
+
+远端继续使用`/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python`。同步本地3个文件后运行k=1..5全量target receiver诊断，使用当前ADV3B02/qknn8 feature evidence，不使用unknown query拟合阈值：
+
+```text
+python code/scripts/phase2_collaborative_open_set_qknn_eval.py \
+  --feature_npz runs/phase2_adv3b02_collab_open_set_qknn_full_20260703/features.npz \
+  --output_json runs/phase2_adv3b02_collab_open_set_qknn_orbit_coproto_adv3b02.json \
+  --output_evidence_csv runs/phase2_adv3b02_collab_open_set_qknn_orbit_coproto_adv3b02_evidence.csv \
+  --collab_counts all --k_shot 8 --query_per_class 20 --qknn_k 8 \
+  --support_calibration_mode leave_one_out \
+  --unknown_gate_mode support_envelope_consensus --score_threshold_combine qknn_only \
+  --scenario_aware --radius_norm 0.3 \
+  --fusion_policy orbit_coproto --label_fusion_policy weighted_vote_margin \
+  --receiver_class_reliability_policy support_calibrated \
+  --candidate_set_min_receivers 2 --candidate_set_max_label_unknown_risk 0.70 \
+  --candidate_set_unknown_reject_risk 0.80 \
+  --unknown_risk_threshold 0.80 --accept_margin_threshold 0.08 \
+  --consensus_score_threshold 0.20 --scorer_component_vote_threshold 0.75 \
+  --orbit_radius_risk_weight 1.0 --orbit_min_trust 0.08 --orbit_unknown_veto_risk 0.82 \
+  --event_alignment_policy receiver_domain_ranked \
+  --support_selection_policy stable_first --evidence_packet_bytes 40
+```
+
+主判断仍为同一k行内`old_acc/min_old`、`seen_new_acc/min_seen`、`unknown_FAR/unknown_reject`、`defer/request_more`和`bytes/event/p95 latency`联合指标。若未达到99/95、97/93、99拒识，结果继续标为diagnostic-only。
+
+### N607结果
+
+远端验证hash与本地一致；远端`py_compile`通过，CLI确认包含`orbit_coproto`和`--orbit_min_trust`。直接N607 preflight显示8张RTX3090均为`10/24576 MiB`、utilization`0%`，选择GPU0运行。每次SSH/SCP/远端运行后，本地`ssh.exe`、N607`22`端口、bridge`22`端口连接数均为`0`。
+
+首次启动遗漏`--class_conformal_enabled`，失败信息为`receiver_class_reliability_policy=support_calibrated requires --class_conformal_enabled`；补齐参数后成功运行。该失败属于配置门槛，不产生结果主张。
+
+远端产物：
+
+|run|JSON SHA256|CSV SHA256|
+|---|---|---|
+|`orbit_coproto_adv3b02`|`183057E0116C9B0295A68E8E5787FC92E03CE32E181928104893CAAF2175EE32`|`65F5461C1337B438566DCD5DB4CED78CC915918405946619817D1CAC09D3DB5B`|
+|`orbit_coproto_min1_adv3b02`|`8E43B8DF37DC9F6A706338EF31BA0C95366B72F38563556F83F7E580D976B440`|`88E8E0777BC46C19C773948493F3A6BC51D616F9C26DF5BE7D6138AF5A20AAAE`|
+|`orbit_coproto_supportprior_adv3b02`|`525A2A32665557C7F2A10FC352FA9E1BCF196736BF93852D3084981EB3C010C6`|`4533C096D07FEE9A99B7CDBFAD0A34D709C727FF6831DB49DC612DCD528A59AC`|
+|`orbit_coproto_tight_adv3b02`|`16F19977B48002D2DFD2A5C5E2A253A23ABA4B19389AB2E79EC72A8ACDA4907C`|`D1F9928E1A9E4DE6E33BDB73B96CE783EF8E0FABCD619B361E028058428E6A40`|
+
+`orbit_coproto_adv3b02`主结果：
+
+|k|old_acc|min_old|seen_new_acc|min_seen|unknown_FAR|unknown_reject|defer|request_more|avg_rx|bytes/event|p95 ms|
+|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+|1|0.0000|0.0000|0.0000|0.0000|0.0000|0.5000|0.7655|0.0000|1.0000|40.0|0.1425|
+|2|0.3224|0.0000|0.3462|0.2500|0.0652|0.7609|0.2960|0.0000|2.0000|80.0|0.1425|
+|3|0.4833|0.1500|0.5500|0.5500|0.0250|0.8750|0.1000|0.0000|3.0000|120.0|0.1425|
+|4|0.8182|0.0000|0.7143|0.6500|0.0294|0.7941|0.0733|0.0000|4.0000|160.0|0.1425|
+|5|0.7925|0.0000|0.6000|0.0000|0.1000|0.9000|0.0323|0.0000|5.0000|200.0|0.1425|
+
+小网格结果：
+
+|run|k|old_acc|min_old|seen_new_acc|min_seen|unknown_FAR|unknown_reject|defer|avg_rx|bytes/event|p95 ms|判定|
+|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---|
+|`orbit_coproto_min1_adv3b02`|4|0.8409|0.0000|0.7143|0.6500|0.2059|0.7941|0.0133|4.0000|160.0|0.1051|放宽min receiver改善old但FAR过高|
+|`orbit_coproto_supportprior_adv3b02`|4|0.8182|0.0000|0.8214|0.8000|0.3235|0.6176|0.0200|4.0000|160.0|0.1036|新类较好但unknown拒识失败|
+|`orbit_coproto_tight_adv3b02`|4|0.7955|0.0000|0.7143|0.6500|0.0588|0.9118|0.0200|4.0000|160.0|0.1026|拒识较强但old低于OLD80边界|
+
+判定：
+
+1.`orbit_coproto_adv3b02`是当前ORBIT小网格的最佳联合点：k=4时`old_acc=0.8182`达到OLD80阶段门槛，`seen_new_acc=0.7143`，`unknown_FAR=0.0294`满足0.05以内的Stage2-C拒识约束，但`min_old=0.0`且`min_seen=0.65`，距离99/95、97/93、99拒识目标仍很远。  
+2.相对`consensus_no_virtual_candidate_adv3b02`的k=4结果，ORBIT把`unknown_FAR`从`0.3000`降到`0.0294`，old_acc从`0.8500`降到`0.8182`，seen_new_acc从`0.7750`降到`0.7143`。这证明trust-weighted prototype协同能显著改善未知拒识，但仍有逐类塌缩。  
+3.`support_quality_prior`说明receiver选择可以提高seen_new，但会明显牺牲unknown拒识；该方向必须加入unknown安全预算，不能只按support质量选receiver。  
+4.结果仍为`receiver_domain_ranked`诊断，不是严格同物理事件卫星群协同。下一步应补同分母/strict event key，或在现有ranked模式中新增逐类floor导向的receiver/class reliability校准。
+
 ## 2026-07-04 SR-PairFuse软pairguard执行计划
 
 ### 设计依据
