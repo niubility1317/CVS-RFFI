@@ -919,6 +919,25 @@ def _unknown_risk(scores: np.ndarray, threshold: float, *, temperature: float) -
     return np.clip(1.0 - known_prob, 0.0, 1.0)
 
 
+def _virtual_unknown_boundary_risk(
+    query_features: np.ndarray,
+    known_scores: np.ndarray,
+    virtual_features: np.ndarray | None,
+    *,
+    temperature: float,
+    margin: float,
+) -> tuple[np.ndarray, np.ndarray]:
+    scores = np.asarray(known_scores, dtype=np.float64)
+    if virtual_features is None or int(np.asarray(virtual_features).shape[0]) == 0:
+        return np.zeros_like(scores, dtype=np.float64), np.zeros_like(scores, dtype=np.float64)
+    query = _normalize_rows(query_features)
+    virtual = _normalize_rows(np.asarray(virtual_features, dtype=np.float32))
+    virtual_scores = np.max(query @ virtual.T, axis=1).astype(np.float64)
+    z = np.clip((virtual_scores - scores + float(margin)) / max(float(temperature), 1e-6), -60.0, 60.0)
+    risk = 1.0 / (1.0 + np.exp(-z))
+    return np.clip(risk, 0.0, 1.0), np.asarray(virtual_scores, dtype=np.float64)
+
+
 def _combined_unknown_risk(
     memory: QknnMemory,
     query_features: np.ndarray,
@@ -1132,6 +1151,10 @@ def build_collaborative_evidence(
     virtual_unknown_mix_alpha: float = 0.50,
     virtual_unknown_noise_scale: float = 0.02,
     virtual_unknown_neighbor_count: int = 2,
+    virtual_unknown_risk_enabled: bool = False,
+    virtual_unknown_risk_samples_per_class: int = 2,
+    virtual_unknown_risk_temperature: float = 0.05,
+    virtual_unknown_risk_margin: float = 0.0,
     evidence_packet_bytes: float = 40.0,
     receiver_reliability_policy: str = "deployment_prior",
     prototype_score_blend: float = 0.0,
@@ -1175,6 +1198,8 @@ def build_collaborative_evidence(
     receiver_memories: dict[str, QknnMemory] = {}
     receiver_thresholds: dict[str, float] = {}
     receiver_class_thresholds: dict[str, dict[str, float]] = {}
+    receiver_virtual_unknowns: dict[str, np.ndarray] = {}
+    receiver_virtual_unknown_counts: dict[str, int] = {}
     evidence: list[dict[str, Any]] = []
     receiver_query: dict[str, dict[str, list[int]]] = {}
     threshold_scope = "support_known_only"
@@ -1284,9 +1309,14 @@ def build_collaborative_evidence(
             mahalanobis_variance_floor=mahalanobis_variance_floor,
             evt_min_scale=evt_min_scale,
         )
+        virtual_sample_count = 0
+        if bool(virtual_unknown_calibration_enabled):
+            virtual_sample_count = max(virtual_sample_count, int(virtual_unknown_samples_per_class))
+        if bool(virtual_unknown_risk_enabled):
+            virtual_sample_count = max(virtual_sample_count, int(virtual_unknown_risk_samples_per_class))
         virtual_features = _virtual_unknown_features(
             memory,
-            samples_per_class=int(virtual_unknown_samples_per_class) if bool(virtual_unknown_calibration_enabled) else 0,
+            samples_per_class=virtual_sample_count,
             seed=int(seed) + 7919 * (len(receiver_memories) + 1),
             mix_alpha=float(virtual_unknown_mix_alpha),
             noise_scale=float(virtual_unknown_noise_scale),
@@ -1295,11 +1325,13 @@ def build_collaborative_evidence(
         proxy_parts: list[np.ndarray] = []
         if proxy_idx.size:
             proxy_parts.append(features[proxy_idx])
-        if int(virtual_features.shape[0]) > 0:
+        if bool(virtual_unknown_calibration_enabled) and int(virtual_features.shape[0]) > 0:
             proxy_parts.append(virtual_features)
         proxy_features = np.vstack(proxy_parts).astype(np.float32) if proxy_parts else None
         source_proxy_scenarios = [_scenario_of(payload, int(i)) for i in proxy_idx.tolist()] if proxy_idx.size else []
-        virtual_proxy_scenarios = [""] * int(virtual_features.shape[0])
+        virtual_proxy_scenarios = (
+            [""] * int(virtual_features.shape[0]) if bool(virtual_unknown_calibration_enabled) else []
+        )
         proxy_scenarios = source_proxy_scenarios + virtual_proxy_scenarios
         threshold, scope = _threshold_from_calibration(
             memory,
@@ -1321,7 +1353,7 @@ def build_collaborative_evidence(
         )
         if scope == "source_only" and proxy_idx.size:
             threshold_scope = scope
-        elif int(virtual_features.shape[0]) > 0 and threshold_scope != "source_only":
+        elif bool(virtual_unknown_calibration_enabled) and int(virtual_features.shape[0]) > 0 and threshold_scope != "source_only":
             threshold_scope = "support_virtual_unknown"
         class_thresholds: dict[str, float] = {}
         if bool(class_score_threshold_enabled):
@@ -1350,6 +1382,11 @@ def build_collaborative_evidence(
         receiver_memories[rx] = memory
         receiver_thresholds[rx] = threshold
         receiver_class_thresholds[rx] = class_thresholds
+        receiver_virtual_unknown_counts[rx] = int(virtual_features.shape[0])
+        receiver_virtual_unknowns[rx] = virtual_features if bool(virtual_unknown_risk_enabled) else np.zeros(
+            (0, int(memory.centroids.shape[1])),
+            dtype=np.float32,
+        )
 
     elapsed_ms = max((time.perf_counter() - t0) * 1000.0, 1e-6)
     total_query_rows = sum(len(v[role]) for v in receiver_query.values() for role in ["old", "seen_new", "unknown"])
@@ -1516,6 +1553,13 @@ def build_collaborative_evidence(
                         evt_temperature=evt_temperature,
                         oldness_temperature=oldness_temperature,
                     )
+                    virtual_unknown_risk, virtual_unknown_score = _virtual_unknown_boundary_risk(
+                        features[[idx]],
+                        score,
+                        receiver_virtual_unknowns.get(rx),
+                        temperature=float(virtual_unknown_risk_temperature),
+                        margin=float(virtual_unknown_risk_margin),
+                    )
                     candidate_audit_risk = 0.0
                     if bool(candidate_audit_unknown_risk_enabled):
                         if candidate_audit_disagreement:
@@ -1525,7 +1569,11 @@ def build_collaborative_evidence(
                             )
                         if float(candidate_audit_min_gap) > 0.0 and audit_gap < float(candidate_audit_min_gap):
                             candidate_audit_risk = max(candidate_audit_risk, float(candidate_audit_gap_risk))
-                    unknown_risk_value = max(float(risk[0]), float(candidate_audit_risk))
+                    unknown_risk_value = max(
+                        float(risk[0]),
+                        float(virtual_unknown_risk[0]) if bool(virtual_unknown_risk_enabled) else 0.0,
+                        float(candidate_audit_risk),
+                    )
                     score_risk_value = max(float(score_risk[0]), float(candidate_audit_risk))
                     evidence.append(
                         {
@@ -1553,10 +1601,9 @@ def build_collaborative_evidence(
                             "class_score_threshold_enabled": int(bool(class_score_threshold_enabled)),
                             "score_threshold_source": threshold_source,
                             "virtual_unknown_calibration_enabled": int(bool(virtual_unknown_calibration_enabled)),
+                            "virtual_unknown_risk_enabled": int(bool(virtual_unknown_risk_enabled)),
                             "virtual_unknown_count": int(
-                                max(0, int(virtual_unknown_samples_per_class)) * max(0, int(memory.centroid_labels.shape[0]))
-                                if bool(virtual_unknown_calibration_enabled)
-                                else 0
+                                receiver_virtual_unknown_counts.get(rx, 0)
                             ),
                             "candidate_class_count": int(candidate_counts[0]),
                             "support_neighbor_count": int(support_neighbor_counts[0]),
@@ -1574,6 +1621,8 @@ def build_collaborative_evidence(
                             "mahalanobis_risk": float(mahalanobis_risk[0]),
                             "evt_risk": float(evt_risk[0]),
                             "oldness_risk": float(oldness_risk[0]),
+                            "virtual_unknown_risk": float(virtual_unknown_risk[0]) if bool(virtual_unknown_risk_enabled) else 0.0,
+                            "virtual_unknown_score": float(virtual_unknown_score[0]) if bool(virtual_unknown_risk_enabled) else 0.0,
                             "class_radius": float(class_radius[0]),
                             "class_radius_z": float(class_radius_z[0]),
                             "reliability": float(reliability),
@@ -1624,6 +1673,10 @@ def build_collaborative_evidence(
         "virtual_unknown_mix_alpha": float(virtual_unknown_mix_alpha),
         "virtual_unknown_noise_scale": float(virtual_unknown_noise_scale),
         "virtual_unknown_neighbor_count": int(virtual_unknown_neighbor_count),
+        "virtual_unknown_risk_enabled": bool(virtual_unknown_risk_enabled),
+        "virtual_unknown_risk_samples_per_class": int(virtual_unknown_risk_samples_per_class),
+        "virtual_unknown_risk_temperature": float(virtual_unknown_risk_temperature),
+        "virtual_unknown_risk_margin": float(virtual_unknown_risk_margin),
         "receiver_reliability_policy": reliability_policy,
         "prototype_score_blend": prototype_blend,
         "prototype_assisted_qknn": prototype_blend > 0.0,
@@ -1636,7 +1689,8 @@ def build_collaborative_evidence(
         "candidate_audit_gap_risk": float(candidate_audit_gap_risk),
         "support_selection_policy": str(support_selection_policy),
         "unknown_gate_mode": str(unknown_gate_mode),
-        "active_risk_components": _active_risk_components_for_gate_mode(unknown_gate_mode),
+        "active_risk_components": _active_risk_components_for_gate_mode(unknown_gate_mode)
+        + (["virtual_unknown"] if bool(virtual_unknown_risk_enabled) else []),
         "scenario_aware": bool(scenario_aware),
         "radius_norm": float(radius_norm),
         "old_bias": float(old_bias),
@@ -1709,6 +1763,10 @@ def run_evaluation(args: argparse.Namespace) -> dict[str, Any]:
         virtual_unknown_mix_alpha=float(args.virtual_unknown_mix_alpha),
         virtual_unknown_noise_scale=float(args.virtual_unknown_noise_scale),
         virtual_unknown_neighbor_count=int(args.virtual_unknown_neighbor_count),
+        virtual_unknown_risk_enabled=bool(args.virtual_unknown_risk_enabled),
+        virtual_unknown_risk_samples_per_class=int(args.virtual_unknown_risk_samples_per_class),
+        virtual_unknown_risk_temperature=float(args.virtual_unknown_risk_temperature),
+        virtual_unknown_risk_margin=float(args.virtual_unknown_risk_margin),
         evidence_packet_bytes=float(args.evidence_packet_bytes),
         receiver_reliability_policy=str(args.receiver_reliability_policy),
         prototype_score_blend=float(args.prototype_score_blend),
@@ -1833,6 +1891,10 @@ def parse_args() -> argparse.Namespace:
     p.add_argument("--virtual_unknown_mix_alpha", type=float, default=0.50)
     p.add_argument("--virtual_unknown_noise_scale", type=float, default=0.02)
     p.add_argument("--virtual_unknown_neighbor_count", type=int, default=2)
+    p.add_argument("--virtual_unknown_risk_enabled", action="store_true")
+    p.add_argument("--virtual_unknown_risk_samples_per_class", type=int, default=2)
+    p.add_argument("--virtual_unknown_risk_temperature", type=float, default=0.05)
+    p.add_argument("--virtual_unknown_risk_margin", type=float, default=0.0)
     p.add_argument("--unknown_risk_threshold", type=float, default=0.80)
     p.add_argument("--accept_margin_threshold", type=float, default=0.10)
     p.add_argument("--unknown_quantile", type=float, default=0.75)

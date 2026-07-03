@@ -307,3 +307,67 @@ SA33增强版结果表：
 下一版算法建议命名为`SCORER-CVS-CPR`：Support-Calibrated Open-set Receiver Evidence Routing with Conformal Prototype Routing。节点本地保留冻结SA33/ADV特征器、int8 support memory、EMA prototype、Mahalanobis逆方差、class conformal校准缓存和低秩adapter；每个事件先由单receiver输出`top2 label、score_y、p_y、p_unknown、radius_z、support_density、receiver_health`，控制器按风险请求更多receiver，并用校准后的log evidence融合。训练侧只更新adapter/prototype/threshold，不回传原始IQ或query unknown，满足低显存和低通信部署边界。
 
 查漏补缺结论：per-label阈值原先存在“真实标签阈值吸收错误top1分数”的语义漏洞，已修复并补测试；但小K时per-label阈值仍应做receiver-global收缩，且当前结果仍不是严格同物理事件协同。若用户要求“全体源接收机1..7”字面评估，需要单独定义源receiver作为协同节点的协议；本报告完成的是CVS Stage2-C target receiver 1..5协同诊断。
+
+## 2026-07-03virtual unknown独立风险组件SA33复跑
+
+目标：把support-derived virtual unknown从“全局抬阈值”改为独立unknown风险组件，避免上一轮virtual unknown校准强行压低known接受率。实现保持`--virtual_unknown_calibration_enabled`旧路径不变，新增`--virtual_unknown_risk_enabled`只把support原型间合成边界样本用于`virtual_unknown_risk`，不进入阈值拟合；metadata中`active_risk_components`加入`virtual_unknown`，融合器可显式投票。
+
+本地与远端验证：
+
+```powershell
+conda activate ssr-gpu
+python -m py_compile code\scripts\phase2_collaborative_open_set_qknn_eval.py code\evaluation\collaborative_open_set_qknn_eval.py
+python code\tests\test_phase2_collaborative_open_set_qknn_eval.py
+python code\tests\test_collaborative_open_set_qknn_eval.py
+```
+
+结果：本地和Git镜像均为34 tests OK和28 tests OK。N607直连预检通过，8张RTX3090均为`10/24576MiB`；同步4个代码/测试文件后，远端`CVS-RFFI`环境同样为34 tests OK和28 tests OK。三组SA33复跑均使用`CUDA_VISIBLE_DEVICES=0`，运行后GPU仍为`10/24576MiB`，SSH/SCP后本地核验无残留`ssh.exe`或22端口`ESTABLISHED`连接。
+
+统一远端输入：`runs/phase2_sa33_collab_open_set_qknn_full_20260703/features.npz`，该特征来自用户指定权重`SA33_sa27_ch2_leo3_ce0p7_r010_20260527_204104`，包含`leo_clear_weak,leo_low_elev_weak,leo_rain_weak`星地信道视图。统一参数沿用增强版：`--collab_counts all --k_shot 8 --query_per_class 20 --qknn_k 8 --candidate_class_top_m 2 --prototype_score_blend 2.0 --mahalanobis_score_blend 1.0 --support_calibration_mode leave_one_out --unknown_gate_mode support_envelope_evt --score_threshold_combine qknn_only --scenario_aware --radius_norm 0.3 --fusion_policy scorer_cvs --collaboration_policy adaptive_gain --label_fusion_policy vote_margin --receiver_reliability_policy deployment_prior --unknown_risk_threshold 0.995 --scorer_component_vote_threshold 0.25 --event_alignment_policy receiver_domain_ranked`。
+
+拉回产物SHA256：
+
+|产物|SHA256|
+|---|---|
+|`collab_open_set_qknn_scorer_cvs_evt_adaptive_gain_vote_margin_sa33_vrisk2_proto2_maha1_qknnonly.json`|`63EC1E39E97757BAD3188842A55806DD1E10EF9424351FD4B84F511C82AE19D4`|
+|`collab_open_set_qknn_scorer_cvs_evt_adaptive_gain_vote_margin_sa33_vrisk2_proto2_maha1_qknnonly_evidence.csv`|`C78161E0A1B9E261804C87DC33CD33E3591FD75FB6D616DF83944D02938B19D7`|
+|`collab_open_set_qknn_scorer_cvs_evt_adaptive_gain_vote_margin_sa33_vrisk4_proto2_maha1_qknnonly.json`|`80124F15DC6095F5303E78592958CC937BE15BAF551C2F751B7BC682BC500F2F`|
+|`collab_open_set_qknn_scorer_cvs_evt_adaptive_gain_vote_margin_sa33_vrisk4_proto2_maha1_qknnonly_evidence.csv`|`EE9B65B268665B2D6068180F22A64178A9D9FD9C49EE8E4029066527795ADE99`|
+|`collab_open_set_qknn_scorer_cvs_evt_adaptive_gain_vote_margin_sa33_vrisk4_margin03_proto2_maha1_qknnonly.json`|`FD5A8A6A3E12275693B1582C118F39424C0D97700953BC7DE6C9E907FD33D94C`|
+|`collab_open_set_qknn_scorer_cvs_evt_adaptive_gain_vote_margin_sa33_vrisk4_margin03_proto2_maha1_qknnonly_evidence.csv`|`64E91D40A51EC5A6DA8BE652CB879A6306F336F4F9C29DD4C0C3438A6DE16456`|
+
+结果表：
+
+|候选|预算|old_acc|min_old|seen_new_acc|min_seen_new|unknown_FAR|unknown_reject|defer_rate|avg_rx|bytes/event|
+|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+|`sa33_vrisk2_proto2_maha1_qknnonly`|1|0.0000|0.0000|0.3833|0.2750|0.2333|0.1667|0.6883|1.0000|120.0|
+|`sa33_vrisk2_proto2_maha1_qknnonly`|2|0.0338|0.0000|0.3673|0.2759|0.0638|0.5319|0.5984|1.9590|235.1|
+|`sa33_vrisk2_proto2_maha1_qknnonly`|3|0.0417|0.0000|0.2750|0.2500|0.0250|0.6250|0.6800|2.8750|345.0|
+|`sa33_vrisk2_proto2_maha1_qknnonly`|4|0.1196|0.0000|0.5161|0.5000|0.0606|0.6667|0.6090|3.7564|450.8|
+|`sa33_vrisk2_proto2_maha1_qknnonly`|5|0.0385|0.0000|0.4000|0.0000|0.0500|0.7000|0.6957|4.8152|577.8|
+|`sa33_vrisk4_proto2_maha1_qknnonly`|1|0.0000|0.0000|0.3833|0.2750|0.2333|0.1667|0.6851|1.0000|120.0|
+|`sa33_vrisk4_proto2_maha1_qknnonly`|2|0.0338|0.0000|0.3673|0.2759|0.0638|0.5319|0.5943|1.9590|235.1|
+|`sa33_vrisk4_proto2_maha1_qknnonly`|3|0.0417|0.0000|0.3250|0.3000|0.0250|0.6250|0.6650|2.8750|345.0|
+|`sa33_vrisk4_proto2_maha1_qknnonly`|4|0.1196|0.0000|0.5161|0.5000|0.0606|0.6667|0.6090|3.7564|450.8|
+|`sa33_vrisk4_proto2_maha1_qknnonly`|5|0.0385|0.0000|0.4000|0.0000|0.0500|0.7000|0.6957|4.8152|577.8|
+|`sa33_vrisk4_margin03_proto2_maha1_qknnonly`|1|0.0000|0.0000|0.3833|0.2750|0.2333|0.1833|0.6818|1.0000|120.0|
+|`sa33_vrisk4_margin03_proto2_maha1_qknnonly`|2|0.0338|0.0000|0.3673|0.2759|0.0426|0.5319|0.5902|1.9590|235.1|
+|`sa33_vrisk4_margin03_proto2_maha1_qknnonly`|3|0.0417|0.0000|0.3000|0.2500|0.0250|0.6500|0.6550|2.8650|343.8|
+|`sa33_vrisk4_margin03_proto2_maha1_qknnonly`|4|0.1196|0.0000|0.5806|0.5455|0.0606|0.6970|0.5962|3.7372|448.5|
+|`sa33_vrisk4_margin03_proto2_maha1_qknnonly`|5|0.0385|0.0000|0.4000|0.0000|0.0500|0.7000|0.6957|4.7717|572.6|
+
+解释：独立virtual unknown风险组件确实改善FAR。相对上一节`sa33_proto2_maha1_qknnonly`预算4的`unknown_FAR=0.1515`，本轮预算3可降至`0.0250`，预算5为`0.0500`；但old仍极低，`min_old=0.0000`，seen-new也明显低于上一节最高`0.7419`。最佳安全折中是`sa33_vrisk4_margin03_proto2_maha1_qknnonly`预算3：`unknown_FAR=0.0250`、`seen_new_acc=0.3000`、`old_acc=0.0417`，平均`2.8650`个接收机、`343.8 bytes/event`。该结果证明风险通道方向正确但接受逻辑过保守，仍不能满足old 99%/floor95%、seen-new 97%/floor93%、unknown拒识99%目标，也不能写作严格同事件卫星群协同或部署成功。
+
+下一步算法应转向`SCORER-CVS-CPR`：每个receiver输出class-conditional conformal p-value、Mahalanobis tail、support density和receiver health；控制器先按低风险高margin早停，只有低置信事件请求更多receiver。virtual unknown应作为`p_unknown`的一部分，而不是直接把`unknown_risk`取max后压制全部known接受。
+
+### review closeout
+
+多子agent审查结论已处理：
+
+|审查点|处理|
+|---|---|
+|`virtual_unknown`风险组件声明但融合未接线|已修复：`RISK_COMPONENT_KEYS`、`row_values`、聚合输出和adaptive gain均接入`virtual_unknown_risk`；新增`test_scorer_cvs_can_use_virtual_unknown_component`覆盖显式组件投票。|
+|support-derived virtual unknown协议边界|报告中明确：该样本只由target support原型合成，不使用target unknown query，不代表真实unknown先验；当前仅为诊断/风险通道。|
+|`collab_counts all`解释|保持解释为target receiver 1..5协同诊断；因`receiver_domain_ranked`不是严格同事件同分母曲线，不把k间差异写成纯协同数量因果。|
+|延迟字段|保留`latency_ms_p50/p95`、`bytes/event`和`prototype_storage`，但延迟只作为离线proxy，不写成真实星上端到端延迟。|
+|性能声明|保持负结论：FAR虽下降，但old/seen-new远低于目标，不是Stage2-C成功、严格同事件协同或部署成功。|

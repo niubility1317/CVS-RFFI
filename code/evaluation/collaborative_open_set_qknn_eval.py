@@ -41,6 +41,7 @@ RISK_COMPONENT_KEYS = {
     "mahalanobis": "mahalanobis_risk",
     "evt": "evt_risk",
     "oldness": "oldness_risk",
+    "virtual_unknown": "virtual_unknown_risk",
 }
 
 
@@ -305,6 +306,7 @@ def _fuse_event(
     mahalanobis_risks = []
     evt_risks = []
     oldness_risks = []
+    virtual_unknown_risks = []
     component_votes = []
     predicted_labels = []
     support_densities = []
@@ -336,15 +338,18 @@ def _fuse_event(
         has_mahalanobis = "mahalanobis_risk" in row
         has_evt = "evt_risk" in row
         has_oldness = "oldness_risk" in row
+        has_virtual_unknown = "virtual_unknown_risk" in row
         mahalanobis_risk_value = _float(row, "mahalanobis_risk", _float(row, "unknown_risk", 0.0))
         evt_risk_value = _float(row, "evt_risk", _float(row, "unknown_risk", 0.0))
         oldness_risk_value = _float(row, "oldness_risk", _float(row, "unknown_risk", 0.0))
+        virtual_unknown_risk_value = _float(row, "virtual_unknown_risk", 0.0)
         score_risks.append(score_risk_value)
         radius_risks.append(radius_risk_value)
         margin_risks.append(margin_risk_value)
         mahalanobis_risks.append(mahalanobis_risk_value)
         evt_risks.append(evt_risk_value)
         oldness_risks.append(oldness_risk_value)
+        virtual_unknown_risks.append(virtual_unknown_risk_value)
         if active_components is None:
             component_values = [score_risk_value, radius_risk_value, margin_risk_value]
             if has_mahalanobis:
@@ -353,6 +358,8 @@ def _fuse_event(
                 component_values.append(evt_risk_value)
             if has_oldness:
                 component_values.append(oldness_risk_value)
+            if has_virtual_unknown:
+                component_values.append(virtual_unknown_risk_value)
         else:
             row_values = {
                 "score": score_risk_value,
@@ -361,6 +368,7 @@ def _fuse_event(
                 "mahalanobis": mahalanobis_risk_value,
                 "evt": evt_risk_value,
                 "oldness": oldness_risk_value,
+                "virtual_unknown": virtual_unknown_risk_value,
             }
             component_values = [row_values[component] for component in active_components]
         component_votes.append(
@@ -375,6 +383,7 @@ def _fuse_event(
     mahalanobis_risk = _weighted_quantile(mahalanobis_risks, weights, unknown_quantile)
     evt_risk = _weighted_quantile(evt_risks, weights, unknown_quantile)
     oldness_risk = _weighted_quantile(oldness_risks, weights, unknown_quantile)
+    virtual_unknown_risk = _weighted_quantile(virtual_unknown_risks, weights, unknown_quantile)
     if weights and sum(weights) > 0:
         risk_component_agreement = sum(v * max(0.0, w) for v, w in zip(component_votes, weights)) / max(
             sum(max(0.0, w) for w in weights),
@@ -595,6 +604,7 @@ def _fuse_event(
         "mahalanobis_risk": float(mahalanobis_risk),
         "evt_risk": float(evt_risk),
         "oldness_risk": float(oldness_risk),
+        "virtual_unknown_risk": float(virtual_unknown_risk),
         "effective_unknown_risk": float(locals().get("effective_unknown_risk", unknown_risk)),
         "seen_new_rescue_applied": bool(locals().get("rescue_applied", False)),
         "seen_new_rescue_label_match": bool(rescue_label_match if policy == "scorer_cvs" else False),
@@ -772,6 +782,7 @@ def _adaptive_should_request_more(
         float(fused.get("mahalanobis_risk", 0.0)),
         float(fused.get("evt_risk", 0.0)),
         float(fused.get("oldness_risk", 0.0)),
+        float(fused.get("virtual_unknown_risk", 0.0)),
     ]
     low_score = float(consensus_score_threshold) > 0.0 and mean_score < float(consensus_score_threshold)
     low_margin = mean_margin < float(accept_margin_threshold)

@@ -1827,3 +1827,37 @@ python code\tests\test_collaborative_open_set_qknn_eval.py
 解释：support-derived virtual unknown能按预期压低unknown FAR。相对`proto2_maha1_qknnonly`预算4的`unknown_FAR=0.1562`，`vunk2/vunk4`预算4降到`0.0312`，但`old_acc`从`0.7586`降至`0.3448`，`seen_new_acc`从`0.7429`降至`0.5429`；这说明该proxy过于保守，把大量可识别known事件推入defer/reject。`vunk4_classq20`预算4把`old_acc/seen_new_acc`回升到`0.4713/0.6286`，但`unknown_FAR=0.0938`又超出`<=0.05`安全线。当前最佳安全折中仍不能接近目标，尤其`min_old`仍为0。
 
 结论：virtual unknown是有效拒识闸门，但单独调阈值无法同时满足旧类、新类和unknown目标。下一步应把virtual unknown从“全局抬阈值”改为“只参与unknown风险组件或conformal p-value”，避免压制所有known接受率；同时应加入class-wise收缩阈值，防止低K类别被边界proxy过度惩罚。
+
+## 2026-07-03virtual unknown独立风险组件
+
+目标：修正上一轮support-derived virtual unknown“全局抬阈值”导致known接受率大幅下降的问题。新实现保留原`--virtual_unknown_calibration_enabled`作为对照路径，新增`--virtual_unknown_risk_enabled`，只把support原型合成的边界样本作为独立unknown风险通道，不进入阈值拟合，也不改变`threshold_scope=support_known_only`。融合器新增`virtual_unknown`风险组件后，可在`scorer_cvs`中与score/radius/margin/evt等通道共同投票。
+
+本地改动：
+
+|文件|目的|
+|---|---|
+|`code/scripts/phase2_collaborative_open_set_qknn_eval.py`|新增`_virtual_unknown_boundary_risk()`；新增CLI参数`--virtual_unknown_risk_enabled`、`--virtual_unknown_risk_samples_per_class`、`--virtual_unknown_risk_temperature`、`--virtual_unknown_risk_margin`；metadata/evidence记录`virtual_unknown_risk`、`virtual_unknown_score`和风险开关；风险模式不改变阈值scope。|
+|`code/evaluation/collaborative_open_set_qknn_eval.py`|`RISK_COMPONENT_KEYS`新增`virtual_unknown`，融合输出增加`virtual_unknown_risk`，adaptive gain也纳入该风险通道。|
+|`code/tests/test_phase2_collaborative_open_set_qknn_eval.py`|新增测试确认virtual unknown风险组件不进入阈值校准、只记录风险字段，并保持query角色不变。|
+|`code/tests/test_collaborative_open_set_qknn_eval.py`|新增测试确认`scorer_cvs`能显式使用`["score","virtual_unknown"]`风险组件。|
+
+本地与Git镜像验证：
+
+```powershell
+conda activate ssr-gpu
+python -m py_compile code\scripts\phase2_collaborative_open_set_qknn_eval.py code\evaluation\collaborative_open_set_qknn_eval.py
+python code\tests\test_phase2_collaborative_open_set_qknn_eval.py
+python code\tests\test_collaborative_open_set_qknn_eval.py
+```
+
+结果：本地`test_phase2_collaborative_open_set_qknn_eval.py`为34 tests OK，`test_collaborative_open_set_qknn_eval.py`为28 tests OK；Git镜像同样为34 tests OK和28 tests OK。`E:\type10-7\code`不是Git仓库，本次变更已同步到Git-backed镜像`E:\type10-7\github_publish\CVS-RFFI-repo`，镜像分支`codex/cvs-rffi-release-20260626`当前待提交。
+
+计划远端验证：同步4个变更文件到N607，在`CVS-RFFI`conda环境复测，再以`proto2_maha1_qknnonly`为基线跑`--collab_counts all`覆盖1到5个target receivers。候选：
+
+|候选|新增参数|目的|
+|---|---|---|
+|`vrisk2_proto2_maha1_qknnonly`|`--virtual_unknown_risk_enabled --virtual_unknown_risk_samples_per_class 2 --virtual_unknown_risk_temperature 0.05`|轻量边界风险通道，检查是否降低FAR且少伤known。|
+|`vrisk4_proto2_maha1_qknnonly`|`--virtual_unknown_risk_enabled --virtual_unknown_risk_samples_per_class 4 --virtual_unknown_risk_temperature 0.05`|增加边界样本，检查unknown风险敏感度。|
+|`vrisk4_margin03_proto2_maha1_qknnonly`|再加`--virtual_unknown_risk_margin 0.03`|略提高边界风险强度，检查FAR/known折中。|
+
+成功判据仍不放宽：主目标为old 99%/floor95%、seen-new 97%/floor93%、unknown拒识99%；若未达到，只能报告诊断负证据和下一步路线，不能写成部署成功。

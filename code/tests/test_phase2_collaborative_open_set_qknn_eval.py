@@ -684,6 +684,35 @@ class Phase2CollaborativeOpenSetQknnEvalTest(unittest.TestCase):
         self.assertEqual(int(evidence[0]["virtual_unknown_calibration_enabled"]), 1)
         self.assertGreater(int(evidence[0]["virtual_unknown_count"]), 0)
 
+    def test_virtual_unknown_risk_is_independent_from_threshold_calibration(self):
+        from phase2_collaborative_open_set_qknn_eval import load_feature_npz, build_collaborative_evidence
+
+        with tempfile.TemporaryDirectory() as td:
+            npz = Path(td) / "features.npz"
+            _write_npz(npz)
+            evidence, metadata = build_collaborative_evidence(
+                load_feature_npz(npz),
+                k_shot=1,
+                query_per_class=2,
+                qknn_k=1,
+                unknown_gate_mode="support_envelope_evt",
+                virtual_unknown_risk_enabled=True,
+                virtual_unknown_risk_samples_per_class=2,
+                virtual_unknown_noise_scale=0.0,
+            )
+
+        self.assertEqual(metadata["threshold_scope"], "support_known_only")
+        self.assertFalse(metadata["virtual_unknown_calibration_enabled"])
+        self.assertTrue(metadata["virtual_unknown_risk_enabled"])
+        self.assertEqual(metadata["virtual_unknown_risk_samples_per_class"], 2)
+        self.assertIn("virtual_unknown", metadata["active_risk_components"])
+        self.assertEqual({row["role"] for row in evidence}, {"old", "seen_new", "unknown"})
+        self.assertEqual(int(evidence[0]["virtual_unknown_calibration_enabled"]), 0)
+        self.assertEqual(int(evidence[0]["virtual_unknown_risk_enabled"]), 1)
+        self.assertGreater(int(evidence[0]["virtual_unknown_count"]), 0)
+        self.assertIn("virtual_unknown_risk", evidence[0])
+        self.assertIn("virtual_unknown_score", evidence[0])
+
     def test_class_score_thresholds_are_recorded_when_enabled(self):
         from phase2_collaborative_open_set_qknn_eval import load_feature_npz, build_collaborative_evidence
 
