@@ -2601,3 +2601,63 @@ V29 variants:
 | `LEOMODEL29_HEAD_DISTILL` | `id_feature_head` | feature-head alignment plus weak teacher-logit distillation |
 | `LEOMODEL29_LATE_FEAT` | `id_late_feature` | broader late identity projection adaptation |
 | `LEOMODEL29_NORM_LATE_CONSERVE` | `id_norm_late_feature` | conservative broader adaptation with stronger clean identity and weak distillation |
+
+## V29 Result: Model-Internal Feature Adapter Target1 Audit
+
+V29 completed on N607 at `2026-07-03T14:41:50+08:00`.
+
+| Item | Value |
+|---|---|
+| command | `bash code/scripts/sweep_phase1_adv3b02_modeladapter_target1_v29_20260703.sh` |
+| GPUs | `0,1,2,3` |
+| log root | `/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_adv3b02_modeladapter_target1_v29_20260703` |
+| completion marker | `[PHASE1-MODELADAPTER-TARGET1-V29-DONE] end=2026-07-03T14:41:50+08:00` |
+| local artifacts | `artifacts\v29_modeladapter_target1\target1_strong_v29_summary.csv`, `target1_strong_v29_metrics.json`, `target1_strong_v29_best.json`, `launcher.out`, `LEOMODEL29_*_train_export.out` |
+| remote process/GPU after completion | no V29 process alive; GPUs `0-7` idle at `10 MiB` |
+
+Gate counts over 40 V29 model-adapter candidates:
+
+| Gate | Pass rows |
+|---|---:|
+| clean fidelity | 38 |
+| old recovery | 16 |
+| scenario/TX floor | 0 |
+| margin/true-distance safety | 20 |
+| unknown safety | 8 |
+| strong target1 | 0 |
+
+Variant-level summary:
+
+| Variant | Mean old acc | Max old acc | Mean clean drop pp | Min unknown FAR | Worst TX floor | Strong target1 |
+|---|---:|---:|---:|---:|---:|---:|
+| `LEOMODEL29_HEAD_FEAT` | 0.7302 | 0.8798 | 0.3225 | 0.6098 | 0.1303 | 0 |
+| `LEOMODEL29_HEAD_DISTILL` | 0.7271 | 0.8794 | 0.3392 | 0.5745 | 0.1470 | 0 |
+| `LEOMODEL29_LATE_FEAT` | 0.7296 | 0.8780 | 0.5158 | 0.5908 | 0.1338 | 0 |
+| `LEOMODEL29_NORM_LATE_CONSERVE` | 0.7278 | 0.8848 | 0.3675 | 0.6043 | 0.1470 | 0 |
+
+Best same-row candidates by joint gate count then old-class accuracy:
+
+| Run | Candidate | Old closed acc | Delta vs identity pp | Clean drop pp | Scenario floor | TX floor | Unknown FAR | Gate pattern |
+|---|---|---:|---:|---:|---:|---:|---:|---|
+| `rx7_14_u10` | `LEOMODEL29_HEAD_FEAT` | 0.8798 | +0.83 | 0.41 | 0.8512 | 0.6328 | 0.9167 | clean+old+margin |
+| `rx7_14_u1` | `LEOMODEL29_HEAD_FEAT` | 0.8798 | +0.83 | 0.41 | 0.8512 | 0.6328 | 0.9325 | clean+old+margin |
+| `rx7_14_u10` | `LEOMODEL29_LATE_FEAT` | 0.8780 | +0.65 | 0.29 | 0.8523 | 0.5960 | 0.8889 | clean+old+margin |
+| `rx7_14_u1` | `LEOMODEL29_LATE_FEAT` | 0.8780 | +0.65 | 0.29 | 0.8523 | 0.5960 | 0.9575 | clean+old+margin |
+| `rx7_7_u10` | `LEOMODEL29_LATE_FEAT` | 0.8185 | +1.31 | -0.08 | 0.7807 | 0.6373 | 0.8326 | clean+old+margin |
+| `rx7_7_u1` | `LEOMODEL29_LATE_FEAT` | 0.8185 | +1.31 | -0.08 | 0.7807 | 0.6373 | 0.9325 | clean+old+margin |
+| `rx7_7_u10` | `LEOMODEL29_HEAD_FEAT` | 0.8141 | +0.88 | 0.25 | 0.7752 | 0.6378 | 0.8498 | clean+old+margin |
+| `rx7_7_u1` | `LEOMODEL29_HEAD_FEAT` | 0.8141 | +0.88 | 0.25 | 0.7752 | 0.6378 | 0.9275 | clean+old+margin |
+
+Interpretation:
+
+| Finding | Evidence | Decision |
+|---|---|---|
+| V29 did not achieve target1 | strong target1`0/40`; scenario/TX floor`0/40`; unknown safety only`8/40` | target1 remains open |
+| Model-internal feature adaptation is less destructive than V28 input repair | clean fidelity`38/40`; mean clean drop below`0.6pp`for all variants | keep the feature-level direction, reject shallow input residual as main route |
+| Old-class recovery is receiver-dependent | `rx7_14` reaches`~0.88`, `rx7_7` reaches`~0.818`, but `rx20_1/rx3_19/rx8_8` remain far lower | cannot claim robust LEO correction or enter target2 |
+| The hard blocker is not logit bias/scale | feature rows improve margin or old accuracy in some receivers, but TX floor and unknown oldness remain unsafe | abandon category logit bias/scale; continue with representation/feature geometry |
+| Target2 should not be launched from V29 | best old rows still have unknown FAR`0.83-0.96`; minimum unknown FAR rows have old accuracy below deployment target | unknownFAR<5% would be threshold gaming without target1 support |
+
+Control boundary: the summary CSV contains `LEOADAPT3_IDENTITY` identity/control rows. Two identity rows for `rx7_14` satisfy the old-class geometry-oriented target1 audit, but they are not V29 correction candidates and still have very high unknown FAR. They are retained as baselines only, not as evidence that the model-adapter route succeeded.
+
+Current decision after V29: source-only category logit bias/scale is not a valid route, and the current feature-adapter implementation is still insufficient. The next route should stay feature-centered but move from simple source clean/LEO feature regression to a stronger representation objective that explicitly preserves per-TX separability and reduces unknown oldness, for example source-only class-conditional feature repair with anti-collapse inter-class constraints and open-set proxy unknown separation. No target receiver clean/query or unknown query may be used for training or threshold fitting.
