@@ -1227,6 +1227,13 @@ def run_evaluation(args: argparse.Namespace) -> dict[str, Any]:
         seen_new_rescue_min_score=float(args.seen_new_rescue_min_score),
         seen_new_rescue_min_margin=float(args.seen_new_rescue_min_margin),
         seen_new_rescue_min_agreement=float(args.seen_new_rescue_min_agreement),
+        class_set_gate_enabled=bool(args.class_set_gate_enabled),
+        old_gate_min_receivers=int(args.old_gate_min_receivers),
+        old_gate_max_effective_unknown_risk=float(args.old_gate_max_effective_unknown_risk),
+        old_gate_max_component_agreement=float(args.old_gate_max_component_agreement),
+        seen_new_gate_min_receivers=int(args.seen_new_gate_min_receivers),
+        seen_new_gate_max_effective_unknown_risk=float(args.seen_new_gate_max_effective_unknown_risk),
+        seen_new_gate_max_component_agreement=float(args.seen_new_gate_max_component_agreement),
         threshold_selection_label_scope=str(metadata["threshold_scope"]),
         unknown_query_eval_only=True,
         receiver_selection_policy=str(args.receiver_selection_policy),
@@ -1309,6 +1316,13 @@ def parse_args() -> argparse.Namespace:
     p.add_argument("--seen_new_rescue_min_score", type=float, default=0.0)
     p.add_argument("--seen_new_rescue_min_margin", type=float, default=0.0)
     p.add_argument("--seen_new_rescue_min_agreement", type=float, default=0.5)
+    p.add_argument("--class_set_gate_enabled", action="store_true")
+    p.add_argument("--old_gate_min_receivers", type=int, default=1)
+    p.add_argument("--old_gate_max_effective_unknown_risk", type=float, default=1.0)
+    p.add_argument("--old_gate_max_component_agreement", type=float, default=1.0)
+    p.add_argument("--seen_new_gate_min_receivers", type=int, default=1)
+    p.add_argument("--seen_new_gate_max_effective_unknown_risk", type=float, default=1.0)
+    p.add_argument("--seen_new_gate_max_component_agreement", type=float, default=1.0)
     p.add_argument("--evidence_packet_bytes", type=float, default=40.0)
     p.add_argument("--receiver_selection_policy", default="fixed_receiver_order")
     p.add_argument(

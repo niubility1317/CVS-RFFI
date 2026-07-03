@@ -239,12 +239,20 @@ def _fuse_event(
     scorer_risk_components: Sequence[str] | str | None = None,
     can_request_more: bool = False,
     latency_budget_ms: float = 0.0,
+    old_labels: set[str] | None = None,
     seen_new_rescue_labels: set[str] | None = None,
     seen_new_rescue_enabled: bool = False,
     seen_new_rescue_risk_scale: float = 1.0,
     seen_new_rescue_min_score: float = 0.0,
     seen_new_rescue_min_margin: float = 0.0,
     seen_new_rescue_min_agreement: float = 0.5,
+    class_set_gate_enabled: bool = False,
+    old_gate_min_receivers: int = 1,
+    old_gate_max_effective_unknown_risk: float = 1.0,
+    old_gate_max_component_agreement: float = 1.0,
+    seen_new_gate_min_receivers: int = 1,
+    seen_new_gate_max_effective_unknown_risk: float = 1.0,
+    seen_new_gate_max_component_agreement: float = 1.0,
 ) -> dict[str, Any]:
     active_components = _parse_risk_components(scorer_risk_components)
     label_scores: defaultdict[str, float] = defaultdict(float)
@@ -367,9 +375,38 @@ def _fuse_event(
         and latency_ms < float(latency_budget_ms)
     )
     rescue_labels = set(str(item) for item in (seen_new_rescue_labels or set()) if str(item))
+    known_old_labels = set(str(item) for item in (old_labels or set()) if str(item))
     rescue_enabled = bool(seen_new_rescue_enabled and rescue_labels)
     rescue_label_match = bool(label and label in rescue_labels)
     rescue_role_allowed = "unknown" not in selected_roles
+    if label and label in rescue_labels:
+        output_label_set = "seen_new"
+    elif label and label in known_old_labels:
+        output_label_set = "old"
+    elif label:
+        output_label_set = "other"
+    else:
+        output_label_set = ""
+
+    def _class_set_gate_decision() -> tuple[bool, str]:
+        if not class_set_gate_enabled or output_label_set not in {"old", "seen_new"}:
+            return True, ""
+        if output_label_set == "old":
+            min_receivers = max(1, int(old_gate_min_receivers))
+            max_risk = float(old_gate_max_effective_unknown_risk)
+            max_agreement = float(old_gate_max_component_agreement)
+        else:
+            min_receivers = max(1, int(seen_new_gate_min_receivers))
+            max_risk = float(seen_new_gate_max_effective_unknown_risk)
+            max_agreement = float(seen_new_gate_max_component_agreement)
+        reasons = []
+        if len(selected) < min_receivers:
+            reasons.append(f"min_receivers:{len(selected)}<{min_receivers}")
+        if effective_unknown_risk > max_risk:
+            reasons.append(f"effective_unknown_risk>{max_risk:.6g}")
+        if risk_component_agreement > max_agreement:
+            reasons.append(f"risk_component_agreement>{max_agreement:.6g}")
+        return not reasons, ",".join(reasons)
 
     policy = _normalize_scope(fusion_policy)
     if policy == "consensus_veto":
@@ -410,10 +447,17 @@ def _fuse_event(
         effective_unknown_risk = unknown_risk * max(0.0, min(1.0, float(seen_new_rescue_risk_scale))) if rescue_applied else unknown_risk
         high_risk = effective_unknown_risk >= float(unknown_risk_threshold)
         multi_channel_risk = risk_component_agreement >= float(scorer_component_vote_threshold)
+        gate_passed, gate_reason = _class_set_gate_decision()
         if high_risk and multi_channel_risk and not strong_known:
             decision = "unknown_reject"
             output_label = UNKNOWN_LABEL
         elif high_risk:
+            decision = "defer"
+            output_label = ""
+        elif strong_known and not gate_passed and within_request_budget:
+            decision = "request_more"
+            output_label = ""
+        elif strong_known and not gate_passed:
             decision = "defer"
             output_label = ""
         elif strong_known:
@@ -457,6 +501,10 @@ def _fuse_event(
         "effective_unknown_risk": float(locals().get("effective_unknown_risk", unknown_risk)),
         "seen_new_rescue_applied": bool(locals().get("rescue_applied", False)),
         "seen_new_rescue_label_match": bool(rescue_label_match if policy == "scorer_cvs" else False),
+        "class_set_gate_applied": bool(class_set_gate_enabled and output_label_set in {"old", "seen_new"}),
+        "class_set_gate_passed": bool(locals().get("gate_passed", True)),
+        "class_set_gate_reason": str(locals().get("gate_reason", "")),
+        "output_label_set": output_label_set,
         "risk_component_agreement": float(risk_component_agreement),
         "known_margin": float(mean_margin),
         "mean_known_score": float(mean_score),
@@ -484,12 +532,20 @@ def _fuse_progressive_event(
     scorer_component_vote_threshold: float,
     scorer_risk_components: Sequence[str] | str | None = None,
     latency_budget_ms: float = 0.0,
+    old_labels: set[str] | None = None,
     seen_new_rescue_labels: set[str] | None = None,
     seen_new_rescue_enabled: bool = False,
     seen_new_rescue_risk_scale: float = 1.0,
     seen_new_rescue_min_score: float = 0.0,
     seen_new_rescue_min_margin: float = 0.0,
     seen_new_rescue_min_agreement: float = 0.5,
+    class_set_gate_enabled: bool = False,
+    old_gate_min_receivers: int = 1,
+    old_gate_max_effective_unknown_risk: float = 1.0,
+    old_gate_max_component_agreement: float = 1.0,
+    seen_new_gate_min_receivers: int = 1,
+    seen_new_gate_max_effective_unknown_risk: float = 1.0,
+    seen_new_gate_max_component_agreement: float = 1.0,
 ) -> dict[str, Any]:
     max_receivers = max(1, int(max_receivers))
     last: dict[str, Any] | None = None
@@ -506,12 +562,20 @@ def _fuse_progressive_event(
             scorer_risk_components=scorer_risk_components,
             can_request_more=used < min(max_receivers, len(ordered)),
             latency_budget_ms=latency_budget_ms,
+            old_labels=old_labels,
             seen_new_rescue_labels=seen_new_rescue_labels,
             seen_new_rescue_enabled=seen_new_rescue_enabled,
             seen_new_rescue_risk_scale=seen_new_rescue_risk_scale,
             seen_new_rescue_min_score=seen_new_rescue_min_score,
             seen_new_rescue_min_margin=seen_new_rescue_min_margin,
             seen_new_rescue_min_agreement=seen_new_rescue_min_agreement,
+            class_set_gate_enabled=class_set_gate_enabled,
+            old_gate_min_receivers=old_gate_min_receivers,
+            old_gate_max_effective_unknown_risk=old_gate_max_effective_unknown_risk,
+            old_gate_max_component_agreement=old_gate_max_component_agreement,
+            seen_new_gate_min_receivers=seen_new_gate_min_receivers,
+            seen_new_gate_max_effective_unknown_risk=seen_new_gate_max_effective_unknown_risk,
+            seen_new_gate_max_component_agreement=seen_new_gate_max_component_agreement,
         )
         fused["participating_receiver_budget"] = int(max_receivers)
         fused["participating_receivers_used"] = int(used)
@@ -620,12 +684,20 @@ def _fuse_adaptive_gain_event(
     adaptive_gain_latency_weight: float = 0.0,
     adaptive_gain_bytes_weight: float = 0.0,
     adaptive_gain_disagreement_weight: float = 0.5,
+    old_labels: set[str] | None = None,
     seen_new_rescue_labels: set[str] | None = None,
     seen_new_rescue_enabled: bool = False,
     seen_new_rescue_risk_scale: float = 1.0,
     seen_new_rescue_min_score: float = 0.0,
     seen_new_rescue_min_margin: float = 0.0,
     seen_new_rescue_min_agreement: float = 0.5,
+    class_set_gate_enabled: bool = False,
+    old_gate_min_receivers: int = 1,
+    old_gate_max_effective_unknown_risk: float = 1.0,
+    old_gate_max_component_agreement: float = 1.0,
+    seen_new_gate_min_receivers: int = 1,
+    seen_new_gate_max_effective_unknown_risk: float = 1.0,
+    seen_new_gate_max_component_agreement: float = 1.0,
 ) -> dict[str, Any]:
     max_receivers = max(1, int(max_receivers))
     if not ordered:
@@ -648,12 +720,20 @@ def _fuse_adaptive_gain_event(
             scorer_risk_components=scorer_risk_components,
             can_request_more=len(selected) < budget,
             latency_budget_ms=latency_budget_ms,
+            old_labels=old_labels,
             seen_new_rescue_labels=seen_new_rescue_labels,
             seen_new_rescue_enabled=seen_new_rescue_enabled,
             seen_new_rescue_risk_scale=seen_new_rescue_risk_scale,
             seen_new_rescue_min_score=seen_new_rescue_min_score,
             seen_new_rescue_min_margin=seen_new_rescue_min_margin,
             seen_new_rescue_min_agreement=seen_new_rescue_min_agreement,
+            class_set_gate_enabled=class_set_gate_enabled,
+            old_gate_min_receivers=old_gate_min_receivers,
+            old_gate_max_effective_unknown_risk=old_gate_max_effective_unknown_risk,
+            old_gate_max_component_agreement=old_gate_max_component_agreement,
+            seen_new_gate_min_receivers=seen_new_gate_min_receivers,
+            seen_new_gate_max_effective_unknown_risk=seen_new_gate_max_effective_unknown_risk,
+            seen_new_gate_max_component_agreement=seen_new_gate_max_component_agreement,
         )
         fused["participating_receiver_budget"] = int(max_receivers)
         fused["participating_receivers_used"] = int(len(selected))
@@ -938,6 +1018,13 @@ def evaluate_collaborative_open_set_evidence(
     seen_new_rescue_min_score: float = 0.0,
     seen_new_rescue_min_margin: float = 0.0,
     seen_new_rescue_min_agreement: float = 0.5,
+    class_set_gate_enabled: bool = False,
+    old_gate_min_receivers: int = 1,
+    old_gate_max_effective_unknown_risk: float = 1.0,
+    old_gate_max_component_agreement: float = 1.0,
+    seen_new_gate_min_receivers: int = 1,
+    seen_new_gate_max_effective_unknown_risk: float = 1.0,
+    seen_new_gate_max_component_agreement: float = 1.0,
     threshold_selection_label_scope: str = "support_known_only",
     unknown_query_eval_only: bool = True,
     receiver_selection_policy: str = "fixed_receiver_order",
@@ -1020,12 +1107,20 @@ def evaluate_collaborative_open_set_evidence(
                     scorer_component_vote_threshold=scorer_component_vote_threshold,
                     scorer_risk_components=active_risk_components,
                     latency_budget_ms=latency_budget_ms,
+                    old_labels=expected_old_labels,
                     seen_new_rescue_labels=expected_seen_new_labels,
                     seen_new_rescue_enabled=seen_new_rescue_enabled,
                     seen_new_rescue_risk_scale=seen_new_rescue_risk_scale,
                     seen_new_rescue_min_score=seen_new_rescue_min_score,
                     seen_new_rescue_min_margin=seen_new_rescue_min_margin,
                     seen_new_rescue_min_agreement=seen_new_rescue_min_agreement,
+                    class_set_gate_enabled=class_set_gate_enabled,
+                    old_gate_min_receivers=old_gate_min_receivers,
+                    old_gate_max_effective_unknown_risk=old_gate_max_effective_unknown_risk,
+                    old_gate_max_component_agreement=old_gate_max_component_agreement,
+                    seen_new_gate_min_receivers=seen_new_gate_min_receivers,
+                    seen_new_gate_max_effective_unknown_risk=seen_new_gate_max_effective_unknown_risk,
+                    seen_new_gate_max_component_agreement=seen_new_gate_max_component_agreement,
                 )
             elif collaboration_policy == "adaptive_gain":
                 adaptive_ordered = _select_receivers(
@@ -1049,12 +1144,20 @@ def evaluate_collaborative_open_set_evidence(
                     adaptive_gain_latency_weight=adaptive_gain_latency_weight,
                     adaptive_gain_bytes_weight=adaptive_gain_bytes_weight,
                     adaptive_gain_disagreement_weight=adaptive_gain_disagreement_weight,
+                    old_labels=expected_old_labels,
                     seen_new_rescue_labels=expected_seen_new_labels,
                     seen_new_rescue_enabled=seen_new_rescue_enabled,
                     seen_new_rescue_risk_scale=seen_new_rescue_risk_scale,
                     seen_new_rescue_min_score=seen_new_rescue_min_score,
                     seen_new_rescue_min_margin=seen_new_rescue_min_margin,
                     seen_new_rescue_min_agreement=seen_new_rescue_min_agreement,
+                    class_set_gate_enabled=class_set_gate_enabled,
+                    old_gate_min_receivers=old_gate_min_receivers,
+                    old_gate_max_effective_unknown_risk=old_gate_max_effective_unknown_risk,
+                    old_gate_max_component_agreement=old_gate_max_component_agreement,
+                    seen_new_gate_min_receivers=seen_new_gate_min_receivers,
+                    seen_new_gate_max_effective_unknown_risk=seen_new_gate_max_effective_unknown_risk,
+                    seen_new_gate_max_component_agreement=seen_new_gate_max_component_agreement,
                 )
             else:
                 fused = _fuse_event(
@@ -1069,12 +1172,20 @@ def evaluate_collaborative_open_set_evidence(
                     scorer_risk_components=active_risk_components,
                     can_request_more=len({_str(row, "receiver_id") for row in group}) > int(k),
                     latency_budget_ms=latency_budget_ms,
+                    old_labels=expected_old_labels,
                     seen_new_rescue_labels=expected_seen_new_labels,
                     seen_new_rescue_enabled=seen_new_rescue_enabled,
                     seen_new_rescue_risk_scale=seen_new_rescue_risk_scale,
                     seen_new_rescue_min_score=seen_new_rescue_min_score,
                     seen_new_rescue_min_margin=seen_new_rescue_min_margin,
                     seen_new_rescue_min_agreement=seen_new_rescue_min_agreement,
+                    class_set_gate_enabled=class_set_gate_enabled,
+                    old_gate_min_receivers=old_gate_min_receivers,
+                    old_gate_max_effective_unknown_risk=old_gate_max_effective_unknown_risk,
+                    old_gate_max_component_agreement=old_gate_max_component_agreement,
+                    seen_new_gate_min_receivers=seen_new_gate_min_receivers,
+                    seen_new_gate_max_effective_unknown_risk=seen_new_gate_max_effective_unknown_risk,
+                    seen_new_gate_max_component_agreement=seen_new_gate_max_component_agreement,
                 )
             first = selected[0]
             fused["role"] = _role(first.get("role"))
@@ -1122,5 +1233,12 @@ def evaluate_collaborative_open_set_evidence(
         "seen_new_rescue_min_score": float(seen_new_rescue_min_score),
         "seen_new_rescue_min_margin": float(seen_new_rescue_min_margin),
         "seen_new_rescue_min_agreement": float(seen_new_rescue_min_agreement),
+        "class_set_gate_enabled": bool(class_set_gate_enabled),
+        "old_gate_min_receivers": int(old_gate_min_receivers),
+        "old_gate_max_effective_unknown_risk": float(old_gate_max_effective_unknown_risk),
+        "old_gate_max_component_agreement": float(old_gate_max_component_agreement),
+        "seen_new_gate_min_receivers": int(seen_new_gate_min_receivers),
+        "seen_new_gate_max_effective_unknown_risk": float(seen_new_gate_max_effective_unknown_risk),
+        "seen_new_gate_max_component_agreement": float(seen_new_gate_max_component_agreement),
         "counts": out_counts,
     }

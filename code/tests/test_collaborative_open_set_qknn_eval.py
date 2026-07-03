@@ -674,6 +674,125 @@ class CollaborativeOpenSetQknnEvalTest(unittest.TestCase):
         self.assertEqual(result["counts"]["1"]["unknown_FAR"], 0.0)
         self.assertEqual(result["counts"]["1"]["seen_new_rescue_count"], 0)
 
+    def test_class_set_gate_defers_unknown_that_looks_old(self):
+        from evaluation.collaborative_open_set_qknn_eval import evaluate_collaborative_open_set_evidence
+
+        rows = [
+            {
+                "event_id": "unknown-looks-old",
+                "receiver_id": "rx-a",
+                "role": "unknown",
+                "true_label": "__unknown__",
+                "predicted_label": "old-a",
+                "known_score": 0.95,
+                "known_margin": 0.40,
+                "unknown_risk": 0.20,
+                "score_risk": 0.20,
+                "radius_risk": 0.10,
+                "margin_risk": 0.10,
+            },
+            {
+                "event_id": "unknown-looks-old",
+                "receiver_id": "rx-b",
+                "role": "unknown",
+                "true_label": "__unknown__",
+                "predicted_label": "old-a",
+                "known_score": 0.96,
+                "known_margin": 0.42,
+                "unknown_risk": 0.25,
+                "score_risk": 0.25,
+                "radius_risk": 0.15,
+                "margin_risk": 0.15,
+            },
+        ]
+        metadata = {
+            "source_receiver_ids": ["src-a"],
+            "target_receiver_ids": ["rx-a", "rx-b"],
+            "old_tx_ids": ["old-a"],
+            "seen_new_tx_ids": ["new-a"],
+            "unknown_tx_ids": ["unk-a"],
+            "target_channel_view": "leo_clear_weak",
+        }
+
+        result = evaluate_collaborative_open_set_evidence(
+            rows,
+            collab_counts="2",
+            fusion_policy="scorer_cvs",
+            unknown_risk_threshold=0.8,
+            accept_margin_threshold=0.1,
+            consensus_score_threshold=0.6,
+            strict_protocol_metadata=True,
+            protocol_metadata=metadata,
+            class_set_gate_enabled=True,
+            old_gate_min_receivers=3,
+        )
+
+        k2 = result["counts"]["2"]
+        self.assertEqual(k2["unknown_FAR"], 0.0)
+        self.assertEqual(k2["unknown_defer"], 1)
+        self.assertEqual(result["class_set_gate_enabled"], True)
+
+    def test_class_set_gate_allows_seen_new_when_gate_passes(self):
+        from evaluation.collaborative_open_set_qknn_eval import evaluate_collaborative_open_set_evidence
+
+        rows = [
+            {
+                "event_id": "seen-new-safe",
+                "receiver_id": "rx-a",
+                "role": "seen_new",
+                "true_label": "new-a",
+                "predicted_label": "new-a",
+                "known_score": 0.90,
+                "known_margin": 0.30,
+                "unknown_risk": 0.92,
+                "score_risk": 0.92,
+                "radius_risk": 0.05,
+                "margin_risk": 0.01,
+            },
+            {
+                "event_id": "seen-new-safe",
+                "receiver_id": "rx-b",
+                "role": "seen_new",
+                "true_label": "new-a",
+                "predicted_label": "new-a",
+                "known_score": 0.88,
+                "known_margin": 0.32,
+                "unknown_risk": 0.91,
+                "score_risk": 0.91,
+                "radius_risk": 0.04,
+                "margin_risk": 0.01,
+            },
+        ]
+        metadata = {
+            "source_receiver_ids": ["src-a"],
+            "target_receiver_ids": ["rx-a", "rx-b"],
+            "old_tx_ids": ["old-a"],
+            "seen_new_tx_ids": ["new-a"],
+            "unknown_tx_ids": ["unk-a"],
+            "target_channel_view": "leo_clear_weak",
+        }
+
+        result = evaluate_collaborative_open_set_evidence(
+            rows,
+            collab_counts="2",
+            fusion_policy="scorer_cvs",
+            unknown_risk_threshold=0.8,
+            accept_margin_threshold=0.1,
+            consensus_score_threshold=0.6,
+            strict_protocol_metadata=True,
+            protocol_metadata=metadata,
+            seen_new_rescue_enabled=True,
+            seen_new_rescue_risk_scale=0.5,
+            class_set_gate_enabled=True,
+            seen_new_gate_min_receivers=2,
+            seen_new_gate_max_effective_unknown_risk=0.6,
+            seen_new_gate_max_component_agreement=0.4,
+        )
+
+        k2 = result["counts"]["2"]
+        self.assertEqual(k2["seen_new_acc"], 1.0)
+        self.assertEqual(k2["seen_new_rescue_count"], 1)
+
     def test_scorer_cvs_component_vote_uses_mahalanobis_as_extra_channel(self):
         from evaluation.collaborative_open_set_qknn_eval import evaluate_collaborative_open_set_evidence
 
