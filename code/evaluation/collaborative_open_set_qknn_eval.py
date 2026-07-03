@@ -442,6 +442,10 @@ def _fuse_event(
     candidate_set_max_receiver_pair_unknown_risk_range: float = 1.0,
     candidate_set_min_label_receiver_class_reliability: float = 0.0,
     candidate_set_require_label_shell_observed: bool = False,
+    candidate_set_pairguard_mode: str = "accept_gate",
+    candidate_set_pairguard_min_event_unknown_risk: float = 0.80,
+    candidate_set_pairguard_min_label_unknown_risk: float = 0.80,
+    candidate_set_pairguard_min_shell_risk: float = 0.90,
 ) -> dict[str, Any]:
     active_components = _parse_risk_components(scorer_risk_components)
     policy = _normalize_scope(fusion_policy)
@@ -487,6 +491,21 @@ def _fuse_event(
     candidate_set_min_label_receiver_class_reliability = _validate_unit_interval(
         candidate_set_min_label_receiver_class_reliability,
         "candidate_set_min_label_receiver_class_reliability",
+    )
+    candidate_set_pairguard_mode = _normalize_scope(candidate_set_pairguard_mode or "accept_gate")
+    if candidate_set_pairguard_mode not in {"accept_gate", "boundary_veto"}:
+        raise ValueError("candidate_set_pairguard_mode must be accept_gate or boundary_veto")
+    candidate_set_pairguard_min_event_unknown_risk = _validate_unit_interval(
+        candidate_set_pairguard_min_event_unknown_risk,
+        "candidate_set_pairguard_min_event_unknown_risk",
+    )
+    candidate_set_pairguard_min_label_unknown_risk = _validate_unit_interval(
+        candidate_set_pairguard_min_label_unknown_risk,
+        "candidate_set_pairguard_min_label_unknown_risk",
+    )
+    candidate_set_pairguard_min_shell_risk = _validate_unit_interval(
+        candidate_set_pairguard_min_shell_risk,
+        "candidate_set_pairguard_min_shell_risk",
     )
     label_scores: defaultdict[str, float] = defaultdict(float)
     label_raw_scores: defaultdict[str, float] = defaultdict(float)
@@ -1074,11 +1093,45 @@ def _fuse_event(
             and label
             and label_shell_risk >= float(candidate_set_shell_reject_risk)
         )
+        candidate_set_pairguard_disagreement_failed = bool(
+            receiver_pair_label_disagreement > float(candidate_set_max_receiver_pair_label_disagreement)
+        )
+        candidate_set_pairguard_risk_range_failed = bool(
+            receiver_pair_unknown_risk_range > float(candidate_set_max_receiver_pair_unknown_risk_range)
+        )
+        candidate_set_pairguard_reliability_failed = bool(
+            label_receiver_class_reliability < float(candidate_set_min_label_receiver_class_reliability)
+        )
+        candidate_set_pairguard_shell_missing_failed = bool(
+            candidate_set_require_label_shell_observed and not label_shell_risk_observed
+        )
+        candidate_set_pairguard_failed = bool(
+            candidate_set_pairguard_disagreement_failed
+            or candidate_set_pairguard_risk_range_failed
+            or candidate_set_pairguard_reliability_failed
+            or candidate_set_pairguard_shell_missing_failed
+        )
+        candidate_set_pairguard_boundary_trigger = bool(
+            unknown_risk >= float(candidate_set_pairguard_min_event_unknown_risk)
+            or label_unknown_risk >= float(candidate_set_pairguard_min_label_unknown_risk)
+            or label_shell_risk >= float(candidate_set_pairguard_min_shell_risk)
+        )
+        candidate_set_pairguard_veto = bool(
+            policy == "candidate_set_cvs"
+            and label
+            and candidate_set_pairguard_mode == "boundary_veto"
+            and candidate_set_pairguard_failed
+            and candidate_set_pairguard_boundary_trigger
+        )
+        candidate_set_pairguard_accept_passed = bool(
+            candidate_set_pairguard_mode != "accept_gate" or not candidate_set_pairguard_failed
+        )
         candidate_set_accept = bool(
             policy == "candidate_set_cvs"
             and output_label_set in {"old", "seen_new"}
             and not candidate_set_high_unknown_veto
             and not candidate_set_shell_veto
+            and not candidate_set_pairguard_veto
             and selected_label_candidate_receivers >= max(1, int(candidate_set_min_receivers))
             and selected_label_top1_receivers >= max(0, int(candidate_set_min_top1_receivers))
             and label_class_conformal_pvalue >= float(candidate_set_min_conformal_pvalue)
@@ -1086,10 +1139,7 @@ def _fuse_event(
             and unknown_risk <= float(candidate_set_max_event_unknown_risk)
             and label_risk_component_agreement <= float(candidate_set_max_label_risk_component_agreement)
             and score_gap_ratio >= float(candidate_set_min_score_gap)
-            and receiver_pair_label_disagreement <= float(candidate_set_max_receiver_pair_label_disagreement)
-            and receiver_pair_unknown_risk_range <= float(candidate_set_max_receiver_pair_unknown_risk_range)
-            and label_receiver_class_reliability >= float(candidate_set_min_label_receiver_class_reliability)
-            and (not candidate_set_require_label_shell_observed or label_shell_risk_observed)
+            and candidate_set_pairguard_accept_passed
         )
         if candidate_set_accept:
             decision = "accept"
@@ -1228,6 +1278,30 @@ def _fuse_event(
             candidate_set_min_label_receiver_class_reliability
         ),
         "candidate_set_require_label_shell_observed": bool(candidate_set_require_label_shell_observed),
+        "candidate_set_pairguard_mode": str(candidate_set_pairguard_mode),
+        "candidate_set_pairguard_min_event_unknown_risk": float(
+            candidate_set_pairguard_min_event_unknown_risk
+        ),
+        "candidate_set_pairguard_min_label_unknown_risk": float(
+            candidate_set_pairguard_min_label_unknown_risk
+        ),
+        "candidate_set_pairguard_min_shell_risk": float(candidate_set_pairguard_min_shell_risk),
+        "candidate_set_pairguard_disagreement_failed": bool(
+            locals().get("candidate_set_pairguard_disagreement_failed", False)
+        ),
+        "candidate_set_pairguard_risk_range_failed": bool(
+            locals().get("candidate_set_pairguard_risk_range_failed", False)
+        ),
+        "candidate_set_pairguard_reliability_failed": bool(
+            locals().get("candidate_set_pairguard_reliability_failed", False)
+        ),
+        "candidate_set_pairguard_shell_missing_failed": bool(
+            locals().get("candidate_set_pairguard_shell_missing_failed", False)
+        ),
+        "candidate_set_pairguard_boundary_trigger": bool(
+            locals().get("candidate_set_pairguard_boundary_trigger", False)
+        ),
+        "candidate_set_pairguard_veto": bool(locals().get("candidate_set_pairguard_veto", False)),
         "output_label_set": output_label_set,
         "label_fusion_policy": label_fusion_policy,
         "class_reliability_policy": class_reliability_policy,
@@ -2169,6 +2243,10 @@ def _fuse_dual_route_event(
     candidate_set_max_receiver_pair_unknown_risk_range: float = 1.0,
     candidate_set_min_label_receiver_class_reliability: float = 0.0,
     candidate_set_require_label_shell_observed: bool = False,
+    candidate_set_pairguard_mode: str = "accept_gate",
+    candidate_set_pairguard_min_event_unknown_risk: float = 0.80,
+    candidate_set_pairguard_min_label_unknown_risk: float = 0.80,
+    candidate_set_pairguard_min_shell_risk: float = 0.90,
     dual_route_rescue_min_pvalue: float = 0.75,
     dual_route_rescue_min_receiver_class_reliability: float = 0.75,
     dual_route_rescue_max_label_unknown_risk: float = 0.60,
@@ -2240,6 +2318,10 @@ def _fuse_dual_route_event(
             candidate_set_min_label_receiver_class_reliability
         ),
         candidate_set_require_label_shell_observed=candidate_set_require_label_shell_observed,
+        candidate_set_pairguard_mode=candidate_set_pairguard_mode,
+        candidate_set_pairguard_min_event_unknown_risk=candidate_set_pairguard_min_event_unknown_risk,
+        candidate_set_pairguard_min_label_unknown_risk=candidate_set_pairguard_min_label_unknown_risk,
+        candidate_set_pairguard_min_shell_risk=candidate_set_pairguard_min_shell_risk,
     )
     rescue = _fuse_event(
         rescue_selected,
@@ -2302,6 +2384,10 @@ def _fuse_dual_route_event(
             candidate_set_min_label_receiver_class_reliability
         ),
         candidate_set_require_label_shell_observed=candidate_set_require_label_shell_observed,
+        candidate_set_pairguard_mode=candidate_set_pairguard_mode,
+        candidate_set_pairguard_min_event_unknown_risk=candidate_set_pairguard_min_event_unknown_risk,
+        candidate_set_pairguard_min_label_unknown_risk=candidate_set_pairguard_min_label_unknown_risk,
+        candidate_set_pairguard_min_shell_risk=candidate_set_pairguard_min_shell_risk,
     )
     rescue_ok = _dual_route_rescue_ok(
         rescue,
@@ -2717,6 +2803,10 @@ def evaluate_collaborative_open_set_evidence(
     candidate_set_max_receiver_pair_unknown_risk_range: float = 1.0,
     candidate_set_min_label_receiver_class_reliability: float = 0.0,
     candidate_set_require_label_shell_observed: bool = False,
+    candidate_set_pairguard_mode: str = "accept_gate",
+    candidate_set_pairguard_min_event_unknown_risk: float = 0.80,
+    candidate_set_pairguard_min_label_unknown_risk: float = 0.80,
+    candidate_set_pairguard_min_shell_risk: float = 0.90,
     dual_route_rescue_min_pvalue: float = 0.75,
     dual_route_rescue_min_receiver_class_reliability: float = 0.75,
     dual_route_rescue_max_label_unknown_risk: float = 0.60,
@@ -2936,6 +3026,14 @@ def evaluate_collaborative_open_set_evidence(
                         candidate_set_min_label_receiver_class_reliability
                     ),
                     candidate_set_require_label_shell_observed=candidate_set_require_label_shell_observed,
+                    candidate_set_pairguard_mode=candidate_set_pairguard_mode,
+                    candidate_set_pairguard_min_event_unknown_risk=(
+                        candidate_set_pairguard_min_event_unknown_risk
+                    ),
+                    candidate_set_pairguard_min_label_unknown_risk=(
+                        candidate_set_pairguard_min_label_unknown_risk
+                    ),
+                    candidate_set_pairguard_min_shell_risk=candidate_set_pairguard_min_shell_risk,
                     dual_route_rescue_min_pvalue=dual_route_rescue_min_pvalue,
                     dual_route_rescue_min_receiver_class_reliability=(
                         dual_route_rescue_min_receiver_class_reliability
@@ -3079,6 +3177,14 @@ def evaluate_collaborative_open_set_evidence(
                         candidate_set_min_label_receiver_class_reliability
                     ),
                     candidate_set_require_label_shell_observed=candidate_set_require_label_shell_observed,
+                    candidate_set_pairguard_mode=candidate_set_pairguard_mode,
+                    candidate_set_pairguard_min_event_unknown_risk=(
+                        candidate_set_pairguard_min_event_unknown_risk
+                    ),
+                    candidate_set_pairguard_min_label_unknown_risk=(
+                        candidate_set_pairguard_min_label_unknown_risk
+                    ),
+                    candidate_set_pairguard_min_shell_risk=candidate_set_pairguard_min_shell_risk,
                 )
             first = selected[0]
             fused["role"] = _role(first.get("role"))
@@ -3202,6 +3308,14 @@ def evaluate_collaborative_open_set_evidence(
             candidate_set_min_label_receiver_class_reliability
         ),
         "candidate_set_require_label_shell_observed": bool(candidate_set_require_label_shell_observed),
+        "candidate_set_pairguard_mode": str(candidate_set_pairguard_mode),
+        "candidate_set_pairguard_min_event_unknown_risk": float(
+            candidate_set_pairguard_min_event_unknown_risk
+        ),
+        "candidate_set_pairguard_min_label_unknown_risk": float(
+            candidate_set_pairguard_min_label_unknown_risk
+        ),
+        "candidate_set_pairguard_min_shell_risk": float(candidate_set_pairguard_min_shell_risk),
         "dual_route_rescue_min_pvalue": float(dual_route_rescue_min_pvalue),
         "dual_route_rescue_min_receiver_class_reliability": float(
             dual_route_rescue_min_receiver_class_reliability
