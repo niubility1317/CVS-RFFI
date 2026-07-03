@@ -2730,3 +2730,84 @@ target-support feature adapter是协议合规的星上轻量诊断模块，但�
 |`p20_s05_gate3`|5|0.6346|0.0000|0.4500|0.0000|0.0000|1.0000|0.0761|0.5972|405.6522|0.1823|
 
 判定：ADV3B02 gate3能把unknown FAR压到0，但known性能仍不足，且per-class floor仍有0；这不是Stage2-C成功证据，只是说明更强CPR gate可作为unknown安全阀。后续应优先提升known覆盖和per-class floor，而不是继续只压unknown FAR。
+
+## 2026-07-04 candidate_set_cvs候选集协同融合
+
+### 目标
+
+上一轮上限诊断显示，ADV3B02/qknn8的正确old/seen-new标签经常存在于`class_evidence_top_m`候选集中，但`cp_set_cvs`硬门控会过度压制known接受，`scorer_cvs`放松后又会显著提高unknown FAR。因此本轮新增`candidate_set_cvs`：先在top-M类条件候选集中做weighted evidence pooling，再用独立的event unknown risk和label unknown risk作为安全阀。该策略不使用unknown query调阈值，不使用真实role做选择，只使用support/conformal/evidence字段。
+
+### 本地变更与验证
+
+|文件|变更|
+|---|---|
+|`code/evaluation/collaborative_open_set_qknn_eval.py`|新增`fusion_policy=candidate_set_cvs`；候选集接受条件包括`candidate_set_min_receivers`、`candidate_set_min_top1_receivers`、`candidate_set_min_conformal_pvalue`、`candidate_set_max_label_unknown_risk`、`candidate_set_max_event_unknown_risk`、`candidate_set_min_score_gap`和`candidate_set_unknown_reject_risk`；输出对应metadata与逐事件字段。|
+|`code/scripts/phase2_collaborative_open_set_qknn_eval.py`|CLI新增`--fusion_policy candidate_set_cvs`和候选集安全阀参数。|
+|`code/tests/test_collaborative_open_set_qknn_eval.py`|新增回归测试：正确标签仅在top-M候选而非top1时可被恢复；高风险unknown即使存在known候选也被拒识。|
+
+验证结果：
+
+|环境|命令|结果|
+|---|---|---|
+|local `ssr-gpu`|`python -m py_compile code\evaluation\collaborative_open_set_qknn_eval.py code\scripts\phase2_collaborative_open_set_qknn_eval.py code\tests\test_collaborative_open_set_qknn_eval.py`|PASS|
+|local `ssr-gpu`|`python -m unittest discover -s code\tests -p "test_collaborative_open_set_qknn_eval.py"`|41 tests OK|
+|local `ssr-gpu`|`python -m unittest discover -s code\tests -p "test_phase2_collaborative_open_set_qknn_eval.py"`|44 tests OK|
+|Git镜像|同上|41+44 tests OK|
+|Git提交|`470a214 Add candidate set CVS fusion policy`|已提交到`E:\type10-7\github_publish\CVS-RFFI-repo`，分支领先远端286|
+
+由于`E:\type10-7`根目录不是Git仓库，代码快照保存在`E:\type10-7\code\snapshots\candidate_set_cvs_20260704\`。资源约束设计说明原文`卫星协同射频指纹识别（RFFI）系统资源约束设计说明.md`仍未在当前工作区找到；本轮继续按可量化字段`avg_rx`、`bytes/event`、`latency_ms_p95`、GPU显存读数和prototype/evidence状态报告资源。
+
+### N607同步与运行
+
+N607直连预检通过，项目根为`/home/szu2070436088/2510044040/CV-SincNet`。运行前后8张RTX3090均为`10 MiB/24576 MiB`，无GPU compute app；用户要求显存占用低即可开启实验，本轮离线证据推理使用`CUDA_VISIBLE_DEVICES=0`但未显著占用显存。远端Python为`/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python`，Python3.10.19。
+
+同步文件与远端SHA256：
+
+|文件|远端SHA256|
+|---|---|
+|`code/evaluation/collaborative_open_set_qknn_eval.py`|`cd85f438d50da0ea63fc67f8c18d850dc37721b24ca77793f09a4c5babacfb81`|
+|`code/scripts/phase2_collaborative_open_set_qknn_eval.py`|`50498926b7739c416f4eb957153dad17c3e5dbd85d6bcdac1029868ffb261f71`|
+|`code/tests/test_collaborative_open_set_qknn_eval.py`|`adf02537f8000af26f8bff94620f5c0b91a9e697c2279b4e7e22a1654296ab1c`|
+
+远端验证：编译PASS；`test_collaborative_open_set_qknn_eval.py`为41 tests OK；`test_phase2_collaborative_open_set_qknn_eval.py`为44 tests OK。每次SSH/SCP后本地检查均为无残留`ssh.exe`、无N607/bridge 22端口`ESTABLISHED`连接。
+
+远端输入：`runs/phase2_adv3b02_collab_open_set_qknn_full_20260703/features.npz`，SHA256为`db559d78db305894307851750ef7d698db387f0984ff13c980fea99db85b8532`；该特征对应`ADV3B02_CORE90_SOFT_E200` Stage2-C qknn8链路，覆盖target receiver 1到5、`leo_clear_weak,leo_low_elev_weak,leo_rain_weak`星地信道视图。输出均为`receiver_count=5`、`group_count=307`、`evidence_row_count=1000`。
+
+产物SHA256：
+
+|产物|SHA256|
+|---|---|
+|`collab_open_set_qknn_candidate_set_cvs_min2_er090_adv3b02.json`|`2D0EC7DB48E4B4FAF8EEB068938EAD8F2224F384FDD83D88466BD60174CF4570`|
+|`collab_open_set_qknn_candidate_set_cvs_min2_er090_adv3b02_evidence.csv`|`4917B07F2034D0D991A06CB62D899DA638C3B9778C544796C505A7B21EBBA4DD`|
+|`collab_open_set_qknn_candidate_set_cvs_min3_er095_adv3b02.json`|`2B514F1126CAC97210B09796EB0726180CCB9D60C433ED12A1F30D7A1334F22B`|
+|`collab_open_set_qknn_candidate_set_cvs_min3_er095_adv3b02_evidence.csv`|`01C3C1F520C3BB5BAA5798F23962B1711CC4F4CF3ED203ADFA43BB4423C15468`|
+|`collab_open_set_qknn_candidate_set_cvs_support_utility_adv3b02.json`|`A4055E66C6B8B872919316536E3D5C431A61A56825F1AF2E0794D349D0863582`|
+|`collab_open_set_qknn_candidate_set_cvs_support_utility_adv3b02_evidence.csv`|`A7F0A7F5D07AA26B9FE0257500461070926F22CD011AC4837E7D77FEE4B5C16B`|
+
+### 结果表
+
+|候选|k|old_acc|min_old|seen_new_acc|min_seen|unknown_FAR|unknown_reject|defer|known_cov|avg_rx|bytes/event|p95_latency|
+|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+|`candidate_min2_er090`|1|0.0000|0.0000|0.0000|0.0000|0.0000|0.4667|0.7492|0.0000|1.0000|40.0000|0.1061|
+|`candidate_min2_er090`|2|0.3224|0.0000|0.2885|0.1500|0.0652|0.9348|0.1840|0.3676|2.0000|80.0000|0.1061|
+|`candidate_min2_er090`|3|0.3667|0.0500|0.5500|0.4500|0.0250|0.9750|0.1050|0.4437|3.0000|120.0000|0.1061|
+|`candidate_min2_er090`|4|0.6818|0.0000|0.7857|0.7000|0.0294|0.9118|0.0867|0.7672|4.0000|160.0000|0.1061|
+|`candidate_min2_er090`|5|0.6038|0.0000|0.6000|0.0000|0.0500|0.9500|0.0968|0.7397|5.0000|200.0000|0.1061|
+|`candidate_min3_er095`|1|0.0000|0.0000|0.0000|0.0000|0.0000|0.4667|0.7492|0.0000|1.0000|40.0000|0.1495|
+|`candidate_min3_er095`|2|0.0000|0.0000|0.0000|0.0000|0.0000|0.9348|0.4720|0.0000|2.0000|80.0000|0.1495|
+|`candidate_min3_er095`|3|0.2667|0.0000|0.3250|0.1000|0.0750|0.9250|0.2200|0.2875|3.0000|120.0000|0.1495|
+|`candidate_min3_er095`|4|0.4886|0.0000|0.5000|0.3500|0.0882|0.8529|0.2667|0.5086|4.0000|160.0000|0.1495|
+|`candidate_min3_er095`|5|0.6226|0.0000|0.5000|0.0000|0.0000|1.0000|0.2151|0.6164|5.0000|200.0000|0.1495|
+|`candidate_support_utility`|1|0.0000|0.0000|0.0000|0.0000|0.0000|0.4667|0.7492|0.0000|1.0000|40.0000|0.1408|
+|`candidate_support_utility`|2|0.3224|0.0500|0.2308|0.0500|0.1087|0.8913|0.1280|0.3382|1.8200|72.8000|0.1408|
+|`candidate_support_utility`|3|0.3833|0.1000|0.4250|0.2000|0.0500|0.9500|0.1000|0.4125|2.6550|106.2000|0.1408|
+|`candidate_support_utility`|4|0.6023|0.0000|0.5714|0.4500|0.1471|0.8529|0.1000|0.6552|3.4133|136.5333|0.1408|
+|`candidate_support_utility`|5|0.5849|0.0000|0.5000|0.0000|0.0500|0.9500|0.0968|0.7123|4.3118|172.4731|0.1408|
+
+### 判定
+
+`candidate_set_cvs`证明了一个关键事实：正确类别存在于top-M证据时，放弃过硬CP门控可以明显提高known识别。例如`candidate_min2_er090,k=4`达到`old_acc=0.6818`、`seen_new_acc=0.7857`、`min_seen=0.7000`、`unknown_FAR=0.0294`，显著高于上一轮`support_utility,k=4`的seen-new 0.4286和固定CP-set gate3的known低覆盖。但它仍远低于目标：old没有达到99%，`min_old=0`，seen-new也未达97/93，unknown拒识未达99%。
+
+`candidate_support_utility`体现了资源收益：k=3平均只使用`2.655`个receiver、`106.2 bytes/event`，相对固定3 receiver的`120 bytes/event`更省，并保持`unknown_FAR=0.0500`；但known性能低于固定候选集融合。说明当前按需协同的utility函数仍偏保守，适合作为资源受限模式，不是性能最优模式。
+
+本轮不能标记目标完成。当前最有价值的推进是：已经把瓶颈从“未知类拒识单独压FAR”推进到“top-M候选集能恢复known，但old floor和严格class coverage仍不足”。下一步应围绕两个方向继续：1）在候选集融合里加入receiver-class可靠度`w_{r,y}`，专门处理`min_old=0`的类别；2）若目标仍要求99/97/99，需要回到地面训练或轻量adapter训练阶段增强class-conditional compactness，仅靠后处理融合已经接近上限。
