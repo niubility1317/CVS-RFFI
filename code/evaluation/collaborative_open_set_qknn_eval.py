@@ -3086,6 +3086,7 @@ def evaluate_collaborative_open_set_evidence(
                     label_fusion_policy=label_fusion_policy,
                     class_reliability_policy=class_reliability_policy,
                     receiver_class_reliability_policy=receiver_class_reliability_policy,
+                    can_request_more=int(k) < int(receiver_count),
                     latency_budget_ms=latency_budget_ms,
                     max_event_bytes=max_event_bytes,
                     max_event_latency_ms=max_event_latency_ms,
