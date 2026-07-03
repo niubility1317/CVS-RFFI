@@ -2144,3 +2144,9 @@ V22 same-row boundary:
 | Best FAR while old drop`<=2pp` | `cap000_all_mlp` | `vote_agreement/source_accept q=0.05` | 0.8833 | 2.00 | 0.8753 | 0.8553 | 0.9541 | Old performance pass, FAR fails |
 
 The next valid work item is target1, not target2: improve worst-receiver/worst-TX LEO closed-set recovery without target clean/query tuning. Current evidence says oldness-only gating can protect unknown safety but does not recover hard receiver slices such as`rx3_19`and`rx20_1`.
+
+## Current EOF Status 2026-07-03 V24
+
+The latest completed feature-only route is V24 residual-subspace repair. It explicitly rejects the source clean/LEO class-logit bias/scale route and uses only source clean-minus-LEO feature residuals. V24 finished with`270`candidate rows and`0`strong target1 pass rows. Gate counts were: old recovery`48/270`, clean fidelity`224/270`, scenario/TX floor`30/270`, margin safety`180/270`, unknown safety`8/270`.
+
+Current decision: target1 is still not globally achieved. V24 preserves clean behavior in many rows but does not recover hard receivers (`rx20_1`,`rx3_19`,`rx8_8`) and tends to increase unknown oldness, so it cannot be promoted as the anti-LEO feature correction. Target2 remains not achieved because the low-FAR rows still trade away old-class performance.
