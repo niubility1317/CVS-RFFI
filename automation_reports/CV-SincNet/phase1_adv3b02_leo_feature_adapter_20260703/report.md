@@ -2187,3 +2187,51 @@ Planned N607 output:
 | V25 summary | `/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_adv3b02_localmem_target1_v25_20260703/target1_strong_v25_summary.csv` |
 | V25 metrics JSON | `/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_adv3b02_localmem_target1_v25_20260703/target1_strong_v25_metrics.json` |
 | V25 best JSON | `/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_adv3b02_localmem_target1_v25_20260703/target1_strong_v25_best.json` |
+
+## V25 Local Residual-Memory Feature Repair Result
+
+V25 completed after the builder was optimized to cache local nearest-residual retrieval per run/K. The first unoptimized attempt was terminated by exact PIDs because it was redundantly recomputing nearest neighbors and had only produced one variant after several minutes; no unrelated process was touched.
+
+| Item | Value |
+|---|---|
+| Remote log root | `/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_adv3b02_localmem_target1_v25_20260703` |
+| Local artifact root | `E:\type10-7\automation_reports\CV-SincNet\phase1_adv3b02_leo_feature_adapter_20260703\artifacts\v25_localmem_target1\` |
+| Candidate rows | 270 |
+| Strong target1 pass rows | 0 |
+
+Gate counts over 270 V25 candidates:
+
+| Gate | Pass rows |
+|---|---:|
+| old recovery | 54 |
+| clean fidelity | 270 |
+| scenario/TX floor | 54 |
+| margin/true-distance safety | 264 |
+| unknown safety | 0 |
+| strong target1 | 0 |
+
+Best same-row candidate per target slice:
+
+| Run | Best V25 candidate | Gates | Old closed acc | Delta vs identity pp | Clean drop pp | Scenario floor | TX floor | Unknown FAR | FAR delta | Unknown oldness delta |
+|---|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+| `rx20_1_u10` | `LEOMEM1_K008_Q20_A025` | 2 | 0.6229 | 0.06 | -0.58 | 0.6046 | 0.3813 | 0.7632 | -0.0125 | 0.6170 |
+| `rx20_1_u1` | `LEOMEM1_K008_Q20_A025` | 2 | 0.6229 | 0.06 | -0.58 | 0.6046 | 0.3813 | 0.8459 | -0.0252 | 0.1787 |
+| `rx3_19_u10` | `LEOMEM1_K008_Q05_A075` | 2 | 0.5550 | 0.68 | -0.17 | 0.5356 | 0.2721 | 0.5881 | 0.0108 | 1.8150 |
+| `rx3_19_u1` | `LEOMEM1_K008_Q05_A075` | 2 | 0.5550 | 0.68 | -0.17 | 0.5356 | 0.2721 | 0.7850 | 0.0325 | 1.6911 |
+| `rx7_14_u10` | `LEOMEM1_K032_Q05_A075` | 4 | 0.8762 | 0.82 | -0.08 | 0.8615 | 0.7211 | 0.9111 | 0.0389 | 1.7537 |
+| `rx7_14_u1` | `LEOMEM1_K032_Q05_A075` | 4 | 0.8762 | 0.82 | -0.08 | 0.8615 | 0.7211 | 0.9425 | 0.0350 | 1.1926 |
+| `rx7_7_u10` | `LEOMEM1_K032_Q05_A050` | 2 | 0.7959 | -0.06 | 0.00 | 0.7774 | 0.6525 | 0.8584 | 0.0086 | 1.3498 |
+| `rx7_7_u1` | `LEOMEM1_K032_Q05_A050` | 2 | 0.7959 | -0.06 | 0.00 | 0.7774 | 0.6525 | 0.9500 | 0.0175 | 0.8968 |
+| `rx8_8_u10` | `LEOMEM1_K008_Q20_A075` | 2 | 0.7224 | 0.35 | 0.67 | 0.6927 | 0.1676 | 0.8432 | 0.0108 | 1.5258 |
+| `rx8_8_u1` | `LEOMEM1_K008_Q20_A075` | 2 | 0.7224 | 0.35 | 0.67 | 0.6927 | 0.1676 | 0.9275 | 0.0175 | 0.8595 |
+
+Interpretation:
+
+| Finding | Evidence | Decision |
+|---|---|---|
+| V25 is safer for clean and margin than V24 | clean fidelity`270/270`, margin safety`264/270` | local residual memory is mechanically better behaved |
+| V25 still does not solve hard receivers | `rx20_1` only 0.6229;`rx3_19` only 0.5550;`rx8_8` only 0.7224 | local source residuals do not recover missing identity evidence |
+| Unknown safety remains the blocker | unknown safety`0/270`; unknown oldness remains positive in best same-row candidates | even local residual repair pulls unknowns toward oldness enough to fail target1 |
+| `rx7_14` improves but is not decisive | best old acc 0.8762 and floor 0.8615, but FAR 0.9111/0.9425 | do not promote as global solution |
+
+Current decision after V25: target1 remains not globally achieved and target2 remains not achieved. Feature repair based only on clean-minus-LEO residuals, whether low-rank or local-memory, is insufficient because it improves or preserves known-old geometry while still increasing unknown oldness. The next feature route must introduce an explicit open-set preserving objective or representation-level retraining, not another residual-only post-adapter.
