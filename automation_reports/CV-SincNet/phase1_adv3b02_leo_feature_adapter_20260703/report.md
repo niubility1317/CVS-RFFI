@@ -2898,3 +2898,90 @@ nohup bash code/scripts/sweep_phase1_adv3b02_hardtx_fullfeature_target1_v31_2026
 ```
 
 Success gate remains unchanged: V31 must pass target1 strong audit before target2 unknown rejection is attempted. If V31 cannot lift low receiver/TX floors toward OLD80 while preserving clean performance and unknown safety, target2 remains blocked.
+
+## V31 Result: Hard-TX Weighted Full Feature Repair
+
+V31 completed on N607 at `2026-07-03T16:05:36+08:00`.
+
+| Item | Value |
+|---|---|
+| command | `bash code/scripts/sweep_phase1_adv3b02_hardtx_fullfeature_target1_v31_20260703.sh` |
+| GPUs | `0,1,2,3,4,5,6,7` |
+| log root | `/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_adv3b02_hardtx_fullfeature_target1_v31_20260703` |
+| completion marker | `[PHASE1-HARDTX-FULLFEATURE-TARGET1-V31-DONE] end=2026-07-03T16:05:36+08:00` |
+| local artifacts | `artifacts\v31_hardtx_fullfeature_target1\target1_strong_v31_summary.csv`, `target1_strong_v31_metrics.json`, `target1_strong_v31_best.json`, `launcher.out` |
+| target2 decision | blocked; target1 strong audit failed |
+
+Gate counts over 80 V31 candidates:
+
+| Gate | Pass rows |
+|---|---:|
+| clean fidelity | 66 |
+| old recovery | 32 |
+| scenario/TX floor | 0 |
+| margin/true-distance safety | 2 |
+| unknown safety | 34 |
+| strong target1 | 0 |
+
+Variant-level summary:
+
+| Variant | Mean old acc | Max old acc | Mean clean drop pp | Min unknown FAR | Worst TX floor | Unknown safety rows |
+|---|---:|---:|---:|---:|---:|---:|
+| `LEOFEAT31_FULL_HARD_BAL` | 0.7214 | 0.8842 | 0.6742 | 0.5799 | 0.1590 | 4 |
+| `LEOFEAT31_FULL_HARD_FLOOR` | 0.7255 | 0.8912 | 0.9350 | 0.5610 | 0.1518 | 4 |
+| `LEOFEAT31_FULL_HARD_SAFE` | 0.7228 | 0.8911 | 0.3958 | 0.5989 | 0.1795 | 4 |
+| `LEOFEAT31_FULL_HARD_USEP` | 0.7219 | 0.8834 | 0.3842 | 0.5745 | 0.1763 | 4 |
+| `LEOFEAT31_LATE_HARD_BAL` | 0.7197 | 0.8850 | 0.9375 | 0.5420 | 0.1568 | 4 |
+| `LEOFEAT31_LATE_HARD_USEP` | 0.7178 | 0.8846 | 1.0175 | 0.5501 | 0.1490 | 6 |
+| `LEOFEAT31_NORM_HARD_BAL` | 0.7213 | 0.8849 | 0.6083 | 0.5637 | 0.1605 | 4 |
+| `LEOFEAT31_NORM_HARD_SAFE` | 0.7200 | 0.8848 | 0.4400 | 0.6179 | 0.1705 | 4 |
+
+Best same-row candidates by joint gate count then old-class accuracy:
+
+| Run | Candidate | Old closed acc | Delta vs identity pp | Clean drop pp | TX floor | Unknown FAR | Gate pattern |
+|---|---|---:|---:|---:|---:|---:|---|
+| `rx7_14_u10` | `LEOFEAT31_LATE_HARD_BAL` | 0.8850 | +1.52 | +0.39 | 0.6382 | 0.9667 | clean+old+margin |
+| `rx7_14_u1` | `LEOFEAT31_LATE_HARD_BAL` | 0.8850 | +1.52 | +0.39 | 0.6382 | 0.9825 | clean+old+margin |
+| `rx7_7_u10` | `LEOFEAT31_LATE_HARD_USEP` | 0.8067 | +0.71 | -0.24 | 0.6845 | 0.8541 | clean+old+unknown |
+| `rx7_14_u1` | `LEOFEAT31_FULL_HARD_FLOOR` | 0.8912 | +2.14 | +0.04 | 0.6945 | 0.9875 | clean+old |
+| `rx7_14_u10` | `LEOFEAT31_FULL_HARD_FLOOR` | 0.8912 | +2.14 | +0.04 | 0.6945 | 0.9889 | clean+old |
+| `rx7_14_u10` | `LEOFEAT31_FULL_HARD_SAFE` | 0.8911 | +2.12 | +0.03 | 0.6723 | 0.9889 | clean+old |
+| `rx7_14_u1` | `LEOFEAT31_FULL_HARD_SAFE` | 0.8911 | +2.12 | +0.03 | 0.6723 | 0.9900 | clean+old |
+| `rx7_14_u10` | `LEOFEAT31_NORM_HARD_BAL` | 0.8849 | +1.50 | +0.45 | 0.6008 | 0.9722 | clean+old |
+
+Lowest unknown FAR rows:
+
+| Run | Candidate | Old closed acc | Unknown FAR | TX floor | Clean drop pp | Gate pattern |
+|---|---|---:|---:|---:|---:|---|
+| `rx3_19_u10` | `LEOFEAT31_LATE_HARD_BAL` | 0.5799 | 0.5420 | 0.2775 | -0.49 | clean+unknown |
+| `rx3_19_u10` | `LEOFEAT31_LATE_HARD_USEP` | 0.5806 | 0.5501 | 0.2672 | -0.09 | clean+unknown |
+| `rx3_19_u10` | `LEOFEAT31_FULL_HARD_FLOOR` | 0.5815 | 0.5610 | 0.3105 | +0.64 | clean+unknown |
+| `rx3_19_u10` | `LEOFEAT31_NORM_HARD_BAL` | 0.5822 | 0.5637 | 0.3187 | -0.72 | clean+unknown |
+| `rx3_19_u10` | `LEOFEAT31_FULL_HARD_USEP` | 0.5741 | 0.5745 | 0.2875 | -0.65 | clean+unknown |
+| `rx3_19_u10` | `LEOFEAT31_FULL_HARD_BAL` | 0.5810 | 0.5799 | 0.2898 | +0.25 | clean+unknown |
+
+Best-by-run rows:
+
+| Run | Candidate | Old closed acc | TX floor | Unknown FAR | Gate pattern |
+|---|---|---:|---:|---:|---|
+| `rx20_1_u10` | `LEOFEAT31_FULL_HARD_SAFE` | 0.6125 | 0.3430 | 0.7975 | clean+unknown |
+| `rx20_1_u1` | `LEOFEAT31_FULL_HARD_SAFE` | 0.6125 | 0.3430 | 0.8599 | clean+unknown |
+| `rx3_19_u10` | `LEOFEAT31_NORM_HARD_BAL` | 0.5822 | 0.3187 | 0.5637 | clean+unknown |
+| `rx3_19_u1` | `LEOFEAT31_NORM_HARD_BAL` | 0.5822 | 0.3187 | 0.7275 | clean+unknown |
+| `rx7_14_u10` | `LEOFEAT31_LATE_HARD_BAL` | 0.8850 | 0.6382 | 0.9667 | clean+old+margin |
+| `rx7_14_u1` | `LEOFEAT31_LATE_HARD_BAL` | 0.8850 | 0.6382 | 0.9825 | clean+old+margin |
+| `rx7_7_u10` | `LEOFEAT31_LATE_HARD_USEP` | 0.8067 | 0.6845 | 0.8541 | clean+old+unknown |
+| `rx7_7_u1` | `LEOFEAT31_FULL_HARD_BAL` | 0.8117 | 0.6677 | 0.9750 | clean+old |
+| `rx8_8_u10` | `LEOFEAT31_LATE_HARD_USEP` | 0.7277 | 0.1490 | 0.8054 | clean+unknown |
+| `rx8_8_u1` | `LEOFEAT31_FULL_HARD_FLOOR` | 0.7358 | 0.1518 | 0.9800 | clean |
+
+Interpretation:
+
+| Finding | Evidence | Decision |
+|---|---|---|
+| V31 did not achieve target1 | strong target1`0/80`; scenario/TX floor`0/80` | target1 remains open |
+| Hard-TX weighting did not fix the hard-class floor | best TX floors remain around`0.60-0.69`only on easier `rx7_14/rx7_7`; `rx8_8` best-by-run TX floor remains`~0.15` | class weighting is not sufficient |
+| Broader feature tuning increases old accuracy only in already-salvageable receivers | `rx7_14` reaches`~0.891`, `rx7_7` reaches`~0.812`; `rx20_1/rx3_19/rx8_8` remain below OLD80 | source-pair adapter does not generalize to hard target receiver/channel combinations |
+| Unknown rejection remains far from target | lowest unknown FAR is`0.5420`, not `<0.05`, and best old-accuracy rows have unknown FAR`0.85-0.99` | target2 remains blocked; thresholding this representation would destroy old-class utility |
+
+Current decision after V31: source-only feature adapters trained from clean/LEO pairs, even with hard-TX weighting and broader identity feature tuning, are still insufficient. The remaining failure is not a logit bias/scale issue. The next valid route should target representation invariance before or during Phase1 training, or learn a source-only channel-invariant feature objective with explicit receiver/channel nuisance removal; target2 unknown rejection must not be attempted until target1 passes.
