@@ -85,3 +85,39 @@ def test_medoid_anchor_mode_keeps_bounded_representative_embeddings():
         for anchor in memory.prototype_matrix
     )
     assert "support_features" not in memory.__dict__
+
+
+def test_boundary_medoid_keeps_near_boundary_anchor_without_full_support():
+    support = np.asarray(
+        [
+            [1.0, 0.0],
+            [0.96, 0.04],
+            [0.62, 0.78],
+            [0.0, 1.0],
+            [0.04, 0.96],
+            [0.78, 0.62],
+        ],
+        dtype=np.float64,
+    )
+    labels = np.asarray(["old-a", "old-a", "old-a", "new-b", "new-b", "new-b"], dtype=object)
+
+    memory = build_compressed_memory(
+        support,
+        labels,
+        old_labels={"old-a"},
+        prototypes_per_class=2,
+        prototype_mode="boundary_medoid",
+    )
+
+    normalized_support = support / np.linalg.norm(support, axis=1, keepdims=True)
+    near_boundary_old = normalized_support[2]
+    near_boundary_new = normalized_support[5]
+
+    assert memory.prototype_matrix.shape == (4, 2)
+    assert any(np.allclose(anchor, near_boundary_old, atol=1e-8) for anchor in memory.prototype_matrix)
+    assert any(np.allclose(anchor, near_boundary_new, atol=1e-8) for anchor in memory.prototype_matrix)
+    assert predict_compressed_memory(memory, np.asarray([[0.70, 0.70]], dtype=np.float64)).tolist() in (
+        ["old-a"],
+        ["new-b"],
+    )
+    assert "support_features" not in memory.__dict__

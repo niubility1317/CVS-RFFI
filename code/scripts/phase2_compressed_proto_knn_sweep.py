@@ -80,6 +80,43 @@ def _medoid_anchors(features: np.ndarray, count: int) -> list[np.ndarray]:
     return [features[idx] for idx in selected]
 
 
+def _boundary_medoid_anchors(
+    features: np.ndarray,
+    label: str,
+    class_means: dict[str, np.ndarray],
+    count: int,
+) -> list[np.ndarray]:
+    features = _normalize_rows(features)
+    count = max(1, min(int(count), int(features.shape[0])))
+    anchors = _medoid_anchors(features, 1)
+    if count == 1:
+        return anchors
+
+    own_mean = class_means[label]
+    other_means = [mean for other_label, mean in class_means.items() if other_label != label]
+    if not other_means:
+        return _medoid_anchors(features, count)
+
+    other_matrix = np.vstack(other_means)
+    margins = (features @ own_mean) - np.max(features @ other_matrix.T, axis=1)
+    selected = [int(np.argmax(features @ anchors[0]))]
+    for candidate in np.argsort(margins).tolist():
+        if candidate not in selected:
+            selected.append(int(candidate))
+        if len(selected) >= count:
+            break
+    while len(selected) < count:
+        sims = features @ features[np.asarray(selected, dtype=int)].T
+        candidate = int(np.argmin(np.max(sims, axis=1)))
+        if candidate in selected:
+            remaining = [idx for idx in range(features.shape[0]) if idx not in selected]
+            if not remaining:
+                break
+            candidate = remaining[0]
+        selected.append(candidate)
+    return [features[idx] for idx in selected]
+
+
 def _subprototypes(features: np.ndarray, count: int, seed: int, mode: str) -> list[np.ndarray]:
     features = _normalize_rows(features)
     count = max(1, min(int(count), int(features.shape[0])))
@@ -128,11 +165,18 @@ def build_compressed_memory(
     prototype_radii: list[float] = []
     prototype_is_old: list[bool] = []
     counts: dict[str, int] = {}
+    sorted_labels = sorted({str(label) for label in labels.tolist()})
+    class_means = {
+        label: _normalize_rows(features[labels == label].mean(axis=0, keepdims=True))[0] for label in sorted_labels
+    }
 
-    for label in sorted({str(label) for label in labels.tolist()}):
+    for label in sorted_labels:
         class_features = features[labels == label]
         counts[label] = int(class_features.shape[0])
-        centers = _subprototypes(class_features, prototypes_per_class, _stable_seed(seed, label), prototype_mode)
+        if prototype_mode == "boundary_medoid":
+            centers = _boundary_medoid_anchors(class_features, label, class_means, prototypes_per_class)
+        else:
+            centers = _subprototypes(class_features, prototypes_per_class, _stable_seed(seed, label), prototype_mode)
         center_matrix = np.vstack(centers)
         assignments = np.argmax(class_features @ center_matrix.T, axis=1)
         for idx, center in enumerate(centers):
