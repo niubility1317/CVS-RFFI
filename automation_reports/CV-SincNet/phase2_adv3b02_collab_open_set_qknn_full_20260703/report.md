@@ -4100,6 +4100,102 @@ conda run --no-capture-output -n ssr-gpu python -m pytest code/tests/test_phase2
 
 两组均覆盖`collab_counts all`，报告receiver数、bytes/event、latency p95和目标指标。成功标准仍为99/95、97/93、99拒识；未达到则diagnostic-only。
 
+### N607结果与算法审查
+
+远端继续使用`/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python`。执行前后GPU占用均为8张RTX3090各`10/24576 MiB`、utilization`0%`，选择GPU0作为低显存占用卡。直接N607预检通过；每次SSH/SCP后本地检查`ssh.exe`进程数、N607`22`端口连接数、bridge`22`端口连接数均为`0`。
+
+同步后远端验证：
+
+```text
+python -m py_compile code/scripts/phase2_collaborative_open_set_qknn_eval.py
+python code/scripts/phase2_collaborative_open_set_qknn_eval.py --help
+```
+
+远端脚本hash与本地一致：
+
+|文件|SHA256|
+|---|---|
+|`code/scripts/phase2_collaborative_open_set_qknn_eval.py`|`5A1D2489C2FDD81AE3BCE07E096D6137805C3C010A3152FB3ABAE99EB601061A`|
+|`code/tests/test_phase2_collaborative_open_set_qknn_eval.py`|`5BC587C2193798BA2264F5D687B9F05ED3D06AE1DB4EF36D534142CEDAA90506`|
+
+本地补充实现`support_envelope_consensus`后，`support_envelope_full`和`support_envelope_consensus`均在CLI可选；`support_envelope_consensus`使用六类风险的top-3均值，避免`max`式full gate一票否决过严。新增单测后本地验证结果为`46 passed`。Git镜像提交包括：`d77a1b9 Add full support envelope gate`、`d721edd Add consensus support envelope gate`。
+
+远端产物hash：
+
+|run|JSON|CSV|JSON SHA256|CSV SHA256|
+|---|---|---|---|---|
+|`fullenv_virtual_shell_support_router_adv3b02`|`runs/phase2_adv3b02_collab_open_set_qknn_full_20260703/collab_open_set_qknn_fullenv_virtual_shell_support_router_adv3b02.json`|`runs/phase2_adv3b02_collab_open_set_qknn_full_20260703/collab_open_set_qknn_fullenv_virtual_shell_support_router_adv3b02_evidence.csv`|`86B808C560AEAE6C5C1F70C279D9371153E8AEA7E3E468E1235449FDA1983960`|`357A92E205CE7C7CBFE648C7B314F8A1DEE79F2EDC49223ABE5FCE426D33D729`|
+|`fullenv_virtual_shell_candidate_adv3b02`|`runs/phase2_adv3b02_collab_open_set_qknn_fullenv_virtual_shell_candidate_adv3b02.json`|`runs/phase2_adv3b02_collab_open_set_qknn_fullenv_virtual_shell_candidate_adv3b02_evidence.csv`|`B83A62F08F943E8F52DE5D3E65D8D0B2A2CFBBF4DDE88CCB05738D468AE61A06`|`53DE6ADC7334B7A18D52C9861AEFDF06A2F917B2F99DB915872A7DA6062882CF`|
+|`fullenv_consensus_candidate_adv3b02`|`runs/phase2_adv3b02_collab_open_set_qknn_fullenv_consensus_candidate_adv3b02.json`|`runs/phase2_adv3b02_collab_open_set_qknn_fullenv_consensus_candidate_adv3b02_evidence.csv`|`0BD7C539A93518DA04ED0F00D6E2504CB6AC35F3DA65E4F7AF3AB4746DA3D4D0`|`A3DE0F8585DB6F52F97476229C56775530313D1C3B0AE865D1E42894F0EB560B`|
+|`consensus_no_virtual_candidate_adv3b02`|`runs/phase2_adv3b02_collab_open_set_qknn_consensus_no_virtual_candidate_adv3b02.json`|`runs/phase2_adv3b02_collab_open_set_qknn_consensus_no_virtual_candidate_adv3b02_evidence.csv`|`17E15C328C6A6A7F668F43C21C3EC7714AB5D28F501A9CE6191A5E5FD3F89893`|`7D074B892151A5200F62119F0236CD1BED097B46040B4D9EB8D9E526B1F2F3C1`|
+
+`fullenv_virtual_shell_support_router_adv3b02`：
+
+|k|old_acc|min_old|seen_new_acc|min_seen|unknown_FAR|unknown_reject|defer|avg_rx|bytes/event|p95 ms|support_accept|unknown_evidence|
+|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+|1|0.0000|0.0000|0.0000|0.0000|0.0000|0.9833|0.0647|1.0000|40.0|0.1150|0.0000|0.9353|
+|2|0.0461|0.0000|0.1569|0.0000|0.0000|1.0000|0.0040|2.0000|80.0|0.1150|0.0595|0.9960|
+|3|0.0583|0.0000|0.1500|0.0000|0.0000|1.0000|0.0000|3.0000|120.0|0.1150|0.0650|1.0000|
+|4|0.1333|0.0000|0.2750|0.0000|0.0000|1.0000|0.0000|3.7400|149.6|0.1150|0.1350|0.9500|
+|5|0.1667|0.0000|0.2750|0.0000|0.0000|1.0000|0.0000|4.1950|167.8|0.1150|0.1550|0.9500|
+
+`fullenv_virtual_shell_candidate_adv3b02`：
+
+|k|old_acc|min_old|seen_new_acc|min_seen|unknown_FAR|unknown_reject|defer|avg_rx|bytes/event|p95 ms|
+|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+|1|0.0000|0.0000|0.0000|0.0000|0.0000|0.9833|0.0647|1.0000|40.0|0.1547|
+|2|0.0461|0.0000|0.1569|0.0000|0.0000|1.0000|0.0040|2.0000|80.0|0.1547|
+|3|0.0583|0.0000|0.1500|0.0000|0.0000|1.0000|0.0000|3.0000|120.0|0.1547|
+|4|0.1333|0.0000|0.2750|0.0000|0.0000|1.0000|0.0000|3.7400|149.6|0.1547|
+|5|0.1667|0.0000|0.2750|0.0000|0.0000|1.0000|0.0000|4.1950|167.8|0.1547|
+
+`fullenv_consensus_candidate_adv3b02`：
+
+|k|old_acc|min_old|seen_new_acc|min_seen|unknown_FAR|unknown_reject|defer|avg_rx|bytes/event|p95 ms|
+|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+|1|0.0000|0.0000|0.0000|0.0000|0.0000|0.8500|0.1133|1.0000|40.0|0.1573|
+|2|0.1053|0.0000|0.1569|0.0000|0.0000|1.0000|0.0040|2.0000|80.0|0.1573|
+|3|0.0583|0.0000|0.1500|0.0000|0.0000|1.0000|0.0000|3.0000|120.0|0.1573|
+|4|0.1500|0.0000|0.3000|0.0000|0.0000|1.0000|0.0000|3.7400|149.6|0.1573|
+|5|0.1833|0.0000|0.3000|0.0000|0.0000|1.0000|0.0000|4.1950|167.8|0.1573|
+
+`consensus_no_virtual_candidate_adv3b02`：
+
+|k|old_acc|min_old|seen_new_acc|min_seen|unknown_FAR|unknown_reject|defer|avg_rx|bytes/event|p95 ms|
+|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+|1|0.0000|0.0000|0.0000|0.0000|0.0000|0.2833|0.8738|1.0000|40.0|0.1429|
+|2|0.6316|0.1500|0.5294|0.2500|0.2857|0.5510|0.1548|2.0000|80.0|0.1429|
+|3|0.7333|0.2500|0.7250|0.5500|0.2250|0.7500|0.0250|3.0000|120.0|0.1429|
+|4|0.8500|0.6500|0.7750|0.6000|0.3000|0.6750|0.0100|3.7400|149.6|0.1429|
+|5|0.8500|0.6500|0.7750|0.6000|0.3000|0.6750|0.0100|4.1950|167.8|0.1429|
+
+判定：
+
+1.`support_envelope_full`加`virtual_unknown_risk/class_shell_unknown_risk`可以把unknown_FAR压到`0.0`，但known几乎全部被误拒；`support_router_cvs`和`candidate_set_cvs`都不能恢复old/seen-new。  
+2.`support_envelope_consensus`略缓解full gate的一票否决，但只要叠加virtual/class shell，仍表现为低FAR、高误拒。  
+3.去掉virtual/class shell后，k=4/k=5的old_acc恢复到`0.8500`、seen_new_acc恢复到`0.7750`，但unknown_FAR升到`0.3000`。这说明当前瓶颈是节点级open-set风险的可分性不足，而不是协同数量或融合策略单点问题。  
+4.本轮没有达到99/95、97/93、99拒识目标，不能写成Stage2-C成功、部署成功或严格卫星群协同成功。
+
+多子agent审查结论：
+
+|角色|结论|处置|
+|---|---|---|
+|文献检索|开放集RFFI和少样本RFFI更支持`prototype/EVT/Mahalanobis/conformal`三门控，不支持继续用同一unknown risk阈值同时承担分类与拒识。|下一轮设计转向ORBIT-CoProto：冻结主干，保守prototype shrinkage，Gaussian/Mahalanobis或EVT拒识，conformal决定accept/defer。|
+|算法构建|建议`ORBIT-CoProto`：多接收机只共享prototype、阈值、类内方差、top-k证据和版本信息，协同数量`1..|R_t|`可选，不传raw IQ。|实现优先级应为`CollaborativePrototypeState`、`predict_with_collaborative_prototypes`、资源字段和协议单测。|
+|逐项监督|5个target receivers的`1..5`已跑；“全体源接收机数量=7”未跑且不应作为Stage2部署协同，因为source receiver并入`R_t`会违反`项目.md`。|最终口径必须写“target receiver count 1..5”，不能写“source receiver全覆盖”。若要跑7个source receiver，只能先定义为非部署诊断或修订协议。|
+|查漏补缺|当前`receiver_domain_ranked`不是严格同事件协同；不同k可能事件分母不同；FAR下降多由known误拒造成。|补证据方向是strict event key、同分母k=1..N、accepted-only/full accuracy/coverage分开报、unknown->known与known->reject混淆。|
+
+下一轮算法路线：停止扩大hard veto、full envelope或class shell，改做`ORBIT-CoProto`最小闭环。核心公式为：
+
+```text
+s_k(y|z)=cos(z,p_k(y))/T_k-lambda_r*d_radius(z,p_k(y))+b_k(y)
+w_k(y)=softmax_k(a1*support_quality_k(y)-a2*latency_k-a3*radius_risk_k(y)-a4*staleness_k(y))
+S(y|z,C)=sum_{k in C} w_k(y)*s_k(y|z)
+accept = S(y_hat)>=tau_y_hat and margin>=m_y_hat and radius(z,p_fused(y_hat))<=R_y_hat and not unknown_veto(z)
+```
+
+其中`p_k(y)`只由source prototype、target-old support和target-new support形成；`Y_unknown`query仅用于评估。通信按top-k证据包估算约`6*c*k+header`bytes/event，prototype同步按`changed_classes*Kp*D*2B`估算。该路线更符合卫星端实时轻量更新：冻结CVS/CV-SincNet主干，只更新prototype、温度、阈值、类半径、EVT尾部参数或小adapter/BN affine。
+
 ## 2026-07-04 SR-PairFuse软pairguard执行计划
 
 ### 设计依据
