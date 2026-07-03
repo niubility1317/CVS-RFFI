@@ -9,6 +9,85 @@ if str(ROOT) not in sys.path:
 
 
 class CollaborativeOpenSetQknnEvalTest(unittest.TestCase):
+    def test_selective_confirm_requests_more_before_rejecting_weak_unknowns(self):
+        from evaluation.collaborative_open_set_qknn_eval import evaluate_collaborative_open_set_evidence
+
+        def row(event_id, receiver_id, role, truth, label, score, margin, risk, pvalue, reliability):
+            return {
+                "event_id": event_id,
+                "receiver_id": receiver_id,
+                "role": role,
+                "true_label": truth,
+                "predicted_label": label,
+                "known_score": score,
+                "known_margin": margin,
+                "unknown_risk": risk,
+                "score_risk": risk,
+                "radius_risk": risk,
+                "margin_risk": risk,
+                "class_conformal_pvalue": pvalue,
+                "class_conformal_support_count": 3,
+                "receiver_class_reliability": reliability,
+                "support_density": reliability,
+                "latency_ms": 1.0,
+                "bytes": 40,
+            }
+
+        rows = [
+            row("old-1", "rx-a", "old", "old-a", "old-a", 0.90, 0.20, 0.10, 0.90, 0.90),
+            row("old-1", "rx-b", "old", "old-a", "old-a", 0.85, 0.18, 0.12, 0.85, 0.85),
+            row("old-1", "rx-c", "old", "old-a", "old-a", 0.80, 0.16, 0.15, 0.80, 0.80),
+            row("unk-1", "rx-a", "unknown", "__unknown__", "old-a", 0.55, 0.03, 0.92, 0.05, 0.10),
+            row("unk-1", "rx-b", "unknown", "__unknown__", "old-a", 0.52, 0.02, 0.90, 0.04, 0.10),
+            row("unk-1", "rx-c", "unknown", "__unknown__", "old-a", 0.50, 0.02, 0.89, 0.04, 0.10),
+        ]
+
+        result = evaluate_collaborative_open_set_evidence(
+            rows,
+            collab_counts=[2, 3],
+            fusion_policy="selective_confirm_cvs",
+            label_fusion_policy="weighted_vote_margin",
+            receiver_class_reliability_policy="support_calibrated",
+            latency_budget_ms=10.0,
+            accept_margin_threshold=0.10,
+            consensus_score_threshold=0.10,
+            scorer_component_vote_threshold=0.50,
+            candidate_set_min_receivers=2,
+            candidate_set_min_conformal_pvalue=0.50,
+            candidate_set_min_label_receiver_class_reliability=0.75,
+            candidate_set_max_label_unknown_risk=0.80,
+            candidate_set_max_event_unknown_risk=0.80,
+            candidate_set_max_label_risk_component_agreement=0.50,
+            candidate_set_event_high_unknown_risk_veto=0.85,
+            candidate_set_unknown_reject_risk=0.85,
+            include_event_results=True,
+            protocol_metadata={
+                "target_receiver_ids": ["rx-a", "rx-b", "rx-c"],
+                "source_receiver_ids": ["src-a"],
+                "old_tx_ids": ["old-a"],
+                "seen_new_tx_ids": ["new-a"],
+                "unknown_tx_ids": ["unk-a"],
+                "target_channel_view": "leo_clear_weak",
+            },
+        )
+
+        k2 = result["counts"]["2"]
+        k3 = result["counts"]["3"]
+        self.assertEqual(result["fusion_policy"], "selective_confirm_cvs")
+        self.assertEqual(k2["old_acc"], 1.0)
+        self.assertEqual(k2["unknown_request_more_rate"], 1.0)
+        self.assertEqual(k2["selective_confirm_accept_count"], 1)
+        self.assertEqual(k2["selective_confirm_unknown_evidence_count"], 1)
+        self.assertEqual(k2["event_results"][0]["selective_confirm_decision_stage"], "strong_known_accept")
+        self.assertIn("support_confirmed", k2["event_results"][0]["selective_confirm_known_protection_reason"])
+        self.assertEqual(k2["event_results"][1]["decision"], "request_more")
+        self.assertEqual(k2["event_results"][1]["selective_confirm_decision_stage"], "weak_unknown_request_more")
+        self.assertIn("event_unknown_risk", k2["event_results"][1]["selective_confirm_risk_veto_source"])
+        self.assertEqual(k3["old_acc"], 1.0)
+        self.assertEqual(k3["unknown_reject_rate"], 1.0)
+        self.assertEqual(k3["unknown_FAR"], 0.0)
+        self.assertEqual(k3["event_results"][1]["decision"], "unknown_reject")
+
     def test_orbit_coproto_trust_weighted_fusion_protects_known_and_rejects_unknown(self):
         from evaluation.collaborative_open_set_qknn_eval import evaluate_collaborative_open_set_evidence
 

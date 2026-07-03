@@ -54,6 +54,7 @@ FUSION_POLICIES = {
     "candidate_set_cvs",
     "support_router_cvs",
     "orbit_coproto",
+    "selective_confirm_cvs",
 }
 
 
@@ -745,14 +746,14 @@ def _fuse_event(
         receiver_class_reliability_for_quality = (
             1.0 if receiver_class_reliability_value is None else float(receiver_class_reliability_value)
         )
-        if policy in {"cp_set_cvs", "candidate_set_cvs"} and allowed_cp_set_labels and label not in allowed_cp_set_labels:
+        if policy in {"cp_set_cvs", "candidate_set_cvs", "selective_confirm_cvs"} and allowed_cp_set_labels and label not in allowed_cp_set_labels:
             filtered_candidate_count += 1
             return
         row_seen_labels.add(label)
         pvalue = max(0.0, min(1.0, float(conformal_pvalue)))
         candidate_score = max(0.0, float(score_value))
         support_count = max(0.0, float(conformal_support_count))
-        if policy in {"cp_set_cvs", "candidate_set_cvs"} and int(source_rank) > 1 and (
+        if policy in {"cp_set_cvs", "candidate_set_cvs", "selective_confirm_cvs"} and int(source_rank) > 1 and (
             candidate_score <= 0.0 or support_count < 1.0
         ):
             filtered_candidate_count += 1
@@ -1246,7 +1247,14 @@ def _fuse_event(
         else:
             decision = "defer"
             output_label = ""
-    elif policy in {"scorer_cvs", "cp_set_cvs", "candidate_set_cvs", "support_router_cvs", "orbit_coproto"}:
+    elif policy in {
+        "scorer_cvs",
+        "cp_set_cvs",
+        "candidate_set_cvs",
+        "support_router_cvs",
+        "orbit_coproto",
+        "selective_confirm_cvs",
+    }:
         strong_consensus = (
             vote_gap > float(consensus_gap_threshold) or score_gap_ratio > float(consensus_gap_threshold)
         ) and agreement >= 0.5
@@ -1296,6 +1304,12 @@ def _fuse_event(
         if policy == "candidate_set_cvs" and label:
             decision_unknown_risk = label_unknown_risk
             decision_risk_component_agreement = label_risk_component_agreement
+        if policy == "selective_confirm_cvs" and label:
+            decision_unknown_risk = max(label_unknown_risk, unknown_risk)
+            decision_risk_component_agreement = max(
+                label_risk_component_agreement,
+                risk_component_agreement,
+            )
         if policy == "orbit_coproto" and label:
             decision_unknown_risk = max(label_unknown_risk, unknown_risk)
             decision_risk_component_agreement = max(label_risk_component_agreement, risk_component_agreement)
@@ -1336,6 +1350,72 @@ def _fuse_event(
                 or decision_risk_component_agreement >= float(scorer_component_vote_threshold)
             )
         )
+        selective_confirm_accept = bool(
+            policy == "selective_confirm_cvs"
+            and output_label_set in {"old", "seen_new"}
+            and selected_label_candidate_receivers >= max(1, int(candidate_set_min_receivers))
+            and selected_label_top1_receivers >= max(0, int(candidate_set_min_top1_receivers))
+            and label_class_conformal_pvalue >= float(candidate_set_min_conformal_pvalue)
+            and label_receiver_class_reliability
+            >= float(candidate_set_min_label_receiver_class_reliability)
+            and mean_score >= float(consensus_score_threshold)
+            and mean_margin >= float(accept_margin_threshold)
+            and score_gap_ratio >= float(candidate_set_min_score_gap)
+            and label_unknown_risk <= float(candidate_set_max_label_unknown_risk)
+            and unknown_risk <= float(candidate_set_max_event_unknown_risk)
+            and label_risk_component_agreement
+            <= float(candidate_set_max_label_risk_component_agreement)
+            and label_shell_risk <= float(candidate_set_max_label_shell_risk)
+            and gate_passed
+        )
+        selective_confirm_weak_label_evidence = bool(
+            policy == "selective_confirm_cvs"
+            and (
+                not label
+                or output_label_set not in {"old", "seen_new"}
+                or selected_label_candidate_receivers < max(1, int(candidate_set_min_receivers))
+                or selected_label_top1_receivers < max(0, int(candidate_set_min_top1_receivers))
+                or label_class_conformal_pvalue < float(candidate_set_min_conformal_pvalue)
+                or label_receiver_class_reliability
+                < float(candidate_set_min_label_receiver_class_reliability)
+                or mean_margin < float(accept_margin_threshold)
+                or mean_score < float(consensus_score_threshold)
+                or score_gap_ratio < float(candidate_set_min_score_gap)
+                or label_risk_component_agreement
+                > float(candidate_set_max_label_risk_component_agreement)
+                or not gate_passed
+            )
+        )
+        selective_confirm_unknown_evidence = bool(
+            policy == "selective_confirm_cvs"
+            and selective_confirm_weak_label_evidence
+            and (
+                unknown_risk >= float(candidate_set_event_high_unknown_risk_veto)
+                or label_unknown_risk >= float(candidate_set_unknown_reject_risk)
+                or label_high_unknown_risk_fraction
+                >= float(candidate_set_max_label_high_unknown_risk_fraction)
+                or decision_risk_component_agreement >= float(scorer_component_vote_threshold)
+            )
+        )
+        selective_confirm_risk_sources = []
+        if policy == "selective_confirm_cvs":
+            if unknown_risk >= float(candidate_set_event_high_unknown_risk_veto):
+                selective_confirm_risk_sources.append("event_unknown_risk")
+            if label_unknown_risk >= float(candidate_set_unknown_reject_risk):
+                selective_confirm_risk_sources.append("label_unknown_risk")
+            if label_high_unknown_risk_fraction >= float(candidate_set_max_label_high_unknown_risk_fraction):
+                selective_confirm_risk_sources.append("high_unknown_fraction")
+            if decision_risk_component_agreement >= float(scorer_component_vote_threshold):
+                selective_confirm_risk_sources.append("risk_component_agreement")
+        selective_confirm_risk_veto_source = ",".join(selective_confirm_risk_sources)
+        selective_confirm_known_protection_reason = ""
+        if selective_confirm_accept:
+            selective_confirm_known_protection_reason = (
+                "support_confirmed:"
+                f"pvalue={label_class_conformal_pvalue:.6g},"
+                f"receiver_reliability={label_receiver_class_reliability:.6g},"
+                f"margin={mean_margin:.6g}"
+            )
         candidate_set_high_unknown_veto = bool(
             policy == "candidate_set_cvs"
             and label
@@ -1649,6 +1729,26 @@ def _fuse_event(
         elif policy == "support_router_cvs":
             decision = "defer"
             output_label = ""
+        elif policy == "selective_confirm_cvs" and selective_confirm_accept:
+            decision = "accept"
+            output_label = label
+            selective_confirm_decision_stage = "strong_known_accept"
+        elif policy == "selective_confirm_cvs" and selective_confirm_unknown_evidence and within_request_budget:
+            decision = "request_more"
+            output_label = ""
+            selective_confirm_decision_stage = "weak_unknown_request_more"
+        elif policy == "selective_confirm_cvs" and selective_confirm_unknown_evidence:
+            decision = "unknown_reject"
+            output_label = UNKNOWN_LABEL
+            selective_confirm_decision_stage = "weak_unknown_reject"
+        elif policy == "selective_confirm_cvs" and within_request_budget:
+            decision = "request_more"
+            output_label = ""
+            selective_confirm_decision_stage = "weak_evidence_request_more"
+        elif policy == "selective_confirm_cvs":
+            decision = "defer"
+            output_label = ""
+            selective_confirm_decision_stage = "weak_evidence_defer"
         elif candidate_set_accept:
             decision = "accept"
             output_label = label
@@ -1778,6 +1878,22 @@ def _fuse_event(
         "candidate_set_accept": bool(locals().get("candidate_set_accept", False)),
         "support_router_accept": bool(locals().get("support_router_accept", False)),
         "support_router_unknown_evidence": bool(locals().get("support_router_unknown_evidence", False)),
+        "selective_confirm_accept": bool(locals().get("selective_confirm_accept", False)),
+        "selective_confirm_unknown_evidence": bool(
+            locals().get("selective_confirm_unknown_evidence", False)
+        ),
+        "selective_confirm_weak_label_evidence": bool(
+            locals().get("selective_confirm_weak_label_evidence", False)
+        ),
+        "selective_confirm_decision_stage": str(
+            locals().get("selective_confirm_decision_stage", "")
+        ),
+        "selective_confirm_risk_veto_source": str(
+            locals().get("selective_confirm_risk_veto_source", "")
+        ),
+        "selective_confirm_known_protection_reason": str(
+            locals().get("selective_confirm_known_protection_reason", "")
+        ),
         "orbit_coproto_accept": bool(locals().get("orbit_coproto_accept", False)),
         "orbit_old_floor_rescue_accept": bool(locals().get("orbit_old_floor_rescue_accept", False)),
         "orbit_coproto_unknown_evidence": bool(locals().get("orbit_coproto_unknown_evidence", False)),
@@ -3192,6 +3308,12 @@ def _finalize_metrics(
     support_router_accept_by_role: defaultdict[str, int] = defaultdict(int)
     support_router_unknown_evidence_total = 0
     support_router_unknown_evidence_by_role: defaultdict[str, int] = defaultdict(int)
+    selective_confirm_accept_total = 0
+    selective_confirm_accept_by_role: defaultdict[str, int] = defaultdict(int)
+    selective_confirm_unknown_evidence_total = 0
+    selective_confirm_unknown_evidence_by_role: defaultdict[str, int] = defaultdict(int)
+    selective_confirm_weak_label_evidence_total = 0
+    selective_confirm_weak_label_evidence_by_role: defaultdict[str, int] = defaultdict(int)
     orbit_old_floor_rescue_total = 0
     orbit_old_floor_rescue_by_role: defaultdict[str, int] = defaultdict(int)
     dual_route_rescue_total = 0
@@ -3262,6 +3384,15 @@ def _finalize_metrics(
         if bool(item.get("support_router_unknown_evidence", False)):
             support_router_unknown_evidence_total += 1
             support_router_unknown_evidence_by_role[role] += 1
+        if bool(item.get("selective_confirm_accept", False)):
+            selective_confirm_accept_total += 1
+            selective_confirm_accept_by_role[role] += 1
+        if bool(item.get("selective_confirm_unknown_evidence", False)):
+            selective_confirm_unknown_evidence_total += 1
+            selective_confirm_unknown_evidence_by_role[role] += 1
+        if bool(item.get("selective_confirm_weak_label_evidence", False)):
+            selective_confirm_weak_label_evidence_total += 1
+            selective_confirm_weak_label_evidence_by_role[role] += 1
         if bool(item.get("orbit_old_floor_rescue_accept", False)):
             orbit_old_floor_rescue_total += 1
             orbit_old_floor_rescue_by_role[role] += 1
@@ -3513,6 +3644,25 @@ def _finalize_metrics(
         ),
         "support_router_unknown_evidence_by_role": dict(
             sorted(support_router_unknown_evidence_by_role.items())
+        ),
+        "selective_confirm_accept_count": int(selective_confirm_accept_total),
+        "selective_confirm_accept_rate": _safe_rate(selective_confirm_accept_total, total_events),
+        "selective_confirm_accept_by_role": dict(sorted(selective_confirm_accept_by_role.items())),
+        "selective_confirm_unknown_evidence_count": int(selective_confirm_unknown_evidence_total),
+        "selective_confirm_unknown_evidence_rate": _safe_rate(
+            selective_confirm_unknown_evidence_total,
+            total_events,
+        ),
+        "selective_confirm_unknown_evidence_by_role": dict(
+            sorted(selective_confirm_unknown_evidence_by_role.items())
+        ),
+        "selective_confirm_weak_label_evidence_count": int(selective_confirm_weak_label_evidence_total),
+        "selective_confirm_weak_label_evidence_rate": _safe_rate(
+            selective_confirm_weak_label_evidence_total,
+            total_events,
+        ),
+        "selective_confirm_weak_label_evidence_by_role": dict(
+            sorted(selective_confirm_weak_label_evidence_by_role.items())
         ),
         "orbit_old_floor_rescue_count": int(orbit_old_floor_rescue_total),
         "orbit_old_floor_rescue_rate": _safe_rate(orbit_old_floor_rescue_total, total_events),

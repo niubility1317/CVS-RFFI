@@ -3916,6 +3916,78 @@ N607同步后远端哈希与本地一致；远端验证`52 tests OK`。实际运
 
 最终SSH/SCP后本地无`ssh.exe`残留，无N607和bridge 22端口ESTABLISHED连接。
 
+## 2026-07-04 selective-confirm协同确认策略计划
+
+### 目标与算法
+
+上一轮`class_negative weak_evidence`证明：即使把class-negative平均风险从`0.83~0.86`压到约`0.25`，它仍会误伤ADV3B02当前特征中的known样本。下一步不再把负证据直接作为主拒识门，而是实现选择性协同确认策略`selective_confirm_cvs`：
+
+1.强证据old/seen-new优先accept：要求label来自`Y_old/Y_new`、候选receiver数达到门槛、conformal p-value和receiver-class reliability达标、margin/score达标、label/event unknown risk和risk component agreement低于局部门槛。  
+2.弱证据高风险样本不在低k直接拒识：若label证据弱且多接收机unknown风险一致，且k还没用满target receiver预算，则输出`request_more`。  
+3.预算耗尽后再拒识：当k达到当前target receiver上限仍满足弱label+高unknown证据，才输出`unknown_reject`。  
+
+这个设计对应现实卫星群的通信约束：强证据样本少通信快速accept，弱证据样本才请求更多卫星接收机证据，最终仍报告`bytes/event`、`latency_ms_p95`和实际receiver数。文献边界上，它继承collaborative RFFI的多receiver投票思想、few-shot open-set的prototype/conformal证据和边缘协同推理的按需通信原则；但本轮仍只作为ADV3B02离线evidence诊断，不声明真实在轨部署。
+
+### 本地改动与验证
+
+|文件|用途|SHA256|
+|---|---|---|
+|`code/evaluation/collaborative_open_set_qknn_eval.py`|新增`fusion_policy=selective_confirm_cvs`，强证据accept、弱证据request_more、预算耗尽后unknown_reject，并输出`selective_confirm_decision_stage/risk_veto_source/known_protection_reason`审计字段和汇总计数。|`2544B260126EEFE9823FDE2589298EE8DADFB977DC02631CF075B965E5C67893`|
+|`code/scripts/phase2_collaborative_open_set_qknn_eval.py`|CLI新增`--fusion_policy selective_confirm_cvs`。|`E9D7277710B3C2CBCF3413C684B144E31A314951E52EB70D1E09E259F9CE31D9`|
+|`code/tests/test_collaborative_open_set_qknn_eval.py`|新增selective-confirm单测：k=2弱unknown请求更多接收机，k=3预算耗尽后拒识，同时强old保持accept并记录保护原因。|`A41628EA46D864CC6FDD787C7BC9BFBF3A7E8B02F5B6C06001FDCBFC8A4E1230`|
+
+本地快照：`E:\type10-7\code\snapshots\phase2_adv3b02_selective_confirm_20260704\`。
+
+验证命令：
+
+```text
+conda run --no-capture-output -n ssr-gpu python -m py_compile code\evaluation\collaborative_open_set_qknn_eval.py code\scripts\phase2_collaborative_open_set_qknn_eval.py
+conda run --no-capture-output -n ssr-gpu python -m pytest code\tests\test_collaborative_open_set_qknn_eval.py code\tests\test_phase2_collaborative_open_set_qknn_eval.py -q -p no:cacheprovider
+```
+
+结果：`109 passed in 1.11s`。
+
+### N607计划
+
+远端继续使用`/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python`。同步3个文件和本报告后，先做远端hash、`py_compile`和`unittest discover`，再用ADV3B02星地qknn8特征包运行k=1..5全量诊断：
+
+```text
+CUDA_VISIBLE_DEVICES=0 /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python code/scripts/phase2_collaborative_open_set_qknn_eval.py \
+  --feature_npz runs/phase2_adv3b02_collab_open_set_qknn_full_20260703/features.npz \
+  --output_json runs/phase2_adv3b02_collab_open_set_qknn_full_20260703/collab_open_set_qknn_selective_confirm_adv3b02_20260704.json \
+  --output_evidence_csv runs/phase2_adv3b02_collab_open_set_qknn_full_20260703/collab_open_set_qknn_selective_confirm_adv3b02_20260704_evidence.csv \
+  --collab_counts all --collab_group_policy available_up_to_k --partial_collab_min_receivers 3 \
+  --k_shot 8 --query_per_class 20 --qknn_k 8 --seed 4070303 \
+  --candidate_class_top_m 2 --class_evidence_top_m 3 \
+  --class_conformal_enabled --class_conformal_min_support 2 \
+  --prototype_score_blend 2.0 --mahalanobis_score_blend 1.0 \
+  --support_calibration_mode leave_one_out \
+  --unknown_gate_mode support_envelope_evt --score_threshold_combine qknn_only \
+  --scenario_aware --radius_norm 0.3 \
+  --fusion_policy selective_confirm_cvs --collaboration_policy fixed_k \
+  --label_fusion_policy weighted_vote_margin \
+  --class_reliability_policy conformal_margin_risk \
+  --receiver_class_reliability_policy support_calibrated \
+  --event_alignment_policy receiver_domain_ranked \
+  --support_selection_policy stable_first \
+  --latency_budget_ms 999 \
+  --unknown_risk_threshold 0.8 --scorer_component_vote_threshold 0.50 \
+  --accept_margin_threshold 0.08 --consensus_score_threshold 0.20 \
+  --candidate_set_min_receivers 2 --candidate_set_min_top1_receivers 0 \
+  --candidate_set_min_conformal_pvalue 0.55 \
+  --candidate_set_min_label_receiver_class_reliability 0.70 \
+  --candidate_set_max_label_unknown_risk 0.85 \
+  --candidate_set_max_event_unknown_risk 0.85 \
+  --candidate_set_max_label_risk_component_agreement 0.50 \
+  --candidate_set_event_high_unknown_risk_veto 0.90 \
+  --candidate_set_max_label_high_unknown_risk_fraction 0.50 \
+  --candidate_set_high_unknown_risk_threshold 0.80 \
+  --candidate_set_unknown_reject_risk 0.85 \
+  --evidence_packet_bytes 40 --include_event_results
+```
+
+成功判据仍为old整体`>=0.99`且per-class`>=0.95`，seen-new整体`>=0.97`且per-class`>=0.93`，unknown reject`>=0.99`。未达到则继续标为diagnostic-only。
+
 ## 2026-07-04 ADV3B02 support_calibrated_pairguard执行计划
 
 ### 设计依据

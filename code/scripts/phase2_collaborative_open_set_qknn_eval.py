@@ -3143,6 +3143,7 @@ def parse_args() -> argparse.Namespace:
             "candidate_set_cvs",
             "support_router_cvs",
             "orbit_coproto",
+            "selective_confirm_cvs",
         ],
     )
     p.add_argument(
