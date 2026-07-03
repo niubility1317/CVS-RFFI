@@ -48,6 +48,8 @@ class QknnMemory:
     class_mahalanobis_thresholds: dict[str, float]
     class_evt_thresholds: dict[str, float]
     class_evt_scales: dict[str, float]
+    class_oldness_weights: dict[str, np.ndarray]
+    class_oldness_thresholds: dict[str, float]
     margin_threshold: float
     score_threshold: float
 
@@ -230,6 +232,42 @@ def _evt_tail_envelope(
     return thresholds, scales
 
 
+def _oldness_gate_envelope(
+    features: np.ndarray,
+    labels: np.ndarray,
+    centroid_labels: np.ndarray,
+    centroids: np.ndarray,
+    *,
+    oldness_quantile: float,
+    oldness_slack: float,
+) -> tuple[dict[str, np.ndarray], dict[str, float]]:
+    normalized = _normalize_rows(features)
+    class_to_pos = {str(label): int(i) for i, label in enumerate(centroid_labels.tolist())}
+    weights: dict[str, np.ndarray] = {}
+    thresholds: dict[str, float] = {}
+    global_centroid = _normalize_rows(normalized.mean(axis=0, keepdims=True))[0]
+    for label in sorted(class_to_pos):
+        idx = np.where(labels == label)[0]
+        other_idx = np.where(labels != label)[0]
+        if idx.size <= 0:
+            continue
+        pos_centroid = centroids[class_to_pos[label]]
+        if other_idx.size:
+            neg_centroid = _normalize_rows(normalized[other_idx].mean(axis=0, keepdims=True))[0]
+        else:
+            neg_centroid = global_centroid
+        direction = pos_centroid - neg_centroid
+        norm = float(np.linalg.norm(direction))
+        if norm <= 1e-8:
+            direction = pos_centroid
+            norm = float(np.linalg.norm(direction))
+        weight = direction / max(norm, 1e-8)
+        pos_scores = normalized[idx] @ weight
+        weights[label] = weight.astype(np.float32)
+        thresholds[label] = float(np.quantile(pos_scores, float(oldness_quantile)) - float(oldness_slack))
+    return weights, thresholds
+
+
 def build_qknn_memory(
     features: np.ndarray,
     labels: Sequence[str],
@@ -241,11 +279,13 @@ def build_qknn_memory(
     score_quantile: float = 0.05,
     mahalanobis_quantile: float = 0.95,
     evt_tail_quantile: float = 0.80,
+    oldness_quantile: float = 0.05,
     radius_slack: float = 0.02,
     margin_slack: float = 0.0,
     score_slack: float = 0.0,
     mahalanobis_slack: float = 0.0,
     evt_tail_slack: float = 0.0,
+    oldness_slack: float = 0.0,
     mahalanobis_variance_floor: float = 1e-4,
     evt_min_scale: float = 1e-3,
 ) -> QknnMemory:
@@ -297,6 +337,14 @@ def build_qknn_memory(
         evt_tail_slack=evt_tail_slack,
         evt_min_scale=evt_min_scale,
     )
+    oldness_weights, oldness_thresholds = _oldness_gate_envelope(
+        normalized,
+        labels_arr,
+        centroid_labels,
+        centroids,
+        oldness_quantile=oldness_quantile,
+        oldness_slack=oldness_slack,
+    )
     storage_bytes = int(qfeatures.nbytes + labels_arr.size * 4)
     return QknnMemory(
         qfeatures=qfeatures,
@@ -313,6 +361,8 @@ def build_qknn_memory(
         class_mahalanobis_thresholds=mahalanobis_thresholds,
         class_evt_thresholds=evt_thresholds,
         class_evt_scales=evt_scales,
+        class_oldness_weights=oldness_weights,
+        class_oldness_thresholds=oldness_thresholds,
         margin_threshold=margin_threshold,
         score_threshold=score_threshold,
     )
@@ -567,12 +617,13 @@ def _combined_unknown_risk(
     margin_temperature: float,
     mahalanobis_temperature: float,
     evt_temperature: float,
-) -> tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
+    oldness_temperature: float,
+) -> tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray, np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
     mode = str(gate_mode or "score").strip().lower()
     score_risk = _unknown_risk(known_scores, score_threshold, temperature=temperature)
     if mode == "score":
         zeros = np.zeros_like(score_risk)
-        return score_risk, score_risk, zeros, zeros, zeros, zeros, zeros
+        return score_risk, score_risk, zeros, zeros, zeros, zeros, zeros, zeros
     centroid_scores = _centroid_scores(memory, query_features)
     class_to_pos = {str(label): int(i) for i, label in enumerate(memory.centroid_labels.tolist())}
     radius_risks = []
@@ -596,6 +647,7 @@ def _combined_unknown_risk(
     mahalanobis_risks = []
     mahalanobis_distances = []
     evt_risks = []
+    oldness_risks = []
     normalized_query = _normalize_rows(query_features)
     for row_i, label in enumerate(predicted_labels):
         label = str(label)
@@ -605,6 +657,7 @@ def _combined_unknown_risk(
             mahalanobis_distances.append(1.0)
             mahalanobis_risks.append(1.0)
             evt_risks.append(1.0)
+            oldness_risks.append(1.0)
             continue
         centroid = memory.centroids[pos]
         distance = float(np.sqrt(np.mean(((normalized_query[row_i] - centroid) ** 2) * inv_var)))
@@ -616,14 +669,25 @@ def _combined_unknown_risk(
         evt_scale = max(float(memory.class_evt_scales.get(label, evt_temperature)), float(evt_temperature), 1e-12)
         excess = max(0.0, distance - evt_threshold)
         evt_risks.append(float(1.0 - np.exp(-excess / evt_scale)))
+        oldness_weight = memory.class_oldness_weights.get(label)
+        if oldness_weight is None:
+            oldness_risks.append(1.0)
+        else:
+            oldness_score = float(normalized_query[row_i] @ oldness_weight)
+            oldness_threshold = float(memory.class_oldness_thresholds.get(label, 0.0))
+            z = (oldness_threshold - oldness_score) / max(float(oldness_temperature), 1e-6)
+            oldness_risks.append(float(1.0 / (1.0 + np.exp(-z))))
     mahalanobis_risk = np.asarray(mahalanobis_risks, dtype=np.float64)
     evt_risk = np.asarray(evt_risks, dtype=np.float64)
+    oldness_risk = np.asarray(oldness_risks, dtype=np.float64)
     if mode == "support_envelope":
         risk = np.maximum.reduce([score_risk, radius_risk, margin_risk])
     elif mode == "support_envelope_mahalanobis":
         risk = np.maximum.reduce([score_risk, radius_risk, margin_risk, mahalanobis_risk])
     elif mode == "support_envelope_evt":
         risk = np.maximum.reduce([score_risk, radius_risk, margin_risk, evt_risk])
+    elif mode == "support_envelope_oldness":
+        risk = np.maximum.reduce([score_risk, radius_risk, margin_risk, oldness_risk])
     elif mode == "radius":
         risk = np.maximum(score_risk, radius_risk)
     elif mode == "margin":
@@ -632,10 +696,12 @@ def _combined_unknown_risk(
         risk = np.maximum(score_risk, mahalanobis_risk)
     elif mode == "evt":
         risk = np.maximum(score_risk, evt_risk)
+    elif mode == "oldness":
+        risk = np.maximum(score_risk, oldness_risk)
     else:
         raise ValueError(
-            "unknown_gate_mode must be score, radius, margin, mahalanobis, evt, support_envelope, "
-            "support_envelope_mahalanobis, or support_envelope_evt"
+            "unknown_gate_mode must be score, radius, margin, mahalanobis, evt, oldness, support_envelope, "
+            "support_envelope_mahalanobis, support_envelope_evt, or support_envelope_oldness"
         )
     return (
         np.clip(risk, 0.0, 1.0),
@@ -644,6 +710,7 @@ def _combined_unknown_risk(
         margin_risk,
         mahalanobis_risk,
         evt_risk,
+        oldness_risk,
         np.asarray(radius_values, dtype=np.float64),
     )
 
@@ -698,15 +765,18 @@ def build_collaborative_evidence(
     score_quantile: float = 0.05,
     mahalanobis_quantile: float = 0.95,
     evt_tail_quantile: float = 0.80,
+    oldness_quantile: float = 0.05,
     radius_slack: float = 0.02,
     margin_slack: float = 0.0,
     score_slack: float = 0.0,
     mahalanobis_slack: float = 0.0,
     evt_tail_slack: float = 0.0,
+    oldness_slack: float = 0.0,
     radius_temperature: float = 0.02,
     margin_temperature: float = 0.02,
     mahalanobis_temperature: float = 0.20,
     evt_temperature: float = 0.05,
+    oldness_temperature: float = 0.05,
     mahalanobis_variance_floor: float = 1e-4,
     evt_min_scale: float = 1e-3,
     scenario_aware: bool = False,
@@ -837,11 +907,13 @@ def build_collaborative_evidence(
             score_quantile=score_quantile,
             mahalanobis_quantile=mahalanobis_quantile,
             evt_tail_quantile=evt_tail_quantile,
+            oldness_quantile=oldness_quantile,
             radius_slack=radius_slack,
             margin_slack=margin_slack,
             score_slack=score_slack,
             mahalanobis_slack=mahalanobis_slack,
             evt_tail_slack=evt_tail_slack,
+            oldness_slack=oldness_slack,
             mahalanobis_variance_floor=mahalanobis_variance_floor,
             evt_min_scale=evt_min_scale,
         )
@@ -945,6 +1017,7 @@ def build_collaborative_evidence(
                         margin_risk,
                         mahalanobis_risk,
                         evt_risk,
+                        oldness_risk,
                         class_radius,
                     ) = _combined_unknown_risk(
                         memory,
@@ -963,6 +1036,7 @@ def build_collaborative_evidence(
                         margin_temperature=margin_temperature,
                         mahalanobis_temperature=mahalanobis_temperature,
                         evt_temperature=evt_temperature,
+                        oldness_temperature=oldness_temperature,
                     )
                     evidence.append(
                         {
@@ -979,6 +1053,7 @@ def build_collaborative_evidence(
                             "margin_risk": float(margin_risk[0]),
                             "mahalanobis_risk": float(mahalanobis_risk[0]),
                             "evt_risk": float(evt_risk[0]),
+                            "oldness_risk": float(oldness_risk[0]),
                             "class_radius": float(class_radius[0]),
                             "reliability": 1.0,
                             "reliability_source": "deployment_prior",
@@ -1027,13 +1102,16 @@ def build_collaborative_evidence(
         "score_quantile": float(score_quantile),
         "mahalanobis_quantile": float(mahalanobis_quantile),
         "evt_tail_quantile": float(evt_tail_quantile),
+        "oldness_quantile": float(oldness_quantile),
         "radius_slack": float(radius_slack),
         "margin_slack": float(margin_slack),
         "score_slack": float(score_slack),
         "mahalanobis_slack": float(mahalanobis_slack),
         "evt_tail_slack": float(evt_tail_slack),
+        "oldness_slack": float(oldness_slack),
         "mahalanobis_temperature": float(mahalanobis_temperature),
         "evt_temperature": float(evt_temperature),
+        "oldness_temperature": float(oldness_temperature),
         "mahalanobis_variance_floor": float(mahalanobis_variance_floor),
         "evt_min_scale": float(evt_min_scale),
     }
@@ -1059,15 +1137,18 @@ def run_evaluation(args: argparse.Namespace) -> dict[str, Any]:
         score_quantile=float(args.score_quantile),
         mahalanobis_quantile=float(args.mahalanobis_quantile),
         evt_tail_quantile=float(args.evt_tail_quantile),
+        oldness_quantile=float(args.oldness_quantile),
         radius_slack=float(args.radius_slack),
         margin_slack=float(args.margin_slack),
         score_slack=float(args.score_slack),
         mahalanobis_slack=float(args.mahalanobis_slack),
         evt_tail_slack=float(args.evt_tail_slack),
+        oldness_slack=float(args.oldness_slack),
         radius_temperature=float(args.radius_temperature),
         margin_temperature=float(args.margin_temperature),
         mahalanobis_temperature=float(args.mahalanobis_temperature),
         evt_temperature=float(args.evt_temperature),
+        oldness_temperature=float(args.oldness_temperature),
         mahalanobis_variance_floor=float(args.mahalanobis_variance_floor),
         evt_min_scale=float(args.evt_min_scale),
         scenario_aware=bool(args.scenario_aware),
@@ -1126,16 +1207,19 @@ def parse_args() -> argparse.Namespace:
     p.add_argument("--margin_temperature", type=float, default=0.02)
     p.add_argument("--mahalanobis_temperature", type=float, default=0.20)
     p.add_argument("--evt_temperature", type=float, default=0.05)
+    p.add_argument("--oldness_temperature", type=float, default=0.05)
     p.add_argument("--radius_quantile", type=float, default=0.95)
     p.add_argument("--margin_quantile", type=float, default=0.05)
     p.add_argument("--score_quantile", type=float, default=0.05)
     p.add_argument("--mahalanobis_quantile", type=float, default=0.95)
     p.add_argument("--evt_tail_quantile", type=float, default=0.80)
+    p.add_argument("--oldness_quantile", type=float, default=0.05)
     p.add_argument("--radius_slack", type=float, default=0.02)
     p.add_argument("--margin_slack", type=float, default=0.0)
     p.add_argument("--score_slack", type=float, default=0.0)
     p.add_argument("--mahalanobis_slack", type=float, default=0.0)
     p.add_argument("--evt_tail_slack", type=float, default=0.0)
+    p.add_argument("--oldness_slack", type=float, default=0.0)
     p.add_argument("--mahalanobis_variance_floor", type=float, default=1e-4)
     p.add_argument("--evt_min_scale", type=float, default=1e-3)
     p.add_argument("--scenario_aware", action="store_true")
@@ -1171,9 +1255,11 @@ def parse_args() -> argparse.Namespace:
             "margin",
             "mahalanobis",
             "evt",
+            "oldness",
             "support_envelope",
             "support_envelope_mahalanobis",
             "support_envelope_evt",
+            "support_envelope_oldness",
         ],
     )
     p.add_argument(

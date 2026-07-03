@@ -211,6 +211,7 @@ def _fuse_event(
     margin_risks = []
     mahalanobis_risks = []
     evt_risks = []
+    oldness_risks = []
     component_votes = []
     predicted_labels = []
     for row in selected:
@@ -229,18 +230,23 @@ def _fuse_event(
         margin_risk_value = _float(row, "margin_risk", _float(row, "unknown_risk", 0.0))
         has_mahalanobis = "mahalanobis_risk" in row
         has_evt = "evt_risk" in row
+        has_oldness = "oldness_risk" in row
         mahalanobis_risk_value = _float(row, "mahalanobis_risk", _float(row, "unknown_risk", 0.0))
         evt_risk_value = _float(row, "evt_risk", _float(row, "unknown_risk", 0.0))
+        oldness_risk_value = _float(row, "oldness_risk", _float(row, "unknown_risk", 0.0))
         score_risks.append(score_risk_value)
         radius_risks.append(radius_risk_value)
         margin_risks.append(margin_risk_value)
         mahalanobis_risks.append(mahalanobis_risk_value)
         evt_risks.append(evt_risk_value)
+        oldness_risks.append(oldness_risk_value)
         component_values = [score_risk_value, radius_risk_value, margin_risk_value]
         if has_mahalanobis:
             component_values.append(mahalanobis_risk_value)
         if has_evt:
             component_values.append(evt_risk_value)
+        if has_oldness:
+            component_values.append(oldness_risk_value)
         component_votes.append(
             sum(value >= float(unknown_risk_threshold) for value in component_values)
             / float(max(len(component_values), 1))
@@ -252,6 +258,7 @@ def _fuse_event(
     margin_risk = _weighted_quantile(margin_risks, weights, unknown_quantile)
     mahalanobis_risk = _weighted_quantile(mahalanobis_risks, weights, unknown_quantile)
     evt_risk = _weighted_quantile(evt_risks, weights, unknown_quantile)
+    oldness_risk = _weighted_quantile(oldness_risks, weights, unknown_quantile)
     if weights and sum(weights) > 0:
         risk_component_agreement = sum(v * max(0.0, w) for v, w in zip(component_votes, weights)) / max(
             sum(max(0.0, w) for w in weights),
@@ -363,6 +370,7 @@ def _fuse_event(
         "margin_risk": float(margin_risk),
         "mahalanobis_risk": float(mahalanobis_risk),
         "evt_risk": float(evt_risk),
+        "oldness_risk": float(oldness_risk),
         "risk_component_agreement": float(risk_component_agreement),
         "known_margin": float(mean_margin),
         "mean_known_score": float(mean_score),
