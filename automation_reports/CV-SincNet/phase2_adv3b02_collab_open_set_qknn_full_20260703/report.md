@@ -2891,3 +2891,26 @@ N607直连预检通过，项目根为`/home/szu2070436088/2510044040/CV-SincNet`
 按需协同版本`rcwr_support_utility`降低资源消耗，例如k=3平均`2.46`个receiver、`98.4 bytes/event`，但FAR升至0.1000；k=5虽FAR为0且平均`3.77`个receiver、`151.0 bytes/event`，known性能不足。因此它目前是资源诊断，不是性能最优路线。
 
 下一步应以`rcwr_min2_er090,k=4`作为OLD80候选上界，专门补独立open-set风险通道：按类Mahalanobis/EVT tail、source/proxy-known校准的oldness gate、以及不使用unknown query的低密度拒识。仅继续放宽候选集接受会提高old/seen-new，但会把unknown吸收为known；仅继续收紧event risk会恢复FAR，但会丢掉OLD80。
+
+### Post-review hardening
+
+子agent review指出一项P1协议风险和两项P2工程风险：`seen_new_rescue_enabled`旧分支使用query真实`role`作为是否救援的条件；`receiver_class_reliability_policy=support_calibrated`若未同时开启`class_conformal_enabled`会静默退化为1.0；JSON复现元数据缺少完整argv/cwd/python/output路径。本轮已修复：
+
+|问题|修复|
+|---|---|
+|`seen_new_rescue`读取query真实role|删除role依赖，改为仅依赖预测标签是否属于seen-new注册表、strong known证据和多风险组件不一致；多通道高风险样本不允许被rescue。|
+|`support_calibrated`静默退化|若未开启`--class_conformal_enabled`直接报错；若某receiver没有support校准分数直接报错。|
+|复现元数据不足|JSON新增`run_command_argv`、`run_cwd`、`python_executable`、`output_json`和`output_evidence_csv`字段。|
+|测试覆盖|更新role-free rescue测试，保留`42+44`单测通过。|
+
+本地`ssr-gpu`和Git镜像均通过：编译PASS，`test_collaborative_open_set_qknn_eval.py`为42 tests OK，`test_phase2_collaborative_open_set_qknn_eval.py`为44 tests OK。Git追加提交：`3fd3b2d Harden receiver class reliability protocol guards`。
+
+N607已再次同步并用`/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python`验证通过。最新远端SHA256：
+
+|文件|SHA256|
+|---|---|
+|`code/evaluation/collaborative_open_set_qknn_eval.py`|`7e84960c7c7827f7aaae762296aceedb5168a03a1ad31c4f9aaefd0953b862b0`|
+|`code/scripts/phase2_collaborative_open_set_qknn_eval.py`|`cb89ed26a3bccb5d09b2e8aea3b695ea62c12b0186e5ac96dd7b377ca6996e00`|
+|`code/tests/test_collaborative_open_set_qknn_eval.py`|`56ba9509c00014c03ae2106f4f3d22df3203d691fd9f594ddb2ee0bd41403867`|
+
+上述hardening不改变已生成rcwr结果的判定：本轮实验命令未启用`seen_new_rescue_enabled`，且已显式启用`class_conformal_enabled`，所以主结果不受P1分支污染。后续重新生成JSON时会带完整argv/cwd/python/output复现字段。
