@@ -236,3 +236,17 @@ def test_quantized_knn_prototype_blend_can_correct_noisy_nearest_neighbor():
     assert predict_quantized_knn_memory(memory, query, k=1, prototype_blend=0.25).tolist() == ["new-b"]
     assert "support_features" not in memory.__dict__
     assert "support_labels" not in memory.__dict__
+
+
+def test_quantized_knn_margin_gated_old_bias_preserves_confident_new_match():
+    support = np.asarray([[1.0, 0.0], [0.98, 0.20]], dtype=np.float64)
+    labels = np.asarray(["old-a", "new-b"], dtype=object)
+    ambiguous_old = np.asarray([[0.99, 0.12]], dtype=np.float64)
+    confident_new = np.asarray([[0.90, 0.435]], dtype=np.float64)
+
+    memory = build_quantized_knn_memory(support, labels, old_labels={"old-a"}, quant_bits=8)
+
+    assert predict_quantized_knn_memory(memory, ambiguous_old, k=1).tolist() == ["new-b"]
+    assert predict_quantized_knn_memory(memory, ambiguous_old, k=1, old_bias=0.08, old_bias_gate=0.01).tolist() == ["old-a"]
+    assert predict_quantized_knn_memory(memory, confident_new, k=1, old_bias=0.08).tolist() == ["old-a"]
+    assert predict_quantized_knn_memory(memory, confident_new, k=1, old_bias=0.08, old_bias_gate=0.01).tolist() == ["new-b"]

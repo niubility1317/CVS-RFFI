@@ -316,18 +316,27 @@ def predict_quantized_knn_memory(
     k: int = 1,
     old_bias: float = 0.0,
     prototype_blend: float = 0.0,
+    old_bias_gate: float | None = None,
 ) -> np.ndarray:
     query = _normalize_rows(query_features)
     support = memory.quantized_matrix.astype(np.float64) / float(memory.scale)
     support = _normalize_rows(support)
     scores = query @ support.T
-    scores = scores + (memory.is_old.astype(np.float64) * float(old_bias))[None, :]
     if float(prototype_blend) != 0.0:
         proto_scores = query @ memory.class_prototype_matrix.T
         proto_by_support = np.zeros_like(scores)
         for idx, label in enumerate(memory.class_prototype_labels):
             proto_by_support[:, memory.labels == label] = proto_scores[:, idx][:, None]
         scores = scores + proto_by_support * float(prototype_blend)
+    if float(old_bias) != 0.0:
+        old_bias_mask = memory.is_old.astype(np.float64)[None, :]
+        if old_bias_gate is not None and np.any(memory.is_old) and np.any(~memory.is_old):
+            best_old = np.max(scores[:, memory.is_old], axis=1)
+            best_new = np.max(scores[:, ~memory.is_old], axis=1)
+            gated_rows = (best_new - best_old) <= float(old_bias_gate)
+            scores = scores + old_bias_mask * float(old_bias) * gated_rows[:, None]
+        else:
+            scores = scores + old_bias_mask * float(old_bias)
     return _classwise_topk_predict(scores, memory.labels, k)
 
 
@@ -437,8 +446,10 @@ def _evaluate_combo(
             k=prototypes_per_class,
             old_bias=old_bias,
             prototype_blend=radius_weight,
+            old_bias_gate=weight_scale if float(weight_scale) > 0.0 else None,
         )
-        method = f"qknn{quant_bits}_k{prototypes_per_class}_oldbias{old_bias:g}_pblend{radius_weight:g}"
+        gate_suffix = f"_ogate{weight_scale:g}" if float(weight_scale) > 0.0 else ""
+        method = f"qknn{quant_bits}_k{prototypes_per_class}_oldbias{old_bias:g}_pblend{radius_weight:g}{gate_suffix}"
         stored_prototype_count = int(len(memory.class_prototype_labels)) if float(radius_weight) != 0.0 else 0
         stored_weight_count = 0
         stored_quantized_count = memory.stored_quantized_count
