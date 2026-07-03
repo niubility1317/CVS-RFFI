@@ -2328,6 +2328,7 @@ class CollaborativeOpenSetQknnEvalTest(unittest.TestCase):
                 consensus_score_threshold=0.0,
                 scorer_component_vote_threshold=1.0,
                 scorer_risk_components=["score", "radius", "margin"],
+                latency_budget_ms=2.0,
                 candidate_set_min_receivers=2,
                 candidate_set_min_conformal_pvalue=0.5,
                 candidate_set_max_label_unknown_risk=0.8,
@@ -2341,7 +2342,7 @@ class CollaborativeOpenSetQknnEvalTest(unittest.TestCase):
                 candidate_set_pairguard_min_shell_risk=0.90,
                 protocol_metadata={
                     "source_receiver_ids": ["src-a"],
-                    "target_receiver_ids": ["rx-a", "rx-b"],
+                    "target_receiver_ids": ["rx-a", "rx-b", "rx-c"],
                     "old_tx_ids": ["old-a", "old-b"],
                     "seen_new_tx_ids": ["new-a"],
                     "unknown_tx_ids": ["unk-a"],
@@ -2400,10 +2401,37 @@ class CollaborativeOpenSetQknnEvalTest(unittest.TestCase):
         self.assertTrue(receiver_scoped_in_event["candidate_set_pairguard_receiver_scoped"])
         self.assertTrue(receiver_scoped_in_event["candidate_set_pairguard_veto"])
 
+        request_rows = make_rows((0.10, 0.95))
+        request_rows.append({
+            **request_rows[0],
+            "receiver_id": "rx-c",
+            "unknown_risk": 0.15,
+            "score_risk": 0.15,
+            "radius_risk": 0.15,
+            "margin_risk": 0.15,
+        })
+        request_more_result = evaluate(
+            request_rows,
+            candidate_set_pairguard_action="request_more",
+        )
+        request_more_event = request_more_result["counts"]["2"]["event_results"][0]
+        self.assertTrue(request_more_event["candidate_set_pairguard_boundary_hit"])
+        self.assertTrue(request_more_event["candidate_set_pairguard_request_more"])
+        self.assertFalse(request_more_event["candidate_set_pairguard_veto"])
+        self.assertFalse(request_more_event["candidate_set_accept"])
+        self.assertEqual(request_more_event["decision"], "request_more")
+        self.assertEqual(request_more_result["counts"]["2"]["candidate_set_pairguard_request_more_count"], 1)
+        self.assertEqual(
+            request_more_result["counts"]["2"]["candidate_set_pairguard_request_more_by_role"],
+            {"old": 1},
+        )
+
         with self.assertRaisesRegex(ValueError, "candidate_set_pairguard_mode"):
             evaluate(make_rows((0.10, 0.80)), candidate_set_pairguard_mode="bad_mode")
         with self.assertRaisesRegex(ValueError, "candidate_set_pairguard_min_event_unknown_risk"):
             evaluate(make_rows((0.10, 0.80)), candidate_set_pairguard_min_event_unknown_risk=1.1)
+        with self.assertRaisesRegex(ValueError, "candidate_set_pairguard_action"):
+            evaluate(make_rows((0.10, 0.80)), candidate_set_pairguard_action="bad_action")
 
     def test_dual_route_cvs_uses_support_quality_rescue_when_safe(self):
         from evaluation.collaborative_open_set_qknn_eval import evaluate_collaborative_open_set_evidence

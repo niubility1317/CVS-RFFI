@@ -470,6 +470,7 @@ def _fuse_event(
     candidate_set_pairguard_min_shell_risk: float = 0.90,
     candidate_set_pairguard_labels: object = None,
     candidate_set_pairguard_receiver_sets: object = None,
+    candidate_set_pairguard_action: str = "veto",
 ) -> dict[str, Any]:
     active_components = _parse_risk_components(scorer_risk_components)
     policy = _normalize_scope(fusion_policy)
@@ -519,6 +520,9 @@ def _fuse_event(
     candidate_set_pairguard_mode = _normalize_scope(candidate_set_pairguard_mode or "accept_gate")
     if candidate_set_pairguard_mode not in {"accept_gate", "boundary_veto"}:
         raise ValueError("candidate_set_pairguard_mode must be accept_gate or boundary_veto")
+    candidate_set_pairguard_action = _normalize_scope(candidate_set_pairguard_action or "veto")
+    if candidate_set_pairguard_action not in {"veto", "request_more"}:
+        raise ValueError("candidate_set_pairguard_action must be veto or request_more")
     candidate_set_pairguard_min_event_unknown_risk = _validate_unit_interval(
         candidate_set_pairguard_min_event_unknown_risk,
         "candidate_set_pairguard_min_event_unknown_risk",
@@ -1150,7 +1154,7 @@ def _fuse_event(
             not candidate_set_pairguard_receiver_set_list
             or selected_receiver_set in candidate_set_pairguard_receiver_set_list
         )
-        candidate_set_pairguard_veto = bool(
+        candidate_set_pairguard_boundary_hit = bool(
             policy == "candidate_set_cvs"
             and label
             and candidate_set_pairguard_label_scoped
@@ -1158,6 +1162,15 @@ def _fuse_event(
             and candidate_set_pairguard_mode == "boundary_veto"
             and candidate_set_pairguard_failed
             and candidate_set_pairguard_boundary_trigger
+        )
+        candidate_set_pairguard_request_more = bool(
+            candidate_set_pairguard_boundary_hit
+            and candidate_set_pairguard_action == "request_more"
+            and within_request_budget
+        )
+        candidate_set_pairguard_veto = bool(
+            candidate_set_pairguard_boundary_hit
+            and not candidate_set_pairguard_request_more
         )
         candidate_set_pairguard_accept_passed = bool(
             candidate_set_pairguard_mode != "accept_gate"
@@ -1171,6 +1184,7 @@ def _fuse_event(
             and not candidate_set_high_unknown_veto
             and not candidate_set_shell_veto
             and not candidate_set_pairguard_veto
+            and not candidate_set_pairguard_request_more
             and selected_label_candidate_receivers >= max(1, int(candidate_set_min_receivers))
             and selected_label_top1_receivers >= max(0, int(candidate_set_min_top1_receivers))
             and label_class_conformal_pvalue >= float(candidate_set_min_conformal_pvalue)
@@ -1183,6 +1197,9 @@ def _fuse_event(
         if candidate_set_accept:
             decision = "accept"
             output_label = label
+        elif policy == "candidate_set_cvs" and locals().get("candidate_set_pairguard_request_more", False):
+            decision = "request_more"
+            output_label = ""
         elif policy == "candidate_set_cvs" and locals().get("candidate_set_high_unknown_veto", False):
             decision = "unknown_reject"
             output_label = UNKNOWN_LABEL
@@ -1318,6 +1335,7 @@ def _fuse_event(
         ),
         "candidate_set_require_label_shell_observed": bool(candidate_set_require_label_shell_observed),
         "candidate_set_pairguard_mode": str(candidate_set_pairguard_mode),
+        "candidate_set_pairguard_action": str(candidate_set_pairguard_action),
         "candidate_set_pairguard_min_event_unknown_risk": float(
             candidate_set_pairguard_min_event_unknown_risk
         ),
@@ -1350,7 +1368,13 @@ def _fuse_event(
         "candidate_set_pairguard_boundary_trigger": bool(
             locals().get("candidate_set_pairguard_boundary_trigger", False)
         ),
+        "candidate_set_pairguard_boundary_hit": bool(
+            locals().get("candidate_set_pairguard_boundary_hit", False)
+        ),
         "candidate_set_pairguard_veto": bool(locals().get("candidate_set_pairguard_veto", False)),
+        "candidate_set_pairguard_request_more": bool(
+            locals().get("candidate_set_pairguard_request_more", False)
+        ),
         "output_label_set": output_label_set,
         "label_fusion_policy": label_fusion_policy,
         "class_reliability_policy": class_reliability_policy,
@@ -2250,6 +2274,7 @@ def _fuse_dual_route_event(
     label_fusion_policy: str = "score_sum",
     class_reliability_policy: str = "none",
     receiver_class_reliability_policy: str = "none",
+    can_request_more: bool = False,
     latency_budget_ms: float = 0.0,
     max_event_bytes: float = 0.0,
     max_event_latency_ms: float = 0.0,
@@ -2298,6 +2323,7 @@ def _fuse_dual_route_event(
     candidate_set_pairguard_min_shell_risk: float = 0.90,
     candidate_set_pairguard_labels: object = None,
     candidate_set_pairguard_receiver_sets: object = None,
+    candidate_set_pairguard_action: str = "veto",
     dual_route_rescue_min_pvalue: float = 0.75,
     dual_route_rescue_min_receiver_class_reliability: float = 0.75,
     dual_route_rescue_max_label_unknown_risk: float = 0.60,
@@ -2375,6 +2401,8 @@ def _fuse_dual_route_event(
         candidate_set_pairguard_min_shell_risk=candidate_set_pairguard_min_shell_risk,
         candidate_set_pairguard_labels=candidate_set_pairguard_labels,
         candidate_set_pairguard_receiver_sets=candidate_set_pairguard_receiver_sets,
+        candidate_set_pairguard_action=candidate_set_pairguard_action,
+        can_request_more=can_request_more,
     )
     rescue = _fuse_event(
         rescue_selected,
@@ -2443,6 +2471,8 @@ def _fuse_dual_route_event(
         candidate_set_pairguard_min_shell_risk=candidate_set_pairguard_min_shell_risk,
         candidate_set_pairguard_labels=candidate_set_pairguard_labels,
         candidate_set_pairguard_receiver_sets=candidate_set_pairguard_receiver_sets,
+        candidate_set_pairguard_action=candidate_set_pairguard_action,
+        can_request_more=can_request_more,
     )
     rescue_ok = _dual_route_rescue_ok(
         rescue,
@@ -2506,6 +2536,10 @@ def _finalize_metrics(
     candidate_set_high_unknown_veto_by_role: defaultdict[str, int] = defaultdict(int)
     candidate_set_shell_veto_total = 0
     candidate_set_shell_veto_by_role: defaultdict[str, int] = defaultdict(int)
+    candidate_set_pairguard_veto_total = 0
+    candidate_set_pairguard_veto_by_role: defaultdict[str, int] = defaultdict(int)
+    candidate_set_pairguard_request_more_total = 0
+    candidate_set_pairguard_request_more_by_role: defaultdict[str, int] = defaultdict(int)
     dual_route_rescue_total = 0
     dual_route_rescue_by_role: defaultdict[str, int] = defaultdict(int)
 
@@ -2547,6 +2581,12 @@ def _finalize_metrics(
         if bool(item.get("candidate_set_shell_veto", False)):
             candidate_set_shell_veto_total += 1
             candidate_set_shell_veto_by_role[role] += 1
+        if bool(item.get("candidate_set_pairguard_veto", False)):
+            candidate_set_pairguard_veto_total += 1
+            candidate_set_pairguard_veto_by_role[role] += 1
+        if bool(item.get("candidate_set_pairguard_request_more", False)):
+            candidate_set_pairguard_request_more_total += 1
+            candidate_set_pairguard_request_more_by_role[role] += 1
         if str(item.get("dual_route_selected_route", "")) == "rescue":
             dual_route_rescue_total += 1
             dual_route_rescue_by_role[role] += 1
@@ -2689,6 +2729,17 @@ def _finalize_metrics(
         "candidate_set_shell_veto_count": int(candidate_set_shell_veto_total),
         "candidate_set_shell_veto_rate": _safe_rate(candidate_set_shell_veto_total, total_events),
         "candidate_set_shell_veto_by_role": dict(sorted(candidate_set_shell_veto_by_role.items())),
+        "candidate_set_pairguard_veto_count": int(candidate_set_pairguard_veto_total),
+        "candidate_set_pairguard_veto_rate": _safe_rate(candidate_set_pairguard_veto_total, total_events),
+        "candidate_set_pairguard_veto_by_role": dict(sorted(candidate_set_pairguard_veto_by_role.items())),
+        "candidate_set_pairguard_request_more_count": int(candidate_set_pairguard_request_more_total),
+        "candidate_set_pairguard_request_more_rate": _safe_rate(
+            candidate_set_pairguard_request_more_total,
+            total_events,
+        ),
+        "candidate_set_pairguard_request_more_by_role": dict(
+            sorted(candidate_set_pairguard_request_more_by_role.items())
+        ),
         "dual_route_rescue_count": int(dual_route_rescue_total),
         "dual_route_rescue_rate": _safe_rate(dual_route_rescue_total, total_events),
         "dual_route_rescue_by_role": dict(sorted(dual_route_rescue_by_role.items())),
@@ -2864,6 +2915,7 @@ def evaluate_collaborative_open_set_evidence(
     candidate_set_pairguard_min_shell_risk: float = 0.90,
     candidate_set_pairguard_labels: object = None,
     candidate_set_pairguard_receiver_sets: object = None,
+    candidate_set_pairguard_action: str = "veto",
     dual_route_rescue_min_pvalue: float = 0.75,
     dual_route_rescue_min_receiver_class_reliability: float = 0.75,
     dual_route_rescue_max_label_unknown_risk: float = 0.60,
@@ -2983,6 +3035,7 @@ def evaluate_collaborative_open_set_evidence(
                     label_fusion_policy=label_fusion_policy,
                     class_reliability_policy=class_reliability_policy,
                     receiver_class_reliability_policy=receiver_class_reliability_policy,
+                    can_request_more=len({_str(row, "receiver_id") for row in group}) > int(k),
                     latency_budget_ms=latency_budget_ms,
                     max_event_bytes=max_event_bytes,
                     max_event_latency_ms=max_event_latency_ms,
@@ -3093,6 +3146,7 @@ def evaluate_collaborative_open_set_evidence(
                     candidate_set_pairguard_min_shell_risk=candidate_set_pairguard_min_shell_risk,
                     candidate_set_pairguard_labels=candidate_set_pairguard_labels,
                     candidate_set_pairguard_receiver_sets=candidate_set_pairguard_receiver_sets,
+                    candidate_set_pairguard_action=candidate_set_pairguard_action,
                     dual_route_rescue_min_pvalue=dual_route_rescue_min_pvalue,
                     dual_route_rescue_min_receiver_class_reliability=(
                         dual_route_rescue_min_receiver_class_reliability
@@ -3246,6 +3300,7 @@ def evaluate_collaborative_open_set_evidence(
                     candidate_set_pairguard_min_shell_risk=candidate_set_pairguard_min_shell_risk,
                     candidate_set_pairguard_labels=candidate_set_pairguard_labels,
                     candidate_set_pairguard_receiver_sets=candidate_set_pairguard_receiver_sets,
+                    candidate_set_pairguard_action=candidate_set_pairguard_action,
                 )
             first = selected[0]
             fused["role"] = _role(first.get("role"))
@@ -3370,6 +3425,7 @@ def evaluate_collaborative_open_set_evidence(
         ),
         "candidate_set_require_label_shell_observed": bool(candidate_set_require_label_shell_observed),
         "candidate_set_pairguard_mode": str(candidate_set_pairguard_mode),
+        "candidate_set_pairguard_action": str(candidate_set_pairguard_action),
         "candidate_set_pairguard_min_event_unknown_risk": float(
             candidate_set_pairguard_min_event_unknown_risk
         ),

@@ -3916,6 +3916,43 @@ N607同步后远端哈希与本地一致；远端验证`52 tests OK`。实际运
 
 最终SSH/SCP后本地无`ssh.exe`残留，无N607和bridge 22端口ESTABLISHED连接。
 
+## 2026-07-04 ADV3B02 pairguard_request_more执行计划
+
+### 设计依据
+
+上一轮`rxscope_14_7_pairs_evt095`证明：把pairguard限定到高风险`label=14-7`和少量receiver组合后，k=2/k=3的unknown_FAR下降，k=4/k=5保持`dualroute_noguard`结果。但硬veto仍会把部分old正确accept变成未决，导致k=2/k=3 old_acc轻微下降。因此本轮新增`candidate_set_pairguard_action=request_more`：当`boundary_veto`命中且还有未使用接收机、请求预算允许时，不直接veto，而是输出`request_more`并记录审计字段。默认仍为`veto`，保持既有实验兼容。
+
+该动作是部署语义实验：离线表中`request_more`计为未决，不会被报告为已正确分类；它只用于验证高风险pair是否能转入“请求更多卫星/接收机证据”的控制路径。若本轮known仍下降，下一步应实现子agent建议的`SR-PairFuse`软惩罚，而不是继续扩大硬门控。
+
+### 本地改动与验证
+
+|文件|用途|SHA256|
+|---|---|---|
+|`code/evaluation/collaborative_open_set_qknn_eval.py`|新增`candidate_set_pairguard_action={veto,request_more}`，穿透`dual_route_cvs`，记录`candidate_set_pairguard_boundary_hit`、`candidate_set_pairguard_request_more`和汇总计数|`24DFE988C8B994445909C6855D1A9F9BA38E30B8B678EB47F0CF94BDADCC8142`|
+|`code/scripts/phase2_collaborative_open_set_qknn_eval.py`|CLI新增`--candidate_set_pairguard_action`|`5C321EEFC2434E57B536A51FC45108E436EF6D4D01B90657452BCD15AB489BB9`|
+|`code/tests/test_collaborative_open_set_qknn_eval.py`|补充三接收机k=2单测，验证pairguard命中时可从veto转为`request_more`并进入汇总计数|`13BD87C0F6E86E5399BE97F012314900B6C5581D9B030D5C6CC4BA8DA928128A`|
+
+`E:\type10-7\code`不是Git仓库，已创建本地快照：`E:\type10-7\code\snapshots\phase2_pairguard_request_more_20260704\`。同一改动已复制到Git镜像`E:\type10-7\github_publish\CVS-RFFI-repo`，待提交。
+
+验证命令：
+
+```text
+conda run --no-capture-output -n ssr-gpu python -m py_compile code/evaluation/collaborative_open_set_qknn_eval.py code/scripts/phase2_collaborative_open_set_qknn_eval.py
+conda run --no-capture-output -n ssr-gpu python -m pytest code/tests/test_collaborative_open_set_qknn_eval.py -k pairguard -q -p no:cacheprovider
+```
+
+结果：根工作区和Git镜像均通过；目标单测结果为`2 passed`。一次并行`conda run`触发Windows临时文件锁，已按项目经验改为串行执行，未作为实验失败证据。
+
+### N607计划
+
+远端仍使用`/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python`。同步3个文件后，运行k=1..5全量矩阵：
+
+|route|关键参数|目的|
+|---|---|---|
+|`rxscope_14_7_pairs_request_more_evt095`|`--candidate_set_pairguard_mode boundary_veto --candidate_set_pairguard_action request_more --candidate_set_pairguard_labels 14-7 --candidate_set_pairguard_receiver_sets 20-1+3-19;7-14+7-7;3-19+7-14+7-7 --candidate_set_pairguard_min_event_unknown_risk 0.95 --candidate_set_max_receiver_pair_label_disagreement 0.50 --candidate_set_max_receiver_pair_unknown_risk_range 0.70 --candidate_set_min_label_receiver_class_reliability 0.75 --candidate_set_require_label_shell_observed`|验证高风险pair是否从硬veto转为请求更多接收机证据，报告unknown_FAR、known损伤、`candidate_set_pairguard_request_more_count`、receiver_count、bytes/event和p95 latency。|
+
+执行前需N607 preflight、GPU空闲/低显存选择、SCP哈希核对和远端`CVS-RFFI`环境语法验证。执行后必须检查本地无`ssh.exe`残留和无到N607/bridge的ESTABLISHED 22连接。
+
 ## 2026-07-04 ADV3B02 receiver_set_pairguard执行计划
 
 ### 设计依据
