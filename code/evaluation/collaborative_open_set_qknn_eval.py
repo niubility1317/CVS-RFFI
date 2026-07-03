@@ -343,6 +343,7 @@ def _fuse_event(
     candidate_set_min_conformal_pvalue: float = 0.0,
     candidate_set_max_label_unknown_risk: float = 1.0,
     candidate_set_max_event_unknown_risk: float = 0.95,
+    candidate_set_max_label_risk_component_agreement: float = 1.0,
     candidate_set_min_score_gap: float = 0.0,
     candidate_set_unknown_reject_risk: float = 0.80,
 ) -> dict[str, Any]:
@@ -893,6 +894,7 @@ def _fuse_event(
             and label_class_conformal_pvalue >= float(candidate_set_min_conformal_pvalue)
             and label_unknown_risk <= float(candidate_set_max_label_unknown_risk)
             and unknown_risk <= float(candidate_set_max_event_unknown_risk)
+            and label_risk_component_agreement <= float(candidate_set_max_label_risk_component_agreement)
             and score_gap_ratio >= float(candidate_set_min_score_gap)
         )
         if candidate_set_accept:
@@ -1000,6 +1002,7 @@ def _fuse_event(
         "candidate_set_min_conformal_pvalue": float(candidate_set_min_conformal_pvalue),
         "candidate_set_max_label_unknown_risk": float(candidate_set_max_label_unknown_risk),
         "candidate_set_max_event_unknown_risk": float(candidate_set_max_event_unknown_risk),
+        "candidate_set_max_label_risk_component_agreement": float(candidate_set_max_label_risk_component_agreement),
         "candidate_set_min_score_gap": float(candidate_set_min_score_gap),
         "candidate_set_unknown_reject_risk": float(candidate_set_unknown_reject_risk),
         "output_label_set": output_label_set,
@@ -2143,6 +2146,7 @@ def evaluate_collaborative_open_set_evidence(
     candidate_set_min_conformal_pvalue: float = 0.0,
     candidate_set_max_label_unknown_risk: float = 1.0,
     candidate_set_max_event_unknown_risk: float = 0.95,
+    candidate_set_max_label_risk_component_agreement: float = 1.0,
     candidate_set_min_score_gap: float = 0.0,
     candidate_set_unknown_reject_risk: float = 0.80,
     threshold_selection_label_scope: str = "support_known_only",
@@ -2368,6 +2372,7 @@ def evaluate_collaborative_open_set_evidence(
                     candidate_set_min_conformal_pvalue=candidate_set_min_conformal_pvalue,
                     candidate_set_max_label_unknown_risk=candidate_set_max_label_unknown_risk,
                     candidate_set_max_event_unknown_risk=candidate_set_max_event_unknown_risk,
+                    candidate_set_max_label_risk_component_agreement=candidate_set_max_label_risk_component_agreement,
                     candidate_set_min_score_gap=candidate_set_min_score_gap,
                     candidate_set_unknown_reject_risk=candidate_set_unknown_reject_risk,
                 )
@@ -2447,6 +2452,7 @@ def evaluate_collaborative_open_set_evidence(
         "candidate_set_min_conformal_pvalue": float(candidate_set_min_conformal_pvalue),
         "candidate_set_max_label_unknown_risk": float(candidate_set_max_label_unknown_risk),
         "candidate_set_max_event_unknown_risk": float(candidate_set_max_event_unknown_risk),
+        "candidate_set_max_label_risk_component_agreement": float(candidate_set_max_label_risk_component_agreement),
         "candidate_set_min_score_gap": float(candidate_set_min_score_gap),
         "candidate_set_unknown_reject_risk": float(candidate_set_unknown_reject_risk),
         "counts": out_counts,

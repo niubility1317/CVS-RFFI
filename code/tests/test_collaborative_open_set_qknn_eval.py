@@ -2102,6 +2102,101 @@ class CollaborativeOpenSetQknnEvalTest(unittest.TestCase):
         self.assertEqual(k3["unknown_reject_rate"], 1.0)
         self.assertEqual(k3["open_set_confusion"], {"old->old": 1, "unknown->unknown_reject": 1})
 
+    def test_candidate_set_cvs_vetoes_high_label_component_agreement(self):
+        from evaluation.collaborative_open_set_qknn_eval import evaluate_collaborative_open_set_evidence
+
+        rows = []
+        for receiver_id in ("rx-a", "rx-b", "rx-c"):
+            rows.append({
+                "event_id": "component-veto-old",
+                "receiver_id": receiver_id,
+                "role": "old",
+                "true_label": "old-a",
+                "predicted_label": "old-a",
+                "known_score": 0.90,
+                "known_margin": 0.20,
+                "unknown_risk": 0.30,
+                "score_risk": 0.10,
+                "radius_risk": 0.10,
+                "margin_risk": 0.10,
+                "class_conformal_pvalue": 0.90,
+                "class_conformal_support_count": 2,
+                "class_evidence_top_m": 1,
+                "class_evidence_top1_label": "old-a",
+                "class_evidence_top1_score": 0.90,
+                "class_evidence_top1_margin": 0.20,
+                "class_evidence_top1_conformal_pvalue": 0.90,
+                "class_evidence_top1_support_count": 2,
+                "class_evidence_top1_unknown_risk": 0.30,
+                "class_evidence_top1_score_risk": 0.10,
+                "class_evidence_top1_radius_risk": 0.10,
+                "class_evidence_top1_margin_risk": 0.10,
+            })
+            rows.append({
+                "event_id": "component-veto-unknown",
+                "receiver_id": receiver_id,
+                "role": "unknown",
+                "true_label": "__unknown__",
+                "predicted_label": "old-a",
+                "known_score": 0.88,
+                "known_margin": 0.20,
+                "unknown_risk": 0.60,
+                "score_risk": 0.90,
+                "radius_risk": 0.90,
+                "margin_risk": 0.10,
+                "class_conformal_pvalue": 0.90,
+                "class_conformal_support_count": 2,
+                "class_evidence_top_m": 1,
+                "class_evidence_top1_label": "old-a",
+                "class_evidence_top1_score": 0.88,
+                "class_evidence_top1_margin": 0.20,
+                "class_evidence_top1_conformal_pvalue": 0.90,
+                "class_evidence_top1_support_count": 2,
+                "class_evidence_top1_unknown_risk": 0.60,
+                "class_evidence_top1_score_risk": 0.90,
+                "class_evidence_top1_radius_risk": 0.90,
+                "class_evidence_top1_margin_risk": 0.10,
+            })
+
+        metadata = {
+            "source_receiver_ids": ["src-a"],
+            "target_receiver_ids": ["rx-a", "rx-b", "rx-c"],
+            "old_tx_ids": ["old-a"],
+            "seen_new_tx_ids": ["new-a"],
+            "unknown_tx_ids": ["unk-a"],
+            "target_channel_view": "leo_clear_weak",
+        }
+        unsafe = evaluate_collaborative_open_set_evidence(
+            rows,
+            collab_counts="3",
+            fusion_policy="candidate_set_cvs",
+            unknown_risk_threshold=0.8,
+            scorer_component_vote_threshold=0.5,
+            scorer_risk_components=["score", "radius", "margin"],
+            candidate_set_min_receivers=2,
+            candidate_set_max_event_unknown_risk=0.9,
+            protocol_metadata=metadata,
+            strict_protocol_metadata=True,
+        )
+        guarded = evaluate_collaborative_open_set_evidence(
+            rows,
+            collab_counts="3",
+            fusion_policy="candidate_set_cvs",
+            unknown_risk_threshold=0.8,
+            scorer_component_vote_threshold=0.5,
+            scorer_risk_components=["score", "radius", "margin"],
+            candidate_set_min_receivers=2,
+            candidate_set_max_event_unknown_risk=0.9,
+            candidate_set_max_label_risk_component_agreement=0.5,
+            protocol_metadata=metadata,
+            strict_protocol_metadata=True,
+        )
+
+        self.assertEqual(unsafe["counts"]["3"]["unknown_FAR"], 1.0)
+        self.assertEqual(guarded["counts"]["3"]["unknown_FAR"], 0.0)
+        self.assertEqual(guarded["counts"]["3"]["old_acc"], 1.0)
+        self.assertEqual(guarded["candidate_set_max_label_risk_component_agreement"], 0.5)
+
     def test_strict_protocol_metadata_validates_stage2_boundaries(self):
         from evaluation.collaborative_open_set_qknn_eval import evaluate_collaborative_open_set_evidence
 
