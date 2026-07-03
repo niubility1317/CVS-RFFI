@@ -631,7 +631,42 @@ class CollaborativeOpenSetQknnEvalTest(unittest.TestCase):
         self.assertEqual(rescued["counts"]["1"]["seen_new_rescue_count"], 1)
         self.assertEqual(rescued["seen_new_rescue_enabled"], True)
 
-    def test_seen_new_rescue_does_not_rescue_unknown_queries(self):
+    def test_seen_new_rescue_guard_does_not_depend_on_true_role(self):
+        from evaluation.collaborative_open_set_qknn_eval import _fuse_event
+
+        base_row = {
+            "event_id": "role-invariance",
+            "receiver_id": "rx-a",
+            "predicted_label": "new-a",
+            "known_score": 0.95,
+            "known_margin": 0.45,
+            "unknown_risk": 0.95,
+            "score_risk": 0.95,
+            "radius_risk": 0.94,
+            "margin_risk": 0.93,
+        }
+        common = dict(
+            unknown_risk_threshold=0.8,
+            accept_margin_threshold=0.1,
+            unknown_quantile=0.75,
+            fusion_policy="scorer_cvs",
+            consensus_gap_threshold=0.0,
+            consensus_score_threshold=0.6,
+            scorer_component_vote_threshold=0.5,
+            seen_new_rescue_labels={"new-a"},
+            seen_new_rescue_enabled=True,
+            seen_new_rescue_risk_scale=0.5,
+            seen_new_rescue_min_score=0.8,
+            seen_new_rescue_min_margin=0.2,
+        )
+
+        as_seen_new = _fuse_event([{**base_row, "role": "seen_new", "true_label": "new-a"}], **common)
+        as_unknown = _fuse_event([{**base_row, "role": "unknown", "true_label": "__unknown__"}], **common)
+
+        for key in ["decision", "output_label", "effective_unknown_risk", "seen_new_rescue_applied"]:
+            self.assertEqual(as_seen_new[key], as_unknown[key])
+
+    def test_class_set_gate_guards_seen_new_rescue_without_true_role(self):
         from evaluation.collaborative_open_set_qknn_eval import evaluate_collaborative_open_set_evidence
 
         row = {
@@ -669,10 +704,82 @@ class CollaborativeOpenSetQknnEvalTest(unittest.TestCase):
             seen_new_rescue_risk_scale=0.5,
             seen_new_rescue_min_score=0.8,
             seen_new_rescue_min_margin=0.2,
+            class_set_gate_enabled=True,
+            seen_new_gate_max_effective_unknown_risk=0.4,
         )
 
         self.assertEqual(result["counts"]["1"]["unknown_FAR"], 0.0)
-        self.assertEqual(result["counts"]["1"]["seen_new_rescue_count"], 0)
+        self.assertEqual(result["counts"]["1"]["unknown_defer"], 1)
+
+    def test_vote_margin_label_fusion_can_select_receiver_consensus(self):
+        from evaluation.collaborative_open_set_qknn_eval import evaluate_collaborative_open_set_evidence
+
+        rows = [
+            {
+                "event_id": "vote-margin",
+                "receiver_id": "rx-a",
+                "role": "old",
+                "true_label": "old-b",
+                "predicted_label": "old-a",
+                "known_score": 0.95,
+                "known_margin": 0.20,
+                "unknown_risk": 0.10,
+            },
+            {
+                "event_id": "vote-margin",
+                "receiver_id": "rx-b",
+                "role": "old",
+                "true_label": "old-b",
+                "predicted_label": "old-b",
+                "known_score": 0.45,
+                "known_margin": 0.30,
+                "unknown_risk": 0.10,
+            },
+            {
+                "event_id": "vote-margin",
+                "receiver_id": "rx-c",
+                "role": "old",
+                "true_label": "old-b",
+                "predicted_label": "old-b",
+                "known_score": 0.44,
+                "known_margin": 0.31,
+                "unknown_risk": 0.10,
+            },
+        ]
+        metadata = {
+            "source_receiver_ids": ["src-a"],
+            "target_receiver_ids": ["rx-a", "rx-b", "rx-c"],
+            "old_tx_ids": ["old-a", "old-b"],
+            "seen_new_tx_ids": ["new-a"],
+            "unknown_tx_ids": ["unk-a"],
+            "target_channel_view": "leo_clear_weak",
+        }
+
+        score_sum = evaluate_collaborative_open_set_evidence(
+            rows,
+            collab_counts="3",
+            fusion_policy="scorer_cvs",
+            unknown_risk_threshold=0.8,
+            accept_margin_threshold=0.1,
+            consensus_score_threshold=0.1,
+            protocol_metadata=metadata,
+            strict_protocol_metadata=True,
+        )
+        vote_margin = evaluate_collaborative_open_set_evidence(
+            rows,
+            collab_counts="3",
+            fusion_policy="scorer_cvs",
+            unknown_risk_threshold=0.8,
+            accept_margin_threshold=0.1,
+            consensus_score_threshold=0.1,
+            label_fusion_policy="vote_margin",
+            protocol_metadata=metadata,
+            strict_protocol_metadata=True,
+        )
+
+        self.assertEqual(score_sum["counts"]["3"]["old_acc"], 0.0)
+        self.assertEqual(vote_margin["counts"]["3"]["old_acc"], 1.0)
+        self.assertEqual(vote_margin["label_fusion_policy"], "vote_margin")
 
     def test_class_set_gate_defers_unknown_that_looks_old(self):
         from evaluation.collaborative_open_set_qknn_eval import evaluate_collaborative_open_set_evidence

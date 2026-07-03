@@ -237,6 +237,7 @@ def _fuse_event(
     consensus_score_threshold: float,
     scorer_component_vote_threshold: float,
     scorer_risk_components: Sequence[str] | str | None = None,
+    label_fusion_policy: str = "score_sum",
     can_request_more: bool = False,
     latency_budget_ms: float = 0.0,
     old_labels: set[str] | None = None,
@@ -255,7 +256,13 @@ def _fuse_event(
     seen_new_gate_max_component_agreement: float = 1.0,
 ) -> dict[str, Any]:
     active_components = _parse_risk_components(scorer_risk_components)
+    label_fusion_policy = _normalize_scope(label_fusion_policy)
+    if label_fusion_policy not in {"score_sum", "vote_sum", "vote_margin", "max_score"}:
+        raise ValueError("label_fusion_policy must be score_sum, vote_sum, vote_margin, or max_score")
     label_scores: defaultdict[str, float] = defaultdict(float)
+    label_weight_totals: defaultdict[str, float] = defaultdict(float)
+    label_margins: defaultdict[str, list[float]] = defaultdict(list)
+    label_max_scores: defaultdict[str, float] = defaultdict(float)
     weights = []
     risks = []
     margins = []
@@ -268,17 +275,16 @@ def _fuse_event(
     oldness_risks = []
     component_votes = []
     predicted_labels = []
-    selected_roles = set()
     for row in selected:
-        try:
-            selected_roles.add(_role(row.get("role")))
-        except ValueError:
-            selected_roles.add("")
         weight = max(0.0, _float(row, "reliability", 1.0))
         label = _str(row, "predicted_label", "")
         if label and label != UNKNOWN_LABEL:
             score_value = max(0.0, _float(row, "known_score", 1.0))
+            margin_value = max(0.0, _float(row, "known_margin", 0.0))
             label_scores[label] += weight * score_value
+            label_weight_totals[label] += weight
+            label_margins[label].append(margin_value)
+            label_max_scores[label] = max(label_max_scores[label], score_value)
             predicted_labels.append(label)
             scores.append(score_value)
         weights.append(weight)
@@ -350,18 +356,33 @@ def _fuse_event(
     elif scores:
         mean_score = sum(scores) / len(scores)
 
-    if label_scores:
-        label, score = max(label_scores.items(), key=lambda item: (item[1], item[0]))
+    label_count = defaultdict(int)
+    for item in predicted_labels:
+        label_count[item] += 1
+    label_rank_scores = {}
+    for item, weighted_score in label_scores.items():
+        count = float(label_count[item])
+        mean_margin_for_label = sum(label_margins[item]) / max(len(label_margins[item]), 1)
+        max_score_for_label = label_max_scores[item]
+        if label_fusion_policy == "vote_sum":
+            rank_score = count + 1e-3 * weighted_score
+        elif label_fusion_policy == "vote_margin":
+            rank_score = count + mean_margin_for_label + 1e-3 * weighted_score
+        elif label_fusion_policy == "max_score":
+            rank_score = max_score_for_label + 1e-3 * count
+        else:
+            rank_score = weighted_score
+        label_rank_scores[item] = float(rank_score)
+    if label_rank_scores:
+        label = max(label_rank_scores.items(), key=lambda item: (item[1], item[0]))[0]
+        score = label_scores[label]
     else:
         label, score = "", 0.0
-    ranked_label_scores = sorted(label_scores.values(), reverse=True)
+    ranked_label_scores = sorted(label_rank_scores.values(), reverse=True)
     top_label_score = ranked_label_scores[0] if ranked_label_scores else 0.0
     second_label_score = ranked_label_scores[1] if len(ranked_label_scores) > 1 else 0.0
     label_score_total = sum(max(0.0, value) for value in label_scores.values())
     score_gap_ratio = (top_label_score - second_label_score) / max(label_score_total, 1e-12)
-    label_count = defaultdict(int)
-    for item in predicted_labels:
-        label_count[item] += 1
     ranked_counts = sorted(label_count.values(), reverse=True)
     top_count = ranked_counts[0] if ranked_counts else 0
     second_count = ranked_counts[1] if len(ranked_counts) > 1 else 0
@@ -378,7 +399,6 @@ def _fuse_event(
     known_old_labels = set(str(item) for item in (old_labels or set()) if str(item))
     rescue_enabled = bool(seen_new_rescue_enabled and rescue_labels)
     rescue_label_match = bool(label and label in rescue_labels)
-    rescue_role_allowed = "unknown" not in selected_roles
     if label and label in rescue_labels:
         output_label_set = "seen_new"
     elif label and label in known_old_labels:
@@ -438,7 +458,6 @@ def _fuse_event(
         rescue_applied = bool(
             rescue_enabled
             and rescue_label_match
-            and rescue_role_allowed
             and strong_known
             and agreement >= float(seen_new_rescue_min_agreement)
             and mean_score >= max(float(consensus_score_threshold), float(seen_new_rescue_min_score))
@@ -505,6 +524,7 @@ def _fuse_event(
         "class_set_gate_passed": bool(locals().get("gate_passed", True)),
         "class_set_gate_reason": str(locals().get("gate_reason", "")),
         "output_label_set": output_label_set,
+        "label_fusion_policy": label_fusion_policy,
         "risk_component_agreement": float(risk_component_agreement),
         "known_margin": float(mean_margin),
         "mean_known_score": float(mean_score),
@@ -531,6 +551,7 @@ def _fuse_progressive_event(
     consensus_score_threshold: float,
     scorer_component_vote_threshold: float,
     scorer_risk_components: Sequence[str] | str | None = None,
+    label_fusion_policy: str = "score_sum",
     latency_budget_ms: float = 0.0,
     old_labels: set[str] | None = None,
     seen_new_rescue_labels: set[str] | None = None,
@@ -560,6 +581,7 @@ def _fuse_progressive_event(
             consensus_score_threshold=consensus_score_threshold,
             scorer_component_vote_threshold=scorer_component_vote_threshold,
             scorer_risk_components=scorer_risk_components,
+            label_fusion_policy=label_fusion_policy,
             can_request_more=used < min(max_receivers, len(ordered)),
             latency_budget_ms=latency_budget_ms,
             old_labels=old_labels,
@@ -679,6 +701,7 @@ def _fuse_adaptive_gain_event(
     consensus_score_threshold: float,
     scorer_component_vote_threshold: float,
     scorer_risk_components: Sequence[str] | str | None = None,
+    label_fusion_policy: str = "score_sum",
     latency_budget_ms: float = 0.0,
     adaptive_gain_min_risk: float = 0.80,
     adaptive_gain_latency_weight: float = 0.0,
@@ -718,6 +741,7 @@ def _fuse_adaptive_gain_event(
             consensus_score_threshold=consensus_score_threshold,
             scorer_component_vote_threshold=scorer_component_vote_threshold,
             scorer_risk_components=scorer_risk_components,
+            label_fusion_policy=label_fusion_policy,
             can_request_more=len(selected) < budget,
             latency_budget_ms=latency_budget_ms,
             old_labels=old_labels,
@@ -1007,6 +1031,7 @@ def evaluate_collaborative_open_set_evidence(
     consensus_score_threshold: float = 0.0,
     scorer_component_vote_threshold: float = 0.5,
     scorer_risk_components: Sequence[str] | str | None = None,
+    label_fusion_policy: str = "score_sum",
     collaboration_policy: str = "fixed_k",
     latency_budget_ms: float = 0.0,
     adaptive_gain_min_risk: float = 0.80,
@@ -1106,6 +1131,7 @@ def evaluate_collaborative_open_set_evidence(
                     consensus_score_threshold=consensus_score_threshold,
                     scorer_component_vote_threshold=scorer_component_vote_threshold,
                     scorer_risk_components=active_risk_components,
+                    label_fusion_policy=label_fusion_policy,
                     latency_budget_ms=latency_budget_ms,
                     old_labels=expected_old_labels,
                     seen_new_rescue_labels=expected_seen_new_labels,
@@ -1139,6 +1165,7 @@ def evaluate_collaborative_open_set_evidence(
                     consensus_score_threshold=consensus_score_threshold,
                     scorer_component_vote_threshold=scorer_component_vote_threshold,
                     scorer_risk_components=active_risk_components,
+                    label_fusion_policy=label_fusion_policy,
                     latency_budget_ms=latency_budget_ms,
                     adaptive_gain_min_risk=adaptive_gain_min_risk,
                     adaptive_gain_latency_weight=adaptive_gain_latency_weight,
@@ -1170,6 +1197,7 @@ def evaluate_collaborative_open_set_evidence(
                     consensus_score_threshold=consensus_score_threshold,
                     scorer_component_vote_threshold=scorer_component_vote_threshold,
                     scorer_risk_components=active_risk_components,
+                    label_fusion_policy=label_fusion_policy,
                     can_request_more=len({_str(row, "receiver_id") for row in group}) > int(k),
                     latency_budget_ms=latency_budget_ms,
                     old_labels=expected_old_labels,
@@ -1223,6 +1251,7 @@ def evaluate_collaborative_open_set_evidence(
         "consensus_score_threshold": float(consensus_score_threshold),
         "scorer_component_vote_threshold": float(scorer_component_vote_threshold),
         "active_risk_components": active_risk_components,
+        "label_fusion_policy": _normalize_scope(label_fusion_policy),
         "latency_budget_ms": float(latency_budget_ms),
         "adaptive_gain_min_risk": float(adaptive_gain_min_risk),
         "adaptive_gain_latency_weight": float(adaptive_gain_latency_weight),

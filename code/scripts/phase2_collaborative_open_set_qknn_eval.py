@@ -1217,6 +1217,7 @@ def run_evaluation(args: argparse.Namespace) -> dict[str, Any]:
         consensus_score_threshold=float(args.consensus_score_threshold),
         scorer_component_vote_threshold=float(args.scorer_component_vote_threshold),
         collaboration_policy=str(args.collaboration_policy),
+        label_fusion_policy=str(args.label_fusion_policy),
         latency_budget_ms=float(args.latency_budget_ms),
         adaptive_gain_min_risk=float(args.adaptive_gain_min_risk),
         adaptive_gain_latency_weight=float(args.adaptive_gain_latency_weight),
@@ -1306,6 +1307,11 @@ def parse_args() -> argparse.Namespace:
     p.add_argument("--consensus_gap_threshold", type=float, default=0.0)
     p.add_argument("--consensus_score_threshold", type=float, default=0.0)
     p.add_argument("--scorer_component_vote_threshold", type=float, default=0.5)
+    p.add_argument(
+        "--label_fusion_policy",
+        default="score_sum",
+        choices=["score_sum", "vote_sum", "vote_margin", "max_score"],
+    )
     p.add_argument("--latency_budget_ms", type=float, default=0.0)
     p.add_argument("--adaptive_gain_min_risk", type=float, default=0.80)
     p.add_argument("--adaptive_gain_latency_weight", type=float, default=0.0)
