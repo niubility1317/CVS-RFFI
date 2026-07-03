@@ -687,6 +687,75 @@ def _threshold_from_calibration(
     return threshold, scope
 
 
+def _label_thresholds_from_calibration(
+    memory: QknnMemory,
+    support_features: np.ndarray,
+    support_labels: Sequence[str],
+    proxy_features: np.ndarray | None,
+    *,
+    top_k: int,
+    support_quantile: float,
+    proxy_quantile: float,
+    support_scenarios: Sequence[str] | None = None,
+    proxy_scenarios: Sequence[str] | None = None,
+    scenario_aware: bool = False,
+    radius_norm: float = 0.0,
+    old_bias: float = 0.0,
+    candidate_class_top_m: int = 0,
+    support_calibration_mode: str = "self",
+    prototype_score_blend: float = 0.0,
+    mahalanobis_score_blend: float = 0.0,
+    mahalanobis_score_temperature: float = 0.20,
+    min_support: int = 1,
+) -> dict[str, float]:
+    labels_arr = np.asarray([canonical_tx_id(label) for label in support_labels], dtype=object)
+    calibration_mode = str(support_calibration_mode or "self").strip().lower()
+    if calibration_mode not in {"self", "leave_one_out", "loo"}:
+        raise ValueError("support_calibration_mode must be self or leave_one_out")
+    exclude = range(int(support_features.shape[0])) if calibration_mode in {"leave_one_out", "loo"} else None
+    _, support_scores, _, _, _, _, _, _ = qknn_scores(
+        memory,
+        support_features,
+        top_k=top_k,
+        query_scenarios=support_scenarios,
+        scenario_aware=scenario_aware,
+        radius_norm=radius_norm,
+        old_bias=old_bias,
+        candidate_class_top_m=candidate_class_top_m,
+        exclude_support_indices=exclude,
+        prototype_score_blend=prototype_score_blend,
+        mahalanobis_score_blend=mahalanobis_score_blend,
+        mahalanobis_score_temperature=mahalanobis_score_temperature,
+    )
+    thresholds: dict[str, float] = {}
+    for label in sorted({str(label) for label in labels_arr.tolist()}):
+        values = support_scores[labels_arr == label]
+        if values.size >= max(1, int(min_support)):
+            thresholds[label] = float(np.quantile(values, float(support_quantile)))
+    if proxy_features is not None and int(proxy_features.shape[0]) > 0:
+        proxy_pred, proxy_scores, _, _, _, _, _, _ = qknn_scores(
+            memory,
+            proxy_features,
+            top_k=top_k,
+            query_scenarios=proxy_scenarios,
+            scenario_aware=scenario_aware and proxy_scenarios is not None,
+            radius_norm=radius_norm,
+            old_bias=old_bias,
+            candidate_class_top_m=candidate_class_top_m,
+            prototype_score_blend=prototype_score_blend,
+            mahalanobis_score_blend=mahalanobis_score_blend,
+            mahalanobis_score_temperature=mahalanobis_score_temperature,
+        )
+        for label in sorted({str(label) for label in proxy_pred.tolist()}):
+            values = proxy_scores[proxy_pred == label]
+            if values.size:
+                thresholds[label] = max(
+                    thresholds.get(label, 0.0),
+                    float(np.quantile(values, float(proxy_quantile))),
+                )
+    return thresholds
+
+
 def _unknown_risk(scores: np.ndarray, threshold: float, *, temperature: float) -> np.ndarray:
     temp = max(float(temperature), 1e-6)
     z = (np.asarray(scores, dtype=np.float64) - float(threshold)) / temp
@@ -899,6 +968,9 @@ def build_collaborative_evidence(
     candidate_class_top_m: int = 0,
     support_calibration_mode: str = "self",
     score_threshold_combine: str = "max",
+    class_score_threshold_enabled: bool = False,
+    class_score_threshold_quantile: float | None = None,
+    class_score_threshold_min_support: int = 1,
     evidence_packet_bytes: float = 40.0,
     receiver_reliability_policy: str = "deployment_prior",
     prototype_score_blend: float = 0.0,
@@ -941,6 +1013,7 @@ def build_collaborative_evidence(
             )
     receiver_memories: dict[str, QknnMemory] = {}
     receiver_thresholds: dict[str, float] = {}
+    receiver_class_thresholds: dict[str, dict[str, float]] = {}
     evidence: list[dict[str, Any]] = []
     receiver_query: dict[str, dict[str, list[int]]] = {}
     threshold_scope = "support_known_only"
@@ -1070,8 +1143,33 @@ def build_collaborative_evidence(
             mahalanobis_score_temperature=mahalanobis_score_temp,
         )
         threshold_scope = scope if scope == "source_only" else threshold_scope
+        class_thresholds: dict[str, float] = {}
+        if bool(class_score_threshold_enabled):
+            class_thresholds = _label_thresholds_from_calibration(
+                memory,
+                features[np.asarray(support_indices, dtype=int)],
+                support_labels,
+                proxy_features,
+                top_k=qknn_k,
+                support_quantile=float(
+                    support_quantile if class_score_threshold_quantile is None else class_score_threshold_quantile
+                ),
+                proxy_quantile=proxy_quantile,
+                support_scenarios=[_scenario_of(payload, int(i)) for i in support_indices],
+                proxy_scenarios=[_scenario_of(payload, int(i)) for i in proxy_idx.tolist()] if proxy_idx.size else None,
+                scenario_aware=bool(scenario_aware),
+                radius_norm=float(radius_norm),
+                old_bias=float(old_bias),
+                candidate_class_top_m=int(candidate_class_top_m),
+                support_calibration_mode=str(support_calibration_mode),
+                prototype_score_blend=prototype_blend,
+                mahalanobis_score_blend=mahalanobis_blend,
+                mahalanobis_score_temperature=mahalanobis_score_temp,
+                min_support=int(class_score_threshold_min_support),
+            )
         receiver_memories[rx] = memory
         receiver_thresholds[rx] = threshold
+        receiver_class_thresholds[rx] = class_thresholds
 
     elapsed_ms = max((time.perf_counter() - t0) * 1000.0, 1e-6)
     total_query_rows = sum(len(v[role]) for v in receiver_query.values() for role in ["old", "seen_new", "unknown"])
@@ -1197,6 +1295,16 @@ def build_collaborative_evidence(
                         reliability = support_density * max(0.0, min(1.0, float(margin[0]) / max(memory.margin_threshold, 1e-6)))
                     else:
                         reliability = 1.0
+                    receiver_score_threshold = float(
+                        receiver_class_thresholds.get(rx, {}).get(str(pred[0]), receiver_thresholds[rx])
+                        if bool(class_score_threshold_enabled)
+                        else receiver_thresholds[rx]
+                    )
+                    effective_score_threshold = _combine_score_threshold(
+                        receiver_score_threshold,
+                        memory.score_threshold,
+                        str(score_threshold_combine),
+                    )
                     (
                         risk,
                         score_risk,
@@ -1213,11 +1321,7 @@ def build_collaborative_evidence(
                         pred,
                         score,
                         margin,
-                        _combine_score_threshold(
-                            receiver_thresholds[rx],
-                            memory.score_threshold,
-                            str(score_threshold_combine),
-                        ),
+                        effective_score_threshold,
                         temperature=risk_temperature,
                         gate_mode=unknown_gate_mode,
                         radius_temperature=radius_temperature,
@@ -1256,6 +1360,10 @@ def build_collaborative_evidence(
                             "candidate_audit_risk": float(candidate_audit_risk),
                             "known_score": float(score[0]),
                             "known_margin": float(margin[0]),
+                            "effective_score_threshold": float(effective_score_threshold),
+                            "receiver_score_threshold": float(receiver_thresholds[rx]),
+                            "class_score_threshold": float(receiver_score_threshold),
+                            "class_score_threshold_enabled": int(bool(class_score_threshold_enabled)),
                             "candidate_class_count": int(candidate_counts[0]),
                             "support_neighbor_count": int(support_neighbor_counts[0]),
                             "support_density": support_density,
@@ -1308,9 +1416,15 @@ def build_collaborative_evidence(
         "event_alignment_policy": alignment_policy,
         "strict_same_event_collaboration": alignment_policy == "strict_event_key",
         "receiver_thresholds": receiver_thresholds,
+        "receiver_class_thresholds": receiver_class_thresholds,
         "threshold_scope": threshold_scope,
         "support_calibration_mode": str(support_calibration_mode),
         "score_threshold_combine": str(score_threshold_combine),
+        "class_score_threshold_enabled": bool(class_score_threshold_enabled),
+        "class_score_threshold_quantile": float(
+            support_quantile if class_score_threshold_quantile is None else class_score_threshold_quantile
+        ),
+        "class_score_threshold_min_support": int(class_score_threshold_min_support),
         "receiver_reliability_policy": reliability_policy,
         "prototype_score_blend": prototype_blend,
         "prototype_assisted_qknn": prototype_blend > 0.0,
@@ -1388,6 +1502,9 @@ def run_evaluation(args: argparse.Namespace) -> dict[str, Any]:
         candidate_class_top_m=int(args.candidate_class_top_m),
         support_calibration_mode=str(args.support_calibration_mode),
         score_threshold_combine=str(args.score_threshold_combine),
+        class_score_threshold_enabled=bool(args.class_score_threshold_enabled),
+        class_score_threshold_quantile=args.class_score_threshold_quantile,
+        class_score_threshold_min_support=int(args.class_score_threshold_min_support),
         evidence_packet_bytes=float(args.evidence_packet_bytes),
         receiver_reliability_policy=str(args.receiver_reliability_policy),
         prototype_score_blend=float(args.prototype_score_blend),
@@ -1504,6 +1621,9 @@ def parse_args() -> argparse.Namespace:
         default="max",
         choices=["max", "qknn_only", "centroid_only", "min", "mean"],
     )
+    p.add_argument("--class_score_threshold_enabled", action="store_true")
+    p.add_argument("--class_score_threshold_quantile", type=float, default=None)
+    p.add_argument("--class_score_threshold_min_support", type=int, default=1)
     p.add_argument("--unknown_risk_threshold", type=float, default=0.80)
     p.add_argument("--accept_margin_threshold", type=float, default=0.10)
     p.add_argument("--unknown_quantile", type=float, default=0.75)

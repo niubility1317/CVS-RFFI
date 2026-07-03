@@ -1725,3 +1725,27 @@ review修正：只读review指出，本轮诊断仍使用`score_threshold_combin
 |`proto2_maha1_qknnonly`|5|0.7500|0.0000|0.4500|0.0000|0.0500|0.2000|0.3261|4.1522|498.3|
 
 解释：`qknn_only`证明前一轮`max`阈值组合确实压低了已知类接受率。最高旧类/seen-new单点是`proto2_maha1_qknnonly`预算4，`old_acc=0.7586`、`seen_new_acc=0.7429`、`min_seen_new=0.6000`，但`unknown_FAR=0.1562`超出安全边界，不能作为开集部署结果。FAR可控的折中候选是`proto2_maha1_qknnonly`预算3：`old_acc=0.3917`、`min_old=0.3000`、`seen_new_acc=0.5750`、`unknown_FAR=0.0250`、`unknown_reject=0.7000`，平均`2.5550`个接收机、`306.6 bytes/event`。按类结果显示预算3旧类不再有0类：`14-10=0.35`、`14-7=0.40`、`20-15=0.45`、`20-19=0.30`、`6-15=0.45`、`8-20=0.40`；seen-new仍不均衡：`19-3=0.20`、`3-8=0.95`。下一步应在`proto2_maha1_qknnonly`预算3基础上做class-conditional FAR gate或per-label threshold，目标是在不放大unknown FAR的情况下抬升`19-3`和旧类floor。
+
+## 2026-07-03per-label qKNN阈值
+
+目标：在`proto2_maha1_qknnonly`预算4已知类性能显著上升但unknown FAR超标的情况下，加入不使用target unknown的per-label校准阈值，尝试在同一blended qKNN得分空间内压制容易吸收unknown的类别。新增开关默认关闭：`--class_score_threshold_enabled`。开启后，每个receiver基于target-old/seen-new support的同口径qKNN分数，按真实标签分别计算类阈值；若存在合法source-only`proxy_unknown`，则只按proxy预测标签抬高对应类阈值。target unknown query不参与阈值拟合。
+
+本地改动：
+
+|文件|目的|
+|---|---|
+|`code/scripts/phase2_collaborative_open_set_qknn_eval.py`|新增`_label_thresholds_from_calibration()`，并在evidence生成时按预测标签使用`receiver_class_thresholds`替代全局receiver阈值；新增CLI：`--class_score_threshold_enabled`、`--class_score_threshold_quantile`、`--class_score_threshold_min_support`；evidence记录`effective_score_threshold`、`receiver_score_threshold`、`class_score_threshold`和开关状态。|
+|`code/tests/test_phase2_collaborative_open_set_qknn_eval.py`|新增per-label阈值开启/默认关闭测试，确保metadata/evidence记录正确。|
+
+本地验证：
+
+```powershell
+conda activate ssr-gpu
+python -m py_compile code\scripts\phase2_collaborative_open_set_qknn_eval.py code\evaluation\collaborative_open_set_qknn_eval.py
+python code\tests\test_phase2_collaborative_open_set_qknn_eval.py
+python code\tests\test_collaborative_open_set_qknn_eval.py
+```
+
+结果：`test_phase2_collaborative_open_set_qknn_eval.py`为31 tests OK，`test_collaborative_open_set_qknn_eval.py`为27 tests OK。
+
+计划远端验证：以`proto2_maha1_qknnonly`为基线，继续使用`--score_threshold_combine qknn_only --prototype_score_blend 2.0 --mahalanobis_score_blend 1.0`，跑三组类阈值分位：`0.20`、`0.35`、`0.50`。目标是寻找`unknown_FAR<=0.05`下更高`old_acc/seen_new_acc/floor`的折中。

@@ -661,6 +661,50 @@ class Phase2CollaborativeOpenSetQknnEvalTest(unittest.TestCase):
         self.assertIn("unk-a", metadata["unknown_tx_ids"])
         self.assertNotIn("proxy-a", metadata["unknown_tx_ids"])
 
+    def test_class_score_thresholds_are_recorded_when_enabled(self):
+        from phase2_collaborative_open_set_qknn_eval import load_feature_npz, build_collaborative_evidence
+
+        with tempfile.TemporaryDirectory() as td:
+            npz = Path(td) / "features.npz"
+            _write_npz(npz)
+            evidence, metadata = build_collaborative_evidence(
+                load_feature_npz(npz),
+                k_shot=1,
+                query_per_class=2,
+                qknn_k=1,
+                support_calibration_mode="leave_one_out",
+                score_threshold_combine="qknn_only",
+                class_score_threshold_enabled=True,
+                class_score_threshold_quantile=0.5,
+            )
+
+        self.assertTrue(metadata["class_score_threshold_enabled"])
+        self.assertAlmostEqual(metadata["class_score_threshold_quantile"], 0.5)
+        self.assertTrue(metadata["receiver_class_thresholds"])
+        first_rx_thresholds = next(iter(metadata["receiver_class_thresholds"].values()))
+        self.assertIn("old-a", first_rx_thresholds)
+        self.assertIn("new-a", first_rx_thresholds)
+        self.assertIn("effective_score_threshold", evidence[0])
+        self.assertIn("class_score_threshold", evidence[0])
+        self.assertEqual(int(evidence[0]["class_score_threshold_enabled"]), 1)
+
+    def test_class_score_thresholds_are_disabled_by_default(self):
+        from phase2_collaborative_open_set_qknn_eval import load_feature_npz, build_collaborative_evidence
+
+        with tempfile.TemporaryDirectory() as td:
+            npz = Path(td) / "features.npz"
+            _write_npz(npz)
+            evidence, metadata = build_collaborative_evidence(
+                load_feature_npz(npz),
+                k_shot=1,
+                query_per_class=2,
+                qknn_k=1,
+            )
+
+        self.assertFalse(metadata["class_score_threshold_enabled"])
+        self.assertEqual(metadata["receiver_class_thresholds"], {rx: {} for rx in metadata["target_receiver_ids"]})
+        self.assertEqual(int(evidence[0]["class_score_threshold_enabled"]), 0)
+
     def test_candidate_audit_gap_can_raise_unknown_risk(self):
         from phase2_collaborative_open_set_qknn_eval import load_feature_npz, build_collaborative_evidence
 
