@@ -130,6 +130,161 @@ class CollaborativeOpenSetQknnEvalTest(unittest.TestCase):
                 ]
             )
 
+    def test_fails_closed_on_unknown_role_and_bad_event_join(self):
+        from evaluation.collaborative_open_set_qknn_eval import evaluate_collaborative_open_set_evidence
+
+        with self.assertRaisesRegex(ValueError, "unknown evidence role"):
+            evaluate_collaborative_open_set_evidence(
+                [
+                    {
+                        "event_id": "bad-role",
+                        "receiver_id": "rx-a",
+                        "role": "target-new-typo",
+                        "true_label": "12-20",
+                    }
+                ]
+            )
+
+        with self.assertRaisesRegex(ValueError, "duplicate receiver_id"):
+            evaluate_collaborative_open_set_evidence(
+                [
+                    {
+                        "event_id": "dup",
+                        "receiver_id": "rx-a",
+                        "role": "old",
+                        "true_label": "old-a",
+                    },
+                    {
+                        "event_id": "dup",
+                        "receiver_id": "rx-a",
+                        "role": "old",
+                        "true_label": "old-a",
+                    },
+                ]
+            )
+
+        with self.assertRaisesRegex(ValueError, "inconsistent true_label"):
+            evaluate_collaborative_open_set_evidence(
+                [
+                    {
+                        "event_id": "mixed",
+                        "receiver_id": "rx-a",
+                        "role": "old",
+                        "true_label": "old-a",
+                    },
+                    {
+                        "event_id": "mixed",
+                        "receiver_id": "rx-b",
+                        "role": "old",
+                        "true_label": "old-b",
+                    },
+                ]
+            )
+
+    def test_records_threshold_scope_and_requires_prior_reliability_for_dynamic_selection(self):
+        from evaluation.collaborative_open_set_qknn_eval import evaluate_collaborative_open_set_evidence
+
+        rows = [
+            {
+                "event_id": "old-1",
+                "receiver_id": "rx-a",
+                "role": "old",
+                "true_label": "old-a",
+                "predicted_label": "old-a",
+                "known_score": 0.8,
+                "known_margin": 0.4,
+                "unknown_risk": 0.1,
+                "reliability": 0.9,
+            }
+        ]
+
+        result = evaluate_collaborative_open_set_evidence(
+            rows,
+            threshold_selection_label_scope="source_only",
+            unknown_query_eval_only=True,
+        )
+        self.assertEqual(result["threshold_selection_label_scope"], "source_only")
+        self.assertEqual(result["denominator_policy"], "matched_max_requested_receivers")
+        self.assertEqual(result["evidence_scope"], "offline_evidence_metrics_only")
+
+        with self.assertRaisesRegex(ValueError, "threshold_selection_label_scope"):
+            evaluate_collaborative_open_set_evidence(rows, threshold_selection_label_scope="unknown_query")
+
+        with self.assertRaisesRegex(ValueError, "reliability_source"):
+            evaluate_collaborative_open_set_evidence(
+                rows,
+                receiver_selection_policy="reliability_prior",
+            )
+
+    def test_high_unknown_risk_vetoes_overconfident_acceptance(self):
+        from evaluation.collaborative_open_set_qknn_eval import evaluate_collaborative_open_set_evidence
+
+        result = evaluate_collaborative_open_set_evidence(
+            [
+                {
+                    "event_id": "overconfident-unknown",
+                    "receiver_id": "rx-a",
+                    "role": "unknown",
+                    "true_label": "__unknown__",
+                    "predicted_label": "old-a",
+                    "known_score": 0.99,
+                    "known_margin": 0.95,
+                    "unknown_risk": 0.99,
+                    "latency_ms": 3.0,
+                    "bytes": 32,
+                }
+            ],
+            unknown_risk_threshold=0.8,
+            accept_margin_threshold=0.1,
+        )
+
+        k1 = result["counts"]["1"]
+        self.assertEqual(k1["unknown_FAR"], 0.0)
+        self.assertEqual(k1["defer_rate"], 1.0)
+        self.assertEqual(k1["open_set_confusion"], {"unknown->defer": 1})
+
+    def test_strict_protocol_metadata_validates_stage2_boundaries(self):
+        from evaluation.collaborative_open_set_qknn_eval import evaluate_collaborative_open_set_evidence
+
+        row = {
+            "event_id": "new-numeric-label",
+            "receiver_id": "20-1",
+            "role": "seen_new",
+            "true_label": "12-20",
+            "predicted_label": "12-20",
+            "known_score": 0.9,
+            "known_margin": 0.3,
+            "unknown_risk": 0.1,
+        }
+
+        with self.assertRaisesRegex(ValueError, "disjoint"):
+            evaluate_collaborative_open_set_evidence(
+                [row],
+                strict_protocol_metadata=True,
+                protocol_metadata={
+                    "source_receiver_ids": ["20-1"],
+                    "target_receiver_ids": ["20-1"],
+                    "old_tx_ids": ["14-10"],
+                    "seen_new_tx_ids": ["12-20"],
+                    "unknown_tx_ids": ["13-20"],
+                    "target_channel_view": "leo_clear_weak",
+                },
+            )
+
+        result = evaluate_collaborative_open_set_evidence(
+            [row],
+            strict_protocol_metadata=True,
+            protocol_metadata={
+                "source_receiver_ids": ["1-1"],
+                "target_receiver_ids": ["20-1"],
+                "old_tx_ids": ["14-10"],
+                "seen_new_tx_ids": ["12-20"],
+                "unknown_tx_ids": ["13-20"],
+                "target_channel_view": "leo_clear_weak",
+            },
+        )
+        self.assertTrue(result["stage2_protocol"]["validated"])
+
     def test_seen_new_per_class_floor_does_not_depend_on_label_prefix(self):
         from evaluation.collaborative_open_set_qknn_eval import evaluate_collaborative_open_set_evidence
 

@@ -6,6 +6,33 @@ from typing import Any, Mapping, Sequence
 
 
 UNKNOWN_LABEL = "__unknown__"
+ROLE_ALIASES = {
+    "old": "old",
+    "target_old": "old",
+    "seen_new": "seen_new",
+    "seennew": "seen_new",
+    "target_new": "seen_new",
+    "new": "seen_new",
+    "unknown": "unknown",
+    "target_unknown": "unknown",
+    "unk": "unknown",
+}
+CALIBRATION_ROLES = {"threshold_fit", "calibration", "fit", "train"}
+SAFE_THRESHOLD_SCOPES = {
+    "fixed_prior",
+    "source_only",
+    "support_only",
+    "known_support",
+    "support_known_only",
+    "old_new_support",
+    "deployment_prior",
+}
+PRIOR_RELIABILITY_SOURCES = {
+    "receiver_prior",
+    "link_budget_prior",
+    "pre_query_prior",
+    "deployment_prior",
+}
 
 
 def parse_collab_counts(spec: str | Sequence[int] | None, *, receiver_count: int) -> list[int]:
@@ -32,11 +59,9 @@ def parse_collab_counts(spec: str | Sequence[int] | None, *, receiver_count: int
 
 def _role(value: object) -> str:
     text = str(value or "").strip().lower().replace("-", "_")
-    if text in {"new", "seennew", "seen_new", "target_new"}:
-        return "seen_new"
-    if text in {"unk", "unknown", "target_unknown"}:
-        return "unknown"
-    return "old"
+    if text not in ROLE_ALIASES:
+        raise ValueError(f"unknown evidence role {value!r}; expected one of {sorted(ROLE_ALIASES)}")
+    return ROLE_ALIASES[text]
 
 
 def _float(row: Mapping[str, Any], key: str, default: float = 0.0) -> float:
@@ -94,26 +119,73 @@ def _safe_rate(num: int, den: int) -> float:
     return 0.0 if den <= 0 else float(num) / float(den)
 
 
-def _validate_rows(rows: Sequence[Mapping[str, Any]]) -> None:
+def _normalize_scope(value: object) -> str:
+    return str(value or "").strip().lower().replace("-", "_")
+
+
+def _validate_threshold_scope(scope: str, *, unknown_query_eval_only: bool) -> None:
+    scope = _normalize_scope(scope)
+    if not scope:
+        raise ValueError("threshold_selection_label_scope must be recorded")
+    if scope not in SAFE_THRESHOLD_SCOPES:
+        raise ValueError(
+            "threshold_selection_label_scope must not use unknown query labels; "
+            f"got {scope!r}"
+        )
+    if not bool(unknown_query_eval_only):
+        raise ValueError("unknown_query_eval_only must be true for deployment-style open-set evaluation")
+
+
+def _validate_rows(
+    rows: Sequence[Mapping[str, Any]],
+    *,
+    threshold_selection_label_scope: str,
+    unknown_query_eval_only: bool,
+    receiver_selection_policy: str,
+) -> None:
+    _validate_threshold_scope(
+        threshold_selection_label_scope,
+        unknown_query_eval_only=unknown_query_eval_only,
+    )
+    policy = _normalize_scope(receiver_selection_policy)
+    if policy not in {"fixed_receiver_order", "reliability_prior"}:
+        raise ValueError("receiver_selection_policy must be fixed_receiver_order or reliability_prior")
     for row in rows:
-        if _role(row.get("role")) == "unknown" and str(row.get("calibration_role", "")).lower() in {
-            "threshold_fit",
-            "calibration",
-            "fit",
-            "train",
-        }:
+        role = _role(row.get("role"))
+        if role in {"old", "seen_new"} and not _str(row, "true_label").strip():
+            raise ValueError("known evidence rows must include true_label")
+        row_scope = _normalize_scope(row.get("threshold_selection_label_scope", threshold_selection_label_scope))
+        _validate_threshold_scope(row_scope, unknown_query_eval_only=unknown_query_eval_only)
+        calibration_role = _normalize_scope(row.get("calibration_role", "query"))
+        if role == "unknown" and calibration_role in CALIBRATION_ROLES:
             raise ValueError("unknown query rows cannot be used for threshold fitting or calibration")
+        if policy == "reliability_prior":
+            source = _normalize_scope(row.get("reliability_source", ""))
+            if source not in PRIOR_RELIABILITY_SOURCES:
+                raise ValueError(
+                    "reliability_prior receiver selection requires query-independent reliability_source"
+                )
 
 
-def _select_receivers(rows: Sequence[Mapping[str, Any]], k: int) -> list[Mapping[str, Any]]:
-    return sorted(
-        rows,
-        key=lambda row: (
-            -_float(row, "reliability", 1.0),
-            _float(row, "latency_ms", 0.0),
-            _str(row, "receiver_id"),
-        ),
-    )[: int(k)]
+def _select_receivers(
+    rows: Sequence[Mapping[str, Any]],
+    k: int,
+    *,
+    receiver_selection_policy: str,
+) -> list[Mapping[str, Any]]:
+    policy = _normalize_scope(receiver_selection_policy)
+    if policy == "reliability_prior":
+        ordered = sorted(
+            rows,
+            key=lambda row: (
+                -_float(row, "reliability", 1.0),
+                _float(row, "latency_ms", 0.0),
+                _str(row, "receiver_id"),
+            ),
+        )
+    else:
+        ordered = sorted(rows, key=lambda row: _str(row, "receiver_id"))
+    return ordered[: int(k)]
 
 
 def _fuse_event(
@@ -148,9 +220,13 @@ def _fuse_event(
     else:
         label, score = "", 0.0
 
-    if unknown_risk >= float(unknown_risk_threshold) and mean_margin < float(accept_margin_threshold):
-        decision = "unknown_reject"
-        output_label = UNKNOWN_LABEL
+    if unknown_risk >= float(unknown_risk_threshold):
+        if mean_margin < float(accept_margin_threshold):
+            decision = "unknown_reject"
+            output_label = UNKNOWN_LABEL
+        else:
+            decision = "defer"
+            output_label = ""
     elif label:
         decision = "accept"
         output_label = label
@@ -185,6 +261,10 @@ def _finalize_metrics(event_results: Sequence[dict[str, Any]], *, k: int, exclud
     unknown_false_accept = 0
     defer_total = 0
 
+    old_labels = {str(item["true_label"]) for item in event_results if item["role"] == "old"}
+    seen_new_labels = {str(item["true_label"]) for item in event_results if item["role"] == "seen_new"}
+    confusion: defaultdict[str, int] = defaultdict(int)
+
     for item in event_results:
         role = item["role"]
         truth = item["true_label"]
@@ -192,6 +272,17 @@ def _finalize_metrics(event_results: Sequence[dict[str, Any]], *, k: int, exclud
         decision = item["decision"]
         accepted = decision == "accept"
         deferred = decision == "defer"
+        if decision == "unknown_reject":
+            predicted_bucket = "unknown_reject"
+        elif deferred:
+            predicted_bucket = "defer"
+        elif output in old_labels:
+            predicted_bucket = "old"
+        elif output in seen_new_labels:
+            predicted_bucket = "seen_new"
+        else:
+            predicted_bucket = "other_accept"
+        confusion[f"{role}->{predicted_bucket}"] += 1
         if deferred:
             defer_total += 1
         role_totals[role] += 1
@@ -244,11 +335,86 @@ def _finalize_metrics(event_results: Sequence[dict[str, Any]], *, k: int, exclud
         "known_full_accuracy": _safe_rate(known_correct, known_total),
         "known_accepted_accuracy": _safe_rate(known_correct, known_accepted),
         "defer_rate": _safe_rate(defer_total, total_events),
+        "open_set_confusion": dict(sorted(confusion.items())),
         "bytes_per_event": sum(bytes_values) / max(len(bytes_values), 1),
         "total_bytes": float(sum(bytes_values)),
         "latency_ms_p50": _percentile(latency_values, 0.50),
         "latency_ms_p95": _percentile(latency_values, 0.95),
     }
+
+
+def _items(value: object) -> set[str]:
+    if value is None:
+        return set()
+    if isinstance(value, str):
+        return {part.strip() for part in value.replace(";", ",").split(",") if part.strip()}
+    try:
+        return {str(item).strip() for item in value if str(item).strip()}
+    except TypeError:
+        text = str(value).strip()
+        return {text} if text else set()
+
+
+def _validate_protocol_metadata(metadata: Mapping[str, Any] | None, *, strict: bool) -> dict[str, Any]:
+    if not metadata:
+        if strict:
+            raise ValueError("protocol_metadata is required when strict_protocol_metadata=True")
+        return {"validated": False, "reason": "protocol_metadata_missing"}
+    source_receivers = _items(metadata.get("source_receiver_ids"))
+    target_receivers = _items(metadata.get("target_receiver_ids"))
+    old_tx = _items(metadata.get("old_tx_ids"))
+    seen_new_tx = _items(metadata.get("seen_new_tx_ids", metadata.get("target_new_tx_ids")))
+    unknown_tx = _items(metadata.get("unknown_tx_ids"))
+    missing = [
+        name
+        for name, values in {
+            "source_receiver_ids": source_receivers,
+            "target_receiver_ids": target_receivers,
+            "old_tx_ids": old_tx,
+            "seen_new_tx_ids": seen_new_tx,
+            "unknown_tx_ids": unknown_tx,
+        }.items()
+        if not values
+    ]
+    if missing:
+        if strict:
+            raise ValueError(f"protocol_metadata missing required fields: {', '.join(missing)}")
+        return {"validated": False, "reason": "protocol_metadata_incomplete", "missing": missing}
+    if source_receivers & target_receivers:
+        raise ValueError("source_receiver_ids and target_receiver_ids must be disjoint")
+    if old_tx & seen_new_tx or old_tx & unknown_tx or seen_new_tx & unknown_tx:
+        raise ValueError("old_tx_ids, seen_new_tx_ids, and unknown_tx_ids must be mutually disjoint")
+    channel_view = str(metadata.get("target_channel_view", "") or "").strip()
+    if not channel_view:
+        raise ValueError("protocol_metadata must include target_channel_view")
+    return {
+        "validated": True,
+        "source_receiver_count": len(source_receivers),
+        "target_receiver_count": len(target_receivers),
+        "old_tx_count": len(old_tx),
+        "seen_new_tx_count": len(seen_new_tx),
+        "unknown_tx_count": len(unknown_tx),
+        "target_channel_view": channel_view,
+    }
+
+
+def _validate_event_groups(groups: Mapping[str, Sequence[Mapping[str, Any]]]) -> None:
+    for event_id, group in groups.items():
+        receivers: set[str] = set()
+        roles: set[str] = set()
+        labels: set[str] = set()
+        for row in group:
+            receiver = _str(row, "receiver_id")
+            if receiver in receivers:
+                raise ValueError(f"duplicate receiver_id {receiver!r} in event_id {event_id!r}")
+            receivers.add(receiver)
+            role = _role(row.get("role"))
+            roles.add(role)
+            labels.add(_str(row, "true_label", UNKNOWN_LABEL if role == "unknown" else "").strip())
+        if len(roles) != 1:
+            raise ValueError(f"inconsistent role values in event_id {event_id!r}")
+        if len(labels) != 1:
+            raise ValueError(f"inconsistent true_label values in event_id {event_id!r}")
 
 
 def evaluate_collaborative_open_set_evidence(
@@ -258,6 +424,11 @@ def evaluate_collaborative_open_set_evidence(
     unknown_risk_threshold: float = 0.80,
     accept_margin_threshold: float = 0.10,
     unknown_quantile: float = 0.75,
+    threshold_selection_label_scope: str = "support_known_only",
+    unknown_query_eval_only: bool = True,
+    receiver_selection_policy: str = "fixed_receiver_order",
+    protocol_metadata: Mapping[str, Any] | None = None,
+    strict_protocol_metadata: bool = False,
 ) -> dict[str, Any]:
     """Evaluate offline collaborative open-set qknn-style evidence.
 
@@ -266,7 +437,13 @@ def evaluate_collaborative_open_set_evidence(
     """
 
     rows = list(rows)
-    _validate_rows(rows)
+    _validate_rows(
+        rows,
+        threshold_selection_label_scope=threshold_selection_label_scope,
+        unknown_query_eval_only=unknown_query_eval_only,
+        receiver_selection_policy=receiver_selection_policy,
+    )
+    protocol_report = _validate_protocol_metadata(protocol_metadata, strict=strict_protocol_metadata)
     groups: "OrderedDict[str, list[Mapping[str, Any]]]" = OrderedDict()
     receivers: set[str] = set()
     for row in rows:
@@ -280,6 +457,7 @@ def evaluate_collaborative_open_set_evidence(
         receivers.add(receiver)
     if not groups:
         raise ValueError("no evidence rows were provided")
+    _validate_event_groups(groups)
 
     receiver_count = len(receivers)
     counts = parse_collab_counts(collab_counts, receiver_count=receiver_count)
@@ -293,7 +471,11 @@ def evaluate_collaborative_open_set_evidence(
     for k in counts:
         event_results: list[dict[str, Any]] = []
         for _, group in eligible:
-            selected = _select_receivers(group, int(k))
+            selected = _select_receivers(
+                group,
+                int(k),
+                receiver_selection_policy=receiver_selection_policy,
+            )
             fused = _fuse_event(
                 selected,
                 unknown_risk_threshold=unknown_risk_threshold,
@@ -314,6 +496,12 @@ def evaluate_collaborative_open_set_evidence(
         "group_count": int(len(groups)),
         "eligible_group_count": int(len(eligible)),
         "excluded_incomplete_groups": int(excluded),
+        "denominator_policy": "matched_max_requested_receivers",
+        "receiver_selection_policy": _normalize_scope(receiver_selection_policy),
+        "threshold_selection_label_scope": _normalize_scope(threshold_selection_label_scope),
+        "unknown_query_eval_only": bool(unknown_query_eval_only),
+        "stage2_protocol": protocol_report,
+        "evidence_scope": "offline_evidence_metrics_only",
         "unknown_risk_threshold": float(unknown_risk_threshold),
         "accept_margin_threshold": float(accept_margin_threshold),
         "unknown_quantile": float(unknown_quantile),

@@ -29,13 +29,13 @@
 | CIOSR-006 | 用户目标 | 未知类拒识目标 99%。 | 后续开集 evaluator | pending | Phase1 low-FAR 能到 99% reject，但旧类覆盖差；sat-only 未解决双目标 | 不能单独拿低 FAR 作为完成。 |
 | CIOSR-007 | 用户目标 | 报告参与推理数量。 | `code/evaluation/collaborative_open_set_qknn_eval.py` | verified | `pytest code\tests\test_collaborative_open_set_qknn_eval.py`：3 passed | open-set evidence evaluator 支持 `collab_counts=all` 输出 `1..receiver_count`。 |
 | CIOSR-008 | 用户目标 | 报告时延。 | `code/evaluation/collaborative_open_set_qknn_eval.py` | verified | `pytest code\tests\test_collaborative_open_set_qknn_eval.py`：3 passed | 当前为 evidence 行输入的 `latency_ms_p50/p95`；真实端到端 latency 待 N607/feature 管线实测。 |
-| CIOSR-009 | 用户目标 | 报告资源约束。 | `code/evaluation/collaborative_open_set_qknn_eval.py`；设计报告 | implemented | evaluator 输出 `bytes_per_event/total_bytes`；资源说明原文未找到 | 已实现通信字节遥测；state size/VRAM 仍待真实管线补充。 |
-| CIOSR-010 | 项目协议 | `R_t` 与 `R_s` 不相交，old/new/unknown TX 互斥。 | evaluator/launcher | pending | `项目.md` 已定义 | 后续 CLI 必须显式检查。 |
+| CIOSR-009 | 用户目标 | 报告资源约束。 | `code/evaluation/collaborative_open_set_qknn_eval.py`；设计报告 | partial | evaluator 输出 `bytes_per_event/total_bytes`；资源说明原文未找到 | 已实现通信字节遥测；prototype storage、VRAM、端到端 latency 和上限策略仍待真实管线补充。 |
+| CIOSR-010 | 项目协议 | `R_t` 与 `R_s` 不相交，old/new/unknown TX 互斥。 | `code/evaluation/collaborative_open_set_qknn_eval.py`; 后续 launcher | partial | evaluator 支持 `strict_protocol_metadata=True` 校验 receiver/TX 互斥；真实 CLI/runner 仍待接入 | Phase A 只证明已给定 metadata 时 fail-closed，不能证明真实 feature 导出合法。 |
 | CIOSR-011 | 项目协议 | unknown query 不参与阈值拟合。 | `code/evaluation/collaborative_open_set_qknn_eval.py` | verified | `test_rejects_threshold_fitting_from_unknown_query_rows` 通过 | evaluator 对 unknown calibration/threshold_fit 行 fail closed。 |
 | CIOSR-012 | 现有代码 | 复用闭集协同 `collab_counts all` 能力。 | `code/evaluation/collaborative_open_set_qknn_eval.py`; `code/evaluation/collaborative_inference_eval.py` | verified | 新 open-set tests 3 passed；旧闭集协同 tests 5 passed | 新增 sibling，不破坏旧闭集入口。 |
 | CIOSR-013 | 现有报告 | 不得把 `no_unknown` qknn8 结果当开集完成。 | 设计报告；最终报告 | verified | qknn8 报告明确未知类不导出、不评估 | 本追踪表已标注。 |
 | CIOSR-014 | 资源约束 | 每事件通信负载需要上限。 | `code/evaluation/collaborative_open_set_qknn_eval.py`; 设计报告 | implemented | evaluator 输出 `bytes_per_event` 和 `total_bytes` | 上限策略仍待资源约束原文核对。 |
-| CIOSR-015 | 实验协议 | 必须同时报告 full denominator、coverage、accepted-only、confusion。 | `code/evaluation/collaborative_open_set_qknn_eval.py` | implemented | tests 覆盖 old/new/unknown、coverage、FAR、per-class floor | confusion 明细矩阵尚未输出；当前为核心指标实现。 |
+| CIOSR-015 | 实验协议 | 必须同时报告 full denominator、coverage、accepted-only、confusion。 | `code/evaluation/collaborative_open_set_qknn_eval.py` | implemented | tests 覆盖 old/new/unknown、coverage、FAR、per-class floor、`open_set_confusion` | 输出 `old/seen_new/unknown -> old/seen_new/unknown_reject/defer/other_accept` 桶级混淆；完整 label-by-label 矩阵仍可后续扩展。 |
 
 ## 关键缺口
 
@@ -67,6 +67,31 @@ conda run -n ssr-gpu python -m pytest -q code\tests\test_collaborative_inference
 - `py_compile`：通过。
 - 旧闭集 collaborative evaluator tests：`5 passed`。
 - 备注：并行 `conda run` 会触发 Windows 临时文件锁，已改为串行执行；pytest cache 目录仍有权限 warning，不影响测试结论。
+
+## 2026-07-03 Phase A review 修复记录
+
+子agent review 指出 Phase A evaluator 不能静默把未知 role 归为 old，不能用首行真值代表整个 event，不能缺失阈值来源和 Stage2 metadata 边界，也不能把证据级指标声明成真实 ADV3B02/qknn8 部署结论。已做以下修复：
+
+| 修复项 | 当前处理 |
+|---|---|
+| role 白名单 | `_role()` 对未知枚举 fail-closed，不再默认归为 old。 |
+| event join 一致性 | 每个 `event_id` 内要求 `role/true_label` 一致，并拒绝重复 `receiver_id`。 |
+| 阈值来源 | 结果记录 `threshold_selection_label_scope` 和 `unknown_query_eval_only`；未知或 unknown-query scope fail-closed。 |
+| 动态 receiver 选择 | 默认固定 `receiver_id` 顺序；如使用 `reliability_prior`，必须提供 query-independent `reliability_source`。 |
+| 高风险拒识 | `unknown_risk` 超阈值时不直接 accept；低 margin 拒识，高 margin defer。 |
+| 协议 metadata | 可用 `strict_protocol_metadata=True` 校验 `R_s/R_t` 不相交和 `Y_old/Y_new/Y_unknown` 互斥。 |
+| 混淆输出 | 输出桶级 `open_set_confusion`。 |
+| 分母边界 | 结果显式记录 `denominator_policy=matched_max_requested_receivers`，避免把 matched subset 当作全覆盖。 |
+
+追加验证命令：
+
+```powershell
+$env:PYTHONIOENCODING='utf-8'; $env:PYTHONUTF8='1'; $env:CONDA_REPORT_ERRORS='false'
+conda run -n ssr-gpu python -m py_compile code\evaluation\collaborative_open_set_qknn_eval.py code\tests\test_collaborative_open_set_qknn_eval.py
+conda run -n ssr-gpu python -m pytest -q code\tests\test_collaborative_open_set_qknn_eval.py
+```
+
+结果：`py_compile` 通过；open-set evaluator tests：`7 passed, 1 warning`。并行 `conda run` 仍触发 Windows 临时文件锁，已按串行验证处理。
 
 ## 下一步验证入口
 
