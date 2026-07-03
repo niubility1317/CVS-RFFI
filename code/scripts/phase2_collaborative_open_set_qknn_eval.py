@@ -2989,6 +2989,7 @@ def run_evaluation(args: argparse.Namespace) -> dict[str, Any]:
         dual_route_rescue_max_disagreement=float(args.dual_route_rescue_max_disagreement),
         dual_route_rescue_max_unknown_risk_range=float(args.dual_route_rescue_max_unknown_risk_range),
         dual_route_rescue_max_safety_unknown_risk=float(args.dual_route_rescue_max_safety_unknown_risk),
+        dual_route_rescue_selection_policy=str(args.dual_route_rescue_selection_policy),
         threshold_selection_label_scope=str(metadata["threshold_scope"]),
         unknown_query_eval_only=True,
         receiver_selection_policy=str(args.receiver_selection_policy),
@@ -3274,6 +3275,11 @@ def parse_args() -> argparse.Namespace:
     p.add_argument("--dual_route_rescue_max_disagreement", type=float, default=0.50)
     p.add_argument("--dual_route_rescue_max_unknown_risk_range", type=float, default=0.50)
     p.add_argument("--dual_route_rescue_max_safety_unknown_risk", type=float, default=0.80)
+    p.add_argument(
+        "--dual_route_rescue_selection_policy",
+        default="deployment_prior_quality",
+        choices=["deployment_prior_quality", "fixed_receiver_order", "reliability_prior", "support_quality_prior"],
+    )
     p.add_argument("--evidence_packet_bytes", type=float, default=40.0)
     p.add_argument(
         "--receiver_reliability_policy",

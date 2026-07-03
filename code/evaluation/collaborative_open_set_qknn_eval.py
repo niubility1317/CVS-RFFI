@@ -382,7 +382,17 @@ def _receiver_deployment_prior_quality(row: Mapping[str, Any]) -> float | None:
 def _select_receivers_deployment_prior(
     rows: Sequence[Mapping[str, Any]],
     k: int,
+    *,
+    selection_policy: str = "deployment_prior_quality",
 ) -> tuple[list[Mapping[str, Any]], str]:
+    policy = _normalize_scope(selection_policy or "deployment_prior_quality")
+    if policy in {"fixed_receiver_order", "reliability_prior", "support_quality_prior"}:
+        return _select_receivers(rows, k, receiver_selection_policy=policy), policy
+    if policy != "deployment_prior_quality":
+        raise ValueError(
+            "dual_route_rescue_selection_policy must be deployment_prior_quality, "
+            "fixed_receiver_order, reliability_prior, or support_quality_prior"
+        )
     if any(_receiver_deployment_prior_quality(row) is not None for row in rows):
         ordered = sorted(
             rows,
@@ -4228,6 +4238,7 @@ def evaluate_collaborative_open_set_evidence(
     dual_route_rescue_max_disagreement: float = 0.50,
     dual_route_rescue_max_unknown_risk_range: float = 0.50,
     dual_route_rescue_max_safety_unknown_risk: float = 0.80,
+    dual_route_rescue_selection_policy: str = "deployment_prior_quality",
     threshold_selection_label_scope: str = "support_known_only",
     unknown_query_eval_only: bool = True,
     receiver_selection_policy: str = "fixed_receiver_order",
@@ -4398,6 +4409,7 @@ def evaluate_collaborative_open_set_evidence(
                 rescue_selected, rescue_selection_policy = _select_receivers_deployment_prior(
                     group,
                     selected_k,
+                    selection_policy=dual_route_rescue_selection_policy,
                 )
                 fused = _fuse_dual_route_event(
                     safety_selected,
@@ -4840,5 +4852,6 @@ def evaluate_collaborative_open_set_evidence(
         "dual_route_rescue_max_disagreement": float(dual_route_rescue_max_disagreement),
         "dual_route_rescue_max_unknown_risk_range": float(dual_route_rescue_max_unknown_risk_range),
         "dual_route_rescue_max_safety_unknown_risk": float(dual_route_rescue_max_safety_unknown_risk),
+        "dual_route_rescue_selection_policy": _normalize_scope(dual_route_rescue_selection_policy),
         "counts": out_counts,
     }

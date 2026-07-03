@@ -9,6 +9,87 @@ if str(ROOT) not in sys.path:
 
 
 class CollaborativeOpenSetQknnEvalTest(unittest.TestCase):
+    def test_dual_route_can_use_support_quality_for_rescue_selection(self):
+        from evaluation.collaborative_open_set_qknn_eval import evaluate_collaborative_open_set_evidence
+
+        def row(receiver_id, label, score, margin, risk, pvalue, reliability):
+            return {
+                "event_id": "old-route",
+                "receiver_id": receiver_id,
+                "role": "old",
+                "true_label": "old-a",
+                "predicted_label": label,
+                "known_score": score,
+                "known_margin": margin,
+                "unknown_risk": risk,
+                "score_risk": risk,
+                "radius_risk": risk,
+                "margin_risk": risk,
+                "class_shell_risk": risk,
+                "label_shell_risk_observed": True,
+                "class_conformal_pvalue": pvalue,
+                "class_conformal_support_count": 3,
+                "receiver_class_reliability": reliability,
+                "support_density": reliability,
+                "latency_ms": 1.0,
+                "bytes": 40,
+            }
+
+        rows = [
+            row("rx-a", "old-b", 0.40, 0.01, 0.90, 0.05, 0.05),
+            row("rx-b", "old-b", 0.42, 0.01, 0.90, 0.05, 0.05),
+            row("rx-c", "old-a", 0.90, 0.30, 0.05, 0.95, 0.95),
+            row("rx-d", "old-a", 0.88, 0.28, 0.05, 0.95, 0.95),
+        ]
+
+        result = evaluate_collaborative_open_set_evidence(
+            rows,
+            collab_counts=[2],
+            collaboration_policy="dual_route_cvs",
+            fusion_policy="candidate_set_cvs",
+            label_fusion_policy="weighted_vote_margin",
+            receiver_class_reliability_policy="support_calibrated",
+            dual_route_rescue_selection_policy="support_quality_prior",
+            dual_route_rescue_min_pvalue=0.80,
+            dual_route_rescue_min_receiver_class_reliability=0.80,
+            dual_route_rescue_max_label_unknown_risk=0.20,
+            dual_route_rescue_max_shell_risk=0.20,
+            dual_route_rescue_max_component_agreement=1.0,
+            dual_route_rescue_max_disagreement=0.10,
+            dual_route_rescue_max_unknown_risk_range=0.10,
+            dual_route_rescue_max_safety_unknown_risk=1.0,
+            candidate_set_min_receivers=2,
+            candidate_set_min_top1_receivers=2,
+            candidate_set_min_conformal_pvalue=0.80,
+            candidate_set_min_label_receiver_class_reliability=0.80,
+            candidate_set_max_label_unknown_risk=0.20,
+            candidate_set_max_event_unknown_risk=0.95,
+            candidate_set_max_label_risk_component_agreement=1.0,
+            candidate_set_max_label_shell_risk=0.20,
+            candidate_set_unknown_reject_risk=0.85,
+            unknown_risk_threshold=0.85,
+            accept_margin_threshold=0.05,
+            consensus_score_threshold=0.10,
+            include_event_results=True,
+            protocol_metadata={
+                "target_receiver_ids": ["rx-a", "rx-b", "rx-c", "rx-d"],
+                "source_receiver_ids": ["src-a"],
+                "old_tx_ids": ["old-a", "old-b"],
+                "seen_new_tx_ids": ["new-a"],
+                "unknown_tx_ids": ["unk-a"],
+                "target_channel_view": "leo_clear_weak",
+            },
+        )
+
+        event = result["counts"]["2"]["event_results"][0]
+        self.assertTrue(event["dual_route_applied"])
+        self.assertTrue(event["dual_route_rescue_ok"])
+        self.assertEqual(event["dual_route_selected_route"], "rescue")
+        self.assertEqual(event["dual_route_rescue_selection_policy"], "support_quality_prior")
+        self.assertEqual(event["dual_route_rescue_receiver_order"], "rx-c,rx-d")
+        self.assertEqual(event["output_label"], "old-a")
+        self.assertEqual(result["counts"]["2"]["old_acc"], 1.0)
+
     def test_selective_confirm_requests_more_before_rejecting_weak_unknowns(self):
         from evaluation.collaborative_open_set_qknn_eval import evaluate_collaborative_open_set_evidence
 
