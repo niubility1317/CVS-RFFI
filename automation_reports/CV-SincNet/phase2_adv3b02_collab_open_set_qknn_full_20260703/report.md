@@ -3916,6 +3916,92 @@ N607同步后远端哈希与本地一致；远端验证`52 tests OK`。实际运
 
 最终SSH/SCP后本地无`ssh.exe`残留，无N607和bridge 22端口ESTABLISHED连接。
 
+## 2026-07-04 SR-PairFuse软pairguard执行计划
+
+### 设计依据
+
+上一轮`request_more`诊断证明控制路径可审计，但门控过严，known大量进入`unknown_reject/request_more`，不能作为性能提升。本轮实现`SR-PairFuse`最小版本：`candidate_set_pairguard_action=soft_penalty`。当高风险receiver-label pair命中时，不直接veto或request_more，而是根据证据弱度给局部candidate risk加软惩罚；强margin、高conformal pvalue、高receiver-class reliability的known样本应继续通过accept gate。
+
+软惩罚审计字段包括：`candidate_set_pairguard_soft_applied`、`candidate_set_pairguard_soft_weakness`、各弱度分量、`candidate_set_pairguard_soft_penalty_value`、`candidate_set_label_unknown_risk_for_accept`、`candidate_set_event_unknown_risk_for_accept`、`candidate_set_label_component_agreement_for_accept`。
+
+### 本地改动与验证
+
+|文件|用途|SHA256|
+|---|---|---|
+|`code/evaluation/collaborative_open_set_qknn_eval.py`|新增`soft_penalty`动作和软惩罚局部accept risk，穿透`dual_route_cvs`并汇总soft命中计数|`91876C2C9F419D8F6D80CE5E6AE0F8EA8F2A95B1B6F90D24FEF2FCEFABA3A516`|
+|`code/scripts/phase2_collaborative_open_set_qknn_eval.py`|CLI新增`--candidate_set_pairguard_soft_*`参数|`FC1018483D2FC8DC4C19C2FFACBFB3700CC49F780793DE6BA20A579E6FE3347D`|
+|`code/tests/test_collaborative_open_set_qknn_eval.py`|补充强证据保留accept、弱margin转入request_more的单测|`BA815A9BFBF52F1207583DC801299023FD3BF0AAF54F122C1743BF0D9210AB58`|
+
+本地快照：`E:\type10-7\code\snapshots\phase2_sr_pairfuse_soft_20260704\`。Git镜像提交：`4a0b42f Add soft pairguard penalty for candidate fusion`。
+
+验证命令：
+
+```text
+conda run --no-capture-output -n ssr-gpu python -m py_compile code/evaluation/collaborative_open_set_qknn_eval.py code/scripts/phase2_collaborative_open_set_qknn_eval.py
+conda run --no-capture-output -n ssr-gpu python -m pytest code/tests/test_collaborative_open_set_qknn_eval.py -k pairguard -q -p no:cacheprovider
+```
+
+结果：根工作区和Git镜像均通过；目标单测为`2 passed`。
+
+### N607计划
+
+远端继续使用`/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python`。同步3个文件后运行k=1..5全量矩阵。初始候选路线：
+
+|route|关键参数|目的|
+|---|---|---|
+|`sr_pairfuse_soft14_7_evt095`|`--candidate_set_pairguard_action soft_penalty --candidate_set_pairguard_labels 14-7 --candidate_set_pairguard_receiver_sets 20-1+3-19;7-14+7-7;3-19+7-14+7-7 --candidate_set_pairguard_soft_penalty 0.35 --candidate_set_pairguard_soft_min_margin 0.18 --candidate_set_pairguard_soft_min_pvalue 0.55 --candidate_set_pairguard_soft_min_reliability 0.75`|验证软惩罚是否相对硬veto/request_more恢复old/seen-new，同时继续降低高风险pair unknown false accept。|
+
+判据：不能只看unknown_FAR。主判断为同一k行内`old_acc`、`seen_new_acc`、`unknown_FAR/unknown_reject`、`request_more/defer`联合指标；若known明显低于`dualroute_noguard`，仍为diagnostic-only。
+
+### N607执行与结果
+
+N607 preflight通过，8张RTX3090均为`10/24576MiB`，选择GPU0。同步后远端哈希与本地一致，远端环境为`/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python`，`py_compile`通过。最终运行后GPU仍为`10/24576MiB`，本地无`ssh.exe`残留，无N607/bridge 22端口ESTABLISHED连接。
+
+远端同步哈希：
+
+|文件|SHA256|
+|---|---|
+|`code/evaluation/collaborative_open_set_qknn_eval.py`|`91876C2C9F419D8F6D80CE5E6AE0F8EA8F2A95B1B6F90D24FEF2FCEFABA3A516`|
+|`code/scripts/phase2_collaborative_open_set_qknn_eval.py`|`FC1018483D2FC8DC4C19C2FFACBFB3700CC49F780793DE6BA20A579E6FE3347D`|
+|`code/tests/test_collaborative_open_set_qknn_eval.py`|`BA815A9BFBF52F1207583DC801299023FD3BF0AAF54F122C1743BF0D9210AB58`|
+
+产物哈希：
+
+|route|JSON SHA256|CSV SHA256|
+|---|---|---|
+|`sr_pairfuse_soft14_7_evt095`|`9F500480D91523AD7D2F99777DFAC10D9932CD032F3D7F9A21C30E5359536956`|`C63A3DAC834C51CFE61BEB5DB03C3C9E672ADC567D403BB84D44F3A3A9208B93`|
+|`sr_pairfuse_soft14_7_relaxed_evt095`|`0F91910C9A698FEF6DF550FF452C4D52F72B279652809F5B86881E9CAAB1FA63`|`1EF8D8D701E409F0ACF9C75A0FCBA4EF92BF98CFF4FDAE4D979017EAF2816DCD`|
+|`sr_pairfuse_soft14_7_noguardbase_evt095`|`EA276BEAE58066CDEC9601DA14ED9F4B5A86B7EDF98B1E2B10F7F9F3DFE289C7`|`B81030AD096663A227F740B783BBD0647B3C219E5636CE54A9F923C5FDA232FB`|
+|`sr_pairfuse_soft_risklabels_evt095`|`7083070CC015584B8552672664521A9B5B282266D4842935524594BF22B67EA7`|`45D51A8C4F7A0451A6D73272ECFCA41FB8D53878B04B7FD1A3833E1B4FED5C04`|
+|`sr_pairfuse_soft_risklabels_lu095_evt095`|`2B5972D7481C339FD739C70319688D7FAD400E470DEBE186421E7F47361F50FA`|`C8F0B2DDCD996CD78C0383E9FF31D588FB6B58C1258EED1DCB1ACDCE247E2C78`|
+
+主结果表：
+
+|route|k|old_acc|min_old|seen_new_acc|min_seen|unknown_FAR|unknown_reject|defer|request_more|bytes/event|p95 ms|soft_rate|
+|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+|dualroute_noguard|2|0.5000|0.2000|0.5962|0.5625|0.1304|0.8696|0.0440|0.0000|80.0|0.1374|0.0000|
+|dualroute_noguard|3|0.6500|0.3000|0.7250|0.6000|0.0750|0.9000|0.0250|0.0000|120.0|0.1374|0.0000|
+|dualroute_noguard|4|0.8083|0.7000|0.7500|0.6000|0.0250|0.9500|0.0150|0.0000|150.0|0.1374|0.0000|
+|dualroute_noguard|5|0.7833|0.5500|0.7250|0.5500|0.0750|0.9000|0.0100|0.0000|168.6|0.1374|0.0000|
+|sr_pairfuse_soft14_7_evt095|2|0.2895|0.0000|0.3333|0.1000|0.0000|1.0000|0.0000|0.0040|80.0|0.1049|0.0040|
+|sr_pairfuse_soft14_7_evt095|3|0.2500|0.0000|0.5250|0.3500|0.0250|0.9750|0.0000|0.0000|120.0|0.1049|0.0000|
+|sr_pairfuse_soft14_7_evt095|4|0.3667|0.0000|0.4250|0.2000|0.0000|1.0000|0.0000|0.0200|149.6|0.1049|0.0000|
+|sr_pairfuse_soft14_7_evt095|5|0.3750|0.0000|0.3500|0.0500|0.0000|1.0000|0.0150|0.0000|167.8|0.1049|0.0000|
+|sr_pairfuse_soft14_7_noguardbase_evt095|2|0.4408|0.0000|0.4314|0.1500|0.1429|0.8571|0.0000|0.0000|80.0|0.1442|0.0040|
+|sr_pairfuse_soft14_7_noguardbase_evt095|3|0.7000|0.1500|0.8500|0.8000|0.2500|0.7500|0.0000|0.0000|120.0|0.1442|0.0000|
+|sr_pairfuse_soft14_7_noguardbase_evt095|4|0.8917|0.7500|0.8000|0.7000|0.2750|0.7250|0.0000|0.0000|149.6|0.1442|0.0000|
+|sr_pairfuse_soft14_7_noguardbase_evt095|5|0.8917|0.7500|0.7500|0.6000|0.3000|0.7000|0.0000|0.0000|167.8|0.1442|0.0000|
+|sr_pairfuse_soft_risklabels_lu095_evt095|2|0.3026|0.0000|0.3529|0.1500|0.0000|1.0000|0.0000|0.0000|80.0|0.1106|0.0556|
+|sr_pairfuse_soft_risklabels_lu095_evt095|3|0.3333|0.0000|0.7000|0.5500|0.0500|0.9500|0.0000|0.0000|120.0|0.1106|0.0600|
+|sr_pairfuse_soft_risklabels_lu095_evt095|4|0.4583|0.0500|0.5250|0.3000|0.0500|0.9500|0.0000|0.0000|149.6|0.1106|0.0600|
+|sr_pairfuse_soft_risklabels_lu095_evt095|5|0.4833|0.1000|0.4000|0.0500|0.1500|0.8500|0.0000|0.0000|167.8|0.1106|0.1050|
+
+判定：`SR-PairFuse`最小实现已接入并可审计，但仍未达目标。最佳known行来自`sr_pairfuse_soft14_7_noguardbase_evt095`，k=4达到`old_acc=0.8917`、`seen_new_acc=0.8000`，但unknown_FAR升到`0.2750`；最低FAR行来自`sr_pairfuse_soft_risklabels_lu095_evt095`的k=2，unknown_FAR为`0.0000`，但old/seen-new崩塌。两者都不能作为99/97/99成功证据。
+
+当前技术结论：手工label/receiver作用域的软惩罚只是在known保留和unknown拒识之间移动阈值，尚未解决星地信道下unknown与old/new空间重叠的问题。下一步需要把`rho_{r,y}`从query诊断改成support/proxy-known校准得到的pair风险先验，并引入强证据known bypass：当margin、pvalue、route一致性和receiver reliability同时强时不施加unknown-risk惩罚；当candidate为高风险label且label_unknown≈1.0但margin弱时才提高局部门槛。
+
+本轮仍为diagnostic-only，不能声明Stage2-C部署成功、不能声明99/97/99达标，不能将`receiver_domain_ranked`写成严格同物理事件协同。
+
 ## 2026-07-04 ADV3B02 pairguard_request_more执行计划
 
 ### 设计依据
