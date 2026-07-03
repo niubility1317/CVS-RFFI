@@ -4041,6 +4041,91 @@ conda run --no-capture-output -n ssr-gpu python -m pytest code\tests\test_phase2
 
 结论：下一步不应继续在当前`receiver_domain_ranked`/max-budget同分母集合上追求99/97/99，因为数据分母已先验缺类。可执行路线是重新导出带严格共享事件键且覆盖所有old/seen-new/unknown TX的多接收机query特征，或降低最大协同预算并用同分母集合明确声明覆盖范围；算法层Old-Floor-Aware ORBIT只能在同分母集合覆盖全部类别后再验证。
 
+### max=3同分母全类覆盖诊断
+
+为确认是否存在可用于算法优化的同分母全类集合，补跑`collab_counts=1,2,3`且`collab_group_policy=same_max_budget`。该设置把最大协同预算降到3，所有k=1..3均使用具备至少3个target receiver证据的同一批事件。
+
+远端产物：
+
+|artifact|SHA256|
+|---|---|
+|`phase2_adv3b02_collab_open_set_qknn_orbit_coproto_same_max3_adv3b02_20260704.json`|`0C45164B24B4E6807DEA52E0A97D00FBF9629606997C661599CA775BB3792BCF`|
+|`phase2_adv3b02_collab_open_set_qknn_orbit_coproto_same_max3_adv3b02_20260704_evidence.csv`|`A1DC72CEA46BC74B96D2BA77B3C55EA6BD6A8CACDCFB8719A9252020AC375D50`|
+
+运行后GPU仍为8张RTX3090均`10/24576MiB`，SSH/SCP后本地无`ssh.exe`残留，无N607和bridge 22端口`ESTABLISHED`连接。
+
+同分母统计：`receiver_count=5`、原始`group_count=307`、最大预算3同分母`eligible_group_count=200`、`collab_group_policy=same_max_budget`。该同分母集合覆盖全部old类和seen-new类：old每类`20`条，seen-new每类`20`条，unknown共`40`条。
+
+|k|total|old_total|seen_new_total|unknown_total|old_acc|min_old|seen_new_acc|min_seen|unknown_FAR|unknown_reject|defer|bytes/event|p95 ms|
+|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+|1|200|120|40|40|0.0000|0.0000|0.0000|0.0000|0.0000|0.5000|0.7550|40.0|0.1421|
+|2|200|120|40|40|0.3250|0.0000|0.3750|0.2500|0.0500|0.7750|0.3050|80.0|0.1421|
+|3|200|120|40|40|0.4833|0.1500|0.5500|0.5500|0.0250|0.8750|0.1000|120.0|0.1421|
+
+按类结果：
+
+|k|old按类准确率|seen-new按类准确率|unknown误接收标签|
+|---:|---|---|---|
+|2|`14-10=0.10,14-7=0.45,20-15=0.70,20-19=0.00,6-15=0.00,8-20=0.70`|`19-3=0.25,3-8=0.50`|`14-7:1,19-3:1`|
+|3|`14-10=0.15,14-7=0.70,20-15=0.65,20-19=0.15,6-15=0.40,8-20=0.85`|`19-3=0.55,3-8=0.55`|`14-7:1`|
+
+判定：max=3同分母集合可作为下一轮算法优化的有效诊断分母，因为它覆盖全部old和seen-new类；但当前ORBIT-COPROTO在该分母上仍只达到k=3`old_acc=0.4833`、`seen_new_acc=0.5500`、`unknown_FAR=0.0250`，距离目标很远。下一步算法必须先提升`20-19`、`6-15`、`14-10`这些old低类，同时不能牺牲unknown拒识；可在该分母上验证Old-Floor-Aware ORBIT，但参数来源必须是support/proxy-known，不能用unknown false accept调参。
+
+### Old-Floor-Aware ORBIT实现计划
+
+基于max=3全类同分母诊断，新增`orbit_old_floor_rescue_enabled`。该分支默认关闭，只在`fusion_policy=orbit_coproto`且输出标签属于old类时启用；条件全部来自support/conformal/节点风险字段，不使用unknown query调参。触发条件包括：候选rank、候选receiver数、class conformal pvalue、receiver-class reliability、support density、margin、label/event unknown risk、class shell risk、组件风险一致性和orbit trust。该分支用于验证是否能修复old类地板，但不能放宽unknown成功声明。
+
+本地改动与验证：
+
+|文件|用途|SHA256|
+|---|---|---|
+|`code/evaluation/collaborative_open_set_qknn_eval.py`|新增Old-Floor-Aware ORBIT救援决策、审计字段和聚合计数|`6FF261A2396A0791890DEF497C71AC1DE4BF2EF1054BA43F3C560A0CD398C1FC`|
+|`code/scripts/phase2_collaborative_open_set_qknn_eval.py`|CLI暴露`--orbit_old_floor_*`参数|`925D02C038741CE094F1DD0DA7D3AFB136176847881191B96091A36D940673FB`|
+|`code/tests/test_collaborative_open_set_qknn_eval.py`|新增救援正负测试，证明只救援support安全old候选且不误收unknown|`2C5D695DC0DA95F87582BAD55D5EF26786B3C85829C6B86C7329B6D19974DE12`|
+
+本地快照：`E:\type10-7\code\snapshots\phase2_orbit_old_floor_20260704_0440\`。
+
+验证：
+
+```text
+conda run --no-capture-output -n ssr-gpu python -m py_compile code\evaluation\collaborative_open_set_qknn_eval.py code\scripts\phase2_collaborative_open_set_qknn_eval.py
+conda run --no-capture-output -n ssr-gpu python -m pytest code\tests\test_collaborative_open_set_qknn_eval.py -q -p no:cacheprovider
+conda run --no-capture-output -n ssr-gpu python -m pytest code\tests\test_phase2_collaborative_open_set_qknn_eval.py -q -p no:cacheprovider
+conda run --no-capture-output -n ssr-gpu python code\scripts\phase2_collaborative_open_set_qknn_eval.py --help
+```
+
+结果：`py_compile`通过；主评估单测`56 passed`；脚本级单测`46 passed`；CLI help确认包含`--orbit_old_floor_*`参数。并行`conda run`仍会偶发Windows临时文件锁，串行重跑通过。
+
+N607计划：同步三处文件，远端验证哈希、`py_compile`和`unittest`后，在max=3全类同分母集合上运行`orbit_old_floor_rescue_enabled`诊断；该运行继续使用ADV3B02/qknn8、`receiver_domain_ranked`、`same_max_budget`和`class_shell_unknown_risk_enabled`，只作为诊断，不声明成功。
+
+### Old-Floor-Aware ORBIT诊断结果
+
+远端同步后哈希与本地一致；远端`py_compile`通过，`PYTHONPATH=code /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python code/tests/test_collaborative_open_set_qknn_eval.py`结果为`Ran 56 tests ... OK`。运行前后GPU仍为8张RTX3090均`10/24576MiB`。
+
+远端产物：
+
+|artifact|SHA256|
+|---|---|
+|`phase2_adv3b02_collab_open_set_qknn_orbit_old_floor_same_max3_adv3b02_20260704.json`|`F9F57923480DB813A94BA56831336A4FD25FA1ECEDA1D8365EA31514B4B33E71`|
+|`phase2_adv3b02_collab_open_set_qknn_orbit_old_floor_same_max3_adv3b02_20260704_evidence.csv`|`8BCAFAAB0F4B63AF77E2A2EC581D61591AD8B0FBF2647E20BA19083D4719DAE4`|
+
+|k|old_acc|min_old|seen_new_acc|min_seen|unknown_FAR|unknown_reject|defer|old_floor_rescue_count|rescue_by_role|bytes/event|p95 ms|
+|---:|---:|---:|---:|---:|---:|---:|---:|---:|---|---:|---:|
+|1|0.0000|0.0000|0.0000|0.0000|0.0000|0.5000|0.7550|0|`{}`|40.0|0.1055|
+|2|0.3250|0.0000|0.3750|0.2500|0.0500|0.7750|0.3050|37|`old:35,seen_new:1,unknown:1`|80.0|0.1055|
+|3|0.4833|0.1500|0.5500|0.5500|0.0250|0.8750|0.1000|48|`old:47,unknown:1`|120.0|0.1055|
+
+按类准确率与未启用Old-Floor救援的max=3同分母ORBIT完全一致：
+
+|k|old按类准确率|seen-new按类准确率|unknown误接收标签|
+|---:|---|---|---|
+|2|`14-10=0.10,14-7=0.45,20-15=0.70,20-19=0.00,6-15=0.00,8-20=0.70`|`19-3=0.25,3-8=0.50`|`14-7:1,19-3:1`|
+|3|`14-10=0.15,14-7=0.70,20-15=0.65,20-19=0.15,6-15=0.40,8-20=0.85`|`19-3=0.55,3-8=0.55`|`14-7:1`|
+
+判定：Old-Floor-Aware ORBIT的保守规则没有带来可度量提升。救援条件触发较多，但主要与已有ORBIT accept重叠；同时评估审计显示少量unknown也满足救援条件，说明不能继续简单放松old-floor门控。当前低类主要不是“安全old候选被阈值拒绝”，而是`20-19`、`6-15`、`14-10`在候选排序/原型证据层已被错分或证据质量不足。下一步应转向节点级证据质量提升：class-conditional多原型锚点、support-only class verifier或per-class prototype calibration，而不是继续放宽ORBIT接受阈值。
+
+本轮所有SSH/SCP后本地均已确认无`ssh.exe`残留，无N607和bridge 22端口`ESTABLISHED`连接。
+
 ## 2026-07-04 SR-PairFuse soft floor/strong bypass实现
 
 ### 设计依据

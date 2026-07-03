@@ -2403,6 +2403,20 @@ def run_evaluation(args: argparse.Namespace) -> dict[str, Any]:
         orbit_staleness_weight=float(args.orbit_staleness_weight),
         orbit_min_trust=float(args.orbit_min_trust),
         orbit_unknown_veto_risk=float(args.orbit_unknown_veto_risk),
+        orbit_old_floor_rescue_enabled=bool(args.orbit_old_floor_rescue_enabled),
+        orbit_old_floor_max_rank=int(args.orbit_old_floor_max_rank),
+        orbit_old_floor_min_receivers=int(args.orbit_old_floor_min_receivers),
+        orbit_old_floor_min_pvalue=float(args.orbit_old_floor_min_pvalue),
+        orbit_old_floor_min_receiver_class_reliability=float(
+            args.orbit_old_floor_min_receiver_class_reliability
+        ),
+        orbit_old_floor_min_support_density=float(args.orbit_old_floor_min_support_density),
+        orbit_old_floor_min_margin=float(args.orbit_old_floor_min_margin),
+        orbit_old_floor_max_label_unknown_risk=float(args.orbit_old_floor_max_label_unknown_risk),
+        orbit_old_floor_max_event_unknown_risk=float(args.orbit_old_floor_max_event_unknown_risk),
+        orbit_old_floor_max_shell_risk=float(args.orbit_old_floor_max_shell_risk),
+        orbit_old_floor_max_component_agreement=float(args.orbit_old_floor_max_component_agreement),
+        orbit_old_floor_min_trust=float(args.orbit_old_floor_min_trust),
         dual_route_rescue_min_pvalue=float(args.dual_route_rescue_min_pvalue),
         dual_route_rescue_min_receiver_class_reliability=float(
             args.dual_route_rescue_min_receiver_class_reliability
@@ -2658,6 +2672,18 @@ def parse_args() -> argparse.Namespace:
     p.add_argument("--orbit_staleness_weight", type=float, default=0.0)
     p.add_argument("--orbit_min_trust", type=float, default=0.10)
     p.add_argument("--orbit_unknown_veto_risk", type=float, default=0.80)
+    p.add_argument("--orbit_old_floor_rescue_enabled", action="store_true")
+    p.add_argument("--orbit_old_floor_max_rank", type=int, default=3)
+    p.add_argument("--orbit_old_floor_min_receivers", type=int, default=2)
+    p.add_argument("--orbit_old_floor_min_pvalue", type=float, default=0.25)
+    p.add_argument("--orbit_old_floor_min_receiver_class_reliability", type=float, default=0.30)
+    p.add_argument("--orbit_old_floor_min_support_density", type=float, default=0.20)
+    p.add_argument("--orbit_old_floor_min_margin", type=float, default=0.03)
+    p.add_argument("--orbit_old_floor_max_label_unknown_risk", type=float, default=0.55)
+    p.add_argument("--orbit_old_floor_max_event_unknown_risk", type=float, default=0.75)
+    p.add_argument("--orbit_old_floor_max_shell_risk", type=float, default=0.65)
+    p.add_argument("--orbit_old_floor_max_component_agreement", type=float, default=0.50)
+    p.add_argument("--orbit_old_floor_min_trust", type=float, default=0.0)
     p.add_argument("--include_event_results", action="store_true")
     p.add_argument("--dual_route_rescue_min_pvalue", type=float, default=0.75)
     p.add_argument("--dual_route_rescue_min_receiver_class_reliability", type=float, default=0.75)

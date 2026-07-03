@@ -497,6 +497,18 @@ def _fuse_event(
     orbit_staleness_weight: float = 0.0,
     orbit_min_trust: float = 0.10,
     orbit_unknown_veto_risk: float = 0.80,
+    orbit_old_floor_rescue_enabled: bool = False,
+    orbit_old_floor_max_rank: int = 3,
+    orbit_old_floor_min_receivers: int = 2,
+    orbit_old_floor_min_pvalue: float = 0.25,
+    orbit_old_floor_min_receiver_class_reliability: float = 0.30,
+    orbit_old_floor_min_support_density: float = 0.20,
+    orbit_old_floor_min_margin: float = 0.03,
+    orbit_old_floor_max_label_unknown_risk: float = 0.55,
+    orbit_old_floor_max_event_unknown_risk: float = 0.75,
+    orbit_old_floor_max_shell_risk: float = 0.65,
+    orbit_old_floor_max_component_agreement: float = 0.50,
+    orbit_old_floor_min_trust: float = 0.0,
 ) -> dict[str, Any]:
     active_components = _parse_risk_components(scorer_risk_components)
     policy = _normalize_scope(fusion_policy)
@@ -518,6 +530,44 @@ def _fuse_event(
     orbit_staleness_weight = _validate_non_negative(orbit_staleness_weight, "orbit_staleness_weight")
     orbit_min_trust = _validate_unit_interval(orbit_min_trust, "orbit_min_trust")
     orbit_unknown_veto_risk = _validate_unit_interval(orbit_unknown_veto_risk, "orbit_unknown_veto_risk")
+    orbit_old_floor_max_rank = max(1, int(orbit_old_floor_max_rank))
+    orbit_old_floor_min_receivers = max(1, int(orbit_old_floor_min_receivers))
+    orbit_old_floor_min_pvalue = _validate_unit_interval(
+        orbit_old_floor_min_pvalue,
+        "orbit_old_floor_min_pvalue",
+    )
+    orbit_old_floor_min_receiver_class_reliability = _validate_unit_interval(
+        orbit_old_floor_min_receiver_class_reliability,
+        "orbit_old_floor_min_receiver_class_reliability",
+    )
+    orbit_old_floor_min_support_density = _validate_unit_interval(
+        orbit_old_floor_min_support_density,
+        "orbit_old_floor_min_support_density",
+    )
+    orbit_old_floor_min_margin = _validate_non_negative(
+        orbit_old_floor_min_margin,
+        "orbit_old_floor_min_margin",
+    )
+    orbit_old_floor_max_label_unknown_risk = _validate_unit_interval(
+        orbit_old_floor_max_label_unknown_risk,
+        "orbit_old_floor_max_label_unknown_risk",
+    )
+    orbit_old_floor_max_event_unknown_risk = _validate_unit_interval(
+        orbit_old_floor_max_event_unknown_risk,
+        "orbit_old_floor_max_event_unknown_risk",
+    )
+    orbit_old_floor_max_shell_risk = _validate_unit_interval(
+        orbit_old_floor_max_shell_risk,
+        "orbit_old_floor_max_shell_risk",
+    )
+    orbit_old_floor_max_component_agreement = _validate_unit_interval(
+        orbit_old_floor_max_component_agreement,
+        "orbit_old_floor_max_component_agreement",
+    )
+    orbit_old_floor_min_trust = _validate_unit_interval(
+        orbit_old_floor_min_trust,
+        "orbit_old_floor_min_trust",
+    )
     candidate_set_event_high_unknown_risk_veto = _validate_non_negative(
         candidate_set_event_high_unknown_risk_veto,
         "candidate_set_event_high_unknown_risk_veto",
@@ -1434,6 +1484,25 @@ def _fuse_event(
             and decision_risk_component_agreement <= float(scorer_component_vote_threshold)
             and gate_passed
         )
+        orbit_old_floor_rescue_accept = bool(
+            policy == "orbit_coproto"
+            and bool(orbit_old_floor_rescue_enabled)
+            and output_label_set == "old"
+            and selected_label_min_evidence_rank <= int(orbit_old_floor_max_rank)
+            and selected_label_candidate_receivers >= int(orbit_old_floor_min_receivers)
+            and label_class_conformal_pvalue >= float(orbit_old_floor_min_pvalue)
+            and label_receiver_class_reliability >= float(orbit_old_floor_min_receiver_class_reliability)
+            and not label_support_density_missing
+            and label_support_density >= float(orbit_old_floor_min_support_density)
+            and mean_margin >= float(orbit_old_floor_min_margin)
+            and label_unknown_risk <= float(orbit_old_floor_max_label_unknown_risk)
+            and unknown_risk < float(orbit_old_floor_max_event_unknown_risk)
+            and label_shell_risk_observed
+            and label_shell_risk <= float(orbit_old_floor_max_shell_risk)
+            and decision_risk_component_agreement <= float(orbit_old_floor_max_component_agreement)
+            and label_orbit_trust >= float(orbit_old_floor_min_trust)
+            and gate_passed
+        )
         orbit_coproto_unknown_evidence = bool(
             policy == "orbit_coproto"
             and (
@@ -1460,7 +1529,7 @@ def _fuse_event(
         elif candidate_set_accept:
             decision = "accept"
             output_label = label
-        elif policy == "orbit_coproto" and orbit_coproto_accept:
+        elif policy == "orbit_coproto" and (orbit_coproto_accept or orbit_old_floor_rescue_accept):
             decision = "accept"
             output_label = label
         elif policy == "orbit_coproto" and orbit_coproto_unknown_evidence and within_request_budget:
@@ -1586,6 +1655,7 @@ def _fuse_event(
         "support_router_accept": bool(locals().get("support_router_accept", False)),
         "support_router_unknown_evidence": bool(locals().get("support_router_unknown_evidence", False)),
         "orbit_coproto_accept": bool(locals().get("orbit_coproto_accept", False)),
+        "orbit_old_floor_rescue_accept": bool(locals().get("orbit_old_floor_rescue_accept", False)),
         "orbit_coproto_unknown_evidence": bool(locals().get("orbit_coproto_unknown_evidence", False)),
         "orbit_label_trust": float(label_orbit_trust),
         "orbit_latency_weight": float(orbit_latency_weight),
@@ -1593,6 +1663,20 @@ def _fuse_event(
         "orbit_staleness_weight": float(orbit_staleness_weight),
         "orbit_min_trust": float(orbit_min_trust),
         "orbit_unknown_veto_risk": float(orbit_unknown_veto_risk),
+        "orbit_old_floor_rescue_enabled": bool(orbit_old_floor_rescue_enabled),
+        "orbit_old_floor_max_rank": int(orbit_old_floor_max_rank),
+        "orbit_old_floor_min_receivers": int(orbit_old_floor_min_receivers),
+        "orbit_old_floor_min_pvalue": float(orbit_old_floor_min_pvalue),
+        "orbit_old_floor_min_receiver_class_reliability": float(
+            orbit_old_floor_min_receiver_class_reliability
+        ),
+        "orbit_old_floor_min_support_density": float(orbit_old_floor_min_support_density),
+        "orbit_old_floor_min_margin": float(orbit_old_floor_min_margin),
+        "orbit_old_floor_max_label_unknown_risk": float(orbit_old_floor_max_label_unknown_risk),
+        "orbit_old_floor_max_event_unknown_risk": float(orbit_old_floor_max_event_unknown_risk),
+        "orbit_old_floor_max_shell_risk": float(orbit_old_floor_max_shell_risk),
+        "orbit_old_floor_max_component_agreement": float(orbit_old_floor_max_component_agreement),
+        "orbit_old_floor_min_trust": float(orbit_old_floor_min_trust),
         "candidate_set_min_receivers": int(candidate_set_min_receivers),
         "candidate_set_min_top1_receivers": int(candidate_set_min_top1_receivers),
         "candidate_set_min_conformal_pvalue": float(candidate_set_min_conformal_pvalue),
@@ -2666,6 +2750,18 @@ def _fuse_dual_route_event(
     orbit_staleness_weight: float = 0.0,
     orbit_min_trust: float = 0.10,
     orbit_unknown_veto_risk: float = 0.80,
+    orbit_old_floor_rescue_enabled: bool = False,
+    orbit_old_floor_max_rank: int = 3,
+    orbit_old_floor_min_receivers: int = 2,
+    orbit_old_floor_min_pvalue: float = 0.25,
+    orbit_old_floor_min_receiver_class_reliability: float = 0.30,
+    orbit_old_floor_min_support_density: float = 0.20,
+    orbit_old_floor_min_margin: float = 0.03,
+    orbit_old_floor_max_label_unknown_risk: float = 0.55,
+    orbit_old_floor_max_event_unknown_risk: float = 0.75,
+    orbit_old_floor_max_shell_risk: float = 0.65,
+    orbit_old_floor_max_component_agreement: float = 0.50,
+    orbit_old_floor_min_trust: float = 0.0,
     dual_route_rescue_min_pvalue: float = 0.75,
     dual_route_rescue_min_receiver_class_reliability: float = 0.75,
     dual_route_rescue_max_label_unknown_risk: float = 0.60,
@@ -2750,6 +2846,23 @@ def _fuse_dual_route_event(
         candidate_set_pairguard_soft_min_agreement=candidate_set_pairguard_soft_min_agreement,
         candidate_set_pairguard_soft_min_pvalue=candidate_set_pairguard_soft_min_pvalue,
         candidate_set_pairguard_soft_min_reliability=candidate_set_pairguard_soft_min_reliability,
+        orbit_latency_weight=orbit_latency_weight,
+        orbit_radius_risk_weight=orbit_radius_risk_weight,
+        orbit_staleness_weight=orbit_staleness_weight,
+        orbit_min_trust=orbit_min_trust,
+        orbit_unknown_veto_risk=orbit_unknown_veto_risk,
+        orbit_old_floor_rescue_enabled=orbit_old_floor_rescue_enabled,
+        orbit_old_floor_max_rank=orbit_old_floor_max_rank,
+        orbit_old_floor_min_receivers=orbit_old_floor_min_receivers,
+        orbit_old_floor_min_pvalue=orbit_old_floor_min_pvalue,
+        orbit_old_floor_min_receiver_class_reliability=orbit_old_floor_min_receiver_class_reliability,
+        orbit_old_floor_min_support_density=orbit_old_floor_min_support_density,
+        orbit_old_floor_min_margin=orbit_old_floor_min_margin,
+        orbit_old_floor_max_label_unknown_risk=orbit_old_floor_max_label_unknown_risk,
+        orbit_old_floor_max_event_unknown_risk=orbit_old_floor_max_event_unknown_risk,
+        orbit_old_floor_max_shell_risk=orbit_old_floor_max_shell_risk,
+        orbit_old_floor_max_component_agreement=orbit_old_floor_max_component_agreement,
+        orbit_old_floor_min_trust=orbit_old_floor_min_trust,
         can_request_more=can_request_more,
     )
     rescue = _fuse_event(
@@ -2826,6 +2939,23 @@ def _fuse_dual_route_event(
         candidate_set_pairguard_soft_min_agreement=candidate_set_pairguard_soft_min_agreement,
         candidate_set_pairguard_soft_min_pvalue=candidate_set_pairguard_soft_min_pvalue,
         candidate_set_pairguard_soft_min_reliability=candidate_set_pairguard_soft_min_reliability,
+        orbit_latency_weight=orbit_latency_weight,
+        orbit_radius_risk_weight=orbit_radius_risk_weight,
+        orbit_staleness_weight=orbit_staleness_weight,
+        orbit_min_trust=orbit_min_trust,
+        orbit_unknown_veto_risk=orbit_unknown_veto_risk,
+        orbit_old_floor_rescue_enabled=orbit_old_floor_rescue_enabled,
+        orbit_old_floor_max_rank=orbit_old_floor_max_rank,
+        orbit_old_floor_min_receivers=orbit_old_floor_min_receivers,
+        orbit_old_floor_min_pvalue=orbit_old_floor_min_pvalue,
+        orbit_old_floor_min_receiver_class_reliability=orbit_old_floor_min_receiver_class_reliability,
+        orbit_old_floor_min_support_density=orbit_old_floor_min_support_density,
+        orbit_old_floor_min_margin=orbit_old_floor_min_margin,
+        orbit_old_floor_max_label_unknown_risk=orbit_old_floor_max_label_unknown_risk,
+        orbit_old_floor_max_event_unknown_risk=orbit_old_floor_max_event_unknown_risk,
+        orbit_old_floor_max_shell_risk=orbit_old_floor_max_shell_risk,
+        orbit_old_floor_max_component_agreement=orbit_old_floor_max_component_agreement,
+        orbit_old_floor_min_trust=orbit_old_floor_min_trust,
         can_request_more=can_request_more,
     )
     rescue_ok = _dual_route_rescue_ok(
@@ -2913,6 +3043,8 @@ def _finalize_metrics(
     support_router_accept_by_role: defaultdict[str, int] = defaultdict(int)
     support_router_unknown_evidence_total = 0
     support_router_unknown_evidence_by_role: defaultdict[str, int] = defaultdict(int)
+    orbit_old_floor_rescue_total = 0
+    orbit_old_floor_rescue_by_role: defaultdict[str, int] = defaultdict(int)
     dual_route_rescue_total = 0
     dual_route_rescue_by_role: defaultdict[str, int] = defaultdict(int)
 
@@ -2975,6 +3107,9 @@ def _finalize_metrics(
         if bool(item.get("support_router_unknown_evidence", False)):
             support_router_unknown_evidence_total += 1
             support_router_unknown_evidence_by_role[role] += 1
+        if bool(item.get("orbit_old_floor_rescue_accept", False)):
+            orbit_old_floor_rescue_total += 1
+            orbit_old_floor_rescue_by_role[role] += 1
         if str(item.get("dual_route_selected_route", "")) == "rescue":
             dual_route_rescue_total += 1
             dual_route_rescue_by_role[role] += 1
@@ -3202,6 +3337,9 @@ def _finalize_metrics(
         "support_router_unknown_evidence_by_role": dict(
             sorted(support_router_unknown_evidence_by_role.items())
         ),
+        "orbit_old_floor_rescue_count": int(orbit_old_floor_rescue_total),
+        "orbit_old_floor_rescue_rate": _safe_rate(orbit_old_floor_rescue_total, total_events),
+        "orbit_old_floor_rescue_by_role": dict(sorted(orbit_old_floor_rescue_by_role.items())),
         "dual_route_rescue_count": int(dual_route_rescue_total),
         "dual_route_rescue_rate": _safe_rate(dual_route_rescue_total, total_events),
         "dual_route_rescue_by_role": dict(sorted(dual_route_rescue_by_role.items())),
@@ -3422,6 +3560,18 @@ def evaluate_collaborative_open_set_evidence(
     orbit_staleness_weight: float = 0.0,
     orbit_min_trust: float = 0.10,
     orbit_unknown_veto_risk: float = 0.80,
+    orbit_old_floor_rescue_enabled: bool = False,
+    orbit_old_floor_max_rank: int = 3,
+    orbit_old_floor_min_receivers: int = 2,
+    orbit_old_floor_min_pvalue: float = 0.25,
+    orbit_old_floor_min_receiver_class_reliability: float = 0.30,
+    orbit_old_floor_min_support_density: float = 0.20,
+    orbit_old_floor_min_margin: float = 0.03,
+    orbit_old_floor_max_label_unknown_risk: float = 0.55,
+    orbit_old_floor_max_event_unknown_risk: float = 0.75,
+    orbit_old_floor_max_shell_risk: float = 0.65,
+    orbit_old_floor_max_component_agreement: float = 0.50,
+    orbit_old_floor_min_trust: float = 0.0,
     dual_route_rescue_min_pvalue: float = 0.75,
     dual_route_rescue_min_receiver_class_reliability: float = 0.75,
     dual_route_rescue_max_label_unknown_risk: float = 0.60,
@@ -3830,6 +3980,20 @@ def evaluate_collaborative_open_set_evidence(
                     orbit_staleness_weight=orbit_staleness_weight,
                     orbit_min_trust=orbit_min_trust,
                     orbit_unknown_veto_risk=orbit_unknown_veto_risk,
+                    orbit_old_floor_rescue_enabled=orbit_old_floor_rescue_enabled,
+                    orbit_old_floor_max_rank=orbit_old_floor_max_rank,
+                    orbit_old_floor_min_receivers=orbit_old_floor_min_receivers,
+                    orbit_old_floor_min_pvalue=orbit_old_floor_min_pvalue,
+                    orbit_old_floor_min_receiver_class_reliability=(
+                        orbit_old_floor_min_receiver_class_reliability
+                    ),
+                    orbit_old_floor_min_support_density=orbit_old_floor_min_support_density,
+                    orbit_old_floor_min_margin=orbit_old_floor_min_margin,
+                    orbit_old_floor_max_label_unknown_risk=orbit_old_floor_max_label_unknown_risk,
+                    orbit_old_floor_max_event_unknown_risk=orbit_old_floor_max_event_unknown_risk,
+                    orbit_old_floor_max_shell_risk=orbit_old_floor_max_shell_risk,
+                    orbit_old_floor_max_component_agreement=orbit_old_floor_max_component_agreement,
+                    orbit_old_floor_min_trust=orbit_old_floor_min_trust,
                 )
             first = selected[0]
             fused["role"] = _role(first.get("role"))
@@ -3977,6 +4141,20 @@ def evaluate_collaborative_open_set_evidence(
         "orbit_staleness_weight": float(orbit_staleness_weight),
         "orbit_min_trust": float(orbit_min_trust),
         "orbit_unknown_veto_risk": float(orbit_unknown_veto_risk),
+        "orbit_old_floor_rescue_enabled": bool(orbit_old_floor_rescue_enabled),
+        "orbit_old_floor_max_rank": int(orbit_old_floor_max_rank),
+        "orbit_old_floor_min_receivers": int(orbit_old_floor_min_receivers),
+        "orbit_old_floor_min_pvalue": float(orbit_old_floor_min_pvalue),
+        "orbit_old_floor_min_receiver_class_reliability": float(
+            orbit_old_floor_min_receiver_class_reliability
+        ),
+        "orbit_old_floor_min_support_density": float(orbit_old_floor_min_support_density),
+        "orbit_old_floor_min_margin": float(orbit_old_floor_min_margin),
+        "orbit_old_floor_max_label_unknown_risk": float(orbit_old_floor_max_label_unknown_risk),
+        "orbit_old_floor_max_event_unknown_risk": float(orbit_old_floor_max_event_unknown_risk),
+        "orbit_old_floor_max_shell_risk": float(orbit_old_floor_max_shell_risk),
+        "orbit_old_floor_max_component_agreement": float(orbit_old_floor_max_component_agreement),
+        "orbit_old_floor_min_trust": float(orbit_old_floor_min_trust),
         "dual_route_rescue_min_pvalue": float(dual_route_rescue_min_pvalue),
         "dual_route_rescue_min_receiver_class_reliability": float(
             dual_route_rescue_min_receiver_class_reliability
