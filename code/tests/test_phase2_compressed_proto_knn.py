@@ -156,3 +156,34 @@ def test_weighted_anchor_memory_uses_counts_without_storing_support():
     ).tolist() == ["old-a"]
     assert "support_features" not in memory.__dict__
     assert "support_labels" not in memory.__dict__
+
+
+def test_loo_knn1_agreement_downweights_anchor_that_disagrees_with_support_teacher():
+    support = np.asarray(
+        [
+            [1.0, 0.0],
+            [0.98, 0.05],
+            [0.18, 0.98],
+            [0.0, 1.0],
+            [0.05, 0.99],
+            [0.10, 0.96],
+        ],
+        dtype=np.float64,
+    )
+    labels = np.asarray(["old-a", "old-a", "old-a", "new-b", "new-b", "new-b"], dtype=object)
+
+    memory = build_compressed_memory(
+        support,
+        labels,
+        old_labels={"old-a"},
+        prototypes_per_class=2,
+        prototype_mode="medoid",
+        prototype_weight_mode="loo_knn1_agreement",
+    )
+
+    old_weights = memory.prototype_weights[memory.prototype_labels == "old-a"]
+
+    assert old_weights.min() < 1.0
+    assert old_weights.max() > 1.0
+    assert "support_features" not in memory.__dict__
+    assert "support_labels" not in memory.__dict__

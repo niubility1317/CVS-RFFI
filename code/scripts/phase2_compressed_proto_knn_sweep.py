@@ -149,6 +149,34 @@ def _subprototypes(features: np.ndarray, count: int, seed: int, mode: str) -> li
     return [center_matrix[idx] for idx in range(count)]
 
 
+def _loo_knn1_teacher_labels(features: np.ndarray, labels: np.ndarray) -> np.ndarray:
+    if features.shape[0] <= 1:
+        return labels.copy()
+    sims = features @ features.T
+    np.fill_diagonal(sims, -np.inf)
+    return labels[np.argmax(sims, axis=1)]
+
+
+def _loo_knn1_agreement_weights(
+    features: np.ndarray,
+    labels: np.ndarray,
+    prototype_matrix: np.ndarray,
+    prototype_labels: np.ndarray,
+) -> np.ndarray:
+    teacher_labels = _loo_knn1_teacher_labels(features, labels)
+    winners = np.argmax(features @ prototype_matrix.T, axis=1)
+    weights: list[float] = []
+    for idx, prototype_label in enumerate(prototype_labels):
+        assigned = winners == idx
+        if not np.any(assigned):
+            weights.append(1.0)
+            continue
+        agree = int(np.sum(teacher_labels[assigned] == prototype_label))
+        disagree = int(np.sum(teacher_labels[assigned] != prototype_label))
+        weights.append(float((agree + 1.0) / (disagree + 1.0)))
+    return np.asarray(weights, dtype=np.float64)
+
+
 def build_compressed_memory(
     support_features: np.ndarray,
     support_labels: np.ndarray,
@@ -193,6 +221,8 @@ def build_compressed_memory(
                     weight = 1.0
                 elif prototype_weight_mode == "assigned_count":
                     weight = float(members.shape[0])
+                elif prototype_weight_mode == "loo_knn1_agreement":
+                    weight = 1.0
                 else:
                     raise ValueError(f"Unsupported prototype_weight_mode: {prototype_weight_mode}")
             prototypes.append(center)
@@ -201,11 +231,18 @@ def build_compressed_memory(
             prototype_weights.append(weight)
             prototype_is_old.append(label in old)
 
+    prototype_matrix = _normalize_rows(np.vstack(prototypes))
+    prototype_label_array = np.asarray(prototype_labels, dtype=object)
+    if prototype_weight_mode == "loo_knn1_agreement":
+        prototype_weight_array = _loo_knn1_agreement_weights(features, labels, prototype_matrix, prototype_label_array)
+    else:
+        prototype_weight_array = np.asarray(prototype_weights, dtype=np.float64)
+
     return CompressedMemory(
-        prototype_matrix=_normalize_rows(np.vstack(prototypes)),
-        prototype_labels=np.asarray(prototype_labels, dtype=object),
+        prototype_matrix=prototype_matrix,
+        prototype_labels=prototype_label_array,
         prototype_radii=np.asarray(prototype_radii, dtype=np.float64),
-        prototype_weights=np.asarray(prototype_weights, dtype=np.float64),
+        prototype_weights=prototype_weight_array,
         prototype_is_old=np.asarray(prototype_is_old, dtype=bool),
         counts=counts,
     )
