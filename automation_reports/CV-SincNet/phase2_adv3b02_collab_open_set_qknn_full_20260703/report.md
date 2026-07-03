@@ -3916,6 +3916,48 @@ N607同步后远端哈希与本地一致；远端验证`52 tests OK`。实际运
 
 最终SSH/SCP后本地无`ssh.exe`残留，无N607和bridge 22端口ESTABLISHED连接。
 
+## 2026-07-04 SR-PairFuse soft floor/strong bypass实现
+
+### 设计依据
+
+上一轮`sr_pairfuse_soft14_7_noguardbase_evt095`证明：取消硬pairguard后，k=4/k=5的old可恢复到`0.8917`，但unknown_FAR仍为`0.2750/0.3000`。逐事件审计显示，部分unknown false accept具有较高score或pvalue，单纯按弱证据比例惩罚会出现`soft_weakness=0`从而放行；但强证据old/seen-new事件又不能被无差别硬拦截。因此本轮新增两个机制：
+
+|机制|参数|作用|
+|---|---|---|
+|强证据保护|`candidate_set_pairguard_soft_strong_bypass`|命中高风险pairguard边界时，若margin、agreement、conformal pvalue、receiver-class reliability均达到配置下限，则不施加soft penalty。|
+|弱证据最低惩罚|`candidate_set_pairguard_soft_floor`|命中高风险pairguard边界且未满足强证据保护时，即使比例惩罚很小，也至少把accept风险抬高到可阻断边界误接收的水平。|
+
+该机制仍是diagnostic route：pairguard label/receiver组合来自当前评估集错误分布，正式论文叙述不能把unknown query调参作为可部署先验；若保留该方向，应改为source/support/proxy-known校准得到风险表。
+
+### 本地改动与验证
+
+|文件|用途|SHA256|
+|---|---|---|
+|`code/evaluation/collaborative_open_set_qknn_eval.py`|新增`candidate_set_pairguard_soft_floor`参数，补强证据bypass，并把floor记录到事件、顶层metadata和汇总审计指标；修正默认门槛真空bypass和shell缺失bypass风险。|`30D0D710154AA962C483DEB1E2D5257630CA9ECB43EBB39481B0E8B83CB347B6`|
+|`code/scripts/phase2_collaborative_open_set_qknn_eval.py`|CLI新增`--candidate_set_pairguard_soft_floor`并传入评估函数。|`EA2875D99F79528AE0D0137BCA2EB372282499B2CAA193C9904DB5C0FF89F980`|
+|`code/tests/test_collaborative_open_set_qknn_eval.py`|补充强证据bypass、弱证据floor触发、默认门槛不得真空bypass、shell缺失不得bypass、非法floor校验。|`57F45DC3BDA05C83D4065A534F0804711DD6F05713B84F9C5F82F7C61F03D4F8`|
+
+本地快照：`E:\type10-7\code\snapshots\phase2_sr_pairfuse_floor_20260704\`。
+
+验证命令：
+
+```text
+conda run --no-capture-output -n ssr-gpu python -m py_compile code/evaluation/collaborative_open_set_qknn_eval.py code/scripts/phase2_collaborative_open_set_qknn_eval.py
+conda run --no-capture-output -n ssr-gpu python -m pytest code/tests/test_collaborative_open_set_qknn_eval.py -k pairguard -q -p no:cacheprovider
+```
+
+结果：`py_compile`通过；pairguard相关测试`2 passed,50 deselected`。Git镜像提交：`272a5e2 Add pairguard soft floor bypass`，安全修正提交：`93cb0c7 Guard pairguard soft bypass`。
+
+### N607执行计划
+
+远端Python环境固定为`/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python`。计划同步上述三个文件到N607，先做远端`py_compile`，再在显存占用最低的GPU上运行k=1..5全量星地信道评估：
+
+|run|关键参数|目的|
+|---|---|---|
+|`candidate_set_cvs_sr_pairfuse_floor_risklabels_evt095_adv3b02`|`--collab_counts all --collab_group_policy available_up_to_k --partial_collab_min_receivers 3 --candidate_set_pairguard_action soft_penalty --candidate_set_pairguard_soft_penalty 0.35 --candidate_set_pairguard_soft_floor 0.35 --candidate_set_pairguard_soft_min_margin 0.50 --candidate_set_pairguard_soft_min_pvalue 0.75 --candidate_set_pairguard_soft_min_reliability 0.85`|验证弱证据floor能否在保留k=4/k=5 known性能的同时压低unknown false accept。|
+
+成功标准仍为：old_acc≥`0.99`且各old类≥`0.95`，seen_new_acc≥`0.97`且各seen-new类≥`0.93`，unknown拒识≥`0.99`。未达到时只能作为diagnostic evidence。
+
 ## 2026-07-04 SR-PairFuse软pairguard执行计划
 
 ### 设计依据
