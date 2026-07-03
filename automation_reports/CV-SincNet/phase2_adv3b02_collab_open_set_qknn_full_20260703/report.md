@@ -1249,3 +1249,29 @@ python E:\type10-7\code\tests\test_collaborative_open_set_qknn_eval.py
 |`vote_margin_density_prior`|`deployment_prior`|带新字段但不改变可靠度，作为回归对照。|
 |`vote_margin_density_support`|`support_density`|用本地top-k标签密度作为receiver reliability。|
 |`vote_margin_density_margin`|`margin_density`|用support density乘以margin强度，进一步降低低margin receiver权重。|
+
+远端验证与运行结果：N607使用`CVS-RFFI`环境，`py_compile`通过，`test_phase2_collaborative_open_set_qknn_eval.py`为17 tests OK，`test_collaborative_open_set_qknn_eval.py`为24 tests OK。三组诊断均输出`receiver_count=5`、`group_count=308`、`evidence_row_count=1000`。运行前后8张RTX3090均为`10/24576MiB`，无新增显存占用。SSH/SCP后本地检查无残留`ssh.exe`或22端口`ESTABLISHED`连接。
+
+拉回产物与SHA256：
+
+|产物|SHA256|
+|---|---|
+|`remote_artifacts/collab_open_set_qknn_scorer_cvs_evt_adaptive_gain_vote_margin_density_deployment_prior.json`|`0016E3B711D6718BBD6DA535063B9880C9150262ACBDFAF55B69DB00F158B8F1`|
+|`remote_artifacts/collab_open_set_qknn_scorer_cvs_evt_adaptive_gain_vote_margin_density_deployment_prior_evidence.csv`|`58A3321DE47FB85959784FC3EB20C76DA6854886A7314D62F41DB1CDC26D4953`|
+|`remote_artifacts/collab_open_set_qknn_scorer_cvs_evt_adaptive_gain_vote_margin_density_support_density.json`|`05206F330289DAF0D528B27B9572A0D44303DB9BE9D3F144D6D45E04CE17E183`|
+|`remote_artifacts/collab_open_set_qknn_scorer_cvs_evt_adaptive_gain_vote_margin_density_support_density_evidence.csv`|`9BA135B70C137DEE1DB5C19BE4CF28D5EC59B86F807A9EB53F82A54DA2BA9598`|
+|`remote_artifacts/collab_open_set_qknn_scorer_cvs_evt_adaptive_gain_vote_margin_density_margin_density.json`|`2B6222B222097B937533B37B3C5CCFDD4F6081D63023AA0882F36C8665D46DD8`|
+|`remote_artifacts/collab_open_set_qknn_scorer_cvs_evt_adaptive_gain_vote_margin_density_margin_density_evidence.csv`|`7C51F552D161BCBB611B5422EF5E8C92BA1DB2854EB7DADC8A2E85058950CD61`|
+
+预算4/5主结果对比：
+
+|候选|预算|old_acc|min_old|seen_new_acc|min_seen_new|unknown_FAR|unknown_reject|defer_rate|avg_rx|结论|
+|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---|
+|`deployment_prior`|4|0.3103|0.0000|0.4857|0.3000|0.0000|0.8438|0.3182|3.2987|回归对照，等同上一轮`vote_margin_norole`。|
+|`deployment_prior`|5|0.3654|0.0000|0.2500|0.0000|0.0000|0.7000|0.4022|4.2391|安全但coverage不足。|
+|`support_density`|4|0.2414|0.0000|0.5143|0.3500|0.0000|0.6875|0.3961|3.2922|提高seen-new，但old下降、defer升高。|
+|`support_density`|5|0.3846|0.0000|0.3000|0.0000|0.0000|0.6000|0.4239|4.2174|预算5 old/seen-new略升，仍远低目标。|
+|`margin_density`|4|0.2414|0.0000|0.5429|0.3500|0.0625|0.5000|0.4610|3.4091|seen-new最高但FAR回升，不适合作为安全候选。|
+|`margin_density`|5|0.3846|0.0000|0.3000|0.0000|0.0500|0.3500|0.5109|4.3913|FAR不满足约束。|
+
+判定：support density证据是有效诊断字段，但直接作为receiver reliability不是充分解法。它可以提升seen-new，预算4从0.4857到0.5143，预算5从0.2500到0.3000，并保持FAR=0；但old_acc下降，说明简单密度加权会压低部分旧类少数正确证据。margin_density进一步提高seen-new但引入FAR，不应作为安全主线。下一步应将support density改为label-conditioned gate/diagnostic字段，而不是统一替代receiver reliability；同时需要导出每个label的第二候选、label-conditioned radius z-score或Gaussian prototype log-likelihood，才能把“未知像新类”与“真实seen-new局部密集”分开。
