@@ -3961,6 +3961,47 @@ conda run --no-capture-output -n ssr-gpu python -m pytest code\tests\test_collab
 
 成功判据不变：old整体`>=0.99`且per-class`>=0.95`，seen-new整体`>=0.97`且per-class`>=0.93`，unknown reject`>=0.99`。未达到则继续标为diagnostic-only。
 
+### N607执行与结果
+
+N607 direct preflight通过，远端项目根为`/home/szu2070436088/2510044040/CV-SincNet`。远端使用`/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python`，版本为`Python 3.10.19`。同步后远端hash与本地一致，`py_compile`通过；远端`CVS-RFFI`环境使用标准库`unittest`验证，`test_collaborative_open_set_qknn_eval.py`为`61 tests OK`，`test_phase2_collaborative_open_set_qknn_eval.py`为`50 tests OK`。远端存在本地没有的根目录`evaluation/`会遮蔽`code/evaluation/`，因此单测从`/tmp`启动并显式设置`PYTHONPATH=/home/szu2070436088/2510044040/CV-SincNet/code`。
+
+运行前后8张RTX3090均为`10/24576MiB`，GPU utilization为`0%`或瞬时`1%`；本轮按低显存占用要求使用GPU0。两组运行均输出`receiver_count=5`、`group_count=307`、`evidence_row_count=1000`，JSON内`qknn_metadata.qknn_k=8`，协同规模为target receiver coalition k=1..5。
+
+|route|JSON SHA256|CSV SHA256|
+|---|---|---|
+|`known_guarded_rescue`|`345D8924B9ED3B27FFE5BE415F14FC351282DE69C9D2B812FDD96C544CE13110`|`5F346429EA216007DF7158545790FA5959346502DFB9F930751E04FDC56A3AD3`|
+|`known_guarded_rescue_loose`|`19557ECE52102C528D062D1D3CB17B9B1A9566E49A5AF8CD4A2418989E97F847`|`3F0772C41575052EFE939E578229E64509618FC7B2A86C6425417AF1CD5AB8AC`|
+
+本地产物目录：`E:\type10-7\remote_artifacts\phase2_adv3b02_collab_open_set_qknn_full_20260703\`。
+
+#### guarded结果
+
+|k|old_acc|min_old|seen_new_acc|min_seen|unknown_FAR|unknown_reject|defer|request_more|rescue|
+|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+|1|0.0000|0.0000|0.0000|0.0000|0.0000|0.1167|0.1433|0.8143|0|
+|2|0.2763|0.0000|0.2500|0.0000|0.0652|0.0870|0.1000|0.5920|0|
+|3|0.3500|0.0000|0.5500|0.0000|0.0250|0.1250|0.1050|0.5100|0|
+|4|0.6667|0.0000|0.6500|0.0000|0.0500|0.3250|0.2000|0.1650|0|
+|5|0.6333|0.0000|0.6000|0.0000|0.0250|0.4500|0.3400|0.0000|0|
+
+#### loose结果
+
+|k|old_acc|min_old|seen_new_acc|min_seen|unknown_FAR|unknown_reject|defer|request_more|rescue|
+|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+|1|0.0000|0.0000|0.0000|0.0000|0.0000|0.1167|0.1433|0.8143|0|
+|2|0.3224|0.0000|0.2885|0.0000|0.0652|0.0870|0.0960|0.5600|0|
+|3|0.4167|0.0000|0.5750|0.0000|0.0500|0.0000|0.1150|0.4600|0|
+|4|0.7417|0.0000|0.7250|0.0000|0.0750|0.1750|0.1850|0.1400|0|
+|5|0.7333|0.0000|0.7000|0.0000|0.0750|0.2500|0.2950|0.0000|0|
+
+### 判定
+
+`known_guarded_rescue`默认门槛过保守，`known_guarded_rescue_count=0`；性能提升主要来自较低`candidate_set_min_conformal_pvalue`带来的`strong_known_accept`增加。loose版本说明放宽known accept确实能提升known覆盖：k=5从上一轮selective-confirm的`old_acc=0.6000/seen_new_acc=0.6000`提升到`old_acc=0.7333/seen_new_acc=0.7000`。但它仍未达到OLD80_FIRST的`old_acc>=0.80`，且`unknown_FAR=0.0750`超过`<=0.05`阶段约束；per-class最低值仍为0。因此本轮仍是diagnostic-only，不能声明Stage2-C成功或卫星群部署成功。
+
+下一步不应继续全局放宽known accept。当前证据表明需要把救援从全局阈值改成receiver-label局部先验或原型层修正：按`receiver_id × label`统计support-calibrated可靠性、known/unknown风险分布和pair-risk组合，只对历史稳定的receiver-label路径降低门槛；同时对unknown高风险receiver组合保持reject/defer。若仍使用当前qknn8证据，不做局部先验或特征/原型修正，old/new覆盖和unknown FAR之间会继续互相牵制。
+
+最终SSH/SCP后本地无`ssh.exe`残留，无N607和bridge 22端口ESTABLISHED连接。
+
 ## 2026-07-04 selective-confirm qknn8全量执行与review修正结果
 
 ### review修正
