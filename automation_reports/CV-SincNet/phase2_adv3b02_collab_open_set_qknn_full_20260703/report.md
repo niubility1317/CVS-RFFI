@@ -2811,3 +2811,83 @@ N607直连预检通过，项目根为`/home/szu2070436088/2510044040/CV-SincNet`
 `candidate_support_utility`体现了资源收益：k=3平均只使用`2.655`个receiver、`106.2 bytes/event`，相对固定3 receiver的`120 bytes/event`更省，并保持`unknown_FAR=0.0500`；但known性能低于固定候选集融合。说明当前按需协同的utility函数仍偏保守，适合作为资源受限模式，不是性能最优模式。
 
 本轮不能标记目标完成。当前最有价值的推进是：已经把瓶颈从“未知类拒识单独压FAR”推进到“top-M候选集能恢复known，但old floor和严格class coverage仍不足”。下一步应围绕两个方向继续：1）在候选集融合里加入receiver-class可靠度`w_{r,y}`，专门处理`min_old=0`的类别；2）若目标仍要求99/97/99，需要回到地面训练或轻量adapter训练阶段增强class-conditional compactness，仅靠后处理融合已经接近上限。
+
+## 2026-07-04 receiver-class可靠度`w_{r,y}`协同融合
+
+### 目标
+
+上一轮`candidate_set_cvs`说明正确类别常在top-M候选集中，但不同receiver对不同类的support质量不一致，导致某些旧类被高分但低可靠receiver持续压制。本轮新增显式`receiver_class_reliability_policy=support_calibrated`：每个receiver只用本地target-old/seen-new support校准分数，为每个候选类生成`w_{r,y}`，融合时将该权重乘入类候选证据。该机制不使用unknown query拟合阈值，不使用query真实role，只使用support-derived校准统计。
+
+### 本地变更与验证
+
+|文件|变更|
+|---|---|
+|`code/evaluation/collaborative_open_set_qknn_eval.py`|新增`receiver_class_reliability_policy`和`label_receiver_class_reliability`；`cp_set_cvs`、`candidate_set_cvs`、`support_utility`、`rb_capr_utility`等路径均可使用`w_{r,y}`。|
+|`code/scripts/phase2_collaborative_open_set_qknn_eval.py`|新增support侧`_receiver_class_reliability_from_support()`；evidence记录`receiver_class_reliability`和`class_evidence_top{m}_receiver_class_reliability`；metadata记录每receiver每类可靠度表。|
+|`code/tests/test_collaborative_open_set_qknn_eval.py`|新增回归测试：开启`support_calibrated`后，低分但高receiver-class可靠度的正确类可压过高分低可靠类；默认关闭时保持原分数排序。|
+
+验证结果：
+
+|环境|命令|结果|
+|---|---|---|
+|local `ssr-gpu`|`python -m py_compile code\evaluation\collaborative_open_set_qknn_eval.py code\scripts\phase2_collaborative_open_set_qknn_eval.py code\tests\test_collaborative_open_set_qknn_eval.py`|PASS|
+|local `ssr-gpu`|`python -m unittest discover -s code\tests -p "test_collaborative_open_set_qknn_eval.py"`|42 tests OK|
+|local `ssr-gpu`|`python -m unittest discover -s code\tests -p "test_phase2_collaborative_open_set_qknn_eval.py"`|44 tests OK|
+|Git镜像|同上|42+44 tests OK|
+|Git提交|`33bdc1b Add receiver class reliability fusion weights`|已提交到`E:\type10-7\github_publish\CVS-RFFI-repo`，当前分支领先远端290。|
+
+由于`E:\type10-7`根目录不是Git仓库，代码快照保存在`E:\type10-7\code\snapshots\receiver_class_reliability_20260704\`。
+
+### N607同步与验证
+
+N607直连预检通过，项目根为`/home/szu2070436088/2510044040/CV-SincNet`。远端使用`/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python`，Python3.10.19。同步后远端编译PASS，`test_collaborative_open_set_qknn_eval.py`为42 tests OK，`test_phase2_collaborative_open_set_qknn_eval.py`为44 tests OK。运行前后8张RTX3090均为`10 MiB/24576 MiB`，未见GPU compute app；每次SSH/SCP后本地检查均为无残留`ssh.exe`、无N607/bridge 22端口`ESTABLISHED`连接。
+
+远端SHA256：
+
+|文件|SHA256|
+|---|---|
+|`code/evaluation/collaborative_open_set_qknn_eval.py`|`b982e1a41f1f883773e253ad497736f9dec56e578c75462871b065eab1a6ff23`|
+|`code/scripts/phase2_collaborative_open_set_qknn_eval.py`|`727a5602816386e1eb819c2e6cc3729469845b4b8a2a558fb7c9e0d42f88b1f0`|
+|`code/tests/test_collaborative_open_set_qknn_eval.py`|`9bb02a5e00a8ab23ede86c963f6961ee10af89b40dea9141e525e56d9cc95e9c`|
+
+本轮复用远端`runs/phase2_adv3b02_collab_open_set_qknn_full_20260703/features.npz`，该特征对应`ADV3B02_CORE90_SOFT_E200`、Stage2-C、qknn8、target receiver 1到5和`leo_clear_weak,leo_low_elev_weak,leo_rain_weak`星地信道视图。资源约束设计说明原文`卫星协同射频指纹识别（RFFI）系统资源约束设计说明.md`仍未在当前工作区找到；本轮继续报告可量化代理指标`avg_rx`、`bytes/event`、`latency_ms_p95`和GPU显存状态。
+
+产物SHA256：
+
+|产物|SHA256|
+|---|---|
+|`collab_open_set_qknn_candidate_set_cvs_rcwr_min2_er075_adv3b02.json`|`0B5A739F40071F969AADD7F00A6168AF5482ACDEC1DD5140887B3EC42D3AB279`|
+|`collab_open_set_qknn_candidate_set_cvs_rcwr_min2_er075_adv3b02_evidence.csv`|`794B35FBBEF58C9E9EAA194223E8D6133DD9B59901E34AE3C4A8FDE7576DC865`|
+|`collab_open_set_qknn_candidate_set_cvs_rcwr_min2_er080_adv3b02.json`|`A88CCF88E8B368CEC4C0185A63BE9C8C5A7CE76602EA71255F90F663406503D5`|
+|`collab_open_set_qknn_candidate_set_cvs_rcwr_min2_er080_adv3b02_evidence.csv`|`A30A94B33299B7A24CEE58A72D35D16F09F2AC54C664888BCB1780BA29CC1EE4`|
+|`collab_open_set_qknn_candidate_set_cvs_rcwr_min2_er090_adv3b02.json`|`592DB58CEE5028E1BFACCF41D5195D942CA02DBE55E687205361E037AD15BBA5`|
+|`collab_open_set_qknn_candidate_set_cvs_rcwr_min2_er090_adv3b02_evidence.csv`|`950BB0D5A6772C890BAB0933618A75FC577C24AFC7398474E663728A50D67008`|
+|`collab_open_set_qknn_candidate_set_cvs_rcwr_support_utility_adv3b02.json`|`B8793FEAA34C3FAB77263718A3D941D1AFB5373133CBD23BF3C6F1DE472C4F0F`|
+|`collab_open_set_qknn_candidate_set_cvs_rcwr_support_utility_adv3b02_evidence.csv`|`3AD2E6ECFFA25ABF6519689ECE6738A4A5AF79A31B0C9D4A4F4E18D3FD86760A`|
+
+### 结果表
+
+|候选|k|old_acc|min_old|seen_new_acc|min_seen|unknown_FAR|unknown_reject|defer|known_cov|avg_rx|bytes/event|p95_latency|mean_w_ry|结论|
+|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---|
+|`rcwr_min2_er075`|1|0.0000|0.0000|0.0000|0.0000|0.0000|0.4667|0.7459|0.0000|1.0000|40.0|0.1320|0.9254|单receiver不足|
+|`rcwr_min2_er075`|2|0.3158|0.0000|0.5000|0.5000|0.0652|0.9348|0.0440|0.5098|2.0000|80.0|0.1320|0.9165|FAR超标|
+|`rcwr_min2_er075`|3|0.3750|0.1000|0.5000|0.4000|0.0250|0.9750|0.0150|0.4813|3.0000|120.0|0.1320|0.9209|FAR达标但known不足|
+|`rcwr_min2_er075`|4|0.7386|0.0000|0.7143|0.6500|0.0294|0.9706|0.0000|0.7845|4.0000|160.0|0.1320|0.9327|FAR达标，known显著提升但未达OLD80|
+|`rcwr_min2_er075`|5|0.6981|0.0000|0.6500|0.0000|0.0000|1.0000|0.0108|0.7945|5.0000|200.0|0.1320|0.9653|拒识强，缺类floor|
+|`rcwr_min2_er080`|3|0.4000|0.1500|0.5250|0.4500|0.0250|0.9750|0.0050|0.5062|3.0000|120.0|0.1329|0.9209|FAR达标但known不足|
+|`rcwr_min2_er080`|4|0.7614|0.0000|0.7500|0.7000|0.0588|0.9412|0.0000|0.8103|4.0000|160.0|0.1329|0.9327|接近OLD80，FAR略超|
+|`rcwr_min2_er090`|3|0.4750|0.1500|0.5500|0.4500|0.0250|0.9750|0.0050|0.5750|3.0000|120.0|0.1825|0.9209|FAR达标，k=3最佳known折中|
+|`rcwr_min2_er090`|4|0.8182|0.0000|0.7857|0.7000|0.0882|0.9118|0.0000|0.8707|4.0000|160.0|0.1825|0.9327|首次越过OLD80，但FAR超标|
+|`rcwr_min2_er090`|5|0.7925|0.0000|0.6500|0.0000|0.0500|0.9500|0.0000|0.8630|5.0000|200.0|0.1825|0.9653|FAR达标边界，seen-new缺类|
+|`rcwr_support_utility`|3|0.4917|0.2500|0.4750|0.3000|0.1000|0.9000|0.0050|0.5500|2.4600|98.4|0.1326|0.9311|省资源但FAR超标|
+|`rcwr_support_utility`|5|0.6415|0.0000|0.5000|0.0000|0.0000|1.0000|0.0000|0.7260|3.7742|151.0|0.1326|0.9573|省资源且拒识强，known不足|
+
+### 判定
+
+`w_{r,y}`是本轮最明确的正向进展。相同ADV3B02/qknn8特征和同一Stage2-C协议下，上一轮`candidate_min2_er090,k=4`为`old_acc=0.6818`、`seen_new_acc=0.7857`、`unknown_FAR=0.0294`；加入receiver-class可靠度后，`rcwr_min2_er090,k=4`达到`old_acc=0.8182`、`seen_new_acc=0.7857`、`known_cov=0.8707`，首次跨过项目当前阶段化门槛`old_acc>=0.80`。这证明按类选择可靠receiver能恢复旧类目标域性能，比单纯全局receiver权重更有效。
+
+但该row的`unknown_FAR=0.0882`，未满足`unknown_FAR<=0.05`，更没有达到用户目标中的未知拒识99%。更严格的`rcwr_min2_er075,k=4`可把FAR压到0.0294，但`old_acc`降到0.7386；`rcwr_min2_er090,k=5`达到`unknown_FAR=0.0500`且`old_acc=0.7925`，仍未过OLD80，且`min_seen=0`。所有候选的`min_old`仍为0，说明仍有旧类地板失败；当前不能声明99/97/99目标达成、Stage2-C成功或部署成功。
+
+按需协同版本`rcwr_support_utility`降低资源消耗，例如k=3平均`2.46`个receiver、`98.4 bytes/event`，但FAR升至0.1000；k=5虽FAR为0且平均`3.77`个receiver、`151.0 bytes/event`，known性能不足。因此它目前是资源诊断，不是性能最优路线。
+
+下一步应以`rcwr_min2_er090,k=4`作为OLD80候选上界，专门补独立open-set风险通道：按类Mahalanobis/EVT tail、source/proxy-known校准的oldness gate、以及不使用unknown query的低密度拒识。仅继续放宽候选集接受会提高old/seen-new，但会把unknown吸收为known；仅继续收紧event risk会恢复FAR，但会丢掉OLD80。
