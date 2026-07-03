@@ -1987,6 +1987,7 @@ def run_evaluation(args: argparse.Namespace) -> dict[str, Any]:
         scorer_component_vote_threshold=float(args.scorer_component_vote_threshold),
         collaboration_policy=str(args.collaboration_policy),
         label_fusion_policy=str(args.label_fusion_policy),
+        class_reliability_policy=str(args.class_reliability_policy),
         latency_budget_ms=float(args.latency_budget_ms),
         max_event_bytes=float(args.max_event_bytes),
         max_event_latency_ms=float(args.max_event_latency_ms),
@@ -2116,6 +2117,11 @@ def parse_args() -> argparse.Namespace:
         "--label_fusion_policy",
         default="score_sum",
         choices=["score_sum", "vote_sum", "vote_margin", "max_score"],
+    )
+    p.add_argument(
+        "--class_reliability_policy",
+        default="none",
+        choices=["none", "conformal_margin_risk"],
     )
     p.add_argument("--latency_budget_ms", type=float, default=0.0)
     p.add_argument("--max_event_bytes", type=float, default=0.0)
