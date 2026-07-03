@@ -592,3 +592,90 @@ RB-CAPR结果表：
 |查漏补缺review|指出`receiver_domain_ranked`不是严格同事件，CP-set零FAR但known覆盖为0，资源指标只是离线proxy。|结论标为诊断负结果；资源只写bytes/latency proxy和显存读数；不写部署成功。|
 
 下一步建议：保留RB-CAPR路由框架，但把融合从硬门限`cp_set_cvs`改为set-valued输出和class-conditional conformal log-opinion pooling；对每个receiver维护`w_{r,y}`和receiver health，目标是先把known覆盖从0.15-0.40区间提高，再重新约束unknown FAR。在线微调只允许更新低秩adapter、prototype EMA、阈值摘要和hard negative统计，不能在星上重训主干。
+
+## 2026-07-04 dual_route_cvs双路协同推理实现与SA33复跑计划
+
+目标：在用户指定权重`SA33_sa27_ch2_leo3_ce0p7_r010_20260527_204104`的星地信道特征上测试`dual_route_cvs`。该策略保留固定receiver安全路由，同时用support-only`receiver_deployment_prior`建立救援路由；救援只在class conformal p-value、support-calibrated receiver-class reliability、class shell风险、风险组件一致性、receiver预测分歧、unknown风险分歧和安全路由风险均满足门控时接管。
+
+重要协议边界：`项目.md`要求Stage2-C部署协同只能使用target receiver domain。当前SA33特征包含5个target receivers；7个source receivers属于地面训练域，不能加入部署协同推理。因此本次`collab_counts=all`覆盖1到5个target receivers，而不是把source receivers并入协同。
+
+本地实现与验证：
+
+|文件|变更|SHA256|
+|---|---|---|
+|`code/evaluation/collaborative_open_set_qknn_eval.py`|新增`dual_route_cvs`、部署先验receiver选择、救援门控、事件审计字段；修复`receiver_pair_label_disagreement`未记录预测标签导致恒为1.0的问题|`8A2B09EB1E924907CAADF70031A69391A0E83A70858F8F5E7C9A57289218F041`|
+|`code/scripts/phase2_collaborative_open_set_qknn_eval.py`|CLI暴露`dual_route_cvs`和门控参数，生成support-only`receiver_deployment_prior`|`CC4432902B8C70797AE22FDBBADBD6E0A372519E8625BB2FB567DD5ADCD9B59C`|
+|`code/tests/test_collaborative_open_set_qknn_eval.py`|新增双路救援通过与高unknown风险阻断测试|`0296A94E8BC386363EABC85925C58FC703B28D361918D3077B43F57D24C4E7EF`|
+
+本地和Git镜像验证：`py_compile`通过，`test_collaborative_open_set_qknn_eval.py`和`test_phase2_collaborative_open_set_qknn_eval.py`共`94 passed`。Git镜像提交：`4270c02 Add dual route collaborative inference`。
+
+远端同步与验证：已同步上述3个文件到N607；远端`/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python`验证`py_compile`通过，`test_collaborative_open_set_qknn_eval.py`为`50 tests OK`；远端hash与本地一致。N607 preflight时间`2026年07月04日02:04:11 CST`，8张RTX3090均为`10 MiB/24576 MiB`；选择GPU0。
+
+计划运行输入：`runs/phase2_sa33_collab_open_set_qknn_full_20260703/features.npz`，checkpoint链路为`runs/cvs_sa27_optimization_central_20260527_204005/SA33_sa27_ch2_leo3_ce0p7_r010/best_strict_udu_model.pth`，特征SHA256为`fae6973e7f0ae01ed7a83fd34e35798a735fd045d32de59ee117cb628759e6c5`，覆盖`leo_clear_weak,leo_low_elev_weak,leo_rain_weak`星地信道视图。
+
+计划输出：
+
+```text
+runs/phase2_sa33_collab_open_set_qknn_full_20260703/collab_open_set_qknn_candidate_set_cvs_dualroute_sa33_shell_s150.json
+runs/phase2_sa33_collab_open_set_qknn_full_20260703/collab_open_set_qknn_candidate_set_cvs_dualroute_sa33_shell_s150_evidence.csv
+```
+
+目标门槛仍为old_acc 0.99、old per-class>=0.95、seen_new_acc 0.97、seen per-class>=0.93、unknown_reject 0.99；未达标时只作为算法诊断。
+
+### dual_route_cvs审计版N607结果
+
+远端执行：在`/home/szu2070436088/2510044040/CV-SincNet`中使用`CUDA_VISIBLE_DEVICES=0 /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python code/scripts/phase2_collaborative_open_set_qknn_eval.py`前台运行。命令包含`--collaboration_policy dual_route_cvs`、`--fusion_policy candidate_set_cvs`、`--include_event_results`、`--event_alignment_policy receiver_domain_ranked`、`--collab_counts all`。输出`receiver_count=5`、`group_count=312`、`evidence_row_count=1000`；协同数量覆盖1到5个target receivers。阈值口径为`threshold_selection_label_scope=support_known_only`、`unknown_query_eval_only=true`。
+
+远端资源：运行前后8张RTX3090均为`10 MiB/24576 MiB`，GPU利用率0%；本轮选择GPU0，但该离线证据推理未显著占用显存。SSH/SCP结束后本地检查无`ssh.exe`，无N607或bridge 22端口`ESTABLISHED`连接。
+
+产物已拉回：
+
+|产物|SHA256|
+|---|---|
+|`remote_artifacts/collab_open_set_qknn_candidate_set_cvs_dual_route_cvs_sa33_shell_s150_audit.json`|`55A8F3F6E8EAFC3D76067C99FA9E8FA665FAA0A7D66C7D6AFEFF9B8A5F7173F9`|
+|`remote_artifacts/collab_open_set_qknn_candidate_set_cvs_dual_route_cvs_sa33_shell_s150_audit_evidence.csv`|`10D6517FE090A2B7E72747AB9F78C78F9D21CDD9990938B00E25235C5A6158FC`|
+
+全量1到5个target receivers结果：
+
+|协同数|old_acc|min_old|seen_new_acc|min_seen|unknown_FAR|unknown_reject|defer|known_cov|avg_rx|bytes/event|rescue_count|rescue_rate|rescue_by_role|
+|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---|
+|1|0.0000|0.0000|0.0000|0.0000|0.0000|0.4833|0.6859|0.0000|1.0000|40.0|0|0.0000|`{}`|
+|2|0.4189|0.1500|0.2353|0.1935|0.4348|0.4565|0.1143|0.5176|2.0000|80.0|32|0.1306|`old=26,seen_new=2,unknown=4`|
+|3|0.5917|0.3500|0.3750|0.2500|0.3250|0.6750|0.0350|0.6625|3.0000|120.0|13|0.0650|`old=13`|
+|4|0.7167|0.6000|0.4000|0.3000|0.3500|0.6500|0.0150|0.7625|3.7750|151.0|11|0.0550|`old=11`|
+|5|0.7167|0.6000|0.4250|0.3500|0.3500|0.6500|0.0150|0.7750|4.2150|168.6|10|0.0500|`old=10`|
+
+协同4逐类指标：
+
+|类别集|逐类准确率|
+|---|---|
+|old|`14-10=0.7000`，`14-7=0.6000`，`20-15=0.7500`，`20-19=0.7000`，`6-15=0.6000`，`8-20=0.9500`|
+|seen-new|`1-16=0.3000`，`1-18=0.5000`|
+
+协同5逐类指标：
+
+|类别集|逐类准确率|
+|---|---|
+|old|`14-10=0.6500`，`14-7=0.6000`，`20-15=0.7500`，`20-19=0.7000`，`6-15=0.6500`，`8-20=0.9500`|
+|seen-new|`1-16=0.3500`，`1-18=0.5000`|
+
+协同4 open-set confusion：
+
+|项|计数|
+|---|---:|
+|`old->old`|93|
+|`old->seen_new`|6|
+|`old->unknown_reject`|18|
+|`old->defer`|3|
+|`seen_new->seen_new`|16|
+|`seen_new->old`|7|
+|`seen_new->unknown_reject`|17|
+|`unknown->unknown_reject`|26|
+|`unknown->old`|13|
+|`unknown->seen_new`|1|
+
+逐事件审计：JSON已包含每个k的`event_results`。协同4共有200个事件，其中安全路由处理old 109个、seen-new 40个、unknown 40个；救援路由接管old 11个。救援样例均记录`dual_route_selected_route=rescue`、`dual_route_safety_decision`、`dual_route_rescue_decision`、`dual_route_rescue_label_unknown_risk`、`dual_route_rescue_label_shell_risk`、`dual_route_rescue_selection_policy=deployment_prior_quality`和`selected_receiver_ids`。协同4仍有14个unknown被错误接受为old/seen-new，说明救援门控不是主要FAR来源，基础candidate-set接受逻辑仍需更强unknown校验。
+
+判定：`dual_route_cvs`在SA33指定权重上相对RB-CAPR负例显著提高old识别，协同4/5达到`old_acc=0.7167`、`min_old=0.6000`；但seen-new仍只有`0.4000/0.4250`，unknown_FAR为`0.3500`，unknown拒识只有`0.6500`。因此远低于old 99%/floor95、seen-new 97%/floor93、unknown拒识99%的目标。本轮只能作为`receiver_domain_ranked`诊断结果，不能声明严格同事件卫星群协同、Stage2-C成功或部署成功。
+
+后续修正方向：保留support-only receiver prior和逐事件dual-route审计；下一步应把unknown接受从candidate-set主路径中拆出，增加known label接受前的OOD二次校验，例如Mahalanobis/class-shell/log-opinion pooling联合门控，并将unknown误接受事件作为hard-negative统计进入地面侧阈值更新，而不是在星上用unknown query调阈值。

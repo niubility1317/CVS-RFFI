@@ -3690,6 +3690,63 @@ k=3 open-set confusion：
 
 远端结束状态：8张RTX3090均为`10/24576MiB`；本地无残留`ssh.exe`，无N607/bridge 22端口ESTABLISHED连接。
 
+## 2026-07-04 dual_route_cvs协同推理实验计划
+
+### 目标
+
+实现并测试`dual_route_cvs`双路协同推理：安全路由使用固定receiver顺序保持unknown拒识边界，救援路由使用support-only`receiver_deployment_prior`排序；只有在class conformal、support-calibrated receiver-class reliability、class shell风险、组件风险一致性、receiver预测分歧、receiver unknown风险分歧和安全路由风险均满足门控时才允许救援接管。
+
+该设计吸收子agent审查意见：禁止用query派生`support_quality_prior`偷看全receiver后只计入k个receiver；救援排序只能使用support校准先验，缺少先验时退回固定顺序并记录`dual_route_rescue_selection_policy=fixed_receiver_order_no_prior`。
+
+### 本地改动
+
+|文件|用途|SHA256|
+|---|---|---|
+|`code/evaluation/collaborative_open_set_qknn_eval.py`|新增`dual_route_cvs`、部署先验receiver选择、救援门控、事件审计字段，并修复`receiver_pair_label_disagreement`未记录预测标签导致恒为1.0的问题|`8A2B09EB1E924907CAADF70031A69391A0E83A70858F8F5E7C9A57289218F041`|
+|`code/scripts/phase2_collaborative_open_set_qknn_eval.py`|CLI暴露`dual_route_cvs`和门控参数，生成support-only`receiver_deployment_prior`|`CC4432902B8C70797AE22FDBBADBD6E0A372519E8625BB2FB567DD5ADCD9B59C`|
+|`code/tests/test_collaborative_open_set_qknn_eval.py`|新增双路救援通过与高unknown风险阻断测试|`0296A94E8BC386363EABC85925C58FC703B28D361918D3077B43F57D24C4E7EF`|
+
+本地快照：`E:\type10-7\code\snapshots\dual_route_cvs_20260704\`。Git镜像提交：`4270c02 Add dual route collaborative inference`。
+
+### 本地验证
+
+```text
+C:\Users\lh594\.conda\envs\ssr-gpu\python.exe -m py_compile code\evaluation\collaborative_open_set_qknn_eval.py code\scripts\phase2_collaborative_open_set_qknn_eval.py
+C:\Users\lh594\.conda\envs\ssr-gpu\python.exe -m pytest code\tests\test_collaborative_open_set_qknn_eval.py code\tests\test_phase2_collaborative_open_set_qknn_eval.py -q
+```
+
+结果：`94 passed`；`.pytest_cache`写入被Windows拒绝但不影响测试。
+
+### N607同步与运行计划
+
+同步映射：
+
+|本地|N607|
+|---|---|
+|`E:\type10-7\code\evaluation\collaborative_open_set_qknn_eval.py`|`/home/szu2070436088/2510044040/CV-SincNet/code/evaluation/collaborative_open_set_qknn_eval.py`|
+|`E:\type10-7\code\scripts\phase2_collaborative_open_set_qknn_eval.py`|`/home/szu2070436088/2510044040/CV-SincNet/code/scripts/phase2_collaborative_open_set_qknn_eval.py`|
+|`E:\type10-7\code\tests\test_collaborative_open_set_qknn_eval.py`|`/home/szu2070436088/2510044040/CV-SincNet/code/tests/test_collaborative_open_set_qknn_eval.py`|
+
+远端环境：`/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python`。工作目录：`/home/szu2070436088/2510044040/CV-SincNet`。
+
+远端验证：
+
+```text
+/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -m py_compile code/evaluation/collaborative_open_set_qknn_eval.py code/scripts/phase2_collaborative_open_set_qknn_eval.py
+/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -m unittest discover -s code/tests -p 'test_collaborative_open_set_qknn_eval.py' -q
+```
+
+实验命令将使用当前`ADV3B02_CORE90_SOFT_E200`特征与星地信道Stage2-C数据，`collab_counts=all`覆盖1到全体target receiver数量，`available_up_to_k`、`partial_collab_min_receivers=3`保持与当前主线一致。目标输出：
+
+```text
+runs/phase2_adv3b02_collab_open_set_qknn_full_20260703/collab_open_set_qknn_candidate_set_cvs_rcwr_avail3_p055_lrca049_huv0999_f050_shell_s150_dualroute_adv3b02.json
+runs/phase2_adv3b02_collab_open_set_qknn_full_20260703/collab_open_set_qknn_candidate_set_cvs_rcwr_avail3_p055_lrca049_huv0999_f050_shell_s150_dualroute_adv3b02_evidence.csv
+```
+
+成功/失败判据：主目标仍是old_acc 0.99、old per-class>=0.95、seen_new_acc 0.97、seen per-class>=0.93、unknown_reject 0.99。若未达标，必须报告为算法诊断，不得声明部署成功。
+
+更正：本节仅为本地实现后的初始ADV3B02计划记录，未作为本轮最终用户请求执行。用户指定权重为`SA33_sa27_ch2_leo3_ce0p7_r010_20260527_204104`；实际N607复跑与最终审计结果已转入`E:\type10-7\automation_reports\CV-SincNet\phase2_sa33_collab_open_set_qknn_full_20260703\report.md`。
+
 
 
 
