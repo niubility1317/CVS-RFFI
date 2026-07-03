@@ -2366,6 +2366,22 @@ class CollaborativeOpenSetQknnEvalTest(unittest.TestCase):
         self.assertFalse(high_risk_event["candidate_set_accept"])
         self.assertEqual(high_risk_event["decision"], "defer")
 
+        scoped_out_event = evaluate(
+            make_rows((0.10, 0.95)),
+            candidate_set_pairguard_labels="old-b",
+        )["counts"]["2"]["event_results"][0]
+        self.assertFalse(scoped_out_event["candidate_set_pairguard_label_scoped"])
+        self.assertFalse(scoped_out_event["candidate_set_pairguard_veto"])
+        self.assertTrue(scoped_out_event["candidate_set_accept"])
+        self.assertEqual(scoped_out_event["decision"], "accept")
+
+        scoped_in_event = evaluate(
+            make_rows((0.10, 0.95)),
+            candidate_set_pairguard_labels="old-a",
+        )["counts"]["2"]["event_results"][0]
+        self.assertTrue(scoped_in_event["candidate_set_pairguard_label_scoped"])
+        self.assertTrue(scoped_in_event["candidate_set_pairguard_veto"])
+
         with self.assertRaisesRegex(ValueError, "candidate_set_pairguard_mode"):
             evaluate(make_rows((0.10, 0.80)), candidate_set_pairguard_mode="bad_mode")
         with self.assertRaisesRegex(ValueError, "candidate_set_pairguard_min_event_unknown_risk"):
