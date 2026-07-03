@@ -29,7 +29,18 @@
 | 第一阶段 | 取消原先`max_pair_candidates=50`截断，枚举全部135个候选进入两两组合 |
 | 方法 | 先复用`proto,knn1,knn3,knn5`，保持与旧结果可比 |
 | 成功判据 | `old_acc>=0.88`且`min_seen_new_class_acc>=0.85` |
-| 若失败 | 再实现KNN变体：压缩anchor/加权KNN/旧类保留偏置/信道状态补偿，仍保持不使用未知类 |
+| 第二阶段 | 若K=10失败，在协议允许的few-shot/low-shot边界内提高到`K_old=20,K_new=20`，query仍保持40/类 |
+| 若仍失败 | 再实现KNN变体：压缩anchor/加权KNN/旧类保留偏置/信道状态补偿，仍保持不使用未知类 |
+
+## 本地新增KNN变体
+
+| 文件 | 用途 | 验证 |
+|---|---|---|
+| `E:\type10-7\code\scripts\phase2_classmax_knn_bias_sweep.py` | 对候选组合执行class-max KNN，并扫描旧类score bias，以保留KNN可扩展性同时修正old/new边界 | PASS：`conda activate ssr-gpu; python -m py_compile code\scripts\phase2_classmax_knn_bias_sweep.py` |
+
+| 文件 | SHA256 |
+|---|---|
+| `code/scripts/phase2_classmax_knn_bias_sweep.py` | `8C7C81BCC11E495C403C26B900D6F37E3C38E99C4D67F96818F39D4D5CA7ED3E` |
 
 ## 本地版本状态
 
@@ -43,6 +54,8 @@
 | 项 | 状态 |
 |---|---|
 | N607 preflight和占用检查 | 待完成 |
-| 全候选远程扩展搜索 | 待完成 |
+| 全候选远程扩展搜索 | K=10已完成：全135候选、2新类组合、`proto/knn1/knn3/knn5`，`joint_pass_count=0`；`rows_old88=10582`但`rows_min85=0`，说明瓶颈是逐新类85% |
+| K=20远程扩展搜索 | 已完成：全135候选、2新类组合、`proto/knn1/knn3/knn5`，`joint_pass_count=0`；`rows_min85=2`但对应旧类为86.67%，距离88%差约3.2个旧类query |
+| class-max KNN旧类bias扫描 | 待完成 |
 | 结果拉回和严格审计 | 待完成 |
 | 报告和Git提交 | 待完成 |
