@@ -1222,6 +1222,11 @@ def run_evaluation(args: argparse.Namespace) -> dict[str, Any]:
         adaptive_gain_latency_weight=float(args.adaptive_gain_latency_weight),
         adaptive_gain_bytes_weight=float(args.adaptive_gain_bytes_weight),
         adaptive_gain_disagreement_weight=float(args.adaptive_gain_disagreement_weight),
+        seen_new_rescue_enabled=bool(args.seen_new_rescue_enabled),
+        seen_new_rescue_risk_scale=float(args.seen_new_rescue_risk_scale),
+        seen_new_rescue_min_score=float(args.seen_new_rescue_min_score),
+        seen_new_rescue_min_margin=float(args.seen_new_rescue_min_margin),
+        seen_new_rescue_min_agreement=float(args.seen_new_rescue_min_agreement),
         threshold_selection_label_scope=str(metadata["threshold_scope"]),
         unknown_query_eval_only=True,
         receiver_selection_policy=str(args.receiver_selection_policy),
@@ -1299,6 +1304,11 @@ def parse_args() -> argparse.Namespace:
     p.add_argument("--adaptive_gain_latency_weight", type=float, default=0.0)
     p.add_argument("--adaptive_gain_bytes_weight", type=float, default=0.0)
     p.add_argument("--adaptive_gain_disagreement_weight", type=float, default=0.5)
+    p.add_argument("--seen_new_rescue_enabled", action="store_true")
+    p.add_argument("--seen_new_rescue_risk_scale", type=float, default=1.0)
+    p.add_argument("--seen_new_rescue_min_score", type=float, default=0.0)
+    p.add_argument("--seen_new_rescue_min_margin", type=float, default=0.0)
+    p.add_argument("--seen_new_rescue_min_agreement", type=float, default=0.5)
     p.add_argument("--evidence_packet_bytes", type=float, default=40.0)
     p.add_argument("--receiver_selection_policy", default="fixed_receiver_order")
     p.add_argument(

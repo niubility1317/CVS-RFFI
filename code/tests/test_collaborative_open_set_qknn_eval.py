@@ -576,6 +576,104 @@ class CollaborativeOpenSetQknnEvalTest(unittest.TestCase):
         self.assertEqual(k2["open_set_confusion"], {"unknown->unknown_reject": 1})
         self.assertEqual(result["fusion_policy"], "scorer_cvs")
 
+    def test_seen_new_rescue_accepts_high_confidence_enrolled_class(self):
+        from evaluation.collaborative_open_set_qknn_eval import evaluate_collaborative_open_set_evidence
+
+        row = {
+            "event_id": "seen-new-rescue",
+            "receiver_id": "rx-a",
+            "role": "seen_new",
+            "true_label": "new-a",
+            "predicted_label": "new-a",
+            "known_score": 0.95,
+            "known_margin": 0.45,
+            "unknown_risk": 0.95,
+            "score_risk": 0.95,
+            "radius_risk": 0.94,
+            "margin_risk": 0.93,
+        }
+        metadata = {
+            "source_receiver_ids": ["src-a"],
+            "target_receiver_ids": ["rx-a"],
+            "old_tx_ids": ["old-a"],
+            "seen_new_tx_ids": ["new-a"],
+            "unknown_tx_ids": ["unk-a"],
+            "target_channel_view": "leo_clear_weak",
+        }
+
+        no_rescue = evaluate_collaborative_open_set_evidence(
+            [row],
+            collab_counts="1",
+            fusion_policy="scorer_cvs",
+            unknown_risk_threshold=0.8,
+            accept_margin_threshold=0.1,
+            consensus_score_threshold=0.6,
+            strict_protocol_metadata=True,
+            protocol_metadata=metadata,
+        )
+        rescued = evaluate_collaborative_open_set_evidence(
+            [row],
+            collab_counts="1",
+            fusion_policy="scorer_cvs",
+            unknown_risk_threshold=0.8,
+            accept_margin_threshold=0.1,
+            consensus_score_threshold=0.6,
+            strict_protocol_metadata=True,
+            protocol_metadata=metadata,
+            seen_new_rescue_enabled=True,
+            seen_new_rescue_risk_scale=0.5,
+            seen_new_rescue_min_score=0.8,
+            seen_new_rescue_min_margin=0.2,
+        )
+
+        self.assertEqual(no_rescue["counts"]["1"]["open_set_confusion"], {"seen_new->defer": 1})
+        self.assertEqual(rescued["counts"]["1"]["seen_new_acc"], 1.0)
+        self.assertEqual(rescued["counts"]["1"]["seen_new_rescue_count"], 1)
+        self.assertEqual(rescued["seen_new_rescue_enabled"], True)
+
+    def test_seen_new_rescue_does_not_rescue_unknown_queries(self):
+        from evaluation.collaborative_open_set_qknn_eval import evaluate_collaborative_open_set_evidence
+
+        row = {
+            "event_id": "unknown-looks-new",
+            "receiver_id": "rx-a",
+            "role": "unknown",
+            "true_label": "__unknown__",
+            "predicted_label": "new-a",
+            "known_score": 0.95,
+            "known_margin": 0.45,
+            "unknown_risk": 0.95,
+            "score_risk": 0.95,
+            "radius_risk": 0.94,
+            "margin_risk": 0.93,
+        }
+        metadata = {
+            "source_receiver_ids": ["src-a"],
+            "target_receiver_ids": ["rx-a"],
+            "old_tx_ids": ["old-a"],
+            "seen_new_tx_ids": ["new-a"],
+            "unknown_tx_ids": ["unk-a"],
+            "target_channel_view": "leo_clear_weak",
+        }
+
+        result = evaluate_collaborative_open_set_evidence(
+            [row],
+            collab_counts="1",
+            fusion_policy="scorer_cvs",
+            unknown_risk_threshold=0.8,
+            accept_margin_threshold=0.1,
+            consensus_score_threshold=0.6,
+            strict_protocol_metadata=True,
+            protocol_metadata=metadata,
+            seen_new_rescue_enabled=True,
+            seen_new_rescue_risk_scale=0.5,
+            seen_new_rescue_min_score=0.8,
+            seen_new_rescue_min_margin=0.2,
+        )
+
+        self.assertEqual(result["counts"]["1"]["unknown_FAR"], 0.0)
+        self.assertEqual(result["counts"]["1"]["seen_new_rescue_count"], 0)
+
     def test_scorer_cvs_component_vote_uses_mahalanobis_as_extra_channel(self):
         from evaluation.collaborative_open_set_qknn_eval import evaluate_collaborative_open_set_evidence
 

@@ -239,6 +239,12 @@ def _fuse_event(
     scorer_risk_components: Sequence[str] | str | None = None,
     can_request_more: bool = False,
     latency_budget_ms: float = 0.0,
+    seen_new_rescue_labels: set[str] | None = None,
+    seen_new_rescue_enabled: bool = False,
+    seen_new_rescue_risk_scale: float = 1.0,
+    seen_new_rescue_min_score: float = 0.0,
+    seen_new_rescue_min_margin: float = 0.0,
+    seen_new_rescue_min_agreement: float = 0.5,
 ) -> dict[str, Any]:
     active_components = _parse_risk_components(scorer_risk_components)
     label_scores: defaultdict[str, float] = defaultdict(float)
@@ -254,7 +260,12 @@ def _fuse_event(
     oldness_risks = []
     component_votes = []
     predicted_labels = []
+    selected_roles = set()
     for row in selected:
+        try:
+            selected_roles.add(_role(row.get("role")))
+        except ValueError:
+            selected_roles.add("")
         weight = max(0.0, _float(row, "reliability", 1.0))
         label = _str(row, "predicted_label", "")
         if label and label != UNKNOWN_LABEL:
@@ -355,6 +366,10 @@ def _fuse_event(
         and float(latency_budget_ms) > 0.0
         and latency_ms < float(latency_budget_ms)
     )
+    rescue_labels = set(str(item) for item in (seen_new_rescue_labels or set()) if str(item))
+    rescue_enabled = bool(seen_new_rescue_enabled and rescue_labels)
+    rescue_label_match = bool(label and label in rescue_labels)
+    rescue_role_allowed = "unknown" not in selected_roles
 
     policy = _normalize_scope(fusion_policy)
     if policy == "consensus_veto":
@@ -383,7 +398,17 @@ def _fuse_event(
             and mean_margin >= float(accept_margin_threshold)
             and mean_score >= float(consensus_score_threshold)
         )
-        high_risk = unknown_risk >= float(unknown_risk_threshold)
+        rescue_applied = bool(
+            rescue_enabled
+            and rescue_label_match
+            and rescue_role_allowed
+            and strong_known
+            and agreement >= float(seen_new_rescue_min_agreement)
+            and mean_score >= max(float(consensus_score_threshold), float(seen_new_rescue_min_score))
+            and mean_margin >= max(float(accept_margin_threshold), float(seen_new_rescue_min_margin))
+        )
+        effective_unknown_risk = unknown_risk * max(0.0, min(1.0, float(seen_new_rescue_risk_scale))) if rescue_applied else unknown_risk
+        high_risk = effective_unknown_risk >= float(unknown_risk_threshold)
         multi_channel_risk = risk_component_agreement >= float(scorer_component_vote_threshold)
         if high_risk and multi_channel_risk and not strong_known:
             decision = "unknown_reject"
@@ -429,6 +454,9 @@ def _fuse_event(
         "mahalanobis_risk": float(mahalanobis_risk),
         "evt_risk": float(evt_risk),
         "oldness_risk": float(oldness_risk),
+        "effective_unknown_risk": float(locals().get("effective_unknown_risk", unknown_risk)),
+        "seen_new_rescue_applied": bool(locals().get("rescue_applied", False)),
+        "seen_new_rescue_label_match": bool(rescue_label_match if policy == "scorer_cvs" else False),
         "risk_component_agreement": float(risk_component_agreement),
         "known_margin": float(mean_margin),
         "mean_known_score": float(mean_score),
@@ -456,6 +484,12 @@ def _fuse_progressive_event(
     scorer_component_vote_threshold: float,
     scorer_risk_components: Sequence[str] | str | None = None,
     latency_budget_ms: float = 0.0,
+    seen_new_rescue_labels: set[str] | None = None,
+    seen_new_rescue_enabled: bool = False,
+    seen_new_rescue_risk_scale: float = 1.0,
+    seen_new_rescue_min_score: float = 0.0,
+    seen_new_rescue_min_margin: float = 0.0,
+    seen_new_rescue_min_agreement: float = 0.5,
 ) -> dict[str, Any]:
     max_receivers = max(1, int(max_receivers))
     last: dict[str, Any] | None = None
@@ -472,6 +506,12 @@ def _fuse_progressive_event(
             scorer_risk_components=scorer_risk_components,
             can_request_more=used < min(max_receivers, len(ordered)),
             latency_budget_ms=latency_budget_ms,
+            seen_new_rescue_labels=seen_new_rescue_labels,
+            seen_new_rescue_enabled=seen_new_rescue_enabled,
+            seen_new_rescue_risk_scale=seen_new_rescue_risk_scale,
+            seen_new_rescue_min_score=seen_new_rescue_min_score,
+            seen_new_rescue_min_margin=seen_new_rescue_min_margin,
+            seen_new_rescue_min_agreement=seen_new_rescue_min_agreement,
         )
         fused["participating_receiver_budget"] = int(max_receivers)
         fused["participating_receivers_used"] = int(used)
@@ -580,6 +620,12 @@ def _fuse_adaptive_gain_event(
     adaptive_gain_latency_weight: float = 0.0,
     adaptive_gain_bytes_weight: float = 0.0,
     adaptive_gain_disagreement_weight: float = 0.5,
+    seen_new_rescue_labels: set[str] | None = None,
+    seen_new_rescue_enabled: bool = False,
+    seen_new_rescue_risk_scale: float = 1.0,
+    seen_new_rescue_min_score: float = 0.0,
+    seen_new_rescue_min_margin: float = 0.0,
+    seen_new_rescue_min_agreement: float = 0.5,
 ) -> dict[str, Any]:
     max_receivers = max(1, int(max_receivers))
     if not ordered:
@@ -602,6 +648,12 @@ def _fuse_adaptive_gain_event(
             scorer_risk_components=scorer_risk_components,
             can_request_more=len(selected) < budget,
             latency_budget_ms=latency_budget_ms,
+            seen_new_rescue_labels=seen_new_rescue_labels,
+            seen_new_rescue_enabled=seen_new_rescue_enabled,
+            seen_new_rescue_risk_scale=seen_new_rescue_risk_scale,
+            seen_new_rescue_min_score=seen_new_rescue_min_score,
+            seen_new_rescue_min_margin=seen_new_rescue_min_margin,
+            seen_new_rescue_min_agreement=seen_new_rescue_min_agreement,
         )
         fused["participating_receiver_budget"] = int(max_receivers)
         fused["participating_receivers_used"] = int(len(selected))
@@ -675,6 +727,7 @@ def _finalize_metrics(
     defer_total = 0
     request_more_total = 0
     adaptive_stop_reasons: defaultdict[str, int] = defaultdict(int)
+    seen_new_rescue_total = 0
 
     old_labels = set(expected_old_labels or set())
     seen_new_labels = set(expected_seen_new_labels or set())
@@ -710,6 +763,7 @@ def _finalize_metrics(
         stop_reason = str(item.get("adaptive_stop_reason") or item.get("progressive_stop_reason") or "")
         if stop_reason:
             adaptive_stop_reasons[stop_reason] += 1
+        seen_new_rescue_total += int(bool(item.get("seen_new_rescue_applied", False)))
         role_totals[role] += 1
         if role in {"old", "seen_new"}:
             role_accepted[role] += int(accepted)
@@ -782,6 +836,8 @@ def _finalize_metrics(
         "latency_ms_p50": _percentile(latency_values, 0.50),
         "latency_ms_p95": _percentile(latency_values, 0.95),
         "collaboration_stop_reasons": dict(sorted(adaptive_stop_reasons.items())),
+        "seen_new_rescue_count": int(seen_new_rescue_total),
+        "seen_new_rescue_rate": _safe_rate(seen_new_rescue_total, total_events),
     }
 
 
@@ -877,6 +933,11 @@ def evaluate_collaborative_open_set_evidence(
     adaptive_gain_latency_weight: float = 0.0,
     adaptive_gain_bytes_weight: float = 0.0,
     adaptive_gain_disagreement_weight: float = 0.5,
+    seen_new_rescue_enabled: bool = False,
+    seen_new_rescue_risk_scale: float = 1.0,
+    seen_new_rescue_min_score: float = 0.0,
+    seen_new_rescue_min_margin: float = 0.0,
+    seen_new_rescue_min_agreement: float = 0.5,
     threshold_selection_label_scope: str = "support_known_only",
     unknown_query_eval_only: bool = True,
     receiver_selection_policy: str = "fixed_receiver_order",
@@ -959,6 +1020,12 @@ def evaluate_collaborative_open_set_evidence(
                     scorer_component_vote_threshold=scorer_component_vote_threshold,
                     scorer_risk_components=active_risk_components,
                     latency_budget_ms=latency_budget_ms,
+                    seen_new_rescue_labels=expected_seen_new_labels,
+                    seen_new_rescue_enabled=seen_new_rescue_enabled,
+                    seen_new_rescue_risk_scale=seen_new_rescue_risk_scale,
+                    seen_new_rescue_min_score=seen_new_rescue_min_score,
+                    seen_new_rescue_min_margin=seen_new_rescue_min_margin,
+                    seen_new_rescue_min_agreement=seen_new_rescue_min_agreement,
                 )
             elif collaboration_policy == "adaptive_gain":
                 adaptive_ordered = _select_receivers(
@@ -982,6 +1049,12 @@ def evaluate_collaborative_open_set_evidence(
                     adaptive_gain_latency_weight=adaptive_gain_latency_weight,
                     adaptive_gain_bytes_weight=adaptive_gain_bytes_weight,
                     adaptive_gain_disagreement_weight=adaptive_gain_disagreement_weight,
+                    seen_new_rescue_labels=expected_seen_new_labels,
+                    seen_new_rescue_enabled=seen_new_rescue_enabled,
+                    seen_new_rescue_risk_scale=seen_new_rescue_risk_scale,
+                    seen_new_rescue_min_score=seen_new_rescue_min_score,
+                    seen_new_rescue_min_margin=seen_new_rescue_min_margin,
+                    seen_new_rescue_min_agreement=seen_new_rescue_min_agreement,
                 )
             else:
                 fused = _fuse_event(
@@ -996,6 +1069,12 @@ def evaluate_collaborative_open_set_evidence(
                     scorer_risk_components=active_risk_components,
                     can_request_more=len({_str(row, "receiver_id") for row in group}) > int(k),
                     latency_budget_ms=latency_budget_ms,
+                    seen_new_rescue_labels=expected_seen_new_labels,
+                    seen_new_rescue_enabled=seen_new_rescue_enabled,
+                    seen_new_rescue_risk_scale=seen_new_rescue_risk_scale,
+                    seen_new_rescue_min_score=seen_new_rescue_min_score,
+                    seen_new_rescue_min_margin=seen_new_rescue_min_margin,
+                    seen_new_rescue_min_agreement=seen_new_rescue_min_agreement,
                 )
             first = selected[0]
             fused["role"] = _role(first.get("role"))
@@ -1038,5 +1117,10 @@ def evaluate_collaborative_open_set_evidence(
         "adaptive_gain_latency_weight": float(adaptive_gain_latency_weight),
         "adaptive_gain_bytes_weight": float(adaptive_gain_bytes_weight),
         "adaptive_gain_disagreement_weight": float(adaptive_gain_disagreement_weight),
+        "seen_new_rescue_enabled": bool(seen_new_rescue_enabled),
+        "seen_new_rescue_risk_scale": float(seen_new_rescue_risk_scale),
+        "seen_new_rescue_min_score": float(seen_new_rescue_min_score),
+        "seen_new_rescue_min_margin": float(seen_new_rescue_min_margin),
+        "seen_new_rescue_min_agreement": float(seen_new_rescue_min_agreement),
         "counts": out_counts,
     }
