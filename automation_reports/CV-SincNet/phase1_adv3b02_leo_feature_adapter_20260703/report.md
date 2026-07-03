@@ -2150,3 +2150,40 @@ The next valid work item is target1, not target2: improve worst-receiver/worst-T
 The latest completed feature-only route is V24 residual-subspace repair. It explicitly rejects the source clean/LEO class-logit bias/scale route and uses only source clean-minus-LEO feature residuals. V24 finished with`270`candidate rows and`0`strong target1 pass rows. Gate counts were: old recovery`48/270`, clean fidelity`224/270`, scenario/TX floor`30/270`, margin safety`180/270`, unknown safety`8/270`.
 
 Current decision: target1 is still not globally achieved. V24 preserves clean behavior in many rows but does not recover hard receivers (`rx20_1`,`rx3_19`,`rx8_8`) and tends to increase unknown oldness, so it cannot be promoted as the anti-LEO feature correction. Target2 remains not achieved because the low-FAR rows still trade away old-class performance.
+
+## V25 Local Residual-Memory Feature Repair Design
+
+V25 continues the feature-only direction and does not use source clean/LEO class-logit bias or scale calibration. It tests whether a local residual memory is safer than V24's low-rank global residual: each input retrieves nearby source LEO features, averages their source clean-minus-LEO residuals, and applies the correction only when the sample is close enough to the source LEO memory. The gate threshold is calibrated from source clean rows against the source LEO memory, not from target clean, target labels, or unknown query labels.
+
+| Item | V25 setting |
+|---|---|
+| Phase1 backbone | Frozen`ADV3B02_CORE90_SOFT_E200phase1` |
+| Feature repair | source clean/LEO local residual memory |
+| Memory rows | source clean/LEO pairs from`source_leo_clear_weak`,`source_leo_low_elev_weak`,`source_leo_rain_weak` |
+| Variants | `K in {8,32,128}`, threshold quantile`{0.05,0.10,0.20}`, alpha`{0.25,0.50,0.75}` |
+| Target clean use | none |
+| Target labels in training/model selection | none |
+| Unknown query threshold fitting | none |
+
+New local files:
+
+| File | Purpose | SHA256 |
+|---|---|---|
+| `E:\type10-7\code\scripts\build_phase1_local_residual_memory_20260703.py` | Build V25 local residual-memory repaired feature NPZs | `26F4D3B03E69AD352FA5EE83D5F16D0E0186F14F9D04644E65F47D194530F79B` |
+| `E:\type10-7\code\scripts\sweep_phase1_adv3b02_localmem_target1_v25_20260703.sh` | N607 launcher and best-row summarizer for V25 | `AC3458BD0DA174F1B49FA435E6CE9D2EDEFCBF3B141F69AA59AAB762FA55B9F3` |
+
+Local verification:
+
+| Command | Result |
+|---|---|
+| `C:\Users\lh594\.conda\envs\ssr-gpu\python.exe -m py_compile E:\type10-7\code\scripts\build_phase1_local_residual_memory_20260703.py E:\type10-7\code\scripts\eval_phase1_target1_strong_repair_audit_20260703.py` | PASS |
+| `bash -lc "bash -n /mnt/e/type10-7/code/scripts/sweep_phase1_adv3b02_localmem_target1_v25_20260703.sh"` | PASS |
+
+Planned N607 output:
+
+| Artifact | Remote path |
+|---|---|
+| V25 build log | `/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_adv3b02_localmem_target1_v25_20260703/build_localmem.out` |
+| V25 summary | `/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_adv3b02_localmem_target1_v25_20260703/target1_strong_v25_summary.csv` |
+| V25 metrics JSON | `/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_adv3b02_localmem_target1_v25_20260703/target1_strong_v25_metrics.json` |
+| V25 best JSON | `/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_adv3b02_localmem_target1_v25_20260703/target1_strong_v25_best.json` |
