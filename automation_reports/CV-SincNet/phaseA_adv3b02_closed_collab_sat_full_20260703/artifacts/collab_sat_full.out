@@ -1,0 +1,23 @@
+[COLLAB-EVAL-CONFIG] ckpt=runs/phase1_adv3_mechanism32_queue_20260701/ADV3B02_CORE90_SOFT_E200/best_joint_safe_ssdg.pth eval_on=test_unseen_day_unseen_rx counts=all fusion=adaptive max_batches=0
+[COLLAB-EVAL-CKPT] run_name=post_stage sha256=2699eedcafe8cec880828592d2d65ba3781a9948939da5cf5c82b47143d59c98
+[COLLAB-EVAL] split=test_unseen_day_unseen_rx k=1 total=12000 base=86.32 fused=86.32 rescue=0 harm=0 net=0 receiver_count=5 eligible_groups=12000 excluded_incomplete=0
+[COLLAB-EVAL] split=test_unseen_day_unseen_rx k=2 total=12000 base=86.32 fused=89.10 rescue=640 harm=306 net=334 receiver_count=5 eligible_groups=12000 excluded_incomplete=0
+[COLLAB-EVAL] split=test_unseen_day_unseen_rx k=3 total=12000 base=86.32 fused=95.38 rescue=1212 harm=125 net=1087 receiver_count=5 eligible_groups=12000 excluded_incomplete=0
+[COLLAB-EVAL] split=test_unseen_day_unseen_rx k=4 total=12000 base=86.32 fused=97.44 rescue=1420 harm=85 net=1335 receiver_count=5 eligible_groups=12000 excluded_incomplete=0
+[COLLAB-EVAL] split=test_unseen_day_unseen_rx k=5 total=12000 base=86.32 fused=98.63 rescue=1542 harm=64 net=1478 receiver_count=5 eligible_groups=12000 excluded_incomplete=0
+[COLLAB-SAT-EVAL] scenario=leo_clear_weak split=test_unseen_day_unseen_rx k=1 total=12000 base=67.22 fused=67.22 rescue=0 harm=0 net=0 receiver_count=5 eligible_groups=12000 excluded_incomplete=0
+[COLLAB-SAT-EVAL] scenario=leo_clear_weak split=test_unseen_day_unseen_rx k=2 total=12000 base=67.22 fused=72.01 rescue=891 harm=316 net=575 receiver_count=5 eligible_groups=12000 excluded_incomplete=0
+[COLLAB-SAT-EVAL] scenario=leo_clear_weak split=test_unseen_day_unseen_rx k=3 total=12000 base=67.22 fused=82.34 rescue=2054 harm=239 net=1815 receiver_count=5 eligible_groups=12000 excluded_incomplete=0
+[COLLAB-SAT-EVAL] scenario=leo_clear_weak split=test_unseen_day_unseen_rx k=4 total=12000 base=67.22 fused=89.18 rescue=2783 harm=147 net=2636 receiver_count=5 eligible_groups=12000 excluded_incomplete=0
+[COLLAB-SAT-EVAL] scenario=leo_clear_weak split=test_unseen_day_unseen_rx k=5 total=12000 base=67.22 fused=91.28 rescue=3041 harm=153 net=2888 receiver_count=5 eligible_groups=12000 excluded_incomplete=0
+[COLLAB-SAT-EVAL] scenario=leo_low_elev_weak split=test_unseen_day_unseen_rx k=1 total=12000 base=65.04 fused=65.04 rescue=0 harm=0 net=0 receiver_count=5 eligible_groups=12000 excluded_incomplete=0
+[COLLAB-SAT-EVAL] scenario=leo_low_elev_weak split=test_unseen_day_unseen_rx k=2 total=12000 base=65.04 fused=69.28 rescue=878 harm=370 net=508 receiver_count=5 eligible_groups=12000 excluded_incomplete=0
+[COLLAB-SAT-EVAL] scenario=leo_low_elev_weak split=test_unseen_day_unseen_rx k=3 total=12000 base=65.04 fused=80.38 rescue=2111 harm=270 net=1841 receiver_count=5 eligible_groups=12000 excluded_incomplete=0
+[COLLAB-SAT-EVAL] scenario=leo_low_elev_weak split=test_unseen_day_unseen_rx k=4 total=12000 base=65.04 fused=86.95 rescue=2821 harm=192 net=2629 receiver_count=5 eligible_groups=12000 excluded_incomplete=0
+[COLLAB-SAT-EVAL] scenario=leo_low_elev_weak split=test_unseen_day_unseen_rx k=5 total=12000 base=65.04 fused=89.53 rescue=3108 harm=170 net=2938 receiver_count=5 eligible_groups=12000 excluded_incomplete=0
+[COLLAB-SAT-EVAL] scenario=leo_rain_weak split=test_unseen_day_unseen_rx k=1 total=12000 base=64.21 fused=64.21 rescue=0 harm=0 net=0 receiver_count=5 eligible_groups=12000 excluded_incomplete=0
+[COLLAB-SAT-EVAL] scenario=leo_rain_weak split=test_unseen_day_unseen_rx k=2 total=12000 base=64.21 fused=68.57 rescue=876 harm=353 net=523 receiver_count=5 eligible_groups=12000 excluded_incomplete=0
+[COLLAB-SAT-EVAL] scenario=leo_rain_weak split=test_unseen_day_unseen_rx k=3 total=12000 base=64.21 fused=79.73 rescue=2143 harm=280 net=1863 receiver_count=5 eligible_groups=12000 excluded_incomplete=0
+[COLLAB-SAT-EVAL] scenario=leo_rain_weak split=test_unseen_day_unseen_rx k=4 total=12000 base=64.21 fused=85.90 rescue=2827 harm=224 net=2603 receiver_count=5 eligible_groups=12000 excluded_incomplete=0
+[COLLAB-SAT-EVAL] scenario=leo_rain_weak split=test_unseen_day_unseen_rx k=5 total=12000 base=64.21 fused=88.67 rescue=3134 harm=199 net=2935 receiver_count=5 eligible_groups=12000 excluded_incomplete=0
+[COLLAB-EVAL-OUTPUT] runs/phaseA_adv3b02_closed_collab_sat_full_20260703/collab_sat_full.json
