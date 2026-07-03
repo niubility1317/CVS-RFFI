@@ -3953,6 +3953,53 @@ conda run --no-capture-output -n ssr-gpu python -m pytest code/tests/test_collab
 
 执行前需N607 preflight、GPU空闲/低显存选择、SCP哈希核对和远端`CVS-RFFI`环境语法验证。执行后必须检查本地无`ssh.exe`残留和无到N607/bridge的ESTABLISHED 22连接。
 
+### N607执行与结果
+
+N607 preflight通过，直接SSH目标可达，项目根为`/home/szu2070436088/2510044040/CV-SincNet`。运行前8张RTX3090均为`10/24576MiB`，选择并列最低显存占用的GPU0。远端环境按用户要求使用`/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python`。
+
+同步与验证：
+
+|项目|结果|
+|---|---|
+|远端评估核心SHA256|`2A37D5E0E3672DBAB1F237B3FE4CB34E90413FF6E6F2BB175E39ADCDD2113D9B`|
+|远端CLI脚本SHA256|`5C321EEFC2434E57B536A51FC45108E436EF6D4D01B90657452BCD15AB489BB9`|
+|远端测试文件SHA256|`13BD87C0F6E86E5399BE97F012314900B6C5581D9B030D5C6CC4BA8DA928128A`|
+|远端语法验证|`py_compile`通过|
+|远端pytest|`CVS-RFFI`环境未安装`pytest`，未做包安装；以远端`py_compile`、CLI `--help`和实际全量运行替代验证|
+|Git镜像提交|`6b11da5 Add pairguard request-more action`、`77b38c5 Use receiver budget for pairguard request-more`、`da83a1a Thread request-more budget through dual route`|
+
+执行中暴露两类配置/实现问题，均已按失败边界处理：
+
+|阶段|问题|处理|是否作为有效结果|
+|---|---|---|---|
+|首次远端命令|缺少`--class_conformal_enabled`，与`receiver_class_reliability_policy=support_calibrated`冲突|补充该参数后重跑|否|
+|第二次远端命令|`candidate_set_max_label_shell_risk=1.5`不满足[0,1]校验|改为`1.0`，`candidate_set_shell_reject_risk`保留`1.5`|否|
+|第三次远端命令|`request_more`未触发，原因是`can_request_more`未穿透到`dual_route_cvs`分支|本地修复、提交、同步后重跑|否|
+|一次远端grep|命令超时留下本地`ssh.exe` PID4212和N607 22端口连接|已`Stop-Process -Id 4212 -Force`并复查无残留|否|
+
+最终有效输出：
+
+|文件|SHA256|
+|---|---|
+|`runs/phase2_adv3b02_collab_open_set_qknn_full_20260703/collab_open_set_qknn_candidate_set_cvs_rxscope14_7_request_more_final_evt095_adv3b02.json`|`237530F4A7DA2009C54BD0452D2C6D5F95FC9968633AA1CB48D0492E6230B8A0`|
+|`runs/phase2_adv3b02_collab_open_set_qknn_full_20260703/collab_open_set_qknn_candidate_set_cvs_rxscope14_7_request_more_final_evt095_adv3b02_evidence.csv`|`C7CEFEF3EBA8DE1071DF2635846F01DF707AEC763C044CF3E7D1C87E06A7E56D`|
+
+运行元数据：`receiver_count=5`、`group_count=309`、`evidence_row_count=1000`，`collab_counts=all`覆盖k=1..5；`candidate_set_pairguard_action=request_more`；星地信道特征沿用`runs/phase2_adv3b02_collab_open_set_qknn_full_20260703/features.npz`，即ADV3B02 Stage2-C星地/LEO特征包。运行后8张GPU仍均为`10/24576MiB`。
+
+|route|k|old_acc|min_old|seen_new_acc|min_seen|unknown_FAR|unknown_reject|defer|request_more|bytes/event|p95 ms|pairguard_veto|pairguard_request_more|request_more_by_role|
+|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---|
+|rxscope14_7_request_more_final_evt095|1|0.0000|0.0000|0.0000|0.0000|0.0000|0.9667|0.0000|0.1327|40.0|0.1034|0.0000|0.0000|`{}`|
+|rxscope14_7_request_more_final_evt095|2|0.1316|0.0000|0.1765|0.0000|0.0000|0.9796|0.0000|0.0119|80.0|0.1034|0.0000|0.0119|`{"old":2,"unknown":1}`|
+|rxscope14_7_request_more_final_evt095|3|0.0667|0.0000|0.1250|0.0000|0.0000|0.9750|0.0000|0.0350|120.0|0.1034|0.0000|0.0350|`{"old":6,"unknown":1}`|
+|rxscope14_7_request_more_final_evt095|4|0.1667|0.0000|0.1500|0.0000|0.0000|1.0000|0.0000|0.0350|149.6|0.1034|0.0000|0.0000|`{}`|
+|rxscope14_7_request_more_final_evt095|5|0.2417|0.0000|0.1500|0.0000|0.0000|1.0000|0.0250|0.0000|167.8|0.1034|0.0000|0.0000|`{}`|
+
+判定：该路线没有达到目标，且不接近目标。虽然`unknown_FAR=0`、`unknown_reject≈0.98-1.00`，但这是以大规模known误拒为代价：k=2 old_acc仅`0.1316`、seen_new_acc仅`0.1765`，k=5 old_acc也仅`0.2417`、seen_new_acc`0.1500`。因此不能声明99/97/99达成，不能声明Stage2-C部署成功，也不能把unknown_FAR下降解释为真实性能提升。它只证明：`request_more`控制路径已接入并可审计，但当前门控参数过严，导致known类被过度转入`unknown_reject/request_more`。
+
+对比上一轮最佳`rxscope_14_7_pairs_evt095`，本轮`request_more`没有改善总体联合指标：上一轮k=4可保持`old_acc=0.8083`、`seen_new_acc=0.7500`、`unknown_FAR=0.0250`；本轮k=4只有`old_acc=0.1667`、`seen_new_acc=0.1500`。下一步不应继续扩大硬门控或单纯调低FAR，而应实现子agent建议的`SR-PairFuse`软风险惩罚：只在弱证据时降低高风险receiver-label pair权重或提高局部门槛，对强margin、低novelty、route一致的known样本保留快速accept路径。
+
+最终SSH/SCP后本地无`ssh.exe`残留，无N607和bridge 22端口ESTABLISHED连接。
+
 ## 2026-07-04 ADV3B02 receiver_set_pairguard执行计划
 
 ### 设计依据
