@@ -1423,6 +1423,8 @@ def build_collaborative_evidence(
     receiver_class_policy = str(receiver_class_reliability_policy or "none").strip().lower()
     if receiver_class_policy not in {"none", "support_calibrated"}:
         raise ValueError("receiver_class_reliability_policy must be none or support_calibrated")
+    if receiver_class_policy == "support_calibrated" and not bool(class_conformal_enabled):
+        raise ValueError("receiver_class_reliability_policy=support_calibrated requires --class_conformal_enabled")
     prototype_blend = float(prototype_score_blend)
     if prototype_blend < 0.0:
         raise ValueError("prototype_score_blend must be >= 0")
@@ -1636,6 +1638,10 @@ def build_collaborative_evidence(
                 mahalanobis_score_blend=mahalanobis_blend,
                 mahalanobis_score_temperature=mahalanobis_score_temp,
                 min_support=int(class_conformal_min_support),
+            )
+        if receiver_class_policy == "support_calibrated" and not conformal_scores:
+            raise RuntimeError(
+                f"receiver_class_reliability_policy=support_calibrated produced no support calibration scores for receiver {rx}"
             )
         class_reliabilities: dict[str, float] = {}
         for label_name in sorted(set(old_labels) | set(new_labels)):
@@ -2258,6 +2264,11 @@ def run_evaluation(args: argparse.Namespace) -> dict[str, Any]:
         scorer_risk_components=metadata["active_risk_components"],
     )
     result["feature_npz"] = str(args.feature_npz)
+    result["run_command_argv"] = [str(item) for item in sys.argv]
+    result["run_cwd"] = str(Path.cwd())
+    result["python_executable"] = str(sys.executable)
+    result["output_json"] = str(args.output_json)
+    result["output_evidence_csv"] = str(args.output_evidence_csv) if args.output_evidence_csv else ""
     result["qknn_metadata"] = metadata
     result["evidence_row_count"] = len(evidence)
     if args.output_evidence_csv:

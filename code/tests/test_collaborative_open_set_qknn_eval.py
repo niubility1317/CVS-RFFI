@@ -811,8 +811,8 @@ class CollaborativeOpenSetQknnEvalTest(unittest.TestCase):
             "known_margin": 0.45,
             "unknown_risk": 0.95,
             "score_risk": 0.95,
-            "radius_risk": 0.94,
-            "margin_risk": 0.93,
+            "radius_risk": 0.10,
+            "margin_risk": 0.10,
         }
         metadata = {
             "source_receiver_ids": ["src-a"],
@@ -853,7 +853,7 @@ class CollaborativeOpenSetQknnEvalTest(unittest.TestCase):
         self.assertEqual(rescued["counts"]["1"]["seen_new_rescue_count"], 1)
         self.assertEqual(rescued["seen_new_rescue_enabled"], True)
 
-    def test_seen_new_rescue_guard_does_not_apply_to_unknown_role(self):
+    def test_seen_new_rescue_guard_does_not_use_true_role(self):
         from evaluation.collaborative_open_set_qknn_eval import _fuse_event
 
         base_row = {
@@ -884,13 +884,15 @@ class CollaborativeOpenSetQknnEvalTest(unittest.TestCase):
 
         as_seen_new = _fuse_event([{**base_row, "role": "seen_new", "true_label": "new-a"}], **common)
         as_unknown = _fuse_event([{**base_row, "role": "unknown", "true_label": "__unknown__"}], **common)
+        role_free = _fuse_event([{k: v for k, v in base_row.items() if k not in {"role", "true_label"}}], **common)
 
-        self.assertTrue(as_seen_new["seen_new_rescue_applied"])
-        self.assertEqual(as_seen_new["decision"], "accept")
-        self.assertEqual(as_seen_new["output_label"], "new-a")
+        self.assertFalse(as_seen_new["seen_new_rescue_applied"])
         self.assertFalse(as_unknown["seen_new_rescue_applied"])
-        self.assertNotEqual(as_unknown["decision"], "accept")
-        self.assertNotEqual(as_unknown["output_label"], "new-a")
+        self.assertFalse(role_free["seen_new_rescue_applied"])
+        self.assertEqual(as_seen_new["decision"], as_unknown["decision"])
+        self.assertEqual(as_seen_new["decision"], role_free["decision"])
+        self.assertEqual(as_seen_new["output_label"], as_unknown["output_label"])
+        self.assertEqual(as_seen_new["output_label"], role_free["output_label"])
 
     def test_class_set_gate_guards_seen_new_rescue_without_true_role(self):
         from evaluation.collaborative_open_set_qknn_eval import evaluate_collaborative_open_set_evidence

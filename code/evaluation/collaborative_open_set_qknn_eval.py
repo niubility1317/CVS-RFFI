@@ -841,13 +841,11 @@ def _fuse_event(
             and mean_margin >= float(accept_margin_threshold)
             and mean_score >= float(consensus_score_threshold)
         )
-        event_role_raw = selected[0].get("role") if selected else ""
-        event_role = _role(event_role_raw) if str(event_role_raw or "").strip() else ""
         rescue_applied = bool(
             rescue_enabled
-            and event_role == "seen_new"
             and rescue_label_match
             and strong_known
+            and risk_component_agreement < float(scorer_component_vote_threshold)
             and agreement >= float(seen_new_rescue_min_agreement)
             and mean_score >= max(float(consensus_score_threshold), float(seen_new_rescue_min_score))
             and mean_margin >= max(float(accept_margin_threshold), float(seen_new_rescue_min_margin))
