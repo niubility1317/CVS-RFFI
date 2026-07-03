@@ -1164,3 +1164,37 @@ python E:\type10-7\code\tests\test_phase2_collaborative_open_set_qknn_eval.py
 与上一轮`adaptive_gain_rescue_s05`相比，class-set gate把所有预算的unknown_FAR压到0；预算4保持seen_new_acc=0.4571，但old_acc从0.3563降到0.3103，defer_rate从0.2857升到0.3312。预算5也保持unknown_FAR=0，但seen_new_acc只有0.2500，old_acc只有0.3654。该结果说明门控方向合理，但当前qKNN证据质量不足，仍不能满足old 99%/class floor 95%、seen-new 97%/class floor 93%、unknown reject 99%的目标。
 
 子agent审计结论并入本轮：文献/方法子agent建议优先组合top-k证据融合、高斯/马氏原型不确定性、open-world原型记忆；算法子agent建议的`DBR-AG-qKNN`与本轮class-set gate一致，即用多组件风险投票和跨receiver预算控制rescue；监督子agent指出当前仍是`receiver_domain_ranked`诊断近似，不是严格同物理事件协同，也不能声明Stage2-C部署成功。下一步应在同一框架内补充严格`event_id`物理协同或改进本地原型证据质量，而不是继续只调gate阈值。
+
+## 2026-07-03 no-role-leakage与标签聚合修正
+
+本轮继续推进目标，但不把上一轮FAR=0视为完成。事件级诊断显示：在当前evidence中，old事件有93.09%至少一个receiver给出正确标签，seen-new事件有73.33%至少一个receiver给出正确标签；unknown事件100%至少一个receiver的`unknown_risk>=0.995`。这说明底层qKNN证据存在可利用上界，当前瓶颈主要是融合器把少数正确receiver证据淹没，而不是所有样本完全不可分。
+
+同时，审计发现上一版`seen_new_rescue`读取了query的`role`来禁止unknown被rescue。这是离线诊断保护，不是可部署算法。修正如下：
+
+|改动|目的|
+|---|---|
+|移除`_fuse_event`中的`role/raw_role`决策依赖|保证accept/rescue/gate只使用部署时可获得的证据字段。|
+|新增`label_fusion_policy`|支持`score_sum`、`vote_sum`、`vote_margin`、`max_score`四种标签聚合，默认`score_sum`保持旧行为。|
+|新增反泄漏单测|同一证据只改`role/true_label`时，`decision/output_label/effective_unknown_risk/rescue`必须一致。|
+
+本地和Git镜像验证：
+
+```powershell
+conda activate ssr-gpu
+python -m py_compile E:\type10-7\code\evaluation\collaborative_open_set_qknn_eval.py E:\type10-7\code\scripts\phase2_collaborative_open_set_qknn_eval.py
+python E:\type10-7\code\tests\test_collaborative_open_set_qknn_eval.py
+python E:\type10-7\code\tests\test_phase2_collaborative_open_set_qknn_eval.py
+```
+
+结果：本地和Git镜像均为`test_collaborative_open_set_qknn_eval.py`24 tests OK，`test_phase2_collaborative_open_set_qknn_eval.py`16 tests OK。Git提交：`c41dd3e Remove role leakage from collaborative qKNN rescue`。
+
+本地基于已拉回evidence复评，使用上一轮class-set gate安全参数：
+
+|label_fusion_policy|预算4 old_acc|预算4 seen_new_acc|预算4 min_seen_new|预算4 unknown_FAR|预算4 defer_rate|
+|---|---:|---:|---:|---:|---:|
+|`score_sum`|0.3103|0.4571|0.2500|0.0000|0.3312|
+|`vote_margin`|0.3103|0.4857|0.3000|0.0000|0.3182|
+|`vote_sum`|0.3103|0.4857|0.3000|0.0000|0.3247|
+|`max_score`|0.3103|0.4857|0.3000|0.0000|0.3052|
+
+去掉`role`泄漏后，预算1在强rescue下会出现`unknown_FAR=0.0500`，说明部署可行算法必须依赖风险/gate保护，而不能依赖真值role保护。预算2-5在class-set gate安全参数下仍保持`unknown_FAR=0.0000`。计划远端复测`vote_margin`，因为它在预算4提高seen-new且降低defer，同时不增加FAR。
