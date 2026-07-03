@@ -3583,6 +3583,113 @@ RuntimeError: NO_ALIGNED_COLLABORATIVE_EVENTS: target receiver query rows do not
 
 远端结束状态：8张RTX3090均为`10/24576MiB`；本地检查无残留`ssh.exe`，无到`172.31.111.215:22`或`172.31.105.18:22`的ESTABLISHED连接。Git镜像提交：`ace6ff4 Add receiver pair audit for collaborative open set`。
 
+## 2026-07-04 support_quality_prior接收机选择策略
+
+### 目的
+
+pair审计显示固定2星组合存在明显取舍：保护seen-new的pair会牺牲旧类，保护旧类的pair会放大FAR。因此本轮实现一个轻量接收机选择策略`support_quality_prior`，在每个事件内按节点本地support校准质量排序，再取预算内接收机。排序使用`reliability`、`support_density`、`class_conformal_pvalue`、`receiver_class_reliability`、`known_score/margin`、`class_shell/radius`安全项，不使用unknown query标签或真实类别。
+
+该策略目标不是直接声明成功，而是检验“支持集质量优先路由”是否能提升低地板新类，作为后续类别条件化路由的依据。
+
+### 本地变更与验证
+
+|文件|变更|
+|---|---|
+|`code/evaluation/collaborative_open_set_qknn_eval.py`|新增`receiver_selection_policy=support_quality_prior`和`_receiver_support_quality()`。默认仍为`fixed_receiver_order`，历史结果可复现。|
+|`code/scripts/phase2_collaborative_open_set_qknn_eval.py`|CLI新增`support_quality_prior`选项。|
+|`code/tests/test_collaborative_open_set_qknn_eval.py`|新增测试，验证该策略能优先选择support校准质量更高的receiver。|
+
+本地验证：
+
+```text
+C:\Users\lh594\.conda\envs\ssr-gpu\python.exe -m py_compile code\evaluation\collaborative_open_set_qknn_eval.py code\scripts\phase2_collaborative_open_set_qknn_eval.py
+C:\Users\lh594\.conda\envs\ssr-gpu\python.exe -m pytest code\tests\test_collaborative_open_set_qknn_eval.py code\tests\test_phase2_collaborative_open_set_qknn_eval.py -q
+```
+
+结果：根工作区和Git镜像均通过，`92 passed`。本地离线重算当前最佳`shell_s150` evidence显示：`support_quality_prior,k=3`可把`seen_new_acc`提升到0.8750、`min_seen`提升到0.8500，`old_acc=0.8167`、`min_old=0.7000`，但`unknown_FAR=0.1250`，拒识退化明显。因此该策略只能作为“新类救援路由”诊断，不能替代当前低FAR主线。
+
+代码SHA256：
+
+|文件|SHA256|
+|---|---|
+|`code/evaluation/collaborative_open_set_qknn_eval.py`|`E50ABB250F592D9EEC3ED77F233FE2DFDEDD58156A464DA7BBBF822A7D5212BB`|
+|`code/scripts/phase2_collaborative_open_set_qknn_eval.py`|`8C27203EF0AA6CEFE4BC62FF1AC44E5581AF21979D8E7F122867E07CF1BB2919`|
+|`code/tests/test_collaborative_open_set_qknn_eval.py`|`67FBA2F87D8C7A9CFE3C87FE48273F7DC49FCD3E3867012AB97193AC57DC9524`|
+
+Git镜像提交：`ebdf1cc Add support quality receiver selection`。
+
+### N607计划
+
+计划同步上述3个文件到N607，远端使用`/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python`验证语法和单测，然后复跑当前最佳`shell_s150`配置，仅把`--receiver_selection_policy`改为`support_quality_prior`。运行仍使用`ADV3B02_CORE90_SOFT_E200`特征、qknn8、`collab_counts=all`、`available_up_to_k`、`partial_collab_min_receivers=3`，输出：
+
+```text
+runs/phase2_adv3b02_collab_open_set_qknn_full_20260703/collab_open_set_qknn_candidate_set_cvs_rcwr_avail3_p055_lrca049_huv0999_f050_shell_s150_supportq_adv3b02.json
+runs/phase2_adv3b02_collab_open_set_qknn_full_20260703/collab_open_set_qknn_candidate_set_cvs_rcwr_avail3_p055_lrca049_huv0999_f050_shell_s150_supportq_adv3b02_evidence.csv
+```
+
+### N607结果
+
+N607直连preflight：`2026年07月04日01:44:17 CST`通过，项目根可见，8张RTX3090均为`10/24576MiB`。同步后远端使用`/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python`验证：
+
+```text
+python -m py_compile code/evaluation/collaborative_open_set_qknn_eval.py code/scripts/phase2_collaborative_open_set_qknn_eval.py
+python -m unittest discover -s code/tests -p 'test_collaborative_open_set_qknn_eval.py' -q
+```
+
+结果：`48 tests OK`。远端hash：
+
+|文件|N607 SHA256|
+|---|---|
+|`code/evaluation/collaborative_open_set_qknn_eval.py`|`e50abb250f592d9eec3ed77f233fe2dfdedd58156a464da7bbbf822a7d5212bb`|
+|`code/scripts/phase2_collaborative_open_set_qknn_eval.py`|`8c27203ef0aa6cefe4bc62ff1ac44e5581af21979d8e7f122867e07cf1bb2919`|
+|`code/tests/test_collaborative_open_set_qknn_eval.py`|`67fba2f87d8c7a9cfe3c87fe48273f7dc49fcd3e3867012ab97193ac57dc9524`|
+
+远端运行使用GPU0，输出`1000`行evidence。产物SHA256：
+
+|产物|SHA256|
+|---|---|
+|`collab_open_set_qknn_candidate_set_cvs_rcwr_avail3_p055_lrca049_huv0999_f050_shell_s150_supportq_adv3b02.json`|`B519EE9961ABAD8AB5274B0CCE6A229DE342CAF8109807D4D40F5361B167739D`|
+|`collab_open_set_qknn_candidate_set_cvs_rcwr_avail3_p055_lrca049_huv0999_f050_shell_s150_supportq_adv3b02_evidence.csv`|`D5E2D03D6CB9C3E25BA6170B4EC6B1DEA6BA55DD5D57EBD475776CA70D43BE3B`|
+
+全量`1..5`协同数量结果：
+
+|预算k|old_acc|min_old|seen_new_acc|min_seen|unknown_FAR|unknown_reject|defer|known_cov|avg_rx|bytes/event|结论|
+|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---|
+|1|0.0000|0.0000|0.0000|0.0000|0.0000|0.3333|0.8795|0.0000|1.0000|40.0|单receiver仍不足|
+|2|0.7368|0.5000|0.7115|0.6562|0.4130|0.5652|0.0680|0.7941|2.0000|80.0|known提升但FAR不可用|
+|3|0.8167|0.7000|0.8750|0.8500|0.1250|0.8500|0.0100|0.8875|3.0000|120.0|新类显著提升但拒识失败|
+|4|0.7917|0.6000|0.8250|0.7500|0.1000|0.8750|0.0100|0.8688|3.7500|150.0|FAR仍超标且old低于0.80|
+|5|0.7833|0.5500|0.7250|0.5500|0.0750|0.9000|0.0100|0.8313|4.2150|168.6|FAR改善但known退化|
+
+k=3逐类结果：
+
+|类别集|逐类准确率|
+|---|---|
+|old|`14-10=0.7000`，`14-7=0.7000`，`20-15=0.7500`，`20-19=0.7500`，`6-15=1.0000`，`8-20=1.0000`|
+|seen-new|`19-3=0.8500`，`3-8=0.9000`|
+
+k=3 open-set confusion：
+
+|项|计数|
+|---|---:|
+|`old->old`|100|
+|`old->seen_new`|5|
+|`old->unknown_reject`|13|
+|`old->defer`|2|
+|`seen_new->seen_new`|35|
+|`seen_new->old`|2|
+|`seen_new->unknown_reject`|3|
+|`unknown->unknown_reject`|34|
+|`unknown->old`|4|
+|`unknown->seen_new`|1|
+|`unknown->defer`|1|
+
+### 判定
+
+`support_quality_prior`证明了接收机选择策略确实能救新类：相对当前低FAR主线`shell_s150,k=4`，新类总体从`0.7500`提高到`0.8750`，新类地板从`0.6000`提高到`0.8500`，且旧类总体从`0.8083`小幅提高到`0.8167`。但代价是unknown拒识从`0.9500`降到`0.8500`，`unknown_FAR`从`0.0250`升到`0.1250`。因此它不能作为最终主线，也不能声明Stage2-C成功；它是下一步“类别条件化双路由”的证据：known救援路径应使用`support_quality_prior`，unknown安全路径仍需保留高unknown风险否决、class shell或新增oldness/pair verifier。
+
+远端结束状态：8张RTX3090均为`10/24576MiB`；本地无残留`ssh.exe`，无N607/bridge 22端口ESTABLISHED连接。
+
 
 
 
