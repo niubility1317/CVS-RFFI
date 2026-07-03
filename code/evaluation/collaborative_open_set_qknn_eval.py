@@ -47,6 +47,28 @@ RISK_COMPONENT_KEYS = {
 COLLAB_GROUP_POLICIES = {"exact_k", "available_up_to_k"}
 
 
+def _parse_receiver_sets(value: object) -> list[frozenset[str]]:
+    if value is None:
+        return []
+    if isinstance(value, str):
+        group_specs = [part.strip() for part in value.split(";") if part.strip()]
+    else:
+        group_specs = list(value) if isinstance(value, Sequence) else [value]
+    parsed: list[frozenset[str]] = []
+    for group in group_specs:
+        if isinstance(group, str):
+            receivers = [
+                part.strip()
+                for part in group.replace("|", "+").replace(",", "+").split("+")
+                if part.strip()
+            ]
+        else:
+            receivers = [str(part).strip() for part in group if str(part).strip()]
+        if receivers:
+            parsed.append(frozenset(receivers))
+    return parsed
+
+
 def parse_collab_counts(spec: str | Sequence[int] | None, *, receiver_count: int) -> list[int]:
     receiver_count = int(receiver_count)
     if receiver_count < 1:
@@ -447,6 +469,7 @@ def _fuse_event(
     candidate_set_pairguard_min_label_unknown_risk: float = 0.80,
     candidate_set_pairguard_min_shell_risk: float = 0.90,
     candidate_set_pairguard_labels: object = None,
+    candidate_set_pairguard_receiver_sets: object = None,
 ) -> dict[str, Any]:
     active_components = _parse_risk_components(scorer_risk_components)
     policy = _normalize_scope(fusion_policy)
@@ -509,6 +532,7 @@ def _fuse_event(
         "candidate_set_pairguard_min_shell_risk",
     )
     candidate_set_pairguard_label_set = _items(candidate_set_pairguard_labels)
+    candidate_set_pairguard_receiver_set_list = _parse_receiver_sets(candidate_set_pairguard_receiver_sets)
     label_scores: defaultdict[str, float] = defaultdict(float)
     label_raw_scores: defaultdict[str, float] = defaultdict(float)
     label_weight_totals: defaultdict[str, float] = defaultdict(float)
@@ -1121,10 +1145,16 @@ def _fuse_event(
         candidate_set_pairguard_label_scoped = bool(
             not candidate_set_pairguard_label_set or (label and label in candidate_set_pairguard_label_set)
         )
+        selected_receiver_set = frozenset(_str(row, "receiver_id") for row in selected)
+        candidate_set_pairguard_receiver_scoped = bool(
+            not candidate_set_pairguard_receiver_set_list
+            or selected_receiver_set in candidate_set_pairguard_receiver_set_list
+        )
         candidate_set_pairguard_veto = bool(
             policy == "candidate_set_cvs"
             and label
             and candidate_set_pairguard_label_scoped
+            and candidate_set_pairguard_receiver_scoped
             and candidate_set_pairguard_mode == "boundary_veto"
             and candidate_set_pairguard_failed
             and candidate_set_pairguard_boundary_trigger
@@ -1132,6 +1162,7 @@ def _fuse_event(
         candidate_set_pairguard_accept_passed = bool(
             candidate_set_pairguard_mode != "accept_gate"
             or not candidate_set_pairguard_label_scoped
+            or not candidate_set_pairguard_receiver_scoped
             or not candidate_set_pairguard_failed
         )
         candidate_set_accept = bool(
@@ -1295,8 +1326,14 @@ def _fuse_event(
         ),
         "candidate_set_pairguard_min_shell_risk": float(candidate_set_pairguard_min_shell_risk),
         "candidate_set_pairguard_labels": ",".join(sorted(candidate_set_pairguard_label_set)),
+        "candidate_set_pairguard_receiver_sets": ";".join(
+            "+".join(sorted(item)) for item in candidate_set_pairguard_receiver_set_list
+        ),
         "candidate_set_pairguard_label_scoped": bool(
             locals().get("candidate_set_pairguard_label_scoped", False)
+        ),
+        "candidate_set_pairguard_receiver_scoped": bool(
+            locals().get("candidate_set_pairguard_receiver_scoped", False)
         ),
         "candidate_set_pairguard_disagreement_failed": bool(
             locals().get("candidate_set_pairguard_disagreement_failed", False)
@@ -2260,6 +2297,7 @@ def _fuse_dual_route_event(
     candidate_set_pairguard_min_label_unknown_risk: float = 0.80,
     candidate_set_pairguard_min_shell_risk: float = 0.90,
     candidate_set_pairguard_labels: object = None,
+    candidate_set_pairguard_receiver_sets: object = None,
     dual_route_rescue_min_pvalue: float = 0.75,
     dual_route_rescue_min_receiver_class_reliability: float = 0.75,
     dual_route_rescue_max_label_unknown_risk: float = 0.60,
@@ -2336,6 +2374,7 @@ def _fuse_dual_route_event(
         candidate_set_pairguard_min_label_unknown_risk=candidate_set_pairguard_min_label_unknown_risk,
         candidate_set_pairguard_min_shell_risk=candidate_set_pairguard_min_shell_risk,
         candidate_set_pairguard_labels=candidate_set_pairguard_labels,
+        candidate_set_pairguard_receiver_sets=candidate_set_pairguard_receiver_sets,
     )
     rescue = _fuse_event(
         rescue_selected,
@@ -2403,6 +2442,7 @@ def _fuse_dual_route_event(
         candidate_set_pairguard_min_label_unknown_risk=candidate_set_pairguard_min_label_unknown_risk,
         candidate_set_pairguard_min_shell_risk=candidate_set_pairguard_min_shell_risk,
         candidate_set_pairguard_labels=candidate_set_pairguard_labels,
+        candidate_set_pairguard_receiver_sets=candidate_set_pairguard_receiver_sets,
     )
     rescue_ok = _dual_route_rescue_ok(
         rescue,
@@ -2823,6 +2863,7 @@ def evaluate_collaborative_open_set_evidence(
     candidate_set_pairguard_min_label_unknown_risk: float = 0.80,
     candidate_set_pairguard_min_shell_risk: float = 0.90,
     candidate_set_pairguard_labels: object = None,
+    candidate_set_pairguard_receiver_sets: object = None,
     dual_route_rescue_min_pvalue: float = 0.75,
     dual_route_rescue_min_receiver_class_reliability: float = 0.75,
     dual_route_rescue_max_label_unknown_risk: float = 0.60,
@@ -3051,6 +3092,7 @@ def evaluate_collaborative_open_set_evidence(
                     ),
                     candidate_set_pairguard_min_shell_risk=candidate_set_pairguard_min_shell_risk,
                     candidate_set_pairguard_labels=candidate_set_pairguard_labels,
+                    candidate_set_pairguard_receiver_sets=candidate_set_pairguard_receiver_sets,
                     dual_route_rescue_min_pvalue=dual_route_rescue_min_pvalue,
                     dual_route_rescue_min_receiver_class_reliability=(
                         dual_route_rescue_min_receiver_class_reliability
@@ -3203,6 +3245,7 @@ def evaluate_collaborative_open_set_evidence(
                     ),
                     candidate_set_pairguard_min_shell_risk=candidate_set_pairguard_min_shell_risk,
                     candidate_set_pairguard_labels=candidate_set_pairguard_labels,
+                    candidate_set_pairguard_receiver_sets=candidate_set_pairguard_receiver_sets,
                 )
             first = selected[0]
             fused["role"] = _role(first.get("role"))
@@ -3335,6 +3378,9 @@ def evaluate_collaborative_open_set_evidence(
         ),
         "candidate_set_pairguard_min_shell_risk": float(candidate_set_pairguard_min_shell_risk),
         "candidate_set_pairguard_labels": ",".join(sorted(_items(candidate_set_pairguard_labels))),
+        "candidate_set_pairguard_receiver_sets": ";".join(
+            "+".join(sorted(item)) for item in _parse_receiver_sets(candidate_set_pairguard_receiver_sets)
+        ),
         "dual_route_rescue_min_pvalue": float(dual_route_rescue_min_pvalue),
         "dual_route_rescue_min_receiver_class_reliability": float(
             dual_route_rescue_min_receiver_class_reliability

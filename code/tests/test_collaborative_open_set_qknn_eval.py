@@ -2382,6 +2382,24 @@ class CollaborativeOpenSetQknnEvalTest(unittest.TestCase):
         self.assertTrue(scoped_in_event["candidate_set_pairguard_label_scoped"])
         self.assertTrue(scoped_in_event["candidate_set_pairguard_veto"])
 
+        receiver_scoped_out_event = evaluate(
+            make_rows((0.10, 0.95)),
+            candidate_set_pairguard_labels="old-a",
+            candidate_set_pairguard_receiver_sets="rx-c+rx-d",
+        )["counts"]["2"]["event_results"][0]
+        self.assertTrue(receiver_scoped_out_event["candidate_set_pairguard_label_scoped"])
+        self.assertFalse(receiver_scoped_out_event["candidate_set_pairguard_receiver_scoped"])
+        self.assertFalse(receiver_scoped_out_event["candidate_set_pairguard_veto"])
+        self.assertTrue(receiver_scoped_out_event["candidate_set_accept"])
+
+        receiver_scoped_in_event = evaluate(
+            make_rows((0.10, 0.95)),
+            candidate_set_pairguard_labels="old-a",
+            candidate_set_pairguard_receiver_sets="rx-b+rx-a",
+        )["counts"]["2"]["event_results"][0]
+        self.assertTrue(receiver_scoped_in_event["candidate_set_pairguard_receiver_scoped"])
+        self.assertTrue(receiver_scoped_in_event["candidate_set_pairguard_veto"])
+
         with self.assertRaisesRegex(ValueError, "candidate_set_pairguard_mode"):
             evaluate(make_rows((0.10, 0.80)), candidate_set_pairguard_mode="bad_mode")
         with self.assertRaisesRegex(ValueError, "candidate_set_pairguard_min_event_unknown_risk"):

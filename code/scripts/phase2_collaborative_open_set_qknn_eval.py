@@ -2362,6 +2362,7 @@ def run_evaluation(args: argparse.Namespace) -> dict[str, Any]:
         ),
         candidate_set_pairguard_min_shell_risk=float(args.candidate_set_pairguard_min_shell_risk),
         candidate_set_pairguard_labels=str(args.candidate_set_pairguard_labels),
+        candidate_set_pairguard_receiver_sets=str(args.candidate_set_pairguard_receiver_sets),
         dual_route_rescue_min_pvalue=float(args.dual_route_rescue_min_pvalue),
         dual_route_rescue_min_receiver_class_reliability=float(
             args.dual_route_rescue_min_receiver_class_reliability
@@ -2591,6 +2592,7 @@ def parse_args() -> argparse.Namespace:
     p.add_argument("--candidate_set_pairguard_min_label_unknown_risk", type=float, default=0.80)
     p.add_argument("--candidate_set_pairguard_min_shell_risk", type=float, default=0.90)
     p.add_argument("--candidate_set_pairguard_labels", default="")
+    p.add_argument("--candidate_set_pairguard_receiver_sets", default="")
     p.add_argument("--include_event_results", action="store_true")
     p.add_argument("--dual_route_rescue_min_pvalue", type=float, default=0.75)
     p.add_argument("--dual_route_rescue_min_receiver_class_reliability", type=float, default=0.75)
