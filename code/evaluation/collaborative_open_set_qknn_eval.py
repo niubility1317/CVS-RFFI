@@ -82,6 +82,15 @@ def _float(row: Mapping[str, Any], key: str, default: float = 0.0) -> float:
     return value
 
 
+def _has_finite_float(row: Mapping[str, Any], key: str) -> bool:
+    if key not in row:
+        return False
+    try:
+        return math.isfinite(float(row.get(key)))
+    except (TypeError, ValueError):
+        return False
+
+
 def _str(row: Mapping[str, Any], key: str, default: str = "") -> str:
     value = row.get(key, default)
     return str(default if value is None else value)
@@ -281,6 +290,8 @@ def _fuse_event(
     predicted_labels = []
     support_densities = []
     radius_z_values = []
+    support_density_missing = []
+    radius_z_missing = []
     for row in selected:
         weight = max(0.0, _float(row, "reliability", 1.0))
         label = _str(row, "predicted_label", "")
@@ -296,6 +307,8 @@ def _fuse_event(
         weights.append(weight)
         risks.append(_float(row, "unknown_risk", 0.0))
         margins.append(_float(row, "known_margin", 0.0))
+        support_density_missing.append(not _has_finite_float(row, "support_density"))
+        radius_z_missing.append(not _has_finite_float(row, "class_radius_z"))
         support_densities.append(_float(row, "support_density", 1.0))
         radius_z_values.append(_float(row, "class_radius_z", 0.0))
         score_risk_value = _float(row, "score_risk", _float(row, "unknown_risk", 0.0))
@@ -403,6 +416,12 @@ def _fuse_event(
     label_radius_z_values = [
         value for value, row in zip(radius_z_values, selected) if _str(row, "predicted_label", "") == label
     ]
+    label_support_density_missing = any(
+        missing for missing, row in zip(support_density_missing, selected) if _str(row, "predicted_label", "") == label
+    )
+    label_radius_z_missing = any(
+        missing for missing, row in zip(radius_z_missing, selected) if _str(row, "predicted_label", "") == label
+    )
     label_support_density = (
         sum(label_support_density_values) / len(label_support_density_values) if label_support_density_values else 0.0
     )
@@ -448,9 +467,13 @@ def _fuse_event(
             reasons.append(f"effective_unknown_risk>{max_risk:.6g}")
         if risk_component_agreement > max_agreement:
             reasons.append(f"risk_component_agreement>{max_agreement:.6g}")
-        if label_support_density < min_density:
+        if min_density > 0.0 and label_support_density_missing:
+            reasons.append("support_density:missing")
+        elif label_support_density < min_density:
             reasons.append(f"support_density:{label_support_density:.6g}<{min_density:.6g}")
-        if label_radius_z > max_radius_z:
+        if max_radius_z < 1.0e12 and label_radius_z_missing:
+            reasons.append("radius_z:missing")
+        elif label_radius_z > max_radius_z:
             reasons.append(f"radius_z:{label_radius_z:.6g}>{max_radius_z:.6g}")
         return not reasons, ",".join(reasons)
 

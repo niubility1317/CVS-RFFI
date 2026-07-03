@@ -839,6 +839,65 @@ class CollaborativeOpenSetQknnEvalTest(unittest.TestCase):
         self.assertEqual(k2["unknown_defer"], 1)
         self.assertEqual(result["class_set_gate_enabled"], True)
 
+    def test_class_set_gate_fails_closed_when_density_field_missing(self):
+        from evaluation.collaborative_open_set_qknn_eval import _fuse_event
+
+        row = {
+            "event_id": "missing-density",
+            "receiver_id": "rx-a",
+            "predicted_label": "old-a",
+            "known_score": 0.95,
+            "known_margin": 0.40,
+            "unknown_risk": 0.10,
+        }
+
+        fused = _fuse_event(
+            [row],
+            fusion_policy="scorer_cvs",
+            old_labels={"old-a"},
+            unknown_risk_threshold=0.8,
+            unknown_quantile=0.75,
+            accept_margin_threshold=0.1,
+            consensus_gap_threshold=0.0,
+            consensus_score_threshold=0.6,
+            scorer_component_vote_threshold=0.5,
+            class_set_gate_enabled=True,
+            old_gate_min_support_density=0.5,
+        )
+
+        self.assertEqual(fused["decision"], "defer")
+        self.assertIn("support_density:missing", fused["class_set_gate_reason"])
+
+    def test_class_set_gate_fails_closed_when_radius_z_field_missing(self):
+        from evaluation.collaborative_open_set_qknn_eval import _fuse_event
+
+        row = {
+            "event_id": "missing-radius-z",
+            "receiver_id": "rx-a",
+            "predicted_label": "old-a",
+            "known_score": 0.95,
+            "known_margin": 0.40,
+            "unknown_risk": 0.10,
+            "support_density": 0.75,
+        }
+
+        fused = _fuse_event(
+            [row],
+            fusion_policy="scorer_cvs",
+            old_labels={"old-a"},
+            unknown_risk_threshold=0.8,
+            unknown_quantile=0.75,
+            accept_margin_threshold=0.1,
+            consensus_gap_threshold=0.0,
+            consensus_score_threshold=0.6,
+            scorer_component_vote_threshold=0.5,
+            class_set_gate_enabled=True,
+            old_gate_max_radius_z=2.0,
+        )
+
+        self.assertEqual(fused["decision"], "defer")
+        self.assertIn("radius_z:missing", fused["class_set_gate_reason"])
+
     def test_class_set_gate_allows_seen_new_when_gate_passes(self):
         from evaluation.collaborative_open_set_qknn_eval import evaluate_collaborative_open_set_evidence
 
