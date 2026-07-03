@@ -992,6 +992,67 @@ class CollaborativeOpenSetQknnEvalTest(unittest.TestCase):
         self.assertEqual(weighted["counts"]["2"]["old_acc"], 1.0)
         self.assertEqual(weighted["label_fusion_policy"], "weighted_vote_margin")
 
+    def test_weighted_vote_margin_agreement_tracks_selected_label_weight(self):
+        from evaluation.collaborative_open_set_qknn_eval import evaluate_collaborative_open_set_evidence
+
+        rows = [
+            {
+                "event_id": "low-weight-high-margin",
+                "receiver_id": "rx-a",
+                "role": "old",
+                "true_label": "old-a",
+                "predicted_label": "old-a",
+                "known_score": 0.20,
+                "known_margin": 0.90,
+                "unknown_risk": 0.90,
+                "score_risk": 0.90,
+                "radius_risk": 0.90,
+                "margin_risk": 0.90,
+                "class_conformal_pvalue": 0.01,
+                "class_conformal_support_count": 2,
+            },
+            {
+                "event_id": "low-weight-high-margin",
+                "receiver_id": "rx-b",
+                "role": "old",
+                "true_label": "old-a",
+                "predicted_label": "old-b",
+                "known_score": 0.80,
+                "known_margin": 0.10,
+                "unknown_risk": 0.10,
+                "score_risk": 0.10,
+                "radius_risk": 0.10,
+                "margin_risk": 0.10,
+                "class_conformal_pvalue": 0.95,
+                "class_conformal_support_count": 2,
+            },
+        ]
+        metadata = {
+            "source_receiver_ids": ["src-a"],
+            "target_receiver_ids": ["rx-a", "rx-b"],
+            "old_tx_ids": ["old-a", "old-b"],
+            "seen_new_tx_ids": ["new-a"],
+            "unknown_tx_ids": ["unk-a"],
+            "target_channel_view": "leo_clear_weak",
+        }
+
+        result = evaluate_collaborative_open_set_evidence(
+            rows,
+            collab_counts="2",
+            fusion_policy="cp_set_cvs",
+            unknown_risk_threshold=0.98,
+            accept_margin_threshold=0.03,
+            consensus_score_threshold=0.1,
+            conformal_rescue_min_pvalue=0.15,
+            class_reliability_policy="conformal_margin_risk",
+            label_fusion_policy="weighted_vote_margin",
+            protocol_metadata=metadata,
+            strict_protocol_metadata=True,
+        )
+
+        self.assertEqual(result["counts"]["2"]["known_coverage"], 0.0)
+        self.assertEqual(result["counts"]["2"]["defer_rate"], 1.0)
+
     def test_class_reliability_is_monotonic_around_pvalue_floor(self):
         from evaluation.collaborative_open_set_qknn_eval import _class_reliability
 

@@ -645,8 +645,9 @@ def _fuse_event(
         else:
             rank_score = weighted_score
         label_rank_scores[item] = float(rank_score)
-    if label_rank_scores:
-        label = max(label_rank_scores.items(), key=lambda item: (item[1], item[0]))[0]
+    ranked_label_items = sorted(label_rank_scores.items(), key=lambda item: (item[1], item[0]), reverse=True)
+    if ranked_label_items:
+        label = ranked_label_items[0][0]
         score = label_scores[label]
     else:
         label, score = "", 0.0
@@ -656,21 +657,26 @@ def _fuse_event(
             mean_score = label_raw_scores[label] / max(label_weight_total, 1e-12)
         if label_margins[label]:
             mean_margin = sum(label_margins[label]) / len(label_margins[label])
-    ranked_label_scores = sorted(label_rank_scores.values(), reverse=True)
+    ranked_label_scores = [float(item[1]) for item in ranked_label_items]
     top_label_score = ranked_label_scores[0] if ranked_label_scores else 0.0
     second_label_score = ranked_label_scores[1] if len(ranked_label_scores) > 1 else 0.0
     label_score_total = sum(max(0.0, value) for value in label_scores.values())
-    score_gap_ratio = (top_label_score - second_label_score) / max(label_score_total, 1e-12)
+    if label_fusion_policy == "weighted_vote_margin":
+        label_rank_total = sum(max(0.0, value) for value in label_rank_scores.values())
+        score_gap_ratio = (top_label_score - second_label_score) / max(label_rank_total, 1e-12)
+    else:
+        score_gap_ratio = (top_label_score - second_label_score) / max(label_score_total, 1e-12)
     ranked_counts = sorted(label_count.values(), reverse=True)
     top_count = ranked_counts[0] if ranked_counts else 0
     second_count = ranked_counts[1] if len(ranked_counts) > 1 else 0
     receiver_n = max(len(selected), 1)
     if label_fusion_policy == "weighted_vote_margin":
-        ranked_weight_totals = sorted((max(0.0, v) for v in label_weight_totals.values()), reverse=True)
-        top_weight = ranked_weight_totals[0] if ranked_weight_totals else 0.0
-        second_weight = ranked_weight_totals[1] if len(ranked_weight_totals) > 1 else 0.0
-        agreement = float(top_weight) / max(sum(max(0.0, v) for v in label_weight_totals.values()), 1e-12)
-        vote_gap = float(top_weight - second_weight) / max(sum(max(0.0, v) for v in label_weight_totals.values()), 1e-12)
+        selected_weight = max(0.0, float(label_weight_totals[label])) if label else 0.0
+        other_weights = [max(0.0, float(v)) for item, v in label_weight_totals.items() if item != label]
+        second_weight = max(other_weights, default=0.0)
+        total_weight = max(sum(max(0.0, v) for v in label_weight_totals.values()), 1e-12)
+        agreement = float(selected_weight) / total_weight
+        vote_gap = float(selected_weight - second_weight) / total_weight
     else:
         agreement = float(top_count) / float(receiver_n)
         vote_gap = float(top_count - second_count) / float(receiver_n)
