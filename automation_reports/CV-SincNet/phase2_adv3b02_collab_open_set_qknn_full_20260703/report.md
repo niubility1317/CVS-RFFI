@@ -582,3 +582,128 @@ N607使用`CVS-RFFI`环境，`py_compile`通过，`test_collaborative_open_set_q
 |5|0.5283|0.0000|0.0500|0.0000|0.0000|0.7000|0.3978|0.0000|0.3978|0.4384|600|0.1124|`3-8`|FAR达标但known不足|
 
 判定：oldness候选类一致性风险没有解决OLD80_FIRST，更没有接近99/97/99目标。其最好old_acc为K5的`0.5283`，per-class floor仍为0；K2/K3/K5可压低FAR但known coverage和old/seen-new准确率不可用。因此该通道只能保留为诊断负例。旧EVT/Mahalanobis表是在组件隔离修复前生成的，后续若比较单通道有效性，需要用`active_risk_components`修复后的代码复跑。
+
+## 2026-07-03 progressive budget协同策略
+
+根据COSR-CI设计文档中的资源约束，新增`collaboration_policy=progressive_budget`。固定策略`fixed_k`仍表示每个事件直接使用k个receiver；渐进策略表示每个事件最多允许请求k个receiver，先用1个receiver推理，若`scorer_cvs`输出`request_more`且`latency_budget_ms`仍允许，则追加下一个receiver，直到accept/reject/defer或达到预算上限。这样`collab_counts=all`仍输出`1..N`，但每个k是“最大参与预算”而不是强制全量参与。
+
+代码改动：
+
+|文件|目的|
+|---|---|
+|`code/evaluation/collaborative_open_set_qknn_eval.py`|新增`collaboration_policy=fixed_k/progressive_budget`、事件级渐进请求循环、`participating_receivers_avg/p95/max`资源统计。|
+|`code/scripts/phase2_collaborative_open_set_qknn_eval.py`|新增CLI参数`--collaboration_policy`并传入评估器。|
+|`code/tests/test_collaborative_open_set_qknn_eval.py`|覆盖渐进策略：`k=1`预算defer，`k=2`预算追加receiver后accept，并报告实际参与receiver数和bytes。|
+
+本地验证：
+
+```powershell
+conda activate ssr-gpu
+python -m py_compile E:\type10-7\code\evaluation\collaborative_open_set_qknn_eval.py E:\type10-7\code\scripts\phase2_collaborative_open_set_qknn_eval.py
+python E:\type10-7\code\tests\test_collaborative_open_set_qknn_eval.py
+python E:\type10-7\code\tests\test_phase2_collaborative_open_set_qknn_eval.py
+```
+
+结果：`test_collaborative_open_set_qknn_eval.py`16 tests OK，`test_phase2_collaborative_open_set_qknn_eval.py`15 tests OK。Git镜像提交：`0bab83a Add progressive budget collaboration policy`。镜像仍领先远端，且存在非本轮未跟踪文件`code/scripts/phase2_qknn_prototype_compress_probe.py`，本轮未处理。
+
+计划远端对照命令，均使用`CVS-RFFI`环境和已有ADV3B02星地信道feature：
+
+```bash
+cd /home/szu2070436088/2510044040/CV-SincNet
+source /opt/miniconda3/etc/profile.d/conda.sh
+conda activate CVS-RFFI
+python code/scripts/phase2_collaborative_open_set_qknn_eval.py \
+  --feature_npz runs/phase2_adv3b02_collab_open_set_qknn_full_20260703/features.npz \
+  --output_json runs/phase2_adv3b02_collab_open_set_qknn_full_20260703/collab_open_set_qknn_scorer_cvs_evt_fixed_active.json \
+  --output_evidence_csv runs/phase2_adv3b02_collab_open_set_qknn_full_20260703/collab_open_set_qknn_scorer_cvs_evt_fixed_active_evidence.csv \
+  --collab_counts all \
+  --k_shot 8 --query_per_class 20 --qknn_k 8 \
+  --support_calibration_mode leave_one_out \
+  --unknown_gate_mode support_envelope_evt \
+  --score_threshold_combine max \
+  --scenario_aware --radius_norm 0.3 \
+  --fusion_policy scorer_cvs \
+  --collaboration_policy fixed_k \
+  --unknown_risk_threshold 0.995 \
+  --accept_margin_threshold 0.03 \
+  --consensus_gap_threshold 0.0 \
+  --consensus_score_threshold 0.30 \
+  --scorer_component_vote_threshold 0.25 \
+  --unknown_quantile 0.75 \
+  --evt_tail_quantile 0.80 \
+  --evt_temperature 0.05 \
+  --latency_budget_ms 12 \
+  --evidence_packet_bytes 120 \
+  --event_alignment_policy receiver_domain_ranked \
+  --support_selection_policy stable_first \
+  --seed 407041
+
+python code/scripts/phase2_collaborative_open_set_qknn_eval.py \
+  --feature_npz runs/phase2_adv3b02_collab_open_set_qknn_full_20260703/features.npz \
+  --output_json runs/phase2_adv3b02_collab_open_set_qknn_full_20260703/collab_open_set_qknn_scorer_cvs_evt_progressive.json \
+  --output_evidence_csv runs/phase2_adv3b02_collab_open_set_qknn_full_20260703/collab_open_set_qknn_scorer_cvs_evt_progressive_evidence.csv \
+  --collab_counts all \
+  --k_shot 8 --query_per_class 20 --qknn_k 8 \
+  --support_calibration_mode leave_one_out \
+  --unknown_gate_mode support_envelope_evt \
+  --score_threshold_combine max \
+  --scenario_aware --radius_norm 0.3 \
+  --fusion_policy scorer_cvs \
+  --collaboration_policy progressive_budget \
+  --unknown_risk_threshold 0.995 \
+  --accept_margin_threshold 0.03 \
+  --consensus_gap_threshold 0.0 \
+  --consensus_score_threshold 0.30 \
+  --scorer_component_vote_threshold 0.25 \
+  --unknown_quantile 0.75 \
+  --evt_tail_quantile 0.80 \
+  --evt_temperature 0.05 \
+  --latency_budget_ms 12 \
+  --evidence_packet_bytes 120 \
+  --event_alignment_policy receiver_domain_ranked \
+  --support_selection_policy stable_first \
+  --seed 407041
+```
+
+远端验证与同步结果：
+
+N607使用`CVS-RFFI`环境，`py_compile`通过，`test_collaborative_open_set_qknn_eval.py`为16 tests OK，`test_phase2_collaborative_open_set_qknn_eval.py`为15 tests OK。本地同步文件SHA256：
+
+|文件|SHA256|
+|---|---|
+|`code/evaluation/collaborative_open_set_qknn_eval.py`|`ce2f5fd5e4f5420773e388110bfcac09fbf1ba883ff30cb835a3d5d8199855b2`|
+|`code/scripts/phase2_collaborative_open_set_qknn_eval.py`|`337b217e9ca66f7afba35bee31710398f0c21118234ec6882f1e2d8aa6ad0a60`|
+|`code/tests/test_collaborative_open_set_qknn_eval.py`|`32c62750e52ac685947eb483ce2cfcccfc953d369141ea27964ed86b2e1d0cdf`|
+
+远端运行前后8张RTX3090均为`10/24576MiB`，没有新增GPU显存占用。两组运行均输出`receiver_count=5`、`group_count=307`、`evidence_row_count=1000`。本轮SSH/SCP后本地检查无残留`ssh.exe`进程和22端口`ESTABLISHED`连接。
+
+产物已拉回：
+
+|产物|大小|
+|---|---:|
+|`remote_artifacts/collab_open_set_qknn_scorer_cvs_evt_fixed_active.json`|12046 bytes|
+|`remote_artifacts/collab_open_set_qknn_scorer_cvs_evt_progressive.json`|12315 bytes|
+|`remote_artifacts/collab_open_set_qknn_scorer_cvs_evt_fixed_active_evidence.csv`|389766 bytes|
+|`remote_artifacts/collab_open_set_qknn_scorer_cvs_evt_progressive_evidence.csv`|389766 bytes|
+
+固定`fixed_k`对照，`active_risk_components=["score","radius","margin","evt"]`：
+
+|协同receiver数|old_acc|min_old_class_acc|seen_new_acc|min_seen_new_class_acc|unknown_FAR|unknown_reject_rate|known_coverage|defer_rate|request_more_rate|unresolved_rate|bytes/event|p95 latency ms|avg used rx|p95 used rx|max used rx|缺失seen-new类|
+|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---|
+|1|0.3583|0.0000|0.2500|0.1500|0.2500|0.5833|0.4372|0.1564|0.0879|0.2443|120|0.0846|1.0000|1.0000|1|无|
+|2|0.1842|0.0000|0.2115|0.1500|0.0000|0.8723|0.1912|0.4422|0.0598|0.5020|240|0.0846|2.0000|2.0000|2|无|
+|3|0.2167|0.0000|0.1750|0.0000|0.0000|0.8000|0.2062|0.5650|0.0000|0.5650|360|0.0846|3.0000|3.0000|3|无|
+|4|0.4091|0.0000|0.2143|0.0000|0.0000|0.8485|0.3621|0.4430|0.0067|0.4497|480|0.0846|4.0000|4.0000|4|无|
+|5|0.4528|0.0000|0.0000|0.0000|0.0000|0.7000|0.3288|0.5376|0.0000|0.5376|600|0.0846|5.0000|5.0000|5|`3-8`|
+
+渐进`progressive_budget`对照，`active_risk_components=["score","radius","margin","evt"]`：
+
+|最大receiver预算|old_acc|min_old_class_acc|seen_new_acc|min_seen_new_class_acc|unknown_FAR|unknown_reject_rate|known_coverage|defer_rate|request_more_rate|unresolved_rate|bytes/event|p95 latency ms|avg used rx|p95 used rx|max used rx|缺失seen-new类|
+|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---|
+|1|0.3583|0.0000|0.2500|0.1500|0.2500|0.5833|0.4372|0.2443|0.0000|0.2443|120.0000|0.0831|1.0000|1.0000|1|无|
+|2|0.3684|0.0000|0.2692|0.1500|0.1702|0.6809|0.4608|0.1952|0.0000|0.1952|132.9084|0.0831|1.1076|2.0000|2|无|
+|3|0.3500|0.0000|0.3000|0.1500|0.1250|0.7750|0.4313|0.1700|0.0000|0.1700|134.4000|0.0831|1.1200|2.0000|3|无|
+|4|0.3182|0.0000|0.1071|0.0000|0.1515|0.7273|0.3966|0.1678|0.0000|0.1678|139.3289|0.0831|1.1611|2.0000|3|无|
+|5|0.3396|0.0000|0.1500|0.0000|0.1500|0.6500|0.4110|0.2043|0.0000|0.2043|148.3871|0.0831|1.2366|2.0000|3|`3-8`|
+
+判定：`progressive_budget`达成了资源目标方向，能在最大预算为5时把平均实际参与receiver从5降到约1.24，bytes/event从600降到约148；但性能仍远低于研究目标。相比固定k，渐进策略在k=2/3提升了old/new并减少unresolved，但unknown FAR仍高，per-class floor仍为0。因此它是更现实的协同调度机制，但不是最终性能解法。下一步应把节点级证据质量提升作为主线：prototype top-M候选筛选、类条件残差/协方差门控、严格同事件event_id导出，以及可回滚的小adapter/阈值校准。
