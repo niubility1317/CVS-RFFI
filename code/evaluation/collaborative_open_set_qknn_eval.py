@@ -601,8 +601,18 @@ def _fuse_event(
         "candidate_set_min_label_receiver_class_reliability",
     )
     candidate_set_pairguard_mode = _normalize_scope(candidate_set_pairguard_mode or "accept_gate")
-    if candidate_set_pairguard_mode not in {"accept_gate", "boundary_veto"}:
-        raise ValueError("candidate_set_pairguard_mode must be accept_gate or boundary_veto")
+    if candidate_set_pairguard_mode not in {"accept_gate", "boundary_veto", "support_calibrated"}:
+        raise ValueError(
+            "candidate_set_pairguard_mode must be accept_gate, boundary_veto, or support_calibrated"
+        )
+    if (
+        candidate_set_pairguard_mode == "support_calibrated"
+        and receiver_class_reliability_policy != "support_calibrated"
+    ):
+        raise ValueError(
+            "candidate_set_pairguard_mode=support_calibrated requires "
+            "receiver_class_reliability_policy=support_calibrated"
+        )
     candidate_set_pairguard_action = _normalize_scope(candidate_set_pairguard_action or "veto")
     if candidate_set_pairguard_action not in {"veto", "request_more", "soft_penalty"}:
         raise ValueError("candidate_set_pairguard_action must be veto, request_more, or soft_penalty")
@@ -714,13 +724,24 @@ def _fuse_event(
         virtual_unknown_risk_value: float,
         class_shell_risk_value: float,
         class_shell_risk_is_missing: bool,
-        receiver_class_reliability_value: float,
+        receiver_class_reliability_value: float | None,
         latency_ms_value: float,
         staleness_value: float,
     ) -> None:
         nonlocal filtered_candidate_count
         if not label or label == UNKNOWN_LABEL or label in row_seen_labels:
             return
+        if (
+            candidate_set_pairguard_mode == "support_calibrated"
+            and receiver_class_reliability_policy == "support_calibrated"
+            and receiver_class_reliability_value is None
+        ):
+            raise ValueError(
+                "receiver_class_reliability is required for support_calibrated pairguard"
+            )
+        receiver_class_reliability_for_quality = (
+            1.0 if receiver_class_reliability_value is None else float(receiver_class_reliability_value)
+        )
         if policy in {"cp_set_cvs", "candidate_set_cvs"} and allowed_cp_set_labels and label not in allowed_cp_set_labels:
             filtered_candidate_count += 1
             return
@@ -746,12 +767,12 @@ def _fuse_event(
         )
         receiver_class_weight = _receiver_class_reliability(
             policy=receiver_class_reliability_policy,
-            value=receiver_class_reliability_value,
+            value=receiver_class_reliability_for_quality,
         )
         orbit_support_quality = (
             _unit_clamp(support_density_value)
             + _unit_clamp(pvalue)
-            + _unit_clamp(receiver_class_reliability_value)
+            + _unit_clamp(receiver_class_reliability_for_quality)
         ) / 3.0
         orbit_penalty = (
             float(orbit_latency_weight) * max(0.0, float(latency_ms_value))
@@ -860,7 +881,11 @@ def _fuse_event(
                 virtual_unknown_risk_value=_float(row, "virtual_unknown_risk", 0.0),
                 class_shell_risk_value=_float(row, "class_shell_risk", 0.0),
                 class_shell_risk_is_missing=not _has_finite_float(row, "class_shell_risk"),
-                receiver_class_reliability_value=_float(row, "receiver_class_reliability", 1.0),
+                receiver_class_reliability_value=(
+                    _float(row, "receiver_class_reliability", 1.0)
+                    if _has_finite_float(row, "receiver_class_reliability")
+                    else None
+                ),
                 latency_ms_value=_float(row, "latency_ms", 0.0),
                 staleness_value=_float(row, "prototype_staleness", _float(row, "support_age", 0.0)),
             )
@@ -911,10 +936,17 @@ def _fuse_event(
                         _has_finite_float(row, f"class_evidence_top{rank}_class_shell_risk")
                         or _has_finite_float(row, "class_shell_risk")
                     ),
-                    receiver_class_reliability_value=_float(
-                        row,
-                        f"class_evidence_top{rank}_receiver_class_reliability",
-                        _float(row, "receiver_class_reliability", 1.0),
+                    receiver_class_reliability_value=(
+                        _float(
+                            row,
+                            f"class_evidence_top{rank}_receiver_class_reliability",
+                            _float(row, "receiver_class_reliability", 1.0),
+                        )
+                        if (
+                            _has_finite_float(row, f"class_evidence_top{rank}_receiver_class_reliability")
+                            or _has_finite_float(row, "receiver_class_reliability")
+                        )
+                        else None
                     ),
                     latency_ms_value=_float(row, "latency_ms", 0.0),
                     staleness_value=_float(row, "prototype_staleness", _float(row, "support_age", 0.0)),
@@ -1306,11 +1338,66 @@ def _fuse_event(
         candidate_set_pairguard_shell_missing_failed = bool(
             candidate_set_require_label_shell_observed and not label_shell_risk_observed
         )
+        candidate_set_pairguard_support_margin_failed = bool(
+            float(candidate_set_pairguard_soft_min_margin) > 0.0
+            and float(mean_margin) < float(candidate_set_pairguard_soft_min_margin)
+        )
+        candidate_set_pairguard_support_agreement_failed = bool(
+            float(candidate_set_pairguard_soft_min_agreement) > 0.0
+            and float(agreement) < float(candidate_set_pairguard_soft_min_agreement)
+        )
+        candidate_set_pairguard_support_pvalue_failed = bool(
+            float(candidate_set_pairguard_soft_min_pvalue) > 0.0
+            and float(label_class_conformal_pvalue) < float(candidate_set_pairguard_soft_min_pvalue)
+        )
+        candidate_set_pairguard_support_reliability_failed = bool(
+            float(candidate_set_pairguard_soft_min_reliability) > 0.0
+            and float(label_receiver_class_reliability)
+            < float(candidate_set_pairguard_soft_min_reliability)
+        )
+        candidate_set_pairguard_support_quality_failed = bool(
+            candidate_set_pairguard_support_margin_failed
+            or candidate_set_pairguard_support_agreement_failed
+            or candidate_set_pairguard_support_pvalue_failed
+            or candidate_set_pairguard_support_reliability_failed
+        )
+        support_quality_terms = []
+        if float(candidate_set_pairguard_soft_min_margin) > 0.0:
+            support_quality_terms.append(
+                min(1.0, float(mean_margin) / max(float(candidate_set_pairguard_soft_min_margin), 1e-12))
+            )
+        if float(candidate_set_pairguard_soft_min_agreement) > 0.0:
+            support_quality_terms.append(
+                min(1.0, float(agreement) / max(float(candidate_set_pairguard_soft_min_agreement), 1e-12))
+            )
+        if float(candidate_set_pairguard_soft_min_pvalue) > 0.0:
+            support_quality_terms.append(
+                min(
+                    1.0,
+                    float(label_class_conformal_pvalue)
+                    / max(float(candidate_set_pairguard_soft_min_pvalue), 1e-12),
+                )
+            )
+        if float(candidate_set_pairguard_soft_min_reliability) > 0.0:
+            support_quality_terms.append(
+                min(
+                    1.0,
+                    float(label_receiver_class_reliability)
+                    / max(float(candidate_set_pairguard_soft_min_reliability), 1e-12),
+                )
+            )
+        candidate_set_pairguard_support_quality = (
+            min(support_quality_terms) if support_quality_terms else 1.0
+        )
         candidate_set_pairguard_failed = bool(
             candidate_set_pairguard_disagreement_failed
             or candidate_set_pairguard_risk_range_failed
             or candidate_set_pairguard_reliability_failed
             or candidate_set_pairguard_shell_missing_failed
+            or (
+                candidate_set_pairguard_mode == "support_calibrated"
+                and candidate_set_pairguard_support_quality_failed
+            )
         )
         candidate_set_pairguard_boundary_trigger = bool(
             unknown_risk >= float(candidate_set_pairguard_min_event_unknown_risk)
@@ -1330,9 +1417,17 @@ def _fuse_event(
             and label
             and candidate_set_pairguard_label_scoped
             and candidate_set_pairguard_receiver_scoped
-            and candidate_set_pairguard_mode == "boundary_veto"
+            and candidate_set_pairguard_mode in {"boundary_veto", "support_calibrated"}
             and candidate_set_pairguard_failed
             and candidate_set_pairguard_boundary_trigger
+            and (
+                candidate_set_pairguard_mode != "support_calibrated"
+                or candidate_set_pairguard_support_quality_failed
+            )
+        )
+        candidate_set_pairguard_support_calibrated_hit = bool(
+            candidate_set_pairguard_boundary_hit
+            and candidate_set_pairguard_mode == "support_calibrated"
         )
         candidate_set_pairguard_request_more = bool(
             candidate_set_pairguard_boundary_hit
@@ -1743,11 +1838,32 @@ def _fuse_event(
         "candidate_set_pairguard_shell_missing_failed": bool(
             locals().get("candidate_set_pairguard_shell_missing_failed", False)
         ),
+        "candidate_set_pairguard_support_margin_failed": bool(
+            locals().get("candidate_set_pairguard_support_margin_failed", False)
+        ),
+        "candidate_set_pairguard_support_agreement_failed": bool(
+            locals().get("candidate_set_pairguard_support_agreement_failed", False)
+        ),
+        "candidate_set_pairguard_support_pvalue_failed": bool(
+            locals().get("candidate_set_pairguard_support_pvalue_failed", False)
+        ),
+        "candidate_set_pairguard_support_reliability_failed": bool(
+            locals().get("candidate_set_pairguard_support_reliability_failed", False)
+        ),
+        "candidate_set_pairguard_support_quality_failed": bool(
+            locals().get("candidate_set_pairguard_support_quality_failed", False)
+        ),
+        "candidate_set_pairguard_support_quality": float(
+            locals().get("candidate_set_pairguard_support_quality", 1.0)
+        ),
         "candidate_set_pairguard_boundary_trigger": bool(
             locals().get("candidate_set_pairguard_boundary_trigger", False)
         ),
         "candidate_set_pairguard_boundary_hit": bool(
             locals().get("candidate_set_pairguard_boundary_hit", False)
+        ),
+        "candidate_set_pairguard_support_calibrated_hit": bool(
+            locals().get("candidate_set_pairguard_support_calibrated_hit", False)
         ),
         "candidate_set_pairguard_veto": bool(locals().get("candidate_set_pairguard_veto", False)),
         "candidate_set_pairguard_request_more": bool(
@@ -3039,6 +3155,10 @@ def _finalize_metrics(
     candidate_set_pairguard_soft_by_role: defaultdict[str, int] = defaultdict(int)
     candidate_set_pairguard_soft_strong_bypass_total = 0
     candidate_set_pairguard_soft_strong_bypass_by_role: defaultdict[str, int] = defaultdict(int)
+    candidate_set_pairguard_support_calibrated_total = 0
+    candidate_set_pairguard_support_calibrated_by_role: defaultdict[str, int] = defaultdict(int)
+    candidate_set_pairguard_support_quality_failed_total = 0
+    candidate_set_pairguard_support_quality_failed_by_role: defaultdict[str, int] = defaultdict(int)
     support_router_accept_total = 0
     support_router_accept_by_role: defaultdict[str, int] = defaultdict(int)
     support_router_unknown_evidence_total = 0
@@ -3101,6 +3221,12 @@ def _finalize_metrics(
         if bool(item.get("candidate_set_pairguard_soft_strong_bypass", False)):
             candidate_set_pairguard_soft_strong_bypass_total += 1
             candidate_set_pairguard_soft_strong_bypass_by_role[role] += 1
+        if bool(item.get("candidate_set_pairguard_support_calibrated_hit", False)):
+            candidate_set_pairguard_support_calibrated_total += 1
+            candidate_set_pairguard_support_calibrated_by_role[role] += 1
+        if bool(item.get("candidate_set_pairguard_support_quality_failed", False)):
+            candidate_set_pairguard_support_quality_failed_total += 1
+            candidate_set_pairguard_support_quality_failed_by_role[role] += 1
         if bool(item.get("support_router_accept", False)):
             support_router_accept_total += 1
             support_router_accept_by_role[role] += 1
@@ -3325,6 +3451,26 @@ def _finalize_metrics(
         ),
         "candidate_set_pairguard_soft_strong_bypass_by_role": dict(
             sorted(candidate_set_pairguard_soft_strong_bypass_by_role.items())
+        ),
+        "candidate_set_pairguard_support_calibrated_hit_count": int(
+            candidate_set_pairguard_support_calibrated_total
+        ),
+        "candidate_set_pairguard_support_calibrated_hit_rate": _safe_rate(
+            candidate_set_pairguard_support_calibrated_total,
+            total_events,
+        ),
+        "candidate_set_pairguard_support_calibrated_hit_by_role": dict(
+            sorted(candidate_set_pairguard_support_calibrated_by_role.items())
+        ),
+        "candidate_set_pairguard_support_quality_failed_count": int(
+            candidate_set_pairguard_support_quality_failed_total
+        ),
+        "candidate_set_pairguard_support_quality_failed_rate": _safe_rate(
+            candidate_set_pairguard_support_quality_failed_total,
+            total_events,
+        ),
+        "candidate_set_pairguard_support_quality_failed_by_role": dict(
+            sorted(candidate_set_pairguard_support_quality_failed_by_role.items())
         ),
         "support_router_accept_count": int(support_router_accept_total),
         "support_router_accept_rate": _safe_rate(support_router_accept_total, total_events),

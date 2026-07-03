@@ -2789,6 +2789,95 @@ class CollaborativeOpenSetQknnEvalTest(unittest.TestCase):
         self.assertEqual(soft_weak_event["decision"], "request_more")
         self.assertEqual(soft_weak_result["counts"]["2"]["candidate_set_pairguard_soft_count"], 1)
 
+        support_calibrated_strong_result = evaluate(
+            make_rows((0.10, 0.95)),
+            candidate_set_pairguard_mode="support_calibrated",
+            receiver_class_reliability_policy="support_calibrated",
+            candidate_set_pairguard_action="soft_penalty",
+            candidate_set_pairguard_soft_penalty=0.25,
+            candidate_set_pairguard_soft_floor=0.05,
+            candidate_set_pairguard_soft_min_margin=0.10,
+            candidate_set_pairguard_soft_min_pvalue=0.50,
+            candidate_set_pairguard_soft_min_reliability=0.75,
+        )
+        support_calibrated_strong_event = support_calibrated_strong_result["counts"]["2"]["event_results"][0]
+        self.assertTrue(support_calibrated_strong_event["candidate_set_pairguard_boundary_trigger"])
+        self.assertFalse(support_calibrated_strong_event["candidate_set_pairguard_support_quality_failed"])
+        self.assertFalse(support_calibrated_strong_event["candidate_set_pairguard_boundary_hit"])
+        self.assertFalse(support_calibrated_strong_event["candidate_set_pairguard_support_calibrated_hit"])
+        self.assertFalse(support_calibrated_strong_event["candidate_set_pairguard_soft_applied"])
+        self.assertTrue(support_calibrated_strong_event["candidate_set_accept"])
+        self.assertEqual(support_calibrated_strong_event["decision"], "accept")
+        self.assertEqual(
+            support_calibrated_strong_result["counts"]["2"][
+                "candidate_set_pairguard_support_calibrated_hit_count"
+            ],
+            0,
+        )
+
+        support_calibrated_weak_rows = make_rows((0.10, 0.95))
+        for row in support_calibrated_weak_rows:
+            row["known_margin"] = 0.02
+            row["class_evidence_top1_margin"] = 0.02
+            row["class_conformal_pvalue"] = 0.20
+            row["class_evidence_top1_conformal_pvalue"] = 0.20
+            row["receiver_class_reliability"] = 0.40
+            row["class_evidence_top1_receiver_class_reliability"] = 0.40
+        support_calibrated_weak_result = evaluate(
+            support_calibrated_weak_rows,
+            candidate_set_pairguard_mode="support_calibrated",
+            receiver_class_reliability_policy="support_calibrated",
+            candidate_set_pairguard_action="soft_penalty",
+            candidate_set_pairguard_soft_penalty=0.25,
+            candidate_set_pairguard_soft_floor=0.05,
+            candidate_set_pairguard_soft_min_margin=0.10,
+            candidate_set_pairguard_soft_min_pvalue=0.50,
+            candidate_set_pairguard_soft_min_reliability=0.75,
+            candidate_set_max_event_unknown_risk=0.99,
+        )
+        support_calibrated_weak_event = support_calibrated_weak_result["counts"]["2"]["event_results"][0]
+        self.assertTrue(support_calibrated_weak_event["candidate_set_pairguard_support_margin_failed"])
+        self.assertTrue(support_calibrated_weak_event["candidate_set_pairguard_support_pvalue_failed"])
+        self.assertTrue(support_calibrated_weak_event["candidate_set_pairguard_support_reliability_failed"])
+        self.assertTrue(support_calibrated_weak_event["candidate_set_pairguard_support_quality_failed"])
+        self.assertLess(support_calibrated_weak_event["candidate_set_pairguard_support_quality"], 1.0)
+        self.assertTrue(support_calibrated_weak_event["candidate_set_pairguard_boundary_hit"])
+        self.assertTrue(support_calibrated_weak_event["candidate_set_pairguard_support_calibrated_hit"])
+        self.assertTrue(support_calibrated_weak_event["candidate_set_pairguard_soft_applied"])
+        self.assertFalse(support_calibrated_weak_event["candidate_set_accept"])
+        self.assertEqual(
+            support_calibrated_weak_result["counts"]["2"][
+                "candidate_set_pairguard_support_calibrated_hit_count"
+            ],
+            1,
+        )
+        self.assertEqual(
+            support_calibrated_weak_result["counts"]["2"][
+                "candidate_set_pairguard_support_quality_failed_by_role"
+            ],
+            {"old": 1},
+        )
+
+        support_calibrated_missing_rows = make_rows((0.10, 0.95))
+        for row in support_calibrated_missing_rows:
+            row.pop("receiver_class_reliability", None)
+            row.pop("class_evidence_top1_receiver_class_reliability", None)
+        with self.assertRaisesRegex(ValueError, "receiver_class_reliability is required"):
+            evaluate(
+                support_calibrated_missing_rows,
+                candidate_set_pairguard_mode="support_calibrated",
+                receiver_class_reliability_policy="support_calibrated",
+                candidate_set_pairguard_action="soft_penalty",
+                candidate_set_pairguard_soft_min_margin=0.10,
+            )
+        with self.assertRaisesRegex(ValueError, "receiver_class_reliability_policy=support_calibrated"):
+            evaluate(
+                make_rows((0.10, 0.95)),
+                candidate_set_pairguard_mode="support_calibrated",
+                candidate_set_pairguard_action="soft_penalty",
+                candidate_set_pairguard_soft_min_margin=0.10,
+            )
+
         with self.assertRaisesRegex(ValueError, "candidate_set_pairguard_mode"):
             evaluate(make_rows((0.10, 0.80)), candidate_set_pairguard_mode="bad_mode")
         with self.assertRaisesRegex(ValueError, "candidate_set_pairguard_min_event_unknown_risk"):

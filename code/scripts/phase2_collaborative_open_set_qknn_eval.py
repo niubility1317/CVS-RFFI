@@ -2962,7 +2962,7 @@ def parse_args() -> argparse.Namespace:
     p.add_argument(
         "--candidate_set_pairguard_mode",
         default="accept_gate",
-        choices=["accept_gate", "boundary_veto"],
+        choices=["accept_gate", "boundary_veto", "support_calibrated"],
     )
     p.add_argument("--candidate_set_pairguard_min_event_unknown_risk", type=float, default=0.80)
     p.add_argument("--candidate_set_pairguard_min_label_unknown_risk", type=float, default=0.80)
