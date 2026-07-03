@@ -85,3 +85,32 @@
 | 本地语法 | PASS：`conda run -n ssr-gpu python -m py_compile code/scripts/phase2_compressed_proto_knn_sweep.py` |
 | 本地脚本SHA256 | `7C93E61B043B3C3673D71A0429714E615872875A85D2265C21C84D5E923BE531` |
 | 待验证 | 在`7-14`近边界候选、`7-7/8-8`新类较强候选上扫描K=1/5/10、`M in {1,2,4,6,8}`、`old_bias`和`radius_weight`，记录同一行是否达标及5-shot相对1-shot差值 |
+
+## medoid-anchor K1/K5/K10结果
+
+| case | K | rows | 同一行达标数 | 最优行 | 判定 |
+|---|---:|---:|---:|---|---|
+| `medoid_rx7_14` | 1 | 2025 | 0 | 最优综合分低于K=5/K=10 | 未达标 |
+| `medoid_rx7_14` | 5 | 2025 | 0 | 5-shot相对1-shot综合分提升38.24pp，未触发“下降超过3pp”问题 | 未达标 |
+| `medoid_rx7_14` | 10 | 2025 | 0 | `19-3,2-13`，`cproto_medoid_p8_oldbias0_rad0`：旧类84.17%，新类均值73.75%，逐类最低72.50%，存储64，support0 | 未达标 |
+| `medoid_rx7_7` | 1 | 2025 | 0 | 新类均值可达80%+，旧类明显不足 | 未达标 |
+| `medoid_rx7_7` | 5 | 2025 | 0 | `15-19,20-7`，`cproto_medoid_p6_oldbias0_rad0`：旧类75.00%，新类均值81.25%，逐类最低75.00%，存储40，support0；5-shot相对1-shot综合分提升17.65pp | 未达标 |
+| `medoid_rx7_7` | 10 | 2025 | 0 | 旧类仍低于85%，新类逐类也不稳 | 未达标 |
+| `medoid_rx8_8` | 1 | 2025 | 0 | 新类均值可达80%+，旧类不足 | 未达标 |
+| `medoid_rx8_8` | 5 | 2025 | 0 | 5-shot相对1-shot综合分提升1.47pp；新类均值下降2.50pp、逐类最低下降2.50pp，在3pp容忍内，但绝对值仍未达标 | 未达标 |
+| `medoid_rx8_8` | 10 | 2025 | 0 | `18-17,2-7`，`cproto_medoid_p1_oldbias0.16_rad0.25`：旧类73.75%，新类均值78.75%，逐类最低75.00%，存储8，support0 | 未达标 |
+
+| 文件 | SHA256 |
+|---|---|
+| `medoid_anchor_k1k5k10/medoid_anchor_k1k5k10_summary.json` | `a5bbe836cd81261264a70933dcef430812c7bb6c0a760c539cad3773ba38521a` |
+| `medoid_rx7_14_k1.out` | `10aa47a826c660d46ce6e6a3ec4a879676caacd26f3fd2072eb8996753585f3e` |
+| `medoid_rx7_14_k5.out` | `e90e898fcc6f299554d113982f9bbfdb005ef6b06130bace6b345a026e074530` |
+| `medoid_rx7_14_k10.out` | `487d7175747d7d01a4fd3c084947e771a07ce5bd7e17be966fedb7e581cf0da0` |
+| `medoid_rx7_7_k1.out` | `5807ea60b7a9f49c334b70c45c4884a46dac45b032711d22814f05583c0d1bb3` |
+| `medoid_rx7_7_k5.out` | `3fad8c6c8b91c784dcbcdbe3db2585690b8ce3cf498cb8f4b5fb4ffc3ae3d8cf` |
+| `medoid_rx7_7_k10.out` | `0753c2f3544715a33b23cf250f2ec8352d14a1e93c73b76aabeabe718cbcc654` |
+| `medoid_rx8_8_k1.out` | `f91b2a6bd02640c782d882501735c3c296997e40afef5a8e3126e6cd6ee4ca12` |
+| `medoid_rx8_8_k5.out` | `05d52cdc46810e2f3cbbf7cc90f8fd83c57f1f69f8fb9e7f4f51a5566e0c1550` |
+| `medoid_rx8_8_k10.out` | `bd0801b83a0041b977d26e53da673efda6600599e102ed8a0a8d656bc05c68dc` |
+
+结论：medoid-anchor比均值原型更贴近KNN，但仍未恢复原始KNN1在`7-14,K=10`上的82.5%/85%新类边界，更没有达到同一行目标。当前证据说明仅靠“无训练压缩KNN头”不足；下一步需要轻量目标域特征修复或闭式线性/岭回归分类头，与压缩记忆结合，而不是继续扩大无训练KNN压缩扫描。
