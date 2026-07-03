@@ -3951,6 +3951,36 @@ N607同步后远端哈希与本地一致；远端验证`52 tests OK`。实际运
 |`rxscope_14_7_pairs_evt095`|`--candidate_set_pairguard_labels 14-7 --candidate_set_pairguard_receiver_sets 20-1+3-19;7-14+7-7;3-19+7-14+7-7 --candidate_set_pairguard_min_event_unknown_risk 0.95`|只处理`14-7`高风险receiver组合，目标是保留old性能并降低k=2/3 unknown_FAR。|
 |`rxscope_all_pairs_evt095`|`--candidate_set_pairguard_labels 14-7,6-15,14-10,19-3 --candidate_set_pairguard_receiver_sets 20-1+3-19;7-14+7-7;3-19+7-14+7-7;20-1+3-19+7-14`|覆盖k=2/3主要false accept组合，但比上一轮labelscope更窄。|
 
+### N607结果
+
+远端同步后SHA256与本地一致；`CVS-RFFI`环境验证`52 tests OK`。两组实验均覆盖k=1..5；首次运行前后8张RTX3090均为`10/24576MiB`。
+
+|route|JSON SHA256|CSV SHA256|
+|---|---|---|
+|`rxscope_14_7_pairs_evt095`|`B62FEDEA0282B11E00EB523C9409A97BCB0B53720B7676E6944D44C3DD513ABC`|`BA3745A070CB98737817CC2E8E88193079E4CE6094823ACDFDB53FFA9E2C4DAF`|
+|`rxscope_all_pairs_evt095`|`C231E232DC0CF8298E5535A5D9BBB663520A54D11FA2A2890F8C943A556AF5C9`|`43213306618AB1E4E6D6B8A180483A1988F1B57E92E8335F7B5F36206B944386`|
+
+|route|k|old_acc|min_old|seen_new_acc|min_seen|unknown_FAR|unknown_reject|defer|bytes/event|p95 ms|pairguard_veto_rate|
+|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+|dualroute_noguard|2|0.5000|0.2000|0.5962|0.5625|0.1304|0.8696|0.0440|80.0|0.1374|0.0000|
+|dualroute_noguard|3|0.6500|0.3000|0.7250|0.6000|0.0750|0.9000|0.0250|120.0|0.1374|0.0000|
+|dualroute_noguard|4|0.8083|0.7000|0.7500|0.6000|0.0250|0.9500|0.0150|150.0|0.1374|0.0000|
+|dualroute_noguard|5|0.7833|0.5500|0.7250|0.5500|0.0750|0.9000|0.0100|168.6|0.1374|0.0000|
+|rxscope_14_7_pairs_evt095|2|0.4934|0.2000|0.5962|0.5625|0.0870|0.9130|0.0440|80.0|0.1826|0.0400|
+|rxscope_14_7_pairs_evt095|3|0.6333|0.3000|0.7250|0.6000|0.0500|0.9250|0.0250|120.0|0.1826|0.0300|
+|rxscope_14_7_pairs_evt095|4|0.8083|0.7000|0.7500|0.6000|0.0250|0.9500|0.0150|150.0|0.1826|0.0000|
+|rxscope_14_7_pairs_evt095|5|0.7833|0.5500|0.7250|0.5500|0.0750|0.9000|0.0100|168.6|0.1826|0.0000|
+|rxscope_all_pairs_evt095|2|0.4737|0.2000|0.5385|0.5000|0.0652|0.9348|0.0440|80.0|0.1340|0.1280|
+|rxscope_all_pairs_evt095|3|0.5750|0.1500|0.6500|0.4500|0.0250|0.9500|0.0250|120.0|0.1340|0.2450|
+|rxscope_all_pairs_evt095|4|0.8083|0.7000|0.7500|0.6000|0.0250|0.9500|0.0150|150.0|0.1340|0.0000|
+|rxscope_all_pairs_evt095|5|0.7833|0.5500|0.7250|0.5500|0.0750|0.9000|0.0100|168.6|0.1340|0.0000|
+
+判定：`rxscope_14_7_pairs_evt095`是目前最好的pairguard折中路线。它在k=2把unknown_FAR从`0.1304`降到`0.0870`，k=3从`0.0750`降到`0.0500`，同时保持seen-new不变；k=4/k=5完全保持`dualroute_noguard`的old、seen-new和unknown表现。代价是k=2/k=3 old分别小幅下降`0.0066/0.0167`，但显著小于全局pairguard或纯labelscope。`rxscope_all_pairs_evt095`unknown更低，但known损伤明显，不作为下一步主线。
+
+下一步应将`rxscope_14_7_pairs_evt095`从硬veto改成软策略：命中高风险label+receiver组合时优先`request_more`或降低对应receiver投票权，而不是直接阻断accept；这样有机会保留k=2/k=3 old，同时继续压低unknown_FAR。当前仍未达到old 99%、seen-new 97%、unknown拒识99%，所有新增结果仍为diagnostic-only。
+
+最终SSH/SCP后本地无`ssh.exe`残留，无N607和bridge 22端口ESTABLISHED连接。
+
 ## 2026-07-04 ADV3B02 label_scoped_pairguard执行计划
 
 ### 设计依据
