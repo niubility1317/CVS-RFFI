@@ -704,9 +704,11 @@ def build_collaborative_evidence(
                         keyed[_event_key(payload, idx, role_name, label)] = int(idx)
                 by_rx_key[rx] = keyed
             if alignment_policy == "strict_event_key":
+                all_event_ids = sorted(set().union(*(set(by_rx_key[rx]) for rx in target_receivers)))
                 event_groups = [
-                    (event_id, {rx: by_rx_key[rx][event_id] for rx in target_receivers})
-                    for event_id in sorted(set.intersection(*(set(by_rx_key[rx]) for rx in target_receivers)))
+                    (event_id, {rx: by_rx_key[rx][event_id] for rx in target_receivers if event_id in by_rx_key[rx]})
+                    for event_id in all_event_ids
+                    if any(event_id in by_rx_key[rx] for rx in target_receivers)
                 ]
                 row_alignment = "role_tx_day_sig_scenario"
             else:
@@ -725,22 +727,27 @@ def build_collaborative_evidence(
                                 _stable_score((rx, role_name, label, i), seed),
                             ),
                         )
-                common_scenarios = sorted(
-                    set.intersection(*(set(by_rx_scenario[rx]) for rx in target_receivers))
-                )
+                common_scenarios = sorted(set().union(*(set(by_rx_scenario[rx]) for rx in target_receivers)))
                 event_groups = []
                 for scenario in common_scenarios:
-                    n = min(len(by_rx_scenario[rx][scenario]) for rx in target_receivers)
+                    n = max(len(by_rx_scenario[rx].get(scenario, [])) for rx in target_receivers)
                     for event_i in range(n):
+                        rx_to_idx = {
+                            rx: by_rx_scenario[rx][scenario][event_i]
+                            for rx in target_receivers
+                            if event_i < len(by_rx_scenario[rx].get(scenario, []))
+                        }
+                        if not rx_to_idx:
+                            continue
                         event_groups.append(
                             (
                                 f"{role_name}|{label}|{scenario}|rank{event_i:05d}",
-                                {rx: by_rx_scenario[rx][scenario][event_i] for rx in target_receivers},
+                                rx_to_idx,
                             )
                         )
                 row_alignment = "receiver_domain_ranked_by_role_tx_scenario"
             for event_id, rx_to_idx in event_groups:
-                for rx in target_receivers:
+                for rx in sorted(rx_to_idx):
                     idx = rx_to_idx[rx]
                     memory = receiver_memories[rx]
                     pred, score, margin = qknn_scores(

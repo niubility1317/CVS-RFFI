@@ -132,14 +132,18 @@ class Phase2CollaborativeOpenSetQknnEvalTest(unittest.TestCase):
             with self.assertRaisesRegex(RuntimeError, "incomplete Stage2-C coverage"):
                 build_collaborative_evidence(load_feature_npz(npz), k_shot=2, query_per_class=2)
 
-    def test_refuses_rank_aligned_pseudo_collaboration(self):
+    def test_strict_event_key_keeps_partial_receiver_groups_for_count_one(self):
         from phase2_collaborative_open_set_qknn_eval import load_feature_npz, build_collaborative_evidence
 
         with tempfile.TemporaryDirectory() as td:
             npz = Path(td) / "features.npz"
             _write_npz(npz, aligned=False)
-            with self.assertRaisesRegex(RuntimeError, "NO_ALIGNED_COLLABORATIVE_EVENTS"):
-                build_collaborative_evidence(load_feature_npz(npz), k_shot=1, query_per_class=1)
+            evidence, metadata = build_collaborative_evidence(load_feature_npz(npz), k_shot=1, query_per_class=1)
+
+        self.assertGreater(len(evidence), 0)
+        self.assertTrue(metadata["strict_same_event_collaboration"])
+        self.assertEqual(metadata["event_alignment"], "role_tx_day_sig_scenario")
+        self.assertEqual(max(len({row["receiver_id"] for row in evidence if row["event_id"] == event_id}) for event_id in {row["event_id"] for row in evidence}), 1)
 
     def test_receiver_domain_ranked_policy_is_explicitly_marked(self):
         from phase2_collaborative_open_set_qknn_eval import load_feature_npz, build_collaborative_evidence
