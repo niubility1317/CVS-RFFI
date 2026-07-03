@@ -2410,3 +2410,65 @@ Interpretation:
 | Target2 should not be attempted on V27 | unknown FAR remains high, e.g.`0.55-0.95`in best same-row rows | unknownFAR<5% remains far away under retained old performance |
 
 Current decision after V27: target1 remains not globally achieved and target2 remains not achieved. The strongest feature-only post-adapter route so far is conservative linear feature repair, but it only preserves geometry; it does not recover the hard receiver/TX failures. The next scientifically valid route should move earlier than the post-feature adapter: either an input/front-end LEO compensation module before the frozen Phase1 extractor, or a new source-only Phase1 representation training run with satellite consistency, while keeping the same sat-only LEO target evaluation and no target clean/query threshold fitting.
+
+## V28 IQ Front-End Feature Correction Design
+
+User decision after V27: source clean/LEO paired training of category logit bias/scale is not a valid route; the next attempt must focus on feature recovery. V28 therefore moves the repair point before the frozen`ADV3B02_CORE90_SOFT_E200phase1`extractor and trains a small source-only IQ residual front-end. The Phase1 checkpoint remains frozen. Target receiver samples, target clean features, target labels, and target unknown query samples are not used for training, thresholding, or model selection.
+
+Target1 pass standard remains stricter than pair MSE/cosine alone:
+
+| Gate | Standard |
+|---|---|
+| old-class recovery | target old closed acc`>=0.80`or`+5pp`vs same-subset identity |
+| clean fidelity | clean input through corrector drops old closed acc by`<=2pp` |
+| scenario/TX floor | min LEO scenario acc`>=0.80`and min old-TX acc`>=0.70` |
+| feature geometry | old-class logit margin not worse by more than`0.02`; true-prototype distance not worse by more than`0.02` |
+| unknown safety | target unknown FAR and unknown oldness do not increase vs same-subset identity |
+
+V28 uses same-subset identity export because the IQ front-end must regenerate features from raw WiSig samples, not from the existing NPZ feature tables. This avoids comparing a newly sampled front-end payload against an unrelated old identity payload.
+
+New/modified local files:
+
+| File | Purpose | SHA256 |
+|---|---|---|
+| `E:\type10-7\code\scripts\train_apply_phase1_iq_preadapter_20260703.py` | Adds feature-first IQ front-end training: source clean/LEO feature alignment, clean-clean consistency, feature margin preservation, identity/clean-control export; default`proto_ce_weight=0`and`logit_ce_weight=0` | `9B88169893221FCA258320DAC5DF6DF92DABB42E10BC78B85C21F51F1464CB62` |
+| `E:\type10-7\code\scripts\sweep_phase1_adv3b02_iqfrontend_target1_v28_20260703.sh` | Runs four feature-first IQ front-end variants and audits target1 against same-subset identity | `9D17038934643507685683CFF27A5D3618EC1A00ED45A4634BD5EDDC4D0AD0DD` |
+
+Local verification:
+
+| Command | Result |
+|---|---|
+| `C:\Users\lh594\.conda\envs\ssr-gpu\python.exe -m py_compile code\scripts\train_apply_phase1_iq_preadapter_20260703.py code\scripts\eval_phase1_target1_strong_repair_audit_20260703.py` | PASS |
+| `bash -lc "bash -n /mnt/e/type10-7/code/scripts/sweep_phase1_adv3b02_iqfrontend_target1_v28_20260703.sh"` | PASS |
+| `C:\Users\lh594\.conda\envs\ssr-gpu\python.exe code\scripts\train_apply_phase1_iq_preadapter_20260703.py --help` | PASS; V28 parameters visible |
+
+Local non-Git code snapshot:
+
+| Snapshot | Files |
+|---|---|
+| `E:\type10-7\code\snapshots\phase1_adv3b02_iqfrontend_target1_v28_20260703\scripts\` | V28 front-end trainer and launcher |
+
+Planned N607 command:
+
+```bash
+cd /home/szu2070436088/2510044040/CV-SincNet && \
+bash code/scripts/sweep_phase1_adv3b02_iqfrontend_target1_v28_20260703.sh
+```
+
+Planned N607 outputs:
+
+| Artifact | Remote path |
+|---|---|
+| V28 log root | `/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_adv3b02_iqfrontend_target1_v28_20260703` |
+| V28 summary CSV | `/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_adv3b02_iqfrontend_target1_v28_20260703/target1_strong_v28_summary.csv` |
+| V28 metrics JSON | `/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_adv3b02_iqfrontend_target1_v28_20260703/target1_strong_v28_metrics.json` |
+| V28 best JSON | `/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_adv3b02_iqfrontend_target1_v28_20260703/target1_strong_v28_best.json` |
+
+V28 variants:
+
+| Variant | Input repair | Intent |
+|---|---|---|
+| `LEOIQ28_RAW_FEAT` | raw LEO IQ + residual front-end | learn feature restoration without fixed canonical assumption |
+| `LEOIQ28_RAW_CONSERVE` | raw LEO IQ + smaller residual | prioritize clean identity and geometry preservation |
+| `LEOIQ28_CANON_FEAT` | canonical LEO IQ repair + residual front-end | combine deterministic LEO repair with learned source-only feature restoration |
+| `LEOIQ28_CANON_CONSERVE` | canonical LEO IQ repair + smaller residual | conservative canonical repair with stronger clean consistency |

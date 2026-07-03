@@ -38,7 +38,9 @@ from eval_feature_diagnosis import (  # noqa: E402
 )
 from export_spaceborne_features import (  # noqa: E402
     _build_wisig_dataset,
+    _leo_repair_canonical_iq,
     _meta_to_list,
+    _rms_normalize_iq,
     _resolve_tx_indices,
     _validate_star_ground_impl,
 )
@@ -63,6 +65,21 @@ class IQResidualPreAdapter(nn.Module):
         y = x.float() + self.alpha * torch.tanh(self.net(x.float()))
         rms = torch.sqrt(torch.mean(y.square(), dim=(1, 2), keepdim=True).clamp_min(1e-8))
         return (y / rms).to(dtype=x.dtype)
+
+
+def _apply_input_repair(x: torch.Tensor, mode: str) -> torch.Tensor:
+    mode_norm = str(mode or "raw").strip().lower()
+    if mode_norm in {"", "raw", "none", "identity"}:
+        return x
+    if mode_norm == "rms":
+        return _rms_normalize_iq(x, clip_sigma=2.8)
+    if mode_norm == "canonical":
+        return _leo_repair_canonical_iq(x)
+    if mode_norm == "canonical_m1e4":
+        return _leo_repair_canonical_iq(x, residual_delta=-1.0e-4)
+    if mode_norm == "canonical_p1e4":
+        return _leo_repair_canonical_iq(x, residual_delta=1.0e-4)
+    raise ValueError(f"unknown input_repair={mode!r}")
 
 
 def _feature_forward(model: nn.Module, x: torch.Tensor, feature_name: str) -> tuple[torch.Tensor, torch.Tensor]:
@@ -135,6 +152,21 @@ def _scenario_for_step(scenarios: Sequence[str], step: int) -> str:
     return str(scenarios[int(step) % len(scenarios)])
 
 
+def _proto_margin_loss(z_ref: torch.Tensor, z_new: torch.Tensor, y: torch.Tensor, protos: torch.Tensor, tolerance: float) -> torch.Tensor:
+    ref_sims = F.normalize(z_ref.detach(), dim=1) @ F.normalize(protos.detach(), dim=1).t()
+    new_sims = F.normalize(z_new, dim=1) @ F.normalize(protos.detach(), dim=1).t()
+    idx = y.long().view(-1, 1)
+    true_ref = ref_sims.gather(1, idx).squeeze(1)
+    true_new = new_sims.gather(1, idx).squeeze(1)
+    mask = torch.ones_like(ref_sims, dtype=torch.bool)
+    mask.scatter_(1, idx, False)
+    other_ref = ref_sims.masked_fill(~mask, -1.0e9).max(dim=1).values
+    other_new = new_sims.masked_fill(~mask, -1.0e9).max(dim=1).values
+    ref_margin = true_ref - other_ref
+    new_margin = true_new - other_new
+    return F.relu(ref_margin - new_margin - float(tolerance)).mean()
+
+
 def train_adapter(args: argparse.Namespace, model: nn.Module, source_loader: DataLoader, device: torch.device) -> tuple[nn.Module, dict[str, Any]]:
     scenarios = parse_sat_scenarios(str(args.sat_scenarios))
     _validate_star_ground_impl(str(args.star_ground_channel_impl), scenarios, field="sat_scenarios")
@@ -146,7 +178,7 @@ def train_adapter(args: argparse.Namespace, model: nn.Module, source_loader: Dat
     history: list[dict[str, float]] = []
     step = 0
     for epoch in range(int(args.epochs)):
-        sums = {"loss": 0.0, "mse": 0.0, "cos": 0.0, "ce": 0.0, "resid": 0.0}
+        sums = {"loss": 0.0, "mse": 0.0, "cos": 0.0, "ce": 0.0, "clean": 0.0, "feat_margin": 0.0, "clean_margin": 0.0, "resid": 0.0}
         count = 0
         for x, y, _d, _meta in source_loader:
             x = x.to(device, non_blocking=True)
@@ -156,17 +188,32 @@ def train_adapter(args: argparse.Namespace, model: nn.Module, source_loader: Dat
             with torch.no_grad():
                 x_sat, _ = apply_sat_channel_for_scenario(x, scenario, args, gen=gen, return_meta=False)
                 z_clean, _ = _feature_forward(model, x, str(args.feature_name))
-            x_rep = adapter(x_sat)
+            x_sat_in = _apply_input_repair(x_sat, str(args.input_repair))
+            x_rep = adapter(x_sat_in)
             z_rep, logits_rep = _feature_forward(model, x_rep, str(args.feature_name))
-            proto_logits = F.normalize(z_rep, dim=1) @ F.normalize(clean_protos, dim=1).t() / max(float(args.proto_temperature), 1e-6)
             mse = F.smooth_l1_loss(z_rep, z_clean)
             cos = 1.0 - F.cosine_similarity(z_rep, z_clean, dim=1).mean()
-            ce = F.cross_entropy(proto_logits, y) + float(args.logit_ce_weight) * F.cross_entropy(logits_rep, y)
-            resid = (x_rep.float() - x_sat.float()).square().mean()
+            if float(args.proto_ce_weight) > 0 or float(args.logit_ce_weight) > 0:
+                proto_logits = F.normalize(z_rep, dim=1) @ F.normalize(clean_protos, dim=1).t() / max(float(args.proto_temperature), 1e-6)
+                ce = F.cross_entropy(proto_logits, y) + float(args.logit_ce_weight) * F.cross_entropy(logits_rep, y)
+            else:
+                ce = z_rep.sum() * 0.0 + logits_rep.sum() * 0.0
+            clean_mode = str(args.input_repair if str(args.clean_input_repair_mode).lower() == "same" else "raw")
+            x_clean_rep = adapter(_apply_input_repair(x, clean_mode))
+            z_clean_rep, _ = _feature_forward(model, x_clean_rep, str(args.feature_name))
+            clean_mse = F.smooth_l1_loss(z_clean_rep, z_clean)
+            clean_cos = 1.0 - F.cosine_similarity(z_clean_rep, z_clean, dim=1).mean()
+            clean_loss = clean_mse + float(args.clean_cos_weight) * clean_cos
+            feat_margin = _proto_margin_loss(z_clean, z_rep, y, clean_protos, float(args.feature_margin_tolerance))
+            clean_margin = _proto_margin_loss(z_clean, z_clean_rep, y, clean_protos, float(args.feature_margin_tolerance))
+            resid = (x_rep.float() - x_sat_in.float()).square().mean()
             loss = (
                 float(args.mse_weight) * mse
                 + float(args.cos_weight) * cos
                 + float(args.proto_ce_weight) * ce
+                + float(args.clean_identity_weight) * clean_loss
+                + float(args.feature_margin_weight) * feat_margin
+                + float(args.clean_feature_margin_weight) * clean_margin
                 + float(args.residual_weight) * resid
             )
             opt.zero_grad(set_to_none=True)
@@ -180,6 +227,9 @@ def train_adapter(args: argparse.Namespace, model: nn.Module, source_loader: Dat
             sums["mse"] += float(mse.detach().item()) * bs
             sums["cos"] += float(cos.detach().item()) * bs
             sums["ce"] += float(ce.detach().item()) * bs
+            sums["clean"] += float(clean_loss.detach().item()) * bs
+            sums["feat_margin"] += float(feat_margin.detach().item()) * bs
+            sums["clean_margin"] += float(clean_margin.detach().item()) * bs
             sums["resid"] += float(resid.detach().item()) * bs
         row = {k: v / max(1, count) for k, v in sums.items()}
         row["epoch"] = float(epoch + 1)
@@ -192,6 +242,18 @@ def train_adapter(args: argparse.Namespace, model: nn.Module, source_loader: Dat
         "history_last": history[-1] if history else {},
         "scenarios": scenarios,
         "scenario_configs": {name: sat_channel_config_for_scenario(name) for name in scenarios},
+        "input_repair": str(args.input_repair),
+        "clean_input_repair_mode": str(args.clean_input_repair_mode),
+        "loss_weights": {
+            "mse": float(args.mse_weight),
+            "cos": float(args.cos_weight),
+            "proto_ce": float(args.proto_ce_weight),
+            "logit_ce": float(args.logit_ce_weight),
+            "clean_identity": float(args.clean_identity_weight),
+            "feature_margin": float(args.feature_margin_weight),
+            "clean_feature_margin": float(args.clean_feature_margin_weight),
+            "residual": float(args.residual_weight),
+        },
     }
 
 
@@ -223,6 +285,8 @@ def _export_role(
     role: str,
     scenarios: Sequence[str],
     seed: int,
+    channel_mode: str,
+    use_adapter: bool,
 ) -> dict[str, np.ndarray]:
     gen = make_torch_generator(device, int(seed))
     feature_buf: list[np.ndarray] = []
@@ -237,13 +301,23 @@ def _export_role(
     roles: list[str] = []
     views: list[str] = []
     scenario_buf: list[str] = []
+    mode = str(channel_mode or "satellite").strip().lower()
     for bi, batch in enumerate(loader):
         x, y, d, meta = batch
         x = x.to(device, non_blocking=True)
-        scenario = _scenario_for_step(scenarios, bi)
-        x_sat, _ = apply_sat_channel_for_scenario(x, scenario, args, gen=gen, return_meta=False)
-        x_rep = adapter(x_sat)
-        z, logits = _feature_forward(model, x_rep, str(args.feature_name))
+        scenario = ""
+        x_eval = x
+        if mode == "satellite":
+            scenario = _scenario_for_step(scenarios, bi)
+            x_eval, _ = apply_sat_channel_for_scenario(x, scenario, args, gen=gen, return_meta=False)
+        elif mode != "clean":
+            raise ValueError(f"unknown channel_mode={channel_mode!r}")
+        if use_adapter:
+            repair_mode = str(args.input_repair)
+            if mode == "clean" and str(args.clean_input_repair_mode).lower() != "same":
+                repair_mode = "raw"
+            x_eval = adapter(_apply_input_repair(x_eval, repair_mode))
+        z, logits = _feature_forward(model, x_eval, str(args.feature_name))
         n = int(x.shape[0])
         feature_buf.append(z.detach().cpu().float().numpy())
         logit_buf.append(logits.detach().cpu().float().numpy())
@@ -255,7 +329,8 @@ def _export_role(
         eqs.extend(_meta_to_list(meta, "equalized", n))
         sigs.extend(_meta_to_list(meta, "sig_i", n))
         roles.extend([role] * n)
-        views.extend(["iq_preadapter"] * n)
+        view_name = "iq_frontend" if use_adapter else ("identity_satellite" if mode == "satellite" else "clean")
+        views.extend([view_name] * n)
         scenario_buf.extend([scenario] * n)
     return {
         "features": np.concatenate(feature_buf, axis=0).astype(np.float32),
@@ -284,18 +359,28 @@ def export_cell(args: argparse.Namespace, model: nn.Module, adapter: nn.Module, 
     proxy_ds, proxy_info = _dataset_for_role(args, role="proxy_unknown", pkl=str(args.new_wisig_pkl), tx_ids=str(args.proxy_unknown_tx_ids), rxs=str(args.proxy_unknown_rxs), seed_offset=211)
     target_old_ds, target_old_info = _dataset_for_role(args, role="target_old", pkl=str(args.wisig_pkl), tx_ids=str(args.target_old_tx_ids), rxs=target_rx, seed_offset=307)
     unknown_ds, unknown_info = _dataset_for_role(args, role="target_unknown", pkl=str(args.new_wisig_pkl), tx_ids=unknown_tx, rxs=target_rx, seed_offset=409)
-    parts = []
-    for role, ds, offset in [
+    role_items = [
         ("source", source_ds, 2001),
         ("proxy_unknown", proxy_ds, 2011),
         ("target_old", target_old_ds, 2021),
         ("target_unknown", unknown_ds, 2031),
-    ]:
+    ]
+    parts = []
+    clean_parts = []
+    identity_parts = []
+    identity_clean_parts = []
+    for role, ds, offset in role_items:
         loader = DataLoader(ds, batch_size=int(args.batch_size), shuffle=False, num_workers=0, drop_last=False)
-        parts.append(_export_role(model, adapter, loader, args=args, device=device, role=role, scenarios=scenarios, seed=int(args.seed) + offset))
+        parts.append(_export_role(model, adapter, loader, args=args, device=device, role=role, scenarios=scenarios, seed=int(args.seed) + offset, channel_mode="satellite", use_adapter=True))
+        if bool(args.export_clean_control):
+            clean_parts.append(_export_role(model, adapter, loader, args=args, device=device, role=role, scenarios=scenarios, seed=int(args.seed) + offset + 7000, channel_mode="clean", use_adapter=True))
+        if bool(args.export_identity):
+            identity_parts.append(_export_role(model, adapter, loader, args=args, device=device, role=role, scenarios=scenarios, seed=int(args.seed) + offset, channel_mode="satellite", use_adapter=False))
+            if bool(args.export_clean_control):
+                identity_clean_parts.append(_export_role(model, adapter, loader, args=args, device=device, role=role, scenarios=scenarios, seed=int(args.seed) + offset + 7000, channel_mode="clean", use_adapter=False))
     payload = _concat(parts)
     manifest = {
-        "payload_source": "phase1_iq_preadapter_satonly_features_v11",
+        "payload_source": "phase1_iq_frontend_satonly_features_v28",
         "feature_name": str(args.feature_name),
         "checkpoint": str(args.ckpt),
         "target_channel_view": "satellite/LEO",
@@ -316,6 +401,29 @@ def export_cell(args: argparse.Namespace, model: nn.Module, adapter: nn.Module, 
     out_dir.mkdir(parents=True, exist_ok=True)
     out_path = out_dir / str(args.out_name)
     np.savez(out_path, **payload)
+    if clean_parts:
+        clean_payload = _concat(clean_parts)
+        clean_manifest = dict(manifest)
+        clean_manifest["target_channel_view"] = "clean"
+        clean_manifest["channel_views"] = ["iq_frontend"]
+        clean_payload["manifest_json"] = np.asarray(json.dumps(clean_manifest, ensure_ascii=False, sort_keys=True))
+        np.savez(out_dir / str(args.clean_out_name), **clean_payload)
+    if identity_parts:
+        identity_payload = _concat(identity_parts)
+        identity_manifest = dict(manifest)
+        identity_manifest["adapter"] = {"identity_baseline": True, "scenarios": scenarios}
+        identity_manifest["channel_views"] = ["identity_satellite"]
+        identity_out_dir = Path(args.runs_root) / name / str(args.identity_subdir)
+        identity_out_dir.mkdir(parents=True, exist_ok=True)
+        identity_payload["manifest_json"] = np.asarray(json.dumps(identity_manifest, ensure_ascii=False, sort_keys=True))
+        np.savez(identity_out_dir / str(args.out_name), **identity_payload)
+        if identity_clean_parts:
+            identity_clean_payload = _concat(identity_clean_parts)
+            identity_clean_manifest = dict(identity_manifest)
+            identity_clean_manifest["target_channel_view"] = "clean"
+            identity_clean_manifest["channel_views"] = ["clean"]
+            identity_clean_payload["manifest_json"] = np.asarray(json.dumps(identity_clean_manifest, ensure_ascii=False, sort_keys=True))
+            np.savez(identity_out_dir / str(args.clean_out_name), **identity_clean_payload)
     return out_path
 
 
@@ -327,6 +435,10 @@ def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
     p.add_argument("--runs_root", type=Path, required=True)
     p.add_argument("--out_subdir", default="ADV3B02_CORE90_SOFT_E200_PHASE1_IQPRE_V11")
     p.add_argument("--out_name", default="features_iqpre_v11.npz")
+    p.add_argument("--clean_out_name", default="features_clean_repaired.npz")
+    p.add_argument("--identity_subdir", default="LEOIQ28_IDENTITY")
+    p.add_argument("--export_clean_control", action=argparse.BooleanOptionalAction, default=True)
+    p.add_argument("--export_identity", action=argparse.BooleanOptionalAction, default=False)
     p.add_argument("--cells", required=True, help="semicolon-separated name:target_rx:unknown_tx_ids")
     p.add_argument("--feature_name", default="z_id")
     p.add_argument("--dataset", default="wisig")
@@ -356,12 +468,19 @@ def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
     p.add_argument("--epochs", type=int, default=45)
     p.add_argument("--hidden_dim", type=int, default=32)
     p.add_argument("--alpha", type=float, default=0.25)
+    p.add_argument("--input_repair", default="raw", choices=["raw", "rms", "canonical", "canonical_m1e4", "canonical_p1e4"])
+    p.add_argument("--clean_input_repair_mode", default="same", choices=["raw", "same"])
     p.add_argument("--lr", type=float, default=8e-4)
     p.add_argument("--weight_decay", type=float, default=1e-4)
     p.add_argument("--mse_weight", type=float, default=1.0)
     p.add_argument("--cos_weight", type=float, default=2.0)
-    p.add_argument("--proto_ce_weight", type=float, default=0.6)
-    p.add_argument("--logit_ce_weight", type=float, default=0.25)
+    p.add_argument("--proto_ce_weight", type=float, default=0.0)
+    p.add_argument("--logit_ce_weight", type=float, default=0.0)
+    p.add_argument("--clean_identity_weight", type=float, default=8.0)
+    p.add_argument("--clean_cos_weight", type=float, default=1.0)
+    p.add_argument("--feature_margin_weight", type=float, default=2.0)
+    p.add_argument("--clean_feature_margin_weight", type=float, default=2.0)
+    p.add_argument("--feature_margin_tolerance", type=float, default=0.01)
     p.add_argument("--residual_weight", type=float, default=0.03)
     p.add_argument("--proto_temperature", type=float, default=0.07)
     p.add_argument("--grad_clip", type=float, default=5.0)
