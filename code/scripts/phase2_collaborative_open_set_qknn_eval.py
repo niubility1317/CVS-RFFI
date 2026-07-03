@@ -2365,6 +2365,7 @@ def run_evaluation(args: argparse.Namespace) -> dict[str, Any]:
         candidate_set_pairguard_receiver_sets=str(args.candidate_set_pairguard_receiver_sets),
         candidate_set_pairguard_action=str(args.candidate_set_pairguard_action),
         candidate_set_pairguard_soft_penalty=float(args.candidate_set_pairguard_soft_penalty),
+        candidate_set_pairguard_soft_floor=float(args.candidate_set_pairguard_soft_floor),
         candidate_set_pairguard_soft_min_margin=float(args.candidate_set_pairguard_soft_min_margin),
         candidate_set_pairguard_soft_min_agreement=float(args.candidate_set_pairguard_soft_min_agreement),
         candidate_set_pairguard_soft_min_pvalue=float(args.candidate_set_pairguard_soft_min_pvalue),
@@ -2607,6 +2608,7 @@ def parse_args() -> argparse.Namespace:
         choices=["veto", "request_more", "soft_penalty"],
     )
     p.add_argument("--candidate_set_pairguard_soft_penalty", type=float, default=0.0)
+    p.add_argument("--candidate_set_pairguard_soft_floor", type=float, default=0.0)
     p.add_argument("--candidate_set_pairguard_soft_min_margin", type=float, default=0.0)
     p.add_argument("--candidate_set_pairguard_soft_min_agreement", type=float, default=0.0)
     p.add_argument("--candidate_set_pairguard_soft_min_pvalue", type=float, default=0.0)

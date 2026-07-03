@@ -2319,6 +2319,7 @@ class CollaborativeOpenSetQknnEvalTest(unittest.TestCase):
         def evaluate(rows, **kwargs):
             pairguard_mode = kwargs.pop("candidate_set_pairguard_mode", "boundary_veto")
             min_event_unknown_risk = kwargs.pop("candidate_set_pairguard_min_event_unknown_risk", 0.90)
+            max_event_unknown_risk = kwargs.pop("candidate_set_max_event_unknown_risk", 1.0)
             return evaluate_collaborative_open_set_evidence(
                 rows,
                 collab_counts="2",
@@ -2332,7 +2333,7 @@ class CollaborativeOpenSetQknnEvalTest(unittest.TestCase):
                 candidate_set_min_receivers=2,
                 candidate_set_min_conformal_pvalue=0.5,
                 candidate_set_max_label_unknown_risk=0.8,
-                candidate_set_max_event_unknown_risk=1.0,
+                candidate_set_max_event_unknown_risk=max_event_unknown_risk,
                 candidate_set_unknown_reject_risk=1.1,
                 candidate_set_max_receiver_pair_label_disagreement=0.25,
                 candidate_set_max_receiver_pair_unknown_risk_range=0.20,
@@ -2430,12 +2431,14 @@ class CollaborativeOpenSetQknnEvalTest(unittest.TestCase):
             make_rows((0.10, 0.95)),
             candidate_set_pairguard_action="soft_penalty",
             candidate_set_pairguard_soft_penalty=1.0,
+            candidate_set_pairguard_soft_floor=0.50,
             candidate_set_pairguard_soft_min_margin=0.10,
             candidate_set_pairguard_soft_min_pvalue=0.50,
             candidate_set_pairguard_soft_min_reliability=0.75,
         )["counts"]["2"]["event_results"][0]
         self.assertTrue(soft_strong_event["candidate_set_pairguard_boundary_hit"])
         self.assertFalse(soft_strong_event["candidate_set_pairguard_veto"])
+        self.assertTrue(soft_strong_event["candidate_set_pairguard_soft_strong_bypass"])
         self.assertFalse(soft_strong_event["candidate_set_pairguard_soft_applied"])
         self.assertTrue(soft_strong_event["candidate_set_accept"])
         self.assertEqual(soft_strong_event["decision"], "accept")
@@ -2455,17 +2458,24 @@ class CollaborativeOpenSetQknnEvalTest(unittest.TestCase):
         soft_weak_result = evaluate(
             soft_weak_rows,
             candidate_set_pairguard_action="soft_penalty",
-            candidate_set_pairguard_soft_penalty=1.0,
+            candidate_set_pairguard_soft_penalty=0.10,
+            candidate_set_pairguard_soft_floor=0.35,
             candidate_set_pairguard_soft_min_margin=0.20,
             candidate_set_pairguard_soft_min_pvalue=0.50,
             candidate_set_pairguard_soft_min_reliability=0.75,
+            candidate_set_max_event_unknown_risk=0.99,
         )
         soft_weak_event = soft_weak_result["counts"]["2"]["event_results"][0]
         self.assertTrue(soft_weak_event["candidate_set_pairguard_boundary_hit"])
+        self.assertFalse(soft_weak_event["candidate_set_pairguard_soft_strong_bypass"])
         self.assertTrue(soft_weak_event["candidate_set_pairguard_soft_applied"])
+        self.assertGreaterEqual(
+            soft_weak_event["candidate_set_pairguard_soft_penalty_value"],
+            0.35,
+        )
         self.assertFalse(soft_weak_event["candidate_set_pairguard_veto"])
         self.assertFalse(soft_weak_event["candidate_set_accept"])
-        self.assertGreater(soft_weak_event["candidate_set_label_unknown_risk_for_accept"], 0.8)
+        self.assertGreater(soft_weak_event["candidate_set_event_unknown_risk_for_accept"], 0.99)
         self.assertEqual(soft_weak_event["decision"], "request_more")
         self.assertEqual(soft_weak_result["counts"]["2"]["candidate_set_pairguard_soft_count"], 1)
 
@@ -2477,6 +2487,8 @@ class CollaborativeOpenSetQknnEvalTest(unittest.TestCase):
             evaluate(make_rows((0.10, 0.80)), candidate_set_pairguard_action="bad_action")
         with self.assertRaisesRegex(ValueError, "candidate_set_pairguard_soft_penalty"):
             evaluate(make_rows((0.10, 0.80)), candidate_set_pairguard_soft_penalty=1.1)
+        with self.assertRaisesRegex(ValueError, "candidate_set_pairguard_soft_floor"):
+            evaluate(make_rows((0.10, 0.80)), candidate_set_pairguard_soft_floor=1.1)
 
     def test_dual_route_cvs_uses_support_quality_rescue_when_safe(self):
         from evaluation.collaborative_open_set_qknn_eval import evaluate_collaborative_open_set_evidence
