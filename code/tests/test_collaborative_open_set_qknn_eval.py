@@ -584,6 +584,83 @@ class CollaborativeOpenSetQknnEvalTest(unittest.TestCase):
         self.assertEqual(result["counts"]["2"]["bytes_per_event"], 144.0)
         self.assertEqual(result["counts"]["2"]["participating_receivers_max"], 2)
 
+    def test_support_utility_prefers_supported_low_cost_receiver(self):
+        from evaluation.collaborative_open_set_qknn_eval import evaluate_collaborative_open_set_evidence
+
+        rows = [
+            {
+                "event_id": "support-utility-old",
+                "receiver_id": "rx-a",
+                "role": "old",
+                "true_label": "old-a",
+                "predicted_label": "old-b",
+                "known_score": 0.45,
+                "known_margin": 0.02,
+                "unknown_risk": 0.55,
+                "reliability": 0.80,
+                "support_density": 0.30,
+                "class_conformal_pvalue": 0.10,
+                "class_conformal_support_count": 1,
+                "latency_ms": 2.0,
+                "bytes": 72,
+            },
+            {
+                "event_id": "support-utility-old",
+                "receiver_id": "rx-b",
+                "role": "old",
+                "true_label": "old-a",
+                "predicted_label": "old-b",
+                "known_score": 0.65,
+                "known_margin": 0.08,
+                "unknown_risk": 0.50,
+                "reliability": 0.95,
+                "support_density": 0.10,
+                "class_conformal_pvalue": 0.05,
+                "class_conformal_support_count": 1,
+                "latency_ms": 20.0,
+                "bytes": 300,
+            },
+            {
+                "event_id": "support-utility-old",
+                "receiver_id": "rx-c",
+                "role": "old",
+                "true_label": "old-a",
+                "predicted_label": "old-a",
+                "known_score": 0.95,
+                "known_margin": 0.45,
+                "unknown_risk": 0.05,
+                "reliability": 0.90,
+                "support_density": 0.95,
+                "class_conformal_pvalue": 0.90,
+                "class_conformal_support_count": 3,
+                "latency_ms": 1.0,
+                "bytes": 72,
+            },
+        ]
+
+        result = evaluate_collaborative_open_set_evidence(
+            rows,
+            collab_counts="2",
+            fusion_policy="scorer_cvs",
+            collaboration_policy="support_utility",
+            unknown_risk_threshold=0.8,
+            accept_margin_threshold=0.1,
+            consensus_gap_threshold=0.3,
+            consensus_score_threshold=0.6,
+            adaptive_gain_min_risk=0.3,
+            adaptive_gain_latency_weight=0.1,
+            adaptive_gain_bytes_weight=0.01,
+            max_event_bytes=200,
+            latency_budget_ms=8.0,
+        )
+
+        k2 = result["counts"]["2"]
+        self.assertEqual(result["collaboration_policy"], "support_utility")
+        self.assertEqual(k2["old_acc"], 1.0)
+        self.assertEqual(k2["bytes_per_event"], 144.0)
+        self.assertEqual(k2["participating_receivers_avg"], 2.0)
+        self.assertEqual(k2["collaboration_stop_reasons"], {"budget_exhausted_accept": 1})
+
     def test_scorer_cvs_rejects_high_risk_without_known_rescue(self):
         from evaluation.collaborative_open_set_qknn_eval import evaluate_collaborative_open_set_evidence
 
@@ -684,7 +761,7 @@ class CollaborativeOpenSetQknnEvalTest(unittest.TestCase):
         self.assertEqual(rescued["counts"]["1"]["seen_new_rescue_count"], 1)
         self.assertEqual(rescued["seen_new_rescue_enabled"], True)
 
-    def test_seen_new_rescue_guard_does_not_depend_on_true_role(self):
+    def test_seen_new_rescue_guard_does_not_apply_to_unknown_role(self):
         from evaluation.collaborative_open_set_qknn_eval import _fuse_event
 
         base_row = {
@@ -716,8 +793,12 @@ class CollaborativeOpenSetQknnEvalTest(unittest.TestCase):
         as_seen_new = _fuse_event([{**base_row, "role": "seen_new", "true_label": "new-a"}], **common)
         as_unknown = _fuse_event([{**base_row, "role": "unknown", "true_label": "__unknown__"}], **common)
 
-        for key in ["decision", "output_label", "effective_unknown_risk", "seen_new_rescue_applied"]:
-            self.assertEqual(as_seen_new[key], as_unknown[key])
+        self.assertTrue(as_seen_new["seen_new_rescue_applied"])
+        self.assertEqual(as_seen_new["decision"], "accept")
+        self.assertEqual(as_seen_new["output_label"], "new-a")
+        self.assertFalse(as_unknown["seen_new_rescue_applied"])
+        self.assertNotEqual(as_unknown["decision"], "accept")
+        self.assertNotEqual(as_unknown["output_label"], "new-a")
 
     def test_class_set_gate_guards_seen_new_rescue_without_true_role(self):
         from evaluation.collaborative_open_set_qknn_eval import evaluate_collaborative_open_set_evidence

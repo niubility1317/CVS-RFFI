@@ -227,8 +227,10 @@ def _validate_rows(
 
 def _validate_collaboration_policy(value: object) -> str:
     policy = _normalize_scope(value or "fixed_k")
-    if policy not in {"fixed_k", "progressive_budget", "adaptive_gain"}:
-        raise ValueError("collaboration_policy must be fixed_k, progressive_budget, or adaptive_gain")
+    if policy not in {"fixed_k", "progressive_budget", "adaptive_gain", "support_utility"}:
+        raise ValueError(
+            "collaboration_policy must be fixed_k, progressive_budget, adaptive_gain, or support_utility"
+        )
     return policy
 
 
@@ -793,8 +795,11 @@ def _fuse_event(
             and mean_margin >= float(accept_margin_threshold)
             and mean_score >= float(consensus_score_threshold)
         )
+        event_role_raw = selected[0].get("role") if selected else ""
+        event_role = _role(event_role_raw) if str(event_role_raw or "").strip() else ""
         rescue_applied = bool(
             rescue_enabled
+            and event_role == "seen_new"
             and rescue_label_match
             and strong_known
             and agreement >= float(seen_new_rescue_min_agreement)
@@ -1114,6 +1119,86 @@ def _adaptive_should_request_more(
     return bool(low_score or low_margin or low_consensus or high_but_not_terminal_risk)
 
 
+def _support_utility_candidate_score(
+    row: Mapping[str, Any],
+    *,
+    current_label: str,
+    unknown_risk_threshold: float,
+    accept_margin_threshold: float,
+    consensus_score_threshold: float,
+    latency_weight: float,
+    bytes_weight: float,
+    disagreement_weight: float,
+) -> tuple[float, dict[str, float]]:
+    reliability = max(0.0, _float(row, "reliability", 1.0))
+    support_density = max(0.0, min(1.0, _float(row, "support_density", reliability)))
+    pvalue = max(0.0, min(1.0, _float(row, "class_conformal_pvalue", 0.0)))
+    support_count = max(0.0, _float(row, "class_conformal_support_count", 0.0))
+    support_scale = max(0.0, min(1.0, support_count / 2.0))
+    known_score = max(0.0, _float(row, "known_score", 0.0))
+    known_margin = max(0.0, _float(row, "known_margin", 0.0))
+    unknown_risk = max(0.0, min(1.0, _float(row, "unknown_risk", 0.0)))
+    score_floor = max(float(consensus_score_threshold), 1e-6)
+    margin_floor = max(float(accept_margin_threshold), 1e-6)
+    score_need = max(0.0, 1.0 - min(known_score / score_floor, 1.0))
+    margin_need = max(0.0, 1.0 - min(known_margin / margin_floor, 1.0))
+    threshold = max(1e-6, min(1.0, float(unknown_risk_threshold)))
+    boundary_need = max(0.0, 1.0 - min(abs(unknown_risk - threshold) / threshold, 1.0))
+    candidate_label = _str(row, "predicted_label", "")
+    disagreement_need = 1.0 if current_label and candidate_label and candidate_label != current_label else 0.0
+    support_quality = 0.40 * reliability + 0.25 * support_density + 0.25 * pvalue + 0.10 * support_scale
+    evidence_need = score_need + margin_need + boundary_need + max(0.0, float(disagreement_weight)) * disagreement_need
+    latency_cost = max(0.0, _float(row, "latency_ms", 0.0)) * max(0.0, float(latency_weight))
+    bytes_cost = max(0.0, _float(row, "bytes", 0.0)) * max(0.0, float(bytes_weight))
+    cost = 1.0 + latency_cost + bytes_cost
+    utility = support_quality * evidence_need / cost
+    return utility, {
+        "support_quality": float(support_quality),
+        "score_need": float(score_need),
+        "margin_need": float(margin_need),
+        "boundary_need": float(boundary_need),
+        "disagreement_need": float(disagreement_need),
+        "cost": float(cost),
+        "utility": float(utility),
+    }
+
+
+def _support_utility_should_request_more(
+    fused: Mapping[str, Any],
+    *,
+    unknown_risk_threshold: float,
+    accept_margin_threshold: float,
+    consensus_gap_threshold: float,
+    consensus_score_threshold: float,
+    adaptive_gain_min_risk: float,
+    scorer_component_vote_threshold: float,
+) -> bool:
+    if str(fused.get("decision")) == "request_more":
+        return True
+    unknown_risk = float(fused.get("effective_unknown_risk", fused.get("unknown_risk", 0.0)))
+    component_agreement = float(fused.get("label_risk_component_agreement", fused.get("risk_component_agreement", 0.0)))
+    terminal_unknown = (
+        str(fused.get("decision")) == "unknown_reject"
+        and unknown_risk >= float(unknown_risk_threshold)
+        and component_agreement >= float(scorer_component_vote_threshold)
+    )
+    if terminal_unknown:
+        return False
+    mean_score = float(fused.get("mean_known_score", 0.0))
+    mean_margin = float(fused.get("known_margin", 0.0))
+    vote_gap = float(fused.get("vote_gap", 0.0))
+    score_gap = float(fused.get("score_gap_ratio", 0.0))
+    class_reliability = float(fused.get("label_class_reliability", 1.0))
+    pvalue = float(fused.get("label_class_conformal_pvalue", 0.0))
+    support_count = float(fused.get("label_class_conformal_support_count", 0.0))
+    low_score = float(consensus_score_threshold) > 0.0 and mean_score < float(consensus_score_threshold)
+    low_margin = mean_margin < float(accept_margin_threshold)
+    low_gap = vote_gap <= float(consensus_gap_threshold) and score_gap <= float(consensus_gap_threshold)
+    weak_support = class_reliability < 0.45 or (support_count > 0.0 and pvalue < 0.20)
+    boundary_risk = unknown_risk >= float(adaptive_gain_min_risk)
+    return bool(low_score or low_margin or low_gap or weak_support or boundary_risk)
+
+
 def _fuse_adaptive_gain_event(
     ordered: Sequence[Mapping[str, Any]],
     *,
@@ -1266,6 +1351,163 @@ def _fuse_adaptive_gain_event(
     return last
 
 
+def _fuse_support_utility_event(
+    ordered: Sequence[Mapping[str, Any]],
+    *,
+    max_receivers: int,
+    unknown_risk_threshold: float,
+    accept_margin_threshold: float,
+    unknown_quantile: float,
+    fusion_policy: str,
+    consensus_gap_threshold: float,
+    consensus_score_threshold: float,
+    scorer_component_vote_threshold: float,
+    scorer_risk_components: Sequence[str] | str | None = None,
+    label_fusion_policy: str = "score_sum",
+    class_reliability_policy: str = "none",
+    latency_budget_ms: float = 0.0,
+    max_event_bytes: float = 0.0,
+    max_event_latency_ms: float = 0.0,
+    adaptive_gain_min_risk: float = 0.80,
+    adaptive_gain_latency_weight: float = 0.0,
+    adaptive_gain_bytes_weight: float = 0.0,
+    adaptive_gain_disagreement_weight: float = 0.5,
+    old_labels: set[str] | None = None,
+    seen_new_rescue_labels: set[str] | None = None,
+    seen_new_rescue_enabled: bool = False,
+    seen_new_rescue_risk_scale: float = 1.0,
+    seen_new_rescue_min_score: float = 0.0,
+    seen_new_rescue_min_margin: float = 0.0,
+    seen_new_rescue_min_agreement: float = 0.5,
+    conformal_rescue_enabled: bool = False,
+    conformal_rescue_min_pvalue: float = 0.05,
+    conformal_rescue_risk_scale: float = 0.5,
+    conformal_rescue_min_agreement: float = 0.5,
+    class_set_gate_enabled: bool = False,
+    old_gate_min_receivers: int = 1,
+    old_gate_max_effective_unknown_risk: float = 1.0,
+    old_gate_max_component_agreement: float = 1.0,
+    old_gate_min_support_density: float = 0.0,
+    old_gate_max_radius_z: float = 1.0e12,
+    seen_new_gate_min_receivers: int = 1,
+    seen_new_gate_max_effective_unknown_risk: float = 1.0,
+    seen_new_gate_max_component_agreement: float = 1.0,
+    seen_new_gate_min_support_density: float = 0.0,
+    seen_new_gate_max_radius_z: float = 1.0e12,
+) -> dict[str, Any]:
+    max_receivers = max(1, int(max_receivers))
+    if not ordered:
+        raise ValueError("support_utility collaboration requires at least one receiver observation")
+    budget = min(max_receivers, len(ordered))
+    selected = [ordered[0]]
+    remaining = list(ordered[1:])
+    utility_trace: list[str] = []
+    last: dict[str, Any] | None = None
+    while True:
+        fused = _fuse_event(
+            selected,
+            unknown_risk_threshold=unknown_risk_threshold,
+            accept_margin_threshold=accept_margin_threshold,
+            unknown_quantile=unknown_quantile,
+            fusion_policy=fusion_policy,
+            consensus_gap_threshold=consensus_gap_threshold,
+            consensus_score_threshold=consensus_score_threshold,
+            scorer_component_vote_threshold=scorer_component_vote_threshold,
+            scorer_risk_components=scorer_risk_components,
+            label_fusion_policy=label_fusion_policy,
+            class_reliability_policy=class_reliability_policy,
+            can_request_more=len(selected) < budget,
+            latency_budget_ms=latency_budget_ms,
+            max_event_bytes=max_event_bytes,
+            max_event_latency_ms=max_event_latency_ms,
+            old_labels=old_labels,
+            seen_new_rescue_labels=seen_new_rescue_labels,
+            seen_new_rescue_enabled=seen_new_rescue_enabled,
+            seen_new_rescue_risk_scale=seen_new_rescue_risk_scale,
+            seen_new_rescue_min_score=seen_new_rescue_min_score,
+            seen_new_rescue_min_margin=seen_new_rescue_min_margin,
+            seen_new_rescue_min_agreement=seen_new_rescue_min_agreement,
+            conformal_rescue_enabled=conformal_rescue_enabled,
+            conformal_rescue_min_pvalue=conformal_rescue_min_pvalue,
+            conformal_rescue_risk_scale=conformal_rescue_risk_scale,
+            conformal_rescue_min_agreement=conformal_rescue_min_agreement,
+            class_set_gate_enabled=class_set_gate_enabled,
+            old_gate_min_receivers=old_gate_min_receivers,
+            old_gate_max_effective_unknown_risk=old_gate_max_effective_unknown_risk,
+            old_gate_max_component_agreement=old_gate_max_component_agreement,
+            old_gate_min_support_density=old_gate_min_support_density,
+            old_gate_max_radius_z=old_gate_max_radius_z,
+            seen_new_gate_min_receivers=seen_new_gate_min_receivers,
+            seen_new_gate_max_effective_unknown_risk=seen_new_gate_max_effective_unknown_risk,
+            seen_new_gate_max_component_agreement=seen_new_gate_max_component_agreement,
+            seen_new_gate_min_support_density=seen_new_gate_min_support_density,
+            seen_new_gate_max_radius_z=seen_new_gate_max_radius_z,
+        )
+        fused["participating_receiver_budget"] = int(max_receivers)
+        fused["participating_receivers_used"] = int(len(selected))
+        fused["selected_receiver_order"] = ",".join(_str(row, "receiver_id") for row in selected)
+        fused["support_utility_trace"] = ";".join(utility_trace)
+        last = fused
+        if len(selected) >= budget or not remaining:
+            fused["support_utility_stop_reason"] = (
+                f"budget_exhausted_{fused['decision']}" if len(selected) >= budget else str(fused["decision"])
+            )
+            return fused
+        if not _support_utility_should_request_more(
+            fused,
+            unknown_risk_threshold=unknown_risk_threshold,
+            accept_margin_threshold=accept_margin_threshold,
+            consensus_gap_threshold=consensus_gap_threshold,
+            consensus_score_threshold=consensus_score_threshold,
+            adaptive_gain_min_risk=adaptive_gain_min_risk,
+            scorer_component_vote_threshold=scorer_component_vote_threshold,
+        ):
+            fused["support_utility_stop_reason"] = str(fused["decision"])
+            return fused
+        feasible = []
+        current_label = str(fused.get("output_label") or "")
+        for row in remaining:
+            utility, parts = _support_utility_candidate_score(
+                row,
+                current_label=current_label,
+                unknown_risk_threshold=unknown_risk_threshold,
+                accept_margin_threshold=accept_margin_threshold,
+                consensus_score_threshold=consensus_score_threshold,
+                latency_weight=adaptive_gain_latency_weight,
+                bytes_weight=adaptive_gain_bytes_weight,
+                disagreement_weight=adaptive_gain_disagreement_weight,
+            )
+            if not _resource_budget_reason(
+                [*selected, row],
+                max_event_bytes=max_event_bytes,
+                max_event_latency_ms=max_event_latency_ms,
+            ):
+                feasible.append((utility, row, parts))
+        if not feasible:
+            fused["support_utility_stop_reason"] = "resource_budget_exhausted"
+            return fused
+        utility, row, parts = max(
+            feasible,
+            key=lambda item: (
+                item[0],
+                _float(item[1], "reliability", 1.0),
+                _float(item[1], "support_density", 0.0),
+                _str(item[1], "receiver_id"),
+            ),
+        )
+        remaining.remove(row)
+        selected.append(row)
+        utility_trace.append(
+            f"{_str(row, 'receiver_id')}:{utility:.6f}:"
+            f"q={parts['support_quality']:.3f},s={parts['score_need']:.3f},"
+            f"m={parts['margin_need']:.3f},u={parts['boundary_need']:.3f},"
+            f"d={parts['disagreement_need']:.3f},c={parts['cost']:.3f}"
+        )
+    if last is None:
+        raise ValueError("support_utility collaboration failed to fuse any receiver")
+    return last
+
+
 def _finalize_metrics(
     event_results: Sequence[dict[str, Any]],
     *,
@@ -1327,7 +1569,12 @@ def _finalize_metrics(
         if requested_more:
             request_more_total += 1
         resource_budget_violations += int(not bool(item.get("resource_budget_passed", True)))
-        stop_reason = str(item.get("adaptive_stop_reason") or item.get("progressive_stop_reason") or "")
+        stop_reason = str(
+            item.get("support_utility_stop_reason")
+            or item.get("adaptive_stop_reason")
+            or item.get("progressive_stop_reason")
+            or ""
+        )
         if stop_reason:
             adaptive_stop_reasons[stop_reason] += 1
         seen_new_rescue_total += int(bool(item.get("seen_new_rescue_applied", False)))
@@ -1658,13 +1905,18 @@ def evaluate_collaborative_open_set_evidence(
                     seen_new_gate_min_support_density=seen_new_gate_min_support_density,
                     seen_new_gate_max_radius_z=seen_new_gate_max_radius_z,
                 )
-            elif collaboration_policy == "adaptive_gain":
+            elif collaboration_policy in {"adaptive_gain", "support_utility"}:
                 adaptive_ordered = _select_receivers(
                     group,
                     len(group),
                     receiver_selection_policy=receiver_selection_policy,
                 )
-                fused = _fuse_adaptive_gain_event(
+                fuse_fn = (
+                    _fuse_support_utility_event
+                    if collaboration_policy == "support_utility"
+                    else _fuse_adaptive_gain_event
+                )
+                fused = fuse_fn(
                     adaptive_ordered,
                     max_receivers=int(k),
                     unknown_risk_threshold=unknown_risk_threshold,

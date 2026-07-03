@@ -2298,7 +2298,11 @@ def parse_args() -> argparse.Namespace:
         default="risk_margin",
         choices=["risk_margin", "consensus_veto", "scorer_cvs", "cp_set_cvs"],
     )
-    p.add_argument("--collaboration_policy", default="fixed_k", choices=["fixed_k", "progressive_budget", "adaptive_gain"])
+    p.add_argument(
+        "--collaboration_policy",
+        default="fixed_k",
+        choices=["fixed_k", "progressive_budget", "adaptive_gain", "support_utility"],
+    )
     p.add_argument("--consensus_gap_threshold", type=float, default=0.0)
     p.add_argument("--consensus_score_threshold", type=float, default=0.0)
     p.add_argument("--scorer_component_vote_threshold", type=float, default=0.5)
