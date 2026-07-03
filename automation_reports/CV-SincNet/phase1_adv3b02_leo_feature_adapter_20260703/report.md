@@ -1153,6 +1153,55 @@ Interpretation:
 
 V19 materially improves the V18 failure mode, but it still does not satisfy strong target1. The best old-class row is `rx7-14-u10/u1 + LEOADAPT5_MARGIN_UNK_MLP`: old acc `0.8694`, clean drop `0.50pp`, scenario floor `0.8588`, and margin delta `+0.5909`. However, it still misses the TX floor (`0.6874 < 0.70`), true-prototype distance tolerance (`+0.053 > 0.02`), and unknown safety (`target_unknown_far_delta +0.044 to +0.045`). Source proxy_unknown repulsion lowers oldness for some unknown-safe rows, but those rows have old acc around `0.58-0.79` or clean drop above the allowed band. Therefore target1 remains not achieved, and target2 remains intentionally deferred.
 
+## V20 Conservative Blend Target1 Audit
+
+V20 tests whether the V19 repair overshoots. It builds post-export feature blends:
+
+```text
+z_v20 = (1 - lambda) * z_identity + lambda * z_v19_adapter
+lambda in {0.10, 0.20, 0.35, 0.50, 0.65, 0.80}
+```
+
+Protocol boundary:
+
+| Item | Setting |
+|---|---|
+| Phase1 backbone | Frozen`ADV3B02_CORE90_SOFT_E200phase1` |
+| Input features | Identity sat-only NPZ and V19 adapter NPZ |
+| Clean control | Same blend is applied to clean control output for fidelity audit |
+| Target labels | Not used for blend generation; only used by final target1 evaluator |
+| Target clean | Not used for training or tuning |
+| Unknown query threshold fitting | Not used |
+
+New files:
+
+| File | Purpose | SHA256 |
+|---|---|---|
+| `E:\type10-7\code\scripts\build_phase1_adapter_blends_20260703.py` | Writes identity/adapter blended `features_leo_repaired.npz` and `features_clean_repaired.npz` with source-clean prototype logits | `C62D1E349D4E2854332818371FEAE29E4A0EF1059A53136842EE35558F796DC3` |
+| `E:\type10-7\code\scripts\sweep_phase1_adv3b02_blend_target1_v20_20260703.sh` | Generates V20 blends from V19 adapters and reruns the strong target1 audit | `119DA3D5EEA07421A27460EA9309D4F5B2F40B333101FC5D84B9CE3F1A6F6455` |
+
+Local verification:
+
+| Command | Result |
+|---|---|
+| `C:\Users\lh594\.conda\envs\ssr-gpu\python.exe -m py_compile E:\type10-7\code\scripts\build_phase1_adapter_blends_20260703.py E:\type10-7\code\scripts\eval_phase1_target1_strong_repair_audit_20260703.py` | PASS |
+| `bash -lc "bash -n /mnt/e/type10-7/code/scripts/sweep_phase1_adv3b02_blend_target1_v20_20260703.sh"` | PASS |
+
+Version/snapshot state:
+
+| Item | Path |
+|---|---|
+| Non-Git code snapshot | `E:\type10-7\code\snapshots\phase1_adv3b02_blend_target1_v20_20260703\` |
+| Git mirror branch | `E:\type10-7\github_publish\CVS-RFFI-repo` |
+
+Planned N607 output:
+
+| Artifact | Remote path |
+|---|---|
+| V20 summary | `/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_adv3b02_blend_target1_v20_20260703/target1_strong_v20_summary.csv` |
+| V20 best JSON | `/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_adv3b02_blend_target1_v20_20260703/target1_strong_v20_best.json` |
+| V20 metrics JSON | `/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_adv3b02_blend_target1_v20_20260703/target1_strong_v20_metrics.json` |
+
 ## V11 Completion Results
 
 V11 completed two IQ pre-adapter variants on N607:
