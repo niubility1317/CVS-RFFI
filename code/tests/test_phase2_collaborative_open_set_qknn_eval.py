@@ -14,14 +14,22 @@ for path in (str(ROOT), str(SCRIPTS)):
         sys.path.insert(0, path)
 
 
-def _write_npz(path: Path, *, include_unknown: bool = True, aligned: bool = True) -> None:
+def _write_npz(
+    path: Path,
+    *,
+    include_unknown: bool = True,
+    aligned: bool = True,
+    include_source: bool = True,
+    include_bad_proxy: bool = False,
+) -> None:
     rows = []
 
     def add(role, tx, rx, day, sig, scenario, feature):
         rows.append((role, tx, rx, day, sig, scenario, np.asarray(feature, dtype=np.float32)))
 
     for rx in ["rx-a", "rx-b"]:
-        add("source", "old-a", "src-a", "d0", f"src-{rx}", "", [1.0, 0.0, 0.0])
+        if include_source:
+            add("source", "old-a", "src-a", "d0", f"src-{rx}", "", [1.0, 0.0, 0.0])
         add("target_old", "old-a", rx, "d1", f"old-support-{rx}", "leo_clear_weak", [1.0, 0.0, 0.0])
         add("target_new", "new-a", rx, "d1", f"new-support-{rx}", "leo_clear_weak", [0.0, 1.0, 0.0])
         old_sig = "old-query" if aligned else f"old-query-{rx}"
@@ -33,6 +41,9 @@ def _write_npz(path: Path, *, include_unknown: bool = True, aligned: bool = True
         add("target_new", "new-a", rx, "d2", f"{new_sig}-2", "leo_clear_weak", [0.01, 0.99, 0.0])
         if include_unknown:
             add("target_unknown", "unk-a", rx, "d2", unk_sig, "leo_clear_weak", [0.0, 0.0, 1.0])
+            add("target_unknown", "unk-a", rx, "d2", f"{unk_sig}-2", "leo_clear_weak", [0.0, 0.01, 0.99])
+    if include_bad_proxy:
+        add("proxy_unknown", "unk-a", "rx-a", "d3", "bad-proxy", "leo_clear_weak", [0.0, 0.0, 1.0])
 
     manifest = {
         "source_tx_ids": ["old-a"],
@@ -94,6 +105,33 @@ class Phase2CollaborativeOpenSetQknnEvalTest(unittest.TestCase):
             with self.assertRaisesRegex(RuntimeError, "LOCAL_DATASET_EXTENSION_REQUIRED"):
                 build_collaborative_evidence(load_feature_npz(npz), k_shot=1, query_per_class=1)
 
+    def test_requires_source_receivers_to_verify_disjoint_protocol(self):
+        from phase2_collaborative_open_set_qknn_eval import load_feature_npz, build_collaborative_evidence
+
+        with tempfile.TemporaryDirectory() as td:
+            npz = Path(td) / "features.npz"
+            _write_npz(npz, include_source=False)
+            with self.assertRaisesRegex(RuntimeError, "LOCAL_PROTOCOL_REPAIR_REQUIRED"):
+                build_collaborative_evidence(load_feature_npz(npz), k_shot=1, query_per_class=1)
+
+    def test_rejects_proxy_unknown_that_overlaps_target_unknown(self):
+        from phase2_collaborative_open_set_qknn_eval import load_feature_npz, build_collaborative_evidence
+
+        with tempfile.TemporaryDirectory() as td:
+            npz = Path(td) / "features.npz"
+            _write_npz(npz, include_bad_proxy=True)
+            with self.assertRaisesRegex(RuntimeError, "proxy_unknown calibration rows must be source-only"):
+                build_collaborative_evidence(load_feature_npz(npz), k_shot=1, query_per_class=1)
+
+    def test_requires_per_receiver_support_and_query_coverage(self):
+        from phase2_collaborative_open_set_qknn_eval import load_feature_npz, build_collaborative_evidence
+
+        with tempfile.TemporaryDirectory() as td:
+            npz = Path(td) / "features.npz"
+            _write_npz(npz)
+            with self.assertRaisesRegex(RuntimeError, "incomplete Stage2-C coverage"):
+                build_collaborative_evidence(load_feature_npz(npz), k_shot=2, query_per_class=2)
+
     def test_refuses_rank_aligned_pseudo_collaboration(self):
         from phase2_collaborative_open_set_qknn_eval import load_feature_npz, build_collaborative_evidence
 
@@ -141,6 +179,61 @@ class Phase2CollaborativeOpenSetQknnEvalTest(unittest.TestCase):
         self.assertIn("radius_risk", evidence[0])
         self.assertIn("margin_risk", evidence[0])
         self.assertIn("class_radius", evidence[0])
+
+    def test_scenario_aware_qknn_prefers_matching_support_scenario(self):
+        from phase2_collaborative_open_set_qknn_eval import build_qknn_memory, qknn_scores
+
+        memory = build_qknn_memory(
+            np.asarray(
+                [
+                    [0.7, 0.7, 0.0],
+                    [0.69, 0.71, 0.0],
+                    [1.0, 0.0, 0.0],
+                    [0.0, 1.0, 0.0],
+                ],
+                dtype=np.float32,
+            ),
+            ["old-a", "old-a", "new-b", "new-a"],
+            old_labels={"old-a"},
+            support_scenarios=["leo_clear_weak", "leo_clear_weak", "leo_clear_weak", "leo_rain_weak"],
+        )
+        pred_global, _, _ = qknn_scores(
+            memory,
+            np.asarray([[0.0, 1.0, 0.0]], dtype=np.float32),
+            top_k=1,
+            query_scenarios=["leo_clear_weak"],
+            scenario_aware=False,
+        )
+        pred_scenario, _, _ = qknn_scores(
+            memory,
+            np.asarray([[0.0, 1.0, 0.0]], dtype=np.float32),
+            top_k=1,
+            query_scenarios=["leo_clear_weak"],
+            scenario_aware=True,
+        )
+
+        self.assertEqual(str(pred_global[0]), "new-a")
+        self.assertEqual(str(pred_scenario[0]), "old-a")
+
+    def test_scenario_aware_and_radius_norm_are_recorded_in_metadata(self):
+        from phase2_collaborative_open_set_qknn_eval import load_feature_npz, build_collaborative_evidence
+
+        with tempfile.TemporaryDirectory() as td:
+            npz = Path(td) / "features.npz"
+            _write_npz(npz)
+            _, metadata = build_collaborative_evidence(
+                load_feature_npz(npz),
+                k_shot=1,
+                query_per_class=2,
+                qknn_k=1,
+                scenario_aware=True,
+                radius_norm=0.3,
+                old_bias=0.1,
+            )
+
+        self.assertTrue(metadata["scenario_aware"])
+        self.assertAlmostEqual(metadata["radius_norm"], 0.3)
+        self.assertAlmostEqual(metadata["old_bias"], 0.1)
 
 
 if __name__ == "__main__":
