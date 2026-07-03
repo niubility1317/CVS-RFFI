@@ -675,6 +675,64 @@ class Phase2CollaborativeOpenSetQknnEvalTest(unittest.TestCase):
         self.assertIn("prototype_calibration_alpha", evidence[0])
         self.assertIn("prototype_calibration_top_m", evidence[0])
 
+    def test_support_center_feature_adapter_transforms_normalized_support(self):
+        from phase2_collaborative_open_set_qknn_eval import (
+            _apply_feature_adapter,
+            _fit_feature_adapter,
+            _normalize_rows,
+        )
+
+        support = np.asarray(
+            [
+                [1.0, 0.80, 0.0],
+                [1.0, 1.20, 0.0],
+                [0.90, 1.00, 0.0],
+            ],
+            dtype=np.float32,
+        )
+        none_adapter = _fit_feature_adapter(
+            support,
+            policy="none",
+            strength=1.0,
+            variance_floor=1e-4,
+        )
+        centered_adapter = _fit_feature_adapter(
+            support,
+            policy="support_center",
+            strength=1.0,
+            variance_floor=1e-4,
+        )
+
+        normalized = _normalize_rows(support)
+        self.assertTrue(np.allclose(_apply_feature_adapter(support, none_adapter), normalized))
+        centered = _apply_feature_adapter(support, centered_adapter)
+        self.assertFalse(np.allclose(centered, normalized))
+        self.assertLess(np.linalg.norm(centered.mean(axis=0)), np.linalg.norm(normalized.mean(axis=0)))
+
+    def test_feature_adapter_is_marked_in_metadata_and_evidence(self):
+        from phase2_collaborative_open_set_qknn_eval import load_feature_npz, build_collaborative_evidence
+
+        with tempfile.TemporaryDirectory() as td:
+            npz = Path(td) / "features.npz"
+            _write_npz(npz)
+            evidence, metadata = build_collaborative_evidence(
+                load_feature_npz(npz),
+                k_shot=1,
+                query_per_class=2,
+                qknn_k=1,
+                feature_adapter_policy="support_center",
+                feature_adapter_strength=0.5,
+                feature_adapter_variance_floor=1e-5,
+            )
+
+        self.assertEqual(metadata["feature_adapter_policy"], "support_center")
+        self.assertAlmostEqual(metadata["feature_adapter_strength"], 0.5)
+        self.assertAlmostEqual(metadata["feature_adapter_variance_floor"], 1e-5)
+        self.assertIn("feature_adapter_policy", evidence[0])
+        self.assertIn("feature_adapter_strength", evidence[0])
+        self.assertEqual(evidence[0]["feature_adapter_policy"], "support_center")
+        self.assertAlmostEqual(float(evidence[0]["feature_adapter_strength"]), 0.5)
+
     def test_mahalanobis_score_assisted_qknn_is_marked_in_metadata_and_evidence(self):
         from phase2_collaborative_open_set_qknn_eval import load_feature_npz, build_collaborative_evidence
 

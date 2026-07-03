@@ -54,6 +54,14 @@ class QknnMemory:
     score_threshold: float
 
 
+@dataclass(frozen=True)
+class FeatureAdapter:
+    policy: str
+    center: np.ndarray
+    scale: np.ndarray
+    strength: float
+
+
 def canonical_tx_id(value: object) -> str:
     text = str(value)
     if text.startswith("tx"):
@@ -74,6 +82,47 @@ def _stable_score(parts: Sequence[object], seed: int) -> float:
 def _normalize_rows(values: np.ndarray) -> np.ndarray:
     values = np.asarray(values, dtype=np.float32)
     return values / np.clip(np.linalg.norm(values, axis=1, keepdims=True), 1e-8, None)
+
+
+def _fit_feature_adapter(
+    support_features: np.ndarray,
+    *,
+    policy: str,
+    strength: float,
+    variance_floor: float,
+) -> FeatureAdapter:
+    policy = str(policy or "none").strip().lower()
+    if policy not in {"none", "support_center", "support_bn_affine"}:
+        raise ValueError("feature_adapter_policy must be none, support_center, or support_bn_affine")
+    normalized = _normalize_rows(support_features)
+    dim = int(normalized.shape[1])
+    strength_value = float(np.clip(float(strength), 0.0, 1.0))
+    if policy == "none" or normalized.shape[0] <= 0 or strength_value <= 0.0:
+        return FeatureAdapter(
+            policy="none",
+            center=np.zeros((dim,), dtype=np.float32),
+            scale=np.ones((dim,), dtype=np.float32),
+            strength=0.0,
+        )
+    center = normalized.mean(axis=0).astype(np.float32)
+    if policy == "support_bn_affine":
+        var = np.var(normalized, axis=0).astype(np.float32)
+        support_scale = np.sqrt(np.maximum(var, float(variance_floor))).astype(np.float32)
+        scale = ((1.0 - strength_value) + strength_value * support_scale).astype(np.float32)
+        scale = np.maximum(scale, float(variance_floor)).astype(np.float32)
+    else:
+        scale = np.ones((dim,), dtype=np.float32)
+    return FeatureAdapter(policy=policy, center=center, scale=scale, strength=strength_value)
+
+
+def _apply_feature_adapter(features: np.ndarray, adapter: FeatureAdapter) -> np.ndarray:
+    values = _normalize_rows(features)
+    if adapter.policy == "none" or float(adapter.strength) <= 0.0:
+        return values
+    centered = values - float(adapter.strength) * adapter.center[None, :]
+    if adapter.policy == "support_bn_affine":
+        centered = centered / adapter.scale[None, :]
+    return _normalize_rows(centered.astype(np.float32))
 
 
 def _as_str(data: Mapping[str, Any], key: str, n: int) -> np.ndarray:
@@ -1274,6 +1323,9 @@ def build_collaborative_evidence(
     prototype_calibration_policy: str = "none",
     prototype_calibration_alpha: float = 0.0,
     prototype_calibration_top_m: int = 2,
+    feature_adapter_policy: str = "none",
+    feature_adapter_strength: float = 0.0,
+    feature_adapter_variance_floor: float = 1e-4,
     candidate_audit_unknown_risk_enabled: bool = False,
     candidate_audit_disagreement_risk: float = 1.0,
     candidate_audit_min_gap: float = 0.0,
@@ -1315,6 +1367,7 @@ def build_collaborative_evidence(
     receiver_class_conformal_scores: dict[str, dict[str, list[float]]] = {}
     receiver_virtual_unknowns: dict[str, np.ndarray] = {}
     receiver_virtual_unknown_counts: dict[str, int] = {}
+    receiver_feature_adapters: dict[str, FeatureAdapter] = {}
     evidence: list[dict[str, Any]] = []
     receiver_query: dict[str, dict[str, list[int]]] = {}
     threshold_scope = "support_known_only"
@@ -1333,6 +1386,11 @@ def build_collaborative_evidence(
         raise ValueError("prototype_calibration_policy must be none, teen_blend, or teen_separate")
     proto_cal_alpha = float(np.clip(float(prototype_calibration_alpha), 0.0, 1.0))
     proto_cal_top_m = max(1, int(prototype_calibration_top_m))
+    adapter_policy = str(feature_adapter_policy or "none").strip().lower()
+    if adapter_policy not in {"none", "support_center", "support_bn_affine"}:
+        raise ValueError("feature_adapter_policy must be none, support_center, or support_bn_affine")
+    adapter_strength = float(np.clip(float(feature_adapter_strength), 0.0, 1.0))
+    adapter_var_floor = max(float(feature_adapter_variance_floor), 1e-8)
     t0 = time.perf_counter()
 
     for rx in target_receivers:
@@ -1409,8 +1467,18 @@ def build_collaborative_evidence(
             receiver_query[rx]["unknown"].extend(query)
         if not support_indices:
             raise RuntimeError(f"receiver {rx} has no known-class support rows")
-        memory = build_qknn_memory(
+        feature_adapter = _fit_feature_adapter(
             features[np.asarray(support_indices, dtype=int)],
+            policy=adapter_policy,
+            strength=adapter_strength,
+            variance_floor=adapter_var_floor,
+        )
+        support_features_for_memory = _apply_feature_adapter(
+            features[np.asarray(support_indices, dtype=int)],
+            feature_adapter,
+        )
+        memory = build_qknn_memory(
+            support_features_for_memory,
             support_labels,
             old_labels=set(old_labels),
             support_scenarios=[_scenario_of(payload, int(i)) for i in support_indices],
@@ -1521,6 +1589,7 @@ def build_collaborative_evidence(
                 min_support=int(class_conformal_min_support),
             )
         receiver_memories[rx] = memory
+        receiver_feature_adapters[rx] = feature_adapter
         receiver_thresholds[rx] = threshold
         receiver_class_thresholds[rx] = class_thresholds
         receiver_class_conformal_scores[rx] = conformal_scores
@@ -1595,6 +1664,7 @@ def build_collaborative_evidence(
                 for rx in sorted(rx_to_idx):
                     idx = rx_to_idx[rx]
                     memory = receiver_memories[rx]
+                    query_feature = _apply_feature_adapter(features[[idx]], receiver_feature_adapters[rx])
                     (
                         pred,
                         score,
@@ -1606,7 +1676,7 @@ def build_collaborative_evidence(
                         second_scores,
                     ) = qknn_scores(
                         memory,
-                        features[[idx]],
+                        query_feature,
                         top_k=qknn_k,
                         query_scenarios=[_scenario_of(payload, idx)],
                         scenario_aware=bool(scenario_aware),
@@ -1629,7 +1699,7 @@ def build_collaborative_evidence(
                             audit_second_scores,
                         ) = qknn_scores(
                             memory,
-                            features[[idx]],
+                            query_feature,
                             top_k=qknn_k,
                             query_scenarios=[_scenario_of(payload, idx)],
                             scenario_aware=bool(scenario_aware),
@@ -1678,7 +1748,7 @@ def build_collaborative_evidence(
                     if int(class_evidence_top_m) > 0:
                         score_labels_for_event, score_matrix_for_event = _qknn_label_score_matrix(
                             memory,
-                            features[[idx]],
+                            query_feature,
                             top_k=qknn_k,
                             query_scenarios=[_scenario_of(payload, idx)],
                             scenario_aware=bool(scenario_aware),
@@ -1734,7 +1804,7 @@ def build_collaborative_evidence(
                                 label_class_radius_z,
                             ) = _combined_unknown_risk(
                                 memory,
-                                features[[idx]],
+                                query_feature,
                                 [label_name],
                                 np.asarray([label_score], dtype=np.float64),
                                 np.asarray([label_margin], dtype=np.float64),
@@ -1786,7 +1856,7 @@ def build_collaborative_evidence(
                         class_radius_z,
                     ) = _combined_unknown_risk(
                         memory,
-                        features[[idx]],
+                        query_feature,
                         pred,
                         score,
                         margin,
@@ -1800,7 +1870,7 @@ def build_collaborative_evidence(
                         oldness_temperature=oldness_temperature,
                     )
                     virtual_unknown_risk, virtual_unknown_score = _virtual_unknown_boundary_risk(
-                        features[[idx]],
+                        query_feature,
                         score,
                         receiver_virtual_unknowns.get(rx),
                         temperature=float(virtual_unknown_risk_temperature),
@@ -1870,6 +1940,8 @@ def build_collaborative_evidence(
                             "mahalanobis_score_blend": mahalanobis_blend,
                             "mahalanobis_score_temperature": mahalanobis_score_temp,
                             "mahalanobis_score_assisted": int(mahalanobis_blend > 0.0),
+                            "feature_adapter_policy": feature_adapter.policy,
+                            "feature_adapter_strength": float(feature_adapter.strength),
                             "unknown_risk": float(unknown_risk_value),
                             "score_risk": float(score_risk_value),
                             "radius_risk": float(radius_risk[0]),
@@ -1949,6 +2021,9 @@ def build_collaborative_evidence(
         "mahalanobis_score_blend": mahalanobis_blend,
         "mahalanobis_score_temperature": mahalanobis_score_temp,
         "mahalanobis_score_assisted_qknn": mahalanobis_blend > 0.0,
+        "feature_adapter_policy": adapter_policy,
+        "feature_adapter_strength": adapter_strength,
+        "feature_adapter_variance_floor": adapter_var_floor,
         "candidate_audit_unknown_risk_enabled": bool(candidate_audit_unknown_risk_enabled),
         "candidate_audit_disagreement_risk": float(candidate_audit_disagreement_risk),
         "candidate_audit_min_gap": float(candidate_audit_min_gap),
@@ -2044,6 +2119,9 @@ def run_evaluation(args: argparse.Namespace) -> dict[str, Any]:
         prototype_calibration_policy=str(args.prototype_calibration_policy),
         prototype_calibration_alpha=float(args.prototype_calibration_alpha),
         prototype_calibration_top_m=int(args.prototype_calibration_top_m),
+        feature_adapter_policy=str(args.feature_adapter_policy),
+        feature_adapter_strength=float(args.feature_adapter_strength),
+        feature_adapter_variance_floor=float(args.feature_adapter_variance_floor),
         candidate_audit_unknown_risk_enabled=bool(args.candidate_audit_unknown_risk_enabled),
         candidate_audit_disagreement_risk=float(args.candidate_audit_disagreement_risk),
         candidate_audit_min_gap=float(args.candidate_audit_min_gap),
@@ -2157,6 +2235,13 @@ def parse_args() -> argparse.Namespace:
     )
     p.add_argument("--prototype_calibration_alpha", type=float, default=0.0)
     p.add_argument("--prototype_calibration_top_m", type=int, default=2)
+    p.add_argument(
+        "--feature_adapter_policy",
+        default="none",
+        choices=["none", "support_center", "support_bn_affine"],
+    )
+    p.add_argument("--feature_adapter_strength", type=float, default=0.0)
+    p.add_argument("--feature_adapter_variance_floor", type=float, default=1e-4)
     p.add_argument("--candidate_audit_unknown_risk_enabled", action="store_true")
     p.add_argument("--candidate_audit_disagreement_risk", type=float, default=1.0)
     p.add_argument("--candidate_audit_min_gap", type=float, default=0.0)
