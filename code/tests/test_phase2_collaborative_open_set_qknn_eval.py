@@ -121,6 +121,27 @@ class Phase2CollaborativeOpenSetQknnEvalTest(unittest.TestCase):
         self.assertFalse(metadata["strict_same_event_collaboration"])
         self.assertEqual(metadata["event_alignment"], "receiver_domain_ranked_by_role_tx_scenario")
 
+    def test_support_envelope_gate_records_radius_and_margin_risk(self):
+        from phase2_collaborative_open_set_qknn_eval import load_feature_npz, build_collaborative_evidence
+
+        with tempfile.TemporaryDirectory() as td:
+            npz = Path(td) / "features.npz"
+            _write_npz(npz)
+            evidence, metadata = build_collaborative_evidence(
+                load_feature_npz(npz),
+                k_shot=1,
+                query_per_class=2,
+                qknn_k=1,
+                support_selection_policy="centroid",
+                unknown_gate_mode="support_envelope",
+            )
+
+        self.assertEqual(metadata["support_selection_policy"], "centroid")
+        self.assertEqual(metadata["unknown_gate_mode"], "support_envelope")
+        self.assertIn("radius_risk", evidence[0])
+        self.assertIn("margin_risk", evidence[0])
+        self.assertIn("class_radius", evidence[0])
+
 
 if __name__ == "__main__":
     unittest.main()

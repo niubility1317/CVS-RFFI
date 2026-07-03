@@ -39,6 +39,11 @@ class QknnMemory:
     old_labels: set[str]
     scale: float
     prototype_storage_bytes: int
+    centroid_labels: np.ndarray
+    centroids: np.ndarray
+    class_radius_thresholds: dict[str, float]
+    margin_threshold: float
+    score_threshold: float
 
 
 def canonical_tx_id(value: object) -> str:
@@ -105,11 +110,76 @@ def validate_required_roles(payload: Mapping[str, Any]) -> None:
         )
 
 
-def build_qknn_memory(features: np.ndarray, labels: Sequence[str], *, old_labels: set[str]) -> QknnMemory:
+def _class_centroids(features: np.ndarray, labels: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
+    label_values = sorted({str(label) for label in labels.tolist()})
+    centroids = []
+    for label in label_values:
+        centroids.append(_normalize_rows(features[labels == label].mean(axis=0, keepdims=True))[0])
+    return np.asarray(label_values, dtype=object), _normalize_rows(np.vstack(centroids))
+
+
+def _centroid_scores(memory: QknnMemory, query_features: np.ndarray) -> np.ndarray:
+    return _normalize_rows(query_features) @ memory.centroids.T
+
+
+def _support_envelope(
+    features: np.ndarray,
+    labels: np.ndarray,
+    centroid_labels: np.ndarray,
+    centroids: np.ndarray,
+    *,
+    radius_quantile: float,
+    margin_quantile: float,
+    score_quantile: float,
+    radius_slack: float,
+    margin_slack: float,
+    score_slack: float,
+) -> tuple[dict[str, float], float, float]:
+    scores = _normalize_rows(features) @ centroids.T
+    class_to_pos = {str(label): int(i) for i, label in enumerate(centroid_labels.tolist())}
+    sorted_scores = np.sort(scores, axis=1)
+    margins = sorted_scores[:, -1] - sorted_scores[:, -2] if scores.shape[1] >= 2 else sorted_scores[:, -1]
+    best_scores = np.max(scores, axis=1)
+    radii: dict[str, float] = {}
+    for label in sorted(class_to_pos):
+        idx = np.where(labels == label)[0]
+        if idx.size:
+            label_score = scores[idx, class_to_pos[label]]
+            radii[label] = float(np.quantile(1.0 - label_score, float(radius_quantile)) + float(radius_slack))
+    margin_t = float(max(0.0, np.quantile(margins, float(margin_quantile)) - float(margin_slack)))
+    score_t = float(max(0.0, np.quantile(best_scores, float(score_quantile)) - float(score_slack)))
+    return radii, margin_t, score_t
+
+
+def build_qknn_memory(
+    features: np.ndarray,
+    labels: Sequence[str],
+    *,
+    old_labels: set[str],
+    radius_quantile: float = 0.95,
+    margin_quantile: float = 0.05,
+    score_quantile: float = 0.05,
+    radius_slack: float = 0.02,
+    margin_slack: float = 0.0,
+    score_slack: float = 0.0,
+) -> QknnMemory:
     normalized = _normalize_rows(features)
     scale = 127.0
     qfeatures = np.clip(np.rint(normalized * scale), -127, 127).astype(np.int8)
     labels_arr = np.asarray([canonical_tx_id(v) for v in labels], dtype=object)
+    centroid_labels, centroids = _class_centroids(normalized, labels_arr)
+    radius_thresholds, margin_threshold, score_threshold = _support_envelope(
+        normalized,
+        labels_arr,
+        centroid_labels,
+        centroids,
+        radius_quantile=radius_quantile,
+        margin_quantile=margin_quantile,
+        score_quantile=score_quantile,
+        radius_slack=radius_slack,
+        margin_slack=margin_slack,
+        score_slack=score_slack,
+    )
     storage_bytes = int(qfeatures.nbytes + labels_arr.size * 4)
     return QknnMemory(
         qfeatures=qfeatures,
@@ -117,6 +187,11 @@ def build_qknn_memory(features: np.ndarray, labels: Sequence[str], *, old_labels
         old_labels=set(old_labels),
         scale=scale,
         prototype_storage_bytes=storage_bytes,
+        centroid_labels=centroid_labels,
+        centroids=centroids,
+        class_radius_thresholds=radius_thresholds,
+        margin_threshold=margin_threshold,
+        score_threshold=score_threshold,
     )
 
 
@@ -172,6 +247,93 @@ def _split_support_query(
     return support, query
 
 
+def _nearest_to_centroid(features: np.ndarray, indices: Sequence[int], k: int) -> list[int]:
+    idx = np.asarray(indices, dtype=int)
+    if idx.size == 0 or int(k) <= 0:
+        return []
+    subset = _normalize_rows(features[idx])
+    centroid = _normalize_rows(subset.mean(axis=0, keepdims=True))[0]
+    return idx[np.argsort(-(subset @ centroid))[: int(k)]].astype(int).tolist()
+
+
+def _scenario_diverse_support(
+    payload: Mapping[str, Any],
+    features: np.ndarray,
+    indices: Sequence[int],
+    k: int,
+) -> list[int]:
+    idx = np.asarray(indices, dtype=int)
+    if idx.size == 0:
+        return []
+    scenarios = np.asarray(payload["sat_scenarios"]).astype(str)
+    selected: list[int] = []
+    for scenario in sorted({str(scenarios[i]) for i in idx.tolist()}):
+        scenario_idx = idx[scenarios[idx] == scenario]
+        selected.extend(_nearest_to_centroid(features, scenario_idx, 1))
+        if len(selected) >= int(k):
+            return selected[: int(k)]
+    remaining = [int(i) for i in idx.tolist() if int(i) not in set(selected)]
+    selected.extend(_nearest_to_centroid(features, remaining, int(k) - len(selected)))
+    return selected[: int(k)]
+
+
+def _select_support_indices(
+    payload: Mapping[str, Any],
+    features: np.ndarray,
+    ordered: Sequence[int],
+    *,
+    k_shot: int,
+    policy: str,
+) -> list[int]:
+    ordered = [int(i) for i in ordered]
+    policy = str(policy or "stable_first").strip().lower()
+    if policy == "stable_first":
+        return ordered[: min(int(k_shot), len(ordered))]
+    if policy == "centroid":
+        return _nearest_to_centroid(features, ordered, int(k_shot))
+    if policy == "scenario_diverse":
+        return _scenario_diverse_support(payload, features, ordered, int(k_shot))
+    raise ValueError("support_selection_policy must be stable_first, centroid, or scenario_diverse")
+
+
+def _split_support_query_selected(
+    payload: Mapping[str, Any],
+    *,
+    features: np.ndarray,
+    role: str,
+    tx_id: str,
+    rx_id: str,
+    k_shot: int,
+    query_per_class: int,
+    seed: int,
+    support_selection_policy: str,
+) -> tuple[list[int], list[int]]:
+    roles = np.asarray(payload["dataset_role"]).astype(str)
+    tx_ids = np.asarray(payload["tx_ids"]).astype(str)
+    rx_ids = np.asarray(payload["rx_ids"]).astype(str)
+    idx = [
+        int(i)
+        for i in np.where((roles == role) & (tx_ids == tx_id) & (rx_ids == rx_id))[0].tolist()
+    ]
+    ordered = sorted(
+        idx,
+        key=lambda i: _stable_score(
+            (role, tx_id, rx_id, payload["day_ids"][i], payload["sig_ids"][i], payload["sat_scenarios"][i]),
+            seed,
+        ),
+    )
+    support = _select_support_indices(
+        payload,
+        features,
+        ordered,
+        k_shot=int(k_shot),
+        policy=support_selection_policy,
+    )
+    support_set = set(support)
+    query = [int(i) for i in ordered if int(i) not in support_set][: int(query_per_class)]
+    return support, query
+
+
 def _threshold_from_calibration(
     memory: QknnMemory,
     support_features: np.ndarray,
@@ -197,6 +359,55 @@ def _unknown_risk(scores: np.ndarray, threshold: float, *, temperature: float) -
     z = (np.asarray(scores, dtype=np.float64) - float(threshold)) / temp
     known_prob = 1.0 / (1.0 + np.exp(-z))
     return np.clip(1.0 - known_prob, 0.0, 1.0)
+
+
+def _combined_unknown_risk(
+    memory: QknnMemory,
+    query_features: np.ndarray,
+    predicted_labels: Sequence[str],
+    known_scores: np.ndarray,
+    known_margins: np.ndarray,
+    score_threshold: float,
+    *,
+    temperature: float,
+    gate_mode: str,
+    radius_temperature: float,
+    margin_temperature: float,
+) -> tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
+    mode = str(gate_mode or "score").strip().lower()
+    score_risk = _unknown_risk(known_scores, score_threshold, temperature=temperature)
+    if mode == "score":
+        zeros = np.zeros_like(score_risk)
+        return score_risk, zeros, zeros, zeros
+    centroid_scores = _centroid_scores(memory, query_features)
+    class_to_pos = {str(label): int(i) for i, label in enumerate(memory.centroid_labels.tolist())}
+    radius_risks = []
+    radius_values = []
+    for row_i, label in enumerate(predicted_labels):
+        label = str(label)
+        pos = class_to_pos.get(label)
+        if pos is None:
+            radius_values.append(1.0)
+            radius_risks.append(1.0)
+            continue
+        radius = float(1.0 - centroid_scores[row_i, pos])
+        threshold = float(memory.class_radius_thresholds.get(label, 1.0))
+        z = (radius - threshold) / max(float(radius_temperature), 1e-6)
+        radius_values.append(radius)
+        radius_risks.append(float(1.0 / (1.0 + np.exp(-z))))
+    radius_risk = np.asarray(radius_risks, dtype=np.float64)
+    margin_t = float(memory.margin_threshold)
+    margin_z = (margin_t - np.asarray(known_margins, dtype=np.float64)) / max(float(margin_temperature), 1e-6)
+    margin_risk = 1.0 / (1.0 + np.exp(-margin_z))
+    if mode == "support_envelope":
+        risk = np.maximum.reduce([score_risk, radius_risk, margin_risk])
+    elif mode == "radius":
+        risk = np.maximum(score_risk, radius_risk)
+    elif mode == "margin":
+        risk = np.maximum(score_risk, margin_risk)
+    else:
+        raise ValueError("unknown_gate_mode must be score, radius, margin, or support_envelope")
+    return np.clip(risk, 0.0, 1.0), radius_risk, margin_risk, np.asarray(radius_values, dtype=np.float64)
 
 
 def _scenario_of(payload: Mapping[str, Any], idx: int) -> str:
@@ -227,6 +438,16 @@ def build_collaborative_evidence(
     proxy_quantile: float = 0.95,
     risk_temperature: float = 0.035,
     event_alignment_policy: str = "strict_event_key",
+    support_selection_policy: str = "stable_first",
+    unknown_gate_mode: str = "score",
+    radius_quantile: float = 0.95,
+    margin_quantile: float = 0.05,
+    score_quantile: float = 0.05,
+    radius_slack: float = 0.02,
+    margin_slack: float = 0.0,
+    score_slack: float = 0.0,
+    radius_temperature: float = 0.02,
+    margin_temperature: float = 0.02,
 ) -> tuple[list[dict[str, Any]], dict[str, Any]]:
     validate_required_roles(payload)
     roles = np.asarray(payload["dataset_role"]).astype(str)
@@ -254,27 +475,31 @@ def build_collaborative_evidence(
         support_labels: list[str] = []
         receiver_query[rx] = {"old": [], "seen_new": [], "unknown": []}
         for label in old_labels:
-            support, query = _split_support_query(
+            support, query = _split_support_query_selected(
                 payload,
+                features=features,
                 role="target_old",
                 tx_id=label,
                 rx_id=rx,
                 k_shot=k_shot,
                 query_per_class=query_per_class,
                 seed=seed,
+                support_selection_policy=support_selection_policy,
             )
             support_indices.extend(support)
             support_labels.extend([label] * len(support))
             receiver_query[rx]["old"].extend(query)
         for label in new_labels:
-            support, query = _split_support_query(
+            support, query = _split_support_query_selected(
                 payload,
+                features=features,
                 role="target_new",
                 tx_id=label,
                 rx_id=rx,
                 k_shot=k_shot,
                 query_per_class=query_per_class,
                 seed=seed,
+                support_selection_policy=support_selection_policy,
             )
             support_indices.extend(support)
             support_labels.extend([label] * len(support))
@@ -292,7 +517,17 @@ def build_collaborative_evidence(
             receiver_query[rx]["unknown"].extend(query)
         if not support_indices:
             raise RuntimeError(f"receiver {rx} has no known-class support rows")
-        memory = build_qknn_memory(features[np.asarray(support_indices, dtype=int)], support_labels, old_labels=set(old_labels))
+        memory = build_qknn_memory(
+            features[np.asarray(support_indices, dtype=int)],
+            support_labels,
+            old_labels=set(old_labels),
+            radius_quantile=radius_quantile,
+            margin_quantile=margin_quantile,
+            score_quantile=score_quantile,
+            radius_slack=radius_slack,
+            margin_slack=margin_slack,
+            score_slack=score_slack,
+        )
         proxy_features = features[proxy_idx] if proxy_idx.size else None
         threshold, scope = _threshold_from_calibration(
             memory,
@@ -365,7 +600,18 @@ def build_collaborative_evidence(
                     idx = rx_to_idx[rx]
                     memory = receiver_memories[rx]
                     pred, score, margin = qknn_scores(memory, features[[idx]], top_k=qknn_k)
-                    risk = _unknown_risk(score, receiver_thresholds[rx], temperature=risk_temperature)
+                    risk, radius_risk, margin_risk, class_radius = _combined_unknown_risk(
+                        memory,
+                        features[[idx]],
+                        pred,
+                        score,
+                        margin,
+                        max(float(receiver_thresholds[rx]), float(memory.score_threshold)),
+                        temperature=risk_temperature,
+                        gate_mode=unknown_gate_mode,
+                        radius_temperature=radius_temperature,
+                        margin_temperature=margin_temperature,
+                    )
                     evidence.append(
                         {
                             "event_id": event_id,
@@ -376,6 +622,9 @@ def build_collaborative_evidence(
                             "known_score": float(score[0]),
                             "known_margin": float(margin[0]),
                             "unknown_risk": float(risk[0]),
+                            "radius_risk": float(radius_risk[0]),
+                            "margin_risk": float(margin_risk[0]),
+                            "class_radius": float(class_radius[0]),
                             "reliability": 1.0,
                             "reliability_source": "deployment_prior",
                             "latency_ms": float(per_row_ms),
@@ -411,6 +660,14 @@ def build_collaborative_evidence(
         "strict_same_event_collaboration": alignment_policy == "strict_event_key",
         "receiver_thresholds": receiver_thresholds,
         "threshold_scope": threshold_scope,
+        "support_selection_policy": str(support_selection_policy),
+        "unknown_gate_mode": str(unknown_gate_mode),
+        "radius_quantile": float(radius_quantile),
+        "margin_quantile": float(margin_quantile),
+        "score_quantile": float(score_quantile),
+        "radius_slack": float(radius_slack),
+        "margin_slack": float(margin_slack),
+        "score_slack": float(score_slack),
     }
     return evidence, metadata
 
@@ -427,6 +684,16 @@ def run_evaluation(args: argparse.Namespace) -> dict[str, Any]:
         proxy_quantile=float(args.proxy_quantile),
         risk_temperature=float(args.risk_temperature),
         event_alignment_policy=str(args.event_alignment_policy),
+        support_selection_policy=str(args.support_selection_policy),
+        unknown_gate_mode=str(args.unknown_gate_mode),
+        radius_quantile=float(args.radius_quantile),
+        margin_quantile=float(args.margin_quantile),
+        score_quantile=float(args.score_quantile),
+        radius_slack=float(args.radius_slack),
+        margin_slack=float(args.margin_slack),
+        score_slack=float(args.score_slack),
+        radius_temperature=float(args.radius_temperature),
+        margin_temperature=float(args.margin_temperature),
     )
     result = evaluate_collaborative_open_set_evidence(
         evidence,
@@ -468,10 +735,28 @@ def parse_args() -> argparse.Namespace:
     p.add_argument("--support_quantile", type=float, default=0.05)
     p.add_argument("--proxy_quantile", type=float, default=0.95)
     p.add_argument("--risk_temperature", type=float, default=0.035)
+    p.add_argument("--radius_temperature", type=float, default=0.02)
+    p.add_argument("--margin_temperature", type=float, default=0.02)
+    p.add_argument("--radius_quantile", type=float, default=0.95)
+    p.add_argument("--margin_quantile", type=float, default=0.05)
+    p.add_argument("--score_quantile", type=float, default=0.05)
+    p.add_argument("--radius_slack", type=float, default=0.02)
+    p.add_argument("--margin_slack", type=float, default=0.0)
+    p.add_argument("--score_slack", type=float, default=0.0)
     p.add_argument("--unknown_risk_threshold", type=float, default=0.80)
     p.add_argument("--accept_margin_threshold", type=float, default=0.10)
     p.add_argument("--unknown_quantile", type=float, default=0.75)
     p.add_argument("--receiver_selection_policy", default="fixed_receiver_order")
+    p.add_argument(
+        "--support_selection_policy",
+        default="stable_first",
+        choices=["stable_first", "centroid", "scenario_diverse"],
+    )
+    p.add_argument(
+        "--unknown_gate_mode",
+        default="score",
+        choices=["score", "radius", "margin", "support_envelope"],
+    )
     p.add_argument(
         "--event_alignment_policy",
         default="strict_event_key",
