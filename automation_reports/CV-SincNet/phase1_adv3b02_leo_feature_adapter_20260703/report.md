@@ -993,6 +993,50 @@ Launch status:
 | Startup health | PASS: driver log shows V18 start and first cell; GPU0 memory/use rose to `393 MiB`/`9%`; no SSH connection left open locally |
 | Expected completion artifacts | `target1_strong_v18_summary.csv`, `target1_strong_v18_metrics.json`, `target1_strong_v18_best.json`, `target1_strong_v18_eval.out` under the V18 log root |
 
+Completion results:
+
+| Item | Value |
+|---|---|
+| End time | 2026-07-03 10:31 CST |
+| Candidate rows | `20` |
+| Identity baseline rows | `10` |
+| Strong target1 pass | `0/20` |
+| Old recovery gate pass | `4/20` |
+| Clean fidelity gate pass | `10/20` |
+| Scenario/TX floor gate pass | `0/20` |
+| Margin gate pass | `0/20` |
+| Unknown safety gate pass | `4/20` |
+| Local artifact dir | `E:\type10-7\automation_reports\CV-SincNet\phase1_adv3b02_leo_feature_adapter_20260703\artifacts\v18_cleanid_target1\` |
+
+Same-row V18 candidate table:
+
+| Cell | Adapter | old_acc | delta_pp | clean_drop | scn_floor | tx_floor | unk_FAR | unk_FAR_d | margin_d | old | clean | floor | margin | unk_safe | pass |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| rx20-1-u1 | LINR | 0.5568 | -6.56 | 8.08 | 0.5316 | 0.2948 | 0.7395 | -0.13 | -5.75 | N | N | N | N | Y | N |
+| rx20-1-u1 | MLP | 0.5532 | -6.91 | 6.50 | 0.5245 | 0.2895 | 0.8207 | -0.05 | -5.32 | N | N | N | N | Y | N |
+| rx20-1-u10 | LINR | 0.5568 | -6.56 | 8.08 | 0.5316 | 0.2948 | 0.6885 | -0.09 | -5.75 | N | N | N | N | Y | N |
+| rx20-1-u10 | MLP | 0.5532 | -6.91 | 6.50 | 0.5245 | 0.2895 | 0.7321 | -0.04 | -5.32 | N | N | N | N | Y | N |
+| rx3-19-u1 | LINR | 0.5153 | -3.29 | 7.42 | 0.4983 | 0.3191 | 0.7500 | -0.00 | -5.75 | N | N | N | N | N | N |
+| rx3-19-u1 | MLP | 0.5291 | -1.91 | 4.00 | 0.5087 | 0.3387 | 0.7975 | 0.05 | -4.82 | N | N | N | N | N | N |
+| rx3-19-u10 | LINR | 0.5153 | -3.29 | 7.42 | 0.4983 | 0.3191 | 0.4607 | -0.12 | -5.75 | N | N | N | N | N | N |
+| rx3-19-u10 | MLP | 0.5291 | -1.91 | 4.00 | 0.5087 | 0.3387 | 0.6423 | 0.07 | -4.82 | N | N | N | N | N | N |
+| rx7-14-u1 | LINR | 0.8503 | -1.76 | 1.50 | 0.8311 | 0.6057 | 0.9725 | 0.07 | -4.54 | Y | Y | N | N | N | N |
+| rx7-14-u1 | MLP | 0.8506 | -1.74 | 0.75 | 0.8239 | 0.6501 | 0.9575 | 0.05 | -4.21 | Y | Y | N | N | N | N |
+| rx7-14-u10 | LINR | 0.8503 | -1.76 | 1.50 | 0.8311 | 0.6057 | 0.9278 | 0.06 | -4.54 | Y | Y | N | N | N | N |
+| rx7-14-u10 | MLP | 0.8506 | -1.74 | 0.75 | 0.8239 | 0.6501 | 0.9278 | 0.06 | -4.21 | Y | Y | N | N | N | N |
+| rx7-7-u1 | LINR | 0.7800 | -1.65 | 0.08 | 0.7686 | 0.6206 | 0.9500 | 0.02 | -5.14 | N | Y | N | N | N | N |
+| rx7-7-u1 | MLP | 0.7729 | -2.35 | 1.67 | 0.7482 | 0.6399 | 0.9600 | 0.03 | -4.74 | N | Y | N | N | N | N |
+| rx7-7-u10 | LINR | 0.7800 | -1.65 | 0.08 | 0.7686 | 0.6206 | 0.8541 | 0.00 | -5.14 | N | Y | N | N | N | N |
+| rx7-7-u10 | MLP | 0.7729 | -2.35 | 1.67 | 0.7482 | 0.6399 | 0.8627 | 0.01 | -4.74 | N | Y | N | N | N | N |
+| rx8-8-u1 | LINR | 0.7232 | 0.44 | 3.92 | 0.6963 | 0.1800 | 0.9850 | 0.07 | -4.64 | N | N | N | N | N | N |
+| rx8-8-u1 | MLP | 0.7471 | 2.82 | 1.17 | 0.7069 | 0.2906 | 0.9625 | 0.05 | -4.25 | N | Y | N | N | N | N |
+| rx8-8-u10 | LINR | 0.7232 | 0.44 | 3.92 | 0.6963 | 0.1800 | 0.8703 | 0.04 | -4.64 | N | N | N | N | N | N |
+| rx8-8-u10 | MLP | 0.7471 | 2.82 | 1.17 | 0.7069 | 0.2906 | 0.9135 | 0.08 | -4.25 | N | Y | N | N | N | N |
+
+Interpretation:
+
+V18 confirms the user correction: adding clean-clean identity consistency is necessary for the protocol, but it is not sufficient. The best old-class rows are the `rx7-14` cells, reaching `0.8506` target-old closed acc with clean drop under `2pp`; however, those rows still lose about `1.7pp` versus identity, have TX floor only `0.6501`, shrink the class margin by more than `4pp`, and worsen target_unknown FAR to about `0.93-0.97`. The rows with better unknown safety are the `rx20-1` cells, but those collapse old acc to about `0.55` and clean drop to `6.5-8.1pp`. Therefore strong target1 remains not achieved, and target2 should not be re-optimized on top of V18 adapters.
+
 ## V11 Completion Results
 
 V11 completed two IQ pre-adapter variants on N607:
