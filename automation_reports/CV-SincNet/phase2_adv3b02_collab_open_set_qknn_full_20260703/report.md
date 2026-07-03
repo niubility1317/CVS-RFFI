@@ -3959,6 +3959,41 @@ conda run --no-capture-output -n ssr-gpu python -m pytest code\tests\test_collab
 
 结果表必须逐k报告`participating_receivers`、实际receiver集合、`old_acc/min_old_class_acc`、`seen_new_acc/min_seen_new_class_acc`、`unknown_FAR/unknown_reject_rate`、`known_coverage`、`defer/request_more`、`candidate_set_pairguard_support_calibrated_hit_by_role`、`candidate_set_pairguard_support_quality_failed_by_role`、`bytes_per_event`、`latency_ms_p95`、GPU显存。若未达到old99/seen-new97/unknown99，保持diagnostic-only。
 
+### N607执行与结果
+
+N607 preflight通过，直接SSH目标可达，项目根为`/home/szu2070436088/2510044040/CV-SincNet`。运行前8张RTX3090均为`10/24576MiB`、utilization`0%`，选择GPU0。远端环境按用户要求使用`/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python`。
+
+远端同步验证：
+
+|项目|结果|
+|---|---|
+|评估核心SHA256|`6340a38b20efd8d791dfa666853ab0e26762b586a3978d407978d93b8ec8c882`|
+|CLI脚本SHA256|`525bb456c3671bff547ac06860e4596043e0b0c5ae918b72a469995300a72a9c`|
+|测试文件SHA256|`1c4da6e86083a789b7a3ec5da4a89a3c8a4695e9d0953f66f740223a4ecd1062`|
+|远端语法验证|`py_compile`通过|
+|远端单测|`PYTHONPATH=code /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python code/tests/test_collaborative_open_set_qknn_eval.py`，`Ran 56 tests ... OK`|
+
+星地信道审计：`features.npz`含`channel_views={clean,single}`、`sat_scenarios={leo_clear_weak,leo_low_elev_weak,leo_rain_weak}`，manifest中的checkpoint为`/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3_mechanism32_queue_20260701/ADV3B02_CORE90_SOFT_E200/best_joint_safe_ssdg.pth`，`target_channel_view=satellite/LEO`。观测receiver包含`20-1,3-19,7-14,7-7,8-8`，本轮输出`receiver_count=5`、`group_count=305`、`evidence_row_count=1000`，`collab_counts=all`覆盖k=1..5。
+
+远端产物已下载到`E:\type10-7\remote_artifacts\phase2_adv3b02_collab_open_set_qknn_full_20260703\`：
+
+|文件|SHA256|
+|---|---|
+|`collab_open_set_qknn_candidate_set_cvs_support_calibrated_soft_evt095_adv3b02.json`|`BEE41BCB2D9403B0C01C6DF4C3AAD85096F008E5447CD8166DB3D7C4EBECE7FF`|
+|`collab_open_set_qknn_candidate_set_cvs_support_calibrated_soft_evt095_adv3b02_evidence.csv`|`AE42D067B5C432D1B3429EF296BE327BAB99E637D824E3A67AF81CF11340A3C5`|
+
+|route|k|actual_rx_hist|old_acc|min_old|seen_new_acc|min_seen|unknown_FAR|unknown_reject|defer|known_cov|soft_rate|support_hit_by_role|support_fail_by_role|bytes/event|p95 ms|判定|
+|---|---:|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---|---|---:|---:|---|
+|`support_calibrated_soft_evt095`|1|`{"1":305}`|0.0000|0.0000|0.0000|0.0000|0.0000|0.4833|0.7934|0.0000|0.1508|`old=19,seen_new=2,unknown=25`|`old=116,seen_new=34,unknown=54`|40.0|0.1846|单receiver不可用|
+|`support_calibrated_soft_evt095`|2|`{"2":247}`|0.4575|0.1000|0.7143|0.6000|0.1111|0.8222|0.0931|0.6535|0.3360|`old=39,seen_new=8,unknown=36`|`old=99,seen_new=30,unknown=43`|80.0|0.1846|FAR过高且old过低|
+|`support_calibrated_soft_evt095`|3|`{"3":200}`|0.6333|0.3500|0.6750|0.5500|0.0500|0.9500|0.0150|0.7313|0.3850|`old=33,seen_new=8,unknown=36`|`old=58,seen_new=17,unknown=36`|120.0|0.1846|拒识改善但known不足|
+|`support_calibrated_soft_evt095`|4|`{"3":47,"4":153}`|0.7750|0.5500|0.6250|0.4000|0.0500|0.9250|0.0300|0.7875|0.3650|`old=26,seen_new=12,unknown=35`|`old=46,seen_new=21,unknown=38`|150.6|0.1846|低于OLD80且seen-new低|
+|`support_calibrated_soft_evt095`|5|`{"3":47,"4":58,"5":95}`|0.7667|0.5000|0.6500|0.4500|0.0500|0.9250|0.0250|0.7938|0.3800|`old=26,seen_new=15,unknown=35`|`old=40,seen_new=23,unknown=37`|169.6|0.1846|全receiver仍未达标|
+
+结论：`support_calibrated`机制实现和远端全量测试已完成，但算法结果没有达到用户目标。它相对手工label/receiver黑名单更合规，因为没有使用unknown query指定label或receiver组合；但当前参数下support弱证据命中仍大量落在old/seen-new上，导致known保留不足。最佳k=4仅`old_acc=0.7750`、`min_old=0.5500`、`seen_new_acc=0.6250`、`min_seen=0.4000`、`unknown_reject=0.9250`，明显低于old99/每类95、seen-new97/每类93、unknown99拒识目标。因此本轮只能标为diagnostic-only，不能声明Stage2-C部署成功。
+
+子agent审查要求已吸收：`collab_counts=all`报告中明确为观测`receiver_count=5`，不是默认假设；`support_calibrated`模式已fail closed，缺`receiver_class_reliability`或未启用`receiver_class_reliability_policy=support_calibrated`会报错；soft strong bypass被作为ablation风险记录，不作为成功证据。最终SSH/SCP后本地无`ssh.exe`残留，无N607和bridge 22端口ESTABLISHED连接。
+
 ## 2026-07-04 ORBIT按类诊断增强
 
 ### 目的
