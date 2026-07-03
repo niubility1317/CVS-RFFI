@@ -204,7 +204,7 @@ class CollaborativeOpenSetQknnEvalTest(unittest.TestCase):
             unknown_query_eval_only=True,
         )
         self.assertEqual(result["threshold_selection_label_scope"], "source_only")
-        self.assertEqual(result["denominator_policy"], "matched_max_requested_receivers")
+        self.assertEqual(result["denominator_policy"], "per_k_available_receivers")
         self.assertEqual(result["evidence_scope"], "offline_evidence_metrics_only")
 
         with self.assertRaisesRegex(ValueError, "threshold_selection_label_scope"):
@@ -310,6 +310,39 @@ class CollaborativeOpenSetQknnEvalTest(unittest.TestCase):
         k1 = result["counts"]["1"]
         self.assertEqual(k1["per_seen_new_class_acc"], {"12-20": 1.0})
         self.assertEqual(k1["min_seen_new_class_acc"], 1.0)
+
+    def test_protocol_expected_classes_are_counted_when_absent_from_matched_subset(self):
+        from evaluation.collaborative_open_set_qknn_eval import evaluate_collaborative_open_set_evidence
+
+        result = evaluate_collaborative_open_set_evidence(
+            [
+                {
+                    "event_id": "old-present",
+                    "receiver_id": "rx-a",
+                    "role": "old",
+                    "true_label": "old-a",
+                    "predicted_label": "old-a",
+                    "known_score": 0.9,
+                    "known_margin": 0.3,
+                    "unknown_risk": 0.1,
+                }
+            ],
+            strict_protocol_metadata=True,
+            protocol_metadata={
+                "source_receiver_ids": ["src-a"],
+                "target_receiver_ids": ["rx-a"],
+                "old_tx_ids": ["old-a", "old-missing"],
+                "seen_new_tx_ids": ["new-missing"],
+                "unknown_tx_ids": ["unk-a"],
+                "target_channel_view": "leo_clear_weak",
+            },
+        )
+
+        k1 = result["counts"]["1"]
+        self.assertEqual(k1["missing_old_classes"], ["old-missing"])
+        self.assertEqual(k1["missing_seen_new_classes"], ["new-missing"])
+        self.assertEqual(k1["per_old_class_acc"]["old-missing"], 0.0)
+        self.assertEqual(k1["min_old_class_acc"], 0.0)
 
 
 if __name__ == "__main__":

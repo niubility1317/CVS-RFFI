@@ -245,7 +245,14 @@ def _fuse_event(
     }
 
 
-def _finalize_metrics(event_results: Sequence[dict[str, Any]], *, k: int, excluded_incomplete: int) -> dict[str, Any]:
+def _finalize_metrics(
+    event_results: Sequence[dict[str, Any]],
+    *,
+    k: int,
+    excluded_incomplete: int,
+    expected_old_labels: set[str] | None = None,
+    expected_seen_new_labels: set[str] | None = None,
+) -> dict[str, Any]:
     role_totals = {"old": 0, "seen_new": 0, "unknown": 0}
     role_correct = {"old": 0, "seen_new": 0}
     role_accepted = {"old": 0, "seen_new": 0}
@@ -261,8 +268,10 @@ def _finalize_metrics(event_results: Sequence[dict[str, Any]], *, k: int, exclud
     unknown_false_accept = 0
     defer_total = 0
 
-    old_labels = {str(item["true_label"]) for item in event_results if item["role"] == "old"}
-    seen_new_labels = {str(item["true_label"]) for item in event_results if item["role"] == "seen_new"}
+    old_labels = set(expected_old_labels or set())
+    seen_new_labels = set(expected_seen_new_labels or set())
+    old_labels.update(str(item["true_label"]) for item in event_results if item["role"] == "old")
+    seen_new_labels.update(str(item["true_label"]) for item in event_results if item["role"] == "seen_new")
     confusion: defaultdict[str, int] = defaultdict(int)
 
     for item in event_results:
@@ -295,14 +304,16 @@ def _finalize_metrics(event_results: Sequence[dict[str, Any]], *, k: int, exclud
             unknown_rejected += int(decision == "unknown_reject")
             unknown_false_accept += int(accepted)
 
+    missing_old = sorted(label for label in old_labels if per_class_total["old"].get(label, 0) <= 0)
+    missing_seen_new = sorted(label for label in seen_new_labels if per_class_total["seen_new"].get(label, 0) <= 0)
     old_class_rates = {
-        label: _safe_rate(per_class_correct["old"][label], total)
-        for label, total in sorted(per_class_total["old"].items())
+        label: _safe_rate(per_class_correct["old"][label], per_class_total["old"].get(label, 0))
+        for label in sorted(old_labels)
         if label
     }
     new_class_rates = {
-        label: _safe_rate(per_class_correct["seen_new"][label], total)
-        for label, total in sorted(per_class_total["seen_new"].items())
+        label: _safe_rate(per_class_correct["seen_new"][label], per_class_total["seen_new"].get(label, 0))
+        for label in sorted(seen_new_labels)
         if label
     }
 
@@ -321,11 +332,13 @@ def _finalize_metrics(event_results: Sequence[dict[str, Any]], *, k: int, exclud
         "old_correct": int(role_correct["old"]),
         "old_acc": _safe_rate(role_correct["old"], role_totals["old"]),
         "per_old_class_acc": old_class_rates,
+        "missing_old_classes": missing_old,
         "min_old_class_acc": min(old_class_rates.values()) if old_class_rates else 0.0,
         "seen_new_total": int(role_totals["seen_new"]),
         "seen_new_correct": int(role_correct["seen_new"]),
         "seen_new_acc": _safe_rate(role_correct["seen_new"], role_totals["seen_new"]),
         "per_seen_new_class_acc": new_class_rates,
+        "missing_seen_new_classes": missing_seen_new,
         "min_seen_new_class_acc": min(new_class_rates.values()) if new_class_rates else 0.0,
         "unknown_total": int(role_totals["unknown"]),
         "unknown_rejected": int(unknown_rejected),
@@ -444,6 +457,12 @@ def evaluate_collaborative_open_set_evidence(
         receiver_selection_policy=receiver_selection_policy,
     )
     protocol_report = _validate_protocol_metadata(protocol_metadata, strict=strict_protocol_metadata)
+    expected_old_labels = _items(protocol_metadata.get("old_tx_ids") if protocol_metadata else None)
+    expected_seen_new_labels = _items(
+        protocol_metadata.get("seen_new_tx_ids", protocol_metadata.get("target_new_tx_ids"))
+        if protocol_metadata
+        else None
+    )
     groups: "OrderedDict[str, list[Mapping[str, Any]]]" = OrderedDict()
     receivers: set[str] = set()
     for row in rows:
@@ -462,13 +481,22 @@ def evaluate_collaborative_open_set_evidence(
     receiver_count = len(receivers)
     counts = parse_collab_counts(collab_counts, receiver_count=receiver_count)
     max_requested = max(counts)
-    eligible = [(event_id, group) for event_id, group in groups.items() if len({ _str(row, "receiver_id") for row in group }) >= max_requested]
-    excluded = len(groups) - len(eligible)
-    if not eligible:
-        raise ValueError(f"no evidence groups contain {max_requested} receiver observations")
+    matched_max = [
+        (event_id, group)
+        for event_id, group in groups.items()
+        if len({_str(row, "receiver_id") for row in group}) >= max_requested
+    ]
 
     out_counts: dict[str, Any] = {}
     for k in counts:
+        eligible = [
+            (event_id, group)
+            for event_id, group in groups.items()
+            if len({_str(row, "receiver_id") for row in group}) >= int(k)
+        ]
+        excluded = len(groups) - len(eligible)
+        if not eligible:
+            raise ValueError(f"no evidence groups contain {k} receiver observations")
         event_results: list[dict[str, Any]] = []
         for _, group in eligible:
             selected = _select_receivers(
@@ -486,7 +514,13 @@ def evaluate_collaborative_open_set_evidence(
             fused["role"] = _role(first.get("role"))
             fused["true_label"] = _str(first, "true_label", UNKNOWN_LABEL if fused["role"] == "unknown" else "")
             event_results.append(fused)
-        out_counts[str(k)] = _finalize_metrics(event_results, k=int(k), excluded_incomplete=excluded)
+        out_counts[str(k)] = _finalize_metrics(
+            event_results,
+            k=int(k),
+            excluded_incomplete=excluded,
+            expected_old_labels=expected_old_labels,
+            expected_seen_new_labels=expected_seen_new_labels,
+        )
 
     return {
         "enabled": True,
@@ -494,9 +528,10 @@ def evaluate_collaborative_open_set_evidence(
         "receiver_count": int(receiver_count),
         "observed_receiver_ids": sorted(receivers),
         "group_count": int(len(groups)),
-        "eligible_group_count": int(len(eligible)),
-        "excluded_incomplete_groups": int(excluded),
-        "denominator_policy": "matched_max_requested_receivers",
+        "eligible_group_count": int(len(matched_max)),
+        "excluded_incomplete_groups": int(len(groups) - len(matched_max)),
+        "denominator_policy": "per_k_available_receivers",
+        "matched_max_requested_group_count": int(len(matched_max)),
         "receiver_selection_policy": _normalize_scope(receiver_selection_policy),
         "threshold_selection_label_scope": _normalize_scope(threshold_selection_label_scope),
         "unknown_query_eval_only": bool(unknown_query_eval_only),
