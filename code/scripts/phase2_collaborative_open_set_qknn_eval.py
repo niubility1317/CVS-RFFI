@@ -715,6 +715,25 @@ def _combined_unknown_risk(
     )
 
 
+def _active_risk_components_for_gate_mode(gate_mode: str) -> list[str]:
+    mode = str(gate_mode or "score").strip().lower()
+    mapping = {
+        "score": ["score"],
+        "radius": ["score", "radius"],
+        "margin": ["score", "margin"],
+        "mahalanobis": ["score", "mahalanobis"],
+        "evt": ["score", "evt"],
+        "oldness": ["score", "oldness"],
+        "support_envelope": ["score", "radius", "margin"],
+        "support_envelope_mahalanobis": ["score", "radius", "margin", "mahalanobis"],
+        "support_envelope_evt": ["score", "radius", "margin", "evt"],
+        "support_envelope_oldness": ["score", "radius", "margin", "oldness"],
+    }
+    if mode not in mapping:
+        raise ValueError(f"unknown unknown_gate_mode {gate_mode!r}")
+    return list(mapping[mode])
+
+
 def _combine_score_threshold(qknn_threshold: float, centroid_threshold: float, mode: str) -> float:
     mode = str(mode or "max").strip().lower()
     if mode == "max":
@@ -1094,6 +1113,7 @@ def build_collaborative_evidence(
         "score_threshold_combine": str(score_threshold_combine),
         "support_selection_policy": str(support_selection_policy),
         "unknown_gate_mode": str(unknown_gate_mode),
+        "active_risk_components": _active_risk_components_for_gate_mode(unknown_gate_mode),
         "scenario_aware": bool(scenario_aware),
         "radius_norm": float(radius_norm),
         "old_bias": float(old_bias),
@@ -1174,6 +1194,7 @@ def run_evaluation(args: argparse.Namespace) -> dict[str, Any]:
         receiver_selection_policy=str(args.receiver_selection_policy),
         protocol_metadata=metadata,
         strict_protocol_metadata=True,
+        scorer_risk_components=metadata["active_risk_components"],
     )
     result["feature_npz"] = str(args.feature_npz)
     result["qknn_metadata"] = metadata

@@ -478,6 +478,41 @@ class CollaborativeOpenSetQknnEvalTest(unittest.TestCase):
         self.assertEqual(k1["unknown_reject_rate"], 0.0)
         self.assertEqual(k1["open_set_confusion"], {"unknown->defer": 1})
 
+    def test_scorer_cvs_component_vote_respects_explicit_active_components(self):
+        from evaluation.collaborative_open_set_qknn_eval import evaluate_collaborative_open_set_evidence
+
+        row = {
+            "event_id": "component-isolation",
+            "receiver_id": "rx-a",
+            "role": "unknown",
+            "true_label": "__unknown__",
+            "predicted_label": "old-a",
+            "known_score": 0.20,
+            "known_margin": 0.01,
+            "unknown_risk": 0.95,
+            "score_risk": 0.10,
+            "radius_risk": 0.10,
+            "margin_risk": 0.10,
+            "evt_risk": 0.95,
+            "oldness_risk": 0.95,
+        }
+
+        result = evaluate_collaborative_open_set_evidence(
+            [row],
+            collab_counts="1",
+            fusion_policy="scorer_cvs",
+            unknown_risk_threshold=0.8,
+            accept_margin_threshold=0.1,
+            consensus_score_threshold=0.6,
+            scorer_component_vote_threshold=0.4,
+            scorer_risk_components=["score", "radius", "margin"],
+        )
+
+        k1 = result["counts"]["1"]
+        self.assertEqual(result["active_risk_components"], ["score", "radius", "margin"])
+        self.assertEqual(k1["unknown_reject_rate"], 0.0)
+        self.assertEqual(k1["open_set_confusion"], {"unknown->defer": 1})
+
     def test_strict_protocol_metadata_validates_stage2_boundaries(self):
         from evaluation.collaborative_open_set_qknn_eval import evaluate_collaborative_open_set_evidence
 

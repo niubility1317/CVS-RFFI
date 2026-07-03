@@ -272,6 +272,7 @@ class Phase2CollaborativeOpenSetQknnEvalTest(unittest.TestCase):
             )
 
         self.assertEqual(metadata["unknown_gate_mode"], "support_envelope_oldness")
+        self.assertEqual(metadata["active_risk_components"], ["score", "radius", "margin", "oldness"])
         self.assertIn("oldness_risk", evidence[0])
         self.assertIn("oldness_quantile", metadata)
 

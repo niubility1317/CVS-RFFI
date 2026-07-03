@@ -33,6 +33,14 @@ PRIOR_RELIABILITY_SOURCES = {
     "pre_query_prior",
     "deployment_prior",
 }
+RISK_COMPONENT_KEYS = {
+    "score": "score_risk",
+    "radius": "radius_risk",
+    "margin": "margin_risk",
+    "mahalanobis": "mahalanobis_risk",
+    "evt": "evt_risk",
+    "oldness": "oldness_risk",
+}
 
 
 def parse_collab_counts(spec: str | Sequence[int] | None, *, receiver_count: int) -> list[int]:
@@ -123,6 +131,29 @@ def _normalize_scope(value: object) -> str:
     return str(value or "").strip().lower().replace("-", "_")
 
 
+def _parse_risk_components(value: object) -> list[str] | None:
+    if value is None:
+        return None
+    if isinstance(value, str):
+        text = value.strip()
+        if not text:
+            return None
+        parts = [part.strip().lower() for part in text.replace(";", ",").split(",") if part.strip()]
+    else:
+        try:
+            parts = [str(part).strip().lower() for part in value if str(part).strip()]
+        except TypeError:
+            parts = [str(value).strip().lower()]
+    components: list[str] = []
+    for part in parts:
+        component = part.replace("-", "_")
+        if component not in RISK_COMPONENT_KEYS:
+            raise ValueError(f"unknown scorer risk component {part!r}")
+        if component not in components:
+            components.append(component)
+    return components or None
+
+
 def _validate_threshold_scope(scope: str, *, unknown_query_eval_only: bool) -> None:
     scope = _normalize_scope(scope)
     if not scope:
@@ -198,9 +229,11 @@ def _fuse_event(
     consensus_gap_threshold: float,
     consensus_score_threshold: float,
     scorer_component_vote_threshold: float,
+    scorer_risk_components: Sequence[str] | str | None = None,
     can_request_more: bool = False,
     latency_budget_ms: float = 0.0,
 ) -> dict[str, Any]:
+    active_components = _parse_risk_components(scorer_risk_components)
     label_scores: defaultdict[str, float] = defaultdict(float)
     weights = []
     risks = []
@@ -240,13 +273,24 @@ def _fuse_event(
         mahalanobis_risks.append(mahalanobis_risk_value)
         evt_risks.append(evt_risk_value)
         oldness_risks.append(oldness_risk_value)
-        component_values = [score_risk_value, radius_risk_value, margin_risk_value]
-        if has_mahalanobis:
-            component_values.append(mahalanobis_risk_value)
-        if has_evt:
-            component_values.append(evt_risk_value)
-        if has_oldness:
-            component_values.append(oldness_risk_value)
+        if active_components is None:
+            component_values = [score_risk_value, radius_risk_value, margin_risk_value]
+            if has_mahalanobis:
+                component_values.append(mahalanobis_risk_value)
+            if has_evt:
+                component_values.append(evt_risk_value)
+            if has_oldness:
+                component_values.append(oldness_risk_value)
+        else:
+            row_values = {
+                "score": score_risk_value,
+                "radius": radius_risk_value,
+                "margin": margin_risk_value,
+                "mahalanobis": mahalanobis_risk_value,
+                "evt": evt_risk_value,
+                "oldness": oldness_risk_value,
+            }
+            component_values = [row_values[component] for component in active_components]
         component_votes.append(
             sum(value >= float(unknown_risk_threshold) for value in component_values)
             / float(max(len(component_values), 1))
@@ -587,6 +631,7 @@ def evaluate_collaborative_open_set_evidence(
     consensus_gap_threshold: float = 0.0,
     consensus_score_threshold: float = 0.0,
     scorer_component_vote_threshold: float = 0.5,
+    scorer_risk_components: Sequence[str] | str | None = None,
     latency_budget_ms: float = 0.0,
     threshold_selection_label_scope: str = "support_known_only",
     unknown_query_eval_only: bool = True,
@@ -601,6 +646,7 @@ def evaluate_collaborative_open_set_evidence(
     """
 
     rows = list(rows)
+    active_risk_components = _parse_risk_components(scorer_risk_components)
     _validate_rows(
         rows,
         threshold_selection_label_scope=threshold_selection_label_scope,
@@ -664,6 +710,7 @@ def evaluate_collaborative_open_set_evidence(
                 consensus_gap_threshold=consensus_gap_threshold,
                 consensus_score_threshold=consensus_score_threshold,
                 scorer_component_vote_threshold=scorer_component_vote_threshold,
+                scorer_risk_components=active_risk_components,
                 can_request_more=len({_str(row, "receiver_id") for row in group}) > int(k),
                 latency_budget_ms=latency_budget_ms,
             )
@@ -701,6 +748,7 @@ def evaluate_collaborative_open_set_evidence(
         "consensus_gap_threshold": float(consensus_gap_threshold),
         "consensus_score_threshold": float(consensus_score_threshold),
         "scorer_component_vote_threshold": float(scorer_component_vote_threshold),
+        "active_risk_components": active_risk_components,
         "latency_budget_ms": float(latency_budget_ms),
         "counts": out_counts,
     }
