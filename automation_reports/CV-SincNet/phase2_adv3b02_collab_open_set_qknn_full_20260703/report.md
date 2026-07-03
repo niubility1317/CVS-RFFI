@@ -1690,3 +1690,38 @@ python code\tests\test_collaborative_open_set_qknn_eval.py
 解释：Mahalanobis类得分单独使用时仅带来小幅改善；与上一轮最强`prototype_score_blend=2.0`组合后，预算4达到本轮最佳同row结果：`old_acc=0.3333`、`seen_new_acc=0.5714`、`min_seen_new=0.4000`、`unknown_FAR=0.0000`，平均参与`3.3247`个接收机，约`399.0 bytes/event`。相对`prototype_blend_2p0_calibrated`预算4，seen-new从`0.5429`升至`0.5714`，old从`0.3218`升至`0.3333`，但`min_old`仍为`0.0000`。该路线说明分布类得分有增益，但仍不能满足目标；下一步应优先对`min_old=0`的旧类做按类混淆审计，判断是类原型塌缩、接收机场景错配还是阈值/门控过严导致。
 
 review修正：只读review指出，本轮诊断仍使用`score_threshold_combine=max`，会将`memory.score_threshold`这个centroid-only阈值与blended qKNN得分空间取max，导致开集风险口径不纯。已补充测试：`mahalanobis_score_blend=0.0`与默认`qknn_scores()`逐字段一致；合法source-only`proxy_unknown`会进入`threshold_scope=source_only`，且target unknown不会作为proxy校准。后续最终诊断应使用`--score_threshold_combine qknn_only`，使阈值只来自同一blended qKNN校准空间。
+
+`qknn_only`远端复测：同步补强测试后，远端`CVS-RFFI`环境复测`test_phase2_collaborative_open_set_qknn_eval.py`为29 tests OK，`test_collaborative_open_set_qknn_eval.py`为27 tests OK。三组最终口径候选均使用`--score_threshold_combine qknn_only`。
+
+`qknn_only`产物SHA256：
+
+|产物|SHA256|
+|---|---|
+|`remote_artifacts/collab_open_set_qknn_scorer_cvs_evt_adaptive_gain_vote_margin_maha_score_0p5_qknnonly.json`|`DE96BFED8F7E6354F395016CED246A4ACE69757840D6A0B0D5C2915F09A2A479`|
+|`remote_artifacts/collab_open_set_qknn_scorer_cvs_evt_adaptive_gain_vote_margin_maha_score_0p5_qknnonly_evidence.csv`|`71641C6C774B458488896188BE13F79F908FDC2F31FFC877F32DC33184010D60`|
+|`remote_artifacts/collab_open_set_qknn_scorer_cvs_evt_adaptive_gain_vote_margin_maha_score_1p0_qknnonly.json`|`4A1824B4E8BFE8078A8BCE14381617AA08D8CDD3F99E5B2FA6F4FEA5A63B79A6`|
+|`remote_artifacts/collab_open_set_qknn_scorer_cvs_evt_adaptive_gain_vote_margin_maha_score_1p0_qknnonly_evidence.csv`|`F9DFD7A2B15DA6A5CC50E8E0D336AAB26E71173C179C7F68F9C4473224F52F02`|
+|`remote_artifacts/collab_open_set_qknn_scorer_cvs_evt_adaptive_gain_vote_margin_proto2_maha1_qknnonly.json`|`46F36661944C21BA69A24390AD9CDD1D9DF729FFDAE7D21E16B0339390142508`|
+|`remote_artifacts/collab_open_set_qknn_scorer_cvs_evt_adaptive_gain_vote_margin_proto2_maha1_qknnonly_evidence.csv`|`F54930ABF233205D1E11574B074017C85003D8CC74942DC980439B92E5C2AC22`|
+
+`qknn_only`结果表：
+
+|候选|预算|old_acc|min_old|seen_new_acc|min_seen_new|unknown_FAR|unknown_reject|defer_rate|avg_rx|bytes/event|
+|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+|`maha_score_0p5_qknnonly`|1|0.0000|0.0000|0.1500|0.0000|0.0500|0.2667|0.7987|1.0000|120.0|
+|`maha_score_0p5_qknnonly`|2|0.3203|0.0000|0.4000|0.1000|0.0625|0.4375|0.4959|1.8943|227.3|
+|`maha_score_0p5_qknnonly`|3|0.3417|0.1500|0.5000|0.0500|0.0000|0.6250|0.5000|2.6350|316.2|
+|`maha_score_0p5_qknnonly`|4|0.6897|0.0000|0.5714|0.3000|0.0625|0.3750|0.2922|3.5455|425.5|
+|`maha_score_0p5_qknnonly`|5|0.7308|0.0000|0.3500|0.0000|0.0500|0.2000|0.3478|4.2283|507.4|
+|`maha_score_1p0_qknnonly`|1|0.0000|0.0000|0.1667|0.0500|0.0500|0.2667|0.7922|1.0000|120.0|
+|`maha_score_1p0_qknnonly`|2|0.3137|0.0000|0.4667|0.2000|0.0833|0.4375|0.4797|1.8902|226.8|
+|`maha_score_1p0_qknnonly`|3|0.3417|0.2000|0.5250|0.1000|0.0000|0.6250|0.5000|2.6300|315.6|
+|`maha_score_1p0_qknnonly`|4|0.7471|0.0000|0.6000|0.3500|0.0625|0.3750|0.2597|3.5260|423.1|
+|`maha_score_1p0_qknnonly`|5|0.7500|0.0000|0.4000|0.0000|0.0500|0.2000|0.3152|4.1739|500.9|
+|`proto2_maha1_qknnonly`|1|0.0000|0.0000|0.2667|0.0500|0.0667|0.2833|0.7760|1.0000|120.0|
+|`proto2_maha1_qknnonly`|2|0.3464|0.0000|0.4667|0.1500|0.1250|0.6667|0.3943|1.8577|222.9|
+|`proto2_maha1_qknnonly`|3|0.3917|0.3000|0.5750|0.2000|0.0250|0.7000|0.4350|2.5550|306.6|
+|`proto2_maha1_qknnonly`|4|0.7586|0.0000|0.7429|0.6000|0.1562|0.5625|0.1558|3.4156|409.9|
+|`proto2_maha1_qknnonly`|5|0.7500|0.0000|0.4500|0.0000|0.0500|0.2000|0.3261|4.1522|498.3|
+
+解释：`qknn_only`证明前一轮`max`阈值组合确实压低了已知类接受率。最高旧类/seen-new单点是`proto2_maha1_qknnonly`预算4，`old_acc=0.7586`、`seen_new_acc=0.7429`、`min_seen_new=0.6000`，但`unknown_FAR=0.1562`超出安全边界，不能作为开集部署结果。FAR可控的折中候选是`proto2_maha1_qknnonly`预算3：`old_acc=0.3917`、`min_old=0.3000`、`seen_new_acc=0.5750`、`unknown_FAR=0.0250`、`unknown_reject=0.7000`，平均`2.5550`个接收机、`306.6 bytes/event`。按类结果显示预算3旧类不再有0类：`14-10=0.35`、`14-7=0.40`、`20-15=0.45`、`20-19=0.30`、`6-15=0.45`、`8-20=0.40`；seen-new仍不均衡：`19-3=0.20`、`3-8=0.95`。下一步应在`proto2_maha1_qknnonly`预算3基础上做class-conditional FAR gate或per-label threshold，目标是在不放大unknown FAR的情况下抬升`19-3`和旧类floor。
