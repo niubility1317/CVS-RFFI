@@ -878,6 +878,56 @@ Planned N607 variants:
 
 Success criteria remain unchanged:`unknown_FAR<=0.05`and old-class performance drop`<=2pp`on sat-only target query, without target clean or target unknown threshold tuning.
 
+## V21 Oldness-Capped Identity Fallback Design
+
+V21 follows the V20 finding that conservative blends can satisfy old recovery, clean fidelity, scenario/tx floors and margin jointly, while unknown safety remains the blocking constraint. It adds a label-free oldness cap after V20 feature export: for each sat-only sample, use the repaired/blended feature only if its source-prototype max logit is no more than the identity feature max logit plus a small cap; otherwise fall back to identity features.
+
+Protocol boundary:
+
+| Item | V21 setting |
+|---|---|
+| Phase1 backbone | Frozen`ADV3B02_CORE90_SOFT_E200phase1` |
+| Candidate features | V20 source-only repaired/blended variants |
+| Gate input | Candidate feature max old source-prototype logit versus identity feature max old source-prototype logit |
+| Caps | `0.00,0.05` |
+| Target labels | Not used for training, gating or threshold selection |
+| Target clean | Not used |
+| Unknown query threshold fitting | Not used |
+| Purpose | Preserve V20 old-class repair only when it does not increase sample oldness beyond identity |
+
+New files:
+
+| File | Purpose | SHA256 |
+|---|---|---|
+| `E:\type10-7\code\scripts\build_phase1_oldness_capped_blends_20260703.py` | Build V21 oldness-capped identity-fallback feature variants from V20 candidate NPZs | `40C83EDB6C64B37AEC381FD38F03E4589867F68A4497BBE6E46C516693D292FC` |
+| `E:\type10-7\code\scripts\sweep_phase1_adv3b02_oldnesscap_target1_v21_20260703.sh` | Build V21 variants and run the target1 strong repair audit | `1BEFAEA2BA6167DE047C4F8D976379B2D776AAC227CC8BF0575F33512F567B26` |
+
+Local verification:
+
+| Command | Result |
+|---|---|
+| `C:\Users\lh594\.conda\envs\ssr-gpu\python.exe -m py_compile E:\type10-7\code\scripts\build_phase1_oldness_capped_blends_20260703.py E:\type10-7\code\scripts\eval_phase1_target1_strong_repair_audit_20260703.py` | PASS |
+| `bash -lc "bash -n /mnt/e/type10-7/code/scripts/sweep_phase1_adv3b02_oldnesscap_target1_v21_20260703.sh"` | PASS |
+
+Version/snapshot state:
+
+| Item | Path |
+|---|---|
+| Non-Git code snapshot | `E:\type10-7\code\snapshots\phase1_adv3b02_oldnesscap_target1_v21_20260703\` |
+| Git mirror builder path | `E:\type10-7\github_publish\CVS-RFFI-repo\code\scripts\build_phase1_oldness_capped_blends_20260703.py` |
+| Git mirror launcher path | `E:\type10-7\github_publish\CVS-RFFI-repo\code\scripts\sweep_phase1_adv3b02_oldnesscap_target1_v21_20260703.sh` |
+
+Planned N607 output:
+
+| Artifact | Remote path |
+|---|---|
+| V21 build log | `/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_adv3b02_oldnesscap_target1_v21_20260703/build_oldness_caps.out` |
+| V21 summary | `/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_adv3b02_oldnesscap_target1_v21_20260703/target1_strong_v21_summary.csv` |
+| V21 metrics JSON | `/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_adv3b02_oldnesscap_target1_v21_20260703/target1_strong_v21_metrics.json` |
+| V21 best JSON | `/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_adv3b02_oldnesscap_target1_v21_20260703/target1_strong_v21_best.json` |
+
+Success criteria are unchanged for target1: corrected sat-only old closed accuracy at least`80%`or at least`+5pp`, clean drop no more than`1-2pp`, scenario and per-tx floors preserved, margins not collapsed, and unknown/proxy-unknown oldness/FAR not worsened.
+
 ## V16 Completion Results
 
 V16 completed on N607 as a bounded foreground command. It trained source-only classwise clean<-LEO repair statistics, calibrated source/proxy old-class tails, and evaluated sat-only target old/unknown rows.
