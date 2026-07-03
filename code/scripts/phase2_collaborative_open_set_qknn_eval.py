@@ -2170,6 +2170,11 @@ def run_evaluation(args: argparse.Namespace) -> dict[str, Any]:
         adaptive_gain_latency_weight=float(args.adaptive_gain_latency_weight),
         adaptive_gain_bytes_weight=float(args.adaptive_gain_bytes_weight),
         adaptive_gain_disagreement_weight=float(args.adaptive_gain_disagreement_weight),
+        rb_capr_utility_min_delta=float(args.rb_capr_utility_min_delta),
+        rb_capr_seen_new_balance_weight=float(args.rb_capr_seen_new_balance_weight),
+        rb_capr_old_floor_weight=float(args.rb_capr_old_floor_weight),
+        rb_capr_unknown_confirm_weight=float(args.rb_capr_unknown_confirm_weight),
+        rb_capr_max_avg_rx_target=float(args.rb_capr_max_avg_rx_target),
         seen_new_rescue_enabled=bool(args.seen_new_rescue_enabled),
         seen_new_rescue_risk_scale=float(args.seen_new_rescue_risk_scale),
         seen_new_rescue_min_score=float(args.seen_new_rescue_min_score),
@@ -2301,7 +2306,7 @@ def parse_args() -> argparse.Namespace:
     p.add_argument(
         "--collaboration_policy",
         default="fixed_k",
-        choices=["fixed_k", "progressive_budget", "adaptive_gain", "support_utility"],
+        choices=["fixed_k", "progressive_budget", "adaptive_gain", "support_utility", "rb_capr_utility"],
     )
     p.add_argument("--consensus_gap_threshold", type=float, default=0.0)
     p.add_argument("--consensus_score_threshold", type=float, default=0.0)
@@ -2323,6 +2328,11 @@ def parse_args() -> argparse.Namespace:
     p.add_argument("--adaptive_gain_latency_weight", type=float, default=0.0)
     p.add_argument("--adaptive_gain_bytes_weight", type=float, default=0.0)
     p.add_argument("--adaptive_gain_disagreement_weight", type=float, default=0.5)
+    p.add_argument("--rb_capr_utility_min_delta", type=float, default=0.02)
+    p.add_argument("--rb_capr_seen_new_balance_weight", type=float, default=0.50)
+    p.add_argument("--rb_capr_old_floor_weight", type=float, default=0.35)
+    p.add_argument("--rb_capr_unknown_confirm_weight", type=float, default=0.60)
+    p.add_argument("--rb_capr_max_avg_rx_target", type=float, default=2.50)
     p.add_argument("--seen_new_rescue_enabled", action="store_true")
     p.add_argument("--seen_new_rescue_risk_scale", type=float, default=1.0)
     p.add_argument("--seen_new_rescue_min_score", type=float, default=0.0)

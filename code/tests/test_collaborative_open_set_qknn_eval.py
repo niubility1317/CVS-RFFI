@@ -661,6 +661,98 @@ class CollaborativeOpenSetQknnEvalTest(unittest.TestCase):
         self.assertEqual(k2["participating_receivers_avg"], 2.0)
         self.assertEqual(k2["collaboration_stop_reasons"], {"budget_exhausted_accept": 1})
 
+    def test_rb_capr_utility_prefers_role_balanced_supported_receiver(self):
+        from evaluation.collaborative_open_set_qknn_eval import evaluate_collaborative_open_set_evidence
+
+        rows = [
+            {
+                "event_id": "rb-capr-old",
+                "receiver_id": "rx-a",
+                "role": "old",
+                "true_label": "old-a",
+                "predicted_label": "old-b",
+                "known_score": 0.44,
+                "known_margin": 0.02,
+                "unknown_risk": 0.58,
+                "risk_component_agreement": 0.35,
+                "reliability": 0.80,
+                "support_density": 0.35,
+                "class_conformal_pvalue": 0.10,
+                "class_conformal_support_count": 1,
+                "latency_ms": 2.0,
+                "bytes": 72,
+            },
+            {
+                "event_id": "rb-capr-old",
+                "receiver_id": "rx-b",
+                "role": "old",
+                "true_label": "old-a",
+                "predicted_label": "new-a",
+                "known_score": 0.88,
+                "known_margin": 0.35,
+                "unknown_risk": 0.15,
+                "risk_component_agreement": 0.10,
+                "reliability": 0.95,
+                "support_density": 0.90,
+                "class_conformal_pvalue": 0.95,
+                "class_conformal_support_count": 3,
+                "latency_ms": 1.0,
+                "bytes": 72,
+            },
+            {
+                "event_id": "rb-capr-old",
+                "receiver_id": "rx-c",
+                "role": "old",
+                "true_label": "old-a",
+                "predicted_label": "old-a",
+                "known_score": 0.90,
+                "known_margin": 0.40,
+                "unknown_risk": 0.08,
+                "risk_component_agreement": 0.05,
+                "reliability": 0.90,
+                "support_density": 0.92,
+                "class_conformal_pvalue": 0.90,
+                "class_conformal_support_count": 3,
+                "latency_ms": 1.0,
+                "bytes": 72,
+            },
+        ]
+
+        metadata = {
+            "source_receiver_ids": ["src-a", "src-b"],
+            "target_receiver_ids": ["rx-a", "rx-b", "rx-c"],
+            "old_tx_ids": ["old-a", "old-b"],
+            "seen_new_tx_ids": ["new-a"],
+            "unknown_tx_ids": ["unk-a"],
+            "target_channel_view": "leo_clear_weak",
+        }
+        result = evaluate_collaborative_open_set_evidence(
+            rows,
+            collab_counts="2",
+            fusion_policy="scorer_cvs",
+            collaboration_policy="rb_capr_utility",
+            unknown_risk_threshold=0.8,
+            accept_margin_threshold=0.1,
+            consensus_gap_threshold=0.3,
+            consensus_score_threshold=0.6,
+            adaptive_gain_min_risk=0.3,
+            adaptive_gain_latency_weight=0.1,
+            adaptive_gain_bytes_weight=0.01,
+            rb_capr_utility_min_delta=0.01,
+            rb_capr_seen_new_balance_weight=0.10,
+            rb_capr_old_floor_weight=0.80,
+            rb_capr_unknown_confirm_weight=0.10,
+            rb_capr_max_avg_rx_target=2.0,
+            protocol_metadata=metadata,
+            strict_protocol_metadata=True,
+        )
+
+        k2 = result["counts"]["2"]
+        self.assertEqual(result["collaboration_policy"], "rb_capr_utility")
+        self.assertEqual(k2["old_acc"], 1.0)
+        self.assertEqual(k2["participating_receivers_avg"], 2.0)
+        self.assertEqual(k2["collaboration_stop_reasons"], {"budget_exhausted_accept": 1})
+
     def test_scorer_cvs_rejects_high_risk_without_known_rescue(self):
         from evaluation.collaborative_open_set_qknn_eval import evaluate_collaborative_open_set_evidence
 
