@@ -5039,4 +5039,40 @@ C:\Users\lh594\.conda\envs\ssr-gpu\python.exe -m pytest code\tests\test_collabor
 
 
 
+## 2026-07-04 class-negative弱证据软风险诊断计划
+
+### 目标
+
+上一轮SA33和ADV3B02的硬`class_negative`风险证明：直接把class-negative synthetic boundary风险并入`unknown_risk=max(...)`会把known样本大量误拒，不能作为卫星部署策略。本轮只改融合风险标定：新增`class_negative_combine_mode=weak_evidence`，仅当接收机本地证据弱（低margin、低conformal p-value或低receiver-class reliability）时放大class-negative风险；强证据known样本保持快速accept路径。
+
+该修改不改变`ADV3B02_CORE90_SOFT_E200`模型权重、不使用unknown query调参、不改变Stage2-C target receiver domain协议。远端仍复用`runs/phase2_adv3b02_collab_open_set_qknn_full_20260703/features.npz`，即ADV3B02、qknn8、target receiver 1到5和`leo_clear_weak,leo_low_elev_weak,leo_rain_weak`星地信道特征包。资源约束设计说明原文`卫星协同射频指纹识别（RFFI）系统资源约束设计说明.md`仍未在当前工作区找到；本轮继续报告`avg_rx`、`bytes/event`、`latency_ms_p95`和GPU显存状态。
+
+### 本地改动与验证
+
+|文件|用途|SHA256|
+|---|---|---|
+|`code/scripts/phase2_collaborative_open_set_qknn_eval.py`|新增`--class_negative_combine_mode weak_evidence`及`weak_margin/weak_pvalue/weak_reliability/risk_floor`，同时记录raw/effective/weakness审计字段。|`601B47DEED122F8D8660CFDD7948AA08BBE5339E2A01B63F92C9C0354AC62A68`|
+|`code/tests/test_phase2_collaborative_open_set_qknn_eval.py`|新增弱证据模式单测，验证effective risk不超过raw risk且metadata/evidence字段齐全。|`82D060A5029C689B41F7BBCF280C2928B85BEB5A1FE549335D2424927FD6D974`|
+
+本地快照：`E:\type10-7\code\snapshots\phase2_adv3b02_classneg_weak_20260704\`。
+
+验证命令：
+
+```text
+conda run --no-capture-output -n ssr-gpu python -m py_compile code\scripts\phase2_collaborative_open_set_qknn_eval.py
+conda run --no-capture-output -n ssr-gpu python -m pytest code\tests\test_phase2_collaborative_open_set_qknn_eval.py code\tests\test_collaborative_open_set_qknn_eval.py -q -p no:cacheprovider
+```
+
+结果：`108 passed in 0.93s`。
+
+### N607计划
+
+远端使用`/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python`。同步本地脚本、测试和本报告后，先做远端`py_compile`和窄单测，再运行k=1..5全量诊断。候选：
+
+|路线|关键参数|目的|
+|---|---|---|
+|`orbit_coproto_classneg_weak_adv3b02`|`--fusion_policy orbit_coproto --class_negative_risk_enabled --class_negative_combine_mode weak_evidence --class_negative_weak_margin 0.08 --class_negative_weak_pvalue 0.50 --class_negative_weak_reliability 0.70`|在当前低FAR的ORBIT路线中验证弱证据class-negative能否继续压低unknown而不再毁坏known。|
+|`dualroute_classneg_weak_adv3b02`|`--fusion_policy candidate_set_cvs --candidate_set_pairguard_action soft_penalty --class_negative_risk_enabled --class_negative_combine_mode weak_evidence`|在高known的dualroute/soft route中验证弱证据class-negative能否降低unknown_FAR。|
+
+成功判据仍为old整体`>=0.99`且per-class`>=0.95`，seen-new整体`>=0.97`且per-class`>=0.93`，unknown reject`>=0.99`。未达到则继续标为diagnostic-only。
 

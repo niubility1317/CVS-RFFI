@@ -1054,6 +1054,47 @@ class Phase2CollaborativeOpenSetQknnEvalTest(unittest.TestCase):
         self.assertIn("class_evidence_top1_class_negative_risk", evidence[0])
         self.assertIn("class_evidence_top1_class_negative_score", evidence[0])
 
+    def test_class_negative_weak_evidence_mode_records_raw_and_effective_risk(self):
+        from phase2_collaborative_open_set_qknn_eval import load_feature_npz, build_collaborative_evidence
+
+        with tempfile.TemporaryDirectory() as td:
+            npz = Path(td) / "features.npz"
+            _write_npz(npz)
+            evidence, metadata = build_collaborative_evidence(
+                load_feature_npz(npz),
+                k_shot=1,
+                query_per_class=2,
+                qknn_k=1,
+                unknown_gate_mode="support_envelope_evt",
+                support_calibration_mode="leave_one_out",
+                class_conformal_enabled=True,
+                class_evidence_top_m=1,
+                class_negative_risk_enabled=True,
+                class_negative_samples_per_class=2,
+                class_negative_mix_alpha=0.50,
+                class_negative_neighbor_count=1,
+                class_negative_risk_temperature=0.05,
+                class_negative_combine_mode="weak_evidence",
+                class_negative_weak_margin=0.10,
+                class_negative_weak_pvalue=0.50,
+                class_negative_weak_reliability=0.50,
+            )
+
+        self.assertEqual(metadata["class_negative_combine_mode"], "weak_evidence")
+        self.assertAlmostEqual(metadata["class_negative_weak_margin"], 0.10)
+        self.assertAlmostEqual(metadata["class_negative_weak_pvalue"], 0.50)
+        self.assertAlmostEqual(metadata["class_negative_weak_reliability"], 0.50)
+        row = evidence[0]
+        self.assertEqual(row["class_negative_combine_mode"], "weak_evidence")
+        self.assertIn("class_negative_raw_risk", row)
+        self.assertIn("class_negative_weakness", row)
+        self.assertIn("class_evidence_top1_class_negative_raw_risk", row)
+        self.assertIn("class_evidence_top1_class_negative_weakness", row)
+        self.assertGreaterEqual(float(row["class_negative_risk"]), 0.0)
+        self.assertLessEqual(float(row["class_negative_risk"]), float(row["class_negative_raw_risk"]) + 1e-12)
+        self.assertGreaterEqual(float(row["class_negative_weakness"]), 0.0)
+        self.assertLessEqual(float(row["class_negative_weakness"]), 1.0)
+
     def test_class_score_thresholds_are_recorded_when_enabled(self):
         from phase2_collaborative_open_set_qknn_eval import load_feature_npz, build_collaborative_evidence
 

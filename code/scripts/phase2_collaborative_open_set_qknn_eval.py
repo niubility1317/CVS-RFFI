@@ -1172,6 +1172,44 @@ def _class_negative_boundary_risk(
     return np.clip(np.asarray(risks, dtype=np.float64), 0.0, 1.0), np.asarray(negative_scores, dtype=np.float64)
 
 
+def _class_negative_effective_risk(
+    raw_risk: float,
+    *,
+    margin_value: float,
+    pvalue: float,
+    receiver_class_reliability: float,
+    mode: str,
+    weak_margin: float,
+    weak_pvalue: float,
+    weak_reliability: float,
+    risk_floor: float,
+) -> tuple[float, float]:
+    risk = max(0.0, min(1.0, float(raw_risk)))
+    combine_mode = str(mode or "max").strip().lower()
+    if combine_mode == "max":
+        return risk, 1.0
+    if combine_mode != "weak_evidence":
+        raise ValueError("class_negative_combine_mode must be max or weak_evidence")
+    weakness_terms: list[float] = []
+    if float(weak_margin) > 0.0:
+        weakness_terms.append(1.0 - min(1.0, max(0.0, float(margin_value)) / max(float(weak_margin), 1e-12)))
+    if float(weak_pvalue) > 0.0:
+        weakness_terms.append(1.0 - min(1.0, max(0.0, float(pvalue)) / max(float(weak_pvalue), 1e-12)))
+    if float(weak_reliability) > 0.0:
+        weakness_terms.append(
+            1.0
+            - min(
+                1.0,
+                max(0.0, float(receiver_class_reliability)) / max(float(weak_reliability), 1e-12),
+            )
+        )
+    weakness = max(weakness_terms) if weakness_terms else 1.0
+    effective = risk * max(0.0, min(1.0, weakness))
+    if risk > 0.0:
+        effective = max(effective, max(0.0, min(1.0, float(risk_floor))))
+    return max(0.0, min(1.0, effective)), max(0.0, min(1.0, weakness))
+
+
 def _class_shell_boundary_risk(
     memory: QknnMemory,
     query_features: np.ndarray,
@@ -1420,6 +1458,11 @@ def _support_quality_class_verifier(
     class_negative_neighbor_count: int = 2,
     class_negative_risk_temperature: float = 0.05,
     class_negative_risk_margin: float = 0.0,
+    class_negative_combine_mode: str = "max",
+    class_negative_weak_margin: float = 0.0,
+    class_negative_weak_pvalue: float = 0.0,
+    class_negative_weak_reliability: float = 0.0,
+    class_negative_risk_floor: float = 0.0,
 ) -> dict[str, Any]:
     score_labels, score_matrix = _qknn_label_score_matrix(
         memory,
@@ -1520,10 +1563,21 @@ def _support_quality_class_verifier(
             else 1.0
         )
         reliability = float(receiver_reliabilities.get(label_name, 1.0))
+        label_class_negative_effective_risk, _label_class_negative_weakness = _class_negative_effective_risk(
+            float(label_class_negative_risk[0]),
+            margin_value=label_margin,
+            pvalue=pvalue,
+            receiver_class_reliability=reliability,
+            mode=str(class_negative_combine_mode),
+            weak_margin=float(class_negative_weak_margin),
+            weak_pvalue=float(class_negative_weak_pvalue),
+            weak_reliability=float(class_negative_weak_reliability),
+            risk_floor=float(class_negative_risk_floor),
+        )
         combined_risk = max(
             float(label_risk[0]),
             float(label_shell_risk[0]) if bool(class_shell_unknown_risk_enabled) else 0.0,
-            float(label_class_negative_risk[0]) if bool(class_negative_risk_enabled) else 0.0,
+            label_class_negative_effective_risk if bool(class_negative_risk_enabled) else 0.0,
         )
         p_factor = (0.50 + 0.50 * max(0.0, min(1.0, float(pvalue)))) ** max(float(pvalue_weight), 0.0)
         r_factor = (0.50 + 0.50 * max(0.0, min(1.0, reliability))) ** max(float(reliability_weight), 0.0)
@@ -1539,8 +1593,9 @@ def _support_quality_class_verifier(
                 "receiver_class_reliability": reliability,
                 "unknown_risk": float(label_risk[0]),
                 "class_negative_risk": (
-                    float(label_class_negative_risk[0]) if bool(class_negative_risk_enabled) else 0.0
+                    label_class_negative_effective_risk if bool(class_negative_risk_enabled) else 0.0
                 ),
+                "class_negative_raw_risk": float(label_class_negative_risk[0]) if bool(class_negative_risk_enabled) else 0.0,
                 "class_shell_risk": float(label_shell_risk[0]) if bool(class_shell_unknown_risk_enabled) else 0.0,
                 "combined_risk": float(combined_risk),
                 "effective_score_threshold": float(label_effective_threshold),
@@ -1658,6 +1713,11 @@ def build_collaborative_evidence(
     class_negative_neighbor_count: int = 2,
     class_negative_risk_temperature: float = 0.05,
     class_negative_risk_margin: float = 0.0,
+    class_negative_combine_mode: str = "max",
+    class_negative_weak_margin: float = 0.0,
+    class_negative_weak_pvalue: float = 0.0,
+    class_negative_weak_reliability: float = 0.0,
+    class_negative_risk_floor: float = 0.0,
     class_shell_unknown_risk_enabled: bool = False,
     class_shell_radius_scale: float = 1.25,
     class_shell_risk_temperature: float = 0.05,
@@ -2193,6 +2253,11 @@ def build_collaborative_evidence(
                             class_negative_neighbor_count=int(class_negative_neighbor_count),
                             class_negative_risk_temperature=float(class_negative_risk_temperature),
                             class_negative_risk_margin=float(class_negative_risk_margin),
+                            class_negative_combine_mode=str(class_negative_combine_mode),
+                            class_negative_weak_margin=float(class_negative_weak_margin),
+                            class_negative_weak_pvalue=float(class_negative_weak_pvalue),
+                            class_negative_weak_reliability=float(class_negative_weak_reliability),
+                            class_negative_risk_floor=float(class_negative_risk_floor),
                             pvalue_weight=verifier_pvalue_weight,
                             reliability_weight=verifier_reliability_weight,
                             risk_weight=verifier_risk_weight,
@@ -2361,6 +2426,20 @@ def build_collaborative_evidence(
                                 label_name,
                                 1.0,
                             )
+                            (
+                                label_class_negative_effective_risk,
+                                label_class_negative_weakness,
+                            ) = _class_negative_effective_risk(
+                                float(label_class_negative_risk[0]),
+                                margin_value=label_margin,
+                                pvalue=label_pvalue if bool(class_conformal_enabled) else 1.0,
+                                receiver_class_reliability=label_receiver_class_reliability,
+                                mode=str(class_negative_combine_mode),
+                                weak_margin=float(class_negative_weak_margin),
+                                weak_pvalue=float(class_negative_weak_pvalue),
+                                weak_reliability=float(class_negative_weak_reliability),
+                                risk_floor=float(class_negative_risk_floor),
+                            )
                             class_evidence_fields[f"class_evidence_top{rank}_label"] = label_name
                             class_evidence_fields[f"class_evidence_top{rank}_score"] = float(label_score)
                             class_evidence_fields[f"class_evidence_top{rank}_margin"] = float(label_margin)
@@ -2382,7 +2461,13 @@ def build_collaborative_evidence(
                             class_evidence_fields[f"class_evidence_top{rank}_evt_risk"] = float(label_evt_risk[0])
                             class_evidence_fields[f"class_evidence_top{rank}_oldness_risk"] = float(label_oldness_risk[0])
                             class_evidence_fields[f"class_evidence_top{rank}_class_negative_risk"] = (
+                                label_class_negative_effective_risk if bool(class_negative_risk_enabled) else 0.0
+                            )
+                            class_evidence_fields[f"class_evidence_top{rank}_class_negative_raw_risk"] = (
                                 float(label_class_negative_risk[0]) if bool(class_negative_risk_enabled) else 0.0
+                            )
+                            class_evidence_fields[f"class_evidence_top{rank}_class_negative_weakness"] = (
+                                label_class_negative_weakness if bool(class_negative_risk_enabled) else 0.0
                             )
                             class_evidence_fields[f"class_evidence_top{rank}_class_negative_score"] = (
                                 float(label_class_negative_score[0]) if bool(class_negative_risk_enabled) else 0.0
@@ -2449,6 +2534,19 @@ def build_collaborative_evidence(
                         temperature=float(class_negative_risk_temperature),
                         margin=float(class_negative_risk_margin),
                     )
+                    class_negative_effective_risk, class_negative_weakness = _class_negative_effective_risk(
+                        float(class_negative_risk[0]),
+                        margin_value=float(margin[0]),
+                        pvalue=class_conformal_pvalue if bool(class_conformal_enabled) else 1.0,
+                        receiver_class_reliability=float(
+                            receiver_class_reliabilities.get(rx, {}).get(str(pred[0]), 1.0)
+                        ),
+                        mode=str(class_negative_combine_mode),
+                        weak_margin=float(class_negative_weak_margin),
+                        weak_pvalue=float(class_negative_weak_pvalue),
+                        weak_reliability=float(class_negative_weak_reliability),
+                        risk_floor=float(class_negative_risk_floor),
+                    )
                     candidate_audit_risk = 0.0
                     if bool(candidate_audit_unknown_risk_enabled):
                         if candidate_audit_disagreement:
@@ -2461,7 +2559,7 @@ def build_collaborative_evidence(
                     unknown_risk_value = max(
                         float(risk[0]),
                         float(virtual_unknown_risk[0]) if bool(virtual_unknown_risk_enabled) else 0.0,
-                        float(class_negative_risk[0]) if bool(class_negative_risk_enabled) else 0.0,
+                        class_negative_effective_risk if bool(class_negative_risk_enabled) else 0.0,
                         float(class_shell_risk[0]) if bool(class_shell_unknown_risk_enabled) else 0.0,
                         float(candidate_audit_risk),
                     )
@@ -2509,6 +2607,11 @@ def build_collaborative_evidence(
                             ),
                             "class_negative_risk_enabled": int(bool(class_negative_risk_enabled)),
                             "class_negative_samples_per_class": int(class_negative_samples_per_class),
+                            "class_negative_combine_mode": str(class_negative_combine_mode),
+                            "class_negative_weak_margin": float(class_negative_weak_margin),
+                            "class_negative_weak_pvalue": float(class_negative_weak_pvalue),
+                            "class_negative_weak_reliability": float(class_negative_weak_reliability),
+                            "class_negative_risk_floor": float(class_negative_risk_floor),
                             "class_shell_unknown_risk_enabled": int(bool(class_shell_unknown_risk_enabled)),
                             "candidate_class_count": int(candidate_counts[0]),
                             "support_neighbor_count": int(support_neighbor_counts[0]),
@@ -2536,7 +2639,9 @@ def build_collaborative_evidence(
                             "oldness_risk": float(oldness_risk[0]),
                             "virtual_unknown_risk": float(virtual_unknown_risk[0]) if bool(virtual_unknown_risk_enabled) else 0.0,
                             "virtual_unknown_score": float(virtual_unknown_score[0]) if bool(virtual_unknown_risk_enabled) else 0.0,
-                            "class_negative_risk": float(class_negative_risk[0]) if bool(class_negative_risk_enabled) else 0.0,
+                            "class_negative_risk": class_negative_effective_risk if bool(class_negative_risk_enabled) else 0.0,
+                            "class_negative_raw_risk": float(class_negative_risk[0]) if bool(class_negative_risk_enabled) else 0.0,
+                            "class_negative_weakness": class_negative_weakness if bool(class_negative_risk_enabled) else 0.0,
                             "class_negative_score": float(class_negative_score[0]) if bool(class_negative_risk_enabled) else 0.0,
                             "class_shell_risk": float(class_shell_risk[0]) if bool(class_shell_unknown_risk_enabled) else 0.0,
                             "class_shell_distance": float(class_shell_distance[0]),
@@ -2610,6 +2715,11 @@ def build_collaborative_evidence(
         "class_negative_neighbor_count": int(class_negative_neighbor_count),
         "class_negative_risk_temperature": float(class_negative_risk_temperature),
         "class_negative_risk_margin": float(class_negative_risk_margin),
+        "class_negative_combine_mode": str(class_negative_combine_mode),
+        "class_negative_weak_margin": float(class_negative_weak_margin),
+        "class_negative_weak_pvalue": float(class_negative_weak_pvalue),
+        "class_negative_weak_reliability": float(class_negative_weak_reliability),
+        "class_negative_risk_floor": float(class_negative_risk_floor),
         "class_shell_unknown_risk_enabled": bool(class_shell_unknown_risk_enabled),
         "class_shell_radius_scale": float(class_shell_radius_scale),
         "class_shell_risk_temperature": float(class_shell_risk_temperature),
@@ -2727,6 +2837,11 @@ def run_evaluation(args: argparse.Namespace) -> dict[str, Any]:
         class_negative_neighbor_count=int(args.class_negative_neighbor_count),
         class_negative_risk_temperature=float(args.class_negative_risk_temperature),
         class_negative_risk_margin=float(args.class_negative_risk_margin),
+        class_negative_combine_mode=str(args.class_negative_combine_mode),
+        class_negative_weak_margin=float(args.class_negative_weak_margin),
+        class_negative_weak_pvalue=float(args.class_negative_weak_pvalue),
+        class_negative_weak_reliability=float(args.class_negative_weak_reliability),
+        class_negative_risk_floor=float(args.class_negative_risk_floor),
         class_shell_unknown_risk_enabled=bool(args.class_shell_unknown_risk_enabled),
         class_shell_radius_scale=float(args.class_shell_radius_scale),
         class_shell_risk_temperature=float(args.class_shell_risk_temperature),
@@ -3005,6 +3120,11 @@ def parse_args() -> argparse.Namespace:
     p.add_argument("--class_negative_neighbor_count", type=int, default=2)
     p.add_argument("--class_negative_risk_temperature", type=float, default=0.05)
     p.add_argument("--class_negative_risk_margin", type=float, default=0.0)
+    p.add_argument("--class_negative_combine_mode", default="max", choices=["max", "weak_evidence"])
+    p.add_argument("--class_negative_weak_margin", type=float, default=0.0)
+    p.add_argument("--class_negative_weak_pvalue", type=float, default=0.0)
+    p.add_argument("--class_negative_weak_reliability", type=float, default=0.0)
+    p.add_argument("--class_negative_risk_floor", type=float, default=0.0)
     p.add_argument("--class_shell_unknown_risk_enabled", action="store_true")
     p.add_argument("--class_shell_radius_scale", type=float, default=1.25)
     p.add_argument("--class_shell_risk_temperature", type=float, default=0.05)
