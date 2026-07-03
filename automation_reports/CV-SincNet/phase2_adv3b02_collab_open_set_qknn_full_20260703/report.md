@@ -3021,3 +3021,122 @@ JSON已记录`run_command_argv`、`run_cwd`、`python_executable`、`output_json
 资源方面，`lrca049_p035,k=4`固定使用4个receiver，`160 bytes/event`，`latency_ms_p95=0.1323`，运行GPU显存占用保持在基线`10 MiB/24576 MiB`。资源约束设计说明原文`卫星协同射频指纹识别（RFFI）系统资源约束设计说明.md`仍未在当前工作区找到；本轮继续使用`avg_rx`、`bytes/event`、`latency_ms_p95`、GPU/VRAM作为可复核代理指标。
 
 下一步不应继续简单收紧全局门控。主要失败来自`20-15`旧类缺类地板和seen-new回落，建议围绕`lrca049_p035,k=4`做按类地板保护：对缺类old引入source/proxy-known oldness gate、按类support envelope下界和低风险old-only rescue；同时保留`candidate_set_max_label_risk_component_agreement<=0.49`作为unknown吸收硬门控。
+
+## 2026-07-04 available_up_to_k协同预算策略
+
+### 目标与诊断
+
+上一轮`lrca049_p035,k=4`的`min_old_class_acc=0.0000`不是单纯分类错误，而是`20-15`在exact-k口径下被完整组过滤移除：evidence中`20-15`有40个event、100条receiver观测，但每个event最多只有3个receiver观测，因此`k=4/5`要求“至少k个receiver”的完整组时，该旧类直接进入`missing_old_classes`。这与现实卫星群不完全一致：在轨协同更合理的口径是“最多请求k个receiver，可用多少融合多少，并报告实际参与receiver数量和资源”。
+
+本轮新增`collab_group_policy`：
+
+|策略|语义|用途|
+|---|---|---|
+|`exact_k`|保留原行为，只评估至少有k个receiver观测的event。|固定协同数量、严格同分母对照。|
+|`available_up_to_k`|把k解释为最大协同预算，只要event达到`partial_collab_min_receivers`即可进入，实际融合`min(k, available_receivers)`。|异步卫星群/覆盖不完整场景，必须报告`avg_rx`和实际资源。|
+
+该改动不改变Stage2-C协议、不使用unknown query调阈值，也不改变`Y_old/Y_new/Y_unknown`互斥。它改变的是协同分母与资源解释：`k`不再等于每个event实际参与receiver数，而是最大请求预算。
+
+### 本地变更与验证
+
+|文件|改动|
+|---|---|
+|`code/evaluation/collaborative_open_set_qknn_eval.py`|新增`collab_group_policy`、`partial_collab_min_receivers`，在`available_up_to_k`下按最小可用receiver门槛保留partial event，并在JSON中记录策略。|
+|`code/scripts/phase2_collaborative_open_set_qknn_eval.py`|新增CLI参数`--collab_group_policy {exact_k,available_up_to_k}`和`--partial_collab_min_receivers`。|
+|`code/tests/test_collaborative_open_set_qknn_eval.py`|新增partial class group测试，证明`exact_k,k=4`会丢失只有3个receiver的旧类，而`available_up_to_k`保留该类并报告实际平均参与数。|
+
+本地`ssr-gpu`验证：`py_compile`通过，`test_collaborative_open_set_qknn_eval.py`先为44 tests OK，子agent审查修复后为45 tests OK；`test_phase2_collaborative_open_set_qknn_eval.py`为44 tests OK。Git镜像重复同样验证通过，并提交`a37d8aa Add available receiver budget collaboration policy`和`3dfb150 Clarify available receiver budget metrics`。根目录非Git，本地快照保存在`E:\type10-7\code\snapshots\available_up_to_k_20260704\`。
+
+### N607同步与验证
+
+N607直连预检通过，远端项目根为`/home/szu2070436088/2510044040/CV-SincNet`，远端Python为`/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python`。同步后远端`py_compile`通过，`test_collaborative_open_set_qknn_eval.py`为45 tests OK，`test_phase2_collaborative_open_set_qknn_eval.py`为44 tests OK。远端代码SHA256：
+
+|文件|SHA256|
+|---|---|
+|`code/evaluation/collaborative_open_set_qknn_eval.py`|`14fc582646fa6455cf7b6f44de64d62e0a8dfa611391936c854c6987a0871fb7`|
+|`code/scripts/phase2_collaborative_open_set_qknn_eval.py`|`a6142d1a6fe00b3cbe12b8ec81e2af5bfad866fc12cd17b606bdba62f1f3d857`|
+|`code/tests/test_collaborative_open_set_qknn_eval.py`|`585e09b96c51523dd1321e353a848ce207b5fe212ec9d58b16486b8737988e87`|
+
+远端运行前后8张RTX3090均为`10 MiB/24576 MiB`，使用GPU0；每次SSH/SCP后本地检查均为无残留`ssh.exe`、无N607/bridge 22端口`ESTABLISHED`连接。
+
+### 远端实验配置
+
+本轮正式复跑配置为`avail3_p050_lrca033`：
+
+```bash
+CUDA_VISIBLE_DEVICES=0 /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python \
+  code/scripts/phase2_collaborative_open_set_qknn_eval.py \
+  --feature_npz runs/phase2_adv3b02_collab_open_set_qknn_full_20260703/features.npz \
+  --output_json runs/phase2_adv3b02_collab_open_set_qknn_full_20260703/collab_open_set_qknn_candidate_set_cvs_rcwr_avail3_p050_lrca033_adv3b02.json \
+  --output_evidence_csv runs/phase2_adv3b02_collab_open_set_qknn_full_20260703/collab_open_set_qknn_candidate_set_cvs_rcwr_avail3_p050_lrca033_adv3b02_evidence.csv \
+  --collab_counts all --collab_group_policy available_up_to_k --partial_collab_min_receivers 3 \
+  --k_shot 8 --query_per_class 20 --qknn_k 8 --seed 4070303 \
+  --candidate_class_top_m 2 --class_evidence_top_m 3 \
+  --class_conformal_enabled --class_conformal_min_support 2 \
+  --prototype_score_blend 2.0 --mahalanobis_score_blend 1.0 \
+  --support_calibration_mode leave_one_out \
+  --unknown_gate_mode support_envelope_evt --score_threshold_combine qknn_only \
+  --scenario_aware --radius_norm 0.3 \
+  --fusion_policy candidate_set_cvs --collaboration_policy fixed_k \
+  --label_fusion_policy weighted_vote_margin \
+  --class_reliability_policy conformal_margin_risk \
+  --receiver_class_reliability_policy support_calibrated \
+  --event_alignment_policy receiver_domain_ranked \
+  --support_selection_policy stable_first \
+  --unknown_risk_threshold 0.8 --scorer_component_vote_threshold 0.50 \
+  --candidate_set_min_receivers 2 --candidate_set_min_top1_receivers 0 \
+  --candidate_set_min_conformal_pvalue 0.50 \
+  --candidate_set_max_label_unknown_risk 1.0 \
+  --candidate_set_max_event_unknown_risk 1.0 \
+  --candidate_set_max_label_risk_component_agreement 0.33 \
+  --candidate_set_unknown_reject_risk 0.80 \
+  --evidence_packet_bytes 40
+```
+
+产物SHA256：
+
+|产物|SHA256|
+|---|---|
+|`collab_open_set_qknn_candidate_set_cvs_rcwr_avail3_p050_lrca033_adv3b02.json`|`835813D44D736610D700843A369F272AE05D1EEE090A9A88B6A3B7D5A7AE8342`|
+|`collab_open_set_qknn_candidate_set_cvs_rcwr_avail3_p050_lrca033_adv3b02_evidence.csv`|`5E4936FFB1895004F8D84C447E9DE35F018B55EA6F74E42030BA4F16ED5F8115`|
+
+### 结果表
+
+|配置|协同预算k|old_acc|min_old|seen_new_acc|min_seen|unknown_FAR|unknown_reject|defer|known_cov|avg_rx|bytes/event|p95_latency|missing_old|结论|
+|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---|---|
+|`avail3_p050_lrca033`|1|0.0000|0.0000|0.0000|0.0000|0.0000|0.4667|0.7459|0.0000|1.0000|40.0|0.1888|[]|单receiver不足|
+|`avail3_p050_lrca033`|2|0.4737|0.1000|0.5769|0.5312|0.1957|0.8043|0.0920|0.6029|2.0000|80.0|0.1888|[]|coverage修复但FAR过高|
+|`avail3_p050_lrca033`|3|0.6167|0.3000|0.6500|0.6000|0.0750|0.9250|0.0400|0.7000|3.0000|120.0|0.1888|[]|类覆盖完整，FAR仍超|
+|`avail3_p050_lrca033`|4|0.8083|0.6500|0.6500|0.5500|0.0500|0.9250|0.0150|0.8187|3.7500|150.0|0.1888|[]|当前最佳类覆盖+OLD80+FAR边界组合|
+|`avail3_p050_lrca033`|5|0.7917|0.6000|0.6500|0.5500|0.0500|0.9500|0.0100|0.8063|4.2150|168.6|0.1888|[]|拒识略强但old低于0.80|
+
+k=4逐类结果：
+
+|类别集|逐类准确率|
+|---|---|
+|old|`14-10=0.8000`，`14-7=0.8500`，`20-15=0.6500`，`20-19=0.7000`，`6-15=0.9000`，`8-20=0.9500`|
+|seen-new|`19-3=0.5500`，`3-8=0.7500`|
+
+### 判定
+
+`available_up_to_k`解决了exact-k分母造成的旧类缺失问题：k=4不再出现`missing_old_classes=['20-15']`，并且`min_old_class_acc`从0提升到0.6500。这是向用户要求“报告参与推理数量、时延、资源约束”和现实卫星群异步可用性迈进的一步。
+
+但它不是最终目标。当前最佳`avail3_p050_lrca033,k=4`仅达到`old_acc=0.8083`、`min_old=0.6500`、`seen_new_acc=0.6500`、`unknown_reject=0.9250`。未知类拒识仍显著低于0.99，旧类每类不低于0.95和新类不低于0.93也未达到。因此不能声明99/97/99、不能声明Stage2-C成功、不能声明卫星部署成功。
+
+下一步机制不应继续只调全局阈值。需要增加“unknown误接收解释通道”和“按类地板保护通道”：对unknown false accept事件提取最终融合证据，设计source/proxy-known oldness gate或receiver-pair inconsistency gate；对`20-15`、`20-19`和seen-new低类建立class floor rescue，但必须只用support/receiver先验，不得使用query真值或unknown query阈值拟合。
+
+### 子agent审查后的口径修复
+
+子agent review指出两项P1风险：`available_up_to_k`下`k`是最大协同预算而不是每个event实际receiver数，旧字段`participating_receivers=4`容易被误读；顶层`eligible_group_count`仍按exact-k最大预算统计，与策略分母不一致。本轮已修复：
+
+|问题|修复|
+|---|---|
+|预算k可能被误读为实际k|每个count新增`receiver_budget`、`min_required_receivers`、`actual_receiver_count_histogram`、`partial_group_count`、`exact_budget_group_count`。|
+|顶层eligible口径不一致|新增`exact_max_requested_group_count`、`policy_eligible_group_count_at_max_budget`、`policy_excluded_group_count_at_max_budget`、`policy_min_receivers_at_max_budget`。|
+|`partial_collab_min_receivers<=0`静默修正|改为显式`ValueError`，新增单测覆盖。|
+
+修复后远端重新验证并复跑同一配置。N607最新测试为`test_collaborative_open_set_qknn_eval.py`45 tests OK，`test_phase2_collaborative_open_set_qknn_eval.py`44 tests OK。刷新后的`avail3_p050_lrca033,k=4`字段为：`receiver_budget=4`，`min_required_receivers=3`，`actual_receiver_count_histogram={'3': 50, '4': 150}`，`partial_group_count=50`，`exact_budget_group_count=150`，`avg_rx=3.75`，`p95_rx=4.0`，`max_rx=4`。顶层策略字段为：`exact_max_requested_group_count=93`，`policy_eligible_group_count_at_max_budget=200`，`policy_excluded_group_count_at_max_budget=107`，`policy_min_receivers_at_max_budget=3`。
+
+因此该结果必须表述为“最大预算k=4、实际平均3.75个receiver参与”的budgeted collaboration，不能表述为固定4个receiver协同。指标数值未因元数据修复改变，刷新后的`latency_ms_p95=0.1888`。
+
+
