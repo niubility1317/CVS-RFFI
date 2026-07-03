@@ -230,6 +230,57 @@ class CollaborativeOpenSetQknnEvalTest(unittest.TestCase):
                 receiver_selection_policy="reliability_prior",
             )
 
+    def test_support_quality_prior_selects_support_calibrated_receiver(self):
+        from evaluation.collaborative_open_set_qknn_eval import evaluate_collaborative_open_set_evidence
+
+        rows = [
+            {
+                "event_id": "quality-old",
+                "receiver_id": "rx-a",
+                "role": "old",
+                "true_label": "old-a",
+                "predicted_label": "old-b",
+                "known_score": 0.95,
+                "known_margin": 0.20,
+                "unknown_risk": 0.10,
+                "support_density": 0.05,
+                "class_conformal_pvalue": 0.05,
+                "receiver_class_reliability": 0.05,
+            },
+            {
+                "event_id": "quality-old",
+                "receiver_id": "rx-b",
+                "role": "old",
+                "true_label": "old-a",
+                "predicted_label": "old-a",
+                "known_score": 0.70,
+                "known_margin": 0.20,
+                "unknown_risk": 0.10,
+                "support_density": 0.95,
+                "class_conformal_pvalue": 0.95,
+                "receiver_class_reliability": 0.95,
+            },
+        ]
+
+        fixed = evaluate_collaborative_open_set_evidence(
+            rows,
+            collab_counts="1",
+            unknown_risk_threshold=0.8,
+            accept_margin_threshold=0.1,
+            receiver_selection_policy="fixed_receiver_order",
+        )
+        support_quality = evaluate_collaborative_open_set_evidence(
+            rows,
+            collab_counts="1",
+            unknown_risk_threshold=0.8,
+            accept_margin_threshold=0.1,
+            receiver_selection_policy="support_quality_prior",
+        )
+
+        self.assertEqual(fixed["counts"]["1"]["old_acc"], 0.0)
+        self.assertEqual(support_quality["counts"]["1"]["old_acc"], 1.0)
+        self.assertEqual(support_quality["receiver_selection_policy"], "support_quality_prior")
+
     def test_high_unknown_risk_vetoes_overconfident_acceptance(self):
         from evaluation.collaborative_open_set_qknn_eval import evaluate_collaborative_open_set_evidence
 

@@ -222,8 +222,10 @@ def _validate_rows(
         unknown_query_eval_only=unknown_query_eval_only,
     )
     policy = _normalize_scope(receiver_selection_policy)
-    if policy not in {"fixed_receiver_order", "reliability_prior"}:
-        raise ValueError("receiver_selection_policy must be fixed_receiver_order or reliability_prior")
+    if policy not in {"fixed_receiver_order", "reliability_prior", "support_quality_prior"}:
+        raise ValueError(
+            "receiver_selection_policy must be fixed_receiver_order, reliability_prior, or support_quality_prior"
+        )
     for row in rows:
         role = _role(row.get("role"))
         if role in {"old", "seen_new"} and not _str(row, "true_label").strip():
@@ -293,6 +295,27 @@ def _receiver_class_reliability(
     return float(max(0.05, min(1.0, float(value))))
 
 
+def _receiver_support_quality(row: Mapping[str, Any]) -> float:
+    reliability = max(0.0, min(1.0, _float(row, "reliability", 1.0)))
+    support_density = max(0.0, min(1.0, _float(row, "support_density", reliability)))
+    pvalue = max(0.0, min(1.0, _float(row, "class_conformal_pvalue", 0.0)))
+    receiver_class_reliability = max(0.0, min(1.0, _float(row, "receiver_class_reliability", 1.0)))
+    score = max(0.0, min(1.0, _float(row, "known_score", 0.0)))
+    margin = max(0.0, min(1.0, _float(row, "known_margin", 0.0)))
+    shell_safety = 1.0 - max(0.0, min(1.0, _float(row, "class_shell_risk", 0.0)))
+    radius_safety = 1.0 - max(0.0, min(1.0, _float(row, "radius_risk", _float(row, "unknown_risk", 0.0))))
+    return float(
+        0.22 * reliability
+        + 0.18 * support_density
+        + 0.18 * pvalue
+        + 0.16 * receiver_class_reliability
+        + 0.12 * score
+        + 0.06 * margin
+        + 0.04 * shell_safety
+        + 0.04 * radius_safety
+    )
+
+
 def _select_receivers(
     rows: Sequence[Mapping[str, Any]],
     k: int,
@@ -305,6 +328,15 @@ def _select_receivers(
             rows,
             key=lambda row: (
                 -_float(row, "reliability", 1.0),
+                _float(row, "latency_ms", 0.0),
+                _str(row, "receiver_id"),
+            ),
+        )
+    elif policy == "support_quality_prior":
+        ordered = sorted(
+            rows,
+            key=lambda row: (
+                -_receiver_support_quality(row),
                 _float(row, "latency_ms", 0.0),
                 _str(row, "receiver_id"),
             ),

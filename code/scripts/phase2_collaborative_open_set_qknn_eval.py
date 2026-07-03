@@ -2540,7 +2540,11 @@ def parse_args() -> argparse.Namespace:
         default="deployment_prior",
         choices=["deployment_prior", "support_density", "margin_density"],
     )
-    p.add_argument("--receiver_selection_policy", default="fixed_receiver_order")
+    p.add_argument(
+        "--receiver_selection_policy",
+        default="fixed_receiver_order",
+        choices=["fixed_receiver_order", "reliability_prior", "support_quality_prior"],
+    )
     p.add_argument(
         "--support_selection_policy",
         default="stable_first",
