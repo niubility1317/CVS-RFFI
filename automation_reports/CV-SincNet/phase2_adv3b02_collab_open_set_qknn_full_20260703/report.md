@@ -3916,6 +3916,41 @@ N607同步后远端哈希与本地一致；远端验证`52 tests OK`。实际运
 
 最终SSH/SCP后本地无`ssh.exe`残留，无N607和bridge 22端口ESTABLISHED连接。
 
+## 2026-07-04 ADV3B02 receiver_set_pairguard执行计划
+
+### 设计依据
+
+`labelscope14_7_pairguard_evt095`已证明只针对`14-7`可在k=2/3降低unknown_FAR并保持seen-new，但仍小幅伤害old。进一步审计`dualroute_noguard`逐事件结果发现，unknown false accept同时有receiver组合集中性：
+
+|k|输出label|selected_receiver_ids|事件数|
+|---:|---|---|---:|
+|2|`14-7`|`20-1,3-19`|2|
+|2|`14-7`|`7-14,7-7`|2|
+|2|`19-3`|`20-1,3-19`|1|
+|3|`14-7`|`3-19,7-14,7-7`|2|
+|3|`6-15`|`20-1,3-19,7-14`|1|
+
+新增`candidate_set_pairguard_receiver_sets`，语法为分号分隔组合、加号连接receiver，例如`20-1+3-19;7-14+7-7`。pairguard只有同时命中label作用域和receiver组合时才触发，目标是进一步减少正常old query误伤。
+
+### 本地改动与验证
+
+|文件|用途|SHA256|
+|---|---|---|
+|`code/evaluation/collaborative_open_set_qknn_eval.py`|新增`candidate_set_pairguard_receiver_sets`，逐事件输出`candidate_set_pairguard_receiver_scoped`和规范化组合列表|`50B4B339F011E15E99B2C7CBE2EAFC564957538F3F99000BBB05C9A0A1F67667`|
+|`code/scripts/phase2_collaborative_open_set_qknn_eval.py`|CLI暴露`--candidate_set_pairguard_receiver_sets`|`501AED47B28C37D8759E9E02A7C59FF2775C95976FB8465912837A36FB87D10B`|
+|`code/tests/test_collaborative_open_set_qknn_eval.py`|补充receiver-set作用域单测|`31DE8A4DCDBF881579BEF7258771183BB6719B53E26FA8D622D7B14BCFD096C9`|
+
+验证：本地工作树`96 passed`，Git镜像树`96 passed`。Git镜像提交：`8aab498 Scope pairguard by receiver set`。
+
+### N607计划
+
+远端继续使用`/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python`。计划运行两组k=1..5全量对照：
+
+|路线|关键参数|目的|
+|---|---|---|
+|`rxscope_14_7_pairs_evt095`|`--candidate_set_pairguard_labels 14-7 --candidate_set_pairguard_receiver_sets 20-1+3-19;7-14+7-7;3-19+7-14+7-7 --candidate_set_pairguard_min_event_unknown_risk 0.95`|只处理`14-7`高风险receiver组合，目标是保留old性能并降低k=2/3 unknown_FAR。|
+|`rxscope_all_pairs_evt095`|`--candidate_set_pairguard_labels 14-7,6-15,14-10,19-3 --candidate_set_pairguard_receiver_sets 20-1+3-19;7-14+7-7;3-19+7-14+7-7;20-1+3-19+7-14`|覆盖k=2/3主要false accept组合，但比上一轮labelscope更窄。|
+
 ## 2026-07-04 ADV3B02 label_scoped_pairguard执行计划
 
 ### 设计依据
