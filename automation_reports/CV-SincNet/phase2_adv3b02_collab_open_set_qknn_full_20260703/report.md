@@ -3916,6 +3916,47 @@ N607同步后远端哈希与本地一致；远端验证`52 tests OK`。实际运
 
 最终SSH/SCP后本地无`ssh.exe`残留，无N607和bridge 22端口ESTABLISHED连接。
 
+## 2026-07-04 ADV3B02 label_scoped_pairguard执行计划
+
+### 设计依据
+
+`dualroute_noguard`逐事件审计显示unknown false accept不是均匀分布：
+
+|k|false accepts|输出label分布|主要receiver组合|
+|---:|---:|---|---|
+|2|6|`14-7`:5，`19-3`:1|`20-1,3-19`为3次，`7-14,7-7`为2次|
+|3|3|`14-7`:2，`6-15`:1|`3-19,7-14,7-7`为2次|
+|4|1|`14-10`:1|`20-1,3-19,7-14,7-7`|
+|5|3|`6-15`:2，`14-10`:1|全5receiver组合|
+
+因此新增`candidate_set_pairguard_labels`，只对高风险输出label执行pairguard，避免上一轮全局pairguard把大量正常old/seen-new样本一起拦截。本轮label作用域：`14-7,6-15,14-10,19-3`。该选择来自本轮诊断结果，只能作为diagnostic route；若后续作为正式方法，应改为support/proxy-known校准得到label风险先验，不能用unknown query结果调参。
+
+### 本地改动与验证
+
+|文件|用途|SHA256|
+|---|---|---|
+|`code/evaluation/collaborative_open_set_qknn_eval.py`|新增`candidate_set_pairguard_labels`，空值表示所有label，非空时只对指定输出label应用pairguard并记录`candidate_set_pairguard_label_scoped`|`D44F792B9ACACEAFDD63974435DBF1C94FBEC9F003A567B916224C53D2F55FBF`|
+|`code/scripts/phase2_collaborative_open_set_qknn_eval.py`|CLI暴露`--candidate_set_pairguard_labels`|`15F58E0CA88D5ACFDE87C8036F51F806A1DCB902501F180F082487473C8F4E0E`|
+|`code/tests/test_collaborative_open_set_qknn_eval.py`|补充label scope单测，证明命中label才触发pairguard veto|`BA30967674A8BFE51E57D1D373DF7F5C828A0D08B11E93758D42CC30D9E88794`|
+
+验证：
+
+```text
+C:\Users\lh594\.conda\envs\ssr-gpu\python.exe -m py_compile code\evaluation\collaborative_open_set_qknn_eval.py code\scripts\phase2_collaborative_open_set_qknn_eval.py
+C:\Users\lh594\.conda\envs\ssr-gpu\python.exe -m pytest code\tests\test_collaborative_open_set_qknn_eval.py code\tests\test_phase2_collaborative_open_set_qknn_eval.py -q
+```
+
+结果：本地工作树`96 passed`，Git镜像树`96 passed`。Git镜像提交：`f6b4b83 Scope pairguard by output label`。
+
+### N607计划
+
+远端仍使用`/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python`。计划运行两组k=1..5全量对照：
+
+|路线|关键参数|目的|
+|---|---|---|
+|`labelscope_pairguard_evt090`|`--candidate_set_pairguard_mode boundary_veto --candidate_set_pairguard_labels 14-7,6-15,14-10,19-3 --candidate_set_pairguard_min_event_unknown_risk 0.90 --candidate_set_max_receiver_pair_label_disagreement 0.50 --candidate_set_max_receiver_pair_unknown_risk_range 0.70`|验证只对高风险label触发时，unknown_FAR能否下降且known损伤小于全局pairguard。|
+|`labelscope_pairguard_evt095`|同上但`candidate_set_pairguard_min_event_unknown_risk 0.95`|更保守边界版本。|
+
 
 
 
