@@ -1653,3 +1653,40 @@ python code\tests\test_collaborative_open_set_qknn_eval.py
 |`proto2_maha1_calibrated`|`--prototype_score_blend 2.0 --mahalanobis_score_blend 1.0`|结合上一轮最强prototype权重与Mahalanobis分布得分，评估互补性。|
 
 风险：Mahalanobis类得分可能产生`support_neighbor_count=0`的distribution-assisted top1，报告中必须标为`mahalanobis_score_assisted_qknn`，不能写成纯qKNN8证据；若unknown FAR升高或min_old仍为0，只能作为诊断负证据。
+
+远端验证结果：N607直连预检通过，远端项目根为`/home/szu2070436088/2510044040/CV-SincNet`，远端环境现场输出`ENV=CVS-RFFI`。同步脚本和测试后，远端`py_compile`通过，`test_phase2_collaborative_open_set_qknn_eval.py`为27 tests OK，`test_collaborative_open_set_qknn_eval.py`为27 tests OK。运行前后GPU显存均为`10MiB/24576MiB`，本轮标记使用`CUDA_VISIBLE_DEVICES=0`。SSH/SCP结束后本地核验：无残留`ssh.exe`，无到N607或bridge的22端口`ESTABLISHED`连接。
+
+远端产物SHA256：
+
+|产物|SHA256|
+|---|---|
+|`remote_artifacts/collab_open_set_qknn_scorer_cvs_evt_adaptive_gain_vote_margin_maha_score_0p5_calibrated.json`|`1D342DB8E20BFF7919E5701FBF94526E81007E8315973A8381FB389C853608DE`|
+|`remote_artifacts/collab_open_set_qknn_scorer_cvs_evt_adaptive_gain_vote_margin_maha_score_0p5_calibrated_evidence.csv`|`DC91E47975BB12B671651712844E2C6AA62CF36F951803396290FA4ADFFC8718`|
+|`remote_artifacts/collab_open_set_qknn_scorer_cvs_evt_adaptive_gain_vote_margin_maha_score_1p0_calibrated.json`|`8B9B1EFA409F580F9C9EC389A7F5A9DFB0C341E09E6F9429F82341B90F2829FC`|
+|`remote_artifacts/collab_open_set_qknn_scorer_cvs_evt_adaptive_gain_vote_margin_maha_score_1p0_calibrated_evidence.csv`|`BA8E94D2140B02FAE465C4E18A0D300EC7D6ADAF95D17D4A4950DFD1F81E4367`|
+|`remote_artifacts/collab_open_set_qknn_scorer_cvs_evt_adaptive_gain_vote_margin_proto2_maha1_calibrated.json`|`5F803AB2B2735F2DA69B746183B04A2ED5AAA569065C1BE6816BFCACAA575AC9`|
+|`remote_artifacts/collab_open_set_qknn_scorer_cvs_evt_adaptive_gain_vote_margin_proto2_maha1_calibrated_evidence.csv`|`3D7C3B70DDF1E32E86E767E67D00B611696DDF25C9436C80D6D67DFC1DEDCC04`|
+
+结果表：
+
+|候选|预算|old_acc|min_old|seen_new_acc|min_seen_new|unknown_FAR|unknown_reject|defer_rate|avg_rx|bytes/event|
+|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+|`maha_score_0p5_calibrated`|1|0.0000|0.0000|0.1500|0.0000|0.0500|0.5167|0.5390|1.0000|120.0|
+|`maha_score_0p5_calibrated`|2|0.0915|0.0000|0.3556|0.1000|0.0000|0.8333|0.3699|1.8252|219.0|
+|`maha_score_0p5_calibrated`|3|0.0500|0.0000|0.4500|0.1000|0.0000|0.9750|0.4300|2.5750|309.0|
+|`maha_score_0p5_calibrated`|4|0.3103|0.0000|0.4857|0.3000|0.0000|0.8438|0.3506|3.3636|403.6|
+|`maha_score_0p5_calibrated`|5|0.3654|0.0000|0.2500|0.0000|0.0000|0.7500|0.4130|4.3370|520.4|
+|`maha_score_1p0_calibrated`|1|0.0000|0.0000|0.1667|0.0500|0.0500|0.4833|0.5649|1.0000|120.0|
+|`maha_score_1p0_calibrated`|2|0.0980|0.0000|0.3778|0.1000|0.0000|0.8333|0.3780|1.8252|219.0|
+|`maha_score_1p0_calibrated`|3|0.0583|0.0000|0.4500|0.1000|0.0000|0.9750|0.4500|2.5700|308.4|
+|`maha_score_1p0_calibrated`|4|0.3103|0.0000|0.4857|0.3000|0.0000|0.8438|0.3636|3.3506|402.1|
+|`maha_score_1p0_calibrated`|5|0.3654|0.0000|0.3000|0.0000|0.0000|0.7500|0.4130|4.2935|515.2|
+|`proto2_maha1_calibrated`|1|0.0000|0.0000|0.2667|0.0500|0.0667|0.4167|0.6429|1.0000|120.0|
+|`proto2_maha1_calibrated`|2|0.0980|0.0000|0.4000|0.1000|0.0000|0.7708|0.4675|1.8211|218.5|
+|`proto2_maha1_calibrated`|3|0.0583|0.0000|0.4750|0.1000|0.0000|0.8750|0.5100|2.5450|305.4|
+|`proto2_maha1_calibrated`|4|0.3333|0.0000|0.5714|0.4000|0.0000|0.8438|0.3442|3.3247|399.0|
+|`proto2_maha1_calibrated`|5|0.3846|0.0000|0.3000|0.0000|0.0000|0.7000|0.4239|4.1848|502.2|
+
+解释：Mahalanobis类得分单独使用时仅带来小幅改善；与上一轮最强`prototype_score_blend=2.0`组合后，预算4达到本轮最佳同row结果：`old_acc=0.3333`、`seen_new_acc=0.5714`、`min_seen_new=0.4000`、`unknown_FAR=0.0000`，平均参与`3.3247`个接收机，约`399.0 bytes/event`。相对`prototype_blend_2p0_calibrated`预算4，seen-new从`0.5429`升至`0.5714`，old从`0.3218`升至`0.3333`，但`min_old`仍为`0.0000`。该路线说明分布类得分有增益，但仍不能满足目标；下一步应优先对`min_old=0`的旧类做按类混淆审计，判断是类原型塌缩、接收机场景错配还是阈值/门控过严导致。
+
+review修正：只读review指出，本轮诊断仍使用`score_threshold_combine=max`，会将`memory.score_threshold`这个centroid-only阈值与blended qKNN得分空间取max，导致开集风险口径不纯。已补充测试：`mahalanobis_score_blend=0.0`与默认`qknn_scores()`逐字段一致；合法source-only`proxy_unknown`会进入`threshold_scope=source_only`，且target unknown不会作为proxy校准。后续最终诊断应使用`--score_threshold_combine qknn_only`，使阈值只来自同一blended qKNN校准空间。

@@ -21,6 +21,7 @@ def _write_npz(
     aligned: bool = True,
     include_source: bool = True,
     include_bad_proxy: bool = False,
+    include_proxy: bool = False,
 ) -> None:
     rows = []
 
@@ -44,6 +45,8 @@ def _write_npz(
             add("target_unknown", "unk-a", rx, "d2", f"{unk_sig}-2", "leo_clear_weak", [0.0, 0.01, 0.99])
     if include_bad_proxy:
         add("proxy_unknown", "unk-a", "rx-a", "d3", "bad-proxy", "leo_clear_weak", [0.0, 0.0, 1.0])
+    if include_proxy:
+        add("proxy_unknown", "proxy-a", "src-proxy", "d3", "proxy-1", "leo_clear_weak", [0.0, 0.0, 1.0])
 
     manifest = {
         "source_tx_ids": ["old-a"],
@@ -551,6 +554,25 @@ class Phase2CollaborativeOpenSetQknnEvalTest(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "mahalanobis_score_blend"):
             qknn_scores(memory, features, top_k=1, mahalanobis_score_blend=-1.0)
 
+    def test_zero_mahalanobis_score_blend_matches_default_qknn_scores(self):
+        from phase2_collaborative_open_set_qknn_eval import build_qknn_memory, qknn_scores
+
+        features = np.asarray(
+            [
+                [1.0, 0.0, 0.0],
+                [0.8, 0.2, 0.0],
+                [0.0, 1.0, 0.0],
+                [0.2, 0.8, 0.0],
+            ],
+            dtype=np.float32,
+        )
+        memory = build_qknn_memory(features, ["old-a", "old-a", "new-a", "new-a"], old_labels={"old-a"})
+        default = qknn_scores(memory, features, top_k=2)
+        explicit_zero = qknn_scores(memory, features, top_k=2, mahalanobis_score_blend=0.0)
+
+        for left, right in zip(default, explicit_zero):
+            np.testing.assert_array_equal(left, right)
+
     def test_support_density_reliability_is_recorded_in_evidence(self):
         from phase2_collaborative_open_set_qknn_eval import load_feature_npz, build_collaborative_evidence
 
@@ -620,6 +642,24 @@ class Phase2CollaborativeOpenSetQknnEvalTest(unittest.TestCase):
         self.assertIn("mahalanobis_score_blend", evidence[0])
         self.assertIn("mahalanobis_score_temperature", evidence[0])
         self.assertIn("mahalanobis_score_assisted", evidence[0])
+
+    def test_source_only_proxy_unknown_sets_threshold_scope(self):
+        from phase2_collaborative_open_set_qknn_eval import load_feature_npz, build_collaborative_evidence
+
+        with tempfile.TemporaryDirectory() as td:
+            npz = Path(td) / "features.npz"
+            _write_npz(npz, include_proxy=True)
+            evidence, metadata = build_collaborative_evidence(
+                load_feature_npz(npz),
+                k_shot=1,
+                query_per_class=2,
+                qknn_k=1,
+            )
+
+        self.assertEqual(metadata["threshold_scope"], "source_only")
+        self.assertEqual({row["role"] for row in evidence}, {"old", "seen_new", "unknown"})
+        self.assertIn("unk-a", metadata["unknown_tx_ids"])
+        self.assertNotIn("proxy-a", metadata["unknown_tx_ids"])
 
     def test_candidate_audit_gap_can_raise_unknown_risk(self):
         from phase2_collaborative_open_set_qknn_eval import load_feature_npz, build_collaborative_evidence
