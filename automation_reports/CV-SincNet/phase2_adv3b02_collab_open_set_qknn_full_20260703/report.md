@@ -1091,3 +1091,53 @@ python E:\type10-7\code\tests\test_phase2_collaborative_open_set_qknn_eval.py
 判定：seen-new rescue确实恢复了部分新类识别，预算4的seen_new_acc从上一轮`adaptive_gain_v1`的0.1724提升到0.4571，min_seen_new_class_acc从0.0500提升到0.2500；但unknown_FAR从0.0645升至0.1250，预算5从0.0000升至0.1500。提高rescue的score/margin门槛会减少rescue触发并降低seen-new收益，但不能压低unknown_FAR。因此当前瓶颈不是单一seen-new救回门槛，而是known/unknown风险估计本身未能区分“高置信seen-new”和“像seen-new的unknown”。
 
 下一步应转向`class-set split gate`：old、seen-new、unknown分别维护不同的风险融合规则。具体最小实现是为seen-new类引入`seen_new_margin_over_unknown`或`support p-value`二次门控，只有同时满足seen-new原型近邻一致、unknown风险低于seen-new专用上界、且unknown类不通过同类门控时才accept；否则defer而不是直接rescue。仅靠风险折扣会扩大unknown false accept，不能达成99%未知拒识目标。
+
+## 2026-07-03 class-set gate协同推理门控
+
+本轮实现`class_set_gate`，用于把`old`与`seen_new`的最终accept条件从统一unknown gate中拆开。实现边界：默认关闭，只有显式传入`--class_set_gate_enabled`才生效；门控失败时若仍有receiver预算则输出`request_more`，预算耗尽后输出`defer`，不把高风险样本强行写成accept。该机制不改变`Y_old/Y_new/Y_unknown`协议，不使用unknown query调阈值。
+
+新增参数：
+
+|参数|用途|默认|
+|---|---|---:|
+|`--class_set_gate_enabled`|开启集合感知二级门控|关闭|
+|`--old_gate_min_receivers`|old类accept所需最少参与receiver|1|
+|`--old_gate_max_effective_unknown_risk`|old类accept允许的最大effective risk|1.0|
+|`--old_gate_max_component_agreement`|old类accept允许的最大多组件风险一致性|1.0|
+|`--seen_new_gate_min_receivers`|seen-new类accept所需最少参与receiver|1|
+|`--seen_new_gate_max_effective_unknown_risk`|seen-new类accept允许的最大effective risk|1.0|
+|`--seen_new_gate_max_component_agreement`|seen-new类accept允许的最大多组件风险一致性|1.0|
+
+代码改动：
+
+|文件|目的|
+|---|---|
+|`code/evaluation/collaborative_open_set_qknn_eval.py`|新增old/seen-new标签集合识别、二级门控、门控失败原因、fixed/progressive/adaptive三种策略的参数贯通。|
+|`code/scripts/phase2_collaborative_open_set_qknn_eval.py`|新增class-set gate CLI参数并写入评估结果JSON。|
+|`code/tests/test_collaborative_open_set_qknn_eval.py`|新增unknown伪装old被defer、真实seen-new通过gate并被rescue的单测。|
+
+本地和Git镜像验证：
+
+```powershell
+conda activate ssr-gpu
+python -m py_compile E:\type10-7\code\evaluation\collaborative_open_set_qknn_eval.py E:\type10-7\code\scripts\phase2_collaborative_open_set_qknn_eval.py
+python E:\type10-7\code\tests\test_collaborative_open_set_qknn_eval.py
+python E:\type10-7\code\tests\test_phase2_collaborative_open_set_qknn_eval.py
+```
+
+结果：本地`test_collaborative_open_set_qknn_eval.py`22 tests OK，`test_phase2_collaborative_open_set_qknn_eval.py`16 tests OK；Git镜像同样通过。Git提交：`3b4e786 Add class set gate for collaborative qKNN`。
+
+基于已拉回的`adaptive_gain_rescue_s05`evidence做本地class-set gate复评，较优安全参数为：`old_gate_min_receivers=2`、`old_gate_max_effective_unknown_risk=0.8`、`old_gate_max_component_agreement=0.2`、`seen_new_gate_min_receivers=1`、`seen_new_gate_max_effective_unknown_risk=0.6`、`seen_new_gate_max_component_agreement=0.25`。本地复评摘要：
+
+|最大receiver预算|old_acc|seen_new_acc|unknown_FAR|defer_rate|avg used rx|rescue count|判定|
+|---:|---:|---:|---:|---:|---:|---:|---|
+|4|0.3103|0.4571|0.0000|0.3312|3.30|17|FAR压到0，但old_acc下降。|
+|5|0.3654|0.2500|0.0000|0.4022|未记录|6|FAR保持0，但coverage/seen-new不足。|
+
+结论：class-set gate能把上一轮预算4的unknown_FAR从0.1250压到0.0000，同时保留预算4的seen_new_acc=0.4571；代价是old_acc从0.3563降到0.3103，defer_rate从0.2857升到0.3312。该结果更符合卫星部署的安全边界，但仍远低于目标，不可声明99/97/99达成。
+
+计划远端诊断使用N607的`CVS-RFFI`环境，在同一`features.npz`和同一星地信道proxy视图上复跑：
+
+|候选|关键参数|目的|
+|---|---|---|
+|`adaptive_gain_class_gate_safe`|`old_gate_min_receivers=2 old_gate_max_effective_unknown_risk=0.8 old_gate_max_component_agreement=0.2 seen_new_gate_max_effective_unknown_risk=0.6 seen_new_gate_max_component_agreement=0.25`|验证本地复评是否能在远端全量1..5复现FAR=0。|
