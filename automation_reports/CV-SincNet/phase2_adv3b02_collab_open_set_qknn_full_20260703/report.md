@@ -3794,6 +3794,51 @@ runs/phase2_adv3b02_collab_open_set_qknn_full_20260703/collab_open_set_qknn_cand
 
 计划命令关键参数：`--collab_counts all`覆盖1到全体target receiver数量；`--collab_group_policy available_up_to_k`、`--partial_collab_min_receivers 3`保持当前ADV3B02口径；`--fusion_policy candidate_set_cvs`、`--collaboration_policy dual_route_cvs`；显式启用pairguard：`--candidate_set_max_receiver_pair_label_disagreement 0.34`、`--candidate_set_max_receiver_pair_unknown_risk_range 0.30`、`--candidate_set_min_label_receiver_class_reliability 0.75`、`--candidate_set_require_label_shell_observed`。远端运行前需完成N607预检、低显存GPU选择、SCP同步、远端`py_compile`和单测。
 
+### N607执行与结果
+
+预检：`tools\n607_ssh_preflight.ps1`通过。N607项目根目录存在，8张RTX3090均为`10/24576MiB`，选择并列最低显存占用的GPU0。远端环境：`/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python`。远端验证：`py_compile`通过，`unittest discover -s code/tests -p 'test_collaborative_open_set_qknn_eval.py' -q`为`51 tests OK`。同步后三个远端代码文件SHA256与本地一致。
+
+远端输出均使用`runs/phase2_adv3b02_collab_open_set_qknn_full_20260703/features.npz`，星地信道特征沿用ADV3B02 Stage2-C特征包；`receiver_count=5`、`group_count=307`、`evidence_row_count=1000`，`--collab_counts all`覆盖k=1..5。
+
+|路线|JSON SHA256|CSV SHA256|结论|
+|---|---|---|---|
+|`dualroute_noguard`|`CD745E3C1E81AEF4CF2B46E4CD9252777AD22C59809FC3D4D3AFA7E45B1396AB`|`2277705159F548B8CD75DE204624C3370C0E217C589ABA9921E3FFC7765FFED1`|k=2、k=3优于固定路由；k=4、k=5与固定路由持平；保留为当前最合理轻量双路由诊断。|
+|`pairguard_strict`|`4D7E51C511F9BA87438B28F9C05F3AB1B1D00A1FCD75675A46A36D2A390E9934`|`00BAEF7ECA1A9209A5C67DA91B6D71077A4FD0A18A2FC307A87E00D7EAB1F43D`|unknown_FAR最低，但known被大量转为unknown_reject，不适合作主线。|
+|`pairguard_balanced`|`9C6781A0B63A3CAB9BEA577B9A6F3E8AE8945F7BB57448BF5294E046C45AB519`|`1BC9D7042984B4FF24F00EF7602639DF26175E76D1B2540A1690B2B38E9B6076`|比strict保留更多known，但仍显著低于固定路由，说明pairguard不能作为硬accept门控直接上线。|
+
+主结果表：
+
+|route|k|old_acc|min_old|seen_new_acc|min_seen|unknown_FAR|unknown_reject|defer|bytes/event|p95 ms|rescue_rate|
+|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+|baseline_fixed_k|1|0.0000|0.0000|0.0000|0.0000|0.0000|0.4667|0.7459|40.0|0.1838||
+|baseline_fixed_k|2|0.4079|0.0500|0.5769|0.5313|0.1304|0.8696|0.0720|80.0|0.1838||
+|baseline_fixed_k|3|0.6250|0.2500|0.7250|0.6000|0.0750|0.9000|0.0300|120.0|0.1838||
+|baseline_fixed_k|4|0.8083|0.7000|0.7500|0.6000|0.0250|0.9500|0.0150|150.0|0.1838||
+|baseline_fixed_k|5|0.7833|0.5500|0.7250|0.5500|0.0750|0.9000|0.0100|168.6|0.1838||
+|dualroute_noguard|1|0.0000|0.0000|0.0000|0.0000|0.0000|0.4667|0.7459|40.0|0.1374|0.0000|
+|dualroute_noguard|2|0.5000|0.2000|0.5962|0.5625|0.1304|0.8696|0.0440|80.0|0.1374|0.2120|
+|dualroute_noguard|3|0.6500|0.3000|0.7250|0.6000|0.0750|0.9000|0.0250|120.0|0.1374|0.2100|
+|dualroute_noguard|4|0.8083|0.7000|0.7500|0.6000|0.0250|0.9500|0.0150|150.0|0.1374|0.1800|
+|dualroute_noguard|5|0.7833|0.5500|0.7250|0.5500|0.0750|0.9000|0.0100|168.6|0.1374|0.1550|
+|pairguard_strict|1|0.0000|0.0000|0.0000|0.0000|0.0000|0.4667|0.7459|40.0|0.1379|0.0000|
+|pairguard_strict|2|0.3224|0.1500|0.2692|0.1000|0.0217|0.9348|0.1800|80.0|0.1379|0.1960|
+|pairguard_strict|3|0.2500|0.0500|0.3500|0.2500|0.0000|0.9750|0.1300|120.0|0.1379|0.1700|
+|pairguard_strict|4|0.1250|0.0000|0.2750|0.1000|0.0000|0.9500|0.2400|150.0|0.1379|0.1050|
+|pairguard_strict|5|0.0750|0.0000|0.2750|0.1000|0.0000|0.9750|0.2550|168.6|0.1379|0.0800|
+|pairguard_balanced|1|0.0000|0.0000|0.0000|0.0000|0.0000|0.4667|0.7459|40.0|0.1358|0.0000|
+|pairguard_balanced|2|0.3947|0.2000|0.5000|0.5000|0.0652|0.9348|0.0520|80.0|0.1358|0.2120|
+|pairguard_balanced|3|0.4167|0.1000|0.5000|0.4000|0.0000|0.9750|0.0300|120.0|0.1358|0.2100|
+|pairguard_balanced|4|0.4333|0.1500|0.3750|0.2500|0.0000|0.9500|0.1050|150.0|0.1358|0.1800|
+|pairguard_balanced|5|0.3667|0.1500|0.3500|0.2000|0.0250|0.9500|0.1150|168.6|0.1358|0.1550|
+
+### 判定与下一步
+
+`dualroute_noguard`是本轮唯一没有明显退化的新增路线：k=2 old从`0.4079`升到`0.5000`，seen-new从`0.5769`升到`0.5962`；k=3 old从`0.6250`升到`0.6500`，seen-new持平`0.7250`；k=4和k=5与固定路由持平。它的unknown_FAR未改善，k=2仍为`0.1304`，k=3为`0.0750`，因此仍是diagnostic-only。
+
+pairguard证明了“receiver分歧/风险跨度/shell观测”确实能压低unknown false accept，但直接作为硬accept门控会把大量known样本打成unknown_reject。下一步不应继续收紧阈值，而应把pairguard改为分层策略：仅在unknown risk接近边界或label shell异常时触发二级校验；对高pvalue、高receiver-class reliability、高score gap的known样本保持accept；对冲突样本进入`request_more`或地面复核，而不是直接unknown_reject。
+
+达标状态：未达成old 99%、old per-class>=95%、seen-new 97%、seen per-class>=93%、unknown rejection 99%目标；不得声明Stage2-C部署成功。最终SSH/SCP后本地无`ssh.exe`残留，无N607和bridge 22端口ESTABLISHED连接。
+
 
 
 
