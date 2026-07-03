@@ -924,3 +924,45 @@ Cost_r=bytes_r + eta*latency_r + gamma*memory_r
 |增加严格`event_id`路线|后续用真实共享事件键复跑，替代`receiver_domain_ranked`诊断近似。|
 
 最终版本状态：本地报告已同步Git镜像；Git镜像当前clean，分支`codex/cvs-rffi-release-20260626`领先origin 238个提交；本轮代码提交为`8393436 Add prototype candidate pruning for qKNN evidence`，报告提交为`6c2060b Record top-M collaborative qKNN diagnostics`，`code/scripts/phase2_qknn_prototype_compress_probe.py`已由`156e41a`跟踪。
+
+## 2026-07-03 adaptive_gain协同策略落地
+
+本轮将BASCC-qKNN8的第一步落为可执行策略：新增`collaboration_policy=adaptive_gain`。策略含义是每个事件从一个receiver开始，在当前融合结果处于低分数、低margin、低共识或高风险边界时，按收益/成本选择下一receiver，直到接受、拒识、defer或达到最大receiver预算。收益项包含ambiguity、margin不足、unknown边界接近程度和预测分歧；成本项包含bytes和latency代理。该策略仍是离线证据评估，不使用unknown query调阈值。
+
+代码改动：
+
+|文件|目的|
+|---|---|
+|`code/evaluation/collaborative_open_set_qknn_eval.py`|新增`adaptive_gain`策略、收益/成本选择、加权score gap共识、unknown defer/request_more统计和stop reason审计。|
+|`code/scripts/phase2_collaborative_open_set_qknn_eval.py`|CLI新增`adaptive_gain`选择和收益/成本参数透传。|
+|`code/tests/test_collaborative_open_set_qknn_eval.py`|新增高风险unknown边界触发多receiver、预算2跳过低价值固定前缀receiver的单测。|
+
+本地验证：
+
+```powershell
+conda activate ssr-gpu
+python -m py_compile E:\type10-7\code\evaluation\collaborative_open_set_qknn_eval.py E:\type10-7\code\scripts\phase2_collaborative_open_set_qknn_eval.py
+python E:\type10-7\code\tests\test_collaborative_open_set_qknn_eval.py
+python E:\type10-7\code\tests\test_phase2_collaborative_open_set_qknn_eval.py
+```
+
+结果：`test_collaborative_open_set_qknn_eval.py`18 tests OK，`test_phase2_collaborative_open_set_qknn_eval.py`16 tests OK。Git镜像同样验证通过。Git提交：`95d8734 Add adaptive gain collaboration policy`。
+
+本轮文件SHA256：
+
+|文件|SHA256|
+|---|---|
+|`code/evaluation/collaborative_open_set_qknn_eval.py`|`762E33E1D637C086A9555902F503A370D2DA59B0F8526C461482E81CB18A66F6`|
+|`code/scripts/phase2_collaborative_open_set_qknn_eval.py`|`88E61019B2B1CFA80A1D589EC8EFC8E64915ED0BC493D047166120556009F7B9`|
+|`code/tests/test_collaborative_open_set_qknn_eval.py`|`C075F81D4C0B2F39CD8E2B18E4BDEDE9A5051F326CFE93527678F2B90DD0C044`|
+
+计划远端诊断使用N607的`CVS-RFFI`环境，底座特征仍为`runs/phase2_adv3b02_collab_open_set_qknn_full_20260703/features.npz`。输出两组结果：
+
+|候选|unknown阈值|目的|
+|---|---:|---|
+|`adaptive_gain_v1`|0.995|保留上一轮高拒识阈值，隔离观察adaptive receiver选择本身的影响。|
+|`adaptive_gain_u090`|0.900|试探更严格unknown拒识阈值是否能压低unknown FAR，并观察old/seen-new牺牲。|
+
+共同关键参数：`--collab_counts all --k_shot 8 --query_per_class 20 --qknn_k 8 --candidate_class_top_m 2 --support_calibration_mode leave_one_out --unknown_gate_mode support_envelope_evt --score_threshold_combine max --scenario_aware --radius_norm 0.3 --fusion_policy scorer_cvs --collaboration_policy adaptive_gain --adaptive_gain_min_risk 0.60 --adaptive_gain_latency_weight 0.0 --adaptive_gain_bytes_weight 0.0 --adaptive_gain_disagreement_weight 0.5 --accept_margin_threshold 0.03 --consensus_gap_threshold 0.0 --consensus_score_threshold 0.30 --scorer_component_vote_threshold 0.25 --unknown_quantile 0.75 --evt_tail_quantile 0.80 --evt_temperature 0.05 --latency_budget_ms 12 --evidence_packet_bytes 120 --event_alignment_policy receiver_domain_ranked --support_selection_policy stable_first --seed 407043`。
+
+预期检查：远端先跑`py_compile`和两组单测，再运行两组诊断；运行前后记录GPU显存；SCP拉回JSON/CSV；本地确认无SSH残留。成功判据不是99/97/99达标，而是判断adaptive策略是否提高实际参与receiver、降低unknown FAR或改善old/seen-new，同时保持报告口径为诊断近似。
