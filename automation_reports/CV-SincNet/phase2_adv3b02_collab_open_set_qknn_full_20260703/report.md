@@ -3538,6 +3538,51 @@ pair审计证明：低成本2星组合没有单个pair同时满足旧类、新�
 
 资源约束说明文件状态：在当前工作区按`卫星协同`、`资源约束`、`RFFI系统说明`关键词递归搜索，仍未找到用户点名的`卫星协同射频指纹识别（RFFI）系统资源约束设计说明.md`。因此本报告继续使用已有字段`participating_receivers`、`bytes_per_event`、`latency_ms_p50/p95`、`prototype_storage_bytes`、`max_event_bytes`、`max_event_latency_ms`作为临时资源口径；找到原文后必须按原文重新校验上限。
 
+### N607同步与严格事件诊断
+
+N607直连preflight：`2026年07月04日01:36:22 CST`通过，项目根可见，8张RTX3090均为`10/24576MiB`。本轮同步使用直接`scp -F E:\type10-7\tools\n607_ssh_config`，目标路径如下：
+
+|本地文件|N607目标|
+|---|---|
+|`code/evaluation/collaborative_open_set_qknn_eval.py`|`/home/szu2070436088/2510044040/CV-SincNet/code/evaluation/collaborative_open_set_qknn_eval.py`|
+|`code/scripts/collab_evidence_pair_audit.py`|`/home/szu2070436088/2510044040/CV-SincNet/code/scripts/collab_evidence_pair_audit.py`|
+|`code/tests/test_collaborative_open_set_qknn_eval.py`|`/home/szu2070436088/2510044040/CV-SincNet/code/tests/test_collaborative_open_set_qknn_eval.py`|
+|`code/tests/test_collab_evidence_pair_audit.py`|`/home/szu2070436088/2510044040/CV-SincNet/code/tests/test_collab_evidence_pair_audit.py`|
+
+远端使用`/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python`验证：
+
+```text
+python -m py_compile code/evaluation/collaborative_open_set_qknn_eval.py code/scripts/collab_evidence_pair_audit.py code/scripts/phase2_collaborative_open_set_qknn_eval.py
+python -m unittest discover -s code/tests -p 'test_collaborative_open_set_qknn_eval.py' -q
+python -m unittest discover -s code/tests -p 'test_collab_evidence_pair_audit.py' -q
+```
+
+结果：`test_collaborative_open_set_qknn_eval.py`为`47 tests OK`；`test_collab_evidence_pair_audit.py`为`1 test OK`。远端hash与本地一致：
+
+|文件|N607 SHA256|
+|---|---|
+|`code/evaluation/collaborative_open_set_qknn_eval.py`|`fe50422e70f0d4c24749a38f95cdcc50cd19a8bdd51a71812e94965bd743d6d1`|
+|`code/scripts/collab_evidence_pair_audit.py`|`b11d5eaf6df2b4f8d6d41d06bdbc17d4c8d4f9e8e7968206840af1db2afe7c6f`|
+|`code/tests/test_collaborative_open_set_qknn_eval.py`|`e6ff68bd440d23d1a85de0c3bc9fb8d342140b29e19d584597fe6e5c8bb3fdfd`|
+|`code/tests/test_collab_evidence_pair_audit.py`|`d00973fdcbd1a3f12bbb321a7b6985100b1dff1c9363bd2ef65035c2e162b01d`|
+
+远端pair审计复现：
+
+|远端产物|SHA256|
+|---|---|
+|`runs/phase2_adv3b02_collab_open_set_qknn_full_20260703/pair_audit_shell_s150_k2_matrix.csv`|`7ae3be1bb77ce0261c44908786c7cacc20940a8203888b043ba4409606f4f11f`|
+|`runs/phase2_adv3b02_collab_open_set_qknn_full_20260703/pair_audit_shell_s150_k2_errors.csv`|`7c7826469946373ec05fe231b99d0722c4662da8eb52f24aa03aef9fbab8fca4`|
+
+严格同事件诊断命令把当前最佳`shell_s150`配置的`--event_alignment_policy`改为`strict_event_key`后失败，错误为：
+
+```text
+RuntimeError: NO_ALIGNED_COLLABORATIVE_EVENTS: target receiver query rows do not share role+tx+day+sig+scenario keys; use --event_alignment_policy receiver_domain_ranked only for explicitly marked receiver-domain ensemble diagnostics
+```
+
+判定：当前全量协同结果不能升格为严格同物理事件卫星群协同，只能继续标为`receiver_domain_ranked` receiver-domain ensemble诊断。若要满足真实卫星群协同部署证据，需要重新导出带共享物理事件键的features或构造严格同事件query集合。
+
+远端结束状态：8张RTX3090均为`10/24576MiB`；本地检查无残留`ssh.exe`，无到`172.31.111.215:22`或`172.31.105.18:22`的ESTABLISHED连接。Git镜像提交：`ace6ff4 Add receiver pair audit for collaborative open set`。
+
 
 
 
