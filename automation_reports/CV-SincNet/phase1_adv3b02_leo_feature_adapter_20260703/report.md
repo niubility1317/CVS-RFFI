@@ -928,6 +928,90 @@ Planned N607 output:
 
 Success criteria are unchanged for target1: corrected sat-only old closed accuracy at least`80%`or at least`+5pp`, clean drop no more than`1-2pp`, scenario and per-tx floors preserved, margins not collapsed, and unknown/proxy-unknown oldness/FAR not worsened.
 
+## V21 Oldness-Capped Identity Fallback Results
+
+Run status:
+
+| Item | Value |
+|---|---|
+| Remote command | `ROOT=/home/szu2070436088/2510044040/CV-SincNet PYTHON=/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python bash code/scripts/sweep_phase1_adv3b02_oldnesscap_target1_v21_20260703.sh` |
+| Remote start/end | `2026-07-03T11:07:19+08:00` to `2026-07-03T11:08:37+08:00` |
+| Rows | 370 |
+| Candidate rows | 360 |
+| Strong target1 candidate pass | 4 |
+| Identity baseline pass rows | 2 |
+
+Artifacts:
+
+| Artifact | Local path | SHA256 |
+|---|---|---|
+| V21 build log | `E:\type10-7\automation_reports\CV-SincNet\phase1_adv3b02_leo_feature_adapter_20260703\artifacts\v21_oldnesscap_target1\build_oldness_caps.out` | `F749CA06876E649A2A28118A8297959685132FD7DE027D9D12A3F29FC8FFC364` |
+| V21 summary | `E:\type10-7\automation_reports\CV-SincNet\phase1_adv3b02_leo_feature_adapter_20260703\artifacts\v21_oldnesscap_target1\target1_strong_v21_summary.csv` | `B571F16E679177D4F72F465D877132DE573D98A8EE2B667C79E43B64B71EC57C` |
+| V21 metrics JSON | `E:\type10-7\automation_reports\CV-SincNet\phase1_adv3b02_leo_feature_adapter_20260703\artifacts\v21_oldnesscap_target1\target1_strong_v21_metrics.json` | `07F9A4A832ED3CAB2938E69DA400A117FA0DBB04592D325BC3F669B5EE388988` |
+| V21 eval stdout | `E:\type10-7\automation_reports\CV-SincNet\phase1_adv3b02_leo_feature_adapter_20260703\artifacts\v21_oldnesscap_target1\target1_strong_v21_eval.out` | `00045BCE11829E1E5ABB6F0A4E9C9BF3E36B0B839EBE788888F447B8169AA7F5` |
+| V21 best JSON | `E:\type10-7\automation_reports\CV-SincNet\phase1_adv3b02_leo_feature_adapter_20260703\artifacts\v21_oldnesscap_target1\target1_strong_v21_best.json` | `EA08160129D2CC782B71E17BEF7E922774609DFA194D8B2C051E671F7E7127C9` |
+
+Strong target1 candidate pass rows:
+
+| Run | Variant | Old closed acc | Delta vs identity pp | Clean drop pp | Scenario floor | TX floor | Unknown FAR source05 | Unknown FAR delta | Unknown oldness delta | Margin delta | True-dist delta | Verdict |
+|---|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---|
+| `rx7_14_u10` | `LEOADAPT5_MARGIN_UNK_MLP_BLEND100_CAP000` | 0.8682 | +0.0294 | -0.1667 | 0.8508 | 0.7088 | 0.8667 | -0.0056 | -0.0698 | +0.0291 | -0.0003 | target1 pass, target2 fail |
+| `rx7_14_u10` | `LEOADAPT5_MARGIN_UNK_MLP_BLEND100_CAP050` | 0.8685 | +0.0588 | -0.1667 | 0.8517 | 0.7106 | 0.8667 | -0.0056 | -0.0668 | +0.0520 | -0.0004 | target1 pass, target2 fail |
+| `rx7_14_u10` | `LEOADAPT5_MARGIN_UNK_MLP_BLEND200_CAP000` | 0.8700 | +0.2059 | -0.1667 | 0.8525 | 0.7106 | 0.8667 | -0.0056 | -0.1510 | +0.0807 | +0.0011 | target1 pass, target2 fail |
+| `rx7_14_u10` | `LEOADAPT5_MARGIN_UNK_MLP_BLEND200_CAP050` | 0.8700 | +0.2059 | -0.1667 | 0.8525 | 0.7106 | 0.8667 | -0.0056 | -0.1486 | +0.1064 | +0.0011 | target1 pass, target2 fail |
+
+Interpretation:
+
+V21 is the first completed run where non-identity repaired features pass the strengthened target1 gate. The pass is not a rejection solution: the same rows still accept about`86.67%`of target unknown samples under the source05 oldness reference. Therefore target1 is achieved for the`rx7_14_u10`target slice under V21, but target2 remains open.
+
+Gate counts:
+
+| Gate | Passing rows |
+|---|---:|
+| Old recovery | 74 |
+| Clean fidelity | 320 |
+| Floor | 66 |
+| Margin | 118 |
+| Unknown safety | 170 |
+| Strong target1 | 6 total, including 4 candidate rows |
+
+## V22 V21-Feature Rejection Design
+
+V22 starts from the V21 target1-pass feature variants and runs a source/proxy-only rejection audit. It does not retrain the Phase1 backbone or the V21 feature adapter. It tests whether target1-passing repaired views can be used as a deployable open-set rejector without using target clean, target labels, or target unknown query labels for threshold selection.
+
+New file:
+
+| File | Purpose | SHA256 |
+|---|---|---|
+| `E:\type10-7\code\scripts\sweep_phase1_adv3b02_v21_reject_v22_20260703.sh` | Sweep single-view and multi-view V21 repaired-feature rejection sets over `eval_phase1_repair_ensemble_manifold_reject_20260703.py` | `209D410F58FD167031288B7885C84850D62B79E2AB4F247AD1859F566392FCCE` |
+
+Local verification:
+
+| Command | Result |
+|---|---|
+| `C:\Users\lh594\.conda\envs\ssr-gpu\python.exe -m py_compile E:\type10-7\code\scripts\eval_phase1_repair_ensemble_manifold_reject_20260703.py` | PASS |
+| `bash -lc "bash -n /mnt/e/type10-7/code/scripts/sweep_phase1_adv3b02_v21_reject_v22_20260703.sh"` | PASS |
+
+V22 protocol:
+
+| Item | Setting |
+|---|---|
+| Target run slice | `phase1_adv3b02_multiview_keepold_rx7_14_u10_20260702` |
+| Feature source | V21 repaired NPZs, `features_leo_repaired.npz` |
+| Adapter sets | identity, each target1-pass variant, low-FAR V21 variants, pass4 ensemble, identity+pass4, lowfar6, cap000/cap050/all MLP ensembles |
+| Threshold calibration | Source old and source proxy_unknown only |
+| Target labels | Not used for threshold calibration |
+| Target unknown query | Evaluation only |
+| Success | `unknown_FAR<=0.05`and `old_drop_pp_vs_closed<=2.0`in the same row |
+
+Planned N607 output:
+
+| Artifact | Remote path |
+|---|---|
+| V22 combined summary | `/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_adv3b02_v21_reject_v22_20260703/v21_reject_v22_summary.csv` |
+| V22 best JSON | `/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_adv3b02_v21_reject_v22_20260703/v21_reject_v22_best.json` |
+| V22 per-set parts | `/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_adv3b02_v21_reject_v22_20260703/parts/` |
+
 ## V16 Completion Results
 
 V16 completed on N607 as a bounded foreground command. It trained source-only classwise clean<-LEO repair statistics, calibrated source/proxy old-class tails, and evaluated sat-only target old/unknown rows.
