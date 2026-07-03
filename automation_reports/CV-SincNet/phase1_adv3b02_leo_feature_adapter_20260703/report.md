@@ -963,6 +963,54 @@ Planned N607 output:
 
 Success check remains target1 first: more target slices must pass the strong gate, especially by raising worst TX and worst receiver floors without worsening unknown safety.
 
+## V23 Source Group-Floor Target1 Results
+
+Run status:
+
+| Item | Value |
+|---|---|
+| Remote command | `ROOT=/home/szu2070436088/2510044040/CV-SincNet PYTHON=/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python bash code/scripts/sweep_phase1_adv3b02_groupfloor_target1_v23_20260703.sh` |
+| Completed adapter metrics | 40/40 |
+| Rows | 130 |
+| Candidate rows | 120 |
+| Strong target1 candidate pass | 0 |
+
+Artifacts:
+
+| Artifact | Local path | SHA256 |
+|---|---|---|
+| V23 summary | `E:\type10-7\automation_reports\CV-SincNet\phase1_adv3b02_leo_feature_adapter_20260703\artifacts\v23_groupfloor_target1\target1_strong_v23_summary.csv` | `7E74D99D920B01D432502E0A9C5DA617D361FDA17579D135E19B01E950C1F135` |
+| V23 metrics JSON | `E:\type10-7\automation_reports\CV-SincNet\phase1_adv3b02_leo_feature_adapter_20260703\artifacts\v23_groupfloor_target1\target1_strong_v23_metrics.json` | `436B9BDFCAB350E65925DF51FE184097FE0B2D97AE7809912FA215A5CD552078` |
+| V23 eval stdout | `E:\type10-7\automation_reports\CV-SincNet\phase1_adv3b02_leo_feature_adapter_20260703\artifacts\v23_groupfloor_target1\target1_strong_v23_eval.out` | `ECA2873C62FEFAD0D1F1628BC3FFC9E71C4E19DF181DB6D25839EB1B4C77D076` |
+| V23 best JSON | `E:\type10-7\automation_reports\CV-SincNet\phase1_adv3b02_leo_feature_adapter_20260703\artifacts\v23_groupfloor_target1\target1_strong_v23_best.json` | `B251312B539B4448F8EFAACC1EE169B9E9DDB992900A64A2E082F74B15A5DB05` |
+| V23 cap build log | `E:\type10-7\automation_reports\CV-SincNet\phase1_adv3b02_leo_feature_adapter_20260703\artifacts\v23_groupfloor_target1\build_oldness_caps.out` | `C734FE7074F50EFB1BD722810FD6320502E8878A5FD658F0E551D5809E96EB82` |
+
+Gate counts over V23 candidate rows:
+
+| Gate | Passing rows |
+|---|---:|
+| Old recovery | 24 |
+| Clean fidelity | 48 |
+| Floor | 4 |
+| Margin | 0 |
+| Unknown safety | 29 |
+| Strong target1 | 0 |
+
+Best same-row outcomes:
+
+| Selection | Run | Variant | Old closed acc | Scenario floor | TX floor | Unknown FAR | Unknown FAR delta | Clean drop pp | Verdict |
+|---|---|---|---:|---:|---:|---:|---:|---:|---|
+| Best target-old acc | `rx7_14_u10` | `LEOADAPT6_RXTXDRO_MLP` | 0.8674 | 0.8525 | 0.6696 | 0.9167 | +0.0444 | not selected | margin/unknown fail |
+| Best TX floor | `rx7_14_u10` | `LEOADAPT6_TXDRO_MLP_CAP000` | 0.8512 | 0.8275 | 0.7069 | 0.9444 | +0.0722 | 0.6667 | margin/unknown fail |
+| Best hard `rx20_1` row | `rx20_1_u10` | `LEOADAPT6_RXTXDRO_MLP_CAP000` | 0.5812 | 0.5583 | 0.3766 | 0.7539 | -0.0218 | 3.3333 | old recovery/floor/clean/margin fail |
+| Best hard `rx3_19` row | `rx3_19_u10` | `LEOADAPT6_RXDRO_MLP` | 0.5418 | 0.5208 | 0.3536 | 0.7778 | +0.2005 | 3.6667 | all gates fail |
+
+Interpretation:
+
+V23 falsifies the simple source rx/tx worst-group repair hypothesis. It can produce some rows with acceptable scenario average on the already-good`rx7_14`slice, but it collapses the margin gate across all candidates and does not recover hard receiver slices. The hard slices remain far below the`80%`target-old recovery floor. For the updated objective, V23 is diagnostic-negative and should not be promoted.
+
+Current target status remains unchanged after V23: target1 is only locally achieved on`rx7_14_u10`by V21; target1 is not globally achieved; target2 is not achieved.
+
 ## V21 Oldness-Capped Identity Fallback Design
 
 V21 follows the V20 finding that conservative blends can satisfy old recovery, clean fidelity, scenario/tx floors and margin jointly, while unknown safety remains the blocking constraint. It adds a label-free oldness cap after V20 feature export: for each sat-only sample, use the repaired/blended feature only if its source-prototype max logit is no more than the identity feature max logit plus a small cap; otherwise fall back to identity features.
