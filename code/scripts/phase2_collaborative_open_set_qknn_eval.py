@@ -1188,6 +1188,7 @@ def run_evaluation(args: argparse.Namespace) -> dict[str, Any]:
         consensus_gap_threshold=float(args.consensus_gap_threshold),
         consensus_score_threshold=float(args.consensus_score_threshold),
         scorer_component_vote_threshold=float(args.scorer_component_vote_threshold),
+        collaboration_policy=str(args.collaboration_policy),
         latency_budget_ms=float(args.latency_budget_ms),
         threshold_selection_label_scope=str(metadata["threshold_scope"]),
         unknown_query_eval_only=True,
@@ -1256,6 +1257,7 @@ def parse_args() -> argparse.Namespace:
     p.add_argument("--accept_margin_threshold", type=float, default=0.10)
     p.add_argument("--unknown_quantile", type=float, default=0.75)
     p.add_argument("--fusion_policy", default="risk_margin", choices=["risk_margin", "consensus_veto", "scorer_cvs"])
+    p.add_argument("--collaboration_policy", default="fixed_k", choices=["fixed_k", "progressive_budget"])
     p.add_argument("--consensus_gap_threshold", type=float, default=0.0)
     p.add_argument("--consensus_score_threshold", type=float, default=0.0)
     p.add_argument("--scorer_component_vote_threshold", type=float, default=0.5)

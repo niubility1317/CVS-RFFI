@@ -198,6 +198,13 @@ def _validate_rows(
                 )
 
 
+def _validate_collaboration_policy(value: object) -> str:
+    policy = _normalize_scope(value or "fixed_k")
+    if policy not in {"fixed_k", "progressive_budget"}:
+        raise ValueError("collaboration_policy must be fixed_k or progressive_budget")
+    return policy
+
+
 def _select_receivers(
     rows: Sequence[Mapping[str, Any]],
     k: int,
@@ -424,7 +431,50 @@ def _fuse_event(
         "bytes": float(sum(_float(row, "bytes", 0.0) for row in selected)),
         "latency_ms": latency_ms,
         "can_request_more": bool(can_request_more),
+        "participating_receivers_used": int(len(selected)),
     }
+
+
+def _fuse_progressive_event(
+    ordered: Sequence[Mapping[str, Any]],
+    *,
+    max_receivers: int,
+    unknown_risk_threshold: float,
+    accept_margin_threshold: float,
+    unknown_quantile: float,
+    fusion_policy: str,
+    consensus_gap_threshold: float,
+    consensus_score_threshold: float,
+    scorer_component_vote_threshold: float,
+    scorer_risk_components: Sequence[str] | str | None = None,
+    latency_budget_ms: float = 0.0,
+) -> dict[str, Any]:
+    max_receivers = max(1, int(max_receivers))
+    last: dict[str, Any] | None = None
+    for used in range(1, min(max_receivers, len(ordered)) + 1):
+        fused = _fuse_event(
+            ordered[:used],
+            unknown_risk_threshold=unknown_risk_threshold,
+            accept_margin_threshold=accept_margin_threshold,
+            unknown_quantile=unknown_quantile,
+            fusion_policy=fusion_policy,
+            consensus_gap_threshold=consensus_gap_threshold,
+            consensus_score_threshold=consensus_score_threshold,
+            scorer_component_vote_threshold=scorer_component_vote_threshold,
+            scorer_risk_components=scorer_risk_components,
+            can_request_more=used < min(max_receivers, len(ordered)),
+            latency_budget_ms=latency_budget_ms,
+        )
+        fused["participating_receiver_budget"] = int(max_receivers)
+        fused["participating_receivers_used"] = int(used)
+        fused["progressive_stop_reason"] = str(fused["decision"])
+        last = fused
+        if fused["decision"] != "request_more":
+            return fused
+    if last is None:
+        raise ValueError("progressive collaboration requires at least one receiver observation")
+    last["progressive_stop_reason"] = "budget_exhausted"
+    return last
 
 
 def _finalize_metrics(
@@ -507,6 +557,7 @@ def _finalize_metrics(
 
     bytes_values = [float(item["bytes"]) for item in event_results]
     latency_values = [float(item["latency_ms"]) for item in event_results]
+    participating_values = [float(item.get("participating_receivers_used", k)) for item in event_results]
     known_total = role_totals["old"] + role_totals["seen_new"]
     known_accepted = role_accepted["old"] + role_accepted["seen_new"]
     known_correct = role_correct["old"] + role_correct["seen_new"]
@@ -514,6 +565,9 @@ def _finalize_metrics(
 
     return {
         "participating_receivers": int(k),
+        "participating_receivers_avg": sum(participating_values) / max(len(participating_values), 1),
+        "participating_receivers_p95": _percentile(participating_values, 0.95),
+        "participating_receivers_max": int(max(participating_values, default=float(k))),
         "total": int(total_events),
         "excluded_incomplete_groups": int(excluded_incomplete),
         "old_total": int(role_totals["old"]),
@@ -632,6 +686,7 @@ def evaluate_collaborative_open_set_evidence(
     consensus_score_threshold: float = 0.0,
     scorer_component_vote_threshold: float = 0.5,
     scorer_risk_components: Sequence[str] | str | None = None,
+    collaboration_policy: str = "fixed_k",
     latency_budget_ms: float = 0.0,
     threshold_selection_label_scope: str = "support_known_only",
     unknown_query_eval_only: bool = True,
@@ -647,6 +702,7 @@ def evaluate_collaborative_open_set_evidence(
 
     rows = list(rows)
     active_risk_components = _parse_risk_components(scorer_risk_components)
+    collaboration_policy = _validate_collaboration_policy(collaboration_policy)
     _validate_rows(
         rows,
         threshold_selection_label_scope=threshold_selection_label_scope,
@@ -701,19 +757,34 @@ def evaluate_collaborative_open_set_evidence(
                 int(k),
                 receiver_selection_policy=receiver_selection_policy,
             )
-            fused = _fuse_event(
-                selected,
-                unknown_risk_threshold=unknown_risk_threshold,
-                accept_margin_threshold=accept_margin_threshold,
-                unknown_quantile=unknown_quantile,
-                fusion_policy=fusion_policy,
-                consensus_gap_threshold=consensus_gap_threshold,
-                consensus_score_threshold=consensus_score_threshold,
-                scorer_component_vote_threshold=scorer_component_vote_threshold,
-                scorer_risk_components=active_risk_components,
-                can_request_more=len({_str(row, "receiver_id") for row in group}) > int(k),
-                latency_budget_ms=latency_budget_ms,
-            )
+            if collaboration_policy == "progressive_budget":
+                fused = _fuse_progressive_event(
+                    selected,
+                    max_receivers=int(k),
+                    unknown_risk_threshold=unknown_risk_threshold,
+                    accept_margin_threshold=accept_margin_threshold,
+                    unknown_quantile=unknown_quantile,
+                    fusion_policy=fusion_policy,
+                    consensus_gap_threshold=consensus_gap_threshold,
+                    consensus_score_threshold=consensus_score_threshold,
+                    scorer_component_vote_threshold=scorer_component_vote_threshold,
+                    scorer_risk_components=active_risk_components,
+                    latency_budget_ms=latency_budget_ms,
+                )
+            else:
+                fused = _fuse_event(
+                    selected,
+                    unknown_risk_threshold=unknown_risk_threshold,
+                    accept_margin_threshold=accept_margin_threshold,
+                    unknown_quantile=unknown_quantile,
+                    fusion_policy=fusion_policy,
+                    consensus_gap_threshold=consensus_gap_threshold,
+                    consensus_score_threshold=consensus_score_threshold,
+                    scorer_component_vote_threshold=scorer_component_vote_threshold,
+                    scorer_risk_components=active_risk_components,
+                    can_request_more=len({_str(row, "receiver_id") for row in group}) > int(k),
+                    latency_budget_ms=latency_budget_ms,
+                )
             first = selected[0]
             fused["role"] = _role(first.get("role"))
             fused["true_label"] = _str(first, "true_label", UNKNOWN_LABEL if fused["role"] == "unknown" else "")
@@ -735,6 +806,7 @@ def evaluate_collaborative_open_set_evidence(
         "eligible_group_count": int(len(matched_max)),
         "excluded_incomplete_groups": int(len(groups) - len(matched_max)),
         "denominator_policy": "per_k_available_receivers",
+        "collaboration_policy": collaboration_policy,
         "matched_max_requested_group_count": int(len(matched_max)),
         "receiver_selection_policy": _normalize_scope(receiver_selection_policy),
         "threshold_selection_label_scope": _normalize_scope(threshold_selection_label_scope),

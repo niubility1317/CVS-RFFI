@@ -337,6 +337,62 @@ class CollaborativeOpenSetQknnEvalTest(unittest.TestCase):
         self.assertEqual(k1["unresolved_rate"], 1.0)
         self.assertEqual(k1["open_set_confusion"], {"old->request_more": 1})
 
+    def test_progressive_budget_requests_receivers_until_confident(self):
+        from evaluation.collaborative_open_set_qknn_eval import evaluate_collaborative_open_set_evidence
+
+        rows = [
+            {
+                "event_id": "progressive-old",
+                "receiver_id": "rx-a",
+                "role": "old",
+                "true_label": "old-a",
+                "predicted_label": "old-a",
+                "known_score": 0.45,
+                "known_margin": 0.02,
+                "unknown_risk": 0.30,
+                "score_risk": 0.10,
+                "radius_risk": 0.20,
+                "margin_risk": 0.30,
+                "latency_ms": 2.0,
+                "bytes": 96,
+            },
+            {
+                "event_id": "progressive-old",
+                "receiver_id": "rx-b",
+                "role": "old",
+                "true_label": "old-a",
+                "predicted_label": "old-a",
+                "known_score": 0.90,
+                "known_margin": 0.30,
+                "unknown_risk": 0.05,
+                "score_risk": 0.05,
+                "radius_risk": 0.05,
+                "margin_risk": 0.05,
+                "latency_ms": 2.5,
+                "bytes": 96,
+            },
+        ]
+
+        result = evaluate_collaborative_open_set_evidence(
+            rows,
+            collab_counts="1,2",
+            fusion_policy="scorer_cvs",
+            collaboration_policy="progressive_budget",
+            unknown_risk_threshold=0.8,
+            accept_margin_threshold=0.1,
+            consensus_gap_threshold=0.5,
+            consensus_score_threshold=0.6,
+            latency_budget_ms=5.0,
+        )
+
+        self.assertEqual(result["collaboration_policy"], "progressive_budget")
+        self.assertEqual(result["counts"]["1"]["open_set_confusion"], {"old->defer": 1})
+        self.assertEqual(result["counts"]["1"]["participating_receivers_avg"], 1.0)
+        self.assertEqual(result["counts"]["2"]["open_set_confusion"], {"old->old": 1})
+        self.assertEqual(result["counts"]["2"]["old_acc"], 1.0)
+        self.assertEqual(result["counts"]["2"]["participating_receivers_avg"], 2.0)
+        self.assertEqual(result["counts"]["2"]["bytes_per_event"], 192.0)
+
     def test_scorer_cvs_rejects_high_risk_without_known_rescue(self):
         from evaluation.collaborative_open_set_qknn_eval import evaluate_collaborative_open_set_evidence
 
