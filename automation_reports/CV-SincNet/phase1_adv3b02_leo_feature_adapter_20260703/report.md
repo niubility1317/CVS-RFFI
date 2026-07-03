@@ -2360,3 +2360,53 @@ Planned N607 output:
 | V27 summary | `/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_adv3b02_featurecontract_target1_v27_20260703/target1_strong_v27_summary.csv` |
 | V27 metrics JSON | `/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_adv3b02_featurecontract_target1_v27_20260703/target1_strong_v27_metrics.json` |
 | V27 best JSON | `/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_adv3b02_featurecontract_target1_v27_20260703/target1_strong_v27_best.json` |
+
+## V27 Pure Feature-Contract Adapter Result
+
+V27 completed onN607 at`2026-07-03T13:19:45+08:00`.The artifacts were pulled to`E:\type10-7\automation_reports\CV-SincNet\phase1_adv3b02_leo_feature_adapter_20260703\artifacts\v27_featurecontract_target1\`.The evaluator summary reports`candidate_rows=60`and`strong_target1_pass=0`.
+
+Gate counts over 60 V27 candidates:
+
+| Gate | Pass rows |
+|---|---:|
+| old recovery | 12 |
+| clean fidelity | 58 |
+| scenario/TX floor | 8 |
+| margin/true-distance safety | 40 |
+| unknown safety | 12 |
+| strong target1 | 0 |
+
+Best same-row candidate per target slice:
+
+| Run | Best V27 candidate | Gates | Old closed acc | Delta vs identity pp | Clean drop pp | Scenario floor | TX floor | Unknown FAR | FAR delta | Unknown oldness delta |
+|---|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+| `rx20_1_u10` | `LEOADAPT9_CONSERVE_LINR` | 2 | 0.6212 | -0.12 | -0.42 | 0.6019 | 0.3674 | 0.7819 | 0.0062 | -0.0427 |
+| `rx20_1_u1` | `LEOADAPT9_MARGIN_LINR` | 3 | 0.6188 | -0.35 | 0.08 | 0.6011 | 0.3830 | 0.8655 | -0.0056 | -0.0760 |
+| `rx3_19_u10` | `LEOADAPT9_FEAT_LINR` | 2 | 0.5544 | 0.62 | 0.00 | 0.5330 | 0.2600 | 0.5501 | -0.0271 | -0.1033 |
+| `rx3_19_u1` | `LEOADAPT9_MARGIN_LINR` | 2 | 0.5529 | 0.47 | -0.08 | 0.5321 | 0.2600 | 0.7525 | 0.0000 | -0.0620 |
+| `rx7_14_u10` | `LEOADAPT9_MARGIN_LINR` | 4 | 0.8765 | 0.85 | -0.08 | 0.8624 | 0.7176 | 0.8889 | 0.0167 | 0.1471 |
+| `rx7_14_u1` | `LEOADAPT9_MARGIN_LINR` | 4 | 0.8765 | 0.85 | -0.08 | 0.8624 | 0.7176 | 0.9375 | 0.0300 | 0.1719 |
+| `rx7_7_u10` | `LEOADAPT9_CONSERVE_LINR` | 2 | 0.7971 | 0.06 | 0.00 | 0.7774 | 0.6560 | 0.8498 | 0.0000 | -0.0355 |
+| `rx7_7_u1` | `LEOADAPT9_CONSERVE_LINR` | 2 | 0.7971 | 0.06 | 0.00 | 0.7774 | 0.6560 | 0.9300 | -0.0025 | -0.0061 |
+| `rx8_8_u10` | `LEOADAPT9_MARGIN_LINR` | 3 | 0.7235 | 0.47 | 0.17 | 0.6936 | 0.1747 | 0.8216 | -0.0108 | -0.1923 |
+| `rx8_8_u1` | `LEOADAPT9_COMPACT_MLP` | 2 | 0.7297 | 1.09 | 0.75 | 0.7025 | 0.1872 | 0.9475 | 0.0375 | 0.7643 |
+
+Variant-level interpretation:
+
+| Variant family | Mean old acc | Mean old delta pp | Clean drop pp | Unknown-safety pass | Margin pass | Decision |
+|---|---:|---:|---:|---:|---:|---|
+| `LEOADAPT9_CONSERVE_LINR` | 0.7126 | 0.18 | -0.17 | 4/10 | 6/10 | best conservative feature-only tradeoff,still far below80 on hard receivers |
+| `LEOADAPT9_MARGIN_LINR` | 0.7131 | 0.23 | 0.02 | 4/10 | 8/10 | improves margin/floor locally but worsens unknown on`rx7_14` |
+| `LEOADAPT9_FEAT_LINR` | 0.7130 | 0.22 | 0.03 | 3/10 | 4/10 | small old-class lift only |
+| `LEOADAPT9_COMPACT_MLP` | 0.7044 | -0.64 | 0.77 | 0/10 | 4/10 | compactness alone pulls unknown oldness upward |
+
+Interpretation:
+
+| Finding | Evidence | Decision |
+|---|---|---|
+| V27 fixes the V26 side effect | clean fidelity`58/60`; margin safety`40/60`; no logit CE/oldness training | pure feature objective is mechanically safer |
+| V27 still cannot recover hard slices | `rx20_1` stays around0.62;`rx3_19`around0.55;`rx8_8`around0.73 | post-hoc feature adapter cannot restore missing identity evidence |
+| Global target1 is still not met | strong target1`0/60`; old recovery`12/60`; unknown safety`12/60` | target1 remains open |
+| Target2 should not be attempted on V27 | unknown FAR remains high, e.g.`0.55-0.95`in best same-row rows | unknownFAR<5% remains far away under retained old performance |
+
+Current decision after V27: target1 remains not globally achieved and target2 remains not achieved. The strongest feature-only post-adapter route so far is conservative linear feature repair, but it only preserves geometry; it does not recover the hard receiver/TX failures. The next scientifically valid route should move earlier than the post-feature adapter: either an input/front-end LEO compensation module before the frozen Phase1 extractor, or a new source-only Phase1 representation training run with satellite consistency, while keeping the same sat-only LEO target evaluation and no target clean/query threshold fitting.
