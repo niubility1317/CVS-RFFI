@@ -226,6 +226,7 @@ def build_collaborative_evidence(
     support_quantile: float = 0.05,
     proxy_quantile: float = 0.95,
     risk_temperature: float = 0.035,
+    event_alignment_policy: str = "strict_event_key",
 ) -> tuple[list[dict[str, Any]], dict[str, Any]]:
     validate_required_roles(payload)
     roles = np.asarray(payload["dataset_role"]).astype(str)
@@ -309,6 +310,10 @@ def build_collaborative_evidence(
     total_query_rows = sum(len(v[role]) for v in receiver_query.values() for role in ["old", "seen_new", "unknown"])
     per_row_ms = elapsed_ms / max(total_query_rows, 1)
 
+    alignment_policy = str(event_alignment_policy or "strict_event_key").strip().lower()
+    if alignment_policy not in {"strict_event_key", "receiver_domain_ranked"}:
+        raise ValueError("event_alignment_policy must be strict_event_key or receiver_domain_ranked")
+
     for role_name, eval_role in [("old", "target_old"), ("seen_new", "target_new"), ("unknown", UNKNOWN_ROLE)]:
         label_set = old_labels if role_name == "old" else new_labels if role_name == "seen_new" else unknown_labels
         for label in label_set:
@@ -319,10 +324,45 @@ def build_collaborative_evidence(
                     if tx_ids[idx] == label:
                         keyed[_event_key(payload, idx, role_name, label)] = int(idx)
                 by_rx_key[rx] = keyed
-            common_keys = sorted(set.intersection(*(set(by_rx_key[rx]) for rx in target_receivers)))
-            for event_id in common_keys:
+            if alignment_policy == "strict_event_key":
+                event_groups = [
+                    (event_id, {rx: by_rx_key[rx][event_id] for rx in target_receivers})
+                    for event_id in sorted(set.intersection(*(set(by_rx_key[rx]) for rx in target_receivers)))
+                ]
+                row_alignment = "role_tx_day_sig_scenario"
+            else:
+                by_rx_scenario: dict[str, dict[str, list[int]]] = {}
                 for rx in target_receivers:
-                    idx = by_rx_key[rx][event_id]
+                    by_rx_scenario[rx] = defaultdict(list)
+                    for idx in receiver_query[rx][role_name]:
+                        if tx_ids[idx] == label:
+                            by_rx_scenario[rx][_scenario_of(payload, idx)].append(int(idx))
+                    for scenario in by_rx_scenario[rx]:
+                        by_rx_scenario[rx][scenario] = sorted(
+                            by_rx_scenario[rx][scenario],
+                            key=lambda i: (
+                                str(payload["day_ids"][i]),
+                                str(payload["sig_ids"][i]),
+                                _stable_score((rx, role_name, label, i), seed),
+                            ),
+                        )
+                common_scenarios = sorted(
+                    set.intersection(*(set(by_rx_scenario[rx]) for rx in target_receivers))
+                )
+                event_groups = []
+                for scenario in common_scenarios:
+                    n = min(len(by_rx_scenario[rx][scenario]) for rx in target_receivers)
+                    for event_i in range(n):
+                        event_groups.append(
+                            (
+                                f"{role_name}|{label}|{scenario}|rank{event_i:05d}",
+                                {rx: by_rx_scenario[rx][scenario][event_i] for rx in target_receivers},
+                            )
+                        )
+                row_alignment = "receiver_domain_ranked_by_role_tx_scenario"
+            for event_id, rx_to_idx in event_groups:
+                for rx in target_receivers:
+                    idx = rx_to_idx[rx]
                     memory = receiver_memories[rx]
                     pred, score, margin = qknn_scores(memory, features[[idx]], top_k=qknn_k)
                     risk = _unknown_risk(score, receiver_thresholds[rx], temperature=risk_temperature)
@@ -344,13 +384,14 @@ def build_collaborative_evidence(
                             "calibration_role": "query",
                             "sat_scenario": _scenario_of(payload, idx),
                             "raw_role": eval_role,
-                            "event_alignment": "role_tx_day_sig_scenario",
+                            "event_alignment": row_alignment,
                         }
                     )
     if not evidence:
         raise RuntimeError(
             "NO_ALIGNED_COLLABORATIVE_EVENTS: target receiver query rows do not share "
-            "role+tx+day+sig+scenario keys; refusing rank-aligned pseudo-collaboration"
+            "role+tx+day+sig+scenario keys; use --event_alignment_policy receiver_domain_ranked "
+            "only for explicitly marked receiver-domain ensemble diagnostics"
         )
 
     metadata = {
@@ -365,7 +406,9 @@ def build_collaborative_evidence(
         "query_per_class": int(query_per_class),
         "prototype_storage_bytes": int(sum(memory.prototype_storage_bytes for memory in receiver_memories.values())),
         "evidence_bytes_per_receiver_event": 40,
-        "event_alignment": "role_tx_day_sig_scenario",
+        "event_alignment": row_alignment if alignment_policy == "receiver_domain_ranked" else "role_tx_day_sig_scenario",
+        "event_alignment_policy": alignment_policy,
+        "strict_same_event_collaboration": alignment_policy == "strict_event_key",
         "receiver_thresholds": receiver_thresholds,
         "threshold_scope": threshold_scope,
     }
@@ -383,6 +426,7 @@ def run_evaluation(args: argparse.Namespace) -> dict[str, Any]:
         support_quantile=float(args.support_quantile),
         proxy_quantile=float(args.proxy_quantile),
         risk_temperature=float(args.risk_temperature),
+        event_alignment_policy=str(args.event_alignment_policy),
     )
     result = evaluate_collaborative_open_set_evidence(
         evidence,
@@ -428,6 +472,15 @@ def parse_args() -> argparse.Namespace:
     p.add_argument("--accept_margin_threshold", type=float, default=0.10)
     p.add_argument("--unknown_quantile", type=float, default=0.75)
     p.add_argument("--receiver_selection_policy", default="fixed_receiver_order")
+    p.add_argument(
+        "--event_alignment_policy",
+        default="strict_event_key",
+        choices=["strict_event_key", "receiver_domain_ranked"],
+        help=(
+            "strict_event_key requires shared role+tx+day+sig+scenario across receivers. "
+            "receiver_domain_ranked is an explicit dataset diagnostic when no same-event key exists."
+        ),
+    )
     return p.parse_args()
 
 
