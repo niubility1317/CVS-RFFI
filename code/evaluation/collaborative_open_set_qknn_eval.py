@@ -56,6 +56,7 @@ FUSION_POLICIES = {
     "orbit_coproto",
     "selective_confirm_cvs",
     "known_guarded_rescue_cvs",
+    "scg_qknn_cvs",
 }
 
 
@@ -748,7 +749,14 @@ def _fuse_event(
             1.0 if receiver_class_reliability_value is None else float(receiver_class_reliability_value)
         )
         if (
-            policy in {"cp_set_cvs", "candidate_set_cvs", "selective_confirm_cvs", "known_guarded_rescue_cvs"}
+            policy
+            in {
+                "cp_set_cvs",
+                "candidate_set_cvs",
+                "selective_confirm_cvs",
+                "known_guarded_rescue_cvs",
+                "scg_qknn_cvs",
+            }
             and allowed_cp_set_labels
             and label not in allowed_cp_set_labels
         ):
@@ -758,8 +766,17 @@ def _fuse_event(
         pvalue = max(0.0, min(1.0, float(conformal_pvalue)))
         candidate_score = max(0.0, float(score_value))
         support_count = max(0.0, float(conformal_support_count))
-        if policy in {"cp_set_cvs", "candidate_set_cvs", "selective_confirm_cvs", "known_guarded_rescue_cvs"} and int(source_rank) > 1 and (
-            candidate_score <= 0.0 or support_count < 1.0
+        if (
+            policy
+            in {
+                "cp_set_cvs",
+                "candidate_set_cvs",
+                "selective_confirm_cvs",
+                "known_guarded_rescue_cvs",
+                "scg_qknn_cvs",
+            }
+            and int(source_rank) > 1
+            and (candidate_score <= 0.0 or support_count < 1.0)
         ):
             filtered_candidate_count += 1
             return
@@ -889,7 +906,7 @@ def _fuse_event(
                 radius_z_is_missing=radius_z_is_missing,
                 conformal_pvalue=class_conformal_pvalue,
                 conformal_support_count=class_conformal_support_count,
-                conformal_weighted=policy in {"cp_set_cvs", "candidate_set_cvs"},
+                conformal_weighted=policy in {"cp_set_cvs", "candidate_set_cvs", "scg_qknn_cvs"},
                 source_rank=1,
                 unknown_risk_value=row_unknown_risk_value,
                 score_risk_value=_float(row, "score_risk", _float(row, "unknown_risk", 0.0)),
@@ -910,7 +927,7 @@ def _fuse_event(
                 latency_ms_value=_float(row, "latency_ms", 0.0),
                 staleness_value=_float(row, "prototype_staleness", _float(row, "support_age", 0.0)),
             )
-        if policy in {"cp_set_cvs", "candidate_set_cvs"}:
+        if policy in {"cp_set_cvs", "candidate_set_cvs", "scg_qknn_cvs"}:
             top_m = max(0, int(_float(row, "class_evidence_top_m", 0.0)))
             for rank in range(1, top_m + 1):
                 top_label = _str(row, f"class_evidence_top{rank}_label", "")
@@ -1260,6 +1277,7 @@ def _fuse_event(
         "orbit_coproto",
         "selective_confirm_cvs",
         "known_guarded_rescue_cvs",
+        "scg_qknn_cvs",
     }:
         strong_consensus = (
             vote_gap > float(consensus_gap_threshold) or score_gap_ratio > float(consensus_gap_threshold)
@@ -1431,7 +1449,8 @@ def _fuse_event(
             )
         known_guarded_rescue_block_reasons: list[str] = []
         known_guarded_rescue_unknown_guard_passed = bool(
-            not selective_confirm_unknown_reject_ready
+            not selective_confirm_unknown_evidence
+            and not selective_confirm_unknown_reject_ready
             and label_unknown_risk <= float(candidate_set_max_label_unknown_risk)
             and unknown_risk <= float(candidate_set_max_event_unknown_risk)
             and label_shell_risk <= float(candidate_set_max_label_shell_risk)
@@ -1479,6 +1498,125 @@ def _fuse_event(
                 known_guarded_rescue_safety_route_decision = "weak_evidence_request_more"
             else:
                 known_guarded_rescue_safety_route_decision = "weak_evidence_defer"
+        scg_min_candidate_receivers = min(
+            max(1, int(candidate_set_min_receivers)),
+            max(1, len(selected)),
+        )
+        scg_min_top1_receivers = min(
+            max(0, int(candidate_set_min_top1_receivers)),
+            max(1, len(selected)),
+        )
+        scg_support_density_floor = (
+            float(old_gate_min_support_density)
+            if output_label_set == "old"
+            else float(seen_new_gate_min_support_density)
+        )
+        scg_local_unknown_receiver_count = sum(
+            1
+            for row, row_risk in zip(selected, risks)
+            if _str(row, "predicted_label", "") == UNKNOWN_LABEL
+            or float(row_risk) >= float(candidate_set_unknown_reject_risk)
+        )
+        scg_local_unknown_fraction = scg_local_unknown_receiver_count / max(len(selected), 1)
+        scg_unknown_sources: list[str] = []
+        if unknown_risk >= float(candidate_set_unknown_reject_risk):
+            scg_unknown_sources.append("event_unknown_risk")
+        if label_unknown_risk >= float(candidate_set_unknown_reject_risk):
+            scg_unknown_sources.append("label_unknown_risk")
+        if label_shell_risk >= float(candidate_set_shell_reject_risk):
+            scg_unknown_sources.append("label_shell_risk")
+        if decision_risk_component_agreement >= float(scorer_component_vote_threshold):
+            scg_unknown_sources.append("risk_component_agreement")
+        if scg_local_unknown_fraction >= 0.5 and scg_local_unknown_receiver_count >= 2:
+            scg_unknown_sources.append("receiver_unknown_majority")
+        scg_unknown_evidence_source_count = len(set(scg_unknown_sources))
+        scg_unknown_evidence = bool(
+            policy == "scg_qknn_cvs" and scg_unknown_evidence_source_count >= 1
+        )
+        scg_support_confirmed_known = bool(
+            policy == "scg_qknn_cvs"
+            and label
+            and output_label_set in {"old", "seen_new"}
+            and selected_label_candidate_receivers >= scg_min_candidate_receivers
+            and selected_label_top1_receivers >= scg_min_top1_receivers
+            and label_class_conformal_pvalue >= float(candidate_set_min_conformal_pvalue)
+            and label_receiver_class_reliability
+            >= float(candidate_set_min_label_receiver_class_reliability)
+            and (scg_support_density_floor <= 0.0 or label_support_density >= scg_support_density_floor)
+            and mean_score >= float(consensus_score_threshold)
+            and mean_margin >= float(accept_margin_threshold)
+            and score_gap_ratio >= float(candidate_set_min_score_gap)
+            and label_risk_component_agreement
+            <= float(candidate_set_max_label_risk_component_agreement)
+            and label_shell_risk <= float(candidate_set_max_label_shell_risk)
+            and receiver_pair_label_disagreement
+            <= float(candidate_set_max_receiver_pair_label_disagreement)
+            and receiver_pair_unknown_risk_range
+            <= float(candidate_set_max_receiver_pair_unknown_risk_range)
+            and gate_passed
+        )
+        scg_support_protected_known = bool(
+            scg_support_confirmed_known
+            and len(selected) >= 2
+            and label_shell_risk < float(candidate_set_shell_reject_risk)
+        )
+        scg_unknown_reject_ready = bool(
+            policy == "scg_qknn_cvs"
+            and scg_unknown_evidence_source_count >= 2
+            and not scg_support_protected_known
+        )
+        scg_unknown_evidence_tolerated_for_accept = (
+            scg_unknown_evidence_source_count == 0
+            if len(selected) < 2
+            else (scg_unknown_evidence_source_count <= 1 or scg_support_protected_known)
+        )
+        scg_accept = bool(
+            scg_support_confirmed_known
+            and scg_unknown_evidence_tolerated_for_accept
+        )
+        scg_weak_known_evidence = bool(
+            policy == "scg_qknn_cvs"
+            and (
+                not label
+                or output_label_set not in {"old", "seen_new"}
+                or selected_label_candidate_receivers < scg_min_candidate_receivers
+                or selected_label_top1_receivers < scg_min_top1_receivers
+                or label_class_conformal_pvalue < float(candidate_set_min_conformal_pvalue)
+                or label_receiver_class_reliability
+                < float(candidate_set_min_label_receiver_class_reliability)
+                or mean_score < float(consensus_score_threshold)
+                or mean_margin < float(accept_margin_threshold)
+                or score_gap_ratio < float(candidate_set_min_score_gap)
+                or receiver_pair_label_disagreement
+                > float(candidate_set_max_receiver_pair_label_disagreement)
+                or receiver_pair_unknown_risk_range
+                > float(candidate_set_max_receiver_pair_unknown_risk_range)
+                or not gate_passed
+            )
+        )
+        scg_block_reason_parts: list[str] = []
+        if policy == "scg_qknn_cvs" and not scg_accept:
+            if not label or output_label_set not in {"old", "seen_new"}:
+                scg_block_reason_parts.append("label_scope")
+            if selected_label_candidate_receivers < scg_min_candidate_receivers:
+                scg_block_reason_parts.append("candidate_votes")
+            if selected_label_top1_receivers < scg_min_top1_receivers:
+                scg_block_reason_parts.append("top1_votes")
+            if label_class_conformal_pvalue < float(candidate_set_min_conformal_pvalue):
+                scg_block_reason_parts.append("pvalue")
+            if label_receiver_class_reliability < float(candidate_set_min_label_receiver_class_reliability):
+                scg_block_reason_parts.append("receiver_class_reliability")
+            if scg_support_density_floor > 0.0 and label_support_density < scg_support_density_floor:
+                scg_block_reason_parts.append("support_density")
+            if not scg_unknown_evidence_tolerated_for_accept:
+                scg_block_reason_parts.append("unknown_evidence")
+            if receiver_pair_label_disagreement > float(candidate_set_max_receiver_pair_label_disagreement):
+                scg_block_reason_parts.append("pair_label_disagreement")
+            if receiver_pair_unknown_risk_range > float(candidate_set_max_receiver_pair_unknown_risk_range):
+                scg_block_reason_parts.append("pair_unknown_risk_range")
+            if not gate_passed:
+                scg_block_reason_parts.append("class_set_gate")
+        scg_block_reason = ",".join(scg_block_reason_parts)
         candidate_set_high_unknown_veto = bool(
             policy == "candidate_set_cvs"
             and label
@@ -1780,6 +1918,24 @@ def _fuse_event(
         if policy == "support_router_cvs" and support_router_accept:
             decision = "accept"
             output_label = label
+        elif policy == "scg_qknn_cvs" and scg_accept:
+            decision = "accept"
+            output_label = label
+        elif policy == "scg_qknn_cvs" and scg_unknown_reject_ready:
+            decision = "unknown_reject"
+            output_label = UNKNOWN_LABEL
+        elif policy == "scg_qknn_cvs" and scg_unknown_evidence and within_request_budget:
+            decision = "request_more"
+            output_label = ""
+        elif policy == "scg_qknn_cvs" and scg_unknown_evidence:
+            decision = "defer"
+            output_label = ""
+        elif policy == "scg_qknn_cvs" and scg_weak_known_evidence and within_request_budget:
+            decision = "request_more"
+            output_label = ""
+        elif policy == "scg_qknn_cvs":
+            decision = "defer"
+            output_label = ""
         elif policy == "support_router_cvs" and support_router_unknown_evidence and within_request_budget:
             decision = "request_more"
             output_label = ""
@@ -1947,6 +2103,44 @@ def _fuse_event(
         "class_set_gate_passed": bool(locals().get("gate_passed", True)),
         "class_set_gate_reason": str(locals().get("gate_reason", "")),
         "candidate_set_accept": bool(locals().get("candidate_set_accept", False)),
+        "scg_qknn_accept": bool(locals().get("scg_accept", False)),
+        "scg_qknn_unknown_evidence": bool(locals().get("scg_unknown_evidence", False)),
+        "scg_qknn_unknown_evidence_source_count": int(
+            locals().get("scg_unknown_evidence_source_count", 0)
+        ),
+        "scg_qknn_unknown_evidence_sources": ",".join(
+            sorted(set(locals().get("scg_unknown_sources", [])))
+        ),
+        "scg_qknn_unknown_reject_ready": bool(
+            locals().get("scg_unknown_reject_ready", False)
+        ),
+        "scg_qknn_support_confirmed_known": bool(
+            locals().get("scg_support_confirmed_known", False)
+        ),
+        "scg_qknn_support_protected_known": bool(
+            locals().get("scg_support_protected_known", False)
+        ),
+        "scg_qknn_unknown_evidence_tolerated_for_accept": bool(
+            locals().get("scg_unknown_evidence_tolerated_for_accept", False)
+        ),
+        "scg_qknn_weak_known_evidence": bool(
+            locals().get("scg_weak_known_evidence", False)
+        ),
+        "scg_qknn_local_unknown_receiver_count": int(
+            locals().get("scg_local_unknown_receiver_count", 0)
+        ),
+        "scg_qknn_local_unknown_fraction": float(
+            locals().get("scg_local_unknown_fraction", 0.0)
+        ),
+        "scg_qknn_min_candidate_receivers": int(
+            locals().get("scg_min_candidate_receivers", 0)
+        ),
+        "scg_qknn_min_top1_receivers": int(locals().get("scg_min_top1_receivers", 0)),
+        "scg_qknn_weighted_score": float(score),
+        "scg_qknn_support_density_floor": float(
+            locals().get("scg_support_density_floor", 0.0)
+        ),
+        "scg_qknn_block_reason": str(locals().get("scg_block_reason", "")),
         "support_router_accept": bool(locals().get("support_router_accept", False)),
         "support_router_unknown_evidence": bool(locals().get("support_router_unknown_evidence", False)),
         "selective_confirm_accept": bool(locals().get("selective_confirm_accept", False)),
@@ -3402,6 +3596,10 @@ def _finalize_metrics(
     support_router_accept_by_role: defaultdict[str, int] = defaultdict(int)
     support_router_unknown_evidence_total = 0
     support_router_unknown_evidence_by_role: defaultdict[str, int] = defaultdict(int)
+    scg_qknn_accept_total = 0
+    scg_qknn_accept_by_role: defaultdict[str, int] = defaultdict(int)
+    scg_qknn_unknown_evidence_total = 0
+    scg_qknn_unknown_evidence_by_role: defaultdict[str, int] = defaultdict(int)
     selective_confirm_accept_total = 0
     selective_confirm_accept_by_role: defaultdict[str, int] = defaultdict(int)
     selective_confirm_unknown_evidence_total = 0
@@ -3480,6 +3678,12 @@ def _finalize_metrics(
         if bool(item.get("support_router_unknown_evidence", False)):
             support_router_unknown_evidence_total += 1
             support_router_unknown_evidence_by_role[role] += 1
+        if bool(item.get("scg_qknn_accept", False)):
+            scg_qknn_accept_total += 1
+            scg_qknn_accept_by_role[role] += 1
+        if bool(item.get("scg_qknn_unknown_evidence", False)):
+            scg_qknn_unknown_evidence_total += 1
+            scg_qknn_unknown_evidence_by_role[role] += 1
         if bool(item.get("selective_confirm_accept", False)):
             selective_confirm_accept_total += 1
             selective_confirm_accept_by_role[role] += 1
@@ -3744,6 +3948,17 @@ def _finalize_metrics(
         "support_router_unknown_evidence_by_role": dict(
             sorted(support_router_unknown_evidence_by_role.items())
         ),
+        "scg_qknn_accept_count": int(scg_qknn_accept_total),
+        "scg_qknn_accept_rate": _safe_rate(scg_qknn_accept_total, total_events),
+        "scg_qknn_accept_by_role": dict(sorted(scg_qknn_accept_by_role.items())),
+        "scg_qknn_unknown_evidence_count": int(scg_qknn_unknown_evidence_total),
+        "scg_qknn_unknown_evidence_rate": _safe_rate(
+            scg_qknn_unknown_evidence_total,
+            total_events,
+        ),
+        "scg_qknn_unknown_evidence_by_role": dict(
+            sorted(scg_qknn_unknown_evidence_by_role.items())
+        ),
         "selective_confirm_accept_count": int(selective_confirm_accept_total),
         "selective_confirm_accept_rate": _safe_rate(selective_confirm_accept_total, total_events),
         "selective_confirm_accept_by_role": dict(sorted(selective_confirm_accept_by_role.items())),
@@ -3819,6 +4034,8 @@ def _validate_protocol_metadata(metadata: Mapping[str, Any] | None, *, strict: b
     channel_view = str(metadata.get("target_channel_view", "") or "").strip()
     if not channel_view:
         raise ValueError("protocol_metadata must include target_channel_view")
+    event_alignment_policy = str(metadata.get("event_alignment_policy", "") or "").strip()
+    strict_same_event_collaboration = bool(metadata.get("strict_same_event_collaboration", True))
     return {
         "validated": True,
         "source_receiver_ids": sorted(source_receivers),
@@ -3832,6 +4049,8 @@ def _validate_protocol_metadata(metadata: Mapping[str, Any] | None, *, strict: b
         "seen_new_tx_count": len(seen_new_tx),
         "unknown_tx_count": len(unknown_tx),
         "target_channel_view": channel_view,
+        "event_alignment_policy": event_alignment_policy,
+        "strict_same_event_collaboration": strict_same_event_collaboration,
     }
 
 
@@ -4038,6 +4257,22 @@ def evaluate_collaborative_open_set_evidence(
         receiver_selection_policy=receiver_selection_policy,
     )
     protocol_report = _validate_protocol_metadata(protocol_metadata, strict=strict_protocol_metadata)
+    event_alignment_policy = str(
+        (protocol_metadata or {}).get(
+            "event_alignment_policy",
+            (protocol_metadata or {}).get("event_alignment", "strict_event_key"),
+        )
+        or "strict_event_key"
+    )
+    strict_same_event_collaboration = bool(
+        (protocol_metadata or {}).get(
+            "strict_same_event_collaboration",
+            event_alignment_policy == "strict_event_key",
+        )
+    )
+    scoped_pairguard_diagnostic_only = bool(
+        _items(candidate_set_pairguard_labels) or _parse_receiver_sets(candidate_set_pairguard_receiver_sets)
+    )
     target_receiver_scope = _items(protocol_metadata.get("target_receiver_ids") if protocol_metadata else None)
     _validate_target_receiver_scope(rows, target_receiver_scope)
     if strict_protocol_metadata and bool(protocol_report.get("validated", False)):
@@ -4473,6 +4708,8 @@ def evaluate_collaborative_open_set_evidence(
         "denominator_policy": "per_k_available_receivers",
         "collaboration_policy": collaboration_policy,
         "collab_group_policy": collab_group_policy,
+        "event_alignment_policy": event_alignment_policy,
+        "strict_same_event_collaboration": strict_same_event_collaboration,
         "partial_collab_min_receivers": int(partial_collab_min_receivers),
         "matched_max_requested_group_count": int(len(matched_max)),
         "receiver_selection_policy": _normalize_scope(receiver_selection_policy),
@@ -4550,6 +4787,13 @@ def evaluate_collaborative_open_set_evidence(
         "candidate_set_require_label_shell_observed": bool(candidate_set_require_label_shell_observed),
         "candidate_set_pairguard_mode": str(candidate_set_pairguard_mode),
         "candidate_set_pairguard_action": str(candidate_set_pairguard_action),
+        "candidate_set_pairguard_scoped_diagnostic_only": bool(scoped_pairguard_diagnostic_only),
+        "candidate_set_pairguard_scope_warning": (
+            "scoped_pairguard_requires_support_or_prior_calibration; "
+            "unknown-error-audit scopes are diagnostic-only"
+            if scoped_pairguard_diagnostic_only
+            else ""
+        ),
         "candidate_set_pairguard_soft_penalty": float(candidate_set_pairguard_soft_penalty),
         "candidate_set_pairguard_soft_floor": float(candidate_set_pairguard_soft_floor),
         "candidate_set_pairguard_soft_min_margin": float(candidate_set_pairguard_soft_min_margin),
