@@ -1202,6 +1202,7 @@ def build_collaborative_evidence(
     class_score_threshold_min_support: int = 1,
     class_conformal_enabled: bool = False,
     class_conformal_min_support: int = 2,
+    class_evidence_top_m: int = 0,
     virtual_unknown_calibration_enabled: bool = False,
     virtual_unknown_samples_per_class: int = 0,
     virtual_unknown_mix_alpha: float = 0.50,
@@ -1608,6 +1609,44 @@ def build_collaborative_evidence(
                         float(score[0]),
                         receiver_class_conformal_scores.get(rx, {}).get(str(pred[0])),
                     )
+                    class_evidence_fields: dict[str, float | int | str] = {}
+                    if int(class_evidence_top_m) > 0:
+                        score_labels_for_event, score_matrix_for_event = _qknn_label_score_matrix(
+                            memory,
+                            features[[idx]],
+                            top_k=qknn_k,
+                            query_scenarios=[_scenario_of(payload, idx)],
+                            scenario_aware=bool(scenario_aware),
+                            radius_norm=float(radius_norm),
+                            old_bias=float(old_bias),
+                            candidate_class_top_m=int(candidate_class_top_m),
+                            prototype_score_blend=prototype_blend,
+                            mahalanobis_score_blend=mahalanobis_blend,
+                            mahalanobis_score_temperature=mahalanobis_score_temp,
+                        )
+                        label_scores_for_event = [
+                            (str(label), float(score_value))
+                            for label, score_value in zip(
+                                score_labels_for_event.tolist(),
+                                score_matrix_for_event[0].tolist(),
+                            )
+                        ]
+                        label_scores_for_event.sort(key=lambda item: (item[1], item[0]), reverse=True)
+                        for rank, (label_name, label_score) in enumerate(
+                            label_scores_for_event[: int(class_evidence_top_m)],
+                            start=1,
+                        ):
+                            label_pvalue = _conformal_pvalue(
+                                label_score,
+                                receiver_class_conformal_scores.get(rx, {}).get(label_name),
+                            )
+                            label_support_count = len(receiver_class_conformal_scores.get(rx, {}).get(label_name, []))
+                            class_evidence_fields[f"class_evidence_top{rank}_label"] = label_name
+                            class_evidence_fields[f"class_evidence_top{rank}_score"] = float(label_score)
+                            class_evidence_fields[f"class_evidence_top{rank}_conformal_pvalue"] = (
+                                float(label_pvalue) if bool(class_conformal_enabled) else 0.0
+                            )
+                            class_evidence_fields[f"class_evidence_top{rank}_support_count"] = int(label_support_count)
                     (
                         risk,
                         score_risk,
@@ -1685,6 +1724,8 @@ def build_collaborative_evidence(
                             "class_conformal_support_count": int(
                                 len(receiver_class_conformal_scores.get(rx, {}).get(str(pred[0]), []))
                             ),
+                            "class_evidence_top_m": int(class_evidence_top_m),
+                            **class_evidence_fields,
                             "virtual_unknown_calibration_enabled": int(bool(virtual_unknown_calibration_enabled)),
                             "virtual_unknown_risk_enabled": int(bool(virtual_unknown_risk_enabled)),
                             "virtual_unknown_count": int(
@@ -1755,6 +1796,7 @@ def build_collaborative_evidence(
         "class_score_threshold_min_support": int(class_score_threshold_min_support),
         "class_conformal_enabled": bool(class_conformal_enabled),
         "class_conformal_min_support": int(class_conformal_min_support),
+        "class_evidence_top_m": int(class_evidence_top_m),
         "receiver_class_conformal_counts": {
             str(rx): {str(label): int(len(values)) for label, values in scores.items()}
             for rx, scores in receiver_class_conformal_scores.items()
@@ -1851,6 +1893,7 @@ def run_evaluation(args: argparse.Namespace) -> dict[str, Any]:
         class_score_threshold_min_support=int(args.class_score_threshold_min_support),
         class_conformal_enabled=bool(args.class_conformal_enabled),
         class_conformal_min_support=int(args.class_conformal_min_support),
+        class_evidence_top_m=int(args.class_evidence_top_m),
         virtual_unknown_calibration_enabled=bool(args.virtual_unknown_calibration_enabled),
         virtual_unknown_samples_per_class=int(args.virtual_unknown_samples_per_class),
         virtual_unknown_mix_alpha=float(args.virtual_unknown_mix_alpha),
@@ -1985,6 +2028,7 @@ def parse_args() -> argparse.Namespace:
     p.add_argument("--class_score_threshold_min_support", type=int, default=1)
     p.add_argument("--class_conformal_enabled", action="store_true")
     p.add_argument("--class_conformal_min_support", type=int, default=2)
+    p.add_argument("--class_evidence_top_m", type=int, default=0)
     p.add_argument("--virtual_unknown_calibration_enabled", action="store_true")
     p.add_argument("--virtual_unknown_samples_per_class", type=int, default=0)
     p.add_argument("--virtual_unknown_mix_alpha", type=float, default=0.50)
@@ -1997,7 +2041,11 @@ def parse_args() -> argparse.Namespace:
     p.add_argument("--unknown_risk_threshold", type=float, default=0.80)
     p.add_argument("--accept_margin_threshold", type=float, default=0.10)
     p.add_argument("--unknown_quantile", type=float, default=0.75)
-    p.add_argument("--fusion_policy", default="risk_margin", choices=["risk_margin", "consensus_veto", "scorer_cvs"])
+    p.add_argument(
+        "--fusion_policy",
+        default="risk_margin",
+        choices=["risk_margin", "consensus_veto", "scorer_cvs", "cp_set_cvs"],
+    )
     p.add_argument("--collaboration_policy", default="fixed_k", choices=["fixed_k", "progressive_budget", "adaptive_gain"])
     p.add_argument("--consensus_gap_threshold", type=float, default=0.0)
     p.add_argument("--consensus_score_threshold", type=float, default=0.0)

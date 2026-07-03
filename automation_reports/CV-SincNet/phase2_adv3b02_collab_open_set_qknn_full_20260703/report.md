@@ -2056,3 +2056,76 @@ ADV3B02 CPR结果表：
 |`collab_open_set_qknn_scorer_cvs_evt_adaptive_gain_vote_margin_adv3b02_cpr_p20_s04_vrisk2_proto2_maha1_qknnonly_fixed_evidence.csv`|`88851140B9D85F870600620B09ACCA91D7014236A76DD6305999D611D445C149`|
 |`collab_open_set_qknn_scorer_cvs_evt_adaptive_gain_vote_margin_adv3b02_cpr_p20_s05_proto2_maha1_qknnonly_fixed.json`|`B8EDFBE14F441553D48F657C5C6F93D63C282FBB2350B492AB37E3200EE432F1`|
 |`collab_open_set_qknn_scorer_cvs_evt_adaptive_gain_vote_margin_adv3b02_cpr_p20_s05_proto2_maha1_qknnonly_fixed_evidence.csv`|`CA51EA4C0FF2D9F9EE99B935F946F76EB53A847958301E7D5686EE871BB19A06`|
+
+## 2026-07-03CP-SET-CVS最小实现计划
+
+目标：从`SCORER-CVS-CPR`的“强known风险折扣”推进到更接近卫星群部署的类条件证据融合。新策略`cp_set_cvs`不再把p-value作为全局unknown risk折扣，而是把class-conditional conformal p-value作为old/seen-new接受门：只有预测类属于old/seen-new、receiver一致性足够、p-value达到阈值且support计数非零时才允许accept；否则按资源预算request_more或defer。这样更符合unknown FAR受控的开集目标。
+
+本轮资源约束说明：工作区未定位到`卫星协同射频指纹识别（RFFI）系统资源约束设计说明.md`原文件，因此本轮只使用当前代码已落地的资源约束字段：`latency_budget_ms`、`max_event_bytes`、`max_event_latency_ms`、`bytes/event`、`prototype_storage_bytes`。远端运行仍记录协同receiver数量、平均实际receiver数、`bytes/event`和GPU显存。
+
+本地改动：
+
+|文件|目的|
+|---|---|
+|`code/evaluation/collaborative_open_set_qknn_eval.py`|新增`fusion_policy=cp_set_cvs`；记录`label_class_conformal_support_count`和`cp_set_gate_passed`；多通道高风险时仍fail closed。|
+|`code/scripts/phase2_collaborative_open_set_qknn_eval.py`|新增`--class_evidence_top_m`，在evidence CSV中记录`class_evidence_top{rank}_label/score/conformal_pvalue/support_count`，用于后续topM类条件融合和审计。|
+|`code/tests/test_collaborative_open_set_qknn_eval.py`|新增测试确认`cp_set_cvs`低p-value时defer，高p-value时accept。|
+|`code/tests/test_phase2_collaborative_open_set_qknn_eval.py`|新增测试确认topM类条件证据字段被记录。|
+
+本地与Git镜像验证：
+
+```powershell
+conda activate ssr-gpu
+python -m py_compile code\scripts\phase2_collaborative_open_set_qknn_eval.py code\evaluation\collaborative_open_set_qknn_eval.py
+python code\tests\test_phase2_collaborative_open_set_qknn_eval.py
+python code\tests\test_collaborative_open_set_qknn_eval.py
+```
+
+结果：本地和Git镜像均为37 tests OK和31 tests OK。
+
+远端计划：同步4个代码/测试文件到N607，在`CVS-RFFI`环境复测；使用ADV3B02特征`runs/phase2_adv3b02_collab_open_set_qknn_full_20260703/features.npz`，运行`--collab_counts all`覆盖1到5个target receivers。候选：
+
+|候选|关键参数|目的|
+|---|---|---|
+|`cpset_p15_proto2_maha1_qknnonly`|`--fusion_policy cp_set_cvs --class_conformal_enabled --class_evidence_top_m 3 --conformal_rescue_min_pvalue 0.15 --unknown_risk_threshold 0.98`|较宽p-value门，观察是否比CPR减少unknown误接受。|
+|`cpset_p20_proto2_maha1_qknnonly`|`--fusion_policy cp_set_cvs --class_conformal_enabled --class_evidence_top_m 3 --conformal_rescue_min_pvalue 0.20 --unknown_risk_threshold 0.995`|中等p-value门，对齐上一轮`cpr_p20_s05`。|
+|`cpset_p20_vrisk2_proto2_maha1_qknnonly`|再加`--virtual_unknown_risk_enabled --virtual_unknown_risk_samples_per_class 2 --virtual_unknown_risk_temperature 0.05`|结合virtual unknown风险，优先压unknown FAR。|
+
+成功判据不变：最终目标仍是old 99%且每类不低于95%、seen-new 97%且每类不低于93%、unknown拒识99%。本轮若未达到，只能作为下一步class-conditional fusion诊断，不写作部署成功。
+
+远端执行结果：N607复测通过，`CVS-RFFI`环境下`test_phase2_collaborative_open_set_qknn_eval.py`为37 tests OK，`test_collaborative_open_set_qknn_eval.py`为31 tests OK。3组候选均输出`receiver_count=5`、`group_count=308`、`evidence_row_count=1000`。最终GPU读数为8张RTX3090均`10 MiB/24576 MiB`；SSH/SCP后本地检查无残留`ssh.exe`或N607 22端口连接。
+
+CP-SET-CVS结果表：
+
+|候选|协同数|old_acc|min_old|seen_new_acc|min_seen|unknown_FAR|unknown_reject|defer|avg_rx|bytes/event|
+|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+|`cpset_p15_proto2_maha1_qknnonly`|1|0.0000|0.0000|0.2500|0.0500|0.0167|0.3000|0.7792|1.0000|120.0000|
+|`cpset_p15_proto2_maha1_qknnonly`|2|0.3464|0.0000|0.3111|0.0500|0.1250|0.7917|0.3333|1.8333|220.0000|
+|`cpset_p15_proto2_maha1_qknnonly`|3|0.3917|0.3000|0.3250|0.0500|0.0250|0.8500|0.4200|2.5150|301.8000|
+|`cpset_p15_proto2_maha1_qknnonly`|4|0.7586|0.0000|0.6000|0.4000|0.0938|0.7500|0.1688|3.3506|402.0779|
+|`cpset_p15_proto2_maha1_qknnonly`|5|0.7500|0.0000|0.3500|0.0000|0.0500|0.5500|0.2826|4.0870|490.4348|
+|`cpset_p20_proto2_maha1_qknnonly`|1|0.0000|0.0000|0.2500|0.0500|0.0167|0.2833|0.7922|1.0000|120.0000|
+|`cpset_p20_proto2_maha1_qknnonly`|2|0.3464|0.0000|0.3111|0.0500|0.1250|0.7500|0.3984|1.8577|222.9268|
+|`cpset_p20_proto2_maha1_qknnonly`|3|0.3917|0.3000|0.3250|0.0500|0.0250|0.7750|0.4850|2.5550|306.6000|
+|`cpset_p20_proto2_maha1_qknnonly`|4|0.7586|0.0000|0.6286|0.4000|0.0938|0.6562|0.2143|3.4156|409.8701|
+|`cpset_p20_proto2_maha1_qknnonly`|5|0.7500|0.0000|0.3500|0.0000|0.0500|0.2000|0.3696|4.1522|498.2609|
+|`cpset_p20_vrisk2_proto2_maha1_qknnonly`|1|0.0000|0.0000|0.0000|0.0000|0.0000|0.2833|0.8896|1.0000|120.0000|
+|`cpset_p20_vrisk2_proto2_maha1_qknnonly`|2|0.0131|0.0000|0.0000|0.0000|0.0000|0.7708|0.6992|1.9268|231.2195|
+|`cpset_p20_vrisk2_proto2_maha1_qknnonly`|3|0.0167|0.0000|0.0000|0.0000|0.0000|0.9250|0.6750|2.8050|336.6000|
+|`cpset_p20_vrisk2_proto2_maha1_qknnonly`|4|0.1724|0.0000|0.0000|0.0000|0.0000|0.9062|0.6364|3.7662|451.9481|
+|`cpset_p20_vrisk2_proto2_maha1_qknnonly`|5|0.1154|0.0000|0.0000|0.0000|0.0000|0.5000|0.7935|4.8152|577.8261|
+
+解释：`cp_set_cvs`把p-value从“救援折扣”改成“接受门”后，unknown FAR明显下降。预算3的`cpset_p15/p20`均达到`unknown_FAR=0.0250`，`cpset_p20_vrisk2`全部预算为`unknown_FAR=0.0000`。但代价是known接受率严重下降，预算3时`old_acc=0.3917`、`seen_new_acc=0.3250`，加入virtual unknown后几乎完全压制known接受。该结果证明类条件接受门能控制unknown误接受，但当前p-value校准和风险门过保守，不能作为最终算法。
+
+下一步：保留topM类条件证据字段，改为“候选集+请求更多receiver”而非单类硬门。具体应融合`class_evidence_top1..top3`的p-value和score，输出多标签候选集；当top类p-value不足但top2/top3存在可信类时请求更多receiver或保持ambiguous，而不是直接defer所有known。还应引入receiver-class可靠度`w_{r,y}`，避免低floor类在协同4/5被多数receiver压制。
+
+CP-SET-CVS产物SHA256：
+
+|文件|SHA256|
+|---|---|
+|`collab_open_set_qknn_cp_set_cvs_cpset_p15_proto2_maha1_qknnonly.json`|`8BE33C713CE01A16A090F041D44AFE7CB2FBD7AC819C08BBD07E9148E1540537`|
+|`collab_open_set_qknn_cp_set_cvs_cpset_p15_proto2_maha1_qknnonly_evidence.csv`|`1D96A694F86BEC38D50BD997EE729346F03774E72A45C0D038727FAF8AAD19C8`|
+|`collab_open_set_qknn_cp_set_cvs_cpset_p20_proto2_maha1_qknnonly.json`|`66FDB5A86080598721F63DDE8877BE07F90C3DCAC17C0A0F36FCF8D1C30F16EC`|
+|`collab_open_set_qknn_cp_set_cvs_cpset_p20_proto2_maha1_qknnonly_evidence.csv`|`8455BB0581F740B9AE37DF2051308B09C725886A1FB0BF89B952EFB2B731F2CA`|
+|`collab_open_set_qknn_cp_set_cvs_cpset_p20_vrisk2_proto2_maha1_qknnonly.json`|`F11CCA7943F45C28849C0D6D0094613E04781573EAD8B4B1ED9763A05914B5A6`|
+|`collab_open_set_qknn_cp_set_cvs_cpset_p20_vrisk2_proto2_maha1_qknnonly_evidence.csv`|`7DF97A44424D3AD0DD7AB3EE7E8C9E0BD7B6561B4F24B7C652096A8BECA0034B`|

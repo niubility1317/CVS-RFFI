@@ -316,6 +316,7 @@ def _fuse_event(
     support_densities = []
     radius_z_values = []
     class_conformal_pvalues = []
+    class_conformal_support_counts = []
     support_density_missing = []
     radius_z_missing = []
     for row in selected:
@@ -338,6 +339,7 @@ def _fuse_event(
         support_densities.append(_float(row, "support_density", 1.0))
         radius_z_values.append(_float(row, "class_radius_z", 0.0))
         class_conformal_pvalues.append(_float(row, "class_conformal_pvalue", 0.0))
+        class_conformal_support_counts.append(_float(row, "class_conformal_support_count", 0.0))
         score_risk_value = _float(row, "score_risk", _float(row, "unknown_risk", 0.0))
         radius_risk_value = _float(row, "radius_risk", _float(row, "unknown_risk", 0.0))
         margin_risk_value = _float(row, "margin_risk", _float(row, "unknown_risk", 0.0))
@@ -453,6 +455,9 @@ def _fuse_event(
     label_class_conformal_values = [
         value for value, row in zip(class_conformal_pvalues, selected) if _str(row, "predicted_label", "") == label
     ]
+    label_class_conformal_count_values = [
+        value for value, row in zip(class_conformal_support_counts, selected) if _str(row, "predicted_label", "") == label
+    ]
     label_support_density_missing = any(
         missing for missing, row in zip(support_density_missing, selected) if _str(row, "predicted_label", "") == label
     )
@@ -467,6 +472,9 @@ def _fuse_event(
         sum(label_class_conformal_values) / len(label_class_conformal_values)
         if label_class_conformal_values
         else 0.0
+    )
+    label_class_conformal_support_count = (
+        min(label_class_conformal_count_values) if label_class_conformal_count_values else 0.0
     )
     latency_ms = float(max((_float(row, "latency_ms", 0.0) for row in selected), default=0.0))
     within_request_budget = bool(
@@ -536,7 +544,7 @@ def _fuse_event(
         else:
             decision = "defer"
             output_label = ""
-    elif policy == "scorer_cvs":
+    elif policy in {"scorer_cvs", "cp_set_cvs"}:
         strong_consensus = (
             vote_gap > float(consensus_gap_threshold) or score_gap_ratio > float(consensus_gap_threshold)
         ) and agreement >= 0.5
@@ -555,12 +563,22 @@ def _fuse_event(
             and mean_margin >= max(float(accept_margin_threshold), float(seen_new_rescue_min_margin))
         )
         conformal_rescue_applied = bool(
-            conformal_rescue_enabled
+            policy == "scorer_cvs"
+            and conformal_rescue_enabled
             and output_label_set in {"old", "seen_new"}
             and strong_known
             and agreement >= float(conformal_rescue_min_agreement)
             and label_class_conformal_pvalue >= float(conformal_rescue_min_pvalue)
             and risk_component_agreement < float(scorer_component_vote_threshold)
+        )
+        cp_set_gate_passed = bool(
+            policy != "cp_set_cvs"
+            or (
+                output_label_set in {"old", "seen_new"}
+                and label_class_conformal_support_count >= 1.0
+                and agreement >= float(conformal_rescue_min_agreement)
+                and label_class_conformal_pvalue >= float(conformal_rescue_min_pvalue)
+            )
         )
         risk_scale = 1.0
         if rescue_applied:
@@ -571,10 +589,16 @@ def _fuse_event(
         high_risk = effective_unknown_risk >= float(unknown_risk_threshold)
         multi_channel_risk = risk_component_agreement >= float(scorer_component_vote_threshold)
         gate_passed, gate_reason = _class_set_gate_decision()
-        if high_risk and multi_channel_risk and not strong_known:
+        if high_risk and multi_channel_risk and (policy == "cp_set_cvs" or not strong_known):
             decision = "unknown_reject"
             output_label = UNKNOWN_LABEL
         elif high_risk:
+            decision = "defer"
+            output_label = ""
+        elif strong_known and not cp_set_gate_passed and within_request_budget:
+            decision = "request_more"
+            output_label = ""
+        elif strong_known and not cp_set_gate_passed:
             decision = "defer"
             output_label = ""
         elif strong_known and not gate_passed and within_request_budget:
@@ -607,9 +631,9 @@ def _fuse_event(
             decision = "defer"
             output_label = ""
     elif label:
-        raise ValueError("fusion_policy must be risk_margin, consensus_veto, or scorer_cvs")
+        raise ValueError("fusion_policy must be risk_margin, consensus_veto, scorer_cvs, or cp_set_cvs")
     else:
-        raise ValueError("fusion_policy must be risk_margin, consensus_veto, or scorer_cvs")
+        raise ValueError("fusion_policy must be risk_margin, consensus_veto, scorer_cvs, or cp_set_cvs")
 
     resource_budget_reason = _resource_budget_reason(
         selected,
@@ -637,6 +661,8 @@ def _fuse_event(
         "seen_new_rescue_label_match": bool(rescue_label_match if policy == "scorer_cvs" else False),
         "conformal_rescue_applied": bool(locals().get("conformal_rescue_applied", False)),
         "label_class_conformal_pvalue": float(label_class_conformal_pvalue),
+        "label_class_conformal_support_count": float(label_class_conformal_support_count),
+        "cp_set_gate_passed": bool(locals().get("cp_set_gate_passed", True)),
         "class_set_gate_applied": bool(class_set_gate_enabled and output_label_set in {"old", "seen_new"}),
         "class_set_gate_passed": bool(locals().get("gate_passed", True)),
         "class_set_gate_reason": str(locals().get("gate_reason", "")),

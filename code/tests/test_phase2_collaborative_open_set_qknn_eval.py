@@ -792,6 +792,36 @@ class Phase2CollaborativeOpenSetQknnEvalTest(unittest.TestCase):
         self.assertEqual(float(evidence[0]["class_conformal_pvalue"]), 0.0)
         self.assertEqual(int(evidence[0]["class_conformal_support_count"]), 0)
 
+    def test_class_evidence_top_m_records_per_label_scores_and_pvalues(self):
+        from phase2_collaborative_open_set_qknn_eval import load_feature_npz, build_collaborative_evidence
+
+        with tempfile.TemporaryDirectory() as td:
+            npz = Path(td) / "features.npz"
+            _write_npz(npz)
+            evidence, metadata = build_collaborative_evidence(
+                load_feature_npz(npz),
+                k_shot=1,
+                query_per_class=2,
+                qknn_k=1,
+                support_calibration_mode="leave_one_out",
+                score_threshold_combine="qknn_only",
+                class_conformal_enabled=True,
+                class_conformal_min_support=1,
+                class_evidence_top_m=2,
+            )
+
+        self.assertEqual(metadata["class_evidence_top_m"], 2)
+        first = evidence[0]
+        self.assertEqual(int(first["class_evidence_top_m"]), 2)
+        self.assertIn("class_evidence_top1_label", first)
+        self.assertIn("class_evidence_top1_score", first)
+        self.assertIn("class_evidence_top1_conformal_pvalue", first)
+        self.assertIn("class_evidence_top1_support_count", first)
+        self.assertIn("class_evidence_top2_label", first)
+        self.assertIn("class_evidence_top2_score", first)
+        self.assertIn("class_evidence_top2_conformal_pvalue", first)
+        self.assertIn("class_evidence_top2_support_count", first)
+
     def test_class_score_thresholds_use_true_label_score_not_top1_score(self):
         from phase2_collaborative_open_set_qknn_eval import (
             _label_thresholds_from_calibration,

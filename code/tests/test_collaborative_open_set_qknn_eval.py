@@ -1268,6 +1268,64 @@ class CollaborativeOpenSetQknnEvalTest(unittest.TestCase):
         self.assertEqual(k1["unknown_FAR"], 0.0)
         self.assertEqual(k1["open_set_confusion"], {"unknown->defer": 1})
 
+    def test_cp_set_cvs_requires_class_conformal_gate(self):
+        from evaluation.collaborative_open_set_qknn_eval import evaluate_collaborative_open_set_evidence
+
+        base = {
+            "event_id": "known-cp-set",
+            "receiver_id": "rx-a",
+            "role": "old",
+            "true_label": "old-a",
+            "predicted_label": "old-a",
+            "known_score": 0.95,
+            "known_margin": 0.20,
+            "unknown_risk": 0.10,
+            "score_risk": 0.10,
+            "radius_risk": 0.10,
+            "margin_risk": 0.10,
+            "class_conformal_support_count": 2,
+        }
+        protocol_metadata = {
+            "source_receiver_ids": ["src-a"],
+            "target_receiver_ids": ["rx-a"],
+            "old_tx_ids": ["old-a"],
+            "seen_new_tx_ids": ["new-a"],
+            "unknown_tx_ids": ["unk-a"],
+            "target_channel_view": "leo_clear_weak",
+        }
+        low = dict(base, class_conformal_pvalue=0.10)
+        high = dict(base, class_conformal_pvalue=0.90)
+
+        low_result = evaluate_collaborative_open_set_evidence(
+            [low],
+            collab_counts="1",
+            fusion_policy="cp_set_cvs",
+            unknown_risk_threshold=0.8,
+            accept_margin_threshold=0.1,
+            consensus_score_threshold=0.6,
+            scorer_component_vote_threshold=0.5,
+            scorer_risk_components=["score", "radius", "margin"],
+            conformal_rescue_min_pvalue=0.5,
+            protocol_metadata=protocol_metadata,
+            strict_protocol_metadata=True,
+        )
+        high_result = evaluate_collaborative_open_set_evidence(
+            [high],
+            collab_counts="1",
+            fusion_policy="cp_set_cvs",
+            unknown_risk_threshold=0.8,
+            accept_margin_threshold=0.1,
+            consensus_score_threshold=0.6,
+            scorer_component_vote_threshold=0.5,
+            scorer_risk_components=["score", "radius", "margin"],
+            conformal_rescue_min_pvalue=0.5,
+            protocol_metadata=protocol_metadata,
+            strict_protocol_metadata=True,
+        )
+
+        self.assertEqual(low_result["counts"]["1"]["open_set_confusion"], {"old->defer": 1})
+        self.assertEqual(high_result["counts"]["1"]["open_set_confusion"], {"old->old": 1})
+
     def test_strict_protocol_metadata_validates_stage2_boundaries(self):
         from evaluation.collaborative_open_set_qknn_eval import evaluate_collaborative_open_set_evidence
 
