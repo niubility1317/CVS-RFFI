@@ -2532,3 +2532,72 @@ Interpretation:
 | target2 is not justified from V28 | unknown FAR remains`0.67-0.95`in best same-row rows and target1 is not met | do not proceed to rejection optimization on V28 |
 
 Current decision after V28: source-only IQ/front-end feature correction, as implemented here, does not meet the old-class recovery requirement. The next valid route should be a source-only Phase1 representation re-training or adaptation objective that changes the extractor itself under clean/LEO consistency, rather than a shallow post-input residual corrector or category-logit bias/scale.
+
+## V29 Source-Only Model-Internal Feature Adapter Design
+
+V29 follows the V28 negative result and moves the correction point from input IQ residuals to a small set of model-internal feature parameters. It still starts from the frozen`ADV3B02_CORE90_SOFT_E200phase1`checkpoint, uses only source receiver clean/LEO pairs for training, and exports sat-only LEO target features for evaluation. Target receiver samples, target clean features, target labels, and target unknown query samples remain evaluation-only.
+
+Mechanism:
+
+```text
+teacher = original ADV3B02_CORE90_SOFT_E200phase1, fully frozen
+student = checkpoint copy, only selected id_backbone late feature parameters trainable
+loss = student(LEO source) -> teacher(clean source) feature alignment
+     + student(clean source) -> teacher(clean source) identity
+     + feature margin preservation
+     + optional teacher-logit distillation
+```
+
+This is not category logit bias/scale: the CosFace classifier weight is not opened, and no standalone logit bias/scale is trained. The trainable scope is limited to feature projections/gates/norms in the identity branch:
+
+| Mode | Trainable scope | Approx params in local self-check |
+|---|---|---:|
+| `id_feature_head` | `id_backbone.cls_head` feature projections/gates, excluding CosFace weight and auxiliary DAC/PA heads | 49,536 |
+| `id_late_feature` | `id_feature_head` plus late identity projections such as `t_proj/f_proj/fuse/con_proj` | 67,008 |
+| `id_norm_late_feature` | `id_late_feature` plus identity-branch norm/gate affine parameters | 67,485 |
+
+New/modified local files:
+
+| File | Purpose | SHA256 |
+|---|---|---|
+| `E:\type10-7\code\scripts\train_apply_phase1_iq_preadapter_20260703.py` | Adds teacher/student model-internal feature adapter mode, identity export from frozen teacher, and V29 manifest view | `E223BF46052858E7C47CADEC84BB362C1B04ACEAE84A29641AF16FF4C7BB5A14` |
+| `E:\type10-7\code\scripts\sweep_phase1_adv3b02_modeladapter_target1_v29_20260703.sh` | Runs four source-only V29 model-internal feature adapter variants and target1 audit | `16568FF4536D2AD43E809F26ED3916DC48CAE6B203355C90237FE8130F5A2C0B` |
+
+Local verification:
+
+| Command | Result |
+|---|---|
+| `C:\Users\lh594\.conda\envs\ssr-gpu\python.exe -m py_compile code\scripts\train_apply_phase1_iq_preadapter_20260703.py code\scripts\eval_phase1_target1_strong_repair_audit_20260703.py` | PASS |
+| `bash -lc "bash -n /mnt/e/type10-7/code/scripts/sweep_phase1_adv3b02_modeladapter_target1_v29_20260703.sh"` | PASS |
+| local trainable-parameter self-check for `id_feature_head/id_late_feature/id_norm_late_feature` | PASS; trainable params remain ~50k-67k |
+
+Local non-Git code snapshot:
+
+| Snapshot | Files |
+|---|---|
+| `E:\type10-7\code\snapshots\phase1_adv3b02_modeladapter_target1_v29_20260703\scripts\` | V29 model-adapter trainer and launcher |
+
+Planned N607 command:
+
+```bash
+cd /home/szu2070436088/2510044040/CV-SincNet && \
+bash code/scripts/sweep_phase1_adv3b02_modeladapter_target1_v29_20260703.sh
+```
+
+Planned N607 outputs:
+
+| Artifact | Remote path |
+|---|---|
+| V29 log root | `/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_adv3b02_modeladapter_target1_v29_20260703` |
+| V29 summary CSV | `/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_adv3b02_modeladapter_target1_v29_20260703/target1_strong_v29_summary.csv` |
+| V29 metrics JSON | `/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_adv3b02_modeladapter_target1_v29_20260703/target1_strong_v29_metrics.json` |
+| V29 best JSON | `/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_adv3b02_modeladapter_target1_v29_20260703/target1_strong_v29_best.json` |
+
+V29 variants:
+
+| Variant | Mode | Intent |
+|---|---|---|
+| `LEOMODEL29_HEAD_FEAT` | `id_feature_head` | feature-head-only alignment with clean identity |
+| `LEOMODEL29_HEAD_DISTILL` | `id_feature_head` | feature-head alignment plus weak teacher-logit distillation |
+| `LEOMODEL29_LATE_FEAT` | `id_late_feature` | broader late identity projection adaptation |
+| `LEOMODEL29_NORM_LATE_CONSERVE` | `id_norm_late_feature` | conservative broader adaptation with stronger clean identity and weak distillation |
