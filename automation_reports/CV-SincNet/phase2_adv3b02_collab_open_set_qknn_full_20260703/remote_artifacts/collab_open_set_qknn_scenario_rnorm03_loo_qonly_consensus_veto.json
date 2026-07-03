@@ -1,0 +1,347 @@
+{
+  "enabled": true,
+  "protocol": "collaborative_open_set_qknn_evidence",
+  "receiver_count": 5,
+  "observed_receiver_ids": [
+    "20-1",
+    "3-19",
+    "7-14",
+    "7-7",
+    "8-8"
+  ],
+  "group_count": 301,
+  "eligible_group_count": 99,
+  "excluded_incomplete_groups": 202,
+  "denominator_policy": "per_k_available_receivers",
+  "matched_max_requested_group_count": 99,
+  "receiver_selection_policy": "fixed_receiver_order",
+  "threshold_selection_label_scope": "support_known_only",
+  "unknown_query_eval_only": true,
+  "stage2_protocol": {
+    "validated": true,
+    "source_receiver_count": 7,
+    "target_receiver_count": 5,
+    "old_tx_count": 6,
+    "seen_new_tx_count": 2,
+    "unknown_tx_count": 2,
+    "target_channel_view": "leo_clear_weak,leo_low_elev_weak,leo_rain_weak"
+  },
+  "evidence_scope": "offline_evidence_metrics_only",
+  "unknown_risk_threshold": 0.98,
+  "accept_margin_threshold": 0.3,
+  "unknown_quantile": 0.75,
+  "fusion_policy": "consensus_veto",
+  "consensus_gap_threshold": 0.6,
+  "consensus_score_threshold": 0.3,
+  "counts": {
+    "1": {
+      "participating_receivers": 1,
+      "total": 301,
+      "excluded_incomplete_groups": 0,
+      "old_total": 181,
+      "old_correct": 134,
+      "old_acc": 0.7403314917127072,
+      "per_old_class_acc": {
+        "14-10": 0.6,
+        "14-7": 0.775,
+        "20-15": 0.85,
+        "20-19": 0.5294117647058824,
+        "6-15": 0.85,
+        "8-20": 0.8148148148148148
+      },
+      "missing_old_classes": [],
+      "min_old_class_acc": 0.5294117647058824,
+      "seen_new_total": 60,
+      "seen_new_correct": 32,
+      "seen_new_acc": 0.5333333333333333,
+      "per_seen_new_class_acc": {
+        "19-3": 0.5,
+        "3-8": 0.55
+      },
+      "missing_seen_new_classes": [],
+      "min_seen_new_class_acc": 0.5,
+      "unknown_total": 60,
+      "unknown_rejected": 0,
+      "unknown_reject_rate": 0.0,
+      "unknown_FAR": 1.0,
+      "known_coverage": 1.0,
+      "known_full_accuracy": 0.6887966804979253,
+      "known_accepted_accuracy": 0.6887966804979253,
+      "defer_rate": 0.0,
+      "open_set_confusion": {
+        "old->old": 172,
+        "old->seen_new": 9,
+        "seen_new->old": 25,
+        "seen_new->seen_new": 35,
+        "unknown->old": 49,
+        "unknown->seen_new": 11
+      },
+      "bytes_per_event": 40.0,
+      "total_bytes": 12040.0,
+      "latency_ms_p50": 0.066026178188622,
+      "latency_ms_p95": 0.066026178188622
+    },
+    "2": {
+      "participating_receivers": 2,
+      "total": 245,
+      "excluded_incomplete_groups": 56,
+      "old_total": 151,
+      "old_correct": 119,
+      "old_acc": 0.7880794701986755,
+      "per_old_class_acc": {
+        "14-10": 0.5,
+        "14-7": 0.8064516129032258,
+        "20-15": 1.0,
+        "20-19": 0.35,
+        "6-15": 0.85,
+        "8-20": 1.0
+      },
+      "missing_old_classes": [],
+      "min_old_class_acc": 0.35,
+      "seen_new_total": 48,
+      "seen_new_correct": 39,
+      "seen_new_acc": 0.8125,
+      "per_seen_new_class_acc": {
+        "19-3": 0.8,
+        "3-8": 0.8214285714285714
+      },
+      "missing_seen_new_classes": [],
+      "min_seen_new_class_acc": 0.8,
+      "unknown_total": 46,
+      "unknown_rejected": 0,
+      "unknown_reject_rate": 0.0,
+      "unknown_FAR": 1.0,
+      "known_coverage": 1.0,
+      "known_full_accuracy": 0.7939698492462312,
+      "known_accepted_accuracy": 0.7939698492462312,
+      "defer_rate": 0.0,
+      "open_set_confusion": {
+        "old->old": 137,
+        "old->seen_new": 14,
+        "seen_new->old": 7,
+        "seen_new->seen_new": 41,
+        "unknown->old": 39,
+        "unknown->seen_new": 7
+      },
+      "bytes_per_event": 80.0,
+      "total_bytes": 19600.0,
+      "latency_ms_p50": 0.066026178188622,
+      "latency_ms_p95": 0.066026178188622
+    },
+    "3": {
+      "participating_receivers": 3,
+      "total": 200,
+      "excluded_incomplete_groups": 101,
+      "old_total": 120,
+      "old_correct": 103,
+      "old_acc": 0.8583333333333333,
+      "per_old_class_acc": {
+        "14-10": 0.3,
+        "14-7": 0.95,
+        "20-15": 1.0,
+        "20-19": 0.9,
+        "6-15": 1.0,
+        "8-20": 1.0
+      },
+      "missing_old_classes": [],
+      "min_old_class_acc": 0.3,
+      "seen_new_total": 40,
+      "seen_new_correct": 38,
+      "seen_new_acc": 0.95,
+      "per_seen_new_class_acc": {
+        "19-3": 0.9,
+        "3-8": 1.0
+      },
+      "missing_seen_new_classes": [],
+      "min_seen_new_class_acc": 0.9,
+      "unknown_total": 40,
+      "unknown_rejected": 0,
+      "unknown_reject_rate": 0.0,
+      "unknown_FAR": 1.0,
+      "known_coverage": 1.0,
+      "known_full_accuracy": 0.88125,
+      "known_accepted_accuracy": 0.88125,
+      "defer_rate": 0.0,
+      "open_set_confusion": {
+        "old->old": 107,
+        "old->seen_new": 13,
+        "seen_new->old": 2,
+        "seen_new->seen_new": 38,
+        "unknown->old": 34,
+        "unknown->seen_new": 6
+      },
+      "bytes_per_event": 120.0,
+      "total_bytes": 24000.0,
+      "latency_ms_p50": 0.066026178188622,
+      "latency_ms_p95": 0.066026178188622
+    },
+    "4": {
+      "participating_receivers": 4,
+      "total": 155,
+      "excluded_incomplete_groups": 146,
+      "old_total": 89,
+      "old_correct": 80,
+      "old_acc": 0.898876404494382,
+      "per_old_class_acc": {
+        "14-10": 0.6,
+        "14-7": 0.8888888888888888,
+        "20-15": 0.0,
+        "20-19": 1.0,
+        "6-15": 1.0,
+        "8-20": 1.0
+      },
+      "missing_old_classes": [
+        "20-15"
+      ],
+      "min_old_class_acc": 0.0,
+      "seen_new_total": 32,
+      "seen_new_correct": 29,
+      "seen_new_acc": 0.90625,
+      "per_seen_new_class_acc": {
+        "19-3": 0.85,
+        "3-8": 1.0
+      },
+      "missing_seen_new_classes": [],
+      "min_seen_new_class_acc": 0.85,
+      "unknown_total": 34,
+      "unknown_rejected": 0,
+      "unknown_reject_rate": 0.0,
+      "unknown_FAR": 1.0,
+      "known_coverage": 1.0,
+      "known_full_accuracy": 0.9008264462809917,
+      "known_accepted_accuracy": 0.9008264462809917,
+      "defer_rate": 0.0,
+      "open_set_confusion": {
+        "old->old": 82,
+        "old->seen_new": 7,
+        "seen_new->old": 3,
+        "seen_new->seen_new": 29,
+        "unknown->old": 28,
+        "unknown->seen_new": 6
+      },
+      "bytes_per_event": 160.0,
+      "total_bytes": 24800.0,
+      "latency_ms_p50": 0.066026178188622,
+      "latency_ms_p95": 0.066026178188622
+    },
+    "5": {
+      "participating_receivers": 5,
+      "total": 99,
+      "excluded_incomplete_groups": 202,
+      "old_total": 59,
+      "old_correct": 48,
+      "old_acc": 0.8135593220338984,
+      "per_old_class_acc": {
+        "14-10": 0.45,
+        "14-7": 0.0,
+        "20-15": 0.0,
+        "20-19": 1.0,
+        "6-15": 1.0,
+        "8-20": 1.0
+      },
+      "missing_old_classes": [
+        "14-7",
+        "20-15"
+      ],
+      "min_old_class_acc": 0.0,
+      "seen_new_total": 20,
+      "seen_new_correct": 19,
+      "seen_new_acc": 0.95,
+      "per_seen_new_class_acc": {
+        "19-3": 0.95,
+        "3-8": 0.0
+      },
+      "missing_seen_new_classes": [
+        "3-8"
+      ],
+      "min_seen_new_class_acc": 0.0,
+      "unknown_total": 20,
+      "unknown_rejected": 0,
+      "unknown_reject_rate": 0.0,
+      "unknown_FAR": 1.0,
+      "known_coverage": 1.0,
+      "known_full_accuracy": 0.8481012658227848,
+      "known_accepted_accuracy": 0.8481012658227848,
+      "defer_rate": 0.0,
+      "open_set_confusion": {
+        "old->old": 50,
+        "old->seen_new": 9,
+        "seen_new->old": 1,
+        "seen_new->seen_new": 19,
+        "unknown->old": 17,
+        "unknown->seen_new": 3
+      },
+      "bytes_per_event": 200.0,
+      "total_bytes": 19800.0,
+      "latency_ms_p50": 0.066026178188622,
+      "latency_ms_p95": 0.066026178188622
+    }
+  },
+  "feature_npz": "runs/phase2_adv3b02_collab_open_set_qknn_full_20260703/features.npz",
+  "qknn_metadata": {
+    "source_receiver_ids": [
+      "1-1",
+      "1-19",
+      "14-7",
+      "18-2",
+      "19-2",
+      "2-1",
+      "2-19"
+    ],
+    "target_receiver_ids": [
+      "20-1",
+      "3-19",
+      "7-14",
+      "7-7",
+      "8-8"
+    ],
+    "old_tx_ids": [
+      "14-10",
+      "14-7",
+      "20-15",
+      "20-19",
+      "6-15",
+      "8-20"
+    ],
+    "seen_new_tx_ids": [
+      "19-3",
+      "3-8"
+    ],
+    "unknown_tx_ids": [
+      "10-1",
+      "10-10"
+    ],
+    "target_channel_view": "leo_clear_weak,leo_low_elev_weak,leo_rain_weak",
+    "qknn_k": 9,
+    "k_shot": 8,
+    "query_per_class": 20,
+    "prototype_storage_bytes": 52480,
+    "evidence_bytes_per_receiver_event": 40,
+    "event_alignment": "receiver_domain_ranked_by_role_tx_scenario",
+    "event_alignment_policy": "receiver_domain_ranked",
+    "strict_same_event_collaboration": false,
+    "receiver_thresholds": {
+      "20-1": 0.08045078307572577,
+      "3-19": 0.051453201677118914,
+      "7-14": 0.05785602322271968,
+      "7-7": 0.009868817926227727,
+      "8-8": 0.08814248118518442
+    },
+    "threshold_scope": "support_known_only",
+    "support_calibration_mode": "leave_one_out",
+    "score_threshold_combine": "qknn_only",
+    "support_selection_policy": "stable_first",
+    "unknown_gate_mode": "score",
+    "scenario_aware": true,
+    "radius_norm": 0.3,
+    "old_bias": 0.0,
+    "radius_quantile": 0.95,
+    "margin_quantile": 0.05,
+    "score_quantile": 0.05,
+    "radius_slack": 0.02,
+    "margin_slack": 0.0,
+    "score_slack": 0.0
+  },
+  "evidence_row_count": 1000,
+  "evidence_csv": "runs/phase2_adv3b02_collab_open_set_qknn_full_20260703/collab_open_set_qknn_scenario_rnorm03_loo_qonly_consensus_veto_evidence.csv"
+}
