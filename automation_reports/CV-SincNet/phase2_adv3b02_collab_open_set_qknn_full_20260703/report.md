@@ -1549,3 +1549,73 @@ python code\tests\test_collaborative_open_set_qknn_eval.py
 |`prototype_blend_2p0`|`--prototype_score_blend 2.0`|较强原型校正，评估是否牺牲support density但提升类均值稳定性。|
 
 预期输出：每个候选保存JSON和evidence CSV，记录`receiver_count`、`counts=1..全体receiver`、old/seen-new/unknown同row指标、defer、avg_rx、bytes/event、GPU显存、SSH断开核验和SHA256。若结果仍远低于目标，应记录为诊断负证据，不写deployment success。
+
+远端验证结果：N607预检通过，直连`N607`，项目根为`/home/szu2070436088/2510044040/CV-SincNet`。远端环境现场输出`ENV=CVS-RFFI`。脚本和测试同步后，在远端`CVS-RFFI`环境复测：`py_compile`通过，`test_phase2_collaborative_open_set_qknn_eval.py`为19 tests OK，`test_collaborative_open_set_qknn_eval.py`为27 tests OK。运行前后8张RTX3090均为`10MiB/24576MiB`，本轮标记使用`CUDA_VISIBLE_DEVICES=0`。每次SSH/SCP后本地核验：无残留`ssh.exe`，无到`172.31.111.215:22`或`172.31.105.18:22`的`ESTABLISHED`连接。
+
+远端产物SHA256：
+
+|产物|SHA256|
+|---|---|
+|`remote_artifacts/collab_open_set_qknn_scorer_cvs_evt_adaptive_gain_vote_margin_prototype_blend_0p25.json`|`7A139AC004D259655E724E51AF5330B808BA6C085C2C20C978E42003FEE4EFB7`|
+|`remote_artifacts/collab_open_set_qknn_scorer_cvs_evt_adaptive_gain_vote_margin_prototype_blend_0p25_evidence.csv`|`70B0CC7BDDB79BFDD3ADE99135062E921F6B036CE67DA89D6FD26A11B4A20896`|
+|`remote_artifacts/collab_open_set_qknn_scorer_cvs_evt_adaptive_gain_vote_margin_prototype_blend_1p0.json`|`A8CE787D684771687EF60A99EB4E0AAE3294C081F8BBE7F9E36E18323FB4A440`|
+|`remote_artifacts/collab_open_set_qknn_scorer_cvs_evt_adaptive_gain_vote_margin_prototype_blend_1p0_evidence.csv`|`A430F8404A5809396F8E8D09C499ACC125A25C78B6A93FFC1EA16059A0818331`|
+|`remote_artifacts/collab_open_set_qknn_scorer_cvs_evt_adaptive_gain_vote_margin_prototype_blend_2p0.json`|`1FF1DF20142B4A96A093A3F86AACA8F53016A580BA40B5743E40D9C72EB1E7D4`|
+|`remote_artifacts/collab_open_set_qknn_scorer_cvs_evt_adaptive_gain_vote_margin_prototype_blend_2p0_evidence.csv`|`97D4ECC8DF2A520E2A593CA59A3B62516FE279786A7F4822583D4537E7017DAA`|
+
+结果表：
+
+|候选|预算|old_acc|min_old|seen_new_acc|min_seen_new|unknown_FAR|unknown_reject|defer_rate|avg_rx|bytes/event|
+|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+|`prototype_blend_0p25`|1|0.0000|0.0000|0.1500|0.0000|0.0000|0.5833|0.5162|1.0000|120.0|
+|`prototype_blend_0p25`|2|0.0850|0.0000|0.3333|0.1000|0.0000|0.8958|0.3577|1.8171|218.0|
+|`prototype_blend_0p25`|3|0.0417|0.0000|0.4500|0.1000|0.0000|0.9250|0.4300|2.5350|304.2|
+|`prototype_blend_0p25`|4|0.3103|0.0000|0.4857|0.3000|0.0000|0.8750|0.3182|3.2662|391.9|
+|`prototype_blend_0p25`|5|0.3654|0.0000|0.2500|0.0000|0.0000|0.7500|0.3913|4.1739|500.9|
+|`prototype_blend_1p0`|1|0.0000|0.0000|0.1500|0.0000|0.0000|0.5167|0.5649|1.0000|120.0|
+|`prototype_blend_1p0`|2|0.0980|0.0000|0.3556|0.1000|0.0000|0.8125|0.3984|1.8211|218.5|
+|`prototype_blend_1p0`|3|0.0583|0.0000|0.4500|0.1000|0.0000|0.8750|0.4750|2.5250|303.0|
+|`prototype_blend_1p0`|4|0.3218|0.0000|0.4571|0.2500|0.0000|0.8750|0.3377|3.2532|390.4|
+|`prototype_blend_1p0`|5|0.3846|0.0000|0.3000|0.0000|0.0000|0.7000|0.4130|4.1413|497.0|
+|`prototype_blend_2p0`|1|0.0000|0.0000|0.1667|0.0500|0.0000|0.4500|0.6299|1.0000|120.0|
+|`prototype_blend_2p0`|2|0.0980|0.0000|0.3556|0.0500|0.0000|0.7917|0.4268|1.8333|220.0|
+|`prototype_blend_2p0`|3|0.0583|0.0000|0.4500|0.0500|0.0000|0.8750|0.4900|2.5700|308.4|
+|`prototype_blend_2p0`|4|0.3218|0.0000|0.5429|0.3500|0.0000|0.8125|0.3766|3.3182|398.2|
+|`prototype_blend_2p0`|5|0.3846|0.0000|0.3000|0.0000|0.0000|0.7000|0.4130|4.1739|500.9|
+
+解释：`prototype_score_blend`能带来小幅正向信号，尤其`prototype_blend_2p0`在预算4把`seen_new_acc`从上一轮默认约`0.4857`提高到`0.5429`，`min_seen_new`从`0.3000`提高到`0.3500`，且`unknown_FAR=0.0000`。但旧类仍远低于目标，预算4`old_acc=0.3218`、`min_old=0.0000`，预算5`old_acc=0.3846`、`min_old=0.0000`。因此该机制是有效但不足的证据增强，不是可部署成功结果。下一步应按文献子agent建议推进shrinkage Gaussian prototype/Mahalanobis class score，把Mahalanobis从仅拒识风险项提升为候选排序/融合得分项；同时按算法子agent建议将候选类过滤前移，以降低生成证据延迟。
+
+审查修复：查漏补缺子agent指出首版`prototype_score_blend`只用于query打分，未进入support/proxy阈值校准，可能导致`known_score`与`receiver_thresholds`口径不一致。已在提交`4def6ac Calibrate prototype blend qKNN scores`中修复：`_threshold_from_calibration()`使用同一`prototype_score_blend`口径；负数blend直接报错；evidence新增`prototype_score_blend`、`prototype_assisted`、`prototype_only_top1`字段；metadata新增`prototype_assisted_qknn`。本地和Git镜像复测：`test_phase2_collaborative_open_set_qknn_eval.py`为23 tests OK，`test_collaborative_open_set_qknn_eval.py`为27 tests OK。远端`CVS-RFFI`环境复测同样为23 tests OK和27 tests OK。
+
+校准一致版本远端产物SHA256：
+
+|产物|SHA256|
+|---|---|
+|`remote_artifacts/collab_open_set_qknn_scorer_cvs_evt_adaptive_gain_vote_margin_prototype_blend_0p25_calibrated.json`|`6A4325F5634FB23445D55EDFD08C8B5827FEA2F7D72D549D40E97579D7904764`|
+|`remote_artifacts/collab_open_set_qknn_scorer_cvs_evt_adaptive_gain_vote_margin_prototype_blend_0p25_calibrated_evidence.csv`|`557957CBFB00076ECD478A4D219B954573276731FDDC4342DFF78E427EE3A166`|
+|`remote_artifacts/collab_open_set_qknn_scorer_cvs_evt_adaptive_gain_vote_margin_prototype_blend_1p0_calibrated.json`|`670733FDE157A141E1C05153A0484E3091EC54E732D0CE9F05C1D55DDB95BE90`|
+|`remote_artifacts/collab_open_set_qknn_scorer_cvs_evt_adaptive_gain_vote_margin_prototype_blend_1p0_calibrated_evidence.csv`|`66330E229BCFC9514DB9E291C4CC1372DD20FAE4E23CF1B645C7502CE6AABFD2`|
+|`remote_artifacts/collab_open_set_qknn_scorer_cvs_evt_adaptive_gain_vote_margin_prototype_blend_2p0_calibrated.json`|`C85EB2FED95BDBB352F37A6544B962BC77D73CA0A0419233A95013FD2C358972`|
+|`remote_artifacts/collab_open_set_qknn_scorer_cvs_evt_adaptive_gain_vote_margin_prototype_blend_2p0_calibrated_evidence.csv`|`2C0DA911AEC27150C5F571606E72B007EE066B2F03AE31A0CD41395C9DFF1CE3`|
+
+校准一致版本结果表如下。前一张无`calibrated`后缀的表仅保留为审查前诊断，不作为最终判断依据。
+
+|候选|预算|old_acc|min_old|seen_new_acc|min_seen_new|unknown_FAR|unknown_reject|defer_rate|avg_rx|bytes/event|
+|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+|`prototype_blend_0p25_calibrated`|1|0.0000|0.0000|0.1500|0.0000|0.0500|0.5833|0.5162|1.0000|120.0|
+|`prototype_blend_0p25_calibrated`|2|0.0850|0.0000|0.3333|0.1000|0.0000|0.8958|0.3577|1.8171|218.0|
+|`prototype_blend_0p25_calibrated`|3|0.0417|0.0000|0.4500|0.1000|0.0000|0.9250|0.4300|2.5350|304.2|
+|`prototype_blend_0p25_calibrated`|4|0.3103|0.0000|0.4857|0.3000|0.0000|0.8750|0.3182|3.2662|391.9|
+|`prototype_blend_0p25_calibrated`|5|0.3654|0.0000|0.2500|0.0000|0.0000|0.7500|0.3913|4.1739|500.9|
+|`prototype_blend_1p0_calibrated`|1|0.0000|0.0000|0.1500|0.0000|0.0500|0.5167|0.5649|1.0000|120.0|
+|`prototype_blend_1p0_calibrated`|2|0.0980|0.0000|0.3556|0.1000|0.0000|0.8125|0.3984|1.8211|218.5|
+|`prototype_blend_1p0_calibrated`|3|0.0583|0.0000|0.4500|0.1000|0.0000|0.8750|0.4750|2.5250|303.0|
+|`prototype_blend_1p0_calibrated`|4|0.3218|0.0000|0.4571|0.2500|0.0000|0.8750|0.3377|3.2532|390.4|
+|`prototype_blend_1p0_calibrated`|5|0.3846|0.0000|0.3000|0.0000|0.0000|0.7000|0.4130|4.1413|497.0|
+|`prototype_blend_2p0_calibrated`|1|0.0000|0.0000|0.1667|0.0500|0.0500|0.4500|0.6299|1.0000|120.0|
+|`prototype_blend_2p0_calibrated`|2|0.0980|0.0000|0.3556|0.0500|0.0000|0.7917|0.4268|1.8333|220.0|
+|`prototype_blend_2p0_calibrated`|3|0.0583|0.0000|0.4500|0.0500|0.0000|0.8750|0.4900|2.5700|308.4|
+|`prototype_blend_2p0_calibrated`|4|0.3218|0.0000|0.5429|0.3500|0.0000|0.8125|0.3766|3.3182|398.2|
+|`prototype_blend_2p0_calibrated`|5|0.3846|0.0000|0.3000|0.0000|0.0000|0.7000|0.4130|4.1739|500.9|
+
+最终判断：当前最强同row候选仍是`prototype_blend_2p0_calibrated`预算4，用约`3.3182`个接收机、约`398.2 bytes/event`达到`seen_new_acc=0.5429`、`min_seen_new=0.3500`、`unknown_FAR=0.0000`，但`old_acc=0.3218`、`min_old=0.0000`，距离目标`old 99%/floor 95%`和`seen-new 97%/floor 93%`仍很远。此结果应记为有效诊断负证据和下一步算法依据，不是部署成功。
