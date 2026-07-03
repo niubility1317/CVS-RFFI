@@ -1,0 +1,161 @@
+import sys
+import unittest
+from pathlib import Path
+
+
+ROOT = Path(__file__).resolve().parents[1]
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
+
+
+class CollaborativeOpenSetQknnEvalTest(unittest.TestCase):
+    def test_reports_counts_metrics_and_resource_telemetry_for_one_to_all_receivers(self):
+        from evaluation.collaborative_open_set_qknn_eval import evaluate_collaborative_open_set_evidence
+
+        rows = [
+            {
+                "event_id": "old-1",
+                "receiver_id": "rx-a",
+                "role": "old",
+                "true_label": "old-a",
+                "predicted_label": "old-b",
+                "known_score": 0.60,
+                "known_margin": 0.05,
+                "unknown_risk": 0.20,
+                "reliability": 0.70,
+                "latency_ms": 4.0,
+                "bytes": 96,
+            },
+            {
+                "event_id": "old-1",
+                "receiver_id": "rx-b",
+                "role": "old",
+                "true_label": "old-a",
+                "predicted_label": "old-a",
+                "known_score": 0.90,
+                "known_margin": 0.40,
+                "unknown_risk": 0.10,
+                "reliability": 0.95,
+                "latency_ms": 6.0,
+                "bytes": 96,
+            },
+            {
+                "event_id": "new-1",
+                "receiver_id": "rx-a",
+                "role": "seen_new",
+                "true_label": "new-a",
+                "predicted_label": "new-a",
+                "known_score": 0.82,
+                "known_margin": 0.24,
+                "unknown_risk": 0.18,
+                "reliability": 0.90,
+                "latency_ms": 5.0,
+                "bytes": 96,
+            },
+            {
+                "event_id": "new-1",
+                "receiver_id": "rx-b",
+                "role": "seen_new",
+                "true_label": "new-a",
+                "predicted_label": "new-a",
+                "known_score": 0.70,
+                "known_margin": 0.18,
+                "unknown_risk": 0.25,
+                "reliability": 0.80,
+                "latency_ms": 7.0,
+                "bytes": 96,
+            },
+            {
+                "event_id": "unk-1",
+                "receiver_id": "rx-a",
+                "role": "unknown",
+                "true_label": "__unknown__",
+                "predicted_label": "old-a",
+                "known_score": 0.55,
+                "known_margin": 0.05,
+                "unknown_risk": 0.92,
+                "reliability": 0.90,
+                "latency_ms": 8.0,
+                "bytes": 96,
+            },
+            {
+                "event_id": "unk-1",
+                "receiver_id": "rx-b",
+                "role": "unknown",
+                "true_label": "__unknown__",
+                "predicted_label": "new-a",
+                "known_score": 0.52,
+                "known_margin": 0.02,
+                "unknown_risk": 0.88,
+                "reliability": 0.85,
+                "latency_ms": 9.0,
+                "bytes": 96,
+            },
+        ]
+
+        result = evaluate_collaborative_open_set_evidence(
+            rows,
+            collab_counts="all",
+            unknown_risk_threshold=0.80,
+            accept_margin_threshold=0.10,
+        )
+
+        self.assertEqual(result["receiver_count"], 2)
+        self.assertEqual(set(result["counts"]), {"1", "2"})
+        self.assertEqual(result["counts"]["1"]["participating_receivers"], 1)
+        self.assertEqual(result["counts"]["2"]["participating_receivers"], 2)
+        self.assertGreaterEqual(result["counts"]["2"]["old_acc"], result["counts"]["1"]["old_acc"])
+        self.assertEqual(result["counts"]["2"]["seen_new_acc"], 1.0)
+        self.assertEqual(result["counts"]["2"]["unknown_reject_rate"], 1.0)
+        self.assertEqual(result["counts"]["2"]["unknown_FAR"], 0.0)
+        self.assertEqual(result["counts"]["2"]["min_old_class_acc"], 1.0)
+        self.assertEqual(result["counts"]["2"]["bytes_per_event"], 192.0)
+        self.assertGreaterEqual(result["counts"]["2"]["latency_ms_p95"], result["counts"]["2"]["latency_ms_p50"])
+
+    def test_rejects_threshold_fitting_from_unknown_query_rows(self):
+        from evaluation.collaborative_open_set_qknn_eval import evaluate_collaborative_open_set_evidence
+
+        with self.assertRaisesRegex(ValueError, "unknown query"):
+            evaluate_collaborative_open_set_evidence(
+                [
+                    {
+                        "event_id": "unk-1",
+                        "receiver_id": "rx-a",
+                        "role": "unknown",
+                        "true_label": "__unknown__",
+                        "predicted_label": "old-a",
+                        "unknown_risk": 0.9,
+                        "calibration_role": "threshold_fit",
+                    }
+                ]
+            )
+
+    def test_seen_new_per_class_floor_does_not_depend_on_label_prefix(self):
+        from evaluation.collaborative_open_set_qknn_eval import evaluate_collaborative_open_set_evidence
+
+        result = evaluate_collaborative_open_set_evidence(
+            [
+                {
+                    "event_id": "new-numeric-label",
+                    "receiver_id": "rx-a",
+                    "role": "seen_new",
+                    "true_label": "12-20",
+                    "predicted_label": "12-20",
+                    "known_score": 0.9,
+                    "known_margin": 0.3,
+                    "unknown_risk": 0.1,
+                    "reliability": 1.0,
+                    "latency_ms": 3.0,
+                    "bytes": 72,
+                }
+            ],
+            collab_counts="all",
+        )
+
+        k1 = result["counts"]["1"]
+        self.assertEqual(k1["per_seen_new_class_acc"], {"12-20": 1.0})
+        self.assertEqual(k1["min_seen_new_class_acc"], 1.0)
+
+
+if __name__ == "__main__":
+    unittest.main()
