@@ -326,8 +326,10 @@ def _fuse_event(
     active_components = _parse_risk_components(scorer_risk_components)
     policy = _normalize_scope(fusion_policy)
     label_fusion_policy = _normalize_scope(label_fusion_policy)
-    if label_fusion_policy not in {"score_sum", "vote_sum", "vote_margin", "max_score"}:
-        raise ValueError("label_fusion_policy must be score_sum, vote_sum, vote_margin, or max_score")
+    if label_fusion_policy not in {"score_sum", "vote_sum", "vote_margin", "weighted_vote_margin", "max_score"}:
+        raise ValueError(
+            "label_fusion_policy must be score_sum, vote_sum, vote_margin, weighted_vote_margin, or max_score"
+        )
     class_reliability_policy = _normalize_scope(class_reliability_policy or "none")
     if class_reliability_policy not in {"none", "conformal_margin_risk"}:
         raise ValueError("class_reliability_policy must be none or conformal_margin_risk")
@@ -636,6 +638,8 @@ def _fuse_event(
             rank_score = count + 1e-3 * weighted_score
         elif label_fusion_policy == "vote_margin":
             rank_score = count + mean_margin_for_label + 1e-3 * weighted_score
+        elif label_fusion_policy == "weighted_vote_margin":
+            rank_score = label_weight_totals[item] + mean_margin_for_label + 1e-3 * weighted_score
         elif label_fusion_policy == "max_score":
             rank_score = max_score_for_label + 1e-3 * count
         else:
@@ -661,8 +665,15 @@ def _fuse_event(
     top_count = ranked_counts[0] if ranked_counts else 0
     second_count = ranked_counts[1] if len(ranked_counts) > 1 else 0
     receiver_n = max(len(selected), 1)
-    agreement = float(top_count) / float(receiver_n)
-    vote_gap = float(top_count - second_count) / float(receiver_n)
+    if label_fusion_policy == "weighted_vote_margin":
+        ranked_weight_totals = sorted((max(0.0, v) for v in label_weight_totals.values()), reverse=True)
+        top_weight = ranked_weight_totals[0] if ranked_weight_totals else 0.0
+        second_weight = ranked_weight_totals[1] if len(ranked_weight_totals) > 1 else 0.0
+        agreement = float(top_weight) / max(sum(max(0.0, v) for v in label_weight_totals.values()), 1e-12)
+        vote_gap = float(top_weight - second_weight) / max(sum(max(0.0, v) for v in label_weight_totals.values()), 1e-12)
+    else:
+        agreement = float(top_count) / float(receiver_n)
+        vote_gap = float(top_count - second_count) / float(receiver_n)
     selected_label_top1_receivers = int(label_top1_receiver_counts[label]) if label else 0
     selected_label_candidate_receivers = int(label_candidate_receiver_counts[label]) if label else 0
     selected_label_min_evidence_rank = int(label_min_evidence_rank[label]) if label and label in label_min_evidence_rank else 0

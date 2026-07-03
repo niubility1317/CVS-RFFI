@@ -2116,7 +2116,7 @@ def parse_args() -> argparse.Namespace:
     p.add_argument(
         "--label_fusion_policy",
         default="score_sum",
-        choices=["score_sum", "vote_sum", "vote_margin", "max_score"],
+        choices=["score_sum", "vote_sum", "vote_margin", "weighted_vote_margin", "max_score"],
     )
     p.add_argument(
         "--class_reliability_policy",
