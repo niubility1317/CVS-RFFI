@@ -1198,3 +1198,24 @@ python E:\type10-7\code\tests\test_phase2_collaborative_open_set_qknn_eval.py
 |`max_score`|0.3103|0.4857|0.3000|0.0000|0.3052|
 
 去掉`role`泄漏后，预算1在强rescue下会出现`unknown_FAR=0.0500`，说明部署可行算法必须依赖风险/gate保护，而不能依赖真值role保护。预算2-5在class-set gate安全参数下仍保持`unknown_FAR=0.0000`。计划远端复测`vote_margin`，因为它在预算4提高seen-new且降低defer，同时不增加FAR。
+
+远端验证与运行结果：N607使用`CVS-RFFI`环境，`py_compile`通过，`test_collaborative_open_set_qknn_eval.py`为24 tests OK，`test_phase2_collaborative_open_set_qknn_eval.py`为16 tests OK。远端运行`adaptive_gain_vote_margin_norole`使用`--collab_counts all`和`--label_fusion_policy vote_margin`，输出`receiver_count=5`、`group_count=308`、`evidence_row_count=1000`。运行前后8张RTX3090均为`10/24576MiB`，无新增显存占用。SSH/SCP后本地检查无残留`ssh.exe`或22端口`ESTABLISHED`连接。
+
+拉回产物与SHA256：
+
+|产物|SHA256|
+|---|---|
+|`remote_artifacts/collab_open_set_qknn_scorer_cvs_evt_adaptive_gain_vote_margin_norole.json`|`1403A61AB7F755F2C3682E7E04349B6DC97CBFAA3072D491EF9C7E5DAA7C60E1`|
+|`remote_artifacts/collab_open_set_qknn_scorer_cvs_evt_adaptive_gain_vote_margin_norole_evidence.csv`|`E3CE84A7F320770CCA570DD23F09E88FBA1E59502A3E9BB2A7265DF5163B26F7`|
+
+`adaptive_gain_vote_margin_norole`结果：
+
+|最大receiver预算|total|old_acc|min_old_class_acc|seen_new_acc|min_seen_new_class_acc|unknown_FAR|unknown_reject_rate|defer_rate|avg used rx|p95 used rx|rescue count|
+|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+|1|308|0.0000|0.0000|0.1500|0.0000|0.0500|0.6167|0.5000|1.0000|1.0000|22|
+|2|246|0.0850|0.0000|0.3556|0.1000|0.0000|0.8958|0.3374|1.8171|2.0000|20|
+|3|200|0.0417|0.0000|0.4250|0.1000|0.0000|0.9500|0.4250|2.5450|3.0000|17|
+|4|154|0.3103|0.0000|0.4857|0.3000|0.0000|0.8438|0.3182|3.2987|4.0000|19|
+|5|92|0.3654|0.0000|0.2500|0.0000|0.0000|0.7000|0.4022|4.2391|5.0000|6|
+
+解释：`vote_margin`合法利用多接收机标签一致性，预算4的seen_new_acc从`class_gate_safe`的0.4571提高到0.4857，min_seen_new_class_acc从0.2500提高到0.3000，defer_rate从0.3312降到0.3182，并保持预算2-5 unknown_FAR=0。预算1出现unknown_FAR=0.0500是预期中的反泄漏审计结果：没有多接收机风险保护时，不能依赖`role`阻止seen-new rescue。因此下一步如果继续追求99/97/99，不能只调融合层；需要加强本地qKNN证据字段，例如每类Gaussian prototype/diag covariance、support density、label-conditioned radius z-score，或导出严格同物理事件键后做真正同事件协同。
