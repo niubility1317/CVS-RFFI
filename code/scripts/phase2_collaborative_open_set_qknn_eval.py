@@ -377,10 +377,15 @@ def qknn_scores(
     scenario_aware: bool = False,
     radius_norm: float = 0.0,
     old_bias: float = 0.0,
+    candidate_class_top_m: int = 0,
     exclude_support_indices: Sequence[int] | None = None,
-) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
+) -> tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
     query = _normalize_rows(query_features)
     support = _normalize_rows(memory.qfeatures.astype(np.float32) / float(memory.scale))
+    centroid_scores = _centroid_scores(memory, query)
+    class_top_m = int(candidate_class_top_m)
+    if class_top_m < 0:
+        raise ValueError("candidate_class_top_m must be >= 0")
     query_scenarios_arr = None
     if scenario_aware:
         if query_scenarios is None:
@@ -404,9 +409,17 @@ def qknn_scores(
     out_labels: list[str] = []
     out_scores: list[float] = []
     out_margins: list[float] = []
+    out_candidate_counts: list[int] = []
     all_support_mask = np.ones(memory.labels.shape[0], dtype=bool)
     for row_i in range(scores.shape[0]):
         support_mask = all_support_mask.copy()
+        if class_top_m > 0:
+            m = max(1, min(class_top_m, int(memory.centroid_labels.shape[0])))
+            candidate_class_pos = np.argpartition(centroid_scores[row_i], -m)[-m:]
+            candidate_labels = set(str(memory.centroid_labels[pos]) for pos in candidate_class_pos.tolist())
+            candidate_mask = np.asarray([str(label) in candidate_labels for label in memory.labels], dtype=bool)
+            if int(np.sum(candidate_mask)) >= k:
+                support_mask &= candidate_mask
         if scenario_aware and query_scenarios_arr is not None:
             candidate_mask = memory.support_scenarios.astype(str) == str(query_scenarios_arr[row_i])
             if int(np.sum(candidate_mask)) >= k and len(set(memory.labels[candidate_mask].tolist())) >= 2:
@@ -429,7 +442,13 @@ def qknn_scores(
         out_labels.append(best_label)
         out_scores.append(float(best_score / max(row_k, 1)))
         out_margins.append(float((best_score - second) / max(row_k, 1)))
-    return np.asarray(out_labels, dtype=object), np.asarray(out_scores, dtype=np.float64), np.asarray(out_margins, dtype=np.float64)
+        out_candidate_counts.append(len(set(memory.labels[support_mask].tolist())))
+    return (
+        np.asarray(out_labels, dtype=object),
+        np.asarray(out_scores, dtype=np.float64),
+        np.asarray(out_margins, dtype=np.float64),
+        np.asarray(out_candidate_counts, dtype=np.int64),
+    )
 
 
 def _split_support_query(
@@ -562,13 +581,14 @@ def _threshold_from_calibration(
     scenario_aware: bool = False,
     radius_norm: float = 0.0,
     old_bias: float = 0.0,
+    candidate_class_top_m: int = 0,
     support_calibration_mode: str = "self",
 ) -> tuple[float, str]:
     calibration_mode = str(support_calibration_mode or "self").strip().lower()
     if calibration_mode not in {"self", "leave_one_out", "loo"}:
         raise ValueError("support_calibration_mode must be self or leave_one_out")
     exclude = range(int(support_features.shape[0])) if calibration_mode in {"leave_one_out", "loo"} else None
-    _, support_scores, _ = qknn_scores(
+    _, support_scores, _, _ = qknn_scores(
         memory,
         support_features,
         top_k=top_k,
@@ -576,12 +596,13 @@ def _threshold_from_calibration(
         scenario_aware=scenario_aware,
         radius_norm=radius_norm,
         old_bias=old_bias,
+        candidate_class_top_m=candidate_class_top_m,
         exclude_support_indices=exclude,
     )
     threshold = float(np.quantile(support_scores, float(support_quantile))) if support_scores.size else 0.0
     scope = "support_known_only"
     if proxy_features is not None and int(proxy_features.shape[0]) > 0:
-        _, proxy_scores, _ = qknn_scores(
+        _, proxy_scores, _, _ = qknn_scores(
             memory,
             proxy_features,
             top_k=top_k,
@@ -589,6 +610,7 @@ def _threshold_from_calibration(
             scenario_aware=scenario_aware and proxy_scenarios is not None,
             radius_norm=radius_norm,
             old_bias=old_bias,
+            candidate_class_top_m=candidate_class_top_m,
         )
         if proxy_scores.size:
             threshold = max(threshold, float(np.quantile(proxy_scores, float(proxy_quantile))))
@@ -801,6 +823,7 @@ def build_collaborative_evidence(
     scenario_aware: bool = False,
     radius_norm: float = 0.0,
     old_bias: float = 0.0,
+    candidate_class_top_m: int = 0,
     support_calibration_mode: str = "self",
     score_threshold_combine: str = "max",
     evidence_packet_bytes: float = 40.0,
@@ -949,6 +972,7 @@ def build_collaborative_evidence(
             scenario_aware=bool(scenario_aware),
             radius_norm=float(radius_norm),
             old_bias=float(old_bias),
+            candidate_class_top_m=int(candidate_class_top_m),
             support_calibration_mode=str(support_calibration_mode),
         )
         threshold_scope = scope if scope == "source_only" else threshold_scope
@@ -1020,7 +1044,7 @@ def build_collaborative_evidence(
                 for rx in sorted(rx_to_idx):
                     idx = rx_to_idx[rx]
                     memory = receiver_memories[rx]
-                    pred, score, margin = qknn_scores(
+                    pred, score, margin, candidate_counts = qknn_scores(
                         memory,
                         features[[idx]],
                         top_k=qknn_k,
@@ -1028,6 +1052,7 @@ def build_collaborative_evidence(
                         scenario_aware=bool(scenario_aware),
                         radius_norm=float(radius_norm),
                         old_bias=float(old_bias),
+                        candidate_class_top_m=int(candidate_class_top_m),
                     )
                     (
                         risk,
@@ -1066,6 +1091,7 @@ def build_collaborative_evidence(
                             "predicted_label": str(pred[0]),
                             "known_score": float(score[0]),
                             "known_margin": float(margin[0]),
+                            "candidate_class_count": int(candidate_counts[0]),
                             "unknown_risk": float(risk[0]),
                             "score_risk": float(score_risk[0]),
                             "radius_risk": float(radius_risk[0]),
@@ -1117,6 +1143,7 @@ def build_collaborative_evidence(
         "scenario_aware": bool(scenario_aware),
         "radius_norm": float(radius_norm),
         "old_bias": float(old_bias),
+        "candidate_class_top_m": int(candidate_class_top_m),
         "radius_quantile": float(radius_quantile),
         "margin_quantile": float(margin_quantile),
         "score_quantile": float(score_quantile),
@@ -1174,6 +1201,7 @@ def run_evaluation(args: argparse.Namespace) -> dict[str, Any]:
         scenario_aware=bool(args.scenario_aware),
         radius_norm=float(args.radius_norm),
         old_bias=float(args.old_bias),
+        candidate_class_top_m=int(args.candidate_class_top_m),
         support_calibration_mode=str(args.support_calibration_mode),
         score_threshold_combine=str(args.score_threshold_combine),
         evidence_packet_bytes=float(args.evidence_packet_bytes),
@@ -1247,6 +1275,7 @@ def parse_args() -> argparse.Namespace:
     p.add_argument("--scenario_aware", action="store_true")
     p.add_argument("--radius_norm", type=float, default=0.0)
     p.add_argument("--old_bias", type=float, default=0.0)
+    p.add_argument("--candidate_class_top_m", type=int, default=0)
     p.add_argument("--support_calibration_mode", default="self", choices=["self", "leave_one_out", "loo"])
     p.add_argument(
         "--score_threshold_combine",
