@@ -1352,8 +1352,88 @@ class CollaborativeOpenSetQknnEvalTest(unittest.TestCase):
                 "class_evidence_top1_support_count": 2,
                 "class_evidence_top2_label": "old-a",
                 "class_evidence_top2_score": 0.85,
+                "class_evidence_top2_margin": 0.30,
                 "class_evidence_top2_conformal_pvalue": 0.90,
                 "class_evidence_top2_support_count": 2,
+                "class_evidence_top2_unknown_risk": 0.10,
+                "class_evidence_top2_score_risk": 0.10,
+                "class_evidence_top2_radius_risk": 0.10,
+                "class_evidence_top2_margin_risk": 0.10,
+                "class_evidence_top2_mahalanobis_risk": 0.10,
+                "class_evidence_top2_evt_risk": 0.10,
+                "class_evidence_top2_oldness_risk": 0.10,
+                "class_evidence_top2_class_radius_z": 0.0,
+            })
+
+        result = evaluate_collaborative_open_set_evidence(
+            rows,
+            collab_counts="2",
+            fusion_policy="cp_set_cvs",
+            unknown_risk_threshold=0.8,
+            accept_margin_threshold=0.1,
+            consensus_score_threshold=0.6,
+            scorer_component_vote_threshold=0.5,
+            scorer_risk_components=["score", "radius", "margin"],
+            conformal_rescue_min_pvalue=0.5,
+            label_fusion_policy="vote_margin",
+            protocol_metadata={
+                "source_receiver_ids": ["src-a"],
+                "target_receiver_ids": ["rx-a", "rx-b"],
+                "old_tx_ids": ["old-a", "old-b"],
+                "seen_new_tx_ids": ["new-a"],
+                "unknown_tx_ids": ["unk-a"],
+                "target_channel_view": "leo_clear_weak",
+            },
+            strict_protocol_metadata=True,
+        )
+
+        k2 = result["counts"]["2"]
+        self.assertEqual(k2["open_set_confusion"], {"old->old": 1})
+        self.assertEqual(k2["old_acc"], 1.0)
+        self.assertLess(k2["unknown_FAR"], 1.0)
+
+    def test_cp_set_cvs_uses_selected_top_m_label_risk(self):
+        from evaluation.collaborative_open_set_qknn_eval import evaluate_collaborative_open_set_evidence
+
+        rows = []
+        for receiver_id in ("rx-a", "rx-b"):
+            rows.append({
+                "event_id": "topm-risk-old",
+                "receiver_id": receiver_id,
+                "role": "old",
+                "true_label": "old-a",
+                "predicted_label": "old-b",
+                "known_score": 0.90,
+                "known_margin": 0.02,
+                "unknown_risk": 0.95,
+                "score_risk": 0.95,
+                "radius_risk": 0.95,
+                "margin_risk": 0.95,
+                "class_conformal_pvalue": 0.10,
+                "class_conformal_support_count": 2,
+                "class_evidence_top_m": 2,
+                "class_evidence_top1_label": "old-b",
+                "class_evidence_top1_score": 0.90,
+                "class_evidence_top1_margin": 0.02,
+                "class_evidence_top1_conformal_pvalue": 0.10,
+                "class_evidence_top1_support_count": 2,
+                "class_evidence_top1_unknown_risk": 0.95,
+                "class_evidence_top1_score_risk": 0.95,
+                "class_evidence_top1_radius_risk": 0.95,
+                "class_evidence_top1_margin_risk": 0.95,
+                "class_evidence_top2_label": "old-a",
+                "class_evidence_top2_score": 0.85,
+                "class_evidence_top2_margin": 0.30,
+                "class_evidence_top2_conformal_pvalue": 0.90,
+                "class_evidence_top2_support_count": 2,
+                "class_evidence_top2_unknown_risk": 0.10,
+                "class_evidence_top2_score_risk": 0.10,
+                "class_evidence_top2_radius_risk": 0.10,
+                "class_evidence_top2_margin_risk": 0.10,
+                "class_evidence_top2_mahalanobis_risk": 0.10,
+                "class_evidence_top2_evt_risk": 0.10,
+                "class_evidence_top2_oldness_risk": 0.10,
+                "class_evidence_top2_class_radius_z": 0.0,
             })
 
         result = evaluate_collaborative_open_set_evidence(

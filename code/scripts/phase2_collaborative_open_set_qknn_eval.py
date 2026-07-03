@@ -1632,10 +1632,56 @@ def build_collaborative_evidence(
                             )
                         ]
                         label_scores_for_event.sort(key=lambda item: (item[1], item[0]), reverse=True)
+                        top_label_scores = label_scores_for_event[: int(class_evidence_top_m)]
                         for rank, (label_name, label_score) in enumerate(
-                            label_scores_for_event[: int(class_evidence_top_m)],
+                            top_label_scores,
                             start=1,
                         ):
+                            label_second_score = max(
+                                (score_value for other_label, score_value in label_scores_for_event if other_label != label_name),
+                                default=0.0,
+                            )
+                            label_margin = float(label_score - label_second_score)
+                            label_class_threshold_value = receiver_class_thresholds.get(rx, {}).get(label_name)
+                            if bool(class_score_threshold_enabled) and label_class_threshold_value is not None:
+                                label_receiver_threshold = float(label_class_threshold_value)
+                                label_threshold_source = "class"
+                            elif bool(class_score_threshold_enabled):
+                                label_receiver_threshold = float(receiver_thresholds[rx])
+                                label_threshold_source = "receiver_fallback"
+                            else:
+                                label_receiver_threshold = float(receiver_thresholds[rx])
+                                label_threshold_source = "receiver_global"
+                            label_effective_threshold = _combine_score_threshold(
+                                label_receiver_threshold,
+                                memory.score_threshold,
+                                str(score_threshold_combine),
+                            )
+                            (
+                                label_risk,
+                                label_score_risk,
+                                label_radius_risk,
+                                label_margin_risk,
+                                label_mahalanobis_risk,
+                                label_evt_risk,
+                                label_oldness_risk,
+                                label_class_radius,
+                                label_class_radius_z,
+                            ) = _combined_unknown_risk(
+                                memory,
+                                features[[idx]],
+                                [label_name],
+                                np.asarray([label_score], dtype=np.float64),
+                                np.asarray([label_margin], dtype=np.float64),
+                                label_effective_threshold,
+                                temperature=risk_temperature,
+                                gate_mode=unknown_gate_mode,
+                                radius_temperature=radius_temperature,
+                                margin_temperature=margin_temperature,
+                                mahalanobis_temperature=mahalanobis_temperature,
+                                evt_temperature=evt_temperature,
+                                oldness_temperature=oldness_temperature,
+                            )
                             label_pvalue = _conformal_pvalue(
                                 label_score,
                                 receiver_class_conformal_scores.get(rx, {}).get(label_name),
@@ -1643,10 +1689,26 @@ def build_collaborative_evidence(
                             label_support_count = len(receiver_class_conformal_scores.get(rx, {}).get(label_name, []))
                             class_evidence_fields[f"class_evidence_top{rank}_label"] = label_name
                             class_evidence_fields[f"class_evidence_top{rank}_score"] = float(label_score)
+                            class_evidence_fields[f"class_evidence_top{rank}_margin"] = float(label_margin)
                             class_evidence_fields[f"class_evidence_top{rank}_conformal_pvalue"] = (
                                 float(label_pvalue) if bool(class_conformal_enabled) else 0.0
                             )
                             class_evidence_fields[f"class_evidence_top{rank}_support_count"] = int(label_support_count)
+                            class_evidence_fields[f"class_evidence_top{rank}_effective_score_threshold"] = float(
+                                label_effective_threshold
+                            )
+                            class_evidence_fields[f"class_evidence_top{rank}_score_threshold_source"] = label_threshold_source
+                            class_evidence_fields[f"class_evidence_top{rank}_unknown_risk"] = float(label_risk[0])
+                            class_evidence_fields[f"class_evidence_top{rank}_score_risk"] = float(label_score_risk[0])
+                            class_evidence_fields[f"class_evidence_top{rank}_radius_risk"] = float(label_radius_risk[0])
+                            class_evidence_fields[f"class_evidence_top{rank}_margin_risk"] = float(label_margin_risk[0])
+                            class_evidence_fields[f"class_evidence_top{rank}_mahalanobis_risk"] = float(
+                                label_mahalanobis_risk[0]
+                            )
+                            class_evidence_fields[f"class_evidence_top{rank}_evt_risk"] = float(label_evt_risk[0])
+                            class_evidence_fields[f"class_evidence_top{rank}_oldness_risk"] = float(label_oldness_risk[0])
+                            class_evidence_fields[f"class_evidence_top{rank}_class_radius"] = float(label_class_radius[0])
+                            class_evidence_fields[f"class_evidence_top{rank}_class_radius_z"] = float(label_class_radius_z[0])
                     (
                         risk,
                         score_risk,

@@ -815,12 +815,18 @@ class Phase2CollaborativeOpenSetQknnEvalTest(unittest.TestCase):
         self.assertEqual(int(first["class_evidence_top_m"]), 2)
         self.assertIn("class_evidence_top1_label", first)
         self.assertIn("class_evidence_top1_score", first)
+        self.assertIn("class_evidence_top1_margin", first)
         self.assertIn("class_evidence_top1_conformal_pvalue", first)
         self.assertIn("class_evidence_top1_support_count", first)
+        self.assertIn("class_evidence_top1_unknown_risk", first)
+        self.assertIn("class_evidence_top1_class_radius_z", first)
         self.assertIn("class_evidence_top2_label", first)
         self.assertIn("class_evidence_top2_score", first)
+        self.assertIn("class_evidence_top2_margin", first)
         self.assertIn("class_evidence_top2_conformal_pvalue", first)
         self.assertIn("class_evidence_top2_support_count", first)
+        self.assertIn("class_evidence_top2_unknown_risk", first)
+        self.assertIn("class_evidence_top2_class_radius_z", first)
 
     def test_class_score_thresholds_use_true_label_score_not_top1_score(self):
         from phase2_collaborative_open_set_qknn_eval import (
