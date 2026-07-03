@@ -44,6 +44,8 @@ class QknnMemory:
     centroid_labels: np.ndarray
     centroids: np.ndarray
     class_radius_thresholds: dict[str, float]
+    class_mahalanobis_inv_vars: dict[str, np.ndarray]
+    class_mahalanobis_thresholds: dict[str, float]
     margin_threshold: float
     score_threshold: float
 
@@ -171,6 +173,36 @@ def _support_envelope(
     return radii, margin_t, score_t
 
 
+def _mahalanobis_envelope(
+    features: np.ndarray,
+    labels: np.ndarray,
+    centroid_labels: np.ndarray,
+    centroids: np.ndarray,
+    *,
+    mahalanobis_quantile: float,
+    mahalanobis_slack: float,
+    variance_floor: float,
+) -> tuple[dict[str, np.ndarray], dict[str, float]]:
+    normalized = _normalize_rows(features)
+    class_to_pos = {str(label): int(i) for i, label in enumerate(centroid_labels.tolist())}
+    inv_vars: dict[str, np.ndarray] = {}
+    thresholds: dict[str, float] = {}
+    global_var = np.var(normalized, axis=0) + float(variance_floor)
+    for label in sorted(class_to_pos):
+        idx = np.where(labels == label)[0]
+        if idx.size <= 0:
+            continue
+        class_features = normalized[idx]
+        centroid = centroids[class_to_pos[label]]
+        class_var = np.var(class_features, axis=0) if idx.size > 1 else global_var
+        var = np.maximum(0.5 * class_var + 0.5 * global_var, float(variance_floor))
+        inv_var = 1.0 / var
+        distances = np.sqrt(np.mean(((class_features - centroid) ** 2) * inv_var[None, :], axis=1))
+        inv_vars[label] = inv_var.astype(np.float32)
+        thresholds[label] = float(np.quantile(distances, float(mahalanobis_quantile)) + float(mahalanobis_slack))
+    return inv_vars, thresholds
+
+
 def build_qknn_memory(
     features: np.ndarray,
     labels: Sequence[str],
@@ -180,9 +212,12 @@ def build_qknn_memory(
     radius_quantile: float = 0.95,
     margin_quantile: float = 0.05,
     score_quantile: float = 0.05,
+    mahalanobis_quantile: float = 0.95,
     radius_slack: float = 0.02,
     margin_slack: float = 0.0,
     score_slack: float = 0.0,
+    mahalanobis_slack: float = 0.0,
+    mahalanobis_variance_floor: float = 1e-4,
 ) -> QknnMemory:
     normalized = _normalize_rows(features)
     scale = 127.0
@@ -217,6 +252,15 @@ def build_qknn_memory(
         margin_slack=margin_slack,
         score_slack=score_slack,
     )
+    mahalanobis_inv_vars, mahalanobis_thresholds = _mahalanobis_envelope(
+        normalized,
+        labels_arr,
+        centroid_labels,
+        centroids,
+        mahalanobis_quantile=mahalanobis_quantile,
+        mahalanobis_slack=mahalanobis_slack,
+        variance_floor=mahalanobis_variance_floor,
+    )
     storage_bytes = int(qfeatures.nbytes + labels_arr.size * 4)
     return QknnMemory(
         qfeatures=qfeatures,
@@ -229,6 +273,8 @@ def build_qknn_memory(
         centroid_labels=centroid_labels,
         centroids=centroids,
         class_radius_thresholds=radius_thresholds,
+        class_mahalanobis_inv_vars=mahalanobis_inv_vars,
+        class_mahalanobis_thresholds=mahalanobis_thresholds,
         margin_threshold=margin_threshold,
         score_threshold=score_threshold,
     )
@@ -481,12 +527,13 @@ def _combined_unknown_risk(
     gate_mode: str,
     radius_temperature: float,
     margin_temperature: float,
-) -> tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
+    mahalanobis_temperature: float,
+) -> tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
     mode = str(gate_mode or "score").strip().lower()
     score_risk = _unknown_risk(known_scores, score_threshold, temperature=temperature)
     if mode == "score":
         zeros = np.zeros_like(score_risk)
-        return score_risk, score_risk, zeros, zeros, zeros
+        return score_risk, score_risk, zeros, zeros, zeros, zeros
     centroid_scores = _centroid_scores(memory, query_features)
     class_to_pos = {str(label): int(i) for i, label in enumerate(memory.centroid_labels.tolist())}
     radius_risks = []
@@ -507,19 +554,45 @@ def _combined_unknown_risk(
     margin_t = float(memory.margin_threshold)
     margin_z = (margin_t - np.asarray(known_margins, dtype=np.float64)) / max(float(margin_temperature), 1e-6)
     margin_risk = 1.0 / (1.0 + np.exp(-margin_z))
+    mahalanobis_risks = []
+    mahalanobis_distances = []
+    normalized_query = _normalize_rows(query_features)
+    for row_i, label in enumerate(predicted_labels):
+        label = str(label)
+        pos = class_to_pos.get(label)
+        inv_var = memory.class_mahalanobis_inv_vars.get(label)
+        if pos is None or inv_var is None:
+            mahalanobis_distances.append(1.0)
+            mahalanobis_risks.append(1.0)
+            continue
+        centroid = memory.centroids[pos]
+        distance = float(np.sqrt(np.mean(((normalized_query[row_i] - centroid) ** 2) * inv_var)))
+        threshold = float(memory.class_mahalanobis_thresholds.get(label, 1.0))
+        z = (distance - threshold) / max(float(mahalanobis_temperature), 1e-6)
+        mahalanobis_distances.append(distance)
+        mahalanobis_risks.append(float(1.0 / (1.0 + np.exp(-z))))
+    mahalanobis_risk = np.asarray(mahalanobis_risks, dtype=np.float64)
     if mode == "support_envelope":
         risk = np.maximum.reduce([score_risk, radius_risk, margin_risk])
+    elif mode == "support_envelope_mahalanobis":
+        risk = np.maximum.reduce([score_risk, radius_risk, margin_risk, mahalanobis_risk])
     elif mode == "radius":
         risk = np.maximum(score_risk, radius_risk)
     elif mode == "margin":
         risk = np.maximum(score_risk, margin_risk)
+    elif mode == "mahalanobis":
+        risk = np.maximum(score_risk, mahalanobis_risk)
     else:
-        raise ValueError("unknown_gate_mode must be score, radius, margin, or support_envelope")
+        raise ValueError(
+            "unknown_gate_mode must be score, radius, margin, mahalanobis, support_envelope, "
+            "or support_envelope_mahalanobis"
+        )
     return (
         np.clip(risk, 0.0, 1.0),
         np.asarray(score_risk, dtype=np.float64),
         radius_risk,
         margin_risk,
+        mahalanobis_risk,
         np.asarray(radius_values, dtype=np.float64),
     )
 
@@ -572,11 +645,15 @@ def build_collaborative_evidence(
     radius_quantile: float = 0.95,
     margin_quantile: float = 0.05,
     score_quantile: float = 0.05,
+    mahalanobis_quantile: float = 0.95,
     radius_slack: float = 0.02,
     margin_slack: float = 0.0,
     score_slack: float = 0.0,
+    mahalanobis_slack: float = 0.0,
     radius_temperature: float = 0.02,
     margin_temperature: float = 0.02,
+    mahalanobis_temperature: float = 0.20,
+    mahalanobis_variance_floor: float = 1e-4,
     scenario_aware: bool = False,
     radius_norm: float = 0.0,
     old_bias: float = 0.0,
@@ -703,9 +780,12 @@ def build_collaborative_evidence(
             radius_quantile=radius_quantile,
             margin_quantile=margin_quantile,
             score_quantile=score_quantile,
+            mahalanobis_quantile=mahalanobis_quantile,
             radius_slack=radius_slack,
             margin_slack=margin_slack,
             score_slack=score_slack,
+            mahalanobis_slack=mahalanobis_slack,
+            mahalanobis_variance_floor=mahalanobis_variance_floor,
         )
         proxy_features = features[proxy_idx] if proxy_idx.size else None
         threshold, scope = _threshold_from_calibration(
@@ -800,7 +880,7 @@ def build_collaborative_evidence(
                         radius_norm=float(radius_norm),
                         old_bias=float(old_bias),
                     )
-                    risk, score_risk, radius_risk, margin_risk, class_radius = _combined_unknown_risk(
+                    risk, score_risk, radius_risk, margin_risk, mahalanobis_risk, class_radius = _combined_unknown_risk(
                         memory,
                         features[[idx]],
                         pred,
@@ -815,6 +895,7 @@ def build_collaborative_evidence(
                         gate_mode=unknown_gate_mode,
                         radius_temperature=radius_temperature,
                         margin_temperature=margin_temperature,
+                        mahalanobis_temperature=mahalanobis_temperature,
                     )
                     evidence.append(
                         {
@@ -829,6 +910,7 @@ def build_collaborative_evidence(
                             "score_risk": float(score_risk[0]),
                             "radius_risk": float(radius_risk[0]),
                             "margin_risk": float(margin_risk[0]),
+                            "mahalanobis_risk": float(mahalanobis_risk[0]),
                             "class_radius": float(class_radius[0]),
                             "reliability": 1.0,
                             "reliability_source": "deployment_prior",
@@ -875,9 +957,13 @@ def build_collaborative_evidence(
         "radius_quantile": float(radius_quantile),
         "margin_quantile": float(margin_quantile),
         "score_quantile": float(score_quantile),
+        "mahalanobis_quantile": float(mahalanobis_quantile),
         "radius_slack": float(radius_slack),
         "margin_slack": float(margin_slack),
         "score_slack": float(score_slack),
+        "mahalanobis_slack": float(mahalanobis_slack),
+        "mahalanobis_temperature": float(mahalanobis_temperature),
+        "mahalanobis_variance_floor": float(mahalanobis_variance_floor),
     }
     return evidence, metadata
 
@@ -899,11 +985,15 @@ def run_evaluation(args: argparse.Namespace) -> dict[str, Any]:
         radius_quantile=float(args.radius_quantile),
         margin_quantile=float(args.margin_quantile),
         score_quantile=float(args.score_quantile),
+        mahalanobis_quantile=float(args.mahalanobis_quantile),
         radius_slack=float(args.radius_slack),
         margin_slack=float(args.margin_slack),
         score_slack=float(args.score_slack),
+        mahalanobis_slack=float(args.mahalanobis_slack),
         radius_temperature=float(args.radius_temperature),
         margin_temperature=float(args.margin_temperature),
+        mahalanobis_temperature=float(args.mahalanobis_temperature),
+        mahalanobis_variance_floor=float(args.mahalanobis_variance_floor),
         scenario_aware=bool(args.scenario_aware),
         radius_norm=float(args.radius_norm),
         old_bias=float(args.old_bias),
@@ -958,12 +1048,16 @@ def parse_args() -> argparse.Namespace:
     p.add_argument("--risk_temperature", type=float, default=0.035)
     p.add_argument("--radius_temperature", type=float, default=0.02)
     p.add_argument("--margin_temperature", type=float, default=0.02)
+    p.add_argument("--mahalanobis_temperature", type=float, default=0.20)
     p.add_argument("--radius_quantile", type=float, default=0.95)
     p.add_argument("--margin_quantile", type=float, default=0.05)
     p.add_argument("--score_quantile", type=float, default=0.05)
+    p.add_argument("--mahalanobis_quantile", type=float, default=0.95)
     p.add_argument("--radius_slack", type=float, default=0.02)
     p.add_argument("--margin_slack", type=float, default=0.0)
     p.add_argument("--score_slack", type=float, default=0.0)
+    p.add_argument("--mahalanobis_slack", type=float, default=0.0)
+    p.add_argument("--mahalanobis_variance_floor", type=float, default=1e-4)
     p.add_argument("--scenario_aware", action="store_true")
     p.add_argument("--radius_norm", type=float, default=0.0)
     p.add_argument("--old_bias", type=float, default=0.0)
@@ -991,7 +1085,7 @@ def parse_args() -> argparse.Namespace:
     p.add_argument(
         "--unknown_gate_mode",
         default="score",
-        choices=["score", "radius", "margin", "support_envelope"],
+        choices=["score", "radius", "margin", "mahalanobis", "support_envelope", "support_envelope_mahalanobis"],
     )
     p.add_argument(
         "--event_alignment_policy",

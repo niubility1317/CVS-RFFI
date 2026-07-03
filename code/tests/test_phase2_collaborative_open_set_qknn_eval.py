@@ -216,6 +216,25 @@ class Phase2CollaborativeOpenSetQknnEvalTest(unittest.TestCase):
         self.assertIn("margin_risk", evidence[0])
         self.assertIn("class_radius", evidence[0])
 
+    def test_mahalanobis_gate_records_class_conditional_risk(self):
+        from phase2_collaborative_open_set_qknn_eval import load_feature_npz, build_collaborative_evidence
+
+        with tempfile.TemporaryDirectory() as td:
+            npz = Path(td) / "features.npz"
+            _write_npz(npz)
+            evidence, metadata = build_collaborative_evidence(
+                load_feature_npz(npz),
+                k_shot=1,
+                query_per_class=2,
+                qknn_k=1,
+                unknown_gate_mode="support_envelope_mahalanobis",
+                mahalanobis_temperature=0.2,
+            )
+
+        self.assertEqual(metadata["unknown_gate_mode"], "support_envelope_mahalanobis")
+        self.assertIn("mahalanobis_risk", evidence[0])
+        self.assertIn("mahalanobis_temperature", metadata)
+
     def test_scenario_aware_qknn_prefers_matching_support_scenario(self):
         from phase2_collaborative_open_set_qknn_eval import build_qknn_memory, qknn_scores
 

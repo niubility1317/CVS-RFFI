@@ -209,6 +209,7 @@ def _fuse_event(
     score_risks = []
     radius_risks = []
     margin_risks = []
+    mahalanobis_risks = []
     component_votes = []
     predicted_labels = []
     for row in selected:
@@ -225,21 +226,25 @@ def _fuse_event(
         score_risk_value = _float(row, "score_risk", _float(row, "unknown_risk", 0.0))
         radius_risk_value = _float(row, "radius_risk", _float(row, "unknown_risk", 0.0))
         margin_risk_value = _float(row, "margin_risk", _float(row, "unknown_risk", 0.0))
+        has_mahalanobis = "mahalanobis_risk" in row
+        mahalanobis_risk_value = _float(row, "mahalanobis_risk", _float(row, "unknown_risk", 0.0))
         score_risks.append(score_risk_value)
         radius_risks.append(radius_risk_value)
         margin_risks.append(margin_risk_value)
+        mahalanobis_risks.append(mahalanobis_risk_value)
+        component_values = [score_risk_value, radius_risk_value, margin_risk_value]
+        if has_mahalanobis:
+            component_values.append(mahalanobis_risk_value)
         component_votes.append(
-            sum(
-                value >= float(unknown_risk_threshold)
-                for value in (score_risk_value, radius_risk_value, margin_risk_value)
-            )
-            / 3.0
+            sum(value >= float(unknown_risk_threshold) for value in component_values)
+            / float(max(len(component_values), 1))
         )
 
     unknown_risk = _weighted_quantile(risks, weights, unknown_quantile)
     score_risk = _weighted_quantile(score_risks, weights, unknown_quantile)
     radius_risk = _weighted_quantile(radius_risks, weights, unknown_quantile)
     margin_risk = _weighted_quantile(margin_risks, weights, unknown_quantile)
+    mahalanobis_risk = _weighted_quantile(mahalanobis_risks, weights, unknown_quantile)
     if weights and sum(weights) > 0:
         risk_component_agreement = sum(v * max(0.0, w) for v, w in zip(component_votes, weights)) / max(
             sum(max(0.0, w) for w in weights),
@@ -349,6 +354,7 @@ def _fuse_event(
         "score_risk": float(score_risk),
         "radius_risk": float(radius_risk),
         "margin_risk": float(margin_risk),
+        "mahalanobis_risk": float(mahalanobis_risk),
         "risk_component_agreement": float(risk_component_agreement),
         "known_margin": float(mean_margin),
         "mean_known_score": float(mean_score),
