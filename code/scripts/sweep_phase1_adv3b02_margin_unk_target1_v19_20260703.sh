@@ -106,6 +106,7 @@ run_cell() {
 echo "[PHASE1-MARGIN-UNK-TARGET1-V19] start=$(date -Is) gpus=${GPUS_CSV} seed=${SEED}"
 pids=()
 for idx in "${!CELLS[@]}"; do
+  mkdir -p "${LOG_ROOT}/${CELLS[$idx]}"
   run_cell "${idx}" > "${LOG_ROOT}/${CELLS[$idx]}/cell_driver.out" 2>&1 &
   pids+=("$!")
 done

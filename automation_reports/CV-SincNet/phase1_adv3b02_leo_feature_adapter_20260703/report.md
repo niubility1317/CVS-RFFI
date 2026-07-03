@@ -1067,7 +1067,7 @@ New/changed files:
 | File | Purpose | SHA256 |
 |---|---|---|
 | `E:\type10-7\code\scripts\fit_apply_phase1_leo_feature_adapter.py` | Adds source proxy_unknown repulsion, source old margin retention, and clean margin retention | `46CB3FBB8DD6051B61B5E8847A2B01D879C3C331217A4869D69D885C5669F50D` |
-| `E:\type10-7\code\scripts\sweep_phase1_adv3b02_margin_unk_target1_v19_20260703.sh` | Parallel multi-GPU V19 launcher with three conservative candidates per cell | `E09068DCBAA443E203A5EE571E7B53D6C4674ECF56DD781564C0A58AFF76531D` |
+| `E:\type10-7\code\scripts\sweep_phase1_adv3b02_margin_unk_target1_v19_20260703.sh` | Parallel multi-GPU V19 launcher with three conservative candidates per cell | `0590635F09455A119820FEF0F45757815091264B79A5A58FCB29655F8689DF05` |
 | `E:\type10-7\code\scripts\eval_phase1_target1_strong_repair_audit_20260703.py` | Reused unchanged strong target1 evaluator | `F8E16B3BBCCC6017725F29DF3B7FCB8012C174653FC0A033DC5527AE9AADBB4F` |
 
 Local verification:
@@ -1083,6 +1083,13 @@ Version/snapshot state:
 |---|---|
 | Non-Git code snapshot | `E:\type10-7\code\snapshots\phase1_adv3b02_margin_unk_target1_v19_20260703\` |
 | Git mirror branch | `E:\type10-7\github_publish\CVS-RFFI-repo` |
+
+Startup correction:
+
+| Time | Status | Detail |
+|---|---|---|
+| 2026-07-03 10:43 CST | Launcher failed before training | Parallel redirection attempted to write `cell_driver.out` before creating per-cell log directories; no adapter training started |
+| 2026-07-03 10:45 CST | Local fix verified | Added `mkdir -p "${LOG_ROOT}/${CELLS[$idx]}"` before background launch; `bash -n` PASS |
 
 Planned N607 output:
 
