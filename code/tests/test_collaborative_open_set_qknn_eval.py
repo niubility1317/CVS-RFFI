@@ -2042,6 +2042,106 @@ class CollaborativeOpenSetQknnEvalTest(unittest.TestCase):
         self.assertEqual(k1["unknown_reject_rate"], 1.0)
         self.assertEqual(k1["open_set_confusion"], {"unknown->unknown_reject": 1})
 
+    def test_scorer_cvs_can_use_class_negative_component(self):
+        from evaluation.collaborative_open_set_qknn_eval import evaluate_collaborative_open_set_evidence
+
+        row = {
+            "event_id": "class-negative-risk",
+            "receiver_id": "rx-a",
+            "role": "unknown",
+            "true_label": "__unknown__",
+            "predicted_label": "old-a",
+            "known_score": 0.90,
+            "known_margin": 0.01,
+            "unknown_risk": 0.95,
+            "score_risk": 0.10,
+            "radius_risk": 0.10,
+            "margin_risk": 0.10,
+            "class_negative_risk": 0.95,
+        }
+
+        result = evaluate_collaborative_open_set_evidence(
+            [row],
+            collab_counts="1",
+            fusion_policy="scorer_cvs",
+            unknown_risk_threshold=0.8,
+            accept_margin_threshold=0.1,
+            consensus_score_threshold=0.6,
+            scorer_component_vote_threshold=0.5,
+            scorer_risk_components=["score", "class_negative"],
+        )
+
+        k1 = result["counts"]["1"]
+        self.assertEqual(result["active_risk_components"], ["score", "class_negative"])
+        self.assertEqual(k1["unknown_reject_rate"], 1.0)
+        self.assertEqual(k1["open_set_confusion"], {"unknown->unknown_reject": 1})
+        self.assertAlmostEqual(k1["class_negative_risk"], 0.95)
+
+    def test_candidate_set_cvs_can_use_class_negative_component(self):
+        from evaluation.collaborative_open_set_qknn_eval import evaluate_collaborative_open_set_evidence
+
+        rows = []
+        for receiver_id in ("rx-a", "rx-b", "rx-c"):
+            rows.append({
+                "event_id": "class-negative-unknown",
+                "receiver_id": receiver_id,
+                "role": "unknown",
+                "true_label": "__unknown__",
+                "predicted_label": "old-a",
+                "known_score": 0.95,
+                "known_margin": 0.40,
+                "unknown_risk": 0.95,
+                "score_risk": 0.05,
+                "radius_risk": 0.05,
+                "margin_risk": 0.05,
+                "class_negative_risk": 0.95,
+                "class_conformal_pvalue": 0.95,
+                "class_conformal_support_count": 2,
+                "class_evidence_top_m": 1,
+                "class_evidence_top1_label": "old-a",
+                "class_evidence_top1_score": 0.95,
+                "class_evidence_top1_margin": 0.40,
+                "class_evidence_top1_conformal_pvalue": 0.95,
+                "class_evidence_top1_support_count": 2,
+                "class_evidence_top1_unknown_risk": 0.95,
+                "class_evidence_top1_score_risk": 0.05,
+                "class_evidence_top1_radius_risk": 0.05,
+                "class_evidence_top1_margin_risk": 0.05,
+                "class_evidence_top1_class_negative_risk": 0.95,
+                "bytes": 40.0,
+                "latency_ms": 0.1,
+            })
+
+        metadata = {
+            "source_receiver_ids": ["src-a"],
+            "target_receiver_ids": ["rx-a", "rx-b", "rx-c"],
+            "old_tx_ids": ["old-a"],
+            "seen_new_tx_ids": ["new-a"],
+            "unknown_tx_ids": ["unk-a"],
+            "target_channel_view": "leo_clear_weak",
+        }
+        result = evaluate_collaborative_open_set_evidence(
+            rows,
+            collab_counts="3",
+            fusion_policy="candidate_set_cvs",
+            scorer_risk_components=["score", "class_negative"],
+            scorer_component_vote_threshold=0.49,
+            candidate_set_min_receivers=2,
+            candidate_set_min_conformal_pvalue=0.5,
+            candidate_set_max_label_unknown_risk=1.0,
+            candidate_set_max_event_unknown_risk=1.0,
+            candidate_set_max_label_risk_component_agreement=1.0,
+            candidate_set_unknown_reject_risk=0.90,
+            protocol_metadata=metadata,
+            strict_protocol_metadata=True,
+        )
+
+        k3 = result["counts"]["3"]
+        self.assertEqual(result["active_risk_components"], ["score", "class_negative"])
+        self.assertEqual(k3["unknown_FAR"], 0.0)
+        self.assertEqual(k3["unknown_reject_rate"], 1.0)
+        self.assertAlmostEqual(k3["class_negative_risk"], 0.95)
+
     def test_scorer_cvs_conformal_rescue_accepts_strong_known(self):
         from evaluation.collaborative_open_set_qknn_eval import evaluate_collaborative_open_set_evidence
 

@@ -42,6 +42,7 @@ RISK_COMPONENT_KEYS = {
     "evt": "evt_risk",
     "oldness": "oldness_risk",
     "virtual_unknown": "virtual_unknown_risk",
+    "class_negative": "class_negative_risk",
     "class_shell": "class_shell_risk",
 }
 COLLAB_GROUP_POLICIES = {"exact_k", "available_up_to_k", "same_max_budget"}
@@ -690,6 +691,7 @@ def _fuse_event(
     evt_risks = []
     oldness_risks = []
     virtual_unknown_risks = []
+    class_negative_risks = []
     component_votes = []
     predicted_labels = []
     support_densities = []
@@ -722,6 +724,7 @@ def _fuse_event(
         evt_risk_value: float,
         oldness_risk_value: float,
         virtual_unknown_risk_value: float,
+        class_negative_risk_value: float,
         class_shell_risk_value: float,
         class_shell_risk_is_missing: bool,
         receiver_class_reliability_value: float | None,
@@ -756,12 +759,16 @@ def _fuse_event(
             return
         if conformal_weighted:
             candidate_score *= 0.5 + 0.5 * pvalue
+        effective_candidate_unknown_risk = max(
+            max(0.0, min(1.0, float(unknown_risk_value))),
+            max(0.0, min(1.0, float(class_negative_risk_value))),
+        )
         class_weight = _class_reliability(
             policy=class_reliability_policy,
             pvalue=pvalue,
             margin_value=margin_value,
             support_count=support_count,
-            unknown_risk_value=unknown_risk_value,
+            unknown_risk_value=effective_candidate_unknown_risk,
             accept_margin_threshold=accept_margin_threshold,
             conformal_rescue_min_pvalue=conformal_rescue_min_pvalue,
         )
@@ -795,7 +802,7 @@ def _fuse_event(
         label_conformal_support_counts[label].append(support_count)
         label_support_density_missing_values[label].append(bool(support_density_is_missing))
         label_radius_z_missing_values[label].append(bool(radius_z_is_missing))
-        label_unknown_risk_values[label].append(max(0.0, min(1.0, float(unknown_risk_value))))
+        label_unknown_risk_values[label].append(effective_candidate_unknown_risk)
         label_shell_risk_values[label].append(max(0.0, min(1.0, float(class_shell_risk_value))))
         label_shell_risk_observed_values[label].append(not bool(class_shell_risk_is_missing))
         label_class_reliability_values[label].append(class_weight)
@@ -809,6 +816,7 @@ def _fuse_event(
             "evt": float(evt_risk_value),
             "oldness": float(oldness_risk_value),
             "virtual_unknown": float(virtual_unknown_risk_value),
+            "class_negative": float(class_negative_risk_value),
             "class_shell": float(class_shell_risk_value),
         }
         if active_components is None:
@@ -821,6 +829,8 @@ def _fuse_event(
                 candidate_components.append(row_component_values["oldness"])
             if math.isfinite(row_component_values["virtual_unknown"]):
                 candidate_components.append(row_component_values["virtual_unknown"])
+            if math.isfinite(row_component_values["class_negative"]):
+                candidate_components.append(row_component_values["class_negative"])
         else:
             candidate_components = [row_component_values[component] for component in active_components]
         label_risk_component_votes[label].append(
@@ -838,7 +848,11 @@ def _fuse_event(
         if label:
             predicted_labels.append(label)
         weights.append(weight)
-        risks.append(_float(row, "unknown_risk", 0.0))
+        row_unknown_risk_value = max(
+            _float(row, "unknown_risk", 0.0),
+            _float(row, "class_negative_risk", 0.0),
+        )
+        risks.append(row_unknown_risk_value)
         margin_value = max(0.0, _float(row, "known_margin", 0.0))
         margins.append(margin_value)
         support_density_is_missing = not _has_finite_float(row, "support_density")
@@ -871,7 +885,7 @@ def _fuse_event(
                 conformal_support_count=class_conformal_support_count,
                 conformal_weighted=policy in {"cp_set_cvs", "candidate_set_cvs"},
                 source_rank=1,
-                unknown_risk_value=_float(row, "unknown_risk", 0.0),
+                unknown_risk_value=row_unknown_risk_value,
                 score_risk_value=_float(row, "score_risk", _float(row, "unknown_risk", 0.0)),
                 radius_risk_value=_float(row, "radius_risk", _float(row, "unknown_risk", 0.0)),
                 margin_risk_value=_float(row, "margin_risk", _float(row, "unknown_risk", 0.0)),
@@ -879,6 +893,7 @@ def _fuse_event(
                 evt_risk_value=_float(row, "evt_risk", _float(row, "unknown_risk", 0.0)),
                 oldness_risk_value=_float(row, "oldness_risk", _float(row, "unknown_risk", 0.0)),
                 virtual_unknown_risk_value=_float(row, "virtual_unknown_risk", 0.0),
+                class_negative_risk_value=_float(row, "class_negative_risk", 0.0),
                 class_shell_risk_value=_float(row, "class_shell_risk", 0.0),
                 class_shell_risk_is_missing=not _has_finite_float(row, "class_shell_risk"),
                 receiver_class_reliability_value=(
@@ -923,7 +938,10 @@ def _fuse_event(
                     conformal_support_count=top_support_count,
                     conformal_weighted=True,
                     source_rank=rank,
-                    unknown_risk_value=_float(row, f"class_evidence_top{rank}_unknown_risk", _float(row, "unknown_risk", 0.0)),
+                    unknown_risk_value=max(
+                        _float(row, f"class_evidence_top{rank}_unknown_risk", row_unknown_risk_value),
+                        _float(row, f"class_evidence_top{rank}_class_negative_risk", _float(row, "class_negative_risk", 0.0)),
+                    ),
                     score_risk_value=_float(row, f"class_evidence_top{rank}_score_risk", _float(row, "score_risk", _float(row, "unknown_risk", 0.0))),
                     radius_risk_value=_float(row, f"class_evidence_top{rank}_radius_risk", _float(row, "radius_risk", _float(row, "unknown_risk", 0.0))),
                     margin_risk_value=_float(row, f"class_evidence_top{rank}_margin_risk", _float(row, "margin_risk", _float(row, "unknown_risk", 0.0))),
@@ -931,6 +949,7 @@ def _fuse_event(
                     evt_risk_value=_float(row, f"class_evidence_top{rank}_evt_risk", _float(row, "evt_risk", _float(row, "unknown_risk", 0.0))),
                     oldness_risk_value=_float(row, f"class_evidence_top{rank}_oldness_risk", _float(row, "oldness_risk", _float(row, "unknown_risk", 0.0))),
                     virtual_unknown_risk_value=_float(row, f"class_evidence_top{rank}_virtual_unknown_risk", _float(row, "virtual_unknown_risk", 0.0)),
+                    class_negative_risk_value=_float(row, f"class_evidence_top{rank}_class_negative_risk", _float(row, "class_negative_risk", 0.0)),
                     class_shell_risk_value=_float(row, f"class_evidence_top{rank}_class_shell_risk", _float(row, "class_shell_risk", 0.0)),
                     class_shell_risk_is_missing=not (
                         _has_finite_float(row, f"class_evidence_top{rank}_class_shell_risk")
@@ -958,11 +977,13 @@ def _fuse_event(
         has_evt = "evt_risk" in row
         has_oldness = "oldness_risk" in row
         has_virtual_unknown = "virtual_unknown_risk" in row
+        has_class_negative = "class_negative_risk" in row
         has_class_shell = "class_shell_risk" in row
         mahalanobis_risk_value = _float(row, "mahalanobis_risk", _float(row, "unknown_risk", 0.0))
         evt_risk_value = _float(row, "evt_risk", _float(row, "unknown_risk", 0.0))
         oldness_risk_value = _float(row, "oldness_risk", _float(row, "unknown_risk", 0.0))
         virtual_unknown_risk_value = _float(row, "virtual_unknown_risk", 0.0)
+        class_negative_risk_value = _float(row, "class_negative_risk", 0.0)
         class_shell_risk_value = _float(row, "class_shell_risk", 0.0)
         score_risks.append(score_risk_value)
         radius_risks.append(radius_risk_value)
@@ -971,6 +992,7 @@ def _fuse_event(
         evt_risks.append(evt_risk_value)
         oldness_risks.append(oldness_risk_value)
         virtual_unknown_risks.append(virtual_unknown_risk_value)
+        class_negative_risks.append(class_negative_risk_value)
         if active_components is None:
             component_values = [score_risk_value, radius_risk_value, margin_risk_value]
             if has_mahalanobis:
@@ -981,6 +1003,8 @@ def _fuse_event(
                 component_values.append(oldness_risk_value)
             if has_virtual_unknown:
                 component_values.append(virtual_unknown_risk_value)
+            if has_class_negative:
+                component_values.append(class_negative_risk_value)
             if has_class_shell:
                 component_values.append(class_shell_risk_value)
         else:
@@ -992,6 +1016,7 @@ def _fuse_event(
                 "evt": evt_risk_value,
                 "oldness": oldness_risk_value,
                 "virtual_unknown": virtual_unknown_risk_value,
+                "class_negative": class_negative_risk_value,
                 "class_shell": class_shell_risk_value,
             }
             component_values = [row_values[component] for component in active_components]
@@ -1008,6 +1033,7 @@ def _fuse_event(
     evt_risk = _weighted_quantile(evt_risks, weights, unknown_quantile)
     oldness_risk = _weighted_quantile(oldness_risks, weights, unknown_quantile)
     virtual_unknown_risk = _weighted_quantile(virtual_unknown_risks, weights, unknown_quantile)
+    class_negative_risk = _weighted_quantile(class_negative_risks, weights, unknown_quantile)
     if weights and sum(weights) > 0:
         risk_component_agreement = sum(v * max(0.0, w) for v, w in zip(component_votes, weights)) / max(
             sum(max(0.0, w) for w in weights),
@@ -1562,6 +1588,8 @@ def _fuse_event(
             and label_class_conformal_pvalue >= float(candidate_set_min_conformal_pvalue)
             and candidate_set_label_unknown_risk_for_accept <= float(candidate_set_max_label_unknown_risk)
             and candidate_set_event_unknown_risk_for_accept <= float(candidate_set_max_event_unknown_risk)
+            and unknown_risk < float(candidate_set_unknown_reject_risk)
+            and label_unknown_risk < float(candidate_set_unknown_reject_risk)
             and candidate_set_label_component_agreement_for_accept
             <= float(candidate_set_max_label_risk_component_agreement)
             and score_gap_ratio >= float(candidate_set_min_score_gap)
@@ -1727,6 +1755,7 @@ def _fuse_event(
         "evt_risk": float(evt_risk),
         "oldness_risk": float(oldness_risk),
         "virtual_unknown_risk": float(virtual_unknown_risk),
+        "class_negative_risk": float(class_negative_risk),
         "effective_unknown_risk": float(locals().get("effective_unknown_risk", unknown_risk)),
         "decision_unknown_risk": float(locals().get("decision_unknown_risk", unknown_risk)),
         "label_unknown_risk": float(label_unknown_risk),
@@ -3335,6 +3364,7 @@ def _finalize_metrics(
     receiver_pair_score_range_values = [
         float(item.get("receiver_pair_score_range", 0.0)) for item in event_results
     ]
+    class_negative_risk_values = [float(item.get("class_negative_risk", 0.0)) for item in event_results]
     known_total = role_totals["old"] + role_totals["seen_new"]
     known_accepted = role_accepted["old"] + role_accepted["seen_new"]
     known_correct = role_correct["old"] + role_correct["seen_new"]
@@ -3392,6 +3422,7 @@ def _finalize_metrics(
         "total_bytes": float(sum(bytes_values)),
         "latency_ms_p50": _percentile(latency_values, 0.50),
         "latency_ms_p95": _percentile(latency_values, 0.95),
+        "class_negative_risk": _percentile(class_negative_risk_values, 0.95),
         "mean_label_class_reliability": (
             sum(label_class_reliability_values) / max(len(label_class_reliability_values), 1)
         ),

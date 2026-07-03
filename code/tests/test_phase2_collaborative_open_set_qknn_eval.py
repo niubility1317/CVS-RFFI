@@ -1024,6 +1024,36 @@ class Phase2CollaborativeOpenSetQknnEvalTest(unittest.TestCase):
         self.assertIn("virtual_unknown_risk", evidence[0])
         self.assertIn("virtual_unknown_score", evidence[0])
 
+    def test_class_negative_risk_is_support_derived_and_recorded(self):
+        from phase2_collaborative_open_set_qknn_eval import load_feature_npz, build_collaborative_evidence
+
+        with tempfile.TemporaryDirectory() as td:
+            npz = Path(td) / "features.npz"
+            _write_npz(npz)
+            evidence, metadata = build_collaborative_evidence(
+                load_feature_npz(npz),
+                k_shot=1,
+                query_per_class=2,
+                qknn_k=1,
+                unknown_gate_mode="support_envelope_evt",
+                class_evidence_top_m=1,
+                class_negative_risk_enabled=True,
+                class_negative_samples_per_class=2,
+                class_negative_mix_alpha=0.50,
+                class_negative_neighbor_count=1,
+                class_negative_risk_temperature=0.05,
+            )
+
+        self.assertTrue(metadata["class_negative_risk_enabled"])
+        self.assertEqual(metadata["class_negative_samples_per_class"], 2)
+        self.assertIn("class_negative", metadata["active_risk_components"])
+        self.assertEqual({row["role"] for row in evidence}, {"old", "seen_new", "unknown"})
+        self.assertEqual(int(evidence[0]["class_negative_risk_enabled"]), 1)
+        self.assertIn("class_negative_risk", evidence[0])
+        self.assertIn("class_negative_score", evidence[0])
+        self.assertIn("class_evidence_top1_class_negative_risk", evidence[0])
+        self.assertIn("class_evidence_top1_class_negative_score", evidence[0])
+
     def test_class_score_thresholds_are_recorded_when_enabled(self):
         from phase2_collaborative_open_set_qknn_eval import load_feature_npz, build_collaborative_evidence
 

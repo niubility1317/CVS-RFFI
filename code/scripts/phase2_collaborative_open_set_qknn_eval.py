@@ -1117,6 +1117,61 @@ def _virtual_unknown_boundary_risk(
     return np.clip(risk, 0.0, 1.0), np.asarray(virtual_scores, dtype=np.float64)
 
 
+def _class_negative_boundary_risk(
+    memory: QknnMemory,
+    query_features: np.ndarray,
+    predicted_labels: Sequence[str],
+    known_scores: np.ndarray,
+    *,
+    samples_per_class: int,
+    mix_alpha: float,
+    neighbor_count: int,
+    temperature: float,
+    margin: float,
+) -> tuple[np.ndarray, np.ndarray]:
+    scores = np.asarray(known_scores, dtype=np.float64)
+    if int(samples_per_class) <= 0 or int(memory.centroids.shape[0]) < 2:
+        return np.zeros_like(scores, dtype=np.float64), np.zeros_like(scores, dtype=np.float64)
+    query = _normalize_rows(query_features)
+    centroids = _normalize_rows(np.asarray(memory.centroids, dtype=np.float32))
+    labels = [str(label) for label in memory.centroid_labels.tolist()]
+    class_to_pos = {label: int(i) for i, label in enumerate(labels)}
+    centroid_sim = centroids @ centroids.T
+    sample_count = max(1, int(samples_per_class))
+    local_neighbor_count = max(1, int(neighbor_count))
+    temp = max(float(temperature), 1e-6)
+    risks: list[float] = []
+    negative_scores: list[float] = []
+    for row_i, raw_label in enumerate(predicted_labels):
+        label = str(raw_label)
+        pos = class_to_pos.get(label)
+        if pos is None:
+            risks.append(1.0)
+            negative_scores.append(1.0)
+            continue
+        neighbor_order = np.argsort(-centroid_sim[pos]).tolist()
+        neighbors = [int(item) for item in neighbor_order if int(item) != pos][:local_neighbor_count]
+        if not neighbors:
+            risks.append(0.0)
+            negative_scores.append(0.0)
+            continue
+        negatives: list[np.ndarray] = []
+        for sample_i in range(sample_count):
+            other = neighbors[sample_i % len(neighbors)]
+            if sample_count > 1:
+                offset = (sample_i / float(sample_count - 1)) - 0.5
+            else:
+                offset = 0.0
+            alpha = max(0.05, min(0.95, float(mix_alpha) + 0.20 * offset))
+            negatives.append((1.0 - alpha) * centroids[pos] + alpha * centroids[other])
+        negative_features = _normalize_rows(np.vstack(negatives).astype(np.float32))
+        negative_score = float(np.max(query[row_i : row_i + 1] @ negative_features.T))
+        z = np.clip((negative_score - float(scores[row_i]) + float(margin)) / temp, -60.0, 60.0)
+        risks.append(float(1.0 / (1.0 + np.exp(-z))))
+        negative_scores.append(negative_score)
+    return np.clip(np.asarray(risks, dtype=np.float64), 0.0, 1.0), np.asarray(negative_scores, dtype=np.float64)
+
+
 def _class_shell_boundary_risk(
     memory: QknnMemory,
     query_features: np.ndarray,
@@ -1359,6 +1414,12 @@ def _support_quality_class_verifier(
     pvalue_weight: float,
     reliability_weight: float,
     risk_weight: float,
+    class_negative_risk_enabled: bool = False,
+    class_negative_samples_per_class: int = 2,
+    class_negative_mix_alpha: float = 0.50,
+    class_negative_neighbor_count: int = 2,
+    class_negative_risk_temperature: float = 0.05,
+    class_negative_risk_margin: float = 0.0,
 ) -> dict[str, Any]:
     score_labels, score_matrix = _qknn_label_score_matrix(
         memory,
@@ -1442,6 +1503,17 @@ def _support_quality_class_verifier(
             temperature=float(class_shell_risk_temperature),
             margin=float(class_shell_risk_margin),
         )
+        label_class_negative_risk, _label_class_negative_score = _class_negative_boundary_risk(
+            memory,
+            query_feature,
+            [label_name],
+            np.asarray([label_score], dtype=np.float64),
+            samples_per_class=int(class_negative_samples_per_class),
+            mix_alpha=float(class_negative_mix_alpha),
+            neighbor_count=int(class_negative_neighbor_count),
+            temperature=float(class_negative_risk_temperature),
+            margin=float(class_negative_risk_margin),
+        )
         pvalue = (
             _conformal_pvalue(label_score, receiver_conformal.get(label_name))
             if bool(class_conformal_enabled)
@@ -1451,6 +1523,7 @@ def _support_quality_class_verifier(
         combined_risk = max(
             float(label_risk[0]),
             float(label_shell_risk[0]) if bool(class_shell_unknown_risk_enabled) else 0.0,
+            float(label_class_negative_risk[0]) if bool(class_negative_risk_enabled) else 0.0,
         )
         p_factor = (0.50 + 0.50 * max(0.0, min(1.0, float(pvalue)))) ** max(float(pvalue_weight), 0.0)
         r_factor = (0.50 + 0.50 * max(0.0, min(1.0, reliability))) ** max(float(reliability_weight), 0.0)
@@ -1465,6 +1538,9 @@ def _support_quality_class_verifier(
                 "pvalue": float(pvalue),
                 "receiver_class_reliability": reliability,
                 "unknown_risk": float(label_risk[0]),
+                "class_negative_risk": (
+                    float(label_class_negative_risk[0]) if bool(class_negative_risk_enabled) else 0.0
+                ),
                 "class_shell_risk": float(label_shell_risk[0]) if bool(class_shell_unknown_risk_enabled) else 0.0,
                 "combined_risk": float(combined_risk),
                 "effective_score_threshold": float(label_effective_threshold),
@@ -1492,6 +1568,7 @@ def _support_quality_class_verifier(
         "top1_pvalue": float(best["pvalue"]),
         "top1_receiver_class_reliability": float(best["receiver_class_reliability"]),
         "top1_unknown_risk": float(best["unknown_risk"]),
+        "top1_class_negative_risk": float(best["class_negative_risk"]),
         "top1_class_shell_risk": float(best["class_shell_risk"]),
         "top1_combined_risk": float(best["combined_risk"]),
         "top1_support_count": int(best["support_count"]),
@@ -1575,6 +1652,12 @@ def build_collaborative_evidence(
     virtual_unknown_risk_samples_per_class: int = 2,
     virtual_unknown_risk_temperature: float = 0.05,
     virtual_unknown_risk_margin: float = 0.0,
+    class_negative_risk_enabled: bool = False,
+    class_negative_samples_per_class: int = 2,
+    class_negative_mix_alpha: float = 0.50,
+    class_negative_neighbor_count: int = 2,
+    class_negative_risk_temperature: float = 0.05,
+    class_negative_risk_margin: float = 0.0,
     class_shell_unknown_risk_enabled: bool = False,
     class_shell_radius_scale: float = 1.25,
     class_shell_risk_temperature: float = 0.05,
@@ -2061,6 +2144,7 @@ def build_collaborative_evidence(
                         "class_verifier_top1_pvalue": 1.0 if not bool(class_conformal_enabled) else 0.0,
                         "class_verifier_top1_receiver_class_reliability": 1.0,
                         "class_verifier_top1_unknown_risk": 0.0,
+                        "class_verifier_top1_class_negative_risk": 0.0,
                         "class_verifier_top1_class_shell_risk": 0.0,
                         "class_verifier_top1_combined_risk": 0.0,
                         "class_verifier_top1_support_count": 0,
@@ -2103,6 +2187,12 @@ def build_collaborative_evidence(
                             class_shell_radius_scale=float(class_shell_radius_scale),
                             class_shell_risk_temperature=float(class_shell_risk_temperature),
                             class_shell_risk_margin=float(class_shell_risk_margin),
+                            class_negative_risk_enabled=bool(class_negative_risk_enabled),
+                            class_negative_samples_per_class=int(class_negative_samples_per_class),
+                            class_negative_mix_alpha=float(class_negative_mix_alpha),
+                            class_negative_neighbor_count=int(class_negative_neighbor_count),
+                            class_negative_risk_temperature=float(class_negative_risk_temperature),
+                            class_negative_risk_margin=float(class_negative_risk_margin),
                             pvalue_weight=verifier_pvalue_weight,
                             reliability_weight=verifier_reliability_weight,
                             risk_weight=verifier_risk_weight,
@@ -2124,6 +2214,9 @@ def build_collaborative_evidence(
                                     verifier["top1_receiver_class_reliability"]
                                 ),
                                 "class_verifier_top1_unknown_risk": float(verifier["top1_unknown_risk"]),
+                                "class_verifier_top1_class_negative_risk": float(
+                                    verifier["top1_class_negative_risk"]
+                                ),
                                 "class_verifier_top1_class_shell_risk": float(verifier["top1_class_shell_risk"]),
                                 "class_verifier_top1_combined_risk": float(verifier["top1_combined_risk"]),
                                 "class_verifier_top1_support_count": int(verifier["top1_support_count"]),
@@ -2248,6 +2341,17 @@ def build_collaborative_evidence(
                                 temperature=float(class_shell_risk_temperature),
                                 margin=float(class_shell_risk_margin),
                             )
+                            label_class_negative_risk, label_class_negative_score = _class_negative_boundary_risk(
+                                memory,
+                                query_feature,
+                                [label_name],
+                                np.asarray([label_score], dtype=np.float64),
+                                samples_per_class=int(class_negative_samples_per_class),
+                                mix_alpha=float(class_negative_mix_alpha),
+                                neighbor_count=int(class_negative_neighbor_count),
+                                temperature=float(class_negative_risk_temperature),
+                                margin=float(class_negative_risk_margin),
+                            )
                             label_pvalue = _conformal_pvalue(
                                 label_score,
                                 receiver_class_conformal_scores.get(rx, {}).get(label_name),
@@ -2277,6 +2381,12 @@ def build_collaborative_evidence(
                             )
                             class_evidence_fields[f"class_evidence_top{rank}_evt_risk"] = float(label_evt_risk[0])
                             class_evidence_fields[f"class_evidence_top{rank}_oldness_risk"] = float(label_oldness_risk[0])
+                            class_evidence_fields[f"class_evidence_top{rank}_class_negative_risk"] = (
+                                float(label_class_negative_risk[0]) if bool(class_negative_risk_enabled) else 0.0
+                            )
+                            class_evidence_fields[f"class_evidence_top{rank}_class_negative_score"] = (
+                                float(label_class_negative_score[0]) if bool(class_negative_risk_enabled) else 0.0
+                            )
                             class_evidence_fields[f"class_evidence_top{rank}_class_shell_risk"] = (
                                 float(label_shell_risk[0]) if bool(class_shell_unknown_risk_enabled) else 0.0
                             )
@@ -2328,6 +2438,17 @@ def build_collaborative_evidence(
                         temperature=float(class_shell_risk_temperature),
                         margin=float(class_shell_risk_margin),
                     )
+                    class_negative_risk, class_negative_score = _class_negative_boundary_risk(
+                        memory,
+                        query_feature,
+                        pred,
+                        score,
+                        samples_per_class=int(class_negative_samples_per_class),
+                        mix_alpha=float(class_negative_mix_alpha),
+                        neighbor_count=int(class_negative_neighbor_count),
+                        temperature=float(class_negative_risk_temperature),
+                        margin=float(class_negative_risk_margin),
+                    )
                     candidate_audit_risk = 0.0
                     if bool(candidate_audit_unknown_risk_enabled):
                         if candidate_audit_disagreement:
@@ -2340,6 +2461,7 @@ def build_collaborative_evidence(
                     unknown_risk_value = max(
                         float(risk[0]),
                         float(virtual_unknown_risk[0]) if bool(virtual_unknown_risk_enabled) else 0.0,
+                        float(class_negative_risk[0]) if bool(class_negative_risk_enabled) else 0.0,
                         float(class_shell_risk[0]) if bool(class_shell_unknown_risk_enabled) else 0.0,
                         float(candidate_audit_risk),
                     )
@@ -2385,6 +2507,8 @@ def build_collaborative_evidence(
                             "virtual_unknown_count": int(
                                 receiver_virtual_unknown_counts.get(rx, 0)
                             ),
+                            "class_negative_risk_enabled": int(bool(class_negative_risk_enabled)),
+                            "class_negative_samples_per_class": int(class_negative_samples_per_class),
                             "class_shell_unknown_risk_enabled": int(bool(class_shell_unknown_risk_enabled)),
                             "candidate_class_count": int(candidate_counts[0]),
                             "support_neighbor_count": int(support_neighbor_counts[0]),
@@ -2412,6 +2536,8 @@ def build_collaborative_evidence(
                             "oldness_risk": float(oldness_risk[0]),
                             "virtual_unknown_risk": float(virtual_unknown_risk[0]) if bool(virtual_unknown_risk_enabled) else 0.0,
                             "virtual_unknown_score": float(virtual_unknown_score[0]) if bool(virtual_unknown_risk_enabled) else 0.0,
+                            "class_negative_risk": float(class_negative_risk[0]) if bool(class_negative_risk_enabled) else 0.0,
+                            "class_negative_score": float(class_negative_score[0]) if bool(class_negative_risk_enabled) else 0.0,
                             "class_shell_risk": float(class_shell_risk[0]) if bool(class_shell_unknown_risk_enabled) else 0.0,
                             "class_shell_distance": float(class_shell_distance[0]),
                             "class_shell_radius_scale": float(class_shell_radius_scale),
@@ -2478,6 +2604,12 @@ def build_collaborative_evidence(
         "virtual_unknown_risk_samples_per_class": int(virtual_unknown_risk_samples_per_class),
         "virtual_unknown_risk_temperature": float(virtual_unknown_risk_temperature),
         "virtual_unknown_risk_margin": float(virtual_unknown_risk_margin),
+        "class_negative_risk_enabled": bool(class_negative_risk_enabled),
+        "class_negative_samples_per_class": int(class_negative_samples_per_class),
+        "class_negative_mix_alpha": float(class_negative_mix_alpha),
+        "class_negative_neighbor_count": int(class_negative_neighbor_count),
+        "class_negative_risk_temperature": float(class_negative_risk_temperature),
+        "class_negative_risk_margin": float(class_negative_risk_margin),
         "class_shell_unknown_risk_enabled": bool(class_shell_unknown_risk_enabled),
         "class_shell_radius_scale": float(class_shell_radius_scale),
         "class_shell_risk_temperature": float(class_shell_risk_temperature),
@@ -2508,6 +2640,7 @@ def build_collaborative_evidence(
         "unknown_gate_mode": str(unknown_gate_mode),
         "active_risk_components": _active_risk_components_for_gate_mode(unknown_gate_mode)
         + (["virtual_unknown"] if bool(virtual_unknown_risk_enabled) else [])
+        + (["class_negative"] if bool(class_negative_risk_enabled) else [])
         + (["class_shell"] if bool(class_shell_unknown_risk_enabled) else []),
         "scenario_aware": bool(scenario_aware),
         "radius_norm": float(radius_norm),
@@ -2588,6 +2721,12 @@ def run_evaluation(args: argparse.Namespace) -> dict[str, Any]:
         virtual_unknown_risk_samples_per_class=int(args.virtual_unknown_risk_samples_per_class),
         virtual_unknown_risk_temperature=float(args.virtual_unknown_risk_temperature),
         virtual_unknown_risk_margin=float(args.virtual_unknown_risk_margin),
+        class_negative_risk_enabled=bool(args.class_negative_risk_enabled),
+        class_negative_samples_per_class=int(args.class_negative_samples_per_class),
+        class_negative_mix_alpha=float(args.class_negative_mix_alpha),
+        class_negative_neighbor_count=int(args.class_negative_neighbor_count),
+        class_negative_risk_temperature=float(args.class_negative_risk_temperature),
+        class_negative_risk_margin=float(args.class_negative_risk_margin),
         class_shell_unknown_risk_enabled=bool(args.class_shell_unknown_risk_enabled),
         class_shell_radius_scale=float(args.class_shell_radius_scale),
         class_shell_risk_temperature=float(args.class_shell_risk_temperature),
@@ -2860,6 +2999,12 @@ def parse_args() -> argparse.Namespace:
     p.add_argument("--virtual_unknown_risk_samples_per_class", type=int, default=2)
     p.add_argument("--virtual_unknown_risk_temperature", type=float, default=0.05)
     p.add_argument("--virtual_unknown_risk_margin", type=float, default=0.0)
+    p.add_argument("--class_negative_risk_enabled", action="store_true")
+    p.add_argument("--class_negative_samples_per_class", type=int, default=2)
+    p.add_argument("--class_negative_mix_alpha", type=float, default=0.50)
+    p.add_argument("--class_negative_neighbor_count", type=int, default=2)
+    p.add_argument("--class_negative_risk_temperature", type=float, default=0.05)
+    p.add_argument("--class_negative_risk_margin", type=float, default=0.0)
     p.add_argument("--class_shell_unknown_risk_enabled", action="store_true")
     p.add_argument("--class_shell_radius_scale", type=float, default=1.25)
     p.add_argument("--class_shell_risk_temperature", type=float, default=0.05)
