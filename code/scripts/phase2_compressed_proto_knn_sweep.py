@@ -36,6 +36,8 @@ class QuantizedKnnMemory:
     scale: float
     labels: np.ndarray
     is_old: np.ndarray
+    class_prototype_matrix: np.ndarray
+    class_prototype_labels: np.ndarray
     counts: dict[str, int]
     quant_bits: int
     stored_support_count: int = 0
@@ -290,12 +292,18 @@ def build_quantized_knn_memory(
     scale = float((2 ** (int(quant_bits) - 1)) - 1)
     quantized = np.clip(np.rint(features * scale), -scale, scale).astype(np.int8)
     old = set(old_labels or set())
-    counts = {label: int(np.sum(labels == label)) for label in sorted({str(label) for label in labels.tolist()})}
+    sorted_labels = sorted({str(label) for label in labels.tolist()})
+    counts = {label: int(np.sum(labels == label)) for label in sorted_labels}
+    prototypes = np.vstack([
+        _normalize_rows(features[labels == label].mean(axis=0, keepdims=True))[0] for label in sorted_labels
+    ])
     return QuantizedKnnMemory(
         quantized_matrix=quantized,
         scale=scale,
         labels=labels,
         is_old=np.asarray([str(label) in old for label in labels], dtype=bool),
+        class_prototype_matrix=prototypes,
+        class_prototype_labels=np.asarray(sorted_labels, dtype=object),
         counts=counts,
         quant_bits=int(quant_bits),
     )
@@ -307,12 +315,19 @@ def predict_quantized_knn_memory(
     *,
     k: int = 1,
     old_bias: float = 0.0,
+    prototype_blend: float = 0.0,
 ) -> np.ndarray:
     query = _normalize_rows(query_features)
     support = memory.quantized_matrix.astype(np.float64) / float(memory.scale)
     support = _normalize_rows(support)
     scores = query @ support.T
     scores = scores + (memory.is_old.astype(np.float64) * float(old_bias))[None, :]
+    if float(prototype_blend) != 0.0:
+        proto_scores = query @ memory.class_prototype_matrix.T
+        proto_by_support = np.zeros_like(scores)
+        for idx, label in enumerate(memory.class_prototype_labels):
+            proto_by_support[:, memory.labels == label] = proto_scores[:, idx][:, None]
+        scores = scores + proto_by_support * float(prototype_blend)
     return _classwise_topk_predict(scores, memory.labels, k)
 
 
@@ -421,9 +436,10 @@ def _evaluate_combo(
             features[query_idx],
             k=prototypes_per_class,
             old_bias=old_bias,
+            prototype_blend=radius_weight,
         )
-        method = f"qknn{quant_bits}_k{prototypes_per_class}_oldbias{old_bias:g}"
-        stored_prototype_count = 0
+        method = f"qknn{quant_bits}_k{prototypes_per_class}_oldbias{old_bias:g}_pblend{radius_weight:g}"
+        stored_prototype_count = int(len(memory.class_prototype_labels)) if float(radius_weight) != 0.0 else 0
         stored_weight_count = 0
         stored_quantized_count = memory.stored_quantized_count
     else:

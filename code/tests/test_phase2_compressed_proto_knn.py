@@ -213,3 +213,26 @@ def test_quantized_knn_memory_matches_knn1_without_raw_support_storage():
     assert predict_quantized_knn_memory(memory, query, k=1).tolist() == ["old-a", "new-b"]
     assert "support_features" not in memory.__dict__
     assert "support_labels" not in memory.__dict__
+
+
+def test_quantized_knn_prototype_blend_can_correct_noisy_nearest_neighbor():
+    support = np.asarray(
+        [
+            [1.0, 0.0],
+            [0.98, 0.04],
+            [0.20, 0.98],
+            [0.0, 1.0],
+            [0.08, 0.99],
+            [0.96, 0.20],
+        ],
+        dtype=np.float64,
+    )
+    labels = np.asarray(["old-a", "old-a", "old-a", "new-b", "new-b", "new-b"], dtype=object)
+    query = np.asarray([[0.22, 0.97]], dtype=np.float64)
+
+    memory = build_quantized_knn_memory(support, labels, old_labels={"old-a"}, quant_bits=8)
+
+    assert predict_quantized_knn_memory(memory, query, k=1).tolist() == ["old-a"]
+    assert predict_quantized_knn_memory(memory, query, k=1, prototype_blend=0.25).tolist() == ["new-b"]
+    assert "support_features" not in memory.__dict__
+    assert "support_labels" not in memory.__dict__
