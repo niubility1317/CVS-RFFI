@@ -593,6 +593,35 @@ RB-CAPR结果表：
 
 下一步建议：保留RB-CAPR路由框架，但把融合从硬门限`cp_set_cvs`改为set-valued输出和class-conditional conformal log-opinion pooling；对每个receiver维护`w_{r,y}`和receiver health，目标是先把known覆盖从0.15-0.40区间提高，再重新约束unknown FAR。在线微调只允许更新低秩adapter、prototype EMA、阈值摘要和hard negative统计，不能在星上重训主干。
 
+## 2026-07-04 class_negative qknn局部边界SA33全量诊断
+
+目标：在用户指定权重`SA33_sa27_ch2_leo3_ce0p7_r010_20260527_204104`的星地信道特征上测试类条件negative prototype风险组件。输入仍为`runs/phase2_sa33_collab_open_set_qknn_full_20260703/features.npz`，覆盖target receivers`20-1,3-19,7-14,7-7,8-8`，协同数量`1..5`，星地信道`leo_clear_weak,leo_low_elev_weak,leo_rain_weak`。远端环境使用`/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python`，GPU0运行，运行前后8张RTX3090均为`10 MiB/24576 MiB`。
+
+本地实现与验证：Git镜像提交`59a967c Add class negative qknn risk component`；本地根工作区和Git镜像均通过`py_compile`与两组聚焦测试，结果为`107 passed`。N607远端哈希与本地一致；远端缺少`pytest`，改用标准库`unittest discover`验证，`test_phase2_collaborative_open_set_qknn_eval.py`为`49 tests OK`，`test_collaborative_open_set_qknn_eval.py`为`58 tests OK`。
+
+远端执行命令核心参数：`--fusion_policy scorer_cvs --collaboration_policy adaptive_gain --label_fusion_policy vote_margin --class_negative_risk_enabled --class_negative_samples_per_class 3 --class_negative_mix_alpha 0.55 --class_negative_neighbor_count 2 --class_negative_risk_temperature 0.04 --class_negative_risk_margin 0.00 --collab_counts all --event_alignment_policy receiver_domain_ranked --include_event_results`。
+
+产物已拉回：
+
+|产物|SHA256|
+|---|---|
+|`artifacts/collab_open_set_qknn_scorer_cvs_classneg_sa33_proto2_maha1_qknnonly.json`|`3AAD19ADFD59F7A0E4AA16E4D015DC3461227605AD0EB9154292E87B914E94A4`|
+|`artifacts/collab_open_set_qknn_scorer_cvs_classneg_sa33_proto2_maha1_qknnonly_evidence.csv`|`3AC7A1EBBE5133E44E3519C1ECC8647E57C8EBD46A1FC900D557E11319A4E0A6`|
+
+全量结果：
+
+|协同数|old_acc|min_old|seen_new_acc|min_seen|unknown_FAR|unknown_reject|defer|known_cov|avg_rx|bytes/event|p95_latency|class_negative_risk|
+|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+|1|0.1458|0.0000|0.0333|0.0000|0.0333|0.2000|0.7885|0.1190|1.0000|120.0000|0.1346|1.0000|
+|2|0.0878|0.0000|0.0000|0.0000|0.0000|0.3478|0.8245|0.0653|1.9714|236.5714|0.1346|1.0000|
+|3|0.0917|0.0000|0.0000|0.0000|0.0000|0.6000|0.7300|0.0688|2.9400|352.8000|0.1346|1.0000|
+|4|0.1739|0.0000|0.0000|0.0000|0.0000|0.6176|0.7226|0.1322|3.9161|469.9355|0.1346|1.0000|
+|5|0.0417|0.0000|0.0000|0.0000|0.0000|0.7500|0.7841|0.0294|4.8750|585.0000|0.1346|1.0000|
+
+判定：`class_negative`把unknown FAR压到较低水平，k=2到k=5均为`0.0000`，但风险过强，`class_negative_risk`分位值为`1.0000`，导致known覆盖和seen-new几乎被压空。该路线不满足old 99%/每类95%、seen-new 97%/每类93%、unknown拒识99%目标，也不能作为Stage2-C成功或部署成功证据。合理结论是：类局部negative boundary可作为未知风险信号，但必须从“直接取max压制known接受”改为校准后的软证据，例如class-conditional conformal log-opinion pooling、温度/边界margin按support分布校准，或仅在低margin/低support density事件中触发。在线微调方向应保留低秩adapter、prototype EMA、阈值摘要和hard negative统计，不应在星上全模型训练。
+
+最终SSH/SCP后本地无`ssh.exe`残留，无N607和bridge 22端口`ESTABLISHED`连接。
+
 ## 2026-07-04 dual_route_cvs双路协同推理实现与SA33复跑计划
 
 目标：在用户指定权重`SA33_sa27_ch2_leo3_ce0p7_r010_20260527_204104`的星地信道特征上测试`dual_route_cvs`。该策略保留固定receiver安全路由，同时用support-only`receiver_deployment_prior`建立救援路由；救援只在class conformal p-value、support-calibrated receiver-class reliability、class shell风险、风险组件一致性、receiver预测分歧、unknown风险分歧和安全路由风险均满足门控时接管。
