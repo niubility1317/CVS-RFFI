@@ -219,6 +219,29 @@ class Phase2CollaborativeOpenSetQknnEvalTest(unittest.TestCase):
         self.assertEqual(str(pred_global[0]), "new-a")
         self.assertEqual(str(pred_scenario[0]), "old-a")
 
+    def test_leave_one_out_support_calibration_excludes_self_neighbor(self):
+        from phase2_collaborative_open_set_qknn_eval import build_qknn_memory, qknn_scores
+
+        features = np.asarray(
+            [
+                [1.0, 0.0, 0.0],
+                [0.8, 0.2, 0.0],
+                [0.0, 1.0, 0.0],
+                [0.2, 0.8, 0.0],
+            ],
+            dtype=np.float32,
+        )
+        memory = build_qknn_memory(
+            features,
+            ["old-a", "old-a", "new-a", "new-a"],
+            old_labels={"old-a"},
+            support_scenarios=["leo_clear_weak"] * 4,
+        )
+        _, self_scores, _ = qknn_scores(memory, features, top_k=1)
+        _, loo_scores, _ = qknn_scores(memory, features, top_k=1, exclude_support_indices=range(features.shape[0]))
+
+        self.assertLess(float(np.mean(loo_scores)), float(np.mean(self_scores)))
+
     def test_scenario_aware_and_radius_norm_are_recorded_in_metadata(self):
         from phase2_collaborative_open_set_qknn_eval import load_feature_npz, build_collaborative_evidence
 
@@ -233,11 +256,15 @@ class Phase2CollaborativeOpenSetQknnEvalTest(unittest.TestCase):
                 scenario_aware=True,
                 radius_norm=0.3,
                 old_bias=0.1,
+                support_calibration_mode="leave_one_out",
+                score_threshold_combine="qknn_only",
             )
 
         self.assertTrue(metadata["scenario_aware"])
         self.assertAlmostEqual(metadata["radius_norm"], 0.3)
         self.assertAlmostEqual(metadata["old_bias"], 0.1)
+        self.assertEqual(metadata["support_calibration_mode"], "leave_one_out")
+        self.assertEqual(metadata["score_threshold_combine"], "qknn_only")
 
 
 if __name__ == "__main__":

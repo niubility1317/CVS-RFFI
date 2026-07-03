@@ -243,6 +243,7 @@ def qknn_scores(
     scenario_aware: bool = False,
     radius_norm: float = 0.0,
     old_bias: float = 0.0,
+    exclude_support_indices: Sequence[int] | None = None,
 ) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
     query = _normalize_rows(query_features)
     support = _normalize_rows(memory.qfeatures.astype(np.float32) / float(memory.scale))
@@ -253,6 +254,11 @@ def qknn_scores(
         query_scenarios_arr = np.asarray([str(v) for v in query_scenarios], dtype=object)
         if query_scenarios_arr.shape[0] != query.shape[0]:
             raise ValueError("query_scenarios length must match query_features")
+    exclude_arr = None
+    if exclude_support_indices is not None:
+        exclude_arr = np.asarray(list(exclude_support_indices), dtype=int)
+        if exclude_arr.shape[0] != query.shape[0]:
+            raise ValueError("exclude_support_indices length must match query_features")
     scores = query @ support.T
     if float(radius_norm) != 0.0:
         denom = np.power(np.maximum(memory.radii_by_support, 1e-4), float(radius_norm))[None, :]
@@ -266,12 +272,16 @@ def qknn_scores(
     out_margins: list[float] = []
     all_support_mask = np.ones(memory.labels.shape[0], dtype=bool)
     for row_i in range(scores.shape[0]):
-        support_mask = all_support_mask
+        support_mask = all_support_mask.copy()
         if scenario_aware and query_scenarios_arr is not None:
             candidate_mask = memory.support_scenarios.astype(str) == str(query_scenarios_arr[row_i])
             if int(np.sum(candidate_mask)) >= k and len(set(memory.labels[candidate_mask].tolist())) >= 2:
-                support_mask = candidate_mask
+                support_mask = candidate_mask.copy()
+        if exclude_arr is not None and 0 <= int(exclude_arr[row_i]) < support_mask.shape[0]:
+            support_mask[int(exclude_arr[row_i])] = False
         support_positions = np.where(support_mask)[0]
+        if support_positions.size == 0:
+            raise ValueError("qknn_scores has no support rows after exclusions")
         row_scores = scores[row_i, support_positions]
         row_k = max(1, min(k, int(row_scores.shape[0])))
         idx = support_positions[np.argpartition(row_scores, -row_k)[-row_k:]]
@@ -418,7 +428,12 @@ def _threshold_from_calibration(
     scenario_aware: bool = False,
     radius_norm: float = 0.0,
     old_bias: float = 0.0,
+    support_calibration_mode: str = "self",
 ) -> tuple[float, str]:
+    calibration_mode = str(support_calibration_mode or "self").strip().lower()
+    if calibration_mode not in {"self", "leave_one_out", "loo"}:
+        raise ValueError("support_calibration_mode must be self or leave_one_out")
+    exclude = range(int(support_features.shape[0])) if calibration_mode in {"leave_one_out", "loo"} else None
     _, support_scores, _ = qknn_scores(
         memory,
         support_features,
@@ -427,6 +442,7 @@ def _threshold_from_calibration(
         scenario_aware=scenario_aware,
         radius_norm=radius_norm,
         old_bias=old_bias,
+        exclude_support_indices=exclude,
     )
     threshold = float(np.quantile(support_scores, float(support_quantile))) if support_scores.size else 0.0
     scope = "support_known_only"
@@ -502,6 +518,21 @@ def _combined_unknown_risk(
     return np.clip(risk, 0.0, 1.0), radius_risk, margin_risk, np.asarray(radius_values, dtype=np.float64)
 
 
+def _combine_score_threshold(qknn_threshold: float, centroid_threshold: float, mode: str) -> float:
+    mode = str(mode or "max").strip().lower()
+    if mode == "max":
+        return max(float(qknn_threshold), float(centroid_threshold))
+    if mode == "qknn_only":
+        return float(qknn_threshold)
+    if mode == "centroid_only":
+        return float(centroid_threshold)
+    if mode == "min":
+        return min(float(qknn_threshold), float(centroid_threshold))
+    if mode == "mean":
+        return 0.5 * (float(qknn_threshold) + float(centroid_threshold))
+    raise ValueError("score_threshold_combine must be max, qknn_only, centroid_only, min, or mean")
+
+
 def _scenario_of(payload: Mapping[str, Any], idx: int) -> str:
     scenario = str(payload["sat_scenarios"][idx])
     return scenario if scenario else str(payload["channel_views"][idx])
@@ -543,6 +574,8 @@ def build_collaborative_evidence(
     scenario_aware: bool = False,
     radius_norm: float = 0.0,
     old_bias: float = 0.0,
+    support_calibration_mode: str = "self",
+    score_threshold_combine: str = "max",
 ) -> tuple[list[dict[str, Any]], dict[str, Any]]:
     validate_required_roles(payload)
     roles = np.asarray(payload["dataset_role"]).astype(str)
@@ -680,6 +713,7 @@ def build_collaborative_evidence(
             scenario_aware=bool(scenario_aware),
             radius_norm=float(radius_norm),
             old_bias=float(old_bias),
+            support_calibration_mode=str(support_calibration_mode),
         )
         threshold_scope = scope if scope == "source_only" else threshold_scope
         receiver_memories[rx] = memory
@@ -765,7 +799,11 @@ def build_collaborative_evidence(
                         pred,
                         score,
                         margin,
-                        max(float(receiver_thresholds[rx]), float(memory.score_threshold)),
+                        _combine_score_threshold(
+                            receiver_thresholds[rx],
+                            memory.score_threshold,
+                            str(score_threshold_combine),
+                        ),
                         temperature=risk_temperature,
                         gate_mode=unknown_gate_mode,
                         radius_temperature=radius_temperature,
@@ -819,6 +857,8 @@ def build_collaborative_evidence(
         "strict_same_event_collaboration": alignment_policy == "strict_event_key",
         "receiver_thresholds": receiver_thresholds,
         "threshold_scope": threshold_scope,
+        "support_calibration_mode": str(support_calibration_mode),
+        "score_threshold_combine": str(score_threshold_combine),
         "support_selection_policy": str(support_selection_policy),
         "unknown_gate_mode": str(unknown_gate_mode),
         "scenario_aware": bool(scenario_aware),
@@ -859,6 +899,8 @@ def run_evaluation(args: argparse.Namespace) -> dict[str, Any]:
         scenario_aware=bool(args.scenario_aware),
         radius_norm=float(args.radius_norm),
         old_bias=float(args.old_bias),
+        support_calibration_mode=str(args.support_calibration_mode),
+        score_threshold_combine=str(args.score_threshold_combine),
     )
     result = evaluate_collaborative_open_set_evidence(
         evidence,
@@ -914,6 +956,12 @@ def parse_args() -> argparse.Namespace:
     p.add_argument("--scenario_aware", action="store_true")
     p.add_argument("--radius_norm", type=float, default=0.0)
     p.add_argument("--old_bias", type=float, default=0.0)
+    p.add_argument("--support_calibration_mode", default="self", choices=["self", "leave_one_out", "loo"])
+    p.add_argument(
+        "--score_threshold_combine",
+        default="max",
+        choices=["max", "qknn_only", "centroid_only", "min", "mean"],
+    )
     p.add_argument("--unknown_risk_threshold", type=float, default=0.80)
     p.add_argument("--accept_margin_threshold", type=float, default=0.10)
     p.add_argument("--unknown_quantile", type=float, default=0.75)
