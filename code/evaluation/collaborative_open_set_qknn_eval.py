@@ -324,6 +324,13 @@ def _fuse_event(
     seen_new_gate_max_component_agreement: float = 1.0,
     seen_new_gate_min_support_density: float = 0.0,
     seen_new_gate_max_radius_z: float = 1.0e12,
+    candidate_set_min_receivers: int = 2,
+    candidate_set_min_top1_receivers: int = 0,
+    candidate_set_min_conformal_pvalue: float = 0.0,
+    candidate_set_max_label_unknown_risk: float = 1.0,
+    candidate_set_max_event_unknown_risk: float = 0.95,
+    candidate_set_min_score_gap: float = 0.0,
+    candidate_set_unknown_reject_risk: float = 0.80,
 ) -> dict[str, Any]:
     active_components = _parse_risk_components(scorer_risk_components)
     policy = _normalize_scope(fusion_policy)
@@ -403,14 +410,16 @@ def _fuse_event(
         nonlocal filtered_candidate_count
         if not label or label == UNKNOWN_LABEL or label in row_seen_labels:
             return
-        if policy == "cp_set_cvs" and allowed_cp_set_labels and label not in allowed_cp_set_labels:
+        if policy in {"cp_set_cvs", "candidate_set_cvs"} and allowed_cp_set_labels and label not in allowed_cp_set_labels:
             filtered_candidate_count += 1
             return
         row_seen_labels.add(label)
         pvalue = max(0.0, min(1.0, float(conformal_pvalue)))
         candidate_score = max(0.0, float(score_value))
         support_count = max(0.0, float(conformal_support_count))
-        if policy == "cp_set_cvs" and int(source_rank) > 1 and (candidate_score <= 0.0 or support_count < 1.0):
+        if policy in {"cp_set_cvs", "candidate_set_cvs"} and int(source_rank) > 1 and (
+            candidate_score <= 0.0 or support_count < 1.0
+        ):
             filtered_candidate_count += 1
             return
         if conformal_weighted:
@@ -503,7 +512,7 @@ def _fuse_event(
                 radius_z_is_missing=radius_z_is_missing,
                 conformal_pvalue=class_conformal_pvalue,
                 conformal_support_count=class_conformal_support_count,
-                conformal_weighted=policy == "cp_set_cvs",
+                conformal_weighted=policy in {"cp_set_cvs", "candidate_set_cvs"},
                 source_rank=1,
                 unknown_risk_value=_float(row, "unknown_risk", 0.0),
                 score_risk_value=_float(row, "score_risk", _float(row, "unknown_risk", 0.0)),
@@ -514,7 +523,7 @@ def _fuse_event(
                 oldness_risk_value=_float(row, "oldness_risk", _float(row, "unknown_risk", 0.0)),
                 virtual_unknown_risk_value=_float(row, "virtual_unknown_risk", 0.0),
             )
-        if policy == "cp_set_cvs":
+        if policy in {"cp_set_cvs", "candidate_set_cvs"}:
             top_m = max(0, int(_float(row, "class_evidence_top_m", 0.0)))
             for rank in range(1, top_m + 1):
                 top_label = _str(row, f"class_evidence_top{rank}_label", "")
@@ -785,7 +794,7 @@ def _fuse_event(
         else:
             decision = "defer"
             output_label = ""
-    elif policy in {"scorer_cvs", "cp_set_cvs"}:
+    elif policy in {"scorer_cvs", "cp_set_cvs", "candidate_set_cvs"}:
         strong_consensus = (
             vote_gap > float(consensus_gap_threshold) or score_gap_ratio > float(consensus_gap_threshold)
         ) and agreement >= 0.5
@@ -834,11 +843,39 @@ def _fuse_event(
         decision_risk_component_agreement = (
             label_risk_component_agreement if policy == "cp_set_cvs" and label else risk_component_agreement
         )
+        if policy == "candidate_set_cvs" and label:
+            decision_unknown_risk = label_unknown_risk
+            decision_risk_component_agreement = label_risk_component_agreement
         effective_unknown_risk = decision_unknown_risk * risk_scale
         high_risk = effective_unknown_risk >= float(unknown_risk_threshold)
         multi_channel_risk = decision_risk_component_agreement >= float(scorer_component_vote_threshold)
         gate_passed, gate_reason = _class_set_gate_decision()
-        if high_risk and multi_channel_risk and (policy == "cp_set_cvs" or not strong_known):
+        candidate_set_accept = bool(
+            policy == "candidate_set_cvs"
+            and output_label_set in {"old", "seen_new"}
+            and selected_label_candidate_receivers >= max(1, int(candidate_set_min_receivers))
+            and selected_label_top1_receivers >= max(0, int(candidate_set_min_top1_receivers))
+            and label_class_conformal_pvalue >= float(candidate_set_min_conformal_pvalue)
+            and label_unknown_risk <= float(candidate_set_max_label_unknown_risk)
+            and unknown_risk <= float(candidate_set_max_event_unknown_risk)
+            and score_gap_ratio >= float(candidate_set_min_score_gap)
+        )
+        if candidate_set_accept:
+            decision = "accept"
+            output_label = label
+        elif policy == "candidate_set_cvs" and (
+            unknown_risk >= float(candidate_set_unknown_reject_risk)
+            or label_unknown_risk >= float(candidate_set_unknown_reject_risk)
+        ):
+            decision = "unknown_reject"
+            output_label = UNKNOWN_LABEL
+        elif policy == "candidate_set_cvs" and within_request_budget:
+            decision = "request_more"
+            output_label = ""
+        elif policy == "candidate_set_cvs":
+            decision = "defer"
+            output_label = ""
+        elif high_risk and multi_channel_risk and (policy == "cp_set_cvs" or not strong_known):
             decision = "unknown_reject"
             output_label = UNKNOWN_LABEL
         elif high_risk:
@@ -880,9 +917,9 @@ def _fuse_event(
             decision = "defer"
             output_label = ""
     elif label:
-        raise ValueError("fusion_policy must be risk_margin, consensus_veto, scorer_cvs, or cp_set_cvs")
+        raise ValueError("fusion_policy must be risk_margin, consensus_veto, scorer_cvs, cp_set_cvs, or candidate_set_cvs")
     else:
-        raise ValueError("fusion_policy must be risk_margin, consensus_veto, scorer_cvs, or cp_set_cvs")
+        raise ValueError("fusion_policy must be risk_margin, consensus_veto, scorer_cvs, cp_set_cvs, or candidate_set_cvs")
 
     resource_budget_reason = _resource_budget_reason(
         selected,
@@ -922,6 +959,14 @@ def _fuse_event(
         "class_set_gate_applied": bool(class_set_gate_enabled and output_label_set in {"old", "seen_new"}),
         "class_set_gate_passed": bool(locals().get("gate_passed", True)),
         "class_set_gate_reason": str(locals().get("gate_reason", "")),
+        "candidate_set_accept": bool(locals().get("candidate_set_accept", False)),
+        "candidate_set_min_receivers": int(candidate_set_min_receivers),
+        "candidate_set_min_top1_receivers": int(candidate_set_min_top1_receivers),
+        "candidate_set_min_conformal_pvalue": float(candidate_set_min_conformal_pvalue),
+        "candidate_set_max_label_unknown_risk": float(candidate_set_max_label_unknown_risk),
+        "candidate_set_max_event_unknown_risk": float(candidate_set_max_event_unknown_risk),
+        "candidate_set_min_score_gap": float(candidate_set_min_score_gap),
+        "candidate_set_unknown_reject_risk": float(candidate_set_unknown_reject_risk),
         "output_label_set": output_label_set,
         "label_fusion_policy": label_fusion_policy,
         "class_reliability_policy": class_reliability_policy,
@@ -2040,6 +2085,13 @@ def evaluate_collaborative_open_set_evidence(
     seen_new_gate_max_component_agreement: float = 1.0,
     seen_new_gate_min_support_density: float = 0.0,
     seen_new_gate_max_radius_z: float = 1.0e12,
+    candidate_set_min_receivers: int = 2,
+    candidate_set_min_top1_receivers: int = 0,
+    candidate_set_min_conformal_pvalue: float = 0.0,
+    candidate_set_max_label_unknown_risk: float = 1.0,
+    candidate_set_max_event_unknown_risk: float = 0.95,
+    candidate_set_min_score_gap: float = 0.0,
+    candidate_set_unknown_reject_risk: float = 0.80,
     threshold_selection_label_scope: str = "support_known_only",
     unknown_query_eval_only: bool = True,
     receiver_selection_policy: str = "fixed_receiver_order",
@@ -2255,6 +2307,13 @@ def evaluate_collaborative_open_set_evidence(
                     seen_new_gate_max_component_agreement=seen_new_gate_max_component_agreement,
                     seen_new_gate_min_support_density=seen_new_gate_min_support_density,
                     seen_new_gate_max_radius_z=seen_new_gate_max_radius_z,
+                    candidate_set_min_receivers=candidate_set_min_receivers,
+                    candidate_set_min_top1_receivers=candidate_set_min_top1_receivers,
+                    candidate_set_min_conformal_pvalue=candidate_set_min_conformal_pvalue,
+                    candidate_set_max_label_unknown_risk=candidate_set_max_label_unknown_risk,
+                    candidate_set_max_event_unknown_risk=candidate_set_max_event_unknown_risk,
+                    candidate_set_min_score_gap=candidate_set_min_score_gap,
+                    candidate_set_unknown_reject_risk=candidate_set_unknown_reject_risk,
                 )
             first = selected[0]
             fused["role"] = _role(first.get("role"))
@@ -2326,5 +2385,12 @@ def evaluate_collaborative_open_set_evidence(
         "seen_new_gate_max_component_agreement": float(seen_new_gate_max_component_agreement),
         "seen_new_gate_min_support_density": float(seen_new_gate_min_support_density),
         "seen_new_gate_max_radius_z": float(seen_new_gate_max_radius_z),
+        "candidate_set_min_receivers": int(candidate_set_min_receivers),
+        "candidate_set_min_top1_receivers": int(candidate_set_min_top1_receivers),
+        "candidate_set_min_conformal_pvalue": float(candidate_set_min_conformal_pvalue),
+        "candidate_set_max_label_unknown_risk": float(candidate_set_max_label_unknown_risk),
+        "candidate_set_max_event_unknown_risk": float(candidate_set_max_event_unknown_risk),
+        "candidate_set_min_score_gap": float(candidate_set_min_score_gap),
+        "candidate_set_unknown_reject_risk": float(candidate_set_unknown_reject_risk),
         "counts": out_counts,
     }

@@ -2195,6 +2195,13 @@ def run_evaluation(args: argparse.Namespace) -> dict[str, Any]:
         seen_new_gate_max_component_agreement=float(args.seen_new_gate_max_component_agreement),
         seen_new_gate_min_support_density=float(args.seen_new_gate_min_support_density),
         seen_new_gate_max_radius_z=float(args.seen_new_gate_max_radius_z),
+        candidate_set_min_receivers=int(args.candidate_set_min_receivers),
+        candidate_set_min_top1_receivers=int(args.candidate_set_min_top1_receivers),
+        candidate_set_min_conformal_pvalue=float(args.candidate_set_min_conformal_pvalue),
+        candidate_set_max_label_unknown_risk=float(args.candidate_set_max_label_unknown_risk),
+        candidate_set_max_event_unknown_risk=float(args.candidate_set_max_event_unknown_risk),
+        candidate_set_min_score_gap=float(args.candidate_set_min_score_gap),
+        candidate_set_unknown_reject_risk=float(args.candidate_set_unknown_reject_risk),
         threshold_selection_label_scope=str(metadata["threshold_scope"]),
         unknown_query_eval_only=True,
         receiver_selection_policy=str(args.receiver_selection_policy),
@@ -2301,7 +2308,7 @@ def parse_args() -> argparse.Namespace:
     p.add_argument(
         "--fusion_policy",
         default="risk_margin",
-        choices=["risk_margin", "consensus_veto", "scorer_cvs", "cp_set_cvs"],
+        choices=["risk_margin", "consensus_veto", "scorer_cvs", "cp_set_cvs", "candidate_set_cvs"],
     )
     p.add_argument(
         "--collaboration_policy",
@@ -2353,6 +2360,13 @@ def parse_args() -> argparse.Namespace:
     p.add_argument("--seen_new_gate_max_component_agreement", type=float, default=1.0)
     p.add_argument("--seen_new_gate_min_support_density", type=float, default=0.0)
     p.add_argument("--seen_new_gate_max_radius_z", type=float, default=1.0e12)
+    p.add_argument("--candidate_set_min_receivers", type=int, default=2)
+    p.add_argument("--candidate_set_min_top1_receivers", type=int, default=0)
+    p.add_argument("--candidate_set_min_conformal_pvalue", type=float, default=0.0)
+    p.add_argument("--candidate_set_max_label_unknown_risk", type=float, default=1.0)
+    p.add_argument("--candidate_set_max_event_unknown_risk", type=float, default=0.95)
+    p.add_argument("--candidate_set_min_score_gap", type=float, default=0.0)
+    p.add_argument("--candidate_set_unknown_reject_risk", type=float, default=0.80)
     p.add_argument("--evidence_packet_bytes", type=float, default=40.0)
     p.add_argument(
         "--receiver_reliability_policy",
