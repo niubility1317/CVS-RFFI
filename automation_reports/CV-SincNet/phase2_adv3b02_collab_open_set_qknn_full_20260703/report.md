@@ -3468,6 +3468,76 @@ k=4逐类结果在三个主线尺度上相同：
 4. 实现`receiver_pair_inconsistency`审计字段，先报告不门控，再决定是否启用。
 5. 最终JSON需补写ADV3B02 checkpoint路径/SHA和feature生成命令，增强artifact追溯。
 
+## 2026-07-04 receiver pair不一致审计实现
+
+### 目的
+
+本轮不继续调全局阈值，而是补齐下一步机制开发所需的诊断证据：在融合器中记录receiver pair标签不一致、unknown risk跨度和score跨度；新增pair审计脚本，对当前最佳`shell_s150_max095_rej098_unk080`的evidence按两两receiver组合重算指标，并输出错误事件表。该审计字段只报告，不参与accept/reject/defer决策。
+
+### 本地变更与验证
+
+|文件|变更|
+|---|---|
+|`code/evaluation/collaborative_open_set_qknn_eval.py`|新增`receiver_pair_label_disagreement`、`receiver_pair_unknown_risk_range`、`receiver_pair_score_range`事件级字段和count级均值；新增`include_event_results`用于审计导出。|
+|`code/scripts/collab_evidence_pair_audit.py`|新增pair矩阵与错误事件表生成脚本，复用正式融合器，不另写判定规则；从evidence推断只读`Y_old/Y_new`协议标签，避免candidate_set把合法类当作`other`。|
+|`code/tests/test_collaborative_open_set_qknn_eval.py`|覆盖事件级审计字段与`include_event_results`。|
+|`code/tests/test_collab_evidence_pair_audit.py`|覆盖pair矩阵和错误事件筛选。|
+
+本地验证：
+
+```text
+C:\Users\lh594\.conda\envs\ssr-gpu\python.exe -m py_compile code\evaluation\collaborative_open_set_qknn_eval.py code\scripts\collab_evidence_pair_audit.py code\scripts\phase2_collaborative_open_set_qknn_eval.py
+C:\Users\lh594\.conda\envs\ssr-gpu\python.exe -m pytest code\tests\test_collaborative_open_set_qknn_eval.py code\tests\test_collab_evidence_pair_audit.py code\tests\test_phase2_collaborative_open_set_qknn_eval.py -q
+```
+
+结果：根工作区`92 passed`，Git镜像同一组测试`92 passed`。`.pytest_cache`仍因本机目录权限给出warning，不影响测试结论。
+
+代码SHA256：
+
+|文件|SHA256|
+|---|---|
+|`code/evaluation/collaborative_open_set_qknn_eval.py`|`FE50422E70F0D4C24749A38F95CDCC50CD19A8BDD51A71812E94965BD743D6D1`|
+|`code/scripts/collab_evidence_pair_audit.py`|`B11D5EAF6DF2B4F8D6D41D06BDBC17D4C8D4F9E8E7968206840AF1DB2AFE7C6F`|
+|`code/tests/test_collaborative_open_set_qknn_eval.py`|`E6FF68BD440D23D1A85DE0C3BC9FB8D342140B29E19D584597FE6E5C8BB3FDFD`|
+|`code/tests/test_collab_evidence_pair_audit.py`|`D00973FDCBD1A3F12BBB321A7B6985100B1DFF1C9363BD2EF65035C2E162B01D`|
+
+### pair审计产物
+
+```text
+python code/scripts/collab_evidence_pair_audit.py --evidence_csv remote_artifacts/collab_open_set_qknn_candidate_set_cvs_rcwr_avail3_p055_lrca049_huv0999_f050_shell_s150_max095_rej098_unk080_adv3b02_evidence.csv --run_json remote_artifacts/collab_open_set_qknn_candidate_set_cvs_rcwr_avail3_p055_lrca049_huv0999_f050_shell_s150_max095_rej098_unk080_adv3b02.json --output_pair_csv pair_audit_shell_s150_k2_matrix.csv --output_error_csv pair_audit_shell_s150_k2_errors.csv --max_error_rows 500
+```
+
+|产物|SHA256|
+|---|---|
+|`pair_audit_shell_s150_k2_matrix.csv`|`7AE3BE1BB77CE0261C44908786C7CACC20940A8203888B043BA4409606F4F11F`|
+|`pair_audit_shell_s150_k2_errors.csv`|`7C7826469946373EC05FE231B99D0722C4662DA8EB52F24AA03AEF9FBAB8FCA4`|
+
+两两receiver结果：
+
+|receiver pair|total|old_acc|min_old|seen_new_acc|min_seen|unknown_FAR|unknown_reject|结论|
+|---|---:|---:|---:|---:|---:|---:|---:|---|
+|`3-19+7-14`|160|0.4694|0.1000|0.7857|0.7500|0.0294|0.9706|新类较好且FAR低，但旧类严重不足|
+|`3-19+8-8`|134|0.5833|0.0000|0.7500|0.7000|0.0294|0.9412|新类较好但`20-15`塌陷|
+|`7-14+7-7`|190|0.8091|0.6000|0.5500|0.3500|0.1250|0.8750|旧类最好但FAR和新类不可接受|
+|`7-14+8-8`|174|0.7340|0.2000|0.7000|0.5500|0.2000|0.7750|旧类/新类中等，FAR过高|
+|`7-7+8-8`|184|0.7692|0.5000|0.4750|0.3000|0.2250|0.7500|FAR过高且新类差|
+
+主要错误簇：
+
+|错误簇|计数|含义|
+|---|---:|---|
+|`old 20-19 -> unknown_reject`|62|旧类低地板主要来自过强拒识。|
+|`seen_new 19-3 -> unknown_reject`|54|新类地板主要来自把`19-3`判成unknown。|
+|`old 14-10 -> accept 19-3`|50|`14-10`和seen-new`19-3`存在强混淆。|
+|`seen_new 19-3 -> accept 14-10`|29|与上一项互为混淆，说明仅靠shell风险不能分开这对类。|
+|`unknown -> accept 14-7/14-10/6-15`|30|剩余unknown false accept集中吸收到少数old类。|
+
+### 判定
+
+pair审计证明：低成本2星组合没有单个pair同时满足旧类、新类和unknown拒识。`3-19+7-14`和`3-19+8-8`能相对保护seen-new并维持低FAR，但旧类地板很低；`7-14+7-7`能保护旧类，但FAR上升到0.125且`19-3`地板很差。下一步不能简单选择固定receiver pair，而应做角色/类别条件化路由：对`19-3`优先调用`3-19/7-14/8-8`证据，对旧类`20-19/14-10`增加反混淆二级验证，对unknown吸收类`14-7/14-10/6-15`加入更强oldness或pair verifier。
+
+资源约束说明文件状态：在当前工作区按`卫星协同`、`资源约束`、`RFFI系统说明`关键词递归搜索，仍未找到用户点名的`卫星协同射频指纹识别（RFFI）系统资源约束设计说明.md`。因此本报告继续使用已有字段`participating_receivers`、`bytes_per_event`、`latency_ms_p50/p95`、`prototype_storage_bytes`、`max_event_bytes`、`max_event_latency_ms`作为临时资源口径；找到原文后必须按原文重新校验上限。
+
 
 
 

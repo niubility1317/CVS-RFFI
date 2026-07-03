@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import math
-from collections import OrderedDict, defaultdict
+from collections import Counter, OrderedDict, defaultdict
 from typing import Any, Mapping, Sequence
 
 
@@ -774,6 +774,13 @@ def _fuse_event(
     else:
         agreement = float(top_count) / float(receiver_n)
         vote_gap = float(top_count - second_count) / float(receiver_n)
+    predicted_label_counts = Counter(item for item in predicted_labels if item)
+    most_common_prediction = predicted_label_counts.most_common(1)[0][1] if predicted_label_counts else 0
+    receiver_pair_label_disagreement = 1.0 - (
+        float(most_common_prediction) / float(max(len(predicted_labels), 1))
+    )
+    receiver_pair_unknown_risk_range = (max(risks) - min(risks)) if risks else 0.0
+    receiver_pair_score_range = (max(scores) - min(scores)) if scores else 0.0
     selected_label_top1_receivers = int(label_top1_receiver_counts[label]) if label else 0
     selected_label_candidate_receivers = int(label_candidate_receiver_counts[label]) if label else 0
     selected_label_min_evidence_rank = int(label_min_evidence_rank[label]) if label and label in label_min_evidence_rank else 0
@@ -1111,6 +1118,9 @@ def _fuse_event(
         "label_class_reliability": float(label_class_reliability),
         "receiver_class_reliability_policy": receiver_class_reliability_policy,
         "label_receiver_class_reliability": float(label_receiver_class_reliability),
+        "receiver_pair_label_disagreement": float(receiver_pair_label_disagreement),
+        "receiver_pair_unknown_risk_range": float(receiver_pair_unknown_risk_range),
+        "receiver_pair_score_range": float(receiver_pair_score_range),
         "label_support_density": float(label_support_density),
         "label_radius_z": float(label_radius_z),
         "risk_component_agreement": float(risk_component_agreement),
@@ -2065,6 +2075,15 @@ def _finalize_metrics(
     label_receiver_class_reliability_values = [
         float(item.get("label_receiver_class_reliability", 1.0)) for item in event_results
     ]
+    receiver_pair_label_disagreement_values = [
+        float(item.get("receiver_pair_label_disagreement", 0.0)) for item in event_results
+    ]
+    receiver_pair_unknown_risk_range_values = [
+        float(item.get("receiver_pair_unknown_risk_range", 0.0)) for item in event_results
+    ]
+    receiver_pair_score_range_values = [
+        float(item.get("receiver_pair_score_range", 0.0)) for item in event_results
+    ]
     known_total = role_totals["old"] + role_totals["seen_new"]
     known_accepted = role_accepted["old"] + role_accepted["seen_new"]
     known_correct = role_correct["old"] + role_correct["seen_new"]
@@ -2121,6 +2140,18 @@ def _finalize_metrics(
         "mean_label_receiver_class_reliability": (
             sum(label_receiver_class_reliability_values)
             / max(len(label_receiver_class_reliability_values), 1)
+        ),
+        "mean_receiver_pair_label_disagreement": (
+            sum(receiver_pair_label_disagreement_values)
+            / max(len(receiver_pair_label_disagreement_values), 1)
+        ),
+        "mean_receiver_pair_unknown_risk_range": (
+            sum(receiver_pair_unknown_risk_range_values)
+            / max(len(receiver_pair_unknown_risk_range_values), 1)
+        ),
+        "mean_receiver_pair_score_range": (
+            sum(receiver_pair_score_range_values)
+            / max(len(receiver_pair_score_range_values), 1)
         ),
         "collaboration_stop_reasons": dict(sorted(adaptive_stop_reasons.items())),
         "seen_new_rescue_count": int(seen_new_rescue_total),
@@ -2300,6 +2331,7 @@ def evaluate_collaborative_open_set_evidence(
     partial_collab_min_receivers: int = 1,
     protocol_metadata: Mapping[str, Any] | None = None,
     strict_protocol_metadata: bool = False,
+    include_event_results: bool = False,
 ) -> dict[str, Any]:
     """Evaluate offline collaborative open-set qknn-style evidence.
 
@@ -2381,7 +2413,7 @@ def evaluate_collaborative_open_set_evidence(
         if not eligible:
             raise ValueError(f"no evidence groups contain {min_receivers_for_k} receiver observations")
         event_results: list[dict[str, Any]] = []
-        for _, group in eligible:
+        for event_id, group in eligible:
             selected_k = min(int(k), len({_str(row, "receiver_id") for row in group}))
             selected = _select_receivers(
                 group,
@@ -2554,8 +2586,13 @@ def evaluate_collaborative_open_set_evidence(
             first = selected[0]
             fused["role"] = _role(first.get("role"))
             fused["true_label"] = _str(first, "true_label", UNKNOWN_LABEL if fused["role"] == "unknown" else "")
+            fused["event_id"] = str(event_id)
+            fused["selected_receiver_ids"] = ",".join(_str(row, "receiver_id") for row in selected)
+            fused["selected_receiver_predictions"] = ",".join(
+                f"{_str(row, 'receiver_id')}:{_str(row, 'predicted_label')}" for row in selected
+            )
             event_results.append(fused)
-        out_counts[str(k)] = _finalize_metrics(
+        metrics = _finalize_metrics(
             event_results,
             k=int(k),
             min_required_receivers=int(min_receivers_for_k),
@@ -2563,6 +2600,9 @@ def evaluate_collaborative_open_set_evidence(
             expected_old_labels=expected_old_labels,
             expected_seen_new_labels=expected_seen_new_labels,
         )
+        if include_event_results:
+            metrics["event_results"] = event_results
+        out_counts[str(k)] = metrics
 
     return {
         "enabled": True,

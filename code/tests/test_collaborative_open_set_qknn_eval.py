@@ -98,6 +98,7 @@ class CollaborativeOpenSetQknnEvalTest(unittest.TestCase):
             collab_counts="all",
             unknown_risk_threshold=0.80,
             accept_margin_threshold=0.10,
+            include_event_results=True,
         )
 
         self.assertEqual(result["receiver_count"], 2)
@@ -111,6 +112,12 @@ class CollaborativeOpenSetQknnEvalTest(unittest.TestCase):
         self.assertEqual(result["counts"]["2"]["min_old_class_acc"], 1.0)
         self.assertEqual(result["counts"]["2"]["bytes_per_event"], 192.0)
         self.assertGreaterEqual(result["counts"]["2"]["latency_ms_p95"], result["counts"]["2"]["latency_ms_p50"])
+        self.assertIn("mean_receiver_pair_label_disagreement", result["counts"]["2"])
+        self.assertIn("mean_receiver_pair_unknown_risk_range", result["counts"]["2"])
+        self.assertEqual(len(result["counts"]["2"]["event_results"]), 3)
+        self.assertIn("receiver_pair_label_disagreement", result["counts"]["2"]["event_results"][0])
+        self.assertEqual(result["counts"]["2"]["event_results"][0]["event_id"], "old-1")
+        self.assertIn("rx-a", result["counts"]["2"]["event_results"][0]["selected_receiver_ids"])
 
     def test_rejects_threshold_fitting_from_unknown_query_rows(self):
         from evaluation.collaborative_open_set_qknn_eval import evaluate_collaborative_open_set_evidence
