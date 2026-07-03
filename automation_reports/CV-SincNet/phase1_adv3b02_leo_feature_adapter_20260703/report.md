@@ -915,6 +915,54 @@ V22 same-row boundary:
 
 The next valid work item is target1, not target2: improve worst-receiver/worst-TX LEO closed-set recovery without target clean/query tuning. Current evidence says oldness-only gating can protect unknown safety but does not recover hard receiver slices such as`rx3_19`and`rx20_1`.
 
+## V24 Residual-Subspace Feature Repair Design
+
+V24 follows the user's correction that logit bias/scale calibration is not the right route. It returns to feature-only repair. The hypothesis is that the LEO damage lives partly in a low-rank residual subspace observable from source clean/LEO pairs; a conservative correction restricted to that residual subspace may repair LEO damage while preserving identity directions better than free MLP/group-floor adapters.
+
+Protocol boundary:
+
+| Item | V24 setting |
+|---|---|
+| Phase1 backbone | Frozen`ADV3B02_CORE90_SOFT_E200phase1` |
+| Adapter type | Feature-only residual-subspace post-adapter |
+| Training data | Source clean plus source LEO `leo_clear_weak`,`leo_low_elev_weak`,`leo_rain_weak` pairs |
+| Residual model | PCA on source clean-minus-LEO feature residuals |
+| Correction direction | global, hard prototype-predicted TX, or soft prototype-weighted TX residual |
+| Gate | Source-only clean-vs-LEO diagonal likelihood in residual subspace |
+| Target clean/query labels | Not used for fitting |
+| Logit-only calibration | Explicitly not used |
+
+New files:
+
+| File | Purpose | SHA256 |
+|---|---|---|
+| `E:\type10-7\code\scripts\build_phase1_residual_subspace_repair_20260703.py` | Build feature-only residual-subspace repaired NPZs from source clean/LEO pairs | `D4FB854EF400207C5C2F6E184C5D179146B3FB98E45D8DBD9FF05AEA47CF01C0` |
+| `E:\type10-7\code\scripts\sweep_phase1_adv3b02_residualsub_target1_v24_20260703.sh` | Build 27 V24 feature-repair variants and run the target1 strong audit | `C64BDC81E025C658F7E19D06DF0ADC8BFC12498738D50F79E3163262A5165B65` |
+
+Local verification:
+
+| Command | Result |
+|---|---|
+| `C:\Users\lh594\.conda\envs\ssr-gpu\python.exe -m py_compile E:\type10-7\code\scripts\build_phase1_residual_subspace_repair_20260703.py E:\type10-7\code\scripts\eval_phase1_target1_strong_repair_audit_20260703.py` | PASS |
+| `bash -lc "bash -n /mnt/e/type10-7/code/scripts/sweep_phase1_adv3b02_residualsub_target1_v24_20260703.sh"` | PASS |
+
+Version/snapshot state:
+
+| Item | Path |
+|---|---|
+| Non-Git code snapshot | `E:\type10-7\code\snapshots\phase1_adv3b02_residualsub_target1_v24_20260703\` |
+
+Planned N607 output:
+
+| Artifact | Remote path |
+|---|---|
+| V24 build log | `/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_adv3b02_residualsub_target1_v24_20260703/build_residual_subspace.out` |
+| V24 summary | `/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_adv3b02_residualsub_target1_v24_20260703/target1_strong_v24_summary.csv` |
+| V24 metrics JSON | `/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_adv3b02_residualsub_target1_v24_20260703/target1_strong_v24_metrics.json` |
+| V24 best JSON | `/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_adv3b02_residualsub_target1_v24_20260703/target1_strong_v24_best.json` |
+
+Success criterion remains target1 first: at least more target slices than V21 must pass the strong gate, with special attention to hard slices `rx20_1`, `rx3_19`, `rx8_8`, and `rx7_7`.
+
 ## V23 Source Group-Floor Target1 Design
 
 V23 returns to target1 and changes the source-only adapter training objective. The new trainer adds a worst-group floor loss over source receiver and/or source TX groups inside each mini-batch. The intent is to prevent the source clean<-LEO repair from optimizing only the average pair loss while leaving hard TX/receiver directions under-repaired.
