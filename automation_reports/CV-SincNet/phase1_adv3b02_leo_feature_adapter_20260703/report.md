@@ -1099,6 +1099,60 @@ Planned N607 output:
 | V19 best JSON | `/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_adv3b02_margin_unk_target1_v19_20260703/target1_strong_v19_best.json` |
 | V19 metrics JSON | `/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_adv3b02_margin_unk_target1_v19_20260703/target1_strong_v19_metrics.json` |
 
+Completion results:
+
+| Item | Value |
+|---|---|
+| End time | 2026-07-03 10:48 CST |
+| Candidate rows | `30` |
+| Identity baseline rows | `10` |
+| Strong target1 pass | `0/30` |
+| Old recovery gate pass | `6/30` |
+| Clean fidelity gate pass | `16/30` |
+| Scenario/TX floor gate pass | `0/30` |
+| Margin gate pass | `0/30` |
+| Unknown safety gate pass | `7/30` |
+| Local artifact dir | `E:\type10-7\automation_reports\CV-SincNet\phase1_adv3b02_leo_feature_adapter_20260703\artifacts\v19_margin_unk_target1\` |
+
+Same-row V19 candidate table:
+
+| Cell | Adapter | old_acc | delta_pp | clean_drop | scn_floor | tx_floor | unk_FAR | unk_FAR_d | margin_d | dist_d | old | clean | floor | margin | unk_safe | pass |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| rx20-1-u1 | MARGIN_UNK_LINR | 0.5956 | -2.68 | 4.08 | 0.5735 | 0.3623 | 0.8207 | -0.05 | -0.34 | 0.136 | N | N | N | N | Y | N |
+| rx20-1-u1 | MARGIN_UNK_MLP | 0.5774 | -4.50 | 4.58 | 0.5530 | 0.3357 | 0.8291 | -0.04 | 0.21 | 0.138 | N | N | N | N | Y | N |
+| rx20-1-u1 | ULTRAID_LINR | 0.5965 | -2.59 | 4.33 | 0.5779 | 0.3535 | 0.8459 | -0.03 | -0.15 | 0.120 | N | N | N | N | Y | N |
+| rx20-1-u10 | MARGIN_UNK_LINR | 0.5956 | -2.68 | 4.08 | 0.5735 | 0.3623 | 0.7664 | -0.01 | -0.34 | 0.136 | N | N | N | N | Y | N |
+| rx20-1-u10 | MARGIN_UNK_MLP | 0.5774 | -4.50 | 4.58 | 0.5530 | 0.3357 | 0.7414 | -0.03 | 0.21 | 0.138 | N | N | N | N | Y | N |
+| rx20-1-u10 | ULTRAID_LINR | 0.5965 | -2.59 | 4.33 | 0.5779 | 0.3535 | 0.7913 | 0.02 | -0.15 | 0.120 | N | N | N | N | N | N |
+| rx3-19-u1 | MARGIN_UNK_LINR | 0.5491 | 0.09 | 4.67 | 0.5277 | 0.3137 | 0.7925 | 0.04 | -0.74 | 0.088 | N | N | N | N | N | N |
+| rx3-19-u1 | MARGIN_UNK_MLP | 0.5524 | 0.41 | 2.33 | 0.5295 | 0.3102 | 0.7925 | 0.04 | 0.00 | 0.064 | N | N | N | N | N | N |
+| rx3-19-u1 | ULTRAID_LINR | 0.5482 | 0.00 | 4.92 | 0.5250 | 0.3172 | 0.8150 | 0.06 | -0.42 | 0.078 | N | N | N | N | N | N |
+| rx3-19-u10 | MARGIN_UNK_LINR | 0.5491 | 0.09 | 4.67 | 0.5277 | 0.3137 | 0.7371 | 0.16 | -0.74 | 0.088 | N | N | N | N | N | N |
+| rx3-19-u10 | MARGIN_UNK_MLP | 0.5524 | 0.41 | 2.33 | 0.5295 | 0.3102 | 0.6911 | 0.11 | 0.00 | 0.064 | N | N | N | N | N | N |
+| rx3-19-u10 | ULTRAID_LINR | 0.5482 | 0.00 | 4.92 | 0.5250 | 0.3172 | 0.7778 | 0.20 | -0.42 | 0.078 | N | N | N | N | N | N |
+| rx7-14-u1 | MARGIN_UNK_LINR | 0.8671 | -0.09 | 0.08 | 0.8499 | 0.6625 | 0.9600 | 0.05 | 0.31 | 0.070 | Y | Y | N | N | N | N |
+| rx7-14-u1 | MARGIN_UNK_MLP | 0.8694 | 0.15 | 0.50 | 0.8588 | 0.6874 | 0.9525 | 0.05 | 0.59 | 0.053 | Y | Y | N | N | N | N |
+| rx7-14-u1 | ULTRAID_LINR | 0.8674 | -0.06 | 0.00 | 0.8508 | 0.6536 | 0.9625 | 0.06 | 0.40 | 0.052 | Y | Y | N | N | N | N |
+| rx7-14-u10 | MARGIN_UNK_LINR | 0.8671 | -0.09 | 0.08 | 0.8499 | 0.6625 | 0.9167 | 0.04 | 0.31 | 0.070 | Y | Y | N | N | N | N |
+| rx7-14-u10 | MARGIN_UNK_MLP | 0.8694 | 0.15 | 0.50 | 0.8588 | 0.6874 | 0.9167 | 0.04 | 0.59 | 0.053 | Y | Y | N | N | N | N |
+| rx7-14-u10 | ULTRAID_LINR | 0.8674 | -0.06 | 0.00 | 0.8508 | 0.6536 | 0.9222 | 0.05 | 0.40 | 0.052 | Y | Y | N | N | N | N |
+| rx7-7-u1 | MARGIN_UNK_LINR | 0.7865 | -1.00 | 0.25 | 0.7677 | 0.6206 | 0.9625 | 0.03 | -0.25 | 0.099 | N | Y | N | N | N | N |
+| rx7-7-u1 | MARGIN_UNK_MLP | 0.7876 | -0.88 | 0.42 | 0.7694 | 0.6525 | 0.9500 | 0.02 | 0.26 | 0.081 | N | Y | N | N | N | N |
+| rx7-7-u1 | ULTRAID_LINR | 0.7859 | -1.06 | 0.42 | 0.7686 | 0.6418 | 0.9525 | 0.02 | -0.09 | 0.086 | N | Y | N | N | N | N |
+| rx7-7-u10 | MARGIN_UNK_LINR | 0.7865 | -1.00 | 0.25 | 0.7677 | 0.6206 | 0.8627 | 0.01 | -0.25 | 0.099 | N | Y | N | N | N | N |
+| rx7-7-u10 | MARGIN_UNK_MLP | 0.7876 | -0.88 | 0.42 | 0.7694 | 0.6525 | 0.8455 | -0.00 | 0.26 | 0.081 | N | Y | N | N | Y | N |
+| rx7-7-u10 | ULTRAID_LINR | 0.7859 | -1.06 | 0.42 | 0.7686 | 0.6418 | 0.8798 | 0.03 | -0.09 | 0.086 | N | Y | N | N | N | N |
+| rx8-8-u1 | MARGIN_UNK_LINR | 0.7200 | 0.12 | 2.08 | 0.6883 | 0.1551 | 0.9500 | 0.04 | -0.09 | 0.075 | N | N | N | N | N | N |
+| rx8-8-u1 | MARGIN_UNK_MLP | 0.7468 | 2.79 | -1.25 | 0.7167 | 0.2941 | 0.9475 | 0.04 | 0.33 | 0.049 | N | Y | N | N | N | N |
+| rx8-8-u1 | ULTRAID_LINR | 0.7244 | 0.56 | 1.75 | 0.6936 | 0.1586 | 0.9475 | 0.04 | 0.07 | 0.062 | N | Y | N | N | N | N |
+| rx8-8-u10 | MARGIN_UNK_LINR | 0.7200 | 0.12 | 2.08 | 0.6883 | 0.1551 | 0.8324 | 0.00 | -0.09 | 0.075 | N | N | N | N | Y | N |
+| rx8-8-u10 | MARGIN_UNK_MLP | 0.7468 | 2.79 | -1.25 | 0.7167 | 0.2941 | 0.8486 | 0.02 | 0.33 | 0.049 | N | Y | N | N | N | N |
+| rx8-8-u10 | ULTRAID_LINR | 0.7244 | 0.56 | 1.75 | 0.6936 | 0.1586 | 0.8486 | 0.02 | 0.07 | 0.062 | N | Y | N | N | N | N |
+
+Interpretation:
+
+V19 materially improves the V18 failure mode, but it still does not satisfy strong target1. The best old-class row is `rx7-14-u10/u1 + LEOADAPT5_MARGIN_UNK_MLP`: old acc `0.8694`, clean drop `0.50pp`, scenario floor `0.8588`, and margin delta `+0.5909`. However, it still misses the TX floor (`0.6874 < 0.70`), true-prototype distance tolerance (`+0.053 > 0.02`), and unknown safety (`target_unknown_far_delta +0.044 to +0.045`). Source proxy_unknown repulsion lowers oldness for some unknown-safe rows, but those rows have old acc around `0.58-0.79` or clean drop above the allowed band. Therefore target1 remains not achieved, and target2 remains intentionally deferred.
+
 ## V11 Completion Results
 
 V11 completed two IQ pre-adapter variants on N607:
