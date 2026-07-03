@@ -1444,3 +1444,74 @@ python code\tests\test_phase2_collaborative_open_set_qknn_eval.py
 本地参数面搜索：基于`default_post_resource_evidence.csv`，对`label_fusion_policy`、`unknown_risk_threshold`、`accept_margin_threshold`、`consensus_score_threshold`、`scorer_component_vote_threshold`和rescue开关做缩小网格搜索。结论是没有隐藏阈值组合接近目标。FAR=0的联合最优约为预算4`old_acc=0.2989`、`seen_new_acc=0.2857`、`defer_rate=0.4870`；FAR=0的旧类最高仍是预算5`old_acc=0.3654`，但`seen_new_acc=0.0500`、`defer_rate=0.5652`。这说明当前瓶颈不是融合阈值，而是底层ADV3B02特征在星地目标域上的旧类/新类局部可分性不足，下一步需要改证据生成层。
 
 下一步技术判断：硬资源预算已补齐系统约束层，但它不会提升准确率。若继续向99/97/99推进，应优先实现本地证据质量提升：`SCOPE-Q8`的per-scenario Gaussian/Mahalanobis prototype、class-conditional EVT或pair verifier二级复核，并把`candidate_class_top_m`改为“候选预筛+全类top2审计”以避免第二候选被过滤。严格同事件协同也仍需单独跑`strict_event_key`诊断；当前`receiver_domain_ranked`只能作为receiver-domain ensemble诊断。
+
+## 2026-07-03候选预筛全类top2审计
+
+目标：解决上一轮子agent指出的`candidate_class_top_m`确认偏差风险。当前qKNN为了效率先用centroid筛候选类，再只在候选类support里做top-k；这会让`second_label/second_score`被候选过滤影响，可能虚高`label_score_gap`。本轮新增全类top1/top2审计：保留候选预筛作为实际预测路径，同时额外计算不经过候选预筛的全类top1/top2证据，用于诊断和可选unknown风险提升。
+
+代码改动：
+
+|文件|目的|
+|---|---|
+|`code/scripts/phase2_collaborative_open_set_qknn_eval.py`|evidence新增`audit_full_top1_label`、`audit_full_top1_score`、`audit_full_second_label`、`audit_full_second_score`、`audit_full_label_score_gap`、`candidate_audit_disagreement`、`candidate_audit_risk`。新增CLI：`--candidate_audit_unknown_risk_enabled`、`--candidate_audit_disagreement_risk`、`--candidate_audit_min_gap`、`--candidate_audit_gap_risk`。默认只记录审计字段，不改变决策；启用后可把候选预筛冲突或全类gap过低提升为unknown风险。|
+|`code/tests/test_phase2_collaborative_open_set_qknn_eval.py`|新增审计字段覆盖和gap风险提升单测。|
+
+本地和Git镜像验证：
+
+```powershell
+conda activate ssr-gpu
+python -m py_compile code\scripts\phase2_collaborative_open_set_qknn_eval.py code\evaluation\collaborative_open_set_qknn_eval.py
+python code\tests\test_phase2_collaborative_open_set_qknn_eval.py
+python code\tests\test_collaborative_open_set_qknn_eval.py
+```
+
+结果：`test_phase2_collaborative_open_set_qknn_eval.py`为18 tests OK，`test_collaborative_open_set_qknn_eval.py`为27 tests OK。Git提交：`2d016d0 Add full-class audit for candidate qKNN evidence`。
+
+计划远端验证：同步脚本和phase2测试到N607，在`CVS-RFFI`环境复测，然后跑两组`--collab_counts all`：
+
+|候选|新增设置|目的|
+|---|---|---|
+|`audit_record_only`|默认审计记录，风险提升关闭|验证新增字段不改变baseline结果，并生成候选预筛偏差审计证据。|
+|`audit_gap_risk`|`--candidate_audit_unknown_risk_enabled --candidate_audit_min_gap 0.05 --candidate_audit_gap_risk 0.995`|测试全类top2 gap过低时是否能进一步抑制unknown误接收；预期可能增加defer，重点看unknown_FAR和旧/新类损失。|
+
+远端验证与诊断结果：N607使用`CVS-RFFI`环境，`py_compile`通过，`test_phase2_collaborative_open_set_qknn_eval.py`为18 tests OK，`test_collaborative_open_set_qknn_eval.py`为27 tests OK。三组诊断均输出`receiver_count=5`、`group_count=308`、`evidence_row_count=1000`。运行后8张RTX3090均为`10MiB/24576MiB`，无新增训练进程；SSH/SCP后本地检查无残留`ssh.exe`或22端口`ESTABLISHED`连接。
+
+补丁修正：第一次`audit_gap_risk`远端结果没有变化，因为`candidate_audit_risk`只进入`unknown_risk`，没有进入组件投票。已追加提交`428ea3d Fold candidate audit risk into qKNN score risk`，使审计风险同步提升`score_risk`。最终有效候选为`audit_gap_risk_scorecomponent`。
+
+拉回产物SHA256：
+
+|产物|SHA256|
+|---|---|
+|`remote_artifacts/collab_open_set_qknn_scorer_cvs_evt_adaptive_gain_vote_margin_audit_record_only.json`|`7F13CC5ED7F2FF4C1AA624E8DAACC3EDBD33D71CFC34037B6E37CF845D347FF3`|
+|`remote_artifacts/collab_open_set_qknn_scorer_cvs_evt_adaptive_gain_vote_margin_audit_record_only_evidence.csv`|`4FEFD03AB7E464CE7DE1BD119320992C355993A5A84F5E52D7B54DC7A5AB21BA`|
+|`remote_artifacts/collab_open_set_qknn_scorer_cvs_evt_adaptive_gain_vote_margin_audit_gap_risk.json`|`2D0DE319E728E462ECFDAD261F6ECD38B24867FE9F4210332CF792161D28DACC`|
+|`remote_artifacts/collab_open_set_qknn_scorer_cvs_evt_adaptive_gain_vote_margin_audit_gap_risk_evidence.csv`|`A5A51A3B93B02BF848AD9E0217516F57265F92F35B9AAAE10EA3E1D8E40E5064`|
+|`remote_artifacts/collab_open_set_qknn_scorer_cvs_evt_adaptive_gain_vote_margin_audit_gap_risk_scorecomponent.json`|`E3077CF3961B14CCCFEDDDFC7C98D65B84ADA8E739DA7DE00F9B5C5524EEB52F`|
+|`remote_artifacts/collab_open_set_qknn_scorer_cvs_evt_adaptive_gain_vote_margin_audit_gap_risk_scorecomponent_evidence.csv`|`41B1883CB28C0FA9F54C557C0E50AFDE707B2C84A0153AA64C6CF5401500174D`|
+
+结果表：
+
+|候选|预算|old_acc|min_old|seen_new_acc|min_seen_new|unknown_FAR|unknown_reject|defer_rate|avg_rx|bytes/event|
+|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+|`audit_record_only`|1|0.0000|0.0000|0.1500|0.0000|0.0500|0.6167|0.5000|1.0000|120.0|
+|`audit_record_only`|2|0.0850|0.0000|0.3556|0.1000|0.0000|0.8958|0.3374|1.8171|218.0|
+|`audit_record_only`|3|0.0417|0.0000|0.4250|0.1000|0.0000|0.9500|0.4250|2.5450|305.4|
+|`audit_record_only`|4|0.3103|0.0000|0.4857|0.3000|0.0000|0.8438|0.3182|3.2987|395.8|
+|`audit_record_only`|5|0.3654|0.0000|0.2500|0.0000|0.0000|0.7000|0.4022|4.2391|508.7|
+|`audit_gap_risk_scorecomponent`|1|0.0000|0.0000|0.1500|0.0000|0.0500|0.6167|0.5000|1.0000|120.0|
+|`audit_gap_risk_scorecomponent`|2|0.0850|0.0000|0.3556|0.1000|0.0000|0.8958|0.3333|1.8171|218.0|
+|`audit_gap_risk_scorecomponent`|3|0.0417|0.0000|0.4250|0.1000|0.0000|0.9500|0.4250|2.5400|304.8|
+|`audit_gap_risk_scorecomponent`|4|0.3103|0.0000|0.4857|0.3000|0.0000|0.8438|0.3117|3.2857|394.3|
+|`audit_gap_risk_scorecomponent`|5|0.3654|0.0000|0.2500|0.0000|0.0000|0.7000|0.3913|4.2065|504.8|
+
+审计统计：
+
+|候选|evidence rows|candidate top1与full top1冲突|candidate audit risk触发|
+|---|---:|---:|---:|
+|`audit_record_only`|1000|8|0|
+|`audit_gap_risk`|1000|8|218|
+|`audit_gap_risk_scorecomponent`|1000|8|218|
+
+解释：全类top2审计确认`candidate_class_top_m=2`的top1确认偏差较小，只有`8/1000`条候选预筛top1与全类top1不一致。gap风险触发`218/1000`条，但即使进入`score_risk`组件投票后，也没有提升old/seen-new/unknown主指标，只略微降低defer和实际参与receiver。这进一步说明当前瓶颈不在候选预筛过滤第二候选，而在ADV3B02特征和qKNN8局部证据本身对星地目标域旧类/新类/未知类的可分性不足。
+
+下一步建议调整：不再优先推进候选预筛审计方向；应实现per-scenario Gaussian/Mahalanobis prototype或pair verifier二级复核。若要继续利用本轮审计字段，建议先做`audit_full_second_label`混淆表，找出unknown最常被哪些old/seen-new吸收，再决定是否训练/拟合轻量pair verifier。
