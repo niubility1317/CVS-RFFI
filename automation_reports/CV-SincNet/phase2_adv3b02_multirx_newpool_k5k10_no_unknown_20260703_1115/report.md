@@ -59,8 +59,43 @@ bash code/scripts/launch_phase2_adv3b02_multirx_newpool_k5k10_no_unknown_2026070
 |---|---|
 | 本地脚本 | 已创建 |
 | 本地验证 | PASS：`conda activate ssr-gpu; bash -n code/scripts/launch_phase2_adv3b02_multirx_newpool_k5k10_no_unknown_20260703_1115.sh; bash code/scripts/launch_phase2_adv3b02_multirx_newpool_k5k10_no_unknown_20260703_1115.sh --dry-run` |
-| N607 preflight | 待重新确认 |
-| 远端同步 | 待完成 |
-| 远端运行 | 待启动 |
-| 结果解析 | 待完成 |
-| Git提交 | 待完成 |
+| N607 preflight | PASS：2026-07-03 11:15:54 CST，direct N607可达，项目根目录可见，8张RTX3090空闲显示10MiB |
+| 远端同步 | PASS：`scp E:\type10-7\code\scripts\launch_phase2_adv3b02_multirx_newpool_k5k10_no_unknown_20260703_1115.sh N607:/home/szu2070436088/2510044040/CV-SincNet/code/scripts/launch_phase2_adv3b02_multirx_newpool_k5k10_no_unknown_20260703_1115.sh`；远端`bash -n`通过，SHA256=`07db668695dc2e8290f8849af6eb11a4d2a1961b30ffd20586d5e7e57493423f` |
+| 远端运行 | 已完成：launcher输出`[ADV3B02-MULTIRX-NEWPOOL-K5K10-DONE]` |
+| 结果解析 | 已完成：`multirx_k5k10_summary.json`已拉回并本地解析 |
+| Git提交 | 初始launcher/report已提交，结果summary和报告更新待提交 |
+
+## 运行结果
+
+| receiver | K | eligible new TX | rows | 同一行达标数 | 结论 |
+|---|---:|---:|---:|---:|---|
+| `20-1` | 5 | 135 | 36180 | 0 | 未达标 |
+| `20-1` | 10 | 135 | 36180 | 0 | 未达标 |
+| `3-19` | 5 | 127 | 32004 | 0 | 未达标 |
+| `3-19` | 10 | 127 | 32004 | 0 | 未达标 |
+| `7-7` | 5 | 132 | 34584 | 0 | 未达标 |
+| `7-7` | 10 | 132 | 34584 | 0 | 未达标 |
+| `8-8` | 5 | 131 | 34060 | 0 | 未达标 |
+| `8-8` | 10 | 131 | 34060 | 0 | 未达标 |
+
+| 排名 | receiver | K | 新类组合 | 方法 | 旧类准确率 | 新类均值 | 新类逐类最低 | 逐新类准确率 | 解释 |
+|---:|---|---:|---|---|---:|---:|---:|---|---|
+| 1 | `8-8` | 10 | `18-20,3-2` | `knn1` | 76.67% | 78.75% | 77.50% | `18-20`:77.50%,`3-2`:80.00% | 新类接近但旧类不足 |
+| 2 | `8-8` | 10 | `14-9,2-7` | `knn3` | 75.83% | 78.75% | 77.50% | `14-9`:77.50%,`2-7`:80.00% | 旧类不足 |
+| 3 | `8-8` | 10 | `14-9,2-7` | `knn1` | 75.42% | 85.00% | 80.00% | `14-9`:90.00%,`2-7`:80.00% | 新类均值达标但逐类和旧类不足 |
+| 4 | `7-7` | 10 | `14-13,7-11` | `proto` | 75.00% | 92.50% | 90.00% | `14-13`:90.00%,`7-11`:95.00% | 新类强，但旧类域适应不足 |
+| 5 | `7-7` | 5 | `15-19,20-7` | `knn1` | 75.00% | 81.25% | 75.00% | `15-19`:87.50%,`20-7`:75.00% | K=5新类不稳定且旧类不足 |
+
+## 产物与哈希
+
+| 文件 | SHA256 |
+|---|---|
+| `E:\type10-7\automation_reports\CV-SincNet\phase2_adv3b02_multirx_newpool_k5k10_no_unknown_20260703_1115\multirx_k5k10_summary.json` | `db256e022f28176123d35ef27cf15a97cc74177533cf36f5fb4388f7ea45c875` |
+| `ADV3B02_MULTIRX_NEWPOOL_RX20_1.out` | `de9b218c8762917e9ff35f06da011c1250b3e6e6daf13ae20b9313c6ae27708e` |
+| `ADV3B02_MULTIRX_NEWPOOL_RX3_19.out` | `9c2a1a171bd41ef992a3dcd2ecb68592e1d97b0020573b7d5fab6433e19ee8b8` |
+| `ADV3B02_MULTIRX_NEWPOOL_RX7_7.out` | `4990b9e8fcfaf2d3d96ea2c30dd94f25138551145fdb8a89b12a3776e4981d44` |
+| `ADV3B02_MULTIRX_NEWPOOL_RX8_8.out` | `b0c0f9d5955207f4f1fb274bfb1efe3e01c4333a95b934123b758dfe894c43e2` |
+
+## 解释与下一步
+
+`7-14`在K=10最接近目标但新类逐类最低只有82.50%，旧类84.58%；其它receiver的K=5/K=10没有更优同一行。多接收机扩展显示单纯更换target receiver和复用朴素`proto/knn`不足以满足低shot目标。下一步应从方法侧推进：把KNN改造为不保存原始support的压缩原型/子原型记忆库，并加入旧类目标域校准项，使`7-7`这类“新类强、旧类弱”的行获得旧类恢复，同时控制新类逐类不掉到85%以下。
