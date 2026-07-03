@@ -1054,3 +1054,40 @@ python E:\type10-7\code\tests\test_phase2_collaborative_open_set_qknn_eval.py
 |`adaptive_gain_rescue_s07`|0.995|0.7|较保守rescue，观察unknown FAR和seen-new之间的折中。|
 
 共同关键参数：`--collab_counts all --k_shot 8 --query_per_class 20 --qknn_k 8 --candidate_class_top_m 2 --support_calibration_mode leave_one_out --unknown_gate_mode support_envelope_evt --score_threshold_combine max --scenario_aware --radius_norm 0.3 --fusion_policy scorer_cvs --collaboration_policy adaptive_gain --adaptive_gain_min_risk 0.60 --unknown_risk_threshold 0.995 --accept_margin_threshold 0.03 --consensus_gap_threshold 0.0 --consensus_score_threshold 0.30 --scorer_component_vote_threshold 0.25 --unknown_quantile 0.75 --evt_tail_quantile 0.80 --evt_temperature 0.05 --latency_budget_ms 12 --evidence_packet_bytes 120 --event_alignment_policy receiver_domain_ranked --support_selection_policy stable_first --seen_new_rescue_enabled --seen_new_rescue_min_score 0.30 --seen_new_rescue_min_margin 0.03 --seen_new_rescue_min_agreement 0.50 --seed 407044`。
+
+远端验证与运行结果：N607使用`CVS-RFFI`环境，`py_compile`通过，`test_collaborative_open_set_qknn_eval.py`为20 tests OK，`test_phase2_collaborative_open_set_qknn_eval.py`为16 tests OK。两组诊断均输出`receiver_count=5`、`group_count=308`、`evidence_row_count=1000`。运行前后8张RTX3090均为`10/24576MiB`，无新增显存占用。SSH/SCP后本地检查无残留`ssh.exe`或22端口`ESTABLISHED`连接。
+
+拉回产物与SHA256：
+
+|产物|SHA256|
+|---|---|
+|`remote_artifacts/collab_open_set_qknn_scorer_cvs_evt_adaptive_gain_rescue_s05.json`|`EE537E601F64DBE80866A161A596F17ECFCC555C032CE2CC0F96DC44CCF720A1`|
+|`remote_artifacts/collab_open_set_qknn_scorer_cvs_evt_adaptive_gain_rescue_s05_evidence.csv`|`F7D43E6865DE98385FB8AD52F13AA001478976509B78F0A51E972F2D2B4E5B53`|
+|`remote_artifacts/collab_open_set_qknn_scorer_cvs_evt_adaptive_gain_rescue_s07.json`|`25A953D4A36E8677962DCF71F767128A4DF942F03DF0CE00BFF6571B55F3D3D4`|
+|`remote_artifacts/collab_open_set_qknn_scorer_cvs_evt_adaptive_gain_rescue_s07_evidence.csv`|`BAABEE9C2C66DAF901BA3167809493E46B1F249CE4F9449CF828A85ED04579FE`|
+
+`adaptive_gain_rescue_s05`结果，`seen_new_rescue_risk_scale=0.5`：
+
+|最大receiver预算|total|excluded|old_acc|min_old_class_acc|seen_new_acc|min_seen_new_class_acc|unknown_FAR|unknown_reject_rate|unknown_defer_rate|known_coverage|defer_rate|unresolved_rate|bytes/event|p95 latency ms|avg used rx|p95 used rx|max used rx|rescue count|
+|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+|1|308|0|0.3883|0.2000|0.1500|0.0000|0.1667|0.6167|0.2167|0.4556|0.1721|0.1721|120.0000|0.0936|1.0000|1.0000|1|19|
+|2|246|62|0.2549|0.0000|0.3556|0.1000|0.0417|0.8750|0.0833|0.3081|0.2276|0.2276|198.0488|0.0936|1.6504|2.0000|2|19|
+|3|200|108|0.2417|0.0000|0.4250|0.1000|0.0500|0.9000|0.0500|0.2938|0.3000|0.3000|271.8000|0.0936|2.2650|3.0000|3|17|
+|4|154|154|0.3563|0.0000|0.4571|0.2500|0.1250|0.7812|0.0938|0.4016|0.2857|0.2857|340.5195|0.0936|2.8377|4.0000|4|17|
+|5|92|216|0.4423|0.0000|0.2500|0.0000|0.1500|0.6000|0.2500|0.4167|0.3370|0.3370|421.3043|0.0936|3.5109|5.0000|5|6|
+
+`adaptive_gain_rescue_s07`结果与`s05`的主指标相同，仅p95 latency proxy不同，为`0.1223ms`；说明当前样本中一旦触发rescue，`risk_scale=0.5/0.7`都会把effective risk压到同一判决区间。
+
+本地基于拉回evidence做rescue门槛小网格复评，代表性结果：
+
+|min_score|min_margin|预算4 seen_new_acc|预算4 unknown_FAR|预算4 rescue|预算5 seen_new_acc|预算5 unknown_FAR|预算5 rescue|
+|---:|---:|---:|---:|---:|---:|---:|---:|
+|0.30|0.03|0.4571|0.1250|17|0.2500|0.1500|6|
+|0.30|0.15|0.4286|0.1250|15|0.2500|0.1500|5|
+|0.45|0.03|0.2857|0.1250|10|0.1500|0.1500|3|
+|0.60|0.03|0.2286|0.1250|3|0.0500|0.1500|0|
+|0.75|0.03|0.2286|0.1250|0|0.0500|0.1500|0|
+
+判定：seen-new rescue确实恢复了部分新类识别，预算4的seen_new_acc从上一轮`adaptive_gain_v1`的0.1724提升到0.4571，min_seen_new_class_acc从0.0500提升到0.2500；但unknown_FAR从0.0645升至0.1250，预算5从0.0000升至0.1500。提高rescue的score/margin门槛会减少rescue触发并降低seen-new收益，但不能压低unknown_FAR。因此当前瓶颈不是单一seen-new救回门槛，而是known/unknown风险估计本身未能区分“高置信seen-new”和“像seen-new的unknown”。
+
+下一步应转向`class-set split gate`：old、seen-new、unknown分别维护不同的风险融合规则。具体最小实现是为seen-new类引入`seen_new_margin_over_unknown`或`support p-value`二次门控，只有同时满足seen-new原型近邻一致、unknown风险低于seen-new专用上界、且unknown类不通过同类门控时才accept；否则defer而不是直接rescue。仅靠风险折扣会扩大unknown false accept，不能达成99%未知拒识目标。
