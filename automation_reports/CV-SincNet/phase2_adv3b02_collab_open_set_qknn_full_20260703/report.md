@@ -3985,6 +3985,53 @@ conda run --no-capture-output -n ssr-gpu python -m pytest code/tests/test_collab
 
 下一步建议：放弃基于unknown错误分布手工列举label/receiver pair的主线化叙述。更合理路线是把文献子agent建议落到可验证算法：冻结`z_id`主干，使用source/support校准的receiver reliability和prototype开集门控，加入可回滚的轻量adapter/TTA，但阈值和风险先验必须来自source/support/proxy-known，不能来自unknown query错误分布。
 
+## 2026-07-04 Support-Calibrated Evidence Router实现
+
+### 设计依据
+
+本轮停止继续扩展unknown错误分布驱动的pairguard表，改为实现`support_router_cvs`。该策略遵循COSR-CI/AWARE-CI资源约束：节点只上传低带宽qknn8 evidence、support/conformal质量、open-set风险、时延和字节数；聚合端先检查old/seen-new是否有足够support-calibrated强证据，再让open-set风险触发`unknown_reject/request_more/defer`。它的关键边界是：分类证据和未知风险分离，但所有阈值仍只能来自source/support/proxy-known，不能使用unknown query调参。
+
+机制：
+
+|层级|条件|输出|
+|---|---|---|
+|强support接收|old/seen-new标签、候选receiver数、top1 receiver数、conformal pvalue、receiver-class reliability、score、margin、support density/radius gate、label/event risk上限同时通过|`accept`|
+|未知证据|未满足强support接收，且event/label unknown risk、class shell risk或多组件risk agreement达到阈值|`unknown_reject`，若有预算则`request_more`|
+|低置信|既非强support，也非明确未知|`defer`或`request_more`|
+
+该算法仍是offline evidence级诊断，不等同严格同事件真实卫星群协同；`receiver_domain_ranked`只是部署proxy排序。
+
+### 本地改动与验证
+
+|文件|用途|SHA256|
+|---|---|---|
+|`code/evaluation/collaborative_open_set_qknn_eval.py`|新增`support_router_cvs`融合策略、事件级`support_router_accept/unknown_evidence`和汇总计数；修复`progressive_budget`参数链路。|`9F0B0B843E7065BE3F23D11FAC289A19256B5C9239FEBC30A8A8D5DA14AF35AA`|
+|`code/scripts/phase2_collaborative_open_set_qknn_eval.py`|CLI允许`--fusion_policy support_router_cvs`。|`83CADEA95D3B8553232B2B3C2D90B1BA540DB9C2CD95CEA6FC2ADDD52F84FBE2`|
+|`code/tests/test_collaborative_open_set_qknn_eval.py`|新增support router单测，覆盖强support old接收与弱support unknown拒识；完整open-set测试回归。|`1ED3F248FC0AD1500189B352C392AB06C7347BCBCD6E69C70FB166001AA37C32`|
+
+本地快照：`E:\type10-7\code\snapshots\phase2_support_router_cvs_20260704\`。Git镜像提交：`da7b144 Add support calibrated evidence router`。
+
+验证：
+
+```text
+conda run --no-capture-output -n ssr-gpu python -m py_compile code/evaluation/collaborative_open_set_qknn_eval.py code/scripts/phase2_collaborative_open_set_qknn_eval.py
+conda run --no-capture-output -n ssr-gpu python -m pytest code/tests/test_collaborative_open_set_qknn_eval.py -q -p no:cacheprovider
+```
+
+结果：`py_compile`通过；`53 passed`。
+
+### N607执行计划
+
+远端环境继续使用`/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python`。运行前按N607 preflight检查GPU占用，选择显存占用最低GPU；如多卡同为低占用，默认GPU0。
+
+计划运行`support_router_cvs`的k=1..5全量星地信道评估：
+
+|run|关键参数|目的|
+|---|---|---|
+|`support_router_evt085_adv3b02`|`--fusion_policy support_router_cvs --class_set_gate_enabled --old_gate_min_support_density 0.55 --old_gate_max_radius_z 2.0 --seen_new_gate_min_support_density 0.50 --seen_new_gate_max_radius_z 2.5 --candidate_set_min_conformal_pvalue 0.50 --candidate_set_min_label_receiver_class_reliability 0.70 --candidate_set_unknown_reject_risk 0.85`|验证support-calibrated强证据能否保留old/seen-new，同时避免pairguard错误表导致的类别误伤。|
+
+成功标准保持不变：old_acc≥`0.99`且min_old≥`0.95`，seen_new_acc≥`0.97`且min_seen≥`0.93`，unknown_reject≥`0.99`且unknown_FAR≤`0.01`。未达到则只作为diagnostic evidence。
+
 ## 2026-07-04 SR-PairFuse软pairguard执行计划
 
 ### 设计依据
