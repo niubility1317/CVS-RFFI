@@ -297,6 +297,38 @@ class Phase2CollaborativeOpenSetQknnEvalTest(unittest.TestCase):
         self.assertIn("oldness_risk", evidence[0])
         self.assertIn("oldness_quantile", metadata)
 
+    def test_full_support_envelope_records_all_calibrated_risks(self):
+        from phase2_collaborative_open_set_qknn_eval import load_feature_npz, build_collaborative_evidence
+
+        with tempfile.TemporaryDirectory() as td:
+            npz = Path(td) / "features.npz"
+            _write_npz(npz)
+            evidence, metadata = build_collaborative_evidence(
+                load_feature_npz(npz),
+                k_shot=1,
+                query_per_class=2,
+                qknn_k=1,
+                unknown_gate_mode="support_envelope_full",
+                mahalanobis_temperature=0.2,
+                evt_temperature=0.05,
+                oldness_temperature=0.05,
+            )
+
+        self.assertEqual(metadata["unknown_gate_mode"], "support_envelope_full")
+        self.assertEqual(
+            metadata["active_risk_components"],
+            ["score", "radius", "margin", "mahalanobis", "evt", "oldness"],
+        )
+        for key in (
+            "score_risk",
+            "radius_risk",
+            "margin_risk",
+            "mahalanobis_risk",
+            "evt_risk",
+            "oldness_risk",
+        ):
+            self.assertIn(key, evidence[0])
+
     def test_scenario_aware_qknn_prefers_matching_support_scenario(self):
         from phase2_collaborative_open_set_qknn_eval import build_qknn_memory, qknn_scores
 

@@ -1235,6 +1235,17 @@ def _combined_unknown_risk(
         risk = np.maximum.reduce([score_risk, radius_risk, margin_risk, evt_risk])
     elif mode == "support_envelope_oldness":
         risk = np.maximum.reduce([score_risk, radius_risk, margin_risk, oldness_risk])
+    elif mode == "support_envelope_full":
+        risk = np.maximum.reduce(
+            [
+                score_risk,
+                radius_risk,
+                margin_risk,
+                mahalanobis_risk,
+                evt_risk,
+                oldness_risk,
+            ]
+        )
     elif mode == "radius":
         risk = np.maximum(score_risk, radius_risk)
     elif mode == "margin":
@@ -1248,7 +1259,7 @@ def _combined_unknown_risk(
     else:
         raise ValueError(
             "unknown_gate_mode must be score, radius, margin, mahalanobis, evt, oldness, support_envelope, "
-            "support_envelope_mahalanobis, support_envelope_evt, or support_envelope_oldness"
+            "support_envelope_mahalanobis, support_envelope_evt, support_envelope_oldness, or support_envelope_full"
         )
     return (
         np.clip(risk, 0.0, 1.0),
@@ -1276,6 +1287,7 @@ def _active_risk_components_for_gate_mode(gate_mode: str) -> list[str]:
         "support_envelope_mahalanobis": ["score", "radius", "margin", "mahalanobis"],
         "support_envelope_evt": ["score", "radius", "margin", "evt"],
         "support_envelope_oldness": ["score", "radius", "margin", "oldness"],
+        "support_envelope_full": ["score", "radius", "margin", "mahalanobis", "evt", "oldness"],
     }
     if mode not in mapping:
         raise ValueError(f"unknown unknown_gate_mode {gate_mode!r}")
@@ -2659,6 +2671,7 @@ def parse_args() -> argparse.Namespace:
             "support_envelope_mahalanobis",
             "support_envelope_evt",
             "support_envelope_oldness",
+            "support_envelope_full",
         ],
     )
     p.add_argument(
