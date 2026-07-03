@@ -3747,6 +3747,53 @@ runs/phase2_adv3b02_collab_open_set_qknn_full_20260703/collab_open_set_qknn_cand
 
 更正：本节仅为本地实现后的初始ADV3B02计划记录，未作为本轮最终用户请求执行。用户指定权重为`SA33_sa27_ch2_leo3_ce0p7_r010_20260527_204104`；实际N607复跑与最终审计结果已转入`E:\type10-7\automation_reports\CV-SincNet\phase2_sa33_collab_open_set_qknn_full_20260703\report.md`。
 
+## 2026-07-04 ADV3B02 pairguard协同推理执行记录
+
+### 目标与边界
+
+本轮重新面向`ADV3B02_CORE90_SOFT_E200`执行协同推理改进，算法名称暂定`candidate_set_cvs_pairguard`。目标是在不增加query探测receiver预算的前提下，提高unknown拒识安全性，并保留`support_quality_prior`已证明的known类救援能力。当前证据仍属于`receiver_domain_ranked`诊断口径；若strict event key继续缺失，不得声明严格同物理事件卫星群协同成功。
+
+文献启发：
+
+|来源|可落地机制|本轮采用方式|
+|---|---|---|
+|[Towards Receiver-Agnostic and Collaborative RFFI](https://arxiv.org/abs/2207.02999)|多receiver协同推理可提升RFFI，但需抑制receiver硬件偏移|保留多receiver证据融合，并新增receiver间分歧门控|
+|[Few-Shot Open-Set RFFI/MLGPN](https://ieeexplore.ieee.org/document/10960433/)|Gaussian prototype/Mahalanobis支持few-shot开集识别|继续使用class conformal、class shell和unknown risk作为轻量开集证据|
+|[Collaborative DNN Inference for Edge Intelligence](https://arxiv.org/abs/2207.07812)|边缘协同推理应按算力、通信、置信度做动态分配|只上传score/risk/reliability等轻量证据，记录bytes/latency|
+|[Federated RFFI Powered by Unsupervised Contrastive Learning](https://www.eng.auburn.edu/~szm0001/papers/tifs24.pdf)|跨节点RFFI训练可不共享原始IQ|后续在线微调只允许adapter/prototype/threshold轻量更新，backbone冻结|
+
+子agent监督结论已吸收：禁止用query派生receiver质量先看全receiver再只统计k个receiver；不能把`receiver_domain_ranked`写成strict event协同；unknown query只能eval-only；未达标必须标记diagnostic-only。
+
+### 本地改动
+
+|文件|用途|SHA256|
+|---|---|---|
+|`code/evaluation/collaborative_open_set_qknn_eval.py`|为`candidate_set_cvs`新增pairguard接受门控：`candidate_set_max_receiver_pair_label_disagreement`、`candidate_set_max_receiver_pair_unknown_risk_range`、`candidate_set_min_label_receiver_class_reliability`、`candidate_set_require_label_shell_observed`；逐事件metadata同步输出|`10CBFDF475C6CE67120D0BF1C8D0B9312F67C27335274C8180CC79664292942B`|
+|`code/scripts/phase2_collaborative_open_set_qknn_eval.py`|CLI暴露上述4个pairguard参数并透传到评估器|`0A1DC5CAD120EC151C0F517C106F2D9E6C59E088DC7FC1E18F5779E146CCB11D`|
+|`code/tests/test_collaborative_open_set_qknn_eval.py`|新增pairguard单测，覆盖pair标签分歧、unknown风险跨度、receiver-class可靠性、shell观测缺失和参数校验|`B808FA4B89B5791A94F25A7D764B5D8DBB1995AA95FF570B60311F3EC9A54FEA`|
+
+### 本地验证
+
+```text
+C:\Users\lh594\.conda\envs\ssr-gpu\python.exe -m py_compile code\evaluation\collaborative_open_set_qknn_eval.py code\scripts\phase2_collaborative_open_set_qknn_eval.py
+C:\Users\lh594\.conda\envs\ssr-gpu\python.exe -m pytest code\tests\test_collaborative_open_set_qknn_eval.py code\tests\test_phase2_collaborative_open_set_qknn_eval.py -q
+```
+
+结果：本地工作树`95 passed`；Git镜像树同样`95 passed`。根目录测试仍有`.pytest_cache`写入权限警告，不影响测试结果。
+
+### N607运行计划
+
+远端环境按用户要求使用`/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python`。同步目标工作目录：`/home/szu2070436088/2510044040/CV-SincNet`。
+
+计划输出：
+
+```text
+runs/phase2_adv3b02_collab_open_set_qknn_full_20260703/collab_open_set_qknn_candidate_set_cvs_pairguard_dualroute_adv3b02.json
+runs/phase2_adv3b02_collab_open_set_qknn_full_20260703/collab_open_set_qknn_candidate_set_cvs_pairguard_dualroute_adv3b02_evidence.csv
+```
+
+计划命令关键参数：`--collab_counts all`覆盖1到全体target receiver数量；`--collab_group_policy available_up_to_k`、`--partial_collab_min_receivers 3`保持当前ADV3B02口径；`--fusion_policy candidate_set_cvs`、`--collaboration_policy dual_route_cvs`；显式启用pairguard：`--candidate_set_max_receiver_pair_label_disagreement 0.34`、`--candidate_set_max_receiver_pair_unknown_risk_range 0.30`、`--candidate_set_min_label_receiver_class_reliability 0.75`、`--candidate_set_require_label_shell_observed`。远端运行前需完成N607预检、低显存GPU选择、SCP同步、远端`py_compile`和单测。
+
 
 
 

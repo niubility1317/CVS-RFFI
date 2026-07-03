@@ -2343,6 +2343,16 @@ def run_evaluation(args: argparse.Namespace) -> dict[str, Any]:
         candidate_set_high_unknown_risk_threshold=float(args.candidate_set_high_unknown_risk_threshold),
         candidate_set_min_score_gap=float(args.candidate_set_min_score_gap),
         candidate_set_unknown_reject_risk=float(args.candidate_set_unknown_reject_risk),
+        candidate_set_max_receiver_pair_label_disagreement=float(
+            args.candidate_set_max_receiver_pair_label_disagreement
+        ),
+        candidate_set_max_receiver_pair_unknown_risk_range=float(
+            args.candidate_set_max_receiver_pair_unknown_risk_range
+        ),
+        candidate_set_min_label_receiver_class_reliability=float(
+            args.candidate_set_min_label_receiver_class_reliability
+        ),
+        candidate_set_require_label_shell_observed=bool(args.candidate_set_require_label_shell_observed),
         dual_route_rescue_min_pvalue=float(args.dual_route_rescue_min_pvalue),
         dual_route_rescue_min_receiver_class_reliability=float(
             args.dual_route_rescue_min_receiver_class_reliability
@@ -2559,6 +2569,10 @@ def parse_args() -> argparse.Namespace:
     p.add_argument("--candidate_set_high_unknown_risk_threshold", type=float, default=0.80)
     p.add_argument("--candidate_set_min_score_gap", type=float, default=0.0)
     p.add_argument("--candidate_set_unknown_reject_risk", type=float, default=0.80)
+    p.add_argument("--candidate_set_max_receiver_pair_label_disagreement", type=float, default=1.0)
+    p.add_argument("--candidate_set_max_receiver_pair_unknown_risk_range", type=float, default=1.0)
+    p.add_argument("--candidate_set_min_label_receiver_class_reliability", type=float, default=0.0)
+    p.add_argument("--candidate_set_require_label_shell_observed", action="store_true")
     p.add_argument("--include_event_results", action="store_true")
     p.add_argument("--dual_route_rescue_min_pvalue", type=float, default=0.75)
     p.add_argument("--dual_route_rescue_min_receiver_class_reliability", type=float, default=0.75)

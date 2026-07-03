@@ -2160,6 +2160,120 @@ class CollaborativeOpenSetQknnEvalTest(unittest.TestCase):
         self.assertEqual(k3["unknown_reject_rate"], 1.0)
         self.assertEqual(k3["open_set_confusion"], {"old->old": 1, "unknown->unknown_reject": 1})
 
+    def test_candidate_set_cvs_pairguard_blocks_unreliable_accepts(self):
+        from evaluation.collaborative_open_set_qknn_eval import evaluate_collaborative_open_set_evidence
+
+        def make_rows(*, omit_shell=False, reliability=1.0):
+            rows = []
+            for receiver_id, predicted_label, risk in (
+                ("rx-a", "old-a", 0.10),
+                ("rx-b", "old-b", 0.80),
+            ):
+                row = {
+                    "event_id": "pairguard-old",
+                    "receiver_id": receiver_id,
+                    "role": "old",
+                    "true_label": "old-a",
+                    "predicted_label": predicted_label,
+                    "known_score": 0.90,
+                    "known_margin": 0.20,
+                    "unknown_risk": risk,
+                    "score_risk": risk,
+                    "radius_risk": risk,
+                    "margin_risk": risk,
+                    "class_conformal_pvalue": 0.90,
+                    "class_conformal_support_count": 2,
+                    "receiver_class_reliability": reliability,
+                    "class_evidence_top_m": 1,
+                    "class_evidence_top1_label": "old-a",
+                    "class_evidence_top1_score": 0.90,
+                    "class_evidence_top1_margin": 0.20,
+                    "class_evidence_top1_conformal_pvalue": 0.90,
+                    "class_evidence_top1_support_count": 2,
+                    "class_evidence_top1_unknown_risk": 0.10,
+                    "class_evidence_top1_score_risk": 0.10,
+                    "class_evidence_top1_radius_risk": 0.10,
+                    "class_evidence_top1_margin_risk": 0.10,
+                    "class_evidence_top1_receiver_class_reliability": reliability,
+                }
+                if not omit_shell:
+                    row["class_shell_risk"] = 0.05
+                    row["class_evidence_top1_class_shell_risk"] = 0.05
+                rows.append(row)
+            return rows
+
+        def evaluate(rows, **kwargs):
+            return evaluate_collaborative_open_set_evidence(
+                rows,
+                collab_counts="2",
+                fusion_policy="candidate_set_cvs",
+                unknown_risk_threshold=0.8,
+                accept_margin_threshold=0.1,
+                consensus_score_threshold=0.0,
+                scorer_component_vote_threshold=1.0,
+                scorer_risk_components=["score", "radius", "margin"],
+                candidate_set_min_receivers=2,
+                candidate_set_min_conformal_pvalue=0.5,
+                candidate_set_max_label_unknown_risk=0.8,
+                candidate_set_max_event_unknown_risk=1.0,
+                candidate_set_unknown_reject_risk=1.1,
+                protocol_metadata={
+                    "source_receiver_ids": ["src-a"],
+                    "target_receiver_ids": ["rx-a", "rx-b"],
+                    "old_tx_ids": ["old-a", "old-b"],
+                    "seen_new_tx_ids": ["new-a"],
+                    "unknown_tx_ids": ["unk-a"],
+                    "target_channel_view": "leo_clear_weak",
+                },
+                strict_protocol_metadata=True,
+                include_event_results=True,
+                **kwargs,
+            )
+
+        base_event = evaluate(make_rows())["counts"]["2"]["event_results"][0]
+        self.assertTrue(base_event["candidate_set_accept"])
+        self.assertEqual(base_event["decision"], "accept")
+
+        disagreement_event = evaluate(
+            make_rows(),
+            candidate_set_max_receiver_pair_label_disagreement=0.25,
+        )["counts"]["2"]["event_results"][0]
+        self.assertFalse(disagreement_event["candidate_set_accept"])
+        self.assertEqual(disagreement_event["decision"], "defer")
+        self.assertEqual(disagreement_event["candidate_set_max_receiver_pair_label_disagreement"], 0.25)
+
+        risk_range_event = evaluate(
+            make_rows(),
+            candidate_set_max_receiver_pair_unknown_risk_range=0.20,
+        )["counts"]["2"]["event_results"][0]
+        self.assertFalse(risk_range_event["candidate_set_accept"])
+        self.assertEqual(risk_range_event["decision"], "defer")
+        self.assertEqual(risk_range_event["candidate_set_max_receiver_pair_unknown_risk_range"], 0.20)
+
+        reliability_event = evaluate(
+            make_rows(reliability=0.40),
+            receiver_class_reliability_policy="support_calibrated",
+            candidate_set_min_label_receiver_class_reliability=0.80,
+        )["counts"]["2"]["event_results"][0]
+        self.assertFalse(reliability_event["candidate_set_accept"])
+        self.assertEqual(reliability_event["decision"], "defer")
+        self.assertEqual(reliability_event["candidate_set_min_label_receiver_class_reliability"], 0.80)
+
+        shell_event = evaluate(
+            make_rows(omit_shell=True),
+            candidate_set_require_label_shell_observed=True,
+        )["counts"]["2"]["event_results"][0]
+        self.assertFalse(shell_event["candidate_set_accept"])
+        self.assertEqual(shell_event["decision"], "defer")
+        self.assertTrue(shell_event["candidate_set_require_label_shell_observed"])
+
+        with self.assertRaisesRegex(ValueError, "candidate_set_max_receiver_pair_label_disagreement"):
+            evaluate(make_rows(), candidate_set_max_receiver_pair_label_disagreement=1.1)
+        with self.assertRaisesRegex(ValueError, "candidate_set_max_receiver_pair_unknown_risk_range"):
+            evaluate(make_rows(), candidate_set_max_receiver_pair_unknown_risk_range=-0.1)
+        with self.assertRaisesRegex(ValueError, "candidate_set_min_label_receiver_class_reliability"):
+            evaluate(make_rows(), candidate_set_min_label_receiver_class_reliability=1.1)
+
     def test_dual_route_cvs_uses_support_quality_rescue_when_safe(self):
         from evaluation.collaborative_open_set_qknn_eval import evaluate_collaborative_open_set_evidence
 
