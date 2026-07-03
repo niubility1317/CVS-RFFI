@@ -1085,6 +1085,87 @@ class CollaborativeOpenSetQknnEvalTest(unittest.TestCase):
         self.assertEqual(reliable_result["class_reliability_policy"], "conformal_margin_risk")
         self.assertLess(reliable_result["counts"]["2"]["mean_label_class_reliability"], 1.0)
 
+    def test_receiver_class_reliability_weights_receiver_label_pairs(self):
+        from evaluation.collaborative_open_set_qknn_eval import evaluate_collaborative_open_set_evidence
+
+        base_row = {
+            "event_id": "receiver-class-rel",
+            "receiver_id": "rx-a",
+            "role": "old",
+            "true_label": "old-a",
+            "predicted_label": "old-b",
+            "known_score": 1.00,
+            "known_margin": 0.30,
+            "unknown_risk": 0.10,
+            "score_risk": 0.10,
+            "radius_risk": 0.10,
+            "margin_risk": 0.10,
+            "class_conformal_pvalue": 0.80,
+            "class_conformal_support_count": 2,
+            "receiver_class_reliability": 0.05,
+            "class_evidence_top_m": 2,
+            "class_evidence_top1_label": "old-b",
+            "class_evidence_top1_score": 1.00,
+            "class_evidence_top1_margin": 0.30,
+            "class_evidence_top1_conformal_pvalue": 0.80,
+            "class_evidence_top1_support_count": 2,
+            "class_evidence_top1_unknown_risk": 0.10,
+            "class_evidence_top1_score_risk": 0.10,
+            "class_evidence_top1_radius_risk": 0.10,
+            "class_evidence_top1_margin_risk": 0.10,
+            "class_evidence_top1_receiver_class_reliability": 0.05,
+            "class_evidence_top2_label": "old-a",
+            "class_evidence_top2_score": 0.80,
+            "class_evidence_top2_margin": 0.50,
+            "class_evidence_top2_conformal_pvalue": 0.80,
+            "class_evidence_top2_support_count": 2,
+            "class_evidence_top2_unknown_risk": 0.10,
+            "class_evidence_top2_score_risk": 0.10,
+            "class_evidence_top2_radius_risk": 0.10,
+            "class_evidence_top2_margin_risk": 0.10,
+            "class_evidence_top2_receiver_class_reliability": 1.00,
+        }
+        second_row = dict(base_row)
+        second_row["receiver_id"] = "rx-b"
+        rows = [base_row, second_row]
+        metadata = {
+            "source_receiver_ids": ["src-a"],
+            "target_receiver_ids": ["rx-a", "rx-b"],
+            "old_tx_ids": ["old-a", "old-b"],
+            "seen_new_tx_ids": ["new-a"],
+            "unknown_tx_ids": ["unk-a"],
+            "target_channel_view": "leo_clear_weak",
+        }
+
+        default_result = evaluate_collaborative_open_set_evidence(
+            rows,
+            collab_counts="2",
+            fusion_policy="cp_set_cvs",
+            unknown_risk_threshold=0.80,
+            accept_margin_threshold=0.05,
+            consensus_score_threshold=0.1,
+            conformal_rescue_min_pvalue=0.20,
+            protocol_metadata=metadata,
+            strict_protocol_metadata=True,
+        )
+        reliable_result = evaluate_collaborative_open_set_evidence(
+            rows,
+            collab_counts="2",
+            fusion_policy="cp_set_cvs",
+            unknown_risk_threshold=0.80,
+            accept_margin_threshold=0.05,
+            consensus_score_threshold=0.1,
+            conformal_rescue_min_pvalue=0.20,
+            receiver_class_reliability_policy="support_calibrated",
+            protocol_metadata=metadata,
+            strict_protocol_metadata=True,
+        )
+
+        self.assertEqual(default_result["counts"]["2"]["old_acc"], 0.0)
+        self.assertEqual(reliable_result["counts"]["2"]["old_acc"], 1.0)
+        self.assertEqual(reliable_result["receiver_class_reliability_policy"], "support_calibrated")
+        self.assertGreater(reliable_result["counts"]["2"]["mean_label_receiver_class_reliability"], 0.9)
+
     def test_weighted_vote_margin_uses_class_reliability_for_tied_receiver_votes(self):
         from evaluation.collaborative_open_set_qknn_eval import evaluate_collaborative_open_set_evidence
 

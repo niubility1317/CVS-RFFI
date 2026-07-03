@@ -264,6 +264,19 @@ def _class_reliability(
     return float(max(0.05, min(1.0, reliability)))
 
 
+def _receiver_class_reliability(
+    *,
+    policy: str,
+    value: float,
+) -> float:
+    policy = _normalize_scope(policy or "none")
+    if policy in {"", "none"}:
+        return 1.0
+    if policy != "support_calibrated":
+        raise ValueError("receiver_class_reliability_policy must be none or support_calibrated")
+    return float(max(0.05, min(1.0, float(value))))
+
+
 def _select_receivers(
     rows: Sequence[Mapping[str, Any]],
     k: int,
@@ -298,6 +311,7 @@ def _fuse_event(
     scorer_risk_components: Sequence[str] | str | None = None,
     label_fusion_policy: str = "score_sum",
     class_reliability_policy: str = "none",
+    receiver_class_reliability_policy: str = "none",
     can_request_more: bool = False,
     latency_budget_ms: float = 0.0,
     max_event_bytes: float = 0.0,
@@ -342,6 +356,9 @@ def _fuse_event(
     class_reliability_policy = _normalize_scope(class_reliability_policy or "none")
     if class_reliability_policy not in {"none", "conformal_margin_risk"}:
         raise ValueError("class_reliability_policy must be none or conformal_margin_risk")
+    receiver_class_reliability_policy = _normalize_scope(receiver_class_reliability_policy or "none")
+    if receiver_class_reliability_policy not in {"none", "support_calibrated"}:
+        raise ValueError("receiver_class_reliability_policy must be none or support_calibrated")
     label_scores: defaultdict[str, float] = defaultdict(float)
     label_raw_scores: defaultdict[str, float] = defaultdict(float)
     label_weight_totals: defaultdict[str, float] = defaultdict(float)
@@ -356,6 +373,7 @@ def _fuse_event(
     label_unknown_risk_values: defaultdict[str, list[float]] = defaultdict(list)
     label_risk_component_votes: defaultdict[str, list[float]] = defaultdict(list)
     label_class_reliability_values: defaultdict[str, list[float]] = defaultdict(list)
+    label_receiver_class_reliability_values: defaultdict[str, list[float]] = defaultdict(list)
     label_candidate_receiver_counts: defaultdict[str, int] = defaultdict(int)
     label_top1_receiver_counts: defaultdict[str, int] = defaultdict(int)
     label_min_evidence_rank: defaultdict[str, int] = defaultdict(lambda: 10**9)
@@ -406,6 +424,7 @@ def _fuse_event(
         evt_risk_value: float,
         oldness_risk_value: float,
         virtual_unknown_risk_value: float,
+        receiver_class_reliability_value: float,
     ) -> None:
         nonlocal filtered_candidate_count
         if not label or label == UNKNOWN_LABEL or label in row_seen_labels:
@@ -433,7 +452,11 @@ def _fuse_event(
             accept_margin_threshold=accept_margin_threshold,
             conformal_rescue_min_pvalue=conformal_rescue_min_pvalue,
         )
-        candidate_weight = weight * class_weight
+        receiver_class_weight = _receiver_class_reliability(
+            policy=receiver_class_reliability_policy,
+            value=receiver_class_reliability_value,
+        )
+        candidate_weight = weight * class_weight * receiver_class_weight
         label_scores[label] += candidate_weight * candidate_score
         label_raw_scores[label] += candidate_weight * max(0.0, float(score_value))
         label_weight_totals[label] += candidate_weight
@@ -447,6 +470,7 @@ def _fuse_event(
         label_radius_z_missing_values[label].append(bool(radius_z_is_missing))
         label_unknown_risk_values[label].append(max(0.0, min(1.0, float(unknown_risk_value))))
         label_class_reliability_values[label].append(class_weight)
+        label_receiver_class_reliability_values[label].append(receiver_class_weight)
         row_component_values = {
             "score": float(score_risk_value),
             "radius": float(radius_risk_value),
@@ -522,6 +546,7 @@ def _fuse_event(
                 evt_risk_value=_float(row, "evt_risk", _float(row, "unknown_risk", 0.0)),
                 oldness_risk_value=_float(row, "oldness_risk", _float(row, "unknown_risk", 0.0)),
                 virtual_unknown_risk_value=_float(row, "virtual_unknown_risk", 0.0),
+                receiver_class_reliability_value=_float(row, "receiver_class_reliability", 1.0),
             )
         if policy in {"cp_set_cvs", "candidate_set_cvs"}:
             top_m = max(0, int(_float(row, "class_evidence_top_m", 0.0)))
@@ -565,6 +590,11 @@ def _fuse_event(
                     evt_risk_value=_float(row, f"class_evidence_top{rank}_evt_risk", _float(row, "evt_risk", _float(row, "unknown_risk", 0.0))),
                     oldness_risk_value=_float(row, f"class_evidence_top{rank}_oldness_risk", _float(row, "oldness_risk", _float(row, "unknown_risk", 0.0))),
                     virtual_unknown_risk_value=_float(row, f"class_evidence_top{rank}_virtual_unknown_risk", _float(row, "virtual_unknown_risk", 0.0)),
+                    receiver_class_reliability_value=_float(
+                        row,
+                        f"class_evidence_top{rank}_receiver_class_reliability",
+                        _float(row, "receiver_class_reliability", 1.0),
+                    ),
                 )
         score_risk_value = _float(row, "score_risk", _float(row, "unknown_risk", 0.0))
         radius_risk_value = _float(row, "radius_risk", _float(row, "unknown_risk", 0.0))
@@ -701,6 +731,7 @@ def _fuse_event(
     selected_label_unknown_risk_values = label_unknown_risk_values[label]
     selected_label_risk_component_votes = label_risk_component_votes[label]
     selected_label_class_reliability_values = label_class_reliability_values[label]
+    selected_label_receiver_class_reliability_values = label_receiver_class_reliability_values[label]
     label_support_density_missing = any(label_support_density_missing_values[label])
     label_radius_z_missing = any(label_radius_z_missing_values[label])
     label_support_density = (
@@ -726,6 +757,12 @@ def _fuse_event(
     label_class_reliability = (
         sum(selected_label_class_reliability_values) / len(selected_label_class_reliability_values)
         if selected_label_class_reliability_values
+        else 1.0
+    )
+    label_receiver_class_reliability = (
+        sum(selected_label_receiver_class_reliability_values)
+        / len(selected_label_receiver_class_reliability_values)
+        if selected_label_receiver_class_reliability_values
         else 1.0
     )
     latency_ms = float(max((_float(row, "latency_ms", 0.0) for row in selected), default=0.0))
@@ -971,6 +1008,8 @@ def _fuse_event(
         "label_fusion_policy": label_fusion_policy,
         "class_reliability_policy": class_reliability_policy,
         "label_class_reliability": float(label_class_reliability),
+        "receiver_class_reliability_policy": receiver_class_reliability_policy,
+        "label_receiver_class_reliability": float(label_receiver_class_reliability),
         "label_support_density": float(label_support_density),
         "label_radius_z": float(label_radius_z),
         "risk_component_agreement": float(risk_component_agreement),
@@ -1005,6 +1044,7 @@ def _fuse_progressive_event(
     scorer_risk_components: Sequence[str] | str | None = None,
     label_fusion_policy: str = "score_sum",
     class_reliability_policy: str = "none",
+    receiver_class_reliability_policy: str = "none",
     latency_budget_ms: float = 0.0,
     max_event_bytes: float = 0.0,
     max_event_latency_ms: float = 0.0,
@@ -1046,6 +1086,7 @@ def _fuse_progressive_event(
             scorer_risk_components=scorer_risk_components,
             label_fusion_policy=label_fusion_policy,
             class_reliability_policy=class_reliability_policy,
+            receiver_class_reliability_policy=receiver_class_reliability_policy,
             can_request_more=used < min(max_receivers, len(ordered)),
             latency_budget_ms=latency_budget_ms,
             max_event_bytes=max_event_bytes,
@@ -1312,6 +1353,7 @@ def _fuse_adaptive_gain_event(
     scorer_risk_components: Sequence[str] | str | None = None,
     label_fusion_policy: str = "score_sum",
     class_reliability_policy: str = "none",
+    receiver_class_reliability_policy: str = "none",
     latency_budget_ms: float = 0.0,
     max_event_bytes: float = 0.0,
     max_event_latency_ms: float = 0.0,
@@ -1363,6 +1405,7 @@ def _fuse_adaptive_gain_event(
             scorer_risk_components=scorer_risk_components,
             label_fusion_policy=label_fusion_policy,
             class_reliability_policy=class_reliability_policy,
+            receiver_class_reliability_policy=receiver_class_reliability_policy,
             can_request_more=len(selected) < budget,
             latency_budget_ms=latency_budget_ms,
             max_event_bytes=max_event_bytes,
@@ -1464,6 +1507,7 @@ def _fuse_support_utility_event(
     scorer_risk_components: Sequence[str] | str | None = None,
     label_fusion_policy: str = "score_sum",
     class_reliability_policy: str = "none",
+    receiver_class_reliability_policy: str = "none",
     latency_budget_ms: float = 0.0,
     max_event_bytes: float = 0.0,
     max_event_latency_ms: float = 0.0,
@@ -1515,6 +1559,7 @@ def _fuse_support_utility_event(
             scorer_risk_components=scorer_risk_components,
             label_fusion_policy=label_fusion_policy,
             class_reliability_policy=class_reliability_policy,
+            receiver_class_reliability_policy=receiver_class_reliability_policy,
             can_request_more=len(selected) < budget,
             latency_budget_ms=latency_budget_ms,
             max_event_bytes=max_event_bytes,
@@ -1621,6 +1666,7 @@ def _fuse_rb_capr_event(
     scorer_risk_components: Sequence[str] | str | None = None,
     label_fusion_policy: str = "score_sum",
     class_reliability_policy: str = "none",
+    receiver_class_reliability_policy: str = "none",
     latency_budget_ms: float = 0.0,
     max_event_bytes: float = 0.0,
     max_event_latency_ms: float = 0.0,
@@ -1679,6 +1725,7 @@ def _fuse_rb_capr_event(
             scorer_risk_components=scorer_risk_components,
             label_fusion_policy=label_fusion_policy,
             class_reliability_policy=class_reliability_policy,
+            receiver_class_reliability_policy=receiver_class_reliability_policy,
             can_request_more=len(selected) < budget,
             latency_budget_ms=latency_budget_ms,
             max_event_bytes=max_event_bytes,
@@ -1893,6 +1940,9 @@ def _finalize_metrics(
     latency_values = [float(item["latency_ms"]) for item in event_results]
     participating_values = [float(item.get("participating_receivers_used", k)) for item in event_results]
     label_class_reliability_values = [float(item.get("label_class_reliability", 1.0)) for item in event_results]
+    label_receiver_class_reliability_values = [
+        float(item.get("label_receiver_class_reliability", 1.0)) for item in event_results
+    ]
     known_total = role_totals["old"] + role_totals["seen_new"]
     known_accepted = role_accepted["old"] + role_accepted["seen_new"]
     known_correct = role_correct["old"] + role_correct["seen_new"]
@@ -1940,6 +1990,10 @@ def _finalize_metrics(
         "latency_ms_p95": _percentile(latency_values, 0.95),
         "mean_label_class_reliability": (
             sum(label_class_reliability_values) / max(len(label_class_reliability_values), 1)
+        ),
+        "mean_label_receiver_class_reliability": (
+            sum(label_receiver_class_reliability_values)
+            / max(len(label_receiver_class_reliability_values), 1)
         ),
         "collaboration_stop_reasons": dict(sorted(adaptive_stop_reasons.items())),
         "seen_new_rescue_count": int(seen_new_rescue_total),
@@ -2052,6 +2106,7 @@ def evaluate_collaborative_open_set_evidence(
     scorer_risk_components: Sequence[str] | str | None = None,
     label_fusion_policy: str = "score_sum",
     class_reliability_policy: str = "none",
+    receiver_class_reliability_policy: str = "none",
     collaboration_policy: str = "fixed_k",
     latency_budget_ms: float = 0.0,
     max_event_bytes: float = 0.0,
@@ -2177,6 +2232,7 @@ def evaluate_collaborative_open_set_evidence(
                     scorer_risk_components=active_risk_components,
                     label_fusion_policy=label_fusion_policy,
                     class_reliability_policy=class_reliability_policy,
+                    receiver_class_reliability_policy=receiver_class_reliability_policy,
                     latency_budget_ms=latency_budget_ms,
                     max_event_bytes=max_event_bytes,
                     max_event_latency_ms=max_event_latency_ms,
@@ -2237,6 +2293,7 @@ def evaluate_collaborative_open_set_evidence(
                     scorer_risk_components=active_risk_components,
                     label_fusion_policy=label_fusion_policy,
                     class_reliability_policy=class_reliability_policy,
+                    receiver_class_reliability_policy=receiver_class_reliability_policy,
                     latency_budget_ms=latency_budget_ms,
                     max_event_bytes=max_event_bytes,
                     max_event_latency_ms=max_event_latency_ms,
@@ -2281,6 +2338,7 @@ def evaluate_collaborative_open_set_evidence(
                     scorer_risk_components=active_risk_components,
                     label_fusion_policy=label_fusion_policy,
                     class_reliability_policy=class_reliability_policy,
+                    receiver_class_reliability_policy=receiver_class_reliability_policy,
                     can_request_more=len({_str(row, "receiver_id") for row in group}) > int(k),
                     latency_budget_ms=latency_budget_ms,
                     max_event_bytes=max_event_bytes,
@@ -2353,6 +2411,7 @@ def evaluate_collaborative_open_set_evidence(
         "active_risk_components": active_risk_components,
         "label_fusion_policy": _normalize_scope(label_fusion_policy),
         "class_reliability_policy": _normalize_scope(class_reliability_policy),
+        "receiver_class_reliability_policy": _normalize_scope(receiver_class_reliability_policy),
         "latency_budget_ms": float(latency_budget_ms),
         "max_event_bytes": float(max_event_bytes),
         "max_event_latency_ms": float(max_event_latency_ms),

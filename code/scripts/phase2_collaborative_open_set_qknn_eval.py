@@ -1070,6 +1070,27 @@ def _conformal_pvalue(score: float, calibration_scores: Sequence[float] | None) 
     return float(leq + 1) / float(len(values) + 1)
 
 
+def _receiver_class_reliability_from_support(
+    calibration_scores: Sequence[float] | None,
+    *,
+    threshold: float,
+    min_support: int,
+) -> float:
+    values = [float(value) for value in (calibration_scores or []) if np.isfinite(float(value))]
+    if not values:
+        return 1.0
+    threshold_value = float(threshold) if np.isfinite(float(threshold)) else 0.0
+    support_scale = min(1.0, len(values) / max(float(min_support), 1.0))
+    pass_rate = sum(value >= threshold_value for value in values) / float(len(values))
+    mean_score = sum(values) / float(len(values))
+    if threshold_value > 1e-12:
+        margin_scale = max(0.0, min(1.0, mean_score / threshold_value))
+    else:
+        margin_scale = max(0.0, min(1.0, mean_score))
+    reliability = (0.25 + 0.75 * support_scale) * (0.35 + 0.65 * pass_rate) * (0.50 + 0.50 * margin_scale)
+    return float(max(0.05, min(1.0, reliability)))
+
+
 def _unknown_risk(scores: np.ndarray, threshold: float, *, temperature: float) -> np.ndarray:
     temp = max(float(temperature), 1e-6)
     z = (np.asarray(scores, dtype=np.float64) - float(threshold)) / temp
@@ -1318,6 +1339,7 @@ def build_collaborative_evidence(
     virtual_unknown_risk_margin: float = 0.0,
     evidence_packet_bytes: float = 40.0,
     receiver_reliability_policy: str = "deployment_prior",
+    receiver_class_reliability_policy: str = "none",
     prototype_score_blend: float = 0.0,
     mahalanobis_score_blend: float = 0.0,
     mahalanobis_score_temperature: float = 0.20,
@@ -1388,6 +1410,7 @@ def build_collaborative_evidence(
     receiver_thresholds: dict[str, float] = {}
     receiver_class_thresholds: dict[str, dict[str, float]] = {}
     receiver_class_conformal_scores: dict[str, dict[str, list[float]]] = {}
+    receiver_class_reliabilities: dict[str, dict[str, float]] = {}
     receiver_virtual_unknowns: dict[str, np.ndarray] = {}
     receiver_virtual_unknown_counts: dict[str, int] = {}
     receiver_feature_adapters: dict[str, FeatureAdapter] = {}
@@ -1397,6 +1420,9 @@ def build_collaborative_evidence(
     reliability_policy = str(receiver_reliability_policy or "deployment_prior").strip().lower()
     if reliability_policy not in {"deployment_prior", "support_density", "margin_density"}:
         raise ValueError("receiver_reliability_policy must be deployment_prior, support_density, or margin_density")
+    receiver_class_policy = str(receiver_class_reliability_policy or "none").strip().lower()
+    if receiver_class_policy not in {"none", "support_calibrated"}:
+        raise ValueError("receiver_class_reliability_policy must be none or support_calibrated")
     prototype_blend = float(prototype_score_blend)
     if prototype_blend < 0.0:
         raise ValueError("prototype_score_blend must be >= 0")
@@ -1611,11 +1637,19 @@ def build_collaborative_evidence(
                 mahalanobis_score_temperature=mahalanobis_score_temp,
                 min_support=int(class_conformal_min_support),
             )
+        class_reliabilities: dict[str, float] = {}
+        for label_name in sorted(set(old_labels) | set(new_labels)):
+            class_reliabilities[label_name] = _receiver_class_reliability_from_support(
+                conformal_scores.get(label_name),
+                threshold=float(class_thresholds.get(label_name, threshold)),
+                min_support=int(class_conformal_min_support),
+            )
         receiver_memories[rx] = memory
         receiver_feature_adapters[rx] = feature_adapter
         receiver_thresholds[rx] = threshold
         receiver_class_thresholds[rx] = class_thresholds
         receiver_class_conformal_scores[rx] = conformal_scores
+        receiver_class_reliabilities[rx] = class_reliabilities
         receiver_virtual_unknown_counts[rx] = int(virtual_features.shape[0])
         receiver_virtual_unknowns[rx] = virtual_features if bool(virtual_unknown_risk_enabled) else np.zeros(
             (0, int(memory.centroids.shape[1])),
@@ -1844,6 +1878,10 @@ def build_collaborative_evidence(
                                 receiver_class_conformal_scores.get(rx, {}).get(label_name),
                             )
                             label_support_count = len(receiver_class_conformal_scores.get(rx, {}).get(label_name, []))
+                            label_receiver_class_reliability = receiver_class_reliabilities.get(rx, {}).get(
+                                label_name,
+                                1.0,
+                            )
                             class_evidence_fields[f"class_evidence_top{rank}_label"] = label_name
                             class_evidence_fields[f"class_evidence_top{rank}_score"] = float(label_score)
                             class_evidence_fields[f"class_evidence_top{rank}_margin"] = float(label_margin)
@@ -1866,6 +1904,9 @@ def build_collaborative_evidence(
                             class_evidence_fields[f"class_evidence_top{rank}_oldness_risk"] = float(label_oldness_risk[0])
                             class_evidence_fields[f"class_evidence_top{rank}_class_radius"] = float(label_class_radius[0])
                             class_evidence_fields[f"class_evidence_top{rank}_class_radius_z"] = float(label_class_radius_z[0])
+                            class_evidence_fields[f"class_evidence_top{rank}_receiver_class_reliability"] = float(
+                                label_receiver_class_reliability
+                            )
                     (
                         risk,
                         score_risk,
@@ -1943,6 +1984,9 @@ def build_collaborative_evidence(
                             "class_conformal_support_count": int(
                                 len(receiver_class_conformal_scores.get(rx, {}).get(str(pred[0]), []))
                             ),
+                            "receiver_class_reliability": float(
+                                receiver_class_reliabilities.get(rx, {}).get(str(pred[0]), 1.0)
+                            ),
                             "class_evidence_top_m": int(class_evidence_top_m),
                             **class_evidence_fields,
                             "virtual_unknown_calibration_enabled": int(bool(virtual_unknown_calibration_enabled)),
@@ -2011,6 +2055,8 @@ def build_collaborative_evidence(
         "strict_same_event_collaboration": alignment_policy == "strict_event_key",
         "receiver_thresholds": receiver_thresholds,
         "receiver_class_thresholds": receiver_class_thresholds,
+        "receiver_class_reliability_policy": receiver_class_policy,
+        "receiver_class_reliabilities": receiver_class_reliabilities,
         "threshold_scope": threshold_scope,
         "support_calibration_mode": str(support_calibration_mode),
         "score_threshold_combine": str(score_threshold_combine),
@@ -2136,6 +2182,7 @@ def run_evaluation(args: argparse.Namespace) -> dict[str, Any]:
         virtual_unknown_risk_margin=float(args.virtual_unknown_risk_margin),
         evidence_packet_bytes=float(args.evidence_packet_bytes),
         receiver_reliability_policy=str(args.receiver_reliability_policy),
+        receiver_class_reliability_policy=str(args.receiver_class_reliability_policy),
         prototype_score_blend=float(args.prototype_score_blend),
         mahalanobis_score_blend=float(args.mahalanobis_score_blend),
         mahalanobis_score_temperature=float(args.mahalanobis_score_temperature),
@@ -2163,6 +2210,7 @@ def run_evaluation(args: argparse.Namespace) -> dict[str, Any]:
         collaboration_policy=str(args.collaboration_policy),
         label_fusion_policy=str(args.label_fusion_policy),
         class_reliability_policy=str(args.class_reliability_policy),
+        receiver_class_reliability_policy=str(args.receiver_class_reliability_policy),
         latency_budget_ms=float(args.latency_budget_ms),
         max_event_bytes=float(args.max_event_bytes),
         max_event_latency_ms=float(args.max_event_latency_ms),
@@ -2327,6 +2375,11 @@ def parse_args() -> argparse.Namespace:
         "--class_reliability_policy",
         default="none",
         choices=["none", "conformal_margin_risk"],
+    )
+    p.add_argument(
+        "--receiver_class_reliability_policy",
+        default="none",
+        choices=["none", "support_calibrated"],
     )
     p.add_argument("--latency_budget_ms", type=float, default=0.0)
     p.add_argument("--max_event_bytes", type=float, default=0.0)
