@@ -2737,3 +2737,86 @@ V30 variants:
 | `LEOFEAT30_LATE_USEP_STRONG` | `id_late_feature` | late-feature version with stronger unknown separation |
 | `LEOFEAT30_NORM_SAFE_USEP` | `id_norm_late_feature` | conservative norm/late-feature route with weak separation |
 | `LEOFEAT30_NORM_PROTO_USEP` | `id_norm_late_feature` | norm/late-feature route with prototype and moderate separation |
+
+V30 launch record:
+
+| Item | Value |
+|---|---|
+| N607 preflight | PASS at `2026-07-03 14:49:14 CST`; GPUs `0-7` idle before launch |
+| remote sync verification | SHA256 matched local files; remote `py_compile` PASS; remote `bash -n` PASS |
+| launch command | `nohup bash code/scripts/sweep_phase1_adv3b02_feature_sep_target1_v30_20260703.sh > logs/phase1_adv3b02_feature_sep_target1_v30_20260703/launcher.out 2>&1 &` |
+| launcher parent PID | `1483654` |
+| train PIDs | `1483676-1483683` |
+| GPU allocation | GPUs `0-7`, one V30 variant per GPU |
+| startup health at `2026-07-03 14:55:00 CST` | PASS; all eight variants reached final training epoch, no Traceback/OOM/NaN/unrecognized-argument errors |
+| current phase at startup health | feature export in progress; `18` V30 NPZ files present |
+
+## V30 Result: Feature Separation Target1 Audit
+
+V30 completed on N607 at `2026-07-03T15:19:07+08:00`.
+
+| Item | Value |
+|---|---|
+| command | `bash code/scripts/sweep_phase1_adv3b02_feature_sep_target1_v30_20260703.sh` |
+| GPUs | `0,1,2,3,4,5,6,7` |
+| log root | `/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_adv3b02_feature_sep_target1_v30_20260703` |
+| completion marker | `[PHASE1-FEATSEP-TARGET1-V30-DONE] end=2026-07-03T15:19:07+08:00` |
+| local artifacts | `artifacts\v30_feature_sep_target1\target1_strong_v30_summary.csv`, `target1_strong_v30_metrics.json`, `target1_strong_v30_best.json`, `launcher.out` |
+| remote process/GPU after completion | no V30 process alive; GPUs released before audit completion |
+
+Gate counts over 80 V30 feature-separation candidates:
+
+| Gate | Pass rows |
+|---|---:|
+| clean fidelity | 70 |
+| old recovery | 32 |
+| scenario/TX floor | 0 |
+| margin/true-distance safety | 44 |
+| unknown safety | 22 |
+| strong target1 | 0 |
+
+Variant-level summary:
+
+| Variant | Mean old acc | Max old acc | Mean clean drop pp | Min unknown FAR | Worst TX floor | Unknown safety rows |
+|---|---:|---:|---:|---:|---:|---:|
+| `LEOFEAT30_HEAD_DISTILL_USEP` | 0.7184 | 0.8780 | 0.2542 | 0.6016 | 0.1478 | 4 |
+| `LEOFEAT30_HEAD_PROTO_FLOOR` | 0.7207 | 0.8723 | 0.2625 | 0.5718 | 0.1505 | 2 |
+| `LEOFEAT30_HEAD_PROTO_USEP` | 0.7242 | 0.8758 | 0.2358 | 0.5393 | 0.1503 | 1 |
+| `LEOFEAT30_HEAD_USEP_STRONG` | 0.7193 | 0.8751 | 0.5008 | 0.5420 | 0.1423 | 4 |
+| `LEOFEAT30_LATE_PROTO_USEP` | 0.7200 | 0.8756 | 1.0833 | 0.5637 | 0.1010 | 1 |
+| `LEOFEAT30_LATE_USEP_STRONG` | 0.7242 | 0.8815 | 0.8350 | 0.5312 | 0.1185 | 4 |
+| `LEOFEAT30_NORM_PROTO_USEP` | 0.7214 | 0.8850 | 0.8558 | 0.6016 | 0.1205 | 4 |
+| `LEOFEAT30_NORM_SAFE_USEP` | 0.7213 | 0.8833 | 0.6275 | 0.6558 | 0.1310 | 2 |
+
+Best same-row candidates by joint gate count then old-class accuracy:
+
+| Run | Candidate | Old closed acc | Delta vs identity pp | Clean drop pp | Scenario floor | TX floor | Unknown FAR | Gate pattern |
+|---|---|---:|---:|---:|---:|---:|---:|---|
+| `rx7_14_u10` | `LEOFEAT30_LATE_USEP_STRONG` | 0.8815 | +1.06 | 0.29 | 0.8520 | 0.6508 | 0.9111 | clean+old+margin |
+| `rx7_14_u1` | `LEOFEAT30_LATE_USEP_STRONG` | 0.8815 | +1.06 | 0.29 | 0.8520 | 0.6508 | 0.9750 | clean+old+margin |
+| `rx7_14_u10` | `LEOFEAT30_HEAD_PROTO_USEP` | 0.8758 | +0.49 | 0.53 | 0.8460 | 0.6210 | 0.9000 | clean+old+margin |
+| `rx7_14_u1` | `LEOFEAT30_HEAD_PROTO_USEP` | 0.8758 | +0.49 | 0.53 | 0.8460 | 0.6210 | 0.9625 | clean+old+margin |
+| `rx7_14_u10` | `LEOFEAT30_LATE_PROTO_USEP` | 0.8756 | +0.48 | 0.66 | 0.8471 | 0.6605 | 0.9167 | clean+old+margin |
+| `rx7_14_u1` | `LEOFEAT30_LATE_PROTO_USEP` | 0.8756 | +0.48 | 0.66 | 0.8471 | 0.6605 | 0.9700 | clean+old+margin |
+| `rx7_7_u10` | `LEOFEAT30_LATE_USEP_STRONG` | 0.8131 | +0.82 | -0.65 | 0.7840 | 0.6798 | 0.8369 | clean+old+margin |
+| `rx7_7_u1` | `LEOFEAT30_LATE_USEP_STRONG` | 0.8131 | +0.82 | -0.65 | 0.7840 | 0.6798 | 0.9550 | clean+old+margin |
+
+Lowest unknown FAR rows:
+
+| Run | Candidate | Old closed acc | Unknown FAR | Clean drop pp | TX floor | Gate pattern |
+|---|---|---:|---:|---:|---:|---|
+| `rx3_19_u10` | `LEOFEAT30_LATE_USEP_STRONG` | 0.5964 | 0.5312 | 0.21 | 0.3078 | clean+unknown |
+| `rx3_19_u10` | `LEOFEAT30_HEAD_PROTO_USEP` | 0.5883 | 0.5393 | -0.96 | 0.2925 | clean+margin |
+| `rx3_19_u10` | `LEOFEAT30_HEAD_USEP_STRONG` | 0.5909 | 0.5420 | -0.29 | 0.2948 | clean+unknown |
+| `rx3_19_u10` | `LEOFEAT30_HEAD_PROTO_FLOOR` | 0.5870 | 0.5718 | -0.92 | 0.3140 | clean+margin+unknown |
+
+Interpretation:
+
+| Finding | Evidence | Decision |
+|---|---|---|
+| V30 did not achieve target1 | strong target1`0/80`; scenario/TX floor`0/80` | target1 remains open |
+| Proxy unknown feature separation helped only marginally | unknown safety improved from V29`8/40`to V30`22/80`, and min unknown FAR improved from`~0.57-0.60`to`0.5312` | useful diagnostic, not deployment-ready |
+| Feature-level old recovery still lacks robust receiver/TX coverage | `rx7_14` and `rx7_7` can exceed OLD80, but `rx20_1/rx3_19/rx8_8` remain below target; worst TX floors remain far below target | cannot proceed to target2 |
+| Unknown rejection target is still far away | best same-row old candidates have unknown FAR`0.84-0.98`; lowest unknown FAR rows have old acc only`~0.59` | unknownFAR<5% is not achievable by thresholding this feature space without sacrificing old-class performance |
+
+Current decision after V30: feature-centered source-only adaptation is still the right direction compared with category logit bias/scale, but small post-hoc model adapters are not enough. The next valid route must change the Phase1 representation training objective or use a stronger source-only adapter with explicit per-TX hard-class handling; target2 unknown rejection remains blocked until target1 passes.
