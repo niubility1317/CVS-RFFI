@@ -188,6 +188,13 @@ def _proto_logits(x: torch.Tensor, prototypes: torch.Tensor, temperature: float)
     return x_n @ p_n.t() / max(float(temperature), 1.0e-6)
 
 
+def _true_margin(logits: torch.Tensor, labels: torch.Tensor) -> torch.Tensor:
+    true_logit = logits.gather(1, labels.view(-1, 1)).squeeze(1)
+    masked = logits.clone()
+    masked.scatter_(1, labels.view(-1, 1), -1.0e9)
+    return true_logit - masked.max(dim=1).values
+
+
 @torch.no_grad()
 def _alignment_metrics(
     adapter: nn.Module,
@@ -292,6 +299,26 @@ def fit_apply(args: argparse.Namespace) -> dict[str, Any]:
     labels = torch.tensor([label_map[tx] for tx in source_labels_text], dtype=torch.long, device=device)
     prototypes = _make_clean_prototypes(clean_x, source_labels_text, source_tx_ids)
 
+    unknown_features = []
+    unknown_count_by_npz: dict[str, int] = {}
+    unknown_roles = {x.strip() for x in str(args.unknown_roles).split(",") if x.strip()}
+    for path in args.source_unknown_npz or []:
+        payload = _load_npz(path)
+        role_mask = np.asarray([str(x) in unknown_roles for x in payload["dataset_role"]], dtype=bool)
+        old_mask = np.asarray([canonical_tx_id(x) in label_map for x in payload["tx_ids"]], dtype=bool)
+        mask = role_mask & ~old_mask
+        unknown_count_by_npz[str(path)] = int(mask.sum())
+        if bool(mask.any()):
+            unknown_features.append(payload["features"][mask])
+    unknown_x = None
+    unknown_source_threshold = float("nan")
+    if unknown_features:
+        unknown_x = torch.as_tensor(np.concatenate(unknown_features, axis=0), dtype=torch.float32, device=device)
+        clean_old_logits = _proto_logits(clean_x, prototypes.detach(), float(args.proto_temperature)).detach()
+        source_scores = clean_old_logits.max(dim=1).values
+        unknown_source_threshold = float(torch.quantile(source_scores.float(), float(args.unknown_source_quantile)).item())
+        unknown_source_threshold -= float(args.unknown_margin)
+
     train_idx_np, val_idx_np = _stable_split(pair_keys, float(args.val_fraction), int(args.seed))
     train_idx = torch.as_tensor(train_idx_np, dtype=torch.long, device=device)
     val_idx = torch.as_tensor(val_idx_np, dtype=torch.long, device=device)
@@ -315,23 +342,47 @@ def fit_apply(args: argparse.Namespace) -> dict[str, Any]:
                 y = labels.index_select(0, idx)
                 z_hat = adapter(z_sat)
                 logits = _proto_logits(z_hat, prototypes.detach(), float(args.proto_temperature))
+                clean_logits = _proto_logits(z_clean, prototypes.detach(), float(args.proto_temperature)).detach()
+                sat_logits = _proto_logits(z_sat, prototypes.detach(), float(args.proto_temperature)).detach()
                 pair_loss = F.smooth_l1_loss(z_hat, z_clean)
                 cos_loss = (1.0 - F.cosine_similarity(z_hat, z_clean, dim=1)).mean()
                 ce_loss = F.cross_entropy(logits, y)
                 residual_loss = ((z_hat - z_sat) ** 2).mean()
+                adapted_margin = _true_margin(logits, y)
+                clean_margin = _true_margin(clean_logits, y)
+                sat_margin = _true_margin(sat_logits, y)
+                target_margin = torch.maximum(clean_margin, sat_margin) - float(args.margin_tolerance_logits)
+                margin_loss = F.relu(target_margin - adapted_margin).mean()
                 if float(args.clean_identity_weight) > 0:
                     z_clean_identity = adapter(z_clean)
+                    clean_identity_logits = _proto_logits(z_clean_identity, prototypes.detach(), float(args.proto_temperature))
                     clean_identity_loss = F.smooth_l1_loss(z_clean_identity, z_clean) + (
                         1.0 - F.cosine_similarity(z_clean_identity, z_clean, dim=1)
                     ).mean()
+                    clean_margin_after = _true_margin(clean_identity_logits, y)
+                    clean_margin_loss = F.relu(clean_margin - float(args.margin_tolerance_logits) - clean_margin_after).mean()
                 else:
                     clean_identity_loss = torch.zeros((), dtype=z_hat.dtype, device=z_hat.device)
+                    clean_margin_loss = torch.zeros((), dtype=z_hat.dtype, device=z_hat.device)
+                if unknown_x is not None and float(args.unknown_repulsion_weight) > 0:
+                    unk_count = int(unknown_x.shape[0])
+                    unk_bs = min(int(args.unknown_batch_size), unk_count)
+                    unk_idx = torch.randint(0, unk_count, (unk_bs,), device=device)
+                    z_unknown = unknown_x.index_select(0, unk_idx)
+                    unknown_logits = _proto_logits(adapter(z_unknown), prototypes.detach(), float(args.proto_temperature))
+                    unknown_max = unknown_logits.max(dim=1).values
+                    unknown_loss = F.softplus(unknown_max - float(unknown_source_threshold)).mean()
+                else:
+                    unknown_loss = torch.zeros((), dtype=z_hat.dtype, device=z_hat.device)
                 loss = (
                     float(args.pair_weight) * pair_loss
                     + float(args.cos_weight) * cos_loss
                     + float(args.proto_ce_weight) * ce_loss
                     + float(args.residual_weight) * residual_loss
                     + float(args.clean_identity_weight) * clean_identity_loss
+                    + float(args.margin_retention_weight) * margin_loss
+                    + float(args.clean_margin_weight) * clean_margin_loss
+                    + float(args.unknown_repulsion_weight) * unknown_loss
                 )
                 opt.zero_grad(set_to_none=True)
                 loss.backward()
@@ -354,9 +405,17 @@ def fit_apply(args: argparse.Namespace) -> dict[str, Any]:
         "train_pair_count": int(train_idx.numel()),
         "val_pair_count": int(val_idx.numel()),
         "clean_identity_weight": float(args.clean_identity_weight),
+        "margin_retention_weight": float(args.margin_retention_weight),
+        "clean_margin_weight": float(args.clean_margin_weight),
+        "unknown_repulsion_weight": float(args.unknown_repulsion_weight),
+        "source_unknown_npz": [str(x) for x in args.source_unknown_npz or []],
+        "source_unknown_count_by_npz": unknown_count_by_npz,
+        "unknown_roles": sorted(unknown_roles),
+        "unknown_source_threshold": unknown_source_threshold,
         "uses_target_clean": False,
         "uses_target_labels": False,
         "uses_unknown_query_for_training": False,
+        "uses_source_proxy_unknown_training": bool(unknown_x is not None and float(args.unknown_repulsion_weight) > 0),
         "logits": "cosine_to_source_clean_prototypes_after_adapter",
     }
     out_arrays = _adapt_payload_arrays(
@@ -414,7 +473,13 @@ def fit_apply(args: argparse.Namespace) -> dict[str, Any]:
             "proto_ce_weight": float(args.proto_ce_weight),
             "residual_weight": float(args.residual_weight),
             "clean_identity_weight": float(args.clean_identity_weight),
+            "margin_retention_weight": float(args.margin_retention_weight),
+            "clean_margin_weight": float(args.clean_margin_weight),
+            "unknown_repulsion_weight": float(args.unknown_repulsion_weight),
         },
+        "source_unknown_npz": [str(x) for x in args.source_unknown_npz or []],
+        "source_unknown_count_by_npz": unknown_count_by_npz,
+        "unknown_source_threshold": unknown_source_threshold,
         "train_alignment": train_metrics,
         "val_alignment": val_metrics,
         "train_clean_identity": train_identity_metrics,
@@ -427,6 +492,7 @@ def fit_apply(args: argparse.Namespace) -> dict[str, Any]:
             "uses_target_clean": False,
             "uses_target_labels": False,
             "uses_unknown_query_for_training": False,
+            "uses_source_proxy_unknown_training": bool(unknown_x is not None and float(args.unknown_repulsion_weight) > 0),
             "test_features_written_from_satellite_npz_only": True,
             "uses_clean_clean_identity_training": bool(float(args.clean_identity_weight) > 0),
         },
@@ -470,6 +536,15 @@ def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
     parser.add_argument("--proto_ce_weight", type=float, default=0.25)
     parser.add_argument("--residual_weight", type=float, default=0.01)
     parser.add_argument("--clean_identity_weight", type=float, default=0.0)
+    parser.add_argument("--margin_retention_weight", type=float, default=0.0)
+    parser.add_argument("--clean_margin_weight", type=float, default=0.0)
+    parser.add_argument("--margin_tolerance_logits", type=float, default=0.25)
+    parser.add_argument("--source_unknown_npz", action="append", default=[])
+    parser.add_argument("--unknown_roles", default="proxy_unknown")
+    parser.add_argument("--unknown_repulsion_weight", type=float, default=0.0)
+    parser.add_argument("--unknown_source_quantile", type=float, default=0.05)
+    parser.add_argument("--unknown_margin", type=float, default=0.0)
+    parser.add_argument("--unknown_batch_size", type=int, default=512)
     parser.add_argument("--proto_temperature", type=float, default=0.07)
     parser.add_argument("--val_fraction", type=float, default=0.15)
     parser.add_argument("--grad_clip", type=float, default=5.0)

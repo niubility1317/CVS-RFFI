@@ -1037,6 +1037,61 @@ Interpretation:
 
 V18 confirms the user correction: adding clean-clean identity consistency is necessary for the protocol, but it is not sufficient. The best old-class rows are the `rx7-14` cells, reaching `0.8506` target-old closed acc with clean drop under `2pp`; however, those rows still lose about `1.7pp` versus identity, have TX floor only `0.6501`, shrink the class margin by more than `4pp`, and worsen target_unknown FAR to about `0.93-0.97`. The rows with better unknown safety are the `rx20-1` cells, but those collapse old acc to about `0.55` and clean drop to `6.5-8.1pp`. Therefore strong target1 remains not achieved, and target2 should not be re-optimized on top of V18 adapters.
 
+## V19 Margin+Unknown Target1 Redesign
+
+V19 directly addresses the V18 failure mode. It keeps the required clean-clean identity constraint, but changes the repair objective from MSE-dominant LEO-to-clean movement to conservative residual repair with old-class margin retention and source-side non-old repulsion.
+
+Protocol boundary:
+
+| Item | Setting |
+|---|---|
+| Phase1 backbone | Frozen`ADV3B02_CORE90_SOFT_E200phase1` |
+| Old-class repair pairs | Source clean/LEO pairs only from `phase1_adv3b02_global_source_leo_pairs_20260703` |
+| Clean-clean identity | Same adapter must map source clean to itself and clean control output is audited |
+| Source non-old repulsion | Uses only `proxy_unknown` rows from source receivers in each satunknown NPZ; excludes all `Y_old` TX and does not use target_old/target_unknown labels |
+| Target clean | Not used for training |
+| Target labels | Not used for training or model selection |
+| Unknown query threshold fitting | Not used |
+
+New objective terms:
+
+```text
+L = previous clean-identity repair loss
+  + margin_retention_weight * ReLU(max(clean_margin, sat_margin) - tol - adapted_margin)
+  + clean_margin_weight * ReLU(clean_margin - tol - adapter(clean)_margin)
+  + unknown_repulsion_weight * softplus(max_old_logit(adapter(source_proxy_unknown)) - source_old_q05)
+```
+
+New/changed files:
+
+| File | Purpose | SHA256 |
+|---|---|---|
+| `E:\type10-7\code\scripts\fit_apply_phase1_leo_feature_adapter.py` | Adds source proxy_unknown repulsion, source old margin retention, and clean margin retention | `46CB3FBB8DD6051B61B5E8847A2B01D879C3C331217A4869D69D885C5669F50D` |
+| `E:\type10-7\code\scripts\sweep_phase1_adv3b02_margin_unk_target1_v19_20260703.sh` | Parallel multi-GPU V19 launcher with three conservative candidates per cell | `E09068DCBAA443E203A5EE571E7B53D6C4674ECF56DD781564C0A58AFF76531D` |
+| `E:\type10-7\code\scripts\eval_phase1_target1_strong_repair_audit_20260703.py` | Reused unchanged strong target1 evaluator | `F8E16B3BBCCC6017725F29DF3B7FCB8012C174653FC0A033DC5527AE9AADBB4F` |
+
+Local verification:
+
+| Command | Result |
+|---|---|
+| `C:\Users\lh594\.conda\envs\ssr-gpu\python.exe -m py_compile E:\type10-7\code\scripts\fit_apply_phase1_leo_feature_adapter.py E:\type10-7\code\scripts\eval_phase1_target1_strong_repair_audit_20260703.py` | PASS |
+| `bash -lc "bash -n /mnt/e/type10-7/code/scripts/sweep_phase1_adv3b02_margin_unk_target1_v19_20260703.sh"` | PASS |
+
+Version/snapshot state:
+
+| Item | Path |
+|---|---|
+| Non-Git code snapshot | `E:\type10-7\code\snapshots\phase1_adv3b02_margin_unk_target1_v19_20260703\` |
+| Git mirror branch | `E:\type10-7\github_publish\CVS-RFFI-repo` |
+
+Planned N607 output:
+
+| Artifact | Remote path |
+|---|---|
+| V19 summary | `/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_adv3b02_margin_unk_target1_v19_20260703/target1_strong_v19_summary.csv` |
+| V19 best JSON | `/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_adv3b02_margin_unk_target1_v19_20260703/target1_strong_v19_best.json` |
+| V19 metrics JSON | `/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_adv3b02_margin_unk_target1_v19_20260703/target1_strong_v19_metrics.json` |
+
 ## V11 Completion Results
 
 V11 completed two IQ pre-adapter variants on N607:
