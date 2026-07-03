@@ -211,6 +211,7 @@ class Phase2CollaborativeOpenSetQknnEvalTest(unittest.TestCase):
 
         self.assertEqual(metadata["support_selection_policy"], "centroid")
         self.assertEqual(metadata["unknown_gate_mode"], "support_envelope")
+        self.assertIn("score_risk", evidence[0])
         self.assertIn("radius_risk", evidence[0])
         self.assertIn("margin_risk", evidence[0])
         self.assertIn("class_radius", evidence[0])

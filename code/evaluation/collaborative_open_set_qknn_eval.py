@@ -197,6 +197,7 @@ def _fuse_event(
     fusion_policy: str,
     consensus_gap_threshold: float,
     consensus_score_threshold: float,
+    scorer_component_vote_threshold: float,
     can_request_more: bool = False,
     latency_budget_ms: float = 0.0,
 ) -> dict[str, Any]:
@@ -205,8 +206,10 @@ def _fuse_event(
     risks = []
     margins = []
     scores = []
+    score_risks = []
     radius_risks = []
     margin_risks = []
+    component_votes = []
     predicted_labels = []
     for row in selected:
         weight = max(0.0, _float(row, "reliability", 1.0))
@@ -219,12 +222,33 @@ def _fuse_event(
         weights.append(weight)
         risks.append(_float(row, "unknown_risk", 0.0))
         margins.append(_float(row, "known_margin", 0.0))
-        radius_risks.append(_float(row, "radius_risk", _float(row, "unknown_risk", 0.0)))
-        margin_risks.append(_float(row, "margin_risk", _float(row, "unknown_risk", 0.0)))
+        score_risk_value = _float(row, "score_risk", _float(row, "unknown_risk", 0.0))
+        radius_risk_value = _float(row, "radius_risk", _float(row, "unknown_risk", 0.0))
+        margin_risk_value = _float(row, "margin_risk", _float(row, "unknown_risk", 0.0))
+        score_risks.append(score_risk_value)
+        radius_risks.append(radius_risk_value)
+        margin_risks.append(margin_risk_value)
+        component_votes.append(
+            sum(
+                value >= float(unknown_risk_threshold)
+                for value in (score_risk_value, radius_risk_value, margin_risk_value)
+            )
+            / 3.0
+        )
 
     unknown_risk = _weighted_quantile(risks, weights, unknown_quantile)
+    score_risk = _weighted_quantile(score_risks, weights, unknown_quantile)
     radius_risk = _weighted_quantile(radius_risks, weights, unknown_quantile)
     margin_risk = _weighted_quantile(margin_risks, weights, unknown_quantile)
+    if weights and sum(weights) > 0:
+        risk_component_agreement = sum(v * max(0.0, w) for v, w in zip(component_votes, weights)) / max(
+            sum(max(0.0, w) for w in weights),
+            1e-12,
+        )
+    elif component_votes:
+        risk_component_agreement = sum(component_votes) / len(component_votes)
+    else:
+        risk_component_agreement = 0.0
     mean_margin = 0.0
     if weights and sum(weights) > 0:
         mean_margin = sum(m * max(0.0, w) for m, w in zip(margins, weights)) / max(sum(weights), 1e-12)
@@ -283,7 +307,8 @@ def _fuse_event(
             and mean_score >= float(consensus_score_threshold)
         )
         high_risk = unknown_risk >= float(unknown_risk_threshold)
-        if high_risk and not strong_known:
+        multi_channel_risk = risk_component_agreement >= float(scorer_component_vote_threshold)
+        if high_risk and multi_channel_risk and not strong_known:
             decision = "unknown_reject"
             output_label = UNKNOWN_LABEL
         elif high_risk:
@@ -321,8 +346,10 @@ def _fuse_event(
         "decision": decision,
         "output_label": output_label,
         "unknown_risk": float(unknown_risk),
+        "score_risk": float(score_risk),
         "radius_risk": float(radius_risk),
         "margin_risk": float(margin_risk),
+        "risk_component_agreement": float(risk_component_agreement),
         "known_margin": float(mean_margin),
         "mean_known_score": float(mean_score),
         "known_score": float(score),
@@ -537,6 +564,7 @@ def evaluate_collaborative_open_set_evidence(
     fusion_policy: str = "risk_margin",
     consensus_gap_threshold: float = 0.0,
     consensus_score_threshold: float = 0.0,
+    scorer_component_vote_threshold: float = 0.5,
     latency_budget_ms: float = 0.0,
     threshold_selection_label_scope: str = "support_known_only",
     unknown_query_eval_only: bool = True,
@@ -613,6 +641,7 @@ def evaluate_collaborative_open_set_evidence(
                 fusion_policy=fusion_policy,
                 consensus_gap_threshold=consensus_gap_threshold,
                 consensus_score_threshold=consensus_score_threshold,
+                scorer_component_vote_threshold=scorer_component_vote_threshold,
                 can_request_more=len({_str(row, "receiver_id") for row in group}) > int(k),
                 latency_budget_ms=latency_budget_ms,
             )
@@ -649,6 +678,7 @@ def evaluate_collaborative_open_set_evidence(
         "fusion_policy": _normalize_scope(fusion_policy),
         "consensus_gap_threshold": float(consensus_gap_threshold),
         "consensus_score_threshold": float(consensus_score_threshold),
+        "scorer_component_vote_threshold": float(scorer_component_vote_threshold),
         "latency_budget_ms": float(latency_budget_ms),
         "counts": out_counts,
     }

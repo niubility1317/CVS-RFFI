@@ -481,12 +481,12 @@ def _combined_unknown_risk(
     gate_mode: str,
     radius_temperature: float,
     margin_temperature: float,
-) -> tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
+) -> tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
     mode = str(gate_mode or "score").strip().lower()
     score_risk = _unknown_risk(known_scores, score_threshold, temperature=temperature)
     if mode == "score":
         zeros = np.zeros_like(score_risk)
-        return score_risk, zeros, zeros, zeros
+        return score_risk, score_risk, zeros, zeros, zeros
     centroid_scores = _centroid_scores(memory, query_features)
     class_to_pos = {str(label): int(i) for i, label in enumerate(memory.centroid_labels.tolist())}
     radius_risks = []
@@ -515,7 +515,13 @@ def _combined_unknown_risk(
         risk = np.maximum(score_risk, margin_risk)
     else:
         raise ValueError("unknown_gate_mode must be score, radius, margin, or support_envelope")
-    return np.clip(risk, 0.0, 1.0), radius_risk, margin_risk, np.asarray(radius_values, dtype=np.float64)
+    return (
+        np.clip(risk, 0.0, 1.0),
+        np.asarray(score_risk, dtype=np.float64),
+        radius_risk,
+        margin_risk,
+        np.asarray(radius_values, dtype=np.float64),
+    )
 
 
 def _combine_score_threshold(qknn_threshold: float, centroid_threshold: float, mode: str) -> float:
@@ -794,7 +800,7 @@ def build_collaborative_evidence(
                         radius_norm=float(radius_norm),
                         old_bias=float(old_bias),
                     )
-                    risk, radius_risk, margin_risk, class_radius = _combined_unknown_risk(
+                    risk, score_risk, radius_risk, margin_risk, class_radius = _combined_unknown_risk(
                         memory,
                         features[[idx]],
                         pred,
@@ -820,6 +826,7 @@ def build_collaborative_evidence(
                             "known_score": float(score[0]),
                             "known_margin": float(margin[0]),
                             "unknown_risk": float(risk[0]),
+                            "score_risk": float(score_risk[0]),
                             "radius_risk": float(radius_risk[0]),
                             "margin_risk": float(margin_risk[0]),
                             "class_radius": float(class_radius[0]),
@@ -913,6 +920,7 @@ def run_evaluation(args: argparse.Namespace) -> dict[str, Any]:
         fusion_policy=str(args.fusion_policy),
         consensus_gap_threshold=float(args.consensus_gap_threshold),
         consensus_score_threshold=float(args.consensus_score_threshold),
+        scorer_component_vote_threshold=float(args.scorer_component_vote_threshold),
         latency_budget_ms=float(args.latency_budget_ms),
         threshold_selection_label_scope=str(metadata["threshold_scope"]),
         unknown_query_eval_only=True,
@@ -971,6 +979,7 @@ def parse_args() -> argparse.Namespace:
     p.add_argument("--fusion_policy", default="risk_margin", choices=["risk_margin", "consensus_veto", "scorer_cvs"])
     p.add_argument("--consensus_gap_threshold", type=float, default=0.0)
     p.add_argument("--consensus_score_threshold", type=float, default=0.0)
+    p.add_argument("--scorer_component_vote_threshold", type=float, default=0.5)
     p.add_argument("--latency_budget_ms", type=float, default=0.0)
     p.add_argument("--evidence_packet_bytes", type=float, default=40.0)
     p.add_argument("--receiver_selection_policy", default="fixed_receiver_order")
