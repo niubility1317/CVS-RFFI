@@ -43,6 +43,7 @@ RISK_COMPONENT_KEYS = {
     "oldness": "oldness_risk",
     "virtual_unknown": "virtual_unknown_risk",
 }
+COLLAB_GROUP_POLICIES = {"exact_k", "available_up_to_k"}
 
 
 def parse_collab_counts(spec: str | Sequence[int] | None, *, receiver_count: int) -> list[int]:
@@ -2076,6 +2077,13 @@ def _validate_event_groups(groups: Mapping[str, Sequence[Mapping[str, Any]]]) ->
             raise ValueError(f"inconsistent true_label values in event_id {event_id!r}")
 
 
+def _validate_collab_group_policy(policy: str) -> str:
+    value = str(policy or "exact_k").strip().lower()
+    if value not in COLLAB_GROUP_POLICIES:
+        raise ValueError(f"collab_group_policy must be one of {sorted(COLLAB_GROUP_POLICIES)}")
+    return value
+
+
 def _validate_target_receiver_scope(rows: Sequence[Mapping[str, Any]], target_receivers: set[str]) -> None:
     if not target_receivers:
         return
@@ -2152,6 +2160,8 @@ def evaluate_collaborative_open_set_evidence(
     threshold_selection_label_scope: str = "support_known_only",
     unknown_query_eval_only: bool = True,
     receiver_selection_policy: str = "fixed_receiver_order",
+    collab_group_policy: str = "exact_k",
+    partial_collab_min_receivers: int = 1,
     protocol_metadata: Mapping[str, Any] | None = None,
     strict_protocol_metadata: bool = False,
 ) -> dict[str, Any]:
@@ -2164,6 +2174,8 @@ def evaluate_collaborative_open_set_evidence(
     rows = list(rows)
     active_risk_components = _parse_risk_components(scorer_risk_components)
     collaboration_policy = _validate_collaboration_policy(collaboration_policy)
+    collab_group_policy = _validate_collab_group_policy(collab_group_policy)
+    partial_collab_min_receivers = max(1, int(partial_collab_min_receivers))
     _validate_rows(
         rows,
         threshold_selection_label_scope=threshold_selection_label_scope,
@@ -2205,19 +2217,23 @@ def evaluate_collaborative_open_set_evidence(
 
     out_counts: dict[str, Any] = {}
     for k in counts:
+        min_receivers_for_k = int(k)
+        if collab_group_policy == "available_up_to_k":
+            min_receivers_for_k = min(int(k), partial_collab_min_receivers)
         eligible = [
             (event_id, group)
             for event_id, group in groups.items()
-            if len({_str(row, "receiver_id") for row in group}) >= int(k)
+            if len({_str(row, "receiver_id") for row in group}) >= min_receivers_for_k
         ]
         excluded = len(groups) - len(eligible)
         if not eligible:
-            raise ValueError(f"no evidence groups contain {k} receiver observations")
+            raise ValueError(f"no evidence groups contain {min_receivers_for_k} receiver observations")
         event_results: list[dict[str, Any]] = []
         for _, group in eligible:
+            selected_k = min(int(k), len({_str(row, "receiver_id") for row in group}))
             selected = _select_receivers(
                 group,
-                int(k),
+                selected_k,
                 receiver_selection_policy=receiver_selection_policy,
             )
             if collaboration_policy == "progressive_budget":
@@ -2398,6 +2414,8 @@ def evaluate_collaborative_open_set_evidence(
         "excluded_incomplete_groups": int(len(groups) - len(matched_max)),
         "denominator_policy": "per_k_available_receivers",
         "collaboration_policy": collaboration_policy,
+        "collab_group_policy": collab_group_policy,
+        "partial_collab_min_receivers": int(partial_collab_min_receivers),
         "matched_max_requested_group_count": int(len(matched_max)),
         "receiver_selection_policy": _normalize_scope(receiver_selection_policy),
         "threshold_selection_label_scope": _normalize_scope(threshold_selection_label_scope),

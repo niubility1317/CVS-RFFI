@@ -2102,6 +2102,60 @@ class CollaborativeOpenSetQknnEvalTest(unittest.TestCase):
         self.assertEqual(k3["unknown_reject_rate"], 1.0)
         self.assertEqual(k3["open_set_confusion"], {"old->old": 1, "unknown->unknown_reject": 1})
 
+    def test_available_up_to_k_keeps_partial_class_groups(self):
+        from evaluation.collaborative_open_set_qknn_eval import evaluate_collaborative_open_set_evidence
+
+        def row(event_id, receiver_id, label):
+            return {
+                "event_id": event_id,
+                "receiver_id": receiver_id,
+                "role": "old",
+                "true_label": label,
+                "predicted_label": label,
+                "known_score": 0.90,
+                "known_margin": 0.50,
+                "unknown_risk": 0.05,
+                "score_risk": 0.05,
+                "radius_risk": 0.05,
+                "margin_risk": 0.05,
+                "bytes": 40.0,
+                "latency_ms": 0.1,
+            }
+
+        rows = [row("old-a-event", rx, "old-a") for rx in ("rx-a", "rx-b", "rx-c")]
+        rows.extend(row("old-b-event", rx, "old-b") for rx in ("rx-a", "rx-b", "rx-c", "rx-d"))
+        protocol = {
+            "source_receiver_ids": ["src-a"],
+            "target_receiver_ids": ["rx-a", "rx-b", "rx-c", "rx-d"],
+            "old_tx_ids": ["old-a", "old-b"],
+            "seen_new_tx_ids": ["new-a"],
+            "unknown_tx_ids": ["unk-a"],
+            "target_channel_view": "leo_clear_weak",
+        }
+
+        exact = evaluate_collaborative_open_set_evidence(
+            rows,
+            collab_counts="4",
+            fusion_policy="risk_margin",
+            protocol_metadata=protocol,
+            strict_protocol_metadata=True,
+        )
+        budgeted = evaluate_collaborative_open_set_evidence(
+            rows,
+            collab_counts="4",
+            fusion_policy="risk_margin",
+            collab_group_policy="available_up_to_k",
+            partial_collab_min_receivers=2,
+            protocol_metadata=protocol,
+            strict_protocol_metadata=True,
+        )
+
+        self.assertEqual(exact["counts"]["4"]["missing_old_classes"], ["old-a"])
+        self.assertEqual(budgeted["counts"]["4"]["missing_old_classes"], [])
+        self.assertEqual(budgeted["counts"]["4"]["old_acc"], 1.0)
+        self.assertEqual(budgeted["counts"]["4"]["participating_receivers_avg"], 3.5)
+        self.assertEqual(budgeted["collab_group_policy"], "available_up_to_k")
+
     def test_candidate_set_cvs_vetoes_high_label_component_agreement(self):
         from evaluation.collaborative_open_set_qknn_eval import evaluate_collaborative_open_set_evidence
 

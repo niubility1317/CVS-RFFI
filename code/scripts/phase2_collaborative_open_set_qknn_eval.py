@@ -2262,6 +2262,8 @@ def run_evaluation(args: argparse.Namespace) -> dict[str, Any]:
         threshold_selection_label_scope=str(metadata["threshold_scope"]),
         unknown_query_eval_only=True,
         receiver_selection_policy=str(args.receiver_selection_policy),
+        collab_group_policy=str(args.collab_group_policy),
+        partial_collab_min_receivers=int(args.partial_collab_min_receivers),
         protocol_metadata=metadata,
         strict_protocol_metadata=True,
         scorer_risk_components=metadata["active_risk_components"],
@@ -2292,6 +2294,17 @@ def parse_args() -> argparse.Namespace:
     p.add_argument("--output_json", type=Path, required=True)
     p.add_argument("--output_evidence_csv", type=Path, default=None)
     p.add_argument("--collab_counts", default="all")
+    p.add_argument(
+        "--collab_group_policy",
+        default="exact_k",
+        choices=["exact_k", "available_up_to_k"],
+        help=(
+            "exact_k evaluates only events observed by at least k receivers; "
+            "available_up_to_k treats k as a maximum collaboration budget and includes "
+            "events with at least --partial_collab_min_receivers observations."
+        ),
+    )
+    p.add_argument("--partial_collab_min_receivers", type=int, default=1)
     p.add_argument("--k_shot", type=int, default=8)
     p.add_argument("--query_per_class", type=int, default=20)
     p.add_argument("--qknn_k", type=int, default=8)
