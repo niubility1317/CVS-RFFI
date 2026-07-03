@@ -21,6 +21,10 @@ import numpy as np
 import phase2_source_guarded_qknn_sweep as qknn
 
 
+Split = tuple[np.ndarray, np.ndarray]
+EnrollmentSplit = tuple[np.ndarray, np.ndarray, np.ndarray]
+
+
 def _softmax(logits: np.ndarray) -> np.ndarray:
     logits = np.asarray(logits, dtype=np.float64)
     exp = np.exp(logits - np.max(logits, axis=1, keepdims=True))
@@ -182,8 +186,8 @@ def _build_active_splits(
     policy: str,
     seed: int,
     exclude_pool_from_query: bool,
-) -> dict[str, tuple[np.ndarray, np.ndarray]]:
-    splits: dict[str, tuple[np.ndarray, np.ndarray]] = {}
+) -> dict[str, EnrollmentSplit]:
+    splits: dict[str, EnrollmentSplit] = {}
     for label in labels:
         available = np.where((tx_ids == label) & (roles == role))[0].astype(int)
         if available.size < k + query_per_class:
@@ -209,10 +213,42 @@ def _build_active_splits(
             query = ordered[pool_n:].astype(int)
         else:
             query = np.asarray([int(idx) for idx in ordered.tolist() if int(idx) not in support_set], dtype=int)
+        enrollment_val = np.asarray([int(idx) for idx in pool.tolist() if int(idx) not in support_set], dtype=int)
         query = query[:query_per_class]
         if len(support) == k and query.size == query_per_class:
-            splits[str(label)] = (np.asarray(support, dtype=int), query.astype(int))
+            splits[str(label)] = (np.asarray(support, dtype=int), query.astype(int), enrollment_val)
     return splits
+
+
+def _as_eval_splits(splits: dict[str, EnrollmentSplit], *, use_enrollment_val: bool = False) -> dict[str, Split]:
+    if use_enrollment_val:
+        return {label: (support, enrollment_val) for label, (support, _, enrollment_val) in splits.items()}
+    return {label: (support, query) for label, (support, query, _) in splits.items()}
+
+
+def _prefixed_metrics(prefix: str, row: dict[str, Any]) -> dict[str, Any]:
+    return {
+        f"{prefix}_old_acc": row["old_acc"],
+        f"{prefix}_min_old_class_acc": row["min_old_class_acc"],
+        f"{prefix}_seen_new_acc": row["seen_new_acc"],
+        f"{prefix}_min_seen_new_class_acc": row["min_seen_new_class_acc"],
+        f"{prefix}_passes_joint_target": row["passes_joint_target"],
+        f"{prefix}_per_old_acc": row["per_old_acc"],
+        f"{prefix}_per_new_acc": row["per_new_acc"],
+        f"{prefix}_old_query_count": row["old_query_count"],
+        f"{prefix}_new_query_count": row["new_query_count"],
+    }
+
+
+def _joint_rank_score(row: dict[str, Any], *, old_target: float, old_floor: float, new_target: float, new_floor: float) -> float:
+    return float(
+        min(
+            row["old_acc"] / old_target,
+            row["min_old_class_acc"] / old_floor,
+            row["seen_new_acc"] / new_target,
+            row["min_seen_new_class_acc"] / new_floor,
+        )
+    )
 
 
 def _mean_pairwise_cosine_distance(features: np.ndarray, indices: np.ndarray) -> float:
@@ -234,8 +270,8 @@ def _mean_centroid_similarity(features: np.ndarray, indices: np.ndarray) -> floa
 
 def _support_quality_metrics(
     *,
-    old_splits: dict[str, tuple[np.ndarray, np.ndarray]],
-    new_splits: dict[str, tuple[np.ndarray, np.ndarray]],
+    old_splits: dict[str, Split],
+    new_splits: dict[str, Split],
     new_labels: tuple[str, ...],
     features: np.ndarray,
     scenarios: np.ndarray,
@@ -393,16 +429,43 @@ def main() -> None:
                 combos = [tuple(explicit_new_labels)] if set(explicit_new_labels).issubset(new_splits) else []
             else:
                 combos = list(itertools.combinations(sorted(new_splits), int(args.combo_size)))
+            old_eval_splits = _as_eval_splits(old_splits)
+            old_enroll_val_splits = _as_eval_splits(old_splits, use_enrollment_val=True)
+            new_eval_splits = _as_eval_splits(new_splits)
+            new_enroll_val_splits = _as_eval_splits(new_splits, use_enrollment_val=True)
             for combo in combos:
                 support_quality = _support_quality_metrics(
-                    old_splits=old_splits,
-                    new_splits=new_splits,
+                    old_splits=old_eval_splits,
+                    new_splits=new_eval_splits,
                     new_labels=tuple(combo),
                     features=features,
                     scenarios=scenarios,
                     source_prototypes=source_prototypes,
                     k_old=args.k_old,
                     k_new=args.k_new,
+                )
+                enroll_val_row = qknn._evaluate_row(
+                    tuple(combo),
+                    features=features,
+                    tx_ids=tx_ids,
+                    source_label=source_label,
+                    source_conf=source_conf,
+                    source_margin=source_margin,
+                    scenarios=scenarios,
+                    old_splits=old_enroll_val_splits,
+                    new_splits=new_enroll_val_splits,
+                    old_labels=old_labels,
+                    topk=args.topk,
+                    old_bias=args.old_bias,
+                    radius_norm=args.radius_norm,
+                    source_guard_mode="none",
+                    source_conf_min=0.0,
+                    source_margin_min=0.0,
+                    scenario_aware=bool(args.scenario_aware),
+                    old_target=args.old_target,
+                    old_floor=args.old_floor,
+                    new_target=args.seen_new_target,
+                    new_floor=args.seen_new_floor,
                 )
                 row = qknn._evaluate_row(
                     tuple(combo),
@@ -412,8 +475,8 @@ def main() -> None:
                     source_conf=source_conf,
                     source_margin=source_margin,
                     scenarios=scenarios,
-                    old_splits=old_splits,
-                    new_splits=new_splits,
+                    old_splits=old_eval_splits,
+                    new_splits=new_eval_splits,
                     old_labels=old_labels,
                     topk=args.topk,
                     old_bias=args.old_bias,
@@ -434,6 +497,14 @@ def main() -> None:
                 row["exclude_pool_from_query"] = bool(args.exclude_pool_from_query)
                 row["diagnostic_scope"] = "active_enrollment_pool_selection_no_query_correctness"
                 row.update(support_quality)
+                row.update(_prefixed_metrics("enroll_val", enroll_val_row))
+                row["enroll_val_rank_score"] = _joint_rank_score(
+                    enroll_val_row,
+                    old_target=args.old_target,
+                    old_floor=args.old_floor,
+                    new_target=args.seen_new_target,
+                    new_floor=args.seen_new_floor,
+                )
                 rows.append(row)
 
     rows.sort(
@@ -455,6 +526,7 @@ def main() -> None:
         "diagnostic_scope": "ACTIVE_ENROLLMENT_DIAGNOSTIC_not_strict_Kshot_when_pool_gt_K",
         "selection_uses_query_correctness": False,
         "selection_inputs": ["support/enrollment labels", "z_id feature geometry", "sat_scenarios", "source old-class logits", "source old-class prototypes"],
+        "enrollment_validation": "Final support code is chosen from a labeled pool; unused pool samples are scored as enrollment validation, while final query can exclude the full pool.",
         "support_quality_sort_uses_query_correctness": False,
         "support_quality_score": "0.35*old_proto_mean_norm + 0.20*old_proto_min_norm + 0.25*scenario_coverage_mean + 0.10*support_diversity_mean + 0.10*new_compactness_norm",
         "feature_npz": str(args.feature_npz),
@@ -483,6 +555,16 @@ def main() -> None:
         "joint_pass_count": int(sum(1 for row in rows if row["passes_joint_target"])),
         "best": rows[:20],
         "best_by_support_quality": sorted(rows, key=lambda row: row["support_quality_score"], reverse=True)[:20],
+        "best_by_enrollment_validation": sorted(
+            rows,
+            key=lambda row: (
+                bool(row["enroll_val_passes_joint_target"]),
+                row["enroll_val_rank_score"],
+                row["enroll_val_old_acc"],
+                row["enroll_val_seen_new_acc"],
+            ),
+            reverse=True,
+        )[:20],
         "rows": rows,
     }
 
@@ -513,6 +595,14 @@ def main() -> None:
         "pool_per_new",
         "exclude_pool_from_query",
         "support_quality_score",
+        "enroll_val_rank_score",
+        "enroll_val_old_acc",
+        "enroll_val_min_old_class_acc",
+        "enroll_val_seen_new_acc",
+        "enroll_val_min_seen_new_class_acc",
+        "enroll_val_passes_joint_target",
+        "enroll_val_per_old_acc",
+        "enroll_val_per_new_acc",
         "support_old_proto_mean",
         "support_old_proto_min",
         "support_scenario_coverage_mean",
@@ -526,6 +616,12 @@ def main() -> None:
             csv_row = {key: row.get(key) for key in fieldnames}
             csv_row["per_old_acc"] = json.dumps(row["per_old_acc"], ensure_ascii=False, sort_keys=True)
             csv_row["per_new_acc"] = json.dumps(row["per_new_acc"], ensure_ascii=False, sort_keys=True)
+            csv_row["enroll_val_per_old_acc"] = json.dumps(
+                row["enroll_val_per_old_acc"], ensure_ascii=False, sort_keys=True
+            )
+            csv_row["enroll_val_per_new_acc"] = json.dumps(
+                row["enroll_val_per_new_acc"], ensure_ascii=False, sort_keys=True
+            )
             writer.writerow(csv_row)
 
     print(
