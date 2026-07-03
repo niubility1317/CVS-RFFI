@@ -404,6 +404,70 @@ class Phase2CollaborativeOpenSetQknnEvalTest(unittest.TestCase):
         self.assertEqual(int(support_neighbor_counts[0]), 0)
         self.assertEqual(str(second_labels[0]), "new-a")
 
+    def test_zero_prototype_score_blend_matches_default_qknn_scores(self):
+        from phase2_collaborative_open_set_qknn_eval import build_qknn_memory, qknn_scores
+
+        features = np.asarray(
+            [
+                [1.0, 0.0, 0.0],
+                [0.8, 0.2, 0.0],
+                [0.0, 1.0, 0.0],
+                [0.2, 0.8, 0.0],
+            ],
+            dtype=np.float32,
+        )
+        memory = build_qknn_memory(features, ["old-a", "old-a", "new-a", "new-a"], old_labels={"old-a"})
+        default = qknn_scores(memory, features, top_k=2)
+        explicit_zero = qknn_scores(memory, features, top_k=2, prototype_score_blend=0.0)
+
+        for left, right in zip(default, explicit_zero):
+            np.testing.assert_array_equal(left, right)
+
+    def test_prototype_score_blend_uses_same_calibration_score_scale(self):
+        from phase2_collaborative_open_set_qknn_eval import build_qknn_memory, _threshold_from_calibration
+
+        features = np.asarray(
+            [
+                [0.8, 0.6, 0.0],
+                [0.8, -0.6, 0.0],
+                [0.9, 0.435, 0.0],
+                [0.9, 0.435, 0.0],
+            ],
+            dtype=np.float32,
+        )
+        memory = build_qknn_memory(features, ["old-a", "old-a", "new-a", "new-a"], old_labels={"old-a"})
+
+        threshold_default, _ = _threshold_from_calibration(
+            memory,
+            features,
+            None,
+            top_k=1,
+            support_quantile=0.5,
+            proxy_quantile=0.95,
+            support_calibration_mode="leave_one_out",
+        )
+        threshold_blended, _ = _threshold_from_calibration(
+            memory,
+            features,
+            None,
+            top_k=1,
+            support_quantile=0.5,
+            proxy_quantile=0.95,
+            support_calibration_mode="leave_one_out",
+            prototype_score_blend=2.0,
+        )
+
+        self.assertNotAlmostEqual(threshold_default, threshold_blended, places=8)
+
+    def test_negative_prototype_score_blend_is_rejected(self):
+        from phase2_collaborative_open_set_qknn_eval import build_qknn_memory, qknn_scores
+
+        features = np.asarray([[1.0, 0.0], [0.0, 1.0]], dtype=np.float32)
+        memory = build_qknn_memory(features, ["old-a", "new-a"], old_labels={"old-a"})
+
+        with self.assertRaisesRegex(ValueError, "prototype_score_blend"):
+            qknn_scores(memory, features, top_k=1, prototype_score_blend=-1.0)
+
     def test_support_density_reliability_is_recorded_in_evidence(self):
         from phase2_collaborative_open_set_qknn_eval import load_feature_npz, build_collaborative_evidence
 
@@ -431,6 +495,26 @@ class Phase2CollaborativeOpenSetQknnEvalTest(unittest.TestCase):
         self.assertIn("candidate_audit_risk", evidence[0])
         self.assertIn("class_radius_z", evidence[0])
         self.assertEqual(float(evidence[0]["reliability"]), float(evidence[0]["support_density"]))
+
+    def test_prototype_assisted_qknn_is_marked_in_metadata_and_evidence(self):
+        from phase2_collaborative_open_set_qknn_eval import load_feature_npz, build_collaborative_evidence
+
+        with tempfile.TemporaryDirectory() as td:
+            npz = Path(td) / "features.npz"
+            _write_npz(npz)
+            evidence, metadata = build_collaborative_evidence(
+                load_feature_npz(npz),
+                k_shot=1,
+                query_per_class=2,
+                qknn_k=1,
+                prototype_score_blend=0.5,
+            )
+
+        self.assertTrue(metadata["prototype_assisted_qknn"])
+        self.assertAlmostEqual(metadata["prototype_score_blend"], 0.5)
+        self.assertIn("prototype_score_blend", evidence[0])
+        self.assertIn("prototype_assisted", evidence[0])
+        self.assertIn("prototype_only_top1", evidence[0])
 
     def test_candidate_audit_gap_can_raise_unknown_risk(self):
         from phase2_collaborative_open_set_qknn_eval import load_feature_npz, build_collaborative_evidence

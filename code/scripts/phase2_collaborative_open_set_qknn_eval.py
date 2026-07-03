@@ -381,6 +381,9 @@ def qknn_scores(
     exclude_support_indices: Sequence[int] | None = None,
     prototype_score_blend: float = 0.0,
 ) -> tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray, np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
+    proto_blend = float(prototype_score_blend)
+    if proto_blend < 0.0:
+        raise ValueError("prototype_score_blend must be >= 0")
     query = _normalize_rows(query_features)
     support = _normalize_rows(memory.qfeatures.astype(np.float32) / float(memory.scale))
     centroid_scores = _centroid_scores(memory, query)
@@ -443,7 +446,6 @@ def qknn_scores(
             score = float(scores[row_i, j])
             per_label[str(memory.labels[j])] += max(0.0, score)
             per_label_count[str(memory.labels[j])] += 1
-        proto_blend = max(0.0, float(prototype_score_blend))
         if proto_blend > 0.0:
             candidate_labels = sorted({str(label) for label in memory.labels[support_mask].tolist()})
             class_to_pos = {str(label): int(pos) for pos, label in enumerate(memory.centroid_labels.tolist())}
@@ -610,6 +612,7 @@ def _threshold_from_calibration(
     old_bias: float = 0.0,
     candidate_class_top_m: int = 0,
     support_calibration_mode: str = "self",
+    prototype_score_blend: float = 0.0,
 ) -> tuple[float, str]:
     calibration_mode = str(support_calibration_mode or "self").strip().lower()
     if calibration_mode not in {"self", "leave_one_out", "loo"}:
@@ -625,6 +628,7 @@ def _threshold_from_calibration(
         old_bias=old_bias,
         candidate_class_top_m=candidate_class_top_m,
         exclude_support_indices=exclude,
+        prototype_score_blend=prototype_score_blend,
     )
     threshold = float(np.quantile(support_scores, float(support_quantile))) if support_scores.size else 0.0
     scope = "support_known_only"
@@ -638,6 +642,7 @@ def _threshold_from_calibration(
             radius_norm=radius_norm,
             old_bias=old_bias,
             candidate_class_top_m=candidate_class_top_m,
+            prototype_score_blend=prototype_score_blend,
         )
         if proxy_scores.size:
             threshold = max(threshold, float(np.quantile(proxy_scores, float(proxy_quantile))))
@@ -903,6 +908,9 @@ def build_collaborative_evidence(
     reliability_policy = str(receiver_reliability_policy or "deployment_prior").strip().lower()
     if reliability_policy not in {"deployment_prior", "support_density", "margin_density"}:
         raise ValueError("receiver_reliability_policy must be deployment_prior, support_density, or margin_density")
+    prototype_blend = float(prototype_score_blend)
+    if prototype_blend < 0.0:
+        raise ValueError("prototype_score_blend must be >= 0")
     t0 = time.perf_counter()
 
     for rx in target_receivers:
@@ -1014,6 +1022,7 @@ def build_collaborative_evidence(
             old_bias=float(old_bias),
             candidate_class_top_m=int(candidate_class_top_m),
             support_calibration_mode=str(support_calibration_mode),
+            prototype_score_blend=prototype_blend,
         )
         threshold_scope = scope if scope == "source_only" else threshold_scope
         receiver_memories[rx] = memory
@@ -1102,7 +1111,7 @@ def build_collaborative_evidence(
                         radius_norm=float(radius_norm),
                         old_bias=float(old_bias),
                         candidate_class_top_m=int(candidate_class_top_m),
-                        prototype_score_blend=float(prototype_score_blend),
+                        prototype_score_blend=prototype_blend,
                     )
                     if int(candidate_class_top_m) > 0:
                         (
@@ -1123,7 +1132,7 @@ def build_collaborative_evidence(
                             radius_norm=float(radius_norm),
                             old_bias=float(old_bias),
                             candidate_class_top_m=0,
-                            prototype_score_blend=float(prototype_score_blend),
+                            prototype_score_blend=prototype_blend,
                         )
                     else:
                         audit_pred = pred
@@ -1201,6 +1210,9 @@ def build_collaborative_evidence(
                             "candidate_class_count": int(candidate_counts[0]),
                             "support_neighbor_count": int(support_neighbor_counts[0]),
                             "support_density": support_density,
+                            "prototype_score_blend": prototype_blend,
+                            "prototype_assisted": int(prototype_blend > 0.0),
+                            "prototype_only_top1": int(prototype_blend > 0.0 and int(support_neighbor_counts[0]) == 0),
                             "unknown_risk": float(unknown_risk_value),
                             "score_risk": float(score_risk_value),
                             "radius_risk": float(radius_risk[0]),
@@ -1248,7 +1260,8 @@ def build_collaborative_evidence(
         "support_calibration_mode": str(support_calibration_mode),
         "score_threshold_combine": str(score_threshold_combine),
         "receiver_reliability_policy": reliability_policy,
-        "prototype_score_blend": float(prototype_score_blend),
+        "prototype_score_blend": prototype_blend,
+        "prototype_assisted_qknn": prototype_blend > 0.0,
         "candidate_audit_unknown_risk_enabled": bool(candidate_audit_unknown_risk_enabled),
         "candidate_audit_disagreement_risk": float(candidate_audit_disagreement_risk),
         "candidate_audit_min_gap": float(candidate_audit_min_gap),
