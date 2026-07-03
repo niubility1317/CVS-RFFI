@@ -38,6 +38,7 @@ class QuantizedKnnMemory:
     is_old: np.ndarray
     class_prototype_matrix: np.ndarray
     class_prototype_labels: np.ndarray
+    class_radii: np.ndarray
     counts: dict[str, int]
     quant_bits: int
     qknn_select_mode: str = "all"
@@ -392,6 +393,13 @@ def build_quantized_knn_memory(
     prototypes = np.vstack([
         _normalize_rows(features[labels == label].mean(axis=0, keepdims=True))[0] for label in sorted_labels
     ])
+    class_radii = np.asarray(
+        [
+            float(np.mean(1.0 - (features[labels == label] @ prototypes[idx])))
+            for idx, label in enumerate(sorted_labels)
+        ],
+        dtype=np.float64,
+    )
     return QuantizedKnnMemory(
         quantized_matrix=quantized,
         scale=scale,
@@ -399,6 +407,7 @@ def build_quantized_knn_memory(
         is_old=np.asarray([str(label) in old for label in labels], dtype=bool),
         class_prototype_matrix=prototypes,
         class_prototype_labels=np.asarray(sorted_labels, dtype=object),
+        class_radii=class_radii,
         counts=counts,
         quant_bits=int(quant_bits),
         qknn_select_mode=str(qknn_select_mode),
@@ -415,11 +424,18 @@ def predict_quantized_knn_memory(
     prototype_blend: float = 0.0,
     old_bias_gate: float | None = None,
     margin_switch_gate: float | None = None,
+    radius_norm: float = 0.0,
 ) -> np.ndarray:
     query = _normalize_rows(query_features)
     support = memory.quantized_matrix.astype(np.float64) / float(memory.scale)
     support = _normalize_rows(support)
     scores = query @ support.T
+    if float(radius_norm) != 0.0:
+        radii_by_support = np.zeros(scores.shape[1], dtype=np.float64)
+        for idx, label in enumerate(memory.class_prototype_labels):
+            radii_by_support[memory.labels == label] = memory.class_radii[idx]
+        denom = np.power(np.maximum(radii_by_support, 1e-4), float(radius_norm))[None, :]
+        scores = 1.0 - ((1.0 - scores) / denom)
     if float(prototype_blend) != 0.0:
         proto_scores = query @ memory.class_prototype_matrix.T
         proto_by_support = np.zeros_like(scores)
@@ -545,8 +561,11 @@ def _evaluate_combo(
             qknn_keep_per_class=qknn_keep_per_class,
         )
         margin_switch_gate = weight_scale if prototype_weight_mode == "margin_switch" else None
+        radius_norm = weight_scale if prototype_weight_mode == "radius_norm" else 0.0
         old_bias_gate = (
-            weight_scale if prototype_weight_mode != "margin_switch" and float(weight_scale) > 0.0 else None
+            weight_scale
+            if prototype_weight_mode not in {"margin_switch", "radius_norm"} and float(weight_scale) > 0.0
+            else None
         )
         pred = predict_quantized_knn_memory(
             memory,
@@ -556,9 +575,12 @@ def _evaluate_combo(
             prototype_blend=radius_weight,
             old_bias_gate=old_bias_gate,
             margin_switch_gate=margin_switch_gate,
+            radius_norm=radius_norm,
         )
         if prototype_weight_mode == "margin_switch":
             gate_suffix = f"_msw{weight_scale:g}"
+        elif prototype_weight_mode == "radius_norm":
+            gate_suffix = f"_rnorm{weight_scale:g}"
         else:
             gate_suffix = f"_ogate{weight_scale:g}" if float(weight_scale) > 0.0 else ""
         select_suffix = (

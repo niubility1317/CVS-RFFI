@@ -303,3 +303,25 @@ def test_quantized_knn_purity_selection_drops_ambiguous_support_code():
     assert predict_quantized_knn_memory(pruned_memory, query, k=1).tolist() == ["old-a"]
     assert "support_features" not in pruned_memory.__dict__
     assert "support_labels" not in pruned_memory.__dict__
+
+
+def test_quantized_knn_radius_norm_uses_class_radius_without_support_storage():
+    support = np.asarray(
+        [
+            [1.0, 0.0],
+            [0.99, 0.02],
+            [0.0, 1.0],
+            [0.75, 0.66],
+        ],
+        dtype=np.float64,
+    )
+    labels = np.asarray(["old-a", "old-a", "new-b", "new-b"], dtype=object)
+    query = np.asarray([[0.95, 0.31]], dtype=np.float64)
+
+    memory = build_quantized_knn_memory(support, labels, old_labels={"old-a"}, quant_bits=8)
+
+    assert memory.class_radii.shape == (2,)
+    assert predict_quantized_knn_memory(memory, query, k=1).tolist() == ["old-a"]
+    assert predict_quantized_knn_memory(memory, query, k=1, radius_norm=0.5).tolist() == ["new-b"]
+    assert "support_features" not in memory.__dict__
+    assert "support_labels" not in memory.__dict__
