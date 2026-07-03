@@ -121,3 +121,38 @@ def test_boundary_medoid_keeps_near_boundary_anchor_without_full_support():
         ["new-b"],
     )
     assert "support_features" not in memory.__dict__
+
+
+def test_weighted_anchor_memory_uses_counts_without_storing_support():
+    support = np.asarray(
+        [
+            [1.0, 0.0],
+            [0.99, 0.01],
+            [0.98, 0.02],
+            [0.92, 0.08],
+            [0.0, 1.0],
+            [0.08, 0.92],
+        ],
+        dtype=np.float64,
+    )
+    labels = np.asarray(["old-a", "old-a", "old-a", "old-a", "new-b", "new-b"], dtype=object)
+
+    memory = build_compressed_memory(
+        support,
+        labels,
+        old_labels={"old-a"},
+        prototypes_per_class=1,
+        prototype_weight_mode="assigned_count",
+    )
+
+    assert memory.prototype_weights.tolist() == [2.0, 4.0]
+    query = np.asarray([[0.64, 0.65]], dtype=np.float64)
+
+    assert predict_compressed_memory(memory, query).tolist() == ["new-b"]
+    assert predict_compressed_memory(
+        memory,
+        query,
+        weight_scale=0.12,
+    ).tolist() == ["old-a"]
+    assert "support_features" not in memory.__dict__
+    assert "support_labels" not in memory.__dict__

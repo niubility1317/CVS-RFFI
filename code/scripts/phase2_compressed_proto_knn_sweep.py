@@ -25,6 +25,7 @@ class CompressedMemory:
     prototype_matrix: np.ndarray
     prototype_labels: np.ndarray
     prototype_radii: np.ndarray
+    prototype_weights: np.ndarray
     prototype_is_old: np.ndarray
     counts: dict[str, int]
 
@@ -155,6 +156,7 @@ def build_compressed_memory(
     old_labels: set[str] | None = None,
     prototypes_per_class: int = 1,
     prototype_mode: str = "mean",
+    prototype_weight_mode: str = "uniform",
     seed: int = 0,
 ) -> CompressedMemory:
     features = _normalize_rows(support_features)
@@ -163,6 +165,7 @@ def build_compressed_memory(
     prototypes: list[np.ndarray] = []
     prototype_labels: list[str] = []
     prototype_radii: list[float] = []
+    prototype_weights: list[float] = []
     prototype_is_old: list[bool] = []
     counts: dict[str, int] = {}
     sorted_labels = sorted({str(label) for label in labels.tolist()})
@@ -183,17 +186,26 @@ def build_compressed_memory(
             members = class_features[assignments == idx]
             if members.size == 0:
                 radius = 0.0
+                weight = 1.0
             else:
                 radius = float(np.mean(1.0 - (members @ center)))
+                if prototype_weight_mode == "uniform":
+                    weight = 1.0
+                elif prototype_weight_mode == "assigned_count":
+                    weight = float(members.shape[0])
+                else:
+                    raise ValueError(f"Unsupported prototype_weight_mode: {prototype_weight_mode}")
             prototypes.append(center)
             prototype_labels.append(label)
             prototype_radii.append(radius)
+            prototype_weights.append(weight)
             prototype_is_old.append(label in old)
 
     return CompressedMemory(
         prototype_matrix=_normalize_rows(np.vstack(prototypes)),
         prototype_labels=np.asarray(prototype_labels, dtype=object),
         prototype_radii=np.asarray(prototype_radii, dtype=np.float64),
+        prototype_weights=np.asarray(prototype_weights, dtype=np.float64),
         prototype_is_old=np.asarray(prototype_is_old, dtype=bool),
         counts=counts,
     )
@@ -205,11 +217,13 @@ def predict_compressed_memory(
     *,
     old_bias: float = 0.0,
     radius_weight: float = 0.0,
+    weight_scale: float = 0.0,
 ) -> np.ndarray:
     query = _normalize_rows(query_features)
     scores = query @ memory.prototype_matrix.T
     scores = scores + (memory.prototype_is_old.astype(np.float64) * float(old_bias))[None, :]
     scores = scores - (memory.prototype_radii * float(radius_weight))[None, :]
+    scores = scores + (np.log(np.maximum(memory.prototype_weights, 1e-12)) * float(weight_scale))[None, :]
     best = np.argmax(scores, axis=1)
     return memory.prototype_labels[best]
 
@@ -261,8 +275,10 @@ def _evaluate_combo(
     new_target: float,
     prototypes_per_class: int,
     prototype_mode: str,
+    prototype_weight_mode: str,
     old_bias: float,
     radius_weight: float,
+    weight_scale: float,
     seed: int,
 ) -> dict[str, Any]:
     support_indices: list[int] = []
@@ -287,6 +303,7 @@ def _evaluate_combo(
         old_labels=old_labels,
         prototypes_per_class=prototypes_per_class,
         prototype_mode=prototype_mode,
+        prototype_weight_mode=prototype_weight_mode,
         seed=seed,
     )
     old_query_idx = np.asarray(old_query_indices, dtype=int)
@@ -298,6 +315,7 @@ def _evaluate_combo(
         features[query_idx],
         old_bias=old_bias,
         radius_weight=radius_weight,
+        weight_scale=weight_scale,
     )
     old_pred = pred[: old_query_idx.size]
     old_truth = truth[: old_query_idx.size]
@@ -314,7 +332,7 @@ def _evaluate_combo(
 
     return {
         "new_tx_ids": list(combo),
-        "method": f"cproto_{prototype_mode}_p{prototypes_per_class}_oldbias{old_bias:g}_rad{radius_weight:g}",
+        "method": f"cproto_{prototype_mode}_{prototype_weight_mode}_p{prototypes_per_class}_oldbias{old_bias:g}_rad{radius_weight:g}_w{weight_scale:g}",
         "old_acc": old_acc,
         "seen_new_acc": seen_new_acc,
         "min_seen_new_class_acc": min_new_acc,
@@ -328,6 +346,7 @@ def _evaluate_combo(
         "old_query_count": int(old_query_idx.size),
         "new_query_count": int(new_query_idx.size),
         "stored_prototype_count": int(memory.prototype_matrix.shape[0]),
+        "stored_weight_count": int(memory.prototype_weights.shape[0]),
         "stored_support_count": 0,
     }
 
@@ -352,8 +371,10 @@ def main() -> None:
     parser.add_argument("--max_pair_candidates", type=int, default=50)
     parser.add_argument("--prototypes_per_class", default="1,2")
     parser.add_argument("--prototype_mode_grid", default="mean")
+    parser.add_argument("--prototype_weight_mode_grid", default="uniform")
     parser.add_argument("--old_bias_grid", default="0,0.02,0.04,0.06,0.08,0.1,0.12,0.14,0.16")
     parser.add_argument("--radius_weight_grid", default="0,0.25,0.5")
+    parser.add_argument("--weight_scale_grid", default="0")
     args = parser.parse_args()
 
     data = np.load(Path(args.feature_npz), allow_pickle=True)
@@ -380,25 +401,29 @@ def main() -> None:
     rows: list[dict[str, Any]] = []
     for combo in itertools.combinations(selected, int(args.combo_size)):
         for prototype_mode in _parse_csv(args.prototype_mode_grid):
-            for prototypes_per_class in [int(v) for v in _parse_csv(args.prototypes_per_class)]:
-                for old_bias in _parse_float_csv(args.old_bias_grid):
-                    for radius_weight in _parse_float_csv(args.radius_weight_grid):
-                        rows.append(
-                            _evaluate_combo(
-                                tuple(combo),
-                                features,
-                                tx_ids,
-                                old_splits,
-                                new_splits,
-                                args.old_target,
-                                args.seen_new_target,
-                                prototypes_per_class,
-                                prototype_mode,
-                                old_bias,
-                                radius_weight,
-                                args.seed,
-                            )
-                        )
+            for prototype_weight_mode in _parse_csv(args.prototype_weight_mode_grid):
+                for prototypes_per_class in [int(v) for v in _parse_csv(args.prototypes_per_class)]:
+                    for old_bias in _parse_float_csv(args.old_bias_grid):
+                        for radius_weight in _parse_float_csv(args.radius_weight_grid):
+                            for weight_scale in _parse_float_csv(args.weight_scale_grid):
+                                rows.append(
+                                    _evaluate_combo(
+                                        tuple(combo),
+                                        features,
+                                        tx_ids,
+                                        old_splits,
+                                        new_splits,
+                                        args.old_target,
+                                        args.seen_new_target,
+                                        prototypes_per_class,
+                                        prototype_mode,
+                                        prototype_weight_mode,
+                                        old_bias,
+                                        radius_weight,
+                                        weight_scale,
+                                        args.seed,
+                                    )
+                                )
     rows.sort(
         key=lambda row: (
             bool(row["passes_joint_target"]),
@@ -442,6 +467,7 @@ def main() -> None:
         "per_new_acc",
         "support_count",
         "stored_prototype_count",
+        "stored_weight_count",
         "stored_support_count",
     ]
     with output_csv.open("w", encoding="utf-8", newline="") as handle:
