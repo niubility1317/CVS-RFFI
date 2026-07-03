@@ -3958,6 +3958,33 @@ conda run --no-capture-output -n ssr-gpu python -m pytest code/tests/test_collab
 
 成功标准仍为：old_acc≥`0.99`且各old类≥`0.95`，seen_new_acc≥`0.97`且各seen-new类≥`0.93`，unknown拒识≥`0.99`。未达到时只能作为diagnostic evidence。
 
+### N607结果
+
+远端使用`/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python`，同步后三个文件哈希与本地安全修正版一致。运行前8张RTX3090均约`10/24576MiB`，选择GPU0；运行后8张GPU均回到`10/24576MiB`。本地无`ssh.exe`残留，无N607和bridge 22端口ESTABLISHED连接。
+
+输出文件：
+
+|artifact|path|SHA256|
+|---|---|---|
+|JSON|`runs/phase2_adv3b02_collab_open_set_qknn_full_20260703/collab_open_set_qknn_candidate_set_cvs_sr_pairfuse_floor_risklabels_evt095_adv3b02.json`|`0CBD161088929328DCD31F47B79581FE3342A11CEB720F92CC454C7A44A7E9F5`|
+|CSV|`runs/phase2_adv3b02_collab_open_set_qknn_full_20260703/collab_open_set_qknn_candidate_set_cvs_sr_pairfuse_floor_risklabels_evt095_adv3b02_evidence.csv`|`B353C30D6FD2FBBE3C42B6811AAA7F5744286B95019DFF2B66418124C97C0AE9`|
+
+协同接收机数量覆盖`1..5`，观察到的target receiver为`20-1,3-19,7-14,7-7,8-8`。本轮仍是`receiver_domain_ranked`诊断，不等同严格同事件卫星群协同。
+
+|k|old_acc|min_old|seen_new_acc|min_seen|unknown_FAR|unknown_reject|defer|avg_rx|bytes/event|p95 ms|boundary_hit|soft_applied|strong_bypass|
+|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+|1|0.0000|0.0000|0.0000|0.0000|0.0000|0.9667|0.1327|1.0000|40.0|0.1045|0.0000|0.0000|0.0000|
+|2|0.4408|0.0000|0.4314|0.1500|0.1429|0.8571|0.0000|2.0000|80.0|0.1045|0.1270|0.0714|0.0556|
+|3|0.6833|0.1500|0.6250|0.3500|0.1250|0.8750|0.0000|3.0000|120.0|0.1045|0.3200|0.2350|0.0850|
+|4|0.8750|0.7000|0.5750|0.2500|0.1750|0.8250|0.0000|3.7400|149.6|0.1045|0.3050|0.1700|0.1350|
+|5|0.8500|0.7000|0.5750|0.2500|0.1250|0.8750|0.0000|4.1950|167.8|0.1045|0.4300|0.2500|0.1800|
+
+判定：`soft_floor+strong_bypass`没有达到目标，也没有优于上一轮`sr_pairfuse_soft14_7_noguardbase_evt095`。它在k=4/k=5保留较高old_acc（`0.8750/0.8500`），但seen-new显著下降到`0.5750/0.5750`，unknown拒识仅`0.8250/0.8750`，距离`0.99`仍很远。k=2最低old类为`0.0000`，说明该风险表在低协同数量下仍会误伤类别，不具备部署或论文成功声明条件。
+
+监督修正：子agent指出默认强证据门槛全为0时会真空bypass，以及shell缺失可能被绕过。已在本轮安全修正提交`93cb0c7`中处理：强证据bypass必须至少配置一个正门槛，且`shell_missing_failed`不得bypass；同时增加`candidate_set_pairguard_boundary_hit_count/rate/by_role`和`candidate_set_pairguard_soft_strong_bypass_count/rate/by_role`用于审计。
+
+下一步建议：放弃基于unknown错误分布手工列举label/receiver pair的主线化叙述。更合理路线是把文献子agent建议落到可验证算法：冻结`z_id`主干，使用source/support校准的receiver reliability和prototype开集门控，加入可回滚的轻量adapter/TTA，但阈值和风险先验必须来自source/support/proxy-known，不能来自unknown query错误分布。
+
 ## 2026-07-04 SR-PairFuse软pairguard执行计划
 
 ### 设计依据
