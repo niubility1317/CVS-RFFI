@@ -402,16 +402,31 @@ def fit_apply(args: argparse.Namespace) -> dict[str, Any]:
                 else:
                     clean_identity_loss = torch.zeros((), dtype=z_hat.dtype, device=z_hat.device)
                     clean_margin_loss = torch.zeros((), dtype=z_hat.dtype, device=z_hat.device)
-                if unknown_x is not None and float(args.unknown_repulsion_weight) > 0:
+                if unknown_x is not None and (
+                    float(args.unknown_repulsion_weight) > 0
+                    or float(args.unknown_identity_weight) > 0
+                    or float(args.unknown_oldness_nonincrease_weight) > 0
+                ):
                     unk_count = int(unknown_x.shape[0])
                     unk_bs = min(int(args.unknown_batch_size), unk_count)
                     unk_idx = torch.randint(0, unk_count, (unk_bs,), device=device)
                     z_unknown = unknown_x.index_select(0, unk_idx)
-                    unknown_logits = _proto_logits(adapter(z_unknown), prototypes.detach(), float(args.proto_temperature))
+                    z_unknown_hat = adapter(z_unknown)
+                    unknown_logits = _proto_logits(z_unknown_hat, prototypes.detach(), float(args.proto_temperature))
+                    unknown_logits_before = _proto_logits(z_unknown, prototypes.detach(), float(args.proto_temperature)).detach()
                     unknown_max = unknown_logits.max(dim=1).values
+                    unknown_max_before = unknown_logits_before.max(dim=1).values
                     unknown_loss = F.softplus(unknown_max - float(unknown_source_threshold)).mean()
+                    unknown_identity_loss = F.smooth_l1_loss(z_unknown_hat, z_unknown) + (
+                        1.0 - F.cosine_similarity(z_unknown_hat, z_unknown, dim=1)
+                    ).mean()
+                    unknown_nonincrease_loss = F.relu(
+                        unknown_max - unknown_max_before - float(args.unknown_oldness_slack)
+                    ).mean()
                 else:
                     unknown_loss = torch.zeros((), dtype=z_hat.dtype, device=z_hat.device)
+                    unknown_identity_loss = torch.zeros((), dtype=z_hat.dtype, device=z_hat.device)
+                    unknown_nonincrease_loss = torch.zeros((), dtype=z_hat.dtype, device=z_hat.device)
                 loss = (
                     float(args.pair_weight) * pair_loss
                     + float(args.cos_weight) * cos_loss
@@ -421,6 +436,8 @@ def fit_apply(args: argparse.Namespace) -> dict[str, Any]:
                     + float(args.margin_retention_weight) * margin_loss
                     + float(args.clean_margin_weight) * clean_margin_loss
                     + float(args.unknown_repulsion_weight) * unknown_loss
+                    + float(args.unknown_identity_weight) * unknown_identity_loss
+                    + float(args.unknown_oldness_nonincrease_weight) * unknown_nonincrease_loss
                     + float(args.group_floor_weight) * group_floor_loss
                 )
                 opt.zero_grad(set_to_none=True)
@@ -447,6 +464,9 @@ def fit_apply(args: argparse.Namespace) -> dict[str, Any]:
         "margin_retention_weight": float(args.margin_retention_weight),
         "clean_margin_weight": float(args.clean_margin_weight),
         "unknown_repulsion_weight": float(args.unknown_repulsion_weight),
+        "unknown_identity_weight": float(args.unknown_identity_weight),
+        "unknown_oldness_nonincrease_weight": float(args.unknown_oldness_nonincrease_weight),
+        "unknown_oldness_slack": float(args.unknown_oldness_slack),
         "group_floor_weight": float(args.group_floor_weight),
         "group_floor_fields": str(args.group_floor_fields),
         "source_unknown_npz": [str(x) for x in args.source_unknown_npz or []],
@@ -456,7 +476,14 @@ def fit_apply(args: argparse.Namespace) -> dict[str, Any]:
         "uses_target_clean": False,
         "uses_target_labels": False,
         "uses_unknown_query_for_training": False,
-        "uses_source_proxy_unknown_training": bool(unknown_x is not None and float(args.unknown_repulsion_weight) > 0),
+        "uses_source_proxy_unknown_training": bool(
+            unknown_x is not None
+            and (
+                float(args.unknown_repulsion_weight) > 0
+                or float(args.unknown_identity_weight) > 0
+                or float(args.unknown_oldness_nonincrease_weight) > 0
+            )
+        ),
         "logits": "cosine_to_source_clean_prototypes_after_adapter",
     }
     out_arrays = _adapt_payload_arrays(
@@ -517,6 +544,9 @@ def fit_apply(args: argparse.Namespace) -> dict[str, Any]:
             "margin_retention_weight": float(args.margin_retention_weight),
             "clean_margin_weight": float(args.clean_margin_weight),
             "unknown_repulsion_weight": float(args.unknown_repulsion_weight),
+            "unknown_identity_weight": float(args.unknown_identity_weight),
+            "unknown_oldness_nonincrease_weight": float(args.unknown_oldness_nonincrease_weight),
+            "unknown_oldness_slack": float(args.unknown_oldness_slack),
             "group_floor_weight": float(args.group_floor_weight),
         },
         "source_unknown_npz": [str(x) for x in args.source_unknown_npz or []],
@@ -534,7 +564,14 @@ def fit_apply(args: argparse.Namespace) -> dict[str, Any]:
             "uses_target_clean": False,
             "uses_target_labels": False,
             "uses_unknown_query_for_training": False,
-            "uses_source_proxy_unknown_training": bool(unknown_x is not None and float(args.unknown_repulsion_weight) > 0),
+            "uses_source_proxy_unknown_training": bool(
+                unknown_x is not None
+                and (
+                    float(args.unknown_repulsion_weight) > 0
+                    or float(args.unknown_identity_weight) > 0
+                    or float(args.unknown_oldness_nonincrease_weight) > 0
+                )
+            ),
             "test_features_written_from_satellite_npz_only": True,
             "uses_clean_clean_identity_training": bool(float(args.clean_identity_weight) > 0),
             "uses_source_group_floor_training": bool(float(args.group_floor_weight) > 0),
@@ -585,6 +622,9 @@ def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
     parser.add_argument("--source_unknown_npz", action="append", default=[])
     parser.add_argument("--unknown_roles", default="proxy_unknown")
     parser.add_argument("--unknown_repulsion_weight", type=float, default=0.0)
+    parser.add_argument("--unknown_identity_weight", type=float, default=0.0)
+    parser.add_argument("--unknown_oldness_nonincrease_weight", type=float, default=0.0)
+    parser.add_argument("--unknown_oldness_slack", type=float, default=0.0)
     parser.add_argument("--group_floor_weight", type=float, default=0.0)
     parser.add_argument("--group_floor_fields", default="tx,rx")
     parser.add_argument("--unknown_source_quantile", type=float, default=0.05)

@@ -2235,3 +2235,50 @@ Interpretation:
 | `rx7_14` improves but is not decisive | best old acc 0.8762 and floor 0.8615, but FAR 0.9111/0.9425 | do not promote as global solution |
 
 Current decision after V25: target1 remains not globally achieved and target2 remains not achieved. Feature repair based only on clean-minus-LEO residuals, whether low-rank or local-memory, is insufficient because it improves or preserves known-old geometry while still increasing unknown oldness. The next feature route must introduce an explicit open-set preserving objective or representation-level retraining, not another residual-only post-adapter.
+
+## V26 Open-Set Contract Feature Adapter Design
+
+V26 addresses the V24/V25 failure mode directly: residual-only feature repair preserves or improves known-old geometry but increases unknown oldness. V26 keeps the frozen`ADV3B02_CORE90_SOFT_E200phase1`feature basis and source-only adapter training, but adds an explicit source proxy_unknown feature contract:
+
+```text
+unknown_repulsion: softplus(max_old_logit(adapter(z_proxy_unknown)) - source_old_q05)
+unknown_identity:  smooth_l1(adapter(z_proxy_unknown), z_proxy_unknown) + cosine_identity_loss
+unknown_oldness_nonincrease: ReLU(max_old_after - max_old_before - slack)
+```
+
+This keeps the correction feature-level and source-only. It still does not use target clean, target labels, target unknown labels, or unknown query thresholds for training or selection.
+
+| Item | V26 setting |
+|---|---|
+| Phase1 backbone | Frozen`ADV3B02_CORE90_SOFT_E200phase1` |
+| Training pairs | source clean/LEO pairs from`source_leo_clear_weak`,`source_leo_low_elev_weak`,`source_leo_rain_weak` |
+| Open-set source | each cell's `proxy_unknown` rows only |
+| New loss terms | proxy_unknown identity + proxy_unknown oldness non-increase |
+| Adapter candidates | `LEOADAPT8_OSCONTRACT_LINR`, `LEOADAPT8_OSCONTRACT_MLP`, `LEOADAPT8_OLDREC_OS_MLP`, `LEOADAPT8_STRICTUNK_LINR` |
+| Post-export guard | oldness-capped identity fallback with caps`0.00,0.03,0.05` |
+| Target clean use | none |
+| Target labels in training/model selection | none |
+| Unknown query threshold fitting | none |
+
+New/modified local files:
+
+| File | Purpose | SHA256 |
+|---|---|---|
+| `E:\type10-7\code\scripts\fit_apply_phase1_leo_feature_adapter.py` | Adds proxy_unknown identity and oldness non-increase losses | `DF8EE2AE521C7F237153190E48ECC560B75F0CF1E5EE496C4233A16D6E831992` |
+| `E:\type10-7\code\scripts\sweep_phase1_adv3b02_oscontract_target1_v26_20260703.sh` | N607 V26 launcher and same-row summarizer | `2005DC70E794A0183804EBB5D84B341FFA08B6391751D4586DA36DF25BA3B1A2` |
+
+Local verification:
+
+| Command | Result |
+|---|---|
+| `C:\Users\lh594\.conda\envs\ssr-gpu\python.exe -m py_compile E:\type10-7\code\scripts\fit_apply_phase1_leo_feature_adapter.py E:\type10-7\code\scripts\eval_phase1_target1_strong_repair_audit_20260703.py E:\type10-7\code\scripts\build_phase1_oldness_capped_blends_20260703.py` | PASS |
+| `bash -lc "bash -n /mnt/e/type10-7/code/scripts/sweep_phase1_adv3b02_oscontract_target1_v26_20260703.sh"` | PASS |
+
+Planned N607 output:
+
+| Artifact | Remote path |
+|---|---|
+| V26 log root | `/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_adv3b02_oscontract_target1_v26_20260703` |
+| V26 summary | `/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_adv3b02_oscontract_target1_v26_20260703/target1_strong_v26_summary.csv` |
+| V26 metrics JSON | `/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_adv3b02_oscontract_target1_v26_20260703/target1_strong_v26_metrics.json` |
+| V26 best JSON | `/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_adv3b02_oscontract_target1_v26_20260703/target1_strong_v26_best.json` |
