@@ -109,9 +109,48 @@ ssh -o BatchMode=yes N607 'cd /home/szu2070436088/2510044040/CV-SincNet && mkdir
 
 | 项 | 状态 |
 |---|---|
-| Git-backed镜像提交 | 本地镜像已生成，提交待完成 |
-| N607重新preflight和占用检查 | 待完成 |
-| 远程同步、hash、syntax、dry-run | 待完成 |
-| 远程运行 | 待完成 |
-| 严格逐类结果解析 | 待完成 |
-| 若发现通过行，生成同一候选的确认报告并更新完成判定 | 待完成 |
+| Git-backed镜像提交 | PASS：代码和初始报告提交`8dc7ba1`，preflight报告提交`e0e5ab3` |
+| N607重新preflight和占用检查 | PASS：启动前库存`gpu_compute=[]`、`active_training_processes=[]` |
+| 远程同步、hash、syntax、dry-run | PASS：脚本hash匹配，本地/远程语法检查通过，远程dry-run显示候选池135且`--unknown_tx_ids`计数0 |
+| 远程运行 | PASS：`scheduler_pid=1296088`，运行已完成并生成JSON/CSV/日志 |
+| 严格逐类结果解析 | PASS：`joint_pass_count=129` |
+| 完成判定 | PASS：同一行`19-3,3-8`+`knn1`达到旧类84.58%、新类`19-3`82.50%、新类`3-8`85.00%，满足旧类>=80%、每个新类>=65%、至少2个新类、未知类不计入 |
+
+## 远程验证和运行证据
+
+| 检查 | 证据 |
+|---|---|
+| 远程脚本hash | `phase2_newtx_pair_sweep.py`为`615c37b95e2a6b50e32cdbb9bfdd1246d9b028ae63b0e69fa58c2dbac447b169`；launcher为`a81c0490a3d36485a5a7074faab1d7ac6459d70eed8d7b41fe798b95c8d61332` |
+| 远程报告hash | 同步后`report.md`为`fbff3ec080380d8a5087e38b8bead584043a6dd9052405cf324c356b4f653111` |
+| 远程dry-run | `target_new_pool_count=135`，`unknown_policy=excluded_from_export_eval_and_success_metrics`，`strict_success=old_acc>=0.80 min_per_new_class_acc>=0.65`，`unknown_tx_ids_count=0` |
+| 启动 | `scheduler_pid=1296088` |
+| 完成 | `features.npz`、`pair_sweep_strict.json`、`pair_sweep_strict.csv`均生成 |
+| 日志扫描 | 本地拉回`scheduler.out`和`pair_sweep.out`后，未发现`Traceback`、`RuntimeError`、CUDA OOM、`unrecognized argument`、`ValueError`、`KeyError`或`ERROR` |
+
+## 结果产物
+
+| 文件 | SHA256 |
+|---|---|
+| `pair_sweep_strict.json` | `6B69AC0B440DFD740B8EC7D05DAEE21F7744B4A9A19DA66684714D351FEA3698` |
+| `pair_sweep_strict.csv` | `DA9BBB17FEFD655AC397647507795747D9E1EA19CBE47E360EE2988025586069` |
+| `pair_sweep.out` | `7353BCE704FCFDE993DC6198C27D43D548E13B470A08309BAD09030B764C15C5` |
+| `scheduler.out` | `B1FE88439DD7CD89CAE1D712ABFA3C9437F0FDC04C1E5617F65182FCE8252BD7` |
+| `remote_dry_run.out` | `0ADC5C81A261957E2109798ED6E834C1B973A21663365145634EEFAC8FCF58CB` |
+
+## 严格通过行
+
+排序标准为先满足`passes_joint_target`，再按`min_seen_new_class_acc`、`old_acc`、`H_old_new`降序。以下每一行均为同一候选同一方法的联合指标，不混用单独极值。
+
+| 新类TX组合 | 方法 | 旧类准确率 | 新类均值准确率 | 新类逐类最低 | H_old_new | 逐类新类准确率 | 判定 |
+|---|---|---:|---:|---:|---:|---|---|
+| `19-3,3-8` | `knn1` | 84.58% | 83.75% | 82.50% | 0.8400 | `19-3`:82.50%;`3-8`:85.00% | PASS |
+| `1-8,19-3` | `knn1` | 84.17% | 82.50% | 82.50% | 0.8333 | `1-8`:82.50%;`19-3`:82.50% | PASS |
+| `19-3,6-6` | `knn1` | 83.33% | 80.00% | 77.50% | 0.8163 | `19-3`:82.50%;`6-6`:77.50% | PASS |
+| `19-3,2-13` | `knn1` | 85.42% | 78.75% | 75.00% | 0.8195 | `19-3`:82.50%;`2-13`:75.00% | PASS |
+| `3-8,6-6` | `knn1` | 84.58% | 77.50% | 75.00% | 0.8094 | `3-8`:80.00%;`6-6`:75.00% | PASS |
+
+## 结论
+
+本轮目标在当前严格定义下已达成：`ADV3B02_CORE90_SOFT_E200`导出的`7-14`目标接收机LEO叠加特征上，使用目标旧类K-shot support和目标新类K-shot support的`knn1`少样本头，在`19-3,3-8`两个新类同时加入时达到旧类84.58%、新类`19-3`82.50%、新类`3-8`85.00%。该行不包含未知类拒识，query规模为旧类240、新类80，support规模为80。
+
+声明边界：这是Phase2-C的target-support非参数少样本决策头，不是OA-MSE正式头成功；若后续论文需要把它写成主方法，应将`knn1`少样本头注册为明确候选头并在`eval_spaceborne_fewshot.py`内形成同等指标输出。对本次用户目标而言，该行满足“旧类>=80%、每个新类>=65%、2个及以上新类、未知类不计入”的同一行完成条件。
