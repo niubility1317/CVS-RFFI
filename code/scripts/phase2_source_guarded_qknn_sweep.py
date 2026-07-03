@@ -111,6 +111,7 @@ def _build_support_bank(
     support_indices: list[int],
     support_labels: list[str],
     old_labels: set[str],
+    support_scenarios: np.ndarray | None = None,
 ) -> dict[str, np.ndarray]:
     support_features = _normalize_rows(features[np.asarray(support_indices, dtype=int)])
     labels = np.asarray(support_labels, dtype=object).astype(str)
@@ -132,7 +133,57 @@ def _build_support_bank(
         "is_old": np.asarray([str(label) in old_labels for label in labels], dtype=bool),
         "radii_by_support": radii_by_support,
         "class_labels": np.asarray(class_labels, dtype=object),
+        "scenarios": None if support_scenarios is None else np.asarray(support_scenarios, dtype=object).astype(str),
     }
+
+
+def _predict_from_bank(
+    bank: dict[str, np.ndarray],
+    query_features: np.ndarray,
+    *,
+    topk: int,
+    old_bias: float,
+    radius_norm: float,
+    query_scenarios: np.ndarray | None = None,
+    scenario_aware: bool = False,
+) -> np.ndarray:
+    query = _normalize_rows(query_features)
+    if not scenario_aware:
+        scores = query @ bank["features"].T
+        if float(radius_norm) != 0.0:
+            denom = np.power(np.maximum(bank["radii_by_support"], 1e-4), float(radius_norm))[None, :]
+            scores = 1.0 - ((1.0 - scores) / denom)
+        if float(old_bias) != 0.0:
+            scores = scores + bank["is_old"].astype(np.float64)[None, :] * float(old_bias)
+        return _classwise_topk_predict(scores, bank["labels"], topk)
+
+    support_scenarios = bank.get("scenarios")
+    if support_scenarios is None or query_scenarios is None:
+        raise ValueError("scenario_aware requires support and query scenario labels")
+
+    query_scenarios = np.asarray(query_scenarios, dtype=object).astype(str)
+    pred = np.empty(query.shape[0], dtype=object)
+    for scenario in sorted({str(value) for value in query_scenarios.tolist()}):
+        query_mask = query_scenarios == scenario
+        support_mask = support_scenarios == scenario
+        # Fallback keeps the head usable when a K-shot support draw misses a scenario.
+        if int(np.sum(support_mask)) < max(1, int(topk)) or len(set(bank["labels"][support_mask].tolist())) < 2:
+            support_mask = np.ones_like(support_mask, dtype=bool)
+        sub_bank = {
+            "features": bank["features"][support_mask],
+            "labels": bank["labels"][support_mask],
+            "is_old": bank["is_old"][support_mask],
+            "radii_by_support": bank["radii_by_support"][support_mask],
+        }
+        pred[query_mask] = _predict_from_bank(
+            sub_bank,
+            query[query_mask],
+            topk=topk,
+            old_bias=old_bias,
+            radius_norm=radius_norm,
+            scenario_aware=False,
+        )
+    return pred
 
 
 def _evaluate_row(
@@ -143,6 +194,7 @@ def _evaluate_row(
     source_label: np.ndarray,
     source_conf: np.ndarray,
     source_margin: np.ndarray,
+    scenarios: np.ndarray,
     old_splits: dict[str, tuple[np.ndarray, np.ndarray]],
     new_splits: dict[str, tuple[np.ndarray, np.ndarray]],
     old_labels: list[str],
@@ -152,6 +204,7 @@ def _evaluate_row(
     source_guard_mode: str,
     source_conf_min: float,
     source_margin_min: float,
+    scenario_aware: bool,
     old_target: float,
     old_floor: float,
     new_target: float,
@@ -172,15 +225,23 @@ def _evaluate_row(
         support_labels.extend([label] * int(support.size))
         new_query_indices.extend(query.tolist())
 
-    bank = _build_support_bank(features, support_indices, support_labels, set(old_labels))
+    bank = _build_support_bank(
+        features,
+        support_indices,
+        support_labels,
+        set(old_labels),
+        support_scenarios=scenarios[np.asarray(support_indices, dtype=int)] if scenario_aware else None,
+    )
     query_idx = np.asarray(old_query_indices + new_query_indices, dtype=int)
-    scores = _normalize_rows(features[query_idx]) @ bank["features"].T
-    if float(radius_norm) != 0.0:
-        denom = np.power(np.maximum(bank["radii_by_support"], 1e-4), float(radius_norm))[None, :]
-        scores = 1.0 - ((1.0 - scores) / denom)
-    if float(old_bias) != 0.0:
-        scores = scores + bank["is_old"].astype(np.float64)[None, :] * float(old_bias)
-    pred = _classwise_topk_predict(scores, bank["labels"], topk)
+    pred = _predict_from_bank(
+        bank,
+        features[query_idx],
+        topk=topk,
+        old_bias=old_bias,
+        radius_norm=radius_norm,
+        query_scenarios=scenarios[query_idx] if scenario_aware else None,
+        scenario_aware=scenario_aware,
+    )
 
     if source_guard_mode != "none":
         old_label_array = np.asarray(old_labels, dtype=object)
@@ -214,6 +275,7 @@ def _evaluate_row(
         "method": (
             f"source_guarded_qknn8_k{topk}_oldbias{old_bias:g}_rnorm{radius_norm:g}"
             f"_sg{source_guard_mode}_c{source_conf_min:g}_m{source_margin_min:g}"
+            f"{'_scenario' if scenario_aware else ''}"
         ),
         "old_acc": old_acc,
         "min_old_class_acc": min_old_acc,
@@ -232,6 +294,7 @@ def _evaluate_row(
         "new_query_count": int(len(new_query_indices)),
         "stored_quantized_count": int(len(support_indices)),
         "stored_support_count": 0,
+        "scenario_aware": bool(scenario_aware),
     }
 
 
@@ -254,6 +317,7 @@ def main() -> None:
     parser.add_argument("--source_guard_modes", default="none")
     parser.add_argument("--source_conf_min_grid", default="0")
     parser.add_argument("--source_margin_min_grid", default="0")
+    parser.add_argument("--scenario_aware_grid", default="false")
     parser.add_argument("--old_target", type=float, default=0.88)
     parser.add_argument("--old_floor", type=float, default=0.80)
     parser.add_argument("--seen_new_target", type=float, default=0.85)
@@ -265,6 +329,7 @@ def main() -> None:
     tx_ids = np.asarray(data["tx_ids"], dtype=object).astype(str)
     roles = np.asarray(data["dataset_role"], dtype=object).astype(str)
     logits = np.asarray(data["tx_logits"], dtype=np.float64)
+    scenarios = np.asarray(data["sat_scenarios"], dtype=object).astype(str)
     old_labels = _parse_csv(args.old_tx_ids)
     old_label_array = np.asarray(old_labels, dtype=object)
     source_idx = np.argmax(logits, axis=1)
@@ -296,29 +361,33 @@ def main() -> None:
                     for source_guard_mode in _parse_csv(args.source_guard_modes):
                         for source_conf_min in _parse_float_csv(args.source_conf_min_grid):
                             for source_margin_min in _parse_float_csv(args.source_margin_min_grid):
-                                rows.append(
-                                    _evaluate_row(
-                                        tuple(combo),
-                                        features=features,
-                                        tx_ids=tx_ids,
-                                        source_label=source_label,
-                                        source_conf=source_conf,
-                                        source_margin=source_margin,
-                                        old_splits=old_splits,
-                                        new_splits=new_splits,
-                                        old_labels=old_labels,
-                                        topk=topk,
-                                        old_bias=old_bias,
-                                        radius_norm=radius_norm,
-                                        source_guard_mode=source_guard_mode,
-                                        source_conf_min=source_conf_min,
-                                        source_margin_min=source_margin_min,
-                                        old_target=args.old_target,
-                                        old_floor=args.old_floor,
-                                        new_target=args.seen_new_target,
-                                        new_floor=args.seen_new_floor,
+                                for scenario_aware_raw in _parse_csv(args.scenario_aware_grid):
+                                    scenario_aware = str(scenario_aware_raw).lower() in {"1", "true", "yes", "y"}
+                                    rows.append(
+                                        _evaluate_row(
+                                            tuple(combo),
+                                            features=features,
+                                            tx_ids=tx_ids,
+                                            source_label=source_label,
+                                            source_conf=source_conf,
+                                            source_margin=source_margin,
+                                            scenarios=scenarios,
+                                            old_splits=old_splits,
+                                            new_splits=new_splits,
+                                            old_labels=old_labels,
+                                            topk=topk,
+                                            old_bias=old_bias,
+                                            radius_norm=radius_norm,
+                                            source_guard_mode=source_guard_mode,
+                                            source_conf_min=source_conf_min,
+                                            source_margin_min=source_margin_min,
+                                            scenario_aware=scenario_aware,
+                                            old_target=args.old_target,
+                                            old_floor=args.old_floor,
+                                            new_target=args.seen_new_target,
+                                            new_floor=args.seen_new_floor,
+                                        )
                                     )
-                                )
 
     rows.sort(
         key=lambda row: (
@@ -352,6 +421,7 @@ def main() -> None:
         "old_floor": float(args.old_floor),
         "seen_new_target": float(args.seen_new_target),
         "seen_new_floor": float(args.seen_new_floor),
+        "scenario_aware_grid": _parse_csv(args.scenario_aware_grid),
         "joint_pass_count": int(sum(1 for row in rows if row["passes_joint_target"])),
         "combo_rows": rows,
     }
@@ -370,6 +440,7 @@ def main() -> None:
         "support_count",
         "stored_quantized_count",
         "stored_support_count",
+        "scenario_aware",
     ]
     with output_csv.open("w", encoding="utf-8", newline="") as handle:
         writer = csv.DictWriter(handle, fieldnames=fieldnames)
