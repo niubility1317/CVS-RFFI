@@ -345,6 +345,9 @@ def _fuse_event(
     candidate_set_max_label_unknown_risk: float = 1.0,
     candidate_set_max_event_unknown_risk: float = 0.95,
     candidate_set_max_label_risk_component_agreement: float = 1.0,
+    candidate_set_event_high_unknown_risk_veto: float = 1.0e12,
+    candidate_set_max_label_high_unknown_risk_fraction: float = 1.0,
+    candidate_set_high_unknown_risk_threshold: float = 0.80,
     candidate_set_min_score_gap: float = 0.0,
     candidate_set_unknown_reject_risk: float = 0.80,
 ) -> dict[str, Any]:
@@ -751,6 +754,16 @@ def _fuse_event(
         min(label_class_conformal_count_values) if label_class_conformal_count_values else 0.0
     )
     label_unknown_risk = _percentile(selected_label_unknown_risk_values, unknown_quantile)
+    label_high_unknown_risk_fraction = (
+        sum(
+            1
+            for value in selected_label_unknown_risk_values
+            if value >= float(candidate_set_high_unknown_risk_threshold)
+        )
+        / len(selected_label_unknown_risk_values)
+        if selected_label_unknown_risk_values
+        else 0.0
+    )
     label_risk_component_agreement = (
         sum(selected_label_risk_component_votes) / len(selected_label_risk_component_votes)
         if selected_label_risk_component_votes
@@ -887,9 +900,16 @@ def _fuse_event(
         high_risk = effective_unknown_risk >= float(unknown_risk_threshold)
         multi_channel_risk = decision_risk_component_agreement >= float(scorer_component_vote_threshold)
         gate_passed, gate_reason = _class_set_gate_decision()
+        candidate_set_high_unknown_veto = bool(
+            policy == "candidate_set_cvs"
+            and label
+            and unknown_risk >= float(candidate_set_event_high_unknown_risk_veto)
+            and label_high_unknown_risk_fraction >= float(candidate_set_max_label_high_unknown_risk_fraction)
+        )
         candidate_set_accept = bool(
             policy == "candidate_set_cvs"
             and output_label_set in {"old", "seen_new"}
+            and not candidate_set_high_unknown_veto
             and selected_label_candidate_receivers >= max(1, int(candidate_set_min_receivers))
             and selected_label_top1_receivers >= max(0, int(candidate_set_min_top1_receivers))
             and label_class_conformal_pvalue >= float(candidate_set_min_conformal_pvalue)
@@ -901,6 +921,9 @@ def _fuse_event(
         if candidate_set_accept:
             decision = "accept"
             output_label = label
+        elif policy == "candidate_set_cvs" and locals().get("candidate_set_high_unknown_veto", False):
+            decision = "unknown_reject"
+            output_label = UNKNOWN_LABEL
         elif policy == "candidate_set_cvs" and (
             unknown_risk >= float(candidate_set_unknown_reject_risk)
             or label_unknown_risk >= float(candidate_set_unknown_reject_risk)
@@ -1004,6 +1027,13 @@ def _fuse_event(
         "candidate_set_max_label_unknown_risk": float(candidate_set_max_label_unknown_risk),
         "candidate_set_max_event_unknown_risk": float(candidate_set_max_event_unknown_risk),
         "candidate_set_max_label_risk_component_agreement": float(candidate_set_max_label_risk_component_agreement),
+        "candidate_set_event_high_unknown_risk_veto": float(candidate_set_event_high_unknown_risk_veto),
+        "candidate_set_max_label_high_unknown_risk_fraction": float(
+            candidate_set_max_label_high_unknown_risk_fraction
+        ),
+        "candidate_set_high_unknown_risk_threshold": float(candidate_set_high_unknown_risk_threshold),
+        "candidate_set_label_high_unknown_risk_fraction": float(label_high_unknown_risk_fraction),
+        "candidate_set_high_unknown_veto": bool(locals().get("candidate_set_high_unknown_veto", False)),
         "candidate_set_min_score_gap": float(candidate_set_min_score_gap),
         "candidate_set_unknown_reject_risk": float(candidate_set_unknown_reject_risk),
         "output_label_set": output_label_set,
@@ -2171,6 +2201,9 @@ def evaluate_collaborative_open_set_evidence(
     candidate_set_max_label_unknown_risk: float = 1.0,
     candidate_set_max_event_unknown_risk: float = 0.95,
     candidate_set_max_label_risk_component_agreement: float = 1.0,
+    candidate_set_event_high_unknown_risk_veto: float = 1.0e12,
+    candidate_set_max_label_high_unknown_risk_fraction: float = 1.0,
+    candidate_set_high_unknown_risk_threshold: float = 0.80,
     candidate_set_min_score_gap: float = 0.0,
     candidate_set_unknown_reject_risk: float = 0.80,
     threshold_selection_label_scope: str = "support_known_only",
@@ -2421,6 +2454,11 @@ def evaluate_collaborative_open_set_evidence(
                     candidate_set_max_label_unknown_risk=candidate_set_max_label_unknown_risk,
                     candidate_set_max_event_unknown_risk=candidate_set_max_event_unknown_risk,
                     candidate_set_max_label_risk_component_agreement=candidate_set_max_label_risk_component_agreement,
+                    candidate_set_event_high_unknown_risk_veto=candidate_set_event_high_unknown_risk_veto,
+                    candidate_set_max_label_high_unknown_risk_fraction=(
+                        candidate_set_max_label_high_unknown_risk_fraction
+                    ),
+                    candidate_set_high_unknown_risk_threshold=candidate_set_high_unknown_risk_threshold,
                     candidate_set_min_score_gap=candidate_set_min_score_gap,
                     candidate_set_unknown_reject_risk=candidate_set_unknown_reject_risk,
                 )
@@ -2508,6 +2546,11 @@ def evaluate_collaborative_open_set_evidence(
         "candidate_set_max_label_unknown_risk": float(candidate_set_max_label_unknown_risk),
         "candidate_set_max_event_unknown_risk": float(candidate_set_max_event_unknown_risk),
         "candidate_set_max_label_risk_component_agreement": float(candidate_set_max_label_risk_component_agreement),
+        "candidate_set_event_high_unknown_risk_veto": float(candidate_set_event_high_unknown_risk_veto),
+        "candidate_set_max_label_high_unknown_risk_fraction": float(
+            candidate_set_max_label_high_unknown_risk_fraction
+        ),
+        "candidate_set_high_unknown_risk_threshold": float(candidate_set_high_unknown_risk_threshold),
         "candidate_set_min_score_gap": float(candidate_set_min_score_gap),
         "candidate_set_unknown_reject_risk": float(candidate_set_unknown_reject_risk),
         "counts": out_counts,

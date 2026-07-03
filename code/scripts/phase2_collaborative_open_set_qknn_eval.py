@@ -2257,6 +2257,11 @@ def run_evaluation(args: argparse.Namespace) -> dict[str, Any]:
         candidate_set_max_label_risk_component_agreement=float(
             args.candidate_set_max_label_risk_component_agreement
         ),
+        candidate_set_event_high_unknown_risk_veto=float(args.candidate_set_event_high_unknown_risk_veto),
+        candidate_set_max_label_high_unknown_risk_fraction=float(
+            args.candidate_set_max_label_high_unknown_risk_fraction
+        ),
+        candidate_set_high_unknown_risk_threshold=float(args.candidate_set_high_unknown_risk_threshold),
         candidate_set_min_score_gap=float(args.candidate_set_min_score_gap),
         candidate_set_unknown_reject_risk=float(args.candidate_set_unknown_reject_risk),
         threshold_selection_label_scope=str(metadata["threshold_scope"]),
@@ -2446,6 +2451,9 @@ def parse_args() -> argparse.Namespace:
     p.add_argument("--candidate_set_max_label_unknown_risk", type=float, default=1.0)
     p.add_argument("--candidate_set_max_event_unknown_risk", type=float, default=0.95)
     p.add_argument("--candidate_set_max_label_risk_component_agreement", type=float, default=1.0)
+    p.add_argument("--candidate_set_event_high_unknown_risk_veto", type=float, default=1.0e12)
+    p.add_argument("--candidate_set_max_label_high_unknown_risk_fraction", type=float, default=1.0)
+    p.add_argument("--candidate_set_high_unknown_risk_threshold", type=float, default=0.80)
     p.add_argument("--candidate_set_min_score_gap", type=float, default=0.0)
     p.add_argument("--candidate_set_unknown_reject_risk", type=float, default=0.80)
     p.add_argument("--evidence_packet_bytes", type=float, default=40.0)
