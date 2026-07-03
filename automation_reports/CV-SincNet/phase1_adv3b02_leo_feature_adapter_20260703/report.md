@@ -2169,7 +2169,7 @@ New local files:
 
 | File | Purpose | SHA256 |
 |---|---|---|
-| `E:\type10-7\code\scripts\build_phase1_local_residual_memory_20260703.py` | Build V25 local residual-memory repaired feature NPZs | `26F4D3B03E69AD352FA5EE83D5F16D0E0186F14F9D04644E65F47D194530F79B` |
+| `E:\type10-7\code\scripts\build_phase1_local_residual_memory_20260703.py` | Build V25 local residual-memory repaired feature NPZs | `01A481B1C3F486A25118702590E9E56D0729267548D2A7DCD7DAC1CEE67A9845` |
 | `E:\type10-7\code\scripts\sweep_phase1_adv3b02_localmem_target1_v25_20260703.sh` | N607 launcher and best-row summarizer for V25 | `AC3458BD0DA174F1B49FA435E6CE9D2EDEFCBF3B141F69AA59AAB762FA55B9F3` |
 
 Local verification:

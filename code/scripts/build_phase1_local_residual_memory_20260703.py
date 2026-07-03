@@ -229,6 +229,55 @@ def write_npz(
     np.savez(output_npz, **out)
 
 
+def write_npz_cached(
+    arrays: dict[str, np.ndarray],
+    output_npz: Path,
+    prototypes: np.ndarray,
+    corrections: np.ndarray,
+    max_sims: np.ndarray,
+    threshold: float,
+    *,
+    k: int,
+    alpha: float,
+    gate_scale: float,
+    local_temperature: float,
+    proto_temperature: float,
+    clean_control: bool,
+) -> None:
+    gate = 1.0 / (1.0 + np.exp(-(max_sims - float(threshold)) / max(float(gate_scale), 1.0e-6)))
+    repaired = np.asarray(arrays["features"], dtype=np.float32) + float(alpha) * gate.reshape(-1, 1).astype(np.float32) * corrections
+    out = dict(arrays)
+    out["features"] = repaired.astype(np.float32)
+    out["tx_logits"] = proto_logits(repaired, prototypes, proto_temperature).astype(np.float32)
+    out["local_residual_gate"] = gate.astype(np.float32)
+    out["local_residual_maxsim"] = max_sims.astype(np.float32)
+    manifest: dict[str, Any] = {}
+    if "manifest_json" in arrays:
+        try:
+            manifest = json.loads(str(np.asarray(arrays["manifest_json"]).item()))
+        except Exception:
+            manifest = {}
+    manifest.update({
+        "local_residual_memory_repair": {
+            "enabled": True,
+            "training_scope": "source_clean_to_source_leo_pairs_only",
+            "features_changed": True,
+            "k": int(k),
+            "alpha": float(alpha),
+            "threshold": float(threshold),
+            "gate_scale": float(gate_scale),
+            "local_temperature": float(local_temperature),
+            "clean_control": bool(clean_control),
+            "uses_target_clean": False,
+            "uses_target_labels": False,
+            "uses_unknown_query_for_training": False,
+        }
+    })
+    out["manifest_json"] = np.asarray(json.dumps(manifest, ensure_ascii=True))
+    output_npz.parent.mkdir(parents=True, exist_ok=True)
+    np.savez(output_npz, **out)
+
+
 def main(argv: Sequence[str] | None = None) -> int:
     p = argparse.ArgumentParser(description=__doc__)
     p.add_argument("--runs_root", type=Path, required=True)
@@ -259,49 +308,73 @@ def main(argv: Sequence[str] | None = None) -> int:
 
     rows = []
     run_ids = parse_csv(args.run_ids)
+    alphas = parse_float_csv(args.alphas)
     for k in parse_int_csv(args.ks):
-        for q, threshold in thresholds.items():
-            qtag = f"Q{int(q * 100 + 0.5):02d}"
-            for alpha in parse_float_csv(args.alphas):
-                atag = f"A{int(alpha * 100 + 0.5):03d}"
-                variant = f"LEOMEM1_K{int(k):03d}_{qtag}_{atag}"
-                for run_id in run_ids:
-                    run_dir = args.runs_root / run_id
-                    sat_npz = run_dir / str(args.sat_relpath)
-                    clean_npz = run_dir / str(args.clean_relpath)
-                    if not sat_npz.exists():
-                        rows.append({"run_id": run_id, "variant": variant, "status": "missing_sat", "path": str(sat_npz)})
-                        continue
+        for run_id in run_ids:
+            run_dir = args.runs_root / run_id
+            sat_npz = run_dir / str(args.sat_relpath)
+            clean_npz = run_dir / str(args.clean_relpath)
+            if not sat_npz.exists():
+                for q in thresholds:
+                    qtag = f"Q{int(q * 100 + 0.5):02d}"
+                    for alpha in alphas:
+                        atag = f"A{int(alpha * 100 + 0.5):03d}"
+                        rows.append({"run_id": run_id, "variant": f"LEOMEM1_K{int(k):03d}_{qtag}_{atag}", "status": "missing_sat", "path": str(sat_npz)})
+                continue
+            sat_arrays = load_npz(sat_npz)
+            sat_corr, sat_max = topk_local_residual(
+                sat_arrays["features"],
+                memory_features_n,
+                residuals,
+                k=int(k),
+                temperature=float(args.local_temperature),
+                chunk_size=int(args.chunk_size),
+            )
+            clean_arrays = load_npz(clean_npz) if clean_npz.exists() else None
+            if clean_arrays is not None:
+                clean_corr, clean_max = topk_local_residual(
+                    clean_arrays["features"],
+                    memory_features_n,
+                    residuals,
+                    k=int(k),
+                    temperature=float(args.local_temperature),
+                    chunk_size=int(args.chunk_size),
+                )
+            else:
+                clean_corr = clean_max = None
+            for q, threshold in thresholds.items():
+                qtag = f"Q{int(q * 100 + 0.5):02d}"
+                for alpha in alphas:
+                    atag = f"A{int(alpha * 100 + 0.5):03d}"
+                    variant = f"LEOMEM1_K{int(k):03d}_{qtag}_{atag}"
                     out_dir = run_dir / variant
-                    write_npz(
-                        sat_npz,
+                    write_npz_cached(
+                        sat_arrays,
                         out_dir / "features_leo_repaired.npz",
                         prototypes,
-                        memory_features_n,
-                        residuals,
+                        sat_corr,
+                        sat_max,
                         threshold,
                         k=int(k),
                         alpha=float(alpha),
                         gate_scale=float(args.gate_scale),
                         local_temperature=float(args.local_temperature),
                         proto_temperature=float(args.proto_temperature),
-                        chunk_size=int(args.chunk_size),
                         clean_control=False,
                     )
-                    if clean_npz.exists():
-                        write_npz(
-                            clean_npz,
+                    if clean_arrays is not None and clean_corr is not None and clean_max is not None:
+                        write_npz_cached(
+                            clean_arrays,
                             out_dir / "features_clean_repaired.npz",
                             prototypes,
-                            memory_features_n,
-                            residuals,
+                            clean_corr,
+                            clean_max,
                             threshold,
                             k=int(k),
                             alpha=float(alpha),
                             gate_scale=float(args.gate_scale),
                             local_temperature=float(args.local_temperature),
                             proto_temperature=float(args.proto_temperature),
-                            chunk_size=int(args.chunk_size),
                             clean_control=True,
                         )
                     rows.append({"run_id": run_id, "variant": variant, "status": "ok"})
