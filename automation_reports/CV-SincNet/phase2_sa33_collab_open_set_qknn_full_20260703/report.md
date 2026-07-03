@@ -153,6 +153,62 @@ python -u code/scripts/phase2_collaborative_open_set_qknn_eval.py \
 - 严格同事件协同因数据集缺少共享事件键被阻断，这是正确行为。
 - 可运行结果为`receiver_domain_ranked`诊断，性能未达目标：unknown FAR过高，old/seen-new per-class floor为0，不能作为部署成功证据。
 
+## 2026-07-03子agent监督签核
+
+该签核仅覆盖SA33任务，不替代ADV3B02相邻报告。监督结论：SA33链路已完成模块实现、N607同步、`CVS-RFFI`环境验证、星地信道评估和`1..5`协同数量诊断；但严格同事件卫星群协同未成立，当前只能标为`receiver_domain_ranked`诊断负例。
+
+|检查项|签核|证据/边界|
+|---|---|---|
+|指定权重|通过|使用`SA33_sa27_ch2_leo3_ce0p7_r010_20260527_204104`，checkpoint路径和SHA256已记录。|
+|协同数量`1..N`|通过但降级|结果覆盖5个target receivers的`1..5`；因缺少共享事件键，只能解释为receiver-domain ranked诊断。|
+|N607同步|通过|4个代码/测试文件已按本地优先流程scp到N607目标路径。|
+|远端Conda|通过|远端测试使用`source /opt/miniconda3/etc/profile.d/conda.sh && conda activate CVS-RFFI`。|
+|星地信道|通过|导出使用`simplified_leo_residual`和`leo_clear_weak,leo_low_elev_weak,leo_rain_weak`。|
+|低显存GPU测试|通过|启动前和测试后GPU记录为`10/24576MiB`级别；本轮未留下训练进程。|
+|报告持久化|通过|本报告已记录实验ID、命令、路径、指标和诊断结论。|
+|Git状态|部分通过|代码进入Git镜像提交；根目录不是Git仓库，镜像领先远端，未追踪文件不属于本轮，不能声明全项目Git闭环完成。|
+|本地优先|通过|本地`ssr-gpu`验证后再同步N607。|
+|SSH断开|通过|远端任务后检查无残留SSH连接。|
+|性能声明|通过但负结论|unknown FAR高，old/seen-new floor为0；不得写作Stage2-C成功、部署成功或论文主结论。|
+|下一步缺口|未完成|需要真实共享`event_id`或共享`role+tx+day+sig+scenario`的多接收机query，严格模式才可形成同事件协同证据。|
+
+## 2026-07-03当前代码复跑
+
+在SCORER-CVS组件隔离修复同步后，使用当前N607代码复跑SA33的`receiver_domain_ranked`全量评估。命令仍在`CVS-RFFI`环境中执行，输入为已有星地信道特征：
+
+```bash
+cd /home/szu2070436088/2510044040/CV-SincNet
+source /opt/miniconda3/etc/profile.d/conda.sh
+conda activate CVS-RFFI
+python code/scripts/phase2_collaborative_open_set_qknn_eval.py \
+  --feature_npz runs/phase2_sa33_collab_open_set_qknn_full_20260703/features.npz \
+  --output_json runs/phase2_sa33_collab_open_set_qknn_full_20260703/collab_open_set_qknn_ranked_current.json \
+  --output_evidence_csv runs/phase2_sa33_collab_open_set_qknn_full_20260703/collab_open_set_qknn_ranked_current_evidence.csv \
+  --collab_counts all \
+  --k_shot 8 \
+  --query_per_class 20 \
+  --qknn_k 8 \
+  --event_alignment_policy receiver_domain_ranked \
+  --seed 407040
+```
+
+运行前后8张RTX3090均为`10/24576MiB`，没有新增GPU显存占用。运行输出：`receiver_count=5`、`group_count=310`、`evidence_row_count=1000`。远端产物已拉回：
+
+- `automation_reports/CV-SincNet/phase2_sa33_collab_open_set_qknn_full_20260703/artifacts/collab_open_set_qknn_ranked_current.json`
+- `automation_reports/CV-SincNet/phase2_sa33_collab_open_set_qknn_full_20260703/artifacts/collab_open_set_qknn_ranked_current_evidence.csv`
+
+当前复跑结果，`active_risk_components=["score"]`：
+
+|协同receiver数|old_acc|min_old_class_acc|seen_new_acc|min_seen_new_class_acc|unknown_FAR|unknown_reject_rate|defer_rate|known_coverage|bytes/event|p95 latency ms|缺失seen-new类|
+|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---|
+|1|0.2211|0.0000|0.0333|0.0000|0.2167|0.5167|0.2968|0.2600|40|0.0796|无|
+|2|0.0946|0.0000|0.0000|0.0000|0.0227|0.3636|0.4625|0.0765|80|0.0796|无|
+|3|0.0833|0.0000|0.0000|0.0000|0.0000|0.2500|0.6350|0.0625|120|0.0796|无|
+|4|0.2065|0.0000|0.0000|0.0000|0.0556|0.2222|0.5375|0.1532|160|0.0796|无|
+|5|0.1600|0.0000|0.0000|0.0000|0.0500|0.0500|0.6333|0.1143|200|0.0796|`1-18`|
+
+判定：当前代码复跑后，SA33在该Stage2-C qknn8诊断下性能仍显著低于可部署目标，尤其old/seen-new per-class floor为0。该结果只能作为`receiver_domain_ranked`负例和后续算法设计输入，不能写作严格同事件协同、Stage2-C成功或部署成功。
+
 ## 下一步
 
 1. 若要真实卫星群同事件协同，需要导出或构造带共享事件ID的多接收机query。
