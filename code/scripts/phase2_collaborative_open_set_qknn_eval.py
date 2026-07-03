@@ -1445,6 +1445,7 @@ def build_collaborative_evidence(
     receiver_class_thresholds: dict[str, dict[str, float]] = {}
     receiver_class_conformal_scores: dict[str, dict[str, list[float]]] = {}
     receiver_class_reliabilities: dict[str, dict[str, float]] = {}
+    receiver_deployment_priors: dict[str, float] = {}
     receiver_virtual_unknowns: dict[str, np.ndarray] = {}
     receiver_virtual_unknown_counts: dict[str, int] = {}
     receiver_feature_adapters: dict[str, FeatureAdapter] = {}
@@ -1690,6 +1691,10 @@ def build_collaborative_evidence(
         receiver_class_thresholds[rx] = class_thresholds
         receiver_class_conformal_scores[rx] = conformal_scores
         receiver_class_reliabilities[rx] = class_reliabilities
+        prior_values = [float(value) for value in class_reliabilities.values()]
+        receiver_deployment_priors[rx] = (
+            float(sum(prior_values) / max(len(prior_values), 1)) if prior_values else 1.0
+        )
         receiver_virtual_unknown_counts[rx] = int(virtual_features.shape[0])
         receiver_virtual_unknowns[rx] = virtual_features if bool(virtual_unknown_risk_enabled) else np.zeros(
             (0, int(memory.centroids.shape[1])),
@@ -2061,6 +2066,8 @@ def build_collaborative_evidence(
                             "candidate_class_count": int(candidate_counts[0]),
                             "support_neighbor_count": int(support_neighbor_counts[0]),
                             "support_density": support_density,
+                            "receiver_deployment_prior": float(receiver_deployment_priors.get(rx, 1.0)),
+                            "receiver_deployment_prior_source": "support_calibrated_receiver_class_mean",
                             "prototype_score_blend": prototype_blend,
                             "prototype_assisted": int(prototype_blend > 0.0),
                             "prototype_calibration_policy": proto_cal_policy,
@@ -2336,6 +2343,16 @@ def run_evaluation(args: argparse.Namespace) -> dict[str, Any]:
         candidate_set_high_unknown_risk_threshold=float(args.candidate_set_high_unknown_risk_threshold),
         candidate_set_min_score_gap=float(args.candidate_set_min_score_gap),
         candidate_set_unknown_reject_risk=float(args.candidate_set_unknown_reject_risk),
+        dual_route_rescue_min_pvalue=float(args.dual_route_rescue_min_pvalue),
+        dual_route_rescue_min_receiver_class_reliability=float(
+            args.dual_route_rescue_min_receiver_class_reliability
+        ),
+        dual_route_rescue_max_label_unknown_risk=float(args.dual_route_rescue_max_label_unknown_risk),
+        dual_route_rescue_max_shell_risk=float(args.dual_route_rescue_max_shell_risk),
+        dual_route_rescue_max_component_agreement=float(args.dual_route_rescue_max_component_agreement),
+        dual_route_rescue_max_disagreement=float(args.dual_route_rescue_max_disagreement),
+        dual_route_rescue_max_unknown_risk_range=float(args.dual_route_rescue_max_unknown_risk_range),
+        dual_route_rescue_max_safety_unknown_risk=float(args.dual_route_rescue_max_safety_unknown_risk),
         threshold_selection_label_scope=str(metadata["threshold_scope"]),
         unknown_query_eval_only=True,
         receiver_selection_policy=str(args.receiver_selection_policy),
@@ -2469,7 +2486,14 @@ def parse_args() -> argparse.Namespace:
     p.add_argument(
         "--collaboration_policy",
         default="fixed_k",
-        choices=["fixed_k", "progressive_budget", "adaptive_gain", "support_utility", "rb_capr_utility"],
+        choices=[
+            "fixed_k",
+            "progressive_budget",
+            "adaptive_gain",
+            "support_utility",
+            "rb_capr_utility",
+            "dual_route_cvs",
+        ],
     )
     p.add_argument("--consensus_gap_threshold", type=float, default=0.0)
     p.add_argument("--consensus_score_threshold", type=float, default=0.0)
@@ -2534,6 +2558,14 @@ def parse_args() -> argparse.Namespace:
     p.add_argument("--candidate_set_high_unknown_risk_threshold", type=float, default=0.80)
     p.add_argument("--candidate_set_min_score_gap", type=float, default=0.0)
     p.add_argument("--candidate_set_unknown_reject_risk", type=float, default=0.80)
+    p.add_argument("--dual_route_rescue_min_pvalue", type=float, default=0.75)
+    p.add_argument("--dual_route_rescue_min_receiver_class_reliability", type=float, default=0.75)
+    p.add_argument("--dual_route_rescue_max_label_unknown_risk", type=float, default=0.60)
+    p.add_argument("--dual_route_rescue_max_shell_risk", type=float, default=0.80)
+    p.add_argument("--dual_route_rescue_max_component_agreement", type=float, default=0.34)
+    p.add_argument("--dual_route_rescue_max_disagreement", type=float, default=0.50)
+    p.add_argument("--dual_route_rescue_max_unknown_risk_range", type=float, default=0.50)
+    p.add_argument("--dual_route_rescue_max_safety_unknown_risk", type=float, default=0.80)
     p.add_argument("--evidence_packet_bytes", type=float, default=40.0)
     p.add_argument(
         "--receiver_reliability_policy",

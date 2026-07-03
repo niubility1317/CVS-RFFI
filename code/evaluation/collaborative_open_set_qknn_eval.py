@@ -245,9 +245,17 @@ def _validate_rows(
 
 def _validate_collaboration_policy(value: object) -> str:
     policy = _normalize_scope(value or "fixed_k")
-    if policy not in {"fixed_k", "progressive_budget", "adaptive_gain", "support_utility", "rb_capr_utility"}:
+    if policy not in {
+        "fixed_k",
+        "progressive_budget",
+        "adaptive_gain",
+        "support_utility",
+        "rb_capr_utility",
+        "dual_route_cvs",
+    }:
         raise ValueError(
-            "collaboration_policy must be fixed_k, progressive_budget, adaptive_gain, support_utility, or rb_capr_utility"
+            "collaboration_policy must be fixed_k, progressive_budget, adaptive_gain, "
+            "support_utility, rb_capr_utility, or dual_route_cvs"
         )
     return policy
 
@@ -314,6 +322,37 @@ def _receiver_support_quality(row: Mapping[str, Any]) -> float:
         + 0.04 * shell_safety
         + 0.04 * radius_safety
     )
+
+
+def _receiver_deployment_prior_quality(row: Mapping[str, Any]) -> float | None:
+    for key in (
+        "receiver_deployment_prior",
+        "deployment_prior",
+        "receiver_prior_quality",
+        "receiver_quality_prior",
+        "receiver_reliability_prior",
+        "prior_reliability",
+    ):
+        if _has_finite_float(row, key):
+            return float(max(0.0, min(1.0, _float(row, key, 0.0))))
+    return None
+
+
+def _select_receivers_deployment_prior(
+    rows: Sequence[Mapping[str, Any]],
+    k: int,
+) -> tuple[list[Mapping[str, Any]], str]:
+    if any(_receiver_deployment_prior_quality(row) is not None for row in rows):
+        ordered = sorted(
+            rows,
+            key=lambda row: (
+                -float(_receiver_deployment_prior_quality(row) or 0.0),
+                _float(row, "latency_ms", 0.0),
+                _str(row, "receiver_id"),
+            ),
+        )
+        return ordered[: int(k)], "deployment_prior_quality"
+    return _select_receivers(rows, k, receiver_selection_policy="fixed_receiver_order"), "fixed_receiver_order_no_prior"
 
 
 def _select_receivers(
@@ -446,6 +485,7 @@ def _fuse_event(
     label_radius_z_missing_values: defaultdict[str, list[bool]] = defaultdict(list)
     label_unknown_risk_values: defaultdict[str, list[float]] = defaultdict(list)
     label_shell_risk_values: defaultdict[str, list[float]] = defaultdict(list)
+    label_shell_risk_observed_values: defaultdict[str, list[bool]] = defaultdict(list)
     label_risk_component_votes: defaultdict[str, list[float]] = defaultdict(list)
     label_class_reliability_values: defaultdict[str, list[float]] = defaultdict(list)
     label_receiver_class_reliability_values: defaultdict[str, list[float]] = defaultdict(list)
@@ -500,6 +540,7 @@ def _fuse_event(
         oldness_risk_value: float,
         virtual_unknown_risk_value: float,
         class_shell_risk_value: float,
+        class_shell_risk_is_missing: bool,
         receiver_class_reliability_value: float,
     ) -> None:
         nonlocal filtered_candidate_count
@@ -546,6 +587,7 @@ def _fuse_event(
         label_radius_z_missing_values[label].append(bool(radius_z_is_missing))
         label_unknown_risk_values[label].append(max(0.0, min(1.0, float(unknown_risk_value))))
         label_shell_risk_values[label].append(max(0.0, min(1.0, float(class_shell_risk_value))))
+        label_shell_risk_observed_values[label].append(not bool(class_shell_risk_is_missing))
         label_class_reliability_values[label].append(class_weight)
         label_receiver_class_reliability_values[label].append(receiver_class_weight)
         row_component_values = {
@@ -582,6 +624,8 @@ def _fuse_event(
     for row in selected:
         weight = max(0.0, _float(row, "reliability", 1.0))
         label = _str(row, "predicted_label", "")
+        if label:
+            predicted_labels.append(label)
         weights.append(weight)
         risks.append(_float(row, "unknown_risk", 0.0))
         margin_value = max(0.0, _float(row, "known_margin", 0.0))
@@ -625,6 +669,7 @@ def _fuse_event(
                 oldness_risk_value=_float(row, "oldness_risk", _float(row, "unknown_risk", 0.0)),
                 virtual_unknown_risk_value=_float(row, "virtual_unknown_risk", 0.0),
                 class_shell_risk_value=_float(row, "class_shell_risk", 0.0),
+                class_shell_risk_is_missing=not _has_finite_float(row, "class_shell_risk"),
                 receiver_class_reliability_value=_float(row, "receiver_class_reliability", 1.0),
             )
         if policy in {"cp_set_cvs", "candidate_set_cvs"}:
@@ -670,6 +715,10 @@ def _fuse_event(
                     oldness_risk_value=_float(row, f"class_evidence_top{rank}_oldness_risk", _float(row, "oldness_risk", _float(row, "unknown_risk", 0.0))),
                     virtual_unknown_risk_value=_float(row, f"class_evidence_top{rank}_virtual_unknown_risk", _float(row, "virtual_unknown_risk", 0.0)),
                     class_shell_risk_value=_float(row, f"class_evidence_top{rank}_class_shell_risk", _float(row, "class_shell_risk", 0.0)),
+                    class_shell_risk_is_missing=not (
+                        _has_finite_float(row, f"class_evidence_top{rank}_class_shell_risk")
+                        or _has_finite_float(row, "class_shell_risk")
+                    ),
                     receiver_class_reliability_value=_float(
                         row,
                         f"class_evidence_top{rank}_receiver_class_reliability",
@@ -825,6 +874,7 @@ def _fuse_event(
     selected_label_risk_component_votes = label_risk_component_votes[label]
     selected_label_class_reliability_values = label_class_reliability_values[label]
     selected_label_receiver_class_reliability_values = label_receiver_class_reliability_values[label]
+    selected_label_shell_risk_observed_values = label_shell_risk_observed_values[label]
     label_support_density_missing = any(label_support_density_missing_values[label])
     label_radius_z_missing = any(label_radius_z_missing_values[label])
     label_support_density = (
@@ -843,6 +893,9 @@ def _fuse_event(
     )
     label_unknown_risk = _percentile(selected_label_unknown_risk_values, unknown_quantile)
     label_shell_risk = _percentile(selected_label_shell_risk_values, unknown_quantile)
+    label_shell_risk_observed = bool(
+        selected_label_shell_risk_observed_values and all(selected_label_shell_risk_observed_values)
+    )
     label_high_unknown_risk_fraction = (
         sum(
             1
@@ -1110,6 +1163,7 @@ def _fuse_event(
         "decision_unknown_risk": float(locals().get("decision_unknown_risk", unknown_risk)),
         "label_unknown_risk": float(label_unknown_risk),
         "label_shell_risk": float(label_shell_risk),
+        "label_shell_risk_observed": bool(label_shell_risk_observed),
         "seen_new_rescue_applied": bool(locals().get("rescue_applied", False)),
         "seen_new_rescue_label_match": bool(rescue_label_match if policy == "scorer_cvs" else False),
         "conformal_rescue_applied": bool(locals().get("conformal_rescue_applied", False)),
@@ -1983,6 +2037,247 @@ def _fuse_rb_capr_event(
     return last
 
 
+def _dual_route_rescue_ok(
+    rescue: Mapping[str, Any],
+    safety: Mapping[str, Any],
+    *,
+    min_pvalue: float,
+    min_receiver_class_reliability: float,
+    max_label_unknown_risk: float,
+    max_shell_risk: float,
+    max_component_agreement: float,
+    max_disagreement: float,
+    max_unknown_risk_range: float,
+    max_safety_unknown_risk: float,
+) -> bool:
+    if str(rescue.get("decision", "")) != "accept":
+        return False
+    if str(rescue.get("output_label_set", "")) not in {"old", "seen_new"}:
+        return False
+    if float(rescue.get("label_class_conformal_pvalue", 0.0)) < float(min_pvalue):
+        return False
+    if float(rescue.get("label_receiver_class_reliability", 0.0)) < float(min_receiver_class_reliability):
+        return False
+    if str(rescue.get("receiver_class_reliability_policy", "")) != "support_calibrated":
+        return False
+    if not bool(rescue.get("label_shell_risk_observed", False)):
+        return False
+    if float(rescue.get("label_unknown_risk", 1.0)) > float(max_label_unknown_risk):
+        return False
+    if float(rescue.get("label_shell_risk", 1.0)) > float(max_shell_risk):
+        return False
+    if float(rescue.get("label_risk_component_agreement", 1.0)) > float(max_component_agreement):
+        return False
+    if float(rescue.get("receiver_pair_label_disagreement", 1.0)) > float(max_disagreement):
+        return False
+    if float(rescue.get("receiver_pair_unknown_risk_range", 1.0)) > float(max_unknown_risk_range):
+        return False
+    safety_risk = max(
+        float(safety.get("unknown_risk", 0.0)),
+        float(safety.get("decision_unknown_risk", 0.0)),
+        float(safety.get("label_unknown_risk", 0.0)),
+    )
+    if safety_risk > float(max_safety_unknown_risk):
+        return False
+    return True
+
+
+def _fuse_dual_route_event(
+    safety_selected: Sequence[Mapping[str, Any]],
+    rescue_selected: Sequence[Mapping[str, Any]],
+    *,
+    unknown_risk_threshold: float,
+    accept_margin_threshold: float,
+    unknown_quantile: float,
+    fusion_policy: str,
+    consensus_gap_threshold: float,
+    consensus_score_threshold: float,
+    scorer_component_vote_threshold: float,
+    scorer_risk_components: Sequence[str] | str | None = None,
+    label_fusion_policy: str = "score_sum",
+    class_reliability_policy: str = "none",
+    receiver_class_reliability_policy: str = "none",
+    latency_budget_ms: float = 0.0,
+    max_event_bytes: float = 0.0,
+    max_event_latency_ms: float = 0.0,
+    old_labels: set[str] | None = None,
+    seen_new_rescue_labels: set[str] | None = None,
+    seen_new_rescue_enabled: bool = False,
+    seen_new_rescue_risk_scale: float = 1.0,
+    seen_new_rescue_min_score: float = 0.0,
+    seen_new_rescue_min_margin: float = 0.0,
+    seen_new_rescue_min_agreement: float = 0.5,
+    conformal_rescue_enabled: bool = False,
+    conformal_rescue_min_pvalue: float = 0.05,
+    conformal_rescue_risk_scale: float = 0.5,
+    conformal_rescue_min_agreement: float = 0.5,
+    class_set_gate_enabled: bool = False,
+    old_gate_min_receivers: int = 1,
+    old_gate_max_effective_unknown_risk: float = 1.0,
+    old_gate_max_component_agreement: float = 1.0,
+    old_gate_min_support_density: float = 0.0,
+    old_gate_max_radius_z: float = 1.0e12,
+    seen_new_gate_min_receivers: int = 1,
+    seen_new_gate_max_effective_unknown_risk: float = 1.0,
+    seen_new_gate_max_component_agreement: float = 1.0,
+    seen_new_gate_min_support_density: float = 0.0,
+    seen_new_gate_max_radius_z: float = 1.0e12,
+    candidate_set_min_receivers: int = 2,
+    candidate_set_min_top1_receivers: int = 0,
+    candidate_set_min_conformal_pvalue: float = 0.0,
+    candidate_set_max_label_unknown_risk: float = 1.0,
+    candidate_set_max_event_unknown_risk: float = 0.95,
+    candidate_set_max_label_risk_component_agreement: float = 1.0,
+    candidate_set_max_label_shell_risk: float = 1.0,
+    candidate_set_shell_reject_risk: float = 1.0e12,
+    candidate_set_event_high_unknown_risk_veto: float = 1.0e12,
+    candidate_set_max_label_high_unknown_risk_fraction: float = 1.0,
+    candidate_set_high_unknown_risk_threshold: float = 0.80,
+    candidate_set_min_score_gap: float = 0.0,
+    candidate_set_unknown_reject_risk: float = 0.80,
+    dual_route_rescue_min_pvalue: float = 0.75,
+    dual_route_rescue_min_receiver_class_reliability: float = 0.75,
+    dual_route_rescue_max_label_unknown_risk: float = 0.60,
+    dual_route_rescue_max_shell_risk: float = 0.80,
+    dual_route_rescue_max_component_agreement: float = 0.34,
+    dual_route_rescue_max_disagreement: float = 0.50,
+    dual_route_rescue_max_unknown_risk_range: float = 0.50,
+    dual_route_rescue_max_safety_unknown_risk: float = 0.80,
+    dual_route_rescue_selection_policy: str = "deployment_prior_quality",
+) -> dict[str, Any]:
+    safety = _fuse_event(
+        safety_selected,
+        unknown_risk_threshold=unknown_risk_threshold,
+        accept_margin_threshold=accept_margin_threshold,
+        unknown_quantile=unknown_quantile,
+        fusion_policy=fusion_policy,
+        consensus_gap_threshold=consensus_gap_threshold,
+        consensus_score_threshold=consensus_score_threshold,
+        scorer_component_vote_threshold=scorer_component_vote_threshold,
+        scorer_risk_components=scorer_risk_components,
+        label_fusion_policy=label_fusion_policy,
+        class_reliability_policy=class_reliability_policy,
+        receiver_class_reliability_policy=receiver_class_reliability_policy,
+        latency_budget_ms=latency_budget_ms,
+        max_event_bytes=max_event_bytes,
+        max_event_latency_ms=max_event_latency_ms,
+        old_labels=old_labels,
+        seen_new_rescue_labels=seen_new_rescue_labels,
+        seen_new_rescue_enabled=seen_new_rescue_enabled,
+        seen_new_rescue_risk_scale=seen_new_rescue_risk_scale,
+        seen_new_rescue_min_score=seen_new_rescue_min_score,
+        seen_new_rescue_min_margin=seen_new_rescue_min_margin,
+        seen_new_rescue_min_agreement=seen_new_rescue_min_agreement,
+        conformal_rescue_enabled=conformal_rescue_enabled,
+        conformal_rescue_min_pvalue=conformal_rescue_min_pvalue,
+        conformal_rescue_risk_scale=conformal_rescue_risk_scale,
+        conformal_rescue_min_agreement=conformal_rescue_min_agreement,
+        class_set_gate_enabled=class_set_gate_enabled,
+        old_gate_min_receivers=old_gate_min_receivers,
+        old_gate_max_effective_unknown_risk=old_gate_max_effective_unknown_risk,
+        old_gate_max_component_agreement=old_gate_max_component_agreement,
+        old_gate_min_support_density=old_gate_min_support_density,
+        old_gate_max_radius_z=old_gate_max_radius_z,
+        seen_new_gate_min_receivers=seen_new_gate_min_receivers,
+        seen_new_gate_max_effective_unknown_risk=seen_new_gate_max_effective_unknown_risk,
+        seen_new_gate_max_component_agreement=seen_new_gate_max_component_agreement,
+        seen_new_gate_min_support_density=seen_new_gate_min_support_density,
+        seen_new_gate_max_radius_z=seen_new_gate_max_radius_z,
+        candidate_set_min_receivers=candidate_set_min_receivers,
+        candidate_set_min_top1_receivers=candidate_set_min_top1_receivers,
+        candidate_set_min_conformal_pvalue=candidate_set_min_conformal_pvalue,
+        candidate_set_max_label_unknown_risk=candidate_set_max_label_unknown_risk,
+        candidate_set_max_event_unknown_risk=candidate_set_max_event_unknown_risk,
+        candidate_set_max_label_risk_component_agreement=candidate_set_max_label_risk_component_agreement,
+        candidate_set_max_label_shell_risk=candidate_set_max_label_shell_risk,
+        candidate_set_shell_reject_risk=candidate_set_shell_reject_risk,
+        candidate_set_event_high_unknown_risk_veto=candidate_set_event_high_unknown_risk_veto,
+        candidate_set_max_label_high_unknown_risk_fraction=candidate_set_max_label_high_unknown_risk_fraction,
+        candidate_set_high_unknown_risk_threshold=candidate_set_high_unknown_risk_threshold,
+        candidate_set_min_score_gap=candidate_set_min_score_gap,
+        candidate_set_unknown_reject_risk=candidate_set_unknown_reject_risk,
+    )
+    rescue = _fuse_event(
+        rescue_selected,
+        unknown_risk_threshold=unknown_risk_threshold,
+        accept_margin_threshold=accept_margin_threshold,
+        unknown_quantile=unknown_quantile,
+        fusion_policy=fusion_policy,
+        consensus_gap_threshold=consensus_gap_threshold,
+        consensus_score_threshold=consensus_score_threshold,
+        scorer_component_vote_threshold=scorer_component_vote_threshold,
+        scorer_risk_components=scorer_risk_components,
+        label_fusion_policy=label_fusion_policy,
+        class_reliability_policy=class_reliability_policy,
+        receiver_class_reliability_policy=receiver_class_reliability_policy,
+        latency_budget_ms=latency_budget_ms,
+        max_event_bytes=max_event_bytes,
+        max_event_latency_ms=max_event_latency_ms,
+        old_labels=old_labels,
+        seen_new_rescue_labels=seen_new_rescue_labels,
+        seen_new_rescue_enabled=seen_new_rescue_enabled,
+        seen_new_rescue_risk_scale=seen_new_rescue_risk_scale,
+        seen_new_rescue_min_score=seen_new_rescue_min_score,
+        seen_new_rescue_min_margin=seen_new_rescue_min_margin,
+        seen_new_rescue_min_agreement=seen_new_rescue_min_agreement,
+        conformal_rescue_enabled=conformal_rescue_enabled,
+        conformal_rescue_min_pvalue=conformal_rescue_min_pvalue,
+        conformal_rescue_risk_scale=conformal_rescue_risk_scale,
+        conformal_rescue_min_agreement=conformal_rescue_min_agreement,
+        class_set_gate_enabled=class_set_gate_enabled,
+        old_gate_min_receivers=old_gate_min_receivers,
+        old_gate_max_effective_unknown_risk=old_gate_max_effective_unknown_risk,
+        old_gate_max_component_agreement=old_gate_max_component_agreement,
+        old_gate_min_support_density=old_gate_min_support_density,
+        old_gate_max_radius_z=old_gate_max_radius_z,
+        seen_new_gate_min_receivers=seen_new_gate_min_receivers,
+        seen_new_gate_max_effective_unknown_risk=seen_new_gate_max_effective_unknown_risk,
+        seen_new_gate_max_component_agreement=seen_new_gate_max_component_agreement,
+        seen_new_gate_min_support_density=seen_new_gate_min_support_density,
+        seen_new_gate_max_radius_z=seen_new_gate_max_radius_z,
+        candidate_set_min_receivers=candidate_set_min_receivers,
+        candidate_set_min_top1_receivers=candidate_set_min_top1_receivers,
+        candidate_set_min_conformal_pvalue=candidate_set_min_conformal_pvalue,
+        candidate_set_max_label_unknown_risk=candidate_set_max_label_unknown_risk,
+        candidate_set_max_event_unknown_risk=candidate_set_max_event_unknown_risk,
+        candidate_set_max_label_risk_component_agreement=candidate_set_max_label_risk_component_agreement,
+        candidate_set_max_label_shell_risk=candidate_set_max_label_shell_risk,
+        candidate_set_shell_reject_risk=candidate_set_shell_reject_risk,
+        candidate_set_event_high_unknown_risk_veto=candidate_set_event_high_unknown_risk_veto,
+        candidate_set_max_label_high_unknown_risk_fraction=candidate_set_max_label_high_unknown_risk_fraction,
+        candidate_set_high_unknown_risk_threshold=candidate_set_high_unknown_risk_threshold,
+        candidate_set_min_score_gap=candidate_set_min_score_gap,
+        candidate_set_unknown_reject_risk=candidate_set_unknown_reject_risk,
+    )
+    rescue_ok = _dual_route_rescue_ok(
+        rescue,
+        safety,
+        min_pvalue=dual_route_rescue_min_pvalue,
+        min_receiver_class_reliability=dual_route_rescue_min_receiver_class_reliability,
+        max_label_unknown_risk=dual_route_rescue_max_label_unknown_risk,
+        max_shell_risk=dual_route_rescue_max_shell_risk,
+        max_component_agreement=dual_route_rescue_max_component_agreement,
+        max_disagreement=dual_route_rescue_max_disagreement,
+        max_unknown_risk_range=dual_route_rescue_max_unknown_risk_range,
+        max_safety_unknown_risk=dual_route_rescue_max_safety_unknown_risk,
+    )
+    chosen = dict(rescue if rescue_ok else safety)
+    chosen["dual_route_applied"] = True
+    chosen["dual_route_selected_route"] = "rescue" if rescue_ok else "safety"
+    chosen["dual_route_rescue_ok"] = bool(rescue_ok)
+    chosen["dual_route_safety_decision"] = str(safety.get("decision", ""))
+    chosen["dual_route_safety_output_label"] = str(safety.get("output_label", ""))
+    chosen["dual_route_safety_unknown_risk"] = float(safety.get("unknown_risk", 0.0))
+    chosen["dual_route_rescue_decision"] = str(rescue.get("decision", ""))
+    chosen["dual_route_rescue_output_label"] = str(rescue.get("output_label", ""))
+    chosen["dual_route_rescue_label_unknown_risk"] = float(rescue.get("label_unknown_risk", 0.0))
+    chosen["dual_route_rescue_label_shell_risk"] = float(rescue.get("label_shell_risk", 0.0))
+    chosen["dual_route_rescue_selection_policy"] = str(dual_route_rescue_selection_policy)
+    chosen["dual_route_safety_receiver_order"] = ",".join(_str(row, "receiver_id") for row in safety_selected)
+    chosen["dual_route_rescue_receiver_order"] = ",".join(_str(row, "receiver_id") for row in rescue_selected)
+    return chosen
+
+
 def _finalize_metrics(
     event_results: Sequence[dict[str, Any]],
     *,
@@ -2016,6 +2311,8 @@ def _finalize_metrics(
     candidate_set_high_unknown_veto_by_role: defaultdict[str, int] = defaultdict(int)
     candidate_set_shell_veto_total = 0
     candidate_set_shell_veto_by_role: defaultdict[str, int] = defaultdict(int)
+    dual_route_rescue_total = 0
+    dual_route_rescue_by_role: defaultdict[str, int] = defaultdict(int)
 
     old_labels = set(expected_old_labels or set())
     seen_new_labels = set(expected_seen_new_labels or set())
@@ -2055,6 +2352,9 @@ def _finalize_metrics(
         if bool(item.get("candidate_set_shell_veto", False)):
             candidate_set_shell_veto_total += 1
             candidate_set_shell_veto_by_role[role] += 1
+        if str(item.get("dual_route_selected_route", "")) == "rescue":
+            dual_route_rescue_total += 1
+            dual_route_rescue_by_role[role] += 1
         stop_reason = str(
             item.get("rb_capr_stop_reason")
             or item.get("support_utility_stop_reason")
@@ -2194,6 +2494,9 @@ def _finalize_metrics(
         "candidate_set_shell_veto_count": int(candidate_set_shell_veto_total),
         "candidate_set_shell_veto_rate": _safe_rate(candidate_set_shell_veto_total, total_events),
         "candidate_set_shell_veto_by_role": dict(sorted(candidate_set_shell_veto_by_role.items())),
+        "dual_route_rescue_count": int(dual_route_rescue_total),
+        "dual_route_rescue_rate": _safe_rate(dual_route_rescue_total, total_events),
+        "dual_route_rescue_by_role": dict(sorted(dual_route_rescue_by_role.items())),
     }
 
 
@@ -2356,6 +2659,14 @@ def evaluate_collaborative_open_set_evidence(
     candidate_set_high_unknown_risk_threshold: float = 0.80,
     candidate_set_min_score_gap: float = 0.0,
     candidate_set_unknown_reject_risk: float = 0.80,
+    dual_route_rescue_min_pvalue: float = 0.75,
+    dual_route_rescue_min_receiver_class_reliability: float = 0.75,
+    dual_route_rescue_max_label_unknown_risk: float = 0.60,
+    dual_route_rescue_max_shell_risk: float = 0.80,
+    dual_route_rescue_max_component_agreement: float = 0.34,
+    dual_route_rescue_max_disagreement: float = 0.50,
+    dual_route_rescue_max_unknown_risk_range: float = 0.50,
+    dual_route_rescue_max_safety_unknown_risk: float = 0.80,
     threshold_selection_label_scope: str = "support_known_only",
     unknown_query_eval_only: bool = True,
     receiver_selection_policy: str = "fixed_receiver_order",
@@ -2493,6 +2804,82 @@ def evaluate_collaborative_open_set_evidence(
                     seen_new_gate_min_support_density=seen_new_gate_min_support_density,
                     seen_new_gate_max_radius_z=seen_new_gate_max_radius_z,
                 )
+            elif collaboration_policy == "dual_route_cvs":
+                safety_selected = _select_receivers(
+                    group,
+                    selected_k,
+                    receiver_selection_policy="fixed_receiver_order",
+                )
+                rescue_selected, rescue_selection_policy = _select_receivers_deployment_prior(
+                    group,
+                    selected_k,
+                )
+                fused = _fuse_dual_route_event(
+                    safety_selected,
+                    rescue_selected,
+                    unknown_risk_threshold=unknown_risk_threshold,
+                    accept_margin_threshold=accept_margin_threshold,
+                    unknown_quantile=unknown_quantile,
+                    fusion_policy=fusion_policy,
+                    consensus_gap_threshold=consensus_gap_threshold,
+                    consensus_score_threshold=consensus_score_threshold,
+                    scorer_component_vote_threshold=scorer_component_vote_threshold,
+                    scorer_risk_components=active_risk_components,
+                    label_fusion_policy=label_fusion_policy,
+                    class_reliability_policy=class_reliability_policy,
+                    receiver_class_reliability_policy=receiver_class_reliability_policy,
+                    latency_budget_ms=latency_budget_ms,
+                    max_event_bytes=max_event_bytes,
+                    max_event_latency_ms=max_event_latency_ms,
+                    old_labels=expected_old_labels,
+                    seen_new_rescue_labels=expected_seen_new_labels,
+                    seen_new_rescue_enabled=seen_new_rescue_enabled,
+                    seen_new_rescue_risk_scale=seen_new_rescue_risk_scale,
+                    seen_new_rescue_min_score=seen_new_rescue_min_score,
+                    seen_new_rescue_min_margin=seen_new_rescue_min_margin,
+                    seen_new_rescue_min_agreement=seen_new_rescue_min_agreement,
+                    conformal_rescue_enabled=conformal_rescue_enabled,
+                    conformal_rescue_min_pvalue=conformal_rescue_min_pvalue,
+                    conformal_rescue_risk_scale=conformal_rescue_risk_scale,
+                    conformal_rescue_min_agreement=conformal_rescue_min_agreement,
+                    class_set_gate_enabled=class_set_gate_enabled,
+                    old_gate_min_receivers=old_gate_min_receivers,
+                    old_gate_max_effective_unknown_risk=old_gate_max_effective_unknown_risk,
+                    old_gate_max_component_agreement=old_gate_max_component_agreement,
+                    old_gate_min_support_density=old_gate_min_support_density,
+                    old_gate_max_radius_z=old_gate_max_radius_z,
+                    seen_new_gate_min_receivers=seen_new_gate_min_receivers,
+                    seen_new_gate_max_effective_unknown_risk=seen_new_gate_max_effective_unknown_risk,
+                    seen_new_gate_max_component_agreement=seen_new_gate_max_component_agreement,
+                    seen_new_gate_min_support_density=seen_new_gate_min_support_density,
+                    seen_new_gate_max_radius_z=seen_new_gate_max_radius_z,
+                    candidate_set_min_receivers=candidate_set_min_receivers,
+                    candidate_set_min_top1_receivers=candidate_set_min_top1_receivers,
+                    candidate_set_min_conformal_pvalue=candidate_set_min_conformal_pvalue,
+                    candidate_set_max_label_unknown_risk=candidate_set_max_label_unknown_risk,
+                    candidate_set_max_event_unknown_risk=candidate_set_max_event_unknown_risk,
+                    candidate_set_max_label_risk_component_agreement=candidate_set_max_label_risk_component_agreement,
+                    candidate_set_max_label_shell_risk=candidate_set_max_label_shell_risk,
+                    candidate_set_shell_reject_risk=candidate_set_shell_reject_risk,
+                    candidate_set_event_high_unknown_risk_veto=candidate_set_event_high_unknown_risk_veto,
+                    candidate_set_max_label_high_unknown_risk_fraction=(
+                        candidate_set_max_label_high_unknown_risk_fraction
+                    ),
+                    candidate_set_high_unknown_risk_threshold=candidate_set_high_unknown_risk_threshold,
+                    candidate_set_min_score_gap=candidate_set_min_score_gap,
+                    candidate_set_unknown_reject_risk=candidate_set_unknown_reject_risk,
+                    dual_route_rescue_min_pvalue=dual_route_rescue_min_pvalue,
+                    dual_route_rescue_min_receiver_class_reliability=(
+                        dual_route_rescue_min_receiver_class_reliability
+                    ),
+                    dual_route_rescue_max_label_unknown_risk=dual_route_rescue_max_label_unknown_risk,
+                    dual_route_rescue_max_shell_risk=dual_route_rescue_max_shell_risk,
+                    dual_route_rescue_max_component_agreement=dual_route_rescue_max_component_agreement,
+                    dual_route_rescue_max_disagreement=dual_route_rescue_max_disagreement,
+                    dual_route_rescue_max_unknown_risk_range=dual_route_rescue_max_unknown_risk_range,
+                    dual_route_rescue_max_safety_unknown_risk=dual_route_rescue_max_safety_unknown_risk,
+                    dual_route_rescue_selection_policy=rescue_selection_policy,
+                )
             elif collaboration_policy in {"adaptive_gain", "support_utility", "rb_capr_utility"}:
                 adaptive_ordered = _select_receivers(
                     group,
@@ -2619,9 +3006,20 @@ def evaluate_collaborative_open_set_evidence(
             fused["role"] = _role(first.get("role"))
             fused["true_label"] = _str(first, "true_label", UNKNOWN_LABEL if fused["role"] == "unknown" else "")
             fused["event_id"] = str(event_id)
-            fused["selected_receiver_ids"] = ",".join(_str(row, "receiver_id") for row in selected)
+            selected_for_audit = selected
+            if collaboration_policy == "dual_route_cvs":
+                route_order_key = (
+                    "dual_route_rescue_receiver_order"
+                    if fused.get("dual_route_selected_route") == "rescue"
+                    else "dual_route_safety_receiver_order"
+                )
+                route_order = [item for item in str(fused.get(route_order_key, "")).split(",") if item]
+                if route_order:
+                    by_receiver = {_str(row, "receiver_id"): row for row in group}
+                    selected_for_audit = [by_receiver[item] for item in route_order if item in by_receiver]
+            fused["selected_receiver_ids"] = ",".join(_str(row, "receiver_id") for row in selected_for_audit)
             fused["selected_receiver_predictions"] = ",".join(
-                f"{_str(row, 'receiver_id')}:{_str(row, 'predicted_label')}" for row in selected
+                f"{_str(row, 'receiver_id')}:{_str(row, 'predicted_label')}" for row in selected_for_audit
             )
             event_results.append(fused)
         metrics = _finalize_metrics(
@@ -2716,5 +3114,15 @@ def evaluate_collaborative_open_set_evidence(
         "candidate_set_high_unknown_risk_threshold": float(candidate_set_high_unknown_risk_threshold),
         "candidate_set_min_score_gap": float(candidate_set_min_score_gap),
         "candidate_set_unknown_reject_risk": float(candidate_set_unknown_reject_risk),
+        "dual_route_rescue_min_pvalue": float(dual_route_rescue_min_pvalue),
+        "dual_route_rescue_min_receiver_class_reliability": float(
+            dual_route_rescue_min_receiver_class_reliability
+        ),
+        "dual_route_rescue_max_label_unknown_risk": float(dual_route_rescue_max_label_unknown_risk),
+        "dual_route_rescue_max_shell_risk": float(dual_route_rescue_max_shell_risk),
+        "dual_route_rescue_max_component_agreement": float(dual_route_rescue_max_component_agreement),
+        "dual_route_rescue_max_disagreement": float(dual_route_rescue_max_disagreement),
+        "dual_route_rescue_max_unknown_risk_range": float(dual_route_rescue_max_unknown_risk_range),
+        "dual_route_rescue_max_safety_unknown_risk": float(dual_route_rescue_max_safety_unknown_risk),
         "counts": out_counts,
     }
