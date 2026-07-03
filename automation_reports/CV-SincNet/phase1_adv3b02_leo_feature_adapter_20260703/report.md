@@ -2820,3 +2820,70 @@ Interpretation:
 | Unknown rejection target is still far away | best same-row old candidates have unknown FAR`0.84-0.98`; lowest unknown FAR rows have old acc only`~0.59` | unknownFAR<5% is not achievable by thresholding this feature space without sacrificing old-class performance |
 
 Current decision after V30: feature-centered source-only adaptation is still the right direction compared with category logit bias/scale, but small post-hoc model adapters are not enough. The next valid route must change the Phase1 representation training objective or use a stronger source-only adapter with explicit per-TX hard-class handling; target2 unknown rejection remains blocked until target1 passes.
+
+## V31 Design: Hard-TX Weighted Full Feature Repair
+
+V31 follows the updated decision that source clean/LEO paired category logit bias/scale is not a valid main route. It stays feature-centered: classifier/logit heads remain frozen, while source clean/LEO pairs supervise representation repair inside the identity feature path.
+
+| Item | Value |
+|---|---|
+| run id | `phase1_adv3b02_hardtx_fullfeature_target1_v31_20260703` |
+| objective | target1 strong audit before any unknown-rejection target2 attempt |
+| hypothesis | V30 failed mainly on fixed hard receiver/TX floors; source-only hard-TX weighting plus broader identity feature repair may lift LEO old accuracy without using target data |
+| training data | source old clean/LEO pairs only; source receivers `0,1,2,3,4,5,6`; sat scenarios `leo_clear_weak,leo_low_elev_weak,leo_rain_weak` |
+| forbidden data | no target receiver samples/stats/prototypes/thresholds/adapters/pseudo-labels; target old/unknown only in post-training audit |
+| base checkpoint | `ADV3B02_CORE90_SOFT_E200` Phase1 `best_joint_safe_ssdg.pth` |
+| changed trainer | `code/scripts/train_apply_phase1_iq_preadapter_20260703.py` |
+| new launcher | `code/scripts/sweep_phase1_adv3b02_hardtx_fullfeature_target1_v31_20260703.sh` |
+| local snapshot | `code/snapshots/phase1_adv3b02_hardtx_fullfeature_target1_v31_20260703/scripts/` |
+| remote log root | `/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_adv3b02_hardtx_fullfeature_target1_v31_20260703` |
+
+V30 hard-floor evidence used to define V31 class weighting:
+
+| Axis | Weak cells |
+|---|---|
+| receiver floor | `rx3_19` mean old acc`0.5897`; `rx20_1` mean`0.6030`; `rx8_8` mean`0.7273` |
+| TX floor | `14-7` mean`0.5833`; `14-10` mean`0.5958`; `20-19` mean`0.6324`; `20-15` mean`0.6605` |
+| V30 gate failure | strong target1`0/80`; scenario/TX floor`0/80`; best unknown FAR`0.5312` |
+
+V31 mechanism:
+
+| Mechanism | Implementation |
+|---|---|
+| feature-only model adapter | new `id_full_feature` mode opens `id_backbone.*` feature parameters, but explicitly freezes `cls_head.head`, `cls_head.dac_head`, `cls_head.pa_head`, and classifier-like params |
+| hard-TX weighting | new `--class_loss_weights`; weighted MSE/cos/prototype CE/clean identity/feature-margin losses emphasize hard source TX classes |
+| clean-clean preservation | clean pass through the same model adapter is constrained to match frozen clean features and preserve margins |
+| unknown safety during target1 | proxy unknown separation remains source-only and is audited against target unknown after training |
+| no category calibration | `--logit_ce_weight 0.0`; no per-class logit bias/scale route is trained |
+
+V31 variant matrix:
+
+| Variant | Mode | Epochs | LR | Class weights |
+|---|---|---:|---:|---|
+| `LEOFEAT31_FULL_HARD_BAL` | `id_full_feature` | 45 | 0.000035 | `1.4,2.6,2.2,2.6,0.8,0.8` |
+| `LEOFEAT31_FULL_HARD_FLOOR` | `id_full_feature` | 50 | 0.000030 | `1.6,3.0,2.4,3.0,0.7,0.7` |
+| `LEOFEAT31_FULL_HARD_USEP` | `id_full_feature` | 45 | 0.000030 | `1.4,2.6,2.2,2.6,0.8,0.8` |
+| `LEOFEAT31_FULL_HARD_SAFE` | `id_full_feature` | 40 | 0.000020 | `1.3,2.4,2.0,2.4,0.8,0.8` |
+| `LEOFEAT31_LATE_HARD_BAL` | `id_late_feature` | 70 | 0.000100 | `1.5,2.8,2.3,2.8,0.8,0.8` |
+| `LEOFEAT31_LATE_HARD_USEP` | `id_late_feature` | 70 | 0.000090 | `1.5,2.8,2.3,2.8,0.8,0.8` |
+| `LEOFEAT31_NORM_HARD_BAL` | `id_norm_late_feature` | 65 | 0.000080 | `1.5,2.8,2.3,2.8,0.8,0.8` |
+| `LEOFEAT31_NORM_HARD_SAFE` | `id_norm_late_feature` | 60 | 0.000060 | `1.4,2.6,2.1,2.6,0.8,0.8` |
+
+Local verification before N607 sync:
+
+| Check | Result |
+|---|---|
+| `python -m py_compile code/scripts/train_apply_phase1_iq_preadapter_20260703.py code/scripts/eval_phase1_target1_strong_repair_audit_20260703.py` | PASS |
+| `bash -n code/scripts/sweep_phase1_adv3b02_hardtx_fullfeature_target1_v31_20260703.sh` | PASS |
+| classifier-free dummy parameter test | PASS; `id_full_feature` trains feature tensors and excludes `cls_head.head/dac_head/pa_head` |
+| trainer SHA256 | `6DA8D0878CE8059BC231C9D1E7ED49F52BF2B9117585A3812310A20E5DE05115` |
+| launcher SHA256 | `8717B5F210A58BA09C79AF96C1749E0F1EF22F7FFED5A0A6BD567103EB582E97` |
+
+Planned launch command:
+
+```bash
+cd /home/szu2070436088/2510044040/CV-SincNet
+nohup bash code/scripts/sweep_phase1_adv3b02_hardtx_fullfeature_target1_v31_20260703.sh > logs/phase1_adv3b02_hardtx_fullfeature_target1_v31_20260703/launcher.out 2>&1 &
+```
+
+Success gate remains unchanged: V31 must pass target1 strong audit before target2 unknown rejection is attempted. If V31 cannot lift low receiver/TX floors toward OLD80 while preserving clean performance and unknown safety, target2 remains blocked.

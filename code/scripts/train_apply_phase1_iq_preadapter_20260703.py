@@ -122,6 +122,14 @@ def _configure_model_adapter(model: nn.Module, mode: str) -> dict[str, Any]:
     if mode_norm in {"", "none", "off", "0"}:
         return {"mode": "none", "trainable_parameters": 0, "trainable_tensors": []}
 
+    def is_frozen_classifier_param(param_name: str) -> bool:
+        return (
+            ".cls_head.head." in param_name
+            or ".cls_head.dac_head." in param_name
+            or ".cls_head.pa_head." in param_name
+            or ".classifier." in param_name
+        )
+
     trainable: list[str] = []
     for name, p in model.named_parameters():
         lname = name.lower()
@@ -129,16 +137,12 @@ def _configure_model_adapter(model: nn.Module, mode: str) -> dict[str, Any]:
         if mode_norm == "id_feature_head":
             allow = (
                 lname.startswith("id_backbone.cls_head.")
-                and ".head." not in lname
-                and ".dac_head." not in lname
-                and ".pa_head." not in lname
+                and not is_frozen_classifier_param(lname)
             )
         elif mode_norm == "id_late_feature":
             allow = (
                 lname.startswith("id_backbone.cls_head.")
-                and ".head." not in lname
-                and ".dac_head." not in lname
-                and ".pa_head." not in lname
+                and not is_frozen_classifier_param(lname)
             ) or (
                 lname.startswith("id_backbone.")
                 and any(token in lname for token in (".fuse.", ".con_proj.", ".t_proj.", ".f_proj.", ".dac_proj.", ".pa_proj."))
@@ -146,15 +150,18 @@ def _configure_model_adapter(model: nn.Module, mode: str) -> dict[str, Any]:
         elif mode_norm == "id_norm_late_feature":
             allow = (
                 lname.startswith("id_backbone.cls_head.")
-                and ".head." not in lname
-                and ".dac_head." not in lname
-                and ".pa_head." not in lname
+                and not is_frozen_classifier_param(lname)
             ) or (
                 lname.startswith("id_backbone.")
                 and any(token in lname for token in (".fuse.", ".con_proj.", ".t_proj.", ".f_proj.", ".dac_proj.", ".pa_proj."))
             ) or (
                 lname.startswith("id_backbone.")
                 and ("norm" in lname or "gate" in lname)
+            )
+        elif mode_norm == "id_full_feature":
+            allow = (
+                lname.startswith("id_backbone.")
+                and not is_frozen_classifier_param(lname)
             )
         else:
             raise ValueError(f"unknown model_adapter_mode={mode!r}")
@@ -245,6 +252,45 @@ def _proto_margin_loss(z_ref: torch.Tensor, z_new: torch.Tensor, y: torch.Tensor
     return F.relu(ref_margin - new_margin - float(tolerance)).mean()
 
 
+def _weighted_mean(values: torch.Tensor, weights: torch.Tensor | None) -> torch.Tensor:
+    if weights is None:
+        return values.mean()
+    w = weights.to(device=values.device, dtype=values.dtype).view(-1)
+    return (values.view(-1) * w).sum() / w.sum().clamp_min(1e-8)
+
+
+def _parse_class_loss_weights(args: argparse.Namespace, device: torch.device) -> torch.Tensor | None:
+    raw = str(args.class_loss_weights or "").strip()
+    if not raw:
+        return None
+    vals = [float(v) for v in raw.split(",") if v.strip()]
+    if len(vals) != int(args.num_old_classes):
+        raise ValueError(f"class_loss_weights must have {args.num_old_classes} values, got {len(vals)}")
+    return torch.tensor(vals, dtype=torch.float32, device=device)
+
+
+def _proto_margin_loss_weighted(
+    z_ref: torch.Tensor,
+    z_new: torch.Tensor,
+    y: torch.Tensor,
+    protos: torch.Tensor,
+    tolerance: float,
+    sample_weights: torch.Tensor | None = None,
+) -> torch.Tensor:
+    ref_sims = F.normalize(z_ref.detach(), dim=1) @ F.normalize(protos.detach(), dim=1).t()
+    new_sims = F.normalize(z_new, dim=1) @ F.normalize(protos.detach(), dim=1).t()
+    idx = y.long().view(-1, 1)
+    true_ref = ref_sims.gather(1, idx).squeeze(1)
+    true_new = new_sims.gather(1, idx).squeeze(1)
+    mask = torch.ones_like(ref_sims, dtype=torch.bool)
+    mask.scatter_(1, idx, False)
+    other_ref = ref_sims.masked_fill(~mask, -1.0e9).max(dim=1).values
+    other_new = new_sims.masked_fill(~mask, -1.0e9).max(dim=1).values
+    ref_margin = true_ref - other_ref
+    new_margin = true_new - other_new
+    return _weighted_mean(F.relu(ref_margin - new_margin - float(tolerance)), sample_weights)
+
+
 def _proxy_unknown_separation_loss(z_unknown: torch.Tensor, protos: torch.Tensor, max_cos: float) -> torch.Tensor:
     sims = F.normalize(z_unknown, dim=1) @ F.normalize(protos.detach(), dim=1).t()
     nearest_old = sims.max(dim=1).values
@@ -262,6 +308,7 @@ def train_adapter(
     _validate_star_ground_impl(str(args.star_ground_channel_impl), scenarios, field="sat_scenarios")
     proto_loader = DataLoader(source_loader.dataset, batch_size=int(args.batch_size), shuffle=False, num_workers=0, drop_last=False)
     clean_protos = _proto_from_loader(teacher_model, proto_loader, args, device)
+    class_loss_weights = _parse_class_loss_weights(args, device)
     proxy_loader, proxy_info = _make_proxy_unknown_train_loader(args)
     proxy_iter = itertools.cycle(proxy_loader) if proxy_loader is not None else None
     adapter: nn.Module
@@ -283,6 +330,7 @@ def train_adapter(
         for x, y, _d, _meta in source_loader:
             x = x.to(device, non_blocking=True)
             y = y.to(device).long()
+            sample_weights = class_loss_weights.index_select(0, y) if class_loss_weights is not None else None
             scenario = _scenario_for_step(scenarios, step)
             step += 1
             with torch.no_grad():
@@ -291,26 +339,30 @@ def train_adapter(
             x_sat_in = _apply_input_repair(x_sat, str(args.input_repair))
             x_rep = adapter(x_sat_in)
             z_rep, logits_rep = _feature_forward(model, x_rep, str(args.feature_name))
-            mse = F.smooth_l1_loss(z_rep, z_clean)
-            cos = 1.0 - F.cosine_similarity(z_rep, z_clean, dim=1).mean()
+            mse_per = F.smooth_l1_loss(z_rep, z_clean, reduction="none").mean(dim=1)
+            mse = _weighted_mean(mse_per, sample_weights)
+            cos_per = 1.0 - F.cosine_similarity(z_rep, z_clean, dim=1)
+            cos = _weighted_mean(cos_per, sample_weights)
             if float(args.proto_ce_weight) > 0 or float(args.logit_ce_weight) > 0:
                 proto_logits = F.normalize(z_rep, dim=1) @ F.normalize(clean_protos, dim=1).t() / max(float(args.proto_temperature), 1e-6)
-                ce = F.cross_entropy(proto_logits, y) + float(args.logit_ce_weight) * F.cross_entropy(logits_rep, y)
+                proto_ce = F.cross_entropy(proto_logits, y, reduction="none")
+                logit_ce = F.cross_entropy(logits_rep, y, reduction="none")
+                ce = _weighted_mean(proto_ce, sample_weights) + float(args.logit_ce_weight) * _weighted_mean(logit_ce, sample_weights)
             else:
                 ce = z_rep.sum() * 0.0 + logits_rep.sum() * 0.0
             clean_mode = str(args.input_repair if str(args.clean_input_repair_mode).lower() == "same" else "raw")
             x_clean_rep = adapter(_apply_input_repair(x, clean_mode))
             z_clean_rep, _ = _feature_forward(model, x_clean_rep, str(args.feature_name))
-            clean_mse = F.smooth_l1_loss(z_clean_rep, z_clean)
-            clean_cos = 1.0 - F.cosine_similarity(z_clean_rep, z_clean, dim=1).mean()
+            clean_mse = _weighted_mean(F.smooth_l1_loss(z_clean_rep, z_clean, reduction="none").mean(dim=1), sample_weights)
+            clean_cos = _weighted_mean(1.0 - F.cosine_similarity(z_clean_rep, z_clean, dim=1), sample_weights)
             clean_kl = F.kl_div(
                 F.log_softmax(logits_rep / max(float(args.distill_temperature), 1e-6), dim=1),
                 F.softmax(logits_clean_teacher / max(float(args.distill_temperature), 1e-6), dim=1),
                 reduction="batchmean",
             ) * (float(args.distill_temperature) ** 2)
             clean_loss = clean_mse + float(args.clean_cos_weight) * clean_cos
-            feat_margin = _proto_margin_loss(z_clean, z_rep, y, clean_protos, float(args.feature_margin_tolerance))
-            clean_margin = _proto_margin_loss(z_clean, z_clean_rep, y, clean_protos, float(args.feature_margin_tolerance))
+            feat_margin = _proto_margin_loss_weighted(z_clean, z_rep, y, clean_protos, float(args.feature_margin_tolerance), sample_weights)
+            clean_margin = _proto_margin_loss_weighted(z_clean, z_clean_rep, y, clean_protos, float(args.feature_margin_tolerance), sample_weights)
             if proxy_iter is not None:
                 x_u, _y_u, _d_u, _meta_u = next(proxy_iter)
                 x_u = x_u.to(device, non_blocking=True)
@@ -378,6 +430,7 @@ def train_adapter(
             "proxy_unknown_max_cos": float(args.proxy_unknown_max_cos),
             "teacher_logit_distill": float(args.teacher_logit_distill_weight),
             "residual": float(args.residual_weight),
+            "class_loss_weights": str(args.class_loss_weights or ""),
         },
     }
 
@@ -609,7 +662,7 @@ def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
     p.add_argument("--hidden_dim", type=int, default=32)
     p.add_argument("--alpha", type=float, default=0.25)
     p.add_argument("--input_adapter_enabled", action=argparse.BooleanOptionalAction, default=True)
-    p.add_argument("--model_adapter_mode", default="none", choices=["none", "id_feature_head", "id_late_feature", "id_norm_late_feature"])
+    p.add_argument("--model_adapter_mode", default="none", choices=["none", "id_feature_head", "id_late_feature", "id_norm_late_feature", "id_full_feature"])
     p.add_argument("--input_repair", default="raw", choices=["raw", "rms", "canonical", "canonical_m1e4", "canonical_p1e4"])
     p.add_argument("--clean_input_repair_mode", default="same", choices=["raw", "same"])
     p.add_argument("--lr", type=float, default=8e-4)
@@ -618,6 +671,7 @@ def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
     p.add_argument("--cos_weight", type=float, default=2.0)
     p.add_argument("--proto_ce_weight", type=float, default=0.0)
     p.add_argument("--logit_ce_weight", type=float, default=0.0)
+    p.add_argument("--class_loss_weights", default="")
     p.add_argument("--clean_identity_weight", type=float, default=8.0)
     p.add_argument("--clean_cos_weight", type=float, default=1.0)
     p.add_argument("--feature_margin_weight", type=float, default=2.0)
