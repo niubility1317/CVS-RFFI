@@ -1141,3 +1141,26 @@ python E:\type10-7\code\tests\test_phase2_collaborative_open_set_qknn_eval.py
 |候选|关键参数|目的|
 |---|---|---|
 |`adaptive_gain_class_gate_safe`|`old_gate_min_receivers=2 old_gate_max_effective_unknown_risk=0.8 old_gate_max_component_agreement=0.2 seen_new_gate_max_effective_unknown_risk=0.6 seen_new_gate_max_component_agreement=0.25`|验证本地复评是否能在远端全量1..5复现FAR=0。|
+
+远端验证与运行结果：N607使用`CVS-RFFI`环境，`py_compile`通过，`test_collaborative_open_set_qknn_eval.py`为22 tests OK，`test_phase2_collaborative_open_set_qknn_eval.py`为16 tests OK。远端运行使用`--collab_counts all`，输出`receiver_count=5`、`group_count=308`、`evidence_row_count=1000`。运行前后8张RTX3090均为`10/24576MiB`，无新增显存占用。SSH/SCP后本地检查无残留`ssh.exe`或22端口`ESTABLISHED`连接。
+
+拉回产物与SHA256：
+
+|产物|SHA256|
+|---|---|
+|`remote_artifacts/collab_open_set_qknn_scorer_cvs_evt_adaptive_gain_class_gate_safe.json`|`87A4BBF6FDBFB9248FF6F8F67C8371328ECE624904354F9D4AF7CE9A24AF6DBA`|
+|`remote_artifacts/collab_open_set_qknn_scorer_cvs_evt_adaptive_gain_class_gate_safe_evidence.csv`|`62DC73505216951A73D048C3FB89CE45B9C02D647A15398A63F44AF204B31050`|
+
+`adaptive_gain_class_gate_safe`结果：
+
+|最大receiver预算|total|old_acc|min_old_class_acc|seen_new_acc|min_seen_new_class_acc|unknown_FAR|unknown_reject_rate|defer_rate|bytes/event|p95 latency ms|avg used rx|p95 used rx|max used rx|rescue count|
+|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+|1|308|0.0000|0.0000|0.1500|0.0000|0.0000|0.6167|0.5097|120.0000|0.0935|1.0000|1.0000|1|19|
+|2|246|0.0850|0.0000|0.3556|0.1000|0.0000|0.8958|0.3415|218.0488|0.0935|1.8171|2.0000|2|19|
+|3|200|0.0417|0.0000|0.4250|0.1000|0.0000|0.9500|0.4250|305.4000|0.0935|2.5450|3.0000|3|17|
+|4|154|0.3103|0.0000|0.4571|0.2500|0.0000|0.8438|0.3312|395.8442|0.0935|3.2987|4.0000|4|17|
+|5|92|0.3654|0.0000|0.2500|0.0000|0.0000|0.7000|0.4022|508.6957|0.0935|4.2391|5.0000|5|6|
+
+与上一轮`adaptive_gain_rescue_s05`相比，class-set gate把所有预算的unknown_FAR压到0；预算4保持seen_new_acc=0.4571，但old_acc从0.3563降到0.3103，defer_rate从0.2857升到0.3312。预算5也保持unknown_FAR=0，但seen_new_acc只有0.2500，old_acc只有0.3654。该结果说明门控方向合理，但当前qKNN证据质量不足，仍不能满足old 99%/class floor 95%、seen-new 97%/class floor 93%、unknown reject 99%的目标。
+
+子agent审计结论并入本轮：文献/方法子agent建议优先组合top-k证据融合、高斯/马氏原型不确定性、open-world原型记忆；算法子agent建议的`DBR-AG-qKNN`与本轮class-set gate一致，即用多组件风险投票和跨receiver预算控制rescue；监督子agent指出当前仍是`receiver_domain_ranked`诊断近似，不是严格同物理事件协同，也不能声明Stage2-C部署成功。下一步应在同一框架内补充严格`event_id`物理协同或改进本地原型证据质量，而不是继续只调gate阈值。
