@@ -511,6 +511,103 @@ def qknn_scores(
     )
 
 
+def _qknn_label_score_matrix(
+    memory: QknnMemory,
+    query_features: np.ndarray,
+    *,
+    top_k: int = 8,
+    query_scenarios: Sequence[str] | None = None,
+    scenario_aware: bool = False,
+    radius_norm: float = 0.0,
+    old_bias: float = 0.0,
+    candidate_class_top_m: int = 0,
+    exclude_support_indices: Sequence[int] | None = None,
+    prototype_score_blend: float = 0.0,
+    mahalanobis_score_blend: float = 0.0,
+    mahalanobis_score_temperature: float = 0.20,
+) -> tuple[np.ndarray, np.ndarray]:
+    proto_blend = float(prototype_score_blend)
+    if proto_blend < 0.0:
+        raise ValueError("prototype_score_blend must be >= 0")
+    maha_blend = float(mahalanobis_score_blend)
+    if maha_blend < 0.0:
+        raise ValueError("mahalanobis_score_blend must be >= 0")
+    maha_temp = max(float(mahalanobis_score_temperature), 1e-6)
+    query = _normalize_rows(query_features)
+    support = _normalize_rows(memory.qfeatures.astype(np.float32) / float(memory.scale))
+    centroid_scores = _centroid_scores(memory, query)
+    mahalanobis_scores = _mahalanobis_known_scores(memory, query, temperature=maha_temp) if maha_blend > 0.0 else None
+    class_to_pos = {str(label): int(pos) for pos, label in enumerate(memory.centroid_labels.tolist())}
+    labels = np.asarray([str(label) for label in memory.centroid_labels.tolist()], dtype=object)
+    label_to_col = {str(label): int(pos) for pos, label in enumerate(labels.tolist())}
+    class_top_m = int(candidate_class_top_m)
+    if class_top_m < 0:
+        raise ValueError("candidate_class_top_m must be >= 0")
+    query_scenarios_arr = None
+    if scenario_aware:
+        if query_scenarios is None:
+            raise ValueError("query_scenarios is required when scenario_aware=True")
+        query_scenarios_arr = np.asarray([str(v) for v in query_scenarios], dtype=object)
+        if query_scenarios_arr.shape[0] != query.shape[0]:
+            raise ValueError("query_scenarios length must match query_features")
+    exclude_arr = None
+    if exclude_support_indices is not None:
+        exclude_arr = np.asarray(list(exclude_support_indices), dtype=int)
+        if exclude_arr.shape[0] != query.shape[0]:
+            raise ValueError("exclude_support_indices length must match query_features")
+    scores = query @ support.T
+    if float(radius_norm) != 0.0:
+        denom = np.power(np.maximum(memory.radii_by_support, 1e-4), float(radius_norm))[None, :]
+        scores = 1.0 - ((1.0 - scores) / denom)
+    if float(old_bias) != 0.0:
+        is_old = np.asarray([str(label) in memory.old_labels for label in memory.labels], dtype=np.float64)
+        scores = scores + is_old[None, :] * float(old_bias)
+    k = max(1, min(int(top_k), int(scores.shape[1])))
+    out = np.zeros((query.shape[0], labels.shape[0]), dtype=np.float64)
+    all_support_mask = np.ones(memory.labels.shape[0], dtype=bool)
+    for row_i in range(scores.shape[0]):
+        support_mask = all_support_mask.copy()
+        if class_top_m > 0:
+            m = max(1, min(class_top_m, int(memory.centroid_labels.shape[0])))
+            candidate_class_pos = np.argpartition(centroid_scores[row_i], -m)[-m:]
+            candidate_labels = set(str(memory.centroid_labels[pos]) for pos in candidate_class_pos.tolist())
+            candidate_mask = np.asarray([str(label) in candidate_labels for label in memory.labels], dtype=bool)
+            if int(np.sum(candidate_mask)) >= k:
+                support_mask &= candidate_mask
+        if scenario_aware and query_scenarios_arr is not None:
+            candidate_mask = memory.support_scenarios.astype(str) == str(query_scenarios_arr[row_i])
+            if int(np.sum(candidate_mask)) >= k and len(set(memory.labels[candidate_mask].tolist())) >= 2:
+                support_mask = candidate_mask.copy()
+        if exclude_arr is not None and 0 <= int(exclude_arr[row_i]) < support_mask.shape[0]:
+            support_mask[int(exclude_arr[row_i])] = False
+        support_positions = np.where(support_mask)[0]
+        if support_positions.size == 0:
+            raise ValueError("qknn_scores has no support rows after exclusions")
+        row_scores = scores[row_i, support_positions]
+        row_k = max(1, min(k, int(row_scores.shape[0])))
+        idx = support_positions[np.argpartition(row_scores, -row_k)[-row_k:]]
+        per_label: dict[str, float] = defaultdict(float)
+        for j in idx.tolist():
+            per_label[str(memory.labels[j])] += max(0.0, float(scores[row_i, j]))
+        candidate_labels = sorted({str(label) for label in memory.labels[support_mask].tolist()})
+        if proto_blend > 0.0:
+            for label in candidate_labels:
+                pos = class_to_pos.get(label)
+                if pos is not None:
+                    per_label[label] += proto_blend * max(0.0, float(centroid_scores[row_i, pos]))
+        if maha_blend > 0.0 and mahalanobis_scores is not None:
+            for label in candidate_labels:
+                pos = class_to_pos.get(label)
+                if pos is not None:
+                    per_label[label] += maha_blend * max(0.0, float(mahalanobis_scores[row_i, pos]))
+        score_denom = max(float(row_k) + proto_blend + maha_blend, 1.0)
+        for label, value in per_label.items():
+            col = label_to_col.get(str(label))
+            if col is not None:
+                out[row_i, col] = float(value / score_denom)
+    return labels, out
+
+
 def _split_support_query(
     payload: Mapping[str, Any],
     *,
@@ -713,7 +810,7 @@ def _label_thresholds_from_calibration(
     if calibration_mode not in {"self", "leave_one_out", "loo"}:
         raise ValueError("support_calibration_mode must be self or leave_one_out")
     exclude = range(int(support_features.shape[0])) if calibration_mode in {"leave_one_out", "loo"} else None
-    _, support_scores, _, _, _, _, _, _ = qknn_scores(
+    score_labels, support_score_matrix = _qknn_label_score_matrix(
         memory,
         support_features,
         top_k=top_k,
@@ -727,12 +824,28 @@ def _label_thresholds_from_calibration(
         mahalanobis_score_blend=mahalanobis_score_blend,
         mahalanobis_score_temperature=mahalanobis_score_temperature,
     )
+    label_to_col = {str(label): int(pos) for pos, label in enumerate(score_labels.tolist())}
     thresholds: dict[str, float] = {}
     for label in sorted({str(label) for label in labels_arr.tolist()}):
-        values = support_scores[labels_arr == label]
+        col = label_to_col.get(label)
+        values = support_score_matrix[labels_arr == label, col] if col is not None else np.asarray([], dtype=np.float64)
         if values.size >= max(1, int(min_support)):
             thresholds[label] = float(np.quantile(values, float(support_quantile)))
     if proxy_features is not None and int(proxy_features.shape[0]) > 0:
+        proxy_score_labels, proxy_score_matrix = _qknn_label_score_matrix(
+            memory,
+            proxy_features,
+            top_k=top_k,
+            query_scenarios=proxy_scenarios,
+            scenario_aware=scenario_aware and proxy_scenarios is not None,
+            radius_norm=radius_norm,
+            old_bias=old_bias,
+            candidate_class_top_m=candidate_class_top_m,
+            prototype_score_blend=prototype_score_blend,
+            mahalanobis_score_blend=mahalanobis_score_blend,
+            mahalanobis_score_temperature=mahalanobis_score_temperature,
+        )
+        proxy_label_to_col = {str(label): int(pos) for pos, label in enumerate(proxy_score_labels.tolist())}
         proxy_pred, proxy_scores, _, _, _, _, _, _ = qknn_scores(
             memory,
             proxy_features,
@@ -747,7 +860,8 @@ def _label_thresholds_from_calibration(
             mahalanobis_score_temperature=mahalanobis_score_temperature,
         )
         for label in sorted({str(label) for label in proxy_pred.tolist()}):
-            values = proxy_scores[proxy_pred == label]
+            col = proxy_label_to_col.get(label)
+            values = proxy_score_matrix[proxy_pred == label, col] if col is not None else proxy_scores[proxy_pred == label]
             if values.size:
                 thresholds[label] = max(
                     thresholds.get(label, 0.0),
@@ -1295,11 +1409,17 @@ def build_collaborative_evidence(
                         reliability = support_density * max(0.0, min(1.0, float(margin[0]) / max(memory.margin_threshold, 1e-6)))
                     else:
                         reliability = 1.0
-                    receiver_score_threshold = float(
-                        receiver_class_thresholds.get(rx, {}).get(str(pred[0]), receiver_thresholds[rx])
-                        if bool(class_score_threshold_enabled)
-                        else receiver_thresholds[rx]
-                    )
+                    class_threshold_value = receiver_class_thresholds.get(rx, {}).get(str(pred[0]))
+                    threshold_source = "receiver_global"
+                    if bool(class_score_threshold_enabled):
+                        if class_threshold_value is not None:
+                            receiver_score_threshold = float(class_threshold_value)
+                            threshold_source = "class"
+                        else:
+                            receiver_score_threshold = float(receiver_thresholds[rx])
+                            threshold_source = "receiver_fallback"
+                    else:
+                        receiver_score_threshold = float(receiver_thresholds[rx])
                     effective_score_threshold = _combine_score_threshold(
                         receiver_score_threshold,
                         memory.score_threshold,
@@ -1361,9 +1481,11 @@ def build_collaborative_evidence(
                             "known_score": float(score[0]),
                             "known_margin": float(margin[0]),
                             "effective_score_threshold": float(effective_score_threshold),
-                            "receiver_score_threshold": float(receiver_thresholds[rx]),
-                            "class_score_threshold": float(receiver_score_threshold),
+                            "receiver_score_threshold": float(receiver_score_threshold),
+                            "base_receiver_score_threshold": float(receiver_thresholds[rx]),
+                            "class_score_threshold": float(class_threshold_value) if class_threshold_value is not None else 0.0,
                             "class_score_threshold_enabled": int(bool(class_score_threshold_enabled)),
+                            "score_threshold_source": threshold_source,
                             "candidate_class_count": int(candidate_counts[0]),
                             "support_neighbor_count": int(support_neighbor_counts[0]),
                             "support_density": support_density,

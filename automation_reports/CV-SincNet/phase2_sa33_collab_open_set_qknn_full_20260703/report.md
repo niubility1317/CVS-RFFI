@@ -214,3 +214,96 @@ python code/scripts/phase2_collaborative_open_set_qknn_eval.py \
 1. 若要真实卫星群同事件协同，需要导出或构造带共享事件ID的多接收机query。
 2. qknn8 unknown gate需要改进，当前support-only阈值明显无法控制unknown FAR。
 3. 后续可引入Gaussian prototype/Mahalanobis或EVT support-tail阈值，但阈值拟合仍不能使用unknown query。
+
+## 2026-07-03SCORER-CVS增强版SA33复跑
+
+监督子agent指出：上一轮原型/Mahalanobis/per-label阈值增强主要闭环在`ADV3B02_CORE90_SOFT_E200`特征上，不能替代用户指定的`SA33_sa27_ch2_leo3_ce0p7_r010_20260527_204104`权重结果。因此本节用同一SA33星地特征复跑当前增强版协同推理。
+
+本地修正：
+
+|文件|修正|
+|---|---|
+|`code/scripts/phase2_collaborative_open_set_qknn_eval.py`|新增`_qknn_label_score_matrix()`；per-label阈值校准改为使用`score_y(x)`的同类分数，而不是support LOO时top1预测类分数；evidence新增`score_threshold_source`和`base_receiver_score_threshold`。|
+|`code/tests/test_phase2_collaborative_open_set_qknn_eval.py`|新增反例测试：当support LOO样本被错分到`new-a`时，`old-a`类阈值不得吸收错误top1高分。|
+
+本地与Git镜像验证：
+
+```powershell
+conda activate ssr-gpu
+python -m py_compile code\scripts\phase2_collaborative_open_set_qknn_eval.py code\evaluation\collaborative_open_set_qknn_eval.py
+python code\tests\test_phase2_collaborative_open_set_qknn_eval.py
+python code\tests\test_collaborative_open_set_qknn_eval.py
+```
+
+结果：`test_phase2_collaborative_open_set_qknn_eval.py`为32 tests OK，`test_collaborative_open_set_qknn_eval.py`为27 tests OK。Git镜像同样复测通过。
+
+N607远端执行：先运行`tools\n607_ssh_preflight.ps1`，直连`N607`通过，项目根为`/home/szu2070436088/2510044040/CV-SincNet`；8张RTX3090均为`10/24576MiB`。同步脚本和测试文件后，在远端执行：
+
+```bash
+cd /home/szu2070436088/2510044040/CV-SincNet
+source /opt/miniconda3/etc/profile.d/conda.sh
+conda activate CVS-RFFI
+python -m py_compile code/scripts/phase2_collaborative_open_set_qknn_eval.py code/evaluation/collaborative_open_set_qknn_eval.py
+python code/tests/test_phase2_collaborative_open_set_qknn_eval.py
+python code/tests/test_collaborative_open_set_qknn_eval.py
+```
+
+结果：远端`CVS-RFFI`环境确认通过，单测为32 tests OK和27 tests OK。随后在`CUDA_VISIBLE_DEVICES=0`上复跑4组`receiver_domain_ranked`诊断，均使用`--collab_counts all`，覆盖5个target receiver的1到5协同数量；source receiver数量为7，仅作为训练/源域统计，不作为本评估的协同参与数。运行前后GPU均为`10/24576MiB`，SSH/SCP后本地检查无残留`ssh.exe`或22端口`ESTABLISHED`连接。
+
+统一参数：`--k_shot 8 --query_per_class 20 --qknn_k 8 --candidate_class_top_m 2 --prototype_score_blend 2.0 --mahalanobis_score_blend 1.0 --support_calibration_mode leave_one_out --unknown_gate_mode support_envelope_evt --score_threshold_combine qknn_only --scenario_aware --radius_norm 0.3 --fusion_policy scorer_cvs --collaboration_policy adaptive_gain --label_fusion_policy vote_margin --receiver_reliability_policy deployment_prior --event_alignment_policy receiver_domain_ranked --support_selection_policy stable_first`。
+
+拉回产物SHA256：
+
+|产物|SHA256|
+|---|---|
+|`collab_open_set_qknn_scorer_cvs_evt_adaptive_gain_vote_margin_sa33_proto2_maha1_qknnonly.json`|`638522140BD0AB56BA58257A77EDCF1BBAAF8DA6A70355325161204471457E36`|
+|`collab_open_set_qknn_scorer_cvs_evt_adaptive_gain_vote_margin_sa33_proto2_maha1_qknnonly_evidence.csv`|`90E3CCFB368C06B42E9C90402CF49B8527F6FAEC0E43A60BD0396B7C7874BDE1`|
+|`collab_open_set_qknn_scorer_cvs_evt_adaptive_gain_vote_margin_sa33_classq20_proto2_maha1_qknnonly.json`|`1B72C44E990EECBDCD391BB890B430CC1FA64ADC38FE768DDCDF1B1AE53854DC`|
+|`collab_open_set_qknn_scorer_cvs_evt_adaptive_gain_vote_margin_sa33_classq20_proto2_maha1_qknnonly_evidence.csv`|`9BEF2B27B441BE82CE755F36B33460362338291388C0AD3401DB8A1F53382BBC`|
+|`collab_open_set_qknn_scorer_cvs_evt_adaptive_gain_vote_margin_sa33_classq35_proto2_maha1_qknnonly.json`|`C3419244C3AD924E542760FCD030641FEB92B2D9E698D95C88D7B3BBA2CD1200`|
+|`collab_open_set_qknn_scorer_cvs_evt_adaptive_gain_vote_margin_sa33_classq35_proto2_maha1_qknnonly_evidence.csv`|`9442E590C1E6C1978D4024EB1F991AC8157594F0F4D83AF6A3E173F9F943A2D1`|
+|`collab_open_set_qknn_scorer_cvs_evt_adaptive_gain_vote_margin_sa33_classq50_proto2_maha1_qknnonly.json`|`AA2DFED23824454BA62DB5EFB6DCDB743494148132145429891486655FE0895F`|
+|`collab_open_set_qknn_scorer_cvs_evt_adaptive_gain_vote_margin_sa33_classq50_proto2_maha1_qknnonly_evidence.csv`|`3F86385FCC58B02B9F674889E220EC4BD246E42284A2D82A40B3A8ADCA3C561C`|
+
+SA33增强版结果表：
+
+|候选|预算|old_acc|min_old|seen_new_acc|min_seen_new|unknown_FAR|unknown_reject|defer_rate|avg_rx|bytes/event|
+|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+|`sa33_proto2_maha1_qknnonly`|1|0.0000|0.0000|0.3833|0.2750|0.2333|0.2500|0.6656|1.0000|120.0|
+|`sa33_proto2_maha1_qknnonly`|2|0.1824|0.0000|0.4490|0.3793|0.1915|0.4894|0.3934|1.7746|213.0|
+|`sa33_proto2_maha1_qknnonly`|3|0.2083|0.0500|0.5500|0.5000|0.1000|0.5750|0.4750|2.5650|307.8|
+|`sa33_proto2_maha1_qknnonly`|4|0.4891|0.0000|0.7419|0.7273|0.1515|0.5152|0.1923|3.2692|392.3|
+|`sa33_proto2_maha1_qknnonly`|5|0.3846|0.0000|0.7000|0.0000|0.1000|0.5500|0.2826|3.6413|437.0|
+|`sa33_classq20_proto2_maha1_qknnonly`|1|0.0000|0.0000|0.3833|0.2750|0.2333|0.2500|0.6656|1.0000|120.0|
+|`sa33_classq20_proto2_maha1_qknnonly`|2|0.1757|0.0000|0.4286|0.3448|0.1702|0.4894|0.3975|1.7746|213.0|
+|`sa33_classq20_proto2_maha1_qknnonly`|3|0.1917|0.0000|0.5500|0.5000|0.1000|0.5750|0.4750|2.5450|305.4|
+|`sa33_classq20_proto2_maha1_qknnonly`|4|0.4783|0.0000|0.7419|0.7273|0.1515|0.6061|0.1731|3.1859|382.3|
+|`sa33_classq20_proto2_maha1_qknnonly`|5|0.4231|0.0000|0.7000|0.0000|0.1000|0.7500|0.2065|3.4348|412.2|
+|`sa33_classq35_proto2_maha1_qknnonly`|1|0.0000|0.0000|0.3833|0.2750|0.2333|0.2667|0.6558|1.0000|120.0|
+|`sa33_classq35_proto2_maha1_qknnonly`|2|0.1554|0.0000|0.4286|0.3448|0.1702|0.5106|0.3852|1.7705|212.5|
+|`sa33_classq35_proto2_maha1_qknnonly`|3|0.1667|0.0000|0.5500|0.5000|0.1000|0.6250|0.4800|2.5500|306.0|
+|`sa33_classq35_proto2_maha1_qknnonly`|4|0.4565|0.0000|0.7419|0.7273|0.1515|0.6364|0.1987|3.2179|386.2|
+|`sa33_classq35_proto2_maha1_qknnonly`|5|0.4423|0.0000|0.7000|0.0000|0.1000|0.8000|0.2065|3.5000|420.0|
+|`sa33_classq50_proto2_maha1_qknnonly`|1|0.0000|0.0000|0.3833|0.2750|0.2333|0.2833|0.6526|1.0000|120.0|
+|`sa33_classq50_proto2_maha1_qknnonly`|2|0.1149|0.0000|0.4286|0.3448|0.1702|0.5532|0.3934|1.7623|211.5|
+|`sa33_classq50_proto2_maha1_qknnonly`|3|0.1167|0.0000|0.5500|0.5000|0.1000|0.6500|0.4700|2.5300|303.6|
+|`sa33_classq50_proto2_maha1_qknnonly`|4|0.4130|0.0000|0.7097|0.7000|0.1212|0.6667|0.2372|3.2115|385.4|
+|`sa33_classq50_proto2_maha1_qknnonly`|5|0.3462|0.0000|0.7000|0.0000|0.1000|0.8500|0.2826|3.6087|433.0|
+
+解释：在SA33指定权重下，增强版最高同row seen-new为`sa33_proto2_maha1_qknnonly`预算4，`seen_new_acc=0.7419`、`min_seen_new=0.7273`，但`unknown_FAR=0.1515`不安全；FAR最低仍为0.1000，不能作为开集部署结果。per-label阈值修正后能提高unknown reject，但没有把FAR降到可部署区间，并且`min_old`多数为0。结论仍是诊断负结果：当前SA33+receiver-domain ensemble不满足99/97/99目标，不满足严格同事件卫星群协同证明。
+
+文献/方法子agent与联网检索给出的可落地路线：
+
+|方向|依据|迁移到CVS-RFFI的实现建议|
+|---|---|---|
+|星上分布式AI约束|[On-Orbit Space AI](https://arxiv.org/html/2604.16518v1)强调星座AI需要处理动态接触图、异构算力、非IID漂移和安全审计。|当前`receiver_domain_ranked`应升级为显式contact graph和receiver health加权，不再把接收机数简单当静态ensemble。|
+|通信高效协同推理|[Communication-Efficient Collaborative LLM Inference over LEO Satellite Networks](https://arxiv.org/html/2604.04654v1)使用模型切分、流水和压缩优化LEO协同推理延迟/通信。|CVS-RFFI不需要传activation；更适合传64-128 bytes证据包，但应把`request_more_receivers()`建成早停/增量路由。|
+|分布式早退|[DistrEE](https://arxiv.org/abs/2502.15735)把多节点协同和early-exit结合，在延迟和精度间自适应取舍。|按`unknown_risk`、margin、class p-value先用1-2台receiver判定，只有低置信事件才请求更多receiver。|
+|邻域保形校准|[Neighborhood Conformal Prediction](https://ojs.aaai.org/index.php/AAAI/article/view/25936/25708)使用embedding近邻校准样本生成自适应预测集。|把per-label阈值升级为class-conditional conformal p-value：每个receiver输出`p_y`和`p_unknown`，跨receiver做log-opinion pooling。|
+|低通信微调|[Federated LoRA with Sparse Communication](https://arxiv.org/html/2406.05233v1)说明LoRA+稀疏通信适合异构低资源联邦微调。|星上实时微调不要更新主干；只同步低秩adapter、class prototype、阈值摘要和少量hard negative统计。|
+|卫星FL异步/部分更新|[FedLEO引用页](https://arxiv.org/html/2411.00263v1)强调LEO场景难以完美同步，需支持partial updates。|训练/微调调度应允许异步receiver adapter更新，报告中分开写“推理协同”和“微调聚合”。|
+|持续学习稳定性|[DOLFIN](https://arxiv.org/html/2510.13567v1)用LoRA和梯度投影记忆平衡联邦增量学习的稳定/可塑性。|对新接收机只训练小adapter，并用source/old prototype子空间约束避免旧TX遗忘。|
+
+下一版算法建议命名为`SCORER-CVS-CPR`：Support-Calibrated Open-set Receiver Evidence Routing with Conformal Prototype Routing。节点本地保留冻结SA33/ADV特征器、int8 support memory、EMA prototype、Mahalanobis逆方差、class conformal校准缓存和低秩adapter；每个事件先由单receiver输出`top2 label、score_y、p_y、p_unknown、radius_z、support_density、receiver_health`，控制器按风险请求更多receiver，并用校准后的log evidence融合。训练侧只更新adapter/prototype/threshold，不回传原始IQ或query unknown，满足低显存和低通信部署边界。
+
+查漏补缺结论：per-label阈值原先存在“真实标签阈值吸收错误top1分数”的语义漏洞，已修复并补测试；但小K时per-label阈值仍应做receiver-global收缩，且当前结果仍不是严格同物理事件协同。若用户要求“全体源接收机1..7”字面评估，需要单独定义源receiver作为协同节点的协议；本报告完成的是CVS Stage2-C target receiver 1..5协同诊断。

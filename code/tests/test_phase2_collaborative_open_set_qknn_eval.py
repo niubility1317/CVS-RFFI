@@ -687,6 +687,46 @@ class Phase2CollaborativeOpenSetQknnEvalTest(unittest.TestCase):
         self.assertIn("effective_score_threshold", evidence[0])
         self.assertIn("class_score_threshold", evidence[0])
         self.assertEqual(int(evidence[0]["class_score_threshold_enabled"]), 1)
+        self.assertIn("score_threshold_source", evidence[0])
+
+    def test_class_score_thresholds_use_true_label_score_not_top1_score(self):
+        from phase2_collaborative_open_set_qknn_eval import (
+            _label_thresholds_from_calibration,
+            build_qknn_memory,
+            qknn_scores,
+        )
+
+        features = np.asarray(
+            [
+                [1.0, 0.0],
+                [-1.0, 0.0],
+                [0.98, 0.20],
+            ],
+            dtype=np.float32,
+        )
+        labels = ["old-a", "old-a", "new-a"]
+        memory = build_qknn_memory(features, labels, old_labels={"old-a"})
+        pred, scores, *_ = qknn_scores(
+            memory,
+            features,
+            top_k=1,
+            exclude_support_indices=range(features.shape[0]),
+        )
+        thresholds = _label_thresholds_from_calibration(
+            memory,
+            features,
+            labels,
+            None,
+            top_k=1,
+            support_quantile=0.5,
+            proxy_quantile=0.5,
+            support_calibration_mode="leave_one_out",
+            min_support=2,
+        )
+
+        self.assertEqual(str(pred[0]), "new-a")
+        self.assertGreater(float(scores[0]), 0.5)
+        self.assertAlmostEqual(float(thresholds["old-a"]), 0.0)
 
     def test_class_score_thresholds_are_disabled_by_default(self):
         from phase2_collaborative_open_set_qknn_eval import load_feature_npz, build_collaborative_evidence
