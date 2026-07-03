@@ -1,0 +1,481 @@
+{
+  "seed_start": 422001,
+  "seed_end": 422100,
+  "seed_count": 100,
+  "candidate_new_tx_ids": [
+    "19-3",
+    "3-8",
+    "1-8",
+    "6-6",
+    "2-13",
+    "9-1"
+  ],
+  "method": "knn1",
+  "k_old": 10,
+  "k_new": 10,
+  "row_count": 1500,
+  "joint_pass_updated_count": 0,
+  "top_joint_like": [
+    {
+      "new_tx_ids": [
+        "19-3",
+        "3-8"
+      ],
+      "method": "knn1",
+      "old_acc": 0.8458333333333333,
+      "seen_new_acc": 0.8374999999999999,
+      "min_seen_new_class_acc": 0.825,
+      "H_old_new": 0.8416460396039603,
+      "per_new_acc": {
+        "19-3": 0.825,
+        "3-8": 0.85
+      },
+      "passes_old_target": false,
+      "passes_seen_new_average_target": false,
+      "passes_seen_new_per_class_target": false,
+      "passes_joint_target": false,
+      "support_count": 80,
+      "old_query_count": 240,
+      "new_query_count": 80,
+      "seed": 422001
+    },
+    {
+      "new_tx_ids": [
+        "1-8",
+        "19-3"
+      ],
+      "method": "knn1",
+      "old_acc": 0.8416666666666667,
+      "seen_new_acc": 0.825,
+      "min_seen_new_class_acc": 0.825,
+      "H_old_new": 0.83325,
+      "per_new_acc": {
+        "1-8": 0.825,
+        "19-3": 0.825
+      },
+      "passes_old_target": false,
+      "passes_seen_new_average_target": false,
+      "passes_seen_new_per_class_target": false,
+      "passes_joint_target": false,
+      "support_count": 80,
+      "old_query_count": 240,
+      "new_query_count": 80,
+      "seed": 422001
+    },
+    {
+      "new_tx_ids": [
+        "19-3",
+        "2-13"
+      ],
+      "method": "knn1",
+      "old_acc": 0.8375,
+      "seen_new_acc": 0.8,
+      "min_seen_new_class_acc": 0.8,
+      "H_old_new": 0.8183206106870229,
+      "per_new_acc": {
+        "19-3": 0.8,
+        "2-13": 0.8
+      },
+      "passes_old_target": false,
+      "passes_seen_new_average_target": false,
+      "passes_seen_new_per_class_target": false,
+      "passes_joint_target": false,
+      "support_count": 80,
+      "old_query_count": 240,
+      "new_query_count": 80,
+      "seed": 422092
+    },
+    {
+      "new_tx_ids": [
+        "19-3",
+        "3-8"
+      ],
+      "method": "knn1",
+      "old_acc": 0.825,
+      "seen_new_acc": 0.8,
+      "min_seen_new_class_acc": 0.8,
+      "H_old_new": 0.8123076923076924,
+      "per_new_acc": {
+        "19-3": 0.8,
+        "3-8": 0.8
+      },
+      "passes_old_target": false,
+      "passes_seen_new_average_target": false,
+      "passes_seen_new_per_class_target": false,
+      "passes_joint_target": false,
+      "support_count": 80,
+      "old_query_count": 240,
+      "new_query_count": 80,
+      "seed": 422092
+    },
+    {
+      "new_tx_ids": [
+        "2-13",
+        "6-6"
+      ],
+      "method": "knn1",
+      "old_acc": 0.8666666666666667,
+      "seen_new_acc": 0.775,
+      "min_seen_new_class_acc": 0.775,
+      "H_old_new": 0.818274111675127,
+      "per_new_acc": {
+        "2-13": 0.775,
+        "6-6": 0.775
+      },
+      "passes_old_target": true,
+      "passes_seen_new_average_target": false,
+      "passes_seen_new_per_class_target": false,
+      "passes_joint_target": false,
+      "support_count": 80,
+      "old_query_count": 240,
+      "new_query_count": 80,
+      "seed": 422036
+    },
+    {
+      "new_tx_ids": [
+        "19-3",
+        "6-6"
+      ],
+      "method": "knn1",
+      "old_acc": 0.8333333333333334,
+      "seen_new_acc": 0.8,
+      "min_seen_new_class_acc": 0.775,
+      "H_old_new": 0.816326530612245,
+      "per_new_acc": {
+        "19-3": 0.825,
+        "6-6": 0.775
+      },
+      "passes_old_target": false,
+      "passes_seen_new_average_target": false,
+      "passes_seen_new_per_class_target": false,
+      "passes_joint_target": false,
+      "support_count": 80,
+      "old_query_count": 240,
+      "new_query_count": 80,
+      "seed": 422001
+    },
+    {
+      "new_tx_ids": [
+        "19-3",
+        "3-8"
+      ],
+      "method": "knn1",
+      "old_acc": 0.8041666666666667,
+      "seen_new_acc": 0.8,
+      "min_seen_new_class_acc": 0.775,
+      "H_old_new": 0.8020779220779222,
+      "per_new_acc": {
+        "19-3": 0.775,
+        "3-8": 0.825
+      },
+      "passes_old_target": false,
+      "passes_seen_new_average_target": false,
+      "passes_seen_new_per_class_target": false,
+      "passes_joint_target": false,
+      "support_count": 80,
+      "old_query_count": 240,
+      "new_query_count": 80,
+      "seed": 422004
+    },
+    {
+      "new_tx_ids": [
+        "19-3",
+        "2-13"
+      ],
+      "method": "knn1",
+      "old_acc": 0.8791666666666667,
+      "seen_new_acc": 0.825,
+      "min_seen_new_class_acc": 0.75,
+      "H_old_new": 0.8512224938875305,
+      "per_new_acc": {
+        "19-3": 0.75,
+        "2-13": 0.9
+      },
+      "passes_old_target": true,
+      "passes_seen_new_average_target": false,
+      "passes_seen_new_per_class_target": false,
+      "passes_joint_target": false,
+      "support_count": 80,
+      "old_query_count": 240,
+      "new_query_count": 80,
+      "seed": 422062
+    },
+    {
+      "new_tx_ids": [
+        "19-3",
+        "2-13"
+      ],
+      "method": "knn1",
+      "old_acc": 0.875,
+      "seen_new_acc": 0.7625,
+      "min_seen_new_class_acc": 0.75,
+      "H_old_new": 0.814885496183206,
+      "per_new_acc": {
+        "19-3": 0.775,
+        "2-13": 0.75
+      },
+      "passes_old_target": true,
+      "passes_seen_new_average_target": false,
+      "passes_seen_new_per_class_target": false,
+      "passes_joint_target": false,
+      "support_count": 80,
+      "old_query_count": 240,
+      "new_query_count": 80,
+      "seed": 422051
+    },
+    {
+      "new_tx_ids": [
+        "2-13",
+        "3-8"
+      ],
+      "method": "knn1",
+      "old_acc": 0.8708333333333333,
+      "seen_new_acc": 0.75,
+      "min_seen_new_class_acc": 0.75,
+      "H_old_new": 0.8059125964010282,
+      "per_new_acc": {
+        "2-13": 0.75,
+        "3-8": 0.75
+      },
+      "passes_old_target": true,
+      "passes_seen_new_average_target": false,
+      "passes_seen_new_per_class_target": false,
+      "passes_joint_target": false,
+      "support_count": 80,
+      "old_query_count": 240,
+      "new_query_count": 80,
+      "seed": 422044
+    },
+    {
+      "new_tx_ids": [
+        "1-8",
+        "19-3"
+      ],
+      "method": "knn1",
+      "old_acc": 0.8583333333333333,
+      "seen_new_acc": 0.7875,
+      "min_seen_new_class_acc": 0.75,
+      "H_old_new": 0.8213924050632911,
+      "per_new_acc": {
+        "1-8": 0.75,
+        "19-3": 0.825
+      },
+      "passes_old_target": true,
+      "passes_seen_new_average_target": false,
+      "passes_seen_new_per_class_target": false,
+      "passes_joint_target": false,
+      "support_count": 80,
+      "old_query_count": 240,
+      "new_query_count": 80,
+      "seed": 422026
+    },
+    {
+      "new_tx_ids": [
+        "19-3",
+        "2-13"
+      ],
+      "method": "knn1",
+      "old_acc": 0.8541666666666666,
+      "seen_new_acc": 0.7875,
+      "min_seen_new_class_acc": 0.75,
+      "H_old_new": 0.819479695431472,
+      "per_new_acc": {
+        "19-3": 0.825,
+        "2-13": 0.75
+      },
+      "passes_old_target": true,
+      "passes_seen_new_average_target": false,
+      "passes_seen_new_per_class_target": false,
+      "passes_joint_target": false,
+      "support_count": 80,
+      "old_query_count": 240,
+      "new_query_count": 80,
+      "seed": 422001
+    },
+    {
+      "new_tx_ids": [
+        "19-3",
+        "2-13"
+      ],
+      "method": "knn1",
+      "old_acc": 0.8541666666666666,
+      "seen_new_acc": 0.75,
+      "min_seen_new_class_acc": 0.75,
+      "H_old_new": 0.7987012987012988,
+      "per_new_acc": {
+        "19-3": 0.75,
+        "2-13": 0.75
+      },
+      "passes_old_target": true,
+      "passes_seen_new_average_target": false,
+      "passes_seen_new_per_class_target": false,
+      "passes_joint_target": false,
+      "support_count": 80,
+      "old_query_count": 240,
+      "new_query_count": 80,
+      "seed": 422028
+    },
+    {
+      "new_tx_ids": [
+        "3-8",
+        "6-6"
+      ],
+      "method": "knn1",
+      "old_acc": 0.8458333333333333,
+      "seen_new_acc": 0.775,
+      "min_seen_new_class_acc": 0.75,
+      "H_old_new": 0.8088688946015424,
+      "per_new_acc": {
+        "3-8": 0.8,
+        "6-6": 0.75
+      },
+      "passes_old_target": false,
+      "passes_seen_new_average_target": false,
+      "passes_seen_new_per_class_target": false,
+      "passes_joint_target": false,
+      "support_count": 80,
+      "old_query_count": 240,
+      "new_query_count": 80,
+      "seed": 422001
+    },
+    {
+      "new_tx_ids": [
+        "19-3",
+        "3-8"
+      ],
+      "method": "knn1",
+      "old_acc": 0.8416666666666667,
+      "seen_new_acc": 0.7625,
+      "min_seen_new_class_acc": 0.75,
+      "H_old_new": 0.8001298701298701,
+      "per_new_acc": {
+        "19-3": 0.75,
+        "3-8": 0.775
+      },
+      "passes_old_target": false,
+      "passes_seen_new_average_target": false,
+      "passes_seen_new_per_class_target": false,
+      "passes_joint_target": false,
+      "support_count": 80,
+      "old_query_count": 240,
+      "new_query_count": 80,
+      "seed": 422019
+    },
+    {
+      "new_tx_ids": [
+        "19-3",
+        "6-6"
+      ],
+      "method": "knn1",
+      "old_acc": 0.8416666666666667,
+      "seen_new_acc": 0.7875,
+      "min_seen_new_class_acc": 0.75,
+      "H_old_new": 0.8136828644501279,
+      "per_new_acc": {
+        "19-3": 0.825,
+        "6-6": 0.75
+      },
+      "passes_old_target": false,
+      "passes_seen_new_average_target": false,
+      "passes_seen_new_per_class_target": false,
+      "passes_joint_target": false,
+      "support_count": 80,
+      "old_query_count": 240,
+      "new_query_count": 80,
+      "seed": 422089
+    },
+    {
+      "new_tx_ids": [
+        "19-3",
+        "9-1"
+      ],
+      "method": "knn1",
+      "old_acc": 0.8291666666666667,
+      "seen_new_acc": 0.7875,
+      "min_seen_new_class_acc": 0.75,
+      "H_old_new": 0.8077963917525773,
+      "per_new_acc": {
+        "19-3": 0.825,
+        "9-1": 0.75
+      },
+      "passes_old_target": false,
+      "passes_seen_new_average_target": false,
+      "passes_seen_new_per_class_target": false,
+      "passes_joint_target": false,
+      "support_count": 80,
+      "old_query_count": 240,
+      "new_query_count": 80,
+      "seed": 422001
+    },
+    {
+      "new_tx_ids": [
+        "19-3",
+        "6-6"
+      ],
+      "method": "knn1",
+      "old_acc": 0.825,
+      "seen_new_acc": 0.7625,
+      "min_seen_new_class_acc": 0.75,
+      "H_old_new": 0.7925196850393701,
+      "per_new_acc": {
+        "19-3": 0.75,
+        "6-6": 0.775
+      },
+      "passes_old_target": false,
+      "passes_seen_new_average_target": false,
+      "passes_seen_new_per_class_target": false,
+      "passes_joint_target": false,
+      "support_count": 80,
+      "old_query_count": 240,
+      "new_query_count": 80,
+      "seed": 422028
+    },
+    {
+      "new_tx_ids": [
+        "19-3",
+        "3-8"
+      ],
+      "method": "knn1",
+      "old_acc": 0.775,
+      "seen_new_acc": 0.8125,
+      "min_seen_new_class_acc": 0.75,
+      "H_old_new": 0.7933070866141734,
+      "per_new_acc": {
+        "19-3": 0.75,
+        "3-8": 0.875
+      },
+      "passes_old_target": false,
+      "passes_seen_new_average_target": false,
+      "passes_seen_new_per_class_target": false,
+      "passes_joint_target": false,
+      "support_count": 80,
+      "old_query_count": 240,
+      "new_query_count": 80,
+      "seed": 422084
+    },
+    {
+      "new_tx_ids": [
+        "19-3",
+        "6-6"
+      ],
+      "method": "knn1",
+      "old_acc": 0.7666666666666667,
+      "seen_new_acc": 0.7625,
+      "min_seen_new_class_acc": 0.75,
+      "H_old_new": 0.7645776566757493,
+      "per_new_acc": {
+        "19-3": 0.75,
+        "6-6": 0.775
+      },
+      "passes_old_target": false,
+      "passes_seen_new_average_target": false,
+      "passes_seen_new_per_class_target": false,
+      "passes_joint_target": false,
+      "support_count": 80,
+      "old_query_count": 240,
+      "new_query_count": 80,
+      "seed": 422084
+    }
+  ],
+  "pass_rows": []
+}
