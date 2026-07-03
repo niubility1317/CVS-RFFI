@@ -2511,7 +2511,14 @@ def parse_args() -> argparse.Namespace:
     p.add_argument(
         "--fusion_policy",
         default="risk_margin",
-        choices=["risk_margin", "consensus_veto", "scorer_cvs", "cp_set_cvs", "candidate_set_cvs"],
+        choices=[
+            "risk_margin",
+            "consensus_veto",
+            "scorer_cvs",
+            "cp_set_cvs",
+            "candidate_set_cvs",
+            "support_router_cvs",
+        ],
     )
     p.add_argument(
         "--collaboration_policy",

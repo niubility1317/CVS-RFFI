@@ -1083,7 +1083,7 @@ def _fuse_event(
         else:
             decision = "defer"
             output_label = ""
-    elif policy in {"scorer_cvs", "cp_set_cvs", "candidate_set_cvs"}:
+    elif policy in {"scorer_cvs", "cp_set_cvs", "candidate_set_cvs", "support_router_cvs"}:
         strong_consensus = (
             vote_gap > float(consensus_gap_threshold) or score_gap_ratio > float(consensus_gap_threshold)
         ) and agreement >= 0.5
@@ -1133,10 +1133,43 @@ def _fuse_event(
         if policy == "candidate_set_cvs" and label:
             decision_unknown_risk = label_unknown_risk
             decision_risk_component_agreement = label_risk_component_agreement
+        if policy == "support_router_cvs" and label:
+            decision_unknown_risk = max(label_unknown_risk, unknown_risk)
+            decision_risk_component_agreement = max(
+                label_risk_component_agreement,
+                risk_component_agreement,
+            )
         effective_unknown_risk = decision_unknown_risk * risk_scale
         high_risk = effective_unknown_risk >= float(unknown_risk_threshold)
         multi_channel_risk = decision_risk_component_agreement >= float(scorer_component_vote_threshold)
         gate_passed, gate_reason = _class_set_gate_decision()
+        support_router_accept = bool(
+            policy == "support_router_cvs"
+            and output_label_set in {"old", "seen_new"}
+            and selected_label_candidate_receivers >= max(1, int(candidate_set_min_receivers))
+            and selected_label_top1_receivers >= max(0, int(candidate_set_min_top1_receivers))
+            and label_class_conformal_pvalue >= float(candidate_set_min_conformal_pvalue)
+            and label_receiver_class_reliability
+            >= float(candidate_set_min_label_receiver_class_reliability)
+            and mean_score >= float(consensus_score_threshold)
+            and mean_margin >= float(accept_margin_threshold)
+            and score_gap_ratio >= float(candidate_set_min_score_gap)
+            and label_unknown_risk <= float(candidate_set_max_label_unknown_risk)
+            and unknown_risk <= float(candidate_set_max_event_unknown_risk)
+            and label_risk_component_agreement
+            <= float(candidate_set_max_label_risk_component_agreement)
+            and label_shell_risk <= float(candidate_set_max_label_shell_risk)
+            and gate_passed
+        )
+        support_router_unknown_evidence = bool(
+            policy == "support_router_cvs"
+            and (
+                unknown_risk >= float(candidate_set_unknown_reject_risk)
+                or label_unknown_risk >= float(candidate_set_unknown_reject_risk)
+                or label_shell_risk >= float(candidate_set_shell_reject_risk)
+                or decision_risk_component_agreement >= float(scorer_component_vote_threshold)
+            )
+        )
         candidate_set_high_unknown_veto = bool(
             policy == "candidate_set_cvs"
             and label
@@ -1331,7 +1364,22 @@ def _fuse_event(
             and score_gap_ratio >= float(candidate_set_min_score_gap)
             and candidate_set_pairguard_accept_passed
         )
-        if candidate_set_accept:
+        if policy == "support_router_cvs" and support_router_accept:
+            decision = "accept"
+            output_label = label
+        elif policy == "support_router_cvs" and support_router_unknown_evidence and within_request_budget:
+            decision = "request_more"
+            output_label = ""
+        elif policy == "support_router_cvs" and support_router_unknown_evidence:
+            decision = "unknown_reject"
+            output_label = UNKNOWN_LABEL
+        elif policy == "support_router_cvs" and within_request_budget:
+            decision = "request_more"
+            output_label = ""
+        elif policy == "support_router_cvs":
+            decision = "defer"
+            output_label = ""
+        elif candidate_set_accept:
             decision = "accept"
             output_label = label
         elif policy == "candidate_set_cvs" and locals().get("candidate_set_pairguard_request_more", False):
@@ -1397,9 +1445,9 @@ def _fuse_event(
             decision = "defer"
             output_label = ""
     elif label:
-        raise ValueError("fusion_policy must be risk_margin, consensus_veto, scorer_cvs, cp_set_cvs, or candidate_set_cvs")
+        raise ValueError("fusion_policy must be risk_margin, consensus_veto, scorer_cvs, cp_set_cvs, candidate_set_cvs, or support_router_cvs")
     else:
-        raise ValueError("fusion_policy must be risk_margin, consensus_veto, scorer_cvs, cp_set_cvs, or candidate_set_cvs")
+        raise ValueError("fusion_policy must be risk_margin, consensus_veto, scorer_cvs, cp_set_cvs, candidate_set_cvs, or support_router_cvs")
 
     resource_budget_reason = _resource_budget_reason(
         selected,
@@ -1442,6 +1490,8 @@ def _fuse_event(
         "class_set_gate_passed": bool(locals().get("gate_passed", True)),
         "class_set_gate_reason": str(locals().get("gate_reason", "")),
         "candidate_set_accept": bool(locals().get("candidate_set_accept", False)),
+        "support_router_accept": bool(locals().get("support_router_accept", False)),
+        "support_router_unknown_evidence": bool(locals().get("support_router_unknown_evidence", False)),
         "candidate_set_min_receivers": int(candidate_set_min_receivers),
         "candidate_set_min_top1_receivers": int(candidate_set_min_top1_receivers),
         "candidate_set_min_conformal_pvalue": float(candidate_set_min_conformal_pvalue),
@@ -1598,6 +1648,7 @@ def _fuse_progressive_event(
     label_fusion_policy: str = "score_sum",
     class_reliability_policy: str = "none",
     receiver_class_reliability_policy: str = "none",
+    can_request_more: bool = False,
     latency_budget_ms: float = 0.0,
     max_event_bytes: float = 0.0,
     max_event_latency_ms: float = 0.0,
@@ -2743,6 +2794,10 @@ def _finalize_metrics(
     candidate_set_pairguard_soft_by_role: defaultdict[str, int] = defaultdict(int)
     candidate_set_pairguard_soft_strong_bypass_total = 0
     candidate_set_pairguard_soft_strong_bypass_by_role: defaultdict[str, int] = defaultdict(int)
+    support_router_accept_total = 0
+    support_router_accept_by_role: defaultdict[str, int] = defaultdict(int)
+    support_router_unknown_evidence_total = 0
+    support_router_unknown_evidence_by_role: defaultdict[str, int] = defaultdict(int)
     dual_route_rescue_total = 0
     dual_route_rescue_by_role: defaultdict[str, int] = defaultdict(int)
 
@@ -2799,6 +2854,12 @@ def _finalize_metrics(
         if bool(item.get("candidate_set_pairguard_soft_strong_bypass", False)):
             candidate_set_pairguard_soft_strong_bypass_total += 1
             candidate_set_pairguard_soft_strong_bypass_by_role[role] += 1
+        if bool(item.get("support_router_accept", False)):
+            support_router_accept_total += 1
+            support_router_accept_by_role[role] += 1
+        if bool(item.get("support_router_unknown_evidence", False)):
+            support_router_unknown_evidence_total += 1
+            support_router_unknown_evidence_by_role[role] += 1
         if str(item.get("dual_route_selected_route", "")) == "rescue":
             dual_route_rescue_total += 1
             dual_route_rescue_by_role[role] += 1
@@ -2972,6 +3033,17 @@ def _finalize_metrics(
         ),
         "candidate_set_pairguard_soft_strong_bypass_by_role": dict(
             sorted(candidate_set_pairguard_soft_strong_bypass_by_role.items())
+        ),
+        "support_router_accept_count": int(support_router_accept_total),
+        "support_router_accept_rate": _safe_rate(support_router_accept_total, total_events),
+        "support_router_accept_by_role": dict(sorted(support_router_accept_by_role.items())),
+        "support_router_unknown_evidence_count": int(support_router_unknown_evidence_total),
+        "support_router_unknown_evidence_rate": _safe_rate(
+            support_router_unknown_evidence_total,
+            total_events,
+        ),
+        "support_router_unknown_evidence_by_role": dict(
+            sorted(support_router_unknown_evidence_by_role.items())
         ),
         "dual_route_rescue_count": int(dual_route_rescue_total),
         "dual_route_rescue_rate": _safe_rate(dual_route_rescue_total, total_events),

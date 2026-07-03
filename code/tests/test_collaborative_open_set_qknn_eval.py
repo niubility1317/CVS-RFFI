@@ -354,6 +354,91 @@ class CollaborativeOpenSetQknnEvalTest(unittest.TestCase):
         self.assertEqual(veto_result["counts"]["2"]["open_set_confusion"], {"unknown->unknown_reject": 1})
         self.assertEqual(veto_result["fusion_policy"], "consensus_veto")
 
+    def test_support_router_separates_known_support_from_unknown_risk(self):
+        from evaluation.collaborative_open_set_qknn_eval import evaluate_collaborative_open_set_evidence
+
+        rows = []
+        for receiver in ("rx-a", "rx-b"):
+            rows.append({
+                "event_id": "strong-old",
+                "receiver_id": receiver,
+                "role": "old",
+                "true_label": "old-a",
+                "predicted_label": "old-a",
+                "known_score": 0.92,
+                "known_margin": 0.42,
+                "unknown_risk": 0.75,
+                "score_risk": 0.75,
+                "radius_risk": 0.60,
+                "margin_risk": 0.35,
+                "support_density": 0.90,
+                "class_radius_z": 0.40,
+                "class_shell_risk": 0.05,
+                "class_conformal_pvalue": 0.90,
+                "class_conformal_support_count": 2,
+                "receiver_class_reliability": 0.95,
+            })
+            rows.append({
+                "event_id": "weak-unknown",
+                "receiver_id": receiver,
+                "role": "unknown",
+                "true_label": "__unknown__",
+                "predicted_label": "old-a",
+                "known_score": 0.30,
+                "known_margin": 0.02,
+                "unknown_risk": 0.96,
+                "score_risk": 0.96,
+                "radius_risk": 0.92,
+                "margin_risk": 0.88,
+                "support_density": 0.20,
+                "class_radius_z": 4.00,
+                "class_shell_risk": 0.70,
+                "class_conformal_pvalue": 0.10,
+                "class_conformal_support_count": 0,
+                "receiver_class_reliability": 0.20,
+            })
+
+        result = evaluate_collaborative_open_set_evidence(
+            rows,
+            collab_counts="2",
+            fusion_policy="support_router_cvs",
+            unknown_risk_threshold=0.80,
+            accept_margin_threshold=0.10,
+            consensus_score_threshold=0.50,
+            scorer_component_vote_threshold=0.50,
+            class_set_gate_enabled=True,
+            old_gate_min_receivers=2,
+            old_gate_min_support_density=0.60,
+            old_gate_max_radius_z=1.50,
+            candidate_set_min_receivers=2,
+            candidate_set_min_top1_receivers=2,
+            candidate_set_min_conformal_pvalue=0.50,
+            candidate_set_max_label_unknown_risk=0.95,
+            candidate_set_max_event_unknown_risk=0.95,
+            candidate_set_max_label_risk_component_agreement=0.80,
+            candidate_set_max_label_shell_risk=0.50,
+            candidate_set_unknown_reject_risk=0.80,
+            candidate_set_min_label_receiver_class_reliability=0.70,
+            protocol_metadata={
+                "source_receiver_ids": ["src-a"],
+                "target_receiver_ids": ["rx-a", "rx-b"],
+                "old_tx_ids": ["old-a"],
+                "seen_new_tx_ids": ["new-a"],
+                "unknown_tx_ids": ["unk-a"],
+                "target_channel_view": "leo_clear_weak",
+            },
+            strict_protocol_metadata=True,
+            include_event_results=True,
+        )
+
+        k2 = result["counts"]["2"]
+        self.assertEqual(result["fusion_policy"], "support_router_cvs")
+        self.assertEqual(k2["old_acc"], 1.0)
+        self.assertEqual(k2["unknown_reject_rate"], 1.0)
+        self.assertEqual(k2["support_router_accept_count"], 1)
+        self.assertEqual(k2["support_router_unknown_evidence_count"], 1)
+        self.assertEqual(k2["open_set_confusion"], {"old->old": 1, "unknown->unknown_reject": 1})
+
     def test_scorer_cvs_requests_more_receivers_under_latency_budget(self):
         from evaluation.collaborative_open_set_qknn_eval import evaluate_collaborative_open_set_evidence
 
