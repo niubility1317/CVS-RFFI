@@ -1164,6 +1164,7 @@ def build_collaborative_evidence(
                         if float(candidate_audit_min_gap) > 0.0 and audit_gap < float(candidate_audit_min_gap):
                             candidate_audit_risk = max(candidate_audit_risk, float(candidate_audit_gap_risk))
                     unknown_risk_value = max(float(risk[0]), float(candidate_audit_risk))
+                    score_risk_value = max(float(score_risk[0]), float(candidate_audit_risk))
                     evidence.append(
                         {
                             "event_id": event_id,
@@ -1187,7 +1188,7 @@ def build_collaborative_evidence(
                             "support_neighbor_count": int(support_neighbor_counts[0]),
                             "support_density": support_density,
                             "unknown_risk": float(unknown_risk_value),
-                            "score_risk": float(score_risk[0]),
+                            "score_risk": float(score_risk_value),
                             "radius_risk": float(radius_risk[0]),
                             "margin_risk": float(margin_risk[0]),
                             "mahalanobis_risk": float(mahalanobis_risk[0]),

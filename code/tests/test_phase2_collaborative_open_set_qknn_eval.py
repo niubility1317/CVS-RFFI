@@ -415,6 +415,7 @@ class Phase2CollaborativeOpenSetQknnEvalTest(unittest.TestCase):
         self.assertTrue(metadata["candidate_audit_unknown_risk_enabled"])
         self.assertGreaterEqual(float(evidence[0]["candidate_audit_risk"]), 0.99)
         self.assertGreaterEqual(float(evidence[0]["unknown_risk"]), 0.99)
+        self.assertGreaterEqual(float(evidence[0]["score_risk"]), 0.99)
 
     def test_scenario_aware_and_radius_norm_are_recorded_in_metadata(self):
         from phase2_collaborative_open_set_qknn_eval import load_feature_npz, build_collaborative_evidence
