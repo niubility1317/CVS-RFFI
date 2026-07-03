@@ -2472,3 +2472,63 @@ V28 variants:
 | `LEOIQ28_RAW_CONSERVE` | raw LEO IQ + smaller residual | prioritize clean identity and geometry preservation |
 | `LEOIQ28_CANON_FEAT` | canonical LEO IQ repair + residual front-end | combine deterministic LEO repair with learned source-only feature restoration |
 | `LEOIQ28_CANON_CONSERVE` | canonical LEO IQ repair + smaller residual | conservative canonical repair with stronger clean consistency |
+
+## V28 IQ Front-End Feature Correction Result
+
+V28 completed onN607 at`2026-07-03T14:05:04+08:00`.Artifacts were pulled to`E:\type10-7\automation_reports\CV-SincNet\phase1_adv3b02_leo_feature_adapter_20260703\artifacts\v28_iqfrontend_target1\`.The run generated all expected`100`NPZ files for same-subset identity, four IQ-front-end variants, and clean controls across the 10 target cells.
+
+Remote execution summary:
+
+| Item | Value |
+|---|---|
+| command | `bash code/scripts/sweep_phase1_adv3b02_iqfrontend_target1_v28_20260703.sh` |
+| GPUs | `0,1,2,3` |
+| log root | `/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_adv3b02_iqfrontend_target1_v28_20260703` |
+| completion marker | `[PHASE1-IQFRONTEND-TARGET1-V28-DONE] end=2026-07-03T14:05:04+08:00` |
+| local artifacts | `artifacts\v28_iqfrontend_target1\target1_strong_v28_summary.csv`, `target1_strong_v28_metrics.json`, `target1_strong_v28_best.json`, `launcher.out` |
+
+Gate counts over 40 V28 candidates:
+
+| Gate | Pass rows |
+|---|---:|
+| old recovery | 4 |
+| clean fidelity | 16 |
+| scenario/TX floor | 0 |
+| margin/true-distance safety | 0 |
+| unknown safety | 4 |
+| strong target1 | 0 |
+
+Best same-row candidate per target slice:
+
+| Run | Best V28 candidate | Old closed acc | Delta vs identity pp | Clean drop pp | Scenario floor | TX floor | Unknown FAR |
+|---|---|---:|---:|---:|---:|---:|---:|
+| `rx20_1_u10` | `LEOIQ28_RAW_FEAT` | 0.5945 | -4.22 | 3.70 | 0.5748 | 0.3665 | 0.8318 |
+| `rx20_1_u1` | `LEOIQ28_RAW_FEAT` | 0.5945 | -4.22 | 3.70 | 0.5748 | 0.3665 | 0.8908 |
+| `rx3_19_u10` | `LEOIQ28_RAW_FEAT` | 0.5578 | -0.83 | 1.26 | 0.5385 | 0.3305 | 0.6667 |
+| `rx3_19_u1` | `LEOIQ28_RAW_FEAT` | 0.5578 | -0.83 | 1.26 | 0.5385 | 0.3305 | 0.8250 |
+| `rx7_14_u10` | `LEOIQ28_RAW_FEAT` | 0.8468 | -2.48 | -0.02 | 0.8186 | 0.5993 | 0.9389 |
+| `rx7_14_u1` | `LEOIQ28_RAW_FEAT` | 0.8468 | -2.48 | -0.02 | 0.8186 | 0.5993 | 0.9525 |
+| `rx7_7_u10` | `LEOIQ28_RAW_CONSERVE` | 0.7912 | -1.42 | -1.20 | 0.7517 | 0.6510 | 0.8541 |
+| `rx7_7_u1` | `LEOIQ28_RAW_CONSERVE` | 0.7912 | -1.42 | -1.20 | 0.7517 | 0.6510 | 0.9475 |
+| `rx8_8_u10` | `LEOIQ28_RAW_CONSERVE` | 0.7064 | -2.53 | 1.95 | 0.6931 | 0.1868 | 0.9243 |
+| `rx8_8_u1` | `LEOIQ28_RAW_CONSERVE` | 0.7064 | -2.53 | 1.95 | 0.6931 | 0.1868 | 0.9525 |
+
+Variant-level summary:
+
+| Variant | Mean old acc | Mean clean drop pp | Mean unknown FAR | Interpretation |
+|---|---:|---:|---:|---|
+| `LEOIQ28_RAW_FEAT` | 0.6984 | 1.29 | 0.8760 | clean fidelity mostly acceptable, but hard receiver recovery/floor and margin still fail |
+| `LEOIQ28_RAW_CONSERVE` | 0.6977 | 1.00 | 0.8805 | slightly safer clean behavior, no old recovery improvement |
+| `LEOIQ28_CANON_FEAT` | 0.3222 | 47.66 | 0.9500 | deterministic canonical repair badly damages clean and identity geometry |
+| `LEOIQ28_CANON_CONSERVE` | 0.3132 | 48.71 | 0.9429 | conservative residual cannot rescue canonical over-correction |
+
+Interpretation:
+
+| Finding | Evidence | Decision |
+|---|---|---|
+| V28 did not achieve target1 | strong target1`0/40`; scenario/TX floor`0/40`; margin safety`0/40` | target1 remains open |
+| raw IQ front-end is less harmful than canonical | raw mean old acc`~0.698`with clean drop`~1pp`; canonical mean old acc`~0.31-0.32`with clean drop`~48pp` | reject current canonical repair as a deployed corrector |
+| clean-clean consistency helps but is insufficient | raw variants often pass clean fidelity, but old accuracy and TX floors remain below target | feature preservation alone does not restore missing LEO identity evidence |
+| target2 is not justified from V28 | unknown FAR remains`0.67-0.95`in best same-row rows and target1 is not met | do not proceed to rejection optimization on V28 |
+
+Current decision after V28: source-only IQ/front-end feature correction, as implemented here, does not meet the old-class recovery requirement. The next valid route should be a source-only Phase1 representation re-training or adaptation objective that changes the extractor itself under clean/LEO consistency, rather than a shallow post-input residual corrector or category-logit bias/scale.
