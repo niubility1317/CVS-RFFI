@@ -195,6 +195,17 @@ def _true_margin(logits: torch.Tensor, labels: torch.Tensor) -> torch.Tensor:
     return true_logit - masked.max(dim=1).values
 
 
+def _proto_sims(x: torch.Tensor, prototypes: torch.Tensor) -> torch.Tensor:
+    x_n = F.normalize(x.float(), dim=1)
+    p_n = F.normalize(prototypes.float(), dim=1)
+    return x_n @ p_n.t()
+
+
+def _true_cos_dist(sims: torch.Tensor, labels: torch.Tensor) -> torch.Tensor:
+    true_sim = sims.gather(1, labels.view(-1, 1)).squeeze(1)
+    return 1.0 - true_sim
+
+
 def _group_worst_mean(values: torch.Tensor, groups: torch.Tensor) -> torch.Tensor:
     unique = torch.unique(groups)
     if unique.numel() <= 1:
@@ -360,6 +371,9 @@ def fit_apply(args: argparse.Namespace) -> dict[str, Any]:
                 logits = _proto_logits(z_hat, prototypes.detach(), float(args.proto_temperature))
                 clean_logits = _proto_logits(z_clean, prototypes.detach(), float(args.proto_temperature)).detach()
                 sat_logits = _proto_logits(z_sat, prototypes.detach(), float(args.proto_temperature)).detach()
+                feature_sims = _proto_sims(z_hat, prototypes.detach())
+                clean_feature_sims = _proto_sims(z_clean, prototypes.detach()).detach()
+                sat_feature_sims = _proto_sims(z_sat, prototypes.detach()).detach()
                 pair_loss = F.smooth_l1_loss(z_hat, z_clean)
                 cos_loss = (1.0 - F.cosine_similarity(z_hat, z_clean, dim=1)).mean()
                 ce_loss = F.cross_entropy(logits, y)
@@ -369,6 +383,17 @@ def fit_apply(args: argparse.Namespace) -> dict[str, Any]:
                 sat_margin = _true_margin(sat_logits, y)
                 target_margin = torch.maximum(clean_margin, sat_margin) - float(args.margin_tolerance_logits)
                 margin_loss = F.relu(target_margin - adapted_margin).mean()
+                feature_margin = _true_margin(feature_sims, y)
+                clean_feature_margin = _true_margin(clean_feature_sims, y)
+                sat_feature_margin = _true_margin(sat_feature_sims, y)
+                feature_margin_target = torch.maximum(clean_feature_margin, sat_feature_margin) - float(args.feature_margin_tolerance)
+                feature_margin_loss = F.relu(feature_margin_target - feature_margin).mean()
+                feature_true_dist = _true_cos_dist(feature_sims, y)
+                clean_feature_true_dist = _true_cos_dist(clean_feature_sims, y)
+                sat_feature_true_dist = _true_cos_dist(sat_feature_sims, y)
+                feature_compactness_loss = F.relu(
+                    feature_true_dist - torch.minimum(clean_feature_true_dist, sat_feature_true_dist) - float(args.feature_compactness_tolerance)
+                ).mean()
                 if float(args.group_floor_weight) > 0:
                     pair_each = F.smooth_l1_loss(z_hat, z_clean, reduction="none").mean(dim=1)
                     cos_each = 1.0 - F.cosine_similarity(z_hat, z_clean, dim=1)
@@ -394,18 +419,25 @@ def fit_apply(args: argparse.Namespace) -> dict[str, Any]:
                 if float(args.clean_identity_weight) > 0:
                     z_clean_identity = adapter(z_clean)
                     clean_identity_logits = _proto_logits(z_clean_identity, prototypes.detach(), float(args.proto_temperature))
+                    clean_identity_sims = _proto_sims(z_clean_identity, prototypes.detach())
                     clean_identity_loss = F.smooth_l1_loss(z_clean_identity, z_clean) + (
                         1.0 - F.cosine_similarity(z_clean_identity, z_clean, dim=1)
                     ).mean()
                     clean_margin_after = _true_margin(clean_identity_logits, y)
                     clean_margin_loss = F.relu(clean_margin - float(args.margin_tolerance_logits) - clean_margin_after).mean()
+                    clean_feature_margin_after = _true_margin(clean_identity_sims, y)
+                    clean_feature_margin_loss = F.relu(
+                        clean_feature_margin - float(args.feature_margin_tolerance) - clean_feature_margin_after
+                    ).mean()
                 else:
                     clean_identity_loss = torch.zeros((), dtype=z_hat.dtype, device=z_hat.device)
                     clean_margin_loss = torch.zeros((), dtype=z_hat.dtype, device=z_hat.device)
+                    clean_feature_margin_loss = torch.zeros((), dtype=z_hat.dtype, device=z_hat.device)
                 if unknown_x is not None and (
                     float(args.unknown_repulsion_weight) > 0
                     or float(args.unknown_identity_weight) > 0
                     or float(args.unknown_oldness_nonincrease_weight) > 0
+                    or float(args.unknown_feature_sim_nonincrease_weight) > 0
                 ):
                     unk_count = int(unknown_x.shape[0])
                     unk_bs = min(int(args.unknown_batch_size), unk_count)
@@ -414,8 +446,12 @@ def fit_apply(args: argparse.Namespace) -> dict[str, Any]:
                     z_unknown_hat = adapter(z_unknown)
                     unknown_logits = _proto_logits(z_unknown_hat, prototypes.detach(), float(args.proto_temperature))
                     unknown_logits_before = _proto_logits(z_unknown, prototypes.detach(), float(args.proto_temperature)).detach()
+                    unknown_sims = _proto_sims(z_unknown_hat, prototypes.detach())
+                    unknown_sims_before = _proto_sims(z_unknown, prototypes.detach()).detach()
                     unknown_max = unknown_logits.max(dim=1).values
                     unknown_max_before = unknown_logits_before.max(dim=1).values
+                    unknown_max_sim = unknown_sims.max(dim=1).values
+                    unknown_max_sim_before = unknown_sims_before.max(dim=1).values
                     unknown_loss = F.softplus(unknown_max - float(unknown_source_threshold)).mean()
                     unknown_identity_loss = F.smooth_l1_loss(z_unknown_hat, z_unknown) + (
                         1.0 - F.cosine_similarity(z_unknown_hat, z_unknown, dim=1)
@@ -423,10 +459,14 @@ def fit_apply(args: argparse.Namespace) -> dict[str, Any]:
                     unknown_nonincrease_loss = F.relu(
                         unknown_max - unknown_max_before - float(args.unknown_oldness_slack)
                     ).mean()
+                    unknown_feature_sim_nonincrease_loss = F.relu(
+                        unknown_max_sim - unknown_max_sim_before - float(args.unknown_feature_sim_slack)
+                    ).mean()
                 else:
                     unknown_loss = torch.zeros((), dtype=z_hat.dtype, device=z_hat.device)
                     unknown_identity_loss = torch.zeros((), dtype=z_hat.dtype, device=z_hat.device)
                     unknown_nonincrease_loss = torch.zeros((), dtype=z_hat.dtype, device=z_hat.device)
+                    unknown_feature_sim_nonincrease_loss = torch.zeros((), dtype=z_hat.dtype, device=z_hat.device)
                 loss = (
                     float(args.pair_weight) * pair_loss
                     + float(args.cos_weight) * cos_loss
@@ -435,9 +475,13 @@ def fit_apply(args: argparse.Namespace) -> dict[str, Any]:
                     + float(args.clean_identity_weight) * clean_identity_loss
                     + float(args.margin_retention_weight) * margin_loss
                     + float(args.clean_margin_weight) * clean_margin_loss
+                    + float(args.feature_margin_weight) * feature_margin_loss
+                    + float(args.feature_compactness_weight) * feature_compactness_loss
+                    + float(args.clean_feature_margin_weight) * clean_feature_margin_loss
                     + float(args.unknown_repulsion_weight) * unknown_loss
                     + float(args.unknown_identity_weight) * unknown_identity_loss
                     + float(args.unknown_oldness_nonincrease_weight) * unknown_nonincrease_loss
+                    + float(args.unknown_feature_sim_nonincrease_weight) * unknown_feature_sim_nonincrease_loss
                     + float(args.group_floor_weight) * group_floor_loss
                 )
                 opt.zero_grad(set_to_none=True)
@@ -463,10 +507,17 @@ def fit_apply(args: argparse.Namespace) -> dict[str, Any]:
         "clean_identity_weight": float(args.clean_identity_weight),
         "margin_retention_weight": float(args.margin_retention_weight),
         "clean_margin_weight": float(args.clean_margin_weight),
+        "feature_margin_weight": float(args.feature_margin_weight),
+        "feature_compactness_weight": float(args.feature_compactness_weight),
+        "clean_feature_margin_weight": float(args.clean_feature_margin_weight),
+        "feature_margin_tolerance": float(args.feature_margin_tolerance),
+        "feature_compactness_tolerance": float(args.feature_compactness_tolerance),
         "unknown_repulsion_weight": float(args.unknown_repulsion_weight),
         "unknown_identity_weight": float(args.unknown_identity_weight),
         "unknown_oldness_nonincrease_weight": float(args.unknown_oldness_nonincrease_weight),
         "unknown_oldness_slack": float(args.unknown_oldness_slack),
+        "unknown_feature_sim_nonincrease_weight": float(args.unknown_feature_sim_nonincrease_weight),
+        "unknown_feature_sim_slack": float(args.unknown_feature_sim_slack),
         "group_floor_weight": float(args.group_floor_weight),
         "group_floor_fields": str(args.group_floor_fields),
         "source_unknown_npz": [str(x) for x in args.source_unknown_npz or []],
@@ -482,6 +533,7 @@ def fit_apply(args: argparse.Namespace) -> dict[str, Any]:
                 float(args.unknown_repulsion_weight) > 0
                 or float(args.unknown_identity_weight) > 0
                 or float(args.unknown_oldness_nonincrease_weight) > 0
+                or float(args.unknown_feature_sim_nonincrease_weight) > 0
             )
         ),
         "logits": "cosine_to_source_clean_prototypes_after_adapter",
@@ -543,10 +595,17 @@ def fit_apply(args: argparse.Namespace) -> dict[str, Any]:
             "clean_identity_weight": float(args.clean_identity_weight),
             "margin_retention_weight": float(args.margin_retention_weight),
             "clean_margin_weight": float(args.clean_margin_weight),
+            "feature_margin_weight": float(args.feature_margin_weight),
+            "feature_compactness_weight": float(args.feature_compactness_weight),
+            "clean_feature_margin_weight": float(args.clean_feature_margin_weight),
+            "feature_margin_tolerance": float(args.feature_margin_tolerance),
+            "feature_compactness_tolerance": float(args.feature_compactness_tolerance),
             "unknown_repulsion_weight": float(args.unknown_repulsion_weight),
             "unknown_identity_weight": float(args.unknown_identity_weight),
             "unknown_oldness_nonincrease_weight": float(args.unknown_oldness_nonincrease_weight),
             "unknown_oldness_slack": float(args.unknown_oldness_slack),
+            "unknown_feature_sim_nonincrease_weight": float(args.unknown_feature_sim_nonincrease_weight),
+            "unknown_feature_sim_slack": float(args.unknown_feature_sim_slack),
             "group_floor_weight": float(args.group_floor_weight),
         },
         "source_unknown_npz": [str(x) for x in args.source_unknown_npz or []],
@@ -570,6 +629,7 @@ def fit_apply(args: argparse.Namespace) -> dict[str, Any]:
                     float(args.unknown_repulsion_weight) > 0
                     or float(args.unknown_identity_weight) > 0
                     or float(args.unknown_oldness_nonincrease_weight) > 0
+                    or float(args.unknown_feature_sim_nonincrease_weight) > 0
                 )
             ),
             "test_features_written_from_satellite_npz_only": True,
@@ -619,12 +679,19 @@ def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
     parser.add_argument("--margin_retention_weight", type=float, default=0.0)
     parser.add_argument("--clean_margin_weight", type=float, default=0.0)
     parser.add_argument("--margin_tolerance_logits", type=float, default=0.25)
+    parser.add_argument("--feature_margin_weight", type=float, default=0.0)
+    parser.add_argument("--feature_compactness_weight", type=float, default=0.0)
+    parser.add_argument("--clean_feature_margin_weight", type=float, default=0.0)
+    parser.add_argument("--feature_margin_tolerance", type=float, default=0.02)
+    parser.add_argument("--feature_compactness_tolerance", type=float, default=0.02)
     parser.add_argument("--source_unknown_npz", action="append", default=[])
     parser.add_argument("--unknown_roles", default="proxy_unknown")
     parser.add_argument("--unknown_repulsion_weight", type=float, default=0.0)
     parser.add_argument("--unknown_identity_weight", type=float, default=0.0)
     parser.add_argument("--unknown_oldness_nonincrease_weight", type=float, default=0.0)
     parser.add_argument("--unknown_oldness_slack", type=float, default=0.0)
+    parser.add_argument("--unknown_feature_sim_nonincrease_weight", type=float, default=0.0)
+    parser.add_argument("--unknown_feature_sim_slack", type=float, default=0.0)
     parser.add_argument("--group_floor_weight", type=float, default=0.0)
     parser.add_argument("--group_floor_fields", default="tx,rx")
     parser.add_argument("--unknown_source_quantile", type=float, default=0.05)

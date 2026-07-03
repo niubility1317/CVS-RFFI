@@ -2282,3 +2282,81 @@ Planned N607 output:
 | V26 summary | `/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_adv3b02_oscontract_target1_v26_20260703/target1_strong_v26_summary.csv` |
 | V26 metrics JSON | `/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_adv3b02_oscontract_target1_v26_20260703/target1_strong_v26_metrics.json` |
 | V26 best JSON | `/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_adv3b02_oscontract_target1_v26_20260703/target1_strong_v26_best.json` |
+
+## V26 Open-Set Contract Feature Adapter Result
+
+V26 completed onN607 and the artifacts were pulled to`E:\type10-7\automation_reports\CV-SincNet\phase1_adv3b02_leo_feature_adapter_20260703\artifacts\v26_oscontract_target1\`.The evaluator summary reports`candidate_rows=160`and`strong_target1_pass=0`.The two CSV rows with`passes_strong_target1=True`are both`LEOADAPT3_IDENTITY`baseline rows for`rx7_14_u10/u1`,not V26 candidates,so they are not counted as a repaired target1 pass.
+
+Gate counts over 160 V26 candidates:
+
+| Gate | Pass rows |
+|---|---:|
+| old recovery | 32 |
+| clean fidelity | 80 |
+| scenario/TX floor | 0 |
+| margin/true-distance safety | 0 |
+| unknown safety | 52 |
+| strong target1 | 0 |
+
+Best same-row candidate per target slice:
+
+| Run | Best V26 candidate | Gates | Old closed acc | Delta vs identity pp | Clean drop pp | Scenario floor | TX floor | Unknown FAR | FAR delta | Unknown oldness delta |
+|---|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+| `rx20_1_u10` | `LEOADAPT8_OSCONTRACT_LINR` | 1 | 0.5882 | -3.41 | 3.08 | 0.5646 | 0.3262 | 0.7757 | 0.0000 | -2.3360 |
+| `rx20_1_u1` | `LEOADAPT8_STRICTUNK_LINR_CAP030` | 1 | 0.5941 | -2.82 | 2.75 | 0.5690 | 0.3481 | 0.8515 | -0.0196 | -1.4109 |
+| `rx3_19_u10` | `LEOADAPT8_OSCONTRACT_MLP_CAP000` | 2 | 0.5526 | 0.44 | 1.83 | 0.5365 | 0.3206 | 0.5583 | -0.0190 | -1.9170 |
+| `rx3_19_u1` | `LEOADAPT8_OSCONTRACT_MLP_CAP000` | 1 | 0.5526 | 0.44 | 1.83 | 0.5365 | 0.3206 | 0.7600 | 0.0075 | -1.3755 |
+| `rx7_14_u10` | `LEOADAPT8_OSCONTRACT_MLP` | 2 | 0.8729 | 0.50 | 0.58 | 0.8552 | 0.6732 | 0.8944 | 0.0222 | -1.0492 |
+| `rx7_14_u1` | `LEOADAPT8_OSCONTRACT_MLP` | 2 | 0.8729 | 0.50 | 0.58 | 0.8552 | 0.6732 | 0.9525 | 0.0450 | -0.7085 |
+| `rx7_7_u10` | `LEOADAPT8_OSCONTRACT_MLP_CAP000` | 2 | 0.7788 | -1.76 | 0.17 | 0.7509 | 0.6525 | 0.8455 | -0.0043 | -1.7371 |
+| `rx7_7_u1` | `LEOADAPT8_OLDREC_OS_MLP_CAP050` | 2 | 0.7771 | -1.94 | -0.17 | 0.7491 | 0.6259 | 0.9300 | -0.0025 | -0.9557 |
+| `rx8_8_u10` | `LEOADAPT8_OSCONTRACT_MLP_CAP000` | 2 | 0.7235 | 0.47 | 1.67 | 0.6989 | 0.1711 | 0.8054 | -0.0270 | -1.9229 |
+| `rx8_8_u1` | `LEOADAPT8_OSCONTRACT_MLP_CAP000` | 1 | 0.7235 | 0.47 | 1.67 | 0.6989 | 0.1711 | 0.9375 | 0.0275 | -0.7798 |
+
+Interpretation:
+
+| Finding | Evidence | Decision |
+|---|---|---|
+| Unknown oldness can be reduced | best same-row candidates often have negative unknown oldness delta | this addresses only one safety symptom |
+| Old-class feature geometry is harmed | candidate mean old acc delta is negative for all V26 variant families; scenario/TX floor pass`0/160`; margin pass`0/160` | V26 cannot satisfy target1 |
+| The logit/prototype-contract route is not sufficient | source proxy_unknown logit constraints improve oldness while degrading closed-set/floor geometry | stop optimizing category logit bias/scale or logit oldness contract |
+
+Current decision after V26: target1 remains not globally achieved and target2 remains not achieved. The next experiment must focus on feature-space correction directly, not category-logit bias/scale or logit oldness shaping.
+
+## V27 Pure Feature-Contract Adapter Design
+
+V27 keeps the source-only and frozen`ADV3B02_CORE90_SOFT_E200phase1`boundary, but removes the category-logit route from training. The adapter is trained on source clean/LEO pairs with feature-space objectives only:
+
+```text
+pair/cos alignment:              adapter(z_leo_source) -> z_clean_source
+clean-clean identity:             adapter(z_clean_source) ~= z_clean_source
+feature prototype margin:         true clean prototype cosine margin not shrink
+feature compactness:              true prototype cosine distance not increase
+proxy_unknown identity:           adapter(z_proxy_unknown) ~= z_proxy_unknown
+proxy_unknown feature safety:     max cosine similarity to old prototypes not increase
+```
+
+Training explicitly sets`proto_ce_weight=0`,`margin_retention_weight=0`,`clean_margin_weight=0`,`unknown_repulsion_weight=0`,and`unknown_oldness_nonincrease_weight=0`.Thus V27 does not train category logits, category bias/scale, or logit oldness repulsion; logits are still regenerated after feature repair only so the unchanged evaluator can score closed-set behavior.
+
+New/modified local files:
+
+| File | Purpose | SHA256 |
+|---|---|---|
+| `E:\type10-7\code\scripts\fit_apply_phase1_leo_feature_adapter.py` | Adds default-off feature margin/compactness and unknown feature-sim non-increase losses | `7867F2AC93169F2C6EBB125D525FBFC5DA6D7F0A5F75B7062F6D46530D084B69` |
+| `E:\type10-7\code\scripts\sweep_phase1_adv3b02_featurecontract_target1_v27_20260703.sh` | N607 V27 pure feature-contract launcher and same-row summarizer | `204E94910B214B5D24FDCD46759B54D44A8EAF3E7D4CB7B5315BC0A85B716F3F` |
+
+Local verification:
+
+| Command | Result |
+|---|---|
+| `C:\Users\lh594\.conda\envs\ssr-gpu\python.exe -m py_compile E:\type10-7\code\scripts\fit_apply_phase1_leo_feature_adapter.py E:\type10-7\code\scripts\eval_phase1_target1_strong_repair_audit_20260703.py` | PASS |
+| `bash -lc "bash -n /mnt/e/type10-7/code/scripts/sweep_phase1_adv3b02_featurecontract_target1_v27_20260703.sh"` | PASS |
+
+Planned N607 output:
+
+| Artifact | Remote path |
+|---|---|
+| V27 log root | `/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_adv3b02_featurecontract_target1_v27_20260703` |
+| V27 summary | `/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_adv3b02_featurecontract_target1_v27_20260703/target1_strong_v27_summary.csv` |
+| V27 metrics JSON | `/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_adv3b02_featurecontract_target1_v27_20260703/target1_strong_v27_metrics.json` |
+| V27 best JSON | `/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_adv3b02_featurecontract_target1_v27_20260703/target1_strong_v27_best.json` |
