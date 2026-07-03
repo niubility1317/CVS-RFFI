@@ -1268,6 +1268,8 @@ def run_evaluation(args: argparse.Namespace) -> dict[str, Any]:
         collaboration_policy=str(args.collaboration_policy),
         label_fusion_policy=str(args.label_fusion_policy),
         latency_budget_ms=float(args.latency_budget_ms),
+        max_event_bytes=float(args.max_event_bytes),
+        max_event_latency_ms=float(args.max_event_latency_ms),
         adaptive_gain_min_risk=float(args.adaptive_gain_min_risk),
         adaptive_gain_latency_weight=float(args.adaptive_gain_latency_weight),
         adaptive_gain_bytes_weight=float(args.adaptive_gain_bytes_weight),
@@ -1366,6 +1368,8 @@ def parse_args() -> argparse.Namespace:
         choices=["score_sum", "vote_sum", "vote_margin", "max_score"],
     )
     p.add_argument("--latency_budget_ms", type=float, default=0.0)
+    p.add_argument("--max_event_bytes", type=float, default=0.0)
+    p.add_argument("--max_event_latency_ms", type=float, default=0.0)
     p.add_argument("--adaptive_gain_min_risk", type=float, default=0.80)
     p.add_argument("--adaptive_gain_latency_weight", type=float, default=0.0)
     p.add_argument("--adaptive_gain_bytes_weight", type=float, default=0.0)

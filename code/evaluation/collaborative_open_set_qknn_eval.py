@@ -91,6 +91,22 @@ def _has_finite_float(row: Mapping[str, Any], key: str) -> bool:
         return False
 
 
+def _resource_budget_reason(
+    selected: Sequence[Mapping[str, Any]],
+    *,
+    max_event_bytes: float = 0.0,
+    max_event_latency_ms: float = 0.0,
+) -> str:
+    reasons = []
+    total_bytes = sum(_float(row, "bytes", 0.0) for row in selected)
+    latency_ms = max((_float(row, "latency_ms", 0.0) for row in selected), default=0.0)
+    if float(max_event_bytes) > 0.0 and total_bytes > float(max_event_bytes):
+        reasons.append(f"bytes:{total_bytes:.6g}>{float(max_event_bytes):.6g}")
+    if float(max_event_latency_ms) > 0.0 and latency_ms > float(max_event_latency_ms):
+        reasons.append(f"latency_ms:{latency_ms:.6g}>{float(max_event_latency_ms):.6g}")
+    return ",".join(reasons)
+
+
 def _str(row: Mapping[str, Any], key: str, default: str = "") -> str:
     value = row.get(key, default)
     return str(default if value is None else value)
@@ -249,6 +265,8 @@ def _fuse_event(
     label_fusion_policy: str = "score_sum",
     can_request_more: bool = False,
     latency_budget_ms: float = 0.0,
+    max_event_bytes: float = 0.0,
+    max_event_latency_ms: float = 0.0,
     old_labels: set[str] | None = None,
     seen_new_rescue_labels: set[str] | None = None,
     seen_new_rescue_enabled: bool = False,
@@ -556,6 +574,16 @@ def _fuse_event(
     else:
         raise ValueError("fusion_policy must be risk_margin, consensus_veto, or scorer_cvs")
 
+    resource_budget_reason = _resource_budget_reason(
+        selected,
+        max_event_bytes=max_event_bytes,
+        max_event_latency_ms=max_event_latency_ms,
+    )
+    resource_budget_passed = resource_budget_reason == ""
+    if not resource_budget_passed:
+        decision = "defer"
+        output_label = ""
+
     return {
         "decision": decision,
         "output_label": output_label,
@@ -585,6 +613,10 @@ def _fuse_event(
         "score_gap_ratio": float(score_gap_ratio),
         "bytes": float(sum(_float(row, "bytes", 0.0) for row in selected)),
         "latency_ms": latency_ms,
+        "resource_budget_passed": bool(resource_budget_passed),
+        "resource_budget_reason": resource_budget_reason,
+        "max_event_bytes": float(max_event_bytes),
+        "max_event_latency_ms": float(max_event_latency_ms),
         "can_request_more": bool(can_request_more),
         "participating_receivers_used": int(len(selected)),
     }
@@ -604,6 +636,8 @@ def _fuse_progressive_event(
     scorer_risk_components: Sequence[str] | str | None = None,
     label_fusion_policy: str = "score_sum",
     latency_budget_ms: float = 0.0,
+    max_event_bytes: float = 0.0,
+    max_event_latency_ms: float = 0.0,
     old_labels: set[str] | None = None,
     seen_new_rescue_labels: set[str] | None = None,
     seen_new_rescue_enabled: bool = False,
@@ -639,6 +673,8 @@ def _fuse_progressive_event(
             label_fusion_policy=label_fusion_policy,
             can_request_more=used < min(max_receivers, len(ordered)),
             latency_budget_ms=latency_budget_ms,
+            max_event_bytes=max_event_bytes,
+            max_event_latency_ms=max_event_latency_ms,
             old_labels=old_labels,
             seen_new_rescue_labels=seen_new_rescue_labels,
             seen_new_rescue_enabled=seen_new_rescue_enabled,
@@ -762,6 +798,8 @@ def _fuse_adaptive_gain_event(
     scorer_risk_components: Sequence[str] | str | None = None,
     label_fusion_policy: str = "score_sum",
     latency_budget_ms: float = 0.0,
+    max_event_bytes: float = 0.0,
+    max_event_latency_ms: float = 0.0,
     adaptive_gain_min_risk: float = 0.80,
     adaptive_gain_latency_weight: float = 0.0,
     adaptive_gain_bytes_weight: float = 0.0,
@@ -807,6 +845,8 @@ def _fuse_adaptive_gain_event(
             label_fusion_policy=label_fusion_policy,
             can_request_more=len(selected) < budget,
             latency_budget_ms=latency_budget_ms,
+            max_event_bytes=max_event_bytes,
+            max_event_latency_ms=max_event_latency_ms,
             old_labels=old_labels,
             seen_new_rescue_labels=seen_new_rescue_labels,
             seen_new_rescue_enabled=seen_new_rescue_enabled,
@@ -860,7 +900,21 @@ def _fuse_adaptive_gain_event(
                 disagreement_weight=adaptive_gain_disagreement_weight,
             )
             scored.append((gain, row, parts))
-        gain, row, parts = max(scored, key=lambda item: (item[0], _float(item[1], "reliability", 1.0), _str(item[1], "receiver_id")))
+        feasible = []
+        for gain, row, parts in scored:
+            if not _resource_budget_reason(
+                [*selected, row],
+                max_event_bytes=max_event_bytes,
+                max_event_latency_ms=max_event_latency_ms,
+            ):
+                feasible.append((gain, row, parts))
+        if not feasible:
+            fused["adaptive_stop_reason"] = "resource_budget_exhausted"
+            return fused
+        gain, row, parts = max(
+            feasible,
+            key=lambda item: (item[0], _float(item[1], "reliability", 1.0), _str(item[1], "receiver_id")),
+        )
         remaining.remove(row)
         selected.append(row)
         gain_trace.append(
@@ -897,6 +951,7 @@ def _finalize_metrics(
     unknown_request_more = 0
     defer_total = 0
     request_more_total = 0
+    resource_budget_violations = 0
     adaptive_stop_reasons: defaultdict[str, int] = defaultdict(int)
     seen_new_rescue_total = 0
 
@@ -931,6 +986,7 @@ def _finalize_metrics(
             defer_total += 1
         if requested_more:
             request_more_total += 1
+        resource_budget_violations += int(not bool(item.get("resource_budget_passed", True)))
         stop_reason = str(item.get("adaptive_stop_reason") or item.get("progressive_stop_reason") or "")
         if stop_reason:
             adaptive_stop_reasons[stop_reason] += 1
@@ -1001,6 +1057,8 @@ def _finalize_metrics(
         "defer_rate": _safe_rate(defer_total, total_events),
         "request_more_rate": _safe_rate(request_more_total, total_events),
         "unresolved_rate": _safe_rate(defer_total + request_more_total, total_events),
+        "resource_budget_violation_count": int(resource_budget_violations),
+        "resource_budget_violation_rate": _safe_rate(resource_budget_violations, total_events),
         "open_set_confusion": dict(sorted(confusion.items())),
         "bytes_per_event": sum(bytes_values) / max(len(bytes_values), 1),
         "total_bytes": float(sum(bytes_values)),
@@ -1101,6 +1159,8 @@ def evaluate_collaborative_open_set_evidence(
     label_fusion_policy: str = "score_sum",
     collaboration_policy: str = "fixed_k",
     latency_budget_ms: float = 0.0,
+    max_event_bytes: float = 0.0,
+    max_event_latency_ms: float = 0.0,
     adaptive_gain_min_risk: float = 0.80,
     adaptive_gain_latency_weight: float = 0.0,
     adaptive_gain_bytes_weight: float = 0.0,
@@ -1204,6 +1264,8 @@ def evaluate_collaborative_open_set_evidence(
                     scorer_risk_components=active_risk_components,
                     label_fusion_policy=label_fusion_policy,
                     latency_budget_ms=latency_budget_ms,
+                    max_event_bytes=max_event_bytes,
+                    max_event_latency_ms=max_event_latency_ms,
                     old_labels=expected_old_labels,
                     seen_new_rescue_labels=expected_seen_new_labels,
                     seen_new_rescue_enabled=seen_new_rescue_enabled,
@@ -1242,6 +1304,8 @@ def evaluate_collaborative_open_set_evidence(
                     scorer_risk_components=active_risk_components,
                     label_fusion_policy=label_fusion_policy,
                     latency_budget_ms=latency_budget_ms,
+                    max_event_bytes=max_event_bytes,
+                    max_event_latency_ms=max_event_latency_ms,
                     adaptive_gain_min_risk=adaptive_gain_min_risk,
                     adaptive_gain_latency_weight=adaptive_gain_latency_weight,
                     adaptive_gain_bytes_weight=adaptive_gain_bytes_weight,
@@ -1279,6 +1343,8 @@ def evaluate_collaborative_open_set_evidence(
                     label_fusion_policy=label_fusion_policy,
                     can_request_more=len({_str(row, "receiver_id") for row in group}) > int(k),
                     latency_budget_ms=latency_budget_ms,
+                    max_event_bytes=max_event_bytes,
+                    max_event_latency_ms=max_event_latency_ms,
                     old_labels=expected_old_labels,
                     seen_new_rescue_labels=expected_seen_new_labels,
                     seen_new_rescue_enabled=seen_new_rescue_enabled,
@@ -1336,6 +1402,8 @@ def evaluate_collaborative_open_set_evidence(
         "active_risk_components": active_risk_components,
         "label_fusion_policy": _normalize_scope(label_fusion_policy),
         "latency_budget_ms": float(latency_budget_ms),
+        "max_event_bytes": float(max_event_bytes),
+        "max_event_latency_ms": float(max_event_latency_ms),
         "adaptive_gain_min_risk": float(adaptive_gain_min_risk),
         "adaptive_gain_latency_weight": float(adaptive_gain_latency_weight),
         "adaptive_gain_bytes_weight": float(adaptive_gain_bytes_weight),

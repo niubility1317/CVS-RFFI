@@ -337,6 +337,52 @@ class CollaborativeOpenSetQknnEvalTest(unittest.TestCase):
         self.assertEqual(k1["unresolved_rate"], 1.0)
         self.assertEqual(k1["open_set_confusion"], {"old->request_more": 1})
 
+    def test_resource_budget_forces_defer_when_selected_receivers_exceed_bytes(self):
+        from evaluation.collaborative_open_set_qknn_eval import evaluate_collaborative_open_set_evidence
+
+        rows = [
+            {
+                "event_id": "budget-old",
+                "receiver_id": "rx-a",
+                "role": "old",
+                "true_label": "old-a",
+                "predicted_label": "old-a",
+                "known_score": 0.95,
+                "known_margin": 0.40,
+                "unknown_risk": 0.05,
+                "latency_ms": 2.0,
+                "bytes": 96,
+            },
+            {
+                "event_id": "budget-old",
+                "receiver_id": "rx-b",
+                "role": "old",
+                "true_label": "old-a",
+                "predicted_label": "old-a",
+                "known_score": 0.94,
+                "known_margin": 0.38,
+                "unknown_risk": 0.05,
+                "latency_ms": 2.5,
+                "bytes": 96,
+            },
+        ]
+
+        result = evaluate_collaborative_open_set_evidence(
+            rows,
+            collab_counts="2",
+            fusion_policy="scorer_cvs",
+            unknown_risk_threshold=0.8,
+            accept_margin_threshold=0.1,
+            consensus_score_threshold=0.6,
+            max_event_bytes=120.0,
+        )
+
+        k2 = result["counts"]["2"]
+        self.assertEqual(k2["old_acc"], 0.0)
+        self.assertEqual(k2["open_set_confusion"], {"old->defer": 1})
+        self.assertEqual(k2["resource_budget_violation_count"], 1)
+        self.assertEqual(k2["resource_budget_violation_rate"], 1.0)
+
     def test_progressive_budget_requests_receivers_until_confident(self):
         from evaluation.collaborative_open_set_qknn_eval import evaluate_collaborative_open_set_evidence
 
