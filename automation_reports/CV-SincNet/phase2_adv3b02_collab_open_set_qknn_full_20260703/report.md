@@ -707,3 +707,98 @@ N607使用`CVS-RFFI`环境，`py_compile`通过，`test_collaborative_open_set_q
 |5|0.3396|0.0000|0.1500|0.0000|0.1500|0.6500|0.4110|0.2043|0.0000|0.2043|148.3871|0.0831|1.2366|2.0000|3|`3-8`|
 
 判定：`progressive_budget`达成了资源目标方向，能在最大预算为5时把平均实际参与receiver从5降到约1.24，bytes/event从600降到约148；但性能仍远低于研究目标。相比固定k，渐进策略在k=2/3提升了old/new并减少unresolved，但unknown FAR仍高，per-class floor仍为0。因此它是更现实的协同调度机制，但不是最终性能解法。下一步应把节点级证据质量提升作为主线：prototype top-M候选筛选、类条件残差/协方差门控、严格同事件event_id导出，以及可回滚的小adapter/阈值校准。
+
+## 2026-07-03 prototype top-M候选筛选
+
+本轮推进节点级证据质量与效率：在qknn8检索前先用类prototype centroid对query做top-M候选类筛选，再只在候选类support中做qknn。默认`candidate_class_top_m=0`保持原行为；显式设置为正整数时启用。该机制对星上部署的意义是减少每个节点的support检索范围和潜在通信解释字段，同时尝试抑制远离候选prototype的错误近邻。
+
+代码改动：
+
+|文件|目的|
+|---|---|
+|`code/scripts/phase2_collaborative_open_set_qknn_eval.py`|新增`candidate_class_top_m`，`qknn_scores`返回`candidate_class_count`，evidence和metadata记录候选类数量。|
+|`code/tests/test_phase2_collaborative_open_set_qknn_eval.py`|覆盖prototype top-M限制候选类数量，并验证metadata记录。|
+
+本地验证：
+
+```powershell
+conda activate ssr-gpu
+python -m py_compile E:\type10-7\code\scripts\phase2_collaborative_open_set_qknn_eval.py
+python E:\type10-7\code\tests\test_phase2_collaborative_open_set_qknn_eval.py
+python E:\type10-7\code\tests\test_collaborative_open_set_qknn_eval.py
+```
+
+结果：`test_phase2_collaborative_open_set_qknn_eval.py`16 tests OK，`test_collaborative_open_set_qknn_eval.py`16 tests OK。Git镜像提交：`8393436 Add prototype candidate pruning for qKNN evidence`。镜像仍领先远端，且存在非本轮未跟踪文件`code/scripts/phase2_qknn_prototype_compress_probe.py`，本轮未处理。
+
+计划远端命令：
+
+```bash
+cd /home/szu2070436088/2510044040/CV-SincNet
+source /opt/miniconda3/etc/profile.d/conda.sh
+conda activate CVS-RFFI
+python code/scripts/phase2_collaborative_open_set_qknn_eval.py \
+  --feature_npz runs/phase2_adv3b02_collab_open_set_qknn_full_20260703/features.npz \
+  --output_json runs/phase2_adv3b02_collab_open_set_qknn_full_20260703/collab_open_set_qknn_scorer_cvs_evt_progressive_topm2.json \
+  --output_evidence_csv runs/phase2_adv3b02_collab_open_set_qknn_full_20260703/collab_open_set_qknn_scorer_cvs_evt_progressive_topm2_evidence.csv \
+  --collab_counts all \
+  --k_shot 8 --query_per_class 20 --qknn_k 8 \
+  --candidate_class_top_m 2 \
+  --support_calibration_mode leave_one_out \
+  --unknown_gate_mode support_envelope_evt \
+  --score_threshold_combine max \
+  --scenario_aware --radius_norm 0.3 \
+  --fusion_policy scorer_cvs \
+  --collaboration_policy progressive_budget \
+  --unknown_risk_threshold 0.995 \
+  --accept_margin_threshold 0.03 \
+  --consensus_gap_threshold 0.0 \
+  --consensus_score_threshold 0.30 \
+  --scorer_component_vote_threshold 0.25 \
+  --unknown_quantile 0.75 \
+  --evt_tail_quantile 0.80 \
+  --evt_temperature 0.05 \
+  --latency_budget_ms 12 \
+  --evidence_packet_bytes 120 \
+  --event_alignment_policy receiver_domain_ranked \
+  --support_selection_policy stable_first \
+  --seed 407042
+```
+
+远端执行结果：
+
+```bash
+cd /home/szu2070436088/2510044040/CV-SincNet
+source /opt/miniconda3/etc/profile.d/conda.sh
+conda activate CVS-RFFI
+python -m py_compile code/scripts/phase2_collaborative_open_set_qknn_eval.py
+python code/tests/test_phase2_collaborative_open_set_qknn_eval.py
+python code/tests/test_collaborative_open_set_qknn_eval.py
+python code/scripts/phase2_collaborative_open_set_qknn_eval.py ... --candidate_class_top_m 2 --collab_counts all --collaboration_policy progressive_budget
+```
+
+验证结果：N607使用`CVS-RFFI`环境，`py_compile`通过，`test_phase2_collaborative_open_set_qknn_eval.py`为16 tests OK，`test_collaborative_open_set_qknn_eval.py`为16 tests OK。远端运行输出`receiver_count=5`、`group_count=310`、`evidence_row_count=1000`，覆盖从1到全部5个target/source接收机协同预算。运行前后8张RTX3090均为`10/24576MiB`，没有新增显存占用。本轮SSH/SCP后本地检查无残留`ssh.exe`进程和22端口`ESTABLISHED`连接。
+
+本轮同步与产物哈希：
+
+|文件|SHA256|
+|---|---|
+|`code/scripts/phase2_collaborative_open_set_qknn_eval.py`|`E9C6DDCDC9C34FA1F6EFC91484AC3281DF60D7D873D804DE3A59E5F952A48F4C`|
+|`code/tests/test_phase2_collaborative_open_set_qknn_eval.py`|`60EF8E620B5A5CC5F92DDD5F104E95A6796622C3D50E1229986B1F1F74043A35`|
+|`remote_artifacts/collab_open_set_qknn_scorer_cvs_evt_progressive_topm2.json`|`85574341F80FD367F9DEE0696D0EB74CA79175693E227693C79531743DCE7DA1`|
+|`remote_artifacts/collab_open_set_qknn_scorer_cvs_evt_progressive_topm2_evidence.csv`|`B108F3924589ED2988DCD98AD8FA7BCECFADFF3990F27363A28D879CC45AEF3D`|
+
+top-M渐进协同结果：
+
+|最大receiver预算|old_acc|min_old_class_acc|seen_new_acc|min_seen_new_class_acc|unknown_FAR|unknown_reject_rate|known_coverage|defer_rate|request_more_rate|unresolved_rate|bytes/event|p95 latency ms|avg used rx|p95 used rx|max used rx|缺失old类|缺失seen-new类|
+|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---|---|
+|1|0.4263|0.0750|0.2333|0.1500|0.2333|0.6167|0.5400|0.1645|0.0000|0.1645|120.0000|0.0942|1.0000|1.0000|1|无|无|
+|2|0.3867|0.0667|0.2857|0.1500|0.2340|0.6809|0.4975|0.1545|0.0000|0.1545|120.9756|0.0942|1.0081|1.0000|2|无|无|
+|3|0.3667|0.0000|0.2500|0.1500|0.2500|0.7250|0.4688|0.1400|0.0000|0.1400|121.2000|0.0942|1.0100|1.0000|2|无|无|
+|4|0.4333|0.0000|0.0968|0.0000|0.3030|0.6970|0.5207|0.0455|0.0000|0.0455|121.5584|0.0942|1.0130|1.0000|2|`20-15`|无|
+|5|0.5600|0.0000|0.1500|0.0000|0.5000|0.5000|0.6429|0.0667|0.0000|0.0667|122.6667|0.0942|1.0222|1.0000|2|`14-7,20-15`|`3-8`|
+
+候选类搜索开销：evidence级`candidate_class_count`共1000行，均值3.768，p95为6，最小2，最大6。虽然设置`candidate_class_top_m=2`，实际候选类数量可能大于2，因为代码在top-M类支持样本不足时回退保留全部support类；这说明当前每接收机8-shot支持集在部分类/场景上过稀疏，候选筛选未稳定压缩到2类。
+
+判定：top-M候选筛选没有达到性能目标，且暴露出两个关键问题。第一，`progressive_budget`过早接受单receiver结果，最大预算为5时实际平均参与receiver仅1.0222，p95仍为1；它节省通信但没有充分利用协同证据。第二，候选类top-M的稀疏回退导致候选类均值仍为3.768，性能改善主要体现在5预算old_acc达到0.5600，但seen_new_acc仅0.1500、unknown_FAR升至0.5000，per-class floor仍为0，不能作为有效路线宣传。
+
+下一步路线调整：保留`candidate_class_top_m`作为效率开关，但不应单独作为性能增强机制。更合理的卫星群协同算法应从“单节点先验快速接受”改为“风险触发的多节点证据聚合”：低风险样本单节点退出；score/radius/margin/EVT任一风险高时强制请求第2/3个接收机；融合时按接收机可靠性、星地信道场景和类条件残差做加权，并对seen-new类单独设置较低拒识阈值，避免unknown gate吞掉新类。严格同事件`event_id`仍是后续必须补齐的数据协议前提；当前`receiver_domain_ranked`只能作为诊断近似。
