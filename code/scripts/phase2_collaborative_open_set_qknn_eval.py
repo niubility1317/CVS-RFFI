@@ -94,6 +94,7 @@ def _fit_feature_adapter(
     policy = str(policy or "none").strip().lower()
     if policy not in {"none", "support_center", "support_bn_affine"}:
         raise ValueError("feature_adapter_policy must be none, support_center, or support_bn_affine")
+    variance_floor_value = max(float(variance_floor), 1e-8)
     normalized = _normalize_rows(support_features)
     dim = int(normalized.shape[1])
     strength_value = float(np.clip(float(strength), 0.0, 1.0))
@@ -107,9 +108,9 @@ def _fit_feature_adapter(
     center = normalized.mean(axis=0).astype(np.float32)
     if policy == "support_bn_affine":
         var = np.var(normalized, axis=0).astype(np.float32)
-        support_scale = np.sqrt(np.maximum(var, float(variance_floor))).astype(np.float32)
+        support_scale = np.sqrt(np.maximum(var, variance_floor_value)).astype(np.float32)
         scale = ((1.0 - strength_value) + strength_value * support_scale).astype(np.float32)
-        scale = np.maximum(scale, float(variance_floor)).astype(np.float32)
+        scale = np.maximum(scale, variance_floor_value).astype(np.float32)
     else:
         scale = np.ones((dim,), dtype=np.float32)
     return FeatureAdapter(policy=policy, center=center, scale=scale, strength=strength_value)
@@ -1339,6 +1340,28 @@ def build_collaborative_evidence(
     old_labels = sorted({str(tx_ids[i]) for i in np.where(roles == "target_old")[0].tolist()})
     new_labels = sorted({str(tx_ids[i]) for i in np.where(roles == "target_new")[0].tolist()})
     unknown_labels = sorted({str(tx_ids[i]) for i in np.where(roles == UNKNOWN_ROLE)[0].tolist()})
+    source_labels = {str(tx_ids[i]) for i in np.where(roles == "source")[0].tolist()}
+    manifest = payload.get("manifest", {})
+    if isinstance(manifest, Mapping):
+        manifest_source_tx = manifest.get("source_tx_ids", [])
+        if isinstance(manifest_source_tx, str):
+            source_labels.update(_parse_csv(manifest_source_tx))
+        else:
+            source_labels.update(_parse_csv(",".join(str(v) for v in manifest_source_tx)))
+    label_overlaps = {
+        "old_new": sorted(set(old_labels) & set(new_labels)),
+        "old_unknown": sorted(set(old_labels) & set(unknown_labels)),
+        "new_unknown": sorted(set(new_labels) & set(unknown_labels)),
+    }
+    if any(label_overlaps.values()):
+        raise RuntimeError(f"LOCAL_PROTOCOL_REPAIR_REQUIRED: target TX sets must be mutually disjoint: {label_overlaps}")
+    old_not_source = sorted(set(old_labels) - source_labels)
+    non_old_in_source = sorted((set(new_labels) | set(unknown_labels)) & source_labels)
+    if old_not_source or non_old_in_source:
+        raise RuntimeError(
+            "LOCAL_PROTOCOL_REPAIR_REQUIRED: Stage2-C TX split violates source/target semantics; "
+            f"old_not_in_source={old_not_source}, non_old_in_source={non_old_in_source}"
+        )
     target_receivers = sorted({str(rx_ids[i]) for i in np.where(np.isin(roles, [*KNOWN_ROLES, UNKNOWN_ROLE]))[0].tolist()})
     source_receivers = sorted({str(rx_ids[i]) for i in np.where(roles == "source")[0].tolist()})
     if not target_receivers:
@@ -1515,7 +1538,7 @@ def build_collaborative_evidence(
         )
         proxy_parts: list[np.ndarray] = []
         if proxy_idx.size:
-            proxy_parts.append(features[proxy_idx])
+            proxy_parts.append(_apply_feature_adapter(features[proxy_idx], feature_adapter))
         if bool(virtual_unknown_calibration_enabled) and int(virtual_features.shape[0]) > 0:
             proxy_parts.append(virtual_features)
         proxy_features = np.vstack(proxy_parts).astype(np.float32) if proxy_parts else None
@@ -1526,7 +1549,7 @@ def build_collaborative_evidence(
         proxy_scenarios = source_proxy_scenarios + virtual_proxy_scenarios
         threshold, scope = _threshold_from_calibration(
             memory,
-            features[np.asarray(support_indices, dtype=int)],
+            support_features_for_memory,
             proxy_features,
             top_k=qknn_k,
             support_quantile=support_quantile,
@@ -1550,7 +1573,7 @@ def build_collaborative_evidence(
         if bool(class_score_threshold_enabled):
             class_thresholds = _label_thresholds_from_calibration(
                 memory,
-                features[np.asarray(support_indices, dtype=int)],
+                support_features_for_memory,
                 support_labels,
                 proxy_features,
                 top_k=qknn_k,
@@ -1574,7 +1597,7 @@ def build_collaborative_evidence(
         if bool(class_conformal_enabled):
             conformal_scores = _label_score_samples_from_calibration(
                 memory,
-                features[np.asarray(support_indices, dtype=int)],
+                support_features_for_memory,
                 support_labels,
                 top_k=qknn_k,
                 support_scenarios=[_scenario_of(payload, int(i)) for i in support_indices],
@@ -1618,11 +1641,10 @@ def build_collaborative_evidence(
                         keyed[_event_key(payload, idx, role_name, label)] = int(idx)
                 by_rx_key[rx] = keyed
             if alignment_policy == "strict_event_key":
-                all_event_ids = sorted(set().union(*(set(by_rx_key[rx]) for rx in target_receivers)))
+                common_event_ids = sorted(set.intersection(*(set(by_rx_key[rx]) for rx in target_receivers)))
                 event_groups = [
-                    (event_id, {rx: by_rx_key[rx][event_id] for rx in target_receivers if event_id in by_rx_key[rx]})
-                    for event_id in all_event_ids
-                    if any(event_id in by_rx_key[rx] for rx in target_receivers)
+                    (event_id, {rx: by_rx_key[rx][event_id] for rx in target_receivers})
+                    for event_id in common_event_ids
                 ]
                 row_alignment = "role_tx_day_sig_scenario"
             else:
@@ -1942,6 +1964,7 @@ def build_collaborative_evidence(
                             "mahalanobis_score_assisted": int(mahalanobis_blend > 0.0),
                             "feature_adapter_policy": feature_adapter.policy,
                             "feature_adapter_strength": float(feature_adapter.strength),
+                            "feature_adapter_variance_floor": adapter_var_floor,
                             "unknown_risk": float(unknown_risk_value),
                             "score_risk": float(score_risk_value),
                             "radius_risk": float(radius_risk[0]),

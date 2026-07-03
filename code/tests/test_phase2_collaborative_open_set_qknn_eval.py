@@ -22,6 +22,8 @@ def _write_npz(
     include_source: bool = True,
     include_bad_proxy: bool = False,
     include_proxy: bool = False,
+    source_tx_id: str = "old-a",
+    extra_source_tx_ids: tuple[str, ...] = (),
 ) -> None:
     rows = []
 
@@ -30,7 +32,9 @@ def _write_npz(
 
     for rx in ["rx-a", "rx-b"]:
         if include_source:
-            add("source", "old-a", "src-a", "d0", f"src-{rx}", "", [1.0, 0.0, 0.0])
+            add("source", source_tx_id, "src-a", "d0", f"src-{rx}", "", [1.0, 0.0, 0.0])
+            for extra_i, extra_tx in enumerate(extra_source_tx_ids):
+                add("source", extra_tx, "src-a", "d0", f"src-{rx}-extra-{extra_i}", "", [0.0, 1.0, 0.0])
         add("target_old", "old-a", rx, "d1", f"old-support-{rx}", "leo_clear_weak", [1.0, 0.0, 0.0])
         add("target_new", "new-a", rx, "d1", f"new-support-{rx}", "leo_clear_weak", [0.0, 1.0, 0.0])
         old_sig = "old-query" if aligned else f"old-query-{rx}"
@@ -49,7 +53,7 @@ def _write_npz(
         add("proxy_unknown", "proxy-a", "src-proxy", "d3", "proxy-1", "leo_clear_weak", [0.0, 0.0, 1.0])
 
     manifest = {
-        "source_tx_ids": ["old-a"],
+        "source_tx_ids": [source_tx_id, *extra_source_tx_ids],
         "target_old_tx_ids": ["old-a"],
         "new_tx_ids": ["new-a"],
         "unknown_tx_ids": ["unk-a"],
@@ -157,6 +161,24 @@ class Phase2CollaborativeOpenSetQknnEvalTest(unittest.TestCase):
             with self.assertRaisesRegex(RuntimeError, "proxy_unknown calibration rows must be source-only"):
                 build_collaborative_evidence(load_feature_npz(npz), k_shot=1, query_per_class=1)
 
+    def test_requires_target_old_to_belong_to_source_tx_set(self):
+        from phase2_collaborative_open_set_qknn_eval import load_feature_npz, build_collaborative_evidence
+
+        with tempfile.TemporaryDirectory() as td:
+            npz = Path(td) / "features.npz"
+            _write_npz(npz, source_tx_id="other-old")
+            with self.assertRaisesRegex(RuntimeError, "old_not_in_source"):
+                build_collaborative_evidence(load_feature_npz(npz), k_shot=1, query_per_class=1)
+
+    def test_rejects_seen_new_or_unknown_that_belongs_to_source_tx_set(self):
+        from phase2_collaborative_open_set_qknn_eval import load_feature_npz, build_collaborative_evidence
+
+        with tempfile.TemporaryDirectory() as td:
+            npz = Path(td) / "features.npz"
+            _write_npz(npz, extra_source_tx_ids=("new-a",))
+            with self.assertRaisesRegex(RuntimeError, "non_old_in_source"):
+                build_collaborative_evidence(load_feature_npz(npz), k_shot=1, query_per_class=1)
+
     def test_requires_per_receiver_support_and_query_coverage(self):
         from phase2_collaborative_open_set_qknn_eval import load_feature_npz, build_collaborative_evidence
 
@@ -166,18 +188,14 @@ class Phase2CollaborativeOpenSetQknnEvalTest(unittest.TestCase):
             with self.assertRaisesRegex(RuntimeError, "incomplete Stage2-C coverage"):
                 build_collaborative_evidence(load_feature_npz(npz), k_shot=2, query_per_class=2)
 
-    def test_strict_event_key_keeps_partial_receiver_groups_for_count_one(self):
+    def test_strict_event_key_requires_shared_events_across_target_receivers(self):
         from phase2_collaborative_open_set_qknn_eval import load_feature_npz, build_collaborative_evidence
 
         with tempfile.TemporaryDirectory() as td:
             npz = Path(td) / "features.npz"
             _write_npz(npz, aligned=False)
-            evidence, metadata = build_collaborative_evidence(load_feature_npz(npz), k_shot=1, query_per_class=1)
-
-        self.assertGreater(len(evidence), 0)
-        self.assertTrue(metadata["strict_same_event_collaboration"])
-        self.assertEqual(metadata["event_alignment"], "role_tx_day_sig_scenario")
-        self.assertEqual(max(len({row["receiver_id"] for row in evidence if row["event_id"] == event_id}) for event_id in {row["event_id"] for row in evidence}), 1)
+            with self.assertRaisesRegex(RuntimeError, "NO_ALIGNED_COLLABORATIVE_EVENTS"):
+                build_collaborative_evidence(load_feature_npz(npz), k_shot=1, query_per_class=1)
 
     def test_receiver_domain_ranked_policy_is_explicitly_marked(self):
         from phase2_collaborative_open_set_qknn_eval import load_feature_npz, build_collaborative_evidence
@@ -709,6 +727,29 @@ class Phase2CollaborativeOpenSetQknnEvalTest(unittest.TestCase):
         self.assertFalse(np.allclose(centered, normalized))
         self.assertLess(np.linalg.norm(centered.mean(axis=0)), np.linalg.norm(normalized.mean(axis=0)))
 
+    def test_support_bn_affine_adapter_clamps_variance_floor_for_zero_variance_support(self):
+        from phase2_collaborative_open_set_qknn_eval import _apply_feature_adapter, _fit_feature_adapter
+
+        support = np.asarray(
+            [
+                [1.0, 0.0, 0.0],
+                [1.0, 0.0, 0.0],
+                [1.0, 0.0, 0.0],
+            ],
+            dtype=np.float32,
+        )
+        adapter = _fit_feature_adapter(
+            support,
+            policy="support_bn_affine",
+            strength=1.0,
+            variance_floor=0.0,
+        )
+        adapted = _apply_feature_adapter(support, adapter)
+
+        self.assertTrue(np.all(np.isfinite(adapter.scale)))
+        self.assertTrue(np.all(adapter.scale >= 1e-8))
+        self.assertTrue(np.all(np.isfinite(adapted)))
+
     def test_feature_adapter_is_marked_in_metadata_and_evidence(self):
         from phase2_collaborative_open_set_qknn_eval import load_feature_npz, build_collaborative_evidence
 
@@ -730,8 +771,10 @@ class Phase2CollaborativeOpenSetQknnEvalTest(unittest.TestCase):
         self.assertAlmostEqual(metadata["feature_adapter_variance_floor"], 1e-5)
         self.assertIn("feature_adapter_policy", evidence[0])
         self.assertIn("feature_adapter_strength", evidence[0])
+        self.assertIn("feature_adapter_variance_floor", evidence[0])
         self.assertEqual(evidence[0]["feature_adapter_policy"], "support_center")
         self.assertAlmostEqual(float(evidence[0]["feature_adapter_strength"]), 0.5)
+        self.assertAlmostEqual(float(evidence[0]["feature_adapter_variance_floor"]), 1e-5)
 
     def test_mahalanobis_score_assisted_qknn_is_marked_in_metadata_and_evidence(self):
         from phase2_collaborative_open_set_qknn_eval import load_feature_npz, build_collaborative_evidence
