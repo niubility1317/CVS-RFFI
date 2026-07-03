@@ -379,7 +379,7 @@ def qknn_scores(
     old_bias: float = 0.0,
     candidate_class_top_m: int = 0,
     exclude_support_indices: Sequence[int] | None = None,
-) -> tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
+) -> tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray, np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
     query = _normalize_rows(query_features)
     support = _normalize_rows(memory.qfeatures.astype(np.float32) / float(memory.scale))
     centroid_scores = _centroid_scores(memory, query)
@@ -412,6 +412,8 @@ def qknn_scores(
     out_candidate_counts: list[int] = []
     out_support_neighbor_counts: list[int] = []
     out_support_densities: list[float] = []
+    out_second_labels: list[str] = []
+    out_second_scores: list[float] = []
     all_support_mask = np.ones(memory.labels.shape[0], dtype=bool)
     for row_i in range(scores.shape[0]):
         support_mask = all_support_mask.copy()
@@ -442,6 +444,7 @@ def qknn_scores(
             per_label_count[str(memory.labels[j])] += 1
         ranked = sorted(per_label.items(), key=lambda item: (item[1], item[0]), reverse=True)
         best_label, best_score = ranked[0]
+        second_label = ranked[1][0] if len(ranked) > 1 else ""
         second = ranked[1][1] if len(ranked) > 1 else 0.0
         best_count = int(per_label_count.get(best_label, 0))
         out_labels.append(best_label)
@@ -450,6 +453,8 @@ def qknn_scores(
         out_candidate_counts.append(len(set(memory.labels[support_mask].tolist())))
         out_support_neighbor_counts.append(best_count)
         out_support_densities.append(float(best_count / max(row_k, 1)))
+        out_second_labels.append(str(second_label))
+        out_second_scores.append(float(second / max(row_k, 1)))
     return (
         np.asarray(out_labels, dtype=object),
         np.asarray(out_scores, dtype=np.float64),
@@ -457,6 +462,8 @@ def qknn_scores(
         np.asarray(out_candidate_counts, dtype=np.int64),
         np.asarray(out_support_neighbor_counts, dtype=np.int64),
         np.asarray(out_support_densities, dtype=np.float64),
+        np.asarray(out_second_labels, dtype=object),
+        np.asarray(out_second_scores, dtype=np.float64),
     )
 
 
@@ -597,7 +604,7 @@ def _threshold_from_calibration(
     if calibration_mode not in {"self", "leave_one_out", "loo"}:
         raise ValueError("support_calibration_mode must be self or leave_one_out")
     exclude = range(int(support_features.shape[0])) if calibration_mode in {"leave_one_out", "loo"} else None
-    _, support_scores, _, _, _, _ = qknn_scores(
+    _, support_scores, _, _, _, _, _, _ = qknn_scores(
         memory,
         support_features,
         top_k=top_k,
@@ -611,7 +618,7 @@ def _threshold_from_calibration(
     threshold = float(np.quantile(support_scores, float(support_quantile))) if support_scores.size else 0.0
     scope = "support_known_only"
     if proxy_features is not None and int(proxy_features.shape[0]) > 0:
-        _, proxy_scores, _, _, _, _ = qknn_scores(
+        _, proxy_scores, _, _, _, _, _, _ = qknn_scores(
             memory,
             proxy_features,
             top_k=top_k,
@@ -649,27 +656,30 @@ def _combined_unknown_risk(
     mahalanobis_temperature: float,
     evt_temperature: float,
     oldness_temperature: float,
-) -> tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray, np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
+) -> tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray, np.ndarray, np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
     mode = str(gate_mode or "score").strip().lower()
     score_risk = _unknown_risk(known_scores, score_threshold, temperature=temperature)
     if mode == "score":
         zeros = np.zeros_like(score_risk)
-        return score_risk, score_risk, zeros, zeros, zeros, zeros, zeros, zeros
+        return score_risk, score_risk, zeros, zeros, zeros, zeros, zeros, zeros, zeros
     centroid_scores = _centroid_scores(memory, query_features)
     class_to_pos = {str(label): int(i) for i, label in enumerate(memory.centroid_labels.tolist())}
     radius_risks = []
     radius_values = []
+    radius_z_values = []
     for row_i, label in enumerate(predicted_labels):
         label = str(label)
         pos = class_to_pos.get(label)
         if pos is None:
             radius_values.append(1.0)
+            radius_z_values.append(1.0)
             radius_risks.append(1.0)
             continue
         radius = float(1.0 - centroid_scores[row_i, pos])
         threshold = float(memory.class_radius_thresholds.get(label, 1.0))
         z = (radius - threshold) / max(float(radius_temperature), 1e-6)
         radius_values.append(radius)
+        radius_z_values.append(float(z))
         radius_risks.append(float(1.0 / (1.0 + np.exp(-z))))
     radius_risk = np.asarray(radius_risks, dtype=np.float64)
     margin_t = float(memory.margin_threshold)
@@ -743,6 +753,7 @@ def _combined_unknown_risk(
         evt_risk,
         oldness_risk,
         np.asarray(radius_values, dtype=np.float64),
+        np.asarray(radius_z_values, dtype=np.float64),
     )
 
 
@@ -1057,7 +1068,16 @@ def build_collaborative_evidence(
                 for rx in sorted(rx_to_idx):
                     idx = rx_to_idx[rx]
                     memory = receiver_memories[rx]
-                    pred, score, margin, candidate_counts, support_neighbor_counts, support_densities = qknn_scores(
+                    (
+                        pred,
+                        score,
+                        margin,
+                        candidate_counts,
+                        support_neighbor_counts,
+                        support_densities,
+                        second_labels,
+                        second_scores,
+                    ) = qknn_scores(
                         memory,
                         features[[idx]],
                         top_k=qknn_k,
@@ -1083,6 +1103,7 @@ def build_collaborative_evidence(
                         evt_risk,
                         oldness_risk,
                         class_radius,
+                        class_radius_z,
                     ) = _combined_unknown_risk(
                         memory,
                         features[[idx]],
@@ -1109,6 +1130,9 @@ def build_collaborative_evidence(
                             "role": role_name,
                             "true_label": "__unknown__" if role_name == "unknown" else str(tx_ids[idx]),
                             "predicted_label": str(pred[0]),
+                            "second_label": str(second_labels[0]),
+                            "second_score": float(second_scores[0]),
+                            "label_score_gap": float(score[0] - second_scores[0]),
                             "known_score": float(score[0]),
                             "known_margin": float(margin[0]),
                             "candidate_class_count": int(candidate_counts[0]),
@@ -1122,6 +1146,7 @@ def build_collaborative_evidence(
                             "evt_risk": float(evt_risk[0]),
                             "oldness_risk": float(oldness_risk[0]),
                             "class_radius": float(class_radius[0]),
+                            "class_radius_z": float(class_radius_z[0]),
                             "reliability": float(reliability),
                             "reliability_source": reliability_policy,
                             "latency_ms": float(per_row_ms),
@@ -1256,9 +1281,13 @@ def run_evaluation(args: argparse.Namespace) -> dict[str, Any]:
         old_gate_min_receivers=int(args.old_gate_min_receivers),
         old_gate_max_effective_unknown_risk=float(args.old_gate_max_effective_unknown_risk),
         old_gate_max_component_agreement=float(args.old_gate_max_component_agreement),
+        old_gate_min_support_density=float(args.old_gate_min_support_density),
+        old_gate_max_radius_z=float(args.old_gate_max_radius_z),
         seen_new_gate_min_receivers=int(args.seen_new_gate_min_receivers),
         seen_new_gate_max_effective_unknown_risk=float(args.seen_new_gate_max_effective_unknown_risk),
         seen_new_gate_max_component_agreement=float(args.seen_new_gate_max_component_agreement),
+        seen_new_gate_min_support_density=float(args.seen_new_gate_min_support_density),
+        seen_new_gate_max_radius_z=float(args.seen_new_gate_max_radius_z),
         threshold_selection_label_scope=str(metadata["threshold_scope"]),
         unknown_query_eval_only=True,
         receiver_selection_policy=str(args.receiver_selection_policy),
@@ -1350,9 +1379,13 @@ def parse_args() -> argparse.Namespace:
     p.add_argument("--old_gate_min_receivers", type=int, default=1)
     p.add_argument("--old_gate_max_effective_unknown_risk", type=float, default=1.0)
     p.add_argument("--old_gate_max_component_agreement", type=float, default=1.0)
+    p.add_argument("--old_gate_min_support_density", type=float, default=0.0)
+    p.add_argument("--old_gate_max_radius_z", type=float, default=1.0e12)
     p.add_argument("--seen_new_gate_min_receivers", type=int, default=1)
     p.add_argument("--seen_new_gate_max_effective_unknown_risk", type=float, default=1.0)
     p.add_argument("--seen_new_gate_max_component_agreement", type=float, default=1.0)
+    p.add_argument("--seen_new_gate_min_support_density", type=float, default=0.0)
+    p.add_argument("--seen_new_gate_max_radius_z", type=float, default=1.0e12)
     p.add_argument("--evidence_packet_bytes", type=float, default=40.0)
     p.add_argument(
         "--receiver_reliability_policy",

@@ -1275,3 +1275,26 @@ python E:\type10-7\code\tests\test_collaborative_open_set_qknn_eval.py
 |`margin_density`|5|0.3846|0.0000|0.3000|0.0000|0.0500|0.3500|0.5109|4.3913|FAR不满足约束。|
 
 判定：support density证据是有效诊断字段，但直接作为receiver reliability不是充分解法。它可以提升seen-new，预算4从0.4857到0.5143，预算5从0.2500到0.3000，并保持FAR=0；但old_acc下降，说明简单密度加权会压低部分旧类少数正确证据。margin_density进一步提高seen-new但引入FAR，不应作为安全主线。下一步应将support density改为label-conditioned gate/diagnostic字段，而不是统一替代receiver reliability；同时需要导出每个label的第二候选、label-conditioned radius z-score或Gaussian prototype log-likelihood，才能把“未知像新类”与“真实seen-new局部密集”分开。
+
+## 2026-07-03 label-conditioned gate证据增强
+
+本轮继续沿用`ADV3B02_CORE90_SOFT_E200`特征和`qknn8`少样本证据，目标是在不引入真值`role`泄漏的前提下，为协同融合层提供可部署的标签条件证据。新增字段用于区分“目标标签局部支持充分”和“未知样本被seen-new rescue误接收”。
+
+代码改动：
+
+|文件|目的|
+|---|---|
+|`code/scripts/phase2_collaborative_open_set_qknn_eval.py`|`qknn_scores`新增`second_label`、`second_score`；evidence新增`label_score_gap`和`class_radius_z`；CLI新增old/seen-new的support-density和radius-z gate参数。|
+|`code/evaluation/collaborative_open_set_qknn_eval.py`|融合器新增label-conditioned `label_support_density`和`label_radius_z`，并允许class-set gate按old/seen-new分别约束最小局部密度和最大半径z-score。|
+|`code/tests/test_phase2_collaborative_open_set_qknn_eval.py`|更新`qknn_scores`返回值测试，覆盖新增evidence字段。|
+
+本地验证：
+
+```powershell
+conda activate ssr-gpu
+python -m py_compile code\scripts\phase2_collaborative_open_set_qknn_eval.py code\evaluation\collaborative_open_set_qknn_eval.py
+python code\tests\test_phase2_collaborative_open_set_qknn_eval.py
+python code\tests\test_collaborative_open_set_qknn_eval.py
+```
+
+结果：`test_phase2_collaborative_open_set_qknn_eval.py`为17 tests OK，`test_collaborative_open_set_qknn_eval.py`为24 tests OK。根目录`E:\type10-7`不是Git仓库，版本化同步目标仍为`E:\type10-7\github_publish\CVS-RFFI-repo`。

@@ -251,9 +251,13 @@ def _fuse_event(
     old_gate_min_receivers: int = 1,
     old_gate_max_effective_unknown_risk: float = 1.0,
     old_gate_max_component_agreement: float = 1.0,
+    old_gate_min_support_density: float = 0.0,
+    old_gate_max_radius_z: float = 1.0e12,
     seen_new_gate_min_receivers: int = 1,
     seen_new_gate_max_effective_unknown_risk: float = 1.0,
     seen_new_gate_max_component_agreement: float = 1.0,
+    seen_new_gate_min_support_density: float = 0.0,
+    seen_new_gate_max_radius_z: float = 1.0e12,
 ) -> dict[str, Any]:
     active_components = _parse_risk_components(scorer_risk_components)
     label_fusion_policy = _normalize_scope(label_fusion_policy)
@@ -275,6 +279,8 @@ def _fuse_event(
     oldness_risks = []
     component_votes = []
     predicted_labels = []
+    support_densities = []
+    radius_z_values = []
     for row in selected:
         weight = max(0.0, _float(row, "reliability", 1.0))
         label = _str(row, "predicted_label", "")
@@ -290,6 +296,8 @@ def _fuse_event(
         weights.append(weight)
         risks.append(_float(row, "unknown_risk", 0.0))
         margins.append(_float(row, "known_margin", 0.0))
+        support_densities.append(_float(row, "support_density", 1.0))
+        radius_z_values.append(_float(row, "class_radius_z", 0.0))
         score_risk_value = _float(row, "score_risk", _float(row, "unknown_risk", 0.0))
         radius_risk_value = _float(row, "radius_risk", _float(row, "unknown_risk", 0.0))
         margin_risk_value = _float(row, "margin_risk", _float(row, "unknown_risk", 0.0))
@@ -389,6 +397,16 @@ def _fuse_event(
     receiver_n = max(len(selected), 1)
     agreement = float(top_count) / float(receiver_n)
     vote_gap = float(top_count - second_count) / float(receiver_n)
+    label_support_density_values = [
+        value for value, row in zip(support_densities, selected) if _str(row, "predicted_label", "") == label
+    ]
+    label_radius_z_values = [
+        value for value, row in zip(radius_z_values, selected) if _str(row, "predicted_label", "") == label
+    ]
+    label_support_density = (
+        sum(label_support_density_values) / len(label_support_density_values) if label_support_density_values else 0.0
+    )
+    label_radius_z = max(label_radius_z_values) if label_radius_z_values else 0.0
     latency_ms = float(max((_float(row, "latency_ms", 0.0) for row in selected), default=0.0))
     within_request_budget = bool(
         can_request_more
@@ -415,10 +433,14 @@ def _fuse_event(
             min_receivers = max(1, int(old_gate_min_receivers))
             max_risk = float(old_gate_max_effective_unknown_risk)
             max_agreement = float(old_gate_max_component_agreement)
+            min_density = float(old_gate_min_support_density)
+            max_radius_z = float(old_gate_max_radius_z)
         else:
             min_receivers = max(1, int(seen_new_gate_min_receivers))
             max_risk = float(seen_new_gate_max_effective_unknown_risk)
             max_agreement = float(seen_new_gate_max_component_agreement)
+            min_density = float(seen_new_gate_min_support_density)
+            max_radius_z = float(seen_new_gate_max_radius_z)
         reasons = []
         if len(selected) < min_receivers:
             reasons.append(f"min_receivers:{len(selected)}<{min_receivers}")
@@ -426,6 +448,10 @@ def _fuse_event(
             reasons.append(f"effective_unknown_risk>{max_risk:.6g}")
         if risk_component_agreement > max_agreement:
             reasons.append(f"risk_component_agreement>{max_agreement:.6g}")
+        if label_support_density < min_density:
+            reasons.append(f"support_density:{label_support_density:.6g}<{min_density:.6g}")
+        if label_radius_z > max_radius_z:
+            reasons.append(f"radius_z:{label_radius_z:.6g}>{max_radius_z:.6g}")
         return not reasons, ",".join(reasons)
 
     policy = _normalize_scope(fusion_policy)
@@ -525,6 +551,8 @@ def _fuse_event(
         "class_set_gate_reason": str(locals().get("gate_reason", "")),
         "output_label_set": output_label_set,
         "label_fusion_policy": label_fusion_policy,
+        "label_support_density": float(label_support_density),
+        "label_radius_z": float(label_radius_z),
         "risk_component_agreement": float(risk_component_agreement),
         "known_margin": float(mean_margin),
         "mean_known_score": float(mean_score),
@@ -564,9 +592,13 @@ def _fuse_progressive_event(
     old_gate_min_receivers: int = 1,
     old_gate_max_effective_unknown_risk: float = 1.0,
     old_gate_max_component_agreement: float = 1.0,
+    old_gate_min_support_density: float = 0.0,
+    old_gate_max_radius_z: float = 1.0e12,
     seen_new_gate_min_receivers: int = 1,
     seen_new_gate_max_effective_unknown_risk: float = 1.0,
     seen_new_gate_max_component_agreement: float = 1.0,
+    seen_new_gate_min_support_density: float = 0.0,
+    seen_new_gate_max_radius_z: float = 1.0e12,
 ) -> dict[str, Any]:
     max_receivers = max(1, int(max_receivers))
     last: dict[str, Any] | None = None
@@ -595,9 +627,13 @@ def _fuse_progressive_event(
             old_gate_min_receivers=old_gate_min_receivers,
             old_gate_max_effective_unknown_risk=old_gate_max_effective_unknown_risk,
             old_gate_max_component_agreement=old_gate_max_component_agreement,
+            old_gate_min_support_density=old_gate_min_support_density,
+            old_gate_max_radius_z=old_gate_max_radius_z,
             seen_new_gate_min_receivers=seen_new_gate_min_receivers,
             seen_new_gate_max_effective_unknown_risk=seen_new_gate_max_effective_unknown_risk,
             seen_new_gate_max_component_agreement=seen_new_gate_max_component_agreement,
+            seen_new_gate_min_support_density=seen_new_gate_min_support_density,
+            seen_new_gate_max_radius_z=seen_new_gate_max_radius_z,
         )
         fused["participating_receiver_budget"] = int(max_receivers)
         fused["participating_receivers_used"] = int(used)
@@ -718,9 +754,13 @@ def _fuse_adaptive_gain_event(
     old_gate_min_receivers: int = 1,
     old_gate_max_effective_unknown_risk: float = 1.0,
     old_gate_max_component_agreement: float = 1.0,
+    old_gate_min_support_density: float = 0.0,
+    old_gate_max_radius_z: float = 1.0e12,
     seen_new_gate_min_receivers: int = 1,
     seen_new_gate_max_effective_unknown_risk: float = 1.0,
     seen_new_gate_max_component_agreement: float = 1.0,
+    seen_new_gate_min_support_density: float = 0.0,
+    seen_new_gate_max_radius_z: float = 1.0e12,
 ) -> dict[str, Any]:
     max_receivers = max(1, int(max_receivers))
     if not ordered:
@@ -755,9 +795,13 @@ def _fuse_adaptive_gain_event(
             old_gate_min_receivers=old_gate_min_receivers,
             old_gate_max_effective_unknown_risk=old_gate_max_effective_unknown_risk,
             old_gate_max_component_agreement=old_gate_max_component_agreement,
+            old_gate_min_support_density=old_gate_min_support_density,
+            old_gate_max_radius_z=old_gate_max_radius_z,
             seen_new_gate_min_receivers=seen_new_gate_min_receivers,
             seen_new_gate_max_effective_unknown_risk=seen_new_gate_max_effective_unknown_risk,
             seen_new_gate_max_component_agreement=seen_new_gate_max_component_agreement,
+            seen_new_gate_min_support_density=seen_new_gate_min_support_density,
+            seen_new_gate_max_radius_z=seen_new_gate_max_radius_z,
         )
         fused["participating_receiver_budget"] = int(max_receivers)
         fused["participating_receivers_used"] = int(len(selected))
@@ -1047,9 +1091,13 @@ def evaluate_collaborative_open_set_evidence(
     old_gate_min_receivers: int = 1,
     old_gate_max_effective_unknown_risk: float = 1.0,
     old_gate_max_component_agreement: float = 1.0,
+    old_gate_min_support_density: float = 0.0,
+    old_gate_max_radius_z: float = 1.0e12,
     seen_new_gate_min_receivers: int = 1,
     seen_new_gate_max_effective_unknown_risk: float = 1.0,
     seen_new_gate_max_component_agreement: float = 1.0,
+    seen_new_gate_min_support_density: float = 0.0,
+    seen_new_gate_max_radius_z: float = 1.0e12,
     threshold_selection_label_scope: str = "support_known_only",
     unknown_query_eval_only: bool = True,
     receiver_selection_policy: str = "fixed_receiver_order",
@@ -1144,9 +1192,13 @@ def evaluate_collaborative_open_set_evidence(
                     old_gate_min_receivers=old_gate_min_receivers,
                     old_gate_max_effective_unknown_risk=old_gate_max_effective_unknown_risk,
                     old_gate_max_component_agreement=old_gate_max_component_agreement,
+                    old_gate_min_support_density=old_gate_min_support_density,
+                    old_gate_max_radius_z=old_gate_max_radius_z,
                     seen_new_gate_min_receivers=seen_new_gate_min_receivers,
                     seen_new_gate_max_effective_unknown_risk=seen_new_gate_max_effective_unknown_risk,
                     seen_new_gate_max_component_agreement=seen_new_gate_max_component_agreement,
+                    seen_new_gate_min_support_density=seen_new_gate_min_support_density,
+                    seen_new_gate_max_radius_z=seen_new_gate_max_radius_z,
                 )
             elif collaboration_policy == "adaptive_gain":
                 adaptive_ordered = _select_receivers(
@@ -1182,9 +1234,13 @@ def evaluate_collaborative_open_set_evidence(
                     old_gate_min_receivers=old_gate_min_receivers,
                     old_gate_max_effective_unknown_risk=old_gate_max_effective_unknown_risk,
                     old_gate_max_component_agreement=old_gate_max_component_agreement,
+                    old_gate_min_support_density=old_gate_min_support_density,
+                    old_gate_max_radius_z=old_gate_max_radius_z,
                     seen_new_gate_min_receivers=seen_new_gate_min_receivers,
                     seen_new_gate_max_effective_unknown_risk=seen_new_gate_max_effective_unknown_risk,
                     seen_new_gate_max_component_agreement=seen_new_gate_max_component_agreement,
+                    seen_new_gate_min_support_density=seen_new_gate_min_support_density,
+                    seen_new_gate_max_radius_z=seen_new_gate_max_radius_z,
                 )
             else:
                 fused = _fuse_event(
@@ -1211,9 +1267,13 @@ def evaluate_collaborative_open_set_evidence(
                     old_gate_min_receivers=old_gate_min_receivers,
                     old_gate_max_effective_unknown_risk=old_gate_max_effective_unknown_risk,
                     old_gate_max_component_agreement=old_gate_max_component_agreement,
+                    old_gate_min_support_density=old_gate_min_support_density,
+                    old_gate_max_radius_z=old_gate_max_radius_z,
                     seen_new_gate_min_receivers=seen_new_gate_min_receivers,
                     seen_new_gate_max_effective_unknown_risk=seen_new_gate_max_effective_unknown_risk,
                     seen_new_gate_max_component_agreement=seen_new_gate_max_component_agreement,
+                    seen_new_gate_min_support_density=seen_new_gate_min_support_density,
+                    seen_new_gate_max_radius_z=seen_new_gate_max_radius_z,
                 )
             first = selected[0]
             fused["role"] = _role(first.get("role"))
@@ -1266,8 +1326,12 @@ def evaluate_collaborative_open_set_evidence(
         "old_gate_min_receivers": int(old_gate_min_receivers),
         "old_gate_max_effective_unknown_risk": float(old_gate_max_effective_unknown_risk),
         "old_gate_max_component_agreement": float(old_gate_max_component_agreement),
+        "old_gate_min_support_density": float(old_gate_min_support_density),
+        "old_gate_max_radius_z": float(old_gate_max_radius_z),
         "seen_new_gate_min_receivers": int(seen_new_gate_min_receivers),
         "seen_new_gate_max_effective_unknown_risk": float(seen_new_gate_max_effective_unknown_risk),
         "seen_new_gate_max_component_agreement": float(seen_new_gate_max_component_agreement),
+        "seen_new_gate_min_support_density": float(seen_new_gate_min_support_density),
+        "seen_new_gate_max_radius_z": float(seen_new_gate_max_radius_z),
         "counts": out_counts,
     }
