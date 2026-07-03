@@ -243,6 +243,52 @@ class CollaborativeOpenSetQknnEvalTest(unittest.TestCase):
         self.assertEqual(k1["defer_rate"], 1.0)
         self.assertEqual(k1["open_set_confusion"], {"unknown->defer": 1})
 
+    def test_consensus_veto_rejects_high_risk_low_consensus_unknown(self):
+        from evaluation.collaborative_open_set_qknn_eval import evaluate_collaborative_open_set_evidence
+
+        rows = [
+            {
+                "event_id": "split-unknown",
+                "receiver_id": "rx-a",
+                "role": "unknown",
+                "true_label": "__unknown__",
+                "predicted_label": "old-a",
+                "known_score": 0.65,
+                "known_margin": 0.50,
+                "unknown_risk": 0.99,
+            },
+            {
+                "event_id": "split-unknown",
+                "receiver_id": "rx-b",
+                "role": "unknown",
+                "true_label": "__unknown__",
+                "predicted_label": "new-a",
+                "known_score": 0.61,
+                "known_margin": 0.45,
+                "unknown_risk": 0.97,
+            },
+        ]
+
+        default_result = evaluate_collaborative_open_set_evidence(
+            rows,
+            collab_counts="2",
+            unknown_risk_threshold=0.8,
+            accept_margin_threshold=0.1,
+        )
+        veto_result = evaluate_collaborative_open_set_evidence(
+            rows,
+            collab_counts="2",
+            unknown_risk_threshold=0.8,
+            accept_margin_threshold=0.1,
+            fusion_policy="consensus_veto",
+            consensus_gap_threshold=0.5,
+        )
+
+        self.assertEqual(default_result["counts"]["2"]["open_set_confusion"], {"unknown->defer": 1})
+        self.assertEqual(veto_result["counts"]["2"]["unknown_reject_rate"], 1.0)
+        self.assertEqual(veto_result["counts"]["2"]["open_set_confusion"], {"unknown->unknown_reject": 1})
+        self.assertEqual(veto_result["fusion_policy"], "consensus_veto")
+
     def test_strict_protocol_metadata_validates_stage2_boundaries(self):
         from evaluation.collaborative_open_set_qknn_eval import evaluate_collaborative_open_set_evidence
 

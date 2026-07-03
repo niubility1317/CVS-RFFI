@@ -194,16 +194,24 @@ def _fuse_event(
     unknown_risk_threshold: float,
     accept_margin_threshold: float,
     unknown_quantile: float,
+    fusion_policy: str,
+    consensus_gap_threshold: float,
+    consensus_score_threshold: float,
 ) -> dict[str, Any]:
     label_scores: defaultdict[str, float] = defaultdict(float)
     weights = []
     risks = []
     margins = []
+    scores = []
+    predicted_labels = []
     for row in selected:
         weight = max(0.0, _float(row, "reliability", 1.0))
         label = _str(row, "predicted_label", "")
         if label and label != UNKNOWN_LABEL:
-            label_scores[label] += weight * max(0.0, _float(row, "known_score", 1.0))
+            score_value = max(0.0, _float(row, "known_score", 1.0))
+            label_scores[label] += weight * score_value
+            predicted_labels.append(label)
+            scores.append(score_value)
         weights.append(weight)
         risks.append(_float(row, "unknown_risk", 0.0))
         margins.append(_float(row, "known_margin", 0.0))
@@ -214,32 +222,72 @@ def _fuse_event(
         mean_margin = sum(m * max(0.0, w) for m, w in zip(margins, weights)) / max(sum(weights), 1e-12)
     elif margins:
         mean_margin = sum(margins) / len(margins)
+    mean_score = 0.0
+    if weights and sum(weights) > 0 and scores:
+        usable_weights = [max(0.0, w) for w, label in zip(weights, [_str(row, "predicted_label", "") for row in selected]) if label and label != UNKNOWN_LABEL]
+        mean_score = sum(s * w for s, w in zip(scores, usable_weights)) / max(sum(usable_weights), 1e-12)
+    elif scores:
+        mean_score = sum(scores) / len(scores)
 
     if label_scores:
         label, score = max(label_scores.items(), key=lambda item: (item[1], item[0]))
     else:
         label, score = "", 0.0
+    label_count = defaultdict(int)
+    for item in predicted_labels:
+        label_count[item] += 1
+    ranked_counts = sorted(label_count.values(), reverse=True)
+    top_count = ranked_counts[0] if ranked_counts else 0
+    second_count = ranked_counts[1] if len(ranked_counts) > 1 else 0
+    receiver_n = max(len(selected), 1)
+    agreement = float(top_count) / float(receiver_n)
+    vote_gap = float(top_count - second_count) / float(receiver_n)
 
-    if unknown_risk >= float(unknown_risk_threshold):
-        if mean_margin < float(accept_margin_threshold):
+    policy = _normalize_scope(fusion_policy)
+    if policy == "consensus_veto":
+        low_consensus = vote_gap <= float(consensus_gap_threshold)
+        low_score = mean_score < float(consensus_score_threshold)
+        low_margin = mean_margin < float(accept_margin_threshold)
+        if unknown_risk >= float(unknown_risk_threshold) and (low_consensus or low_score or low_margin):
             decision = "unknown_reject"
             output_label = UNKNOWN_LABEL
+        elif unknown_risk >= float(unknown_risk_threshold):
+            decision = "defer"
+            output_label = ""
+        elif label:
+            decision = "accept"
+            output_label = label
+        else:
+            decision = "defer"
+            output_label = ""
+    elif policy == "risk_margin":
+        if unknown_risk >= float(unknown_risk_threshold):
+            if mean_margin < float(accept_margin_threshold):
+                decision = "unknown_reject"
+                output_label = UNKNOWN_LABEL
+            else:
+                decision = "defer"
+                output_label = ""
+        elif label:
+            decision = "accept"
+            output_label = label
         else:
             decision = "defer"
             output_label = ""
     elif label:
-        decision = "accept"
-        output_label = label
+        raise ValueError("fusion_policy must be risk_margin or consensus_veto")
     else:
-        decision = "defer"
-        output_label = ""
+        raise ValueError("fusion_policy must be risk_margin or consensus_veto")
 
     return {
         "decision": decision,
         "output_label": output_label,
         "unknown_risk": float(unknown_risk),
         "known_margin": float(mean_margin),
+        "mean_known_score": float(mean_score),
         "known_score": float(score),
+        "agreement": float(agreement),
+        "vote_gap": float(vote_gap),
         "bytes": float(sum(_float(row, "bytes", 0.0) for row in selected)),
         "latency_ms": float(max((_float(row, "latency_ms", 0.0) for row in selected), default=0.0)),
     }
@@ -437,6 +485,9 @@ def evaluate_collaborative_open_set_evidence(
     unknown_risk_threshold: float = 0.80,
     accept_margin_threshold: float = 0.10,
     unknown_quantile: float = 0.75,
+    fusion_policy: str = "risk_margin",
+    consensus_gap_threshold: float = 0.0,
+    consensus_score_threshold: float = 0.0,
     threshold_selection_label_scope: str = "support_known_only",
     unknown_query_eval_only: bool = True,
     receiver_selection_policy: str = "fixed_receiver_order",
@@ -509,6 +560,9 @@ def evaluate_collaborative_open_set_evidence(
                 unknown_risk_threshold=unknown_risk_threshold,
                 accept_margin_threshold=accept_margin_threshold,
                 unknown_quantile=unknown_quantile,
+                fusion_policy=fusion_policy,
+                consensus_gap_threshold=consensus_gap_threshold,
+                consensus_score_threshold=consensus_score_threshold,
             )
             first = selected[0]
             fused["role"] = _role(first.get("role"))
@@ -540,5 +594,8 @@ def evaluate_collaborative_open_set_evidence(
         "unknown_risk_threshold": float(unknown_risk_threshold),
         "accept_margin_threshold": float(accept_margin_threshold),
         "unknown_quantile": float(unknown_quantile),
+        "fusion_policy": _normalize_scope(fusion_policy),
+        "consensus_gap_threshold": float(consensus_gap_threshold),
+        "consensus_score_threshold": float(consensus_score_threshold),
         "counts": out_counts,
     }

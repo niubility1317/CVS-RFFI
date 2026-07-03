@@ -866,6 +866,9 @@ def run_evaluation(args: argparse.Namespace) -> dict[str, Any]:
         unknown_risk_threshold=float(args.unknown_risk_threshold),
         accept_margin_threshold=float(args.accept_margin_threshold),
         unknown_quantile=float(args.unknown_quantile),
+        fusion_policy=str(args.fusion_policy),
+        consensus_gap_threshold=float(args.consensus_gap_threshold),
+        consensus_score_threshold=float(args.consensus_score_threshold),
         threshold_selection_label_scope=str(metadata["threshold_scope"]),
         unknown_query_eval_only=True,
         receiver_selection_policy=str(args.receiver_selection_policy),
@@ -914,6 +917,9 @@ def parse_args() -> argparse.Namespace:
     p.add_argument("--unknown_risk_threshold", type=float, default=0.80)
     p.add_argument("--accept_margin_threshold", type=float, default=0.10)
     p.add_argument("--unknown_quantile", type=float, default=0.75)
+    p.add_argument("--fusion_policy", default="risk_margin", choices=["risk_margin", "consensus_veto"])
+    p.add_argument("--consensus_gap_threshold", type=float, default=0.0)
+    p.add_argument("--consensus_score_threshold", type=float, default=0.0)
     p.add_argument("--receiver_selection_policy", default="fixed_receiver_order")
     p.add_argument(
         "--support_selection_policy",
