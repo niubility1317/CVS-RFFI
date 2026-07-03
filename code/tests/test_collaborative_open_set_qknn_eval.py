@@ -393,6 +393,144 @@ class CollaborativeOpenSetQknnEvalTest(unittest.TestCase):
         self.assertEqual(result["counts"]["2"]["participating_receivers_avg"], 2.0)
         self.assertEqual(result["counts"]["2"]["bytes_per_event"], 192.0)
 
+    def test_adaptive_gain_requests_high_risk_unknown_boundary_receivers(self):
+        from evaluation.collaborative_open_set_qknn_eval import evaluate_collaborative_open_set_evidence
+
+        rows = [
+            {
+                "event_id": "adaptive-unknown",
+                "receiver_id": "rx-a",
+                "role": "unknown",
+                "true_label": "__unknown__",
+                "predicted_label": "old-a",
+                "known_score": 0.55,
+                "known_margin": 0.04,
+                "unknown_risk": 0.70,
+                "score_risk": 0.70,
+                "radius_risk": 0.65,
+                "margin_risk": 0.60,
+                "reliability": 0.90,
+                "latency_ms": 2.0,
+                "bytes": 72,
+            },
+            {
+                "event_id": "adaptive-unknown",
+                "receiver_id": "rx-b",
+                "role": "unknown",
+                "true_label": "__unknown__",
+                "predicted_label": "old-b",
+                "known_score": 0.20,
+                "known_margin": 0.01,
+                "unknown_risk": 0.95,
+                "score_risk": 0.93,
+                "radius_risk": 0.94,
+                "margin_risk": 0.92,
+                "reliability": 0.95,
+                "latency_ms": 3.0,
+                "bytes": 72,
+            },
+            {
+                "event_id": "adaptive-unknown",
+                "receiver_id": "rx-c",
+                "role": "unknown",
+                "true_label": "__unknown__",
+                "predicted_label": "old-a",
+                "known_score": 0.90,
+                "known_margin": 0.35,
+                "unknown_risk": 0.10,
+                "score_risk": 0.10,
+                "radius_risk": 0.10,
+                "margin_risk": 0.10,
+                "reliability": 0.80,
+                "latency_ms": 1.0,
+                "bytes": 72,
+            },
+        ]
+
+        result = evaluate_collaborative_open_set_evidence(
+            rows,
+            collab_counts="1,2",
+            fusion_policy="scorer_cvs",
+            collaboration_policy="adaptive_gain",
+            unknown_risk_threshold=0.8,
+            accept_margin_threshold=0.1,
+            consensus_gap_threshold=0.5,
+            consensus_score_threshold=0.6,
+            scorer_component_vote_threshold=0.5,
+            adaptive_gain_min_risk=0.6,
+            latency_budget_ms=8.0,
+        )
+
+        self.assertEqual(result["collaboration_policy"], "adaptive_gain")
+        self.assertEqual(result["counts"]["1"]["open_set_confusion"], {"unknown->defer": 1})
+        self.assertEqual(result["counts"]["2"]["unknown_reject_rate"], 1.0)
+        self.assertEqual(result["counts"]["2"]["participating_receivers_avg"], 2.0)
+        self.assertEqual(result["counts"]["2"]["collaboration_stop_reasons"], {"budget_exhausted_unknown_reject": 1})
+
+    def test_adaptive_gain_can_pick_candidate_outside_fixed_prefix(self):
+        from evaluation.collaborative_open_set_qknn_eval import evaluate_collaborative_open_set_evidence
+
+        rows = [
+            {
+                "event_id": "adaptive-old",
+                "receiver_id": "rx-a",
+                "role": "old",
+                "true_label": "old-a",
+                "predicted_label": "old-b",
+                "known_score": 0.50,
+                "known_margin": 0.02,
+                "unknown_risk": 0.40,
+                "reliability": 0.90,
+                "latency_ms": 2.0,
+                "bytes": 72,
+            },
+            {
+                "event_id": "adaptive-old",
+                "receiver_id": "rx-b",
+                "role": "old",
+                "true_label": "old-a",
+                "predicted_label": "old-b",
+                "known_score": 0.52,
+                "known_margin": 0.02,
+                "unknown_risk": 0.45,
+                "reliability": 0.10,
+                "latency_ms": 20.0,
+                "bytes": 720,
+            },
+            {
+                "event_id": "adaptive-old",
+                "receiver_id": "rx-c",
+                "role": "old",
+                "true_label": "old-a",
+                "predicted_label": "old-a",
+                "known_score": 0.95,
+                "known_margin": 0.50,
+                "unknown_risk": 0.05,
+                "reliability": 0.99,
+                "latency_ms": 1.0,
+                "bytes": 72,
+            },
+        ]
+
+        result = evaluate_collaborative_open_set_evidence(
+            rows,
+            collab_counts="2",
+            fusion_policy="scorer_cvs",
+            collaboration_policy="adaptive_gain",
+            unknown_risk_threshold=0.8,
+            accept_margin_threshold=0.1,
+            consensus_gap_threshold=0.3,
+            consensus_score_threshold=0.6,
+            adaptive_gain_min_risk=0.3,
+            adaptive_gain_latency_weight=0.1,
+            adaptive_gain_bytes_weight=0.01,
+            latency_budget_ms=8.0,
+        )
+
+        self.assertEqual(result["counts"]["2"]["old_acc"], 1.0)
+        self.assertEqual(result["counts"]["2"]["bytes_per_event"], 144.0)
+        self.assertEqual(result["counts"]["2"]["participating_receivers_max"], 2)
+
     def test_scorer_cvs_rejects_high_risk_without_known_rescue(self):
         from evaluation.collaborative_open_set_qknn_eval import evaluate_collaborative_open_set_evidence
 

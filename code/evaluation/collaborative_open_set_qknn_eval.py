@@ -200,8 +200,8 @@ def _validate_rows(
 
 def _validate_collaboration_policy(value: object) -> str:
     policy = _normalize_scope(value or "fixed_k")
-    if policy not in {"fixed_k", "progressive_budget"}:
-        raise ValueError("collaboration_policy must be fixed_k or progressive_budget")
+    if policy not in {"fixed_k", "progressive_budget", "adaptive_gain"}:
+        raise ValueError("collaboration_policy must be fixed_k, progressive_budget, or adaptive_gain")
     return policy
 
 
@@ -335,6 +335,11 @@ def _fuse_event(
         label, score = max(label_scores.items(), key=lambda item: (item[1], item[0]))
     else:
         label, score = "", 0.0
+    ranked_label_scores = sorted(label_scores.values(), reverse=True)
+    top_label_score = ranked_label_scores[0] if ranked_label_scores else 0.0
+    second_label_score = ranked_label_scores[1] if len(ranked_label_scores) > 1 else 0.0
+    label_score_total = sum(max(0.0, value) for value in label_scores.values())
+    score_gap_ratio = (top_label_score - second_label_score) / max(label_score_total, 1e-12)
     label_count = defaultdict(int)
     for item in predicted_labels:
         label_count[item] += 1
@@ -369,7 +374,9 @@ def _fuse_event(
             decision = "defer"
             output_label = ""
     elif policy == "scorer_cvs":
-        strong_consensus = vote_gap > float(consensus_gap_threshold) and agreement >= 0.5
+        strong_consensus = (
+            vote_gap > float(consensus_gap_threshold) or score_gap_ratio > float(consensus_gap_threshold)
+        ) and agreement >= 0.5
         strong_known = (
             bool(label)
             and strong_consensus
@@ -428,6 +435,7 @@ def _fuse_event(
         "known_score": float(score),
         "agreement": float(agreement),
         "vote_gap": float(vote_gap),
+        "score_gap_ratio": float(score_gap_ratio),
         "bytes": float(sum(_float(row, "bytes", 0.0) for row in selected)),
         "latency_ms": latency_ms,
         "can_request_more": bool(can_request_more),
@@ -477,6 +485,170 @@ def _fuse_progressive_event(
     return last
 
 
+def _adaptive_receiver_gain(
+    row: Mapping[str, Any],
+    *,
+    current_label: str,
+    unknown_risk_threshold: float,
+    accept_margin_threshold: float,
+    consensus_score_threshold: float,
+    latency_weight: float,
+    bytes_weight: float,
+    disagreement_weight: float,
+) -> tuple[float, dict[str, float]]:
+    reliability = max(0.0, _float(row, "reliability", 1.0))
+    known_score = max(0.0, _float(row, "known_score", 0.0))
+    known_margin = max(0.0, _float(row, "known_margin", 0.0))
+    unknown_risk = max(0.0, min(1.0, _float(row, "unknown_risk", 0.0)))
+    score_floor = max(float(consensus_score_threshold), 1e-6)
+    margin_floor = max(float(accept_margin_threshold), 1e-6)
+    ambiguity_gain = max(0.0, 1.0 - min(known_score / score_floor, 1.0))
+    margin_gain = max(0.0, 1.0 - min(known_margin / margin_floor, 1.0))
+    threshold = max(1e-6, min(1.0, float(unknown_risk_threshold)))
+    unknown_boundary_gain = max(0.0, 1.0 - min(abs(unknown_risk - threshold) / threshold, 1.0))
+    candidate_label = _str(row, "predicted_label", "")
+    disagreement_gain = 1.0 if current_label and candidate_label and candidate_label != current_label else 0.0
+    latency_cost = max(0.0, _float(row, "latency_ms", 0.0)) * max(0.0, float(latency_weight))
+    bytes_cost = max(0.0, _float(row, "bytes", 0.0)) * max(0.0, float(bytes_weight))
+    cost = 1.0 + latency_cost + bytes_cost
+    raw_gain = reliability * (
+        ambiguity_gain
+        + margin_gain
+        + unknown_boundary_gain
+        + max(0.0, float(disagreement_weight)) * disagreement_gain
+    )
+    return raw_gain / cost, {
+        "reliability": float(reliability),
+        "ambiguity": float(ambiguity_gain),
+        "margin": float(margin_gain),
+        "unknown_boundary": float(unknown_boundary_gain),
+        "disagreement": float(disagreement_gain),
+        "cost": float(cost),
+        "gain": float(raw_gain / cost),
+    }
+
+
+def _adaptive_should_request_more(
+    fused: Mapping[str, Any],
+    *,
+    unknown_risk_threshold: float,
+    accept_margin_threshold: float,
+    consensus_gap_threshold: float,
+    consensus_score_threshold: float,
+    adaptive_gain_min_risk: float,
+) -> bool:
+    if str(fused.get("decision")) == "request_more":
+        return True
+    mean_score = float(fused.get("mean_known_score", 0.0))
+    mean_margin = float(fused.get("known_margin", 0.0))
+    vote_gap = float(fused.get("vote_gap", 0.0))
+    unknown_risk = float(fused.get("unknown_risk", 0.0))
+    risks = [
+        float(fused.get("score_risk", 0.0)),
+        float(fused.get("radius_risk", 0.0)),
+        float(fused.get("margin_risk", 0.0)),
+        float(fused.get("mahalanobis_risk", 0.0)),
+        float(fused.get("evt_risk", 0.0)),
+        float(fused.get("oldness_risk", 0.0)),
+    ]
+    low_score = float(consensus_score_threshold) > 0.0 and mean_score < float(consensus_score_threshold)
+    low_margin = mean_margin < float(accept_margin_threshold)
+    low_consensus = vote_gap <= float(consensus_gap_threshold)
+    high_but_not_terminal_risk = max(risks + [unknown_risk]) >= float(adaptive_gain_min_risk)
+    terminal_unknown = unknown_risk >= float(unknown_risk_threshold) and float(
+        fused.get("risk_component_agreement", 0.0)
+    ) >= 0.5
+    if terminal_unknown:
+        return False
+    return bool(low_score or low_margin or low_consensus or high_but_not_terminal_risk)
+
+
+def _fuse_adaptive_gain_event(
+    ordered: Sequence[Mapping[str, Any]],
+    *,
+    max_receivers: int,
+    unknown_risk_threshold: float,
+    accept_margin_threshold: float,
+    unknown_quantile: float,
+    fusion_policy: str,
+    consensus_gap_threshold: float,
+    consensus_score_threshold: float,
+    scorer_component_vote_threshold: float,
+    scorer_risk_components: Sequence[str] | str | None = None,
+    latency_budget_ms: float = 0.0,
+    adaptive_gain_min_risk: float = 0.80,
+    adaptive_gain_latency_weight: float = 0.0,
+    adaptive_gain_bytes_weight: float = 0.0,
+    adaptive_gain_disagreement_weight: float = 0.5,
+) -> dict[str, Any]:
+    max_receivers = max(1, int(max_receivers))
+    if not ordered:
+        raise ValueError("adaptive_gain collaboration requires at least one receiver observation")
+    budget = min(max_receivers, len(ordered))
+    selected = [ordered[0]]
+    remaining = list(ordered[1:])
+    gain_trace: list[str] = []
+    last: dict[str, Any] | None = None
+    while True:
+        fused = _fuse_event(
+            selected,
+            unknown_risk_threshold=unknown_risk_threshold,
+            accept_margin_threshold=accept_margin_threshold,
+            unknown_quantile=unknown_quantile,
+            fusion_policy=fusion_policy,
+            consensus_gap_threshold=consensus_gap_threshold,
+            consensus_score_threshold=consensus_score_threshold,
+            scorer_component_vote_threshold=scorer_component_vote_threshold,
+            scorer_risk_components=scorer_risk_components,
+            can_request_more=len(selected) < budget,
+            latency_budget_ms=latency_budget_ms,
+        )
+        fused["participating_receiver_budget"] = int(max_receivers)
+        fused["participating_receivers_used"] = int(len(selected))
+        fused["selected_receiver_order"] = ",".join(_str(row, "receiver_id") for row in selected)
+        fused["adaptive_gain_trace"] = ";".join(gain_trace)
+        last = fused
+        if len(selected) >= budget or not remaining:
+            fused["adaptive_stop_reason"] = (
+                f"budget_exhausted_{fused['decision']}" if len(selected) >= budget else str(fused["decision"])
+            )
+            return fused
+        if not _adaptive_should_request_more(
+            fused,
+            unknown_risk_threshold=unknown_risk_threshold,
+            accept_margin_threshold=accept_margin_threshold,
+            consensus_gap_threshold=consensus_gap_threshold,
+            consensus_score_threshold=consensus_score_threshold,
+            adaptive_gain_min_risk=adaptive_gain_min_risk,
+        ):
+            fused["adaptive_stop_reason"] = str(fused["decision"])
+            return fused
+        current_label = str(fused.get("output_label") or "")
+        scored = []
+        for row in remaining:
+            gain, parts = _adaptive_receiver_gain(
+                row,
+                current_label=current_label,
+                unknown_risk_threshold=unknown_risk_threshold,
+                accept_margin_threshold=accept_margin_threshold,
+                consensus_score_threshold=consensus_score_threshold,
+                latency_weight=adaptive_gain_latency_weight,
+                bytes_weight=adaptive_gain_bytes_weight,
+                disagreement_weight=adaptive_gain_disagreement_weight,
+            )
+            scored.append((gain, row, parts))
+        gain, row, parts = max(scored, key=lambda item: (item[0], _float(item[1], "reliability", 1.0), _str(item[1], "receiver_id")))
+        remaining.remove(row)
+        selected.append(row)
+        gain_trace.append(
+            f"{_str(row, 'receiver_id')}:{gain:.6f}:"
+            f"a={parts['ambiguity']:.3f},m={parts['margin']:.3f},u={parts['unknown_boundary']:.3f},d={parts['disagreement']:.3f}"
+        )
+    if last is None:
+        raise ValueError("adaptive_gain collaboration failed to fuse any receiver")
+    return last
+
+
 def _finalize_metrics(
     event_results: Sequence[dict[str, Any]],
     *,
@@ -498,8 +670,11 @@ def _finalize_metrics(
     }
     unknown_rejected = 0
     unknown_false_accept = 0
+    unknown_defer = 0
+    unknown_request_more = 0
     defer_total = 0
     request_more_total = 0
+    adaptive_stop_reasons: defaultdict[str, int] = defaultdict(int)
 
     old_labels = set(expected_old_labels or set())
     seen_new_labels = set(expected_seen_new_labels or set())
@@ -532,6 +707,9 @@ def _finalize_metrics(
             defer_total += 1
         if requested_more:
             request_more_total += 1
+        stop_reason = str(item.get("adaptive_stop_reason") or item.get("progressive_stop_reason") or "")
+        if stop_reason:
+            adaptive_stop_reasons[stop_reason] += 1
         role_totals[role] += 1
         if role in {"old", "seen_new"}:
             role_accepted[role] += int(accepted)
@@ -541,6 +719,8 @@ def _finalize_metrics(
         elif role == "unknown":
             unknown_rejected += int(decision == "unknown_reject")
             unknown_false_accept += int(accepted)
+            unknown_defer += int(deferred)
+            unknown_request_more += int(requested_more)
 
     missing_old = sorted(label for label in old_labels if per_class_total["old"].get(label, 0) <= 0)
     missing_seen_new = sorted(label for label in seen_new_labels if per_class_total["seen_new"].get(label, 0) <= 0)
@@ -586,6 +766,10 @@ def _finalize_metrics(
         "unknown_rejected": int(unknown_rejected),
         "unknown_reject_rate": _safe_rate(unknown_rejected, role_totals["unknown"]),
         "unknown_FAR": _safe_rate(unknown_false_accept, role_totals["unknown"]),
+        "unknown_defer": int(unknown_defer),
+        "unknown_defer_rate": _safe_rate(unknown_defer, role_totals["unknown"]),
+        "unknown_request_more": int(unknown_request_more),
+        "unknown_request_more_rate": _safe_rate(unknown_request_more, role_totals["unknown"]),
         "known_coverage": _safe_rate(known_accepted, known_total),
         "known_full_accuracy": _safe_rate(known_correct, known_total),
         "known_accepted_accuracy": _safe_rate(known_correct, known_accepted),
@@ -597,6 +781,7 @@ def _finalize_metrics(
         "total_bytes": float(sum(bytes_values)),
         "latency_ms_p50": _percentile(latency_values, 0.50),
         "latency_ms_p95": _percentile(latency_values, 0.95),
+        "collaboration_stop_reasons": dict(sorted(adaptive_stop_reasons.items())),
     }
 
 
@@ -688,6 +873,10 @@ def evaluate_collaborative_open_set_evidence(
     scorer_risk_components: Sequence[str] | str | None = None,
     collaboration_policy: str = "fixed_k",
     latency_budget_ms: float = 0.0,
+    adaptive_gain_min_risk: float = 0.80,
+    adaptive_gain_latency_weight: float = 0.0,
+    adaptive_gain_bytes_weight: float = 0.0,
+    adaptive_gain_disagreement_weight: float = 0.5,
     threshold_selection_label_scope: str = "support_known_only",
     unknown_query_eval_only: bool = True,
     receiver_selection_policy: str = "fixed_receiver_order",
@@ -771,6 +960,29 @@ def evaluate_collaborative_open_set_evidence(
                     scorer_risk_components=active_risk_components,
                     latency_budget_ms=latency_budget_ms,
                 )
+            elif collaboration_policy == "adaptive_gain":
+                adaptive_ordered = _select_receivers(
+                    group,
+                    len(group),
+                    receiver_selection_policy=receiver_selection_policy,
+                )
+                fused = _fuse_adaptive_gain_event(
+                    adaptive_ordered,
+                    max_receivers=int(k),
+                    unknown_risk_threshold=unknown_risk_threshold,
+                    accept_margin_threshold=accept_margin_threshold,
+                    unknown_quantile=unknown_quantile,
+                    fusion_policy=fusion_policy,
+                    consensus_gap_threshold=consensus_gap_threshold,
+                    consensus_score_threshold=consensus_score_threshold,
+                    scorer_component_vote_threshold=scorer_component_vote_threshold,
+                    scorer_risk_components=active_risk_components,
+                    latency_budget_ms=latency_budget_ms,
+                    adaptive_gain_min_risk=adaptive_gain_min_risk,
+                    adaptive_gain_latency_weight=adaptive_gain_latency_weight,
+                    adaptive_gain_bytes_weight=adaptive_gain_bytes_weight,
+                    adaptive_gain_disagreement_weight=adaptive_gain_disagreement_weight,
+                )
             else:
                 fused = _fuse_event(
                     selected,
@@ -822,5 +1034,9 @@ def evaluate_collaborative_open_set_evidence(
         "scorer_component_vote_threshold": float(scorer_component_vote_threshold),
         "active_risk_components": active_risk_components,
         "latency_budget_ms": float(latency_budget_ms),
+        "adaptive_gain_min_risk": float(adaptive_gain_min_risk),
+        "adaptive_gain_latency_weight": float(adaptive_gain_latency_weight),
+        "adaptive_gain_bytes_weight": float(adaptive_gain_bytes_weight),
+        "adaptive_gain_disagreement_weight": float(adaptive_gain_disagreement_weight),
         "counts": out_counts,
     }
