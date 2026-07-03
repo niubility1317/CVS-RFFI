@@ -367,6 +367,43 @@ class Phase2CollaborativeOpenSetQknnEvalTest(unittest.TestCase):
         self.assertEqual(str(second_labels[0]), "")
         self.assertEqual(float(second_scores[0]), 0.0)
 
+    def test_prototype_score_blend_can_correct_neighbor_only_collision(self):
+        from phase2_collaborative_open_set_qknn_eval import build_qknn_memory, qknn_scores
+
+        features = np.asarray(
+            [
+                [0.8, 0.6, 0.0],
+                [0.8, -0.6, 0.0],
+                [0.9, 0.435, 0.0],
+                [0.9, 0.435, 0.0],
+            ],
+            dtype=np.float32,
+        )
+        memory = build_qknn_memory(
+            features,
+            ["old-a", "old-a", "new-a", "new-a"],
+            old_labels={"old-a"},
+        )
+
+        pred_neighbor_only, _, _, _, _, _, _, _ = qknn_scores(
+            memory,
+            np.asarray([[1.0, 0.0, 0.0]], dtype=np.float32),
+            top_k=1,
+        )
+        pred_blended, score, margin, _, support_neighbor_counts, _, second_labels, _ = qknn_scores(
+            memory,
+            np.asarray([[1.0, 0.0, 0.0]], dtype=np.float32),
+            top_k=1,
+            prototype_score_blend=10.0,
+        )
+
+        self.assertEqual(str(pred_neighbor_only[0]), "new-a")
+        self.assertEqual(str(pred_blended[0]), "old-a")
+        self.assertGreater(float(score[0]), 0.0)
+        self.assertGreater(float(margin[0]), 0.0)
+        self.assertEqual(int(support_neighbor_counts[0]), 0)
+        self.assertEqual(str(second_labels[0]), "new-a")
+
     def test_support_density_reliability_is_recorded_in_evidence(self):
         from phase2_collaborative_open_set_qknn_eval import load_feature_npz, build_collaborative_evidence
 
@@ -432,6 +469,7 @@ class Phase2CollaborativeOpenSetQknnEvalTest(unittest.TestCase):
                 radius_norm=0.3,
                 old_bias=0.1,
                 candidate_class_top_m=2,
+                prototype_score_blend=0.2,
                 support_calibration_mode="leave_one_out",
                 score_threshold_combine="qknn_only",
             )
@@ -440,6 +478,7 @@ class Phase2CollaborativeOpenSetQknnEvalTest(unittest.TestCase):
         self.assertAlmostEqual(metadata["radius_norm"], 0.3)
         self.assertAlmostEqual(metadata["old_bias"], 0.1)
         self.assertEqual(metadata["candidate_class_top_m"], 2)
+        self.assertAlmostEqual(metadata["prototype_score_blend"], 0.2)
         self.assertEqual(metadata["support_calibration_mode"], "leave_one_out")
         self.assertEqual(metadata["score_threshold_combine"], "qknn_only")
 

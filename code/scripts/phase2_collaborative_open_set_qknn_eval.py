@@ -379,6 +379,7 @@ def qknn_scores(
     old_bias: float = 0.0,
     candidate_class_top_m: int = 0,
     exclude_support_indices: Sequence[int] | None = None,
+    prototype_score_blend: float = 0.0,
 ) -> tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray, np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
     query = _normalize_rows(query_features)
     support = _normalize_rows(memory.qfeatures.astype(np.float32) / float(memory.scale))
@@ -442,19 +443,29 @@ def qknn_scores(
             score = float(scores[row_i, j])
             per_label[str(memory.labels[j])] += max(0.0, score)
             per_label_count[str(memory.labels[j])] += 1
+        proto_blend = max(0.0, float(prototype_score_blend))
+        if proto_blend > 0.0:
+            candidate_labels = sorted({str(label) for label in memory.labels[support_mask].tolist()})
+            class_to_pos = {str(label): int(pos) for pos, label in enumerate(memory.centroid_labels.tolist())}
+            for label in candidate_labels:
+                pos = class_to_pos.get(label)
+                if pos is not None:
+                    per_label[label] += proto_blend * max(0.0, float(centroid_scores[row_i, pos]))
+                    per_label_count.setdefault(label, 0)
         ranked = sorted(per_label.items(), key=lambda item: (item[1], item[0]), reverse=True)
         best_label, best_score = ranked[0]
         second_label = ranked[1][0] if len(ranked) > 1 else ""
         second = ranked[1][1] if len(ranked) > 1 else 0.0
         best_count = int(per_label_count.get(best_label, 0))
+        score_denom = max(float(row_k) + proto_blend, 1.0)
         out_labels.append(best_label)
-        out_scores.append(float(best_score / max(row_k, 1)))
-        out_margins.append(float((best_score - second) / max(row_k, 1)))
+        out_scores.append(float(best_score / score_denom))
+        out_margins.append(float((best_score - second) / score_denom))
         out_candidate_counts.append(len(set(memory.labels[support_mask].tolist())))
         out_support_neighbor_counts.append(best_count)
         out_support_densities.append(float(best_count / max(row_k, 1)))
         out_second_labels.append(str(second_label))
-        out_second_scores.append(float(second / max(row_k, 1)))
+        out_second_scores.append(float(second / score_denom))
     return (
         np.asarray(out_labels, dtype=object),
         np.asarray(out_scores, dtype=np.float64),
@@ -848,6 +859,7 @@ def build_collaborative_evidence(
     score_threshold_combine: str = "max",
     evidence_packet_bytes: float = 40.0,
     receiver_reliability_policy: str = "deployment_prior",
+    prototype_score_blend: float = 0.0,
     candidate_audit_unknown_risk_enabled: bool = False,
     candidate_audit_disagreement_risk: float = 1.0,
     candidate_audit_min_gap: float = 0.0,
@@ -1090,6 +1102,7 @@ def build_collaborative_evidence(
                         radius_norm=float(radius_norm),
                         old_bias=float(old_bias),
                         candidate_class_top_m=int(candidate_class_top_m),
+                        prototype_score_blend=float(prototype_score_blend),
                     )
                     if int(candidate_class_top_m) > 0:
                         (
@@ -1110,6 +1123,7 @@ def build_collaborative_evidence(
                             radius_norm=float(radius_norm),
                             old_bias=float(old_bias),
                             candidate_class_top_m=0,
+                            prototype_score_blend=float(prototype_score_blend),
                         )
                     else:
                         audit_pred = pred
@@ -1234,6 +1248,7 @@ def build_collaborative_evidence(
         "support_calibration_mode": str(support_calibration_mode),
         "score_threshold_combine": str(score_threshold_combine),
         "receiver_reliability_policy": reliability_policy,
+        "prototype_score_blend": float(prototype_score_blend),
         "candidate_audit_unknown_risk_enabled": bool(candidate_audit_unknown_risk_enabled),
         "candidate_audit_disagreement_risk": float(candidate_audit_disagreement_risk),
         "candidate_audit_min_gap": float(candidate_audit_min_gap),
@@ -1307,6 +1322,7 @@ def run_evaluation(args: argparse.Namespace) -> dict[str, Any]:
         score_threshold_combine=str(args.score_threshold_combine),
         evidence_packet_bytes=float(args.evidence_packet_bytes),
         receiver_reliability_policy=str(args.receiver_reliability_policy),
+        prototype_score_blend=float(args.prototype_score_blend),
         candidate_audit_unknown_risk_enabled=bool(args.candidate_audit_unknown_risk_enabled),
         candidate_audit_disagreement_risk=float(args.candidate_audit_disagreement_risk),
         candidate_audit_min_gap=float(args.candidate_audit_min_gap),
@@ -1405,6 +1421,7 @@ def parse_args() -> argparse.Namespace:
     p.add_argument("--radius_norm", type=float, default=0.0)
     p.add_argument("--old_bias", type=float, default=0.0)
     p.add_argument("--candidate_class_top_m", type=int, default=0)
+    p.add_argument("--prototype_score_blend", type=float, default=0.0)
     p.add_argument("--candidate_audit_unknown_risk_enabled", action="store_true")
     p.add_argument("--candidate_audit_disagreement_risk", type=float, default=1.0)
     p.add_argument("--candidate_audit_min_gap", type=float, default=0.0)

@@ -1515,3 +1515,37 @@ python code\tests\test_collaborative_open_set_qknn_eval.py
 解释：全类top2审计确认`candidate_class_top_m=2`的top1确认偏差较小，只有`8/1000`条候选预筛top1与全类top1不一致。gap风险触发`218/1000`条，但即使进入`score_risk`组件投票后，也没有提升old/seen-new/unknown主指标，只略微降低defer和实际参与receiver。这进一步说明当前瓶颈不在候选预筛过滤第二候选，而在ADV3B02特征和qKNN8局部证据本身对星地目标域旧类/新类/未知类的可分性不足。
 
 下一步建议调整：不再优先推进候选预筛审计方向；应实现per-scenario Gaussian/Mahalanobis prototype或pair verifier二级复核。若要继续利用本轮审计字段，建议先做`audit_full_second_label`混淆表，找出unknown最常被哪些old/seen-new吸收，再决定是否训练/拟合轻量pair verifier。
+
+## 2026-07-03原型打分融合协同推理
+
+时间：2026-07-03 20:04:35 +08:00。目标：在不增加GPU训练和不使用target unknown调阈值的前提下，增强qKNN8多接收机协同推理的本地证据质量。上一轮全类top2审计表明候选预筛不是主瓶颈，因此本轮实现轻量`prototype_score_blend`：在qKNN按邻居聚合的类得分上，额外加入每类归一化centroid与query的点积摘要。该机制默认关闭，开启后每个接收机只需维护/传输类原型摘要，适合卫星群边缘部署；它能在局部邻居被接收机或星地信道扰动误导时，用更稳定的类均值证据校正候选排序。
+
+协议边界：本轮仍使用`receiver_domain_ranked`作为receiver-domain ensemble/deployment proxy诊断，不声明严格同物理事件星群协同证明。`Y_unknown`仍仅用于query评估，不参与support、阈值拟合、prototype或早停。远端必须使用`CVS-RFFI`Conda环境。
+
+本地改动：
+
+|文件|目的|
+|---|---|
+|`code/scripts/phase2_collaborative_open_set_qknn_eval.py`|`qknn_scores`新增`prototype_score_blend`，把类centroid相似度按权重并入按类得分；`build_collaborative_evidence`、CLI和metadata同步记录该参数。默认`0.0`不改变既有路径。|
+|`code/tests/test_phase2_collaborative_open_set_qknn_eval.py`|新增邻居碰撞校正单测；扩展metadata记录测试。|
+
+本地验证：
+
+```powershell
+conda activate ssr-gpu
+python -m py_compile code\scripts\phase2_collaborative_open_set_qknn_eval.py code\evaluation\collaborative_open_set_qknn_eval.py
+python code\tests\test_phase2_collaborative_open_set_qknn_eval.py
+python code\tests\test_collaborative_open_set_qknn_eval.py
+```
+
+结果：`test_phase2_collaborative_open_set_qknn_eval.py`为19 tests OK，`test_collaborative_open_set_qknn_eval.py`为27 tests OK。Git镜像同样复测通过。代码目录`E:\type10-7\code`不是Git仓库；版本化路径为`E:\type10-7\github_publish\CVS-RFFI-repo`，当前镜像分支为`codex/cvs-rffi-release-20260626`。
+
+计划远端验证：先运行`tools\n607_ssh_preflight.ps1`，同步脚本和测试文件到N607项目根，在`CVS-RFFI`环境复测，再以低显存占用GPU状态运行`--collab_counts all`，覆盖协同推理数量1到全体target receiver。候选设置：
+
+|候选|新增参数|目的|
+|---|---|---|
+|`prototype_blend_0p25`|`--prototype_score_blend 0.25`|小权重原型校正，检查是否能提升旧类/新类且不增加unknown FAR。|
+|`prototype_blend_1p0`|`--prototype_score_blend 1.0`|中等权重原型校正，检查是否减少qKNN邻居噪声。|
+|`prototype_blend_2p0`|`--prototype_score_blend 2.0`|较强原型校正，评估是否牺牲support density但提升类均值稳定性。|
+
+预期输出：每个候选保存JSON和evidence CSV，记录`receiver_count`、`counts=1..全体receiver`、old/seen-new/unknown同row指标、defer、avg_rx、bytes/event、GPU显存、SSH断开核验和SHA256。若结果仍远低于目标，应记录为诊断负证据，不写deployment success。
