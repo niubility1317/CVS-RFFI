@@ -776,7 +776,7 @@ python code/tests/test_collaborative_open_set_qknn_eval.py
 python code/scripts/phase2_collaborative_open_set_qknn_eval.py ... --candidate_class_top_m 2 --collab_counts all --collaboration_policy progressive_budget
 ```
 
-验证结果：N607使用`CVS-RFFI`环境，`py_compile`通过，`test_phase2_collaborative_open_set_qknn_eval.py`为16 tests OK，`test_collaborative_open_set_qknn_eval.py`为16 tests OK。远端运行输出`receiver_count=5`、`group_count=310`、`evidence_row_count=1000`，覆盖从1到全部5个target/source接收机协同预算。运行前后8张RTX3090均为`10/24576MiB`，没有新增显存占用。本轮SSH/SCP后本地检查无残留`ssh.exe`进程和22端口`ESTABLISHED`连接。
+验证结果：N607使用`CVS-RFFI`环境，`py_compile`通过，`test_phase2_collaborative_open_set_qknn_eval.py`为16 tests OK，`test_collaborative_open_set_qknn_eval.py`为16 tests OK。远端运行输出`receiver_count=5`、`group_count=310`、`evidence_row_count=1000`，覆盖从1到5个target receiver最大协同预算；metadata中的7个source receiver只作为协议侧support/source域信息，不是本次部署协同节点。运行前后8张RTX3090均为`10/24576MiB`，没有新增显存占用。本轮SSH/SCP后本地检查无残留`ssh.exe`进程和22端口`ESTABLISHED`连接。
 
 本轮同步与产物哈希：
 
@@ -802,3 +802,125 @@ top-M渐进协同结果：
 判定：top-M候选筛选没有达到性能目标，且暴露出两个关键问题。第一，`progressive_budget`过早接受单receiver结果，最大预算为5时实际平均参与receiver仅1.0222，p95仍为1；它节省通信但没有充分利用协同证据。第二，候选类top-M的稀疏回退导致候选类均值仍为3.768，性能改善主要体现在5预算old_acc达到0.5600，但seen_new_acc仅0.1500、unknown_FAR升至0.5000，per-class floor仍为0，不能作为有效路线宣传。
 
 下一步路线调整：保留`candidate_class_top_m`作为效率开关，但不应单独作为性能增强机制。更合理的卫星群协同算法应从“单节点先验快速接受”改为“风险触发的多节点证据聚合”：低风险样本单节点退出；score/radius/margin/EVT任一风险高时强制请求第2/3个接收机；融合时按接收机可靠性、星地信道场景和类条件残差做加权，并对seen-new类单独设置较低拒识阈值，避免unknown gate吞掉新类。严格同事件`event_id`仍是后续必须补齐的数据协议前提；当前`receiver_domain_ranked`只能作为诊断近似。
+
+## 2026-07-03多子agent审计与算法修正
+
+本轮按用户要求设置文献/方法、算法构建、完成度监督、查漏补缺review四类子agent。所有子agent均只读审查，未改文件。审计结论要求收紧表述：本轮完成的是`receiver_domain_ranked`诊断近似，不是严格同一物理事件的星座协同；性能远未达标，不能宣称部署成功。
+
+逐项完成度审查：
+
+|任务项|状态|证据|边界|
+|---|---|---|---|
+|服务器使用`CVS-RFFI`环境|完成|远端命令使用`source /opt/miniconda3/etc/profile.d/conda.sh && conda activate CVS-RFFI`；远端`py_compile`和两组测试均通过16 tests OK。|无。|
+|SSH全量测试|完成但需限定口径|JSON覆盖`counts=1..5`，`receiver_count=5`。|这里的5是target/deployment receiver数量；7个source receiver不作为协同推理节点。|
+|包含星地信道|完成|metadata记录`leo_clear_weak,leo_low_elev_weak,leo_rain_weak`。|这是physics-informed proxy，不是真实在轨IQ测试。|
+|协同推理数量从1到全体接收机|完成但需限定口径|覆盖1..5个target receiver最大预算。|`progressive_budget`实际平均参与receiver约1.0，不等于每条样本都使用全部5个receiver。|
+|同步服务器|完成|本地验证后用`scp`同步脚本和测试，远端复测通过。|无远端Git提交；项目规则要求本地先改后SCP，已满足。|
+|低显存GPU测试|完成|运行前后8卡均为`10/24576MiB`。|这是低显存占用验证，不是高负载压力测试。|
+|报告持久化与Git提交|完成|本报告已同步到Git镜像；代码提交`8393436`，报告提交`6c2060b`。|镜像分支仍领先origin，未push。|
+|性能目标|未完成|top-M最佳old_acc为0.5600，seen_new_acc为0.1500，unknown_FAR为0.5000，per-class floor仍为0。|不能宣称99/97/99达标。|
+
+review修正后的指标口径：
+
+|口径项|最终解释|对结论的影响|
+|---|---|---|
+|`receiver_count=5`|evidence中观测到的target receiver数量。source receiver数量为7，仅在metadata中记录。|不能写成source+target总数，也不能写成7个源接收机协同。|
+|`progressive_budget`|表中`1..5`是最大receiver预算；实际使用数由`participating_receivers_avg/p95/max`决定。|预算5时实际avg used rx为1.0222，p95为1，max为2，说明并未形成全员协同。|
+|跨k比较|评估器采用`denominator_policy=per_k_available_receivers`。|k间eligible group不同，不能把k=5的old_acc=0.5600直接解释为同分母趋势提升。|
+|`candidate_class_top_m=2`|并非严格top-2。top-M支持不足时会回退；且`scenario_aware`可能覆盖候选筛选。|候选类均值3.768、p95为6，说明当前只是不稳定压缩。|
+|`unknown_FAR`|`accepted_unknown/unknown_total`，不包括defer/request_more。|低FAR不能单独等价为unknown安全成功；必须同时看reject/defer和confusion。|
+|`latency_ms_p95`|离线证据评分代理。|未计入星间链路、排队、串行请求、端侧推理总时延。|
+|严格同事件协同|当前`strict_same_event_collaboration=false`，`event_alignment_policy=receiver_domain_ranked`。|只能作为receiver-domain ensemble诊断，不能称为严格同物理事件星座协同。|
+
+top-M跨预算分母补表：
+
+|最大receiver预算|eligible total|excluded_incomplete_groups|old_acc|seen_new_acc|unknown_FAR|avg used rx|max used rx|
+|---:|---:|---:|---:|---:|---:|---:|---:|
+|1|310|0|0.4263|0.2333|0.2333|1.0000|1|
+|2|246|64|0.3867|0.2857|0.2340|1.0081|2|
+|3|200|110|0.3667|0.2500|0.2500|1.0100|2|
+|4|154|156|0.4333|0.0968|0.3030|1.0130|2|
+|5|90|220|0.5600|0.1500|0.5000|1.0222|2|
+
+unknown口径补表：
+
+|最大receiver预算|unknown_total|accepted_unknown|unknown_FAR|unknown_rejected|unknown_reject_rate|unknown_defer|unknown_defer_rate|
+|---:|---:|---:|---:|---:|---:|---:|---:|
+|1|60|14|0.2333|37|0.6167|9|0.1500|
+|2|47|11|0.2340|32|0.6809|4|0.0851|
+|3|40|10|0.2500|29|0.7250|1|0.0250|
+|4|33|10|0.3030|23|0.6970|0|0.0000|
+|5|20|10|0.5000|10|0.5000|0|0.0000|
+
+文献/方法子agent给出的可借鉴方向：
+
+|方向|参考线索|对CVS-RFFI的取舍|
+|---|---|---|
+|星间/星地协同推理与模型切分|COIN-LEO、轨道边缘计算综述强调LEO移动性和通信/算力/存储约束。参考：https://www.mdpi.com/2504-446X/7/9/575，https://www.sciencedirect.com/science/article/pii/S1000936124004709|适合把卫星端限定为`z_id`提取、原型距离和拒识门控；不适合上传raw IQ或假定链路稳定。|
+|End-Edge-Cloud协同更新|IEEE COMST 2024综述覆盖协同训练、推理、更新、压缩、模型切分和知识迁移。参考：https://pure.bit.edu.cn/en/publications/end-edge-cloud-collaborative-computing-for-deep-learning-a-compre/|适合地面教师更新部署包、星上小模型轻量校准；不适合星上full fine-tuning。|
+|在线test-time adaptation|TTA/OTTA综述强调流式分布漂移和测试时适应。参考：https://arxiv.org/html/2411.03687v1，https://link.springer.com/article/10.1007/s11263-024-02213-5|适合温度、bias、BN affine、小adapter和阈值微调；不适合无门控熵最小化，避免未知TX被吸入known类。|
+|Few-shot open-set原型/边界学习|FSOSR、MRM loss、OPP等强调few-shot下known/open边界。参考：https://openaccess.thecvf.com/content/CVPR2021/papers/Jeong_Few-Shot_Open-Set_Recognition_by_Transformation_Consistency_CVPR_2021_paper.pdf，https://www.ijcai.org/proceedings/2023/0390.pdf|适合Stage2-C的K-shot旧类校准、新类注册和unknown拒识；需增加receiver泄漏抑制和星地信道stress验证。|
+|RFFI专用open-set/原型方法|Open-Set RF Fingerprinting、Meta-RFF/OFSCIL等。参考：https://arxiv.org/abs/2306.13895|最贴近RF指纹；但若论文没有跨接收机和旧/新/未知TX互斥，只能作为模块线索。|
+|Few-shot class-incremental/prototype replay|FSCIL综述和prototype calibration/data-free replay。参考：https://www.sciencedirect.com/science/article/pii/S0893608023006019，https://arxiv.org/html/2502.08181v1|适合seen-new enrollment后保存`mean/cov/count/quality/threshold`，但必须外挂unknown FAR和defer机制。|
+|风险触发协同/不确定性校准|不确定性触发云边协同和选择性offloading。参考：https://arxiv.org/html/2402.16904v1|适合低风险本地判决、高风险请求邻星/地面复核；需按receiver报告ECE、FAR和rollback触发率。|
+
+建议算法：`BASCC-qKNN8`，即Budgeted Adaptive Satellite Cluster Collaboration for qKNN8。核心变化是把“固定顺序扩展receiver”改为“风险触发的收益/成本选择”。每个接收机只上传压缩证据包：
+
+```text
+{top2_class_ids, top2_scores, margin, unknown_risk, p_known, receiver_reliability, latency_est}
+```
+
+本地qknn8分数：
+
+```text
+s_r,c(x)=sum_{i in N8(x), y_i=c} exp(-d(z,z_i)/tau_r) / sum_{j in N8(x)} exp(-d(z,z_j)/tau_r)
+m_r=s_r,c1-s_r,c2
+```
+
+open-set非一致性：
+
+```text
+a_c(x)=d(z,mu_c)/(sigma_c+eps)
+p_c(x)=(1+#{a_c(support)>=a_c(x)})/(K+1)
+p_known=max_c p_c(x)
+```
+
+可靠性加权融合：
+
+```text
+rel_r,c=LOO_acc_r,c * exp(-dispersion_r,c) * domain_align_r
+L_c=sum_{r in S} w_r,c * log(eps+s_r,c)
+P_c=softmax(L_c)
+U=sigmoid(trimmed_mean_r(logit(u_r)) + beta * disagreement)
+```
+
+请求更多receiver的条件：
+
+```text
+theta_low < max_c P_c < theta_acc
+or margin(P) < theta_m
+or theta_u < U < theta_rej
+or top1 class disagreement high
+```
+
+下一receiver选择：
+
+```text
+r*=argmax_r Gain(r | current evidence) / Cost(r)
+Gain_r=lambda1*ambiguity*rel_r,top1 + lambda2*pair_rel_r,top1,top2 + lambda3*unknown_boundary_rel_r - lambda4*expected_noise_r
+Cost_r=bytes_r + eta*latency_r + gamma*memory_r
+```
+
+星上训练/微调限定为轻量可回滚更新：高置信低分歧样本进入prototype EMA；support leave-one-out和高置信缓存用于温度/阈值校准；可选BN affine或低秩adapter，不做full fine-tuning。任一窗口出现support LOO下降、unknown risk升高或receiver disagreement升高，即回滚最近更新。
+
+落地到现有脚本的最小改动：
+
+|改动点|说明|
+|---|---|
+|新增`--collaboration_policy adaptive_gain`|替代当前固定顺序`progressive_budget`。|
+|新增`p_known/top2/reliability/disagreement`证据字段|支持收益/成本选择和可解释审计。|
+|unknown融合改为trimmed logit mean|避免接收机越多越容易被noisy风险项误拒。|
+|记录`selected_receiver_order/stop_reason/gain_trace`|让每条样本能解释为什么请求或停止协同。|
+|增加严格`event_id`路线|后续用真实共享事件键复跑，替代`receiver_domain_ranked`诊断近似。|
+
+最终版本状态：本地报告已同步Git镜像；Git镜像当前clean，分支`codex/cvs-rffi-release-20260626`领先origin 238个提交；本轮代码提交为`8393436 Add prototype candidate pruning for qKNN evidence`，报告提交为`6c2060b Record top-M collaborative qKNN diagnostics`，`code/scripts/phase2_qknn_prototype_compress_probe.py`已由`156e41a`跟踪。
