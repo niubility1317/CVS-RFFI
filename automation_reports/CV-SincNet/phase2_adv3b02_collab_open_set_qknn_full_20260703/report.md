@@ -3916,6 +3916,49 @@ N607同步后远端哈希与本地一致；远端验证`52 tests OK`。实际运
 
 最终SSH/SCP后本地无`ssh.exe`残留，无N607和bridge 22端口ESTABLISHED连接。
 
+## 2026-07-04 ADV3B02 support_calibrated_pairguard执行计划
+
+### 设计依据
+
+上一轮`labelscope`和`rxscope`路线证明：手工指定高风险label/receiver组合可以降低unknown_FAR，但该组合来自unknown false accept审计，只能作为diagnostic-only，不能作为正式Stage2-C部署算法。文献侧可借鉴三类机制：通信受限边缘协同推理的“强证据本地accept、弱证据请求更多节点”、few-shot open-set domain adaptation的support/proxy-open校准，以及开放集原型/距离阈值的正负证据分离。对应本项目，本轮实现`candidate_set_pairguard_mode=support_calibrated`：
+
+|机制|落地方式|协议边界|
+|---|---|---|
+|support校准pair risk|用`known_margin`、`agreement`、`class_conformal_pvalue`、`receiver_class_reliability`判断候选支持质量，不写死`14-7`或receiver组合|阈值来自support/proxy-known证据和保守部署假设；unknown query只用于最终评估|
+|强证据旁路|即使事件unknown risk高，若support质量全部达标，则不触发pairguard软惩罚|防止上一轮低FAR路线把known大量误拒|
+|弱证据软惩罚|只有support质量失败且事件/label/shell风险触发边界时，对accept风险加局部惩罚|默认不改变既有行为，需显式启用`support_calibrated`|
+|fail closed可靠性|启用`support_calibrated`时必须同时启用`receiver_class_reliability_policy=support_calibrated`且输入行必须含`receiver_class_reliability`|避免缺字段被当作1.0可靠性|
+
+### 本地改动与验证
+
+|文件|用途|SHA256|
+|---|---|---|
+|`code/evaluation/collaborative_open_set_qknn_eval.py`|新增`support_calibrated`pairguard模式、support质量失败字段、support_calibrated汇总计数、可靠性fail closed校验|`6340A38B20EFD8D791DFA666853AB0E26762B586A3978D407978D93B8EC8C882`|
+|`code/scripts/phase2_collaborative_open_set_qknn_eval.py`|CLI允许`--candidate_set_pairguard_mode support_calibrated`|`525BB456C3671BFF547AC06860E4596043E0B0C5AE918B72A469995300A72A9C`|
+|`code/tests/test_collaborative_open_set_qknn_eval.py`|补充强证据旁路、弱support触发软惩罚、缺`receiver_class_reliability`失败、未启用support校准策略失败单测|`1C4DA6E86083A789B7A3EC5DA4A89A3C8A4695E9D0953F66F740223A4ECD1062`|
+
+`E:\type10-7\code`不是Git仓库，已创建本地快照：`E:\type10-7\code\snapshots\phase2_support_calibrated_pairguard_20260704_051009\`。Git镜像提交：`b22e728 Add support calibrated pairguard mode`，分支`codex/cvs-rffi-release-20260626`，当前ahead`345`。
+
+本地验证命令：
+
+```text
+conda run --no-capture-output -n ssr-gpu python -m py_compile code\evaluation\collaborative_open_set_qknn_eval.py code\scripts\phase2_collaborative_open_set_qknn_eval.py
+conda run --no-capture-output -n ssr-gpu python -m pytest code\tests\test_collaborative_open_set_qknn_eval.py -k pairguard -q -p no:cacheprovider
+conda run --no-capture-output -n ssr-gpu python -m pytest code\tests\test_collaborative_open_set_qknn_eval.py code\tests\test_phase2_collaborative_open_set_qknn_eval.py -q -p no:cacheprovider
+```
+
+结果：根工作区`104 passed`，Git镜像同一测试`104 passed`。
+
+### N607计划
+
+远端环境必须使用`/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python`。执行前运行`tools\n607_ssh_preflight.ps1`，记录GPU占用，选择显存占用最低GPU，先做远端`py_compile`和测试，再运行全量`collab_counts=all`，确认实际覆盖设计target receivers：`20-1,3-19,7-14,7-7,8-8`。若evidence仅观测到局部receiver，报告必须标为partial，不能写成全体源接收机数量完成。
+
+|route|关键参数|目的|
+|---|---|---|
+|`support_calibrated_soft_evt095`|`--candidate_set_pairguard_mode support_calibrated --receiver_class_reliability_policy support_calibrated --candidate_set_pairguard_action soft_penalty --candidate_set_pairguard_soft_penalty 0.20 --candidate_set_pairguard_soft_floor 0.03 --candidate_set_pairguard_soft_min_margin 0.18 --candidate_set_pairguard_soft_min_pvalue 0.60 --candidate_set_pairguard_soft_min_reliability 0.80 --candidate_set_pairguard_min_event_unknown_risk 0.95 --candidate_set_pairguard_min_label_unknown_risk 0.95 --candidate_set_pairguard_min_shell_risk 0.90 --candidate_set_max_receiver_pair_label_disagreement 0.50 --candidate_set_max_receiver_pair_unknown_risk_range 0.70`|不使用手工label/receiver黑名单，验证support弱证据软惩罚能否在保留known的同时降低unknown_FAR。|
+
+结果表必须逐k报告`participating_receivers`、实际receiver集合、`old_acc/min_old_class_acc`、`seen_new_acc/min_seen_new_class_acc`、`unknown_FAR/unknown_reject_rate`、`known_coverage`、`defer/request_more`、`candidate_set_pairguard_support_calibrated_hit_by_role`、`candidate_set_pairguard_support_quality_failed_by_role`、`bytes_per_event`、`latency_ms_p95`、GPU显存。若未达到old99/seen-new97/unknown99，保持diagnostic-only。
+
 ## 2026-07-04 ORBIT按类诊断增强
 
 ### 目的
