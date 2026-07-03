@@ -1749,3 +1749,81 @@ python code\tests\test_collaborative_open_set_qknn_eval.py
 结果：`test_phase2_collaborative_open_set_qknn_eval.py`为31 tests OK，`test_collaborative_open_set_qknn_eval.py`为27 tests OK。
 
 计划远端验证：以`proto2_maha1_qknnonly`为基线，继续使用`--score_threshold_combine qknn_only --prototype_score_blend 2.0 --mahalanobis_score_blend 1.0`，跑三组类阈值分位：`0.20`、`0.35`、`0.50`。目标是寻找`unknown_FAR<=0.05`下更高`old_acc/seen_new_acc/floor`的折中。
+
+## 2026-07-03support-derived virtual unknown校准
+
+目标：继续推进ADV3B02主线目标。前一轮`proto2_maha1_qknnonly`预算4能把`old_acc/seen_new_acc`抬高到`0.7586/0.7429`，但`unknown_FAR=0.1562`不满足开集安全；预算3的`unknown_FAR=0.0250`较安全，但`old_acc=0.3917`、`seen_new_acc=0.5750`过低。本轮引入不使用target unknown query的support-derived virtual unknown校准：从每个receiver的target-old/seen-new support原型之间合成低密度边界样本，作为proxy校准阈值，目标是在预算4附近压低unknown FAR，同时尽量保持已知类性能。
+
+本地改动：
+
+|文件|目的|
+|---|---|
+|`code/scripts/phase2_collaborative_open_set_qknn_eval.py`|新增`_virtual_unknown_features()`，CLI新增`--virtual_unknown_calibration_enabled`、`--virtual_unknown_samples_per_class`、`--virtual_unknown_mix_alpha`、`--virtual_unknown_noise_scale`、`--virtual_unknown_neighbor_count`；metadata/evidence记录virtual unknown配置和每receiver合成数量。|
+|`code/tests/test_phase2_collaborative_open_set_qknn_eval.py`|新增测试，确认纯virtual unknown校准标记为`threshold_scope=support_virtual_unknown`，且evidence角色仍只有old/seen_new/unknown query，不引入target unknown校准行。|
+
+本地验证：
+
+```powershell
+conda activate ssr-gpu
+python -m py_compile code\scripts\phase2_collaborative_open_set_qknn_eval.py code\evaluation\collaborative_open_set_qknn_eval.py
+python code\tests\test_phase2_collaborative_open_set_qknn_eval.py
+python code\tests\test_collaborative_open_set_qknn_eval.py
+```
+
+结果：`test_phase2_collaborative_open_set_qknn_eval.py`为33 tests OK，`test_collaborative_open_set_qknn_eval.py`为27 tests OK。
+
+远端计划：同步脚本和phase2测试到N607，在`CVS-RFFI`环境复测；以`proto2_maha1_qknnonly`为基线，使用`--collab_counts all`覆盖1到5个target receiver，候选如下：
+
+|候选|新增参数|目的|
+|---|---|---|
+|`vunk2_proto2_maha1_qknnonly`|`--virtual_unknown_calibration_enabled --virtual_unknown_samples_per_class 2`|轻量边界proxy，检查是否降低预算4 FAR。|
+|`vunk4_proto2_maha1_qknnonly`|`--virtual_unknown_calibration_enabled --virtual_unknown_samples_per_class 4`|中等proxy强度，检查FAR/known性能折中。|
+|`vunk4_classq20_proto2_maha1_qknnonly`|再加`--class_score_threshold_enabled --class_score_threshold_quantile 0.20`|结合per-label阈值，压制易吸收unknown的预测类。|
+
+协议边界：virtual unknown只由target support原型生成，不能写成真实unknown先验，也不能作为target unknown query调阈值；本轮仍是`receiver_domain_ranked`诊断，不是严格同物理事件卫星群协同证明。
+
+远端修正与验证：首次远端运行时，生成器正确输出`threshold_scope=support_virtual_unknown`，但融合评估验证器`SAFE_THRESHOLD_SCOPES`未同步该合法scope，报错`ValueError: threshold_selection_label_scope must not use unknown query labels; got 'support_virtual_unknown'`。根因是验证层白名单遗漏，不是数据泄漏。已在`code/evaluation/collaborative_open_set_qknn_eval.py`加入`support_virtual_unknown`安全scope，并在`code/tests/test_collaborative_open_set_qknn_eval.py`补测试。复测如下：
+
+```powershell
+conda activate ssr-gpu
+python -m py_compile code\scripts\phase2_collaborative_open_set_qknn_eval.py code\evaluation\collaborative_open_set_qknn_eval.py
+python code\tests\test_phase2_collaborative_open_set_qknn_eval.py
+python code\tests\test_collaborative_open_set_qknn_eval.py
+```
+
+结果：本地和Git镜像均为33 tests OK和27 tests OK。同步N607后，远端`CVS-RFFI`环境同样为33 tests OK和27 tests OK。运行前后8张RTX3090均为`10MiB/24576MiB`，SSH/SCP后本地检查无残留`ssh.exe`或22端口`ESTABLISHED`连接。
+
+拉回产物SHA256：
+
+|产物|SHA256|
+|---|---|
+|`collab_open_set_qknn_scorer_cvs_evt_adaptive_gain_vote_margin_vunk2_proto2_maha1_qknnonly.json`|`72143D89681A71928BC8527142442357B5FC651FC1863066D9016BAD28459EE2`|
+|`collab_open_set_qknn_scorer_cvs_evt_adaptive_gain_vote_margin_vunk2_proto2_maha1_qknnonly_evidence.csv`|`835F9A898409A3C221D9D30D5527D963D14ACEFF51F4AE8E596815B19C8B713E`|
+|`collab_open_set_qknn_scorer_cvs_evt_adaptive_gain_vote_margin_vunk4_proto2_maha1_qknnonly.json`|`B9E54150B4E95D33BE8CF6A6E6E929FF622505A1997D7FB9FF30D8904F08CD75`|
+|`collab_open_set_qknn_scorer_cvs_evt_adaptive_gain_vote_margin_vunk4_proto2_maha1_qknnonly_evidence.csv`|`71AAB85FCBFC539ADF11C17B75EE83CA60748A4EA86BC3BB96245843FE2B7785`|
+|`collab_open_set_qknn_scorer_cvs_evt_adaptive_gain_vote_margin_vunk4_classq20_proto2_maha1_qknnonly.json`|`FDF66CF7DD95457ADAC6638E3F1D974BB22494435B0D18FB34D51FC3AA7A2928`|
+|`collab_open_set_qknn_scorer_cvs_evt_adaptive_gain_vote_margin_vunk4_classq20_proto2_maha1_qknnonly_evidence.csv`|`0DF6BA7B4A210B04C486F7F9687373B63158EA575C9C3FEA81B69C56ED9F8B8A`|
+
+结果表：
+
+|候选|预算|old_acc|min_old|seen_new_acc|min_seen_new|unknown_FAR|unknown_reject|defer_rate|avg_rx|bytes/event|
+|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+|`vunk2_proto2_maha1_qknnonly`|1|0.0000|0.0000|0.2667|0.0500|0.0667|0.4000|0.6494|1.0000|120.0|
+|`vunk2_proto2_maha1_qknnonly`|2|0.0980|0.0000|0.4000|0.1000|0.0000|0.7708|0.4675|1.8211|218.5|
+|`vunk2_proto2_maha1_qknnonly`|3|0.0583|0.0000|0.4500|0.0500|0.0000|0.8750|0.5200|2.5700|308.4|
+|`vunk2_proto2_maha1_qknnonly`|4|0.3448|0.0000|0.5429|0.3500|0.0312|0.8125|0.3701|3.4091|409.1|
+|`vunk2_proto2_maha1_qknnonly`|5|0.4038|0.0000|0.3500|0.0000|0.0000|0.6500|0.4457|4.3152|517.8|
+|`vunk4_proto2_maha1_qknnonly`|1|0.0000|0.0000|0.2667|0.0500|0.0667|0.4000|0.6494|1.0000|120.0|
+|`vunk4_proto2_maha1_qknnonly`|2|0.0980|0.0000|0.4000|0.1000|0.0000|0.7708|0.4675|1.8252|219.0|
+|`vunk4_proto2_maha1_qknnonly`|3|0.0583|0.0000|0.4500|0.0500|0.0000|0.8750|0.5250|2.5750|309.0|
+|`vunk4_proto2_maha1_qknnonly`|4|0.3448|0.0000|0.5429|0.3500|0.0312|0.8125|0.3701|3.4156|409.9|
+|`vunk4_proto2_maha1_qknnonly`|5|0.4038|0.0000|0.3500|0.0000|0.0000|0.6500|0.4457|4.3261|519.1|
+|`vunk4_classq20_proto2_maha1_qknnonly`|1|0.0000|0.0000|0.2667|0.0500|0.0667|0.3000|0.7013|1.0000|120.0|
+|`vunk4_classq20_proto2_maha1_qknnonly`|2|0.1634|0.0000|0.4222|0.1500|0.0208|0.7292|0.4593|1.8252|219.0|
+|`vunk4_classq20_proto2_maha1_qknnonly`|3|0.1583|0.0500|0.4750|0.1000|0.0250|0.8500|0.4550|2.5350|304.2|
+|`vunk4_classq20_proto2_maha1_qknnonly`|4|0.4713|0.0000|0.6286|0.5000|0.0938|0.7812|0.2792|3.4416|413.0|
+|`vunk4_classq20_proto2_maha1_qknnonly`|5|0.4615|0.0000|0.4000|0.0000|0.0500|0.6000|0.4130|4.3261|519.1|
+
+解释：support-derived virtual unknown能按预期压低unknown FAR。相对`proto2_maha1_qknnonly`预算4的`unknown_FAR=0.1562`，`vunk2/vunk4`预算4降到`0.0312`，但`old_acc`从`0.7586`降至`0.3448`，`seen_new_acc`从`0.7429`降至`0.5429`；这说明该proxy过于保守，把大量可识别known事件推入defer/reject。`vunk4_classq20`预算4把`old_acc/seen_new_acc`回升到`0.4713/0.6286`，但`unknown_FAR=0.0938`又超出`<=0.05`安全线。当前最佳安全折中仍不能接近目标，尤其`min_old`仍为0。
+
+结论：virtual unknown是有效拒识闸门，但单独调阈值无法同时满足旧类、新类和unknown目标。下一步应把virtual unknown从“全局抬阈值”改为“只参与unknown风险组件或conformal p-value”，避免压制所有known接受率；同时应加入class-wise收缩阈值，防止低K类别被边界proxy过度惩罚。

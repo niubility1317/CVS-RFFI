@@ -165,6 +165,48 @@ def _mahalanobis_known_scores(memory: QknnMemory, query_features: np.ndarray, *,
     return np.clip(out, 0.0, 1.0)
 
 
+def _virtual_unknown_features(
+    memory: QknnMemory,
+    *,
+    samples_per_class: int,
+    seed: int,
+    mix_alpha: float,
+    noise_scale: float,
+    neighbor_count: int,
+) -> np.ndarray:
+    samples = max(0, int(samples_per_class))
+    if samples == 0 or int(memory.centroids.shape[0]) < 2:
+        return np.zeros((0, int(memory.centroids.shape[1])), dtype=np.float32)
+    alpha = float(np.clip(float(mix_alpha), 0.05, 0.95))
+    noise = max(0.0, float(noise_scale))
+    n_neighbors = max(1, int(neighbor_count))
+    centroids = _normalize_rows(memory.centroids)
+    dim = int(centroids.shape[1])
+    rng = np.random.default_rng(int(seed))
+    rows: list[np.ndarray] = []
+    similarity = centroids @ centroids.T
+    for class_i in range(int(centroids.shape[0])):
+        order = np.argsort(-similarity[class_i])
+        neighbors = [int(pos) for pos in order.tolist() if int(pos) != class_i][:n_neighbors]
+        if not neighbors:
+            continue
+        for sample_i in range(samples):
+            other_i = neighbors[sample_i % len(neighbors)]
+            local_alpha = alpha
+            if samples > 1:
+                span = (sample_i / max(samples - 1, 1)) - 0.5
+                local_alpha = float(np.clip(alpha + 0.20 * span, 0.05, 0.95))
+            point = (1.0 - local_alpha) * centroids[class_i] + local_alpha * centroids[other_i]
+            if noise > 0.0:
+                direction = rng.normal(0.0, noise, size=dim).astype(np.float32)
+                direction = direction - point * float(direction @ point)
+                point = point + direction
+            rows.append(point.astype(np.float32))
+    if not rows:
+        return np.zeros((0, dim), dtype=np.float32)
+    return _normalize_rows(np.vstack(rows)).astype(np.float32)
+
+
 def _support_envelope(
     features: np.ndarray,
     labels: np.ndarray,
@@ -1085,6 +1127,11 @@ def build_collaborative_evidence(
     class_score_threshold_enabled: bool = False,
     class_score_threshold_quantile: float | None = None,
     class_score_threshold_min_support: int = 1,
+    virtual_unknown_calibration_enabled: bool = False,
+    virtual_unknown_samples_per_class: int = 0,
+    virtual_unknown_mix_alpha: float = 0.50,
+    virtual_unknown_noise_scale: float = 0.02,
+    virtual_unknown_neighbor_count: int = 2,
     evidence_packet_bytes: float = 40.0,
     receiver_reliability_policy: str = "deployment_prior",
     prototype_score_blend: float = 0.0,
@@ -1237,7 +1284,23 @@ def build_collaborative_evidence(
             mahalanobis_variance_floor=mahalanobis_variance_floor,
             evt_min_scale=evt_min_scale,
         )
-        proxy_features = features[proxy_idx] if proxy_idx.size else None
+        virtual_features = _virtual_unknown_features(
+            memory,
+            samples_per_class=int(virtual_unknown_samples_per_class) if bool(virtual_unknown_calibration_enabled) else 0,
+            seed=int(seed) + 7919 * (len(receiver_memories) + 1),
+            mix_alpha=float(virtual_unknown_mix_alpha),
+            noise_scale=float(virtual_unknown_noise_scale),
+            neighbor_count=int(virtual_unknown_neighbor_count),
+        )
+        proxy_parts: list[np.ndarray] = []
+        if proxy_idx.size:
+            proxy_parts.append(features[proxy_idx])
+        if int(virtual_features.shape[0]) > 0:
+            proxy_parts.append(virtual_features)
+        proxy_features = np.vstack(proxy_parts).astype(np.float32) if proxy_parts else None
+        source_proxy_scenarios = [_scenario_of(payload, int(i)) for i in proxy_idx.tolist()] if proxy_idx.size else []
+        virtual_proxy_scenarios = [""] * int(virtual_features.shape[0])
+        proxy_scenarios = source_proxy_scenarios + virtual_proxy_scenarios
         threshold, scope = _threshold_from_calibration(
             memory,
             features[np.asarray(support_indices, dtype=int)],
@@ -1246,7 +1309,7 @@ def build_collaborative_evidence(
             support_quantile=support_quantile,
             proxy_quantile=proxy_quantile,
             support_scenarios=[_scenario_of(payload, int(i)) for i in support_indices],
-            proxy_scenarios=[_scenario_of(payload, int(i)) for i in proxy_idx.tolist()] if proxy_idx.size else None,
+            proxy_scenarios=proxy_scenarios if proxy_scenarios else None,
             scenario_aware=bool(scenario_aware),
             radius_norm=float(radius_norm),
             old_bias=float(old_bias),
@@ -1256,7 +1319,10 @@ def build_collaborative_evidence(
             mahalanobis_score_blend=mahalanobis_blend,
             mahalanobis_score_temperature=mahalanobis_score_temp,
         )
-        threshold_scope = scope if scope == "source_only" else threshold_scope
+        if scope == "source_only" and proxy_idx.size:
+            threshold_scope = scope
+        elif int(virtual_features.shape[0]) > 0 and threshold_scope != "source_only":
+            threshold_scope = "support_virtual_unknown"
         class_thresholds: dict[str, float] = {}
         if bool(class_score_threshold_enabled):
             class_thresholds = _label_thresholds_from_calibration(
@@ -1270,7 +1336,7 @@ def build_collaborative_evidence(
                 ),
                 proxy_quantile=proxy_quantile,
                 support_scenarios=[_scenario_of(payload, int(i)) for i in support_indices],
-                proxy_scenarios=[_scenario_of(payload, int(i)) for i in proxy_idx.tolist()] if proxy_idx.size else None,
+                proxy_scenarios=proxy_scenarios if proxy_scenarios else None,
                 scenario_aware=bool(scenario_aware),
                 radius_norm=float(radius_norm),
                 old_bias=float(old_bias),
@@ -1486,6 +1552,12 @@ def build_collaborative_evidence(
                             "class_score_threshold": float(class_threshold_value) if class_threshold_value is not None else 0.0,
                             "class_score_threshold_enabled": int(bool(class_score_threshold_enabled)),
                             "score_threshold_source": threshold_source,
+                            "virtual_unknown_calibration_enabled": int(bool(virtual_unknown_calibration_enabled)),
+                            "virtual_unknown_count": int(
+                                max(0, int(virtual_unknown_samples_per_class)) * max(0, int(memory.centroid_labels.shape[0]))
+                                if bool(virtual_unknown_calibration_enabled)
+                                else 0
+                            ),
                             "candidate_class_count": int(candidate_counts[0]),
                             "support_neighbor_count": int(support_neighbor_counts[0]),
                             "support_density": support_density,
@@ -1547,6 +1619,11 @@ def build_collaborative_evidence(
             support_quantile if class_score_threshold_quantile is None else class_score_threshold_quantile
         ),
         "class_score_threshold_min_support": int(class_score_threshold_min_support),
+        "virtual_unknown_calibration_enabled": bool(virtual_unknown_calibration_enabled),
+        "virtual_unknown_samples_per_class": int(virtual_unknown_samples_per_class),
+        "virtual_unknown_mix_alpha": float(virtual_unknown_mix_alpha),
+        "virtual_unknown_noise_scale": float(virtual_unknown_noise_scale),
+        "virtual_unknown_neighbor_count": int(virtual_unknown_neighbor_count),
         "receiver_reliability_policy": reliability_policy,
         "prototype_score_blend": prototype_blend,
         "prototype_assisted_qknn": prototype_blend > 0.0,
@@ -1627,6 +1704,11 @@ def run_evaluation(args: argparse.Namespace) -> dict[str, Any]:
         class_score_threshold_enabled=bool(args.class_score_threshold_enabled),
         class_score_threshold_quantile=args.class_score_threshold_quantile,
         class_score_threshold_min_support=int(args.class_score_threshold_min_support),
+        virtual_unknown_calibration_enabled=bool(args.virtual_unknown_calibration_enabled),
+        virtual_unknown_samples_per_class=int(args.virtual_unknown_samples_per_class),
+        virtual_unknown_mix_alpha=float(args.virtual_unknown_mix_alpha),
+        virtual_unknown_noise_scale=float(args.virtual_unknown_noise_scale),
+        virtual_unknown_neighbor_count=int(args.virtual_unknown_neighbor_count),
         evidence_packet_bytes=float(args.evidence_packet_bytes),
         receiver_reliability_policy=str(args.receiver_reliability_policy),
         prototype_score_blend=float(args.prototype_score_blend),
@@ -1746,6 +1828,11 @@ def parse_args() -> argparse.Namespace:
     p.add_argument("--class_score_threshold_enabled", action="store_true")
     p.add_argument("--class_score_threshold_quantile", type=float, default=None)
     p.add_argument("--class_score_threshold_min_support", type=int, default=1)
+    p.add_argument("--virtual_unknown_calibration_enabled", action="store_true")
+    p.add_argument("--virtual_unknown_samples_per_class", type=int, default=0)
+    p.add_argument("--virtual_unknown_mix_alpha", type=float, default=0.50)
+    p.add_argument("--virtual_unknown_noise_scale", type=float, default=0.02)
+    p.add_argument("--virtual_unknown_neighbor_count", type=int, default=2)
     p.add_argument("--unknown_risk_threshold", type=float, default=0.80)
     p.add_argument("--accept_margin_threshold", type=float, default=0.10)
     p.add_argument("--unknown_quantile", type=float, default=0.75)

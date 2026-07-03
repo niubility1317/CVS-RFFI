@@ -661,6 +661,29 @@ class Phase2CollaborativeOpenSetQknnEvalTest(unittest.TestCase):
         self.assertIn("unk-a", metadata["unknown_tx_ids"])
         self.assertNotIn("proxy-a", metadata["unknown_tx_ids"])
 
+    def test_virtual_unknown_calibration_is_support_derived_and_recorded(self):
+        from phase2_collaborative_open_set_qknn_eval import load_feature_npz, build_collaborative_evidence
+
+        with tempfile.TemporaryDirectory() as td:
+            npz = Path(td) / "features.npz"
+            _write_npz(npz)
+            evidence, metadata = build_collaborative_evidence(
+                load_feature_npz(npz),
+                k_shot=1,
+                query_per_class=2,
+                qknn_k=1,
+                virtual_unknown_calibration_enabled=True,
+                virtual_unknown_samples_per_class=2,
+                virtual_unknown_noise_scale=0.0,
+            )
+
+        self.assertEqual(metadata["threshold_scope"], "support_virtual_unknown")
+        self.assertTrue(metadata["virtual_unknown_calibration_enabled"])
+        self.assertEqual(metadata["virtual_unknown_samples_per_class"], 2)
+        self.assertEqual({row["role"] for row in evidence}, {"old", "seen_new", "unknown"})
+        self.assertEqual(int(evidence[0]["virtual_unknown_calibration_enabled"]), 1)
+        self.assertGreater(int(evidence[0]["virtual_unknown_count"]), 0)
+
     def test_class_score_thresholds_are_recorded_when_enabled(self):
         from phase2_collaborative_open_set_qknn_eval import load_feature_npz, build_collaborative_evidence
 

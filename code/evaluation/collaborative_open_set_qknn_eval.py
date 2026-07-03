@@ -24,6 +24,7 @@ SAFE_THRESHOLD_SCOPES = {
     "support_only",
     "known_support",
     "support_known_only",
+    "support_virtual_unknown",
     "old_new_support",
     "deployment_prior",
 }

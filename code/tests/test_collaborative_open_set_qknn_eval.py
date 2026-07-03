@@ -207,6 +207,13 @@ class CollaborativeOpenSetQknnEvalTest(unittest.TestCase):
         self.assertEqual(result["denominator_policy"], "per_k_available_receivers")
         self.assertEqual(result["evidence_scope"], "offline_evidence_metrics_only")
 
+        result = evaluate_collaborative_open_set_evidence(
+            rows,
+            threshold_selection_label_scope="support_virtual_unknown",
+            unknown_query_eval_only=True,
+        )
+        self.assertEqual(result["threshold_selection_label_scope"], "support_virtual_unknown")
+
         with self.assertRaisesRegex(ValueError, "threshold_selection_label_scope"):
             evaluate_collaborative_open_set_evidence(rows, threshold_selection_label_scope="unknown_query")
 
