@@ -915,6 +915,54 @@ V22 same-row boundary:
 
 The next valid work item is target1, not target2: improve worst-receiver/worst-TX LEO closed-set recovery without target clean/query tuning. Current evidence says oldness-only gating can protect unknown safety but does not recover hard receiver slices such as`rx3_19`and`rx20_1`.
 
+## V23 Source Group-Floor Target1 Design
+
+V23 returns to target1 and changes the source-only adapter training objective. The new trainer adds a worst-group floor loss over source receiver and/or source TX groups inside each mini-batch. The intent is to prevent the source clean<-LEO repair from optimizing only the average pair loss while leaving hard TX/receiver directions under-repaired.
+
+Protocol boundary:
+
+| Item | V23 setting |
+|---|---|
+| Phase1 backbone | Frozen`ADV3B02_CORE90_SOFT_E200phase1` |
+| Adapter training data | Source clean plus source LEO `leo_clear_weak`,`leo_low_elev_weak`,`leo_rain_weak` pairs |
+| Added objective | Worst-group source repair loss over `tx`, `rx`, or `tx,rx` |
+| Clean identity | Enabled |
+| Margin retention | Enabled |
+| Source proxy_unknown repulsion | Enabled |
+| Target clean/query labels | Not used for training or selection |
+| Post-processing | Oldness-capped identity fallback with caps`0.00,0.05` |
+
+New/changed files:
+
+| File | Purpose | SHA256 |
+|---|---|---|
+| `E:\type10-7\code\scripts\fit_apply_phase1_leo_feature_adapter.py` | Adds `--group_floor_weight` and `--group_floor_fields` source-group worst-loss training | `8C07B74C7D73B3738B5E990693E71D440ED7593DECD189D6E0A38932A0DFF831` |
+| `E:\type10-7\code\scripts\sweep_phase1_adv3b02_groupfloor_target1_v23_20260703.sh` | Runs four group-floor adapters across the ten target slices, builds oldness-capped variants, then runs target1 strong audit | `AC2EBB1AE8F5F1D4B79E0376244F5432959B4B27F3C647E6A2E20C507454323E` |
+
+Local verification:
+
+| Command | Result |
+|---|---|
+| `C:\Users\lh594\.conda\envs\ssr-gpu\python.exe -m py_compile E:\type10-7\code\scripts\fit_apply_phase1_leo_feature_adapter.py E:\type10-7\code\scripts\build_phase1_oldness_capped_blends_20260703.py E:\type10-7\code\scripts\eval_phase1_target1_strong_repair_audit_20260703.py` | PASS |
+| `bash -lc "bash -n /mnt/e/type10-7/code/scripts/sweep_phase1_adv3b02_groupfloor_target1_v23_20260703.sh"` | PASS |
+
+Version/snapshot state:
+
+| Item | Path |
+|---|---|
+| Non-Git code snapshot | `E:\type10-7\code\snapshots\phase1_adv3b02_groupfloor_target1_v23_20260703\` |
+
+Planned N607 output:
+
+| Artifact | Remote path |
+|---|---|
+| V23 summary | `/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_adv3b02_groupfloor_target1_v23_20260703/target1_strong_v23_summary.csv` |
+| V23 metrics JSON | `/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_adv3b02_groupfloor_target1_v23_20260703/target1_strong_v23_metrics.json` |
+| V23 best JSON | `/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_adv3b02_groupfloor_target1_v23_20260703/target1_strong_v23_best.json` |
+| V23 cap build log | `/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_adv3b02_groupfloor_target1_v23_20260703/build_oldness_caps.out` |
+
+Success check remains target1 first: more target slices must pass the strong gate, especially by raising worst TX and worst receiver floors without worsening unknown safety.
+
 ## V21 Oldness-Capped Identity Fallback Design
 
 V21 follows the V20 finding that conservative blends can satisfy old recovery, clean fidelity, scenario/tx floors and margin jointly, while unknown safety remains the blocking constraint. It adds a label-free oldness cap after V20 feature export: for each sat-only sample, use the repaired/blended feature only if its source-prototype max logit is no more than the identity feature max logit plus a small cap; otherwise fall back to identity features.

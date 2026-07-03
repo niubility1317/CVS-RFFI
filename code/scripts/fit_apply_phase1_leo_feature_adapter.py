@@ -195,6 +195,18 @@ def _true_margin(logits: torch.Tensor, labels: torch.Tensor) -> torch.Tensor:
     return true_logit - masked.max(dim=1).values
 
 
+def _group_worst_mean(values: torch.Tensor, groups: torch.Tensor) -> torch.Tensor:
+    unique = torch.unique(groups)
+    if unique.numel() <= 1:
+        return values.mean()
+    means = []
+    for group in unique:
+        mask = groups == group
+        if bool(mask.any()):
+            means.append(values[mask].mean())
+    return torch.stack(means).max() if means else values.mean()
+
+
 @torch.no_grad()
 def _alignment_metrics(
     adapter: nn.Module,
@@ -280,6 +292,7 @@ def fit_apply(args: argparse.Namespace) -> dict[str, Any]:
     clean_features = []
     sat_features = []
     source_labels_text: list[str] = []
+    source_rx_text: list[str] = []
     pair_keys: list[tuple[str, ...]] = []
     pair_count_by_train_npz: dict[str, int] = {}
     for sat_i, train_sat in enumerate(train_sats):
@@ -290,6 +303,7 @@ def fit_apply(args: argparse.Namespace) -> dict[str, Any]:
         clean_features.append(clean["features"][clean_idx])
         sat_features.append(train_sat["features"][sat_idx])
         source_labels_text.extend([canonical_tx_id(train_sat["tx_ids"][j]) for j in sat_idx])
+        source_rx_text.extend([str(train_sat["rx_ids"][j]) for j in sat_idx])
         pair_keys.extend([(f"train_sat_{sat_i}", *_row_key(train_sat, j)) for j in sat_idx])
 
     device = torch.device(args.device if torch.cuda.is_available() or not str(args.device).startswith("cuda") else "cpu")
@@ -297,6 +311,8 @@ def fit_apply(args: argparse.Namespace) -> dict[str, Any]:
     sat_x = torch.as_tensor(np.concatenate(sat_features, axis=0), dtype=torch.float32, device=device)
     label_map = {canonical_tx_id(tx): i for i, tx in enumerate(source_tx_ids)}
     labels = torch.tensor([label_map[tx] for tx in source_labels_text], dtype=torch.long, device=device)
+    rx_map = {rx: i for i, rx in enumerate(sorted(set(source_rx_text)))}
+    rx_groups = torch.tensor([rx_map[rx] for rx in source_rx_text], dtype=torch.long, device=device)
     prototypes = _make_clean_prototypes(clean_x, source_labels_text, source_tx_ids)
 
     unknown_features = []
@@ -353,6 +369,28 @@ def fit_apply(args: argparse.Namespace) -> dict[str, Any]:
                 sat_margin = _true_margin(sat_logits, y)
                 target_margin = torch.maximum(clean_margin, sat_margin) - float(args.margin_tolerance_logits)
                 margin_loss = F.relu(target_margin - adapted_margin).mean()
+                if float(args.group_floor_weight) > 0:
+                    pair_each = F.smooth_l1_loss(z_hat, z_clean, reduction="none").mean(dim=1)
+                    cos_each = 1.0 - F.cosine_similarity(z_hat, z_clean, dim=1)
+                    ce_each = F.cross_entropy(logits, y, reduction="none")
+                    residual_each = ((z_hat - z_sat) ** 2).mean(dim=1)
+                    margin_each = F.relu(target_margin - adapted_margin)
+                    floor_each = (
+                        float(args.pair_weight) * pair_each
+                        + float(args.cos_weight) * cos_each
+                        + float(args.proto_ce_weight) * ce_each
+                        + float(args.residual_weight) * residual_each
+                        + float(args.margin_retention_weight) * margin_each
+                    )
+                    floor_terms = []
+                    fields = {x.strip().lower() for x in str(args.group_floor_fields).split(",") if x.strip()}
+                    if "tx" in fields:
+                        floor_terms.append(_group_worst_mean(floor_each, y))
+                    if "rx" in fields:
+                        floor_terms.append(_group_worst_mean(floor_each, rx_groups.index_select(0, idx)))
+                    group_floor_loss = torch.stack(floor_terms).mean() if floor_terms else torch.zeros((), dtype=z_hat.dtype, device=z_hat.device)
+                else:
+                    group_floor_loss = torch.zeros((), dtype=z_hat.dtype, device=z_hat.device)
                 if float(args.clean_identity_weight) > 0:
                     z_clean_identity = adapter(z_clean)
                     clean_identity_logits = _proto_logits(z_clean_identity, prototypes.detach(), float(args.proto_temperature))
@@ -383,6 +421,7 @@ def fit_apply(args: argparse.Namespace) -> dict[str, Any]:
                     + float(args.margin_retention_weight) * margin_loss
                     + float(args.clean_margin_weight) * clean_margin_loss
                     + float(args.unknown_repulsion_weight) * unknown_loss
+                    + float(args.group_floor_weight) * group_floor_loss
                 )
                 opt.zero_grad(set_to_none=True)
                 loss.backward()
@@ -408,6 +447,8 @@ def fit_apply(args: argparse.Namespace) -> dict[str, Any]:
         "margin_retention_weight": float(args.margin_retention_weight),
         "clean_margin_weight": float(args.clean_margin_weight),
         "unknown_repulsion_weight": float(args.unknown_repulsion_weight),
+        "group_floor_weight": float(args.group_floor_weight),
+        "group_floor_fields": str(args.group_floor_fields),
         "source_unknown_npz": [str(x) for x in args.source_unknown_npz or []],
         "source_unknown_count_by_npz": unknown_count_by_npz,
         "unknown_roles": sorted(unknown_roles),
@@ -476,6 +517,7 @@ def fit_apply(args: argparse.Namespace) -> dict[str, Any]:
             "margin_retention_weight": float(args.margin_retention_weight),
             "clean_margin_weight": float(args.clean_margin_weight),
             "unknown_repulsion_weight": float(args.unknown_repulsion_weight),
+            "group_floor_weight": float(args.group_floor_weight),
         },
         "source_unknown_npz": [str(x) for x in args.source_unknown_npz or []],
         "source_unknown_count_by_npz": unknown_count_by_npz,
@@ -495,6 +537,7 @@ def fit_apply(args: argparse.Namespace) -> dict[str, Any]:
             "uses_source_proxy_unknown_training": bool(unknown_x is not None and float(args.unknown_repulsion_weight) > 0),
             "test_features_written_from_satellite_npz_only": True,
             "uses_clean_clean_identity_training": bool(float(args.clean_identity_weight) > 0),
+            "uses_source_group_floor_training": bool(float(args.group_floor_weight) > 0),
         },
     }
     if args.output_json:
@@ -542,6 +585,8 @@ def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
     parser.add_argument("--source_unknown_npz", action="append", default=[])
     parser.add_argument("--unknown_roles", default="proxy_unknown")
     parser.add_argument("--unknown_repulsion_weight", type=float, default=0.0)
+    parser.add_argument("--group_floor_weight", type=float, default=0.0)
+    parser.add_argument("--group_floor_fields", default="tx,rx")
     parser.add_argument("--unknown_source_quantile", type=float, default=0.05)
     parser.add_argument("--unknown_margin", type=float, default=0.0)
     parser.add_argument("--unknown_batch_size", type=int, default=512)
