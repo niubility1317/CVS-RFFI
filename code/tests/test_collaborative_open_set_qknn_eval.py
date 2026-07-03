@@ -87,6 +87,113 @@ class CollaborativeOpenSetQknnEvalTest(unittest.TestCase):
         self.assertEqual(k3["unknown_reject_rate"], 1.0)
         self.assertEqual(k3["unknown_FAR"], 0.0)
         self.assertEqual(k3["event_results"][1]["decision"], "unknown_reject")
+        self.assertGreaterEqual(
+            k3["event_results"][1]["selective_confirm_unknown_evidence_source_count"],
+            2,
+        )
+
+    def test_selective_confirm_defers_single_unknown_source_when_event_budget_exhausted(self):
+        from evaluation.collaborative_open_set_qknn_eval import evaluate_collaborative_open_set_evidence
+
+        rows = [
+            {
+                "event_id": "unk-local-two",
+                "receiver_id": "rx-a",
+                "role": "unknown",
+                "true_label": "__unknown__",
+                "predicted_label": "old-a",
+                "known_score": 0.30,
+                "known_margin": 0.02,
+                "unknown_risk": 0.10,
+                "score_risk": 0.10,
+                "radius_risk": 0.10,
+                "margin_risk": 0.10,
+                "class_conformal_pvalue": 0.05,
+                "class_conformal_support_count": 2,
+                "receiver_class_reliability": 0.10,
+                "support_density": 0.10,
+                "latency_ms": 1.0,
+                "bytes": 40,
+            },
+            {
+                "event_id": "unk-local-two",
+                "receiver_id": "rx-b",
+                "role": "unknown",
+                "true_label": "__unknown__",
+                "predicted_label": "old-b",
+                "known_score": 0.25,
+                "known_margin": 0.01,
+                "unknown_risk": 0.95,
+                "score_risk": 0.10,
+                "radius_risk": 0.10,
+                "margin_risk": 0.10,
+                "class_conformal_pvalue": 0.05,
+                "class_conformal_support_count": 2,
+                "receiver_class_reliability": 0.10,
+                "support_density": 0.10,
+                "latency_ms": 1.0,
+                "bytes": 40,
+            },
+            {
+                "event_id": "old-global-rx-c",
+                "receiver_id": "rx-c",
+                "role": "old",
+                "true_label": "old-a",
+                "predicted_label": "old-a",
+                "known_score": 0.95,
+                "known_margin": 0.30,
+                "unknown_risk": 0.05,
+                "score_risk": 0.05,
+                "radius_risk": 0.05,
+                "margin_risk": 0.05,
+                "class_conformal_pvalue": 0.90,
+                "class_conformal_support_count": 2,
+                "receiver_class_reliability": 0.90,
+                "support_density": 0.90,
+                "latency_ms": 1.0,
+                "bytes": 40,
+            },
+        ]
+
+        result = evaluate_collaborative_open_set_evidence(
+            rows,
+            collab_counts=[2],
+            collab_group_policy="available_up_to_k",
+            partial_collab_min_receivers=1,
+            fusion_policy="selective_confirm_cvs",
+            label_fusion_policy="weighted_vote_margin",
+            receiver_class_reliability_policy="support_calibrated",
+            latency_budget_ms=10.0,
+            accept_margin_threshold=0.10,
+            consensus_score_threshold=0.10,
+            scorer_component_vote_threshold=0.50,
+            candidate_set_min_receivers=1,
+            candidate_set_min_conformal_pvalue=0.50,
+            candidate_set_min_label_receiver_class_reliability=0.75,
+            candidate_set_max_label_unknown_risk=0.80,
+            candidate_set_max_event_unknown_risk=0.80,
+            candidate_set_max_label_risk_component_agreement=0.50,
+            candidate_set_event_high_unknown_risk_veto=0.85,
+            candidate_set_unknown_reject_risk=0.85,
+            include_event_results=True,
+            protocol_metadata={
+                "target_receiver_ids": ["rx-a", "rx-b", "rx-c"],
+                "source_receiver_ids": ["src-a"],
+                "old_tx_ids": ["old-a", "old-b"],
+                "seen_new_tx_ids": ["new-a"],
+                "unknown_tx_ids": ["unk-a"],
+                "target_channel_view": "leo_clear_weak",
+            },
+        )
+
+        unk_event = next(
+            item for item in result["counts"]["2"]["event_results"] if item["event_id"] == "unk-local-two"
+        )
+        self.assertEqual(unk_event["decision"], "defer")
+        self.assertEqual(unk_event["selective_confirm_decision_stage"], "single_unknown_evidence_defer")
+        self.assertEqual(unk_event["selective_confirm_unknown_evidence_source_count"], 1)
+        self.assertTrue(unk_event["selective_confirm_budget_exhausted"])
+        self.assertFalse(unk_event["selective_confirm_request_more_available_receivers"])
 
     def test_orbit_coproto_trust_weighted_fusion_protects_known_and_rejects_unknown(self):
         from evaluation.collaborative_open_set_qknn_eval import evaluate_collaborative_open_set_evidence

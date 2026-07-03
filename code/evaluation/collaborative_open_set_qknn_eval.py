@@ -1386,17 +1386,6 @@ def _fuse_event(
                 or not gate_passed
             )
         )
-        selective_confirm_unknown_evidence = bool(
-            policy == "selective_confirm_cvs"
-            and selective_confirm_weak_label_evidence
-            and (
-                unknown_risk >= float(candidate_set_event_high_unknown_risk_veto)
-                or label_unknown_risk >= float(candidate_set_unknown_reject_risk)
-                or label_high_unknown_risk_fraction
-                >= float(candidate_set_max_label_high_unknown_risk_fraction)
-                or decision_risk_component_agreement >= float(scorer_component_vote_threshold)
-            )
-        )
         selective_confirm_risk_sources = []
         if policy == "selective_confirm_cvs":
             if unknown_risk >= float(candidate_set_event_high_unknown_risk_veto):
@@ -1407,6 +1396,17 @@ def _fuse_event(
                 selective_confirm_risk_sources.append("high_unknown_fraction")
             if decision_risk_component_agreement >= float(scorer_component_vote_threshold):
                 selective_confirm_risk_sources.append("risk_component_agreement")
+        selective_confirm_unknown_evidence_source_count = len(set(selective_confirm_risk_sources))
+        selective_confirm_unknown_evidence = bool(
+            policy == "selective_confirm_cvs"
+            and selective_confirm_weak_label_evidence
+            and selective_confirm_unknown_evidence_source_count >= 1
+        )
+        selective_confirm_unknown_reject_ready = bool(
+            policy == "selective_confirm_cvs"
+            and selective_confirm_weak_label_evidence
+            and selective_confirm_unknown_evidence_source_count >= 2
+        )
         selective_confirm_risk_veto_source = ",".join(selective_confirm_risk_sources)
         selective_confirm_known_protection_reason = ""
         if selective_confirm_accept:
@@ -1737,10 +1737,14 @@ def _fuse_event(
             decision = "request_more"
             output_label = ""
             selective_confirm_decision_stage = "weak_unknown_request_more"
-        elif policy == "selective_confirm_cvs" and selective_confirm_unknown_evidence:
+        elif policy == "selective_confirm_cvs" and selective_confirm_unknown_reject_ready:
             decision = "unknown_reject"
             output_label = UNKNOWN_LABEL
             selective_confirm_decision_stage = "weak_unknown_reject"
+        elif policy == "selective_confirm_cvs" and selective_confirm_unknown_evidence:
+            decision = "defer"
+            output_label = ""
+            selective_confirm_decision_stage = "single_unknown_evidence_defer"
         elif policy == "selective_confirm_cvs" and within_request_budget:
             decision = "request_more"
             output_label = ""
@@ -1891,6 +1895,11 @@ def _fuse_event(
         "selective_confirm_risk_veto_source": str(
             locals().get("selective_confirm_risk_veto_source", "")
         ),
+        "selective_confirm_unknown_evidence_source_count": int(
+            locals().get("selective_confirm_unknown_evidence_source_count", 0)
+        ),
+        "selective_confirm_budget_exhausted": bool(not can_request_more),
+        "selective_confirm_request_more_available_receivers": bool(can_request_more),
         "selective_confirm_known_protection_reason": str(
             locals().get("selective_confirm_known_protection_reason", "")
         ),
@@ -4002,7 +4011,9 @@ def evaluate_collaborative_open_set_evidence(
             raise ValueError(f"no evidence groups contain {min_receivers_for_k} receiver observations")
         event_results: list[dict[str, Any]] = []
         for event_id, group in eligible:
-            selected_k = min(int(k), len({_str(row, "receiver_id") for row in group}))
+            event_receiver_count = len({_str(row, "receiver_id") for row in group})
+            selected_k = min(int(k), event_receiver_count)
+            event_can_request_more = selected_k < event_receiver_count
             selected = _select_receivers(
                 group,
                 selected_k,
@@ -4023,7 +4034,7 @@ def evaluate_collaborative_open_set_evidence(
                     label_fusion_policy=label_fusion_policy,
                     class_reliability_policy=class_reliability_policy,
                     receiver_class_reliability_policy=receiver_class_reliability_policy,
-                    can_request_more=int(k) < int(receiver_count),
+                    can_request_more=event_can_request_more,
                     latency_budget_ms=latency_budget_ms,
                     max_event_bytes=max_event_bytes,
                     max_event_latency_ms=max_event_latency_ms,
@@ -4074,7 +4085,7 @@ def evaluate_collaborative_open_set_evidence(
                     label_fusion_policy=label_fusion_policy,
                     class_reliability_policy=class_reliability_policy,
                     receiver_class_reliability_policy=receiver_class_reliability_policy,
-                    can_request_more=int(k) < int(receiver_count),
+                    can_request_more=event_can_request_more,
                     latency_budget_ms=latency_budget_ms,
                     max_event_bytes=max_event_bytes,
                     max_event_latency_ms=max_event_latency_ms,
@@ -4234,7 +4245,7 @@ def evaluate_collaborative_open_set_evidence(
                     label_fusion_policy=label_fusion_policy,
                     class_reliability_policy=class_reliability_policy,
                     receiver_class_reliability_policy=receiver_class_reliability_policy,
-                    can_request_more=int(k) < int(receiver_count),
+                    can_request_more=event_can_request_more,
                     latency_budget_ms=latency_budget_ms,
                     max_event_bytes=max_event_bytes,
                     max_event_latency_ms=max_event_latency_ms,

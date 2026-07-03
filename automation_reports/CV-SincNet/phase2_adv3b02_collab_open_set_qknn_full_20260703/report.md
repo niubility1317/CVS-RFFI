@@ -3932,9 +3932,9 @@ N607同步后远端哈希与本地一致；远端验证`52 tests OK`。实际运
 
 |文件|用途|SHA256|
 |---|---|---|
-|`code/evaluation/collaborative_open_set_qknn_eval.py`|新增`fusion_policy=selective_confirm_cvs`，强证据accept、弱证据request_more、预算耗尽后unknown_reject，并输出`selective_confirm_decision_stage/risk_veto_source/known_protection_reason`审计字段和汇总计数。|`2544B260126EEFE9823FDE2589298EE8DADFB977DC02631CF075B965E5C67893`|
+|`code/evaluation/collaborative_open_set_qknn_eval.py`|新增`fusion_policy=selective_confirm_cvs`，强证据accept、弱证据request_more；最终unknown_reject要求至少2类独立风险来源，单一unknown证据在事件本地receiver预算耗尽时转为defer，并输出`selective_confirm_decision_stage/risk_veto_source/unknown_evidence_source_count/budget_exhausted/known_protection_reason`审计字段和汇总计数。|`4D1F5B34F003961D0624F579347D6209F57C3B4C5D2E7DD38386DA4356B221A0`|
 |`code/scripts/phase2_collaborative_open_set_qknn_eval.py`|CLI新增`--fusion_policy selective_confirm_cvs`。|`E9D7277710B3C2CBCF3413C684B144E31A314951E52EB70D1E09E259F9CE31D9`|
-|`code/tests/test_collaborative_open_set_qknn_eval.py`|新增selective-confirm单测：k=2弱unknown请求更多接收机，k=3预算耗尽后拒识，同时强old保持accept并记录保护原因。|`A41628EA46D864CC6FDD787C7BC9BFBF3A7E8B02F5B6C06001FDCBFC8A4E1230`|
+|`code/tests/test_collaborative_open_set_qknn_eval.py`|新增selective-confirm单测：k=2弱unknown请求更多接收机，k=3多证据预算耗尽后拒识，强old保持accept；补充事件本地无剩余receiver且只有单一unknown证据时必须defer。|`A613454CC9A7D668AFF0B38B9696180C673A5B22C12954C9D5F7EE08B3EA38FC`|
 
 本地快照：`E:\type10-7\code\snapshots\phase2_adv3b02_selective_confirm_20260704\`。
 
@@ -3945,7 +3945,7 @@ conda run --no-capture-output -n ssr-gpu python -m py_compile code\evaluation\co
 conda run --no-capture-output -n ssr-gpu python -m pytest code\tests\test_collaborative_open_set_qknn_eval.py code\tests\test_phase2_collaborative_open_set_qknn_eval.py -q -p no:cacheprovider
 ```
 
-结果：`109 passed in 1.11s`。
+结果：第一次并行pytest触发Windows conda临时文件锁，串行重跑通过：`110 passed in 1.10s`。
 
 ### N607计划
 
