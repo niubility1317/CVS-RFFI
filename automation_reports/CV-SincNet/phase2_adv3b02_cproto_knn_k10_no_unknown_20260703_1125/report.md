@@ -49,6 +49,27 @@
 | 项 | 状态 |
 |---|---|
 | Git提交 | 待完成 |
-| 远端同步 | 待完成 |
-| 远端运行 | 待完成 |
-| 结果解析 | 待完成 |
+| 远端同步 | PASS：远端`py_compile`通过，脚本SHA256=`826a4c89f88c035b4ae5d664e94f4d4de51910b81b8173049bb86ff520fdebb3` |
+| 远端运行 | 已完成：`7-14`、`7-7`、`8-8`三个K=10候选池均完成 |
+| 结果解析 | 已完成：summary和日志已拉回 |
+
+## 结果
+
+| case | rows | 同一行达标数 | 最优行 | 解释 |
+|---|---:|---:|---|---|
+| `cproto_rx7_14_k10` | 810 | 0 | `19-3,6-6`，`cproto_p2_oldbias0_rad0`：旧类75.83%，新类均值60.00%，逐类最低57.50%，存储原型16，存储support0 | 压缩子原型不如原始KNN1，细粒度新类边界丢失明显 |
+| `cproto_rx7_7_k10` | 810 | 0 | `14-13,15-19`，`cproto_p1_oldbias0_rad0.25`：旧类77.50%，新类均值80.00%，逐类最低77.50%，存储原型8，存储support0 | 不保存support成立，但旧类不足且逐新类不足 |
+| `cproto_rx8_8_k10` | 810 | 0 | `18-17,2-7`，`cproto_p1_oldbias0.2_rad0.5`：旧类76.25%，新类均值78.75%，逐类最低77.50%，存储原型8，存储support0 | old_bias不足以把旧类推到85%，继续增大bias会损伤新类 |
+
+## 产物与哈希
+
+| 文件 | SHA256 |
+|---|---|
+| `E:\type10-7\automation_reports\CV-SincNet\phase2_adv3b02_cproto_knn_k10_no_unknown_20260703_1125\cproto_k10_summary.json` | `4820e15179c787846d850a4ed293d5c0698e68e2faf3e557874ba0a6d986d683` |
+| `cproto_rx7_14_k10.out` | `a86516ef7432ee2ad5f0d7ef2382d1835b433e65558aa11cc2685c7d6c17f4bc` |
+| `cproto_rx7_7_k10.out` | `278bc5e4bc861df5a8898ccc4a8a1fdef1c936993097aa900dbc0e0333999f59` |
+| `cproto_rx8_8_k10.out` | `7136b89c8cbd86aaffb3aed8fad99cccce4f46413ca69754e49d7aac9a2fa278` |
+
+## 方法结论
+
+压缩原型KNN满足部署创新点：推理侧`stored_support_count=0`，只保存8到16个原型统计量。但当前单纯均值/子原型压缩损失了原始KNN1依赖的近邻细节，K=10未达到目标。后续如果继续沿此方向，应采用“可学习或选择式压缩”：每类保存少量代表性anchor/medoid或蒸馏原型，而不是简单均值；同时对旧类做目标域adapter或特征修复，再将修复后的support压缩进记忆库。
