@@ -1177,6 +1177,97 @@ class CollaborativeOpenSetQknnEvalTest(unittest.TestCase):
         self.assertEqual(k1["unknown_reject_rate"], 1.0)
         self.assertEqual(k1["open_set_confusion"], {"unknown->unknown_reject": 1})
 
+    def test_scorer_cvs_conformal_rescue_accepts_strong_known(self):
+        from evaluation.collaborative_open_set_qknn_eval import evaluate_collaborative_open_set_evidence
+
+        row = {
+            "event_id": "known-conformal",
+            "receiver_id": "rx-a",
+            "role": "old",
+            "true_label": "old-a",
+            "predicted_label": "old-a",
+            "known_score": 0.95,
+            "known_margin": 0.20,
+            "unknown_risk": 0.95,
+            "score_risk": 0.95,
+            "radius_risk": 0.10,
+            "margin_risk": 0.10,
+            "class_conformal_pvalue": 0.90,
+        }
+
+        result = evaluate_collaborative_open_set_evidence(
+            [row],
+            collab_counts="1",
+            fusion_policy="scorer_cvs",
+            unknown_risk_threshold=0.8,
+            accept_margin_threshold=0.1,
+            consensus_score_threshold=0.6,
+            scorer_component_vote_threshold=0.5,
+            scorer_risk_components=["score", "radius", "margin"],
+            conformal_rescue_enabled=True,
+            conformal_rescue_min_pvalue=0.5,
+            conformal_rescue_risk_scale=0.1,
+            protocol_metadata={
+                "source_receiver_ids": ["src-a"],
+                "target_receiver_ids": ["rx-a"],
+                "old_tx_ids": ["old-a"],
+                "seen_new_tx_ids": ["new-a"],
+                "unknown_tx_ids": ["unk-a"],
+                "target_channel_view": "leo_clear_weak",
+            },
+            strict_protocol_metadata=True,
+        )
+
+        k1 = result["counts"]["1"]
+        self.assertEqual(k1["old_acc"], 1.0)
+        self.assertEqual(k1["open_set_confusion"], {"old->old": 1})
+        self.assertTrue(result["conformal_rescue_enabled"])
+
+    def test_scorer_cvs_conformal_rescue_does_not_accept_multichannel_unknown(self):
+        from evaluation.collaborative_open_set_qknn_eval import evaluate_collaborative_open_set_evidence
+
+        row = {
+            "event_id": "unknown-conformal-risk",
+            "receiver_id": "rx-a",
+            "role": "unknown",
+            "true_label": "__unknown__",
+            "predicted_label": "old-a",
+            "known_score": 0.95,
+            "known_margin": 0.20,
+            "unknown_risk": 0.95,
+            "score_risk": 0.95,
+            "radius_risk": 0.95,
+            "margin_risk": 0.95,
+            "class_conformal_pvalue": 0.90,
+        }
+
+        result = evaluate_collaborative_open_set_evidence(
+            [row],
+            collab_counts="1",
+            fusion_policy="scorer_cvs",
+            unknown_risk_threshold=0.8,
+            accept_margin_threshold=0.1,
+            consensus_score_threshold=0.6,
+            scorer_component_vote_threshold=0.5,
+            scorer_risk_components=["score", "radius", "margin"],
+            conformal_rescue_enabled=True,
+            conformal_rescue_min_pvalue=0.5,
+            conformal_rescue_risk_scale=0.1,
+            protocol_metadata={
+                "source_receiver_ids": ["src-a"],
+                "target_receiver_ids": ["rx-a"],
+                "old_tx_ids": ["old-a"],
+                "seen_new_tx_ids": ["new-a"],
+                "unknown_tx_ids": ["unk-a"],
+                "target_channel_view": "leo_clear_weak",
+            },
+            strict_protocol_metadata=True,
+        )
+
+        k1 = result["counts"]["1"]
+        self.assertEqual(k1["unknown_FAR"], 0.0)
+        self.assertEqual(k1["open_set_confusion"], {"unknown->defer": 1})
+
     def test_strict_protocol_metadata_validates_stage2_boundaries(self):
         from evaluation.collaborative_open_set_qknn_eval import evaluate_collaborative_open_set_evidence
 

@@ -371,3 +371,51 @@ python code\tests\test_collaborative_open_set_qknn_eval.py
 |`collab_counts all`解释|保持解释为target receiver 1..5协同诊断；因`receiver_domain_ranked`不是严格同事件同分母曲线，不把k间差异写成纯协同数量因果。|
 |延迟字段|保留`latency_ms_p50/p95`、`bytes/event`和`prototype_storage`，但延迟只作为离线proxy，不写成真实星上端到端延迟。|
 |性能声明|保持负结论：FAR虽下降，但old/seen-new远低于目标，不是Stage2-C成功、严格同事件协同或部署成功。|
+
+## 2026-07-03CPR review修复后SA33固定版复跑
+
+背景：查漏补缺子agent指出原`conformal_rescue`存在P1风险，即unknown样本若被预测成old/seen-new且p-value高，可能在多风险通道同时高风险时仍被缩放为known接受。已修复为：只有`risk_component_agreement < scorer_component_vote_threshold`时CPR才允许降低`effective_unknown_risk`；多风险通道一致高风险时fail closed。另将`class_conformal_min_support`默认值从1提高到2，防止K=1/LOO退化。
+
+本地、Git镜像和N607`CVS-RFFI`环境均通过：
+
+```powershell
+conda activate ssr-gpu
+python -m py_compile code\scripts\phase2_collaborative_open_set_qknn_eval.py code\evaluation\collaborative_open_set_qknn_eval.py
+python code\tests\test_phase2_collaborative_open_set_qknn_eval.py
+python code\tests\test_collaborative_open_set_qknn_eval.py
+```
+
+结果：本地和Git镜像均为36 tests OK和30 tests OK；N607使用`/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python`同样为36 tests OK和30 tests OK。修复版SA33复跑使用已有`runs/phase2_sa33_collab_open_set_qknn_full_20260703/features.npz`，该特征来自用户指定权重`SA33_sa27_ch2_leo3_ce0p7_r010_20260527_204104`，覆盖5个target receiver、协同数量1到5、星地信道`leo_clear_weak,leo_low_elev_weak,leo_rain_weak`。运行后GPU读数为8张RTX3090均`10 MiB/24576 MiB`；SSH/SCP后本地检查无残留`ssh.exe`或N607 22端口连接。
+
+SA33固定版CPR结果：
+
+|候选|协同数|old_acc|min_old|seen_new_acc|min_seen|unknown_FAR|unknown_reject|defer|avg_rx|bytes/event|
+|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+|`cpr_p15_s05_u098_proto2_maha1_qknnonly_fixed`|1|0.0000|0.0000|0.3833|0.2750|0.2333|0.3000|0.6558|1.0000|120.0000|
+|`cpr_p15_s05_u098_proto2_maha1_qknnonly_fixed`|2|0.3716|0.1000|0.4490|0.3793|0.2340|0.5319|0.1557|1.7623|211.4754|
+|`cpr_p15_s05_u098_proto2_maha1_qknnonly_fixed`|3|0.4333|0.1500|0.5500|0.5000|0.2250|0.6250|0.2200|2.5350|304.2000|
+|`cpr_p15_s05_u098_proto2_maha1_qknnonly_fixed`|4|0.5870|0.0000|0.7419|0.7273|0.3030|0.6364|0.0641|3.1859|382.3077|
+|`cpr_p15_s05_u098_proto2_maha1_qknnonly_fixed`|5|0.4808|0.0000|0.7000|0.0000|0.1000|0.7500|0.1739|3.4783|417.3913|
+|`cpr_p20_s04_vrisk2_proto2_maha1_qknnonly_fixed`|1|0.0000|0.0000|0.3833|0.2750|0.2333|0.1667|0.6883|1.0000|120.0000|
+|`cpr_p20_s04_vrisk2_proto2_maha1_qknnonly_fixed`|2|0.3851|0.1000|0.3673|0.2759|0.1915|0.5319|0.2131|1.9590|235.0820|
+|`cpr_p20_s04_vrisk2_proto2_maha1_qknnonly_fixed`|3|0.3250|0.0500|0.2750|0.2500|0.0500|0.6250|0.4750|2.8750|345.0000|
+|`cpr_p20_s04_vrisk2_proto2_maha1_qknnonly_fixed`|4|0.5543|0.0000|0.5161|0.5000|0.1515|0.6667|0.1859|3.7564|450.7692|
+|`cpr_p20_s04_vrisk2_proto2_maha1_qknnonly_fixed`|5|0.4038|0.0000|0.4000|0.0000|0.0500|0.7000|0.4457|4.8152|577.8261|
+|`cpr_p20_s05_proto2_maha1_qknnonly_fixed`|1|0.0000|0.0000|0.3833|0.2750|0.2333|0.2500|0.6656|1.0000|120.0000|
+|`cpr_p20_s05_proto2_maha1_qknnonly_fixed`|2|0.3851|0.1000|0.4490|0.3793|0.2553|0.4894|0.1885|1.7746|212.9508|
+|`cpr_p20_s05_proto2_maha1_qknnonly_fixed`|3|0.4417|0.1500|0.5500|0.5000|0.2250|0.5750|0.2650|2.5650|307.8000|
+|`cpr_p20_s05_proto2_maha1_qknnonly_fixed`|4|0.5978|0.0000|0.7419|0.7273|0.3333|0.5152|0.0769|3.2692|392.3077|
+|`cpr_p20_s05_proto2_maha1_qknnonly_fixed`|5|0.4808|0.0000|0.7000|0.0000|0.1000|0.5500|0.2174|3.6413|436.9565|
+
+判定：SA33指定权重在修复版CPR下仍未达到目标。最佳FAR行是`cpr_p20_s04_vrisk2_proto2_maha1_qknnonly_fixed`协同3或5，`unknown_FAR=0.0500`，但协同3`old_acc=0.3250`、`seen_new_acc=0.2750`，协同5`old_acc=0.4038`、`seen_new_acc=0.4000`且`min_old=0`。最佳seen-new行协同4可达`seen_new_acc=0.7419`、`min_seen=0.7273`，但`unknown_FAR=0.3030/0.3333`且`min_old=0`。该结果只能作为`receiver_domain_ranked`负例，不能写作严格同事件卫星群协同、Stage2-C成功或部署成功。
+
+固定版SHA256：
+
+|文件|SHA256|
+|---|---|
+|`collab_open_set_qknn_scorer_cvs_evt_adaptive_gain_vote_margin_sa33_cpr_p15_s05_u098_proto2_maha1_qknnonly_fixed.json`|`719FE2202CE7120BD34A0EE87F36DA2E217DE4972F0F31F6D1B6CB3974F341D6`|
+|`collab_open_set_qknn_scorer_cvs_evt_adaptive_gain_vote_margin_sa33_cpr_p15_s05_u098_proto2_maha1_qknnonly_fixed_evidence.csv`|`257962DA462E0D7F89EB9210BBDE3EEC44A779E7035BD3592C60640413325639`|
+|`collab_open_set_qknn_scorer_cvs_evt_adaptive_gain_vote_margin_sa33_cpr_p20_s04_vrisk2_proto2_maha1_qknnonly_fixed.json`|`750DCA7B8554B48CCB81ECB0AEE67583B864FB71F934BD31659AC55206C62190`|
+|`collab_open_set_qknn_scorer_cvs_evt_adaptive_gain_vote_margin_sa33_cpr_p20_s04_vrisk2_proto2_maha1_qknnonly_fixed_evidence.csv`|`D3DD9AA7FCE4C53BDD5A4B32C7F430B9A7390DFA6313F6EE04C7399D2F0A8A2D`|
+|`collab_open_set_qknn_scorer_cvs_evt_adaptive_gain_vote_margin_sa33_cpr_p20_s05_proto2_maha1_qknnonly_fixed.json`|`1A2F7C4435055458137DBF305647582514C4CA08686213ABFE44D15B90D84872`|
+|`collab_open_set_qknn_scorer_cvs_evt_adaptive_gain_vote_margin_sa33_cpr_p20_s05_proto2_maha1_qknnonly_fixed_evidence.csv`|`0E957CF78F0A345D99CBE7DA9415646F79632CB9122D680C37C87DA4EADD0A18`|

@@ -741,6 +741,57 @@ class Phase2CollaborativeOpenSetQknnEvalTest(unittest.TestCase):
         self.assertEqual(int(evidence[0]["class_score_threshold_enabled"]), 1)
         self.assertIn("score_threshold_source", evidence[0])
 
+    def test_class_conformal_pvalues_are_support_derived_and_recorded(self):
+        from phase2_collaborative_open_set_qknn_eval import load_feature_npz, build_collaborative_evidence
+
+        with tempfile.TemporaryDirectory() as td:
+            npz = Path(td) / "features.npz"
+            _write_npz(npz)
+            evidence, metadata = build_collaborative_evidence(
+                load_feature_npz(npz),
+                k_shot=1,
+                query_per_class=2,
+                qknn_k=1,
+                support_calibration_mode="leave_one_out",
+                score_threshold_combine="qknn_only",
+                class_conformal_enabled=True,
+                class_conformal_min_support=1,
+            )
+
+        self.assertTrue(metadata["class_conformal_enabled"])
+        self.assertTrue(metadata["receiver_class_conformal_counts"])
+        first_rx_counts = next(iter(metadata["receiver_class_conformal_counts"].values()))
+        self.assertIn("old-a", first_rx_counts)
+        self.assertIn("new-a", first_rx_counts)
+        self.assertEqual({row["role"] for row in evidence}, {"old", "seen_new", "unknown"})
+        self.assertEqual(int(evidence[0]["class_conformal_enabled"]), 1)
+        self.assertIn("class_conformal_pvalue", evidence[0])
+        self.assertIn("class_conformal_support_count", evidence[0])
+
+    def test_class_conformal_defaults_fail_closed_with_single_support(self):
+        from phase2_collaborative_open_set_qknn_eval import load_feature_npz, build_collaborative_evidence
+
+        with tempfile.TemporaryDirectory() as td:
+            npz = Path(td) / "features.npz"
+            _write_npz(npz)
+            evidence, metadata = build_collaborative_evidence(
+                load_feature_npz(npz),
+                k_shot=1,
+                query_per_class=2,
+                qknn_k=1,
+                support_calibration_mode="leave_one_out",
+                score_threshold_combine="qknn_only",
+                class_conformal_enabled=True,
+            )
+
+        self.assertEqual(metadata["class_conformal_min_support"], 2)
+        self.assertTrue(metadata["receiver_class_conformal_counts"])
+        first_rx_counts = next(iter(metadata["receiver_class_conformal_counts"].values()))
+        self.assertEqual(first_rx_counts, {})
+        self.assertEqual(int(evidence[0]["class_conformal_enabled"]), 1)
+        self.assertEqual(float(evidence[0]["class_conformal_pvalue"]), 0.0)
+        self.assertEqual(int(evidence[0]["class_conformal_support_count"]), 0)
+
     def test_class_score_thresholds_use_true_label_score_not_top1_score(self):
         from phase2_collaborative_open_set_qknn_eval import (
             _label_thresholds_from_calibration,

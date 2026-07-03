@@ -276,6 +276,10 @@ def _fuse_event(
     seen_new_rescue_min_score: float = 0.0,
     seen_new_rescue_min_margin: float = 0.0,
     seen_new_rescue_min_agreement: float = 0.5,
+    conformal_rescue_enabled: bool = False,
+    conformal_rescue_min_pvalue: float = 0.05,
+    conformal_rescue_risk_scale: float = 0.5,
+    conformal_rescue_min_agreement: float = 0.5,
     class_set_gate_enabled: bool = False,
     old_gate_min_receivers: int = 1,
     old_gate_max_effective_unknown_risk: float = 1.0,
@@ -311,6 +315,7 @@ def _fuse_event(
     predicted_labels = []
     support_densities = []
     radius_z_values = []
+    class_conformal_pvalues = []
     support_density_missing = []
     radius_z_missing = []
     for row in selected:
@@ -332,6 +337,7 @@ def _fuse_event(
         radius_z_missing.append(not _has_finite_float(row, "class_radius_z"))
         support_densities.append(_float(row, "support_density", 1.0))
         radius_z_values.append(_float(row, "class_radius_z", 0.0))
+        class_conformal_pvalues.append(_float(row, "class_conformal_pvalue", 0.0))
         score_risk_value = _float(row, "score_risk", _float(row, "unknown_risk", 0.0))
         radius_risk_value = _float(row, "radius_risk", _float(row, "unknown_risk", 0.0))
         margin_risk_value = _float(row, "margin_risk", _float(row, "unknown_risk", 0.0))
@@ -444,6 +450,9 @@ def _fuse_event(
     label_radius_z_values = [
         value for value, row in zip(radius_z_values, selected) if _str(row, "predicted_label", "") == label
     ]
+    label_class_conformal_values = [
+        value for value, row in zip(class_conformal_pvalues, selected) if _str(row, "predicted_label", "") == label
+    ]
     label_support_density_missing = any(
         missing for missing, row in zip(support_density_missing, selected) if _str(row, "predicted_label", "") == label
     )
@@ -454,6 +463,11 @@ def _fuse_event(
         sum(label_support_density_values) / len(label_support_density_values) if label_support_density_values else 0.0
     )
     label_radius_z = max(label_radius_z_values) if label_radius_z_values else 0.0
+    label_class_conformal_pvalue = (
+        sum(label_class_conformal_values) / len(label_class_conformal_values)
+        if label_class_conformal_values
+        else 0.0
+    )
     latency_ms = float(max((_float(row, "latency_ms", 0.0) for row in selected), default=0.0))
     within_request_budget = bool(
         can_request_more
@@ -540,7 +554,20 @@ def _fuse_event(
             and mean_score >= max(float(consensus_score_threshold), float(seen_new_rescue_min_score))
             and mean_margin >= max(float(accept_margin_threshold), float(seen_new_rescue_min_margin))
         )
-        effective_unknown_risk = unknown_risk * max(0.0, min(1.0, float(seen_new_rescue_risk_scale))) if rescue_applied else unknown_risk
+        conformal_rescue_applied = bool(
+            conformal_rescue_enabled
+            and output_label_set in {"old", "seen_new"}
+            and strong_known
+            and agreement >= float(conformal_rescue_min_agreement)
+            and label_class_conformal_pvalue >= float(conformal_rescue_min_pvalue)
+            and risk_component_agreement < float(scorer_component_vote_threshold)
+        )
+        risk_scale = 1.0
+        if rescue_applied:
+            risk_scale = min(risk_scale, max(0.0, min(1.0, float(seen_new_rescue_risk_scale))))
+        if conformal_rescue_applied:
+            risk_scale = min(risk_scale, max(0.0, min(1.0, float(conformal_rescue_risk_scale))))
+        effective_unknown_risk = unknown_risk * risk_scale
         high_risk = effective_unknown_risk >= float(unknown_risk_threshold)
         multi_channel_risk = risk_component_agreement >= float(scorer_component_vote_threshold)
         gate_passed, gate_reason = _class_set_gate_decision()
@@ -608,6 +635,8 @@ def _fuse_event(
         "effective_unknown_risk": float(locals().get("effective_unknown_risk", unknown_risk)),
         "seen_new_rescue_applied": bool(locals().get("rescue_applied", False)),
         "seen_new_rescue_label_match": bool(rescue_label_match if policy == "scorer_cvs" else False),
+        "conformal_rescue_applied": bool(locals().get("conformal_rescue_applied", False)),
+        "label_class_conformal_pvalue": float(label_class_conformal_pvalue),
         "class_set_gate_applied": bool(class_set_gate_enabled and output_label_set in {"old", "seen_new"}),
         "class_set_gate_passed": bool(locals().get("gate_passed", True)),
         "class_set_gate_reason": str(locals().get("gate_reason", "")),
@@ -656,6 +685,10 @@ def _fuse_progressive_event(
     seen_new_rescue_min_score: float = 0.0,
     seen_new_rescue_min_margin: float = 0.0,
     seen_new_rescue_min_agreement: float = 0.5,
+    conformal_rescue_enabled: bool = False,
+    conformal_rescue_min_pvalue: float = 0.05,
+    conformal_rescue_risk_scale: float = 0.5,
+    conformal_rescue_min_agreement: float = 0.5,
     class_set_gate_enabled: bool = False,
     old_gate_min_receivers: int = 1,
     old_gate_max_effective_unknown_risk: float = 1.0,
@@ -693,6 +726,10 @@ def _fuse_progressive_event(
             seen_new_rescue_min_score=seen_new_rescue_min_score,
             seen_new_rescue_min_margin=seen_new_rescue_min_margin,
             seen_new_rescue_min_agreement=seen_new_rescue_min_agreement,
+            conformal_rescue_enabled=conformal_rescue_enabled,
+            conformal_rescue_min_pvalue=conformal_rescue_min_pvalue,
+            conformal_rescue_risk_scale=conformal_rescue_risk_scale,
+            conformal_rescue_min_agreement=conformal_rescue_min_agreement,
             class_set_gate_enabled=class_set_gate_enabled,
             old_gate_min_receivers=old_gate_min_receivers,
             old_gate_max_effective_unknown_risk=old_gate_max_effective_unknown_risk,
@@ -823,6 +860,10 @@ def _fuse_adaptive_gain_event(
     seen_new_rescue_min_score: float = 0.0,
     seen_new_rescue_min_margin: float = 0.0,
     seen_new_rescue_min_agreement: float = 0.5,
+    conformal_rescue_enabled: bool = False,
+    conformal_rescue_min_pvalue: float = 0.05,
+    conformal_rescue_risk_scale: float = 0.5,
+    conformal_rescue_min_agreement: float = 0.5,
     class_set_gate_enabled: bool = False,
     old_gate_min_receivers: int = 1,
     old_gate_max_effective_unknown_risk: float = 1.0,
@@ -866,6 +907,10 @@ def _fuse_adaptive_gain_event(
             seen_new_rescue_min_score=seen_new_rescue_min_score,
             seen_new_rescue_min_margin=seen_new_rescue_min_margin,
             seen_new_rescue_min_agreement=seen_new_rescue_min_agreement,
+            conformal_rescue_enabled=conformal_rescue_enabled,
+            conformal_rescue_min_pvalue=conformal_rescue_min_pvalue,
+            conformal_rescue_risk_scale=conformal_rescue_risk_scale,
+            conformal_rescue_min_agreement=conformal_rescue_min_agreement,
             class_set_gate_enabled=class_set_gate_enabled,
             old_gate_min_receivers=old_gate_min_receivers,
             old_gate_max_effective_unknown_risk=old_gate_max_effective_unknown_risk,
@@ -1182,6 +1227,10 @@ def evaluate_collaborative_open_set_evidence(
     seen_new_rescue_min_score: float = 0.0,
     seen_new_rescue_min_margin: float = 0.0,
     seen_new_rescue_min_agreement: float = 0.5,
+    conformal_rescue_enabled: bool = False,
+    conformal_rescue_min_pvalue: float = 0.05,
+    conformal_rescue_risk_scale: float = 0.5,
+    conformal_rescue_min_agreement: float = 0.5,
     class_set_gate_enabled: bool = False,
     old_gate_min_receivers: int = 1,
     old_gate_max_effective_unknown_risk: float = 1.0,
@@ -1285,6 +1334,10 @@ def evaluate_collaborative_open_set_evidence(
                     seen_new_rescue_min_score=seen_new_rescue_min_score,
                     seen_new_rescue_min_margin=seen_new_rescue_min_margin,
                     seen_new_rescue_min_agreement=seen_new_rescue_min_agreement,
+                    conformal_rescue_enabled=conformal_rescue_enabled,
+                    conformal_rescue_min_pvalue=conformal_rescue_min_pvalue,
+                    conformal_rescue_risk_scale=conformal_rescue_risk_scale,
+                    conformal_rescue_min_agreement=conformal_rescue_min_agreement,
                     class_set_gate_enabled=class_set_gate_enabled,
                     old_gate_min_receivers=old_gate_min_receivers,
                     old_gate_max_effective_unknown_risk=old_gate_max_effective_unknown_risk,
@@ -1329,6 +1382,10 @@ def evaluate_collaborative_open_set_evidence(
                     seen_new_rescue_min_score=seen_new_rescue_min_score,
                     seen_new_rescue_min_margin=seen_new_rescue_min_margin,
                     seen_new_rescue_min_agreement=seen_new_rescue_min_agreement,
+                    conformal_rescue_enabled=conformal_rescue_enabled,
+                    conformal_rescue_min_pvalue=conformal_rescue_min_pvalue,
+                    conformal_rescue_risk_scale=conformal_rescue_risk_scale,
+                    conformal_rescue_min_agreement=conformal_rescue_min_agreement,
                     class_set_gate_enabled=class_set_gate_enabled,
                     old_gate_min_receivers=old_gate_min_receivers,
                     old_gate_max_effective_unknown_risk=old_gate_max_effective_unknown_risk,
@@ -1364,6 +1421,10 @@ def evaluate_collaborative_open_set_evidence(
                     seen_new_rescue_min_score=seen_new_rescue_min_score,
                     seen_new_rescue_min_margin=seen_new_rescue_min_margin,
                     seen_new_rescue_min_agreement=seen_new_rescue_min_agreement,
+                    conformal_rescue_enabled=conformal_rescue_enabled,
+                    conformal_rescue_min_pvalue=conformal_rescue_min_pvalue,
+                    conformal_rescue_risk_scale=conformal_rescue_risk_scale,
+                    conformal_rescue_min_agreement=conformal_rescue_min_agreement,
                     class_set_gate_enabled=class_set_gate_enabled,
                     old_gate_min_receivers=old_gate_min_receivers,
                     old_gate_max_effective_unknown_risk=old_gate_max_effective_unknown_risk,
@@ -1425,6 +1486,10 @@ def evaluate_collaborative_open_set_evidence(
         "seen_new_rescue_min_score": float(seen_new_rescue_min_score),
         "seen_new_rescue_min_margin": float(seen_new_rescue_min_margin),
         "seen_new_rescue_min_agreement": float(seen_new_rescue_min_agreement),
+        "conformal_rescue_enabled": bool(conformal_rescue_enabled),
+        "conformal_rescue_min_pvalue": float(conformal_rescue_min_pvalue),
+        "conformal_rescue_risk_scale": float(conformal_rescue_risk_scale),
+        "conformal_rescue_min_agreement": float(conformal_rescue_min_agreement),
         "class_set_gate_enabled": bool(class_set_gate_enabled),
         "old_gate_min_receivers": int(old_gate_min_receivers),
         "old_gate_max_effective_unknown_risk": float(old_gate_max_effective_unknown_risk),

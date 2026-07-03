@@ -1861,3 +1861,198 @@ python code\tests\test_collaborative_open_set_qknn_eval.py
 |`vrisk4_margin03_proto2_maha1_qknnonly`|再加`--virtual_unknown_risk_margin 0.03`|略提高边界风险强度，检查FAR/known折中。|
 
 成功判据仍不放宽：主目标为old 99%/floor95%、seen-new 97%/floor93%、unknown拒识99%；若未达到，只能报告诊断负证据和下一步路线，不能写成部署成功。
+
+## 2026-07-03SCORER-CVS-CPR最小实现
+
+目标：继续推进ADV3B02主线目标。上一轮virtual unknown独立风险组件能降低FAR，但`unknown_risk=max(...)`仍会把大量known事件推入defer/reject。本轮实现`SCORER-CVS-CPR`的最小可测版本：每个receiver基于target-old/seen-new support的leave-one-out同类分数分布，输出预测类`class_conformal_pvalue`；融合器在strong known、receiver一致性足够且p-value达标时启用`conformal_rescue`，降低effective unknown risk，而不使用target unknown query拟合阈值。
+
+本地改动：
+
+|文件|目的|
+|---|---|
+|`code/scripts/phase2_collaborative_open_set_qknn_eval.py`|新增`_label_score_samples_from_calibration()`和`_conformal_pvalue()`；CLI新增`--class_conformal_enabled`、`--class_conformal_min_support`；evidence记录`class_conformal_pvalue`、`class_conformal_support_count`；metadata记录每receiver/label的conformal校准样本数。|
+|`code/evaluation/collaborative_open_set_qknn_eval.py`|新增`conformal_rescue_enabled`、`conformal_rescue_min_pvalue`、`conformal_rescue_risk_scale`、`conformal_rescue_min_agreement`；`scorer_cvs`在强known且p-value达标时降低`effective_unknown_risk`；输出`conformal_rescue_applied`和`label_class_conformal_pvalue`。|
+|`code/tests/test_phase2_collaborative_open_set_qknn_eval.py`|新增测试确认p-value由support派生并写入evidence。|
+|`code/tests/test_collaborative_open_set_qknn_eval.py`|新增测试确认conformal rescue在真实protocol metadata下可接受强known样本。|
+
+本地与Git镜像验证：
+
+```powershell
+conda activate ssr-gpu
+python -m py_compile code\scripts\phase2_collaborative_open_set_qknn_eval.py code\evaluation\collaborative_open_set_qknn_eval.py
+python code\tests\test_phase2_collaborative_open_set_qknn_eval.py
+python code\tests\test_collaborative_open_set_qknn_eval.py
+```
+
+结果：本地和Git镜像均为`test_phase2_collaborative_open_set_qknn_eval.py`35 tests OK，`test_collaborative_open_set_qknn_eval.py`29 tests OK。`E:\type10-7\code`不是Git仓库，变更已同步到Git-backed镜像`E:\type10-7\github_publish\CVS-RFFI-repo`，待远端验证后提交。
+
+远端计划：同步4个代码/测试文件到N607，在`CVS-RFFI`环境复测；以`proto2_maha1_qknnonly`为基线，使用ADV3B02特征`runs/phase2_adv3b02_collab_open_set_qknn_full_20260703/features.npz`，跑`--collab_counts all`覆盖1到5个target receivers。候选：
+
+|候选|新增参数|目的|
+|---|---|---|
+|`cpr_p05_s05_proto2_maha1_qknnonly`|`--class_conformal_enabled --conformal_rescue_enabled --conformal_rescue_min_pvalue 0.05 --conformal_rescue_risk_scale 0.5`|宽松p-value救援，检查是否恢复known性能且FAR可控。|
+|`cpr_p20_s05_proto2_maha1_qknnonly`|`--class_conformal_enabled --conformal_rescue_enabled --conformal_rescue_min_pvalue 0.20 --conformal_rescue_risk_scale 0.5`|更严格p-value准入，降低unknown误接受风险。|
+|`cpr_p20_s03_vrisk4_proto2_maha1_qknnonly`|再加`--virtual_unknown_risk_enabled --virtual_unknown_risk_samples_per_class 4 --virtual_unknown_risk_temperature 0.05 --conformal_rescue_risk_scale 0.3`|结合virtual unknown风险和conformal rescue，检查FAR/known折中。|
+
+协议边界：conformal校准只使用target support的old/seen-new标签，不使用target unknown query；当前仍是`receiver_domain_ranked`诊断，不是严格同物理事件协同证明。
+
+远端验证：
+
+|项目|结果|
+|---|---|
+|N607预检|`tools\n607_ssh_preflight.ps1`通过，direct `N607`可达，远端project root可见，8张RTX3090均约`10/24576MiB`。|
+|同步目标|`/home/szu2070436088/2510044040/CV-SincNet/code/scripts/phase2_collaborative_open_set_qknn_eval.py`、`code/evaluation/collaborative_open_set_qknn_eval.py`、两个对应测试文件。|
+|远端环境|`/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python`，工作目录`/home/szu2070436088/2510044040/CV-SincNet`。|
+|远端测试|`test_phase2_collaborative_open_set_qknn_eval.py`35 tests OK；`test_collaborative_open_set_qknn_eval.py`29 tests OK。|
+|运行资源|`CUDA_VISIBLE_DEVICES=0`；运行前后GPU均约`10/24576MiB`，无训练进程占用。|
+|结果取回|JSON/CSV已取回到`E:\type10-7\automation_reports\CV-SincNet\phase2_adv3b02_collab_open_set_qknn_full_20260703\remote_artifacts`。|
+|SSH清理|SCP/SSH后检查为`NO_SSH_PROCESS`和`NO_N607_SSH_ESTABLISHED`。|
+
+远端命令基线：`--collab_counts all --k_shot 8 --query_per_class 20 --qknn_k 8 --candidate_class_top_m 2 --prototype_score_blend 2.0 --mahalanobis_score_blend 1.0 --support_calibration_mode leave_one_out --unknown_gate_mode support_envelope_evt --score_threshold_combine qknn_only --scenario_aware --radius_norm 0.3 --fusion_policy scorer_cvs --collaboration_policy adaptive_gain --label_fusion_policy vote_margin --receiver_reliability_policy deployment_prior --adaptive_gain_min_risk 0.60 --accept_margin_threshold 0.03 --consensus_gap_threshold 0.0 --consensus_score_threshold 0.30 --scorer_component_vote_threshold 0.25 --unknown_quantile 0.75 --evt_tail_quantile 0.80 --evt_temperature 0.05 --latency_budget_ms 12 --evidence_packet_bytes 120 --event_alignment_policy receiver_domain_ranked --support_selection_policy stable_first --seen_new_rescue_enabled --seen_new_rescue_risk_scale 0.5 --seen_new_rescue_min_score 0.30 --seen_new_rescue_min_margin 0.03 --seen_new_rescue_min_agreement 0.50 --class_set_gate_enabled --old_gate_min_receivers 2 --old_gate_max_effective_unknown_risk 0.8 --old_gate_max_component_agreement 0.2 --seen_new_gate_min_receivers 1 --seen_new_gate_max_effective_unknown_risk 0.6 --seen_new_gate_max_component_agreement 0.25 --seed 407044`。
+
+ADV3B02 CPR结果表：
+
+|候选|协同数|old_acc|min_old|seen_new_acc|min_seen|unknown_FAR|unknown_reject|defer|avg_rx|bytes/event|old_n|seen_n|unknown_n|
+|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+|`cpr_p05_s05_proto2_maha1_qknnonly`|1|0.0000|0.0000|0.2667|0.0500|0.0667|0.2833|0.7760|1.0000|120.0000|188|60|60|
+|`cpr_p05_s05_proto2_maha1_qknnonly`|2|0.6144|0.2000|0.4667|0.1500|0.1667|0.6667|0.1789|1.8577|222.9268|153|45|48|
+|`cpr_p05_s05_proto2_maha1_qknnonly`|3|0.8000|0.5500|0.5750|0.2000|0.1000|0.7000|0.1500|2.5550|306.6000|120|40|40|
+|`cpr_p05_s05_proto2_maha1_qknnonly`|4|0.8851|0.0000|0.7429|0.6000|0.2500|0.5625|0.0584|3.4156|409.8701|87|35|32|
+|`cpr_p05_s05_proto2_maha1_qknnonly`|5|0.8462|0.0000|0.4500|0.0000|0.3000|0.2000|0.2065|4.1522|498.2609|52|20|20|
+|`cpr_p15_s05_u098_proto2_maha1_qknnonly`|1|0.0000|0.0000|0.2667|0.0500|0.0667|0.2833|0.7695|1.0000|120.0000|188|60|60|
+|`cpr_p15_s05_u098_proto2_maha1_qknnonly`|2|0.5948|0.2000|0.4444|0.1500|0.1458|0.6875|0.1667|1.8333|220.0000|153|45|48|
+|`cpr_p15_s05_u098_proto2_maha1_qknnonly`|3|0.7917|0.5500|0.5500|0.2000|0.0500|0.7250|0.1200|2.5150|301.8000|120|40|40|
+|`cpr_p15_s05_u098_proto2_maha1_qknnonly`|4|0.8621|0.0000|0.7143|0.6000|0.1875|0.6250|0.0584|3.3506|402.0779|87|35|32|
+|`cpr_p15_s05_u098_proto2_maha1_qknnonly`|5|0.8269|0.0000|0.4500|0.0000|0.1500|0.4000|0.1957|4.0978|491.7391|52|20|20|
+|`cpr_p18_s05_u098_proto2_maha1_qknnonly`|1|0.0000|0.0000|0.2667|0.0500|0.0667|0.2833|0.7695|1.0000|120.0000|188|60|60|
+|`cpr_p18_s05_u098_proto2_maha1_qknnonly`|2|0.5948|0.2000|0.4444|0.1500|0.1458|0.6875|0.1667|1.8333|220.0000|153|45|48|
+|`cpr_p18_s05_u098_proto2_maha1_qknnonly`|3|0.7917|0.5500|0.5500|0.2000|0.0500|0.7250|0.1300|2.5150|301.8000|120|40|40|
+|`cpr_p18_s05_u098_proto2_maha1_qknnonly`|4|0.8621|0.0000|0.7143|0.6000|0.1875|0.6250|0.0584|3.3506|402.0779|87|35|32|
+|`cpr_p18_s05_u098_proto2_maha1_qknnonly`|5|0.8269|0.0000|0.4500|0.0000|0.1500|0.4000|0.1957|4.0978|491.7391|52|20|20|
+|`cpr_p20_s03_vrisk4_proto2_maha1_qknnonly`|1|0.0000|0.0000|0.2667|0.0500|0.0667|0.2833|0.7922|1.0000|120.0000|188|60|60|
+|`cpr_p20_s03_vrisk4_proto2_maha1_qknnonly`|2|0.5752|0.1500|0.4000|0.1000|0.1458|0.7083|0.1992|1.9268|231.2195|153|45|48|
+|`cpr_p20_s03_vrisk4_proto2_maha1_qknnonly`|3|0.7250|0.3000|0.5250|0.1000|0.0000|0.8250|0.1700|2.8050|336.6000|120|40|40|
+|`cpr_p20_s03_vrisk4_proto2_maha1_qknnonly`|4|0.8621|0.0000|0.6571|0.4000|0.0938|0.7188|0.1039|3.7662|451.9481|87|35|32|
+|`cpr_p20_s03_vrisk4_proto2_maha1_qknnonly`|5|0.8462|0.0000|0.4000|0.0000|0.0000|0.4000|0.2500|4.8261|579.1304|52|20|20|
+|`cpr_p20_s04_vrisk2_proto2_maha1_qknnonly`|1|0.0000|0.0000|0.2667|0.0500|0.0667|0.2833|0.7922|1.0000|120.0000|188|60|60|
+|`cpr_p20_s04_vrisk2_proto2_maha1_qknnonly`|2|0.5752|0.1500|0.4000|0.1000|0.1667|0.7083|0.2033|1.9268|231.2195|153|45|48|
+|`cpr_p20_s04_vrisk2_proto2_maha1_qknnonly`|3|0.7333|0.3500|0.5250|0.1000|0.0250|0.8250|0.1600|2.8050|336.6000|120|40|40|
+|`cpr_p20_s04_vrisk2_proto2_maha1_qknnonly`|4|0.8736|0.0000|0.6571|0.4000|0.1250|0.7188|0.0909|3.7662|451.9481|87|35|32|
+|`cpr_p20_s04_vrisk2_proto2_maha1_qknnonly`|5|0.8462|0.0000|0.4000|0.0000|0.0000|0.3000|0.2717|4.8152|577.8261|52|20|20|
+|`cpr_p20_s05_proto2_maha1_qknnonly`|1|0.0000|0.0000|0.2667|0.0500|0.0667|0.2833|0.7760|1.0000|120.0000|188|60|60|
+|`cpr_p20_s05_proto2_maha1_qknnonly`|2|0.6078|0.2000|0.4667|0.1500|0.1667|0.6667|0.1829|1.8577|222.9268|153|45|48|
+|`cpr_p20_s05_proto2_maha1_qknnonly`|3|0.8000|0.5500|0.5750|0.2000|0.0750|0.7000|0.1650|2.5550|306.6000|120|40|40|
+|`cpr_p20_s05_proto2_maha1_qknnonly`|4|0.8851|0.0000|0.7429|0.6000|0.2188|0.5625|0.0649|3.4156|409.8701|87|35|32|
+|`cpr_p20_s05_proto2_maha1_qknnonly`|5|0.8462|0.0000|0.4500|0.0000|0.3000|0.2000|0.2065|4.1522|498.2609|52|20|20|
+|`cpr_p20_s05_u098_proto2_maha1_qknnonly`|1|0.0000|0.0000|0.2667|0.0500|0.0667|0.2833|0.7695|1.0000|120.0000|188|60|60|
+|`cpr_p20_s05_u098_proto2_maha1_qknnonly`|2|0.5948|0.2000|0.4444|0.1500|0.1458|0.6875|0.1667|1.8333|220.0000|153|45|48|
+|`cpr_p20_s05_u098_proto2_maha1_qknnonly`|3|0.7917|0.5500|0.5500|0.2000|0.0500|0.7250|0.1300|2.5150|301.8000|120|40|40|
+|`cpr_p20_s05_u098_proto2_maha1_qknnonly`|4|0.8621|0.0000|0.7143|0.6000|0.1875|0.6250|0.0584|3.3506|402.0779|87|35|32|
+|`cpr_p20_s05_u098_proto2_maha1_qknnonly`|5|0.8269|0.0000|0.4500|0.0000|0.1500|0.4000|0.1957|4.0978|491.7391|52|20|20|
+|`cpr_p20_s05_u985_proto2_maha1_qknnonly`|1|0.0000|0.0000|0.2667|0.0500|0.0667|0.2833|0.7695|1.0000|120.0000|188|60|60|
+|`cpr_p20_s05_u985_proto2_maha1_qknnonly`|2|0.5948|0.2000|0.4444|0.1500|0.1667|0.6875|0.1748|1.8374|220.4878|153|45|48|
+|`cpr_p20_s05_u985_proto2_maha1_qknnonly`|3|0.7917|0.5500|0.5500|0.2000|0.0500|0.7250|0.1350|2.5150|301.8000|120|40|40|
+|`cpr_p20_s05_u985_proto2_maha1_qknnonly`|4|0.8621|0.0000|0.7143|0.6000|0.1875|0.6250|0.0584|3.3506|402.0779|87|35|32|
+|`cpr_p20_s05_u985_proto2_maha1_qknnonly`|5|0.8269|0.0000|0.4500|0.0000|0.1500|0.4000|0.1957|4.0978|491.7391|52|20|20|
+|`cpr_p20_s05_vote020_proto2_maha1_qknnonly`|1|0.0000|0.0000|0.2667|0.0500|0.0667|0.2833|0.7760|1.0000|120.0000|188|60|60|
+|`cpr_p20_s05_vote020_proto2_maha1_qknnonly`|2|0.6078|0.2000|0.4667|0.1500|0.1667|0.6667|0.1829|1.8577|222.9268|153|45|48|
+|`cpr_p20_s05_vote020_proto2_maha1_qknnonly`|3|0.8000|0.5500|0.5750|0.2000|0.0750|0.7000|0.1650|2.5550|306.6000|120|40|40|
+|`cpr_p20_s05_vote020_proto2_maha1_qknnonly`|4|0.8851|0.0000|0.7429|0.6000|0.2188|0.5625|0.0649|3.4156|409.8701|87|35|32|
+|`cpr_p20_s05_vote020_proto2_maha1_qknnonly`|5|0.8462|0.0000|0.4500|0.0000|0.3000|0.4000|0.1630|4.1522|498.2609|52|20|20|
+|`cpr_p50_s05_proto2_maha1_qknnonly`|1|0.0000|0.0000|0.2667|0.0500|0.0667|0.2833|0.7760|1.0000|120.0000|188|60|60|
+|`cpr_p50_s05_proto2_maha1_qknnonly`|2|0.5229|0.1000|0.4667|0.1500|0.1458|0.6667|0.2520|1.8577|222.9268|153|45|48|
+|`cpr_p50_s05_proto2_maha1_qknnonly`|3|0.7250|0.4500|0.5750|0.2000|0.0500|0.7000|0.2300|2.5550|306.6000|120|40|40|
+|`cpr_p50_s05_proto2_maha1_qknnonly`|4|0.8506|0.0000|0.7429|0.6000|0.1875|0.5625|0.0974|3.4156|409.8701|87|35|32|
+|`cpr_p50_s05_proto2_maha1_qknnonly`|5|0.8462|0.0000|0.4500|0.0000|0.1000|0.2000|0.2609|4.1522|498.2609|52|20|20|
+
+主结论：CPR确实恢复known接受率。`cpr_p20_s05_proto2_maha1_qknnonly`与`cpr_p20_s05_vote020_proto2_maha1_qknnonly`在协同数3达到`old_acc=0.8000`、`min_old=0.5500`、`seen_new_acc=0.5750`，但`unknown_FAR=0.0750`，尚未满足`<=0.05`安全线；`cpr_p15/p18/p20_s05_u098`协同数3把`unknown_FAR`压到`0.0500`，但`old_acc=0.7917`，低于OLD80阶段门槛。协同数4/5的旧类均值更高，但`min_old=0.0000`，说明至少一个旧类完全失效，不能作为主线成功证据。
+
+错误与不合理点：
+
+|问题|证据|处理边界|
+|---|---|---|
+|不能把协同数4的高均值当成功|多个候选协同数4的`old_acc>=0.85`，但`min_old=0.0000`且`unknown_FAR`多为`0.1875-0.2500`|只能诊断为类间不均衡，不能写成部署成功。|
+|不能把低FAR单点当成功|`cpr_p20_s03_vrisk4`协同数3`unknown_FAR=0.0000`，但`old_acc=0.7250`、`min_old=0.3000`|virtual unknown仍过度压制known，需要分层而非全局风险。|
+|协同数1几乎不可用|所有候选协同数1`old_acc=0.0000`，高defer|单接收机路径必须重设门控或降级为请求更多receiver。|
+|当前不是最终目标|最佳行仍远低于old 99%/floor95%、seen-new 97%/floor93%、unknown拒识99%|报告为阶段诊断进展，不得注册为deployment success。|
+
+下一步算法方向：从`SCORER-CVS-CPR`升级为class-conditional cost-aware CPR。具体是对每个label维护类条件p-value、class-wise floor risk和receiver-domain reliability，不再使用统一`effective_unknown_risk`缩放；同时给低floor旧类设置类级补偿/隔离阈值，避免协同数4/5出现均值提升但某类归零。下一轮候选应围绕`unknown_FAR=0.05`附近做joint objective：优先搜索`old_acc>=0.80 && min_old>0.55 && unknown_FAR<=0.05`，再优化seen-new。
+
+结果文件哈希：
+
+|文件|SHA256|
+|---|---|
+|`collab_open_set_qknn_scorer_cvs_evt_adaptive_gain_vote_margin_cpr_p05_s05_proto2_maha1_qknnonly.json`|`DEAD30A534661299194B2FD52F363779C87CE860291831E2C68DE63FFD568C98`|
+|`collab_open_set_qknn_scorer_cvs_evt_adaptive_gain_vote_margin_cpr_p05_s05_proto2_maha1_qknnonly_evidence.csv`|`0FCA42137442B05350FFDACBA74908CCD07699A6F896138C643593FBD5ADB49D`|
+|`collab_open_set_qknn_scorer_cvs_evt_adaptive_gain_vote_margin_cpr_p15_s05_u098_proto2_maha1_qknnonly.json`|`E6D587DF4F8C3D89215C9638B884DC6C9995534CA1843B20603F70A18A2E952E`|
+|`collab_open_set_qknn_scorer_cvs_evt_adaptive_gain_vote_margin_cpr_p15_s05_u098_proto2_maha1_qknnonly_evidence.csv`|`3B0916DD03A2103C33195CDDB14CD8C7292F045918C13F3B81550EA8F68BF877`|
+|`collab_open_set_qknn_scorer_cvs_evt_adaptive_gain_vote_margin_cpr_p18_s05_u098_proto2_maha1_qknnonly.json`|`1755E298A260330714F6D7B2ED96083F914A8CF9B2D29304DC84EF7E2E5AA8F9`|
+|`collab_open_set_qknn_scorer_cvs_evt_adaptive_gain_vote_margin_cpr_p18_s05_u098_proto2_maha1_qknnonly_evidence.csv`|`00627CD4C1CB375DD4DCBF4F337A5523A339FD02154B3FAD0A390633B3963D1B`|
+|`collab_open_set_qknn_scorer_cvs_evt_adaptive_gain_vote_margin_cpr_p20_s03_vrisk4_proto2_maha1_qknnonly.json`|`3E3C70314EF0F0DF4A415BC69841FC891318F31FCB43FFDC899CD68869D4FE6F`|
+|`collab_open_set_qknn_scorer_cvs_evt_adaptive_gain_vote_margin_cpr_p20_s03_vrisk4_proto2_maha1_qknnonly_evidence.csv`|`2B26C03EB640E59E86BAC8E58165929C8C51CFB0103B8C3E941D5835261BB2C5`|
+|`collab_open_set_qknn_scorer_cvs_evt_adaptive_gain_vote_margin_cpr_p20_s04_vrisk2_proto2_maha1_qknnonly.json`|`A173DB65B67914BBD93D04C53AC7044C9EF8D06649C93C5D44BA056A6761DC14`|
+|`collab_open_set_qknn_scorer_cvs_evt_adaptive_gain_vote_margin_cpr_p20_s04_vrisk2_proto2_maha1_qknnonly_evidence.csv`|`335DBC944AFFE588CE9EB65FD4698FD8FF1A63E0D9D7F3917268FEC62C2C8A34`|
+|`collab_open_set_qknn_scorer_cvs_evt_adaptive_gain_vote_margin_cpr_p20_s05_proto2_maha1_qknnonly.json`|`9F6BDFE40C90F67C75E67A8DA914A7263CAB09AA6E45D2C2B0D0FF62BF273D01`|
+|`collab_open_set_qknn_scorer_cvs_evt_adaptive_gain_vote_margin_cpr_p20_s05_proto2_maha1_qknnonly_evidence.csv`|`6BD7A9271AA27BD952E55BDB5B82A30BD8F6F16CAC9A08B39CA89399330139B2`|
+|`collab_open_set_qknn_scorer_cvs_evt_adaptive_gain_vote_margin_cpr_p20_s05_u098_proto2_maha1_qknnonly.json`|`4F818F0CE3467CBF9F8D9A40B2E9F7B326ED49ED020EC8198B5E82186FF87724`|
+|`collab_open_set_qknn_scorer_cvs_evt_adaptive_gain_vote_margin_cpr_p20_s05_u098_proto2_maha1_qknnonly_evidence.csv`|`BF8644237511AB6E28669D700D2A7E1ECACC9092E08D77F045194906A0E7DF96`|
+|`collab_open_set_qknn_scorer_cvs_evt_adaptive_gain_vote_margin_cpr_p20_s05_u985_proto2_maha1_qknnonly.json`|`D1D8A78C78C744CFCE9B82B3ABB573C3AD4E17D1251CA4569E5B0684C92C6E9A`|
+|`collab_open_set_qknn_scorer_cvs_evt_adaptive_gain_vote_margin_cpr_p20_s05_u985_proto2_maha1_qknnonly_evidence.csv`|`03EFB59D318F97E5E3DE89262F6DA15E7DE996C72B245C97F39044C51A8CC05B`|
+|`collab_open_set_qknn_scorer_cvs_evt_adaptive_gain_vote_margin_cpr_p20_s05_vote020_proto2_maha1_qknnonly.json`|`39E5B0A3CF6369ADA918567FF929FA05084E4D3AAE0B0EB8B8450C1C32CE747C`|
+|`collab_open_set_qknn_scorer_cvs_evt_adaptive_gain_vote_margin_cpr_p20_s05_vote020_proto2_maha1_qknnonly_evidence.csv`|`821A01EFA318400489C8DF8BD38017B6ADC450FFBC233A6DE7447B7BD4722914`|
+|`collab_open_set_qknn_scorer_cvs_evt_adaptive_gain_vote_margin_cpr_p50_s05_proto2_maha1_qknnonly.json`|`387F362A30630F9AFDB0963A0AECCFF6CAD56B444795DFEF09196E468003E745`|
+|`collab_open_set_qknn_scorer_cvs_evt_adaptive_gain_vote_margin_cpr_p50_s05_proto2_maha1_qknnonly_evidence.csv`|`07994D21FB243D243D14A70737BE3999C5DA9DE12556BB62B0C9E7229F20CF70`|
+
+## 2026-07-03CPR review修复与固定版复跑
+
+子agent review指出P1问题：原`conformal_rescue`在强known且p-value达标时直接缩放`effective_unknown_risk`，可能把高风险unknown救成known接受。修复后，只有当`risk_component_agreement < scorer_component_vote_threshold`时CPR才允许缩放风险；多风险通道一致高风险时fail closed，最多defer/reject，不直接accept。另将`class_conformal_min_support`默认值从1提高到2，避免K=1/LOO时p-value退化为粗粒度救援门。
+
+新增回归测试：
+
+|文件|测试|
+|---|---|
+|`code/tests/test_collaborative_open_set_qknn_eval.py`|`test_scorer_cvs_conformal_rescue_does_not_accept_multichannel_unknown`确认unknown高p-value但多通道高风险时不会被accept。|
+|`code/tests/test_phase2_collaborative_open_set_qknn_eval.py`|`test_class_conformal_defaults_fail_closed_with_single_support`确认默认min_support=2时K=1类p-value为0、support_count为0。|
+
+验证结果：
+
+|位置|命令|结果|
+|---|---|---|
+|本地`E:\type10-7`|`conda activate ssr-gpu; python -m py_compile ...; python code\tests\test_phase2_collaborative_open_set_qknn_eval.py; python code\tests\test_collaborative_open_set_qknn_eval.py`|36 tests OK和30 tests OK。|
+|Git镜像|同上|36 tests OK和30 tests OK。|
+|N607|`/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python`执行py_compile和两组测试|36 tests OK和30 tests OK。|
+
+远端同步：四个代码/测试文件已重新scp到N607。复测后检查为`NO_SSH_PROCESS`和`NO_N607_SSH_ESTABLISHED`。修复版复跑使用`CUDA_VISIBLE_DEVICES=0`，最终GPU读数为8张RTX3090均`10 MiB/24576 MiB`。
+
+固定版关键候选结果：
+
+|候选|协同数|old_acc|min_old|seen_new_acc|min_seen|unknown_FAR|unknown_reject|defer|avg_rx|bytes/event|
+|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+|`cpr_p15_s05_u098_proto2_maha1_qknnonly_fixed`|1|0.0000|0.0000|0.2667|0.0500|0.0667|0.2833|0.7695|1.0000|120.0000|
+|`cpr_p15_s05_u098_proto2_maha1_qknnonly_fixed`|2|0.5948|0.2000|0.4444|0.1500|0.1458|0.6875|0.1667|1.8333|220.0000|
+|`cpr_p15_s05_u098_proto2_maha1_qknnonly_fixed`|3|0.7917|0.5500|0.5500|0.2000|0.0500|0.7250|0.1200|2.5150|301.8000|
+|`cpr_p15_s05_u098_proto2_maha1_qknnonly_fixed`|4|0.8621|0.0000|0.7143|0.6000|0.1875|0.6250|0.0584|3.3506|402.0779|
+|`cpr_p15_s05_u098_proto2_maha1_qknnonly_fixed`|5|0.8269|0.0000|0.4500|0.0000|0.1500|0.4000|0.1957|4.0978|491.7391|
+|`cpr_p20_s04_vrisk2_proto2_maha1_qknnonly_fixed`|1|0.0000|0.0000|0.2667|0.0500|0.0667|0.2833|0.7922|1.0000|120.0000|
+|`cpr_p20_s04_vrisk2_proto2_maha1_qknnonly_fixed`|2|0.5752|0.1500|0.4000|0.1000|0.1667|0.7083|0.2033|1.9268|231.2195|
+|`cpr_p20_s04_vrisk2_proto2_maha1_qknnonly_fixed`|3|0.7333|0.3500|0.5250|0.1000|0.0250|0.8250|0.1600|2.8050|336.6000|
+|`cpr_p20_s04_vrisk2_proto2_maha1_qknnonly_fixed`|4|0.8736|0.0000|0.6571|0.4000|0.1250|0.7188|0.0909|3.7662|451.9481|
+|`cpr_p20_s04_vrisk2_proto2_maha1_qknnonly_fixed`|5|0.8462|0.0000|0.4000|0.0000|0.0000|0.3000|0.2717|4.8152|577.8261|
+|`cpr_p20_s05_proto2_maha1_qknnonly_fixed`|1|0.0000|0.0000|0.2667|0.0500|0.0667|0.2833|0.7760|1.0000|120.0000|
+|`cpr_p20_s05_proto2_maha1_qknnonly_fixed`|2|0.6078|0.2000|0.4667|0.1500|0.1667|0.6667|0.1829|1.8577|222.9268|
+|`cpr_p20_s05_proto2_maha1_qknnonly_fixed`|3|0.8000|0.5500|0.5750|0.2000|0.0750|0.7000|0.1650|2.5550|306.6000|
+|`cpr_p20_s05_proto2_maha1_qknnonly_fixed`|4|0.8851|0.0000|0.7429|0.6000|0.2188|0.5625|0.0649|3.4156|409.8701|
+|`cpr_p20_s05_proto2_maha1_qknnonly_fixed`|5|0.8462|0.0000|0.4500|0.0000|0.3000|0.2000|0.2065|4.1522|498.2609|
+
+固定版结论：关键候选数值与pre-fix主表一致，说明P1保护没有改变这些ADV3B02候选的聚合输出，但修复后的安全边界更严格。当前最佳折中仍是二选一：`cpr_p20_s05`协同3达到`old_acc=0.8000`但`unknown_FAR=0.0750`；`cpr_p15_s05_u098`协同3达到`unknown_FAR=0.0500`但`old_acc=0.7917`。仍不能声明Stage2-C成功或部署成功。
+
+固定版结果SHA256：
+
+|文件|SHA256|
+|---|---|
+|`collab_open_set_qknn_scorer_cvs_evt_adaptive_gain_vote_margin_adv3b02_cpr_p15_s05_u098_proto2_maha1_qknnonly_fixed.json`|`B869D652AD431FFE471A01F694A50E50A4458C7138007405CC1BA7C1040BDFFB`|
+|`collab_open_set_qknn_scorer_cvs_evt_adaptive_gain_vote_margin_adv3b02_cpr_p15_s05_u098_proto2_maha1_qknnonly_fixed_evidence.csv`|`06CF788316C1F5642C15D89F7ADF9A368AD08907496C2A26AA4ED33F7A90E4A0`|
+|`collab_open_set_qknn_scorer_cvs_evt_adaptive_gain_vote_margin_adv3b02_cpr_p20_s04_vrisk2_proto2_maha1_qknnonly_fixed.json`|`A2F047C616E7237F0CD52DEABC9573F52CBFFDBAF37CEE9F9252600659A97513`|
+|`collab_open_set_qknn_scorer_cvs_evt_adaptive_gain_vote_margin_adv3b02_cpr_p20_s04_vrisk2_proto2_maha1_qknnonly_fixed_evidence.csv`|`88851140B9D85F870600620B09ACCA91D7014236A76DD6305999D611D445C149`|
+|`collab_open_set_qknn_scorer_cvs_evt_adaptive_gain_vote_margin_adv3b02_cpr_p20_s05_proto2_maha1_qknnonly_fixed.json`|`B8EDFBE14F441553D48F657C5C6F93D63C282FBB2350B492AB37E3200EE432F1`|
+|`collab_open_set_qknn_scorer_cvs_evt_adaptive_gain_vote_margin_adv3b02_cpr_p20_s05_proto2_maha1_qknnonly_fixed_evidence.csv`|`CA51EA4C0FF2D9F9EE99B935F946F76EB53A847958301E7D5686EE871BB19A06`|

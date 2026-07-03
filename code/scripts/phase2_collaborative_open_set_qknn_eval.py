@@ -912,6 +912,60 @@ def _label_thresholds_from_calibration(
     return thresholds
 
 
+def _label_score_samples_from_calibration(
+    memory: QknnMemory,
+    support_features: np.ndarray,
+    support_labels: Sequence[str],
+    *,
+    top_k: int,
+    support_scenarios: Sequence[str] | None = None,
+    scenario_aware: bool = False,
+    radius_norm: float = 0.0,
+    old_bias: float = 0.0,
+    candidate_class_top_m: int = 0,
+    support_calibration_mode: str = "self",
+    prototype_score_blend: float = 0.0,
+    mahalanobis_score_blend: float = 0.0,
+    mahalanobis_score_temperature: float = 0.20,
+    min_support: int = 1,
+) -> dict[str, list[float]]:
+    labels_arr = np.asarray([canonical_tx_id(label) for label in support_labels], dtype=object)
+    calibration_mode = str(support_calibration_mode or "self").strip().lower()
+    if calibration_mode not in {"self", "leave_one_out", "loo"}:
+        raise ValueError("support_calibration_mode must be self or leave_one_out")
+    exclude = range(int(support_features.shape[0])) if calibration_mode in {"leave_one_out", "loo"} else None
+    score_labels, support_score_matrix = _qknn_label_score_matrix(
+        memory,
+        support_features,
+        top_k=top_k,
+        query_scenarios=support_scenarios,
+        scenario_aware=scenario_aware,
+        radius_norm=radius_norm,
+        old_bias=old_bias,
+        candidate_class_top_m=candidate_class_top_m,
+        exclude_support_indices=exclude,
+        prototype_score_blend=prototype_score_blend,
+        mahalanobis_score_blend=mahalanobis_score_blend,
+        mahalanobis_score_temperature=mahalanobis_score_temperature,
+    )
+    label_to_col = {str(label): int(pos) for pos, label in enumerate(score_labels.tolist())}
+    out: dict[str, list[float]] = {}
+    for label in sorted({str(label) for label in labels_arr.tolist()}):
+        col = label_to_col.get(label)
+        values = support_score_matrix[labels_arr == label, col] if col is not None else np.asarray([], dtype=np.float64)
+        if values.size >= max(1, int(min_support)):
+            out[label] = [float(value) for value in values.tolist()]
+    return out
+
+
+def _conformal_pvalue(score: float, calibration_scores: Sequence[float] | None) -> float:
+    values = [float(value) for value in (calibration_scores or []) if np.isfinite(float(value))]
+    if not values:
+        return 0.0
+    leq = sum(value <= float(score) for value in values)
+    return float(leq + 1) / float(len(values) + 1)
+
+
 def _unknown_risk(scores: np.ndarray, threshold: float, *, temperature: float) -> np.ndarray:
     temp = max(float(temperature), 1e-6)
     z = (np.asarray(scores, dtype=np.float64) - float(threshold)) / temp
@@ -1146,6 +1200,8 @@ def build_collaborative_evidence(
     class_score_threshold_enabled: bool = False,
     class_score_threshold_quantile: float | None = None,
     class_score_threshold_min_support: int = 1,
+    class_conformal_enabled: bool = False,
+    class_conformal_min_support: int = 2,
     virtual_unknown_calibration_enabled: bool = False,
     virtual_unknown_samples_per_class: int = 0,
     virtual_unknown_mix_alpha: float = 0.50,
@@ -1198,6 +1254,7 @@ def build_collaborative_evidence(
     receiver_memories: dict[str, QknnMemory] = {}
     receiver_thresholds: dict[str, float] = {}
     receiver_class_thresholds: dict[str, dict[str, float]] = {}
+    receiver_class_conformal_scores: dict[str, dict[str, list[float]]] = {}
     receiver_virtual_unknowns: dict[str, np.ndarray] = {}
     receiver_virtual_unknown_counts: dict[str, int] = {}
     evidence: list[dict[str, Any]] = []
@@ -1379,9 +1436,28 @@ def build_collaborative_evidence(
                 mahalanobis_score_temperature=mahalanobis_score_temp,
                 min_support=int(class_score_threshold_min_support),
             )
+        conformal_scores: dict[str, list[float]] = {}
+        if bool(class_conformal_enabled):
+            conformal_scores = _label_score_samples_from_calibration(
+                memory,
+                features[np.asarray(support_indices, dtype=int)],
+                support_labels,
+                top_k=qknn_k,
+                support_scenarios=[_scenario_of(payload, int(i)) for i in support_indices],
+                scenario_aware=bool(scenario_aware),
+                radius_norm=float(radius_norm),
+                old_bias=float(old_bias),
+                candidate_class_top_m=int(candidate_class_top_m),
+                support_calibration_mode=str(support_calibration_mode),
+                prototype_score_blend=prototype_blend,
+                mahalanobis_score_blend=mahalanobis_blend,
+                mahalanobis_score_temperature=mahalanobis_score_temp,
+                min_support=int(class_conformal_min_support),
+            )
         receiver_memories[rx] = memory
         receiver_thresholds[rx] = threshold
         receiver_class_thresholds[rx] = class_thresholds
+        receiver_class_conformal_scores[rx] = conformal_scores
         receiver_virtual_unknown_counts[rx] = int(virtual_features.shape[0])
         receiver_virtual_unknowns[rx] = virtual_features if bool(virtual_unknown_risk_enabled) else np.zeros(
             (0, int(memory.centroids.shape[1])),
@@ -1528,6 +1604,10 @@ def build_collaborative_evidence(
                         memory.score_threshold,
                         str(score_threshold_combine),
                     )
+                    class_conformal_pvalue = _conformal_pvalue(
+                        float(score[0]),
+                        receiver_class_conformal_scores.get(rx, {}).get(str(pred[0])),
+                    )
                     (
                         risk,
                         score_risk,
@@ -1600,6 +1680,11 @@ def build_collaborative_evidence(
                             "class_score_threshold": float(class_threshold_value) if class_threshold_value is not None else 0.0,
                             "class_score_threshold_enabled": int(bool(class_score_threshold_enabled)),
                             "score_threshold_source": threshold_source,
+                            "class_conformal_enabled": int(bool(class_conformal_enabled)),
+                            "class_conformal_pvalue": float(class_conformal_pvalue) if bool(class_conformal_enabled) else 0.0,
+                            "class_conformal_support_count": int(
+                                len(receiver_class_conformal_scores.get(rx, {}).get(str(pred[0]), []))
+                            ),
                             "virtual_unknown_calibration_enabled": int(bool(virtual_unknown_calibration_enabled)),
                             "virtual_unknown_risk_enabled": int(bool(virtual_unknown_risk_enabled)),
                             "virtual_unknown_count": int(
@@ -1668,6 +1753,12 @@ def build_collaborative_evidence(
             support_quantile if class_score_threshold_quantile is None else class_score_threshold_quantile
         ),
         "class_score_threshold_min_support": int(class_score_threshold_min_support),
+        "class_conformal_enabled": bool(class_conformal_enabled),
+        "class_conformal_min_support": int(class_conformal_min_support),
+        "receiver_class_conformal_counts": {
+            str(rx): {str(label): int(len(values)) for label, values in scores.items()}
+            for rx, scores in receiver_class_conformal_scores.items()
+        },
         "virtual_unknown_calibration_enabled": bool(virtual_unknown_calibration_enabled),
         "virtual_unknown_samples_per_class": int(virtual_unknown_samples_per_class),
         "virtual_unknown_mix_alpha": float(virtual_unknown_mix_alpha),
@@ -1758,6 +1849,8 @@ def run_evaluation(args: argparse.Namespace) -> dict[str, Any]:
         class_score_threshold_enabled=bool(args.class_score_threshold_enabled),
         class_score_threshold_quantile=args.class_score_threshold_quantile,
         class_score_threshold_min_support=int(args.class_score_threshold_min_support),
+        class_conformal_enabled=bool(args.class_conformal_enabled),
+        class_conformal_min_support=int(args.class_conformal_min_support),
         virtual_unknown_calibration_enabled=bool(args.virtual_unknown_calibration_enabled),
         virtual_unknown_samples_per_class=int(args.virtual_unknown_samples_per_class),
         virtual_unknown_mix_alpha=float(args.virtual_unknown_mix_alpha),
@@ -1801,6 +1894,10 @@ def run_evaluation(args: argparse.Namespace) -> dict[str, Any]:
         seen_new_rescue_min_score=float(args.seen_new_rescue_min_score),
         seen_new_rescue_min_margin=float(args.seen_new_rescue_min_margin),
         seen_new_rescue_min_agreement=float(args.seen_new_rescue_min_agreement),
+        conformal_rescue_enabled=bool(args.conformal_rescue_enabled),
+        conformal_rescue_min_pvalue=float(args.conformal_rescue_min_pvalue),
+        conformal_rescue_risk_scale=float(args.conformal_rescue_risk_scale),
+        conformal_rescue_min_agreement=float(args.conformal_rescue_min_agreement),
         class_set_gate_enabled=bool(args.class_set_gate_enabled),
         old_gate_min_receivers=int(args.old_gate_min_receivers),
         old_gate_max_effective_unknown_risk=float(args.old_gate_max_effective_unknown_risk),
@@ -1886,6 +1983,8 @@ def parse_args() -> argparse.Namespace:
     p.add_argument("--class_score_threshold_enabled", action="store_true")
     p.add_argument("--class_score_threshold_quantile", type=float, default=None)
     p.add_argument("--class_score_threshold_min_support", type=int, default=1)
+    p.add_argument("--class_conformal_enabled", action="store_true")
+    p.add_argument("--class_conformal_min_support", type=int, default=2)
     p.add_argument("--virtual_unknown_calibration_enabled", action="store_true")
     p.add_argument("--virtual_unknown_samples_per_class", type=int, default=0)
     p.add_argument("--virtual_unknown_mix_alpha", type=float, default=0.50)
@@ -1920,6 +2019,10 @@ def parse_args() -> argparse.Namespace:
     p.add_argument("--seen_new_rescue_min_score", type=float, default=0.0)
     p.add_argument("--seen_new_rescue_min_margin", type=float, default=0.0)
     p.add_argument("--seen_new_rescue_min_agreement", type=float, default=0.5)
+    p.add_argument("--conformal_rescue_enabled", action="store_true")
+    p.add_argument("--conformal_rescue_min_pvalue", type=float, default=0.05)
+    p.add_argument("--conformal_rescue_risk_scale", type=float, default=0.5)
+    p.add_argument("--conformal_rescue_min_agreement", type=float, default=0.5)
     p.add_argument("--class_set_gate_enabled", action="store_true")
     p.add_argument("--old_gate_min_receivers", type=int, default=1)
     p.add_argument("--old_gate_max_effective_unknown_risk", type=float, default=1.0)
