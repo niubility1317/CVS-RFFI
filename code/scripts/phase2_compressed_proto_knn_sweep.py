@@ -40,6 +40,8 @@ class QuantizedKnnMemory:
     class_prototype_labels: np.ndarray
     counts: dict[str, int]
     quant_bits: int
+    qknn_select_mode: str = "all"
+    qknn_keep_per_class: int = 0
     stored_support_count: int = 0
 
     @property
@@ -223,6 +225,73 @@ def _loo_knn1_agreement_weights(
     return np.asarray(weights, dtype=np.float64)
 
 
+def _classwise_select_support_indices(
+    features: np.ndarray,
+    labels: np.ndarray,
+    *,
+    mode: str = "all",
+    keep_per_class: int = 0,
+) -> np.ndarray:
+    mode = str(mode)
+    keep_per_class = int(keep_per_class)
+    if mode == "all" or keep_per_class <= 0:
+        return np.arange(features.shape[0], dtype=int)
+    if mode not in {"central", "margin", "purity", "hybrid"}:
+        raise ValueError(f"Unsupported qknn_select_mode: {mode}")
+
+    features = _normalize_rows(features)
+    labels = np.asarray(labels, dtype=object).astype(str)
+    sorted_labels = sorted({str(label) for label in labels.tolist()})
+    class_means = {
+        label: _normalize_rows(features[labels == label].mean(axis=0, keepdims=True))[0] for label in sorted_labels
+    }
+    loo_teacher = _loo_knn1_teacher_labels(features, labels)
+    selected: list[int] = []
+
+    for label in sorted_labels:
+        class_idx = np.where(labels == label)[0]
+        keep = min(keep_per_class, int(class_idx.size))
+        if keep >= class_idx.size:
+            selected.extend(class_idx.tolist())
+            continue
+
+        class_features = features[class_idx]
+        own = class_features @ class_means[label]
+        other_means = [mean for other_label, mean in class_means.items() if other_label != label]
+        if other_means:
+            other = np.max(class_features @ np.vstack(other_means).T, axis=1)
+            margin = own - other
+        else:
+            margin = own
+        agreement = (loo_teacher[class_idx] == label).astype(np.float64)
+        if mode == "central":
+            quality = own
+        elif mode == "margin":
+            quality = margin
+        else:
+            quality = margin + 0.02 * agreement + 0.005 * own
+
+        if mode != "hybrid":
+            order = np.lexsort((class_idx, -quality))
+            selected.extend(class_idx[order[:keep]].tolist())
+            continue
+
+        pool_count = min(class_idx.size, max(keep * 2, keep + 1))
+        pool_order = np.lexsort((class_idx, -quality))[:pool_count]
+        pool_idx = class_idx[pool_order]
+        pool_features = features[pool_idx]
+        picked_local = [0]
+        while len(picked_local) < keep:
+            sims = pool_features @ pool_features[np.asarray(picked_local, dtype=int)].T
+            diversity = 1.0 - np.max(sims, axis=1)
+            diversity[np.asarray(picked_local, dtype=int)] = -np.inf
+            score = quality[pool_order] + 0.05 * diversity
+            picked_local.append(int(np.argmax(score)))
+        selected.extend(pool_idx[np.asarray(picked_local, dtype=int)].tolist())
+
+    return np.asarray(sorted(selected), dtype=int)
+
+
 def build_compressed_memory(
     support_features: np.ndarray,
     support_labels: np.ndarray,
@@ -300,11 +369,21 @@ def build_quantized_knn_memory(
     *,
     old_labels: set[str] | None = None,
     quant_bits: int = 8,
+    qknn_select_mode: str = "all",
+    qknn_keep_per_class: int = 0,
 ) -> QuantizedKnnMemory:
     if int(quant_bits) != 8:
         raise ValueError("Only int8 quantized KNN memory is currently supported")
     features = _normalize_rows(support_features)
     labels = np.asarray(support_labels, dtype=object).astype(str)
+    selected_idx = _classwise_select_support_indices(
+        features,
+        labels,
+        mode=qknn_select_mode,
+        keep_per_class=qknn_keep_per_class,
+    )
+    features = features[selected_idx]
+    labels = labels[selected_idx]
     scale = float((2 ** (int(quant_bits) - 1)) - 1)
     quantized = np.clip(np.rint(features * scale), -scale, scale).astype(np.int8)
     old = set(old_labels or set())
@@ -322,6 +401,8 @@ def build_quantized_knn_memory(
         class_prototype_labels=np.asarray(sorted_labels, dtype=object),
         counts=counts,
         quant_bits=int(quant_bits),
+        qknn_select_mode=str(qknn_select_mode),
+        qknn_keep_per_class=int(qknn_keep_per_class),
     )
 
 
@@ -429,6 +510,8 @@ def _evaluate_combo(
     weight_scale: float,
     seed: int,
     quant_bits: int,
+    qknn_select_mode: str,
+    qknn_keep_per_class: int,
 ) -> dict[str, Any]:
     support_indices: list[int] = []
     support_labels: list[str] = []
@@ -458,6 +541,8 @@ def _evaluate_combo(
             support_label_array,
             old_labels=old_labels,
             quant_bits=quant_bits,
+            qknn_select_mode=qknn_select_mode,
+            qknn_keep_per_class=qknn_keep_per_class,
         )
         margin_switch_gate = weight_scale if prototype_weight_mode == "margin_switch" else None
         old_bias_gate = (
@@ -476,7 +561,12 @@ def _evaluate_combo(
             gate_suffix = f"_msw{weight_scale:g}"
         else:
             gate_suffix = f"_ogate{weight_scale:g}" if float(weight_scale) > 0.0 else ""
-        method = f"qknn{quant_bits}_k{prototypes_per_class}_oldbias{old_bias:g}_pblend{radius_weight:g}{gate_suffix}"
+        select_suffix = (
+            ""
+            if qknn_select_mode == "all" or int(qknn_keep_per_class) <= 0
+            else f"_sel{qknn_select_mode}{int(qknn_keep_per_class)}"
+        )
+        method = f"qknn{quant_bits}_k{prototypes_per_class}_oldbias{old_bias:g}_pblend{radius_weight:g}{gate_suffix}{select_suffix}"
         stored_prototype_count = int(len(memory.class_prototype_labels)) if float(radius_weight) != 0.0 else 0
         stored_weight_count = 0
         stored_quantized_count = memory.stored_quantized_count
@@ -561,6 +651,8 @@ def main() -> None:
     parser.add_argument("--radius_weight_grid", default="0,0.25,0.5")
     parser.add_argument("--weight_scale_grid", default="0")
     parser.add_argument("--quant_bits", type=int, default=8)
+    parser.add_argument("--qknn_select_mode_grid", default="all")
+    parser.add_argument("--qknn_keep_per_class_grid", default="0")
     args = parser.parse_args()
 
     data = np.load(Path(args.feature_npz), allow_pickle=True)
@@ -592,25 +684,39 @@ def main() -> None:
                     for old_bias in _parse_float_csv(args.old_bias_grid):
                         for radius_weight in _parse_float_csv(args.radius_weight_grid):
                             for weight_scale in _parse_float_csv(args.weight_scale_grid):
-                                rows.append(
-                                    _evaluate_combo(
-                                        tuple(combo),
-                                        features,
-                                        tx_ids,
-                                        old_splits,
-                                        new_splits,
-                                        args.old_target,
-                                        args.seen_new_target,
-                                        prototypes_per_class,
-                                        prototype_mode,
-                                        prototype_weight_mode,
-                                        old_bias,
-                                        radius_weight,
-                                        weight_scale,
-                                        args.seed,
-                                        args.quant_bits,
-                                    )
+                                qknn_select_modes = (
+                                    _parse_csv(args.qknn_select_mode_grid)
+                                    if prototype_mode == "quantized_knn"
+                                    else ["all"]
                                 )
+                                qknn_keep_values = (
+                                    [int(v) for v in _parse_csv(args.qknn_keep_per_class_grid)]
+                                    if prototype_mode == "quantized_knn"
+                                    else [0]
+                                )
+                                for qknn_select_mode in qknn_select_modes:
+                                    for qknn_keep_per_class in qknn_keep_values:
+                                        rows.append(
+                                            _evaluate_combo(
+                                                tuple(combo),
+                                                features,
+                                                tx_ids,
+                                                old_splits,
+                                                new_splits,
+                                                args.old_target,
+                                                args.seen_new_target,
+                                                prototypes_per_class,
+                                                prototype_mode,
+                                                prototype_weight_mode,
+                                                old_bias,
+                                                radius_weight,
+                                                weight_scale,
+                                                args.seed,
+                                                args.quant_bits,
+                                                qknn_select_mode,
+                                                qknn_keep_per_class,
+                                            )
+                                        )
     rows.sort(
         key=lambda row: (
             bool(row["passes_joint_target"]),

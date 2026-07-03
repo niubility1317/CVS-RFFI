@@ -270,3 +270,36 @@ def test_quantized_knn_margin_switch_uses_topk_only_when_top1_is_uncertain():
     assert predict_quantized_knn_memory(memory, uncertain_query, k=1).tolist() == ["old-a"]
     assert predict_quantized_knn_memory(memory, uncertain_query, k=3, margin_switch_gate=0.02).tolist() == ["new-b"]
     assert predict_quantized_knn_memory(memory, confident_query, k=3, margin_switch_gate=0.02).tolist() == ["old-a"]
+
+
+def test_quantized_knn_purity_selection_drops_ambiguous_support_code():
+    support = np.asarray(
+        [
+            [1.0, 0.0],
+            [0.98, 0.02],
+            [0.0, 1.0],
+            [0.02, 0.98],
+            [0.10, 0.995],
+            [0.92, 0.20],
+        ],
+        dtype=np.float64,
+    )
+    labels = np.asarray(["old-a", "old-a", "new-b", "new-b", "new-b", "new-b"], dtype=object)
+    query = np.asarray([[0.90, 0.18]], dtype=np.float64)
+
+    full_memory = build_quantized_knn_memory(support, labels, old_labels={"old-a"}, quant_bits=8)
+    pruned_memory = build_quantized_knn_memory(
+        support,
+        labels,
+        old_labels={"old-a"},
+        quant_bits=8,
+        qknn_select_mode="purity",
+        qknn_keep_per_class=2,
+    )
+
+    assert full_memory.stored_quantized_count == 6
+    assert pruned_memory.stored_quantized_count == 4
+    assert predict_quantized_knn_memory(full_memory, query, k=1).tolist() == ["new-b"]
+    assert predict_quantized_knn_memory(pruned_memory, query, k=1).tolist() == ["old-a"]
+    assert "support_features" not in pruned_memory.__dict__
+    assert "support_labels" not in pruned_memory.__dict__
