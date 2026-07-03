@@ -329,3 +329,54 @@ N607远端验证：使用`CVS-RFFI`环境，`py_compile`通过，两组单测分
 |5|0.5400|0.0000|0.3000|0.0000|0.0500|0.4000|0.5111|0.0000|0.5111|0.4714|480|0.0704|`3-8`|known不足且缺类|
 
 判定：SCORER-CVS组件投票实现了更现实的证据包协同、时延预算和`request_more`输出，但当前ADV3B02特征空间中的open-set separability仍不足。该结果继续标为诊断负结果，不能作为Stage2-C成功或部署成功证据。下一步不应继续只调融合阈值，应回到节点级可分性：加入class-conditional Mahalanobis/LOF、EVT tail或oldness gate，并优先补严格同事件`event_id`导出；否则`receiver_domain_ranked`只能支撑receiver-domain ensemble诊断。
+
+## 2026-07-03 Mahalanobis节点级风险通道
+
+根据上一轮结论，本次不再只调融合阈值，而是在节点本地support memory中加入class-conditional diagonal Mahalanobis统计。每个receiver基于本地`target-old + seen-new` support估计每类centroid、对角方差、Mahalanobis support距离分位阈值；query侧输出`mahalanobis_risk`，并可通过`unknown_gate_mode=mahalanobis`或`support_envelope_mahalanobis`进入节点级unknown风险。融合端将`mahalanobis_risk`作为SCORER-CVS第四个组件参与`scorer_component_vote_threshold`，避免单一风险通道直接决定拒识。
+
+代码改动：
+
+|文件|目的|
+|---|---|
+|`code/scripts/phase2_collaborative_open_set_qknn_eval.py`|新增Mahalanobis support envelope、`mahalanobis_risk`证据字段、`--unknown_gate_mode mahalanobis/support_envelope_mahalanobis`、`--mahalanobis_quantile/slack/temperature/variance_floor`参数。|
+|`code/evaluation/collaborative_open_set_qknn_eval.py`|SCORER-CVS组件投票自动纳入`mahalanobis_risk`。|
+|`code/tests/test_collaborative_open_set_qknn_eval.py`|覆盖Mahalanobis作为第四风险组件时的投票行为。|
+|`code/tests/test_phase2_collaborative_open_set_qknn_eval.py`|覆盖Mahalanobis gate输出和metadata记录。|
+
+本地验证：
+
+```powershell
+conda activate ssr-gpu
+python -m py_compile E:\type10-7\code\evaluation\collaborative_open_set_qknn_eval.py E:\type10-7\code\scripts\phase2_collaborative_open_set_qknn_eval.py
+python E:\type10-7\code\tests\test_collaborative_open_set_qknn_eval.py
+python E:\type10-7\code\tests\test_phase2_collaborative_open_set_qknn_eval.py
+```
+
+结果：12 tests OK和13 tests OK。Git提交：`a2c3fb0 Add Mahalanobis SCORER-CVS risk channel`。
+
+计划远端主命令：
+
+```bash
+python code/scripts/phase2_collaborative_open_set_qknn_eval.py \
+  --feature_npz runs/phase2_adv3b02_collab_open_set_qknn_full_20260703/features.npz \
+  --output_json runs/phase2_adv3b02_collab_open_set_qknn_full_20260703/collab_open_set_qknn_scorer_cvs_mahalanobis.json \
+  --output_evidence_csv runs/phase2_adv3b02_collab_open_set_qknn_full_20260703/collab_open_set_qknn_scorer_cvs_mahalanobis_evidence.csv \
+  --collab_counts all \
+  --k_shot 8 --query_per_class 20 --qknn_k 8 \
+  --support_calibration_mode leave_one_out \
+  --unknown_gate_mode support_envelope_mahalanobis \
+  --score_threshold_combine max \
+  --scenario_aware --radius_norm 0.3 \
+  --fusion_policy scorer_cvs \
+  --unknown_risk_threshold 0.80 \
+  --accept_margin_threshold 0.10 \
+  --consensus_gap_threshold 0.50 \
+  --consensus_score_threshold 0.30 \
+  --scorer_component_vote_threshold 0.50 \
+  --unknown_quantile 0.75 \
+  --latency_budget_ms 12 \
+  --evidence_packet_bytes 112 \
+  --event_alignment_policy receiver_domain_ranked \
+  --support_selection_policy stable_first \
+  --seed 407037
+```
