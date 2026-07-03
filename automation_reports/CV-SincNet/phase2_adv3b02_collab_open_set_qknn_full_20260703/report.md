@@ -3139,4 +3139,116 @@ k=4逐类结果：
 
 因此该结果必须表述为“最大预算k=4、实际平均3.75个receiver参与”的budgeted collaboration，不能表述为固定4个receiver协同。指标数值未因元数据修复改变，刷新后的`latency_ms_p95=0.1888`。
 
+## 2026-07-04 candidate_set高unknown风险比例否决
+
+### 目标与诊断
+
+`avail3_p050_lrca033,k=4`仍有2个unknown false accept。事件级复现显示两个误接收类型不同：
+
+|误接收事件|错误输出|诊断|
+|---|---|---|
+|`unknown|10-1|leo_clear_weak|rank00007`|`14-10`|事件总`unknown_risk≈1.0`，但候选标签组件风险比例低，导致candidate_set接受；同一候选标签下有一半参与receiver给出高unknown风险。|
+|`unknown|10-10|leo_low_elev_weak|rank00014`|`14-7`|低unknown风险、高support density、高一致性的强相似unknown；现有support-only风险难以区分。|
+
+因此本轮只针对第一类“事件级高unknown风险但候选集仍接受”的情况加门控，不试图用同一阈值强行解决第二类强相似unknown，避免过度伤害old/seen-new。
+
+新增参数：
+
+|参数|含义|
+|---|---|
+|`candidate_set_event_high_unknown_risk_veto`|当事件级`unknown_risk`达到该阈值时，启用额外否决检查。默认`1e12`，即关闭。|
+|`candidate_set_max_label_high_unknown_risk_fraction`|同一候选标签下，高unknown风险receiver占比达到该值则否决。|
+|`candidate_set_high_unknown_risk_threshold`|单receiver被视作高unknown风险的阈值。|
+
+该门控只读取各receiver对候选标签的support/prototype风险证据和事件风险聚合，不用unknown query拟合阈值。当前正式配置为`candidate_set_event_high_unknown_risk_veto=0.999`、`candidate_set_max_label_high_unknown_risk_fraction=0.5`、`candidate_set_high_unknown_risk_threshold=0.8`。
+
+### 本地与远端验证
+
+|项目|结果|
+|---|---|
+|本地`ssr-gpu`|`py_compile`通过；`test_collaborative_open_set_qknn_eval.py`46 tests OK；`test_phase2_collaborative_open_set_qknn_eval.py`44 tests OK。|
+|Git镜像|同样验证通过，提交`6def37c Add candidate high unknown fraction veto`。|
+|N607|远端`py_compile`通过；`test_collaborative_open_set_qknn_eval.py`46 tests OK；`test_phase2_collaborative_open_set_qknn_eval.py`44 tests OK；子agent审查后补充veto计数和参数范围校验并重新验证。|
+
+N607最新代码SHA256：
+
+|文件|SHA256|
+|---|---|
+|`code/evaluation/collaborative_open_set_qknn_eval.py`|`353af9b0cae940cb61fe987233dfe60bac0297a32db1df8609c90d9e9f6f1c32`|
+|`code/scripts/phase2_collaborative_open_set_qknn_eval.py`|`90478f4a8014eb8557ccaafa8d48c39bd92538e030cbee7f44414c8dae162648`|
+|`code/tests/test_collaborative_open_set_qknn_eval.py`|`a8b67add47dd51676fa1e4165bf3a8150b7aaecf55939403d9a50caa458c2d24`|
+
+N607运行前后8张RTX3090均为`10 MiB/24576 MiB`，使用GPU0；SSH/SCP后本地检查为无残留`ssh.exe`、无N607/bridge 22端口`ESTABLISHED`连接。
+
+### 远端实验配置
+
+新增正式候选`avail3_p050_lrca033_huv0999_f050`：
+
+```bash
+CUDA_VISIBLE_DEVICES=0 /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python \
+  code/scripts/phase2_collaborative_open_set_qknn_eval.py \
+  --feature_npz runs/phase2_adv3b02_collab_open_set_qknn_full_20260703/features.npz \
+  --output_json runs/phase2_adv3b02_collab_open_set_qknn_full_20260703/collab_open_set_qknn_candidate_set_cvs_rcwr_avail3_p050_lrca033_huv0999_f050_adv3b02.json \
+  --output_evidence_csv runs/phase2_adv3b02_collab_open_set_qknn_full_20260703/collab_open_set_qknn_candidate_set_cvs_rcwr_avail3_p050_lrca033_huv0999_f050_adv3b02_evidence.csv \
+  --collab_counts all --collab_group_policy available_up_to_k --partial_collab_min_receivers 3 \
+  --k_shot 8 --query_per_class 20 --qknn_k 8 --seed 4070303 \
+  --candidate_class_top_m 2 --class_evidence_top_m 3 \
+  --class_conformal_enabled --class_conformal_min_support 2 \
+  --prototype_score_blend 2.0 --mahalanobis_score_blend 1.0 \
+  --support_calibration_mode leave_one_out \
+  --unknown_gate_mode support_envelope_evt --score_threshold_combine qknn_only \
+  --scenario_aware --radius_norm 0.3 \
+  --fusion_policy candidate_set_cvs --collaboration_policy fixed_k \
+  --label_fusion_policy weighted_vote_margin \
+  --class_reliability_policy conformal_margin_risk \
+  --receiver_class_reliability_policy support_calibrated \
+  --event_alignment_policy receiver_domain_ranked \
+  --support_selection_policy stable_first \
+  --unknown_risk_threshold 0.8 --scorer_component_vote_threshold 0.50 \
+  --candidate_set_min_receivers 2 --candidate_set_min_top1_receivers 0 \
+  --candidate_set_min_conformal_pvalue 0.50 \
+  --candidate_set_max_label_unknown_risk 1.0 \
+  --candidate_set_max_event_unknown_risk 1.0 \
+  --candidate_set_max_label_risk_component_agreement 0.33 \
+  --candidate_set_event_high_unknown_risk_veto 0.999 \
+  --candidate_set_max_label_high_unknown_risk_fraction 0.5 \
+  --candidate_set_high_unknown_risk_threshold 0.8 \
+  --candidate_set_unknown_reject_risk 0.80 \
+  --evidence_packet_bytes 40
+```
+
+产物SHA256：
+
+|产物|SHA256|
+|---|---|
+|`collab_open_set_qknn_candidate_set_cvs_rcwr_avail3_p050_lrca033_huv0999_f050_adv3b02.json`|`B5AC9761FCF3719DA91D6C7CC3E9BED2000A4430369D23C7966EF67AE59E068A`|
+|`collab_open_set_qknn_candidate_set_cvs_rcwr_avail3_p050_lrca033_huv0999_f050_adv3b02_evidence.csv`|`F9A70130D53B3EF8C4EF725802A5E0EAC330D899BB8D5D797E80749D65B88AB8`|
+
+### 结果表
+
+|配置|预算k|old_acc|min_old|seen_new_acc|min_seen|unknown_FAR|unknown_reject|defer|known_cov|avg_rx|bytes/event|p95_latency|实际rx直方图|结论|
+|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---|---|
+|`avail3_p050_lrca033_huv0999_f050`|1|0.0000|0.0000|0.0000|0.0000|0.0000|0.4667|0.7459|0.0000|1.0000|40.0|0.1348|`{'1':307}`|单receiver不足|
+|`avail3_p050_lrca033_huv0999_f050`|2|0.4145|0.0500|0.5192|0.4688|0.1304|0.8696|0.0920|0.5441|2.0000|80.0|0.1348|`{'2':250}`|FAR仍高|
+|`avail3_p050_lrca033_huv0999_f050`|3|0.5750|0.2500|0.6500|0.6000|0.0750|0.9250|0.0400|0.6625|3.0000|120.0|0.1348|`{'3':200}`|FAR仍超|
+|`avail3_p050_lrca033_huv0999_f050`|4|0.8000|0.6500|0.6500|0.5500|0.0250|0.9500|0.0150|0.8125|3.7500|150.0|0.1348|`{'3':50,'4':150}`|当前最佳OLD80+FAR组合|
+|`avail3_p050_lrca033_huv0999_f050`|5|0.7833|0.6000|0.6500|0.5500|0.0250|0.9750|0.0100|0.8000|4.2150|168.6|0.1348|`{'3':50,'4':57,'5':93}`|拒识更强但old低于0.80|
+
+k=4逐类结果：
+
+|类别集|逐类准确率|
+|---|---|
+|old|`14-10=0.8000`，`14-7=0.8500`，`20-15=0.6500`，`20-19=0.6500`，`6-15=0.9000`，`8-20=0.9500`|
+|seen-new|`19-3=0.5500`，`3-8=0.7500`|
+
+### 判定
+
+`candidate_set_high_unknown_veto`审计字段显示，k=4共触发22次，占全部200个event的0.11；其中unknown 19次、old 3次。这说明FAR下降主要来自unknown侧否决，但old轻微下降也由该门控造成，属于当前可解释代价。
+
+相对`avail3_p050_lrca033,k=4`，本轮把`unknown_FAR`从0.0500降到0.0250，`unknown_reject`从0.9250升到0.9500，代价是`old_acc`从0.8083降到0.8000、`20-19`从0.7000降到0.6500。该机制确实解决了一类“事件总风险很高但candidate_set仍接受”的unknown误接收，是当前最好的OLD80+unknown_FAR组合。
+
+但它仍不是最终目标：`min_old=0.6500`，`seen_new_acc=0.6500`，`min_seen=0.5500`，unknown拒识0.9500，均未达到用户要求的99/95、97/93、99。剩余主要失败是第二类强相似unknown和低类地板；下一步需要引入不依赖unknown query阈值拟合的receiver-pair不一致证据或源域外类虚拟边界，而不是继续只调candidate_set阈值。
+
+
+
 
