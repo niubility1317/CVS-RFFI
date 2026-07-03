@@ -73,9 +73,12 @@
 
 | 检查 | 证据 |
 |---|---|
-| Direct preflight | 2026-07-03 09:41:32 CST通过`tools\n607_ssh_preflight.ps1`，N607直接SSH、项目根目录、GPU可见性均通过 |
-| Live inventory | 2026-07-03 09:41:41+0800通过`tools\n607_training_inventory.py --direct-only --pretty`，`gpu_compute=[]`，`active_training_processes=[]` |
-| SSH清理 | preflight、inventory和只读元数据检查后，本地`ssh.exe`与N607/bridge的22端口ESTABLISHED连接均清理为空 |
+| Git-backed版本 | `github_publish\CVS-RFFI-repo`提交`8dc7ba1`，消息`Add ADV3B02 per-class new TX sweep` |
+| Direct preflight | 2026-07-03 09:52:39 CST通过`tools\n607_ssh_preflight.ps1`，N607直接SSH、项目根目录、8张GPU可见，GPU显存均为10MiB |
+| Live inventory | 2026-07-03 09:52:45+0800通过`tools\n607_training_inventory.py --direct-only --pretty`，`gpu_compute=[]`，`active_training_processes=[]` |
+| 目标路径 | 远程`phase2_adv3b02_rx7_14_newpool_perclass_no_unknown_20260703_0943`对应run/log/report目录均不存在；两个待同步脚本路径也不存在 |
+| 磁盘 | `/home`所在`/dev/sdb`为11T，总用量26%，可用7.7T |
+| SSH清理 | preflight、inventory和路径检查后，本地`ssh.exe`与N607/bridge的22端口ESTABLISHED连接均清理为空 |
 
 ## 同步计划
 
