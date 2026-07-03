@@ -1298,3 +1298,87 @@ python code\tests\test_collaborative_open_set_qknn_eval.py
 ```
 
 结果：`test_phase2_collaborative_open_set_qknn_eval.py`为17 tests OK，`test_collaborative_open_set_qknn_eval.py`为24 tests OK。根目录`E:\type10-7`不是Git仓库，版本化同步目标仍为`E:\type10-7\github_publish\CVS-RFFI-repo`。
+
+Git镜像提交：
+
+|提交|目的|
+|---|---|
+|`0bc4aa1 Add label conditioned qKNN gate evidence`|加入`second_label/second_score/label_score_gap/class_radius_z`和label-conditioned gate参数。|
+|`abeb9b1 Fail closed on missing label gate evidence`|子agent review指出旧CSV缺字段会被默认值误判安全，已改为启用密度/半径gate时缺字段fail-closed，并新增2个单测。|
+
+最终本地和Git镜像验证均通过：
+
+```powershell
+conda activate ssr-gpu
+python -m py_compile code\scripts\phase2_collaborative_open_set_qknn_eval.py code\evaluation\collaborative_open_set_qknn_eval.py
+python code\tests\test_phase2_collaborative_open_set_qknn_eval.py
+python code\tests\test_collaborative_open_set_qknn_eval.py
+```
+
+结果：`test_phase2_collaborative_open_set_qknn_eval.py`为17 tests OK，`test_collaborative_open_set_qknn_eval.py`为26 tests OK。
+
+N607同步与最终远端验证：使用`scp -F E:\type10-7\tools\n607_ssh_config`同步`code/scripts/phase2_collaborative_open_set_qknn_eval.py`、`code/evaluation/collaborative_open_set_qknn_eval.py`、`code/tests/test_phase2_collaborative_open_set_qknn_eval.py`、`code/tests/test_collaborative_open_set_qknn_eval.py`到`/home/szu2070436088/2510044040/CV-SincNet/`对应路径。远端使用`CVS-RFFI`环境：
+
+```bash
+source /opt/miniconda3/etc/profile.d/conda.sh
+conda activate CVS-RFFI
+cd /home/szu2070436088/2510044040/CV-SincNet
+python -m py_compile code/scripts/phase2_collaborative_open_set_qknn_eval.py code/evaluation/collaborative_open_set_qknn_eval.py
+python code/tests/test_phase2_collaborative_open_set_qknn_eval.py
+python code/tests/test_collaborative_open_set_qknn_eval.py
+```
+
+结果：远端`test_phase2_collaborative_open_set_qknn_eval.py`为17 tests OK，`test_collaborative_open_set_qknn_eval.py`为26 tests OK。
+
+最终远端诊断命令沿用`ADV3B02_CORE90_SOFT_E200`特征产物`runs/phase2_adv3b02_collab_open_set_qknn_full_20260703/features.npz`，设置`CUDA_VISIBLE_DEVICES=0`，使用`--collab_counts all`、`--scenario_aware`、`--event_alignment_policy receiver_domain_ranked`、`--fusion_policy scorer_cvs`、`--collaboration_policy adaptive_gain`、`--label_fusion_policy vote_margin`、`--receiver_reliability_policy deployment_prior`和class-set gate安全参数。四组候选均输出`receiver_count=5`、`group_count=308`、`evidence_row_count=1000`。运行后8张RTX3090均为`10MiB/24576MiB`，无新增训练进程；SSH/SCP后本地检查无残留`ssh.exe`或22端口`ESTABLISHED`连接。
+
+拉回产物SHA256：
+
+|产物|SHA256|
+|---|---|
+|`remote_artifacts/collab_open_set_qknn_scorer_cvs_evt_adaptive_gain_vote_margin_labelgate_default.json`|`0A01E72565A0DD9CE60E1E8D5D80F31F5A2D4936D3CF1D93058E534AB963612D`|
+|`remote_artifacts/collab_open_set_qknn_scorer_cvs_evt_adaptive_gain_vote_margin_labelgate_default_evidence.csv`|`711944C115F6EB347CB661DF2318C5F2CE0CCBFDEDF534CDF554CD1C204DF722`|
+|`remote_artifacts/collab_open_set_qknn_scorer_cvs_evt_adaptive_gain_vote_margin_labelgate_seen_density05.json`|`1C070E933F97B52B475FC8E769F1232239F765A0341A76E9F77A60153EA15207`|
+|`remote_artifacts/collab_open_set_qknn_scorer_cvs_evt_adaptive_gain_vote_margin_labelgate_seen_density05_evidence.csv`|`082B3B2D8F4073B2AF9298B26B5923AD36173ECD4134528267DE1D4DE4C8294E`|
+|`remote_artifacts/collab_open_set_qknn_scorer_cvs_evt_adaptive_gain_vote_margin_labelgate_seen_density0625.json`|`C0031D744DB60679DD5AE59D077B8ECC19ED79455273B39B3A11F18DA48E6E10`|
+|`remote_artifacts/collab_open_set_qknn_scorer_cvs_evt_adaptive_gain_vote_margin_labelgate_seen_density0625_evidence.csv`|`60A5F96D6D343868E3C491622143690A60C6964760C12B493754A1E2B710C91B`|
+|`remote_artifacts/collab_open_set_qknn_scorer_cvs_evt_adaptive_gain_vote_margin_labelgate_seen_density05_radius2.json`|`054B7F426E36C7A06AC3524E38861C09AE4A22455AA9EE3D6AE1995B081E6273`|
+|`remote_artifacts/collab_open_set_qknn_scorer_cvs_evt_adaptive_gain_vote_margin_labelgate_seen_density05_radius2_evidence.csv`|`0D53FC0F2490827BD6EC34E513D5002D834B64350A0137EED3FCD1741245CCA2`|
+
+最终结果：
+
+|候选|预算|old_acc|min_old|seen_new_acc|min_seen_new|unknown_FAR|unknown_reject|defer_rate|avg_rx|p95_rx|rescue|
+|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+|`default`|1|0.0000|0.0000|0.1500|0.0000|0.0500|0.6167|0.5000|1.0000|1.0000|22|
+|`default`|2|0.0850|0.0000|0.3556|0.1000|0.0000|0.8958|0.3374|1.8171|2.0000|20|
+|`default`|3|0.0417|0.0000|0.4250|0.1000|0.0000|0.9500|0.4250|2.5450|3.0000|17|
+|`default`|4|0.3103|0.0000|0.4857|0.3000|0.0000|0.8438|0.3182|3.2987|4.0000|19|
+|`default`|5|0.3654|0.0000|0.2500|0.0000|0.0000|0.7000|0.4022|4.2391|5.0000|6|
+|`seen_density05`|1|0.0000|0.0000|0.1500|0.0000|0.0500|0.6167|0.5000|1.0000|1.0000|22|
+|`seen_density05`|2|0.0850|0.0000|0.3556|0.1000|0.0000|0.8958|0.3374|1.8171|2.0000|20|
+|`seen_density05`|3|0.0417|0.0000|0.4250|0.1000|0.0000|0.9500|0.4250|2.5450|3.0000|17|
+|`seen_density05`|4|0.3103|0.0000|0.4571|0.2500|0.0000|0.8438|0.3247|3.2987|4.0000|19|
+|`seen_density05`|5|0.3654|0.0000|0.2500|0.0000|0.0000|0.7000|0.4022|4.2391|5.0000|6|
+|`seen_density0625`|1|0.0000|0.0000|0.1500|0.0000|0.0500|0.6167|0.5032|1.0000|1.0000|22|
+|`seen_density0625`|2|0.0850|0.0000|0.3111|0.1000|0.0000|0.8958|0.3455|1.8171|2.0000|20|
+|`seen_density0625`|3|0.0417|0.0000|0.4000|0.0500|0.0000|0.9500|0.4300|2.5450|3.0000|17|
+|`seen_density0625`|4|0.3103|0.0000|0.4286|0.2000|0.0000|0.8438|0.3377|3.2987|4.0000|19|
+|`seen_density0625`|5|0.3654|0.0000|0.2500|0.0000|0.0000|0.7000|0.4130|4.2391|5.0000|6|
+|`seen_density05_radius2`|1|0.0000|0.0000|0.1500|0.0000|0.0500|0.6167|0.5000|1.0000|1.0000|22|
+|`seen_density05_radius2`|2|0.0850|0.0000|0.3333|0.1000|0.0000|0.8958|0.3415|1.8171|2.0000|20|
+|`seen_density05_radius2`|3|0.0417|0.0000|0.4000|0.1000|0.0000|0.9500|0.4300|2.5450|3.0000|17|
+|`seen_density05_radius2`|4|0.3103|0.0000|0.4286|0.2500|0.0000|0.8438|0.3312|3.2987|4.0000|19|
+|`seen_density05_radius2`|5|0.3654|0.0000|0.2500|0.0000|0.0000|0.7000|0.4022|4.2391|5.0000|6|
+
+判定：新增label-conditioned证据字段已完成、同步和验证；但密度/radius gate本轮没有提升主结果。`default`仍是四组中预算4的最佳seen-new结果，`seen_new_acc=0.4857`、`min_seen_new=0.3000`、`unknown_FAR=0.0000`，但`old_acc=0.3103`和`min_old=0.0000`远低目标。更强的`seen_density`约束主要把seen-new样本转为defer，降低seen-new准确率，未带来额外FAR收益。因此当前模块只能作为可部署证据框架和负面诊断，不能声明99/97/99达成、Stage2-C成功或卫星群部署成功。
+
+子agent监督结论：
+
+|角色|结论|
+|---|---|
+|文献/方法|建议下一版采用class-conditional EVT/Gaussian-Mahalanobis原型、qKNN候选加pair verifier、accepted-only原型更新和资源感知neighbor-query；当前只能写作冻结主干上的轻量少样本适应，不是星上全量实时训练。|
+|算法合理性|`support_density`、`second_label`、`label_score_gap`、`class_radius_z`不含真值泄漏，方向合理；但`candidate_class_top_m`可能过滤真实第二候选，`class_radius_z`小K敏感，当前gate更像安全闸门而不是性能增强器。|
+|逐项完成监督|N607已用`CVS-RFFI`环境，`collab_counts all`覆盖1到5，星地proxy视图由`--scenario_aware`和metadata保留，低显存GPU验证完成；严格同一物理事件协同和性能目标未完成。|
+|查漏补缺review|P1指出缺`support_density/class_radius_z`字段时不应默认安全；已修复为启用对应gate时fail-closed，并增加单测。仍建议后续补`gate_reason×role×budget`、`second_label`混淆和固定分母预算表。|
+
+下一步算法建议：不要继续只调融合阈值。优先实现`SCOPE-Q8`式稀疏一致性开放集原型证据：本地先用每类scenario prototype预筛，再做qKNN8，通信只上传top2 label/score/margin/risk/support-density/radius-z；协同端用渐进式receiver请求和unknown高分位veto；seen-new注册只更新int8原型/支持码和阈值，必要时才开小adapter/BN affine并带rollback。最小实验矩阵可先用`K={5,10}`、`M={1,3,5}`、`leo_clear_weak`、1个target receiver烟测，再扩展到多LEO视图和多receiver。
