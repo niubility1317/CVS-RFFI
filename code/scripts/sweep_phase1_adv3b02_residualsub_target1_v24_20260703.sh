@@ -73,7 +73,7 @@ env "PYTHONPATH=${ROOT}/code:${ROOT}:${PYTHONPATH:-}" \
   --variants "${VARIANTS}" \
   > "${LOG_ROOT}/target1_strong_v24_eval.out" 2>&1
 
-"${PYTHON}" - <<'PY' "${SUMMARY_CSV}" "${LOG_ROOT}/target1_strong_v24_best.json"
+"${PYTHON}" - "${SUMMARY_CSV}" "${LOG_ROOT}/target1_strong_v24_best.json" <<'PY'
 import csv
 import json
 import math

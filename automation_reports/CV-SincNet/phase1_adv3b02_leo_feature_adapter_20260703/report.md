@@ -915,6 +915,59 @@ V22 same-row boundary:
 
 The next valid work item is target1, not target2: improve worst-receiver/worst-TX LEO closed-set recovery without target clean/query tuning. Current evidence says oldness-only gating can protect unknown safety but does not recover hard receiver slices such as`rx3_19`and`rx20_1`.
 
+## V24 Residual-Subspace Feature Repair Result
+
+V24 followed the user correction that source clean/LEO class-logit bias or scale calibration is not a valid route. The tested mechanism was feature-only: source clean-minus-LEO residual PCA, with global/hard-TX/soft-TX residual corrections, no target clean, no target labels, and no unknown query fitting.
+
+Remote execution:
+
+| Item | Value |
+|---|---|
+| N607 command | `ROOT=/home/szu2070436088/2510044040/CV-SincNet PYTHON=/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python bash code/scripts/sweep_phase1_adv3b02_residualsub_target1_v24_20260703.sh` |
+| Log root | `/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_adv3b02_residualsub_target1_v24_20260703` |
+| Local artifact root | `E:\type10-7\automation_reports\CV-SincNet\phase1_adv3b02_leo_feature_adapter_20260703\artifacts\v24_residualsub_target1\` |
+| Source clean/LEO paired rows | 28800 |
+| Candidate rows | 270 |
+| Strong target1 pass rows | 0 |
+
+Gate counts over 270 V24 candidates:
+
+| Gate | Pass rows |
+|---|---:|
+| old recovery | 48 |
+| clean fidelity | 224 |
+| scenario/TX floor | 30 |
+| margin/true-distance safety | 180 |
+| unknown safety | 8 |
+| strong target1 | 0 |
+
+Best same-row candidate per target slice:
+
+| Run | Best V24 candidate | Gates | Old closed acc | Delta vs identity pp | Clean drop pp | Scenario floor | TX floor | Unknown FAR | FAR delta | Unknown oldness delta |
+|---|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+| `rx20_1_u10` | `LEOSUB1_HARDTX_R16_A050` | 2 | 0.6224 | 0.00 | -0.58 | 0.6063 | 0.3588 | 0.7788 | 0.0031 | 3.6113 |
+| `rx20_1_u1` | `LEOSUB1_HARDTX_R08_A025` | 2 | 0.6224 | 0.00 | -0.58 | 0.6063 | 0.3588 | 0.8291 | -0.0420 | 1.5244 |
+| `rx3_19_u10` | `LEOSUB1_SOFTTX_R04_A025` | 2 | 0.5526 | 0.44 | 0.50 | 0.5295 | 0.2305 | 0.6179 | 0.0407 | 2.8511 |
+| `rx3_19_u1` | `LEOSUB1_SOFTTX_R04_A025` | 2 | 0.5526 | 0.44 | 0.50 | 0.5295 | 0.2305 | 0.7675 | 0.0150 | 1.7243 |
+| `rx7_14_u10` | `LEOSUB1_HARDTX_R04_A050` | 4 | 0.8682 | 0.03 | 0.00 | 0.8499 | 0.7036 | 0.8667 | -0.0056 | 1.7508 |
+| `rx7_14_u1` | `LEOSUB1_HARDTX_R04_A050` | 4 | 0.8682 | 0.03 | 0.00 | 0.8499 | 0.7036 | 0.9325 | 0.0250 | 1.3228 |
+| `rx7_7_u10` | `LEOSUB1_HARDTX_R16_A075` | 2 | 0.7965 | 0.00 | 0.00 | 0.7747 | 0.6578 | 0.8884 | 0.0386 | 3.1380 |
+| `rx7_7_u1` | `LEOSUB1_HARDTX_R08_A025` | 2 | 0.7965 | 0.00 | 0.00 | 0.7747 | 0.6578 | 0.9350 | 0.0025 | 1.3244 |
+| `rx8_8_u10` | `LEOSUB1_HARDTX_R08_A025` | 2 | 0.7188 | 0.00 | -0.33 | 0.6865 | 0.1747 | 0.9730 | 0.1405 | 2.9552 |
+| `rx8_8_u1` | `LEOSUB1_HARDTX_R08_A025` | 2 | 0.7188 | 0.00 | -0.33 | 0.6865 | 0.1747 | 0.9900 | 0.0800 | 1.4246 |
+
+Interpretation:
+
+| Finding | Evidence | Decision |
+|---|---|---|
+| V24 does not solve target1 | `0/270` strong target1 pass rows | Do not promote as adapter route |
+| Clean fidelity is not the blocker | `224/270` pass clean fidelity | Clean-clean preservation alone is too weak |
+| Hard receivers remain hard | `rx20_1` stays 0.6224;`rx3_19` stays near 0.5526 | Residual subspace repair does not recover lost old-class separability |
+| Unknown safety is the primary failure | only `8/270` pass unknown safety; unknown oldness deltas are mostly positive | The correction tends to move unknown/non-old samples toward old prototypes |
+| The useful local behavior is limited to already-good `rx7_14` | old acc 0.8682 and scenario floor 0.8499, but unknown FAR remains high | This is not a global target1 solution |
+
+Next feature-only direction: stop applying a universal clean-minus-LEO repair to all samples. The evidence suggests unknown and old samples share the source residual subspace under the current gate. The next valid route should learn or derive a feature correction that is conditional on identity-evidence stability, for example prototype-rank stability, pre/post nearest-class consistency, or an explicit source proxy-unknown repulsion term in feature space, while still not using target clean, target labels, or unknown query thresholds.
+
 ## V24 Residual-Subspace Feature Repair Design
 
 V24 follows the user's correction that logit bias/scale calibration is not the right route. It returns to feature-only repair. The hypothesis is that the LEO damage lives partly in a low-rank residual subspace observable from source clean/LEO pairs; a conservative correction restricted to that residual subspace may repair LEO damage while preserving identity directions better than free MLP/group-floor adapters.
