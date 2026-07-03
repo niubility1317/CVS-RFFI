@@ -966,3 +966,49 @@ python E:\type10-7\code\tests\test_phase2_collaborative_open_set_qknn_eval.py
 共同关键参数：`--collab_counts all --k_shot 8 --query_per_class 20 --qknn_k 8 --candidate_class_top_m 2 --support_calibration_mode leave_one_out --unknown_gate_mode support_envelope_evt --score_threshold_combine max --scenario_aware --radius_norm 0.3 --fusion_policy scorer_cvs --collaboration_policy adaptive_gain --adaptive_gain_min_risk 0.60 --adaptive_gain_latency_weight 0.0 --adaptive_gain_bytes_weight 0.0 --adaptive_gain_disagreement_weight 0.5 --accept_margin_threshold 0.03 --consensus_gap_threshold 0.0 --consensus_score_threshold 0.30 --scorer_component_vote_threshold 0.25 --unknown_quantile 0.75 --evt_tail_quantile 0.80 --evt_temperature 0.05 --latency_budget_ms 12 --evidence_packet_bytes 120 --event_alignment_policy receiver_domain_ranked --support_selection_policy stable_first --seed 407043`。
 
 预期检查：远端先跑`py_compile`和两组单测，再运行两组诊断；运行前后记录GPU显存；SCP拉回JSON/CSV；本地确认无SSH残留。成功判据不是99/97/99达标，而是判断adaptive策略是否提高实际参与receiver、降低unknown FAR或改善old/seen-new，同时保持报告口径为诊断近似。
+
+远端验证与运行结果：N607使用`CVS-RFFI`环境，`py_compile`通过，`test_collaborative_open_set_qknn_eval.py`为18 tests OK，`test_phase2_collaborative_open_set_qknn_eval.py`为16 tests OK。两组诊断均输出`receiver_count=5`、`group_count=309`、`evidence_row_count=1000`。运行前后8张RTX3090均为`10/24576MiB`，没有新增显存占用。SSH/SCP后本地检查无残留`ssh.exe`和22端口`ESTABLISHED`连接。
+
+拉回产物与SHA256：
+
+|产物|SHA256|
+|---|---|
+|`remote_artifacts/collab_open_set_qknn_scorer_cvs_evt_adaptive_gain_v1.json`|`5B4F8C17C9FCFB1AC7AE7474D692D97FD3F3D3DB68209FC054F852B9DF4B0B06`|
+|`remote_artifacts/collab_open_set_qknn_scorer_cvs_evt_adaptive_gain_v1_evidence.csv`|`ADD93F02AA98BF16DA300AA1B0FCB982356348DCDF9D62E59BED25D43A1332B3`|
+|`remote_artifacts/collab_open_set_qknn_scorer_cvs_evt_adaptive_gain_u090.json`|`6063A0297244D387C67E93C5D781F2A34FD2C1594A8B4948EDAC8A45F44A2798`|
+|`remote_artifacts/collab_open_set_qknn_scorer_cvs_evt_adaptive_gain_u090_evidence.csv`|`9900158135868025841D4AE1E7D212ED87D3CCBED4515ED234F7B3DCC76E599F`|
+
+`adaptive_gain_v1`结果，`unknown_risk_threshold=0.995`：
+
+|最大receiver预算|total|excluded|old_acc|min_old_class_acc|seen_new_acc|min_seen_new_class_acc|unknown_FAR|unknown_reject_rate|unknown_defer_rate|known_coverage|defer_rate|unresolved_rate|bytes/event|p95 latency ms|avg used rx|p95 used rx|max used rx|
+|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+|1|309|0|0.2910|0.0000|0.1667|0.0000|0.1500|0.5833|0.2667|0.2892|0.3948|0.3948|120.0000|0.1266|1.0000|1.0000|1|
+|2|252|57|0.1447|0.0000|0.2353|0.0000|0.0408|0.8571|0.1020|0.1823|0.4008|0.4008|218.5714|0.1266|1.8214|2.0000|2|
+|3|200|109|0.1583|0.0000|0.2500|0.0000|0.0500|0.6750|0.2750|0.1938|0.5150|0.5150|312.0000|0.1266|2.6000|3.0000|3|
+|4|148|161|0.5227|0.0000|0.1724|0.0500|0.0645|0.7419|0.1935|0.4530|0.3446|0.3446|408.6486|0.1266|3.4054|4.0000|4|
+|5|91|218|0.6275|0.0000|0.0000|0.0000|0.0000|0.7500|0.2500|0.4507|0.4286|0.4286|523.5165|0.1266|4.3626|5.0000|5|
+
+`adaptive_gain_u090`结果，`unknown_risk_threshold=0.900`：
+
+|最大receiver预算|total|excluded|old_acc|min_old_class_acc|seen_new_acc|min_seen_new_class_acc|unknown_FAR|unknown_reject_rate|unknown_defer_rate|known_coverage|defer_rate|unresolved_rate|bytes/event|p95 latency ms|avg used rx|p95 used rx|max used rx|
+|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+|1|309|0|0.1587|0.0000|0.1500|0.0000|0.0500|0.5833|0.3667|0.1606|0.3948|0.3948|120.0000|0.0926|1.0000|1.0000|1|
+|2|252|57|0.0987|0.0000|0.1765|0.0000|0.0408|0.8367|0.1224|0.1232|0.4087|0.4087|209.0476|0.0926|1.7421|2.0000|2|
+|3|200|109|0.0750|0.0000|0.2250|0.0000|0.0500|0.8000|0.1500|0.1187|0.4850|0.4850|280.2000|0.0926|2.3350|3.0000|3|
+|4|148|161|0.1932|0.0000|0.1034|0.0000|0.0645|0.8387|0.0968|0.1795|0.4730|0.4730|353.5135|0.0926|2.9459|4.0000|4|
+|5|91|218|0.1176|0.0000|0.0000|0.0000|0.0000|0.9000|0.1000|0.0845|0.5604|0.5604|444.3956|0.0926|3.7033|5.0000|5|
+
+候选类搜索开销：两组evidence均为1000行，`candidate_class_count`均值3.772，p95为6，最小2，最大6；这与top-M上一轮基本一致，说明adaptive策略改变的是receiver协同选择，不改变本地候选类压缩效果。
+
+判定：`adaptive_gain`解决了上一轮`progressive_budget`过早停止的问题。以预算5为例，实际平均参与receiver从top-M progressive的1.0222提升到4.3626，p95达到5，说明算法能够在风险边界主动请求更多接收机。高阈值版本把预算5的unknown_FAR降到0.0000，同时old_acc提升到0.6275，但seen_new_acc降到0.0000，且per-class floor仍为0；低阈值版本进一步增强拒识但更严重牺牲old/seen-new。因此当前瓶颈从“协同没有真正发生”转移为“open-set风险门控把seen-new和部分old吞掉”。这不是成功结果，但它是有效的定位：下一步必须加入seen-new aware可靠性融合或类集合分流门控，不能继续单纯降低unknown阈值。
+
+下一步最小改动建议：
+
+|方向|目的|具体实现|
+|---|---|---|
+|seen-new aware known rescue|避免新类被unknown gate吞掉|在融合层识别`predicted_label in seen_new_tx_ids`，对高score/high margin且多receiver一致的新类使用较低风险权重或单独`theta_u_new`。|
+|unknown trim-logit融合|降低单个高风险receiver支配结果|把unknown风险从weighted quantile改为trimmed logit mean，并记录trim比例。|
+|strict top-M交集|让候选类压缩真实生效|将`candidate_class_top_m`与`scenario_aware` support mask取交集，记录回退原因。|
+|真实event_id|从诊断近似转向物理协同|导出共享物理事件键并用`strict_event_key`复跑。|
+
+本轮不能声明99/97/99目标达成，也不能声明Stage2-C部署成功；当前结论仍是ADV3B02/qknn8在`receiver_domain_ranked`诊断下的协同推理算法迭代证据。
