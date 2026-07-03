@@ -214,6 +214,51 @@ def _alignment_metrics(
     }
 
 
+@torch.no_grad()
+def _identity_metrics(
+    adapter: nn.Module,
+    clean_x: torch.Tensor,
+    labels: torch.Tensor,
+    prototypes: torch.Tensor,
+    temperature: float,
+) -> dict[str, float]:
+    before_logits = _proto_logits(clean_x, prototypes, temperature)
+    before_pred = before_logits.argmax(dim=1)
+    adapted = adapter(clean_x)
+    after_logits = _proto_logits(adapted, prototypes, temperature)
+    after_pred = after_logits.argmax(dim=1)
+    return {
+        "clean_identity_mse": float(F.mse_loss(adapted, clean_x).item()),
+        "clean_identity_cos": float(F.cosine_similarity(adapted, clean_x, dim=1).mean().item()),
+        "clean_proto_acc_before": float((before_pred == labels).float().mean().item()),
+        "clean_proto_acc_after": float((after_pred == labels).float().mean().item()),
+        "clean_mean_residual_norm": float((adapted - clean_x).norm(dim=1).mean().item()),
+    }
+
+
+@torch.no_grad()
+def _adapt_payload_arrays(
+    payload: Mapping[str, Any],
+    adapter: nn.Module,
+    prototypes: torch.Tensor,
+    proto_temperature: float,
+    device: torch.device,
+    manifest_patch: Mapping[str, Any],
+) -> dict[str, np.ndarray]:
+    all_features = torch.as_tensor(payload["features"], dtype=torch.float32, device=device)
+    adapted_t = adapter(all_features).detach().float()
+    adapted_logits_t = _proto_logits(adapted_t, prototypes, float(proto_temperature)).detach().float()
+    adapted = np.asarray(adapted_t.cpu().tolist(), dtype=np.float32)
+    adapted_logits = np.asarray(adapted_logits_t.cpu().tolist(), dtype=np.float32)
+    out_arrays = dict(payload["arrays"])
+    out_arrays["features"] = adapted
+    out_arrays["tx_logits"] = adapted_logits
+    base_manifest = dict(payload.get("manifest", {}))
+    base_manifest.update(manifest_patch)
+    out_arrays["manifest_json"] = np.asarray(json.dumps(base_manifest, ensure_ascii=True))
+    return out_arrays
+
+
 def fit_apply(args: argparse.Namespace) -> dict[str, Any]:
     torch.manual_seed(int(args.seed))
     np.random.seed(int(args.seed))
@@ -274,11 +319,19 @@ def fit_apply(args: argparse.Namespace) -> dict[str, Any]:
                 cos_loss = (1.0 - F.cosine_similarity(z_hat, z_clean, dim=1)).mean()
                 ce_loss = F.cross_entropy(logits, y)
                 residual_loss = ((z_hat - z_sat) ** 2).mean()
+                if float(args.clean_identity_weight) > 0:
+                    z_clean_identity = adapter(z_clean)
+                    clean_identity_loss = F.smooth_l1_loss(z_clean_identity, z_clean) + (
+                        1.0 - F.cosine_similarity(z_clean_identity, z_clean, dim=1)
+                    ).mean()
+                else:
+                    clean_identity_loss = torch.zeros((), dtype=z_hat.dtype, device=z_hat.device)
                 loss = (
                     float(args.pair_weight) * pair_loss
                     + float(args.cos_weight) * cos_loss
                     + float(args.proto_ce_weight) * ce_loss
                     + float(args.residual_weight) * residual_loss
+                    + float(args.clean_identity_weight) * clean_identity_loss
                 )
                 opt.zero_grad(set_to_none=True)
                 loss.backward()
@@ -287,22 +340,10 @@ def fit_apply(args: argparse.Namespace) -> dict[str, Any]:
     adapter.eval()
     train_metrics = _alignment_metrics(adapter, sat_x.index_select(0, train_idx), clean_x.index_select(0, train_idx), labels.index_select(0, train_idx), prototypes, float(args.proto_temperature))
     val_metrics = _alignment_metrics(adapter, sat_x.index_select(0, val_idx), clean_x.index_select(0, val_idx), labels.index_select(0, val_idx), prototypes, float(args.proto_temperature))
+    train_identity_metrics = _identity_metrics(adapter, clean_x.index_select(0, train_idx), labels.index_select(0, train_idx), prototypes, float(args.proto_temperature))
+    val_identity_metrics = _identity_metrics(adapter, clean_x.index_select(0, val_idx), labels.index_select(0, val_idx), prototypes, float(args.proto_temperature))
 
-    all_features = torch.as_tensor(sat["features"], dtype=torch.float32, device=device)
-    with torch.no_grad():
-        adapted_t = adapter(all_features).detach().float()
-        adapted_logits_t = _proto_logits(adapted_t, prototypes, float(args.proto_temperature)).detach().float()
-        # Some N607 PyTorch/NumPy combinations can expose tensor.numpy() as an
-        # object array. The list conversion is slower but robust for these
-        # bounded feature exports and keeps the saved NPZ strictly float32.
-        adapted = np.asarray(adapted_t.cpu().tolist(), dtype=np.float32)
-        adapted_logits = np.asarray(adapted_logits_t.cpu().tolist(), dtype=np.float32)
-
-    out_arrays = dict(sat["arrays"])
-    out_arrays["features"] = adapted
-    out_arrays["tx_logits"] = adapted_logits
-    base_manifest = dict(sat.get("manifest", {}))
-    base_manifest["leo_feature_adapter"] = {
+    adapter_manifest = {
         "enabled": True,
         "training_scope": "source_clean_to_source_satellite_pairs_only",
         "clean_npz": str(args.clean_npz),
@@ -312,14 +353,47 @@ def fit_apply(args: argparse.Namespace) -> dict[str, Any]:
         "source_pair_count": len(pair_keys),
         "train_pair_count": int(train_idx.numel()),
         "val_pair_count": int(val_idx.numel()),
+        "clean_identity_weight": float(args.clean_identity_weight),
         "uses_target_clean": False,
         "uses_target_labels": False,
         "uses_unknown_query_for_training": False,
         "logits": "cosine_to_source_clean_prototypes_after_adapter",
     }
-    out_arrays["manifest_json"] = np.asarray(json.dumps(base_manifest, ensure_ascii=True))
+    out_arrays = _adapt_payload_arrays(
+        sat,
+        adapter,
+        prototypes,
+        float(args.proto_temperature),
+        device,
+        {"leo_feature_adapter": adapter_manifest},
+    )
     Path(args.out_npz).parent.mkdir(parents=True, exist_ok=True)
     np.savez(args.out_npz, **out_arrays)
+    clean_apply_metrics = None
+    if args.clean_apply_npz and args.clean_out_npz:
+        clean_apply = _load_npz(args.clean_apply_npz)
+        clean_out_arrays = _adapt_payload_arrays(
+            clean_apply,
+            adapter,
+            prototypes,
+            float(args.proto_temperature),
+            device,
+            {"leo_feature_adapter_clean_control": {**adapter_manifest, "clean_apply_npz": str(args.clean_apply_npz)}},
+        )
+        Path(args.clean_out_npz).parent.mkdir(parents=True, exist_ok=True)
+        np.savez(args.clean_out_npz, **clean_out_arrays)
+        clean_apply_x = torch.as_tensor(clean_apply["features"], dtype=torch.float32, device=device)
+        clean_apply_labels_text = [canonical_tx_id(x) for x in clean_apply["tx_ids"]]
+        clean_apply_labels = torch.tensor([label_map.get(tx, -1) for tx in clean_apply_labels_text], dtype=torch.long, device=device)
+        valid = clean_apply_labels >= 0
+        if bool(valid.any()):
+            clean_apply_metrics = _identity_metrics(
+                adapter,
+                clean_apply_x.index_select(0, valid.nonzero(as_tuple=False).view(-1)),
+                clean_apply_labels.index_select(0, valid.nonzero(as_tuple=False).view(-1)),
+                prototypes,
+                float(args.proto_temperature),
+            )
 
     metrics = {
         "phase": "phase1_source_only_leo_feature_repair_adapter",
@@ -339,15 +413,22 @@ def fit_apply(args: argparse.Namespace) -> dict[str, Any]:
             "cos_weight": float(args.cos_weight),
             "proto_ce_weight": float(args.proto_ce_weight),
             "residual_weight": float(args.residual_weight),
+            "clean_identity_weight": float(args.clean_identity_weight),
         },
         "train_alignment": train_metrics,
         "val_alignment": val_metrics,
+        "train_clean_identity": train_identity_metrics,
+        "val_clean_identity": val_identity_metrics,
+        "clean_apply_npz": str(args.clean_apply_npz) if args.clean_apply_npz else "",
+        "clean_out_npz": str(args.clean_out_npz) if args.clean_out_npz else "",
+        "clean_apply_identity": clean_apply_metrics,
         "protocol": {
             "uses_source_clean_pairs": True,
             "uses_target_clean": False,
             "uses_target_labels": False,
             "uses_unknown_query_for_training": False,
             "test_features_written_from_satellite_npz_only": True,
+            "uses_clean_clean_identity_training": bool(float(args.clean_identity_weight) > 0),
         },
     }
     if args.output_json:
@@ -388,6 +469,7 @@ def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
     parser.add_argument("--cos_weight", type=float, default=0.5)
     parser.add_argument("--proto_ce_weight", type=float, default=0.25)
     parser.add_argument("--residual_weight", type=float, default=0.01)
+    parser.add_argument("--clean_identity_weight", type=float, default=0.0)
     parser.add_argument("--proto_temperature", type=float, default=0.07)
     parser.add_argument("--val_fraction", type=float, default=0.15)
     parser.add_argument("--grad_clip", type=float, default=5.0)
@@ -395,6 +477,8 @@ def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
     parser.add_argument("--device", default="cuda:0")
     parser.add_argument("--output_json", default="")
     parser.add_argument("--adapter_out", default="")
+    parser.add_argument("--clean_apply_npz", default="")
+    parser.add_argument("--clean_out_npz", default="")
     return parser.parse_args(argv)
 
 

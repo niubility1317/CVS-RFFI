@@ -920,6 +920,65 @@ Conclusion under the current constraint:
 
 The refreshed task has been completed as an audit, but the requested success target is not achieved under the frozen`ADV3B02_CORE90_SOFT_E200phase1`feature basis. The blocking evidence is now consistent across pooled thresholds, global repair, classwise repair, IQ pre-adaptation, decision fusion, repair-manifold scoring, selective-correctness gates and class-local tail calibration. The next scientifically valid route is to change the representation training objective itself: source-side non-old/open-set negatives plus LEO identity-retention in Phase1, then rerun the same sat-only target audit. That would be a new Phase1 training route, not a completed frozen-base rejection result.
 
+## V18 Clean-Identity Target1 Redesign
+
+User correction on target1: MSE/cosine/prototype alignment is too weak to claim an anti-LEO correction. A deployable correction must also preserve clean samples and improve closed-set LEO recognition. Therefore target1 status is revised from "achieved" to "weak feature-alignment positive, strong target1 unproven" until the following gates pass.
+
+Strong target1 gates:
+
+| Gate | Required evidence |
+|---|---|
+| LEO closed-set recovery | Corrected sat-only target-old closed acc`>=0.80`, or at least`+5pp`vs same-logit identity baseline |
+| Clean fidelity | Same adapter applied to clean control has target-old drop`<=2pp` |
+| Scenario floor | `leo_clear_weak`、`leo_low_elev_weak`、`leo_rain_weak`target-old floor near`0.80` |
+| TX floor | Worst target-old TX improves and remains usable |
+| Margin/compactness | Target-old margin must not shrink and true-prototype distance must not increase beyond tolerance |
+| Unknown safety | target_unknown/proxy_unknown oldness and source-threshold FAR must not worsen vs identity baseline |
+
+V18 changes training accordingly. The adapter loss now includes clean-clean identity consistency:
+
+```text
+L = pair_weight * smooth_l1(adapter(z_leo), z_clean)
+  + cos_weight * (1 - cosine(adapter(z_leo), z_clean))
+  + proto_ce_weight * CE(proto_logits(adapter(z_leo)), tx)
+  + residual_weight * ||adapter(z_leo)-z_leo||^2
+  + clean_identity_weight * [smooth_l1(adapter(z_clean), z_clean)
+                             + 1 - cosine(adapter(z_clean), z_clean)]
+```
+
+New/changed files:
+
+| File | Purpose | SHA256 |
+|---|---|---|
+| `E:\type10-7\code\scripts\fit_apply_phase1_leo_feature_adapter.py` | Adds`--clean_identity_weight`plus`--clean_apply_npz/--clean_out_npz`so the same adapter is audited on clean control | `AA899BF635A66913A607873271E9D3C5F565572DE23C9723F29679BBA864989C` |
+| `E:\type10-7\code\scripts\eval_phase1_target1_strong_repair_audit_20260703.py` | Strong target1 evaluator for closed recovery、clean fidelity、scenario/TX floor、margin and unknown safety | `F8E16B3BBCCC6017725F29DF3B7FCB8012C174653FC0A033DC5527AE9AADBB4F` |
+| `E:\type10-7\code\scripts\sweep_phase1_adv3b02_target1_strong_v17_20260703.sh` | Audit existing repair adapters under the strong target1 gates | `DFEF53A0A9ADDF6035EA2D96F0D977CCF0120F50EEF57D9C5DC7D8B16F9DCC02` |
+| `E:\type10-7\code\scripts\sweep_phase1_adv3b02_cleanid_target1_v18_20260703.sh` | Train clean-identity adapters and run strong target1 audit | `B4C4C668AF975A9C0ECDE6B703B6C0200B5847E84DB52A3755B7FE850379509C` |
+
+Local verification:
+
+| Command | Result |
+|---|---|
+| `C:\Users\lh594\.conda\envs\ssr-gpu\python.exe -m py_compile E:\type10-7\code\scripts\fit_apply_phase1_leo_feature_adapter.py E:\type10-7\code\scripts\eval_phase1_target1_strong_repair_audit_20260703.py` | PASS |
+| `bash -lc "bash -n /mnt/e/type10-7/code/scripts/sweep_phase1_adv3b02_target1_strong_v17_20260703.sh && bash -n /mnt/e/type10-7/code/scripts/sweep_phase1_adv3b02_cleanid_target1_v18_20260703.sh"` | PASS |
+
+Version/snapshot state:
+
+| Item | Path |
+|---|---|
+| Non-Git code snapshot | `E:\type10-7\code\snapshots\phase1_adv3b02_cleanid_target1_v18_20260703\` |
+| Git mirror branch | `E:\type10-7\github_publish\CVS-RFFI-repo` |
+
+Planned N607 output:
+
+| Artifact | Remote path |
+|---|---|
+| V18 summary | `/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_adv3b02_cleanid_target1_v18_20260703/target1_strong_v18_summary.csv` |
+| V18 best JSON | `/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_adv3b02_cleanid_target1_v18_20260703/target1_strong_v18_best.json` |
+| V18 metrics JSON | `/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_adv3b02_cleanid_target1_v18_20260703/target1_strong_v18_metrics.json` |
+
+Decision rule before returning to target2: if V18 has`strong_target1_pass=0`, target1 remains not achieved and unknown rejection should not be re-optimized on top of that adapter.
+
 ## V11 Completion Results
 
 V11 completed two IQ pre-adapter variants on N607:
