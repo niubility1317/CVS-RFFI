@@ -3883,6 +3883,39 @@ C:\Users\lh594\.conda\envs\ssr-gpu\python.exe -m pytest code\tests\test_collabor
 
 输出路径将写入`runs/phase2_adv3b02_collab_open_set_qknn_full_20260703/`，并拉回到本地`remote_artifacts/`。成功目标仍为old 99%、old per-class>=95%、seen-new 97%、seen per-class>=93%、unknown rejection 99%；未达到则继续标为diagnostic-only。
 
+### N607结果
+
+N607同步后远端哈希与本地一致；远端验证`52 tests OK`。实际运行三组：`boundary_pairguard_evt090`、`boundary_pairguard_evt095`和一个更轻的`boundary_shellrel_evt095`。运行均使用GPU0；首次运行前后GPU显存均为`10/24576MiB`，后续短作业未观察到显存上升。每组均覆盖`collab_counts=all`即k=1..5。
+
+|route|JSON SHA256|CSV SHA256|
+|---|---|---|
+|`boundary_pairguard_evt090`|`5A04B78C9933FA498173EF32E9C479D4DC86BA8CF353B60C2477D197ACF6D675`|`B67AF0B29895A812074D0BF2AF1F75FAC342F1A9024777AB34229191725ACA03`|
+|`boundary_pairguard_evt095`|`984D89D5D51A120A03C38C492DC40EDE3850364A97AB383E47393572C4EA3097`|`CD6C5209C9393E84D535971082B9320A5379846EA380C6643689E13741AFC487`|
+|`boundary_shellrel_evt095`|`45D7B8042E589CB35D14E54099BE1C21EEB8BF147E54BA24C6E2E024C4E0DD8C`|`C4CFF9564E0329B4ABCA52A5C2994BEAF53901EBEA69A1082CF8C4734923F809`|
+
+|route|k|old_acc|min_old|seen_new_acc|min_seen|unknown_FAR|unknown_reject|defer|bytes/event|p95 ms|pairguard_veto_rate|
+|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+|dualroute_noguard|2|0.5000|0.2000|0.5962|0.5625|0.1304|0.8696|0.0440|80.0|0.1374|0.0000|
+|dualroute_noguard|3|0.6500|0.3000|0.7250|0.6000|0.0750|0.9000|0.0250|120.0|0.1374|0.0000|
+|dualroute_noguard|4|0.8083|0.7000|0.7500|0.6000|0.0250|0.9500|0.0150|150.0|0.1374|0.0000|
+|dualroute_noguard|5|0.7833|0.5500|0.7250|0.5500|0.0750|0.9000|0.0100|168.6|0.1374|0.0000|
+|boundary_pairguard_evt090|2|0.4276|0.2000|0.5000|0.5000|0.0652|0.9348|0.0440|80.0|0.1335|0.2800|
+|boundary_pairguard_evt090|3|0.4750|0.1500|0.5500|0.4500|0.0000|0.9750|0.0250|120.0|0.1335|0.4500|
+|boundary_pairguard_evt090|4|0.6167|0.4000|0.5250|0.4000|0.0250|0.9500|0.0150|150.0|0.1335|0.3850|
+|boundary_pairguard_evt090|5|0.5917|0.2500|0.5000|0.3500|0.0250|0.9500|0.0100|168.6|0.1335|0.4550|
+|boundary_pairguard_evt095|2|0.4408|0.2000|0.5000|0.5000|0.0652|0.9348|0.0440|80.0|0.1336|0.2600|
+|boundary_pairguard_evt095|3|0.4917|0.1500|0.5750|0.4500|0.0250|0.9500|0.0250|120.0|0.1336|0.4250|
+|boundary_pairguard_evt095|4|0.6167|0.4000|0.5500|0.4000|0.0250|0.9500|0.0150|150.0|0.1336|0.3750|
+|boundary_pairguard_evt095|5|0.5917|0.2500|0.5250|0.3500|0.0250|0.9500|0.0100|168.6|0.1336|0.4450|
+|boundary_shellrel_evt095|2|0.5000|0.2000|0.5962|0.5625|0.1304|0.8696|0.0440|80.0|0.1839|0.0040|
+|boundary_shellrel_evt095|3|0.6500|0.3000|0.7250|0.6000|0.0750|0.9000|0.0250|120.0|0.1839|0.0000|
+|boundary_shellrel_evt095|4|0.8083|0.7000|0.7500|0.6000|0.0250|0.9500|0.0150|150.0|0.1839|0.0000|
+|boundary_shellrel_evt095|5|0.7833|0.5500|0.7250|0.5500|0.0750|0.9000|0.0100|168.6|0.1839|0.0000|
+
+判定：`boundary_pairguard_evt090/evt095`确实降低了unknown_FAR，k=3分别为`0.0000/0.0250`，但pairguard veto率达到`0.4250-0.4500`，导致old和seen-new大幅下降。`boundary_shellrel_evt095`几乎不伤known，但也几乎不改善unknown。当前证据说明下一步不能继续靠全局pair分歧/风险跨度阈值，而应改为“类别条件化pairguard”：只对历史false-accept高发标签或receiver pair触发，或把pairguard输出改为`request_more`/地面复核权重，而不是直接阻断accept。当前仍未达标，所有新增结果均为diagnostic-only。
+
+最终SSH/SCP后本地无`ssh.exe`残留，无N607和bridge 22端口ESTABLISHED连接。
+
 
 
 
