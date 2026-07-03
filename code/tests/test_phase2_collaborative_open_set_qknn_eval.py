@@ -853,6 +853,107 @@ class Phase2CollaborativeOpenSetQknnEvalTest(unittest.TestCase):
         self.assertIn("mahalanobis_score_temperature", evidence[0])
         self.assertIn("mahalanobis_score_assisted", evidence[0])
 
+    def test_support_quality_class_verifier_can_rerank_ambiguous_candidate(self):
+        from phase2_collaborative_open_set_qknn_eval import (
+            _support_quality_class_verifier,
+            build_qknn_memory,
+            qknn_scores,
+        )
+
+        features = np.asarray(
+            [
+                [1.0, 0.0, 0.0],
+                [0.99, 0.01, 0.0],
+                [0.80, 0.60, 0.0],
+                [0.79, 0.61, 0.0],
+            ],
+            dtype=np.float32,
+        )
+        memory = build_qknn_memory(
+            features,
+            ["old-a", "old-a", "new-a", "new-a"],
+            old_labels={"old-a"},
+            support_scenarios=["leo_clear_weak"] * 4,
+        )
+        query = np.asarray([[0.96, 0.28, 0.0]], dtype=np.float32)
+        pred, _, _, _, _, _, _, _ = qknn_scores(memory, query, top_k=3)
+
+        verifier = _support_quality_class_verifier(
+            memory,
+            query,
+            rx="rx-a",
+            scenario="leo_clear_weak",
+            qknn_k=3,
+            scenario_aware=False,
+            radius_norm=0.0,
+            old_bias=0.0,
+            candidate_class_top_m=0,
+            class_verifier_top_m=2,
+            prototype_blend=0.0,
+            mahalanobis_blend=0.0,
+            mahalanobis_score_temp=0.2,
+            receiver_threshold=0.0,
+            receiver_class_thresholds={},
+            receiver_class_conformal_scores={
+                "rx-a": {
+                    "old-a": [0.99, 0.99, 0.99],
+                    "new-a": [0.10, 0.10, 0.10],
+                }
+            },
+            receiver_class_reliabilities={"rx-a": {"old-a": 0.10, "new-a": 1.0}},
+            score_threshold_combine="qknn_only",
+            class_score_threshold_enabled=False,
+            class_conformal_enabled=True,
+            unknown_gate_mode="score",
+            risk_temperature=0.035,
+            radius_temperature=0.02,
+            margin_temperature=0.02,
+            mahalanobis_temperature=0.2,
+            evt_temperature=0.05,
+            oldness_temperature=0.05,
+            class_shell_unknown_risk_enabled=False,
+            class_shell_radius_scale=1.25,
+            class_shell_risk_temperature=0.05,
+            class_shell_risk_margin=0.0,
+            pvalue_weight=4.0,
+            reliability_weight=4.0,
+            risk_weight=0.0,
+        )
+
+        self.assertEqual(str(pred[0]), "old-a")
+        self.assertEqual(verifier["top1_label"], "new-a")
+        self.assertEqual(verifier["second_label"], "old-a")
+        self.assertGreater(verifier["top1_verified_score"], verifier["second_verified_score"])
+
+    def test_support_quality_class_verifier_is_marked_in_metadata_and_evidence(self):
+        from phase2_collaborative_open_set_qknn_eval import load_feature_npz, build_collaborative_evidence
+
+        with tempfile.TemporaryDirectory() as td:
+            npz = Path(td) / "features.npz"
+            _write_npz(npz)
+            evidence, metadata = build_collaborative_evidence(
+                load_feature_npz(npz),
+                k_shot=1,
+                query_per_class=2,
+                qknn_k=1,
+                class_conformal_enabled=True,
+                class_conformal_min_support=1,
+                receiver_class_reliability_policy="support_calibrated",
+                class_verifier_policy="support_quality",
+                class_verifier_top_m=2,
+                class_verifier_pvalue_weight=2.0,
+                class_verifier_reliability_weight=3.0,
+                class_verifier_risk_weight=0.5,
+            )
+
+        self.assertEqual(metadata["class_verifier_policy"], "support_quality")
+        self.assertEqual(metadata["class_verifier_top_m"], 2)
+        self.assertAlmostEqual(metadata["class_verifier_pvalue_weight"], 2.0)
+        self.assertAlmostEqual(metadata["class_verifier_reliability_weight"], 3.0)
+        self.assertAlmostEqual(metadata["class_verifier_risk_weight"], 0.5)
+        self.assertIn("class_verifier_changed", evidence[0])
+        self.assertIn("class_verifier_top1_verified_score", evidence[0])
+
     def test_source_only_proxy_unknown_sets_threshold_scope(self):
         from phase2_collaborative_open_set_qknn_eval import load_feature_npz, build_collaborative_evidence
 

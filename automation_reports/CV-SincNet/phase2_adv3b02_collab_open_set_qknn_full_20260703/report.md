@@ -4006,6 +4006,114 @@ conda run --no-capture-output -n ssr-gpu python -m pytest code\tests\test_phase2
 
 本轮所有SSH/SCP后本地均已确认无`ssh.exe`残留，无N607和bridge 22端口`ESTABLISHED`连接。
 
+### support-only原型/马氏节点证据诊断
+
+在Old-Floor-Aware ORBIT没有提升后，补跑三组不改代码的节点级证据质量诊断，均在max=3同分母全类集合上运行，仍使用ADV3B02/qknn8、`receiver_domain_ranked`、`same_max_budget`和`class_shell_unknown_risk_enabled`。
+
+|route|关键参数|JSON SHA256|CSV SHA256|
+|---|---|---|---|
+|`proto_maha`|`--prototype_score_blend 2.0 --mahalanobis_score_blend 1.0`|`387733E0C3C72DBD9CA9514AE4B4C73CB6FDE51ADC548AE301CAC03377B45922`|`7C13C753B62597E8C021E879876BBD136B3924775BDF5128FF9648E58DF4CED3`|
+|`proto_maha_top3`|同上，另加`--candidate_class_top_m 3`|`CA521F675C7410B1E81F22B7E2D548A75CA63E90AA5CA7A3D52AF9CDC79C2008`|`3847366F25EF5823212CFA2A9B56CAD4E34DFD32863C43D79E4A1F1F30AD893D`|
+|`proto_maha_classthr`|`proto_maha`基础上加`--class_score_threshold_enabled --class_score_threshold_quantile 0.10 --score_threshold_combine max`|`8DA8F2DA1C927654685BC10FBFA83DBE568C7A84A712837D25678F75E848A441`|`E4B343ADB5C7199700E37BDF21B33BB5BD92C72C59644351AC334F184CD92E94`|
+
+运行后GPU仍为8张RTX3090均`10/24576MiB`，SSH/SCP后本地无`ssh.exe`残留，无N607和bridge 22端口`ESTABLISHED`连接。
+
+|route|k|old_acc|min_old|seen_new_acc|min_seen|unknown_FAR|unknown_reject|defer|bytes/event|p95 ms|
+|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+|baseline_orbit_same_max3|3|0.4833|0.1500|0.5500|0.5500|0.0250|0.8750|0.1000|120.0|0.1421|
+|proto_maha|3|0.4917|0.1500|0.6500|0.5500|0.0500|0.8250|0.1200|120.0|0.1176|
+|proto_maha_top3|3|0.5000|0.1500|0.6500|0.5500|0.0500|0.8250|0.1150|120.0|0.1320|
+|proto_maha_classthr|3|0.4000|0.0500|0.5500|0.4500|0.0250|0.9500|0.0750|120.0|0.1382|
+
+按类结果：
+
+|route|k=3 old按类准确率|k=3 seen-new按类准确率|unknown误接收标签|
+|---|---|---|---|
+|baseline_orbit_same_max3|`14-10=0.15,14-7=0.70,20-15=0.65,20-19=0.15,6-15=0.40,8-20=0.85`|`19-3=0.55,3-8=0.55`|`14-7:1`|
+|proto_maha|`14-10=0.15,14-7=0.75,20-15=0.70,20-19=0.20,6-15=0.25,8-20=0.90`|`19-3=0.55,3-8=0.75`|`14-7:2`|
+|proto_maha_top3|`14-10=0.15,14-7=0.75,20-15=0.70,20-19=0.25,6-15=0.25,8-20=0.90`|`19-3=0.55,3-8=0.75`|`14-7:2`|
+|proto_maha_classthr|`14-10=0.10,14-7=0.60,20-15=0.55,20-19=0.05,6-15=0.20,8-20=0.90`|`19-3=0.45,3-8=0.65`|`14-7:1`|
+
+判定：support-only原型/马氏融合方向有小幅正收益，尤其`proto_maha_top3`把k=3`old_acc`从`0.4833`提升到`0.5000`，seen-new从`0.5500`提升到`0.6500`，但`unknown_FAR`从`0.0250`升到`0.0500`，且`min_old`仍停在`0.1500`。class score threshold版本虽然把unknown_reject提到`0.9500`，但known损伤明显，不适合作为主线。下一步应实现显式support-only class verifier，在候选重排时同时使用class conformal pvalue、receiver-class reliability、class shell/unknown risk和原型/马氏分数，而不是只线性叠加prototype/mahalanobis score。
+
+## 2026-07-04 ADV3B02 support_quality class verifier执行计划
+
+目标：在不改变`ADV3B02_CORE90_SOFT_E200`底座、不使用unknown query校准、不增加全模型训练的前提下，新增support-only类验证器。每个receiver本地先按qknn/prototype/mahalanobis形成候选类，再用类级conformal pvalue、receiver-class reliability、support-envelope风险和class shell风险重排候选标签，减少低质量receiver/class证据对协同融合的污染。
+
+本地变更：
+
+|文件|变更|
+|---|---|
+|`code/scripts/phase2_collaborative_open_set_qknn_eval.py`|新增`class_verifier_policy=support_quality`、`class_verifier_top_m`和pvalue/reliability/risk权重；evidence记录base预测、验证器top1/second、是否改写、support_count和风险字段；metadata记录完整策略参数。|
+|`code/tests/test_phase2_collaborative_open_set_qknn_eval.py`|新增support_quality类验证器重排单元测试和metadata/evidence字段测试。|
+
+本地快照：`E:\type10-7\code\snapshots\phase2_support_quality_class_verifier_20260704\`。本地SHA256：脚本`6F6373F661BD3C96A427A9D5056E6A6C6A54C3E72311FA636ACA22ACBB941354`，测试`FED73E72662F931FE6115DA73DAAB823675AF6A5A548F7819EA488E6FFCB072C`。
+
+本地验证：
+
+```text
+conda run --no-capture-output -n ssr-gpu python -m py_compile code\scripts\phase2_collaborative_open_set_qknn_eval.py code\evaluation\collaborative_open_set_qknn_eval.py
+conda run --no-capture-output -n ssr-gpu python -m pytest code\tests\test_phase2_collaborative_open_set_qknn_eval.py -q -p no:cacheprovider
+```
+
+结果：`py_compile`通过；`test_phase2_collaborative_open_set_qknn_eval.py`为`48 passed`。
+
+远端计划：先运行`tools\n607_ssh_preflight.ps1`，选择显存占用最低GPU，使用`scp`同步脚本和测试到`/home/szu2070436088/2510044040/CV-SincNet`。远端固定使用`/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python`验证`py_compile`和`unittest`，再复跑k=1..全体target receiver数量的星地信道全量诊断。候选输出：
+
+```text
+runs/phase2_adv3b02_collab_open_set_qknn_full_20260703/collab_open_set_qknn_support_quality_verifier_same_max3_adv3b02_20260704.json
+runs/phase2_adv3b02_collab_open_set_qknn_full_20260703/collab_open_set_qknn_support_quality_verifier_same_max3_adv3b02_20260704_evidence.csv
+```
+
+### N607结果
+
+N607 preflight通过，远端项目根可见，8张RTX3090运行前均为`10/24576MiB`、utilization`0%`，选择GPU0。同步文件：
+
+|本地|远端|
+|---|---|
+|`E:\type10-7\code\scripts\phase2_collaborative_open_set_qknn_eval.py`|`/home/szu2070436088/2510044040/CV-SincNet/code/scripts/phase2_collaborative_open_set_qknn_eval.py`|
+|`E:\type10-7\code\tests\test_phase2_collaborative_open_set_qknn_eval.py`|`/home/szu2070436088/2510044040/CV-SincNet/code/tests/test_phase2_collaborative_open_set_qknn_eval.py`|
+
+远端环境固定为`/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python`。远端SHA256与本地一致：脚本`6f6373f661bd3c96a427a9d5056e6a6c6a54c3e72311fa636aca22acbb941354`，测试`fed73e72662f931fe6115da73daab823675af6a5a548f7819ea488e6ffcb072c`。远端`py_compile`通过。`unittest discover`在远端上下文中未能解析`evaluation.collaborative_open_set_qknn_eval`，直接执行测试文件成功：`Ran 48 tests ... OK`；直接import验证显示`evaluation.collaborative_open_set_qknn_eval`实际存在且可导入。该问题记录为远端测试启动方式限制，不作为代码失败证据。
+
+全量运行均使用`runs/phase2_adv3b02_collab_open_set_qknn_full_20260703/features.npz`，保留星地信道/LEO特征，`--collab_counts all`覆盖k=1..5个target receiver，`receiver_count=5`、`group_count=307`、`evidence_row_count=1000`。运行后8张GPU仍为`10/24576MiB`、utilization`0%`。每次SSH/SCP后本地检查均无残留`ssh.exe`，无到N607或bridge的22端口`ESTABLISHED`连接。
+
+远端产物：
+
+|run|JSON SHA256|CSV SHA256|验证器改写条数|
+|---|---|---|---:|
+|`support_quality_verifier_full`|`0977423E77D377B1AECB93D41CC4A1085929949438AB9A25D09A88C8B3C5A5B4`|`70ADFD0A6FA2206913B3009A3D325838DC703DDF2D17F266E59BB18B56160277`|60/1000|
+|`support_quality_verifier_risk2_full`|`90ED5D91C11A4A4041F0E09EFE8272FDAC5E5C7400FDD4F1AD7CFF4EF673015A`|`82FA34D0660012B89B05129523A4DF3E0ABC13A4C81647838279B1A762AD3D25`|64/1000|
+
+`support_quality_verifier_full`主结果：
+
+|k|old_acc|min_old|seen_new_acc|min_seen|unknown_FAR|unknown_reject|defer|bytes/event|p95 ms|
+|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+|1|0.0000|0.0000|0.0000|0.0000|0.0000|0.4167|0.8046|40.0|0.1330|
+|2|0.3750|0.0000|0.3846|0.2500|0.1304|0.7609|0.2680|80.0|0.1330|
+|3|0.4917|0.1000|0.6250|0.5000|0.0500|0.8250|0.1250|120.0|0.1330|
+|4|0.8182|0.0000|0.6786|0.5500|0.1176|0.7647|0.0800|160.0|0.1330|
+|5|0.8113|0.0000|0.6000|0.0000|0.1000|0.9000|0.0430|200.0|0.1330|
+
+`support_quality_verifier_risk2_full`主结果：
+
+|k|old_acc|min_old|seen_new_acc|min_seen|unknown_FAR|unknown_reject|defer|bytes/event|p95 ms|
+|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+|1|0.0000|0.0000|0.0000|0.0000|0.0000|0.4167|0.8046|40.0|0.1837|
+|2|0.3684|0.0000|0.3846|0.2500|0.1304|0.7609|0.2760|80.0|0.1837|
+|3|0.4833|0.0500|0.6500|0.5500|0.0500|0.8250|0.1250|120.0|0.1837|
+|4|0.8068|0.0000|0.6786|0.5500|0.1176|0.7647|0.0800|160.0|0.1837|
+|5|0.7736|0.0000|0.6000|0.0000|0.1000|0.9000|0.0430|200.0|0.1837|
+
+k=3类级上下文：
+
+|run|old per-class|seen-new per-class|unknown false accept labels|
+|---|---|---|---|
+|`support_quality_verifier_full`|`14-10=0.10,14-7=0.75,20-15=0.70,20-19=0.25,6-15=0.25,8-20=0.90`|`19-3=0.50,3-8=0.75`|`14-7:2`|
+|`support_quality_verifier_risk2_full`|`14-10=0.05,14-7=0.75,20-15=0.70,20-19=0.25,6-15=0.25,8-20=0.90`|`19-3=0.55,3-8=0.75`|`14-7:2`|
+
+判定：`support_quality`类验证器可审计、部署代价低，且k=3的seen-new相对ORBIT baseline有局部改善；但它没有解决旧类地板问题，`14-10/20-19/6-15`仍显著低，k=4/k=5还出现类缺失地板为0。更保守的risk权重没有降低unknown_FAR，只把部分old正确样本继续压低。因此本轮仍为diagnostic-only，不能声明Stage2-C成功、不能声明99/97/99达标。下一步不应继续只调验证器权重，应转向support-side receiver-class风险先验和按类/按receiver的support质量筛选，避免unknown样本被验证器改写成高风险旧类。
+
 ### 同分母k=1..5补充诊断
 
 为避免把不同k的不同事件分母误读为“接收机数量因果提升”，新增`collab_group_policy=same_max_budget`。该策略要求所有k都只在最大请求接收机数可用的同一批事件上评估；本轮`collab_counts all`时最大预算为5，因此k=1..5均使用具备5个target receiver证据的事件组。

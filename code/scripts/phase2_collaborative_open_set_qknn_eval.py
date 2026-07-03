@@ -1323,6 +1323,188 @@ def _combine_score_threshold(qknn_threshold: float, centroid_threshold: float, m
     raise ValueError("score_threshold_combine must be max, qknn_only, centroid_only, min, or mean")
 
 
+def _support_quality_class_verifier(
+    memory: QknnMemory,
+    query_feature: np.ndarray,
+    *,
+    rx: str,
+    scenario: str,
+    qknn_k: int,
+    scenario_aware: bool,
+    radius_norm: float,
+    old_bias: float,
+    candidate_class_top_m: int,
+    class_verifier_top_m: int,
+    prototype_blend: float,
+    mahalanobis_blend: float,
+    mahalanobis_score_temp: float,
+    receiver_threshold: float,
+    receiver_class_thresholds: Mapping[str, Mapping[str, float]],
+    receiver_class_conformal_scores: Mapping[str, Mapping[str, Sequence[float]]],
+    receiver_class_reliabilities: Mapping[str, Mapping[str, float]],
+    score_threshold_combine: str,
+    class_score_threshold_enabled: bool,
+    class_conformal_enabled: bool,
+    unknown_gate_mode: str,
+    risk_temperature: float,
+    radius_temperature: float,
+    margin_temperature: float,
+    mahalanobis_temperature: float,
+    evt_temperature: float,
+    oldness_temperature: float,
+    class_shell_unknown_risk_enabled: bool,
+    class_shell_radius_scale: float,
+    class_shell_risk_temperature: float,
+    class_shell_risk_margin: float,
+    pvalue_weight: float,
+    reliability_weight: float,
+    risk_weight: float,
+) -> dict[str, Any]:
+    score_labels, score_matrix = _qknn_label_score_matrix(
+        memory,
+        query_feature,
+        top_k=qknn_k,
+        query_scenarios=[scenario],
+        scenario_aware=bool(scenario_aware),
+        radius_norm=float(radius_norm),
+        old_bias=float(old_bias),
+        candidate_class_top_m=int(candidate_class_top_m),
+        prototype_score_blend=float(prototype_blend),
+        mahalanobis_score_blend=float(mahalanobis_blend),
+        mahalanobis_score_temperature=float(mahalanobis_score_temp),
+    )
+    label_scores = [
+        (str(label), float(score_value))
+        for label, score_value in zip(score_labels.tolist(), score_matrix[0].tolist())
+        if np.isfinite(float(score_value))
+    ]
+    label_scores.sort(key=lambda item: (item[1], item[0]), reverse=True)
+    top_m = int(class_verifier_top_m)
+    if top_m > 0:
+        label_scores = label_scores[:top_m]
+    if not label_scores:
+        raise RuntimeError("support_quality class verifier has no candidate labels")
+
+    receiver_conformal = receiver_class_conformal_scores.get(rx, {})
+    receiver_reliabilities = receiver_class_reliabilities.get(rx, {})
+    verified: list[dict[str, float | str | int]] = []
+    for label_name, label_score in label_scores:
+        label_second_score = max(
+            (score_value for other_label, score_value in label_scores if other_label != label_name),
+            default=0.0,
+        )
+        label_margin = float(label_score - label_second_score)
+        label_class_threshold_value = receiver_class_thresholds.get(rx, {}).get(label_name)
+        if bool(class_score_threshold_enabled) and label_class_threshold_value is not None:
+            label_receiver_threshold = float(label_class_threshold_value)
+            label_threshold_source = "class"
+        elif bool(class_score_threshold_enabled):
+            label_receiver_threshold = float(receiver_threshold)
+            label_threshold_source = "receiver_fallback"
+        else:
+            label_receiver_threshold = float(receiver_threshold)
+            label_threshold_source = "receiver_global"
+        label_effective_threshold = _combine_score_threshold(
+            label_receiver_threshold,
+            memory.score_threshold,
+            str(score_threshold_combine),
+        )
+        (
+            label_risk,
+            _label_score_risk,
+            _label_radius_risk,
+            _label_margin_risk,
+            _label_mahalanobis_risk,
+            _label_evt_risk,
+            _label_oldness_risk,
+            _label_class_radius,
+            _label_class_radius_z,
+        ) = _combined_unknown_risk(
+            memory,
+            query_feature,
+            [label_name],
+            np.asarray([label_score], dtype=np.float64),
+            np.asarray([label_margin], dtype=np.float64),
+            label_effective_threshold,
+            temperature=float(risk_temperature),
+            gate_mode=str(unknown_gate_mode),
+            radius_temperature=float(radius_temperature),
+            margin_temperature=float(margin_temperature),
+            mahalanobis_temperature=float(mahalanobis_temperature),
+            evt_temperature=float(evt_temperature),
+            oldness_temperature=float(oldness_temperature),
+        )
+        label_shell_risk, _label_shell_distance = _class_shell_boundary_risk(
+            memory,
+            query_feature,
+            [label_name],
+            radius_scale=float(class_shell_radius_scale),
+            temperature=float(class_shell_risk_temperature),
+            margin=float(class_shell_risk_margin),
+        )
+        pvalue = (
+            _conformal_pvalue(label_score, receiver_conformal.get(label_name))
+            if bool(class_conformal_enabled)
+            else 1.0
+        )
+        reliability = float(receiver_reliabilities.get(label_name, 1.0))
+        combined_risk = max(
+            float(label_risk[0]),
+            float(label_shell_risk[0]) if bool(class_shell_unknown_risk_enabled) else 0.0,
+        )
+        p_factor = (0.50 + 0.50 * max(0.0, min(1.0, float(pvalue)))) ** max(float(pvalue_weight), 0.0)
+        r_factor = (0.50 + 0.50 * max(0.0, min(1.0, reliability))) ** max(float(reliability_weight), 0.0)
+        risk_factor = max(0.0, 1.0 - combined_risk) ** max(float(risk_weight), 0.0)
+        verified_score = float(max(0.0, label_score) * p_factor * r_factor * risk_factor)
+        verified.append(
+            {
+                "label": label_name,
+                "raw_score": float(label_score),
+                "raw_margin": float(label_margin),
+                "verified_score": verified_score,
+                "pvalue": float(pvalue),
+                "receiver_class_reliability": reliability,
+                "unknown_risk": float(label_risk[0]),
+                "class_shell_risk": float(label_shell_risk[0]) if bool(class_shell_unknown_risk_enabled) else 0.0,
+                "combined_risk": float(combined_risk),
+                "effective_score_threshold": float(label_effective_threshold),
+                "score_threshold_source": label_threshold_source,
+                "support_count": int(len(receiver_conformal.get(label_name, []))),
+            }
+        )
+    verified.sort(
+        key=lambda item: (
+            float(item["verified_score"]),
+            float(item["raw_score"]),
+            str(item["label"]),
+        ),
+        reverse=True,
+    )
+    best = verified[0]
+    second: Mapping[str, float | str] = (
+        verified[1] if len(verified) > 1 else {"label": "", "raw_score": 0.0, "verified_score": 0.0}
+    )
+    return {
+        "top1_label": str(best["label"]),
+        "top1_raw_score": float(best["raw_score"]),
+        "top1_raw_margin": float(best["raw_margin"]),
+        "top1_verified_score": float(best["verified_score"]),
+        "top1_pvalue": float(best["pvalue"]),
+        "top1_receiver_class_reliability": float(best["receiver_class_reliability"]),
+        "top1_unknown_risk": float(best["unknown_risk"]),
+        "top1_class_shell_risk": float(best["class_shell_risk"]),
+        "top1_combined_risk": float(best["combined_risk"]),
+        "top1_support_count": int(best["support_count"]),
+        "top1_effective_score_threshold": float(best["effective_score_threshold"]),
+        "top1_score_threshold_source": str(best["score_threshold_source"]),
+        "second_label": str(second["label"]),
+        "second_raw_score": float(second["raw_score"]),
+        "second_verified_score": float(second["verified_score"]),
+        "candidate_count": int(len(verified)),
+        "all": verified,
+    }
+
+
 def _scenario_of(payload: Mapping[str, Any], idx: int) -> str:
     scenario = str(payload["sat_scenarios"][idx])
     return scenario if scenario else str(payload["channel_views"][idx])
@@ -1413,6 +1595,11 @@ def build_collaborative_evidence(
     candidate_audit_disagreement_risk: float = 1.0,
     candidate_audit_min_gap: float = 0.0,
     candidate_audit_gap_risk: float = 0.0,
+    class_verifier_policy: str = "none",
+    class_verifier_top_m: int = 0,
+    class_verifier_pvalue_weight: float = 1.0,
+    class_verifier_reliability_weight: float = 1.0,
+    class_verifier_risk_weight: float = 1.0,
 ) -> tuple[list[dict[str, Any]], dict[str, Any]]:
     validate_required_roles(payload)
     roles = np.asarray(payload["dataset_role"]).astype(str)
@@ -1493,6 +1680,16 @@ def build_collaborative_evidence(
     if mahalanobis_blend < 0.0:
         raise ValueError("mahalanobis_score_blend must be >= 0")
     mahalanobis_score_temp = max(float(mahalanobis_score_temperature), 1e-6)
+    class_verifier = str(class_verifier_policy or "none").strip().lower()
+    if class_verifier not in {"none", "support_quality"}:
+        raise ValueError("class_verifier_policy must be none or support_quality")
+    verifier_top_m = int(class_verifier_top_m)
+    if verifier_top_m < 0:
+        raise ValueError("class_verifier_top_m must be >= 0")
+    verifier_candidate_top_m = verifier_top_m if verifier_top_m > 0 else int(candidate_class_top_m)
+    verifier_pvalue_weight = max(float(class_verifier_pvalue_weight), 0.0)
+    verifier_reliability_weight = max(float(class_verifier_reliability_weight), 0.0)
+    verifier_risk_weight = max(float(class_verifier_risk_weight), 0.0)
     proto_cal_policy = str(prototype_calibration_policy or "none").strip().lower()
     if proto_cal_policy not in {"none", "teen_blend", "teen_separate"}:
         raise ValueError("prototype_calibration_policy must be none, teen_blend, or teen_separate")
@@ -1842,6 +2039,105 @@ def build_collaborative_evidence(
                         audit_score = score
                         audit_second_labels = second_labels
                         audit_second_scores = second_scores
+                    base_pred = str(pred[0])
+                    base_score = float(score[0])
+                    base_margin = float(margin[0])
+                    base_second_label = str(second_labels[0])
+                    base_second_score = float(second_scores[0])
+                    verifier_fields: dict[str, float | int | str] = {
+                        "class_verifier_policy": class_verifier,
+                        "class_verifier_top_m": int(verifier_top_m),
+                        "class_verifier_candidate_top_m": int(verifier_candidate_top_m),
+                        "class_verifier_changed": 0,
+                        "class_verifier_base_label": base_pred,
+                        "class_verifier_base_score": base_score,
+                        "class_verifier_base_margin": base_margin,
+                        "class_verifier_base_second_label": base_second_label,
+                        "class_verifier_base_second_score": base_second_score,
+                        "class_verifier_top1_label": base_pred,
+                        "class_verifier_top1_raw_score": base_score,
+                        "class_verifier_top1_raw_margin": base_margin,
+                        "class_verifier_top1_verified_score": base_score,
+                        "class_verifier_top1_pvalue": 1.0 if not bool(class_conformal_enabled) else 0.0,
+                        "class_verifier_top1_receiver_class_reliability": 1.0,
+                        "class_verifier_top1_unknown_risk": 0.0,
+                        "class_verifier_top1_class_shell_risk": 0.0,
+                        "class_verifier_top1_combined_risk": 0.0,
+                        "class_verifier_top1_support_count": 0,
+                        "class_verifier_top1_effective_score_threshold": 0.0,
+                        "class_verifier_top1_score_threshold_source": "not_applied",
+                        "class_verifier_second_label": base_second_label,
+                        "class_verifier_second_raw_score": base_second_score,
+                        "class_verifier_second_verified_score": base_second_score,
+                    }
+                    if class_verifier == "support_quality":
+                        verifier = _support_quality_class_verifier(
+                            memory,
+                            query_feature,
+                            rx=rx,
+                            scenario=_scenario_of(payload, idx),
+                            qknn_k=qknn_k,
+                            scenario_aware=bool(scenario_aware),
+                            radius_norm=float(radius_norm),
+                            old_bias=float(old_bias),
+                            candidate_class_top_m=int(verifier_candidate_top_m),
+                            class_verifier_top_m=int(verifier_top_m),
+                            prototype_blend=prototype_blend,
+                            mahalanobis_blend=mahalanobis_blend,
+                            mahalanobis_score_temp=mahalanobis_score_temp,
+                            receiver_threshold=float(receiver_thresholds[rx]),
+                            receiver_class_thresholds=receiver_class_thresholds,
+                            receiver_class_conformal_scores=receiver_class_conformal_scores,
+                            receiver_class_reliabilities=receiver_class_reliabilities,
+                            score_threshold_combine=str(score_threshold_combine),
+                            class_score_threshold_enabled=bool(class_score_threshold_enabled),
+                            class_conformal_enabled=bool(class_conformal_enabled),
+                            unknown_gate_mode=str(unknown_gate_mode),
+                            risk_temperature=float(risk_temperature),
+                            radius_temperature=float(radius_temperature),
+                            margin_temperature=float(margin_temperature),
+                            mahalanobis_temperature=float(mahalanobis_temperature),
+                            evt_temperature=float(evt_temperature),
+                            oldness_temperature=float(oldness_temperature),
+                            class_shell_unknown_risk_enabled=bool(class_shell_unknown_risk_enabled),
+                            class_shell_radius_scale=float(class_shell_radius_scale),
+                            class_shell_risk_temperature=float(class_shell_risk_temperature),
+                            class_shell_risk_margin=float(class_shell_risk_margin),
+                            pvalue_weight=verifier_pvalue_weight,
+                            reliability_weight=verifier_reliability_weight,
+                            risk_weight=verifier_risk_weight,
+                        )
+                        pred = np.asarray([str(verifier["top1_label"])], dtype=object)
+                        score = np.asarray([float(verifier["top1_raw_score"])], dtype=np.float64)
+                        margin = np.asarray([float(verifier["top1_raw_margin"])], dtype=np.float64)
+                        second_labels = np.asarray([str(verifier["second_label"])], dtype=object)
+                        second_scores = np.asarray([float(verifier["second_raw_score"])], dtype=np.float64)
+                        verifier_fields.update(
+                            {
+                                "class_verifier_changed": int(str(verifier["top1_label"]) != base_pred),
+                                "class_verifier_top1_label": str(verifier["top1_label"]),
+                                "class_verifier_top1_raw_score": float(verifier["top1_raw_score"]),
+                                "class_verifier_top1_raw_margin": float(verifier["top1_raw_margin"]),
+                                "class_verifier_top1_verified_score": float(verifier["top1_verified_score"]),
+                                "class_verifier_top1_pvalue": float(verifier["top1_pvalue"]),
+                                "class_verifier_top1_receiver_class_reliability": float(
+                                    verifier["top1_receiver_class_reliability"]
+                                ),
+                                "class_verifier_top1_unknown_risk": float(verifier["top1_unknown_risk"]),
+                                "class_verifier_top1_class_shell_risk": float(verifier["top1_class_shell_risk"]),
+                                "class_verifier_top1_combined_risk": float(verifier["top1_combined_risk"]),
+                                "class_verifier_top1_support_count": int(verifier["top1_support_count"]),
+                                "class_verifier_top1_effective_score_threshold": float(
+                                    verifier["top1_effective_score_threshold"]
+                                ),
+                                "class_verifier_top1_score_threshold_source": str(
+                                    verifier["top1_score_threshold_source"]
+                                ),
+                                "class_verifier_second_label": str(verifier["second_label"]),
+                                "class_verifier_second_raw_score": float(verifier["second_raw_score"]),
+                                "class_verifier_second_verified_score": float(verifier["second_verified_score"]),
+                            }
+                        )
                     audit_gap = float(audit_score[0] - audit_second_scores[0])
                     candidate_audit_disagreement = str(audit_pred[0]) != str(pred[0])
                     support_density = float(support_densities[0])
@@ -2082,6 +2378,7 @@ def build_collaborative_evidence(
                                 receiver_class_reliabilities.get(rx, {}).get(str(pred[0]), 1.0)
                             ),
                             "class_evidence_top_m": int(class_evidence_top_m),
+                            **verifier_fields,
                             **class_evidence_fields,
                             "virtual_unknown_calibration_enabled": int(bool(virtual_unknown_calibration_enabled)),
                             "virtual_unknown_risk_enabled": int(bool(virtual_unknown_risk_enabled)),
@@ -2201,6 +2498,12 @@ def build_collaborative_evidence(
         "candidate_audit_disagreement_risk": float(candidate_audit_disagreement_risk),
         "candidate_audit_min_gap": float(candidate_audit_min_gap),
         "candidate_audit_gap_risk": float(candidate_audit_gap_risk),
+        "class_verifier_policy": class_verifier,
+        "class_verifier_top_m": int(verifier_top_m),
+        "class_verifier_candidate_top_m": int(verifier_candidate_top_m),
+        "class_verifier_pvalue_weight": float(verifier_pvalue_weight),
+        "class_verifier_reliability_weight": float(verifier_reliability_weight),
+        "class_verifier_risk_weight": float(verifier_risk_weight),
         "support_selection_policy": str(support_selection_policy),
         "unknown_gate_mode": str(unknown_gate_mode),
         "active_risk_components": _active_risk_components_for_gate_mode(unknown_gate_mode)
@@ -2305,6 +2608,11 @@ def run_evaluation(args: argparse.Namespace) -> dict[str, Any]:
         candidate_audit_disagreement_risk=float(args.candidate_audit_disagreement_risk),
         candidate_audit_min_gap=float(args.candidate_audit_min_gap),
         candidate_audit_gap_risk=float(args.candidate_audit_gap_risk),
+        class_verifier_policy=str(args.class_verifier_policy),
+        class_verifier_top_m=int(args.class_verifier_top_m),
+        class_verifier_pvalue_weight=float(args.class_verifier_pvalue_weight),
+        class_verifier_reliability_weight=float(args.class_verifier_reliability_weight),
+        class_verifier_risk_weight=float(args.class_verifier_risk_weight),
     )
     result = evaluate_collaborative_open_set_evidence(
         evidence,
@@ -2526,6 +2834,11 @@ def parse_args() -> argparse.Namespace:
     p.add_argument("--candidate_audit_disagreement_risk", type=float, default=1.0)
     p.add_argument("--candidate_audit_min_gap", type=float, default=0.0)
     p.add_argument("--candidate_audit_gap_risk", type=float, default=0.0)
+    p.add_argument("--class_verifier_policy", default="none", choices=["none", "support_quality"])
+    p.add_argument("--class_verifier_top_m", type=int, default=0)
+    p.add_argument("--class_verifier_pvalue_weight", type=float, default=1.0)
+    p.add_argument("--class_verifier_reliability_weight", type=float, default=1.0)
+    p.add_argument("--class_verifier_risk_weight", type=float, default=1.0)
     p.add_argument("--support_calibration_mode", default="self", choices=["self", "leave_one_out", "loo"])
     p.add_argument(
         "--score_threshold_combine",
