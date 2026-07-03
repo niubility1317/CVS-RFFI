@@ -2364,6 +2364,13 @@ def run_evaluation(args: argparse.Namespace) -> dict[str, Any]:
         candidate_set_pairguard_labels=str(args.candidate_set_pairguard_labels),
         candidate_set_pairguard_receiver_sets=str(args.candidate_set_pairguard_receiver_sets),
         candidate_set_pairguard_action=str(args.candidate_set_pairguard_action),
+        candidate_set_pairguard_soft_penalty=float(args.candidate_set_pairguard_soft_penalty),
+        candidate_set_pairguard_soft_min_margin=float(args.candidate_set_pairguard_soft_min_margin),
+        candidate_set_pairguard_soft_min_agreement=float(args.candidate_set_pairguard_soft_min_agreement),
+        candidate_set_pairguard_soft_min_pvalue=float(args.candidate_set_pairguard_soft_min_pvalue),
+        candidate_set_pairguard_soft_min_reliability=float(
+            args.candidate_set_pairguard_soft_min_reliability
+        ),
         dual_route_rescue_min_pvalue=float(args.dual_route_rescue_min_pvalue),
         dual_route_rescue_min_receiver_class_reliability=float(
             args.dual_route_rescue_min_receiver_class_reliability
@@ -2594,7 +2601,16 @@ def parse_args() -> argparse.Namespace:
     p.add_argument("--candidate_set_pairguard_min_shell_risk", type=float, default=0.90)
     p.add_argument("--candidate_set_pairguard_labels", default="")
     p.add_argument("--candidate_set_pairguard_receiver_sets", default="")
-    p.add_argument("--candidate_set_pairguard_action", default="veto", choices=["veto", "request_more"])
+    p.add_argument(
+        "--candidate_set_pairguard_action",
+        default="veto",
+        choices=["veto", "request_more", "soft_penalty"],
+    )
+    p.add_argument("--candidate_set_pairguard_soft_penalty", type=float, default=0.0)
+    p.add_argument("--candidate_set_pairguard_soft_min_margin", type=float, default=0.0)
+    p.add_argument("--candidate_set_pairguard_soft_min_agreement", type=float, default=0.0)
+    p.add_argument("--candidate_set_pairguard_soft_min_pvalue", type=float, default=0.0)
+    p.add_argument("--candidate_set_pairguard_soft_min_reliability", type=float, default=0.0)
     p.add_argument("--include_event_results", action="store_true")
     p.add_argument("--dual_route_rescue_min_pvalue", type=float, default=0.75)
     p.add_argument("--dual_route_rescue_min_receiver_class_reliability", type=float, default=0.75)

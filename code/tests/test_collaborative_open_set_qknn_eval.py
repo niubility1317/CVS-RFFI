@@ -2426,12 +2426,57 @@ class CollaborativeOpenSetQknnEvalTest(unittest.TestCase):
             {"old": 1},
         )
 
+        soft_strong_event = evaluate(
+            make_rows((0.10, 0.95)),
+            candidate_set_pairguard_action="soft_penalty",
+            candidate_set_pairguard_soft_penalty=1.0,
+            candidate_set_pairguard_soft_min_margin=0.10,
+            candidate_set_pairguard_soft_min_pvalue=0.50,
+            candidate_set_pairguard_soft_min_reliability=0.75,
+        )["counts"]["2"]["event_results"][0]
+        self.assertTrue(soft_strong_event["candidate_set_pairguard_boundary_hit"])
+        self.assertFalse(soft_strong_event["candidate_set_pairguard_veto"])
+        self.assertFalse(soft_strong_event["candidate_set_pairguard_soft_applied"])
+        self.assertTrue(soft_strong_event["candidate_set_accept"])
+        self.assertEqual(soft_strong_event["decision"], "accept")
+
+        soft_weak_rows = make_rows((0.10, 0.95))
+        for row in soft_weak_rows:
+            row["known_margin"] = 0.02
+            row["class_evidence_top1_margin"] = 0.02
+        soft_weak_rows.append({
+            **soft_weak_rows[0],
+            "receiver_id": "rx-c",
+            "unknown_risk": 0.15,
+            "score_risk": 0.15,
+            "radius_risk": 0.15,
+            "margin_risk": 0.15,
+        })
+        soft_weak_result = evaluate(
+            soft_weak_rows,
+            candidate_set_pairguard_action="soft_penalty",
+            candidate_set_pairguard_soft_penalty=1.0,
+            candidate_set_pairguard_soft_min_margin=0.20,
+            candidate_set_pairguard_soft_min_pvalue=0.50,
+            candidate_set_pairguard_soft_min_reliability=0.75,
+        )
+        soft_weak_event = soft_weak_result["counts"]["2"]["event_results"][0]
+        self.assertTrue(soft_weak_event["candidate_set_pairguard_boundary_hit"])
+        self.assertTrue(soft_weak_event["candidate_set_pairguard_soft_applied"])
+        self.assertFalse(soft_weak_event["candidate_set_pairguard_veto"])
+        self.assertFalse(soft_weak_event["candidate_set_accept"])
+        self.assertGreater(soft_weak_event["candidate_set_label_unknown_risk_for_accept"], 0.8)
+        self.assertEqual(soft_weak_event["decision"], "request_more")
+        self.assertEqual(soft_weak_result["counts"]["2"]["candidate_set_pairguard_soft_count"], 1)
+
         with self.assertRaisesRegex(ValueError, "candidate_set_pairguard_mode"):
             evaluate(make_rows((0.10, 0.80)), candidate_set_pairguard_mode="bad_mode")
         with self.assertRaisesRegex(ValueError, "candidate_set_pairguard_min_event_unknown_risk"):
             evaluate(make_rows((0.10, 0.80)), candidate_set_pairguard_min_event_unknown_risk=1.1)
         with self.assertRaisesRegex(ValueError, "candidate_set_pairguard_action"):
             evaluate(make_rows((0.10, 0.80)), candidate_set_pairguard_action="bad_action")
+        with self.assertRaisesRegex(ValueError, "candidate_set_pairguard_soft_penalty"):
+            evaluate(make_rows((0.10, 0.80)), candidate_set_pairguard_soft_penalty=1.1)
 
     def test_dual_route_cvs_uses_support_quality_rescue_when_safe(self):
         from evaluation.collaborative_open_set_qknn_eval import evaluate_collaborative_open_set_evidence

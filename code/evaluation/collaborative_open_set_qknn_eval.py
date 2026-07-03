@@ -471,6 +471,11 @@ def _fuse_event(
     candidate_set_pairguard_labels: object = None,
     candidate_set_pairguard_receiver_sets: object = None,
     candidate_set_pairguard_action: str = "veto",
+    candidate_set_pairguard_soft_penalty: float = 0.0,
+    candidate_set_pairguard_soft_min_margin: float = 0.0,
+    candidate_set_pairguard_soft_min_agreement: float = 0.0,
+    candidate_set_pairguard_soft_min_pvalue: float = 0.0,
+    candidate_set_pairguard_soft_min_reliability: float = 0.0,
 ) -> dict[str, Any]:
     active_components = _parse_risk_components(scorer_risk_components)
     policy = _normalize_scope(fusion_policy)
@@ -521,8 +526,28 @@ def _fuse_event(
     if candidate_set_pairguard_mode not in {"accept_gate", "boundary_veto"}:
         raise ValueError("candidate_set_pairguard_mode must be accept_gate or boundary_veto")
     candidate_set_pairguard_action = _normalize_scope(candidate_set_pairguard_action or "veto")
-    if candidate_set_pairguard_action not in {"veto", "request_more"}:
-        raise ValueError("candidate_set_pairguard_action must be veto or request_more")
+    if candidate_set_pairguard_action not in {"veto", "request_more", "soft_penalty"}:
+        raise ValueError("candidate_set_pairguard_action must be veto, request_more, or soft_penalty")
+    candidate_set_pairguard_soft_penalty = _validate_unit_interval(
+        candidate_set_pairguard_soft_penalty,
+        "candidate_set_pairguard_soft_penalty",
+    )
+    candidate_set_pairguard_soft_min_margin = _validate_non_negative(
+        candidate_set_pairguard_soft_min_margin,
+        "candidate_set_pairguard_soft_min_margin",
+    )
+    candidate_set_pairguard_soft_min_agreement = _validate_unit_interval(
+        candidate_set_pairguard_soft_min_agreement,
+        "candidate_set_pairguard_soft_min_agreement",
+    )
+    candidate_set_pairguard_soft_min_pvalue = _validate_unit_interval(
+        candidate_set_pairguard_soft_min_pvalue,
+        "candidate_set_pairguard_soft_min_pvalue",
+    )
+    candidate_set_pairguard_soft_min_reliability = _validate_unit_interval(
+        candidate_set_pairguard_soft_min_reliability,
+        "candidate_set_pairguard_soft_min_reliability",
+    )
     candidate_set_pairguard_min_event_unknown_risk = _validate_unit_interval(
         candidate_set_pairguard_min_event_unknown_risk,
         "candidate_set_pairguard_min_event_unknown_risk",
@@ -1168,8 +1193,74 @@ def _fuse_event(
             and candidate_set_pairguard_action == "request_more"
             and within_request_budget
         )
+        candidate_set_pairguard_soft_margin_weakness = (
+            max(0.0, float(candidate_set_pairguard_soft_min_margin) - float(mean_margin))
+            / max(float(candidate_set_pairguard_soft_min_margin), 1e-12)
+            if float(candidate_set_pairguard_soft_min_margin) > 0.0
+            else 0.0
+        )
+        candidate_set_pairguard_soft_agreement_weakness = (
+            max(0.0, float(candidate_set_pairguard_soft_min_agreement) - float(agreement))
+            / max(float(candidate_set_pairguard_soft_min_agreement), 1e-12)
+            if float(candidate_set_pairguard_soft_min_agreement) > 0.0
+            else 0.0
+        )
+        candidate_set_pairguard_soft_pvalue_weakness = (
+            max(0.0, float(candidate_set_pairguard_soft_min_pvalue) - float(label_class_conformal_pvalue))
+            / max(float(candidate_set_pairguard_soft_min_pvalue), 1e-12)
+            if float(candidate_set_pairguard_soft_min_pvalue) > 0.0
+            else 0.0
+        )
+        candidate_set_pairguard_soft_reliability_weakness = (
+            max(
+                0.0,
+                float(candidate_set_pairguard_soft_min_reliability)
+                - float(label_receiver_class_reliability),
+            )
+            / max(float(candidate_set_pairguard_soft_min_reliability), 1e-12)
+            if float(candidate_set_pairguard_soft_min_reliability) > 0.0
+            else 0.0
+        )
+        candidate_set_pairguard_soft_weakness = max(
+            candidate_set_pairguard_soft_margin_weakness,
+            candidate_set_pairguard_soft_agreement_weakness,
+            candidate_set_pairguard_soft_pvalue_weakness,
+            candidate_set_pairguard_soft_reliability_weakness,
+        )
+        candidate_set_pairguard_soft_risk_pressure = max(
+            float(unknown_risk),
+            float(label_unknown_risk),
+            float(label_shell_risk),
+        )
+        candidate_set_pairguard_soft_penalty_value = (
+            min(
+                1.0,
+                float(candidate_set_pairguard_soft_penalty)
+                * candidate_set_pairguard_soft_risk_pressure
+                * candidate_set_pairguard_soft_weakness,
+            )
+            if (
+                candidate_set_pairguard_boundary_hit
+                and candidate_set_pairguard_action == "soft_penalty"
+            )
+            else 0.0
+        )
+        candidate_set_pairguard_soft_applied = bool(candidate_set_pairguard_soft_penalty_value > 0.0)
+        candidate_set_label_unknown_risk_for_accept = min(
+            1.0,
+            float(label_unknown_risk) + candidate_set_pairguard_soft_penalty_value,
+        )
+        candidate_set_event_unknown_risk_for_accept = min(
+            1.0,
+            float(unknown_risk) + candidate_set_pairguard_soft_penalty_value,
+        )
+        candidate_set_label_component_agreement_for_accept = min(
+            1.0,
+            float(label_risk_component_agreement) + candidate_set_pairguard_soft_penalty_value,
+        )
         candidate_set_pairguard_veto = bool(
             candidate_set_pairguard_boundary_hit
+            and candidate_set_pairguard_action != "soft_penalty"
             and not candidate_set_pairguard_request_more
         )
         candidate_set_pairguard_accept_passed = bool(
@@ -1188,9 +1279,10 @@ def _fuse_event(
             and selected_label_candidate_receivers >= max(1, int(candidate_set_min_receivers))
             and selected_label_top1_receivers >= max(0, int(candidate_set_min_top1_receivers))
             and label_class_conformal_pvalue >= float(candidate_set_min_conformal_pvalue)
-            and label_unknown_risk <= float(candidate_set_max_label_unknown_risk)
-            and unknown_risk <= float(candidate_set_max_event_unknown_risk)
-            and label_risk_component_agreement <= float(candidate_set_max_label_risk_component_agreement)
+            and candidate_set_label_unknown_risk_for_accept <= float(candidate_set_max_label_unknown_risk)
+            and candidate_set_event_unknown_risk_for_accept <= float(candidate_set_max_event_unknown_risk)
+            and candidate_set_label_component_agreement_for_accept
+            <= float(candidate_set_max_label_risk_component_agreement)
             and score_gap_ratio >= float(candidate_set_min_score_gap)
             and candidate_set_pairguard_accept_passed
         )
@@ -1336,6 +1428,11 @@ def _fuse_event(
         "candidate_set_require_label_shell_observed": bool(candidate_set_require_label_shell_observed),
         "candidate_set_pairguard_mode": str(candidate_set_pairguard_mode),
         "candidate_set_pairguard_action": str(candidate_set_pairguard_action),
+        "candidate_set_pairguard_soft_penalty": float(candidate_set_pairguard_soft_penalty),
+        "candidate_set_pairguard_soft_min_margin": float(candidate_set_pairguard_soft_min_margin),
+        "candidate_set_pairguard_soft_min_agreement": float(candidate_set_pairguard_soft_min_agreement),
+        "candidate_set_pairguard_soft_min_pvalue": float(candidate_set_pairguard_soft_min_pvalue),
+        "candidate_set_pairguard_soft_min_reliability": float(candidate_set_pairguard_soft_min_reliability),
         "candidate_set_pairguard_min_event_unknown_risk": float(
             candidate_set_pairguard_min_event_unknown_risk
         ),
@@ -1374,6 +1471,36 @@ def _fuse_event(
         "candidate_set_pairguard_veto": bool(locals().get("candidate_set_pairguard_veto", False)),
         "candidate_set_pairguard_request_more": bool(
             locals().get("candidate_set_pairguard_request_more", False)
+        ),
+        "candidate_set_pairguard_soft_applied": bool(
+            locals().get("candidate_set_pairguard_soft_applied", False)
+        ),
+        "candidate_set_pairguard_soft_weakness": float(
+            locals().get("candidate_set_pairguard_soft_weakness", 0.0)
+        ),
+        "candidate_set_pairguard_soft_margin_weakness": float(
+            locals().get("candidate_set_pairguard_soft_margin_weakness", 0.0)
+        ),
+        "candidate_set_pairguard_soft_agreement_weakness": float(
+            locals().get("candidate_set_pairguard_soft_agreement_weakness", 0.0)
+        ),
+        "candidate_set_pairguard_soft_pvalue_weakness": float(
+            locals().get("candidate_set_pairguard_soft_pvalue_weakness", 0.0)
+        ),
+        "candidate_set_pairguard_soft_reliability_weakness": float(
+            locals().get("candidate_set_pairguard_soft_reliability_weakness", 0.0)
+        ),
+        "candidate_set_pairguard_soft_penalty_value": float(
+            locals().get("candidate_set_pairguard_soft_penalty_value", 0.0)
+        ),
+        "candidate_set_label_unknown_risk_for_accept": float(
+            locals().get("candidate_set_label_unknown_risk_for_accept", label_unknown_risk)
+        ),
+        "candidate_set_event_unknown_risk_for_accept": float(
+            locals().get("candidate_set_event_unknown_risk_for_accept", unknown_risk)
+        ),
+        "candidate_set_label_component_agreement_for_accept": float(
+            locals().get("candidate_set_label_component_agreement_for_accept", label_risk_component_agreement)
         ),
         "output_label_set": output_label_set,
         "label_fusion_policy": label_fusion_policy,
@@ -2324,6 +2451,11 @@ def _fuse_dual_route_event(
     candidate_set_pairguard_labels: object = None,
     candidate_set_pairguard_receiver_sets: object = None,
     candidate_set_pairguard_action: str = "veto",
+    candidate_set_pairguard_soft_penalty: float = 0.0,
+    candidate_set_pairguard_soft_min_margin: float = 0.0,
+    candidate_set_pairguard_soft_min_agreement: float = 0.0,
+    candidate_set_pairguard_soft_min_pvalue: float = 0.0,
+    candidate_set_pairguard_soft_min_reliability: float = 0.0,
     dual_route_rescue_min_pvalue: float = 0.75,
     dual_route_rescue_min_receiver_class_reliability: float = 0.75,
     dual_route_rescue_max_label_unknown_risk: float = 0.60,
@@ -2402,6 +2534,11 @@ def _fuse_dual_route_event(
         candidate_set_pairguard_labels=candidate_set_pairguard_labels,
         candidate_set_pairguard_receiver_sets=candidate_set_pairguard_receiver_sets,
         candidate_set_pairguard_action=candidate_set_pairguard_action,
+        candidate_set_pairguard_soft_penalty=candidate_set_pairguard_soft_penalty,
+        candidate_set_pairguard_soft_min_margin=candidate_set_pairguard_soft_min_margin,
+        candidate_set_pairguard_soft_min_agreement=candidate_set_pairguard_soft_min_agreement,
+        candidate_set_pairguard_soft_min_pvalue=candidate_set_pairguard_soft_min_pvalue,
+        candidate_set_pairguard_soft_min_reliability=candidate_set_pairguard_soft_min_reliability,
         can_request_more=can_request_more,
     )
     rescue = _fuse_event(
@@ -2472,6 +2609,11 @@ def _fuse_dual_route_event(
         candidate_set_pairguard_labels=candidate_set_pairguard_labels,
         candidate_set_pairguard_receiver_sets=candidate_set_pairguard_receiver_sets,
         candidate_set_pairguard_action=candidate_set_pairguard_action,
+        candidate_set_pairguard_soft_penalty=candidate_set_pairguard_soft_penalty,
+        candidate_set_pairguard_soft_min_margin=candidate_set_pairguard_soft_min_margin,
+        candidate_set_pairguard_soft_min_agreement=candidate_set_pairguard_soft_min_agreement,
+        candidate_set_pairguard_soft_min_pvalue=candidate_set_pairguard_soft_min_pvalue,
+        candidate_set_pairguard_soft_min_reliability=candidate_set_pairguard_soft_min_reliability,
         can_request_more=can_request_more,
     )
     rescue_ok = _dual_route_rescue_ok(
@@ -2540,6 +2682,8 @@ def _finalize_metrics(
     candidate_set_pairguard_veto_by_role: defaultdict[str, int] = defaultdict(int)
     candidate_set_pairguard_request_more_total = 0
     candidate_set_pairguard_request_more_by_role: defaultdict[str, int] = defaultdict(int)
+    candidate_set_pairguard_soft_total = 0
+    candidate_set_pairguard_soft_by_role: defaultdict[str, int] = defaultdict(int)
     dual_route_rescue_total = 0
     dual_route_rescue_by_role: defaultdict[str, int] = defaultdict(int)
 
@@ -2587,6 +2731,9 @@ def _finalize_metrics(
         if bool(item.get("candidate_set_pairguard_request_more", False)):
             candidate_set_pairguard_request_more_total += 1
             candidate_set_pairguard_request_more_by_role[role] += 1
+        if bool(item.get("candidate_set_pairguard_soft_applied", False)):
+            candidate_set_pairguard_soft_total += 1
+            candidate_set_pairguard_soft_by_role[role] += 1
         if str(item.get("dual_route_selected_route", "")) == "rescue":
             dual_route_rescue_total += 1
             dual_route_rescue_by_role[role] += 1
@@ -2740,6 +2887,9 @@ def _finalize_metrics(
         "candidate_set_pairguard_request_more_by_role": dict(
             sorted(candidate_set_pairguard_request_more_by_role.items())
         ),
+        "candidate_set_pairguard_soft_count": int(candidate_set_pairguard_soft_total),
+        "candidate_set_pairguard_soft_rate": _safe_rate(candidate_set_pairguard_soft_total, total_events),
+        "candidate_set_pairguard_soft_by_role": dict(sorted(candidate_set_pairguard_soft_by_role.items())),
         "dual_route_rescue_count": int(dual_route_rescue_total),
         "dual_route_rescue_rate": _safe_rate(dual_route_rescue_total, total_events),
         "dual_route_rescue_by_role": dict(sorted(dual_route_rescue_by_role.items())),
@@ -2916,6 +3066,11 @@ def evaluate_collaborative_open_set_evidence(
     candidate_set_pairguard_labels: object = None,
     candidate_set_pairguard_receiver_sets: object = None,
     candidate_set_pairguard_action: str = "veto",
+    candidate_set_pairguard_soft_penalty: float = 0.0,
+    candidate_set_pairguard_soft_min_margin: float = 0.0,
+    candidate_set_pairguard_soft_min_agreement: float = 0.0,
+    candidate_set_pairguard_soft_min_pvalue: float = 0.0,
+    candidate_set_pairguard_soft_min_reliability: float = 0.0,
     dual_route_rescue_min_pvalue: float = 0.75,
     dual_route_rescue_min_receiver_class_reliability: float = 0.75,
     dual_route_rescue_max_label_unknown_risk: float = 0.60,
@@ -3148,6 +3303,11 @@ def evaluate_collaborative_open_set_evidence(
                     candidate_set_pairguard_labels=candidate_set_pairguard_labels,
                     candidate_set_pairguard_receiver_sets=candidate_set_pairguard_receiver_sets,
                     candidate_set_pairguard_action=candidate_set_pairguard_action,
+                    candidate_set_pairguard_soft_penalty=candidate_set_pairguard_soft_penalty,
+                    candidate_set_pairguard_soft_min_margin=candidate_set_pairguard_soft_min_margin,
+                    candidate_set_pairguard_soft_min_agreement=candidate_set_pairguard_soft_min_agreement,
+                    candidate_set_pairguard_soft_min_pvalue=candidate_set_pairguard_soft_min_pvalue,
+                    candidate_set_pairguard_soft_min_reliability=candidate_set_pairguard_soft_min_reliability,
                     dual_route_rescue_min_pvalue=dual_route_rescue_min_pvalue,
                     dual_route_rescue_min_receiver_class_reliability=(
                         dual_route_rescue_min_receiver_class_reliability
@@ -3302,6 +3462,11 @@ def evaluate_collaborative_open_set_evidence(
                     candidate_set_pairguard_labels=candidate_set_pairguard_labels,
                     candidate_set_pairguard_receiver_sets=candidate_set_pairguard_receiver_sets,
                     candidate_set_pairguard_action=candidate_set_pairguard_action,
+                    candidate_set_pairguard_soft_penalty=candidate_set_pairguard_soft_penalty,
+                    candidate_set_pairguard_soft_min_margin=candidate_set_pairguard_soft_min_margin,
+                    candidate_set_pairguard_soft_min_agreement=candidate_set_pairguard_soft_min_agreement,
+                    candidate_set_pairguard_soft_min_pvalue=candidate_set_pairguard_soft_min_pvalue,
+                    candidate_set_pairguard_soft_min_reliability=candidate_set_pairguard_soft_min_reliability,
                 )
             first = selected[0]
             fused["role"] = _role(first.get("role"))
@@ -3427,6 +3592,11 @@ def evaluate_collaborative_open_set_evidence(
         "candidate_set_require_label_shell_observed": bool(candidate_set_require_label_shell_observed),
         "candidate_set_pairguard_mode": str(candidate_set_pairguard_mode),
         "candidate_set_pairguard_action": str(candidate_set_pairguard_action),
+        "candidate_set_pairguard_soft_penalty": float(candidate_set_pairguard_soft_penalty),
+        "candidate_set_pairguard_soft_min_margin": float(candidate_set_pairguard_soft_min_margin),
+        "candidate_set_pairguard_soft_min_agreement": float(candidate_set_pairguard_soft_min_agreement),
+        "candidate_set_pairguard_soft_min_pvalue": float(candidate_set_pairguard_soft_min_pvalue),
+        "candidate_set_pairguard_soft_min_reliability": float(candidate_set_pairguard_soft_min_reliability),
         "candidate_set_pairguard_min_event_unknown_risk": float(
             candidate_set_pairguard_min_event_unknown_risk
         ),
