@@ -3324,6 +3324,150 @@ k=4逐类结果：
 
 该结果仍远未达最终目标：旧类总体未到0.99、旧类地板未到0.95；seen-new总体未到0.97、地板未到0.93；unknown拒识仍低于0.99。它只能作为下一阶段机制开发的当前最优基线，不能声明Stage2-C成功、部署成功或论文主结论。
 
+## 2026-07-04 CCBR-CVS class shell风险机制实现与N607计划
+
+### 机制
+
+本轮新增`CCBR-CVS`第一版：Class-Conditional Boundary and Receiver-consistency Routing中的support-only类外壳风险。它不改变`ADV3B02_CORE90_SOFT_E200`底座，不训练主干，不使用unknown query调阈值；只在每个receiver本地qknn8 evidence中记录候选类到support类中心的外壳距离：
+
+```text
+d_{r,y}(z)=1-cos(z,c_{r,y})
+R_{r,y}=Q_q(1-cos(s_{r,y},c_{r,y}))+slack
+class_shell_risk=sigmoid((d_{r,y}-scale*R_{r,y}+margin)/T)
+```
+
+融合端新增`candidate_set_max_label_shell_risk`和`candidate_set_shell_reject_risk`。前者阻止高外壳风险的candidate_set接受，后者在达到拒识阈值时输出`unknown_reject`。该机制的目标是拦截“基础unknown风险较低但落在候选类support外壳之外”的未知类false accept，同时通过默认关闭保持旧候选可复现。
+
+### 本地变更与验证
+
+|文件|变更|
+|---|---|
+|`code/evaluation/collaborative_open_set_qknn_eval.py`|新增`class_shell`风险组件、`label_shell_risk`聚合、candidate_set shell门控/拒识和shell veto统计。|
+|`code/scripts/phase2_collaborative_open_set_qknn_eval.py`|新增`--class_shell_unknown_risk_enabled`、`--class_shell_radius_scale`、`--class_shell_risk_temperature`、`--class_shell_risk_margin`，并把主预测与top-M候选的`class_shell_risk`写入CSV。|
+|`code/tests/test_collaborative_open_set_qknn_eval.py`|新增高`class_shell_risk`拦截unknown false accept的单元测试。|
+
+本地验证：
+
+```text
+conda run -n ssr-gpu python -m py_compile code\evaluation\collaborative_open_set_qknn_eval.py code\scripts\phase2_collaborative_open_set_qknn_eval.py
+C:\Users\lh594\.conda\envs\ssr-gpu\python.exe -m pytest code\tests\test_collaborative_open_set_qknn_eval.py -q
+C:\Users\lh594\.conda\envs\ssr-gpu\python.exe -m pytest code\tests\test_phase2_collaborative_open_set_qknn_eval.py -q
+```
+
+结果：语法检查通过；协同开集测试`47 passed`；Phase2脚本测试`44 passed`。首次并行`conda run`触发Windows conda临时文件锁，串行直接调用环境Python后通过，不作为实验失败证据。
+
+Git提交：`91e8a00 Add class shell risk for collaborative open set`。本地快照：`E:\type10-7\code\snapshots\class_shell_cvs_20260704\`。
+
+### N607计划
+
+预检时间：`2026年07月04日01:18:18 CST`。N607直连预检通过，项目根存在，8张RTX3090均为`10 MiB/24576 MiB`，选择GPU0。预检后确认无残留`ssh.exe`和N607/bridge 22端口连接。
+
+计划同步：
+
+|本地文件|N607目标|
+|---|---|
+|`E:\type10-7\code\evaluation\collaborative_open_set_qknn_eval.py`|`/home/szu2070436088/2510044040/CV-SincNet/code/evaluation/collaborative_open_set_qknn_eval.py`|
+|`E:\type10-7\code\scripts\phase2_collaborative_open_set_qknn_eval.py`|`/home/szu2070436088/2510044040/CV-SincNet/code/scripts/phase2_collaborative_open_set_qknn_eval.py`|
+|`E:\type10-7\code\tests\test_collaborative_open_set_qknn_eval.py`|`/home/szu2070436088/2510044040/CV-SincNet/code/tests/test_collaborative_open_set_qknn_eval.py`|
+
+计划候选：继承当前最佳`avail3_p055_lrca049_huv0999_f050`，只新增class shell风险，小网格跑`class_shell_radius_scale in {1.25,1.50,1.75}`，每个候选`collab_counts=all`、`available_up_to_k`、`partial_collab_min_receivers=3`，报告协同数量1到全体receiver、old/seen-new/unknown、per-class floor、bytes/event、latency proxy、shell veto统计。远端Python使用`/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python`。
+
+### N607同步与远端验证
+
+远端同步后SHA256：
+
+|文件|N607 SHA256|
+|---|---|
+|`code/evaluation/collaborative_open_set_qknn_eval.py`|`6356033ab55fd8be86153a879e89aabd78df48792bf02c5829b134be1c872f5f`|
+|`code/scripts/phase2_collaborative_open_set_qknn_eval.py`|`2e4fe924f0b18c354b1c6b67f9e05ba79e1fd70edf53aeb3514b0cb5c7367903`|
+|`code/tests/test_collaborative_open_set_qknn_eval.py`|`136d942e172498db0d35b2c472a7850fdc76c971688cbc2531d218806c2df819`|
+
+远端验证：
+
+```text
+/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -m py_compile code/evaluation/collaborative_open_set_qknn_eval.py code/scripts/phase2_collaborative_open_set_qknn_eval.py
+/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -m unittest discover -s code/tests -p 'test_collaborative_open_set_qknn_eval.py' -q
+/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -m unittest discover -s code/tests -p 'test_phase2_collaborative_open_set_qknn_eval.py' -q
+```
+
+结果：远端`py_compile`通过；`test_collaborative_open_set_qknn_eval.py`为`47 tests OK`；`test_phase2_collaborative_open_set_qknn_eval.py`为`44 tests OK`。`CVS-RFFI`环境无`pytest`模块，因此远端用标准库`unittest`验证。
+
+### N607结果
+
+所有运行均使用GPU0，运行前后8张RTX3090均为`10 MiB/24576 MiB`。每次SSH/SCP后均确认无残留`ssh.exe`和N607/bridge 22端口连接。
+
+产物SHA256：
+
+|候选|JSON SHA256|CSV SHA256|
+|---|---|---|
+|`shell_s125_max095_rej098_unk080`|`AA9A19CC1A410583CD7241BBDF881D5DB5C4A81AB5110858854A4773DDAC76D2`|`505EEB34208CDB2C45B4DF8B85A1FF729D458F4BEBB58F468C30C92C2DA6A7BD`|
+|`shell_s150_max095_rej098_unk080`|`5AE24F9960A493CE901FD2FA1644522B4594CF624A09EB67C8F43CC2EC29124C`|`6E13D7904F31A5C97679995542514E3436FF6D12173DF0A76F7E66E6E5C64DFD`|
+|`shell_s175_max095_rej098_unk080`|`CACB47E19066DF2BD710DD8CBAFD82354F41A6F9BBF2DB5F74E01007E1A144AD`|`973BD54157CD36F3ACEA79D7B79A8987A9A43AA19172CA4C247A1297494AE2ED`|
+|`shell_s125_max095_rej098_unk995`|`1BEA52682A9D756F52378B0834919433959BD7ADCA6FD473E97227CD77FCAE05`|`63B3E6BC1BAB9EAE9096A0C4C981E84AB8CC0637718F57303535739631C46F55`|
+|`shell_s150_max095_rej098_unk995`|`67CA352B8E03D18CC5F64923BDFA3785BC4953903E779CAD525B5E72714D274C`|`3376C944341DEA844D992EFE43A7E3DAE26C7326182FD5425177683251FAB84C`|
+|`shell_s175_max095_rej098_unk995`|`DA571E77D2A33D8B2087110F5FD559D10DF3E7B036AC5398124AEEA1C885863F`|`2FA54FCEE0859DA57F39B917297579D75D805765A10E25F27F810A9BA803E2FD`|
+
+`unk995`是诊断性放宽拒识阈值，用来检查class shell是否能恢复seen-new；它使k=4 unknown拒识从0.9500降到0.7750，不能作为候选主线。主线比较采用`unk080`，即保留上一轮`candidate_set_unknown_reject_risk=0.80`。
+
+主线`unk080`结果：
+
+|候选|预算k|old_acc|min_old|seen_new_acc|min_seen|unknown_FAR|unknown_reject|defer|known_cov|avg_rx|bytes/event|p95_latency|high_unknown_veto|shell_veto|shell_veto_by_role|结论|
+|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---|---|
+|`shell_s125_max095_rej098_unk080`|1|0.0000|0.0000|0.0000|0.0000|0.0000|0.4667|0.7459|0.0000|1.0000|40.0|0.1311|40|9|`old=3,seen_new=1,unknown=5`|单receiver不足|
+|`shell_s125_max095_rej098_unk080`|2|0.4079|0.0500|0.5769|0.5312|0.1304|0.8696|0.0800|0.5588|2.0000|80.0|0.1311|62|1|`old=1`|FAR高|
+|`shell_s125_max095_rej098_unk080`|3|0.6250|0.2500|0.7250|0.6000|0.0750|0.9000|0.0300|0.7188|3.0000|120.0|0.1311|39|7|`unknown=7`|FAR仍超|
+|`shell_s125_max095_rej098_unk080`|4|0.8083|0.7000|0.7500|0.6000|0.0250|0.9500|0.0150|0.8375|3.7500|150.0|0.1311|22|11|`old=1,unknown=10`|seen-new提升但shell误伤1个old|
+|`shell_s125_max095_rej098_unk080`|5|0.7833|0.5500|0.7250|0.5500|0.0500|0.9250|0.0100|0.8313|4.2150|168.6|0.1311|22|17|`old=2,unknown=15`|FAR边界但old下降|
+|`shell_s150_max095_rej098_unk080`|1|0.0000|0.0000|0.0000|0.0000|0.0000|0.4667|0.7459|0.0000|1.0000|40.0|0.1838|40|5|`old=2,unknown=3`|单receiver不足|
+|`shell_s150_max095_rej098_unk080`|2|0.4079|0.0500|0.5769|0.5312|0.1304|0.8696|0.0720|0.5686|2.0000|80.0|0.1838|62|0|`{}`|FAR高|
+|`shell_s150_max095_rej098_unk080`|3|0.6250|0.2500|0.7250|0.6000|0.0750|0.9000|0.0300|0.7250|3.0000|120.0|0.1838|39|3|`unknown=3`|FAR仍超|
+|`shell_s150_max095_rej098_unk080`|4|0.8083|0.7000|0.7500|0.6000|0.0250|0.9500|0.0150|0.8375|3.7500|150.0|0.1838|22|3|`unknown=3`|当前最佳综合候选|
+|`shell_s150_max095_rej098_unk080`|5|0.7833|0.5500|0.7250|0.5500|0.0750|0.9000|0.0100|0.8313|4.2150|168.6|0.1838|22|7|`unknown=7`|FAR升高|
+|`shell_s175_max095_rej098_unk080`|1|0.0000|0.0000|0.0000|0.0000|0.0000|0.4667|0.7459|0.0000|1.0000|40.0|0.1301|40|4|`old=2,unknown=2`|单receiver不足|
+|`shell_s175_max095_rej098_unk080`|2|0.4079|0.0500|0.5769|0.5312|0.1304|0.8696|0.0720|0.5686|2.0000|80.0|0.1301|62|0|`{}`|FAR高|
+|`shell_s175_max095_rej098_unk080`|3|0.6250|0.2500|0.7250|0.6000|0.0750|0.9000|0.0300|0.7250|3.0000|120.0|0.1301|39|2|`unknown=2`|FAR仍超|
+|`shell_s175_max095_rej098_unk080`|4|0.8083|0.7000|0.7500|0.6000|0.0250|0.9500|0.0150|0.8375|3.7500|150.0|0.1301|22|3|`unknown=3`|与s150同指标，p95 proxy更低|
+|`shell_s175_max095_rej098_unk080`|5|0.7833|0.5500|0.7250|0.5500|0.0750|0.9000|0.0100|0.8313|4.2150|168.6|0.1301|22|7|`unknown=7`|FAR升高|
+
+k=4逐类结果在三个主线尺度上相同：
+
+|类别集|逐类准确率|
+|---|---|
+|old|`14-10=0.7000`，`14-7=0.7000`，`20-15=0.7500`，`20-19=0.7000`，`6-15=1.0000`，`8-20=1.0000`|
+|seen-new|`19-3=0.6000`，`3-8=0.9000`|
+
+### 判定
+
+`shell_s150_max095_rej098_unk080,k=4`和`shell_s175_max095_rej098_unk080,k=4`相对上一轮当前最佳`avail3_p055_lrca049_huv0999_f050,k=4`有小幅有效改进：
+
+|候选|old_acc|min_old|seen_new_acc|min_seen|unknown_FAR|unknown_reject|known_cov|avg_rx|bytes/event|
+|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+|上一轮`avail3_p055_lrca049_huv0999_f050,k=4`|0.8083|0.7000|0.7250|0.6000|0.0250|0.9500|0.8250|3.7500|150.0|
+|本轮`shell_s150_max095_rej098_unk080,k=4`|0.8083|0.7000|0.7500|0.6000|0.0250|0.9500|0.8375|3.7500|150.0|
+|本轮`shell_s175_max095_rej098_unk080,k=4`|0.8083|0.7000|0.7500|0.6000|0.0250|0.9500|0.8375|3.7500|150.0|
+
+改进点：seen-new总体从0.7250升到0.7500，`3-8`从0.8500升到0.9000，unknown FAR和unknown拒识不变，known coverage从0.8250升到0.8375。`shell_s150/s175`的shell veto在k=4均只命中unknown3次，没有误伤old/seen-new；`shell_s125`误伤1个old，因此不作为主候选。
+
+边界：该候选仍远未达最终目标。旧类地板仍只有0.7000，seen-new地板仍只有0.6000，unknown拒识仍为0.9500而非0.9900。当前结果只能说明support-only class shell风险是一个有效小增益机制，不能声明Stage2-C成功、部署成功或论文主结论。
+
+### 子agent监督意见纳入
+
+|角色|关键意见|处理|
+|---|---|---|
+|文献/方法检索|建议优先采用收缩原型、Mahalanobis/energy、support-only边界、证据级轻量融合；避免full-model在线训练、MAML、无门控自训练、unknown query阈值拟合。|采用support-only class shell风险，不改主干，不用unknown query校准。|
+|算法构建|建议`CCBR-CVS`，新增`class_shell_risk`和后续`receiver_pair_inconsistency`；第一版先让shell风险硬门控，pair不一致先审计。|已实现`class_shell_risk`；pair不一致尚未实现，列为下一步。|
+|合理性监督|`receiver_domain_ranked`不能写成严格同事件协同；必须保留Stage2-C边界、unknown query评估专用、资源proxy边界。|报告明确当前仍是receiver-domain ensemble诊断，不升格为严格同事件卫星群协同证据。|
+|逐项完成监督|目标指标仍未完成；缺strict_event_key复核、资源约束原文、checkpoint SHA写入最终JSON、低类地板归因。|列入下一步硬缺口。|
+|查漏补缺review|过度调参风险高；需protocol audit、receiver pair矩阵、threshold sweep、低类地板优化和matched-all denominator。|本轮只承认小增益；下一步优先做pair矩阵和strict_event_key可行性审计。|
+
+### 下一步
+
+1. 固定`shell_s150_max095_rej098_unk080,k=4`为当前机制基线，停止围绕同一阈值族做无边界扫参。
+2. 增加receiver pair矩阵和逐事件错误表，定位哪些接收机组合救`3-8`、哪些组合误拒`19-3`和低地板old类。
+3. 检查是否能用`strict_event_key`构造严格同事件协同；若不能，必须把当前全量结果继续标为`receiver_domain_ranked`诊断。
+4. 实现`receiver_pair_inconsistency`审计字段，先报告不门控，再决定是否启用。
+5. 最终JSON需补写ADV3B02 checkpoint路径/SHA和feature生成命令，增强artifact追溯。
+
 
 
 
