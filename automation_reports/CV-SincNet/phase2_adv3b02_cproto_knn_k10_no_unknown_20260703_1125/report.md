@@ -10,6 +10,7 @@
 | 目标 | 在不保存原始support样本/逐support embedding的约束下，将KNN变体改造为压缩原型/子原型记忆库，并验证K=10是否能在Phase2-C同一行达到旧类>=85%、新类均值>=80%、每新类>=85% |
 | 基础模型 | `ADV3B02_CORE90_SOFT_E200` |
 | 未知类 | 不导出、不评估、不参与阈值或成功判据 |
+| 最新补充口径 | 2026-07-03更新：以5/10-shot为标准，同时补充观察1-shot；5-shot性能相对1-shot可允许下降3pp，但主完成判据仍需同一行满足旧类>=85%、新类均值>=80%、每新类>=85%、新类数>=2 |
 
 ## 方法变体
 
@@ -73,3 +74,14 @@
 ## 方法结论
 
 压缩原型KNN满足部署创新点：推理侧`stored_support_count=0`，只保存8到16个原型统计量。但当前单纯均值/子原型压缩损失了原始KNN1依赖的近邻细节，K=10未达到目标。后续如果继续沿此方向，应采用“可学习或选择式压缩”：每类保存少量代表性anchor/medoid或蒸馏原型，而不是简单均值；同时对旧类做目标域adapter或特征修复，再将修复后的support压缩进记忆库。
+
+## medoid-anchor扩展计划
+
+| 项 | 值 |
+|---|---|
+| 新增脚本能力 | `prototype_mode=medoid`：每类从support embedding中选择少量代表性anchor，先选最接近类均值的样本，再用farthest-first覆盖类内多样性 |
+| 存储边界 | 不保存原始IQ，不保存全量support；只保存每类`M`个归一化anchor embedding、半径、计数和old/new标记。若K=10、8个类、`M=4`，存储32个anchor而非80个support embedding |
+| 本地测试 | PASS：`conda run -n ssr-gpu python -m pytest -q code/tests/test_phase2_compressed_proto_knn.py`，3个测试通过 |
+| 本地语法 | PASS：`conda run -n ssr-gpu python -m py_compile code/scripts/phase2_compressed_proto_knn_sweep.py` |
+| 本地脚本SHA256 | `7C93E61B043B3C3673D71A0429714E615872875A85D2265C21C84D5E923BE531` |
+| 待验证 | 在`7-14`近边界候选、`7-7/8-8`新类较强候选上扫描K=1/5/10、`M in {1,2,4,6,8}`、`old_bias`和`radius_weight`，记录同一行是否达标及5-shot相对1-shot差值 |

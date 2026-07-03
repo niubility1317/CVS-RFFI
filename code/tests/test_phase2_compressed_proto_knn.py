@@ -53,3 +53,35 @@ def test_old_bias_rescues_old_query_with_compressed_prototypes():
 
     assert predict_compressed_memory(memory, query, old_bias=0.0).tolist() == ["new-b"]
     assert predict_compressed_memory(memory, query, old_bias=0.16).tolist() == ["old-a"]
+
+
+def test_medoid_anchor_mode_keeps_bounded_representative_embeddings():
+    support = np.asarray(
+        [
+            [1.0, 0.0],
+            [0.9, 0.1],
+            [0.0, 1.0],
+            [0.1, 0.9],
+            [0.7, 0.7],
+            [0.72, 0.68],
+        ],
+        dtype=np.float64,
+    )
+    labels = np.asarray(["old-a", "old-a", "new-b", "new-b", "new-b", "new-b"], dtype=object)
+
+    memory = build_compressed_memory(
+        support,
+        labels,
+        old_labels={"old-a"},
+        prototypes_per_class=2,
+        prototype_mode="medoid",
+    )
+
+    normalized_support = support / np.linalg.norm(support, axis=1, keepdims=True)
+    assert memory.prototype_matrix.shape == (4, 2)
+    assert memory.counts == {"new-b": 4, "old-a": 2}
+    assert all(
+        np.any(np.all(np.isclose(anchor, normalized_support, atol=1e-8), axis=1))
+        for anchor in memory.prototype_matrix
+    )
+    assert "support_features" not in memory.__dict__
