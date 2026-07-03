@@ -1382,3 +1382,65 @@ python code/tests/test_collaborative_open_set_qknn_eval.py
 |查漏补缺review|P1指出缺`support_density/class_radius_z`字段时不应默认安全；已修复为启用对应gate时fail-closed，并增加单测。仍建议后续补`gate_reason×role×budget`、`second_label`混淆和固定分母预算表。|
 
 下一步算法建议：不要继续只调融合阈值。优先实现`SCOPE-Q8`式稀疏一致性开放集原型证据：本地先用每类scenario prototype预筛，再做qKNN8，通信只上传top2 label/score/margin/risk/support-density/radius-z；协同端用渐进式receiver请求和unknown高分位veto；seen-new注册只更新int8原型/支持码和阈值，必要时才开小adapter/BN affine并带rollback。最小实验矩阵可先用`K={5,10}`、`M={1,3,5}`、`leo_clear_weak`、1个target receiver烟测，再扩展到多LEO视图和多receiver。
+
+## 2026-07-03硬资源预算协同约束
+
+目标：把卫星群协同推理从“只报告资源”推进到“可按通信/时延硬预算执行”。本轮不改变默认行为；只有显式设置`--max_event_bytes`或`--max_event_latency_ms`时才启用硬约束。该改动服务于后续SCOPE-Q8：低置信样本可以请求更多接收机，但不能突破星间通信包大小或单事件时延预算。
+
+代码改动：
+
+|文件|目的|
+|---|---|
+|`code/evaluation/collaborative_open_set_qknn_eval.py`|新增`max_event_bytes`、`max_event_latency_ms`；所有融合策略都会检查选中receiver集合的总bytes和最大latency；超预算时输出`defer`并记录`resource_budget_reason`。`adaptive_gain`在选择下一个receiver前先过滤会超预算的候选，若无可行候选则记录`resource_budget_exhausted`。|
+|`code/scripts/phase2_collaborative_open_set_qknn_eval.py`|CLI新增`--max_event_bytes`和`--max_event_latency_ms`。|
+|`code/tests/test_collaborative_open_set_qknn_eval.py`|新增硬bytes预算单测，验证超预算时强制defer并统计`resource_budget_violation_rate`。|
+
+本地和Git镜像验证：
+
+```powershell
+conda activate ssr-gpu
+python -m py_compile code\scripts\phase2_collaborative_open_set_qknn_eval.py code\evaluation\collaborative_open_set_qknn_eval.py
+python code\tests\test_collaborative_open_set_qknn_eval.py
+python code\tests\test_phase2_collaborative_open_set_qknn_eval.py
+```
+
+结果：`test_collaborative_open_set_qknn_eval.py`为27 tests OK，`test_phase2_collaborative_open_set_qknn_eval.py`为17 tests OK。Git提交：`2076a29 Add hard resource budgets to collaborative qKNN`。
+
+计划远端验证：同步上述3个文件到N607，在`CVS-RFFI`环境重新跑编译和单测，然后跑两组`--collab_counts all`诊断：
+
+|候选|新增资源约束|目的|
+|---|---|---|
+|`labelgate_default_post_resource`|无硬预算|回归检查，结果应与上一轮`default`一致。|
+|`labelgate_budget360`|`--max_event_bytes 360 --max_event_latency_ms 12`|限制单事件最多约3个120-byte接收机证据包，验证1到5预算下资源约束是否按预期把高预算请求截断或defer。|
+
+远端验证与诊断结果：N607使用`CVS-RFFI`环境，`py_compile`通过，`test_collaborative_open_set_qknn_eval.py`为27 tests OK，`test_phase2_collaborative_open_set_qknn_eval.py`为17 tests OK。两组诊断均输出`receiver_count=5`、`group_count=308`、`evidence_row_count=1000`。运行后8张RTX3090均为`10MiB/24576MiB`，无新增训练进程；SSH/SCP后本地检查无残留`ssh.exe`或22端口`ESTABLISHED`连接。
+
+拉回产物SHA256：
+
+|产物|SHA256|
+|---|---|
+|`remote_artifacts/collab_open_set_qknn_scorer_cvs_evt_adaptive_gain_vote_margin_labelgate_default_post_resource.json`|`6A2A6F57AB0AEDC395672D724DC5A235F6C0F7BD7EF72B7F68856EB3ACD02463`|
+|`remote_artifacts/collab_open_set_qknn_scorer_cvs_evt_adaptive_gain_vote_margin_labelgate_default_post_resource_evidence.csv`|`B5BBCBBB195D83A5ADE6E30B540DDD4A300F99E35FC893596DE64979F04216F7`|
+|`remote_artifacts/collab_open_set_qknn_scorer_cvs_evt_adaptive_gain_vote_margin_labelgate_budget360.json`|`CDABD385475442A15B4D7335A54DA6020311C7A711E5D1D044A74A8C3F82F20C`|
+|`remote_artifacts/collab_open_set_qknn_scorer_cvs_evt_adaptive_gain_vote_margin_labelgate_budget360_evidence.csv`|`3D724CF564208D31FA8F47BAE3ACB18A705C59A706818B70D07F87BBB3A47414`|
+
+结果表：
+
+|候选|预算|old_acc|min_old|seen_new_acc|min_seen_new|unknown_FAR|unknown_reject|defer_rate|avg_rx|bytes/event|p95_latency_ms|resource_violation|
+|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+|`default_post_resource`|1|0.0000|0.0000|0.1500|0.0000|0.0500|0.6167|0.5000|1.0000|120.0|0.0979|0.0000|
+|`default_post_resource`|2|0.0850|0.0000|0.3556|0.1000|0.0000|0.8958|0.3374|1.8171|218.0|0.0979|0.0000|
+|`default_post_resource`|3|0.0417|0.0000|0.4250|0.1000|0.0000|0.9500|0.4250|2.5450|305.4|0.0979|0.0000|
+|`default_post_resource`|4|0.3103|0.0000|0.4857|0.3000|0.0000|0.8438|0.3182|3.2987|395.8|0.0979|0.0000|
+|`default_post_resource`|5|0.3654|0.0000|0.2500|0.0000|0.0000|0.7000|0.4022|4.2391|508.7|0.0979|0.0000|
+|`budget360`|1|0.0000|0.0000|0.1500|0.0000|0.0500|0.6167|0.5000|1.0000|120.0|0.0941|0.0000|
+|`budget360`|2|0.0850|0.0000|0.3556|0.1000|0.0000|0.8958|0.3374|1.8171|218.0|0.0941|0.0000|
+|`budget360`|3|0.0417|0.0000|0.4250|0.1000|0.0000|0.9500|0.4250|2.5450|305.4|0.0941|0.0000|
+|`budget360`|4|0.0575|0.0000|0.3429|0.1000|0.0000|0.9375|0.3442|2.5844|310.1|0.0941|0.0000|
+|`budget360`|5|0.0577|0.0000|0.1000|0.0000|0.0000|0.9000|0.4565|2.7174|326.1|0.0941|0.0000|
+
+解释：无硬预算回归结果与上一轮`default`一致，证明新增资源预算逻辑默认不改变算法。`budget360`严格把单事件平均通信量压到约`310-326 bytes/event`，且`resource_budget_violation_rate=0`；但预算4/5下旧类和新类准确率明显下降，说明当前qKNN证据依赖超过3个receiver的补充信息，若现实星间链路只允许约3个120-byte证据包，需要更强的本地证据质量或更聪明的receiver选择，而不能只靠截断。
+
+本地参数面搜索：基于`default_post_resource_evidence.csv`，对`label_fusion_policy`、`unknown_risk_threshold`、`accept_margin_threshold`、`consensus_score_threshold`、`scorer_component_vote_threshold`和rescue开关做缩小网格搜索。结论是没有隐藏阈值组合接近目标。FAR=0的联合最优约为预算4`old_acc=0.2989`、`seen_new_acc=0.2857`、`defer_rate=0.4870`；FAR=0的旧类最高仍是预算5`old_acc=0.3654`，但`seen_new_acc=0.0500`、`defer_rate=0.5652`。这说明当前瓶颈不是融合阈值，而是底层ADV3B02特征在星地目标域上的旧类/新类局部可分性不足，下一步需要改证据生成层。
+
+下一步技术判断：硬资源预算已补齐系统约束层，但它不会提升准确率。若继续向99/97/99推进，应优先实现本地证据质量提升：`SCOPE-Q8`的per-scenario Gaussian/Mahalanobis prototype、class-conditional EVT或pair verifier二级复核，并把`candidate_class_top_m`改为“候选预筛+全类top2审计”以避免第二候选被过滤。严格同事件协同也仍需单独跑`strict_event_key`诊断；当前`receiver_domain_ranked`只能作为receiver-domain ensemble诊断。
