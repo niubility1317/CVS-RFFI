@@ -1846,6 +1846,7 @@ def _finalize_metrics(
     event_results: Sequence[dict[str, Any]],
     *,
     k: int,
+    min_required_receivers: int,
     excluded_incomplete: int,
     expected_old_labels: set[str] | None = None,
     expected_seen_new_labels: set[str] | None = None,
@@ -1941,6 +1942,16 @@ def _finalize_metrics(
     bytes_values = [float(item["bytes"]) for item in event_results]
     latency_values = [float(item["latency_ms"]) for item in event_results]
     participating_values = [float(item.get("participating_receivers_used", k)) for item in event_results]
+    actual_receiver_count_histogram: defaultdict[str, int] = defaultdict(int)
+    partial_group_count = 0
+    exact_budget_group_count = 0
+    for value in participating_values:
+        used = int(value)
+        actual_receiver_count_histogram[str(used)] += 1
+        if used < int(k):
+            partial_group_count += 1
+        if used == int(k):
+            exact_budget_group_count += 1
     label_class_reliability_values = [float(item.get("label_class_reliability", 1.0)) for item in event_results]
     label_receiver_class_reliability_values = [
         float(item.get("label_receiver_class_reliability", 1.0)) for item in event_results
@@ -1952,6 +1963,11 @@ def _finalize_metrics(
 
     return {
         "participating_receivers": int(k),
+        "receiver_budget": int(k),
+        "min_required_receivers": int(min_required_receivers),
+        "actual_receiver_count_histogram": dict(sorted(actual_receiver_count_histogram.items(), key=lambda item: int(item[0]))),
+        "partial_group_count": int(partial_group_count),
+        "exact_budget_group_count": int(exact_budget_group_count),
         "participating_receivers_avg": sum(participating_values) / max(len(participating_values), 1),
         "participating_receivers_p95": _percentile(participating_values, 0.95),
         "participating_receivers_max": int(max(participating_values, default=float(k))),
@@ -2175,7 +2191,9 @@ def evaluate_collaborative_open_set_evidence(
     active_risk_components = _parse_risk_components(scorer_risk_components)
     collaboration_policy = _validate_collaboration_policy(collaboration_policy)
     collab_group_policy = _validate_collab_group_policy(collab_group_policy)
-    partial_collab_min_receivers = max(1, int(partial_collab_min_receivers))
+    partial_collab_min_receivers = int(partial_collab_min_receivers)
+    if partial_collab_min_receivers < 1:
+        raise ValueError("partial_collab_min_receivers must be >= 1")
     _validate_rows(
         rows,
         threshold_selection_label_scope=threshold_selection_label_scope,
@@ -2208,6 +2226,10 @@ def evaluate_collaborative_open_set_evidence(
 
     receiver_count = len(receivers)
     counts = parse_collab_counts(collab_counts, receiver_count=receiver_count)
+    if partial_collab_min_receivers > receiver_count:
+        raise ValueError(
+            f"partial_collab_min_receivers {partial_collab_min_receivers} exceeds receiver_count {receiver_count}"
+        )
     max_requested = max(counts)
     matched_max = [
         (event_id, group)
@@ -2216,6 +2238,16 @@ def evaluate_collaborative_open_set_evidence(
     ]
 
     out_counts: dict[str, Any] = {}
+    policy_min_for_max_requested = (
+        min(max_requested, partial_collab_min_receivers)
+        if collab_group_policy == "available_up_to_k"
+        else max_requested
+    )
+    policy_matched_max = [
+        (event_id, group)
+        for event_id, group in groups.items()
+        if len({_str(row, "receiver_id") for row in group}) >= policy_min_for_max_requested
+    ]
     for k in counts:
         min_receivers_for_k = int(k)
         if collab_group_policy == "available_up_to_k":
@@ -2399,6 +2431,7 @@ def evaluate_collaborative_open_set_evidence(
         out_counts[str(k)] = _finalize_metrics(
             event_results,
             k=int(k),
+            min_required_receivers=int(min_receivers_for_k),
             excluded_incomplete=excluded,
             expected_old_labels=expected_old_labels,
             expected_seen_new_labels=expected_seen_new_labels,
@@ -2412,6 +2445,10 @@ def evaluate_collaborative_open_set_evidence(
         "group_count": int(len(groups)),
         "eligible_group_count": int(len(matched_max)),
         "excluded_incomplete_groups": int(len(groups) - len(matched_max)),
+        "exact_max_requested_group_count": int(len(matched_max)),
+        "policy_eligible_group_count_at_max_budget": int(len(policy_matched_max)),
+        "policy_excluded_group_count_at_max_budget": int(len(groups) - len(policy_matched_max)),
+        "policy_min_receivers_at_max_budget": int(policy_min_for_max_requested),
         "denominator_policy": "per_k_available_receivers",
         "collaboration_policy": collaboration_policy,
         "collab_group_policy": collab_group_policy,

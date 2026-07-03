@@ -2154,7 +2154,48 @@ class CollaborativeOpenSetQknnEvalTest(unittest.TestCase):
         self.assertEqual(budgeted["counts"]["4"]["missing_old_classes"], [])
         self.assertEqual(budgeted["counts"]["4"]["old_acc"], 1.0)
         self.assertEqual(budgeted["counts"]["4"]["participating_receivers_avg"], 3.5)
+        self.assertEqual(budgeted["counts"]["4"]["receiver_budget"], 4)
+        self.assertEqual(budgeted["counts"]["4"]["min_required_receivers"], 2)
+        self.assertEqual(budgeted["counts"]["4"]["actual_receiver_count_histogram"], {"3": 1, "4": 1})
+        self.assertEqual(budgeted["counts"]["4"]["partial_group_count"], 1)
+        self.assertEqual(budgeted["exact_max_requested_group_count"], 1)
+        self.assertEqual(budgeted["policy_eligible_group_count_at_max_budget"], 2)
         self.assertEqual(budgeted["collab_group_policy"], "available_up_to_k")
+
+    def test_available_up_to_k_rejects_invalid_partial_min_receivers(self):
+        from evaluation.collaborative_open_set_qknn_eval import evaluate_collaborative_open_set_evidence
+
+        rows = [
+            {
+                "event_id": "old-a-event",
+                "receiver_id": "rx-a",
+                "role": "old",
+                "true_label": "old-a",
+                "predicted_label": "old-a",
+                "known_score": 0.90,
+                "known_margin": 0.50,
+                "unknown_risk": 0.05,
+            }
+        ]
+        protocol = {
+            "source_receiver_ids": ["src-a"],
+            "target_receiver_ids": ["rx-a"],
+            "old_tx_ids": ["old-a"],
+            "seen_new_tx_ids": ["new-a"],
+            "unknown_tx_ids": ["unk-a"],
+            "target_channel_view": "leo_clear_weak",
+        }
+
+        with self.assertRaisesRegex(ValueError, "partial_collab_min_receivers must be >= 1"):
+            evaluate_collaborative_open_set_evidence(
+                rows,
+                collab_counts="1",
+                fusion_policy="risk_margin",
+                collab_group_policy="available_up_to_k",
+                partial_collab_min_receivers=0,
+                protocol_metadata=protocol,
+                strict_protocol_metadata=True,
+            )
 
     def test_candidate_set_cvs_vetoes_high_label_component_agreement(self):
         from evaluation.collaborative_open_set_qknn_eval import evaluate_collaborative_open_set_evidence
