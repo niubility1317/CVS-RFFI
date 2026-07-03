@@ -2914,3 +2914,110 @@ N607已再次同步并用`/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python`�
 |`code/tests/test_collaborative_open_set_qknn_eval.py`|`56ba9509c00014c03ae2106f4f3d22df3203d691fd9f594ddb2ee0bd41403867`|
 
 上述hardening不改变已生成rcwr结果的判定：本轮实验命令未启用`seen_new_rescue_enabled`，且已显式启用`class_conformal_enabled`，所以主结果不受P1分支污染。后续重新生成JSON时会带完整argv/cwd/python/output复现字段。
+
+## 2026-07-04 candidate_set多风险组件门控
+
+### 目标与改动
+
+本轮针对`rcwr_min2_er090,k=4`“old_acc跨过0.80但unknown_FAR=0.0882”的边界问题，新增独立open-set风险否决通道：在`candidate_set_cvs`接受候选时，除`candidate_set_min_conformal_pvalue`外，增加`candidate_set_max_label_risk_component_agreement`，用标签级多风险组件一致性否决高unknown吸收风险样本。该门控不使用unknown query标签；它只读取事件证据中的风险组件聚合结果。
+
+|文件|改动|
+|---|---|
+|`code/evaluation/collaborative_open_set_qknn_eval.py`|新增`candidate_set_max_label_risk_component_agreement`参数、候选集接受条件和JSON元数据字段。|
+|`code/scripts/phase2_collaborative_open_set_qknn_eval.py`|新增CLI参数`--candidate_set_max_label_risk_component_agreement`并传入评估入口。|
+|`code/tests/test_collaborative_open_set_qknn_eval.py`|新增`test_candidate_set_cvs_vetoes_high_label_component_agreement`，覆盖高组件风险一致性否决。|
+
+根目录`E:\type10-7`不是Git仓库，本地快照保存在`E:\type10-7\code\snapshots\candidate_component_veto_20260704\`。Git镜像`E:\type10-7\github_publish\CVS-RFFI-repo`已提交`ede6539 Add candidate set component risk veto`。
+
+### 本地与N607验证
+
+本地`ssr-gpu`与Git镜像均通过以下验证：
+
+|环境|命令|结果|
+|---|---|---|
+|本地工作区|`python -m py_compile code\evaluation\collaborative_open_set_qknn_eval.py code\scripts\phase2_collaborative_open_set_qknn_eval.py code\tests\test_collaborative_open_set_qknn_eval.py`|PASS|
+|本地工作区|`python -m unittest discover -s code\tests -p "test_collaborative_open_set_qknn_eval.py"`|43 tests OK|
+|本地工作区|`python -m unittest discover -s code\tests -p "test_phase2_collaborative_open_set_qknn_eval.py"`|44 tests OK|
+|Git镜像|同上三条|PASS，43 tests OK，44 tests OK|
+
+N607直连预检通过，远端项目根为`/home/szu2070436088/2510044040/CV-SincNet`，远端Python为`/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python`。同步后远端`py_compile`通过，`test_collaborative_open_set_qknn_eval.py`为43 tests OK，`test_phase2_collaborative_open_set_qknn_eval.py`为44 tests OK。运行前后8张RTX3090均为`10 MiB/24576 MiB`，选择显存占用最低的GPU0执行；每次SSH/SCP后本地检查均为无残留`ssh.exe`、无N607/bridge 22端口`ESTABLISHED`连接。
+
+远端最新代码SHA256：
+
+|文件|SHA256|
+|---|---|
+|`code/evaluation/collaborative_open_set_qknn_eval.py`|`3030322907e81df5032fc7cab3d93e01c43a6ef409876a22c4c554aec134c9e2`|
+|`code/scripts/phase2_collaborative_open_set_qknn_eval.py`|`7eae43b3b73386f802860649e82225842bd290f751f2d8e97a1e7a7e00afdd36`|
+|`code/tests/test_collaborative_open_set_qknn_eval.py`|`d3475481bbcbc93cb1200b395321f4763c797898c02baa923e71d74f2741b53b`|
+
+### 远端命令口径
+
+本轮复用`runs/phase2_adv3b02_collab_open_set_qknn_full_20260703/features.npz`，对应`ADV3B02_CORE90_SOFT_E200`、Stage2-C、qknn8、target receiver 1到5和`leo_clear_weak,leo_low_elev_weak,leo_rain_weak`星地信道视图。主要固定参数为：
+
+```bash
+CUDA_VISIBLE_DEVICES=0 /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python \
+  code/scripts/phase2_collaborative_open_set_qknn_eval.py \
+  --feature_npz runs/phase2_adv3b02_collab_open_set_qknn_full_20260703/features.npz \
+  --collab_counts all --k_shot 8 --query_per_class 20 --qknn_k 8 --seed 4070303 \
+  --fusion_policy candidate_set_cvs --collaboration_policy fixed_k \
+  --candidate_class_top_m 2 --class_evidence_top_m 3 \
+  --class_conformal_enabled --class_conformal_min_support 2 \
+  --prototype_score_blend 2.0 --mahalanobis_score_blend 1.0 \
+  --support_calibration_mode leave_one_out \
+  --unknown_gate_mode support_envelope_evt --score_threshold_combine qknn_only \
+  --scenario_aware --radius_norm 0.3 \
+  --label_fusion_policy weighted_vote_margin \
+  --class_reliability_policy conformal_margin_risk \
+  --receiver_class_reliability_policy support_calibrated \
+  --event_alignment_policy receiver_domain_ranked \
+  --support_selection_policy stable_first \
+  --unknown_risk_threshold 0.8 --scorer_component_vote_threshold 0.50 \
+  --candidate_set_min_receivers 2 --candidate_set_min_top1_receivers 0 \
+  --candidate_set_max_label_unknown_risk 1.0 \
+  --candidate_set_max_event_unknown_risk 0.90 \
+  --candidate_set_unknown_reject_risk 0.80 \
+  --evidence_packet_bytes 40
+```
+
+差异参数：
+
+|配置|差异参数|JSON|Evidence CSV|
+|---|---|---|---|
+|`lrca050_p035`|`--candidate_set_min_conformal_pvalue 0.35 --candidate_set_max_label_risk_component_agreement 0.50`|`runs/phase2_adv3b02_collab_open_set_qknn_full_20260703/collab_open_set_qknn_candidate_set_cvs_rcwr_lrca050_p035_adv3b02.json`|`runs/phase2_adv3b02_collab_open_set_qknn_full_20260703/collab_open_set_qknn_candidate_set_cvs_rcwr_lrca050_p035_adv3b02_evidence.csv`|
+|`lrca049_p035`|`--candidate_set_min_conformal_pvalue 0.35 --candidate_set_max_label_risk_component_agreement 0.49`|`runs/phase2_adv3b02_collab_open_set_qknn_full_20260703/collab_open_set_qknn_candidate_set_cvs_rcwr_lrca049_p035_adv3b02.json`|`runs/phase2_adv3b02_collab_open_set_qknn_full_20260703/collab_open_set_qknn_candidate_set_cvs_rcwr_lrca049_p035_adv3b02_evidence.csv`|
+
+JSON已记录`run_command_argv`、`run_cwd`、`python_executable`、`output_json`和`output_evidence_csv`。
+
+### 产物SHA256
+
+|产物|SHA256|
+|---|---|
+|`collab_open_set_qknn_candidate_set_cvs_rcwr_lrca050_p035_adv3b02.json`|`6479948C6C69D1A58F1CF7CE298687C170AD100190F119C038F18A0FAC1470B0`|
+|`collab_open_set_qknn_candidate_set_cvs_rcwr_lrca050_p035_adv3b02_evidence.csv`|`C7CA3774970C83BFA4B10E53B8909BA3A1475277FB5D59E8BF4B7B18F2342C65`|
+|`collab_open_set_qknn_candidate_set_cvs_rcwr_lrca049_p035_adv3b02.json`|`BCCE76EB0D8FCF22C91D8DD8F580DB969434623AE74E696A13B60BC40F68B36A`|
+|`collab_open_set_qknn_candidate_set_cvs_rcwr_lrca049_p035_adv3b02_evidence.csv`|`6158B632A84100988951EB2A7BDA3E4A73FD9618CABAF87145AAB4A09748D099`|
+
+### 结果表
+
+|配置|协同数|old_acc|min_old_class_acc|seen_new_acc|min_seen_new_class_acc|unknown_FAR|unknown_reject_rate|defer_rate|known_coverage|avg_rx|bytes/event|latency_ms_p95|结论|
+|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---|
+|`lrca050_p035`|1|0.0000|0.0000|0.0000|0.0000|0.0000|0.4667|0.7459|0.0000|1.0000|40.0|0.1818|单receiver证据不足|
+|`lrca050_p035`|2|0.3816|0.0500|0.5192|0.5000|0.0652|0.9348|0.0320|0.5539|2.0000|80.0|0.1818|FAR略超，known不足|
+|`lrca050_p035`|3|0.4750|0.1500|0.5500|0.4500|0.0250|0.9750|0.0050|0.5750|3.0000|120.0|0.1818|FAR达标但known不足|
+|`lrca050_p035`|4|0.8182|0.0000|0.7857|0.7000|0.0588|0.9412|0.0000|0.8707|4.0000|160.0|0.1818|保留OLD80，FAR仍略超|
+|`lrca050_p035`|5|0.7925|0.0000|0.6500|0.0000|0.0500|0.9500|0.0000|0.8493|5.0000|200.0|0.1818|FAR到边界，old未过0.80|
+|`lrca049_p035`|1|0.0000|0.0000|0.0000|0.0000|0.0000|0.4667|0.7459|0.0000|1.0000|40.0|0.1323|单receiver证据不足|
+|`lrca049_p035`|2|0.3750|0.0500|0.4808|0.4688|0.0652|0.9348|0.0640|0.5098|2.0000|80.0|0.1323|FAR略超，known不足|
+|`lrca049_p035`|3|0.4750|0.1500|0.5500|0.4500|0.0250|0.9750|0.0050|0.5750|3.0000|120.0|0.1323|FAR达标但known不足|
+|`lrca049_p035`|4|0.8182|0.0000|0.7143|0.6500|0.0294|0.9706|0.0000|0.8448|4.0000|160.0|0.1323|当前最佳OLD80+FAR组合|
+|`lrca049_p035`|5|0.7925|0.0000|0.6500|0.0000|0.0000|1.0000|0.0000|0.8493|5.0000|200.0|0.1323|拒识最强但old和seen-new不足|
+
+### 判定
+
+`candidate_set_max_label_risk_component_agreement=0.49`在k=4时把`rcwr_min2_er090,k=4`的`unknown_FAR`从0.0882压到0.0294，同时保留`old_acc=0.8182`。这是当前最好的OLD80+FAR组合，说明多风险组件一致性门控能在不牺牲old主精度的情况下抑制unknown吸收。
+
+但该结果仍不是用户目标：`min_old_class_acc=0.0000`，`seen_new_acc=0.7143`，`min_seen_new_class_acc=0.6500`，unknown拒识率0.9706低于0.99。因此当前只能声明“候选方向有效且达到阶段性OLD80+FAR组合”，不能声明99/97/99、不能声明Stage2-C成功、也不能声明卫星部署成功。
+
+资源方面，`lrca049_p035,k=4`固定使用4个receiver，`160 bytes/event`，`latency_ms_p95=0.1323`，运行GPU显存占用保持在基线`10 MiB/24576 MiB`。资源约束设计说明原文`卫星协同射频指纹识别（RFFI）系统资源约束设计说明.md`仍未在当前工作区找到；本轮继续使用`avg_rx`、`bytes/event`、`latency_ms_p95`、GPU/VRAM作为可复核代理指标。
+
+下一步不应继续简单收紧全局门控。主要失败来自`20-15`旧类缺类地板和seen-new回落，建议围绕`lrca049_p035,k=4`做按类地板保护：对缺类old引入source/proxy-known oldness gate、按类support envelope下界和低风险old-only rescue；同时保留`candidate_set_max_label_risk_component_agreement<=0.49`作为unknown吸收硬门控。
