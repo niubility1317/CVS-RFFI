@@ -1219,3 +1219,33 @@ python E:\type10-7\code\tests\test_phase2_collaborative_open_set_qknn_eval.py
 |5|92|0.3654|0.0000|0.2500|0.0000|0.0000|0.7000|0.4022|4.2391|5.0000|6|
 
 解释：`vote_margin`合法利用多接收机标签一致性，预算4的seen_new_acc从`class_gate_safe`的0.4571提高到0.4857，min_seen_new_class_acc从0.2500提高到0.3000，defer_rate从0.3312降到0.3182，并保持预算2-5 unknown_FAR=0。预算1出现unknown_FAR=0.0500是预期中的反泄漏审计结果：没有多接收机风险保护时，不能依赖`role`阻止seen-new rescue。因此下一步如果继续追求99/97/99，不能只调融合层；需要加强本地qKNN证据字段，例如每类Gaussian prototype/diag covariance、support density、label-conditioned radius z-score，或导出严格同物理事件键后做真正同事件协同。
+
+## 2026-07-03 support density证据增强
+
+本轮转向增强qKNN证据字段。诊断表明当前融合器在多数receiver错误或高风险时容易淹没少数正确receiver；因此新增每个receiver本地top-k邻居中最佳标签的支持密度，用于描述该receiver预测标签是否有局部支持，而不使用query真值。
+
+代码改动：
+
+|文件|目的|
+|---|---|
+|`code/scripts/phase2_collaborative_open_set_qknn_eval.py`|`qknn_scores`新增`support_neighbor_count`和`support_density`返回值；evidence写出这两个字段；新增`--receiver_reliability_policy deployment_prior|support_density|margin_density`，默认保持旧行为。|
+|`code/tests/test_phase2_collaborative_open_set_qknn_eval.py`|更新qknn返回值测试，新增support density reliability字段测试。|
+
+本地和Git镜像验证：
+
+```powershell
+conda activate ssr-gpu
+python -m py_compile E:\type10-7\code\scripts\phase2_collaborative_open_set_qknn_eval.py E:\type10-7\code\evaluation\collaborative_open_set_qknn_eval.py
+python E:\type10-7\code\tests\test_phase2_collaborative_open_set_qknn_eval.py
+python E:\type10-7\code\tests\test_collaborative_open_set_qknn_eval.py
+```
+
+结果：本地和Git镜像均为`test_phase2_collaborative_open_set_qknn_eval.py`17 tests OK，`test_collaborative_open_set_qknn_eval.py`24 tests OK。Git提交：`6ccb9c6 Add support density evidence for collaborative qKNN`。
+
+计划远端对比三组，均沿用`vote_margin`、class-set gate安全参数和`--collab_counts all`：
+
+|候选|receiver_reliability_policy|目的|
+|---|---|---|
+|`vote_margin_density_prior`|`deployment_prior`|带新字段但不改变可靠度，作为回归对照。|
+|`vote_margin_density_support`|`support_density`|用本地top-k标签密度作为receiver reliability。|
+|`vote_margin_density_margin`|`margin_density`|用support density乘以margin强度，进一步降低低margin receiver权重。|
