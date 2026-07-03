@@ -42,6 +42,7 @@ RISK_COMPONENT_KEYS = {
     "evt": "evt_risk",
     "oldness": "oldness_risk",
     "virtual_unknown": "virtual_unknown_risk",
+    "class_shell": "class_shell_risk",
 }
 COLLAB_GROUP_POLICIES = {"exact_k", "available_up_to_k"}
 
@@ -359,6 +360,8 @@ def _fuse_event(
     candidate_set_max_label_unknown_risk: float = 1.0,
     candidate_set_max_event_unknown_risk: float = 0.95,
     candidate_set_max_label_risk_component_agreement: float = 1.0,
+    candidate_set_max_label_shell_risk: float = 1.0,
+    candidate_set_shell_reject_risk: float = 1.0e12,
     candidate_set_event_high_unknown_risk_veto: float = 1.0e12,
     candidate_set_max_label_high_unknown_risk_fraction: float = 1.0,
     candidate_set_high_unknown_risk_threshold: float = 0.80,
@@ -390,6 +393,14 @@ def _fuse_event(
         candidate_set_high_unknown_risk_threshold,
         "candidate_set_high_unknown_risk_threshold",
     )
+    candidate_set_max_label_shell_risk = _validate_unit_interval(
+        candidate_set_max_label_shell_risk,
+        "candidate_set_max_label_shell_risk",
+    )
+    candidate_set_shell_reject_risk = _validate_non_negative(
+        candidate_set_shell_reject_risk,
+        "candidate_set_shell_reject_risk",
+    )
     label_scores: defaultdict[str, float] = defaultdict(float)
     label_raw_scores: defaultdict[str, float] = defaultdict(float)
     label_weight_totals: defaultdict[str, float] = defaultdict(float)
@@ -402,6 +413,7 @@ def _fuse_event(
     label_support_density_missing_values: defaultdict[str, list[bool]] = defaultdict(list)
     label_radius_z_missing_values: defaultdict[str, list[bool]] = defaultdict(list)
     label_unknown_risk_values: defaultdict[str, list[float]] = defaultdict(list)
+    label_shell_risk_values: defaultdict[str, list[float]] = defaultdict(list)
     label_risk_component_votes: defaultdict[str, list[float]] = defaultdict(list)
     label_class_reliability_values: defaultdict[str, list[float]] = defaultdict(list)
     label_receiver_class_reliability_values: defaultdict[str, list[float]] = defaultdict(list)
@@ -455,6 +467,7 @@ def _fuse_event(
         evt_risk_value: float,
         oldness_risk_value: float,
         virtual_unknown_risk_value: float,
+        class_shell_risk_value: float,
         receiver_class_reliability_value: float,
     ) -> None:
         nonlocal filtered_candidate_count
@@ -500,6 +513,7 @@ def _fuse_event(
         label_support_density_missing_values[label].append(bool(support_density_is_missing))
         label_radius_z_missing_values[label].append(bool(radius_z_is_missing))
         label_unknown_risk_values[label].append(max(0.0, min(1.0, float(unknown_risk_value))))
+        label_shell_risk_values[label].append(max(0.0, min(1.0, float(class_shell_risk_value))))
         label_class_reliability_values[label].append(class_weight)
         label_receiver_class_reliability_values[label].append(receiver_class_weight)
         row_component_values = {
@@ -510,6 +524,7 @@ def _fuse_event(
             "evt": float(evt_risk_value),
             "oldness": float(oldness_risk_value),
             "virtual_unknown": float(virtual_unknown_risk_value),
+            "class_shell": float(class_shell_risk_value),
         }
         if active_components is None:
             candidate_components = [row_component_values["score"], row_component_values["radius"], row_component_values["margin"]]
@@ -577,6 +592,7 @@ def _fuse_event(
                 evt_risk_value=_float(row, "evt_risk", _float(row, "unknown_risk", 0.0)),
                 oldness_risk_value=_float(row, "oldness_risk", _float(row, "unknown_risk", 0.0)),
                 virtual_unknown_risk_value=_float(row, "virtual_unknown_risk", 0.0),
+                class_shell_risk_value=_float(row, "class_shell_risk", 0.0),
                 receiver_class_reliability_value=_float(row, "receiver_class_reliability", 1.0),
             )
         if policy in {"cp_set_cvs", "candidate_set_cvs"}:
@@ -621,6 +637,7 @@ def _fuse_event(
                     evt_risk_value=_float(row, f"class_evidence_top{rank}_evt_risk", _float(row, "evt_risk", _float(row, "unknown_risk", 0.0))),
                     oldness_risk_value=_float(row, f"class_evidence_top{rank}_oldness_risk", _float(row, "oldness_risk", _float(row, "unknown_risk", 0.0))),
                     virtual_unknown_risk_value=_float(row, f"class_evidence_top{rank}_virtual_unknown_risk", _float(row, "virtual_unknown_risk", 0.0)),
+                    class_shell_risk_value=_float(row, f"class_evidence_top{rank}_class_shell_risk", _float(row, "class_shell_risk", 0.0)),
                     receiver_class_reliability_value=_float(
                         row,
                         f"class_evidence_top{rank}_receiver_class_reliability",
@@ -634,10 +651,12 @@ def _fuse_event(
         has_evt = "evt_risk" in row
         has_oldness = "oldness_risk" in row
         has_virtual_unknown = "virtual_unknown_risk" in row
+        has_class_shell = "class_shell_risk" in row
         mahalanobis_risk_value = _float(row, "mahalanobis_risk", _float(row, "unknown_risk", 0.0))
         evt_risk_value = _float(row, "evt_risk", _float(row, "unknown_risk", 0.0))
         oldness_risk_value = _float(row, "oldness_risk", _float(row, "unknown_risk", 0.0))
         virtual_unknown_risk_value = _float(row, "virtual_unknown_risk", 0.0)
+        class_shell_risk_value = _float(row, "class_shell_risk", 0.0)
         score_risks.append(score_risk_value)
         radius_risks.append(radius_risk_value)
         margin_risks.append(margin_risk_value)
@@ -655,6 +674,8 @@ def _fuse_event(
                 component_values.append(oldness_risk_value)
             if has_virtual_unknown:
                 component_values.append(virtual_unknown_risk_value)
+            if has_class_shell:
+                component_values.append(class_shell_risk_value)
         else:
             row_values = {
                 "score": score_risk_value,
@@ -664,6 +685,7 @@ def _fuse_event(
                 "evt": evt_risk_value,
                 "oldness": oldness_risk_value,
                 "virtual_unknown": virtual_unknown_risk_value,
+                "class_shell": class_shell_risk_value,
             }
             component_values = [row_values[component] for component in active_components]
         component_votes.append(
@@ -760,6 +782,7 @@ def _fuse_event(
     label_class_conformal_values = label_conformal_pvalues[label]
     label_class_conformal_count_values = label_conformal_support_counts[label]
     selected_label_unknown_risk_values = label_unknown_risk_values[label]
+    selected_label_shell_risk_values = label_shell_risk_values[label]
     selected_label_risk_component_votes = label_risk_component_votes[label]
     selected_label_class_reliability_values = label_class_reliability_values[label]
     selected_label_receiver_class_reliability_values = label_receiver_class_reliability_values[label]
@@ -780,6 +803,7 @@ def _fuse_event(
         min(label_class_conformal_count_values) if label_class_conformal_count_values else 0.0
     )
     label_unknown_risk = _percentile(selected_label_unknown_risk_values, unknown_quantile)
+    label_shell_risk = _percentile(selected_label_shell_risk_values, unknown_quantile)
     label_high_unknown_risk_fraction = (
         sum(
             1
@@ -932,10 +956,21 @@ def _fuse_event(
             and unknown_risk >= float(candidate_set_event_high_unknown_risk_veto)
             and label_high_unknown_risk_fraction >= float(candidate_set_max_label_high_unknown_risk_fraction)
         )
+        candidate_set_shell_veto = bool(
+            policy == "candidate_set_cvs"
+            and label
+            and label_shell_risk > float(candidate_set_max_label_shell_risk)
+        )
+        candidate_set_shell_reject = bool(
+            policy == "candidate_set_cvs"
+            and label
+            and label_shell_risk >= float(candidate_set_shell_reject_risk)
+        )
         candidate_set_accept = bool(
             policy == "candidate_set_cvs"
             and output_label_set in {"old", "seen_new"}
             and not candidate_set_high_unknown_veto
+            and not candidate_set_shell_veto
             and selected_label_candidate_receivers >= max(1, int(candidate_set_min_receivers))
             and selected_label_top1_receivers >= max(0, int(candidate_set_min_top1_receivers))
             and label_class_conformal_pvalue >= float(candidate_set_min_conformal_pvalue)
@@ -948,6 +983,9 @@ def _fuse_event(
             decision = "accept"
             output_label = label
         elif policy == "candidate_set_cvs" and locals().get("candidate_set_high_unknown_veto", False):
+            decision = "unknown_reject"
+            output_label = UNKNOWN_LABEL
+        elif policy == "candidate_set_cvs" and locals().get("candidate_set_shell_reject", False):
             decision = "unknown_reject"
             output_label = UNKNOWN_LABEL
         elif policy == "candidate_set_cvs" and (
@@ -1032,6 +1070,7 @@ def _fuse_event(
         "effective_unknown_risk": float(locals().get("effective_unknown_risk", unknown_risk)),
         "decision_unknown_risk": float(locals().get("decision_unknown_risk", unknown_risk)),
         "label_unknown_risk": float(label_unknown_risk),
+        "label_shell_risk": float(label_shell_risk),
         "seen_new_rescue_applied": bool(locals().get("rescue_applied", False)),
         "seen_new_rescue_label_match": bool(rescue_label_match if policy == "scorer_cvs" else False),
         "conformal_rescue_applied": bool(locals().get("conformal_rescue_applied", False)),
@@ -1053,6 +1092,8 @@ def _fuse_event(
         "candidate_set_max_label_unknown_risk": float(candidate_set_max_label_unknown_risk),
         "candidate_set_max_event_unknown_risk": float(candidate_set_max_event_unknown_risk),
         "candidate_set_max_label_risk_component_agreement": float(candidate_set_max_label_risk_component_agreement),
+        "candidate_set_max_label_shell_risk": float(candidate_set_max_label_shell_risk),
+        "candidate_set_shell_reject_risk": float(candidate_set_shell_reject_risk),
         "candidate_set_event_high_unknown_risk_veto": float(candidate_set_event_high_unknown_risk_veto),
         "candidate_set_max_label_high_unknown_risk_fraction": float(
             candidate_set_max_label_high_unknown_risk_fraction
@@ -1060,6 +1101,8 @@ def _fuse_event(
         "candidate_set_high_unknown_risk_threshold": float(candidate_set_high_unknown_risk_threshold),
         "candidate_set_label_high_unknown_risk_fraction": float(label_high_unknown_risk_fraction),
         "candidate_set_high_unknown_veto": bool(locals().get("candidate_set_high_unknown_veto", False)),
+        "candidate_set_shell_veto": bool(locals().get("candidate_set_shell_veto", False)),
+        "candidate_set_shell_reject": bool(locals().get("candidate_set_shell_reject", False)),
         "candidate_set_min_score_gap": float(candidate_set_min_score_gap),
         "candidate_set_unknown_reject_risk": float(candidate_set_unknown_reject_risk),
         "output_label_set": output_label_set,
@@ -1929,6 +1972,8 @@ def _finalize_metrics(
     seen_new_rescue_total = 0
     candidate_set_high_unknown_veto_total = 0
     candidate_set_high_unknown_veto_by_role: defaultdict[str, int] = defaultdict(int)
+    candidate_set_shell_veto_total = 0
+    candidate_set_shell_veto_by_role: defaultdict[str, int] = defaultdict(int)
 
     old_labels = set(expected_old_labels or set())
     seen_new_labels = set(expected_seen_new_labels or set())
@@ -1965,6 +2010,9 @@ def _finalize_metrics(
         if bool(item.get("candidate_set_high_unknown_veto", False)):
             candidate_set_high_unknown_veto_total += 1
             candidate_set_high_unknown_veto_by_role[role] += 1
+        if bool(item.get("candidate_set_shell_veto", False)):
+            candidate_set_shell_veto_total += 1
+            candidate_set_shell_veto_by_role[role] += 1
         stop_reason = str(
             item.get("rb_capr_stop_reason")
             or item.get("support_utility_stop_reason")
@@ -2080,6 +2128,9 @@ def _finalize_metrics(
         "candidate_set_high_unknown_veto_count": int(candidate_set_high_unknown_veto_total),
         "candidate_set_high_unknown_veto_rate": _safe_rate(candidate_set_high_unknown_veto_total, total_events),
         "candidate_set_high_unknown_veto_by_role": dict(sorted(candidate_set_high_unknown_veto_by_role.items())),
+        "candidate_set_shell_veto_count": int(candidate_set_shell_veto_total),
+        "candidate_set_shell_veto_rate": _safe_rate(candidate_set_shell_veto_total, total_events),
+        "candidate_set_shell_veto_by_role": dict(sorted(candidate_set_shell_veto_by_role.items())),
     }
 
 
@@ -2235,6 +2286,8 @@ def evaluate_collaborative_open_set_evidence(
     candidate_set_max_label_unknown_risk: float = 1.0,
     candidate_set_max_event_unknown_risk: float = 0.95,
     candidate_set_max_label_risk_component_agreement: float = 1.0,
+    candidate_set_max_label_shell_risk: float = 1.0,
+    candidate_set_shell_reject_risk: float = 1.0e12,
     candidate_set_event_high_unknown_risk_veto: float = 1.0e12,
     candidate_set_max_label_high_unknown_risk_fraction: float = 1.0,
     candidate_set_high_unknown_risk_threshold: float = 0.80,
@@ -2488,6 +2541,8 @@ def evaluate_collaborative_open_set_evidence(
                     candidate_set_max_label_unknown_risk=candidate_set_max_label_unknown_risk,
                     candidate_set_max_event_unknown_risk=candidate_set_max_event_unknown_risk,
                     candidate_set_max_label_risk_component_agreement=candidate_set_max_label_risk_component_agreement,
+                    candidate_set_max_label_shell_risk=candidate_set_max_label_shell_risk,
+                    candidate_set_shell_reject_risk=candidate_set_shell_reject_risk,
                     candidate_set_event_high_unknown_risk_veto=candidate_set_event_high_unknown_risk_veto,
                     candidate_set_max_label_high_unknown_risk_fraction=(
                         candidate_set_max_label_high_unknown_risk_fraction
@@ -2580,6 +2635,8 @@ def evaluate_collaborative_open_set_evidence(
         "candidate_set_max_label_unknown_risk": float(candidate_set_max_label_unknown_risk),
         "candidate_set_max_event_unknown_risk": float(candidate_set_max_event_unknown_risk),
         "candidate_set_max_label_risk_component_agreement": float(candidate_set_max_label_risk_component_agreement),
+        "candidate_set_max_label_shell_risk": float(candidate_set_max_label_shell_risk),
+        "candidate_set_shell_reject_risk": float(candidate_set_shell_reject_risk),
         "candidate_set_event_high_unknown_risk_veto": float(candidate_set_event_high_unknown_risk_veto),
         "candidate_set_max_label_high_unknown_risk_fraction": float(
             candidate_set_max_label_high_unknown_risk_fraction

@@ -1117,6 +1117,36 @@ def _virtual_unknown_boundary_risk(
     return np.clip(risk, 0.0, 1.0), np.asarray(virtual_scores, dtype=np.float64)
 
 
+def _class_shell_boundary_risk(
+    memory: QknnMemory,
+    query_features: np.ndarray,
+    predicted_labels: Sequence[str],
+    *,
+    radius_scale: float,
+    temperature: float,
+    margin: float,
+) -> tuple[np.ndarray, np.ndarray]:
+    query = _normalize_rows(query_features)
+    class_to_pos = {str(label): int(i) for i, label in enumerate(memory.centroid_labels.tolist())}
+    risks: list[float] = []
+    distances: list[float] = []
+    scale = max(float(radius_scale), 1e-6)
+    temp = max(float(temperature), 1e-6)
+    for row_i, raw_label in enumerate(predicted_labels):
+        label = str(raw_label)
+        pos = class_to_pos.get(label)
+        if pos is None:
+            risks.append(1.0)
+            distances.append(1.0)
+            continue
+        distance = float(1.0 - float(query[row_i] @ memory.centroids[pos]))
+        threshold = max(0.0, float(memory.class_radius_thresholds.get(label, 1.0))) * scale
+        z = np.clip((distance - threshold + float(margin)) / temp, -60.0, 60.0)
+        risks.append(float(1.0 / (1.0 + np.exp(-z))))
+        distances.append(distance)
+    return np.clip(np.asarray(risks, dtype=np.float64), 0.0, 1.0), np.asarray(distances, dtype=np.float64)
+
+
 def _combined_unknown_risk(
     memory: QknnMemory,
     query_features: np.ndarray,
@@ -1337,6 +1367,10 @@ def build_collaborative_evidence(
     virtual_unknown_risk_samples_per_class: int = 2,
     virtual_unknown_risk_temperature: float = 0.05,
     virtual_unknown_risk_margin: float = 0.0,
+    class_shell_unknown_risk_enabled: bool = False,
+    class_shell_radius_scale: float = 1.25,
+    class_shell_risk_temperature: float = 0.05,
+    class_shell_risk_margin: float = 0.0,
     evidence_packet_bytes: float = 40.0,
     receiver_reliability_policy: str = "deployment_prior",
     receiver_class_reliability_policy: str = "none",
@@ -1879,6 +1913,14 @@ def build_collaborative_evidence(
                                 evt_temperature=evt_temperature,
                                 oldness_temperature=oldness_temperature,
                             )
+                            label_shell_risk, label_shell_distance = _class_shell_boundary_risk(
+                                memory,
+                                query_feature,
+                                [label_name],
+                                radius_scale=float(class_shell_radius_scale),
+                                temperature=float(class_shell_risk_temperature),
+                                margin=float(class_shell_risk_margin),
+                            )
                             label_pvalue = _conformal_pvalue(
                                 label_score,
                                 receiver_class_conformal_scores.get(rx, {}).get(label_name),
@@ -1908,6 +1950,12 @@ def build_collaborative_evidence(
                             )
                             class_evidence_fields[f"class_evidence_top{rank}_evt_risk"] = float(label_evt_risk[0])
                             class_evidence_fields[f"class_evidence_top{rank}_oldness_risk"] = float(label_oldness_risk[0])
+                            class_evidence_fields[f"class_evidence_top{rank}_class_shell_risk"] = (
+                                float(label_shell_risk[0]) if bool(class_shell_unknown_risk_enabled) else 0.0
+                            )
+                            class_evidence_fields[f"class_evidence_top{rank}_class_shell_distance"] = float(
+                                label_shell_distance[0]
+                            )
                             class_evidence_fields[f"class_evidence_top{rank}_class_radius"] = float(label_class_radius[0])
                             class_evidence_fields[f"class_evidence_top{rank}_class_radius_z"] = float(label_class_radius_z[0])
                             class_evidence_fields[f"class_evidence_top{rank}_receiver_class_reliability"] = float(
@@ -1945,6 +1993,14 @@ def build_collaborative_evidence(
                         temperature=float(virtual_unknown_risk_temperature),
                         margin=float(virtual_unknown_risk_margin),
                     )
+                    class_shell_risk, class_shell_distance = _class_shell_boundary_risk(
+                        memory,
+                        query_feature,
+                        pred,
+                        radius_scale=float(class_shell_radius_scale),
+                        temperature=float(class_shell_risk_temperature),
+                        margin=float(class_shell_risk_margin),
+                    )
                     candidate_audit_risk = 0.0
                     if bool(candidate_audit_unknown_risk_enabled):
                         if candidate_audit_disagreement:
@@ -1957,6 +2013,7 @@ def build_collaborative_evidence(
                     unknown_risk_value = max(
                         float(risk[0]),
                         float(virtual_unknown_risk[0]) if bool(virtual_unknown_risk_enabled) else 0.0,
+                        float(class_shell_risk[0]) if bool(class_shell_unknown_risk_enabled) else 0.0,
                         float(candidate_audit_risk),
                     )
                     score_risk_value = max(float(score_risk[0]), float(candidate_audit_risk))
@@ -2000,6 +2057,7 @@ def build_collaborative_evidence(
                             "virtual_unknown_count": int(
                                 receiver_virtual_unknown_counts.get(rx, 0)
                             ),
+                            "class_shell_unknown_risk_enabled": int(bool(class_shell_unknown_risk_enabled)),
                             "candidate_class_count": int(candidate_counts[0]),
                             "support_neighbor_count": int(support_neighbor_counts[0]),
                             "support_density": support_density,
@@ -2024,6 +2082,9 @@ def build_collaborative_evidence(
                             "oldness_risk": float(oldness_risk[0]),
                             "virtual_unknown_risk": float(virtual_unknown_risk[0]) if bool(virtual_unknown_risk_enabled) else 0.0,
                             "virtual_unknown_score": float(virtual_unknown_score[0]) if bool(virtual_unknown_risk_enabled) else 0.0,
+                            "class_shell_risk": float(class_shell_risk[0]) if bool(class_shell_unknown_risk_enabled) else 0.0,
+                            "class_shell_distance": float(class_shell_distance[0]),
+                            "class_shell_radius_scale": float(class_shell_radius_scale),
                             "class_radius": float(class_radius[0]),
                             "class_radius_z": float(class_radius_z[0]),
                             "reliability": float(reliability),
@@ -2087,6 +2148,10 @@ def build_collaborative_evidence(
         "virtual_unknown_risk_samples_per_class": int(virtual_unknown_risk_samples_per_class),
         "virtual_unknown_risk_temperature": float(virtual_unknown_risk_temperature),
         "virtual_unknown_risk_margin": float(virtual_unknown_risk_margin),
+        "class_shell_unknown_risk_enabled": bool(class_shell_unknown_risk_enabled),
+        "class_shell_radius_scale": float(class_shell_radius_scale),
+        "class_shell_risk_temperature": float(class_shell_risk_temperature),
+        "class_shell_risk_margin": float(class_shell_risk_margin),
         "receiver_reliability_policy": reliability_policy,
         "prototype_score_blend": prototype_blend,
         "prototype_assisted_qknn": prototype_blend > 0.0,
@@ -2106,7 +2171,8 @@ def build_collaborative_evidence(
         "support_selection_policy": str(support_selection_policy),
         "unknown_gate_mode": str(unknown_gate_mode),
         "active_risk_components": _active_risk_components_for_gate_mode(unknown_gate_mode)
-        + (["virtual_unknown"] if bool(virtual_unknown_risk_enabled) else []),
+        + (["virtual_unknown"] if bool(virtual_unknown_risk_enabled) else [])
+        + (["class_shell"] if bool(class_shell_unknown_risk_enabled) else []),
         "scenario_aware": bool(scenario_aware),
         "radius_norm": float(radius_norm),
         "old_bias": float(old_bias),
@@ -2186,6 +2252,10 @@ def run_evaluation(args: argparse.Namespace) -> dict[str, Any]:
         virtual_unknown_risk_samples_per_class=int(args.virtual_unknown_risk_samples_per_class),
         virtual_unknown_risk_temperature=float(args.virtual_unknown_risk_temperature),
         virtual_unknown_risk_margin=float(args.virtual_unknown_risk_margin),
+        class_shell_unknown_risk_enabled=bool(args.class_shell_unknown_risk_enabled),
+        class_shell_radius_scale=float(args.class_shell_radius_scale),
+        class_shell_risk_temperature=float(args.class_shell_risk_temperature),
+        class_shell_risk_margin=float(args.class_shell_risk_margin),
         evidence_packet_bytes=float(args.evidence_packet_bytes),
         receiver_reliability_policy=str(args.receiver_reliability_policy),
         receiver_class_reliability_policy=str(args.receiver_class_reliability_policy),
@@ -2257,6 +2327,8 @@ def run_evaluation(args: argparse.Namespace) -> dict[str, Any]:
         candidate_set_max_label_risk_component_agreement=float(
             args.candidate_set_max_label_risk_component_agreement
         ),
+        candidate_set_max_label_shell_risk=float(args.candidate_set_max_label_shell_risk),
+        candidate_set_shell_reject_risk=float(args.candidate_set_shell_reject_risk),
         candidate_set_event_high_unknown_risk_veto=float(args.candidate_set_event_high_unknown_risk_veto),
         candidate_set_max_label_high_unknown_risk_fraction=float(
             args.candidate_set_max_label_high_unknown_risk_fraction
@@ -2382,6 +2454,10 @@ def parse_args() -> argparse.Namespace:
     p.add_argument("--virtual_unknown_risk_samples_per_class", type=int, default=2)
     p.add_argument("--virtual_unknown_risk_temperature", type=float, default=0.05)
     p.add_argument("--virtual_unknown_risk_margin", type=float, default=0.0)
+    p.add_argument("--class_shell_unknown_risk_enabled", action="store_true")
+    p.add_argument("--class_shell_radius_scale", type=float, default=1.25)
+    p.add_argument("--class_shell_risk_temperature", type=float, default=0.05)
+    p.add_argument("--class_shell_risk_margin", type=float, default=0.0)
     p.add_argument("--unknown_risk_threshold", type=float, default=0.80)
     p.add_argument("--accept_margin_threshold", type=float, default=0.10)
     p.add_argument("--unknown_quantile", type=float, default=0.75)
@@ -2451,6 +2527,8 @@ def parse_args() -> argparse.Namespace:
     p.add_argument("--candidate_set_max_label_unknown_risk", type=float, default=1.0)
     p.add_argument("--candidate_set_max_event_unknown_risk", type=float, default=0.95)
     p.add_argument("--candidate_set_max_label_risk_component_agreement", type=float, default=1.0)
+    p.add_argument("--candidate_set_max_label_shell_risk", type=float, default=1.0)
+    p.add_argument("--candidate_set_shell_reject_risk", type=float, default=1.0e12)
     p.add_argument("--candidate_set_event_high_unknown_risk_veto", type=float, default=1.0e12)
     p.add_argument("--candidate_set_max_label_high_unknown_risk_fraction", type=float, default=1.0)
     p.add_argument("--candidate_set_high_unknown_risk_threshold", type=float, default=0.80)
