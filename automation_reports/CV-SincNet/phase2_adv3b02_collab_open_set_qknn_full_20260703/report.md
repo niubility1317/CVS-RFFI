@@ -3957,6 +3957,35 @@ C:\Users\lh594\.conda\envs\ssr-gpu\python.exe -m pytest code\tests\test_collabor
 |`labelscope_pairguard_evt090`|`--candidate_set_pairguard_mode boundary_veto --candidate_set_pairguard_labels 14-7,6-15,14-10,19-3 --candidate_set_pairguard_min_event_unknown_risk 0.90 --candidate_set_max_receiver_pair_label_disagreement 0.50 --candidate_set_max_receiver_pair_unknown_risk_range 0.70`|验证只对高风险label触发时，unknown_FAR能否下降且known损伤小于全局pairguard。|
 |`labelscope_pairguard_evt095`|同上但`candidate_set_pairguard_min_event_unknown_risk 0.95`|更保守边界版本。|
 
+### N607结果
+
+远端同步后哈希与本地一致；远端`CVS-RFFI`环境验证`52 tests OK`。运行三组k=1..5全量对照：`labelscope_pairguard_evt090`、`labelscope_pairguard_evt095`和更窄的`labelscope14_7_pairguard_evt095`。GPU0运行，首次运行前后8张RTX3090均为`10/24576MiB`。
+
+|route|JSON SHA256|CSV SHA256|
+|---|---|---|
+|`labelscope_pairguard_evt090`|`697CA04448A981CA352E6617BC784D223B1884953D4EF2B79C749276C50D8B63`|`0A15B0A402F066CCA3A2E36604F5A555C90D0A5EAF5B218EA0FB69993265E333`|
+|`labelscope_pairguard_evt095`|`4914528AF8D0CAF16B563CEA7FCD435AD615226555D27427EB8B2378369D6499`|`2897C64E50C5CEBD933052586C36A8AB9AFEE423439955D5ECE4C064BD520309`|
+|`labelscope14_7_pairguard_evt095`|`C14CF3DE3B8E8C0F99FE5EE62CDD0A9573C64A08DD7D9F1AFC28522B171FDE1D`|`116448FC16D47A8438E7F12A0DECE77DFFFD198AEB9D2E12C3CAF96EEB298FEA`|
+
+|route|k|old_acc|min_old|seen_new_acc|min_seen|unknown_FAR|unknown_reject|defer|bytes/event|p95 ms|pairguard_veto_rate|
+|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+|dualroute_noguard|2|0.5000|0.2000|0.5962|0.5625|0.1304|0.8696|0.0440|80.0|0.1374|0.0000|
+|dualroute_noguard|3|0.6500|0.3000|0.7250|0.6000|0.0750|0.9000|0.0250|120.0|0.1374|0.0000|
+|dualroute_noguard|4|0.8083|0.7000|0.7500|0.6000|0.0250|0.9500|0.0150|150.0|0.1374|0.0000|
+|dualroute_noguard|5|0.7833|0.5500|0.7250|0.5500|0.0750|0.9000|0.0100|168.6|0.1374|0.0000|
+|labelscope_pairguard_evt095|2|0.4737|0.2000|0.5385|0.5000|0.0652|0.9348|0.0440|80.0|0.1327|0.1440|
+|labelscope_pairguard_evt095|3|0.5583|0.1500|0.6500|0.4500|0.0250|0.9500|0.0250|120.0|0.1327|0.2900|
+|labelscope_pairguard_evt095|4|0.7083|0.4000|0.6500|0.4000|0.0250|0.9500|0.0150|150.0|0.1327|0.2500|
+|labelscope_pairguard_evt095|5|0.6917|0.2500|0.6250|0.3500|0.0250|0.9500|0.0100|168.6|0.1327|0.3150|
+|labelscope14_7_pairguard_evt095|2|0.4934|0.2000|0.5962|0.5625|0.0870|0.9130|0.0440|80.0|0.1332|0.0560|
+|labelscope14_7_pairguard_evt095|3|0.6167|0.3000|0.7250|0.6000|0.0500|0.9250|0.0250|120.0|0.1332|0.0950|
+|labelscope14_7_pairguard_evt095|4|0.7917|0.6000|0.7500|0.6000|0.0250|0.9500|0.0150|150.0|0.1332|0.0850|
+|labelscope14_7_pairguard_evt095|5|0.7667|0.5500|0.7250|0.5500|0.0750|0.9000|0.0100|168.6|0.1332|0.0850|
+
+判定：类别作用域比全局pairguard更接近目标，尤其`labelscope14_7_pairguard_evt095`在k=2把unknown_FAR从`0.1304`降至`0.0870`，k=3从`0.0750`降至`0.0500`，且seen-new不低于`dualroute_noguard`。但old_acc仍下降：k=3从`0.6500`降到`0.6167`，k=4从`0.8083`降到`0.7917`，已经跌破OLD80_FIRST阶段门槛。因此它仍不是主线成功，只能说明“高风险label定向二级门控”比全局pairguard更合理。下一步应把`14-7`门控从直接veto改为`request_more`或软降权，或结合receiver-pair级先验只处理`20-1,3-19`和`7-14,7-7`这类高风险组合，避免对正常old query造成同等惩罚。
+
+最终SSH/SCP后本地无`ssh.exe`残留，无N607和bridge 22端口ESTABLISHED连接。
+
 
 
 
