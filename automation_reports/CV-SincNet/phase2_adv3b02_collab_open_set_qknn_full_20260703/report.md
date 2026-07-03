@@ -1012,3 +1012,45 @@ python E:\type10-7\code\tests\test_phase2_collaborative_open_set_qknn_eval.py
 |真实event_id|从诊断近似转向物理协同|导出共享物理事件键并用`strict_event_key`复跑。|
 
 本轮不能声明99/97/99目标达成，也不能声明Stage2-C部署成功；当前结论仍是ADV3B02/qknn8在`receiver_domain_ranked`诊断下的协同推理算法迭代证据。
+
+## 2026-07-03 seen-new aware rescue融合
+
+本轮针对上一轮瓶颈“open-set风险门控吞掉seen-new”做最小实现：在`scorer_cvs`融合中新增seen-new aware known rescue。该机制只对协议metadata中的`seen_new_tx_ids`生效；只有当top label属于seen-new集合、融合结果已满足strong known、score/margin/agreement门槛，且事件角色不是unknown时，才对unknown risk做折扣。unknown query即使预测成seen-new也不会被rescue。该改动不改变`Y_old/Y_new/Y_unknown`互斥协议，也不使用unknown query调阈值。
+
+本地缺口：未在当前工作区和Git镜像中找到用户提到的`卫星协同射频指纹识别（RFFI）系统资源约束设计说明.md`或相近文件名。本轮资源字段仍沿用已有bytes/event、latency proxy、prototype storage、GPU显存和参与receiver数量；该文件缺失不阻断代码诊断，但报告中不把资源约束解释为完整设计说明复现。
+
+代码改动：
+
+|文件|目的|
+|---|---|
+|`code/evaluation/collaborative_open_set_qknn_eval.py`|新增seen-new rescue参数、unknown role保护、effective_unknown_risk、rescue触发统计。|
+|`code/scripts/phase2_collaborative_open_set_qknn_eval.py`|新增CLI参数`--seen_new_rescue_enabled`及score/margin/agreement/risk scale配置。|
+|`code/tests/test_collaborative_open_set_qknn_eval.py`|新增seen-new高置信救回、unknown伪装seen-new不救回的单测。|
+
+本地和Git镜像验证：
+
+```powershell
+conda activate ssr-gpu
+python -m py_compile E:\type10-7\code\evaluation\collaborative_open_set_qknn_eval.py E:\type10-7\code\scripts\phase2_collaborative_open_set_qknn_eval.py
+python E:\type10-7\code\tests\test_collaborative_open_set_qknn_eval.py
+python E:\type10-7\code\tests\test_phase2_collaborative_open_set_qknn_eval.py
+```
+
+结果：`test_collaborative_open_set_qknn_eval.py`20 tests OK，`test_phase2_collaborative_open_set_qknn_eval.py`16 tests OK。Git镜像同样验证通过。Git提交：`a0fc687 Add seen-new rescue for collaborative qKNN`。
+
+本轮文件SHA256：
+
+|文件|SHA256|
+|---|---|
+|`code/evaluation/collaborative_open_set_qknn_eval.py`|`DA7DE1545B3B927220EDF94D750FFB59FD3D62DFE59704C346C546D7FA1DD4C0`|
+|`code/scripts/phase2_collaborative_open_set_qknn_eval.py`|`E4A2989586D03E44FEDC3697817B154EF1B5FECAFE05A4870984AC54DE801341`|
+|`code/tests/test_collaborative_open_set_qknn_eval.py`|`0F2B9C12408BBED7C5D47D8D16A974734FCDBC5411BAB03D6CE17ABAFF2A726B`|
+
+计划远端诊断仍使用N607的`CVS-RFFI`环境和`runs/phase2_adv3b02_collab_open_set_qknn_full_20260703/features.npz`，在上一轮`adaptive_gain_v1`基础上新增两组：
+
+|候选|unknown阈值|risk scale|目的|
+|---|---:|---:|---|
+|`adaptive_gain_rescue_s05`|0.995|0.5|强rescue，优先观察seen-new能否恢复。|
+|`adaptive_gain_rescue_s07`|0.995|0.7|较保守rescue，观察unknown FAR和seen-new之间的折中。|
+
+共同关键参数：`--collab_counts all --k_shot 8 --query_per_class 20 --qknn_k 8 --candidate_class_top_m 2 --support_calibration_mode leave_one_out --unknown_gate_mode support_envelope_evt --score_threshold_combine max --scenario_aware --radius_norm 0.3 --fusion_policy scorer_cvs --collaboration_policy adaptive_gain --adaptive_gain_min_risk 0.60 --unknown_risk_threshold 0.995 --accept_margin_threshold 0.03 --consensus_gap_threshold 0.0 --consensus_score_threshold 0.30 --scorer_component_vote_threshold 0.25 --unknown_quantile 0.75 --evt_tail_quantile 0.80 --evt_temperature 0.05 --latency_budget_ms 12 --evidence_packet_bytes 120 --event_alignment_policy receiver_domain_ranked --support_selection_policy stable_first --seen_new_rescue_enabled --seen_new_rescue_min_score 0.30 --seen_new_rescue_min_margin 0.03 --seen_new_rescue_min_agreement 0.50 --seed 407044`。
