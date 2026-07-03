@@ -1232,9 +1232,17 @@ def _fuse_event(
             candidate_set_pairguard_soft_pvalue_weakness,
             candidate_set_pairguard_soft_reliability_weakness,
         )
+        candidate_set_pairguard_soft_strong_bypass_enabled = bool(
+            float(candidate_set_pairguard_soft_min_margin) > 0.0
+            or float(candidate_set_pairguard_soft_min_agreement) > 0.0
+            or float(candidate_set_pairguard_soft_min_pvalue) > 0.0
+            or float(candidate_set_pairguard_soft_min_reliability) > 0.0
+        )
         candidate_set_pairguard_soft_strong_bypass = bool(
             candidate_set_pairguard_boundary_hit
             and candidate_set_pairguard_action == "soft_penalty"
+            and candidate_set_pairguard_soft_strong_bypass_enabled
+            and not candidate_set_pairguard_shell_missing_failed
             and (
                 float(candidate_set_pairguard_soft_min_margin) <= 0.0
                 or float(mean_margin) >= float(candidate_set_pairguard_soft_min_margin)
@@ -1512,6 +1520,9 @@ def _fuse_event(
         ),
         "candidate_set_pairguard_soft_applied": bool(
             locals().get("candidate_set_pairguard_soft_applied", False)
+        ),
+        "candidate_set_pairguard_soft_strong_bypass_enabled": bool(
+            locals().get("candidate_set_pairguard_soft_strong_bypass_enabled", False)
         ),
         "candidate_set_pairguard_soft_strong_bypass": bool(
             locals().get("candidate_set_pairguard_soft_strong_bypass", False)
@@ -2726,8 +2737,12 @@ def _finalize_metrics(
     candidate_set_pairguard_veto_by_role: defaultdict[str, int] = defaultdict(int)
     candidate_set_pairguard_request_more_total = 0
     candidate_set_pairguard_request_more_by_role: defaultdict[str, int] = defaultdict(int)
+    candidate_set_pairguard_boundary_hit_total = 0
+    candidate_set_pairguard_boundary_hit_by_role: defaultdict[str, int] = defaultdict(int)
     candidate_set_pairguard_soft_total = 0
     candidate_set_pairguard_soft_by_role: defaultdict[str, int] = defaultdict(int)
+    candidate_set_pairguard_soft_strong_bypass_total = 0
+    candidate_set_pairguard_soft_strong_bypass_by_role: defaultdict[str, int] = defaultdict(int)
     dual_route_rescue_total = 0
     dual_route_rescue_by_role: defaultdict[str, int] = defaultdict(int)
 
@@ -2775,9 +2790,15 @@ def _finalize_metrics(
         if bool(item.get("candidate_set_pairguard_request_more", False)):
             candidate_set_pairguard_request_more_total += 1
             candidate_set_pairguard_request_more_by_role[role] += 1
+        if bool(item.get("candidate_set_pairguard_boundary_hit", False)):
+            candidate_set_pairguard_boundary_hit_total += 1
+            candidate_set_pairguard_boundary_hit_by_role[role] += 1
         if bool(item.get("candidate_set_pairguard_soft_applied", False)):
             candidate_set_pairguard_soft_total += 1
             candidate_set_pairguard_soft_by_role[role] += 1
+        if bool(item.get("candidate_set_pairguard_soft_strong_bypass", False)):
+            candidate_set_pairguard_soft_strong_bypass_total += 1
+            candidate_set_pairguard_soft_strong_bypass_by_role[role] += 1
         if str(item.get("dual_route_selected_route", "")) == "rescue":
             dual_route_rescue_total += 1
             dual_route_rescue_by_role[role] += 1
@@ -2931,9 +2952,27 @@ def _finalize_metrics(
         "candidate_set_pairguard_request_more_by_role": dict(
             sorted(candidate_set_pairguard_request_more_by_role.items())
         ),
+        "candidate_set_pairguard_boundary_hit_count": int(candidate_set_pairguard_boundary_hit_total),
+        "candidate_set_pairguard_boundary_hit_rate": _safe_rate(
+            candidate_set_pairguard_boundary_hit_total,
+            total_events,
+        ),
+        "candidate_set_pairguard_boundary_hit_by_role": dict(
+            sorted(candidate_set_pairguard_boundary_hit_by_role.items())
+        ),
         "candidate_set_pairguard_soft_count": int(candidate_set_pairguard_soft_total),
         "candidate_set_pairguard_soft_rate": _safe_rate(candidate_set_pairguard_soft_total, total_events),
         "candidate_set_pairguard_soft_by_role": dict(sorted(candidate_set_pairguard_soft_by_role.items())),
+        "candidate_set_pairguard_soft_strong_bypass_count": int(
+            candidate_set_pairguard_soft_strong_bypass_total
+        ),
+        "candidate_set_pairguard_soft_strong_bypass_rate": _safe_rate(
+            candidate_set_pairguard_soft_strong_bypass_total,
+            total_events,
+        ),
+        "candidate_set_pairguard_soft_strong_bypass_by_role": dict(
+            sorted(candidate_set_pairguard_soft_strong_bypass_by_role.items())
+        ),
         "dual_route_rescue_count": int(dual_route_rescue_total),
         "dual_route_rescue_rate": _safe_rate(dual_route_rescue_total, total_events),
         "dual_route_rescue_by_role": dict(sorted(dual_route_rescue_by_role.items())),

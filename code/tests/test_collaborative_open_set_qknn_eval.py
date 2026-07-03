@@ -2427,7 +2427,7 @@ class CollaborativeOpenSetQknnEvalTest(unittest.TestCase):
             {"old": 1},
         )
 
-        soft_strong_event = evaluate(
+        soft_strong_result = evaluate(
             make_rows((0.10, 0.95)),
             candidate_set_pairguard_action="soft_penalty",
             candidate_set_pairguard_soft_penalty=1.0,
@@ -2435,13 +2435,56 @@ class CollaborativeOpenSetQknnEvalTest(unittest.TestCase):
             candidate_set_pairguard_soft_min_margin=0.10,
             candidate_set_pairguard_soft_min_pvalue=0.50,
             candidate_set_pairguard_soft_min_reliability=0.75,
-        )["counts"]["2"]["event_results"][0]
+        )
+        soft_strong_event = soft_strong_result["counts"]["2"]["event_results"][0]
         self.assertTrue(soft_strong_event["candidate_set_pairguard_boundary_hit"])
         self.assertFalse(soft_strong_event["candidate_set_pairguard_veto"])
+        self.assertTrue(soft_strong_event["candidate_set_pairguard_soft_strong_bypass_enabled"])
         self.assertTrue(soft_strong_event["candidate_set_pairguard_soft_strong_bypass"])
         self.assertFalse(soft_strong_event["candidate_set_pairguard_soft_applied"])
         self.assertTrue(soft_strong_event["candidate_set_accept"])
         self.assertEqual(soft_strong_event["decision"], "accept")
+        self.assertEqual(
+            soft_strong_result["counts"]["2"]["candidate_set_pairguard_soft_strong_bypass_count"],
+            1,
+        )
+        self.assertEqual(
+            soft_strong_result["counts"]["2"]["candidate_set_pairguard_boundary_hit_count"],
+            1,
+        )
+
+        soft_default_threshold_event = evaluate(
+            make_rows((0.10, 0.95)),
+            candidate_set_pairguard_action="soft_penalty",
+            candidate_set_pairguard_soft_penalty=0.0,
+            candidate_set_pairguard_soft_floor=0.35,
+            candidate_set_max_event_unknown_risk=0.99,
+        )["counts"]["2"]["event_results"][0]
+        self.assertTrue(soft_default_threshold_event["candidate_set_pairguard_boundary_hit"])
+        self.assertFalse(soft_default_threshold_event["candidate_set_pairguard_soft_strong_bypass_enabled"])
+        self.assertFalse(soft_default_threshold_event["candidate_set_pairguard_soft_strong_bypass"])
+        self.assertTrue(soft_default_threshold_event["candidate_set_pairguard_soft_applied"])
+        self.assertFalse(soft_default_threshold_event["candidate_set_accept"])
+
+        shell_missing_rows = make_rows((0.10, 0.95))
+        for row in shell_missing_rows:
+            row.pop("class_shell_risk", None)
+            row.pop("class_evidence_top1_class_shell_risk", None)
+        shell_missing_event = evaluate(
+            shell_missing_rows,
+            candidate_set_require_label_shell_observed=True,
+            candidate_set_pairguard_action="soft_penalty",
+            candidate_set_pairguard_soft_penalty=0.0,
+            candidate_set_pairguard_soft_floor=0.35,
+            candidate_set_pairguard_soft_min_margin=0.10,
+            candidate_set_pairguard_soft_min_pvalue=0.50,
+            candidate_set_pairguard_soft_min_reliability=0.75,
+            candidate_set_max_event_unknown_risk=0.99,
+        )["counts"]["2"]["event_results"][0]
+        self.assertTrue(shell_missing_event["candidate_set_pairguard_shell_missing_failed"])
+        self.assertFalse(shell_missing_event["candidate_set_pairguard_soft_strong_bypass"])
+        self.assertTrue(shell_missing_event["candidate_set_pairguard_soft_applied"])
+        self.assertFalse(shell_missing_event["candidate_set_accept"])
 
         soft_weak_rows = make_rows((0.10, 0.95))
         for row in soft_weak_rows:
