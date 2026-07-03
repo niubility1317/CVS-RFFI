@@ -2879,6 +2879,17 @@ Local verification before N607 sync:
 | trainer SHA256 | `6DA8D0878CE8059BC231C9D1E7ED49F52BF2B9117585A3812310A20E5DE05115` |
 | launcher SHA256 | `8717B5F210A58BA09C79AF96C1749E0F1EF22F7FFED5A0A6BD567103EB582E97` |
 
+N607 sync and remote verification:
+
+| Check | Result |
+|---|---|
+| N607 preflight | PASS at `2026-07-03 15:32:28 CST`; direct SSH; project root visible; GPUs `0-7` idle |
+| synced files | trainer, V31 launcher, report |
+| remote SHA256 | trainer `6da8d0878ce8059bc231c9d1e7ed49f52bf2b9117585a3812310a20e5de05115`; launcher `8717b5f210a58ba09c79af96c1749e0f1ef22f7ffed5a0a6bd567103eb582e97` |
+| remote syntax checks | `py_compile` PASS; `bash -n` PASS; trainer `--help` exposes `id_full_feature` and `--class_loss_weights` |
+| real checkpoint trainable check | `id_full_feature` on `ADV3B02_CORE90_SOFT_E200` opens `368225` params across `66` tensors; forbidden classifier tensors `[]` |
+| SSH cleanup | no local `ssh.exe` or established N607 connection remains after verification |
+
 Planned launch command:
 
 ```bash
