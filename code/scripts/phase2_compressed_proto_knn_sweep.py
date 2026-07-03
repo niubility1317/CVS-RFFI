@@ -30,6 +30,21 @@ class CompressedMemory:
     counts: dict[str, int]
 
 
+@dataclass(frozen=True)
+class QuantizedKnnMemory:
+    quantized_matrix: np.ndarray
+    scale: float
+    labels: np.ndarray
+    is_old: np.ndarray
+    counts: dict[str, int]
+    quant_bits: int
+    stored_support_count: int = 0
+
+    @property
+    def stored_quantized_count(self) -> int:
+        return int(self.quantized_matrix.shape[0])
+
+
 def _normalize_rows(values: np.ndarray) -> np.ndarray:
     values = np.asarray(values, dtype=np.float64)
     return values / np.maximum(np.linalg.norm(values, axis=1, keepdims=True), 1e-12)
@@ -62,6 +77,19 @@ def _harmonic(a: float, b: float) -> float:
     if a + b <= 0:
         return 0.0
     return float(2.0 * a * b / (a + b))
+
+
+def _classwise_topk_predict(scores: np.ndarray, labels: np.ndarray, k: int) -> np.ndarray:
+    k = max(1, min(int(k), int(scores.shape[1])))
+    top_idx = np.argpartition(-scores, kth=k - 1, axis=1)[:, :k]
+    pred: list[str] = []
+    for row_idx, candidates in enumerate(top_idx):
+        class_scores: dict[str, float] = {}
+        for candidate in candidates.tolist():
+            label = str(labels[candidate])
+            class_scores[label] = class_scores.get(label, 0.0) + float(scores[row_idx, candidate])
+        pred.append(max(class_scores.items(), key=lambda item: (item[1], item[0]))[0])
+    return np.asarray(pred, dtype=object)
 
 
 def _medoid_anchors(features: np.ndarray, count: int) -> list[np.ndarray]:
@@ -248,6 +276,46 @@ def build_compressed_memory(
     )
 
 
+def build_quantized_knn_memory(
+    support_features: np.ndarray,
+    support_labels: np.ndarray,
+    *,
+    old_labels: set[str] | None = None,
+    quant_bits: int = 8,
+) -> QuantizedKnnMemory:
+    if int(quant_bits) != 8:
+        raise ValueError("Only int8 quantized KNN memory is currently supported")
+    features = _normalize_rows(support_features)
+    labels = np.asarray(support_labels, dtype=object).astype(str)
+    scale = float((2 ** (int(quant_bits) - 1)) - 1)
+    quantized = np.clip(np.rint(features * scale), -scale, scale).astype(np.int8)
+    old = set(old_labels or set())
+    counts = {label: int(np.sum(labels == label)) for label in sorted({str(label) for label in labels.tolist()})}
+    return QuantizedKnnMemory(
+        quantized_matrix=quantized,
+        scale=scale,
+        labels=labels,
+        is_old=np.asarray([str(label) in old for label in labels], dtype=bool),
+        counts=counts,
+        quant_bits=int(quant_bits),
+    )
+
+
+def predict_quantized_knn_memory(
+    memory: QuantizedKnnMemory,
+    query_features: np.ndarray,
+    *,
+    k: int = 1,
+    old_bias: float = 0.0,
+) -> np.ndarray:
+    query = _normalize_rows(query_features)
+    support = memory.quantized_matrix.astype(np.float64) / float(memory.scale)
+    support = _normalize_rows(support)
+    scores = query @ support.T
+    scores = scores + (memory.is_old.astype(np.float64) * float(old_bias))[None, :]
+    return _classwise_topk_predict(scores, memory.labels, k)
+
+
 def predict_compressed_memory(
     memory: CompressedMemory,
     query_features: np.ndarray,
@@ -317,6 +385,7 @@ def _evaluate_combo(
     radius_weight: float,
     weight_scale: float,
     seed: int,
+    quant_bits: int,
 ) -> dict[str, Any]:
     support_indices: list[int] = []
     support_labels: list[str] = []
@@ -334,26 +403,50 @@ def _evaluate_combo(
         support_labels.extend([tx] * int(support.size))
         new_query_indices.extend(query.tolist())
 
-    memory = build_compressed_memory(
-        features[np.asarray(support_indices, dtype=int)],
-        np.asarray(support_labels, dtype=object),
-        old_labels=old_labels,
-        prototypes_per_class=prototypes_per_class,
-        prototype_mode=prototype_mode,
-        prototype_weight_mode=prototype_weight_mode,
-        seed=seed,
-    )
+    support_features = features[np.asarray(support_indices, dtype=int)]
+    support_label_array = np.asarray(support_labels, dtype=object)
     old_query_idx = np.asarray(old_query_indices, dtype=int)
     new_query_idx = np.asarray(new_query_indices, dtype=int)
     query_idx = np.concatenate([old_query_idx, new_query_idx])
     truth = tx_ids[query_idx]
-    pred = predict_compressed_memory(
-        memory,
-        features[query_idx],
-        old_bias=old_bias,
-        radius_weight=radius_weight,
-        weight_scale=weight_scale,
-    )
+    if prototype_mode == "quantized_knn":
+        memory = build_quantized_knn_memory(
+            support_features,
+            support_label_array,
+            old_labels=old_labels,
+            quant_bits=quant_bits,
+        )
+        pred = predict_quantized_knn_memory(
+            memory,
+            features[query_idx],
+            k=prototypes_per_class,
+            old_bias=old_bias,
+        )
+        method = f"qknn{quant_bits}_k{prototypes_per_class}_oldbias{old_bias:g}"
+        stored_prototype_count = 0
+        stored_weight_count = 0
+        stored_quantized_count = memory.stored_quantized_count
+    else:
+        memory = build_compressed_memory(
+            support_features,
+            support_label_array,
+            old_labels=old_labels,
+            prototypes_per_class=prototypes_per_class,
+            prototype_mode=prototype_mode,
+            prototype_weight_mode=prototype_weight_mode,
+            seed=seed,
+        )
+        pred = predict_compressed_memory(
+            memory,
+            features[query_idx],
+            old_bias=old_bias,
+            radius_weight=radius_weight,
+            weight_scale=weight_scale,
+        )
+        method = f"cproto_{prototype_mode}_{prototype_weight_mode}_p{prototypes_per_class}_oldbias{old_bias:g}_rad{radius_weight:g}_w{weight_scale:g}"
+        stored_prototype_count = int(memory.prototype_matrix.shape[0])
+        stored_weight_count = int(memory.prototype_weights.shape[0])
+        stored_quantized_count = 0
     old_pred = pred[: old_query_idx.size]
     old_truth = truth[: old_query_idx.size]
     new_pred = pred[old_query_idx.size :]
@@ -369,7 +462,7 @@ def _evaluate_combo(
 
     return {
         "new_tx_ids": list(combo),
-        "method": f"cproto_{prototype_mode}_{prototype_weight_mode}_p{prototypes_per_class}_oldbias{old_bias:g}_rad{radius_weight:g}_w{weight_scale:g}",
+        "method": method,
         "old_acc": old_acc,
         "seen_new_acc": seen_new_acc,
         "min_seen_new_class_acc": min_new_acc,
@@ -382,8 +475,9 @@ def _evaluate_combo(
         "support_count": int(len(support_indices)),
         "old_query_count": int(old_query_idx.size),
         "new_query_count": int(new_query_idx.size),
-        "stored_prototype_count": int(memory.prototype_matrix.shape[0]),
-        "stored_weight_count": int(memory.prototype_weights.shape[0]),
+        "stored_prototype_count": stored_prototype_count,
+        "stored_weight_count": stored_weight_count,
+        "stored_quantized_count": stored_quantized_count,
         "stored_support_count": 0,
     }
 
@@ -412,6 +506,7 @@ def main() -> None:
     parser.add_argument("--old_bias_grid", default="0,0.02,0.04,0.06,0.08,0.1,0.12,0.14,0.16")
     parser.add_argument("--radius_weight_grid", default="0,0.25,0.5")
     parser.add_argument("--weight_scale_grid", default="0")
+    parser.add_argument("--quant_bits", type=int, default=8)
     args = parser.parse_args()
 
     data = np.load(Path(args.feature_npz), allow_pickle=True)
@@ -459,6 +554,7 @@ def main() -> None:
                                         radius_weight,
                                         weight_scale,
                                         args.seed,
+                                        args.quant_bits,
                                     )
                                 )
     rows.sort(
@@ -505,6 +601,7 @@ def main() -> None:
         "support_count",
         "stored_prototype_count",
         "stored_weight_count",
+        "stored_quantized_count",
         "stored_support_count",
     ]
     with output_csv.open("w", encoding="utf-8", newline="") as handle:

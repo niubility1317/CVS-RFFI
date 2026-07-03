@@ -10,7 +10,9 @@ sys.path.insert(0, str(PROJECT_ROOT / "code"))
 sys.path.insert(0, str(PROJECT_ROOT / "code" / "scripts"))
 
 from phase2_compressed_proto_knn_sweep import (  # noqa: E402
+    build_quantized_knn_memory,
     build_compressed_memory,
+    predict_quantized_knn_memory,
     predict_compressed_memory,
 )
 
@@ -185,5 +187,29 @@ def test_loo_knn1_agreement_downweights_anchor_that_disagrees_with_support_teach
 
     assert old_weights.min() < 1.0
     assert old_weights.max() > 1.0
+    assert "support_features" not in memory.__dict__
+    assert "support_labels" not in memory.__dict__
+
+
+def test_quantized_knn_memory_matches_knn1_without_raw_support_storage():
+    support = np.asarray(
+        [
+            [1.0, 0.0],
+            [0.92, 0.08],
+            [0.0, 1.0],
+            [0.08, 0.92],
+        ],
+        dtype=np.float64,
+    )
+    labels = np.asarray(["old-a", "old-a", "new-b", "new-b"], dtype=object)
+    query = np.asarray([[0.93, 0.07], [0.07, 0.93]], dtype=np.float64)
+
+    memory = build_quantized_knn_memory(support, labels, old_labels={"old-a"}, quant_bits=8)
+
+    assert memory.quantized_matrix.dtype == np.int8
+    assert memory.quantized_matrix.shape == support.shape
+    assert memory.stored_support_count == 0
+    assert memory.stored_quantized_count == support.shape[0]
+    assert predict_quantized_knn_memory(memory, query, k=1).tolist() == ["old-a", "new-b"]
     assert "support_features" not in memory.__dict__
     assert "support_labels" not in memory.__dict__
