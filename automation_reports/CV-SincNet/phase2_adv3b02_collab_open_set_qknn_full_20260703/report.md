@@ -3916,6 +3916,73 @@ N607同步后远端哈希与本地一致；远端验证`52 tests OK`。实际运
 
 最终SSH/SCP后本地无`ssh.exe`残留，无N607和bridge 22端口ESTABLISHED连接。
 
+## 2026-07-04 selective-confirm qknn8全量执行与review修正结果
+
+### review修正
+
+查漏补缺子agent指出两个P1风险：原始`selective_confirm_cvs`允许单一路径unknown证据触发最终拒识，且`request_more`预算使用全局receiver数而非事件本地receiver数。本轮已修正：
+
+1.`unknown_reject`要求至少2类独立风险来源，风险来源包括`event_unknown_risk`、`label_unknown_risk`、`high_unknown_fraction`和`risk_component_agreement`。单一unknown证据在预算耗尽时输出`defer`，审计阶段为`single_unknown_evidence_defer`。
+2.`request_more`预算改为事件本地`selected_k < event_receiver_count`，避免某事件只有2个receiver但全局有5个receiver时错误请求更多receiver。
+3.新增审计字段：`selective_confirm_unknown_evidence_source_count`、`selective_confirm_budget_exhausted`、`selective_confirm_request_more_available_receivers`。
+
+本地验证：`py_compile`通过；第一次并行pytest触发Windows conda临时文件锁，串行重跑通过：`110 passed in 1.10s`。镜像仓库提交：`4cce3ee Add selective confirm collaborative fusion`、`4088191 Tighten selective confirm evidence gates`。
+
+|文件|SHA256|
+|---|---|
+|`code/evaluation/collaborative_open_set_qknn_eval.py`|`4D1F5B34F003961D0624F579347D6209F57C3B4C5D2E7DD38386DA4356B221A0`|
+|`code/scripts/phase2_collaborative_open_set_qknn_eval.py`|`E9D7277710B3C2CBCF3413C684B144E31A314951E52EB70D1E09E259F9CE31D9`|
+|`code/tests/test_collaborative_open_set_qknn_eval.py`|`A613454CC9A7D668AFF0B38B9696180C673A5B22C12954C9D5F7EE08B3EA38FC`|
+
+### N607验证与执行
+
+N607 direct preflight通过，远端项目根为`/home/szu2070436088/2510044040/CV-SincNet`。远端使用用户指定的`/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python`，版本为`Python 3.10.19`。同步后远端hash与本地一致，`py_compile`通过。远端`CVS-RFFI`环境继续无`pytest`，因此使用标准库`unittest`；由于远端存在本地没有的根目录`evaluation/`会遮蔽`code/evaluation/`，单测从`/tmp`启动并显式设置`PYTHONPATH=/home/szu2070436088/2510044040/CV-SincNet/code`，验证导入路径为`code/evaluation/collaborative_open_set_qknn_eval.py`。远端测试结果：`test_collaborative_open_set_qknn_eval.py`为`60 tests OK`，`test_phase2_collaborative_open_set_qknn_eval.py`为`50 tests OK`。
+
+运行前后8张RTX3090均为`10/24576MiB`、GPU utilization`0%`。本轮在GPU0执行；输出`receiver_count=5`、`group_count=307`、`evidence_row_count=1000`。命令明确使用`--qknn_k 8`，JSON内`qknn_metadata.qknn_k=8`；协同规模是`receiver_coalition_k=1..5`个target receivers，不包含source receivers。
+
+远端产物已拉回到`E:\type10-7\remote_artifacts\phase2_adv3b02_collab_open_set_qknn_full_20260703\`。
+
+|产物|SHA256|
+|---|---|
+|`collab_open_set_qknn_selective_confirm_adv3b02_qknn8_20260704.json`|`6C453C1F269B28A0345954ADE774A0D19455790F92A1D91A3B3D301E7185CC2E`|
+|`collab_open_set_qknn_selective_confirm_adv3b02_qknn8_20260704_evidence.csv`|`2875882DF3D0B0FBC2249F432195FCF84C6B5BCA5150735B71C9ABE852F4A723`|
+
+### qknn8结果
+
+|k|old_acc|min_old|seen_new_acc|min_seen|unknown_FAR|unknown_reject|defer|request_more|avg_rx|bytes/event|p95 ms|select_accept|select_unknown|select_weak|
+|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+|1|0.0000|0.0000|0.0000|0.0000|0.0000|0.1167|0.1433|0.8143|1.000|40.0|0.1340|0|77|307|
+|2|0.2697|0.0000|0.2500|0.0000|0.0652|0.0870|0.1040|0.5920|2.000|80.0|0.1340|62|96|154|
+|3|0.3333|0.0000|0.5500|0.0000|0.0000|0.1250|0.1100|0.5150|3.000|120.0|0.1340|68|64|86|
+|4|0.6333|0.0000|0.6500|0.0000|0.0250|0.3250|0.2100|0.1700|3.750|150.0|0.1340|108|43|55|
+|5|0.6000|0.0000|0.6000|0.0000|0.0000|0.4500|0.3550|0.0000|4.215|168.6|0.1340|103|46|56|
+
+### 决策阶段审计
+
+|k|strong_known_accept|weak_unknown_request_more|weak_unknown_reject|single_unknown_evidence_defer|weak_evidence_request_more|weak_evidence_defer|
+|---:|---:|---:|---:|---:|---:|---:|
+|1|0|63|13|1|187|43|
+|2|62|75|14|7|73|19|
+|3|68|51|7|6|52|16|
+|4|108|16|16|11|18|31|
+|5|103|0|26|20|0|51|
+
+|k|source_count_0|source_count_1|source_count_2|source_count_3|source_count_4|
+|---:|---:|---:|---:|---:|---:|
+|1|230|4|2|17|54|
+|2|118|45|45|17|25|
+|3|93|62|20|16|9|
+|4|116|44|13|22|5|
+|5|115|44|13|25|3|
+
+### 结论与边界
+
+selective-confirm修正后的工程逻辑合理性比上一版更强：强证据known先accept，弱证据优先`request_more`，最终拒识至少需要2类unknown证据，且事件本地receiver预算耗尽才进入最终`reject/defer`分支。但ADV3B02当前特征上的结果仍不合格：k=5时`unknown_FAR=0`，但`old_acc=0.6000`、`seen_new_acc=0.6000`、`min_old=0`、`min_seen=0`，远低于old整体`>=0.99`且per-class`>=0.95`、seen-new整体`>=0.97`且per-class`>=0.93`、unknown reject`>=0.99`的成功目标。因此本轮只能作为diagnostic-only，不能写作Stage2-C成功、部署成功或论文主结果。
+
+文献子agent建议与本轮方向一致：qknn8中的`8`应固定为每接收机近邻数，协同数量应单独命名为`receiver_coalition_k=1..|R_t|`；卫星群部署优先使用“压缩证据上传+不确定性触发扩展协同”，而不是传raw IQ或全量feature bank。当前资源约束设计说明原文`卫星协同射频指纹识别（RFFI）系统资源约束设计说明.md`仍未在工作区找到，因此资源结论只能使用`bytes/event`、`latency_ms_p95`、GPU显存和prototype storage代理指标，不能声明已满足该文档的正式约束。
+
+最终SSH/SCP后本地无`ssh.exe`残留，无N607和bridge 22端口ESTABLISHED连接。
+
 ## 2026-07-04 selective-confirm协同确认策略计划
 
 ### 目标与算法
