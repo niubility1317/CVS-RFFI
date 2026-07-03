@@ -2753,7 +2753,7 @@ target-support feature adapter是协议合规的星上轻量诊断模块，但�
 |local `ssr-gpu`|`python -m unittest discover -s code\tests -p "test_collaborative_open_set_qknn_eval.py"`|41 tests OK|
 |local `ssr-gpu`|`python -m unittest discover -s code\tests -p "test_phase2_collaborative_open_set_qknn_eval.py"`|44 tests OK|
 |Git镜像|同上|41+44 tests OK|
-|Git提交|`470a214 Add candidate set CVS fusion policy`；`9b38d75 Record candidate set CVS fusion results`|已提交到`E:\type10-7\github_publish\CVS-RFFI-repo`，分支领先远端287|
+|Git提交|`470a214 Add candidate set CVS fusion policy`；`9b38d75 Record candidate set CVS fusion results`；`81d4e9b Fix candidate set report version state`|已提交到`E:\type10-7\github_publish\CVS-RFFI-repo`；具体领先数量以`git status -sb`实时输出为准|
 
 由于`E:\type10-7`根目录不是Git仓库，代码快照保存在`E:\type10-7\code\snapshots\candidate_set_cvs_20260704\`。资源约束设计说明原文`卫星协同射频指纹识别（RFFI）系统资源约束设计说明.md`仍未在当前工作区找到；本轮继续按可量化字段`avg_rx`、`bytes/event`、`latency_ms_p95`、GPU显存读数和prototype/evidence状态报告资源。
 
