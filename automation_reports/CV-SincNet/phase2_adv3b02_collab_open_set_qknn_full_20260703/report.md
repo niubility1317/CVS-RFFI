@@ -4032,6 +4032,39 @@ conda run --no-capture-output -n ssr-gpu python -m pytest code/tests/test_collab
 
 成功标准保持不变：old_acc≥`0.99`且min_old≥`0.95`，seen_new_acc≥`0.97`且min_seen≥`0.93`，unknown_reject≥`0.99`且unknown_FAR≤`0.01`。未达到则只作为diagnostic evidence。
 
+### N607结果
+
+远端同步后三个文件哈希与本地一致，远端环境为`/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python`。运行前后8张RTX3090均为`10/24576MiB`，选择GPU0。最终本地无`ssh.exe`残留，无N607和bridge 22端口ESTABLISHED连接。
+
+|route|JSON SHA256|CSV SHA256|
+|---|---|---|
+|`support_router_evt085_adv3b02`|`B760C9E1F8C83DEBD8FA0D3612A9E31699ED04DAF93EA221707661C385972595`|`459B4F6F4E0E684E56587439A6A6CA1558981668D4818757DF2EA429E8726CFF`|
+|`support_router_relaxed_evt092_adv3b02`|`F4B52C13D7A940C540A002D0FA8D724E700F33AAB19952861B5A4B614307249C`|`58F65E11E30669F37EDDBA99713E803D95F4884102E31479077B8F4345BBFDFF`|
+
+`support_router_evt085_adv3b02`：
+
+|k|old_acc|min_old|seen_new_acc|min_seen|unknown_FAR|unknown_reject|defer|avg_rx|bytes/event|p95 ms|support_accept|unknown_evidence|
+|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+|1|0.0000|0.0000|0.0000|0.0000|0.0000|0.9500|0.1359|1.0000|40.0|0.1409|0.0000|0.8641|
+|2|0.0592|0.0000|0.1765|0.0000|0.0000|1.0000|0.0040|2.0000|80.0|0.1409|0.0714|0.9325|
+|3|0.0750|0.0000|0.1750|0.0000|0.0000|1.0000|0.0000|3.0000|120.0|0.1409|0.0800|0.9350|
+|4|0.1833|0.0000|0.2750|0.0000|0.0000|1.0000|0.0050|3.7400|149.6|0.1409|0.1650|0.8650|
+|5|0.1750|0.0000|0.2750|0.0000|0.0000|1.0000|0.0050|4.1950|167.8|0.1409|0.1600|0.8650|
+
+`support_router_relaxed_evt092_adv3b02`：
+
+|k|old_acc|min_old|seen_new_acc|min_seen|unknown_FAR|unknown_reject|defer|avg_rx|bytes/event|p95 ms|support_accept|unknown_evidence|
+|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+|1|0.0000|0.0000|0.0000|0.0000|0.0000|0.9500|0.1456|1.0000|40.0|0.1461|0.0000|0.8544|
+|2|0.0855|0.0000|0.2157|0.0000|0.0000|1.0000|0.0040|2.0000|80.0|0.1461|0.0992|0.9246|
+|3|0.1333|0.0000|0.2250|0.0000|0.0000|1.0000|0.0000|3.0000|120.0|0.1461|0.1250|0.9250|
+|4|0.3917|0.0000|0.3500|0.0500|0.0000|1.0000|0.0000|3.7400|149.6|0.1461|0.3050|0.8500|
+|5|0.3833|0.0000|0.3250|0.0000|0.0000|1.0000|0.0000|4.1950|167.8|0.1461|0.3050|0.8500|
+
+判定：`support_router_cvs`能把unknown_FAR压到`0.0`，但known被严重误拒；即使放宽support证据，k=4/k=5的old_acc也只有`0.3917/0.3833`，seen-new只有`0.3500/0.3250`。这说明当前support/conformal质量信号在LEO扰动下对known过严，不能直接作为accept gate主线。它证明“双通道路由”方向可审计，但当前证据特征不足以同时满足known和unknown。
+
+下一步决策：继续调融合阈值不会自然逼近99/97/99。需要回到节点级open-set风险建模：为每个receiver/class导出support-only或source/proxy-known校准的`evt_tail_prob`、class-conditional distance density、Mahalanobis/LOF或oldness gate，并在feature导出阶段区分old/seen-new支持集与unknown风险，不再用当前单一`unknown_risk`同时承担分类和拒识。现有结果仍为diagnostic-only。
+
 ## 2026-07-04 SR-PairFuse软pairguard执行计划
 
 ### 设计依据
