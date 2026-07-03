@@ -5072,7 +5072,62 @@ conda run --no-capture-output -n ssr-gpu python -m pytest code\tests\test_phase2
 |路线|关键参数|目的|
 |---|---|---|
 |`orbit_coproto_classneg_weak_adv3b02`|`--fusion_policy orbit_coproto --class_negative_risk_enabled --class_negative_combine_mode weak_evidence --class_negative_weak_margin 0.08 --class_negative_weak_pvalue 0.50 --class_negative_weak_reliability 0.70`|在当前低FAR的ORBIT路线中验证弱证据class-negative能否继续压低unknown而不再毁坏known。|
-|`dualroute_classneg_weak_adv3b02`|`--fusion_policy candidate_set_cvs --candidate_set_pairguard_action soft_penalty --class_negative_risk_enabled --class_negative_combine_mode weak_evidence`|在高known的dualroute/soft route中验证弱证据class-negative能否降低unknown_FAR。|
+|`dualroute_classneg_weak_adv3b02`|`--fusion_policy candidate_set_cvs --class_negative_risk_enabled --class_negative_combine_mode weak_evidence`；实际JSON记录`candidate_set_pairguard_action=veto`且`candidate_set_pairguard_soft_penalty=0.0`。|在高known的dualroute基线上验证弱证据class-negative能否降低unknown_FAR；本轮不是soft_penalty路线。|
 
 成功判据仍为old整体`>=0.99`且per-class`>=0.95`，seen-new整体`>=0.97`且per-class`>=0.93`，unknown reject`>=0.99`。未达到则继续标为diagnostic-only。
+
+### N607执行与结果
+
+N607 direct preflight通过；远端项目根为`/home/szu2070436088/2510044040/CV-SincNet`，8张RTX3090运行前均为`10/24576MiB`、GPU utilization`0%`。本轮按用户要求使用`/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python`。同步后远端hash与本地一致：
+
+|文件|SHA256|
+|---|---|
+|`code/scripts/phase2_collaborative_open_set_qknn_eval.py`|`601B47DEED122F8D8660CFDD7948AA08BBE5339E2A01B63F92C9C0354AC62A68`|
+|`code/tests/test_phase2_collaborative_open_set_qknn_eval.py`|`82D060A5029C689B41F7BBCF280C2928B85BEB5A1FE549335D2424927FD6D974`|
+
+远端`py_compile`通过。`CVS-RFFI`环境没有安装`pytest`，因此没有安装新包，改用标准库`unittest discover`验证：`test_phase2_collaborative_open_set_qknn_eval.py`为`50 tests OK`，`test_collaborative_open_set_qknn_eval.py`为`58 tests OK`。
+
+远端运行两条全量诊断，均使用`--collab_counts all`，输出`receiver_count=5`、`group_count=307`、`evidence_row_count=1000`，覆盖k=1..5个target receivers；星地信道沿用ADV3B02 Stage2-C特征包。运行后8张RTX3090仍为`10/24576MiB`、GPU utilization`0%`。
+
+口径限制：本轮覆盖的是5个target receivers的k=1..5，不包括source receivers；`receiver_domain_ranked`仍是receiver-domain ensemble诊断近似，不能写成strict same-event卫星群协同。结果使用per-k available receiver分母，不同k的old/seen-new/unknown样本数会变化，不能把k间变化直接写成同分母因果提升。
+
+|route|JSON SHA256|CSV SHA256|
+|---|---|---|
+|`orbit_coproto_classneg_weak_adv3b02_20260704`|`BBFCF7341394294A1DC22C91405FD00EEDB1946A7D18FB94D27D03569B77EBE4`|`10F6F88EBD9F28D2BB8FAAF195AA50C3BBA727ECE0D9D97D5EAF6171A2E088A3`|
+|`dualroute_classneg_weak_adv3b02_20260704`|`139D872E893B8D138A3B14CB9CDDB665EC53DE41C4AF16AB3BC33A5A6262B772`|`636B2DD9BBAABDA0E891F30DA094A06D7F284584E4EB37F9506FA2C98B45A336`|
+
+本地产物已拉回到`E:\type10-7\remote_artifacts\phase2_adv3b02_collab_open_set_qknn_full_20260703\`。
+
+|route|k|old_acc|min_old|seen_new_acc|min_seen|unknown_FAR|unknown_reject|defer|request_more|avg_rx|bytes/event|p95 ms|
+|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+|orbit_classneg_weak|1|0.0000|0.0000|0.0000|0.0000|0.0000|0.5167|0.6808|0.0000|1.0|40.0|0.1078|
+|orbit_classneg_weak|2|0.3158|0.0000|0.3077|0.2500|0.0435|0.8261|0.2160|0.0000|2.0|80.0|0.1078|
+|orbit_classneg_weak|3|0.4250|0.1000|0.5000|0.4500|0.0250|0.9000|0.0550|0.0000|3.0|120.0|0.1078|
+|orbit_classneg_weak|4|0.7159|0.0000|0.6071|0.5500|0.0294|0.7941|0.0867|0.0000|4.0|160.0|0.1078|
+|orbit_classneg_weak|5|0.6792|0.0000|0.5000|0.0000|0.1000|0.9000|0.0215|0.0000|5.0|200.0|0.1078|
+|dualroute_classneg_weak|1|0.0000|0.0000|0.0000|0.0000|0.0000|0.4667|0.7134|0.0000|1.0|40.0|0.1327|
+|dualroute_classneg_weak|2|0.2895|0.0000|0.4038|0.4000|0.0652|0.9348|0.0720|0.0000|2.0|80.0|0.1327|
+|dualroute_classneg_weak|3|0.2667|0.0000|0.4750|0.3500|0.0000|0.9750|0.0250|0.0000|3.0|120.0|0.1327|
+|dualroute_classneg_weak|4|0.3667|0.0500|0.4250|0.2500|0.0250|0.9500|0.0150|0.0000|3.75|150.0|0.1327|
+|dualroute_classneg_weak|5|0.3667|0.0500|0.4250|0.2500|0.0000|0.9750|0.0100|0.0000|4.215|168.6|0.1327|
+
+弱证据审计：
+
+|route|evidence rows|effective risk mean|raw risk mean|weakness mean|effective max|raw max|
+|---|---:|---:|---:|---:|---:|---:|
+|orbit_classneg_weak|1000|0.251867|0.864262|0.264073|1.000000|1.000000|
+|dualroute_classneg_weak|1000|0.246773|0.826240|0.261053|0.998958|1.000000|
+
+判定：弱证据组合确实把平均class-negative风险从`0.83~0.86`压到约`0.25`，避免了原始`max`风险的无条件全量压制；但对ADV3B02当前特征仍然误伤known。`orbit_classneg_weak`相对上一轮`orbit_coproto_adv3b02`的k=4结果，old_acc从`0.8182`降至`0.7159`，seen_new_acc从`0.7143`降至`0.6071`，unknown_FAR仍为`0.0294`，未带来有效收益。`dualroute_classneg_weak`在k=3和k=5把unknown_FAR降到`0`，但old_acc只有`0.2667/0.3667`，seen_new_acc只有`0.4750/0.4250`，不是可部署解。
+
+结论：本轮实现和全量测试完成，但结果仍为diagnostic-only，不能声明达到old 99%/per-class 95%、seen-new 97%/per-class 93%或unknown reject 99%。下一步不应继续扩大class-negative拒识风险，而应把其从`unknown_risk`主路径降级为“请求更多接收机/在线微调样本优先级”信号，或改为按support/proxy-known校准的receiver-label局部先验，避免对强证据known样本产生全局拒识。
+
+### 子agent监督与查漏结论
+
+|子agent角色|结论|需要保留的边界|
+|---|---|---|
+|合理性审查|未发现本轮`class_negative weak_evidence`使用unknown query拟合阈值的证据；JSON记录`unknown_query_eval_only=True`、`threshold_selection_label_scope=support_known_only`。但算法结果不合格，必须保持diagnostic-only。|若沿用前序unknown false accept得到的label/pair风险，只能写作诊断启发，不能写成正式可部署先验；不能把`receiver_domain_ranked`称为strict event协同；不能声明99/97/99或Stage2-C部署成功。|
+|逐项完成度审计|工程闭环已完成：实现、本地验证、同步N607、`CVS-RFFI`环境验证、低显存GPU全量测试、k=1..5结果和资源字段均有证据。|结果未达目标；资源约束设计说明原文仍未找到，因此资源报告只能基于`bytes/event`、`latency_ms_p95`、GPU显存等代理指标；本轮离线evidence评估不等于卫星端高负载实时训练压力测试通过。|
+
+最终SSH/SCP后本地无`ssh.exe`残留，无N607和bridge 22端口ESTABLISHED连接。
 
