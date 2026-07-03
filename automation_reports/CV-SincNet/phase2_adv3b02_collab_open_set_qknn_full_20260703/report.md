@@ -4006,6 +4006,41 @@ conda run --no-capture-output -n ssr-gpu python -m pytest code\tests\test_phase2
 
 本轮所有SSH/SCP后本地均已确认无`ssh.exe`残留，无N607和bridge 22端口`ESTABLISHED`连接。
 
+### 同分母k=1..5补充诊断
+
+为避免把不同k的不同事件分母误读为“接收机数量因果提升”，新增`collab_group_policy=same_max_budget`。该策略要求所有k都只在最大请求接收机数可用的同一批事件上评估；本轮`collab_counts all`时最大预算为5，因此k=1..5均使用具备5个target receiver证据的事件组。
+
+本地改动：
+
+|文件|用途|SHA256|
+|---|---|---|
+|`code/evaluation/collaborative_open_set_qknn_eval.py`|新增`same_max_budget`协同组策略|`7A3EE3CBE3BB9F40EDD51394A79A7151C44E8D42F8FC2F87C4C6E051EF7CF297`|
+|`code/scripts/phase2_collaborative_open_set_qknn_eval.py`|CLI暴露`--collab_group_policy same_max_budget`|`776D1A2D4E3480D6D3DA3F71D4B83906FF2645EB678B2A22B198061D61A1EA1E`|
+|`code/tests/test_collaborative_open_set_qknn_eval.py`|补充同分母策略单测|`05717FBD612FCDB6A32AFF6223DDFC8567C2683EA7D7B3182B10E4B09B2B0F22`|
+
+本地验证：`py_compile`通过；`test_collaborative_open_set_qknn_eval.py`为`55 passed`；`test_phase2_collaborative_open_set_qknn_eval.py`为`46 passed`。远端同步后哈希一致，`py_compile`通过，远端`unittest`为`Ran 55 tests ... OK`。运行前后8张RTX3090均为`10/24576MiB`。
+
+远端产物：
+
+|artifact|SHA256|
+|---|---|
+|`phase2_adv3b02_collab_open_set_qknn_orbit_coproto_same_max_adv3b02_20260704.json`|`0221A393BFE7EB8825A444EAA9BC1BA9E358E3FB2F9B3E63DD618BECB71489E9`|
+|`phase2_adv3b02_collab_open_set_qknn_orbit_coproto_same_max_adv3b02_20260704_evidence.csv`|`40C8D7D1484FF2057047A168FEDC02DCC7F893451D96CB443A031836763EBD54`|
+
+同分母统计：`receiver_count=5`、原始`group_count=307`、最大预算同分母`eligible_group_count=93`、`collab_group_policy=same_max_budget`。
+
+|k|total|old_total|seen_new_total|unknown_total|old_acc|min_old|seen_new_acc|min_seen|unknown_FAR|unknown_reject|defer|bytes/event|p95 ms|
+|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+|1|93|53|20|20|0.0000|0.0000|0.0000|0.0000|0.0000|0.3500|0.8387|40.0|0.1083|
+|2|93|53|20|20|0.1132|0.0000|0.2500|0.0000|0.0500|0.7000|0.4839|80.0|0.1083|
+|3|93|53|20|20|0.3585|0.0000|0.5500|0.0000|0.0000|0.9000|0.1505|120.0|0.1083|
+|4|93|53|20|20|0.8302|0.0000|0.6500|0.0000|0.0500|0.8500|0.0645|160.0|0.1083|
+|5|93|53|20|20|0.7925|0.0000|0.6000|0.0000|0.1000|0.9000|0.0323|200.0|0.1083|
+
+同分母per-class total在所有k相同：old为`14-10:20,14-7:0,20-15:0,20-19:4,6-15:20,8-20:9`；seen-new为`19-3:20,3-8:0`。这说明当前feature/evidence导出的5接收机同分母集合缺少`14-7`、`20-15`和`3-8`，因此无论算法如何调门控，`min_old`和`min_seen`都不可能达到目标。k=4的`old_acc=0.8302`只描述这个缺类子集，不能作为全old类floor证据。
+
+结论：下一步不应继续在当前`receiver_domain_ranked`/max-budget同分母集合上追求99/97/99，因为数据分母已先验缺类。可执行路线是重新导出带严格共享事件键且覆盖所有old/seen-new/unknown TX的多接收机query特征，或降低最大协同预算并用同分母集合明确声明覆盖范围；算法层Old-Floor-Aware ORBIT只能在同分母集合覆盖全部类别后再验证。
+
 ## 2026-07-04 SR-PairFuse soft floor/strong bypass实现
 
 ### 设计依据

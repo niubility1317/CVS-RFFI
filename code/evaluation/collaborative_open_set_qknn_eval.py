@@ -44,7 +44,7 @@ RISK_COMPONENT_KEYS = {
     "virtual_unknown": "virtual_unknown_risk",
     "class_shell": "class_shell_risk",
 }
-COLLAB_GROUP_POLICIES = {"exact_k", "available_up_to_k"}
+COLLAB_GROUP_POLICIES = {"exact_k", "available_up_to_k", "same_max_budget"}
 FUSION_POLICIES = {
     "risk_margin",
     "consensus_veto",
@@ -3512,11 +3512,14 @@ def evaluate_collaborative_open_set_evidence(
         min_receivers_for_k = int(k)
         if collab_group_policy == "available_up_to_k":
             min_receivers_for_k = min(int(k), partial_collab_min_receivers)
-        eligible = [
-            (event_id, group)
-            for event_id, group in groups.items()
-            if len({_str(row, "receiver_id") for row in group}) >= min_receivers_for_k
-        ]
+        if collab_group_policy == "same_max_budget":
+            eligible = list(policy_matched_max)
+        else:
+            eligible = [
+                (event_id, group)
+                for event_id, group in groups.items()
+                if len({_str(row, "receiver_id") for row in group}) >= min_receivers_for_k
+            ]
         excluded = len(groups) - len(eligible)
         if not eligible:
             raise ValueError(f"no evidence groups contain {min_receivers_for_k} receiver observations")

@@ -2452,11 +2452,12 @@ def parse_args() -> argparse.Namespace:
     p.add_argument(
         "--collab_group_policy",
         default="exact_k",
-        choices=["exact_k", "available_up_to_k"],
+        choices=["exact_k", "available_up_to_k", "same_max_budget"],
         help=(
             "exact_k evaluates only events observed by at least k receivers; "
             "available_up_to_k treats k as a maximum collaboration budget and includes "
-            "events with at least --partial_collab_min_receivers observations."
+            "events with at least --partial_collab_min_receivers observations; "
+            "same_max_budget evaluates every k on the same groups available at the maximum requested budget."
         ),
     )
     p.add_argument("--partial_collab_min_receivers", type=int, default=1)

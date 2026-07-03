@@ -2918,6 +2918,25 @@ class CollaborativeOpenSetQknnEvalTest(unittest.TestCase):
         self.assertEqual(budgeted["policy_eligible_group_count_at_max_budget"], 2)
         self.assertEqual(budgeted["collab_group_policy"], "available_up_to_k")
 
+        same_max = evaluate_collaborative_open_set_evidence(
+            rows,
+            collab_counts="1,4",
+            fusion_policy="risk_margin",
+            collab_group_policy="same_max_budget",
+            protocol_metadata=protocol,
+            strict_protocol_metadata=True,
+        )
+
+        self.assertEqual(same_max["collab_group_policy"], "same_max_budget")
+        self.assertEqual(same_max["exact_max_requested_group_count"], 1)
+        self.assertEqual(same_max["policy_eligible_group_count_at_max_budget"], 1)
+        self.assertEqual(same_max["counts"]["1"]["old_total"], 1)
+        self.assertEqual(same_max["counts"]["4"]["old_total"], 1)
+        self.assertEqual(same_max["counts"]["1"]["per_old_class_total"], {"old-a": 0, "old-b": 1})
+        self.assertEqual(same_max["counts"]["4"]["per_old_class_total"], {"old-a": 0, "old-b": 1})
+        self.assertEqual(same_max["counts"]["1"]["missing_old_classes"], ["old-a"])
+        self.assertEqual(same_max["counts"]["4"]["missing_old_classes"], ["old-a"])
+
     def test_available_up_to_k_rejects_invalid_partial_min_receivers(self):
         from evaluation.collaborative_open_set_qknn_eval import evaluate_collaborative_open_set_evidence
 
