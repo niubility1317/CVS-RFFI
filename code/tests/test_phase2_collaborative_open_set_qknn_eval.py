@@ -96,6 +96,37 @@ class Phase2CollaborativeOpenSetQknnEvalTest(unittest.TestCase):
         self.assertEqual(metadata["event_alignment"], "role_tx_day_sig_scenario")
         self.assertGreater(metadata["prototype_storage_bytes"], 0)
 
+    def test_records_scorer_cvs_packet_resource_bytes(self):
+        from phase2_collaborative_open_set_qknn_eval import load_feature_npz, build_collaborative_evidence
+        from evaluation.collaborative_open_set_qknn_eval import evaluate_collaborative_open_set_evidence
+
+        with tempfile.TemporaryDirectory() as td:
+            npz = Path(td) / "features.npz"
+            _write_npz(npz)
+            evidence, metadata = build_collaborative_evidence(
+                load_feature_npz(npz),
+                k_shot=1,
+                query_per_class=2,
+                qknn_k=1,
+                unknown_gate_mode="support_envelope",
+                evidence_packet_bytes=96,
+            )
+            result = evaluate_collaborative_open_set_evidence(
+                evidence,
+                collab_counts="2",
+                threshold_selection_label_scope=metadata["threshold_scope"],
+                protocol_metadata=metadata,
+                strict_protocol_metadata=True,
+                fusion_policy="scorer_cvs",
+                consensus_gap_threshold=0.5,
+                consensus_score_threshold=0.0,
+                latency_budget_ms=10.0,
+            )
+
+        self.assertEqual(metadata["evidence_bytes_per_receiver_event"], 96)
+        self.assertEqual(result["counts"]["2"]["bytes_per_event"], 192)
+        self.assertEqual(result["fusion_policy"], "scorer_cvs")
+
     def test_requires_target_unknown_rows_for_open_set_eval(self):
         from phase2_collaborative_open_set_qknn_eval import load_feature_npz, build_collaborative_evidence
 

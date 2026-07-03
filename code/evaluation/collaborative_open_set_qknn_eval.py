@@ -197,12 +197,16 @@ def _fuse_event(
     fusion_policy: str,
     consensus_gap_threshold: float,
     consensus_score_threshold: float,
+    can_request_more: bool = False,
+    latency_budget_ms: float = 0.0,
 ) -> dict[str, Any]:
     label_scores: defaultdict[str, float] = defaultdict(float)
     weights = []
     risks = []
     margins = []
     scores = []
+    radius_risks = []
+    margin_risks = []
     predicted_labels = []
     for row in selected:
         weight = max(0.0, _float(row, "reliability", 1.0))
@@ -215,8 +219,12 @@ def _fuse_event(
         weights.append(weight)
         risks.append(_float(row, "unknown_risk", 0.0))
         margins.append(_float(row, "known_margin", 0.0))
+        radius_risks.append(_float(row, "radius_risk", _float(row, "unknown_risk", 0.0)))
+        margin_risks.append(_float(row, "margin_risk", _float(row, "unknown_risk", 0.0)))
 
     unknown_risk = _weighted_quantile(risks, weights, unknown_quantile)
+    radius_risk = _weighted_quantile(radius_risks, weights, unknown_quantile)
+    margin_risk = _weighted_quantile(margin_risks, weights, unknown_quantile)
     mean_margin = 0.0
     if weights and sum(weights) > 0:
         mean_margin = sum(m * max(0.0, w) for m, w in zip(margins, weights)) / max(sum(weights), 1e-12)
@@ -242,6 +250,12 @@ def _fuse_event(
     receiver_n = max(len(selected), 1)
     agreement = float(top_count) / float(receiver_n)
     vote_gap = float(top_count - second_count) / float(receiver_n)
+    latency_ms = float(max((_float(row, "latency_ms", 0.0) for row in selected), default=0.0))
+    within_request_budget = bool(
+        can_request_more
+        and float(latency_budget_ms) > 0.0
+        and latency_ms < float(latency_budget_ms)
+    )
 
     policy = _normalize_scope(fusion_policy)
     if policy == "consensus_veto":
@@ -260,6 +274,30 @@ def _fuse_event(
         else:
             decision = "defer"
             output_label = ""
+    elif policy == "scorer_cvs":
+        strong_consensus = vote_gap > float(consensus_gap_threshold) and agreement >= 0.5
+        strong_known = (
+            bool(label)
+            and strong_consensus
+            and mean_margin >= float(accept_margin_threshold)
+            and mean_score >= float(consensus_score_threshold)
+        )
+        high_risk = unknown_risk >= float(unknown_risk_threshold)
+        if high_risk and not strong_known:
+            decision = "unknown_reject"
+            output_label = UNKNOWN_LABEL
+        elif high_risk:
+            decision = "defer"
+            output_label = ""
+        elif strong_known:
+            decision = "accept"
+            output_label = label
+        elif within_request_budget:
+            decision = "request_more"
+            output_label = ""
+        else:
+            decision = "defer"
+            output_label = ""
     elif policy == "risk_margin":
         if unknown_risk >= float(unknown_risk_threshold):
             if mean_margin < float(accept_margin_threshold):
@@ -275,21 +313,24 @@ def _fuse_event(
             decision = "defer"
             output_label = ""
     elif label:
-        raise ValueError("fusion_policy must be risk_margin or consensus_veto")
+        raise ValueError("fusion_policy must be risk_margin, consensus_veto, or scorer_cvs")
     else:
-        raise ValueError("fusion_policy must be risk_margin or consensus_veto")
+        raise ValueError("fusion_policy must be risk_margin, consensus_veto, or scorer_cvs")
 
     return {
         "decision": decision,
         "output_label": output_label,
         "unknown_risk": float(unknown_risk),
+        "radius_risk": float(radius_risk),
+        "margin_risk": float(margin_risk),
         "known_margin": float(mean_margin),
         "mean_known_score": float(mean_score),
         "known_score": float(score),
         "agreement": float(agreement),
         "vote_gap": float(vote_gap),
         "bytes": float(sum(_float(row, "bytes", 0.0) for row in selected)),
-        "latency_ms": float(max((_float(row, "latency_ms", 0.0) for row in selected), default=0.0)),
+        "latency_ms": latency_ms,
+        "can_request_more": bool(can_request_more),
     }
 
 
@@ -315,6 +356,7 @@ def _finalize_metrics(
     unknown_rejected = 0
     unknown_false_accept = 0
     defer_total = 0
+    request_more_total = 0
 
     old_labels = set(expected_old_labels or set())
     seen_new_labels = set(expected_seen_new_labels or set())
@@ -329,8 +371,11 @@ def _finalize_metrics(
         decision = item["decision"]
         accepted = decision == "accept"
         deferred = decision == "defer"
+        requested_more = decision == "request_more"
         if decision == "unknown_reject":
             predicted_bucket = "unknown_reject"
+        elif requested_more:
+            predicted_bucket = "request_more"
         elif deferred:
             predicted_bucket = "defer"
         elif output in old_labels:
@@ -342,6 +387,8 @@ def _finalize_metrics(
         confusion[f"{role}->{predicted_bucket}"] += 1
         if deferred:
             defer_total += 1
+        if requested_more:
+            request_more_total += 1
         role_totals[role] += 1
         if role in {"old", "seen_new"}:
             role_accepted[role] += int(accepted)
@@ -396,6 +443,8 @@ def _finalize_metrics(
         "known_full_accuracy": _safe_rate(known_correct, known_total),
         "known_accepted_accuracy": _safe_rate(known_correct, known_accepted),
         "defer_rate": _safe_rate(defer_total, total_events),
+        "request_more_rate": _safe_rate(request_more_total, total_events),
+        "unresolved_rate": _safe_rate(defer_total + request_more_total, total_events),
         "open_set_confusion": dict(sorted(confusion.items())),
         "bytes_per_event": sum(bytes_values) / max(len(bytes_values), 1),
         "total_bytes": float(sum(bytes_values)),
@@ -488,6 +537,7 @@ def evaluate_collaborative_open_set_evidence(
     fusion_policy: str = "risk_margin",
     consensus_gap_threshold: float = 0.0,
     consensus_score_threshold: float = 0.0,
+    latency_budget_ms: float = 0.0,
     threshold_selection_label_scope: str = "support_known_only",
     unknown_query_eval_only: bool = True,
     receiver_selection_policy: str = "fixed_receiver_order",
@@ -563,6 +613,8 @@ def evaluate_collaborative_open_set_evidence(
                 fusion_policy=fusion_policy,
                 consensus_gap_threshold=consensus_gap_threshold,
                 consensus_score_threshold=consensus_score_threshold,
+                can_request_more=len({_str(row, "receiver_id") for row in group}) > int(k),
+                latency_budget_ms=latency_budget_ms,
             )
             first = selected[0]
             fused["role"] = _role(first.get("role"))
@@ -597,5 +649,6 @@ def evaluate_collaborative_open_set_evidence(
         "fusion_policy": _normalize_scope(fusion_policy),
         "consensus_gap_threshold": float(consensus_gap_threshold),
         "consensus_score_threshold": float(consensus_score_threshold),
+        "latency_budget_ms": float(latency_budget_ms),
         "counts": out_counts,
     }

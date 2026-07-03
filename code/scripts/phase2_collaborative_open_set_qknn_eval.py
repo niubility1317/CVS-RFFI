@@ -576,6 +576,7 @@ def build_collaborative_evidence(
     old_bias: float = 0.0,
     support_calibration_mode: str = "self",
     score_threshold_combine: str = "max",
+    evidence_packet_bytes: float = 40.0,
 ) -> tuple[list[dict[str, Any]], dict[str, Any]]:
     validate_required_roles(payload)
     roles = np.asarray(payload["dataset_role"]).astype(str)
@@ -825,7 +826,7 @@ def build_collaborative_evidence(
                             "reliability": 1.0,
                             "reliability_source": "deployment_prior",
                             "latency_ms": float(per_row_ms),
-                            "bytes": 40.0,
+                            "bytes": float(evidence_packet_bytes),
                             "threshold_selection_label_scope": threshold_scope,
                             "calibration_role": "query",
                             "sat_scenario": _scenario_of(payload, idx),
@@ -851,7 +852,7 @@ def build_collaborative_evidence(
         "k_shot": int(k_shot),
         "query_per_class": int(query_per_class),
         "prototype_storage_bytes": int(sum(memory.prototype_storage_bytes for memory in receiver_memories.values())),
-        "evidence_bytes_per_receiver_event": 40,
+        "evidence_bytes_per_receiver_event": float(evidence_packet_bytes),
         "event_alignment": row_alignment if alignment_policy == "receiver_domain_ranked" else "role_tx_day_sig_scenario",
         "event_alignment_policy": alignment_policy,
         "strict_same_event_collaboration": alignment_policy == "strict_event_key",
@@ -901,6 +902,7 @@ def run_evaluation(args: argparse.Namespace) -> dict[str, Any]:
         old_bias=float(args.old_bias),
         support_calibration_mode=str(args.support_calibration_mode),
         score_threshold_combine=str(args.score_threshold_combine),
+        evidence_packet_bytes=float(args.evidence_packet_bytes),
     )
     result = evaluate_collaborative_open_set_evidence(
         evidence,
@@ -911,6 +913,7 @@ def run_evaluation(args: argparse.Namespace) -> dict[str, Any]:
         fusion_policy=str(args.fusion_policy),
         consensus_gap_threshold=float(args.consensus_gap_threshold),
         consensus_score_threshold=float(args.consensus_score_threshold),
+        latency_budget_ms=float(args.latency_budget_ms),
         threshold_selection_label_scope=str(metadata["threshold_scope"]),
         unknown_query_eval_only=True,
         receiver_selection_policy=str(args.receiver_selection_policy),
@@ -965,9 +968,11 @@ def parse_args() -> argparse.Namespace:
     p.add_argument("--unknown_risk_threshold", type=float, default=0.80)
     p.add_argument("--accept_margin_threshold", type=float, default=0.10)
     p.add_argument("--unknown_quantile", type=float, default=0.75)
-    p.add_argument("--fusion_policy", default="risk_margin", choices=["risk_margin", "consensus_veto"])
+    p.add_argument("--fusion_policy", default="risk_margin", choices=["risk_margin", "consensus_veto", "scorer_cvs"])
     p.add_argument("--consensus_gap_threshold", type=float, default=0.0)
     p.add_argument("--consensus_score_threshold", type=float, default=0.0)
+    p.add_argument("--latency_budget_ms", type=float, default=0.0)
+    p.add_argument("--evidence_packet_bytes", type=float, default=40.0)
     p.add_argument("--receiver_selection_policy", default="fixed_receiver_order")
     p.add_argument(
         "--support_selection_policy",

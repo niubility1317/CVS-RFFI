@@ -289,6 +289,99 @@ class CollaborativeOpenSetQknnEvalTest(unittest.TestCase):
         self.assertEqual(veto_result["counts"]["2"]["open_set_confusion"], {"unknown->unknown_reject": 1})
         self.assertEqual(veto_result["fusion_policy"], "consensus_veto")
 
+    def test_scorer_cvs_requests_more_receivers_under_latency_budget(self):
+        from evaluation.collaborative_open_set_qknn_eval import evaluate_collaborative_open_set_evidence
+
+        rows = [
+            {
+                "event_id": "uncertain-old",
+                "receiver_id": "rx-a",
+                "role": "old",
+                "true_label": "old-a",
+                "predicted_label": "old-a",
+                "known_score": 0.45,
+                "known_margin": 0.02,
+                "unknown_risk": 0.30,
+                "radius_risk": 0.20,
+                "margin_risk": 0.30,
+                "latency_ms": 2.0,
+            },
+            {
+                "event_id": "uncertain-old",
+                "receiver_id": "rx-b",
+                "role": "old",
+                "true_label": "old-a",
+                "predicted_label": "old-a",
+                "known_score": 0.48,
+                "known_margin": 0.03,
+                "unknown_risk": 0.35,
+                "radius_risk": 0.25,
+                "margin_risk": 0.35,
+                "latency_ms": 2.5,
+            },
+        ]
+
+        result = evaluate_collaborative_open_set_evidence(
+            rows,
+            collab_counts="1",
+            fusion_policy="scorer_cvs",
+            unknown_risk_threshold=0.8,
+            accept_margin_threshold=0.1,
+            consensus_gap_threshold=0.5,
+            consensus_score_threshold=0.6,
+            latency_budget_ms=5.0,
+        )
+
+        k1 = result["counts"]["1"]
+        self.assertEqual(k1["request_more_rate"], 1.0)
+        self.assertEqual(k1["unresolved_rate"], 1.0)
+        self.assertEqual(k1["open_set_confusion"], {"old->request_more": 1})
+
+    def test_scorer_cvs_rejects_high_risk_without_known_rescue(self):
+        from evaluation.collaborative_open_set_qknn_eval import evaluate_collaborative_open_set_evidence
+
+        rows = [
+            {
+                "event_id": "unknown-risk",
+                "receiver_id": "rx-a",
+                "role": "unknown",
+                "true_label": "__unknown__",
+                "predicted_label": "old-a",
+                "known_score": 0.40,
+                "known_margin": 0.02,
+                "unknown_risk": 0.95,
+                "radius_risk": 0.90,
+                "margin_risk": 0.92,
+            },
+            {
+                "event_id": "unknown-risk",
+                "receiver_id": "rx-b",
+                "role": "unknown",
+                "true_label": "__unknown__",
+                "predicted_label": "old-b",
+                "known_score": 0.35,
+                "known_margin": 0.01,
+                "unknown_risk": 0.97,
+                "radius_risk": 0.94,
+                "margin_risk": 0.93,
+            },
+        ]
+
+        result = evaluate_collaborative_open_set_evidence(
+            rows,
+            collab_counts="2",
+            fusion_policy="scorer_cvs",
+            unknown_risk_threshold=0.8,
+            accept_margin_threshold=0.1,
+            consensus_gap_threshold=0.5,
+            consensus_score_threshold=0.6,
+        )
+
+        k2 = result["counts"]["2"]
+        self.assertEqual(k2["unknown_reject_rate"], 1.0)
+        self.assertEqual(k2["open_set_confusion"], {"unknown->unknown_reject": 1})
+        self.assertEqual(result["fusion_policy"], "scorer_cvs")
+
     def test_strict_protocol_metadata_validates_stage2_boundaries(self):
         from evaluation.collaborative_open_set_qknn_eval import evaluate_collaborative_open_set_evidence
 
