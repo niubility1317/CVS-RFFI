@@ -3249,6 +3249,81 @@ k=4逐类结果：
 
 但它仍不是最终目标：`min_old=0.6500`，`seen_new_acc=0.6500`，`min_seen=0.5500`，unknown拒识0.9500，均未达到用户要求的99/95、97/93、99。剩余主要失败是第二类强相似unknown和低类地板；下一步需要引入不依赖unknown query阈值拟合的receiver-pair不一致证据或源域外类虚拟边界，而不是继续只调candidate_set阈值。
 
+## 2026-07-04 candidate_set高unknown风险比例门控参数再平衡
+
+### 目标
+
+上一轮`avail3_p050_lrca033_huv0999_f050,k=4`把`unknown_FAR`降到0.0250，但`seen_new_acc`仍只有0.6500。本轮不改代码，基于已验证的高unknown风险比例否决机制，重新平衡`candidate_set_min_conformal_pvalue`和`candidate_set_max_label_risk_component_agreement`，目标是在保持低FAR的同时恢复seen-new和旧类地板。
+
+本地离线扫参显示`pvalue=0.55`、`label_risk_component_agreement<=0.49`、`huv=0.999`优于上一轮：k=4预期`old≈0.8083`、`seen_new≈0.7500`、`unknown_FAR≈0.0250`。因此在N607上正式复跑`avail3_p055_lrca049_huv0999_f050`。
+
+### N607配置
+
+```bash
+CUDA_VISIBLE_DEVICES=0 /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python \
+  code/scripts/phase2_collaborative_open_set_qknn_eval.py \
+  --feature_npz runs/phase2_adv3b02_collab_open_set_qknn_full_20260703/features.npz \
+  --output_json runs/phase2_adv3b02_collab_open_set_qknn_full_20260703/collab_open_set_qknn_candidate_set_cvs_rcwr_avail3_p055_lrca049_huv0999_f050_adv3b02.json \
+  --output_evidence_csv runs/phase2_adv3b02_collab_open_set_qknn_full_20260703/collab_open_set_qknn_candidate_set_cvs_rcwr_avail3_p055_lrca049_huv0999_f050_adv3b02_evidence.csv \
+  --collab_counts all --collab_group_policy available_up_to_k --partial_collab_min_receivers 3 \
+  --k_shot 8 --query_per_class 20 --qknn_k 8 --seed 4070303 \
+  --candidate_class_top_m 2 --class_evidence_top_m 3 \
+  --class_conformal_enabled --class_conformal_min_support 2 \
+  --prototype_score_blend 2.0 --mahalanobis_score_blend 1.0 \
+  --support_calibration_mode leave_one_out \
+  --unknown_gate_mode support_envelope_evt --score_threshold_combine qknn_only \
+  --scenario_aware --radius_norm 0.3 \
+  --fusion_policy candidate_set_cvs --collaboration_policy fixed_k \
+  --label_fusion_policy weighted_vote_margin \
+  --class_reliability_policy conformal_margin_risk \
+  --receiver_class_reliability_policy support_calibrated \
+  --event_alignment_policy receiver_domain_ranked \
+  --support_selection_policy stable_first \
+  --unknown_risk_threshold 0.8 --scorer_component_vote_threshold 0.50 \
+  --candidate_set_min_receivers 2 --candidate_set_min_top1_receivers 0 \
+  --candidate_set_min_conformal_pvalue 0.55 \
+  --candidate_set_max_label_unknown_risk 1.0 \
+  --candidate_set_max_event_unknown_risk 1.0 \
+  --candidate_set_max_label_risk_component_agreement 0.49 \
+  --candidate_set_event_high_unknown_risk_veto 0.999 \
+  --candidate_set_max_label_high_unknown_risk_fraction 0.5 \
+  --candidate_set_high_unknown_risk_threshold 0.8 \
+  --candidate_set_unknown_reject_risk 0.80 \
+  --evidence_packet_bytes 40
+```
+
+运行前后8张RTX3090均为`10 MiB/24576 MiB`，使用GPU0；运行后本地检查无残留`ssh.exe`和N607/bridge 22端口连接。
+
+产物SHA256：
+
+|产物|SHA256|
+|---|---|
+|`collab_open_set_qknn_candidate_set_cvs_rcwr_avail3_p055_lrca049_huv0999_f050_adv3b02.json`|`CDE6709DE940AC508C24291EDBAA2F5931CF6EA32A0824CCE6B01A9508388658`|
+|`collab_open_set_qknn_candidate_set_cvs_rcwr_avail3_p055_lrca049_huv0999_f050_adv3b02_evidence.csv`|`771668FCDB2EC627EDF82D81447C5ECF6F9945B5F9639A094ECE435A9491604C`|
+
+### 结果表
+
+|配置|预算k|old_acc|min_old|seen_new_acc|min_seen|unknown_FAR|unknown_reject|defer|known_cov|avg_rx|bytes/event|p95_latency|veto_count|veto_by_role|结论|
+|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---|---|
+|`avail3_p055_lrca049_huv0999_f050`|1|0.0000|0.0000|0.0000|0.0000|0.0000|0.4667|0.7459|0.0000|1.0000|40.0|0.1840|40|`old=22,seen_new=2,unknown=16`|单receiver不足|
+|`avail3_p055_lrca049_huv0999_f050`|2|0.4079|0.0500|0.5192|0.4688|0.1304|0.8696|0.0920|0.5392|2.0000|80.0|0.1840|62|`old=34,seen_new=8,unknown=20`|FAR仍高|
+|`avail3_p055_lrca049_huv0999_f050`|3|0.6250|0.2500|0.7250|0.6000|0.0750|0.9000|0.0300|0.7188|3.0000|120.0|0.1840|39|`old=13,seen_new=3,unknown=23`|seen-new提升但FAR仍超|
+|`avail3_p055_lrca049_huv0999_f050`|4|0.8083|0.7000|0.7250|0.6000|0.0250|0.9500|0.0150|0.8250|3.7500|150.0|0.1840|22|`old=3,unknown=19`|当前最佳综合组合|
+|`avail3_p055_lrca049_huv0999_f050`|5|0.7833|0.5500|0.7000|0.5500|0.0250|0.9500|0.0100|0.8187|4.2150|168.6|0.1840|22|`old=3,unknown=19`|FAR低但old低于0.80|
+
+k=4逐类结果：
+
+|类别集|逐类准确率|
+|---|---|
+|old|`14-10=0.7000`，`14-7=0.7000`，`20-15=0.7500`，`20-19=0.7000`，`6-15=1.0000`，`8-20=1.0000`|
+|seen-new|`19-3=0.6000`，`3-8=0.8500`|
+
+### 判定
+
+`avail3_p055_lrca049_huv0999_f050,k=4`是当前最好的综合候选：相对上一轮`avail3_p050_lrca033_huv0999_f050,k=4`，`old_acc`从0.8000升到0.8083，`min_old`从0.6500升到0.7000，`seen_new_acc`从0.6500升到0.7250，`min_seen`从0.5500升到0.6000，同时`unknown_FAR`保持0.0250，`unknown_reject`保持0.9500。资源仍是最大预算4，实际平均3.75个receiver参与，约`150 bytes/event`。
+
+该结果仍远未达最终目标：旧类总体未到0.99、旧类地板未到0.95；seen-new总体未到0.97、地板未到0.93；unknown拒识仍低于0.99。它只能作为下一阶段机制开发的当前最优基线，不能声明Stage2-C成功、部署成功或论文主结论。
+
 
 
 
