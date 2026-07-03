@@ -2361,6 +2361,7 @@ def run_evaluation(args: argparse.Namespace) -> dict[str, Any]:
         protocol_metadata=metadata,
         strict_protocol_metadata=True,
         scorer_risk_components=metadata["active_risk_components"],
+        include_event_results=bool(args.include_event_results),
     )
     result["feature_npz"] = str(args.feature_npz)
     result["run_command_argv"] = [str(item) for item in sys.argv]
@@ -2558,6 +2559,7 @@ def parse_args() -> argparse.Namespace:
     p.add_argument("--candidate_set_high_unknown_risk_threshold", type=float, default=0.80)
     p.add_argument("--candidate_set_min_score_gap", type=float, default=0.0)
     p.add_argument("--candidate_set_unknown_reject_risk", type=float, default=0.80)
+    p.add_argument("--include_event_results", action="store_true")
     p.add_argument("--dual_route_rescue_min_pvalue", type=float, default=0.75)
     p.add_argument("--dual_route_rescue_min_receiver_class_reliability", type=float, default=0.75)
     p.add_argument("--dual_route_rescue_max_label_unknown_risk", type=float, default=0.60)
