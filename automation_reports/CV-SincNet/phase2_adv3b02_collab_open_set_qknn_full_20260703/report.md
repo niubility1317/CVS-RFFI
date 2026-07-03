@@ -3839,6 +3839,50 @@ pairguard证明了“receiver分歧/风险跨度/shell观测”确实能压低un
 
 达标状态：未达成old 99%、old per-class>=95%、seen-new 97%、seen per-class>=93%、unknown rejection 99%目标；不得声明Stage2-C部署成功。最终SSH/SCP后本地无`ssh.exe`残留，无N607和bridge 22端口ESTABLISHED连接。
 
+## 2026-07-04 ADV3B02 boundary_pairguard执行计划
+
+### 动机
+
+上一轮`pairguard_strict`和`pairguard_balanced`说明receiver分歧、unknown风险跨度和shell观测能降低unknown false accept，但如果把这些条件作为所有known接受的硬门控，会把大量old/seen-new样本转为unknown_reject。新实现增加`candidate_set_pairguard_mode=boundary_veto`：只有当事件级unknown风险、label级unknown风险或shell风险接近边界时，才触发pairguard拦截；低风险高置信known样本即使receiver之间存在分歧，也不直接被硬拒绝。
+
+资源约束说明文件`卫星协同射频指纹识别（RFFI）系统资源约束设计说明.md`本地仍未定位到。当前报告继续使用评估器内的`receiver_count`、`bytes_per_event`、`latency_ms_p95`、`avg_participating_receivers`作为资源替代证据，并保留该文档缺失风险。
+
+### 本地改动与验证
+
+|文件|用途|SHA256|
+|---|---|---|
+|`code/evaluation/collaborative_open_set_qknn_eval.py`|新增`candidate_set_pairguard_mode={accept_gate,boundary_veto}`与边界触发阈值；逐事件输出pairguard失败/触发/veto字段|`8469FA97742A09D6425D2B5EE024E452CBBDBB076EFE0D31BA8BFFD6EE3F235C`|
+|`code/scripts/phase2_collaborative_open_set_qknn_eval.py`|CLI暴露boundary pairguard参数|`221922B12587EA0F752944BD3077055B219593805263D5157ACE03119795ED27`|
+|`code/tests/test_collaborative_open_set_qknn_eval.py`|新增boundary pairguard单测，证明低风险分歧样本可accept，高风险分歧样本被defer|`E8C2CA81867C7443B29E92D06A2B7643909FFA22449A6EE3981CFFFF9FD60761`|
+
+本地验证：
+
+```text
+C:\Users\lh594\.conda\envs\ssr-gpu\python.exe -m py_compile code\evaluation\collaborative_open_set_qknn_eval.py code\scripts\phase2_collaborative_open_set_qknn_eval.py
+C:\Users\lh594\.conda\envs\ssr-gpu\python.exe -m pytest code\tests\test_collaborative_open_set_qknn_eval.py code\tests\test_phase2_collaborative_open_set_qknn_eval.py -q
+```
+
+结果：本地工作树`96 passed`；Git镜像树同样`96 passed`。Git镜像提交：`3f2419a Add boundary pairguard mode`。
+
+### N607运行计划
+
+同步目标：
+
+|本地|N607|
+|---|---|
+|`E:\type10-7\code\evaluation\collaborative_open_set_qknn_eval.py`|`/home/szu2070436088/2510044040/CV-SincNet/code/evaluation/collaborative_open_set_qknn_eval.py`|
+|`E:\type10-7\code\scripts\phase2_collaborative_open_set_qknn_eval.py`|`/home/szu2070436088/2510044040/CV-SincNet/code/scripts/phase2_collaborative_open_set_qknn_eval.py`|
+|`E:\type10-7\code\tests\test_collaborative_open_set_qknn_eval.py`|`/home/szu2070436088/2510044040/CV-SincNet/code/tests/test_collaborative_open_set_qknn_eval.py`|
+
+远端环境继续使用`/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python`，工作目录为`/home/szu2070436088/2510044040/CV-SincNet`。计划跑两组`boundary_veto`全量k=1..5对照：
+
+|路线|关键参数|目的|
+|---|---|---|
+|`boundary_pairguard_evt090`|`--candidate_set_pairguard_mode boundary_veto --candidate_set_pairguard_min_event_unknown_risk 0.90 --candidate_set_max_receiver_pair_label_disagreement 0.50 --candidate_set_max_receiver_pair_unknown_risk_range 0.70 --candidate_set_min_label_receiver_class_reliability 0.75 --candidate_set_require_label_shell_observed`|在风险接近unknown时才拦截，测试能否保留`dualroute_noguard`的known性能并降低unknown_FAR。|
+|`boundary_pairguard_evt095`|同上但`candidate_set_pairguard_min_event_unknown_risk 0.95`|更保守触发，作为低伤害版本。|
+
+输出路径将写入`runs/phase2_adv3b02_collab_open_set_qknn_full_20260703/`，并拉回到本地`remote_artifacts/`。成功目标仍为old 99%、old per-class>=95%、seen-new 97%、seen per-class>=93%、unknown rejection 99%；未达到则继续标为diagnostic-only。
+
 
 
 
