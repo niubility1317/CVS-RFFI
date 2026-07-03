@@ -225,3 +225,65 @@ python code/tests/test_collaborative_open_set_qknn_eval.py
 1.当前代码和远端测试证明了链路可运行、指标可复现、报告和artifact已持久化。  
 2.当前结果不证明open-set协同推理成功，主要失败点是known与unknown在现有qKNN score/risk空间不可分。  
 3.下一步优先补严格事件键和独立open-set风险通道，而不是继续调`unknown_risk_threshold`或`consensus_veto`。
+
+## 2026-07-03 SCORER-CVS融合策略实现
+
+本次实现`SCORER-CVS`的最小可运行版本：Support-Calibrated Open-set Receiver Evidence Routing。该版本不改变Stage2-C数据协议，不使用unknown query拟合阈值；只在融合层新增独立open-set证据聚合、低置信`request_more`状态和证据包资源统计。
+
+代码改动：
+
+|文件|目的|
+|---|---|
+|`code/evaluation/collaborative_open_set_qknn_eval.py`|新增`fusion_policy=scorer_cvs`，聚合`unknown_risk/radius_risk/margin_risk`，在低置信且时延预算允许时输出`request_more`，报告`request_more_rate/unresolved_rate`。|
+|`code/scripts/phase2_collaborative_open_set_qknn_eval.py`|CLI开放`--fusion_policy scorer_cvs`、`--latency_budget_ms`、`--evidence_packet_bytes`，用于卫星证据包资源统计。|
+|`code/tests/test_collaborative_open_set_qknn_eval.py`|覆盖高风险拒识和低置信请求更多receiver。|
+|`code/tests/test_phase2_collaborative_open_set_qknn_eval.py`|覆盖SCORER-CVS证据包字节统计。|
+
+本地验证：
+
+```powershell
+conda activate ssr-gpu
+python -m py_compile E:\type10-7\code\evaluation\collaborative_open_set_qknn_eval.py E:\type10-7\code\scripts\phase2_collaborative_open_set_qknn_eval.py
+python E:\type10-7\code\tests\test_collaborative_open_set_qknn_eval.py
+python E:\type10-7\code\tests\test_phase2_collaborative_open_set_qknn_eval.py
+```
+
+结果：`test_collaborative_open_set_qknn_eval.py`为11 tests OK，`test_phase2_collaborative_open_set_qknn_eval.py`为12 tests OK。Git提交：`f9b2bd1 Add SCORER-CVS collaborative open-set fusion`。
+
+待同步映射：
+
+|本地|N607|
+|---|---|
+|`E:\type10-7\code\evaluation\collaborative_open_set_qknn_eval.py`|`/home/szu2070436088/2510044040/CV-SincNet/code/evaluation/collaborative_open_set_qknn_eval.py`|
+|`E:\type10-7\code\scripts\phase2_collaborative_open_set_qknn_eval.py`|`/home/szu2070436088/2510044040/CV-SincNet/code/scripts/phase2_collaborative_open_set_qknn_eval.py`|
+|`E:\type10-7\code\tests\test_collaborative_open_set_qknn_eval.py`|`/home/szu2070436088/2510044040/CV-SincNet/code/tests/test_collaborative_open_set_qknn_eval.py`|
+|`E:\type10-7\code\tests\test_phase2_collaborative_open_set_qknn_eval.py`|`/home/szu2070436088/2510044040/CV-SincNet/code/tests/test_phase2_collaborative_open_set_qknn_eval.py`|
+
+计划远端命令使用`CVS-RFFI`环境，并复用既有`runs/phase2_adv3b02_collab_open_set_qknn_full_20260703/features.npz`：
+
+```bash
+python code/tests/test_collaborative_open_set_qknn_eval.py
+python code/tests/test_phase2_collaborative_open_set_qknn_eval.py
+python code/scripts/phase2_collaborative_open_set_qknn_eval.py \
+  --feature_npz runs/phase2_adv3b02_collab_open_set_qknn_full_20260703/features.npz \
+  --output_json runs/phase2_adv3b02_collab_open_set_qknn_full_20260703/collab_open_set_qknn_scorer_cvs_support_envelope.json \
+  --collab_counts all \
+  --k_shot 8 --query_per_class 20 --qknn_k 8 \
+  --support_calibration_mode leave_one_out \
+  --unknown_gate_mode support_envelope \
+  --score_threshold_combine max \
+  --scenario_aware --radius_norm 0.3 \
+  --fusion_policy scorer_cvs \
+  --unknown_risk_threshold 0.80 \
+  --accept_margin_threshold 0.10 \
+  --consensus_gap_threshold 0.50 \
+  --consensus_score_threshold 0.30 \
+  --unknown_quantile 0.75 \
+  --latency_budget_ms 12 \
+  --evidence_packet_bytes 96 \
+  --event_alignment_policy receiver_domain_ranked \
+  --support_selection_policy stable_first \
+  --seed 407034
+```
+
+预期检查：报告1..5 receiver的`old_acc/min_old_class_acc/seen_new_acc/min_seen_new_class_acc/unknown_FAR/unknown_reject_rate/request_more_rate/unresolved_rate/bytes_per_event/latency_ms_p95`。若仍未达99/97/99，则继续标为诊断负结果。
