@@ -1118,3 +1118,42 @@ artifact SHA256：
 代码验证：`conda run -n ssr-gpu python -m py_compile code\scripts\phase2_support_metric_qknn_probe.py`通过。当前脚本SHA256为`3EC0664B371C156D5F065A6668551798A061687A0BED8A98ADDFC291B89CF58C`。
 
 结论：目标仍未完成。K=5已有source guard达标行，K=10仍稳定卡在`10-10=74.29%`；本轮三个新增方向进一步排除了“query无监督图后处理”“support-query传播”“类专属对角度量”能单独解决瓶颈的解释。当前更可信的下一步是表征侧hard-pair重训，或设计support-only小型adapter并引入独立support seed验证，不能继续依赖同一query集上的后处理微调来声明稳定达标。
+
+### 2026-07-05 support-Mahalanobis与局部可分性审计
+
+本轮继续固定`K=10`，不扩大K数量，仍使用seed`421029`、`R_t=7-14`、每类70个query和当前最强底座`diag_fisher+pair_gaussian+pair_fisher+ridge_head`。新增运行已存在的`mahal_proto`入口：只用K-shot support残差估计一个共享Mahalanobis原型距离头，部署侧保存协方差逆矩阵标量，不保存原始support样本或support embedding明文。
+
+| 诊断 | 行数 | 最好配置 | old_acc | min_old | new_acc | min_new | 存储开销 | 结论 |
+|---|---:|---|---:|---:|---:|---:|---:|---|
+| support-Mahalanobis prototype | 288 | `weight=0.05,alpha=10,diag_mix=0.5,clip=2.0` | 84.52% | 70.00% | 85.14% | 74.29% | `25600`个float | 均值微升，`10-10`不变 |
+
+最好行逐新类性能：
+
+| 类别 | acc |
+|---|---:|
+| `10-10` | 74.29% |
+| `11-10` | 80.00% |
+| `18-5` | 91.43% |
+| `19-3` | 88.57% |
+| `2-13` | 75.71% |
+| `2-5` | 85.71% |
+| `3-8` | 88.57% |
+| `4-10` | 92.86% |
+| `8-18` | 82.86% |
+| `8-3` | 91.43% |
+
+同时做了只读局部可分性审计，未作为正式候选写入脚本：
+
+- `10-10`的support半径为`0.1141`，不是最分散的新类；最分散的是`2-5=0.3474`、`8-18=0.2892`、`19-3=0.2207`。因此“按support半径给`10-10`额外补偿”缺少support侧证据。
+- `10-10`support原型最近邻为`4-10(sim=0.9584)`和`20-19(sim=0.9512)`；`20-19`support原型最近邻也包含`10-10(sim=0.9512)`。瓶颈仍是旧新hard-pair纠缠。
+- support leave-one-out中`10-10`准确率为`0.60`，但`11-10=0.30`、`18-5=0.50`、`19-3=0.50`、`2-13=0.50`更低或相近；LOO也不能唯一指向`10-10`。
+- 低维source-logit/prob ridge残差头只读原型测试没有把`10-10`提升到75%；best类均值可到`85.29%`左右，但`10-10`仍为`74.29%`。
+- 每类quota±1的分配层slack只读审计同样不能提升`10-10`，最好仍是`min_new=74.29%`。这说明瓶颈不是固定quota单独锁死。
+
+artifact SHA256：
+
+| file | SHA256 |
+|---|---|
+| `k10_mahal_proto_grid.json` | `4B014D88D27CD1F8CD2CDC298BE37E55AA5E163051F46D899EDFD8F69E27F500` |
+
+结论：目标仍未完成。到目前为止，K=10的`10-10=74.29%`已对以下路线稳定不敏感：pair-Fisher、ridge head、pair-logreg、source guard、source prototype anchor、runner-up rescue、support subspace prototype、assignment-margin、query graph smoothing、label propagation、class-specific diagonal metric、support-Mahalanobis、source-logit低维残差和quota slack。下一步若继续在当前特征上做后处理，很可能只是query集过拟合；真正有价值的路线应转向表征侧hard-pair重训，或设计一个有独立support seed/receiver复核的小adapter协议。
