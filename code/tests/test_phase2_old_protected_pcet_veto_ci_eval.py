@@ -57,6 +57,29 @@ class Phase2OldProtectedPcetVetoCiEvalTest(unittest.TestCase):
             ["opv_ultra_preserve", "opv_preserve", "opv_balanced", "opv_unknown_push"],
         )
 
+    def test_summary_order_is_not_unknown_metric_ranking(self):
+        from phase2_old_protected_pcet_veto_ci_eval import _pre_registered_summary_order
+
+        profile_names = ["opv_ultra_preserve", "opv_unknown_push"]
+        policy_names = ["opu_old_preserve"]
+        ultra = {
+            "profile": "opv_ultra_preserve",
+            "policy": "opu_old_preserve",
+            "collab_count": 1,
+            "unknown_reject_rate": 0.10,
+        }
+        unknown_push = {
+            "profile": "opv_unknown_push",
+            "policy": "opu_old_preserve",
+            "collab_count": 1,
+            "unknown_reject_rate": 0.90,
+        }
+
+        self.assertLess(
+            _pre_registered_summary_order(ultra, profile_names, policy_names),
+            _pre_registered_summary_order(unknown_push, profile_names, policy_names),
+        )
+
 
 if __name__ == "__main__":
     unittest.main()

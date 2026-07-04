@@ -258,6 +258,20 @@ def _joint_score(metrics: Mapping[str, Any]) -> float:
     )
 
 
+def _pre_registered_summary_order(
+    row: Mapping[str, Any], profile_names: Sequence[str], policy_names: Sequence[str]
+) -> tuple[int, int, int]:
+    """Keep summary rows in protocol order, not target-unknown evaluation order."""
+
+    profile_index = {name: index for index, name in enumerate(profile_names)}
+    policy_index = {name: index for index, name in enumerate(policy_names)}
+    return (
+        profile_index.get(str(row.get("profile", "")), len(profile_index)),
+        policy_index.get(str(row.get("policy", "")), len(policy_index)),
+        int(row.get("collab_count", 0)),
+    )
+
+
 def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
     p = argparse.ArgumentParser(description=__doc__)
     p.add_argument("--feature_npz", type=Path, required=True)
@@ -307,13 +321,15 @@ def main(argv: Sequence[str] | None = None) -> int:
     )
     _write_csv(args.output_dir / "opv_base_dual_route_evidence.csv", base_evidence)
 
+    profile_names = _profile_names(args.profiles)
+    policy_names = _parse_policy_names(args.policies)
     summary_rows: list[dict[str, Any]] = []
     results: dict[str, Any] = {}
-    for profile_name in _profile_names(args.profiles):
+    for profile_name in profile_names:
         profile = _profile_by_name(profile_name)
         evidence = augment_opv_evidence(base_evidence, profile)
         _write_csv(args.output_dir / f"{profile.name}_opv_evidence.csv", evidence)
-        for policy_name in _parse_policy_names(args.policies):
+        for policy_name in policy_names:
             policy = _policy_by_name(policy_name)
             result = _evaluate_policy(
                 evidence,
@@ -328,20 +344,15 @@ def main(argv: Sequence[str] | None = None) -> int:
                 row["profile"] = profile.name
                 row["profile_description"] = profile.description
                 row["joint_score"] = _joint_score(metrics)
+                row["joint_score_scope"] = "evaluation_ranking_only_uses_target_unknown_metrics"
+                row["summary_order"] = "pre_registered_profile_policy_collab_count"
                 row["target_unknown_training_count"] = 0
                 row["target_unknown_selection_count"] = 0
+                row["unknown_query_eval_only"] = True
+                row["profile_selection_uses_target_unknown"] = False
                 summary_rows.append(row)
 
-    summary_rows.sort(
-        key=lambda row: (
-            float(row["old_acc"]) >= 0.80,
-            float(row["unknown_reject_rate"]),
-            float(row["old_acc"]),
-            float(row["seen_new_acc"]),
-            -float(row["unknown_FAR"]),
-        ),
-        reverse=True,
-    )
+    summary_rows.sort(key=lambda row: _pre_registered_summary_order(row, profile_names, policy_names))
     summary_csv = args.output_dir / "opv_ci_summary.csv"
     summary_json = args.output_dir / "opv_ci_summary.json"
     _write_summary(summary_csv, summary_rows)
@@ -352,7 +363,9 @@ def main(argv: Sequence[str] | None = None) -> int:
                 "feature_npz": str(args.feature_npz),
                 "config": {key: str(value) if isinstance(value, Path) else value for key, value in vars(args).items()},
                 "metadata": metadata,
-                "profiles": [asdict(_profile_by_name(name)) for name in _profile_names(args.profiles)],
+                "profiles": [asdict(_profile_by_name(name)) for name in profile_names],
+                "summary_order": "pre_registered_profile_policy_collab_count",
+                "joint_score_scope": "evaluation_ranking_only_uses_target_unknown_metrics",
                 "profile_selection_uses_target_unknown": False,
                 "target_unknown_training_count": 0,
                 "target_unknown_selection_count": 0,
