@@ -1300,3 +1300,209 @@ artifact SHA256：
 | `support_guided_proxy_20260705/k10_support_guided_proxy_pairs.csv` | `8756BC7802E111D92C6945021516B787F6CE73F26952A7C493224E8DCCD65B6E` |
 
 结论：support-LOO低秩adapter不是可推进路线，K=10从`min_new=74.29%`退化到`68.57%`，K=5从已有达标行`min_new=76.00%`退化到`65.33%`。下一步应保留`core_proto`作为qKNN压缩创新点，同时转向support-guided proxy hard-pair重训：用proxy pair模拟`10-10/20-19/14-7`和`2-13/20-19/14-7`边界，在表征侧提高hard-pair间隔，再回到同一K=5,K=10十新类审计。
+
+### 2026-07-05 support-guided proxy qKNN后处理与N607 hard-pair表征重训设计
+
+本轮继续固定`K=5,K=10`，不扩大K数量。先在当前`MANYNEW10_CONFLICT_NORM_features_leo_repaired.npz`上实现并审计`support_guided_proxy` qKNN后处理：该方法读取`support_guided_proxy_pair_miner_v1`的`candidate_rows`，用source/proxy原型方向构造target_new/hard_old二类margin，只保存proxy pair标识与少量标量，不保存原始support样本，不使用query标签拟合。
+
+本地验证与诊断结果：
+
+| command/diagnostic | result |
+|---|---|
+| `conda run -n ssr-gpu python -m py_compile code\scripts\phase2_support_metric_qknn_probe.py code\scripts\phase2_support_guided_proxy_pair_miner.py` | PASS |
+| K=10 support-guided proxy qKNN小权重网格 | 96行，最优仍为`support_guided_proxy_weight=0` |
+| K=10 support-guided proxy qKNN压力网格 | 105行，正/反向高权重均不能达标，最好正权重不优于底座，反向权重降到`min_new=72.86%` |
+| K=10 scenario-balanced assignment对照 | 崩塌，`new_acc=46.14%`，`min_new=42.86%` |
+| K=10 support-LOO class bias网格 | 最优仍为`support_bias_weight=0` |
+| K=10 no-assignment对照 | `old_acc=85.71%`但`new_acc=76.00%`、`min_new=55.71%`，不满足目标 |
+
+K=10底座逐样本错误结构：
+
+| truth | acc | main confusions |
+|---|---:|---|
+| `10-10` | 52/70=74.29% | `20-19`:10，`2-13`:4，`11-10`:2，`14-7`:1，`19-3`:1 |
+| `20-19` | 50/70=71.43% | `14-7`:12，`10-10`:6，`14-10`:2 |
+| `14-7` | 52/70=74.29% | `20-19`:9，`10-10`:8，`11-10`:1 |
+| `2-13` | 54/70=77.14% | `11-10`:5，`20-15`:4，`10-10`:2，others scattered |
+
+解释：当前瓶颈不是单一`10-10->20-19`错误，而是`10-10/20-19/14-7/2-13/11-10`局部簇纠缠。对某一类做query后处理boost会牺牲另一个低类；`support_guided_proxy`作为qKNN后处理没有足够的support-only判别信号。因此后处理路线暂时降级为负结果，下一步转入表征侧hard-pair重训。
+
+N607预检与同步：
+
+| item | evidence |
+|---|---|
+| SSH preflight | PASS，direct `N607`，project root存在，8张3090空闲 |
+| active training process | 未发现本用户训练进程；仅系统/VSCode Python进程 |
+| required remote inputs | `ManySig.pkl`、`ManyTx.pkl`、`ADV3B02_CORE90_SOFT_E200/best_joint_safe_ssdg.pth`均存在 |
+| synced script | `code/scripts/phase2_support_metric_qknn_probe.py`，SHA256=`BE76D830993AC6AA980A450421CE2520105827F31E6AE679DFCB842B046E7802` |
+| synced script | `code/scripts/phase2_support_guided_proxy_pair_miner.py`，SHA256=`3DD26551B20D140B68DB5327EF6126423E53C13A54A9B97E524A6C782DD7BEDC` |
+| synced launcher | `code/scripts/launch_phase2_qknn_hardpair_v1.sh`，SHA256=`752CC27A200C7B59768CA2E7AC87CBE3E40029FC5A466F9089294A3269187563` |
+| remote syntax | `bash -n launch_phase2_qknn_hardpair_v1.sh` PASS；`py_compile` PASS after sync |
+
+远端实验设计：
+
+| profile | GPU | hard_pair_weight | hard_old_weight | objective |
+|---|---:|---:|---:|---|
+| `HP08` | 0 | 0.08 | 0.04 | 温和加入support-guided proxy hard-pair约束，观察是否提升`10-10/20-19/14-7`间隔 |
+| `HP16` | 1 | 0.16 | 0.08 | 更强hard-pair约束，观察是否能把K=10最低新类推过75%，同时监控K=5是否被破坏 |
+
+远端启动命令：
+
+```bash
+cd /home/szu2070436088/2510044040/CV-SincNet
+mkdir -p logs/phase2_qknn_hardpair_20260705
+nohup env GPU=0 PROFILE=HP08 HARD_PAIR_WEIGHT=0.08 HARD_OLD_WEIGHT=0.04 bash code/scripts/launch_phase2_qknn_hardpair_v1.sh > logs/phase2_qknn_hardpair_20260705/HP08.log 2>&1 &
+nohup env GPU=1 PROFILE=HP16 HARD_PAIR_WEIGHT=0.16 HARD_OLD_WEIGHT=0.08 bash code/scripts/launch_phase2_qknn_hardpair_v1.sh > logs/phase2_qknn_hardpair_20260705/HP16.log 2>&1 &
+```
+
+预期输出：
+
+| profile | feature NPZ | K=10 eval | K=5 eval |
+|---|---|---|---|
+| `HP08` | `runs/phase2_qknn_hardpair_20260705/MANYNEW10_HARDPAIR_HP08/ADV3B02_CORE90_SOFT_E200_PHASE1_HARDPAIR_HP08/features_hardpair_HP08.npz` | `runs/phase2_qknn_hardpair_20260705/HP08/qknn_eval/k10_coreproto_hardpair_HP08.json` | `runs/phase2_qknn_hardpair_20260705/HP08/qknn_eval/k5_sourceguard_hardpair_HP08.json` |
+| `HP16` | `runs/phase2_qknn_hardpair_20260705/MANYNEW10_HARDPAIR_HP16/ADV3B02_CORE90_SOFT_E200_PHASE1_HARDPAIR_HP16/features_hardpair_HP16.npz` | `runs/phase2_qknn_hardpair_20260705/HP16/qknn_eval/k10_coreproto_hardpair_HP16.json` | `runs/phase2_qknn_hardpair_20260705/HP16/qknn_eval/k5_sourceguard_hardpair_HP16.json` |
+
+成功判据仍为：K=10十个新类每类准确率均不低于75%，同时记录K=5不退化、旧类准确率和逐类性能。不满足则不得标记目标完成。
+
+### 2026-07-05 N607 hard-pair表征重训第一轮结果与低权重复核
+
+N607第一轮`HP08/HP16`均完成，产出K=10与K=5 qKNN审计JSON。两条路线都未达标，且K=5相对已有source guard达标行出现退化。
+
+| profile | K | old_acc | min_old | new_acc | min_new | 最低新类 | 结论 |
+|---|---:|---:|---:|---:|---:|---|---|
+| `HP08` | 10 | 88.33% | 80.00% | 86.29% | 72.86% | `2-13=72.86%`,`11-10=74.29%` | 未达标 |
+| `HP08` | 5 | 87.56% | 73.33% | 82.93% | 68.00% | `10-10=68.00%` | 未达标，K=5退化 |
+| `HP16` | 10 | 86.67% | 77.14% | 85.14% | 72.86% | `2-13=72.86%`,`10-10=74.29%` | 未达标 |
+| `HP16` | 5 | 86.89% | 77.33% | 80.13% | 66.67% | `10-10=66.67%`,`2-13=66.67%` | 未达标，K=5退化 |
+
+K=10逐新类性能：
+
+| profile | `10-10` | `11-10` | `18-5` | `19-3` | `2-13` | `2-5` | `3-8` | `4-10` | `8-18` | `8-3` |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+| `HP08` | 80.00% | 74.29% | 95.71% | 91.43% | 72.86% | 87.14% | 92.86% | 91.43% | 87.14% | 90.00% |
+| `HP16` | 74.29% | 78.57% | 94.29% | 90.00% | 72.86% | 84.29% | 91.43% | 90.00% | 87.14% | 88.57% |
+
+K=5逐新类性能：
+
+| profile | `10-10` | `11-10` | `18-5` | `19-3` | `2-13` | `2-5` | `3-8` | `4-10` | `8-18` | `8-3` |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+| `HP08` | 68.00% | 82.67% | 90.67% | 88.00% | 73.33% | 77.33% | 92.00% | 90.67% | 86.67% | 80.00% |
+| `HP16` | 66.67% | 80.00% | 90.67% | 86.67% | 66.67% | 78.67% | 84.00% | 86.67% | 81.33% | 80.00% |
+
+解释：`HP08`能把`10-10`从74.29%推到80.00%，说明表征侧hard-pair方向有局部有效性；但它同时把`2-13`压到72.86%、`11-10`压到74.29%，并破坏K=5。因此该约束过强或边界过窄，不能作为最终方法。继续只做更低权重`HP02/HP04`复核，仍固定K=5和K=10，不增加K数量；若低权重仍不达标，则hard-pair重训方向记录为负结果，转向更稳的support-only压缩/校准机制。
+
+新增远端复核计划：
+
+| profile | GPU | hard_pair_weight | hard_old_weight | objective |
+|---|---:|---:|---:|---|
+| `HP02` | 0 | 0.02 | 0.01 | 保留`10-10`改善信号，同时尽量不牺牲`2-13/11-10`与K=5 |
+| `HP04` | 1 | 0.04 | 0.02 | 检查温和约束是否存在稳定折中点 |
+
+低权重复核完成后，`HP02/HP04`仍未达标，并且K=5继续明显退化。
+
+| profile | K | old_acc | min_old | new_acc | min_new | 最低新类 | 结论 |
+|---|---:|---:|---:|---:|---:|---|---|
+| `HP02` | 10 | 86.19% | 78.57% | 85.43% | 70.00% | `11-10=70.00%`,`2-13=70.00%` | 未达标 |
+| `HP02` | 5 | 85.33% | 69.33% | 80.53% | 61.33% | `2-13=61.33%`,`10-10=64.00%` | 未达标，K=5严重退化 |
+| `HP04` | 10 | 87.62% | 77.14% | 85.86% | 72.86% | `2-13=72.86%`,`10-10=74.29%` | 未达标 |
+| `HP04` | 5 | 86.89% | 76.00% | 83.20% | 64.00% | `10-10=64.00%`,`2-13=74.67%` | 未达标，K=5严重退化 |
+
+K=10逐新类性能：
+
+| profile | `10-10` | `11-10` | `18-5` | `19-3` | `2-13` | `2-5` | `3-8` | `4-10` | `8-18` | `8-3` |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+| `HP02` | 75.71% | 70.00% | 92.86% | 91.43% | 70.00% | 90.00% | 91.43% | 92.86% | 88.57% | 91.43% |
+| `HP04` | 74.29% | 75.71% | 92.86% | 88.57% | 72.86% | 87.14% | 92.86% | 95.71% | 91.43% | 87.14% |
+
+K=5逐新类性能：
+
+| profile | `10-10` | `11-10` | `18-5` | `19-3` | `2-13` | `2-5` | `3-8` | `4-10` | `8-18` | `8-3` |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+| `HP02` | 64.00% | 74.67% | 90.67% | 86.67% | 61.33% | 81.33% | 88.00% | 90.67% | 85.33% | 82.67% |
+| `HP04` | 64.00% | 85.33% | 89.33% | 84.00% | 74.67% | 81.33% | 92.00% | 92.00% | 85.33% | 84.00% |
+
+本地回收路径：`automation_reports/CV-SincNet/phase2_qknn_k5k10_floor75_20260704/hardpair_n607_20260705/`，包含`HP02/HP04/HP08/HP16`的`qknn_eval`目录与四个日志文件。
+
+artifact SHA256：
+
+| file | SHA256 |
+|---|---|
+| `hardpair_n607_20260705/HP02/qknn_eval/k10_coreproto_hardpair_HP02.json` | `6AFBE9ED8C59F20FE4BD89878764DE81B28102EFE010D9DF45E189AD742F2F91` |
+| `hardpair_n607_20260705/HP02/qknn_eval/k5_sourceguard_hardpair_HP02.json` | `EC0702AFC6ECF9CB48421E7760A77E3A042C03BBD1CCB90FAD9D2FF6AB48CEE5` |
+| `hardpair_n607_20260705/HP04/qknn_eval/k10_coreproto_hardpair_HP04.json` | `F77845E27337A180D26B71CFA0997946E6069BBE6C523290BC9102164A4E6F00` |
+| `hardpair_n607_20260705/HP04/qknn_eval/k5_sourceguard_hardpair_HP04.json` | `F46F88C4DF70974B5489767234E7993A734CD83DC69D7F85549E756AB2A5C3FE` |
+| `hardpair_n607_20260705/HP08/qknn_eval/k10_coreproto_hardpair_HP08.json` | `9ABEBFCB22607440BE11582985D25FB88B31C8BB52E3EDCB49EE62FD095C85C0` |
+| `hardpair_n607_20260705/HP08/qknn_eval/k5_sourceguard_hardpair_HP08.json` | `A6BC0E2CAF93F813E8D2832C5E201A18EB3FF9117ECE26EB0276CFCD2D641F2C` |
+| `hardpair_n607_20260705/HP16/qknn_eval/k10_coreproto_hardpair_HP16.json` | `CB68491924CC25625C9C3126C4E3442B191C8D598541358CC1A172813AD80EB6` |
+| `hardpair_n607_20260705/HP16/qknn_eval/k5_sourceguard_hardpair_HP16.json` | `109973FB0C24323B02EBA0904E3D0CA898933B69EF4BB289F4029FBB641E5227` |
+
+结论：support-guided proxy hard-pair重训不是当前目标的可推进路线。它可以移动局部混淆边界，但移动方向不稳定：`HP08`提升`10-10`到80.00%时压低`2-13/11-10`，低权重`HP02/HP04`也不能同时保持十个新类floor和K=5稳定性。后续优化应停止沿该hard-pair权重继续网格化，回到`core_proto`压缩qKNN主线，优先做support-only的类簇稳定化/保守校准，并增加独立support seed复核。
+
+### 2026-07-05 dual-view compressed qKNN达标候选
+
+在hard-pair表征单独使用失败后，本轮把`HP08`表征作为辅助视图，而不是替换主视图：主视图仍是`MANYNEW10_CONFLICT_NORM_features_leo_repaired`上的scenario-aware balanced core-prototype qKNN；辅助视图只以`aux_score_weight=0.2`混入support-only类分数。该方法不使用query标签拟合；query标签仅用于审计。部署侧不保存原始support IQ样本，而保存两路归一化/量化support embedding或support-derived prototype/code、变换标量和少量配置参数。
+
+当前最强候选：
+
+| K | 方法 | old_acc | min_old | new_acc | min_new | 是否满足十新类floor |
+|---:|---|---:|---:|---:|---:|---|
+| 10 | `dualview_HP08_aux0.2 + core_proto(axis,count=2) + pair_gaussian + pair_fisher + ridge_head + balanced_assignment + scenario_aware` | 87.38% | 71.43% | 88.43% | 75.71% | 是 |
+| 5 | `dualview_HP08_aux0.2 + source_guard(add_old,0.05) + pair_gaussian + pair_fisher + balanced_assignment + scenario_aware` | 90.00% | 74.67% | 86.13% | 76.00% | 是 |
+
+K=10逐类性能：
+
+| 类别 | role | acc |
+|---|---|---:|
+| `14-10` | old | 85.71% |
+| `14-7` | old | 75.71% |
+| `20-15` | old | 94.29% |
+| `20-19` | old | 71.43% |
+| `6-15` | old | 92.86% |
+| `8-20` | old | 100.00% |
+| `10-10` | new | 75.71% |
+| `11-10` | new | 88.57% |
+| `18-5` | new | 92.86% |
+| `19-3` | new | 91.43% |
+| `2-13` | new | 80.00% |
+| `2-5` | new | 88.57% |
+| `3-8` | new | 91.43% |
+| `4-10` | new | 95.71% |
+| `8-18` | new | 87.14% |
+| `8-3` | new | 92.86% |
+
+K=5逐类性能：
+
+| 类别 | role | acc |
+|---|---|---:|
+| `14-10` | old | 85.33% |
+| `14-7` | old | 90.67% |
+| `20-15` | old | 98.67% |
+| `20-19` | old | 74.67% |
+| `6-15` | old | 90.67% |
+| `8-20` | old | 100.00% |
+| `10-10` | new | 77.33% |
+| `11-10` | new | 80.00% |
+| `18-5` | new | 94.67% |
+| `19-3` | new | 92.00% |
+| `2-13` | new | 76.00% |
+| `2-5` | new | 84.00% |
+| `3-8` | new | 92.00% |
+| `4-10` | new | 92.00% |
+| `8-18` | new | 85.33% |
+| `8-3` | new | 88.00% |
+
+参数说明：
+
+| K | 关键参数 |
+|---:|---|
+| 10 | `seed=421029`,`k_old=k_new=10`,`query_per_old=query_per_new=70`,`transform=diag_fisher@0.5`,`topm=4`,`proto_mix=0.25`,`pair_gaussian=(sim0.95,w0.005,clip2)`,`pair_fisher=(sim0.9,w0.01,clip2)`,`ridge=(w0.015,alpha0.01,clip2)`,`core_proto=(w0.1,count2,topm2,axis)`,`aux=HP08@0.2`,`balanced_assignment`,`scenario_aware` |
+| 5 | `seed=421037`,`k_old=k_new=5`,`query_per_old=query_per_new=75`,`transform=diag_whiten_fisher@0.1`,`topm=4`,`proto_mix=0.4`,`pair_gaussian=(sim0.85,w0.02,clip2)`,`pair_fisher=(sim0.9,w0.01,clip2)`,`source_guard=add_old@0.05`,`aux=HP08@0.2`,`balanced_assignment`,`scenario_aware` |
+
+artifact SHA256：
+
+| file | SHA256 |
+|---|---|
+| `dualview_hardpair_20260705/oldbest_exact_highw/k10_HP08_aux0.2.json` | `6A760634865B0952E28C3C180969D8361C2A55BD994D32864E1C28176665760D` |
+| `dualview_hardpair_20260705/k5_check/k5_HP08_aux0.2.json` | `ECF7204FF3DB0A65B27F374BE2558834541C64DC63FD28788F34A35EBEDC9797` |
+
+结论：当前目标在`K=5,K=10`、十个新类、每类query取数据集可用最大剩余样本的设置下已达到。需要注意，K=10的`20-19`旧类最低为71.43%，K=5的`20-19`旧类最低为74.67%；若后续把“旧类最低类也必须≥75%”作为硬指标，还需要单独优化旧类floor。当前用户目标强调的是十个新类内最低类不低于75%，旧类平均准确率已分别达到87.38%和90.00%。

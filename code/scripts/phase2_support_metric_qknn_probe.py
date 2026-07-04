@@ -412,6 +412,84 @@ def _pair_fisher_adjust_scores(
     return adjusted, used
 
 
+def _proxy_prototypes(features: np.ndarray, tx_ids: np.ndarray, roles: np.ndarray) -> dict[str, np.ndarray]:
+    out: dict[str, np.ndarray] = {}
+    for label in sorted({str(value) for value in tx_ids[roles == "proxy_unknown"].tolist()}):
+        idx = np.where((tx_ids == label) & (roles == "proxy_unknown"))[0].astype(int)
+        if idx.size:
+            out[label] = qknn._normalize_rows(features[idx].mean(axis=0, keepdims=True))[0]
+    return out
+
+
+def _support_guided_proxy_adjust_scores(
+    scores: np.ndarray,
+    *,
+    features: np.ndarray,
+    tx_ids: np.ndarray,
+    roles: np.ndarray,
+    support_indices: np.ndarray,
+    support_labels: np.ndarray,
+    query_indices: np.ndarray,
+    class_labels: list[str],
+    candidate_rows: list[dict[str, Any]],
+    weight: float,
+    top_pairs: int,
+    clip: float,
+) -> tuple[np.ndarray, int, int]:
+    if float(weight) == 0.0 or int(top_pairs) <= 0 or not candidate_rows:
+        return scores, 0, 0
+    label_to_index = {label: idx for idx, label in enumerate(class_labels)}
+    support = qknn._normalize_rows(features[support_indices])
+    query = qknn._normalize_rows(features[query_indices])
+    support_label_arr = np.asarray(support_labels, dtype=object).astype(str)
+    proxy_proto = _proxy_prototypes(qknn._normalize_rows(features), tx_ids, roles)
+    adjusted = np.asarray(scores, dtype=np.float64).copy()
+    pair_accum: dict[tuple[str, str], list[np.ndarray]] = {}
+    rows = sorted(
+        candidate_rows,
+        key=lambda row: float(row.get("analogy_score", 0.0)),
+        reverse=True,
+    )[: int(top_pairs)]
+    used = 0
+    for row in rows:
+        new_label = str(row.get("target_new", ""))
+        old_label = str(row.get("hard_old", ""))
+        left_proxy = str(row.get("left_proxy", ""))
+        right_proxy = str(row.get("right_proxy", ""))
+        if new_label not in label_to_index or old_label not in label_to_index:
+            continue
+        if left_proxy not in proxy_proto or right_proxy not in proxy_proto:
+            continue
+        new_support = support[support_label_arr == new_label]
+        old_support = support[support_label_arr == old_label]
+        if new_support.size == 0 or old_support.size == 0:
+            continue
+        axis = proxy_proto[left_proxy] - proxy_proto[right_proxy]
+        norm = float(np.linalg.norm(axis))
+        if norm < 1e-8:
+            continue
+        axis = axis / norm
+        new_mean_vec = qknn._normalize_rows(new_support.mean(axis=0, keepdims=True))[0]
+        old_mean_vec = qknn._normalize_rows(old_support.mean(axis=0, keepdims=True))[0]
+        if float(axis @ (new_mean_vec - old_mean_vec)) < 0.0:
+            axis = -axis
+        new_proj = new_support @ axis
+        old_proj = old_support @ axis
+        midpoint = 0.5 * (float(np.mean(new_proj)) + float(np.mean(old_proj)))
+        scale = float(np.std(np.concatenate([new_proj, old_proj], axis=0)) + 1e-3)
+        margin = np.clip((query @ axis - midpoint) / scale, -float(clip), float(clip))
+        pair_accum.setdefault((new_label, old_label), []).append(margin)
+        used += 1
+    for (new_label, old_label), margins in pair_accum.items():
+        mean_margin = np.mean(np.stack(margins, axis=0), axis=0)
+        new_idx = label_to_index[new_label]
+        old_idx = label_to_index[old_label]
+        adjusted[:, new_idx] += float(weight) * mean_margin
+        adjusted[:, old_idx] -= float(weight) * mean_margin
+    stored_scalars = int(used * 3)
+    return adjusted, int(used), stored_scalars
+
+
 def _pair_logreg_adjust_scores(
     scores: np.ndarray,
     *,
@@ -1299,6 +1377,10 @@ def _evaluate_metric_qknn(
     pair_fisher_weight: float,
     pair_fisher_alpha: float,
     pair_fisher_clip: float,
+    support_guided_proxy_rows: list[dict[str, Any]],
+    support_guided_proxy_weight: float,
+    support_guided_proxy_top_pairs: int,
+    support_guided_proxy_clip: float,
     pair_logreg_similarity: float,
     pair_logreg_weight: float,
     pair_logreg_alpha: float,
@@ -1511,6 +1593,20 @@ def _evaluate_metric_qknn(
         weight=float(pair_fisher_weight),
         alpha=float(pair_fisher_alpha),
         clip=float(pair_fisher_clip),
+    )
+    scores, support_guided_proxy_count, stored_support_guided_proxy_scalars = _support_guided_proxy_adjust_scores(
+        scores,
+        features=adapted,
+        tx_ids=tx_ids,
+        roles=roles,
+        support_indices=support_indices,
+        support_labels=support_labels,
+        query_indices=query_indices,
+        class_labels=old_labels + new_labels,
+        candidate_rows=support_guided_proxy_rows,
+        weight=float(support_guided_proxy_weight),
+        top_pairs=int(support_guided_proxy_top_pairs),
+        clip=float(support_guided_proxy_clip),
     )
     scores, pair_logreg_count, stored_pair_logreg_scalars = _pair_logreg_adjust_scores(
         scores,
@@ -1785,6 +1881,11 @@ def _evaluate_metric_qknn(
         "pair_fisher_alpha": float(pair_fisher_alpha),
         "pair_fisher_clip": float(pair_fisher_clip),
         "pair_fisher_count": int(pair_fisher_count),
+        "support_guided_proxy_weight": float(support_guided_proxy_weight),
+        "support_guided_proxy_top_pairs": int(support_guided_proxy_top_pairs),
+        "support_guided_proxy_clip": float(support_guided_proxy_clip),
+        "support_guided_proxy_count": int(support_guided_proxy_count),
+        "stored_support_guided_proxy_scalars": int(stored_support_guided_proxy_scalars),
         "pair_logreg_similarity": float(pair_logreg_similarity),
         "pair_logreg_weight": float(pair_logreg_weight),
         "pair_logreg_alpha": float(pair_logreg_alpha),
@@ -1961,6 +2062,10 @@ def main() -> None:
     parser.add_argument("--pair_fisher_weight_grid", default="0")
     parser.add_argument("--pair_fisher_alpha_grid", default="1.0")
     parser.add_argument("--pair_fisher_clip_grid", default="5.0")
+    parser.add_argument("--support_guided_proxy_json", default="")
+    parser.add_argument("--support_guided_proxy_weight_grid", default="0")
+    parser.add_argument("--support_guided_proxy_top_pairs_grid", default="0")
+    parser.add_argument("--support_guided_proxy_clip_grid", default="2.0")
     parser.add_argument("--pair_logreg_similarity_grid", default="1.1")
     parser.add_argument("--pair_logreg_weight_grid", default="0")
     parser.add_argument("--pair_logreg_alpha_grid", default="1.0")
@@ -2045,6 +2150,10 @@ def main() -> None:
                 raise ValueError(f"aux_feature_npz metadata mismatch for {key}: {args.aux_feature_npz}")
     old_labels = qknn._parse_csv(args.old_tx_ids)
     new_labels = qknn._parse_csv(args.new_tx_ids)
+    support_guided_proxy_rows: list[dict[str, Any]] = []
+    if str(args.support_guided_proxy_json).strip():
+        proxy_manifest = json.loads(Path(args.support_guided_proxy_json).read_text(encoding="utf-8"))
+        support_guided_proxy_rows = list(proxy_manifest.get("candidate_rows", []))
     source_probs = active._softmax(logits)
     source_label_to_idx = {label: idx for idx, label in enumerate(old_labels)}
     source_prototypes: dict[str, np.ndarray] = {}
@@ -2081,6 +2190,9 @@ def main() -> None:
             qknn._parse_float_csv(args.pair_fisher_weight_grid),
             qknn._parse_float_csv(args.pair_fisher_alpha_grid),
             qknn._parse_float_csv(args.pair_fisher_clip_grid),
+            qknn._parse_float_csv(args.support_guided_proxy_weight_grid),
+            qknn._parse_int_csv(args.support_guided_proxy_top_pairs_grid),
+            qknn._parse_float_csv(args.support_guided_proxy_clip_grid),
             qknn._parse_float_csv(args.pair_logreg_similarity_grid),
             qknn._parse_float_csv(args.pair_logreg_weight_grid),
             qknn._parse_float_csv(args.pair_logreg_alpha_grid),
@@ -2204,6 +2316,9 @@ def main() -> None:
                 pair_fisher_weight,
                 pair_fisher_alpha,
                 pair_fisher_clip,
+                support_guided_proxy_weight,
+                support_guided_proxy_top_pairs,
+                support_guided_proxy_clip,
                 pair_logreg_similarity,
                 pair_logreg_weight,
                 pair_logreg_alpha,
@@ -2303,6 +2418,10 @@ def main() -> None:
                     pair_fisher_weight=float(pair_fisher_weight),
                     pair_fisher_alpha=float(pair_fisher_alpha),
                     pair_fisher_clip=float(pair_fisher_clip),
+                    support_guided_proxy_rows=support_guided_proxy_rows,
+                    support_guided_proxy_weight=float(support_guided_proxy_weight),
+                    support_guided_proxy_top_pairs=int(support_guided_proxy_top_pairs),
+                    support_guided_proxy_clip=float(support_guided_proxy_clip),
                     pair_logreg_similarity=float(pair_logreg_similarity),
                     pair_logreg_weight=float(pair_logreg_weight),
                     pair_logreg_alpha=float(pair_logreg_alpha),
@@ -2464,6 +2583,11 @@ def main() -> None:
         "pair_fisher_alpha",
         "pair_fisher_clip",
         "pair_fisher_count",
+        "support_guided_proxy_weight",
+        "support_guided_proxy_top_pairs",
+        "support_guided_proxy_clip",
+        "support_guided_proxy_count",
+        "stored_support_guided_proxy_scalars",
         "pair_logreg_similarity",
         "pair_logreg_weight",
         "pair_logreg_alpha",
