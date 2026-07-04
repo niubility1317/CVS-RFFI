@@ -1055,3 +1055,66 @@ artifact SHA256：
 代码验证：`conda run -n ssr-gpu python -m py_compile code\scripts\phase2_support_metric_qknn_probe.py`通过。当前脚本SHA256为`351D9899E9BA77E724EC1AD75E52CD553220233AD0EAE7E2065FDE397DEA6DE6`。
 
 结论：新增pair-logreg头是一个可写入方法创新点的压缩KNN变体，但它仍不能在现有特征上完成K=10最低类75%门槛。下一步应从“分数后处理”转到“特征侧hard-pair分离”：以`10-10/20-19/14-7`为hard pair，在地面导出新的LEO特征或support-only小adapter初始化，再用同一K=5/K=10、每类70query、target receiver domain=`7-14`协议复评。
+
+### 2026-07-05 query图平滑、label propagation与类专属度量负诊断
+
+本轮继续固定`K=10`，不扩大K数量，使用当前最强底座`diag_fisher+pair_gaussian+pair_fisher+ridge_head`与seed`421029`。新增三个诊断入口：
+
+- `query_graph_smooth`：只用无标签query特征构建query-query kNN图，对已有qKNN分数做批内平滑；不读取query标签，但依赖query批统计，因此定位为转导诊断。
+- `labelprop`：把support label作为clamped节点，把query作为无标签节点，在support+query联合图上传播标签分数；不读取query标签，部署侧不保存原始support样本。
+- `class_diag_metric`：只用K-shot support为每个类别构造类专属对角Fisher度量，部署侧保存每类每维缩放标量，不保存原始support样本。
+
+关键结果如下：
+
+| 诊断 | 行数 | 通过行数 | 最好配置 | old_acc | min_old | new_acc | min_new | 瓶颈 |
+|---|---:|---:|---|---:|---:|---:|---:|---|
+| query图平滑 | 1440 | 0 | `weight=0.1,k=3,temp=0.2,rounds=3,scope=scenario` | 84.76% | 68.57% | 85.29% | 74.29% | `10-10=74.29%` |
+| support-query label propagation | 224 | 0 | `weight=0.05,k=5,alpha=0.95,temp=0.05,rounds=10,clip=1,scope=scenario` | 84.76% | 70.00% | 85.29% | 74.29% | `10-10=74.29%` |
+| class-specific diagonal metric | 1080 | 0 | 最好退回`class_diag_metric_weight=0` | 85.00% | 71.43% | 85.00% | 74.29% | `10-10=74.29%` |
+
+query图平滑最好行逐新类性能：
+
+| 类别 | acc |
+|---|---:|
+| `10-10` | 74.29% |
+| `11-10` | 78.57% |
+| `18-5` | 94.29% |
+| `19-3` | 87.14% |
+| `2-13` | 77.14% |
+| `2-5` | 87.14% |
+| `3-8` | 88.57% |
+| `4-10` | 92.86% |
+| `8-18` | 81.43% |
+| `8-3` | 91.43% |
+
+label propagation最好行逐新类性能：
+
+| 类别 | acc |
+|---|---:|
+| `10-10` | 74.29% |
+| `11-10` | 77.14% |
+| `18-5` | 92.86% |
+| `19-3` | 90.00% |
+| `2-13` | 77.14% |
+| `2-5` | 88.57% |
+| `3-8` | 87.14% |
+| `4-10` | 92.86% |
+| `8-18` | 81.43% |
+| `8-3` | 91.43% |
+
+基线prediction级诊断显示，K=10最强行中真实`10-10`错误18个，其中误分到`20-19`10个、`2-13`4个、`11-10`2个、`14-7`1个、`19-3`1个；同时被预测成`10-10`的假阳性也有18个，其中真实`14-7`8个、`20-19`6个、`2-13`3个、`14-10`1个。source旧类logit不能区分这些样本：错误真实`10-10`的source confidence均值为`0.9648`，正确真实`10-10`为`0.9892`，假阳性`10-10`为`0.9716`，且source argmax大多指向`20-19`。这解释了为什么source guard、query平滑和label propagation都无法把`10-10`从`52/70`推到`53/70`。
+
+本轮一个更大的label propagation网格在本地运行超过600秒后超时，未产出JSON/CSV；已清理残留`conda`与`python`本地进程，并复查没有遗留训练/评估子进程。没有N607远端启动、没有SCP同步、没有服务器状态改变。
+
+artifact SHA256：
+
+| file | SHA256 |
+|---|---|
+| `k10_querygraph_grid.json` | `4D16354C330393EC986D1EB58AEF8E6B6D1A80C9F471077EA2524CB16FCACECD` |
+| `k10_labelprop_small.json` | `A7A428890BDDEE19A300F6D97A4CC3766016328825FAF408CD76213CC9B351E9` |
+| `k10_classdiag_grid.json` | `7AE6B1697900FB9507333A37449A7F4CF1208B2EA1A467401CDB13A30C3981F5` |
+| `k10_base_predictions.json` | `C5717094524904E35D7B6A2740BCE4E905CB1583885C84028942F8321778F3B2` |
+
+代码验证：`conda run -n ssr-gpu python -m py_compile code\scripts\phase2_support_metric_qknn_probe.py`通过。当前脚本SHA256为`3EC0664B371C156D5F065A6668551798A061687A0BED8A98ADDFC291B89CF58C`。
+
+结论：目标仍未完成。K=5已有source guard达标行，K=10仍稳定卡在`10-10=74.29%`；本轮三个新增方向进一步排除了“query无监督图后处理”“support-query传播”“类专属对角度量”能单独解决瓶颈的解释。当前更可信的下一步是表征侧hard-pair重训，或设计support-only小型adapter并引入独立support seed验证，不能继续依赖同一query集上的后处理微调来声明稳定达标。

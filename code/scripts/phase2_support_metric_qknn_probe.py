@@ -582,6 +582,126 @@ def _assignment_margin_adjust_scores(scores: np.ndarray, weight: float, clip: fl
     return score_matrix + float(weight) * margin
 
 
+def _query_graph_smooth_scores(
+    scores: np.ndarray,
+    *,
+    features: np.ndarray,
+    query_indices: np.ndarray,
+    scenarios: np.ndarray,
+    neighbor_k: int,
+    weight: float,
+    temperature: float,
+    rounds: int,
+    scope: str,
+) -> tuple[np.ndarray, int]:
+    if float(weight) == 0.0 or int(neighbor_k) <= 0 or int(rounds) <= 0:
+        return scores, 0
+    scope_norm = str(scope).strip().lower()
+    if scope_norm not in {"all", "scenario"}:
+        raise ValueError(f"unsupported query_graph_scope: {scope}")
+    query = qknn._normalize_rows(features[query_indices])
+    query_scenarios = np.asarray(scenarios[query_indices], dtype=object).astype(str)
+    smoothed = np.asarray(scores, dtype=np.float64).copy()
+    total_edges = 0
+    groups: list[np.ndarray] = []
+    if scope_norm == "scenario":
+        for scenario in sorted({str(value) for value in query_scenarios.tolist()}):
+            groups.append(np.where(query_scenarios == scenario)[0])
+    else:
+        groups.append(np.arange(query.shape[0], dtype=int))
+    for group in groups:
+        if int(group.size) <= 1:
+            continue
+        k = max(1, min(int(neighbor_k), int(group.size) - 1))
+        group_query = query[group]
+        similarity = group_query @ group_query.T
+        np.fill_diagonal(similarity, -np.inf)
+        neighbor_idx = np.argpartition(similarity, kth=similarity.shape[1] - k, axis=1)[:, -k:]
+        neighbor_sim = np.take_along_axis(similarity, neighbor_idx, axis=1)
+        temp = max(float(temperature), 1e-6)
+        exp = np.exp((neighbor_sim - np.max(neighbor_sim, axis=1, keepdims=True)) / temp)
+        weights = exp / np.maximum(np.sum(exp, axis=1, keepdims=True), 1e-12)
+        total_edges += int(group.size * k)
+        for _round in range(int(rounds)):
+            source = smoothed[group]
+            neighbor_scores = source[neighbor_idx]
+            averaged = np.sum(neighbor_scores * weights[:, :, None], axis=1)
+            smoothed[group] = (1.0 - float(weight)) * source + float(weight) * averaged
+    return smoothed, int(total_edges)
+
+
+def _support_query_labelprop_scores(
+    *,
+    features: np.ndarray,
+    support_indices: np.ndarray,
+    support_labels: np.ndarray,
+    query_indices: np.ndarray,
+    scenarios: np.ndarray,
+    class_labels: list[str],
+    neighbor_k: int,
+    alpha: float,
+    temperature: float,
+    rounds: int,
+    clip: float,
+    scope: str,
+) -> tuple[np.ndarray, int]:
+    if int(neighbor_k) <= 0 or int(rounds) <= 0:
+        return np.zeros((query_indices.size, len(class_labels)), dtype=np.float64), 0
+    scope_norm = str(scope).strip().lower()
+    if scope_norm not in {"all", "scenario"}:
+        raise ValueError(f"unsupported labelprop_scope: {scope}")
+    labels = np.asarray(support_labels, dtype=object).astype(str)
+    label_to_index = {label: index for index, label in enumerate(class_labels)}
+    support_scenarios = np.asarray(scenarios[support_indices], dtype=object).astype(str)
+    query_scenarios = np.asarray(scenarios[query_indices], dtype=object).astype(str)
+    out = np.zeros((query_indices.size, len(class_labels)), dtype=np.float64)
+    total_edges = 0
+    groups: list[tuple[np.ndarray, np.ndarray]] = []
+    if scope_norm == "scenario":
+        for scenario in sorted({str(value) for value in query_scenarios.tolist()}):
+            q_local = np.where(query_scenarios == scenario)[0]
+            s_local = np.where(support_scenarios == scenario)[0]
+            if s_local.size < max(2, len(class_labels)) or len(set(labels[s_local].tolist())) < 2:
+                s_local = np.arange(support_indices.size, dtype=int)
+            groups.append((s_local, q_local))
+    else:
+        groups.append((np.arange(support_indices.size, dtype=int), np.arange(query_indices.size, dtype=int)))
+    for support_local, query_local in groups:
+        if query_local.size == 0 or support_local.size == 0:
+            continue
+        node_indices = np.concatenate([support_indices[support_local], query_indices[query_local]])
+        node_features = qknn._normalize_rows(features[node_indices])
+        support_count = int(support_local.size)
+        node_count = int(node_indices.size)
+        if node_count <= 1:
+            continue
+        k = max(1, min(int(neighbor_k), node_count - 1))
+        similarity = node_features @ node_features.T
+        np.fill_diagonal(similarity, -np.inf)
+        neighbor_idx = np.argpartition(similarity, kth=similarity.shape[1] - k, axis=1)[:, -k:]
+        neighbor_sim = np.take_along_axis(similarity, neighbor_idx, axis=1)
+        temp = max(float(temperature), 1e-6)
+        exp = np.exp((neighbor_sim - np.max(neighbor_sim, axis=1, keepdims=True)) / temp)
+        weights = exp / np.maximum(np.sum(exp, axis=1, keepdims=True), 1e-12)
+        y = np.zeros((node_count, len(class_labels)), dtype=np.float64)
+        for local_row, label in enumerate(labels[support_local].tolist()):
+            if label in label_to_index:
+                y[local_row, label_to_index[label]] = 1.0
+        f = y.copy()
+        alpha_clamped = min(max(float(alpha), 0.0), 0.999)
+        for _round in range(int(rounds)):
+            propagated = np.sum(f[neighbor_idx] * weights[:, :, None], axis=1)
+            f = alpha_clamped * propagated + (1.0 - alpha_clamped) * y
+            f[:support_count] = y[:support_count]
+        query_scores = f[support_count:]
+        query_scores = query_scores - np.mean(query_scores, axis=1, keepdims=True)
+        query_scores = query_scores / (np.std(query_scores, axis=1, keepdims=True) + 1e-6)
+        query_scores = np.clip(query_scores, -float(clip), float(clip))
+        out[query_local] = query_scores
+        total_edges += int(node_count * k)
+    return out, int(total_edges)
+
+
 def _source_old_guard_adjust_scores(
     scores: np.ndarray,
     *,
@@ -833,6 +953,78 @@ def _support_subspace_proto_scores(
     return scores, int(max_rank), stored_scalars
 
 
+def _class_diag_metric_scores(
+    *,
+    features: np.ndarray,
+    support_indices: np.ndarray,
+    support_labels: np.ndarray,
+    query_indices: np.ndarray,
+    class_labels: list[str],
+    topm: int,
+    proto_mix: float,
+    similarity_threshold: float,
+    alpha: float,
+    power: float,
+    clip: float,
+) -> tuple[np.ndarray, int, int]:
+    support = qknn._normalize_rows(features[support_indices])
+    query = qknn._normalize_rows(features[query_indices])
+    labels = np.asarray(support_labels, dtype=object).astype(str)
+    means: list[np.ndarray] = []
+    variances: list[np.ndarray] = []
+    valid: list[bool] = []
+    for label in class_labels:
+        cls = support[labels == label]
+        if cls.size == 0:
+            means.append(np.zeros(support.shape[1], dtype=np.float64))
+            variances.append(np.ones(support.shape[1], dtype=np.float64))
+            valid.append(False)
+            continue
+        means.append(np.mean(cls, axis=0))
+        variances.append(np.var(cls, axis=0) + 1e-6)
+        valid.append(True)
+    mean_matrix = qknn._normalize_rows(np.stack(means, axis=0))
+    var_matrix = np.stack(variances, axis=0)
+    proto_sim = mean_matrix @ mean_matrix.T
+    score_columns: list[np.ndarray] = []
+    metric_count = 0
+    for class_index, label in enumerate(class_labels):
+        cls = support[labels == label]
+        if cls.size == 0:
+            score_columns.append(np.full(query.shape[0], -1e9, dtype=np.float64))
+            continue
+        competitors = np.where(proto_sim[class_index] >= float(similarity_threshold))[0]
+        competitors = competitors[competitors != class_index]
+        competitors = np.asarray([idx for idx in competitors.tolist() if valid[idx]], dtype=int)
+        if competitors.size == 0:
+            order = np.argsort(-proto_sim[class_index])
+            competitors = np.asarray([idx for idx in order.tolist() if idx != class_index and valid[idx]][:1], dtype=int)
+        if competitors.size == 0:
+            weights = np.ones(support.shape[1], dtype=np.float64)
+        else:
+            diff2 = (mean_matrix[class_index][None, :] - mean_matrix[competitors]) ** 2
+            denom = var_matrix[class_index][None, :] + var_matrix[competitors]
+            fisher = np.mean(diff2 / (denom + float(alpha)), axis=0)
+            fisher = fisher / (float(np.mean(fisher)) + 1e-12)
+            weights = np.power(np.maximum(fisher, 1e-6), float(power))
+            weights = np.clip(weights, 0.05, 20.0)
+            weights = weights / (float(np.mean(weights)) + 1e-12)
+        sqrt_w = np.sqrt(weights)
+        cls_w = qknn._normalize_rows(cls * sqrt_w[None, :])
+        query_w = qknn._normalize_rows(query * sqrt_w[None, :])
+        proto = qknn._normalize_rows(cls_w.mean(axis=0, keepdims=True))[0]
+        local = _topm_mean(query_w @ cls_w.T, int(topm))
+        proto_score = query_w @ proto
+        score_columns.append((1.0 - float(proto_mix)) * local + float(proto_mix) * proto_score)
+        metric_count += 1
+    scores = np.stack(score_columns, axis=1)
+    scores = scores - np.mean(scores, axis=1, keepdims=True)
+    scores = scores / (np.std(scores, axis=1, keepdims=True) + 1e-6)
+    scores = np.clip(scores, -float(clip), float(clip))
+    stored_scalars = int(metric_count * support.shape[1])
+    return scores, int(metric_count), int(stored_scalars)
+
+
 def _support_loo_base_scores(
     *,
     features: np.ndarray,
@@ -1036,6 +1228,11 @@ def _evaluate_metric_qknn(
     subspace_proto_rank: int,
     subspace_proto_power: float,
     subspace_proto_clip: float,
+    class_diag_metric_weight: float,
+    class_diag_metric_similarity: float,
+    class_diag_metric_alpha: float,
+    class_diag_metric_power: float,
+    class_diag_metric_clip: float,
     support_bias_weight: float,
     support_bias_step: float,
     support_bias_rounds: int,
@@ -1046,6 +1243,18 @@ def _evaluate_metric_qknn(
     score_calibration: str,
     assignment_margin_weight: float,
     assignment_margin_clip: float,
+    labelprop_weight: float,
+    labelprop_k: int,
+    labelprop_alpha: float,
+    labelprop_temperature: float,
+    labelprop_rounds: int,
+    labelprop_clip: float,
+    labelprop_scope: str,
+    query_graph_weight: float,
+    query_graph_k: int,
+    query_graph_temperature: float,
+    query_graph_rounds: int,
+    query_graph_scope: str,
     source_guard_mode: str,
     source_guard_weight: float,
     source_guard_conf_min: float,
@@ -1286,6 +1495,23 @@ def _evaluate_metric_qknn(
             clip=float(subspace_proto_clip),
         )
         scores = scores + float(subspace_proto_weight) * subspace_scores
+    class_diag_metric_count = 0
+    stored_class_diag_metric_scalars = 0
+    if float(class_diag_metric_weight) > 0.0:
+        class_diag_scores, class_diag_metric_count, stored_class_diag_metric_scalars = _class_diag_metric_scores(
+            features=adapted,
+            support_indices=support_indices,
+            support_labels=support_labels,
+            query_indices=query_indices,
+            class_labels=old_labels + new_labels,
+            topm=int(topm),
+            proto_mix=float(proto_mix),
+            similarity_threshold=float(class_diag_metric_similarity),
+            alpha=float(class_diag_metric_alpha),
+            power=float(class_diag_metric_power),
+            clip=float(class_diag_metric_clip),
+        )
+        scores = scores + float(class_diag_metric_weight) * class_diag_scores
     stored_support_bias_scalars = 0
     support_bias_loo_min_acc = 0.0
     support_bias_loo_mean_acc = 0.0
@@ -1337,6 +1563,23 @@ def _evaluate_metric_qknn(
         weight=float(assignment_margin_weight),
         clip=float(assignment_margin_clip),
     )
+    labelprop_edges = 0
+    if float(labelprop_weight) != 0.0:
+        labelprop_scores, labelprop_edges = _support_query_labelprop_scores(
+            features=adapted,
+            support_indices=support_indices,
+            support_labels=support_labels,
+            query_indices=query_indices,
+            scenarios=scenarios,
+            class_labels=old_labels + new_labels,
+            neighbor_k=int(labelprop_k),
+            alpha=float(labelprop_alpha),
+            temperature=float(labelprop_temperature),
+            rounds=int(labelprop_rounds),
+            clip=float(labelprop_clip),
+            scope=str(labelprop_scope),
+        )
+        scores = scores + float(labelprop_weight) * labelprop_scores
     scores, source_proto_anchor_count, stored_source_proto_anchor_scalars = _source_proto_anchor_adjust_scores(
         scores,
         adapted_features=adapted,
@@ -1357,6 +1600,17 @@ def _evaluate_metric_qknn(
         source_guard_weight=float(source_guard_weight),
         source_guard_conf_min=float(source_guard_conf_min),
         source_guard_margin_min=float(source_guard_margin_min),
+    )
+    scores, query_graph_edges = _query_graph_smooth_scores(
+        scores,
+        features=adapted,
+        query_indices=query_indices,
+        scenarios=scenarios,
+        neighbor_k=int(query_graph_k),
+        weight=float(query_graph_weight),
+        temperature=float(query_graph_temperature),
+        rounds=int(query_graph_rounds),
+        scope=str(query_graph_scope),
     )
     if scenario_balanced_assignment:
         pred = base._scenario_balanced_predict(
@@ -1452,6 +1706,13 @@ def _evaluate_metric_qknn(
         "subspace_proto_power": float(subspace_proto_power),
         "subspace_proto_clip": float(subspace_proto_clip),
         "stored_subspace_proto_scalars": int(stored_subspace_proto_scalars),
+        "class_diag_metric_weight": float(class_diag_metric_weight),
+        "class_diag_metric_similarity": float(class_diag_metric_similarity),
+        "class_diag_metric_alpha": float(class_diag_metric_alpha),
+        "class_diag_metric_power": float(class_diag_metric_power),
+        "class_diag_metric_clip": float(class_diag_metric_clip),
+        "class_diag_metric_count": int(class_diag_metric_count),
+        "stored_class_diag_metric_scalars": int(stored_class_diag_metric_scalars),
         "support_bias_weight": float(support_bias_weight),
         "support_bias_step": float(support_bias_step),
         "support_bias_rounds": int(support_bias_rounds),
@@ -1465,6 +1726,20 @@ def _evaluate_metric_qknn(
         "score_calibration": str(score_calibration),
         "assignment_margin_weight": float(assignment_margin_weight),
         "assignment_margin_clip": float(assignment_margin_clip),
+        "labelprop_weight": float(labelprop_weight),
+        "labelprop_k": int(labelprop_k),
+        "labelprop_alpha": float(labelprop_alpha),
+        "labelprop_temperature": float(labelprop_temperature),
+        "labelprop_rounds": int(labelprop_rounds),
+        "labelprop_clip": float(labelprop_clip),
+        "labelprop_scope": str(labelprop_scope),
+        "labelprop_edges": int(labelprop_edges),
+        "query_graph_weight": float(query_graph_weight),
+        "query_graph_k": int(query_graph_k),
+        "query_graph_temperature": float(query_graph_temperature),
+        "query_graph_rounds": int(query_graph_rounds),
+        "query_graph_scope": str(query_graph_scope),
+        "query_graph_edges": int(query_graph_edges),
         "source_guard_mode": str(source_guard_mode),
         "source_guard_weight": float(source_guard_weight),
         "source_guard_conf_min": float(source_guard_conf_min),
@@ -1593,6 +1868,11 @@ def main() -> None:
     parser.add_argument("--subspace_proto_rank_grid", default="8")
     parser.add_argument("--subspace_proto_power_grid", default="0")
     parser.add_argument("--subspace_proto_clip_grid", default="3.0")
+    parser.add_argument("--class_diag_metric_weight_grid", default="0")
+    parser.add_argument("--class_diag_metric_similarity_grid", default="0.9")
+    parser.add_argument("--class_diag_metric_alpha_grid", default="0.01")
+    parser.add_argument("--class_diag_metric_power_grid", default="0.5")
+    parser.add_argument("--class_diag_metric_clip_grid", default="2.0")
     parser.add_argument("--support_bias_weight_grid", default="0")
     parser.add_argument("--support_bias_step_grid", default="0.01")
     parser.add_argument("--support_bias_rounds_grid", default="4")
@@ -1603,6 +1883,18 @@ def main() -> None:
     parser.add_argument("--score_calibration_grid", default="none")
     parser.add_argument("--assignment_margin_weight_grid", default="0")
     parser.add_argument("--assignment_margin_clip_grid", default="1.0")
+    parser.add_argument("--labelprop_weight_grid", default="0")
+    parser.add_argument("--labelprop_k_grid", default="8")
+    parser.add_argument("--labelprop_alpha_grid", default="0.8")
+    parser.add_argument("--labelprop_temperature_grid", default="0.05")
+    parser.add_argument("--labelprop_rounds_grid", default="10")
+    parser.add_argument("--labelprop_clip_grid", default="2.0")
+    parser.add_argument("--labelprop_scope_grid", default="all")
+    parser.add_argument("--query_graph_weight_grid", default="0")
+    parser.add_argument("--query_graph_k_grid", default="8")
+    parser.add_argument("--query_graph_temperature_grid", default="0.05")
+    parser.add_argument("--query_graph_rounds_grid", default="1")
+    parser.add_argument("--query_graph_scope_grid", default="all")
     parser.add_argument("--source_guard_mode_grid", default="none")
     parser.add_argument("--source_guard_weight_grid", default="0")
     parser.add_argument("--source_guard_conf_min_grid", default="0")
@@ -1692,6 +1984,11 @@ def main() -> None:
             qknn._parse_int_csv(args.subspace_proto_rank_grid),
             qknn._parse_float_csv(args.subspace_proto_power_grid),
             qknn._parse_float_csv(args.subspace_proto_clip_grid),
+            qknn._parse_float_csv(args.class_diag_metric_weight_grid),
+            qknn._parse_float_csv(args.class_diag_metric_similarity_grid),
+            qknn._parse_float_csv(args.class_diag_metric_alpha_grid),
+            qknn._parse_float_csv(args.class_diag_metric_power_grid),
+            qknn._parse_float_csv(args.class_diag_metric_clip_grid),
             qknn._parse_float_csv(args.support_bias_weight_grid),
             qknn._parse_float_csv(args.support_bias_step_grid),
             qknn._parse_int_csv(args.support_bias_rounds_grid),
@@ -1702,6 +1999,18 @@ def main() -> None:
             qknn._parse_csv(args.score_calibration_grid),
             qknn._parse_float_csv(args.assignment_margin_weight_grid),
             qknn._parse_float_csv(args.assignment_margin_clip_grid),
+            qknn._parse_float_csv(args.labelprop_weight_grid),
+            qknn._parse_int_csv(args.labelprop_k_grid),
+            qknn._parse_float_csv(args.labelprop_alpha_grid),
+            qknn._parse_float_csv(args.labelprop_temperature_grid),
+            qknn._parse_int_csv(args.labelprop_rounds_grid),
+            qknn._parse_float_csv(args.labelprop_clip_grid),
+            qknn._parse_csv(args.labelprop_scope_grid),
+            qknn._parse_float_csv(args.query_graph_weight_grid),
+            qknn._parse_int_csv(args.query_graph_k_grid),
+            qknn._parse_float_csv(args.query_graph_temperature_grid),
+            qknn._parse_int_csv(args.query_graph_rounds_grid),
+            qknn._parse_csv(args.query_graph_scope_grid),
             qknn._parse_csv(args.source_guard_mode_grid),
             qknn._parse_float_csv(args.source_guard_weight_grid),
             qknn._parse_float_csv(args.source_guard_conf_min_grid),
@@ -1794,6 +2103,11 @@ def main() -> None:
                 subspace_proto_rank,
                 subspace_proto_power,
                 subspace_proto_clip,
+                class_diag_metric_weight,
+                class_diag_metric_similarity,
+                class_diag_metric_alpha,
+                class_diag_metric_power,
+                class_diag_metric_clip,
                 support_bias_weight,
                 support_bias_step,
                 support_bias_rounds,
@@ -1804,6 +2118,18 @@ def main() -> None:
                 score_calibration,
                 assignment_margin_weight,
                 assignment_margin_clip,
+                labelprop_weight,
+                labelprop_k,
+                labelprop_alpha,
+                labelprop_temperature,
+                labelprop_rounds,
+                labelprop_clip,
+                labelprop_scope,
+                query_graph_weight,
+                query_graph_k,
+                query_graph_temperature,
+                query_graph_rounds,
+                query_graph_scope,
                 source_guard_mode,
                 source_guard_weight,
                 source_guard_conf_min,
@@ -1872,6 +2198,11 @@ def main() -> None:
                     subspace_proto_rank=int(subspace_proto_rank),
                     subspace_proto_power=float(subspace_proto_power),
                     subspace_proto_clip=float(subspace_proto_clip),
+                    class_diag_metric_weight=float(class_diag_metric_weight),
+                    class_diag_metric_similarity=float(class_diag_metric_similarity),
+                    class_diag_metric_alpha=float(class_diag_metric_alpha),
+                    class_diag_metric_power=float(class_diag_metric_power),
+                    class_diag_metric_clip=float(class_diag_metric_clip),
                     support_bias_weight=float(support_bias_weight),
                     support_bias_step=float(support_bias_step),
                     support_bias_rounds=int(support_bias_rounds),
@@ -1882,6 +2213,18 @@ def main() -> None:
                     score_calibration=str(score_calibration),
                     assignment_margin_weight=float(assignment_margin_weight),
                     assignment_margin_clip=float(assignment_margin_clip),
+                    labelprop_weight=float(labelprop_weight),
+                    labelprop_k=int(labelprop_k),
+                    labelprop_alpha=float(labelprop_alpha),
+                    labelprop_temperature=float(labelprop_temperature),
+                    labelprop_rounds=int(labelprop_rounds),
+                    labelprop_clip=float(labelprop_clip),
+                    labelprop_scope=str(labelprop_scope),
+                    query_graph_weight=float(query_graph_weight),
+                    query_graph_k=int(query_graph_k),
+                    query_graph_temperature=float(query_graph_temperature),
+                    query_graph_rounds=int(query_graph_rounds),
+                    query_graph_scope=str(query_graph_scope),
                     source_guard_mode=str(source_guard_mode),
                     source_guard_weight=float(source_guard_weight),
                     source_guard_conf_min=float(source_guard_conf_min),
@@ -2021,6 +2364,13 @@ def main() -> None:
         "subspace_proto_power",
         "subspace_proto_clip",
         "stored_subspace_proto_scalars",
+        "class_diag_metric_weight",
+        "class_diag_metric_similarity",
+        "class_diag_metric_alpha",
+        "class_diag_metric_power",
+        "class_diag_metric_clip",
+        "class_diag_metric_count",
+        "stored_class_diag_metric_scalars",
         "support_bias_weight",
         "support_bias_step",
         "support_bias_rounds",
@@ -2034,6 +2384,20 @@ def main() -> None:
         "score_calibration",
         "assignment_margin_weight",
         "assignment_margin_clip",
+        "labelprop_weight",
+        "labelprop_k",
+        "labelprop_alpha",
+        "labelprop_temperature",
+        "labelprop_rounds",
+        "labelprop_clip",
+        "labelprop_scope",
+        "labelprop_edges",
+        "query_graph_weight",
+        "query_graph_k",
+        "query_graph_temperature",
+        "query_graph_rounds",
+        "query_graph_scope",
+        "query_graph_edges",
         "source_guard_mode",
         "source_guard_weight",
         "source_guard_conf_min",
