@@ -2,7 +2,7 @@
 
 ## 场景边界
 
-OF-HNFR-CI 面向 Stage2-C 天基 RFFI 卫星群协同推理诊断。输入为 ADV3B02/Proxy-mined 特征包，协同后端仍使用 qknn8 的 ENPC/SLEV 证据栈，`target_unknown`只参与最终评估，不进入训练、阈值选择或 profile 选择。
+OF-HNFR-CI 面向 Stage2-C 天基 RFFI 卫星群协同推理诊断。输入为 ADV3B02/Proxy-mined 特征包，协同后端仍使用 qknn8 的 ENPC/SLEV 证据栈，`target_unknown`不进入训练、适配器更新或阈值拟合。摘要中的`best_joint_row`只允许作为事后诊断排序，不允许作为部署 profile 选择依据。
 
 ## 算法机制
 
@@ -54,4 +54,4 @@ L_floor = mean(max(0, margin - (s_y - max_{c!=y}s_c)))
 | 训练指标中`target_unknown_training_count=0` | PASS |
 | OPR 原有 target_unknown 排除与 manifest 测试 | PASS |
 
-本地诊断显示 OF-HNFR-CI 能同时提高 target-old support 与 seen-new support 的 prototype accuracy，并显著降低 proxy_unknown 最大已知 logit；但真实`target_unknown`仍未在不伤害 old/seen 的情况下达到拒识目标。因此当前结论为`NON_DEPLOYMENT_DIAGNOSTIC`，不能作为部署成功候选。
+本地诊断显示 OF-HNFR-CI 能同时提高 target-old support 与 seen-new support 的 prototype accuracy，并显著降低 proxy_unknown 最大已知 logit；但真实`target_unknown`仍未在不伤害 old/seen 的情况下达到拒识目标。该结论仅适用于当前 ADV3B02/Proxy-mined 特征、OF-HNFR-CI 训练配置和 ENPC/SLEV 后端；当前状态为`NON_DEPLOYMENT_DIAGNOSTIC`，不能作为部署成功候选。
