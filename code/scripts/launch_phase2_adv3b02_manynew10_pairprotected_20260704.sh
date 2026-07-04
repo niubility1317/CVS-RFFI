@@ -33,8 +33,8 @@ done
 
 IFS=',' read -r -a GPUS <<<"${GPUS_CSV}"
 declare -a VARIANTS=(
-  "MANYNEW10_PAIR_HEAD id_feature_head 45 0.00010 1.00 2.00 18.00 4.00 5.50 0.004 0.16 0.10 0.05 0.18 0.08 0.10 0.04 0.08 0.02"
-  "MANYNEW10_PAIR_NORM id_norm_late_feature 45 0.00007 0.90 1.80 20.00 3.50 6.00 0.003 0.14 0.08 0.05 0.16 0.08 0.08 0.05 0.10 0.02"
+  "MANYNEW10_PAIR_HEAD id_feature_head 45 0.00010 1.00 2.00 18.00 4.00 5.50 0.004 0.16 0.10 0.05 0.18 0.08 0.10 0.04 0.08 0.02 0.02"
+  "MANYNEW10_PAIR_NORM id_norm_late_feature 45 0.00007 0.90 1.80 20.00 3.50 6.00 0.003 0.14 0.08 0.05 0.16 0.08 0.08 0.05 0.10 0.02 0.02"
 )
 
 if (( ${#GPUS[@]} < ${#VARIANTS[@]} )); then
