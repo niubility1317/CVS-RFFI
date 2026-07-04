@@ -369,3 +369,50 @@ artifact SHA256：
 | `strict_n10_k5_conflict_norm_classbias_seed120.json` | `8E4CA684853A8FD9F85A1EE050CD3D947400829FDB92FB36CB05472CDDA7CC97` |
 
 结论：当前最好仍是support-metric qKNN。它相对原conflict-protected qKNN在K=10上把new_acc从`80.00%`提高到`83.43%`，但最低新类仍卡在`10-10/2-13=72.86%`；K=5最低新类从`65.33%`提高到`69.33%`，仍远低于`75%`。class-bias的support LOO信号与query表现不一致，会严重牺牲旧类；query-unlabeled原型更新也没有改善最低类。因此下一步不应继续调bias或transductive prototype，而应针对低类`10-10/2-13/11-10/19-3`做support选择和类间冲突诊断，重点寻找更稳定的support压缩码本或源表征，而不是扩大K。
+
+## 2026-07-05 support-metric qKNN冲突诊断与后处理负证据
+
+本轮继续沿K=5/K=10、不扩大K数量的约束推进。`phase2_support_metric_qknn_probe.py`新增两个不使用query label的压缩头选项：support-only repulsive prototype scoring和support-similarity pairwise quota refine；另新增`phase2_support_metric_confusion_diagnose.py`用于单配置混淆审计。代码验证：`conda run -n ssr-gpu python -m py_compile code\scripts\phase2_support_metric_qknn_probe.py code\scripts\phase2_support_metric_confusion_diagnose.py`通过。
+
+脚本SHA256：
+
+| file | SHA256 |
+|---|---|
+| `code/scripts/phase2_support_metric_qknn_probe.py` | `219ED05EE42A8545F598468DEE0A038E6F30C550114DCD04AA4D35A7C8C0F207` |
+| `code/scripts/phase2_support_metric_confusion_diagnose.py` | `FB1B960E8974CE7B31CFCCD4F46612F4A61F3D7918F88A8FDCC57C4742A96791` |
+
+### 当前最佳配置的混淆瓶颈
+
+| K | seed | 低类 | acc | 主要错分 | support prototype近邻证据 |
+|---:|---:|---|---:|---|---|
+| 10 | 421029 | `10-10` | 72.86% | `20-19`:11/70 | `20-19`/`10-10` sim=0.951 |
+| 10 | 421029 | `2-13` | 72.86% | `11-10`:8/70,`20-15`:4/70 | `11-10`/`2-13` sim=0.966 |
+| 5 | 421037 | `2-13` | 69.33% | `11-10`:8/75,`3-8`:4/75 | `11-10`/`2-13` sim=0.847 |
+| 5 | 421037 | `11-10` | 72.00% | `2-13`:9/75,`6-15`:9/75 | `6-15`/`11-10` sim=0.918 |
+| 5 | 421037 | `19-3` | 74.67% | `14-10`:11/75,`20-19`:5/75 | `14-10`/`19-3` sim=0.932 |
+
+解释：瓶颈不是query数量不足，也不是K值不够大后的统计均值问题，而是K-shot support在星地信道特征中形成了高度相似的类对；balanced assignment只能保证每类预测配额，不能修复这些相似类对内部的成对互换。
+
+### 新后处理机制结果
+
+| 方法 | K | seed | old_acc | min_old | new_acc | min_new | 变化 |
+|---|---:|---:|---:|---:|---:|---:|---|
+| support-metric qKNN基线 | 10 | 421029 | 83.10% | 67.14% | 83.43% | 72.86% | 当前最佳 |
+| repulsive prototype scoring | 10 | 421029 | 83.10% | 67.14% | 83.43% | 72.86% | 未提升 |
+| repulsive prototype+proto_mix窄网格 | 10 | 421029 | 83.10% | 67.14% | 83.43% | 72.86% | 未提升 |
+| pairwise quota refine | 10 | 421029 | 83.10% | 67.14% | 83.43% | 72.86% | `changed_predictions=0` |
+| support-metric qKNN基线 | 5 | 421037 | 82.67% | 65.33% | 79.47% | 69.33% | 当前最佳 |
+| pairwise quota refine | 5 | 421037 | 82.67% | 65.33% | 79.47% | 69.33% | `changed_predictions=0` |
+
+artifact SHA256：
+
+| file | SHA256 |
+|---|---|
+| `strict_n10_k10_support_metric_confusion_seed421029.json` | `833496BC196D15550B07AAB433051020575C137519234E01F5525A87D02069BC` |
+| `strict_n10_k5_support_metric_confusion_seed421037.json` | `E9229CB396FEDE687E6109DDBFCF969B043A27061C2EBE06481FA8C383DE85CE` |
+| `strict_n10_k10_metric_qknn_pairrefine_seed421029_focus.json` | `B1AE83D0B3219164218460624CC6BA645B39FDE21B9AA5615533893ECFCF1801` |
+| `strict_n10_k5_metric_qknn_pairrefine_seed421037_focus.json` | `EDE127F5090E0247F2C5A9E00774F583EA48B0FA4785A76A1258BA12F2D22921` |
+| `strict_n10_k10_metric_qknn_repel_seed421029_focus.json` | `FF868FE5C96D04DFB80B4BFC4EF2CF61129A6AF00547FCDE9F434CB24DB0A8CE` |
+| `strict_n10_k10_metric_qknn_repel_protomix_seed421029_narrow.json` | `08C40CEAE366FC4A894B2AD959360BD824EB4C72CAB1B7C87A2D12E51690A6C4` |
+
+结论：目标仍未完成。新的repulsive prototype和pairwise quota refine是合规的压缩qKNN变体，但在当前最佳support seed上不能改善最低类；pairwise refine不改变预测，说明balanced assignment在现有score矩阵下已经达到相似类对内的局部配额最优。后续应停止继续扩大后处理网格，转向训练侧或特征侧：围绕`20-19/10-10`、`11-10/2-13`、`6-15/11-10`、`14-10/19-3`加入source-side pair-separation/episode hard-pair loss，或重新导出更能分开这些pair的`MANYNEW10_CONFLICT_NORM`特征，再回到同一K=5/K=10压缩qKNN评估。
