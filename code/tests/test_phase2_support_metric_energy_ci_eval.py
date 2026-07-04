@@ -2,9 +2,11 @@ import numpy as np
 
 from scripts.phase2_support_metric_energy_ci_eval import (
     SmecConfig,
+    _flatten_counts,
     build_support_model,
     augment_smec_evidence,
 )
+from scripts.phase2_old_protected_unknown_confirm_ci_eval import OpuPolicy
 
 
 def _row(
@@ -80,6 +82,102 @@ def _support_model(config=None):
         old_labels={"old-a"},
         config=cfg,
     )
+
+
+def _policy():
+    return OpuPolicy(
+        name="unit_policy",
+        unknown_risk_threshold=0.82,
+        candidate_set_unknown_reject_risk=0.86,
+        scorer_component_vote_threshold=0.70,
+        candidate_set_min_receivers=1,
+        candidate_set_min_top1_receivers=0,
+        candidate_set_min_conformal_pvalue=0.00,
+        candidate_set_max_label_unknown_risk=0.95,
+        candidate_set_max_event_unknown_risk=0.98,
+        candidate_set_max_label_risk_component_agreement=0.90,
+        candidate_set_max_label_shell_risk=1.00,
+        candidate_set_shell_reject_risk=1.00,
+        candidate_set_max_receiver_pair_label_disagreement=0.88,
+        candidate_set_max_receiver_pair_unknown_risk_range=1.00,
+        candidate_set_min_label_receiver_class_reliability=0.00,
+        old_gate_min_support_density=0.00,
+        seen_new_gate_min_support_density=0.00,
+        accept_margin_threshold=0.005,
+        consensus_score_threshold=0.00,
+        consensus_gap_threshold=0.00,
+    )
+
+
+def test_smec_relative_candidate_is_not_protocol_success_when_far_above_target():
+    rows = _flatten_counts(
+        algorithm="unit_algo",
+        policy=_policy(),
+        metrics={
+            "threshold_selection_label_scope": "support_known_only",
+            "counts": {
+                "4": {
+                    "old_acc": 0.81,
+                    "min_old_class_acc": 0.30,
+                    "seen_new_acc": 0.78,
+                    "min_seen_new_class_acc": 0.72,
+                    "unknown_reject_rate": 0.25,
+                    "unknown_FAR": 0.68,
+                    "known_coverage": 0.95,
+                    "defer_rate": 0.04,
+                }
+            },
+        },
+        base_counts={
+            "4": {
+                "old_acc": 0.81,
+                "seen_new_acc": 0.78,
+                "unknown_reject_rate": 0.18,
+                "unknown_FAR": 0.75,
+            }
+        },
+    )
+
+    row = rows[0]
+    assert row["old_not_drop_pass"] is True
+    assert row["seen_new_not_drop_pass"] is True
+    assert row["verdict"] == "relative_tradeoff_candidate"
+    assert row["protocol_success"] is False
+
+
+def test_smec_seen_new_drop_blocks_relative_candidate():
+    rows = _flatten_counts(
+        algorithm="unit_algo",
+        policy=_policy(),
+        metrics={
+            "threshold_selection_label_scope": "support_known_only",
+            "counts": {
+                "4": {
+                    "old_acc": 0.81,
+                    "min_old_class_acc": 0.30,
+                    "seen_new_acc": 0.77,
+                    "min_seen_new_class_acc": 0.72,
+                    "unknown_reject_rate": 0.25,
+                    "unknown_FAR": 0.68,
+                    "known_coverage": 0.95,
+                    "defer_rate": 0.04,
+                }
+            },
+        },
+        base_counts={
+            "4": {
+                "old_acc": 0.81,
+                "seen_new_acc": 0.78,
+                "unknown_reject_rate": 0.18,
+                "unknown_FAR": 0.75,
+            }
+        },
+    )
+
+    row = rows[0]
+    assert row["seen_new_not_drop_pass"] is False
+    assert row["verdict"] == "diagnostic_only"
+    assert row["protocol_success"] is False
 
 
 def _two_class_support_model(config=None):

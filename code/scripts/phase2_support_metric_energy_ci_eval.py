@@ -843,12 +843,28 @@ def _flatten_counts(
             )
             row["delta_unknown_FAR"] = float(row["unknown_FAR"]) - float(base.get("unknown_FAR", 0.0))
             row["old_not_drop_pass"] = float(row["delta_old_acc"]) >= -1e-12
-            row["verdict"] = (
-                "candidate"
-                if row["old_not_drop_pass"]
+            row["seen_new_not_drop_pass"] = float(row["delta_seen_new_acc"]) >= -1e-12
+            row["far_target_pass"] = float(row["unknown_FAR"]) <= 0.05
+            row["protocol_success"] = (
+                bool(row["old_not_drop_pass"])
+                and bool(row["seen_new_not_drop_pass"])
+                and float(row["old_acc"]) >= 0.80
+                and float(row["unknown_FAR"]) <= 0.05
+                and float(row["delta_unknown_reject_rate"]) > 0.0
+                and float(row["delta_unknown_FAR"]) <= 0.0
+            )
+            relative_candidate = (
+                bool(row["old_not_drop_pass"])
+                and bool(row["seen_new_not_drop_pass"])
                 and float(row["old_acc"]) >= 0.80
                 and float(row["delta_unknown_reject_rate"]) > 0.0
                 and float(row["delta_unknown_FAR"]) <= 0.0
+            )
+            row["verdict"] = (
+                "protocol_success"
+                if row["protocol_success"]
+                else "relative_tradeoff_candidate"
+                if relative_candidate
                 else "diagnostic_only"
             )
         rows.append(row)
