@@ -256,6 +256,8 @@ def main() -> None:
     parser.add_argument("--query_per_new", type=int, default=60)
     parser.add_argument("--pool_per_old", type=int, default=50)
     parser.add_argument("--pool_per_new", type=int, default=50)
+    parser.add_argument("--old_role", default="target_old")
+    parser.add_argument("--new_role", default="target_new")
     parser.add_argument("--scenario_aware", action="store_true")
     parser.add_argument("--exclude_pool_from_query", action="store_true")
     parser.add_argument("--old_target", type=float, default=0.80)
@@ -293,7 +295,7 @@ def main() -> None:
                 source_label_to_idx=source_label_to_idx,
                 source_prototypes=source_prototypes,
                 labels=old_labels,
-                role="target_old",
+                role=str(args.old_role),
                 k=args.k_old,
                 query_per_class=args.query_per_old,
                 pool_per_class=args.pool_per_old,
@@ -310,7 +312,7 @@ def main() -> None:
                 source_label_to_idx=source_label_to_idx,
                 source_prototypes=source_prototypes,
                 labels=new_labels,
-                role="target_new",
+                role=str(args.new_role),
                 k=args.k_new,
                 query_per_class=args.query_per_new,
                 pool_per_class=args.pool_per_new,
