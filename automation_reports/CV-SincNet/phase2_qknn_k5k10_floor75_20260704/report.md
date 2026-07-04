@@ -1008,3 +1008,50 @@ artifact SHA256：
 代码验证：`conda run -n ssr-gpu python -m py_compile code\scripts\phase2_support_metric_qknn_probe.py`通过。
 
 结论：目标仍未完成。assignment-margin不能把K=10的`10-10`越过75%，且最好正向权重退回0；负权重也没有改变最低类。该结果进一步排除“只需修改均衡分配目标”的解释，瓶颈仍指向`10-10/20-19/14-7`在现有LEO特征空间中的真实纠缠。下一步应停止增加分配后处理，转向支持集小型可训练adapter或表征侧hard-pair重训，并保持同一K=5/K=10审计口径。
+
+### 2026-07-05 pair-logreg压缩类对头与support稳定性扫描
+
+本轮新增`pair_logreg`压缩类对头，目标是保留KNN易扩展的优点，同时缓解“原始KNN需要保存原始support样本”的部署困难。该头只在target support上训练：对prototype相似度超过阈值的类对，使用每个support样本到两类support prototype的余弦相似度构造`[sim_left-sim_right,sim_left,sim_right,1]`四维特征，并用ridge闭式解拟合二分类边界；部署侧只保存每个类对4个float权重和类对索引，不保存原始support样本，不读取query标签。对于8个旧-新冲突类对，额外存储量为32个float；对于16个全冲突类对，额外存储量为64个float，明显小于保存160个K=10 support embedding或原始IQ。
+
+固定当前K=10最强底座`diag_fisher+pair_gaussian+pair_fisher+ridge_head`，并保持`K=10`、每类最大query数`70`不变，结果如下：
+
+| 诊断 | 行数 | 通过行数 | 最好配置 | old_acc | min_old | new_acc | min_new | 瓶颈 |
+|---|---:|---:|---|---:|---:|---:|---:|---|
+| pair-logreg窄扫 | 360 | 0 | 退回`weight=0` | 85.00% | 71.43% | 85.00% | 74.29% | `10-10=74.29%` |
+| pair-logreg攻击性扫 | 792 | 0 | `similarity=0.65,weight=-0.2,alpha=10,clip=0.5,scope=old_new` | 85.00% | 71.43% | 85.43% | 74.29% | `10-10=74.29%` |
+| scenario-balanced分配 | 224 | 0 | `scope=all,weight=-0.1` | 63.10% | 20.00% | 46.29% | 41.43% | 分配策略坍塌 |
+| 旧-新冲突偏置 | 63 | 0 | 退回等价底座 | 85.00% | 71.43% | 85.00% | 74.29% | `10-10=74.29%` |
+| K=10 support seed扫描 | 100 | 0 | `seed=421029` | 85.00% | 71.43% | 85.00% | 74.29% | 100个seed均未过75% |
+| ridge head宽扫 | 520 | 0 | `weight=0.015,alpha=0.001,clip=5.0` | 84.52% | 70.00% | 85.29% | 74.29% | `10-10=74.29%` |
+
+pair-logreg攻击性扫的最好逐新类性能如下：
+
+| 类别 | acc |
+|---|---:|
+| `10-10` | 74.29% |
+| `11-10` | 81.43% |
+| `18-5` | 91.43% |
+| `19-3` | 90.00% |
+| `2-13` | 75.71% |
+| `2-5` | 85.71% |
+| `3-8` | 88.57% |
+| `4-10` | 92.86% |
+| `8-18` | 82.86% |
+| `8-3` | 91.43% |
+
+本轮的关键解释是：pair-logreg可以在不保存原始support的条件下增加一个可部署局部判别头，并能把新类平均准确率从85.00%推到85.43%，但最低类仍卡在`10-10=52/70=74.29%`。100个support seed扫描中没有任何K=10行达到`min_new>=75%`，说明当前瓶颈不是单一support抽样偶然，也不是类偏置、类对局部线性校正或ridge强度不足。K=5仍沿用既有source guard诊断通过行：`new_acc=82.67%`、`min_new=76.00%`。K=10未完成，因此目标状态仍应保持active。
+
+artifact SHA256：
+
+| file | SHA256 |
+|---|---|
+| `k10_pairlogreg_grid.json` | `54705BFF6C99938D5B15B12C4C2CE5074D88CB34507F162057F8C7134C4A0C40` |
+| `k10_pairlogreg_aggressive.json` | `2BADE26DE84CA4F0FE4F1EB96A5B20E9E34B2B41B5986B9A8D4EA8777DE88CF2` |
+| `k10_scenario_balanced_pairlogreg.json` | `9A2F377BA0F8E188F9CF2BEDB5472F602CB634413185DB06A85295DBB15C09DE` |
+| `k10_conflict_bias_grid.json` | `2C9DDCA1E9362C1FD2BCC2B307542E2200AB2F02408DD43A03DFE0713B1C09E8` |
+| `k10_seedscan_base100.json` | `67B71A6576B86A40B30875440969FDC10C2C5D2D6A6C1E639C25FDE74E26EFD0` |
+| `k10_ridge_wide_grid.json` | `7C850413E46A497F3DC6F8E3809E2CB4F3BA2DCCFAFD4697CF4E0645C9C47D61` |
+
+代码验证：`conda run -n ssr-gpu python -m py_compile code\scripts\phase2_support_metric_qknn_probe.py`通过。当前脚本SHA256为`351D9899E9BA77E724EC1AD75E52CD553220233AD0EAE7E2065FDE397DEA6DE6`。
+
+结论：新增pair-logreg头是一个可写入方法创新点的压缩KNN变体，但它仍不能在现有特征上完成K=10最低类75%门槛。下一步应从“分数后处理”转到“特征侧hard-pair分离”：以`10-10/20-19/14-7`为hard pair，在地面导出新的LEO特征或support-only小adapter初始化，再用同一K=5/K=10、每类70query、target receiver domain=`7-14`协议复评。

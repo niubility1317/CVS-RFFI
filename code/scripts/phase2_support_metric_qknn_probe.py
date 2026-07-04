@@ -412,6 +412,91 @@ def _pair_fisher_adjust_scores(
     return adjusted, used
 
 
+def _pair_logreg_adjust_scores(
+    scores: np.ndarray,
+    *,
+    features: np.ndarray,
+    support_indices: np.ndarray,
+    support_labels: np.ndarray,
+    query_indices: np.ndarray,
+    class_labels: list[str],
+    old_labels: set[str],
+    proto_sim: np.ndarray,
+    similarity_threshold: float,
+    weight: float,
+    alpha: float,
+    clip: float,
+    scope: str,
+) -> tuple[np.ndarray, int, int]:
+    if float(weight) == 0.0 or float(similarity_threshold) > 1.0:
+        return scores, 0, 0
+    scope_norm = str(scope).strip().lower()
+    if scope_norm not in {"all", "old_new"}:
+        raise ValueError(f"unsupported pair_logreg_scope: {scope}")
+    support = qknn._normalize_rows(features[support_indices])
+    query = qknn._normalize_rows(features[query_indices])
+    labels = np.asarray(support_labels, dtype=object).astype(str)
+    prototypes: list[np.ndarray] = []
+    for label in class_labels:
+        class_support = support[labels == label]
+        if class_support.size == 0:
+            prototypes.append(np.zeros(features.shape[1], dtype=np.float64))
+        else:
+            prototypes.append(qknn._normalize_rows(class_support.mean(axis=0, keepdims=True))[0])
+    proto = qknn._normalize_rows(np.stack(prototypes, axis=0))
+    adjusted = np.asarray(scores, dtype=np.float64).copy()
+    used = 0
+    stored_scalars = 0
+    for left in range(len(class_labels)):
+        for right in range(left + 1, len(class_labels)):
+            left_is_old = class_labels[left] in old_labels
+            right_is_old = class_labels[right] in old_labels
+            if scope_norm == "old_new" and left_is_old == right_is_old:
+                continue
+            if float(proto_sim[left, right]) < float(similarity_threshold):
+                continue
+            pair_mask = (labels == class_labels[left]) | (labels == class_labels[right])
+            pair_support = support[pair_mask]
+            pair_labels = labels[pair_mask]
+            if pair_support.shape[0] < 4 or len(set(pair_labels.tolist())) < 2:
+                continue
+            left_sim = pair_support @ proto[left]
+            right_sim = pair_support @ proto[right]
+            x = np.stack(
+                [
+                    left_sim - right_sim,
+                    left_sim,
+                    right_sim,
+                    np.ones_like(left_sim),
+                ],
+                axis=1,
+            )
+            y = np.where(pair_labels == class_labels[left], 1.0, -1.0)
+            reg = float(alpha) * np.eye(x.shape[1], dtype=np.float64)
+            reg[-1, -1] = float(alpha) * 0.01
+            try:
+                coeff = np.linalg.solve(x.T @ x + reg, x.T @ y)
+            except np.linalg.LinAlgError:
+                coeff = np.linalg.pinv(x.T @ x + reg) @ x.T @ y
+            q_left_sim = query @ proto[left]
+            q_right_sim = query @ proto[right]
+            qx = np.stack(
+                [
+                    q_left_sim - q_right_sim,
+                    q_left_sim,
+                    q_right_sim,
+                    np.ones_like(q_left_sim),
+                ],
+                axis=1,
+            )
+            margin = np.clip(qx @ coeff, -float(clip), float(clip))
+            adjusted[:, left] += float(weight) * margin
+            adjusted[:, right] -= float(weight) * margin
+            used += 1
+            stored_scalars += int(coeff.size)
+    return adjusted, int(used), int(stored_scalars)
+
+
 def _new_old_conflict_bias_scores(
     scores: np.ndarray,
     *,
@@ -934,6 +1019,11 @@ def _evaluate_metric_qknn(
     pair_fisher_weight: float,
     pair_fisher_alpha: float,
     pair_fisher_clip: float,
+    pair_logreg_similarity: float,
+    pair_logreg_weight: float,
+    pair_logreg_alpha: float,
+    pair_logreg_clip: float,
+    pair_logreg_scope: str,
     new_old_conflict_bias_threshold: float,
     new_old_conflict_bias_weight: float,
     bootstrap_proto_mix: float,
@@ -1120,6 +1210,21 @@ def _evaluate_metric_qknn(
         weight=float(pair_fisher_weight),
         alpha=float(pair_fisher_alpha),
         clip=float(pair_fisher_clip),
+    )
+    scores, pair_logreg_count, stored_pair_logreg_scalars = _pair_logreg_adjust_scores(
+        scores,
+        features=adapted,
+        support_indices=support_indices,
+        support_labels=support_labels,
+        query_indices=query_indices,
+        class_labels=old_labels + new_labels,
+        old_labels=set(old_labels),
+        proto_sim=proto_sim,
+        similarity_threshold=float(pair_logreg_similarity),
+        weight=float(pair_logreg_weight),
+        alpha=float(pair_logreg_alpha),
+        clip=float(pair_logreg_clip),
+        scope=str(pair_logreg_scope),
     )
     scores, new_old_conflict_bias = _new_old_conflict_bias_scores(
         scores,
@@ -1318,6 +1423,13 @@ def _evaluate_metric_qknn(
         "pair_fisher_alpha": float(pair_fisher_alpha),
         "pair_fisher_clip": float(pair_fisher_clip),
         "pair_fisher_count": int(pair_fisher_count),
+        "pair_logreg_similarity": float(pair_logreg_similarity),
+        "pair_logreg_weight": float(pair_logreg_weight),
+        "pair_logreg_alpha": float(pair_logreg_alpha),
+        "pair_logreg_clip": float(pair_logreg_clip),
+        "pair_logreg_scope": str(pair_logreg_scope),
+        "pair_logreg_count": int(pair_logreg_count),
+        "stored_pair_logreg_scalars": int(stored_pair_logreg_scalars),
         "new_old_conflict_bias_threshold": float(new_old_conflict_bias_threshold),
         "new_old_conflict_bias_weight": float(new_old_conflict_bias_weight),
         "new_old_conflict_bias": new_old_conflict_bias,
@@ -1461,6 +1573,11 @@ def main() -> None:
     parser.add_argument("--pair_fisher_weight_grid", default="0")
     parser.add_argument("--pair_fisher_alpha_grid", default="1.0")
     parser.add_argument("--pair_fisher_clip_grid", default="5.0")
+    parser.add_argument("--pair_logreg_similarity_grid", default="1.1")
+    parser.add_argument("--pair_logreg_weight_grid", default="0")
+    parser.add_argument("--pair_logreg_alpha_grid", default="1.0")
+    parser.add_argument("--pair_logreg_clip_grid", default="2.0")
+    parser.add_argument("--pair_logreg_scope_grid", default="all")
     parser.add_argument("--new_old_conflict_bias_threshold_grid", default="1.1")
     parser.add_argument("--new_old_conflict_bias_weight_grid", default="0")
     parser.add_argument("--old_new_runnerup_rescue_similarity_grid", default="1.1")
@@ -1555,6 +1672,11 @@ def main() -> None:
             qknn._parse_float_csv(args.pair_fisher_weight_grid),
             qknn._parse_float_csv(args.pair_fisher_alpha_grid),
             qknn._parse_float_csv(args.pair_fisher_clip_grid),
+            qknn._parse_float_csv(args.pair_logreg_similarity_grid),
+            qknn._parse_float_csv(args.pair_logreg_weight_grid),
+            qknn._parse_float_csv(args.pair_logreg_alpha_grid),
+            qknn._parse_float_csv(args.pair_logreg_clip_grid),
+            qknn._parse_csv(args.pair_logreg_scope_grid),
             qknn._parse_float_csv(args.new_old_conflict_bias_threshold_grid),
             qknn._parse_float_csv(args.new_old_conflict_bias_weight_grid),
             qknn._parse_float_csv(args.old_new_runnerup_rescue_similarity_grid),
@@ -1652,6 +1774,11 @@ def main() -> None:
                 pair_fisher_weight,
                 pair_fisher_alpha,
                 pair_fisher_clip,
+                pair_logreg_similarity,
+                pair_logreg_weight,
+                pair_logreg_alpha,
+                pair_logreg_clip,
+                pair_logreg_scope,
                 new_old_conflict_bias_threshold,
                 new_old_conflict_bias_weight,
                 old_new_runnerup_rescue_similarity,
@@ -1725,6 +1852,11 @@ def main() -> None:
                     pair_fisher_weight=float(pair_fisher_weight),
                     pair_fisher_alpha=float(pair_fisher_alpha),
                     pair_fisher_clip=float(pair_fisher_clip),
+                    pair_logreg_similarity=float(pair_logreg_similarity),
+                    pair_logreg_weight=float(pair_logreg_weight),
+                    pair_logreg_alpha=float(pair_logreg_alpha),
+                    pair_logreg_clip=float(pair_logreg_clip),
+                    pair_logreg_scope=str(pair_logreg_scope),
                     new_old_conflict_bias_threshold=float(new_old_conflict_bias_threshold),
                     new_old_conflict_bias_weight=float(new_old_conflict_bias_weight),
                     old_new_runnerup_rescue_similarity=float(old_new_runnerup_rescue_similarity),
@@ -1860,6 +1992,13 @@ def main() -> None:
         "pair_fisher_alpha",
         "pair_fisher_clip",
         "pair_fisher_count",
+        "pair_logreg_similarity",
+        "pair_logreg_weight",
+        "pair_logreg_alpha",
+        "pair_logreg_clip",
+        "pair_logreg_scope",
+        "pair_logreg_count",
+        "stored_pair_logreg_scalars",
         "new_old_conflict_bias_threshold",
         "new_old_conflict_bias_weight",
         "new_old_conflict_bias",
