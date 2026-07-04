@@ -481,6 +481,89 @@ def _calibrate_score_columns(scores: np.ndarray, mode: str) -> np.ndarray:
     raise ValueError(f"unsupported score_calibration mode: {mode}")
 
 
+def _source_old_guard_adjust_scores(
+    scores: np.ndarray,
+    *,
+    logits: np.ndarray,
+    query_indices: np.ndarray,
+    old_labels: list[str],
+    source_guard_mode: str,
+    source_guard_weight: float,
+    source_guard_conf_min: float,
+    source_guard_margin_min: float,
+) -> tuple[np.ndarray, int]:
+    mode = str(source_guard_mode).strip().lower()
+    if mode in {"", "none"} or float(source_guard_weight) == 0.0:
+        return scores, 0
+    query_logits = np.asarray(logits[query_indices], dtype=np.float64)
+    if query_logits.ndim != 2 or query_logits.shape[1] < len(old_labels):
+        raise ValueError("source old guard requires tx_logits columns for old labels")
+    query_logits = query_logits[:, : len(old_labels)]
+    exp = np.exp(query_logits - np.max(query_logits, axis=1, keepdims=True))
+    probs = exp / np.maximum(np.sum(exp, axis=1, keepdims=True), 1e-12)
+    old_argmax = np.argmax(probs, axis=1)
+    if query_logits.shape[1] > 1:
+        top2 = np.partition(query_logits, kth=-2, axis=1)[:, -2:]
+        margin = top2[:, 1] - top2[:, 0]
+    else:
+        margin = np.full(query_logits.shape[0], np.inf, dtype=np.float64)
+    confidence = np.max(probs, axis=1)
+    guard = (confidence >= float(source_guard_conf_min)) & (margin >= float(source_guard_margin_min))
+    adjusted = np.asarray(scores, dtype=np.float64).copy()
+    old_count = len(old_labels)
+    if mode == "add_old":
+        rows = np.where(guard)[0]
+        adjusted[rows, old_argmax[rows]] += float(source_guard_weight)
+    elif mode == "penalize_new":
+        adjusted[guard, old_count:] -= float(source_guard_weight)
+    elif mode == "add_old_penalize_new":
+        rows = np.where(guard)[0]
+        adjusted[rows, old_argmax[rows]] += float(source_guard_weight)
+        adjusted[guard, old_count:] -= float(source_guard_weight)
+    else:
+        raise ValueError(f"unsupported source_guard_mode: {source_guard_mode}")
+    return adjusted, int(np.sum(guard))
+
+
+def _source_proto_anchor_adjust_scores(
+    scores: np.ndarray,
+    *,
+    adapted_features: np.ndarray,
+    tx_ids: np.ndarray,
+    roles: np.ndarray,
+    query_indices: np.ndarray,
+    old_labels: list[str],
+    source_proto_anchor_mode: str,
+    source_proto_anchor_weight: float,
+    source_proto_anchor_center: float,
+) -> tuple[np.ndarray, int, int]:
+    mode = str(source_proto_anchor_mode).strip().lower()
+    weight = float(source_proto_anchor_weight)
+    if mode in {"", "none"} or weight == 0.0:
+        return scores, 0, 0
+    prototypes: list[np.ndarray] = []
+    for label in old_labels:
+        source_idx = np.where((tx_ids == label) & (roles == "source"))[0].astype(int)
+        if source_idx.size == 0:
+            return scores, 0, 0
+        proto = qknn._normalize_rows(adapted_features[source_idx].mean(axis=0, keepdims=True))[0]
+        prototypes.append(proto)
+    proto_matrix = np.vstack(prototypes)
+    query = qknn._normalize_rows(adapted_features[query_indices])
+    similarity = query @ proto_matrix.T
+    if mode == "add":
+        adjustment = similarity
+    elif mode == "centered":
+        adjustment = similarity - float(source_proto_anchor_center)
+    elif mode == "penalize_low":
+        adjustment = np.minimum(similarity - float(source_proto_anchor_center), 0.0)
+    else:
+        raise ValueError(f"unsupported source_proto_anchor_mode: {source_proto_anchor_mode}")
+    adjusted = np.asarray(scores, dtype=np.float64).copy()
+    adjusted[:, : len(old_labels)] += weight * adjustment
+    return adjusted, int(query_indices.size), int(proto_matrix.size)
+
+
 def _bootstrap_proto_scores(
     *,
     features: np.ndarray,
@@ -615,7 +698,9 @@ def _evaluate_metric_qknn(
     *,
     features: np.ndarray,
     aux_features: np.ndarray | None,
+    logits: np.ndarray,
     tx_ids: np.ndarray,
+    roles: np.ndarray,
     scenarios: np.ndarray,
     old_splits: dict[str, Split],
     new_splits: dict[str, Split],
@@ -663,10 +748,18 @@ def _evaluate_metric_qknn(
     mahal_proto_diag_mix: float,
     mahal_proto_clip: float,
     score_calibration: str,
+    source_guard_mode: str,
+    source_guard_weight: float,
+    source_guard_conf_min: float,
+    source_guard_margin_min: float,
+    source_proto_anchor_mode: str,
+    source_proto_anchor_weight: float,
+    source_proto_anchor_center: float,
     old_target: float,
     old_floor: float,
     new_target: float,
     new_floor: float,
+    collect_predictions: bool,
 ) -> dict[str, Any]:
     support_indices, support_labels = _collect_support(old_splits, new_splits, old_labels, new_labels)
     old_query: list[int] = []
@@ -868,6 +961,27 @@ def _evaluate_metric_qknn(
         )
         scores = scores + float(mahal_proto_weight) * mahal_scores
     scores = _calibrate_score_columns(scores, str(score_calibration))
+    scores, source_proto_anchor_count, stored_source_proto_anchor_scalars = _source_proto_anchor_adjust_scores(
+        scores,
+        adapted_features=adapted,
+        tx_ids=tx_ids,
+        roles=roles,
+        query_indices=query_indices,
+        old_labels=old_labels,
+        source_proto_anchor_mode=str(source_proto_anchor_mode),
+        source_proto_anchor_weight=float(source_proto_anchor_weight),
+        source_proto_anchor_center=float(source_proto_anchor_center),
+    )
+    scores, source_guard_count = _source_old_guard_adjust_scores(
+        scores,
+        logits=logits,
+        query_indices=query_indices,
+        old_labels=old_labels,
+        source_guard_mode=str(source_guard_mode),
+        source_guard_weight=float(source_guard_weight),
+        source_guard_conf_min=float(source_guard_conf_min),
+        source_guard_margin_min=float(source_guard_margin_min),
+    )
     if scenario_balanced_assignment:
         pred = base._scenario_balanced_predict(
             scores,
@@ -949,6 +1063,16 @@ def _evaluate_metric_qknn(
         "mahal_proto_diag_mix": float(mahal_proto_diag_mix),
         "mahal_proto_clip": float(mahal_proto_clip),
         "score_calibration": str(score_calibration),
+        "source_guard_mode": str(source_guard_mode),
+        "source_guard_weight": float(source_guard_weight),
+        "source_guard_conf_min": float(source_guard_conf_min),
+        "source_guard_margin_min": float(source_guard_margin_min),
+        "source_guard_count": int(source_guard_count),
+        "source_proto_anchor_mode": str(source_proto_anchor_mode),
+        "source_proto_anchor_weight": float(source_proto_anchor_weight),
+        "source_proto_anchor_center": float(source_proto_anchor_center),
+        "source_proto_anchor_count": int(source_proto_anchor_count),
+        "stored_source_proto_anchor_scalars": int(stored_source_proto_anchor_scalars),
         "stored_mahal_proto_scalars": int(stored_mahal_proto_scalars),
         "stored_quantized_support_code_count": int(support_indices.size),
         "stored_raw_support_count": 0,
@@ -963,6 +1087,41 @@ def _evaluate_metric_qknn(
     }
     row.update({f"query_{key}": value for key, value in metrics.items()})
     row["query_rank_score"] = base._rank(metrics)
+    if bool(collect_predictions):
+        class_labels = old_labels + new_labels
+        class_to_index = {label: index for index, label in enumerate(class_labels)}
+        score_order = np.argsort(scores, axis=1)[:, ::-1]
+        debug_rows: list[dict[str, Any]] = []
+        for local_index, query_index in enumerate(query_indices.tolist()):
+            truth_label = str(truth[local_index])
+            pred_label = str(pred[local_index])
+            top_indices = score_order[local_index, : min(3, score_order.shape[1])]
+            true_score = float(scores[local_index, class_to_index[truth_label]])
+            pred_score = float(scores[local_index, class_to_index[pred_label]])
+            top_score = float(scores[local_index, top_indices[0]])
+            debug_rows.append(
+                {
+                    "local_query_index": int(local_index),
+                    "source_index": int(query_index),
+                    "role": "old" if local_index < old_count else "new",
+                    "truth": truth_label,
+                    "pred": pred_label,
+                    "correct": bool(pred_label == truth_label),
+                    "scenario": str(scenarios[query_index]),
+                    "truth_score": true_score,
+                    "assigned_pred_score": pred_score,
+                    "top_score": top_score,
+                    "truth_minus_assigned_pred": float(true_score - pred_score),
+                    "truth_minus_raw_top": float(true_score - top_score),
+                    "raw_top1": str(class_labels[int(top_indices[0])]),
+                    "raw_top1_score": float(scores[local_index, top_indices[0]]),
+                    "raw_top2": str(class_labels[int(top_indices[1])]) if len(top_indices) > 1 else "",
+                    "raw_top2_score": float(scores[local_index, top_indices[1]]) if len(top_indices) > 1 else "",
+                    "raw_top3": str(class_labels[int(top_indices[2])]) if len(top_indices) > 2 else "",
+                    "raw_top3_score": float(scores[local_index, top_indices[2]]) if len(top_indices) > 2 else "",
+                }
+            )
+        row["_debug_predictions"] = debug_rows
     return row
 
 
@@ -972,6 +1131,7 @@ def main() -> None:
     parser.add_argument("--aux_feature_npz", default="")
     parser.add_argument("--output_json", required=True)
     parser.add_argument("--output_csv", required=True)
+    parser.add_argument("--output_predictions_csv", default="")
     parser.add_argument("--old_tx_ids", default="14-10,14-7,20-15,20-19,6-15,8-20")
     parser.add_argument("--new_tx_ids", required=True)
     parser.add_argument("--old_role", default="target_old")
@@ -1024,6 +1184,13 @@ def main() -> None:
     parser.add_argument("--mahal_proto_diag_mix_grid", default="0.5")
     parser.add_argument("--mahal_proto_clip_grid", default="3.0")
     parser.add_argument("--score_calibration_grid", default="none")
+    parser.add_argument("--source_guard_mode_grid", default="none")
+    parser.add_argument("--source_guard_weight_grid", default="0")
+    parser.add_argument("--source_guard_conf_min_grid", default="0")
+    parser.add_argument("--source_guard_margin_min_grid", default="0")
+    parser.add_argument("--source_proto_anchor_mode_grid", default="none")
+    parser.add_argument("--source_proto_anchor_weight_grid", default="0")
+    parser.add_argument("--source_proto_anchor_center_grid", default="0")
     parser.add_argument("--scenario_aware", action="store_true")
     parser.add_argument("--balanced_assignment", action="store_true")
     parser.add_argument("--scenario_balanced_assignment", action="store_true")
@@ -1099,6 +1266,13 @@ def main() -> None:
             qknn._parse_float_csv(args.mahal_proto_diag_mix_grid),
             qknn._parse_float_csv(args.mahal_proto_clip_grid),
             qknn._parse_csv(args.score_calibration_grid),
+            qknn._parse_csv(args.source_guard_mode_grid),
+            qknn._parse_float_csv(args.source_guard_weight_grid),
+            qknn._parse_float_csv(args.source_guard_conf_min_grid),
+            qknn._parse_float_csv(args.source_guard_margin_min_grid),
+            qknn._parse_csv(args.source_proto_anchor_mode_grid),
+            qknn._parse_float_csv(args.source_proto_anchor_weight_grid),
+            qknn._parse_float_csv(args.source_proto_anchor_center_grid),
         )
     )
 
@@ -1177,11 +1351,20 @@ def main() -> None:
                 mahal_proto_diag_mix,
                 mahal_proto_clip,
                 score_calibration,
+                source_guard_mode,
+                source_guard_weight,
+                source_guard_conf_min,
+                source_guard_margin_min,
+                source_proto_anchor_mode,
+                source_proto_anchor_weight,
+                source_proto_anchor_center,
             ) in search_grid:
                 row = _evaluate_metric_qknn(
                     features=features,
                     aux_features=aux_features,
+                    logits=logits,
                     tx_ids=tx_ids,
+                    roles=roles,
                     scenarios=scenarios,
                     old_splits=old_splits,
                     new_splits=new_splits,
@@ -1229,10 +1412,18 @@ def main() -> None:
                     mahal_proto_diag_mix=float(mahal_proto_diag_mix),
                     mahal_proto_clip=float(mahal_proto_clip),
                     score_calibration=str(score_calibration),
+                    source_guard_mode=str(source_guard_mode),
+                    source_guard_weight=float(source_guard_weight),
+                    source_guard_conf_min=float(source_guard_conf_min),
+                    source_guard_margin_min=float(source_guard_margin_min),
+                    source_proto_anchor_mode=str(source_proto_anchor_mode),
+                    source_proto_anchor_weight=float(source_proto_anchor_weight),
+                    source_proto_anchor_center=float(source_proto_anchor_center),
                     old_target=float(args.old_target),
                     old_floor=float(args.old_floor),
                     new_target=float(args.seen_new_target),
                     new_floor=float(args.seen_new_floor),
+                    collect_predictions=bool(str(args.output_predictions_csv).strip()),
                 )
                 row["seed"] = int(seed)
                 row["support_selection_policy"] = policy
@@ -1264,6 +1455,36 @@ def main() -> None:
     output_json = Path(args.output_json)
     output_csv = Path(args.output_csv)
     output_json.parent.mkdir(parents=True, exist_ok=True)
+    if str(args.output_predictions_csv).strip() and rows:
+        prediction_fields = [
+            "local_query_index",
+            "source_index",
+            "role",
+            "truth",
+            "pred",
+            "correct",
+            "scenario",
+            "truth_score",
+            "assigned_pred_score",
+            "top_score",
+            "truth_minus_assigned_pred",
+            "truth_minus_raw_top",
+            "raw_top1",
+            "raw_top1_score",
+            "raw_top2",
+            "raw_top2_score",
+            "raw_top3",
+            "raw_top3_score",
+        ]
+        predictions_path = Path(args.output_predictions_csv)
+        predictions_path.parent.mkdir(parents=True, exist_ok=True)
+        with predictions_path.open("w", encoding="utf-8", newline="") as handle:
+            writer = csv.DictWriter(handle, fieldnames=prediction_fields)
+            writer.writeheader()
+            for debug_row in rows[0].get("_debug_predictions", []):
+                writer.writerow({key: debug_row.get(key) for key in prediction_fields})
+    for row in rows:
+        row.pop("_debug_predictions", None)
     output_json.write_text(json.dumps(summary, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     fields = [
         "seed",
@@ -1317,6 +1538,16 @@ def main() -> None:
         "mahal_proto_diag_mix",
         "mahal_proto_clip",
         "score_calibration",
+        "source_guard_mode",
+        "source_guard_weight",
+        "source_guard_conf_min",
+        "source_guard_margin_min",
+        "source_guard_count",
+        "source_proto_anchor_mode",
+        "source_proto_anchor_weight",
+        "source_proto_anchor_center",
+        "source_proto_anchor_count",
+        "stored_source_proto_anchor_scalars",
         "stored_mahal_proto_scalars",
         "query_old_acc",
         "query_min_old_class_acc",

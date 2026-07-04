@@ -807,3 +807,76 @@ artifact SHA256：
 | `k5_dualview_pairfisher_pairrefine.json` | `47A062DBB10796A8BF79C549003117E3FABA7DEB6E17F47A93A36B972DE7D87F` |
 
 结论：分数列校准和已有pair refine都不能把`10-10`越过75%。这进一步说明当前差1个query不是简单的列尺度问题或pair内配额重排问题，而是`10-10`边界样本在现有特征空间中确实排在错误侧。下一步若继续保持qKNN路线，应做更细粒度的support-only预测级诊断，定位`10-10`误分目标和margin，再设计只针对该混淆方向的可解释tie-breaker；否则应回到表征训练侧强化`10-10`相关proxy hard negative分离。
+
+### 2026-07-05 source guard与source-prototype anchor诊断
+
+本轮继续限定`K=5,K=10`，没有扩大K数量。新增两类不保存原始support的qKNN压缩变体：
+
+- `source old guard`：使用地面旧类分类logit作为旧类置信保护项，在balanced assignment前对旧类或新类列做小权重校正。该项不使用query标签，但依赖地面模型旧类logit。
+- `source-prototype anchor`：把地面旧类source prototype作为压缩锚点，在target support拟合的metric空间中对旧类分数做轻量校正。部署侧新增存储为旧类source prototype标量，本轮为`960`个float标量；仍不保存原始support IQ或support embedding明文。
+
+关键结果如下。所有support/query均来自`R_t=7-14`目标接收机域的LEO视图；query标签仅用于审计与排序，因此这些网格结果仍是本地诊断证据，不是无需验证集的星上自适应调参协议。
+
+| 诊断 | K | 最好配置 | old_acc | min_old | new_acc | min_new | 结论 |
+|---|---:|---|---:|---:|---:|---:|---|
+| source old guard | 5 | `add_old,weight=0.05,conf_min=0,margin_min=0` | 83.78% | 64.00% | 82.67% | 76.00% | K=5十新类floor达标 |
+| source old guard | 10 | `penalize_new,weight=0.01,conf_min=0.7,margin_min=0` | 84.29% | 70.00% | 84.43% | 74.29% | K=10仍差1个query |
+| radius/old-bias微调 | 10 | `scenario_aware=true`真实基线小网格 | 84.05% | 70.00% | 84.43% | 74.29% | 无法提升`10-10` |
+| source-prototype anchor | 10 | `penalize_low,weight=0.02,center=0.55` | 84.29% | 70.00% | 84.43% | 74.29% | 旧类均值小升，新类floor不变 |
+
+#### source old guard K=5逐类
+
+| 类别 | role | acc |
+|---|---|---:|
+| `14-10` | old | 89.33% |
+| `14-7` | old | 77.33% |
+| `20-15` | old | 89.33% |
+| `20-19` | old | 64.00% |
+| `6-15` | old | 85.33% |
+| `8-20` | old | 97.33% |
+| `10-10` | new | 76.00% |
+| `11-10` | new | 77.33% |
+| `18-5` | new | 86.67% |
+| `19-3` | new | 85.33% |
+| `2-13` | new | 76.00% |
+| `2-5` | new | 82.67% |
+| `3-8` | new | 88.00% |
+| `4-10` | new | 88.00% |
+| `8-18` | new | 81.33% |
+| `8-3` | new | 85.33% |
+
+#### K=10当前瓶颈逐类
+
+| 类别 | role | acc |
+|---|---|---:|
+| `14-10` | old | 87.14% |
+| `14-7` | old | 74.29% |
+| `20-15` | old | 90.00% |
+| `20-19` | old | 70.00% |
+| `6-15` | old | 87.14% |
+| `8-20` | old | 97.14% |
+| `10-10` | new | 74.29% |
+| `11-10` | new | 78.57% |
+| `18-5` | new | 91.43% |
+| `19-3` | new | 84.29% |
+| `2-13` | new | 75.71% |
+| `2-5` | new | 87.14% |
+| `3-8` | new | 88.57% |
+| `4-10` | new | 91.43% |
+| `8-18` | new | 82.86% |
+| `8-3` | new | 90.00% |
+
+预测级诊断显示，K=10中`10-10`为`52/70`，主要误分到旧类`20-19`；`source old guard`无法解决这个方向，因为这些`10-10`边界样本在地面旧类logit中也被高置信地判成`20-19`。K=5中`10-10`原始top1多数已是`10-10`，问题更多来自balanced assignment配额被旧类假阳性占用，因此`source old guard`能把`10-10`从`56/75`推到`57/75`并越过75%。K=10的错误更像表征空间中`10-10/20-19`真实纠缠，单纯后处理目前不能稳定越过floor。
+
+artifact SHA256：
+
+| file | SHA256 |
+|---|---|
+| `k5_sourceguard_grid.json` | `88F2749BDDC2A14F0C01E4472E22C5B943330BAE9346942756EE1316B3CA87E0` |
+| `k10_sourceguard_grid.json` | `59DB4A60AB92A8AAC27EE1B02716CC946BE7342D54CE55B1F96B1923E8A26685` |
+| `k10_source_proto_anchor_grid.json` | `3EDC07E3C6BC4C1FA85888420419F8C0900023A8E26947B4F380FBF434D0BBDC` |
+| `k10_scenaware_radius_oldbias_mini.json` | `17D97E4DC5393DDC2AF27A5E027559491F702D936B4F7D5E3BCBCE55EB16B5E2` |
+
+代码验证：`conda run -n ssr-gpu python -m py_compile github_publish\CVS-RFFI-repo\code\scripts\phase2_support_metric_qknn_probe.py`通过。当前脚本SHA256为`82FF5DB6F78B3923BEA16D477A0CF619B5EF811AB2CF739E14770F01C51D1B8E`。
+
+结论：目标尚未完成。K=5已经达到十个新类最低类不低于75%，但K=10仍停在`10-10=74.29%`。下一步不应扩大K；更有价值的路线是训练侧或特征侧对`10-10/20-19`做hard-pair分离，或者设计一个只由target support和source prototype确定、但能专门处理旧新相似pair的局部判别头，并用独立support seed验证稳定性。
