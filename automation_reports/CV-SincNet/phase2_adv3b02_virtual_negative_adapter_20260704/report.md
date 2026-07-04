@@ -146,7 +146,7 @@ cd /home/szu2070436088/2510044040/CV-SincNet && CUDA_VISIBLE_DEVICES=0 /home/szu
 | unknown eval-only | 本地完成 | metadata与row均记录`unknown_query_eval_only=true`和`calibration_role=query` |
 | 使用CVS-RFFI远端环境 | 完成 | 使用`/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python` |
 | N607低显存GPU测试 | 完成 | GPU0显存占用10MiB；运行时设置`CUDA_VISIBLE_DEVICES=0` |
-| Git版本化 | 待完成 | 需复制到Git mirror并提交 |
+| Git版本化 | 完成 | Git mirror提交`c0544e9 Add virtual negative adapter diagnostic` |
 
 ## 下一步算法建议
 
