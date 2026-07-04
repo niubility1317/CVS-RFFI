@@ -766,7 +766,7 @@ def evaluate_apace(
                 "reliability_fit_scope": "support_quality_only_no_query_outcomes",
                 "verdict": "PENDING",
             }
-            row["target_pass"] = _target_pass(
+            metric_pass = _target_pass(
                 {
                     **row,
                     "bytes_per_event": row["bytes_proxy_per_event"],
@@ -774,6 +774,7 @@ def evaluate_apace(
                     "resource_pass": row["resource_proxy_pass"],
                 }
             )
+            row["target_pass"] = bool(metric_pass and row["resource_proxy_pass"])
             row["verdict"] = "TARGET_PASS" if row["target_pass"] else "NON_DEPLOYMENT_DIAGNOSTIC"
             row["joint_score"] = _joint_score(row)
             summary_rows.append(row)

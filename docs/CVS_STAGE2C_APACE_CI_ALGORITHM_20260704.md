@@ -59,6 +59,8 @@
 - 不得使用`best_posthoc_eval_row`选择部署profile或调阈值。
 - `target_unknown_training_count=0`、`threshold_uses_target_unknown=false`、`profile_selection_uses_target_unknown=false`、`reliability_uses_target_unknown=false`必须保持为硬约束。
 - 所有结果必须同row报告`old_acc/min_old/seen_new_acc/min_seen/unknown_reject/unknown_FAR/known_defer/unknown_defer/bytes_proxy/latency_proxy/participating/resource_proxy_pass/verdict`。
+- `target_pass`必须同时满足性能门槛和`resource_proxy_pass=true`。资源代理失败时，即使性能指标达标，也只能给出`NON_DEPLOYMENT_DIAGNOSTIC`。
+- 当前`same_max_budget`会随`M`增大跳过接收机证据不足的事件，因此`M=1..R`结果是参与数量覆盖，不是严格同一事件分母上的单调收益曲线。
 
 ## 当前预期
 

@@ -200,6 +200,62 @@ class Phase2ApaceCiEvalTest(unittest.TestCase):
             self.assertFalse(row["profile_selection_uses_target_unknown"])
             self.assertFalse(row["reliability_uses_target_unknown"])
 
+    def test_resource_proxy_failure_blocks_target_pass(self):
+        from phase2_apace_ci_eval import evaluate_apace, _profile_by_name
+
+        rows = []
+        for role, label, top_label, pvalue, density, energy in [
+            ("old", "old-a", "old-a", 0.95, 0.95, 0.10),
+            ("seen_new", "new-a", "new-a", 0.95, 0.95, 0.10),
+            ("unknown", "unk-a", "old-a", 0.01, 0.05, 0.98),
+        ]:
+            rows.append(
+                {
+                    "event_id": f"{role}-1",
+                    "role": role,
+                    "true_label": label,
+                    "receiver_id": "rx-a",
+                    "top_label": top_label,
+                    "top_label_set": "old" if top_label == "old-a" else "seen_new",
+                    "proto_score": 0.96 if role != "unknown" else 0.55,
+                    "target_proto_score": 0.96 if role != "unknown" else 0.55,
+                    "old_anchor_score": 0.96 if role == "old" else 0.15,
+                    "density_score": density,
+                    "conformal_p": pvalue,
+                    "open_energy": energy,
+                    "margin": 0.40 if role != "unknown" else 0.01,
+                    "quality": 0.90,
+                    "bytes": 2048,
+                    "latency_ms": 0.5,
+                }
+            )
+
+        result = evaluate_apace(
+            rows,
+            profiles=[_profile_by_name("apace_primary")],
+            collab_counts="1",
+            collab_group_policy="same_max_budget",
+            receiver_selection_policy="quality_prior",
+            max_event_bytes=1152,
+            max_event_latency_ms=20,
+            target_gates={
+                "old_acc": 0.99,
+                "min_old": 0.95,
+                "seen_new_acc": 0.97,
+                "min_seen": 0.93,
+                "unknown_reject": 0.99,
+            },
+            include_event_results=False,
+        )
+
+        row = result["summary_rows"][0]
+        self.assertEqual(row["old_acc"], 1.0)
+        self.assertEqual(row["seen_new_acc"], 1.0)
+        self.assertEqual(row["unknown_reject"], 1.0)
+        self.assertFalse(row["resource_proxy_pass"])
+        self.assertFalse(row["target_pass"])
+        self.assertEqual(row["verdict"], "NON_DEPLOYMENT_DIAGNOSTIC")
+
     def test_feature_pipeline_keeps_unknown_out_of_calibration_sources(self):
         from phase2_apace_ci_eval import main
 
