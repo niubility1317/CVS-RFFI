@@ -931,3 +931,43 @@ artifact SHA256：
 代码验证：`conda run -n ssr-gpu python -m py_compile code\scripts\phase2_support_metric_qknn_probe.py`通过。当前脚本SHA256为`B0BD898E093275500099A6BE6EAECF0AA76928791F92A456190B5CD4B1F68CC3`。
 
 结论：目标仍未完成。K=5已达标；K=10在多种压缩qKNN后处理下稳定卡在`10-10=74.29%`。当前证据支持下一步转向特征侧：重新训练或导出一个专门拉开`10-10/20-19`的表征，再用同一K=5/K=10压缩qKNN评估，而不是继续叠加分数后处理。
+
+### 2026-07-05 support子空间原型与LOO偏置诊断
+
+本轮继续保持`K=5,K=10`不变，针对“qKNN需要保存原始support样本”的困难新增两个压缩分类头候选：
+
+- `support_subspace_proto`：只用K-shot support类均值做SVD，保存低秩投影矩阵和子空间类原型，不保存原始support样本。本轮K=10最大存储为`2640`个float标量。
+- `support_bias`：只用K-shot support做留一qKNN预测，在support内部学习16维类偏置，部署时只保存16个float偏置；不读取query标签。
+
+固定当前K=10最强底座`diag_fisher + pair_gaussian + pair_fisher + ridge_head`后，seed`421029`的结果如下：
+
+| 诊断 | 最好配置 | old_acc | min_old | new_acc | min_new | 逐类瓶颈 |
+|---|---|---:|---:|---:|---:|---|
+| support子空间原型 | `weight=0.1,rank=15,power=0,clip=2.0` | 84.76% | 71.43% | 85.14% | 74.29% | `10-10=74.29%` |
+| support LOO偏置 | 最好退回`weight=0` | 85.00% | 71.43% | 85.00% | 74.29% | `10-10=74.29%` |
+
+support子空间原型逐类新类性能：
+
+| 类别 | acc |
+|---|---:|
+| `10-10` | 74.29% |
+| `11-10` | 80.00% |
+| `18-5` | 91.43% |
+| `19-3` | 87.14% |
+| `2-13` | 77.14% |
+| `2-5` | 87.14% |
+| `3-8` | 88.57% |
+| `4-10` | 91.43% |
+| `8-18` | 84.29% |
+| `8-3` | 90.00% |
+
+artifact SHA256：
+
+| file | SHA256 |
+|---|---|
+| `k10_subspace_proto_seed421029.json` | `266A9709930BFE3AD62AF7D0666EF8773CD8C3A455EC1247E7BCAB32B18E1421` |
+| `k10_support_bias_seed421029.json` | `9B279CD3AAB1765854EF68F64ADCA7C34666BA0950A52A58C69782A5A350CC2A` |
+
+代码验证：`conda run -n ssr-gpu python -m py_compile code\scripts\phase2_support_metric_qknn_probe.py`通过。
+
+结论：目标仍未完成。两个新增压缩头都满足“不保存原始support”的部署约束，但不能把K=10的`10-10`从`52/70`提升到`53/70`。当前最可信判断仍是：K=10瓶颈主要来自`10-10/20-19/14-7`表征纠缠和均衡分配配额交换，继续做query无监督后处理收益很小；下一步应优先做表征侧hard-pair分离或支持集小型可训练adapter，并用同一K=5/K=10协议验证。

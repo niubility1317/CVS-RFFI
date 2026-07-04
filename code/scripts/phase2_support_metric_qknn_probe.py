@@ -682,6 +682,154 @@ def _ridge_head_scores(
     return logits, int(weights.size)
 
 
+def _support_subspace_proto_scores(
+    *,
+    features: np.ndarray,
+    support_indices: np.ndarray,
+    support_labels: np.ndarray,
+    query_indices: np.ndarray,
+    class_labels: list[str],
+    rank: int,
+    power: float,
+    clip: float,
+) -> tuple[np.ndarray, int, int]:
+    support = qknn._normalize_rows(features[support_indices])
+    query = qknn._normalize_rows(features[query_indices])
+    labels = np.asarray(support_labels, dtype=object).astype(str)
+    prototypes: list[np.ndarray] = []
+    valid_mask: list[bool] = []
+    for label in class_labels:
+        cls = support[labels == label]
+        if cls.size == 0:
+            prototypes.append(np.zeros(support.shape[1], dtype=np.float64))
+            valid_mask.append(False)
+            continue
+        prototypes.append(cls.mean(axis=0))
+        valid_mask.append(True)
+    proto = np.stack(prototypes, axis=0)
+    centered_proto = proto - proto.mean(axis=0, keepdims=True)
+    max_rank = min(int(rank), max(1, centered_proto.shape[0] - 1), centered_proto.shape[1])
+    if max_rank <= 0:
+        return np.zeros((query.shape[0], len(class_labels)), dtype=np.float64), 0, 0
+    _u, singular_values, vh = np.linalg.svd(centered_proto, full_matrices=False)
+    basis = vh[:max_rank].T
+    query_proj = query @ basis
+    proto_proj = proto @ basis
+    if float(power) != 0.0 and singular_values.size:
+        scale = np.power(np.maximum(singular_values[:max_rank], 1e-6), float(power))
+        query_proj = query_proj * scale[None, :]
+        proto_proj = proto_proj * scale[None, :]
+    query_proj = qknn._normalize_rows(query_proj)
+    proto_proj = qknn._normalize_rows(proto_proj)
+    scores = query_proj @ proto_proj.T
+    for class_index, is_valid in enumerate(valid_mask):
+        if not is_valid:
+            scores[:, class_index] = -1e9
+    scores = scores - np.mean(scores, axis=1, keepdims=True)
+    scores = scores / (np.std(scores, axis=1, keepdims=True) + 1e-6)
+    scores = np.clip(scores, -float(clip), float(clip))
+    stored_scalars = int(basis.size + proto_proj.size)
+    return scores, int(max_rank), stored_scalars
+
+
+def _support_loo_base_scores(
+    *,
+    features: np.ndarray,
+    support_indices: np.ndarray,
+    support_labels: np.ndarray,
+    scenarios: np.ndarray,
+    class_labels: list[str],
+    old_labels: set[str],
+    topm: int,
+    proto_mix: float,
+    radius_norm: float,
+    old_bias: float,
+    neg_lambda: float,
+    neg_threshold: float,
+    neg_margin: float,
+    mutual_only: bool,
+    scenario_aware: bool,
+) -> np.ndarray:
+    labels = np.asarray(support_labels, dtype=object).astype(str)
+    rows: list[np.ndarray] = []
+    for row_index, query_index in enumerate(np.asarray(support_indices, dtype=int).tolist()):
+        keep = np.ones(int(support_indices.size), dtype=bool)
+        keep[row_index] = False
+        loo_scores, _radii, _proto_sim = base._class_scores(
+            features=features,
+            support_indices=support_indices[keep],
+            support_labels=labels[keep],
+            query_indices=np.asarray([query_index], dtype=int),
+            scenarios=scenarios,
+            class_labels=class_labels,
+            old_labels=old_labels,
+            topm=int(topm),
+            proto_mix=float(proto_mix),
+            radius_norm=float(radius_norm),
+            old_bias=float(old_bias),
+            neg_lambda=float(neg_lambda),
+            neg_threshold=float(neg_threshold),
+            neg_margin=float(neg_margin),
+            mutual_only=bool(mutual_only),
+            scenario_aware=bool(scenario_aware),
+        )
+        rows.append(loo_scores[0])
+    return np.stack(rows, axis=0)
+
+
+def _support_bias_vector(
+    *,
+    support_scores: np.ndarray,
+    support_labels: np.ndarray,
+    class_labels: list[str],
+    old_labels: list[str],
+    new_labels: list[str],
+    step: float,
+    rounds: int,
+) -> tuple[np.ndarray, float, float]:
+    labels = np.asarray(support_labels, dtype=object).astype(str)
+    label_to_index = {label: index for index, label in enumerate(class_labels)}
+    truth_idx = np.asarray([label_to_index[label] for label in labels], dtype=int)
+    old_count = int(sum(1 for label in labels.tolist() if label in set(old_labels)))
+
+    def objective(bias: np.ndarray) -> tuple[float, float, float]:
+        pred = base._balanced_predict(
+            support_scores + bias[None, :],
+            old_count=old_count,
+            old_labels=old_labels,
+            new_labels=new_labels,
+        )
+        pred_idx = np.asarray([label_to_index[label] for label in pred.tolist()], dtype=int)
+        per_class: list[float] = []
+        for class_index, label in enumerate(class_labels):
+            mask = labels == label
+            per_class.append(float(np.mean(pred_idx[mask] == truth_idx[mask])) if bool(np.any(mask)) else 0.0)
+        return float(min(per_class)), float(np.mean(per_class)), float(np.mean(pred_idx == truth_idx))
+
+    bias = np.zeros(len(class_labels), dtype=np.float64)
+    best = objective(bias)
+    for _round in range(max(0, int(rounds))):
+        improved = False
+        for class_index in range(len(class_labels)):
+            local_best = best
+            local_bias = bias.copy()
+            for delta in (-float(step), 0.0, float(step)):
+                candidate = bias.copy()
+                candidate[class_index] += delta
+                candidate -= np.mean(candidate)
+                score = objective(candidate)
+                if score > local_best:
+                    local_best = score
+                    local_bias = candidate
+            if local_best > best:
+                best = local_best
+                bias = local_bias
+                improved = True
+        if not improved:
+            break
+    return bias, best[0], best[1]
+
+
 def _mahalanobis_proto_scores(
     *,
     features: np.ndarray,
@@ -778,6 +926,13 @@ def _evaluate_metric_qknn(
     ridge_head_weight: float,
     ridge_head_alpha: float,
     ridge_head_clip: float,
+    subspace_proto_weight: float,
+    subspace_proto_rank: int,
+    subspace_proto_power: float,
+    subspace_proto_clip: float,
+    support_bias_weight: float,
+    support_bias_step: float,
+    support_bias_rounds: int,
     mahal_proto_weight: float,
     mahal_proto_alpha: float,
     mahal_proto_diag_mix: float,
@@ -994,6 +1149,52 @@ def _evaluate_metric_qknn(
             clip=float(ridge_head_clip),
         )
         scores = scores + float(ridge_head_weight) * ridge_scores
+    stored_subspace_proto_scalars = 0
+    subspace_proto_rank_used = 0
+    if float(subspace_proto_weight) > 0.0:
+        subspace_scores, subspace_proto_rank_used, stored_subspace_proto_scalars = _support_subspace_proto_scores(
+            features=adapted,
+            support_indices=support_indices,
+            support_labels=support_labels,
+            query_indices=query_indices,
+            class_labels=old_labels + new_labels,
+            rank=int(subspace_proto_rank),
+            power=float(subspace_proto_power),
+            clip=float(subspace_proto_clip),
+        )
+        scores = scores + float(subspace_proto_weight) * subspace_scores
+    stored_support_bias_scalars = 0
+    support_bias_loo_min_acc = 0.0
+    support_bias_loo_mean_acc = 0.0
+    if float(support_bias_weight) > 0.0 and float(support_bias_step) > 0.0 and int(support_bias_rounds) > 0:
+        support_scores = _support_loo_base_scores(
+            features=adapted,
+            support_indices=support_indices,
+            support_labels=support_labels,
+            scenarios=scenarios,
+            class_labels=old_labels + new_labels,
+            old_labels=set(old_labels),
+            topm=int(topm),
+            proto_mix=float(proto_mix),
+            radius_norm=float(radius_norm),
+            old_bias=float(old_bias),
+            neg_lambda=float(neg_lambda),
+            neg_threshold=float(neg_threshold),
+            neg_margin=float(neg_margin),
+            mutual_only=bool(mutual_only),
+            scenario_aware=bool(scenario_aware),
+        )
+        support_bias, support_bias_loo_min_acc, support_bias_loo_mean_acc = _support_bias_vector(
+            support_scores=support_scores,
+            support_labels=support_labels,
+            class_labels=old_labels + new_labels,
+            old_labels=old_labels,
+            new_labels=new_labels,
+            step=float(support_bias_step),
+            rounds=int(support_bias_rounds),
+        )
+        scores = scores + float(support_bias_weight) * support_bias[None, :]
+        stored_support_bias_scalars = int(support_bias.size)
     stored_mahal_proto_scalars = 0
     if float(mahal_proto_weight) > 0.0:
         mahal_scores, stored_mahal_proto_scalars = _mahalanobis_proto_scores(
@@ -1110,6 +1311,18 @@ def _evaluate_metric_qknn(
         "ridge_head_alpha": float(ridge_head_alpha),
         "ridge_head_clip": float(ridge_head_clip),
         "stored_ridge_head_scalars": int(stored_ridge_head_scalars),
+        "subspace_proto_weight": float(subspace_proto_weight),
+        "subspace_proto_rank": int(subspace_proto_rank),
+        "subspace_proto_rank_used": int(subspace_proto_rank_used),
+        "subspace_proto_power": float(subspace_proto_power),
+        "subspace_proto_clip": float(subspace_proto_clip),
+        "stored_subspace_proto_scalars": int(stored_subspace_proto_scalars),
+        "support_bias_weight": float(support_bias_weight),
+        "support_bias_step": float(support_bias_step),
+        "support_bias_rounds": int(support_bias_rounds),
+        "support_bias_loo_min_acc": float(support_bias_loo_min_acc),
+        "support_bias_loo_mean_acc": float(support_bias_loo_mean_acc),
+        "stored_support_bias_scalars": int(stored_support_bias_scalars),
         "mahal_proto_weight": float(mahal_proto_weight),
         "mahal_proto_alpha": float(mahal_proto_alpha),
         "mahal_proto_diag_mix": float(mahal_proto_diag_mix),
@@ -1234,6 +1447,13 @@ def main() -> None:
     parser.add_argument("--ridge_head_weight_grid", default="0")
     parser.add_argument("--ridge_head_alpha_grid", default="1.0")
     parser.add_argument("--ridge_head_clip_grid", default="3.0")
+    parser.add_argument("--subspace_proto_weight_grid", default="0")
+    parser.add_argument("--subspace_proto_rank_grid", default="8")
+    parser.add_argument("--subspace_proto_power_grid", default="0")
+    parser.add_argument("--subspace_proto_clip_grid", default="3.0")
+    parser.add_argument("--support_bias_weight_grid", default="0")
+    parser.add_argument("--support_bias_step_grid", default="0.01")
+    parser.add_argument("--support_bias_rounds_grid", default="4")
     parser.add_argument("--mahal_proto_weight_grid", default="0")
     parser.add_argument("--mahal_proto_alpha_grid", default="1.0")
     parser.add_argument("--mahal_proto_diag_mix_grid", default="0.5")
@@ -1319,6 +1539,13 @@ def main() -> None:
             qknn._parse_float_csv(args.ridge_head_weight_grid),
             qknn._parse_float_csv(args.ridge_head_alpha_grid),
             qknn._parse_float_csv(args.ridge_head_clip_grid),
+            qknn._parse_float_csv(args.subspace_proto_weight_grid),
+            qknn._parse_int_csv(args.subspace_proto_rank_grid),
+            qknn._parse_float_csv(args.subspace_proto_power_grid),
+            qknn._parse_float_csv(args.subspace_proto_clip_grid),
+            qknn._parse_float_csv(args.support_bias_weight_grid),
+            qknn._parse_float_csv(args.support_bias_step_grid),
+            qknn._parse_int_csv(args.support_bias_rounds_grid),
             qknn._parse_float_csv(args.mahal_proto_weight_grid),
             qknn._parse_float_csv(args.mahal_proto_alpha_grid),
             qknn._parse_float_csv(args.mahal_proto_diag_mix_grid),
@@ -1407,6 +1634,13 @@ def main() -> None:
                 ridge_head_weight,
                 ridge_head_alpha,
                 ridge_head_clip,
+                subspace_proto_weight,
+                subspace_proto_rank,
+                subspace_proto_power,
+                subspace_proto_clip,
+                support_bias_weight,
+                support_bias_step,
+                support_bias_rounds,
                 mahal_proto_weight,
                 mahal_proto_alpha,
                 mahal_proto_diag_mix,
@@ -1471,6 +1705,13 @@ def main() -> None:
                     ridge_head_weight=float(ridge_head_weight),
                     ridge_head_alpha=float(ridge_head_alpha),
                     ridge_head_clip=float(ridge_head_clip),
+                    subspace_proto_weight=float(subspace_proto_weight),
+                    subspace_proto_rank=int(subspace_proto_rank),
+                    subspace_proto_power=float(subspace_proto_power),
+                    subspace_proto_clip=float(subspace_proto_clip),
+                    support_bias_weight=float(support_bias_weight),
+                    support_bias_step=float(support_bias_step),
+                    support_bias_rounds=int(support_bias_rounds),
                     mahal_proto_weight=float(mahal_proto_weight),
                     mahal_proto_alpha=float(mahal_proto_alpha),
                     mahal_proto_diag_mix=float(mahal_proto_diag_mix),
@@ -1602,6 +1843,18 @@ def main() -> None:
         "ridge_head_alpha",
         "ridge_head_clip",
         "stored_ridge_head_scalars",
+        "subspace_proto_weight",
+        "subspace_proto_rank",
+        "subspace_proto_rank_used",
+        "subspace_proto_power",
+        "subspace_proto_clip",
+        "stored_subspace_proto_scalars",
+        "support_bias_weight",
+        "support_bias_step",
+        "support_bias_rounds",
+        "support_bias_loo_min_acc",
+        "support_bias_loo_mean_acc",
+        "stored_support_bias_scalars",
         "mahal_proto_weight",
         "mahal_proto_alpha",
         "mahal_proto_diag_mix",
