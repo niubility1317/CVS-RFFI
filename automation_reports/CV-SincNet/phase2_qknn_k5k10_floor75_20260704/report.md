@@ -416,3 +416,57 @@ artifact SHA256：
 | `strict_n10_k10_metric_qknn_repel_protomix_seed421029_narrow.json` | `08C40CEAE366FC4A894B2AD959360BD824EB4C72CAB1B7C87A2D12E51690A6C4` |
 
 结论：目标仍未完成。新的repulsive prototype和pairwise quota refine是合规的压缩qKNN变体，但在当前最佳support seed上不能改善最低类；pairwise refine不改变预测，说明balanced assignment在现有score矩阵下已经达到相似类对内的局部配额最优。后续应停止继续扩大后处理网格，转向训练侧或特征侧：围绕`20-19/10-10`、`11-10/2-13`、`6-15/11-10`、`14-10/19-3`加入source-side pair-separation/episode hard-pair loss，或重新导出更能分开这些pair的`MANYNEW10_CONFLICT_NORM`特征，再回到同一K=5/K=10压缩qKNN评估。
+
+## 2026-07-05 proxy hard-pair训练侧优化计划
+
+目标仍为：K只取`5`和`10`，不扩大K数量；十个目标新类别内最低新类准确率不低于`75%`，同时记录旧类准确率和逐类性能。当前最好仍未达标：K=10最低新类`72.86%`，K=5最低新类`69.33%`。
+
+本轮停止继续扩大qKNN后处理网格，转到训练/特征侧。新增训练脚本参数支持`proxy_unknown_hard_pair_ids`，用可读TX标签指定代理未知类硬对，训练时解析为ManyTx原始`tx_i`。该机制只使用source old和proxy_unknown训练池；`PROXY_UNKNOWN_TX_IDS`继续排除十个目标新类`10-10,11-10,18-5,19-3,2-13,2-5,3-8,4-10,8-18,8-3`，不把目标新类标签泄漏进地面训练。
+
+### proxy hard-pair挖掘依据
+
+挖掘输入为已完成的`MANYNEW10_CONFLICT_NORM_features_leo_repaired.npz`，只读取`source`和`proxy_unknown`角色，未使用目标query标签。该文件SHA256为`ABCD59B5A2766CC108DBC977B060A6D1FC62A7D80C3833910F2C1A12096F785C`。选择的proxy hard-pair如下：
+
+`15-1:20-12,20-12:15-1,4-1:7-11,7-11:4-1,1-16:8-13,8-13:1-16,6-6:8-1,8-1:6-6,4-1:7-10,7-10:4-1,1-10:8-13,8-13:1-10,15-19:9-1,9-1:15-19,1-14:6-6,6-6:1-14`
+
+| proxy pair | cosine sim |
+|---|---:|
+| `15-1:20-12` | 0.9994 |
+| `4-1:7-11` | 0.9988 |
+| `1-16:8-13` | 0.9988 |
+| `6-6:8-1` | 0.9987 |
+| `4-1:7-10` | 0.9987 |
+| `1-10:8-13` | 0.9983 |
+| `15-19:9-1` | 0.9981 |
+| `1-14:6-6` | 0.9985 |
+
+### 本地变更与验证
+
+| file | purpose | SHA256 |
+|---|---|---|
+| `code/scripts/train_apply_phase1_iq_preadapter_20260703.py` | 增加proxy hard-pair loss和TX标签解析 | `C08D913C42D380BEF4C441BB07CBB17EC0B9DFEC5644AD674DE24E76ABB12F15` |
+| `code/scripts/launch_phase2_adv3b02_manynew10_proxy_hardpair_20260705.sh` | N607训练+K=5/K=10支持集metric qKNN评估launcher | `FA4C4053988FED5A7F9F528850EE3D132CFABDCFBE6006C57C7F9ADC90B725D8` |
+
+本地验证：
+
+| command | result |
+|---|---|
+| `conda run -n ssr-gpu python -m py_compile code\scripts\train_apply_phase1_iq_preadapter_20260703.py code\scripts\phase2_support_metric_qknn_probe.py` | PASS |
+| `bash -n code/scripts/launch_phase2_adv3b02_manynew10_proxy_hardpair_20260705.sh` | PASS |
+| `ROOT=/tmp/cvs-rffi-dryrun RUNS_ROOT=/tmp/cvs-rffi-dryrun/runs/proxy_hp LOG_ROOT=/tmp/cvs-rffi-dryrun/logs/proxy_hp bash code/scripts/launch_phase2_adv3b02_manynew10_proxy_hardpair_20260705.sh --dry-run` | PASS |
+
+### 待发射N607实验
+
+| field | value |
+|---|---|
+| run_id | `phase2_adv3b02_manynew10_proxy_hardpair_20260705` |
+| target receiver domain | `7-14` |
+| old labels | `14-10,14-7,20-15,20-19,6-15,8-20` |
+| new labels | `10-10,11-10,18-5,19-3,2-13,2-5,3-8,4-10,8-18,8-3` |
+| strict support | `pool_per_old=K,pool_per_new=K` |
+| strict query | K=10时`70/query/class`，K=5时`75/query/class` |
+| variants | `MANYNEW10_PROXY_HP_NORM_SAFE`、`MANYNEW10_PROXY_HP_NORM_STRONG` |
+| qKNN eval | 固定当前最强support-metric配置；K=10用`diag_fisher,strength=0.5`，K=5用`diag_whiten_fisher,strength=0.1` |
+| success criterion | K=5和K=10均满足`old_acc>=80%`且每个new类`>=75%` |
+
+待执行远端命令：`bash code/scripts/launch_phase2_adv3b02_manynew10_proxy_hardpair_20260705.sh`。发射前必须完成N607 SSH preflight、同步上述两个脚本、远端`py_compile`和`bash -n`验证，并记录PID/GPU/log路径。

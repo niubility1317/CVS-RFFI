@@ -198,6 +198,8 @@ def _make_proxy_unknown_train_loader(args: argparse.Namespace):
         + float(args.proxy_unknown_proto_ce_weight)
         + float(args.proxy_unknown_pair_margin_weight)
         + float(args.proxy_unknown_old_margin_weight)
+        + float(args.proxy_unknown_hard_pair_margin_weight)
+        + float(args.proxy_unknown_hard_old_margin_weight)
     )
     if proxy_weights <= 0:
         return None, {}
@@ -274,6 +276,43 @@ def _parse_class_loss_weights(args: argparse.Namespace, device: torch.device) ->
     if len(vals) != int(args.num_old_classes):
         raise ValueError(f"class_loss_weights must have {args.num_old_classes} values, got {len(vals)}")
     return torch.tensor(vals, dtype=torch.float32, device=device)
+
+
+def _parse_hard_pair_ids(
+    raw: str,
+    device: torch.device,
+    *,
+    tx_labels: Sequence[Any] | None = None,
+    tx_idx: Sequence[int] | None = None,
+) -> torch.Tensor:
+    label_to_idx: dict[str, int] = {}
+    if tx_labels is not None and tx_idx is not None:
+        for label, idx in zip(tx_labels, tx_idx):
+            label_to_idx[canonical_tx_id(label)] = int(idx)
+
+    def resolve_token(token: str) -> int:
+        value = str(token).strip()
+        try:
+            return int(value)
+        except ValueError:
+            pass
+        key = canonical_tx_id(value)
+        if key in label_to_idx:
+            return int(label_to_idx[key])
+        raise ValueError(f"cannot resolve hard pair TX token {token!r}")
+
+    pairs: list[tuple[int, int]] = []
+    for item in str(raw or "").split(","):
+        item = item.strip()
+        if not item:
+            continue
+        if ":" not in item:
+            raise ValueError(f"hard pair item must be left:right, got {item!r}")
+        left, right = item.split(":", 1)
+        pairs.append((resolve_token(left), resolve_token(right)))
+    if not pairs:
+        return torch.empty((0, 2), dtype=torch.long, device=device)
+    return torch.tensor(pairs, dtype=torch.long, device=device)
 
 
 def _proto_margin_loss_weighted(
@@ -358,6 +397,39 @@ def _proxy_unknown_episode_losses(
     return proto_ce, pair_margin_loss, old_margin_loss
 
 
+def _proxy_unknown_hard_pair_loss(
+    z_unknown: torch.Tensor,
+    y_unknown: torch.Tensor,
+    old_protos: torch.Tensor,
+    hard_pairs: torch.Tensor,
+    *,
+    pair_margin: float,
+    old_margin: float,
+) -> tuple[torch.Tensor, torch.Tensor]:
+    labels = y_unknown.long().view(-1)
+    zero = z_unknown.sum() * 0.0
+    if hard_pairs.numel() == 0 or labels.numel() <= 1:
+        return zero, zero
+    z = F.normalize(z_unknown, dim=1)
+    old_proto = F.normalize(old_protos.detach(), dim=1)
+    pair_losses: list[torch.Tensor] = []
+    old_losses: list[torch.Tensor] = []
+    for left, right in hard_pairs.detach().cpu().tolist():
+        left_mask = labels == int(left)
+        if not bool(left_mask.any()):
+            continue
+        left_z = z[left_mask]
+        right_mask = labels == int(right)
+        if bool(right_mask.any()):
+            right_proto = F.normalize(z[right_mask].mean(dim=0, keepdim=True), dim=1)[0]
+            pair_losses.append(F.relu(left_z @ right_proto - 1.0 + float(pair_margin)).mean())
+        if 0 <= int(right) < old_proto.shape[0]:
+            old_losses.append(F.relu(left_z @ old_proto[int(right)] - 1.0 + float(old_margin)).mean())
+    pair_loss = torch.stack(pair_losses).mean() if pair_losses else zero
+    old_loss = torch.stack(old_losses).mean() if old_losses else zero
+    return pair_loss, old_loss
+
+
 def train_adapter(
     args: argparse.Namespace,
     model: nn.Module,
@@ -371,6 +443,12 @@ def train_adapter(
     clean_protos = _proto_from_loader(teacher_model, proto_loader, args, device)
     class_loss_weights = _parse_class_loss_weights(args, device)
     proxy_loader, proxy_info = _make_proxy_unknown_train_loader(args)
+    hard_pairs = _parse_hard_pair_ids(
+        str(args.proxy_unknown_hard_pair_ids),
+        device,
+        tx_labels=proxy_info.get("tx_labels") if proxy_info else None,
+        tx_idx=proxy_info.get("tx_idx") if proxy_info else None,
+    )
     proxy_iter = itertools.cycle(proxy_loader) if proxy_loader is not None else None
     adapter: nn.Module
     if bool(args.input_adapter_enabled):
@@ -399,6 +477,8 @@ def train_adapter(
             "proxy_unknown_proto_ce": 0.0,
             "proxy_unknown_pair_margin": 0.0,
             "proxy_unknown_old_margin": 0.0,
+            "proxy_unknown_hard_pair": 0.0,
+            "proxy_unknown_hard_old": 0.0,
             "resid": 0.0,
         }
         count = 0
@@ -457,12 +537,22 @@ def train_adapter(
                     pair_margin=float(args.proxy_unknown_pair_margin),
                     old_margin=float(args.proxy_unknown_old_margin),
                 )
+                proxy_unknown_hard_pair, proxy_unknown_hard_old = _proxy_unknown_hard_pair_loss(
+                    z_u_rep,
+                    y_u,
+                    clean_protos,
+                    hard_pairs,
+                    pair_margin=float(args.proxy_unknown_hard_pair_margin),
+                    old_margin=float(args.proxy_unknown_hard_old_margin),
+                )
             else:
                 proxy_unknown_sep = z_rep.sum() * 0.0
                 proxy_unknown_supcon = z_rep.sum() * 0.0
                 proxy_unknown_proto_ce = z_rep.sum() * 0.0
                 proxy_unknown_pair_margin = z_rep.sum() * 0.0
                 proxy_unknown_old_margin = z_rep.sum() * 0.0
+                proxy_unknown_hard_pair = z_rep.sum() * 0.0
+                proxy_unknown_hard_old = z_rep.sum() * 0.0
             resid = (x_rep.float() - x_sat_in.float()).square().mean()
             loss = (
                 float(args.mse_weight) * mse
@@ -476,6 +566,8 @@ def train_adapter(
                 + float(args.proxy_unknown_proto_ce_weight) * proxy_unknown_proto_ce
                 + float(args.proxy_unknown_pair_margin_weight) * proxy_unknown_pair_margin
                 + float(args.proxy_unknown_old_margin_weight) * proxy_unknown_old_margin
+                + float(args.proxy_unknown_hard_pair_margin_weight) * proxy_unknown_hard_pair
+                + float(args.proxy_unknown_hard_old_margin_weight) * proxy_unknown_hard_old
                 + float(args.teacher_logit_distill_weight) * clean_kl
                 + float(args.residual_weight) * resid
             )
@@ -498,6 +590,8 @@ def train_adapter(
             sums["proxy_unknown_proto_ce"] += float(proxy_unknown_proto_ce.detach().item()) * bs
             sums["proxy_unknown_pair_margin"] += float(proxy_unknown_pair_margin.detach().item()) * bs
             sums["proxy_unknown_old_margin"] += float(proxy_unknown_old_margin.detach().item()) * bs
+            sums["proxy_unknown_hard_pair"] += float(proxy_unknown_hard_pair.detach().item()) * bs
+            sums["proxy_unknown_hard_old"] += float(proxy_unknown_hard_old.detach().item()) * bs
             sums["resid"] += float(resid.detach().item()) * bs
         row = {k: v / max(1, count) for k, v in sums.items()}
         row["epoch"] = float(epoch + 1)
@@ -533,6 +627,11 @@ def train_adapter(
             "proxy_unknown_pair_margin_weight": float(args.proxy_unknown_pair_margin_weight),
             "proxy_unknown_old_margin": float(args.proxy_unknown_old_margin),
             "proxy_unknown_old_margin_weight": float(args.proxy_unknown_old_margin_weight),
+            "proxy_unknown_hard_pair_ids": str(args.proxy_unknown_hard_pair_ids or ""),
+            "proxy_unknown_hard_pair_margin": float(args.proxy_unknown_hard_pair_margin),
+            "proxy_unknown_hard_pair_margin_weight": float(args.proxy_unknown_hard_pair_margin_weight),
+            "proxy_unknown_hard_old_margin": float(args.proxy_unknown_hard_old_margin),
+            "proxy_unknown_hard_old_margin_weight": float(args.proxy_unknown_hard_old_margin_weight),
             "teacher_logit_distill": float(args.teacher_logit_distill_weight),
             "residual": float(args.residual_weight),
             "class_loss_weights": str(args.class_loss_weights or ""),
@@ -792,6 +891,11 @@ def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
     p.add_argument("--proxy_unknown_pair_margin", type=float, default=0.04)
     p.add_argument("--proxy_unknown_old_margin_weight", type=float, default=0.0)
     p.add_argument("--proxy_unknown_old_margin", type=float, default=0.02)
+    p.add_argument("--proxy_unknown_hard_pair_ids", default="")
+    p.add_argument("--proxy_unknown_hard_pair_margin_weight", type=float, default=0.0)
+    p.add_argument("--proxy_unknown_hard_pair_margin", type=float, default=0.08)
+    p.add_argument("--proxy_unknown_hard_old_margin_weight", type=float, default=0.0)
+    p.add_argument("--proxy_unknown_hard_old_margin", type=float, default=0.05)
     p.add_argument("--teacher_logit_distill_weight", type=float, default=0.0)
     p.add_argument("--distill_temperature", type=float, default=2.0)
     p.add_argument("--residual_weight", type=float, default=0.03)
