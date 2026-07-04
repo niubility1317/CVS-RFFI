@@ -145,7 +145,11 @@ SSH/SCP清理：
 - 每次SSH/SCP后均检查本地`ssh.exe`进程与`172.31.111.215:22`、`172.31.105.18:22` ESTABLISHED连接。
 - 检查未发现残留SSH进程或ESTABLISHED连接。
 
-待补充：Git镜像提交。
+Git镜像提交：
+
+- 仓库：`E:\type10-7\github_publish\CVS-RFFI-repo`
+- 分支：`codex/cvs-rffi-release-20260626`
+- 提交：`9bba3df Add SOM-CI source open metric evaluation`
 
 ## 下一步建议
 
