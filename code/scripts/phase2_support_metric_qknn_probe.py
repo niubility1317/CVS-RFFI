@@ -452,6 +452,35 @@ def _new_old_conflict_bias_scores(
     return adjusted, bias_by_label
 
 
+def _calibrate_score_columns(scores: np.ndarray, mode: str) -> np.ndarray:
+    mode = str(mode).strip().lower()
+    if mode in {"", "none", "identity"}:
+        return scores
+    adjusted = np.asarray(scores, dtype=np.float64).copy()
+    if mode == "column_center":
+        return adjusted - np.mean(adjusted, axis=0, keepdims=True)
+    if mode == "column_zscore":
+        centered = adjusted - np.mean(adjusted, axis=0, keepdims=True)
+        return centered / (np.std(centered, axis=0, keepdims=True) + 1e-6)
+    if mode == "column_robust":
+        median = np.median(adjusted, axis=0, keepdims=True)
+        q75 = np.percentile(adjusted, 75, axis=0, keepdims=True)
+        q25 = np.percentile(adjusted, 25, axis=0, keepdims=True)
+        return (adjusted - median) / (q75 - q25 + 1e-6)
+    if mode == "column_rank":
+        ranked = np.empty_like(adjusted, dtype=np.float64)
+        if adjusted.shape[0] <= 1:
+            return np.zeros_like(adjusted, dtype=np.float64)
+        scale = 2.0 / float(adjusted.shape[0] - 1)
+        for col in range(adjusted.shape[1]):
+            order = np.argsort(adjusted[:, col], kind="mergesort")
+            ranks = np.empty(adjusted.shape[0], dtype=np.float64)
+            ranks[order] = np.arange(adjusted.shape[0], dtype=np.float64)
+            ranked[:, col] = ranks * scale - 1.0
+        return ranked
+    raise ValueError(f"unsupported score_calibration mode: {mode}")
+
+
 def _bootstrap_proto_scores(
     *,
     features: np.ndarray,
@@ -633,6 +662,7 @@ def _evaluate_metric_qknn(
     mahal_proto_alpha: float,
     mahal_proto_diag_mix: float,
     mahal_proto_clip: float,
+    score_calibration: str,
     old_target: float,
     old_floor: float,
     new_target: float,
@@ -837,6 +867,7 @@ def _evaluate_metric_qknn(
             clip=float(mahal_proto_clip),
         )
         scores = scores + float(mahal_proto_weight) * mahal_scores
+    scores = _calibrate_score_columns(scores, str(score_calibration))
     if scenario_balanced_assignment:
         pred = base._scenario_balanced_predict(
             scores,
@@ -917,6 +948,7 @@ def _evaluate_metric_qknn(
         "mahal_proto_alpha": float(mahal_proto_alpha),
         "mahal_proto_diag_mix": float(mahal_proto_diag_mix),
         "mahal_proto_clip": float(mahal_proto_clip),
+        "score_calibration": str(score_calibration),
         "stored_mahal_proto_scalars": int(stored_mahal_proto_scalars),
         "stored_quantized_support_code_count": int(support_indices.size),
         "stored_raw_support_count": 0,
@@ -991,6 +1023,7 @@ def main() -> None:
     parser.add_argument("--mahal_proto_alpha_grid", default="1.0")
     parser.add_argument("--mahal_proto_diag_mix_grid", default="0.5")
     parser.add_argument("--mahal_proto_clip_grid", default="3.0")
+    parser.add_argument("--score_calibration_grid", default="none")
     parser.add_argument("--scenario_aware", action="store_true")
     parser.add_argument("--balanced_assignment", action="store_true")
     parser.add_argument("--scenario_balanced_assignment", action="store_true")
@@ -1065,6 +1098,7 @@ def main() -> None:
             qknn._parse_float_csv(args.mahal_proto_alpha_grid),
             qknn._parse_float_csv(args.mahal_proto_diag_mix_grid),
             qknn._parse_float_csv(args.mahal_proto_clip_grid),
+            qknn._parse_csv(args.score_calibration_grid),
         )
     )
 
@@ -1142,6 +1176,7 @@ def main() -> None:
                 mahal_proto_alpha,
                 mahal_proto_diag_mix,
                 mahal_proto_clip,
+                score_calibration,
             ) in search_grid:
                 row = _evaluate_metric_qknn(
                     features=features,
@@ -1193,6 +1228,7 @@ def main() -> None:
                     mahal_proto_alpha=float(mahal_proto_alpha),
                     mahal_proto_diag_mix=float(mahal_proto_diag_mix),
                     mahal_proto_clip=float(mahal_proto_clip),
+                    score_calibration=str(score_calibration),
                     old_target=float(args.old_target),
                     old_floor=float(args.old_floor),
                     new_target=float(args.seen_new_target),
@@ -1280,6 +1316,7 @@ def main() -> None:
         "mahal_proto_alpha",
         "mahal_proto_diag_mix",
         "mahal_proto_clip",
+        "score_calibration",
         "stored_mahal_proto_scalars",
         "query_old_acc",
         "query_min_old_class_acc",

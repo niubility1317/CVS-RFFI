@@ -783,3 +783,27 @@ artifact SHA256：
 | `k5_dualview_pairfisher_conflictbias.json` | `14C9A3CA5B03D4CDDAB98D2B87557FB15B40353F0F4DF68BEC5D6E13903D5151` |
 
 结论：pair-Fisher是目前最强的qKNN压缩变体，K=10从此前72.86%最低类推进到74.29%，K=5保持74.67%且提高均值；但两者均未达到“十个新类内最低类不低于75%”。因为当前最强行都只差1个query，后续优化应聚焦`10-10`相对旧类`20-19/14-7`和新类邻域的边界，而不是扩大K或继续做大网格。若坚持星上可部署，下一步应采用support-only可解释的针对性tie-breaker或表征侧小训练修复，并用独立support策略/seed复核，避免把query排序结果变成部署调参。
+
+### 2026-07-05 score calibration与pair refine负诊断
+
+为确认`10-10`差1个query是否来自balanced assignment前的类别分数尺度不一致，本轮给`phase2_support_metric_qknn_probe.py`新增`--score_calibration_grid`，默认`none`，可选`column_center,column_zscore,column_robust,column_rank`。该校准只使用无标签query分数分布，不使用query标签；但由于它依赖query batch统计，仍应标为transductive diagnostic，而不是默认在线星上协议。
+
+固定pair-Fisher最强配置后的小网格结论如下：
+
+| 诊断 | K | 最好模式 | old_acc | min_old | new_acc | min_new | 结论 |
+|---|---:|---|---:|---:|---:|---:|---|
+| score calibration | 10 | `none/column_center`并列 | 84.05% | 70.00% | 84.43% | 74.29% | 无提升；`column_rank/zscore/robust`降低最低类 |
+| score calibration | 5 | `none/column_center`并列 | 83.56% | 62.67% | 82.53% | 74.67% | 无提升；rank/zscore/robust降低最低类 |
+| pair refine | 10 | `pair_refine_changed_predictions=0` | 84.05% | 70.00% | 84.43% | 74.29% | 无prediction变化 |
+| pair refine | 5 | `pair_refine_changed_predictions=0` | 83.56% | 62.67% | 82.53% | 74.67% | 无prediction变化 |
+
+artifact SHA256：
+
+| file | SHA256 |
+|---|---|
+| `k10_pairfisher_scorecal.json` | `AD367C233AD89675E0D1F56D6B9E1BB4EFA1425586B97843BBFCCCCBE8B33C2C` |
+| `k5_dualview_pairfisher_scorecal.json` | `4B6A6BF563D2099E37F389B0A8BA28283D3CE1B3D78D71D261742782014B4EEE` |
+| `k10_pairfisher_pairrefine.json` | `CDAFE13AE1D6CBFD6DFA8DE1BDEAA150B51B0800578E5EDA91B2CC8D7A296E27` |
+| `k5_dualview_pairfisher_pairrefine.json` | `47A062DBB10796A8BF79C549003117E3FABA7DEB6E17F47A93A36B972DE7D87F` |
+
+结论：分数列校准和已有pair refine都不能把`10-10`越过75%。这进一步说明当前差1个query不是简单的列尺度问题或pair内配额重排问题，而是`10-10`边界样本在现有特征空间中确实排在错误侧。下一步若继续保持qKNN路线，应做更细粒度的support-only预测级诊断，定位`10-10`误分目标和margin，再设计只针对该混淆方向的可解释tie-breaker；否则应回到表征训练侧强化`10-10`相关proxy hard negative分离。
