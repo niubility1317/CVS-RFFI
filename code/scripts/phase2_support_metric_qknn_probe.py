@@ -12,6 +12,7 @@ import argparse
 import csv
 import json
 import sys
+from itertools import combinations, product
 from pathlib import Path
 from typing import Any
 
@@ -289,6 +290,146 @@ def _pair_axis_adjust_scores(
     return adjusted, used
 
 
+def _pair_gaussian_adjust_scores(
+    scores: np.ndarray,
+    *,
+    features: np.ndarray,
+    support_indices: np.ndarray,
+    support_labels: np.ndarray,
+    query_indices: np.ndarray,
+    class_labels: list[str],
+    proto_sim: np.ndarray,
+    similarity_threshold: float,
+    weight: float,
+    clip: float,
+) -> tuple[np.ndarray, int]:
+    if float(weight) == 0.0 or float(similarity_threshold) > 1.0:
+        return scores, 0
+    support = qknn._normalize_rows(features[support_indices])
+    query = qknn._normalize_rows(features[query_indices])
+    labels = np.asarray(support_labels, dtype=object).astype(str)
+    prototypes: list[np.ndarray] = []
+    for label in class_labels:
+        class_support = support[labels == label]
+        if class_support.size == 0:
+            prototypes.append(np.zeros(features.shape[1], dtype=np.float64))
+        else:
+            prototypes.append(qknn._normalize_rows(class_support.mean(axis=0, keepdims=True))[0])
+    proto = qknn._normalize_rows(np.stack(prototypes, axis=0))
+    adjusted = np.asarray(scores, dtype=np.float64).copy()
+    used = 0
+    for left in range(len(class_labels)):
+        for right in range(left + 1, len(class_labels)):
+            if float(proto_sim[left, right]) < float(similarity_threshold):
+                continue
+            left_support = support[labels == class_labels[left]]
+            right_support = support[labels == class_labels[right]]
+            if left_support.size == 0 or right_support.size == 0:
+                continue
+            axis = proto[left] - proto[right]
+            norm = float(np.linalg.norm(axis))
+            if norm < 1e-8:
+                continue
+            axis = axis / norm
+            left_proj = left_support @ axis
+            right_proj = right_support @ axis
+            left_mean = float(np.mean(left_proj))
+            right_mean = float(np.mean(right_proj))
+            left_var = float(np.var(left_proj) + 1e-4)
+            right_var = float(np.var(right_proj) + 1e-4)
+            query_proj = query @ axis
+            left_ll = -0.5 * (((query_proj - left_mean) ** 2) / left_var + np.log(left_var))
+            right_ll = -0.5 * (((query_proj - right_mean) ** 2) / right_var + np.log(right_var))
+            margin = np.clip(left_ll - right_ll, -float(clip), float(clip))
+            adjusted[:, left] += float(weight) * margin
+            adjusted[:, right] -= float(weight) * margin
+            used += 1
+    return adjusted, used
+
+
+def _bootstrap_proto_scores(
+    *,
+    features: np.ndarray,
+    support_indices: np.ndarray,
+    support_labels: np.ndarray,
+    query_indices: np.ndarray,
+    class_labels: list[str],
+    old_labels: set[str],
+    topm: int,
+    drop: int,
+    radius_norm: float,
+    old_bias: float,
+) -> tuple[np.ndarray, int]:
+    """Score queries against support-only leave-subset prototypes.
+
+    This expands each class into virtual prototypes computed from the K-shot
+    support set. Deployment stores the derived prototypes, not raw support.
+    """
+    support = qknn._normalize_rows(features[support_indices])
+    query = qknn._normalize_rows(features[query_indices])
+    labels = np.asarray(support_labels, dtype=object).astype(str)
+    score_columns: list[np.ndarray] = []
+    prototype_count = 0
+    for label in class_labels:
+        class_support = support[labels == label]
+        n_support = int(class_support.shape[0])
+        if n_support == 0:
+            score_columns.append(np.full(query.shape[0], -1e9, dtype=np.float64))
+            continue
+        drop_count = max(1, min(int(drop), n_support - 1))
+        if n_support <= 1:
+            protos = qknn._normalize_rows(class_support.mean(axis=0, keepdims=True))
+        else:
+            proto_rows: list[np.ndarray] = []
+            support_sum = np.sum(class_support, axis=0)
+            for excluded in combinations(range(n_support), drop_count):
+                keep_count = n_support - len(excluded)
+                if keep_count <= 0:
+                    continue
+                excluded_sum = np.sum(class_support[list(excluded)], axis=0)
+                proto_rows.append((support_sum - excluded_sum) / float(keep_count))
+            protos = qknn._normalize_rows(np.stack(proto_rows, axis=0)) if proto_rows else qknn._normalize_rows(class_support.mean(axis=0, keepdims=True))
+        prototype_count += int(protos.shape[0])
+        class_prototype = qknn._normalize_rows(class_support.mean(axis=0, keepdims=True))[0]
+        radius = float(np.mean(1.0 - class_support @ class_prototype))
+        boot = _topm_mean(query @ protos.T, int(topm))
+        if float(radius_norm) != 0.0:
+            boot = 1.0 - ((1.0 - boot) / (max(radius, 1e-4) ** float(radius_norm)))
+        if label in old_labels:
+            boot = boot + float(old_bias)
+        score_columns.append(boot)
+    return np.stack(score_columns, axis=1), prototype_count
+
+
+def _ridge_head_scores(
+    *,
+    features: np.ndarray,
+    support_indices: np.ndarray,
+    support_labels: np.ndarray,
+    query_indices: np.ndarray,
+    class_labels: list[str],
+    alpha: float,
+    clip: float,
+) -> tuple[np.ndarray, int]:
+    support = qknn._normalize_rows(features[support_indices])
+    query = qknn._normalize_rows(features[query_indices])
+    label_to_index = {label: index for index, label in enumerate(class_labels)}
+    y = np.full((support.shape[0], len(class_labels)), -1.0 / max(1, len(class_labels)), dtype=np.float64)
+    for row_index, label in enumerate(np.asarray(support_labels, dtype=object).astype(str)):
+        if label in label_to_index:
+            y[row_index, label_to_index[label]] = 1.0
+    support_aug = np.concatenate([support, np.ones((support.shape[0], 1), dtype=np.float64)], axis=1)
+    query_aug = np.concatenate([query, np.ones((query.shape[0], 1), dtype=np.float64)], axis=1)
+    reg = float(alpha) * np.eye(support_aug.shape[1], dtype=np.float64)
+    reg[-1, -1] = float(alpha) * 0.01
+    weights = np.linalg.solve(support_aug.T @ support_aug + reg, support_aug.T @ y)
+    logits = query_aug @ weights
+    logits = logits - np.mean(logits, axis=1, keepdims=True)
+    logits = logits / (np.std(logits, axis=1, keepdims=True) + 1e-6)
+    logits = np.clip(logits, -float(clip), float(clip))
+    return logits, int(weights.size)
+
+
 def _evaluate_metric_qknn(
     *,
     features: np.ndarray,
@@ -310,6 +451,7 @@ def _evaluate_metric_qknn(
     mutual_only: bool,
     scenario_aware: bool,
     balanced_assignment: bool,
+    scenario_balanced_assignment: bool,
     proto_repel_lambda: float,
     proto_repel_margin: float,
     proto_repel_steps: int,
@@ -318,6 +460,15 @@ def _evaluate_metric_qknn(
     pair_axis_similarity: float,
     pair_axis_weight: float,
     pair_axis_clip: float,
+    pair_gaussian_similarity: float,
+    pair_gaussian_weight: float,
+    pair_gaussian_clip: float,
+    bootstrap_proto_mix: float,
+    bootstrap_proto_drop: int,
+    bootstrap_proto_topm: int,
+    ridge_head_weight: float,
+    ridge_head_alpha: float,
+    ridge_head_clip: float,
     old_target: float,
     old_floor: float,
     new_target: float,
@@ -396,7 +547,54 @@ def _evaluate_metric_qknn(
         weight=float(pair_axis_weight),
         clip=float(pair_axis_clip),
     )
-    if balanced_assignment:
+    scores, pair_gaussian_count = _pair_gaussian_adjust_scores(
+        scores,
+        features=adapted,
+        support_indices=support_indices,
+        support_labels=support_labels,
+        query_indices=query_indices,
+        class_labels=old_labels + new_labels,
+        proto_sim=proto_sim,
+        similarity_threshold=float(pair_gaussian_similarity),
+        weight=float(pair_gaussian_weight),
+        clip=float(pair_gaussian_clip),
+    )
+    bootstrap_proto_count = 0
+    if float(bootstrap_proto_mix) > 0.0:
+        bootstrap_scores, bootstrap_proto_count = _bootstrap_proto_scores(
+            features=adapted,
+            support_indices=support_indices,
+            support_labels=support_labels,
+            query_indices=query_indices,
+            class_labels=old_labels + new_labels,
+            old_labels=set(old_labels),
+            topm=int(bootstrap_proto_topm),
+            drop=int(bootstrap_proto_drop),
+            radius_norm=float(radius_norm),
+            old_bias=float(old_bias),
+        )
+        scores = (1.0 - float(bootstrap_proto_mix)) * scores + float(bootstrap_proto_mix) * bootstrap_scores
+    stored_ridge_head_scalars = 0
+    if float(ridge_head_weight) > 0.0:
+        ridge_scores, stored_ridge_head_scalars = _ridge_head_scores(
+            features=adapted,
+            support_indices=support_indices,
+            support_labels=support_labels,
+            query_indices=query_indices,
+            class_labels=old_labels + new_labels,
+            alpha=float(ridge_head_alpha),
+            clip=float(ridge_head_clip),
+        )
+        scores = scores + float(ridge_head_weight) * ridge_scores
+    if scenario_balanced_assignment:
+        pred = base._scenario_balanced_predict(
+            scores,
+            query_scenarios=scenarios[query_indices],
+            query_old_mask=np.arange(query_indices.size) < old_count,
+            old_labels=old_labels,
+            new_labels=new_labels,
+        )
+    elif balanced_assignment:
         pred = base._balanced_predict(scores, old_count=old_count, old_labels=old_labels, new_labels=new_labels)
     else:
         pred = base._predict(scores, old_labels + new_labels)
@@ -432,6 +630,7 @@ def _evaluate_metric_qknn(
         "mutual_only": bool(mutual_only),
         "scenario_aware": bool(scenario_aware),
         "balanced_assignment": bool(balanced_assignment),
+        "scenario_balanced_assignment": bool(scenario_balanced_assignment),
         "proto_repel_lambda": float(proto_repel_lambda),
         "proto_repel_margin": float(proto_repel_margin),
         "proto_repel_steps": int(proto_repel_steps),
@@ -442,6 +641,18 @@ def _evaluate_metric_qknn(
         "pair_axis_weight": float(pair_axis_weight),
         "pair_axis_clip": float(pair_axis_clip),
         "pair_axis_count": int(pair_axis_count),
+        "pair_gaussian_similarity": float(pair_gaussian_similarity),
+        "pair_gaussian_weight": float(pair_gaussian_weight),
+        "pair_gaussian_clip": float(pair_gaussian_clip),
+        "pair_gaussian_count": int(pair_gaussian_count),
+        "bootstrap_proto_mix": float(bootstrap_proto_mix),
+        "bootstrap_proto_drop": int(bootstrap_proto_drop),
+        "bootstrap_proto_topm": int(bootstrap_proto_topm),
+        "stored_bootstrap_prototype_count": int(bootstrap_proto_count),
+        "ridge_head_weight": float(ridge_head_weight),
+        "ridge_head_alpha": float(ridge_head_alpha),
+        "ridge_head_clip": float(ridge_head_clip),
+        "stored_ridge_head_scalars": int(stored_ridge_head_scalars),
         "stored_quantized_support_code_count": int(support_indices.size),
         "stored_raw_support_count": 0,
         "stored_class_prototype_count": int(len(old_labels) + len(new_labels)),
@@ -493,8 +704,18 @@ def main() -> None:
     parser.add_argument("--pair_axis_similarity_grid", default="1.1")
     parser.add_argument("--pair_axis_weight_grid", default="0")
     parser.add_argument("--pair_axis_clip_grid", default="1.0")
+    parser.add_argument("--pair_gaussian_similarity_grid", default="1.1")
+    parser.add_argument("--pair_gaussian_weight_grid", default="0")
+    parser.add_argument("--pair_gaussian_clip_grid", default="5.0")
+    parser.add_argument("--bootstrap_proto_mix_grid", default="0")
+    parser.add_argument("--bootstrap_proto_drop_grid", default="1")
+    parser.add_argument("--bootstrap_proto_topm_grid", default="1")
+    parser.add_argument("--ridge_head_weight_grid", default="0")
+    parser.add_argument("--ridge_head_alpha_grid", default="1.0")
+    parser.add_argument("--ridge_head_clip_grid", default="3.0")
     parser.add_argument("--scenario_aware", action="store_true")
     parser.add_argument("--balanced_assignment", action="store_true")
+    parser.add_argument("--scenario_balanced_assignment", action="store_true")
     parser.add_argument("--exclude_pool_from_query", action="store_true")
     parser.add_argument("--old_target", type=float, default=0.80)
     parser.add_argument("--old_floor", type=float, default=0.75)
@@ -517,6 +738,38 @@ def main() -> None:
         source_idx = np.where((tx_ids == label) & (roles == "source"))[0].astype(int)
         if source_idx.size:
             source_prototypes[label] = qknn._normalize_rows(features[source_idx].mean(axis=0, keepdims=True))[0]
+
+    search_grid = list(
+        product(
+            qknn._parse_csv(args.transform_modes),
+            qknn._parse_float_csv(args.transform_strengths),
+            qknn._parse_int_csv(args.topm_grid),
+            qknn._parse_float_csv(args.proto_mix_grid),
+            qknn._parse_float_csv(args.radius_norm_grid),
+            qknn._parse_float_csv(args.old_bias_grid),
+            qknn._parse_float_csv(args.neg_lambda_grid),
+            qknn._parse_float_csv(args.neg_threshold_grid),
+            qknn._parse_float_csv(args.neg_margin_grid),
+            qknn._parse_csv(args.mutual_only_grid),
+            qknn._parse_float_csv(args.proto_repel_lambda_grid),
+            qknn._parse_float_csv(args.proto_repel_margin_grid),
+            qknn._parse_int_csv(args.proto_repel_steps_grid),
+            qknn._parse_float_csv(args.proto_repel_anchor_grid),
+            qknn._parse_float_csv(args.pair_refine_similarity_grid),
+            qknn._parse_float_csv(args.pair_axis_similarity_grid),
+            qknn._parse_float_csv(args.pair_axis_weight_grid),
+            qknn._parse_float_csv(args.pair_axis_clip_grid),
+            qknn._parse_float_csv(args.pair_gaussian_similarity_grid),
+            qknn._parse_float_csv(args.pair_gaussian_weight_grid),
+            qknn._parse_float_csv(args.pair_gaussian_clip_grid),
+            qknn._parse_float_csv(args.bootstrap_proto_mix_grid),
+            qknn._parse_int_csv(args.bootstrap_proto_drop_grid),
+            qknn._parse_int_csv(args.bootstrap_proto_topm_grid),
+            qknn._parse_float_csv(args.ridge_head_weight_grid),
+            qknn._parse_float_csv(args.ridge_head_alpha_grid),
+            qknn._parse_float_csv(args.ridge_head_clip_grid),
+        )
+    )
 
     rows: list[dict[str, Any]] = []
     for seed in range(int(args.seed_start), int(args.seed_start) + int(args.seed_count)):
@@ -553,64 +806,85 @@ def main() -> None:
                 continue
             old_splits = active._as_eval_splits(old_raw)
             new_splits = active._as_eval_splits(new_raw)
-            for mode in qknn._parse_csv(args.transform_modes):
-                for strength in qknn._parse_float_csv(args.transform_strengths):
-                    for topm in qknn._parse_int_csv(args.topm_grid):
-                        for proto_mix in qknn._parse_float_csv(args.proto_mix_grid):
-                            for radius_norm in qknn._parse_float_csv(args.radius_norm_grid):
-                                for old_bias in qknn._parse_float_csv(args.old_bias_grid):
-                                    for neg_lambda in qknn._parse_float_csv(args.neg_lambda_grid):
-                                        for neg_threshold in qknn._parse_float_csv(args.neg_threshold_grid):
-                                            for neg_margin in qknn._parse_float_csv(args.neg_margin_grid):
-                                                for mutual_raw in qknn._parse_csv(args.mutual_only_grid):
-                                                    for proto_repel_lambda in qknn._parse_float_csv(args.proto_repel_lambda_grid):
-                                                        for proto_repel_margin in qknn._parse_float_csv(args.proto_repel_margin_grid):
-                                                            for proto_repel_steps in qknn._parse_int_csv(args.proto_repel_steps_grid):
-                                                                for proto_repel_anchor in qknn._parse_float_csv(args.proto_repel_anchor_grid):
-                                                                    for pair_refine_similarity in qknn._parse_float_csv(args.pair_refine_similarity_grid):
-                                                                        for pair_axis_similarity in qknn._parse_float_csv(args.pair_axis_similarity_grid):
-                                                                            for pair_axis_weight in qknn._parse_float_csv(args.pair_axis_weight_grid):
-                                                                                for pair_axis_clip in qknn._parse_float_csv(args.pair_axis_clip_grid):
-                                                                                        row = _evaluate_metric_qknn(
-                                                                                            features=features,
-                                                                                            tx_ids=tx_ids,
-                                                                                            scenarios=scenarios,
-                                                                                            old_splits=old_splits,
-                                                                                            new_splits=new_splits,
-                                                                                            old_labels=old_labels,
-                                                                                            new_labels=new_labels,
-                                                                                            transform_mode=mode,
-                                                                                            transform_strength=float(strength),
-                                                                                            topm=int(topm),
-                                                                                            proto_mix=float(proto_mix),
-                                                                                            radius_norm=float(radius_norm),
-                                                                                            old_bias=float(old_bias),
-                                                                                            neg_lambda=float(neg_lambda),
-                                                                                            neg_threshold=float(neg_threshold),
-                                                                                            neg_margin=float(neg_margin),
-                                                                                            mutual_only=str(mutual_raw).lower() == "true",
-                                                                                            scenario_aware=bool(args.scenario_aware),
-                                                                                            balanced_assignment=bool(args.balanced_assignment),
-                                                                                            proto_repel_lambda=float(proto_repel_lambda),
-                                                                                            proto_repel_margin=float(proto_repel_margin),
-                                                                                            proto_repel_steps=int(proto_repel_steps),
-                                                                                            proto_repel_anchor=float(proto_repel_anchor),
-                                                                                            pair_refine_similarity=float(pair_refine_similarity),
-                                                                                            pair_axis_similarity=float(pair_axis_similarity),
-                                                                                            pair_axis_weight=float(pair_axis_weight),
-                                                                                            pair_axis_clip=float(pair_axis_clip),
-                                                                                            old_target=float(args.old_target),
-                                                                                            old_floor=float(args.old_floor),
-                                                                                            new_target=float(args.seen_new_target),
-                                                                                            new_floor=float(args.seen_new_floor),
-                                                                                        )
-                                                                                        row["seed"] = int(seed)
-                                                                                        row["support_selection_policy"] = policy
-                                                                                        row["k_old"] = int(args.k_old)
-                                                                                        row["k_new"] = int(args.k_new)
-                                                                                        row["pool_per_old"] = int(args.pool_per_old)
-                                                                                        row["pool_per_new"] = int(args.pool_per_new)
-                                                                                        rows.append(row)
+            for (
+                mode,
+                strength,
+                topm,
+                proto_mix,
+                radius_norm,
+                old_bias,
+                neg_lambda,
+                neg_threshold,
+                neg_margin,
+                mutual_raw,
+                proto_repel_lambda,
+                proto_repel_margin,
+                proto_repel_steps,
+                proto_repel_anchor,
+                pair_refine_similarity,
+                pair_axis_similarity,
+                pair_axis_weight,
+                pair_axis_clip,
+                pair_gaussian_similarity,
+                pair_gaussian_weight,
+                pair_gaussian_clip,
+                bootstrap_proto_mix,
+                bootstrap_proto_drop,
+                bootstrap_proto_topm,
+                ridge_head_weight,
+                ridge_head_alpha,
+                ridge_head_clip,
+            ) in search_grid:
+                row = _evaluate_metric_qknn(
+                    features=features,
+                    tx_ids=tx_ids,
+                    scenarios=scenarios,
+                    old_splits=old_splits,
+                    new_splits=new_splits,
+                    old_labels=old_labels,
+                    new_labels=new_labels,
+                    transform_mode=mode,
+                    transform_strength=float(strength),
+                    topm=int(topm),
+                    proto_mix=float(proto_mix),
+                    radius_norm=float(radius_norm),
+                    old_bias=float(old_bias),
+                    neg_lambda=float(neg_lambda),
+                    neg_threshold=float(neg_threshold),
+                    neg_margin=float(neg_margin),
+                    mutual_only=str(mutual_raw).lower() == "true",
+                    scenario_aware=bool(args.scenario_aware),
+                    balanced_assignment=bool(args.balanced_assignment),
+                    scenario_balanced_assignment=bool(args.scenario_balanced_assignment),
+                    proto_repel_lambda=float(proto_repel_lambda),
+                    proto_repel_margin=float(proto_repel_margin),
+                    proto_repel_steps=int(proto_repel_steps),
+                    proto_repel_anchor=float(proto_repel_anchor),
+                    pair_refine_similarity=float(pair_refine_similarity),
+                    pair_axis_similarity=float(pair_axis_similarity),
+                    pair_axis_weight=float(pair_axis_weight),
+                    pair_axis_clip=float(pair_axis_clip),
+                    pair_gaussian_similarity=float(pair_gaussian_similarity),
+                    pair_gaussian_weight=float(pair_gaussian_weight),
+                    pair_gaussian_clip=float(pair_gaussian_clip),
+                    bootstrap_proto_mix=float(bootstrap_proto_mix),
+                    bootstrap_proto_drop=int(bootstrap_proto_drop),
+                    bootstrap_proto_topm=int(bootstrap_proto_topm),
+                    ridge_head_weight=float(ridge_head_weight),
+                    ridge_head_alpha=float(ridge_head_alpha),
+                    ridge_head_clip=float(ridge_head_clip),
+                    old_target=float(args.old_target),
+                    old_floor=float(args.old_floor),
+                    new_target=float(args.seen_new_target),
+                    new_floor=float(args.seen_new_floor),
+                )
+                row["seed"] = int(seed)
+                row["support_selection_policy"] = policy
+                row["k_old"] = int(args.k_old)
+                row["k_new"] = int(args.k_new)
+                row["pool_per_old"] = int(args.pool_per_old)
+                row["pool_per_new"] = int(args.pool_per_new)
+                rows.append(row)
 
     rows.sort(
         key=lambda row: (
@@ -649,6 +923,7 @@ def main() -> None:
         "mutual_only",
         "scenario_aware",
         "balanced_assignment",
+        "scenario_balanced_assignment",
         "proto_repel_lambda",
         "proto_repel_margin",
         "proto_repel_steps",
@@ -659,6 +934,18 @@ def main() -> None:
         "pair_axis_weight",
         "pair_axis_clip",
         "pair_axis_count",
+        "pair_gaussian_similarity",
+        "pair_gaussian_weight",
+        "pair_gaussian_clip",
+        "pair_gaussian_count",
+        "bootstrap_proto_mix",
+        "bootstrap_proto_drop",
+        "bootstrap_proto_topm",
+        "stored_bootstrap_prototype_count",
+        "ridge_head_weight",
+        "ridge_head_alpha",
+        "ridge_head_clip",
+        "stored_ridge_head_scalars",
         "query_old_acc",
         "query_min_old_class_acc",
         "query_seen_new_acc",

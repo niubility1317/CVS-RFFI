@@ -634,3 +634,44 @@ artifact SHA256：
 | `conflict_norm_k5_pairaxis_smoke.json` | `67D93048E51FBC62B7BE412CA4B533B86118C87E5E0AAF3AAB93B2CB7DCDE130` |
 
 结论：pair-axis是合规的压缩qKNN变体，但它只改善均值，不改善目标所需的最低类；因此当前瓶颈仍是`10-10/2-13/11-10/19-3`这组目标新类在星地特征空间中的support代表性不足和类间纠缠。下一步应优先做support selection本身的优化，而不是继续加score后处理：例如在K固定时选择低类更稳定的scenario-balanced/anti-nearest-old support，或用source/proxy训练更强的目标类相似度解耦表征。
+
+### 2026-07-05 bootstrap/pair-gaussian/ridge压缩qKNN负证据
+
+本轮继续限定K=5和K=10，不扩大K数量，不使用query标签拟合。`phase2_support_metric_qknn_probe.py`新增三个support-only压缩头：
+
+- `bootstrap_proto`：由K-shot support生成留一子原型，部署侧保存派生原型，不保存原始support。
+- `pair_gaussian`：对高相似support prototype类对保存一维pair轴及两侧support投影均值/方差，用高斯似然差修正分数。
+- `ridge_head`：用K-shot support闭式训练L2岭线性残差头，与qKNN分数小权重融合，部署侧保存权重矩阵。
+
+脚本SHA256：`6B2FE9A94711D6D98D30C34F0289222BFD4311D8F58F5D442068714719AB94C7`。本地验证：`conda run -n ssr-gpu python -m py_compile code\scripts\phase2_support_metric_qknn_probe.py`通过。
+
+固定历史最佳support seed的小网格结果：
+
+| 变体 | K | 最佳配置 | old_acc | min_old | new_acc | min_new | 逐类瓶颈 |
+|---|---:|---|---:|---:|---:|---:|---|
+| bootstrap_proto | 10 | `mix=0`仍最佳 | 83.10% | 67.14% | 83.43% | 72.86% | `10-10`72.86%,`2-13`72.86% |
+| bootstrap_proto | 5 | `mix=0`仍最佳 | 82.67% | 65.33% | 79.47% | 69.33% | `2-13`69.33%,`11-10`72.00% |
+| pair_gaussian | 10 | `sim=0.95,weight=0.005,clip=2` | 83.57% | 67.14% | 84.00% | 72.86% | `10-10`72.86%,`2-13`72.86% |
+| pair_gaussian | 5 | `sim=0.85,weight=0.02,clip=2` | 83.33% | 65.33% | 80.13% | 70.67% | `2-13`70.67%,`11-10`73.33% |
+| ridge_head | 10 | `weight=0.002,alpha=0.1` | 83.57% | 68.57% | 83.57% | 72.86% | `10-10`72.86%,`2-13`72.86% |
+| ridge_head | 5 | `weight=0.01,alpha=0.1` | 82.89% | 64.00% | 79.73% | 69.33% | `2-13`69.33% |
+
+120个support seed复核：
+
+| 变体 | K | 固定配置 | best seed | old_acc | min_old | new_acc | min_new | 结论 |
+|---|---:|---|---:|---:|---:|---:|---:|---|
+| pair_gaussian | 10 | `sim=0.95,weight=0.005,clip=2` | 421029 | 83.57% | 67.14% | 84.00% | 72.86% | 未过75%最低类 |
+| pair_gaussian | 5 | `sim=0.85,weight=0.02,clip=2` | 421037 | 83.33% | 65.33% | 80.13% | 70.67% | 未过75%最低类 |
+
+artifact SHA256：
+
+| file | SHA256 |
+|---|---|
+| `strict_n10_k10_bootproto_seed421029_focus.json` | `7D7DC85A7C9A44E6A0EB9BF7313DA11C55DBEE8112D72AABDAEF36227638CA8A` |
+| `strict_n10_k5_bootproto_seed421037_focus.json` | `B5FA4FE8DABC982AC47CDB1F8DEA37405C56CC7FD1242B4CF795E710B9C99643` |
+| `strict_n10_k10_pairgauss_seed120.json` | `B9C3DB6DB065A0776CB209B51FB2740EE257605A853C89FDE7C0A077B101259D` |
+| `strict_n10_k5_pairgauss_seed120.json` | `0DF611041D988269626601235BD06772157FA09046803FDD6FF7ED99304B1860` |
+| `strict_n10_k10_ridgehead_seed421029_focus.json` | `DE528EF9507CA6A3EE14816523BDEC2EB5D09291FA577D4D0D6421BA6506055A` |
+| `strict_n10_k5_ridgehead_seed421037_focus.json` | `C9C60892A422DC36B2827791B57996D05329AD159D31332AE16B00CF87E22F3A` |
+
+结论：新增三个压缩qKNN头均合规且部署侧不保存原始support，但仍无法把十新类最低类抬到75%。pair_gaussian是本轮最有效的后处理：K=5最低类从69.33%升至70.67%，K=10新类均值从83.43%升至84.00%，但`10-10/2-13`硬对仍卡在72.86%。下一步不应继续扩大后处理网格；在严格K-shot且`pool_per_class=K`时，support selection本身没有候选空间，必须转向表征侧或训练侧生成更可分的星地特征，再用同一K=5/K=10压缩qKNN头复核。
