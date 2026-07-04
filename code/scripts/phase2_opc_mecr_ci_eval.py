@@ -43,6 +43,7 @@ from phase2_orbit_pcet_ci_eval import (  # noqa: E402
 
 
 UNKNOWN_LABEL = "__unknown__"
+DEFER_LABEL = "__defer__"
 
 
 @dataclass(frozen=True)
@@ -406,26 +407,32 @@ def _fuse_opc_mecr_event(
 
     if seen_preempts_old and not (strong_unknown and no_known_consensus):
         output_label = str(best_seen["label"])
+        output_action = "accept"
         decision = "accept_seen_new_envelope"
         chosen = best_seen
     elif old_safe and not strong_unknown_overrides_old:
         output_label = str(best_old["label"])
+        output_action = "accept"
         decision = "accept_old_safe"
         chosen = best_old
     elif seen_safe and not (strong_unknown and no_known_consensus):
         output_label = str(best_seen["label"])
+        output_action = "accept"
         decision = "accept_seen_new_envelope"
         chosen = best_seen
     elif strong_unknown and (no_known_consensus or seen_new_excluded):
         output_label = UNKNOWN_LABEL
+        output_action = "reject_unknown"
         decision = "reject_unknown_no_consensus"
         chosen = best_any
     elif old_safe and strong_unknown_overrides_old:
-        output_label = UNKNOWN_LABEL
+        output_label = DEFER_LABEL
+        output_action = "defer"
         decision = "defer_old_strong_unknown"
         chosen = best_old
     else:
-        output_label = UNKNOWN_LABEL
+        output_label = DEFER_LABEL
+        output_action = "defer"
         decision = "defer"
         chosen = best_any
 
@@ -441,6 +448,7 @@ def _fuse_opc_mecr_event(
         "role": _role(first.get("role")),
         "true_label": _str(first, "true_label"),
         "output_label": output_label,
+        "output_action": output_action,
         "decision": decision,
         "candidate_label": str(chosen.get("label", "")),
         "candidate_label_set": str(chosen.get("label_set", "")),
@@ -481,22 +489,23 @@ def _finalize(event_results: Sequence[Mapping[str, Any]], old_labels: set[str], 
         output = str(item["output_label"])
         decision = str(item["decision"])
         role_total[role] += 1
-        if decision.startswith("defer"):
+        action = str(item.get("output_action", ""))
+        if action == "defer" or decision.startswith("defer"):
             role_defer[role] += 1
-        if role in {"old", "seen_new"} and str(item.get("candidate_label_set", "")) in {"old", "seen_new"}:
+        if role in {"old", "seen_new"} and (bool(item.get("old_safe", False)) or bool(item.get("seen_safe", False))):
             known_consensus += 1
         if role == "unknown" and bool(item.get("no_known_consensus", False)):
             unknown_no_consensus += 1
         if role == "old" and decision == "accept_old_safe":
             old_safe_accept += 1
-        if role == "old" and output == UNKNOWN_LABEL:
+        if role == "old" and action in {"reject_unknown", "defer"}:
             old_reject_or_defer += 1
         if role in {"old", "seen_new"}:
             per_total[role][true_label] += 1
             if output == true_label:
                 role_correct[role] += 1
                 per_correct[role][true_label] += 1
-            elif output == UNKNOWN_LABEL:
+            elif action in {"reject_unknown", "defer"}:
                 confusion[f"{role}->reject_or_defer"] += 1
             elif output in old_labels:
                 confusion[f"{role}->old"] += 1
@@ -505,15 +514,17 @@ def _finalize(event_results: Sequence[Mapping[str, Any]], old_labels: set[str], 
             else:
                 confusion[f"{role}->other"] += 1
         elif role == "unknown":
-            if output == UNKNOWN_LABEL and decision == "reject_unknown_no_consensus":
+            if action == "reject_unknown" and decision == "reject_unknown_no_consensus":
                 role_correct[role] += 1
                 confusion["unknown->reject"] += 1
             elif output in old_labels:
                 confusion["unknown->old"] += 1
             elif output in seen_labels:
                 confusion["unknown->seen_new"] += 1
-            else:
+            elif action == "defer":
                 confusion["unknown->defer"] += 1
+            else:
+                confusion["unknown->other"] += 1
     old_rates = {
         label: (per_correct["old"][label] / per_total["old"][label] if per_total["old"][label] else 0.0)
         for label in sorted(old_labels)
@@ -647,6 +658,10 @@ def evaluate_opc_mecr(
                 "old_reject_rate": _count_value(metrics, "old_reject_rate"),
                 "known_consensus_rate": _count_value(metrics, "known_consensus_rate"),
                 "unknown_no_consensus_rate": _count_value(metrics, "unknown_no_consensus_rate"),
+                "event_count": int(_count_value(metrics, "event_count")),
+                "old_total": int(_count_value(metrics, "old_total")),
+                "seen_new_total": int(_count_value(metrics, "seen_new_total")),
+                "unknown_total": int(_count_value(metrics, "unknown_total")),
                 "bytes_per_event": _count_value(metrics, "bytes_per_event"),
                 "latency_ms": _count_value(metrics, "latency_ms_pessimistic"),
                 "latency_ms_p95": _count_value(metrics, "latency_ms_p95"),
@@ -676,9 +691,9 @@ def evaluate_opc_mecr(
         "profile_results": profile_results,
         "summary_rows": summary_rows,
         "best_protocol_order_row": summary_rows[0] if summary_rows else None,
-        "best_eval_row": sorted(summary_rows, key=lambda row: row["joint_score"], reverse=True)[0] if summary_rows else None,
+        "best_posthoc_eval_row": sorted(summary_rows, key=lambda row: row["joint_score"], reverse=True)[0] if summary_rows else None,
         "summary_order": "pre_registered_profile_collab_count",
-        "joint_score_scope": "evaluation_analysis_only_not_profile_selection",
+        "joint_score_scope": "posthoc_evaluation_analysis_only_not_profile_or_threshold_selection",
         "target_receivers": target_receivers,
         "old_labels": old_labels,
         "seen_new_labels": seen_labels,
@@ -804,7 +819,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         json.dumps(
             {
                 "best_protocol_order_row": result["best_protocol_order_row"],
-                "best_eval_row": result["best_eval_row"],
+                "best_posthoc_eval_row": result["best_posthoc_eval_row"],
                 "target_receivers": result["target_receivers"],
             },
             ensure_ascii=False,

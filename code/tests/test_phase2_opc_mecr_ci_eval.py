@@ -91,9 +91,48 @@ class Phase2OpcMecrCiEvalTest(unittest.TestCase):
         )
 
         self.assertEqual(out["output_label"], UNKNOWN_LABEL)
+        self.assertEqual(out["output_action"], "reject_unknown")
         self.assertEqual(out["decision"], "reject_unknown_no_consensus")
         self.assertTrue(out["strong_unknown"])
         self.assertTrue(out["no_known_consensus"])
+
+    def test_defer_is_not_encoded_as_unknown_reject_label(self):
+        from phase2_opc_mecr_ci_eval import DEFER_LABEL, _fuse_opc_mecr_event, _profile_by_name
+
+        row = {
+            "event_id": "ambiguous-1",
+            "role": "unknown",
+            "true_label": "unk-a",
+            "receiver_id": "rx-a",
+            "class_evidence_top1_label": "old-a",
+            "class_evidence_top1_score": 0.10,
+            "class_evidence_top1_margin": 0.0,
+            "class_evidence_top1_conformal_pvalue": 0.05,
+            "class_evidence_top1_receiver_class_reliability": 0.05,
+            "class_evidence_top1_support_count": 1,
+            "class_evidence_top1_unknown_risk": 0.55,
+            "pcet_unknown_risk": 0.55,
+            "class_negative_risk": 0.45,
+            "class_shell_risk": 0.10,
+            "support_density": 0.05,
+            "reliability": 0.05,
+            "bytes": 128,
+            "latency_ms": 0.5,
+        }
+
+        out = _fuse_opc_mecr_event(
+            [row],
+            profile=_profile_by_name("mecr_balanced"),
+            top_m=1,
+            old_labels={"old-a"},
+            seen_labels={"new-a"},
+            max_event_bytes=1152,
+            max_event_latency_ms=20,
+        )
+
+        self.assertEqual(out["output_label"], DEFER_LABEL)
+        self.assertEqual(out["output_action"], "defer")
+        self.assertEqual(out["decision"], "defer")
 
     def test_evaluate_opc_mecr_reports_all_collab_counts_and_protocol_flags(self):
         from phase2_opc_mecr_ci_eval import evaluate_opc_mecr, _profile_by_name
@@ -150,6 +189,65 @@ class Phase2OpcMecrCiEvalTest(unittest.TestCase):
         self.assertTrue(all(row["unknown_query_eval_only"] for row in result["summary_rows"]))
         self.assertTrue(all(row["target_unknown_training_count"] == 0 for row in result["summary_rows"]))
         self.assertFalse(result["profile_selection_uses_target_unknown"])
+        self.assertIn("best_posthoc_eval_row", result)
+        self.assertNotIn("best_eval_row", result)
+        self.assertEqual(
+            result["joint_score_scope"],
+            "posthoc_evaluation_analysis_only_not_profile_or_threshold_selection",
+        )
+        for row in result["summary_rows"]:
+            self.assertIn("event_count", row)
+            self.assertIn("old_total", row)
+            self.assertIn("seen_new_total", row)
+            self.assertIn("unknown_total", row)
+
+    def test_known_consensus_rate_requires_safe_gate(self):
+        from phase2_opc_mecr_ci_eval import evaluate_opc_mecr, _profile_by_name
+
+        rows = []
+        for receiver in ["rx-a", "rx-b"]:
+            rows.append(
+                {
+                    "event_id": "old-weak",
+                    "role": "old",
+                    "true_label": "old-a",
+                    "receiver_id": receiver,
+                    "class_evidence_top1_label": "old-a",
+                    "class_evidence_top1_score": 0.05,
+                    "class_evidence_top1_margin": 0.0,
+                    "class_evidence_top1_conformal_pvalue": 0.0,
+                    "class_evidence_top1_receiver_class_reliability": 0.0,
+                    "class_evidence_top1_support_count": 1,
+                    "class_evidence_top1_unknown_risk": 0.4,
+                    "pcet_unknown_risk": 0.4,
+                    "class_negative_risk": 0.2,
+                    "class_shell_risk": 0.1,
+                    "support_density": 0.0,
+                    "reliability": 0.0,
+                    "bytes": 128,
+                    "latency_ms": 0.5,
+                }
+            )
+        result = evaluate_opc_mecr(
+            rows,
+            profiles=[_profile_by_name("opc_old_guard")],
+            collab_counts="all",
+            collab_group_policy="same_max_budget",
+            receiver_selection_policy="support_quality_prior",
+            top_m=1,
+            max_event_bytes=1152,
+            max_event_latency_ms=20,
+            target_gates={
+                "old_acc": 0.99,
+                "min_old": 0.95,
+                "seen_new_acc": 0.97,
+                "min_seen": 0.93,
+                "unknown_reject": 0.99,
+            },
+            include_event_results=False,
+        )
+
+        self.assertTrue(all(float(row["known_consensus_rate"]) == 0.0 for row in result["summary_rows"]))
 
 
 if __name__ == "__main__":
