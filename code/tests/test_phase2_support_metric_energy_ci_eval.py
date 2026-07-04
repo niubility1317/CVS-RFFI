@@ -111,3 +111,28 @@ def test_smec_raises_weak_far_from_support_unknown_risk():
     assert out[0]["smec_knn_risk"] > 0.90
     assert out[0]["unknown_risk"] > 0.50
     assert out[0]["class_evidence_top1_unknown_risk"] == out[0]["unknown_risk"]
+
+
+def test_smec_old_lossless_policy_never_lifts_old_label_risk():
+    cfg = _config(old_label_aux_policy="never")
+    rows = [_row("e0", score=0.20, margin=0.01, risk=0.05, label="old-a")]
+    models = {"rx-a": _support_model(cfg)}
+    query_features = {("e0", "rx-a"): np.asarray([0.0, 1.0], dtype=np.float32)}
+
+    out = augment_smec_evidence(rows, models, query_features, {}, cfg, old_labels={"old-a"})
+
+    assert out[0]["unknown_risk"] == 0.05
+    assert out[0]["smec_old_label_aux_policy"] == "never"
+    assert out[0]["smec_old_label_lift_blocked"] == 1
+
+
+def test_smec_old_lossless_policy_still_lifts_seen_new_label_risk():
+    cfg = _config(old_label_aux_policy="never")
+    rows = [_row("e0", score=0.20, margin=0.01, risk=0.05, label="new-a")]
+    models = {"rx-a": _support_model(cfg)}
+    query_features = {("e0", "rx-a"): np.asarray([0.0, 1.0], dtype=np.float32)}
+
+    out = augment_smec_evidence(rows, models, query_features, {}, cfg, old_labels={"old-a"})
+
+    assert out[0]["unknown_risk"] > 0.50
+    assert out[0]["smec_old_label_lift_blocked"] == 0

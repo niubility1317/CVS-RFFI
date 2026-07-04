@@ -71,6 +71,7 @@ class SmecConfig:
     strong_aux_cap: float = 0.15
     aux_bytes_per_receiver: float = 24.0
     aux_latency_ms: float = 0.03
+    old_label_aux_policy: str = "strong_cap"
 
 
 @dataclass(frozen=True)
@@ -277,6 +278,13 @@ def augment_smec_evidence(
         )
         strong_known, weakness = _base_strength(source, config)
         aux_component = _unit(aux_raw * max(weakness, 0.20))
+        old_label_lift_blocked = 0
+        old_policy = str(config.old_label_aux_policy or "strong_cap").strip().lower()
+        if old_policy not in {"strong_cap", "never"}:
+            raise ValueError("old_label_aux_policy must be strong_cap or never")
+        if old_policy == "never" and label in old_labels:
+            aux_component = min(aux_component, base_risk)
+            old_label_lift_blocked = 1
         if strong_known and label in old_labels:
             aux_component = min(aux_component, float(config.strong_aux_cap))
         fused = max(base_risk, aux_component)
@@ -291,6 +299,8 @@ def augment_smec_evidence(
         row["smec_base_weakness"] = weakness
         row["smec_distance"] = distance
         row["smec_strong_known_candidate"] = int(strong_known and label in old_labels)
+        row["smec_old_label_aux_policy"] = old_policy
+        row["smec_old_label_lift_blocked"] = old_label_lift_blocked
         row["smec_missing_feature"] = 0
         row["smec_unknown_query_used_for_threshold"] = "false"
         row["smec_label_authority"] = "base_qknn_only"
@@ -522,6 +532,7 @@ def _main(argv: Sequence[str] | None = None) -> int:
     parser.add_argument("--max_event_bytes", type=float, default=900.0)
     parser.add_argument("--max_event_latency_ms", type=float, default=20.0)
     parser.add_argument("--write_evidence", action="store_true")
+    parser.add_argument("--profiles", default="standard,old_lossless")
     args = parser.parse_args(argv)
 
     args.output_dir.mkdir(parents=True, exist_ok=True)
@@ -533,26 +544,27 @@ def _main(argv: Sequence[str] | None = None) -> int:
     )
     base_rows = read_csv_rows(known_csv)
     metadata = _load_metadata(known_json)
-    config = SmecConfig()
+    requested_profiles = [part.strip() for part in str(args.profiles).split(",") if part.strip()]
+    if not requested_profiles:
+        raise ValueError("at least one --profiles value is required")
+    profile_configs: dict[str, SmecConfig] = {}
+    for profile in requested_profiles:
+        if profile == "standard":
+            profile_configs["standard"] = SmecConfig()
+        elif profile == "old_lossless":
+            profile_configs["old_lossless"] = SmecConfig(old_label_aux_policy="never")
+        else:
+            raise ValueError("unknown SMEC profile; expected standard or old_lossless")
+    build_config = next(iter(profile_configs.values()))
     payload = load_feature_npz(args.feature_npz)
     models, query_features, query_logits, smec_metadata = build_stage2_smec_inputs(
         payload,
-        config,
+        build_config,
         k_shot=int(metadata.get("k_shot", 8)),
         query_per_class=int(metadata.get("query_per_class", 20)),
         seed=4070303,
         support_selection_policy=str(metadata.get("support_selection_policy", "stable_first")),
     )
-    smec_rows = augment_smec_evidence(
-        base_rows,
-        models,
-        query_features,
-        query_logits,
-        config,
-        old_labels=set(metadata.get("old_tx_ids", smec_metadata["old_tx_ids"])),
-    )
-    if args.write_evidence:
-        write_csv_rows(args.output_dir / "smec_ci_evidence.csv", smec_rows)
 
     policies = _select_policies(args.policies)
     summary_rows: list[dict[str, Any]] = []
@@ -571,21 +583,43 @@ def _main(argv: Sequence[str] | None = None) -> int:
         summary_rows.extend(
             _flatten_counts(algorithm="base_known_route", policy=policy, metrics=base_metrics[policy.name])
         )
-        metrics = _evaluate_policy(
-            smec_rows,
-            metadata,
-            policy,
-            max_event_bytes=args.max_event_bytes,
-            max_event_latency_ms=args.max_event_latency_ms,
+    profile_audits: dict[str, Any] = {}
+    for profile, config in profile_configs.items():
+        algorithm = "smec_old_lossless_ci" if profile == "old_lossless" else "smec_ci"
+        smec_rows = augment_smec_evidence(
+            base_rows,
+            models,
+            query_features,
+            query_logits,
+            config,
+            old_labels=set(metadata.get("old_tx_ids", smec_metadata["old_tx_ids"])),
         )
-        rows = _flatten_counts(
-            algorithm="smec_ci",
-            policy=policy,
-            metrics=metrics,
-            base_counts=base_metrics[policy.name]["counts"],
-        )
-        summary_rows.extend(rows)
-        best_rows.extend(rows)
+        if args.write_evidence:
+            write_csv_rows(args.output_dir / f"{algorithm}_evidence.csv", smec_rows)
+        profile_audits[profile] = {
+            "algorithm": algorithm,
+            "config": config.__dict__,
+            "row_count": len(smec_rows),
+            "old_label_lift_blocked_count": sum(
+                int(row.get("smec_old_label_lift_blocked", 0) or 0) for row in smec_rows
+            ),
+        }
+        for policy in policies:
+            metrics = _evaluate_policy(
+                smec_rows,
+                metadata,
+                policy,
+                max_event_bytes=args.max_event_bytes,
+                max_event_latency_ms=args.max_event_latency_ms,
+            )
+            rows = _flatten_counts(
+                algorithm=algorithm,
+                policy=policy,
+                metrics=metrics,
+                base_counts=base_metrics[policy.name]["counts"],
+            )
+            summary_rows.extend(rows)
+            best_rows.extend(rows)
 
     best_rows = sorted(
         best_rows,
@@ -607,6 +641,7 @@ def _main(argv: Sequence[str] | None = None) -> int:
                 "base_evidence_csv": str(known_csv),
                 "metadata_json": str(known_json),
                 "config": config.__dict__,
+                "profile_audits": profile_audits,
                 "support_only_thresholds": True,
                 "unknown_query_used_for_threshold": False,
                 "label_authority": "base_qknn_only",
