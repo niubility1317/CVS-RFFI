@@ -199,6 +199,63 @@ def _balanced_predict(
     return out.astype(str)
 
 
+def _quota_slots(count: int, labels: list[str], *, offset: int) -> list[int]:
+    if count <= 0 or not labels:
+        return []
+    base = int(count) // len(labels)
+    rem = int(count) % len(labels)
+    slots: list[int] = []
+    for index, _label in enumerate(labels):
+        quota = base + (1 if index < rem else 0)
+        slots.extend([offset + index] * quota)
+    return slots
+
+
+def _scenario_balanced_predict(
+    scores: np.ndarray,
+    *,
+    query_scenarios: np.ndarray,
+    query_old_mask: np.ndarray,
+    old_labels: list[str],
+    new_labels: list[str],
+) -> np.ndarray:
+    """Balanced assignment independently inside each observable scenario.
+
+    The scenario id is deployment metadata, not a class label. This prevents a
+    global assignment from spending all hard-scenario errors on the same class.
+    """
+    from scipy.optimize import linear_sum_assignment
+
+    class_labels = old_labels + new_labels
+    labels = np.asarray(class_labels, dtype=object)
+    scenarios = np.asarray(query_scenarios, dtype=object).astype(str)
+    old_mask = np.asarray(query_old_mask, dtype=bool)
+    out = np.empty(scores.shape[0], dtype=object)
+    filled = np.zeros(scores.shape[0], dtype=bool)
+    for scenario in sorted({str(value) for value in scenarios.tolist()}):
+        mask = scenarios == scenario
+        row_indices = np.where(mask)[0]
+        old_count = int(np.sum(old_mask[mask]))
+        new_count = int(row_indices.size) - old_count
+        slots = _quota_slots(old_count, old_labels, offset=0)
+        slots.extend(_quota_slots(new_count, new_labels, offset=len(old_labels)))
+        if len(slots) != int(row_indices.size):
+            continue
+        slot_scores = scores[row_indices][:, np.asarray(slots, dtype=int)]
+        row_ind, col_ind = linear_sum_assignment(-slot_scores)
+        out[row_indices[row_ind]] = labels[np.asarray(slots, dtype=int)[col_ind]]
+        filled[row_indices[row_ind]] = True
+    if not bool(np.all(filled)):
+        fallback = _balanced_predict(
+            scores[~filled],
+            old_count=int(np.sum(old_mask[~filled])),
+            old_labels=old_labels,
+            new_labels=new_labels,
+        )
+        out[~filled] = fallback
+    return out.astype(str)
+
+
 def _metrics(
     pred: np.ndarray,
     truth: np.ndarray,
@@ -421,6 +478,7 @@ def main() -> None:
     parser.add_argument("--mutual_only_grid", default="true,false")
     parser.add_argument("--scenario_aware", action="store_true")
     parser.add_argument("--balanced_assignment", action="store_true")
+    parser.add_argument("--scenario_balanced_assignment", action="store_true")
     parser.add_argument("--skip_support_loo", action="store_true")
     parser.add_argument("--exclude_pool_from_query", action="store_true")
     parser.add_argument("--old_target", type=float, default=0.80)
@@ -557,7 +615,19 @@ def main() -> None:
                                                     scenario_aware=bool(args.scenario_aware),
                                                 )
                                                 ordered_loo_scores = loo_scores[loo_order]
-                                                if bool(args.balanced_assignment):
+                                                if bool(args.scenario_balanced_assignment):
+                                                    loo_old_mask = np.asarray(
+                                                        [label in old_label_set for label in loo_truth.tolist()],
+                                                        dtype=bool,
+                                                    )
+                                                    loo_pred = _scenario_balanced_predict(
+                                                        ordered_loo_scores,
+                                                        query_scenarios=scenarios[support_indices[loo_order]],
+                                                        query_old_mask=loo_old_mask,
+                                                        old_labels=old_labels,
+                                                        new_labels=new_labels,
+                                                    )
+                                                elif bool(args.balanced_assignment):
                                                     loo_pred = _balanced_predict(
                                                         ordered_loo_scores,
                                                         old_count=sum(1 for label in loo_truth.tolist() if label in old_label_set),
@@ -577,7 +647,21 @@ def main() -> None:
                                                     new_target=float(args.seen_new_target),
                                                     new_floor=float(args.seen_new_floor),
                                                 )
-                                            if bool(args.balanced_assignment):
+                                            if bool(args.scenario_balanced_assignment):
+                                                query_old_mask = np.concatenate(
+                                                    [
+                                                        np.ones(int(old_query.size), dtype=bool),
+                                                        np.zeros(int(new_query.size), dtype=bool),
+                                                    ]
+                                                )
+                                                query_pred = _scenario_balanced_predict(
+                                                    query_scores,
+                                                    query_scenarios=scenarios[query_indices],
+                                                    query_old_mask=query_old_mask,
+                                                    old_labels=old_labels,
+                                                    new_labels=new_labels,
+                                                )
+                                            elif bool(args.balanced_assignment):
                                                 query_pred = _balanced_predict(
                                                     query_scores,
                                                     old_count=int(old_query.size),
@@ -610,6 +694,7 @@ def main() -> None:
                                                 "mutual_only": bool(mutual_only),
                                                 "scenario_aware": bool(args.scenario_aware),
                                                 "balanced_assignment": bool(args.balanced_assignment),
+                                                "scenario_balanced_assignment": bool(args.scenario_balanced_assignment),
                                                 "k_old": int(args.k_old),
                                                 "k_new": int(args.k_new),
                                                 "pool_per_old": int(args.pool_per_old),
@@ -678,6 +763,7 @@ def main() -> None:
         "neg_margin",
         "mutual_only",
         "balanced_assignment",
+        "scenario_balanced_assignment",
         "query_old_acc",
         "query_min_old_class_acc",
         "query_seen_new_acc",

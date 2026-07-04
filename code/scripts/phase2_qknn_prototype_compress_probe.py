@@ -204,6 +204,8 @@ def main() -> None:
     parser.add_argument("--topk_grid", default="1")
     parser.add_argument("--old_bias_grid", default="0")
     parser.add_argument("--radius_norm_grid", default="0")
+    parser.add_argument("--old_role", default="target_old")
+    parser.add_argument("--new_role", default="target_new")
     parser.add_argument("--exclude_pool_from_query", action="store_true")
     parser.add_argument("--old_target", type=float, default=0.88)
     parser.add_argument("--old_floor", type=float, default=0.80)
@@ -220,7 +222,7 @@ def main() -> None:
     old_labels = qknn._parse_csv(args.old_tx_ids)
     explicit_new_labels = qknn._parse_csv(args.new_tx_ids)
     candidate_new_labels = qknn._parse_csv(args.candidate_new_tx_ids)
-    requested_new_labels = explicit_new_labels or candidate_new_labels or sorted({str(label) for label in tx_ids[roles == "target_new"].tolist()})
+    requested_new_labels = explicit_new_labels or candidate_new_labels or sorted({str(label) for label in tx_ids[roles == str(args.new_role)].tolist()})
     old_label_array = np.asarray(old_labels, dtype=object)
     source_probs = active._softmax(logits)
     source_label_to_idx = {label: idx for idx, label in enumerate(old_labels)}
@@ -242,7 +244,7 @@ def main() -> None:
                 source_label_to_idx=source_label_to_idx,
                 source_prototypes=source_prototypes,
                 labels=old_labels,
-                role="target_old",
+                role=str(args.old_role),
                 k=args.k_old,
                 query_per_class=args.query_per_old,
                 pool_per_class=args.pool_per_old,
@@ -259,7 +261,7 @@ def main() -> None:
                 source_label_to_idx=source_label_to_idx,
                 source_prototypes=source_prototypes,
                 labels=requested_new_labels,
-                role="target_new",
+                role=str(args.new_role),
                 k=args.k_new,
                 query_per_class=args.query_per_new,
                 pool_per_class=args.pool_per_new,
@@ -351,6 +353,8 @@ def main() -> None:
         "feature_npz": str(args.feature_npz),
         "old_tx_ids": old_labels,
         "explicit_new_tx_ids": explicit_new_labels,
+        "old_role": str(args.old_role),
+        "new_role": str(args.new_role),
         "eligible_new_tx_count": int(len(requested_new_labels)),
         "combo_size": int(args.combo_size),
         "seed_start": int(args.seed_start),
