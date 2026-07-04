@@ -95,3 +95,17 @@ DARC-CI使用同一事件内多接收机的base qKNN证据构造拒识确认信�
 | darc_light | opu_old_guarded | 4 | 0.7754010695 | 0.7333333333 | 0.2500000000 | 0.5833333333 | 0.0053475936 | 0.0000000000 | diagnostic_only |
 
 远端结论：DARC-CI没有形成有效未知拒识提升。接收机top-label分歧在当前证据上不足以区分unknown与星地信道下的旧类/seen-new困难样本。继续推进时应转向更直接的support-only距离/能量/EVT校准，而不是只依赖接收机分歧。
+
+## 字段级可分性诊断
+
+本地追加运行`phase2_evidence_field_separability_diag.py`，输入为同一base evidence。该诊断会使用query标签做oracle sweep，因此只能作为上界分析，不能作为可部署阈值选择。
+
+| 约束 | 最佳字段 | old_acc | seen_new_acc | min_old | min_seen | unknown_reject_rate | unknown_FAR | known_coverage | 结论 |
+|---|---|---:|---:|---:|---:|---:|---:|---:|---|
+| FAR<=0.05 | `unknown_risk` | 0.1550000000 | 0.0750000000 | 0.0000000000 | 0.0000000000 | 0.9500000000 | 0.0500000000 | 0.1350000000 | 强拒识会严重误拒已知 |
+| FAR<=0.10 | `unknown_risk` | 0.2383333333 | 0.1600000000 | 0.0000000000 | 0.1200000000 | 0.9100000000 | 0.0900000000 | 0.2237500000 | 不可用 |
+| FAR<=0.20 | `score_risk` | 0.3633333333 | 0.4400000000 | 0.1100000000 | 0.3800000000 | 0.8000000000 | 0.2000000000 | 0.4512500000 | 不可用 |
+| known floor>=0.80 | 无 | - | - | - | - | - | - | - | oracle也找不到可行门 |
+| 目标99/97/99 | 无 | - | - | - | - | - | - | - | 当前evidence风险字段上界不足 |
+
+诊断结论：现有`unknown_risk/score_risk/radius/mahalanobis/EVT/class_shell/class_negative`等字段在当前base evidence中不具备足够可分性。继续在这些字段上做阈值或接收机分歧融合无法达到目标；下一条路线必须改变证据本身，例如从feature/logit层重新构造support-only energy、quantized KNN distance、prototype shell和per-receiver calibration，而不是只重组已有risk字段。
