@@ -67,3 +67,31 @@ DARC-CI使用同一事件内多接收机的base qKNN证据构造拒识确认信�
 | 远端脚本 | `/home/szu2070436088/2510044040/CV-SincNet/code/scripts/phase2_disagreement_confirm_ci_eval.py` |
 | 远端输出 | `/home/szu2070436088/2510044040/CV-SincNet/runs/phase2_adv3b02_darc_ci_20260704/` |
 | 远端日志 | `/home/szu2070436088/2510044040/CV-SincNet/logs/phase2_adv3b02_darc_ci_20260704/` |
+
+## N607执行记录
+
+| 项 | 结果 |
+|---|---|
+| SSH preflight | PASS；direct `N607`；project root可见；8张RTX3090均为10MiB/24576MiB |
+| GPU选择 | GPU0；`CUDA_VISIBLE_DEVICES=0` |
+| Conda环境 | `/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python` |
+| 同步文件 | DARC脚本、DARC测试、本报告、base evidence、metadata |
+| 远端单元验证 | `py_compile` PASS；无pytest内联测试PASS，输出`remote_darc_unit_tests=PASS` |
+| 远端运行命令 | `CUDA_VISIBLE_DEVICES=0 /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python code/scripts/phase2_disagreement_confirm_ci_eval.py --base_evidence_csv runs/phase2_adv3b02_darc_ci_20260704/inputs/base_evidence.csv --metadata_json runs/phase2_adv3b02_darc_ci_20260704/inputs/base_metadata.json --output_dir runs/phase2_adv3b02_darc_ci_20260704/remote_all_profiles --policies opu_old_preserve,opu_old_guarded` |
+| 远端输出 | `/home/szu2070436088/2510044040/CV-SincNet/runs/phase2_adv3b02_darc_ci_20260704/remote_all_profiles/` |
+| 远端日志 | `/home/szu2070436088/2510044040/CV-SincNet/logs/phase2_adv3b02_darc_ci_20260704/darc_all_profiles.log` |
+| 拉回artifact | `remote_artifacts/phase2_adv3b02_darc_ci_20260704/remote_all_profiles/` |
+| SSH清理 | 每次SSH/SCP后检查本地`ssh.exe`和到`172.31.111.215:22`的ESTABLISHED连接；最终无残留 |
+
+## N607远端结果
+
+远端summary共41行，即表头+`base_paired`10行+`darc_ci`30行，覆盖2个policy、3个profile、`collab_count=1..5`。`candidate_count=0`。
+
+| profile | policy | collab_count | old_acc | seen_new_acc | unknown_reject_rate | unknown_FAR | delta_old_acc | delta_unknown_reject_rate | verdict |
+|---|---|---:|---:|---:|---:|---:|---:|---:|---|
+| darc_light | opu_old_preserve | 4 | 0.8021390374 | 0.7833333333 | 0.1833333333 | 0.7500000000 | 0.0000000000 | 0.0000000000 | diagnostic_only |
+| darc_balanced | opu_old_preserve | 4 | 0.8021390374 | 0.7833333333 | 0.1833333333 | 0.7500000000 | 0.0000000000 | 0.0000000000 | diagnostic_only |
+| darc_unknown_push | opu_old_preserve | 4 | 0.7967914439 | 0.7833333333 | 0.1833333333 | 0.7666666667 | -0.0053475936 | 0.0000000000 | diagnostic_only |
+| darc_light | opu_old_guarded | 4 | 0.7754010695 | 0.7333333333 | 0.2500000000 | 0.5833333333 | 0.0053475936 | 0.0000000000 | diagnostic_only |
+
+远端结论：DARC-CI没有形成有效未知拒识提升。接收机top-label分歧在当前证据上不足以区分unknown与星地信道下的旧类/seen-new困难样本。继续推进时应转向更直接的support-only距离/能量/EVT校准，而不是只依赖接收机分歧。
