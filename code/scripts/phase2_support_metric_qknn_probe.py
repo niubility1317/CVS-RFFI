@@ -874,6 +874,94 @@ def _bootstrap_proto_scores(
     return np.stack(score_columns, axis=1), prototype_count
 
 
+def _core_proto_scores(
+    *,
+    features: np.ndarray,
+    support_indices: np.ndarray,
+    support_labels: np.ndarray,
+    query_indices: np.ndarray,
+    class_labels: list[str],
+    old_labels: set[str],
+    core_count: int,
+    topm: int,
+    radius_norm: float,
+    old_bias: float,
+    mode: str,
+) -> tuple[np.ndarray, int]:
+    """Score against compressed support-derived cores instead of raw support.
+
+    The stored state is a small set of normalized class cores. In centroid mode
+    each core is an average of a support subset, so deployment does not need to
+    retain individual support embeddings.
+    """
+    support = qknn._normalize_rows(features[support_indices])
+    query = qknn._normalize_rows(features[query_indices])
+    labels = np.asarray(support_labels, dtype=object).astype(str)
+    mode_norm = str(mode).strip().lower()
+    if mode_norm not in {"centroid", "axis"}:
+        raise ValueError(f"unsupported core_proto_mode: {mode}")
+    score_columns: list[np.ndarray] = []
+    stored_count = 0
+    for label_index, label in enumerate(class_labels):
+        cls = support[labels == label]
+        n_support = int(cls.shape[0])
+        if n_support == 0:
+            score_columns.append(np.full(query.shape[0], -1e9, dtype=np.float64))
+            continue
+        class_mean = qknn._normalize_rows(cls.mean(axis=0, keepdims=True))[0]
+        n_core = max(1, min(int(core_count), n_support))
+        cores: list[np.ndarray] = []
+        if mode_norm == "axis" and n_core > 1 and len(class_labels) > 1:
+            all_means: list[np.ndarray] = []
+            for other in class_labels:
+                other_cls = support[labels == other]
+                if other_cls.size == 0:
+                    all_means.append(np.zeros(support.shape[1], dtype=np.float64))
+                else:
+                    all_means.append(qknn._normalize_rows(other_cls.mean(axis=0, keepdims=True))[0])
+            mean_matrix = np.stack(all_means, axis=0)
+            sim = mean_matrix[label_index] @ mean_matrix.T
+            sim[label_index] = -np.inf
+            competitor = mean_matrix[int(np.argmax(sim))]
+            axis = class_mean - competitor
+            axis_norm = float(np.linalg.norm(axis))
+            if axis_norm > 1e-8:
+                proj = cls @ (axis / axis_norm)
+                bins = np.array_split(np.argsort(proj), n_core)
+                for bin_indices in bins:
+                    if int(bin_indices.size):
+                        cores.append(cls[bin_indices].mean(axis=0))
+        if not cores:
+            chosen = [int(np.argmax(cls @ class_mean))]
+            while len(chosen) < n_core:
+                selected = cls[np.asarray(chosen, dtype=int)]
+                min_dist = np.min(1.0 - cls @ selected.T, axis=1)
+                min_dist[np.asarray(chosen, dtype=int)] = -np.inf
+                next_index = int(np.argmax(min_dist))
+                if next_index in chosen:
+                    break
+                chosen.append(next_index)
+            centers = cls[np.asarray(chosen, dtype=int)]
+            assign = np.argmax(cls @ centers.T, axis=1)
+            for core_index in range(len(chosen)):
+                member = cls[assign == core_index]
+                if int(member.shape[0]):
+                    cores.append(member.mean(axis=0))
+        core_matrix = qknn._normalize_rows(np.stack(cores, axis=0))
+        stored_count += int(core_matrix.shape[0])
+        radius = float(np.mean(1.0 - cls @ class_mean))
+        score = _topm_mean(query @ core_matrix.T, int(topm))
+        if float(radius_norm) != 0.0:
+            score = 1.0 - ((1.0 - score) / (max(radius, 1e-4) ** float(radius_norm)))
+        if label in old_labels:
+            score = score + float(old_bias)
+        score_columns.append(score)
+    scores = np.stack(score_columns, axis=1)
+    scores = scores - np.mean(scores, axis=1, keepdims=True)
+    scores = scores / (np.std(scores, axis=1, keepdims=True) + 1e-6)
+    return scores, int(stored_count)
+
+
 def _ridge_head_scores(
     *,
     features: np.ndarray,
@@ -1221,6 +1309,10 @@ def _evaluate_metric_qknn(
     bootstrap_proto_mix: float,
     bootstrap_proto_drop: int,
     bootstrap_proto_topm: int,
+    core_proto_weight: float,
+    core_proto_count: int,
+    core_proto_topm: int,
+    core_proto_mode: str,
     ridge_head_weight: float,
     ridge_head_alpha: float,
     ridge_head_clip: float,
@@ -1469,6 +1561,22 @@ def _evaluate_metric_qknn(
             old_bias=float(old_bias),
         )
         scores = (1.0 - float(bootstrap_proto_mix)) * scores + float(bootstrap_proto_mix) * bootstrap_scores
+    core_proto_count_stored = 0
+    if float(core_proto_weight) > 0.0:
+        core_scores, core_proto_count_stored = _core_proto_scores(
+            features=adapted,
+            support_indices=support_indices,
+            support_labels=support_labels,
+            query_indices=query_indices,
+            class_labels=old_labels + new_labels,
+            old_labels=set(old_labels),
+            core_count=int(core_proto_count),
+            topm=int(core_proto_topm),
+            radius_norm=float(radius_norm),
+            old_bias=float(old_bias),
+            mode=str(core_proto_mode),
+        )
+        scores = scores + float(core_proto_weight) * core_scores
     stored_ridge_head_scalars = 0
     if float(ridge_head_weight) > 0.0:
         ridge_scores, stored_ridge_head_scalars = _ridge_head_scores(
@@ -1696,6 +1804,11 @@ def _evaluate_metric_qknn(
         "bootstrap_proto_drop": int(bootstrap_proto_drop),
         "bootstrap_proto_topm": int(bootstrap_proto_topm),
         "stored_bootstrap_prototype_count": int(bootstrap_proto_count),
+        "core_proto_weight": float(core_proto_weight),
+        "core_proto_count": int(core_proto_count),
+        "core_proto_topm": int(core_proto_topm),
+        "core_proto_mode": str(core_proto_mode),
+        "stored_core_prototype_count": int(core_proto_count_stored),
         "ridge_head_weight": float(ridge_head_weight),
         "ridge_head_alpha": float(ridge_head_alpha),
         "ridge_head_clip": float(ridge_head_clip),
@@ -1861,6 +1974,10 @@ def main() -> None:
     parser.add_argument("--bootstrap_proto_mix_grid", default="0")
     parser.add_argument("--bootstrap_proto_drop_grid", default="1")
     parser.add_argument("--bootstrap_proto_topm_grid", default="1")
+    parser.add_argument("--core_proto_weight_grid", default="0")
+    parser.add_argument("--core_proto_count_grid", default="3")
+    parser.add_argument("--core_proto_topm_grid", default="1")
+    parser.add_argument("--core_proto_mode_grid", default="centroid")
     parser.add_argument("--ridge_head_weight_grid", default="0")
     parser.add_argument("--ridge_head_alpha_grid", default="1.0")
     parser.add_argument("--ridge_head_clip_grid", default="3.0")
@@ -1977,6 +2094,10 @@ def main() -> None:
             qknn._parse_float_csv(args.bootstrap_proto_mix_grid),
             qknn._parse_int_csv(args.bootstrap_proto_drop_grid),
             qknn._parse_int_csv(args.bootstrap_proto_topm_grid),
+            qknn._parse_float_csv(args.core_proto_weight_grid),
+            qknn._parse_int_csv(args.core_proto_count_grid),
+            qknn._parse_int_csv(args.core_proto_topm_grid),
+            qknn._parse_csv(args.core_proto_mode_grid),
             qknn._parse_float_csv(args.ridge_head_weight_grid),
             qknn._parse_float_csv(args.ridge_head_alpha_grid),
             qknn._parse_float_csv(args.ridge_head_clip_grid),
@@ -2096,6 +2217,10 @@ def main() -> None:
                 bootstrap_proto_mix,
                 bootstrap_proto_drop,
                 bootstrap_proto_topm,
+                core_proto_weight,
+                core_proto_count,
+                core_proto_topm,
+                core_proto_mode,
                 ridge_head_weight,
                 ridge_head_alpha,
                 ridge_head_clip,
@@ -2191,6 +2316,10 @@ def main() -> None:
                     bootstrap_proto_mix=float(bootstrap_proto_mix),
                     bootstrap_proto_drop=int(bootstrap_proto_drop),
                     bootstrap_proto_topm=int(bootstrap_proto_topm),
+                    core_proto_weight=float(core_proto_weight),
+                    core_proto_count=int(core_proto_count),
+                    core_proto_topm=int(core_proto_topm),
+                    core_proto_mode=str(core_proto_mode),
                     ridge_head_weight=float(ridge_head_weight),
                     ridge_head_alpha=float(ridge_head_alpha),
                     ridge_head_clip=float(ridge_head_clip),
@@ -2354,6 +2483,11 @@ def main() -> None:
         "bootstrap_proto_drop",
         "bootstrap_proto_topm",
         "stored_bootstrap_prototype_count",
+        "core_proto_weight",
+        "core_proto_count",
+        "core_proto_topm",
+        "core_proto_mode",
+        "stored_core_prototype_count",
         "ridge_head_weight",
         "ridge_head_alpha",
         "ridge_head_clip",

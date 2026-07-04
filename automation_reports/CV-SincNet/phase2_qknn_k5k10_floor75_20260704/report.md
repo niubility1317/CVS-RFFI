@@ -1157,3 +1157,53 @@ artifact SHA256：
 | `k10_mahal_proto_grid.json` | `4B014D88D27CD1F8CD2CDC298BE37E55AA5E163051F46D899EDFD8F69E27F500` |
 
 结论：目标仍未完成。到目前为止，K=10的`10-10=74.29%`已对以下路线稳定不敏感：pair-Fisher、ridge head、pair-logreg、source guard、source prototype anchor、runner-up rescue、support subspace prototype、assignment-margin、query graph smoothing、label propagation、class-specific diagonal metric、support-Mahalanobis、source-logit低维残差和quota slack。下一步若继续在当前特征上做后处理，很可能只是query集过拟合；真正有价值的路线应转向表征侧hard-pair重训，或设计一个有独立support seed/receiver复核的小adapter协议。
+
+### 2026-07-05 core-prototype压缩qKNN诊断
+
+本轮继续固定`K=5,K=10`，不扩大K数量。代码新增`core_proto`压缩分支：每类只保存少量由target support生成的核心原型，不保存原始support样本；`centroid`模式用farthest-first分组后保存组均值，`axis`模式沿最近混淆类方向切分support后保存组均值。该机制保持qKNN/原型近邻形式，目标是把原本需要保存K-shot support embedding的部署状态压缩为少量support-derived prototype。
+
+本地验证命令：
+
+| command | result |
+|---|---|
+| `conda run -n ssr-gpu python -m py_compile code\scripts\phase2_support_metric_qknn_probe.py` | PASS |
+| `phase2_support_metric_qknn_probe.py` K=10 core-prototype narrow grid | PASS，144行 |
+
+关键结果如下。所有support/query仍来自`R_t=7-14`目标接收机域LEO视图；K=10每类70个query，K=5沿用既有source guard达标行。
+
+| 诊断 | K | seed | 最好配置 | old_acc | min_old | new_acc | min_new | 存储开销 | 结论 |
+|---|---:|---:|---|---:|---:|---:|---:|---:|---|
+| source old guard | 5 | 421037 | `add_old,weight=0.05,conf_min=0,margin_min=0` | 83.78% | 64.00% | 82.67% | 76.00% | `80`个量化support code | K=5十新类floor达标 |
+| core-prototype qKNN | 10 | 421029 | `axis,count=2,topm=2,weight=0.1`叠加`pair_gaussian+pair_fisher+ridge_head` | 84.76% | 71.43% | 85.14% | 74.29% | `32`个核心原型 | K=10仍差1个query |
+| ridge+pair-Fisher底座 | 10 | 421029 | `core_proto_weight=0` | 85.00% | 71.43% | 85.00% | 74.29% | `160`个量化support code | floor不变 |
+
+core-prototype最好行K=10逐类性能：
+
+| 类别 | role | acc |
+|---|---|---:|
+| `14-10` | old | 88.57% |
+| `14-7` | old | 74.29% |
+| `20-15` | old | 90.00% |
+| `20-19` | old | 71.43% |
+| `6-15` | old | 87.14% |
+| `8-20` | old | 97.14% |
+| `10-10` | new | 74.29% |
+| `11-10` | new | 80.00% |
+| `18-5` | new | 91.43% |
+| `19-3` | new | 87.14% |
+| `2-13` | new | 77.14% |
+| `2-5` | new | 87.14% |
+| `3-8` | new | 88.57% |
+| `4-10` | new | 91.43% |
+| `8-18` | new | 84.29% |
+| `8-3` | new | 90.00% |
+
+artifact SHA256：
+
+| file | SHA256 |
+|---|---|
+| `code/scripts/phase2_support_metric_qknn_probe.py` | `865F4D438F3884FF7843BACEA03AEEF43FBC98EC9B89B4CDF3ADA54B1FE5326A` |
+| `coreproto_20260705/k10_coreproto_pairfisher_ridge_grid.json` | `2E70CCAD1629CE719F445C0497088E78033B33C3A8DD6FEB114C559255CC2967` |
+| `coreproto_20260705/k10_coreproto_pairfisher_ridge_grid.csv` | `F942BDB0395712DFC73B172AAADE84848B1B31C44C662C14F8C06772C12D655B` |
+
+结论：`core_proto`是一个可写入方法创新点的KNN压缩路线，存储从K=10的`160`个support code进一步压到`32`个核心原型，并把K=10新类均值保持在`85.14%`；但最低新类仍是`10-10=74.29%`，目标尚未完成。当前不应扩大K，也不应把同一query集上的后处理微调包装为稳定达标；下一步应优先做表征侧`10-10/20-19/14-7`hard-pair分离，或建立有独立support seed复核的support-only小adapter协议。
