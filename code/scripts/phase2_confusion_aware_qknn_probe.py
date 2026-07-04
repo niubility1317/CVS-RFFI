@@ -307,6 +307,92 @@ def _support_loo_scores(
     return np.stack(rows, axis=0)
 
 
+def _mean_pairwise_cosine_distance(features: np.ndarray, indices: np.ndarray) -> float:
+    if indices.size < 2:
+        return 0.0
+    subset = qknn._normalize_rows(features[indices])
+    sim = subset @ subset.T
+    upper = sim[np.triu_indices(indices.size, k=1)]
+    return float(np.mean(np.clip(1.0 - upper, 0.0, 2.0)) / 2.0)
+
+
+def _mean_centroid_similarity(features: np.ndarray, indices: np.ndarray) -> float:
+    if indices.size == 0:
+        return 0.0
+    subset = qknn._normalize_rows(features[indices])
+    centroid = qknn._normalize_rows(subset.mean(axis=0, keepdims=True))[0]
+    return float(np.mean(subset @ centroid))
+
+
+def _support_health_metrics(
+    *,
+    features: np.ndarray,
+    scenarios: np.ndarray,
+    support_indices: np.ndarray,
+    support_labels: np.ndarray,
+    old_labels: list[str],
+    new_labels: list[str],
+    source_prototypes: dict[str, np.ndarray],
+) -> dict[str, Any]:
+    scenario_values = {str(value) for value in scenarios[support_indices].tolist()}
+    scenario_cap = max(1, min(len(scenario_values), int(support_indices.size)))
+    old_proto_scores: list[float] = []
+    old_proto_mins: list[float] = []
+    class_diversities: list[float] = []
+    class_compactness: list[float] = []
+    class_scenario_coverages: list[float] = []
+    per_class: dict[str, dict[str, float]] = {}
+    for label in old_labels + new_labels:
+        class_indices = support_indices[support_labels == label]
+        if class_indices.size == 0:
+            continue
+        coverage = float(len({str(value) for value in scenarios[class_indices].tolist()}) / scenario_cap)
+        diversity = _mean_pairwise_cosine_distance(features, class_indices)
+        compactness = _mean_centroid_similarity(features, class_indices)
+        class_scenario_coverages.append(coverage)
+        class_diversities.append(diversity)
+        class_compactness.append(compactness)
+        proto_mean = 0.0
+        proto_min = 0.0
+        if label in source_prototypes:
+            proto_scores = qknn._normalize_rows(features[class_indices]) @ source_prototypes[label]
+            proto_mean = float(np.mean(proto_scores))
+            proto_min = float(np.min(proto_scores))
+            old_proto_scores.append(proto_mean)
+            old_proto_mins.append(proto_min)
+        per_class[label] = {
+            "scenario_coverage": coverage,
+            "diversity": diversity,
+            "compactness": compactness,
+            "old_source_proto_mean": proto_mean,
+            "old_source_proto_min": proto_min,
+        }
+    compact_mean = float(np.mean(class_compactness)) if class_compactness else 0.0
+    diversity_mean = float(np.mean(class_diversities)) if class_diversities else 0.0
+    scenario_mean = float(np.mean(class_scenario_coverages)) if class_scenario_coverages else 0.0
+    old_proto_mean = float(np.mean(old_proto_scores)) if old_proto_scores else 0.0
+    old_proto_min = float(np.min(old_proto_mins)) if old_proto_mins else 0.0
+    compact_norm = (compact_mean + 1.0) / 2.0
+    old_proto_mean_norm = (old_proto_mean + 1.0) / 2.0
+    old_proto_min_norm = (old_proto_min + 1.0) / 2.0
+    health = (
+        0.30 * scenario_mean
+        + 0.20 * diversity_mean
+        + 0.20 * compact_norm
+        + 0.20 * old_proto_mean_norm
+        + 0.10 * old_proto_min_norm
+    )
+    return {
+        "support_health_score": float(health),
+        "support_scenario_coverage_mean": scenario_mean,
+        "support_diversity_mean": diversity_mean,
+        "support_compactness_mean": compact_mean,
+        "support_old_proto_mean": old_proto_mean,
+        "support_old_proto_min": old_proto_min,
+        "support_health_per_class": per_class,
+    }
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--feature_npz", required=True)
@@ -400,6 +486,15 @@ def main() -> None:
                 active._as_eval_splits(new_raw),
                 old_labels,
                 new_labels,
+            )
+            support_health = _support_health_metrics(
+                features=features,
+                scenarios=scenarios,
+                support_indices=support_indices,
+                support_labels=support_labels,
+                old_labels=old_labels,
+                new_labels=new_labels,
+                source_prototypes=source_prototypes,
             )
             query_indices = np.concatenate([old_query, new_query])
             truth = tx_ids[query_indices]
@@ -529,6 +624,7 @@ def main() -> None:
                                             }
                                             row.update({f"query_{key}": value for key, value in query_metrics.items()})
                                             row.update({f"support_loo_{key}": value for key, value in loo_metrics.items()})
+                                            row.update(support_health)
                                             row["query_rank_score"] = _rank(query_metrics)
                                             row["support_loo_rank_score"] = _rank(loo_metrics)
                                             rows.append(row)
@@ -545,6 +641,8 @@ def main() -> None:
 
     rows.sort(key=lambda row: tuple(row["query_rank_score"]), reverse=True)
     best_by_support = sorted(rows, key=lambda row: tuple(row["support_loo_rank_score"]), reverse=True)
+    best_by_support_health = sorted(rows, key=lambda row: float(row["support_health_score"]), reverse=True)
+    best_by_support_diversity = sorted(rows, key=lambda row: float(row["support_diversity_mean"]), reverse=True)
     best_proto_sim.sort(key=lambda row: row["prototype_cosine"], reverse=True)
     summary = {
         "diagnostic_scope": "SUPPORT_ONLY_CONFUSION_AWARE_QKNN_NO_QUERY_LABEL_FIT",
@@ -559,6 +657,8 @@ def main() -> None:
         "rows_count": int(len(rows)),
         "best_by_query": rows[:20],
         "best_by_support_loo": best_by_support[:20],
+        "best_by_support_health": best_by_support_health[:20],
+        "best_by_support_diversity": best_by_support_diversity[:20],
         "closest_support_prototype_pairs": best_proto_sim[:30],
         "rows": rows,
     }
@@ -594,6 +694,13 @@ def main() -> None:
         "support_loo_passes_joint_target",
         "support_loo_per_old_acc",
         "support_loo_per_new_acc",
+        "support_health_score",
+        "support_scenario_coverage_mean",
+        "support_diversity_mean",
+        "support_compactness_mean",
+        "support_old_proto_mean",
+        "support_old_proto_min",
+        "support_health_per_class",
         "stored_quantized_support_code_count",
         "stored_raw_support_count",
         "stored_class_prototype_count",
@@ -603,7 +710,13 @@ def main() -> None:
         writer.writeheader()
         for row in rows:
             out = {key: row.get(key) for key in fields}
-            for key in ("query_per_old_acc", "query_per_new_acc", "support_loo_per_old_acc", "support_loo_per_new_acc"):
+            for key in (
+                "query_per_old_acc",
+                "query_per_new_acc",
+                "support_loo_per_old_acc",
+                "support_loo_per_new_acc",
+                "support_health_per_class",
+            ):
                 out[key] = json.dumps(row[key], ensure_ascii=False, sort_keys=True)
             writer.writerow(out)
     print(
