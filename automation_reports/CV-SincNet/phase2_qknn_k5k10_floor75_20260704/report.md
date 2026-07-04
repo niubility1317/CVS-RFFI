@@ -507,3 +507,130 @@ artifact SHA256：
 提交后短监控：GPU 0/1各有约`1481 MiB`显存占用并运行对应训练进程；GPU 2-7空闲。短SSH命令结束后，本地无残留`ssh.exe`，无到`172.31.111.215:22`的ESTABLISHED连接。
 
 2026-07-05 03:01 CST启动健康检查：两个变体均已进入训练日志并运行到epoch 25；日志中出现`proxy_unknown_hard_pair`和`proxy_unknown_hard_old`字段，说明hard-pair标签解析和loss路径已实际生效。GPU 0/1仍分别运行SAFE/STRONG训练，GPU 2-7空闲。本次短监控后本地再次确认无残留`ssh.exe`，无到N607:22的ESTABLISHED连接。
+
+### N607完成结果与评估修复
+
+2026-07-05 03:05 CST复查：两个训练进程已结束，`features_leo_repaired.npz`和`features_clean_repaired.npz`均已导出；GPU 0/1恢复空闲。launcher原始评估阶段失败，原因是远端缺少`phase2_metric_adapter_probe.py`依赖，首个K=10 eval日志报错`ModuleNotFoundError: No module named 'phase2_metric_adapter_probe'`。处理方式：只同步support-metric评估依赖脚本，不重训；新增并提交eval-only launcher`code/scripts/eval_phase2_adv3b02_manynew10_proxy_hardpair_20260705.sh`，远端`bash -n`通过后补跑四个评估JSON。
+
+| variant | K | seed | old_acc | min_old | new_acc | min_new | 达到最低新类75% |
+|---|---:|---:|---:|---:|---:|---:|---|
+| `MANYNEW10_PROXY_HP_NORM_SAFE` | 10 | 421029 | 83.81% | 68.57% | 82.43% | 70.00% | 否 |
+| `MANYNEW10_PROXY_HP_NORM_STRONG` | 10 | 421029 | 82.62% | 67.14% | 81.86% | 71.43% | 否 |
+| `MANYNEW10_PROXY_HP_NORM_SAFE` | 5 | 421037 | 82.22% | 65.33% | 78.93% | 68.00% | 否 |
+| `MANYNEW10_PROXY_HP_NORM_STRONG` | 5 | 421037 | 82.44% | 66.67% | 78.13% | 66.67% | 否 |
+
+#### SAFE K=10逐类
+
+| 类别 | role | acc |
+|---|---|---:|
+| `14-10` | old | 85.71% |
+| `14-7` | old | 74.29% |
+| `20-15` | old | 88.57% |
+| `20-19` | old | 68.57% |
+| `6-15` | old | 88.57% |
+| `8-20` | old | 97.14% |
+| `10-10` | new | 71.43% |
+| `11-10` | new | 75.71% |
+| `18-5` | new | 91.43% |
+| `19-3` | new | 82.86% |
+| `2-13` | new | 70.00% |
+| `2-5` | new | 82.86% |
+| `3-8` | new | 88.57% |
+| `4-10` | new | 90.00% |
+| `8-18` | new | 81.43% |
+| `8-3` | new | 90.00% |
+
+#### SAFE K=5逐类
+
+| 类别 | role | acc |
+|---|---|---:|
+| `14-10` | old | 84.00% |
+| `14-7` | old | 77.33% |
+| `20-15` | old | 89.33% |
+| `20-19` | old | 65.33% |
+| `6-15` | old | 81.33% |
+| `8-20` | old | 96.00% |
+| `10-10` | new | 74.67% |
+| `11-10` | new | 70.67% |
+| `18-5` | new | 85.33% |
+| `19-3` | new | 74.67% |
+| `2-13` | new | 68.00% |
+| `2-5` | new | 78.67% |
+| `3-8` | new | 86.67% |
+| `4-10` | new | 86.67% |
+| `8-18` | new | 78.67% |
+| `8-3` | new | 85.33% |
+
+#### STRONG K=10逐类
+
+| 类别 | role | acc |
+|---|---|---:|
+| `14-10` | old | 84.29% |
+| `14-7` | old | 72.86% |
+| `20-15` | old | 88.57% |
+| `20-19` | old | 67.14% |
+| `6-15` | old | 85.71% |
+| `8-20` | old | 97.14% |
+| `10-10` | new | 71.43% |
+| `11-10` | new | 75.71% |
+| `18-5` | new | 88.57% |
+| `19-3` | new | 80.00% |
+| `2-13` | new | 71.43% |
+| `2-5` | new | 82.86% |
+| `3-8` | new | 88.57% |
+| `4-10` | new | 90.00% |
+| `8-18` | new | 81.43% |
+| `8-3` | new | 88.57% |
+
+#### STRONG K=5逐类
+
+| 类别 | role | acc |
+|---|---|---:|
+| `14-10` | old | 82.67% |
+| `14-7` | old | 80.00% |
+| `20-15` | old | 89.33% |
+| `20-19` | old | 66.67% |
+| `6-15` | old | 78.67% |
+| `8-20` | old | 97.33% |
+| `10-10` | new | 74.67% |
+| `11-10` | new | 69.33% |
+| `18-5` | new | 80.00% |
+| `19-3` | new | 72.00% |
+| `2-13` | new | 66.67% |
+| `2-5` | new | 80.00% |
+| `3-8` | new | 85.33% |
+| `4-10` | new | 88.00% |
+| `8-18` | new | 80.00% |
+| `8-3` | new | 85.33% |
+
+artifact SHA256：
+
+| file | SHA256 |
+|---|---|
+| `SAFE_k10.json` | `469D06DBD1D08F3CE4C1A994D6A00D9C5B2E9CE00E7F7FF3656EA40646EFF8FC` |
+| `SAFE_k5.json` | `4647BFC0A8917F3CB380F6367B8AEB226CE644EA82CC1CFA63599141334B3D40` |
+| `STRONG_k10.json` | `C5F19E5B25EC152B8DE2B7E9AC7B87710E11289F7F85DF0913EC4C207AD7E0EC` |
+| `STRONG_k5.json` | `63DAE451CD97FD1226BFB105E5857FF284F534B86DEBF8D5F0A27D054E5111B7` |
+| `manynew10_proxy_hardpair_summary.json` | `2E375E2F12156639813B5FB59BD66980B151B71313066ECC31FF87CBFAF8E483` |
+
+结论：proxy hard-pair训练侧优化没有达成目标，也没有超过原support-metric qKNN最佳最低类。原最佳仍是`MANYNEW10_CONFLICT_NORM`：K=10的min_new为`72.86%`，K=5的min_new为`69.33%`。proxy hard-pair在K=10提高了SAFE旧类均值到`83.81%`，但牺牲新类最低类；K=5整体也回落。
+
+### 2026-07-05 support-only pair-axis压缩qKNN负证据
+
+新增`phase2_support_metric_qknn_probe.py`中的support-only pair-axis rerank：只用support prototype之间高相似类对构造一维判别轴，部署侧额外保存少量pair axis参数，不保存原始support样本。脚本SHA256：`906963B1D110BFAF534040C358F2323A6104DC0AD7B53AEB1E8107A0CD5D7BBC`。本地验证：`conda run -n ssr-gpu python -m py_compile code\scripts\phase2_support_metric_qknn_probe.py`通过；`SAFE_k10_pairaxis_smoke`通过。
+
+在历史最佳`MANYNEW10_CONFLICT_NORM`特征上快速验证：
+
+| 特征 | K | pair-axis最佳配置 | old_acc | min_old | new_acc | min_new | 结论 |
+|---|---:|---|---:|---:|---:|---:|---|
+| `MANYNEW10_CONFLICT_NORM` | 10 | `similarity=0.90,weight=0.005` | 83.33% | 67.14% | 83.57% | 72.86% | 均值略升，最低类未升 |
+| `MANYNEW10_CONFLICT_NORM` | 5 | `similarity=0.95,weight=0.02` | 83.11% | 65.33% | 79.87% | 69.33% | 均值略升，最低类未升 |
+
+artifact SHA256：
+
+| file | SHA256 |
+|---|---|
+| `conflict_norm_k10_pairaxis_smoke.json` | `234DB1737A9FCC6C5E4E91F7FF7C2DF7B448EEE63EEA4C7B71450B3C67D32CE5` |
+| `conflict_norm_k5_pairaxis_smoke.json` | `67D93048E51FBC62B7BE412CA4B533B86118C87E5E0AAF3AAB93B2CB7DCDE130` |
+
+结论：pair-axis是合规的压缩qKNN变体，但它只改善均值，不改善目标所需的最低类；因此当前瓶颈仍是`10-10/2-13/11-10/19-3`这组目标新类在星地特征空间中的support代表性不足和类间纠缠。下一步应优先做support selection本身的优化，而不是继续加score后处理：例如在K固定时选择低类更稳定的scenario-balanced/anti-nearest-old support，或用source/proxy训练更强的目标类相似度解耦表征。
