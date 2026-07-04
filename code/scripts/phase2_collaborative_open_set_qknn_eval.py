@@ -1665,6 +1665,7 @@ def build_collaborative_evidence(
     proxy_quantile: float = 0.95,
     risk_temperature: float = 0.035,
     event_alignment_policy: str = "strict_event_key",
+    strict_event_min_receivers: int = 0,
     support_selection_policy: str = "stable_first",
     unknown_gate_mode: str = "score",
     radius_quantile: float = 0.95,
@@ -2074,6 +2075,8 @@ def build_collaborative_evidence(
     alignment_policy = str(event_alignment_policy or "strict_event_key").strip().lower()
     if alignment_policy not in {"strict_event_key", "receiver_domain_ranked"}:
         raise ValueError("event_alignment_policy must be strict_event_key or receiver_domain_ranked")
+    strict_event_min = int(strict_event_min_receivers) if int(strict_event_min_receivers) > 0 else len(target_receivers)
+    strict_event_min = max(1, min(strict_event_min, len(target_receivers)))
 
     for role_name, eval_role in [("old", "target_old"), ("seen_new", "target_new"), ("unknown", UNKNOWN_ROLE)]:
         label_set = old_labels if role_name == "old" else new_labels if role_name == "seen_new" else unknown_labels
@@ -2086,10 +2089,11 @@ def build_collaborative_evidence(
                         keyed[_event_key(payload, idx, role_name, label)] = int(idx)
                 by_rx_key[rx] = keyed
             if alignment_policy == "strict_event_key":
-                common_event_ids = sorted(set.intersection(*(set(by_rx_key[rx]) for rx in target_receivers)))
+                common_event_ids = sorted(set().union(*(set(by_rx_key[rx]) for rx in target_receivers)))
                 event_groups = [
-                    (event_id, {rx: by_rx_key[rx][event_id] for rx in target_receivers})
+                    (event_id, {rx: by_rx_key[rx][event_id] for rx in target_receivers if event_id in by_rx_key[rx]})
                     for event_id in common_event_ids
+                    if sum(1 for rx in target_receivers if event_id in by_rx_key[rx]) >= strict_event_min
                 ]
                 row_alignment = "role_tx_day_sig_scenario"
             else:
@@ -2567,6 +2571,8 @@ def build_collaborative_evidence(
                     evidence.append(
                         {
                             "event_id": event_id,
+                            "strict_event_receiver_count": int(len(rx_to_idx)),
+                            "strict_event_min_receivers": int(strict_event_min),
                             "receiver_id": rx,
                             "role": role_name,
                             "true_label": "__unknown__" if role_name == "unknown" else str(tx_ids[idx]),
@@ -2681,6 +2687,7 @@ def build_collaborative_evidence(
         "event_alignment": row_alignment if alignment_policy == "receiver_domain_ranked" else "role_tx_day_sig_scenario",
         "event_alignment_policy": alignment_policy,
         "strict_same_event_collaboration": alignment_policy == "strict_event_key",
+        "strict_event_min_receivers": int(strict_event_min),
         "receiver_thresholds": receiver_thresholds,
         "receiver_class_thresholds": receiver_class_thresholds,
         "receiver_class_reliability_policy": receiver_class_policy,
@@ -2789,6 +2796,7 @@ def run_evaluation(args: argparse.Namespace) -> dict[str, Any]:
         proxy_quantile=float(args.proxy_quantile),
         risk_temperature=float(args.risk_temperature),
         event_alignment_policy=str(args.event_alignment_policy),
+        strict_event_min_receivers=int(args.strict_event_min_receivers),
         support_selection_policy=str(args.support_selection_policy),
         unknown_gate_mode=str(args.unknown_gate_mode),
         radius_quantile=float(args.radius_quantile),
@@ -3322,6 +3330,12 @@ def parse_args() -> argparse.Namespace:
             "strict_event_key requires shared role+tx+day+sig+scenario across receivers. "
             "receiver_domain_ranked is an explicit dataset diagnostic when no same-event key exists."
         ),
+    )
+    p.add_argument(
+        "--strict_event_min_receivers",
+        type=int,
+        default=0,
+        help="Minimum receivers required to keep a strict_event_key group. 0 preserves all-target-receiver strictness.",
     )
     return p.parse_args()
 

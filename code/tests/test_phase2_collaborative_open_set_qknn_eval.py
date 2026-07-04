@@ -197,6 +197,56 @@ class Phase2CollaborativeOpenSetQknnEvalTest(unittest.TestCase):
             with self.assertRaisesRegex(RuntimeError, "NO_ALIGNED_COLLABORATIVE_EVENTS"):
                 build_collaborative_evidence(load_feature_npz(npz), k_shot=1, query_per_class=1)
 
+    def test_strict_event_key_allows_partial_receiver_groups_when_configured(self):
+        from phase2_collaborative_open_set_qknn_eval import load_feature_npz, build_collaborative_evidence
+
+        with tempfile.TemporaryDirectory() as td:
+            npz = Path(td) / "features.npz"
+            rows = []
+
+            def add(role, tx, rx, day, sig, scenario, feature):
+                rows.append((role, tx, rx, day, sig, scenario, np.asarray(feature, dtype=np.float32)))
+
+            for rx in ["rx-a", "rx-b", "rx-c"]:
+                add("source", "old-a", "src-a", "d0", f"src-{rx}", "", [1.0, 0.0, 0.0])
+                add("target_old", "old-a", rx, "d1", f"old-support-{rx}", "leo_clear_weak", [1.0, 0.0, 0.0])
+                add("target_new", "new-a", rx, "d1", f"new-support-{rx}", "leo_clear_weak", [0.0, 1.0, 0.0])
+                shared = "shared-query" if rx in {"rx-a", "rx-b"} else "rx-c-query"
+                add("target_old", "old-a", rx, "d2", shared, "leo_clear_weak", [0.98, 0.02, 0.0])
+                add("target_new", "new-a", rx, "d2", shared, "leo_clear_weak", [0.02, 0.98, 0.0])
+                add("target_unknown", "unk-a", rx, "d2", shared, "leo_clear_weak", [0.0, 0.0, 1.0])
+            manifest = {
+                "source_tx_ids": ["old-a"],
+                "target_old_tx_ids": ["old-a"],
+                "new_tx_ids": ["new-a"],
+                "unknown_tx_ids": ["unk-a"],
+                "target_channel_view": "satellite/LEO",
+            }
+            np.savez(
+                npz,
+                features=np.stack([r[6] for r in rows]).astype(np.float32),
+                dataset_role=np.asarray([r[0] for r in rows], dtype=object),
+                tx_ids=np.asarray([r[1] for r in rows], dtype=object),
+                rx_ids=np.asarray([r[2] for r in rows], dtype=object),
+                day_ids=np.asarray([r[3] for r in rows], dtype=object),
+                sig_ids=np.asarray([r[4] for r in rows], dtype=object),
+                sat_scenarios=np.asarray([r[5] for r in rows], dtype=object),
+                channel_views=np.asarray(["satellite" if r[5] else "clean" for r in rows], dtype=object),
+                manifest_json=np.asarray(json.dumps(manifest)),
+            )
+            evidence, metadata = build_collaborative_evidence(
+                load_feature_npz(npz),
+                k_shot=1,
+                query_per_class=1,
+                strict_event_min_receivers=2,
+            )
+
+        self.assertGreater(len(evidence), 0)
+        self.assertEqual(metadata["event_alignment_policy"], "strict_event_key")
+        self.assertTrue(metadata["strict_same_event_collaboration"])
+        self.assertEqual(metadata["strict_event_min_receivers"], 2)
+        self.assertIn(2, {int(row["strict_event_receiver_count"]) for row in evidence})
+
     def test_receiver_domain_ranked_policy_is_explicitly_marked(self):
         from phase2_collaborative_open_set_qknn_eval import load_feature_npz, build_collaborative_evidence
 
