@@ -189,4 +189,44 @@ nohup bash code/scripts/launch_phase2_adv3b02_manynew10_conflict_protected_20260
 | driver log | `/home/szu2070436088/2510044040/CV-SincNet/logs/phase2_adv3b02_manynew10_conflict_protected_20260705.driver.out` |
 | summary | `/home/szu2070436088/2510044040/CV-SincNet/logs/phase2_adv3b02_manynew10_conflict_protected_20260705/manynew10_conflict_protected_summary.json` |
 
-当前状态：本地脚本和报告已准备；尚未启动N607，需先执行N607 direct preflight并检查GPU/进程占用。
+## 2026-07-05 N607启动记录
+
+N607 direct preflight已通过：direct SSH config、identity、server time、project root和GPU可见性均正常。启动前远端GPU0-7均为空闲低显存状态，未发现本任务训练进程。
+
+同步文件：
+
+| local | remote | SHA256 |
+|---|---|---|
+| `E:\type10-7\github_publish\CVS-RFFI-repo\code\scripts\launch_phase2_adv3b02_manynew10_conflict_protected_20260705.sh` | `/home/szu2070436088/2510044040/CV-SincNet/code/scripts/launch_phase2_adv3b02_manynew10_conflict_protected_20260705.sh` | `B5849654FE33B91A6D4E9A279B9D3B6FD69F965768915E2B11A664CD8EC5D993` |
+
+远端验证：
+
+```bash
+cd /home/szu2070436088/2510044040/CV-SincNet
+sha256sum code/scripts/launch_phase2_adv3b02_manynew10_conflict_protected_20260705.sh
+bash -n code/scripts/launch_phase2_adv3b02_manynew10_conflict_protected_20260705.sh
+```
+
+结果：远端SHA256与本地一致，`bash -n`通过。
+
+启动命令：
+
+```bash
+cd /home/szu2070436088/2510044040/CV-SincNet
+nohup bash code/scripts/launch_phase2_adv3b02_manynew10_conflict_protected_20260705.sh > logs/phase2_adv3b02_manynew10_conflict_protected_20260705.driver.out 2>&1 & echo $!
+```
+
+启动SSH命令在本地等待时超时，不能单独作为失败或成功证据；随后已按N607规则检查并关闭本地残留`ssh.exe`，复查后本地无`ssh.exe`进程、无到`172.31.111.215:22`或`172.31.105.18:22`的ESTABLISHED连接。
+
+后续短命令复核显示run已启动：
+
+| 项目 | 证据 |
+|---|---|
+| driver log | 已写入`[MANYNEW10-CONFLICT-PROTECTED] run_id=phase2_adv3b02_manynew10_conflict_protected_20260705 dry_run=0 target_rx=7-14 gpus=0,1` |
+| launcher PID | `2460901`，父级残留启动shell PID `2460899` |
+| variant driver PIDs | `2460903`、`2460904` |
+| training PID | `2460908`：`MANYNEW10_CONFLICT_HEAD` |
+| training PID | `2460907`：`MANYNEW10_CONFLICT_NORM` |
+| GPU状态 | GPU0约643MiB、GPU1约1481MiB，其余GPU低占用；训练处于启动初期 |
+
+当前状态：N607训练已启动但未完成。需要后续读取`logs/phase2_adv3b02_manynew10_conflict_protected_20260705/`和`manynew10_conflict_protected_summary.json`，完成后按K=5/K=10严格逐类指标更新本报告。
