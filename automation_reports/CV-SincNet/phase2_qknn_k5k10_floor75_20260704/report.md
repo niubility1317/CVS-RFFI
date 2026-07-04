@@ -1207,3 +1207,96 @@ artifact SHA256：
 | `coreproto_20260705/k10_coreproto_pairfisher_ridge_grid.csv` | `F942BDB0395712DFC73B172AAADE84848B1B31C44C662C14F8C06772C12D655B` |
 
 结论：`core_proto`是一个可写入方法创新点的KNN压缩路线，存储从K=10的`160`个support code进一步压到`32`个核心原型，并把K=10新类均值保持在`85.14%`；但最低新类仍是`10-10=74.29%`，目标尚未完成。当前不应扩大K，也不应把同一query集上的后处理微调包装为稳定达标；下一步应优先做表征侧`10-10/20-19/14-7`hard-pair分离，或建立有独立support seed复核的support-only小adapter协议。
+
+### 2026-07-05 support-LOO adapter与support-guided proxy hard-pair挖掘
+
+本轮继续固定`K=5,K=10`，不扩大K数量。新增/修复两项工具：`phase2_lowrank_residual_adapter_probe.py`加入balanced assignment与`best_by_support_loo`选择口径；`phase2_support_guided_proxy_pair_miner.py`只使用target support标签和source/proxy特征挖掘hard-pair训练约束，不使用target query标签。
+
+本地验证命令：
+
+| command | result |
+|---|---|
+| `conda run -n ssr-gpu python -m py_compile code\scripts\phase2_lowrank_residual_adapter_probe.py` | PASS |
+| `conda run -n ssr-gpu python -m py_compile code\scripts\phase2_support_guided_proxy_pair_miner.py` | PASS |
+| `phase2_lowrank_residual_adapter_probe.py` K=10 support-LOO balanced grid | PASS，324行 |
+| `phase2_lowrank_residual_adapter_probe.py` K=5 support-LOO balanced grid | PASS，72行 |
+| `phase2_support_guided_proxy_pair_miner.py` K=10 proxy hard-pair mining | PASS，36行 |
+
+低秩adapter结果如下。`support_loo`是唯一可作为协议内选择的口径；`query audit only`只用于失败分析，不能作为真实调参依据。
+
+| 诊断 | K | 选择口径 | 配置 | old_acc | min_old | new_acc | min_new | 结论 |
+|---|---:|---|---|---:|---:|---:|---:|---|
+| support-LOO low-rank adapter | 10 | support_loo | `rank=4,scale=0.1,steps=100,lr=0.002,reg=0.001` | 84.29% | 65.71% | 83.14% | 68.57% | 失败，低于既有K=10底座 |
+| support-LOO low-rank adapter | 10 | query audit only | `rank=4,scale=0.1,steps=50,lr=0.001,reg=0.1` | 83.57% | 68.57% | 83.00% | 71.43% | 失败，不能作为选择口径 |
+| support-LOO low-rank adapter | 5 | support_loo | `rank=4,scale=0.1,steps=50,lr=0.001,reg=0.1` | 82.67% | 69.33% | 78.53% | 65.33% | 失败，低于已有K=5 source guard |
+| support-LOO low-rank adapter | 5 | query audit only | `rank=0,scale=0.05,steps=20,lr=0.0005,reg=0.01` | 82.67% | 69.33% | 78.93% | 66.67% | 失败，不能作为选择口径 |
+
+K=10 support-LOO最好行逐类性能：
+
+| 类别 | role | acc |
+|---|---|---:|
+| `14-10` | old | 90.00% |
+| `14-7` | old | 75.71% |
+| `20-15` | old | 92.86% |
+| `20-19` | old | 65.71% |
+| `6-15` | old | 84.29% |
+| `8-20` | old | 97.14% |
+| `10-10` | new | 68.57% |
+| `11-10` | new | 75.71% |
+| `18-5` | new | 91.43% |
+| `19-3` | new | 90.00% |
+| `2-13` | new | 72.86% |
+| `2-5` | new | 82.86% |
+| `3-8` | new | 85.71% |
+| `4-10` | new | 91.43% |
+| `8-18` | new | 81.43% |
+| `8-3` | new | 91.43% |
+
+K=5 support-LOO最好行逐类性能：
+
+| 类别 | role | acc |
+|---|---|---:|
+| `14-10` | old | 81.33% |
+| `14-7` | old | 78.67% |
+| `20-15` | old | 90.67% |
+| `20-19` | old | 69.33% |
+| `6-15` | old | 80.00% |
+| `8-20` | old | 96.00% |
+| `10-10` | new | 77.33% |
+| `11-10` | new | 72.00% |
+| `18-5` | new | 84.00% |
+| `19-3` | new | 72.00% |
+| `2-13` | new | 65.33% |
+| `2-5` | new | 78.67% |
+| `3-8` | new | 84.00% |
+| `4-10` | new | 89.33% |
+| `8-18` | new | 78.67% |
+| `8-3` | new | 84.00% |
+
+support-guided proxy miner为下一轮表征侧hard-pair重训生成了候选约束。top proxy显示`10-10`瓶颈主要对应`20-19/14-7`旧类邻近关系，`2-13`瓶颈主要对应`20-19/14-7`旧类邻近关系；该结果只用于设计下一轮训练约束，不能视为已提升准确率。
+
+| target_new | hard_old | proxy_pair | analogy_score |
+|---|---|---|---:|
+| `10-10` | `20-19` | `19-19:10-7` | 2.1670 |
+| `10-10` | `20-19` | `17-10:10-7` | 2.1580 |
+| `10-10` | `20-19` | `19-19:17-10` | 2.1430 |
+| `10-10` | `20-19` | `16-5:19-19` | 2.1411 |
+| `10-10` | `14-7` | `10-7:1-1` | 1.9282 |
+| `2-13` | `20-19` | `5-5:19-19` | 2.0598 |
+| `2-13` | `20-19` | `5-5:16-5` | 2.0513 |
+| `2-13` | `14-7` | `5-5:14-11` | 1.8878 |
+
+artifact SHA256：
+
+| file | SHA256 |
+|---|---|
+| `code/scripts/phase2_lowrank_residual_adapter_probe.py` | `CBB39CD50BE18A662567D50AABE565363ABD7B507F26C9222F8E052C3AEE389A` |
+| `code/scripts/phase2_support_guided_proxy_pair_miner.py` | `3DD26551B20D140B68DB5327EF6126423E53C13A54A9B97E524A6C782DD7BEDC` |
+| `supportloo_adapter_20260705/k10_lowrank_supportloo_balanced_grid.json` | `68D7AB8CEBEA06750296CB7437695CA871ACE3FD2EE8428FDA4A9013DD231B39` |
+| `supportloo_adapter_20260705/k10_lowrank_supportloo_balanced_grid.csv` | `96616181362700A5FBA48E7DCCD07F63BD6750F7D9AB9564E4B4BDF83B4BC4A9` |
+| `supportloo_adapter_20260705/k5_lowrank_supportloo_balanced_grid.json` | `F2CE454C7959AAF2A29E69A1BCE50960072A56A5A42046D600D06310E9EB29E5` |
+| `supportloo_adapter_20260705/k5_lowrank_supportloo_balanced_grid.csv` | `E2639E05EE87E85CAE628713683282E8D303405C7FAED1899A0DEEB00BFE1B3A` |
+| `support_guided_proxy_20260705/k10_support_guided_proxy_pairs.json` | `C93584ECF0E4D4A0E9C85DACEBCD7F5E621952374AA1ADB5776D42800E00E235` |
+| `support_guided_proxy_20260705/k10_support_guided_proxy_pairs.csv` | `8756BC7802E111D92C6945021516B787F6CE73F26952A7C493224E8DCCD65B6E` |
+
+结论：support-LOO低秩adapter不是可推进路线，K=10从`min_new=74.29%`退化到`68.57%`，K=5从已有达标行`min_new=76.00%`退化到`65.33%`。下一步应保留`core_proto`作为qKNN压缩创新点，同时转向support-guided proxy hard-pair重训：用proxy pair模拟`10-10/20-19/14-7`和`2-13/20-19/14-7`边界，在表征侧提高hard-pair间隔，再回到同一K=5,K=10十新类审计。

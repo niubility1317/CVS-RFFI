@@ -145,6 +145,7 @@ def _evaluate_adapter(
     neg_margin: float,
     mutual_only: bool,
     scenario_aware: bool,
+    balanced_assignment: bool,
     old_target: float,
     old_floor: float,
     new_target: float,
@@ -173,7 +174,10 @@ def _evaluate_adapter(
             mutual_only=bool(mutual_only),
             scenario_aware=bool(scenario_aware),
         )
-        pred = caq._predict(scores, old_labels + new_labels)
+        if bool(balanced_assignment):
+            pred = caq._balanced_predict(scores, old_count=len(old_query), old_labels=old_labels, new_labels=new_labels)
+        else:
+            pred = caq._predict(scores, old_labels + new_labels)
     else:
         bank = qknn._build_support_bank(
             adapted,
@@ -300,6 +304,7 @@ def main() -> None:
     parser.add_argument("--old_role", default="target_old")
     parser.add_argument("--new_role", default="target_new")
     parser.add_argument("--scenario_aware", action="store_true")
+    parser.add_argument("--balanced_assignment", action="store_true")
     parser.add_argument("--exclude_pool_from_query", action="store_true")
     parser.add_argument("--old_target", type=float, default=0.80)
     parser.add_argument("--old_floor", type=float, default=0.75)
@@ -412,6 +417,7 @@ def main() -> None:
                                     neg_margin=args.neg_margin,
                                     mutual_only=args.mutual_only,
                                     scenario_aware=bool(args.scenario_aware),
+                                    balanced_assignment=bool(args.balanced_assignment),
                                     old_target=args.old_target,
                                     old_floor=args.old_floor,
                                     new_target=args.seen_new_target,
@@ -438,6 +444,7 @@ def main() -> None:
                                     neg_margin=args.neg_margin,
                                     mutual_only=args.mutual_only,
                                     scenario_aware=bool(args.scenario_aware),
+                                    balanced_assignment=bool(args.balanced_assignment),
                                     old_target=args.old_target,
                                     old_floor=args.old_floor,
                                     new_target=args.seen_new_target,
@@ -462,6 +469,7 @@ def main() -> None:
                                     "neg_margin": float(args.neg_margin),
                                     "mutual_only": bool(args.mutual_only),
                                     "scenario_aware": bool(args.scenario_aware),
+                                    "balanced_assignment": bool(args.balanced_assignment),
                                     "k_old": int(args.k_old),
                                     "k_new": int(args.k_new),
                                     "pool_per_old": int(args.pool_per_old),
@@ -473,6 +481,12 @@ def main() -> None:
                                 }
                                 row.update(_prefixed("enroll_val", enroll_row))
                                 row.update(_prefixed("query", query_row))
+                                if trace:
+                                    row["support_loo_final_acc"] = float(trace[-1]["support_loo_acc"])
+                                    row["support_loo_final_loss"] = float(trace[-1]["support_loo_loss"])
+                                else:
+                                    row["support_loo_final_acc"] = 0.0
+                                    row["support_loo_final_loss"] = float("inf")
                                 row["enroll_val_rank_score"] = _rank_score(enroll_row)
                                 row["query_rank_score"] = _rank_score(query_row)
                                 rows.append(row)
@@ -487,15 +501,25 @@ def main() -> None:
         reverse=True,
     )
     best_by_enroll = sorted(rows, key=lambda row: tuple(row["enroll_val_rank_score"]), reverse=True)
+    best_by_support_loo = sorted(
+        rows,
+        key=lambda row: (
+            float(row["support_loo_final_acc"]),
+            -float(row["support_loo_final_loss"]),
+            -int(row["adapter_param_scalars"]),
+        ),
+        reverse=True,
+    )
     summary = {
         "diagnostic_scope": "SUPPORT_ONLY_LOWRANK_RESIDUAL_ADAPTER_NO_QUERY_LABEL_FIT",
-        "selection_note": "best_by_enrollment uses unused labeled enrollment-pool rows only; best_by_query is audit.",
+        "selection_note": "best_by_support_loo uses only K-shot support leave-one-out; best_by_enrollment needs extra enrollment-pool rows; best_by_query is audit.",
         "feature_npz": str(args.feature_npz),
         "old_tx_ids": old_labels,
         "new_tx_ids": new_labels,
         "rows": rows,
         "best_by_query": rows[:20],
         "best_by_enrollment": best_by_enroll[:20],
+        "best_by_support_loo": best_by_support_loo[:20],
     }
     output_json = Path(args.output_json)
     output_csv = Path(args.output_csv)
@@ -518,6 +542,9 @@ def main() -> None:
         "neg_threshold",
         "neg_margin",
         "mutual_only",
+        "balanced_assignment",
+        "support_loo_final_acc",
+        "support_loo_final_loss",
         "query_old_acc",
         "query_min_old_class_acc",
         "query_seen_new_acc",
@@ -549,6 +576,7 @@ def main() -> None:
         json.dumps(
             {
                 "best_by_enrollment": best_by_enroll[:3],
+                "best_by_support_loo": best_by_support_loo[:3],
                 "best_by_query": rows[:3],
                 "output_json": str(output_json),
             },
