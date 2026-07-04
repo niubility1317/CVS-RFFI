@@ -212,6 +212,93 @@ def test_smec_obace_guard_blocks_seen_new_label_without_enough_absolute_failures
     assert out[0]["unknown_risk"] == 0.05
 
 
+def test_smec_obace_event_guard_lifts_consistent_unknown_from_event_evidence():
+    cfg = _config(
+        old_label_aux_policy="obace_event_guard",
+        proto_weight=0.0,
+        knn_weight=0.0,
+        old_boundary_weight=0.0,
+        obace_conformal_weight=0.0,
+        obace_event_weight=1.0,
+        obace_event_vote_min_risk=0.50,
+        obace_event_min_votes=2,
+        obace_event_min_mean_risk=0.50,
+        old_lift_min_weakness=0.50,
+    )
+    rows = [
+        _row("e0", score=0.20, margin=0.01, risk=0.05, label="old-a", role="unknown", true_label="unknown-a"),
+        {
+            **_row(
+                "e0",
+                score=0.20,
+                margin=0.01,
+                risk=0.05,
+                label="old-a",
+                role="unknown",
+                true_label="unknown-a",
+            ),
+            "receiver_id": "rx-b",
+        },
+        {
+            **_row(
+                "e0",
+                score=0.20,
+                margin=0.01,
+                risk=0.05,
+                label="old-a",
+                role="unknown",
+                true_label="unknown-a",
+            ),
+            "receiver_id": "rx-c",
+        },
+    ]
+    models = {rx: _two_class_support_model(cfg) for rx in ["rx-a", "rx-b", "rx-c"]}
+    query_features = {
+        ("e0", "rx-a"): np.asarray([0.70, 0.70], dtype=np.float32),
+        ("e0", "rx-b"): np.asarray([0.70, 0.70], dtype=np.float32),
+        ("e0", "rx-c"): np.asarray([0.70, 0.70], dtype=np.float32),
+    }
+
+    out = augment_smec_evidence(rows, models, query_features, {}, cfg, old_labels={"old-a"})
+
+    assert all(row["smec_obace_event_vote_count"] >= 2 for row in out)
+    assert all(row["smec_obace_event_risk"] > 0.50 for row in out)
+    assert all(row["smec_old_label_lift_blocked"] == 0 for row in out)
+    assert all(row["unknown_risk"] > 0.50 for row in out)
+
+
+def test_smec_obace_event_guard_blocks_strong_old_despite_event_evidence():
+    cfg = _config(
+        old_label_aux_policy="obace_event_guard",
+        proto_weight=0.0,
+        knn_weight=0.0,
+        old_boundary_weight=0.0,
+        obace_conformal_weight=0.0,
+        obace_event_weight=1.0,
+        obace_event_vote_min_risk=0.50,
+        obace_event_min_votes=2,
+        obace_event_min_mean_risk=0.50,
+    )
+    rows = [
+        _row("e0", score=0.95, margin=0.30, risk=0.05, label="old-a"),
+        {**_row("e0", score=0.95, margin=0.30, risk=0.05, label="old-a"), "receiver_id": "rx-b"},
+        {**_row("e0", score=0.95, margin=0.30, risk=0.05, label="old-a"), "receiver_id": "rx-c"},
+    ]
+    models = {rx: _two_class_support_model(cfg) for rx in ["rx-a", "rx-b", "rx-c"]}
+    query_features = {
+        ("e0", "rx-a"): np.asarray([0.70, 0.70], dtype=np.float32),
+        ("e0", "rx-b"): np.asarray([0.70, 0.70], dtype=np.float32),
+        ("e0", "rx-c"): np.asarray([0.70, 0.70], dtype=np.float32),
+    }
+
+    out = augment_smec_evidence(rows, models, query_features, {}, cfg, old_labels={"old-a"})
+
+    assert all(row["smec_obace_event_vote_count"] >= 2 for row in out)
+    assert all(row["smec_strong_known_candidate"] == 1 for row in out)
+    assert all(row["smec_old_label_lift_blocked"] == 1 for row in out)
+    assert all(row["unknown_risk"] == 0.05 for row in out)
+
+
 def test_smec_old_boundary_guard_lifts_agreed_old_label_near_foreign_boundary():
     cfg = _config(
         old_label_aux_policy="old_boundary_guard",

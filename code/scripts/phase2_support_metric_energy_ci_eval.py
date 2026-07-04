@@ -84,6 +84,12 @@ class SmecConfig:
     obace_absolute_risk_gate: float = 0.70
     obace_old_min_abs_failures: int = 2
     obace_nonold_min_abs_failures: int = 2
+    obace_event_weight: float = 0.0
+    obace_event_vote_min_risk: float = 0.60
+    obace_event_min_votes: int = 2
+    obace_event_min_mean_risk: float = 0.60
+    obace_event_old_min_local_failures: int = 0
+    obace_event_nonold_min_local_failures: int = 0
 
 
 @dataclass(frozen=True)
@@ -285,7 +291,7 @@ def _smec_risks(
     feature: np.ndarray,
     logits: np.ndarray | None,
     config: SmecConfig,
-) -> tuple[float, float, float, float, float, float, float, float, float, float, int]:
+) -> tuple[float, float, float, float, float, float, float, float, float, float, float, int]:
     feat = _normalize_rows(np.asarray(feature, dtype=np.float32).reshape(1, -1))[0]
     centroid = model.centroids.get(str(label))
     if centroid is None:
@@ -391,6 +397,61 @@ def augment_smec_evidence(
             "receiver_count": float(n),
             "label_agreement": max(counts.values()) / float(n) if counts else 0.0,
         }
+    risk_cache: dict[
+        tuple[str, str],
+        tuple[float, float, float, float, float, float, float, float, float, float, float, int],
+    ] = {}
+    event_obace_stats: dict[str, dict[str, float]] = {}
+
+    def _risk_for(
+        source: Mapping[str, Any],
+    ) -> tuple[float, float, float, float, float, float, float, float, float, float, float, int] | None:
+        rx = str(source.get("receiver_id", ""))
+        event_id = str(source.get("event_id", ""))
+        key = (event_id, rx)
+        if key in risk_cache:
+            return risk_cache[key]
+        model = models.get(rx)
+        feature = query_features.get(key)
+        if model is None or feature is None:
+            return None
+        risk_cache[key] = _smec_risks(
+            model=model,
+            label=_top_label(source),
+            feature=feature,
+            logits=query_logits.get(key),
+            config=config,
+        )
+        return risk_cache[key]
+
+    def _event_obace_for(event_id: str) -> dict[str, float]:
+        if event_id in event_obace_stats:
+            return event_obace_stats[event_id]
+        conformal_risks: list[float] = []
+        fail_counts: list[int] = []
+        for peer in grouped.get(event_id, []):
+            risks = _risk_for(peer)
+            if risks is None:
+                continue
+            conformal_risks.append(float(risks[4]))
+            fail_counts.append(int(risks[11]))
+        n = max(len(conformal_risks), 1)
+        vote_count = sum(1 for risk in conformal_risks if risk >= float(config.obace_event_vote_min_risk))
+        fail_vote_count = sum(1 for count in fail_counts if count > 0)
+        mean_risk = sum(conformal_risks) / float(n) if conformal_risks else 0.0
+        vote_ratio = vote_count / float(n)
+        fail_vote_ratio = fail_vote_count / float(n)
+        event_risk = _unit(mean_risk + 0.15 * vote_ratio + 0.10 * fail_vote_ratio)
+        stats = {
+            "risk": event_risk,
+            "mean_risk": mean_risk,
+            "vote_count": float(vote_count),
+            "fail_vote_count": float(fail_vote_count),
+            "receiver_count": float(len(conformal_risks)),
+        }
+        event_obace_stats[event_id] = stats
+        return stats
+
     out: list[dict[str, Any]] = []
     for source in rows:
         rx = str(source.get("receiver_id", ""))
@@ -402,6 +463,12 @@ def augment_smec_evidence(
         feature = query_features.get(key)
         label = _top_label(source)
         if model is None or feature is None:
+            row["smec_missing_feature"] = 1
+            row["smec_label_authority"] = "base_qknn_only"
+            out.append(row)
+            continue
+        risk_values = _risk_for(source)
+        if risk_values is None:
             row["smec_missing_feature"] = 1
             row["smec_label_authority"] = "base_qknn_only"
             out.append(row)
@@ -419,20 +486,33 @@ def augment_smec_evidence(
             obace_conformal_pvalue,
             obace_nonconformity,
             obace_absolute_fail_count,
-        ) = _smec_risks(
-            model=model,
-            label=label,
-            feature=feature,
-            logits=query_logits.get(key),
-            config=config,
+        ) = risk_values
+        obace_event = _event_obace_for(event_id)
+        obace_event_risk = float(obace_event.get("risk", 0.0))
+        obace_event_pass = (
+            float(config.obace_event_weight) > 0.0
+            and obace_event_risk >= float(config.obace_event_min_mean_risk)
+            and float(obace_event.get("vote_count", 0.0)) >= float(config.obace_event_min_votes)
         )
         strong_known, weakness = _base_strength(source, config)
         aux_component = _unit(aux_raw * max(weakness, 0.20))
+        if obace_event_pass:
+            aux_component = max(
+                aux_component,
+                _unit(float(config.obace_event_weight) * obace_event_risk * max(weakness, 0.20)),
+            )
         old_label_lift_blocked = 0
         old_policy = str(config.old_label_aux_policy or "strong_cap").strip().lower()
-        if old_policy not in {"strong_cap", "never", "consensus_guard", "old_boundary_guard", "obace_guard"}:
+        if old_policy not in {
+            "strong_cap",
+            "never",
+            "consensus_guard",
+            "old_boundary_guard",
+            "obace_guard",
+            "obace_event_guard",
+        }:
             raise ValueError(
-                "old_label_aux_policy must be strong_cap, never, consensus_guard, old_boundary_guard, or obace_guard"
+                "old_label_aux_policy must be strong_cap, never, consensus_guard, old_boundary_guard, obace_guard, or obace_event_guard"
             )
         if old_policy == "never" and label in old_labels:
             aux_component = min(aux_component, base_risk)
@@ -480,6 +560,21 @@ def augment_smec_evidence(
             if not allow_nonold_lift:
                 aux_component = min(aux_component, base_risk)
                 old_label_lift_blocked = 1
+        if old_policy == "obace_event_guard":
+            local_min_failures = (
+                int(config.obace_event_old_min_local_failures)
+                if label in old_labels
+                else int(config.obace_event_nonold_min_local_failures)
+            )
+            allow_event_lift = (
+                obace_event_pass
+                and int(obace_absolute_fail_count) >= local_min_failures
+                and weakness >= float(config.old_lift_min_weakness)
+                and not strong_known
+            )
+            if not allow_event_lift:
+                aux_component = min(aux_component, base_risk)
+                old_label_lift_blocked = 1
         if strong_known and label in old_labels:
             aux_component = min(aux_component, float(config.strong_aux_cap))
         fused = max(base_risk, aux_component)
@@ -493,6 +588,10 @@ def augment_smec_evidence(
         row["smec_obace_conformal_pvalue"] = obace_conformal_pvalue
         row["smec_obace_nonconformity"] = obace_nonconformity
         row["smec_obace_absolute_fail_count"] = int(obace_absolute_fail_count)
+        row["smec_obace_event_risk"] = obace_event_risk
+        row["smec_obace_event_mean_risk"] = float(obace_event.get("mean_risk", 0.0))
+        row["smec_obace_event_vote_count"] = float(obace_event.get("vote_count", 0.0))
+        row["smec_obace_event_fail_vote_count"] = float(obace_event.get("fail_vote_count", 0.0))
         row["smec_old_boundary_margin"] = old_boundary_margin
         row["smec_old_boundary_threshold"] = old_boundary_threshold
         row["smec_aux_raw"] = aux_raw
@@ -786,9 +885,30 @@ def _main(argv: Sequence[str] | None = None) -> int:
                 obace_old_min_abs_failures=3,
                 obace_nonold_min_abs_failures=3,
             )
+        elif profile == "obace_event":
+            profile_configs["obace_event"] = SmecConfig(
+                old_label_aux_policy="obace_event_guard",
+                old_lift_min_weakness=0.50,
+                proto_weight=0.55,
+                knn_weight=0.45,
+                energy_weight=0.08,
+                old_boundary_weight=0.20,
+                old_boundary_min_risk=0.98,
+                obace_conformal_weight=0.55,
+                obace_conformal_min_risk=0.85,
+                obace_absolute_risk_gate=0.70,
+                obace_old_min_abs_failures=3,
+                obace_nonold_min_abs_failures=3,
+                obace_event_weight=0.60,
+                obace_event_vote_min_risk=0.55,
+                obace_event_min_votes=4,
+                obace_event_min_mean_risk=0.75,
+                obace_event_old_min_local_failures=2,
+                obace_event_nonold_min_local_failures=2,
+            )
         else:
             raise ValueError(
-                "unknown SMEC profile; expected standard, old_lossless, consensus_guard, old_boundary_guard, or obace"
+                "unknown SMEC profile; expected standard, old_lossless, consensus_guard, old_boundary_guard, obace, or obace_event"
             )
     build_config = next(iter(profile_configs.values()))
     payload = load_feature_npz(args.feature_npz)
@@ -827,6 +947,8 @@ def _main(argv: Sequence[str] | None = None) -> int:
             algorithm = "smec_old_boundary_guard_ci"
         if profile == "obace":
             algorithm = "obace_ci"
+        if profile == "obace_event":
+            algorithm = "obace_event_ci"
         smec_rows = augment_smec_evidence(
             base_rows,
             models,
