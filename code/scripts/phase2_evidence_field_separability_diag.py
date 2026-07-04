@@ -157,6 +157,12 @@ def scan_fields(
     max_combo_size: int,
     modes: Sequence[str],
     far_targets: Sequence[float],
+    known_floor_targets: Sequence[float] = (),
+    goal_old_acc: float = 0.99,
+    goal_min_old_class_acc: float = 0.95,
+    goal_seen_new_acc: float = 0.97,
+    goal_min_seen_new_class_acc: float = 0.93,
+    goal_unknown_reject_rate: float = 0.99,
     max_thresholds: int,
 ) -> dict[str, Any]:
     present = [field for field in risk_fields if any(field in row for row in rows)]
@@ -180,6 +186,68 @@ def scan_fields(
             reverse=True,
         )
         by_far[str(float(target))] = feasible[0] if feasible else {"reason": "no_feasible_gate"}
+    by_known_floor: dict[str, dict[str, Any]] = {}
+    for target in known_floor_targets:
+        floor = float(target)
+        feasible = [
+            item
+            for item in candidates
+            if item["old_acc"] >= floor
+            and item["seen_new_acc"] >= floor
+            and item["min_old_class_acc"] >= floor
+            and item["min_seen_new_class_acc"] >= floor
+        ]
+        feasible.sort(
+            key=lambda item: (
+                item["unknown_reject_rate"],
+                -item["unknown_FAR"],
+                item["known_coverage"],
+                item["old_acc"] + item["seen_new_acc"],
+            ),
+            reverse=True,
+        )
+        by_known_floor[str(floor)] = feasible[0] if feasible else {"reason": "no_feasible_gate"}
+
+    def _goal_deficit(item: Mapping[str, Any]) -> float:
+        return (
+            max(0.0, float(goal_old_acc) - float(item["old_acc"]))
+            + max(0.0, float(goal_min_old_class_acc) - float(item["min_old_class_acc"]))
+            + max(0.0, float(goal_seen_new_acc) - float(item["seen_new_acc"]))
+            + max(0.0, float(goal_min_seen_new_class_acc) - float(item["min_seen_new_class_acc"]))
+            + max(0.0, float(goal_unknown_reject_rate) - float(item["unknown_reject_rate"]))
+        )
+
+    goal_feasible = [
+        item
+        for item in candidates
+        if item["old_acc"] >= float(goal_old_acc)
+        and item["min_old_class_acc"] >= float(goal_min_old_class_acc)
+        and item["seen_new_acc"] >= float(goal_seen_new_acc)
+        and item["min_seen_new_class_acc"] >= float(goal_min_seen_new_class_acc)
+        and item["unknown_reject_rate"] >= float(goal_unknown_reject_rate)
+    ]
+    goal_feasible.sort(key=lambda item: (item["known_coverage"], -item["defer_rate"]), reverse=True)
+    closest_to_goal = sorted(
+        candidates,
+        key=lambda item: (
+            _goal_deficit(item),
+            -item["unknown_FAR"],
+            -item["defer_rate"],
+        ),
+    )[0] if candidates else {"reason": "no_candidates"}
+    goal_feasibility = {
+        "constraints": {
+            "old_acc": float(goal_old_acc),
+            "min_old_class_acc": float(goal_min_old_class_acc),
+            "seen_new_acc": float(goal_seen_new_acc),
+            "min_seen_new_class_acc": float(goal_min_seen_new_class_acc),
+            "unknown_reject_rate": float(goal_unknown_reject_rate),
+        },
+        "feasible": bool(goal_feasible),
+        "best_feasible": goal_feasible[0] if goal_feasible else {"reason": "no_feasible_gate"},
+        "closest_candidate": closest_to_goal,
+        "closest_candidate_total_deficit": float(_goal_deficit(closest_to_goal)) if candidates else 0.0,
+    }
     candidates.sort(
         key=lambda item: (
             item["unknown_reject_rate"],
@@ -194,6 +262,8 @@ def scan_fields(
         "row_count": len(rows),
         "risk_fields_present": present,
         "best_by_far_target": by_far,
+        "best_by_known_floor_target": by_known_floor,
+        "goal_feasibility": goal_feasibility,
         "top_unknown_reject_candidates": candidates[:25],
     }
 
@@ -206,6 +276,12 @@ def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
     p.add_argument("--max_combo_size", type=int, default=2)
     p.add_argument("--modes", default="max")
     p.add_argument("--far_targets", default="0.01,0.05,0.10")
+    p.add_argument("--known_floor_targets", default="0.80,0.90,0.95,0.99")
+    p.add_argument("--goal_old_acc", type=float, default=0.99)
+    p.add_argument("--goal_min_old_class_acc", type=float, default=0.95)
+    p.add_argument("--goal_seen_new_acc", type=float, default=0.97)
+    p.add_argument("--goal_min_seen_new_class_acc", type=float, default=0.93)
+    p.add_argument("--goal_unknown_reject_rate", type=float, default=0.99)
     p.add_argument("--max_thresholds", type=int, default=256)
     return p.parse_args(argv)
 
@@ -216,12 +292,21 @@ def main(argv: Sequence[str] | None = None) -> int:
     risk_fields = [field.strip() for field in str(args.risk_fields).split(",") if field.strip()]
     modes = [mode.strip() for mode in str(args.modes).split(",") if mode.strip()]
     far_targets = [float(value) for value in str(args.far_targets).split(",") if str(value).strip()]
+    known_floor_targets = [
+        float(value) for value in str(args.known_floor_targets).split(",") if str(value).strip()
+    ]
     result = scan_fields(
         rows,
         risk_fields=risk_fields,
         max_combo_size=int(args.max_combo_size),
         modes=modes,
         far_targets=far_targets,
+        known_floor_targets=known_floor_targets,
+        goal_old_acc=float(args.goal_old_acc),
+        goal_min_old_class_acc=float(args.goal_min_old_class_acc),
+        goal_seen_new_acc=float(args.goal_seen_new_acc),
+        goal_min_seen_new_class_acc=float(args.goal_min_seen_new_class_acc),
+        goal_unknown_reject_rate=float(args.goal_unknown_reject_rate),
         max_thresholds=int(args.max_thresholds),
     )
     result["evidence_csv"] = str(args.evidence_csv)

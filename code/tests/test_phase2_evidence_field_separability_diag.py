@@ -55,6 +55,49 @@ class Phase2EvidenceFieldSeparabilityDiagTest(unittest.TestCase):
         self.assertEqual(best["old_acc"], 1.0)
         self.assertEqual(best["seen_new_acc"], 1.0)
 
+    def test_reports_goal_feasibility_and_known_floor_candidates(self):
+        from phase2_evidence_field_separability_diag import scan_fields
+
+        rows = [
+            {
+                "role": "old",
+                "true_label": "old-a",
+                "predicted_label": "old-a",
+                "risk": 0.1,
+            },
+            {
+                "role": "seen_new",
+                "true_label": "new-a",
+                "predicted_label": "new-a",
+                "risk": 0.2,
+            },
+            {
+                "role": "unknown",
+                "true_label": "__unknown__",
+                "predicted_label": "old-a",
+                "risk": 0.9,
+            },
+        ]
+
+        result = scan_fields(
+            rows,
+            risk_fields=["risk"],
+            max_combo_size=1,
+            modes=["max"],
+            far_targets=[0.0],
+            known_floor_targets=[0.9],
+            goal_old_acc=0.9,
+            goal_min_old_class_acc=0.9,
+            goal_seen_new_acc=0.9,
+            goal_min_seen_new_class_acc=0.9,
+            goal_unknown_reject_rate=0.9,
+            max_thresholds=64,
+        )
+
+        self.assertTrue(result["goal_feasibility"]["feasible"])
+        self.assertEqual(result["goal_feasibility"]["best_feasible"]["unknown_reject_rate"], 1.0)
+        self.assertEqual(result["best_by_known_floor_target"]["0.9"]["unknown_reject_rate"], 1.0)
+
 
 if __name__ == "__main__":
     unittest.main()
