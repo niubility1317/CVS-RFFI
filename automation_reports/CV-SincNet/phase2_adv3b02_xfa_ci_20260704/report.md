@@ -72,3 +72,4 @@ XFA-CI保持base qKNN为唯一标签来源，辅助适配feature只允许输出`
 | paired子集缺失造成虚假收益 | `same_subset=true`、`sample_count_matched`、`missing_aux_row_count`必填 |
 | 多配置挑最好形成选择偏差 | 全矩阵保留`xfa_ci_summary.csv`；未通过旧类保底的row标`diagnostic_only` |
 | 本地全aux网格慢 | 已修脚本默认不写大型证据CSV并缓存base-only评估；远端做全量/代表性扩展 |
+| N607项目根目录`evaluation/`遮蔽`code/evaluation` | XFA-CI脚本强制将`CODE_ROOT`放到`sys.path[0]`，避免远端布局导致`collaborative_open_set_qknn_eval`导入失败 |

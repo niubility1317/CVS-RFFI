@@ -19,8 +19,9 @@ from pathlib import Path
 from typing import Any, Iterable, Mapping, Sequence
 
 CODE_ROOT = Path(__file__).resolve().parents[1]
-if str(CODE_ROOT) not in sys.path:
-    sys.path.insert(0, str(CODE_ROOT))
+if str(CODE_ROOT) in sys.path:
+    sys.path.remove(str(CODE_ROOT))
+sys.path.insert(0, str(CODE_ROOT))
 
 from scripts.phase2_old_protected_unknown_confirm_ci_eval import (  # noqa: E402
     POLICIES,
