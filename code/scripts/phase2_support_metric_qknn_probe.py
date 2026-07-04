@@ -564,6 +564,41 @@ def _source_proto_anchor_adjust_scores(
     return adjusted, int(query_indices.size), int(proto_matrix.size)
 
 
+def _old_new_runnerup_rescue_scores(
+    scores: np.ndarray,
+    *,
+    proto_sim: np.ndarray,
+    class_labels: list[str],
+    old_labels: set[str],
+    similarity_threshold: float,
+    margin: float,
+    weight: float,
+) -> tuple[np.ndarray, int, int]:
+    if float(weight) == 0.0 or float(similarity_threshold) > 1.0 or float(margin) <= 0.0:
+        return scores, 0, 0
+    old_indices = [index for index, label in enumerate(class_labels) if label in old_labels]
+    new_indices = [index for index, label in enumerate(class_labels) if label not in old_labels]
+    if not old_indices or not new_indices:
+        return scores, 0, 0
+    adjusted = np.asarray(scores, dtype=np.float64).copy()
+    pair_count = 0
+    rescue_count = 0
+    for old_index in old_indices:
+        for new_index in new_indices:
+            if float(proto_sim[old_index, new_index]) < float(similarity_threshold):
+                continue
+            pair_count += 1
+            old_score = scores[:, old_index]
+            new_score = scores[:, new_index]
+            gap = old_score - new_score
+            mask = (gap > 0.0) & (gap <= float(margin))
+            if not np.any(mask):
+                continue
+            adjusted[mask, new_index] += float(weight) * (float(margin) - gap[mask])
+            rescue_count += int(np.sum(mask))
+    return adjusted, int(pair_count), int(rescue_count)
+
+
 def _bootstrap_proto_scores(
     *,
     features: np.ndarray,
@@ -755,6 +790,9 @@ def _evaluate_metric_qknn(
     source_proto_anchor_mode: str,
     source_proto_anchor_weight: float,
     source_proto_anchor_center: float,
+    old_new_runnerup_rescue_similarity: float,
+    old_new_runnerup_rescue_margin: float,
+    old_new_runnerup_rescue_weight: float,
     old_target: float,
     old_floor: float,
     new_target: float,
@@ -920,6 +958,15 @@ def _evaluate_metric_qknn(
         threshold=float(new_old_conflict_bias_threshold),
         weight=float(new_old_conflict_bias_weight),
     )
+    scores, old_new_runnerup_rescue_pairs, old_new_runnerup_rescue_count = _old_new_runnerup_rescue_scores(
+        scores,
+        proto_sim=proto_sim,
+        class_labels=old_labels + new_labels,
+        old_labels=set(old_labels),
+        similarity_threshold=float(old_new_runnerup_rescue_similarity),
+        margin=float(old_new_runnerup_rescue_margin),
+        weight=float(old_new_runnerup_rescue_weight),
+    )
     bootstrap_proto_count = 0
     if float(bootstrap_proto_mix) > 0.0:
         bootstrap_scores, bootstrap_proto_count = _bootstrap_proto_scores(
@@ -1050,6 +1097,11 @@ def _evaluate_metric_qknn(
         "new_old_conflict_bias_threshold": float(new_old_conflict_bias_threshold),
         "new_old_conflict_bias_weight": float(new_old_conflict_bias_weight),
         "new_old_conflict_bias": new_old_conflict_bias,
+        "old_new_runnerup_rescue_similarity": float(old_new_runnerup_rescue_similarity),
+        "old_new_runnerup_rescue_margin": float(old_new_runnerup_rescue_margin),
+        "old_new_runnerup_rescue_weight": float(old_new_runnerup_rescue_weight),
+        "old_new_runnerup_rescue_pairs": int(old_new_runnerup_rescue_pairs),
+        "old_new_runnerup_rescue_count": int(old_new_runnerup_rescue_count),
         "bootstrap_proto_mix": float(bootstrap_proto_mix),
         "bootstrap_proto_drop": int(bootstrap_proto_drop),
         "bootstrap_proto_topm": int(bootstrap_proto_topm),
@@ -1173,6 +1225,9 @@ def main() -> None:
     parser.add_argument("--pair_fisher_clip_grid", default="5.0")
     parser.add_argument("--new_old_conflict_bias_threshold_grid", default="1.1")
     parser.add_argument("--new_old_conflict_bias_weight_grid", default="0")
+    parser.add_argument("--old_new_runnerup_rescue_similarity_grid", default="1.1")
+    parser.add_argument("--old_new_runnerup_rescue_margin_grid", default="0")
+    parser.add_argument("--old_new_runnerup_rescue_weight_grid", default="0")
     parser.add_argument("--bootstrap_proto_mix_grid", default="0")
     parser.add_argument("--bootstrap_proto_drop_grid", default="1")
     parser.add_argument("--bootstrap_proto_topm_grid", default="1")
@@ -1255,6 +1310,9 @@ def main() -> None:
             qknn._parse_float_csv(args.pair_fisher_clip_grid),
             qknn._parse_float_csv(args.new_old_conflict_bias_threshold_grid),
             qknn._parse_float_csv(args.new_old_conflict_bias_weight_grid),
+            qknn._parse_float_csv(args.old_new_runnerup_rescue_similarity_grid),
+            qknn._parse_float_csv(args.old_new_runnerup_rescue_margin_grid),
+            qknn._parse_float_csv(args.old_new_runnerup_rescue_weight_grid),
             qknn._parse_float_csv(args.bootstrap_proto_mix_grid),
             qknn._parse_int_csv(args.bootstrap_proto_drop_grid),
             qknn._parse_int_csv(args.bootstrap_proto_topm_grid),
@@ -1340,6 +1398,9 @@ def main() -> None:
                 pair_fisher_clip,
                 new_old_conflict_bias_threshold,
                 new_old_conflict_bias_weight,
+                old_new_runnerup_rescue_similarity,
+                old_new_runnerup_rescue_margin,
+                old_new_runnerup_rescue_weight,
                 bootstrap_proto_mix,
                 bootstrap_proto_drop,
                 bootstrap_proto_topm,
@@ -1401,6 +1462,9 @@ def main() -> None:
                     pair_fisher_clip=float(pair_fisher_clip),
                     new_old_conflict_bias_threshold=float(new_old_conflict_bias_threshold),
                     new_old_conflict_bias_weight=float(new_old_conflict_bias_weight),
+                    old_new_runnerup_rescue_similarity=float(old_new_runnerup_rescue_similarity),
+                    old_new_runnerup_rescue_margin=float(old_new_runnerup_rescue_margin),
+                    old_new_runnerup_rescue_weight=float(old_new_runnerup_rescue_weight),
                     bootstrap_proto_mix=float(bootstrap_proto_mix),
                     bootstrap_proto_drop=int(bootstrap_proto_drop),
                     bootstrap_proto_topm=int(bootstrap_proto_topm),
@@ -1525,6 +1589,11 @@ def main() -> None:
         "new_old_conflict_bias_threshold",
         "new_old_conflict_bias_weight",
         "new_old_conflict_bias",
+        "old_new_runnerup_rescue_similarity",
+        "old_new_runnerup_rescue_margin",
+        "old_new_runnerup_rescue_weight",
+        "old_new_runnerup_rescue_pairs",
+        "old_new_runnerup_rescue_count",
         "bootstrap_proto_mix",
         "bootstrap_proto_drop",
         "bootstrap_proto_topm",

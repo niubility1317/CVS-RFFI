@@ -880,3 +880,54 @@ artifact SHA256：
 代码验证：`conda run -n ssr-gpu python -m py_compile github_publish\CVS-RFFI-repo\code\scripts\phase2_support_metric_qknn_probe.py`通过。当前脚本SHA256为`82FF5DB6F78B3923BEA16D477A0CF619B5EF811AB2CF739E14770F01C51D1B8E`。
 
 结论：目标尚未完成。K=5已经达到十个新类最低类不低于75%，但K=10仍停在`10-10=74.29%`。下一步不应扩大K；更有价值的路线是训练侧或特征侧对`10-10/20-19`做hard-pair分离，或者设计一个只由target support和source prototype确定、但能专门处理旧新相似pair的局部判别头，并用独立support seed验证稳定性。
+
+### 2026-07-05 runner-up rescue与ridge head融合诊断
+
+本轮继续保持`K=5,K=10`不变，重点只处理K=10瓶颈。新增`old_new_runnerup_rescue`压缩qKNN后处理：先用support prototype相似度选出高相似旧-新pair；若某个无标签query上旧类分数第一、新类分数第二且二者分差低于阈值，就按`margin-gap`给新类加轻量补偿。该机制不使用query标签，部署侧不保存原始support，只保存少量超参；它是对`10-10`被`20-19`吸走的定向诊断。
+
+结果如下：
+
+| 诊断 | K | 最好配置 | old_acc | min_old | new_acc | min_new | 结论 |
+|---|---:|---|---:|---:|---:|---:|---|
+| runner-up rescue | 10 | `similarity=0.90,margin=0.02,weight=0.2` | 84.05% | 70.00% | 84.43% | 74.29% | 无prediction收益 |
+| ridge+pair-Fisher | 10 | `ridge_weight=0.015,alpha=0.01,clip=2.0` | 85.00% | 71.43% | 85.00% | 74.29% | 均值提升，`10-10`不动 |
+| strength tiny scan | 10 | `transform_strength=0.5`仍最佳 | 85.00% | 71.43% | 85.00% | 74.29% | metric强度邻域无突破 |
+| ridge+source guard | 10 | 最好退回`source_guard=none` | 85.00% | 71.43% | 85.00% | 74.29% | source guard不能释放`10-10` |
+
+#### ridge+pair-Fisher K=10逐类
+
+| 类别 | role | acc |
+|---|---|---:|
+| `14-10` | old | 88.57% |
+| `14-7` | old | 74.29% |
+| `20-15` | old | 90.00% |
+| `20-19` | old | 71.43% |
+| `6-15` | old | 88.57% |
+| `8-20` | old | 97.14% |
+| `10-10` | new | 74.29% |
+| `11-10` | new | 81.43% |
+| `18-5` | new | 91.43% |
+| `19-3` | new | 88.57% |
+| `2-13` | new | 75.71% |
+| `2-5` | new | 85.71% |
+| `3-8` | new | 87.14% |
+| `4-10` | new | 92.86% |
+| `8-18` | new | 81.43% |
+| `8-3` | new | 91.43% |
+
+解释：ridge head证明K-shot support中存在可提升整体均值的线性信息，且部署侧只需保存`2576`个head标量；但所有有效后处理都无法把`10-10`从`52/70`提升到`53/70`。runner-up救援虽然命中多个高相似旧-新pair候选，但balanced assignment后的瓶颈不受这种局部分差补偿影响，说明`10-10`错误样本不是简单的“第二名差一点”模式。
+
+一个较大的`transform_strength/topm/proto_mix/ridge`联合网格在本地超时，未产出JSON/CSV；已确认并停止残留`conda`父进程和`ssr-gpu`子进程，后续只保留小网格负证据。当前没有N607远端作业或同步。
+
+artifact SHA256：
+
+| file | SHA256 |
+|---|---|
+| `k10_runnerup_rescue_grid.json` | `26BAD5AD1445CA7DB59B2F38A1B27209B00EB50A2583A6C33CCED2F5A1179B26` |
+| `k10_ridge_pairfisher_grid.json` | `B23CFF08F81DCEE6D137181A5AD419A0464370F4FD30EAF9EF09A731E9645771` |
+| `k10_strength_ridge_tiny.json` | `25D34CBEA78A62337D396B05548B1296DE5518D9653C7F598D4277EB853116C2` |
+| `k10_ridge_sourceguard_mini.json` | `DE43112E7D1ED3C6DE2B552C770F929FCF197586DA2FC07A33CC3DC51DF1546A` |
+
+代码验证：`conda run -n ssr-gpu python -m py_compile code\scripts\phase2_support_metric_qknn_probe.py`通过。当前脚本SHA256为`B0BD898E093275500099A6BE6EAECF0AA76928791F92A456190B5CD4B1F68CC3`。
+
+结论：目标仍未完成。K=5已达标；K=10在多种压缩qKNN后处理下稳定卡在`10-10=74.29%`。当前证据支持下一步转向特征侧：重新训练或导出一个专门拉开`10-10/20-19`的表征，再用同一K=5/K=10压缩qKNN评估，而不是继续叠加分数后处理。
