@@ -64,6 +64,34 @@ XFA-CI保持base qKNN为唯一标签来源，辅助适配feature只允许输出`
 | 日志路径 | `/home/szu2070436088/2510044040/CV-SincNet/logs/phase2_adv3b02_xfa_ci_20260704/` |
 | 输出路径 | `/home/szu2070436088/2510044040/CV-SincNet/runs/phase2_adv3b02_xfa_ci_20260704/` |
 
+## N607执行记录
+
+| 项 | 结果 |
+|---|---|
+| SSH preflight | PASS；direct `N607`；project root可见；8张RTX3090均为10MiB/24576MiB |
+| 低显存GPU选择 | GPU0；`CUDA_VISIBLE_DEVICES=0` |
+| Conda环境 | `/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python` |
+| 同步文件 | `code/scripts/phase2_cross_feature_aux_ci_eval.py`、`code/tests/test_phase2_cross_feature_aux_ci_eval.py`、本报告、`code/evaluation/__init__.py`依赖修复、base/metadata/MOE aux evidence输入 |
+| 远端单元验证 | `py_compile` PASS；无pytest依赖内联测试PASS，输出`remote_xfa_unit_tests=PASS` |
+| 远端运行命令 | `CUDA_VISIBLE_DEVICES=0 /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python code/scripts/phase2_cross_feature_aux_ci_eval.py --base_evidence_csv runs/phase2_adv3b02_xfa_ci_20260704/inputs/base_evidence.csv --metadata_json runs/phase2_adv3b02_xfa_ci_20260704/inputs/base_metadata.json --output_dir runs/phase2_adv3b02_xfa_ci_20260704/remote_smoke_moe --policies opu_old_preserve,opu_old_guarded --aux_weight 0.25 --strong_aux_cap 0.05 --aux_evidence_csv moe=runs/phase2_adv3b02_xfa_ci_20260704/inputs/moe/opu_ci_evidence.csv` |
+| 远端输出 | `/home/szu2070436088/2510044040/CV-SincNet/runs/phase2_adv3b02_xfa_ci_20260704/remote_smoke_moe/` |
+| 远端日志 | `/home/szu2070436088/2510044040/CV-SincNet/logs/phase2_adv3b02_xfa_ci_20260704/xfa_smoke_moe.log` |
+| 拉回artifact | `remote_artifacts/phase2_adv3b02_xfa_ci_20260704/remote_smoke_moe/` |
+| SSH清理 | 每次SSH/SCP后检查本地`ssh.exe`和到`172.31.111.215:22`的ESTABLISHED连接；最终无残留 |
+
+## N607远端结果
+
+远端summary共21行，即表头+`base_paired/xfa_ci`×2个policy×`collab_count=1..5`。同一paired子集：`sample_count_matched=979`，`missing_aux_row_count=21`，`same_subset=true`。
+
+| algorithm | policy | collab_count | old_acc | seen_new_acc | unknown_reject_rate | unknown_FAR | delta_old_acc | delta_unknown_reject_rate | verdict |
+|---|---|---:|---:|---:|---:|---:|---:|---:|---|
+| xfa_ci | opu_old_preserve | 4 | 0.8074866310 | 0.8166666667 | 0.1833333333 | 0.7500000000 | 0.0000000000 | 0.0000000000 | diagnostic_only |
+| xfa_ci | opu_old_guarded | 4 | 0.7700534759 | 0.7166666667 | 0.2500000000 | 0.5500000000 | 0.0000000000 | 0.0000000000 | diagnostic_only |
+| xfa_ci | opu_old_preserve | 5 | 0.6256684492 | 0.5166666667 | 0.0333333333 | 0.5666666667 | -0.1764705882 | -0.0500000000 | diagnostic_only |
+| xfa_ci | opu_old_guarded | 5 | 0.5935828877 | 0.4833333333 | 0.1000000000 | 0.5000000000 | -0.1711229947 | -0.1000000000 | diagnostic_only |
+
+远端结论：XFA-CI的MOE辅助拒识烟测没有产生未知拒识收益；当协同数量增加到5时还明显损伤旧类和seen-new。该路线当前不能作为满足目标的成功候选，只能保留为负面诊断证据。下一步若继续，应把aux风险从“适配feature自身unknown风险”改为更稳定的support-only KNN/energy/EVT组合，且必须先通过paired old-harm审计。
+
 ## 风险和待检
 
 | 风险 | 处理 |
