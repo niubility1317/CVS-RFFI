@@ -717,3 +717,69 @@ artifact SHA256：
 | `norm_head_k5_dualview_seed120.json` | `B61DEAD5382497BCC16C982D91E5EE245C47224BD336C2834AD44CA1019C248C` |
 
 结论：qKNN压缩头侧已经把K=5最低类推进到74.67%，但K=10仍为72.86%。这说明当前主要瓶颈不是support存储形式，而是`10-10/2-13`在现有星地表征空间中的类间可分性不足。下一步应围绕`CONFLICT_NORM/CONFLICT_HEAD`的双视图思路做训练侧表征改造，而不是继续扩大K或继续加纯后处理网格。
+
+### 2026-07-05 support-only pair-Fisher压缩qKNN诊断
+
+在dual-view之后继续做不保存原始support的qKNN变体：`pair_fisher`只用K-shot support在高相似类对之间估计一维Fisher/LDA判别轴，并保存该pair轴及support投影高斯统计；query阶段把一维高斯似然差作为小权重分数修正。该路线的部署存储仍是压缩参数，不保存原始support IQ或support embedding明文。`new_old_conflict_bias`进一步测试“新类原型靠近旧类原型时给新类加support-only偏置”的想法，但网格最优权重为0，说明该偏置没有稳定收益。
+
+本地验证：`conda run -n ssr-gpu python -m py_compile code\scripts\phase2_support_metric_qknn_probe.py`通过。本轮仍限定`K=5,K=10`，不扩大K数量，不使用query标签训练或拟合；target receiver domain仍为`7-14`，support/query来自同一目标域LEO视图。注意：当前网格按query指标排序，只能作为本地诊断和路线选择证据，不能直接写成无需验证集的星上自适应调参协议。
+
+| 路线 | K | 最佳配置 | old_acc | min_old | new_acc | min_new | 瓶颈 |
+|---|---:|---|---:|---:|---:|---:|---|
+| pair-Fisher qKNN | 10 | `CONFLICT_NORM; pair_gaussian_weight=0.005; pair_fisher_similarity=0.90; pair_fisher_weight=0.01; alpha=1.0; clip=2.0` | 84.05% | 70.00% | 84.43% | 74.29% | `10-10`为52/70，差1个query |
+| pair-Fisher qKNN | 5 | `CONFLICT_NORM+CONFLICT_HEAD dual-view; aux_w=0.8; pair_gaussian_weight=0.02; pair_fisher_similarity=0.90; pair_fisher_weight=0.01; alpha=1.0; clip=5.0` | 83.56% | 62.67% | 82.53% | 74.67% | `10-10`为56/75，差1个query |
+| pair-Fisher+new-old conflict bias | 10 | 最优`new_old_conflict_bias_weight=0`，退回pair-Fisher | 84.05% | 70.00% | 84.43% | 74.29% | 无`min_new>=75%`行 |
+| pair-Fisher+new-old conflict bias | 5 | 最优`new_old_conflict_bias_weight=0`，退回或略低于pair-Fisher | 83.11% | 62.67% | 82.00% | 74.67% | 无`min_new>=75%`行 |
+
+#### pair-Fisher K=10逐类
+
+| 类别 | role | acc |
+|---|---|---:|
+| `14-10` | old | 87.14% |
+| `14-7` | old | 72.86% |
+| `20-15` | old | 90.00% |
+| `20-19` | old | 70.00% |
+| `6-15` | old | 87.14% |
+| `8-20` | old | 97.14% |
+| `10-10` | new | 74.29% |
+| `11-10` | new | 78.57% |
+| `18-5` | new | 91.43% |
+| `19-3` | new | 84.29% |
+| `2-13` | new | 75.71% |
+| `2-5` | new | 87.14% |
+| `3-8` | new | 88.57% |
+| `4-10` | new | 91.43% |
+| `8-18` | new | 82.86% |
+| `8-3` | new | 90.00% |
+
+#### pair-Fisher K=5逐类
+
+| 类别 | role | acc |
+|---|---|---:|
+| `14-10` | old | 89.33% |
+| `14-7` | old | 76.00% |
+| `20-15` | old | 90.67% |
+| `20-19` | old | 62.67% |
+| `6-15` | old | 85.33% |
+| `8-20` | old | 97.33% |
+| `10-10` | new | 74.67% |
+| `11-10` | new | 77.33% |
+| `18-5` | new | 86.67% |
+| `19-3` | new | 85.33% |
+| `2-13` | new | 76.00% |
+| `2-5` | new | 82.67% |
+| `3-8` | new | 88.00% |
+| `4-10` | new | 88.00% |
+| `8-18` | new | 81.33% |
+| `8-3` | new | 85.33% |
+
+artifact SHA256：
+
+| file | SHA256 |
+|---|---|
+| `k10_pairfisher_grid.json` | `FEB154360C62FC546674EAF672DE2B501FF1A707DF17F326CFA2223E482E7189` |
+| `k5_dualview_pairfisher_grid.json` | `B1E109F13556507FB4A3C2D5BC866BAF86B12FE7D57E4B751A5B86F71C4F8CEB` |
+| `k10_pairfisher_conflictbias.json` | `D22C08283CF8B091E60A0951D1E51625E3DED892F14F24A4FEADD0F69D6891D6` |
+| `k5_dualview_pairfisher_conflictbias.json` | `14C9A3CA5B03D4CDDAB98D2B87557FB15B40353F0F4DF68BEC5D6E13903D5151` |
+
+结论：pair-Fisher是目前最强的qKNN压缩变体，K=10从此前72.86%最低类推进到74.29%，K=5保持74.67%且提高均值；但两者均未达到“十个新类内最低类不低于75%”。因为当前最强行都只差1个query，后续优化应聚焦`10-10`相对旧类`20-19/14-7`和新类邻域的边界，而不是扩大K或继续做大网格。若坚持星上可部署，下一步应采用support-only可解释的针对性tie-breaker或表征侧小训练修复，并用独立support策略/seed复核，避免把query排序结果变成部署调参。

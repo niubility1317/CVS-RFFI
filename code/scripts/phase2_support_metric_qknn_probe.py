@@ -347,6 +347,111 @@ def _pair_gaussian_adjust_scores(
     return adjusted, used
 
 
+def _pair_fisher_adjust_scores(
+    scores: np.ndarray,
+    *,
+    features: np.ndarray,
+    support_indices: np.ndarray,
+    support_labels: np.ndarray,
+    query_indices: np.ndarray,
+    class_labels: list[str],
+    proto_sim: np.ndarray,
+    similarity_threshold: float,
+    weight: float,
+    alpha: float,
+    clip: float,
+) -> tuple[np.ndarray, int]:
+    if float(weight) == 0.0 or float(similarity_threshold) > 1.0:
+        return scores, 0
+    support = qknn._normalize_rows(features[support_indices])
+    query = qknn._normalize_rows(features[query_indices])
+    labels = np.asarray(support_labels, dtype=object).astype(str)
+    adjusted = np.asarray(scores, dtype=np.float64).copy()
+    used = 0
+    for left in range(len(class_labels)):
+        for right in range(left + 1, len(class_labels)):
+            if float(proto_sim[left, right]) < float(similarity_threshold):
+                continue
+            left_support = support[labels == class_labels[left]]
+            right_support = support[labels == class_labels[right]]
+            if left_support.size == 0 or right_support.size == 0:
+                continue
+            left_mean_vec = np.mean(left_support, axis=0)
+            right_mean_vec = np.mean(right_support, axis=0)
+            centered = np.concatenate(
+                [left_support - left_mean_vec[None, :], right_support - right_mean_vec[None, :]],
+                axis=0,
+            )
+            cov = (centered.T @ centered) / max(1, centered.shape[0] - 2)
+            trace_scale = float(np.trace(cov) / max(1, cov.shape[0]))
+            cov = cov + float(alpha) * max(trace_scale, 1e-6) * np.eye(cov.shape[0], dtype=np.float64)
+            axis = np.linalg.solve(cov, left_mean_vec - right_mean_vec)
+            norm = float(np.linalg.norm(axis))
+            if norm < 1e-8:
+                continue
+            axis = axis / norm
+            left_proj = left_support @ axis
+            right_proj = right_support @ axis
+            left_mean = float(np.mean(left_proj))
+            right_mean = float(np.mean(right_proj))
+            if left_mean < right_mean:
+                axis = -axis
+                left_proj = -left_proj
+                right_proj = -right_proj
+                left_mean = float(np.mean(left_proj))
+                right_mean = float(np.mean(right_proj))
+            left_var = float(np.var(left_proj) + 1e-4)
+            right_var = float(np.var(right_proj) + 1e-4)
+            query_proj = query @ axis
+            left_ll = -0.5 * (((query_proj - left_mean) ** 2) / left_var + np.log(left_var))
+            right_ll = -0.5 * (((query_proj - right_mean) ** 2) / right_var + np.log(right_var))
+            margin = np.clip(left_ll - right_ll, -float(clip), float(clip))
+            adjusted[:, left] += float(weight) * margin
+            adjusted[:, right] -= float(weight) * margin
+            used += 1
+    return adjusted, used
+
+
+def _new_old_conflict_bias_scores(
+    scores: np.ndarray,
+    *,
+    features: np.ndarray,
+    support_indices: np.ndarray,
+    support_labels: np.ndarray,
+    class_labels: list[str],
+    old_labels: set[str],
+    threshold: float,
+    weight: float,
+) -> tuple[np.ndarray, dict[str, float]]:
+    if float(weight) == 0.0 or float(threshold) > 1.0:
+        return scores, {}
+    support = qknn._normalize_rows(features[support_indices])
+    labels = np.asarray(support_labels, dtype=object).astype(str)
+    prototypes: list[np.ndarray] = []
+    for label in class_labels:
+        cls = support[labels == label]
+        if cls.size == 0:
+            prototypes.append(np.zeros(support.shape[1], dtype=np.float64))
+        else:
+            prototypes.append(qknn._normalize_rows(cls.mean(axis=0, keepdims=True))[0])
+    proto = qknn._normalize_rows(np.stack(prototypes, axis=0))
+    old_indices = [index for index, label in enumerate(class_labels) if label in old_labels]
+    adjusted = np.asarray(scores, dtype=np.float64).copy()
+    bias_by_label: dict[str, float] = {}
+    if not old_indices:
+        return adjusted, bias_by_label
+    for class_index, label in enumerate(class_labels):
+        if label in old_labels:
+            continue
+        max_old_sim = float(np.max(proto[class_index] @ proto[old_indices].T))
+        bias = float(weight) * max(0.0, max_old_sim - float(threshold))
+        if bias == 0.0:
+            continue
+        adjusted[:, class_index] += bias
+        bias_by_label[label] = bias
+    return adjusted, bias_by_label
+
+
 def _bootstrap_proto_scores(
     *,
     features: np.ndarray,
@@ -512,6 +617,12 @@ def _evaluate_metric_qknn(
     pair_gaussian_similarity: float,
     pair_gaussian_weight: float,
     pair_gaussian_clip: float,
+    pair_fisher_similarity: float,
+    pair_fisher_weight: float,
+    pair_fisher_alpha: float,
+    pair_fisher_clip: float,
+    new_old_conflict_bias_threshold: float,
+    new_old_conflict_bias_weight: float,
     bootstrap_proto_mix: float,
     bootstrap_proto_drop: int,
     bootstrap_proto_topm: int,
@@ -663,6 +774,29 @@ def _evaluate_metric_qknn(
         weight=float(pair_gaussian_weight),
         clip=float(pair_gaussian_clip),
     )
+    scores, pair_fisher_count = _pair_fisher_adjust_scores(
+        scores,
+        features=adapted,
+        support_indices=support_indices,
+        support_labels=support_labels,
+        query_indices=query_indices,
+        class_labels=old_labels + new_labels,
+        proto_sim=proto_sim,
+        similarity_threshold=float(pair_fisher_similarity),
+        weight=float(pair_fisher_weight),
+        alpha=float(pair_fisher_alpha),
+        clip=float(pair_fisher_clip),
+    )
+    scores, new_old_conflict_bias = _new_old_conflict_bias_scores(
+        scores,
+        features=adapted,
+        support_indices=support_indices,
+        support_labels=support_labels,
+        class_labels=old_labels + new_labels,
+        old_labels=set(old_labels),
+        threshold=float(new_old_conflict_bias_threshold),
+        weight=float(new_old_conflict_bias_weight),
+    )
     bootstrap_proto_count = 0
     if float(bootstrap_proto_mix) > 0.0:
         bootstrap_scores, bootstrap_proto_count = _bootstrap_proto_scores(
@@ -763,6 +897,14 @@ def _evaluate_metric_qknn(
         "pair_gaussian_weight": float(pair_gaussian_weight),
         "pair_gaussian_clip": float(pair_gaussian_clip),
         "pair_gaussian_count": int(pair_gaussian_count),
+        "pair_fisher_similarity": float(pair_fisher_similarity),
+        "pair_fisher_weight": float(pair_fisher_weight),
+        "pair_fisher_alpha": float(pair_fisher_alpha),
+        "pair_fisher_clip": float(pair_fisher_clip),
+        "pair_fisher_count": int(pair_fisher_count),
+        "new_old_conflict_bias_threshold": float(new_old_conflict_bias_threshold),
+        "new_old_conflict_bias_weight": float(new_old_conflict_bias_weight),
+        "new_old_conflict_bias": new_old_conflict_bias,
         "bootstrap_proto_mix": float(bootstrap_proto_mix),
         "bootstrap_proto_drop": int(bootstrap_proto_drop),
         "bootstrap_proto_topm": int(bootstrap_proto_topm),
@@ -833,6 +975,12 @@ def main() -> None:
     parser.add_argument("--pair_gaussian_similarity_grid", default="1.1")
     parser.add_argument("--pair_gaussian_weight_grid", default="0")
     parser.add_argument("--pair_gaussian_clip_grid", default="5.0")
+    parser.add_argument("--pair_fisher_similarity_grid", default="1.1")
+    parser.add_argument("--pair_fisher_weight_grid", default="0")
+    parser.add_argument("--pair_fisher_alpha_grid", default="1.0")
+    parser.add_argument("--pair_fisher_clip_grid", default="5.0")
+    parser.add_argument("--new_old_conflict_bias_threshold_grid", default="1.1")
+    parser.add_argument("--new_old_conflict_bias_weight_grid", default="0")
     parser.add_argument("--bootstrap_proto_mix_grid", default="0")
     parser.add_argument("--bootstrap_proto_drop_grid", default="1")
     parser.add_argument("--bootstrap_proto_topm_grid", default="1")
@@ -901,6 +1049,12 @@ def main() -> None:
             qknn._parse_float_csv(args.pair_gaussian_similarity_grid),
             qknn._parse_float_csv(args.pair_gaussian_weight_grid),
             qknn._parse_float_csv(args.pair_gaussian_clip_grid),
+            qknn._parse_float_csv(args.pair_fisher_similarity_grid),
+            qknn._parse_float_csv(args.pair_fisher_weight_grid),
+            qknn._parse_float_csv(args.pair_fisher_alpha_grid),
+            qknn._parse_float_csv(args.pair_fisher_clip_grid),
+            qknn._parse_float_csv(args.new_old_conflict_bias_threshold_grid),
+            qknn._parse_float_csv(args.new_old_conflict_bias_weight_grid),
             qknn._parse_float_csv(args.bootstrap_proto_mix_grid),
             qknn._parse_int_csv(args.bootstrap_proto_drop_grid),
             qknn._parse_int_csv(args.bootstrap_proto_topm_grid),
@@ -972,6 +1126,12 @@ def main() -> None:
                 pair_gaussian_similarity,
                 pair_gaussian_weight,
                 pair_gaussian_clip,
+                pair_fisher_similarity,
+                pair_fisher_weight,
+                pair_fisher_alpha,
+                pair_fisher_clip,
+                new_old_conflict_bias_threshold,
+                new_old_conflict_bias_weight,
                 bootstrap_proto_mix,
                 bootstrap_proto_drop,
                 bootstrap_proto_topm,
@@ -1017,6 +1177,12 @@ def main() -> None:
                     pair_gaussian_similarity=float(pair_gaussian_similarity),
                     pair_gaussian_weight=float(pair_gaussian_weight),
                     pair_gaussian_clip=float(pair_gaussian_clip),
+                    pair_fisher_similarity=float(pair_fisher_similarity),
+                    pair_fisher_weight=float(pair_fisher_weight),
+                    pair_fisher_alpha=float(pair_fisher_alpha),
+                    pair_fisher_clip=float(pair_fisher_clip),
+                    new_old_conflict_bias_threshold=float(new_old_conflict_bias_threshold),
+                    new_old_conflict_bias_weight=float(new_old_conflict_bias_weight),
                     bootstrap_proto_mix=float(bootstrap_proto_mix),
                     bootstrap_proto_drop=int(bootstrap_proto_drop),
                     bootstrap_proto_topm=int(bootstrap_proto_topm),
@@ -1094,6 +1260,14 @@ def main() -> None:
         "pair_gaussian_weight",
         "pair_gaussian_clip",
         "pair_gaussian_count",
+        "pair_fisher_similarity",
+        "pair_fisher_weight",
+        "pair_fisher_alpha",
+        "pair_fisher_clip",
+        "pair_fisher_count",
+        "new_old_conflict_bias_threshold",
+        "new_old_conflict_bias_weight",
+        "new_old_conflict_bias",
         "bootstrap_proto_mix",
         "bootstrap_proto_drop",
         "bootstrap_proto_topm",
@@ -1132,6 +1306,7 @@ def main() -> None:
             out = {key: row.get(key) for key in fields}
             out["query_per_old_acc"] = json.dumps(row["query_per_old_acc"], ensure_ascii=False, sort_keys=True)
             out["query_per_new_acc"] = json.dumps(row["query_per_new_acc"], ensure_ascii=False, sort_keys=True)
+            out["new_old_conflict_bias"] = json.dumps(row.get("new_old_conflict_bias", {}), ensure_ascii=False, sort_keys=True)
             writer.writerow(out)
     print(json.dumps({"best": rows[:5], "output_json": str(output_json)}, ensure_ascii=False, indent=2))
 
