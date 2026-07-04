@@ -230,3 +230,72 @@ nohup bash code/scripts/launch_phase2_adv3b02_manynew10_conflict_protected_20260
 | GPU状态 | GPU0约643MiB、GPU1约1481MiB，其余GPU低占用；训练处于启动初期 |
 
 当前状态：N607训练已启动但未完成。需要后续读取`logs/phase2_adv3b02_manynew10_conflict_protected_20260705/`和`manynew10_conflict_protected_summary.json`，完成后按K=5/K=10严格逐类指标更新本报告。
+
+## 2026-07-05 conflict-protected完成结果
+
+N607训练、特征导出和补跑严格qKNN评估已完成。首次launcher后处理因远端`phase2_confusion_aware_qknn_probe.py`为旧版、不支持`--balanced_assignment`而中断；随后同步本地新版评估脚本，远端SHA256为`56DB804D661A3304957BA0601630ED276545D688EDE4E1329DB01029AEBA70E4`，`py_compile`通过，并只补跑四个严格评估，不重训。
+
+远端最终状态：无`manynew10_conflict/train_apply/phase2_confusion_aware_qknn_probe`进程，GPU0-7恢复低占用。本地SSH/SCP残留已检查，当前无`ssh.exe`进程，无到N607或lab bridge 22端口的ESTABLISHED连接。
+
+结果文件已拉取到：`E:\type10-7\automation_reports\CV-SincNet\phase2_qknn_k5k10_floor75_20260704\remote_artifacts\conflict_protected_20260705\`。
+
+| variant | K | seed | old_acc | min_old | new_acc | min_new | 是否达标 |
+|---|---:|---:|---:|---:|---:|---:|---|
+| `MANYNEW10_CONFLICT_NORM` | 10 | 421027 | 84.05% | 71.43% | 80.00% | 72.86% | 否 |
+| `MANYNEW10_CONFLICT_HEAD` | 10 | 421045 | 80.24% | 67.14% | 77.71% | 71.43% | 否 |
+| `MANYNEW10_CONFLICT_NORM` | 5 | 421113 | 79.78% | 68.00% | 75.60% | 65.33% | 否 |
+| `MANYNEW10_CONFLICT_HEAD` | 5 | 421009 | 78.44% | 64.00% | 74.40% | 64.00% | 否 |
+
+### `MANYNEW10_CONFLICT_NORM` K=10逐类
+
+| 类别 | role | acc |
+|---|---|---:|
+| 14-10 | old | 82.86% |
+| 14-7 | old | 77.14% |
+| 20-15 | old | 91.43% |
+| 20-19 | old | 71.43% |
+| 6-15 | old | 84.29% |
+| 8-20 | old | 97.14% |
+| 10-10 | new | 75.71% |
+| 11-10 | new | 72.86% |
+| 18-5 | new | 84.29% |
+| 19-3 | new | 78.57% |
+| 2-13 | new | 72.86% |
+| 2-5 | new | 78.57% |
+| 3-8 | new | 82.86% |
+| 4-10 | new | 90.00% |
+| 8-18 | new | 77.14% |
+| 8-3 | new | 87.14% |
+
+### `MANYNEW10_CONFLICT_NORM` K=5逐类
+
+| 类别 | role | acc |
+|---|---|---:|
+| 14-10 | old | 74.67% |
+| 14-7 | old | 77.33% |
+| 20-15 | old | 93.33% |
+| 20-19 | old | 69.33% |
+| 6-15 | old | 68.00% |
+| 8-20 | old | 96.00% |
+| 10-10 | new | 70.67% |
+| 11-10 | new | 66.67% |
+| 18-5 | new | 85.33% |
+| 19-3 | new | 65.33% |
+| 2-13 | new | 65.33% |
+| 2-5 | new | 78.67% |
+| 3-8 | new | 74.67% |
+| 4-10 | new | 92.00% |
+| 8-18 | new | 68.00% |
+| 8-3 | new | 89.33% |
+
+artifact SHA256：
+
+| file | SHA256 |
+|---|---|
+| `manynew10_conflict_protected_summary.json` | `1211A817DD9DC3D149A610387DE1AD37C1A6CC72B82439F3F8770839CA0B885B` |
+| `MANYNEW10_CONFLICT_NORM_k10.json` | `7CCA68D58C8A8133B3B80980AE43ADB1C4355ACA9D3978A7839C60A8B963A1E9` |
+| `MANYNEW10_CONFLICT_NORM_k5.json` | `CA3FBF27C3174AFB9AF0AE2997B33420F9B54329B21A62EEC508F1E823485F5E` |
+| `MANYNEW10_CONFLICT_HEAD_k10.json` | `74F39C76AEB5C094DD3ADC57DF86B3D4344F5E6945AA3634C83549BF11AF01D5` |
+| `MANYNEW10_CONFLICT_HEAD_k5.json` | `624AC38CA955CF5B9949DD8230D93C55B3D7B497BB58E80831643872747F348B` |
+
+解释：conflict-protected表示训练有正向收益，K=10最好最低新类从原`71.43%`提高到`72.86%`，并保持old_acc超过80%。但是它没有达到十新类最低`75%`，且K=5仍明显坍塌，最低新类只有`65.33%`。当前目标仍未完成。下一步应把优化重点从proxy-only source训练转向Stage2-C允许的support-only轻量度量/原型校准，但必须设计不依赖额外target query标签的验证机制；单纯加强proxy episode约束已经不足以让K=5稳定。
