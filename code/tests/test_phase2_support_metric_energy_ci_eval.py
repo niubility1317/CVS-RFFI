@@ -136,3 +136,46 @@ def test_smec_old_lossless_policy_still_lifts_seen_new_label_risk():
 
     assert out[0]["unknown_risk"] > 0.50
     assert out[0]["smec_old_label_lift_blocked"] == 0
+
+
+def test_smec_old_consensus_guard_blocks_agreed_old_label_risk():
+    cfg = _config(old_label_aux_policy="consensus_guard")
+    rows = [
+        _row("e0", score=0.20, margin=0.01, risk=0.05, label="old-a"),
+        {**_row("e0", score=0.20, margin=0.01, risk=0.05, label="old-a"), "receiver_id": "rx-b"},
+    ]
+    models = {"rx-a": _support_model(cfg), "rx-b": _support_model(cfg)}
+    query_features = {
+        ("e0", "rx-a"): np.asarray([0.0, 1.0], dtype=np.float32),
+        ("e0", "rx-b"): np.asarray([0.0, 1.0], dtype=np.float32),
+    }
+
+    out = augment_smec_evidence(rows, models, query_features, {}, cfg, old_labels={"old-a"})
+
+    assert all(row["unknown_risk"] == 0.05 for row in out)
+    assert all(row["smec_event_label_agreement"] == 1.0 for row in out)
+    assert all(row["smec_old_label_lift_blocked"] == 1 for row in out)
+
+
+def test_smec_old_consensus_guard_lifts_disagreed_weak_old_label_risk():
+    cfg = _config(
+        old_label_aux_policy="consensus_guard",
+        old_lift_max_label_agreement=0.60,
+        old_lift_min_weakness=0.50,
+    )
+    rows = [
+        _row("e0", score=0.20, margin=0.01, risk=0.05, label="old-a"),
+        {**_row("e0", score=0.20, margin=0.01, risk=0.05, label="new-a"), "receiver_id": "rx-b"},
+    ]
+    models = {"rx-a": _support_model(cfg), "rx-b": _support_model(cfg)}
+    query_features = {
+        ("e0", "rx-a"): np.asarray([0.0, 1.0], dtype=np.float32),
+        ("e0", "rx-b"): np.asarray([0.0, 1.0], dtype=np.float32),
+    }
+
+    out = augment_smec_evidence(rows, models, query_features, {}, cfg, old_labels={"old-a"})
+
+    old_row = next(row for row in out if row["receiver_id"] == "rx-a")
+    assert old_row["smec_event_label_agreement"] == 0.5
+    assert old_row["smec_old_label_lift_blocked"] == 0
+    assert old_row["unknown_risk"] > 0.50

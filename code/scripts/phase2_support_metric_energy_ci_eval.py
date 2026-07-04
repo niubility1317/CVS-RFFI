@@ -72,6 +72,8 @@ class SmecConfig:
     aux_bytes_per_receiver: float = 24.0
     aux_latency_ms: float = 0.03
     old_label_aux_policy: str = "strong_cap"
+    old_lift_max_label_agreement: float = 0.60
+    old_lift_min_weakness: float = 0.50
 
 
 @dataclass(frozen=True)
@@ -254,6 +256,18 @@ def augment_smec_evidence(
     *,
     old_labels: set[str],
 ) -> list[dict[str, Any]]:
+    event_stats: dict[str, dict[str, float]] = {}
+    grouped: dict[str, list[Mapping[str, Any]]] = {}
+    for source in rows:
+        grouped.setdefault(str(source.get("event_id", "")), []).append(source)
+    for event_id, group in grouped.items():
+        labels = [_top_label(row) for row in group]
+        counts = {label: labels.count(label) for label in set(labels)}
+        n = max(len(labels), 1)
+        event_stats[event_id] = {
+            "receiver_count": float(n),
+            "label_agreement": max(counts.values()) / float(n) if counts else 0.0,
+        }
     out: list[dict[str, Any]] = []
     for source in rows:
         rx = str(source.get("receiver_id", ""))
@@ -280,11 +294,22 @@ def augment_smec_evidence(
         aux_component = _unit(aux_raw * max(weakness, 0.20))
         old_label_lift_blocked = 0
         old_policy = str(config.old_label_aux_policy or "strong_cap").strip().lower()
-        if old_policy not in {"strong_cap", "never"}:
-            raise ValueError("old_label_aux_policy must be strong_cap or never")
+        if old_policy not in {"strong_cap", "never", "consensus_guard"}:
+            raise ValueError("old_label_aux_policy must be strong_cap, never, or consensus_guard")
         if old_policy == "never" and label in old_labels:
             aux_component = min(aux_component, base_risk)
             old_label_lift_blocked = 1
+        if old_policy == "consensus_guard" and label in old_labels:
+            stats = event_stats.get(event_id, {})
+            label_agreement = float(stats.get("label_agreement", 1.0))
+            allow_old_lift = (
+                label_agreement <= float(config.old_lift_max_label_agreement)
+                and weakness >= float(config.old_lift_min_weakness)
+                and not strong_known
+            )
+            if not allow_old_lift:
+                aux_component = min(aux_component, base_risk)
+                old_label_lift_blocked = 1
         if strong_known and label in old_labels:
             aux_component = min(aux_component, float(config.strong_aux_cap))
         fused = max(base_risk, aux_component)
@@ -301,6 +326,8 @@ def augment_smec_evidence(
         row["smec_strong_known_candidate"] = int(strong_known and label in old_labels)
         row["smec_old_label_aux_policy"] = old_policy
         row["smec_old_label_lift_blocked"] = old_label_lift_blocked
+        row["smec_event_label_agreement"] = float(event_stats.get(event_id, {}).get("label_agreement", 0.0))
+        row["smec_event_receiver_count"] = float(event_stats.get(event_id, {}).get("receiver_count", 0.0))
         row["smec_missing_feature"] = 0
         row["smec_unknown_query_used_for_threshold"] = "false"
         row["smec_label_authority"] = "base_qknn_only"
@@ -553,8 +580,14 @@ def _main(argv: Sequence[str] | None = None) -> int:
             profile_configs["standard"] = SmecConfig()
         elif profile == "old_lossless":
             profile_configs["old_lossless"] = SmecConfig(old_label_aux_policy="never")
+        elif profile == "consensus_guard":
+            profile_configs["consensus_guard"] = SmecConfig(
+                old_label_aux_policy="consensus_guard",
+                old_lift_max_label_agreement=0.60,
+                old_lift_min_weakness=0.50,
+            )
         else:
-            raise ValueError("unknown SMEC profile; expected standard or old_lossless")
+            raise ValueError("unknown SMEC profile; expected standard, old_lossless, or consensus_guard")
     build_config = next(iter(profile_configs.values()))
     payload = load_feature_npz(args.feature_npz)
     models, query_features, query_logits, smec_metadata = build_stage2_smec_inputs(
@@ -586,6 +619,8 @@ def _main(argv: Sequence[str] | None = None) -> int:
     profile_audits: dict[str, Any] = {}
     for profile, config in profile_configs.items():
         algorithm = "smec_old_lossless_ci" if profile == "old_lossless" else "smec_ci"
+        if profile == "consensus_guard":
+            algorithm = "smec_consensus_guard_ci"
         smec_rows = augment_smec_evidence(
             base_rows,
             models,
