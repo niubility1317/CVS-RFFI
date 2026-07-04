@@ -50,6 +50,7 @@ class QknnMemory:
     class_evt_scales: dict[str, float]
     class_oldness_weights: dict[str, np.ndarray]
     class_oldness_thresholds: dict[str, float]
+    source_old_prototype_shrinkage_applied: dict[str, float]
     margin_threshold: float
     score_threshold: float
 
@@ -234,6 +235,38 @@ def _calibrate_seen_new_centroids(
             updated = original + alpha_value * (original - old_mix)
         calibrated[pos] = _normalize_rows(updated.reshape(1, -1))[0]
         applied[labels[pos]] = alpha_value
+    return _normalize_rows(calibrated), applied
+
+
+def _apply_source_old_prototype_shrinkage(
+    centroid_labels: np.ndarray,
+    centroids: np.ndarray,
+    *,
+    old_labels: set[str],
+    source_old_features: np.ndarray | None,
+    source_old_labels: Sequence[str] | None,
+    alpha: float,
+) -> tuple[np.ndarray, dict[str, float]]:
+    alpha_value = float(np.clip(float(alpha), 0.0, 1.0))
+    if alpha_value <= 0.0 or source_old_features is None or source_old_labels is None:
+        return centroids, {}
+    source_features = _normalize_rows(np.asarray(source_old_features, dtype=np.float32))
+    source_labels = np.asarray([canonical_tx_id(v) for v in source_old_labels], dtype=object)
+    if source_features.shape[0] != source_labels.shape[0]:
+        raise ValueError("source_old_features and source_old_labels must have matching lengths")
+    labels = [str(label) for label in centroid_labels.tolist()]
+    calibrated = np.asarray(centroids, dtype=np.float32).copy()
+    applied: dict[str, float] = {}
+    for pos, label in enumerate(labels):
+        if label not in old_labels:
+            continue
+        idx = np.where(source_labels == label)[0]
+        if idx.size == 0:
+            continue
+        source_centroid = _normalize_rows(source_features[idx].mean(axis=0, keepdims=True))[0]
+        updated = (1.0 - alpha_value) * calibrated[pos] + alpha_value * source_centroid
+        calibrated[pos] = _normalize_rows(updated.reshape(1, -1))[0]
+        applied[label] = alpha_value
     return _normalize_rows(calibrated), applied
 
 
@@ -443,6 +476,9 @@ def build_qknn_memory(
     prototype_calibration_policy: str = "none",
     prototype_calibration_alpha: float = 0.0,
     prototype_calibration_top_m: int = 2,
+    source_old_features: np.ndarray | None = None,
+    source_old_labels: Sequence[str] | None = None,
+    source_old_prototype_shrinkage_alpha: float = 0.0,
 ) -> QknnMemory:
     normalized = _normalize_rows(features)
     scale = 127.0
@@ -455,6 +491,14 @@ def build_qknn_memory(
         if scenario_arr.shape[0] != labels_arr.shape[0]:
             raise ValueError("support_scenarios length must match labels")
     centroid_labels, centroids = _class_centroids(normalized, labels_arr)
+    centroids, source_old_shrinkage_applied = _apply_source_old_prototype_shrinkage(
+        centroid_labels,
+        centroids,
+        old_labels=set(old_labels),
+        source_old_features=source_old_features,
+        source_old_labels=source_old_labels,
+        alpha=source_old_prototype_shrinkage_alpha,
+    )
     centroids, _ = _calibrate_seen_new_centroids(
         centroid_labels,
         centroids,
@@ -526,6 +570,7 @@ def build_qknn_memory(
         class_evt_scales=evt_scales,
         class_oldness_weights=oldness_weights,
         class_oldness_thresholds=oldness_thresholds,
+        source_old_prototype_shrinkage_applied=source_old_shrinkage_applied,
         margin_threshold=margin_threshold,
         score_threshold=score_threshold,
     )
@@ -1781,6 +1826,7 @@ def build_collaborative_evidence(
     prototype_calibration_policy: str = "none",
     prototype_calibration_alpha: float = 0.0,
     prototype_calibration_top_m: int = 2,
+    source_old_prototype_shrinkage_alpha: float = 0.0,
     feature_adapter_policy: str = "none",
     feature_adapter_strength: float = 0.0,
     feature_adapter_variance_floor: float = 1e-4,
@@ -1888,6 +1934,7 @@ def build_collaborative_evidence(
         raise ValueError("prototype_calibration_policy must be none, teen_blend, or teen_separate")
     proto_cal_alpha = float(np.clip(float(prototype_calibration_alpha), 0.0, 1.0))
     proto_cal_top_m = max(1, int(prototype_calibration_top_m))
+    source_old_shrinkage_alpha = float(np.clip(float(source_old_prototype_shrinkage_alpha), 0.0, 1.0))
     adapter_policy = str(feature_adapter_policy or "none").strip().lower()
     if adapter_policy not in {"none", "support_center", "support_bn_affine"}:
         raise ValueError("feature_adapter_policy must be none, support_center, or support_bn_affine")
@@ -1979,6 +2026,17 @@ def build_collaborative_evidence(
             features[np.asarray(support_indices, dtype=int)],
             feature_adapter,
         )
+        source_old_indices = [
+            int(i)
+            for i in np.where(roles == "source")[0].tolist()
+            if str(tx_ids[int(i)]) in set(old_labels)
+        ]
+        source_old_features_for_memory = (
+            _apply_feature_adapter(features[np.asarray(source_old_indices, dtype=int)], feature_adapter)
+            if source_old_indices
+            else None
+        )
+        source_old_labels_for_memory = [str(tx_ids[int(i)]) for i in source_old_indices] if source_old_indices else None
         memory = build_qknn_memory(
             support_features_for_memory,
             support_labels,
@@ -2001,6 +2059,9 @@ def build_collaborative_evidence(
             prototype_calibration_policy=proto_cal_policy,
             prototype_calibration_alpha=proto_cal_alpha,
             prototype_calibration_top_m=proto_cal_top_m,
+            source_old_features=source_old_features_for_memory,
+            source_old_labels=source_old_labels_for_memory,
+            source_old_prototype_shrinkage_alpha=source_old_shrinkage_alpha,
         )
         virtual_sample_count = 0
         if bool(virtual_unknown_calibration_enabled):
@@ -2678,6 +2739,10 @@ def build_collaborative_evidence(
                             "prototype_calibration_policy": proto_cal_policy,
                             "prototype_calibration_alpha": proto_cal_alpha,
                             "prototype_calibration_top_m": proto_cal_top_m,
+                            "source_old_prototype_shrinkage_alpha": source_old_shrinkage_alpha,
+                            "source_old_prototype_shrinkage_applied": int(
+                                str(pred[0]) in memory.source_old_prototype_shrinkage_applied
+                            ),
                             "prototype_only_top1": int(prototype_blend > 0.0 and int(support_neighbor_counts[0]) == 0),
                             "mahalanobis_score_blend": mahalanobis_blend,
                             "mahalanobis_score_temperature": mahalanobis_score_temp,
@@ -2786,6 +2851,11 @@ def build_collaborative_evidence(
         "prototype_calibration_policy": proto_cal_policy,
         "prototype_calibration_alpha": proto_cal_alpha,
         "prototype_calibration_top_m": proto_cal_top_m,
+        "source_old_prototype_shrinkage_alpha": source_old_shrinkage_alpha,
+        "source_old_prototype_shrinkage_applied": {
+            str(rx): memory.source_old_prototype_shrinkage_applied
+            for rx, memory in receiver_memories.items()
+        },
         "mahalanobis_score_blend": mahalanobis_blend,
         "mahalanobis_score_temperature": mahalanobis_score_temp,
         "mahalanobis_score_assisted_qknn": mahalanobis_blend > 0.0,
@@ -2912,6 +2982,7 @@ def run_evaluation(args: argparse.Namespace) -> dict[str, Any]:
         prototype_calibration_policy=str(args.prototype_calibration_policy),
         prototype_calibration_alpha=float(args.prototype_calibration_alpha),
         prototype_calibration_top_m=int(args.prototype_calibration_top_m),
+        source_old_prototype_shrinkage_alpha=float(args.source_old_prototype_shrinkage_alpha),
         feature_adapter_policy=str(args.feature_adapter_policy),
         feature_adapter_strength=float(args.feature_adapter_strength),
         feature_adapter_variance_floor=float(args.feature_adapter_variance_floor),
@@ -3135,6 +3206,12 @@ def parse_args() -> argparse.Namespace:
     )
     p.add_argument("--prototype_calibration_alpha", type=float, default=0.0)
     p.add_argument("--prototype_calibration_top_m", type=int, default=2)
+    p.add_argument(
+        "--source_old_prototype_shrinkage_alpha",
+        type=float,
+        default=0.0,
+        help="Blend old-class target support centroids with source-old centroids: c=(1-alpha)c_target+alpha c_source.",
+    )
     p.add_argument(
         "--feature_adapter_policy",
         default="none",

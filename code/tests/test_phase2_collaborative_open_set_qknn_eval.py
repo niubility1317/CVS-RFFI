@@ -318,6 +318,35 @@ class Phase2CollaborativeOpenSetQknnEvalTest(unittest.TestCase):
 
         self.assertEqual(support, [1])
 
+    def test_source_old_prototype_shrinkage_blends_old_centroid_only(self):
+        from phase2_collaborative_open_set_qknn_eval import build_qknn_memory
+
+        memory = build_qknn_memory(
+            np.asarray(
+                [
+                    [0.0, 1.0, 0.0],
+                    [0.0, 0.0, 1.0],
+                ],
+                dtype=np.float32,
+            ),
+            ["old-a", "new-a"],
+            old_labels={"old-a"},
+            source_old_features=np.asarray([[1.0, 0.0, 0.0]], dtype=np.float32),
+            source_old_labels=["old-a"],
+            source_old_prototype_shrinkage_alpha=0.50,
+        )
+
+        label_to_pos = {str(label): i for i, label in enumerate(memory.centroid_labels.tolist())}
+        expected_old = np.asarray([1.0, 1.0, 0.0], dtype=np.float32)
+        expected_old = expected_old / np.linalg.norm(expected_old)
+        np.testing.assert_allclose(memory.centroids[label_to_pos["old-a"]], expected_old, atol=1e-6)
+        np.testing.assert_allclose(
+            memory.centroids[label_to_pos["new-a"]],
+            np.asarray([0.0, 0.0, 1.0], dtype=np.float32),
+            atol=1e-6,
+        )
+        self.assertEqual(memory.source_old_prototype_shrinkage_applied, {"old-a": 0.5})
+
     def test_mahalanobis_gate_records_class_conditional_risk(self):
         from phase2_collaborative_open_set_qknn_eval import load_feature_npz, build_collaborative_evidence
 
