@@ -149,7 +149,7 @@ Git镜像提交：
 
 - 仓库：`E:\type10-7\github_publish\CVS-RFFI-repo`
 - 分支：`codex/cvs-rffi-release-20260626`
-- 提交：`bb35b1e Add OVC-CI open verifier evaluation`
+- 提交状态：已提交；以仓库`git log --oneline`为准，避免报告自引用导致amend后hash漂移。
 
 ## 下一步建议
 
