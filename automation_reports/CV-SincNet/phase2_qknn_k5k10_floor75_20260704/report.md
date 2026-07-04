@@ -505,3 +505,5 @@ artifact SHA256：
 | expected outputs | `/home/szu2070436088/2510044040/CV-SincNet/runs/phase2_adv3b02_manynew10_proxy_hardpair_20260705/PHASE2_MANYNEW10_RX7_14/<variant>/` |
 
 提交后短监控：GPU 0/1各有约`1481 MiB`显存占用并运行对应训练进程；GPU 2-7空闲。短SSH命令结束后，本地无残留`ssh.exe`，无到`172.31.111.215:22`的ESTABLISHED连接。
+
+2026-07-05 03:01 CST启动健康检查：两个变体均已进入训练日志并运行到epoch 25；日志中出现`proxy_unknown_hard_pair`和`proxy_unknown_hard_old`字段，说明hard-pair标签解析和loss路径已实际生效。GPU 0/1仍分别运行SAFE/STRONG训练，GPU 2-7空闲。本次短监控后本地再次确认无残留`ssh.exe`，无到N607:22的ESTABLISHED连接。
