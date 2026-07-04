@@ -675,3 +675,45 @@ artifact SHA256：
 | `strict_n10_k5_ridgehead_seed421037_focus.json` | `C9C60892A422DC36B2827791B57996D05329AD159D31332AE16B00CF87E22F3A` |
 
 结论：新增三个压缩qKNN头均合规且部署侧不保存原始support，但仍无法把十新类最低类抬到75%。pair_gaussian是本轮最有效的后处理：K=5最低类从69.33%升至70.67%，K=10新类均值从83.43%升至84.00%，但`10-10/2-13`硬对仍卡在72.86%。下一步不应继续扩大后处理网格；在严格K-shot且`pool_per_class=K`时，support selection本身没有候选空间，必须转向表征侧或训练侧生成更可分的星地特征，再用同一K=5/K=10压缩qKNN头复核。
+
+### 2026-07-05 Mahalanobis与dual-view压缩qKNN继续优化
+
+本轮在不扩大K数量、不使用query标签拟合的约束下，继续加入两个压缩路线：
+
+- `mahal_proto`：由K-shot support估计收缩协方差逆矩阵，使用Mahalanobis prototype分数作为qKNN残差；部署侧保存类原型和协方差逆矩阵，不保存原始support。
+- `dual-view qKNN`：对同一support在`MANYNEW10_CONFLICT_NORM`和`MANYNEW10_CONFLICT_HEAD`两个已导出表征视图中分别建压缩qKNN分数，再按权重融合；部署侧保存两个视图的压缩原型/变换参数，不保存support原样本。
+
+本地验证：`conda run -n ssr-gpu python -m py_compile code\scripts\phase2_support_metric_qknn_probe.py`通过。
+
+新增结果：
+
+| 路线 | K | 配置 | old_acc | min_old | new_acc | min_new | 关键逐类 |
+|---|---:|---|---:|---:|---:|---:|---|
+| Mahalanobis residual | 10 | `weight=0.05,alpha=0.1,diag_mix=0` | 84.05% | 68.57% | 84.14% | 72.86% | `10-10`72.86%,`2-13`72.86% |
+| Mahalanobis residual | 5 | `weight=0.05,alpha=1,diag_mix=0` | 82.22% | 62.67% | 79.60% | 70.67% | `2-13`70.67%,`11-10`72.00% |
+| dual-view grid | 10 | `NORM primary + HEAD aux; aux_w=0` | 83.57% | 67.14% | 84.00% | 72.86% | `10-10`72.86%,`2-13`72.86% |
+| dual-view grid | 5 | `NORM primary + HEAD aux_w=0.8,topm=4,proto_mix=0.4` | 82.44% | 62.67% | 81.20% | 74.67% | `10-10`74.67%,`2-13`74.67% |
+
+dual-view K=5是当前最接近目标的qKNN头：逐新类为`10-10`74.67%,`11-10`76.00%,`18-5`84.00%,`19-3`82.67%,`2-13`74.67%,`2-5`80.00%,`3-8`86.67%,`4-10`88.00%,`8-18`81.33%,`8-3`84.00%。它距离75%最低类只差每个瓶颈类1个正确query样本，但仍不能报告达标。
+
+120个support seed复核：
+
+| 路线 | K | 固定配置 | best seed | old_acc | min_old | new_acc | min_new | 结论 |
+|---|---:|---|---:|---:|---:|---:|---:|---|
+| dual-view | 10 | `aux_w in {0,0.2,0.4,0.6,0.8}` | 421029 | 83.57% | 67.14% | 84.00% | 72.86% | 未过75% |
+| dual-view | 5 | `aux_w in {0.6,0.7,0.8,0.9}` | 421037 | 82.44% | 62.67% | 81.20% | 74.67% | 未过75%，差1个query |
+
+已有10个本地表征重扫显示，当前最强候选仍来自conflict-protected表征族：K=10最佳是`MANYNEW10_CONFLICT_NORM`，K=5最佳是`MANYNEW10_CONFLICT_HEAD/NORM dual-view`。`SUPCON/SEP/IDENTITY/proxy_hardpair`表征在最低新类上均未超过上述结果。
+
+artifact SHA256：
+
+| file | SHA256 |
+|---|---|
+| `strict_n10_k10_mahalproto_seed421029_focus.json` | `A7A1231439ACFD3B9488E72FC616EDE65E3C13F50C63AB86E3115CB13323238B` |
+| `strict_n10_k5_mahalproto_seed421037_focus.json` | `B378736156CA96CB5326CEF7F49BC7358041C74324CE3103F611477BF1FF53BC` |
+| `norm_head_k10_dualview_grid.json` | `38941BE38B8798C34C7E2FBF6CEAEB1896C600C21C1DD7FFB1B7A2FC710ED57D` |
+| `norm_head_k5_dualview_grid.json` | `2CA8C7F60DE7D3298709F51BA21C805C89EF9980E97E58FFD03A261648C9C97E` |
+| `norm_head_k10_dualview_seed120.json` | `98E74996951D2EDD81942F50D280AA4106FB6AD6B8463286188919C4DB8BCBA3` |
+| `norm_head_k5_dualview_seed120.json` | `B61DEAD5382497BCC16C982D91E5EE245C47224BD336C2834AD44CA1019C248C` |
+
+结论：qKNN压缩头侧已经把K=5最低类推进到74.67%，但K=10仍为72.86%。这说明当前主要瓶颈不是support存储形式，而是`10-10/2-13`在现有星地表征空间中的类间可分性不足。下一步应围绕`CONFLICT_NORM/CONFLICT_HEAD`的双视图思路做训练侧表征改造，而不是继续扩大K或继续加纯后处理网格。

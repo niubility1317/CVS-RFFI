@@ -430,9 +430,57 @@ def _ridge_head_scores(
     return logits, int(weights.size)
 
 
+def _mahalanobis_proto_scores(
+    *,
+    features: np.ndarray,
+    support_indices: np.ndarray,
+    support_labels: np.ndarray,
+    query_indices: np.ndarray,
+    class_labels: list[str],
+    alpha: float,
+    diag_mix: float,
+    clip: float,
+) -> tuple[np.ndarray, int]:
+    support = qknn._normalize_rows(features[support_indices])
+    query = qknn._normalize_rows(features[query_indices])
+    labels = np.asarray(support_labels, dtype=object).astype(str)
+    prototypes: list[np.ndarray] = []
+    residuals: list[np.ndarray] = []
+    for label in class_labels:
+        cls = support[labels == label]
+        if cls.size == 0:
+            prototypes.append(np.zeros(support.shape[1], dtype=np.float64))
+            continue
+        proto = cls.mean(axis=0)
+        prototypes.append(proto)
+        residuals.append(cls - proto[None, :])
+    proto = qknn._normalize_rows(np.stack(prototypes, axis=0))
+    if residuals:
+        centered = np.concatenate(residuals, axis=0)
+    else:
+        centered = support - support.mean(axis=0, keepdims=True)
+    cov = (centered.T @ centered) / max(1, centered.shape[0] - 1)
+    diag_cov = np.diag(np.diag(cov))
+    mixed_cov = (1.0 - float(diag_mix)) * cov + float(diag_mix) * diag_cov
+    trace_scale = float(np.trace(mixed_cov) / max(1, mixed_cov.shape[0]))
+    reg = float(alpha) * max(trace_scale, 1e-6)
+    inv_cov = np.linalg.pinv(mixed_cov + reg * np.eye(mixed_cov.shape[0], dtype=np.float64))
+    columns: list[np.ndarray] = []
+    for class_index in range(len(class_labels)):
+        diff = query - proto[class_index][None, :]
+        dist = np.sum((diff @ inv_cov) * diff, axis=1)
+        columns.append(-dist)
+    logits = np.stack(columns, axis=1)
+    logits = logits - np.mean(logits, axis=1, keepdims=True)
+    logits = logits / (np.std(logits, axis=1, keepdims=True) + 1e-6)
+    logits = np.clip(logits, -float(clip), float(clip))
+    return logits, int(inv_cov.size)
+
+
 def _evaluate_metric_qknn(
     *,
     features: np.ndarray,
+    aux_features: np.ndarray | None,
     tx_ids: np.ndarray,
     scenarios: np.ndarray,
     old_splits: dict[str, Split],
@@ -443,6 +491,7 @@ def _evaluate_metric_qknn(
     transform_strength: float,
     topm: int,
     proto_mix: float,
+    aux_score_weight: float,
     radius_norm: float,
     old_bias: float,
     neg_lambda: float,
@@ -469,6 +518,10 @@ def _evaluate_metric_qknn(
     ridge_head_weight: float,
     ridge_head_alpha: float,
     ridge_head_clip: float,
+    mahal_proto_weight: float,
+    mahal_proto_alpha: float,
+    mahal_proto_diag_mix: float,
+    mahal_proto_clip: float,
     old_target: float,
     old_floor: float,
     new_target: float,
@@ -535,6 +588,57 @@ def _evaluate_metric_qknn(
             mutual_only=bool(mutual_only),
             scenario_aware=bool(scenario_aware),
         )
+    if aux_features is not None and float(aux_score_weight) > 0.0:
+        aux_transform = metric._fit_transform(
+            aux_features[support_indices],
+            support_labels,
+            str(transform_mode),
+            float(transform_strength),
+        )
+        aux_adapted = metric._apply_transform(aux_features, aux_transform)
+        if float(proto_repel_lambda) > 0.0 and int(proto_repel_steps) > 0:
+            aux_scores, _aux_radii, _aux_proto_sim = _repelled_class_scores(
+                features=aux_adapted,
+                support_indices=support_indices,
+                support_labels=support_labels,
+                query_indices=query_indices,
+                scenarios=scenarios,
+                class_labels=old_labels + new_labels,
+                old_labels=set(old_labels),
+                topm=int(topm),
+                proto_mix=float(proto_mix),
+                radius_norm=float(radius_norm),
+                old_bias=float(old_bias),
+                neg_lambda=float(neg_lambda),
+                neg_threshold=float(neg_threshold),
+                neg_margin=float(neg_margin),
+                mutual_only=bool(mutual_only),
+                scenario_aware=bool(scenario_aware),
+                proto_repel_lambda=float(proto_repel_lambda),
+                proto_repel_margin=float(proto_repel_margin),
+                proto_repel_steps=int(proto_repel_steps),
+                proto_repel_anchor=float(proto_repel_anchor),
+            )
+        else:
+            aux_scores, _aux_radii, _aux_proto_sim = base._class_scores(
+                features=aux_adapted,
+                support_indices=support_indices,
+                support_labels=support_labels,
+                query_indices=query_indices,
+                scenarios=scenarios,
+                class_labels=old_labels + new_labels,
+                old_labels=set(old_labels),
+                topm=int(topm),
+                proto_mix=float(proto_mix),
+                radius_norm=float(radius_norm),
+                old_bias=float(old_bias),
+                neg_lambda=float(neg_lambda),
+                neg_threshold=float(neg_threshold),
+                neg_margin=float(neg_margin),
+                mutual_only=bool(mutual_only),
+                scenario_aware=bool(scenario_aware),
+            )
+        scores = (1.0 - float(aux_score_weight)) * scores + float(aux_score_weight) * aux_scores
     scores, pair_axis_count = _pair_axis_adjust_scores(
         scores,
         features=adapted,
@@ -586,6 +690,19 @@ def _evaluate_metric_qknn(
             clip=float(ridge_head_clip),
         )
         scores = scores + float(ridge_head_weight) * ridge_scores
+    stored_mahal_proto_scalars = 0
+    if float(mahal_proto_weight) > 0.0:
+        mahal_scores, stored_mahal_proto_scalars = _mahalanobis_proto_scores(
+            features=adapted,
+            support_indices=support_indices,
+            support_labels=support_labels,
+            query_indices=query_indices,
+            class_labels=old_labels + new_labels,
+            alpha=float(mahal_proto_alpha),
+            diag_mix=float(mahal_proto_diag_mix),
+            clip=float(mahal_proto_clip),
+        )
+        scores = scores + float(mahal_proto_weight) * mahal_scores
     if scenario_balanced_assignment:
         pred = base._scenario_balanced_predict(
             scores,
@@ -622,6 +739,7 @@ def _evaluate_metric_qknn(
         "transform_strength": float(transform_strength),
         "topm": int(topm),
         "proto_mix": float(proto_mix),
+        "aux_score_weight": float(aux_score_weight),
         "radius_norm": float(radius_norm),
         "old_bias": float(old_bias),
         "neg_lambda": float(neg_lambda),
@@ -653,10 +771,16 @@ def _evaluate_metric_qknn(
         "ridge_head_alpha": float(ridge_head_alpha),
         "ridge_head_clip": float(ridge_head_clip),
         "stored_ridge_head_scalars": int(stored_ridge_head_scalars),
+        "mahal_proto_weight": float(mahal_proto_weight),
+        "mahal_proto_alpha": float(mahal_proto_alpha),
+        "mahal_proto_diag_mix": float(mahal_proto_diag_mix),
+        "mahal_proto_clip": float(mahal_proto_clip),
+        "stored_mahal_proto_scalars": int(stored_mahal_proto_scalars),
         "stored_quantized_support_code_count": int(support_indices.size),
         "stored_raw_support_count": 0,
         "stored_class_prototype_count": int(len(old_labels) + len(new_labels)),
         "stored_transform_scalars": int(2 * features.shape[1]),
+        "stored_aux_transform_scalars": int(2 * aux_features.shape[1]) if aux_features is not None and float(aux_score_weight) > 0.0 else 0,
         "transform_scale_min": float(np.min(transform["scale"])),
         "transform_scale_max": float(np.max(transform["scale"])),
         "transform_scale_mean": float(np.mean(transform["scale"])),
@@ -671,6 +795,7 @@ def _evaluate_metric_qknn(
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--feature_npz", required=True)
+    parser.add_argument("--aux_feature_npz", default="")
     parser.add_argument("--output_json", required=True)
     parser.add_argument("--output_csv", required=True)
     parser.add_argument("--old_tx_ids", default="14-10,14-7,20-15,20-19,6-15,8-20")
@@ -690,6 +815,7 @@ def main() -> None:
     parser.add_argument("--transform_strengths", default="0,0.1,0.25,0.5,0.75,1.0")
     parser.add_argument("--topm_grid", default="4")
     parser.add_argument("--proto_mix_grid", default="0.25")
+    parser.add_argument("--aux_score_weight_grid", default="0")
     parser.add_argument("--radius_norm_grid", default="0")
     parser.add_argument("--old_bias_grid", default="0.001")
     parser.add_argument("--neg_lambda_grid", default="0.7")
@@ -713,6 +839,10 @@ def main() -> None:
     parser.add_argument("--ridge_head_weight_grid", default="0")
     parser.add_argument("--ridge_head_alpha_grid", default="1.0")
     parser.add_argument("--ridge_head_clip_grid", default="3.0")
+    parser.add_argument("--mahal_proto_weight_grid", default="0")
+    parser.add_argument("--mahal_proto_alpha_grid", default="1.0")
+    parser.add_argument("--mahal_proto_diag_mix_grid", default="0.5")
+    parser.add_argument("--mahal_proto_clip_grid", default="3.0")
     parser.add_argument("--scenario_aware", action="store_true")
     parser.add_argument("--balanced_assignment", action="store_true")
     parser.add_argument("--scenario_balanced_assignment", action="store_true")
@@ -729,6 +859,14 @@ def main() -> None:
     roles = np.asarray(data["dataset_role"], dtype=object).astype(str)
     logits = np.asarray(data["tx_logits"], dtype=np.float64)
     scenarios = np.asarray(data["sat_scenarios"], dtype=object).astype(str)
+    aux_features = None
+    if str(args.aux_feature_npz).strip():
+        aux_data = np.load(Path(args.aux_feature_npz), allow_pickle=True)
+        aux_features = qknn._normalize_rows(aux_data["features"])
+        for key, primary in (("tx_ids", tx_ids), ("dataset_role", roles), ("sat_scenarios", scenarios)):
+            aux_values = np.asarray(aux_data[key], dtype=object).astype(str)
+            if aux_values.shape != primary.shape or not bool(np.all(aux_values == primary)):
+                raise ValueError(f"aux_feature_npz metadata mismatch for {key}: {args.aux_feature_npz}")
     old_labels = qknn._parse_csv(args.old_tx_ids)
     new_labels = qknn._parse_csv(args.new_tx_ids)
     source_probs = active._softmax(logits)
@@ -745,6 +883,7 @@ def main() -> None:
             qknn._parse_float_csv(args.transform_strengths),
             qknn._parse_int_csv(args.topm_grid),
             qknn._parse_float_csv(args.proto_mix_grid),
+            qknn._parse_float_csv(args.aux_score_weight_grid),
             qknn._parse_float_csv(args.radius_norm_grid),
             qknn._parse_float_csv(args.old_bias_grid),
             qknn._parse_float_csv(args.neg_lambda_grid),
@@ -768,6 +907,10 @@ def main() -> None:
             qknn._parse_float_csv(args.ridge_head_weight_grid),
             qknn._parse_float_csv(args.ridge_head_alpha_grid),
             qknn._parse_float_csv(args.ridge_head_clip_grid),
+            qknn._parse_float_csv(args.mahal_proto_weight_grid),
+            qknn._parse_float_csv(args.mahal_proto_alpha_grid),
+            qknn._parse_float_csv(args.mahal_proto_diag_mix_grid),
+            qknn._parse_float_csv(args.mahal_proto_clip_grid),
         )
     )
 
@@ -811,6 +954,7 @@ def main() -> None:
                 strength,
                 topm,
                 proto_mix,
+                aux_score_weight,
                 radius_norm,
                 old_bias,
                 neg_lambda,
@@ -834,9 +978,14 @@ def main() -> None:
                 ridge_head_weight,
                 ridge_head_alpha,
                 ridge_head_clip,
+                mahal_proto_weight,
+                mahal_proto_alpha,
+                mahal_proto_diag_mix,
+                mahal_proto_clip,
             ) in search_grid:
                 row = _evaluate_metric_qknn(
                     features=features,
+                    aux_features=aux_features,
                     tx_ids=tx_ids,
                     scenarios=scenarios,
                     old_splits=old_splits,
@@ -847,6 +996,7 @@ def main() -> None:
                     transform_strength=float(strength),
                     topm=int(topm),
                     proto_mix=float(proto_mix),
+                    aux_score_weight=float(aux_score_weight),
                     radius_norm=float(radius_norm),
                     old_bias=float(old_bias),
                     neg_lambda=float(neg_lambda),
@@ -873,6 +1023,10 @@ def main() -> None:
                     ridge_head_weight=float(ridge_head_weight),
                     ridge_head_alpha=float(ridge_head_alpha),
                     ridge_head_clip=float(ridge_head_clip),
+                    mahal_proto_weight=float(mahal_proto_weight),
+                    mahal_proto_alpha=float(mahal_proto_alpha),
+                    mahal_proto_diag_mix=float(mahal_proto_diag_mix),
+                    mahal_proto_clip=float(mahal_proto_clip),
                     old_target=float(args.old_target),
                     old_floor=float(args.old_floor),
                     new_target=float(args.seen_new_target),
@@ -899,6 +1053,7 @@ def main() -> None:
     summary = {
         "diagnostic_scope": "SUPPORT_ONLY_METRIC_QKNN_COMPRESSED_NO_RAW_SUPPORT",
         "feature_npz": str(args.feature_npz),
+        "aux_feature_npz": str(args.aux_feature_npz),
         "old_tx_ids": old_labels,
         "new_tx_ids": new_labels,
         "rows_count": len(rows),
@@ -915,6 +1070,7 @@ def main() -> None:
         "transform_strength",
         "topm",
         "proto_mix",
+        "aux_score_weight",
         "radius_norm",
         "old_bias",
         "neg_lambda",
@@ -946,6 +1102,11 @@ def main() -> None:
         "ridge_head_alpha",
         "ridge_head_clip",
         "stored_ridge_head_scalars",
+        "mahal_proto_weight",
+        "mahal_proto_alpha",
+        "mahal_proto_diag_mix",
+        "mahal_proto_clip",
+        "stored_mahal_proto_scalars",
         "query_old_acc",
         "query_min_old_class_acc",
         "query_seen_new_acc",
@@ -958,6 +1119,7 @@ def main() -> None:
         "stored_raw_support_count",
         "stored_class_prototype_count",
         "stored_transform_scalars",
+        "stored_aux_transform_scalars",
         "transform_scale_min",
         "transform_scale_max",
         "transform_scale_mean",
