@@ -90,6 +90,12 @@ class SmecConfig:
     obace_event_min_mean_risk: float = 0.60
     obace_event_old_min_local_failures: int = 0
     obace_event_nonold_min_local_failures: int = 0
+    obace_void_override_min_event_risk: float = 1.01
+    obace_void_override_min_votes: int = 0
+    obace_void_override_min_receiver_count: int = 0
+    obace_void_override_min_label_count: int = 0
+    obace_void_override_max_label_agreement: float = 0.0
+    obace_void_override_floor: float = 0.0
 
 
 @dataclass(frozen=True)
@@ -396,6 +402,7 @@ def augment_smec_evidence(
         event_stats[event_id] = {
             "receiver_count": float(n),
             "label_agreement": max(counts.values()) / float(n) if counts else 0.0,
+            "label_count": float(len(counts)),
         }
     risk_cache: dict[
         tuple[str, str],
@@ -510,9 +517,10 @@ def augment_smec_evidence(
             "old_boundary_guard",
             "obace_guard",
             "obace_event_guard",
+            "obace_void_guard",
         }:
             raise ValueError(
-                "old_label_aux_policy must be strong_cap, never, consensus_guard, old_boundary_guard, obace_guard, or obace_event_guard"
+                "old_label_aux_policy must be strong_cap, never, consensus_guard, old_boundary_guard, obace_guard, obace_event_guard, or obace_void_guard"
             )
         if old_policy == "never" and label in old_labels:
             aux_component = min(aux_component, base_risk)
@@ -560,7 +568,19 @@ def augment_smec_evidence(
             if not allow_nonold_lift:
                 aux_component = min(aux_component, base_risk)
                 old_label_lift_blocked = 1
-        if old_policy == "obace_event_guard":
+        void_override_pass = (
+            old_policy == "obace_void_guard"
+            and obace_event_pass
+            and obace_event_risk >= float(config.obace_void_override_min_event_risk)
+            and float(obace_event.get("vote_count", 0.0)) >= float(config.obace_void_override_min_votes)
+            and float(obace_event.get("receiver_count", 0.0))
+            >= float(config.obace_void_override_min_receiver_count)
+            and float(event_stats.get(event_id, {}).get("label_count", 0.0))
+            >= float(config.obace_void_override_min_label_count)
+            and float(event_stats.get(event_id, {}).get("label_agreement", 1.0))
+            <= float(config.obace_void_override_max_label_agreement)
+        )
+        if old_policy in {"obace_event_guard", "obace_void_guard"}:
             local_min_failures = (
                 int(config.obace_event_old_min_local_failures)
                 if label in old_labels
@@ -568,14 +588,21 @@ def augment_smec_evidence(
             )
             allow_event_lift = (
                 obace_event_pass
-                and int(obace_absolute_fail_count) >= local_min_failures
-                and weakness >= float(config.old_lift_min_weakness)
-                and not strong_known
+                and (
+                    (
+                        int(obace_absolute_fail_count) >= local_min_failures
+                        and weakness >= float(config.old_lift_min_weakness)
+                        and not strong_known
+                    )
+                    or void_override_pass
+                )
             )
             if not allow_event_lift:
                 aux_component = min(aux_component, base_risk)
                 old_label_lift_blocked = 1
-        if strong_known and label in old_labels:
+            if void_override_pass:
+                aux_component = max(aux_component, float(config.obace_void_override_floor))
+        if strong_known and label in old_labels and not void_override_pass:
             aux_component = min(aux_component, float(config.strong_aux_cap))
         fused = max(base_risk, aux_component)
         row["unknown_risk"] = fused
@@ -592,6 +619,7 @@ def augment_smec_evidence(
         row["smec_obace_event_mean_risk"] = float(obace_event.get("mean_risk", 0.0))
         row["smec_obace_event_vote_count"] = float(obace_event.get("vote_count", 0.0))
         row["smec_obace_event_fail_vote_count"] = float(obace_event.get("fail_vote_count", 0.0))
+        row["smec_obace_void_override_pass"] = int(void_override_pass)
         row["smec_old_boundary_margin"] = old_boundary_margin
         row["smec_old_boundary_threshold"] = old_boundary_threshold
         row["smec_aux_raw"] = aux_raw
@@ -603,6 +631,7 @@ def augment_smec_evidence(
         row["smec_old_label_aux_policy"] = old_policy
         row["smec_old_label_lift_blocked"] = old_label_lift_blocked
         row["smec_event_label_agreement"] = float(event_stats.get(event_id, {}).get("label_agreement", 0.0))
+        row["smec_event_label_count"] = float(event_stats.get(event_id, {}).get("label_count", 0.0))
         row["smec_event_receiver_count"] = float(event_stats.get(event_id, {}).get("receiver_count", 0.0))
         row["smec_missing_feature"] = 0
         row["smec_unknown_query_used_for_threshold"] = "false"
@@ -906,9 +935,36 @@ def _main(argv: Sequence[str] | None = None) -> int:
                 obace_event_old_min_local_failures=2,
                 obace_event_nonold_min_local_failures=2,
             )
+        elif profile == "obace_void":
+            profile_configs["obace_void"] = SmecConfig(
+                old_label_aux_policy="obace_void_guard",
+                old_lift_min_weakness=0.50,
+                proto_weight=0.55,
+                knn_weight=0.45,
+                energy_weight=0.08,
+                old_boundary_weight=0.20,
+                old_boundary_min_risk=0.98,
+                obace_conformal_weight=0.55,
+                obace_conformal_min_risk=0.85,
+                obace_absolute_risk_gate=0.70,
+                obace_old_min_abs_failures=3,
+                obace_nonold_min_abs_failures=3,
+                obace_event_weight=0.60,
+                obace_event_vote_min_risk=0.55,
+                obace_event_min_votes=4,
+                obace_event_min_mean_risk=0.75,
+                obace_event_old_min_local_failures=2,
+                obace_event_nonold_min_local_failures=2,
+                obace_void_override_min_event_risk=0.95,
+                obace_void_override_min_votes=4,
+                obace_void_override_min_receiver_count=4,
+                obace_void_override_min_label_count=2,
+                obace_void_override_max_label_agreement=0.80,
+                obace_void_override_floor=0.90,
+            )
         else:
             raise ValueError(
-                "unknown SMEC profile; expected standard, old_lossless, consensus_guard, old_boundary_guard, obace, or obace_event"
+                "unknown SMEC profile; expected standard, old_lossless, consensus_guard, old_boundary_guard, obace, obace_event, or obace_void"
             )
     build_config = next(iter(profile_configs.values()))
     payload = load_feature_npz(args.feature_npz)
@@ -949,6 +1005,8 @@ def _main(argv: Sequence[str] | None = None) -> int:
             algorithm = "obace_ci"
         if profile == "obace_event":
             algorithm = "obace_event_ci"
+        if profile == "obace_void":
+            algorithm = "obace_void_ci"
         smec_rows = augment_smec_evidence(
             base_rows,
             models,

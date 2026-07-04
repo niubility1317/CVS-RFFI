@@ -299,6 +299,86 @@ def test_smec_obace_event_guard_blocks_strong_old_despite_event_evidence():
     assert all(row["unknown_risk"] == 0.05 for row in out)
 
 
+def test_smec_obace_void_guard_overrides_strong_old_only_for_extreme_disagreement():
+    cfg = _config(
+        old_label_aux_policy="obace_void_guard",
+        proto_weight=0.0,
+        knn_weight=0.0,
+        old_boundary_weight=0.0,
+        obace_conformal_weight=1.0,
+        obace_conformal_min_risk=0.50,
+        obace_event_weight=1.0,
+        obace_event_vote_min_risk=0.50,
+        obace_event_min_votes=2,
+        obace_event_min_mean_risk=0.50,
+        obace_void_override_min_event_risk=0.50,
+        obace_void_override_min_votes=2,
+        obace_void_override_min_receiver_count=2,
+        obace_void_override_min_label_count=2,
+        obace_void_override_max_label_agreement=0.67,
+        obace_void_override_floor=0.90,
+    )
+    rows = [
+        _row("e0", score=0.95, margin=0.30, risk=0.05, label="old-a"),
+        {**_row("e0", score=0.95, margin=0.30, risk=0.05, label="new-a"), "receiver_id": "rx-b"},
+        {**_row("e0", score=0.95, margin=0.30, risk=0.05, label="new-a"), "receiver_id": "rx-c"},
+    ]
+    models = {rx: _two_class_support_model(cfg) for rx in ["rx-a", "rx-b", "rx-c"]}
+    query_features = {
+        ("e0", "rx-a"): np.asarray([0.70, 0.70], dtype=np.float32),
+        ("e0", "rx-b"): np.asarray([0.70, 0.70], dtype=np.float32),
+        ("e0", "rx-c"): np.asarray([0.70, 0.70], dtype=np.float32),
+    }
+
+    out = augment_smec_evidence(rows, models, query_features, {}, cfg, old_labels={"old-a"})
+
+    old_row = next(row for row in out if row["receiver_id"] == "rx-a")
+    assert old_row["smec_strong_known_candidate"] == 1
+    assert old_row["smec_event_label_count"] == 2
+    assert old_row["smec_obace_void_override_pass"] == 1
+    assert old_row["smec_old_label_lift_blocked"] == 0
+    assert old_row["unknown_risk"] >= 0.90
+
+
+def test_smec_obace_void_guard_keeps_strong_old_when_event_label_agrees():
+    cfg = _config(
+        old_label_aux_policy="obace_void_guard",
+        proto_weight=0.0,
+        knn_weight=0.0,
+        old_boundary_weight=0.0,
+        obace_conformal_weight=1.0,
+        obace_conformal_min_risk=0.50,
+        obace_event_weight=1.0,
+        obace_event_vote_min_risk=0.50,
+        obace_event_min_votes=2,
+        obace_event_min_mean_risk=0.50,
+        obace_void_override_min_event_risk=0.50,
+        obace_void_override_min_votes=2,
+        obace_void_override_min_receiver_count=2,
+        obace_void_override_min_label_count=2,
+        obace_void_override_max_label_agreement=0.67,
+        obace_void_override_floor=0.90,
+    )
+    rows = [
+        _row("e0", score=0.95, margin=0.30, risk=0.05, label="old-a"),
+        {**_row("e0", score=0.95, margin=0.30, risk=0.05, label="old-a"), "receiver_id": "rx-b"},
+        {**_row("e0", score=0.95, margin=0.30, risk=0.05, label="old-a"), "receiver_id": "rx-c"},
+    ]
+    models = {rx: _two_class_support_model(cfg) for rx in ["rx-a", "rx-b", "rx-c"]}
+    query_features = {
+        ("e0", "rx-a"): np.asarray([0.70, 0.70], dtype=np.float32),
+        ("e0", "rx-b"): np.asarray([0.70, 0.70], dtype=np.float32),
+        ("e0", "rx-c"): np.asarray([0.70, 0.70], dtype=np.float32),
+    }
+
+    out = augment_smec_evidence(rows, models, query_features, {}, cfg, old_labels={"old-a"})
+
+    assert all(row["smec_strong_known_candidate"] == 1 for row in out)
+    assert all(row["smec_obace_void_override_pass"] == 0 for row in out)
+    assert all(row["smec_old_label_lift_blocked"] == 1 for row in out)
+    assert all(row["unknown_risk"] == 0.05 for row in out)
+
+
 def test_smec_old_boundary_guard_lifts_agreed_old_label_near_foreign_boundary():
     cfg = _config(
         old_label_aux_policy="old_boundary_guard",
