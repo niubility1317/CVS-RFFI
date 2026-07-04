@@ -74,6 +74,11 @@ class SmecConfig:
     old_label_aux_policy: str = "strong_cap"
     old_lift_max_label_agreement: float = 0.60
     old_lift_min_weakness: float = 0.50
+    old_boundary_weight: float = 0.50
+    old_boundary_temperature: float = 0.03
+    old_boundary_quantile: float = 0.05
+    old_boundary_slack: float = 0.00
+    old_boundary_min_risk: float = 0.95
 
 
 @dataclass(frozen=True)
@@ -88,6 +93,8 @@ class SmecReceiverModel:
     global_proto_threshold: float
     knn_threshold: float
     energy_threshold: float | None
+    old_boundary_margin_thresholds: dict[str, float]
+    global_old_boundary_margin_threshold: float
 
 
 def _float(row: Mapping[str, Any], key: str, default: float = 0.0) -> float:
@@ -177,6 +184,30 @@ def build_support_model(
             old_energy = _energy(np.asarray(support_logits, dtype=np.float32)[old_idx])
             energy_threshold = _quantile(old_energy.tolist(), config.energy_quantile) + float(config.energy_slack)
 
+    old_boundary_margin_thresholds: dict[str, float] = {}
+    all_old_boundary_margins: list[float] = []
+    if len(centroids) >= 2:
+        for label in unique_labels:
+            if label not in old_labels:
+                continue
+            other_centroids = [centroid for other, centroid in centroids.items() if other != label]
+            if not other_centroids:
+                continue
+            other_matrix = np.stack(other_centroids, axis=0)
+            idx = np.asarray([i for i, value in enumerate(labels) if value == label], dtype=int)
+            own_sim = np.clip(features[idx] @ centroids[label], -1.0, 1.0)
+            other_sim = np.max(np.clip(features[idx] @ other_matrix.T, -1.0, 1.0), axis=1)
+            margins = (own_sim - other_sim).astype(np.float64).tolist()
+            all_old_boundary_margins.extend(float(v) for v in margins)
+            old_boundary_margin_thresholds[label] = (
+                _quantile(margins, config.old_boundary_quantile) - float(config.old_boundary_slack)
+            )
+    global_old_boundary_margin_threshold = _quantile(
+        all_old_boundary_margins,
+        config.old_boundary_quantile,
+        default=0.0,
+    ) - float(config.old_boundary_slack)
+
     return SmecReceiverModel(
         receiver_id=str(receiver_id),
         labels=unique_labels,
@@ -188,6 +219,8 @@ def build_support_model(
         global_proto_threshold=float(global_proto_threshold),
         knn_threshold=float(knn_threshold),
         energy_threshold=energy_threshold,
+        old_boundary_margin_thresholds=old_boundary_margin_thresholds,
+        global_old_boundary_margin_threshold=float(global_old_boundary_margin_threshold),
     )
 
 
@@ -218,7 +251,7 @@ def _smec_risks(
     feature: np.ndarray,
     logits: np.ndarray | None,
     config: SmecConfig,
-) -> tuple[float, float, float, float, float]:
+) -> tuple[float, float, float, float, float, float, float, float]:
     feat = _normalize_rows(np.asarray(feature, dtype=np.float32).reshape(1, -1))[0]
     centroid = model.centroids.get(str(label))
     if centroid is None:
@@ -239,12 +272,40 @@ def _smec_risks(
         energy_risk = _sigmoid(
             (query_energy - float(model.energy_threshold)) / max(float(config.energy_temperature), 1e-6)
         )
+    old_boundary_margin = math.inf
+    old_boundary_threshold = float(model.global_old_boundary_margin_threshold)
+    old_boundary_risk = 0.0
+    if str(label) in model.old_labels and len(model.centroids) >= 2:
+        own_centroid = model.centroids.get(str(label))
+        other_centroids = [centroid for other, centroid in model.centroids.items() if other != str(label)]
+        if own_centroid is not None and other_centroids:
+            other_matrix = np.stack(other_centroids, axis=0)
+            own_sim = float(np.clip(float(feat @ own_centroid), -1.0, 1.0))
+            other_sim = float(np.max(np.clip(other_matrix @ feat, -1.0, 1.0)))
+            old_boundary_margin = own_sim - other_sim
+            old_boundary_threshold = float(
+                model.old_boundary_margin_thresholds.get(str(label), model.global_old_boundary_margin_threshold)
+            )
+            old_boundary_risk = _sigmoid(
+                (old_boundary_threshold - old_boundary_margin)
+                / max(float(config.old_boundary_temperature), 1e-6)
+            )
     aux = _unit(
         float(config.proto_weight) * proto_risk
         + float(config.knn_weight) * knn_risk
         + float(config.energy_weight) * energy_risk
+        + float(config.old_boundary_weight) * old_boundary_risk
     )
-    return proto_risk, knn_risk, energy_risk, aux, max(proto_dist, knn_dist)
+    return (
+        proto_risk,
+        knn_risk,
+        energy_risk,
+        old_boundary_risk,
+        aux,
+        max(proto_dist, knn_dist),
+        old_boundary_margin,
+        old_boundary_threshold,
+    )
 
 
 def augment_smec_evidence(
@@ -283,7 +344,16 @@ def augment_smec_evidence(
             row["smec_label_authority"] = "base_qknn_only"
             out.append(row)
             continue
-        proto_risk, knn_risk, energy_risk, aux_raw, distance = _smec_risks(
+        (
+            proto_risk,
+            knn_risk,
+            energy_risk,
+            old_boundary_risk,
+            aux_raw,
+            distance,
+            old_boundary_margin,
+            old_boundary_threshold,
+        ) = _smec_risks(
             model=model,
             label=label,
             feature=feature,
@@ -294,8 +364,10 @@ def augment_smec_evidence(
         aux_component = _unit(aux_raw * max(weakness, 0.20))
         old_label_lift_blocked = 0
         old_policy = str(config.old_label_aux_policy or "strong_cap").strip().lower()
-        if old_policy not in {"strong_cap", "never", "consensus_guard"}:
-            raise ValueError("old_label_aux_policy must be strong_cap, never, or consensus_guard")
+        if old_policy not in {"strong_cap", "never", "consensus_guard", "old_boundary_guard"}:
+            raise ValueError(
+                "old_label_aux_policy must be strong_cap, never, consensus_guard, or old_boundary_guard"
+            )
         if old_policy == "never" and label in old_labels:
             aux_component = min(aux_component, base_risk)
             old_label_lift_blocked = 1
@@ -310,6 +382,19 @@ def augment_smec_evidence(
             if not allow_old_lift:
                 aux_component = min(aux_component, base_risk)
                 old_label_lift_blocked = 1
+        if old_policy == "old_boundary_guard" and label in old_labels:
+            stats = event_stats.get(event_id, {})
+            label_agreement = float(stats.get("label_agreement", 1.0))
+            allow_by_disagreement = label_agreement <= float(config.old_lift_max_label_agreement)
+            allow_by_boundary = old_boundary_risk >= float(config.old_boundary_min_risk)
+            allow_old_lift = (
+                (allow_by_disagreement or allow_by_boundary)
+                and weakness >= float(config.old_lift_min_weakness)
+                and not strong_known
+            )
+            if not allow_old_lift:
+                aux_component = min(aux_component, base_risk)
+                old_label_lift_blocked = 1
         if strong_known and label in old_labels:
             aux_component = min(aux_component, float(config.strong_aux_cap))
         fused = max(base_risk, aux_component)
@@ -318,6 +403,9 @@ def augment_smec_evidence(
         row["smec_proto_risk"] = proto_risk
         row["smec_knn_risk"] = knn_risk
         row["smec_energy_risk"] = energy_risk
+        row["smec_old_boundary_risk"] = old_boundary_risk
+        row["smec_old_boundary_margin"] = old_boundary_margin
+        row["smec_old_boundary_threshold"] = old_boundary_threshold
         row["smec_aux_raw"] = aux_raw
         row["smec_aux_component"] = aux_component
         row["smec_base_unknown_risk"] = base_risk
@@ -586,8 +674,18 @@ def _main(argv: Sequence[str] | None = None) -> int:
                 old_lift_max_label_agreement=0.60,
                 old_lift_min_weakness=0.50,
             )
+        elif profile == "old_boundary_guard":
+            profile_configs["old_boundary_guard"] = SmecConfig(
+                old_label_aux_policy="old_boundary_guard",
+                old_lift_max_label_agreement=0.60,
+                old_lift_min_weakness=0.50,
+                old_boundary_weight=0.60,
+                old_boundary_min_risk=0.98,
+            )
         else:
-            raise ValueError("unknown SMEC profile; expected standard, old_lossless, or consensus_guard")
+            raise ValueError(
+                "unknown SMEC profile; expected standard, old_lossless, consensus_guard, or old_boundary_guard"
+            )
     build_config = next(iter(profile_configs.values()))
     payload = load_feature_npz(args.feature_npz)
     models, query_features, query_logits, smec_metadata = build_stage2_smec_inputs(
@@ -621,6 +719,8 @@ def _main(argv: Sequence[str] | None = None) -> int:
         algorithm = "smec_old_lossless_ci" if profile == "old_lossless" else "smec_ci"
         if profile == "consensus_guard":
             algorithm = "smec_consensus_guard_ci"
+        if profile == "old_boundary_guard":
+            algorithm = "smec_old_boundary_guard_ci"
         smec_rows = augment_smec_evidence(
             base_rows,
             models,

@@ -73,6 +73,87 @@ def _support_model(config=None):
     )
 
 
+def _two_class_support_model(config=None):
+    cfg = config or _config()
+    support_features = np.asarray(
+        [
+            [1.00, 0.00],
+            [0.98, 0.05],
+            [0.98, -0.05],
+            [0.00, 1.00],
+            [0.05, 0.98],
+            [-0.05, 0.98],
+        ],
+        dtype=np.float32,
+    )
+    return build_support_model(
+        receiver_id="rx-a",
+        support_features=support_features,
+        support_labels=["old-a", "old-a", "old-a", "new-a", "new-a", "new-a"],
+        support_logits=None,
+        old_labels={"old-a"},
+        config=cfg,
+    )
+
+
+def test_smec_builds_old_boundary_margin_from_support_only():
+    cfg = _config(old_boundary_quantile=0.05, old_boundary_slack=0.0)
+    model = _two_class_support_model(cfg)
+
+    assert "old-a" in model.old_boundary_margin_thresholds
+    assert model.old_boundary_margin_thresholds["old-a"] > 0.80
+    assert model.global_old_boundary_margin_threshold > 0.80
+
+
+def test_smec_old_boundary_guard_lifts_agreed_old_label_near_foreign_boundary():
+    cfg = _config(
+        old_label_aux_policy="old_boundary_guard",
+        old_boundary_weight=1.0,
+        old_boundary_min_risk=0.80,
+        old_lift_min_weakness=0.50,
+    )
+    rows = [
+        _row("e0", score=0.20, margin=0.01, risk=0.05, label="old-a"),
+        {**_row("e0", score=0.20, margin=0.01, risk=0.05, label="old-a"), "receiver_id": "rx-b"},
+    ]
+    models = {"rx-a": _two_class_support_model(cfg), "rx-b": _two_class_support_model(cfg)}
+    query_features = {
+        ("e0", "rx-a"): np.asarray([0.70, 0.70], dtype=np.float32),
+        ("e0", "rx-b"): np.asarray([0.70, 0.70], dtype=np.float32),
+    }
+
+    out = augment_smec_evidence(rows, models, query_features, {}, cfg, old_labels={"old-a"})
+
+    assert all(row["smec_event_label_agreement"] == 1.0 for row in out)
+    assert all(row["smec_old_boundary_risk"] >= 0.80 for row in out)
+    assert all(row["smec_old_label_lift_blocked"] == 0 for row in out)
+    assert all(row["unknown_risk"] > 0.50 for row in out)
+
+
+def test_smec_old_boundary_guard_blocks_agreed_old_label_inside_old_margin():
+    cfg = _config(
+        old_label_aux_policy="old_boundary_guard",
+        old_boundary_weight=1.0,
+        old_boundary_min_risk=0.80,
+        old_lift_min_weakness=0.50,
+    )
+    rows = [
+        _row("e0", score=0.20, margin=0.01, risk=0.05, label="old-a"),
+        {**_row("e0", score=0.20, margin=0.01, risk=0.05, label="old-a"), "receiver_id": "rx-b"},
+    ]
+    models = {"rx-a": _two_class_support_model(cfg), "rx-b": _two_class_support_model(cfg)}
+    query_features = {
+        ("e0", "rx-a"): np.asarray([1.0, 0.0], dtype=np.float32),
+        ("e0", "rx-b"): np.asarray([1.0, 0.0], dtype=np.float32),
+    }
+
+    out = augment_smec_evidence(rows, models, query_features, {}, cfg, old_labels={"old-a"})
+
+    assert all(row["smec_old_boundary_risk"] < 0.20 for row in out)
+    assert all(row["smec_old_label_lift_blocked"] == 1 for row in out)
+    assert all(row["unknown_risk"] == 0.05 for row in out)
+
+
 def test_smec_preserves_base_label_authority():
     cfg = _config()
     rows = [_row("e0", score=0.25, margin=0.01, label="old-a")]
