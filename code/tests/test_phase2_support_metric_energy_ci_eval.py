@@ -7,12 +7,21 @@ from scripts.phase2_support_metric_energy_ci_eval import (
 )
 
 
-def _row(event_id: str, *, score: float, margin: float, risk: float = 0.05, label: str = "old-a"):
+def _row(
+    event_id: str,
+    *,
+    score: float,
+    margin: float,
+    risk: float = 0.05,
+    label: str = "old-a",
+    role: str = "old",
+    true_label: str = "old-a",
+):
     return {
         "event_id": event_id,
         "receiver_id": "rx-a",
-        "role": "old",
-        "true_label": "old-a",
+        "role": role,
+        "true_label": true_label,
         "predicted_label": label,
         "class_evidence_top1_label": label,
         "known_score": str(score),
@@ -103,6 +112,104 @@ def test_smec_builds_old_boundary_margin_from_support_only():
     assert "old-a" in model.old_boundary_margin_thresholds
     assert model.old_boundary_margin_thresholds["old-a"] > 0.80
     assert model.global_old_boundary_margin_threshold > 0.80
+
+
+def test_smec_builds_obace_conformal_scores_from_support_only():
+    cfg = _config()
+    model = _two_class_support_model(cfg)
+
+    assert "old-a" in model.obace_conformal_scores
+    assert "new-a" in model.obace_conformal_scores
+    assert len(model.obace_conformal_scores["old-a"]) == 3
+    assert len(model.obace_conformal_scores["new-a"]) == 3
+
+
+def test_smec_obace_guard_lifts_high_consensus_unknown_with_absolute_failures():
+    cfg = _config(
+        old_label_aux_policy="obace_guard",
+        obace_conformal_weight=1.0,
+        obace_conformal_min_risk=0.70,
+        obace_old_min_abs_failures=2,
+        old_lift_min_weakness=0.50,
+    )
+    rows = [
+        _row("e0", score=0.20, margin=0.01, risk=0.05, label="old-a", role="unknown", true_label="unknown-a"),
+        {
+            **_row(
+                "e0",
+                score=0.20,
+                margin=0.01,
+                risk=0.05,
+                label="old-a",
+                role="unknown",
+                true_label="unknown-a",
+            ),
+            "receiver_id": "rx-b",
+        },
+    ]
+    models = {"rx-a": _two_class_support_model(cfg), "rx-b": _two_class_support_model(cfg)}
+    query_features = {
+        ("e0", "rx-a"): np.asarray([0.70, 0.70], dtype=np.float32),
+        ("e0", "rx-b"): np.asarray([0.70, 0.70], dtype=np.float32),
+    }
+
+    out = augment_smec_evidence(rows, models, query_features, {}, cfg, old_labels={"old-a"})
+
+    assert all(row["smec_event_label_agreement"] == 1.0 for row in out)
+    assert all(row["smec_obace_conformal_risk"] >= 0.70 for row in out)
+    assert all(row["smec_obace_absolute_fail_count"] >= 2 for row in out)
+    assert all(row["smec_old_label_lift_blocked"] == 0 for row in out)
+    assert all(row["unknown_risk"] > 0.50 for row in out)
+
+
+def test_smec_obace_guard_blocks_old_label_when_only_boundary_fails():
+    cfg = _config(
+        old_label_aux_policy="obace_guard",
+        proto_weight=0.0,
+        knn_weight=0.0,
+        old_boundary_weight=1.0,
+        obace_conformal_weight=0.0,
+        obace_old_min_abs_failures=2,
+        old_boundary_min_risk=0.80,
+        old_lift_min_weakness=0.50,
+    )
+    rows = [
+        _row("e0", score=0.20, margin=0.01, risk=0.05, label="old-a"),
+        {**_row("e0", score=0.20, margin=0.01, risk=0.05, label="old-a"), "receiver_id": "rx-b"},
+    ]
+    models = {"rx-a": _two_class_support_model(cfg), "rx-b": _two_class_support_model(cfg)}
+    query_features = {
+        ("e0", "rx-a"): np.asarray([0.70, 0.70], dtype=np.float32),
+        ("e0", "rx-b"): np.asarray([0.70, 0.70], dtype=np.float32),
+    }
+
+    out = augment_smec_evidence(rows, models, query_features, {}, cfg, old_labels={"old-a"})
+
+    assert all(row["smec_old_boundary_risk"] >= 0.80 for row in out)
+    assert all(row["smec_obace_absolute_fail_count"] == 1 for row in out)
+    assert all(row["smec_old_label_lift_blocked"] == 1 for row in out)
+    assert all(row["unknown_risk"] == 0.05 for row in out)
+
+
+def test_smec_obace_guard_blocks_seen_new_label_without_enough_absolute_failures():
+    cfg = _config(
+        old_label_aux_policy="obace_guard",
+        proto_weight=1.0,
+        knn_weight=0.0,
+        old_boundary_weight=0.0,
+        obace_conformal_weight=1.0,
+        obace_conformal_min_risk=0.70,
+        obace_nonold_min_abs_failures=3,
+    )
+    rows = [_row("e0", score=0.20, margin=0.01, risk=0.05, label="new-a", role="seen_new", true_label="new-a")]
+    models = {"rx-a": _two_class_support_model(cfg)}
+    query_features = {("e0", "rx-a"): np.asarray([0.70, 0.70], dtype=np.float32)}
+
+    out = augment_smec_evidence(rows, models, query_features, {}, cfg, old_labels={"old-a"})
+
+    assert out[0]["smec_obace_absolute_fail_count"] < 3
+    assert out[0]["smec_old_label_lift_blocked"] == 1
+    assert out[0]["unknown_risk"] == 0.05
 
 
 def test_smec_old_boundary_guard_lifts_agreed_old_label_near_foreign_boundary():

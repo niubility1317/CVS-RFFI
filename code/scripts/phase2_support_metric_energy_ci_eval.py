@@ -79,6 +79,11 @@ class SmecConfig:
     old_boundary_quantile: float = 0.05
     old_boundary_slack: float = 0.00
     old_boundary_min_risk: float = 0.95
+    obace_conformal_weight: float = 0.0
+    obace_conformal_min_risk: float = 0.80
+    obace_absolute_risk_gate: float = 0.70
+    obace_old_min_abs_failures: int = 2
+    obace_nonold_min_abs_failures: int = 2
 
 
 @dataclass(frozen=True)
@@ -95,6 +100,8 @@ class SmecReceiverModel:
     energy_threshold: float | None
     old_boundary_margin_thresholds: dict[str, float]
     global_old_boundary_margin_threshold: float
+    obace_conformal_scores: dict[str, tuple[float, ...]]
+    global_obace_conformal_scores: tuple[float, ...]
 
 
 def _float(row: Mapping[str, Any], key: str, default: float = 0.0) -> float:
@@ -208,6 +215,31 @@ def build_support_model(
         default=0.0,
     ) - float(config.old_boundary_slack)
 
+    obace_conformal_scores: dict[str, tuple[float, ...]] = {}
+    all_obace_scores: list[float] = []
+    if features.shape[0] >= 1:
+        sim = np.clip(features @ features.T, -1.0, 1.0)
+        for label in unique_labels:
+            idx = np.asarray([i for i, value in enumerate(labels) if value == label], dtype=int)
+            if idx.size == 0:
+                continue
+            centroid = centroids[label]
+            proto_threshold = max(float(proto_thresholds.get(label, global_proto_threshold)), 1e-6)
+            label_scores: list[float] = []
+            for i in idx.tolist():
+                proto_dist = float(1.0 - np.clip(float(features[i] @ centroid), -1.0, 1.0))
+                same = [j for j in idx.tolist() if j != i]
+                if same:
+                    knn_dist = float(1.0 - np.max(sim[i, same]))
+                else:
+                    knn_dist = proto_dist
+                score = (proto_dist / proto_threshold) + (
+                    knn_dist / max(float(knn_threshold), 1e-6)
+                )
+                label_scores.append(float(score))
+            obace_conformal_scores[label] = tuple(label_scores)
+            all_obace_scores.extend(label_scores)
+
     return SmecReceiverModel(
         receiver_id=str(receiver_id),
         labels=unique_labels,
@@ -221,6 +253,8 @@ def build_support_model(
         energy_threshold=energy_threshold,
         old_boundary_margin_thresholds=old_boundary_margin_thresholds,
         global_old_boundary_margin_threshold=float(global_old_boundary_margin_threshold),
+        obace_conformal_scores=obace_conformal_scores,
+        global_obace_conformal_scores=tuple(all_obace_scores),
     )
 
 
@@ -251,7 +285,7 @@ def _smec_risks(
     feature: np.ndarray,
     logits: np.ndarray | None,
     config: SmecConfig,
-) -> tuple[float, float, float, float, float, float, float, float]:
+) -> tuple[float, float, float, float, float, float, float, float, float, float, int]:
     feat = _normalize_rows(np.asarray(feature, dtype=np.float32).reshape(1, -1))[0]
     centroid = model.centroids.get(str(label))
     if centroid is None:
@@ -290,21 +324,49 @@ def _smec_risks(
                 (old_boundary_threshold - old_boundary_margin)
                 / max(float(config.old_boundary_temperature), 1e-6)
             )
+    conformal_scores = model.obace_conformal_scores.get(str(label), model.global_obace_conformal_scores)
+    obace_nonconformity = (proto_dist / max(float(proto_threshold), 1e-6)) + (
+        knn_dist / max(float(model.knn_threshold), 1e-6)
+    )
+    if conformal_scores:
+        obace_conformal_pvalue = (1.0 + sum(1 for value in conformal_scores if value >= obace_nonconformity)) / (
+            len(conformal_scores) + 1.0
+        )
+    else:
+        obace_conformal_pvalue = 1.0
+    obace_conformal_risk = 1.0 - _unit(obace_conformal_pvalue)
+    absolute_fail_count = 0
+    gate = float(config.obace_absolute_risk_gate)
+    if float(config.proto_weight) > 0.0 and proto_risk >= gate:
+        absolute_fail_count += 1
+    if float(config.knn_weight) > 0.0 and knn_risk >= gate:
+        absolute_fail_count += 1
+    if float(config.energy_weight) > 0.0 and energy_risk >= gate:
+        absolute_fail_count += 1
+    if float(config.old_boundary_weight) > 0.0 and old_boundary_risk >= float(config.old_boundary_min_risk):
+        absolute_fail_count += 1
+    if float(config.obace_conformal_weight) > 0.0 and obace_conformal_risk >= float(config.obace_conformal_min_risk):
+        absolute_fail_count += 1
     aux = _unit(
         float(config.proto_weight) * proto_risk
         + float(config.knn_weight) * knn_risk
         + float(config.energy_weight) * energy_risk
         + float(config.old_boundary_weight) * old_boundary_risk
+        + float(config.obace_conformal_weight) * obace_conformal_risk
     )
     return (
         proto_risk,
         knn_risk,
         energy_risk,
         old_boundary_risk,
+        obace_conformal_risk,
         aux,
         max(proto_dist, knn_dist),
         old_boundary_margin,
         old_boundary_threshold,
+        obace_conformal_pvalue,
+        obace_nonconformity,
+        absolute_fail_count,
     )
 
 
@@ -349,10 +411,14 @@ def augment_smec_evidence(
             knn_risk,
             energy_risk,
             old_boundary_risk,
+            obace_conformal_risk,
             aux_raw,
             distance,
             old_boundary_margin,
             old_boundary_threshold,
+            obace_conformal_pvalue,
+            obace_nonconformity,
+            obace_absolute_fail_count,
         ) = _smec_risks(
             model=model,
             label=label,
@@ -364,9 +430,9 @@ def augment_smec_evidence(
         aux_component = _unit(aux_raw * max(weakness, 0.20))
         old_label_lift_blocked = 0
         old_policy = str(config.old_label_aux_policy or "strong_cap").strip().lower()
-        if old_policy not in {"strong_cap", "never", "consensus_guard", "old_boundary_guard"}:
+        if old_policy not in {"strong_cap", "never", "consensus_guard", "old_boundary_guard", "obace_guard"}:
             raise ValueError(
-                "old_label_aux_policy must be strong_cap, never, consensus_guard, or old_boundary_guard"
+                "old_label_aux_policy must be strong_cap, never, consensus_guard, old_boundary_guard, or obace_guard"
             )
         if old_policy == "never" and label in old_labels:
             aux_component = min(aux_component, base_risk)
@@ -395,6 +461,25 @@ def augment_smec_evidence(
             if not allow_old_lift:
                 aux_component = min(aux_component, base_risk)
                 old_label_lift_blocked = 1
+        if old_policy == "obace_guard" and label in old_labels:
+            allow_old_lift = (
+                int(obace_absolute_fail_count) >= int(config.obace_old_min_abs_failures)
+                and obace_conformal_risk >= float(config.obace_conformal_min_risk)
+                and weakness >= float(config.old_lift_min_weakness)
+                and not strong_known
+            )
+            if not allow_old_lift:
+                aux_component = min(aux_component, base_risk)
+                old_label_lift_blocked = 1
+        if old_policy == "obace_guard" and label not in old_labels:
+            allow_nonold_lift = (
+                int(obace_absolute_fail_count) >= int(config.obace_nonold_min_abs_failures)
+                and obace_conformal_risk >= float(config.obace_conformal_min_risk)
+                and weakness >= float(config.old_lift_min_weakness)
+            )
+            if not allow_nonold_lift:
+                aux_component = min(aux_component, base_risk)
+                old_label_lift_blocked = 1
         if strong_known and label in old_labels:
             aux_component = min(aux_component, float(config.strong_aux_cap))
         fused = max(base_risk, aux_component)
@@ -404,6 +489,10 @@ def augment_smec_evidence(
         row["smec_knn_risk"] = knn_risk
         row["smec_energy_risk"] = energy_risk
         row["smec_old_boundary_risk"] = old_boundary_risk
+        row["smec_obace_conformal_risk"] = obace_conformal_risk
+        row["smec_obace_conformal_pvalue"] = obace_conformal_pvalue
+        row["smec_obace_nonconformity"] = obace_nonconformity
+        row["smec_obace_absolute_fail_count"] = int(obace_absolute_fail_count)
         row["smec_old_boundary_margin"] = old_boundary_margin
         row["smec_old_boundary_threshold"] = old_boundary_threshold
         row["smec_aux_raw"] = aux_raw
@@ -682,9 +771,24 @@ def _main(argv: Sequence[str] | None = None) -> int:
                 old_boundary_weight=0.60,
                 old_boundary_min_risk=0.98,
             )
+        elif profile == "obace":
+            profile_configs["obace"] = SmecConfig(
+                old_label_aux_policy="obace_guard",
+                old_lift_min_weakness=0.50,
+                proto_weight=0.60,
+                knn_weight=0.50,
+                energy_weight=0.08,
+                old_boundary_weight=0.25,
+                old_boundary_min_risk=0.98,
+                obace_conformal_weight=0.70,
+                obace_conformal_min_risk=0.85,
+                obace_absolute_risk_gate=0.70,
+                obace_old_min_abs_failures=3,
+                obace_nonold_min_abs_failures=3,
+            )
         else:
             raise ValueError(
-                "unknown SMEC profile; expected standard, old_lossless, consensus_guard, or old_boundary_guard"
+                "unknown SMEC profile; expected standard, old_lossless, consensus_guard, old_boundary_guard, or obace"
             )
     build_config = next(iter(profile_configs.values()))
     payload = load_feature_npz(args.feature_npz)
@@ -721,6 +825,8 @@ def _main(argv: Sequence[str] | None = None) -> int:
             algorithm = "smec_consensus_guard_ci"
         if profile == "old_boundary_guard":
             algorithm = "smec_old_boundary_guard_ci"
+        if profile == "obace":
+            algorithm = "obace_ci"
         smec_rows = augment_smec_evidence(
             base_rows,
             models,
