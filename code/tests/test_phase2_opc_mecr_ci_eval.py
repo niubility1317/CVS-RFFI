@@ -1,6 +1,10 @@
+import json
 import sys
+import tempfile
 import unittest
 from pathlib import Path
+
+import numpy as np
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -8,6 +12,40 @@ SCRIPTS = ROOT / "scripts"
 for path in (str(ROOT), str(SCRIPTS)):
     if path not in sys.path:
         sys.path.insert(0, path)
+
+
+def _write_min_stage2c_npz(path: Path) -> None:
+    rows = []
+
+    def add(role, tx, rx, day, sig, scenario, feature):
+        rows.append((role, tx, rx, day, sig, scenario, np.asarray(feature, dtype=np.float32)))
+
+    for rx in ["rx-a", "rx-b"]:
+        add("source", "old-a", "src-a", "d0", f"source-{rx}", "", [1.0, 0.0, 0.0])
+        add("target_old", "old-a", rx, "d1", f"old-support-{rx}", "leo_clear_weak", [1.0, 0.0, 0.0])
+        add("target_new", "new-a", rx, "d1", f"new-support-{rx}", "leo_clear_weak", [0.0, 1.0, 0.0])
+        add("target_old", "old-a", rx, "d2", "old-query", "leo_clear_weak", [0.98, 0.02, 0.0])
+        add("target_new", "new-a", rx, "d2", "new-query", "leo_clear_weak", [0.02, 0.98, 0.0])
+        add("target_unknown", "unk-a", rx, "d2", "unk-query", "leo_clear_weak", [0.0, 0.0, 1.0])
+    manifest = {
+        "source_tx_ids": ["old-a"],
+        "target_old_tx_ids": ["old-a"],
+        "new_tx_ids": ["new-a"],
+        "unknown_tx_ids": ["unk-a"],
+        "target_channel_view": "satellite/LEO",
+    }
+    np.savez(
+        path,
+        features=np.stack([r[6] for r in rows]).astype(np.float32),
+        dataset_role=np.asarray([r[0] for r in rows], dtype=object),
+        tx_ids=np.asarray([r[1] for r in rows], dtype=object),
+        rx_ids=np.asarray([r[2] for r in rows], dtype=object),
+        day_ids=np.asarray([r[3] for r in rows], dtype=object),
+        sig_ids=np.asarray([r[4] for r in rows], dtype=object),
+        sat_scenarios=np.asarray([r[5] for r in rows], dtype=object),
+        channel_views=np.asarray(["satellite" if r[5] else "clean" for r in rows], dtype=object),
+        manifest_json=np.asarray(json.dumps(manifest)),
+    )
 
 
 class Phase2OpcMecrCiEvalTest(unittest.TestCase):
@@ -248,6 +286,66 @@ class Phase2OpcMecrCiEvalTest(unittest.TestCase):
         )
 
         self.assertTrue(all(float(row["known_consensus_rate"]) == 0.0 for row in result["summary_rows"]))
+
+    def test_feature_pipeline_keeps_target_unknown_out_of_calibration_sources(self):
+        from phase2_opc_mecr_ci_eval import main
+
+        with tempfile.TemporaryDirectory() as td:
+            root = Path(td)
+            feature_npz = root / "features.npz"
+            output_json = root / "opc.json"
+            output_csv = root / "opc.csv"
+            _write_min_stage2c_npz(feature_npz)
+
+            rc = main(
+                [
+                    "--feature_npz",
+                    str(feature_npz),
+                    "--output_json",
+                    str(output_json),
+                    "--output_summary_csv",
+                    str(output_csv),
+                    "--profiles",
+                    "opc_old_guard",
+                    "--collab_counts",
+                    "all",
+                    "--collab_group_policy",
+                    "same_max_budget",
+                    "--top_m",
+                    "1",
+                    "--k_shot",
+                    "1",
+                    "--query_per_class",
+                    "1",
+                    "--qknn_k",
+                    "1",
+                    "--seed",
+                    "7",
+                    "--support_selection_policy",
+                    "stable_first",
+                    "--event_alignment_policy",
+                    "receiver_domain_ranked",
+                ]
+            )
+            result = json.loads(output_json.read_text(encoding="utf-8"))
+
+        self.assertEqual(rc, 0)
+        self.assertTrue(result["unknown_query_eval_only"])
+        self.assertEqual(result["target_unknown_training_count"], 0)
+        self.assertFalse(result["profile_selection_uses_target_unknown"])
+        self.assertEqual(result["joint_score_scope"], "posthoc_evaluation_analysis_only_not_profile_or_threshold_selection")
+        metadata = result["base_pcet_known_preserving"]["qknn_metadata"]
+        self.assertTrue(metadata["unknown_query_eval_only"])
+        self.assertFalse(metadata["labeled_unknown_support_used_for_boundary_fit"])
+        self.assertNotIn("unknown", metadata["threshold_scope"])
+        self.assertIn(metadata["threshold_scope"], {"source_only", "support_known_only"})
+        self.assertEqual(metadata["unknown_tx_ids"], ["unk-a"])
+        for receiver_counts in metadata["receiver_class_conformal_counts"].values():
+            self.assertNotIn("unk-a", receiver_counts)
+        for receiver_thresholds in metadata["receiver_class_thresholds"].values():
+            self.assertNotIn("unk-a", receiver_thresholds)
+        for receiver_reliability in metadata["receiver_class_reliabilities"].values():
+            self.assertNotIn("unk-a", receiver_reliability)
 
 
 if __name__ == "__main__":
