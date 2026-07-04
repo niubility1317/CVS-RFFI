@@ -54,7 +54,7 @@ C:\Users\lh594\.conda\envs\ssr-gpu\python.exe code\scripts\phase2_old_protected_
 
 对OPU基线`opu_old_preserve,k=4`：`old_acc=0.802139`，`unknown_reject=0.183333`。本地未找到`old_acc>=0.802139`且`unknown_reject>0.183333`的ARC候选。
 
-## N607计划
+## N607执行
 
 远端输入：
 
@@ -64,7 +64,17 @@ C:\Users\lh594\.conda\envs\ssr-gpu\python.exe code\scripts\phase2_old_protected_
 
 该feature SHA256为`db559d78db305894307851750ef7d698db387f0984ff13c980fea99db85b8532`，与本地输入一致。
 
-远端命令计划：
+远端验证：
+
+| 项目 | 结果 |
+|---|---|
+| N607预检 | PASS，直连`N607`，项目根可见，8张RTX3090均约10MiB显存占用。 |
+| 远端Python | `/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python`，Python3.10.19。 |
+| 同步后SHA | 脚本`e26513e5d0c2bd28554078e0988bb85b3a492723d94c07aa98a21468110fe8bb`；测试`73bd4eabd26fbba57a4e5bb6f44fa19e87726766830a42bdbac24cdb2a0b456e`。 |
+| 远端编译/测试 | `py_compile`PASS；`python code/tests/test_phase2_old_protected_arc_ci_eval.py`，3 tests OK。 |
+| SSH清理 | 每次SSH/SCP后检查，本地无`ssh.exe`残留，无到`172.31.111.215:22`的ESTABLISHED连接。 |
+
+远端命令：
 
 ```bash
 CUDA_VISIBLE_DEVICES=0 /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python code/scripts/phase2_old_protected_arc_ci_eval.py \
@@ -76,6 +86,28 @@ CUDA_VISIBLE_DEVICES=0 /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python code/
   --force
 ```
 
+GPU：选择GPU0；运行前后GPU0显存均为10MiB，未出现额外显存占用。
+
+远端输出：
+
+| 文件 | SHA256 |
+|---|---|
+| `runs/phase2_adv3b02_arc_ci_20260704/arc_ci_summary.csv` | `9427da1147e7a28a21ad3e4279038877e2863d46e49c88f47fb107435ca27075` |
+| `runs/phase2_adv3b02_arc_ci_20260704/arc_ci_summary.json` | `46291dfe3c7acedddfccb9b086f464c71ae1ecb020a8d32ef73446d7ef3f196d` |
+| `logs/phase2_adv3b02_arc_ci_20260704/arc_ci.log` | `b0753d1d84a7a6cfb4eedc973dc216e0de1b27602af005064272be0b7a9450eb` |
+
+本地拉回：`remote_artifacts\phase2_adv3b02_arc_ci_20260704\`。
+
+远端全量结果覆盖`collab_count=1..5`。`policy=opu_old_preserve`、`collab_count=4`同row结果：
+
+| profile | old_acc | min_old | seen_new_acc | min_seen | unknown_reject | unknown_FAR | bytes_per_event | latency_ms_p95 |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|
+| arc_old_floor | 0.796791 | 0.300000 | 0.766667 | 0.725000 | 0.200000 | 0.716667 | 496.339 | 0.184152 |
+| arc_balanced | 0.673797 | 0.300000 | 0.700000 | 0.650000 | 0.466667 | 0.450000 | 496.339 | 0.184152 |
+| arc_unknown_safe | 0.459893 | 0.200000 | 0.433333 | 0.375000 | 0.766667 | 0.166667 | 496.339 | 0.184152 |
+
+远端未找到`old_acc>=0.802139`且`unknown_reject>0.183333`的ARC候选。summary字段确认：`summary_order=pre_registered_profile_policy_collab_count`，`profile_selection_uses_target_unknown=False`，`target_unknown_training_count=0`，`target_unknown_selection_count=0`。
+
 ## 当前解释
 
-ARC验证了候选集空集拒识方向，但在当前特征上仍未满足“旧类不下降”。说明后处理层已经触及上限，下一步需要进入表征/原型层：source/target-old shrinkage原型、class-wise EVT/Mahalanobis、弱星地多视图一致性和conformal选择性拒识的联合校准。
+ARC验证了候选集空集拒识方向，但在当前特征上仍未满足“旧类不下降”。说明后处理层已经触及上限，下一步需要进入表征/原型层：source/target-old shrinkage原型、class-wise EVT/Mahalanobis、弱星地多视图一致性和conformal选择性拒识的联合校准。TENT/SHOT/ODIN等依赖闭集测试批或OOD验证调参的在线适应路线不进入当前主线。
