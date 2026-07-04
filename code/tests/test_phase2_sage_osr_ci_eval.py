@@ -4,6 +4,7 @@ import tempfile
 from pathlib import Path
 
 import numpy as np
+import argparse
 
 ROOT = Path(__file__).resolve().parents[1]
 SCRIPTS = ROOT / "scripts"
@@ -93,3 +94,32 @@ def test_sage_osr_runs_cpu_smoke_and_keeps_unknown_eval_only():
         assert summary["training_counts"]["proxy_unknown"] > 0
         assert {str(row["collab_count"]) for row in aware["summary_rows"]} == {"1", "2"}
         assert Path(summary["adapted_feature_npz"]).exists()
+        assert summary["adapter_metadata"]["train_metrics"]["curriculum"] == "two_stage"
+        assert summary["adapter_metadata"]["train_metrics"]["alignment_epochs"] == 1
+        assert summary["adapter_metadata"]["train_metrics"]["negative_epochs"] == 1
+
+
+def test_sage_osr_two_stage_epoch_split_and_tx_balanced_proxy_sampling():
+    from phase2_sage_osr_ci_eval import _sample_proxy_indices, _split_stage_epochs
+
+    args = argparse.Namespace(
+        curriculum="two_stage",
+        adapter_epochs=5,
+        alignment_epochs=-1,
+        negative_epochs=-1,
+        alignment_fraction=0.6,
+    )
+    assert _split_stage_epochs(args) == (3, 2)
+
+    rng = np.random.default_rng(7)
+    out = _sample_proxy_indices(
+        rng=rng,
+        proxy_indices=[0, 1, 2, 3, 4, 5],
+        proxy_groups=[np.asarray([0, 1, 2]), np.asarray([3, 4, 5])],
+        take=4,
+        policy="tx_balanced",
+    )
+
+    assert len(out) == 4
+    assert any(int(v) in {0, 1, 2} for v in out)
+    assert any(int(v) in {3, 4, 5} for v in out)

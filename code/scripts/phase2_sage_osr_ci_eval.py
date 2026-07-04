@@ -59,6 +59,59 @@ def _entropy_loss(logits: torch.Tensor) -> torch.Tensor:
     return -entropy.mean()
 
 
+def _split_stage_epochs(args: argparse.Namespace) -> tuple[int, int]:
+    total = max(1, int(args.adapter_epochs))
+    if str(args.curriculum) == "legacy":
+        return 0, total
+    align = int(args.alignment_epochs)
+    neg = int(args.negative_epochs)
+    if align < 0 and neg < 0:
+        align = max(1, int(round(total * float(args.alignment_fraction))))
+        neg = max(1, total - align)
+    elif align < 0:
+        neg = max(1, neg)
+        align = max(1, total - neg)
+    elif neg < 0:
+        align = max(1, align)
+        neg = max(1, total - align)
+    return int(align), int(neg)
+
+
+def _proxy_groups_by_tx(plan: Any, tx_ids: np.ndarray) -> list[np.ndarray]:
+    groups: list[np.ndarray] = []
+    for tx in sorted({str(tx_ids[int(i)]) for i in plan.proxy_unknown_indices}):
+        group = np.asarray([int(i) for i in plan.proxy_unknown_indices if str(tx_ids[int(i)]) == tx], dtype=np.int64)
+        if group.size:
+            groups.append(group)
+    return groups
+
+
+def _sample_proxy_indices(
+    *,
+    rng: np.random.Generator,
+    proxy_indices: Sequence[int],
+    proxy_groups: Sequence[np.ndarray],
+    take: int,
+    policy: str,
+) -> np.ndarray:
+    count = max(1, int(take))
+    if str(policy) != "tx_balanced" or not proxy_groups:
+        base = np.asarray([int(i) for i in proxy_indices], dtype=np.int64)
+        return rng.choice(base, size=count, replace=count > int(base.size)).astype(np.int64)
+    per_group = max(1, int(math.ceil(count / max(1, len(proxy_groups)))))
+    chunks = []
+    for group in proxy_groups:
+        chunks.append(rng.choice(group, size=per_group, replace=per_group > int(group.size)).astype(np.int64))
+    out = np.concatenate(chunks, axis=0)
+    if out.size > count:
+        out = rng.choice(out, size=count, replace=False).astype(np.int64)
+    elif out.size < count:
+        all_proxy = np.concatenate([np.asarray(g, dtype=np.int64) for g in proxy_groups], axis=0)
+        extra = rng.choice(all_proxy, size=count - int(out.size), replace=(count - int(out.size)) > int(all_proxy.size)).astype(np.int64)
+        out = np.concatenate([out, extra], axis=0)
+    return out.astype(np.int64)
+
+
 def train_sage_adapter(payload: Mapping[str, Any], plan: Any, args: argparse.Namespace) -> tuple[LowRankResidualAdapter, dict[str, Any]]:
     device = _resolve_device(str(args.device))
     torch.manual_seed(int(args.seed))
@@ -93,11 +146,15 @@ def train_sage_adapter(payload: Mapping[str, Any], plan: Any, args: argparse.Nam
     source_count = int(source_idx.numel())
     support_count = int(support_idx.numel())
     proxy_count = int(proxy_idx_all.numel())
+    proxy_groups = _proxy_groups_by_tx(plan, tx_ids)
+    alignment_epochs, negative_epochs = _split_stage_epochs(args)
+    total_epochs = negative_epochs if str(args.curriculum) == "legacy" else alignment_epochs + negative_epochs
     losses: list[float] = []
     component_tail: list[dict[str, float]] = []
     start_time = time.perf_counter()
 
-    for _epoch in range(int(args.adapter_epochs)):
+    for epoch in range(int(total_epochs)):
+        phase = "negative" if str(args.curriculum) == "legacy" or epoch >= alignment_epochs else "alignment"
         adapter.train()
         source_order = source_idx[torch.randperm(source_count, device=device)]
         support_order = support_idx[torch.randperm(support_count, device=device)]
@@ -121,8 +178,14 @@ def train_sage_adapter(payload: Mapping[str, Any], plan: Any, args: argparse.Nam
             if sup_batch.numel() == 0:
                 sup_batch = support_order[: min(batch, support_count)]
             proxy_take = min(max(int(src_batch.numel()), int(sup_batch.numel())), proxy_count)
-            proxy_np = rng.choice(proxy_count, size=proxy_take, replace=proxy_take > proxy_count)
-            proxy_batch = proxy_idx_all[torch.as_tensor(proxy_np, dtype=torch.long, device=device)]
+            proxy_np = _sample_proxy_indices(
+                rng=rng,
+                proxy_indices=plan.proxy_unknown_indices,
+                proxy_groups=proxy_groups,
+                take=proxy_take,
+                policy=str(args.proxy_curriculum),
+            )
+            proxy_batch = torch.as_tensor(proxy_np, dtype=torch.long, device=device)
 
             z_src0 = x.index_select(0, src_batch)
             z_sup0 = x.index_select(0, sup_batch)
@@ -161,12 +224,14 @@ def train_sage_adapter(payload: Mapping[str, Any], plan: Any, args: argparse.Nam
             masked = sup_logits.scatter(1, sup_y.view(-1, 1), -1e6)
             support_margin = F.relu(float(args.support_margin_target) - (true_sup - masked.max(dim=1).values)).mean()
             residual = ((z_src - z_src0) ** 2).mean() + ((z_sup - z_sup0) ** 2).mean() + ((z_proxy - z_proxy0) ** 2).mean()
+            proxy_open_weight = float(args.proxy_open_weight) if phase == "negative" else 0.0
+            proxy_entropy_weight = float(args.proxy_entropy_weight) if phase == "negative" else 0.0
             loss = (
                 float(args.source_cls_weight) * src_ce
                 + float(args.support_cls_weight) * sup_ce
                 + float(args.old_distill_weight) * old_distill
-                + float(args.proxy_open_weight) * proxy_hard_open
-                + float(args.proxy_entropy_weight) * proxy_entropy
+                + proxy_open_weight * proxy_hard_open
+                + proxy_entropy_weight * proxy_entropy
                 + float(args.support_compact_weight) * support_compact
                 + float(args.support_margin_weight) * support_margin
                 + float(args.residual_weight) * residual
@@ -188,7 +253,9 @@ def train_sage_adapter(payload: Mapping[str, Any], plan: Any, args: argparse.Nam
             ):
                 total_components[key] += float(value.detach().item())
         losses.append(total_loss / max_steps)
-        component_tail.append({key: value / max_steps for key, value in total_components.items()})
+        row = {key: value / max_steps for key, value in total_components.items()}
+        row["phase"] = phase
+        component_tail.append(row)
 
     adapter.eval()
     with torch.no_grad():
@@ -210,6 +277,11 @@ def train_sage_adapter(payload: Mapping[str, Any], plan: Any, args: argparse.Nam
             "final_loss": losses[-1] if losses else None,
             "loss_trace_tail": losses[-5:],
             "component_trace_tail": component_tail[-5:],
+            "curriculum": str(args.curriculum),
+            "alignment_epochs": int(alignment_epochs),
+            "negative_epochs": int(negative_epochs),
+            "proxy_curriculum": str(args.proxy_curriculum),
+            "proxy_group_count": int(len(proxy_groups)),
             "source_proto_acc_before": float((source_pred_before == source_y_t).float().mean().item()),
             "source_proto_acc_after": float((source_pred_after == source_y_t).float().mean().item()),
             "support_proto_acc_before": float((support_pred_before == support_y_t).float().mean().item()),
@@ -309,6 +381,10 @@ def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
     p.add_argument("--support_selection_policy", default="stable_first", choices=["stable_first", "centroid", "scenario_diverse", "strict_event_query_preserve"])
     p.add_argument("--device", default="cuda:0")
     p.add_argument("--adapter_epochs", type=int, default=60)
+    p.add_argument("--curriculum", default="two_stage", choices=["two_stage", "legacy"])
+    p.add_argument("--alignment_epochs", type=int, default=-1)
+    p.add_argument("--negative_epochs", type=int, default=-1)
+    p.add_argument("--alignment_fraction", type=float, default=0.67)
     p.add_argument("--adapter_rank", type=int, default=12)
     p.add_argument("--adapter_alpha", type=float, default=0.10)
     p.add_argument("--dropout", type=float, default=0.05)
@@ -319,6 +395,7 @@ def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
     p.add_argument("--proto_temperature", type=float, default=0.08)
     p.add_argument("--proxy_open_margin", type=float, default=0.05)
     p.add_argument("--proxy_hard_fraction", type=float, default=0.35)
+    p.add_argument("--proxy_curriculum", default="tx_balanced", choices=["tx_balanced", "random"])
     p.add_argument("--support_margin_target", type=float, default=1.0)
     p.add_argument("--source_cls_weight", type=float, default=1.0)
     p.add_argument("--support_cls_weight", type=float, default=1.5)
@@ -364,7 +441,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     adapted_npz = args.adapter_npz or (args.output_dir / "sage_osr_adapted_features.npz")
     metadata = {
         "algorithm": "SAGE-OSR",
-        "adapter": "low_rank_residual_hard_proxy_open_set_adapter",
+        "adapter": "low_rank_residual_two_stage_open_set_adapter",
         "target_unknown_eval_only": True,
         "training_roles": ["source", PROXY_UNKNOWN_ROLE, "target_old_support", "target_new_support"],
         "forbidden_roles": [UNKNOWN_ROLE],
