@@ -121,3 +121,72 @@ conda run -n ssr-gpu python code\scripts\phase2_graph_smooth_qknn_probe.py ... -
 - `strict_n10_k5_transproto_seed421011.json/csv`
 - 新脚本：`github_publish/CVS-RFFI-repo/code/scripts/phase2_graph_smooth_qknn_probe.py`
 - 新脚本：`github_publish/CVS-RFFI-repo/code/scripts/phase2_transductive_proto_qknn_probe.py`
+
+## 2026-07-05补充：现有特征视图上限复核
+
+为避免把`MANYNEW10_SUPCON_HEAD`的单一特征视图误判为qKNN上限，本轮追加复核了已导出的其他五个特征视图。口径保持严格：`K_old=K_new=10`，`pool_per_old=pool_per_new=10`，每类query为70，target receiver仍为`7-14`，new role仍为`target_unknown`，不扩大K数量，不使用未知拒识。
+
+固定qKNN配置为当前K=10最好配置：`topm=4,proto_mix=0.25,radius_norm=0,old_bias=0.001,neg_lambda=0.7,neg_threshold=0.75,neg_margin=0.01,mutual_only=true,scenario_aware=true,balanced_assignment=true`。每个特征视图扫`seed_start=421000,seed_count=60`与`stable_first,scenario_diverse`两种support策略。
+
+| feature view | 证据文件 | best seed | policy | old_acc | min_old | new_acc | min_new | 关键逐新类短板 | verdict |
+|---|---|---:|---|---:|---:|---:|---:|---|---|
+| `MANYNEW10_SUPCON_HEAD` | `strict_n10_k10_seed421046_small.json` | 421046 | stable_first | 83.57% | 65.71% | 81.29% | 71.43% | `10-10`71.43%,`2-13`72.86%,`19-3`74.29% | 当前最好，仍失败 |
+| `MANYNEW10_SUPCON_NORM` | `strict_n10_k10_supcon_norm_seed60.json` | 421056 | stable_first | 83.33% | 67.14% | 78.00% | 61.43% | `2-13`61.43%,`10-10`70.00%,`11-10`71.43% | 失败 |
+| `MANYNEW10_HEAD_SEP` | `strict_n10_k10_head_sep_seed60.json` | 421028 | stable_first | 80.24% | 57.14% | 73.71% | 58.57% | `2-13`58.57%,`19-3`60.00%,`10-10`62.86% | 失败 |
+| `MANYNEW10_NORM_SEP` | `strict_n10_k10_norm_sep_seed60.json` | 421027 | stable_first | 80.95% | 55.71% | 70.86% | 54.29% | `2-13`54.29%,`19-3`55.71%,`10-10`57.14% | 失败 |
+| `MANYNEW10_IDENTITY` from supcon run | `strict_n10_k10_identity_supconrun_seed60.json` | 421034 | stable_first | 76.90% | 50.00% | 73.00% | 51.43% | `2-13`51.43%,`11-10`52.86%,`18-5`64.29% | 失败 |
+| `MANYNEW10_IDENTITY` from repair run | `strict_n10_k10_identity_repairrun_seed60.json` | 421034 | stable_first | 76.90% | 50.00% | 73.00% | 51.43% | `2-13`51.43%,`11-10`52.86%,`18-5`64.29% | 失败 |
+
+结论：替代特征视图没有隐藏的K=10达标行，且多数视图的最低新类远低于`SUPCON_HEAD`。当前瓶颈不是“换一个已导出的特征”或继续微调qKNN读出层，而是目标receiver `7-14`下多个新类与旧类/新类邻域仍未被表示层分开。
+
+## 2026-07-05新增远端训练方案
+
+新增N607 launcher：`code/scripts/launch_phase2_adv3b02_manynew10_conflict_protected_20260705.sh`。
+
+该方案不改训练主逻辑，复用已有`proxy_unknown_supcon/proto_ce/pair_margin/old_margin`接口，但把训练目标改成更强的old-protected proxy episode约束，并把post-eval改为严格`K=10`和`K=5` qKNN同口径验证，而不是K=20/K=50近似审计。训练仍只使用source receiver上的proxy non-old TX，显式排除固定十个target seen-new TX；target receiver样本只用于导出后的support/query评估。
+
+| variant | trainable part | epochs | lr | 关键变化 |
+|---|---|---:|---:|---|
+| `MANYNEW10_CONFLICT_HEAD` | `id_feature_head` | 60 | 0.00008 | 提高proxy pair margin、old margin和clean/feature margin，保护旧类同时增强proxy类间间隔 |
+| `MANYNEW10_CONFLICT_NORM` | `id_norm_late_feature` | 60 | 0.00006 | 在late feature+norm/gate参数上做同类约束，检查是否更稳 |
+
+post-eval严格设置：
+
+| eval | K | query per class | qKNN配置 | 成功门槛 |
+|---|---:|---:|---|---|
+| `manynew10_strict_k10_qknn.json` | 10 | 70 | 当前K=10最好配置，`balanced_assignment=true` | `old_acc>=80%`且每个新类`>=75%` |
+| `manynew10_strict_k5_qknn.json` | 5 | 75 | 当前K=5最好配置，`balanced_assignment=true` | `old_acc>=80%`且每个新类`>=75%` |
+
+本地验证：
+
+```powershell
+bash -n code/scripts/launch_phase2_adv3b02_manynew10_conflict_protected_20260705.sh
+conda run -n ssr-gpu python -m py_compile code\scripts\phase2_confusion_aware_qknn_probe.py code\scripts\train_apply_phase1_iq_preadapter_20260703.py
+bash -lc 'mkdir -p /tmp/type10_conflict_dryrun && env ROOT=/tmp/type10_conflict_dryrun RUNS_ROOT=/tmp/type10_conflict_dryrun/runs LOG_ROOT=/tmp/type10_conflict_dryrun/logs PYTHON=python GPUS_CSV=0,1 bash /mnt/e/type10-7/github_publish/CVS-RFFI-repo/code/scripts/launch_phase2_adv3b02_manynew10_conflict_protected_20260705.sh --dry-run'
+```
+
+验证结果：全部通过。dry-run确认`target_rx=7-14`、十个新类列表、proxy pool排除target-new、严格成功门槛为`K5 and K10 old_acc>=0.80 and every seen-new class>=0.75`。
+
+N607同步/启动计划：
+
+| local | remote |
+|---|---|
+| `E:\type10-7\github_publish\CVS-RFFI-repo\code\scripts\launch_phase2_adv3b02_manynew10_conflict_protected_20260705.sh` | `/home/szu2070436088/2510044040/CV-SincNet/code/scripts/launch_phase2_adv3b02_manynew10_conflict_protected_20260705.sh` |
+
+计划远端命令：
+
+```bash
+cd /home/szu2070436088/2510044040/CV-SincNet
+nohup bash code/scripts/launch_phase2_adv3b02_manynew10_conflict_protected_20260705.sh > logs/phase2_adv3b02_manynew10_conflict_protected_20260705.driver.out 2>&1 & echo $!
+```
+
+预期输出：
+
+| 类型 | 路径 |
+|---|---|
+| runs | `/home/szu2070436088/2510044040/CV-SincNet/runs/phase2_adv3b02_manynew10_conflict_protected_20260705/` |
+| logs | `/home/szu2070436088/2510044040/CV-SincNet/logs/phase2_adv3b02_manynew10_conflict_protected_20260705/` |
+| driver log | `/home/szu2070436088/2510044040/CV-SincNet/logs/phase2_adv3b02_manynew10_conflict_protected_20260705.driver.out` |
+| summary | `/home/szu2070436088/2510044040/CV-SincNet/logs/phase2_adv3b02_manynew10_conflict_protected_20260705/manynew10_conflict_protected_summary.json` |
+
+当前状态：本地脚本和报告已准备；尚未启动N607，需先执行N607 direct preflight并检查GPU/进程占用。
