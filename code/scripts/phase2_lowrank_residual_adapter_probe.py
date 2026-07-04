@@ -13,6 +13,7 @@ from __future__ import annotations
 import argparse
 import csv
 import json
+import sys
 from pathlib import Path
 from typing import Any
 
@@ -20,6 +21,11 @@ import numpy as np
 import torch
 import torch.nn.functional as F
 
+SCRIPT_DIR = Path(__file__).resolve().parent
+if str(SCRIPT_DIR) not in sys.path:
+    sys.path.insert(0, str(SCRIPT_DIR))
+
+import phase2_confusion_aware_qknn_probe as caq
 import phase2_qknn_active_support_select as active
 import phase2_source_guarded_qknn_sweep as qknn
 
@@ -130,7 +136,14 @@ def _evaluate_adapter(
     old_labels: list[str],
     new_labels: list[str],
     topk: int,
+    topm: int,
+    proto_mix: float,
     radius_norm: float,
+    old_bias: float,
+    neg_lambda: float,
+    neg_threshold: float,
+    neg_margin: float,
+    mutual_only: bool,
     scenario_aware: bool,
     old_target: float,
     old_floor: float,
@@ -140,23 +153,44 @@ def _evaluate_adapter(
     with torch.no_grad():
         x = torch.as_tensor(features, dtype=torch.float32)
         adapted = adapter(x).cpu().numpy()
-    bank = qknn._build_support_bank(
-        adapted,
-        support_indices,
-        support_labels,
-        set(old_labels),
-        support_scenarios=scenarios[np.asarray(support_indices, dtype=int)] if scenario_aware else None,
-    )
     query_idx = np.asarray(old_query + new_query, dtype=int)
-    pred = qknn._predict_from_bank(
-        bank,
-        adapted[query_idx],
-        topk=int(topk),
-        old_bias=0.0,
-        radius_norm=float(radius_norm),
-        query_scenarios=scenarios[query_idx] if scenario_aware else None,
-        scenario_aware=bool(scenario_aware),
-    )
+    if int(topm) > 0:
+        scores, _, _ = caq._class_scores(
+            features=adapted,
+            support_indices=np.asarray(support_indices, dtype=int),
+            support_labels=np.asarray(support_labels, dtype=object).astype(str),
+            query_indices=query_idx,
+            scenarios=scenarios,
+            class_labels=old_labels + new_labels,
+            old_labels=set(old_labels),
+            topm=int(topm),
+            proto_mix=float(proto_mix),
+            radius_norm=float(radius_norm),
+            old_bias=float(old_bias),
+            neg_lambda=float(neg_lambda),
+            neg_threshold=float(neg_threshold),
+            neg_margin=float(neg_margin),
+            mutual_only=bool(mutual_only),
+            scenario_aware=bool(scenario_aware),
+        )
+        pred = caq._predict(scores, old_labels + new_labels)
+    else:
+        bank = qknn._build_support_bank(
+            adapted,
+            support_indices,
+            support_labels,
+            set(old_labels),
+            support_scenarios=scenarios[np.asarray(support_indices, dtype=int)] if scenario_aware else None,
+        )
+        pred = qknn._predict_from_bank(
+            bank,
+            adapted[query_idx],
+            topk=int(topk),
+            old_bias=float(old_bias),
+            radius_norm=float(radius_norm),
+            query_scenarios=scenarios[query_idx] if scenario_aware else None,
+            scenario_aware=bool(scenario_aware),
+        )
     truth = tx_ids[query_idx]
     old_count = len(old_query)
     old_pred = pred[:old_count]
@@ -247,7 +281,14 @@ def main() -> None:
     parser.add_argument("--reg_weights", default="0.001,0.01,0.1")
     parser.add_argument("--temperature", type=float, default=24.0)
     parser.add_argument("--topk", type=int, default=1)
+    parser.add_argument("--topm", type=int, default=0)
+    parser.add_argument("--proto_mix", type=float, default=0.0)
     parser.add_argument("--radius_norm", type=float, default=0.2)
+    parser.add_argument("--old_bias", type=float, default=0.0)
+    parser.add_argument("--neg_lambda", type=float, default=0.0)
+    parser.add_argument("--neg_threshold", type=float, default=0.75)
+    parser.add_argument("--neg_margin", type=float, default=0.0)
+    parser.add_argument("--mutual_only", action="store_true")
     parser.add_argument("--seed_start", type=int, default=422947)
     parser.add_argument("--seed_count", type=int, default=1)
     parser.add_argument("--k_old", type=int, default=20)
@@ -362,7 +403,14 @@ def main() -> None:
                                     old_labels=old_labels,
                                     new_labels=new_labels,
                                     topk=args.topk,
+                                    topm=args.topm,
+                                    proto_mix=args.proto_mix,
                                     radius_norm=args.radius_norm,
+                                    old_bias=args.old_bias,
+                                    neg_lambda=args.neg_lambda,
+                                    neg_threshold=args.neg_threshold,
+                                    neg_margin=args.neg_margin,
+                                    mutual_only=args.mutual_only,
                                     scenario_aware=bool(args.scenario_aware),
                                     old_target=args.old_target,
                                     old_floor=args.old_floor,
@@ -381,7 +429,14 @@ def main() -> None:
                                     old_labels=old_labels,
                                     new_labels=new_labels,
                                     topk=args.topk,
+                                    topm=args.topm,
+                                    proto_mix=args.proto_mix,
                                     radius_norm=args.radius_norm,
+                                    old_bias=args.old_bias,
+                                    neg_lambda=args.neg_lambda,
+                                    neg_threshold=args.neg_threshold,
+                                    neg_margin=args.neg_margin,
+                                    mutual_only=args.mutual_only,
                                     scenario_aware=bool(args.scenario_aware),
                                     old_target=args.old_target,
                                     old_floor=args.old_floor,
@@ -398,7 +453,14 @@ def main() -> None:
                                     "reg_weight": float(reg_weight),
                                     "temperature": float(args.temperature),
                                     "topk": int(args.topk),
+                                    "topm": int(args.topm),
+                                    "proto_mix": float(args.proto_mix),
                                     "radius_norm": float(args.radius_norm),
+                                    "old_bias": float(args.old_bias),
+                                    "neg_lambda": float(args.neg_lambda),
+                                    "neg_threshold": float(args.neg_threshold),
+                                    "neg_margin": float(args.neg_margin),
+                                    "mutual_only": bool(args.mutual_only),
                                     "scenario_aware": bool(args.scenario_aware),
                                     "k_old": int(args.k_old),
                                     "k_new": int(args.k_new),
@@ -448,7 +510,14 @@ def main() -> None:
         "lr",
         "reg_weight",
         "topk",
+        "topm",
+        "proto_mix",
         "radius_norm",
+        "old_bias",
+        "neg_lambda",
+        "neg_threshold",
+        "neg_margin",
+        "mutual_only",
         "query_old_acc",
         "query_min_old_class_acc",
         "query_seen_new_acc",

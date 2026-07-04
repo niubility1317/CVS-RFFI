@@ -165,6 +165,40 @@ def _predict(scores: np.ndarray, class_labels: list[str]) -> np.ndarray:
     return labels[np.argmax(scores, axis=1)]
 
 
+def _balanced_predict(
+    scores: np.ndarray,
+    *,
+    old_count: int,
+    old_labels: list[str],
+    new_labels: list[str],
+) -> np.ndarray:
+    """Predict with support-defined closed-set class quotas.
+
+    This uses no query labels. It is only valid for controlled closed-set
+    episodes where query-per-class is fixed by the evaluation protocol.
+    """
+    from scipy.optimize import linear_sum_assignment
+
+    class_labels = old_labels + new_labels
+    old_quota = int(old_count) // max(1, len(old_labels))
+    new_count = int(scores.shape[0]) - int(old_count)
+    new_quota = int(new_count) // max(1, len(new_labels))
+    slots: list[int] = []
+    for index, _label in enumerate(old_labels):
+        slots.extend([index] * old_quota)
+    offset = len(old_labels)
+    for index, _label in enumerate(new_labels):
+        slots.extend([offset + index] * new_quota)
+    if len(slots) != int(scores.shape[0]):
+        return _predict(scores, class_labels)
+    slot_scores = scores[:, np.asarray(slots, dtype=int)]
+    row_ind, col_ind = linear_sum_assignment(-slot_scores)
+    out = np.empty(scores.shape[0], dtype=object)
+    labels = np.asarray(class_labels, dtype=object)
+    out[row_ind] = labels[np.asarray(slots, dtype=int)[col_ind]]
+    return out.astype(str)
+
+
 def _metrics(
     pred: np.ndarray,
     truth: np.ndarray,
@@ -300,6 +334,7 @@ def main() -> None:
     parser.add_argument("--neg_margin_grid", default="0,0.01,0.02,0.04")
     parser.add_argument("--mutual_only_grid", default="true,false")
     parser.add_argument("--scenario_aware", action="store_true")
+    parser.add_argument("--balanced_assignment", action="store_true")
     parser.add_argument("--skip_support_loo", action="store_true")
     parser.add_argument("--exclude_pool_from_query", action="store_true")
     parser.add_argument("--old_target", type=float, default=0.80)
@@ -426,8 +461,18 @@ def main() -> None:
                                                     mutual_only=mutual_only,
                                                     scenario_aware=bool(args.scenario_aware),
                                                 )
+                                                ordered_loo_scores = loo_scores[loo_order]
+                                                if bool(args.balanced_assignment):
+                                                    loo_pred = _balanced_predict(
+                                                        ordered_loo_scores,
+                                                        old_count=sum(1 for label in loo_truth.tolist() if label in old_label_set),
+                                                        old_labels=old_labels,
+                                                        new_labels=new_labels,
+                                                    )
+                                                else:
+                                                    loo_pred = _predict(ordered_loo_scores, class_labels)
                                                 loo_metrics = _metrics(
-                                                    _predict(loo_scores[loo_order], class_labels),
+                                                    loo_pred,
                                                     loo_truth,
                                                     old_count=sum(1 for label in loo_truth.tolist() if label in old_label_set),
                                                     old_labels=old_labels,
@@ -437,8 +482,17 @@ def main() -> None:
                                                     new_target=float(args.seen_new_target),
                                                     new_floor=float(args.seen_new_floor),
                                                 )
+                                            if bool(args.balanced_assignment):
+                                                query_pred = _balanced_predict(
+                                                    query_scores,
+                                                    old_count=int(old_query.size),
+                                                    old_labels=old_labels,
+                                                    new_labels=new_labels,
+                                                )
+                                            else:
+                                                query_pred = _predict(query_scores, class_labels)
                                             query_metrics = _metrics(
-                                                _predict(query_scores, class_labels),
+                                                query_pred,
                                                 truth,
                                                 old_count=int(old_query.size),
                                                 old_labels=old_labels,
@@ -460,6 +514,7 @@ def main() -> None:
                                                 "neg_margin": float(neg_margin),
                                                 "mutual_only": bool(mutual_only),
                                                 "scenario_aware": bool(args.scenario_aware),
+                                                "balanced_assignment": bool(args.balanced_assignment),
                                                 "k_old": int(args.k_old),
                                                 "k_new": int(args.k_new),
                                                 "pool_per_old": int(args.pool_per_old),
@@ -522,6 +577,7 @@ def main() -> None:
         "neg_threshold",
         "neg_margin",
         "mutual_only",
+        "balanced_assignment",
         "query_old_acc",
         "query_min_old_class_acc",
         "query_seen_new_acc",
