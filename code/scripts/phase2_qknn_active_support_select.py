@@ -344,6 +344,8 @@ def main() -> None:
     parser.add_argument("--query_per_new", type=int, default=75)
     parser.add_argument("--pool_per_old", type=int, default=80)
     parser.add_argument("--pool_per_new", type=int, default=80)
+    parser.add_argument("--old_role", default="target_old")
+    parser.add_argument("--new_role", default="target_new")
     parser.add_argument("--topk", type=int, default=9)
     parser.add_argument("--old_bias", type=float, default=0.0)
     parser.add_argument("--radius_norm", type=float, default=0.0)
@@ -398,7 +400,7 @@ def main() -> None:
                 source_label_to_idx=source_label_to_idx,
                 source_prototypes=source_prototypes,
                 labels=old_labels,
-                role="target_old",
+                role=str(args.old_role),
                 k=args.k_old,
                 query_per_class=args.query_per_old,
                 pool_per_class=args.pool_per_old,
@@ -415,7 +417,7 @@ def main() -> None:
                 source_label_to_idx=source_label_to_idx,
                 source_prototypes=source_prototypes,
                 labels=requested_new_labels,
-                role="target_new",
+                role=str(args.new_role),
                 k=args.k_new,
                 query_per_class=args.query_per_new,
                 pool_per_class=args.pool_per_new,
@@ -494,6 +496,8 @@ def main() -> None:
                 row["support_selection_policy"] = policy
                 row["pool_per_old"] = int(args.pool_per_old)
                 row["pool_per_new"] = int(args.pool_per_new)
+                row["old_role"] = str(args.old_role)
+                row["new_role"] = str(args.new_role)
                 row["exclude_pool_from_query"] = bool(args.exclude_pool_from_query)
                 row["diagnostic_scope"] = "active_enrollment_pool_selection_no_query_correctness"
                 row.update(support_quality)
@@ -543,6 +547,8 @@ def main() -> None:
         "query_per_new": int(args.query_per_new),
         "pool_per_old": int(args.pool_per_old),
         "pool_per_new": int(args.pool_per_new),
+        "old_role": str(args.old_role),
+        "new_role": str(args.new_role),
         "exclude_pool_from_query": bool(args.exclude_pool_from_query),
         "method": (
             f"active_select_qknn8_k{args.topk}_oldbias{args.old_bias:g}"
