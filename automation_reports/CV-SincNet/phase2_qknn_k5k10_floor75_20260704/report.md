@@ -299,3 +299,73 @@ artifact SHA256：
 | `MANYNEW10_CONFLICT_HEAD_k5.json` | `624AC38CA955CF5B9949DD8230D93C55B3D7B497BB58E80831643872747F348B` |
 
 解释：conflict-protected表示训练有正向收益，K=10最好最低新类从原`71.43%`提高到`72.86%`，并保持old_acc超过80%。但是它没有达到十新类最低`75%`，且K=5仍明显坍塌，最低新类只有`65.33%`。当前目标仍未完成。下一步应把优化重点从proxy-only source训练转向Stage2-C允许的support-only轻量度量/原型校准，但必须设计不依赖额外target query标签的验证机制；单纯加强proxy episode约束已经不足以让K=5稳定。
+
+## 2026-07-05 support-metric压缩qKNN本地优化结果
+
+新增本地脚本：`code/scripts/phase2_support_metric_qknn_probe.py`。该脚本保持qKNN路线，但不保存原始support样本；部署状态由量化support code、每类prototype、少量support-only度量变换标量组成。度量变换只用target support拟合，query label仅用于事后审计。脚本SHA256：`076FF9C9C227E0DAB89ADB4CBB8D7B0346807E1C2CD528A2BEB38281E62FFE39`。
+
+本轮只评估`K=5`和`K=10`，未扩大K数量；`pool_per_old=K`、`pool_per_new=K`，严格保持K-only support。support和query均来自`R_t=7-14`目标接收机域，并使用已导出的`MANYNEW10_CONFLICT_NORM_features_leo_repaired.npz`星地信道特征。目标仍未达成。
+
+| 方法 | K | seed | 关键配置 | old_acc | min_old | new_acc | min_new | 是否达标 |
+|---|---:|---:|---|---:|---:|---:|---:|---|
+| support-metric qKNN | 10 | 421029 | `diag_fisher,strength=0.5,topm=4,proto_mix=0.25,radius_norm=0,old_bias=0.001,neg_lambda=0.7` | 83.10% | 67.14% | 83.43% | 72.86% | 否 |
+| support-metric qKNN | 5 | 421037 | `diag_whiten_fisher,strength=0.1,topm=5,proto_mix=0.6,radius_norm=0.1,old_bias=0,neg_lambda=0` | 82.67% | 65.33% | 79.47% | 69.33% | 否 |
+| transductive proto qKNN | 10 | 421029 | query-unlabeled prototype refine,`query_mix=0.2,score_mix=0.2,iters=2` | 82.86% | 68.57% | 81.86% | 71.43% | 否 |
+| transductive proto qKNN | 5 | 421037 | query-unlabeled prototype refine,最佳为无更新等价配置 | 82.67% | 69.33% | 78.93% | 66.67% | 否 |
+| support-LOO class-bias qKNN | 10 | 421118 | 每类bias由support LOO拟合 | 71.67% | 38.57% | 80.14% | 62.86% | 否 |
+| support-LOO class-bias qKNN | 5 | 421009 | 每类bias由support LOO拟合 | 43.33% | 0.00% | 74.00% | 58.67% | 否 |
+
+### support-metric qKNN K=10逐类
+
+| 类别 | role | acc |
+|---|---|---:|
+| 14-10 | old | 82.86% |
+| 14-7 | old | 78.57% |
+| 20-15 | old | 91.43% |
+| 20-19 | old | 67.14% |
+| 6-15 | old | 82.86% |
+| 8-20 | old | 95.71% |
+| 10-10 | new | 72.86% |
+| 11-10 | new | 75.71% |
+| 18-5 | new | 92.86% |
+| 19-3 | new | 80.00% |
+| 2-13 | new | 72.86% |
+| 2-5 | new | 85.71% |
+| 3-8 | new | 88.57% |
+| 4-10 | new | 91.43% |
+| 8-18 | new | 82.86% |
+| 8-3 | new | 91.43% |
+
+### support-metric qKNN K=5逐类
+
+| 类别 | role | acc |
+|---|---|---:|
+| 14-10 | old | 82.67% |
+| 14-7 | old | 74.67% |
+| 20-15 | old | 92.00% |
+| 20-19 | old | 65.33% |
+| 6-15 | old | 85.33% |
+| 8-20 | old | 96.00% |
+| 10-10 | new | 76.00% |
+| 11-10 | new | 72.00% |
+| 18-5 | new | 85.33% |
+| 19-3 | new | 74.67% |
+| 2-13 | new | 69.33% |
+| 2-5 | new | 78.67% |
+| 3-8 | new | 86.67% |
+| 4-10 | new | 88.00% |
+| 8-18 | new | 78.67% |
+| 8-3 | new | 85.33% |
+
+### artifact SHA256
+
+| file | SHA256 |
+|---|---|
+| `strict_n10_k10_conflict_norm_metric_qknn_seed120.json` | `6A283A435E3123344682CF0DB7F49F347313D960396B377F699AF855E0477400` |
+| `strict_n10_k5_conflict_norm_metric_qknn_topm5_seed120.json` | `C8AE32A557538CB6C6B94F0FAB6D61F80BDD2C2253090469987B977FA90593DF` |
+| `strict_n10_k10_conflict_norm_transproto_seed421029_focus.json` | `AA17FEC159765D62AC21D160E8AFF024756281E9617986CCD03CB83A2992AA38` |
+| `strict_n10_k5_conflict_norm_transproto_seed421037_focus.json` | `32BF3E8BB90261CB7FBF770C563470E6173CB482EACCC7365DB2102EE77DA0DF` |
+| `strict_n10_k10_conflict_norm_classbias_seed120.json` | `DA7686E3427B240628671FABDBB421AF773DDA9DA6DA16878F1977B693EA50C5` |
+| `strict_n10_k5_conflict_norm_classbias_seed120.json` | `8E4CA684853A8FD9F85A1EE050CD3D947400829FDB92FB36CB05472CDDA7CC97` |
+
+结论：当前最好仍是support-metric qKNN。它相对原conflict-protected qKNN在K=10上把new_acc从`80.00%`提高到`83.43%`，但最低新类仍卡在`10-10/2-13=72.86%`；K=5最低新类从`65.33%`提高到`69.33%`，仍远低于`75%`。class-bias的support LOO信号与query表现不一致，会严重牺牲旧类；query-unlabeled原型更新也没有改善最低类。因此下一步不应继续调bias或transductive prototype，而应针对低类`10-10/2-13/11-10/19-3`做support选择和类间冲突诊断，重点寻找更稳定的support压缩码本或源表征，而不是扩大K。
