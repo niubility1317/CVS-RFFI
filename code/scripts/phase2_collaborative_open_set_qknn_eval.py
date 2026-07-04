@@ -813,6 +813,48 @@ def _scenario_diverse_support(
     return selected[: int(k)]
 
 
+def _strict_event_support_key(payload: Mapping[str, Any], i: int) -> tuple[str, ...]:
+    eq_ids = np.asarray(payload.get("eq_ids", np.full(len(payload["tx_ids"]), ""))).astype(str)
+    channel_views = np.asarray(payload.get("channel_views", np.full(len(payload["tx_ids"]), ""))).astype(str)
+    return (
+        str(np.asarray(payload["dataset_role"]).astype(str)[int(i)]),
+        str(np.asarray(payload["tx_ids"]).astype(str)[int(i)]),
+        str(np.asarray(payload["day_ids"]).astype(str)[int(i)]),
+        str(eq_ids[int(i)]),
+        str(np.asarray(payload["sig_ids"]).astype(str)[int(i)]),
+        str(channel_views[int(i)]),
+        str(np.asarray(payload["sat_scenarios"]).astype(str)[int(i)]),
+    )
+
+
+def _strict_event_receiver_counts(payload: Mapping[str, Any]) -> dict[tuple[str, ...], int]:
+    rx_ids = np.asarray(payload["rx_ids"]).astype(str)
+    receivers_by_key: dict[tuple[str, ...], set[str]] = defaultdict(set)
+    for i in range(len(rx_ids)):
+        receivers_by_key[_strict_event_support_key(payload, int(i))].add(str(rx_ids[int(i)]))
+    return {key: len(receivers) for key, receivers in receivers_by_key.items()}
+
+
+def _strict_event_query_preserve_support(
+    payload: Mapping[str, Any],
+    ordered: Sequence[int],
+    k: int,
+) -> list[int]:
+    ordered = [int(i) for i in ordered]
+    if int(k) <= 0:
+        return []
+    receiver_counts = _strict_event_receiver_counts(payload)
+    rank = {int(i): pos for pos, i in enumerate(ordered)}
+    ranked = sorted(
+        ordered,
+        key=lambda i: (
+            int(receiver_counts.get(_strict_event_support_key(payload, int(i)), 1)),
+            int(rank[int(i)]),
+        ),
+    )
+    return ranked[: min(int(k), len(ranked))]
+
+
 def _select_support_indices(
     payload: Mapping[str, Any],
     features: np.ndarray,
@@ -829,7 +871,11 @@ def _select_support_indices(
         return _nearest_to_centroid(features, ordered, int(k_shot))
     if policy == "scenario_diverse":
         return _scenario_diverse_support(payload, features, ordered, int(k_shot))
-    raise ValueError("support_selection_policy must be stable_first, centroid, or scenario_diverse")
+    if policy == "strict_event_query_preserve":
+        return _strict_event_query_preserve_support(payload, ordered, int(k_shot))
+    raise ValueError(
+        "support_selection_policy must be stable_first, centroid, scenario_diverse, or strict_event_query_preserve"
+    )
 
 
 def _split_support_query_selected(
@@ -858,7 +904,10 @@ def _split_support_query_selected(
             seed,
         ),
     )
-    support_candidates = ordered[: min(int(k_shot), len(ordered))]
+    if str(support_selection_policy or "").strip().lower() == "strict_event_query_preserve":
+        support_candidates = ordered
+    else:
+        support_candidates = ordered[: min(int(k_shot), len(ordered))]
     support = _select_support_indices(
         payload,
         features,
@@ -3155,6 +3204,7 @@ def parse_args() -> argparse.Namespace:
             "selective_confirm_cvs",
             "known_guarded_rescue_cvs",
             "scg_qknn_cvs",
+            "old_protected_unknown_confirm_cvs",
         ],
     )
     p.add_argument(
@@ -3302,7 +3352,7 @@ def parse_args() -> argparse.Namespace:
     p.add_argument(
         "--support_selection_policy",
         default="stable_first",
-        choices=["stable_first", "centroid", "scenario_diverse"],
+        choices=["stable_first", "centroid", "scenario_diverse", "strict_event_query_preserve"],
     )
     p.add_argument(
         "--unknown_gate_mode",

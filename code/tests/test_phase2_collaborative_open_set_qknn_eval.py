@@ -287,6 +287,37 @@ class Phase2CollaborativeOpenSetQknnEvalTest(unittest.TestCase):
         self.assertIn("margin_risk", evidence[0])
         self.assertIn("class_radius", evidence[0])
 
+    def test_strict_event_query_preserve_keeps_shared_receiver_event_for_query(self):
+        from phase2_collaborative_open_set_qknn_eval import _select_support_indices
+
+        rows = [
+            ("target_old", "old-a", "rx-a", "d1", "shared", "leo_clear_weak"),
+            ("target_old", "old-a", "rx-a", "d1", "unique-a", "leo_clear_weak"),
+            ("target_old", "old-a", "rx-b", "d1", "shared", "leo_clear_weak"),
+            ("target_old", "old-a", "rx-c", "d1", "shared", "leo_clear_weak"),
+        ]
+        payload = {
+            "dataset_role": np.asarray([r[0] for r in rows], dtype=object),
+            "tx_ids": np.asarray([r[1] for r in rows], dtype=object),
+            "rx_ids": np.asarray([r[2] for r in rows], dtype=object),
+            "day_ids": np.asarray([r[3] for r in rows], dtype=object),
+            "eq_ids": np.asarray(["eq-1" for _ in rows], dtype=object),
+            "sig_ids": np.asarray([r[4] for r in rows], dtype=object),
+            "channel_views": np.asarray(["satellite" for _ in rows], dtype=object),
+            "sat_scenarios": np.asarray([r[5] for r in rows], dtype=object),
+        }
+        features = np.eye(len(rows), dtype=np.float32)
+
+        support = _select_support_indices(
+            payload,
+            features,
+            [0, 1],
+            k_shot=1,
+            policy="strict_event_query_preserve",
+        )
+
+        self.assertEqual(support, [1])
+
     def test_mahalanobis_gate_records_class_conditional_risk(self):
         from phase2_collaborative_open_set_qknn_eval import load_feature_npz, build_collaborative_evidence
 

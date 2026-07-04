@@ -57,6 +57,7 @@ FUSION_POLICIES = {
     "selective_confirm_cvs",
     "known_guarded_rescue_cvs",
     "scg_qknn_cvs",
+    "old_protected_unknown_confirm_cvs",
 }
 
 
@@ -539,6 +540,9 @@ def _fuse_event(
         raise ValueError("receiver_class_reliability_policy must be none or support_calibrated")
     if policy not in FUSION_POLICIES:
         raise ValueError(f"fusion_policy must be one of {', '.join(sorted(FUSION_POLICIES))}")
+    requested_policy = policy
+    if policy == "old_protected_unknown_confirm_cvs":
+        policy = "scg_qknn_cvs"
     orbit_latency_weight = _validate_non_negative(orbit_latency_weight, "orbit_latency_weight")
     orbit_radius_risk_weight = _validate_non_negative(orbit_radius_risk_weight, "orbit_radius_risk_weight")
     orbit_staleness_weight = _validate_non_negative(orbit_staleness_weight, "orbit_staleness_weight")
@@ -2084,6 +2088,8 @@ def _fuse_event(
     return {
         "decision": decision,
         "output_label": output_label,
+        "requested_fusion_policy": str(requested_policy),
+        "internal_fusion_policy": str(policy),
         "unknown_risk": float(unknown_risk),
         "score_risk": float(score_risk),
         "radius_risk": float(radius_risk),

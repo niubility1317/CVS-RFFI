@@ -430,6 +430,77 @@ class CollaborativeOpenSetQknnEvalTest(unittest.TestCase):
         self.assertIn("unknown_evidence", events["unk-1"]["scg_qknn_block_reason"])
         self.assertEqual(result["counts"]["2"]["scg_qknn_accept_count"], 1)
 
+    def test_old_protected_unknown_confirm_alias_preserves_policy_name(self):
+        from evaluation.collaborative_open_set_qknn_eval import evaluate_collaborative_open_set_evidence
+
+        def row(event_id, receiver_id, role, truth, label, score, margin, risk, pvalue, reliability):
+            return {
+                "event_id": event_id,
+                "receiver_id": receiver_id,
+                "role": role,
+                "true_label": truth,
+                "predicted_label": label,
+                "known_score": score,
+                "known_margin": margin,
+                "unknown_risk": risk,
+                "score_risk": risk,
+                "radius_risk": risk,
+                "margin_risk": risk,
+                "class_shell_risk": risk,
+                "class_conformal_pvalue": pvalue,
+                "class_conformal_support_count": 3,
+                "receiver_class_reliability": reliability,
+                "support_density": reliability,
+                "latency_ms": 1.0,
+                "bytes": 40,
+            }
+
+        rows = [
+            row("old-1", "rx-a", "old", "old-a", "old-a", 0.90, 0.20, 0.10, 0.95, 0.95),
+            row("old-1", "rx-b", "old", "old-a", "old-a", 0.86, 0.18, 0.12, 0.92, 0.92),
+            row("unk-1", "rx-a", "unknown", "__unknown__", "old-a", 0.70, 0.12, 0.92, 0.90, 0.90),
+            row("unk-1", "rx-b", "unknown", "__unknown__", "old-a", 0.68, 0.11, 0.91, 0.88, 0.88),
+        ]
+
+        result = evaluate_collaborative_open_set_evidence(
+            rows,
+            collab_counts=[2],
+            fusion_policy="old_protected_unknown_confirm_cvs",
+            label_fusion_policy="weighted_vote_margin",
+            receiver_class_reliability_policy="support_calibrated",
+            accept_margin_threshold=0.10,
+            consensus_score_threshold=0.10,
+            scorer_component_vote_threshold=0.50,
+            candidate_set_min_receivers=2,
+            candidate_set_min_top1_receivers=2,
+            candidate_set_min_conformal_pvalue=0.50,
+            candidate_set_min_label_receiver_class_reliability=0.75,
+            candidate_set_max_label_unknown_risk=0.80,
+            candidate_set_max_event_unknown_risk=0.80,
+            candidate_set_max_label_risk_component_agreement=0.50,
+            candidate_set_unknown_reject_risk=0.85,
+            candidate_set_shell_reject_risk=0.85,
+            candidate_set_max_receiver_pair_label_disagreement=0.25,
+            candidate_set_max_receiver_pair_unknown_risk_range=0.25,
+            old_gate_min_support_density=0.75,
+            include_event_results=True,
+            protocol_metadata={
+                "target_receiver_ids": ["rx-a", "rx-b"],
+                "source_receiver_ids": ["src-a"],
+                "old_tx_ids": ["old-a"],
+                "seen_new_tx_ids": ["new-a"],
+                "unknown_tx_ids": ["unk-a"],
+                "target_channel_view": "leo_clear_weak",
+            },
+        )
+
+        self.assertEqual(result["fusion_policy"], "old_protected_unknown_confirm_cvs")
+        events = {item["event_id"]: item for item in result["counts"]["2"]["event_results"]}
+        self.assertEqual(events["old-1"]["decision"], "accept")
+        self.assertEqual(events["unk-1"]["decision"], "unknown_reject")
+        self.assertEqual(events["old-1"]["requested_fusion_policy"], "old_protected_unknown_confirm_cvs")
+        self.assertEqual(events["old-1"]["internal_fusion_policy"], "scg_qknn_cvs")
+
     def test_scg_qknn_support_protection_overrides_channel_shift_unknown_risk(self):
         from evaluation.collaborative_open_set_qknn_eval import evaluate_collaborative_open_set_evidence
 

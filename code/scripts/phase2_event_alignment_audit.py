@@ -101,7 +101,14 @@ def _base_row_from_npz(z: Any, i: int, *, split: str = "all") -> dict[str, Any]:
     }
 
 
-def _load_npz_rows(feature_npz: Path, *, k_shot: int, query_per_class: int, seed: int) -> tuple[list[dict[str, Any]], dict[str, Any]]:
+def _load_npz_rows(
+    feature_npz: Path,
+    *,
+    k_shot: int,
+    query_per_class: int,
+    seed: int,
+    support_selection_policy: str,
+) -> tuple[list[dict[str, Any]], dict[str, Any]]:
     z = np.load(feature_npz, allow_pickle=True)
     manifest = json.loads(str(z["manifest_json"].item())) if "manifest_json" in z.files else {}
     rows: list[dict[str, Any]] = []
@@ -122,7 +129,7 @@ def _load_npz_rows(feature_npz: Path, *, k_shot: int, query_per_class: int, seed
                 k_shot=k_shot,
                 query_per_class=query_per_class,
                 seed=seed,
-                support_selection_policy="stable_first",
+                support_selection_policy=support_selection_policy,
             )
             rows.extend(_base_row_from_npz(z, i, split="support") for i in support)
             rows.extend(_base_row_from_npz(z, i, split="query") for i in query)
@@ -136,7 +143,7 @@ def _load_npz_rows(feature_npz: Path, *, k_shot: int, query_per_class: int, seed
                 k_shot=k_shot,
                 query_per_class=query_per_class,
                 seed=seed,
-                support_selection_policy="stable_first",
+                support_selection_policy=support_selection_policy,
             )
             rows.extend(_base_row_from_npz(z, i, split="support") for i in support)
             rows.extend(_base_row_from_npz(z, i, split="query") for i in query)
@@ -196,6 +203,11 @@ def _main(argv: Sequence[str] | None = None) -> int:
     parser.add_argument("--k_shot", type=int, default=8)
     parser.add_argument("--query_per_class", type=int, default=20)
     parser.add_argument("--seed", type=int, default=4070303)
+    parser.add_argument(
+        "--support_selection_policy",
+        default="stable_first",
+        choices=["stable_first", "centroid", "scenario_diverse", "strict_event_query_preserve"],
+    )
     args = parser.parse_args(argv)
 
     rows, manifest = _load_npz_rows(
@@ -203,6 +215,7 @@ def _main(argv: Sequence[str] | None = None) -> int:
         k_shot=int(args.k_shot),
         query_per_class=int(args.query_per_class),
         seed=int(args.seed),
+        support_selection_policy=str(args.support_selection_policy),
     )
     target_receivers = _target_receivers_from_manifest(manifest)
     result = audit_rows(rows, target_receivers=target_receivers, receiver_count=len(target_receivers), split_filter="query")
@@ -210,6 +223,7 @@ def _main(argv: Sequence[str] | None = None) -> int:
     result["manifest_checkpoint"] = manifest.get("checkpoint", "")
     result["target_channel_view"] = manifest.get("target_channel_view", "")
     result["target_channel_scenarios"] = manifest.get("target_channel_scenarios", [])
+    result["support_selection_policy"] = str(args.support_selection_policy)
     args.output_json.parent.mkdir(parents=True, exist_ok=True)
     args.output_json.write_text(json.dumps(result, ensure_ascii=False, indent=2, sort_keys=True), encoding="utf-8")
     _write_group_csv(args.output_groups_csv, rows, target_receivers)
