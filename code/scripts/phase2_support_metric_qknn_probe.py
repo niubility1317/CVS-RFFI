@@ -481,6 +481,22 @@ def _calibrate_score_columns(scores: np.ndarray, mode: str) -> np.ndarray:
     raise ValueError(f"unsupported score_calibration mode: {mode}")
 
 
+def _assignment_margin_adjust_scores(scores: np.ndarray, weight: float, clip: float) -> np.ndarray:
+    if float(weight) == 0.0:
+        return scores
+    score_matrix = np.asarray(scores, dtype=np.float64)
+    if score_matrix.shape[1] <= 1:
+        return score_matrix
+    sorted_scores = np.sort(score_matrix, axis=1)
+    top1 = sorted_scores[:, -1:]
+    top2 = sorted_scores[:, -2:-1]
+    max_other = np.where(score_matrix == top1, top2, top1)
+    margin = score_matrix - max_other
+    if float(clip) > 0.0:
+        margin = np.clip(margin, -float(clip), float(clip))
+    return score_matrix + float(weight) * margin
+
+
 def _source_old_guard_adjust_scores(
     scores: np.ndarray,
     *,
@@ -938,6 +954,8 @@ def _evaluate_metric_qknn(
     mahal_proto_diag_mix: float,
     mahal_proto_clip: float,
     score_calibration: str,
+    assignment_margin_weight: float,
+    assignment_margin_clip: float,
     source_guard_mode: str,
     source_guard_weight: float,
     source_guard_conf_min: float,
@@ -1209,6 +1227,11 @@ def _evaluate_metric_qknn(
         )
         scores = scores + float(mahal_proto_weight) * mahal_scores
     scores = _calibrate_score_columns(scores, str(score_calibration))
+    scores = _assignment_margin_adjust_scores(
+        scores,
+        weight=float(assignment_margin_weight),
+        clip=float(assignment_margin_clip),
+    )
     scores, source_proto_anchor_count, stored_source_proto_anchor_scalars = _source_proto_anchor_adjust_scores(
         scores,
         adapted_features=adapted,
@@ -1328,6 +1351,8 @@ def _evaluate_metric_qknn(
         "mahal_proto_diag_mix": float(mahal_proto_diag_mix),
         "mahal_proto_clip": float(mahal_proto_clip),
         "score_calibration": str(score_calibration),
+        "assignment_margin_weight": float(assignment_margin_weight),
+        "assignment_margin_clip": float(assignment_margin_clip),
         "source_guard_mode": str(source_guard_mode),
         "source_guard_weight": float(source_guard_weight),
         "source_guard_conf_min": float(source_guard_conf_min),
@@ -1459,6 +1484,8 @@ def main() -> None:
     parser.add_argument("--mahal_proto_diag_mix_grid", default="0.5")
     parser.add_argument("--mahal_proto_clip_grid", default="3.0")
     parser.add_argument("--score_calibration_grid", default="none")
+    parser.add_argument("--assignment_margin_weight_grid", default="0")
+    parser.add_argument("--assignment_margin_clip_grid", default="1.0")
     parser.add_argument("--source_guard_mode_grid", default="none")
     parser.add_argument("--source_guard_weight_grid", default="0")
     parser.add_argument("--source_guard_conf_min_grid", default="0")
@@ -1551,6 +1578,8 @@ def main() -> None:
             qknn._parse_float_csv(args.mahal_proto_diag_mix_grid),
             qknn._parse_float_csv(args.mahal_proto_clip_grid),
             qknn._parse_csv(args.score_calibration_grid),
+            qknn._parse_float_csv(args.assignment_margin_weight_grid),
+            qknn._parse_float_csv(args.assignment_margin_clip_grid),
             qknn._parse_csv(args.source_guard_mode_grid),
             qknn._parse_float_csv(args.source_guard_weight_grid),
             qknn._parse_float_csv(args.source_guard_conf_min_grid),
@@ -1646,6 +1675,8 @@ def main() -> None:
                 mahal_proto_diag_mix,
                 mahal_proto_clip,
                 score_calibration,
+                assignment_margin_weight,
+                assignment_margin_clip,
                 source_guard_mode,
                 source_guard_weight,
                 source_guard_conf_min,
@@ -1717,6 +1748,8 @@ def main() -> None:
                     mahal_proto_diag_mix=float(mahal_proto_diag_mix),
                     mahal_proto_clip=float(mahal_proto_clip),
                     score_calibration=str(score_calibration),
+                    assignment_margin_weight=float(assignment_margin_weight),
+                    assignment_margin_clip=float(assignment_margin_clip),
                     source_guard_mode=str(source_guard_mode),
                     source_guard_weight=float(source_guard_weight),
                     source_guard_conf_min=float(source_guard_conf_min),
@@ -1860,6 +1893,8 @@ def main() -> None:
         "mahal_proto_diag_mix",
         "mahal_proto_clip",
         "score_calibration",
+        "assignment_margin_weight",
+        "assignment_margin_clip",
         "source_guard_mode",
         "source_guard_weight",
         "source_guard_conf_min",

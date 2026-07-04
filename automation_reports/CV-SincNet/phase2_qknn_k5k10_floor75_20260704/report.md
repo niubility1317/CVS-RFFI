@@ -971,3 +971,40 @@ artifact SHA256：
 代码验证：`conda run -n ssr-gpu python -m py_compile code\scripts\phase2_support_metric_qknn_probe.py`通过。
 
 结论：目标仍未完成。两个新增压缩头都满足“不保存原始support”的部署约束，但不能把K=10的`10-10`从`52/70`提升到`53/70`。当前最可信判断仍是：K=10瓶颈主要来自`10-10/20-19/14-7`表征纠缠和均衡分配配额交换，继续做query无监督后处理收益很小；下一步应优先做表征侧hard-pair分离或支持集小型可训练adapter，并用同一K=5/K=10协议验证。
+
+### 2026-07-05 assignment-margin均衡分配诊断
+
+本轮继续限定`K=5,K=10`，不扩大K数量。新增`assignment_margin`分配目标：在balanced assignment前，对每个query-class分数加入该类相对其它类最高分的margin项，测试“配额误占用”是否来自匈牙利分配过度偏向绝对分数而忽略类专属性。该项不使用query标签，部署侧不保存原始support，仅新增两个标量超参。
+
+固定当前K=10最强底座`diag_fisher + pair_gaussian + pair_fisher + ridge_head`，在seed`421029`上分别扫正负margin权重：
+
+| 诊断 | 最好配置 | old_acc | min_old | new_acc | min_new | 逐类瓶颈 |
+|---|---|---:|---:|---:|---:|---|
+| 正margin | `weight=0,clip=0.25` | 85.00% | 71.43% | 85.00% | 74.29% | `10-10=74.29%` |
+| 负margin | `weight=-0.02,clip=0.25` | 85.00% | 71.43% | 85.00% | 74.29% | `10-10=74.29%` |
+
+负margin最好行逐新类性能：
+
+| 类别 | acc |
+|---|---:|
+| `10-10` | 74.29% |
+| `11-10` | 81.43% |
+| `18-5` | 91.43% |
+| `19-3` | 88.57% |
+| `2-13` | 75.71% |
+| `2-5` | 85.71% |
+| `3-8` | 87.14% |
+| `4-10` | 92.86% |
+| `8-18` | 81.43% |
+| `8-3` | 91.43% |
+
+artifact SHA256：
+
+| file | SHA256 |
+|---|---|
+| `k10_assignment_margin_seed421029.json` | `EDF273F44EB588BEA5AFE405670545DF809E89263DA65B487C0453ED6894F562` |
+| `k10_assignment_margin_negative_seed421029.json` | `BF4CC1C3FA801C915B2A8BAA3A068A8495AC77D44178FEBE11225EC9F361495E` |
+
+代码验证：`conda run -n ssr-gpu python -m py_compile code\scripts\phase2_support_metric_qknn_probe.py`通过。
+
+结论：目标仍未完成。assignment-margin不能把K=10的`10-10`越过75%，且最好正向权重退回0；负权重也没有改变最低类。该结果进一步排除“只需修改均衡分配目标”的解释，瓶颈仍指向`10-10/20-19/14-7`在现有LEO特征空间中的真实纠缠。下一步应停止增加分配后处理，转向支持集小型可训练adapter或表征侧hard-pair重训，并保持同一K=5/K=10审计口径。
