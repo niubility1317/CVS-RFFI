@@ -79,6 +79,10 @@ class SmecConfig:
     old_boundary_quantile: float = 0.05
     old_boundary_slack: float = 0.00
     old_boundary_min_risk: float = 0.95
+    proxy_void_weight: float = 0.0
+    proxy_void_temperature: float = 0.03
+    proxy_void_quantile: float = 0.90
+    proxy_void_slack: float = 0.01
     obace_conformal_weight: float = 0.0
     obace_conformal_min_risk: float = 0.80
     obace_absolute_risk_gate: float = 0.70
@@ -112,6 +116,8 @@ class SmecReceiverModel:
     energy_threshold: float | None
     old_boundary_margin_thresholds: dict[str, float]
     global_old_boundary_margin_threshold: float
+    proxy_void_anchors: np.ndarray
+    proxy_void_threshold: float
     obace_conformal_scores: dict[str, tuple[float, ...]]
     global_obace_conformal_scores: tuple[float, ...]
 
@@ -227,6 +233,23 @@ def build_support_model(
         default=0.0,
     ) - float(config.old_boundary_slack)
 
+    proxy_void_anchors = np.zeros((0, features.shape[1] if features.ndim == 2 else 0), dtype=np.float32)
+    proxy_void_threshold = math.inf
+    if len(centroids) >= 2:
+        anchors: list[np.ndarray] = []
+        for i, left in enumerate(unique_labels):
+            for right in unique_labels[i + 1 :]:
+                midpoint = centroids[left] + centroids[right]
+                norm = float(np.linalg.norm(midpoint))
+                if norm > 1e-12:
+                    anchors.append((midpoint / norm).astype(np.float32))
+        if anchors:
+            proxy_void_anchors = np.stack(anchors, axis=0).astype(np.float32)
+            support_void_sims = np.max(np.clip(features @ proxy_void_anchors.T, -1.0, 1.0), axis=1)
+            proxy_void_threshold = _quantile(support_void_sims.tolist(), config.proxy_void_quantile) + float(
+                config.proxy_void_slack
+            )
+
     obace_conformal_scores: dict[str, tuple[float, ...]] = {}
     all_obace_scores: list[float] = []
     if features.shape[0] >= 1:
@@ -265,6 +288,8 @@ def build_support_model(
         energy_threshold=energy_threshold,
         old_boundary_margin_thresholds=old_boundary_margin_thresholds,
         global_old_boundary_margin_threshold=float(global_old_boundary_margin_threshold),
+        proxy_void_anchors=proxy_void_anchors,
+        proxy_void_threshold=float(proxy_void_threshold),
         obace_conformal_scores=obace_conformal_scores,
         global_obace_conformal_scores=tuple(all_obace_scores),
     )
@@ -297,7 +322,7 @@ def _smec_risks(
     feature: np.ndarray,
     logits: np.ndarray | None,
     config: SmecConfig,
-) -> tuple[float, float, float, float, float, float, float, float, float, float, float, int]:
+) -> tuple[float, float, float, float, float, float, float, float, float, float, float, int, float, float, float]:
     feat = _normalize_rows(np.asarray(feature, dtype=np.float32).reshape(1, -1))[0]
     centroid = model.centroids.get(str(label))
     if centroid is None:
@@ -336,6 +361,14 @@ def _smec_risks(
                 (old_boundary_threshold - old_boundary_margin)
                 / max(float(config.old_boundary_temperature), 1e-6)
             )
+    proxy_void_similarity = -math.inf
+    proxy_void_threshold = float(model.proxy_void_threshold)
+    proxy_void_risk = 0.0
+    if float(config.proxy_void_weight) > 0.0 and model.proxy_void_anchors.size:
+        proxy_void_similarity = float(np.max(np.clip(model.proxy_void_anchors @ feat, -1.0, 1.0)))
+        proxy_void_risk = _sigmoid(
+            (proxy_void_similarity - proxy_void_threshold) / max(float(config.proxy_void_temperature), 1e-6)
+        )
     conformal_scores = model.obace_conformal_scores.get(str(label), model.global_obace_conformal_scores)
     obace_nonconformity = (proto_dist / max(float(proto_threshold), 1e-6)) + (
         knn_dist / max(float(model.knn_threshold), 1e-6)
@@ -357,6 +390,8 @@ def _smec_risks(
         absolute_fail_count += 1
     if float(config.old_boundary_weight) > 0.0 and old_boundary_risk >= float(config.old_boundary_min_risk):
         absolute_fail_count += 1
+    if float(config.proxy_void_weight) > 0.0 and proxy_void_risk >= gate:
+        absolute_fail_count += 1
     if float(config.obace_conformal_weight) > 0.0 and obace_conformal_risk >= float(config.obace_conformal_min_risk):
         absolute_fail_count += 1
     aux = _unit(
@@ -364,6 +399,7 @@ def _smec_risks(
         + float(config.knn_weight) * knn_risk
         + float(config.energy_weight) * energy_risk
         + float(config.old_boundary_weight) * old_boundary_risk
+        + float(config.proxy_void_weight) * proxy_void_risk
         + float(config.obace_conformal_weight) * obace_conformal_risk
     )
     return (
@@ -379,6 +415,9 @@ def _smec_risks(
         obace_conformal_pvalue,
         obace_nonconformity,
         absolute_fail_count,
+        proxy_void_risk,
+        proxy_void_similarity,
+        proxy_void_threshold,
     )
 
 
@@ -406,13 +445,13 @@ def augment_smec_evidence(
         }
     risk_cache: dict[
         tuple[str, str],
-        tuple[float, float, float, float, float, float, float, float, float, float, float, int],
+        tuple[float, float, float, float, float, float, float, float, float, float, float, int, float, float, float],
     ] = {}
     event_obace_stats: dict[str, dict[str, float]] = {}
 
     def _risk_for(
         source: Mapping[str, Any],
-    ) -> tuple[float, float, float, float, float, float, float, float, float, float, float, int] | None:
+    ) -> tuple[float, float, float, float, float, float, float, float, float, float, float, int, float, float, float] | None:
         rx = str(source.get("receiver_id", ""))
         event_id = str(source.get("event_id", ""))
         key = (event_id, rx)
@@ -493,6 +532,9 @@ def augment_smec_evidence(
             obace_conformal_pvalue,
             obace_nonconformity,
             obace_absolute_fail_count,
+            proxy_void_risk,
+            proxy_void_similarity,
+            proxy_void_threshold,
         ) = risk_values
         obace_event = _event_obace_for(event_id)
         obace_event_risk = float(obace_event.get("risk", 0.0))
@@ -611,6 +653,9 @@ def augment_smec_evidence(
         row["smec_knn_risk"] = knn_risk
         row["smec_energy_risk"] = energy_risk
         row["smec_old_boundary_risk"] = old_boundary_risk
+        row["smec_proxy_void_risk"] = proxy_void_risk
+        row["smec_proxy_void_similarity"] = proxy_void_similarity
+        row["smec_proxy_void_threshold"] = proxy_void_threshold
         row["smec_obace_conformal_risk"] = obace_conformal_risk
         row["smec_obace_conformal_pvalue"] = obace_conformal_pvalue
         row["smec_obace_nonconformity"] = obace_nonconformity
@@ -978,9 +1023,34 @@ def _main(argv: Sequence[str] | None = None) -> int:
                 obace_void_override_max_label_agreement=0.80,
                 obace_void_override_floor=0.90,
             )
+        elif profile == "proxy_void":
+            profile_configs["proxy_void"] = SmecConfig(
+                old_label_aux_policy="obace_event_guard",
+                old_lift_min_weakness=0.50,
+                proto_weight=0.50,
+                knn_weight=0.40,
+                energy_weight=0.08,
+                old_boundary_weight=0.20,
+                old_boundary_min_risk=0.98,
+                proxy_void_weight=0.45,
+                proxy_void_temperature=0.03,
+                proxy_void_quantile=0.90,
+                proxy_void_slack=0.01,
+                obace_conformal_weight=0.45,
+                obace_conformal_min_risk=0.85,
+                obace_absolute_risk_gate=0.70,
+                obace_old_min_abs_failures=3,
+                obace_nonold_min_abs_failures=3,
+                obace_event_weight=0.60,
+                obace_event_vote_min_risk=0.55,
+                obace_event_min_votes=4,
+                obace_event_min_mean_risk=0.75,
+                obace_event_old_min_local_failures=2,
+                obace_event_nonold_min_local_failures=2,
+            )
         else:
             raise ValueError(
-                "unknown SMEC profile; expected standard, old_lossless, consensus_guard, old_boundary_guard, obace, obace_event, or obace_void"
+                "unknown SMEC profile; expected standard, old_lossless, consensus_guard, old_boundary_guard, obace, obace_event, obace_void, or proxy_void"
             )
     build_config = next(iter(profile_configs.values()))
     payload = load_feature_npz(args.feature_npz)
@@ -1023,6 +1093,8 @@ def _main(argv: Sequence[str] | None = None) -> int:
             algorithm = "obace_event_ci"
         if profile == "obace_void":
             algorithm = "obace_void_ci"
+        if profile == "proxy_void":
+            algorithm = "proxy_void_ci"
         smec_rows = augment_smec_evidence(
             base_rows,
             models,

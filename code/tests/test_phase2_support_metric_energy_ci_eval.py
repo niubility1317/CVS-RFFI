@@ -222,6 +222,60 @@ def test_smec_builds_obace_conformal_scores_from_support_only():
     assert len(model.obace_conformal_scores["new-a"]) == 3
 
 
+def test_smec_builds_proxy_void_anchors_from_known_support_only():
+    cfg = _config(proxy_void_quantile=0.90, proxy_void_slack=0.01)
+    model = _two_class_support_model(cfg)
+
+    assert model.proxy_void_anchors.shape == (1, 2)
+    assert model.proxy_void_threshold > 0.70
+    assert model.proxy_void_threshold < 0.80
+    assert set(model.support_labels) == {"old-a", "new-a"}
+
+
+def test_smec_proxy_void_risk_lifts_boundary_query_without_unknown_fit():
+    cfg = _config(
+        proto_weight=0.0,
+        knn_weight=0.0,
+        old_boundary_weight=0.0,
+        obace_conformal_weight=0.0,
+        proxy_void_weight=1.0,
+        proxy_void_quantile=0.90,
+        proxy_void_slack=0.01,
+        proxy_void_temperature=0.03,
+    )
+    rows = [_row("e0", score=0.20, margin=0.01, risk=0.05, label="new-a", role="unknown", true_label="unknown-a")]
+    models = {"rx-a": _two_class_support_model(cfg)}
+    query_features = {("e0", "rx-a"): np.asarray([0.70, 0.70], dtype=np.float32)}
+
+    out = augment_smec_evidence(rows, models, query_features, {}, cfg, old_labels={"old-a"})
+
+    assert out[0]["smec_proxy_void_risk"] > 0.90
+    assert out[0]["smec_obace_absolute_fail_count"] == 1
+    assert out[0]["unknown_risk"] > 0.50
+    assert out[0]["smec_unknown_query_used_for_threshold"] == "false"
+
+
+def test_smec_proxy_void_risk_stays_low_for_support_like_old_query():
+    cfg = _config(
+        proto_weight=0.0,
+        knn_weight=0.0,
+        old_boundary_weight=0.0,
+        obace_conformal_weight=0.0,
+        proxy_void_weight=1.0,
+        proxy_void_quantile=0.90,
+        proxy_void_slack=0.01,
+        proxy_void_temperature=0.03,
+    )
+    rows = [_row("e0", score=0.95, margin=0.30, risk=0.05, label="old-a")]
+    models = {"rx-a": _two_class_support_model(cfg)}
+    query_features = {("e0", "rx-a"): np.asarray([1.00, 0.00], dtype=np.float32)}
+
+    out = augment_smec_evidence(rows, models, query_features, {}, cfg, old_labels={"old-a"})
+
+    assert out[0]["smec_proxy_void_risk"] < 0.50
+    assert out[0]["unknown_risk"] == 0.05
+
+
 def test_smec_obace_guard_lifts_high_consensus_unknown_with_absolute_failures():
     cfg = _config(
         old_label_aux_policy="obace_guard",
