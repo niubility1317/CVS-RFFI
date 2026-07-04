@@ -470,3 +470,38 @@ artifact SHA256：
 | success criterion | K=5和K=10均满足`old_acc>=80%`且每个new类`>=75%` |
 
 待执行远端命令：`bash code/scripts/launch_phase2_adv3b02_manynew10_proxy_hardpair_20260705.sh`。发射前必须完成N607 SSH preflight、同步上述两个脚本、远端`py_compile`和`bash -n`验证，并记录PID/GPU/log路径。
+
+### N607发射记录
+
+2026-07-05 03:00 CST已发射正式任务。直连preflight通过：N607主机`dell-DSS8440`，项目根目录`/home/szu2070436088/2510044040/CV-SincNet`可见，GPU 0-7可见。发射前进程/GPU检查显示无训练进程，GPU 0-7空闲。
+
+同步文件：
+
+| local file | remote file |
+|---|---|
+| `code/scripts/train_apply_phase1_iq_preadapter_20260703.py` | `/home/szu2070436088/2510044040/CV-SincNet/code/scripts/train_apply_phase1_iq_preadapter_20260703.py` |
+| `code/scripts/launch_phase2_adv3b02_manynew10_proxy_hardpair_20260705.sh` | `/home/szu2070436088/2510044040/CV-SincNet/code/scripts/launch_phase2_adv3b02_manynew10_proxy_hardpair_20260705.sh` |
+| `code/scripts/phase2_support_metric_qknn_probe.py` | `/home/szu2070436088/2510044040/CV-SincNet/code/scripts/phase2_support_metric_qknn_probe.py` |
+
+远端验证：
+
+| command | result |
+|---|---|
+| `/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -m py_compile code/scripts/train_apply_phase1_iq_preadapter_20260703.py code/scripts/phase2_support_metric_qknn_probe.py` | PASS |
+| `bash -n code/scripts/launch_phase2_adv3b02_manynew10_proxy_hardpair_20260705.sh` | PASS |
+| `bash code/scripts/launch_phase2_adv3b02_manynew10_proxy_hardpair_20260705.sh --dry-run` | PASS |
+
+正式提交命令：
+
+`nohup env RUN_ID=phase2_adv3b02_manynew10_proxy_hardpair_20260705 GPUS_CSV=0,1 bash code/scripts/launch_phase2_adv3b02_manynew10_proxy_hardpair_20260705.sh > logs/phase2_adv3b02_manynew10_proxy_hardpair_20260705/launcher.out 2>&1 &`
+
+| field | value |
+|---|---|
+| launcher_pid | `2513737` |
+| launcher_log | `/home/szu2070436088/2510044040/CV-SincNet/logs/phase2_adv3b02_manynew10_proxy_hardpair_20260705/launcher.out` |
+| SAFE process | PID`2513745`,GPU`0`,`MANYNEW10_PROXY_HP_NORM_SAFE` |
+| STRONG process | PID`2513744`,GPU`1`,`MANYNEW10_PROXY_HP_NORM_STRONG` |
+| train logs | `/home/szu2070436088/2510044040/CV-SincNet/logs/phase2_adv3b02_manynew10_proxy_hardpair_20260705/*_train_export.out` |
+| expected outputs | `/home/szu2070436088/2510044040/CV-SincNet/runs/phase2_adv3b02_manynew10_proxy_hardpair_20260705/PHASE2_MANYNEW10_RX7_14/<variant>/` |
+
+提交后短监控：GPU 0/1各有约`1481 MiB`显存占用并运行对应训练进程；GPU 2-7空闲。短SSH命令结束后，本地无残留`ssh.exe`，无到`172.31.111.215:22`的ESTABLISHED连接。
