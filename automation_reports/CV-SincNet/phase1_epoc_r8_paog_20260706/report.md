@@ -121,3 +121,19 @@ Snapshot:
 |training useful|`best_test_tx`和sat/receiver floor不低于R7同类水平，同时proxy AUC明显超过0.5、virtual accept显著下降。|
 |进入Stage2-C条件|训练完成并导出prototype后，使用qknn8和协同推理`M=1..target receiver count`复评旧类、seen-new和真实unknown拒识。|
 |失败判据|若proxy AUC仍低于0.5或Stage2-C old/seen-new/unknown仍远离目标，则表明当前损失族仍不足，需要新增显式Gaussian/Mahalanobis或轻量reject head，而不是继续只调壳层权重。|
+
+## 07:34 CST监控更新
+
+N607只读预检PASS，直连`N607`可用，项目根目录和GPU可见。07:34 CST短SSH监控显示两个R8 PAOG候选仍在运行：GPU0显存约2375MiB，GPU1显存约2301MiB，GPU2-7约10MiB。远端进程仍为启动时记录的`EPOC_R8_PAOG_RADIUS_ENERGY`和`EPOC_R8_PAOG_SHELL_BALANCED`训练进程，未进入完成态。
+
+|candidate|epoch|best_epoch|best_score|best_test_tx|latest_val_tx|latest_train_tx|proxy_active|proxy_auc|virtual_accept|source_overflow|nonfinite/skip|prototype|判定|
+|---|---:|---:|---:|---:|---:|---:|---:|---|---|---:|---|---|---|
+|`EPOC_R8_PAOG_RADIUS_ENERGY`|19/200|10|84.7489|89.5191|98.6250|91.8149|0|NA|NA|0.9004|CSV无非有限单元；`train_skipped_nonfinite_grad=0`|absent|训练继续；proxy尚未激活，不可判断unknown拒识。|
+|`EPOC_R8_PAOG_SHELL_BALANCED`|18/200|10|84.0791|89.2490|98.6429|93.3053|0|NA|NA|0.8397|CSV无非有限单元；`train_skipped_nonfinite_grad=0.0154`，日志尾部一次`GRAD total=nan`已被训练记录为跳过|absent|训练继续；需要持续观察非有限梯度频率和proxy激活后的分离。|
+
+边界解释：
+
+- 当前`train_proxy_unknown_active=0`，RADIUS计划E34激活proxy，SHELL计划E30激活proxy；因此本次监控不能支持unknown拒识性能结论。
+- 两个候选均未导出`phase2_zid_prototypes.pt`，Stage2-C qknn8协同推理`M=1..target receiver count`仍必须延后。
+- 日志中的`TEST overall_tx=nan% (0/0)`和sat/strict nan来自当前测试窗口缺失或字段未激活，不等同于训练崩溃；SHELL的非有限梯度跳过是需要追踪的异常信号，但CSV没有非有限单元且进程仍写入safe checkpoint。
+- 本轮仍只能声明“R8训练运行中、尚不可评估目标完成”。不得声明Stage2-C成功、部署成功或未知拒识改善。
