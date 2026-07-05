@@ -339,6 +339,37 @@ Interpretation:
 
 Current goal status: active, not achieved.
 
+## 2026-07-06 Local Follow-up: query-structure separability audit
+
+Objective: test whether the current N20 feature file contains a usable unlabeled query-cluster structure for an adaptive transductive qKNN variant. This is a diagnostic only; query labels are used only for the oracle cluster-naming audit.
+
+Diagnostic setup:
+
+- Feature file: `n20_features/features_n20_norm.npz`.
+- Split: seed421023, `old_role=target_old`, `new_role=target_unknown`, `pool_per_old=10`, `pool_per_new=10`.
+- New labels are read from the fingerprinted current rerun: `10-10,11-10,18-5,19-3,2-13,2-5,3-8,4-10,8-18,8-3,1-1,1-10,1-11,1-12,1-14,1-15,1-16,1-18,1-19,1-2`.
+- Method: spherical K-means on new-query embeddings, initialized by K-shot support prototypes.
+- Audit modes:
+  - `oracle`: assign clusters to true labels with Hungarian matching. This uses query labels only to measure whether the query geometry is clusterable.
+  - `support_named`: assign clusters to labels using support-prototype similarity. This is the deployable naming approximation.
+
+Result summary:
+
+| scope | K | query/class | mode | new_acc | min_new | weakest classes |
+|---|---:|---:|---|---:|---:|---|
+| N20 | 10 | 70 | oracle cluster naming | 30.57% | 0.00% | `1-10` 0.00%,`19-3` 5.71%,`1-1` 5.71% |
+| N20 | 10 | 70 | support-named clusters | 24.07% | 0.00% | `1-14` 0.00%,`19-3` 2.86%,`3-8` 2.86% |
+| N20 | 5 | 75 | oracle cluster naming | 31.13% | 1.33% | `1-10` 1.33%,`19-3` 6.67%,`18-5` 10.67% |
+| N20 | 5 | 75 | support-named clusters | 26.93% | 2.67% | `1-10` 2.67%,`1-2` 2.67%,`1-12` 4.00% |
+
+Interpretation:
+
+- This diagnostic does not replace qKNN evaluation, but it explains why the recent KNN-head variants are not lifting the N20 floor: the current query embeddings do not form stable class clusters for the hardest ManyTx groups.
+- The failure remains severe even when query labels are allowed only for oracle cluster naming, so a pure transductive qKNN assignment mechanism is unlikely to reach `min_new>=75%` on this feature file.
+- The next credible route is to restore/reproduce the archived stronger feature state or add representation-side adaptation before the qKNN memory head. More support-compressed score surgery is not a high-probability path to the active target.
+
+Current goal status: active, not achieved.
+
 ## 2026-07-06 Local Follow-up: support LOO pair-rescue diagnostic
 
 Objective: test a more targeted compressed qKNN variant for dense new-class confusion. Instead of storing raw support samples or sweeping a generic classifier head, the new diagnostic uses leave-one-out support predictions to identify directed confusion pairs, then stores a small pairwise linear margin for the selected pairs.
