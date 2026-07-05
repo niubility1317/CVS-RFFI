@@ -1518,6 +1518,151 @@ def _support_bias_vector(
     return bias, best[0], best[1]
 
 
+def _support_loo_pair_rescue_scores(
+    scores: np.ndarray,
+    *,
+    features: np.ndarray,
+    support_indices: np.ndarray,
+    support_labels: np.ndarray,
+    query_indices: np.ndarray,
+    support_scores: np.ndarray,
+    class_labels: list[str],
+    old_labels: list[str],
+    new_labels: list[str],
+    top_pairs: int,
+    min_errors: int,
+    weight: float,
+    alpha: float,
+    clip: float,
+    scope: str,
+) -> tuple[np.ndarray, int, int, float, float]:
+    if float(weight) == 0.0 or int(top_pairs) <= 0:
+        return scores, 0, 0, 0.0, 0.0
+    scope_norm = str(scope).strip().lower()
+    if scope_norm not in {"all", "role", "new"}:
+        raise ValueError(f"unsupported support_loo_pair_rescue_scope: {scope}")
+    labels = np.asarray(support_labels, dtype=object).astype(str)
+    label_to_index = {label: index for index, label in enumerate(class_labels)}
+    old_set = set(old_labels)
+    new_set = set(new_labels)
+    old_count = int(sum(1 for label in labels.tolist() if label in old_set))
+    loo_pred = _assignment_predict(
+        np.asarray(support_scores, dtype=np.float64),
+        old_count=old_count,
+        old_labels=old_labels,
+        new_labels=new_labels,
+        query_scenarios=np.asarray(["support"] * int(labels.size), dtype=object),
+        scenario_balanced_assignment=False,
+        role_balanced_assignment=True,
+        balanced_assignment=True,
+    )
+    before_per_class: list[float] = []
+    for label in class_labels:
+        mask = labels == label
+        before_per_class.append(float(np.mean(loo_pred[mask] == label)) if bool(np.any(mask)) else 0.0)
+
+    pair_counts: dict[tuple[str, str], int] = {}
+    for truth_label, pred_label in zip(labels.tolist(), loo_pred.tolist()):
+        truth = str(truth_label)
+        pred = str(pred_label)
+        if truth == pred:
+            continue
+        if truth not in label_to_index or pred not in label_to_index:
+            continue
+        if scope_norm == "new" and (truth not in new_set or pred not in new_set):
+            continue
+        if scope_norm == "role" and ((truth in old_set) != (pred in old_set)):
+            continue
+        pair_counts[(truth, pred)] = pair_counts.get((truth, pred), 0) + 1
+    candidates = [
+        (truth, pred, count)
+        for (truth, pred), count in pair_counts.items()
+        if int(count) >= max(1, int(min_errors))
+    ]
+    candidates.sort(key=lambda item: (-int(item[2]), item[0], item[1]))
+    candidates = candidates[: max(0, int(top_pairs))]
+    if not candidates:
+        return scores, 0, 0, float(min(before_per_class, default=0.0)), float(np.mean(before_per_class) if before_per_class else 0.0)
+
+    support = qknn._normalize_rows(features[support_indices])
+    query = qknn._normalize_rows(features[query_indices])
+    prototypes: list[np.ndarray] = []
+    for label in class_labels:
+        cls = support[labels == label]
+        if cls.size == 0:
+            prototypes.append(np.zeros(support.shape[1], dtype=np.float64))
+        else:
+            prototypes.append(qknn._normalize_rows(cls.mean(axis=0, keepdims=True))[0])
+    proto = qknn._normalize_rows(np.stack(prototypes, axis=0))
+    adjusted = np.asarray(scores, dtype=np.float64).copy()
+    rescue_scores = np.asarray(support_scores, dtype=np.float64).copy()
+    used = 0
+    stored_scalars = 0
+    for truth, pred, _count in candidates:
+        truth_idx = label_to_index[truth]
+        pred_idx = label_to_index[pred]
+        pair_mask = (labels == truth) | (labels == pred)
+        pair_support = support[pair_mask]
+        pair_labels = labels[pair_mask]
+        if pair_support.shape[0] < 4 or len(set(pair_labels.tolist())) < 2:
+            continue
+        truth_sim = pair_support @ proto[truth_idx]
+        pred_sim = pair_support @ proto[pred_idx]
+        x = np.stack(
+            [
+                truth_sim - pred_sim,
+                truth_sim,
+                pred_sim,
+                np.ones_like(truth_sim),
+            ],
+            axis=1,
+        )
+        y = np.where(pair_labels == truth, 1.0, -1.0)
+        reg = float(alpha) * np.eye(x.shape[1], dtype=np.float64)
+        reg[-1, -1] = float(alpha) * 0.01
+        try:
+            coeff = np.linalg.solve(x.T @ x + reg, x.T @ y)
+        except np.linalg.LinAlgError:
+            coeff = np.linalg.pinv(x.T @ x + reg) @ x.T @ y
+        q_truth = query @ proto[truth_idx]
+        q_pred = query @ proto[pred_idx]
+        qx = np.stack([q_truth - q_pred, q_truth, q_pred, np.ones_like(q_truth)], axis=1)
+        margin = np.clip(qx @ coeff, -float(clip), float(clip))
+        adjusted[:, truth_idx] += float(weight) * margin
+        adjusted[:, pred_idx] -= float(weight) * margin
+
+        s_truth = support @ proto[truth_idx]
+        s_pred = support @ proto[pred_idx]
+        sx = np.stack([s_truth - s_pred, s_truth, s_pred, np.ones_like(s_truth)], axis=1)
+        s_margin = np.clip(sx @ coeff, -float(clip), float(clip))
+        rescue_scores[:, truth_idx] += float(weight) * s_margin
+        rescue_scores[:, pred_idx] -= float(weight) * s_margin
+        used += 1
+        stored_scalars += int(coeff.size)
+
+    after_pred = _assignment_predict(
+        rescue_scores,
+        old_count=old_count,
+        old_labels=old_labels,
+        new_labels=new_labels,
+        query_scenarios=np.asarray(["support"] * int(labels.size), dtype=object),
+        scenario_balanced_assignment=False,
+        role_balanced_assignment=True,
+        balanced_assignment=True,
+    )
+    after_per_class: list[float] = []
+    for label in class_labels:
+        mask = labels == label
+        after_per_class.append(float(np.mean(after_pred[mask] == label)) if bool(np.any(mask)) else 0.0)
+    return (
+        adjusted,
+        int(used),
+        int(stored_scalars),
+        float(min(after_per_class, default=0.0)),
+        float(np.mean(after_per_class) if after_per_class else 0.0),
+    )
+
+
 def _mahalanobis_proto_scores(
     *,
     features: np.ndarray,
@@ -1640,6 +1785,12 @@ def _evaluate_metric_qknn(
     support_bias_weight: float,
     support_bias_step: float,
     support_bias_rounds: int,
+    support_loo_pair_rescue_weight: float,
+    support_loo_pair_rescue_top_pairs: int,
+    support_loo_pair_rescue_min_errors: int,
+    support_loo_pair_rescue_alpha: float,
+    support_loo_pair_rescue_clip: float,
+    support_loo_pair_rescue_scope: str,
     mahal_proto_weight: float,
     mahal_proto_alpha: float,
     mahal_proto_diag_mix: float,
@@ -1962,8 +2113,9 @@ def _evaluate_metric_qknn(
     stored_support_bias_scalars = 0
     support_bias_loo_min_acc = 0.0
     support_bias_loo_mean_acc = 0.0
+    support_loo_scores: np.ndarray | None = None
     if float(support_bias_weight) > 0.0 and float(support_bias_step) > 0.0 and int(support_bias_rounds) > 0:
-        support_scores = _support_loo_base_scores(
+        support_loo_scores = _support_loo_base_scores(
             features=adapted,
             support_indices=support_indices,
             support_labels=support_labels,
@@ -1981,7 +2133,7 @@ def _evaluate_metric_qknn(
             scenario_aware=bool(scenario_aware),
         )
         support_bias, support_bias_loo_min_acc, support_bias_loo_mean_acc = _support_bias_vector(
-            support_scores=support_scores,
+            support_scores=support_loo_scores,
             support_labels=support_labels,
             class_labels=old_labels + new_labels,
             old_labels=old_labels,
@@ -1991,6 +2143,52 @@ def _evaluate_metric_qknn(
         )
         scores = scores + float(support_bias_weight) * support_bias[None, :]
         stored_support_bias_scalars = int(support_bias.size)
+    support_loo_pair_rescue_count = 0
+    stored_support_loo_pair_rescue_scalars = 0
+    support_loo_pair_rescue_min_acc = 0.0
+    support_loo_pair_rescue_mean_acc = 0.0
+    if float(support_loo_pair_rescue_weight) > 0.0 and int(support_loo_pair_rescue_top_pairs) > 0:
+        if support_loo_scores is None:
+            support_loo_scores = _support_loo_base_scores(
+                features=adapted,
+                support_indices=support_indices,
+                support_labels=support_labels,
+                scenarios=scenarios,
+                class_labels=old_labels + new_labels,
+                old_labels=set(old_labels),
+                topm=int(topm),
+                proto_mix=float(proto_mix),
+                radius_norm=float(radius_norm),
+                old_bias=float(old_bias),
+                neg_lambda=float(neg_lambda),
+                neg_threshold=float(neg_threshold),
+                neg_margin=float(neg_margin),
+                mutual_only=bool(mutual_only),
+                scenario_aware=bool(scenario_aware),
+            )
+        (
+            scores,
+            support_loo_pair_rescue_count,
+            stored_support_loo_pair_rescue_scalars,
+            support_loo_pair_rescue_min_acc,
+            support_loo_pair_rescue_mean_acc,
+        ) = _support_loo_pair_rescue_scores(
+            scores,
+            features=adapted,
+            support_indices=support_indices,
+            support_labels=support_labels,
+            query_indices=query_indices,
+            support_scores=support_loo_scores,
+            class_labels=old_labels + new_labels,
+            old_labels=old_labels,
+            new_labels=new_labels,
+            top_pairs=int(support_loo_pair_rescue_top_pairs),
+            min_errors=int(support_loo_pair_rescue_min_errors),
+            weight=float(support_loo_pair_rescue_weight),
+            alpha=float(support_loo_pair_rescue_alpha),
+            clip=float(support_loo_pair_rescue_clip),
+            scope=str(support_loo_pair_rescue_scope),
+        )
     stored_mahal_proto_scalars = 0
     if float(mahal_proto_weight) > 0.0:
         mahal_scores, stored_mahal_proto_scalars = _mahalanobis_proto_scores(
@@ -2230,6 +2428,16 @@ def _evaluate_metric_qknn(
         "support_bias_loo_min_acc": float(support_bias_loo_min_acc),
         "support_bias_loo_mean_acc": float(support_bias_loo_mean_acc),
         "stored_support_bias_scalars": int(stored_support_bias_scalars),
+        "support_loo_pair_rescue_weight": float(support_loo_pair_rescue_weight),
+        "support_loo_pair_rescue_top_pairs": int(support_loo_pair_rescue_top_pairs),
+        "support_loo_pair_rescue_min_errors": int(support_loo_pair_rescue_min_errors),
+        "support_loo_pair_rescue_alpha": float(support_loo_pair_rescue_alpha),
+        "support_loo_pair_rescue_clip": float(support_loo_pair_rescue_clip),
+        "support_loo_pair_rescue_scope": str(support_loo_pair_rescue_scope),
+        "support_loo_pair_rescue_count": int(support_loo_pair_rescue_count),
+        "support_loo_pair_rescue_loo_min_acc": float(support_loo_pair_rescue_min_acc),
+        "support_loo_pair_rescue_loo_mean_acc": float(support_loo_pair_rescue_mean_acc),
+        "stored_support_loo_pair_rescue_scalars": int(stored_support_loo_pair_rescue_scalars),
         "mahal_proto_weight": float(mahal_proto_weight),
         "mahal_proto_alpha": float(mahal_proto_alpha),
         "mahal_proto_diag_mix": float(mahal_proto_diag_mix),
@@ -2548,6 +2756,12 @@ def main() -> None:
     parser.add_argument("--support_bias_weight_grid", default="0")
     parser.add_argument("--support_bias_step_grid", default="0.01")
     parser.add_argument("--support_bias_rounds_grid", default="4")
+    parser.add_argument("--support_loo_pair_rescue_weight_grid", default="0")
+    parser.add_argument("--support_loo_pair_rescue_top_pairs_grid", default="0")
+    parser.add_argument("--support_loo_pair_rescue_min_errors_grid", default="1")
+    parser.add_argument("--support_loo_pair_rescue_alpha_grid", default="0.1")
+    parser.add_argument("--support_loo_pair_rescue_clip_grid", default="2.0")
+    parser.add_argument("--support_loo_pair_rescue_scope_grid", default="new")
     parser.add_argument("--mahal_proto_weight_grid", default="0")
     parser.add_argument("--mahal_proto_alpha_grid", default="1.0")
     parser.add_argument("--mahal_proto_diag_mix_grid", default="0.5")
@@ -2689,6 +2903,12 @@ def main() -> None:
             qknn._parse_float_csv(args.support_bias_weight_grid),
             qknn._parse_float_csv(args.support_bias_step_grid),
             qknn._parse_int_csv(args.support_bias_rounds_grid),
+            qknn._parse_float_csv(args.support_loo_pair_rescue_weight_grid),
+            qknn._parse_int_csv(args.support_loo_pair_rescue_top_pairs_grid),
+            qknn._parse_int_csv(args.support_loo_pair_rescue_min_errors_grid),
+            qknn._parse_float_csv(args.support_loo_pair_rescue_alpha_grid),
+            qknn._parse_float_csv(args.support_loo_pair_rescue_clip_grid),
+            qknn._parse_csv(args.support_loo_pair_rescue_scope_grid),
             qknn._parse_float_csv(args.mahal_proto_weight_grid),
             qknn._parse_float_csv(args.mahal_proto_alpha_grid),
             qknn._parse_float_csv(args.mahal_proto_diag_mix_grid),
@@ -2844,6 +3064,12 @@ def main() -> None:
                     support_bias_weight,
                     support_bias_step,
                     support_bias_rounds,
+                    support_loo_pair_rescue_weight,
+                    support_loo_pair_rescue_top_pairs,
+                    support_loo_pair_rescue_min_errors,
+                    support_loo_pair_rescue_alpha,
+                    support_loo_pair_rescue_clip,
+                    support_loo_pair_rescue_scope,
                     mahal_proto_weight,
                     mahal_proto_alpha,
                     mahal_proto_diag_mix,
@@ -3065,6 +3291,12 @@ def main() -> None:
                         support_bias_weight=float(support_bias_weight),
                         support_bias_step=float(support_bias_step),
                         support_bias_rounds=int(support_bias_rounds),
+                        support_loo_pair_rescue_weight=float(support_loo_pair_rescue_weight),
+                        support_loo_pair_rescue_top_pairs=int(support_loo_pair_rescue_top_pairs),
+                        support_loo_pair_rescue_min_errors=int(support_loo_pair_rescue_min_errors),
+                        support_loo_pair_rescue_alpha=float(support_loo_pair_rescue_alpha),
+                        support_loo_pair_rescue_clip=float(support_loo_pair_rescue_clip),
+                        support_loo_pair_rescue_scope=str(support_loo_pair_rescue_scope),
                         mahal_proto_weight=float(mahal_proto_weight),
                         mahal_proto_alpha=float(mahal_proto_alpha),
                         mahal_proto_diag_mix=float(mahal_proto_diag_mix),
@@ -3264,6 +3496,16 @@ def main() -> None:
         "support_bias_loo_min_acc",
         "support_bias_loo_mean_acc",
         "stored_support_bias_scalars",
+        "support_loo_pair_rescue_weight",
+        "support_loo_pair_rescue_top_pairs",
+        "support_loo_pair_rescue_min_errors",
+        "support_loo_pair_rescue_alpha",
+        "support_loo_pair_rescue_clip",
+        "support_loo_pair_rescue_scope",
+        "support_loo_pair_rescue_count",
+        "support_loo_pair_rescue_loo_min_acc",
+        "support_loo_pair_rescue_loo_mean_acc",
+        "stored_support_loo_pair_rescue_scalars",
         "mahal_proto_weight",
         "mahal_proto_alpha",
         "mahal_proto_diag_mix",

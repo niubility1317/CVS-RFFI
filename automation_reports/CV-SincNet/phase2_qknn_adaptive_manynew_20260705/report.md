@@ -338,3 +338,39 @@ Interpretation:
 - Current evidence says the next useful route should not be another scalar KNN head grid. It should either improve the embedding/feature extractor for dense ManyTx families, or introduce a protocol-explicit admission/defer mechanism for support classes whose compressed prototypes are inseparable. If no defer/reject is allowed, the present embedding does not support a valid claim that twenty new classes remain above the 75% per-class floor.
 
 Current goal status: active, not achieved.
+
+## 2026-07-06 Local Follow-up: support LOO pair-rescue diagnostic
+
+Objective: test a more targeted compressed qKNN variant for dense new-class confusion. Instead of storing raw support samples or sweeping a generic classifier head, the new diagnostic uses leave-one-out support predictions to identify directed confusion pairs, then stores a small pairwise linear margin for the selected pairs.
+
+Code change:
+
+- Added `support_loo_pair_rescue_*` CLI grids in `code/scripts/phase2_support_metric_qknn_probe.py`.
+- The mechanism uses support-only LOO errors to select dense-class confusion pairs such as `truth -> predicted competitor`.
+- Persistent extra state is small: each selected pair stores 4 scalar coefficients. In the best N20 K=10 row below, 5 directed pairs were used, adding 20 scalars.
+- Raw support samples are still not stored; `stored_raw_support_count=0`.
+
+Local verification:
+
+```text
+conda run -n ssr-gpu python -m py_compile code\scripts\phase2_support_metric_qknn_probe.py
+```
+
+PASS.
+
+Result summary:
+
+| scope | K | seed | candidate | old_acc | min_old | new_acc | min_new | extra persistent state | verdict |
+|---|---:|---:|---|---:|---:|---:|---:|---:|---|
+| N20 | 10 | 421023 | v2 best before LOO pair rescue | 91.43% | 77.14% | 72.14% | 52.86% | 0 pair-rescue scalars | baseline |
+| N20 | 10 | 421023 | LOO pair rescue best | 91.43% | 77.14% | 72.64% | 52.86% | 20 scalars | tiny mean gain, floor unchanged |
+| N20 | 5 | 421023 | manual-v2 no LOO pair rescue | 91.67% | 77.14% | 68.07% | 45.71% | 0 pair-rescue scalars | baseline for same seed |
+| N20 | 5 | 421023 | LOO pair rescue using K10-best settings | 91.67% | 77.14% | 68.29% | 47.14% | 20 scalars | small floor gain, still failed |
+
+Interpretation:
+
+- The LOO-pair mechanism is a cleaner qKNN compression variant than raw-support KNN: it converts support-set failure modes into a few stored pairwise scalars and adapts naturally to `K` and class count through the number of observed LOO confusion pairs.
+- It does not solve the active goal. N20 K=10 still has `min_new=52.86%`, and N20 K=5 still has `min_new=47.14%`.
+- The useful evidence is negative but specific: even when the pair selection is driven by the exact support-set dense-cluster errors, the deployed query floor does not move. This strengthens the conclusion that the remaining collapse is primarily representation/embedding separability, not KNN storage, quota assignment, or a missing small compressed head.
+
+Current goal status: active, not achieved. Recommended next route is representation-side repair or a protocol-explicit enrollment quality gate; continuing to add scalar KNN heads is unlikely to reach the 75% per-class floor for twenty new classes.
