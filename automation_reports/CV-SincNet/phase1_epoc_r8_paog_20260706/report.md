@@ -137,3 +137,19 @@ N607只读预检PASS，直连`N607`可用，项目根目录和GPU可见。07:34 
 - 两个候选均未导出`phase2_zid_prototypes.pt`，Stage2-C qknn8协同推理`M=1..target receiver count`仍必须延后。
 - 日志中的`TEST overall_tx=nan% (0/0)`和sat/strict nan来自当前测试窗口缺失或字段未激活，不等同于训练崩溃；SHELL的非有限梯度跳过是需要追踪的异常信号，但CSV没有非有限单元且进程仍写入safe checkpoint。
 - 本轮仍只能声明“R8训练运行中、尚不可评估目标完成”。不得声明Stage2-C成功、部署成功或未知拒识改善。
+
+## 07:46 CST proxy激活早期监控
+
+N607只读预检PASS。07:46 CST短SSH监控显示两个R8 PAOG候选仍在运行，GPU0/GPU1显存约2527/2447MiB，GPU2-7约10MiB。当前metrics已复制到本地证据目录`E:\type10-7\local_artifacts\r8_metrics_20260706_0746`。
+
+|candidate|epoch|best_epoch|best_test_tx|latest_val_tx|latest_test_tx|proxy_active|proxy_auc|virtual_accept|proxy_accept|soft_mix_accept|source_overflow|skipped_nonfinite_grad|prototype|判定|
+|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---|---|
+|`EPOC_R8_PAOG_RADIUS_ENERGY`|34/200|20|89.8152|98.5476|NA|1|0.4033|0.8159|0.0331|0.9995|0.9036|1.0000|absent|proxy刚激活即弱于随机分离，且梯度全跳过；早期负趋势。|
+|`EPOC_R8_PAOG_SHELL_BALANCED`|32/200|20|89.6681|98.5000|NA|1|0.3807|0.8094|0.0183|1.0000|0.8541|1.0000|absent|E30-E32连续proxy AUC约0.38，virtual accept约0.81；早期负趋势。|
+
+解释与下一步：
+
+- 这不是最终Stage2-C失败证据，因为训练尚未完成，prototype尚未导出，真实`Y_unknown`仍未参与评估。
+- 但proxy激活后`proxy_auc<0.5`、`virtual_accept≈0.81`、`soft_unknown_mixup_virtual_accept≈1.0`，说明当前R8外壳约束没有把虚拟/代理unknown推出旧类邻域。
+- 两个候选在proxy激活后均记录`train_skipped_nonfinite_grad=1.0`，数值稳定性风险高；若后续持续，则R8很可能不会成为有效Stage2-C候选。
+- 后续仍应等prototype导出后做qknn8同row复评；同时应准备更稳的下一路线：降低proxy hard shell对主干梯度的直接作用，改为冻结教师特征上的Mahalanobis/energy reject head或只训练轻量边界头，避免地面训练接触真实未知类。
