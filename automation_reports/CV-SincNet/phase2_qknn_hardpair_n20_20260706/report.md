@@ -241,6 +241,49 @@ Interpretation:
 
 Current goal status: active, not achieved. Next credible step is not larger K and not query transductive tuning; it should target `2-13` first via representation/enrollment repair or a support-selection protocol that remains scientifically honest about the labeled budget.
 
+## Hard-Class Floor Diagnosis After v11
+
+Objective: determine whether the current failure is caused by qKNN head tuning, unlucky strict K-shot support selection, or a representation-level hard class. All diagnostics keep the K anchors fixed at `K=10` and `K=5`; no larger K value is introduced.
+
+Artifacts:
+
+| diagnostic | artifact |
+|---|---|
+| N10 K10 support-bias grid | `artifacts\n10_k10_v11_support_bias_grid_seed421029.json` |
+| N10 K10 prediction debug | `artifacts\n10_k10_v11_preddebug_predictions.csv` |
+| N10 K10 pair-axis grid | `artifacts\n10_k10_v11_pair_axis_grid_seed421029.json` |
+| N10 K10 transductive grid | `artifacts\n10_k10_v9_transductive_grid_seed421029.json` |
+| N10 K10 classdiag metric grid | `artifacts\n10_k10_v11_classdiag_grid_seed421029.json` |
+| N10 K10 strict seed scan | `artifacts\n10_k10_v11_seedscan120.json` |
+| N10 K5 strict seed scan | `artifacts\n10_k5_v11_seedscan120.json` |
+
+Key findings:
+
+| check | K | rows/seeds | best new_acc | best min_new | best `2-13` | pass 75% floor | interpretation |
+|---|---:|---:|---:|---:|---:|---:|---|
+| v11 strict seed scan | 10 | 120 seeds | 86.71% at seed421082 | 71.43% | 71.43% | 0 | support draw helps but cannot reach floor |
+| v11 strict seed scan | 5 | 120 seeds | 86.80% at seed421064 | 66.67% | 66.67% | 0 | K5 has same hard-class bottleneck |
+| support-bias grid | 10 | 20 rows | 84.57% | 61.43% | 61.43% | 0 | class prior/bias is not the limiting factor |
+| pair-axis grid | 10 | 24 rows | 84.57% | 61.43% | 61.43% | 0 | simple pair prototype axis does not separate `2-13` |
+| classdiag metric grid | 10 | 270 rows | 85.14% | 61.43% | 61.43% | 0 | support-derived local feature weighting lifts mean but not floor |
+| transductive query-proto grid | 10 | 288 rows | 84.43% | 60.00% | 60.00% | 0 | unlabeled query prototypes do not repair the hard pair |
+
+Prediction-level confusion at N10 K10 v11 seed421029:
+
+| truth | correct | main wrong assignments | raw top1 evidence |
+|---|---:|---|---|
+| `2-13` | 43/70=61.43% | `11-10`:15,`10-10`:5,`3-8`:3 | raw top1 is `11-10` for 20/70 |
+| `11-10` | 53/70=75.71% | `2-13`:16 | raw top1 is `2-13` for 11/70 |
+
+Interpretation:
+
+- The active target remains unmet: ten new classes still fail the per-class floor, and the 10-to-20-new-class drop is far larger than 3pp.
+- The bottleneck is now sharply localized: `2-13` and `11-10` form a reciprocal hard pair. Balanced assignment and support-bias cannot fix it because the failure is pair-boundary separability, not missing class quota.
+- Strict K-shot seed scans show that enrollment quality matters, but even the best 120-seed strict K10 support draw reaches only 71.43% minimum class accuracy. Therefore a support-only selector can improve stability but is not enough to prove the requested 75% floor.
+- The next aligned optimization should move to representation/enrollment repair for the `2-13`/`11-10` pair, or add a new compressed pairwise head that changes the local pair feature geometry rather than only reweighting existing qKNN scores.
+
+Current goal status: active, not achieved.
+
 ## HP08REF Aligned Evaluation and v10 Aux Gate
 
 HP08REF completion:
