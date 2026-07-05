@@ -3173,6 +3173,8 @@ def _adaptive_qknn_overrides(
         "stable_dualview_v7",
         "dualview_support_v8",
         "stable_dualview_v8",
+        "dualview_support_v9",
+        "stable_dualview_v9",
     }:
         raise ValueError(f"unsupported adaptive_qknn_policy: {policy}")
     use_v2 = name in {"dualview_support_v2", "stable_dualview_v2"}
@@ -3182,6 +3184,7 @@ def _adaptive_qknn_overrides(
     use_v6 = name in {"dualview_support_v6", "stable_dualview_v6"}
     use_v7 = name in {"dualview_support_v7", "stable_dualview_v7"}
     use_v8 = name in {"dualview_support_v8", "stable_dualview_v8"}
+    use_v9 = name in {"dualview_support_v9", "stable_dualview_v9"}
 
     min_k = float(geometry["adaptive_support_min_k"])
     new_count = float(geometry["adaptive_new_class_count"])
@@ -3189,7 +3192,7 @@ def _adaptive_qknn_overrides(
     p90_sim = float(geometry["adaptive_support_p90_offdiag_proto_sim"])
     radius = float(geometry["adaptive_support_mean_radius"])
     hardness = _clip01(max((max_sim - 0.82) / 0.16, (p90_sim - 0.68) / 0.22, (radius - 0.08) / 0.20))
-    if use_v3 or use_v4 or use_v5 or use_v7 or use_v8:
+    if use_v3 or use_v4 or use_v5 or use_v7 or use_v8 or use_v9:
         class_load = _clip01((new_count - 2.0) / 18.0)
     else:
         class_load = _clip01((new_count - 10.0) / 20.0)
@@ -3234,15 +3237,15 @@ def _adaptive_qknn_overrides(
         "source_guard_conf_min": 0.0,
         "source_guard_margin_min": 0.0,
     }
-    if use_v2 or use_v3 or use_v4 or use_v5 or use_v6 or use_v7 or use_v8:
+    if use_v2 or use_v3 or use_v4 or use_v5 or use_v6 or use_v7 or use_v8 or use_v9:
         competition_load = class_load
-        if (use_v3 or use_v4 or use_v5 or use_v6 or use_v7 or use_v8) and new_count >= 2.0:
+        if (use_v3 or use_v4 or use_v5 or use_v6 or use_v7 or use_v8 or use_v9) and new_count >= 2.0:
             competition_load = max(competition_load, 0.25)
         overrides.update(
             {
                 "role_balanced_assignment": bool(
                     class_load > 0.0
-                    or ((use_v3 or use_v4 or use_v5 or use_v6 or use_v7 or use_v8) and stable_gate >= 0.50)
+                    or ((use_v3 or use_v4 or use_v5 or use_v6 or use_v7 or use_v8 or use_v9) and stable_gate >= 0.50)
                 ),
                 "local_competition_weight": float(0.02 * competition_load * stable_gate),
                 "local_competition_k": int(3 + round(4.0 * competition_load)),
@@ -3305,7 +3308,7 @@ def _adaptive_qknn_overrides(
                 "support_loo_pair_rescue_scope": "new",
             }
         )
-    if use_v7 or use_v8:
+    if use_v7 or use_v8 or use_v9:
         pair_gate = _clip01(max(stable_gate, class_load) * (0.35 + 0.65 * k_reliability))
         labelprop_gate = _clip01(k_reliability * stable_gate * (1.0 - 0.5 * class_load))
         labelprop_weight = float(np.clip(0.50 * labelprop_gate, 0.0, 0.18))
@@ -3328,7 +3331,7 @@ def _adaptive_qknn_overrides(
                 "pair_logreg_scope": "new",
             }
         )
-    if use_v8:
+    if use_v8 or use_v9:
         low_load_residual = float(np.clip(0.20 - 0.30 * k_reliability, 0.05, 0.20))
         high_load_residual = float(np.clip(0.10 + 0.60 * k_reliability, 0.10, 0.30))
         load_blend = _clip01((class_load - 0.50) / 0.25)
@@ -3341,6 +3344,20 @@ def _adaptive_qknn_overrides(
                 "old_residual_new_rank": 5,
                 "old_residual_new_proto_mix": residual_proto_mix,
                 "old_residual_new_clip": 2.0,
+            }
+        )
+    if use_v9:
+        rescue_gate = _clip01(max(stable_gate, class_load))
+        rescue_weight = float(np.clip((0.10 - 0.15 * k_reliability) * rescue_gate, 0.02, 0.10))
+        rescue_top_pairs = int(max(4, min(12, round(0.40 * max(new_count, 1.0)))))
+        overrides.update(
+            {
+                "support_loo_pair_rescue_weight": rescue_weight,
+                "support_loo_pair_rescue_top_pairs": rescue_top_pairs,
+                "support_loo_pair_rescue_min_errors": 1,
+                "support_loo_pair_rescue_alpha": 0.1,
+                "support_loo_pair_rescue_clip": 2.0,
+                "support_loo_pair_rescue_scope": "new",
             }
         )
     return overrides
@@ -3875,6 +3892,12 @@ def main() -> None:
                         "local_competition_k": int(local_competition_k),
                         "local_competition_clip": float(local_competition_clip),
                         "local_competition_scope": str(local_competition_scope),
+                        "support_loo_pair_rescue_weight": float(support_loo_pair_rescue_weight),
+                        "support_loo_pair_rescue_top_pairs": int(support_loo_pair_rescue_top_pairs),
+                        "support_loo_pair_rescue_min_errors": int(support_loo_pair_rescue_min_errors),
+                        "support_loo_pair_rescue_alpha": float(support_loo_pair_rescue_alpha),
+                        "support_loo_pair_rescue_clip": float(support_loo_pair_rescue_clip),
+                        "support_loo_pair_rescue_scope": str(support_loo_pair_rescue_scope),
                         "labelprop_weight": float(labelprop_weight),
                         "labelprop_k": int(labelprop_k),
                         "labelprop_alpha": float(labelprop_alpha),
@@ -3956,6 +3979,24 @@ def main() -> None:
                             ),
                             "local_competition_scope": adaptive_overrides.get(
                                 "local_competition_scope", params["local_competition_scope"]
+                            ),
+                            "support_loo_pair_rescue_weight": adaptive_overrides.get(
+                                "support_loo_pair_rescue_weight", params["support_loo_pair_rescue_weight"]
+                            ),
+                            "support_loo_pair_rescue_top_pairs": adaptive_overrides.get(
+                                "support_loo_pair_rescue_top_pairs", params["support_loo_pair_rescue_top_pairs"]
+                            ),
+                            "support_loo_pair_rescue_min_errors": adaptive_overrides.get(
+                                "support_loo_pair_rescue_min_errors", params["support_loo_pair_rescue_min_errors"]
+                            ),
+                            "support_loo_pair_rescue_alpha": adaptive_overrides.get(
+                                "support_loo_pair_rescue_alpha", params["support_loo_pair_rescue_alpha"]
+                            ),
+                            "support_loo_pair_rescue_clip": adaptive_overrides.get(
+                                "support_loo_pair_rescue_clip", params["support_loo_pair_rescue_clip"]
+                            ),
+                            "support_loo_pair_rescue_scope": adaptive_overrides.get(
+                                "support_loo_pair_rescue_scope", params["support_loo_pair_rescue_scope"]
                             ),
                             "labelprop_weight": adaptive_overrides.get("labelprop_weight", params["labelprop_weight"]),
                             "labelprop_k": adaptive_overrides.get("labelprop_k", params["labelprop_k"]),
@@ -4113,12 +4154,12 @@ def main() -> None:
                         support_bias_weight=float(support_bias_weight),
                         support_bias_step=float(support_bias_step),
                         support_bias_rounds=int(support_bias_rounds),
-                        support_loo_pair_rescue_weight=float(support_loo_pair_rescue_weight),
-                        support_loo_pair_rescue_top_pairs=int(support_loo_pair_rescue_top_pairs),
-                        support_loo_pair_rescue_min_errors=int(support_loo_pair_rescue_min_errors),
-                        support_loo_pair_rescue_alpha=float(support_loo_pair_rescue_alpha),
-                        support_loo_pair_rescue_clip=float(support_loo_pair_rescue_clip),
-                        support_loo_pair_rescue_scope=str(support_loo_pair_rescue_scope),
+                        support_loo_pair_rescue_weight=float(params["support_loo_pair_rescue_weight"]),
+                        support_loo_pair_rescue_top_pairs=int(params["support_loo_pair_rescue_top_pairs"]),
+                        support_loo_pair_rescue_min_errors=int(params["support_loo_pair_rescue_min_errors"]),
+                        support_loo_pair_rescue_alpha=float(params["support_loo_pair_rescue_alpha"]),
+                        support_loo_pair_rescue_clip=float(params["support_loo_pair_rescue_clip"]),
+                        support_loo_pair_rescue_scope=str(params["support_loo_pair_rescue_scope"]),
                         mahal_proto_weight=float(mahal_proto_weight),
                         mahal_proto_alpha=float(mahal_proto_alpha),
                         mahal_proto_diag_mix=float(mahal_proto_diag_mix),

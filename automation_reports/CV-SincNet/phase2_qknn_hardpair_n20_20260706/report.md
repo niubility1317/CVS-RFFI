@@ -201,3 +201,73 @@ Interpretation:
 - Storage property remains aligned with the qKNN innovation requirement: no raw support samples are stored; the rows store compressed support codes, class prototypes, transform scalars, and small residual/logistic state.
 
 Current goal status: active, not achieved.
+
+## Adaptive v9 Support-LOO Rescue
+
+Objective: improve the N20 many-new qKNN route without adding more K anchors. The only anchors remain `K=10` and `K=5`, using the maximum query budget from the 80-sample-per-class feature file: `K=10` uses 70 query samples per class, and `K=5` uses 75 query samples per class.
+
+Implementation change:
+
+- Added `dualview_support_v9` / `stable_dualview_v9` in `code/scripts/phase2_support_metric_qknn_probe.py`.
+- The v9 policy adaptively enables support-LOO pair rescue from support geometry: `support_hardness`, `class_load`, and `k_reliability`.
+- Fixed adaptive parameter plumbing so support-LOO rescue values from the policy are actually passed into `_evaluate_metric_qknn`.
+- Storage remains compressed: no raw support vectors are stored. v9 stores quantized support codes, class prototypes, transform scalars, residual/logistic scalars, and 32 support-LOO pair-rescue scalars.
+
+Verification:
+
+| command | result |
+|---|---|
+| `conda run -n ssr-gpu python -m py_compile code\scripts\phase2_support_metric_qknn_probe.py` | PASS |
+| `n20_k10_norm_hp08_adaptive_v9.json` | completed |
+| `n20_k5_norm_hp08_adaptive_v9.json` | completed |
+
+The earlier large floor-grid attempt timed out before producing output files and is not used as evidence. The leftover local `conda`/`python` processes from that timed-out command were identified as the same diagnostic command and stopped before the v9 reruns.
+
+v8 to v9 comparison:
+
+| route | K | old_acc | min_old | new_acc | min_new | support-LOO pairs | stored support-LOO scalars | raw support stored | verdict |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|---|
+| adaptive v8 | 10 | 95.71% | 88.57% | 74.86% | 57.14% | 0 | 0 | 0 | failed |
+| adaptive v9 | 10 | 95.71% | 88.57% | 75.00% | 57.14% | 8 | 32 | 0 | failed |
+| adaptive v8 | 5 | 97.11% | 92.00% | 74.20% | 57.33% | 0 | 0 | 0 | failed |
+| adaptive v9 | 5 | 97.11% | 92.00% | 74.80% | 60.00% | 8 | 32 | 0 | failed |
+
+Adaptive v9 per-class details:
+
+| TX | K10 acc | K5 acc |
+|---|---:|---:|
+| `14-10` | 97.14% | 98.67% |
+| `14-7` | 88.57% | 93.33% |
+| `20-15` | 100.00% | 98.67% |
+| `20-19` | 88.57% | 92.00% |
+| `6-15` | 100.00% | 100.00% |
+| `8-20` | 100.00% | 100.00% |
+| `10-10` | 90.00% | 89.33% |
+| `11-10` | 60.00% | 70.67% |
+| `18-5` | 65.71% | 60.00% |
+| `19-3` | 71.43% | 60.00% |
+| `2-13` | 57.14% | 60.00% |
+| `2-5` | 82.86% | 85.33% |
+| `3-8` | 84.29% | 90.67% |
+| `4-10` | 88.57% | 89.33% |
+| `8-18` | 75.71% | 85.33% |
+| `8-3` | 78.57% | 81.33% |
+| `1-1` | 67.14% | 72.00% |
+| `1-10` | 85.71% | 88.00% |
+| `1-11` | 91.43% | 89.33% |
+| `1-12` | 68.57% | 73.33% |
+| `1-14` | 72.86% | 60.00% |
+| `1-15` | 87.14% | 76.00% |
+| `1-16` | 72.86% | 68.00% |
+| `1-18` | 61.43% | 60.00% |
+| `1-19` | 75.71% | 74.67% |
+| `1-2` | 62.86% | 62.67% |
+
+Interpretation:
+
+- v9 improves mean new accuracy modestly and raises the K5 new-class floor from 57.33% to 60.00%, while preserving high old-class performance.
+- v9 still fails the active floor target because the K10 minimum remains 57.14% and the K5 minimum remains 60.00%, both far below 75%.
+- The main remaining weak classes are stable across v8/v9: `2-13`,`1-18`,`1-2`,`18-5`, with additional K-specific weakness on `19-3`,`1-14`,`1-16`. This points to representation/enrollment separability rather than a pure classifier-head storage issue.
+- The current adaptive direction is still useful: it adds a support-derived rescue mechanism without per-K hand tuning, and it keeps `K=5` within 0.20pp of `K=10` on mean new accuracy. The next optimization should target hard-class representation or support selection quality, not larger K.
+
+Current goal status: active, not achieved.
