@@ -1145,3 +1145,171 @@ Best same-row results:
 | N10 | 10 | 70 | 91.67% | 77.14% | 80.43% | 58.57% | tiny adaptive ridge, 2576 scalars | worse than core/bootstrap |
 
 Interpretation: the ridge head is not the missing qKNN component. It does not lift the weakest classes (`2-13` and `4-10`) toward 75%, and the best K=10 ridge row is below the `core/bootstrap` row (`82.00%/62.86%`). Keep the active route focused on representation/enrollment-quality repair rather than adding another support-fitted classifier head.
+
+## 2026-07-06 Goal-mode continuation: strict-K compressed qKNN stability probes
+
+Objective: continue optimizing qKNN under the active goal: only `K=5` and `K=10`, maximum query counts, no unknown rejection in this probe, and no raw support storage. The target is to prevent collapse as the number of new classes increases, with ten-new-class per-class floor `>=75%`.
+
+Protocol boundary:
+
+- Stage2-C target receiver domain remains `rx=7-14`; source receivers remain disjoint.
+- `target_old` and `target_unknown` support/query come from the target receiver domain.
+- `K=5` uses `query_per_class=75`; `K=10` uses `query_per_class=70`, matching the current 80-sample-per-class feature files.
+- `pool_per_class=K` in the low-rank adapter probes, so the run does not use a larger labeled enrollment pool.
+- Query labels are used only for audit. The graph probes use query features without query labels.
+
+New diagnostic script:
+
+- Added `code/scripts/phase2_qknn_old_anchor_transport_diag.py`.
+- It tests compressed old-anchor transport from target-old support prototypes to source-old prototypes, plus optional unlabeled batch transport over support/query features.
+- Persistent state is compressed transform metadata only: shift/diagonal/procrustes/batch normalization scalars. It does not store raw support samples.
+
+Local verification:
+
+```text
+conda run -n ssr-gpu python -m py_compile code\scripts\phase2_qknn_old_anchor_transport_diag.py
+conda run -n ssr-gpu python -m py_compile code\scripts\phase2_support_metric_qknn_probe.py
+conda run -n ssr-gpu python -m py_compile code\scripts\phase2_lowrank_residual_adapter_probe.py
+```
+
+PASS when run serially. A parallel `conda run` attempt hit the known Windows temp-file lock and was not used as evidence.
+
+### A. Old-anchor transport diagnostic
+
+Output files:
+
+| artifact | path |
+|---|---|
+| support-only transport | `v9_probe/old_anchor_transport_diag.json` |
+| support+unlabeled-query batch transport | `v9_probe/old_anchor_batch_transport_diag.json` |
+
+Best same-row results:
+
+| scope | K | query/class | method | old_acc | min_old | new_acc | min_new | verdict |
+|---|---:|---:|---|---:|---:|---:|---:|---|
+| N10 | 5 | 75 | diag transport + batch diag-whiten | 91.56% | 77.33% | 66.13% | 53.33% | failed |
+| N10 | 10 | 70 | procrustes transport + batch diag-whiten | 91.43% | 77.14% | 83.29% | 67.14% | mean good, floor failed |
+| N20 | 5 | 75 | procrustes transport + batch diag-whiten | 91.11% | 76.00% | 46.40% | 29.33% | failed |
+| N20 | 10 | 70 | procrustes transport + batch diag-whiten | 91.67% | 77.14% | 59.14% | 31.43% | failed |
+
+Interpretation: old-anchor transport is a valid compressed qKNN variant, but it cannot solve the many-new-class collapse. It improves some means without lifting weak-class floors.
+
+### B. Strict-K low-rank residual adapter
+
+Output files:
+
+| scope | K | path |
+|---|---:|---|
+| N10 | 10 | `lowrank_probe/n10_k10_lowrank_strictk.json` |
+| N10 | 5 | `lowrank_probe/n10_k5_lowrank_strictk.json` |
+
+Best same-row results:
+
+| scope | K | query/class | selected policy | adapter state | old_acc | min_old | new_acc | min_new | verdict |
+|---|---:|---:|---|---:|---:|---:|---:|---:|---|
+| N10 | 10 | 70 | scenario_centroid | rank8,2720 scalars,160 support codes | 83.10% | 62.86% | 78.14% | 64.29% | failed |
+| N10 | 5 | 75 | scenario_centroid | rank4,1440 scalars,80 support codes | 79.11% | 53.33% | 77.73% | 58.67% | failed |
+
+Weak ten-new-class floors:
+
+| K | weakest new classes | weakest old class |
+|---:|---|---|
+| 10 | `10-10=64.29%`,`11-10=64.29%`,`2-13=64.29%`,`8-18=71.43%` | `20-19=62.86%` |
+| 5 | `10-10=58.67%`,`2-13=58.67%`,`11-10=66.67%`,`19-3=74.67%` | `20-19=53.33%` |
+
+Interpretation: the low-rank adapter has the right storage property, but support-only LOO fitting overfits the tiny support geometry and harms old-class floor. It is not the deployable solution by itself.
+
+### C. Unlabeled graph and dense-cluster qKNN for N20
+
+Output files:
+
+| scope | K | path |
+|---|---:|---|
+| N20 | 10 | `graph_probe/n20_k10_graph_probe.json` |
+| N20 | 5 | `graph_probe/n20_k5_graph_probe_small.json` |
+
+Best same-row results:
+
+| scope | K | query/class | method | old_acc | min_old | new_acc | min_new | verdict |
+|---|---:|---:|---|---:|---:|---:|---:|---|
+| N20 | 10 | 70 | diag_fisher0.1 + core0.1 + dense_cluster0.1 | 84.76% | 74.29% | 66.71% | 47.14% | failed |
+| N20 | 5 | 75 | diag_fisher0.1 + query_graph0.1 + dense_cluster0.1 | 81.11% | 64.00% | 63.67% | 32.00% | failed |
+
+N20 K=10 per-new detail:
+
+| TX | acc |
+|---|---:|
+| `1-1` | 48.57% |
+| `1-10` | 82.86% |
+| `1-11` | 87.14% |
+| `1-12` | 55.71% |
+| `1-14` | 62.86% |
+| `1-15` | 68.57% |
+| `1-16` | 72.86% |
+| `1-18` | 48.57% |
+| `1-19` | 60.00% |
+| `1-2` | 52.86% |
+| `10-10` | 87.14% |
+| `11-10` | 54.29% |
+| `18-5` | 62.86% |
+| `19-3` | 58.57% |
+| `2-13` | 47.14% |
+| `2-5` | 74.29% |
+| `3-8` | 75.71% |
+| `4-10` | 85.71% |
+| `8-18` | 75.71% |
+| `8-3` | 72.86% |
+
+N20 K=5 per-new detail:
+
+| TX | acc |
+|---|---:|
+| `1-1` | 62.67% |
+| `1-10` | 86.67% |
+| `1-11` | 89.33% |
+| `1-12` | 61.33% |
+| `1-14` | 32.00% |
+| `1-15` | 57.33% |
+| `1-16` | 62.67% |
+| `1-18` | 37.33% |
+| `1-19` | 61.33% |
+| `1-2` | 49.33% |
+| `10-10` | 81.33% |
+| `11-10` | 54.67% |
+| `18-5` | 40.00% |
+| `19-3` | 46.67% |
+| `2-13` | 45.33% |
+| `2-5` | 82.67% |
+| `3-8` | 81.33% |
+| `4-10` | 88.00% |
+| `8-18` | 78.67% |
+| `8-3` | 74.67% |
+
+Interpretation: adding ten more new classes mainly fails inside the dense `1-*` family and a few cross-family hard pairs. Unlabeled graph smoothing and dense cluster runtime prototypes help mean accuracy compared with the weakest current N20 baselines, but they do not lift the class floor.
+
+### D. Current decision
+
+The active goal is not achieved.
+
+Current best verified evidence under this continuation:
+
+| scope | K | best verified route | new_acc | min_new | status |
+|---|---:|---|---:|---:|---|
+| N10 | 10 | historical HP08 dual-view route | 88.43% | 75.71% | achieved for new floor, old floor still weak at `20-19=71.43%` |
+| N10 | 5 | historical HP08 dual-view route | 86.13% | 76.00% | achieved for new floor, old floor still weak at `20-19=74.67%` |
+| N20 | 10 | current graph/dense-cluster qKNN | 66.71% | 47.14% | failed |
+| N20 | 5 | current graph/dense-cluster qKNN | 63.67% | 32.00% | failed |
+
+Important HP08 boundary:
+
+- The strong HP08 auxiliary feature file contains only ten target-domain `target_unknown` new TX.
+- It also contains many `proxy_unknown` TX from source receivers, but those cannot be used as Stage2-C target-new support/query.
+- Therefore the ten-new-class HP08 result cannot be claimed as a twenty-new-class result. The next high-value experiment is to export an HP08-style hard-pair representation for the N20 target-domain feature set, then rerun the same strict `K=5,K=10` maximum-query protocol.
+
+Next route:
+
+1. Generate or retrieve HP08-style hard-pair target-domain features for N20, not proxy-only classes.
+2. Rerun the already validated HP08 dual-view qKNN settings under N20 and strict `pool_per_class=K`.
+3. If N20 still fails, move the innovation from score-side qKNN to enrollment-quality gating plus representation-side hard-pair training for dense ManyTx families.
+
+Current goal status: active, not achieved.
