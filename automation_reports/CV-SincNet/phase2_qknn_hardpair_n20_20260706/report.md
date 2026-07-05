@@ -202,6 +202,10 @@ Interpretation:
 
 Current goal status: active, not achieved.
 
+## 05:44 Sync and SSH Cleanup Note
+
+05:44 CST执行本地到N607同步：本报告同步到`/home/szu2070436088/2510044040/CV-SincNet/automation_reports/CV-SincNet/phase2_qknn_hardpair_n20_20260706/report.md`，并用本地`Get-FileHash`和远端`sha256sum`核对一致。同步后发现既有本地`ssh.exe`残留PID`15320`，命令为早前`phase2_qknn_hardpair_n20_aligned_ref_20260706`的HP08REF nohup launch通道；已只关闭本地SSH客户端并复查为`NO_SSH_PROCESS`、`NO_N607_OR_BRIDGE_ESTABLISHED_22`。该清理不代表停止远端训练或诊断任务。
+
 ## Aligned HP08 Relaunch Plan
 
 Timestamp: 2026-07-06 05:35 CST
