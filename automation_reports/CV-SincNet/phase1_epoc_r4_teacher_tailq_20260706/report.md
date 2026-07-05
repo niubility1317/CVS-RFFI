@@ -69,7 +69,7 @@ R3使用较强energy/VOS和几何约束后，旧类未塌陷，但`proxy_auc`低
 |远端碰撞检查|`runs/phase1_epoc_r4_teacher_tailq_20260706`和`logs/phase1_epoc_r4_teacher_tailq_20260706`启动前均不存在|
 |同步文件|R4启动器、R4测试、本报告、`code/SYNC_MANIFEST.txt`|
 |远端启动前hash|启动器`ccc5134c20049824befd3e337795cc7592f275959e3e15982a1fbea03adba80b`；测试`964d8f4ab70449b9ec70cb32659d1cf808f759bc430e3fcb8330bb8835323a89`；报告`4b4bfb820d1f5c713e5cd99af96980f90ea59bdc7cf7df6d59d403949bb0094c`；manifest`58b32a77f0096552fe42e303fc1f9600a97ec932d33f0b7993d39ec3a0a5a756`|
-|远端最终同步hash|2026-07-06 01:42 CST校验：报告`b5c46d859d9f8c693a60b596d474fb0e8ef4968c05463517b7f07ac66db2ac4c`；manifest`2582b69ee839f9d64c340add1cc091503dcfe4bfb7cbad79ae848e0ca040a1ba`|
+|远端最终同步校验|2026-07-06 01:42 CST之后再次同步报告和manifest；最终hash以`code/SYNC_MANIFEST.txt`条目和远端`sha256sum`输出为准，避免在报告正文内记录自身hash导致自引用漂移|
 |远端验证|`bash -n` PASS；远端dry-run PASS；远端直接测试函数`direct_r4_launcher_tests=PASS`；禁用字段扫描未出现`ManyTx.pkl`、`--new_wisig_pkl`、`target_unknown`|
 |SSH/SCP清理|preflight、远端验证、同步、启动前检查、启动命令后均检查本地`ssh.exe`和到`172.31.111.215:22`/`172.31.105.18:22`的ESTABLISHED连接，无残留|
 
@@ -121,3 +121,10 @@ cd /home/szu2070436088/2510044040/CV-SincNet && bash code/scripts/launch_phase1_
 ## 当前状态
 
 R4已同步N607并启动两个候选。当前证据只支持“source-only底层修复实验已健康启动”，不能声明开集未知拒识目标完成。后续需在E20-E30观察`proxy_auc`、`virtual_accept`、`soft_virtual_accept`和LEO/source指标；完成后必须用导出的Phase2原型回到真实`ManyTx` Stage2-C/qknn8/协同M=1..5评估。
+
+## 复核备注
+
+|问题|处理|
+|---|---|
+|`--lambda_energy_in`/`--lambda_energy_out`|当前训练图中属于解析参数，不作为R4有效机制证据；R4有效的energy/tail约束来自`proxy_unknown_energy_margin_quantile_weight`、`proxy_unknown_energy_margin_target`、`proxy_unknown_tail_quarantine_weight`等proxy loss入口|
+|tail quarantine动态生效|启动健康只证明配置加载和训练运行；要等`proxy_unknown_start_epoch=20/22`之后检查`proxy_unknown_tail_quarantine_loss`、`proxy_auc`、`virtual_accept`和`soft_virtual_accept`|
