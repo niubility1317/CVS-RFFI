@@ -2016,6 +2016,125 @@ def _evaluate_metric_qknn(
     return row
 
 
+def _support_geometry_summary(
+    *,
+    features: np.ndarray,
+    support_indices: np.ndarray,
+    support_labels: np.ndarray,
+    old_labels: list[str],
+    new_labels: list[str],
+    k_old: int,
+    k_new: int,
+) -> dict[str, float]:
+    class_labels = old_labels + new_labels
+    prototypes: list[np.ndarray] = []
+    radii: list[float] = []
+    counts: list[int] = []
+    for label in class_labels:
+        idx = support_indices[support_labels == label]
+        counts.append(int(idx.size))
+        if idx.size == 0:
+            continue
+        vectors = qknn._normalize_rows(features[idx])
+        proto = qknn._normalize_rows(vectors.mean(axis=0, keepdims=True))[0]
+        prototypes.append(proto)
+        radii.append(float(np.mean(1.0 - np.clip(vectors @ proto, -1.0, 1.0))))
+    if len(prototypes) >= 2:
+        proto_matrix = np.stack(prototypes, axis=0)
+        sim = proto_matrix @ proto_matrix.T
+        offdiag = sim[~np.eye(sim.shape[0], dtype=bool)]
+        max_offdiag = float(np.max(offdiag))
+        p90_offdiag = float(np.quantile(offdiag, 0.90))
+        mean_offdiag = float(np.mean(offdiag))
+    else:
+        max_offdiag = 0.0
+        p90_offdiag = 0.0
+        mean_offdiag = 0.0
+    min_k = float(min([count for count in counts if count > 0], default=min(int(k_old), int(k_new))))
+    mean_radius = float(np.mean(radii)) if radii else 0.0
+    return {
+        "adaptive_support_min_k": min_k,
+        "adaptive_old_class_count": float(len(old_labels)),
+        "adaptive_new_class_count": float(len(new_labels)),
+        "adaptive_total_class_count": float(len(class_labels)),
+        "adaptive_support_max_offdiag_proto_sim": max_offdiag,
+        "adaptive_support_p90_offdiag_proto_sim": p90_offdiag,
+        "adaptive_support_mean_offdiag_proto_sim": mean_offdiag,
+        "adaptive_support_mean_radius": mean_radius,
+    }
+
+
+def _clip01(value: float) -> float:
+    return float(np.clip(float(value), 0.0, 1.0))
+
+
+def _adaptive_qknn_overrides(
+    *,
+    policy: str,
+    geometry: dict[str, float],
+    aux_available: bool,
+) -> dict[str, Any]:
+    name = str(policy).strip().lower()
+    if name in {"", "none"}:
+        return {
+            "adaptive_qknn_policy": "none",
+            "adaptive_support_hardness": 0.0,
+            "adaptive_class_load": 0.0,
+            "adaptive_k_reliability": 0.0,
+        }
+    if name not in {"dualview_support_v1", "stable_dualview_v1"}:
+        raise ValueError(f"unsupported adaptive_qknn_policy: {policy}")
+
+    min_k = float(geometry["adaptive_support_min_k"])
+    new_count = float(geometry["adaptive_new_class_count"])
+    max_sim = float(geometry["adaptive_support_max_offdiag_proto_sim"])
+    p90_sim = float(geometry["adaptive_support_p90_offdiag_proto_sim"])
+    radius = float(geometry["adaptive_support_mean_radius"])
+    hardness = _clip01(max((max_sim - 0.82) / 0.16, (p90_sim - 0.68) / 0.22, (radius - 0.08) / 0.20))
+    class_load = _clip01((new_count - 10.0) / 20.0)
+    k_reliability = _clip01((min_k - 5.0) / 15.0)
+    stable_gate = _clip01(max(hardness, 0.6 * class_load))
+    enhancement_gate = _clip01((1.0 - stable_gate) * k_reliability)
+
+    aux_weight = 0.0
+    if bool(aux_available):
+        aux_weight = float(np.clip(0.16 + 0.04 * stable_gate + 0.02 * class_load, 0.12, 0.24))
+    source_guard_weight = float(np.clip(0.05 * stable_gate + 0.02 * class_load, 0.0, 0.07))
+    core_count = int(max(1, min(int(min_k), round(np.sqrt(max(min_k, 1.0)) / 1.6))))
+    core_topm = int(max(1, min(core_count, 2 + int(class_load >= 0.5))))
+
+    return {
+        "adaptive_qknn_policy": name,
+        "adaptive_support_hardness": hardness,
+        "adaptive_class_load": class_load,
+        "adaptive_k_reliability": k_reliability,
+        "adaptive_stable_gate": stable_gate,
+        "adaptive_enhancement_gate": enhancement_gate,
+        "transform_mode": "diag_whiten_fisher" if stable_gate >= 0.50 else "diag_fisher",
+        "transform_strength": float(np.clip(0.10 + 0.40 * enhancement_gate, 0.10, 0.50)),
+        "proto_mix": float(np.clip(0.40 - 0.15 * enhancement_gate, 0.25, 0.40)),
+        "aux_score_weight": aux_weight,
+        "pair_gaussian_similarity": float(np.clip(0.85 + 0.10 * enhancement_gate, 0.85, 0.95)),
+        "pair_gaussian_weight": float(np.clip(0.02 - 0.015 * enhancement_gate, 0.005, 0.02)),
+        "pair_gaussian_clip": 2.0,
+        "pair_fisher_similarity": 0.90,
+        "pair_fisher_weight": 0.01,
+        "pair_fisher_alpha": 1.0,
+        "pair_fisher_clip": 2.0,
+        "ridge_head_weight": float(np.clip(0.015 * enhancement_gate, 0.0, 0.015)),
+        "ridge_head_alpha": 0.01 if enhancement_gate > 0.0 else 1.0,
+        "ridge_head_clip": 2.0,
+        "core_proto_weight": float(np.clip(0.10 * enhancement_gate, 0.0, 0.10)),
+        "core_proto_count": core_count,
+        "core_proto_topm": core_topm,
+        "core_proto_mode": "axis" if enhancement_gate >= 0.25 else "centroid",
+        "source_guard_mode": "add_old" if source_guard_weight > 0.0 else "none",
+        "source_guard_weight": source_guard_weight,
+        "source_guard_conf_min": 0.0,
+        "source_guard_margin_min": 0.0,
+    }
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--feature_npz", required=True)
@@ -2041,6 +2160,7 @@ def main() -> None:
     parser.add_argument("--topm_grid", default="4")
     parser.add_argument("--proto_mix_grid", default="0.25")
     parser.add_argument("--aux_score_weight_grid", default="0")
+    parser.add_argument("--adaptive_qknn_policy_grid", default="none")
     parser.add_argument("--radius_norm_grid", default="0")
     parser.add_argument("--old_bias_grid", default="0.001")
     parser.add_argument("--neg_lambda_grid", default="0.7")
@@ -2289,210 +2409,280 @@ def main() -> None:
                 continue
             old_splits = active._as_eval_splits(old_raw)
             new_splits = active._as_eval_splits(new_raw)
-            for (
-                mode,
-                strength,
-                topm,
-                proto_mix,
-                aux_score_weight,
-                radius_norm,
-                old_bias,
-                neg_lambda,
-                neg_threshold,
-                neg_margin,
-                mutual_raw,
-                proto_repel_lambda,
-                proto_repel_margin,
-                proto_repel_steps,
-                proto_repel_anchor,
-                pair_refine_similarity,
-                pair_axis_similarity,
-                pair_axis_weight,
-                pair_axis_clip,
-                pair_gaussian_similarity,
-                pair_gaussian_weight,
-                pair_gaussian_clip,
-                pair_fisher_similarity,
-                pair_fisher_weight,
-                pair_fisher_alpha,
-                pair_fisher_clip,
-                support_guided_proxy_weight,
-                support_guided_proxy_top_pairs,
-                support_guided_proxy_clip,
-                pair_logreg_similarity,
-                pair_logreg_weight,
-                pair_logreg_alpha,
-                pair_logreg_clip,
-                pair_logreg_scope,
-                new_old_conflict_bias_threshold,
-                new_old_conflict_bias_weight,
-                old_new_runnerup_rescue_similarity,
-                old_new_runnerup_rescue_margin,
-                old_new_runnerup_rescue_weight,
-                bootstrap_proto_mix,
-                bootstrap_proto_drop,
-                bootstrap_proto_topm,
-                core_proto_weight,
-                core_proto_count,
-                core_proto_topm,
-                core_proto_mode,
-                ridge_head_weight,
-                ridge_head_alpha,
-                ridge_head_clip,
-                subspace_proto_weight,
-                subspace_proto_rank,
-                subspace_proto_power,
-                subspace_proto_clip,
-                class_diag_metric_weight,
-                class_diag_metric_similarity,
-                class_diag_metric_alpha,
-                class_diag_metric_power,
-                class_diag_metric_clip,
-                support_bias_weight,
-                support_bias_step,
-                support_bias_rounds,
-                mahal_proto_weight,
-                mahal_proto_alpha,
-                mahal_proto_diag_mix,
-                mahal_proto_clip,
-                score_calibration,
-                assignment_margin_weight,
-                assignment_margin_clip,
-                labelprop_weight,
-                labelprop_k,
-                labelprop_alpha,
-                labelprop_temperature,
-                labelprop_rounds,
-                labelprop_clip,
-                labelprop_scope,
-                query_graph_weight,
-                query_graph_k,
-                query_graph_temperature,
-                query_graph_rounds,
-                query_graph_scope,
-                source_guard_mode,
-                source_guard_weight,
-                source_guard_conf_min,
-                source_guard_margin_min,
-                source_proto_anchor_mode,
-                source_proto_anchor_weight,
-                source_proto_anchor_center,
-            ) in search_grid:
-                row = _evaluate_metric_qknn(
-                    features=features,
-                    aux_features=aux_features,
-                    logits=logits,
-                    tx_ids=tx_ids,
-                    roles=roles,
-                    scenarios=scenarios,
-                    old_splits=old_splits,
-                    new_splits=new_splits,
-                    old_labels=old_labels,
-                    new_labels=new_labels,
-                    transform_mode=mode,
-                    transform_strength=float(strength),
-                    topm=int(topm),
-                    proto_mix=float(proto_mix),
-                    aux_score_weight=float(aux_score_weight),
-                    radius_norm=float(radius_norm),
-                    old_bias=float(old_bias),
-                    neg_lambda=float(neg_lambda),
-                    neg_threshold=float(neg_threshold),
-                    neg_margin=float(neg_margin),
-                    mutual_only=str(mutual_raw).lower() == "true",
-                    scenario_aware=bool(args.scenario_aware),
-                    balanced_assignment=bool(args.balanced_assignment),
-                    scenario_balanced_assignment=bool(args.scenario_balanced_assignment),
-                    proto_repel_lambda=float(proto_repel_lambda),
-                    proto_repel_margin=float(proto_repel_margin),
-                    proto_repel_steps=int(proto_repel_steps),
-                    proto_repel_anchor=float(proto_repel_anchor),
-                    pair_refine_similarity=float(pair_refine_similarity),
-                    pair_axis_similarity=float(pair_axis_similarity),
-                    pair_axis_weight=float(pair_axis_weight),
-                    pair_axis_clip=float(pair_axis_clip),
-                    pair_gaussian_similarity=float(pair_gaussian_similarity),
-                    pair_gaussian_weight=float(pair_gaussian_weight),
-                    pair_gaussian_clip=float(pair_gaussian_clip),
-                    pair_fisher_similarity=float(pair_fisher_similarity),
-                    pair_fisher_weight=float(pair_fisher_weight),
-                    pair_fisher_alpha=float(pair_fisher_alpha),
-                    pair_fisher_clip=float(pair_fisher_clip),
-                    support_guided_proxy_rows=support_guided_proxy_rows,
-                    support_guided_proxy_weight=float(support_guided_proxy_weight),
-                    support_guided_proxy_top_pairs=int(support_guided_proxy_top_pairs),
-                    support_guided_proxy_clip=float(support_guided_proxy_clip),
-                    pair_logreg_similarity=float(pair_logreg_similarity),
-                    pair_logreg_weight=float(pair_logreg_weight),
-                    pair_logreg_alpha=float(pair_logreg_alpha),
-                    pair_logreg_clip=float(pair_logreg_clip),
-                    pair_logreg_scope=str(pair_logreg_scope),
-                    new_old_conflict_bias_threshold=float(new_old_conflict_bias_threshold),
-                    new_old_conflict_bias_weight=float(new_old_conflict_bias_weight),
-                    old_new_runnerup_rescue_similarity=float(old_new_runnerup_rescue_similarity),
-                    old_new_runnerup_rescue_margin=float(old_new_runnerup_rescue_margin),
-                    old_new_runnerup_rescue_weight=float(old_new_runnerup_rescue_weight),
-                    bootstrap_proto_mix=float(bootstrap_proto_mix),
-                    bootstrap_proto_drop=int(bootstrap_proto_drop),
-                    bootstrap_proto_topm=int(bootstrap_proto_topm),
-                    core_proto_weight=float(core_proto_weight),
-                    core_proto_count=int(core_proto_count),
-                    core_proto_topm=int(core_proto_topm),
-                    core_proto_mode=str(core_proto_mode),
-                    ridge_head_weight=float(ridge_head_weight),
-                    ridge_head_alpha=float(ridge_head_alpha),
-                    ridge_head_clip=float(ridge_head_clip),
-                    subspace_proto_weight=float(subspace_proto_weight),
-                    subspace_proto_rank=int(subspace_proto_rank),
-                    subspace_proto_power=float(subspace_proto_power),
-                    subspace_proto_clip=float(subspace_proto_clip),
-                    class_diag_metric_weight=float(class_diag_metric_weight),
-                    class_diag_metric_similarity=float(class_diag_metric_similarity),
-                    class_diag_metric_alpha=float(class_diag_metric_alpha),
-                    class_diag_metric_power=float(class_diag_metric_power),
-                    class_diag_metric_clip=float(class_diag_metric_clip),
-                    support_bias_weight=float(support_bias_weight),
-                    support_bias_step=float(support_bias_step),
-                    support_bias_rounds=int(support_bias_rounds),
-                    mahal_proto_weight=float(mahal_proto_weight),
-                    mahal_proto_alpha=float(mahal_proto_alpha),
-                    mahal_proto_diag_mix=float(mahal_proto_diag_mix),
-                    mahal_proto_clip=float(mahal_proto_clip),
-                    score_calibration=str(score_calibration),
-                    assignment_margin_weight=float(assignment_margin_weight),
-                    assignment_margin_clip=float(assignment_margin_clip),
-                    labelprop_weight=float(labelprop_weight),
-                    labelprop_k=int(labelprop_k),
-                    labelprop_alpha=float(labelprop_alpha),
-                    labelprop_temperature=float(labelprop_temperature),
-                    labelprop_rounds=int(labelprop_rounds),
-                    labelprop_clip=float(labelprop_clip),
-                    labelprop_scope=str(labelprop_scope),
-                    query_graph_weight=float(query_graph_weight),
-                    query_graph_k=int(query_graph_k),
-                    query_graph_temperature=float(query_graph_temperature),
-                    query_graph_rounds=int(query_graph_rounds),
-                    query_graph_scope=str(query_graph_scope),
-                    source_guard_mode=str(source_guard_mode),
-                    source_guard_weight=float(source_guard_weight),
-                    source_guard_conf_min=float(source_guard_conf_min),
-                    source_guard_margin_min=float(source_guard_margin_min),
-                    source_proto_anchor_mode=str(source_proto_anchor_mode),
-                    source_proto_anchor_weight=float(source_proto_anchor_weight),
-                    source_proto_anchor_center=float(source_proto_anchor_center),
-                    old_target=float(args.old_target),
-                    old_floor=float(args.old_floor),
-                    new_target=float(args.seen_new_target),
-                    new_floor=float(args.seen_new_floor),
-                    collect_predictions=bool(str(args.output_predictions_csv).strip()),
+            support_indices, support_labels = _collect_support(old_splits, new_splits, old_labels, new_labels)
+            support_geometry = _support_geometry_summary(
+                features=features,
+                support_indices=support_indices,
+                support_labels=support_labels,
+                old_labels=old_labels,
+                new_labels=new_labels,
+                k_old=int(args.k_old),
+                k_new=int(args.k_new),
+            )
+            for adaptive_policy in qknn._parse_csv(args.adaptive_qknn_policy_grid):
+                adaptive_overrides = _adaptive_qknn_overrides(
+                    policy=str(adaptive_policy),
+                    geometry=support_geometry,
+                    aux_available=aux_features is not None,
                 )
-                row["seed"] = int(seed)
-                row["support_selection_policy"] = policy
-                row["k_old"] = int(args.k_old)
-                row["k_new"] = int(args.k_new)
-                row["pool_per_old"] = int(args.pool_per_old)
-                row["pool_per_new"] = int(args.pool_per_new)
-                rows.append(row)
+                for (
+                    mode,
+                    strength,
+                    topm,
+                    proto_mix,
+                    aux_score_weight,
+                    radius_norm,
+                    old_bias,
+                    neg_lambda,
+                    neg_threshold,
+                    neg_margin,
+                    mutual_raw,
+                    proto_repel_lambda,
+                    proto_repel_margin,
+                    proto_repel_steps,
+                    proto_repel_anchor,
+                    pair_refine_similarity,
+                    pair_axis_similarity,
+                    pair_axis_weight,
+                    pair_axis_clip,
+                    pair_gaussian_similarity,
+                    pair_gaussian_weight,
+                    pair_gaussian_clip,
+                    pair_fisher_similarity,
+                    pair_fisher_weight,
+                    pair_fisher_alpha,
+                    pair_fisher_clip,
+                    support_guided_proxy_weight,
+                    support_guided_proxy_top_pairs,
+                    support_guided_proxy_clip,
+                    pair_logreg_similarity,
+                    pair_logreg_weight,
+                    pair_logreg_alpha,
+                    pair_logreg_clip,
+                    pair_logreg_scope,
+                    new_old_conflict_bias_threshold,
+                    new_old_conflict_bias_weight,
+                    old_new_runnerup_rescue_similarity,
+                    old_new_runnerup_rescue_margin,
+                    old_new_runnerup_rescue_weight,
+                    bootstrap_proto_mix,
+                    bootstrap_proto_drop,
+                    bootstrap_proto_topm,
+                    core_proto_weight,
+                    core_proto_count,
+                    core_proto_topm,
+                    core_proto_mode,
+                    ridge_head_weight,
+                    ridge_head_alpha,
+                    ridge_head_clip,
+                    subspace_proto_weight,
+                    subspace_proto_rank,
+                    subspace_proto_power,
+                    subspace_proto_clip,
+                    class_diag_metric_weight,
+                    class_diag_metric_similarity,
+                    class_diag_metric_alpha,
+                    class_diag_metric_power,
+                    class_diag_metric_clip,
+                    support_bias_weight,
+                    support_bias_step,
+                    support_bias_rounds,
+                    mahal_proto_weight,
+                    mahal_proto_alpha,
+                    mahal_proto_diag_mix,
+                    mahal_proto_clip,
+                    score_calibration,
+                    assignment_margin_weight,
+                    assignment_margin_clip,
+                    labelprop_weight,
+                    labelprop_k,
+                    labelprop_alpha,
+                    labelprop_temperature,
+                    labelprop_rounds,
+                    labelprop_clip,
+                    labelprop_scope,
+                    query_graph_weight,
+                    query_graph_k,
+                    query_graph_temperature,
+                    query_graph_rounds,
+                    query_graph_scope,
+                    source_guard_mode,
+                    source_guard_weight,
+                    source_guard_conf_min,
+                    source_guard_margin_min,
+                    source_proto_anchor_mode,
+                    source_proto_anchor_weight,
+                    source_proto_anchor_center,
+                ) in search_grid:
+                    params: dict[str, Any] = {
+                        "mode": mode,
+                        "strength": float(strength),
+                        "proto_mix": float(proto_mix),
+                        "aux_score_weight": float(aux_score_weight),
+                        "pair_gaussian_similarity": float(pair_gaussian_similarity),
+                        "pair_gaussian_weight": float(pair_gaussian_weight),
+                        "pair_gaussian_clip": float(pair_gaussian_clip),
+                        "pair_fisher_similarity": float(pair_fisher_similarity),
+                        "pair_fisher_weight": float(pair_fisher_weight),
+                        "pair_fisher_alpha": float(pair_fisher_alpha),
+                        "pair_fisher_clip": float(pair_fisher_clip),
+                        "core_proto_weight": float(core_proto_weight),
+                        "core_proto_count": int(core_proto_count),
+                        "core_proto_topm": int(core_proto_topm),
+                        "core_proto_mode": str(core_proto_mode),
+                        "ridge_head_weight": float(ridge_head_weight),
+                        "ridge_head_alpha": float(ridge_head_alpha),
+                        "ridge_head_clip": float(ridge_head_clip),
+                        "source_guard_mode": str(source_guard_mode),
+                        "source_guard_weight": float(source_guard_weight),
+                        "source_guard_conf_min": float(source_guard_conf_min),
+                        "source_guard_margin_min": float(source_guard_margin_min),
+                    }
+                    params.update(
+                        {
+                            "mode": adaptive_overrides.get("transform_mode", params["mode"]),
+                            "strength": adaptive_overrides.get("transform_strength", params["strength"]),
+                            "proto_mix": adaptive_overrides.get("proto_mix", params["proto_mix"]),
+                            "aux_score_weight": adaptive_overrides.get("aux_score_weight", params["aux_score_weight"]),
+                            "pair_gaussian_similarity": adaptive_overrides.get("pair_gaussian_similarity", params["pair_gaussian_similarity"]),
+                            "pair_gaussian_weight": adaptive_overrides.get("pair_gaussian_weight", params["pair_gaussian_weight"]),
+                            "pair_gaussian_clip": adaptive_overrides.get("pair_gaussian_clip", params["pair_gaussian_clip"]),
+                            "pair_fisher_similarity": adaptive_overrides.get("pair_fisher_similarity", params["pair_fisher_similarity"]),
+                            "pair_fisher_weight": adaptive_overrides.get("pair_fisher_weight", params["pair_fisher_weight"]),
+                            "pair_fisher_alpha": adaptive_overrides.get("pair_fisher_alpha", params["pair_fisher_alpha"]),
+                            "pair_fisher_clip": adaptive_overrides.get("pair_fisher_clip", params["pair_fisher_clip"]),
+                            "core_proto_weight": adaptive_overrides.get("core_proto_weight", params["core_proto_weight"]),
+                            "core_proto_count": adaptive_overrides.get("core_proto_count", params["core_proto_count"]),
+                            "core_proto_topm": adaptive_overrides.get("core_proto_topm", params["core_proto_topm"]),
+                            "core_proto_mode": adaptive_overrides.get("core_proto_mode", params["core_proto_mode"]),
+                            "ridge_head_weight": adaptive_overrides.get("ridge_head_weight", params["ridge_head_weight"]),
+                            "ridge_head_alpha": adaptive_overrides.get("ridge_head_alpha", params["ridge_head_alpha"]),
+                            "ridge_head_clip": adaptive_overrides.get("ridge_head_clip", params["ridge_head_clip"]),
+                            "source_guard_mode": adaptive_overrides.get("source_guard_mode", params["source_guard_mode"]),
+                            "source_guard_weight": adaptive_overrides.get("source_guard_weight", params["source_guard_weight"]),
+                            "source_guard_conf_min": adaptive_overrides.get("source_guard_conf_min", params["source_guard_conf_min"]),
+                            "source_guard_margin_min": adaptive_overrides.get("source_guard_margin_min", params["source_guard_margin_min"]),
+                        }
+                    )
+                    row = _evaluate_metric_qknn(
+                        features=features,
+                        aux_features=aux_features,
+                        logits=logits,
+                        tx_ids=tx_ids,
+                        roles=roles,
+                        scenarios=scenarios,
+                        old_splits=old_splits,
+                        new_splits=new_splits,
+                        old_labels=old_labels,
+                        new_labels=new_labels,
+                        transform_mode=params["mode"],
+                        transform_strength=float(params["strength"]),
+                        topm=int(topm),
+                        proto_mix=float(params["proto_mix"]),
+                        aux_score_weight=float(params["aux_score_weight"]),
+                        radius_norm=float(radius_norm),
+                        old_bias=float(old_bias),
+                        neg_lambda=float(neg_lambda),
+                        neg_threshold=float(neg_threshold),
+                        neg_margin=float(neg_margin),
+                        mutual_only=str(mutual_raw).lower() == "true",
+                        scenario_aware=bool(args.scenario_aware),
+                        balanced_assignment=bool(args.balanced_assignment),
+                        scenario_balanced_assignment=bool(args.scenario_balanced_assignment),
+                        proto_repel_lambda=float(proto_repel_lambda),
+                        proto_repel_margin=float(proto_repel_margin),
+                        proto_repel_steps=int(proto_repel_steps),
+                        proto_repel_anchor=float(proto_repel_anchor),
+                        pair_refine_similarity=float(pair_refine_similarity),
+                        pair_axis_similarity=float(pair_axis_similarity),
+                        pair_axis_weight=float(pair_axis_weight),
+                        pair_axis_clip=float(pair_axis_clip),
+                        pair_gaussian_similarity=float(params["pair_gaussian_similarity"]),
+                        pair_gaussian_weight=float(params["pair_gaussian_weight"]),
+                        pair_gaussian_clip=float(params["pair_gaussian_clip"]),
+                        pair_fisher_similarity=float(params["pair_fisher_similarity"]),
+                        pair_fisher_weight=float(params["pair_fisher_weight"]),
+                        pair_fisher_alpha=float(params["pair_fisher_alpha"]),
+                        pair_fisher_clip=float(params["pair_fisher_clip"]),
+                        support_guided_proxy_rows=support_guided_proxy_rows,
+                        support_guided_proxy_weight=float(support_guided_proxy_weight),
+                        support_guided_proxy_top_pairs=int(support_guided_proxy_top_pairs),
+                        support_guided_proxy_clip=float(support_guided_proxy_clip),
+                        pair_logreg_similarity=float(pair_logreg_similarity),
+                        pair_logreg_weight=float(pair_logreg_weight),
+                        pair_logreg_alpha=float(pair_logreg_alpha),
+                        pair_logreg_clip=float(pair_logreg_clip),
+                        pair_logreg_scope=str(pair_logreg_scope),
+                        new_old_conflict_bias_threshold=float(new_old_conflict_bias_threshold),
+                        new_old_conflict_bias_weight=float(new_old_conflict_bias_weight),
+                        old_new_runnerup_rescue_similarity=float(old_new_runnerup_rescue_similarity),
+                        old_new_runnerup_rescue_margin=float(old_new_runnerup_rescue_margin),
+                        old_new_runnerup_rescue_weight=float(old_new_runnerup_rescue_weight),
+                        bootstrap_proto_mix=float(bootstrap_proto_mix),
+                        bootstrap_proto_drop=int(bootstrap_proto_drop),
+                        bootstrap_proto_topm=int(bootstrap_proto_topm),
+                        core_proto_weight=float(params["core_proto_weight"]),
+                        core_proto_count=int(params["core_proto_count"]),
+                        core_proto_topm=int(params["core_proto_topm"]),
+                        core_proto_mode=str(params["core_proto_mode"]),
+                        ridge_head_weight=float(params["ridge_head_weight"]),
+                        ridge_head_alpha=float(params["ridge_head_alpha"]),
+                        ridge_head_clip=float(params["ridge_head_clip"]),
+                        subspace_proto_weight=float(subspace_proto_weight),
+                        subspace_proto_rank=int(subspace_proto_rank),
+                        subspace_proto_power=float(subspace_proto_power),
+                        subspace_proto_clip=float(subspace_proto_clip),
+                        class_diag_metric_weight=float(class_diag_metric_weight),
+                        class_diag_metric_similarity=float(class_diag_metric_similarity),
+                        class_diag_metric_alpha=float(class_diag_metric_alpha),
+                        class_diag_metric_power=float(class_diag_metric_power),
+                        class_diag_metric_clip=float(class_diag_metric_clip),
+                        support_bias_weight=float(support_bias_weight),
+                        support_bias_step=float(support_bias_step),
+                        support_bias_rounds=int(support_bias_rounds),
+                        mahal_proto_weight=float(mahal_proto_weight),
+                        mahal_proto_alpha=float(mahal_proto_alpha),
+                        mahal_proto_diag_mix=float(mahal_proto_diag_mix),
+                        mahal_proto_clip=float(mahal_proto_clip),
+                        score_calibration=str(score_calibration),
+                        assignment_margin_weight=float(assignment_margin_weight),
+                        assignment_margin_clip=float(assignment_margin_clip),
+                        labelprop_weight=float(labelprop_weight),
+                        labelprop_k=int(labelprop_k),
+                        labelprop_alpha=float(labelprop_alpha),
+                        labelprop_temperature=float(labelprop_temperature),
+                        labelprop_rounds=int(labelprop_rounds),
+                        labelprop_clip=float(labelprop_clip),
+                        labelprop_scope=str(labelprop_scope),
+                        query_graph_weight=float(query_graph_weight),
+                        query_graph_k=int(query_graph_k),
+                        query_graph_temperature=float(query_graph_temperature),
+                        query_graph_rounds=int(query_graph_rounds),
+                        query_graph_scope=str(query_graph_scope),
+                        source_guard_mode=str(params["source_guard_mode"]),
+                        source_guard_weight=float(params["source_guard_weight"]),
+                        source_guard_conf_min=float(params["source_guard_conf_min"]),
+                        source_guard_margin_min=float(params["source_guard_margin_min"]),
+                        source_proto_anchor_mode=str(source_proto_anchor_mode),
+                        source_proto_anchor_weight=float(source_proto_anchor_weight),
+                        source_proto_anchor_center=float(source_proto_anchor_center),
+                        old_target=float(args.old_target),
+                        old_floor=float(args.old_floor),
+                        new_target=float(args.seen_new_target),
+                        new_floor=float(args.seen_new_floor),
+                        collect_predictions=bool(str(args.output_predictions_csv).strip()),
+                    )
+                    row.update(support_geometry)
+                    for key, value in adaptive_overrides.items():
+                        if key not in {"transform_mode", "transform_strength"}:
+                            row[key] = value
+                    row["seed"] = int(seed)
+                    row["support_selection_policy"] = policy
+                    row["k_old"] = int(args.k_old)
+                    row["k_new"] = int(args.k_new)
+                    row["pool_per_old"] = int(args.pool_per_old)
+                    row["pool_per_new"] = int(args.pool_per_new)
+                    rows.append(row)
 
     rows.sort(
         key=lambda row: (
