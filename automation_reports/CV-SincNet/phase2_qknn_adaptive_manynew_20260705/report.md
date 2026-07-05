@@ -339,6 +339,65 @@ Interpretation:
 
 Current goal status: active, not achieved.
 
+## 2026-07-06 Local Follow-up: dual-view core/bootstrap compressed prototype check
+
+Objective: test whether the existing qKNN compression route can be strengthened without storing raw support samples, while keeping only the requested anchors `K=5,K=10`. The route adds bootstrap virtual prototypes and small core prototypes on top of the adaptive `dualview_support_v8` scoring surface.
+
+Protocol and scope:
+
+- Dataset feature fingerprint is unchanged: `features_n20_norm.npz` SHA256 `aab99af6d7022f422a61eac8018884790d1497c8f3f1f17aa65a02bdcf1432e2`; aux head SHA256 `637bae47ace04b87f9e72c42d006c44218ce8ccc58b819343e38dafca85aa140`.
+- `K=10` uses `query_per_old=70,query_per_new=70`; `K=5` uses `query_per_old=75,query_per_new=75`, i.e. maximum query under the current 80-sample-per-class N20 feature file.
+- No raw support sample is stored. Persistent state remains compressed: class prototypes, transform scalars, old-residual basis/prototypes, optional bootstrap prototypes, and optional core prototypes.
+- Runs are local diagnostics under the current Stage2-C support/query permission. No N607 job was launched.
+
+Commands:
+
+```text
+conda run -n ssr-gpu python code\scripts\phase2_support_metric_qknn_probe.py ... --adaptive_qknn_policy_grid dualview_support_v8 --bootstrap_proto_mix_grid 0,0.2,0.4 --core_proto_weight_grid 0,0.1,0.2 --core_proto_count_grid 3,5 --core_proto_topm_grid 1,2 --core_proto_mode_grid centroid,axis
+```
+
+Output files:
+
+| scope | K | output |
+|---|---:|---|
+| N10 | 10 | `v9_probe/n10_k10_q70_manualv8_core_boot_grid.csv` |
+| N10 | 5 | `v9_probe/n10_k5_q75_manualv8_core_boot_grid.csv` |
+| N20 | 10 | `v9_probe/n20_k10_q70_manualv8_core_boot_grid.csv` |
+| N20 | 5 | `v9_probe/n20_k5_q75_manualv8_core_boot_grid.csv` |
+
+Best same-row results:
+
+| scope | K | query/class | old_acc | min_old | new_acc | min_new | best compressed add-on | support/query fingerprint | verdict |
+|---|---:|---:|---:|---:|---:|---:|---|---|---|
+| N10 | 10 | 70 | 91.67% | 77.14% | 82.00% | 62.86% | `bootstrap_mix=0.4,core_weight=0.1,core_count=5,core_topm=2,mode=centroid` | `support=17457ab7f1a04516,new_query=b977c4b95157c58e` | mean gain, floor failed |
+| N10 | 5 | 75 | 91.11% | 76.00% | 68.13% | 50.67% | no bootstrap/core selected | `support=9a56618e3602f87a,new_query=09b03c2262679c50` | failed |
+| N20 | 10 | 70 | 91.67% | 77.14% | 57.36% | 27.14% | no bootstrap/core selected | `support=0885bb60486a4730,new_query=acca9b1d27022cc6` | many-new collapse |
+| N20 | 5 | 75 | 90.89% | 77.33% | 45.13% | 25.33% | `bootstrap_mix=0.2`, no core | `support=8f045a45d81708e9,new_query=2f664e408c3435d5` | many-new collapse |
+
+Per-new-class details for the two requested ten-new-class anchors:
+
+| class | N10 K=10 acc | N10 K=5 acc |
+|---|---:|---:|
+| `10-10` | 71.43% | 58.67% |
+| `11-10` | 75.71% | 62.67% |
+| `18-5` | 91.43% | 69.33% |
+| `19-3` | 88.57% | 74.67% |
+| `2-13` | 62.86% | 50.67% |
+| `2-5` | 87.14% | 77.33% |
+| `3-8` | 90.00% | 70.67% |
+| `4-10` | 74.29% | 53.33% |
+| `8-18` | 88.57% | 84.00% |
+| `8-3` | 90.00% | 80.00% |
+
+Interpretation:
+
+- The compressed-prototype idea is useful only on `N10,K=10`: mean new accuracy reaches 82.00%, but the weakest class remains `2-13=62.86%`, so it still misses the `min_new>=75%` goal by 12.14 percentage points.
+- `K=5` does not benefit from the bootstrap/core route on N10; the best row falls back to the adaptive v8 surface and remains at `min_new=50.67%`.
+- Expanding from ten to twenty new classes triggers clear collapse under the current feature geometry. N20 best rows are `min_new=27.14%` for K=10 and `25.33%` for K=5, despite old-class accuracy staying above 90%.
+- Therefore the current qKNN score-head family is not sufficient. Further raw-support-free score surgery should not be treated as the main route to the 75% floor. The next credible route should add a protocol-explicit enrollment-quality gate or representation-side adaptation that changes the new-class geometry before assignment.
+
+Current goal status: active, not achieved.
+
 ## 2026-07-06 Continuation: adaptive v7 new-new compressed pair head
 
 Objective: continue the qKNN route without expanding the K grid. This test keeps the anchors at `K=5,K=10`, adds an adaptive compressed new-new pair head, and verifies whether the weakest-class floor improves when the number of new classes increases.
@@ -1062,3 +1121,7 @@ Interpretation:
 - The next optimization should target adaptive enrollment/support-quality repair or representation-side adaptation rather than more scalar score blending.
 
 Current goal status: active, not achieved.
+
+## 2026-07-06 Latest checkpoint
+
+Latest completed local check is the `dual-view core/bootstrap compressed prototype` diagnostic recorded above. It keeps `K=5,K=10` only and uses maximum query counts for the current 80-sample-per-class feature file. Best current ten-new-class results are `K=10 new_acc=82.00%,min_new=62.86%` and `K=5 new_acc=68.13%,min_new=50.67%`; best twenty-new-class results are `K=10 new_acc=57.36%,min_new=27.14%` and `K=5 new_acc=45.13%,min_new=25.33%`. The active goal remains open and not achieved.
