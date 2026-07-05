@@ -104,6 +104,15 @@ Snapshot:
 |claim boundary|当前只证明远端启动和startup PASS；不得声明Stage2-C成功、部署成功或目标完成。训练完成导出prototype后，必须接`phase2_collaborative_open_set_qknn_eval.py --collab_counts all --qknn_k 8`做M=1..target receiver count同row复评。|
 |ssh cleanup|启动和健康检查后本地复查`ssh.exe=0`、N607/bridge 22端口ESTABLISHED连接均为0。|
 
+## 运行监控
+
+|time CST|candidate|epoch|GPU/mem|status|verdict|
+|---|---|---:|---|---|---|
+|2026-07-06 07:27|`EPOC_R8_PAOG_RADIUS_ENERGY`|9/200|GPU0/约2255MiB|`latest_safe_ssdg.pth`、`latest_ssdg.pth`和`best_joint_safe_ssdg.pth`已写；日志含`[ZID-FEATURE-SPACE]`，确认`proto/open_world/zid_compact/proxy_unknown/soft_mix/source_episode/phase2_export`启用。|running startup healthy；尚未到proxy active阶段，不可判断unknown拒识。|
+|2026-07-06 07:27|`EPOC_R8_PAOG_SHELL_BALANCED`|9/200|GPU1/约2013MiB|`latest_safe_ssdg.pth`、`latest_ssdg.pth`和`best_joint_safe_ssdg.pth`已写；日志含`[ZID-FEATURE-SPACE]`，确认`proto/open_world/zid_compact/proxy_unknown/soft_mix/source_episode/phase2_export`启用。|running startup healthy；尚未到proxy active阶段，不可判断unknown拒识。|
+
+07:27 CST只读监控结论：两个候选均运行到E009/200，GPU0/1保持低显存占用量级，未见Traceback、RuntimeError、CUDA OOM、out-of-memory、NaN、unrecognized arguments或Killed。当前只能声明startup healthy，不能声明训练有效或Stage2-C成功。
+
 ## 成功/失败判据
 
 |阶段|判据|
