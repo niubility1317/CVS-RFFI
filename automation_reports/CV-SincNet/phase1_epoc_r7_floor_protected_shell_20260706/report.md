@@ -10,7 +10,7 @@
 |objective|在协同推理、OSPR-CI++、feature geometry、target-old prototype/ridge/MLP上限均未达到目标后，启动更底层source-only地面训练候选，优先保护旧类floor并修复LEO特征几何。|
 |base/teacher|`ADV3B02_CORE90_SOFT_E200`，checkpoint:`runs/phase1_adv3_mechanism32_queue_20260701/ADV3B02_CORE90_SOFT_E200/best_joint_safe_ssdg.pth`|
 |route|`source_only_floor_protected_feature_shell`|
-|status|n607_running_monitor_e183_e182|
+|status|n607_running_monitor_e185_e184|
 
 ## 协议边界
 
@@ -170,6 +170,8 @@ Snapshot:
 |2026-07-06 06:21|`EPOC_R7_BALANCED_LOW_DENSITY`|179/200|90|85.8023|98.6012|90.0270|98.6071|93.0409|1|0.4373|0.8056|0.7677|not yet|running; prototype absent, proxy still negative|
 |2026-07-06 06:24|`EPOC_R7_FLOOR_LOCKED_SHELL`|183/200|10|85.7313|98.6369|90.6623|98.5536|94.6514|1|0.4793|0.8171|0.8339|not yet|running; prototype absent, proxy still below random|
 |2026-07-06 06:24|`EPOC_R7_BALANCED_LOW_DENSITY`|182/200|90|85.8023|98.6012|90.0270|98.6250|93.8822|1|0.4399|0.8093|0.7709|not yet|running; E182 test_tx=89.5270 below best, prototype absent|
+|2026-07-06 06:27|`EPOC_R7_FLOOR_LOCKED_SHELL`|185/200|10|85.7313|98.6369|90.6623|98.6131|93.7861|1|0.4758|0.8202|0.8328|not yet|running; prototype absent, proxy still below random|
+|2026-07-06 06:27|`EPOC_R7_BALANCED_LOW_DENSITY`|184/200|90|85.8023|98.6012|90.0270|98.6250|94.3029|1|0.4349|0.8115|0.7542|not yet|running; E184 test_tx=89.7373 below best, prototype absent|
 
 03:59 CST只读监控结论：N607预检PASS，GPU2/3分别约2443/2437MiB；两个候选均有`best_joint_safe_ssdg.pth`，但尚未导出`phase2_zid_prototypes.pt`。错误扫描未见Traceback、RuntimeError、CUDA OOM、out-of-memory、NaN、unrecognized arguments或Killed。由于proxy未知计划从E55/E60才启动，当前`proxy_active=0`属于预期，不可据此判断unknown拒识效果。当前状态仍是训练中，不能启动Stage2-C qknn8协同复评。
 
@@ -236,6 +238,8 @@ Snapshot:
 06:21 CST只读监控结论：N607预检PASS，GPU2/3分别约2669/2665MiB，GPU0/1/4/5/6/7仍约10MiB；R7两个主PID仍运行，`FLOOR_LOCKED_SHELL`到E180/200，`BALANCED_LOW_DENSITY`到E179/200，`find`仍未发现`phase2_zid_prototypes.pt`或Stage2 feature npz，错误扫描未见Traceback、RuntimeError、CUDA OOM、out-of-memory、unrecognized arguments或Killed。只读拉取两个`metrics_epoch.csv`到本地临时目录`E:\type10-7\local_artifacts\r7_metrics_20260706_0621`解析。`FLOOR_LOCKED_SHELL`best仍为E010，E180 test_tx为89.2299，低于best_test_tx 90.6623，proxy AUC为0.4835、virtual accept为0.8135、source episode overflow为0.8394；`BALANCED_LOW_DENSITY`best仍为E090，E179 proxy AUC为0.4373、virtual accept为0.8056、soft unknown mixup virtual accept为0.9981、source episode overflow为0.7677。当前仍不能启动R7 Stage2-C qknn8协同推理全量复评；R7过程证据继续显示未知proxy分离不足。SSH/SCP后均复查为`NO_SSH_PROCESS`、`NO_N607_OR_BRIDGE_ESTABLISHED_22`。
 
 06:24 CST只读监控结论：N607预检PASS，GPU2/3分别约2669/2665MiB，GPU0/1/4/5/6/7仍约10MiB；R7两个主PID仍运行。短命令检查时日志尾部显示`FLOOR_LOCKED_SHELL`到E182/200、`BALANCED_LOW_DENSITY`到E181/200；随后只读拉取`metrics_epoch.csv`时已推进到`FLOOR_LOCKED_SHELL` E183/200、`BALANCED_LOW_DENSITY` E182/200。`find`仍未发现`phase2_zid_prototypes.pt`或Stage2 feature npz，错误扫描未见Traceback、RuntimeError、CUDA OOM、out-of-memory、unrecognized arguments或Killed。`FLOOR_LOCKED_SHELL`best仍为E010，E183 proxy AUC为0.4793、virtual accept为0.8171、source episode overflow为0.8339；`BALANCED_LOW_DENSITY`best仍为E090，E182 test_tx为89.5270，低于best_test_tx 90.0270，proxy AUC为0.4399、virtual accept为0.8093、soft unknown mixup virtual accept为0.9949、source episode overflow为0.7709。当前仍不能启动R7 Stage2-C qknn8协同推理全量复评；R7过程证据继续显示未知proxy分离不足。SSH/SCP后均复查为`NO_SSH_PROCESS`、`NO_N607_OR_BRIDGE_ESTABLISHED_22`。
+
+06:27 CST只读监控结论：N607预检PASS，GPU2/3分别约2669/2665MiB，GPU0/1/4/5/6/7仍约10MiB；R7两个主PID仍运行。短命令检查时日志尾部显示`FLOOR_LOCKED_SHELL`到E184/200、`BALANCED_LOW_DENSITY`到E183/200；随后只读拉取`metrics_epoch.csv`时已推进到`FLOOR_LOCKED_SHELL` E185/200、`BALANCED_LOW_DENSITY` E184/200。`find`仍未发现`phase2_zid_prototypes.pt`或Stage2 feature npz，错误扫描未见Traceback、RuntimeError、CUDA OOM、out-of-memory、unrecognized arguments或Killed。`FLOOR_LOCKED_SHELL`best仍为E010，E185 proxy AUC为0.4758、virtual accept为0.8202、source episode overflow为0.8328；`BALANCED_LOW_DENSITY`best仍为E090，E184 test_tx为89.7373，低于best_test_tx 90.0270，proxy AUC为0.4349、virtual accept为0.8115、soft unknown mixup virtual accept为1.0000、source episode overflow为0.7542。当前仍不能启动R7 Stage2-C qknn8协同推理全量复评；R7过程证据继续显示未知proxy分离不足。SSH/SCP后均复查为`NO_SSH_PROCESS`、`NO_N607_OR_BRIDGE_ESTABLISHED_22`。
 
 ## 成功/失败判据
 
