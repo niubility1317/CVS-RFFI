@@ -202,6 +202,56 @@ Interpretation:
 
 Current goal status: active, not achieved.
 
+## Post-v9 Floor Diagnostics
+
+These diagnostics keep the K anchors fixed at `K=10` and `K=5`; no larger K setting was introduced. Query remains the maximum available split: 70 per class for `K=10`, 75 per class for `K=5`.
+
+Artifacts:
+
+| diagnostic | artifact |
+|---|---|
+| v9 K10 seed scan | `artifacts\n20_k10_norm_hp08_adaptive_v9_seedscan5.csv` |
+| v9 K5 seed scan | `artifacts\n20_k5_norm_hp08_adaptive_v9_seedscan5.csv` |
+| K10 transductive proto single point | `artifacts\n20_k10_v9_transductive_w006.json` |
+| K10 query-proto refine single point | `artifacts\n20_k10_v9_qproto_w006.json` |
+| K10 strong support-LOO grid | `artifacts\n20_k10_v8_loo_strong_grid.csv` |
+| K5 strong support-LOO grid | `artifacts\n20_k5_v8_loo_strong_grid.csv` |
+| K10 support-bias grid | `artifacts\n20_k10_v8_support_bias_grid.csv` |
+| K10 class-diag metric grid | `artifacts\n20_k10_v8_classdiag_grid.csv` |
+
+Seed scan summary:
+
+| K | seed | old_acc | min_old | new_acc | min_new | weakest new classes |
+|---:|---:|---:|---:|---:|---:|---|
+| 10 | 421031 | 96.43% | 90.00% | 77.07% | 58.57% | `2-13` 58.57%,`11-10` 62.86%,`1-14` 64.29%,`19-3` 65.71%,`1-18` 67.14%,`1-2` 70.00% |
+| 10 | 421033 | 95.71% | 87.14% | 74.50% | 51.43% | `2-13` 51.43%,`1-2` 58.57%,`1-18` 62.86%,`11-10` 62.86%,`1-12` 68.57%,`18-5` 68.57% |
+| 5 | 421037 | 97.11% | 92.00% | 74.80% | 60.00% | `1-14` 60.00%,`1-18` 60.00%,`18-5` 60.00%,`19-3` 60.00%,`2-13` 60.00%,`1-2` 62.67% |
+| 5 | 421038 | 94.22% | 86.67% | 69.60% | 37.33% | `2-13` 37.33%,`18-5` 45.33%,`19-3` 48.00%,`11-10` 50.67%,`1-18` 53.33%,`1-12` 58.67% |
+
+The seed scan shows the collapse is not a single unlucky support draw. Even the best scanned floor is only 58.57% for `K=10` and 60.00% for `K=5`; worse seeds collapse much lower.
+
+Mechanism checks:
+
+| route | K | old_acc | min_old | new_acc | min_new | conclusion |
+|---|---:|---:|---:|---:|---:|---|
+| v9 baseline | 10 | 95.71% | 88.57% | 75.00% | 57.14% | reference |
+| transductive proto `w=0.06` | 10 | 95.48% | 87.14% | 75.00% | 57.14% | no floor gain |
+| query-proto refine `w=0.06` | 10 | 95.48% | 87.14% | 75.00% | 57.14% | no floor gain |
+| strong support-LOO best | 10 | 95.71% | 88.57% | 75.57% | 61.43% | modest floor gain, still failed |
+| strong support-LOO best | 5 | 97.11% | 92.00% | 74.80% | 60.00% | no gain beyond v9 |
+| support-bias grid best | 10 | 95.71% | 88.57% | 74.86% | 57.14% | no floor gain |
+| class-diag metric grid best | 10 | 95.48% | 87.14% | 75.00% | 57.14% | no floor gain; high storage cost |
+
+The timed-out broader transductive grid produced no JSON/CSV evidence and is excluded. Its leftover local `conda`/`python` processes were stopped before later diagnostics.
+
+Interpretation:
+
+- Current qKNN compression and adaptive scoring are not the primary bottleneck in the N20 setting. Multiple compressed score-level repairs preserve old-class accuracy but cannot lift the repeated weak classes to 75%.
+- The hard classes are stable across seed and mechanism checks: especially `2-13`,`1-18`,`1-2`,`18-5`, with K-specific weakness on `19-3`,`1-14`,`11-10`.
+- Query-graph/transductive refinement does not repair the floor under the current feature geometry, so the next credible path is representation or enrollment-quality repair for these hard new classes, not larger K or more per-K tuning.
+
+Current goal status: active, not achieved.
+
 ## Adaptive v9 Support-LOO Rescue
 
 Objective: improve the N20 many-new qKNN route without adding more K anchors. The only anchors remain `K=10` and `K=5`, using the maximum query budget from the 80-sample-per-class feature file: `K=10` uses 70 query samples per class, and `K=5` uses 75 query samples per class.
