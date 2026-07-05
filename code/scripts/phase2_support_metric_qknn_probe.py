@@ -2965,9 +2965,12 @@ def _adaptive_qknn_overrides(
         "stable_dualview_v1",
         "dualview_support_v2",
         "stable_dualview_v2",
+        "dualview_support_v3",
+        "stable_dualview_v3",
     }:
         raise ValueError(f"unsupported adaptive_qknn_policy: {policy}")
     use_v2 = name in {"dualview_support_v2", "stable_dualview_v2"}
+    use_v3 = name in {"dualview_support_v3", "stable_dualview_v3"}
 
     min_k = float(geometry["adaptive_support_min_k"])
     new_count = float(geometry["adaptive_new_class_count"])
@@ -2975,7 +2978,10 @@ def _adaptive_qknn_overrides(
     p90_sim = float(geometry["adaptive_support_p90_offdiag_proto_sim"])
     radius = float(geometry["adaptive_support_mean_radius"])
     hardness = _clip01(max((max_sim - 0.82) / 0.16, (p90_sim - 0.68) / 0.22, (radius - 0.08) / 0.20))
-    class_load = _clip01((new_count - 10.0) / 20.0)
+    if use_v3:
+        class_load = _clip01((new_count - 2.0) / 18.0)
+    else:
+        class_load = _clip01((new_count - 10.0) / 20.0)
     k_reliability = _clip01((min_k - 5.0) / 15.0)
     stable_gate = _clip01(max(hardness, 0.6 * class_load))
     enhancement_gate = _clip01((1.0 - stable_gate) * k_reliability)
@@ -3017,12 +3023,15 @@ def _adaptive_qknn_overrides(
         "source_guard_conf_min": 0.0,
         "source_guard_margin_min": 0.0,
     }
-    if use_v2:
+    if use_v2 or use_v3:
+        competition_load = class_load
+        if use_v3 and new_count >= 2.0:
+            competition_load = max(competition_load, 0.25)
         overrides.update(
             {
-                "role_balanced_assignment": bool(class_load > 0.0),
-                "local_competition_weight": float(0.02 * class_load * stable_gate),
-                "local_competition_k": int(3 + round(4.0 * class_load)),
+                "role_balanced_assignment": bool(class_load > 0.0 or (use_v3 and stable_gate >= 0.50)),
+                "local_competition_weight": float(0.02 * competition_load * stable_gate),
+                "local_competition_k": int(3 + round(4.0 * competition_load)),
                 "local_competition_clip": 1.0,
                 "local_competition_scope": "role",
             }

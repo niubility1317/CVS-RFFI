@@ -339,6 +339,100 @@ Interpretation:
 
 Current goal status: active, not achieved.
 
+## 2026-07-06 Continuation: ADV3B02 full Stage2-C feature qKNN max-query audit
+
+Objective: test whether the complete `ADV3B02_CORE90_SOFT_E200` frozen Stage2-C LEO multi-receiver feature package can serve as a stronger representation-side input for the qKNN route under the active `K=5,K=10` goal. This run keeps the K axis fixed and uses the maximum available query count for each class.
+
+Feature source:
+
+| item | value |
+|---|---|
+| remote feature | `/home/szu2070436088/2510044040/CV-SincNet/runs/phase2_adv3b02_frozen_manytx_unknown_diag_20260706/ADV3B02_CORE90_FROZEN_QKNN8_M1_TO_ALL_R5/features_stage2c_leo_multirx.npz` |
+| local copy | `E:\type10-7\automation_reports\CV-SincNet\phase2_adv3b02_frozen_manytx_unknown_diag_20260706\artifacts\features_stage2c_leo_multirx.npz` |
+| SHA256 | `AD788749019D1EA6FBA67BE49F8A241CB3A114153ACB8CCF1F84C2DE7DA9A0A4` |
+| roles | `source=13440,target_old=9600,target_new=8000,target_unknown=8000,proxy_unknown=9350` |
+| old classes | `6` classes, `1600` target-old samples per class |
+| seen-new classes | `8` classes, `1000` target-new samples per class |
+| LEO views | `leo_clear_weak,leo_low_elev_weak,leo_rain_weak` |
+
+Local/N607 handling:
+
+- N607 direct preflight passed.
+- The remote feature package was copied with `scp` and hash-verified locally.
+- No new remote training or remote evaluation was launched.
+- SSH/SCP sessions were checked after use; no persistent N607 or bridge connection remained.
+
+Code change:
+
+- Added `dualview_support_v3` / `stable_dualview_v3` to `code/scripts/phase2_support_metric_qknn_probe.py`.
+- The new adaptive policy fixes a v2 weakness: v2 used `class_load=(new_count-10)/20`, so an 8-new-class task had `class_load=0` and did not automatically enable role-balanced assignment even when support geometry was hard.
+- v3 makes class load continuous from two new classes upward: `class_load=clip((new_count-2)/18)`.
+- v3 enables role-balanced assignment when `class_load>0` or support hardness is high, and applies local competition with a nonzero low-class-count floor. This is an adaptive rule over support geometry, `K`, and class count; it is not per-K custom tuning.
+
+Local verification:
+
+```text
+conda run -n ssr-gpu python -m py_compile code\scripts\phase2_support_metric_qknn_probe.py
+```
+
+PASS.
+
+Max-query result summary:
+
+| feature | K | query old/class | query new/class | candidate | old_acc | min_old | seen_new_acc | min_seen_new | verdict |
+|---|---:|---:|---:|---|---:|---:|---:|---:|---|
+| ADV3B02 full Stage2-C LEO | 10 | 1590 | 990 | role-balanced qKNN | 72.51% | 52.26% | 27.77% | 17.78% | failed |
+| ADV3B02 full Stage2-C LEO | 10 | 1590 | 990 | `dualview_support_v3` | 72.57% | 52.45% | 27.80% | 17.88% | tiny gain, failed |
+| ADV3B02 full Stage2-C LEO | 5 | 1595 | 995 | role-balanced qKNN | 72.32% | 51.22% | 25.84% | 14.27% | failed |
+| ADV3B02 full Stage2-C LEO | 5 | 1595 | 995 | `dualview_support_v3` | 72.36% | 51.29% | 25.83% | 14.17% | no meaningful gain, failed |
+
+Per-class result for `dualview_support_v3`, K=10:
+
+| role | class | accuracy |
+|---|---|---:|
+| old | `14-10` | 67.30% |
+| old | `14-7` | 60.69% |
+| old | `20-15` | 76.54% |
+| old | `20-19` | 52.45% |
+| old | `6-15` | 87.42% |
+| old | `8-20` | 91.01% |
+| seen-new | `1-10` | 32.02% |
+| seen-new | `1-12` | 24.95% |
+| seen-new | `1-14` | 22.02% |
+| seen-new | `1-16` | 28.28% |
+| seen-new | `1-18` | 24.75% |
+| seen-new | `1-8` | 26.87% |
+| seen-new | `10-11` | 17.88% |
+| seen-new | `10-4` | 45.66% |
+
+Per-class result for `dualview_support_v3`, K=5:
+
+| role | class | accuracy |
+|---|---|---:|
+| old | `14-10` | 67.21% |
+| old | `14-7` | 60.25% |
+| old | `20-15` | 76.68% |
+| old | `20-19` | 51.29% |
+| old | `6-15` | 87.71% |
+| old | `8-20` | 91.03% |
+| seen-new | `1-10` | 36.58% |
+| seen-new | `1-12` | 33.47% |
+| seen-new | `1-14` | 18.49% |
+| seen-new | `1-16` | 14.17% |
+| seen-new | `1-18` | 23.92% |
+| seen-new | `1-8` | 20.20% |
+| seen-new | `10-11` | 16.48% |
+| seen-new | `10-4` | 43.32% |
+
+Interpretation:
+
+- The v3 adaptive gate is a real method improvement over v2 because it removes a discontinuity at ten new classes and makes role balancing/competition respond to support hardness and class count continuously.
+- It does not solve the active goal. Even with the complete ADV3B02 full Stage2-C LEO feature package and maximum query count, both old and seen-new accuracy are far below the target, and the weakest new classes remain below 20%.
+- K=5 is within 5pp of K=10 in mean seen-new accuracy on this feature package, but both are far below the required accuracy and floor.
+- The strongest evidence now points away from additional qKNN score-head tweaks and toward representation-side retraining/adaptation before qKNN enrollment. In particular, the frozen ADV3B02 LEO Stage2-C features do not preserve target receiver identity geometry strongly enough for the current qKNN memory head.
+
+Current goal status: active, not achieved.
+
 ## 2026-07-06 Local Follow-up: query-structure separability audit
 
 Objective: test whether the current N20 feature file contains a usable unlabeled query-cluster structure for an adaptive transductive qKNN variant. This is a diagnostic only; query labels are used only for the oracle cluster-naming audit.
