@@ -293,6 +293,66 @@ The initial launch SSH command returned exit code 1 despite printing `launch_pid
 
 Next check: wait for completion, copy `features_hardpair_HP08A_n20.npz`, verify full alignment against NORM, and only then rerun dual-view qKNN.
 
+## HP08A Completion and Reference-Filter Repair
+
+The first aligned-seed attempt completed, but still did not match the NORM reference on `rx_ids`,`day_ids`, and `sig_ids`:
+
+| file | status |
+|---|---|
+| `aligned_HP08A\features_hardpair_HP08A_n20.npz` | copied locally |
+| `aligned_HP08A\n20_k10_coreproto_hardpair_HP08A.json` | copied locally |
+| `aligned_HP08A\n20_k5_sourceguard_hardpair_HP08A.json` | copied locally |
+
+Alignment check:
+
+| key | aligned with NORM |
+|---|---|
+| `tx_ids` | yes |
+| `dataset_role` | yes |
+| `sat_scenarios` | yes |
+| `channel_views` | yes |
+| `eq_ids` | yes |
+| `rx_ids` | no |
+| `day_ids` | no |
+| `sig_ids` | no |
+
+HP08A-only sanity results:
+
+| route | K | old_acc | min_old | new_acc | min_new | verdict |
+|---|---:|---:|---:|---:|---:|---|
+| HP08A only | 10 | 81.19% | 71.43% | 75.71% | 61.43% | failed |
+| HP08A only | 5 | 77.56% | 61.33% | 68.13% | 52.00% | failed |
+
+Conclusion: changing only the export seed is insufficient. The NORM lineage used a particular sample-key set that cannot be recovered reliably by seed guessing.
+
+Implemented next repair:
+
+- `train_apply_phase1_iq_preadapter_20260703.py` now supports `--export_reference_npz`.
+- When a reference NPZ is provided, each export role is filtered and ordered by the reference `tx/rx/day/eq/sig/role` keys.
+- The export dataset bypasses `max_export_samples_per_tx` cap under reference-filter mode so required reference samples are not removed before filtering.
+- `launch_phase2_qknn_hardpair_n20_v1.sh` now forwards optional `EXPORT_REFERENCE_NPZ`.
+
+Verification:
+
+| location | command | result |
+|---|---|---|
+| local | `conda run -n ssr-gpu python -m py_compile code\scripts\train_apply_phase1_iq_preadapter_20260703.py code\scripts\phase2_support_metric_qknn_probe.py` | PASS |
+| local | `bash -n code/scripts/launch_phase2_qknn_hardpair_n20_v1.sh` | PASS |
+| remote N607 | `/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -m py_compile code/scripts/train_apply_phase1_iq_preadapter_20260703.py code/scripts/phase2_support_metric_qknn_probe.py` | PASS |
+| remote N607 | `bash -n code/scripts/launch_phase2_qknn_hardpair_n20_v1.sh` | PASS |
+| remote reference file | `runs/phase2_qknn_hardpair_n20_aligned_ref_20260706/reference/features_n20_norm.npz` present |
+
+Next planned command:
+
+```bash
+cd /home/szu2070436088/2510044040/CV-SincNet
+nohup env GPU=5 PROFILE=HP08REF EXPORT_SEED=4070391 \
+  EXPORT_REFERENCE_NPZ=/home/szu2070436088/2510044040/CV-SincNet/runs/phase2_qknn_hardpair_n20_aligned_ref_20260706/reference/features_n20_norm.npz \
+  RUN_ROOT=/home/szu2070436088/2510044040/CV-SincNet/runs/phase2_qknn_hardpair_n20_aligned_ref_20260706 \
+  bash code/scripts/launch_phase2_qknn_hardpair_n20_v1.sh \
+  > logs/phase2_qknn_hardpair_n20_aligned_ref_20260706/launch_HP08REF.out 2>&1 &
+```
+
 ## Aux Alignment Guard and Credible Baseline Reset
 
 Follow-up inspection found that the archived `NORM+HP08` dual-view N20 rows were not sample-aligned:

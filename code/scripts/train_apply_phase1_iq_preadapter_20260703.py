@@ -30,6 +30,7 @@ for path in (str(REPO_ROOT), str(CODE_ROOT)):
 from cvsrffi.eval import apply_sat_channel_for_scenario  # noqa: E402
 from cvsrffi.tensors import make_torch_generator  # noqa: E402
 from cvsrffi.wisig_fewshot_payload import canonical_tx_id, parse_tx_id_list  # noqa: E402
+from dataset_wisig import WiSigSubsetDataset  # noqa: E402
 from eval_feature_diagnosis import (  # noqa: E402
     build_model_from_ckpt,
     collect_feature_dict,
@@ -640,6 +641,7 @@ def train_adapter(
 
 
 def _dataset_for_role(args: argparse.Namespace, *, role: str, pkl: str, tx_ids: str, rxs: str | None, seed_offset: int):
+    max_samples_per_tx = 0 if str(getattr(args, "export_reference_npz", "")).strip() else int(args.max_export_samples_per_tx)
     ds, info = _build_wisig_dataset(
         pkl_path=str(pkl),
         tx_spec=str(tx_ids),
@@ -650,10 +652,59 @@ def _dataset_for_role(args: argparse.Namespace, *, role: str, pkl: str, tx_ids: 
         days=None,
         rxs=rxs,
         max_samples_per_combo=int(args.max_samples_per_combo),
-        max_samples_per_tx=int(args.max_export_samples_per_tx),
+        max_samples_per_tx=int(max_samples_per_tx),
         seed=int(args.seed) + int(seed_offset),
     )
     return ds, info
+
+
+def _reference_keys_by_role(reference_npz: str | Path) -> dict[str, list[tuple[str, str, str, str, str]]]:
+    if not str(reference_npz).strip():
+        return {}
+    data = np.load(Path(reference_npz), allow_pickle=True)
+    required = ("tx_ids", "rx_ids", "day_ids", "eq_ids", "sig_ids", "dataset_role")
+    missing = [key for key in required if key not in data.files]
+    if missing:
+        raise ValueError(f"export_reference_npz missing keys: {missing}")
+    arrays = {key: np.asarray(data[key], dtype=object).astype(str) for key in required}
+    out: dict[str, list[tuple[str, str, str, str, str]]] = {}
+    for index in range(int(arrays["tx_ids"].shape[0])):
+        role = str(arrays["dataset_role"][index])
+        key = (
+            str(arrays["tx_ids"][index]),
+            str(arrays["rx_ids"][index]),
+            str(arrays["day_ids"][index]),
+            str(arrays["eq_ids"][index]),
+            str(arrays["sig_ids"][index]),
+        )
+        out.setdefault(role, []).append(key)
+    return out
+
+
+def _filter_dataset_to_reference(ds, *, role: str, reference_keys: dict[str, list[tuple[str, str, str, str, str]]]):
+    desired = reference_keys.get(str(role))
+    if not desired:
+        return ds
+    tx_labels = [canonical_tx_id(value) for value in ds.tx_list]
+    rx_labels = [str(value) for value in ds.rx_list]
+    day_labels = [str(value) for value in ds.day_list]
+    eq_labels = [str(value) for value in ds.eq_list]
+    index_by_key: dict[tuple[str, str, str, str, str], int] = {}
+    for dataset_index, item in enumerate(ds.index):
+        key = (
+            tx_labels[int(item.tx_i)],
+            rx_labels[int(item.rx_i)],
+            day_labels[int(item.day_i)],
+            eq_labels[int(item.eq_i)],
+            str(int(item.sig_i)),
+        )
+        index_by_key[key] = int(dataset_index)
+    missing = [key for key in desired if key not in index_by_key]
+    if missing:
+        preview = ",".join(":".join(key) for key in missing[:5])
+        raise ValueError(f"reference samples missing for role={role}: count={len(missing)} preview={preview}")
+    selected = [index_by_key[key] for key in desired]
+    return WiSigSubsetDataset(ds, selected, split_source=f"{role}_reference_npz")
 
 
 @torch.no_grad()
@@ -746,10 +797,24 @@ def export_cell(
 ) -> Path:
     name, target_rx, unknown_tx = cell.split(":")
     scenarios = parse_sat_scenarios(str(args.sat_scenarios))
+    reference_keys = _reference_keys_by_role(args.export_reference_npz)
     source_ds, source_info = _dataset_for_role(args, role="source", pkl=str(args.wisig_pkl), tx_ids=str(args.source_tx_ids), rxs=str(args.source_rxs), seed_offset=101)
     proxy_ds, proxy_info = _dataset_for_role(args, role="proxy_unknown", pkl=str(args.new_wisig_pkl), tx_ids=str(args.proxy_unknown_tx_ids), rxs=str(args.proxy_unknown_rxs), seed_offset=211)
     target_old_ds, target_old_info = _dataset_for_role(args, role="target_old", pkl=str(args.wisig_pkl), tx_ids=str(args.target_old_tx_ids), rxs=target_rx, seed_offset=307)
     unknown_ds, unknown_info = _dataset_for_role(args, role="target_unknown", pkl=str(args.new_wisig_pkl), tx_ids=unknown_tx, rxs=target_rx, seed_offset=409)
+    source_ds = _filter_dataset_to_reference(source_ds, role="source", reference_keys=reference_keys)
+    proxy_ds = _filter_dataset_to_reference(proxy_ds, role="proxy_unknown", reference_keys=reference_keys)
+    target_old_ds = _filter_dataset_to_reference(target_old_ds, role="target_old", reference_keys=reference_keys)
+    unknown_ds = _filter_dataset_to_reference(unknown_ds, role="target_unknown", reference_keys=reference_keys)
+    for info, ds in (
+        (source_info, source_ds),
+        (proxy_info, proxy_ds),
+        (target_old_info, target_old_ds),
+        (unknown_info, unknown_ds),
+    ):
+        if reference_keys:
+            info["reference_filtered"] = True
+            info["size"] = int(len(ds))
     role_items = [
         ("source", source_ds, 2001),
         ("proxy_unknown", proxy_ds, 2011),
@@ -786,6 +851,7 @@ def export_cell(
         "proxy_unknown": proxy_info,
         "target_old": target_old_info,
         "target_unknown": unknown_info,
+        "export_reference_npz": str(args.export_reference_npz or ""),
         "uses_target_clean": False,
         "uses_target_labels_for_training": False,
         "uses_unknown_query_for_threshold": False,
@@ -836,6 +902,7 @@ def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
     p.add_argument("--export_identity", action=argparse.BooleanOptionalAction, default=False)
     p.add_argument("--cells", required=True, help="semicolon-separated name:target_rx:unknown_tx_ids")
     p.add_argument("--feature_name", default="z_id")
+    p.add_argument("--export_reference_npz", default="", help="optional feature NPZ whose tx/rx/day/eq/sig/role order defines export samples")
     p.add_argument("--dataset", default="wisig")
     p.add_argument("--num_classes", type=int, default=None)
     p.add_argument("--model_size", default=None)

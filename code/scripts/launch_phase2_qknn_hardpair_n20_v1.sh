@@ -8,6 +8,7 @@ PROFILE="${PROFILE:-HP08}"
 HARD_PAIR_WEIGHT="${HARD_PAIR_WEIGHT:-0.08}"
 HARD_OLD_WEIGHT="${HARD_OLD_WEIGHT:-0.04}"
 EXPORT_SEED="${EXPORT_SEED:-4070391}"
+EXPORT_REFERENCE_NPZ="${EXPORT_REFERENCE_NPZ:-}"
 RUN_ROOT="${RUN_ROOT:-${ROOT}/runs/phase2_qknn_hardpair_n20_20260706}"
 
 OLD_TX="14-10,14-7,20-15,20-19,6-15,8-20"
@@ -22,6 +23,11 @@ export PYTHONPATH="${ROOT}/code:${ROOT}:${PYTHONPATH:-}"
 mkdir -p "${RUN_ROOT}/${PROFILE}"
 cd "${ROOT}"
 
+REFERENCE_ARGS=()
+if [[ -n "${EXPORT_REFERENCE_NPZ}" ]]; then
+  REFERENCE_ARGS=(--export_reference_npz "${EXPORT_REFERENCE_NPZ}")
+fi
+
 CUDA_VISIBLE_DEVICES="${GPU}" "${PYTHON}" -u code/scripts/train_apply_phase1_iq_preadapter_20260703.py \
   --ckpt "${ROOT}/runs/phase1_adv3_mechanism32_queue_20260701/ADV3B02_CORE90_SOFT_E200/best_joint_safe_ssdg.pth" \
   --wisig_pkl "${ROOT}/Dataset_WigSig/ManySig.pkl" \
@@ -30,6 +36,7 @@ CUDA_VISIBLE_DEVICES="${GPU}" "${PYTHON}" -u code/scripts/train_apply_phase1_iq_
   --out_subdir "ADV3B02_CORE90_SOFT_E200_PHASE1_HARDPAIR_${PROFILE}_N20" \
   --out_name "features_hardpair_${PROFILE}_n20.npz" \
   --clean_out_name "features_clean_hardpair_${PROFILE}_n20.npz" \
+  "${REFERENCE_ARGS[@]}" \
   --cells "MANYNEW20_HARDPAIR_${PROFILE}:${TARGET_RX}:${NEW_TX}" \
   --source_tx_ids "${OLD_TX}" \
   --target_old_tx_ids "${OLD_TX}" \
