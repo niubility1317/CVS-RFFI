@@ -1,0 +1,56 @@
+{
+  "phase": "phase1_source_calibrated_ood_geometry_baseline",
+  "verdict_scope": "diagnostic_only_not_stage2c_success",
+  "threshold_scope": "source_calibrated_only_no_target_support_no_unknown_query_tuning",
+  "feature_npz": "runs/phase2_epoc_b_ospr_qknn_collab_20260705_retry1/EPOC_B_OSPR_QKNN8_M1_TO_ALL_R5/features_stage2c_leo_multirx.npz",
+  "source_tx_ids": [
+    "14-10",
+    "14-7",
+    "20-15",
+    "20-19",
+    "6-15",
+    "8-20"
+  ],
+  "known_query_roles": [
+    "target_new",
+    "target_old"
+  ],
+  "unknown_query_roles": [
+    "target_unknown"
+  ],
+  "target_unknown_tx_ids": [],
+  "calibration_roles": [
+    "source"
+  ],
+  "target_unknown_training_count": 0,
+  "uses_unknown_query_for_threshold": false,
+  "uses_target_receiver_for_ground_training": false,
+  "gate_policy": {
+    "cosine_prototype": true,
+    "diag_mahalanobis": true,
+    "knn_distance": true,
+    "energy": true
+  },
+  "thresholds": {
+    "cosine_dist_max": 0.018606260418891907,
+    "mahalanobis_max": 4.445812225341797,
+    "knn_dist_max": 0.0043807197362184525,
+    "distance_quantile": 0.95,
+    "source_correct_count": 12964,
+    "source_threshold_count": 49567,
+    "energy_max": -15.043828964233398,
+    "energy_quantile": 0.95
+  },
+  "known_query_count": 9600,
+  "known_closed_accuracy_no_reject": 0.7509375,
+  "known_full_accuracy_after_reject": 0.24322916666666666,
+  "known_accepted_accuracy": 0.9806803863922722,
+  "known_coverage": 0.24802083333333333,
+  "unknown_query_count": 8000,
+  "unknown_FAR": 0.10187499970197678,
+  "unknown_reject_rate": 0.8981250002980232,
+  "passes_unknown_far_target": false,
+  "row_count": 49567,
+  "FPR95": 0.8152083158493042,
+  "AUROC_unknown": 0.6053048372268677
+}
