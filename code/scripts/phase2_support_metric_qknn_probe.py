@@ -1840,6 +1840,37 @@ def _support_loo_base_scores(
     return np.stack(rows, axis=0)
 
 
+def _support_loo_accuracy_summary(
+    support_scores: np.ndarray,
+    *,
+    support_labels: np.ndarray,
+    old_labels: list[str],
+    new_labels: list[str],
+) -> tuple[float, float]:
+    labels = np.asarray(support_labels, dtype=object).astype(str)
+    class_labels = list(old_labels) + list(new_labels)
+    old_set = set(old_labels)
+    old_count = int(sum(1 for label in labels.tolist() if label in old_set))
+    pred = _assignment_predict(
+        np.asarray(support_scores, dtype=np.float64),
+        old_count=old_count,
+        old_labels=old_labels,
+        new_labels=new_labels,
+        query_scenarios=np.asarray(["support"] * int(labels.size), dtype=object),
+        scenario_balanced_assignment=False,
+        role_balanced_assignment=True,
+        balanced_assignment=True,
+    )
+    per_class: list[float] = []
+    for label in class_labels:
+        mask = labels == label
+        if bool(np.any(mask)):
+            per_class.append(float(np.mean(pred[mask] == label)))
+    if not per_class:
+        return 0.0, 0.0
+    return float(np.mean(pred == labels)), float(min(per_class))
+
+
 def _support_bias_vector(
     *,
     support_scores: np.ndarray,
@@ -2130,6 +2161,7 @@ def _evaluate_metric_qknn(
     topm: int,
     proto_mix: float,
     aux_score_weight: float,
+    adaptive_qknn_policy: str,
     radius_norm: float,
     old_bias: float,
     neg_lambda: float,
@@ -2319,6 +2351,15 @@ def _evaluate_metric_qknn(
             mutual_only=bool(mutual_only),
             scenario_aware=bool(scenario_aware),
         )
+    effective_aux_score_weight = float(aux_score_weight)
+    aux_support_gate_factor = 1.0
+    aux_support_primary_loo_acc = 0.0
+    aux_support_primary_loo_min_acc = 0.0
+    aux_support_aux_loo_acc = 0.0
+    aux_support_aux_loo_min_acc = 0.0
+    aux_support_loo_delta = 0.0
+    aux_support_min_delta = 0.0
+    aux_support_absolute_floor_gate = 1.0
     if aux_features is not None and float(aux_score_weight) > 0.0:
         aux_transform = metric._fit_transform(
             aux_features[support_indices],
@@ -2369,7 +2410,70 @@ def _evaluate_metric_qknn(
                 mutual_only=bool(mutual_only),
                 scenario_aware=bool(scenario_aware),
             )
-        scores = (1.0 - float(aux_score_weight)) * scores + float(aux_score_weight) * aux_scores
+        policy_name = str(adaptive_qknn_policy).strip().lower()
+        if policy_name in {"dualview_support_v10", "stable_dualview_v10"}:
+            primary_loo_scores = _support_loo_base_scores(
+                features=adapted,
+                support_indices=support_indices,
+                support_labels=support_labels,
+                scenarios=scenarios,
+                class_labels=old_labels + new_labels,
+                old_labels=set(old_labels),
+                topm=int(topm),
+                proto_mix=float(proto_mix),
+                radius_norm=float(radius_norm),
+                old_bias=float(old_bias),
+                neg_lambda=float(neg_lambda),
+                neg_threshold=float(neg_threshold),
+                neg_margin=float(neg_margin),
+                mutual_only=bool(mutual_only),
+                scenario_aware=bool(scenario_aware),
+            )
+            aux_loo_scores = _support_loo_base_scores(
+                features=aux_adapted,
+                support_indices=support_indices,
+                support_labels=support_labels,
+                scenarios=scenarios,
+                class_labels=old_labels + new_labels,
+                old_labels=set(old_labels),
+                topm=int(topm),
+                proto_mix=float(proto_mix),
+                radius_norm=float(radius_norm),
+                old_bias=float(old_bias),
+                neg_lambda=float(neg_lambda),
+                neg_threshold=float(neg_threshold),
+                neg_margin=float(neg_margin),
+                mutual_only=bool(mutual_only),
+                scenario_aware=bool(scenario_aware),
+            )
+            (
+                aux_support_primary_loo_acc,
+                aux_support_primary_loo_min_acc,
+            ) = _support_loo_accuracy_summary(
+                primary_loo_scores,
+                support_labels=support_labels,
+                old_labels=old_labels,
+                new_labels=new_labels,
+            )
+            (
+                aux_support_aux_loo_acc,
+                aux_support_aux_loo_min_acc,
+            ) = _support_loo_accuracy_summary(
+                aux_loo_scores,
+                support_labels=support_labels,
+                old_labels=old_labels,
+                new_labels=new_labels,
+            )
+            aux_support_loo_delta = float(aux_support_aux_loo_acc - aux_support_primary_loo_acc)
+            aux_support_min_delta = float(aux_support_aux_loo_min_acc - aux_support_primary_loo_min_acc)
+            mean_gate = float(np.clip((aux_support_loo_delta + 0.02) / 0.08, 0.0, 1.0))
+            floor_gate = float(np.clip((aux_support_min_delta + 0.05) / 0.12, 0.0, 1.0))
+            aux_support_absolute_floor_gate = float(
+                np.clip((aux_support_aux_loo_min_acc - 0.20) / 0.30, 0.0, 1.0)
+            )
+            aux_support_gate_factor = float(min(mean_gate, floor_gate, aux_support_absolute_floor_gate))
+            effective_aux_score_weight = float(aux_score_weight) * aux_support_gate_factor
+        scores = (1.0 - effective_aux_score_weight) * scores + effective_aux_score_weight * aux_scores
     scores, pair_axis_count = _pair_axis_adjust_scores(
         scores,
         features=adapted,
@@ -2877,6 +2981,15 @@ def _evaluate_metric_qknn(
         "topm": int(topm),
         "proto_mix": float(proto_mix),
         "aux_score_weight": float(aux_score_weight),
+        "effective_aux_score_weight": float(effective_aux_score_weight),
+        "aux_support_gate_factor": float(aux_support_gate_factor),
+        "aux_support_primary_loo_acc": float(aux_support_primary_loo_acc),
+        "aux_support_primary_loo_min_acc": float(aux_support_primary_loo_min_acc),
+        "aux_support_aux_loo_acc": float(aux_support_aux_loo_acc),
+        "aux_support_aux_loo_min_acc": float(aux_support_aux_loo_min_acc),
+        "aux_support_loo_delta": float(aux_support_loo_delta),
+        "aux_support_min_delta": float(aux_support_min_delta),
+        "aux_support_absolute_floor_gate": float(aux_support_absolute_floor_gate),
         "radius_norm": float(radius_norm),
         "old_bias": float(old_bias),
         "neg_lambda": float(neg_lambda),
@@ -3043,7 +3156,9 @@ def _evaluate_metric_qknn(
         "stored_raw_support_count": 0,
         "stored_class_prototype_count": int(len(old_labels) + len(new_labels)),
         "stored_transform_scalars": int(2 * features.shape[1]),
-        "stored_aux_transform_scalars": int(2 * aux_features.shape[1]) if aux_features is not None and float(aux_score_weight) > 0.0 else 0,
+        "stored_aux_transform_scalars": int(2 * aux_features.shape[1])
+        if aux_features is not None and float(effective_aux_score_weight) > 0.0
+        else 0,
         "transform_scale_min": float(np.min(transform["scale"])),
         "transform_scale_max": float(np.max(transform["scale"])),
         "transform_scale_mean": float(np.mean(transform["scale"])),
@@ -3175,6 +3290,8 @@ def _adaptive_qknn_overrides(
         "stable_dualview_v8",
         "dualview_support_v9",
         "stable_dualview_v9",
+        "dualview_support_v10",
+        "stable_dualview_v10",
     }:
         raise ValueError(f"unsupported adaptive_qknn_policy: {policy}")
     use_v2 = name in {"dualview_support_v2", "stable_dualview_v2"}
@@ -3185,6 +3302,7 @@ def _adaptive_qknn_overrides(
     use_v7 = name in {"dualview_support_v7", "stable_dualview_v7"}
     use_v8 = name in {"dualview_support_v8", "stable_dualview_v8"}
     use_v9 = name in {"dualview_support_v9", "stable_dualview_v9"}
+    use_v10 = name in {"dualview_support_v10", "stable_dualview_v10"}
 
     min_k = float(geometry["adaptive_support_min_k"])
     new_count = float(geometry["adaptive_new_class_count"])
@@ -3192,7 +3310,7 @@ def _adaptive_qknn_overrides(
     p90_sim = float(geometry["adaptive_support_p90_offdiag_proto_sim"])
     radius = float(geometry["adaptive_support_mean_radius"])
     hardness = _clip01(max((max_sim - 0.82) / 0.16, (p90_sim - 0.68) / 0.22, (radius - 0.08) / 0.20))
-    if use_v3 or use_v4 or use_v5 or use_v7 or use_v8 or use_v9:
+    if use_v3 or use_v4 or use_v5 or use_v7 or use_v8 or use_v9 or use_v10:
         class_load = _clip01((new_count - 2.0) / 18.0)
     else:
         class_load = _clip01((new_count - 10.0) / 20.0)
@@ -3237,15 +3355,18 @@ def _adaptive_qknn_overrides(
         "source_guard_conf_min": 0.0,
         "source_guard_margin_min": 0.0,
     }
-    if use_v2 or use_v3 or use_v4 or use_v5 or use_v6 or use_v7 or use_v8 or use_v9:
+    if use_v2 or use_v3 or use_v4 or use_v5 or use_v6 or use_v7 or use_v8 or use_v9 or use_v10:
         competition_load = class_load
-        if (use_v3 or use_v4 or use_v5 or use_v6 or use_v7 or use_v8 or use_v9) and new_count >= 2.0:
+        if (use_v3 or use_v4 or use_v5 or use_v6 or use_v7 or use_v8 or use_v9 or use_v10) and new_count >= 2.0:
             competition_load = max(competition_load, 0.25)
         overrides.update(
             {
                 "role_balanced_assignment": bool(
                     class_load > 0.0
-                    or ((use_v3 or use_v4 or use_v5 or use_v6 or use_v7 or use_v8 or use_v9) and stable_gate >= 0.50)
+                    or (
+                        (use_v3 or use_v4 or use_v5 or use_v6 or use_v7 or use_v8 or use_v9 or use_v10)
+                        and stable_gate >= 0.50
+                    )
                 ),
                 "local_competition_weight": float(0.02 * competition_load * stable_gate),
                 "local_competition_k": int(3 + round(4.0 * competition_load)),
@@ -3346,7 +3467,7 @@ def _adaptive_qknn_overrides(
                 "old_residual_new_clip": 2.0,
             }
         )
-    if use_v9:
+    if use_v9 or use_v10:
         rescue_gate = _clip01(max(stable_gate, class_load))
         rescue_weight = float(np.clip((0.10 - 0.15 * k_reliability) * rescue_gate, 0.02, 0.10))
         rescue_top_pairs = int(max(4, min(12, round(0.40 * max(new_count, 1.0)))))
@@ -4099,6 +4220,9 @@ def main() -> None:
                         topm=int(topm),
                         proto_mix=float(params["proto_mix"]),
                         aux_score_weight=float(params["aux_score_weight"]),
+                        adaptive_qknn_policy=str(
+                            params.get("adaptive_qknn_policy", adaptive_overrides.get("adaptive_qknn_policy", ""))
+                        ),
                         radius_norm=float(radius_norm),
                         old_bias=float(old_bias),
                         neg_lambda=float(neg_lambda),
@@ -4310,6 +4434,15 @@ def main() -> None:
         "topm",
         "proto_mix",
         "aux_score_weight",
+        "effective_aux_score_weight",
+        "aux_support_gate_factor",
+        "aux_support_primary_loo_acc",
+        "aux_support_primary_loo_min_acc",
+        "aux_support_aux_loo_acc",
+        "aux_support_aux_loo_min_acc",
+        "aux_support_loo_delta",
+        "aux_support_min_delta",
+        "aux_support_absolute_floor_gate",
         "radius_norm",
         "old_bias",
         "neg_lambda",

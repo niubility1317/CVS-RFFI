@@ -202,6 +202,87 @@ Interpretation:
 
 Current goal status: active, not achieved.
 
+## HP08REF Aligned Evaluation and v10 Aux Gate
+
+HP08REF completion:
+
+| item | result |
+|---|---|
+| remote feature copied back | PASS |
+| local artifact dir | `E:\type10-7\automation_reports\CV-SincNet\phase2_qknn_hardpair_n20_20260706\artifacts\aligned_HP08REF` |
+| NORM vs HP08REF row count | 11760 vs 11760 |
+| aligned metadata keys | `tx_ids,dataset_role,sat_scenarios,rx_ids,channel_views,day_ids,eq_ids,sig_ids` all exact match |
+| local SSH residue after copy | none observed |
+
+Implementation update:
+
+- Added `dualview_support_v10` / `stable_dualview_v10` in `code/scripts/phase2_support_metric_qknn_probe.py`.
+- v10 keeps v9's adaptive support-LOO rescue, but adds a support-only auxiliary-view reliability gate.
+- The gate computes primary-view and auxiliary-view support LOO accuracy without query labels. If the auxiliary view has weak minimum-class support LOO, the effective auxiliary score weight is reduced to zero.
+- This avoids storing raw support samples. The extra stored metadata is scalar only: effective aux weight, gate factor, and support LOO diagnostics.
+
+Verification:
+
+| command | result |
+|---|---|
+| `conda run -n ssr-gpu python -m py_compile code\scripts\phase2_support_metric_qknn_probe.py` | PASS |
+| K10 HP08REF v9 seed5 | completed |
+| K5 HP08REF v9 seed5 | completed |
+| K10 HP08REF v10-floor seed5 | completed |
+| K5 HP08REF v10-floor seed5 | completed |
+
+Result summary:
+
+| route | K | seed scope | old_acc | min_old | new_acc | min_new | effective_aux | weakest new |
+|---|---:|---|---:|---:|---:|---:|---:|---|
+| NORM-only v9 | 10 | full120 | 92.62% | 78.57% | 70.71% | 51.43% | 0.00% | `2-13` 51.43%,`11-10` 55.71%,`1-2` 57.14%,`1-18` 58.57% |
+| NORM-only v9 | 5 | full120 | 92.22% | 78.67% | 68.67% | 42.67% | 0.00% | `1-14` 42.67%,`2-13` 48.00%,`18-5` 50.67%,`1-18` 53.33% |
+| NORM+HP08REF v9 | 10 | seed5 | 94.29% | 85.71% | 63.86% | 48.57% | 22.00% | `1-12` 48.57%,`1-2` 50.00%,`2-13` 50.00%,`1-14` 51.43% |
+| NORM+HP08REF v9 | 5 | seed5 | 94.44% | 85.33% | 48.80% | 28.00% | 22.00% | `1-1` 28.00%,`1-14` 30.67%,`1-18` 37.33%,`1-11` 40.00% |
+| NORM+HP08REF v10-floor | 10 | seed5 | 92.62% | 80.00% | 44.79% | 21.43% | 0.00% | `1-1` 21.43%,`1-12` 27.14%,`1-2` 30.00%,`1-11` 37.14% |
+| NORM+HP08REF v10-floor | 5 | seed5 | 77.11% | 36.00% | 41.87% | 22.67% | 0.00% | `1-1` 22.67%,`1-11` 26.67%,`1-12` 26.67%,`1-14` 28.00% |
+
+Detailed current credible best, NORM-only v9 full120:
+
+| TX | role | K10 acc | K5 acc |
+|---|---|---:|---:|
+| `14-10` | old | 95.71% | 97.33% |
+| `14-7` | old | 81.43% | 78.67% |
+| `20-15` | old | 100.00% | 98.67% |
+| `20-19` | old | 78.57% | 78.67% |
+| `6-15` | old | 100.00% | 100.00% |
+| `8-20` | old | 100.00% | 100.00% |
+| `10-10` | new | 84.29% | 81.33% |
+| `11-10` | new | 55.71% | 62.67% |
+| `18-5` | new | 62.86% | 50.67% |
+| `19-3` | new | 68.57% | 54.67% |
+| `2-13` | new | 51.43% | 48.00% |
+| `2-5` | new | 78.57% | 82.67% |
+| `3-8` | new | 78.57% | 85.33% |
+| `4-10` | new | 87.14% | 88.00% |
+| `8-18` | new | 68.57% | 81.33% |
+| `8-3` | new | 70.00% | 77.33% |
+| `1-1` | new | 60.00% | 69.33% |
+| `1-10` | new | 84.29% | 86.67% |
+| `1-11` | new | 90.00% | 84.00% |
+| `1-12` | new | 62.86% | 65.33% |
+| `1-14` | new | 68.57% | 42.67% |
+| `1-15` | new | 84.29% | 73.33% |
+| `1-16` | new | 70.00% | 58.67% |
+| `1-18` | new | 58.57% | 53.33% |
+| `1-19` | new | 72.86% | 69.33% |
+| `1-2` | new | 57.14% | 58.67% |
+
+Interpretation:
+
+- The alignment repair succeeded. HP08REF is now valid for dual-view experiments, unlike HP08/HP08A.
+- The aligned HP08REF view is not a promotable improvement: v9 dual-view lowers new-class performance, especially at K=5.
+- v10 demonstrates a useful safety idea: support-only minimum-class reliability can automatically reject a harmful auxiliary view. However, in the tested seed5 window, support selection itself is poor, so rejecting HP08REF does not solve the N20 floor.
+- Current strongest credible qKNN evidence remains NORM-only v9 full120, but it still fails the active goal: K10 min_new 51.43% and K5 min_new 42.67%, both below the required 75%.
+- Next optimization should move away from HP08 hard-pair auxiliary views and toward support selection/enrollment quality or representation repair for `2-13`,`1-14`,`18-5`,`1-18`,`1-2`,`11-10`.
+
+Current goal status: active, not achieved.
+
 ## 05:44 Sync and SSH Cleanup Note
 
 05:44 CST执行本地到N607同步：本报告同步到`/home/szu2070436088/2510044040/CV-SincNet/automation_reports/CV-SincNet/phase2_qknn_hardpair_n20_20260706/report.md`，并用本地`Get-FileHash`和远端`sha256sum`核对一致。同步后发现既有本地`ssh.exe`残留PID`15320`，命令为早前`phase2_qknn_hardpair_n20_aligned_ref_20260706`的HP08REF nohup launch通道；已只关闭本地SSH客户端并复查为`NO_SSH_PROCESS`、`NO_N607_OR_BRIDGE_ESTABLISHED_22`。该清理不代表停止远端训练或诊断任务。
