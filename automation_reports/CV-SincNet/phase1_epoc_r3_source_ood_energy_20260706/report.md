@@ -145,6 +145,17 @@ N607 direct preflight于2026-07-06 00:24 CST通过。GPU采样：GPU0`2487/24576
 
 当前判断：R3运行健康但尚未到关键观测点。下一次有效判断点应在`EPOC_R3_TIGHT_CORE_MARGIN`达到E028-E030、`EPOC_R3_ENERGY_VOS_GUARD`达到E030之后，重点比较R3是否相对R2显著提升`proxy_auc`并压低`virtual_accept`/`soft_virtual_accept`，同时旧类`val_tx_acc`不能明显下降。
 
+## 00:30-00:31 CST首轮proxy观测
+
+N607 direct preflight于2026-07-06 00:27 CST通过。GPU采样显示R3仍在低显存运行：GPU2约`2459/24576MiB`，GPU3约`2465/24576MiB`。两条R3进程均存活，日志尾部未发现Traceback、RuntimeError、CUDA OOM或unrecognized arguments。
+
+|候选|时间|epoch|旧类保持|首轮proxy unknown证据|初步判读|
+|---|---:|---:|---|---|---|
+|`EPOC_R3_ENERGY_VOS_GUARD`|2026-07-06 00:31 CST|E030/180|`val_tx_acc=98.5655`，`test_tx_acc=89.8348`|`proxy_auc=0.4362`，`proxy_accept=0.0068`，`virtual_accept=0.8183`，`soft_virtual_accept=0.9990`，`radius_to_inter_ratio=0.9778`|首轮proxy启动后没有优于R2，AUC低于R2约0.47-0.48；旧类未塌陷但未知分离仍弱|
+|`EPOC_R3_TIGHT_CORE_MARGIN`|2026-07-06 00:30 CST|E029/180|`val_tx_acc=98.5655`|`proxy_auc=0.4070`，`proxy_accept=0.0166`，`virtual_accept=0.8272`，`soft_virtual_accept=0.9997`，`radius_to_inter_ratio=0.9681`|首轮proxy比R2更差；紧致核心没有立刻把虚拟未知推出已知邻域|
+
+当前结论：R3首轮proxy证据是负面的早期信号，不能升级为有效路线。仍应继续运行到warmup后半段，因为`proxy_unknown_warmup_epochs=30`，但下一步若E040-E050仍维持`proxy_auc<0.55`且`virtual_accept>0.5`，应停止把R3作为主路线推进，转向更底层的两类方案：第一，重新设计source-only负样本构造与能量边界，避免当前virtual outlier仍落在已知类邻域；第二，准备Stage2只读诊断，用已冻结R3/R2/ADV3B02特征包验证真实`ManyTx`未知是否与source proxy指标一致，但阈值仍不得使用`Y_unknown`调参。
+
 ## SSH清理状态
 
 |检查点|结果|
