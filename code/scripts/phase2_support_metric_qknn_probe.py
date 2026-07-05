@@ -209,6 +209,82 @@ def _query_proto_refine_scores(
     return base_scores + float(weight) * refine, int(stored_count)
 
 
+def _support_anchored_transductive_proto_scores(
+    scores: np.ndarray,
+    *,
+    features: np.ndarray,
+    support_indices: np.ndarray,
+    support_labels: np.ndarray,
+    query_indices: np.ndarray,
+    class_labels: list[str],
+    old_count: int,
+    old_labels: list[str],
+    new_labels: list[str],
+    query_scenarios: np.ndarray,
+    scenario_balanced_assignment: bool,
+    role_balanced_assignment: bool,
+    balanced_assignment: bool,
+    rounds: int,
+    weight: float,
+    support_weight: float,
+    query_weight: float,
+    query_topm: int,
+    clip: float,
+) -> tuple[np.ndarray, int]:
+    """Iteratively refine with support-anchored temporary query prototypes.
+
+    This is a transductive compressed-KNN step: persistent state remains class
+    support prototypes, while query prototypes are temporary per batch.
+    """
+    if float(weight) == 0.0 or int(rounds) <= 0:
+        return scores, 0
+    support = qknn._normalize_rows(features[support_indices])
+    query = qknn._normalize_rows(features[query_indices])
+    labels = np.asarray(support_labels, dtype=object).astype(str)
+    base_scores = np.asarray(scores, dtype=np.float64)
+    support_proto_rows: list[np.ndarray] = []
+    for label in class_labels:
+        cls = support[labels == str(label)]
+        if cls.size == 0:
+            support_proto_rows.append(np.zeros(support.shape[1], dtype=np.float64))
+        else:
+            support_proto_rows.append(qknn._normalize_rows(cls.mean(axis=0, keepdims=True))[0])
+    support_proto = qknn._normalize_rows(np.stack(support_proto_rows, axis=0))
+    work_scores = base_scores.copy()
+    stored_count = 0
+    for _round in range(int(rounds)):
+        provisional = _assignment_predict(
+            work_scores,
+            old_count=old_count,
+            old_labels=old_labels,
+            new_labels=new_labels,
+            query_scenarios=query_scenarios,
+            scenario_balanced_assignment=bool(scenario_balanced_assignment),
+            role_balanced_assignment=bool(role_balanced_assignment),
+            balanced_assignment=bool(balanced_assignment),
+        )
+        proto_rows: list[np.ndarray] = []
+        for class_index, label in enumerate(class_labels):
+            rows = np.where(provisional == str(label))[0]
+            if rows.size and int(query_topm) > 0 and rows.size > int(query_topm):
+                row_scores = work_scores[rows, class_index]
+                rows = rows[np.argsort(row_scores)[::-1][: int(query_topm)]]
+            if rows.size:
+                query_proto = qknn._normalize_rows(query[rows].mean(axis=0, keepdims=True))[0]
+                proto_rows.append(float(support_weight) * support_proto[class_index] + float(query_weight) * query_proto)
+                stored_count += 1
+            else:
+                proto_rows.append(support_proto[class_index])
+        proto = qknn._normalize_rows(np.stack(proto_rows, axis=0))
+        refine = query @ proto.T
+        refine = refine - np.mean(refine, axis=1, keepdims=True)
+        refine = refine / (np.std(refine, axis=1, keepdims=True) + 1e-6)
+        if float(clip) > 0.0:
+            refine = np.clip(refine, -float(clip), float(clip))
+        work_scores = base_scores + float(weight) * refine
+    return work_scores, int(stored_count)
+
+
 def _repel_prototypes(
     prototypes: np.ndarray,
     *,
@@ -1590,6 +1666,12 @@ def _evaluate_metric_qknn(
     query_proto_refine_weight: float,
     query_proto_refine_topm: int,
     query_proto_refine_clip: float,
+    transductive_proto_weight: float,
+    transductive_proto_rounds: int,
+    transductive_proto_query_topm: int,
+    transductive_proto_support_weight: float,
+    transductive_proto_query_weight: float,
+    transductive_proto_clip: float,
     source_guard_mode: str,
     source_guard_weight: float,
     source_guard_conf_min: float,
@@ -1987,6 +2069,29 @@ def _evaluate_metric_qknn(
         rounds=int(query_graph_rounds),
         scope=str(query_graph_scope),
     )
+    transductive_proto_count = 0
+    if float(transductive_proto_weight) != 0.0 and int(transductive_proto_rounds) > 0:
+        scores, transductive_proto_count = _support_anchored_transductive_proto_scores(
+            scores,
+            features=adapted,
+            support_indices=support_indices,
+            support_labels=support_labels,
+            query_indices=query_indices,
+            class_labels=old_labels + new_labels,
+            old_count=old_count,
+            old_labels=old_labels,
+            new_labels=new_labels,
+            query_scenarios=scenarios[query_indices],
+            scenario_balanced_assignment=bool(scenario_balanced_assignment),
+            role_balanced_assignment=bool(role_balanced_assignment),
+            balanced_assignment=bool(balanced_assignment),
+            rounds=int(transductive_proto_rounds),
+            weight=float(transductive_proto_weight),
+            support_weight=float(transductive_proto_support_weight),
+            query_weight=float(transductive_proto_query_weight),
+            query_topm=int(transductive_proto_query_topm),
+            clip=float(transductive_proto_clip),
+        )
     query_proto_refine_count = 0
     if float(query_proto_refine_weight) != 0.0:
         provisional_pred = _assignment_predict(
@@ -2155,6 +2260,13 @@ def _evaluate_metric_qknn(
         "query_proto_refine_topm": int(query_proto_refine_topm),
         "query_proto_refine_clip": float(query_proto_refine_clip),
         "query_proto_refine_count": int(query_proto_refine_count),
+        "transductive_proto_weight": float(transductive_proto_weight),
+        "transductive_proto_rounds": int(transductive_proto_rounds),
+        "transductive_proto_query_topm": int(transductive_proto_query_topm),
+        "transductive_proto_support_weight": float(transductive_proto_support_weight),
+        "transductive_proto_query_weight": float(transductive_proto_query_weight),
+        "transductive_proto_clip": float(transductive_proto_clip),
+        "transductive_proto_count": int(transductive_proto_count),
         "source_guard_mode": str(source_guard_mode),
         "source_guard_weight": float(source_guard_weight),
         "source_guard_conf_min": float(source_guard_conf_min),
@@ -2283,7 +2395,12 @@ def _adaptive_qknn_overrides(
             "adaptive_class_load": 0.0,
             "adaptive_k_reliability": 0.0,
         }
-    if name not in {"dualview_support_v1", "stable_dualview_v1", "dualview_support_v2", "stable_dualview_v2"}:
+    if name not in {
+        "dualview_support_v1",
+        "stable_dualview_v1",
+        "dualview_support_v2",
+        "stable_dualview_v2",
+    }:
         raise ValueError(f"unsupported adaptive_qknn_policy: {policy}")
     use_v2 = name in {"dualview_support_v2", "stable_dualview_v2"}
 
@@ -2457,6 +2574,12 @@ def main() -> None:
     parser.add_argument("--query_proto_refine_weight_grid", default="0")
     parser.add_argument("--query_proto_refine_topm_grid", default="0")
     parser.add_argument("--query_proto_refine_clip_grid", default="2.0")
+    parser.add_argument("--transductive_proto_weight_grid", default="0")
+    parser.add_argument("--transductive_proto_rounds_grid", default="0")
+    parser.add_argument("--transductive_proto_query_topm_grid", default="50")
+    parser.add_argument("--transductive_proto_support_weight_grid", default="1.0")
+    parser.add_argument("--transductive_proto_query_weight_grid", default="1.0")
+    parser.add_argument("--transductive_proto_clip_grid", default="1.5")
     parser.add_argument("--source_guard_mode_grid", default="none")
     parser.add_argument("--source_guard_weight_grid", default="0")
     parser.add_argument("--source_guard_conf_min_grid", default="0")
@@ -2592,6 +2715,12 @@ def main() -> None:
             qknn._parse_float_csv(args.query_proto_refine_weight_grid),
             qknn._parse_int_csv(args.query_proto_refine_topm_grid),
             qknn._parse_float_csv(args.query_proto_refine_clip_grid),
+            qknn._parse_float_csv(args.transductive_proto_weight_grid),
+            qknn._parse_int_csv(args.transductive_proto_rounds_grid),
+            qknn._parse_int_csv(args.transductive_proto_query_topm_grid),
+            qknn._parse_float_csv(args.transductive_proto_support_weight_grid),
+            qknn._parse_float_csv(args.transductive_proto_query_weight_grid),
+            qknn._parse_float_csv(args.transductive_proto_clip_grid),
             qknn._parse_csv(args.source_guard_mode_grid),
             qknn._parse_float_csv(args.source_guard_weight_grid),
             qknn._parse_float_csv(args.source_guard_conf_min_grid),
@@ -2741,6 +2870,12 @@ def main() -> None:
                     query_proto_refine_weight,
                     query_proto_refine_topm,
                     query_proto_refine_clip,
+                    transductive_proto_weight,
+                    transductive_proto_rounds,
+                    transductive_proto_query_topm,
+                    transductive_proto_support_weight,
+                    transductive_proto_query_weight,
+                    transductive_proto_clip,
                     source_guard_mode,
                     source_guard_weight,
                     source_guard_conf_min,
@@ -2780,6 +2915,12 @@ def main() -> None:
                         "query_proto_refine_weight": float(query_proto_refine_weight),
                         "query_proto_refine_topm": int(query_proto_refine_topm),
                         "query_proto_refine_clip": float(query_proto_refine_clip),
+                        "transductive_proto_weight": float(transductive_proto_weight),
+                        "transductive_proto_rounds": int(transductive_proto_rounds),
+                        "transductive_proto_query_topm": int(transductive_proto_query_topm),
+                        "transductive_proto_support_weight": float(transductive_proto_support_weight),
+                        "transductive_proto_query_weight": float(transductive_proto_query_weight),
+                        "transductive_proto_clip": float(transductive_proto_clip),
                     }
                     params.update(
                         {
@@ -2826,6 +2967,24 @@ def main() -> None:
                             ),
                             "query_proto_refine_clip": adaptive_overrides.get(
                                 "query_proto_refine_clip", params["query_proto_refine_clip"]
+                            ),
+                            "transductive_proto_weight": adaptive_overrides.get(
+                                "transductive_proto_weight", params["transductive_proto_weight"]
+                            ),
+                            "transductive_proto_rounds": adaptive_overrides.get(
+                                "transductive_proto_rounds", params["transductive_proto_rounds"]
+                            ),
+                            "transductive_proto_query_topm": adaptive_overrides.get(
+                                "transductive_proto_query_topm", params["transductive_proto_query_topm"]
+                            ),
+                            "transductive_proto_support_weight": adaptive_overrides.get(
+                                "transductive_proto_support_weight", params["transductive_proto_support_weight"]
+                            ),
+                            "transductive_proto_query_weight": adaptive_overrides.get(
+                                "transductive_proto_query_weight", params["transductive_proto_query_weight"]
+                            ),
+                            "transductive_proto_clip": adaptive_overrides.get(
+                                "transductive_proto_clip", params["transductive_proto_clip"]
                             ),
                         }
                     )
@@ -2932,6 +3091,12 @@ def main() -> None:
                         query_proto_refine_weight=float(params["query_proto_refine_weight"]),
                         query_proto_refine_topm=int(params["query_proto_refine_topm"]),
                         query_proto_refine_clip=float(params["query_proto_refine_clip"]),
+                        transductive_proto_weight=float(params["transductive_proto_weight"]),
+                        transductive_proto_rounds=int(params["transductive_proto_rounds"]),
+                        transductive_proto_query_topm=int(params["transductive_proto_query_topm"]),
+                        transductive_proto_support_weight=float(params["transductive_proto_support_weight"]),
+                        transductive_proto_query_weight=float(params["transductive_proto_query_weight"]),
+                        transductive_proto_clip=float(params["transductive_proto_clip"]),
                         source_guard_mode=str(params["source_guard_mode"]),
                         source_guard_weight=float(params["source_guard_weight"]),
                         source_guard_conf_min=float(params["source_guard_conf_min"]),
@@ -3129,6 +3294,13 @@ def main() -> None:
         "query_proto_refine_topm",
         "query_proto_refine_clip",
         "query_proto_refine_count",
+        "transductive_proto_weight",
+        "transductive_proto_rounds",
+        "transductive_proto_query_topm",
+        "transductive_proto_support_weight",
+        "transductive_proto_query_weight",
+        "transductive_proto_clip",
+        "transductive_proto_count",
         "source_guard_mode",
         "source_guard_weight",
         "source_guard_conf_min",

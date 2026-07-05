@@ -289,3 +289,52 @@ Deployment/storage note:
 - Runtime overhead is low: role-balanced assignment uses the same Hungarian assignment scale as the existing closed-set quota solver, local competition stores 104 prototype-neighbor edges for the N20 K=10 row, and query-prototype refinement stores at most one temporary prototype per class when enabled.
 
 Current verdict: v2 is a useful stabilization step for old/new quota coupling, but the active goal is not complete because N20 min_new is far below75%.
+
+## 2026-07-06 Local Follow-up: compressed diagnostic heads
+
+Objective: continue optimizing qKNN for many-new-class stability under the same Phase2-C protocol, without increasing the reported K grid beyond `K=5,K=10` and without storing raw support samples.
+
+Local code change:
+
+- Added explicit `transductive_proto_*` diagnostic switches in `code/scripts/phase2_support_metric_qknn_probe.py`. This branch builds temporary support-anchored query prototypes for the current batch only. It does not add persistent raw-support storage.
+- The unverified `dualview_support_v3` policy entry was removed from the adaptive policy dispatcher after local diagnostics showed no improvement. Therefore promoted adaptive policies remain `dualview_support_v1` and `dualview_support_v2`; transductive prototype refinement is diagnostic-only unless explicitly enabled by CLI grid arguments.
+
+Local verification:
+
+```text
+conda run -n ssr-gpu python -m py_compile code\scripts\phase2_support_metric_qknn_probe.py
+```
+
+PASS.
+
+N20 K=10 seed/policy follow-up:
+
+| candidate | K | seed | old_acc | min_old | new_acc | min_new | persistent extra storage | verdict |
+|---|---:|---:|---:|---:|---:|---:|---:|---|
+| `dualview_support_v2`, original seed | 10 | 421029 | 92.14% | 78.57% | 68.29% | 44.29% | compressed prototypes + local edges | baseline v2 |
+| seed/policy search best | 10 | 421023 | 91.43% | 77.14% | 72.14% | 52.86% | compressed prototypes + local edges | improved but failed |
+| ridge-head small grid best | 10 | 421023 | 91.43% | 77.14% | 72.14% | 52.86% | none beyond v2 | no gain |
+| pair-logreg small grid best | 10 | 421023 | 91.43% | 77.14% | 72.36% | 52.86% | 4 scalars in best row | tiny mean gain, no floor gain |
+| class-diag metric grid best | 10 | 421023 | 91.43% | 77.14% | 72.14% | 52.86% | none in best row | no gain |
+| pair-axis manual-v2 grid best | 10 | 421023 | 91.43% | 77.14% | 72.29% | 52.86% | one pair axis in best row | tiny mean gain, no floor gain |
+| support-bias LOO grid best | 10 | 421023 | 91.43% | 77.14% | 72.14% | 52.86% | none in best row | no gain |
+| transductive-proto diagnostic best | 10 | 421023 | 91.43% | 77.14% | 72.21% | 52.86% | temporary query prototypes only | no floor gain |
+
+Worst N20 K=10 classes for the best seed/policy row:
+
+| truth class | acc | main wrong predictions |
+|---|---:|---|
+| `2-13` | 52.86% | `11-10`:11, `1-18`:8, `1-2`:5, `1-14`:4 |
+| `1-18` | 52.86% | `11-10`:15, `2-13`:5, `1-14`:3, `1-2`:3 |
+| `18-5` | 54.29% | `1-18`:16, `1-16`:14 |
+| `1-2` | 57.14% | `1-19`:6, `3-8`:6, `4-10`:5, `2-5`:4 |
+| `11-10` | 58.57% | `2-13`:16, `1-18`:8, `1-14`:4 |
+| `1-14` | 61.43% | `18-5`:11, `1-10`:7, `1-16`:7 |
+
+Interpretation:
+
+- The best N20 row now has good old-class performance (`old_acc=91.43%`, `min_old=77.14%`) and improves new-class mean accuracy to `72.14%`, but the new-class floor remains `52.86%`. The active many-new-class stability goal is therefore not complete.
+- The remaining failures are not solved by support-compressed classifier heads, per-pair scalar/axis correction, class-diagonal metric correction, support LOO biasing, or temporary transductive prototypes. The error pattern is dense new/new confusion among specific support-prototype neighborhoods, especially `2-13`/`11-10`/`1-18` and `18-5`/`1-16`.
+- Current evidence says the next useful route should not be another scalar KNN head grid. It should either improve the embedding/feature extractor for dense ManyTx families, or introduce a protocol-explicit admission/defer mechanism for support classes whose compressed prototypes are inseparable. If no defer/reject is allowed, the present embedding does not support a valid claim that twenty new classes remain above the 75% per-class floor.
+
+Current goal status: active, not achieved.
