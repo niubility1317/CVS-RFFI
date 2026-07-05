@@ -132,3 +132,72 @@ Startup evidence:
 ```
 
 The retry command itself timed out locally before returning a PID, but the subsequent short-lived checks confirmed the remote process is running and healthy. Continue monitoring via short SSH checks only.
+
+## Completed Results
+
+Remote run completed and artifacts were copied locally:
+
+| artifact | local path |
+|---|---|
+| HP08 N20 feature | `E:\type10-7\automation_reports\CV-SincNet\phase2_qknn_hardpair_n20_20260706\artifacts\features_hardpair_HP08_n20.npz` |
+| HP08-only K10 | `artifacts\n20_k10_coreproto_hardpair_HP08.json` |
+| HP08-only K5 | `artifacts\n20_k5_sourceguard_hardpair_HP08.json` |
+| NORM+HP08 fixed K10 | `artifacts\n20_k10_norm_hp08_dualview.json` |
+| NORM+HP08 fixed K5 | `artifacts\n20_k5_norm_hp08_dualview.json` |
+| NORM+HP08 adaptive v8 K10 | `artifacts\n20_k10_norm_hp08_adaptive_v8.json` |
+| NORM+HP08 adaptive v8 K5 | `artifacts\n20_k5_norm_hp08_adaptive_v8.json` |
+
+All rows use the maximum-query split available from the 80-sample-per-class feature file: `K=10` uses 70 query samples per class, and `K=5` uses 75 query samples per class.
+
+Summary:
+
+| route | K | old_acc | min_old | new_acc | min_new | raw support stored | verdict |
+|---|---:|---:|---:|---:|---:|---:|---|
+| HP08 only fixed | 10 | 79.52% | 64.29% | 74.14% | 42.86% | 0 | failed |
+| HP08 only fixed | 5 | 77.33% | 66.67% | 66.47% | 42.67% | 0 | failed |
+| NORM+HP08 fixed | 10 | 82.38% | 67.14% | 74.93% | 54.29% | 0 | failed |
+| NORM+HP08 fixed | 5 | 80.00% | 69.33% | 70.60% | 42.67% | 0 | failed |
+| NORM+HP08 adaptive v8 | 10 | 95.71% | 88.57% | 74.86% | 57.14% | 0 | failed |
+| NORM+HP08 adaptive v8 | 5 | 97.11% | 92.00% | 74.20% | 57.33% | 0 | failed |
+
+The adaptive v8 result is currently the best stability row because it keeps old classes high and keeps K=5 within 0.66pp of K=10 on mean new accuracy. It still fails the active goal because the new-class floor remains far below 75%.
+
+Adaptive v8 per-class details:
+
+| TX | K10 acc | K5 acc |
+|---|---:|---:|
+| `14-10` | 97.14% | 98.67% |
+| `14-7` | 88.57% | 93.33% |
+| `20-15` | 100.00% | 98.67% |
+| `20-19` | 88.57% | 92.00% |
+| `6-15` | 100.00% | 100.00% |
+| `8-20` | 100.00% | 100.00% |
+| `10-10` | 90.00% | 89.33% |
+| `11-10` | 58.57% | 66.67% |
+| `18-5` | 64.29% | 57.33% |
+| `19-3` | 71.43% | 60.00% |
+| `2-13` | 57.14% | 57.33% |
+| `2-5` | 82.86% | 85.33% |
+| `3-8` | 84.29% | 90.67% |
+| `4-10` | 88.57% | 89.33% |
+| `8-18` | 75.71% | 85.33% |
+| `8-3` | 78.57% | 81.33% |
+| `1-1` | 71.43% | 72.00% |
+| `1-10` | 85.71% | 89.33% |
+| `1-11` | 91.43% | 90.67% |
+| `1-12` | 70.00% | 73.33% |
+| `1-14` | 70.00% | 58.67% |
+| `1-15` | 85.71% | 74.67% |
+| `1-16` | 72.86% | 65.33% |
+| `1-18` | 61.43% | 60.00% |
+| `1-19` | 74.29% | 74.67% |
+| `1-2` | 62.86% | 62.67% |
+
+Interpretation:
+
+- N20 HP08 feature export is valid and improves the N20 fixed dual-view floor from the previous NORM/HEAD baseline, but not enough to meet `min_new>=75%`.
+- Adaptive v8 solves part of the stability issue: old classes no longer collapse, and K=5 is close to K=10 without a separate hand-tuned K policy.
+- The remaining failure is concentrated in a repeatable hard subset: `11-10`,`18-5`,`2-13`,`1-14`,`1-18`,`1-2`, plus K5 degradation on `19-3`. This is now a representation/enrollment-quality problem, not simply a KNN storage or scalar scoring problem.
+- Storage property remains aligned with the qKNN innovation requirement: no raw support samples are stored; the rows store compressed support codes, class prototypes, transform scalars, and small residual/logistic state.
+
+Current goal status: active, not achieved.
