@@ -414,3 +414,62 @@ Interpretation:
 - Dense-cluster query prototypes do not solve the many-new-class floor problem. K=10 has no measurable gain; K=5 gains only +0.33pp mean new accuracy and +1.33pp min-new in the current rerun.
 - The result is still useful negative evidence: even a role-local, support-graph-derived, no-raw-support transductive variant cannot lift dense ManyTx families toward the 75% per-class floor.
 - The active goal remains open. The next route should move away from post-hoc qKNN score surgery and toward representation-side repair or explicit enrollment-quality gating under the Stage2-C protocol.
+
+## 2026-07-06 Local Follow-up: reproducibility hardening and old-residual new-class qKNN
+
+Objective: harden the N20 qKNN evidence trail and test whether new-class collapse is caused by old-class receiver-domain attractors. This keeps the goal anchors at `K=5,K=10` and does not expand the K grid.
+
+Code change:
+
+- Added output-level SHA256 fingerprints for `feature_npz` and `aux_feature_npz`.
+- Added split fingerprints to every result row: global support/query digests and per-label support/query digests.
+- Added `old_residual_new_*` grids in `code/scripts/phase2_support_metric_qknn_probe.py`.
+- The old-residual mechanism estimates a compressed old-class prototype subspace from support prototypes, removes that subspace from support/query embeddings, then blends residual-space scores into new-class scores only.
+- Persistent extra state is compressed: old-subspace basis, old center, and new residual prototypes. Raw support samples are not stored; `stored_raw_support_count=0`.
+
+Local verification:
+
+```text
+conda run -n ssr-gpu python -m py_compile code\scripts\phase2_support_metric_qknn_probe.py
+```
+
+PASS.
+
+Reproducibility audit:
+
+| artifact | value |
+|---|---|
+| feature_npz | `n20_features/features_n20_norm.npz` |
+| feature_npz_sha256 | `aab99af6d7022f422a61eac8018884790d1497c8f3f1f17aa65a02bdcf1432e2` |
+| aux_feature_npz | `n20_features/features_n20_head.npz` |
+| aux_feature_npz_sha256 | `637bae47ace04b87f9e72c42d006c44218ce8ccc58b819343e38dafca85aa140` |
+| K=10 support_index_sha16 | `4a07f9cba0d2708f` |
+| K=10 old_query_index_sha16 | `4bc84cba8c5c2001` |
+| K=10 new_query_index_sha16 | `bb7d5c3a3574c068` |
+| K=10 query_index_sha16 | `26d9c84b19bc26b7` |
+
+Important boundary: the archived N20 seed421023 `dualview_support_v2` row (`K=10 old_acc=91.43%,min_old=77.14%,new_acc=72.14%,min_new=52.86%`) is not reproduced by the current feature file and current HEAD. The current rerun with matching visible high-level settings gives `old_acc=92.38%,min_old=80.00%,new_acc=44.36%,min_new=24.29%`. Future rows now carry feature and split fingerprints so this drift cannot be hidden.
+
+Prediction diagnosis from the current K=10 rerun:
+
+- Raw new-query top-1 predictions are heavily pulled to old labels, especially `8-3` (198), `11-10` (152), `20-19` (141), `1-10` (108), `20-15` (89), `1-16` (87), and `6-15` (79).
+- Role-balanced assignment gives each new class the expected 70 assignments, but it cannot repair the wrong new/new score geometry.
+- Weak current K=10 classes include `1-1` (24.29%), `1-2` (24.29%), `1-12` (28.57%), `1-11` (37.14%), and `11-10` (37.14%).
+
+Result summary from the current HEAD reproducible rerun:
+
+| scope | K | query/class | candidate | old_acc | min_old | new_acc | min_new | extra persistent state | verdict |
+|---|---:|---:|---|---:|---:|---:|---:|---:|---|
+| N20 | 10 | 70 | current fingerprinted baseline | 92.38% | 80.00% | 44.36% | 24.29% | 0 old-residual scalars | reproducible baseline |
+| N20 | 10 | 70 | old-residual best (`weight=0.2,rank=5,proto_mix=0.4`) | 92.38% | 80.00% | 46.79% | 24.29% | 4160 scalars | +2.43pp mean new, floor unchanged |
+| N20 | 5 | 75 | current fingerprinted baseline | 92.00% | 78.67% | 38.67% | 20.00% | 0 old-residual scalars | reproducible baseline |
+| N20 | 5 | 75 | old-residual best (`weight=0.2,rank=5,proto_mix=0.4`) | 92.00% | 78.67% | 39.60% | 25.33% | 4160 scalars | +0.93pp mean new, +5.33pp floor |
+
+Interpretation:
+
+- Old-residual scoring is a valid qKNN compression innovation candidate because it replaces raw-support storage with a support-derived old-subspace basis and residual prototypes.
+- It does not achieve the active goal. N20 remains far below the `min_new>=75%` requirement, and K=5 remains more than 5 percentage points below K=10 in mean new accuracy on the current fingerprinted rerun.
+- The evidence now separates two facts: the historical archived row was stronger but is not currently reproducible from the local feature file, while the reproducible current feature geometry has severe old-attractor and dense ManyTx separability failures.
+- The next optimization should target adaptive enrollment/support-quality repair or representation-side adaptation rather than more scalar score blending.
+
+Current goal status: active, not achieved.

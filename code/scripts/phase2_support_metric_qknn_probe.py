@@ -10,6 +10,7 @@ from __future__ import annotations
 
 import argparse
 import csv
+import hashlib
 import json
 import sys
 from itertools import combinations, product
@@ -29,6 +30,54 @@ import phase2_source_guarded_qknn_sweep as qknn
 
 
 Split = tuple[np.ndarray, np.ndarray]
+
+
+def _sha256_file(path: Path) -> str:
+    digest = hashlib.sha256()
+    with path.open("rb") as handle:
+        for chunk in iter(lambda: handle.read(1024 * 1024), b""):
+            digest.update(chunk)
+    return digest.hexdigest()
+
+
+def _indices_digest(indices: np.ndarray) -> str:
+    arr = np.asarray(indices, dtype=np.int64)
+    return hashlib.sha256(arr.tobytes()).hexdigest()[:16]
+
+
+def _split_fingerprint(
+    old_splits: dict[str, Split],
+    new_splits: dict[str, Split],
+    old_labels: list[str],
+    new_labels: list[str],
+) -> dict[str, Any]:
+    support_all: list[int] = []
+    old_query_all: list[int] = []
+    new_query_all: list[int] = []
+    per_label: dict[str, dict[str, Any]] = {}
+    for role, labels, splits, query_all in (
+        ("old", old_labels, old_splits, old_query_all),
+        ("new", new_labels, new_splits, new_query_all),
+    ):
+        for label in labels:
+            support, query = splits[label]
+            support_all.extend(support.astype(int).tolist())
+            query_all.extend(query.astype(int).tolist())
+            per_label[str(label)] = {
+                "role": role,
+                "support_count": int(support.size),
+                "query_count": int(query.size),
+                "support_sha16": _indices_digest(support),
+                "query_sha16": _indices_digest(query),
+            }
+    query_all_combined = old_query_all + new_query_all
+    return {
+        "support_index_sha16": _indices_digest(np.asarray(support_all, dtype=np.int64)),
+        "old_query_index_sha16": _indices_digest(np.asarray(old_query_all, dtype=np.int64)),
+        "new_query_index_sha16": _indices_digest(np.asarray(new_query_all, dtype=np.int64)),
+        "query_index_sha16": _indices_digest(np.asarray(query_all_combined, dtype=np.int64)),
+        "split_fingerprint": per_label,
+    }
 
 
 def _collect_support(
@@ -1512,6 +1561,72 @@ def _support_subspace_proto_scores(
     return scores, int(max_rank), stored_scalars
 
 
+def _old_residual_new_scores(
+    *,
+    features: np.ndarray,
+    support_indices: np.ndarray,
+    support_labels: np.ndarray,
+    query_indices: np.ndarray,
+    class_labels: list[str],
+    old_labels: list[str],
+    topm: int,
+    proto_mix: float,
+    rank: int,
+    clip: float,
+) -> tuple[np.ndarray, int, int]:
+    """Score new classes after removing the compressed old-prototype subspace."""
+    support = qknn._normalize_rows(features[support_indices])
+    query = qknn._normalize_rows(features[query_indices])
+    labels = np.asarray(support_labels, dtype=object).astype(str)
+    old_set = {str(label) for label in old_labels}
+    old_proto_rows: list[np.ndarray] = []
+    for label in old_labels:
+        cls = support[labels == str(label)]
+        if cls.size:
+            old_proto_rows.append(qknn._normalize_rows(cls.mean(axis=0, keepdims=True))[0])
+    if len(old_proto_rows) < 2:
+        return np.zeros((query.shape[0], len(class_labels)), dtype=np.float64), 0, 0
+    old_proto = np.stack(old_proto_rows, axis=0)
+    old_center = old_proto.mean(axis=0, keepdims=True)
+    centered = old_proto - old_center
+    max_rank = min(int(rank), centered.shape[0] - 1, centered.shape[1])
+    if max_rank <= 0:
+        return np.zeros((query.shape[0], len(class_labels)), dtype=np.float64), 0, 0
+    _u, _s, vh = np.linalg.svd(centered, full_matrices=False)
+    basis = vh[:max_rank].T
+
+    def residualize(matrix: np.ndarray) -> np.ndarray:
+        centered_matrix = matrix - old_center
+        residual = centered_matrix - (centered_matrix @ basis) @ basis.T
+        return qknn._normalize_rows(residual)
+
+    support_res = residualize(support)
+    query_res = residualize(query)
+    out = np.zeros((query.shape[0], len(class_labels)), dtype=np.float64)
+    used_new = 0
+    for class_index, label in enumerate(class_labels):
+        if str(label) in old_set:
+            continue
+        cls = support_res[labels == str(label)]
+        if cls.size == 0:
+            continue
+        prototype = qknn._normalize_rows(cls.mean(axis=0, keepdims=True))[0]
+        sims = query_res @ cls.T
+        local = _topm_mean(sims, int(topm))
+        proto = query_res @ prototype
+        out[:, class_index] = (1.0 - float(proto_mix)) * local + float(proto_mix) * proto
+        used_new += 1
+    if used_new:
+        new_indices = [idx for idx, label in enumerate(class_labels) if str(label) not in old_set]
+        new_scores = out[:, new_indices]
+        new_scores = new_scores - np.mean(new_scores, axis=1, keepdims=True)
+        new_scores = new_scores / (np.std(new_scores, axis=1, keepdims=True) + 1e-6)
+        new_scores = np.clip(new_scores, -float(clip), float(clip))
+        out[:, new_indices] = new_scores
+    stored_scalars = int(basis.size + old_center.size + used_new * features.shape[1])
+    return out, int(max_rank), int(stored_scalars)
+
+
 def _class_diag_metric_scores(
     *,
     features: np.ndarray,
@@ -1941,6 +2056,10 @@ def _evaluate_metric_qknn(
     subspace_proto_rank: int,
     subspace_proto_power: float,
     subspace_proto_clip: float,
+    old_residual_new_weight: float,
+    old_residual_new_rank: int,
+    old_residual_new_proto_mix: float,
+    old_residual_new_clip: float,
     class_diag_metric_weight: float,
     class_diag_metric_similarity: float,
     class_diag_metric_alpha: float,
@@ -2265,6 +2384,22 @@ def _evaluate_metric_qknn(
             clip=float(subspace_proto_clip),
         )
         scores = scores + float(subspace_proto_weight) * subspace_scores
+    old_residual_new_rank_used = 0
+    stored_old_residual_new_scalars = 0
+    if float(old_residual_new_weight) > 0.0:
+        old_residual_scores, old_residual_new_rank_used, stored_old_residual_new_scalars = _old_residual_new_scores(
+            features=adapted,
+            support_indices=support_indices,
+            support_labels=support_labels,
+            query_indices=query_indices,
+            class_labels=old_labels + new_labels,
+            old_labels=old_labels,
+            topm=int(topm),
+            proto_mix=float(old_residual_new_proto_mix),
+            rank=int(old_residual_new_rank),
+            clip=float(old_residual_new_clip),
+        )
+        scores = scores + float(old_residual_new_weight) * old_residual_scores
     class_diag_metric_count = 0
     stored_class_diag_metric_scalars = 0
     if float(class_diag_metric_weight) > 0.0:
@@ -2620,6 +2755,12 @@ def _evaluate_metric_qknn(
         "subspace_proto_power": float(subspace_proto_power),
         "subspace_proto_clip": float(subspace_proto_clip),
         "stored_subspace_proto_scalars": int(stored_subspace_proto_scalars),
+        "old_residual_new_weight": float(old_residual_new_weight),
+        "old_residual_new_rank": int(old_residual_new_rank),
+        "old_residual_new_rank_used": int(old_residual_new_rank_used),
+        "old_residual_new_proto_mix": float(old_residual_new_proto_mix),
+        "old_residual_new_clip": float(old_residual_new_clip),
+        "stored_old_residual_new_scalars": int(stored_old_residual_new_scalars),
         "class_diag_metric_weight": float(class_diag_metric_weight),
         "class_diag_metric_similarity": float(class_diag_metric_similarity),
         "class_diag_metric_alpha": float(class_diag_metric_alpha),
@@ -2964,6 +3105,10 @@ def main() -> None:
     parser.add_argument("--subspace_proto_rank_grid", default="8")
     parser.add_argument("--subspace_proto_power_grid", default="0")
     parser.add_argument("--subspace_proto_clip_grid", default="3.0")
+    parser.add_argument("--old_residual_new_weight_grid", default="0")
+    parser.add_argument("--old_residual_new_rank_grid", default="2")
+    parser.add_argument("--old_residual_new_proto_mix_grid", default="0.4")
+    parser.add_argument("--old_residual_new_clip_grid", default="2.0")
     parser.add_argument("--class_diag_metric_weight_grid", default="0")
     parser.add_argument("--class_diag_metric_similarity_grid", default="0.9")
     parser.add_argument("--class_diag_metric_alpha_grid", default="0.01")
@@ -3036,15 +3181,17 @@ def main() -> None:
     parser.add_argument("--seen_new_floor", type=float, default=0.75)
     args = parser.parse_args()
 
-    data = np.load(Path(args.feature_npz), allow_pickle=True)
+    feature_path = Path(args.feature_npz)
+    aux_feature_path = Path(args.aux_feature_npz) if str(args.aux_feature_npz).strip() else None
+    data = np.load(feature_path, allow_pickle=True)
     features = qknn._normalize_rows(data["features"])
     tx_ids = np.asarray(data["tx_ids"], dtype=object).astype(str)
     roles = np.asarray(data["dataset_role"], dtype=object).astype(str)
     logits = np.asarray(data["tx_logits"], dtype=np.float64)
     scenarios = np.asarray(data["sat_scenarios"], dtype=object).astype(str)
     aux_features = None
-    if str(args.aux_feature_npz).strip():
-        aux_data = np.load(Path(args.aux_feature_npz), allow_pickle=True)
+    if aux_feature_path is not None:
+        aux_data = np.load(aux_feature_path, allow_pickle=True)
         aux_features = qknn._normalize_rows(aux_data["features"])
         for key, primary in (("tx_ids", tx_ids), ("dataset_role", roles), ("sat_scenarios", scenarios)):
             aux_values = np.asarray(aux_data[key], dtype=object).astype(str)
@@ -3119,6 +3266,10 @@ def main() -> None:
             qknn._parse_int_csv(args.subspace_proto_rank_grid),
             qknn._parse_float_csv(args.subspace_proto_power_grid),
             qknn._parse_float_csv(args.subspace_proto_clip_grid),
+            qknn._parse_float_csv(args.old_residual_new_weight_grid),
+            qknn._parse_int_csv(args.old_residual_new_rank_grid),
+            qknn._parse_float_csv(args.old_residual_new_proto_mix_grid),
+            qknn._parse_float_csv(args.old_residual_new_clip_grid),
             qknn._parse_float_csv(args.class_diag_metric_weight_grid),
             qknn._parse_float_csv(args.class_diag_metric_similarity_grid),
             qknn._parse_float_csv(args.class_diag_metric_alpha_grid),
@@ -3218,6 +3369,7 @@ def main() -> None:
                 continue
             old_splits = active._as_eval_splits(old_raw)
             new_splits = active._as_eval_splits(new_raw)
+            split_fingerprint = _split_fingerprint(old_splits, new_splits, old_labels, new_labels)
             support_indices, support_labels = _collect_support(old_splits, new_splits, old_labels, new_labels)
             support_geometry = _support_geometry_summary(
                 features=features,
@@ -3288,6 +3440,10 @@ def main() -> None:
                     subspace_proto_rank,
                     subspace_proto_power,
                     subspace_proto_clip,
+                    old_residual_new_weight,
+                    old_residual_new_rank,
+                    old_residual_new_proto_mix,
+                    old_residual_new_clip,
                     class_diag_metric_weight,
                     class_diag_metric_similarity,
                     class_diag_metric_alpha,
@@ -3555,6 +3711,10 @@ def main() -> None:
                         subspace_proto_rank=int(subspace_proto_rank),
                         subspace_proto_power=float(subspace_proto_power),
                         subspace_proto_clip=float(subspace_proto_clip),
+                        old_residual_new_weight=float(old_residual_new_weight),
+                        old_residual_new_rank=int(old_residual_new_rank),
+                        old_residual_new_proto_mix=float(old_residual_new_proto_mix),
+                        old_residual_new_clip=float(old_residual_new_clip),
                         class_diag_metric_weight=float(class_diag_metric_weight),
                         class_diag_metric_similarity=float(class_diag_metric_similarity),
                         class_diag_metric_alpha=float(class_diag_metric_alpha),
@@ -3637,6 +3797,7 @@ def main() -> None:
                     row["pool_per_old"] = int(args.pool_per_old)
                     row["pool_per_new"] = int(args.pool_per_new)
                     row["exclude_pool_from_query"] = bool(args.exclude_pool_from_query)
+                    row.update(split_fingerprint)
                     rows.append(row)
 
     rows.sort(
@@ -3653,6 +3814,8 @@ def main() -> None:
         "diagnostic_scope": "SUPPORT_ONLY_METRIC_QKNN_COMPRESSED_NO_RAW_SUPPORT",
         "feature_npz": str(args.feature_npz),
         "aux_feature_npz": str(args.aux_feature_npz),
+        "feature_npz_sha256": _sha256_file(feature_path),
+        "aux_feature_npz_sha256": _sha256_file(aux_feature_path) if aux_feature_path is not None else "",
         "old_tx_ids": old_labels,
         "new_tx_ids": new_labels,
         "rows_count": len(rows),
@@ -3770,6 +3933,12 @@ def main() -> None:
         "subspace_proto_power",
         "subspace_proto_clip",
         "stored_subspace_proto_scalars",
+        "old_residual_new_weight",
+        "old_residual_new_rank",
+        "old_residual_new_rank_used",
+        "old_residual_new_proto_mix",
+        "old_residual_new_clip",
+        "stored_old_residual_new_scalars",
         "class_diag_metric_weight",
         "class_diag_metric_similarity",
         "class_diag_metric_alpha",
@@ -3867,6 +4036,11 @@ def main() -> None:
         "pool_per_old",
         "pool_per_new",
         "exclude_pool_from_query",
+        "support_index_sha16",
+        "old_query_index_sha16",
+        "new_query_index_sha16",
+        "query_index_sha16",
+        "split_fingerprint",
         "stored_quantized_support_code_count",
         "stored_raw_support_count",
         "stored_class_prototype_count",
@@ -3885,6 +4059,7 @@ def main() -> None:
             out["query_per_old_acc"] = json.dumps(row["query_per_old_acc"], ensure_ascii=False, sort_keys=True)
             out["query_per_new_acc"] = json.dumps(row["query_per_new_acc"], ensure_ascii=False, sort_keys=True)
             out["new_old_conflict_bias"] = json.dumps(row.get("new_old_conflict_bias", {}), ensure_ascii=False, sort_keys=True)
+            out["split_fingerprint"] = json.dumps(row.get("split_fingerprint", {}), ensure_ascii=False, sort_keys=True)
             writer.writerow(out)
     print(json.dumps({"best": rows[:5], "output_json": str(output_json)}, ensure_ascii=False, indent=2))
 
