@@ -202,6 +202,98 @@ Interpretation:
 
 Current goal status: active, not achieved.
 
+## v12 Compressed Pairwise Linear Head Check
+
+Objective: add a qKNN variant that keeps the KNN-style extensibility but avoids persisting raw support samples. The new route is `dualview_support_v12`: it inherits v11 ASLR and adds a support-LOO-selected compressed pairwise linear head for hard new-class pairs.
+
+Mechanism:
+
+- Hard pairs are selected only from support-LOO errors; query labels are audit-only.
+- For each selected unordered hard pair, the method fits a ridge linear boundary in feature space using only that pair's K-shot support.
+- The deployed state stores only the learned coefficient vector and bias per selected pair, not raw support examples.
+- The initial aggressive version overfit support: N10 K10 support-LOO floor rose to 80.00%, but query floor fell to 57.14%. The committed v12 therefore uses a conservative adaptive gate: `linear_weight=clip((0.004+0.006*k_reliability)*linear_gate,0,0.008)`, `top_pairs<=3`, `alpha=10.0`, `clip=0.5`.
+
+Verification:
+
+| command / artifact | result |
+|---|---|
+| `conda run -n ssr-gpu python -m py_compile code\scripts\phase2_support_metric_qknn_probe.py` | PASS |
+| `n10_k10_norm_only_adaptive_v12_safe_seed421029.json` | completed |
+| `n10_k5_norm_only_adaptive_v12_safe_seed421037.json` | completed |
+| `n20_k10_norm_only_adaptive_v12_safe_seed421029.json` | completed |
+| `n20_k5_norm_only_adaptive_v12_safe_seed421037.json` | completed |
+| `n20_k5_v11_linear_safe_grid_seed421037.json` | completed; best floor still 44.00% |
+
+Strict NORM-only maximum-query v12 results:
+
+| new count | K | seed | old_acc | min_old | new_acc | min_new | rescue scalars | linear scalars | verdict |
+|---:|---:|---:|---:|---:|---:|---:|---:|---:|---|
+| 10 | 10 | 421029 | 92.14% | 77.14% | 84.57% | 61.43% | 16 | 322 | failed |
+| 10 | 5 | 421037 | 91.56% | 77.33% | 85.60% | 61.33% | 16 | 322 | failed |
+| 20 | 10 | 421029 | 92.62% | 78.57% | 70.64% | 51.43% | 32 | 483 | failed |
+| 20 | 5 | 421037 | 92.22% | 78.67% | 68.73% | 44.00% | 32 | 483 | failed |
+
+Per-TX accuracy, N10:
+
+| TX | role | K10 acc | K5 acc |
+|---|---|---:|---:|
+| `14-10` | old | 95.71% | 96.00% |
+| `14-7` | old | 80.00% | 77.33% |
+| `20-15` | old | 100.00% | 98.67% |
+| `20-19` | old | 77.14% | 77.33% |
+| `6-15` | old | 100.00% | 100.00% |
+| `8-20` | old | 100.00% | 100.00% |
+| `10-10` | new | 91.43% | 90.67% |
+| `11-10` | new | 75.71% | 73.33% |
+| `18-5` | new | 94.29% | 96.00% |
+| `19-3` | new | 95.71% | 96.00% |
+| `2-13` | new | 61.43% | 61.33% |
+| `2-5` | new | 81.43% | 85.33% |
+| `3-8` | new | 91.43% | 88.00% |
+| `4-10` | new | 87.14% | 89.33% |
+| `8-18` | new | 75.71% | 82.67% |
+| `8-3` | new | 91.43% | 93.33% |
+
+Per-TX accuracy, N20:
+
+| TX | role | K10 acc | K5 acc |
+|---|---|---:|---:|
+| `14-10` | old | 95.71% | 97.33% |
+| `14-7` | old | 81.43% | 78.67% |
+| `20-15` | old | 100.00% | 98.67% |
+| `20-19` | old | 78.57% | 78.67% |
+| `6-15` | old | 100.00% | 100.00% |
+| `8-20` | old | 100.00% | 100.00% |
+| `10-10` | new | 84.29% | 81.33% |
+| `11-10` | new | 55.71% | 62.67% |
+| `18-5` | new | 62.86% | 50.67% |
+| `19-3` | new | 67.14% | 54.67% |
+| `2-13` | new | 51.43% | 48.00% |
+| `2-5` | new | 78.57% | 81.33% |
+| `3-8` | new | 80.00% | 85.33% |
+| `4-10` | new | 88.57% | 88.00% |
+| `8-18` | new | 70.00% | 81.33% |
+| `8-3` | new | 72.86% | 77.33% |
+| `1-1` | new | 57.14% | 69.33% |
+| `1-10` | new | 84.29% | 86.67% |
+| `1-11` | new | 85.71% | 85.33% |
+| `1-12` | new | 62.86% | 65.33% |
+| `1-14` | new | 68.57% | 44.00% |
+| `1-15` | new | 82.86% | 73.33% |
+| `1-16` | new | 70.00% | 58.67% |
+| `1-18` | new | 58.57% | 53.33% |
+| `1-19` | new | 74.29% | 69.33% |
+| `1-2` | new | 57.14% | 58.67% |
+
+Interpretation:
+
+- v12 satisfies the compression requirement: raw support storage remains zero; the extra pairwise state is 322 scalars for N10 and 483 scalars for N20 in these runs.
+- It does not satisfy the active performance goal. N10 minimum new-class accuracy remains about 61%, and N20 minimum new-class accuracy remains 51.43% for K10 and 44.00% for K5.
+- The mean new-class drop from N10 to N20 remains too large: 13.93pp at K10 and 16.87pp at K5, so the requested no-collapse rule is still violated.
+- The useful result is negative but actionable: compressed qKNN heads can be made deployment-friendly and non-destructive, but the remaining floor is dominated by hard representation/enrollment classes (`2-13`, `11-10`, `18-5`, `1-14`, `1-18`, `1-2`) rather than by raw-support storage or simple KNN score calibration.
+
+Current goal status: active, not achieved.
+
 ## Adaptive v11 ASLR Check
 
 Objective: continue optimizing qKNN without adding K values. The only anchors remain `K=10` and `K=5`. This check adds `dualview_support_v11`, an ASLR policy: Adaptive Support-LOO Rescue. ASLR keeps the v9 compressed qKNN backbone and increases the support-LOO pair-rescue strength from support geometry, K reliability, and new-class load. It stores no raw support samples.
