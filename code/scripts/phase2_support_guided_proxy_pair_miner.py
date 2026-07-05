@@ -90,6 +90,7 @@ def main() -> None:
     parser.add_argument("--new_tx_ids", required=True)
     parser.add_argument("--target_new_focus", default="10-10,2-13")
     parser.add_argument("--hard_old_focus", default="20-19,14-7")
+    parser.add_argument("--hard_focus", default="")
     parser.add_argument("--new_role", default="target_unknown")
     parser.add_argument("--old_role", default="target_old")
     parser.add_argument("--seed", type=int, default=421029)
@@ -112,7 +113,9 @@ def main() -> None:
     old_labels = qknn._parse_csv(args.old_tx_ids)
     new_labels = qknn._parse_csv(args.new_tx_ids)
     focus_new = [label for label in qknn._parse_csv(args.target_new_focus) if label in set(new_labels)]
-    focus_old = [label for label in qknn._parse_csv(args.hard_old_focus) if label in set(old_labels)]
+    all_class_labels = old_labels + new_labels
+    hard_focus_raw = str(args.hard_focus).strip() or str(args.hard_old_focus)
+    focus_hard = [label for label in qknn._parse_csv(hard_focus_raw) if label in set(all_class_labels)]
 
     old_splits = _build_support_splits(
         features=features,
@@ -158,14 +161,16 @@ def main() -> None:
         new_proto = support_proto[new_label]
         proxy_new_sim = proxy_matrix @ new_proto
         near_new_order = np.argsort(-proxy_new_sim)[: int(args.top_proxy_per_focus)]
-        for old_label in focus_old:
-            old_proto = support_proto[old_label]
-            old_index = old_labels.index(old_label)
-            proxy_old_sim = proxy_matrix @ old_proto
-            near_old_order = np.argsort(-proxy_old_sim)[: int(args.top_proxy_per_focus)]
+        for hard_label in focus_hard:
+            if hard_label == new_label or hard_label not in support_proto:
+                continue
+            hard_proto = support_proto[hard_label]
+            old_index = old_labels.index(hard_label) if hard_label in old_labels else -1
+            proxy_hard_sim = proxy_matrix @ hard_proto
+            near_hard_order = np.argsort(-proxy_hard_sim)[: int(args.top_proxy_per_focus)]
             pair_rows: list[dict[str, Any]] = []
             for left_i in near_new_order.tolist():
-                for right_i in near_old_order.tolist():
+                for right_i in near_hard_order.tolist():
                     if left_i == right_i:
                         continue
                     left_label = proxy_labels[left_i]
@@ -173,19 +178,21 @@ def main() -> None:
                     proxy_pair_sim = float(proxy_proto[left_label] @ proxy_proto[right_label])
                     score = (
                         float(proxy_new_sim[left_i])
-                        + float(proxy_old_sim[right_i])
+                        + float(proxy_hard_sim[right_i])
                         + 0.5 * proxy_pair_sim
-                        - 0.25 * abs(float(proxy_new_sim[right_i]) - float(proxy_old_sim[left_i]))
+                        - 0.25 * abs(float(proxy_new_sim[right_i]) - float(proxy_hard_sim[left_i]))
                     )
                     pair_rows.append(
                         {
                             "target_new": new_label,
-                            "hard_old": old_label,
+                            "hard_old": hard_label,
+                            "hard_label": hard_label,
                             "old_index": int(old_index),
                             "left_proxy": left_label,
                             "right_proxy": right_label,
                             "left_to_target_new": float(proxy_new_sim[left_i]),
-                            "right_to_hard_old": float(proxy_old_sim[right_i]),
+                            "right_to_hard_old": float(proxy_hard_sim[right_i]),
+                            "right_to_hard_label": float(proxy_hard_sim[right_i]),
                             "proxy_pair_sim": proxy_pair_sim,
                             "analogy_score": float(score),
                         }
@@ -194,7 +201,8 @@ def main() -> None:
             for row in pair_rows[: int(args.top_pairs)]:
                 candidate_rows.append(row)
                 selected_pair_items.append(f"{row['left_proxy']}:{row['right_proxy']}")
-                selected_pair_items.append(f"{row['left_proxy']}:{old_index}")
+                if int(row["old_index"]) >= 0:
+                    selected_pair_items.append(f"{row['left_proxy']}:{row['old_index']}")
 
     deduped: list[str] = []
     for item in selected_pair_items:
@@ -217,7 +225,8 @@ def main() -> None:
         "old_tx_ids": old_labels,
         "new_tx_ids": new_labels,
         "target_new_focus": focus_new,
-        "hard_old_focus": focus_old,
+        "hard_old_focus": [label for label in focus_hard if label in set(old_labels)],
+        "hard_focus": focus_hard,
         "selected_proxy_hard_pair_ids": deduped,
         "selected_proxy_hard_pair_ids_csv": ",".join(deduped),
         "candidate_rows": candidate_rows,
@@ -230,11 +239,13 @@ def main() -> None:
     fields = [
         "target_new",
         "hard_old",
+        "hard_label",
         "old_index",
         "left_proxy",
         "right_proxy",
         "left_to_target_new",
         "right_to_hard_old",
+        "right_to_hard_label",
         "proxy_pair_sim",
         "analogy_score",
     ]

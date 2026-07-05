@@ -202,6 +202,93 @@ Interpretation:
 
 Current goal status: active, not achieved.
 
+## v13 Adaptive Support-Proxy Direction Rescue
+
+Objective: remove the manual `hard_focus` dependency from the useful qKNN proxy route. The new `dualview_support_v13` policy mines hard pairs from target support only: support leave-one-out errors plus high-similarity support prototype pairs. It then uses `proxy_unknown` class prototypes to generate compressed analogy directions. The deployed state stores only proxy-direction scalar metadata and class/prototype state; it does not store raw support samples.
+
+Local implementation:
+
+| file | change |
+|---|---|
+| `code/scripts/phase2_support_metric_qknn_probe.py` | added automatic support-LOO/prototype hard-pair mining and `dualview_support_v13` adaptive proxy weights |
+| `code/scripts/phase2_support_guided_proxy_pair_miner.py` | generalized external hard-pair miner from old-only `hard_old` to arbitrary registered `hard_label`, including new-vs-new pairs |
+
+Verification:
+
+| command | result |
+|---|---|
+| `conda run -n ssr-gpu python -m py_compile code\scripts\phase2_support_metric_qknn_probe.py code\scripts\phase2_support_guided_proxy_pair_miner.py` | PASS |
+
+Final v13 summary, maximum query split:
+
+| scope | K | query per class | old_acc | min_old | new_acc | min_new | auto pairs | stored proxy scalars | verdict |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|---|
+| N10 | 10 | 70 | 92.14% | 77.14% | 85.29% | 64.29% | 8 | 24 | failed target floor |
+| N10 | 5 | 75 | 91.56% | 77.33% | 85.47% | 61.33% | 8 | 24 | failed target floor |
+| N20 | 10 | 70 | 92.62% | 78.57% | 70.14% | 51.43% | 8 | 24 | failed target floor |
+| N20 | 5 | 75 | 92.22% | 78.67% | 70.00% | 46.67% | 8 | 24 | failed target floor |
+
+N10 v13 per-class details:
+
+| TX | K10 correct/total | K10 acc | K5 correct/total | K5 acc |
+|---|---:|---:|---:|---:|
+| `14-10` | 67/70 | 95.71% | 72/75 | 96.00% |
+| `14-7` | 56/70 | 80.00% | 58/75 | 77.33% |
+| `20-15` | 70/70 | 100.00% | 74/75 | 98.67% |
+| `20-19` | 54/70 | 77.14% | 58/75 | 77.33% |
+| `6-15` | 70/70 | 100.00% | 75/75 | 100.00% |
+| `8-20` | 70/70 | 100.00% | 75/75 | 100.00% |
+| `10-10` | 64/70 | 91.43% | 68/75 | 90.67% |
+| `11-10` | 55/70 | 78.57% | 55/75 | 73.33% |
+| `18-5` | 67/70 | 95.71% | 72/75 | 96.00% |
+| `19-3` | 67/70 | 95.71% | 72/75 | 96.00% |
+| `2-13` | 45/70 | 64.29% | 46/75 | 61.33% |
+| `2-5` | 57/70 | 81.43% | 64/75 | 85.33% |
+| `3-8` | 64/70 | 91.43% | 66/75 | 88.00% |
+| `4-10` | 61/70 | 87.14% | 66/75 | 88.00% |
+| `8-18` | 53/70 | 75.71% | 62/75 | 82.67% |
+| `8-3` | 64/70 | 91.43% | 70/75 | 93.33% |
+
+N20 v13 per-class details:
+
+| TX | K10 correct/total | K10 acc | K5 correct/total | K5 acc |
+|---|---:|---:|---:|---:|
+| `14-10` | 67/70 | 95.71% | 73/75 | 97.33% |
+| `14-7` | 57/70 | 81.43% | 59/75 | 78.67% |
+| `20-15` | 70/70 | 100.00% | 74/75 | 98.67% |
+| `20-19` | 55/70 | 78.57% | 59/75 | 78.67% |
+| `6-15` | 70/70 | 100.00% | 75/75 | 100.00% |
+| `8-20` | 70/70 | 100.00% | 75/75 | 100.00% |
+| `10-10` | 59/70 | 84.29% | 61/75 | 81.33% |
+| `11-10` | 39/70 | 55.71% | 47/75 | 62.67% |
+| `18-5` | 44/70 | 62.86% | 41/75 | 54.67% |
+| `19-3` | 44/70 | 62.86% | 41/75 | 54.67% |
+| `2-13` | 36/70 | 51.43% | 35/75 | 46.67% |
+| `2-5` | 55/70 | 78.57% | 61/75 | 81.33% |
+| `3-8` | 56/70 | 80.00% | 64/75 | 85.33% |
+| `4-10` | 62/70 | 88.57% | 66/75 | 88.00% |
+| `8-18` | 49/70 | 70.00% | 61/75 | 81.33% |
+| `8-3` | 51/70 | 72.86% | 59/75 | 78.67% |
+| `1-1` | 40/70 | 57.14% | 52/75 | 69.33% |
+| `1-10` | 59/70 | 84.29% | 65/75 | 86.67% |
+| `1-11` | 60/70 | 85.71% | 64/75 | 85.33% |
+| `1-12` | 44/70 | 62.86% | 50/75 | 66.67% |
+| `1-14` | 48/70 | 68.57% | 43/75 | 57.33% |
+| `1-15` | 56/70 | 80.00% | 55/75 | 73.33% |
+| `1-16` | 49/70 | 70.00% | 49/75 | 65.33% |
+| `1-18` | 40/70 | 57.14% | 40/75 | 53.33% |
+| `1-19` | 51/70 | 72.86% | 52/75 | 69.33% |
+| `1-2` | 40/70 | 57.14% | 44/75 | 58.67% |
+
+Interpretation:
+
+- v13 improves deployability and removes hand-written hard-pair focus, but it does not meet the active target. The old-class target remains stable, while the new-class floor is still far below 75%.
+- The automatic pair selector repeatedly locks onto one support-hard pair per split (`11-10->18-5` for N10 K10, `8-3->2-5` for N10 K5, `1-15->19-3` or `1-14->1-16` for N20), which helps some classes but leaves `2-13`, `11-10`, `18-5`, `19-3`, and several `1-*` classes under-separated.
+- The best hand-guided proxy route remains a useful diagnostic signal: manually focusing `2-13` against hard competitors reached N10 K5 `min_new=72.00%`, but the current automatic selector has not yet recovered that behavior.
+- Next route should make hard-pair selection class-floor aware without using query labels. A candidate is a support-only fairness objective that reserves at least one proxy-direction bundle for each low-confidence support class instead of allowing one pair to consume all `top_pairs`.
+
+Current goal status: active, not achieved.
+
 ## v12 Compressed Pairwise Linear Head Check
 
 Objective: add a qKNN variant that keeps the KNN-style extensibility but avoids persisting raw support samples. The new route is `dualview_support_v12`: it inherits v11 ASLR and adds a support-LOO-selected compressed pairwise linear head for hard new-class pairs.
