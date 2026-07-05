@@ -83,3 +83,17 @@ SSH清理：一次错误扫描命令因远端输出/管道行为超时，留下�
 |`EPOC_R6_KNOWN_FLOOR_SHELL_KD`|25|98.52|0.3811|0.8179|0.0167|1.0000|0.9997|0.9638|旧类源验证稳定，但未知拒识训练信号仍未改善|
 
 解释：R6实现了“转入底层source-only蒸馏”的目标动作，但早期proxy信号仍为负趋势。当前不能声明R6已改善开集拒识；也不能用proxy单项拒识指标替代后续Stage2-C qknn8 M=1..5复评。下一次应在E35-E45附近再次检查`proxy_auc`、`virtual_accept`、`soft_virtual_accept`和源验证旧类保持；若仍无改善，应将R6降级为负证据，并设计更明确的feature-space上限诊断或target-old-only上限诊断。
+
+## E35窗口监控与路线判定
+
+监控时间：2026-07-06 02:59 CST。  
+N607 preflight：PASS；本轮远端操作只读，不新增启动、不终止进程。GPU0/GPU1分别约`2529MiB/24576MiB`、`2435MiB/24576MiB`，R6两个候选仍在低显存运行。日志尾部错误扫描未发现`Traceback`、`RuntimeError`、`CUDA out of memory`、`unrecognized arguments`、`Killed`或`NaN`。SSH清理复查：本地`ssh.exe`为`none`，N607/bridge `ESTABLISHED`连接为`none`。
+
+|候选|最新epoch|val_tx_acc|proxy_auc|virtual_accept|proxy_accept|bridge_accept|soft_virtual_accept|radius_inter_ratio|E35-E37判断|
+|---|---:|---:|---:|---:|---:|---:|---:|---:|---|
+|`EPOC_R6_RECIPROCAL_SHELL_KD`|37|98.51|0.3655|0.8219|0.0111|1.0000|1.0000|0.9759|旧类source验证稳定，但proxy分离仍显著低于0.5；虚拟未知仍大量被已知邻域接受|
+|`EPOC_R6_KNOWN_FLOOR_SHELL_KD`|37|98.52|0.3776|0.8171|0.0216|1.0000|0.9997|0.9557|旧类source验证稳定，但未知壳层/软未知约束没有形成可用开放边界|
+
+路线判定：R6保留运行以获得完整训练轨迹，但不再作为主路线扩展同类超参。当前证据满足“`proxy_auc<0.55`且`virtual_accept>0.5`、`soft_virtual_accept≈1.0`”的降级条件，应把R6记为source-only底层蒸馏负趋势证据。下一步主线转入只读`feature-space upper-bound`诊断和`target-old-only`上限诊断：前者冻结ADV3B02/EPOC/R6特征，检查old、seen-new、unknown在`z_id`空间的半径、最近原型混淆、kNN margin、energy/radius分布；后者只用`R_t`内`Y_old` support/query评估目标域旧类上限。两者都不得使用真实`Y_unknown`训练、阈值拟合、早停或模型选择。
+
+子agent审计结论：完成监督子agent确认当前不能标记`complete`，因为尚无同一候选达到旧类99%、旧类每类95%、seen-new 97%、seen-new每类93%、unknown reject 99%，且R6训练完成后仍需Stage2-C qknn8 M=1..全接收机复评；也不能标记`blocked`，因为仍有可执行的feature-space upper-bound和target-old-only诊断。方法review子agent指出OSPR-CI++已证明决策级强拒识不是当前主解，R3/R4/R5/R6的proxy趋势说明特征空间尚未形成可用开放边界，协同推理应保留为部署层低成本确认和冲突仲裁，不应继续承担主要表征修复。
