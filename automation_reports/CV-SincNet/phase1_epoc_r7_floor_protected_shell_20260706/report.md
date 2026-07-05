@@ -10,7 +10,7 @@
 |objective|在协同推理、OSPR-CI++、feature geometry、target-old prototype/ridge/MLP上限均未达到目标后，启动更底层source-only地面训练候选，优先保护旧类floor并修复LEO特征几何。|
 |base/teacher|`ADV3B02_CORE90_SOFT_E200`，checkpoint:`runs/phase1_adv3_mechanism32_queue_20260701/ADV3B02_CORE90_SOFT_E200/best_joint_safe_ssdg.pth`|
 |route|`source_only_floor_protected_feature_shell`|
-|status|n607_running_monitor_e025|
+|status|n607_running_monitor_e029|
 
 ## 协议边界
 
@@ -108,10 +108,14 @@ Snapshot:
 |2026-07-06 03:59|`EPOC_R7_BALANCED_LOW_DENSITY`|19/200|10|83.4509|98.5536|89.2039|98.5952|91.5745|0|NA|NA|0.7882|not yet|running; no Stage2-C eval yet|
 |2026-07-06 04:04|`EPOC_R7_FLOOR_LOCKED_SHELL`|25/200|10|85.7313|98.6369|90.6623|98.6548|91.6466|0|NA|NA|0.8395|not yet|running; no Stage2-C eval yet|
 |2026-07-06 04:04|`EPOC_R7_BALANCED_LOW_DENSITY`|25/200|20|84.4508|98.5655|89.7289|98.4881|93.3894|0|NA|NA|0.7673|not yet|running; no Stage2-C eval yet|
+|2026-07-06 04:07|`EPOC_R7_FLOOR_LOCKED_SHELL`|29/200|10|85.7313|98.6369|90.6623|98.6369|93.2091|0|NA|NA|0.8392|not yet|running; no Stage2-C eval yet|
+|2026-07-06 04:07|`EPOC_R7_BALANCED_LOW_DENSITY`|29/200|20|84.4508|98.5655|89.7289|98.5595|93.6178|0|NA|NA|0.7534|not yet|running; no Stage2-C eval yet|
 
 03:59 CST只读监控结论：N607预检PASS，GPU2/3分别约2443/2437MiB；两个候选均有`best_joint_safe_ssdg.pth`，但尚未导出`phase2_zid_prototypes.pt`。错误扫描未见Traceback、RuntimeError、CUDA OOM、out-of-memory、NaN、unrecognized arguments或Killed。由于proxy未知计划从E55/E60才启动，当前`proxy_active=0`属于预期，不可据此判断unknown拒识效果。当前状态仍是训练中，不能启动Stage2-C qknn8协同复评。
 
 04:04 CST只读监控结论：N607预检PASS，GPU2/3分别约2463/2459MiB；两个候选均继续运行到E025/200，仍未导出`phase2_zid_prototypes.pt`。`BALANCED_LOW_DENSITY`在E020刷新best_score到84.4508；`FLOOR_LOCKED_SHELL`best仍为E010。错误扫描仍为空。当前仍不满足Stage2-C复评前置条件。
+
+04:07 CST只读监控结论：N607预检PASS，GPU2/3分别约2463/2459MiB；两个候选均继续运行到E029/200，仍早于proxy启动点E55/E60，`proxy_active=0`仍属预期。两个候选均未导出`phase2_zid_prototypes.pt`，错误扫描为空，Stage2-C qknn8协同复评继续延后。
 
 ## 成功/失败判据
 
