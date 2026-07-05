@@ -29,6 +29,8 @@ MAX_EVENT_BYTES="${MAX_EVENT_BYTES:-1152}"
 MAX_EVENT_LATENCY_MS="${MAX_EVENT_LATENCY_MS:-20}"
 OSPR_DEVICE="${OSPR_DEVICE:-cpu}"
 EVENT_ALIGNMENT_POLICY="${EVENT_ALIGNMENT_POLICY:-receiver_domain_ranked}"
+COLLAB_GROUP_POLICY="${COLLAB_GROUP_POLICY:-available_up_to_k}"
+PARTIAL_COLLAB_MIN_RECEIVERS="${PARTIAL_COLLAB_MIN_RECEIVERS:-1}"
 SEED="${SEED:-4070505}"
 DRY_RUN="${DRY_RUN:-0}"
 
@@ -69,7 +71,7 @@ echo "[EPOC-B-OSPR-QKNN-COLLAB] target_new_tx_ids=${TARGET_NEW_TX_IDS}"
 echo "[EPOC-B-OSPR-QKNN-COLLAB] unknown_tx_ids=${UNKNOWN_TX_IDS}"
 echo "[EPOC-B-OSPR-QKNN-COLLAB] proxy_unknown_tx_ids=${PROXY_UNKNOWN_TX_IDS}"
 echo "[EPOC-B-OSPR-QKNN-COLLAB] gpu_selected=${GPU_SELECTED} ospr_device=${OSPR_DEVICE}"
-echo "[EPOC-B-OSPR-QKNN-COLLAB] collab_counts=all qknn_k=${QKNN_K} k_shot=${K_SHOT} query_per_class=${QUERY_PER_CLASS}"
+echo "[EPOC-B-OSPR-QKNN-COLLAB] collab_counts=all collab_group_policy=${COLLAB_GROUP_POLICY} partial_collab_min_receivers=${PARTIAL_COLLAB_MIN_RECEIVERS} qknn_k=${QKNN_K} k_shot=${K_SHOT} query_per_class=${QUERY_PER_CLASS}"
 echo "[EPOC-B-OSPR-QKNN-COLLAB] protocol=Stage2-C unknown_query_eval_only=true ground_training_unknown_seen=false"
 echo "[EPOC-B-OSPR-QKNN-COLLAB] event_alignment_policy=${EVENT_ALIGNMENT_POLICY} verdict_scope=NON_DEPLOYMENT_DIAGNOSTIC unless strict_event_key succeeds"
 
@@ -117,8 +119,8 @@ OSPR_CMD=(
   --output_dir "${OSPR_OUT}"
   --backend both
   --collab_counts all
-  --collab_group_policy same_max_budget
-  --partial_collab_min_receivers 1
+  --collab_group_policy "${COLLAB_GROUP_POLICY}"
+  --partial_collab_min_receivers "${PARTIAL_COLLAB_MIN_RECEIVERS}"
   --k_shot "${K_SHOT}"
   --query_per_class "${QUERY_PER_CLASS}"
   --qknn_k "${QKNN_K}"

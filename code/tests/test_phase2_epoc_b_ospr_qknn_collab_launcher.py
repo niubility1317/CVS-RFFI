@@ -21,6 +21,7 @@ def test_epoc_b_ospr_qknn_collab_launcher_declares_full_stage2c_route():
     assert "ground_training_unknown_seen=false" in out
     assert "event_alignment_policy=receiver_domain_ranked" in out
     assert "verdict_scope=NON_DEPLOYMENT_DIAGNOSTIC" in out
+    assert "collab_group_policy=available_up_to_k" in out
     assert "--target_old_tx_ids" in out
     assert "--new_tx_ids" in out
     assert "--unknown_tx_ids" in out
@@ -42,3 +43,5 @@ def test_epoc_b_ospr_qknn_collab_launcher_declares_full_stage2c_route():
     assert "--max_event_bytes 1152" in out
     assert "--max_event_latency_ms 20" in out
     assert "--event_alignment_policy receiver_domain_ranked" in out
+    assert "--collab_group_policy available_up_to_k" in out
+    assert "--partial_collab_min_receivers 1" in out
