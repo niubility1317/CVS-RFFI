@@ -1045,7 +1045,7 @@ def _pair_logreg_adjust_scores(
     if float(weight) == 0.0 or float(similarity_threshold) > 1.0:
         return scores, 0, 0
     scope_norm = str(scope).strip().lower()
-    if scope_norm not in {"all", "old_new"}:
+    if scope_norm not in {"all", "old_new", "new"}:
         raise ValueError(f"unsupported pair_logreg_scope: {scope}")
     support = qknn._normalize_rows(features[support_indices])
     query = qknn._normalize_rows(features[query_indices])
@@ -1066,6 +1066,8 @@ def _pair_logreg_adjust_scores(
             left_is_old = class_labels[left] in old_labels
             right_is_old = class_labels[right] in old_labels
             if scope_norm == "old_new" and left_is_old == right_is_old:
+                continue
+            if scope_norm == "new" and (left_is_old or right_is_old):
                 continue
             if float(proto_sim[left, right]) < float(similarity_threshold):
                 continue
@@ -3167,6 +3169,8 @@ def _adaptive_qknn_overrides(
         "stable_dualview_v5",
         "dualview_support_v6",
         "stable_dualview_v6",
+        "dualview_support_v7",
+        "stable_dualview_v7",
     }:
         raise ValueError(f"unsupported adaptive_qknn_policy: {policy}")
     use_v2 = name in {"dualview_support_v2", "stable_dualview_v2"}
@@ -3174,6 +3178,7 @@ def _adaptive_qknn_overrides(
     use_v4 = name in {"dualview_support_v4", "stable_dualview_v4"}
     use_v5 = name in {"dualview_support_v5", "stable_dualview_v5"}
     use_v6 = name in {"dualview_support_v6", "stable_dualview_v6"}
+    use_v7 = name in {"dualview_support_v7", "stable_dualview_v7"}
 
     min_k = float(geometry["adaptive_support_min_k"])
     new_count = float(geometry["adaptive_new_class_count"])
@@ -3181,7 +3186,7 @@ def _adaptive_qknn_overrides(
     p90_sim = float(geometry["adaptive_support_p90_offdiag_proto_sim"])
     radius = float(geometry["adaptive_support_mean_radius"])
     hardness = _clip01(max((max_sim - 0.82) / 0.16, (p90_sim - 0.68) / 0.22, (radius - 0.08) / 0.20))
-    if use_v3 or use_v4 or use_v5:
+    if use_v3 or use_v4 or use_v5 or use_v7:
         class_load = _clip01((new_count - 2.0) / 18.0)
     else:
         class_load = _clip01((new_count - 10.0) / 20.0)
@@ -3226,14 +3231,14 @@ def _adaptive_qknn_overrides(
         "source_guard_conf_min": 0.0,
         "source_guard_margin_min": 0.0,
     }
-    if use_v2 or use_v3 or use_v4 or use_v5 or use_v6:
+    if use_v2 or use_v3 or use_v4 or use_v5 or use_v6 or use_v7:
         competition_load = class_load
-        if (use_v3 or use_v4 or use_v5 or use_v6) and new_count >= 2.0:
+        if (use_v3 or use_v4 or use_v5 or use_v6 or use_v7) and new_count >= 2.0:
             competition_load = max(competition_load, 0.25)
         overrides.update(
             {
                 "role_balanced_assignment": bool(
-                    class_load > 0.0 or ((use_v3 or use_v4 or use_v5 or use_v6) and stable_gate >= 0.50)
+                    class_load > 0.0 or ((use_v3 or use_v4 or use_v5 or use_v6 or use_v7) and stable_gate >= 0.50)
                 ),
                 "local_competition_weight": float(0.02 * competition_load * stable_gate),
                 "local_competition_k": int(3 + round(4.0 * competition_load)),
@@ -3294,6 +3299,29 @@ def _adaptive_qknn_overrides(
                 "support_loo_pair_rescue_alpha": 0.1,
                 "support_loo_pair_rescue_clip": 2.0,
                 "support_loo_pair_rescue_scope": "new",
+            }
+        )
+    if use_v7:
+        pair_gate = _clip01(max(stable_gate, class_load) * (0.35 + 0.65 * k_reliability))
+        labelprop_gate = _clip01(k_reliability * stable_gate * (1.0 - 0.5 * class_load))
+        labelprop_weight = float(np.clip(0.50 * labelprop_gate, 0.0, 0.18))
+        pair_weight = float(np.clip(0.04 * pair_gate, 0.0, 0.04))
+        pair_similarity = float(np.clip(0.94 - 0.10 * class_load - 0.05 * stable_gate, 0.80, 0.94))
+        overrides.update(
+            {
+                "labelprop_weight": labelprop_weight,
+                "labelprop_k": 8,
+                "labelprop_alpha": 0.8,
+                "labelprop_temperature": 0.08,
+                "labelprop_rounds": 10,
+                "labelprop_clip": 2.0,
+                "labelprop_scope": "scenario" if labelprop_weight > 0.0 else "all",
+                "query_graph_weight": 0.0,
+                "pair_logreg_similarity": pair_similarity,
+                "pair_logreg_weight": pair_weight,
+                "pair_logreg_alpha": float(np.clip(1.0 - 0.9 * k_reliability, 0.1, 1.0)),
+                "pair_logreg_clip": 2.0,
+                "pair_logreg_scope": "new",
             }
         )
     return overrides
@@ -3803,6 +3831,11 @@ def main() -> None:
                         "pair_fisher_weight": float(pair_fisher_weight),
                         "pair_fisher_alpha": float(pair_fisher_alpha),
                         "pair_fisher_clip": float(pair_fisher_clip),
+                        "pair_logreg_similarity": float(pair_logreg_similarity),
+                        "pair_logreg_weight": float(pair_logreg_weight),
+                        "pair_logreg_alpha": float(pair_logreg_alpha),
+                        "pair_logreg_clip": float(pair_logreg_clip),
+                        "pair_logreg_scope": str(pair_logreg_scope),
                         "core_proto_weight": float(core_proto_weight),
                         "core_proto_count": int(core_proto_count),
                         "core_proto_topm": int(core_proto_topm),
@@ -3858,6 +3891,13 @@ def main() -> None:
                             "pair_fisher_weight": adaptive_overrides.get("pair_fisher_weight", params["pair_fisher_weight"]),
                             "pair_fisher_alpha": adaptive_overrides.get("pair_fisher_alpha", params["pair_fisher_alpha"]),
                             "pair_fisher_clip": adaptive_overrides.get("pair_fisher_clip", params["pair_fisher_clip"]),
+                            "pair_logreg_similarity": adaptive_overrides.get(
+                                "pair_logreg_similarity", params["pair_logreg_similarity"]
+                            ),
+                            "pair_logreg_weight": adaptive_overrides.get("pair_logreg_weight", params["pair_logreg_weight"]),
+                            "pair_logreg_alpha": adaptive_overrides.get("pair_logreg_alpha", params["pair_logreg_alpha"]),
+                            "pair_logreg_clip": adaptive_overrides.get("pair_logreg_clip", params["pair_logreg_clip"]),
+                            "pair_logreg_scope": adaptive_overrides.get("pair_logreg_scope", params["pair_logreg_scope"]),
                             "core_proto_weight": adaptive_overrides.get("core_proto_weight", params["core_proto_weight"]),
                             "core_proto_count": adaptive_overrides.get("core_proto_count", params["core_proto_count"]),
                             "core_proto_topm": adaptive_overrides.get("core_proto_topm", params["core_proto_topm"]),
@@ -3999,11 +4039,11 @@ def main() -> None:
                         support_guided_proxy_weight=float(support_guided_proxy_weight),
                         support_guided_proxy_top_pairs=int(support_guided_proxy_top_pairs),
                         support_guided_proxy_clip=float(support_guided_proxy_clip),
-                        pair_logreg_similarity=float(pair_logreg_similarity),
-                        pair_logreg_weight=float(pair_logreg_weight),
-                        pair_logreg_alpha=float(pair_logreg_alpha),
-                        pair_logreg_clip=float(pair_logreg_clip),
-                        pair_logreg_scope=str(pair_logreg_scope),
+                        pair_logreg_similarity=float(params["pair_logreg_similarity"]),
+                        pair_logreg_weight=float(params["pair_logreg_weight"]),
+                        pair_logreg_alpha=float(params["pair_logreg_alpha"]),
+                        pair_logreg_clip=float(params["pair_logreg_clip"]),
+                        pair_logreg_scope=str(params["pair_logreg_scope"]),
                         new_old_conflict_bias_threshold=float(new_old_conflict_bias_threshold),
                         new_old_conflict_bias_weight=float(new_old_conflict_bias_weight),
                         old_new_runnerup_rescue_similarity=float(old_new_runnerup_rescue_similarity),

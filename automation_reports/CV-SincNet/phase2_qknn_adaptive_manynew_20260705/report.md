@@ -339,6 +339,60 @@ Interpretation:
 
 Current goal status: active, not achieved.
 
+## 2026-07-06 Continuation: adaptive v7 new-new compressed pair head
+
+Objective: continue the qKNN route without expanding the K grid. This test keeps the anchors at `K=5,K=10`, adds an adaptive compressed new-new pair head, and verifies whether the weakest-class floor improves when the number of new classes increases.
+
+Code change:
+
+- Added `dualview_support_v7` and `stable_dualview_v7` in `code/scripts/phase2_support_metric_qknn_probe.py`.
+- Extended `pair_logreg_scope` with a `new` mode so the pair head only adjusts new-class columns and does not consume old-class capacity.
+- v7 sets `pair_logreg_similarity`, `pair_logreg_weight`, `pair_logreg_alpha`, and `pair_logreg_scope=new` from support geometry, K reliability, and new-class count. It does not use per-K hand-picked parameters.
+- Persistent extra state is compressed: each active pair stores four scalar coefficients. No raw support samples are stored.
+
+Local verification:
+
+```text
+C:\Users\lh594\.conda\envs\ssr-gpu\python.exe -m py_compile code\scripts\phase2_support_metric_qknn_probe.py
+```
+
+PASS.
+
+Split boundary:
+
+- Feature file: `n20_features/features_n20_norm.npz`; auxiliary head: `n20_features/features_n20_head.npz`.
+- Each target-old and target-unknown transmitter has exactly 80 samples in this local subset.
+- With `K=10,pool_per_class=10,exclude_pool_from_query`, maximum query is 70/class.
+- With `K=5,pool_per_class=10,exclude_pool_from_query`, maximum query is 65/class. The attempted 75/class K=5 run produced zero rows because the split is infeasible under strict support/pool exclusion.
+
+v7 result summary:
+
+| scope | K | query/class | old_acc | min_old | seen_new_acc | min_seen_new | pair count | pair scalars | raw support | verdict |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---|
+| N10 | 10 | 70 | 92.14% | 77.14% | 87.43% | 62.86% | 4 | 16 | 0 | failed floor |
+| N10 | 5 | 65 | 91.03% | 75.38% | 82.77% | 49.23% | 2 | 8 | 0 | failed floor |
+| N20 | 10 | 70 | 91.67% | 75.71% | 72.71% | 47.14% | 1 | 4 | 0 | failed floor |
+| N20 | 5 | 65 | 91.03% | 75.38% | 68.23% | 43.08% | 2 | 8 | 0 | failed floor |
+
+Per-new-class detail:
+
+| scope | K | per-new accuracy |
+|---|---:|---|
+| N10 | 10 | `10-10` 90.00%,`11-10` 72.86%,`18-5` 97.14%,`19-3` 95.71%,`2-13` 62.86%,`2-5` 87.14%,`3-8` 95.71%,`4-10` 91.43%,`8-18` 90.00%,`8-3` 91.43% |
+| N10 | 5 | `10-10` 89.23%,`11-10` 70.77%,`18-5` 84.62%,`19-3` 93.85%,`2-13` 49.23%,`2-5` 87.69%,`3-8` 87.69%,`4-10` 87.69%,`8-18` 86.15%,`8-3` 90.77% |
+| N20 | 10 | `1-1` 68.57%,`1-10` 87.14%,`1-11` 88.57%,`1-12` 65.71%,`1-14` 64.29%,`1-15` 82.86%,`1-16` 67.14%,`1-18` 52.86%,`1-19` 74.29%,`1-2` 58.57%,`10-10` 87.14%,`11-10` 60.00%,`18-5` 47.14%,`19-3` 70.00%,`2-13` 50.00%,`2-5` 85.71%,`3-8` 88.57%,`4-10` 88.57%,`8-18` 87.14%,`8-3` 80.00% |
+| N20 | 5 | `1-1` 61.54%,`1-10` 86.15%,`1-11` 76.92%,`1-12` 60.00%,`1-14` 50.77%,`1-15` 70.77%,`1-16` 60.00%,`1-18` 53.85%,`1-19` 72.31%,`1-2` 58.46%,`10-10` 87.69%,`11-10` 61.54%,`18-5` 43.08%,`19-3` 56.92%,`2-13` 52.31%,`2-5` 80.00%,`3-8` 80.00%,`4-10` 90.77%,`8-18` 80.00%,`8-3` 81.54% |
+
+Interpretation:
+
+- v7 is a valid compressed qKNN variant: it adds an adaptive new-new pair correction while storing only 4 to 16 pair scalars and zero raw support samples.
+- It does not meet the active goal. In the ten-new-class case, the weakest class remains `2-13`: 62.86% at K=10 and 49.23% at K=5, both below 75%.
+- In the twenty-new-class case, the weakest class remains around the dense ManyTx families: `18-5` is 47.14% at K=10 and 43.08% at K=5.
+- The K stability clause is partly satisfied for mean accuracy: N10 K=5 is 4.66pp below K=10, and N20 K=5 is 4.48pp below K=10 under the strict 65-query K=5 split. The floor requirement is still the blocker.
+- Compared with the current fingerprinted N20 baseline recorded above (`K=10 new_acc=44.36%,min_new=24.29%`; `K=5 new_acc=38.67%,min_new=20.00%` under a different K=5 query count), v7 materially improves mean and floor, but the remaining gap to `min_new>=75%` is still too large for another small score-head tweak to plausibly close.
+
+Current goal status: active, not achieved. Next credible route: representation/enrollment-side repair before qKNN, or a protocol-explicit support-quality gate; continue to keep K limited to 5 and 10.
+
 ## 2026-07-06 Continuation: adaptive v6 support-LOO policy
 
 Objective: continue the active qKNN goal without expanding the K grid. This step adds one adaptive policy and verifies it only at `K=5,K=10` for 10 and 20 new classes.
