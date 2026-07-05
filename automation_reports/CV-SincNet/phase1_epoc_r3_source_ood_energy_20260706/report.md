@@ -132,6 +132,19 @@ GPU状态采样：2026-07-06 00:20 CST，GPU0`2487/24576MiB`，GPU1`2411/24576Mi
 
 R2未被中断。R3是基于R2负面趋势追加的source-only底层修复路线。
 
+## 00:24 CST监控更新
+
+N607 direct preflight于2026-07-06 00:24 CST通过。GPU采样：GPU0`2487/24576MiB`，GPU1`2411/24576MiB`，GPU2`2315/24576MiB`，GPU3`2321/24576MiB`，GPU4-GPU7均约`10/24576MiB`。R2和R3均保持运行，未发现Traceback、RuntimeError、CUDA OOM或unrecognized arguments。日志尾部出现`nan`字样主要来自结构化指标/非有限计数字段，需继续关注`nonfinite_*_metric_count`，但当前没有训练崩溃证据。
+
+|候选|epoch|best|旧类保持|开集代理状态|判读|
+|---|---:|---|---|---|---|
+|`EPOC_R3_ENERGY_VOS_GUARD`|E022/180|best E020，`best_score=85.5712`|`val_tx_acc=98.5357`|`proxy_unknown`尚未启动，`train_loss_proxy_unknown=0.0`，`proxy_auc=null`|仍在开集loss正式启动前；旧类保持未塌陷，需等E030后再判断未知分离|
+|`EPOC_R3_TIGHT_CORE_MARGIN`|E021/180|best E010，`best_score=85.8973`|`val_tx_acc=98.6071`|`proxy_unknown`尚未启动，`train_loss_proxy_unknown=0.0`，`proxy_auc=null`|仍在开集loss正式启动前；当前best略高，但未知拒识尚无证据|
+|`EPOC_R2_BALANCED_SEP`|E116/190|best E100，`best_score=85.5742`|`val_tx_acc=98.6429`|`proxy_auc=0.4772`，`virtual_accept=0.8291`，`soft_virtual_accept=0.9976`，`radius_to_inter_ratio=0.9504`|R2仍未突破未知代理分离，继续作为负面参照|
+|`EPOC_R2_OLD_FLOOR`|E118/180|best E080，`best_score=85.1636`|`val_tx_acc=98.5476`|`proxy_auc=0.4785`，`virtual_accept=0.8212`，`soft_virtual_accept=0.9976`，`radius_to_inter_ratio=0.9753`|R2仍未突破未知代理分离，继续作为负面参照|
+
+当前判断：R3运行健康但尚未到关键观测点。下一次有效判断点应在`EPOC_R3_TIGHT_CORE_MARGIN`达到E028-E030、`EPOC_R3_ENERGY_VOS_GUARD`达到E030之后，重点比较R3是否相对R2显著提升`proxy_auc`并压低`virtual_accept`/`soft_virtual_accept`，同时旧类`val_tx_acc`不能明显下降。
+
 ## SSH清理状态
 
 |检查点|结果|
@@ -139,3 +152,4 @@ R2未被中断。R3是基于R2负面趋势追加的source-only底层修复路线
 |首次启动健康检查后|本地无残留`ssh.exe`；无到`172.31.111.215:22`或`172.31.105.18:22`的ESTABLISHED连接|
 |两次失败监控命令后|均无残留`ssh.exe`；无到N607或桥接机的ESTABLISHED连接|
 |00:20 CST紧凑监控后|本地无残留`ssh.exe`；无到N607或桥接机的ESTABLISHED连接|
+|00:24 CST紧凑监控后|本地无残留`ssh.exe`；无到N607或桥接机的ESTABLISHED连接|
