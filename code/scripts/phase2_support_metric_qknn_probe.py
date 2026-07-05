@@ -143,6 +143,97 @@ def _role_balanced_predict(
     return out.astype(str)
 
 
+def _quota_predict_fast(
+    scores: np.ndarray,
+    *,
+    labels: np.ndarray,
+    class_indices: list[int],
+    quotas: list[int],
+) -> np.ndarray:
+    """Fast quota assignment for few-class closed-set episodes.
+
+    This avoids materializing one slot per query sample. It starts from row-wise
+    argmax and repairs class quotas by moving the lowest-loss rows from
+    overfull classes to underfull classes. It is deterministic and preserves
+    exact quotas, but it is a greedy transport approximation rather than the
+    exact Hungarian solution.
+    """
+    local_scores = scores[:, np.asarray(class_indices, dtype=int)]
+    target = np.asarray(quotas, dtype=int)
+    if local_scores.shape[0] == 0:
+        return np.asarray([], dtype=str)
+    if int(np.sum(target)) != int(local_scores.shape[0]) or np.any(target < 0):
+        return labels[np.asarray(class_indices, dtype=int)[np.argmax(local_scores, axis=1)]].astype(str)
+    pred = np.argmax(local_scores, axis=1).astype(int)
+    counts = np.bincount(pred, minlength=len(class_indices)).astype(int)
+    max_steps = int(local_scores.shape[0]) * max(1, len(class_indices))
+    steps = 0
+    while bool(np.any(counts != target)) and steps < max_steps:
+        under = np.where(counts < target)[0]
+        over_mask = counts > target
+        if under.size == 0 or not bool(np.any(over_mask)):
+            break
+        best_row = -1
+        best_class = -1
+        best_loss = np.inf
+        movable = over_mask[pred]
+        if not bool(np.any(movable)):
+            break
+        movable_rows = np.where(movable)[0]
+        current_scores = local_scores[movable_rows, pred[movable_rows]]
+        for candidate in under:
+            losses = current_scores - local_scores[movable_rows, candidate]
+            local_best = int(np.argmin(losses))
+            loss = float(losses[local_best])
+            if loss < best_loss:
+                best_loss = loss
+                best_row = int(movable_rows[local_best])
+                best_class = int(candidate)
+        if best_row < 0 or best_class < 0:
+            break
+        old_class = int(pred[best_row])
+        pred[best_row] = best_class
+        counts[old_class] -= 1
+        counts[best_class] += 1
+        steps += 1
+    if bool(np.any(counts != target)):
+        return labels[np.asarray(class_indices, dtype=int)[np.argmax(local_scores, axis=1)]].astype(str)
+    return labels[np.asarray(class_indices, dtype=int)[pred]].astype(str)
+
+
+def _role_balanced_predict_fast(
+    scores: np.ndarray,
+    *,
+    old_count: int,
+    old_labels: list[str],
+    new_labels: list[str],
+) -> np.ndarray:
+    class_labels = old_labels + new_labels
+    labels = np.asarray(class_labels, dtype=object)
+    out = np.empty(scores.shape[0], dtype=object)
+    old_rows = np.arange(int(old_count), dtype=int)
+    new_rows = np.arange(int(old_count), int(scores.shape[0]), dtype=int)
+
+    old_quotas = [base._quota_slots(int(old_rows.size), old_labels, offset=0).count(i) for i in range(len(old_labels))]
+    new_slots = base._quota_slots(int(new_rows.size), new_labels, offset=len(old_labels))
+    new_quotas = [new_slots.count(len(old_labels) + i) for i in range(len(new_labels))]
+    if old_rows.size:
+        out[old_rows] = _quota_predict_fast(
+            scores[old_rows],
+            labels=labels,
+            class_indices=list(range(len(old_labels))),
+            quotas=old_quotas,
+        )
+    if new_rows.size:
+        out[new_rows] = _quota_predict_fast(
+            scores[new_rows],
+            labels=labels,
+            class_indices=list(range(len(old_labels), len(old_labels) + len(new_labels))),
+            quotas=new_quotas,
+        )
+    return out.astype(str)
+
+
 def _local_competition_adjust_scores(
     scores: np.ndarray,
     *,
@@ -203,6 +294,7 @@ def _assignment_predict(
     query_scenarios: np.ndarray,
     scenario_balanced_assignment: bool,
     role_balanced_assignment: bool,
+    fast_role_balanced_assignment: bool = False,
     balanced_assignment: bool,
 ) -> np.ndarray:
     if scenario_balanced_assignment:
@@ -214,6 +306,8 @@ def _assignment_predict(
             new_labels=new_labels,
         )
     if role_balanced_assignment:
+        if bool(fast_role_balanced_assignment):
+            return _role_balanced_predict_fast(scores, old_count=old_count, old_labels=old_labels, new_labels=new_labels)
         return _role_balanced_predict(scores, old_count=old_count, old_labels=old_labels, new_labels=new_labels)
     if balanced_assignment:
         return base._balanced_predict(scores, old_count=old_count, old_labels=old_labels, new_labels=new_labels)
@@ -2043,6 +2137,7 @@ def _evaluate_metric_qknn(
     scenario_aware: bool,
     balanced_assignment: bool,
     role_balanced_assignment: bool,
+    fast_role_balanced_assignment: bool,
     scenario_balanced_assignment: bool,
     proto_repel_lambda: float,
     proto_repel_margin: float,
@@ -2752,6 +2847,7 @@ def _evaluate_metric_qknn(
         query_scenarios=scenarios[query_indices],
         scenario_balanced_assignment=bool(scenario_balanced_assignment),
         role_balanced_assignment=bool(role_balanced_assignment),
+        fast_role_balanced_assignment=bool(fast_role_balanced_assignment),
         balanced_assignment=bool(balanced_assignment),
     )
     pred, pair_refine_changed = _pairwise_quota_refine(
@@ -2788,6 +2884,7 @@ def _evaluate_metric_qknn(
         "scenario_aware": bool(scenario_aware),
         "balanced_assignment": bool(balanced_assignment),
         "role_balanced_assignment": bool(role_balanced_assignment),
+        "fast_role_balanced_assignment": bool(fast_role_balanced_assignment),
         "scenario_balanced_assignment": bool(scenario_balanced_assignment),
         "proto_repel_lambda": float(proto_repel_lambda),
         "proto_repel_margin": float(proto_repel_margin),
@@ -3282,6 +3379,7 @@ def main() -> None:
     parser.add_argument("--scenario_aware", action="store_true")
     parser.add_argument("--balanced_assignment", action="store_true")
     parser.add_argument("--role_balanced_assignment", action="store_true")
+    parser.add_argument("--fast_role_balanced_assignment", action="store_true")
     parser.add_argument("--scenario_balanced_assignment", action="store_true")
     parser.add_argument("--exclude_pool_from_query", action="store_true")
     parser.add_argument("--old_target", type=float, default=0.80)
@@ -3794,6 +3892,7 @@ def main() -> None:
                         scenario_aware=bool(args.scenario_aware),
                         balanced_assignment=bool(args.balanced_assignment),
                         role_balanced_assignment=bool(params["role_balanced_assignment"]),
+                        fast_role_balanced_assignment=bool(args.fast_role_balanced_assignment),
                         scenario_balanced_assignment=bool(args.scenario_balanced_assignment),
                         proto_repel_lambda=float(proto_repel_lambda),
                         proto_repel_margin=float(proto_repel_margin),
@@ -4004,6 +4103,7 @@ def main() -> None:
         "scenario_aware",
         "balanced_assignment",
         "role_balanced_assignment",
+        "fast_role_balanced_assignment",
         "scenario_balanced_assignment",
         "proto_repel_lambda",
         "proto_repel_margin",

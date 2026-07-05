@@ -339,6 +339,90 @@ Interpretation:
 
 Current goal status: active, not achieved.
 
+## 2026-07-06 Continuation: fast quota assignment for full max-query qKNN
+
+Objective: make the receiver-domain qKNN route executable at full max-query size, then test one shared adaptive domain-refine rule under only `K=5,K=10`.
+
+Code change:
+
+- Added `--fast_role_balanced_assignment` in `code/scripts/phase2_support_metric_qknn_probe.py`.
+- The previous exact role-balanced assignment materialized one slot per query sample and used Hungarian assignment inside old/new query partitions. For max-query ADV3B02 this implied about `9540x9540` and `7920x7920` assignment matrices.
+- The new fast path keeps the same closed-set role quota semantics but uses a deterministic greedy transport repair: start from per-row argmax, then move the lowest-loss rows from overfull classes to underfull classes until exact class quotas are satisfied.
+- This is not the exact Hungarian optimum, so all rows below are explicitly marked `fast quota`. It is a deployable approximation and removes the full-query runtime blocker.
+
+Local verification:
+
+```text
+conda run -n ssr-gpu python -m py_compile code\scripts\phase2_support_metric_qknn_probe.py
+```
+
+PASS. Full max-query K=10 and K=5 rows completed locally in seconds to tens of seconds instead of timing out.
+
+Fast quota max-query summary:
+
+| feature | K | query old/class | query new/class | candidate | old_acc | min_old | seen_new_acc | min_seen_new | status |
+|---|---:|---:|---:|---|---:|---:|---:|---:|---|
+| ADV3B02 Stage2-C LEO | 10 | 1590 | 990 | fast quota baseline | 72.37% | 51.70% | 30.38% | 16.16% | completed |
+| ADV3B02 Stage2-C LEO | 10 | 1590 | 990 | fast quota `rx_scenario/new,w=0.25` | 72.37% | 51.70% | 43.23% | 27.98% | completed |
+| ADV3B02 Stage2-C LEO | 10 | 1590 | 990 | fast quota `rx_scenario/new,w=0.5` | 72.37% | 51.70% | 42.71% | 28.28% | best K10 floor |
+| ADV3B02 Stage2-C LEO | 10 | 1590 | 990 | fast quota `rx_scenario/new,w=0.75` | 72.37% | 51.70% | 41.64% | 27.27% | stability candidate |
+| ADV3B02 Stage2-C LEO | 5 | 1595 | 995 | fast quota baseline | 72.56% | 52.35% | 22.86% | 10.45% | completed |
+| ADV3B02 Stage2-C LEO | 5 | 1595 | 995 | fast quota `rx_scenario/new,w=0.25` | 72.56% | 52.35% | 36.34% | 26.13% | completed |
+| ADV3B02 Stage2-C LEO | 5 | 1595 | 995 | fast quota `rx_scenario/new,w=0.5` | 72.56% | 52.35% | 36.98% | 26.93% | completed |
+| ADV3B02 Stage2-C LEO | 5 | 1595 | 995 | fast quota `rx_scenario/new,w=0.75` | 72.56% | 52.35% | 37.61% | 27.34% | best shared stability |
+
+Shared-weight interpretation:
+
+- `w=0.75` is the best shared setting for the active K-stability requirement: K=10 seen-new is 41.64%, K=5 seen-new is 37.61%, so K=5 is 4.03pp below K=10 and meets the "within 5pp" stability clause.
+- The same setting improves K=10 over fast baseline by +11.26pp mean new and +11.11pp min-new; it improves K=5 by +14.75pp mean new and +16.89pp min-new.
+- The old-class metrics are unchanged by construction because `domain_refine_scope=new` leaves old-class columns untouched under role-balanced assignment.
+- The active accuracy floor is still not achieved: the best shared K=10 minimum new class is 27.27%, and the best shared K=5 minimum new class is 27.34%, far below 75%.
+
+K=10 per-class detail for fast quota `rx_scenario/new,w=0.75`:
+
+| role | tx | accuracy |
+|---|---|---:|
+| old | 14-10 | 64.91% |
+| old | 14-7 | 61.76% |
+| old | 20-15 | 77.30% |
+| old | 20-19 | 51.70% |
+| old | 6-15 | 87.48% |
+| old | 8-20 | 91.07% |
+| new | 1-10 | 35.45% |
+| new | 1-12 | 43.84% |
+| new | 1-14 | 44.95% |
+| new | 1-16 | 32.83% |
+| new | 1-18 | 54.55% |
+| new | 1-8 | 37.88% |
+| new | 10-11 | 27.27% |
+| new | 10-4 | 56.36% |
+
+K=5 per-class detail for fast quota `rx_scenario/new,w=0.75`:
+
+| role | tx | accuracy |
+|---|---|---:|
+| old | 14-10 | 67.08% |
+| old | 14-7 | 60.69% |
+| old | 20-15 | 76.61% |
+| old | 20-19 | 52.35% |
+| old | 6-15 | 87.59% |
+| old | 8-20 | 91.03% |
+| new | 1-10 | 34.57% |
+| new | 1-12 | 33.27% |
+| new | 1-14 | 38.39% |
+| new | 1-16 | 38.49% |
+| new | 1-18 | 47.04% |
+| new | 1-8 | 33.27% |
+| new | 10-11 | 27.34% |
+| new | 10-4 | 48.54% |
+
+Conclusion:
+
+- This is concrete progress for the qKNN route: max-query is now runnable, the K=5/K=10 stability condition is met under a single shared weight, and the method still stores compressed support/domain prototypes rather than raw support samples.
+- It is not a successful final result. The remaining blocker is representation separability for the weakest new class, especially `10-11`, not KNN storage or assignment runtime.
+
+Current goal status: active, not achieved.
+
 ## 2026-07-06 ADV3B02 Stage2-C follow-up: receiver-domain new-scope qKNN
 
 Objective: continue the qKNN route on the complete ADV3B02 Stage2-C LEO feature with only `K=5,K=10`, max available query count, and no raw support storage. The tested idea is receiver-domain compressed prototypes: use observable `rx_id|sat_scenario` domains to refine only new-class score columns while preserving the old-class closed-set head.
