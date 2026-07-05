@@ -21,7 +21,7 @@
 |文件|目的|
 |---|---|
 |`E:\type10-7\code\scripts\phase2_frozen_manytx_unknown_diagnostic.py`|新增薄封装诊断脚本，复用现有qknn8证据构建和协同评估，固定输出`protocol_safety`、1..N协同摘要、目标达标字段|
-|`E:\type10-7\code\tests\test_phase2_frozen_manytx_unknown_diagnostic.py`|新增合成NPZ单测，验证未知query eval-only、协同数量1..N、非正参数拒绝、CSV输出和旧Stage2-C特征包manifest兼容重标|
+|`E:\type10-7\code\tests\test_phase2_frozen_manytx_unknown_diagnostic.py`|新增合成NPZ单测，验证未知query eval-only、协同数量1..N、非正参数拒绝、CLI枚举与核心函数一致、CSV输出和旧Stage2-C特征包manifest兼容重标|
 
 ## 协议边界
 
@@ -41,7 +41,7 @@
 |命令|结果|
 |---|---|
 |`conda run -n ssr-gpu python -m py_compile code\scripts\phase2_frozen_manytx_unknown_diagnostic.py code\tests\test_phase2_frozen_manytx_unknown_diagnostic.py`|PASS|
-|`conda run -n ssr-gpu python code\tests\test_phase2_frozen_manytx_unknown_diagnostic.py`|PASS，3 tests OK；负例会打印argparse usage|
+|`conda run -n ssr-gpu python code\tests\test_phase2_frozen_manytx_unknown_diagnostic.py`|PASS，4 tests OK；负例会打印argparse usage|
 |`conda run -n ssr-gpu python code\tests\test_phase2_collaborative_open_set_qknn_eval.py`|PASS，53 tests OK|
 
 注：Windows上并行`conda run`曾触发临时文件锁，已改为串行验证；这不是实验结论。
@@ -88,6 +88,8 @@ cd /home/szu2070436088/2510044040/CV-SincNet
 |远端验证|`py_compile` PASS；`python code/tests/test_phase2_frozen_manytx_unknown_diagnostic.py` PASS，3 tests OK|
 |SSH清理|SCP/SSH后本地`ssh.exe`无残留，N607和桥接机22端口无ESTABLISHED连接|
 
+补充修复：子agent审查发现封装CLI的`support_selection_policy`枚举与底层`phase2_collaborative_open_set_qknn_eval.py`不一致。已修正为`stable_first/centroid/scenario_diverse/strict_event_query_preserve`，并新增测试覆盖`strict_event_query_preserve`解析。
+
 ### 有界特征包检查
 
 已检查现有特征NPZ：
@@ -125,7 +127,7 @@ cd /home/szu2070436088/2510044040/CV-SincNet
 
 |特征包|receiver_count|collab_count|old_acc|min_old_class_acc|seen_new_acc|min_seen_new_class_acc|unknown_reject_rate|unknown_FAR|known_coverage|latency_ms_p95|结论|
 |---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---|
-|旧Stage2-C兼容包|1|1|0.0000|0.0000|0.0000|0.0000|1.0000|0.0000|0.0000|1.1051|负证据：全拒识保住unknown，但旧类/新类完全不可用|
+|旧Stage2-C兼容包|1|1|0.0000|0.0000|0.0000|0.0000|1.0000|0.0000|0.0000|1.1438|负证据：全拒识保住unknown，但旧类/新类完全不可用|
 
 协议安全字段：
 

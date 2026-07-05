@@ -144,6 +144,21 @@ class Phase2FrozenManytxUnknownDiagnosticTest(unittest.TestCase):
         with self.assertRaises(SystemExit):
             parse_args(["--feature_npz", "x.npz", "--output_json", "out.json", "--query_per_class", "0"])
 
+    def test_accepts_core_support_selection_policy_names(self):
+        from phase2_frozen_manytx_unknown_diagnostic import parse_args
+
+        args = parse_args(
+            [
+                "--feature_npz",
+                "x.npz",
+                "--output_json",
+                "out.json",
+                "--support_selection_policy",
+                "strict_event_query_preserve",
+            ]
+        )
+        self.assertEqual(args.support_selection_policy, "strict_event_query_preserve")
+
     def test_can_repair_legacy_target_new_unknown_roles_from_manifest(self):
         from phase2_frozen_manytx_unknown_diagnostic import main
 

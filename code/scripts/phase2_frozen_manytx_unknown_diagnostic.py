@@ -338,7 +338,11 @@ def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
     p.add_argument("--seed", type=int, default=4070606)
     p.add_argument("--event_alignment_policy", default="receiver_domain_ranked", choices=["strict_event_key", "receiver_domain_ranked"])
     p.add_argument("--strict_event_min_receivers", type=int, default=0)
-    p.add_argument("--support_selection_policy", default="stable_first", choices=["stable_first", "scenario_diverse", "centroid_nearest"])
+    p.add_argument(
+        "--support_selection_policy",
+        default="stable_first",
+        choices=["stable_first", "centroid", "scenario_diverse", "strict_event_query_preserve"],
+    )
     p.add_argument("--unknown_gate_mode", default="support_envelope")
     p.add_argument("--support_quantile", type=float, default=0.05)
     p.add_argument("--proxy_quantile", type=float, default=0.95)
