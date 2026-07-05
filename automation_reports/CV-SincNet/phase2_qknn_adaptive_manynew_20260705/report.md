@@ -391,6 +391,50 @@ Interpretation:
 - The K stability clause is partly satisfied for mean accuracy: N10 K=5 is 4.66pp below K=10, and N20 K=5 is 4.48pp below K=10 under the strict 65-query K=5 split. The floor requirement is still the blocker.
 - Compared with the current fingerprinted N20 baseline recorded above (`K=10 new_acc=44.36%,min_new=24.29%`; `K=5 new_acc=38.67%,min_new=20.00%` under a different K=5 query count), v7 materially improves mean and floor, but the remaining gap to `min_new>=75%` is still too large for another small score-head tweak to plausibly close.
 
+## 2026-07-06 Continuation: adaptive v8 old-subspace residual compressed head
+
+Objective: continue the active qKNN goal with only `K=5,K=10`, improve many-new-class floor stability, and keep the support state compressed instead of storing raw support samples.
+
+Code change:
+
+- Added `dualview_support_v8` and `stable_dualview_v8` in `code/scripts/phase2_support_metric_qknn_probe.py`.
+- v8 inherits the v7 adaptive new-new compressed pair head, then automatically enables `old_residual_new_*` from support geometry, new-class load, and K reliability.
+- Fixed the adaptive parameter path so `old_residual_new_weight`, `old_residual_new_rank`, `old_residual_new_proto_mix`, and `old_residual_new_clip` are applied through the same `params` override path as the other adaptive heads.
+- Persistent extra state remains compressed: old-class residual subspace plus one new-class residual prototype per new class. `stored_raw_support_count=0` in all rows below.
+
+Local verification:
+
+```text
+C:\Users\lh594\.conda\envs\ssr-gpu\python.exe -m py_compile code\scripts\phase2_support_metric_qknn_probe.py
+```
+
+PASS.
+
+v8 result summary:
+
+| scope | K | query/class | old_acc | min_old | seen_new_acc | min_seen_new | old_residual_weight | old_residual_scalars | raw support | verdict |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---|
+| N10 | 10 | 70 | 92.14% | 77.14% | 87.86% | 62.86% | 0.0936 | 2560 | 0 | failed floor |
+| N10 | 5 | 65 | 91.03% | 75.38% | 83.23% | 56.92% | 0.1947 | 2560 | 0 | improved but failed floor |
+| N20 | 10 | 70 | 91.67% | 75.71% | 73.14% | 50.00% | 0.3000 | 4160 | 0 | improved but failed floor |
+| N20 | 5 | 65 | 91.03% | 75.38% | 69.54% | 47.69% | 0.1000 | 4160 | 0 | improved but failed floor |
+
+Per-new-class detail:
+
+| scope | K | per-new accuracy |
+|---|---:|---|
+| N10 | 10 | `10-10` 90.00%,`11-10` 72.86%,`18-5` 97.14%,`19-3` 95.71%,`2-13` 62.86%,`2-5` 88.57%,`3-8` 95.71%,`4-10` 92.86%,`8-18` 90.00%,`8-3` 92.86% |
+| N10 | 5 | `10-10` 89.23%,`11-10` 67.69%,`18-5` 83.08%,`19-3` 95.38%,`2-13` 56.92%,`2-5` 83.08%,`3-8` 92.31%,`4-10` 86.15%,`8-18` 87.69%,`8-3` 90.77% |
+| N20 | 10 | `1-1` 61.43%,`1-10` 85.71%,`1-11` 87.14%,`1-12` 65.71%,`1-14` 64.29%,`1-15` 84.29%,`1-16` 67.14%,`1-18` 60.00%,`1-19` 77.14%,`1-2` 62.86%,`10-10` 87.14%,`11-10` 62.86%,`18-5` 50.00%,`19-3` 74.29%,`2-13` 54.29%,`2-5` 85.71%,`3-8` 91.43%,`4-10` 88.57%,`8-18` 87.14%,`8-3` 65.71% |
+| N20 | 5 | `1-1` 60.00%,`1-10` 86.15%,`1-11` 83.08%,`1-12` 58.46%,`1-14` 53.85%,`1-15` 78.46%,`1-16` 58.46%,`1-18` 56.92%,`1-19` 72.31%,`1-2` 61.54%,`10-10` 84.62%,`11-10` 58.46%,`18-5` 47.69%,`19-3` 64.62%,`2-13` 50.77%,`2-5` 80.00%,`3-8` 87.69%,`4-10` 87.69%,`8-18` 83.08%,`8-3` 76.92% |
+
+Interpretation:
+
+- v8 is a real improvement over v7 for several weakest-class rows without adding a new K axis: N10 K=5 minimum new class improves from 49.23% to 56.92%, N20 K=10 from 47.14% to 50.00%, and N20 K=5 from 43.08% to 47.69%.
+- The active goal is still not met. The worst classes remain `2-13` in the ten-new-class case and `18-5`/`2-13` in the twenty-new-class case, all below the required 75% floor.
+- A scenario-balanced assignment diagnostic was run for K=10 and was rejected: it collapsed old and new accuracy, so the present blocker is not a simple receiver-scenario quota issue.
+- Current evidence supports keeping v8 as the best compressed qKNN variant so far, but also shows the remaining gap is representation-side or class-admission-side rather than solvable by another small compressed score head alone.
+
 Current goal status: active, not achieved. Next credible route: representation/enrollment-side repair before qKNN, or a protocol-explicit support-quality gate; continue to keep K limited to 5 and 10.
 
 ## 2026-07-06 Continuation: adaptive v6 support-LOO policy

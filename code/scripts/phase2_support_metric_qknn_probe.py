@@ -3171,6 +3171,8 @@ def _adaptive_qknn_overrides(
         "stable_dualview_v6",
         "dualview_support_v7",
         "stable_dualview_v7",
+        "dualview_support_v8",
+        "stable_dualview_v8",
     }:
         raise ValueError(f"unsupported adaptive_qknn_policy: {policy}")
     use_v2 = name in {"dualview_support_v2", "stable_dualview_v2"}
@@ -3179,6 +3181,7 @@ def _adaptive_qknn_overrides(
     use_v5 = name in {"dualview_support_v5", "stable_dualview_v5"}
     use_v6 = name in {"dualview_support_v6", "stable_dualview_v6"}
     use_v7 = name in {"dualview_support_v7", "stable_dualview_v7"}
+    use_v8 = name in {"dualview_support_v8", "stable_dualview_v8"}
 
     min_k = float(geometry["adaptive_support_min_k"])
     new_count = float(geometry["adaptive_new_class_count"])
@@ -3186,7 +3189,7 @@ def _adaptive_qknn_overrides(
     p90_sim = float(geometry["adaptive_support_p90_offdiag_proto_sim"])
     radius = float(geometry["adaptive_support_mean_radius"])
     hardness = _clip01(max((max_sim - 0.82) / 0.16, (p90_sim - 0.68) / 0.22, (radius - 0.08) / 0.20))
-    if use_v3 or use_v4 or use_v5 or use_v7:
+    if use_v3 or use_v4 or use_v5 or use_v7 or use_v8:
         class_load = _clip01((new_count - 2.0) / 18.0)
     else:
         class_load = _clip01((new_count - 10.0) / 20.0)
@@ -3231,14 +3234,15 @@ def _adaptive_qknn_overrides(
         "source_guard_conf_min": 0.0,
         "source_guard_margin_min": 0.0,
     }
-    if use_v2 or use_v3 or use_v4 or use_v5 or use_v6 or use_v7:
+    if use_v2 or use_v3 or use_v4 or use_v5 or use_v6 or use_v7 or use_v8:
         competition_load = class_load
-        if (use_v3 or use_v4 or use_v5 or use_v6 or use_v7) and new_count >= 2.0:
+        if (use_v3 or use_v4 or use_v5 or use_v6 or use_v7 or use_v8) and new_count >= 2.0:
             competition_load = max(competition_load, 0.25)
         overrides.update(
             {
                 "role_balanced_assignment": bool(
-                    class_load > 0.0 or ((use_v3 or use_v4 or use_v5 or use_v6 or use_v7) and stable_gate >= 0.50)
+                    class_load > 0.0
+                    or ((use_v3 or use_v4 or use_v5 or use_v6 or use_v7 or use_v8) and stable_gate >= 0.50)
                 ),
                 "local_competition_weight": float(0.02 * competition_load * stable_gate),
                 "local_competition_k": int(3 + round(4.0 * competition_load)),
@@ -3301,7 +3305,7 @@ def _adaptive_qknn_overrides(
                 "support_loo_pair_rescue_scope": "new",
             }
         )
-    if use_v7:
+    if use_v7 or use_v8:
         pair_gate = _clip01(max(stable_gate, class_load) * (0.35 + 0.65 * k_reliability))
         labelprop_gate = _clip01(k_reliability * stable_gate * (1.0 - 0.5 * class_load))
         labelprop_weight = float(np.clip(0.50 * labelprop_gate, 0.0, 0.18))
@@ -3322,6 +3326,21 @@ def _adaptive_qknn_overrides(
                 "pair_logreg_alpha": float(np.clip(1.0 - 0.9 * k_reliability, 0.1, 1.0)),
                 "pair_logreg_clip": 2.0,
                 "pair_logreg_scope": "new",
+            }
+        )
+    if use_v8:
+        low_load_residual = float(np.clip(0.20 - 0.30 * k_reliability, 0.05, 0.20))
+        high_load_residual = float(np.clip(0.10 + 0.60 * k_reliability, 0.10, 0.30))
+        load_blend = _clip01((class_load - 0.50) / 0.25)
+        residual_weight = (1.0 - load_blend) * low_load_residual + load_blend * high_load_residual
+        residual_weight = float(np.clip(stable_gate * residual_weight, 0.0, 0.30))
+        residual_proto_mix = float(np.clip(0.25 + 0.15 * class_load * (1.0 - 0.5 * k_reliability), 0.25, 0.40))
+        overrides.update(
+            {
+                "old_residual_new_weight": residual_weight,
+                "old_residual_new_rank": 5,
+                "old_residual_new_proto_mix": residual_proto_mix,
+                "old_residual_new_clip": 2.0,
             }
         )
     return overrides
@@ -3843,6 +3862,10 @@ def main() -> None:
                         "ridge_head_weight": float(ridge_head_weight),
                         "ridge_head_alpha": float(ridge_head_alpha),
                         "ridge_head_clip": float(ridge_head_clip),
+                        "old_residual_new_weight": float(old_residual_new_weight),
+                        "old_residual_new_rank": int(old_residual_new_rank),
+                        "old_residual_new_proto_mix": float(old_residual_new_proto_mix),
+                        "old_residual_new_clip": float(old_residual_new_clip),
                         "source_guard_mode": str(source_guard_mode),
                         "source_guard_weight": float(source_guard_weight),
                         "source_guard_conf_min": float(source_guard_conf_min),
@@ -3905,6 +3928,18 @@ def main() -> None:
                             "ridge_head_weight": adaptive_overrides.get("ridge_head_weight", params["ridge_head_weight"]),
                             "ridge_head_alpha": adaptive_overrides.get("ridge_head_alpha", params["ridge_head_alpha"]),
                             "ridge_head_clip": adaptive_overrides.get("ridge_head_clip", params["ridge_head_clip"]),
+                            "old_residual_new_weight": adaptive_overrides.get(
+                                "old_residual_new_weight", params["old_residual_new_weight"]
+                            ),
+                            "old_residual_new_rank": adaptive_overrides.get(
+                                "old_residual_new_rank", params["old_residual_new_rank"]
+                            ),
+                            "old_residual_new_proto_mix": adaptive_overrides.get(
+                                "old_residual_new_proto_mix", params["old_residual_new_proto_mix"]
+                            ),
+                            "old_residual_new_clip": adaptive_overrides.get(
+                                "old_residual_new_clip", params["old_residual_new_clip"]
+                            ),
                             "source_guard_mode": adaptive_overrides.get("source_guard_mode", params["source_guard_mode"]),
                             "source_guard_weight": adaptive_overrides.get("source_guard_weight", params["source_guard_weight"]),
                             "source_guard_conf_min": adaptive_overrides.get("source_guard_conf_min", params["source_guard_conf_min"]),
@@ -4063,10 +4098,10 @@ def main() -> None:
                         subspace_proto_rank=int(subspace_proto_rank),
                         subspace_proto_power=float(subspace_proto_power),
                         subspace_proto_clip=float(subspace_proto_clip),
-                        old_residual_new_weight=float(old_residual_new_weight),
-                        old_residual_new_rank=int(old_residual_new_rank),
-                        old_residual_new_proto_mix=float(old_residual_new_proto_mix),
-                        old_residual_new_clip=float(old_residual_new_clip),
+                        old_residual_new_weight=float(params["old_residual_new_weight"]),
+                        old_residual_new_rank=int(params["old_residual_new_rank"]),
+                        old_residual_new_proto_mix=float(params["old_residual_new_proto_mix"]),
+                        old_residual_new_clip=float(params["old_residual_new_clip"]),
                         domain_refine_key=str(domain_refine_key),
                         domain_refine_weight=float(domain_refine_weight),
                         domain_refine_scope=str(domain_refine_scope),
