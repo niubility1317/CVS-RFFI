@@ -71,3 +71,15 @@ cd /home/szu2070436088/2510044040/CV-SincNet && RUN_ID=phase1_epoc_r6_reciprocal
 健康检查观察：两个候选均出现`EPOCH-BEGIN`、`LOSS-*`、`OW-FEAT`、`PROXY-UNK`、`ZID-FEATURE-SPACE`和checkpoint写入。当前proxy/OW/source episode在前几轮尚未激活，符合`start_epoch`设置；这不是拒识效果证据，后续需在proxy激活后监控`proxy_unknown_auc_proxy`、`virtual_accept_rate`、`soft_unknown_mixup_virtual_accept_rate`以及源验证旧类保持。
 
 SSH清理：一次错误扫描命令因远端输出/管道行为超时，留下本地`ssh.exe` PID`42072`连接N607:22；已按规则关闭并复查，最终`ssh.exe processes: none`且`N607/bridge established connections: none`。
+
+## 早期监控记录
+
+监控时间：2026-07-06 02:48 CST。  
+状态：两个R6候选仍在运行，metrics持续写入，最近日志未发现`Traceback`、`RuntimeError`、`CUDA out of memory`、`unrecognized arguments`或`Killed`。本轮只做monitor-only，不新增启动、不终止进程。
+
+|候选|最新epoch|val_tx_acc|proxy_auc|virtual_accept|proxy_accept|bridge_accept|soft_virtual_accept|radius_inter_ratio|早期判断|
+|---|---:|---:|---:|---:|---:|---:|---:|---:|---|
+|`EPOC_R6_RECIPROCAL_SHELL_KD`|25|98.51|0.3638|0.8160|0.0161|1.0000|1.0000|1.0143|旧类源验证稳定，但proxy unknown分离更弱；虚拟未知仍大量落入已知邻域|
+|`EPOC_R6_KNOWN_FLOOR_SHELL_KD`|25|98.52|0.3811|0.8179|0.0167|1.0000|0.9997|0.9638|旧类源验证稳定，但未知拒识训练信号仍未改善|
+
+解释：R6实现了“转入底层source-only蒸馏”的目标动作，但早期proxy信号仍为负趋势。当前不能声明R6已改善开集拒识；也不能用proxy单项拒识指标替代后续Stage2-C qknn8 M=1..5复评。下一次应在E35-E45附近再次检查`proxy_auc`、`virtual_accept`、`soft_virtual_accept`和源验证旧类保持；若仍无改善，应将R6降级为负证据，并设计更明确的feature-space上限诊断或target-old-only上限诊断。
