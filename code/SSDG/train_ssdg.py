@@ -62,6 +62,7 @@ try:
         make_soft_unknown_mixup,
         open_world_feature_space_loss,
         proxy_unknown_energy_loss,
+        one_way_kl_from_teacher,
         sanitize_loss,
         soft_unknown_mixup_loss,
         source_episode_three_sigma_loss,
@@ -113,6 +114,7 @@ except ModuleNotFoundError:
     aggregate_named_stats = compute_core_losses = evaluate_sat_scenarios = None
     detect_one_epoch_drop = detect_paic_variance_guard = guard_minimums_from_args = None
     joint_safe_score = missing_joint_safe_metrics = protected_metric_snapshot = None
+    one_way_kl_from_teacher = None
     build_aug_base_cfg = build_stage_state = configure_augmentor_for_epoch = configure_mixstyle_for_epoch = None
     format_stage_state = make_augmentor = None
     format_named_test_lines = format_sat_test_lines = None
@@ -171,6 +173,13 @@ def build_arg_parser() -> argparse.ArgumentParser:
     parser.add_argument("--pseudo_strong_agreement", type=str2bool, default=True)
     parser.add_argument("--use_ema_teacher", type=str2bool, default=False)
     parser.add_argument("--ema_decay", type=float, default=0.999)
+    parser.add_argument("--teacher_ckpt", type=str, default="", help="Optional frozen teacher checkpoint for ADV3B02 distillation.")
+    parser.add_argument("--lambda_teacher_clean_kl", type=float, default=0.0)
+    parser.add_argument("--lambda_teacher_sat_kl", type=float, default=0.0)
+    parser.add_argument("--lambda_teacher_zid_mse", type=float, default=0.0)
+    parser.add_argument("--teacher_distill_temperature", type=float, default=2.0)
+    parser.add_argument("--teacher_distill_start_epoch", type=int, default=1)
+    parser.add_argument("--teacher_distill_warmup_epochs", type=int, default=0)
     parser.add_argument("--use_sat_consistency", dest="use_sat_consistency", action="store_true", default=True)
     parser.add_argument("--no_use_sat_consistency", dest="use_sat_consistency", action="store_false")
     parser.add_argument("--sat_train_scenario", type=str, default="mixed_orbit")
@@ -1103,6 +1112,22 @@ def _loss_weights(args, stage_state: Mapping[str, Any] | None) -> Dict[str, floa
     }
 
 
+def _teacher_distill_scale(args, epoch: int) -> float:
+    return _stage_gate_scale(
+        epoch,
+        start_epoch=int(getattr(args, "teacher_distill_start_epoch", 1)),
+        warmup_epochs=int(getattr(args, "teacher_distill_warmup_epochs", 0)),
+    )
+
+
+def _teacher_distill_requested(args) -> bool:
+    return (
+        float(getattr(args, "lambda_teacher_clean_kl", 0.0)) > 0.0
+        or float(getattr(args, "lambda_teacher_sat_kl", 0.0)) > 0.0
+        or float(getattr(args, "lambda_teacher_zid_mse", 0.0)) > 0.0
+    )
+
+
 def _stage_gate_scale(epoch: int, *, start_epoch: int = 1, warmup_epochs: int = 0) -> float:
     start = max(1, int(start_epoch))
     if int(epoch) < start:
@@ -1957,6 +1982,24 @@ def train(args) -> int:
         ema_model.eval()
         for param in ema_model.parameters():
             param.requires_grad = False
+    teacher_model = None
+    if _teacher_distill_requested(args):
+        if not str(getattr(args, "teacher_ckpt", "")).strip():
+            raise ValueError("--teacher_ckpt is required when any teacher distillation weight is non-zero")
+        if one_way_kl_from_teacher is None:
+            raise ImportError("cvsrffi.losses.one_way_kl_from_teacher is required for teacher distillation")
+        teacher_ckpt = load_checkpoint(str(args.teacher_ckpt), device)
+        teacher_model_args = merge_checkpoint_args(
+            teacher_ckpt,
+            argparse.Namespace(),
+            input_len=int(data_ctx["input_len"]),
+            num_domains=int(data_ctx["num_domains"]),
+        )
+        teacher_model = build_baseline_model(teacher_model_args, device)
+        teacher_model.load_state_dict(teacher_ckpt["model"], strict=False)
+        teacher_model.eval()
+        for param in teacher_model.parameters():
+            param.requires_grad = False
     optimizer = torch.optim.AdamW([p for p in model.parameters() if p.requires_grad], lr=float(args.lr), weight_decay=float(args.weight_decay))
     scaler = GradScaler(enabled=bool(args.amp and device.type == "cuda"))
     proto_bank = None
@@ -2004,6 +2047,13 @@ def train(args) -> int:
                 f"lambda_source_episode={float(args.lambda_source_episode):.6g} "
                 f"lambda_u={float(args.lambda_u):.6g} lambda_ent={float(args.lambda_ent):.6g} "
                 f"label_smoothing={float(args.label_smoothing):.6g}",
+                "[CONFIG-TEACHER] "
+                f"teacher_ckpt={str(getattr(args, 'teacher_ckpt', '') or '<none>')} "
+                f"lambda_teacher_clean_kl={float(args.lambda_teacher_clean_kl):.6g} "
+                f"lambda_teacher_sat_kl={float(args.lambda_teacher_sat_kl):.6g} "
+                f"lambda_teacher_zid_mse={float(args.lambda_teacher_zid_mse):.6g} "
+                f"temperature={float(args.teacher_distill_temperature):.6g} "
+                f"start_epoch={int(args.teacher_distill_start_epoch)} warmup_epochs={int(args.teacher_distill_warmup_epochs)}",
                 "[CONFIG-ADG] "
                 f"bridge_w={float(args.proxy_unknown_bridge_accept_weight):.6g} "
                 f"shell_out_w={float(args.proxy_unknown_shell_outward_accept_weight):.6g} "
@@ -2169,6 +2219,25 @@ def train(args) -> int:
                 else:
                     loss_fishr_l = out_l["tx_logits"].sum() * 0.0
                 z_id_l = out_l["z_id"]
+                teacher_scale = _teacher_distill_scale(args, epoch)
+                loss_teacher_clean_kl_l = z_id_l.sum() * 0.0
+                loss_teacher_sat_kl_l = z_id_l.sum() * 0.0
+                loss_teacher_zid_mse_l = z_id_l.sum() * 0.0
+                teacher_clean_out = None
+                if teacher_model is not None and teacher_scale > 0.0:
+                    with torch.no_grad():
+                        teacher_clean_out = teacher_model(x_l_main, y_tx=y_l, grl_lambda=1.0, return_aux=True, domain_labels=d_l)
+                    if float(args.lambda_teacher_clean_kl) > 0.0:
+                        loss_teacher_clean_kl_l = one_way_kl_from_teacher(
+                            out_l["tx_logits"],
+                            teacher_clean_out["tx_logits"],
+                            temperature=float(args.teacher_distill_temperature),
+                        )
+                    if float(args.lambda_teacher_zid_mse) > 0.0:
+                        loss_teacher_zid_mse_l = F.mse_loss(
+                            F.normalize(z_id_l.float(), dim=1),
+                            F.normalize(teacher_clean_out["z_id"].detach().float(), dim=1),
+                        )
                 loss_proto_l = z_id_l.sum() * 0.0
                 proto_info: Dict[str, float] = {
                     "proto_pull_cos": float("nan"),
@@ -2521,6 +2590,17 @@ def train(args) -> int:
                         clean_prob,
                         reduction="batchmean",
                     )
+                    if (
+                        teacher_model is not None
+                        and teacher_scale > 0.0
+                        and float(args.lambda_teacher_sat_kl) > 0.0
+                        and teacher_clean_out is not None
+                    ):
+                        loss_teacher_sat_kl_l = one_way_kl_from_teacher(
+                            out_sat["tx_logits"],
+                            teacher_clean_out["tx_logits"],
+                            temperature=float(args.teacher_distill_temperature),
+                        )
                 else:
                     loss_sat_cls_l = out_l["tx_logits"].sum() * 0.0
                     loss_sat_cons_l = out_l["tx_logits"].sum() * 0.0
@@ -2540,6 +2620,9 @@ def train(args) -> int:
                     + (cur_w["source_episode"] * source_episode_stage_scale) * sanitize_loss("ssdg_source_episode", loss_source_episode_l, z_id_l, loss_warn_counts)
                     + cur_w["sat_cls"] * loss_sat_cls_l
                     + cur_w["sat_cons"] * loss_sat_cons_l
+                    + (float(args.lambda_teacher_clean_kl) * teacher_scale) * sanitize_loss("teacher_clean_kl", loss_teacher_clean_kl_l, z_id_l, loss_warn_counts)
+                    + (float(args.lambda_teacher_sat_kl) * teacher_scale) * sanitize_loss("teacher_sat_kl", loss_teacher_sat_kl_l, z_id_l, loss_warn_counts)
+                    + (float(args.lambda_teacher_zid_mse) * teacher_scale) * sanitize_loss("teacher_zid_mse", loss_teacher_zid_mse_l, z_id_l, loss_warn_counts)
                 )
                 if phase == "pseudo" and bool(args.use_unlabeled):
                     try:
@@ -2656,6 +2739,9 @@ def train(args) -> int:
                     "train/loss_source_episode": loss_source_episode_l.detach(),
                     "train/loss_sat_cls_labeled": loss_sat_cls_l.detach(),
                     "train/loss_sat_cons_labeled": loss_sat_cons_l.detach(),
+                    "train/loss_teacher_clean_kl": loss_teacher_clean_kl_l.detach(),
+                    "train/loss_teacher_sat_kl": loss_teacher_sat_kl_l.detach(),
+                    "train/loss_teacher_zid_mse": loss_teacher_zid_mse_l.detach(),
                     "train/w_loss_tx_labeled": loss_tx_l.detach(),
                     "train/w_loss_domain_labeled": (cur_w["dom"] * loss_dom_l).detach(),
                     "train/w_loss_adv_labeled": (cur_w["adv"] * loss_adv_l).detach(),
@@ -2671,6 +2757,10 @@ def train(args) -> int:
                     "train/w_loss_source_episode": ((cur_w["source_episode"] * source_episode_stage_scale) * loss_source_episode_l).detach(),
                     "train/w_loss_sat_cls_labeled": (cur_w["sat_cls"] * loss_sat_cls_l).detach(),
                     "train/w_loss_sat_cons_labeled": (cur_w["sat_cons"] * loss_sat_cons_l).detach(),
+                    "train/w_loss_teacher_clean_kl": ((float(args.lambda_teacher_clean_kl) * teacher_scale) * loss_teacher_clean_kl_l).detach(),
+                    "train/w_loss_teacher_sat_kl": ((float(args.lambda_teacher_sat_kl) * teacher_scale) * loss_teacher_sat_kl_l).detach(),
+                    "train/w_loss_teacher_zid_mse": ((float(args.lambda_teacher_zid_mse) * teacher_scale) * loss_teacher_zid_mse_l).detach(),
+                    "train/teacher_distill_scale": float(teacher_scale),
                     "train/loss_unlabeled": loss_u.detach(),
                     "train/tx_acc": 100.0 * (out_l["tx_logits"].argmax(dim=1) == y_l).float().mean().detach(),
                     "train/dom_acc": core_losses.get("dom_acc", float("nan")),
