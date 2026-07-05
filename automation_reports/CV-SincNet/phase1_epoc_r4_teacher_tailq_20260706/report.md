@@ -68,7 +68,8 @@ R3使用较强energy/VOS和几何约束后，旧类未塌陷，但`proxy_auc`低
 |远端环境|`/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python`|
 |远端碰撞检查|`runs/phase1_epoc_r4_teacher_tailq_20260706`和`logs/phase1_epoc_r4_teacher_tailq_20260706`启动前均不存在|
 |同步文件|R4启动器、R4测试、本报告、`code/SYNC_MANIFEST.txt`|
-|远端hash|启动器`ccc5134c20049824befd3e337795cc7592f275959e3e15982a1fbea03adba80b`；测试`964d8f4ab70449b9ec70cb32659d1cf808f759bc430e3fcb8330bb8835323a89`；报告`4b4bfb820d1f5c713e5cd99af96980f90ea59bdc7cf7df6d59d403949bb0094c`；manifest`58b32a77f0096552fe42e303fc1f9600a97ec932d33f0b7993d39ec3a0a5a756`|
+|远端启动前hash|启动器`ccc5134c20049824befd3e337795cc7592f275959e3e15982a1fbea03adba80b`；测试`964d8f4ab70449b9ec70cb32659d1cf808f759bc430e3fcb8330bb8835323a89`；报告`4b4bfb820d1f5c713e5cd99af96980f90ea59bdc7cf7df6d59d403949bb0094c`；manifest`58b32a77f0096552fe42e303fc1f9600a97ec932d33f0b7993d39ec3a0a5a756`|
+|远端最终同步hash|2026-07-06 01:42 CST校验：报告`b5c46d859d9f8c693a60b596d474fb0e8ef4968c05463517b7f07ac66db2ac4c`；manifest`2582b69ee839f9d64c340add1cc091503dcfe4bfb7cbad79ae848e0ca040a1ba`|
 |远端验证|`bash -n` PASS；远端dry-run PASS；远端直接测试函数`direct_r4_launcher_tests=PASS`；禁用字段扫描未出现`ManyTx.pkl`、`--new_wisig_pkl`、`target_unknown`|
 |SSH/SCP清理|preflight、远端验证、同步、启动前检查、启动命令后均检查本地`ssh.exe`和到`172.31.111.215:22`/`172.31.105.18:22`的ESTABLISHED连接，无残留|
 
