@@ -9,6 +9,81 @@ if str(ROOT) not in sys.path:
 
 
 class CollaborativeOpenSetQknnEvalTest(unittest.TestCase):
+    def test_ospr_ci_pp_uses_support_protected_unknown_confirmation(self):
+        from evaluation.collaborative_open_set_qknn_eval import evaluate_collaborative_open_set_evidence
+
+        def row(event_id, receiver_id, role, truth, label, score, margin, risk, pvalue, reliability):
+            return {
+                "event_id": event_id,
+                "receiver_id": receiver_id,
+                "role": role,
+                "true_label": truth,
+                "predicted_label": label,
+                "known_score": score,
+                "known_margin": margin,
+                "unknown_risk": risk,
+                "score_risk": risk,
+                "radius_risk": risk,
+                "margin_risk": risk,
+                "class_shell_risk": risk,
+                "label_shell_risk_observed": True,
+                "class_conformal_pvalue": pvalue,
+                "class_conformal_support_count": 3,
+                "receiver_class_reliability": reliability,
+                "support_density": reliability,
+                "latency_ms": 1.0,
+                "bytes": 64,
+            }
+
+        rows = [
+            row("old-1", "rx-a", "old", "old-a", "old-a", 0.92, 0.28, 0.10, 0.95, 0.95),
+            row("old-1", "rx-b", "old", "old-a", "old-a", 0.90, 0.26, 0.12, 0.92, 0.92),
+            row("unk-1", "rx-a", "unknown", "__unknown__", "old-a", 0.35, 0.02, 0.94, 0.04, 0.15),
+            row("unk-1", "rx-b", "unknown", "__unknown__", "old-b", 0.34, 0.02, 0.92, 0.04, 0.15),
+        ]
+
+        result = evaluate_collaborative_open_set_evidence(
+            rows,
+            collab_counts=[2],
+            fusion_policy="ospr_ci_pp",
+            label_fusion_policy="weighted_vote_margin",
+            receiver_class_reliability_policy="support_calibrated",
+            candidate_set_min_receivers=2,
+            candidate_set_min_top1_receivers=2,
+            candidate_set_min_conformal_pvalue=0.50,
+            candidate_set_min_label_receiver_class_reliability=0.75,
+            candidate_set_max_label_unknown_risk=0.80,
+            candidate_set_max_event_unknown_risk=0.80,
+            candidate_set_max_label_risk_component_agreement=0.50,
+            candidate_set_unknown_reject_risk=0.85,
+            candidate_set_shell_reject_risk=0.85,
+            unknown_risk_threshold=0.85,
+            accept_margin_threshold=0.05,
+            consensus_score_threshold=0.05,
+            max_event_bytes=128,
+            max_event_latency_ms=20,
+            include_event_results=True,
+            protocol_metadata={
+                "target_receiver_ids": ["rx-a", "rx-b"],
+                "source_receiver_ids": ["src-a"],
+                "old_tx_ids": ["old-a", "old-b"],
+                "seen_new_tx_ids": ["new-a"],
+                "unknown_tx_ids": ["unk-a"],
+                "target_channel_view": "leo_clear_weak",
+            },
+        )
+
+        events = {event["event_id"]: event for event in result["counts"]["2"]["event_results"]}
+        self.assertEqual(result["fusion_policy"], "ospr_ci_pp")
+        self.assertEqual(events["old-1"]["requested_fusion_policy"], "ospr_ci_pp")
+        self.assertEqual(events["old-1"]["internal_fusion_policy"], "scg_qknn_cvs")
+        self.assertEqual(events["old-1"]["decision"], "accept")
+        self.assertEqual(events["old-1"]["output_label"], "old-a")
+        self.assertEqual(events["unk-1"]["decision"], "unknown_reject")
+        self.assertEqual(result["counts"]["2"]["old_acc"], 1.0)
+        self.assertEqual(result["counts"]["2"]["unknown_reject_rate"], 1.0)
+        self.assertEqual(result["counts"]["2"]["resource_budget_violation_rate"], 0.0)
+
     def test_dual_route_can_use_support_quality_for_rescue_selection(self):
         from evaluation.collaborative_open_set_qknn_eval import evaluate_collaborative_open_set_evidence
 

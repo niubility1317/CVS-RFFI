@@ -3282,6 +3282,7 @@ def parse_args() -> argparse.Namespace:
             "known_guarded_rescue_cvs",
             "scg_qknn_cvs",
             "old_protected_unknown_confirm_cvs",
+            "ospr_ci_pp",
         ],
     )
     p.add_argument(

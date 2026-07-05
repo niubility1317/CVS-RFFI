@@ -2,6 +2,7 @@ import json
 import sys
 import tempfile
 import unittest
+from unittest.mock import patch
 from pathlib import Path
 
 import numpy as np
@@ -74,6 +75,26 @@ def _write_npz(
 
 
 class Phase2CollaborativeOpenSetQknnEvalTest(unittest.TestCase):
+    def test_cli_accepts_ospr_ci_pp_fusion_policy(self):
+        from phase2_collaborative_open_set_qknn_eval import parse_args
+
+        with patch.object(
+            sys,
+            "argv",
+            [
+                "phase2_collaborative_open_set_qknn_eval.py",
+                "--feature_npz",
+                "features.npz",
+                "--output_json",
+                "out.json",
+                "--fusion_policy",
+                "ospr_ci_pp",
+            ],
+        ):
+            args = parse_args()
+
+        self.assertEqual(args.fusion_policy, "ospr_ci_pp")
+
     def test_builds_qknn8_evidence_and_reports_one_to_all_receivers(self):
         from phase2_collaborative_open_set_qknn_eval import load_feature_npz, build_collaborative_evidence
         from evaluation.collaborative_open_set_qknn_eval import evaluate_collaborative_open_set_evidence

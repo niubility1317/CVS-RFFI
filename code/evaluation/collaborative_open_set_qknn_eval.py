@@ -58,6 +58,7 @@ FUSION_POLICIES = {
     "known_guarded_rescue_cvs",
     "scg_qknn_cvs",
     "old_protected_unknown_confirm_cvs",
+    "ospr_ci_pp",
 }
 
 
@@ -541,7 +542,7 @@ def _fuse_event(
     if policy not in FUSION_POLICIES:
         raise ValueError(f"fusion_policy must be one of {', '.join(sorted(FUSION_POLICIES))}")
     requested_policy = policy
-    if policy == "old_protected_unknown_confirm_cvs":
+    if policy in {"old_protected_unknown_confirm_cvs", "ospr_ci_pp"}:
         policy = "scg_qknn_cvs"
     orbit_latency_weight = _validate_non_negative(orbit_latency_weight, "orbit_latency_weight")
     orbit_radius_risk_weight = _validate_non_negative(orbit_radius_risk_weight, "orbit_radius_risk_weight")

@@ -11,6 +11,21 @@ local_smoke_status=NON_DEPLOYMENT_DIAGNOSTIC; best high-reject rows still miss s
 remote_verify=N607 direct preflight PASS; remote sha256 PASS; py_compile PASS; unittest 4 PASS; GPU0 low VRAM selected.
 remote_run=CVS-RFFI env full OSPR-CI M=1..5 PASS completion; target_pass_count=0; final verdict NON_DEPLOYMENT_DIAGNOSTIC.
 
+[phase2_ospr_ci_pp_20260706_022047_local_ready]
+purpose=OSPR-CI++ minimal qknn8 collaborative open-set inference branch. Adds fusion_policy=ospr_ci_pp as an auditable alias for support-protected unknown confirmation and exposes it in the Stage2-C collaborative evaluator CLI. Reuses existing retry1 adapted features for CPU/low-VRAM N607 re-evaluation; target_unknown remains eval-only.
+snapshot=E:\type10-7\code\snapshots\phase2_ospr_ci_pp_20260706_022047
+E:\type10-7\code\evaluation\collaborative_open_set_qknn_eval.py -> N607:/home/szu2070436088/2510044040/CV-SincNet/code/evaluation/collaborative_open_set_qknn_eval.py sha256=ED7999B7DF253D65FFEA1633BCA33C68A6CAC7EEA76BDD76021CCC69CB386968
+E:\type10-7\code\scripts\phase2_collaborative_open_set_qknn_eval.py -> N607:/home/szu2070436088/2510044040/CV-SincNet/code/scripts/phase2_collaborative_open_set_qknn_eval.py sha256=754DA2CC5EAA9642F83CBEA6A77E0EFB916CFE0FCA13298C1D51CCB31BC9844D
+E:\type10-7\code\tests\test_collaborative_open_set_qknn_eval.py -> N607:/home/szu2070436088/2510044040/CV-SincNet/code/tests/test_collaborative_open_set_qknn_eval.py sha256=61DADE646A81EF7F4C704A6AF9D90DD28A006D017AF0EFC4433AD7D1A5F39B89
+E:\type10-7\code\tests\test_phase2_collaborative_open_set_qknn_eval.py -> N607:/home/szu2070436088/2510044040/CV-SincNet/code/tests/test_phase2_collaborative_open_set_qknn_eval.py sha256=D95F6465463D8C6860FF6E9E278195DAFB8424F485302023605DCD75586DD609
+E:\type10-7\automation_reports\CV-SincNet\phase1_epoc_adv3b02_distill_20260705\report.md -> N607:/home/szu2070436088/2510044040/CV-SincNet/automation_reports/CV-SincNet/phase1_epoc_adv3b02_distill_20260705/report.md
+local_verify=py_compile PASS; ssr-gpu pytest test_phase2_collaborative_open_set_qknn_eval.py -k ospr_ci_pp => 1 passed; ssr-gpu pytest test_collaborative_open_set_qknn_eval.py test_phase2_collaborative_open_set_qknn_eval.py => 122 passed; only .pytest_cache permission warning.
+protocol_boundary=NON_DEPLOYMENT_DIAGNOSTIC; target_unknown_training_count=0; target_unknown_calibration_count=0; uses_unknown_query_for_threshold=false; ground_training_unknown_seen=false.
+remote_action=Run N607 preflight, sync files/report/manifest, remote hash/py_compile/focused pytest or direct smoke, then run CPU/low-VRAM ospr_ci_pp evaluator on existing retry1 ospr_ci_adapted_features.npz with collab_counts=all.
+remote_verify=N607 preflight PASS at 2026-07-06 02:21 CST; remote sha256 PASS; py_compile PASS; pytest unavailable in CVS-RFFI env, direct unittest OSPR-CI++ CLI case PASS; no local SSH residue after sync/test.
+remote_run=Completed CPU/low-VRAM OSPR-CI++ re-evaluation at 2026-07-06 02:22 CST using existing retry1 ospr_ci_adapted_features.npz. Output dir runs/phase2_epoc_b_ospr_qknn_collab_20260705_retry1/EPOC_B_OSPR_QKNN8_M1_TO_ALL_R5/ospr_ci_pp_20260706_022047; local copies under automation_reports/CV-SincNet/phase1_epoc_adv3b02_distill_20260705/stage2c_retry1_ospr_ci_pp_20260706_022047.
+remote_result=Negative evidence. M=1..5 all resource_violation=0 and latency_p95_ms=1.18; best unknown_reject=99.48 at M=3/4/5, but old_acc=8.05, min_old=0, seen_new_acc=0, min_seen=0. No target pass; decision-layer OSPR-CI++ remains insufficient without lower-level ADV3B02 teacher-guided source-only feature separation/distillation.
+
 2026-06-09 16:20 CVS CEN51 full-DG low-shot sweep
 
 Local -> N607 mapping:
