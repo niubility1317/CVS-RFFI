@@ -394,6 +394,59 @@ Interpretation:
 
 Current goal status: active, not achieved.
 
+## 2026-07-06 Local Follow-up: v5 class-count stability and signature-feature audit
+
+Objective: directly test the active goal clause that performance should not collapse as new-class count increases, while keeping the evaluation anchored to `K=5,K=10` and a single adaptive v5 policy.
+
+Setup:
+
+- Feature: `features_stage2c_leo_multirx.npz` from `ADV3B02_CORE90_SOFT_E200`.
+- Old labels fixed: `14-10,14-7,20-15,20-19,6-15,8-20`.
+- New labels are prefix subsets of the current 8-class Stage2-C set: `1-10,1-12,1-14,1-16,1-18,1-8,10-11,10-4`.
+- Query count is maximum available after support exclusion: K=10 uses `query_per_old=1590,query_per_new=990`; K=5 uses `query_per_old=1595,query_per_new=995`.
+- Method is one shared adaptive policy: `dualview_support_v5`, `rx_scenario` new-scope domain refine, fast role-balanced assignment, no raw support storage.
+
+Class-count stability result:
+
+| new classes | K | old_acc | min_old | seen_new_acc | min_seen_new | labelprop_weight | verdict |
+|---:|---:|---:|---:|---:|---:|---:|---|
+| 2 | 10 | 72.99% | 50.63% | 97.27% | 97.27% | 0.30 | high new-class accuracy |
+| 2 | 5 | 67.69% | 46.71% | 97.19% | 97.19% | 0.00 | K-stable |
+| 4 | 10 | 73.11% | 50.50% | 65.63% | 47.07% | 0.30 | mean near target, floor failed |
+| 4 | 5 | 67.83% | 47.65% | 64.07% | 44.92% | 0.00 | K-stable but floor failed |
+| 6 | 10 | 72.97% | 50.25% | 54.14% | 43.94% | 0.30 | collapsed vs N=4 |
+| 6 | 5 | 67.84% | 47.90% | 43.28% | 30.85% | 0.00 | K gap failed |
+| 8 | 10 | 73.01% | 50.82% | 43.75% | 36.67% | 0.30 | failed |
+| 8 | 5 | 67.85% | 48.21% | 36.02% | 29.05% | 0.00 | failed |
+
+K stability and class-count drop:
+
+| new classes | K10 new_acc | K5 new_acc | K10-K5 gap | K10 min_new | K5 min_new |
+|---:|---:|---:|---:|---:|---:|
+| 2 | 97.27% | 97.19% | 0.08pp | 97.27% | 97.19% |
+| 4 | 65.63% | 64.07% | 1.56pp | 47.07% | 44.92% |
+| 6 | 54.14% | 43.28% | 10.86pp | 43.94% | 30.85% |
+| 8 | 43.75% | 36.02% | 7.73pp | 36.67% | 29.05% |
+
+Signature-feature audit:
+
+| feature view | target-new domain-centroid mean | target-new domain-centroid floor | sampled 1NN mean | sampled 1NN floor | interpretation |
+|---|---:|---:|---:|---:|---|
+| embedding | 44.07% | 26.50% | 42.38% | 30.50% | current best geometry |
+| embedding + old-prototype signature | 43.28% | 25.90% | 42.06% | 29.50% | no gain |
+| embedding + old-logit probability | 43.12% | 24.20% | 42.31% | 30.00% | no gain |
+| z-scored old logits | 34.89% | 15.80% | 30.31% | 15.00% | unsuitable for new identity |
+| signature only | 35.31% | 12.50% | 27.75% | 17.50% | unsuitable |
+
+Interpretation:
+
+- The v5 qKNN head is adaptive and stable for 2 and 4 new classes, but performance collapses once the ManyTx subset reaches 6 and 8 new classes.
+- The requested class-count robustness is therefore not met. From 2 to 4 new classes, K10 seen-new accuracy drops by `31.64pp`, already far beyond the requested `<=3pp per +10 classes` trend. From 4 to 6 it drops another `11.49pp`.
+- The signature-feature audit rules out an easy qKNN-only rescue using old-class logits or source-prototype response signatures. These signatures reduce, rather than improve, new-class geometry on the current ADV3B02 feature.
+- The next aligned step is representation/enrollment repair, not more score-head stacking: the qKNN head should remain v5, while the feature extractor or enrollment adapter must improve target-new identity separability before the active goal can be feasible.
+
+Current goal status: active, not achieved.
+
 ## 2026-07-06 Continuation: fast quota assignment for full max-query qKNN
 
 Objective: make the receiver-domain qKNN route executable at full max-query size, then test one shared adaptive domain-refine rule under only `K=5,K=10`.
