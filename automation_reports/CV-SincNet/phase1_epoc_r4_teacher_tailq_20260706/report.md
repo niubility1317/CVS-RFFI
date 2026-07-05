@@ -109,6 +109,17 @@ cd /home/szu2070436088/2510044040/CV-SincNet && bash code/scripts/launch_phase1_
 |`EPOC_R4_TEACHER_LOCK_TAILQ`|`Rl`，elapsed约`05:45`|已到`E015/200`；`VAL tx=98.42%`；`JOINT-GUARD safe=1`|继续运行；短日志窗口未见Traceback、RuntimeError、CUDA OOM或unrecognized arguments|
 |`EPOC_R4_SOURCE_OUTWARD_SHELL`|`Rl`，elapsed约`05:24`|已到`E014/200`；`VAL tx=98.45%`；`JOINT-GUARD safe=1`|继续运行；短日志窗口未见Traceback、RuntimeError、CUDA OOM或unrecognized arguments|
 
+## E24-E29机制监控
+
+2026-07-06 01:48 CST monitor-only检查。N607 preflight PASS；GPU4约`2449 MiB`、GPU5约`2413 MiB`；两个R4进程仍运行，无Traceback、RuntimeError、CUDA OOM、unrecognized arguments，日志未出现`ManyTx`、`target_unknown`或`new_wisig`。结构化指标来自远端`metrics_epoch.jsonl`最后6个epoch。
+
+|候选|epoch范围|val_tx范围|proxy_auc范围|virtual_accept范围|soft_virtual_accept|tail_quarantine_loss范围|source_tail_q范围|判定|
+|---|---|---:|---:|---:|---:|---:|---:|---|
+|`EPOC_R4_TEACHER_LOCK_TAILQ`|E24-E29|98.57%-98.66%|0.4709-0.4825|0.8286-0.8325|0.9996-1.0000|6.8222-8.5882|0.7568-0.7736|旧类稳定，但proxy拒识代理仍失败；满足降级条件|
+|`EPOC_R4_SOURCE_OUTWARD_SHELL`|E24-E29|98.62%|0.3979-0.4041|0.8237-0.8332|0.9996-1.0000|7.0560-9.4269|0.7536-0.7702|旧类稳定，但proxy拒识代理更差；满足降级条件|
+
+解释边界：`proxy_auc<0.55`且`virtual_accept>0.5`说明source-only虚拟未知仍被旧类接受区覆盖；`soft_virtual_accept≈1.0`说明soft mixup未知代理几乎全部被接受。该结果只能作为Phase1机制负证据，不能直接代表真实ManyTx未知类拒识性能。远端训练不被中断，继续保留后续checkpoint和曲线作为负证据/后续对照。
+
 ## 观察指标
 
 |阶段|重点指标|判据|
@@ -120,7 +131,7 @@ cd /home/szu2070436088/2510044040/CV-SincNet && bash code/scripts/launch_phase1_
 
 ## 当前状态
 
-R4已同步N607并启动两个候选。当前证据只支持“source-only底层修复实验已健康启动”，不能声明开集未知拒识目标完成。后续需在E20-E30观察`proxy_auc`、`virtual_accept`、`soft_virtual_accept`和LEO/source指标；完成后必须用导出的Phase2原型回到真实`ManyTx` Stage2-C/qknn8/协同M=1..5评估。
+R4已同步N607并启动两个候选，且E24-E29机制监控已给出早期负证据：旧类source验证保持稳定，但proxy/soft未知代理仍高度被接受。当前结论是“R4可作为旧类保持稳定的source-only负证据”，不能声明开集未知拒识目标完成。后续仍需用完成后的checkpoint或下一条底层路线回到真实`ManyTx` Stage2-C/qknn8/协同M=1..5评估。
 
 ## 复核备注
 
