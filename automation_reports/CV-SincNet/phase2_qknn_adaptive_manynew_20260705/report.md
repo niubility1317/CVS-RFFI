@@ -1125,3 +1125,23 @@ Current goal status: active, not achieved.
 ## 2026-07-06 Latest checkpoint
 
 Latest completed local check is the `dual-view core/bootstrap compressed prototype` diagnostic recorded above. It keeps `K=5,K=10` only and uses maximum query counts for the current 80-sample-per-class feature file. Best current ten-new-class results are `K=10 new_acc=82.00%,min_new=62.86%` and `K=5 new_acc=68.13%,min_new=50.67%`; best twenty-new-class results are `K=10 new_acc=57.36%,min_new=27.14%` and `K=5 new_acc=45.13%,min_new=25.33%`. The active goal remains open and not achieved.
+
+## 2026-07-06 Ridge compressed head spot-check
+
+Objective: test whether a small ridge-style support-fitted head can repair the ten-new-class floor without storing raw support samples. This keeps the same maximum-query N10 split and the requested `K=5,K=10` anchors.
+
+Output files:
+
+| scope | K | output |
+|---|---:|---|
+| N10 | 5 | `v9_probe/n10_k5_q75_manualv8_ridge_grid.csv` |
+| N10 | 10 | `v9_probe/n10_k10_q70_manualv8_ridge_grid.csv` |
+
+Best same-row results:
+
+| scope | K | query/class | old_acc | min_old | new_acc | min_new | ridge state | verdict |
+|---|---:|---:|---:|---:|---:|---:|---|---|
+| N10 | 5 | 75 | 91.11% | 76.00% | 68.13% | 50.67% | zero selected | no gain |
+| N10 | 10 | 70 | 91.67% | 77.14% | 80.43% | 58.57% | tiny adaptive ridge, 2576 scalars | worse than core/bootstrap |
+
+Interpretation: the ridge head is not the missing qKNN component. It does not lift the weakest classes (`2-13` and `4-10`) toward 75%, and the best K=10 ridge row is below the `core/bootstrap` row (`82.00%/62.86%`). Keep the active route focused on representation/enrollment-quality repair rather than adding another support-fitted classifier head.
