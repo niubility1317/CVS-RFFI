@@ -111,3 +111,24 @@ Repair: removed only the four hard-pair entries containing target-new proxy labe
 ```
 
 The repaired hard-pair list keeps 32 proxy-only entries and does not restore any target-new label to proxy training.
+
+Retry launch:
+
+| item | value |
+|---|---|
+| command log | `logs/phase2_qknn_hardpair_n20_20260706/launch_HP08_retry1.out` |
+| wrapper PID | `3207361` |
+| train PID | `3207363` |
+| GPU | `5` |
+| startup health | PASS |
+| latest observed progress | epoch `10.0` logged |
+| GPU5 state | `utilization=27%`,`memory.used=1481 MiB` |
+| local SSH cleanup | no local `ssh.exe` process or established N607 SSH connection remained after the timed-out launch command |
+
+Startup evidence:
+
+```text
+{"epoch": 10.0, "loss": 3.4078712005615235, ... "proxy_unknown_hard_pair": 0.0002745220424840227, "proxy_unknown_hard_old": 0.0014085482470691205}
+```
+
+The retry command itself timed out locally before returning a PID, but the subsequent short-lived checks confirmed the remote process is running and healthy. Continue monitoring via short SSH checks only.
