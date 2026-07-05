@@ -202,6 +202,97 @@ Interpretation:
 
 Current goal status: active, not achieved.
 
+## Aligned HP08 Relaunch Plan
+
+Timestamp: 2026-07-06 05:35 CST
+
+Objective: re-export HP08 hard-pair N20 features with the same sample-selection seed as the aligned NORM/HEAD feature lineage, then rerun strict `K=10` and `K=5` qKNN maximum-query evaluation. This directly addresses the aux feature misalignment found above.
+
+Local version state:
+
+| file | purpose |
+|---|---|
+| `code/scripts/phase2_support_metric_qknn_probe.py` | fail closed when `aux_feature_npz` is not sample-aligned |
+| `code/scripts/launch_phase2_qknn_hardpair_n20_v1.sh` | expose `EXPORT_SEED`, default `4070391`, for aligned HP08 export |
+
+Verification:
+
+| location | command | result |
+|---|---|---|
+| local | `conda run -n ssr-gpu python -m py_compile code\scripts\phase2_support_metric_qknn_probe.py` | PASS |
+| local | `bash -n code/scripts/launch_phase2_qknn_hardpair_n20_v1.sh` | PASS |
+| remote N607 | `/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -m py_compile code/scripts/phase2_support_metric_qknn_probe.py` | PASS |
+| remote N607 | `bash -n code/scripts/launch_phase2_qknn_hardpair_n20_v1.sh` | PASS |
+
+Sync destination:
+
+| local | remote |
+|---|---|
+| `E:\type10-7\github_publish\CVS-RFFI-repo\code\scripts\phase2_support_metric_qknn_probe.py` | `/home/szu2070436088/2510044040/CV-SincNet/code/scripts/phase2_support_metric_qknn_probe.py` |
+| `E:\type10-7\github_publish\CVS-RFFI-repo\code\scripts\launch_phase2_qknn_hardpair_n20_v1.sh` | `/home/szu2070436088/2510044040/CV-SincNet/code/scripts/launch_phase2_qknn_hardpair_n20_v1.sh` |
+
+Remote preflight:
+
+| item | evidence |
+|---|---|
+| direct SSH | PASS via `tools\n607_ssh_preflight.ps1` |
+| project root | `/home/szu2070436088/2510044040/CV-SincNet` visible |
+| GPU5 | idle, 10 MiB used |
+| existing qKNN/HP08 process | none |
+| other active processes | Python jobs on GPU2/GPU3 only |
+
+Planned command:
+
+```bash
+cd /home/szu2070436088/2510044040/CV-SincNet
+nohup env GPU=5 PROFILE=HP08A EXPORT_SEED=4070391 \
+  RUN_ROOT=/home/szu2070436088/2510044040/CV-SincNet/runs/phase2_qknn_hardpair_n20_aligned_20260706 \
+  bash code/scripts/launch_phase2_qknn_hardpair_n20_v1.sh \
+  > logs/phase2_qknn_hardpair_n20_aligned_20260706/launch_HP08A.out 2>&1 &
+```
+
+Expected outputs:
+
+| output | remote path |
+|---|---|
+| aligned HP08 feature | `runs/phase2_qknn_hardpair_n20_aligned_20260706/MANYNEW20_HARDPAIR_HP08A/ADV3B02_CORE90_SOFT_E200_PHASE1_HARDPAIR_HP08A_N20/features_hardpair_HP08A_n20.npz` |
+| K10 sanity qKNN | `runs/phase2_qknn_hardpair_n20_aligned_20260706/HP08A/qknn_eval/n20_k10_coreproto_hardpair_HP08A.json` |
+| K5 sanity qKNN | `runs/phase2_qknn_hardpair_n20_aligned_20260706/HP08A/qknn_eval/n20_k5_sourceguard_hardpair_HP08A.json` |
+
+Success check after completion:
+
+1. Copy the aligned HP08 feature locally.
+2. Verify full metadata alignment against `features_n20_norm.npz`.
+3. Rerun NORM+aligned-HP08 `dualview_support_v9` under `K=10` and `K=5`.
+4. Compare against credible NORM-only and NORM+HEAD baselines, not against the contaminated NORM+HP08 rows.
+
+Current goal status: active, pending aligned HP08 run.
+
+## Aligned HP08 Startup Evidence
+
+Launch result:
+
+| item | value |
+|---|---|
+| wrapper PID | `3232538` |
+| train PID | `3232542` |
+| GPU | `5` |
+| log | `logs/phase2_qknn_hardpair_n20_aligned_20260706/launch_HP08A.out` |
+| run root | `runs/phase2_qknn_hardpair_n20_aligned_20260706` |
+| export seed | `4070391` |
+| local SSH cleanup | no local `ssh.exe` N607 connection remained after startup check |
+
+Startup health:
+
+```text
+{"epoch": 5.0, "loss": 3.5946702880859376, ... "proxy_unknown_hard_pair": 0.00019177311612293124, "proxy_unknown_hard_old": 0.0009558753594756126}
+GPU5: utilization=23%, memory.used=1481 MiB
+```
+
+The initial launch SSH command returned exit code 1 despite printing `launch_pid=3232538`; follow-up short SSH checks confirmed the remote wrapper and train process are running. Treat the launch as active, with health based on the follow-up process/log/GPU evidence rather than the launch command exit code.
+
+Next check: wait for completion, copy `features_hardpair_HP08A_n20.npz`, verify full alignment against NORM, and only then rerun dual-view qKNN.
+
 ## Aux Alignment Guard and Credible Baseline Reset
 
 Follow-up inspection found that the archived `NORM+HP08` dual-view N20 rows were not sample-aligned:
