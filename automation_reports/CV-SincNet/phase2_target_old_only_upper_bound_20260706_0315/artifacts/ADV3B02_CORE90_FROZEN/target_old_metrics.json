@@ -1,0 +1,130 @@
+{
+  "phase": "target_old_only_upper_bound_diagnostic",
+  "verdict_scope": "non_deployment_target_old_only_diagnostic",
+  "feature_npz": "runs/phase2_adv3b02_frozen_manytx_unknown_diag_20260706/ADV3B02_CORE90_FROZEN_QKNN8_M1_TO_ALL_R5/features_stage2c_leo_multirx.npz",
+  "target_old_tx_ids": [
+    "14-10",
+    "14-7",
+    "20-15",
+    "20-19",
+    "6-15",
+    "8-20"
+  ],
+  "k_values": [
+    1,
+    2,
+    5,
+    10,
+    20,
+    50
+  ],
+  "target_unknown_training_count": 0,
+  "target_unknown_calibration_count": 0,
+  "uses_unknown_query_for_threshold": false,
+  "uses_unknown_for_model_selection": false,
+  "support_query_source": "target_old_rows_only_deterministic_split",
+  "results": [
+    {
+      "k": 1,
+      "support_count": 6,
+      "query_count": 9594,
+      "support_query_overlap_count": 0,
+      "old_acc": 0.6497811131957474,
+      "min_old_class_acc": 0.3627267041901188,
+      "per_tx_accuracy": {
+        "14-10": 0.3889931207004378,
+        "14-7": 0.5916197623514696,
+        "20-15": 0.7410881801125704,
+        "20-19": 0.3627267041901188,
+        "6-15": 0.8943089430894309,
+        "8-20": 0.9199499687304565
+      },
+      "ignored_non_target_old_rows": 38790
+    },
+    {
+      "k": 2,
+      "support_count": 12,
+      "query_count": 9588,
+      "support_query_overlap_count": 0,
+      "old_acc": 0.7158948685857321,
+      "min_old_class_acc": 0.4449311639549437,
+      "per_tx_accuracy": {
+        "14-10": 0.6401752190237797,
+        "14-7": 0.681476846057572,
+        "20-15": 0.72090112640801,
+        "20-19": 0.4449311639549437,
+        "6-15": 0.8936170212765957,
+        "8-20": 0.9142678347934918
+      },
+      "ignored_non_target_old_rows": 38790
+    },
+    {
+      "k": 5,
+      "support_count": 30,
+      "query_count": 9570,
+      "support_query_overlap_count": 0,
+      "old_acc": 0.7176593521421107,
+      "min_old_class_acc": 0.4827586206896552,
+      "per_tx_accuracy": {
+        "14-10": 0.6300940438871473,
+        "14-7": 0.671473354231975,
+        "20-15": 0.7166144200626959,
+        "20-19": 0.4827586206896552,
+        "6-15": 0.8865203761755486,
+        "8-20": 0.9184952978056427
+      },
+      "ignored_non_target_old_rows": 38790
+    },
+    {
+      "k": 10,
+      "support_count": 60,
+      "query_count": 9540,
+      "support_query_overlap_count": 0,
+      "old_acc": 0.7165618448637316,
+      "min_old_class_acc": 0.4748427672955975,
+      "per_tx_accuracy": {
+        "14-10": 0.6327044025157232,
+        "14-7": 0.6729559748427673,
+        "20-15": 0.7176100628930817,
+        "20-19": 0.4748427672955975,
+        "6-15": 0.8817610062893082,
+        "8-20": 0.919496855345912
+      },
+      "ignored_non_target_old_rows": 38790
+    },
+    {
+      "k": 20,
+      "support_count": 120,
+      "query_count": 9480,
+      "support_query_overlap_count": 0,
+      "old_acc": 0.7162447257383966,
+      "min_old_class_acc": 0.46392405063291137,
+      "per_tx_accuracy": {
+        "14-10": 0.6303797468354431,
+        "14-7": 0.6791139240506329,
+        "20-15": 0.7189873417721518,
+        "20-19": 0.46392405063291137,
+        "6-15": 0.8835443037974684,
+        "8-20": 0.9215189873417722
+      },
+      "ignored_non_target_old_rows": 38790
+    },
+    {
+      "k": 50,
+      "support_count": 300,
+      "query_count": 9300,
+      "support_query_overlap_count": 0,
+      "old_acc": 0.6781720430107527,
+      "min_old_class_acc": 0.3774193548387097,
+      "per_tx_accuracy": {
+        "14-10": 0.6251612903225806,
+        "14-7": 0.3774193548387097,
+        "20-15": 0.7174193548387097,
+        "20-19": 0.5374193548387097,
+        "6-15": 0.8858064516129033,
+        "8-20": 0.9258064516129032
+      },
+      "ignored_non_target_old_rows": 38790
+    }
+  ]
+}
