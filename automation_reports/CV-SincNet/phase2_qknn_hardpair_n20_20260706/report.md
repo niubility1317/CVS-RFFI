@@ -202,6 +202,45 @@ Interpretation:
 
 Current goal status: active, not achieved.
 
+## Adaptive v11 ASLR Check
+
+Objective: continue optimizing qKNN without adding K values. The only anchors remain `K=10` and `K=5`. This check adds `dualview_support_v11`, an ASLR policy: Adaptive Support-LOO Rescue. ASLR keeps the v9 compressed qKNN backbone and increases the support-LOO pair-rescue strength from support geometry, K reliability, and new-class load. It stores no raw support samples.
+
+Implementation change:
+
+- Added `dualview_support_v11` / `stable_dualview_v11` to `code/scripts/phase2_support_metric_qknn_probe.py`.
+- v11 inherits the v9 pair-logreg, old-residual, local competition, source-old guard, and support-LOO rescue path.
+- v11 uses adaptive rescue weight `clip((0.10 + 0.30 * k_reliability) * rescue_gate, 0.05, 0.20)`, so K=5 and K=10 are handled by one formula rather than separate per-K parameter files.
+- A first aggressive v11 draft using column-rank calibration plus transductive/dense query refinement was tested and discarded because it lowered the N20 floor; the committed v11 keeps those query-state refinements disabled.
+
+Verification:
+
+| command / artifact | result |
+|---|---|
+| `conda run -n ssr-gpu python -m py_compile code\scripts\phase2_support_metric_qknn_probe.py` | PASS |
+| `n10_k10_norm_only_adaptive_v11_seed421029.json` | completed |
+| `n10_k5_norm_only_adaptive_v11_seed421037.json` | completed |
+| `n20_k10_norm_only_adaptive_v11_v9plus_seed421029.json` | completed |
+| `n20_k5_norm_only_adaptive_v11_v9plus_seed421037.json` | completed |
+
+Strict NORM-only maximum-query results:
+
+| new count | K | old_acc | min_old | new_acc | min_new | stored qcodes | weakest new classes |
+|---:|---:|---:|---:|---:|---:|---:|---|
+| 10 | 10 | 92.14% | 77.14% | 84.57% | 61.43% | 160 | `2-13` 61.43%,`11-10` 75.71%,`8-18` 75.71% |
+| 10 | 5 | 91.56% | 77.33% | 85.60% | 61.33% | 80 | `2-13` 61.33%,`11-10` 73.33%,`8-18` 82.67% |
+| 20 | 10 | 92.62% | 78.57% | 70.64% | 51.43% | 260 | `2-13` 51.43%,`11-10` 55.71%,`1-1` 57.14%,`1-2` 57.14%,`1-18` 58.57% |
+| 20 | 5 | 92.22% | 78.67% | 68.67% | 42.67% | 130 | `1-14` 42.67%,`2-13` 48.00%,`18-5` 50.67%,`1-18` 53.33% |
+
+Interpretation:
+
+- v11 does not achieve the active target. Even at ten new classes, the floor is only about 61%, driven mainly by `2-13`.
+- The N10 mean new accuracy is high, 84.57% for K=10 and 85.60% for K=5, so the failure is not average recognition. It is a minimum-class stability failure.
+- When moving from 10 to 20 new classes, mean new accuracy drops from 84.57% to 70.64% for K=10 and from 85.60% to 68.67% for K=5, far exceeding the requested 3pp-per-10-new-class bound.
+- Current qKNN compression remains deployment-friendly: the strongest rows store quantized support codes and small scalar state, with `stored_raw_support_count=0`. However, classifier-head adaptation alone is insufficient for the hard classes.
+
+Current goal status: active, not achieved. Next credible step is not larger K and not query transductive tuning; it should target `2-13` first via representation/enrollment repair or a support-selection protocol that remains scientifically honest about the labeled budget.
+
 ## HP08REF Aligned Evaluation and v10 Aux Gate
 
 HP08REF completion:

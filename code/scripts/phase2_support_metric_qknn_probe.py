@@ -2411,7 +2411,12 @@ def _evaluate_metric_qknn(
                 scenario_aware=bool(scenario_aware),
             )
         policy_name = str(adaptive_qknn_policy).strip().lower()
-        if policy_name in {"dualview_support_v10", "stable_dualview_v10"}:
+        if policy_name in {
+            "dualview_support_v10",
+            "stable_dualview_v10",
+            "dualview_support_v11",
+            "stable_dualview_v11",
+        }:
             primary_loo_scores = _support_loo_base_scores(
                 features=adapted,
                 support_indices=support_indices,
@@ -3292,6 +3297,8 @@ def _adaptive_qknn_overrides(
         "stable_dualview_v9",
         "dualview_support_v10",
         "stable_dualview_v10",
+        "dualview_support_v11",
+        "stable_dualview_v11",
     }:
         raise ValueError(f"unsupported adaptive_qknn_policy: {policy}")
     use_v2 = name in {"dualview_support_v2", "stable_dualview_v2"}
@@ -3303,6 +3310,7 @@ def _adaptive_qknn_overrides(
     use_v8 = name in {"dualview_support_v8", "stable_dualview_v8"}
     use_v9 = name in {"dualview_support_v9", "stable_dualview_v9"}
     use_v10 = name in {"dualview_support_v10", "stable_dualview_v10"}
+    use_v11 = name in {"dualview_support_v11", "stable_dualview_v11"}
 
     min_k = float(geometry["adaptive_support_min_k"])
     new_count = float(geometry["adaptive_new_class_count"])
@@ -3310,7 +3318,7 @@ def _adaptive_qknn_overrides(
     p90_sim = float(geometry["adaptive_support_p90_offdiag_proto_sim"])
     radius = float(geometry["adaptive_support_mean_radius"])
     hardness = _clip01(max((max_sim - 0.82) / 0.16, (p90_sim - 0.68) / 0.22, (radius - 0.08) / 0.20))
-    if use_v3 or use_v4 or use_v5 or use_v7 or use_v8 or use_v9 or use_v10:
+    if use_v3 or use_v4 or use_v5 or use_v7 or use_v8 or use_v9 or use_v10 or use_v11:
         class_load = _clip01((new_count - 2.0) / 18.0)
     else:
         class_load = _clip01((new_count - 10.0) / 20.0)
@@ -3355,16 +3363,36 @@ def _adaptive_qknn_overrides(
         "source_guard_conf_min": 0.0,
         "source_guard_margin_min": 0.0,
     }
-    if use_v2 or use_v3 or use_v4 or use_v5 or use_v6 or use_v7 or use_v8 or use_v9 or use_v10:
+    if use_v2 or use_v3 or use_v4 or use_v5 or use_v6 or use_v7 or use_v8 or use_v9 or use_v10 or use_v11:
         competition_load = class_load
-        if (use_v3 or use_v4 or use_v5 or use_v6 or use_v7 or use_v8 or use_v9 or use_v10) and new_count >= 2.0:
+        if (
+            use_v3
+            or use_v4
+            or use_v5
+            or use_v6
+            or use_v7
+            or use_v8
+            or use_v9
+            or use_v10
+            or use_v11
+        ) and new_count >= 2.0:
             competition_load = max(competition_load, 0.25)
         overrides.update(
             {
                 "role_balanced_assignment": bool(
                     class_load > 0.0
                     or (
-                        (use_v3 or use_v4 or use_v5 or use_v6 or use_v7 or use_v8 or use_v9 or use_v10)
+                        (
+                            use_v3
+                            or use_v4
+                            or use_v5
+                            or use_v6
+                            or use_v7
+                            or use_v8
+                            or use_v9
+                            or use_v10
+                            or use_v11
+                        )
                         and stable_gate >= 0.50
                     )
                 ),
@@ -3429,7 +3457,7 @@ def _adaptive_qknn_overrides(
                 "support_loo_pair_rescue_scope": "new",
             }
         )
-    if use_v7 or use_v8 or use_v9:
+    if use_v7 or use_v8 or use_v9 or use_v11:
         pair_gate = _clip01(max(stable_gate, class_load) * (0.35 + 0.65 * k_reliability))
         labelprop_gate = _clip01(k_reliability * stable_gate * (1.0 - 0.5 * class_load))
         labelprop_weight = float(np.clip(0.50 * labelprop_gate, 0.0, 0.18))
@@ -3452,7 +3480,7 @@ def _adaptive_qknn_overrides(
                 "pair_logreg_scope": "new",
             }
         )
-    if use_v8 or use_v9:
+    if use_v8 or use_v9 or use_v11:
         low_load_residual = float(np.clip(0.20 - 0.30 * k_reliability, 0.05, 0.20))
         high_load_residual = float(np.clip(0.10 + 0.60 * k_reliability, 0.10, 0.30))
         load_blend = _clip01((class_load - 0.50) / 0.25)
@@ -3467,9 +3495,12 @@ def _adaptive_qknn_overrides(
                 "old_residual_new_clip": 2.0,
             }
         )
-    if use_v9 or use_v10:
+    if use_v9 or use_v10 or use_v11:
         rescue_gate = _clip01(max(stable_gate, class_load))
-        rescue_weight = float(np.clip((0.10 - 0.15 * k_reliability) * rescue_gate, 0.02, 0.10))
+        if use_v11:
+            rescue_weight = float(np.clip((0.10 + 0.30 * k_reliability) * rescue_gate, 0.05, 0.20))
+        else:
+            rescue_weight = float(np.clip((0.10 - 0.15 * k_reliability) * rescue_gate, 0.02, 0.10))
         rescue_top_pairs = int(max(4, min(12, round(0.40 * max(new_count, 1.0)))))
         overrides.update(
             {
@@ -3479,6 +3510,29 @@ def _adaptive_qknn_overrides(
                 "support_loo_pair_rescue_alpha": 0.1,
                 "support_loo_pair_rescue_clip": 2.0,
                 "support_loo_pair_rescue_scope": "new",
+            }
+        )
+    if use_v11:
+        # ASLR: Adaptive Support-LOO Rescue. The classifier keeps compressed
+        # support codes and a few pairwise rescue scalars for support-confused
+        # class pairs; it does not persist raw support samples or query state.
+        overrides.update(
+            {
+                "score_calibration": "none",
+                "transductive_proto_weight": 0.0,
+                "transductive_proto_rounds": 0,
+                "transductive_proto_query_topm": 0,
+                "transductive_proto_support_weight": 1.0,
+                "transductive_proto_query_weight": 1.0,
+                "transductive_proto_clip": 1.5,
+                "dense_cluster_weight": 0.0,
+                "dense_cluster_similarity": 0.9,
+                "dense_cluster_neighbor_k": 0,
+                "dense_cluster_rounds": 1,
+                "dense_cluster_candidate_topn": 3,
+                "dense_cluster_query_topm": 0,
+                "dense_cluster_clip": 1.5,
+                "dense_cluster_scope": "new",
             }
         )
     return overrides
