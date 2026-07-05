@@ -101,6 +101,13 @@ cd /home/szu2070436088/2510044040/CV-SincNet && bash code/scripts/launch_phase1_
 |`EPOC_R4_TEACHER_LOCK_TAILQ`|`Rl`，elapsed约`02:33`|GPU4约`1781 MiB`|已到`E009/200`；`VAL tx=98.48%`；`JOINT-GUARD safe=1`；`latest_safe_ssdg.pth`持续保存|继续运行；未见Traceback、RuntimeError、CUDA OOM、unrecognized arguments、ManyTx、target_unknown、new_wisig；proxy仍`active=0`符合`proxy_unknown_start_epoch=20`前状态|
 |`EPOC_R4_SOURCE_OUTWARD_SHELL`|`Rl`，elapsed约`02:12`|GPU5约`2241 MiB`|已到`E008/200`；`VAL tx=98.60%`；`JOINT-GUARD safe=1`；`latest_safe_ssdg.pth`持续保存|继续运行；未见Traceback、RuntimeError、CUDA OOM、unrecognized arguments、ManyTx、target_unknown、new_wisig；proxy仍`active=0`符合`proxy_unknown_start_epoch=22`前状态|
 
+2026-07-06 01:39 CST启动后约5分钟检查：
+
+|候选|进程状态|日志进度|健康结论|
+|---|---|---|---|
+|`EPOC_R4_TEACHER_LOCK_TAILQ`|`Rl`，elapsed约`05:45`|已到`E015/200`；`VAL tx=98.42%`；`JOINT-GUARD safe=1`|继续运行；短日志窗口未见Traceback、RuntimeError、CUDA OOM或unrecognized arguments|
+|`EPOC_R4_SOURCE_OUTWARD_SHELL`|`Rl`，elapsed约`05:24`|已到`E014/200`；`VAL tx=98.45%`；`JOINT-GUARD safe=1`|继续运行；短日志窗口未见Traceback、RuntimeError、CUDA OOM或unrecognized arguments|
+
 ## 观察指标
 
 |阶段|重点指标|判据|
