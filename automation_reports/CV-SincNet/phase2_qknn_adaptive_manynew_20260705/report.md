@@ -339,6 +339,61 @@ Interpretation:
 
 Current goal status: active, not achieved.
 
+## 2026-07-06 Local Follow-up: adaptive scenario-labelprop qKNN v5 and oracle geometry audit
+
+Objective: continue improving the compressed qKNN route without expanding the K grid. This follow-up tests whether the v4 scenario-labelprop gate was too conservative and whether the current ADV3B02 full Stage2-C feature geometry can theoretically support the active `min_new>=75%` target.
+
+Code change:
+
+- Added `dualview_support_v5` and `stable_dualview_v5` to `code/scripts/phase2_support_metric_qknn_probe.py`.
+- v5 keeps the same adaptive gate structure as v4, but raises the bounded scenario label-propagation cap from `0.20` to `0.30` and uses `temperature=0.10`.
+- The gate remains adaptive: `labelprop_weight=clip(0.90*k_reliability*stable_gate,0,0.30)`. Therefore K=5 still disables label propagation automatically because `k_reliability=0`.
+- Persistent state remains compressed. The run stores `stored_raw_support_count=0`; query graph scores are runtime-only.
+
+Local verification:
+
+```text
+C:\Users\lh594\.conda\envs\ssr-gpu\python.exe -m py_compile code\scripts\phase2_support_metric_qknn_probe.py
+```
+
+PASS.
+
+Max-query result summary:
+
+| feature | method | K | query old/class | query new/class | old_acc | min_old | seen_new_acc | min_seen_new | labelprop | stored raw support | verdict |
+|---|---|---:|---:|---:|---:|---:|---:|---:|---|---:|---|
+| ADV3B02 full Stage2-C LEO | `dualview_support_v4` | 10 | 1590 | 990 | 72.96% | 50.88% | 43.67% | 36.26% | `w=0.20,k=8,temp=0.05` | 0 | previous best |
+| ADV3B02 full Stage2-C LEO | `dualview_support_v5` | 10 | 1590 | 990 | 73.01% | 50.82% | 43.75% | 36.67% | `w=0.30,k=8,temp=0.10` | 0 | +0.08pp mean,+0.41pp floor, failed |
+| ADV3B02 full Stage2-C LEO | `dualview_support_v4` | 5 | 1595 | 995 | 67.85% | 48.21% | 36.02% | 29.05% | `w=0.00` | 0 | previous best |
+| ADV3B02 full Stage2-C LEO | `dualview_support_v5` | 5 | 1595 | 995 | 67.85% | 48.21% | 36.02% | 29.05% | `w=0.00` | 0 | stable, failed |
+
+Per-new-class detail for v5:
+
+| K | 1-10 | 1-12 | 1-14 | 1-16 | 1-18 | 1-8 | 10-11 | 10-4 | min |
+|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+| 10 | 36.67% | 43.03% | 45.86% | 38.99% | 55.96% | 40.51% | 36.77% | 52.22% | 36.67% |
+| 5 | 33.07% | 29.05% | 38.89% | 37.09% | 39.70% | 33.47% | 31.16% | 45.73% | 29.05% |
+
+Oracle geometry audit on the same feature file:
+
+| role | oracle/test | samples | class count | mean acc | min class acc | interpretation |
+|---|---|---:|---:|---:|---:|---|
+| target-new | global centroid using all labels | 8000 | 8 | 34.70% | 10.40% | global new-class centers are badly entangled |
+| target-new | leave-one-out centroid | 8000 | 8 | 34.45% | 10.30% | no usable global centroid upper bound |
+| target-new | rx-scenario centroid using all labels | 8000 | 8 | 44.08% | 26.50% | receiver/channel domain helps but remains far below 75% |
+| target-new | leave-one-out 1NN using all labels | 8000 | 8 | 47.78% | 37.70% | local geometry upper bound is still below target |
+| target-old | global centroid using all labels | 9600 | 6 | 72.41% | 56.88% | old-class geometry also misses OLD80 |
+| target-old | rx-scenario centroid using all labels | 9600 | 6 | 75.48% | 50.88% | domain conditioning helps mean but not floor |
+| target-old | leave-one-out 1NN using all labels | 9600 | 6 | 75.14% | 53.06% | current feature cannot prove an 80% old-class floor |
+
+Interpretation:
+
+- v5 is the current best compressed qKNN head on this ADV3B02 full Stage2-C feature: K=10 new floor improves from `36.26%` to `36.67%`, with no raw support storage and no K-specific hand tuning.
+- The active goal is still not achieved. K=10 remains `38.33pp` below the `75%` new-class floor, and K=5 remains `7.73pp` below K=10 in mean seen-new accuracy.
+- The oracle audit is now decisive negative evidence for this feature file: even label-cheating target-new 1NN reaches only `47.78%` mean and `37.70%` floor. Therefore further qKNN score-head tuning on this frozen feature cannot plausibly reach the requested floor; the next route must improve the representation or enrollment feature geometry before the compressed qKNN head.
+
+Current goal status: active, not achieved.
+
 ## 2026-07-06 Continuation: fast quota assignment for full max-query qKNN
 
 Objective: make the receiver-domain qKNN route executable at full max-query size, then test one shared adaptive domain-refine rule under only `K=5,K=10`.
