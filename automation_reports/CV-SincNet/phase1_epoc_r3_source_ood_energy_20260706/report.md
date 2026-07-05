@@ -156,6 +156,19 @@ N607 direct preflight于2026-07-06 00:27 CST通过。GPU采样显示R3仍在低�
 
 当前结论：R3首轮proxy证据是负面的早期信号，不能升级为有效路线。仍应继续运行到warmup后半段，因为`proxy_unknown_warmup_epochs=30`，但下一步若E040-E050仍维持`proxy_auc<0.55`且`virtual_accept>0.5`，应停止把R3作为主路线推进，转向更底层的两类方案：第一，重新设计source-only负样本构造与能量边界，避免当前virtual outlier仍落在已知类邻域；第二，准备Stage2只读诊断，用已冻结R3/R2/ADV3B02特征包验证真实`ManyTx`未知是否与source proxy指标一致，但阈值仍不得使用`Y_unknown`调参。
 
+## 00:35-00:41 CST warmup后段监控
+
+N607 direct preflight于2026-07-06 00:35 CST通过。GPU2/GPU3显存约`2459/2465MiB`，两条R3进程存活；R2仍在GPU0/GPU1运行。所有采样日志尾部均未发现Traceback、RuntimeError、CUDA OOM或unrecognized arguments。
+
+|候选|时间|epoch|旧类保持|proxy unknown证据|判读|
+|---|---:|---:|---|---|---|
+|`EPOC_R3_ENERGY_VOS_GUARD`|2026-07-06 00:41 CST|E041/180|`val_tx_acc=98.5655`|`proxy_auc=0.4330`，`proxy_accept=0.0296`，`virtual_accept=0.8123`，`soft_virtual_accept=0.9997`，`radius_to_inter_ratio=1.0045`|warmup后段仍低于R2参照；旧类保持可以，但未知代理分离失败|
+|`EPOC_R3_TIGHT_CORE_MARGIN`|2026-07-06 00:41 CST|E041/180|`val_tx_acc=98.5655`|`proxy_auc=0.4044`，`proxy_accept=0.0075`，`virtual_accept=0.8297`，`soft_virtual_accept=0.9994`，`radius_to_inter_ratio=0.9399`|比R2更差，紧致核心策略没有产生开放空间分离|
+|`EPOC_R2_BALANCED_SEP`|2026-07-06 00:39 CST|E132/190|`val_tx_acc=98.6250`|`proxy_auc=0.4811`，`virtual_accept=0.8305`，`soft_virtual_accept=0.9971`|R2自身仍弱，但R3未超过此负面参照|
+|`EPOC_R2_OLD_FLOOR`|2026-07-06 00:39 CST|E133/180|`val_tx_acc=98.5476`|`proxy_auc=0.4730`，`virtual_accept=0.8233`，`soft_virtual_accept=0.9966`|R2自身仍弱，但R3未超过此负面参照|
+
+路线判断：按预设判断条件，R3已满足“`proxy_auc<0.55`且`virtual_accept>0.5`”的降级触发。R3应继续跑完以保留完整负面证据和后续checkpoint，但不应继续作为主路线追加同类超参。下一步主线应转为更底层的算法修复：构造不贴近旧类流形的source-only负样本、显式约束unknown energy高于known且低密度区域不可接受，并新增冻结特征包Stage2只读诊断来验证source proxy失败是否对应真实ManyTx未知失败；该诊断只读评估，不使用`Y_unknown`调阈值。
+
 ## SSH清理状态
 
 |检查点|结果|
