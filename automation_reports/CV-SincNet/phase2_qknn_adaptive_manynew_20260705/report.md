@@ -423,6 +423,54 @@ Conclusion:
 
 Current goal status: active, not achieved.
 
+## 2026-07-06 Local Follow-up: adaptive scenario-labelprop qKNN v4
+
+Objective: continue the qKNN route under the active goal: keep only `K=5,K=10`, keep max-query evaluation, avoid raw support storage, and add an adaptive mechanism that does not require per-K manual parameter selection when new-class count increases.
+
+Code change:
+
+- Added `dualview_support_v4` and `stable_dualview_v4` to `code/scripts/phase2_support_metric_qknn_probe.py`.
+- v4 keeps the v3 support-geometry gate, source guard, and role-local competition.
+- v4 adds scenario-scoped support-query label propagation only through an adaptive gate: `labelprop_gate=k_reliability*stable_gate`, where `k_reliability=clip((min_k-5)/15)`.
+- This makes `K=5` automatically disable label propagation, while `K=10` enables a bounded `labelprop_weight=0.2` only when support geometry is hard but sufficiently reliable.
+- Persistent deployment state is still compressed: quantized support codes, class prototypes, and receiver-scenario domain prototypes. Raw support samples are not stored.
+
+Local verification:
+
+```text
+conda run -n ssr-gpu python -m py_compile code\scripts\phase2_support_metric_qknn_probe.py
+```
+
+PASS.
+
+Max-query result summary:
+
+| feature | method | K | query old/class | query new/class | old_acc | min_old | seen_new_acc | min_seen_new | labelprop_weight | stored raw support | verdict |
+|---|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---|
+| ADV3B02 full Stage2-C LEO | `dualview_support_v4` | 10 | 1590 | 990 | 72.96% | 50.88% | 43.67% | 36.26% | 0.20 | 0 | small gain, failed |
+| ADV3B02 full Stage2-C LEO | `dualview_support_v4` | 5 | 1595 | 995 | 67.85% | 48.21% | 36.02% | 29.05% | 0.00 | 0 | stable gate worked, failed |
+
+Per-new-class detail:
+
+| K | 1-10 | 1-12 | 1-14 | 1-16 | 1-18 | 1-8 | 10-11 | 10-4 | min |
+|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+| 10 | 36.26% | 42.73% | 45.66% | 38.89% | 56.67% | 40.30% | 36.87% | 52.02% | 36.26% |
+| 5 | 33.07% | 29.05% | 38.89% | 37.09% | 39.70% | 33.47% | 31.16% | 45.73% | 29.05% |
+
+Control-grid interpretation:
+
+- Support-selection grid (`stable_first,centroid,scenario_centroid,scenario_diverse`) produced the same effective results on this split: K=10 `new_acc=41.31%,min_new=34.14%`; K=5 `new_acc=36.01%,min_new=28.94%`.
+- Query-structure grid showed label propagation is helpful for K=10 but harmful for K=5. Best K=10 was `labelprop_weight=0.2,query_graph_weight=0.0`: `new_acc=43.67%,min_new=36.26%`. Best K=5 remained `labelprop_weight=0.0,query_graph_weight=0.0`.
+- v4 captures that behavior with a single adaptive rule rather than two K-specific settings.
+
+Interpretation:
+
+- This is a method improvement for the qKNN route: it adds an adaptive, compressed, scenario-aware propagation mechanism and avoids raw support storage.
+- It still does not meet the active target. In the current ADV3B02 full Stage2-C feature geometry, even the best v4 K=10 floor is `36.26%`, which is `38.74pp` below the required `75%` minimum per new class. K=5 remains worse than K=10 by `7.65pp` in mean new accuracy, so the K-stability condition is also not met.
+- The failure is now better localized: support selection alone is not the main cause, and fixed query propagation is unsafe for lower shot. The next viable direction is representation-side or enrollment-quality repair before qKNN scoring, while preserving the v4 adaptive gate as the current best compressed qKNN head.
+
+Current goal status: active, not achieved.
+
 ## 2026-07-06 ADV3B02 Stage2-C follow-up: receiver-domain new-scope qKNN
 
 Objective: continue the qKNN route on the complete ADV3B02 Stage2-C LEO feature with only `K=5,K=10`, max available query count, and no raw support storage. The tested idea is receiver-domain compressed prototypes: use observable `rx_id|sat_scenario` domains to refine only new-class score columns while preserving the old-class closed-set head.

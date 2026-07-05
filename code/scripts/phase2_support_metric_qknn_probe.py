@@ -3161,10 +3161,13 @@ def _adaptive_qknn_overrides(
         "stable_dualview_v2",
         "dualview_support_v3",
         "stable_dualview_v3",
+        "dualview_support_v4",
+        "stable_dualview_v4",
     }:
         raise ValueError(f"unsupported adaptive_qknn_policy: {policy}")
     use_v2 = name in {"dualview_support_v2", "stable_dualview_v2"}
     use_v3 = name in {"dualview_support_v3", "stable_dualview_v3"}
+    use_v4 = name in {"dualview_support_v4", "stable_dualview_v4"}
 
     min_k = float(geometry["adaptive_support_min_k"])
     new_count = float(geometry["adaptive_new_class_count"])
@@ -3172,7 +3175,7 @@ def _adaptive_qknn_overrides(
     p90_sim = float(geometry["adaptive_support_p90_offdiag_proto_sim"])
     radius = float(geometry["adaptive_support_mean_radius"])
     hardness = _clip01(max((max_sim - 0.82) / 0.16, (p90_sim - 0.68) / 0.22, (radius - 0.08) / 0.20))
-    if use_v3:
+    if use_v3 or use_v4:
         class_load = _clip01((new_count - 2.0) / 18.0)
     else:
         class_load = _clip01((new_count - 10.0) / 20.0)
@@ -3217,17 +3220,32 @@ def _adaptive_qknn_overrides(
         "source_guard_conf_min": 0.0,
         "source_guard_margin_min": 0.0,
     }
-    if use_v2 or use_v3:
+    if use_v2 or use_v3 or use_v4:
         competition_load = class_load
-        if use_v3 and new_count >= 2.0:
+        if (use_v3 or use_v4) and new_count >= 2.0:
             competition_load = max(competition_load, 0.25)
         overrides.update(
             {
-                "role_balanced_assignment": bool(class_load > 0.0 or (use_v3 and stable_gate >= 0.50)),
+                "role_balanced_assignment": bool(class_load > 0.0 or ((use_v3 or use_v4) and stable_gate >= 0.50)),
                 "local_competition_weight": float(0.02 * competition_load * stable_gate),
                 "local_competition_k": int(3 + round(4.0 * competition_load)),
                 "local_competition_clip": 1.0,
                 "local_competition_scope": "role",
+            }
+        )
+    if use_v4:
+        labelprop_gate = _clip01(k_reliability * stable_gate)
+        labelprop_weight = float(np.clip(0.60 * labelprop_gate, 0.0, 0.20))
+        overrides.update(
+            {
+                "labelprop_weight": labelprop_weight,
+                "labelprop_k": 8,
+                "labelprop_alpha": 0.8,
+                "labelprop_temperature": 0.05,
+                "labelprop_rounds": 10,
+                "labelprop_clip": 2.0,
+                "labelprop_scope": "scenario" if labelprop_weight > 0.0 else "all",
+                "query_graph_weight": 0.0,
             }
         )
     return overrides
@@ -3753,6 +3771,14 @@ def main() -> None:
                         "local_competition_k": int(local_competition_k),
                         "local_competition_clip": float(local_competition_clip),
                         "local_competition_scope": str(local_competition_scope),
+                        "labelprop_weight": float(labelprop_weight),
+                        "labelprop_k": int(labelprop_k),
+                        "labelprop_alpha": float(labelprop_alpha),
+                        "labelprop_temperature": float(labelprop_temperature),
+                        "labelprop_rounds": int(labelprop_rounds),
+                        "labelprop_clip": float(labelprop_clip),
+                        "labelprop_scope": str(labelprop_scope),
+                        "query_graph_weight": float(query_graph_weight),
                         "query_proto_refine_weight": float(query_proto_refine_weight),
                         "query_proto_refine_topm": int(query_proto_refine_topm),
                         "query_proto_refine_clip": float(query_proto_refine_clip),
@@ -3807,6 +3833,18 @@ def main() -> None:
                             ),
                             "local_competition_scope": adaptive_overrides.get(
                                 "local_competition_scope", params["local_competition_scope"]
+                            ),
+                            "labelprop_weight": adaptive_overrides.get("labelprop_weight", params["labelprop_weight"]),
+                            "labelprop_k": adaptive_overrides.get("labelprop_k", params["labelprop_k"]),
+                            "labelprop_alpha": adaptive_overrides.get("labelprop_alpha", params["labelprop_alpha"]),
+                            "labelprop_temperature": adaptive_overrides.get(
+                                "labelprop_temperature", params["labelprop_temperature"]
+                            ),
+                            "labelprop_rounds": adaptive_overrides.get("labelprop_rounds", params["labelprop_rounds"]),
+                            "labelprop_clip": adaptive_overrides.get("labelprop_clip", params["labelprop_clip"]),
+                            "labelprop_scope": adaptive_overrides.get("labelprop_scope", params["labelprop_scope"]),
+                            "query_graph_weight": adaptive_overrides.get(
+                                "query_graph_weight", params["query_graph_weight"]
                             ),
                             "query_proto_refine_weight": adaptive_overrides.get(
                                 "query_proto_refine_weight", params["query_proto_refine_weight"]
@@ -3965,14 +4003,14 @@ def main() -> None:
                         score_calibration=str(score_calibration),
                         assignment_margin_weight=float(assignment_margin_weight),
                         assignment_margin_clip=float(assignment_margin_clip),
-                        labelprop_weight=float(labelprop_weight),
-                        labelprop_k=int(labelprop_k),
-                        labelprop_alpha=float(labelprop_alpha),
-                        labelprop_temperature=float(labelprop_temperature),
-                        labelprop_rounds=int(labelprop_rounds),
-                        labelprop_clip=float(labelprop_clip),
-                        labelprop_scope=str(labelprop_scope),
-                        query_graph_weight=float(query_graph_weight),
+                        labelprop_weight=float(params["labelprop_weight"]),
+                        labelprop_k=int(params["labelprop_k"]),
+                        labelprop_alpha=float(params["labelprop_alpha"]),
+                        labelprop_temperature=float(params["labelprop_temperature"]),
+                        labelprop_rounds=int(params["labelprop_rounds"]),
+                        labelprop_clip=float(params["labelprop_clip"]),
+                        labelprop_scope=str(params["labelprop_scope"]),
+                        query_graph_weight=float(params["query_graph_weight"]),
                         query_graph_k=int(query_graph_k),
                         query_graph_temperature=float(query_graph_temperature),
                         query_graph_rounds=int(query_graph_rounds),
