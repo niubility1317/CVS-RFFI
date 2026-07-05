@@ -100,6 +100,15 @@ Snapshot:
 |startup health|2026-07-06 03:54 CST复查：两个候选均进入`E009/200`；日志含`[CONFIG-TEACHER]`、`[CONFIG-LOSS]`、`[CONFIG-SAT]`、`[EPOCH-BEGIN]`；GPU2/3约2185/2179MiB；未见Traceback、RuntimeError、CUDA OOM、NaN、unrecognized arguments或Killed。|
 |claim boundary|当前只证明R7已启动且startup PASS；不得声明Stage2-C成功、部署成功或最终目标完成。训练完成后必须用qknn8与协同推理`M=1..全体目标接收机数量`复评旧类、seen-new和unknown。|
 
+## 运行监控
+
+|time CST|candidate|epoch|best_epoch|best_score|best_val_tx|best_test_tx|latest_val_tx|latest_train_tx|proxy_active|proxy_auc|virtual_accept|source_episode_overflow|proto_export|verdict|
+|---|---|---:|---:|---:|---:|---:|---:|---:|---:|---|---|---:|---|---|
+|2026-07-06 03:59|`EPOC_R7_FLOOR_LOCKED_SHELL`|19/200|10|85.7313|98.6369|90.6623|98.5714|93.3774|0|NA|NA|0.8438|not yet|running; no Stage2-C eval yet|
+|2026-07-06 03:59|`EPOC_R7_BALANCED_LOW_DENSITY`|19/200|10|83.4509|98.5536|89.2039|98.5952|91.5745|0|NA|NA|0.7882|not yet|running; no Stage2-C eval yet|
+
+03:59 CST只读监控结论：N607预检PASS，GPU2/3分别约2443/2437MiB；两个候选均有`best_joint_safe_ssdg.pth`，但尚未导出`phase2_zid_prototypes.pt`。错误扫描未见Traceback、RuntimeError、CUDA OOM、out-of-memory、NaN、unrecognized arguments或Killed。由于proxy未知计划从E55/E60才启动，当前`proxy_active=0`属于预期，不可据此判断unknown拒识效果。当前状态仍是训练中，不能启动Stage2-C qknn8协同复评。
+
 ## 成功/失败判据
 
 |阶段|判据|
