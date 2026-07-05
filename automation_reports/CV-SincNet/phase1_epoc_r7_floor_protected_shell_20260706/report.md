@@ -10,7 +10,7 @@
 |objective|在协同推理、OSPR-CI++、feature geometry、target-old prototype/ridge/MLP上限均未达到目标后，启动更底层source-only地面训练候选，优先保护旧类floor并修复LEO特征几何。|
 |base/teacher|`ADV3B02_CORE90_SOFT_E200`，checkpoint:`runs/phase1_adv3_mechanism32_queue_20260701/ADV3B02_CORE90_SOFT_E200/best_joint_safe_ssdg.pth`|
 |route|`source_only_floor_protected_feature_shell`|
-|status|n607_running_monitor_e122_e122|
+|status|n607_running_monitor_e128_e128|
 
 ## 协议边界
 
@@ -148,6 +148,8 @@ Snapshot:
 |2026-07-06 05:19|`EPOC_R7_BALANCED_LOW_DENSITY`|116/200|90|85.8023|98.6012|90.0270|98.5774|93.8221|1|0.4375|0.8088|0.7563|not yet|running; proxy still negative|
 |2026-07-06 05:24|`EPOC_R7_FLOOR_LOCKED_SHELL`|122/200|10|85.7313|98.6369|90.6623|98.5952|94.4712|1|0.4770|0.8207|0.8379|not yet|running; prototype absent, proxy still below random|
 |2026-07-06 05:24|`EPOC_R7_BALANCED_LOW_DENSITY`|122/200|90|85.8023|98.6012|90.0270|98.6250|95.0841|1|0.4442|0.8038|0.7600|not yet|running; prototype absent, proxy still negative|
+|2026-07-06 05:28|`EPOC_R7_FLOOR_LOCKED_SHELL`|128/200|10|85.7313|98.6369|90.6623|98.6845|94.1346|1|0.4830|0.8175|0.8407|not yet|running; prototype absent, proxy still below random|
+|2026-07-06 05:28|`EPOC_R7_BALANCED_LOW_DENSITY`|128/200|90|85.8023|98.6012|90.0270|98.5655|91.9591|1|0.4317|0.8111|0.7826|not yet|running; prototype absent, proxy still negative|
 
 03:59 CST只读监控结论：N607预检PASS，GPU2/3分别约2443/2437MiB；两个候选均有`best_joint_safe_ssdg.pth`，但尚未导出`phase2_zid_prototypes.pt`。错误扫描未见Traceback、RuntimeError、CUDA OOM、out-of-memory、NaN、unrecognized arguments或Killed。由于proxy未知计划从E55/E60才启动，当前`proxy_active=0`属于预期，不可据此判断unknown拒识效果。当前状态仍是训练中，不能启动Stage2-C qknn8协同复评。
 
@@ -192,6 +194,8 @@ Snapshot:
 05:19 CST只读监控结论：N607预检PASS，GPU2/3分别约2465/2459MiB；两个候选主进程仍运行，`FLOOR_LOCKED_SHELL`到E117/200，`BALANCED_LOW_DENSITY`到E116/200，均仍未导出`phase2_zid_prototypes.pt`。`FLOOR_LOCKED_SHELL`最近E113-E117的proxy AUC约0.4772-0.4841，E117为0.4841，virtual accept约0.8171；`BALANCED_LOW_DENSITY`最近E112-E116的proxy AUC约0.4348-0.4418，E116为0.4375，virtual accept约0.8088，soft unknown mixup virtual accept约0.9962。日志未见Traceback、RuntimeError、CUDA OOM、out-of-memory、unrecognized arguments或Killed；尾部扫描仍只见`sat_cos=nan`、`aux=nan`和非test epoch的`overall_tx=nan% (0/0)`文本。Stage2-C qknn8协同复评继续等待prototype导出；R7过程证据仍未显示有效未知分离。
 
 05:24 CST只读监控结论：N607预检PASS，GPU2/3分别约2465/2459MiB；两个候选主进程仍运行并均到E122/200，均仍未导出`phase2_zid_prototypes.pt`。`FLOOR_LOCKED_SHELL`最近E118-E122的proxy AUC约0.4758-0.4781，E122为0.4770，virtual accept约0.8207，proxy accept约0.0113；`BALANCED_LOW_DENSITY`最近E118-E122的proxy AUC约0.4336-0.4442，E122为0.4442，virtual accept约0.8038，soft unknown mixup virtual accept约0.9968。日志未见Traceback、RuntimeError、CUDA OOM、out-of-memory、unrecognized arguments或Killed。当前仍不能启动Stage2-C qknn8协同推理全量复评；R7过程证据继续显示未知proxy分离不足。
+
+05:28 CST只读监控结论：N607预检PASS，GPU2/3分别约2465/2459MiB；两个候选主进程仍运行并均到E128/200，均仍未导出`phase2_zid_prototypes.pt`。`FLOOR_LOCKED_SHELL`最近E124-E128的proxy AUC约0.4726-0.4830，E128为0.4830，virtual accept约0.8175，proxy accept约0.0058；`BALANCED_LOW_DENSITY`最近E124-E128的proxy AUC约0.4317-0.4431，E128为0.4317，virtual accept约0.8111，soft unknown mixup virtual accept约0.9962。日志未见Traceback、RuntimeError、CUDA OOM、out-of-memory、unrecognized arguments或Killed。Stage2-C qknn8协同复评继续等待prototype导出；R7过程证据仍为未知proxy分离不足。
 
 ## 成功/失败判据
 
