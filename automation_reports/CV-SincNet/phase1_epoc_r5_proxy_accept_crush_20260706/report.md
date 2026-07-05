@@ -93,6 +93,13 @@ cd /home/szu2070436088/2510044040/CV-SincNet && bash code/scripts/launch_phase1_
 |`EPOC_R5_BRIDGE_CRUSH`|`Rl`，elapsed约`01:37`|GPU6约`2241 MiB`|已到`E006/200`，保存`latest_safe_ssdg.pth`和`latest_ssdg.pth`|出现`[CONFIG-LOSS]`、`[CONFIG-TEACHER]`、`[CONFIG-SAT]`、`[EPOCH-BEGIN]`；教师为`ADV3B02_CORE90_SOFT_E200`；训练数据为`ManySig.pkl`|未见Traceback、RuntimeError、CUDA OOM、unrecognized arguments；未见`ManyTx`、`target_unknown`、`new_wisig`、`lambda_energy_in/out`|`VAL tx`约98.25%-98.59%；`JOINT-GUARD safe=1`；proxy尚未激活，符合`proxy_unknown_start_epoch=18`前状态|
 |`EPOC_R5_CORE_SHELL_REJECT`|`Rl`，elapsed约`01:17`|GPU7约`2045 MiB`|已到`E005/200`，保存`latest_safe_ssdg.pth`和`latest_ssdg.pth`|出现`[CONFIG-LOSS]`、`[CONFIG-TEACHER]`、`[CONFIG-SAT]`、`[EPOCH-BEGIN]`；教师为`ADV3B02_CORE90_SOFT_E200`；训练数据为`ManySig.pkl`|未见Traceback、RuntimeError、CUDA OOM、unrecognized arguments；未见`ManyTx`、`target_unknown`、`new_wisig`、`lambda_energy_in/out`|`VAL tx`约98.15%-98.67%；`JOINT-GUARD safe=1`；proxy尚未激活，符合`proxy_unknown_start_epoch=18`前状态|
 
+2026-07-06 02:05 CST启动后约6分钟检查：
+
+|候选|进程状态|日志进度|健康结论|
+|---|---|---|---|
+|`EPOC_R5_BRIDGE_CRUSH`|`Rl`，elapsed约`06:22`|已到`E016/200`；`VAL tx=98.53%`；`JOINT-GUARD safe=1`；`latest_safe_ssdg.pth`持续保存|继续运行；短日志窗口未见Traceback、RuntimeError、CUDA OOM、unrecognized arguments或协议禁用字段|
+|`EPOC_R5_CORE_SHELL_REJECT`|`Sl`，elapsed约`06:02`|已到`E016/200`；`VAL tx=98.48%`；`JOINT-GUARD safe=1`；`latest_safe_ssdg.pth`持续保存|继续运行；短日志窗口未见Traceback、RuntimeError、CUDA OOM、unrecognized arguments或协议禁用字段|
+
 ## 观察指标
 
 |阶段|重点指标|判据|
