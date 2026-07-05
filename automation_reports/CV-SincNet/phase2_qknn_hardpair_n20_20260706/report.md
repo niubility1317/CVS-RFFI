@@ -84,3 +84,30 @@ The launch itself is not success evidence. The target remains:
 - The HP08 representation may still not separate dense `1-*` ManyTx families.
 - Standalone HP08 qKNN is only a sanity probe. The main comparison after export must rerun dual-view qKNN with the existing N20 NORM feature and this new HP08 feature.
 - Training uses active N607 resources. Before launch, recheck GPU occupancy and keep short-lived SSH/SCP only.
+
+## Startup Retry 1
+
+Initial remote launch:
+
+| item | value |
+|---|---|
+| launch PID | `3205938` |
+| GPU | `5` |
+| status | failed during hard-pair parsing before training |
+| log | `logs/phase2_qknn_hardpair_n20_20260706/launch_HP08.out` |
+
+Failure:
+
+```text
+ValueError: cannot resolve hard pair TX token '1-1'
+```
+
+Cause: the N20 target-new list intentionally moved `1-1` and `1-18` out of `proxy_unknown`, but the inherited N10 hard-pair list still referenced these labels as proxy classes. This was a protocol guard, not a model failure.
+
+Repair: removed only the four hard-pair entries containing target-new proxy labels:
+
+```text
+10-7:1-1,19-19:1-1,1-18:14-11,1-18:1
+```
+
+The repaired hard-pair list keeps 32 proxy-only entries and does not restore any target-new label to proxy training.
