@@ -289,6 +289,94 @@ Interpretation:
 
 Current goal status: active, not achieved.
 
+## v14/v15 Class-Floor-Aware Support-Proxy Check
+
+Objective: address the v13 failure mode where all automatic proxy directions collapse onto one support-hard pair. v14 adds class-balanced round-robin selection over support-only hard-pair candidates. v15 keeps the same compressed proxy-direction representation but makes the balance gate adaptive: low-shot support (`adaptive_k_reliability<0.25`) uses class-balanced selection; higher-reliability support keeps v13's concentrated bundle.
+
+Verification:
+
+| command | result |
+|---|---|
+| `conda run -n ssr-gpu python -m py_compile code\scripts\phase2_support_metric_qknn_probe.py` | PASS |
+
+v15 maximum-query summary:
+
+| scope | K | query per class | old_acc | min_old | new_acc | min_new | balance gate | stored proxy scalars | verdict |
+|---|---:|---:|---:|---:|---:|---:|---|---:|---|
+| N10 | 10 | 70 | 92.14% | 77.14% | 85.29% | 64.29% | off | 24 | failed target floor |
+| N10 | 5 | 75 | 91.56% | 77.33% | 85.07% | 64.00% | on | 24 | failed target floor |
+| N20 | 10 | 70 | 92.62% | 78.57% | 70.14% | 51.43% | off | 24 | failed target floor |
+| N20 | 5 | 75 | 92.22% | 78.67% | 69.33% | 48.00% | on | 24 | failed target floor |
+
+Comparison against v13:
+
+| scope | K | v13 min_new | v15 min_new | delta |
+|---|---:|---:|---:|---:|
+| N10 | 10 | 64.29% | 64.29% | +0.00pp |
+| N10 | 5 | 61.33% | 64.00% | +2.67pp |
+| N20 | 10 | 51.43% | 51.43% | +0.00pp |
+| N20 | 5 | 46.67% | 48.00% | +1.33pp |
+
+v15 N10 per-class details:
+
+| TX | K10 correct/total | K10 acc | K5 correct/total | K5 acc |
+|---|---:|---:|---:|---:|
+| `14-10` | 67/70 | 95.71% | 72/75 | 96.00% |
+| `14-7` | 56/70 | 80.00% | 58/75 | 77.33% |
+| `20-15` | 70/70 | 100.00% | 74/75 | 98.67% |
+| `20-19` | 54/70 | 77.14% | 58/75 | 77.33% |
+| `6-15` | 70/70 | 100.00% | 75/75 | 100.00% |
+| `8-20` | 70/70 | 100.00% | 75/75 | 100.00% |
+| `10-10` | 64/70 | 91.43% | 68/75 | 90.67% |
+| `11-10` | 55/70 | 78.57% | 57/75 | 76.00% |
+| `18-5` | 67/70 | 95.71% | 71/75 | 94.67% |
+| `19-3` | 67/70 | 95.71% | 73/75 | 97.33% |
+| `2-13` | 45/70 | 64.29% | 48/75 | 64.00% |
+| `2-5` | 57/70 | 81.43% | 61/75 | 81.33% |
+| `3-8` | 64/70 | 91.43% | 65/75 | 86.67% |
+| `4-10` | 61/70 | 87.14% | 64/75 | 85.33% |
+| `8-18` | 53/70 | 75.71% | 61/75 | 81.33% |
+| `8-3` | 64/70 | 91.43% | 70/75 | 93.33% |
+
+v15 N20 per-class details:
+
+| TX | K10 correct/total | K10 acc | K5 correct/total | K5 acc |
+|---|---:|---:|---:|---:|
+| `14-10` | 67/70 | 95.71% | 73/75 | 97.33% |
+| `14-7` | 57/70 | 81.43% | 59/75 | 78.67% |
+| `20-15` | 70/70 | 100.00% | 74/75 | 98.67% |
+| `20-19` | 55/70 | 78.57% | 59/75 | 78.67% |
+| `6-15` | 70/70 | 100.00% | 75/75 | 100.00% |
+| `8-20` | 70/70 | 100.00% | 75/75 | 100.00% |
+| `10-10` | 59/70 | 84.29% | 60/75 | 80.00% |
+| `11-10` | 39/70 | 55.71% | 45/75 | 60.00% |
+| `18-5` | 44/70 | 62.86% | 38/75 | 50.67% |
+| `19-3` | 44/70 | 62.86% | 42/75 | 56.00% |
+| `2-13` | 36/70 | 51.43% | 37/75 | 49.33% |
+| `2-5` | 55/70 | 78.57% | 61/75 | 81.33% |
+| `3-8` | 56/70 | 80.00% | 65/75 | 86.67% |
+| `4-10` | 62/70 | 88.57% | 66/75 | 88.00% |
+| `8-18` | 49/70 | 70.00% | 62/75 | 82.67% |
+| `8-3` | 51/70 | 72.86% | 58/75 | 77.33% |
+| `1-1` | 40/70 | 57.14% | 52/75 | 69.33% |
+| `1-10` | 59/70 | 84.29% | 65/75 | 86.67% |
+| `1-11` | 60/70 | 85.71% | 64/75 | 85.33% |
+| `1-12` | 44/70 | 62.86% | 50/75 | 66.67% |
+| `1-14` | 48/70 | 68.57% | 36/75 | 48.00% |
+| `1-15` | 56/70 | 80.00% | 57/75 | 76.00% |
+| `1-16` | 49/70 | 70.00% | 49/75 | 65.33% |
+| `1-18` | 40/70 | 57.14% | 36/75 | 48.00% |
+| `1-19` | 51/70 | 72.86% | 51/75 | 68.00% |
+| `1-2` | 40/70 | 57.14% | 46/75 | 61.33% |
+
+Interpretation:
+
+- v15 is a small but real stability improvement over v13 for K=5 without harming K=10, using a single adaptive rule derived from support size reliability.
+- It still fails the active objective: N10/N20 class floors remain below 75%, and N20 mean new accuracy remains around 70%.
+- Support-bias calibration was tested as a compressed per-class scalar route and did not change the N10 class floor in this split. The next useful route is not more scalar bias; it should change how low-floor classes such as `2-13`, `11-10`, `18-5`, `1-14`, and `1-18` obtain proxy evidence, likely with per-class proxy bundles plus a support-only validation gate that rejects harmful bundles.
+
+Current goal status: active, not achieved.
+
 ## v12 Compressed Pairwise Linear Head Check
 
 Objective: add a qKNN variant that keeps the KNN-style extensibility but avoids persisting raw support samples. The new route is `dualview_support_v12`: it inherits v11 ASLR and adds a support-LOO-selected compressed pairwise linear head for hard new-class pairs.
