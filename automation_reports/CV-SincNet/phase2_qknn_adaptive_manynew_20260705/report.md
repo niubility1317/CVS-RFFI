@@ -339,6 +339,88 @@ Interpretation:
 
 Current goal status: active, not achieved.
 
+## 2026-07-06 ADV3B02 Stage2-C follow-up: receiver-domain new-scope qKNN
+
+Objective: continue the qKNN route on the complete ADV3B02 Stage2-C LEO feature with only `K=5,K=10`, max available query count, and no raw support storage. The tested idea is receiver-domain compressed prototypes: use observable `rx_id|sat_scenario` domains to refine only new-class score columns while preserving the old-class closed-set head.
+
+Code change:
+
+- Added metadata domain construction in `code/scripts/phase2_support_metric_qknn_probe.py`: `scenario`, `rx`, `channel`, `rx_scenario`, and `rx_channel`.
+- Added `domain_refine_key_grid`, `domain_refine_weight_grid`, and `domain_refine_scope_grid`.
+- Added `domain_refine_scope=new|old|all`; `new` stores and scores only new-class domain prototypes. With 8 new classes and 15 observed `rx_scenario` domains, persistent new-domain state is 120 compressed prototypes, not raw support samples.
+- Added role-balanced row pruning for `scope=new`: when old/new query partitions are known, only new-query rows are domain-refined.
+
+Local verification:
+
+```text
+conda run -n ssr-gpu python -m py_compile code\scripts\phase2_support_metric_qknn_probe.py
+conda run -n ssr-gpu python code\scripts\phase2_support_metric_qknn_probe.py ... --query_per_old 100 --query_per_new 100 --domain_refine_key_grid rx_scenario --domain_refine_weight_grid 0.5 --domain_refine_scope_grid new
+```
+
+PASS. Smoke output: `adv3b02_full_stage2c/smoke_k10_domainrefine_newscope_q100.json`, with `domain_refine_scope=new`, `domain_refine_domain_count=15`, `stored_domain_refine_prototype_count=120`, and `stored_raw_support_count=0`.
+
+Full max-query runtime boundary:
+
+- Full max-query `scope=new` was attempted twice for K=10 and exceeded 180 seconds each time on the local Windows host, even after row/column pruning. The remaining bottleneck is `base._class_scores(... scenario_aware=True)` over receiver-scenario partitions.
+- Therefore the max-query `scope=new` row below is reported as a strict role-balanced inference, not as a completed full-run JSON. Under role-balanced assignment, old-query rows use only old-class columns and new-query rows use only new-class columns; `scope=new` leaves old columns identical to the v3 baseline and leaves new columns identical to the completed `rx_scenario/all` domain-refine run.
+
+Max-query summary:
+
+| feature | K | query old/class | query new/class | candidate | old_acc | min_old | seen_new_acc | min_seen_new | status |
+|---|---:|---:|---:|---|---:|---:|---:|---:|---|
+| ADV3B02 Stage2-C LEO | 10 | 1590 | 990 | `dualview_support_v3` baseline | 72.57% | 52.45% | 27.80% | 17.88% | completed |
+| ADV3B02 Stage2-C LEO | 10 | 1590 | 990 | `rx_scenario/all,w=0.5` | 63.69% | 51.89% | 44.72% | 33.13% | completed |
+| ADV3B02 Stage2-C LEO | 10 | 1590 | 990 | `rx_scenario/new,w=0.5` | 72.57% | 52.45% | 44.72% | 33.13% | inferred from role-balanced column independence |
+| ADV3B02 Stage2-C LEO | 5 | 1595 | 995 | `dualview_support_v3` baseline | 72.36% | 51.29% | 25.83% | 14.17% | completed |
+| ADV3B02 Stage2-C LEO | 5 | 1595 | 995 | `rx_scenario/all,w=0.5` | 52.11% | 33.17% | 32.90% | 18.29% | completed |
+| ADV3B02 Stage2-C LEO | 5 | 1595 | 995 | `rx_scenario/new,w=0.5` | 72.36% | 51.29% | 32.90% | 18.29% | inferred from role-balanced column independence |
+
+K=10 per-class detail for inferred `rx_scenario/new,w=0.5`:
+
+| role | tx | accuracy |
+|---|---|---:|
+| old | 14-10 | 67.30% |
+| old | 14-7 | 60.69% |
+| old | 20-15 | 76.54% |
+| old | 20-19 | 52.45% |
+| old | 6-15 | 87.42% |
+| old | 8-20 | 91.01% |
+| new | 1-10 | 39.70% |
+| new | 1-12 | 46.77% |
+| new | 1-14 | 48.79% |
+| new | 1-16 | 33.13% |
+| new | 1-18 | 57.17% |
+| new | 1-8 | 38.59% |
+| new | 10-11 | 46.46% |
+| new | 10-4 | 47.17% |
+
+K=5 per-class detail for inferred `rx_scenario/new,w=0.5`:
+
+| role | tx | accuracy |
+|---|---|---:|
+| old | 14-10 | 67.21% |
+| old | 14-7 | 60.25% |
+| old | 20-15 | 76.68% |
+| old | 20-19 | 51.29% |
+| old | 6-15 | 87.71% |
+| old | 8-20 | 91.03% |
+| new | 1-10 | 28.64% |
+| new | 1-12 | 44.62% |
+| new | 1-14 | 29.45% |
+| new | 1-16 | 21.91% |
+| new | 1-18 | 46.93% |
+| new | 1-8 | 32.96% |
+| new | 10-11 | 18.29% |
+| new | 10-4 | 40.40% |
+
+Interpretation:
+
+- The new-scope receiver-domain variant is a better qKNN compression direction than all-scope domain refine: it preserves old-class accuracy while lifting K=10 new mean from 27.80% to 44.72% and new floor from 17.88% to 33.13%.
+- It still fails the active goal. The K=10 new floor remains 41.87pp below the 75% floor, and K=5 remains much weaker than K=10.
+- The practical deployment cost is small in memory terms: one global qKNN support codebook plus 120 new-class receiver-domain prototypes for this setting. The current blocker is not storage but separability and the unoptimized Python scoring path.
+
+Current goal status: active, not achieved.
+
 ## 2026-07-06 Continuation: ADV3B02 full Stage2-C feature qKNN max-query audit
 
 Objective: test whether the complete `ADV3B02_CORE90_SOFT_E200` frozen Stage2-C LEO multi-receiver feature package can serve as a stronger representation-side input for the qKNN route under the active `K=5,K=10` goal. This run keeps the K axis fixed and uses the maximum available query count for each class.

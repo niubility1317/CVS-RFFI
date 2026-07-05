@@ -1989,6 +1989,33 @@ def _mahalanobis_proto_scores(
     return logits, int(inv_cov.size)
 
 
+def _metadata_domain_values(
+    *,
+    key: str,
+    scenarios: np.ndarray,
+    rx_ids: np.ndarray,
+    channel_views: np.ndarray,
+) -> np.ndarray:
+    mode = str(key).strip().lower()
+    if mode in {"", "none"}:
+        return np.asarray([""] * int(scenarios.size), dtype=object)
+    if mode == "scenario":
+        return np.asarray(scenarios, dtype=object).astype(str)
+    if mode == "rx":
+        return np.asarray(rx_ids, dtype=object).astype(str)
+    if mode == "channel":
+        return np.asarray(channel_views, dtype=object).astype(str)
+    if mode == "rx_scenario":
+        rx = np.asarray(rx_ids, dtype=object).astype(str)
+        sc = np.asarray(scenarios, dtype=object).astype(str)
+        return np.asarray([f"{left}|{right}" for left, right in zip(rx.tolist(), sc.tolist())], dtype=object)
+    if mode == "rx_channel":
+        rx = np.asarray(rx_ids, dtype=object).astype(str)
+        view = np.asarray(channel_views, dtype=object).astype(str)
+        return np.asarray([f"{left}|{right}" for left, right in zip(rx.tolist(), view.tolist())], dtype=object)
+    raise ValueError(f"unsupported domain_refine_key: {key}")
+
+
 def _evaluate_metric_qknn(
     *,
     features: np.ndarray,
@@ -1997,6 +2024,7 @@ def _evaluate_metric_qknn(
     tx_ids: np.ndarray,
     roles: np.ndarray,
     scenarios: np.ndarray,
+    domain_values: np.ndarray,
     old_splits: dict[str, Split],
     new_splits: dict[str, Split],
     old_labels: list[str],
@@ -2060,6 +2088,9 @@ def _evaluate_metric_qknn(
     old_residual_new_rank: int,
     old_residual_new_proto_mix: float,
     old_residual_new_clip: float,
+    domain_refine_key: str,
+    domain_refine_weight: float,
+    domain_refine_scope: str,
     class_diag_metric_weight: float,
     class_diag_metric_similarity: float,
     class_diag_metric_alpha: float,
@@ -2400,6 +2431,67 @@ def _evaluate_metric_qknn(
             clip=float(old_residual_new_clip),
         )
         scores = scores + float(old_residual_new_weight) * old_residual_scores
+    domain_refine_domain_count = 0
+    stored_domain_refine_prototype_count = 0
+    if float(domain_refine_weight) > 0.0 and str(domain_refine_key).strip().lower() not in {"", "none"}:
+        refine_scope = str(domain_refine_scope).strip().lower()
+        if refine_scope not in {"all", "new", "old"}:
+            raise ValueError(f"unsupported domain_refine_scope: {domain_refine_scope}")
+        if refine_scope == "new":
+            refine_labels = list(new_labels)
+            if bool(role_balanced_assignment):
+                refine_query_indices = query_indices[old_count:]
+                refine_rows = np.arange(old_count, query_indices.size, dtype=int)
+            else:
+                refine_query_indices = query_indices
+                refine_rows = np.arange(query_indices.size, dtype=int)
+        elif refine_scope == "old":
+            refine_labels = list(old_labels)
+            if bool(role_balanced_assignment):
+                refine_query_indices = query_indices[:old_count]
+                refine_rows = np.arange(old_count, dtype=int)
+            else:
+                refine_query_indices = query_indices
+                refine_rows = np.arange(query_indices.size, dtype=int)
+        else:
+            refine_labels = list(old_labels) + list(new_labels)
+            refine_query_indices = query_indices
+            refine_rows = np.arange(query_indices.size, dtype=int)
+        domain_scores, _domain_radii, _domain_proto_sim = base._class_scores(
+            features=adapted,
+            support_indices=support_indices,
+            support_labels=support_labels,
+            query_indices=refine_query_indices,
+            scenarios=domain_values,
+            class_labels=refine_labels,
+            old_labels=set(old_labels),
+            topm=int(topm),
+            proto_mix=float(proto_mix),
+            radius_norm=float(radius_norm),
+            old_bias=float(old_bias),
+            neg_lambda=float(neg_lambda),
+            neg_threshold=float(neg_threshold),
+            neg_margin=float(neg_margin),
+            mutual_only=bool(mutual_only),
+            scenario_aware=True,
+        )
+        if refine_scope == "all":
+            blended_scores = (1.0 - float(domain_refine_weight)) * scores + float(domain_refine_weight) * domain_scores
+            scores = blended_scores
+        elif refine_scope == "new":
+            scores[refine_rows, len(old_labels) :] = (
+                (1.0 - float(domain_refine_weight)) * scores[refine_rows, len(old_labels) :]
+                + float(domain_refine_weight) * domain_scores
+            )
+        elif refine_scope == "old":
+            scores[refine_rows, : len(old_labels)] = (
+                (1.0 - float(domain_refine_weight)) * scores[refine_rows, : len(old_labels)]
+                + float(domain_refine_weight) * domain_scores
+            )
+        query_domains = set(np.asarray(domain_values[query_indices], dtype=object).astype(str).tolist())
+        support_domains = set(np.asarray(domain_values[support_indices], dtype=object).astype(str).tolist())
+        domain_refine_domain_count = len(query_domains & support_domains)
+        stored_domain_refine_prototype_count = int(domain_refine_domain_count * len(refine_labels))
     class_diag_metric_count = 0
     stored_class_diag_metric_scalars = 0
     if float(class_diag_metric_weight) > 0.0:
@@ -2761,6 +2853,11 @@ def _evaluate_metric_qknn(
         "old_residual_new_proto_mix": float(old_residual_new_proto_mix),
         "old_residual_new_clip": float(old_residual_new_clip),
         "stored_old_residual_new_scalars": int(stored_old_residual_new_scalars),
+        "domain_refine_key": str(domain_refine_key),
+        "domain_refine_weight": float(domain_refine_weight),
+        "domain_refine_scope": str(domain_refine_scope),
+        "domain_refine_domain_count": int(domain_refine_domain_count),
+        "stored_domain_refine_prototype_count": int(stored_domain_refine_prototype_count),
         "class_diag_metric_weight": float(class_diag_metric_weight),
         "class_diag_metric_similarity": float(class_diag_metric_similarity),
         "class_diag_metric_alpha": float(class_diag_metric_alpha),
@@ -3118,6 +3215,9 @@ def main() -> None:
     parser.add_argument("--old_residual_new_rank_grid", default="2")
     parser.add_argument("--old_residual_new_proto_mix_grid", default="0.4")
     parser.add_argument("--old_residual_new_clip_grid", default="2.0")
+    parser.add_argument("--domain_refine_key_grid", default="none")
+    parser.add_argument("--domain_refine_weight_grid", default="0")
+    parser.add_argument("--domain_refine_scope_grid", default="all")
     parser.add_argument("--class_diag_metric_weight_grid", default="0")
     parser.add_argument("--class_diag_metric_similarity_grid", default="0.9")
     parser.add_argument("--class_diag_metric_alpha_grid", default="0.01")
@@ -3198,6 +3298,12 @@ def main() -> None:
     roles = np.asarray(data["dataset_role"], dtype=object).astype(str)
     logits = np.asarray(data["tx_logits"], dtype=np.float64)
     scenarios = np.asarray(data["sat_scenarios"], dtype=object).astype(str)
+    rx_ids = np.asarray(data["rx_ids"], dtype=object).astype(str) if "rx_ids" in data.files else np.asarray([""] * int(tx_ids.size), dtype=object)
+    channel_views = (
+        np.asarray(data["channel_views"], dtype=object).astype(str)
+        if "channel_views" in data.files
+        else np.asarray([""] * int(tx_ids.size), dtype=object)
+    )
     aux_features = None
     if aux_feature_path is not None:
         aux_data = np.load(aux_feature_path, allow_pickle=True)
@@ -3279,6 +3385,9 @@ def main() -> None:
             qknn._parse_int_csv(args.old_residual_new_rank_grid),
             qknn._parse_float_csv(args.old_residual_new_proto_mix_grid),
             qknn._parse_float_csv(args.old_residual_new_clip_grid),
+            qknn._parse_csv(args.domain_refine_key_grid),
+            qknn._parse_float_csv(args.domain_refine_weight_grid),
+            qknn._parse_csv(args.domain_refine_scope_grid),
             qknn._parse_float_csv(args.class_diag_metric_weight_grid),
             qknn._parse_float_csv(args.class_diag_metric_similarity_grid),
             qknn._parse_float_csv(args.class_diag_metric_alpha_grid),
@@ -3453,6 +3562,9 @@ def main() -> None:
                     old_residual_new_rank,
                     old_residual_new_proto_mix,
                     old_residual_new_clip,
+                    domain_refine_key,
+                    domain_refine_weight,
+                    domain_refine_scope,
                     class_diag_metric_weight,
                     class_diag_metric_similarity,
                     class_diag_metric_alpha,
@@ -3658,6 +3770,12 @@ def main() -> None:
                         tx_ids=tx_ids,
                         roles=roles,
                         scenarios=scenarios,
+                        domain_values=_metadata_domain_values(
+                            key=str(domain_refine_key),
+                            scenarios=scenarios,
+                            rx_ids=rx_ids,
+                            channel_views=channel_views,
+                        ),
                         old_splits=old_splits,
                         new_splits=new_splits,
                         old_labels=old_labels,
@@ -3724,6 +3842,9 @@ def main() -> None:
                         old_residual_new_rank=int(old_residual_new_rank),
                         old_residual_new_proto_mix=float(old_residual_new_proto_mix),
                         old_residual_new_clip=float(old_residual_new_clip),
+                        domain_refine_key=str(domain_refine_key),
+                        domain_refine_weight=float(domain_refine_weight),
+                        domain_refine_scope=str(domain_refine_scope),
                         class_diag_metric_weight=float(class_diag_metric_weight),
                         class_diag_metric_similarity=float(class_diag_metric_similarity),
                         class_diag_metric_alpha=float(class_diag_metric_alpha),
@@ -3948,6 +4069,11 @@ def main() -> None:
         "old_residual_new_proto_mix",
         "old_residual_new_clip",
         "stored_old_residual_new_scalars",
+        "domain_refine_key",
+        "domain_refine_weight",
+        "domain_refine_scope",
+        "domain_refine_domain_count",
+        "stored_domain_refine_prototype_count",
         "class_diag_metric_weight",
         "class_diag_metric_similarity",
         "class_diag_metric_alpha",
