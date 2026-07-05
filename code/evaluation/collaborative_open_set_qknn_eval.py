@@ -4712,9 +4712,15 @@ def evaluate_collaborative_open_set_evidence(
             metrics["event_results"] = event_results
         out_counts[str(k)] = metrics
 
+    target_pass_count = sum(1 for metrics in out_counts.values() if bool(metrics.get("target_pass", False)))
+
     return {
         "enabled": True,
         "protocol": "collaborative_open_set_qknn_evidence",
+        "verdict_scope": "NON_DEPLOYMENT_DIAGNOSTIC",
+        "stage2_success_claim": False,
+        "deployment_success_claim": False,
+        "target_pass_count": int(target_pass_count),
         "receiver_count": int(receiver_count),
         "observed_receiver_ids": sorted(receivers),
         "group_count": int(len(groups)),

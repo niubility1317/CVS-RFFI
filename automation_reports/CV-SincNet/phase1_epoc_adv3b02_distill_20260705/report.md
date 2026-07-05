@@ -436,4 +436,15 @@ cd /home/szu2070436088/2510044040/CV-SincNet && /home/szu2070436088/.conda/envs/
 
 #### 结论
 
-OSPR-CI++实现和远端复评均完成，但结果仍是负证据：它能把未知拒识推到`99.48%`，同时把旧类压到约`8%`、seen-new压到`0%`，并且每类floor为`0%`。这证明当前决策层/证据层协同无法在现有EPOC B特征上同时满足旧类、新类和未知拒识目标。下一步主路线应转入底层训练：以`ADV3B02_CORE90_SOFT_E200`为教师，训练source-only负原型壳层/reciprocal prototype shell/低密度能量约束蒸馏模型，使星地信道扰动后的未知类特征远离已知/seen-new原型；真实`Y_unknown`仍只允许用于最终Stage2-C评估。
+OSPR-CI++实现和远端复评均完成，但结果仍是负证据：它能把未知拒识推到`99.48%`，同时把旧类压到约`8%`、seen-new压到`0%`，并且每类floor为`0%`。在当前EPOC B特征包、`receiver_domain_ranked`证据构造和OSPR-CI++参数下，决策层/证据层协同仍未同时满足旧类、新类和未知拒识目标；该结论不外推为所有协同推理方法均不可行。下一步主路线应转入底层训练：以`ADV3B02_CORE90_SOFT_E200`为教师，训练source-only负原型壳层/reciprocal prototype shell/低密度能量约束蒸馏模型，使星地信道扰动后的未知类特征远离已知/seen-new原型；真实`Y_unknown`仍只允许用于最终Stage2-C评估。
+
+### 子agent审查修正记录
+
+2026-07-06 02:34 CST收到两个只读审查结论：完成度审查确认OSPR-CI++实现、N607同步、M=1..5复评和资源记录已完成，但最终科学目标未达成；合理性审查确认协议边界基本正确，同时要求补充机器可读JSON中的`verdict_scope`、`stage2_success_claim`、`deployment_success_claim`、`target_pass_count`等字段，并收紧结论措辞避免过度外推。已完成的本地修正如下：
+
+|修正项|状态|
+|---|---|
+|`collaborative_open_set_qknn_eval.py`输出`verdict_scope=NON_DEPLOYMENT_DIAGNOSTIC`|已实现，待远端重跑生成新JSON|
+|输出`stage2_success_claim=false`和`deployment_success_claim=false`|已实现，待远端重跑生成新JSON|
+|输出`target_pass_count`|已实现，当前OSPR-CI++应为`0`|
+|报告结论限定为当前EPOC B特征包、当前证据构造和当前参数|已修正|

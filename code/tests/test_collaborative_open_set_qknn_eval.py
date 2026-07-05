@@ -75,6 +75,10 @@ class CollaborativeOpenSetQknnEvalTest(unittest.TestCase):
 
         events = {event["event_id"]: event for event in result["counts"]["2"]["event_results"]}
         self.assertEqual(result["fusion_policy"], "ospr_ci_pp")
+        self.assertEqual(result["verdict_scope"], "NON_DEPLOYMENT_DIAGNOSTIC")
+        self.assertFalse(result["stage2_success_claim"])
+        self.assertFalse(result["deployment_success_claim"])
+        self.assertEqual(result["target_pass_count"], 0)
         self.assertEqual(events["old-1"]["requested_fusion_policy"], "ospr_ci_pp")
         self.assertEqual(events["old-1"]["internal_fusion_policy"], "scg_qknn_cvs")
         self.assertEqual(events["old-1"]["decision"], "accept")
