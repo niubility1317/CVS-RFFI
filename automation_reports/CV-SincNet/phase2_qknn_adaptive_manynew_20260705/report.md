@@ -374,3 +374,43 @@ Interpretation:
 - The useful evidence is negative but specific: even when the pair selection is driven by the exact support-set dense-cluster errors, the deployed query floor does not move. This strengthens the conclusion that the remaining collapse is primarily representation/embedding separability, not KNN storage, quota assignment, or a missing small compressed head.
 
 Current goal status: active, not achieved. Recommended next route is representation-side repair or a protocol-explicit enrollment quality gate; continuing to add scalar KNN heads is unlikely to reach the 75% per-class floor for twenty new classes.
+
+## 2026-07-06 Local Follow-up: dense-cluster query prototype diagnostic
+
+Objective: test a cluster-local qKNN compression variant for dense ManyTx new-class groups, still under the same `K=5,K=10` anchors and without storing raw support samples.
+
+Code change:
+
+- Added `dense_cluster_*` CLI grids in `code/scripts/phase2_support_metric_qknn_probe.py`.
+- The mechanism builds a support-prototype graph inside the selected role, forms dense class clusters, then uses only the current query batch to build temporary cluster-local query prototypes before the final assignment.
+- Persistent state is unchanged: class prototypes and small graph/parameter metadata only. No raw support sample is stored; the query prototypes are runtime-only.
+- Added reproducibility fields to each row: `old_role`,`new_role`,`query_per_old`,`query_per_new`,`exclude_pool_from_query`.
+
+Local verification:
+
+```text
+conda run -n ssr-gpu python -m py_compile code\scripts\phase2_support_metric_qknn_probe.py
+```
+
+PASS.
+
+Result summary from the current HEAD rerun:
+
+| scope | K | query/class | candidate | old_acc | min_old | new_acc | min_new | dense-cluster state | verdict |
+|---|---:|---:|---|---:|---:|---:|---:|---:|---|
+| N20 | 10 | 70 | current weight=0 baseline | 92.38% | 80.00% | 44.36% | 24.29% | 0 clusters | baseline for current rerun |
+| N20 | 10 | 70 | best active dense-cluster | 92.38% | 80.00% | 44.36% | 24.29% | 5 clusters,20 temporary query prototypes | no gain |
+| N20 | 5 | 75 | current weight=0 baseline | 92.00% | 78.67% | 38.67% | 20.00% | 0 clusters | baseline for current rerun |
+| N20 | 5 | 75 | best active dense-cluster | 92.00% | 78.67% | 39.00% | 21.33% | 4 clusters,20 temporary query prototypes | tiny gain, failed |
+
+Important reproducibility note:
+
+- The previously archived N20 seed421023 `dualview_support_v2` row remains in this report as historical evidence: `K=10 old_acc=91.43%,min_old=77.14%,new_acc=72.14%,min_new=52.86%`.
+- Re-running the current HEAD with the same visible high-level settings did not reproduce that archived row; it produced the current baselines above. The support geometry fields match, but the stored `max_offdiag_proto_sim/class_radii` evidence differs, so the historical row should be treated as an archived result rather than a current rerun.
+- This is exactly why the script now records `old_role/new_role/query_per_*` and `exclude_pool_from_query` directly in each output row.
+
+Interpretation:
+
+- Dense-cluster query prototypes do not solve the many-new-class floor problem. K=10 has no measurable gain; K=5 gains only +0.33pp mean new accuracy and +1.33pp min-new in the current rerun.
+- The result is still useful negative evidence: even a role-local, support-graph-derived, no-raw-support transductive variant cannot lift dense ManyTx families toward the 75% per-class floor.
+- The active goal remains open. The next route should move away from post-hoc qKNN score surgery and toward representation-side repair or explicit enrollment-quality gating under the Stage2-C protocol.

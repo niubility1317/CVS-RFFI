@@ -285,6 +285,170 @@ def _support_anchored_transductive_proto_scores(
     return work_scores, int(stored_count)
 
 
+def _dense_cluster_query_refine_scores(
+    scores: np.ndarray,
+    *,
+    features: np.ndarray,
+    support_indices: np.ndarray,
+    support_labels: np.ndarray,
+    query_indices: np.ndarray,
+    class_labels: list[str],
+    old_count: int,
+    old_labels: list[str],
+    new_labels: list[str],
+    proto_sim: np.ndarray,
+    query_scenarios: np.ndarray,
+    scenario_balanced_assignment: bool,
+    role_balanced_assignment: bool,
+    balanced_assignment: bool,
+    rounds: int,
+    weight: float,
+    similarity_threshold: float,
+    neighbor_k: int,
+    candidate_topn: int,
+    query_topm: int,
+    clip: float,
+    scope: str,
+) -> tuple[np.ndarray, int, int, int]:
+    """Refine dense support-prototype clusters with temporary query prototypes.
+
+    Persistent state remains compressed: the cluster graph is derived from class
+    prototypes, while query prototypes exist only for the current inference batch.
+    """
+    if float(weight) == 0.0 or int(rounds) <= 0:
+        return scores, 0, 0, 0
+    mode = str(scope).strip().lower()
+    if mode not in {"all", "role", "new", "old"}:
+        raise ValueError(f"unsupported dense_cluster_scope: {scope}")
+    class_count = len(class_labels)
+    old_class_count = len(old_labels)
+    sim = np.asarray(proto_sim, dtype=np.float64)
+    if sim.shape != (class_count, class_count) or class_count < 2:
+        return scores, 0, 0, 0
+
+    support = qknn._normalize_rows(features[support_indices])
+    query = qknn._normalize_rows(features[query_indices])
+    labels = np.asarray(support_labels, dtype=object).astype(str)
+    support_proto_rows: list[np.ndarray] = []
+    for label in class_labels:
+        class_support = support[labels == str(label)]
+        if class_support.size == 0:
+            support_proto_rows.append(np.zeros(support.shape[1], dtype=np.float64))
+        else:
+            support_proto_rows.append(qknn._normalize_rows(class_support.mean(axis=0, keepdims=True))[0])
+    support_proto = qknn._normalize_rows(np.stack(support_proto_rows, axis=0))
+
+    def components(indices: list[int]) -> list[list[int]]:
+        index_set = set(indices)
+        graph = {idx: set() for idx in indices}
+        for idx in indices:
+            candidates = [other for other in indices if other != idx]
+            if not candidates:
+                continue
+            connected: set[int] = set()
+            if float(similarity_threshold) <= 1.0:
+                connected.update(other for other in candidates if float(sim[idx, other]) >= float(similarity_threshold))
+            if int(neighbor_k) > 0:
+                ordered = sorted(candidates, key=lambda other: float(sim[idx, other]), reverse=True)
+                connected.update(ordered[: int(neighbor_k)])
+            for other in connected:
+                if other in index_set:
+                    graph[idx].add(other)
+                    graph[other].add(idx)
+        seen: set[int] = set()
+        out: list[list[int]] = []
+        for idx in indices:
+            if idx in seen:
+                continue
+            stack = [idx]
+            comp: list[int] = []
+            seen.add(idx)
+            while stack:
+                node = stack.pop()
+                comp.append(node)
+                for nxt in graph[node]:
+                    if nxt not in seen:
+                        seen.add(nxt)
+                        stack.append(nxt)
+            if len(comp) >= 2:
+                out.append(sorted(comp))
+        return out
+
+    scopes: list[list[int]] = []
+    if mode in {"all", "role"}:
+        if mode == "all":
+            scopes.append(list(range(class_count)))
+        else:
+            scopes.append(list(range(old_class_count)))
+            scopes.append(list(range(old_class_count, class_count)))
+    elif mode == "old":
+        scopes.append(list(range(old_class_count)))
+    else:
+        scopes.append(list(range(old_class_count, class_count)))
+    cluster_components = [comp for scope_indices in scopes for comp in components(scope_indices)]
+    if not cluster_components:
+        return scores, 0, 0, 0
+
+    work_scores = np.asarray(scores, dtype=np.float64).copy()
+    used_clusters = 0
+    temp_proto_count = 0
+    adjusted_rows_total = 0
+    for _round in range(int(rounds)):
+        provisional = _assignment_predict(
+            work_scores,
+            old_count=old_count,
+            old_labels=old_labels,
+            new_labels=new_labels,
+            query_scenarios=query_scenarios,
+            scenario_balanced_assignment=bool(scenario_balanced_assignment),
+            role_balanced_assignment=bool(role_balanced_assignment),
+            balanced_assignment=bool(balanced_assignment),
+        )
+        pred_indices = np.asarray([class_labels.index(str(label)) for label in provisional], dtype=int)
+        topn = max(1, min(int(candidate_topn), class_count))
+        top_order = np.argsort(work_scores, axis=1)[:, ::-1][:, :topn]
+        for comp in cluster_components:
+            comp_array = np.asarray(comp, dtype=int)
+            if comp_array.size < 2:
+                continue
+            if mode != "all" and comp_array[0] < old_class_count:
+                role_rows = np.arange(0, int(old_count), dtype=int)
+            elif mode != "all":
+                role_rows = np.arange(int(old_count), work_scores.shape[0], dtype=int)
+            else:
+                role_rows = np.arange(work_scores.shape[0], dtype=int)
+            if role_rows.size == 0:
+                continue
+            in_pred = np.isin(pred_indices[role_rows], comp_array)
+            in_top = np.any(np.isin(top_order[role_rows], comp_array), axis=1)
+            candidate_rows = role_rows[in_pred | in_top]
+            if candidate_rows.size < comp_array.size:
+                continue
+            local_proto_rows: list[np.ndarray] = []
+            local_temp = 0
+            for class_index in comp:
+                rows = candidate_rows[pred_indices[candidate_rows] == class_index]
+                if rows.size == 0:
+                    local_proto_rows.append(support_proto[class_index])
+                    continue
+                if int(query_topm) > 0 and rows.size > int(query_topm):
+                    rows = rows[np.argsort(work_scores[rows, class_index])[::-1][: int(query_topm)]]
+                query_proto = qknn._normalize_rows(query[rows].mean(axis=0, keepdims=True))[0]
+                local_proto_rows.append(qknn._normalize_rows((support_proto[class_index] + query_proto)[None, :])[0])
+                local_temp += 1
+            local_proto = qknn._normalize_rows(np.stack(local_proto_rows, axis=0))
+            refine = query[candidate_rows] @ local_proto.T
+            refine = refine - np.mean(refine, axis=1, keepdims=True)
+            refine = refine / (np.std(refine, axis=1, keepdims=True) + 1e-6)
+            if float(clip) > 0.0:
+                refine = np.clip(refine, -float(clip), float(clip))
+            work_scores[np.ix_(candidate_rows, comp_array)] += float(weight) * refine
+            used_clusters += 1
+            temp_proto_count += int(local_temp)
+            adjusted_rows_total += int(candidate_rows.size)
+    return work_scores, int(used_clusters), int(temp_proto_count), int(adjusted_rows_total)
+
+
 def _repel_prototypes(
     prototypes: np.ndarray,
     *,
@@ -1823,6 +1987,14 @@ def _evaluate_metric_qknn(
     transductive_proto_support_weight: float,
     transductive_proto_query_weight: float,
     transductive_proto_clip: float,
+    dense_cluster_weight: float,
+    dense_cluster_similarity: float,
+    dense_cluster_neighbor_k: int,
+    dense_cluster_rounds: int,
+    dense_cluster_candidate_topn: int,
+    dense_cluster_query_topm: int,
+    dense_cluster_clip: float,
+    dense_cluster_scope: str,
     source_guard_mode: str,
     source_guard_weight: float,
     source_guard_conf_min: float,
@@ -2312,6 +2484,39 @@ def _evaluate_metric_qknn(
             weight=float(query_proto_refine_weight),
             clip=float(query_proto_refine_clip),
         )
+    dense_cluster_count = 0
+    dense_cluster_temp_proto_count = 0
+    dense_cluster_adjusted_rows = 0
+    if float(dense_cluster_weight) != 0.0 and int(dense_cluster_rounds) > 0:
+        (
+            scores,
+            dense_cluster_count,
+            dense_cluster_temp_proto_count,
+            dense_cluster_adjusted_rows,
+        ) = _dense_cluster_query_refine_scores(
+            scores,
+            features=adapted,
+            support_indices=support_indices,
+            support_labels=support_labels,
+            query_indices=query_indices,
+            class_labels=old_labels + new_labels,
+            old_count=old_count,
+            old_labels=old_labels,
+            new_labels=new_labels,
+            proto_sim=proto_sim,
+            query_scenarios=scenarios[query_indices],
+            scenario_balanced_assignment=bool(scenario_balanced_assignment),
+            role_balanced_assignment=bool(role_balanced_assignment),
+            balanced_assignment=bool(balanced_assignment),
+            rounds=int(dense_cluster_rounds),
+            weight=float(dense_cluster_weight),
+            similarity_threshold=float(dense_cluster_similarity),
+            neighbor_k=int(dense_cluster_neighbor_k),
+            candidate_topn=int(dense_cluster_candidate_topn),
+            query_topm=int(dense_cluster_query_topm),
+            clip=float(dense_cluster_clip),
+            scope=str(dense_cluster_scope),
+        )
     pred = _assignment_predict(
         scores,
         old_count=old_count,
@@ -2475,6 +2680,17 @@ def _evaluate_metric_qknn(
         "transductive_proto_query_weight": float(transductive_proto_query_weight),
         "transductive_proto_clip": float(transductive_proto_clip),
         "transductive_proto_count": int(transductive_proto_count),
+        "dense_cluster_weight": float(dense_cluster_weight),
+        "dense_cluster_similarity": float(dense_cluster_similarity),
+        "dense_cluster_neighbor_k": int(dense_cluster_neighbor_k),
+        "dense_cluster_rounds": int(dense_cluster_rounds),
+        "dense_cluster_candidate_topn": int(dense_cluster_candidate_topn),
+        "dense_cluster_query_topm": int(dense_cluster_query_topm),
+        "dense_cluster_clip": float(dense_cluster_clip),
+        "dense_cluster_scope": str(dense_cluster_scope),
+        "dense_cluster_count": int(dense_cluster_count),
+        "dense_cluster_temp_proto_count": int(dense_cluster_temp_proto_count),
+        "dense_cluster_adjusted_rows": int(dense_cluster_adjusted_rows),
         "source_guard_mode": str(source_guard_mode),
         "source_guard_weight": float(source_guard_weight),
         "source_guard_conf_min": float(source_guard_conf_min),
@@ -2794,6 +3010,14 @@ def main() -> None:
     parser.add_argument("--transductive_proto_support_weight_grid", default="1.0")
     parser.add_argument("--transductive_proto_query_weight_grid", default="1.0")
     parser.add_argument("--transductive_proto_clip_grid", default="1.5")
+    parser.add_argument("--dense_cluster_weight_grid", default="0")
+    parser.add_argument("--dense_cluster_similarity_grid", default="0.9")
+    parser.add_argument("--dense_cluster_neighbor_k_grid", default="0")
+    parser.add_argument("--dense_cluster_rounds_grid", default="1")
+    parser.add_argument("--dense_cluster_candidate_topn_grid", default="3")
+    parser.add_argument("--dense_cluster_query_topm_grid", default="50")
+    parser.add_argument("--dense_cluster_clip_grid", default="1.5")
+    parser.add_argument("--dense_cluster_scope_grid", default="new")
     parser.add_argument("--source_guard_mode_grid", default="none")
     parser.add_argument("--source_guard_weight_grid", default="0")
     parser.add_argument("--source_guard_conf_min_grid", default="0")
@@ -2941,6 +3165,14 @@ def main() -> None:
             qknn._parse_float_csv(args.transductive_proto_support_weight_grid),
             qknn._parse_float_csv(args.transductive_proto_query_weight_grid),
             qknn._parse_float_csv(args.transductive_proto_clip_grid),
+            qknn._parse_float_csv(args.dense_cluster_weight_grid),
+            qknn._parse_float_csv(args.dense_cluster_similarity_grid),
+            qknn._parse_int_csv(args.dense_cluster_neighbor_k_grid),
+            qknn._parse_int_csv(args.dense_cluster_rounds_grid),
+            qknn._parse_int_csv(args.dense_cluster_candidate_topn_grid),
+            qknn._parse_int_csv(args.dense_cluster_query_topm_grid),
+            qknn._parse_float_csv(args.dense_cluster_clip_grid),
+            qknn._parse_csv(args.dense_cluster_scope_grid),
             qknn._parse_csv(args.source_guard_mode_grid),
             qknn._parse_float_csv(args.source_guard_weight_grid),
             qknn._parse_float_csv(args.source_guard_conf_min_grid),
@@ -3102,6 +3334,14 @@ def main() -> None:
                     transductive_proto_support_weight,
                     transductive_proto_query_weight,
                     transductive_proto_clip,
+                    dense_cluster_weight,
+                    dense_cluster_similarity,
+                    dense_cluster_neighbor_k,
+                    dense_cluster_rounds,
+                    dense_cluster_candidate_topn,
+                    dense_cluster_query_topm,
+                    dense_cluster_clip,
+                    dense_cluster_scope,
                     source_guard_mode,
                     source_guard_weight,
                     source_guard_conf_min,
@@ -3147,6 +3387,14 @@ def main() -> None:
                         "transductive_proto_support_weight": float(transductive_proto_support_weight),
                         "transductive_proto_query_weight": float(transductive_proto_query_weight),
                         "transductive_proto_clip": float(transductive_proto_clip),
+                        "dense_cluster_weight": float(dense_cluster_weight),
+                        "dense_cluster_similarity": float(dense_cluster_similarity),
+                        "dense_cluster_neighbor_k": int(dense_cluster_neighbor_k),
+                        "dense_cluster_rounds": int(dense_cluster_rounds),
+                        "dense_cluster_candidate_topn": int(dense_cluster_candidate_topn),
+                        "dense_cluster_query_topm": int(dense_cluster_query_topm),
+                        "dense_cluster_clip": float(dense_cluster_clip),
+                        "dense_cluster_scope": str(dense_cluster_scope),
                     }
                     params.update(
                         {
@@ -3211,6 +3459,30 @@ def main() -> None:
                             ),
                             "transductive_proto_clip": adaptive_overrides.get(
                                 "transductive_proto_clip", params["transductive_proto_clip"]
+                            ),
+                            "dense_cluster_weight": adaptive_overrides.get(
+                                "dense_cluster_weight", params["dense_cluster_weight"]
+                            ),
+                            "dense_cluster_similarity": adaptive_overrides.get(
+                                "dense_cluster_similarity", params["dense_cluster_similarity"]
+                            ),
+                            "dense_cluster_neighbor_k": adaptive_overrides.get(
+                                "dense_cluster_neighbor_k", params["dense_cluster_neighbor_k"]
+                            ),
+                            "dense_cluster_rounds": adaptive_overrides.get(
+                                "dense_cluster_rounds", params["dense_cluster_rounds"]
+                            ),
+                            "dense_cluster_candidate_topn": adaptive_overrides.get(
+                                "dense_cluster_candidate_topn", params["dense_cluster_candidate_topn"]
+                            ),
+                            "dense_cluster_query_topm": adaptive_overrides.get(
+                                "dense_cluster_query_topm", params["dense_cluster_query_topm"]
+                            ),
+                            "dense_cluster_clip": adaptive_overrides.get(
+                                "dense_cluster_clip", params["dense_cluster_clip"]
+                            ),
+                            "dense_cluster_scope": adaptive_overrides.get(
+                                "dense_cluster_scope", params["dense_cluster_scope"]
                             ),
                         }
                     )
@@ -3329,6 +3601,14 @@ def main() -> None:
                         transductive_proto_support_weight=float(params["transductive_proto_support_weight"]),
                         transductive_proto_query_weight=float(params["transductive_proto_query_weight"]),
                         transductive_proto_clip=float(params["transductive_proto_clip"]),
+                        dense_cluster_weight=float(params["dense_cluster_weight"]),
+                        dense_cluster_similarity=float(params["dense_cluster_similarity"]),
+                        dense_cluster_neighbor_k=int(params["dense_cluster_neighbor_k"]),
+                        dense_cluster_rounds=int(params["dense_cluster_rounds"]),
+                        dense_cluster_candidate_topn=int(params["dense_cluster_candidate_topn"]),
+                        dense_cluster_query_topm=int(params["dense_cluster_query_topm"]),
+                        dense_cluster_clip=float(params["dense_cluster_clip"]),
+                        dense_cluster_scope=str(params["dense_cluster_scope"]),
                         source_guard_mode=str(params["source_guard_mode"]),
                         source_guard_weight=float(params["source_guard_weight"]),
                         source_guard_conf_min=float(params["source_guard_conf_min"]),
@@ -3350,8 +3630,13 @@ def main() -> None:
                     row["support_selection_policy"] = policy
                     row["k_old"] = int(args.k_old)
                     row["k_new"] = int(args.k_new)
+                    row["old_role"] = str(args.old_role)
+                    row["new_role"] = str(args.new_role)
+                    row["query_per_old"] = int(args.query_per_old)
+                    row["query_per_new"] = int(args.query_per_new)
                     row["pool_per_old"] = int(args.pool_per_old)
                     row["pool_per_new"] = int(args.pool_per_new)
+                    row["exclude_pool_from_query"] = bool(args.exclude_pool_from_query)
                     rows.append(row)
 
     rows.sort(
@@ -3410,6 +3695,8 @@ def main() -> None:
     fields = [
         "seed",
         "support_selection_policy",
+        "old_role",
+        "new_role",
         "transform_mode",
         "transform_strength",
         "topm",
@@ -3543,6 +3830,17 @@ def main() -> None:
         "transductive_proto_query_weight",
         "transductive_proto_clip",
         "transductive_proto_count",
+        "dense_cluster_weight",
+        "dense_cluster_similarity",
+        "dense_cluster_neighbor_k",
+        "dense_cluster_rounds",
+        "dense_cluster_candidate_topn",
+        "dense_cluster_query_topm",
+        "dense_cluster_clip",
+        "dense_cluster_scope",
+        "dense_cluster_count",
+        "dense_cluster_temp_proto_count",
+        "dense_cluster_adjusted_rows",
         "source_guard_mode",
         "source_guard_weight",
         "source_guard_conf_min",
@@ -3562,6 +3860,13 @@ def main() -> None:
         "query_passes_joint_target",
         "query_per_old_acc",
         "query_per_new_acc",
+        "k_old",
+        "k_new",
+        "query_per_old",
+        "query_per_new",
+        "pool_per_old",
+        "pool_per_new",
+        "exclude_pool_from_query",
         "stored_quantized_support_code_count",
         "stored_raw_support_count",
         "stored_class_prototype_count",
