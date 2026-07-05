@@ -3596,3 +3596,80 @@ CUDA_VISIBLE_DEVICES=<low_vram_gpu> /home/szu2070436088/.conda/envs/CVS-RFFI/bin
 ```
 
 启动前必须重新执行N607 preflight、GPU低显存选择、scp同步、远端hash/py_compile、报告同步，并在每次SSH/SCP后记录本地`ssh.exe`和TCP22清理状态。
+
+## OSPR-CI N607 full M=1..R result
+
+更新时间：2026-07-05 09:36 +08:00
+
+N607 direct preflight通过，服务器`dell-DSS8440`，远端环境`/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python`，项目根目录`/home/szu2070436088/2510044040/CV-SincNet`。运行前8张RTX3090均约`10/24576 MiB`，选择GPU0；运行后GPU0仍约`10/24576 MiB`，未观察到持久显存占用。
+
+远端验证：
+
+| 项 | 结果 |
+|---|---|
+| `sha256sum code/scripts/phase2_ospr_ci_eval.py` | `cec009bf587e036eea0ebd1584ecaa7d49ca17cfc0dc7899379520b70f5298ba` |
+| `sha256sum code/tests/test_phase2_ospr_ci_eval.py` | `ebbe48796d6cd1b13145fe913586f470438426aa1a733732b22ae3c027413532` |
+| `sha256sum docs/CVS_STAGE2C_OSPR_CI_ALGORITHM_20260705.md` | `85dac6baa3632dfa25efeb214bde4443b03ade7bbde19c57d3c7997a2e8c53b2` |
+| `py_compile` | PASS |
+| `PYTHONPATH=code:code/scripts python code/tests/test_phase2_ospr_ci_eval.py` | PASS，4 tests OK |
+| SSH/SCP清理 | 每次SSH/SCP后本地`ssh_processes=null`，到N607/bridge的`ESTABLISHED` TCP22为`null` |
+
+远端命令：
+
+```bash
+CUDA_VISIBLE_DEVICES=0 /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python code/scripts/phase2_ospr_ci_eval.py --feature_npz remote_artifacts/phase2_adv3b02_proxy_mined_20260704/features_proxy_mined.npz --output_dir remote_artifacts/phase2_adv3b02_proxy_mined_20260704/ospr_ci_remote --backend both --collab_counts all --k_shot 8 --query_per_class 12 --qknn_k 8 --seed 4070505 --source_holdout_per_class 12 --adapter_epochs 90 --adapter_rank 12 --batch_size 256 --device cuda:0 --support_selection_policy stable_first --event_alignment_policy receiver_domain_ranked --max_event_bytes 1152 --max_event_latency_ms 20
+```
+
+远端artifact：
+
+| Artifact | Remote SHA256 | Local pullback |
+|---|---|---|
+| `ospr_ci_summary.json` | `8b7e623be53233a4b590f99ddcbfa582f61dee3df22b918c25449f5b52927816` | `local_artifacts/phase2_adv3b02_proxy_mined_20260704/remote/ospr_ci_remote/ospr_ci_summary.json` |
+| `ospr_ci_enpc_summary.csv` | `39509db7d52053ee04e1b1743f81ffbeaf661fc5d44563c7f62e9b763f8b1a28` | `local_artifacts/phase2_adv3b02_proxy_mined_20260704/remote/ospr_ci_remote/ospr_ci_enpc_summary.csv` |
+| `ospr_ci_slev_summary.csv` | `85c8263a3b1ba1640a0df009f4c0bac594d62b2c0190cbbf3934e6ab774878dc` | `local_artifacts/phase2_adv3b02_proxy_mined_20260704/remote/ospr_ci_remote/ospr_ci_slev_summary.csv` |
+| `ospr_ci_adapted_features.npz` | `51c4673b9ea6a1fa3e03ef97f80c6ab30e1e40357d017085bca6e56dd39064e4` | `local_artifacts/phase2_adv3b02_proxy_mined_20260704/remote/ospr_ci_remote/ospr_ci_adapted_features.npz` |
+
+训练侧指标：
+
+| 指标 | before | after |
+|---|---:|---:|
+| `source_fit_proto_acc` | 0.947917 | 0.949519 |
+| `source_holdout_proto_acc` | 0.944444 | 0.972222 |
+| `support_proto_acc` | 0.590625 | 0.734375 |
+| `target_old_support_proto_acc` | 0.687500 | 0.775000 |
+| `seen_new_support_proto_acc` | 0.300000 | 0.612500 |
+| `proxy_max_logit_mean` | 10.794748 | 0.174762 |
+| `adapter_train_seconds` |  | 12.202031 |
+| `total_fp16_state_bytes` |  | 61762 |
+| `qknn8_support_int8_bytes` |  | 51200 |
+
+协议计数：
+
+| 字段 | 值 |
+|---|---:|
+| `source_fit` | 1248 |
+| `source_holdout_calibration` | 72 |
+| `proxy_unknown` | 3520 |
+| `target_support` | 320 |
+| `target_unknown_eval_only` | 440 |
+| `target_unknown_training_count` | 0 |
+
+M覆盖：
+
+| 后端 | `collab_count`覆盖 |
+|---|---|
+| ENPC | `1,2,3,4,5` |
+| SLEV | `1,2,3,4,5` |
+
+远端同一行结果摘要：
+
+| backend | profile | M | old_acc | min_old | seen_new_acc | min_seen | unknown_reject | unknown_FAR | bytes/event | verdict |
+|---|---|---:|---:|---:|---:|---:|---:|---:|---:|---|
+| ENPC | `enpc_old80_unknown_probe` | 4 | 0.714286 | 0.416667 | 0.375000 | 0.250000 | 0.750000 | 0.250000 | 512 | `NON_DEPLOYMENT_DIAGNOSTIC` |
+| ENPC | `enpc_old80_unknown_probe` | 5 | 0.541667 | 0.000000 | 0.291667 | 0.166667 | 0.916667 | 0.083333 | 640 | `NON_DEPLOYMENT_DIAGNOSTIC` |
+| ENPC | `enpc_known_anchor` | 4 | 0.910714 | 0.750000 | 0.625000 | 0.500000 | 0.000000 | 1.000000 | 512 | `NON_DEPLOYMENT_DIAGNOSTIC` |
+| SLEV | `slev_old80_energy_probe` | 3 | 0.777778 | 0.416667 | 0.500000 | 0.416667 | 0.583333 | 0.416667 | 384 | `NON_DEPLOYMENT_DIAGNOSTIC` |
+| SLEV | `slev_energy_strict` | 3 | 0.638889 | 0.250000 | 0.208333 | 0.083333 | 0.791667 | 0.208333 | 384 | `NON_DEPLOYMENT_DIAGNOSTIC` |
+| SLEV | `slev_known_anchor` | 4 | 0.910714 | 0.750000 | 0.625000 | 0.500000 | 0.000000 | 1.000000 | 512 | `NON_DEPLOYMENT_DIAGNOSTIC` |
+
+结论：OSPR-CI本轮已经完成本地实现、本地测试、Git镜像提交、N607同步、远端验证和全量`M=1..5`复验。训练侧确实改善了support几何并显著压低proxy已知类logit，但同一行指标仍未达到用户目标：最高未知拒识行`unknown_reject=0.916667`时旧类和seen-new严重不足；旧类/seen-new较好的行未知拒识为0。因此当前结果只能作为负诊断，不能声明天基部署成功或目标达成。

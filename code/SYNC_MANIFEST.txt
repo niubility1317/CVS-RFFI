@@ -5,9 +5,11 @@ purpose=OSPR-CI source-heldout prototype repair collaborative inference for ADV3
 E:\type10-7\code\scripts\phase2_ospr_ci_eval.py -> /home/szu2070436088/2510044040/CV-SincNet/code/scripts/phase2_ospr_ci_eval.py sha256=CEC009BF587E036EEA0EBD1584ECAA7D49CA17CFC0DC7899379520B70F5298BA
 E:\type10-7\code\tests\test_phase2_ospr_ci_eval.py -> /home/szu2070436088/2510044040/CV-SincNet/code/tests/test_phase2_ospr_ci_eval.py sha256=EBBE48796D6CD1B13145FE913586F470438426AA1A733732B22AE3C027413532
 E:\type10-7\docs\CVS_STAGE2C_OSPR_CI_ALGORITHM_20260705.md -> /home/szu2070436088/2510044040/CV-SincNet/docs/CVS_STAGE2C_OSPR_CI_ALGORITHM_20260705.md sha256=85DAC6BAA3632DFA25EFEB214BDE4443B03ADE7BBDE19C57D3C7997A2E8C53B2
-E:\type10-7\automation_reports\CV-SincNet\phase2_adv3b02_smec_ci_20260704\report.md -> /home/szu2070436088/2510044040/CV-SincNet/automation_reports/CV-SincNet/phase2_adv3b02_smec_ci_20260704/report.md sha256=3BF4470A8EF0EDB89EDAAC0C8F23CC2434087AEF92DA7BB85C268538DCAE72FA
+E:\type10-7\automation_reports\CV-SincNet\phase2_adv3b02_smec_ci_20260704\report.md -> /home/szu2070436088/2510044040/CV-SincNet/automation_reports/CV-SincNet/phase2_adv3b02_smec_ci_20260704/report.md sha256=33D7F49FC115071158CFF3B6E9EC146A1B4E9AD8DC685C95B70B61105EC6F151
 local_verify=py_compile PASS; pytest test_phase2_ospr_ci_eval.py 4 PASS; local smoke generated ospr_ci_summary and ENPC/SLEV M=1..5 diagnostic rows.
 local_smoke_status=NON_DEPLOYMENT_DIAGNOSTIC; best high-reject rows still miss same-row old/seen-new/unknown gates.
+remote_verify=N607 direct preflight PASS; remote sha256 PASS; py_compile PASS; unittest 4 PASS; GPU0 low VRAM selected.
+remote_run=CVS-RFFI env full OSPR-CI M=1..5 PASS completion; target_pass_count=0; final verdict NON_DEPLOYMENT_DIAGNOSTIC.
 
 2026-06-09 16:20 CVS CEN51 full-DG low-shot sweep
 
