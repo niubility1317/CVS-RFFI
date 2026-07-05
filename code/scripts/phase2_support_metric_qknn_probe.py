@@ -3536,7 +3536,21 @@ def main() -> None:
     if aux_feature_path is not None:
         aux_data = np.load(aux_feature_path, allow_pickle=True)
         aux_features = qknn._normalize_rows(aux_data["features"])
-        for key, primary in (("tx_ids", tx_ids), ("dataset_role", roles), ("sat_scenarios", scenarios)):
+        required_aux_keys = {
+            "tx_ids": tx_ids,
+            "dataset_role": roles,
+            "sat_scenarios": scenarios,
+            "rx_ids": rx_ids,
+            "channel_views": channel_views,
+        }
+        for optional_key in ("day_ids", "eq_ids", "sig_ids"):
+            if optional_key in data.files or optional_key in aux_data.files:
+                if optional_key not in data.files or optional_key not in aux_data.files:
+                    raise ValueError(f"aux_feature_npz missing alignment key {optional_key}: {args.aux_feature_npz}")
+                required_aux_keys[optional_key] = np.asarray(data[optional_key], dtype=object).astype(str)
+        for key, primary in required_aux_keys.items():
+            if key not in aux_data.files:
+                raise ValueError(f"aux_feature_npz missing alignment key {key}: {args.aux_feature_npz}")
             aux_values = np.asarray(aux_data[key], dtype=object).astype(str)
             if aux_values.shape != primary.shape or not bool(np.all(aux_values == primary)):
                 raise ValueError(f"aux_feature_npz metadata mismatch for {key}: {args.aux_feature_npz}")

@@ -202,6 +202,51 @@ Interpretation:
 
 Current goal status: active, not achieved.
 
+## Aux Alignment Guard and Credible Baseline Reset
+
+Follow-up inspection found that the archived `NORM+HP08` dual-view N20 rows were not sample-aligned:
+
+| check | result |
+|---|---:|
+| NORM sample rows | 11,760 |
+| HP08 sample rows | 11,760 |
+| full metadata-key intersection (`tx/rx/day/eq/sig/role/scenario`) | 1,374 |
+| source intersection | 2 |
+| target-old intersection | 8 |
+| target-unknown intersection | 698 |
+
+Therefore the previous `NORM+HP08` dual-view rows are now treated as diagnostic-contaminated, not valid aligned multi-view evidence. The root cause is that HP08 export used a different export seed (`421900`) from the NORM/HEAD N20 export lineage. `features_n20_head.npz` was checked and is fully aligned with `features_n20_norm.npz`.
+
+Code repair:
+
+- `phase2_support_metric_qknn_probe.py` now requires auxiliary feature files to match the primary file on `tx_ids`,`dataset_role`,`sat_scenarios`,`rx_ids`,`channel_views`, and optional sample keys `day_ids`,`eq_ids`,`sig_ids`.
+- `launch_phase2_qknn_hardpair_n20_v1.sh` now exposes `EXPORT_SEED`, defaulting to `4070391`, so HP08 can be re-exported on the same sample selection as the NORM N20 feature file.
+
+Verification:
+
+| command | result |
+|---|---|
+| `conda run -n ssr-gpu python -m py_compile code\scripts\phase2_support_metric_qknn_probe.py` | PASS |
+| `bash -n code/scripts/launch_phase2_qknn_hardpair_n20_v1.sh` | PASS |
+| NORM+misaligned-HP08 guard check | expected failure: `aux_feature_npz metadata mismatch for rx_ids` |
+
+Credible rerun baselines after the guard:
+
+| feature route | K | old_acc | min_old | new_acc | min_new | verdict |
+|---|---:|---:|---:|---:|---:|---|
+| NORM only adaptive v9 | 10 | 92.62% | 78.57% | 70.71% | 51.43% | failed |
+| NORM+aligned HEAD adaptive v9 | 10 | 92.14% | 78.57% | 71.07% | 51.43% | failed |
+| NORM only adaptive v9 | 5 | 92.22% | 78.67% | 68.67% | 42.67% | failed |
+| NORM+aligned HEAD adaptive v9 | 5 | 91.78% | 77.33% | 68.80% | 44.00% | failed |
+
+Interpretation:
+
+- The true aligned N20 baseline is lower than the earlier contaminated NORM+HP08 rows.
+- The aligned HEAD auxiliary view does not solve the many-new floor collapse.
+- The next necessary experiment is an aligned HP08 re-export using `EXPORT_SEED=4070391`, followed by the same strict `K=10`/`K=5` maximum-query qKNN evaluation. This is a representation-quality repair attempt, not a K expansion.
+
+Current goal status: active, not achieved.
+
 ## Post-v9 Floor Diagnostics
 
 These diagnostics keep the K anchors fixed at `K=10` and `K=5`; no larger K setting was introduced. Query remains the maximum available split: 70 per class for `K=10`, 75 per class for `K=5`.

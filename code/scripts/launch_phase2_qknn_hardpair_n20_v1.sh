@@ -7,6 +7,7 @@ GPU="${GPU:-5}"
 PROFILE="${PROFILE:-HP08}"
 HARD_PAIR_WEIGHT="${HARD_PAIR_WEIGHT:-0.08}"
 HARD_OLD_WEIGHT="${HARD_OLD_WEIGHT:-0.04}"
+EXPORT_SEED="${EXPORT_SEED:-4070391}"
 RUN_ROOT="${RUN_ROOT:-${ROOT}/runs/phase2_qknn_hardpair_n20_20260706}"
 
 OLD_TX="14-10,14-7,20-15,20-19,6-15,8-20"
@@ -85,7 +86,7 @@ CUDA_VISIBLE_DEVICES="${GPU}" "${PYTHON}" -u code/scripts/train_apply_phase1_iq_
   --grad_clip 5.0 \
   --log_every 5 \
   --device cuda:0 \
-  --seed 421900
+  --seed "${EXPORT_SEED}"
 
 FEATURE_NPZ="${RUN_ROOT}/MANYNEW20_HARDPAIR_${PROFILE}/ADV3B02_CORE90_SOFT_E200_PHASE1_HARDPAIR_${PROFILE}_N20/features_hardpair_${PROFILE}_n20.npz"
 EVAL_DIR="${RUN_ROOT}/${PROFILE}/qknn_eval"
