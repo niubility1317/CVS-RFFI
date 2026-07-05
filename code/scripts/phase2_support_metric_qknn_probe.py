@@ -3165,12 +3165,15 @@ def _adaptive_qknn_overrides(
         "stable_dualview_v4",
         "dualview_support_v5",
         "stable_dualview_v5",
+        "dualview_support_v6",
+        "stable_dualview_v6",
     }:
         raise ValueError(f"unsupported adaptive_qknn_policy: {policy}")
     use_v2 = name in {"dualview_support_v2", "stable_dualview_v2"}
     use_v3 = name in {"dualview_support_v3", "stable_dualview_v3"}
     use_v4 = name in {"dualview_support_v4", "stable_dualview_v4"}
     use_v5 = name in {"dualview_support_v5", "stable_dualview_v5"}
+    use_v6 = name in {"dualview_support_v6", "stable_dualview_v6"}
 
     min_k = float(geometry["adaptive_support_min_k"])
     new_count = float(geometry["adaptive_new_class_count"])
@@ -3223,14 +3226,14 @@ def _adaptive_qknn_overrides(
         "source_guard_conf_min": 0.0,
         "source_guard_margin_min": 0.0,
     }
-    if use_v2 or use_v3 or use_v4 or use_v5:
+    if use_v2 or use_v3 or use_v4 or use_v5 or use_v6:
         competition_load = class_load
-        if (use_v3 or use_v4 or use_v5) and new_count >= 2.0:
+        if (use_v3 or use_v4 or use_v5 or use_v6) and new_count >= 2.0:
             competition_load = max(competition_load, 0.25)
         overrides.update(
             {
                 "role_balanced_assignment": bool(
-                    class_load > 0.0 or ((use_v3 or use_v4 or use_v5) and stable_gate >= 0.50)
+                    class_load > 0.0 or ((use_v3 or use_v4 or use_v5 or use_v6) and stable_gate >= 0.50)
                 ),
                 "local_competition_weight": float(0.02 * competition_load * stable_gate),
                 "local_competition_k": int(3 + round(4.0 * competition_load)),
@@ -3266,6 +3269,31 @@ def _adaptive_qknn_overrides(
                 "labelprop_clip": 2.0,
                 "labelprop_scope": "scenario" if labelprop_weight > 0.0 else "all",
                 "query_graph_weight": 0.0,
+            }
+        )
+    if use_v6:
+        rescue_gate = _clip01(((new_count - 10.0) / 10.0) * stable_gate)
+        labelprop_gate = _clip01(k_reliability * stable_gate * (1.0 - rescue_gate))
+        labelprop_weight = float(np.clip(0.60 * labelprop_gate, 0.0, 0.20))
+        support_loo_weight = float(np.clip(0.02 * rescue_gate, 0.0, 0.02))
+        support_loo_top_pairs = int(max(4, min(12, round(0.40 * new_count))))
+        support_loo_min_errors = int(max(3, np.ceil(0.20 * max(min_k, 1.0))))
+        overrides.update(
+            {
+                "labelprop_weight": labelprop_weight,
+                "labelprop_k": 8,
+                "labelprop_alpha": 0.8,
+                "labelprop_temperature": 0.08,
+                "labelprop_rounds": 10,
+                "labelprop_clip": 2.0,
+                "labelprop_scope": "scenario" if labelprop_weight > 0.0 else "all",
+                "query_graph_weight": 0.0,
+                "support_loo_pair_rescue_weight": support_loo_weight,
+                "support_loo_pair_rescue_top_pairs": support_loo_top_pairs,
+                "support_loo_pair_rescue_min_errors": support_loo_min_errors,
+                "support_loo_pair_rescue_alpha": 0.1,
+                "support_loo_pair_rescue_clip": 2.0,
+                "support_loo_pair_rescue_scope": "new",
             }
         )
     return overrides

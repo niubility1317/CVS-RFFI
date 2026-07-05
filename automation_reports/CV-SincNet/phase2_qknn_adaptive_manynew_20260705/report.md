@@ -339,6 +339,50 @@ Interpretation:
 
 Current goal status: active, not achieved.
 
+## 2026-07-06 Continuation: adaptive v6 support-LOO policy
+
+Objective: continue the active qKNN goal without expanding the K grid. This step adds one adaptive policy and verifies it only at `K=5,K=10` for 10 and 20 new classes.
+
+Code change:
+
+- Added `dualview_support_v6` / `stable_dualview_v6` in `code/scripts/phase2_support_metric_qknn_probe.py`.
+- v6 keeps the v2 stable dual-view baseline for high new-class load and adds an adaptive support-LOO pair-rescue gate. The gate depends on support geometry, new-class count, and K reliability, not on hand-picked per-K parameters.
+- Persistent state remains compressed: transformed class prototypes, optional support-LOO pair coefficients, and metadata. Raw support samples are not stored (`stored_raw_support_count=0` in all verification rows).
+
+Local verification:
+
+```text
+C:\Users\lh594\.conda\envs\ssr-gpu\python.exe -m py_compile code\scripts\phase2_support_metric_qknn_probe.py
+```
+
+PASS.
+
+v6 verification summary:
+
+| new classes | K | old_acc | min_old | seen_new_acc | min_seen_new | labelprop_weight | support_loo_weight | support_loo_pairs | verdict |
+|---:|---:|---:|---:|---:|---:|---:|---:|---:|---|
+| 10 | 10 | 92.14% | 77.14% | 87.57% | 65.71% | 0.187 | 0.00 | 0 | high mean, floor failed |
+| 10 | 5 | 92.44% | 78.67% | 85.20% | 54.67% | 0.000 | 0.00 | 0 | high mean, floor failed |
+| 20 | 10 | 91.43% | 77.14% | 72.14% | 52.86% | 0.000 | 0.02 | 0 | improved vs current baseline, floor failed |
+| 20 | 5 | 92.44% | 78.67% | 60.20% | 26.67% | 0.000 | 0.02 | 0 | improved mean, severe floor failure |
+
+Per-new-class performance:
+
+| new classes | K | per-new accuracy |
+|---:|---:|---|
+| 10 | 10 | `10-10=90.00%, 11-10=74.29%, 18-5=94.29%, 19-3=95.71%, 2-13=65.71%, 2-5=87.14%, 3-8=95.71%, 4-10=91.43%, 8-18=90.00%, 8-3=91.43%` |
+| 10 | 5 | `10-10=90.67%, 11-10=73.33%, 18-5=85.33%, 19-3=94.67%, 2-13=54.67%, 2-5=89.33%, 3-8=92.00%, 4-10=92.00%, 8-18=88.00%, 8-3=92.00%` |
+| 20 | 10 | `10-10=85.71%, 11-10=58.57%, 18-5=54.29%, 19-3=67.14%, 2-13=52.86%, 2-5=82.86%, 3-8=84.29%, 4-10=88.57%, 8-18=85.71%, 8-3=78.57%, 1-1=68.57%, 1-10=85.71%, 1-11=88.57%, 1-12=70.00%, 1-14=61.43%, 1-15=80.00%, 1-16=67.14%, 1-18=52.86%, 1-19=72.86%, 1-2=57.14%` |
+| 20 | 5 | `10-10=74.67%, 11-10=53.33%, 18-5=52.00%, 19-3=29.33%, 2-13=30.67%, 2-5=78.67%, 3-8=88.00%, 4-10=86.67%, 8-18=82.67%, 8-3=69.33%, 1-1=60.00%, 1-10=80.00%, 1-11=73.33%, 1-12=65.33%, 1-14=57.33%, 1-15=60.00%, 1-16=69.33%, 1-18=29.33%, 1-19=26.67%, 1-2=37.33%` |
+
+Interpretation:
+
+- v6 is a useful adaptive qKNN step: with the same K anchors and compressed support state, it keeps old-class accuracy above 91% and improves the N20 current reproducible route materially over the previously recorded fingerprinted baseline (`K=10 seen_new_acc 44.36% -> 72.14%`, `K=5 seen_new_acc 38.67% -> 60.20%`).
+- The active goal is still not met. The ten-new-class floor remains below 75%, and twenty-new-class K=5 collapses on several classes (`1-19`, `1-18`, `19-3`, `2-13`).
+- The next step should target floor-aware enrollment/representation repair. v6 solves part of the mean-accuracy problem but not the worst-class separability problem.
+
+Current goal status: active, not achieved.
+
 ## 2026-07-06 Local Follow-up: adaptive scenario-labelprop qKNN v5 and oracle geometry audit
 
 Objective: continue improving the compressed qKNN route without expanding the K grid. This follow-up tests whether the v4 scenario-labelprop gate was too conservative and whether the current ADV3B02 full Stage2-C feature geometry can theoretically support the active `min_new>=75%` target.
