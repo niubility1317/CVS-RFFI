@@ -294,6 +294,55 @@ Interpretation:
 
 Current goal status: active, not achieved.
 
+## Support Quality and Scenario-Balanced Diagnostics
+
+Objective: continue qKNN optimization without increasing K or adding per-K hand tuning. Two non-query-label routes were checked after v12:
+
+1. `scenario_balanced_assignment`: use the known LEO scenario batch structure during assignment.
+2. `support_quality_weight`: compute one support-quality scalar per stored support code from support-LOO truth margin, then use those scalars to reweight compressed prototypes and topm local KNN scores.
+
+Implementation update:
+
+- Added support-LOO quality weighting to `code/scripts/phase2_support_metric_qknn_probe.py`.
+- The deployed state remains compressed: no raw support samples are stored; the extra state is one scalar per quantized support code.
+- The quality score uses only support labels and support-LOO predictions. Query labels remain audit-only.
+
+Verification:
+
+| command / artifact | result |
+|---|---|
+| `conda run -n ssr-gpu python -m py_compile code\scripts\phase2_support_metric_qknn_probe.py` | PASS |
+| `n10_k10_v11_support_quality_grid_seed421029.csv` | completed,90 rows |
+| `n10_k10_v11_support_quality_strong_grid_seed421029.csv` | completed,36 rows |
+| `n10_k10_v11_scenariobal_seed421029.json` | completed |
+| `n10_k5_v11_scenariobal_seed421037.json` | completed |
+| `n20_k10_v11_scenariobal_seed421029.json` | completed |
+| `n20_k5_v11_scenariobal_seed421037.json` | completed |
+
+Support-quality result, N10 K10:
+
+| route | rows | best old_acc | best new_acc | best min_new | extra stored scalars | verdict |
+|---|---:|---:|---:|---:|---:|---|
+| conservative support-quality grid | 90 | 92.14% | 84.57% | 61.43% | 160 | no improvement |
+| strong support-quality grid | 36 | 91.43% | 82.57% | 60.00% | 160 | worsened |
+
+Scenario-balanced assignment result:
+
+| new count | K | old_acc | min_old | new_acc | min_new | verdict |
+|---:|---:|---:|---:|---:|---:|---|
+| 10 | 10 | 58.33% | 20.00% | 44.00% | 34.29% | rejected |
+| 10 | 5 | 54.67% | 18.67% | 43.20% | 29.33% | rejected |
+| 20 | 10 | 45.71% | 20.00% | 30.29% | 15.71% | rejected |
+| 20 | 5 | 40.00% | 18.67% | 28.00% | 17.33% | rejected |
+
+Interpretation:
+
+- Scenario-balanced assignment is not usable here. It over-constrains the batch by LEO scenario and destroys both old and new accuracy.
+- Support-quality weighting is deployment-friendly and aligns with the compression requirement, but it does not raise the hard-class floor. Strong weighting actually reduces mean new accuracy.
+- This further narrows the failure: the dominant hard classes are not fixed by support reliability reweighting, support-bias, pair-axis, pairwise linear heads, transductive query prototypes, class-diagonal local metrics, or scenario assignment. The remaining credible path is representation/enrollment repair, not another scalar KNN head.
+
+Current goal status: active, not achieved.
+
 ## Adaptive v11 ASLR Check
 
 Objective: continue optimizing qKNN without adding K values. The only anchors remain `K=10` and `K=5`. This check adds `dualview_support_v11`, an ASLR policy: Adaptive Support-LOO Rescue. ASLR keeps the v9 compressed qKNN backbone and increases the support-LOO pair-rescue strength from support geometry, K reliability, and new-class load. It stores no raw support samples.

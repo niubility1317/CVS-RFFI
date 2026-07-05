@@ -734,6 +734,166 @@ def _repelled_class_scores(
     return score_matrix, radius_by_label, proto_sim
 
 
+def _weighted_topm_mean(scores: np.ndarray, weights: np.ndarray, topm: int) -> np.ndarray:
+    scores = np.asarray(scores, dtype=np.float64)
+    weights = np.asarray(weights, dtype=np.float64)
+    if scores.ndim != 2 or scores.shape[1] == 0:
+        return np.full(scores.shape[0], -1e9, dtype=np.float64)
+    k = max(1, min(int(topm), int(scores.shape[1])))
+    top_idx = np.argpartition(-scores, kth=k - 1, axis=1)[:, :k]
+    top_scores = np.take_along_axis(scores, top_idx, axis=1)
+    top_weights = np.maximum(weights[top_idx], 1e-6)
+    return np.sum(top_scores * top_weights, axis=1) / np.maximum(np.sum(top_weights, axis=1), 1e-6)
+
+
+def _support_quality_weights(
+    *,
+    support_scores: np.ndarray,
+    support_labels: np.ndarray,
+    class_labels: list[str],
+    floor: float,
+    margin_scale: float,
+) -> tuple[np.ndarray, float, float]:
+    labels = np.asarray(support_labels, dtype=object).astype(str)
+    scores = np.asarray(support_scores, dtype=np.float64)
+    label_to_index = {label: index for index, label in enumerate(class_labels)}
+    truth_index = np.asarray([label_to_index[str(label)] for label in labels.tolist()], dtype=int)
+    truth_scores = scores[np.arange(scores.shape[0]), truth_index]
+    masked = scores.copy()
+    masked[np.arange(scores.shape[0]), truth_index] = -np.inf
+    runner_up = np.max(masked, axis=1)
+    margin = truth_scores - runner_up
+    scale = max(float(margin_scale), 1e-4)
+    reliability = 1.0 / (1.0 + np.exp(-np.clip(margin / scale, -12.0, 12.0)))
+    floor_value = float(np.clip(float(floor), 0.0, 1.0))
+    weights = floor_value + (1.0 - floor_value) * reliability
+    per_class_acc: list[float] = []
+    pred = np.asarray(class_labels, dtype=object)[np.argmax(scores, axis=1)].astype(str)
+    for label in class_labels:
+        mask = labels == label
+        if bool(np.any(mask)):
+            per_class_acc.append(float(np.mean(pred[mask] == label)))
+    return weights.astype(np.float64), float(min(per_class_acc, default=0.0)), float(np.mean(per_class_acc) if per_class_acc else 0.0)
+
+
+def _support_quality_weighted_scores(
+    *,
+    features: np.ndarray,
+    support_indices: np.ndarray,
+    support_labels: np.ndarray,
+    query_indices: np.ndarray,
+    scenarios: np.ndarray,
+    class_labels: list[str],
+    old_labels: set[str],
+    topm: int,
+    proto_mix: float,
+    radius_norm: float,
+    old_bias: float,
+    neg_lambda: float,
+    neg_threshold: float,
+    neg_margin: float,
+    mutual_only: bool,
+    scenario_aware: bool,
+    support_scores: np.ndarray,
+    quality_floor: float,
+    margin_scale: float,
+) -> tuple[np.ndarray, dict[str, float], np.ndarray, int, float, float]:
+    labels = np.asarray(support_labels, dtype=object).astype(str)
+    support_weights, loo_min_acc, loo_mean_acc = _support_quality_weights(
+        support_scores=support_scores,
+        support_labels=labels,
+        class_labels=class_labels,
+        floor=float(quality_floor),
+        margin_scale=float(margin_scale),
+    )
+
+    if scenario_aware:
+        query_scenarios = np.asarray(scenarios[query_indices], dtype=object).astype(str)
+        support_scenarios = np.asarray(scenarios[support_indices], dtype=object).astype(str)
+        out = np.full((query_indices.size, len(class_labels)), -1e9, dtype=np.float64)
+        radii: dict[str, float] = {}
+        proto_sim = np.zeros((len(class_labels), len(class_labels)), dtype=np.float64)
+        for scenario in sorted({str(value) for value in query_scenarios.tolist()}):
+            query_mask = query_scenarios == scenario
+            support_mask = support_scenarios == scenario
+            if int(np.sum(support_mask)) < max(1, int(topm)) or len(set(labels[support_mask].tolist())) < 2:
+                support_mask = np.ones_like(support_mask, dtype=bool)
+            sub_scores, sub_radii, sub_proto_sim, _sub_stored, _min_acc, _mean_acc = _support_quality_weighted_scores(
+                features=features,
+                support_indices=support_indices[support_mask],
+                support_labels=labels[support_mask],
+                query_indices=query_indices[query_mask],
+                scenarios=scenarios,
+                class_labels=class_labels,
+                old_labels=old_labels,
+                topm=topm,
+                proto_mix=proto_mix,
+                radius_norm=radius_norm,
+                old_bias=old_bias,
+                neg_lambda=neg_lambda,
+                neg_threshold=neg_threshold,
+                neg_margin=neg_margin,
+                mutual_only=mutual_only,
+                scenario_aware=False,
+                support_scores=support_scores[support_mask],
+                quality_floor=quality_floor,
+                margin_scale=margin_scale,
+            )
+            out[query_mask] = sub_scores
+            radii.update(sub_radii)
+            proto_sim = sub_proto_sim
+        return out, radii, proto_sim, int(support_weights.size), loo_min_acc, loo_mean_acc
+
+    query = qknn._normalize_rows(features[query_indices])
+    support = qknn._normalize_rows(features[support_indices])
+    prototypes: list[np.ndarray] = []
+    radii: list[float] = []
+    local_scores: list[np.ndarray] = []
+    for label in class_labels:
+        class_mask = labels == label
+        class_support = support[class_mask]
+        class_weights = support_weights[class_mask]
+        if class_support.size == 0:
+            prototypes.append(np.zeros(features.shape[1], dtype=np.float64))
+            radii.append(1.0)
+            local_scores.append(np.full(query.shape[0], -1e9, dtype=np.float64))
+            continue
+        weighted_mean = np.sum(class_support * class_weights[:, None], axis=0) / max(float(np.sum(class_weights)), 1e-6)
+        prototype = qknn._normalize_rows(weighted_mean[None, :])[0]
+        prototypes.append(prototype)
+        radius = float(np.sum(class_weights * (1.0 - class_support @ prototype)) / max(float(np.sum(class_weights)), 1e-6))
+        radii.append(radius)
+        local = _weighted_topm_mean(query @ class_support.T, class_weights, int(topm))
+        if float(radius_norm) != 0.0:
+            local = 1.0 - ((1.0 - local) / (max(radius, 1e-4) ** float(radius_norm)))
+        local_scores.append(local)
+
+    proto_matrix = qknn._normalize_rows(np.stack(prototypes, axis=0))
+    proto_scores = query @ proto_matrix.T
+    if float(radius_norm) != 0.0:
+        denom = np.power(np.maximum(np.asarray(radii, dtype=np.float64), 1e-4), float(radius_norm))[None, :]
+        proto_scores = 1.0 - ((1.0 - proto_scores) / denom)
+    score_matrix = (1.0 - float(proto_mix)) * np.stack(local_scores, axis=1) + float(proto_mix) * proto_scores
+    for class_index, label in enumerate(class_labels):
+        if label in old_labels:
+            score_matrix[:, class_index] += float(old_bias)
+    proto_sim = proto_matrix @ proto_matrix.T
+    if float(neg_lambda) > 0.0:
+        penalties = np.zeros_like(score_matrix)
+        for class_i in range(len(class_labels)):
+            close_mask = proto_sim[class_i] >= float(neg_threshold)
+            close_mask[class_i] = False
+            if mutual_only:
+                close_mask = close_mask & (proto_sim[:, class_i] >= float(neg_threshold))
+            if not bool(np.any(close_mask)):
+                continue
+            other = score_matrix[:, close_mask]
+            penalties[:, class_i] = np.maximum(0.0, np.max(other, axis=1) - score_matrix[:, class_i] + float(neg_margin))
+        score_matrix = score_matrix - float(neg_lambda) * penalties
+    radius_by_label = {label: radii[i] for i, label in enumerate(class_labels)}
+    return score_matrix, radius_by_label, proto_sim, int(support_weights.size), loo_min_acc, loo_mean_acc
+
+
 def _pairwise_quota_refine(
     pred: np.ndarray,
     scores: np.ndarray,
@@ -2357,6 +2517,9 @@ def _evaluate_metric_qknn(
     support_bias_weight: float,
     support_bias_step: float,
     support_bias_rounds: int,
+    support_quality_weight: float,
+    support_quality_floor: float,
+    support_quality_margin_scale: float,
     support_loo_pair_rescue_weight: float,
     support_loo_pair_rescue_top_pairs: int,
     support_loo_pair_rescue_min_errors: int,
@@ -2856,7 +3019,10 @@ def _evaluate_metric_qknn(
     support_bias_loo_min_acc = 0.0
     support_bias_loo_mean_acc = 0.0
     support_loo_scores: np.ndarray | None = None
-    if float(support_bias_weight) > 0.0 and float(support_bias_step) > 0.0 and int(support_bias_rounds) > 0:
+    support_quality_stored_scalars = 0
+    support_quality_loo_min_acc = 0.0
+    support_quality_loo_mean_acc = 0.0
+    if float(support_quality_weight) > 0.0:
         support_loo_scores = _support_loo_base_scores(
             features=adapted,
             support_indices=support_indices,
@@ -2874,6 +3040,55 @@ def _evaluate_metric_qknn(
             mutual_only=bool(mutual_only),
             scenario_aware=bool(scenario_aware),
         )
+        (
+            quality_scores,
+            _quality_radii,
+            _quality_proto_sim,
+            support_quality_stored_scalars,
+            support_quality_loo_min_acc,
+            support_quality_loo_mean_acc,
+        ) = _support_quality_weighted_scores(
+            features=adapted,
+            support_indices=support_indices,
+            support_labels=support_labels,
+            query_indices=query_indices,
+            scenarios=scenarios,
+            class_labels=old_labels + new_labels,
+            old_labels=set(old_labels),
+            topm=int(topm),
+            proto_mix=float(proto_mix),
+            radius_norm=float(radius_norm),
+            old_bias=float(old_bias),
+            neg_lambda=float(neg_lambda),
+            neg_threshold=float(neg_threshold),
+            neg_margin=float(neg_margin),
+            mutual_only=bool(mutual_only),
+            scenario_aware=bool(scenario_aware),
+            support_scores=support_loo_scores,
+            quality_floor=float(support_quality_floor),
+            margin_scale=float(support_quality_margin_scale),
+        )
+        quality_weight = float(np.clip(float(support_quality_weight), 0.0, 1.0))
+        scores = (1.0 - quality_weight) * scores + quality_weight * quality_scores
+    if float(support_bias_weight) > 0.0 and float(support_bias_step) > 0.0 and int(support_bias_rounds) > 0:
+        if support_loo_scores is None:
+            support_loo_scores = _support_loo_base_scores(
+                features=adapted,
+                support_indices=support_indices,
+                support_labels=support_labels,
+                scenarios=scenarios,
+                class_labels=old_labels + new_labels,
+                old_labels=set(old_labels),
+                topm=int(topm),
+                proto_mix=float(proto_mix),
+                radius_norm=float(radius_norm),
+                old_bias=float(old_bias),
+                neg_lambda=float(neg_lambda),
+                neg_threshold=float(neg_threshold),
+                neg_margin=float(neg_margin),
+                mutual_only=bool(mutual_only),
+                scenario_aware=bool(scenario_aware),
+            )
         support_bias, support_bias_loo_min_acc, support_bias_loo_mean_acc = _support_bias_vector(
             support_scores=support_loo_scores,
             support_labels=support_labels,
@@ -3271,6 +3486,12 @@ def _evaluate_metric_qknn(
         "support_bias_loo_min_acc": float(support_bias_loo_min_acc),
         "support_bias_loo_mean_acc": float(support_bias_loo_mean_acc),
         "stored_support_bias_scalars": int(stored_support_bias_scalars),
+        "support_quality_weight": float(support_quality_weight),
+        "support_quality_floor": float(support_quality_floor),
+        "support_quality_margin_scale": float(support_quality_margin_scale),
+        "support_quality_loo_min_acc": float(support_quality_loo_min_acc),
+        "support_quality_loo_mean_acc": float(support_quality_loo_mean_acc),
+        "stored_support_quality_scalars": int(support_quality_stored_scalars),
         "support_loo_pair_rescue_weight": float(support_loo_pair_rescue_weight),
         "support_loo_pair_rescue_top_pairs": int(support_loo_pair_rescue_top_pairs),
         "support_loo_pair_rescue_min_errors": int(support_loo_pair_rescue_min_errors),
@@ -3839,6 +4060,9 @@ def main() -> None:
     parser.add_argument("--support_bias_weight_grid", default="0")
     parser.add_argument("--support_bias_step_grid", default="0.01")
     parser.add_argument("--support_bias_rounds_grid", default="4")
+    parser.add_argument("--support_quality_weight_grid", default="0")
+    parser.add_argument("--support_quality_floor_grid", default="0.25")
+    parser.add_argument("--support_quality_margin_scale_grid", default="0.1")
     parser.add_argument("--support_loo_pair_rescue_weight_grid", default="0")
     parser.add_argument("--support_loo_pair_rescue_top_pairs_grid", default="0")
     parser.add_argument("--support_loo_pair_rescue_min_errors_grid", default="1")
@@ -4030,6 +4254,9 @@ def main() -> None:
             qknn._parse_float_csv(args.support_bias_weight_grid),
             qknn._parse_float_csv(args.support_bias_step_grid),
             qknn._parse_int_csv(args.support_bias_rounds_grid),
+            qknn._parse_float_csv(args.support_quality_weight_grid),
+            qknn._parse_float_csv(args.support_quality_floor_grid),
+            qknn._parse_float_csv(args.support_quality_margin_scale_grid),
             qknn._parse_float_csv(args.support_loo_pair_rescue_weight_grid),
             qknn._parse_int_csv(args.support_loo_pair_rescue_top_pairs_grid),
             qknn._parse_int_csv(args.support_loo_pair_rescue_min_errors_grid),
@@ -4213,6 +4440,9 @@ def main() -> None:
                     support_bias_weight,
                     support_bias_step,
                     support_bias_rounds,
+                    support_quality_weight,
+                    support_quality_floor,
+                    support_quality_margin_scale,
                     support_loo_pair_rescue_weight,
                     support_loo_pair_rescue_top_pairs,
                     support_loo_pair_rescue_min_errors,
@@ -4599,6 +4829,9 @@ def main() -> None:
                         support_bias_weight=float(support_bias_weight),
                         support_bias_step=float(support_bias_step),
                         support_bias_rounds=int(support_bias_rounds),
+                        support_quality_weight=float(support_quality_weight),
+                        support_quality_floor=float(support_quality_floor),
+                        support_quality_margin_scale=float(support_quality_margin_scale),
                         support_loo_pair_rescue_weight=float(params["support_loo_pair_rescue_weight"]),
                         support_loo_pair_rescue_top_pairs=int(params["support_loo_pair_rescue_top_pairs"]),
                         support_loo_pair_rescue_min_errors=int(params["support_loo_pair_rescue_min_errors"]),
@@ -4849,6 +5082,12 @@ def main() -> None:
         "support_bias_loo_min_acc",
         "support_bias_loo_mean_acc",
         "stored_support_bias_scalars",
+        "support_quality_weight",
+        "support_quality_floor",
+        "support_quality_margin_scale",
+        "support_quality_loo_min_acc",
+        "support_quality_loo_mean_acc",
+        "stored_support_quality_scalars",
         "support_loo_pair_rescue_weight",
         "support_loo_pair_rescue_top_pairs",
         "support_loo_pair_rescue_min_errors",
