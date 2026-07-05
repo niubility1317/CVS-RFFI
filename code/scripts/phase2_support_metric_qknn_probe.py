@@ -56,6 +56,159 @@ def _topm_mean(scores: np.ndarray, topm: int) -> np.ndarray:
     return np.mean(part, axis=1)
 
 
+def _role_balanced_predict(
+    scores: np.ndarray,
+    *,
+    old_count: int,
+    old_labels: list[str],
+    new_labels: list[str],
+) -> np.ndarray:
+    """Balanced assignment inside the known old/new query partitions.
+
+    This preserves the closed-set equal-quota protocol while preventing global
+    Hungarian assignment from swapping old-query quota with new-query quota.
+    """
+    from scipy.optimize import linear_sum_assignment
+
+    class_labels = old_labels + new_labels
+    labels = np.asarray(class_labels, dtype=object)
+    out = np.empty(scores.shape[0], dtype=object)
+    old_rows = np.arange(int(old_count), dtype=int)
+    new_rows = np.arange(int(old_count), int(scores.shape[0]), dtype=int)
+
+    def assign(row_indices: np.ndarray, slot_indices: list[int]) -> bool:
+        if row_indices.size == 0:
+            return True
+        if len(slot_indices) != int(row_indices.size):
+            return False
+        slot_array = np.asarray(slot_indices, dtype=int)
+        slot_scores = scores[row_indices][:, slot_array]
+        row_ind, col_ind = linear_sum_assignment(-slot_scores)
+        out[row_indices[row_ind]] = labels[slot_array[col_ind]]
+        return True
+
+    old_slots = base._quota_slots(int(old_rows.size), old_labels, offset=0)
+    new_slots = base._quota_slots(int(new_rows.size), new_labels, offset=len(old_labels))
+    if not assign(old_rows, old_slots) or not assign(new_rows, new_slots):
+        return base._balanced_predict(scores, old_count=old_count, old_labels=old_labels, new_labels=new_labels)
+    return out.astype(str)
+
+
+def _local_competition_adjust_scores(
+    scores: np.ndarray,
+    *,
+    proto_sim: np.ndarray,
+    old_labels: list[str],
+    new_labels: list[str],
+    neighbor_k: int,
+    weight: float,
+    clip: float,
+    scope: str,
+) -> tuple[np.ndarray, int]:
+    """Sharpen class scores against support-prototype neighbors only.
+
+    The adjustment stores no raw support samples. It uses only the compressed
+    prototype similarity graph, so adding new classes only adds prototype nodes
+    and a small local-neighbor list.
+    """
+    if float(weight) == 0.0 or int(neighbor_k) <= 1 or scores.shape[1] < 2:
+        return scores, 0
+    mode = str(scope).strip().lower()
+    if mode not in {"all", "role"}:
+        raise ValueError(f"unsupported local_competition_scope: {scope}")
+    class_count = int(scores.shape[1])
+    old_count = len(old_labels)
+    sim = np.asarray(proto_sim, dtype=np.float64).copy()
+    if sim.shape != (class_count, class_count):
+        return scores, 0
+    adjusted = scores.copy()
+    changes = np.zeros_like(scores, dtype=np.float64)
+    neighbor_edges = 0
+    for class_index in range(class_count):
+        allowed = np.ones(class_count, dtype=bool)
+        if mode == "role":
+            if class_index < old_count:
+                allowed[old_count:] = False
+            else:
+                allowed[:old_count] = False
+        allowed[class_index] = False
+        candidates = np.where(allowed)[0]
+        if candidates.size == 0:
+            continue
+        k = max(1, min(int(neighbor_k) - 1, int(candidates.size)))
+        order = candidates[np.argsort(sim[class_index, candidates])[::-1][:k]]
+        competitor = np.max(scores[:, order], axis=1)
+        margin = scores[:, class_index] - competitor
+        changes[:, class_index] = np.clip(margin, -float(clip), float(clip))
+        neighbor_edges += int(order.size)
+    adjusted = adjusted + float(weight) * changes
+    return adjusted, neighbor_edges
+
+
+def _assignment_predict(
+    scores: np.ndarray,
+    *,
+    old_count: int,
+    old_labels: list[str],
+    new_labels: list[str],
+    query_scenarios: np.ndarray,
+    scenario_balanced_assignment: bool,
+    role_balanced_assignment: bool,
+    balanced_assignment: bool,
+) -> np.ndarray:
+    if scenario_balanced_assignment:
+        return base._scenario_balanced_predict(
+            scores,
+            query_scenarios=query_scenarios,
+            query_old_mask=np.arange(scores.shape[0]) < int(old_count),
+            old_labels=old_labels,
+            new_labels=new_labels,
+        )
+    if role_balanced_assignment:
+        return _role_balanced_predict(scores, old_count=old_count, old_labels=old_labels, new_labels=new_labels)
+    if balanced_assignment:
+        return base._balanced_predict(scores, old_count=old_count, old_labels=old_labels, new_labels=new_labels)
+    return base._predict(scores, old_labels + new_labels)
+
+
+def _query_proto_refine_scores(
+    scores: np.ndarray,
+    *,
+    features: np.ndarray,
+    query_indices: np.ndarray,
+    provisional_pred: np.ndarray,
+    class_labels: list[str],
+    topm: int,
+    weight: float,
+    clip: float,
+) -> tuple[np.ndarray, int]:
+    """Refine scores using temporary query-batch prototypes from pseudo labels."""
+    if float(weight) == 0.0:
+        return scores, 0
+    query = qknn._normalize_rows(features[query_indices])
+    pred = np.asarray(provisional_pred, dtype=object).astype(str)
+    base_scores = np.asarray(scores, dtype=np.float64)
+    proto_rows: list[np.ndarray] = []
+    stored_count = 0
+    for class_index, label in enumerate(class_labels):
+        rows = np.where(pred == str(label))[0]
+        if rows.size == 0:
+            proto_rows.append(np.zeros(query.shape[1], dtype=np.float64))
+            continue
+        if int(topm) > 0 and int(rows.size) > int(topm):
+            row_scores = base_scores[rows, class_index]
+            rows = rows[np.argsort(row_scores)[::-1][: int(topm)]]
+        proto_rows.append(query[rows].mean(axis=0))
+        stored_count += 1
+    proto = qknn._normalize_rows(np.stack(proto_rows, axis=0))
+    refine = query @ proto.T
+    refine = refine - np.mean(refine, axis=1, keepdims=True)
+    refine = refine / (np.std(refine, axis=1, keepdims=True) + 1e-6)
+    if float(clip) > 0.0:
+        refine = np.clip(refine, -float(clip), float(clip))
+    return base_scores + float(weight) * refine, int(stored_count)
+
+
 def _repel_prototypes(
     prototypes: np.ndarray,
     *,
@@ -1361,6 +1514,7 @@ def _evaluate_metric_qknn(
     mutual_only: bool,
     scenario_aware: bool,
     balanced_assignment: bool,
+    role_balanced_assignment: bool,
     scenario_balanced_assignment: bool,
     proto_repel_lambda: float,
     proto_repel_margin: float,
@@ -1429,6 +1583,13 @@ def _evaluate_metric_qknn(
     query_graph_temperature: float,
     query_graph_rounds: int,
     query_graph_scope: str,
+    local_competition_weight: float,
+    local_competition_k: int,
+    local_competition_clip: float,
+    local_competition_scope: str,
+    query_proto_refine_weight: float,
+    query_proto_refine_topm: int,
+    query_proto_refine_clip: float,
     source_guard_mode: str,
     source_guard_weight: float,
     source_guard_conf_min: float,
@@ -1767,6 +1928,16 @@ def _evaluate_metric_qknn(
         weight=float(assignment_margin_weight),
         clip=float(assignment_margin_clip),
     )
+    scores, local_competition_edges = _local_competition_adjust_scores(
+        scores,
+        proto_sim=proto_sim,
+        old_labels=old_labels,
+        new_labels=new_labels,
+        neighbor_k=int(local_competition_k),
+        weight=float(local_competition_weight),
+        clip=float(local_competition_clip),
+        scope=str(local_competition_scope),
+    )
     labelprop_edges = 0
     if float(labelprop_weight) != 0.0:
         labelprop_scores, labelprop_edges = _support_query_labelprop_scores(
@@ -1816,18 +1987,38 @@ def _evaluate_metric_qknn(
         rounds=int(query_graph_rounds),
         scope=str(query_graph_scope),
     )
-    if scenario_balanced_assignment:
-        pred = base._scenario_balanced_predict(
+    query_proto_refine_count = 0
+    if float(query_proto_refine_weight) != 0.0:
+        provisional_pred = _assignment_predict(
             scores,
-            query_scenarios=scenarios[query_indices],
-            query_old_mask=np.arange(query_indices.size) < old_count,
+            old_count=old_count,
             old_labels=old_labels,
             new_labels=new_labels,
+            query_scenarios=scenarios[query_indices],
+            scenario_balanced_assignment=bool(scenario_balanced_assignment),
+            role_balanced_assignment=bool(role_balanced_assignment),
+            balanced_assignment=bool(balanced_assignment),
         )
-    elif balanced_assignment:
-        pred = base._balanced_predict(scores, old_count=old_count, old_labels=old_labels, new_labels=new_labels)
-    else:
-        pred = base._predict(scores, old_labels + new_labels)
+        scores, query_proto_refine_count = _query_proto_refine_scores(
+            scores,
+            features=adapted,
+            query_indices=query_indices,
+            provisional_pred=provisional_pred,
+            class_labels=old_labels + new_labels,
+            topm=int(query_proto_refine_topm),
+            weight=float(query_proto_refine_weight),
+            clip=float(query_proto_refine_clip),
+        )
+    pred = _assignment_predict(
+        scores,
+        old_count=old_count,
+        old_labels=old_labels,
+        new_labels=new_labels,
+        query_scenarios=scenarios[query_indices],
+        scenario_balanced_assignment=bool(scenario_balanced_assignment),
+        role_balanced_assignment=bool(role_balanced_assignment),
+        balanced_assignment=bool(balanced_assignment),
+    )
     pred, pair_refine_changed = _pairwise_quota_refine(
         pred,
         scores,
@@ -1861,6 +2052,7 @@ def _evaluate_metric_qknn(
         "mutual_only": bool(mutual_only),
         "scenario_aware": bool(scenario_aware),
         "balanced_assignment": bool(balanced_assignment),
+        "role_balanced_assignment": bool(role_balanced_assignment),
         "scenario_balanced_assignment": bool(scenario_balanced_assignment),
         "proto_repel_lambda": float(proto_repel_lambda),
         "proto_repel_margin": float(proto_repel_margin),
@@ -1954,6 +2146,15 @@ def _evaluate_metric_qknn(
         "query_graph_rounds": int(query_graph_rounds),
         "query_graph_scope": str(query_graph_scope),
         "query_graph_edges": int(query_graph_edges),
+        "local_competition_weight": float(local_competition_weight),
+        "local_competition_k": int(local_competition_k),
+        "local_competition_clip": float(local_competition_clip),
+        "local_competition_scope": str(local_competition_scope),
+        "local_competition_edges": int(local_competition_edges),
+        "query_proto_refine_weight": float(query_proto_refine_weight),
+        "query_proto_refine_topm": int(query_proto_refine_topm),
+        "query_proto_refine_clip": float(query_proto_refine_clip),
+        "query_proto_refine_count": int(query_proto_refine_count),
         "source_guard_mode": str(source_guard_mode),
         "source_guard_weight": float(source_guard_weight),
         "source_guard_conf_min": float(source_guard_conf_min),
@@ -2082,8 +2283,9 @@ def _adaptive_qknn_overrides(
             "adaptive_class_load": 0.0,
             "adaptive_k_reliability": 0.0,
         }
-    if name not in {"dualview_support_v1", "stable_dualview_v1"}:
+    if name not in {"dualview_support_v1", "stable_dualview_v1", "dualview_support_v2", "stable_dualview_v2"}:
         raise ValueError(f"unsupported adaptive_qknn_policy: {policy}")
+    use_v2 = name in {"dualview_support_v2", "stable_dualview_v2"}
 
     min_k = float(geometry["adaptive_support_min_k"])
     new_count = float(geometry["adaptive_new_class_count"])
@@ -2103,7 +2305,7 @@ def _adaptive_qknn_overrides(
     core_count = int(max(1, min(int(min_k), round(np.sqrt(max(min_k, 1.0)) / 1.6))))
     core_topm = int(max(1, min(core_count, 2 + int(class_load >= 0.5))))
 
-    return {
+    overrides: dict[str, Any] = {
         "adaptive_qknn_policy": name,
         "adaptive_support_hardness": hardness,
         "adaptive_class_load": class_load,
@@ -2133,6 +2335,17 @@ def _adaptive_qknn_overrides(
         "source_guard_conf_min": 0.0,
         "source_guard_margin_min": 0.0,
     }
+    if use_v2:
+        overrides.update(
+            {
+                "role_balanced_assignment": bool(class_load > 0.0),
+                "local_competition_weight": float(0.02 * class_load * stable_gate),
+                "local_competition_k": int(3 + round(4.0 * class_load)),
+                "local_competition_clip": 1.0,
+                "local_competition_scope": "role",
+            }
+        )
+    return overrides
 
 
 def main() -> None:
@@ -2237,6 +2450,13 @@ def main() -> None:
     parser.add_argument("--query_graph_temperature_grid", default="0.05")
     parser.add_argument("--query_graph_rounds_grid", default="1")
     parser.add_argument("--query_graph_scope_grid", default="all")
+    parser.add_argument("--local_competition_weight_grid", default="0")
+    parser.add_argument("--local_competition_k_grid", default="4")
+    parser.add_argument("--local_competition_clip_grid", default="1.0")
+    parser.add_argument("--local_competition_scope_grid", default="role")
+    parser.add_argument("--query_proto_refine_weight_grid", default="0")
+    parser.add_argument("--query_proto_refine_topm_grid", default="0")
+    parser.add_argument("--query_proto_refine_clip_grid", default="2.0")
     parser.add_argument("--source_guard_mode_grid", default="none")
     parser.add_argument("--source_guard_weight_grid", default="0")
     parser.add_argument("--source_guard_conf_min_grid", default="0")
@@ -2246,6 +2466,7 @@ def main() -> None:
     parser.add_argument("--source_proto_anchor_center_grid", default="0")
     parser.add_argument("--scenario_aware", action="store_true")
     parser.add_argument("--balanced_assignment", action="store_true")
+    parser.add_argument("--role_balanced_assignment", action="store_true")
     parser.add_argument("--scenario_balanced_assignment", action="store_true")
     parser.add_argument("--exclude_pool_from_query", action="store_true")
     parser.add_argument("--old_target", type=float, default=0.80)
@@ -2364,6 +2585,13 @@ def main() -> None:
             qknn._parse_float_csv(args.query_graph_temperature_grid),
             qknn._parse_int_csv(args.query_graph_rounds_grid),
             qknn._parse_csv(args.query_graph_scope_grid),
+            qknn._parse_float_csv(args.local_competition_weight_grid),
+            qknn._parse_int_csv(args.local_competition_k_grid),
+            qknn._parse_float_csv(args.local_competition_clip_grid),
+            qknn._parse_csv(args.local_competition_scope_grid),
+            qknn._parse_float_csv(args.query_proto_refine_weight_grid),
+            qknn._parse_int_csv(args.query_proto_refine_topm_grid),
+            qknn._parse_float_csv(args.query_proto_refine_clip_grid),
             qknn._parse_csv(args.source_guard_mode_grid),
             qknn._parse_float_csv(args.source_guard_weight_grid),
             qknn._parse_float_csv(args.source_guard_conf_min_grid),
@@ -2506,6 +2734,13 @@ def main() -> None:
                     query_graph_temperature,
                     query_graph_rounds,
                     query_graph_scope,
+                    local_competition_weight,
+                    local_competition_k,
+                    local_competition_clip,
+                    local_competition_scope,
+                    query_proto_refine_weight,
+                    query_proto_refine_topm,
+                    query_proto_refine_clip,
                     source_guard_mode,
                     source_guard_weight,
                     source_guard_conf_min,
@@ -2537,6 +2772,14 @@ def main() -> None:
                         "source_guard_weight": float(source_guard_weight),
                         "source_guard_conf_min": float(source_guard_conf_min),
                         "source_guard_margin_min": float(source_guard_margin_min),
+                        "role_balanced_assignment": bool(args.role_balanced_assignment),
+                        "local_competition_weight": float(local_competition_weight),
+                        "local_competition_k": int(local_competition_k),
+                        "local_competition_clip": float(local_competition_clip),
+                        "local_competition_scope": str(local_competition_scope),
+                        "query_proto_refine_weight": float(query_proto_refine_weight),
+                        "query_proto_refine_topm": int(query_proto_refine_topm),
+                        "query_proto_refine_clip": float(query_proto_refine_clip),
                     }
                     params.update(
                         {
@@ -2562,6 +2805,28 @@ def main() -> None:
                             "source_guard_weight": adaptive_overrides.get("source_guard_weight", params["source_guard_weight"]),
                             "source_guard_conf_min": adaptive_overrides.get("source_guard_conf_min", params["source_guard_conf_min"]),
                             "source_guard_margin_min": adaptive_overrides.get("source_guard_margin_min", params["source_guard_margin_min"]),
+                            "role_balanced_assignment": adaptive_overrides.get(
+                                "role_balanced_assignment", params["role_balanced_assignment"]
+                            ),
+                            "local_competition_weight": adaptive_overrides.get(
+                                "local_competition_weight", params["local_competition_weight"]
+                            ),
+                            "local_competition_k": adaptive_overrides.get("local_competition_k", params["local_competition_k"]),
+                            "local_competition_clip": adaptive_overrides.get(
+                                "local_competition_clip", params["local_competition_clip"]
+                            ),
+                            "local_competition_scope": adaptive_overrides.get(
+                                "local_competition_scope", params["local_competition_scope"]
+                            ),
+                            "query_proto_refine_weight": adaptive_overrides.get(
+                                "query_proto_refine_weight", params["query_proto_refine_weight"]
+                            ),
+                            "query_proto_refine_topm": adaptive_overrides.get(
+                                "query_proto_refine_topm", params["query_proto_refine_topm"]
+                            ),
+                            "query_proto_refine_clip": adaptive_overrides.get(
+                                "query_proto_refine_clip", params["query_proto_refine_clip"]
+                            ),
                         }
                     )
                     row = _evaluate_metric_qknn(
@@ -2588,6 +2853,7 @@ def main() -> None:
                         mutual_only=str(mutual_raw).lower() == "true",
                         scenario_aware=bool(args.scenario_aware),
                         balanced_assignment=bool(args.balanced_assignment),
+                        role_balanced_assignment=bool(params["role_balanced_assignment"]),
                         scenario_balanced_assignment=bool(args.scenario_balanced_assignment),
                         proto_repel_lambda=float(proto_repel_lambda),
                         proto_repel_margin=float(proto_repel_margin),
@@ -2659,6 +2925,13 @@ def main() -> None:
                         query_graph_temperature=float(query_graph_temperature),
                         query_graph_rounds=int(query_graph_rounds),
                         query_graph_scope=str(query_graph_scope),
+                        local_competition_weight=float(params["local_competition_weight"]),
+                        local_competition_k=int(params["local_competition_k"]),
+                        local_competition_clip=float(params["local_competition_clip"]),
+                        local_competition_scope=str(params["local_competition_scope"]),
+                        query_proto_refine_weight=float(params["query_proto_refine_weight"]),
+                        query_proto_refine_topm=int(params["query_proto_refine_topm"]),
+                        query_proto_refine_clip=float(params["query_proto_refine_clip"]),
                         source_guard_mode=str(params["source_guard_mode"]),
                         source_guard_weight=float(params["source_guard_weight"]),
                         source_guard_conf_min=float(params["source_guard_conf_min"]),
@@ -2753,6 +3026,7 @@ def main() -> None:
         "mutual_only",
         "scenario_aware",
         "balanced_assignment",
+        "role_balanced_assignment",
         "scenario_balanced_assignment",
         "proto_repel_lambda",
         "proto_repel_margin",
@@ -2846,6 +3120,15 @@ def main() -> None:
         "query_graph_rounds",
         "query_graph_scope",
         "query_graph_edges",
+        "local_competition_weight",
+        "local_competition_k",
+        "local_competition_clip",
+        "local_competition_scope",
+        "local_competition_edges",
+        "query_proto_refine_weight",
+        "query_proto_refine_topm",
+        "query_proto_refine_clip",
+        "query_proto_refine_count",
         "source_guard_mode",
         "source_guard_weight",
         "source_guard_conf_min",

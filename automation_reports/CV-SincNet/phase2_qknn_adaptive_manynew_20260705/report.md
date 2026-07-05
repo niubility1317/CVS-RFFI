@@ -238,3 +238,54 @@ Recommended next route:
 2. Add class-density-aware quotas: classes in dense clusters get local competition only against nearest support-prototype neighbors, avoiding global quota pressure from unrelated easy classes.
 3. Add per-class support compactness gates: when a class has high support radius or high nearest-prototype similarity, use multi-prototype/codebook storage instead of a single centroid.
 4. Re-run N10 and N20 with the same `K=5,K=10` anchors and require N20 drop within3pp before attempting N30.
+
+## Adaptive v2 Diagnostic
+
+Code change:
+
+- Added `role_balanced_assignment`: performs closed-set Hungarian quota assignment separately inside the known old-query and new-query partitions. This prevents global assignment from swapping old-query quota with new-query quota when the number of new classes grows.
+- Added `local_competition`: a support-prototype-neighbor score adjustment. It stores no raw support sample; it only needs the compressed class prototype graph and a small neighbor list.
+- Added `query_proto_refine`: optional transductive refinement from provisional pseudo labels to temporary query-batch prototypes. This also stores no raw support sample; deployment storage is unchanged, and runtime memory is one temporary prototype per class for the current batch.
+- Added `adaptive_qknn_policy=dualview_support_v2`: for class-load above the ten-new-class anchor it enables role-balanced assignment and a small local-competition weight. For the ten-new-class anchor it reduces to the v1 policy, so the prior K=5/K=10 best rows are preserved.
+
+Local verification:
+
+```text
+conda run -n ssr-gpu python -m py_compile code\scripts\phase2_support_metric_qknn_probe.py
+```
+
+Remote sync/verification:
+
+| item | evidence |
+|---|---|
+| synced script | `/home/szu2070436088/2510044040/CV-SincNet/code/scripts/phase2_support_metric_qknn_probe.py` |
+| remote syntax | `python3 -m py_compile code/scripts/phase2_support_metric_qknn_probe.py` PASS |
+| remote SHA256 | `6b733070fb6ca846184ce6c25a306acc6b5a0532a05ae838e7af2046a3d33685` |
+| N607 action boundary | synced and compiled only; no new experiment launched |
+
+Result summary:
+
+| scope | K | method | old_acc | min_old | new_acc | min_new | key settings |
+|---|---:|---|---:|---:|---:|---:|---|
+| N10 | 10 | `dualview_support_v2` | 87.86% | 74.29% | 87.71% | 77.14% | same as v1 |
+| N10 | 5 | `dualview_support_v2` | 88.89% | 72.00% | 85.87% | 76.00% | same as v1 |
+| N20 | 10 | `dualview_support_v1` | 75.00% | 54.29% | 64.50% | 40.00% | baseline |
+| N20 | 5 | `dualview_support_v1` | 66.89% | 45.33% | 60.87% | 24.00% | baseline |
+| N20 | 10 | `dualview_support_v2` | 92.14% | 78.57% | 68.29% | 44.29% | role balance + local competition |
+| N20 | 5 | `dualview_support_v2` | 92.44% | 78.67% | 65.53% | 36.00% | role balance + local competition |
+| N20 | 10 | `v2+labelprop` best diagnostic | 91.67% | 77.14% | 68.86% | 45.71% | `labelprop_weight=0.1` |
+| N20 | 10 | `v2+query_proto_refine` best diagnostic | 92.14% | 78.57% | 67.93% | 47.14% | `query_proto_refine_weight=0.05,topm=50` |
+
+Interpretation:
+
+- The previous N20 collapse had a large assignment component. In the reproduced K=10 v1 row, raw top1 old-query accuracy was 88.33%, but global balanced assignment assigned 89 old-query samples to new labels and 89 new-query samples to old labels. `role_balanced_assignment` removes this cross-role quota swap and lifts N20 K=10 old_acc from 75.00% to 92.14%.
+- The ten-new-class target is still satisfied for K=5 and K=10, and K=5 remains within5pp of K=10 on new_acc.
+- The twenty-new-class target is not satisfied. v2 improves N20 K=10 new_acc by +3.79pp and min_new by +4.29pp, but min_new remains 44.29%. Label propagation and query-prototype refinement only raise the best observed min_new to 45.71% and 47.14%, respectively.
+- Current evidence therefore says the remaining N20 bottleneck is not primarily KNN storage or assignment; it is feature separability in dense new-class families. The weakest classes still need better representation or a stronger class-family-aware adaptation stage before claiming "more new classes do not collapse".
+
+Deployment/storage note:
+
+- v2 still does not store raw support samples. Persistent state remains transform scalars, class prototypes, optional aux transform scalars, and small prototype-neighbor metadata.
+- Runtime overhead is low: role-balanced assignment uses the same Hungarian assignment scale as the existing closed-set quota solver, local competition stores 104 prototype-neighbor edges for the N20 K=10 row, and query-prototype refinement stores at most one temporary prototype per class when enabled.
+
+Current verdict: v2 is a useful stabilization step for old/new quota coupling, but the active goal is not complete because N20 min_new is far below75%.
