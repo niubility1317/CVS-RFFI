@@ -1,0 +1,110 @@
+# phase1_epoc_r7_floor_protected_shell_20260706
+
+## 基本信息
+
+|字段|内容|
+|---|---|
+|experiment_id|phase1_epoc_r7_floor_protected_shell_20260706|
+|timestamp|2026-07-06 03:55 CST|
+|operator|Codex|
+|objective|在协同推理、OSPR-CI++、feature geometry、target-old prototype/ridge/MLP上限均未达到目标后，启动更底层source-only地面训练候选，优先保护旧类floor并修复LEO特征几何。|
+|base/teacher|`ADV3B02_CORE90_SOFT_E200`，checkpoint:`runs/phase1_adv3_mechanism32_queue_20260701/ADV3B02_CORE90_SOFT_E200/best_joint_safe_ssdg.pth`|
+|route|`source_only_floor_protected_feature_shell`|
+|status|n607_running_startup_pass|
+
+## 协议边界
+
+- 地面训练只使用`ManySig.pkl`源域旧类数据，`labeled_ratio=0.10`。
+- 不加载`ManyTx.pkl`，不传入`--new_wisig_pkl`，不使用真实`Y_unknown`或目标接收机`R_t`样本。
+- 所有未知拒识训练信号来自虚拟unknown、source-heldout proxy逻辑、open-world feature shell、source episode半径约束和soft inter-class mixup，不接触真实Stage2 `target_unknown`。
+- 输出prototype只用于后续Stage2-C评估；本轮训练完成不等于部署成功。
+
+## 设计动机
+
+上一轮证据显示：
+
+|证据|结论|
+|---|---|
+|OSPR-CI/qknn8协同|资源满足，但旧类、新类和未知拒识无法同row达标。|
+|OSPR-CI++|可把未知拒识推到约99%，但旧类和seen-new几乎崩塌。|
+|feature-space upper bound|source-calibrated open boundary约89%-90%未知拒识，未达到99%。|
+|target-old prototype/ridge/MLP上限|MLP support train_acc=100%，target query old_acc最高约73%，说明不是线性头不足，而是LEO目标域特征几何不足。|
+
+R7的核心改变：
+
+- 强化teacher clean/sat/z_id蒸馏，避免学生偏离ADV3B02旧类能力。
+- 加强`z_id` compactness和source episode三sigma半径约束，优先保护旧类每类floor。
+- 降低R5/R6中可能导致已知类崩塌的proxy/soft unknown强度，把open-set shell作为轻约束而非主导目标。
+- 继续导出Phase2 prototype，后续必须回到Stage2-C qknn8+协同推理评估。
+
+## 候选矩阵
+
+|candidate|GPU|seed|机制侧重|teacher clean/sat/zid|proxy强度/start|soft mix强度|source episode|phase2 radius cap|
+|---|---:|---:|---|---|---|---:|---:|---:|
+|`EPOC_R7_FLOOR_LOCKED_SHELL`|2|706701|最大化旧类floor保护；虚拟unknown只作轻壳层约束|1.75/0.58/0.320|0.0030/E55|0.00000|0.0078|14|
+|`EPOC_R7_BALANCED_LOW_DENSITY`|3|706711|稍强低密度壳层，同时保持teacher/旧类compact|1.55/0.64/0.280|0.0045/E60|0.00002|0.0068|16|
+
+## 本地变更
+
+|文件|目的|sha256|
+|---|---|---|
+|`E:\type10-7\code\scripts\launch_phase1_epoc_r7_floor_protected_shell_20260706.sh`|新增R7 source-only floor-protected shell训练启动器；经子agent审查后延后proxy启动、降低soft mixup、放宽phase2半径，并修正dry-run日志为source-heldout proxy+virtual unknown shell。|`7F369C0B01FB7A9D46799ACD2F54DCB8DB31074876A08F2EF84B407B490F7D66`|
+|`E:\type10-7\code\tests\test_phase1_epoc_r7_floor_protected_shell_launcher.py`|验证dry-run协议边界、候选数量、关键参数和source-heldout proxy声明。|`86DBFD5CC646E31DC3B8741182966B3A2DDC8B824D3F4AE645F76FBBFBDA63F3`|
+
+Snapshot:
+
+`E:\type10-7\code\snapshots\phase1_epoc_r7_floor_protected_shell_20260706`
+
+## 本地验证
+
+|命令|结果|
+|---|---|
+|`bash -n code/scripts/launch_phase1_epoc_r7_floor_protected_shell_20260706.sh`|PASS|
+|`bash code/scripts/launch_phase1_epoc_r7_floor_protected_shell_20260706.sh --dry-run --only=EPOC_R7_FLOOR_LOCKED_SHELL`|PASS|
+|`PYTHONIOENCODING=utf-8 PYTHONUTF8=1 conda run -n ssr-gpu python -m pytest code\tests\test_phase1_epoc_r7_floor_protected_shell_launcher.py code\tests\test_epoc_adv3b02_teacher_distill.py -q`|PASS:4 passed；仅`.pytest_cache`权限warning。|
+|`PYTHONIOENCODING=utf-8 PYTHONUTF8=1 conda run -n ssr-gpu python -m py_compile code\tests\test_phase1_epoc_r7_floor_protected_shell_launcher.py`|PASS|
+
+子agent合理性审查后修正：
+
+|修正项|内容|
+|---|---|
+|proxy启动|从约26epoch推迟到55/60epoch，避免重复R6强proxy失败。|
+|soft unknown mixup|主候选降为0，对照仅保留0.00002极低权重。|
+|phase2 radius cap|从8/10放宽到14/16，避免过紧prototype半径伤害旧类尾部。|
+|teacher distill|提高clean/sat/z_id蒸馏权重，优先保护旧类floor和LEO几何。|
+|dry-run声明|从过窄的`virtual_unknown_only`修正为`source_heldout_proxy_unknown=1`和`virtual_unknown_shell=1`，避免误读训练信号来源。|
+
+## 远端计划
+
+|字段|内容|
+|---|---|
+|remote_root|`/home/szu2070436088/2510044040/CV-SincNet`|
+|python|`/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python`|
+|run_root|`runs/phase1_epoc_r7_floor_protected_shell_20260706`|
+|log_root|`logs/phase1_epoc_r7_floor_protected_shell_20260706`|
+|launch command|`bash code/scripts/launch_phase1_epoc_r7_floor_protected_shell_20260706.sh`|
+|GPU policy|默认GPU2和GPU3；N607预检后若GPU2/3不再低占用，启动器仍会按`MAX_ACTIVE_PER_GPU=2`等待slot。|
+|startup checks|`[CONFIG-TEACHER]`、`[CONFIG-LOSS]`、`[CONFIG-SAT]`、`[EPOCH-BEGIN]`；扫描Traceback、RuntimeError、CUDA OOM、NaN、unrecognized arguments。|
+|expected outputs|每候选`metrics_epoch.csv`、`metrics_epoch.jsonl`、`best_joint_safe_ssdg.pth`、`phase2_zid_prototypes.pt`。|
+
+## N607同步与启动证据
+
+|字段|内容|
+|---|---|
+|preflight|2026-07-06 03:54 CST PASS；direct `N607`可用，project root可见，GPU2/3分别约2185/2179MiB。|
+|remote sync|launcher、test、report、`code/SYNC_MANIFEST.txt`已同步到`/home/szu2070436088/2510044040/CV-SincNet`对应路径。|
+|remote verify|远端hash匹配，本地/远端`bash -n`、dry-run、测试函数/py_compile检查PASS；dry-run确认ManySig-only、未加载ManyTx、无`--new_wisig_pkl`和真实`target_unknown`。|
+|launch command|`cd /home/szu2070436088/2510044040/CV-SincNet; nohup bash code/scripts/launch_phase1_epoc_r7_floor_protected_shell_20260706.sh > logs/phase1_epoc_r7_floor_protected_shell_20260706_driver.out 2>&1 < /dev/null &`|
+|driver PID|`3176795`|
+|candidate PIDs/logs|`EPOC_R7_FLOOR_LOCKED_SHELL`:PID`3176812`,GPU2,log`logs/phase1_epoc_r7_floor_protected_shell_20260706/EPOC_R7_FLOOR_LOCKED_SHELL.out`;`EPOC_R7_BALANCED_LOW_DENSITY`:PID`3177236`,GPU3,log`logs/phase1_epoc_r7_floor_protected_shell_20260706/EPOC_R7_BALANCED_LOW_DENSITY.out`。|
+|startup health|2026-07-06 03:54 CST复查：两个候选均进入`E009/200`；日志含`[CONFIG-TEACHER]`、`[CONFIG-LOSS]`、`[CONFIG-SAT]`、`[EPOCH-BEGIN]`；GPU2/3约2185/2179MiB；未见Traceback、RuntimeError、CUDA OOM、NaN、unrecognized arguments或Killed。|
+|claim boundary|当前只证明R7已启动且startup PASS；不得声明Stage2-C成功、部署成功或最终目标完成。训练完成后必须用qknn8与协同推理`M=1..全体目标接收机数量`复评旧类、seen-new和unknown。|
+
+## 成功/失败判据
+
+|阶段|判据|
+|---|---|
+|startup PASS|两个候选均启动，日志进入epoch，未见配置/argparse/OOM错误。|
+|training useful|同row`best_score`不低于EPOC B，且`sat_floor`/receiver floor不明显退化。|
+|进入Stage2-C条件|训练完成并导出prototype后，必须用Stage2-C qknn8+协同推理复评`M=1..5`，真实unknown只作eval。|
+|失败判据|若旧类floor仍未明显改善，则R7也进入负证据；下一步需改变模型/损失结构，而不是继续微调壳层权重。|
