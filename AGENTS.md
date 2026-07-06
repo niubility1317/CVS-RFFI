@@ -6,3 +6,12 @@
 - DO NOT send optional commentary.
 - Do not commit datasets, trained weights, checkpoints, private runtime details, logs, generated experiment outputs, or local machine state. Keep `.gitignore` aligned with this boundary.
 - Do not claim deployment success from clean-view or diagnostic-only evidence. Any reported result must be tied to a concrete run, split, K-shot setting, satellite/LEO view, and same-row metric context.
+
+## Windows Shell and Command Hygiene
+
+- Prefer PowerShell 7 for complex Windows commands. Use `pwsh -NoLogo -NoProfile -Command "<command>"` when shell behavior, quoting, or UTF-8 output matters.
+- Do not run Conda wrapper commands in parallel or in tight bursts. If a Conda temp activation file is locked or missing, treat it as command-wrapper noise first, rerun serially, and only then classify a project validation failure.
+- Do not paste Bash here-doc syntax into PowerShell. Use a PowerShell here-string, a temporary script, `python -c`, or UTF-8 stdin to `ssh ... python3 -` / LF-only stdin to `ssh ... bash -s`.
+- For Markdown, JSON, and non-ASCII text, use explicit UTF-8 writes, BOM-aware reads, and Python JSON I/O when payloads are large or encoding-sensitive.
+- Do not assume all PowerShell versions support the same parameters or .NET helpers. Check support before relying on `Tee-Object -Encoding`, `Test-Connection -TimeoutSeconds`, `[IO.Path]::GetRelativePath`, or compression APIs that may require explicit `Add-Type`.
+- After SSH/SCP timeouts or malformed quoting, verify local SSH clients and TCP connections have exited, then use read-only remote process/log evidence before relaunching or declaring failure.
