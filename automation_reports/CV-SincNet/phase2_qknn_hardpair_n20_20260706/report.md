@@ -4746,3 +4746,38 @@ K10 strict正向候选仍保持上一节结论：`k10_strict_residual_labelprop_
 | `14-7` | old | 58/70 | 82.86% | `20-19`12 |
 
 解释边界：该结果仍基于N20 HP08L5包中的`target_unknown`注册新类，能作为K5旧类域适应+seen-new注册识别候选；它仍不能声明真实Stage2-C unknown/FAR，因为本包没有独立`target_new/target_unknown`互斥字段。后续需要把`seed=421052`式support质量约束转成可部署的support selection/quality gate，并在完整Stage2-C未知类包上另做FAR验证。
+
+#### K5支持集quality gate负诊断与高floor候选
+
+本节继续上一节结论，目标是验证是否能把K5支持集seed sweep中的通过行转化为不读取query真值的support quality gate。复用同一K5严格配置，仅把既有`support_quality_weight`设为`0.000001`以触发support leave-one-out统计并尽量不改变预测。该诊断只使用support标签和特征计算`support_quality_loo_min_acc/support_quality_loo_mean_acc`；query真值仅用于离线评估相关性。本节没有修改代码、没有N607 preflight、没有scp、没有远端启动。
+
+输出文件：
+
+| artifact | rows | purpose |
+| --- | ---: | --- |
+| `k5_strict_support_quality_probe_20260707.csv/json` | 120 | `seed=421000..421119`支持集LOO质量信号与query结果对照。 |
+| `k5_strict_seed421070_floor_predictions_20260707.csv/json` | 1 | 严格K5高floor候选单点复验。 |
+| `k5_strict_seed421070_floor_predictions_rows_20260707.csv` | 1820 | `seed=421070`逐query预测明细。 |
+
+support quality gate结果为负。`support_quality_loo_mean_acc`与`query_min_seen_new_class_acc`相关系数约`-0.1278`，与`query_seen_new_acc`相关系数约`-0.1824`；`support_quality_loo_min_acc`与`query_min_seen_new_class_acc`相关系数约`-0.1141`。按`support_quality_loo_mean_acc>=0.74`筛出的7行全部未通过joint target；按`support_quality_loo_min_acc>=0.4`筛出的6行也全部未通过。因此当前support LOO不能作为可部署支持集质量门控，不能把它包装成qKNNV42默认优化。
+
+横扫现有严格K CSV后，`seed=421070`是当前K5严格路线中更贴近“旧类域适应+最低类保护”的高floor候选；它不是算法参数优化，而是K=5注册样本敏感性证据：
+
+| seed | old | min_old | seen_new | min_new | support sha | query sha | verdict |
+| ---: | ---: | ---: | ---: | ---: | --- | --- | --- |
+| 421070 | 94.52% | 85.71% | 89.36% | 80.00% | `a84b66e28e565c52` | `75c99f6361810ca9` | 相比`seed=421052`，旧类均值+1.42pp、旧类地板+4.28pp、新类地板+1.43pp，但seen-new均值低1.28pp；更适合作为floor优先候选。 |
+| 421052 | 93.10% | 81.43% | 90.64% | 78.57% | `bde0caf4ab49e2f7` | `c21db084c910cf4e` | 更适合作为seen-new均值优先候选。 |
+
+`seed=421070`逐类最低行：
+
+| class | role | correct/total | acc | main wrong preds |
+| --- | --- | ---: | ---: | --- |
+| `1-12` | new | 56/70 | 80.00% | `1-1`7，`8-3`4，`1-14`1，`2-13`1，`1-18`1 |
+| `1-14` | new | 56/70 | 80.00% | `1-10`9，`18-5`2，`1-16`1，`1-18`1，`2-13`1 |
+| `2-13` | new | 58/70 | 82.86% | `11-10`4，`10-10`3，`1-2`2，`4-10`2，`18-5`1 |
+| `1-15` | new | 59/70 | 84.29% | `19-3`11 |
+| `19-3` | new | 59/70 | 84.29% | `1-15`9，`1-19`1，`1-14`1 |
+| `14-7` | old | 60/70 | 85.71% | `20-19`9，`14-10`1 |
+| `20-19` | old | 61/70 | 87.14% | `14-7`6，`14-10`3 |
+
+当前决策：K5严格路线已经存在两个可报告候选。若目标优先“seen-new均值”，保留`seed=421052`；若目标优先“新类增多下最低类不坍塌和旧类域适应”，`seed=421070`更强。但二者都仍是support样本敏感性证据，不是可部署selection gate。下一步应做注册期support候选池的oracle-free选择机制，或在完整Stage2-C包上重新生成互斥`Y_new/Y_unknown`的qKNN候选；不应把support LOO阈值作为默认放行条件。
