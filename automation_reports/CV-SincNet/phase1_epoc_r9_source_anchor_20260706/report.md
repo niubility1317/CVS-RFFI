@@ -165,3 +165,14 @@ N607只读预检PASS。GPU2/GPU3分别约2521/2403MiB，两个R9候选仍在运�
 错误扫描：`Traceback`、`RuntimeError`、`CUDA out of memory`、`out-of-memory`、`unrecognized arguments`、`Killed`命中数为0。SSH清理已确认本地无`ssh.exe`且无N607/bridge 22端口ESTABLISHED连接。
 
 边界：R9仍是Phase1训练中证据；最终目标需要等prototype导出后再做qknn8协同推理`M=1..all target receivers`同row复评。
+
+## 2026-07-06 08:44 CST训练中监控
+
+N607只读预检PASS。08:44 CST短SSH监控显示R9两个候选仍在运行，GPU2/GPU3约2523/2531MiB，GPU4-7约10MiB。两个候选均存在`best_joint_safe_ssdg.pth`、`latest_safe_ssdg.pth`、`latest_ssdg.pth`和`metrics_epoch.csv`，但尚未导出`phase2_zid_prototypes.pt/json`，因此最终Stage2-C qknn8协同推理仍不能启动。
+
+|candidate|PID|epoch|best_epoch|best_score|train_tx_acc|prototype|判定|
+|---|---:|---:|---:|---:|---:|---|---|
+|`EPOC_R9_ANCHOR_NOPROXY`|3320959|29/200|10|85.4510|92.7163|absent|训练继续；source-anchor无proxy主线仍在早期，不能判断unknown拒识。|
+|`EPOC_R9_GENTLE_VIRTUAL_LATE`|3321795|29/200|20|85.0565|93.0529|absent|训练继续；gentle virtual计划E90后激活，目前不能判断真实unknown分离。|
+
+错误扫描：`Traceback`、`RuntimeError`、`CUDA out of memory`、`out-of-memory`、`unrecognized arguments`、`Killed`命中数为0。边界保持不变：R9是source-only特征修复训练中证据，不使用真实未知类训练；Stage2-C qknn8协同评估必须等prototype导出后执行，真实unknown仍eval-only。

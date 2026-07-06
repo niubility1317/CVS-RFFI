@@ -186,3 +186,14 @@ N607只读预检PASS。GPU0/GPU1分别约2527/2447MiB，两个R8候选仍在运�
 错误扫描：`Traceback`、`RuntimeError`、`CUDA out of memory`、`out-of-memory`、`unrecognized arguments`、`Killed`命中数为0。SSH清理已确认本地无`ssh.exe`且无N607/bridge 22端口ESTABLISHED连接。
 
 边界：R8仍是Phase1训练中，当前趋势继续支持“强proxy shell路线较弱”的判断，但不能替代训练完成后的Stage2-C同row评估。
+
+## 2026-07-06 08:44 CST训练中监控
+
+N607只读预检PASS。08:44 CST短SSH监控显示R8两个候选仍在运行，GPU0/GPU1约2527/2447MiB，GPU2/GPU3由R9占用约2523/2531MiB，GPU4-7约10MiB。两个候选均存在`best_joint_safe_ssdg.pth`、`latest_safe_ssdg.pth`、`latest_ssdg.pth`和`metrics_epoch.csv`，但仍未导出`phase2_zid_prototypes.pt/json`，因此不能启动最终Stage2-C qknn8协同评估。
+
+|candidate|PID|epoch|best_epoch|best_score|train_tx_acc|prototype|判定|
+|---|---:|---:|---:|---:|---:|---|---|
+|`EPOC_R8_PAOG_RADIUS_ENERGY`|3289110|109/200|20|84.8666|92.0192|absent|训练继续；proxy路线仍无最终prototype，不能形成Stage2-C证据。|
+|`EPOC_R8_PAOG_SHELL_BALANCED`|3289536|109/200|20|85.3407|92.6923|absent|训练继续；仍需等待完成导出后同row复评。|
+
+错误扫描：`Traceback`、`RuntimeError`、`CUDA out of memory`、`out-of-memory`、`unrecognized arguments`、`Killed`命中数为0。当前结论仍是训练中监控，不是部署成功、Stage2-C成功或未知拒识改善证据。
