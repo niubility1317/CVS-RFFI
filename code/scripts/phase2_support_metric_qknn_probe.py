@@ -933,6 +933,147 @@ def _pairwise_quota_refine(
     return refined.astype(str), changed
 
 
+def _query_pair_cluster_quota_refine(
+    pred: np.ndarray,
+    scores: np.ndarray,
+    *,
+    features: np.ndarray,
+    support_indices: np.ndarray,
+    support_labels: np.ndarray,
+    query_indices: np.ndarray,
+    class_labels: list[str],
+    old_count: int,
+    old_labels: list[str],
+    new_labels: list[str],
+    proto_sim: np.ndarray,
+    top_pairs: int,
+    similarity_threshold: float,
+    score_weight: float,
+    query_weight: float,
+    clip: float,
+    scope: str,
+) -> tuple[np.ndarray, int, int, str]:
+    """Pair-local quota refinement with temporary query clusters.
+
+    The persistent state is still compressed support prototypes plus scalar
+    gates. Query centers are batch-local and discarded after inference.
+    """
+    if int(top_pairs) <= 0 or float(query_weight) == 0.0:
+        return pred, 0, 0, ""
+    scope_norm = str(scope).strip().lower()
+    if scope_norm not in {"new", "old", "all", "role"}:
+        raise ValueError(f"unsupported query_pair_cluster_scope: {scope}")
+    refined = np.asarray(pred, dtype=object).astype(str).copy()
+    labels = np.asarray(class_labels, dtype=object).astype(str)
+    label_to_index = {label: index for index, label in enumerate(labels.tolist())}
+    old_set = set(old_labels)
+    new_set = set(new_labels)
+    support = qknn._normalize_rows(features[support_indices])
+    query = qknn._normalize_rows(features[query_indices])
+    support_label_arr = np.asarray(support_labels, dtype=object).astype(str)
+    support_proto_rows: list[np.ndarray] = []
+    for label in labels.tolist():
+        cls = support[support_label_arr == str(label)]
+        if cls.size == 0:
+            support_proto_rows.append(np.zeros(support.shape[1], dtype=np.float64))
+        else:
+            support_proto_rows.append(qknn._normalize_rows(cls.mean(axis=0, keepdims=True))[0])
+    support_proto = qknn._normalize_rows(np.stack(support_proto_rows, axis=0))
+
+    class_indices: list[int] = []
+    for label in labels.tolist():
+        is_old = label in old_set
+        is_new = label in new_set
+        if scope_norm == "new" and not is_new:
+            continue
+        if scope_norm == "old" and not is_old:
+            continue
+        class_indices.append(label_to_index[label])
+    if scope_norm == "role":
+        class_indices = list(range(len(class_labels)))
+    if len(class_indices) < 2:
+        return refined, 0, 0, ""
+
+    top2_counts: dict[tuple[int, int], int] = {}
+    if scope_norm == "old":
+        row_pool = np.arange(0, int(old_count), dtype=int)
+    elif scope_norm == "new":
+        row_pool = np.arange(int(old_count), int(scores.shape[0]), dtype=int)
+    else:
+        row_pool = np.arange(int(scores.shape[0]), dtype=int)
+    local_cols = np.asarray(class_indices, dtype=int)
+    if row_pool.size and local_cols.size >= 2:
+        local_scores = scores[row_pool][:, local_cols]
+        order = np.argsort(-local_scores, axis=1)[:, :2]
+        for pair in order.tolist():
+            left = int(local_cols[pair[0]])
+            right = int(local_cols[pair[1]])
+            key = tuple(sorted((left, right)))
+            top2_counts[key] = top2_counts.get(key, 0) + 1
+
+    pairs: list[tuple[float, int, int]] = []
+    for pos, left in enumerate(class_indices):
+        for right in class_indices[pos + 1 :]:
+            sim = float(proto_sim[left, right])
+            count = float(top2_counts.get(tuple(sorted((left, right))), 0))
+            if sim < float(similarity_threshold) and count <= 0.0:
+                continue
+            risk = sim + 0.002 * count
+            pairs.append((risk, int(left), int(right)))
+    if not pairs:
+        return refined, 0, 0, ""
+
+    changed = 0
+    applied = 0
+    pair_names: list[str] = []
+    for _risk, left, right in sorted(pairs, reverse=True)[: int(top_pairs)]:
+        left_label = str(labels[left])
+        right_label = str(labels[right])
+        pair_mask = (refined == left_label) | (refined == right_label)
+        if scope_norm == "new":
+            pair_mask[: int(old_count)] = False
+        elif scope_norm == "old":
+            pair_mask[int(old_count) :] = False
+        pair_indices = np.where(pair_mask)[0]
+        pair_count = int(pair_indices.size)
+        if pair_count <= 2:
+            continue
+        left_quota = int(np.sum(refined[pair_indices] == left_label))
+        if left_quota <= 0 or left_quota >= pair_count:
+            continue
+        left_rows = pair_indices[refined[pair_indices] == left_label]
+        right_rows = pair_indices[refined[pair_indices] == right_label]
+        if left_rows.size == 0 or right_rows.size == 0:
+            continue
+        left_center = qknn._normalize_rows(query[left_rows].mean(axis=0, keepdims=True))[0]
+        right_center = qknn._normalize_rows(query[right_rows].mean(axis=0, keepdims=True))[0]
+        support_axis = support_proto[left] - support_proto[right]
+        support_axis = qknn._normalize_rows(support_axis[None, :])[0]
+        query_axis = left_center - right_center
+        query_axis = qknn._normalize_rows(query_axis[None, :])[0]
+        if float(np.dot(query_axis, support_axis)) < 0.0:
+            query_axis = -query_axis
+        axis = qknn._normalize_rows((support_axis + float(query_weight) * query_axis)[None, :])[0]
+        cluster_margin = query[pair_indices] @ axis
+        cluster_margin = cluster_margin - float(np.mean(cluster_margin))
+        cluster_margin = cluster_margin / (float(np.std(cluster_margin)) + 1e-6)
+        if float(clip) > 0.0:
+            cluster_margin = np.clip(cluster_margin, -float(clip), float(clip))
+        score_margin = scores[pair_indices, left] - scores[pair_indices, right]
+        combined = float(score_weight) * score_margin + float(query_weight) * cluster_margin
+        order = np.argsort(-combined)
+        new_pair = np.full(pair_count, right_label, dtype=object)
+        new_pair[order[:left_quota]] = left_label
+        local_changed = int(np.sum(refined[pair_indices] != new_pair))
+        if local_changed <= 0:
+            continue
+        refined[pair_indices] = new_pair
+        changed += local_changed
+        applied += 1
+        pair_names.append(f"{left_label}<->{right_label}")
+    return refined.astype(str), int(changed), int(applied), ";".join(pair_names[:16])
+
+
 def _pair_axis_adjust_scores(
     scores: np.ndarray,
     *,
@@ -3688,6 +3829,12 @@ def _evaluate_metric_qknn(
     dense_cluster_query_topm: int,
     dense_cluster_clip: float,
     dense_cluster_scope: str,
+    query_pair_cluster_top_pairs: int,
+    query_pair_cluster_similarity: float,
+    query_pair_cluster_score_weight: float,
+    query_pair_cluster_query_weight: float,
+    query_pair_cluster_clip: float,
+    query_pair_cluster_scope: str,
     source_guard_mode: str,
     source_guard_weight: float,
     source_guard_conf_min: float,
@@ -4740,6 +4887,27 @@ def _evaluate_metric_qknn(
         fast_role_balanced_assignment=bool(fast_role_balanced_assignment),
         balanced_assignment=bool(balanced_assignment),
     )
+    pred, query_pair_cluster_changed, query_pair_cluster_count, query_pair_cluster_pairs = (
+        _query_pair_cluster_quota_refine(
+            pred,
+            scores,
+            features=adapted,
+            support_indices=support_indices,
+            support_labels=support_labels,
+            query_indices=query_indices,
+            class_labels=old_labels + new_labels,
+            old_count=old_count,
+            old_labels=old_labels,
+            new_labels=new_labels,
+            proto_sim=proto_sim,
+            top_pairs=int(query_pair_cluster_top_pairs),
+            similarity_threshold=float(query_pair_cluster_similarity),
+            score_weight=float(query_pair_cluster_score_weight),
+            query_weight=float(query_pair_cluster_query_weight),
+            clip=float(query_pair_cluster_clip),
+            scope=str(query_pair_cluster_scope),
+        )
+    )
     pred, pair_refine_changed = _pairwise_quota_refine(
         pred,
         scores,
@@ -4987,6 +5155,15 @@ def _evaluate_metric_qknn(
         "dense_cluster_count": int(dense_cluster_count),
         "dense_cluster_temp_proto_count": int(dense_cluster_temp_proto_count),
         "dense_cluster_adjusted_rows": int(dense_cluster_adjusted_rows),
+        "query_pair_cluster_top_pairs": int(query_pair_cluster_top_pairs),
+        "query_pair_cluster_similarity": float(query_pair_cluster_similarity),
+        "query_pair_cluster_score_weight": float(query_pair_cluster_score_weight),
+        "query_pair_cluster_query_weight": float(query_pair_cluster_query_weight),
+        "query_pair_cluster_clip": float(query_pair_cluster_clip),
+        "query_pair_cluster_scope": str(query_pair_cluster_scope),
+        "query_pair_cluster_count": int(query_pair_cluster_count),
+        "query_pair_cluster_changed": int(query_pair_cluster_changed),
+        "query_pair_cluster_pairs": query_pair_cluster_pairs,
         "source_guard_mode": str(source_guard_mode),
         "source_guard_weight": float(source_guard_weight),
         "source_guard_conf_min": float(source_guard_conf_min),
@@ -5739,6 +5916,12 @@ def main() -> None:
     parser.add_argument("--dense_cluster_query_topm_grid", default="50")
     parser.add_argument("--dense_cluster_clip_grid", default="1.5")
     parser.add_argument("--dense_cluster_scope_grid", default="new")
+    parser.add_argument("--query_pair_cluster_top_pairs_grid", default="0")
+    parser.add_argument("--query_pair_cluster_similarity_grid", default="0.78")
+    parser.add_argument("--query_pair_cluster_score_weight_grid", default="1.0")
+    parser.add_argument("--query_pair_cluster_query_weight_grid", default="0")
+    parser.add_argument("--query_pair_cluster_clip_grid", default="2.0")
+    parser.add_argument("--query_pair_cluster_scope_grid", default="new")
     parser.add_argument("--source_guard_mode_grid", default="none")
     parser.add_argument("--source_guard_weight_grid", default="0")
     parser.add_argument("--source_guard_conf_min_grid", default="0")
@@ -5952,6 +6135,12 @@ def main() -> None:
             qknn._parse_int_csv(args.dense_cluster_query_topm_grid),
             qknn._parse_float_csv(args.dense_cluster_clip_grid),
             qknn._parse_csv(args.dense_cluster_scope_grid),
+            qknn._parse_int_csv(args.query_pair_cluster_top_pairs_grid),
+            qknn._parse_float_csv(args.query_pair_cluster_similarity_grid),
+            qknn._parse_float_csv(args.query_pair_cluster_score_weight_grid),
+            qknn._parse_float_csv(args.query_pair_cluster_query_weight_grid),
+            qknn._parse_float_csv(args.query_pair_cluster_clip_grid),
+            qknn._parse_csv(args.query_pair_cluster_scope_grid),
             qknn._parse_csv(args.source_guard_mode_grid),
             qknn._parse_float_csv(args.source_guard_weight_grid),
             qknn._parse_float_csv(args.source_guard_conf_min_grid),
@@ -6156,6 +6345,12 @@ def main() -> None:
                     dense_cluster_query_topm,
                     dense_cluster_clip,
                     dense_cluster_scope,
+                    query_pair_cluster_top_pairs,
+                    query_pair_cluster_similarity,
+                    query_pair_cluster_score_weight,
+                    query_pair_cluster_query_weight,
+                    query_pair_cluster_clip,
+                    query_pair_cluster_scope,
                     source_guard_mode,
                     source_guard_weight,
                     source_guard_conf_min,
@@ -6265,6 +6460,12 @@ def main() -> None:
                         "dense_cluster_query_topm": int(dense_cluster_query_topm),
                         "dense_cluster_clip": float(dense_cluster_clip),
                         "dense_cluster_scope": str(dense_cluster_scope),
+                        "query_pair_cluster_top_pairs": int(query_pair_cluster_top_pairs),
+                        "query_pair_cluster_similarity": float(query_pair_cluster_similarity),
+                        "query_pair_cluster_score_weight": float(query_pair_cluster_score_weight),
+                        "query_pair_cluster_query_weight": float(query_pair_cluster_query_weight),
+                        "query_pair_cluster_clip": float(query_pair_cluster_clip),
+                        "query_pair_cluster_scope": str(query_pair_cluster_scope),
                     }
                     params.update(
                         {
@@ -6504,6 +6705,24 @@ def main() -> None:
                             "dense_cluster_scope": adaptive_overrides.get(
                                 "dense_cluster_scope", params["dense_cluster_scope"]
                             ),
+                            "query_pair_cluster_top_pairs": adaptive_overrides.get(
+                                "query_pair_cluster_top_pairs", params["query_pair_cluster_top_pairs"]
+                            ),
+                            "query_pair_cluster_similarity": adaptive_overrides.get(
+                                "query_pair_cluster_similarity", params["query_pair_cluster_similarity"]
+                            ),
+                            "query_pair_cluster_score_weight": adaptive_overrides.get(
+                                "query_pair_cluster_score_weight", params["query_pair_cluster_score_weight"]
+                            ),
+                            "query_pair_cluster_query_weight": adaptive_overrides.get(
+                                "query_pair_cluster_query_weight", params["query_pair_cluster_query_weight"]
+                            ),
+                            "query_pair_cluster_clip": adaptive_overrides.get(
+                                "query_pair_cluster_clip", params["query_pair_cluster_clip"]
+                            ),
+                            "query_pair_cluster_scope": adaptive_overrides.get(
+                                "query_pair_cluster_scope", params["query_pair_cluster_scope"]
+                            ),
                         }
                     )
                     row = _evaluate_metric_qknn(
@@ -6674,6 +6893,12 @@ def main() -> None:
                         dense_cluster_query_topm=int(params["dense_cluster_query_topm"]),
                         dense_cluster_clip=float(params["dense_cluster_clip"]),
                         dense_cluster_scope=str(params["dense_cluster_scope"]),
+                        query_pair_cluster_top_pairs=int(params["query_pair_cluster_top_pairs"]),
+                        query_pair_cluster_similarity=float(params["query_pair_cluster_similarity"]),
+                        query_pair_cluster_score_weight=float(params["query_pair_cluster_score_weight"]),
+                        query_pair_cluster_query_weight=float(params["query_pair_cluster_query_weight"]),
+                        query_pair_cluster_clip=float(params["query_pair_cluster_clip"]),
+                        query_pair_cluster_scope=str(params["query_pair_cluster_scope"]),
                         source_guard_mode=str(params["source_guard_mode"]),
                         source_guard_weight=float(params["source_guard_weight"]),
                         source_guard_conf_min=float(params["source_guard_conf_min"]),
@@ -6992,6 +7217,15 @@ def main() -> None:
         "dense_cluster_count",
         "dense_cluster_temp_proto_count",
         "dense_cluster_adjusted_rows",
+        "query_pair_cluster_top_pairs",
+        "query_pair_cluster_similarity",
+        "query_pair_cluster_score_weight",
+        "query_pair_cluster_query_weight",
+        "query_pair_cluster_clip",
+        "query_pair_cluster_scope",
+        "query_pair_cluster_count",
+        "query_pair_cluster_changed",
+        "query_pair_cluster_pairs",
         "source_guard_mode",
         "source_guard_weight",
         "source_guard_conf_min",
