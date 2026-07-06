@@ -4719,3 +4719,30 @@ K10 strict正向候选仍保持上一节结论：`k10_strict_residual_labelprop_
 | 同文件基线行 | 36 | `slot_release_top_pairs=0` | 93.10% | 81.43% | 89.00% | 74.29% | 与上一K5最佳指标一致，作为本节内部对照。 |
 
 涉及`19-3`的slot行共8行，均未把`19-3`从52/70提升；开启`top_pairs=6`后会触发`1-15<->19-3`，但`19-3`仍为74.29%，新类均值还会降到88.79%或更低。因此slot release可保留为默认关闭诊断工具，但不能作为当前K5最低类修复。当前严格K结论保持不变：K10已通过new floor，K5旧类/新类均值已晋升但最低新类仍差1个query过75%，后续应优先做`19-3/1-15`支持集表示或注册期校准，而不是继续增加配额后处理强度。
+
+#### K5支持集seed sweep晋升
+
+在slot release负结果后，复用同一K5参数、不启用slot后处理，对`seed=421000..421119`做120个支持集选择复核，并同步测试`slot_release_top_pairs=1`。该实验不改变特征、协议或算法参数，只检验K=5目标域support选择对最低类的影响。输出文件为`k5_strict_slot_release_seed_sweep_20260707.csv/json`。
+
+| sweep branch | rows | new floor pass | joint target pass | old mean range | min_old range | seen_new range | min_new range | 判定 |
+| --- | ---: | ---: | ---: | --- | --- | --- | --- | --- |
+| baseline，`slot_release_top_pairs=0` | 120 | 12 | 12 | 91.90%-96.19% | 80.00%-90.00% | 81.07%-91.36% | 32.86%-80.00% | 支持集选择显著影响K5地板；存在通过K5 joint target的support。 |
+| `slot_release_top_pairs=1` | 120 | 11 | 11 | 91.90%-96.19% | 80.00%-90.00% | 81.07%-91.36% | 32.86%-80.00% | slot不提升通过数，仍不作为推荐默认。 |
+
+按“旧类不回退且新类均值更高”的当前K5候选选择`seed=421052`，并导出逐query预测`k5_strict_seed421052_predictions_rows_20260707.csv`。该行不依赖slot release：
+
+| seed | slot | old | min_old | seen_new | min_new | support sha | query sha | verdict |
+| ---: | --- | ---: | ---: | ---: | ---: | --- | --- | --- |
+| 421052 | off | 93.10% | 81.43% | 90.64% | 78.57% | `bde0caf4ab49e2f7` | `c21db084c910cf4e` | 当前K5推荐候选；相对上一K5最佳，旧类均值/地板不回退，新类均值+1.64pp，最低新类+4.29pp。 |
+
+逐类最低行如下，所有新类均达到或超过75%：
+
+| class | role | correct/total | acc | main wrong preds |
+| --- | --- | ---: | ---: | --- |
+| `1-14` | new | 55/70 | 78.57% | `1-10`8，`2-13`3，`1-16`3，`8-18`1 |
+| `1-2` | new | 57/70 | 81.43% | `10-10`5，`1-19`2，`8-3`2，`1-14`2，`1-12`1 |
+| `2-13` | new | 57/70 | 81.43% | `1-2`7，`4-10`3，`18-5`2，`1-18`1 |
+| `20-19` | old | 57/70 | 81.43% | `14-7`9，`14-10`4 |
+| `14-7` | old | 58/70 | 82.86% | `20-19`12 |
+
+解释边界：该结果仍基于N20 HP08L5包中的`target_unknown`注册新类，能作为K5旧类域适应+seen-new注册识别候选；它仍不能声明真实Stage2-C unknown/FAR，因为本包没有独立`target_new/target_unknown`互斥字段。后续需要把`seed=421052`式support质量约束转成可部署的support selection/quality gate，并在完整Stage2-C未知类包上另做FAR验证。
