@@ -4532,3 +4532,17 @@ V55提交后继续做了三组本地只读诊断，均未形成可提交策略�
 严格固定K到达路线仍未解决：K5 strict地板停在71.43%，K10 strict地板也停在71.43%，局部竞争、query graph、显式scenario fallback和query proto refine只能抬均值或转移最低类，不能稳定解决低类坍塌。K5 active路线证明support场景覆盖选择有效，但20seed只有1/20同时过旧类和新类floor，仍不够稳。K10 active hybrid是当前唯一同时改善旧类域适应和新类地板的候选：相对K10 strict best的`old=94.05%,min_old=84.29%,seen_new=87.07%,min_new=71.43%`，20seed均值达到`old=94.60%,min_old=85.57%,seen_new=91.71%,min_new=79.36%`，最差seed也保持`min_old>=81.43%,min_new>=78.57%`。
 
 因此下一步若继续本地优化，应围绕K10 active hybrid做两个收敛动作：一是把`pool_per=80`主动候选池协议写成明确Stage2-C子协议，说明星上/地面流程如何只保留或标注K=10个support；二是在该候选上补unknown拒识/FAR和更多target receiver复核。若目标必须严格限制为“只接收到K=5或K=10个样本且无候选池选择”，则本轮尚未找到可发布优化，不能同步N607正式实验。
+
+### 2026-07-06严格K支持集LOO-pair低类修正诊断
+
+本节回到用户强调的严格少样本设置：`pool_per_old=K,pool_per_new=K`，即不依赖`pool_per=80`主动候选池。所有support/query仍来自目标接收机域并叠加LEO星地信道；query真值只用于离线评估。本节没有修改代码、没有N607 preflight、没有scp、没有远端启动。
+
+| diagnostic | K | rows | key setting | old | min_old | seen_new | min_new | 低类/结论 |
+| --- | ---: | ---: | --- | ---: | ---: | ---: | ---: | --- |
+| `k10_strict_supportloo_pair_grid_20260706.csv` | 10 | 225 | `support_loo_pair_linear_weight=0.04,top_pairs=16` | 94.05% | 84.29% | 87.36% | 74.29% | `1-12=52/70`，较旧strict K10地板71.43%提高2个query，但仍差1个query过75%。 |
+| `k10_strict_pair_cluster_competition_grid_20260706.csv` | 10 | 144 | 上行叠加`query_cluster_weight=0.04,local_competition_weight=0.04,k=3,scope=all` | 94.05% | 84.29% | 87.57% | 74.29% | 均值继续小幅提高，但最低类仍为`1-12=52/70`。 |
+| `k10_strict_support_bias_pair_grid_20260706.csv` | 10 | 54 | 上行叠加`support_bias_weight`网格 | 94.05% | 84.29% | 87.57% | 74.29% | 最优仍选择`support_bias_weight=0`，support列偏置不能补足最后1个query。 |
+| `k10_strict_scenariobalanced_pair_verify_20260706.csv` | 10 | 1 | scenario-balanced assignment | 66.67% | 20.00% | 39.07% | 21.43% | 强负结果；按场景强行配额会破坏旧类和新类，不可作为补丁。 |
+| `k5_strict_supportloo_pair_grid_20260706.csv` | 5 | 288 | support-LOO pair + local competition小网格 | 93.10% | 81.43% | 84.71% | 71.43% | `1-2=50/70`仍未改善；`1-12`可到53/70但最低类转回`1-2`。 |
+
+当前严格K结论：support-LOO pair线性修正能从support内部错误中提取可部署信号，并把K10 strict的最低新类从50/70提升到52/70，同时保持旧类`old=94.05%,min_old=84.29%`不降；但它没有达到75%地板，也没有解决K5 strict的`1-2`场景覆盖缺失。K5 strict仍需要新的“缺场景support时的类内风险估计”机制；K10 strict可继续沿support-LOO pair方向做更细的类簇/场景门控，但当前不能写成完成qKNNV42优化目标，也不应同步N607正式实验。
