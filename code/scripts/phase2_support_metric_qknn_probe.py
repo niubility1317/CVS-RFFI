@@ -1710,6 +1710,123 @@ def _query_graph_smooth_scores(
     return smoothed, int(total_edges)
 
 
+def _query_cluster_align_scores(
+    scores: np.ndarray,
+    *,
+    features: np.ndarray,
+    support_indices: np.ndarray,
+    support_labels: np.ndarray,
+    query_indices: np.ndarray,
+    old_count: int,
+    class_labels: list[str],
+    old_labels: list[str],
+    new_labels: list[str],
+    weight: float,
+    rounds: int,
+    support_weight: float,
+    temperature: float,
+    clip: float,
+    scope: str,
+) -> tuple[np.ndarray, int, int]:
+    """Align temporary query clusters to support prototypes under known quotas.
+
+    The persistent state remains the compressed support prototype bank. Query
+    clusters are batch-local transductive state and are discarded after scoring.
+    """
+    if float(weight) == 0.0 or int(rounds) <= 0:
+        return scores, 0, 0
+    scope_norm = str(scope).strip().lower()
+    if scope_norm not in {"all", "role", "new", "old"}:
+        raise ValueError(f"unsupported query_cluster_scope: {scope}")
+
+    support = qknn._normalize_rows(features[support_indices])
+    query = qknn._normalize_rows(features[query_indices])
+    labels = np.asarray(support_labels, dtype=object).astype(str)
+    label_to_index = {label: index for index, label in enumerate(class_labels)}
+    support_proto: dict[str, np.ndarray] = {}
+    for label in class_labels:
+        cls = support[labels == label]
+        if cls.size:
+            support_proto[label] = qknn._normalize_rows(cls.mean(axis=0, keepdims=True))[0]
+
+    cluster_scores = np.zeros_like(scores, dtype=np.float64)
+    temp_proto_count = 0
+    assigned_rows = 0
+    support_anchor = float(np.clip(float(support_weight), 0.0, 1.0))
+    temp = max(float(temperature), 1e-6)
+
+    groups: list[tuple[np.ndarray, list[str]]] = []
+    if scope_norm == "all":
+        groups.append((np.arange(query_indices.size, dtype=int), list(class_labels)))
+    else:
+        if scope_norm in {"role", "old"}:
+            groups.append((np.arange(int(old_count), dtype=int), list(old_labels)))
+        if scope_norm in {"role", "new"}:
+            groups.append((np.arange(int(old_count), query_indices.size, dtype=int), list(new_labels)))
+
+    for rows, labels_subset in groups:
+        labels_subset = [label for label in labels_subset if label in support_proto and label in label_to_index]
+        if rows.size == 0 or not labels_subset:
+            continue
+        local_query = query[rows]
+        local_class_indices = [label_to_index[label] for label in labels_subset]
+        centers = qknn._normalize_rows(np.stack([support_proto[label] for label in labels_subset], axis=0))
+        local_label_array = np.asarray(labels_subset, dtype=object)
+        slot_indices = base._quota_slots(int(rows.size), labels_subset, offset=0)
+        quotas = [slot_indices.count(i) for i in range(len(labels_subset))]
+        if sum(quotas) != int(rows.size):
+            quotas = [int(rows.size) // len(labels_subset)] * len(labels_subset)
+            for idx in range(int(rows.size) - sum(quotas)):
+                quotas[idx % len(quotas)] += 1
+        assigned_local = np.zeros(int(rows.size), dtype=int)
+        for _round in range(int(rounds)):
+            sim = local_query @ centers.T
+            assigned_labels = _quota_predict_fast(
+                sim,
+                labels=local_label_array,
+                class_indices=list(range(len(labels_subset))),
+                quotas=quotas,
+            )
+            assigned_local = np.asarray(
+                [labels_subset.index(str(label)) for label in assigned_labels.tolist()],
+                dtype=int,
+            )
+            updated: list[np.ndarray] = []
+            for local_idx, label in enumerate(labels_subset):
+                member = local_query[assigned_local == local_idx]
+                if member.size:
+                    query_center = qknn._normalize_rows(member.mean(axis=0, keepdims=True))[0]
+                    center = support_anchor * support_proto[label] + (1.0 - support_anchor) * query_center
+                    updated.append(center)
+                else:
+                    updated.append(support_proto[label])
+            centers = qknn._normalize_rows(np.stack(updated, axis=0))
+
+        local_scores = (local_query @ centers.T) / temp
+        local_base_scores = np.asarray(scores[rows][:, local_class_indices], dtype=np.float64)
+        if local_base_scores.shape[1] > 1:
+            base_order = np.argsort(local_base_scores, axis=1)
+            base_top = base_order[:, -1]
+            base_second = base_order[:, -2]
+            base_margin = local_base_scores[np.arange(local_base_scores.shape[0]), base_top] - local_base_scores[
+                np.arange(local_base_scores.shape[0]), base_second
+            ]
+            agreement = float(np.mean(base_top == assigned_local))
+            margin_floor = 0.02 + 0.01 * np.log1p(len(labels_subset))
+            if agreement < 0.70 or float(np.mean(base_margin)) < margin_floor:
+                continue
+        local_scores = local_scores - np.mean(local_scores, axis=1, keepdims=True)
+        local_scores = local_scores / (np.std(local_scores, axis=1, keepdims=True) + 1e-6)
+        local_scores = np.clip(local_scores, -float(clip), float(clip))
+        for local_idx, label in enumerate(labels_subset):
+            cluster_scores[rows, label_to_index[label]] = local_scores[:, local_idx]
+        temp_proto_count += len(labels_subset)
+        assigned_rows += int(rows.size)
+
+    adjusted = np.asarray(scores, dtype=np.float64) + float(weight) * cluster_scores
+    return adjusted, int(temp_proto_count), int(assigned_rows)
+
+
 def _support_query_labelprop_scores(
     *,
     features: np.ndarray,
@@ -2449,6 +2566,103 @@ def _support_loo_pair_rescue_scores(
             continue
         if truth != pred:
             pair_counts[(truth, pred)] = pair_counts.get((truth, pred), 0) + 1
+    use_legacy_candidates = int(proto_neighbors) <= 0 and float(proto_min_sim) > 1.0
+    if use_legacy_candidates:
+        candidates = [
+            (truth, pred, count, float(count))
+            for (truth, pred), count in pair_counts.items()
+            if int(count) >= max(1, int(min_errors))
+        ]
+        candidates.sort(key=lambda item: (-int(item[2]), item[0], item[1]))
+        candidates = candidates[: max(0, int(top_pairs))]
+        if not candidates:
+            return (
+                scores,
+                0,
+                0,
+                float(min(before_per_class, default=0.0)),
+                float(np.mean(before_per_class) if before_per_class else 0.0),
+                "",
+            )
+        support = qknn._normalize_rows(features[support_indices])
+        query = qknn._normalize_rows(features[query_indices])
+        prototypes: list[np.ndarray] = []
+        for label in class_labels:
+            class_support = support[labels == label]
+            if class_support.size == 0:
+                prototypes.append(np.zeros(features.shape[1], dtype=np.float64))
+            else:
+                prototypes.append(qknn._normalize_rows(class_support.mean(axis=0, keepdims=True))[0])
+        proto = qknn._normalize_rows(np.stack(prototypes, axis=0))
+        adjusted = np.asarray(scores, dtype=np.float64).copy()
+        rescue_scores = np.asarray(support_scores, dtype=np.float64).copy()
+        used = 0
+        stored_scalars = 0
+        used_pairs: list[str] = []
+        for truth, pred, _count, _score in candidates:
+            truth_idx = label_to_index[truth]
+            pred_idx = label_to_index[pred]
+            pair_mask = (labels == truth) | (labels == pred)
+            pair_support = support[pair_mask]
+            pair_labels = labels[pair_mask]
+            if pair_support.shape[0] < 4 or len(set(pair_labels.tolist())) < 2:
+                continue
+            truth_sim = pair_support @ proto[truth_idx]
+            pred_sim = pair_support @ proto[pred_idx]
+            x = np.stack(
+                [
+                    truth_sim - pred_sim,
+                    truth_sim,
+                    pred_sim,
+                    np.ones_like(truth_sim),
+                ],
+                axis=1,
+            )
+            y = np.where(pair_labels == truth, 1.0, -1.0)
+            reg = float(alpha) * np.eye(x.shape[1], dtype=np.float64)
+            reg[-1, -1] = float(alpha) * 0.01
+            try:
+                coeff = np.linalg.solve(x.T @ x + reg, x.T @ y)
+            except np.linalg.LinAlgError:
+                coeff = np.linalg.pinv(x.T @ x + reg) @ x.T @ y
+            q_truth = query @ proto[truth_idx]
+            q_pred = query @ proto[pred_idx]
+            qx = np.stack([q_truth - q_pred, q_truth, q_pred, np.ones_like(q_truth)], axis=1)
+            margin = np.clip(qx @ coeff, -float(clip), float(clip))
+            adjusted[:, truth_idx] += float(weight) * margin
+            adjusted[:, pred_idx] -= float(weight) * margin
+
+            s_truth = support @ proto[truth_idx]
+            s_pred = support @ proto[pred_idx]
+            sx = np.stack([s_truth - s_pred, s_truth, s_pred, np.ones_like(s_truth)], axis=1)
+            s_margin = np.clip(sx @ coeff, -float(clip), float(clip))
+            rescue_scores[:, truth_idx] += float(weight) * s_margin
+            rescue_scores[:, pred_idx] -= float(weight) * s_margin
+            used += 1
+            used_pairs.append(f"{truth}->{pred}")
+            stored_scalars += int(coeff.size)
+        after_pred = _assignment_predict(
+            rescue_scores,
+            old_count=old_count,
+            old_labels=old_labels,
+            new_labels=new_labels,
+            query_scenarios=np.asarray(["support"] * int(labels.size), dtype=object),
+            scenario_balanced_assignment=False,
+            role_balanced_assignment=True,
+            balanced_assignment=True,
+        )
+        after_per_class: list[float] = []
+        for label in class_labels:
+            mask = labels == label
+            after_per_class.append(float(np.mean(after_pred[mask] == label)) if bool(np.any(mask)) else 0.0)
+        return (
+            adjusted,
+            int(used),
+            int(stored_scalars),
+            float(min(after_per_class, default=0.0)),
+            float(np.mean(after_per_class) if after_per_class else 0.0),
+            ";".join(used_pairs[:32]),
+        )
     for row_idx, truth_label in enumerate(labels.tolist()):
         truth = str(truth_label)
         if truth not in label_to_index:
@@ -2964,6 +3178,12 @@ def _evaluate_metric_qknn(
     query_graph_temperature: float,
     query_graph_rounds: int,
     query_graph_scope: str,
+    query_cluster_weight: float,
+    query_cluster_rounds: int,
+    query_cluster_support_weight: float,
+    query_cluster_temperature: float,
+    query_cluster_clip: float,
+    query_cluster_scope: str,
     local_competition_weight: float,
     local_competition_k: int,
     local_competition_clip: float,
@@ -3764,6 +3984,26 @@ def _evaluate_metric_qknn(
         rounds=int(query_graph_rounds),
         scope=str(query_graph_scope),
     )
+    query_cluster_temp_proto_count = 0
+    query_cluster_assigned_rows = 0
+    if float(query_cluster_weight) != 0.0 and int(query_cluster_rounds) > 0:
+        scores, query_cluster_temp_proto_count, query_cluster_assigned_rows = _query_cluster_align_scores(
+            scores,
+            features=adapted,
+            support_indices=support_indices,
+            support_labels=support_labels,
+            query_indices=query_indices,
+            old_count=old_count,
+            class_labels=old_labels + new_labels,
+            old_labels=old_labels,
+            new_labels=new_labels,
+            weight=float(query_cluster_weight),
+            rounds=int(query_cluster_rounds),
+            support_weight=float(query_cluster_support_weight),
+            temperature=float(query_cluster_temperature),
+            clip=float(query_cluster_clip),
+            scope=str(query_cluster_scope),
+        )
     transductive_proto_count = 0
     if float(transductive_proto_weight) != 0.0 and int(transductive_proto_rounds) > 0:
         scores, transductive_proto_count = _support_anchored_transductive_proto_scores(
@@ -4044,6 +4284,14 @@ def _evaluate_metric_qknn(
         "query_graph_rounds": int(query_graph_rounds),
         "query_graph_scope": str(query_graph_scope),
         "query_graph_edges": int(query_graph_edges),
+        "query_cluster_weight": float(query_cluster_weight),
+        "query_cluster_rounds": int(query_cluster_rounds),
+        "query_cluster_support_weight": float(query_cluster_support_weight),
+        "query_cluster_temperature": float(query_cluster_temperature),
+        "query_cluster_clip": float(query_cluster_clip),
+        "query_cluster_scope": str(query_cluster_scope),
+        "query_cluster_temp_proto_count": int(query_cluster_temp_proto_count),
+        "query_cluster_assigned_rows": int(query_cluster_assigned_rows),
         "local_competition_weight": float(local_competition_weight),
         "local_competition_k": int(local_competition_k),
         "local_competition_clip": float(local_competition_clip),
@@ -4242,6 +4490,8 @@ def _adaptive_qknn_overrides(
         "stable_dualview_v19",
         "dualview_support_v20",
         "stable_dualview_v20",
+        "dualview_support_v21",
+        "stable_dualview_v21",
     }:
         raise ValueError(f"unsupported adaptive_qknn_policy: {policy}")
     use_v2 = name in {"dualview_support_v2", "stable_dualview_v2"}
@@ -4263,6 +4513,7 @@ def _adaptive_qknn_overrides(
     use_v18 = name in {"dualview_support_v18", "stable_dualview_v18"}
     use_v19 = name in {"dualview_support_v19", "stable_dualview_v19"}
     use_v20 = name in {"dualview_support_v20", "stable_dualview_v20"}
+    use_v21 = name in {"dualview_support_v21", "stable_dualview_v21"}
 
     min_k = float(geometry["adaptive_support_min_k"])
     new_count = float(geometry["adaptive_new_class_count"])
@@ -4270,7 +4521,7 @@ def _adaptive_qknn_overrides(
     p90_sim = float(geometry["adaptive_support_p90_offdiag_proto_sim"])
     radius = float(geometry["adaptive_support_mean_radius"])
     hardness = _clip01(max((max_sim - 0.82) / 0.16, (p90_sim - 0.68) / 0.22, (radius - 0.08) / 0.20))
-    if use_v3 or use_v4 or use_v5 or use_v7 or use_v8 or use_v9 or use_v10 or use_v11 or use_v12 or use_v13 or use_v14 or use_v15 or use_v16 or use_v17 or use_v18 or use_v19 or use_v20:
+    if use_v3 or use_v4 or use_v5 or use_v7 or use_v8 or use_v9 or use_v10 or use_v11 or use_v12 or use_v13 or use_v14 or use_v15 or use_v16 or use_v17 or use_v18 or use_v19 or use_v20 or use_v21:
         class_load = _clip01((new_count - 2.0) / 18.0)
     else:
         class_load = _clip01((new_count - 10.0) / 20.0)
@@ -4315,7 +4566,7 @@ def _adaptive_qknn_overrides(
         "source_guard_conf_min": 0.0,
         "source_guard_margin_min": 0.0,
     }
-    if use_v2 or use_v3 or use_v4 or use_v5 or use_v6 or use_v7 or use_v8 or use_v9 or use_v10 or use_v11 or use_v12 or use_v13 or use_v14 or use_v15 or use_v16 or use_v17 or use_v18 or use_v19 or use_v20:
+    if use_v2 or use_v3 or use_v4 or use_v5 or use_v6 or use_v7 or use_v8 or use_v9 or use_v10 or use_v11 or use_v12 or use_v13 or use_v14 or use_v15 or use_v16 or use_v17 or use_v18 or use_v19 or use_v20 or use_v21:
         competition_load = class_load
         if (
             use_v3
@@ -4336,6 +4587,7 @@ def _adaptive_qknn_overrides(
             or use_v18
             or use_v19
             or use_v20
+            or use_v21
         ) and new_count >= 2.0:
             competition_load = max(competition_load, 0.25)
         overrides.update(
@@ -4362,6 +4614,7 @@ def _adaptive_qknn_overrides(
                             or use_v18
                             or use_v19
                             or use_v20
+                            or use_v21
                         )
                         and stable_gate >= 0.50
                     )
@@ -4427,7 +4680,7 @@ def _adaptive_qknn_overrides(
                 "support_loo_pair_rescue_scope": "new",
             }
         )
-    if use_v7 or use_v8 or use_v9 or use_v11 or use_v12 or use_v13 or use_v14 or use_v15 or use_v16 or use_v17 or use_v18 or use_v19 or use_v20:
+    if use_v7 or use_v8 or use_v9 or use_v11 or use_v12 or use_v13 or use_v14 or use_v15 or use_v16 or use_v17 or use_v18 or use_v19 or use_v20 or use_v21:
         pair_gate = _clip01(max(stable_gate, class_load) * (0.35 + 0.65 * k_reliability))
         labelprop_gate = _clip01(k_reliability * stable_gate * (1.0 - 0.5 * class_load))
         labelprop_weight = float(np.clip(0.50 * labelprop_gate, 0.0, 0.18))
@@ -4450,7 +4703,7 @@ def _adaptive_qknn_overrides(
                 "pair_logreg_scope": "new",
             }
         )
-    if use_v8 or use_v9 or use_v11 or use_v12 or use_v13 or use_v14 or use_v15 or use_v16 or use_v17 or use_v18 or use_v19 or use_v20:
+    if use_v8 or use_v9 or use_v11 or use_v12 or use_v13 or use_v14 or use_v15 or use_v16 or use_v17 or use_v18 or use_v19 or use_v20 or use_v21:
         low_load_residual = float(np.clip(0.20 - 0.30 * k_reliability, 0.05, 0.20))
         high_load_residual = float(np.clip(0.10 + 0.60 * k_reliability, 0.10, 0.30))
         load_blend = _clip01((class_load - 0.50) / 0.25)
@@ -4465,9 +4718,9 @@ def _adaptive_qknn_overrides(
                 "old_residual_new_clip": 2.0,
             }
         )
-    if use_v9 or use_v10 or use_v11 or use_v12 or use_v13 or use_v14 or use_v15 or use_v16 or use_v17 or use_v18 or use_v19 or use_v20:
+    if use_v9 or use_v10 or use_v11 or use_v12 or use_v13 or use_v14 or use_v15 or use_v16 or use_v17 or use_v18 or use_v19 or use_v20 or use_v21:
         rescue_gate = _clip01(max(stable_gate, class_load))
-        if use_v11 or use_v12 or use_v13 or use_v14 or use_v15 or use_v16 or use_v17 or use_v18 or use_v19 or use_v20:
+        if use_v11 or use_v12 or use_v13 or use_v14 or use_v15 or use_v16 or use_v17 or use_v18 or use_v19 or use_v20 or use_v21:
             rescue_weight = float(np.clip((0.10 + 0.30 * k_reliability) * rescue_gate, 0.05, 0.20))
         else:
             rescue_weight = float(np.clip((0.10 - 0.15 * k_reliability) * rescue_gate, 0.02, 0.10))
@@ -4505,7 +4758,7 @@ def _adaptive_qknn_overrides(
                 "support_loo_pair_linear_scope": "new",
             }
         )
-    if use_v13 or use_v14 or use_v15 or use_v16 or use_v17 or use_v18 or use_v19 or use_v20:
+    if use_v13 or use_v14 or use_v15 or use_v16 or use_v17 or use_v18 or use_v19 or use_v20 or use_v21:
         proxy_gate = _clip01(max(stable_gate, class_load))
         proxy_weight = float(np.clip((0.10 + 0.90 * k_reliability) * proxy_gate, 0.0, 0.40))
         proxy_top_pairs = int(max(8, min(16, round(0.40 * max(new_count, 1.0)))))
@@ -4533,7 +4786,31 @@ def _adaptive_qknn_overrides(
                 "support_guided_proxy_gate_mean_tol": 0.0,
             }
         )
-    if use_v11 or use_v12 or use_v13 or use_v14 or use_v15 or use_v16 or use_v17 or use_v18 or use_v19 or use_v20:
+    if use_v21:
+        cluster_gate = _clip01(max(stable_gate, class_load) * (0.55 + 0.45 * k_reliability))
+        cluster_weight = float(
+            np.clip((0.05 + 0.11 * class_load + 0.07 * (1.0 - k_reliability)) * cluster_gate, 0.03, 0.16)
+        )
+        cluster_support_weight = float(np.clip(0.55 + 0.25 * k_reliability - 0.10 * class_load, 0.40, 0.75))
+        cluster_temperature = float(np.clip(0.10 - 0.04 * k_reliability + 0.02 * class_load, 0.05, 0.12))
+        overrides.update(
+            {
+                "query_cluster_weight": cluster_weight,
+                "query_cluster_rounds": 3,
+                "query_cluster_support_weight": cluster_support_weight,
+                "query_cluster_temperature": cluster_temperature,
+                "query_cluster_clip": 2.0,
+                "query_cluster_scope": "new",
+            }
+        )
+        if k_reliability < 0.15:
+            overrides.update(
+                {
+                    "support_loo_pair_rescue_weight": 0.0,
+                    "support_loo_pair_rescue_top_pairs": 0,
+                }
+            )
+    if use_v11 or use_v12 or use_v13 or use_v14 or use_v15 or use_v16 or use_v17 or use_v18 or use_v19 or use_v20 or use_v21:
         # ASLR: Adaptive Support-LOO Rescue. v12 adds compressed pairwise
         # linear boundaries; v13 adds compressed support-proxy direction rescue.
         # These variants do not persist raw support or query state.
@@ -4693,6 +4970,12 @@ def main() -> None:
     parser.add_argument("--query_graph_temperature_grid", default="0.05")
     parser.add_argument("--query_graph_rounds_grid", default="1")
     parser.add_argument("--query_graph_scope_grid", default="all")
+    parser.add_argument("--query_cluster_weight_grid", default="0")
+    parser.add_argument("--query_cluster_rounds_grid", default="3")
+    parser.add_argument("--query_cluster_support_weight_grid", default="0.6")
+    parser.add_argument("--query_cluster_temperature_grid", default="0.08")
+    parser.add_argument("--query_cluster_clip_grid", default="2.0")
+    parser.add_argument("--query_cluster_scope_grid", default="new")
     parser.add_argument("--local_competition_weight_grid", default="0")
     parser.add_argument("--local_competition_k_grid", default="4")
     parser.add_argument("--local_competition_clip_grid", default="1.0")
@@ -4897,6 +5180,12 @@ def main() -> None:
             qknn._parse_float_csv(args.query_graph_temperature_grid),
             qknn._parse_int_csv(args.query_graph_rounds_grid),
             qknn._parse_csv(args.query_graph_scope_grid),
+            qknn._parse_float_csv(args.query_cluster_weight_grid),
+            qknn._parse_int_csv(args.query_cluster_rounds_grid),
+            qknn._parse_float_csv(args.query_cluster_support_weight_grid),
+            qknn._parse_float_csv(args.query_cluster_temperature_grid),
+            qknn._parse_float_csv(args.query_cluster_clip_grid),
+            qknn._parse_csv(args.query_cluster_scope_grid),
             qknn._parse_float_csv(args.local_competition_weight_grid),
             qknn._parse_int_csv(args.local_competition_k_grid),
             qknn._parse_float_csv(args.local_competition_clip_grid),
@@ -5093,6 +5382,12 @@ def main() -> None:
                     query_graph_temperature,
                     query_graph_rounds,
                     query_graph_scope,
+                    query_cluster_weight,
+                    query_cluster_rounds,
+                    query_cluster_support_weight,
+                    query_cluster_temperature,
+                    query_cluster_clip,
+                    query_cluster_scope,
                     local_competition_weight,
                     local_competition_k,
                     local_competition_clip,
@@ -5192,6 +5487,12 @@ def main() -> None:
                         "labelprop_clip": float(labelprop_clip),
                         "labelprop_scope": str(labelprop_scope),
                         "query_graph_weight": float(query_graph_weight),
+                        "query_cluster_weight": float(query_cluster_weight),
+                        "query_cluster_rounds": int(query_cluster_rounds),
+                        "query_cluster_support_weight": float(query_cluster_support_weight),
+                        "query_cluster_temperature": float(query_cluster_temperature),
+                        "query_cluster_clip": float(query_cluster_clip),
+                        "query_cluster_scope": str(query_cluster_scope),
                         "query_proto_refine_weight": float(query_proto_refine_weight),
                         "query_proto_refine_topm": int(query_proto_refine_topm),
                         "query_proto_refine_clip": float(query_proto_refine_clip),
@@ -5354,6 +5655,24 @@ def main() -> None:
                             "labelprop_scope": adaptive_overrides.get("labelprop_scope", params["labelprop_scope"]),
                             "query_graph_weight": adaptive_overrides.get(
                                 "query_graph_weight", params["query_graph_weight"]
+                            ),
+                            "query_cluster_weight": adaptive_overrides.get(
+                                "query_cluster_weight", params["query_cluster_weight"]
+                            ),
+                            "query_cluster_rounds": adaptive_overrides.get(
+                                "query_cluster_rounds", params["query_cluster_rounds"]
+                            ),
+                            "query_cluster_support_weight": adaptive_overrides.get(
+                                "query_cluster_support_weight", params["query_cluster_support_weight"]
+                            ),
+                            "query_cluster_temperature": adaptive_overrides.get(
+                                "query_cluster_temperature", params["query_cluster_temperature"]
+                            ),
+                            "query_cluster_clip": adaptive_overrides.get(
+                                "query_cluster_clip", params["query_cluster_clip"]
+                            ),
+                            "query_cluster_scope": adaptive_overrides.get(
+                                "query_cluster_scope", params["query_cluster_scope"]
                             ),
                             "query_proto_refine_weight": adaptive_overrides.get(
                                 "query_proto_refine_weight", params["query_proto_refine_weight"]
@@ -5546,6 +5865,12 @@ def main() -> None:
                         query_graph_temperature=float(query_graph_temperature),
                         query_graph_rounds=int(query_graph_rounds),
                         query_graph_scope=str(query_graph_scope),
+                        query_cluster_weight=float(params["query_cluster_weight"]),
+                        query_cluster_rounds=int(params["query_cluster_rounds"]),
+                        query_cluster_support_weight=float(params["query_cluster_support_weight"]),
+                        query_cluster_temperature=float(params["query_cluster_temperature"]),
+                        query_cluster_clip=float(params["query_cluster_clip"]),
+                        query_cluster_scope=str(params["query_cluster_scope"]),
                         local_competition_weight=float(params["local_competition_weight"]),
                         local_competition_k=int(params["local_competition_k"]),
                         local_competition_clip=float(params["local_competition_clip"]),
@@ -5829,6 +6154,14 @@ def main() -> None:
         "query_graph_rounds",
         "query_graph_scope",
         "query_graph_edges",
+        "query_cluster_weight",
+        "query_cluster_rounds",
+        "query_cluster_support_weight",
+        "query_cluster_temperature",
+        "query_cluster_clip",
+        "query_cluster_scope",
+        "query_cluster_temp_proto_count",
+        "query_cluster_assigned_rows",
         "local_competition_weight",
         "local_competition_k",
         "local_competition_clip",

@@ -202,6 +202,50 @@ Interpretation:
 
 Current goal status: active, not achieved.
 
+## v21 Self-Gated Query Cluster Diagnostic
+
+Objective: continue optimizing qKNN without adding K anchors. The only K settings remain `K=10` and `K=5`; query stays at the feature-file maximum, namely 70 query samples per class for `K=10` and 75 for `K=5`.
+
+Implementation changes:
+
+- Restored the legacy support-LOO pair rescue branch used by the earlier v15/v19 lineage when `support_loo_pair_rescue_proto_neighbors<=0` and `support_loo_pair_rescue_proto_min_sim>1.0`. This prevents the v20 risk-pair logic from contaminating legacy baselines.
+- Added `dualview_support_v21` / `stable_dualview_v21` with self-gated query-cluster alignment. The method keeps only compressed support prototypes as persistent memory; query clusters are temporary batch-local state and are discarded after scoring.
+- Added an unsupervised query-cluster gate: cluster scores are injected only when quota cluster assignment agrees sufficiently with the current qKNN score top-1 and has adequate score margin. No query labels are used for fitting or gating.
+- Added a low-reliability support-LOO rescue gate for v21: when `k_reliability<0.15`, pair rescue is disabled so low-shot support mistakes are not amplified.
+
+Verification:
+
+| check | result |
+|---|---|
+| `conda run -n ssr-gpu python -m py_compile code\scripts\phase2_support_metric_qknn_probe.py` | PASS |
+| N10 K10 v15 legacy check | restored historical row: old 92.14%, new 85.29%, min_new 64.29% |
+| N10 K10 v21 self-gate | no query-cluster injection; same as restored v15 |
+| N10 K5 v21 reliable gate | completed; still failed floor target |
+
+Key result rows:
+
+| route | K | query per class | old_acc | min_old | new_acc | min_new | weakest new classes | verdict |
+|---|---:|---:|---:|---:|---:|---:|---|---|
+| v15 legacy check | 10 | 70 | 92.14% | 77.14% | 85.29% | 64.29% | `2-13` 64.29%,`8-18` 75.71%,`11-10` 78.57% | baseline restored, target failed |
+| v21 self-gate | 10 | 70 | 92.14% | 77.14% | 85.29% | 64.29% | `2-13` 64.29%,`8-18` 75.71%,`11-10` 78.57% | safe fallback, no gain |
+| current v15 check | 5 | 75 | 91.78% | 77.33% | 81.33% | 53.33% | `2-13` 53.33%,`11-10` 56.00%,`2-5` 81.33% | current low-K legacy drift remains |
+| v21 reliable gate | 5 | 75 | 91.78% | 77.33% | 82.67% | 56.00% | `2-13` 56.00%,`11-10` 69.33%,`2-5` 78.67% | small recovery, target failed |
+
+Interpretation:
+
+- The K10 baseline regression is repaired, so future K10 comparisons are again meaningful.
+- The self-gated query-cluster idea is safe in this split because it refuses to inject unreliable query structure; however, it currently behaves as a fallback rather than an accuracy improver.
+- The low-K failure is not solved. Current code still does not reproduce the archived `n10_k5_v15_lowshot_hybrid_seed421037.csv` row (`new_acc=85.07%`, `min_new=64.00%`). The mismatch is concentrated in automatic support-guided proxy pair selection and should be fixed before using v21 as a promotable result.
+- Active goal remains unmet: ten-new-class floor is still below 75%, and N20 remains known to collapse well below the target under current compressed qKNN geometry.
+
+Next technical route:
+
+1. Recover the archived K5 v15 proxy-pair behavior or introduce a support-only reliability objective that chooses proxy bundles without query labels.
+2. Re-run strict anchors after that repair: N10 K10, N10 K5, N20 K10, N20 K5.
+3. Treat larger enrollment-pool support selection only as a separate diagnostic unless the label-budget claim is explicitly changed.
+
+Current goal status: active, not achieved.
+
 ## v13 Adaptive Support-Proxy Direction Rescue
 
 Objective: remove the manual `hard_focus` dependency from the useful qKNN proxy route. The new `dualview_support_v13` policy mines hard pairs from target support only: support leave-one-out errors plus high-similarity support prototype pairs. It then uses `proxy_unknown` class prototypes to generate compressed analogy directions. The deployed state stores only proxy-direction scalar metadata and class/prototype state; it does not store raw support samples.
