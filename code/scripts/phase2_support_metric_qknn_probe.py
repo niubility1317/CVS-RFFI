@@ -2509,6 +2509,98 @@ def _old_residual_new_scores(
     return out, int(max_rank), int(stored_scalars)
 
 
+def _source_target_residual_transport_scores(
+    *,
+    features: np.ndarray,
+    tx_ids: np.ndarray,
+    roles: np.ndarray,
+    support_indices: np.ndarray,
+    support_labels: np.ndarray,
+    query_indices: np.ndarray,
+    class_labels: list[str],
+    old_labels: list[str],
+    new_labels: list[str],
+    topm: int,
+    proto_mix: float,
+    rank: int,
+    residual_strength: float,
+    shift_strength: float,
+    clip: float,
+) -> tuple[np.ndarray, int, int, int, float]:
+    """Score new classes in a compact source-to-target old-class residual space.
+
+    The deployable state is a source/target old-prototype transport basis plus
+    new-class residual prototypes. It does not retain raw support vectors.
+    """
+    if not new_labels:
+        return np.zeros((int(query_indices.size), len(class_labels)), dtype=np.float64), 0, 0, 0, 0.0
+    support = qknn._normalize_rows(features[support_indices])
+    query = qknn._normalize_rows(features[query_indices])
+    labels = np.asarray(support_labels, dtype=object).astype(str)
+    tx_arr = np.asarray(tx_ids, dtype=object).astype(str)
+    role_arr = np.asarray(roles, dtype=object).astype(str)
+
+    source_proto_rows: list[np.ndarray] = []
+    target_proto_rows: list[np.ndarray] = []
+    for label in old_labels:
+        source_idx = np.where((tx_arr == str(label)) & (role_arr == "source"))[0].astype(int)
+        target_cls = support[labels == str(label)]
+        if source_idx.size == 0 or target_cls.size == 0:
+            continue
+        source_proto = qknn._normalize_rows(features[source_idx].mean(axis=0, keepdims=True))[0]
+        target_proto = qknn._normalize_rows(target_cls.mean(axis=0, keepdims=True))[0]
+        source_proto_rows.append(source_proto)
+        target_proto_rows.append(target_proto)
+    if len(source_proto_rows) < 2:
+        return np.zeros((query.shape[0], len(class_labels)), dtype=np.float64), 0, 0, 0, 0.0
+
+    source_proto = np.stack(source_proto_rows, axis=0)
+    target_proto = np.stack(target_proto_rows, axis=0)
+    shifts = target_proto - source_proto
+    mean_shift = shifts.mean(axis=0, keepdims=True)
+    shift_norm = float(np.linalg.norm(mean_shift))
+    centered = shifts - mean_shift
+    max_rank = min(int(rank), centered.shape[0] - 1, centered.shape[1])
+    if max_rank <= 0:
+        basis = np.zeros((features.shape[1], 0), dtype=np.float64)
+    else:
+        _u, _s, vh = np.linalg.svd(centered, full_matrices=False)
+        basis = vh[:max_rank].T
+    target_center = target_proto.mean(axis=0, keepdims=True)
+
+    def transport(matrix: np.ndarray) -> np.ndarray:
+        shifted = matrix - float(shift_strength) * mean_shift
+        centered_matrix = shifted - target_center
+        if basis.size and float(residual_strength) != 0.0:
+            centered_matrix = centered_matrix - float(residual_strength) * ((centered_matrix @ basis) @ basis.T)
+        return qknn._normalize_rows(centered_matrix)
+
+    support_res = transport(support)
+    query_res = transport(query)
+    out = np.zeros((query.shape[0], len(class_labels)), dtype=np.float64)
+    used_new = 0
+    new_set = {str(label) for label in new_labels}
+    for class_index, label in enumerate(class_labels):
+        if str(label) not in new_set:
+            continue
+        cls = support_res[labels == str(label)]
+        if cls.size == 0:
+            continue
+        prototype = qknn._normalize_rows(cls.mean(axis=0, keepdims=True))[0]
+        local = _topm_mean(query_res @ cls.T, int(topm))
+        proto = query_res @ prototype
+        out[:, class_index] = (1.0 - float(proto_mix)) * local + float(proto_mix) * proto
+        used_new += 1
+    if used_new:
+        new_indices = [idx for idx, label in enumerate(class_labels) if str(label) in new_set]
+        new_scores = out[:, new_indices]
+        new_scores = new_scores - np.mean(new_scores, axis=1, keepdims=True)
+        new_scores = new_scores / (np.std(new_scores, axis=1, keepdims=True) + 1e-6)
+        out[:, new_indices] = np.clip(new_scores, -float(clip), float(clip))
+    stored_scalars = int(basis.size + mean_shift.size + target_center.size + used_new * features.shape[1])
+    return out, int(max_rank), int(len(source_proto_rows)), int(stored_scalars), shift_norm
+
+
 def _class_diag_metric_scores(
     *,
     features: np.ndarray,
@@ -4590,6 +4682,59 @@ def _evaluate_metric_qknn(
             clip=float(old_residual_new_clip),
         )
         scores = scores + float(old_residual_new_weight) * old_residual_scores
+    source_target_transport_weight = 0.0
+    source_target_transport_rank = 0
+    source_target_transport_rank_used = 0
+    source_target_transport_old_pairs = 0
+    source_target_transport_residual_strength = 0.0
+    source_target_transport_shift_strength = 0.0
+    source_target_transport_proto_mix = 0.0
+    source_target_transport_shift_norm = 0.0
+    stored_source_target_transport_scalars = 0
+    if str(adaptive_qknn_policy).strip().lower() in {"dualview_support_v39", "stable_dualview_v39"}:
+        label_counts = [
+            int(np.sum(np.asarray(support_labels, dtype=object).astype(str) == str(label)))
+            for label in old_labels + new_labels
+        ]
+        min_support = float(min(label_counts) if label_counts else 0.0)
+        class_load_gate = float(np.clip((float(len(new_labels)) - 2.0) / 18.0, 0.0, 1.0))
+        low_k_gate = float(np.clip(1.0 - ((min_support - 5.0) / 15.0), 0.0, 1.0))
+        source_target_transport_weight = float(
+            np.clip(0.018 + 0.026 * class_load_gate + 0.016 * low_k_gate, 0.0, 0.060)
+        )
+        source_target_transport_rank = int(max(1, min(3, len(old_labels) - 1, adapted.shape[1])))
+        source_target_transport_residual_strength = float(
+            np.clip(0.30 + 0.22 * class_load_gate + 0.18 * low_k_gate, 0.25, 0.72)
+        )
+        source_target_transport_shift_strength = float(np.clip(0.06 + 0.14 * class_load_gate, 0.05, 0.24))
+        source_target_transport_proto_mix = float(np.clip(0.50 + 0.10 * low_k_gate, 0.50, 0.62))
+        (
+            source_target_scores,
+            source_target_transport_rank_used,
+            source_target_transport_old_pairs,
+            stored_source_target_transport_scalars,
+            source_target_transport_shift_norm,
+        ) = _source_target_residual_transport_scores(
+            features=adapted,
+            tx_ids=tx_ids,
+            roles=roles,
+            support_indices=support_indices,
+            support_labels=support_labels,
+            query_indices=query_indices,
+            class_labels=old_labels + new_labels,
+            old_labels=old_labels,
+            new_labels=new_labels,
+            topm=int(topm),
+            proto_mix=source_target_transport_proto_mix,
+            rank=source_target_transport_rank,
+            residual_strength=source_target_transport_residual_strength,
+            shift_strength=source_target_transport_shift_strength,
+            clip=2.0,
+        )
+        if source_target_transport_old_pairs < 2:
+            source_target_transport_weight = 0.0
+            stored_source_target_transport_scalars = 0
+        scores = scores + source_target_transport_weight * source_target_scores
     domain_refine_domain_count = 0
     stored_domain_refine_prototype_count = 0
     if float(domain_refine_weight) > 0.0 and str(domain_refine_key).strip().lower() not in {"", "none"}:
@@ -4895,6 +5040,8 @@ def _evaluate_metric_qknn(
         "stable_dualview_v37",
         "dualview_support_v38",
         "stable_dualview_v38",
+        "dualview_support_v39",
+        "stable_dualview_v39",
     }:
         if support_loo_scores is None:
             support_loo_scores = _support_loo_base_scores(
@@ -4941,6 +5088,8 @@ def _evaluate_metric_qknn(
                 "stable_dualview_v37",
                 "dualview_support_v38",
                 "stable_dualview_v38",
+                "dualview_support_v39",
+                "stable_dualview_v39",
             }
             and low_k_gate >= 0.75
         ):
@@ -4979,7 +5128,14 @@ def _evaluate_metric_qknn(
             gate_margin=neighborhood_gate_margin,
             query_neighbor_weight=neighborhood_gate_query_weight,
         )
-    if policy_norm in {"dualview_support_v37", "stable_dualview_v37", "dualview_support_v38", "stable_dualview_v38"}:
+    if policy_norm in {
+        "dualview_support_v37",
+        "stable_dualview_v37",
+        "dualview_support_v38",
+        "stable_dualview_v38",
+        "dualview_support_v39",
+        "stable_dualview_v39",
+    }:
         if support_loo_scores is None:
             support_loo_scores = _support_loo_base_scores(
                 features=adapted,
@@ -5034,7 +5190,10 @@ def _evaluate_metric_qknn(
             clip=1.0,
             gate_margin=contrast_margin,
             floor_target=0.75,
-            risk_scale=float(low_k_gate) if policy_norm in {"dualview_support_v38", "stable_dualview_v38"} else 0.0,
+            risk_scale=float(low_k_gate)
+            if policy_norm
+            in {"dualview_support_v38", "stable_dualview_v38", "dualview_support_v39", "stable_dualview_v39"}
+            else 0.0,
         )
     if policy_norm in {
         "dualview_support_v25",
@@ -5459,6 +5618,15 @@ def _evaluate_metric_qknn(
         "old_residual_new_proto_mix": float(old_residual_new_proto_mix),
         "old_residual_new_clip": float(old_residual_new_clip),
         "stored_old_residual_new_scalars": int(stored_old_residual_new_scalars),
+        "source_target_transport_weight": float(source_target_transport_weight),
+        "source_target_transport_rank": int(source_target_transport_rank),
+        "source_target_transport_rank_used": int(source_target_transport_rank_used),
+        "source_target_transport_old_pairs": int(source_target_transport_old_pairs),
+        "source_target_transport_residual_strength": float(source_target_transport_residual_strength),
+        "source_target_transport_shift_strength": float(source_target_transport_shift_strength),
+        "source_target_transport_proto_mix": float(source_target_transport_proto_mix),
+        "source_target_transport_shift_norm": float(source_target_transport_shift_norm),
+        "stored_source_target_transport_scalars": int(stored_source_target_transport_scalars),
         "domain_refine_key": str(domain_refine_key),
         "domain_refine_weight": float(domain_refine_weight),
         "domain_refine_scope": str(domain_refine_scope),
@@ -5805,6 +5973,8 @@ def _adaptive_qknn_overrides(
         "stable_dualview_v37",
         "dualview_support_v38",
         "stable_dualview_v38",
+        "dualview_support_v39",
+        "stable_dualview_v39",
     }:
         raise ValueError(f"unsupported adaptive_qknn_policy: {policy}")
     use_v2 = name in {"dualview_support_v2", "stable_dualview_v2"}
@@ -5838,7 +6008,8 @@ def _adaptive_qknn_overrides(
     use_v33 = name in {"dualview_support_v33", "stable_dualview_v33"}
     use_v34 = name in {"dualview_support_v34", "stable_dualview_v34"}
     use_v35 = name in {"dualview_support_v35", "stable_dualview_v35"}
-    use_v38 = name in {"dualview_support_v38", "stable_dualview_v38"}
+    use_v39 = name in {"dualview_support_v39", "stable_dualview_v39"}
+    use_v38 = name in {"dualview_support_v38", "stable_dualview_v38"} or use_v39
     use_v37 = name in {"dualview_support_v37", "stable_dualview_v37"} or use_v38
     use_v36 = name in {"dualview_support_v36", "stable_dualview_v36"} or use_v37
     use_v32 = name in {"dualview_support_v32", "stable_dualview_v32"} or use_v33 or use_v34 or use_v35 or use_v36
@@ -7785,6 +7956,15 @@ def main() -> None:
         "source_proto_anchor_center",
         "source_proto_anchor_count",
         "stored_source_proto_anchor_scalars",
+        "source_target_transport_weight",
+        "source_target_transport_rank",
+        "source_target_transport_rank_used",
+        "source_target_transport_old_pairs",
+        "source_target_transport_residual_strength",
+        "source_target_transport_shift_strength",
+        "source_target_transport_proto_mix",
+        "source_target_transport_shift_norm",
+        "stored_source_target_transport_scalars",
         "stored_mahal_proto_scalars",
         "query_old_acc",
         "query_min_old_class_acc",
