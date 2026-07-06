@@ -24,8 +24,10 @@ SCRIPT_DIR = Path(__file__).resolve().parent
 CODE_ROOT = SCRIPT_DIR.parent
 REPO_ROOT = CODE_ROOT.parent
 for path in (str(SCRIPT_DIR), str(CODE_ROOT), str(REPO_ROOT)):
-    if path not in sys.path:
-        sys.path.insert(0, path)
+    while path in sys.path:
+        sys.path.remove(path)
+for path in (str(REPO_ROOT), str(CODE_ROOT), str(SCRIPT_DIR)):
+    sys.path.insert(0, path)
 
 import phase2_qknn_active_support_select as active
 from cvsrffi.eval import apply_sat_channel_for_scenario
