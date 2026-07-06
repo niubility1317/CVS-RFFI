@@ -4770,6 +4770,8 @@ def _adaptive_qknn_overrides(
         "stable_dualview_v24",
         "dualview_support_v25",
         "stable_dualview_v25",
+        "dualview_support_v27",
+        "stable_dualview_v27",
     }:
         raise ValueError(f"unsupported adaptive_qknn_policy: {policy}")
     use_v2 = name in {"dualview_support_v2", "stable_dualview_v2"}
@@ -4796,6 +4798,8 @@ def _adaptive_qknn_overrides(
     use_v23 = name in {"dualview_support_v23", "stable_dualview_v23"}
     use_v24 = name in {"dualview_support_v24", "stable_dualview_v24"}
     use_v25 = name in {"dualview_support_v25", "stable_dualview_v25"}
+    use_v27 = name in {"dualview_support_v27", "stable_dualview_v27"}
+    use_v9 = use_v9 or use_v27
 
     min_k = float(geometry["adaptive_support_min_k"])
     new_count = float(geometry["adaptive_new_class_count"])
@@ -5130,6 +5134,18 @@ def _adaptive_qknn_overrides(
                     "query_cluster_margin_min": 0.0,
                 }
             )
+    if use_v27:
+        quality_gate = _clip01(max(stable_gate, class_load))
+        low_k_gate = _clip01(1.0 - k_reliability)
+        quality_weight = float(np.clip(0.10 * quality_gate * (0.55 + 0.45 * low_k_gate), 0.0, 0.10))
+        overrides.update(
+            {
+                "support_quality_weight": quality_weight,
+                "support_quality_floor": 0.25,
+                "support_quality_margin_scale": 0.1,
+                "support_bias_weight": 0.0,
+            }
+        )
     if use_v11 or use_v12 or use_v13 or use_v14 or use_v15 or use_v16 or use_v17 or use_v18 or use_v19 or use_v20 or use_v21 or use_v22 or use_v23 or use_v24 or use_v25:
         # ASLR: Adaptive Support-LOO Rescue. v12 adds compressed pairwise
         # linear boundaries; v13 adds compressed support-proxy direction rescue.
@@ -5792,6 +5808,12 @@ def main() -> None:
                         "local_competition_k": int(local_competition_k),
                         "local_competition_clip": float(local_competition_clip),
                         "local_competition_scope": str(local_competition_scope),
+                        "support_bias_weight": float(support_bias_weight),
+                        "support_bias_step": float(support_bias_step),
+                        "support_bias_rounds": int(support_bias_rounds),
+                        "support_quality_weight": float(support_quality_weight),
+                        "support_quality_floor": float(support_quality_floor),
+                        "support_quality_margin_scale": float(support_quality_margin_scale),
                         "support_loo_pair_rescue_weight": float(support_loo_pair_rescue_weight),
                         "support_loo_pair_rescue_top_pairs": int(support_loo_pair_rescue_top_pairs),
                         "support_loo_pair_rescue_min_errors": int(support_loo_pair_rescue_min_errors),
@@ -5928,6 +5950,24 @@ def main() -> None:
                             ),
                             "local_competition_scope": adaptive_overrides.get(
                                 "local_competition_scope", params["local_competition_scope"]
+                            ),
+                            "support_bias_weight": adaptive_overrides.get(
+                                "support_bias_weight", params["support_bias_weight"]
+                            ),
+                            "support_bias_step": adaptive_overrides.get(
+                                "support_bias_step", params["support_bias_step"]
+                            ),
+                            "support_bias_rounds": adaptive_overrides.get(
+                                "support_bias_rounds", params["support_bias_rounds"]
+                            ),
+                            "support_quality_weight": adaptive_overrides.get(
+                                "support_quality_weight", params["support_quality_weight"]
+                            ),
+                            "support_quality_floor": adaptive_overrides.get(
+                                "support_quality_floor", params["support_quality_floor"]
+                            ),
+                            "support_quality_margin_scale": adaptive_overrides.get(
+                                "support_quality_margin_scale", params["support_quality_margin_scale"]
                             ),
                             "support_loo_pair_rescue_weight": adaptive_overrides.get(
                                 "support_loo_pair_rescue_weight", params["support_loo_pair_rescue_weight"]
@@ -6162,12 +6202,12 @@ def main() -> None:
                         class_diag_metric_alpha=float(class_diag_metric_alpha),
                         class_diag_metric_power=float(class_diag_metric_power),
                         class_diag_metric_clip=float(class_diag_metric_clip),
-                        support_bias_weight=float(support_bias_weight),
-                        support_bias_step=float(support_bias_step),
-                        support_bias_rounds=int(support_bias_rounds),
-                        support_quality_weight=float(support_quality_weight),
-                        support_quality_floor=float(support_quality_floor),
-                        support_quality_margin_scale=float(support_quality_margin_scale),
+                        support_bias_weight=float(params["support_bias_weight"]),
+                        support_bias_step=float(params["support_bias_step"]),
+                        support_bias_rounds=int(params["support_bias_rounds"]),
+                        support_quality_weight=float(params["support_quality_weight"]),
+                        support_quality_floor=float(params["support_quality_floor"]),
+                        support_quality_margin_scale=float(params["support_quality_margin_scale"]),
                         support_loo_pair_rescue_weight=float(params["support_loo_pair_rescue_weight"]),
                         support_loo_pair_rescue_top_pairs=int(params["support_loo_pair_rescue_top_pairs"]),
                         support_loo_pair_rescue_min_errors=int(params["support_loo_pair_rescue_min_errors"]),
