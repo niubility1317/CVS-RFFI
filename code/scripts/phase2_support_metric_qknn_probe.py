@@ -2980,6 +2980,170 @@ def _support_loo_pair_linear_scores(
     )
 
 
+def _support_loo_top2_pair_gate_scores(
+    scores: np.ndarray,
+    *,
+    features: np.ndarray,
+    support_indices: np.ndarray,
+    support_labels: np.ndarray,
+    query_indices: np.ndarray,
+    support_scores: np.ndarray,
+    class_labels: list[str],
+    old_labels: list[str],
+    new_labels: list[str],
+    old_query_count: int,
+    top_pairs: int,
+    min_errors: int,
+    weight: float,
+    alpha: float,
+    clip: float,
+    gate_margin: float,
+) -> tuple[np.ndarray, int, int, float, float, str]:
+    if float(weight) == 0.0 or int(top_pairs) <= 0:
+        return scores, 0, 0, 0.0, 0.0, ""
+    labels = np.asarray(support_labels, dtype=object).astype(str)
+    label_to_index = {label: index for index, label in enumerate(class_labels)}
+    old_set = set(old_labels)
+    new_set = set(new_labels)
+    old_count = int(sum(1 for label in labels.tolist() if label in old_set))
+    loo_pred = _assignment_predict(
+        np.asarray(support_scores, dtype=np.float64),
+        old_count=old_count,
+        old_labels=old_labels,
+        new_labels=new_labels,
+        query_scenarios=np.asarray(["support"] * int(labels.size), dtype=object),
+        scenario_balanced_assignment=False,
+        role_balanced_assignment=True,
+        balanced_assignment=True,
+    )
+    before_per_class: list[float] = []
+    for label in class_labels:
+        mask = labels == label
+        before_per_class.append(float(np.mean(loo_pred[mask] == label)) if bool(np.any(mask)) else 0.0)
+
+    pair_counts: dict[tuple[str, str], int] = {}
+    for truth_label, pred_label in zip(labels.tolist(), loo_pred.tolist()):
+        truth = str(truth_label)
+        pred = str(pred_label)
+        if truth == pred or truth not in new_set or pred not in new_set:
+            continue
+        left, right = sorted((truth, pred))
+        pair_counts[(left, right)] = pair_counts.get((left, right), 0) + 1
+    candidates = [
+        (left, right, count)
+        for (left, right), count in pair_counts.items()
+        if int(count) >= max(1, int(min_errors))
+    ]
+    candidates.sort(key=lambda item: (-int(item[2]), item[0], item[1]))
+    candidates = candidates[: max(0, int(top_pairs))]
+    if not candidates:
+        return scores, 0, 0, float(min(before_per_class, default=0.0)), float(np.mean(before_per_class) if before_per_class else 0.0), ""
+
+    support = qknn._normalize_rows(features[support_indices])
+    query = qknn._normalize_rows(features[query_indices])
+    prototypes: list[np.ndarray] = []
+    for label in class_labels:
+        class_support = support[labels == label]
+        if class_support.size == 0:
+            prototypes.append(np.zeros(features.shape[1], dtype=np.float64))
+        else:
+            prototypes.append(qknn._normalize_rows(class_support.mean(axis=0, keepdims=True))[0])
+    proto = qknn._normalize_rows(np.stack(prototypes, axis=0))
+
+    adjusted = np.asarray(scores, dtype=np.float64).copy()
+    gate_support_scores = np.asarray(support_scores, dtype=np.float64).copy()
+    new_indices = np.asarray([label_to_index[label] for label in new_labels if label in label_to_index], dtype=int)
+    if new_indices.size < 2:
+        return scores, 0, 0, float(min(before_per_class, default=0.0)), float(np.mean(before_per_class) if before_per_class else 0.0), ""
+    query_new_rows = np.arange(int(old_query_count), int(scores.shape[0]), dtype=int)
+    support_new_rows = np.where(np.asarray([label in new_set for label in labels.tolist()], dtype=bool))[0]
+    alpha_value = max(float(alpha), 1e-8)
+    gate = max(float(gate_margin), 1e-8)
+    used = 0
+    stored_scalars = 0
+    used_pairs: list[str] = []
+
+    def gated_rows(score_matrix: np.ndarray, rows: np.ndarray, left_idx: int, right_idx: int) -> tuple[np.ndarray, np.ndarray]:
+        if rows.size == 0:
+            return rows, np.asarray([], dtype=np.float64)
+        local = score_matrix[rows][:, new_indices]
+        order = np.argsort(local, axis=1)[:, -2:]
+        top_pair = np.sort(new_indices[order], axis=1)
+        pair = np.asarray(sorted((left_idx, right_idx)), dtype=int)
+        pair_mask = np.all(top_pair == pair[None, :], axis=1)
+        pair_gap = np.abs(score_matrix[rows, left_idx] - score_matrix[rows, right_idx])
+        margin_mask = pair_gap <= gate
+        keep = pair_mask & margin_mask
+        kept_rows = rows[keep]
+        if kept_rows.size == 0:
+            return kept_rows, np.asarray([], dtype=np.float64)
+        factors = 1.0 - np.clip(pair_gap[keep] / gate, 0.0, 1.0)
+        return kept_rows, factors.astype(np.float64)
+
+    for left, right, _count in candidates:
+        left_idx = label_to_index[left]
+        right_idx = label_to_index[right]
+        pair_mask = (labels == left) | (labels == right)
+        pair_support = support[pair_mask]
+        pair_labels = labels[pair_mask]
+        if pair_support.shape[0] < 4 or len(set(pair_labels.tolist())) < 2:
+            continue
+        left_sim = pair_support @ proto[left_idx]
+        right_sim = pair_support @ proto[right_idx]
+        x = np.stack([left_sim - right_sim, left_sim, right_sim, np.ones_like(left_sim)], axis=1)
+        y = np.where(pair_labels == left, 1.0, -1.0).astype(np.float64)
+        reg = alpha_value * np.eye(x.shape[1], dtype=np.float64)
+        reg[-1, -1] = alpha_value * 0.01
+        try:
+            coeff = np.linalg.solve(x.T @ x + reg, x.T @ y)
+        except np.linalg.LinAlgError:
+            coeff = np.linalg.pinv(x.T @ x + reg) @ x.T @ y
+
+        rows, factors = gated_rows(adjusted, query_new_rows, left_idx, right_idx)
+        if rows.size:
+            q_left = query[rows] @ proto[left_idx]
+            q_right = query[rows] @ proto[right_idx]
+            qx = np.stack([q_left - q_right, q_left, q_right, np.ones_like(q_left)], axis=1)
+            margin = np.clip(qx @ coeff, -float(clip), float(clip)) * factors
+            adjusted[rows, left_idx] += float(weight) * margin
+            adjusted[rows, right_idx] -= float(weight) * margin
+
+        s_rows, s_factors = gated_rows(gate_support_scores, support_new_rows, left_idx, right_idx)
+        if s_rows.size:
+            s_left = support[s_rows] @ proto[left_idx]
+            s_right = support[s_rows] @ proto[right_idx]
+            sx = np.stack([s_left - s_right, s_left, s_right, np.ones_like(s_left)], axis=1)
+            s_margin = np.clip(sx @ coeff, -float(clip), float(clip)) * s_factors
+            gate_support_scores[s_rows, left_idx] += float(weight) * s_margin
+            gate_support_scores[s_rows, right_idx] -= float(weight) * s_margin
+        used += 1
+        used_pairs.append(f"{left}<->{right}")
+        stored_scalars += int(coeff.size + 2)
+
+    after_pred = _assignment_predict(
+        gate_support_scores,
+        old_count=old_count,
+        old_labels=old_labels,
+        new_labels=new_labels,
+        query_scenarios=np.asarray(["support"] * int(labels.size), dtype=object),
+        scenario_balanced_assignment=False,
+        role_balanced_assignment=True,
+        balanced_assignment=True,
+    )
+    after_per_class: list[float] = []
+    for label in class_labels:
+        mask = labels == label
+        after_per_class.append(float(np.mean(after_pred[mask] == label)) if bool(np.any(mask)) else 0.0)
+    return (
+        adjusted,
+        int(used),
+        int(stored_scalars),
+        float(min(after_per_class, default=0.0)),
+        float(np.mean(after_per_class) if after_per_class else 0.0),
+        ";".join(used_pairs[:32]),
+    )
+
+
 def _mahalanobis_proto_scores(
     *,
     features: np.ndarray,
@@ -3367,6 +3531,8 @@ def _evaluate_metric_qknn(
             "stable_dualview_v23",
             "dualview_support_v24",
             "stable_dualview_v24",
+            "dualview_support_v25",
+            "stable_dualview_v25",
         }:
             primary_loo_scores = _support_loo_base_scores(
                 features=adapted,
@@ -3936,6 +4102,68 @@ def _evaluate_metric_qknn(
             clip=float(support_loo_pair_linear_clip),
             scope=str(support_loo_pair_linear_scope),
         )
+    top2_pair_gate_count = 0
+    stored_top2_pair_gate_scalars = 0
+    top2_pair_gate_loo_min_acc = 0.0
+    top2_pair_gate_loo_mean_acc = 0.0
+    top2_pair_gate_pairs = ""
+    top2_pair_gate_weight = 0.0
+    top2_pair_gate_top_pairs = 0
+    top2_pair_gate_margin = 0.0
+    if str(adaptive_qknn_policy).strip().lower() in {"dualview_support_v25", "stable_dualview_v25"}:
+        if support_loo_scores is None:
+            support_loo_scores = _support_loo_base_scores(
+                features=adapted,
+                support_indices=support_indices,
+                support_labels=support_labels,
+                scenarios=scenarios,
+                class_labels=old_labels + new_labels,
+                old_labels=set(old_labels),
+                topm=int(topm),
+                proto_mix=float(proto_mix),
+                radius_norm=float(radius_norm),
+                old_bias=float(old_bias),
+                neg_lambda=float(neg_lambda),
+                neg_threshold=float(neg_threshold),
+                neg_margin=float(neg_margin),
+                mutual_only=bool(mutual_only),
+                scenario_aware=bool(scenario_aware),
+            )
+        label_counts = [
+            int(np.sum(np.asarray(support_labels, dtype=object).astype(str) == str(label)))
+            for label in old_labels + new_labels
+        ]
+        min_support = float(min(label_counts) if label_counts else 0)
+        class_load_gate = _clip01((float(len(new_labels)) - 2.0) / 18.0)
+        k_gate = _clip01((min_support - 5.0) / 15.0)
+        top2_pair_gate_weight = float(np.clip(0.035 + 0.030 * class_load_gate + 0.020 * k_gate, 0.03, 0.08))
+        top2_pair_gate_top_pairs = int(max(2, min(8, round(0.30 * max(float(len(new_labels)), 1.0)))))
+        top2_pair_gate_margin = float(np.clip(0.28 + 0.18 * k_gate + 0.08 * class_load_gate, 0.25, 0.55))
+        (
+            scores,
+            top2_pair_gate_count,
+            stored_top2_pair_gate_scalars,
+            top2_pair_gate_loo_min_acc,
+            top2_pair_gate_loo_mean_acc,
+            top2_pair_gate_pairs,
+        ) = _support_loo_top2_pair_gate_scores(
+            scores,
+            features=adapted,
+            support_indices=support_indices,
+            support_labels=support_labels,
+            query_indices=query_indices,
+            support_scores=support_loo_scores,
+            class_labels=old_labels + new_labels,
+            old_labels=old_labels,
+            new_labels=new_labels,
+            old_query_count=old_count,
+            top_pairs=top2_pair_gate_top_pairs,
+            min_errors=1,
+            weight=top2_pair_gate_weight,
+            alpha=0.1,
+            clip=1.5,
+            gate_margin=top2_pair_gate_margin,
+        )
     stored_mahal_proto_scalars = 0
     if float(mahal_proto_weight) > 0.0:
         mahal_scores, stored_mahal_proto_scalars = _mahalanobis_proto_scores(
@@ -4295,6 +4523,14 @@ def _evaluate_metric_qknn(
         "support_loo_pair_linear_loo_min_acc": float(support_loo_pair_linear_min_acc),
         "support_loo_pair_linear_loo_mean_acc": float(support_loo_pair_linear_mean_acc),
         "stored_support_loo_pair_linear_scalars": int(stored_support_loo_pair_linear_scalars),
+        "top2_pair_gate_weight": float(top2_pair_gate_weight),
+        "top2_pair_gate_top_pairs": int(top2_pair_gate_top_pairs),
+        "top2_pair_gate_margin": float(top2_pair_gate_margin),
+        "top2_pair_gate_count": int(top2_pair_gate_count),
+        "top2_pair_gate_pairs": top2_pair_gate_pairs,
+        "top2_pair_gate_loo_min_acc": float(top2_pair_gate_loo_min_acc),
+        "top2_pair_gate_loo_mean_acc": float(top2_pair_gate_loo_mean_acc),
+        "stored_top2_pair_gate_scalars": int(stored_top2_pair_gate_scalars),
         "mahal_proto_weight": float(mahal_proto_weight),
         "mahal_proto_alpha": float(mahal_proto_alpha),
         "mahal_proto_diag_mix": float(mahal_proto_diag_mix),
@@ -4532,6 +4768,8 @@ def _adaptive_qknn_overrides(
         "stable_dualview_v23",
         "dualview_support_v24",
         "stable_dualview_v24",
+        "dualview_support_v25",
+        "stable_dualview_v25",
     }:
         raise ValueError(f"unsupported adaptive_qknn_policy: {policy}")
     use_v2 = name in {"dualview_support_v2", "stable_dualview_v2"}
@@ -4557,6 +4795,7 @@ def _adaptive_qknn_overrides(
     use_v22 = name in {"dualview_support_v22", "stable_dualview_v22"}
     use_v23 = name in {"dualview_support_v23", "stable_dualview_v23"}
     use_v24 = name in {"dualview_support_v24", "stable_dualview_v24"}
+    use_v25 = name in {"dualview_support_v25", "stable_dualview_v25"}
 
     min_k = float(geometry["adaptive_support_min_k"])
     new_count = float(geometry["adaptive_new_class_count"])
@@ -4564,7 +4803,7 @@ def _adaptive_qknn_overrides(
     p90_sim = float(geometry["adaptive_support_p90_offdiag_proto_sim"])
     radius = float(geometry["adaptive_support_mean_radius"])
     hardness = _clip01(max((max_sim - 0.82) / 0.16, (p90_sim - 0.68) / 0.22, (radius - 0.08) / 0.20))
-    if use_v3 or use_v4 or use_v5 or use_v7 or use_v8 or use_v9 or use_v10 or use_v11 or use_v12 or use_v13 or use_v14 or use_v15 or use_v16 or use_v17 or use_v18 or use_v19 or use_v20 or use_v21 or use_v22 or use_v23 or use_v24:
+    if use_v3 or use_v4 or use_v5 or use_v7 or use_v8 or use_v9 or use_v10 or use_v11 or use_v12 or use_v13 or use_v14 or use_v15 or use_v16 or use_v17 or use_v18 or use_v19 or use_v20 or use_v21 or use_v22 or use_v23 or use_v24 or use_v25:
         class_load = _clip01((new_count - 2.0) / 18.0)
     else:
         class_load = _clip01((new_count - 10.0) / 20.0)
@@ -4609,7 +4848,7 @@ def _adaptive_qknn_overrides(
         "source_guard_conf_min": 0.0,
         "source_guard_margin_min": 0.0,
     }
-    if use_v2 or use_v3 or use_v4 or use_v5 or use_v6 or use_v7 or use_v8 or use_v9 or use_v10 or use_v11 or use_v12 or use_v13 or use_v14 or use_v15 or use_v16 or use_v17 or use_v18 or use_v19 or use_v20 or use_v21 or use_v22 or use_v23 or use_v24:
+    if use_v2 or use_v3 or use_v4 or use_v5 or use_v6 or use_v7 or use_v8 or use_v9 or use_v10 or use_v11 or use_v12 or use_v13 or use_v14 or use_v15 or use_v16 or use_v17 or use_v18 or use_v19 or use_v20 or use_v21 or use_v22 or use_v23 or use_v24 or use_v25:
         competition_load = class_load
         if (
             use_v3
@@ -4634,6 +4873,7 @@ def _adaptive_qknn_overrides(
             or use_v22
             or use_v23
             or use_v24
+            or use_v25
         ) and new_count >= 2.0:
             competition_load = max(competition_load, 0.25)
         overrides.update(
@@ -4664,6 +4904,7 @@ def _adaptive_qknn_overrides(
                             or use_v22
                             or use_v23
                             or use_v24
+                            or use_v25
                         )
                         and stable_gate >= 0.50
                     )
@@ -4729,7 +4970,7 @@ def _adaptive_qknn_overrides(
                 "support_loo_pair_rescue_scope": "new",
             }
         )
-    if use_v7 or use_v8 or use_v9 or use_v11 or use_v12 or use_v13 or use_v14 or use_v15 or use_v16 or use_v17 or use_v18 or use_v19 or use_v20 or use_v21 or use_v22 or use_v23 or use_v24:
+    if use_v7 or use_v8 or use_v9 or use_v11 or use_v12 or use_v13 or use_v14 or use_v15 or use_v16 or use_v17 or use_v18 or use_v19 or use_v20 or use_v21 or use_v22 or use_v23 or use_v24 or use_v25:
         pair_gate = _clip01(max(stable_gate, class_load) * (0.35 + 0.65 * k_reliability))
         labelprop_gate = _clip01(k_reliability * stable_gate * (1.0 - 0.5 * class_load))
         labelprop_weight = float(np.clip(0.50 * labelprop_gate, 0.0, 0.18))
@@ -4752,7 +4993,7 @@ def _adaptive_qknn_overrides(
                 "pair_logreg_scope": "new",
             }
         )
-    if use_v8 or use_v9 or use_v11 or use_v12 or use_v13 or use_v14 or use_v15 or use_v16 or use_v17 or use_v18 or use_v19 or use_v20 or use_v21 or use_v22 or use_v23 or use_v24:
+    if use_v8 or use_v9 or use_v11 or use_v12 or use_v13 or use_v14 or use_v15 or use_v16 or use_v17 or use_v18 or use_v19 or use_v20 or use_v21 or use_v22 or use_v23 or use_v24 or use_v25:
         low_load_residual = float(np.clip(0.20 - 0.30 * k_reliability, 0.05, 0.20))
         high_load_residual = float(np.clip(0.10 + 0.60 * k_reliability, 0.10, 0.30))
         load_blend = _clip01((class_load - 0.50) / 0.25)
@@ -4767,9 +5008,9 @@ def _adaptive_qknn_overrides(
                 "old_residual_new_clip": 2.0,
             }
         )
-    if use_v9 or use_v10 or use_v11 or use_v12 or use_v13 or use_v14 or use_v15 or use_v16 or use_v17 or use_v18 or use_v19 or use_v20 or use_v21 or use_v22 or use_v23 or use_v24:
+    if use_v9 or use_v10 or use_v11 or use_v12 or use_v13 or use_v14 or use_v15 or use_v16 or use_v17 or use_v18 or use_v19 or use_v20 or use_v21 or use_v22 or use_v23 or use_v24 or use_v25:
         rescue_gate = _clip01(max(stable_gate, class_load))
-        if use_v11 or use_v12 or use_v13 or use_v14 or use_v15 or use_v16 or use_v17 or use_v18 or use_v19 or use_v20 or use_v21 or use_v22 or use_v23 or use_v24:
+        if use_v11 or use_v12 or use_v13 or use_v14 or use_v15 or use_v16 or use_v17 or use_v18 or use_v19 or use_v20 or use_v21 or use_v22 or use_v23 or use_v24 or use_v25:
             rescue_weight = float(np.clip((0.10 + 0.30 * k_reliability) * rescue_gate, 0.05, 0.20))
         else:
             rescue_weight = float(np.clip((0.10 - 0.15 * k_reliability) * rescue_gate, 0.02, 0.10))
@@ -4807,13 +5048,13 @@ def _adaptive_qknn_overrides(
                 "support_loo_pair_linear_scope": "new",
             }
         )
-    if use_v13 or use_v14 or use_v15 or use_v16 or use_v17 or use_v18 or use_v19 or use_v20 or use_v21 or use_v22 or use_v23 or use_v24:
+    if use_v13 or use_v14 or use_v15 or use_v16 or use_v17 or use_v18 or use_v19 or use_v20 or use_v21 or use_v22 or use_v23 or use_v24 or use_v25:
         proxy_gate = _clip01(max(stable_gate, class_load))
         proxy_weight = float(np.clip((0.10 + 0.90 * k_reliability) * proxy_gate, 0.0, 0.40))
         proxy_top_pairs = int(max(8, min(16, round(0.40 * max(new_count, 1.0)))))
         if use_v16:
             proxy_top_pairs = int(max(16, min(32, round(0.80 * max(new_count, 1.0)))))
-        proxy_balance = bool(use_v14 or use_v18 or use_v20 or ((use_v15 or use_v22 or use_v23 or use_v24) and k_reliability < 0.25))
+        proxy_balance = bool(use_v14 or use_v18 or use_v20 or ((use_v15 or use_v22 or use_v23 or use_v24 or use_v25) and k_reliability < 0.25))
         proxy_bundle_rows = 4 if use_v16 else 1
         proxy_analogy = bool(use_v17 or use_v18)
         proxy_gate_enabled = bool(use_v19)
@@ -4835,9 +5076,9 @@ def _adaptive_qknn_overrides(
                 "support_guided_proxy_gate_mean_tol": 0.0,
             }
         )
-    if use_v21 or use_v22 or use_v23 or use_v24:
+    if use_v21 or use_v22 or use_v23 or use_v24 or use_v25:
         cluster_gate = _clip01(max(stable_gate, class_load) * (0.55 + 0.45 * k_reliability))
-        if use_v22 or use_v23 or use_v24:
+        if use_v22 or use_v23 or use_v24 or use_v25:
             v22_base_weight = 0.04 * (1.0 - 0.35 * k_reliability) + 0.02 * class_load * k_reliability
             v22_overload_gate = 1.0 - _clip01((class_load - 0.55) / 0.45) * (1.0 - k_reliability)
             cluster_weight = float(
@@ -4859,7 +5100,7 @@ def _adaptive_qknn_overrides(
                 "query_cluster_scope": "new",
             }
         )
-        if use_v22 or use_v23 or use_v24:
+        if use_v22 or use_v23 or use_v24 or use_v25:
             overrides.update(
                 {
                     "query_cluster_agreement_min": float(np.clip(0.35 + 0.35 * k_reliability, 0.35, 0.70)),
@@ -4889,7 +5130,7 @@ def _adaptive_qknn_overrides(
                     "query_cluster_margin_min": 0.0,
                 }
             )
-    if use_v11 or use_v12 or use_v13 or use_v14 or use_v15 or use_v16 or use_v17 or use_v18 or use_v19 or use_v20 or use_v21 or use_v22 or use_v23 or use_v24:
+    if use_v11 or use_v12 or use_v13 or use_v14 or use_v15 or use_v16 or use_v17 or use_v18 or use_v19 or use_v20 or use_v21 or use_v22 or use_v23 or use_v24 or use_v25:
         # ASLR: Adaptive Support-LOO Rescue. v12 adds compressed pairwise
         # linear boundaries; v13 adds compressed support-proxy direction rescue.
         # These variants do not persist raw support or query state.
@@ -6230,6 +6471,14 @@ def main() -> None:
         "support_loo_pair_linear_loo_min_acc",
         "support_loo_pair_linear_loo_mean_acc",
         "stored_support_loo_pair_linear_scalars",
+        "top2_pair_gate_weight",
+        "top2_pair_gate_top_pairs",
+        "top2_pair_gate_margin",
+        "top2_pair_gate_count",
+        "top2_pair_gate_pairs",
+        "top2_pair_gate_loo_min_acc",
+        "top2_pair_gate_loo_mean_acc",
+        "stored_top2_pair_gate_scalars",
         "mahal_proto_weight",
         "mahal_proto_alpha",
         "mahal_proto_diag_mix",
