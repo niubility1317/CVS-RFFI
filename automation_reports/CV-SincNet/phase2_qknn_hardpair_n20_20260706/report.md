@@ -4606,3 +4606,33 @@ K10严格路线出现可保留正向候选：相对上一节`k10_strict_scenario
 K5严格路线仍未解决。最佳K5只把`seen_new`推进到86.71%，`min_new`仍为74.29%，且旧类floor刚好80.00%；因此不能声明K5目标完成。下一步应围绕`19-3<->1-15`的`leo_clear_weak`对称混淆做support-only风险建模，而不是继续扩大全局labelprop或同场景原型平移。
 
 本节所有正向结论仍是本地Stage2-C identity诊断；unknown拒识/FAR未评估，未同步N607，不能写成部署成功或论文最终结论。
+
+### 2026-07-06严格K同场景pair边界复核
+
+本节继续严格K-shot路线：`pool_per_old=K,pool_per_new=K`，不使用`pool_per=80`主动候选池。目标是针对上一节K5最低类`19-3=52/70`及其主要混淆`19-3<->1-15`，测试一个默认关闭的support-only同场景pair边界机制。该机制只使用support特征、support标签、support场景和query场景；query真值只用于离线评估。本节没有N607 preflight、没有scp、没有远端启动。`E:\type10-7`根目录仍不是Git仓库，代码和artifact已镜像到Git承载面`E:\type10-7\github_publish\CVS-RFFI-repo`。
+
+#### 代码变更与验证
+
+| item | result |
+| --- | --- |
+| `code/scripts/phase2_support_metric_qknn_probe.py` | 新增`_scenario_pair_refine_scores`和`--scenario_pair_refine_*_grid`，输出`scenario_pair_refine_count/pairs/stored_scenario_pair_refine_scalars`；默认`weight=0,top_pairs=0`，不改变既有路线。 |
+| `code/scripts/phase2_qknn_old_anchor_transport_diag.py` | 补齐`_evaluate_metric_qknn`新增及既有缺省参数，避免旧诊断入口漏参。 |
+| `code/tests/test_phase2_qknn_scenario_residual_completion.py` | 新增同场景pair边界单测，验证support-only二分类边界能提高正确类相对分数。 |
+| `conda activate ssr-gpu;python -m py_compile code\scripts\phase2_support_metric_qknn_probe.py code\scripts\phase2_qknn_old_anchor_transport_diag.py` | PASS |
+| `conda activate ssr-gpu;python code\tests\test_phase2_qknn_scenario_residual_completion.py` | PASS，5 tests |
+| `_evaluate_metric_qknn`签名覆盖检查 | `phase2_qknn_old_anchor_transport_diag.BASE_DEFAULTS`无缺省漏项。 |
+
+#### 严格K5结果
+
+| diagnostic | K | rows | setting | old | min_old | seen_new | min_new | 结论 |
+| --- | ---: | ---: | --- | ---: | ---: | ---: | ---: | --- |
+| `k5_strict_scenario_pair_refine_grid_20260706.csv` | 5 | 192 | 残差+labelprop最佳上叠加`scenario_pair_refine_weight=0,0.02,0.04,0.06;top_pairs=0,6,10;min_sim=0.80` | 92.38% | 80.00% | 86.71% | 74.29% | 最优仍为`scenario_pair_refine_weight=0`；非零pair边界没有补足`19-3`最后1个query。 |
+| `k5_strict_scenario_pair_refine_lowthreshold_probe_20260706.csv` | 5 | 1 | `weight=0.01,top_pairs=30,min_sim=0.0` | 92.38% | 80.00% | 86.50% | 74.29% | 低阈值可捕获`leo_clear_weak:1-15<->19-3@0.678`，但只抬高`1-15`，`19-3`仍为52/70，均值下降。 |
+| `k5_strict_scenario_balanced_residual_labelprop_verify_20260706.csv` | 5 | 2 | 在残差+labelprop最佳上启用`scenario_balanced_assignment` | 61.43% | 20.00% | 39.00% | 18.57% | 强负结果；按场景强配额会破坏旧类和新类，不可用于K5。 |
+| `k5_oldstable_newscenario_centroid_current_verify_20260706.csv` | 5 | 1 | `pool_per_old=5,pool_per_new=5,policy=old_stable_new_scenario_centroid` | 92.38% | 80.00% | 85.14% | 72.86% | 严格K复验失败；历史通过行依赖`pool_per_old=80,pool_per_new=80`主动候选池，不能当作K=5少样本严格结论。 |
+
+#### 当前决策
+
+`scenario_pair_refine`作为默认关闭诊断机制可保留，因为它可追踪、可测试且不改变既有默认行为；但它没有解决K5严格路线。K5 strict当前仍停在`old=92.38%,min_old=80.00%,seen_new=86.71%,min_new=74.29%`，最低类仍是`19-3=52/70`。历史`old_stable_new_scenario_centroid`的`min_new=75.71%`行必须标为`pool_per=80`主动候选池诊断，不能提升为用户本轮要求的`K=5`少样本协议结果。
+
+K10 strict正向候选仍保持上一节结论：`k10_strict_residual_labelprop_grid_20260706.csv`中`old=94.05%,min_old=84.29%,seen_new=88.36%,min_new=75.71%`，但unknown拒识/FAR未评估。下一步若继续严格K5，应优先寻找能改变`19-3`底层分数排序的support-only风险估计，而不是pair线性边界、同场景强配额或`pool_per=80`主动选择。

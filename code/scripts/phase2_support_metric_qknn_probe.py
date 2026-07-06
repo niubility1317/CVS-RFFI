@@ -549,6 +549,137 @@ def _scenario_proto_refine_scores(
     return adjusted, changed_cells, stored_scalars
 
 
+def _scenario_pair_refine_scores(
+    scores: np.ndarray,
+    *,
+    features: np.ndarray,
+    support_indices: np.ndarray,
+    support_labels: np.ndarray,
+    query_indices: np.ndarray,
+    scenarios: np.ndarray,
+    class_labels: list[str],
+    old_labels: list[str],
+    new_labels: list[str],
+    weight: float,
+    top_pairs: int,
+    min_support: int,
+    min_similarity: float,
+    alpha: float,
+    clip: float,
+    query_topm: int,
+    scope: str,
+) -> tuple[np.ndarray, int, int, str]:
+    """Apply same-scenario compact pair boundaries for high-similarity classes."""
+    if float(weight) == 0.0 or int(top_pairs) <= 0 or scores.size == 0:
+        return scores, 0, 0, ""
+    mode = str(scope).strip().lower()
+    if mode not in {"all", "old", "new", "role"}:
+        raise ValueError(f"unsupported scenario_pair_refine_scope: {scope}")
+    support_indices = np.asarray(support_indices, dtype=int)
+    query_indices = np.asarray(query_indices, dtype=int)
+    if support_indices.size == 0 or query_indices.size == 0:
+        return scores, 0, 0, ""
+    support = qknn._normalize_rows(np.asarray(features[support_indices], dtype=np.float64))
+    query = qknn._normalize_rows(np.asarray(features[query_indices], dtype=np.float64))
+    support_scenarios = np.asarray(scenarios[support_indices], dtype=object).astype(str)
+    query_scenarios = np.asarray(scenarios[query_indices], dtype=object).astype(str)
+    labels = np.asarray(support_labels, dtype=object).astype(str)
+    class_count = len(class_labels)
+    if support.shape[1] == 0 or scores.shape[1] != class_count:
+        return scores, 0, 0, ""
+
+    old_set = {str(label) for label in old_labels}
+    new_set = {str(label) for label in new_labels}
+
+    def in_scope(label: str) -> bool:
+        if mode == "old":
+            return label in old_set
+        if mode == "new":
+            return label in new_set
+        if mode == "role":
+            return label in old_set or label in new_set
+        return True
+
+    label_to_index = {label: index for index, label in enumerate(class_labels)}
+    adjusted = np.asarray(scores, dtype=np.float64).copy()
+    used = 0
+    stored_scalars = 0
+    used_pairs: list[str] = []
+    min_count = max(1, int(min_support))
+    alpha_value = max(float(alpha), 1e-8)
+    topm_value = max(0, int(query_topm))
+    for scenario in np.unique(query_scenarios):
+        scenario = str(scenario)
+        query_rows = np.where(query_scenarios == scenario)[0]
+        if query_rows.size == 0:
+            continue
+        protos: dict[str, np.ndarray] = {}
+        class_masks: dict[str, np.ndarray] = {}
+        for label in class_labels:
+            label_str = str(label)
+            if not in_scope(label_str):
+                continue
+            mask = (labels == label_str) & (support_scenarios == scenario)
+            if int(np.sum(mask)) < min_count:
+                continue
+            protos[label_str] = qknn._normalize_rows(support[mask].mean(axis=0, keepdims=True))[0]
+            class_masks[label_str] = mask
+        scenario_labels = sorted(protos)
+        if len(scenario_labels) < 2:
+            continue
+        pair_candidates: list[tuple[float, str, str]] = []
+        for left_pos, left in enumerate(scenario_labels):
+            for right in scenario_labels[left_pos + 1 :]:
+                sim = float(protos[left] @ protos[right])
+                if sim >= float(min_similarity):
+                    pair_candidates.append((sim, left, right))
+        pair_candidates.sort(key=lambda item: (-float(item[0]), item[1], item[2]))
+        for sim, left, right in pair_candidates[: max(0, int(top_pairs))]:
+            left_idx = label_to_index[left]
+            right_idx = label_to_index[right]
+            pair_mask = class_masks[left] | class_masks[right]
+            pair_support = support[pair_mask]
+            pair_labels = labels[pair_mask]
+            if pair_support.shape[0] < 4 or len(set(pair_labels.tolist())) < 2:
+                continue
+            x = np.concatenate(
+                [pair_support, np.ones((pair_support.shape[0], 1), dtype=np.float64)],
+                axis=1,
+            )
+            y = np.where(pair_labels == left, 1.0, -1.0).astype(np.float64)
+            gram = x @ x.T + alpha_value * np.eye(x.shape[0], dtype=np.float64)
+            try:
+                dual = np.linalg.solve(gram, y)
+            except np.linalg.LinAlgError:
+                dual = np.linalg.pinv(gram) @ y
+            coeff = x.T @ dual
+            rows = query_rows
+            if topm_value > 0:
+                scoped_indices = np.asarray(
+                    [label_to_index[label] for label in scenario_labels if label in label_to_index],
+                    dtype=int,
+                )
+                local_topm = max(1, min(topm_value, int(scoped_indices.size)))
+                local = adjusted[rows][:, scoped_indices]
+                top_local = np.argsort(local, axis=1)[:, -local_topm:]
+                top_indices = scoped_indices[top_local]
+                keep = np.any(top_indices == left_idx, axis=1) | np.any(top_indices == right_idx, axis=1)
+                rows = rows[keep]
+            if rows.size == 0:
+                continue
+            qx = np.concatenate(
+                [query[rows], np.ones((rows.size, 1), dtype=np.float64)],
+                axis=1,
+            )
+            margin = np.clip(qx @ coeff, -float(clip), float(clip))
+            adjusted[rows, left_idx] += float(weight) * margin
+            adjusted[rows, right_idx] -= float(weight) * margin
+            used += 1
+            stored_scalars += int(coeff.size + 3)
+            used_pairs.append(f"{scenario}:{left}<->{right}@{sim:.3f}")
+    return adjusted, int(used), int(stored_scalars), ";".join(used_pairs[:32])
+
+
 def _assignment_predict(
     scores: np.ndarray,
     *,
@@ -4552,6 +4683,14 @@ def _evaluate_metric_qknn(
     scenario_proto_refine_min_support: int,
     scenario_proto_refine_clip: float,
     scenario_proto_refine_scope: str,
+    scenario_pair_refine_weight: float,
+    scenario_pair_refine_top_pairs: int,
+    scenario_pair_refine_min_support: int,
+    scenario_pair_refine_min_similarity: float,
+    scenario_pair_refine_alpha: float,
+    scenario_pair_refine_clip: float,
+    scenario_pair_refine_query_topm: int,
+    scenario_pair_refine_scope: str,
     query_proto_refine_weight: float,
     query_proto_refine_topm: int,
     query_proto_refine_clip: float,
@@ -6129,6 +6268,30 @@ def _evaluate_metric_qknn(
         clip=float(scenario_proto_refine_clip),
         scope=str(scenario_proto_refine_scope),
     )
+    (
+        scores,
+        scenario_pair_refine_count,
+        stored_scenario_pair_refine_scalars,
+        scenario_pair_refine_pairs,
+    ) = _scenario_pair_refine_scores(
+        scores,
+        features=adapted,
+        support_indices=support_indices,
+        support_labels=support_labels,
+        query_indices=query_indices,
+        scenarios=scenarios,
+        class_labels=old_labels + new_labels,
+        old_labels=old_labels,
+        new_labels=new_labels,
+        weight=float(scenario_pair_refine_weight),
+        top_pairs=int(scenario_pair_refine_top_pairs),
+        min_support=int(scenario_pair_refine_min_support),
+        min_similarity=float(scenario_pair_refine_min_similarity),
+        alpha=float(scenario_pair_refine_alpha),
+        clip=float(scenario_pair_refine_clip),
+        query_topm=int(scenario_pair_refine_query_topm),
+        scope=str(scenario_pair_refine_scope),
+    )
     labelprop_edges = 0
     if float(labelprop_weight) != 0.0:
         labelprop_scores, labelprop_edges = _support_query_labelprop_scores(
@@ -6596,6 +6759,17 @@ def _evaluate_metric_qknn(
         "scenario_proto_refine_scope": str(scenario_proto_refine_scope),
         "scenario_proto_refine_count": int(scenario_proto_refine_count),
         "stored_scenario_proto_refine_scalars": int(stored_scenario_proto_refine_scalars),
+        "scenario_pair_refine_weight": float(scenario_pair_refine_weight),
+        "scenario_pair_refine_top_pairs": int(scenario_pair_refine_top_pairs),
+        "scenario_pair_refine_min_support": int(scenario_pair_refine_min_support),
+        "scenario_pair_refine_min_similarity": float(scenario_pair_refine_min_similarity),
+        "scenario_pair_refine_alpha": float(scenario_pair_refine_alpha),
+        "scenario_pair_refine_clip": float(scenario_pair_refine_clip),
+        "scenario_pair_refine_query_topm": int(scenario_pair_refine_query_topm),
+        "scenario_pair_refine_scope": str(scenario_pair_refine_scope),
+        "scenario_pair_refine_count": int(scenario_pair_refine_count),
+        "scenario_pair_refine_pairs": str(scenario_pair_refine_pairs),
+        "stored_scenario_pair_refine_scalars": int(stored_scenario_pair_refine_scalars),
         "query_proto_refine_weight": float(query_proto_refine_weight),
         "query_proto_refine_topm": int(query_proto_refine_topm),
         "query_proto_refine_clip": float(query_proto_refine_clip),
@@ -7727,6 +7901,14 @@ def main() -> None:
     parser.add_argument("--scenario_proto_refine_min_support_grid", default="1")
     parser.add_argument("--scenario_proto_refine_clip_grid", default="1.0")
     parser.add_argument("--scenario_proto_refine_scope_grid", default="new")
+    parser.add_argument("--scenario_pair_refine_weight_grid", default="0")
+    parser.add_argument("--scenario_pair_refine_top_pairs_grid", default="0")
+    parser.add_argument("--scenario_pair_refine_min_support_grid", default="2")
+    parser.add_argument("--scenario_pair_refine_min_similarity_grid", default="0.85")
+    parser.add_argument("--scenario_pair_refine_alpha_grid", default="0.1")
+    parser.add_argument("--scenario_pair_refine_clip_grid", default="1.0")
+    parser.add_argument("--scenario_pair_refine_query_topm_grid", default="0")
+    parser.add_argument("--scenario_pair_refine_scope_grid", default="new")
     parser.add_argument("--query_proto_refine_weight_grid", default="0")
     parser.add_argument("--query_proto_refine_topm_grid", default="0")
     parser.add_argument("--query_proto_refine_clip_grid", default="2.0")
@@ -7955,6 +8137,14 @@ def main() -> None:
             qknn._parse_int_csv(args.scenario_proto_refine_min_support_grid),
             qknn._parse_float_csv(args.scenario_proto_refine_clip_grid),
             qknn._parse_csv(args.scenario_proto_refine_scope_grid),
+            qknn._parse_float_csv(args.scenario_pair_refine_weight_grid),
+            qknn._parse_int_csv(args.scenario_pair_refine_top_pairs_grid),
+            qknn._parse_int_csv(args.scenario_pair_refine_min_support_grid),
+            qknn._parse_float_csv(args.scenario_pair_refine_min_similarity_grid),
+            qknn._parse_float_csv(args.scenario_pair_refine_alpha_grid),
+            qknn._parse_float_csv(args.scenario_pair_refine_clip_grid),
+            qknn._parse_int_csv(args.scenario_pair_refine_query_topm_grid),
+            qknn._parse_csv(args.scenario_pair_refine_scope_grid),
             qknn._parse_float_csv(args.query_proto_refine_weight_grid),
             qknn._parse_int_csv(args.query_proto_refine_topm_grid),
             qknn._parse_float_csv(args.query_proto_refine_clip_grid),
@@ -8174,6 +8364,14 @@ def main() -> None:
                     scenario_proto_refine_min_support,
                     scenario_proto_refine_clip,
                     scenario_proto_refine_scope,
+                    scenario_pair_refine_weight,
+                    scenario_pair_refine_top_pairs,
+                    scenario_pair_refine_min_support,
+                    scenario_pair_refine_min_similarity,
+                    scenario_pair_refine_alpha,
+                    scenario_pair_refine_clip,
+                    scenario_pair_refine_query_topm,
+                    scenario_pair_refine_scope,
                     query_proto_refine_weight,
                     query_proto_refine_topm,
                     query_proto_refine_clip,
@@ -8263,6 +8461,14 @@ def main() -> None:
                         "scenario_proto_refine_min_support": int(scenario_proto_refine_min_support),
                         "scenario_proto_refine_clip": float(scenario_proto_refine_clip),
                         "scenario_proto_refine_scope": str(scenario_proto_refine_scope),
+                        "scenario_pair_refine_weight": float(scenario_pair_refine_weight),
+                        "scenario_pair_refine_top_pairs": int(scenario_pair_refine_top_pairs),
+                        "scenario_pair_refine_min_support": int(scenario_pair_refine_min_support),
+                        "scenario_pair_refine_min_similarity": float(scenario_pair_refine_min_similarity),
+                        "scenario_pair_refine_alpha": float(scenario_pair_refine_alpha),
+                        "scenario_pair_refine_clip": float(scenario_pair_refine_clip),
+                        "scenario_pair_refine_query_topm": int(scenario_pair_refine_query_topm),
+                        "scenario_pair_refine_scope": str(scenario_pair_refine_scope),
                         "support_bias_weight": float(support_bias_weight),
                         "support_bias_step": float(support_bias_step),
                         "support_bias_rounds": int(support_bias_rounds),
@@ -8485,6 +8691,30 @@ def main() -> None:
                             "labelprop_rounds": adaptive_overrides.get("labelprop_rounds", params["labelprop_rounds"]),
                             "labelprop_clip": adaptive_overrides.get("labelprop_clip", params["labelprop_clip"]),
                             "labelprop_scope": adaptive_overrides.get("labelprop_scope", params["labelprop_scope"]),
+                            "scenario_pair_refine_weight": adaptive_overrides.get(
+                                "scenario_pair_refine_weight", params["scenario_pair_refine_weight"]
+                            ),
+                            "scenario_pair_refine_top_pairs": adaptive_overrides.get(
+                                "scenario_pair_refine_top_pairs", params["scenario_pair_refine_top_pairs"]
+                            ),
+                            "scenario_pair_refine_min_support": adaptive_overrides.get(
+                                "scenario_pair_refine_min_support", params["scenario_pair_refine_min_support"]
+                            ),
+                            "scenario_pair_refine_min_similarity": adaptive_overrides.get(
+                                "scenario_pair_refine_min_similarity", params["scenario_pair_refine_min_similarity"]
+                            ),
+                            "scenario_pair_refine_alpha": adaptive_overrides.get(
+                                "scenario_pair_refine_alpha", params["scenario_pair_refine_alpha"]
+                            ),
+                            "scenario_pair_refine_clip": adaptive_overrides.get(
+                                "scenario_pair_refine_clip", params["scenario_pair_refine_clip"]
+                            ),
+                            "scenario_pair_refine_query_topm": adaptive_overrides.get(
+                                "scenario_pair_refine_query_topm", params["scenario_pair_refine_query_topm"]
+                            ),
+                            "scenario_pair_refine_scope": adaptive_overrides.get(
+                                "scenario_pair_refine_scope", params["scenario_pair_refine_scope"]
+                            ),
                             "query_graph_weight": adaptive_overrides.get(
                                 "query_graph_weight", params["query_graph_weight"]
                             ),
@@ -8743,6 +8973,14 @@ def main() -> None:
                         scenario_proto_refine_min_support=int(params["scenario_proto_refine_min_support"]),
                         scenario_proto_refine_clip=float(params["scenario_proto_refine_clip"]),
                         scenario_proto_refine_scope=str(params["scenario_proto_refine_scope"]),
+                        scenario_pair_refine_weight=float(params["scenario_pair_refine_weight"]),
+                        scenario_pair_refine_top_pairs=int(params["scenario_pair_refine_top_pairs"]),
+                        scenario_pair_refine_min_support=int(params["scenario_pair_refine_min_support"]),
+                        scenario_pair_refine_min_similarity=float(params["scenario_pair_refine_min_similarity"]),
+                        scenario_pair_refine_alpha=float(params["scenario_pair_refine_alpha"]),
+                        scenario_pair_refine_clip=float(params["scenario_pair_refine_clip"]),
+                        scenario_pair_refine_query_topm=int(params["scenario_pair_refine_query_topm"]),
+                        scenario_pair_refine_scope=str(params["scenario_pair_refine_scope"]),
                         query_proto_refine_weight=float(params["query_proto_refine_weight"]),
                         query_proto_refine_topm=int(params["query_proto_refine_topm"]),
                         query_proto_refine_clip=float(params["query_proto_refine_clip"]),
@@ -9083,6 +9321,17 @@ def main() -> None:
         "scenario_proto_refine_scope",
         "scenario_proto_refine_count",
         "stored_scenario_proto_refine_scalars",
+        "scenario_pair_refine_weight",
+        "scenario_pair_refine_top_pairs",
+        "scenario_pair_refine_min_support",
+        "scenario_pair_refine_min_similarity",
+        "scenario_pair_refine_alpha",
+        "scenario_pair_refine_clip",
+        "scenario_pair_refine_query_topm",
+        "scenario_pair_refine_scope",
+        "scenario_pair_refine_count",
+        "scenario_pair_refine_pairs",
+        "stored_scenario_pair_refine_scalars",
         "query_proto_refine_weight",
         "query_proto_refine_topm",
         "query_proto_refine_clip",
