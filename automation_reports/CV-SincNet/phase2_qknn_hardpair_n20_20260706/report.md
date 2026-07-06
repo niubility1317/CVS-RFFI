@@ -4694,3 +4694,7 @@ K10 strict正向候选仍保持上一节结论：`k10_strict_residual_labelprop_
 | `1-2` | 55/70 | 78.57% | `1-19`6，`10-10`3，`8-3`2 |
 
 `19-3`的18个错误全部发生在`leo_clear_weak`，其中17个raw top1就是`1-15`；`truth_minus_assigned_pred`中位数约`-0.2924`，说明当前分数空间仍把这些样本强判为`1-15`。因此本轮可升级默认参数面，但不能声称K5最低类已修复。下一步应围绕`19-3/1-15`做更强的support-only表示或注册期校准，而不是继续增加pair边界权重。
+
+#### pairwise quota refine复核
+
+在新K5最佳点上补跑`k5_strict_labelprop_pairquota_refine_20260707.csv`，测试已有默认关闭的`pair_refine_similarity=0,0.5,0.65,0.75,0.85,0.95,1.1`。结果为负：`0.5..1.1`均未改变预测，仍为`old=93.10%,min_old=81.43%,seen_new=89.00%,min_new=74.29%`；`0.0`会改动150个预测并把`min_old/min_new`都压到67.14%。因此“全局pair内quota重排”不能作为K5最低类修复，后续如果做slot release，必须加更强的support/query安全门控，而不能直接放开所有pair。
