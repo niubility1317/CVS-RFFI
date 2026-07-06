@@ -2998,6 +2998,7 @@ def _support_loo_top2_pair_gate_scores(
     alpha: float,
     clip: float,
     gate_margin: float,
+    query_pair_weight: float,
 ) -> tuple[np.ndarray, int, int, float, float, str]:
     if float(weight) == 0.0 or int(top_pairs) <= 0:
         return scores, 0, 0, 0.0, 0.0, ""
@@ -3021,20 +3022,42 @@ def _support_loo_top2_pair_gate_scores(
         mask = labels == label
         before_per_class.append(float(np.mean(loo_pred[mask] == label)) if bool(np.any(mask)) else 0.0)
 
-    pair_counts: dict[tuple[str, str], int] = {}
+    new_indices = np.asarray([label_to_index[label] for label in new_labels if label in label_to_index], dtype=int)
+    if new_indices.size < 2:
+        return scores, 0, 0, float(min(before_per_class, default=0.0)), float(np.mean(before_per_class) if before_per_class else 0.0), ""
+
+    pair_counts: dict[tuple[str, str], float] = {}
     for truth_label, pred_label in zip(labels.tolist(), loo_pred.tolist()):
         truth = str(truth_label)
         pred = str(pred_label)
         if truth == pred or truth not in new_set or pred not in new_set:
             continue
         left, right = sorted((truth, pred))
-        pair_counts[(left, right)] = pair_counts.get((left, right), 0) + 1
+        pair_counts[(left, right)] = pair_counts.get((left, right), 0.0) + 1.0
+    query_new_rows = np.arange(int(old_query_count), int(scores.shape[0]), dtype=int)
+    if float(query_pair_weight) > 0.0 and query_new_rows.size:
+        local = np.asarray(scores, dtype=np.float64)[query_new_rows][:, new_indices]
+        order = np.argsort(local, axis=1)[:, -2:]
+        top_pair = np.sort(new_indices[order], axis=1)
+        pair_gap = np.abs(local[np.arange(local.shape[0]), order[:, 1]] - local[np.arange(local.shape[0]), order[:, 0]])
+        gate = max(float(gate_margin), 1e-8)
+        keep = pair_gap <= (1.5 * gate)
+        index_to_label = {index: label for label, index in label_to_index.items()}
+        for left_idx, right_idx in top_pair[keep].tolist():
+            left = index_to_label.get(int(left_idx))
+            right = index_to_label.get(int(right_idx))
+            if left is None or right is None:
+                continue
+            if left == right or left not in new_set or right not in new_set:
+                continue
+            pair = tuple(sorted((left, right)))
+            pair_counts[pair] = pair_counts.get(pair, 0.0) + float(query_pair_weight)
     candidates = [
         (left, right, count)
         for (left, right), count in pair_counts.items()
-        if int(count) >= max(1, int(min_errors))
+        if float(count) >= float(max(1, int(min_errors)))
     ]
-    candidates.sort(key=lambda item: (-int(item[2]), item[0], item[1]))
+    candidates.sort(key=lambda item: (-float(item[2]), item[0], item[1]))
     candidates = candidates[: max(0, int(top_pairs))]
     if not candidates:
         return scores, 0, 0, float(min(before_per_class, default=0.0)), float(np.mean(before_per_class) if before_per_class else 0.0), ""
@@ -3052,10 +3075,6 @@ def _support_loo_top2_pair_gate_scores(
 
     adjusted = np.asarray(scores, dtype=np.float64).copy()
     gate_support_scores = np.asarray(support_scores, dtype=np.float64).copy()
-    new_indices = np.asarray([label_to_index[label] for label in new_labels if label in label_to_index], dtype=int)
-    if new_indices.size < 2:
-        return scores, 0, 0, float(min(before_per_class, default=0.0)), float(np.mean(before_per_class) if before_per_class else 0.0), ""
-    query_new_rows = np.arange(int(old_query_count), int(scores.shape[0]), dtype=int)
     support_new_rows = np.where(np.asarray([label in new_set for label in labels.tolist()], dtype=bool))[0]
     alpha_value = max(float(alpha), 1e-8)
     gate = max(float(gate_margin), 1e-8)
@@ -4110,7 +4129,14 @@ def _evaluate_metric_qknn(
     top2_pair_gate_weight = 0.0
     top2_pair_gate_top_pairs = 0
     top2_pair_gate_margin = 0.0
-    if str(adaptive_qknn_policy).strip().lower() in {"dualview_support_v25", "stable_dualview_v25"}:
+    top2_pair_gate_query_weight = 0.0
+    policy_norm = str(adaptive_qknn_policy).strip().lower()
+    if policy_norm in {
+        "dualview_support_v25",
+        "stable_dualview_v25",
+        "dualview_support_v28",
+        "stable_dualview_v28",
+    }:
         if support_loo_scores is None:
             support_loo_scores = _support_loo_base_scores(
                 features=adapted,
@@ -4136,9 +4162,15 @@ def _evaluate_metric_qknn(
         min_support = float(min(label_counts) if label_counts else 0)
         class_load_gate = _clip01((float(len(new_labels)) - 2.0) / 18.0)
         k_gate = _clip01((min_support - 5.0) / 15.0)
-        top2_pair_gate_weight = float(np.clip(0.035 + 0.030 * class_load_gate + 0.020 * k_gate, 0.03, 0.08))
-        top2_pair_gate_top_pairs = int(max(2, min(8, round(0.30 * max(float(len(new_labels)), 1.0)))))
-        top2_pair_gate_margin = float(np.clip(0.28 + 0.18 * k_gate + 0.08 * class_load_gate, 0.25, 0.55))
+        if policy_norm in {"dualview_support_v28", "stable_dualview_v28"}:
+            top2_pair_gate_weight = float(np.clip(0.020 + 0.018 * class_load_gate + 0.012 * k_gate, 0.018, 0.050))
+            top2_pair_gate_top_pairs = int(max(2, min(6, round(0.22 * max(float(len(new_labels)), 1.0)))))
+            top2_pair_gate_margin = float(np.clip(0.18 + 0.12 * k_gate + 0.06 * class_load_gate, 0.16, 0.36))
+            top2_pair_gate_query_weight = float(np.clip(0.020 + 0.020 * class_load_gate, 0.0, 0.040))
+        else:
+            top2_pair_gate_weight = float(np.clip(0.035 + 0.030 * class_load_gate + 0.020 * k_gate, 0.03, 0.08))
+            top2_pair_gate_top_pairs = int(max(2, min(8, round(0.30 * max(float(len(new_labels)), 1.0)))))
+            top2_pair_gate_margin = float(np.clip(0.28 + 0.18 * k_gate + 0.08 * class_load_gate, 0.25, 0.55))
         (
             scores,
             top2_pair_gate_count,
@@ -4163,6 +4195,7 @@ def _evaluate_metric_qknn(
             alpha=0.1,
             clip=1.5,
             gate_margin=top2_pair_gate_margin,
+            query_pair_weight=top2_pair_gate_query_weight,
         )
     stored_mahal_proto_scalars = 0
     if float(mahal_proto_weight) > 0.0:
@@ -4526,6 +4559,7 @@ def _evaluate_metric_qknn(
         "top2_pair_gate_weight": float(top2_pair_gate_weight),
         "top2_pair_gate_top_pairs": int(top2_pair_gate_top_pairs),
         "top2_pair_gate_margin": float(top2_pair_gate_margin),
+        "top2_pair_gate_query_weight": float(top2_pair_gate_query_weight),
         "top2_pair_gate_count": int(top2_pair_gate_count),
         "top2_pair_gate_pairs": top2_pair_gate_pairs,
         "top2_pair_gate_loo_min_acc": float(top2_pair_gate_loo_min_acc),
@@ -4772,6 +4806,8 @@ def _adaptive_qknn_overrides(
         "stable_dualview_v25",
         "dualview_support_v27",
         "stable_dualview_v27",
+        "dualview_support_v28",
+        "stable_dualview_v28",
     }:
         raise ValueError(f"unsupported adaptive_qknn_policy: {policy}")
     use_v2 = name in {"dualview_support_v2", "stable_dualview_v2"}
@@ -4799,7 +4835,8 @@ def _adaptive_qknn_overrides(
     use_v24 = name in {"dualview_support_v24", "stable_dualview_v24"}
     use_v25 = name in {"dualview_support_v25", "stable_dualview_v25"}
     use_v27 = name in {"dualview_support_v27", "stable_dualview_v27"}
-    use_v9 = use_v9 or use_v27
+    use_v28 = name in {"dualview_support_v28", "stable_dualview_v28"}
+    use_v9 = use_v9 or use_v27 or use_v28
 
     min_k = float(geometry["adaptive_support_min_k"])
     new_count = float(geometry["adaptive_new_class_count"])
@@ -5134,7 +5171,7 @@ def _adaptive_qknn_overrides(
                     "query_cluster_margin_min": 0.0,
                 }
             )
-    if use_v27:
+    if use_v27 or use_v28:
         quality_gate = _clip01(max(stable_gate, class_load))
         low_k_gate = _clip01(1.0 - k_reliability)
         quality_weight = float(np.clip(0.10 * quality_gate * (0.55 + 0.45 * low_k_gate), 0.0, 0.10))
@@ -6514,6 +6551,7 @@ def main() -> None:
         "top2_pair_gate_weight",
         "top2_pair_gate_top_pairs",
         "top2_pair_gate_margin",
+        "top2_pair_gate_query_weight",
         "top2_pair_gate_count",
         "top2_pair_gate_pairs",
         "top2_pair_gate_loo_min_acc",
