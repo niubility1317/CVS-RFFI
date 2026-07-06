@@ -67,9 +67,9 @@ do
     code/scripts/phase2_support_metric_qknn_probe.py \
     --feature_npz "${FEATURE_NPZ}" \
     --aux_feature_npz "${AUX_NPZ}" \
-    --output_json "${ARTIFACT_DIR}/n20_${tag}_v53_fftlogmag_v42_v49_20260706.json" \
-    --output_csv "${ARTIFACT_DIR}/n20_${tag}_v53_fftlogmag_v42_v49_20260706.csv" \
-    --output_predictions_csv "${ARTIFACT_DIR}/n20_${tag}_v53_fftlogmag_v42_v49_20260706_predictions.csv" \
+    --output_json "${ARTIFACT_DIR}/n20_${tag}_v53_fftlogmag_policy_20260706.json" \
+    --output_csv "${ARTIFACT_DIR}/n20_${tag}_v53_fftlogmag_policy_20260706.csv" \
+    --output_predictions_csv "${ARTIFACT_DIR}/n20_${tag}_v53_fftlogmag_policy_20260706_predictions.csv" \
     --old_tx_ids "${OLD_TX}" \
     --new_tx_ids "${NEW_TX}" \
     --old_role target_old \
@@ -87,7 +87,7 @@ do
     --topm_grid 4 \
     --proto_mix_grid "${proto_mix}" \
     --aux_score_weight_grid "${aux_weight}" \
-    --adaptive_qknn_policy_grid stable_dualview_v42,stable_dualview_v49 \
+    --adaptive_qknn_policy_grid stable_dualview_v53 \
     --scenario_aware \
     --balanced_assignment
 done
