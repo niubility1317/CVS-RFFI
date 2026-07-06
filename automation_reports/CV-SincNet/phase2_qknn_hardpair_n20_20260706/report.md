@@ -289,6 +289,54 @@ Interpretation:
 
 Current goal status: active, not achieved.
 
+## v16/v17/v18 Proxy Bundle Diagnostics
+
+Objective: test whether the remaining low-floor classes can be repaired by replacing single-pair selection with richer compressed proxy evidence. Three variants were checked:
+
+| variant | mechanism | intent |
+|---|---|---|
+| v16 | per-class proxy bundles, 4 proxy directions per selected risk class | avoid v13 one-pair collapse while keeping multiple directions per class |
+| v17 | support-proxy analogy scoring, no class balance | mimic the external hand-guided proxy miner's scoring rule |
+| v18 | support-proxy analogy scoring plus class balance | combine hand-miner scoring with low-class coverage |
+
+Verification:
+
+| command | result |
+|---|---|
+| `conda run -n ssr-gpu python -m py_compile code\scripts\phase2_support_metric_qknn_probe.py` | PASS |
+
+Support-prototype diagnostic:
+
+| K | target class | nearest support competitors |
+|---:|---|---|
+| 10 | `2-13` | `11-10` 0.9591, `18-5` 0.9030, `3-8` 0.8884 |
+| 5 | `2-13` | `11-10` 0.8874, `18-5` 0.7967, `3-8` 0.7855 |
+
+This confirms that the manual successful route (`2-13` vs `11-10`) is visible from support prototypes; the remaining failure is candidate gating/scoring, not query-label leakage.
+
+Maximum-query result summary:
+
+| variant | scope | K | old_acc | new_acc | min_new | stored proxy scalars | verdict |
+|---|---|---:|---:|---:|---:|---:|---|
+| v16 | N10 | 10 | 92.14% | 83.57% | 57.14% | 48 | failed, worse than v15 |
+| v16 | N10 | 5 | 91.56% | 85.33% | 62.67% | 48 | failed, worse than v15 K5 floor |
+| v16 | N20 | 10 | 92.62% | 68.86% | 48.57% | 48 | failed, worse than v15 |
+| v16 | N20 | 5 | 92.22% | 70.07% | 48.00% | 48 | failed, tied floor but larger state |
+| v17 | N10 | 10 | 92.14% | 84.29% | 61.43% | 24 | failed |
+| v17 | N10 | 5 | 91.56% | 85.33% | 61.33% | 24 | failed |
+| v18 | N10 | 10 | 92.14% | 79.14% | 54.29% | 24 | failed, harmful |
+| v18 | N10 | 5 | 91.56% | 83.47% | 56.00% | 24 | failed, harmful |
+| v18 | N20 | 10 | 92.62% | 65.57% | 31.43% | 24 | failed, harmful |
+| v18 | N20 | 5 | 92.22% | 70.20% | 45.33% | 24 | failed |
+
+Interpretation:
+
+- v16 shows that simply adding more compressed proxy directions is not enough. It increases stored state from 24 to 48 scalars and often hurts the floor.
+- v17/v18 show that the hand-miner analogy score alone is not sufficient. The useful manual result came from selecting the right hard pair and weight together; automatic support-only scoring still over-selects harmful bundles.
+- Current best automatic route remains v15: it gives a small K5 stability gain without K10 regression. The next meaningful change should add an explicit support-only validation gate that simulates candidate bundle application on support leave-one-out scores and rejects bundles that reduce support class floor or mean. Without that gate, proxy directions can be plausible geometrically but harmful at query time.
+
+Current goal status: active, not achieved.
+
 ## v14/v15 Class-Floor-Aware Support-Proxy Check
 
 Objective: address the v13 failure mode where all automatic proxy directions collapse onto one support-hard pair. v14 adds class-balanced round-robin selection over support-only hard-pair candidates. v15 keeps the same compressed proxy-direction representation but makes the balance gate adaptive: low-shot support (`adaptive_k_reliability<0.25`) uses class-balanced selection; higher-reliability support keeps v13's concentrated bundle.
