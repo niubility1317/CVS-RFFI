@@ -139,3 +139,16 @@ R7/R8已经显示协同投票和riskgate不能弥补当前LEO target特征几何
 | 2026-07-06 08:30 CST | Both candidates reached E009/200；GPU2/GPU3 about2243/2245MiB；`latest_safe_ssdg.pth` and `latest_ssdg.pth` exist for both candidates；error scan empty for Traceback/RuntimeError/CUDA-OOM/out-of-memory/unrecognized/Killed. |
 
 Current claim boundary: R9 has only startup-health evidence. It is not Stage2-C evidence and not a deployment success claim. Stage2-C qknn8 collaborative inference with M=1..all target receivers remains pending until Phase1 completes and exports `phase2_zid_prototypes.pt`.
+
+## 2026-07-06 08:34 CST训练中监控
+
+N607只读预检PASS。GPU2/GPU3分别约2501/2381MiB，R9两个候选仍在运行并写入safe/latest checkpoint，但尚未导出`phase2_zid_prototypes.pt`或`.json`，因此不能启动Stage2-C qknn8协同评估。
+
+|candidate|epoch|best_epoch|best_score|best_test_tx|train_tx_acc|source_overflow|skipped_nonfinite_grad|prototype|判定|
+|---|---:|---:|---:|---:|---:|---:|---:|---|---|
+|`EPOC_R9_ANCHOR_NOPROXY`|18/200|10|85.4510|89.9225|94.1106|0.9354|0.0000|absent|训练继续；当前仍是无proxy阶段，旧类稳定性略高于R8早期，但未到可评估阶段。|
+|`EPOC_R9_GENTLE_VIRTUAL_LATE`|17/200|10|84.1287|89.7529|95.1923|0.9016|0.0000|absent|训练继续；proxy计划E90后才激活，当前不能判断unknown拒识。|
+
+错误扫描：`Traceback`、`RuntimeError`、`CUDA out of memory`、`out-of-memory`、`unrecognized arguments`、`Killed`命中数为0。SSH清理已确认本地无`ssh.exe`且无N607/bridge 22端口ESTABLISHED连接。
+
+边界：R9仍只是Phase1训练中证据，不是Stage2-C证据，也不能声明部署成功。下一步必须等待训练完成并导出prototype后，再用qknn8协同推理`M=1..all target receivers`做同row旧类、seen-new和真实unknown eval-only复评。

@@ -160,3 +160,16 @@ N607只读预检PASS。07:46 CST短SSH监控显示两个R8 PAOG候选仍在运�
 结果为负证据，不是部署成功。两条case均`verdict_scope=NON_DEPLOYMENT_DIAGNOSTIC`，`target_pass_count=0`，`stage2_success_claim=false`，`deployment_success_claim=false`。最佳已知性能来自SHELL的M=3..5：`old_acc=31.16%`、`min_old=1.72%`、`seen_new_acc`最高`10.03%`、`min_seen=0%`、`unknown_reject`约`85.83%-86.35%`。最高unknown拒识来自M=1：RADIUS`95.30%`、SHELL`95.01%`，但对应旧类约`16.62%-17.00%`、seen-new为`0%`。资源代理预算未违规，`latency_p95_ms≈0.30`、`evidence_bytes_per_receiver_event=56`，但缺少真实链路资源说明文件，不能写成真实星间链路验证。
 
 结论：current-best风险门控能提高unknown拒识，但主要通过低覆盖/误拒旧类和新类换取，仍未满足OLD80_FIRST，更未接近最终目标。R8训练需继续到最终checkpoint/prototype后再复评；若最终仍旧类或seen-new显著不足，应停止继续调协同阈值，转向更底层的source-only特征分离或轻量reject head。
+
+## 2026-07-06 08:34 CST训练中监控
+
+N607只读预检PASS。GPU0/GPU1分别约2527/2447MiB，R8两个候选仍在运行，尚未导出`phase2_zid_prototypes.pt`或`.json`，因此不能启动最终Stage2-C qknn8协同评估。
+
+|candidate|epoch|best_epoch|best_score|best_test_tx|train_tx_acc|proxy_auc|source_overflow|skipped_nonfinite_grad|prototype|判定|
+|---|---:|---:|---:|---:|---:|---:|---:|---:|---|---|
+|`EPOC_R8_PAOG_RADIUS_ENERGY`|98/200|20|84.8666|89.8152|93.3293|0.4088|0.8872|1.0000|absent|训练继续；proxy分离仍弱，未满足进入Stage2-C最终复评条件。|
+|`EPOC_R8_PAOG_SHELL_BALANCED`|98/200|20|85.3407|89.6681|93.5216|0.3794|0.8397|1.0000|absent|训练继续；proxy AUC低于随机，数值风险仍高。|
+
+错误扫描：`Traceback`、`RuntimeError`、`CUDA out of memory`、`out-of-memory`、`unrecognized arguments`、`Killed`命中数为0。SSH清理已确认本地无`ssh.exe`且无N607/bridge 22端口ESTABLISHED连接。
+
+边界：本次只证明R8仍在运行和当前proxy趋势继续偏负；不构成Stage2-C完成证据，也不构成部署成功证据。最终仍需等待prototype导出后做qknn8协同推理`M=1..all target receivers`同row复评。
