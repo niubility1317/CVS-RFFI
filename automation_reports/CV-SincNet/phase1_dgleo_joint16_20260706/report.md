@@ -119,6 +119,15 @@ MAX_ACTIVE_PER_GPU=2 bash code/scripts/launch_phase1_dgleo_joint16_20260706.sh
 |错误扫描|未发现`Traceback`、`RuntimeError`、`CUDA out of memory`、`unrecognized arguments`、`Killed`、`ModuleNotFoundError`、`ImportError`。|
 |SSH清理|每轮SSH/SCP后本地检查均为`NO_SSH_PROCESS`、`NO_N607_OR_BRIDGE_ESTABLISHED_22`。|
 
+## 运行时长估计
+
+|时间|依据|估计|
+|---|---|---|
+|2026-07-06 16:40:37 CST|16个`metrics_epoch.jsonl`全量已写入行；各候选当前约50-54/200轮。|按全程均值估算，最慢剩余约2.68小时，中位剩余约2.61小时。|
+|2026-07-06 16:40:37 CST|按最近5轮均值估算，近期含更重评估/IO开销。|最慢剩余约3.34小时，中位剩余约3.25小时。|
+
+当前建议按保守口径预期约3.2-3.4小时后跑完，即大约2026-07-06 19:55-20:05 CST。若后续进入`test_eval_final_window=30`的密集评估阶段，最后30轮可能比中段更慢，完成时间可能再后移约10-25分钟。
+
 ## ETA快照
 
 |时间|进度|近8轮平均epoch耗时|线性ETA|保守ETA|
