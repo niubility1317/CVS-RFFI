@@ -121,3 +121,18 @@ Interpretation:严格`exact_k`同事件5接收机融合不可用于当前Stage2-
 最佳同row结果是`R8_SHELL`的`M预算=1`：old_acc35.41%、min_old5.00%、seen_new2.37%、min_seen0.00%、unknown_reject40.94%、unknown_FAR16.80%。这与目标旧类99%/min95%、seen-new97%/min93%、unknown拒识99%相差极大。预算M从1增加到5没有带来性能增益，反而由于可对齐多接收机组稀少，effective evidence偏向低M/partial group，旧类、seen-new和unknown拒识整体下降。
 
 结论：R8/R9/R10表征修复后，基础qknn8协同仍不能解决星地信道未知类拒识，同时旧类和seen-new也未达到OLD80_FIRST门槛。下一步不应继续只调协同融合参数；需要回到底层表征/蒸馏路线，优先约束未知类附近的已知类边界，包括ADV3B02指导的source-only代理未知蒸馏、source overflow压缩、低密度接受抑制、radius_to_inter_ratio提升和z_id tail angle收缩。真实未知类仍只能评估，不能进入地面训练或阈值选择。
+
+## Phase1 Rejection-Metric Snapshot
+
+最终epoch训练侧拒识相关指标如下。R8/R9/R10的source overflow仍高达84.01%到96.28%；带proxy/virtual分支的候选`proxy_vaccept`仍在81.39%到86.83%，`bridge_accept_rate=1.0`，说明源侧边界仍允许大量代理/桥接样本落入已知类接受区域。`zid_p95/p99`仍约51.40到52.94度/72.19到76.91度，tail较宽。该证据支持下一步转向ADV3B02指导的source-only蒸馏和边界塑形，而不是继续单独调协同融合。
+
+|case|epoch|best_score|test_tx|proxy_vaccept|source_overflow|bridge_accept|low_density_accept|tail_accept_loss|overflow_accept_loss|radius_to_inter|zid_p50|zid_p95|zid_p99|zid_tail_cvar|proxy_auc|nonfinite_grad|
+|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+|`R8_RADIUS`|200|84.8666|89.57%|82.37%|89.07%|100.00%|0.04%|4.0835|3.7633|0.9722|30.09|52.94|76.75|56.80|0.4035|1.0|
+|`R8_SHELL`|200|85.3407|89.47%|81.39%|84.01%|100.00%|0.04%|5.0367|2.8563|1.0076|30.56|52.55|76.91|57.23|0.3862|1.0|
+|`R9_ANCHOR`|200|85.7999|89.27%|n/a|93.59%|n/a|n/a|0.0000|0.0000|n/a|30.12|50.10|72.79|52.92|n/a|0.0|
+|`R9_GENTLE`|200|85.9079|89.55%|81.99%|91.24%|100.00%|0.09%|2.7757|1.6666|0.9854|30.16|51.41|72.19|53.46|0.5192|0.0|
+|`R10_BOUNDARY`|200|85.7483|90.04%|n/a|96.28%|n/a|n/a|0.0000|0.0000|n/a|30.16|52.58|75.77|52.65|n/a|0.0|
+|`R10_GENTLE`|200|85.9245|89.58%|86.83%|95.14%|100.00%|0.08%|1.7547|1.6081|0.9351|29.85|51.40|74.48|52.05|0.5633|0.0|
+
+Next-route implication:优先降低`proxy_vaccept/source_overflow/bridge_accept_rate`，同时不牺牲source/test TX准确率；使`radius_to_inter_ratio`稳定低于当前R8_SHELL的1.0076并压缩`zid_p95/p99/tail_cvar`。训练仍必须source-only，不得接触真实`Y_unknown`或目标接收机样本。
