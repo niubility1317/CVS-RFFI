@@ -3668,6 +3668,7 @@ def _support_neighbor_contrast_scores(
     clip: float,
     gate_margin: float,
     floor_target: float,
+    risk_scale: float,
 ) -> tuple[np.ndarray, int, int, float, float, str]:
     """Support-only one-vs-neighborhood contrast.
 
@@ -3816,7 +3817,9 @@ def _support_neighbor_contrast_scores(
         factors = 1.0 - np.clip(gap[keep] / gate, 0.0, 1.0)
         return kept_rows, best_neighbor_idx[keep].astype(int), factors.astype(np.float64)
 
-    for target, _risk in candidates:
+    max_candidate_risk = max((float(risk) for _label, risk in candidates), default=1.0)
+    max_candidate_risk = max(max_candidate_risk, 1e-8)
+    for target, target_risk in candidates:
         neighbors = choose_neighbors(target)
         if not neighbors:
             continue
@@ -3828,11 +3831,15 @@ def _support_neighbor_contrast_scores(
         direction = qknn._normalize_rows(direction[None, :])[0]
 
         before_label_acc, before_floor_value, before_mean_value = support_audit(contrast_support_scores)
+        target_scale = 1.0
+        if float(risk_scale) > 0.0:
+            normalized_risk = float(np.clip(float(target_risk) / max_candidate_risk, 0.0, 1.0))
+            target_scale = float(np.clip(1.0 + float(risk_scale) * normalized_risk, 1.0, 1.75))
         proposal_support_scores = contrast_support_scores.copy()
         s_rows, s_best_neighbor_idx, s_factors = gated_rows(proposal_support_scores, support_new_rows, target_idx, neighbor_indices)
         if s_rows.size:
             s_margin = np.maximum(np.clip(support[s_rows] @ direction, -float(clip), float(clip)), 0.0) * s_factors
-            s_delta = float(weight) * s_margin
+            s_delta = float(weight) * target_scale * s_margin
             proposal_support_scores[s_rows, target_idx] += s_delta
             proposal_support_scores[s_rows, s_best_neighbor_idx] -= s_delta
         after_label_acc, after_floor_value, after_mean_value = support_audit(proposal_support_scores)
@@ -3846,13 +3853,13 @@ def _support_neighbor_contrast_scores(
         rows, best_neighbor_idx, factors = gated_rows(adjusted, query_new_rows, target_idx, neighbor_indices)
         if rows.size:
             margin = np.maximum(np.clip(query[rows] @ direction, -float(clip), float(clip)), 0.0) * factors
-            delta = float(weight) * margin
+            delta = float(weight) * target_scale * margin
             adjusted[rows, target_idx] += delta
             adjusted[rows, best_neighbor_idx] -= delta
         contrast_support_scores = proposal_support_scores
         used += 1
-        stored_scalars += int(direction.size + neighbor_indices.size + 1)
-        used_items.append(f"{target}->" + ",".join(neighbors[:8]))
+        stored_scalars += int(direction.size + neighbor_indices.size + 2)
+        used_items.append(f"{target}@{target_scale:.2f}->" + ",".join(neighbors[:8]))
 
     _after_labels, after_floor, after_mean = support_audit(contrast_support_scores)
     return adjusted, int(used), int(stored_scalars), float(after_floor), float(after_mean), ";".join(used_items[:32])
@@ -4886,6 +4893,8 @@ def _evaluate_metric_qknn(
         "stable_dualview_v36",
         "dualview_support_v37",
         "stable_dualview_v37",
+        "dualview_support_v38",
+        "stable_dualview_v38",
     }:
         if support_loo_scores is None:
             support_loo_scores = _support_loo_base_scores(
@@ -4930,6 +4939,8 @@ def _evaluate_metric_qknn(
                 "stable_dualview_v36",
                 "dualview_support_v37",
                 "stable_dualview_v37",
+                "dualview_support_v38",
+                "stable_dualview_v38",
             }
             and low_k_gate >= 0.75
         ):
@@ -4968,7 +4979,7 @@ def _evaluate_metric_qknn(
             gate_margin=neighborhood_gate_margin,
             query_neighbor_weight=neighborhood_gate_query_weight,
         )
-    if policy_norm in {"dualview_support_v37", "stable_dualview_v37"}:
+    if policy_norm in {"dualview_support_v37", "stable_dualview_v37", "dualview_support_v38", "stable_dualview_v38"}:
         if support_loo_scores is None:
             support_loo_scores = _support_loo_base_scores(
                 features=adapted,
@@ -5023,6 +5034,7 @@ def _evaluate_metric_qknn(
             clip=1.0,
             gate_margin=contrast_margin,
             floor_target=0.75,
+            risk_scale=float(low_k_gate) if policy_norm in {"dualview_support_v38", "stable_dualview_v38"} else 0.0,
         )
     if policy_norm in {
         "dualview_support_v25",
@@ -5791,6 +5803,8 @@ def _adaptive_qknn_overrides(
         "stable_dualview_v36",
         "dualview_support_v37",
         "stable_dualview_v37",
+        "dualview_support_v38",
+        "stable_dualview_v38",
     }:
         raise ValueError(f"unsupported adaptive_qknn_policy: {policy}")
     use_v2 = name in {"dualview_support_v2", "stable_dualview_v2"}
@@ -5824,7 +5838,8 @@ def _adaptive_qknn_overrides(
     use_v33 = name in {"dualview_support_v33", "stable_dualview_v33"}
     use_v34 = name in {"dualview_support_v34", "stable_dualview_v34"}
     use_v35 = name in {"dualview_support_v35", "stable_dualview_v35"}
-    use_v37 = name in {"dualview_support_v37", "stable_dualview_v37"}
+    use_v38 = name in {"dualview_support_v38", "stable_dualview_v38"}
+    use_v37 = name in {"dualview_support_v37", "stable_dualview_v37"} or use_v38
     use_v36 = name in {"dualview_support_v36", "stable_dualview_v36"} or use_v37
     use_v32 = name in {"dualview_support_v32", "stable_dualview_v32"} or use_v33 or use_v34 or use_v35 or use_v36
     use_v31 = name in {"dualview_support_v31", "stable_dualview_v31"} or use_v32
