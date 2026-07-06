@@ -3987,6 +3987,8 @@ def _evaluate_metric_qknn(
             "stable_dualview_v25",
             "dualview_support_v30",
             "stable_dualview_v30",
+            "dualview_support_v31",
+            "stable_dualview_v31",
         }:
             primary_loo_scores = _support_loo_base_scores(
                 features=adapted,
@@ -4049,6 +4051,8 @@ def _evaluate_metric_qknn(
                 "stable_dualview_v24",
                 "dualview_support_v30",
                 "stable_dualview_v30",
+                "dualview_support_v31",
+                "stable_dualview_v31",
             }:
                 mean_gate = float(np.clip((aux_support_loo_delta + 0.01) / 0.05, 0.0, 1.0))
                 floor_gate = float(np.clip((aux_support_min_delta + 0.02) / 0.06, 0.0, 1.0))
@@ -4583,6 +4587,8 @@ def _evaluate_metric_qknn(
         "stable_dualview_v29",
         "dualview_support_v30",
         "stable_dualview_v30",
+        "dualview_support_v31",
+        "stable_dualview_v31",
     }:
         if support_loo_scores is None:
             support_loo_scores = _support_loo_base_scores(
@@ -5362,6 +5368,8 @@ def _adaptive_qknn_overrides(
         "stable_dualview_v29",
         "dualview_support_v30",
         "stable_dualview_v30",
+        "dualview_support_v31",
+        "stable_dualview_v31",
     }:
         raise ValueError(f"unsupported adaptive_qknn_policy: {policy}")
     use_v2 = name in {"dualview_support_v2", "stable_dualview_v2"}
@@ -5392,7 +5400,8 @@ def _adaptive_qknn_overrides(
     use_v28 = name in {"dualview_support_v28", "stable_dualview_v28"}
     use_v29 = name in {"dualview_support_v29", "stable_dualview_v29"}
     use_v30 = name in {"dualview_support_v30", "stable_dualview_v30"}
-    use_v9 = use_v9 or use_v27 or use_v28 or use_v29 or use_v30
+    use_v31 = name in {"dualview_support_v31", "stable_dualview_v31"}
+    use_v9 = use_v9 or use_v27 or use_v28 or use_v29 or use_v30 or use_v31
 
     min_k = float(geometry["adaptive_support_min_k"])
     new_count = float(geometry["adaptive_new_class_count"])
@@ -5727,7 +5736,7 @@ def _adaptive_qknn_overrides(
                     "query_cluster_margin_min": 0.0,
                 }
             )
-    if use_v27 or use_v28 or use_v29 or use_v30:
+    if use_v27 or use_v28 or use_v29 or use_v30 or use_v31:
         quality_gate = _clip01(max(stable_gate, class_load))
         low_k_gate = _clip01(1.0 - k_reliability)
         quality_weight = float(np.clip(0.10 * quality_gate * (0.55 + 0.45 * low_k_gate), 0.0, 0.10))
@@ -5737,6 +5746,22 @@ def _adaptive_qknn_overrides(
                 "support_quality_floor": 0.25,
                 "support_quality_margin_scale": 0.1,
                 "support_bias_weight": 0.0,
+            }
+        )
+    if use_v31:
+        pair_linear_gate = _clip01(max(stable_gate, class_load))
+        pair_linear_weight = float(
+            np.clip((0.008 - 0.004 * k_reliability + 0.0015 * class_load) * pair_linear_gate, 0.0, 0.010)
+        )
+        pair_linear_top_pairs = int(max(4, min(8, round(0.40 * max(new_count, 1.0)))))
+        overrides.update(
+            {
+                "support_loo_pair_linear_weight": pair_linear_weight,
+                "support_loo_pair_linear_top_pairs": pair_linear_top_pairs,
+                "support_loo_pair_linear_min_errors": 1,
+                "support_loo_pair_linear_alpha": float(np.clip(0.10 + 0.90 * k_reliability, 0.10, 1.00)),
+                "support_loo_pair_linear_clip": float(np.clip(1.00 - 0.50 * k_reliability, 0.50, 1.00)),
+                "support_loo_pair_linear_scope": "new",
             }
         )
     if use_v11 or use_v12 or use_v13 or use_v14 or use_v15 or use_v16 or use_v17 or use_v18 or use_v19 or use_v20 or use_v21 or use_v22 or use_v23 or use_v24 or use_v25:
