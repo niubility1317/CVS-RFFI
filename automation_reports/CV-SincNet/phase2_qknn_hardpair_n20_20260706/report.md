@@ -318,6 +318,7 @@ V55提交后继续做了三组本地只读诊断，均未形成可提交策略�
 | `k5_v55_active_enrollment_seed_sweep` | `scenario_centroid` | 421030-421049 | 91.90% | 78.57% | 86.71% | 74.29% | 多seed下新类地板接近75%，但旧类地板仍不合格。 |
 | `k5_v55_oldstable_newscenario_seed_sweep` | `old_stable_new_scenario_centroid` | 421030-421049 | 92.86% | 81.43% | 86.79% | 74.29% | 旧类恢复合格，新类仍差1个query；低类集中在`1-1/1-12/8-3/2-13`。 |
 | `k5_v55_oldstable_newscenario_scenariobalanced` | `old_stable_new_scenario_centroid` + scenario-balanced assignment | 421030-421049 | 最优行仍不超过74.29%地板；部分行严重坍塌 | - | - | - | scenario-balanced assignment不是安全补丁。 |
+| `k5_oldstable_newscenario_cluster_param_grid` | `old_stable_new_scenario_centroid` + query-cluster权重/温度网格 | 421035 | 92.86% | 81.43% | 86.79% | 74.29% | query-cluster调参不能补足最后1个query。 |
 
 为便于后续复现实验，Git承载面新增`old_stable_new_scenario_centroid`支持选择策略：旧类保持`stable_first`以保护旧类域适应，新类使用`scenario_centroid`以覆盖LEO场景。该策略当前只作为诊断入口；在严格K-shot协议下，除非实际只用K=5个已接收标签且不依赖额外标注pool，否则不得声明为Stage2-C完成证据。
 
