@@ -63,11 +63,11 @@
 
 |项目|状态|
 |---|---|
-|本地Git状态|`E:\type10-7`和`E:\type10-7\code`不是Git仓库；代码已镜像到`github_publish/CVS-RFFI-repo`并提交`9440745 Add EPOC concat-sat DGLEO joint launcher`；既有`local_artifacts/phase2_adv3b02_*`未跟踪项未改动。|
+|本地Git状态|`E:\type10-7`和`E:\type10-7\code`不是Git仓库；代码已镜像到`github_publish/CVS-RFFI-repo`并提交`9440745 Add EPOC concat-sat DGLEO joint launcher`、`084c6d3 Use nohup for DGLEO joint launcher`；报告提交`725b6df Record DGLEO joint16 experiment report`；既有`local_artifacts/phase2_adv3b02_*`未跟踪项未改动。|
 |N607预检|已通过；8张GPU均约10MiB，未发现活动训练进程。|
 |本地验证|通过`python -m py_compile code/SSDG/train_ssdg.py`、`bash -n code/scripts/launch_phase1_dgleo_joint16_20260706.sh`、启动器dry-run、`ssr-gpu`环境`pytest -q code/tests/test_phase1_dgleo_joint16_launcher.py`。|
 |快照|已创建`code/snapshots/phase1_dgleo_joint16_20260706/`，包含`train_ssdg.py`、启动器和测试。|
-|远端同步|已同步启动器、测试和`train_ssdg.py`到N607；同步后SHA256分别为`d55e3158678b2261ea77620bf6785be7a7422046aca8032aef9c60369e0d0878`、`fd0c07180ad3e80d002ae700a8ff4ca9db16778bd77153c986a52af787d2bcbe`、`27fbe66d971d232b0f3be585259cd8fc8b453baee8bc2108f01f40db5f190f55`。|
+|远端同步|已同步启动器、测试和`train_ssdg.py`到N607；同步后SHA256分别为`d55e3158678b2261ea77620bf6785be7a7422046aca8032aef9c60369e0d0878`、`7bd07e38fdcdf47361db47c3615440aa2a3378e6f1fcf6b9febc40f7edcdd98f`、`27fbe66d971d232b0f3be585259cd8fc8b453baee8bc2108f01f40db5f190f55`。启动器使用`nohup "${CMD[@]}" > "${log_path}" 2>&1 &`防止SSH退出影响训练进程。|
 |远端备份|远端原`code/SSDG/train_ssdg.py`已备份到`code/snapshots/phase1_dgleo_joint16_20260706/remote_before_sync_20260706_154031/SSDG/train_ssdg.py`，原SHA256为`5e7950dcf0cdb222ef92b3303c4980be83a6e66fb9305a100148343b97639f9c`。|
 |远端验证|通过N607端`py_compile`、`bash -n`和单候选dry-run；dry-run显示`base=EPOC_CONCAT_SAT`、`concat_sat_mode=full_2b_core_domain`、`concat_sat_full_loss=1`。|
 |远端启动|待使用`MAX_ACTIVE_PER_GPU=2`启动16候选。|
