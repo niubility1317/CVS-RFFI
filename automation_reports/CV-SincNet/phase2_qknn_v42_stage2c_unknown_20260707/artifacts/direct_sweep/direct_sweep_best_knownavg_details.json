@@ -1,0 +1,107 @@
+{
+  "bytes_per_event": 40.0,
+  "collab_count": 1,
+  "confusion": {
+    "old->old": 78,
+    "old->unknown_reject": 270,
+    "seen_new->old": 17,
+    "seen_new->unknown_reject": 368,
+    "unknown->old": 13,
+    "unknown->seen_new": 1,
+    "unknown->unknown_reject": 372
+  },
+  "file": "direct_base_k10_candidate_set_cvs.json",
+  "known_accepted_accuracy": 0.8105263157894737,
+  "known_avg": 0.11063218390804598,
+  "known_coverage": 0.1296043656207367,
+  "known_floor": 0.0,
+  "min_old": 0.0,
+  "min_seen": 0.0,
+  "old_acc": 0.22126436781609196,
+  "per_old_class_acc": {
+    "14-10": 0.08620689655172414,
+    "14-7": 0.0,
+    "20-15": 0.42857142857142855,
+    "20-19": 0.0,
+    "6-15": 0.0,
+    "8-20": 0.8888888888888888
+  },
+  "per_old_class_decision_counts": {
+    "14-10": {
+      "accept": 5,
+      "unknown_reject": 53
+    },
+    "14-7": {
+      "unknown_reject": 60
+    },
+    "20-15": {
+      "accept": 24,
+      "unknown_reject": 32
+    },
+    "20-19": {
+      "unknown_reject": 60
+    },
+    "6-15": {
+      "accept": 1,
+      "unknown_reject": 59
+    },
+    "8-20": {
+      "accept": 48,
+      "unknown_reject": 6
+    }
+  },
+  "per_seen_new_class_acc": {
+    "1-10": 0.0,
+    "1-12": 0.0,
+    "1-14": 0.0,
+    "1-16": 0.0,
+    "1-18": 0.0,
+    "1-8": 0.0,
+    "10-11": 0.0,
+    "10-4": 0.0
+  },
+  "per_seen_new_class_decision_counts": {
+    "1-10": {
+      "accept": 1,
+      "unknown_reject": 39
+    },
+    "1-12": {
+      "accept": 4,
+      "unknown_reject": 37
+    },
+    "1-14": {
+      "accept": 5,
+      "unknown_reject": 38
+    },
+    "1-16": {
+      "unknown_reject": 49
+    },
+    "1-18": {
+      "accept": 2,
+      "unknown_reject": 50
+    },
+    "1-8": {
+      "accept": 1,
+      "unknown_reject": 51
+    },
+    "10-11": {
+      "accept": 1,
+      "unknown_reject": 50
+    },
+    "10-4": {
+      "accept": 3,
+      "unknown_reject": 54
+    }
+  },
+  "seen_new_acc": 0.0,
+  "strict_min": 0.0,
+  "unknown_FAR": 0.03626943005181347,
+  "unknown_false_accept_labels": {
+    "10-11": 1,
+    "14-10": 1,
+    "20-15": 2,
+    "6-15": 1,
+    "8-20": 9
+  },
+  "unknown_reject": 0.9637305699481865
+}

@@ -1,0 +1,6582 @@
+{
+  "records": [
+    {
+      "bytes_per_event": 128.0,
+      "collab_count": 1,
+      "file": "pcet_k10_scenario_diverse.json",
+      "joint_floor": 0.0,
+      "known_accepted_accuracy": 0.8979591836734694,
+      "known_avg": 0.06321839080459771,
+      "known_coverage": 0.06684856753069578,
+      "known_floor": 0.0,
+      "min_old": 0.0,
+      "min_seen": 0.0,
+      "old_acc": 0.12643678160919541,
+      "open_set_confusion": {
+        "old->old": 45,
+        "old->unknown_reject": 303,
+        "seen_new->old": 4,
+        "seen_new->request_more": 1,
+        "seen_new->unknown_reject": 380,
+        "unknown->old": 12,
+        "unknown->unknown_reject": 374
+      },
+      "per_old_class_acc": {
+        "14-10": 0.0,
+        "14-7": 0.0,
+        "20-15": 0.14285714285714285,
+        "20-19": 0.0,
+        "6-15": 0.0,
+        "8-20": 0.6666666666666666
+      },
+      "per_old_class_decision_counts": {
+        "14-10": {
+          "unknown_reject": 58
+        },
+        "14-7": {
+          "unknown_reject": 60
+        },
+        "20-15": {
+          "accept": 8,
+          "unknown_reject": 48
+        },
+        "20-19": {
+          "accept": 1,
+          "unknown_reject": 59
+        },
+        "6-15": {
+          "unknown_reject": 60
+        },
+        "8-20": {
+          "accept": 36,
+          "unknown_reject": 18
+        }
+      },
+      "per_seen_new_class_acc": {
+        "1-10": 0.0,
+        "1-12": 0.0,
+        "1-14": 0.0,
+        "1-16": 0.0,
+        "1-18": 0.0,
+        "1-8": 0.0,
+        "10-11": 0.0,
+        "10-4": 0.0
+      },
+      "per_seen_new_class_decision_counts": {
+        "1-10": {
+          "unknown_reject": 40
+        },
+        "1-12": {
+          "accept": 1,
+          "unknown_reject": 40
+        },
+        "1-14": {
+          "request_more": 1,
+          "unknown_reject": 42
+        },
+        "1-16": {
+          "unknown_reject": 49
+        },
+        "1-18": {
+          "unknown_reject": 52
+        },
+        "1-8": {
+          "accept": 2,
+          "unknown_reject": 50
+        },
+        "10-11": {
+          "unknown_reject": 51
+        },
+        "10-4": {
+          "accept": 1,
+          "unknown_reject": 56
+        }
+      },
+      "profile": "pcet_balanced",
+      "seen_new_acc": 0.0,
+      "unknown_FAR": 0.031088082901554404,
+      "unknown_false_accept_labels": {
+        "20-15": 5,
+        "8-20": 7
+      },
+      "unknown_reject": 0.9689119170984456
+    },
+    {
+      "bytes_per_event": 220.0822162645219,
+      "collab_count": 2,
+      "file": "pcet_k10_scenario_diverse.json",
+      "joint_floor": 0.0,
+      "known_accepted_accuracy": 1.0,
+      "known_avg": 0.022988505747126436,
+      "known_coverage": 0.021828103683492497,
+      "known_floor": 0.0,
+      "min_old": 0.0,
+      "min_seen": 0.0,
+      "old_acc": 0.04597701149425287,
+      "open_set_confusion": {
+        "old->defer": 15,
+        "old->old": 16,
+        "old->request_more": 2,
+        "old->unknown_reject": 315,
+        "seen_new->defer": 3,
+        "seen_new->request_more": 2,
+        "seen_new->unknown_reject": 380,
+        "unknown->defer": 10,
+        "unknown->request_more": 1,
+        "unknown->unknown_reject": 375
+      },
+      "per_old_class_acc": {
+        "14-10": 0.0,
+        "14-7": 0.0,
+        "20-15": 0.017857142857142856,
+        "20-19": 0.0,
+        "6-15": 0.0,
+        "8-20": 0.2777777777777778
+      },
+      "per_old_class_decision_counts": {
+        "14-10": {
+          "unknown_reject": 58
+        },
+        "14-7": {
+          "unknown_reject": 60
+        },
+        "20-15": {
+          "accept": 1,
+          "unknown_reject": 55
+        },
+        "20-19": {
+          "defer": 1,
+          "unknown_reject": 59
+        },
+        "6-15": {
+          "unknown_reject": 60
+        },
+        "8-20": {
+          "accept": 15,
+          "defer": 14,
+          "request_more": 2,
+          "unknown_reject": 23
+        }
+      },
+      "per_seen_new_class_acc": {
+        "1-10": 0.0,
+        "1-12": 0.0,
+        "1-14": 0.0,
+        "1-16": 0.0,
+        "1-18": 0.0,
+        "1-8": 0.0,
+        "10-11": 0.0,
+        "10-4": 0.0
+      },
+      "per_seen_new_class_decision_counts": {
+        "1-10": {
+          "unknown_reject": 40
+        },
+        "1-12": {
+          "defer": 1,
+          "unknown_reject": 40
+        },
+        "1-14": {
+          "request_more": 1,
+          "unknown_reject": 42
+        },
+        "1-16": {
+          "unknown_reject": 49
+        },
+        "1-18": {
+          "unknown_reject": 52
+        },
+        "1-8": {
+          "defer": 1,
+          "request_more": 1,
+          "unknown_reject": 50
+        },
+        "10-11": {
+          "unknown_reject": 51
+        },
+        "10-4": {
+          "defer": 1,
+          "unknown_reject": 56
+        }
+      },
+      "profile": "pcet_balanced",
+      "seen_new_acc": 0.0,
+      "unknown_FAR": 0.0,
+      "unknown_false_accept_labels": {},
+      "unknown_reject": 0.9715025906735751
+    },
+    {
+      "bytes_per_event": 248.7935656836461,
+      "collab_count": 3,
+      "file": "pcet_k10_scenario_diverse.json",
+      "joint_floor": 0.0,
+      "known_accepted_accuracy": 1.0,
+      "known_avg": 0.014367816091954023,
+      "known_coverage": 0.013642564802182811,
+      "known_floor": 0.0,
+      "min_old": 0.0,
+      "min_seen": 0.0,
+      "old_acc": 0.028735632183908046,
+      "open_set_confusion": {
+        "old->defer": 21,
+        "old->old": 10,
+        "old->unknown_reject": 317,
+        "seen_new->defer": 3,
+        "seen_new->unknown_reject": 382,
+        "unknown->defer": 10,
+        "unknown->unknown_reject": 376
+      },
+      "per_old_class_acc": {
+        "14-10": 0.0,
+        "14-7": 0.0,
+        "20-15": 0.017857142857142856,
+        "20-19": 0.0,
+        "6-15": 0.0,
+        "8-20": 0.16666666666666666
+      },
+      "per_old_class_decision_counts": {
+        "14-10": {
+          "unknown_reject": 58
+        },
+        "14-7": {
+          "unknown_reject": 60
+        },
+        "20-15": {
+          "accept": 1,
+          "unknown_reject": 55
+        },
+        "20-19": {
+          "defer": 1,
+          "unknown_reject": 59
+        },
+        "6-15": {
+          "unknown_reject": 60
+        },
+        "8-20": {
+          "accept": 9,
+          "defer": 20,
+          "unknown_reject": 25
+        }
+      },
+      "per_seen_new_class_acc": {
+        "1-10": 0.0,
+        "1-12": 0.0,
+        "1-14": 0.0,
+        "1-16": 0.0,
+        "1-18": 0.0,
+        "1-8": 0.0,
+        "10-11": 0.0,
+        "10-4": 0.0
+      },
+      "per_seen_new_class_decision_counts": {
+        "1-10": {
+          "unknown_reject": 40
+        },
+        "1-12": {
+          "defer": 1,
+          "unknown_reject": 40
+        },
+        "1-14": {
+          "unknown_reject": 43
+        },
+        "1-16": {
+          "unknown_reject": 49
+        },
+        "1-18": {
+          "unknown_reject": 52
+        },
+        "1-8": {
+          "defer": 1,
+          "unknown_reject": 51
+        },
+        "10-11": {
+          "unknown_reject": 51
+        },
+        "10-4": {
+          "defer": 1,
+          "unknown_reject": 56
+        }
+      },
+      "profile": "pcet_balanced",
+      "seen_new_acc": 0.0,
+      "unknown_FAR": 0.0,
+      "unknown_false_accept_labels": {},
+      "unknown_reject": 0.9740932642487047
+    },
+    {
+      "bytes_per_event": 251.6532618409294,
+      "collab_count": 4,
+      "file": "pcet_k10_scenario_diverse.json",
+      "joint_floor": 0.0,
+      "known_accepted_accuracy": 1.0,
+      "known_avg": 0.014367816091954023,
+      "known_coverage": 0.013642564802182811,
+      "known_floor": 0.0,
+      "min_old": 0.0,
+      "min_seen": 0.0,
+      "old_acc": 0.028735632183908046,
+      "open_set_confusion": {
+        "old->defer": 21,
+        "old->old": 10,
+        "old->unknown_reject": 317,
+        "seen_new->defer": 3,
+        "seen_new->unknown_reject": 382,
+        "unknown->defer": 10,
+        "unknown->unknown_reject": 376
+      },
+      "per_old_class_acc": {
+        "14-10": 0.0,
+        "14-7": 0.0,
+        "20-15": 0.017857142857142856,
+        "20-19": 0.0,
+        "6-15": 0.0,
+        "8-20": 0.16666666666666666
+      },
+      "per_old_class_decision_counts": {
+        "14-10": {
+          "unknown_reject": 58
+        },
+        "14-7": {
+          "unknown_reject": 60
+        },
+        "20-15": {
+          "accept": 1,
+          "unknown_reject": 55
+        },
+        "20-19": {
+          "defer": 1,
+          "unknown_reject": 59
+        },
+        "6-15": {
+          "unknown_reject": 60
+        },
+        "8-20": {
+          "accept": 9,
+          "defer": 20,
+          "unknown_reject": 25
+        }
+      },
+      "per_seen_new_class_acc": {
+        "1-10": 0.0,
+        "1-12": 0.0,
+        "1-14": 0.0,
+        "1-16": 0.0,
+        "1-18": 0.0,
+        "1-8": 0.0,
+        "10-11": 0.0,
+        "10-4": 0.0
+      },
+      "per_seen_new_class_decision_counts": {
+        "1-10": {
+          "unknown_reject": 40
+        },
+        "1-12": {
+          "defer": 1,
+          "unknown_reject": 40
+        },
+        "1-14": {
+          "unknown_reject": 43
+        },
+        "1-16": {
+          "unknown_reject": 49
+        },
+        "1-18": {
+          "unknown_reject": 52
+        },
+        "1-8": {
+          "defer": 1,
+          "unknown_reject": 51
+        },
+        "10-11": {
+          "unknown_reject": 51
+        },
+        "10-4": {
+          "defer": 1,
+          "unknown_reject": 56
+        }
+      },
+      "profile": "pcet_balanced",
+      "seen_new_acc": 0.0,
+      "unknown_FAR": 0.0,
+      "unknown_false_accept_labels": {},
+      "unknown_reject": 0.9740932642487047
+    },
+    {
+      "bytes_per_event": 251.6532618409294,
+      "collab_count": 5,
+      "file": "pcet_k10_scenario_diverse.json",
+      "joint_floor": 0.0,
+      "known_accepted_accuracy": 1.0,
+      "known_avg": 0.014367816091954023,
+      "known_coverage": 0.013642564802182811,
+      "known_floor": 0.0,
+      "min_old": 0.0,
+      "min_seen": 0.0,
+      "old_acc": 0.028735632183908046,
+      "open_set_confusion": {
+        "old->defer": 21,
+        "old->old": 10,
+        "old->unknown_reject": 317,
+        "seen_new->defer": 3,
+        "seen_new->unknown_reject": 382,
+        "unknown->defer": 10,
+        "unknown->unknown_reject": 376
+      },
+      "per_old_class_acc": {
+        "14-10": 0.0,
+        "14-7": 0.0,
+        "20-15": 0.017857142857142856,
+        "20-19": 0.0,
+        "6-15": 0.0,
+        "8-20": 0.16666666666666666
+      },
+      "per_old_class_decision_counts": {
+        "14-10": {
+          "unknown_reject": 58
+        },
+        "14-7": {
+          "unknown_reject": 60
+        },
+        "20-15": {
+          "accept": 1,
+          "unknown_reject": 55
+        },
+        "20-19": {
+          "defer": 1,
+          "unknown_reject": 59
+        },
+        "6-15": {
+          "unknown_reject": 60
+        },
+        "8-20": {
+          "accept": 9,
+          "defer": 20,
+          "unknown_reject": 25
+        }
+      },
+      "per_seen_new_class_acc": {
+        "1-10": 0.0,
+        "1-12": 0.0,
+        "1-14": 0.0,
+        "1-16": 0.0,
+        "1-18": 0.0,
+        "1-8": 0.0,
+        "10-11": 0.0,
+        "10-4": 0.0
+      },
+      "per_seen_new_class_decision_counts": {
+        "1-10": {
+          "unknown_reject": 40
+        },
+        "1-12": {
+          "defer": 1,
+          "unknown_reject": 40
+        },
+        "1-14": {
+          "unknown_reject": 43
+        },
+        "1-16": {
+          "unknown_reject": 49
+        },
+        "1-18": {
+          "unknown_reject": 52
+        },
+        "1-8": {
+          "defer": 1,
+          "unknown_reject": 51
+        },
+        "10-11": {
+          "unknown_reject": 51
+        },
+        "10-4": {
+          "defer": 1,
+          "unknown_reject": 56
+        }
+      },
+      "profile": "pcet_balanced",
+      "seen_new_acc": 0.0,
+      "unknown_FAR": 0.0,
+      "unknown_false_accept_labels": {},
+      "unknown_reject": 0.9740932642487047
+    },
+    {
+      "bytes_per_event": 128.0,
+      "collab_count": 1,
+      "file": "pcet_k10_scenario_diverse.json",
+      "joint_floor": 0.0,
+      "known_accepted_accuracy": 0.6544502617801047,
+      "known_avg": 0.17959770114942528,
+      "known_coverage": 0.2605729877216917,
+      "known_floor": 0.0,
+      "min_old": 0.0,
+      "min_seen": 0.0,
+      "old_acc": 0.35919540229885055,
+      "open_set_confusion": {
+        "old->old": 142,
+        "old->unknown_reject": 206,
+        "seen_new->old": 49,
+        "seen_new->unknown_reject": 336,
+        "unknown->old": 74,
+        "unknown->unknown_reject": 312
+      },
+      "per_old_class_acc": {
+        "14-10": 0.06896551724137931,
+        "14-7": 0.4666666666666667,
+        "20-15": 0.6607142857142857,
+        "20-19": 0.11666666666666667,
+        "6-15": 0.0,
+        "8-20": 0.9074074074074074
+      },
+      "per_old_class_decision_counts": {
+        "14-10": {
+          "accept": 10,
+          "unknown_reject": 48
+        },
+        "14-7": {
+          "accept": 30,
+          "unknown_reject": 30
+        },
+        "20-15": {
+          "accept": 37,
+          "unknown_reject": 19
+        },
+        "20-19": {
+          "accept": 14,
+          "unknown_reject": 46
+        },
+        "6-15": {
+          "accept": 2,
+          "unknown_reject": 58
+        },
+        "8-20": {
+          "accept": 49,
+          "unknown_reject": 5
+        }
+      },
+      "per_seen_new_class_acc": {
+        "1-10": 0.0,
+        "1-12": 0.0,
+        "1-14": 0.0,
+        "1-16": 0.0,
+        "1-18": 0.0,
+        "1-8": 0.0,
+        "10-11": 0.0,
+        "10-4": 0.0
+      },
+      "per_seen_new_class_decision_counts": {
+        "1-10": {
+          "accept": 1,
+          "unknown_reject": 39
+        },
+        "1-12": {
+          "accept": 17,
+          "unknown_reject": 24
+        },
+        "1-14": {
+          "accept": 8,
+          "unknown_reject": 35
+        },
+        "1-16": {
+          "accept": 1,
+          "unknown_reject": 48
+        },
+        "1-18": {
+          "accept": 4,
+          "unknown_reject": 48
+        },
+        "1-8": {
+          "accept": 4,
+          "unknown_reject": 48
+        },
+        "10-11": {
+          "accept": 4,
+          "unknown_reject": 47
+        },
+        "10-4": {
+          "accept": 10,
+          "unknown_reject": 47
+        }
+      },
+      "profile": "pcet_known_preserving",
+      "seen_new_acc": 0.0,
+      "unknown_FAR": 0.19170984455958548,
+      "unknown_false_accept_labels": {
+        "14-7": 28,
+        "20-15": 20,
+        "20-19": 6,
+        "8-20": 20
+      },
+      "unknown_reject": 0.8082901554404145
+    },
+    {
+      "bytes_per_event": 220.0822162645219,
+      "collab_count": 2,
+      "file": "pcet_k10_scenario_diverse.json",
+      "joint_floor": 0.0,
+      "known_accepted_accuracy": 0.6120401337792643,
+      "known_avg": 0.25699358113151216,
+      "known_coverage": 0.40791268758526605,
+      "known_floor": 0.0,
+      "min_old": 0.11666666666666667,
+      "min_seen": 0.0,
+      "old_acc": 0.40229885057471265,
+      "open_set_confusion": {
+        "old->defer": 12,
+        "old->old": 158,
+        "old->request_more": 3,
+        "old->seen_new": 19,
+        "old->unknown_reject": 156,
+        "seen_new->defer": 17,
+        "seen_new->old": 28,
+        "seen_new->request_more": 27,
+        "seen_new->seen_new": 94,
+        "seen_new->unknown_reject": 219,
+        "unknown->defer": 23,
+        "unknown->old": 54,
+        "unknown->request_more": 24,
+        "unknown->seen_new": 39,
+        "unknown->unknown_reject": 246
+      },
+      "per_old_class_acc": {
+        "14-10": 0.13793103448275862,
+        "14-7": 0.4,
+        "20-15": 0.6428571428571429,
+        "20-19": 0.26666666666666666,
+        "6-15": 0.11666666666666667,
+        "8-20": 0.9074074074074074
+      },
+      "per_old_class_decision_counts": {
+        "14-10": {
+          "accept": 26,
+          "request_more": 1,
+          "unknown_reject": 31
+        },
+        "14-7": {
+          "accept": 29,
+          "defer": 3,
+          "request_more": 1,
+          "unknown_reject": 27
+        },
+        "20-15": {
+          "accept": 36,
+          "defer": 3,
+          "request_more": 1,
+          "unknown_reject": 16
+        },
+        "20-19": {
+          "accept": 20,
+          "defer": 6,
+          "unknown_reject": 34
+        },
+        "6-15": {
+          "accept": 17,
+          "unknown_reject": 43
+        },
+        "8-20": {
+          "accept": 49,
+          "unknown_reject": 5
+        }
+      },
+      "per_seen_new_class_acc": {
+        "1-10": 0.175,
+        "1-12": 0.04878048780487805,
+        "1-14": 0.0,
+        "1-16": 0.40816326530612246,
+        "1-18": 0.0,
+        "1-8": 0.0,
+        "10-11": 0.11764705882352941,
+        "10-4": 0.14035087719298245
+      },
+      "per_seen_new_class_decision_counts": {
+        "1-10": {
+          "accept": 27,
+          "request_more": 1,
+          "unknown_reject": 12
+        },
+        "1-12": {
+          "accept": 11,
+          "defer": 4,
+          "request_more": 13,
+          "unknown_reject": 13
+        },
+        "1-14": {
+          "accept": 10,
+          "defer": 3,
+          "request_more": 4,
+          "unknown_reject": 26
+        },
+        "1-16": {
+          "accept": 30,
+          "defer": 1,
+          "unknown_reject": 18
+        },
+        "1-18": {
+          "accept": 15,
+          "defer": 1,
+          "request_more": 2,
+          "unknown_reject": 34
+        },
+        "1-8": {
+          "accept": 5,
+          "defer": 2,
+          "request_more": 2,
+          "unknown_reject": 43
+        },
+        "10-11": {
+          "accept": 13,
+          "defer": 3,
+          "unknown_reject": 35
+        },
+        "10-4": {
+          "accept": 11,
+          "defer": 3,
+          "request_more": 5,
+          "unknown_reject": 38
+        }
+      },
+      "profile": "pcet_known_preserving",
+      "seen_new_acc": 0.11168831168831168,
+      "unknown_FAR": 0.24093264248704663,
+      "unknown_false_accept_labels": {
+        "1-10": 8,
+        "1-14": 4,
+        "1-18": 1,
+        "1-8": 3,
+        "10-11": 12,
+        "10-4": 11,
+        "14-10": 10,
+        "14-7": 13,
+        "20-15": 9,
+        "20-19": 10,
+        "6-15": 6,
+        "8-20": 6
+      },
+      "unknown_reject": 0.6373056994818653
+    },
+    {
+      "bytes_per_event": 248.7935656836461,
+      "collab_count": 3,
+      "file": "pcet_k10_scenario_diverse.json",
+      "joint_floor": 0.0,
+      "known_accepted_accuracy": 0.6151202749140894,
+      "known_avg": 0.25110837438423644,
+      "known_coverage": 0.3969986357435198,
+      "known_floor": 0.0,
+      "min_old": 0.1,
+      "min_seen": 0.0,
+      "old_acc": 0.3879310344827586,
+      "open_set_confusion": {
+        "old->defer": 15,
+        "old->old": 152,
+        "old->seen_new": 18,
+        "old->unknown_reject": 163,
+        "seen_new->defer": 19,
+        "seen_new->old": 28,
+        "seen_new->seen_new": 93,
+        "seen_new->unknown_reject": 245,
+        "unknown->defer": 25,
+        "unknown->old": 52,
+        "unknown->request_more": 1,
+        "unknown->seen_new": 33,
+        "unknown->unknown_reject": 275
+      },
+      "per_old_class_acc": {
+        "14-10": 0.13793103448275862,
+        "14-7": 0.36666666666666664,
+        "20-15": 0.6428571428571429,
+        "20-19": 0.2833333333333333,
+        "6-15": 0.1,
+        "8-20": 0.8518518518518519
+      },
+      "per_old_class_decision_counts": {
+        "14-10": {
+          "accept": 25,
+          "unknown_reject": 33
+        },
+        "14-7": {
+          "accept": 26,
+          "defer": 3,
+          "unknown_reject": 31
+        },
+        "20-15": {
+          "accept": 36,
+          "defer": 3,
+          "unknown_reject": 17
+        },
+        "20-19": {
+          "accept": 21,
+          "defer": 6,
+          "unknown_reject": 33
+        },
+        "6-15": {
+          "accept": 16,
+          "unknown_reject": 44
+        },
+        "8-20": {
+          "accept": 46,
+          "defer": 3,
+          "unknown_reject": 5
+        }
+      },
+      "per_seen_new_class_acc": {
+        "1-10": 0.15,
+        "1-12": 0.07317073170731707,
+        "1-14": 0.0,
+        "1-16": 0.3877551020408163,
+        "1-18": 0.0,
+        "1-8": 0.0,
+        "10-11": 0.1568627450980392,
+        "10-4": 0.14035087719298245
+      },
+      "per_seen_new_class_decision_counts": {
+        "1-10": {
+          "accept": 25,
+          "unknown_reject": 15
+        },
+        "1-12": {
+          "accept": 12,
+          "defer": 4,
+          "unknown_reject": 25
+        },
+        "1-14": {
+          "accept": 7,
+          "defer": 4,
+          "unknown_reject": 32
+        },
+        "1-16": {
+          "accept": 28,
+          "defer": 1,
+          "unknown_reject": 20
+        },
+        "1-18": {
+          "accept": 15,
+          "defer": 1,
+          "unknown_reject": 36
+        },
+        "1-8": {
+          "accept": 6,
+          "defer": 2,
+          "unknown_reject": 44
+        },
+        "10-11": {
+          "accept": 16,
+          "defer": 3,
+          "unknown_reject": 32
+        },
+        "10-4": {
+          "accept": 12,
+          "defer": 4,
+          "unknown_reject": 41
+        }
+      },
+      "profile": "pcet_known_preserving",
+      "seen_new_acc": 0.11428571428571428,
+      "unknown_FAR": 0.22020725388601037,
+      "unknown_false_accept_labels": {
+        "1-10": 4,
+        "1-14": 4,
+        "1-18": 1,
+        "1-8": 3,
+        "10-11": 9,
+        "10-4": 12,
+        "14-10": 9,
+        "14-7": 13,
+        "20-15": 10,
+        "20-19": 10,
+        "6-15": 3,
+        "8-20": 7
+      },
+      "unknown_reject": 0.7124352331606217
+    },
+    {
+      "bytes_per_event": 251.6532618409294,
+      "collab_count": 4,
+      "file": "pcet_k10_scenario_diverse.json",
+      "joint_floor": 0.0,
+      "known_accepted_accuracy": 0.6148648648648649,
+      "known_avg": 0.25500447828034034,
+      "known_coverage": 0.4038199181446112,
+      "known_floor": 0.0,
+      "min_old": 0.1,
+      "min_seen": 0.0,
+      "old_acc": 0.3879310344827586,
+      "open_set_confusion": {
+        "old->defer": 15,
+        "old->old": 152,
+        "old->seen_new": 18,
+        "old->unknown_reject": 163,
+        "seen_new->defer": 19,
+        "seen_new->old": 28,
+        "seen_new->seen_new": 98,
+        "seen_new->unknown_reject": 240,
+        "unknown->defer": 25,
+        "unknown->old": 53,
+        "unknown->seen_new": 33,
+        "unknown->unknown_reject": 275
+      },
+      "per_old_class_acc": {
+        "14-10": 0.13793103448275862,
+        "14-7": 0.36666666666666664,
+        "20-15": 0.6428571428571429,
+        "20-19": 0.2833333333333333,
+        "6-15": 0.1,
+        "8-20": 0.8518518518518519
+      },
+      "per_old_class_decision_counts": {
+        "14-10": {
+          "accept": 25,
+          "unknown_reject": 33
+        },
+        "14-7": {
+          "accept": 26,
+          "defer": 3,
+          "unknown_reject": 31
+        },
+        "20-15": {
+          "accept": 36,
+          "defer": 3,
+          "unknown_reject": 17
+        },
+        "20-19": {
+          "accept": 21,
+          "defer": 6,
+          "unknown_reject": 33
+        },
+        "6-15": {
+          "accept": 16,
+          "unknown_reject": 44
+        },
+        "8-20": {
+          "accept": 46,
+          "defer": 3,
+          "unknown_reject": 5
+        }
+      },
+      "per_seen_new_class_acc": {
+        "1-10": 0.15,
+        "1-12": 0.07317073170731707,
+        "1-14": 0.0,
+        "1-16": 0.3877551020408163,
+        "1-18": 0.0,
+        "1-8": 0.0,
+        "10-11": 0.21568627450980393,
+        "10-4": 0.14035087719298245
+      },
+      "per_seen_new_class_decision_counts": {
+        "1-10": {
+          "accept": 25,
+          "unknown_reject": 15
+        },
+        "1-12": {
+          "accept": 12,
+          "defer": 4,
+          "unknown_reject": 25
+        },
+        "1-14": {
+          "accept": 7,
+          "defer": 4,
+          "unknown_reject": 32
+        },
+        "1-16": {
+          "accept": 28,
+          "defer": 1,
+          "unknown_reject": 20
+        },
+        "1-18": {
+          "accept": 16,
+          "defer": 1,
+          "unknown_reject": 35
+        },
+        "1-8": {
+          "accept": 6,
+          "defer": 2,
+          "unknown_reject": 44
+        },
+        "10-11": {
+          "accept": 20,
+          "defer": 3,
+          "unknown_reject": 28
+        },
+        "10-4": {
+          "accept": 12,
+          "defer": 4,
+          "unknown_reject": 41
+        }
+      },
+      "profile": "pcet_known_preserving",
+      "seen_new_acc": 0.12207792207792208,
+      "unknown_FAR": 0.22279792746113988,
+      "unknown_false_accept_labels": {
+        "1-10": 4,
+        "1-14": 4,
+        "1-18": 1,
+        "1-8": 3,
+        "10-11": 9,
+        "10-4": 12,
+        "14-10": 9,
+        "14-7": 13,
+        "20-15": 10,
+        "20-19": 10,
+        "6-15": 4,
+        "8-20": 7
+      },
+      "unknown_reject": 0.7124352331606217
+    },
+    {
+      "bytes_per_event": 251.6532618409294,
+      "collab_count": 5,
+      "file": "pcet_k10_scenario_diverse.json",
+      "joint_floor": 0.0,
+      "known_accepted_accuracy": 0.6148648648648649,
+      "known_avg": 0.25500447828034034,
+      "known_coverage": 0.4038199181446112,
+      "known_floor": 0.0,
+      "min_old": 0.1,
+      "min_seen": 0.0,
+      "old_acc": 0.3879310344827586,
+      "open_set_confusion": {
+        "old->defer": 15,
+        "old->old": 152,
+        "old->seen_new": 18,
+        "old->unknown_reject": 163,
+        "seen_new->defer": 19,
+        "seen_new->old": 28,
+        "seen_new->seen_new": 98,
+        "seen_new->unknown_reject": 240,
+        "unknown->defer": 25,
+        "unknown->old": 53,
+        "unknown->seen_new": 33,
+        "unknown->unknown_reject": 275
+      },
+      "per_old_class_acc": {
+        "14-10": 0.13793103448275862,
+        "14-7": 0.36666666666666664,
+        "20-15": 0.6428571428571429,
+        "20-19": 0.2833333333333333,
+        "6-15": 0.1,
+        "8-20": 0.8518518518518519
+      },
+      "per_old_class_decision_counts": {
+        "14-10": {
+          "accept": 25,
+          "unknown_reject": 33
+        },
+        "14-7": {
+          "accept": 26,
+          "defer": 3,
+          "unknown_reject": 31
+        },
+        "20-15": {
+          "accept": 36,
+          "defer": 3,
+          "unknown_reject": 17
+        },
+        "20-19": {
+          "accept": 21,
+          "defer": 6,
+          "unknown_reject": 33
+        },
+        "6-15": {
+          "accept": 16,
+          "unknown_reject": 44
+        },
+        "8-20": {
+          "accept": 46,
+          "defer": 3,
+          "unknown_reject": 5
+        }
+      },
+      "per_seen_new_class_acc": {
+        "1-10": 0.15,
+        "1-12": 0.07317073170731707,
+        "1-14": 0.0,
+        "1-16": 0.3877551020408163,
+        "1-18": 0.0,
+        "1-8": 0.0,
+        "10-11": 0.21568627450980393,
+        "10-4": 0.14035087719298245
+      },
+      "per_seen_new_class_decision_counts": {
+        "1-10": {
+          "accept": 25,
+          "unknown_reject": 15
+        },
+        "1-12": {
+          "accept": 12,
+          "defer": 4,
+          "unknown_reject": 25
+        },
+        "1-14": {
+          "accept": 7,
+          "defer": 4,
+          "unknown_reject": 32
+        },
+        "1-16": {
+          "accept": 28,
+          "defer": 1,
+          "unknown_reject": 20
+        },
+        "1-18": {
+          "accept": 16,
+          "defer": 1,
+          "unknown_reject": 35
+        },
+        "1-8": {
+          "accept": 6,
+          "defer": 2,
+          "unknown_reject": 44
+        },
+        "10-11": {
+          "accept": 20,
+          "defer": 3,
+          "unknown_reject": 28
+        },
+        "10-4": {
+          "accept": 12,
+          "defer": 4,
+          "unknown_reject": 41
+        }
+      },
+      "profile": "pcet_known_preserving",
+      "seen_new_acc": 0.12207792207792208,
+      "unknown_FAR": 0.22279792746113988,
+      "unknown_false_accept_labels": {
+        "1-10": 4,
+        "1-14": 4,
+        "1-18": 1,
+        "1-8": 3,
+        "10-11": 9,
+        "10-4": 12,
+        "14-10": 9,
+        "14-7": 13,
+        "20-15": 10,
+        "20-19": 10,
+        "6-15": 4,
+        "8-20": 7
+      },
+      "unknown_reject": 0.7124352331606217
+    },
+    {
+      "bytes_per_event": 128.0,
+      "collab_count": 1,
+      "file": "pcet_k10_scenario_diverse.json",
+      "joint_floor": 0.0,
+      "known_accepted_accuracy": 0.8863636363636364,
+      "known_avg": 0.05603448275862069,
+      "known_coverage": 0.06002728512960437,
+      "known_floor": 0.0,
+      "min_old": 0.0,
+      "min_seen": 0.0,
+      "old_acc": 0.11206896551724138,
+      "open_set_confusion": {
+        "old->old": 40,
+        "old->unknown_reject": 308,
+        "seen_new->old": 4,
+        "seen_new->unknown_reject": 381,
+        "unknown->old": 10,
+        "unknown->unknown_reject": 376
+      },
+      "per_old_class_acc": {
+        "14-10": 0.0,
+        "14-7": 0.0,
+        "20-15": 0.05357142857142857,
+        "20-19": 0.0,
+        "6-15": 0.0,
+        "8-20": 0.6666666666666666
+      },
+      "per_old_class_decision_counts": {
+        "14-10": {
+          "unknown_reject": 58
+        },
+        "14-7": {
+          "unknown_reject": 60
+        },
+        "20-15": {
+          "accept": 3,
+          "unknown_reject": 53
+        },
+        "20-19": {
+          "accept": 1,
+          "unknown_reject": 59
+        },
+        "6-15": {
+          "unknown_reject": 60
+        },
+        "8-20": {
+          "accept": 36,
+          "unknown_reject": 18
+        }
+      },
+      "per_seen_new_class_acc": {
+        "1-10": 0.0,
+        "1-12": 0.0,
+        "1-14": 0.0,
+        "1-16": 0.0,
+        "1-18": 0.0,
+        "1-8": 0.0,
+        "10-11": 0.0,
+        "10-4": 0.0
+      },
+      "per_seen_new_class_decision_counts": {
+        "1-10": {
+          "unknown_reject": 40
+        },
+        "1-12": {
+          "accept": 1,
+          "unknown_reject": 40
+        },
+        "1-14": {
+          "unknown_reject": 43
+        },
+        "1-16": {
+          "unknown_reject": 49
+        },
+        "1-18": {
+          "unknown_reject": 52
+        },
+        "1-8": {
+          "accept": 2,
+          "unknown_reject": 50
+        },
+        "10-11": {
+          "unknown_reject": 51
+        },
+        "10-4": {
+          "accept": 1,
+          "unknown_reject": 56
+        }
+      },
+      "profile": "pcet_unknown_strict",
+      "seen_new_acc": 0.0,
+      "unknown_FAR": 0.025906735751295335,
+      "unknown_false_accept_labels": {
+        "20-15": 4,
+        "8-20": 6
+      },
+      "unknown_reject": 0.9740932642487047
+    },
+    {
+      "bytes_per_event": 220.0822162645219,
+      "collab_count": 2,
+      "file": "pcet_k10_scenario_diverse.json",
+      "joint_floor": 0.0,
+      "known_accepted_accuracy": 1.0,
+      "known_avg": 0.022988505747126436,
+      "known_coverage": 0.021828103683492497,
+      "known_floor": 0.0,
+      "min_old": 0.0,
+      "min_seen": 0.0,
+      "old_acc": 0.04597701149425287,
+      "open_set_confusion": {
+        "old->defer": 1,
+        "old->old": 16,
+        "old->unknown_reject": 331,
+        "seen_new->defer": 3,
+        "seen_new->request_more": 1,
+        "seen_new->unknown_reject": 381,
+        "unknown->defer": 9,
+        "unknown->unknown_reject": 377
+      },
+      "per_old_class_acc": {
+        "14-10": 0.0,
+        "14-7": 0.0,
+        "20-15": 0.017857142857142856,
+        "20-19": 0.0,
+        "6-15": 0.0,
+        "8-20": 0.2777777777777778
+      },
+      "per_old_class_decision_counts": {
+        "14-10": {
+          "unknown_reject": 58
+        },
+        "14-7": {
+          "unknown_reject": 60
+        },
+        "20-15": {
+          "accept": 1,
+          "unknown_reject": 55
+        },
+        "20-19": {
+          "defer": 1,
+          "unknown_reject": 59
+        },
+        "6-15": {
+          "unknown_reject": 60
+        },
+        "8-20": {
+          "accept": 15,
+          "unknown_reject": 39
+        }
+      },
+      "per_seen_new_class_acc": {
+        "1-10": 0.0,
+        "1-12": 0.0,
+        "1-14": 0.0,
+        "1-16": 0.0,
+        "1-18": 0.0,
+        "1-8": 0.0,
+        "10-11": 0.0,
+        "10-4": 0.0
+      },
+      "per_seen_new_class_decision_counts": {
+        "1-10": {
+          "unknown_reject": 40
+        },
+        "1-12": {
+          "defer": 1,
+          "unknown_reject": 40
+        },
+        "1-14": {
+          "unknown_reject": 43
+        },
+        "1-16": {
+          "unknown_reject": 49
+        },
+        "1-18": {
+          "unknown_reject": 52
+        },
+        "1-8": {
+          "defer": 1,
+          "request_more": 1,
+          "unknown_reject": 50
+        },
+        "10-11": {
+          "unknown_reject": 51
+        },
+        "10-4": {
+          "defer": 1,
+          "unknown_reject": 56
+        }
+      },
+      "profile": "pcet_unknown_strict",
+      "seen_new_acc": 0.0,
+      "unknown_FAR": 0.0,
+      "unknown_false_accept_labels": {},
+      "unknown_reject": 0.9766839378238342
+    },
+    {
+      "bytes_per_event": 248.7935656836461,
+      "collab_count": 3,
+      "file": "pcet_k10_scenario_diverse.json",
+      "joint_floor": 0.0,
+      "known_accepted_accuracy": 1.0,
+      "known_avg": 0.014367816091954023,
+      "known_coverage": 0.013642564802182811,
+      "known_floor": 0.0,
+      "min_old": 0.0,
+      "min_seen": 0.0,
+      "old_acc": 0.028735632183908046,
+      "open_set_confusion": {
+        "old->defer": 3,
+        "old->old": 10,
+        "old->unknown_reject": 335,
+        "seen_new->defer": 3,
+        "seen_new->unknown_reject": 382,
+        "unknown->defer": 9,
+        "unknown->unknown_reject": 377
+      },
+      "per_old_class_acc": {
+        "14-10": 0.0,
+        "14-7": 0.0,
+        "20-15": 0.017857142857142856,
+        "20-19": 0.0,
+        "6-15": 0.0,
+        "8-20": 0.16666666666666666
+      },
+      "per_old_class_decision_counts": {
+        "14-10": {
+          "unknown_reject": 58
+        },
+        "14-7": {
+          "unknown_reject": 60
+        },
+        "20-15": {
+          "accept": 1,
+          "unknown_reject": 55
+        },
+        "20-19": {
+          "defer": 1,
+          "unknown_reject": 59
+        },
+        "6-15": {
+          "unknown_reject": 60
+        },
+        "8-20": {
+          "accept": 9,
+          "defer": 2,
+          "unknown_reject": 43
+        }
+      },
+      "per_seen_new_class_acc": {
+        "1-10": 0.0,
+        "1-12": 0.0,
+        "1-14": 0.0,
+        "1-16": 0.0,
+        "1-18": 0.0,
+        "1-8": 0.0,
+        "10-11": 0.0,
+        "10-4": 0.0
+      },
+      "per_seen_new_class_decision_counts": {
+        "1-10": {
+          "unknown_reject": 40
+        },
+        "1-12": {
+          "defer": 1,
+          "unknown_reject": 40
+        },
+        "1-14": {
+          "unknown_reject": 43
+        },
+        "1-16": {
+          "unknown_reject": 49
+        },
+        "1-18": {
+          "unknown_reject": 52
+        },
+        "1-8": {
+          "defer": 1,
+          "unknown_reject": 51
+        },
+        "10-11": {
+          "unknown_reject": 51
+        },
+        "10-4": {
+          "defer": 1,
+          "unknown_reject": 56
+        }
+      },
+      "profile": "pcet_unknown_strict",
+      "seen_new_acc": 0.0,
+      "unknown_FAR": 0.0,
+      "unknown_false_accept_labels": {},
+      "unknown_reject": 0.9766839378238342
+    },
+    {
+      "bytes_per_event": 251.6532618409294,
+      "collab_count": 4,
+      "file": "pcet_k10_scenario_diverse.json",
+      "joint_floor": 0.0,
+      "known_accepted_accuracy": 1.0,
+      "known_avg": 0.014367816091954023,
+      "known_coverage": 0.013642564802182811,
+      "known_floor": 0.0,
+      "min_old": 0.0,
+      "min_seen": 0.0,
+      "old_acc": 0.028735632183908046,
+      "open_set_confusion": {
+        "old->defer": 3,
+        "old->old": 10,
+        "old->unknown_reject": 335,
+        "seen_new->defer": 3,
+        "seen_new->unknown_reject": 382,
+        "unknown->defer": 9,
+        "unknown->unknown_reject": 377
+      },
+      "per_old_class_acc": {
+        "14-10": 0.0,
+        "14-7": 0.0,
+        "20-15": 0.017857142857142856,
+        "20-19": 0.0,
+        "6-15": 0.0,
+        "8-20": 0.16666666666666666
+      },
+      "per_old_class_decision_counts": {
+        "14-10": {
+          "unknown_reject": 58
+        },
+        "14-7": {
+          "unknown_reject": 60
+        },
+        "20-15": {
+          "accept": 1,
+          "unknown_reject": 55
+        },
+        "20-19": {
+          "defer": 1,
+          "unknown_reject": 59
+        },
+        "6-15": {
+          "unknown_reject": 60
+        },
+        "8-20": {
+          "accept": 9,
+          "defer": 2,
+          "unknown_reject": 43
+        }
+      },
+      "per_seen_new_class_acc": {
+        "1-10": 0.0,
+        "1-12": 0.0,
+        "1-14": 0.0,
+        "1-16": 0.0,
+        "1-18": 0.0,
+        "1-8": 0.0,
+        "10-11": 0.0,
+        "10-4": 0.0
+      },
+      "per_seen_new_class_decision_counts": {
+        "1-10": {
+          "unknown_reject": 40
+        },
+        "1-12": {
+          "defer": 1,
+          "unknown_reject": 40
+        },
+        "1-14": {
+          "unknown_reject": 43
+        },
+        "1-16": {
+          "unknown_reject": 49
+        },
+        "1-18": {
+          "unknown_reject": 52
+        },
+        "1-8": {
+          "defer": 1,
+          "unknown_reject": 51
+        },
+        "10-11": {
+          "unknown_reject": 51
+        },
+        "10-4": {
+          "defer": 1,
+          "unknown_reject": 56
+        }
+      },
+      "profile": "pcet_unknown_strict",
+      "seen_new_acc": 0.0,
+      "unknown_FAR": 0.0,
+      "unknown_false_accept_labels": {},
+      "unknown_reject": 0.9766839378238342
+    },
+    {
+      "bytes_per_event": 251.6532618409294,
+      "collab_count": 5,
+      "file": "pcet_k10_scenario_diverse.json",
+      "joint_floor": 0.0,
+      "known_accepted_accuracy": 1.0,
+      "known_avg": 0.014367816091954023,
+      "known_coverage": 0.013642564802182811,
+      "known_floor": 0.0,
+      "min_old": 0.0,
+      "min_seen": 0.0,
+      "old_acc": 0.028735632183908046,
+      "open_set_confusion": {
+        "old->defer": 3,
+        "old->old": 10,
+        "old->unknown_reject": 335,
+        "seen_new->defer": 3,
+        "seen_new->unknown_reject": 382,
+        "unknown->defer": 9,
+        "unknown->unknown_reject": 377
+      },
+      "per_old_class_acc": {
+        "14-10": 0.0,
+        "14-7": 0.0,
+        "20-15": 0.017857142857142856,
+        "20-19": 0.0,
+        "6-15": 0.0,
+        "8-20": 0.16666666666666666
+      },
+      "per_old_class_decision_counts": {
+        "14-10": {
+          "unknown_reject": 58
+        },
+        "14-7": {
+          "unknown_reject": 60
+        },
+        "20-15": {
+          "accept": 1,
+          "unknown_reject": 55
+        },
+        "20-19": {
+          "defer": 1,
+          "unknown_reject": 59
+        },
+        "6-15": {
+          "unknown_reject": 60
+        },
+        "8-20": {
+          "accept": 9,
+          "defer": 2,
+          "unknown_reject": 43
+        }
+      },
+      "per_seen_new_class_acc": {
+        "1-10": 0.0,
+        "1-12": 0.0,
+        "1-14": 0.0,
+        "1-16": 0.0,
+        "1-18": 0.0,
+        "1-8": 0.0,
+        "10-11": 0.0,
+        "10-4": 0.0
+      },
+      "per_seen_new_class_decision_counts": {
+        "1-10": {
+          "unknown_reject": 40
+        },
+        "1-12": {
+          "defer": 1,
+          "unknown_reject": 40
+        },
+        "1-14": {
+          "unknown_reject": 43
+        },
+        "1-16": {
+          "unknown_reject": 49
+        },
+        "1-18": {
+          "unknown_reject": 52
+        },
+        "1-8": {
+          "defer": 1,
+          "unknown_reject": 51
+        },
+        "10-11": {
+          "unknown_reject": 51
+        },
+        "10-4": {
+          "defer": 1,
+          "unknown_reject": 56
+        }
+      },
+      "profile": "pcet_unknown_strict",
+      "seen_new_acc": 0.0,
+      "unknown_FAR": 0.0,
+      "unknown_false_accept_labels": {},
+      "unknown_reject": 0.9766839378238342
+    },
+    {
+      "bytes_per_event": 128.0,
+      "collab_count": 1,
+      "file": "pcet_k10_stable_first.json",
+      "joint_floor": 0.0,
+      "known_accepted_accuracy": 0.8979591836734694,
+      "known_avg": 0.06321839080459771,
+      "known_coverage": 0.06684856753069578,
+      "known_floor": 0.0,
+      "min_old": 0.0,
+      "min_seen": 0.0,
+      "old_acc": 0.12643678160919541,
+      "open_set_confusion": {
+        "old->old": 45,
+        "old->unknown_reject": 303,
+        "seen_new->old": 4,
+        "seen_new->request_more": 1,
+        "seen_new->unknown_reject": 380,
+        "unknown->old": 12,
+        "unknown->unknown_reject": 374
+      },
+      "per_old_class_acc": {
+        "14-10": 0.0,
+        "14-7": 0.0,
+        "20-15": 0.14285714285714285,
+        "20-19": 0.0,
+        "6-15": 0.0,
+        "8-20": 0.6666666666666666
+      },
+      "per_old_class_decision_counts": {
+        "14-10": {
+          "unknown_reject": 58
+        },
+        "14-7": {
+          "unknown_reject": 60
+        },
+        "20-15": {
+          "accept": 8,
+          "unknown_reject": 48
+        },
+        "20-19": {
+          "accept": 1,
+          "unknown_reject": 59
+        },
+        "6-15": {
+          "unknown_reject": 60
+        },
+        "8-20": {
+          "accept": 36,
+          "unknown_reject": 18
+        }
+      },
+      "per_seen_new_class_acc": {
+        "1-10": 0.0,
+        "1-12": 0.0,
+        "1-14": 0.0,
+        "1-16": 0.0,
+        "1-18": 0.0,
+        "1-8": 0.0,
+        "10-11": 0.0,
+        "10-4": 0.0
+      },
+      "per_seen_new_class_decision_counts": {
+        "1-10": {
+          "unknown_reject": 40
+        },
+        "1-12": {
+          "accept": 1,
+          "unknown_reject": 40
+        },
+        "1-14": {
+          "request_more": 1,
+          "unknown_reject": 42
+        },
+        "1-16": {
+          "unknown_reject": 49
+        },
+        "1-18": {
+          "unknown_reject": 52
+        },
+        "1-8": {
+          "accept": 2,
+          "unknown_reject": 50
+        },
+        "10-11": {
+          "unknown_reject": 51
+        },
+        "10-4": {
+          "accept": 1,
+          "unknown_reject": 56
+        }
+      },
+      "profile": "pcet_balanced",
+      "seen_new_acc": 0.0,
+      "unknown_FAR": 0.031088082901554404,
+      "unknown_false_accept_labels": {
+        "20-15": 5,
+        "8-20": 7
+      },
+      "unknown_reject": 0.9689119170984456
+    },
+    {
+      "bytes_per_event": 220.0822162645219,
+      "collab_count": 2,
+      "file": "pcet_k10_stable_first.json",
+      "joint_floor": 0.0,
+      "known_accepted_accuracy": 1.0,
+      "known_avg": 0.022988505747126436,
+      "known_coverage": 0.021828103683492497,
+      "known_floor": 0.0,
+      "min_old": 0.0,
+      "min_seen": 0.0,
+      "old_acc": 0.04597701149425287,
+      "open_set_confusion": {
+        "old->defer": 15,
+        "old->old": 16,
+        "old->request_more": 2,
+        "old->unknown_reject": 315,
+        "seen_new->defer": 3,
+        "seen_new->request_more": 2,
+        "seen_new->unknown_reject": 380,
+        "unknown->defer": 10,
+        "unknown->request_more": 1,
+        "unknown->unknown_reject": 375
+      },
+      "per_old_class_acc": {
+        "14-10": 0.0,
+        "14-7": 0.0,
+        "20-15": 0.017857142857142856,
+        "20-19": 0.0,
+        "6-15": 0.0,
+        "8-20": 0.2777777777777778
+      },
+      "per_old_class_decision_counts": {
+        "14-10": {
+          "unknown_reject": 58
+        },
+        "14-7": {
+          "unknown_reject": 60
+        },
+        "20-15": {
+          "accept": 1,
+          "unknown_reject": 55
+        },
+        "20-19": {
+          "defer": 1,
+          "unknown_reject": 59
+        },
+        "6-15": {
+          "unknown_reject": 60
+        },
+        "8-20": {
+          "accept": 15,
+          "defer": 14,
+          "request_more": 2,
+          "unknown_reject": 23
+        }
+      },
+      "per_seen_new_class_acc": {
+        "1-10": 0.0,
+        "1-12": 0.0,
+        "1-14": 0.0,
+        "1-16": 0.0,
+        "1-18": 0.0,
+        "1-8": 0.0,
+        "10-11": 0.0,
+        "10-4": 0.0
+      },
+      "per_seen_new_class_decision_counts": {
+        "1-10": {
+          "unknown_reject": 40
+        },
+        "1-12": {
+          "defer": 1,
+          "unknown_reject": 40
+        },
+        "1-14": {
+          "request_more": 1,
+          "unknown_reject": 42
+        },
+        "1-16": {
+          "unknown_reject": 49
+        },
+        "1-18": {
+          "unknown_reject": 52
+        },
+        "1-8": {
+          "defer": 1,
+          "request_more": 1,
+          "unknown_reject": 50
+        },
+        "10-11": {
+          "unknown_reject": 51
+        },
+        "10-4": {
+          "defer": 1,
+          "unknown_reject": 56
+        }
+      },
+      "profile": "pcet_balanced",
+      "seen_new_acc": 0.0,
+      "unknown_FAR": 0.0,
+      "unknown_false_accept_labels": {},
+      "unknown_reject": 0.9715025906735751
+    },
+    {
+      "bytes_per_event": 248.7935656836461,
+      "collab_count": 3,
+      "file": "pcet_k10_stable_first.json",
+      "joint_floor": 0.0,
+      "known_accepted_accuracy": 1.0,
+      "known_avg": 0.014367816091954023,
+      "known_coverage": 0.013642564802182811,
+      "known_floor": 0.0,
+      "min_old": 0.0,
+      "min_seen": 0.0,
+      "old_acc": 0.028735632183908046,
+      "open_set_confusion": {
+        "old->defer": 21,
+        "old->old": 10,
+        "old->unknown_reject": 317,
+        "seen_new->defer": 3,
+        "seen_new->unknown_reject": 382,
+        "unknown->defer": 10,
+        "unknown->unknown_reject": 376
+      },
+      "per_old_class_acc": {
+        "14-10": 0.0,
+        "14-7": 0.0,
+        "20-15": 0.017857142857142856,
+        "20-19": 0.0,
+        "6-15": 0.0,
+        "8-20": 0.16666666666666666
+      },
+      "per_old_class_decision_counts": {
+        "14-10": {
+          "unknown_reject": 58
+        },
+        "14-7": {
+          "unknown_reject": 60
+        },
+        "20-15": {
+          "accept": 1,
+          "unknown_reject": 55
+        },
+        "20-19": {
+          "defer": 1,
+          "unknown_reject": 59
+        },
+        "6-15": {
+          "unknown_reject": 60
+        },
+        "8-20": {
+          "accept": 9,
+          "defer": 20,
+          "unknown_reject": 25
+        }
+      },
+      "per_seen_new_class_acc": {
+        "1-10": 0.0,
+        "1-12": 0.0,
+        "1-14": 0.0,
+        "1-16": 0.0,
+        "1-18": 0.0,
+        "1-8": 0.0,
+        "10-11": 0.0,
+        "10-4": 0.0
+      },
+      "per_seen_new_class_decision_counts": {
+        "1-10": {
+          "unknown_reject": 40
+        },
+        "1-12": {
+          "defer": 1,
+          "unknown_reject": 40
+        },
+        "1-14": {
+          "unknown_reject": 43
+        },
+        "1-16": {
+          "unknown_reject": 49
+        },
+        "1-18": {
+          "unknown_reject": 52
+        },
+        "1-8": {
+          "defer": 1,
+          "unknown_reject": 51
+        },
+        "10-11": {
+          "unknown_reject": 51
+        },
+        "10-4": {
+          "defer": 1,
+          "unknown_reject": 56
+        }
+      },
+      "profile": "pcet_balanced",
+      "seen_new_acc": 0.0,
+      "unknown_FAR": 0.0,
+      "unknown_false_accept_labels": {},
+      "unknown_reject": 0.9740932642487047
+    },
+    {
+      "bytes_per_event": 251.6532618409294,
+      "collab_count": 4,
+      "file": "pcet_k10_stable_first.json",
+      "joint_floor": 0.0,
+      "known_accepted_accuracy": 1.0,
+      "known_avg": 0.014367816091954023,
+      "known_coverage": 0.013642564802182811,
+      "known_floor": 0.0,
+      "min_old": 0.0,
+      "min_seen": 0.0,
+      "old_acc": 0.028735632183908046,
+      "open_set_confusion": {
+        "old->defer": 21,
+        "old->old": 10,
+        "old->unknown_reject": 317,
+        "seen_new->defer": 3,
+        "seen_new->unknown_reject": 382,
+        "unknown->defer": 10,
+        "unknown->unknown_reject": 376
+      },
+      "per_old_class_acc": {
+        "14-10": 0.0,
+        "14-7": 0.0,
+        "20-15": 0.017857142857142856,
+        "20-19": 0.0,
+        "6-15": 0.0,
+        "8-20": 0.16666666666666666
+      },
+      "per_old_class_decision_counts": {
+        "14-10": {
+          "unknown_reject": 58
+        },
+        "14-7": {
+          "unknown_reject": 60
+        },
+        "20-15": {
+          "accept": 1,
+          "unknown_reject": 55
+        },
+        "20-19": {
+          "defer": 1,
+          "unknown_reject": 59
+        },
+        "6-15": {
+          "unknown_reject": 60
+        },
+        "8-20": {
+          "accept": 9,
+          "defer": 20,
+          "unknown_reject": 25
+        }
+      },
+      "per_seen_new_class_acc": {
+        "1-10": 0.0,
+        "1-12": 0.0,
+        "1-14": 0.0,
+        "1-16": 0.0,
+        "1-18": 0.0,
+        "1-8": 0.0,
+        "10-11": 0.0,
+        "10-4": 0.0
+      },
+      "per_seen_new_class_decision_counts": {
+        "1-10": {
+          "unknown_reject": 40
+        },
+        "1-12": {
+          "defer": 1,
+          "unknown_reject": 40
+        },
+        "1-14": {
+          "unknown_reject": 43
+        },
+        "1-16": {
+          "unknown_reject": 49
+        },
+        "1-18": {
+          "unknown_reject": 52
+        },
+        "1-8": {
+          "defer": 1,
+          "unknown_reject": 51
+        },
+        "10-11": {
+          "unknown_reject": 51
+        },
+        "10-4": {
+          "defer": 1,
+          "unknown_reject": 56
+        }
+      },
+      "profile": "pcet_balanced",
+      "seen_new_acc": 0.0,
+      "unknown_FAR": 0.0,
+      "unknown_false_accept_labels": {},
+      "unknown_reject": 0.9740932642487047
+    },
+    {
+      "bytes_per_event": 251.6532618409294,
+      "collab_count": 5,
+      "file": "pcet_k10_stable_first.json",
+      "joint_floor": 0.0,
+      "known_accepted_accuracy": 1.0,
+      "known_avg": 0.014367816091954023,
+      "known_coverage": 0.013642564802182811,
+      "known_floor": 0.0,
+      "min_old": 0.0,
+      "min_seen": 0.0,
+      "old_acc": 0.028735632183908046,
+      "open_set_confusion": {
+        "old->defer": 21,
+        "old->old": 10,
+        "old->unknown_reject": 317,
+        "seen_new->defer": 3,
+        "seen_new->unknown_reject": 382,
+        "unknown->defer": 10,
+        "unknown->unknown_reject": 376
+      },
+      "per_old_class_acc": {
+        "14-10": 0.0,
+        "14-7": 0.0,
+        "20-15": 0.017857142857142856,
+        "20-19": 0.0,
+        "6-15": 0.0,
+        "8-20": 0.16666666666666666
+      },
+      "per_old_class_decision_counts": {
+        "14-10": {
+          "unknown_reject": 58
+        },
+        "14-7": {
+          "unknown_reject": 60
+        },
+        "20-15": {
+          "accept": 1,
+          "unknown_reject": 55
+        },
+        "20-19": {
+          "defer": 1,
+          "unknown_reject": 59
+        },
+        "6-15": {
+          "unknown_reject": 60
+        },
+        "8-20": {
+          "accept": 9,
+          "defer": 20,
+          "unknown_reject": 25
+        }
+      },
+      "per_seen_new_class_acc": {
+        "1-10": 0.0,
+        "1-12": 0.0,
+        "1-14": 0.0,
+        "1-16": 0.0,
+        "1-18": 0.0,
+        "1-8": 0.0,
+        "10-11": 0.0,
+        "10-4": 0.0
+      },
+      "per_seen_new_class_decision_counts": {
+        "1-10": {
+          "unknown_reject": 40
+        },
+        "1-12": {
+          "defer": 1,
+          "unknown_reject": 40
+        },
+        "1-14": {
+          "unknown_reject": 43
+        },
+        "1-16": {
+          "unknown_reject": 49
+        },
+        "1-18": {
+          "unknown_reject": 52
+        },
+        "1-8": {
+          "defer": 1,
+          "unknown_reject": 51
+        },
+        "10-11": {
+          "unknown_reject": 51
+        },
+        "10-4": {
+          "defer": 1,
+          "unknown_reject": 56
+        }
+      },
+      "profile": "pcet_balanced",
+      "seen_new_acc": 0.0,
+      "unknown_FAR": 0.0,
+      "unknown_false_accept_labels": {},
+      "unknown_reject": 0.9740932642487047
+    },
+    {
+      "bytes_per_event": 128.0,
+      "collab_count": 1,
+      "file": "pcet_k10_stable_first.json",
+      "joint_floor": 0.0,
+      "known_accepted_accuracy": 0.6544502617801047,
+      "known_avg": 0.17959770114942528,
+      "known_coverage": 0.2605729877216917,
+      "known_floor": 0.0,
+      "min_old": 0.0,
+      "min_seen": 0.0,
+      "old_acc": 0.35919540229885055,
+      "open_set_confusion": {
+        "old->old": 142,
+        "old->unknown_reject": 206,
+        "seen_new->old": 49,
+        "seen_new->unknown_reject": 336,
+        "unknown->old": 74,
+        "unknown->unknown_reject": 312
+      },
+      "per_old_class_acc": {
+        "14-10": 0.06896551724137931,
+        "14-7": 0.4666666666666667,
+        "20-15": 0.6607142857142857,
+        "20-19": 0.11666666666666667,
+        "6-15": 0.0,
+        "8-20": 0.9074074074074074
+      },
+      "per_old_class_decision_counts": {
+        "14-10": {
+          "accept": 10,
+          "unknown_reject": 48
+        },
+        "14-7": {
+          "accept": 30,
+          "unknown_reject": 30
+        },
+        "20-15": {
+          "accept": 37,
+          "unknown_reject": 19
+        },
+        "20-19": {
+          "accept": 14,
+          "unknown_reject": 46
+        },
+        "6-15": {
+          "accept": 2,
+          "unknown_reject": 58
+        },
+        "8-20": {
+          "accept": 49,
+          "unknown_reject": 5
+        }
+      },
+      "per_seen_new_class_acc": {
+        "1-10": 0.0,
+        "1-12": 0.0,
+        "1-14": 0.0,
+        "1-16": 0.0,
+        "1-18": 0.0,
+        "1-8": 0.0,
+        "10-11": 0.0,
+        "10-4": 0.0
+      },
+      "per_seen_new_class_decision_counts": {
+        "1-10": {
+          "accept": 1,
+          "unknown_reject": 39
+        },
+        "1-12": {
+          "accept": 17,
+          "unknown_reject": 24
+        },
+        "1-14": {
+          "accept": 8,
+          "unknown_reject": 35
+        },
+        "1-16": {
+          "accept": 1,
+          "unknown_reject": 48
+        },
+        "1-18": {
+          "accept": 4,
+          "unknown_reject": 48
+        },
+        "1-8": {
+          "accept": 4,
+          "unknown_reject": 48
+        },
+        "10-11": {
+          "accept": 4,
+          "unknown_reject": 47
+        },
+        "10-4": {
+          "accept": 10,
+          "unknown_reject": 47
+        }
+      },
+      "profile": "pcet_known_preserving",
+      "seen_new_acc": 0.0,
+      "unknown_FAR": 0.19170984455958548,
+      "unknown_false_accept_labels": {
+        "14-7": 28,
+        "20-15": 20,
+        "20-19": 6,
+        "8-20": 20
+      },
+      "unknown_reject": 0.8082901554404145
+    },
+    {
+      "bytes_per_event": 220.0822162645219,
+      "collab_count": 2,
+      "file": "pcet_k10_stable_first.json",
+      "joint_floor": 0.0,
+      "known_accepted_accuracy": 0.6120401337792643,
+      "known_avg": 0.25699358113151216,
+      "known_coverage": 0.40791268758526605,
+      "known_floor": 0.0,
+      "min_old": 0.11666666666666667,
+      "min_seen": 0.0,
+      "old_acc": 0.40229885057471265,
+      "open_set_confusion": {
+        "old->defer": 12,
+        "old->old": 158,
+        "old->request_more": 3,
+        "old->seen_new": 19,
+        "old->unknown_reject": 156,
+        "seen_new->defer": 17,
+        "seen_new->old": 28,
+        "seen_new->request_more": 27,
+        "seen_new->seen_new": 94,
+        "seen_new->unknown_reject": 219,
+        "unknown->defer": 23,
+        "unknown->old": 54,
+        "unknown->request_more": 24,
+        "unknown->seen_new": 39,
+        "unknown->unknown_reject": 246
+      },
+      "per_old_class_acc": {
+        "14-10": 0.13793103448275862,
+        "14-7": 0.4,
+        "20-15": 0.6428571428571429,
+        "20-19": 0.26666666666666666,
+        "6-15": 0.11666666666666667,
+        "8-20": 0.9074074074074074
+      },
+      "per_old_class_decision_counts": {
+        "14-10": {
+          "accept": 26,
+          "request_more": 1,
+          "unknown_reject": 31
+        },
+        "14-7": {
+          "accept": 29,
+          "defer": 3,
+          "request_more": 1,
+          "unknown_reject": 27
+        },
+        "20-15": {
+          "accept": 36,
+          "defer": 3,
+          "request_more": 1,
+          "unknown_reject": 16
+        },
+        "20-19": {
+          "accept": 20,
+          "defer": 6,
+          "unknown_reject": 34
+        },
+        "6-15": {
+          "accept": 17,
+          "unknown_reject": 43
+        },
+        "8-20": {
+          "accept": 49,
+          "unknown_reject": 5
+        }
+      },
+      "per_seen_new_class_acc": {
+        "1-10": 0.175,
+        "1-12": 0.04878048780487805,
+        "1-14": 0.0,
+        "1-16": 0.40816326530612246,
+        "1-18": 0.0,
+        "1-8": 0.0,
+        "10-11": 0.11764705882352941,
+        "10-4": 0.14035087719298245
+      },
+      "per_seen_new_class_decision_counts": {
+        "1-10": {
+          "accept": 27,
+          "request_more": 1,
+          "unknown_reject": 12
+        },
+        "1-12": {
+          "accept": 11,
+          "defer": 4,
+          "request_more": 13,
+          "unknown_reject": 13
+        },
+        "1-14": {
+          "accept": 10,
+          "defer": 3,
+          "request_more": 4,
+          "unknown_reject": 26
+        },
+        "1-16": {
+          "accept": 30,
+          "defer": 1,
+          "unknown_reject": 18
+        },
+        "1-18": {
+          "accept": 15,
+          "defer": 1,
+          "request_more": 2,
+          "unknown_reject": 34
+        },
+        "1-8": {
+          "accept": 5,
+          "defer": 2,
+          "request_more": 2,
+          "unknown_reject": 43
+        },
+        "10-11": {
+          "accept": 13,
+          "defer": 3,
+          "unknown_reject": 35
+        },
+        "10-4": {
+          "accept": 11,
+          "defer": 3,
+          "request_more": 5,
+          "unknown_reject": 38
+        }
+      },
+      "profile": "pcet_known_preserving",
+      "seen_new_acc": 0.11168831168831168,
+      "unknown_FAR": 0.24093264248704663,
+      "unknown_false_accept_labels": {
+        "1-10": 8,
+        "1-14": 4,
+        "1-18": 1,
+        "1-8": 3,
+        "10-11": 12,
+        "10-4": 11,
+        "14-10": 10,
+        "14-7": 13,
+        "20-15": 9,
+        "20-19": 10,
+        "6-15": 6,
+        "8-20": 6
+      },
+      "unknown_reject": 0.6373056994818653
+    },
+    {
+      "bytes_per_event": 248.7935656836461,
+      "collab_count": 3,
+      "file": "pcet_k10_stable_first.json",
+      "joint_floor": 0.0,
+      "known_accepted_accuracy": 0.6151202749140894,
+      "known_avg": 0.25110837438423644,
+      "known_coverage": 0.3969986357435198,
+      "known_floor": 0.0,
+      "min_old": 0.1,
+      "min_seen": 0.0,
+      "old_acc": 0.3879310344827586,
+      "open_set_confusion": {
+        "old->defer": 15,
+        "old->old": 152,
+        "old->seen_new": 18,
+        "old->unknown_reject": 163,
+        "seen_new->defer": 19,
+        "seen_new->old": 28,
+        "seen_new->seen_new": 93,
+        "seen_new->unknown_reject": 245,
+        "unknown->defer": 25,
+        "unknown->old": 52,
+        "unknown->request_more": 1,
+        "unknown->seen_new": 33,
+        "unknown->unknown_reject": 275
+      },
+      "per_old_class_acc": {
+        "14-10": 0.13793103448275862,
+        "14-7": 0.36666666666666664,
+        "20-15": 0.6428571428571429,
+        "20-19": 0.2833333333333333,
+        "6-15": 0.1,
+        "8-20": 0.8518518518518519
+      },
+      "per_old_class_decision_counts": {
+        "14-10": {
+          "accept": 25,
+          "unknown_reject": 33
+        },
+        "14-7": {
+          "accept": 26,
+          "defer": 3,
+          "unknown_reject": 31
+        },
+        "20-15": {
+          "accept": 36,
+          "defer": 3,
+          "unknown_reject": 17
+        },
+        "20-19": {
+          "accept": 21,
+          "defer": 6,
+          "unknown_reject": 33
+        },
+        "6-15": {
+          "accept": 16,
+          "unknown_reject": 44
+        },
+        "8-20": {
+          "accept": 46,
+          "defer": 3,
+          "unknown_reject": 5
+        }
+      },
+      "per_seen_new_class_acc": {
+        "1-10": 0.15,
+        "1-12": 0.07317073170731707,
+        "1-14": 0.0,
+        "1-16": 0.3877551020408163,
+        "1-18": 0.0,
+        "1-8": 0.0,
+        "10-11": 0.1568627450980392,
+        "10-4": 0.14035087719298245
+      },
+      "per_seen_new_class_decision_counts": {
+        "1-10": {
+          "accept": 25,
+          "unknown_reject": 15
+        },
+        "1-12": {
+          "accept": 12,
+          "defer": 4,
+          "unknown_reject": 25
+        },
+        "1-14": {
+          "accept": 7,
+          "defer": 4,
+          "unknown_reject": 32
+        },
+        "1-16": {
+          "accept": 28,
+          "defer": 1,
+          "unknown_reject": 20
+        },
+        "1-18": {
+          "accept": 15,
+          "defer": 1,
+          "unknown_reject": 36
+        },
+        "1-8": {
+          "accept": 6,
+          "defer": 2,
+          "unknown_reject": 44
+        },
+        "10-11": {
+          "accept": 16,
+          "defer": 3,
+          "unknown_reject": 32
+        },
+        "10-4": {
+          "accept": 12,
+          "defer": 4,
+          "unknown_reject": 41
+        }
+      },
+      "profile": "pcet_known_preserving",
+      "seen_new_acc": 0.11428571428571428,
+      "unknown_FAR": 0.22020725388601037,
+      "unknown_false_accept_labels": {
+        "1-10": 4,
+        "1-14": 4,
+        "1-18": 1,
+        "1-8": 3,
+        "10-11": 9,
+        "10-4": 12,
+        "14-10": 9,
+        "14-7": 13,
+        "20-15": 10,
+        "20-19": 10,
+        "6-15": 3,
+        "8-20": 7
+      },
+      "unknown_reject": 0.7124352331606217
+    },
+    {
+      "bytes_per_event": 251.6532618409294,
+      "collab_count": 4,
+      "file": "pcet_k10_stable_first.json",
+      "joint_floor": 0.0,
+      "known_accepted_accuracy": 0.6148648648648649,
+      "known_avg": 0.25500447828034034,
+      "known_coverage": 0.4038199181446112,
+      "known_floor": 0.0,
+      "min_old": 0.1,
+      "min_seen": 0.0,
+      "old_acc": 0.3879310344827586,
+      "open_set_confusion": {
+        "old->defer": 15,
+        "old->old": 152,
+        "old->seen_new": 18,
+        "old->unknown_reject": 163,
+        "seen_new->defer": 19,
+        "seen_new->old": 28,
+        "seen_new->seen_new": 98,
+        "seen_new->unknown_reject": 240,
+        "unknown->defer": 25,
+        "unknown->old": 53,
+        "unknown->seen_new": 33,
+        "unknown->unknown_reject": 275
+      },
+      "per_old_class_acc": {
+        "14-10": 0.13793103448275862,
+        "14-7": 0.36666666666666664,
+        "20-15": 0.6428571428571429,
+        "20-19": 0.2833333333333333,
+        "6-15": 0.1,
+        "8-20": 0.8518518518518519
+      },
+      "per_old_class_decision_counts": {
+        "14-10": {
+          "accept": 25,
+          "unknown_reject": 33
+        },
+        "14-7": {
+          "accept": 26,
+          "defer": 3,
+          "unknown_reject": 31
+        },
+        "20-15": {
+          "accept": 36,
+          "defer": 3,
+          "unknown_reject": 17
+        },
+        "20-19": {
+          "accept": 21,
+          "defer": 6,
+          "unknown_reject": 33
+        },
+        "6-15": {
+          "accept": 16,
+          "unknown_reject": 44
+        },
+        "8-20": {
+          "accept": 46,
+          "defer": 3,
+          "unknown_reject": 5
+        }
+      },
+      "per_seen_new_class_acc": {
+        "1-10": 0.15,
+        "1-12": 0.07317073170731707,
+        "1-14": 0.0,
+        "1-16": 0.3877551020408163,
+        "1-18": 0.0,
+        "1-8": 0.0,
+        "10-11": 0.21568627450980393,
+        "10-4": 0.14035087719298245
+      },
+      "per_seen_new_class_decision_counts": {
+        "1-10": {
+          "accept": 25,
+          "unknown_reject": 15
+        },
+        "1-12": {
+          "accept": 12,
+          "defer": 4,
+          "unknown_reject": 25
+        },
+        "1-14": {
+          "accept": 7,
+          "defer": 4,
+          "unknown_reject": 32
+        },
+        "1-16": {
+          "accept": 28,
+          "defer": 1,
+          "unknown_reject": 20
+        },
+        "1-18": {
+          "accept": 16,
+          "defer": 1,
+          "unknown_reject": 35
+        },
+        "1-8": {
+          "accept": 6,
+          "defer": 2,
+          "unknown_reject": 44
+        },
+        "10-11": {
+          "accept": 20,
+          "defer": 3,
+          "unknown_reject": 28
+        },
+        "10-4": {
+          "accept": 12,
+          "defer": 4,
+          "unknown_reject": 41
+        }
+      },
+      "profile": "pcet_known_preserving",
+      "seen_new_acc": 0.12207792207792208,
+      "unknown_FAR": 0.22279792746113988,
+      "unknown_false_accept_labels": {
+        "1-10": 4,
+        "1-14": 4,
+        "1-18": 1,
+        "1-8": 3,
+        "10-11": 9,
+        "10-4": 12,
+        "14-10": 9,
+        "14-7": 13,
+        "20-15": 10,
+        "20-19": 10,
+        "6-15": 4,
+        "8-20": 7
+      },
+      "unknown_reject": 0.7124352331606217
+    },
+    {
+      "bytes_per_event": 251.6532618409294,
+      "collab_count": 5,
+      "file": "pcet_k10_stable_first.json",
+      "joint_floor": 0.0,
+      "known_accepted_accuracy": 0.6148648648648649,
+      "known_avg": 0.25500447828034034,
+      "known_coverage": 0.4038199181446112,
+      "known_floor": 0.0,
+      "min_old": 0.1,
+      "min_seen": 0.0,
+      "old_acc": 0.3879310344827586,
+      "open_set_confusion": {
+        "old->defer": 15,
+        "old->old": 152,
+        "old->seen_new": 18,
+        "old->unknown_reject": 163,
+        "seen_new->defer": 19,
+        "seen_new->old": 28,
+        "seen_new->seen_new": 98,
+        "seen_new->unknown_reject": 240,
+        "unknown->defer": 25,
+        "unknown->old": 53,
+        "unknown->seen_new": 33,
+        "unknown->unknown_reject": 275
+      },
+      "per_old_class_acc": {
+        "14-10": 0.13793103448275862,
+        "14-7": 0.36666666666666664,
+        "20-15": 0.6428571428571429,
+        "20-19": 0.2833333333333333,
+        "6-15": 0.1,
+        "8-20": 0.8518518518518519
+      },
+      "per_old_class_decision_counts": {
+        "14-10": {
+          "accept": 25,
+          "unknown_reject": 33
+        },
+        "14-7": {
+          "accept": 26,
+          "defer": 3,
+          "unknown_reject": 31
+        },
+        "20-15": {
+          "accept": 36,
+          "defer": 3,
+          "unknown_reject": 17
+        },
+        "20-19": {
+          "accept": 21,
+          "defer": 6,
+          "unknown_reject": 33
+        },
+        "6-15": {
+          "accept": 16,
+          "unknown_reject": 44
+        },
+        "8-20": {
+          "accept": 46,
+          "defer": 3,
+          "unknown_reject": 5
+        }
+      },
+      "per_seen_new_class_acc": {
+        "1-10": 0.15,
+        "1-12": 0.07317073170731707,
+        "1-14": 0.0,
+        "1-16": 0.3877551020408163,
+        "1-18": 0.0,
+        "1-8": 0.0,
+        "10-11": 0.21568627450980393,
+        "10-4": 0.14035087719298245
+      },
+      "per_seen_new_class_decision_counts": {
+        "1-10": {
+          "accept": 25,
+          "unknown_reject": 15
+        },
+        "1-12": {
+          "accept": 12,
+          "defer": 4,
+          "unknown_reject": 25
+        },
+        "1-14": {
+          "accept": 7,
+          "defer": 4,
+          "unknown_reject": 32
+        },
+        "1-16": {
+          "accept": 28,
+          "defer": 1,
+          "unknown_reject": 20
+        },
+        "1-18": {
+          "accept": 16,
+          "defer": 1,
+          "unknown_reject": 35
+        },
+        "1-8": {
+          "accept": 6,
+          "defer": 2,
+          "unknown_reject": 44
+        },
+        "10-11": {
+          "accept": 20,
+          "defer": 3,
+          "unknown_reject": 28
+        },
+        "10-4": {
+          "accept": 12,
+          "defer": 4,
+          "unknown_reject": 41
+        }
+      },
+      "profile": "pcet_known_preserving",
+      "seen_new_acc": 0.12207792207792208,
+      "unknown_FAR": 0.22279792746113988,
+      "unknown_false_accept_labels": {
+        "1-10": 4,
+        "1-14": 4,
+        "1-18": 1,
+        "1-8": 3,
+        "10-11": 9,
+        "10-4": 12,
+        "14-10": 9,
+        "14-7": 13,
+        "20-15": 10,
+        "20-19": 10,
+        "6-15": 4,
+        "8-20": 7
+      },
+      "unknown_reject": 0.7124352331606217
+    },
+    {
+      "bytes_per_event": 128.0,
+      "collab_count": 1,
+      "file": "pcet_k10_stable_first.json",
+      "joint_floor": 0.0,
+      "known_accepted_accuracy": 0.8863636363636364,
+      "known_avg": 0.05603448275862069,
+      "known_coverage": 0.06002728512960437,
+      "known_floor": 0.0,
+      "min_old": 0.0,
+      "min_seen": 0.0,
+      "old_acc": 0.11206896551724138,
+      "open_set_confusion": {
+        "old->old": 40,
+        "old->unknown_reject": 308,
+        "seen_new->old": 4,
+        "seen_new->unknown_reject": 381,
+        "unknown->old": 10,
+        "unknown->unknown_reject": 376
+      },
+      "per_old_class_acc": {
+        "14-10": 0.0,
+        "14-7": 0.0,
+        "20-15": 0.05357142857142857,
+        "20-19": 0.0,
+        "6-15": 0.0,
+        "8-20": 0.6666666666666666
+      },
+      "per_old_class_decision_counts": {
+        "14-10": {
+          "unknown_reject": 58
+        },
+        "14-7": {
+          "unknown_reject": 60
+        },
+        "20-15": {
+          "accept": 3,
+          "unknown_reject": 53
+        },
+        "20-19": {
+          "accept": 1,
+          "unknown_reject": 59
+        },
+        "6-15": {
+          "unknown_reject": 60
+        },
+        "8-20": {
+          "accept": 36,
+          "unknown_reject": 18
+        }
+      },
+      "per_seen_new_class_acc": {
+        "1-10": 0.0,
+        "1-12": 0.0,
+        "1-14": 0.0,
+        "1-16": 0.0,
+        "1-18": 0.0,
+        "1-8": 0.0,
+        "10-11": 0.0,
+        "10-4": 0.0
+      },
+      "per_seen_new_class_decision_counts": {
+        "1-10": {
+          "unknown_reject": 40
+        },
+        "1-12": {
+          "accept": 1,
+          "unknown_reject": 40
+        },
+        "1-14": {
+          "unknown_reject": 43
+        },
+        "1-16": {
+          "unknown_reject": 49
+        },
+        "1-18": {
+          "unknown_reject": 52
+        },
+        "1-8": {
+          "accept": 2,
+          "unknown_reject": 50
+        },
+        "10-11": {
+          "unknown_reject": 51
+        },
+        "10-4": {
+          "accept": 1,
+          "unknown_reject": 56
+        }
+      },
+      "profile": "pcet_unknown_strict",
+      "seen_new_acc": 0.0,
+      "unknown_FAR": 0.025906735751295335,
+      "unknown_false_accept_labels": {
+        "20-15": 4,
+        "8-20": 6
+      },
+      "unknown_reject": 0.9740932642487047
+    },
+    {
+      "bytes_per_event": 220.0822162645219,
+      "collab_count": 2,
+      "file": "pcet_k10_stable_first.json",
+      "joint_floor": 0.0,
+      "known_accepted_accuracy": 1.0,
+      "known_avg": 0.022988505747126436,
+      "known_coverage": 0.021828103683492497,
+      "known_floor": 0.0,
+      "min_old": 0.0,
+      "min_seen": 0.0,
+      "old_acc": 0.04597701149425287,
+      "open_set_confusion": {
+        "old->defer": 1,
+        "old->old": 16,
+        "old->unknown_reject": 331,
+        "seen_new->defer": 3,
+        "seen_new->request_more": 1,
+        "seen_new->unknown_reject": 381,
+        "unknown->defer": 9,
+        "unknown->unknown_reject": 377
+      },
+      "per_old_class_acc": {
+        "14-10": 0.0,
+        "14-7": 0.0,
+        "20-15": 0.017857142857142856,
+        "20-19": 0.0,
+        "6-15": 0.0,
+        "8-20": 0.2777777777777778
+      },
+      "per_old_class_decision_counts": {
+        "14-10": {
+          "unknown_reject": 58
+        },
+        "14-7": {
+          "unknown_reject": 60
+        },
+        "20-15": {
+          "accept": 1,
+          "unknown_reject": 55
+        },
+        "20-19": {
+          "defer": 1,
+          "unknown_reject": 59
+        },
+        "6-15": {
+          "unknown_reject": 60
+        },
+        "8-20": {
+          "accept": 15,
+          "unknown_reject": 39
+        }
+      },
+      "per_seen_new_class_acc": {
+        "1-10": 0.0,
+        "1-12": 0.0,
+        "1-14": 0.0,
+        "1-16": 0.0,
+        "1-18": 0.0,
+        "1-8": 0.0,
+        "10-11": 0.0,
+        "10-4": 0.0
+      },
+      "per_seen_new_class_decision_counts": {
+        "1-10": {
+          "unknown_reject": 40
+        },
+        "1-12": {
+          "defer": 1,
+          "unknown_reject": 40
+        },
+        "1-14": {
+          "unknown_reject": 43
+        },
+        "1-16": {
+          "unknown_reject": 49
+        },
+        "1-18": {
+          "unknown_reject": 52
+        },
+        "1-8": {
+          "defer": 1,
+          "request_more": 1,
+          "unknown_reject": 50
+        },
+        "10-11": {
+          "unknown_reject": 51
+        },
+        "10-4": {
+          "defer": 1,
+          "unknown_reject": 56
+        }
+      },
+      "profile": "pcet_unknown_strict",
+      "seen_new_acc": 0.0,
+      "unknown_FAR": 0.0,
+      "unknown_false_accept_labels": {},
+      "unknown_reject": 0.9766839378238342
+    },
+    {
+      "bytes_per_event": 248.7935656836461,
+      "collab_count": 3,
+      "file": "pcet_k10_stable_first.json",
+      "joint_floor": 0.0,
+      "known_accepted_accuracy": 1.0,
+      "known_avg": 0.014367816091954023,
+      "known_coverage": 0.013642564802182811,
+      "known_floor": 0.0,
+      "min_old": 0.0,
+      "min_seen": 0.0,
+      "old_acc": 0.028735632183908046,
+      "open_set_confusion": {
+        "old->defer": 3,
+        "old->old": 10,
+        "old->unknown_reject": 335,
+        "seen_new->defer": 3,
+        "seen_new->unknown_reject": 382,
+        "unknown->defer": 9,
+        "unknown->unknown_reject": 377
+      },
+      "per_old_class_acc": {
+        "14-10": 0.0,
+        "14-7": 0.0,
+        "20-15": 0.017857142857142856,
+        "20-19": 0.0,
+        "6-15": 0.0,
+        "8-20": 0.16666666666666666
+      },
+      "per_old_class_decision_counts": {
+        "14-10": {
+          "unknown_reject": 58
+        },
+        "14-7": {
+          "unknown_reject": 60
+        },
+        "20-15": {
+          "accept": 1,
+          "unknown_reject": 55
+        },
+        "20-19": {
+          "defer": 1,
+          "unknown_reject": 59
+        },
+        "6-15": {
+          "unknown_reject": 60
+        },
+        "8-20": {
+          "accept": 9,
+          "defer": 2,
+          "unknown_reject": 43
+        }
+      },
+      "per_seen_new_class_acc": {
+        "1-10": 0.0,
+        "1-12": 0.0,
+        "1-14": 0.0,
+        "1-16": 0.0,
+        "1-18": 0.0,
+        "1-8": 0.0,
+        "10-11": 0.0,
+        "10-4": 0.0
+      },
+      "per_seen_new_class_decision_counts": {
+        "1-10": {
+          "unknown_reject": 40
+        },
+        "1-12": {
+          "defer": 1,
+          "unknown_reject": 40
+        },
+        "1-14": {
+          "unknown_reject": 43
+        },
+        "1-16": {
+          "unknown_reject": 49
+        },
+        "1-18": {
+          "unknown_reject": 52
+        },
+        "1-8": {
+          "defer": 1,
+          "unknown_reject": 51
+        },
+        "10-11": {
+          "unknown_reject": 51
+        },
+        "10-4": {
+          "defer": 1,
+          "unknown_reject": 56
+        }
+      },
+      "profile": "pcet_unknown_strict",
+      "seen_new_acc": 0.0,
+      "unknown_FAR": 0.0,
+      "unknown_false_accept_labels": {},
+      "unknown_reject": 0.9766839378238342
+    },
+    {
+      "bytes_per_event": 251.6532618409294,
+      "collab_count": 4,
+      "file": "pcet_k10_stable_first.json",
+      "joint_floor": 0.0,
+      "known_accepted_accuracy": 1.0,
+      "known_avg": 0.014367816091954023,
+      "known_coverage": 0.013642564802182811,
+      "known_floor": 0.0,
+      "min_old": 0.0,
+      "min_seen": 0.0,
+      "old_acc": 0.028735632183908046,
+      "open_set_confusion": {
+        "old->defer": 3,
+        "old->old": 10,
+        "old->unknown_reject": 335,
+        "seen_new->defer": 3,
+        "seen_new->unknown_reject": 382,
+        "unknown->defer": 9,
+        "unknown->unknown_reject": 377
+      },
+      "per_old_class_acc": {
+        "14-10": 0.0,
+        "14-7": 0.0,
+        "20-15": 0.017857142857142856,
+        "20-19": 0.0,
+        "6-15": 0.0,
+        "8-20": 0.16666666666666666
+      },
+      "per_old_class_decision_counts": {
+        "14-10": {
+          "unknown_reject": 58
+        },
+        "14-7": {
+          "unknown_reject": 60
+        },
+        "20-15": {
+          "accept": 1,
+          "unknown_reject": 55
+        },
+        "20-19": {
+          "defer": 1,
+          "unknown_reject": 59
+        },
+        "6-15": {
+          "unknown_reject": 60
+        },
+        "8-20": {
+          "accept": 9,
+          "defer": 2,
+          "unknown_reject": 43
+        }
+      },
+      "per_seen_new_class_acc": {
+        "1-10": 0.0,
+        "1-12": 0.0,
+        "1-14": 0.0,
+        "1-16": 0.0,
+        "1-18": 0.0,
+        "1-8": 0.0,
+        "10-11": 0.0,
+        "10-4": 0.0
+      },
+      "per_seen_new_class_decision_counts": {
+        "1-10": {
+          "unknown_reject": 40
+        },
+        "1-12": {
+          "defer": 1,
+          "unknown_reject": 40
+        },
+        "1-14": {
+          "unknown_reject": 43
+        },
+        "1-16": {
+          "unknown_reject": 49
+        },
+        "1-18": {
+          "unknown_reject": 52
+        },
+        "1-8": {
+          "defer": 1,
+          "unknown_reject": 51
+        },
+        "10-11": {
+          "unknown_reject": 51
+        },
+        "10-4": {
+          "defer": 1,
+          "unknown_reject": 56
+        }
+      },
+      "profile": "pcet_unknown_strict",
+      "seen_new_acc": 0.0,
+      "unknown_FAR": 0.0,
+      "unknown_false_accept_labels": {},
+      "unknown_reject": 0.9766839378238342
+    },
+    {
+      "bytes_per_event": 251.6532618409294,
+      "collab_count": 5,
+      "file": "pcet_k10_stable_first.json",
+      "joint_floor": 0.0,
+      "known_accepted_accuracy": 1.0,
+      "known_avg": 0.014367816091954023,
+      "known_coverage": 0.013642564802182811,
+      "known_floor": 0.0,
+      "min_old": 0.0,
+      "min_seen": 0.0,
+      "old_acc": 0.028735632183908046,
+      "open_set_confusion": {
+        "old->defer": 3,
+        "old->old": 10,
+        "old->unknown_reject": 335,
+        "seen_new->defer": 3,
+        "seen_new->unknown_reject": 382,
+        "unknown->defer": 9,
+        "unknown->unknown_reject": 377
+      },
+      "per_old_class_acc": {
+        "14-10": 0.0,
+        "14-7": 0.0,
+        "20-15": 0.017857142857142856,
+        "20-19": 0.0,
+        "6-15": 0.0,
+        "8-20": 0.16666666666666666
+      },
+      "per_old_class_decision_counts": {
+        "14-10": {
+          "unknown_reject": 58
+        },
+        "14-7": {
+          "unknown_reject": 60
+        },
+        "20-15": {
+          "accept": 1,
+          "unknown_reject": 55
+        },
+        "20-19": {
+          "defer": 1,
+          "unknown_reject": 59
+        },
+        "6-15": {
+          "unknown_reject": 60
+        },
+        "8-20": {
+          "accept": 9,
+          "defer": 2,
+          "unknown_reject": 43
+        }
+      },
+      "per_seen_new_class_acc": {
+        "1-10": 0.0,
+        "1-12": 0.0,
+        "1-14": 0.0,
+        "1-16": 0.0,
+        "1-18": 0.0,
+        "1-8": 0.0,
+        "10-11": 0.0,
+        "10-4": 0.0
+      },
+      "per_seen_new_class_decision_counts": {
+        "1-10": {
+          "unknown_reject": 40
+        },
+        "1-12": {
+          "defer": 1,
+          "unknown_reject": 40
+        },
+        "1-14": {
+          "unknown_reject": 43
+        },
+        "1-16": {
+          "unknown_reject": 49
+        },
+        "1-18": {
+          "unknown_reject": 52
+        },
+        "1-8": {
+          "defer": 1,
+          "unknown_reject": 51
+        },
+        "10-11": {
+          "unknown_reject": 51
+        },
+        "10-4": {
+          "defer": 1,
+          "unknown_reject": 56
+        }
+      },
+      "profile": "pcet_unknown_strict",
+      "seen_new_acc": 0.0,
+      "unknown_FAR": 0.0,
+      "unknown_false_accept_labels": {},
+      "unknown_reject": 0.9766839378238342
+    },
+    {
+      "bytes_per_event": 128.0,
+      "collab_count": 1,
+      "file": "pcet_k5_scenario_diverse.json",
+      "joint_floor": 0.0,
+      "known_accepted_accuracy": 0.8596491228070176,
+      "known_avg": 0.07020057306590258,
+      "known_coverage": 0.07692307692307693,
+      "known_floor": 0.0,
+      "min_old": 0.0,
+      "min_seen": 0.0,
+      "old_acc": 0.14040114613180515,
+      "open_set_confusion": {
+        "old->old": 49,
+        "old->request_more": 2,
+        "old->unknown_reject": 298,
+        "seen_new->old": 8,
+        "seen_new->request_more": 2,
+        "seen_new->unknown_reject": 382,
+        "unknown->old": 10,
+        "unknown->request_more": 2,
+        "unknown->unknown_reject": 374
+      },
+      "per_old_class_acc": {
+        "14-10": 0.0,
+        "14-7": 0.0,
+        "20-15": 0.25,
+        "20-19": 0.0,
+        "6-15": 0.0,
+        "8-20": 0.6363636363636364
+      },
+      "per_old_class_decision_counts": {
+        "14-10": {
+          "unknown_reject": 58
+        },
+        "14-7": {
+          "unknown_reject": 60
+        },
+        "20-15": {
+          "accept": 14,
+          "request_more": 1,
+          "unknown_reject": 41
+        },
+        "20-19": {
+          "unknown_reject": 60
+        },
+        "6-15": {
+          "request_more": 1,
+          "unknown_reject": 59
+        },
+        "8-20": {
+          "accept": 35,
+          "unknown_reject": 20
+        }
+      },
+      "per_seen_new_class_acc": {
+        "1-10": 0.0,
+        "1-12": 0.0,
+        "1-14": 0.0,
+        "1-16": 0.0,
+        "1-18": 0.0,
+        "1-8": 0.0,
+        "10-11": 0.0,
+        "10-4": 0.0
+      },
+      "per_seen_new_class_decision_counts": {
+        "1-10": {
+          "unknown_reject": 40
+        },
+        "1-12": {
+          "accept": 1,
+          "unknown_reject": 41
+        },
+        "1-14": {
+          "request_more": 1,
+          "unknown_reject": 41
+        },
+        "1-16": {
+          "accept": 1,
+          "unknown_reject": 48
+        },
+        "1-18": {
+          "accept": 1,
+          "unknown_reject": 51
+        },
+        "1-8": {
+          "accept": 1,
+          "unknown_reject": 54
+        },
+        "10-11": {
+          "unknown_reject": 53
+        },
+        "10-4": {
+          "accept": 4,
+          "request_more": 1,
+          "unknown_reject": 54
+        }
+      },
+      "profile": "pcet_balanced",
+      "seen_new_acc": 0.0,
+      "unknown_FAR": 0.025906735751295335,
+      "unknown_false_accept_labels": {
+        "20-15": 5,
+        "8-20": 5
+      },
+      "unknown_reject": 0.9689119170984456
+    },
+    {
+      "bytes_per_event": 219.2014196983141,
+      "collab_count": 2,
+      "file": "pcet_k5_scenario_diverse.json",
+      "joint_floor": 0.0,
+      "known_accepted_accuracy": 1.0,
+      "known_avg": 0.02005730659025788,
+      "known_coverage": 0.018893387314439947,
+      "known_floor": 0.0,
+      "min_old": 0.0,
+      "min_seen": 0.0,
+      "old_acc": 0.04011461318051576,
+      "open_set_confusion": {
+        "old->defer": 8,
+        "old->old": 14,
+        "old->unknown_reject": 327,
+        "seen_new->defer": 4,
+        "seen_new->request_more": 3,
+        "seen_new->unknown_reject": 385,
+        "unknown->defer": 8,
+        "unknown->request_more": 3,
+        "unknown->unknown_reject": 375
+      },
+      "per_old_class_acc": {
+        "14-10": 0.0,
+        "14-7": 0.0,
+        "20-15": 0.0,
+        "20-19": 0.0,
+        "6-15": 0.0,
+        "8-20": 0.2545454545454545
+      },
+      "per_old_class_decision_counts": {
+        "14-10": {
+          "unknown_reject": 58
+        },
+        "14-7": {
+          "unknown_reject": 60
+        },
+        "20-15": {
+          "unknown_reject": 56
+        },
+        "20-19": {
+          "unknown_reject": 60
+        },
+        "6-15": {
+          "unknown_reject": 60
+        },
+        "8-20": {
+          "accept": 14,
+          "defer": 8,
+          "unknown_reject": 33
+        }
+      },
+      "per_seen_new_class_acc": {
+        "1-10": 0.0,
+        "1-12": 0.0,
+        "1-14": 0.0,
+        "1-16": 0.0,
+        "1-18": 0.0,
+        "1-8": 0.0,
+        "10-11": 0.0,
+        "10-4": 0.0
+      },
+      "per_seen_new_class_decision_counts": {
+        "1-10": {
+          "unknown_reject": 40
+        },
+        "1-12": {
+          "unknown_reject": 42
+        },
+        "1-14": {
+          "unknown_reject": 42
+        },
+        "1-16": {
+          "defer": 1,
+          "unknown_reject": 48
+        },
+        "1-18": {
+          "unknown_reject": 52
+        },
+        "1-8": {
+          "request_more": 1,
+          "unknown_reject": 54
+        },
+        "10-11": {
+          "unknown_reject": 53
+        },
+        "10-4": {
+          "defer": 3,
+          "request_more": 2,
+          "unknown_reject": 54
+        }
+      },
+      "profile": "pcet_balanced",
+      "seen_new_acc": 0.0,
+      "unknown_FAR": 0.0,
+      "unknown_false_accept_labels": {},
+      "unknown_reject": 0.9715025906735751
+    },
+    {
+      "bytes_per_event": 247.59538598047914,
+      "collab_count": 3,
+      "file": "pcet_k5_scenario_diverse.json",
+      "joint_floor": 0.0,
+      "known_accepted_accuracy": 1.0,
+      "known_avg": 0.012893982808022923,
+      "known_coverage": 0.012145748987854251,
+      "known_floor": 0.0,
+      "min_old": 0.0,
+      "min_seen": 0.0,
+      "old_acc": 0.025787965616045846,
+      "open_set_confusion": {
+        "old->defer": 13,
+        "old->old": 9,
+        "old->unknown_reject": 327,
+        "seen_new->defer": 4,
+        "seen_new->unknown_reject": 388,
+        "unknown->defer": 8,
+        "unknown->unknown_reject": 378
+      },
+      "per_old_class_acc": {
+        "14-10": 0.0,
+        "14-7": 0.0,
+        "20-15": 0.0,
+        "20-19": 0.0,
+        "6-15": 0.0,
+        "8-20": 0.16363636363636364
+      },
+      "per_old_class_decision_counts": {
+        "14-10": {
+          "unknown_reject": 58
+        },
+        "14-7": {
+          "unknown_reject": 60
+        },
+        "20-15": {
+          "unknown_reject": 56
+        },
+        "20-19": {
+          "unknown_reject": 60
+        },
+        "6-15": {
+          "unknown_reject": 60
+        },
+        "8-20": {
+          "accept": 9,
+          "defer": 13,
+          "unknown_reject": 33
+        }
+      },
+      "per_seen_new_class_acc": {
+        "1-10": 0.0,
+        "1-12": 0.0,
+        "1-14": 0.0,
+        "1-16": 0.0,
+        "1-18": 0.0,
+        "1-8": 0.0,
+        "10-11": 0.0,
+        "10-4": 0.0
+      },
+      "per_seen_new_class_decision_counts": {
+        "1-10": {
+          "unknown_reject": 40
+        },
+        "1-12": {
+          "unknown_reject": 42
+        },
+        "1-14": {
+          "unknown_reject": 42
+        },
+        "1-16": {
+          "defer": 1,
+          "unknown_reject": 48
+        },
+        "1-18": {
+          "unknown_reject": 52
+        },
+        "1-8": {
+          "unknown_reject": 55
+        },
+        "10-11": {
+          "unknown_reject": 53
+        },
+        "10-4": {
+          "defer": 3,
+          "unknown_reject": 56
+        }
+      },
+      "profile": "pcet_balanced",
+      "seen_new_acc": 0.0,
+      "unknown_FAR": 0.0,
+      "unknown_false_accept_labels": {},
+      "unknown_reject": 0.9792746113989638
+    },
+    {
+      "bytes_per_event": 249.86690328305235,
+      "collab_count": 4,
+      "file": "pcet_k5_scenario_diverse.json",
+      "joint_floor": 0.0,
+      "known_accepted_accuracy": 1.0,
+      "known_avg": 0.012893982808022923,
+      "known_coverage": 0.012145748987854251,
+      "known_floor": 0.0,
+      "min_old": 0.0,
+      "min_seen": 0.0,
+      "old_acc": 0.025787965616045846,
+      "open_set_confusion": {
+        "old->defer": 13,
+        "old->old": 9,
+        "old->unknown_reject": 327,
+        "seen_new->defer": 4,
+        "seen_new->unknown_reject": 388,
+        "unknown->defer": 8,
+        "unknown->unknown_reject": 378
+      },
+      "per_old_class_acc": {
+        "14-10": 0.0,
+        "14-7": 0.0,
+        "20-15": 0.0,
+        "20-19": 0.0,
+        "6-15": 0.0,
+        "8-20": 0.16363636363636364
+      },
+      "per_old_class_decision_counts": {
+        "14-10": {
+          "unknown_reject": 58
+        },
+        "14-7": {
+          "unknown_reject": 60
+        },
+        "20-15": {
+          "unknown_reject": 56
+        },
+        "20-19": {
+          "unknown_reject": 60
+        },
+        "6-15": {
+          "unknown_reject": 60
+        },
+        "8-20": {
+          "accept": 9,
+          "defer": 13,
+          "unknown_reject": 33
+        }
+      },
+      "per_seen_new_class_acc": {
+        "1-10": 0.0,
+        "1-12": 0.0,
+        "1-14": 0.0,
+        "1-16": 0.0,
+        "1-18": 0.0,
+        "1-8": 0.0,
+        "10-11": 0.0,
+        "10-4": 0.0
+      },
+      "per_seen_new_class_decision_counts": {
+        "1-10": {
+          "unknown_reject": 40
+        },
+        "1-12": {
+          "unknown_reject": 42
+        },
+        "1-14": {
+          "unknown_reject": 42
+        },
+        "1-16": {
+          "defer": 1,
+          "unknown_reject": 48
+        },
+        "1-18": {
+          "unknown_reject": 52
+        },
+        "1-8": {
+          "unknown_reject": 55
+        },
+        "10-11": {
+          "unknown_reject": 53
+        },
+        "10-4": {
+          "defer": 3,
+          "unknown_reject": 56
+        }
+      },
+      "profile": "pcet_balanced",
+      "seen_new_acc": 0.0,
+      "unknown_FAR": 0.0,
+      "unknown_false_accept_labels": {},
+      "unknown_reject": 0.9792746113989638
+    },
+    {
+      "bytes_per_event": 249.86690328305235,
+      "collab_count": 5,
+      "file": "pcet_k5_scenario_diverse.json",
+      "joint_floor": 0.0,
+      "known_accepted_accuracy": 1.0,
+      "known_avg": 0.012893982808022923,
+      "known_coverage": 0.012145748987854251,
+      "known_floor": 0.0,
+      "min_old": 0.0,
+      "min_seen": 0.0,
+      "old_acc": 0.025787965616045846,
+      "open_set_confusion": {
+        "old->defer": 13,
+        "old->old": 9,
+        "old->unknown_reject": 327,
+        "seen_new->defer": 4,
+        "seen_new->unknown_reject": 388,
+        "unknown->defer": 8,
+        "unknown->unknown_reject": 378
+      },
+      "per_old_class_acc": {
+        "14-10": 0.0,
+        "14-7": 0.0,
+        "20-15": 0.0,
+        "20-19": 0.0,
+        "6-15": 0.0,
+        "8-20": 0.16363636363636364
+      },
+      "per_old_class_decision_counts": {
+        "14-10": {
+          "unknown_reject": 58
+        },
+        "14-7": {
+          "unknown_reject": 60
+        },
+        "20-15": {
+          "unknown_reject": 56
+        },
+        "20-19": {
+          "unknown_reject": 60
+        },
+        "6-15": {
+          "unknown_reject": 60
+        },
+        "8-20": {
+          "accept": 9,
+          "defer": 13,
+          "unknown_reject": 33
+        }
+      },
+      "per_seen_new_class_acc": {
+        "1-10": 0.0,
+        "1-12": 0.0,
+        "1-14": 0.0,
+        "1-16": 0.0,
+        "1-18": 0.0,
+        "1-8": 0.0,
+        "10-11": 0.0,
+        "10-4": 0.0
+      },
+      "per_seen_new_class_decision_counts": {
+        "1-10": {
+          "unknown_reject": 40
+        },
+        "1-12": {
+          "unknown_reject": 42
+        },
+        "1-14": {
+          "unknown_reject": 42
+        },
+        "1-16": {
+          "defer": 1,
+          "unknown_reject": 48
+        },
+        "1-18": {
+          "unknown_reject": 52
+        },
+        "1-8": {
+          "unknown_reject": 55
+        },
+        "10-11": {
+          "unknown_reject": 53
+        },
+        "10-4": {
+          "defer": 3,
+          "unknown_reject": 56
+        }
+      },
+      "profile": "pcet_balanced",
+      "seen_new_acc": 0.0,
+      "unknown_FAR": 0.0,
+      "unknown_false_accept_labels": {},
+      "unknown_reject": 0.9792746113989638
+    },
+    {
+      "bytes_per_event": 128.0,
+      "collab_count": 1,
+      "file": "pcet_k5_scenario_diverse.json",
+      "joint_floor": 0.0,
+      "known_accepted_accuracy": 0.6073298429319371,
+      "known_avg": 0.16524618443365885,
+      "known_coverage": 0.25775978407557354,
+      "known_floor": 0.0,
+      "min_old": 0.0,
+      "min_seen": 0.0,
+      "old_acc": 0.3151862464183381,
+      "open_set_confusion": {
+        "old->old": 127,
+        "old->seen_new": 1,
+        "old->unknown_reject": 221,
+        "seen_new->old": 41,
+        "seen_new->seen_new": 22,
+        "seen_new->unknown_reject": 329,
+        "unknown->old": 77,
+        "unknown->seen_new": 12,
+        "unknown->unknown_reject": 297
+      },
+      "per_old_class_acc": {
+        "14-10": 0.0,
+        "14-7": 0.48333333333333334,
+        "20-15": 0.44642857142857145,
+        "20-19": 0.08333333333333333,
+        "6-15": 0.016666666666666666,
+        "8-20": 0.9090909090909091
+      },
+      "per_old_class_decision_counts": {
+        "14-10": {
+          "accept": 2,
+          "unknown_reject": 56
+        },
+        "14-7": {
+          "accept": 31,
+          "unknown_reject": 29
+        },
+        "20-15": {
+          "accept": 25,
+          "unknown_reject": 31
+        },
+        "20-19": {
+          "accept": 15,
+          "unknown_reject": 45
+        },
+        "6-15": {
+          "accept": 5,
+          "unknown_reject": 55
+        },
+        "8-20": {
+          "accept": 50,
+          "unknown_reject": 5
+        }
+      },
+      "per_seen_new_class_acc": {
+        "1-10": 0.025,
+        "1-12": 0.0,
+        "1-14": 0.0,
+        "1-16": 0.08163265306122448,
+        "1-18": 0.0,
+        "1-8": 0.0,
+        "10-11": 0.018867924528301886,
+        "10-4": 0.0
+      },
+      "per_seen_new_class_decision_counts": {
+        "1-10": {
+          "accept": 2,
+          "unknown_reject": 38
+        },
+        "1-12": {
+          "accept": 10,
+          "unknown_reject": 32
+        },
+        "1-14": {
+          "accept": 6,
+          "unknown_reject": 36
+        },
+        "1-16": {
+          "accept": 5,
+          "unknown_reject": 44
+        },
+        "1-18": {
+          "accept": 8,
+          "unknown_reject": 44
+        },
+        "1-8": {
+          "accept": 9,
+          "unknown_reject": 46
+        },
+        "10-11": {
+          "accept": 9,
+          "unknown_reject": 44
+        },
+        "10-4": {
+          "accept": 14,
+          "unknown_reject": 45
+        }
+      },
+      "profile": "pcet_known_preserving",
+      "seen_new_acc": 0.015306122448979591,
+      "unknown_FAR": 0.23056994818652848,
+      "unknown_false_accept_labels": {
+        "1-10": 1,
+        "1-16": 7,
+        "1-8": 1,
+        "10-11": 3,
+        "14-7": 30,
+        "20-15": 19,
+        "20-19": 6,
+        "6-15": 4,
+        "8-20": 18
+      },
+      "unknown_reject": 0.7694300518134715
+    },
+    {
+      "bytes_per_event": 219.2014196983141,
+      "collab_count": 2,
+      "file": "pcet_k5_scenario_diverse.json",
+      "joint_floor": 0.0,
+      "known_accepted_accuracy": 0.5723684210526315,
+      "known_avg": 0.24268317642243145,
+      "known_coverage": 0.41025641025641024,
+      "known_floor": 0.0,
+      "min_old": 0.03333333333333333,
+      "min_seen": 0.0,
+      "old_acc": 0.37822349570200575,
+      "open_set_confusion": {
+        "old->defer": 13,
+        "old->old": 156,
+        "old->request_more": 4,
+        "old->seen_new": 14,
+        "old->unknown_reject": 162,
+        "seen_new->defer": 15,
+        "seen_new->old": 26,
+        "seen_new->request_more": 20,
+        "seen_new->seen_new": 108,
+        "seen_new->unknown_reject": 223,
+        "unknown->defer": 27,
+        "unknown->old": 58,
+        "unknown->request_more": 23,
+        "unknown->seen_new": 39,
+        "unknown->unknown_reject": 239
+      },
+      "per_old_class_acc": {
+        "14-10": 0.1206896551724138,
+        "14-7": 0.4666666666666667,
+        "20-15": 0.5714285714285714,
+        "20-19": 0.23333333333333334,
+        "6-15": 0.03333333333333333,
+        "8-20": 0.8909090909090909
+      },
+      "per_old_class_decision_counts": {
+        "14-10": {
+          "accept": 13,
+          "defer": 2,
+          "unknown_reject": 43
+        },
+        "14-7": {
+          "accept": 33,
+          "defer": 2,
+          "request_more": 2,
+          "unknown_reject": 23
+        },
+        "20-15": {
+          "accept": 32,
+          "request_more": 2,
+          "unknown_reject": 22
+        },
+        "20-19": {
+          "accept": 28,
+          "defer": 6,
+          "unknown_reject": 26
+        },
+        "6-15": {
+          "accept": 15,
+          "defer": 2,
+          "unknown_reject": 43
+        },
+        "8-20": {
+          "accept": 49,
+          "defer": 1,
+          "unknown_reject": 5
+        }
+      },
+      "per_seen_new_class_acc": {
+        "1-10": 0.35,
+        "1-12": 0.047619047619047616,
+        "1-14": 0.0,
+        "1-16": 0.2653061224489796,
+        "1-18": 0.0,
+        "1-8": 0.01818181818181818,
+        "10-11": 0.11320754716981132,
+        "10-4": 0.1016949152542373
+      },
+      "per_seen_new_class_decision_counts": {
+        "1-10": {
+          "accept": 26,
+          "defer": 1,
+          "unknown_reject": 13
+        },
+        "1-12": {
+          "accept": 15,
+          "defer": 1,
+          "request_more": 5,
+          "unknown_reject": 21
+        },
+        "1-14": {
+          "accept": 9,
+          "request_more": 4,
+          "unknown_reject": 29
+        },
+        "1-16": {
+          "accept": 26,
+          "defer": 1,
+          "unknown_reject": 22
+        },
+        "1-18": {
+          "accept": 16,
+          "request_more": 3,
+          "unknown_reject": 33
+        },
+        "1-8": {
+          "accept": 16,
+          "defer": 3,
+          "request_more": 1,
+          "unknown_reject": 35
+        },
+        "10-11": {
+          "accept": 17,
+          "defer": 4,
+          "unknown_reject": 32
+        },
+        "10-4": {
+          "accept": 9,
+          "defer": 5,
+          "request_more": 7,
+          "unknown_reject": 38
+        }
+      },
+      "profile": "pcet_known_preserving",
+      "seen_new_acc": 0.10714285714285714,
+      "unknown_FAR": 0.25129533678756477,
+      "unknown_false_accept_labels": {
+        "1-10": 10,
+        "1-16": 10,
+        "1-8": 5,
+        "10-11": 10,
+        "10-4": 4,
+        "14-10": 12,
+        "14-7": 18,
+        "20-15": 4,
+        "20-19": 8,
+        "6-15": 9,
+        "8-20": 7
+      },
+      "unknown_reject": 0.6191709844559585
+    },
+    {
+      "bytes_per_event": 247.59538598047914,
+      "collab_count": 3,
+      "file": "pcet_k5_scenario_diverse.json",
+      "joint_floor": 0.0,
+      "known_accepted_accuracy": 0.5802047781569966,
+      "known_avg": 0.23710967194900884,
+      "known_coverage": 0.39541160593792174,
+      "known_floor": 0.0,
+      "min_old": 0.016666666666666666,
+      "min_seen": 0.0,
+      "old_acc": 0.36962750716332377,
+      "open_set_confusion": {
+        "old->defer": 14,
+        "old->old": 152,
+        "old->seen_new": 13,
+        "old->unknown_reject": 170,
+        "seen_new->defer": 17,
+        "seen_new->old": 25,
+        "seen_new->request_more": 1,
+        "seen_new->seen_new": 103,
+        "seen_new->unknown_reject": 246,
+        "unknown->defer": 29,
+        "unknown->old": 56,
+        "unknown->seen_new": 40,
+        "unknown->unknown_reject": 261
+      },
+      "per_old_class_acc": {
+        "14-10": 0.08620689655172414,
+        "14-7": 0.4666666666666667,
+        "20-15": 0.5892857142857143,
+        "20-19": 0.23333333333333334,
+        "6-15": 0.016666666666666666,
+        "8-20": 0.8727272727272727
+      },
+      "per_old_class_decision_counts": {
+        "14-10": {
+          "accept": 11,
+          "defer": 2,
+          "unknown_reject": 45
+        },
+        "14-7": {
+          "accept": 32,
+          "defer": 2,
+          "unknown_reject": 26
+        },
+        "20-15": {
+          "accept": 33,
+          "unknown_reject": 23
+        },
+        "20-19": {
+          "accept": 28,
+          "defer": 6,
+          "unknown_reject": 26
+        },
+        "6-15": {
+          "accept": 13,
+          "defer": 2,
+          "unknown_reject": 45
+        },
+        "8-20": {
+          "accept": 48,
+          "defer": 2,
+          "unknown_reject": 5
+        }
+      },
+      "per_seen_new_class_acc": {
+        "1-10": 0.35,
+        "1-12": 0.0,
+        "1-14": 0.0,
+        "1-16": 0.2857142857142857,
+        "1-18": 0.0,
+        "1-8": 0.01818181818181818,
+        "10-11": 0.11320754716981132,
+        "10-4": 0.1016949152542373
+      },
+      "per_seen_new_class_decision_counts": {
+        "1-10": {
+          "accept": 27,
+          "defer": 1,
+          "unknown_reject": 12
+        },
+        "1-12": {
+          "accept": 11,
+          "defer": 1,
+          "unknown_reject": 30
+        },
+        "1-14": {
+          "accept": 7,
+          "unknown_reject": 35
+        },
+        "1-16": {
+          "accept": 23,
+          "defer": 1,
+          "unknown_reject": 25
+        },
+        "1-18": {
+          "accept": 18,
+          "defer": 1,
+          "unknown_reject": 33
+        },
+        "1-8": {
+          "accept": 16,
+          "defer": 3,
+          "unknown_reject": 36
+        },
+        "10-11": {
+          "accept": 16,
+          "defer": 4,
+          "unknown_reject": 33
+        },
+        "10-4": {
+          "accept": 10,
+          "defer": 6,
+          "request_more": 1,
+          "unknown_reject": 42
+        }
+      },
+      "profile": "pcet_known_preserving",
+      "seen_new_acc": 0.10459183673469388,
+      "unknown_FAR": 0.24870466321243523,
+      "unknown_false_accept_labels": {
+        "1-10": 8,
+        "1-16": 14,
+        "1-8": 5,
+        "10-11": 8,
+        "10-4": 5,
+        "14-10": 7,
+        "14-7": 21,
+        "20-15": 6,
+        "20-19": 7,
+        "6-15": 9,
+        "8-20": 6
+      },
+      "unknown_reject": 0.6761658031088082
+    },
+    {
+      "bytes_per_event": 249.86690328305235,
+      "collab_count": 4,
+      "file": "pcet_k5_scenario_diverse.json",
+      "joint_floor": 0.0,
+      "known_accepted_accuracy": 0.576271186440678,
+      "known_avg": 0.23710967194900884,
+      "known_coverage": 0.398110661268556,
+      "known_floor": 0.0,
+      "min_old": 0.016666666666666666,
+      "min_seen": 0.0,
+      "old_acc": 0.36962750716332377,
+      "open_set_confusion": {
+        "old->defer": 14,
+        "old->old": 152,
+        "old->seen_new": 13,
+        "old->unknown_reject": 170,
+        "seen_new->defer": 17,
+        "seen_new->old": 25,
+        "seen_new->seen_new": 105,
+        "seen_new->unknown_reject": 245,
+        "unknown->defer": 30,
+        "unknown->old": 55,
+        "unknown->seen_new": 40,
+        "unknown->unknown_reject": 261
+      },
+      "per_old_class_acc": {
+        "14-10": 0.08620689655172414,
+        "14-7": 0.4666666666666667,
+        "20-15": 0.5892857142857143,
+        "20-19": 0.23333333333333334,
+        "6-15": 0.016666666666666666,
+        "8-20": 0.8727272727272727
+      },
+      "per_old_class_decision_counts": {
+        "14-10": {
+          "accept": 11,
+          "defer": 2,
+          "unknown_reject": 45
+        },
+        "14-7": {
+          "accept": 32,
+          "defer": 2,
+          "unknown_reject": 26
+        },
+        "20-15": {
+          "accept": 33,
+          "unknown_reject": 23
+        },
+        "20-19": {
+          "accept": 28,
+          "defer": 6,
+          "unknown_reject": 26
+        },
+        "6-15": {
+          "accept": 13,
+          "defer": 2,
+          "unknown_reject": 45
+        },
+        "8-20": {
+          "accept": 48,
+          "defer": 2,
+          "unknown_reject": 5
+        }
+      },
+      "per_seen_new_class_acc": {
+        "1-10": 0.35,
+        "1-12": 0.0,
+        "1-14": 0.0,
+        "1-16": 0.2857142857142857,
+        "1-18": 0.0,
+        "1-8": 0.01818181818181818,
+        "10-11": 0.11320754716981132,
+        "10-4": 0.1016949152542373
+      },
+      "per_seen_new_class_decision_counts": {
+        "1-10": {
+          "accept": 27,
+          "defer": 1,
+          "unknown_reject": 12
+        },
+        "1-12": {
+          "accept": 11,
+          "defer": 1,
+          "unknown_reject": 30
+        },
+        "1-14": {
+          "accept": 7,
+          "unknown_reject": 35
+        },
+        "1-16": {
+          "accept": 23,
+          "defer": 1,
+          "unknown_reject": 25
+        },
+        "1-18": {
+          "accept": 18,
+          "defer": 1,
+          "unknown_reject": 33
+        },
+        "1-8": {
+          "accept": 16,
+          "defer": 3,
+          "unknown_reject": 36
+        },
+        "10-11": {
+          "accept": 18,
+          "defer": 4,
+          "unknown_reject": 31
+        },
+        "10-4": {
+          "accept": 10,
+          "defer": 6,
+          "unknown_reject": 43
+        }
+      },
+      "profile": "pcet_known_preserving",
+      "seen_new_acc": 0.10459183673469388,
+      "unknown_FAR": 0.24611398963730569,
+      "unknown_false_accept_labels": {
+        "1-10": 8,
+        "1-16": 14,
+        "1-8": 5,
+        "10-11": 8,
+        "10-4": 5,
+        "14-10": 7,
+        "14-7": 21,
+        "20-15": 5,
+        "20-19": 7,
+        "6-15": 9,
+        "8-20": 6
+      },
+      "unknown_reject": 0.6761658031088082
+    },
+    {
+      "bytes_per_event": 249.86690328305235,
+      "collab_count": 5,
+      "file": "pcet_k5_scenario_diverse.json",
+      "joint_floor": 0.0,
+      "known_accepted_accuracy": 0.576271186440678,
+      "known_avg": 0.23710967194900884,
+      "known_coverage": 0.398110661268556,
+      "known_floor": 0.0,
+      "min_old": 0.016666666666666666,
+      "min_seen": 0.0,
+      "old_acc": 0.36962750716332377,
+      "open_set_confusion": {
+        "old->defer": 14,
+        "old->old": 152,
+        "old->seen_new": 13,
+        "old->unknown_reject": 170,
+        "seen_new->defer": 17,
+        "seen_new->old": 25,
+        "seen_new->seen_new": 105,
+        "seen_new->unknown_reject": 245,
+        "unknown->defer": 30,
+        "unknown->old": 55,
+        "unknown->seen_new": 40,
+        "unknown->unknown_reject": 261
+      },
+      "per_old_class_acc": {
+        "14-10": 0.08620689655172414,
+        "14-7": 0.4666666666666667,
+        "20-15": 0.5892857142857143,
+        "20-19": 0.23333333333333334,
+        "6-15": 0.016666666666666666,
+        "8-20": 0.8727272727272727
+      },
+      "per_old_class_decision_counts": {
+        "14-10": {
+          "accept": 11,
+          "defer": 2,
+          "unknown_reject": 45
+        },
+        "14-7": {
+          "accept": 32,
+          "defer": 2,
+          "unknown_reject": 26
+        },
+        "20-15": {
+          "accept": 33,
+          "unknown_reject": 23
+        },
+        "20-19": {
+          "accept": 28,
+          "defer": 6,
+          "unknown_reject": 26
+        },
+        "6-15": {
+          "accept": 13,
+          "defer": 2,
+          "unknown_reject": 45
+        },
+        "8-20": {
+          "accept": 48,
+          "defer": 2,
+          "unknown_reject": 5
+        }
+      },
+      "per_seen_new_class_acc": {
+        "1-10": 0.35,
+        "1-12": 0.0,
+        "1-14": 0.0,
+        "1-16": 0.2857142857142857,
+        "1-18": 0.0,
+        "1-8": 0.01818181818181818,
+        "10-11": 0.11320754716981132,
+        "10-4": 0.1016949152542373
+      },
+      "per_seen_new_class_decision_counts": {
+        "1-10": {
+          "accept": 27,
+          "defer": 1,
+          "unknown_reject": 12
+        },
+        "1-12": {
+          "accept": 11,
+          "defer": 1,
+          "unknown_reject": 30
+        },
+        "1-14": {
+          "accept": 7,
+          "unknown_reject": 35
+        },
+        "1-16": {
+          "accept": 23,
+          "defer": 1,
+          "unknown_reject": 25
+        },
+        "1-18": {
+          "accept": 18,
+          "defer": 1,
+          "unknown_reject": 33
+        },
+        "1-8": {
+          "accept": 16,
+          "defer": 3,
+          "unknown_reject": 36
+        },
+        "10-11": {
+          "accept": 18,
+          "defer": 4,
+          "unknown_reject": 31
+        },
+        "10-4": {
+          "accept": 10,
+          "defer": 6,
+          "unknown_reject": 43
+        }
+      },
+      "profile": "pcet_known_preserving",
+      "seen_new_acc": 0.10459183673469388,
+      "unknown_FAR": 0.24611398963730569,
+      "unknown_false_accept_labels": {
+        "1-10": 8,
+        "1-16": 14,
+        "1-8": 5,
+        "10-11": 8,
+        "10-4": 5,
+        "14-10": 7,
+        "14-7": 21,
+        "20-15": 5,
+        "20-19": 7,
+        "6-15": 9,
+        "8-20": 6
+      },
+      "unknown_reject": 0.6761658031088082
+    },
+    {
+      "bytes_per_event": 128.0,
+      "collab_count": 1,
+      "file": "pcet_k5_scenario_diverse.json",
+      "joint_floor": 0.0,
+      "known_accepted_accuracy": 0.8846153846153846,
+      "known_avg": 0.0659025787965616,
+      "known_coverage": 0.07017543859649122,
+      "known_floor": 0.0,
+      "min_old": 0.0,
+      "min_seen": 0.0,
+      "old_acc": 0.1318051575931232,
+      "open_set_confusion": {
+        "old->old": 46,
+        "old->request_more": 1,
+        "old->unknown_reject": 302,
+        "seen_new->old": 6,
+        "seen_new->unknown_reject": 386,
+        "unknown->old": 8,
+        "unknown->request_more": 1,
+        "unknown->unknown_reject": 377
+      },
+      "per_old_class_acc": {
+        "14-10": 0.0,
+        "14-7": 0.0,
+        "20-15": 0.19642857142857142,
+        "20-19": 0.0,
+        "6-15": 0.0,
+        "8-20": 0.6363636363636364
+      },
+      "per_old_class_decision_counts": {
+        "14-10": {
+          "unknown_reject": 58
+        },
+        "14-7": {
+          "unknown_reject": 60
+        },
+        "20-15": {
+          "accept": 11,
+          "unknown_reject": 45
+        },
+        "20-19": {
+          "unknown_reject": 60
+        },
+        "6-15": {
+          "request_more": 1,
+          "unknown_reject": 59
+        },
+        "8-20": {
+          "accept": 35,
+          "unknown_reject": 20
+        }
+      },
+      "per_seen_new_class_acc": {
+        "1-10": 0.0,
+        "1-12": 0.0,
+        "1-14": 0.0,
+        "1-16": 0.0,
+        "1-18": 0.0,
+        "1-8": 0.0,
+        "10-11": 0.0,
+        "10-4": 0.0
+      },
+      "per_seen_new_class_decision_counts": {
+        "1-10": {
+          "unknown_reject": 40
+        },
+        "1-12": {
+          "accept": 1,
+          "unknown_reject": 41
+        },
+        "1-14": {
+          "unknown_reject": 42
+        },
+        "1-16": {
+          "accept": 1,
+          "unknown_reject": 48
+        },
+        "1-18": {
+          "unknown_reject": 52
+        },
+        "1-8": {
+          "accept": 1,
+          "unknown_reject": 54
+        },
+        "10-11": {
+          "unknown_reject": 53
+        },
+        "10-4": {
+          "accept": 3,
+          "unknown_reject": 56
+        }
+      },
+      "profile": "pcet_unknown_strict",
+      "seen_new_acc": 0.0,
+      "unknown_FAR": 0.02072538860103627,
+      "unknown_false_accept_labels": {
+        "20-15": 4,
+        "8-20": 4
+      },
+      "unknown_reject": 0.9766839378238342
+    },
+    {
+      "bytes_per_event": 219.2014196983141,
+      "collab_count": 2,
+      "file": "pcet_k5_scenario_diverse.json",
+      "joint_floor": 0.0,
+      "known_accepted_accuracy": 1.0,
+      "known_avg": 0.02005730659025788,
+      "known_coverage": 0.018893387314439947,
+      "known_floor": 0.0,
+      "min_old": 0.0,
+      "min_seen": 0.0,
+      "old_acc": 0.04011461318051576,
+      "open_set_confusion": {
+        "old->defer": 1,
+        "old->old": 14,
+        "old->unknown_reject": 334,
+        "seen_new->defer": 2,
+        "seen_new->request_more": 3,
+        "seen_new->unknown_reject": 387,
+        "unknown->defer": 6,
+        "unknown->request_more": 2,
+        "unknown->unknown_reject": 378
+      },
+      "per_old_class_acc": {
+        "14-10": 0.0,
+        "14-7": 0.0,
+        "20-15": 0.0,
+        "20-19": 0.0,
+        "6-15": 0.0,
+        "8-20": 0.2545454545454545
+      },
+      "per_old_class_decision_counts": {
+        "14-10": {
+          "unknown_reject": 58
+        },
+        "14-7": {
+          "unknown_reject": 60
+        },
+        "20-15": {
+          "unknown_reject": 56
+        },
+        "20-19": {
+          "unknown_reject": 60
+        },
+        "6-15": {
+          "unknown_reject": 60
+        },
+        "8-20": {
+          "accept": 14,
+          "defer": 1,
+          "unknown_reject": 40
+        }
+      },
+      "per_seen_new_class_acc": {
+        "1-10": 0.0,
+        "1-12": 0.0,
+        "1-14": 0.0,
+        "1-16": 0.0,
+        "1-18": 0.0,
+        "1-8": 0.0,
+        "10-11": 0.0,
+        "10-4": 0.0
+      },
+      "per_seen_new_class_decision_counts": {
+        "1-10": {
+          "unknown_reject": 40
+        },
+        "1-12": {
+          "unknown_reject": 42
+        },
+        "1-14": {
+          "unknown_reject": 42
+        },
+        "1-16": {
+          "defer": 1,
+          "unknown_reject": 48
+        },
+        "1-18": {
+          "unknown_reject": 52
+        },
+        "1-8": {
+          "request_more": 1,
+          "unknown_reject": 54
+        },
+        "10-11": {
+          "unknown_reject": 53
+        },
+        "10-4": {
+          "defer": 1,
+          "request_more": 2,
+          "unknown_reject": 56
+        }
+      },
+      "profile": "pcet_unknown_strict",
+      "seen_new_acc": 0.0,
+      "unknown_FAR": 0.0,
+      "unknown_false_accept_labels": {},
+      "unknown_reject": 0.9792746113989638
+    },
+    {
+      "bytes_per_event": 247.59538598047914,
+      "collab_count": 3,
+      "file": "pcet_k5_scenario_diverse.json",
+      "joint_floor": 0.0,
+      "known_accepted_accuracy": 1.0,
+      "known_avg": 0.012893982808022923,
+      "known_coverage": 0.012145748987854251,
+      "known_floor": 0.0,
+      "min_old": 0.0,
+      "min_seen": 0.0,
+      "old_acc": 0.025787965616045846,
+      "open_set_confusion": {
+        "old->defer": 2,
+        "old->old": 9,
+        "old->unknown_reject": 338,
+        "seen_new->defer": 2,
+        "seen_new->unknown_reject": 390,
+        "unknown->defer": 6,
+        "unknown->unknown_reject": 380
+      },
+      "per_old_class_acc": {
+        "14-10": 0.0,
+        "14-7": 0.0,
+        "20-15": 0.0,
+        "20-19": 0.0,
+        "6-15": 0.0,
+        "8-20": 0.16363636363636364
+      },
+      "per_old_class_decision_counts": {
+        "14-10": {
+          "unknown_reject": 58
+        },
+        "14-7": {
+          "unknown_reject": 60
+        },
+        "20-15": {
+          "unknown_reject": 56
+        },
+        "20-19": {
+          "unknown_reject": 60
+        },
+        "6-15": {
+          "unknown_reject": 60
+        },
+        "8-20": {
+          "accept": 9,
+          "defer": 2,
+          "unknown_reject": 44
+        }
+      },
+      "per_seen_new_class_acc": {
+        "1-10": 0.0,
+        "1-12": 0.0,
+        "1-14": 0.0,
+        "1-16": 0.0,
+        "1-18": 0.0,
+        "1-8": 0.0,
+        "10-11": 0.0,
+        "10-4": 0.0
+      },
+      "per_seen_new_class_decision_counts": {
+        "1-10": {
+          "unknown_reject": 40
+        },
+        "1-12": {
+          "unknown_reject": 42
+        },
+        "1-14": {
+          "unknown_reject": 42
+        },
+        "1-16": {
+          "defer": 1,
+          "unknown_reject": 48
+        },
+        "1-18": {
+          "unknown_reject": 52
+        },
+        "1-8": {
+          "unknown_reject": 55
+        },
+        "10-11": {
+          "unknown_reject": 53
+        },
+        "10-4": {
+          "defer": 1,
+          "unknown_reject": 58
+        }
+      },
+      "profile": "pcet_unknown_strict",
+      "seen_new_acc": 0.0,
+      "unknown_FAR": 0.0,
+      "unknown_false_accept_labels": {},
+      "unknown_reject": 0.9844559585492227
+    },
+    {
+      "bytes_per_event": 249.86690328305235,
+      "collab_count": 4,
+      "file": "pcet_k5_scenario_diverse.json",
+      "joint_floor": 0.0,
+      "known_accepted_accuracy": 1.0,
+      "known_avg": 0.012893982808022923,
+      "known_coverage": 0.012145748987854251,
+      "known_floor": 0.0,
+      "min_old": 0.0,
+      "min_seen": 0.0,
+      "old_acc": 0.025787965616045846,
+      "open_set_confusion": {
+        "old->defer": 2,
+        "old->old": 9,
+        "old->unknown_reject": 338,
+        "seen_new->defer": 2,
+        "seen_new->unknown_reject": 390,
+        "unknown->defer": 6,
+        "unknown->unknown_reject": 380
+      },
+      "per_old_class_acc": {
+        "14-10": 0.0,
+        "14-7": 0.0,
+        "20-15": 0.0,
+        "20-19": 0.0,
+        "6-15": 0.0,
+        "8-20": 0.16363636363636364
+      },
+      "per_old_class_decision_counts": {
+        "14-10": {
+          "unknown_reject": 58
+        },
+        "14-7": {
+          "unknown_reject": 60
+        },
+        "20-15": {
+          "unknown_reject": 56
+        },
+        "20-19": {
+          "unknown_reject": 60
+        },
+        "6-15": {
+          "unknown_reject": 60
+        },
+        "8-20": {
+          "accept": 9,
+          "defer": 2,
+          "unknown_reject": 44
+        }
+      },
+      "per_seen_new_class_acc": {
+        "1-10": 0.0,
+        "1-12": 0.0,
+        "1-14": 0.0,
+        "1-16": 0.0,
+        "1-18": 0.0,
+        "1-8": 0.0,
+        "10-11": 0.0,
+        "10-4": 0.0
+      },
+      "per_seen_new_class_decision_counts": {
+        "1-10": {
+          "unknown_reject": 40
+        },
+        "1-12": {
+          "unknown_reject": 42
+        },
+        "1-14": {
+          "unknown_reject": 42
+        },
+        "1-16": {
+          "defer": 1,
+          "unknown_reject": 48
+        },
+        "1-18": {
+          "unknown_reject": 52
+        },
+        "1-8": {
+          "unknown_reject": 55
+        },
+        "10-11": {
+          "unknown_reject": 53
+        },
+        "10-4": {
+          "defer": 1,
+          "unknown_reject": 58
+        }
+      },
+      "profile": "pcet_unknown_strict",
+      "seen_new_acc": 0.0,
+      "unknown_FAR": 0.0,
+      "unknown_false_accept_labels": {},
+      "unknown_reject": 0.9844559585492227
+    },
+    {
+      "bytes_per_event": 249.86690328305235,
+      "collab_count": 5,
+      "file": "pcet_k5_scenario_diverse.json",
+      "joint_floor": 0.0,
+      "known_accepted_accuracy": 1.0,
+      "known_avg": 0.012893982808022923,
+      "known_coverage": 0.012145748987854251,
+      "known_floor": 0.0,
+      "min_old": 0.0,
+      "min_seen": 0.0,
+      "old_acc": 0.025787965616045846,
+      "open_set_confusion": {
+        "old->defer": 2,
+        "old->old": 9,
+        "old->unknown_reject": 338,
+        "seen_new->defer": 2,
+        "seen_new->unknown_reject": 390,
+        "unknown->defer": 6,
+        "unknown->unknown_reject": 380
+      },
+      "per_old_class_acc": {
+        "14-10": 0.0,
+        "14-7": 0.0,
+        "20-15": 0.0,
+        "20-19": 0.0,
+        "6-15": 0.0,
+        "8-20": 0.16363636363636364
+      },
+      "per_old_class_decision_counts": {
+        "14-10": {
+          "unknown_reject": 58
+        },
+        "14-7": {
+          "unknown_reject": 60
+        },
+        "20-15": {
+          "unknown_reject": 56
+        },
+        "20-19": {
+          "unknown_reject": 60
+        },
+        "6-15": {
+          "unknown_reject": 60
+        },
+        "8-20": {
+          "accept": 9,
+          "defer": 2,
+          "unknown_reject": 44
+        }
+      },
+      "per_seen_new_class_acc": {
+        "1-10": 0.0,
+        "1-12": 0.0,
+        "1-14": 0.0,
+        "1-16": 0.0,
+        "1-18": 0.0,
+        "1-8": 0.0,
+        "10-11": 0.0,
+        "10-4": 0.0
+      },
+      "per_seen_new_class_decision_counts": {
+        "1-10": {
+          "unknown_reject": 40
+        },
+        "1-12": {
+          "unknown_reject": 42
+        },
+        "1-14": {
+          "unknown_reject": 42
+        },
+        "1-16": {
+          "defer": 1,
+          "unknown_reject": 48
+        },
+        "1-18": {
+          "unknown_reject": 52
+        },
+        "1-8": {
+          "unknown_reject": 55
+        },
+        "10-11": {
+          "unknown_reject": 53
+        },
+        "10-4": {
+          "defer": 1,
+          "unknown_reject": 58
+        }
+      },
+      "profile": "pcet_unknown_strict",
+      "seen_new_acc": 0.0,
+      "unknown_FAR": 0.0,
+      "unknown_false_accept_labels": {},
+      "unknown_reject": 0.9844559585492227
+    },
+    {
+      "bytes_per_event": 128.0,
+      "collab_count": 1,
+      "file": "pcet_k5_stable_first.json",
+      "joint_floor": 0.0,
+      "known_accepted_accuracy": 0.8596491228070176,
+      "known_avg": 0.07020057306590258,
+      "known_coverage": 0.07692307692307693,
+      "known_floor": 0.0,
+      "min_old": 0.0,
+      "min_seen": 0.0,
+      "old_acc": 0.14040114613180515,
+      "open_set_confusion": {
+        "old->old": 49,
+        "old->request_more": 2,
+        "old->unknown_reject": 298,
+        "seen_new->old": 8,
+        "seen_new->request_more": 2,
+        "seen_new->unknown_reject": 382,
+        "unknown->old": 10,
+        "unknown->request_more": 2,
+        "unknown->unknown_reject": 374
+      },
+      "per_old_class_acc": {
+        "14-10": 0.0,
+        "14-7": 0.0,
+        "20-15": 0.25,
+        "20-19": 0.0,
+        "6-15": 0.0,
+        "8-20": 0.6363636363636364
+      },
+      "per_old_class_decision_counts": {
+        "14-10": {
+          "unknown_reject": 58
+        },
+        "14-7": {
+          "unknown_reject": 60
+        },
+        "20-15": {
+          "accept": 14,
+          "request_more": 1,
+          "unknown_reject": 41
+        },
+        "20-19": {
+          "unknown_reject": 60
+        },
+        "6-15": {
+          "request_more": 1,
+          "unknown_reject": 59
+        },
+        "8-20": {
+          "accept": 35,
+          "unknown_reject": 20
+        }
+      },
+      "per_seen_new_class_acc": {
+        "1-10": 0.0,
+        "1-12": 0.0,
+        "1-14": 0.0,
+        "1-16": 0.0,
+        "1-18": 0.0,
+        "1-8": 0.0,
+        "10-11": 0.0,
+        "10-4": 0.0
+      },
+      "per_seen_new_class_decision_counts": {
+        "1-10": {
+          "unknown_reject": 40
+        },
+        "1-12": {
+          "accept": 1,
+          "unknown_reject": 41
+        },
+        "1-14": {
+          "request_more": 1,
+          "unknown_reject": 41
+        },
+        "1-16": {
+          "accept": 1,
+          "unknown_reject": 48
+        },
+        "1-18": {
+          "accept": 1,
+          "unknown_reject": 51
+        },
+        "1-8": {
+          "accept": 1,
+          "unknown_reject": 54
+        },
+        "10-11": {
+          "unknown_reject": 53
+        },
+        "10-4": {
+          "accept": 4,
+          "request_more": 1,
+          "unknown_reject": 54
+        }
+      },
+      "profile": "pcet_balanced",
+      "seen_new_acc": 0.0,
+      "unknown_FAR": 0.025906735751295335,
+      "unknown_false_accept_labels": {
+        "20-15": 5,
+        "8-20": 5
+      },
+      "unknown_reject": 0.9689119170984456
+    },
+    {
+      "bytes_per_event": 219.2014196983141,
+      "collab_count": 2,
+      "file": "pcet_k5_stable_first.json",
+      "joint_floor": 0.0,
+      "known_accepted_accuracy": 1.0,
+      "known_avg": 0.02005730659025788,
+      "known_coverage": 0.018893387314439947,
+      "known_floor": 0.0,
+      "min_old": 0.0,
+      "min_seen": 0.0,
+      "old_acc": 0.04011461318051576,
+      "open_set_confusion": {
+        "old->defer": 8,
+        "old->old": 14,
+        "old->unknown_reject": 327,
+        "seen_new->defer": 4,
+        "seen_new->request_more": 3,
+        "seen_new->unknown_reject": 385,
+        "unknown->defer": 8,
+        "unknown->request_more": 3,
+        "unknown->unknown_reject": 375
+      },
+      "per_old_class_acc": {
+        "14-10": 0.0,
+        "14-7": 0.0,
+        "20-15": 0.0,
+        "20-19": 0.0,
+        "6-15": 0.0,
+        "8-20": 0.2545454545454545
+      },
+      "per_old_class_decision_counts": {
+        "14-10": {
+          "unknown_reject": 58
+        },
+        "14-7": {
+          "unknown_reject": 60
+        },
+        "20-15": {
+          "unknown_reject": 56
+        },
+        "20-19": {
+          "unknown_reject": 60
+        },
+        "6-15": {
+          "unknown_reject": 60
+        },
+        "8-20": {
+          "accept": 14,
+          "defer": 8,
+          "unknown_reject": 33
+        }
+      },
+      "per_seen_new_class_acc": {
+        "1-10": 0.0,
+        "1-12": 0.0,
+        "1-14": 0.0,
+        "1-16": 0.0,
+        "1-18": 0.0,
+        "1-8": 0.0,
+        "10-11": 0.0,
+        "10-4": 0.0
+      },
+      "per_seen_new_class_decision_counts": {
+        "1-10": {
+          "unknown_reject": 40
+        },
+        "1-12": {
+          "unknown_reject": 42
+        },
+        "1-14": {
+          "unknown_reject": 42
+        },
+        "1-16": {
+          "defer": 1,
+          "unknown_reject": 48
+        },
+        "1-18": {
+          "unknown_reject": 52
+        },
+        "1-8": {
+          "request_more": 1,
+          "unknown_reject": 54
+        },
+        "10-11": {
+          "unknown_reject": 53
+        },
+        "10-4": {
+          "defer": 3,
+          "request_more": 2,
+          "unknown_reject": 54
+        }
+      },
+      "profile": "pcet_balanced",
+      "seen_new_acc": 0.0,
+      "unknown_FAR": 0.0,
+      "unknown_false_accept_labels": {},
+      "unknown_reject": 0.9715025906735751
+    },
+    {
+      "bytes_per_event": 247.59538598047914,
+      "collab_count": 3,
+      "file": "pcet_k5_stable_first.json",
+      "joint_floor": 0.0,
+      "known_accepted_accuracy": 1.0,
+      "known_avg": 0.012893982808022923,
+      "known_coverage": 0.012145748987854251,
+      "known_floor": 0.0,
+      "min_old": 0.0,
+      "min_seen": 0.0,
+      "old_acc": 0.025787965616045846,
+      "open_set_confusion": {
+        "old->defer": 13,
+        "old->old": 9,
+        "old->unknown_reject": 327,
+        "seen_new->defer": 4,
+        "seen_new->unknown_reject": 388,
+        "unknown->defer": 8,
+        "unknown->unknown_reject": 378
+      },
+      "per_old_class_acc": {
+        "14-10": 0.0,
+        "14-7": 0.0,
+        "20-15": 0.0,
+        "20-19": 0.0,
+        "6-15": 0.0,
+        "8-20": 0.16363636363636364
+      },
+      "per_old_class_decision_counts": {
+        "14-10": {
+          "unknown_reject": 58
+        },
+        "14-7": {
+          "unknown_reject": 60
+        },
+        "20-15": {
+          "unknown_reject": 56
+        },
+        "20-19": {
+          "unknown_reject": 60
+        },
+        "6-15": {
+          "unknown_reject": 60
+        },
+        "8-20": {
+          "accept": 9,
+          "defer": 13,
+          "unknown_reject": 33
+        }
+      },
+      "per_seen_new_class_acc": {
+        "1-10": 0.0,
+        "1-12": 0.0,
+        "1-14": 0.0,
+        "1-16": 0.0,
+        "1-18": 0.0,
+        "1-8": 0.0,
+        "10-11": 0.0,
+        "10-4": 0.0
+      },
+      "per_seen_new_class_decision_counts": {
+        "1-10": {
+          "unknown_reject": 40
+        },
+        "1-12": {
+          "unknown_reject": 42
+        },
+        "1-14": {
+          "unknown_reject": 42
+        },
+        "1-16": {
+          "defer": 1,
+          "unknown_reject": 48
+        },
+        "1-18": {
+          "unknown_reject": 52
+        },
+        "1-8": {
+          "unknown_reject": 55
+        },
+        "10-11": {
+          "unknown_reject": 53
+        },
+        "10-4": {
+          "defer": 3,
+          "unknown_reject": 56
+        }
+      },
+      "profile": "pcet_balanced",
+      "seen_new_acc": 0.0,
+      "unknown_FAR": 0.0,
+      "unknown_false_accept_labels": {},
+      "unknown_reject": 0.9792746113989638
+    },
+    {
+      "bytes_per_event": 249.86690328305235,
+      "collab_count": 4,
+      "file": "pcet_k5_stable_first.json",
+      "joint_floor": 0.0,
+      "known_accepted_accuracy": 1.0,
+      "known_avg": 0.012893982808022923,
+      "known_coverage": 0.012145748987854251,
+      "known_floor": 0.0,
+      "min_old": 0.0,
+      "min_seen": 0.0,
+      "old_acc": 0.025787965616045846,
+      "open_set_confusion": {
+        "old->defer": 13,
+        "old->old": 9,
+        "old->unknown_reject": 327,
+        "seen_new->defer": 4,
+        "seen_new->unknown_reject": 388,
+        "unknown->defer": 8,
+        "unknown->unknown_reject": 378
+      },
+      "per_old_class_acc": {
+        "14-10": 0.0,
+        "14-7": 0.0,
+        "20-15": 0.0,
+        "20-19": 0.0,
+        "6-15": 0.0,
+        "8-20": 0.16363636363636364
+      },
+      "per_old_class_decision_counts": {
+        "14-10": {
+          "unknown_reject": 58
+        },
+        "14-7": {
+          "unknown_reject": 60
+        },
+        "20-15": {
+          "unknown_reject": 56
+        },
+        "20-19": {
+          "unknown_reject": 60
+        },
+        "6-15": {
+          "unknown_reject": 60
+        },
+        "8-20": {
+          "accept": 9,
+          "defer": 13,
+          "unknown_reject": 33
+        }
+      },
+      "per_seen_new_class_acc": {
+        "1-10": 0.0,
+        "1-12": 0.0,
+        "1-14": 0.0,
+        "1-16": 0.0,
+        "1-18": 0.0,
+        "1-8": 0.0,
+        "10-11": 0.0,
+        "10-4": 0.0
+      },
+      "per_seen_new_class_decision_counts": {
+        "1-10": {
+          "unknown_reject": 40
+        },
+        "1-12": {
+          "unknown_reject": 42
+        },
+        "1-14": {
+          "unknown_reject": 42
+        },
+        "1-16": {
+          "defer": 1,
+          "unknown_reject": 48
+        },
+        "1-18": {
+          "unknown_reject": 52
+        },
+        "1-8": {
+          "unknown_reject": 55
+        },
+        "10-11": {
+          "unknown_reject": 53
+        },
+        "10-4": {
+          "defer": 3,
+          "unknown_reject": 56
+        }
+      },
+      "profile": "pcet_balanced",
+      "seen_new_acc": 0.0,
+      "unknown_FAR": 0.0,
+      "unknown_false_accept_labels": {},
+      "unknown_reject": 0.9792746113989638
+    },
+    {
+      "bytes_per_event": 249.86690328305235,
+      "collab_count": 5,
+      "file": "pcet_k5_stable_first.json",
+      "joint_floor": 0.0,
+      "known_accepted_accuracy": 1.0,
+      "known_avg": 0.012893982808022923,
+      "known_coverage": 0.012145748987854251,
+      "known_floor": 0.0,
+      "min_old": 0.0,
+      "min_seen": 0.0,
+      "old_acc": 0.025787965616045846,
+      "open_set_confusion": {
+        "old->defer": 13,
+        "old->old": 9,
+        "old->unknown_reject": 327,
+        "seen_new->defer": 4,
+        "seen_new->unknown_reject": 388,
+        "unknown->defer": 8,
+        "unknown->unknown_reject": 378
+      },
+      "per_old_class_acc": {
+        "14-10": 0.0,
+        "14-7": 0.0,
+        "20-15": 0.0,
+        "20-19": 0.0,
+        "6-15": 0.0,
+        "8-20": 0.16363636363636364
+      },
+      "per_old_class_decision_counts": {
+        "14-10": {
+          "unknown_reject": 58
+        },
+        "14-7": {
+          "unknown_reject": 60
+        },
+        "20-15": {
+          "unknown_reject": 56
+        },
+        "20-19": {
+          "unknown_reject": 60
+        },
+        "6-15": {
+          "unknown_reject": 60
+        },
+        "8-20": {
+          "accept": 9,
+          "defer": 13,
+          "unknown_reject": 33
+        }
+      },
+      "per_seen_new_class_acc": {
+        "1-10": 0.0,
+        "1-12": 0.0,
+        "1-14": 0.0,
+        "1-16": 0.0,
+        "1-18": 0.0,
+        "1-8": 0.0,
+        "10-11": 0.0,
+        "10-4": 0.0
+      },
+      "per_seen_new_class_decision_counts": {
+        "1-10": {
+          "unknown_reject": 40
+        },
+        "1-12": {
+          "unknown_reject": 42
+        },
+        "1-14": {
+          "unknown_reject": 42
+        },
+        "1-16": {
+          "defer": 1,
+          "unknown_reject": 48
+        },
+        "1-18": {
+          "unknown_reject": 52
+        },
+        "1-8": {
+          "unknown_reject": 55
+        },
+        "10-11": {
+          "unknown_reject": 53
+        },
+        "10-4": {
+          "defer": 3,
+          "unknown_reject": 56
+        }
+      },
+      "profile": "pcet_balanced",
+      "seen_new_acc": 0.0,
+      "unknown_FAR": 0.0,
+      "unknown_false_accept_labels": {},
+      "unknown_reject": 0.9792746113989638
+    },
+    {
+      "bytes_per_event": 128.0,
+      "collab_count": 1,
+      "file": "pcet_k5_stable_first.json",
+      "joint_floor": 0.0,
+      "known_accepted_accuracy": 0.6073298429319371,
+      "known_avg": 0.16524618443365885,
+      "known_coverage": 0.25775978407557354,
+      "known_floor": 0.0,
+      "min_old": 0.0,
+      "min_seen": 0.0,
+      "old_acc": 0.3151862464183381,
+      "open_set_confusion": {
+        "old->old": 127,
+        "old->seen_new": 1,
+        "old->unknown_reject": 221,
+        "seen_new->old": 41,
+        "seen_new->seen_new": 22,
+        "seen_new->unknown_reject": 329,
+        "unknown->old": 77,
+        "unknown->seen_new": 12,
+        "unknown->unknown_reject": 297
+      },
+      "per_old_class_acc": {
+        "14-10": 0.0,
+        "14-7": 0.48333333333333334,
+        "20-15": 0.44642857142857145,
+        "20-19": 0.08333333333333333,
+        "6-15": 0.016666666666666666,
+        "8-20": 0.9090909090909091
+      },
+      "per_old_class_decision_counts": {
+        "14-10": {
+          "accept": 2,
+          "unknown_reject": 56
+        },
+        "14-7": {
+          "accept": 31,
+          "unknown_reject": 29
+        },
+        "20-15": {
+          "accept": 25,
+          "unknown_reject": 31
+        },
+        "20-19": {
+          "accept": 15,
+          "unknown_reject": 45
+        },
+        "6-15": {
+          "accept": 5,
+          "unknown_reject": 55
+        },
+        "8-20": {
+          "accept": 50,
+          "unknown_reject": 5
+        }
+      },
+      "per_seen_new_class_acc": {
+        "1-10": 0.025,
+        "1-12": 0.0,
+        "1-14": 0.0,
+        "1-16": 0.08163265306122448,
+        "1-18": 0.0,
+        "1-8": 0.0,
+        "10-11": 0.018867924528301886,
+        "10-4": 0.0
+      },
+      "per_seen_new_class_decision_counts": {
+        "1-10": {
+          "accept": 2,
+          "unknown_reject": 38
+        },
+        "1-12": {
+          "accept": 10,
+          "unknown_reject": 32
+        },
+        "1-14": {
+          "accept": 6,
+          "unknown_reject": 36
+        },
+        "1-16": {
+          "accept": 5,
+          "unknown_reject": 44
+        },
+        "1-18": {
+          "accept": 8,
+          "unknown_reject": 44
+        },
+        "1-8": {
+          "accept": 9,
+          "unknown_reject": 46
+        },
+        "10-11": {
+          "accept": 9,
+          "unknown_reject": 44
+        },
+        "10-4": {
+          "accept": 14,
+          "unknown_reject": 45
+        }
+      },
+      "profile": "pcet_known_preserving",
+      "seen_new_acc": 0.015306122448979591,
+      "unknown_FAR": 0.23056994818652848,
+      "unknown_false_accept_labels": {
+        "1-10": 1,
+        "1-16": 7,
+        "1-8": 1,
+        "10-11": 3,
+        "14-7": 30,
+        "20-15": 19,
+        "20-19": 6,
+        "6-15": 4,
+        "8-20": 18
+      },
+      "unknown_reject": 0.7694300518134715
+    },
+    {
+      "bytes_per_event": 219.2014196983141,
+      "collab_count": 2,
+      "file": "pcet_k5_stable_first.json",
+      "joint_floor": 0.0,
+      "known_accepted_accuracy": 0.5723684210526315,
+      "known_avg": 0.24268317642243145,
+      "known_coverage": 0.41025641025641024,
+      "known_floor": 0.0,
+      "min_old": 0.03333333333333333,
+      "min_seen": 0.0,
+      "old_acc": 0.37822349570200575,
+      "open_set_confusion": {
+        "old->defer": 13,
+        "old->old": 156,
+        "old->request_more": 4,
+        "old->seen_new": 14,
+        "old->unknown_reject": 162,
+        "seen_new->defer": 15,
+        "seen_new->old": 26,
+        "seen_new->request_more": 20,
+        "seen_new->seen_new": 108,
+        "seen_new->unknown_reject": 223,
+        "unknown->defer": 27,
+        "unknown->old": 58,
+        "unknown->request_more": 23,
+        "unknown->seen_new": 39,
+        "unknown->unknown_reject": 239
+      },
+      "per_old_class_acc": {
+        "14-10": 0.1206896551724138,
+        "14-7": 0.4666666666666667,
+        "20-15": 0.5714285714285714,
+        "20-19": 0.23333333333333334,
+        "6-15": 0.03333333333333333,
+        "8-20": 0.8909090909090909
+      },
+      "per_old_class_decision_counts": {
+        "14-10": {
+          "accept": 13,
+          "defer": 2,
+          "unknown_reject": 43
+        },
+        "14-7": {
+          "accept": 33,
+          "defer": 2,
+          "request_more": 2,
+          "unknown_reject": 23
+        },
+        "20-15": {
+          "accept": 32,
+          "request_more": 2,
+          "unknown_reject": 22
+        },
+        "20-19": {
+          "accept": 28,
+          "defer": 6,
+          "unknown_reject": 26
+        },
+        "6-15": {
+          "accept": 15,
+          "defer": 2,
+          "unknown_reject": 43
+        },
+        "8-20": {
+          "accept": 49,
+          "defer": 1,
+          "unknown_reject": 5
+        }
+      },
+      "per_seen_new_class_acc": {
+        "1-10": 0.35,
+        "1-12": 0.047619047619047616,
+        "1-14": 0.0,
+        "1-16": 0.2653061224489796,
+        "1-18": 0.0,
+        "1-8": 0.01818181818181818,
+        "10-11": 0.11320754716981132,
+        "10-4": 0.1016949152542373
+      },
+      "per_seen_new_class_decision_counts": {
+        "1-10": {
+          "accept": 26,
+          "defer": 1,
+          "unknown_reject": 13
+        },
+        "1-12": {
+          "accept": 15,
+          "defer": 1,
+          "request_more": 5,
+          "unknown_reject": 21
+        },
+        "1-14": {
+          "accept": 9,
+          "request_more": 4,
+          "unknown_reject": 29
+        },
+        "1-16": {
+          "accept": 26,
+          "defer": 1,
+          "unknown_reject": 22
+        },
+        "1-18": {
+          "accept": 16,
+          "request_more": 3,
+          "unknown_reject": 33
+        },
+        "1-8": {
+          "accept": 16,
+          "defer": 3,
+          "request_more": 1,
+          "unknown_reject": 35
+        },
+        "10-11": {
+          "accept": 17,
+          "defer": 4,
+          "unknown_reject": 32
+        },
+        "10-4": {
+          "accept": 9,
+          "defer": 5,
+          "request_more": 7,
+          "unknown_reject": 38
+        }
+      },
+      "profile": "pcet_known_preserving",
+      "seen_new_acc": 0.10714285714285714,
+      "unknown_FAR": 0.25129533678756477,
+      "unknown_false_accept_labels": {
+        "1-10": 10,
+        "1-16": 10,
+        "1-8": 5,
+        "10-11": 10,
+        "10-4": 4,
+        "14-10": 12,
+        "14-7": 18,
+        "20-15": 4,
+        "20-19": 8,
+        "6-15": 9,
+        "8-20": 7
+      },
+      "unknown_reject": 0.6191709844559585
+    },
+    {
+      "bytes_per_event": 247.59538598047914,
+      "collab_count": 3,
+      "file": "pcet_k5_stable_first.json",
+      "joint_floor": 0.0,
+      "known_accepted_accuracy": 0.5802047781569966,
+      "known_avg": 0.23710967194900884,
+      "known_coverage": 0.39541160593792174,
+      "known_floor": 0.0,
+      "min_old": 0.016666666666666666,
+      "min_seen": 0.0,
+      "old_acc": 0.36962750716332377,
+      "open_set_confusion": {
+        "old->defer": 14,
+        "old->old": 152,
+        "old->seen_new": 13,
+        "old->unknown_reject": 170,
+        "seen_new->defer": 17,
+        "seen_new->old": 25,
+        "seen_new->request_more": 1,
+        "seen_new->seen_new": 103,
+        "seen_new->unknown_reject": 246,
+        "unknown->defer": 29,
+        "unknown->old": 56,
+        "unknown->seen_new": 40,
+        "unknown->unknown_reject": 261
+      },
+      "per_old_class_acc": {
+        "14-10": 0.08620689655172414,
+        "14-7": 0.4666666666666667,
+        "20-15": 0.5892857142857143,
+        "20-19": 0.23333333333333334,
+        "6-15": 0.016666666666666666,
+        "8-20": 0.8727272727272727
+      },
+      "per_old_class_decision_counts": {
+        "14-10": {
+          "accept": 11,
+          "defer": 2,
+          "unknown_reject": 45
+        },
+        "14-7": {
+          "accept": 32,
+          "defer": 2,
+          "unknown_reject": 26
+        },
+        "20-15": {
+          "accept": 33,
+          "unknown_reject": 23
+        },
+        "20-19": {
+          "accept": 28,
+          "defer": 6,
+          "unknown_reject": 26
+        },
+        "6-15": {
+          "accept": 13,
+          "defer": 2,
+          "unknown_reject": 45
+        },
+        "8-20": {
+          "accept": 48,
+          "defer": 2,
+          "unknown_reject": 5
+        }
+      },
+      "per_seen_new_class_acc": {
+        "1-10": 0.35,
+        "1-12": 0.0,
+        "1-14": 0.0,
+        "1-16": 0.2857142857142857,
+        "1-18": 0.0,
+        "1-8": 0.01818181818181818,
+        "10-11": 0.11320754716981132,
+        "10-4": 0.1016949152542373
+      },
+      "per_seen_new_class_decision_counts": {
+        "1-10": {
+          "accept": 27,
+          "defer": 1,
+          "unknown_reject": 12
+        },
+        "1-12": {
+          "accept": 11,
+          "defer": 1,
+          "unknown_reject": 30
+        },
+        "1-14": {
+          "accept": 7,
+          "unknown_reject": 35
+        },
+        "1-16": {
+          "accept": 23,
+          "defer": 1,
+          "unknown_reject": 25
+        },
+        "1-18": {
+          "accept": 18,
+          "defer": 1,
+          "unknown_reject": 33
+        },
+        "1-8": {
+          "accept": 16,
+          "defer": 3,
+          "unknown_reject": 36
+        },
+        "10-11": {
+          "accept": 16,
+          "defer": 4,
+          "unknown_reject": 33
+        },
+        "10-4": {
+          "accept": 10,
+          "defer": 6,
+          "request_more": 1,
+          "unknown_reject": 42
+        }
+      },
+      "profile": "pcet_known_preserving",
+      "seen_new_acc": 0.10459183673469388,
+      "unknown_FAR": 0.24870466321243523,
+      "unknown_false_accept_labels": {
+        "1-10": 8,
+        "1-16": 14,
+        "1-8": 5,
+        "10-11": 8,
+        "10-4": 5,
+        "14-10": 7,
+        "14-7": 21,
+        "20-15": 6,
+        "20-19": 7,
+        "6-15": 9,
+        "8-20": 6
+      },
+      "unknown_reject": 0.6761658031088082
+    },
+    {
+      "bytes_per_event": 249.86690328305235,
+      "collab_count": 4,
+      "file": "pcet_k5_stable_first.json",
+      "joint_floor": 0.0,
+      "known_accepted_accuracy": 0.576271186440678,
+      "known_avg": 0.23710967194900884,
+      "known_coverage": 0.398110661268556,
+      "known_floor": 0.0,
+      "min_old": 0.016666666666666666,
+      "min_seen": 0.0,
+      "old_acc": 0.36962750716332377,
+      "open_set_confusion": {
+        "old->defer": 14,
+        "old->old": 152,
+        "old->seen_new": 13,
+        "old->unknown_reject": 170,
+        "seen_new->defer": 17,
+        "seen_new->old": 25,
+        "seen_new->seen_new": 105,
+        "seen_new->unknown_reject": 245,
+        "unknown->defer": 30,
+        "unknown->old": 55,
+        "unknown->seen_new": 40,
+        "unknown->unknown_reject": 261
+      },
+      "per_old_class_acc": {
+        "14-10": 0.08620689655172414,
+        "14-7": 0.4666666666666667,
+        "20-15": 0.5892857142857143,
+        "20-19": 0.23333333333333334,
+        "6-15": 0.016666666666666666,
+        "8-20": 0.8727272727272727
+      },
+      "per_old_class_decision_counts": {
+        "14-10": {
+          "accept": 11,
+          "defer": 2,
+          "unknown_reject": 45
+        },
+        "14-7": {
+          "accept": 32,
+          "defer": 2,
+          "unknown_reject": 26
+        },
+        "20-15": {
+          "accept": 33,
+          "unknown_reject": 23
+        },
+        "20-19": {
+          "accept": 28,
+          "defer": 6,
+          "unknown_reject": 26
+        },
+        "6-15": {
+          "accept": 13,
+          "defer": 2,
+          "unknown_reject": 45
+        },
+        "8-20": {
+          "accept": 48,
+          "defer": 2,
+          "unknown_reject": 5
+        }
+      },
+      "per_seen_new_class_acc": {
+        "1-10": 0.35,
+        "1-12": 0.0,
+        "1-14": 0.0,
+        "1-16": 0.2857142857142857,
+        "1-18": 0.0,
+        "1-8": 0.01818181818181818,
+        "10-11": 0.11320754716981132,
+        "10-4": 0.1016949152542373
+      },
+      "per_seen_new_class_decision_counts": {
+        "1-10": {
+          "accept": 27,
+          "defer": 1,
+          "unknown_reject": 12
+        },
+        "1-12": {
+          "accept": 11,
+          "defer": 1,
+          "unknown_reject": 30
+        },
+        "1-14": {
+          "accept": 7,
+          "unknown_reject": 35
+        },
+        "1-16": {
+          "accept": 23,
+          "defer": 1,
+          "unknown_reject": 25
+        },
+        "1-18": {
+          "accept": 18,
+          "defer": 1,
+          "unknown_reject": 33
+        },
+        "1-8": {
+          "accept": 16,
+          "defer": 3,
+          "unknown_reject": 36
+        },
+        "10-11": {
+          "accept": 18,
+          "defer": 4,
+          "unknown_reject": 31
+        },
+        "10-4": {
+          "accept": 10,
+          "defer": 6,
+          "unknown_reject": 43
+        }
+      },
+      "profile": "pcet_known_preserving",
+      "seen_new_acc": 0.10459183673469388,
+      "unknown_FAR": 0.24611398963730569,
+      "unknown_false_accept_labels": {
+        "1-10": 8,
+        "1-16": 14,
+        "1-8": 5,
+        "10-11": 8,
+        "10-4": 5,
+        "14-10": 7,
+        "14-7": 21,
+        "20-15": 5,
+        "20-19": 7,
+        "6-15": 9,
+        "8-20": 6
+      },
+      "unknown_reject": 0.6761658031088082
+    },
+    {
+      "bytes_per_event": 249.86690328305235,
+      "collab_count": 5,
+      "file": "pcet_k5_stable_first.json",
+      "joint_floor": 0.0,
+      "known_accepted_accuracy": 0.576271186440678,
+      "known_avg": 0.23710967194900884,
+      "known_coverage": 0.398110661268556,
+      "known_floor": 0.0,
+      "min_old": 0.016666666666666666,
+      "min_seen": 0.0,
+      "old_acc": 0.36962750716332377,
+      "open_set_confusion": {
+        "old->defer": 14,
+        "old->old": 152,
+        "old->seen_new": 13,
+        "old->unknown_reject": 170,
+        "seen_new->defer": 17,
+        "seen_new->old": 25,
+        "seen_new->seen_new": 105,
+        "seen_new->unknown_reject": 245,
+        "unknown->defer": 30,
+        "unknown->old": 55,
+        "unknown->seen_new": 40,
+        "unknown->unknown_reject": 261
+      },
+      "per_old_class_acc": {
+        "14-10": 0.08620689655172414,
+        "14-7": 0.4666666666666667,
+        "20-15": 0.5892857142857143,
+        "20-19": 0.23333333333333334,
+        "6-15": 0.016666666666666666,
+        "8-20": 0.8727272727272727
+      },
+      "per_old_class_decision_counts": {
+        "14-10": {
+          "accept": 11,
+          "defer": 2,
+          "unknown_reject": 45
+        },
+        "14-7": {
+          "accept": 32,
+          "defer": 2,
+          "unknown_reject": 26
+        },
+        "20-15": {
+          "accept": 33,
+          "unknown_reject": 23
+        },
+        "20-19": {
+          "accept": 28,
+          "defer": 6,
+          "unknown_reject": 26
+        },
+        "6-15": {
+          "accept": 13,
+          "defer": 2,
+          "unknown_reject": 45
+        },
+        "8-20": {
+          "accept": 48,
+          "defer": 2,
+          "unknown_reject": 5
+        }
+      },
+      "per_seen_new_class_acc": {
+        "1-10": 0.35,
+        "1-12": 0.0,
+        "1-14": 0.0,
+        "1-16": 0.2857142857142857,
+        "1-18": 0.0,
+        "1-8": 0.01818181818181818,
+        "10-11": 0.11320754716981132,
+        "10-4": 0.1016949152542373
+      },
+      "per_seen_new_class_decision_counts": {
+        "1-10": {
+          "accept": 27,
+          "defer": 1,
+          "unknown_reject": 12
+        },
+        "1-12": {
+          "accept": 11,
+          "defer": 1,
+          "unknown_reject": 30
+        },
+        "1-14": {
+          "accept": 7,
+          "unknown_reject": 35
+        },
+        "1-16": {
+          "accept": 23,
+          "defer": 1,
+          "unknown_reject": 25
+        },
+        "1-18": {
+          "accept": 18,
+          "defer": 1,
+          "unknown_reject": 33
+        },
+        "1-8": {
+          "accept": 16,
+          "defer": 3,
+          "unknown_reject": 36
+        },
+        "10-11": {
+          "accept": 18,
+          "defer": 4,
+          "unknown_reject": 31
+        },
+        "10-4": {
+          "accept": 10,
+          "defer": 6,
+          "unknown_reject": 43
+        }
+      },
+      "profile": "pcet_known_preserving",
+      "seen_new_acc": 0.10459183673469388,
+      "unknown_FAR": 0.24611398963730569,
+      "unknown_false_accept_labels": {
+        "1-10": 8,
+        "1-16": 14,
+        "1-8": 5,
+        "10-11": 8,
+        "10-4": 5,
+        "14-10": 7,
+        "14-7": 21,
+        "20-15": 5,
+        "20-19": 7,
+        "6-15": 9,
+        "8-20": 6
+      },
+      "unknown_reject": 0.6761658031088082
+    },
+    {
+      "bytes_per_event": 128.0,
+      "collab_count": 1,
+      "file": "pcet_k5_stable_first.json",
+      "joint_floor": 0.0,
+      "known_accepted_accuracy": 0.8846153846153846,
+      "known_avg": 0.0659025787965616,
+      "known_coverage": 0.07017543859649122,
+      "known_floor": 0.0,
+      "min_old": 0.0,
+      "min_seen": 0.0,
+      "old_acc": 0.1318051575931232,
+      "open_set_confusion": {
+        "old->old": 46,
+        "old->request_more": 1,
+        "old->unknown_reject": 302,
+        "seen_new->old": 6,
+        "seen_new->unknown_reject": 386,
+        "unknown->old": 8,
+        "unknown->request_more": 1,
+        "unknown->unknown_reject": 377
+      },
+      "per_old_class_acc": {
+        "14-10": 0.0,
+        "14-7": 0.0,
+        "20-15": 0.19642857142857142,
+        "20-19": 0.0,
+        "6-15": 0.0,
+        "8-20": 0.6363636363636364
+      },
+      "per_old_class_decision_counts": {
+        "14-10": {
+          "unknown_reject": 58
+        },
+        "14-7": {
+          "unknown_reject": 60
+        },
+        "20-15": {
+          "accept": 11,
+          "unknown_reject": 45
+        },
+        "20-19": {
+          "unknown_reject": 60
+        },
+        "6-15": {
+          "request_more": 1,
+          "unknown_reject": 59
+        },
+        "8-20": {
+          "accept": 35,
+          "unknown_reject": 20
+        }
+      },
+      "per_seen_new_class_acc": {
+        "1-10": 0.0,
+        "1-12": 0.0,
+        "1-14": 0.0,
+        "1-16": 0.0,
+        "1-18": 0.0,
+        "1-8": 0.0,
+        "10-11": 0.0,
+        "10-4": 0.0
+      },
+      "per_seen_new_class_decision_counts": {
+        "1-10": {
+          "unknown_reject": 40
+        },
+        "1-12": {
+          "accept": 1,
+          "unknown_reject": 41
+        },
+        "1-14": {
+          "unknown_reject": 42
+        },
+        "1-16": {
+          "accept": 1,
+          "unknown_reject": 48
+        },
+        "1-18": {
+          "unknown_reject": 52
+        },
+        "1-8": {
+          "accept": 1,
+          "unknown_reject": 54
+        },
+        "10-11": {
+          "unknown_reject": 53
+        },
+        "10-4": {
+          "accept": 3,
+          "unknown_reject": 56
+        }
+      },
+      "profile": "pcet_unknown_strict",
+      "seen_new_acc": 0.0,
+      "unknown_FAR": 0.02072538860103627,
+      "unknown_false_accept_labels": {
+        "20-15": 4,
+        "8-20": 4
+      },
+      "unknown_reject": 0.9766839378238342
+    },
+    {
+      "bytes_per_event": 219.2014196983141,
+      "collab_count": 2,
+      "file": "pcet_k5_stable_first.json",
+      "joint_floor": 0.0,
+      "known_accepted_accuracy": 1.0,
+      "known_avg": 0.02005730659025788,
+      "known_coverage": 0.018893387314439947,
+      "known_floor": 0.0,
+      "min_old": 0.0,
+      "min_seen": 0.0,
+      "old_acc": 0.04011461318051576,
+      "open_set_confusion": {
+        "old->defer": 1,
+        "old->old": 14,
+        "old->unknown_reject": 334,
+        "seen_new->defer": 2,
+        "seen_new->request_more": 3,
+        "seen_new->unknown_reject": 387,
+        "unknown->defer": 6,
+        "unknown->request_more": 2,
+        "unknown->unknown_reject": 378
+      },
+      "per_old_class_acc": {
+        "14-10": 0.0,
+        "14-7": 0.0,
+        "20-15": 0.0,
+        "20-19": 0.0,
+        "6-15": 0.0,
+        "8-20": 0.2545454545454545
+      },
+      "per_old_class_decision_counts": {
+        "14-10": {
+          "unknown_reject": 58
+        },
+        "14-7": {
+          "unknown_reject": 60
+        },
+        "20-15": {
+          "unknown_reject": 56
+        },
+        "20-19": {
+          "unknown_reject": 60
+        },
+        "6-15": {
+          "unknown_reject": 60
+        },
+        "8-20": {
+          "accept": 14,
+          "defer": 1,
+          "unknown_reject": 40
+        }
+      },
+      "per_seen_new_class_acc": {
+        "1-10": 0.0,
+        "1-12": 0.0,
+        "1-14": 0.0,
+        "1-16": 0.0,
+        "1-18": 0.0,
+        "1-8": 0.0,
+        "10-11": 0.0,
+        "10-4": 0.0
+      },
+      "per_seen_new_class_decision_counts": {
+        "1-10": {
+          "unknown_reject": 40
+        },
+        "1-12": {
+          "unknown_reject": 42
+        },
+        "1-14": {
+          "unknown_reject": 42
+        },
+        "1-16": {
+          "defer": 1,
+          "unknown_reject": 48
+        },
+        "1-18": {
+          "unknown_reject": 52
+        },
+        "1-8": {
+          "request_more": 1,
+          "unknown_reject": 54
+        },
+        "10-11": {
+          "unknown_reject": 53
+        },
+        "10-4": {
+          "defer": 1,
+          "request_more": 2,
+          "unknown_reject": 56
+        }
+      },
+      "profile": "pcet_unknown_strict",
+      "seen_new_acc": 0.0,
+      "unknown_FAR": 0.0,
+      "unknown_false_accept_labels": {},
+      "unknown_reject": 0.9792746113989638
+    },
+    {
+      "bytes_per_event": 247.59538598047914,
+      "collab_count": 3,
+      "file": "pcet_k5_stable_first.json",
+      "joint_floor": 0.0,
+      "known_accepted_accuracy": 1.0,
+      "known_avg": 0.012893982808022923,
+      "known_coverage": 0.012145748987854251,
+      "known_floor": 0.0,
+      "min_old": 0.0,
+      "min_seen": 0.0,
+      "old_acc": 0.025787965616045846,
+      "open_set_confusion": {
+        "old->defer": 2,
+        "old->old": 9,
+        "old->unknown_reject": 338,
+        "seen_new->defer": 2,
+        "seen_new->unknown_reject": 390,
+        "unknown->defer": 6,
+        "unknown->unknown_reject": 380
+      },
+      "per_old_class_acc": {
+        "14-10": 0.0,
+        "14-7": 0.0,
+        "20-15": 0.0,
+        "20-19": 0.0,
+        "6-15": 0.0,
+        "8-20": 0.16363636363636364
+      },
+      "per_old_class_decision_counts": {
+        "14-10": {
+          "unknown_reject": 58
+        },
+        "14-7": {
+          "unknown_reject": 60
+        },
+        "20-15": {
+          "unknown_reject": 56
+        },
+        "20-19": {
+          "unknown_reject": 60
+        },
+        "6-15": {
+          "unknown_reject": 60
+        },
+        "8-20": {
+          "accept": 9,
+          "defer": 2,
+          "unknown_reject": 44
+        }
+      },
+      "per_seen_new_class_acc": {
+        "1-10": 0.0,
+        "1-12": 0.0,
+        "1-14": 0.0,
+        "1-16": 0.0,
+        "1-18": 0.0,
+        "1-8": 0.0,
+        "10-11": 0.0,
+        "10-4": 0.0
+      },
+      "per_seen_new_class_decision_counts": {
+        "1-10": {
+          "unknown_reject": 40
+        },
+        "1-12": {
+          "unknown_reject": 42
+        },
+        "1-14": {
+          "unknown_reject": 42
+        },
+        "1-16": {
+          "defer": 1,
+          "unknown_reject": 48
+        },
+        "1-18": {
+          "unknown_reject": 52
+        },
+        "1-8": {
+          "unknown_reject": 55
+        },
+        "10-11": {
+          "unknown_reject": 53
+        },
+        "10-4": {
+          "defer": 1,
+          "unknown_reject": 58
+        }
+      },
+      "profile": "pcet_unknown_strict",
+      "seen_new_acc": 0.0,
+      "unknown_FAR": 0.0,
+      "unknown_false_accept_labels": {},
+      "unknown_reject": 0.9844559585492227
+    },
+    {
+      "bytes_per_event": 249.86690328305235,
+      "collab_count": 4,
+      "file": "pcet_k5_stable_first.json",
+      "joint_floor": 0.0,
+      "known_accepted_accuracy": 1.0,
+      "known_avg": 0.012893982808022923,
+      "known_coverage": 0.012145748987854251,
+      "known_floor": 0.0,
+      "min_old": 0.0,
+      "min_seen": 0.0,
+      "old_acc": 0.025787965616045846,
+      "open_set_confusion": {
+        "old->defer": 2,
+        "old->old": 9,
+        "old->unknown_reject": 338,
+        "seen_new->defer": 2,
+        "seen_new->unknown_reject": 390,
+        "unknown->defer": 6,
+        "unknown->unknown_reject": 380
+      },
+      "per_old_class_acc": {
+        "14-10": 0.0,
+        "14-7": 0.0,
+        "20-15": 0.0,
+        "20-19": 0.0,
+        "6-15": 0.0,
+        "8-20": 0.16363636363636364
+      },
+      "per_old_class_decision_counts": {
+        "14-10": {
+          "unknown_reject": 58
+        },
+        "14-7": {
+          "unknown_reject": 60
+        },
+        "20-15": {
+          "unknown_reject": 56
+        },
+        "20-19": {
+          "unknown_reject": 60
+        },
+        "6-15": {
+          "unknown_reject": 60
+        },
+        "8-20": {
+          "accept": 9,
+          "defer": 2,
+          "unknown_reject": 44
+        }
+      },
+      "per_seen_new_class_acc": {
+        "1-10": 0.0,
+        "1-12": 0.0,
+        "1-14": 0.0,
+        "1-16": 0.0,
+        "1-18": 0.0,
+        "1-8": 0.0,
+        "10-11": 0.0,
+        "10-4": 0.0
+      },
+      "per_seen_new_class_decision_counts": {
+        "1-10": {
+          "unknown_reject": 40
+        },
+        "1-12": {
+          "unknown_reject": 42
+        },
+        "1-14": {
+          "unknown_reject": 42
+        },
+        "1-16": {
+          "defer": 1,
+          "unknown_reject": 48
+        },
+        "1-18": {
+          "unknown_reject": 52
+        },
+        "1-8": {
+          "unknown_reject": 55
+        },
+        "10-11": {
+          "unknown_reject": 53
+        },
+        "10-4": {
+          "defer": 1,
+          "unknown_reject": 58
+        }
+      },
+      "profile": "pcet_unknown_strict",
+      "seen_new_acc": 0.0,
+      "unknown_FAR": 0.0,
+      "unknown_false_accept_labels": {},
+      "unknown_reject": 0.9844559585492227
+    },
+    {
+      "bytes_per_event": 249.86690328305235,
+      "collab_count": 5,
+      "file": "pcet_k5_stable_first.json",
+      "joint_floor": 0.0,
+      "known_accepted_accuracy": 1.0,
+      "known_avg": 0.012893982808022923,
+      "known_coverage": 0.012145748987854251,
+      "known_floor": 0.0,
+      "min_old": 0.0,
+      "min_seen": 0.0,
+      "old_acc": 0.025787965616045846,
+      "open_set_confusion": {
+        "old->defer": 2,
+        "old->old": 9,
+        "old->unknown_reject": 338,
+        "seen_new->defer": 2,
+        "seen_new->unknown_reject": 390,
+        "unknown->defer": 6,
+        "unknown->unknown_reject": 380
+      },
+      "per_old_class_acc": {
+        "14-10": 0.0,
+        "14-7": 0.0,
+        "20-15": 0.0,
+        "20-19": 0.0,
+        "6-15": 0.0,
+        "8-20": 0.16363636363636364
+      },
+      "per_old_class_decision_counts": {
+        "14-10": {
+          "unknown_reject": 58
+        },
+        "14-7": {
+          "unknown_reject": 60
+        },
+        "20-15": {
+          "unknown_reject": 56
+        },
+        "20-19": {
+          "unknown_reject": 60
+        },
+        "6-15": {
+          "unknown_reject": 60
+        },
+        "8-20": {
+          "accept": 9,
+          "defer": 2,
+          "unknown_reject": 44
+        }
+      },
+      "per_seen_new_class_acc": {
+        "1-10": 0.0,
+        "1-12": 0.0,
+        "1-14": 0.0,
+        "1-16": 0.0,
+        "1-18": 0.0,
+        "1-8": 0.0,
+        "10-11": 0.0,
+        "10-4": 0.0
+      },
+      "per_seen_new_class_decision_counts": {
+        "1-10": {
+          "unknown_reject": 40
+        },
+        "1-12": {
+          "unknown_reject": 42
+        },
+        "1-14": {
+          "unknown_reject": 42
+        },
+        "1-16": {
+          "defer": 1,
+          "unknown_reject": 48
+        },
+        "1-18": {
+          "unknown_reject": 52
+        },
+        "1-8": {
+          "unknown_reject": 55
+        },
+        "10-11": {
+          "unknown_reject": 53
+        },
+        "10-4": {
+          "defer": 1,
+          "unknown_reject": 58
+        }
+      },
+      "profile": "pcet_unknown_strict",
+      "seen_new_acc": 0.0,
+      "unknown_FAR": 0.0,
+      "unknown_false_accept_labels": {},
+      "unknown_reject": 0.9844559585492227
+    }
+  ]
+}
