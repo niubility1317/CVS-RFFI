@@ -119,6 +119,14 @@ MAX_ACTIVE_PER_GPU=2 bash code/scripts/launch_phase1_dgleo_joint16_20260706.sh
 |错误扫描|未发现`Traceback`、`RuntimeError`、`CUDA out of memory`、`unrecognized arguments`、`Killed`、`ModuleNotFoundError`、`ImportError`。|
 |SSH清理|每轮SSH/SCP后本地检查均为`NO_SSH_PROCESS`、`NO_N607_OR_BRIDGE_ESTABLISHED_22`。|
 
+## ETA快照
+
+|时间|进度|近8轮平均epoch耗时|线性ETA|保守ETA|
+|---|---|---|---|---|
+|2026-07-06 16:18 CST|16个候选均在运行；最新epoch范围30-34/200，均处于label阶段。|约69-71秒/epoch。|约3.2-3.35小时。|考虑pseudo阶段、最终窗口更密集测试和checkpoint导出，预计约3.8-4.5小时。|
+
+预计完成窗口：2026-07-06 19:35-20:45 CST。该估计基于早期label阶段速度，后续若GPU负载、I/O或最终评估变慢，需要重新刷新。
+
 ## 后续检查
 
 启动后4-5分钟检查每个候选日志是否出现`[CONFIG-LOSS]`、`[CONFIG-SAT]`、`[CONFIG-CONCAT-SAT]`、`[EPOCH-BEGIN]`、`[LOSS-SAT-W]`、`[ZID-FEATURE-SPACE]`或对应loss记录；同时扫描Traceback、RuntimeError、CUDA OOM、NaN、unrecognized arguments和Killed。训练完成后必须导出`phase2_zid_prototypes.pt/json`，再做single-observation LEO的Stage2同row复评。
