@@ -83,7 +83,67 @@
 
 ## 待执行
 
-- 本地非Git目录`E:\type10-7\code`需要创建快照。
-- 变更需要镜像到`E:\type10-7\github_publish\CVS-RFFI-repo`并提交。
-- N607预检通过后用`scp`同步5个文件，远端做语法/dry-run验证，再启动16候选。
-- 启动后4到5分钟检查`[CONFIG-DM-ACCEPT]`、`[CONFIG-CONCAT-SAT]`、`[EPOCH-BEGIN]`、`[EPOCH-END]`、fatal/OOM/NaN和`metrics_epoch.jsonl`写入。
+- 本地非Git目录`E:\type10-7\code`已创建快照。
+- 变更已镜像到`E:\type10-7\github_publish\CVS-RFFI-repo`并提交。
+- N607预检、同步、远端验证和启动已完成。
+- 下一步等训练完成后回填最终结果表、best/final gap、拒识代理指标和Stage2候选边界。
+
+## 版本与同步记录
+
+|项目|记录|
+|---|---|
+|本地代码快照|`E:\type10-7\code\snapshots\phase1_dgleo_directmetric16_20260706`|
+|Git镜像commit|`8f535c3 Add Phase1 direct metric acceptance training`|
+|远端备份|`/home/szu2070436088/2510044040/CV-SincNet/code/snapshots/phase1_dgleo_directmetric16_20260706/remote_before_sync_20260706_211655`|
+|远端root包兼容备份|`.../remote_before_sync_20260706_211655/root_cvsrffi/losses.py`|
+|远端root包兼容镜像|N607当前会优先导入`/home/szu2070436088/2510044040/CV-SincNet/cvsrffi/losses.py`，因此已把已验证的`code/cvsrffi/losses.py`同步到该实际导入路径，hash一致。|
+
+|文件|远端路径|SHA256|
+|---|---|---|
+|`code/cvsrffi/losses.py`|`code/cvsrffi/losses.py`和`cvsrffi/losses.py`|`2e7ebbb8380281e1caec49134110d5e28dc6fa66f08c852c6ef1c3fb801c36aa`|
+|`code/SSDG/train_ssdg.py`|`code/SSDG/train_ssdg.py`|`b11a39f6900b772e13cce0de6be9c55f70bc08a0e7a54905057da1cdf1442518`|
+|`code/scripts/launch_phase1_dgleo_directmetric16_20260706.sh`|`code/scripts/launch_phase1_dgleo_directmetric16_20260706.sh`|`c3454d3384c5cdf523b3ce4c267cf10c10b69f0d268aa1cd274d65ef7e2d16e6`|
+|`code/tests/test_direct_metric_acceptance_loss.py`|`code/tests/test_direct_metric_acceptance_loss.py`|`30c7b14c2f777cf5bf5dde9e4b0fd18d79265b03f3951d9eec6a94c8bf625f96`|
+|`code/tests/test_phase1_dgleo_directmetric16_launcher.py`|`code/tests/test_phase1_dgleo_directmetric16_launcher.py`|`909fbd08332a213b1462081c369269fa0173ad0cf59f01477c9da702a859bffa`|
+
+## 远端验证与启动状态
+
+|检查|结果|
+|---|---|
+|N607预检|通过；直连`N607`、项目root可见、8张RTX3090可见。|
+|远端语法|`py_compile`通过；`bash -n`通过。|
+|远端测试|N607环境无`pytest`模块，未跑pytest；改用本地`ssr-gpu`pytest和远端`--help`/dry-run验证。|
+|远端参数验证|`code/SSDG/train_ssdg.py --help`包含`--lambda_direct_metric_accept`和`--direct_metric_sat_pair_weight`。|
+|launcher dry-run|通过；`DGLEO_DM_P0C_BAL_A`命令含source-only、direct metric、concat_sa full-loss参数。|
+|启动命令|`cd /home/szu2070436088/2510044040/CV-SincNet && MAX_ACTIVE_PER_GPU=2 LAUNCH_SETTLE_SECONDS=12 bash code/scripts/launch_phase1_dgleo_directmetric16_20260706.sh`|
+|启动结果|16/16候选已提交，日志16个，`metrics_epoch.jsonl`16个。|
+|启动健康|8张GPU利用率约91%到98%；`[CONFIG-DM-ACCEPT]`16/16、`[CONFIG-CONCAT-SAT]`16/16、`[EPOCH-BEGIN]`16/16、`[EPOCH-END]`16/16、`[DM-ACCEPT]`16/16；fatal pattern计数0。|
+
+|candidate|GPU|PID|seed|
+|---|---:|---:|---:|
+|`DGLEO_DM_P0A_CORETAIL_A`|0|3685671|707101|
+|`DGLEO_DM_P0A_CORETAIL_B`|0|3686096|707102|
+|`DGLEO_DM_P0B_BRIDGE_A`|1|3686499|707111|
+|`DGLEO_DM_P0B_BRIDGE_B`|1|3686922|707112|
+|`DGLEO_DM_P0D_RADIUS_A`|2|3687359|707121|
+|`DGLEO_DM_P0D_RADIUS_B`|2|3688170|707122|
+|`DGLEO_DM_P1C_SATPAIR_A`|3|3688607|707131|
+|`DGLEO_DM_P1C_SATPAIR_B`|3|3689015|707132|
+|`DGLEO_DM_P0C_BAL_A`|4|3689452|707141|
+|`DGLEO_DM_P0C_BAL_B`|4|3689858|707142|
+|`DGLEO_DM_P1A_LATE_A`|5|3690703|707151|
+|`DGLEO_DM_P1A_LATE_B`|5|3691109|707152|
+|`DGLEO_DM_P1B_FLOOR_A`|6|3691546|707161|
+|`DGLEO_DM_P1B_FLOOR_B`|6|3691953|707162|
+|`DGLEO_DM_P0E_STRONG_A`|7|3692392|707171|
+|`DGLEO_DM_P0E_STRONG_B`|7|3693211|707172|
+
+## 完成后必须检查
+
+|检查项|说明|
+|---|---|
+|训练健康|16/16是否200epoch完成；是否有fatal、OOM、nonfinite grad skip异常集中在P0E强约束组。|
+|泛化主表|同row统计overall、strict UDU、receiver floor、satellite mean/floor、rx11、best-final gap。|
+|拒识代理主表|同时看旧`proxy_unknown_*`和新`dm_accept_*`字段，不能只看direct surrogate。|
+|双目标判定|只有泛化floor不塌且`source_overflow`、`proxy_vaccept`、bridge/low-density/tail/overflow accept、`zid_p95/p99/tail_cvar`共同下降的row，才可进入Stage2真实unknown评估。|
+|声明边界|本轮仍不能声明真实`unknown_FAR`、`FPR95`、Stage2 old/new/unknown成功或部署成功。|
