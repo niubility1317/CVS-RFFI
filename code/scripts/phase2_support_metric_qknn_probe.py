@@ -2045,6 +2045,65 @@ def _support_query_labelprop_scores(
     return out, int(total_edges)
 
 
+def _query_topm_quota_residual_scores(
+    scores: np.ndarray,
+    *,
+    old_query_count: int,
+    class_labels: list[str],
+    new_labels: list[str],
+    topm: int,
+    weight: float,
+    temperature: float,
+    clip: float,
+) -> tuple[np.ndarray, int, int, str]:
+    """Apply a compressed unlabeled-query quota residual correction.
+
+    Role-balanced assignment already assumes a fixed query quota per registered
+    class. This correction uses only batch-local top-M score patterns to decide
+    which classes are underrepresented in high-confidence candidates, then adds
+    row-dependent nudges for those classes when they appear near the top. The
+    persistent state is only one residual scalar per registered new class.
+    """
+    if float(weight) == 0.0 or int(topm) <= 1 or not new_labels:
+        return scores, 0, 0, ""
+    label_to_index = {label: index for index, label in enumerate(class_labels)}
+    new_indices = np.asarray([label_to_index[label] for label in new_labels if label in label_to_index], dtype=int)
+    query_new_rows = np.arange(int(old_query_count), int(scores.shape[0]), dtype=int)
+    if query_new_rows.size == 0 or new_indices.size < 2:
+        return scores, 0, 0, ""
+    local = np.asarray(scores, dtype=np.float64)[query_new_rows][:, new_indices]
+    local_topm = max(2, min(int(topm), int(new_indices.size)))
+    order = np.argsort(local, axis=1)[:, -local_topm:][:, ::-1]
+    top_scores = np.take_along_axis(local, order, axis=1)
+    top_global = new_indices[order]
+    top1_local = order[:, 0]
+    counts = np.bincount(top1_local, minlength=int(new_indices.size)).astype(np.float64)
+    expected = float(query_new_rows.size) / float(new_indices.size)
+    residual = (expected - counts) / max(expected, 1.0)
+    residual = np.clip(residual, -1.0, 1.0)
+    if float(np.max(np.abs(residual))) <= 1e-12:
+        return scores, int(new_indices.size), 0, ""
+
+    temp = max(float(temperature), 1e-6)
+    rank_weight = 1.0 / (1.0 + np.arange(local_topm, dtype=np.float64))
+    closeness = np.exp((top_scores - top_scores[:, :1]) / temp)
+    delta_local = np.zeros_like(local, dtype=np.float64)
+    for rank in range(local_topm):
+        cls_local = order[:, rank]
+        cls_residual = residual[cls_local]
+        delta = float(weight) * cls_residual * rank_weight[rank] * closeness[:, rank]
+        delta = np.clip(delta, -float(clip), float(clip))
+        delta_local[np.arange(local.shape[0]), cls_local] += delta
+
+    adjusted = np.asarray(scores, dtype=np.float64).copy()
+    adjusted[np.ix_(query_new_rows, new_indices)] += delta_local
+    changed = int(np.sum(np.abs(delta_local) > 1e-12))
+    summary_parts = []
+    for label, value in sorted(zip(new_labels, residual.tolist()), key=lambda item: (-abs(float(item[1])), item[0]))[:12]:
+        summary_parts.append(f"{label}:{float(value):+.3f}")
+    return adjusted, int(new_indices.size), changed, ";".join(summary_parts)
+
+
 def _source_old_guard_adjust_scores(
     scores: np.ndarray,
     *,
@@ -3991,6 +4050,10 @@ def _evaluate_metric_qknn(
             "stable_dualview_v31",
             "dualview_support_v32",
             "stable_dualview_v32",
+            "dualview_support_v33",
+            "stable_dualview_v33",
+            "dualview_support_v34",
+            "stable_dualview_v34",
         }:
             primary_loo_scores = _support_loo_base_scores(
                 features=adapted,
@@ -4057,6 +4120,10 @@ def _evaluate_metric_qknn(
                 "stable_dualview_v31",
                 "dualview_support_v32",
                 "stable_dualview_v32",
+                "dualview_support_v33",
+                "stable_dualview_v33",
+                "dualview_support_v34",
+                "stable_dualview_v34",
             }:
                 mean_gate = float(np.clip((aux_support_loo_delta + 0.01) / 0.05, 0.0, 1.0))
                 floor_gate = float(np.clip((aux_support_min_delta + 0.02) / 0.06, 0.0, 1.0))
@@ -4595,6 +4662,10 @@ def _evaluate_metric_qknn(
         "stable_dualview_v31",
         "dualview_support_v32",
         "stable_dualview_v32",
+        "dualview_support_v33",
+        "stable_dualview_v33",
+        "dualview_support_v34",
+        "stable_dualview_v34",
     }:
         if support_loo_scores is None:
             support_loo_scores = _support_loo_base_scores(
@@ -4626,9 +4697,15 @@ def _evaluate_metric_qknn(
         neighborhood_gate_neighbor_count = int(max(2, min(4, round(2.0 + 2.0 * class_load_gate))))
         neighborhood_gate_margin = float(np.clip(0.22 + 0.08 * class_load_gate + 0.10 * low_k_gate, 0.20, 0.42))
         neighborhood_gate_query_weight = float(np.clip(0.018 + 0.034 * class_load_gate, 0.0, 0.055))
-        if policy_norm in {"dualview_support_v32", "stable_dualview_v32"} and low_k_gate >= 0.75:
+        if policy_norm in {"dualview_support_v32", "stable_dualview_v32", "dualview_support_v34", "stable_dualview_v34"} and low_k_gate >= 0.75:
             neighborhood_gate_weight = 0.0
             neighborhood_gate_query_weight = 0.0
+        if policy_norm in {"dualview_support_v33", "stable_dualview_v33"}:
+            neighborhood_gate_weight = float(0.45 * neighborhood_gate_weight)
+            neighborhood_gate_query_weight = float(0.35 * neighborhood_gate_query_weight)
+            neighborhood_gate_top_classes = int(max(2, min(6, round(0.22 * max(float(len(new_labels)), 1.0)))))
+            neighborhood_gate_neighbor_count = int(max(2, min(3, neighborhood_gate_neighbor_count)))
+            neighborhood_gate_margin = float(np.clip(0.18 + 0.04 * class_load_gate + 0.04 * low_k_gate, 0.18, 0.28))
         (
             scores,
             neighborhood_gate_count,
@@ -4768,6 +4845,30 @@ def _evaluate_metric_qknn(
             scope=str(labelprop_scope),
         )
         scores = scores + float(labelprop_weight) * labelprop_scores
+    quota_residual_class_count = 0
+    quota_residual_changed_scores = 0
+    quota_residual_summary = ""
+    if policy_norm in {"dualview_support_v34", "stable_dualview_v34"}:
+        label_counts = [
+            int(np.sum(np.asarray(support_labels, dtype=object).astype(str) == str(label)))
+            for label in old_labels + new_labels
+        ]
+        min_support = float(min(label_counts) if label_counts else 0.0)
+        class_load_gate = _clip01((float(len(new_labels)) - 2.0) / 18.0)
+        low_k_gate = _clip01(1.0 - ((min_support - 5.0) / 15.0))
+        quota_weight = float(np.clip(0.055 * class_load_gate * (0.70 + 0.30 * low_k_gate), 0.0, 0.060))
+        scores, quota_residual_class_count, quota_residual_changed_scores, quota_residual_summary = (
+            _query_topm_quota_residual_scores(
+                scores,
+                old_query_count=old_count,
+                class_labels=old_labels + new_labels,
+                new_labels=new_labels,
+                topm=int(max(3, min(5, round(3.0 + 2.0 * class_load_gate)))),
+                weight=quota_weight,
+                temperature=float(np.clip(0.10 + 0.03 * low_k_gate, 0.10, 0.13)),
+                clip=1.0,
+            )
+        )
     scores, source_proto_anchor_count, stored_source_proto_anchor_scalars = _source_proto_anchor_adjust_scores(
         scores,
         adapted_features=adapted,
@@ -5136,6 +5237,9 @@ def _evaluate_metric_qknn(
         "labelprop_clip": float(labelprop_clip),
         "labelprop_scope": str(labelprop_scope),
         "labelprop_edges": int(labelprop_edges),
+        "quota_residual_class_count": int(quota_residual_class_count),
+        "quota_residual_changed_scores": int(quota_residual_changed_scores),
+        "quota_residual_summary": str(quota_residual_summary),
         "query_graph_weight": float(query_graph_weight),
         "query_graph_k": int(query_graph_k),
         "query_graph_temperature": float(query_graph_temperature),
@@ -5381,6 +5485,10 @@ def _adaptive_qknn_overrides(
         "stable_dualview_v31",
         "dualview_support_v32",
         "stable_dualview_v32",
+        "dualview_support_v33",
+        "stable_dualview_v33",
+        "dualview_support_v34",
+        "stable_dualview_v34",
     }:
         raise ValueError(f"unsupported adaptive_qknn_policy: {policy}")
     use_v2 = name in {"dualview_support_v2", "stable_dualview_v2"}
@@ -5411,7 +5519,9 @@ def _adaptive_qknn_overrides(
     use_v28 = name in {"dualview_support_v28", "stable_dualview_v28"}
     use_v29 = name in {"dualview_support_v29", "stable_dualview_v29"}
     use_v30 = name in {"dualview_support_v30", "stable_dualview_v30"}
-    use_v32 = name in {"dualview_support_v32", "stable_dualview_v32"}
+    use_v33 = name in {"dualview_support_v33", "stable_dualview_v33"}
+    use_v34 = name in {"dualview_support_v34", "stable_dualview_v34"}
+    use_v32 = name in {"dualview_support_v32", "stable_dualview_v32"} or use_v33 or use_v34
     use_v31 = name in {"dualview_support_v31", "stable_dualview_v31"} or use_v32
     use_v9 = use_v9 or use_v27 or use_v28 or use_v29 or use_v30 or use_v31
 
@@ -7239,6 +7349,9 @@ def main() -> None:
         "labelprop_clip",
         "labelprop_scope",
         "labelprop_edges",
+        "quota_residual_class_count",
+        "quota_residual_changed_scores",
+        "quota_residual_summary",
         "query_graph_weight",
         "query_graph_k",
         "query_graph_temperature",
