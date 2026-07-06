@@ -70,7 +70,7 @@
 |远端同步|已同步启动器、测试和`train_ssdg.py`到N607；同步后SHA256分别为`d55e3158678b2261ea77620bf6785be7a7422046aca8032aef9c60369e0d0878`、`7bd07e38fdcdf47361db47c3615440aa2a3378e6f1fcf6b9febc40f7edcdd98f`、`27fbe66d971d232b0f3be585259cd8fc8b453baee8bc2108f01f40db5f190f55`。启动器使用`nohup "${CMD[@]}" > "${log_path}" 2>&1 &`防止SSH退出影响训练进程。|
 |远端备份|远端原`code/SSDG/train_ssdg.py`已备份到`code/snapshots/phase1_dgleo_joint16_20260706/remote_before_sync_20260706_154031/SSDG/train_ssdg.py`，原SHA256为`5e7950dcf0cdb222ef92b3303c4980be83a6e66fb9305a100148343b97639f9c`。|
 |远端验证|通过N607端`py_compile`、`bash -n`和单候选dry-run；dry-run显示`base=EPOC_CONCAT_SAT`、`concat_sat_mode=full_2b_core_domain`、`concat_sat_full_loss=1`。|
-|远端启动|待使用`MAX_ACTIVE_PER_GPU=2`启动16候选。|
+|远端启动|已使用`MAX_ACTIVE_PER_GPU=2 LAUNCH_SETTLE_SECONDS=12`启动16候选；每张GPU两个训练进程。|
 
 ## 同步映射
 
@@ -86,6 +86,38 @@
 cd /home/szu2070436088/2510044040/CV-SincNet
 MAX_ACTIVE_PER_GPU=2 bash code/scripts/launch_phase1_dgleo_joint16_20260706.sh
 ```
+
+## 启动结果
+
+|候选|GPU|PID|日志|
+|---|---:|---:|---|
+|`DGLEO_J1_BASE_A`|0|3522942|`logs/phase1_dgleo_joint16_20260706/DGLEO_J1_BASE_A.out`|
+|`DGLEO_J1_BASE_B`|0|3523348|`logs/phase1_dgleo_joint16_20260706/DGLEO_J1_BASE_B.out`|
+|`DGLEO_J2_DOMAIN_A`|1|3523770|`logs/phase1_dgleo_joint16_20260706/DGLEO_J2_DOMAIN_A.out`|
+|`DGLEO_J2_DOMAIN_B`|1|3524176|`logs/phase1_dgleo_joint16_20260706/DGLEO_J2_DOMAIN_B.out`|
+|`DGLEO_J7_KD_A`|2|3524614|`logs/phase1_dgleo_joint16_20260706/DGLEO_J7_KD_A.out`|
+|`DGLEO_J7_KD_B`|2|3525431|`logs/phase1_dgleo_joint16_20260706/DGLEO_J7_KD_B.out`|
+|`DGLEO_J3_BRIDGE_A`|3|3525872|`logs/phase1_dgleo_joint16_20260706/DGLEO_J3_BRIDGE_A.out`|
+|`DGLEO_J3_BRIDGE_B`|3|3526278|`logs/phase1_dgleo_joint16_20260706/DGLEO_J3_BRIDGE_B.out`|
+|`DGLEO_J4_PROXY_A`|4|3526715|`logs/phase1_dgleo_joint16_20260706/DGLEO_J4_PROXY_A.out`|
+|`DGLEO_J4_PROXY_B`|4|3527121|`logs/phase1_dgleo_joint16_20260706/DGLEO_J4_PROXY_B.out`|
+|`DGLEO_J5_RADIUS_A`|5|3527966|`logs/phase1_dgleo_joint16_20260706/DGLEO_J5_RADIUS_A.out`|
+|`DGLEO_J5_RADIUS_B`|5|3528374|`logs/phase1_dgleo_joint16_20260706/DGLEO_J5_RADIUS_B.out`|
+|`DGLEO_J10_BALANCED_A`|6|3528811|`logs/phase1_dgleo_joint16_20260706/DGLEO_J10_BALANCED_A.out`|
+|`DGLEO_J10_BALANCED_B`|6|3529217|`logs/phase1_dgleo_joint16_20260706/DGLEO_J10_BALANCED_B.out`|
+|`DGLEO_J11_STRONG_A`|7|3529655|`logs/phase1_dgleo_joint16_20260706/DGLEO_J11_STRONG_A.out`|
+|`DGLEO_J11_STRONG_B`|7|3530476|`logs/phase1_dgleo_joint16_20260706/DGLEO_J11_STRONG_B.out`|
+
+## 启动后健康检查
+
+|检查项|结果|
+|---|---|
+|日志数量|16个`*.out`。|
+|进程/GPU|`nvidia-smi pmon`显示0-7号GPU各2个Python训练进程。|
+|EPOC concat接入|16个日志均出现`[CONFIG-CONCAT-SAT]`；16份`metrics_epoch.jsonl`均出现`concat_sat_expanded`字段。|
+|训练推进|16个日志均出现`[EPOCH-BEGIN]`和`[EPOCH-END]`。|
+|错误扫描|未发现`Traceback`、`RuntimeError`、`CUDA out of memory`、`unrecognized arguments`、`Killed`、`ModuleNotFoundError`、`ImportError`。|
+|SSH清理|每轮SSH/SCP后本地检查均为`NO_SSH_PROCESS`、`NO_N607_OR_BRIDGE_ESTABLISHED_22`。|
 
 ## 后续检查
 
