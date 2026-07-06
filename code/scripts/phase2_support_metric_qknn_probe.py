@@ -3033,16 +3033,23 @@ def _metadata_domain_values(
     scenarios: np.ndarray,
     rx_ids: np.ndarray,
     channel_views: np.ndarray,
+    day_ids: np.ndarray,
 ) -> np.ndarray:
     mode = str(key).strip().lower()
     if mode in {"", "none"}:
         return np.asarray([""] * int(scenarios.size), dtype=object)
     if mode == "scenario":
         return np.asarray(scenarios, dtype=object).astype(str)
+    if mode == "day":
+        return np.asarray(day_ids, dtype=object).astype(str)
     if mode == "rx":
         return np.asarray(rx_ids, dtype=object).astype(str)
     if mode == "channel":
         return np.asarray(channel_views, dtype=object).astype(str)
+    if mode == "day_scenario":
+        day = np.asarray(day_ids, dtype=object).astype(str)
+        sc = np.asarray(scenarios, dtype=object).astype(str)
+        return np.asarray([f"{left}|{right}" for left, right in zip(day.tolist(), sc.tolist())], dtype=object)
     if mode == "rx_scenario":
         rx = np.asarray(rx_ids, dtype=object).astype(str)
         sc = np.asarray(scenarios, dtype=object).astype(str)
@@ -5099,6 +5106,7 @@ def main() -> None:
     logits = np.asarray(data["tx_logits"], dtype=np.float64)
     scenarios = np.asarray(data["sat_scenarios"], dtype=object).astype(str)
     rx_ids = np.asarray(data["rx_ids"], dtype=object).astype(str) if "rx_ids" in data.files else np.asarray([""] * int(tx_ids.size), dtype=object)
+    day_ids = np.asarray(data["day_ids"], dtype=object).astype(str) if "day_ids" in data.files else np.asarray([""] * int(tx_ids.size), dtype=object)
     channel_views = (
         np.asarray(data["channel_views"], dtype=object).astype(str)
         if "channel_views" in data.files
@@ -5825,6 +5833,7 @@ def main() -> None:
                             scenarios=scenarios,
                             rx_ids=rx_ids,
                             channel_views=channel_views,
+                            day_ids=day_ids,
                         ),
                         old_splits=old_splits,
                         new_splits=new_splits,
