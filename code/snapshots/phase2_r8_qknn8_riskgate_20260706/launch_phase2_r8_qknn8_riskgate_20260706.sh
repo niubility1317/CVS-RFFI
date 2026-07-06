@@ -16,7 +16,7 @@ TARGET_OLD_TX_IDS="${TARGET_OLD_TX_IDS:-0,1,2,3,4,5}"
 TARGET_RECEIVERS="${TARGET_RECEIVERS:-20-1,3-19,7-14,7-7,8-8}"
 TARGET_NEW_TX_IDS="${TARGET_NEW_TX_IDS:-1-10,1-12,1-14,1-16,1-18,1-8,10-11,10-4}"
 UNKNOWN_TX_IDS="${UNKNOWN_TX_IDS:-10-7,11-1,11-10,11-19,11-4,11-7,12-19,12-20}"
-PROXY_UNKNOWN_TX_IDS="${PROXY_UNKNOWN_TX_IDS:-12-7,13-14,13-19,13-3,13-7,14-11,14-12,14-13}"
+PROXY_UNKNOWN_TX_IDS="${PROXY_UNKNOWN_TX_IDS:-}"
 
 K_SHOT="${K_SHOT:-8}"
 QUERY_PER_CLASS="${QUERY_PER_CLASS:-20}"
@@ -65,6 +65,7 @@ echo "[R8-QKNN8-RISKGATE] qknn_k=${QKNN_K} k_shot=${K_SHOT} query_per_class=${QU
 echo "[R8-QKNN8-RISKGATE] fusion_policy=old_protected_unknown_confirm_cvs unknown_gate_mode=support_envelope_full"
 echo "[R8-QKNN8-RISKGATE] risk_components=score,radius,margin,mahalanobis,evt,oldness,virtual_unknown,class_negative,class_shell"
 echo "[R8-QKNN8-RISKGATE] protocol=Stage2-C unknown_query_eval_only=true ground_training_unknown_seen=false"
+echo "[R8-QKNN8-RISKGATE] proxy_unknown_real_tx_calibration=$([[ -n "${PROXY_UNKNOWN_TX_IDS}" ]] && echo 1 || echo 0)"
 echo "[R8-QKNN8-RISKGATE] stage2_success_claim=0 deployment_success_claim=0"
 
 launch_case() {
@@ -77,6 +78,16 @@ launch_case() {
   output_json="${out_dir}/qknn8_riskgate.json"
   evidence_csv="${out_dir}/qknn8_riskgate_evidence.csv"
   log_path="${LOG_ROOT}/${case_id}.out"
+
+  local proxy_unknown_export_args=()
+  if [[ -n "${PROXY_UNKNOWN_TX_IDS}" ]]; then
+    proxy_unknown_export_args=(
+      --proxy_unknown_tx_ids "${PROXY_UNKNOWN_TX_IDS}"
+      --proxy_unknown_rxs "${SOURCE_RXS}"
+      --proxy_unknown_channel_view satellite
+      --proxy_unknown_sat_scenarios leo_clear_weak,leo_low_elev_weak,leo_rain_weak
+    )
+  fi
 
   local export_cmd=(
     env PYTHONPATH="${ROOT}/code:${ROOT}:${PYTHONPATH:-}" CUDA_VISIBLE_DEVICES="${gpu}"
@@ -97,10 +108,7 @@ launch_case() {
     --target_new_channel_view satellite
     --target_new_sat_scenarios leo_clear_weak,leo_low_elev_weak,leo_rain_weak
     --unknown_tx_ids "${UNKNOWN_TX_IDS}"
-    --proxy_unknown_tx_ids "${PROXY_UNKNOWN_TX_IDS}"
-    --proxy_unknown_rxs "${SOURCE_RXS}"
-    --proxy_unknown_channel_view satellite
-    --proxy_unknown_sat_scenarios leo_clear_weak,leo_low_elev_weak,leo_rain_weak
+    "${proxy_unknown_export_args[@]}"
     --star_ground_channel_impl simplified_leo_residual
     --wisig_equalized 1
     --wisig_domain rx_day

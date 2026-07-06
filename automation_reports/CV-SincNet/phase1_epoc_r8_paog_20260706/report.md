@@ -153,3 +153,10 @@ N607只读预检PASS。07:46 CST短SSH监控显示两个R8 PAOG候选仍在运�
 - 但proxy激活后`proxy_auc<0.5`、`virtual_accept≈0.81`、`soft_unknown_mixup_virtual_accept≈1.0`，说明当前R8外壳约束没有把虚拟/代理unknown推出旧类邻域。
 - 两个候选在proxy激活后均记录`train_skipped_nonfinite_grad=1.0`，数值稳定性风险高；若后续持续，则R8很可能不会成为有效Stage2-C候选。
 - 后续仍应等prototype导出后做qknn8同row复评；同时应准备更稳的下一路线：降低proxy hard shell对主干梯度的直接作用，改为冻结教师特征上的Mahalanobis/energy reject head或只训练轻量边界头，避免地面训练接触真实未知类。
+## 2026-07-06 08:09 CST current-best Stage2-C riskgate diagnostic
+
+在R8训练仍进行中时，按用户要求利用低占用GPU2/3并行启动`phase2_r8_qknn8_riskgate_20260706`，使用当前`best_joint_safe_ssdg.pth`做Stage2-C qknn8协同风险门控诊断。该诊断默认关闭真实`proxy_unknown` TX校准：`proxy_unknown_real_tx_calibration=0`，真实`Y_unknown`只作query评估，阈值口径为`support_virtual_unknown`。
+
+结果为负证据，不是部署成功。两条case均`verdict_scope=NON_DEPLOYMENT_DIAGNOSTIC`，`target_pass_count=0`，`stage2_success_claim=false`，`deployment_success_claim=false`。最佳已知性能来自SHELL的M=3..5：`old_acc=31.16%`、`min_old=1.72%`、`seen_new_acc`最高`10.03%`、`min_seen=0%`、`unknown_reject`约`85.83%-86.35%`。最高unknown拒识来自M=1：RADIUS`95.30%`、SHELL`95.01%`，但对应旧类约`16.62%-17.00%`、seen-new为`0%`。资源代理预算未违规，`latency_p95_ms≈0.30`、`evidence_bytes_per_receiver_event=56`，但缺少真实链路资源说明文件，不能写成真实星间链路验证。
+
+结论：current-best风险门控能提高unknown拒识，但主要通过低覆盖/误拒旧类和新类换取，仍未满足OLD80_FIRST，更未接近最终目标。R8训练需继续到最终checkpoint/prototype后再复评；若最终仍旧类或seen-new显著不足，应停止继续调协同阈值，转向更底层的source-only特征分离或轻量reject head。
