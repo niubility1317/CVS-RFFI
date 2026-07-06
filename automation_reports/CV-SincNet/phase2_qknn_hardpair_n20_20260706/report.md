@@ -202,6 +202,39 @@ Interpretation:
 
 Current goal status: active, not achieved.
 
+## 2026-07-06 V54低K参数化优化
+
+本节记录`stable_dualview_v54`在Git承载面`E:\type10-7\github_publish\CVS-RFFI-repo`中的代码化结果。`E:\type10-7`根目录不是Git仓库；实际探针脚本位于本Git承载面`code/scripts/phase2_support_metric_qknn_probe.py`。
+
+协议边界不变：K5/K10的target-old与target-new support/query均来自目标接收机域，目标域样本为LEO叠加后的星地信道视图；未把query混淆真值写入部署策略。
+
+| probe | K | 设置 | old | min_old | seen_new | min_new | 结论 |
+| --- | ---: | --- | ---: | ---: | ---: | ---: | --- |
+| `k5_missed_policy_probe_20260706` | 5 | `stable_dualview_v37/v38/v39/v45-v48` | 91.90% | 80.00% | 80.00%-83.07% | 70.00%-71.43% | 已有neighbor contrast类策略未超过V36。 |
+| `k5_v36_rescue_neighbor_probe_20260706` | 5 | V36参数复刻+rescue proto邻居 | 91.90% | 80.00% | 82.57%-83.00% | 70.00%-71.43% | 可识别`2-13->1-2`，但不能抬升共同地板。 |
+| `k5_v36_bias_probe_20260706` | 5 | V36参数复刻+support bias | 91.90% | 80.00% | 83.21% | 71.43% | bias不改变最终地板。 |
+| `k5_v36_baseparam_probe_20260706` | 5 | V36参数复刻，扫`topm/proto_mix/aux_weight` | 93.10% | 81.43% | 83.93% | 71.43% | 找到可部署均值和旧类域适应收益：`topm=2,proto_mix=0.45,aux_weight=0.26`。 |
+
+代码变更：
+
+| file | change |
+| --- | --- |
+| `code/scripts/phase2_support_metric_qknn_probe.py` | 新增`stable_dualview_v54`策略入口。K<10保持V36低K注册组件，并覆盖`topm=2`、`proto_mix=0.45`、有辅视图时`aux_score_weight=0.26`；K>=10仍映射为`stable_dualview_v49`。 |
+| `code/tests/test_phase2_support_metric_qknn_v54_policy.py` | 覆盖V54低K参数与高K映射V49。 |
+| `code/scripts/launch_phase2_qknn_fftlogmag_v54_20260706.sh` | 新增V54 launcher，输出到`artifacts/v54_fftlogmag_20260706`，请求`--adaptive_qknn_policy_grid stable_dualview_v54`。 |
+
+本地验证：
+
+| command/artifact | result |
+| --- | --- |
+| `conda run -n ssr-gpu python -m py_compile code/scripts/phase2_support_metric_qknn_probe.py code/tests/test_phase2_support_metric_qknn_v54_policy.py` | PASS |
+| `conda run -n ssr-gpu python code/tests/test_phase2_support_metric_qknn_v54_policy.py` | PASS，1 test |
+| `bash -n code/scripts/launch_phase2_qknn_fftlogmag_v54_20260706.sh` | PASS |
+| `local_v54_policy_verify_20260706/k5_v54_policy_verify.json` | `old=93.10%`,`min_old=81.43%`,`seen_new=83.93%`,`min_new=71.43%`。 |
+| `local_v54_policy_verify_20260706/k10_v54_policy_verify.json`与`k10_v53_current_compare.json` | 当前代码同一split下完全一致；V54高K正确映射V49。 |
+
+边界：V54相对本节V36/K5对照提升old +1.19pp、min_old +1.43pp、seen_new +0.71pp；但K5最低新类仍为71.43%，未达到75%地板，不能声称解决“新类增多下最低类过低”问题。当前目标仍active，未完成。
+
 ## Adaptive v23 Support-Gated Aux Safety
 
 Objective: continue optimizing qKNN without expanding the K grid. The only evaluated anchors remain `K=5` and `K=10`, using the maximum query split from the 80-sample-per-class feature file. This run tests whether an adaptive support-only auxiliary-view reliability gate can improve stability when the number of enrolled new classes increases.
