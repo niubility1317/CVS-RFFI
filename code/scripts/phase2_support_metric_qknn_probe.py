@@ -4306,10 +4306,18 @@ def _evaluate_metric_qknn(
         (int(np.sum(support_label_array == str(label))) for label in list(old_labels) + list(new_labels)),
         default=0,
     )
-    enable_scenario_class_fallback = str(adaptive_qknn_policy).strip().lower() in {
+    fallback_policy = str(adaptive_qknn_policy).strip().lower()
+    enable_scenario_class_fallback = fallback_policy in {
         "dualview_support_v45",
         "stable_dualview_v45",
+        "dualview_support_v47",
+        "stable_dualview_v47",
     } and int(support_min_k) >= 10
+    scenario_class_fallback_labels = (
+        {str(label) for label in old_labels}
+        if fallback_policy in {"dualview_support_v47", "stable_dualview_v47"} and bool(enable_scenario_class_fallback)
+        else None
+    )
 
     transform = metric._fit_transform(
         features[support_indices],
@@ -4360,6 +4368,7 @@ def _evaluate_metric_qknn(
             mutual_only=bool(mutual_only),
             scenario_aware=bool(scenario_aware),
             scenario_class_fallback=bool(enable_scenario_class_fallback),
+            scenario_class_fallback_labels=scenario_class_fallback_labels,
         )
     effective_aux_score_weight = float(aux_score_weight)
     aux_support_gate_factor = 1.0
@@ -4420,6 +4429,7 @@ def _evaluate_metric_qknn(
                 mutual_only=bool(mutual_only),
                 scenario_aware=bool(scenario_aware),
                 scenario_class_fallback=bool(enable_scenario_class_fallback),
+                scenario_class_fallback_labels=scenario_class_fallback_labels,
             )
         policy_name = str(adaptive_qknn_policy).strip().lower()
         if policy_name in {
@@ -4453,6 +4463,10 @@ def _evaluate_metric_qknn(
             "stable_dualview_v44",
             "dualview_support_v45",
             "stable_dualview_v45",
+            "dualview_support_v46",
+            "stable_dualview_v46",
+            "dualview_support_v47",
+            "stable_dualview_v47",
         }:
             primary_loo_scores = _support_loo_base_scores(
                 features=adapted,
@@ -4531,6 +4545,10 @@ def _evaluate_metric_qknn(
                 "stable_dualview_v44",
                 "dualview_support_v45",
                 "stable_dualview_v45",
+                "dualview_support_v46",
+                "stable_dualview_v46",
+                "dualview_support_v47",
+                "stable_dualview_v47",
             }:
                 mean_gate = float(np.clip((aux_support_loo_delta + 0.01) / 0.05, 0.0, 1.0))
                 floor_gate = float(np.clip((aux_support_min_delta + 0.02) / 0.06, 0.0, 1.0))
@@ -4810,6 +4828,10 @@ def _evaluate_metric_qknn(
         "stable_dualview_v44",
         "dualview_support_v45",
         "stable_dualview_v45",
+        "dualview_support_v46",
+        "stable_dualview_v46",
+        "dualview_support_v47",
+        "stable_dualview_v47",
     }:
         transport_policy = str(adaptive_qknn_policy).strip().lower()
         label_counts = [
@@ -4868,6 +4890,10 @@ def _evaluate_metric_qknn(
                 "stable_dualview_v44",
                 "dualview_support_v45",
                 "stable_dualview_v45",
+                "dualview_support_v46",
+                "stable_dualview_v46",
+                "dualview_support_v47",
+                "stable_dualview_v47",
             }
         ):
             source_target_transport_gate_mode = "support_loo_class_gate"
@@ -5384,6 +5410,10 @@ def _evaluate_metric_qknn(
         "stable_dualview_v44",
         "dualview_support_v45",
         "stable_dualview_v45",
+        "dualview_support_v46",
+        "stable_dualview_v46",
+        "dualview_support_v47",
+        "stable_dualview_v47",
     }:
         if support_loo_scores is None:
             support_loo_scores = _support_loo_base_scores(
@@ -5458,6 +5488,10 @@ def _evaluate_metric_qknn(
                 "stable_dualview_v44",
                 "dualview_support_v45",
                 "stable_dualview_v45",
+                "dualview_support_v46",
+                "stable_dualview_v46",
+                "dualview_support_v47",
+                "stable_dualview_v47",
             }
             else 0.0,
         )
@@ -6258,6 +6292,10 @@ def _adaptive_qknn_overrides(
         "stable_dualview_v44",
         "dualview_support_v45",
         "stable_dualview_v45",
+        "dualview_support_v46",
+        "stable_dualview_v46",
+        "dualview_support_v47",
+        "stable_dualview_v47",
     }:
         raise ValueError(f"unsupported adaptive_qknn_policy: {policy}")
     use_v2 = name in {"dualview_support_v2", "stable_dualview_v2"}
@@ -6293,7 +6331,9 @@ def _adaptive_qknn_overrides(
     use_v35 = name in {"dualview_support_v35", "stable_dualview_v35"}
     use_v43 = name in {"dualview_support_v43", "stable_dualview_v43"}
     use_v45 = name in {"dualview_support_v45", "stable_dualview_v45"}
-    use_v44 = name in {"dualview_support_v44", "stable_dualview_v44"} or use_v45
+    use_v46 = name in {"dualview_support_v46", "stable_dualview_v46"}
+    use_v47 = name in {"dualview_support_v47", "stable_dualview_v47"}
+    use_v44 = name in {"dualview_support_v44", "stable_dualview_v44"} or use_v45 or use_v46 or use_v47
     use_v42 = name in {"dualview_support_v42", "stable_dualview_v42"} or use_v43 or use_v44
     use_v40 = name in {"dualview_support_v40", "stable_dualview_v40"} or use_v42
     use_v39 = name in {"dualview_support_v39", "stable_dualview_v39"} or use_v40
@@ -6840,6 +6880,25 @@ def _adaptive_qknn_overrides(
         )
     if use_v45:
         overrides["scenario_class_fallback"] = bool(k_reliability >= 0.25)
+    if use_v46:
+        overrides["scenario_class_fallback"] = False
+        if k_reliability >= 0.25:
+            overrides.update(
+                {
+                    "support_loo_pair_rescue_top_pairs": int(max(10, min(12, round(0.50 * max(new_count, 1.0))))),
+                    "support_loo_pair_rescue_proto_neighbors": 0,
+                    "support_loo_pair_rescue_proto_min_sim": 1.1,
+                }
+            )
+    if use_v47:
+        overrides["scenario_class_fallback"] = "old_only" if k_reliability >= 0.25 else False
+        if k_reliability >= 0.25:
+            overrides.update(
+                {
+                    "support_loo_pair_rescue_proto_neighbors": 0,
+                    "support_loo_pair_rescue_proto_min_sim": 1.1,
+                }
+            )
     return overrides
 
 

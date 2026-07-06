@@ -68,6 +68,7 @@ def _scenario_class_fallback_mask(
     support_scenarios: np.ndarray,
     scenario: str,
     class_labels: list[str],
+    fallback_class_labels: set[str] | None = None,
 ) -> np.ndarray:
     scenario_mask = np.asarray(support_scenarios, dtype=object).astype(str) == str(scenario)
     labels = np.asarray(support_labels, dtype=object).astype(str)
@@ -75,7 +76,10 @@ def _scenario_class_fallback_mask(
         return np.ones(labels.shape[0], dtype=bool)
     keep = scenario_mask.copy()
     scenario_labels = {str(label) for label in labels[scenario_mask].tolist()}
+    fallback_labels = {str(label) for label in (fallback_class_labels if fallback_class_labels is not None else class_labels)}
     for label in class_labels:
+        if str(label) not in fallback_labels:
+            continue
         if str(label) not in scenario_labels:
             keep = keep | (labels == str(label))
     return keep
@@ -100,6 +104,7 @@ def _class_scores(
     mutual_only: bool,
     scenario_aware: bool,
     scenario_class_fallback: bool = False,
+    scenario_class_fallback_labels: set[str] | None = None,
 ) -> tuple[np.ndarray, dict[str, float], np.ndarray]:
     if scenario_aware:
         query_scenarios = np.asarray(scenarios[query_indices], dtype=object).astype(str)
@@ -115,6 +120,7 @@ def _class_scores(
                     support_scenarios=support_scenarios,
                     scenario=str(scenario),
                     class_labels=class_labels,
+                    fallback_class_labels=scenario_class_fallback_labels,
                 )
             else:
                 support_mask = support_scenarios == scenario
