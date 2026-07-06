@@ -372,6 +372,107 @@ def _local_competition_adjust_scores(
     return adjusted, neighbor_edges
 
 
+def _scenario_residual_completion_scores(
+    scores: np.ndarray,
+    *,
+    features: np.ndarray,
+    support_indices: np.ndarray,
+    support_labels: np.ndarray,
+    query_indices: np.ndarray,
+    scenarios: np.ndarray,
+    class_labels: list[str],
+    old_labels: list[str],
+    new_labels: list[str],
+    weight: float,
+    min_classes: int,
+    clip: float,
+    scope: str,
+) -> tuple[np.ndarray, int, int]:
+    """Boost missing class-scenario prototypes from support-only residuals."""
+    if float(weight) == 0.0 or scores.size == 0:
+        return scores, 0, 0
+    mode = str(scope).strip().lower()
+    if mode not in {"all", "old", "new", "role"}:
+        raise ValueError(f"unsupported scenario_residual_scope: {scope}")
+    support_indices = np.asarray(support_indices, dtype=int)
+    query_indices = np.asarray(query_indices, dtype=int)
+    if support_indices.size == 0 or query_indices.size == 0:
+        return scores, 0, 0
+    support = qknn._normalize_rows(np.asarray(features[support_indices], dtype=np.float64))
+    query = qknn._normalize_rows(np.asarray(features[query_indices], dtype=np.float64))
+    support_scenarios = np.asarray(scenarios[support_indices], dtype=object).astype(str)
+    query_scenarios = np.asarray(scenarios[query_indices], dtype=object).astype(str)
+    labels = np.asarray(support_labels, dtype=object).astype(str)
+    class_count = len(class_labels)
+    if support.shape[1] == 0 or scores.shape[1] != class_count:
+        return scores, 0, 0
+
+    old_set = {str(label) for label in old_labels}
+    new_set = {str(label) for label in new_labels}
+    global_proto = np.zeros((class_count, support.shape[1]), dtype=np.float64)
+    valid_class = np.zeros(class_count, dtype=bool)
+    class_scenario_has: dict[tuple[int, str], bool] = {}
+    for class_index, label in enumerate(class_labels):
+        class_mask = labels == str(label)
+        if not bool(np.any(class_mask)):
+            continue
+        global_proto[class_index] = qknn._normalize_rows(support[class_mask].mean(axis=0, keepdims=True))[0]
+        valid_class[class_index] = True
+        for scenario in np.unique(support_scenarios[class_mask]):
+            class_scenario_has[(class_index, str(scenario))] = True
+
+    adjusted = np.asarray(scores, dtype=np.float64).copy()
+    changed_cells = 0
+    residual_vectors = 0
+    for scenario in np.unique(query_scenarios):
+        scenario = str(scenario)
+        residuals: list[np.ndarray] = []
+        for class_index, label in enumerate(class_labels):
+            if not valid_class[class_index]:
+                continue
+            scenario_mask = (labels == str(label)) & (support_scenarios == scenario)
+            if not bool(np.any(scenario_mask)):
+                continue
+            scenario_proto = qknn._normalize_rows(support[scenario_mask].mean(axis=0, keepdims=True))[0]
+            residuals.append(scenario_proto - global_proto[class_index])
+        if len(residuals) < int(min_classes):
+            continue
+        residual = np.mean(np.stack(residuals, axis=0), axis=0)
+        residual_vectors += 1
+        query_rows = np.where(query_scenarios == scenario)[0]
+        if query_rows.size == 0:
+            continue
+        for class_index, label in enumerate(class_labels):
+            label_str = str(label)
+            if not valid_class[class_index] or class_scenario_has.get((class_index, scenario), False):
+                continue
+            if mode == "old" and label_str not in old_set:
+                continue
+            if mode == "new" and label_str not in new_set:
+                continue
+            if mode == "role" and label_str not in old_set and label_str not in new_set:
+                continue
+            synthetic = qknn._normalize_rows((global_proto[class_index] + residual).reshape(1, -1))[0]
+            synthetic_score = query[query_rows] @ synthetic
+            current = adjusted[query_rows, class_index]
+            hard_masked = current < -1.0e6
+            replacement = synthetic_score
+            if float(clip) > 0.0:
+                replacement = np.clip(replacement, -float(clip), float(clip))
+            updated = current.copy()
+            if bool(np.any(hard_masked)):
+                updated[hard_masked] = float(weight) * replacement[hard_masked]
+            if bool(np.any(~hard_masked)):
+                delta = np.maximum(0.0, synthetic_score[~hard_masked] - current[~hard_masked])
+                if float(clip) > 0.0:
+                    delta = np.clip(delta, 0.0, float(clip))
+                updated[~hard_masked] = current[~hard_masked] + float(weight) * delta
+            adjusted[query_rows, class_index] = updated
+            changed_cells += int(query_rows.size)
+    stored_scalars = int(residual_vectors * support.shape[1])
+    return adjusted, changed_cells, stored_scalars
+
+
 def _assignment_predict(
     scores: np.ndarray,
     *,
@@ -4367,6 +4468,10 @@ def _evaluate_metric_qknn(
     local_competition_k: int,
     local_competition_clip: float,
     local_competition_scope: str,
+    scenario_residual_weight: float,
+    scenario_residual_min_classes: int,
+    scenario_residual_clip: float,
+    scenario_residual_scope: str,
     query_proto_refine_weight: float,
     query_proto_refine_topm: int,
     query_proto_refine_clip: float,
@@ -5914,6 +6019,21 @@ def _evaluate_metric_qknn(
         clip=float(local_competition_clip),
         scope=str(local_competition_scope),
     )
+    scores, scenario_residual_count, stored_scenario_residual_scalars = _scenario_residual_completion_scores(
+        scores,
+        features=adapted,
+        support_indices=support_indices,
+        support_labels=support_labels,
+        query_indices=query_indices,
+        scenarios=scenarios,
+        class_labels=old_labels + new_labels,
+        old_labels=old_labels,
+        new_labels=new_labels,
+        weight=float(scenario_residual_weight),
+        min_classes=int(scenario_residual_min_classes),
+        clip=float(scenario_residual_clip),
+        scope=str(scenario_residual_scope),
+    )
     labelprop_edges = 0
     if float(labelprop_weight) != 0.0:
         labelprop_scores, labelprop_edges = _support_query_labelprop_scores(
@@ -6369,6 +6489,12 @@ def _evaluate_metric_qknn(
         "local_competition_clip": float(local_competition_clip),
         "local_competition_scope": str(local_competition_scope),
         "local_competition_edges": int(local_competition_edges),
+        "scenario_residual_weight": float(scenario_residual_weight),
+        "scenario_residual_min_classes": int(scenario_residual_min_classes),
+        "scenario_residual_clip": float(scenario_residual_clip),
+        "scenario_residual_scope": str(scenario_residual_scope),
+        "scenario_residual_count": int(scenario_residual_count),
+        "stored_scenario_residual_scalars": int(stored_scenario_residual_scalars),
         "query_proto_refine_weight": float(query_proto_refine_weight),
         "query_proto_refine_topm": int(query_proto_refine_topm),
         "query_proto_refine_clip": float(query_proto_refine_clip),
@@ -7492,6 +7618,10 @@ def main() -> None:
     parser.add_argument("--local_competition_k_grid", default="4")
     parser.add_argument("--local_competition_clip_grid", default="1.0")
     parser.add_argument("--local_competition_scope_grid", default="role")
+    parser.add_argument("--scenario_residual_weight_grid", default="0")
+    parser.add_argument("--scenario_residual_min_classes_grid", default="2")
+    parser.add_argument("--scenario_residual_clip_grid", default="1.0")
+    parser.add_argument("--scenario_residual_scope_grid", default="new")
     parser.add_argument("--query_proto_refine_weight_grid", default="0")
     parser.add_argument("--query_proto_refine_topm_grid", default="0")
     parser.add_argument("--query_proto_refine_clip_grid", default="2.0")
@@ -7712,6 +7842,10 @@ def main() -> None:
             qknn._parse_int_csv(args.local_competition_k_grid),
             qknn._parse_float_csv(args.local_competition_clip_grid),
             qknn._parse_csv(args.local_competition_scope_grid),
+            qknn._parse_float_csv(args.scenario_residual_weight_grid),
+            qknn._parse_int_csv(args.scenario_residual_min_classes_grid),
+            qknn._parse_float_csv(args.scenario_residual_clip_grid),
+            qknn._parse_csv(args.scenario_residual_scope_grid),
             qknn._parse_float_csv(args.query_proto_refine_weight_grid),
             qknn._parse_int_csv(args.query_proto_refine_topm_grid),
             qknn._parse_float_csv(args.query_proto_refine_clip_grid),
@@ -7923,6 +8057,10 @@ def main() -> None:
                     local_competition_k,
                     local_competition_clip,
                     local_competition_scope,
+                    scenario_residual_weight,
+                    scenario_residual_min_classes,
+                    scenario_residual_clip,
+                    scenario_residual_scope,
                     query_proto_refine_weight,
                     query_proto_refine_topm,
                     query_proto_refine_clip,
@@ -8004,6 +8142,10 @@ def main() -> None:
                         "local_competition_k": int(local_competition_k),
                         "local_competition_clip": float(local_competition_clip),
                         "local_competition_scope": str(local_competition_scope),
+                        "scenario_residual_weight": float(scenario_residual_weight),
+                        "scenario_residual_min_classes": int(scenario_residual_min_classes),
+                        "scenario_residual_clip": float(scenario_residual_clip),
+                        "scenario_residual_scope": str(scenario_residual_scope),
                         "support_bias_weight": float(support_bias_weight),
                         "support_bias_step": float(support_bias_step),
                         "support_bias_rounds": int(support_bias_rounds),
@@ -8476,6 +8618,10 @@ def main() -> None:
                         local_competition_k=int(params["local_competition_k"]),
                         local_competition_clip=float(params["local_competition_clip"]),
                         local_competition_scope=str(params["local_competition_scope"]),
+                        scenario_residual_weight=float(params["scenario_residual_weight"]),
+                        scenario_residual_min_classes=int(params["scenario_residual_min_classes"]),
+                        scenario_residual_clip=float(params["scenario_residual_clip"]),
+                        scenario_residual_scope=str(params["scenario_residual_scope"]),
                         query_proto_refine_weight=float(params["query_proto_refine_weight"]),
                         query_proto_refine_topm=int(params["query_proto_refine_topm"]),
                         query_proto_refine_clip=float(params["query_proto_refine_clip"]),
@@ -8804,6 +8950,12 @@ def main() -> None:
         "local_competition_clip",
         "local_competition_scope",
         "local_competition_edges",
+        "scenario_residual_weight",
+        "scenario_residual_min_classes",
+        "scenario_residual_clip",
+        "scenario_residual_scope",
+        "scenario_residual_count",
+        "stored_scenario_residual_scalars",
         "query_proto_refine_weight",
         "query_proto_refine_topm",
         "query_proto_refine_clip",

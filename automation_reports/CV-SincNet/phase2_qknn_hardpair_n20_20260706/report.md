@@ -4546,3 +4546,30 @@ V55提交后继续做了三组本地只读诊断，均未形成可提交策略�
 | `k5_strict_supportloo_pair_grid_20260706.csv` | 5 | 288 | support-LOO pair + local competition小网格 | 93.10% | 81.43% | 84.71% | 71.43% | `1-2=50/70`仍未改善；`1-12`可到53/70但最低类转回`1-2`。 |
 
 当前严格K结论：support-LOO pair线性修正能从support内部错误中提取可部署信号，并把K10 strict的最低新类从50/70提升到52/70，同时保持旧类`old=94.05%,min_old=84.29%`不降；但它没有达到75%地板，也没有解决K5 strict的`1-2`场景覆盖缺失。K5 strict仍需要新的“缺场景support时的类内风险估计”机制；K10 strict可继续沿support-LOO pair方向做更细的类簇/场景门控，但当前不能写成完成qKNNV42优化目标，也不应同步N607正式实验。
+
+### 2026-07-06支持集场景残差补全诊断
+
+本节继续严格K-shot路线：`pool_per_old=K,pool_per_new=K`，不使用active候选池。新增的`scenario_residual_*`机制只使用support特征、support标签、support场景和query场景，不使用query真值；当某类缺少query场景support且原scenario-aware评分为硬mask时，用其他类在该场景上的support残差合成有限候选分数。`E:\type10-7`根目录仍不是Git仓库，本轮代码改动和artifact镜像在Git承载面`E:\type10-7\github_publish\CVS-RFFI-repo`；本节没有N607 preflight、没有scp、没有远端启动。
+
+#### 代码变更与验证
+
+| item | result |
+| --- | --- |
+| `code/scripts/phase2_support_metric_qknn_probe.py` | 新增`_scenario_residual_completion_scores`和`--scenario_residual_weight/min_classes/clip/scope_grid`，输出`scenario_residual_count`与`stored_scenario_residual_scalars`。 |
+| `code/tests/test_phase2_qknn_scenario_residual_completion.py` | 新增support-only残差补全测试，覆盖普通boost、零权重不改变分数、`-1e9`硬mask替换。 |
+| `conda run --no-capture-output -n ssr-gpu python -m py_compile code\scripts\phase2_support_metric_qknn_probe.py` | PASS |
+| `conda run --no-capture-output -n ssr-gpu python code\tests\test_phase2_qknn_scenario_residual_completion.py` | PASS，3 tests |
+
+#### 严格K结果
+
+| diagnostic | K | rows | best setting | old | min_old | seen_new | min_new | 低类/结论 |
+| --- | ---: | ---: | --- | ---: | ---: | ---: | ---: | --- |
+| `k10_strict_scenario_residual_grid_20260706.csv` | 10 | 20 | `scenario_residual_weight=0.5,min_classes=2,clip=0.5` | 94.05% | 84.29% | 87.50% | 74.29% | 相对weight=0只提升seen_new+0.14pp；最低仍为`1-12=52/70`，未过75%。 |
+| `k5_strict_scenario_residual_grid_20260706.csv` | 5 | 20 | `scenario_residual_weight=0.5,min_classes=2,clip=0.5` | 93.10% | 81.43% | 86.14% | 74.29% | 相对weight=0把seen_new从84.71%提升到86.14%，并把`1-2`从50/70提升到53/70；但最低转移到`19-3=52/70`，仍差1个query过75%。 |
+
+| K | baseline low classes | residual best low classes |
+| ---: | --- | --- |
+| 10 | `1-12=52/70`,`2-13=54/70`,`1-2=56/70` | `1-12=52/70`,`2-13=54/70`,`1-2=55/70` |
+| 5 | `1-2=50/70`,`19-3=52/70`,`2-13=52/70`,`1-12=53/70` | `19-3=52/70`,`1-2=53/70`,`1-12=54/70`,`1-15=54/70` |
+
+当前解释边界：场景残差补全是有效的support-only机制，能解除严格K5中`1-2`缺场景support导致的硬mask坍塌，并明显提升新类均值；但它把最低类转移到`19-3`，K5/K10都仍未满足`min_new>=75%`。因此本轮仍不能声明qKNNV42严格K优化目标完成，也不应同步N607正式实验。下一步应在该残差补全基础上增加“低类候选间局部保守竞争/风险门控”，重点约束`19-3/2-13/1-12/1-2`这一组同LEO场景下的互相挤压，而不是再做全局分数平移。
