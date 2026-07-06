@@ -296,6 +296,18 @@ K5主要失败不是简单权重问题。`1-2`在该split中仍为50/70；其`le
 
 后续优化应优先围绕“support场景覆盖缺失时的可部署风险估计”设计，而不是继续扩大query真值导向的pair bias。当前最可疑目标是`1-2`在`leo_clear_weak`无support覆盖时的保守注册机制；任何新机制都必须先证明不会复现“关闭scenario-aware导致seen_new坍塌”的失败模式。
 
+### 继续诊断负证据
+
+V55提交后继续做了三组本地只读诊断，均未形成可提交策略：
+
+| diagnostic | K | 设置 | old | min_old | seen_new | min_new | 结论 |
+| --- | ---: | --- | ---: | ---: | ---: | ---: | --- |
+| monkeypatch targeted fallback | 5 | 仅对`1-2/2-13`开启缺失场景fallback | 93.10% | 81.43% | 84.07% | 71.43% | 定向解屏蔽不改变最终assignment，说明瓶颈不只是`-1e9`硬屏蔽。 |
+| `k5_v55_query_pair_on_cluster_grid` | 5 | V55叠加query-pair cluster，top_pairs=4/8/12，query_weight=0.05/0.1/0.2 | 93.10% | 81.43% | 83.86%-84.00% | 71.43% | query-pair后验修正不能抬`1-2`，部分设置降低`2-13`或seen_new。 |
+| `k5_v56_lowk_transport_verify` | 5 | 临时V56=V55+弱source-target transport | 93.10% | 81.43% | 84.07% | 71.43% | transport在该低K配置下`rank_used=0`,`old_pairs=0`，无实际增益；临时代码已撤回。 |
+
+这三组结果强化了当前判断：K5地板需要新的support-only可观测风险建模，不能靠已有scenario fallback、query-pair后验或低Ktransport简单叠加解决。
+
 ## Adaptive v23 Support-Gated Aux Safety
 
 Objective: continue optimizing qKNN without expanding the K grid. The only evaluated anchors remain `K=5` and `K=10`, using the maximum query split from the 80-sample-per-class feature file. This run tests whether an adaptive support-only auxiliary-view reliability gate can improve stability when the number of enrolled new classes increases.
