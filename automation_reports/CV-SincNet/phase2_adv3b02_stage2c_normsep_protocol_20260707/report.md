@@ -1,0 +1,90 @@
+# qKNNV42真实Stage2-C NORM_SEP协议修复准备
+
+## 基本信息
+
+|字段|内容|
+|---|---|
+|experiment ID|`phase2_adv3b02_stage2c_normsep_protocol_20260707`|
+|timestamp|2026-07-07|
+|operator|Codex|
+|objective|在qKNNV42目标下继续推进旧类域适应、新类增多坍塌和最低类过低问题；本轮补齐真实Stage2-C导出协议，使NORM_SEP类表征能同时导出`target_old`、`target_new`和`target_unknown`|
+|status|本地代码和launcher准备完成；未访问N607，未启动训练|
+
+## 协议边界
+
+已读取`E:\type10-7\AGENTS.md`和`E:\type10-7\项目.md`。本轮不修改项目协议，遵守以下边界：
+
+- `R_t=7-14`，与source receivers`0,1,2,3,4,5,6`不相交。
+- `target_old`仍为ManySig旧类`14-10,14-7,20-15,20-19,6-15,8-20`。
+- `target_new`使用已有完整Stage2-C包中的真实ManyTx标签：`1-10,1-12,1-14,1-16,1-18,1-8,10-11,10-4`。
+- `target_unknown`使用互斥真实ManyTx标签：`10-7,11-1,11-10,11-19,11-4,11-7,12-19,12-20`。
+- proxy unknown训练池显式排除上述`target_new`和`target_unknown`，避免把目标新类或未知类用于source-side proxy训练。
+- LEO视图固定为`leo_clear_weak,leo_low_elev_weak,leo_rain_weak`，不是clean control。
+
+## 本轮变更
+
+|文件|位置|目的|
+|---|---|---|
+|`code/scripts/train_apply_phase1_iq_preadapter_20260703.py`|Git承载面与`E:\type10-7\code`运行面|新增四段`cell`格式：`name:target_rx:target_new_tx_ids:target_unknown_tx_ids`；保留旧三段格式兼容|
+|`code/scripts/launch_phase2_adv3b02_stage2c_normsep_protocol_20260707.sh`|Git承载面与运行面|新增真实Stage2-C NORM_SEP/HEAD_SEP训练导出launcher|
+|`code/tests/test_train_apply_phase1_iq_preadapter_cells.py`|Git承载面与运行面|覆盖三段兼容、四段Stage2-C解析和`target_new/target_unknown`重叠拒绝|
+
+`E:\type10-7\code`不是Git仓库；本轮改动已镜像到`E:\type10-7\github_publish\CVS-RFFI-repo`，后续以Git提交为版本承载面。
+
+## 验证
+
+|命令|结果|
+|---|---|
+|`conda run -n ssr-gpu python -m py_compile code\scripts\train_apply_phase1_iq_preadapter_20260703.py code\tests\test_train_apply_phase1_iq_preadapter_cells.py`|PASS|
+|`conda run -n ssr-gpu python -m unittest discover -s code\tests -p test_train_apply_phase1_iq_preadapter_cells.py -v`|PASS，3个测试通过|
+|`bash -n ./code/scripts/launch_phase2_adv3b02_stage2c_normsep_protocol_20260707.sh`|PASS|
+|`bash -lc '... launch_phase2_adv3b02_stage2c_normsep_protocol_20260707.sh --dry-run'`|PASS，输出确认`target_new`、`target_unknown`和proxy排除声明|
+
+dry-run关键输出：
+
+```text
+[STAGE2C-NORMSEP] target_new=1-10,1-12,1-14,1-16,1-18,1-8,10-11,10-4
+[STAGE2C-NORMSEP] target_unknown=10-7,11-1,11-10,11-19,11-4,11-7,12-19,12-20
+[STAGE2C-NORMSEP] proxy_pool_excludes_target_new_and_target_unknown=true
+```
+
+## 预期N607使用方式
+
+本轮未执行N607预检。若下一步启动，必须先运行：
+
+```powershell
+powershell -ExecutionPolicy Bypass -File tools\n607_ssh_preflight.ps1
+```
+
+预期远端同步：
+
+|local|remote|
+|---|---|
+|`E:\type10-7\github_publish\CVS-RFFI-repo\code\scripts\train_apply_phase1_iq_preadapter_20260703.py`|`/home/szu2070436088/2510044040/CV-SincNet/code/scripts/train_apply_phase1_iq_preadapter_20260703.py`|
+|`E:\type10-7\github_publish\CVS-RFFI-repo\code\scripts\launch_phase2_adv3b02_stage2c_normsep_protocol_20260707.sh`|`/home/szu2070436088/2510044040/CV-SincNet/code/scripts/launch_phase2_adv3b02_stage2c_normsep_protocol_20260707.sh`|
+
+预期启动命令：
+
+```bash
+cd /home/szu2070436088/2510044040/CV-SincNet
+nohup bash code/scripts/launch_phase2_adv3b02_stage2c_normsep_protocol_20260707.sh > logs/phase2_adv3b02_stage2c_normsep_protocol_20260707.driver.out 2>&1 & echo $!
+```
+
+预期输出：
+
+|类型|路径|
+|---|---|
+|runs|`/home/szu2070436088/2510044040/CV-SincNet/runs/phase2_adv3b02_stage2c_normsep_protocol_20260707/`|
+|logs|`/home/szu2070436088/2510044040/CV-SincNet/logs/phase2_adv3b02_stage2c_normsep_protocol_20260707/`|
+|summary|`/home/szu2070436088/2510044040/CV-SincNet/logs/phase2_adv3b02_stage2c_normsep_protocol_20260707/stage2c_normsep_protocol_summary.json`|
+
+## 成功判据与风险
+
+|项|判据|
+|---|---|
+|旧类阶段门槛|K5/K10下`old_acc>=0.80`，并关注`min_old_class_acc`|
+|seen-new目标|相对冻结Stage2-C包提高`seen_new_acc`和`min_seen_new_class_acc`，重点观察最低类是否脱离20%-40%坍塌区|
+|unknown目标|`unknown_FAR<=0.05`为最终部署安全目标；若未达，只能标为诊断或下一阶段优化输入|
+|协议安全|`target_unknown`只评估，不参与阈值拟合、训练或model selection|
+
+风险：本launcher只修复真实Stage2-C导出协议并继承NORM_SEP/HEAD_SEP类表征训练思想；它不保证一次达到最终目标。若N607结果仍显示unknown moat弱或seen-new floor低，应转向class/receiver-protected episodic representation training，而不是继续阈值微调。

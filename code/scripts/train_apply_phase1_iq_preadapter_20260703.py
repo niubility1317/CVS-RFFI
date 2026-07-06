@@ -804,6 +804,33 @@ def _concat(parts: Sequence[dict[str, np.ndarray]]) -> dict[str, np.ndarray]:
     return {k: np.concatenate([p[k] for p in parts], axis=0) for k in parts[0].keys()}
 
 
+def _parse_export_cell(cell: str) -> dict[str, str]:
+    parts = [part.strip() for part in str(cell).split(":")]
+    if len(parts) == 3:
+        name, target_rx, target_unknown_tx = parts
+        target_new_tx = ""
+    elif len(parts) == 4:
+        name, target_rx, target_new_tx, target_unknown_tx = parts
+    else:
+        raise ValueError(
+            "cell must be name:target_rx:target_unknown_tx_ids or "
+            "name:target_rx:target_new_tx_ids:target_unknown_tx_ids"
+        )
+    if not name or not target_rx or not target_unknown_tx:
+        raise ValueError(f"cell has empty required field: {cell!r}")
+    new_ids = set(parse_tx_id_list(target_new_tx))
+    unknown_ids = set(parse_tx_id_list(target_unknown_tx))
+    overlap = sorted(new_ids & unknown_ids)
+    if overlap:
+        raise ValueError(f"target_new and target_unknown TX IDs must be disjoint: {overlap}")
+    return {
+        "name": name,
+        "target_rx": target_rx,
+        "target_new_tx": target_new_tx,
+        "target_unknown_tx": target_unknown_tx,
+    }
+
+
 def export_cell(
     args: argparse.Namespace,
     model: nn.Module,
@@ -813,23 +840,36 @@ def export_cell(
     cell: str,
     train_info: dict[str, Any],
 ) -> Path:
-    name, target_rx, unknown_tx = cell.split(":")
+    cell_spec = _parse_export_cell(cell)
+    name = cell_spec["name"]
+    target_rx = cell_spec["target_rx"]
+    target_new_tx = cell_spec["target_new_tx"]
+    unknown_tx = cell_spec["target_unknown_tx"]
     scenarios = parse_sat_scenarios(str(args.sat_scenarios))
     reference_keys = _reference_keys_by_role(args.export_reference_npz)
     source_ds, source_info = _dataset_for_role(args, role="source", pkl=str(args.wisig_pkl), tx_ids=str(args.source_tx_ids), rxs=str(args.source_rxs), seed_offset=101)
     proxy_ds, proxy_info = _dataset_for_role(args, role="proxy_unknown", pkl=str(args.new_wisig_pkl), tx_ids=str(args.proxy_unknown_tx_ids), rxs=str(args.proxy_unknown_rxs), seed_offset=211)
     target_old_ds, target_old_info = _dataset_for_role(args, role="target_old", pkl=str(args.wisig_pkl), tx_ids=str(args.target_old_tx_ids), rxs=target_rx, seed_offset=307)
+    target_new_ds = None
+    target_new_info = None
+    if parse_tx_id_list(target_new_tx):
+        target_new_ds, target_new_info = _dataset_for_role(args, role="target_new", pkl=str(args.new_wisig_pkl), tx_ids=target_new_tx, rxs=target_rx, seed_offset=353)
     unknown_ds, unknown_info = _dataset_for_role(args, role="target_unknown", pkl=str(args.new_wisig_pkl), tx_ids=unknown_tx, rxs=target_rx, seed_offset=409)
     source_ds = _filter_dataset_to_reference(source_ds, role="source", reference_keys=reference_keys)
     proxy_ds = _filter_dataset_to_reference(proxy_ds, role="proxy_unknown", reference_keys=reference_keys)
     target_old_ds = _filter_dataset_to_reference(target_old_ds, role="target_old", reference_keys=reference_keys)
+    if target_new_ds is not None:
+        target_new_ds = _filter_dataset_to_reference(target_new_ds, role="target_new", reference_keys=reference_keys)
     unknown_ds = _filter_dataset_to_reference(unknown_ds, role="target_unknown", reference_keys=reference_keys)
     for info, ds in (
         (source_info, source_ds),
         (proxy_info, proxy_ds),
         (target_old_info, target_old_ds),
+        (target_new_info, target_new_ds),
         (unknown_info, unknown_ds),
     ):
+        if info is None or ds is None:
+            continue
         if reference_keys:
             info["reference_filtered"] = True
             info["size"] = int(len(ds))
@@ -837,8 +877,10 @@ def export_cell(
         ("source", source_ds, 2001),
         ("proxy_unknown", proxy_ds, 2011),
         ("target_old", target_old_ds, 2021),
-        ("target_unknown", unknown_ds, 2031),
     ]
+    if target_new_ds is not None:
+        role_items.append(("target_new", target_new_ds, 2027))
+    role_items.append(("target_unknown", unknown_ds, 2031))
     parts = []
     clean_parts = []
     identity_parts = []
@@ -871,7 +913,10 @@ def export_cell(
         "source": source_info,
         "proxy_unknown": proxy_info,
         "target_old": target_old_info,
+        "target_new": target_new_info,
         "target_unknown": unknown_info,
+        "target_new_tx_ids": parse_tx_id_list(target_new_tx),
+        "target_unknown_tx_ids": parse_tx_id_list(unknown_tx),
         "export_reference_npz": str(args.export_reference_npz or ""),
         "uses_target_clean": False,
         "uses_target_labels_for_training": False,
@@ -921,7 +966,14 @@ def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
     p.add_argument("--identity_subdir", default="LEOIQ28_IDENTITY")
     p.add_argument("--export_clean_control", action=argparse.BooleanOptionalAction, default=True)
     p.add_argument("--export_identity", action=argparse.BooleanOptionalAction, default=False)
-    p.add_argument("--cells", required=True, help="semicolon-separated name:target_rx:unknown_tx_ids")
+    p.add_argument(
+        "--cells",
+        required=True,
+        help=(
+            "semicolon-separated name:target_rx:target_unknown_tx_ids legacy cells, "
+            "or name:target_rx:target_new_tx_ids:target_unknown_tx_ids Stage2-C cells"
+        ),
+    )
     p.add_argument("--feature_name", default="z_id")
     p.add_argument("--export_reference_npz", default="", help="optional feature NPZ whose tx/rx/day/eq/sig/role order defines export samples")
     p.add_argument("--dataset", default="wisig")
