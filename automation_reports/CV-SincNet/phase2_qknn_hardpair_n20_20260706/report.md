@@ -4698,3 +4698,24 @@ K10 strict正向候选仍保持上一节结论：`k10_strict_residual_labelprop_
 #### pairwise quota refine复核
 
 在新K5最佳点上补跑`k5_strict_labelprop_pairquota_refine_20260707.csv`，测试已有默认关闭的`pair_refine_similarity=0,0.5,0.65,0.75,0.85,0.95,1.1`。结果为负：`0.5..1.1`均未改变预测，仍为`old=93.10%,min_old=81.43%,seen_new=89.00%,min_new=74.29%`；`0.0`会改动150个预测并把`min_old/min_new`都压到67.14%。因此“全局pair内quota重排”不能作为K5最低类修复，后续如果做slot release，必须加更强的support/query安全门控，而不能直接放开所有pair。
+
+#### slot release quota refine复核
+
+本节修改Git承载面脚本`code/scripts/phase2_support_metric_qknn_probe.py`，新增默认关闭的`_slot_release_quota_refine`及CLI网格参数。该规则只使用当前score、预测标签、LEO场景标签和原型相似度，不读取truth；它在同一类角色scope内交换“低置信已占槽位”和“竞争类候选槽位”，保持每类预测配额不变。新增单元测试位于`code/tests/test_phase2_qknn_scenario_residual_completion.py`。本节未运行N607、未scp、未启动远端实验。
+
+验证命令：
+
+| command | result |
+| --- | --- |
+| `conda activate ssr-gpu; python -m py_compile code/scripts/phase2_support_metric_qknn_probe.py code/tests/test_phase2_qknn_scenario_residual_completion.py` | PASS |
+| `conda activate ssr-gpu; python code/tests/test_phase2_qknn_scenario_residual_completion.py` | PASS，7 tests |
+| `conda run --no-capture-output -n ssr-gpu python code/scripts/phase2_support_metric_qknn_probe.py ... --slot_release_top_pairs_grid 0,1,3,6 --slot_release_similarity_grid 0,0.5,0.65 --slot_release_margin_grid 0.02,0.05 --slot_release_accept_margin_grid=-0.35,-0.25,-0.15 --slot_release_max_swaps_grid 2,4` | PASS，144 rows |
+
+结果文件：
+
+| artifact | rows | best setting | old | min_old | seen_new | min_new | 判定 |
+| --- | ---: | --- | ---: | ---: | ---: | ---: | --- |
+| `k5_strict_slot_release_grid_20260707.csv` | 144 | `top_pairs=1,similarity=0,margin=0.02,accept_margin=-0.35,max_swaps=2`，`slot_release_pairs=11-10<->2-13:4` | 93.10% | 81.43% | 89.21% | 74.29% | 小幅提升新类均值，但没有提升最低类。 |
+| 同文件基线行 | 36 | `slot_release_top_pairs=0` | 93.10% | 81.43% | 89.00% | 74.29% | 与上一K5最佳指标一致，作为本节内部对照。 |
+
+涉及`19-3`的slot行共8行，均未把`19-3`从52/70提升；开启`top_pairs=6`后会触发`1-15<->19-3`，但`19-3`仍为74.29%，新类均值还会降到88.79%或更低。因此slot release可保留为默认关闭诊断工具，但不能作为当前K5最低类修复。当前严格K结论保持不变：K10已通过new floor，K5旧类/新类均值已晋升但最低新类仍差1个query过75%，后续应优先做`19-3/1-15`支持集表示或注册期校准，而不是继续增加配额后处理强度。

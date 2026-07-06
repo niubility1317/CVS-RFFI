@@ -190,6 +190,67 @@ class Phase2ScenarioResidualCompletionTest(unittest.TestCase):
         self.assertIn("new-a<->new-b", pairs)
         self.assertGreater(adjusted[0, 0], adjusted[0, 1])
 
+    def test_slot_release_default_off_preserves_predictions(self):
+        from phase2_support_metric_qknn_probe import _slot_release_quota_refine
+
+        pred = np.asarray(["new-a", "new-b"], dtype=object)
+        refined, changed, pair_count, pairs = _slot_release_quota_refine(
+            pred,
+            np.asarray([[0.1, 0.4], [0.2, 0.3]], dtype=np.float64),
+            class_labels=["new-a", "new-b"],
+            old_labels=[],
+            new_labels=["new-a", "new-b"],
+            query_scenarios=np.asarray(["clear", "clear"], dtype=object),
+            proto_sim=np.asarray([[1.0, 0.9], [0.9, 1.0]], dtype=np.float64),
+            top_pairs=0,
+            similarity_threshold=0.0,
+            release_margin=0.0,
+            accept_margin=-1.0,
+            max_swaps_per_pair=2,
+            scope="new",
+            same_scenario=True,
+        )
+
+        np.testing.assert_array_equal(refined, pred.astype(str))
+        self.assertEqual(changed, 0)
+        self.assertEqual(pair_count, 0)
+        self.assertEqual(pairs, "")
+
+    def test_slot_release_swaps_same_scenario_raw_top_conflict(self):
+        from phase2_support_metric_qknn_probe import _slot_release_quota_refine
+
+        pred = np.asarray(["new-a", "new-b", "new-a", "new-b"], dtype=object)
+        scores = np.asarray(
+            [
+                [0.10, 0.30],
+                [0.18, 0.20],
+                [0.40, 0.10],
+                [0.05, 0.50],
+            ],
+            dtype=np.float64,
+        )
+        refined, changed, pair_count, pairs = _slot_release_quota_refine(
+            pred,
+            scores,
+            class_labels=["new-a", "new-b"],
+            old_labels=[],
+            new_labels=["new-a", "new-b"],
+            query_scenarios=np.asarray(["clear", "clear", "rain", "rain"], dtype=object),
+            proto_sim=np.asarray([[1.0, 0.8], [0.8, 1.0]], dtype=np.float64),
+            top_pairs=1,
+            similarity_threshold=0.0,
+            release_margin=0.05,
+            accept_margin=-0.05,
+            max_swaps_per_pair=2,
+            scope="new",
+            same_scenario=True,
+        )
+
+        np.testing.assert_array_equal(refined, np.asarray(["new-b", "new-a", "new-a", "new-b"], dtype=str))
+        self.assertEqual(changed, 2)
+        self.assertEqual(pair_count, 1)
+        self.assertIn("new-a<->new-b:2", pairs)
+
 
 if __name__ == "__main__":
     unittest.main()

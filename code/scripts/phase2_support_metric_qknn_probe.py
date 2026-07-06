@@ -1338,6 +1338,119 @@ def _pairwise_quota_refine(
     return refined.astype(str), changed
 
 
+def _slot_release_quota_refine(
+    pred: np.ndarray,
+    scores: np.ndarray,
+    *,
+    class_labels: list[str],
+    old_labels: list[str],
+    new_labels: list[str],
+    query_scenarios: np.ndarray,
+    proto_sim: np.ndarray,
+    top_pairs: int,
+    similarity_threshold: float,
+    release_margin: float,
+    accept_margin: float,
+    max_swaps_per_pair: int,
+    scope: str,
+    same_scenario: bool,
+) -> tuple[np.ndarray, int, int, str]:
+    """Swap low-confidence filled slots with bounded raw-top conflicts.
+
+    The rule is oracle-free and preserves the per-class assignment quota by
+    swapping labels between a low-confidence slot row and a candidate row from
+    the competing class. It is intentionally default-off because it can trade
+    total score for floor rescue on hard K-shot pairs.
+    """
+    if int(top_pairs) <= 0 or int(max_swaps_per_pair) <= 0:
+        return pred, 0, 0, ""
+    scope_norm = str(scope).strip().lower()
+    if scope_norm not in {"new", "old", "all"}:
+        raise ValueError(f"unsupported slot_release_scope: {scope}")
+    refined = np.asarray(pred, dtype=object).astype(str).copy()
+    labels = np.asarray(class_labels, dtype=object).astype(str)
+    old_set = set(old_labels)
+    new_set = set(new_labels)
+    allowed: set[str] = set(labels.tolist())
+    if scope_norm == "new":
+        allowed = {label for label in labels.tolist() if label in new_set}
+    elif scope_norm == "old":
+        allowed = {label for label in labels.tolist() if label in old_set}
+    if len(allowed) < 2:
+        return refined, 0, 0, ""
+
+    raw_top = labels[np.argmax(scores, axis=1)]
+    scenarios = np.asarray(query_scenarios, dtype=object).astype(str)
+    pairs: list[tuple[float, int, int]] = []
+    for left in range(len(labels)):
+        for right in range(left + 1, len(labels)):
+            left_label = str(labels[left])
+            right_label = str(labels[right])
+            if left_label not in allowed or right_label not in allowed:
+                continue
+            sim = float(proto_sim[left, right])
+            if sim >= float(similarity_threshold):
+                conflict_count = int(
+                    np.sum((refined == left_label) & (raw_top == right_label))
+                    + np.sum((refined == right_label) & (raw_top == left_label))
+                )
+                if conflict_count > 0:
+                    pairs.append((float(conflict_count) + sim, left, right))
+    if not pairs:
+        return refined, 0, 0, ""
+
+    changed = 0
+    touched_pairs: list[str] = []
+    for _rank, left, right in sorted(pairs, reverse=True)[: int(top_pairs)]:
+        left_label = str(labels[left])
+        right_label = str(labels[right])
+        pair_changed = 0
+        for slot_index, competitor_index, slot_label, competitor_label in (
+            (left, right, left_label, right_label),
+            (right, left, right_label, left_label),
+        ):
+            release_mask = (
+                (refined == slot_label)
+                & (raw_top == competitor_label)
+                & ((scores[:, competitor_index] - scores[:, slot_index]) >= float(release_margin))
+            )
+            if not bool(np.any(release_mask)):
+                continue
+            scenario_values = np.unique(scenarios[release_mask]) if bool(same_scenario) else np.asarray([""], dtype=object)
+            for scenario_value in scenario_values.tolist():
+                if bool(same_scenario):
+                    scenario_mask = scenarios == str(scenario_value)
+                else:
+                    scenario_mask = np.ones(refined.shape[0], dtype=bool)
+                release_indices = np.where(release_mask & scenario_mask)[0]
+                accept_mask = (
+                    (refined == competitor_label)
+                    & scenario_mask
+                    & ((scores[:, slot_index] - scores[:, competitor_index]) >= float(accept_margin))
+                )
+                accept_indices = np.where(accept_mask)[0]
+                if release_indices.size == 0 or accept_indices.size == 0:
+                    continue
+                release_gain = scores[release_indices, competitor_index] - scores[release_indices, slot_index]
+                accept_margin_values = scores[accept_indices, slot_index] - scores[accept_indices, competitor_index]
+                release_order = release_indices[np.argsort(-release_gain)]
+                accept_order = accept_indices[np.argsort(-accept_margin_values)]
+                swap_count = min(int(max_swaps_per_pair) - pair_changed, int(release_order.size), int(accept_order.size))
+                if swap_count <= 0:
+                    break
+                release_take = release_order[:swap_count]
+                accept_take = accept_order[:swap_count]
+                refined[release_take] = competitor_label
+                refined[accept_take] = slot_label
+                pair_changed += int(2 * swap_count)
+                changed += int(2 * swap_count)
+                if pair_changed >= int(max_swaps_per_pair):
+                    break
+        if pair_changed > 0:
+            touched_pairs.append(f"{left_label}<->{right_label}:{pair_changed}")
+    return refined.astype(str), changed, len(touched_pairs), ";".join(touched_pairs[:12])
+
+
 def _query_pair_cluster_quota_refine(
     pred: np.ndarray,
     scores: np.ndarray,
@@ -4725,6 +4838,13 @@ def _evaluate_metric_qknn(
     query_pair_cluster_query_weight: float,
     query_pair_cluster_clip: float,
     query_pair_cluster_scope: str,
+    slot_release_top_pairs: int,
+    slot_release_similarity: float,
+    slot_release_margin: float,
+    slot_release_accept_margin: float,
+    slot_release_max_swaps: int,
+    slot_release_scope: str,
+    slot_release_same_scenario: bool,
     source_guard_mode: str,
     source_guard_weight: float,
     source_guard_conf_min: float,
@@ -6516,6 +6636,22 @@ def _evaluate_metric_qknn(
         proto_sim=proto_sim,
         similarity_threshold=float(pair_refine_similarity),
     )
+    pred, slot_release_changed, slot_release_pairs, slot_release_pair_summary = _slot_release_quota_refine(
+        pred,
+        scores,
+        class_labels=old_labels + new_labels,
+        old_labels=old_labels,
+        new_labels=new_labels,
+        query_scenarios=scenarios[query_indices],
+        proto_sim=proto_sim,
+        top_pairs=int(slot_release_top_pairs),
+        similarity_threshold=float(slot_release_similarity),
+        release_margin=float(slot_release_margin),
+        accept_margin=float(slot_release_accept_margin),
+        max_swaps_per_pair=int(slot_release_max_swaps),
+        scope=str(slot_release_scope),
+        same_scenario=bool(slot_release_same_scenario),
+    )
     truth = tx_ids[query_indices]
     metrics = base._metrics(
         pred,
@@ -6561,6 +6697,16 @@ def _evaluate_metric_qknn(
         "proto_repel_anchor": float(proto_repel_anchor),
         "pair_refine_similarity": float(pair_refine_similarity),
         "pair_refine_changed_predictions": int(pair_refine_changed),
+        "slot_release_top_pairs": int(slot_release_top_pairs),
+        "slot_release_similarity": float(slot_release_similarity),
+        "slot_release_margin": float(slot_release_margin),
+        "slot_release_accept_margin": float(slot_release_accept_margin),
+        "slot_release_max_swaps": int(slot_release_max_swaps),
+        "slot_release_scope": str(slot_release_scope),
+        "slot_release_same_scenario": bool(slot_release_same_scenario),
+        "slot_release_changed_predictions": int(slot_release_changed),
+        "slot_release_pair_count": int(slot_release_pairs),
+        "slot_release_pairs": slot_release_pair_summary,
         "pair_axis_similarity": float(pair_axis_similarity),
         "pair_axis_weight": float(pair_axis_weight),
         "pair_axis_clip": float(pair_axis_clip),
@@ -7946,6 +8092,13 @@ def main() -> None:
     parser.add_argument("--query_pair_cluster_query_weight_grid", default="0")
     parser.add_argument("--query_pair_cluster_clip_grid", default="2.0")
     parser.add_argument("--query_pair_cluster_scope_grid", default="new")
+    parser.add_argument("--slot_release_top_pairs_grid", default="0")
+    parser.add_argument("--slot_release_similarity_grid", default="1.1")
+    parser.add_argument("--slot_release_margin_grid", default="0.05")
+    parser.add_argument("--slot_release_accept_margin_grid", default="-0.25")
+    parser.add_argument("--slot_release_max_swaps_grid", default="2")
+    parser.add_argument("--slot_release_scope_grid", default="new")
+    parser.add_argument("--slot_release_same_scenario_grid", default="true")
     parser.add_argument("--source_guard_mode_grid", default="none")
     parser.add_argument("--source_guard_weight_grid", default="0")
     parser.add_argument("--source_guard_conf_min_grid", default="0")
@@ -8183,6 +8336,13 @@ def main() -> None:
             qknn._parse_float_csv(args.query_pair_cluster_query_weight_grid),
             qknn._parse_float_csv(args.query_pair_cluster_clip_grid),
             qknn._parse_csv(args.query_pair_cluster_scope_grid),
+            qknn._parse_int_csv(args.slot_release_top_pairs_grid),
+            qknn._parse_float_csv(args.slot_release_similarity_grid),
+            qknn._parse_float_csv(args.slot_release_margin_grid),
+            qknn._parse_float_csv(args.slot_release_accept_margin_grid),
+            qknn._parse_int_csv(args.slot_release_max_swaps_grid),
+            qknn._parse_csv(args.slot_release_scope_grid),
+            qknn._parse_csv(args.slot_release_same_scenario_grid),
             qknn._parse_csv(args.source_guard_mode_grid),
             qknn._parse_float_csv(args.source_guard_weight_grid),
             qknn._parse_float_csv(args.source_guard_conf_min_grid),
@@ -8411,6 +8571,13 @@ def main() -> None:
                     query_pair_cluster_query_weight,
                     query_pair_cluster_clip,
                     query_pair_cluster_scope,
+                    slot_release_top_pairs,
+                    slot_release_similarity,
+                    slot_release_margin,
+                    slot_release_accept_margin,
+                    slot_release_max_swaps,
+                    slot_release_scope,
+                    slot_release_same_scenario,
                     source_guard_mode,
                     source_guard_weight,
                     source_guard_conf_min,
@@ -8545,6 +8712,13 @@ def main() -> None:
                         "query_pair_cluster_query_weight": float(query_pair_cluster_query_weight),
                         "query_pair_cluster_clip": float(query_pair_cluster_clip),
                         "query_pair_cluster_scope": str(query_pair_cluster_scope),
+                        "slot_release_top_pairs": int(slot_release_top_pairs),
+                        "slot_release_similarity": float(slot_release_similarity),
+                        "slot_release_margin": float(slot_release_margin),
+                        "slot_release_accept_margin": float(slot_release_accept_margin),
+                        "slot_release_max_swaps": int(slot_release_max_swaps),
+                        "slot_release_scope": str(slot_release_scope),
+                        "slot_release_same_scenario": str(slot_release_same_scenario).lower() == "true",
                         "scenario_class_fallback_mode": str(scenario_class_fallback_mode),
                     }
                     params.update(
@@ -9025,6 +9199,13 @@ def main() -> None:
                         query_pair_cluster_query_weight=float(params["query_pair_cluster_query_weight"]),
                         query_pair_cluster_clip=float(params["query_pair_cluster_clip"]),
                         query_pair_cluster_scope=str(params["query_pair_cluster_scope"]),
+                        slot_release_top_pairs=int(params["slot_release_top_pairs"]),
+                        slot_release_similarity=float(params["slot_release_similarity"]),
+                        slot_release_margin=float(params["slot_release_margin"]),
+                        slot_release_accept_margin=float(params["slot_release_accept_margin"]),
+                        slot_release_max_swaps=int(params["slot_release_max_swaps"]),
+                        slot_release_scope=str(params["slot_release_scope"]),
+                        slot_release_same_scenario=bool(params["slot_release_same_scenario"]),
                         source_guard_mode=str(params["source_guard_mode"]),
                         source_guard_weight=float(params["source_guard_weight"]),
                         source_guard_conf_min=float(params["source_guard_conf_min"]),
@@ -9148,6 +9329,16 @@ def main() -> None:
         "proto_repel_anchor",
         "pair_refine_similarity",
         "pair_refine_changed_predictions",
+        "slot_release_top_pairs",
+        "slot_release_similarity",
+        "slot_release_margin",
+        "slot_release_accept_margin",
+        "slot_release_max_swaps",
+        "slot_release_scope",
+        "slot_release_same_scenario",
+        "slot_release_changed_predictions",
+        "slot_release_pair_count",
+        "slot_release_pairs",
         "pair_axis_similarity",
         "pair_axis_weight",
         "pair_axis_clip",
