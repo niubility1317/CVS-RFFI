@@ -106,6 +106,46 @@ def _sketch_batch_with_projection(raw_rows: np.ndarray, *, projection: np.ndarra
     return sketch.astype(np.float32)
 
 
+def _spectral_logmag_sketch_batch(raw_rows: np.ndarray, *, dim: int) -> np.ndarray:
+    rows: list[np.ndarray] = []
+    target_x = np.linspace(0.0, 1.0, int(dim), dtype=np.float64)
+    for row in raw_rows:
+        iq = _as_iq2t(row).astype(np.float32)
+        complex_iq = iq[0].astype(np.float64) + 1j * iq[1].astype(np.float64)
+        complex_iq = complex_iq - np.mean(complex_iq)
+        rms = float(np.sqrt(np.mean(np.abs(complex_iq) ** 2)))
+        if rms > 1e-8:
+            complex_iq = complex_iq / rms
+        window = np.hanning(int(complex_iq.size))
+        if float(np.max(window)) <= 0.0:
+            window = np.ones(int(complex_iq.size), dtype=np.float64)
+        spectrum = np.fft.fftshift(np.fft.fft(complex_iq * window))
+        logmag = np.log1p(np.abs(spectrum)).astype(np.float64)
+        source_x = np.linspace(0.0, 1.0, int(logmag.size), dtype=np.float64)
+        sketch = np.interp(target_x, source_x, logmag).astype(np.float32)
+        sketch -= np.mean(sketch, dtype=np.float64).astype(np.float32)
+        sketch /= np.maximum(float(np.linalg.norm(sketch)), 1e-8)
+        rows.append(sketch.astype(np.float32))
+    return np.stack(rows, axis=0).astype(np.float32)
+
+
+def _sketch_batch_with_method(
+    raw_rows: np.ndarray,
+    *,
+    dim: int,
+    method: str,
+    projection: np.ndarray | None,
+) -> np.ndarray:
+    method_norm = str(method).strip().lower()
+    if method_norm == "random_projection":
+        if projection is None:
+            raise ValueError("random_projection sketch requires projection")
+        return _sketch_batch_with_projection(raw_rows, projection=projection)
+    if method_norm == "fft_logmag":
+        return _spectral_logmag_sketch_batch(raw_rows, dim=int(dim))
+    raise ValueError(f"unsupported sketch_method: {method}")
+
+
 def _sketch_batch(raw_rows: np.ndarray, *, dim: int, seed: int) -> np.ndarray:
     flat_dim = int(np.asarray(raw_rows[0], dtype=np.float32).size)
     proj = _projection_matrix(flat_dim, int(dim), int(seed))
@@ -133,11 +173,12 @@ def _sketch_leo_batch(
     raw_rows: np.ndarray,
     scenarios: np.ndarray,
     *,
-    projection: np.ndarray,
+    projection: np.ndarray | None,
     args: argparse.Namespace,
 ) -> np.ndarray:
     raw = np.stack([_as_iq2t(row) for row in raw_rows], axis=0).astype(np.float32)
-    out = np.zeros((raw.shape[0], int(projection.shape[1])), dtype=np.float32)
+    sketch_dim = int(args.sketch_dim)
+    out = np.zeros((raw.shape[0], sketch_dim), dtype=np.float32)
     device = torch.device(str(args.device))
     views = max(1, int(args.leo_tta_views))
     batch_size = max(1, int(args.batch_size))
@@ -146,7 +187,7 @@ def _sketch_leo_batch(
         end = min(raw.shape[0], start + batch_size)
         local_raw = raw[start:end]
         local_scenarios = scenarios[start:end]
-        local_acc = np.zeros((end - start, int(projection.shape[1])), dtype=np.float32)
+        local_acc = np.zeros((end - start, sketch_dim), dtype=np.float32)
         for view_i in range(views):
             view_rows: list[tuple[int, np.ndarray]] = []
             for scenario in sorted({str(v) for v in local_scenarios.tolist()}):
@@ -156,7 +197,12 @@ def _sketch_leo_batch(
                 with torch.no_grad():
                     y, _ = apply_sat_channel_for_scenario(x, scenario, args, gen=gen, return_meta=False)
                 y_np = y.detach().cpu().numpy().astype(np.float32)
-                sketch = _sketch_batch_with_projection(y_np, projection=projection)
+                sketch = _sketch_batch_with_method(
+                    y_np,
+                    dim=int(args.sketch_dim),
+                    method=str(args.sketch_method),
+                    projection=projection,
+                )
                 view_rows.extend((int(i), sketch[j]) for j, i in enumerate(pos.tolist()))
             view_rows.sort(key=lambda item: item[0])
             local_acc += np.stack([row for _idx, row in view_rows], axis=0)
@@ -174,6 +220,7 @@ def main() -> None:
     parser.add_argument("--manytx_pkl", required=True)
     parser.add_argument("--output_npz", required=True)
     parser.add_argument("--sketch_dim", type=int, default=96)
+    parser.add_argument("--sketch_method", choices=["random_projection", "fft_logmag"], default="random_projection")
     parser.add_argument("--projection_seed", type=int, default=60741)
     parser.add_argument("--channel_view", choices=["leo", "clean"], default="leo")
     parser.add_argument("--leo_tta_views", type=int, default=5)
@@ -227,24 +274,39 @@ def main() -> None:
         )
 
     raw_array = np.stack([_as_iq2t(row) for row in raw_rows], axis=0)
-    projection = _projection_matrix(raw_array.shape[1] * raw_array.shape[2], int(args.sketch_dim), int(args.projection_seed))
+    projection = None
+    if str(args.sketch_method) == "random_projection":
+        projection = _projection_matrix(raw_array.shape[1] * raw_array.shape[2], int(args.sketch_dim), int(args.projection_seed))
     if str(args.channel_view) == "leo":
         sketch = _sketch_leo_batch(raw_array, scenarios, projection=projection, args=args)
     else:
-        sketch = _sketch_batch_with_projection(raw_array, projection=projection)
+        sketch = _sketch_batch_with_method(
+            raw_array,
+            dim=int(args.sketch_dim),
+            method=str(args.sketch_method),
+            projection=projection,
+        )
     source_manifest = json.loads(str(data["manifest_json"].item())) if "manifest_json" in data.files else {}
+    sketch_method = str(args.sketch_method)
+    if sketch_method == "random_projection":
+        sketch_method_label = "dc_removed_l2_raw_iq_random_projection_tanh_l2"
+    elif sketch_method == "fft_logmag":
+        sketch_method_label = "dc_removed_rms_iq_fft_logmag_l2"
+    else:
+        raise ValueError(f"unsupported sketch_method: {sketch_method}")
     manifest = {
         "source_feature_npz": str(feature_path),
         "manysig_pkl": str(args.manysig_pkl),
         "manytx_pkl": str(args.manytx_pkl),
         "sketch_dim": int(args.sketch_dim),
+        "sketch_method": sketch_method,
         "projection_seed": int(args.projection_seed),
         "source_counts": source_counts,
         "stored_raw_support_count": 0,
         "method": (
-            "leo_tta_dc_removed_l2_raw_iq_random_projection_tanh_l2"
+            f"leo_tta_{sketch_method_label}"
             if str(args.channel_view) == "leo"
-            else "dc_removed_l2_raw_iq_random_projection_tanh_l2"
+            else sketch_method_label
         ),
         "channel_view": "satellite/LEO" if str(args.channel_view) == "leo" else "clean/control",
         "uses_target_clean": bool(str(args.channel_view) != "leo"),
