@@ -114,6 +114,41 @@ class Phase2ScenarioResidualCompletionTest(unittest.TestCase):
         self.assertGreater(stored, 0)
         self.assertGreater(adjusted[0, 0], -1.0e6)
 
+    def test_scenario_proto_refine_sharpens_same_scenario_pair(self):
+        from phase2_support_metric_qknn_probe import _scenario_proto_refine_scores
+
+        features = np.asarray(
+            [
+                [1.0, 0.0],
+                [0.9, 0.1],
+                [0.0, 1.0],
+                [0.1, 0.9],
+                [1.0, 0.0],
+            ],
+            dtype=np.float64,
+        )
+        scores = np.zeros((1, 2), dtype=np.float64)
+
+        adjusted, count, stored = _scenario_proto_refine_scores(
+            scores,
+            features=features,
+            support_indices=np.asarray([0, 1, 2, 3], dtype=int),
+            support_labels=np.asarray(["new-a", "new-a", "new-b", "new-b"], dtype=object),
+            query_indices=np.asarray([4], dtype=int),
+            scenarios=np.asarray(["clear", "clear", "clear", "clear", "clear"], dtype=object),
+            class_labels=["new-a", "new-b"],
+            old_labels=[],
+            new_labels=["new-a", "new-b"],
+            weight=0.2,
+            min_support=1,
+            clip=1.0,
+            scope="new",
+        )
+
+        self.assertGreater(count, 0)
+        self.assertGreater(stored, 0)
+        self.assertGreater(adjusted[0, 0], adjusted[0, 1])
+
 
 if __name__ == "__main__":
     unittest.main()

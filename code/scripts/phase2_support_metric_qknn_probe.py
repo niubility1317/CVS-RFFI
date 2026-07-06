@@ -473,6 +473,82 @@ def _scenario_residual_completion_scores(
     return adjusted, changed_cells, stored_scalars
 
 
+def _scenario_proto_refine_scores(
+    scores: np.ndarray,
+    *,
+    features: np.ndarray,
+    support_indices: np.ndarray,
+    support_labels: np.ndarray,
+    query_indices: np.ndarray,
+    scenarios: np.ndarray,
+    class_labels: list[str],
+    old_labels: list[str],
+    new_labels: list[str],
+    weight: float,
+    min_support: int,
+    clip: float,
+    scope: str,
+) -> tuple[np.ndarray, int, int]:
+    """Refine same-scenario scores with compressed class-scenario prototypes."""
+    if float(weight) == 0.0 or scores.size == 0:
+        return scores, 0, 0
+    mode = str(scope).strip().lower()
+    if mode not in {"all", "old", "new", "role"}:
+        raise ValueError(f"unsupported scenario_proto_refine_scope: {scope}")
+    support_indices = np.asarray(support_indices, dtype=int)
+    query_indices = np.asarray(query_indices, dtype=int)
+    if support_indices.size == 0 or query_indices.size == 0:
+        return scores, 0, 0
+    support = qknn._normalize_rows(np.asarray(features[support_indices], dtype=np.float64))
+    query = qknn._normalize_rows(np.asarray(features[query_indices], dtype=np.float64))
+    support_scenarios = np.asarray(scenarios[support_indices], dtype=object).astype(str)
+    query_scenarios = np.asarray(scenarios[query_indices], dtype=object).astype(str)
+    labels = np.asarray(support_labels, dtype=object).astype(str)
+    class_count = len(class_labels)
+    if support.shape[1] == 0 or scores.shape[1] != class_count:
+        return scores, 0, 0
+
+    old_set = {str(label) for label in old_labels}
+    new_set = {str(label) for label in new_labels}
+    adjusted = np.asarray(scores, dtype=np.float64).copy()
+    changed_cells = 0
+    proto_count = 0
+    min_count = max(1, int(min_support))
+    for scenario in np.unique(query_scenarios):
+        scenario = str(scenario)
+        query_rows = np.where(query_scenarios == scenario)[0]
+        if query_rows.size == 0:
+            continue
+        scenario_scores = np.zeros((query_rows.size, class_count), dtype=np.float64)
+        active = np.zeros(class_count, dtype=bool)
+        for class_index, label in enumerate(class_labels):
+            label_str = str(label)
+            if mode == "old" and label_str not in old_set:
+                continue
+            if mode == "new" and label_str not in new_set:
+                continue
+            if mode == "role" and label_str not in old_set and label_str not in new_set:
+                continue
+            class_mask = (labels == label_str) & (support_scenarios == scenario)
+            if int(np.sum(class_mask)) < min_count:
+                continue
+            proto = qknn._normalize_rows(support[class_mask].mean(axis=0, keepdims=True))[0]
+            scenario_scores[:, class_index] = query[query_rows] @ proto
+            active[class_index] = True
+            proto_count += 1
+        if int(np.sum(active)) < 2:
+            continue
+        local = scenario_scores[:, active]
+        local = local - np.mean(local, axis=1, keepdims=True)
+        local = local / (np.std(local, axis=1, keepdims=True) + 1e-6)
+        if float(clip) > 0.0:
+            local = np.clip(local, -float(clip), float(clip))
+        adjusted[np.ix_(query_rows, np.where(active)[0])] += float(weight) * local
+        changed_cells += int(query_rows.size * np.sum(active))
+    stored_scalars = int(proto_count * support.shape[1])
+    return adjusted, changed_cells, stored_scalars
+
+
 def _assignment_predict(
     scores: np.ndarray,
     *,
@@ -4472,6 +4548,10 @@ def _evaluate_metric_qknn(
     scenario_residual_min_classes: int,
     scenario_residual_clip: float,
     scenario_residual_scope: str,
+    scenario_proto_refine_weight: float,
+    scenario_proto_refine_min_support: int,
+    scenario_proto_refine_clip: float,
+    scenario_proto_refine_scope: str,
     query_proto_refine_weight: float,
     query_proto_refine_topm: int,
     query_proto_refine_clip: float,
@@ -6034,6 +6114,21 @@ def _evaluate_metric_qknn(
         clip=float(scenario_residual_clip),
         scope=str(scenario_residual_scope),
     )
+    scores, scenario_proto_refine_count, stored_scenario_proto_refine_scalars = _scenario_proto_refine_scores(
+        scores,
+        features=adapted,
+        support_indices=support_indices,
+        support_labels=support_labels,
+        query_indices=query_indices,
+        scenarios=scenarios,
+        class_labels=old_labels + new_labels,
+        old_labels=old_labels,
+        new_labels=new_labels,
+        weight=float(scenario_proto_refine_weight),
+        min_support=int(scenario_proto_refine_min_support),
+        clip=float(scenario_proto_refine_clip),
+        scope=str(scenario_proto_refine_scope),
+    )
     labelprop_edges = 0
     if float(labelprop_weight) != 0.0:
         labelprop_scores, labelprop_edges = _support_query_labelprop_scores(
@@ -6495,6 +6590,12 @@ def _evaluate_metric_qknn(
         "scenario_residual_scope": str(scenario_residual_scope),
         "scenario_residual_count": int(scenario_residual_count),
         "stored_scenario_residual_scalars": int(stored_scenario_residual_scalars),
+        "scenario_proto_refine_weight": float(scenario_proto_refine_weight),
+        "scenario_proto_refine_min_support": int(scenario_proto_refine_min_support),
+        "scenario_proto_refine_clip": float(scenario_proto_refine_clip),
+        "scenario_proto_refine_scope": str(scenario_proto_refine_scope),
+        "scenario_proto_refine_count": int(scenario_proto_refine_count),
+        "stored_scenario_proto_refine_scalars": int(stored_scenario_proto_refine_scalars),
         "query_proto_refine_weight": float(query_proto_refine_weight),
         "query_proto_refine_topm": int(query_proto_refine_topm),
         "query_proto_refine_clip": float(query_proto_refine_clip),
@@ -7622,6 +7723,10 @@ def main() -> None:
     parser.add_argument("--scenario_residual_min_classes_grid", default="2")
     parser.add_argument("--scenario_residual_clip_grid", default="1.0")
     parser.add_argument("--scenario_residual_scope_grid", default="new")
+    parser.add_argument("--scenario_proto_refine_weight_grid", default="0")
+    parser.add_argument("--scenario_proto_refine_min_support_grid", default="1")
+    parser.add_argument("--scenario_proto_refine_clip_grid", default="1.0")
+    parser.add_argument("--scenario_proto_refine_scope_grid", default="new")
     parser.add_argument("--query_proto_refine_weight_grid", default="0")
     parser.add_argument("--query_proto_refine_topm_grid", default="0")
     parser.add_argument("--query_proto_refine_clip_grid", default="2.0")
@@ -7846,6 +7951,10 @@ def main() -> None:
             qknn._parse_int_csv(args.scenario_residual_min_classes_grid),
             qknn._parse_float_csv(args.scenario_residual_clip_grid),
             qknn._parse_csv(args.scenario_residual_scope_grid),
+            qknn._parse_float_csv(args.scenario_proto_refine_weight_grid),
+            qknn._parse_int_csv(args.scenario_proto_refine_min_support_grid),
+            qknn._parse_float_csv(args.scenario_proto_refine_clip_grid),
+            qknn._parse_csv(args.scenario_proto_refine_scope_grid),
             qknn._parse_float_csv(args.query_proto_refine_weight_grid),
             qknn._parse_int_csv(args.query_proto_refine_topm_grid),
             qknn._parse_float_csv(args.query_proto_refine_clip_grid),
@@ -8061,6 +8170,10 @@ def main() -> None:
                     scenario_residual_min_classes,
                     scenario_residual_clip,
                     scenario_residual_scope,
+                    scenario_proto_refine_weight,
+                    scenario_proto_refine_min_support,
+                    scenario_proto_refine_clip,
+                    scenario_proto_refine_scope,
                     query_proto_refine_weight,
                     query_proto_refine_topm,
                     query_proto_refine_clip,
@@ -8146,6 +8259,10 @@ def main() -> None:
                         "scenario_residual_min_classes": int(scenario_residual_min_classes),
                         "scenario_residual_clip": float(scenario_residual_clip),
                         "scenario_residual_scope": str(scenario_residual_scope),
+                        "scenario_proto_refine_weight": float(scenario_proto_refine_weight),
+                        "scenario_proto_refine_min_support": int(scenario_proto_refine_min_support),
+                        "scenario_proto_refine_clip": float(scenario_proto_refine_clip),
+                        "scenario_proto_refine_scope": str(scenario_proto_refine_scope),
                         "support_bias_weight": float(support_bias_weight),
                         "support_bias_step": float(support_bias_step),
                         "support_bias_rounds": int(support_bias_rounds),
@@ -8622,6 +8739,10 @@ def main() -> None:
                         scenario_residual_min_classes=int(params["scenario_residual_min_classes"]),
                         scenario_residual_clip=float(params["scenario_residual_clip"]),
                         scenario_residual_scope=str(params["scenario_residual_scope"]),
+                        scenario_proto_refine_weight=float(params["scenario_proto_refine_weight"]),
+                        scenario_proto_refine_min_support=int(params["scenario_proto_refine_min_support"]),
+                        scenario_proto_refine_clip=float(params["scenario_proto_refine_clip"]),
+                        scenario_proto_refine_scope=str(params["scenario_proto_refine_scope"]),
                         query_proto_refine_weight=float(params["query_proto_refine_weight"]),
                         query_proto_refine_topm=int(params["query_proto_refine_topm"]),
                         query_proto_refine_clip=float(params["query_proto_refine_clip"]),
@@ -8956,6 +9077,12 @@ def main() -> None:
         "scenario_residual_scope",
         "scenario_residual_count",
         "stored_scenario_residual_scalars",
+        "scenario_proto_refine_weight",
+        "scenario_proto_refine_min_support",
+        "scenario_proto_refine_clip",
+        "scenario_proto_refine_scope",
+        "scenario_proto_refine_count",
+        "stored_scenario_proto_refine_scalars",
         "query_proto_refine_weight",
         "query_proto_refine_topm",
         "query_proto_refine_clip",

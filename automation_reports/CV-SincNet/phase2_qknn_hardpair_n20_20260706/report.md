@@ -4573,3 +4573,36 @@ V55提交后继续做了三组本地只读诊断，均未形成可提交策略�
 | 5 | `1-2=50/70`,`19-3=52/70`,`2-13=52/70`,`1-12=53/70` | `19-3=52/70`,`1-2=53/70`,`1-12=54/70`,`1-15=54/70` |
 
 当前解释边界：场景残差补全是有效的support-only机制，能解除严格K5中`1-2`缺场景support导致的硬mask坍塌，并明显提升新类均值；但它把最低类转移到`19-3`，K5/K10都仍未满足`min_new>=75%`。因此本轮仍不能声明qKNNV42严格K优化目标完成，也不应同步N607正式实验。下一步应在该残差补全基础上增加“低类候选间局部保守竞争/风险门控”，重点约束`19-3/2-13/1-12/1-2`这一组同LEO场景下的互相挤压，而不是再做全局分数平移。
+
+### 2026-07-06严格K残差后局部门控与labelprop复核
+
+本节继续严格K-shot路线：`pool_per_old=K,pool_per_new=K`，不使用active候选池。所有support/query仍来自目标接收机域并叠加LEO星地信道；query真值只用于离线评估和错误流审计。本节没有N607 preflight、没有scp、没有远端启动。`E:\type10-7`根目录仍不是Git仓库，本轮代码改动和artifact镜像只落在Git承载面`E:\type10-7\github_publish\CVS-RFFI-repo`。
+
+#### 代码变更与验证
+
+| item | result |
+| --- | --- |
+| `code/scripts/phase2_support_metric_qknn_probe.py` | 新增`_scenario_proto_refine_scores`和`--scenario_proto_refine_*_grid`，用于support-only同场景类原型细化诊断；默认权重为0，不改变既有策略。 |
+| `code/tests/test_phase2_qknn_scenario_residual_completion.py` | 新增同场景原型细化单测，验证只用support同场景原型时能推高正确类分数。 |
+| `conda run --no-capture-output -n ssr-gpu python -m py_compile code\scripts\phase2_support_metric_qknn_probe.py` | PASS |
+| `conda run --no-capture-output -n ssr-gpu python code\tests\test_phase2_qknn_scenario_residual_completion.py` | PASS，4 tests |
+
+#### 严格K结果
+
+| diagnostic | K | rows | best setting | old | min_old | seen_new | min_new | 低类/结论 |
+| --- | ---: | ---: | --- | ---: | ---: | ---: | ---: | --- |
+| `k5_strict_scenario_residual_best_predictions.csv` | 5 | 1820 query rows | 残差最佳逐query审计 | 93.10% | 81.43% | 86.14% | 74.29% | `19-3=52/70`,`1-2=53/70`,`1-12/1-15=54/70`；低类来自`19-3<->1-15`,`1-12<->1-1/8-3`,`1-2->1-19`等局部混淆。 |
+| `k5_strict_residual_pairlinear_grid_20260706.csv` | 5 | 32 | 残差最佳叠加support-LOO pair linear | 93.10% | 81.43% | 86.14% | 74.29% | 最优仍为`support_loo_pair_linear_weight=0`；pair linear不能补足K5最后1个query。 |
+| `k5_strict_scenario_proto_refine_grid_20260706.csv` | 5 | 36 | 同场景原型细化网格 | 93.10% | 81.43% | 86.14% | 74.29% | 最优仍为`scenario_proto_refine_weight=0`；非零权重只转移低类，不提升joint排序。 |
+| `k5_strict_residual_policy_gate_grid_20260706.csv` | 5 | 6 | 残差最佳叠加已有策略门控 | 92.38% | 80.00% | 86.57% | 74.29% | 新类均值小升，但旧类均值下降且地板仍为`19-3=52/70`。 |
+| `k5_strict_residual_labelprop_grid_20260706.csv` | 5 | 96 | `labelprop_weight=0.035,k=8,alpha=0.72,temp=0.08,rounds=8,local_competition=0.04` | 92.38% | 80.00% | 86.71% | 74.29% | K5仍没有任何行通过新类75%地板；最低仍是`19-3=52/70`。 |
+| `k10_strict_residual_policy_gate_grid_20260706.csv` | 10 | 6 | 残差最佳叠加已有策略门控 | 94.05% | 84.29% | 88.29% | 75.71% | `adaptive_qknn_policy=none`的轻量labelprop行通过joint target；旧V42/V50类门控反而回退到72.86%地板。 |
+| `k10_strict_residual_labelprop_grid_20260706.csv` | 10 | 48 | `labelprop_weight=0.035,k=8,alpha=0.8,temp=0.08,rounds=8` | 94.05% | 84.29% | 88.36% | 75.71% | 16/48行通过joint target；最低类为`1-12=53/70`，`1-1/1-2=56/70`。 |
+
+#### 当前决策
+
+K10严格路线出现可保留正向候选：相对上一节`k10_strict_scenario_residual_grid_20260706.csv`的`old=94.05%,min_old=84.29%,seen_new=87.50%,min_new=74.29%`，新的轻量labelprop组合保持旧类域适应不降，并把`seen_new`提升到88.36%、`min_new`提升到75.71%，首次在严格K10固定到达协议下通过`old>=80%`与`seen-new floor>=75%`的joint target。
+
+K5严格路线仍未解决。最佳K5只把`seen_new`推进到86.71%，`min_new`仍为74.29%，且旧类floor刚好80.00%；因此不能声明K5目标完成。下一步应围绕`19-3<->1-15`的`leo_clear_weak`对称混淆做support-only风险建模，而不是继续扩大全局labelprop或同场景原型平移。
+
+本节所有正向结论仍是本地Stage2-C identity诊断；unknown拒识/FAR未评估，未同步N607，不能写成部署成功或论文最终结论。
