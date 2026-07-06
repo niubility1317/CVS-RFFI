@@ -4510,3 +4510,25 @@ V55提交后继续做了三组本地只读诊断，均未形成可提交策略�
 | `k10_oldstable_newscenario_diverse_local_competition_grid` | 10 | active `pool_per=80`中选K=10 | `old_stable_new_scenario_diverse + local_competition_weight=0.02,k=3,scope=role,qpr=0.01` | 95.48% | 87.14% | 91.79% | 80.00% | K10 active-enrollment首个同时抬旧类和新类地板候选；低类为`1-12/2-13=56/70`、`11-10/8-3=57/70`。 |
 
 逐query诊断显示，严格K5的`1-2`错误主要集中在`leo_clear_weak`场景，固定support没有覆盖该场景；显式fallback解屏蔽后仍不能净增正确数，并会把低类扩展到`2-13=50/70`。因此当前最清晰的可推进方向不是继续做全局fallback或query graph，而是把“从接收候选流中选择K个support”的active-enrollment流程和support原型局部竞争结合起来。该K5/K10候选仍不能作为“只有K个样本到达且无候选pool可选”的严格部署证据；若卫星端协议允许先接收更多叠加LEO目标域候选、再只保留/标注K=5或K=10个support用于注册，则目前最强候选分别是K5的`old_stable_new_scenario_centroid + local_competition`和K10的`old_stable_new_scenario_diverse + local_competition + qpr`。下一步应验证这两个active候选的多seed稳定性，并把候选pool选择协议写清楚后再考虑N607正式实验。
+
+### 2026-07-06active候选多seed稳定性复核
+
+本节对上一节两个active-enrollment候选追加20个seed复核。协议边界不变：support/query均来自目标接收机域且叠加LEO星地信道；但`pool_per_old=80,pool_per_new=80`表示先从更大目标域候选池中选择K个support，因此该结果只支持“主动选择K-shot support”的路线，不支持“实际只接收到固定K个样本且无法选择”的严格到达协议。本节没有N607 preflight、没有scp、没有远端启动。
+
+| sweep | K | policy/setting | seeds | pass_old80 | pass_new75 | pass_both | mean old | worst old | mean seen_new | worst seen_new | mean min_old | worst min_old | mean min_new | worst min_new | verdict |
+| --- | ---: | --- | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | --- |
+| `k5_active_centroid_localcomp_seed_sweep.csv` | 5 | `old_stable_new_scenario_centroid + local_competition_weight=0.04,k=5,scope=all` | 421030-421049 | 18/20 | 3/20 | 1/20 | 93.10% | 91.43% | 86.82% | 85.71% | 82.14% | 77.14% | 73.93% | 71.43% | 单seed可过75%新类地板，但多seed不稳定；不能作为当前主线完成证据。 |
+| `k10_active_oldstable_diverse_localcomp_seed_sweep.csv` | 10 | `old_stable_new_scenario_diverse + local_competition_weight=0.02,k=3,scope=role,qpr=0.01` | 421030-421049 | 20/20 | 20/20 | 20/20 | 94.60% | 93.10% | 91.71% | 91.36% | 85.57% | 81.43% | 79.36% | 78.57% | 当前最强本地候选；20/20同时满足旧类floor>=80%和新类floor>=75%，且最差新类floor仍为78.57%。 |
+
+| sweep | best/worst row | seed | old | min_old | seen_new | min_new | 低类说明 |
+| --- | --- | ---: | ---: | ---: | ---: | ---: | --- |
+| K5 active | best joint floor | 421031 | 91.43% | 77.14% | 87.43% | 75.71% | 新类刚过75%，但旧类最低`20-19=54/70`，旧类floor不合格。 |
+| K5 active | worst joint floor | 421040 | 94.05% | 84.29% | 86.57% | 71.43% | 旧类合格但新类最低`1-12=50/70`，仍复现最低类过低。 |
+| K10 active hybrid | best joint floor | 421040 | 95.95% | 88.57% | 92.14% | 80.00% | 新类最低`1-12=56/70`，旧类最低`14-7=62/70`。 |
+| K10 active hybrid | worst joint floor | 421039 | 95.00% | 87.14% | 91.36% | 78.57% | 新类最低`1-12/2-13=55/70`，仍高于75%门槛。 |
+
+#### 当前决策
+
+严格固定K到达路线仍未解决：K5 strict地板停在71.43%，K10 strict地板也停在71.43%，局部竞争、query graph、显式scenario fallback和query proto refine只能抬均值或转移最低类，不能稳定解决低类坍塌。K5 active路线证明support场景覆盖选择有效，但20seed只有1/20同时过旧类和新类floor，仍不够稳。K10 active hybrid是当前唯一同时改善旧类域适应和新类地板的候选：相对K10 strict best的`old=94.05%,min_old=84.29%,seen_new=87.07%,min_new=71.43%`，20seed均值达到`old=94.60%,min_old=85.57%,seen_new=91.71%,min_new=79.36%`，最差seed也保持`min_old>=81.43%,min_new>=78.57%`。
+
+因此下一步若继续本地优化，应围绕K10 active hybrid做两个收敛动作：一是把`pool_per=80`主动候选池协议写成明确Stage2-C子协议，说明星上/地面流程如何只保留或标注K=10个support；二是在该候选上补unknown拒识/FAR和更多target receiver复核。若目标必须严格限制为“只接收到K=5或K=10个样本且无候选池选择”，则本轮尚未找到可发布优化，不能同步N607正式实验。
