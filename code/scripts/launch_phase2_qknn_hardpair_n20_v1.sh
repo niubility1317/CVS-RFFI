@@ -9,6 +9,7 @@ HARD_PAIR_WEIGHT="${HARD_PAIR_WEIGHT:-0.08}"
 HARD_OLD_WEIGHT="${HARD_OLD_WEIGHT:-0.04}"
 EXPORT_SEED="${EXPORT_SEED:-4070391}"
 EXPORT_REFERENCE_NPZ="${EXPORT_REFERENCE_NPZ:-}"
+SATELLITE_TTA_POLICY="${SATELLITE_TTA_POLICY:-none}"
 RUN_ROOT="${RUN_ROOT:-${ROOT}/runs/phase2_qknn_hardpair_n20_20260706}"
 
 OLD_TX="14-10,14-7,20-15,20-19,6-15,8-20"
@@ -53,6 +54,7 @@ CUDA_VISIBLE_DEVICES="${GPU}" "${PYTHON}" -u code/scripts/train_apply_phase1_iq_
   --max_export_samples_per_tx 80 \
   --num_old_classes 6 \
   --sat_scenarios leo_clear_weak,leo_low_elev_weak,leo_rain_weak \
+  --satellite_tta_policy "${SATELLITE_TTA_POLICY}" \
   --star_ground_channel_impl simplified_leo_residual \
   --batch_size 384 \
   --epochs 60 \

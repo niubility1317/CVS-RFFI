@@ -44,6 +44,8 @@ from export_spaceborne_features import (  # noqa: E402
     _meta_to_list,
     _rms_normalize_iq,
     _resolve_tx_indices,
+    _satellite_tta_view_count,
+    _satellite_tta_views,
     _validate_star_ground_impl,
 )
 from training_controls import parse_sat_scenarios, sat_channel_config_for_scenario  # noqa: E402
@@ -745,12 +747,26 @@ def _export_role(
             x_eval, _ = apply_sat_channel_for_scenario(x, scenario, args, gen=gen, return_meta=False)
         elif mode != "clean":
             raise ValueError(f"unknown channel_mode={channel_mode!r}")
-        if use_adapter:
-            repair_mode = str(args.input_repair)
-            if mode == "clean" and str(args.clean_input_repair_mode).lower() != "same":
-                repair_mode = "raw"
-            x_eval = adapter(_apply_input_repair(x_eval, repair_mode))
-        z, logits = _feature_forward(model, x_eval, str(args.feature_name))
+        tta_policy = str(getattr(args, "satellite_tta_policy", "none")) if mode == "satellite" else "none"
+        tta_views = _satellite_tta_views(x_eval, tta_policy)
+        z_views: list[torch.Tensor] = []
+        logit_views: list[torch.Tensor] = []
+        for _tta_name, x_view in tta_views:
+            x_forward = x_view
+            if use_adapter:
+                repair_mode = str(args.input_repair)
+                if mode == "clean" and str(args.clean_input_repair_mode).lower() != "same":
+                    repair_mode = "raw"
+                x_forward = adapter(_apply_input_repair(x_forward, repair_mode))
+            z_view, logits_view = _feature_forward(model, x_forward, str(args.feature_name))
+            z_views.append(z_view.float())
+            logit_views.append(logits_view.float())
+        if len(z_views) == 1:
+            z = z_views[0]
+            logits = logit_views[0]
+        else:
+            z = torch.stack(z_views, dim=0).mean(dim=0)
+            logits = torch.stack(logit_views, dim=0).mean(dim=0)
         n = int(x.shape[0])
         feature_buf.append(z.detach().cpu().float().numpy())
         logit_buf.append(logits.detach().cpu().float().numpy())
@@ -764,6 +780,8 @@ def _export_role(
         roles.extend([role] * n)
         adapted_view = "model_feature_adapter" if str(args.model_adapter_mode).lower() != "none" else "iq_frontend"
         view_name = adapted_view if use_adapter else ("identity_satellite" if mode == "satellite" else "clean")
+        if mode == "satellite" and str(tta_policy).strip().lower() not in {"", "none", "off", "0"}:
+            view_name = f"{view_name}|tta_mean={tta_policy}"
         views.extend([view_name] * n)
         scenario_buf.extend([scenario] * n)
     return {
@@ -845,6 +863,9 @@ def export_cell(
         "checkpoint": str(args.ckpt),
         "target_channel_view": "satellite/LEO",
         "channel_views": ["model_feature_adapter" if str(args.model_adapter_mode).lower() != "none" else "iq_frontend"],
+        "satellite_tta_policy": str(args.satellite_tta_policy),
+        "satellite_tta_view_count": _satellite_tta_view_count(str(args.satellite_tta_policy)),
+        "satellite_tta_aggregation": "feature_logit_mean_per_physical_sample",
         "star_ground_channel_impl": str(args.star_ground_channel_impl),
         "sat_scenarios": scenarios,
         "source": source_info,
@@ -925,6 +946,12 @@ def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
     p.add_argument("--max_export_samples_per_tx", type=int, default=200)
     p.add_argument("--num_old_classes", type=int, default=6)
     p.add_argument("--sat_scenarios", default="leo_clear_weak,leo_low_elev_weak,leo_rain_weak")
+    p.add_argument(
+        "--satellite_tta_policy",
+        default="none",
+        choices=["none", "rx_light5", "sat_rx_phys11", "sat_rx_blind15", "sat_rx_repair9", "sat_rx_repair_anchor7"],
+        help="receive-side LEO repair/TTA views averaged into one exported feature row per physical sample",
+    )
     p.add_argument("--star_ground_channel_impl", default="simplified_leo_residual", choices=["legacy_satellite", "simplified_leo_residual"])
     p.add_argument("--sat_fs_hz", type=float, default=25e6)
     p.add_argument("--sat_fc_hz", type=float, default=2.462e9)
