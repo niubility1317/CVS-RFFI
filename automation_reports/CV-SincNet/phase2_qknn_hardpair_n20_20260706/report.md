@@ -4781,3 +4781,35 @@ support quality gate结果为负。`support_quality_loo_mean_acc`与`query_min_s
 | `20-19` | old | 61/70 | 87.14% | `14-7`6，`14-10`3 |
 
 当前决策：K5严格路线已经存在两个可报告候选。若目标优先“seen-new均值”，保留`seed=421052`；若目标优先“新类增多下最低类不坍塌和旧类域适应”，`seed=421070`更强。但二者都仍是support样本敏感性证据，不是可部署selection gate。下一步应做注册期support候选池的oracle-free选择机制，或在完整Stage2-C包上重新生成互斥`Y_new/Y_unknown`的qKNN候选；不应把support LOO阈值作为默认放行条件。
+
+#### K5高floor候选窄参数晋升
+
+本节在`seed=421070`高floor支持集上继续做窄参数复核，验证能否在不跌破最低新类的前提下追回seen-new均值。仍使用同一严格K协议：`K=5`，`pool_per_old=5,pool_per_new=5`，`old_role=target_old`，`new_role=target_unknown`，`exclude_pool_from_query=false`。只扫描既有参数面`aux_score_weight/labelprop/scenario_residual/old_bias`，不修改代码、不使用query真值调参进入运行过程。本节没有N607 preflight、没有scp、没有远端启动。
+
+输出文件：
+
+| artifact | rows | purpose |
+| --- | ---: | --- |
+| `k5_strict_seed421070_floor_param_refine_20260707.csv/json` | 162 | `seed=421070`高floor候选的窄参数网格。 |
+| `k5_strict_seed421070_floor_param_best_predictions_20260707.csv/json` | 1 | 最优参数单点复验。 |
+| `k5_strict_seed421070_floor_param_best_predictions_rows_20260707.csv` | 1820 | 最优参数逐query预测明细。 |
+
+最优行：
+
+| seed | setting | old | min_old | seen_new | min_new | support sha | query sha | verdict |
+| ---: | --- | ---: | ---: | ---: | ---: | --- | --- | --- |
+| 421070 | `aux_score_weight=0.34,labelprop_weight=0.025,labelprop_alpha=0.76,scenario_residual_weight=0.5,old_bias=0.001` | 94.52% | 85.71% | 90.14% | 81.43% | `a84b66e28e565c52` | `75c99f6361810ca9` | 当前K5严格高floor最优候选；相对上一`seed=421070`单点，旧类不回退，seen-new均值+0.78pp，最低新类+1.43pp。 |
+
+逐类最低行：
+
+| class | role | correct/total | acc | main wrong preds |
+| --- | --- | ---: | ---: | --- |
+| `1-12` | new | 57/70 | 81.43% | `1-1`7，`8-3`3，`1-14`1，`2-13`1，`1-18`1 |
+| `1-14` | new | 57/70 | 81.43% | `1-10`8，`18-5`2，`1-16`1，`1-18`1，`2-13`1 |
+| `1-15` | new | 59/70 | 84.29% | `19-3`11 |
+| `19-3` | new | 59/70 | 84.29% | `1-15`10，`1-19`1 |
+| `2-13` | new | 59/70 | 84.29% | `11-10`4，`10-10`3，`4-10`2，`1-2`1，`18-5`1 |
+| `14-7` | old | 60/70 | 85.71% | `20-19`9，`14-10`1 |
+| `20-19` | old | 61/70 | 87.14% | `14-7`6，`14-10`3 |
+
+当前K5严格结论更新为：在N20 HP08L5注册新类包上，qKNNV42参数面存在一条同时满足旧类域适应和新类floor的候选，`old=94.52%,min_old=85.71%,seen_new=90.14%,min_new=81.43%`。该结果仍不能声明真实Stage2-C unknown/FAR，因为本包没有互斥`target_new/target_unknown`字段；它应作为K5旧类适应+seen-new注册识别晋升候选，下一步必须迁移到完整Stage2-C互斥未知包或实现不依赖query真值的注册期support选择机制。
