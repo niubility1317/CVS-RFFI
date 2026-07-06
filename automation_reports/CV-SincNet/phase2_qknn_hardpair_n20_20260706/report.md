@@ -4662,3 +4662,35 @@ K10 strict正向候选仍保持上一节结论：`k10_strict_residual_labelprop_
 `scenario_pair_refine_center`作为默认关闭诊断参数可保留，因为它不改变既有默认路线且能复现实验假设；但它不是K5修复方向。当前K5严格最佳仍是上一节残差+labelprop行：`old=92.38%,min_old=80.00%,seen_new=86.71%,min_new=74.29%`，最低类仍为`19-3=52/70`。中心化pair边界最多提升`1-15`到54/70以上，但不能把`19-3`过75%，强权重还会压低`1-2/2-13`。
 
 下一步不应继续增加pair边界权重。更合理的方向是做逐query分数审计后的“低类安全重排”或“scenario内候选集局部最小类保护”，但必须只使用K-shot support和无标签query分布，且要先证明不会牺牲`1-2/2-13/1-12`地板。
+
+### 2026-07-07严格K labelprop旧类保护窄网格
+
+本节继续严格K路线，不修改代码，复用既有`scenario_residual`和`labelprop`默认关闭参数面，在当前HP08L5 N20特征包上做窄网格。目标是先验证能否在当前性能基础上同时提高旧类域适应和新类增多时的整体稳定性，再单独记录最低类瓶颈。特征文件仍为`features_hardpair_HP08L5_n20.npz`，辅助特征为`features_hardpair_HP08L5_n20_leo_fftlogmag96.npz`，`old_role=target_old`，`new_role=target_unknown`，`exclude_pool_from_query=false`。本节没有N607 preflight、没有scp、没有远端启动。
+
+#### unknown/FAR协议复核
+
+当前N20 HP08L5包不能直接声明Stage2-C unknown/FAR。该包的`target_unknown`实际承载20个目标域注册新类，manifest只有`target_old`和`target_unknown`，没有独立`target_new`和真实`unknown_tx_ids`；`proxy_unknown`是115个源侧代理未知类。因此本包可评估旧类域适应和新类注册识别，但不能把`target_unknown`列当作真实未知拒识。
+
+已存在的完整Stage2-C冻结诊断包`phase2_adv3b02_frozen_manytx_unknown_diag_20260706`具备`target_new`和`target_unknown`分离：6个旧类、8个seen-new、8个真实unknown，目标侧5个接收机且`satellite/LEO`。该诊断为负证据，`target_unknown_training_count=0`、`target_unknown_calibration_count=0`、`uses_unknown_query_for_threshold=false`、`unknown_query_eval_only=true`，但M=1..5均未达标：最佳unknown侧接近`unknown_reject_rate=0.974359`、`unknown_FAR=0.025641`，known侧`old_acc<=0.136752`且`seen_new_acc=0`。因此它不能替代当前qKNNV42 N20完成声明，只能说明unknown/FAR仍需独立协议包和新机制。
+
+#### 严格K结果
+
+验证命令均为本地串行`conda run --no-capture-output -n ssr-gpu python code\scripts\phase2_support_metric_qknn_probe.py`，分别运行K5、K10窄网格，并对K5最佳单点追加`--output_predictions_csv`导出逐行预测。未修改代码，未运行N607远端任务。
+
+| diagnostic | K | rows | setting | old | min_old | seen_new | min_new | 判定 |
+| --- | ---: | ---: | --- | ---: | ---: | ---: | ---: | --- |
+| `k5_strict_labelprop_old_guard_refine_20260707.csv` | 5 | 108 | `labelprop_weight=0.025,k=10,alpha=0.72,temp=0.05,rounds=8`，`scenario_residual_weight=0.5` | 93.10% | 81.43% | 89.00% | 74.29% | 晋升。相对上一K5基线`92.38/80.00/86.71/74.29`，旧类和新类均值同时提升，但最低类仍差1个query过75%。 |
+| `k10_strict_labelprop_old_guard_refine_20260707.csv` | 10 | 108 | 同上，`aux_score_weight=0.34` | 94.05% | 84.29% | 91.64% | 81.43% | 晋升且通过new floor。相对上一K10基线`94.05/84.29/88.36/75.71`，旧类不回退，新类均值和地板显著提升。 |
+
+#### K5最低类审计
+
+新K5最佳单点已导出逐行预测：`k5_strict_labelprop_old_guard_best_predictions_rows_20260707.csv`。预测仍采用旧/新角色内均衡分配，新类每类预测总量均为70，因此最低类问题不是quota不均衡。
+
+| truth | correct/total | acc | main wrong preds |
+| --- | ---: | ---: | --- |
+| `19-3` | 52/70 | 74.29% | `1-15`17，`8-18`1 |
+| `1-15` | 53/70 | 75.71% | `19-3`16，`1-19`1 |
+| `1-12` | 55/70 | 78.57% | `1-1`9，`1-14`2，`4-10`2，`8-3`2 |
+| `1-2` | 55/70 | 78.57% | `1-19`6，`10-10`3，`8-3`2 |
+
+`19-3`的18个错误全部发生在`leo_clear_weak`，其中17个raw top1就是`1-15`；`truth_minus_assigned_pred`中位数约`-0.2924`，说明当前分数空间仍把这些样本强判为`1-15`。因此本轮可升级默认参数面，但不能声称K5最低类已修复。下一步应围绕`19-3/1-15`做更强的support-only表示或注册期校准，而不是继续增加pair边界权重。
