@@ -3163,6 +3163,292 @@ def _support_loo_top2_pair_gate_scores(
     )
 
 
+def _support_query_neighborhood_gate_scores(
+    scores: np.ndarray,
+    *,
+    features: np.ndarray,
+    support_indices: np.ndarray,
+    support_labels: np.ndarray,
+    query_indices: np.ndarray,
+    support_scores: np.ndarray,
+    class_labels: list[str],
+    old_labels: list[str],
+    new_labels: list[str],
+    old_query_count: int,
+    top_classes: int,
+    neighbor_count: int,
+    query_topm: int,
+    weight: float,
+    alpha: float,
+    clip: float,
+    gate_margin: float,
+    query_neighbor_weight: float,
+) -> tuple[np.ndarray, int, int, float, float, str]:
+    """Compressed one-vs-neighborhood gate for hard new classes.
+
+    Candidate classes come from support LOO errors plus unlabeled query top-M
+    ambiguity. The fitted state is a small ridge boundary over prototype
+    similarity features; no raw support or query samples are persisted.
+    """
+    if float(weight) == 0.0 or int(top_classes) <= 0 or int(neighbor_count) <= 0:
+        return scores, 0, 0, 0.0, 0.0, ""
+    labels = np.asarray(support_labels, dtype=object).astype(str)
+    label_to_index = {label: index for index, label in enumerate(class_labels)}
+    new_set = set(new_labels)
+    old_set = set(old_labels)
+    old_support_count = int(sum(1 for label in labels.tolist() if label in old_set))
+    loo_pred = _assignment_predict(
+        np.asarray(support_scores, dtype=np.float64),
+        old_count=old_support_count,
+        old_labels=old_labels,
+        new_labels=new_labels,
+        query_scenarios=np.asarray(["support"] * int(labels.size), dtype=object),
+        scenario_balanced_assignment=False,
+        role_balanced_assignment=True,
+        balanced_assignment=True,
+    )
+    before_per_class: list[float] = []
+    for label in class_labels:
+        mask = labels == label
+        before_per_class.append(float(np.mean(loo_pred[mask] == label)) if bool(np.any(mask)) else 0.0)
+
+    new_indices = np.asarray([label_to_index[label] for label in new_labels if label in label_to_index], dtype=int)
+    if new_indices.size < 2:
+        return scores, 0, 0, float(min(before_per_class, default=0.0)), float(np.mean(before_per_class) if before_per_class else 0.0), ""
+
+    risk: dict[str, float] = {label: 0.0 for label in new_labels}
+    neighbor_votes: dict[str, dict[str, float]] = {label: {} for label in new_labels}
+    for truth_label, pred_label in zip(labels.tolist(), loo_pred.tolist()):
+        truth = str(truth_label)
+        pred = str(pred_label)
+        if truth == pred or truth not in new_set or pred not in new_set:
+            continue
+        risk[truth] = risk.get(truth, 0.0) + 1.0
+        votes = neighbor_votes.setdefault(truth, {})
+        votes[pred] = votes.get(pred, 0.0) + 1.0
+
+    query_new_rows = np.arange(int(old_query_count), int(scores.shape[0]), dtype=int)
+    gate = max(float(gate_margin), 1e-8)
+    local_topm = max(2, min(int(query_topm), int(new_indices.size)))
+    index_to_label = {index: label for label, index in label_to_index.items()}
+    if float(query_neighbor_weight) > 0.0 and query_new_rows.size:
+        local = np.asarray(scores, dtype=np.float64)[query_new_rows][:, new_indices]
+        order = np.argsort(local, axis=1)[:, -local_topm:][:, ::-1]
+        top_global = new_indices[order]
+        top_scores = np.take_along_axis(local, order, axis=1)
+        ambiguity = 1.0 - np.clip((top_scores[:, 0] - top_scores[:, -1]) / (2.0 * gate), 0.0, 1.0)
+        for row_labels, row_ambiguity in zip(top_global.tolist(), ambiguity.tolist()):
+            if float(row_ambiguity) <= 0.0:
+                continue
+            labels_top = [index_to_label.get(int(idx), "") for idx in row_labels]
+            labels_top = [label for label in labels_top if label in new_set]
+            for position, target in enumerate(labels_top):
+                position_weight = 1.0 / float(position + 1)
+                risk[target] = risk.get(target, 0.0) + float(query_neighbor_weight) * float(row_ambiguity) * position_weight
+                votes = neighbor_votes.setdefault(target, {})
+                for neighbor in labels_top:
+                    if neighbor == target:
+                        continue
+                    votes[neighbor] = votes.get(neighbor, 0.0) + (
+                        float(query_neighbor_weight) * float(row_ambiguity) / max(1.0, float(len(labels_top) - 1))
+                    )
+
+    support = qknn._normalize_rows(features[support_indices])
+    query = qknn._normalize_rows(features[query_indices])
+    prototypes: list[np.ndarray] = []
+    for label in class_labels:
+        class_support = support[labels == label]
+        if class_support.size == 0:
+            prototypes.append(np.zeros(features.shape[1], dtype=np.float64))
+        else:
+            prototypes.append(qknn._normalize_rows(class_support.mean(axis=0, keepdims=True))[0])
+    proto = qknn._normalize_rows(np.stack(prototypes, axis=0))
+    proto_sim = proto @ proto.T
+
+    candidates = [(label, score) for label, score in risk.items() if float(score) > 0.0]
+    candidates.sort(key=lambda item: (-float(item[1]), item[0]))
+    candidates = candidates[: max(0, int(top_classes))]
+    if not candidates:
+        return scores, 0, 0, float(min(before_per_class, default=0.0)), float(np.mean(before_per_class) if before_per_class else 0.0), ""
+
+    adjusted = np.asarray(scores, dtype=np.float64).copy()
+    gate_support_scores = np.asarray(support_scores, dtype=np.float64).copy()
+    support_new_rows = np.where(np.asarray([label in new_set for label in labels.tolist()], dtype=bool))[0]
+    alpha_value = max(float(alpha), 1e-8)
+    used = 0
+    stored_scalars = 0
+    used_neighborhoods: list[str] = []
+
+    def support_audit(score_matrix: np.ndarray) -> tuple[dict[str, float], float, float]:
+        pred = _assignment_predict(
+            score_matrix,
+            old_count=old_support_count,
+            old_labels=old_labels,
+            new_labels=new_labels,
+            query_scenarios=np.asarray(["support"] * int(labels.size), dtype=object),
+            scenario_balanced_assignment=False,
+            role_balanced_assignment=True,
+            balanced_assignment=True,
+        )
+        per_label: dict[str, float] = {}
+        per_values: list[float] = []
+        for class_label in class_labels:
+            mask = labels == class_label
+            value = float(np.mean(pred[mask] == class_label)) if bool(np.any(mask)) else 0.0
+            per_label[class_label] = value
+            per_values.append(value)
+        return per_label, float(min(per_values, default=0.0)), float(np.mean(per_values) if per_values else 0.0)
+
+    def choose_neighbors(target: str) -> list[str]:
+        votes = neighbor_votes.get(target, {})
+        ranked = [(neighbor, value) for neighbor, value in votes.items() if neighbor in new_set and neighbor != target]
+        ranked.sort(key=lambda item: (-float(item[1]), item[0]))
+        selected = [neighbor for neighbor, _value in ranked[: max(0, int(neighbor_count))]]
+        if len(selected) >= int(neighbor_count):
+            return selected
+        target_idx = label_to_index[target]
+        sim_rank = []
+        for label in new_labels:
+            if label == target or label in selected:
+                continue
+            sim_rank.append((label, float(proto_sim[target_idx, label_to_index[label]])))
+        sim_rank.sort(key=lambda item: (-float(item[1]), item[0]))
+        for label, _sim in sim_rank:
+            selected.append(label)
+            if len(selected) >= int(neighbor_count):
+                break
+        return selected
+
+    def gated_rows(score_matrix: np.ndarray, rows: np.ndarray, target_idx: int, neighbor_indices: np.ndarray) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
+        if rows.size == 0 or neighbor_indices.size == 0:
+            return rows[:0], np.asarray([], dtype=int), np.asarray([], dtype=np.float64)
+        local_new = score_matrix[rows][:, new_indices]
+        order = np.argsort(local_new, axis=1)[:, -local_topm:]
+        top_set = new_indices[order]
+        in_top = np.any(top_set == int(target_idx), axis=1)
+        for neighbor_idx in neighbor_indices.tolist():
+            in_top = in_top | np.any(top_set == int(neighbor_idx), axis=1)
+        neighbor_scores = score_matrix[rows][:, neighbor_indices]
+        best_neighbor_local = np.argmax(neighbor_scores, axis=1)
+        best_neighbor_idx = neighbor_indices[best_neighbor_local]
+        gap = np.abs(score_matrix[rows, target_idx] - neighbor_scores[np.arange(neighbor_scores.shape[0]), best_neighbor_local])
+        keep = in_top & (gap <= gate)
+        kept_rows = rows[keep]
+        if kept_rows.size == 0:
+            return kept_rows, np.asarray([], dtype=int), np.asarray([], dtype=np.float64)
+        factors = 1.0 - np.clip(gap[keep] / gate, 0.0, 1.0)
+        return kept_rows, best_neighbor_idx[keep].astype(int), factors.astype(np.float64)
+
+    for target, _risk_value in candidates:
+        if target not in label_to_index:
+            continue
+        neighbors = choose_neighbors(target)
+        if not neighbors:
+            continue
+        target_idx = label_to_index[target]
+        neighbor_indices = np.asarray([label_to_index[label] for label in neighbors if label in label_to_index], dtype=int)
+        if neighbor_indices.size == 0:
+            continue
+        train_mask = (labels == target) | np.isin(labels, np.asarray(neighbors, dtype=object))
+        train_support = support[train_mask]
+        train_labels = labels[train_mask]
+        if train_support.shape[0] < 4 or len(set(train_labels.tolist())) < 2:
+            continue
+        target_sim = train_support @ proto[target_idx]
+        neighbor_sim = train_support @ proto[neighbor_indices].T
+        max_neighbor_sim = np.max(neighbor_sim, axis=1)
+        mean_neighbor_sim = np.mean(neighbor_sim, axis=1)
+        x = np.stack(
+            [
+                target_sim - max_neighbor_sim,
+                target_sim,
+                max_neighbor_sim,
+                mean_neighbor_sim,
+                np.ones_like(target_sim),
+            ],
+            axis=1,
+        )
+        y = np.where(train_labels == target, 1.0, -1.0).astype(np.float64)
+        reg = alpha_value * np.eye(x.shape[1], dtype=np.float64)
+        reg[-1, -1] = alpha_value * 0.01
+        try:
+            coeff = np.linalg.solve(x.T @ x + reg, x.T @ y)
+        except np.linalg.LinAlgError:
+            coeff = np.linalg.pinv(x.T @ x + reg) @ x.T @ y
+
+        before_label_acc, before_floor, before_mean = support_audit(gate_support_scores)
+        proposal_support_scores = gate_support_scores.copy()
+        s_rows, s_best_neighbor_idx, s_factors = gated_rows(
+            proposal_support_scores,
+            support_new_rows,
+            target_idx,
+            neighbor_indices,
+        )
+        if s_rows.size:
+            s_target = support[s_rows] @ proto[target_idx]
+            s_neighbor = support[s_rows] @ proto[neighbor_indices].T
+            s_max_neighbor = np.max(s_neighbor, axis=1)
+            s_mean_neighbor = np.mean(s_neighbor, axis=1)
+            sx = np.stack(
+                [s_target - s_max_neighbor, s_target, s_max_neighbor, s_mean_neighbor, np.ones_like(s_target)],
+                axis=1,
+            )
+            s_margin = np.maximum(np.clip(sx @ coeff, -float(clip), float(clip)), 0.0) * s_factors
+            s_delta = float(weight) * s_margin
+            proposal_support_scores[s_rows, target_idx] += s_delta
+            proposal_support_scores[s_rows, s_best_neighbor_idx] -= s_delta
+        after_label_acc, after_floor, after_mean = support_audit(proposal_support_scores)
+        target_before = float(before_label_acc.get(target, 0.0))
+        target_after = float(after_label_acc.get(target, 0.0))
+        if (
+            target_after <= target_before + 1e-9
+            or after_mean + 1e-9 < before_mean
+            or after_floor + 1e-9 < before_floor
+        ):
+            continue
+        rows, best_neighbor_idx, factors = gated_rows(adjusted, query_new_rows, target_idx, neighbor_indices)
+        if rows.size:
+            q_target = query[rows] @ proto[target_idx]
+            q_neighbor = query[rows] @ proto[neighbor_indices].T
+            q_max_neighbor = np.max(q_neighbor, axis=1)
+            q_mean_neighbor = np.mean(q_neighbor, axis=1)
+            qx = np.stack(
+                [q_target - q_max_neighbor, q_target, q_max_neighbor, q_mean_neighbor, np.ones_like(q_target)],
+                axis=1,
+            )
+            margin = np.maximum(np.clip(qx @ coeff, -float(clip), float(clip)), 0.0) * factors
+            delta = float(weight) * margin
+            adjusted[rows, target_idx] += delta
+            adjusted[rows, best_neighbor_idx] -= delta
+        gate_support_scores = proposal_support_scores
+        used += 1
+        stored_scalars += int(coeff.size + neighbor_indices.size + 2)
+        used_neighborhoods.append(f"{target}->" + ",".join(neighbors[:8]))
+
+    after_pred = _assignment_predict(
+        gate_support_scores,
+        old_count=old_support_count,
+        old_labels=old_labels,
+        new_labels=new_labels,
+        query_scenarios=np.asarray(["support"] * int(labels.size), dtype=object),
+        scenario_balanced_assignment=False,
+        role_balanced_assignment=True,
+        balanced_assignment=True,
+    )
+    after_per_class: list[float] = []
+    for label in class_labels:
+        mask = labels == label
+        after_per_class.append(float(np.mean(after_pred[mask] == label)) if bool(np.any(mask)) else 0.0)
+    return (
+        adjusted,
+        int(used),
+        int(stored_scalars),
+        float(min(after_per_class, default=0.0)),
+        float(np.mean(after_per_class) if after_per_class else 0.0),
+        ";".join(used_neighborhoods[:32]),
+    )
+
+
 def _mahalanobis_proto_scores(
     *,
     features: np.ndarray,
@@ -4130,7 +4416,75 @@ def _evaluate_metric_qknn(
     top2_pair_gate_top_pairs = 0
     top2_pair_gate_margin = 0.0
     top2_pair_gate_query_weight = 0.0
+    neighborhood_gate_count = 0
+    stored_neighborhood_gate_scalars = 0
+    neighborhood_gate_loo_min_acc = 0.0
+    neighborhood_gate_loo_mean_acc = 0.0
+    neighborhood_gate_neighborhoods = ""
+    neighborhood_gate_weight = 0.0
+    neighborhood_gate_top_classes = 0
+    neighborhood_gate_neighbor_count = 0
+    neighborhood_gate_margin = 0.0
+    neighborhood_gate_query_weight = 0.0
     policy_norm = str(adaptive_qknn_policy).strip().lower()
+    if policy_norm in {"dualview_support_v29", "stable_dualview_v29"}:
+        if support_loo_scores is None:
+            support_loo_scores = _support_loo_base_scores(
+                features=adapted,
+                support_indices=support_indices,
+                support_labels=support_labels,
+                scenarios=scenarios,
+                class_labels=old_labels + new_labels,
+                old_labels=set(old_labels),
+                topm=int(topm),
+                proto_mix=float(proto_mix),
+                radius_norm=float(radius_norm),
+                old_bias=float(old_bias),
+                neg_lambda=float(neg_lambda),
+                neg_threshold=float(neg_threshold),
+                neg_margin=float(neg_margin),
+                mutual_only=bool(mutual_only),
+                scenario_aware=bool(scenario_aware),
+            )
+        label_counts = [
+            int(np.sum(np.asarray(support_labels, dtype=object).astype(str) == str(label)))
+            for label in old_labels + new_labels
+        ]
+        min_support = float(min(label_counts) if label_counts else 0)
+        class_load_gate = _clip01((float(len(new_labels)) - 2.0) / 18.0)
+        low_k_gate = _clip01(1.0 - ((min_support - 5.0) / 15.0))
+        neighborhood_gate_weight = float(np.clip(0.022 + 0.020 * class_load_gate + 0.014 * low_k_gate, 0.018, 0.060))
+        neighborhood_gate_top_classes = int(max(2, min(8, round(0.28 * max(float(len(new_labels)), 1.0)))))
+        neighborhood_gate_neighbor_count = int(max(2, min(4, round(2.0 + 2.0 * class_load_gate))))
+        neighborhood_gate_margin = float(np.clip(0.22 + 0.08 * class_load_gate + 0.10 * low_k_gate, 0.20, 0.42))
+        neighborhood_gate_query_weight = float(np.clip(0.018 + 0.034 * class_load_gate, 0.0, 0.055))
+        (
+            scores,
+            neighborhood_gate_count,
+            stored_neighborhood_gate_scalars,
+            neighborhood_gate_loo_min_acc,
+            neighborhood_gate_loo_mean_acc,
+            neighborhood_gate_neighborhoods,
+        ) = _support_query_neighborhood_gate_scores(
+            scores,
+            features=adapted,
+            support_indices=support_indices,
+            support_labels=support_labels,
+            query_indices=query_indices,
+            support_scores=support_loo_scores,
+            class_labels=old_labels + new_labels,
+            old_labels=old_labels,
+            new_labels=new_labels,
+            old_query_count=old_count,
+            top_classes=neighborhood_gate_top_classes,
+            neighbor_count=neighborhood_gate_neighbor_count,
+            query_topm=4,
+            weight=neighborhood_gate_weight,
+            alpha=0.1,
+            clip=1.5,
+            gate_margin=neighborhood_gate_margin,
+            query_neighbor_weight=neighborhood_gate_query_weight,
+        )
     if policy_norm in {
         "dualview_support_v25",
         "stable_dualview_v25",
@@ -4565,6 +4919,16 @@ def _evaluate_metric_qknn(
         "top2_pair_gate_loo_min_acc": float(top2_pair_gate_loo_min_acc),
         "top2_pair_gate_loo_mean_acc": float(top2_pair_gate_loo_mean_acc),
         "stored_top2_pair_gate_scalars": int(stored_top2_pair_gate_scalars),
+        "neighborhood_gate_weight": float(neighborhood_gate_weight),
+        "neighborhood_gate_top_classes": int(neighborhood_gate_top_classes),
+        "neighborhood_gate_neighbor_count": int(neighborhood_gate_neighbor_count),
+        "neighborhood_gate_margin": float(neighborhood_gate_margin),
+        "neighborhood_gate_query_weight": float(neighborhood_gate_query_weight),
+        "neighborhood_gate_count": int(neighborhood_gate_count),
+        "neighborhood_gate_neighborhoods": neighborhood_gate_neighborhoods,
+        "neighborhood_gate_loo_min_acc": float(neighborhood_gate_loo_min_acc),
+        "neighborhood_gate_loo_mean_acc": float(neighborhood_gate_loo_mean_acc),
+        "stored_neighborhood_gate_scalars": int(stored_neighborhood_gate_scalars),
         "mahal_proto_weight": float(mahal_proto_weight),
         "mahal_proto_alpha": float(mahal_proto_alpha),
         "mahal_proto_diag_mix": float(mahal_proto_diag_mix),
@@ -4808,6 +5172,8 @@ def _adaptive_qknn_overrides(
         "stable_dualview_v27",
         "dualview_support_v28",
         "stable_dualview_v28",
+        "dualview_support_v29",
+        "stable_dualview_v29",
     }:
         raise ValueError(f"unsupported adaptive_qknn_policy: {policy}")
     use_v2 = name in {"dualview_support_v2", "stable_dualview_v2"}
@@ -4836,7 +5202,8 @@ def _adaptive_qknn_overrides(
     use_v25 = name in {"dualview_support_v25", "stable_dualview_v25"}
     use_v27 = name in {"dualview_support_v27", "stable_dualview_v27"}
     use_v28 = name in {"dualview_support_v28", "stable_dualview_v28"}
-    use_v9 = use_v9 or use_v27 or use_v28
+    use_v29 = name in {"dualview_support_v29", "stable_dualview_v29"}
+    use_v9 = use_v9 or use_v27 or use_v28 or use_v29
 
     min_k = float(geometry["adaptive_support_min_k"])
     new_count = float(geometry["adaptive_new_class_count"])
@@ -5171,7 +5538,7 @@ def _adaptive_qknn_overrides(
                     "query_cluster_margin_min": 0.0,
                 }
             )
-    if use_v27 or use_v28:
+    if use_v27 or use_v28 or use_v29:
         quality_gate = _clip01(max(stable_gate, class_load))
         low_k_gate = _clip01(1.0 - k_reliability)
         quality_weight = float(np.clip(0.10 * quality_gate * (0.55 + 0.45 * low_k_gate), 0.0, 0.10))
@@ -6557,6 +6924,16 @@ def main() -> None:
         "top2_pair_gate_loo_min_acc",
         "top2_pair_gate_loo_mean_acc",
         "stored_top2_pair_gate_scalars",
+        "neighborhood_gate_weight",
+        "neighborhood_gate_top_classes",
+        "neighborhood_gate_neighbor_count",
+        "neighborhood_gate_margin",
+        "neighborhood_gate_query_weight",
+        "neighborhood_gate_count",
+        "neighborhood_gate_neighborhoods",
+        "neighborhood_gate_loo_min_acc",
+        "neighborhood_gate_loo_mean_acc",
+        "stored_neighborhood_gate_scalars",
         "mahal_proto_weight",
         "mahal_proto_alpha",
         "mahal_proto_diag_mix",
