@@ -1,0 +1,4 @@
+bytes_per_event,collab_count,known_defer,latency_ms,min_old,min_seen,old_acc,profile,profile_description,request_more,resource_pass,seen_new_acc,target_min_old,target_min_seen,target_old_acc,target_pass,target_seen_new_acc,target_unknown_reject,unknown_FAR,unknown_reject
+128.0,1,0.0,0.0,0.0,0.0,0.7083333333333334,pcet_known_preserving,"PCET risk telemetry with loose known acceptance, used to measure old/new retention",0.0,True,0.06,0.75,0.65,0.8,False,0.75,0.95,0.34,0.66
+128.0,1,0.0,0.0,0.0,0.0,0.4583333333333333,pcet_balanced,prototype-consistency plus tail-risk rejection with support-confirmed known rescue,0.0,True,0.0,0.75,0.65,0.8,False,0.75,0.95,0.16,0.83
+128.0,1,0.0,0.0,0.0,0.0,0.06666666666666667,pcet_unknown_strict,strict PCET unknown safety profile for exposing retention trade-offs,0.0,True,0.0,0.75,0.65,0.8,False,0.75,0.95,0.0,0.89

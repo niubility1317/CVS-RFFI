@@ -1,0 +1,178 @@
+{
+  "algorithm": "stage2_proxy_target_geometry_audit_v1",
+  "feature_npz": "E:\\type10-7\\automation_reports\\CV-SincNet\\phase2_qknn_v42_old80_probe_20260707\\artifacts\\derived_stage2c\\MANYNEW10_NORM_SEP_derived_stage2c_5new5unknown.npz",
+  "groups": {
+    "proxy_unknown": {
+      "accept_rate_at_support_threshold": 0.8797,
+      "margin": {
+        "max": 0.901177704334259,
+        "mean": 0.17371079760566355,
+        "min": 4.351139068603516e-06,
+        "n": 10000,
+        "p10": 0.002333134412765503,
+        "p50": 0.039545267820358276,
+        "p90": 0.7409854710102084
+      },
+      "max_cosine": {
+        "max": 0.9998192191123962,
+        "mean": 0.8221578400485218,
+        "min": 0.12034819275140762,
+        "n": 10000,
+        "p10": 0.48117952644824985,
+        "p50": 0.9180688261985779,
+        "p90": 0.9976016223430634
+      },
+      "n": 10000,
+      "nearest_label_counts": {
+        "10-10": 308,
+        "11-10": 1362,
+        "14-10": 1084,
+        "14-7": 788,
+        "18-5": 1248,
+        "19-3": 352,
+        "2-13": 402,
+        "20-15": 1416,
+        "20-19": 527,
+        "6-15": 1674,
+        "8-20": 839
+      },
+      "reject_rate_at_support_threshold": 0.12029999999999996
+    },
+    "target_new_query": {
+      "accept_rate_at_support_threshold": 0.96,
+      "margin": {
+        "max": 0.3041054904460907,
+        "mean": 0.0336640764772892,
+        "min": 7.31348991394043e-05,
+        "n": 100,
+        "p10": 0.0019858479499816895,
+        "p50": 0.014864951372146606,
+        "p90": 0.08686743974685673
+      },
+      "max_cosine": {
+        "max": 0.999516487121582,
+        "mean": 0.9150622430443763,
+        "min": 0.32160472869873047,
+        "n": 100,
+        "p10": 0.74147127866745,
+        "p50": 0.9689861536026001,
+        "p90": 0.9974233388900757
+      },
+      "n": 100,
+      "nearest_label_counts": {
+        "10-10": 16,
+        "11-10": 35,
+        "14-10": 11,
+        "14-7": 2,
+        "18-5": 1,
+        "19-3": 6,
+        "2-13": 11,
+        "20-15": 1,
+        "20-19": 7,
+        "6-15": 9,
+        "8-20": 1
+      },
+      "reject_rate_at_support_threshold": 0.040000000000000036,
+      "top1_acc": 0.44
+    },
+    "target_old_query": {
+      "accept_rate_at_support_threshold": 1.0,
+      "margin": {
+        "max": 0.900236189365387,
+        "mean": 0.3844557402034601,
+        "min": 8.994340896606445e-05,
+        "n": 120,
+        "p10": 0.004658424854278564,
+        "p50": 0.1108618974685669,
+        "p90": 0.8743896901607513
+      },
+      "max_cosine": {
+        "max": 0.9997529983520508,
+        "mean": 0.9396033098300298,
+        "min": 0.5783358812332153,
+        "n": 120,
+        "p10": 0.8646070420742035,
+        "p50": 0.969038337469101,
+        "p90": 0.9982971131801606
+      },
+      "n": 120,
+      "nearest_label_counts": {
+        "10-10": 10,
+        "14-10": 18,
+        "14-7": 16,
+        "18-5": 1,
+        "19-3": 1,
+        "20-15": 20,
+        "20-19": 14,
+        "6-15": 20,
+        "8-20": 20
+      },
+      "reject_rate_at_support_threshold": 0.0,
+      "top1_acc": 0.8666666666666667
+    },
+    "target_unknown_query": {
+      "accept_rate_at_support_threshold": 0.96,
+      "margin": {
+        "max": 0.8784139752388,
+        "mean": 0.21622291326522827,
+        "min": 0.0004974603652954102,
+        "n": 100,
+        "p10": 0.0034002840518951418,
+        "p50": 0.09040150046348572,
+        "p90": 0.7819210767745973
+      },
+      "max_cosine": {
+        "max": 0.9981496334075928,
+        "mean": 0.8754122027754784,
+        "min": 0.3659983277320862,
+        "n": 100,
+        "p10": 0.6111627757549286,
+        "p50": 0.9412365853786469,
+        "p90": 0.9876216292381287
+      },
+      "n": 100,
+      "nearest_label_counts": {
+        "10-10": 9,
+        "11-10": 14,
+        "14-10": 25,
+        "14-7": 10,
+        "18-5": 3,
+        "2-13": 3,
+        "20-15": 23,
+        "20-19": 10,
+        "6-15": 2,
+        "8-20": 1
+      },
+      "reject_rate_at_support_threshold": 0.040000000000000036
+    }
+  },
+  "k_shot": 10,
+  "known_accept_quantile": 0.05,
+  "prototype_labels": [
+    "10-10",
+    "11-10",
+    "14-10",
+    "14-7",
+    "18-5",
+    "19-3",
+    "2-13",
+    "20-15",
+    "20-19",
+    "6-15",
+    "8-20"
+  ],
+  "query_per_class": 20,
+  "seed": 421070,
+  "separation": {
+    "known_vs_proxy_unknown_auroc": 0.6404113636363636,
+    "known_vs_target_unknown_auroc": 0.6538181818181819,
+    "proxy_unknown_fpr95_known": 0.756,
+    "target_unknown_fpr95_known": 0.85,
+    "target_unknown_minus_proxy_mean_max_cosine": 0.053254362726956606
+  },
+  "support_count": 110,
+  "support_known_accept_threshold": 0.5227004751563072,
+  "support_selection_policy": "scenario_diverse",
+  "support_threshold_source": "target_old_and_target_new_support_only",
+  "support_threshold_uses_target_unknown": false
+}

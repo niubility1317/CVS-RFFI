@@ -1,0 +1,17 @@
+k_shot,policy,variant,candidate_scope,query_group,n_support,n_query,old_acc,min_old,acc,min_class_acc
+5,stable_first,plain,old_only_target_support,,150,600,0.7333333333333333,0.43,,
+5,stable_first,v42_old_shrink,old_only_target_support,,150,600,0.7333333333333333,0.43,,
+5,scenario_diverse,plain,old_only_target_support,,150,600,0.7333333333333333,0.43,,
+5,scenario_diverse,v42_old_shrink,old_only_target_support,,150,600,0.7333333333333333,0.43,,
+5,centroid,plain,old_only_target_support,,150,600,0.7333333333333333,0.43,,
+5,centroid,v42_old_shrink,old_only_target_support,,150,600,0.7333333333333333,0.43,,
+10,stable_first,plain,old_only_target_support,,300,600,0.7316666666666667,0.51,,
+10,stable_first,v42_old_shrink,old_only_target_support,,300,600,0.7316666666666667,0.51,,
+10,scenario_diverse,plain,old_only_target_support,,300,600,0.7316666666666667,0.51,,
+10,scenario_diverse,v42_old_shrink,old_only_target_support,,300,600,0.7316666666666667,0.51,,
+10,centroid,plain,old_only_target_support,,300,600,0.7316666666666667,0.51,,
+10,centroid,v42_old_shrink,old_only_target_support,,300,600,0.7316666666666667,0.51,,
+5,scenario_diverse,plain,old_plus_new_target_support,target_old_query,350,600,,,0.5383333333333333,0.23
+5,scenario_diverse,plain,old_plus_new_target_support,target_new_query,350,800,,,0.21625,0.09
+10,scenario_diverse,plain,old_plus_new_target_support,target_old_query,700,600,,,0.5916666666666667,0.35
+10,scenario_diverse,plain,old_plus_new_target_support,target_new_query,700,800,,,0.22,0.06
