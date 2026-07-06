@@ -137,6 +137,10 @@ def _select_support(
         if role == "target_old":
             return ordered[:k].astype(int).tolist()
         return _scenario_centroid(features, ordered, scenarios, k, diverse_fill=False)
+    if policy == "old_stable_new_scenario_diverse":
+        if role == "target_old":
+            return ordered[:k].astype(int).tolist()
+        return _scenario_centroid(features, ordered, scenarios, k, diverse_fill=True)
     if policy == "stable_first":
         return ordered[:k].astype(int).tolist()
     if policy == "centroid":

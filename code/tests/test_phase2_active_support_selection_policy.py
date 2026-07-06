@@ -61,6 +61,55 @@ class Phase2ActiveSupportSelectionPolicyTest(unittest.TestCase):
         )
         self.assertEqual({str(scenarios[idx]) for idx in new_support}, {"clear", "rain", "low"})
 
+    def test_old_stable_new_scenario_diverse_keeps_old_stable_and_diverse_fills_new(self):
+        from phase2_qknn_active_support_select import _select_support, _stable_order
+
+        features = np.asarray(
+            [
+                [1.0, 0.0],
+                [0.99, 0.01],
+                [0.0, 1.0],
+                [0.01, 0.99],
+                [-1.0, 0.0],
+            ],
+            dtype=np.float64,
+        )
+        features = features / np.maximum(np.linalg.norm(features, axis=1, keepdims=True), 1e-12)
+        candidates = np.arange(features.shape[0], dtype=int)
+        scenarios = np.asarray(["clear", "clear", "rain", "rain", "low"], dtype=object)
+
+        old_support = _select_support(
+            policy="old_stable_new_scenario_diverse",
+            label="old-a",
+            role="target_old",
+            candidates=candidates,
+            features=features,
+            scenarios=scenarios,
+            source_probs=np.zeros((features.shape[0], 1), dtype=np.float64),
+            source_label_to_idx={},
+            source_prototypes={},
+            k=4,
+            seed=77,
+        )
+        expected_old = _stable_order(candidates, label="target_old:old-a", seed=77)[:4].astype(int).tolist()
+        self.assertEqual(old_support, expected_old)
+
+        new_support = _select_support(
+            policy="old_stable_new_scenario_diverse",
+            label="new-a",
+            role="target_unknown",
+            candidates=candidates,
+            features=features,
+            scenarios=scenarios,
+            source_probs=np.zeros((features.shape[0], 1), dtype=np.float64),
+            source_label_to_idx={},
+            source_prototypes={},
+            k=4,
+            seed=77,
+        )
+        self.assertEqual({str(scenarios[idx]) for idx in new_support}, {"clear", "rain", "low"})
+        self.assertIn(4, new_support)
+
 
 if __name__ == "__main__":
     unittest.main()

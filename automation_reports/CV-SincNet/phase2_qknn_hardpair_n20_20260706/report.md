@@ -4497,7 +4497,7 @@ V55提交后继续做了三组本地只读诊断，均未形成可提交策略�
 
 ### 2026-07-06局部竞争与active support补充诊断
 
-本节继续沿qKNNV42后续优化目标做本地诊断。协议边界不变：目标域support/query均来自叠加LEO星地信道后的接收样本；query真值只用于离线评估。本节没有N607 preflight、没有scp、没有远端启动。曾临时验证`old_stable_new_scenario_diverse`支持选择，但该策略会把K5 active-enrollment最低类转移到`1-1=50/70`，代码已撤回，未作为工程产物保留。
+本节继续沿qKNNV42后续优化目标做本地诊断。协议边界不变：目标域support/query均来自叠加LEO星地信道后的接收样本；query真值只用于离线评估。本节没有N607 preflight、没有scp、没有远端启动。`old_stable_new_scenario_diverse`在K5 active-enrollment下是负结果，会把最低类转移到`1-1=50/70`；但K10验证显示它能同时保住旧类域适应和新类地板，因此保留为显式候选策略，默认策略不变。
 
 | diagnostic | K | support来源 | key setting | old | min_old | seen_new | min_new | 低类/结论 |
 | --- | ---: | --- | --- | ---: | ---: | ---: | ---: | --- |
@@ -4506,5 +4506,7 @@ V55提交后继续做了三组本地只读诊断，均未形成可提交策略�
 | `k5_oldstable_newscenario_local_competition_grid` | 5 | active `pool_per=80`中选K=5 | `old_stable_new_scenario_centroid + local_competition_weight=0.04,k=5,scope=all` | 92.62% | 81.43% | 86.93% | 75.71% | K5 active-enrollment首个过75%地板候选；低类为`1-12=53/70`、`1-1/2-13=54/70`。 |
 | `k10_strict_local_competition_grid` | 10 | strict `pool_per=10` | 最优仍为关闭local competition，`qpr=0.01` | 94.05% | 84.29% | 87.07% | 71.43% | `1-12=50/70`仍未解决。 |
 | `k10_oldstable_newscenario_local_competition_grid` | 10 | active `pool_per=80`中选K=10 | `old_stable_new_scenario_centroid + local_competition_weight=0.02,k=3,scope=role` | 94.76% | 85.71% | 85.43% | 67.14% | 旧类更强但新类坍塌更重，K10 active选择不是当前路线。 |
+| `k10_active_policy_local_competition_grid` | 10 | active `pool_per=80`中选K=10 | `scenario_diverse,qpr=0.01` | 92.86% | 78.57% | 92.79% | 81.43% | 新类地板过线但旧类min低于80%，不能直接作为旧类域适应候选。 |
+| `k10_oldstable_newscenario_diverse_local_competition_grid` | 10 | active `pool_per=80`中选K=10 | `old_stable_new_scenario_diverse + local_competition_weight=0.02,k=3,scope=role,qpr=0.01` | 95.48% | 87.14% | 91.79% | 80.00% | K10 active-enrollment首个同时抬旧类和新类地板候选；低类为`1-12/2-13=56/70`、`11-10/8-3=57/70`。 |
 
-逐query诊断显示，严格K5的`1-2`错误主要集中在`leo_clear_weak`场景，固定support没有覆盖该场景；显式fallback解屏蔽后仍不能净增正确数，并会把低类扩展到`2-13=50/70`。因此当前最清晰的可推进方向不是继续做全局fallback或query graph，而是把“从接收候选流中选择K个support”的active-enrollment流程和support原型局部竞争结合起来。该K5候选仍不能作为“只有K=5个样本到达且无候选pool可选”的严格部署证据；若卫星端协议允许先接收更多叠加LEO目标域候选、再只保留/标注K=5个support用于注册，则它是目前最强的K5候选。K10仍未解决最低类问题，下一步应单独围绕`1-12/1-1`在K10 active选择中的退化做支持集风险约束，而不是直接扩大local competition权重。
+逐query诊断显示，严格K5的`1-2`错误主要集中在`leo_clear_weak`场景，固定support没有覆盖该场景；显式fallback解屏蔽后仍不能净增正确数，并会把低类扩展到`2-13=50/70`。因此当前最清晰的可推进方向不是继续做全局fallback或query graph，而是把“从接收候选流中选择K个support”的active-enrollment流程和support原型局部竞争结合起来。该K5/K10候选仍不能作为“只有K个样本到达且无候选pool可选”的严格部署证据；若卫星端协议允许先接收更多叠加LEO目标域候选、再只保留/标注K=5或K=10个support用于注册，则目前最强候选分别是K5的`old_stable_new_scenario_centroid + local_competition`和K10的`old_stable_new_scenario_diverse + local_competition + qpr`。下一步应验证这两个active候选的多seed稳定性，并把候选pool选择协议写清楚后再考虑N607正式实验。
