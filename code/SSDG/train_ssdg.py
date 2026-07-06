@@ -158,6 +158,16 @@ def build_arg_parser() -> argparse.ArgumentParser:
     parser.add_argument("--label_smoothing", type=float, default=0.01)
     parser.add_argument("--lambda_u", type=float, default=1.0)
     parser.add_argument("--lambda_ent", type=float, default=0.01)
+    parser.add_argument("--lambda_u_domain", type=float, default=0.0)
+    parser.add_argument("--lambda_u_adv", type=float, default=0.0)
+    parser.add_argument("--lambda_u_sat_cons", type=float, default=0.0)
+    parser.add_argument("--lambda_u_direct_metric_accept", type=float, default=0.0)
+    parser.add_argument("--u_domain_start_epoch", type=int, default=1)
+    parser.add_argument("--u_sat_cons_start_epoch", type=int, default=1)
+    parser.add_argument("--u_direct_metric_start_epoch", type=int, default=1)
+    parser.add_argument("--u_direct_metric_min_selected", type=int, default=16)
+    parser.add_argument("--u_direct_metric_use_sat_pair", type=str2bool, default=True)
+    parser.add_argument("--u_sat_zid_cons_weight", type=float, default=0.25)
     parser.add_argument("--lambda_domain", "--lambda_dom", dest="lambda_domain", type=float, default=1.0)
     parser.add_argument("--lambda_adv", type=float, default=0.45)
     parser.add_argument("--lambda_orth", type=float, default=0.05)
@@ -951,6 +961,10 @@ def _phase2_audit_requested(args) -> bool:
         "lambda_soft_unknown_mixup",
         "lambda_source_episode",
         "lambda_direct_metric_accept",
+        "lambda_u_domain",
+        "lambda_u_adv",
+        "lambda_u_sat_cons",
+        "lambda_u_direct_metric_accept",
     )
     return any(bool(getattr(args, key, False)) for key in flags) or any(float(getattr(args, key, 0.0)) > 0.0 for key in weights)
 
@@ -990,6 +1004,10 @@ def _phase2_audit_state(args) -> Dict[str, Any]:
         "soft_unknown_mixup": float(getattr(args, "lambda_soft_unknown_mixup", 0.0)),
         "source_episode": float(getattr(args, "lambda_source_episode", 0.0)),
         "direct_metric_accept": float(getattr(args, "lambda_direct_metric_accept", 0.0)),
+        "u_domain": float(getattr(args, "lambda_u_domain", 0.0)),
+        "u_adv": float(getattr(args, "lambda_u_adv", 0.0)),
+        "u_sat_cons": float(getattr(args, "lambda_u_sat_cons", 0.0)),
+        "u_direct_metric_accept": float(getattr(args, "lambda_u_direct_metric_accept", 0.0)),
     }
     legacy_unwired = {
         key: value
@@ -1007,7 +1025,19 @@ def _phase2_audit_state(args) -> Dict[str, Any]:
     active_loss = bool(getattr(args, "use_proto_memory", False)) or any(
         value > 0.0
         for key, value in weights.items()
-        if key in {"proto_memory", "open_world_feat", "zid_compact", "proxy_unknown", "soft_unknown_mixup", "source_episode", "direct_metric_accept"}
+        if key in {
+            "proto_memory",
+            "open_world_feat",
+            "zid_compact",
+            "proxy_unknown",
+            "soft_unknown_mixup",
+            "source_episode",
+            "direct_metric_accept",
+            "u_domain",
+            "u_adv",
+            "u_sat_cons",
+            "u_direct_metric_accept",
+        }
     )
     return {
         "requested": bool(requested),
@@ -1024,6 +1054,10 @@ def _phase2_audit_state(args) -> Dict[str, Any]:
         "use_soft_unknown_mixup_loss": float(getattr(args, "lambda_soft_unknown_mixup", 0.0)) > 0.0,
         "use_source_episode_loss": float(getattr(args, "lambda_source_episode", 0.0)) > 0.0,
         "use_direct_metric_acceptance_loss": float(getattr(args, "lambda_direct_metric_accept", 0.0)) > 0.0,
+        "use_unlabeled_domain_loss": float(getattr(args, "lambda_u_domain", 0.0)) > 0.0,
+        "use_unlabeled_adv_loss": float(getattr(args, "lambda_u_adv", 0.0)) > 0.0,
+        "use_unlabeled_sat_cons_loss": float(getattr(args, "lambda_u_sat_cons", 0.0)) > 0.0,
+        "use_unlabeled_direct_metric_loss": float(getattr(args, "lambda_u_direct_metric_accept", 0.0)) > 0.0,
         "phase2_export_prototypes": bool(getattr(args, "phase2_export_prototypes", False)),
         "imports": import_status,
         "weights": weights,
@@ -1161,6 +1195,10 @@ def _loss_weights(args, stage_state: Mapping[str, Any] | None) -> Dict[str, floa
         "soft_unknown_mixup": float(getattr(args, "lambda_soft_unknown_mixup", 0.0)),
         "source_episode": float(getattr(args, "lambda_source_episode", 0.0)),
         "direct_metric_accept": float(getattr(args, "lambda_direct_metric_accept", 0.0)),
+        "u_domain": float(getattr(args, "lambda_u_domain", 0.0)),
+        "u_adv": float(getattr(args, "lambda_u_adv", 0.0)),
+        "u_sat_cons": float(getattr(args, "lambda_u_sat_cons", 0.0)),
+        "u_direct_metric_accept": float(getattr(args, "lambda_u_direct_metric_accept", 0.0)),
     }
 
 
@@ -1452,6 +1490,15 @@ def _build_ssdg_epoch_telemetry_row(
         "use_unlabeled": bool(getattr(args, "use_unlabeled", False)),
         "lambda_u": float(getattr(args, "lambda_u", 0.0)),
         "lambda_ent": float(getattr(args, "lambda_ent", 0.0)),
+        "lambda_u_domain": float(getattr(args, "lambda_u_domain", 0.0)),
+        "lambda_u_adv": float(getattr(args, "lambda_u_adv", 0.0)),
+        "lambda_u_sat_cons": float(getattr(args, "lambda_u_sat_cons", 0.0)),
+        "lambda_u_direct_metric_accept": float(getattr(args, "lambda_u_direct_metric_accept", 0.0)),
+        "u_domain_start_epoch": int(getattr(args, "u_domain_start_epoch", 0)),
+        "u_sat_cons_start_epoch": int(getattr(args, "u_sat_cons_start_epoch", 0)),
+        "u_direct_metric_start_epoch": int(getattr(args, "u_direct_metric_start_epoch", 0)),
+        "u_direct_metric_min_selected": int(getattr(args, "u_direct_metric_min_selected", 0)),
+        "u_direct_metric_use_sat_pair": bool(getattr(args, "u_direct_metric_use_sat_pair", False)),
         "pseudo_threshold_mode": str(getattr(args, "pseudo_threshold_mode", "")),
         "tau_min": float(getattr(args, "tau_min", 0.0)),
         "tau_max": float(getattr(args, "tau_max", 0.0)),
@@ -1494,6 +1541,15 @@ def _build_ssdg_epoch_telemetry_row(
         "lambda_proxy_unknown",
         "lambda_soft_unknown_mixup",
         "lambda_direct_metric_accept",
+        "lambda_u_domain",
+        "lambda_u_adv",
+        "lambda_u_sat_cons",
+        "lambda_u_direct_metric_accept",
+        "u_domain_start_epoch",
+        "u_sat_cons_start_epoch",
+        "u_direct_metric_start_epoch",
+        "u_direct_metric_min_selected",
+        "u_sat_zid_cons_weight",
         "proto_domain_align_weight",
         "ow_feat_radius_deg",
         "ow_feat_inter_margin_deg",
@@ -1706,6 +1762,10 @@ def format_ssdg_epoch_block(
     w_soft_unknown_mixup = _log_value(train_logs, "train/w_loss_soft_unknown_mixup", loss_soft_unknown_mixup)
     w_source_episode = _log_value(train_logs, "train/w_loss_source_episode", loss_source_episode)
     w_direct_metric_accept = _log_value(train_logs, "train/w_loss_direct_metric_accept", loss_direct_metric_accept)
+    w_u_domain = _log_value(train_logs, "train/w_loss_u_domain", 0.0)
+    w_u_adv = _log_value(train_logs, "train/w_loss_u_adv", 0.0)
+    w_u_sat_cons = _log_value(train_logs, "train/w_loss_u_sat_cons", 0.0)
+    w_u_direct_metric = _log_value(train_logs, "train/w_loss_u_direct_metric_accept", 0.0)
     reliable = _log_value(train_logs, "train/reliable_ratio")
     pseudo_conf = _log_value(train_logs, "train/pseudo_conf")
     domain_pass = _log_value(train_logs, "train/domain_pass")
@@ -1882,6 +1942,24 @@ def format_ssdg_epoch_block(
         f"sat_pair_p95={_log_value(train_logs, 'train/dm_accept_sat_pair_angle_p95_deg'):.2f}deg"
     )
     lines.append(
+        "[U-DIRECT] "
+        f"loss_domain={_log_value(train_logs, 'train/loss_u_domain'):.4f} "
+        f"loss_adv={_log_value(train_logs, 'train/loss_u_adv'):.4f} "
+        f"loss_sat={_log_value(train_logs, 'train/loss_u_sat_cons'):.4f} "
+        f"loss_dm={_log_value(train_logs, 'train/loss_u_direct_metric_accept'):.4f} "
+        f"selected={_log_value(train_logs, 'train/u_dm_accept_selected'):.0f} "
+        f"dm_active={_log_value(train_logs, 'train/u_dm_accept_active'):.1f} "
+        f"sat_pairs={_log_value(train_logs, 'train/u_dm_accept_sat_pair_count'):.0f} "
+        f"p95={_log_value(train_logs, 'train/u_dm_accept_zid_p95_deg'):.2f}deg "
+        f"p99={_log_value(train_logs, 'train/u_dm_accept_zid_p99_deg'):.2f}deg "
+        f"source_overflow={_log_value(train_logs, 'train/u_dm_accept_source_overflow'):.4f} "
+        f"proxy_vaccept={_log_value(train_logs, 'train/u_dm_accept_proxy_vaccept'):.4f} "
+        f"bridge={_log_value(train_logs, 'train/u_dm_accept_bridge_accept_rate'):.4f} "
+        f"low_den={_log_value(train_logs, 'train/u_dm_accept_low_density_accept_rate'):.4f} "
+        f"radius_inter={_log_value(train_logs, 'train/u_dm_accept_radius_to_inter_ratio'):.4f} "
+        f"sat_pair_p95={_log_value(train_logs, 'train/u_dm_accept_sat_pair_angle_p95_deg'):.2f}deg"
+    )
+    lines.append(
         "[LOSS-WEIGHT] "
         f"dom={float(stage_state.get('dom_scale', loss_weights.get('dom', 0.0))):.3f} "
         f"adv={float(stage_state.get('adv_scale', loss_weights.get('adv', 0.0))):.3f} "
@@ -1893,6 +1971,10 @@ def format_ssdg_epoch_block(
         f"soft_unknown_mixup={float(loss_weights.get('soft_unknown_mixup', 0.0)):.6g} "
         f"source_episode={float(loss_weights.get('source_episode', 0.0)):.6g} "
         f"direct_metric={float(loss_weights.get('direct_metric_accept', 0.0)):.6g} "
+        f"u_domain={float(loss_weights.get('u_domain', 0.0)):.6g} "
+        f"u_adv={float(loss_weights.get('u_adv', 0.0)):.6g} "
+        f"u_sat_cons={float(loss_weights.get('u_sat_cons', 0.0)):.6g} "
+        f"u_dm={float(loss_weights.get('u_direct_metric_accept', 0.0)):.6g} "
         "aux_scale=0.000"
     )
     lines.append(
@@ -1912,6 +1994,10 @@ def format_ssdg_epoch_block(
                 "soft_unknown_mixup": w_soft_unknown_mixup,
                 "source_episode": w_source_episode,
                 "direct_metric": w_direct_metric_accept,
+                "u_domain": w_u_domain,
+                "u_adv": w_u_adv,
+                "u_sat_cons": w_u_sat_cons,
+                "u_dm": w_u_direct_metric,
             }
         )
     )
@@ -2249,7 +2335,17 @@ def train(args) -> int:
                 f"lambda_source_episode={float(args.lambda_source_episode):.6g} "
                 f"lambda_direct_metric_accept={float(args.lambda_direct_metric_accept):.6g} "
                 f"lambda_u={float(args.lambda_u):.6g} lambda_ent={float(args.lambda_ent):.6g} "
+                f"lambda_u_domain={float(args.lambda_u_domain):.6g} lambda_u_adv={float(args.lambda_u_adv):.6g} "
+                f"lambda_u_sat_cons={float(args.lambda_u_sat_cons):.6g} "
+                f"lambda_u_direct_metric_accept={float(args.lambda_u_direct_metric_accept):.6g} "
                 f"label_smoothing={float(args.label_smoothing):.6g}",
+                "[CONFIG-U-DIRECT] "
+                f"domain_start={int(args.u_domain_start_epoch)} sat_start={int(args.u_sat_cons_start_epoch)} "
+                f"dm_start={int(args.u_direct_metric_start_epoch)} dm_min_selected={int(args.u_direct_metric_min_selected)} "
+                f"dm_sat_pair={int(bool(args.u_direct_metric_use_sat_pair))} "
+                f"sat_zid_cons_w={float(args.u_sat_zid_cons_weight):.6g} "
+                f"domain_loss={float(args.lambda_u_domain):.6g} adv_loss={float(args.lambda_u_adv):.6g} "
+                f"sat_cons={float(args.lambda_u_sat_cons):.6g} dm_accept={float(args.lambda_u_direct_metric_accept):.6g}",
                 "[CONFIG-TEACHER] "
                 f"teacher_ckpt={str(getattr(args, 'teacher_ckpt', '') or '<none>')} "
                 f"lambda_teacher_clean_kl={float(args.lambda_teacher_clean_kl):.6g} "
@@ -3048,6 +3144,145 @@ def train(args) -> int:
                         loss_u = out_s["tx_logits"].sum() * 0.0
                     prob_s = out_s["tx_logits"].softmax(dim=1)
                     loss_ent = -(prob_s * prob_s.clamp_min(1e-8).log()).sum(dim=1).mean()
+                    zero_u = out_s["tx_logits"].sum() * 0.0
+                    loss_u_domain = zero_u
+                    loss_u_adv = zero_u
+                    loss_u_sat_cons = zero_u
+                    loss_u_direct_metric = zero_u
+                    u_sat_pair_count = 0
+                    u_dm_info: Dict[str, float] = {
+                        "active": 0.0,
+                        "selected": float(pseudo_selected),
+                        "zid_p95_deg": float("nan"),
+                        "zid_p99_deg": float("nan"),
+                        "source_overflow": float("nan"),
+                        "proxy_vaccept": float("nan"),
+                        "bridge_accept_rate": float("nan"),
+                        "low_density_accept_rate": float("nan"),
+                        "tail_accept_rate": float("nan"),
+                        "overflow_accept_rate": float("nan"),
+                        "radius_to_inter_ratio": float("nan"),
+                        "sat_pair_angle_p95_deg": float("nan"),
+                    }
+                    valid_u_domain = d_u is not None and bool(torch.is_tensor(d_u)) and d_u.numel() == pseudo.numel()
+                    if valid_u_domain:
+                        valid_u_mask = d_u >= 0
+                    else:
+                        valid_u_mask = torch.zeros_like(pseudo, dtype=torch.bool)
+                    if (
+                        float(args.lambda_u_domain) > 0.0
+                        and epoch >= int(args.u_domain_start_epoch)
+                        and bool(valid_u_mask.any())
+                        and "dom_logits" in out_s
+                    ):
+                        loss_u_domain = F.cross_entropy(out_s["dom_logits"][valid_u_mask].float(), d_u[valid_u_mask].long())
+                    if (
+                        float(args.lambda_u_adv) > 0.0
+                        and epoch >= int(args.u_domain_start_epoch)
+                        and bool(valid_u_mask.any())
+                        and "adv_dom_logits" in out_s
+                    ):
+                        loss_u_adv = F.cross_entropy(out_s["adv_dom_logits"][valid_u_mask].float(), d_u[valid_u_mask].long())
+                    out_u_sat = None
+                    if (
+                        float(args.lambda_u_sat_cons) > 0.0
+                        and epoch >= int(args.u_sat_cons_start_epoch)
+                        and concat_sat_aug is not None
+                    ):
+                        u_sat_view = concat_sat_aug.transform(x_u, args=args, epoch=epoch, batch_idx=int(batch_idx) + 200000)
+                        x_u_sat = _safe_iq_tensor(u_sat_view.x)
+                        out_u_sat = model(x_u_sat, y_tx=None, grl_lambda=1.0, return_aux=True, domain_labels=d_u)
+                        loss_u_sat_kl = F.kl_div(
+                            F.log_softmax(out_u_sat["tx_logits"], dim=1),
+                            prob_s.detach(),
+                            reduction="batchmean",
+                        )
+                        loss_u_sat_zid = F.mse_loss(
+                            F.normalize(out_u_sat["z_id"].float(), dim=1),
+                            F.normalize(out_s["z_id"].detach().float(), dim=1),
+                        )
+                        loss_u_sat_cons = loss_u_sat_kl + float(args.u_sat_zid_cons_weight) * loss_u_sat_zid
+                        if (
+                            float(args.lambda_u_domain) > 0.0
+                            and epoch >= int(args.u_domain_start_epoch)
+                            and bool(valid_u_mask.any())
+                            and "dom_logits" in out_u_sat
+                        ):
+                            loss_u_domain = 0.5 * (
+                                loss_u_domain
+                                + F.cross_entropy(out_u_sat["dom_logits"][valid_u_mask].float(), d_u[valid_u_mask].long())
+                            )
+                        if (
+                            float(args.lambda_u_adv) > 0.0
+                            and epoch >= int(args.u_domain_start_epoch)
+                            and bool(valid_u_mask.any())
+                            and "adv_dom_logits" in out_u_sat
+                        ):
+                            loss_u_adv = 0.5 * (
+                                loss_u_adv
+                                + F.cross_entropy(out_u_sat["adv_dom_logits"][valid_u_mask].float(), d_u[valid_u_mask].long())
+                            )
+                    if (
+                        float(args.lambda_u_direct_metric_accept) > 0.0
+                        and epoch >= int(args.u_direct_metric_start_epoch)
+                        and direct_metric_acceptance_loss is not None
+                        and pseudo_selected >= int(args.u_direct_metric_min_selected)
+                    ):
+                        dm_z = out_s["z_id"][mask]
+                        dm_y = pseudo[mask].long()
+                        dm_d = d_u[mask].long() if valid_u_domain else None
+                        paired_view_count_u = 0
+                        if bool(args.u_direct_metric_use_sat_pair) and out_u_sat is not None:
+                            dm_z = torch.cat([dm_z, out_u_sat["z_id"][mask]], dim=0)
+                            dm_y = torch.cat([dm_y, dm_y], dim=0)
+                            if dm_d is not None:
+                                dm_d = torch.cat([dm_d, dm_d], dim=0)
+                            paired_view_count_u = int(pseudo_selected)
+                            u_sat_pair_count = paired_view_count_u
+                        loss_u_direct_metric, u_dm_info = direct_metric_acceptance_loss(
+                            dm_z,
+                            dm_y,
+                            dm_d,
+                            paired_view_count=paired_view_count_u,
+                            virtual_count=int(args.direct_metric_virtual_count),
+                            virtual_mode=str(args.direct_metric_virtual_mode),
+                            core_quantile=float(args.direct_metric_core_quantile),
+                            accept_quantile=float(args.direct_metric_accept_quantile),
+                            tail_quantile=float(args.direct_metric_tail_quantile),
+                            overflow_quantile=float(args.direct_metric_overflow_quantile),
+                            zid_p50_target_rad=math.radians(float(args.direct_metric_zid_p50_target_deg)),
+                            zid_p95_target_rad=math.radians(float(args.direct_metric_zid_p95_target_deg)),
+                            zid_p99_target_rad=math.radians(float(args.direct_metric_zid_p99_target_deg)),
+                            zid_tail_cvar_target_rad=math.radians(float(args.direct_metric_zid_tail_cvar_target_deg)),
+                            source_overflow_target=float(args.direct_metric_source_overflow_target),
+                            proxy_vaccept_target=float(args.direct_metric_proxy_vaccept_target),
+                            bridge_accept_target=float(args.direct_metric_bridge_accept_target),
+                            low_density_accept_target=float(args.direct_metric_low_density_accept_target),
+                            tail_accept_target=float(args.direct_metric_tail_accept_target),
+                            overflow_accept_target=float(args.direct_metric_overflow_accept_target),
+                            radius_inter_ratio_target=float(args.direct_metric_radius_inter_ratio_target),
+                            core_accept_target=float(args.direct_metric_core_accept_target),
+                            sat_pair_target_rad=math.radians(float(args.direct_metric_sat_pair_target_deg)),
+                            zid_quantile_weight=float(args.direct_metric_zid_quantile_weight),
+                            source_overflow_weight=float(args.direct_metric_source_overflow_weight),
+                            proxy_vaccept_weight=float(args.direct_metric_proxy_vaccept_weight),
+                            bridge_accept_weight=float(args.direct_metric_bridge_accept_weight),
+                            low_density_accept_weight=float(args.direct_metric_low_density_accept_weight),
+                            tail_accept_weight=float(args.direct_metric_tail_accept_weight),
+                            overflow_accept_weight=float(args.direct_metric_overflow_accept_weight),
+                            radius_inter_ratio_weight=float(args.direct_metric_radius_inter_ratio_weight),
+                            core_accept_weight=float(args.direct_metric_core_accept_weight),
+                            sat_pair_weight=float(args.direct_metric_sat_pair_weight) if paired_view_count_u > 0 else 0.0,
+                            quantile_temperature_rad=math.radians(float(args.direct_metric_quantile_temperature_deg)),
+                            accept_temperature=float(args.direct_metric_accept_temperature),
+                            component_temperature_rad=math.radians(float(args.direct_metric_component_temperature_deg)),
+                            density_temperature_rad=math.radians(float(args.direct_metric_density_temperature_deg)),
+                            component_margin_rad=math.radians(float(args.direct_metric_component_margin_deg)),
+                            source_margin_rad=math.radians(float(args.direct_metric_source_margin_deg)),
+                            shell_width_rad=math.radians(float(args.direct_metric_shell_width_deg)),
+                            accept_cvar_alpha=float(args.direct_metric_accept_cvar_alpha),
+                            virtual_detach=bool(args.direct_metric_virtual_detach),
+                        )
                     reliable_ratio = mask.float().mean()
                     pseudo_conf = conf.mean()
                     domain_pass = domain_mask.float().mean()
@@ -3057,6 +3292,25 @@ def train(args) -> int:
                     z = out_l["tx_logits"].sum() * 0.0
                     loss_u = z
                     loss_ent = z
+                    loss_u_domain = z
+                    loss_u_adv = z
+                    loss_u_sat_cons = z
+                    loss_u_direct_metric = z
+                    u_sat_pair_count = 0
+                    u_dm_info = {
+                        "active": 0.0,
+                        "selected": 0.0,
+                        "zid_p95_deg": float("nan"),
+                        "zid_p99_deg": float("nan"),
+                        "source_overflow": float("nan"),
+                        "proxy_vaccept": float("nan"),
+                        "bridge_accept_rate": float("nan"),
+                        "low_density_accept_rate": float("nan"),
+                        "tail_accept_rate": float("nan"),
+                        "overflow_accept_rate": float("nan"),
+                        "radius_to_inter_ratio": float("nan"),
+                        "sat_pair_angle_p95_deg": float("nan"),
+                    }
                     reliable_ratio = z.detach()
                     pseudo_conf = z.detach()
                     domain_pass = z.detach()
@@ -3065,7 +3319,16 @@ def train(args) -> int:
                     pseudo_total = 0
                     pseudo_selected = 0
                     pseudo_correct = 0
-                loss = loss_l + float(args.lambda_u) * loss_u + float(args.lambda_ent) * loss_ent
+                loss = (
+                    loss_l
+                    + float(args.lambda_u) * loss_u
+                    + float(args.lambda_ent) * loss_ent
+                    + float(args.lambda_u_domain) * sanitize_loss("ssdg_u_domain", loss_u_domain, z_id_l, loss_warn_counts)
+                    + float(args.lambda_u_adv) * sanitize_loss("ssdg_u_adv", loss_u_adv, z_id_l, loss_warn_counts)
+                    + float(args.lambda_u_sat_cons) * sanitize_loss("ssdg_u_sat_cons", loss_u_sat_cons, z_id_l, loss_warn_counts)
+                    + float(args.lambda_u_direct_metric_accept)
+                    * sanitize_loss("ssdg_u_direct_metric_accept", loss_u_direct_metric, z_id_l, loss_warn_counts)
+                )
             loss_is_finite = bool(torch.isfinite(loss.detach()).item())
             skipped_nonfinite_loss = 0
             skipped_nonfinite_grad = 0
@@ -3151,6 +3414,29 @@ def train(args) -> int:
                     "train/concat_sat_stage_start_epoch": float(concat_sat_info.get("stage_start_epoch", float("nan"))),
                     "train/concat_sat_stage_index": float(concat_sat_info.get("stage_index", float("nan"))),
                     "train/loss_unlabeled": loss_u.detach(),
+                    "train/loss_u_domain": loss_u_domain.detach(),
+                    "train/loss_u_adv": loss_u_adv.detach(),
+                    "train/loss_u_sat_cons": loss_u_sat_cons.detach(),
+                    "train/loss_u_direct_metric_accept": loss_u_direct_metric.detach(),
+                    "train/w_loss_u_domain": (float(args.lambda_u_domain) * loss_u_domain).detach(),
+                    "train/w_loss_u_adv": (float(args.lambda_u_adv) * loss_u_adv).detach(),
+                    "train/w_loss_u_sat_cons": (float(args.lambda_u_sat_cons) * loss_u_sat_cons).detach(),
+                    "train/w_loss_u_direct_metric_accept": (
+                        float(args.lambda_u_direct_metric_accept) * loss_u_direct_metric
+                    ).detach(),
+                    "train/u_dm_accept_active": u_dm_info.get("active", float("nan")),
+                    "train/u_dm_accept_selected": u_dm_info.get("selected", float("nan")),
+                    "train/u_dm_accept_sat_pair_count": float(u_sat_pair_count),
+                    "train/u_dm_accept_zid_p95_deg": u_dm_info.get("zid_p95_deg", float("nan")),
+                    "train/u_dm_accept_zid_p99_deg": u_dm_info.get("zid_p99_deg", float("nan")),
+                    "train/u_dm_accept_source_overflow": u_dm_info.get("source_overflow", float("nan")),
+                    "train/u_dm_accept_proxy_vaccept": u_dm_info.get("proxy_vaccept", float("nan")),
+                    "train/u_dm_accept_bridge_accept_rate": u_dm_info.get("bridge_accept_rate", float("nan")),
+                    "train/u_dm_accept_low_density_accept_rate": u_dm_info.get("low_density_accept_rate", float("nan")),
+                    "train/u_dm_accept_tail_accept_rate": u_dm_info.get("tail_accept_rate", float("nan")),
+                    "train/u_dm_accept_overflow_accept_rate": u_dm_info.get("overflow_accept_rate", float("nan")),
+                    "train/u_dm_accept_radius_to_inter_ratio": u_dm_info.get("radius_to_inter_ratio", float("nan")),
+                    "train/u_dm_accept_sat_pair_angle_p95_deg": u_dm_info.get("sat_pair_angle_p95_deg", float("nan")),
                     "train/tx_acc": 100.0 * (out_l["tx_logits"].argmax(dim=1) == y_l).float().mean().detach(),
                     "train/dom_acc": core_losses.get("dom_acc", float("nan")),
                     "train/cons_cos": core_losses.get("cons_cos", float("nan")),
