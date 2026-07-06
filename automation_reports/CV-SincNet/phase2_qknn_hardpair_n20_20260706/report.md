@@ -427,6 +427,96 @@ Interpretation:
 
 Current goal status: active, not achieved.
 
+## v20 Risk-Covered Pair Rescue Diagnostics
+
+Objective: test whether the repeatedly weak classes can be covered more explicitly without storing raw support samples and without adding new K anchors. The policy `dualview_support_v20` keeps the same `K=10` and `K=5` maximum-query protocol, disables the harmful v19 proxy rows, and expands support-LOO pair rescue with a support-only class-risk score plus prototype-neighbor candidate discovery.
+
+Implementation change:
+
+- Extended support-LOO pair rescue to score candidate pairs from three support-only sources: actual support-LOO mistakes, support-score runner-up labels, and nearest support-class prototypes.
+- Added a class-risk term from support-LOO class accuracy, support margin, and prototype similarity, then filtered directions where a lower-risk class would subtract from a higher-risk class.
+- Added `support_loo_pair_rescue_proto_neighbors`, `support_loo_pair_rescue_proto_min_sim`, and `support_loo_pair_rescue_pairs` fields so the accepted compressed pair bundle is auditable.
+- Added `dualview_support_v20` / `stable_dualview_v20` adaptive policies. The policy derives pair count, prototype threshold, and rescue weight from `new_count`, support-size reliability, and class-load; no per-K parameter table is introduced.
+
+Verification and artifacts:
+
+| item | result |
+|---|---|
+| `conda run -n ssr-gpu python -m py_compile code\scripts\phase2_support_metric_qknn_probe.py` | PASS |
+| `artifacts\n10_k10_v20_riskpair_seed421029.csv` | completed |
+| `artifacts\n10_k5_v20_riskpair_seed421037.csv` | completed |
+| `artifacts\n20_k10_v20_riskpair_seed421029.csv` | completed |
+| `artifacts\n20_k5_v20_riskpair_seed421037.csv` | completed |
+
+Maximum-query v20 summary:
+
+| scope | K | query per class | old_acc | min_old | new_acc | min_new | pair count | pair weight | verdict |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|---|
+| N10 | 10 | 70 | 92.14% | 77.14% | 84.86% | 62.86% | 10 | 0.0822 | failed,worse than v15/v19 floor |
+| N10 | 5 | 75 | 91.56% | 77.33% | 85.47% | 58.67% | 10 | 0.0482 | failed,worse than v15/v19 floor |
+| N20 | 10 | 70 | 92.62% | 78.57% | 70.79% | 52.86% | 13 | 0.0933 | failed,small floor gain only |
+| N20 | 5 | 75 | 92.22% | 78.67% | 69.60% | 48.00% | 13 | 0.0600 | failed,tied v15 floor |
+
+N10 v20 per-class details:
+
+| TX | K10 correct/total | K10 acc | K5 correct/total | K5 acc |
+|---|---:|---:|---:|---:|
+| `14-10` | 67/70 | 95.71% | 72/75 | 96.00% |
+| `14-7` | 56/70 | 80.00% | 58/75 | 77.33% |
+| `20-15` | 70/70 | 100.00% | 74/75 | 98.67% |
+| `20-19` | 54/70 | 77.14% | 58/75 | 77.33% |
+| `6-15` | 70/70 | 100.00% | 75/75 | 100.00% |
+| `8-20` | 70/70 | 100.00% | 75/75 | 100.00% |
+| `10-10` | 64/70 | 91.43% | 68/75 | 90.67% |
+| `11-10` | 52/70 | 74.29% | 54/75 | 72.00% |
+| `18-5` | 67/70 | 95.71% | 72/75 | 96.00% |
+| `19-3` | 67/70 | 95.71% | 72/75 | 96.00% |
+| `2-13` | 44/70 | 62.86% | 44/75 | 58.67% |
+| `2-5` | 57/70 | 81.43% | 65/75 | 86.67% |
+| `3-8` | 64/70 | 91.43% | 66/75 | 88.00% |
+| `4-10` | 61/70 | 87.14% | 67/75 | 89.33% |
+| `8-18` | 54/70 | 77.14% | 63/75 | 84.00% |
+| `8-3` | 64/70 | 91.43% | 70/75 | 93.33% |
+
+N20 v20 per-class details:
+
+| TX | K10 correct/total | K10 acc | K5 correct/total | K5 acc |
+|---|---:|---:|---:|---:|
+| `14-10` | 67/70 | 95.71% | 73/75 | 97.33% |
+| `14-7` | 57/70 | 81.43% | 59/75 | 78.67% |
+| `20-15` | 70/70 | 100.00% | 74/75 | 98.67% |
+| `20-19` | 55/70 | 78.57% | 59/75 | 78.67% |
+| `6-15` | 70/70 | 100.00% | 75/75 | 100.00% |
+| `8-20` | 70/70 | 100.00% | 75/75 | 100.00% |
+| `10-10` | 60/70 | 85.71% | 61/75 | 81.33% |
+| `11-10` | 40/70 | 57.14% | 45/75 | 60.00% |
+| `18-5` | 44/70 | 62.86% | 39/75 | 52.00% |
+| `19-3` | 48/70 | 68.57% | 40/75 | 53.33% |
+| `2-13` | 37/70 | 52.86% | 36/75 | 48.00% |
+| `2-5` | 56/70 | 80.00% | 62/75 | 82.67% |
+| `3-8` | 56/70 | 80.00% | 64/75 | 85.33% |
+| `4-10` | 61/70 | 87.14% | 66/75 | 88.00% |
+| `8-18` | 49/70 | 70.00% | 61/75 | 81.33% |
+| `8-3` | 50/70 | 71.43% | 58/75 | 77.33% |
+| `1-1` | 38/70 | 54.29% | 54/75 | 72.00% |
+| `1-10` | 59/70 | 84.29% | 65/75 | 86.67% |
+| `1-11` | 64/70 | 91.43% | 65/75 | 86.67% |
+| `1-12` | 39/70 | 55.71% | 53/75 | 70.67% |
+| `1-14` | 48/70 | 68.57% | 40/75 | 53.33% |
+| `1-15` | 59/70 | 84.29% | 54/75 | 72.00% |
+| `1-16` | 49/70 | 70.00% | 46/75 | 61.33% |
+| `1-18` | 41/70 | 58.57% | 37/75 | 49.33% |
+| `1-19` | 52/70 | 74.29% | 52/75 | 69.33% |
+| `1-2` | 41/70 | 58.57% | 46/75 | 61.33% |
+
+Interpretation:
+
+- v20 is a useful diagnostic and instrumentation step, but it is not the current best route. It raises N20 K10 floor from the v15/v19 51.43% boundary to 52.86%, but harms N10 and does not improve the N20 K5 48.00% floor.
+- The accepted pair bundles are now auditable, but support-risk coverage alone still fails to identify query-transfer-safe corrections. The repeatedly weak classes remain `2-13`,`1-18`,`1-2`,`11-10`,`18-5`, and several dense `1-*` classes.
+- Current best automatic route remains v15 for this route family. v20 should be kept as a compressed, support-only diagnostic component, not promoted as the deployment classifier head.
+
+Current goal status: active, not achieved.
+
 ## v14/v15 Class-Floor-Aware Support-Proxy Check
 
 Objective: address the v13 failure mode where all automatic proxy directions collapse onto one support-hard pair. v14 adds class-balanced round-robin selection over support-only hard-pair candidates. v15 keeps the same compressed proxy-direction representation but makes the balance gate adaptive: low-shot support (`adaptive_k_reliability<0.25`) uses class-balanced selection; higher-reliability support keeps v13's concentrated bundle.

@@ -2405,9 +2405,11 @@ def _support_loo_pair_rescue_scores(
     alpha: float,
     clip: float,
     scope: str,
-) -> tuple[np.ndarray, int, int, float, float]:
+    proto_neighbors: int,
+    proto_min_sim: float,
+) -> tuple[np.ndarray, int, int, float, float, str]:
     if float(weight) == 0.0 or int(top_pairs) <= 0:
-        return scores, 0, 0, 0.0, 0.0
+        return scores, 0, 0, 0.0, 0.0, ""
     scope_norm = str(scope).strip().lower()
     if scope_norm not in {"all", "role", "new"}:
         raise ValueError(f"unsupported support_loo_pair_rescue_scope: {scope}")
@@ -2427,48 +2429,143 @@ def _support_loo_pair_rescue_scores(
         balanced_assignment=True,
     )
     before_per_class: list[float] = []
+    before_acc_by_label: dict[str, float] = {}
     for label in class_labels:
         mask = labels == label
-        before_per_class.append(float(np.mean(loo_pred[mask] == label)) if bool(np.any(mask)) else 0.0)
+        acc = float(np.mean(loo_pred[mask] == label)) if bool(np.any(mask)) else 0.0
+        before_per_class.append(acc)
+        before_acc_by_label[label] = acc
 
     pair_counts: dict[tuple[str, str], int] = {}
+    runner_counts: dict[tuple[str, str], int] = {}
     for truth_label, pred_label in zip(labels.tolist(), loo_pred.tolist()):
         truth = str(truth_label)
         pred = str(pred_label)
-        if truth == pred:
-            continue
         if truth not in label_to_index or pred not in label_to_index:
             continue
         if scope_norm == "new" and (truth not in new_set or pred not in new_set):
             continue
         if scope_norm == "role" and ((truth in old_set) != (pred in old_set)):
             continue
-        pair_counts[(truth, pred)] = pair_counts.get((truth, pred), 0) + 1
-    candidates = [
-        (truth, pred, count)
-        for (truth, pred), count in pair_counts.items()
-        if int(count) >= max(1, int(min_errors))
-    ]
-    candidates.sort(key=lambda item: (-int(item[2]), item[0], item[1]))
-    candidates = candidates[: max(0, int(top_pairs))]
-    if not candidates:
-        return scores, 0, 0, float(min(before_per_class, default=0.0)), float(np.mean(before_per_class) if before_per_class else 0.0)
+        if truth != pred:
+            pair_counts[(truth, pred)] = pair_counts.get((truth, pred), 0) + 1
+    for row_idx, truth_label in enumerate(labels.tolist()):
+        truth = str(truth_label)
+        if truth not in label_to_index:
+            continue
+        truth_idx = label_to_index[truth]
+        score_row = np.asarray(support_scores[row_idx], dtype=np.float64)
+        ranked = np.argsort(score_row)[::-1]
+        for idx in ranked.tolist():
+            competitor = class_labels[int(idx)]
+            if int(idx) == truth_idx:
+                continue
+            if scope_norm == "new" and (truth not in new_set or competitor not in new_set):
+                continue
+            if scope_norm == "role" and ((truth in old_set) != (competitor in old_set)):
+                continue
+            runner_counts[(truth, competitor)] = runner_counts.get((truth, competitor), 0) + 1
+            break
 
     support = qknn._normalize_rows(features[support_indices])
     query = qknn._normalize_rows(features[query_indices])
     prototypes: list[np.ndarray] = []
+    valid_proto: list[bool] = []
     for label in class_labels:
         cls = support[labels == label]
         if cls.size == 0:
             prototypes.append(np.zeros(support.shape[1], dtype=np.float64))
+            valid_proto.append(False)
         else:
             prototypes.append(qknn._normalize_rows(cls.mean(axis=0, keepdims=True))[0])
+            valid_proto.append(True)
     proto = qknn._normalize_rows(np.stack(prototypes, axis=0))
+    proto_sim = proto @ proto.T
+
+    class_risk: dict[str, float] = {}
+    for label in class_labels:
+        if scope_norm == "new" and label not in new_set:
+            continue
+        class_idx = label_to_index[label]
+        class_mask = labels == label
+        if not bool(np.any(class_mask)):
+            continue
+        allowed = [
+            idx
+            for idx, other in enumerate(class_labels)
+            if idx != class_idx
+            and not (scope_norm == "new" and other not in new_set)
+            and not (scope_norm == "role" and ((label in old_set) != (other in old_set)))
+        ]
+        if not allowed:
+            continue
+        cls_scores = np.asarray(support_scores[class_mask], dtype=np.float64)
+        margin = cls_scores[:, class_idx] - np.max(cls_scores[:, allowed], axis=1)
+        max_sim = float(np.max(proto_sim[class_idx, allowed])) if valid_proto[class_idx] else 0.0
+        risk = (
+            2.0 * max(0.0, 1.0 - before_acc_by_label.get(label, 0.0))
+            + 3.0 * max(0.0, 0.08 - float(np.mean(margin)))
+            + 1.5 * max(0.0, max_sim - float(proto_min_sim))
+        )
+        class_risk[label] = float(risk)
+
+    pair_scores: dict[tuple[str, str], float] = {}
+    for key, count in pair_counts.items():
+        if class_risk.get(key[0], 0.0) + 0.05 < class_risk.get(key[1], 0.0):
+            continue
+        pair_scores[key] = max(pair_scores.get(key, 0.0), 4.0 * float(count) + class_risk.get(key[0], 0.0))
+    for key, count in runner_counts.items():
+        if class_risk.get(key[0], 0.0) + 0.05 < class_risk.get(key[1], 0.0):
+            continue
+        pair_scores[key] = max(pair_scores.get(key, 0.0), 1.0 * float(count) + class_risk.get(key[0], 0.0))
+    if int(proto_neighbors) > 0:
+        for truth in class_labels:
+            if truth not in label_to_index:
+                continue
+            if scope_norm == "new" and truth not in new_set:
+                continue
+            truth_idx = label_to_index[truth]
+            if not valid_proto[truth_idx]:
+                continue
+            allowed = [
+                idx
+                for idx, other in enumerate(class_labels)
+                if idx != truth_idx
+                and valid_proto[idx]
+                and not (scope_norm == "new" and other not in new_set)
+                and not (scope_norm == "role" and ((truth in old_set) != (other in old_set)))
+            ]
+            ordered = sorted(allowed, key=lambda idx: float(proto_sim[truth_idx, idx]), reverse=True)
+            used_neighbors = 0
+            for pred_idx in ordered:
+                sim = float(proto_sim[truth_idx, pred_idx])
+                if sim < float(proto_min_sim):
+                    continue
+                pred = class_labels[pred_idx]
+                key = (truth, pred)
+                if class_risk.get(truth, 0.0) + 0.05 < class_risk.get(pred, 0.0):
+                    continue
+                score = class_risk.get(truth, 0.0) + 2.0 * sim
+                pair_scores[key] = max(pair_scores.get(key, 0.0), score)
+                used_neighbors += 1
+                if used_neighbors >= int(proto_neighbors):
+                    break
+
+    candidates = [
+        (truth, pred, int(pair_counts.get((truth, pred), 0)), float(score))
+        for (truth, pred), score in pair_scores.items()
+        if int(pair_counts.get((truth, pred), 0)) >= max(1, int(min_errors)) or float(score) > 0.0
+    ]
+    candidates.sort(key=lambda item: (-float(item[3]), item[0], item[1]))
+    candidates = candidates[: max(0, int(top_pairs))]
+    if not candidates:
+        return scores, 0, 0, float(min(before_per_class, default=0.0)), float(np.mean(before_per_class) if before_per_class else 0.0), ""
     adjusted = np.asarray(scores, dtype=np.float64).copy()
     rescue_scores = np.asarray(support_scores, dtype=np.float64).copy()
     used = 0
     stored_scalars = 0
-    for truth, pred, _count in candidates:
+    used_pairs: list[str] = []
+    for truth, pred, _count, _score in candidates:
         truth_idx = label_to_index[truth]
         pred_idx = label_to_index[pred]
         pair_mask = (labels == truth) | (labels == pred)
@@ -2508,6 +2605,7 @@ def _support_loo_pair_rescue_scores(
         rescue_scores[:, truth_idx] += float(weight) * s_margin
         rescue_scores[:, pred_idx] -= float(weight) * s_margin
         used += 1
+        used_pairs.append(f"{truth}->{pred}")
         stored_scalars += int(coeff.size)
 
     after_pred = _assignment_predict(
@@ -2530,6 +2628,7 @@ def _support_loo_pair_rescue_scores(
         int(stored_scalars),
         float(min(after_per_class, default=0.0)),
         float(np.mean(after_per_class) if after_per_class else 0.0),
+        ";".join(used_pairs[:32]),
     )
 
 
@@ -2838,6 +2937,8 @@ def _evaluate_metric_qknn(
     support_loo_pair_rescue_alpha: float,
     support_loo_pair_rescue_clip: float,
     support_loo_pair_rescue_scope: str,
+    support_loo_pair_rescue_proto_neighbors: int,
+    support_loo_pair_rescue_proto_min_sim: float,
     support_loo_pair_linear_weight: float,
     support_loo_pair_linear_top_pairs: int,
     support_loo_pair_linear_min_errors: int,
@@ -3493,6 +3594,7 @@ def _evaluate_metric_qknn(
     stored_support_loo_pair_rescue_scalars = 0
     support_loo_pair_rescue_min_acc = 0.0
     support_loo_pair_rescue_mean_acc = 0.0
+    support_loo_pair_rescue_pairs = ""
     if float(support_loo_pair_rescue_weight) > 0.0 and int(support_loo_pair_rescue_top_pairs) > 0:
         if support_loo_scores is None:
             support_loo_scores = _support_loo_base_scores(
@@ -3518,6 +3620,7 @@ def _evaluate_metric_qknn(
             stored_support_loo_pair_rescue_scalars,
             support_loo_pair_rescue_min_acc,
             support_loo_pair_rescue_mean_acc,
+            support_loo_pair_rescue_pairs,
         ) = _support_loo_pair_rescue_scores(
             scores,
             features=adapted,
@@ -3534,6 +3637,8 @@ def _evaluate_metric_qknn(
             alpha=float(support_loo_pair_rescue_alpha),
             clip=float(support_loo_pair_rescue_clip),
             scope=str(support_loo_pair_rescue_scope),
+            proto_neighbors=int(support_loo_pair_rescue_proto_neighbors),
+            proto_min_sim=float(support_loo_pair_rescue_proto_min_sim),
         )
     support_loo_pair_linear_count = 0
     stored_support_loo_pair_linear_scalars = 0
@@ -3901,7 +4006,10 @@ def _evaluate_metric_qknn(
         "support_loo_pair_rescue_alpha": float(support_loo_pair_rescue_alpha),
         "support_loo_pair_rescue_clip": float(support_loo_pair_rescue_clip),
         "support_loo_pair_rescue_scope": str(support_loo_pair_rescue_scope),
+        "support_loo_pair_rescue_proto_neighbors": int(support_loo_pair_rescue_proto_neighbors),
+        "support_loo_pair_rescue_proto_min_sim": float(support_loo_pair_rescue_proto_min_sim),
         "support_loo_pair_rescue_count": int(support_loo_pair_rescue_count),
+        "support_loo_pair_rescue_pairs": support_loo_pair_rescue_pairs,
         "support_loo_pair_rescue_loo_min_acc": float(support_loo_pair_rescue_min_acc),
         "support_loo_pair_rescue_loo_mean_acc": float(support_loo_pair_rescue_mean_acc),
         "stored_support_loo_pair_rescue_scalars": int(stored_support_loo_pair_rescue_scalars),
@@ -4132,6 +4240,8 @@ def _adaptive_qknn_overrides(
         "stable_dualview_v18",
         "dualview_support_v19",
         "stable_dualview_v19",
+        "dualview_support_v20",
+        "stable_dualview_v20",
     }:
         raise ValueError(f"unsupported adaptive_qknn_policy: {policy}")
     use_v2 = name in {"dualview_support_v2", "stable_dualview_v2"}
@@ -4152,6 +4262,7 @@ def _adaptive_qknn_overrides(
     use_v17 = name in {"dualview_support_v17", "stable_dualview_v17"}
     use_v18 = name in {"dualview_support_v18", "stable_dualview_v18"}
     use_v19 = name in {"dualview_support_v19", "stable_dualview_v19"}
+    use_v20 = name in {"dualview_support_v20", "stable_dualview_v20"}
 
     min_k = float(geometry["adaptive_support_min_k"])
     new_count = float(geometry["adaptive_new_class_count"])
@@ -4159,7 +4270,7 @@ def _adaptive_qknn_overrides(
     p90_sim = float(geometry["adaptive_support_p90_offdiag_proto_sim"])
     radius = float(geometry["adaptive_support_mean_radius"])
     hardness = _clip01(max((max_sim - 0.82) / 0.16, (p90_sim - 0.68) / 0.22, (radius - 0.08) / 0.20))
-    if use_v3 or use_v4 or use_v5 or use_v7 or use_v8 or use_v9 or use_v10 or use_v11 or use_v12 or use_v13 or use_v14 or use_v15 or use_v16 or use_v17 or use_v18 or use_v19:
+    if use_v3 or use_v4 or use_v5 or use_v7 or use_v8 or use_v9 or use_v10 or use_v11 or use_v12 or use_v13 or use_v14 or use_v15 or use_v16 or use_v17 or use_v18 or use_v19 or use_v20:
         class_load = _clip01((new_count - 2.0) / 18.0)
     else:
         class_load = _clip01((new_count - 10.0) / 20.0)
@@ -4204,7 +4315,7 @@ def _adaptive_qknn_overrides(
         "source_guard_conf_min": 0.0,
         "source_guard_margin_min": 0.0,
     }
-    if use_v2 or use_v3 or use_v4 or use_v5 or use_v6 or use_v7 or use_v8 or use_v9 or use_v10 or use_v11 or use_v12 or use_v13 or use_v14 or use_v15 or use_v16 or use_v17 or use_v18 or use_v19:
+    if use_v2 or use_v3 or use_v4 or use_v5 or use_v6 or use_v7 or use_v8 or use_v9 or use_v10 or use_v11 or use_v12 or use_v13 or use_v14 or use_v15 or use_v16 or use_v17 or use_v18 or use_v19 or use_v20:
         competition_load = class_load
         if (
             use_v3
@@ -4224,6 +4335,7 @@ def _adaptive_qknn_overrides(
             or use_v17
             or use_v18
             or use_v19
+            or use_v20
         ) and new_count >= 2.0:
             competition_load = max(competition_load, 0.25)
         overrides.update(
@@ -4249,6 +4361,7 @@ def _adaptive_qknn_overrides(
                             or use_v17
                             or use_v18
                             or use_v19
+                            or use_v20
                         )
                         and stable_gate >= 0.50
                     )
@@ -4314,7 +4427,7 @@ def _adaptive_qknn_overrides(
                 "support_loo_pair_rescue_scope": "new",
             }
         )
-    if use_v7 or use_v8 or use_v9 or use_v11 or use_v12 or use_v13 or use_v14 or use_v15 or use_v16 or use_v17 or use_v18 or use_v19:
+    if use_v7 or use_v8 or use_v9 or use_v11 or use_v12 or use_v13 or use_v14 or use_v15 or use_v16 or use_v17 or use_v18 or use_v19 or use_v20:
         pair_gate = _clip01(max(stable_gate, class_load) * (0.35 + 0.65 * k_reliability))
         labelprop_gate = _clip01(k_reliability * stable_gate * (1.0 - 0.5 * class_load))
         labelprop_weight = float(np.clip(0.50 * labelprop_gate, 0.0, 0.18))
@@ -4337,7 +4450,7 @@ def _adaptive_qknn_overrides(
                 "pair_logreg_scope": "new",
             }
         )
-    if use_v8 or use_v9 or use_v11 or use_v12 or use_v13 or use_v14 or use_v15 or use_v16 or use_v17 or use_v18 or use_v19:
+    if use_v8 or use_v9 or use_v11 or use_v12 or use_v13 or use_v14 or use_v15 or use_v16 or use_v17 or use_v18 or use_v19 or use_v20:
         low_load_residual = float(np.clip(0.20 - 0.30 * k_reliability, 0.05, 0.20))
         high_load_residual = float(np.clip(0.10 + 0.60 * k_reliability, 0.10, 0.30))
         load_blend = _clip01((class_load - 0.50) / 0.25)
@@ -4352,13 +4465,20 @@ def _adaptive_qknn_overrides(
                 "old_residual_new_clip": 2.0,
             }
         )
-    if use_v9 or use_v10 or use_v11 or use_v12 or use_v13 or use_v14 or use_v15 or use_v16 or use_v17 or use_v18 or use_v19:
+    if use_v9 or use_v10 or use_v11 or use_v12 or use_v13 or use_v14 or use_v15 or use_v16 or use_v17 or use_v18 or use_v19 or use_v20:
         rescue_gate = _clip01(max(stable_gate, class_load))
-        if use_v11 or use_v12 or use_v13 or use_v14 or use_v15 or use_v16 or use_v17 or use_v18 or use_v19:
+        if use_v11 or use_v12 or use_v13 or use_v14 or use_v15 or use_v16 or use_v17 or use_v18 or use_v19 or use_v20:
             rescue_weight = float(np.clip((0.10 + 0.30 * k_reliability) * rescue_gate, 0.05, 0.20))
         else:
             rescue_weight = float(np.clip((0.10 - 0.15 * k_reliability) * rescue_gate, 0.02, 0.10))
         rescue_top_pairs = int(max(4, min(12, round(0.40 * max(new_count, 1.0)))))
+        rescue_proto_neighbors = 0
+        rescue_proto_min_sim = 1.1
+        if use_v20:
+            rescue_weight = float(np.clip((0.04 + 0.10 * k_reliability + 0.02 * class_load) * rescue_gate, 0.04, 0.10))
+            rescue_top_pairs = int(max(10, min(18, round(0.65 * max(new_count, 1.0)))))
+            rescue_proto_neighbors = 2
+            rescue_proto_min_sim = float(np.clip(0.72 + 0.10 * k_reliability - 0.04 * class_load, 0.68, 0.82))
         overrides.update(
             {
                 "support_loo_pair_rescue_weight": rescue_weight,
@@ -4367,6 +4487,8 @@ def _adaptive_qknn_overrides(
                 "support_loo_pair_rescue_alpha": 0.1,
                 "support_loo_pair_rescue_clip": 2.0,
                 "support_loo_pair_rescue_scope": "new",
+                "support_loo_pair_rescue_proto_neighbors": rescue_proto_neighbors,
+                "support_loo_pair_rescue_proto_min_sim": rescue_proto_min_sim,
             }
         )
     if use_v12:
@@ -4383,16 +4505,19 @@ def _adaptive_qknn_overrides(
                 "support_loo_pair_linear_scope": "new",
             }
         )
-    if use_v13 or use_v14 or use_v15 or use_v16 or use_v17 or use_v18 or use_v19:
+    if use_v13 or use_v14 or use_v15 or use_v16 or use_v17 or use_v18 or use_v19 or use_v20:
         proxy_gate = _clip01(max(stable_gate, class_load))
         proxy_weight = float(np.clip((0.10 + 0.90 * k_reliability) * proxy_gate, 0.0, 0.40))
         proxy_top_pairs = int(max(8, min(16, round(0.40 * max(new_count, 1.0)))))
         if use_v16:
             proxy_top_pairs = int(max(16, min(32, round(0.80 * max(new_count, 1.0)))))
-        proxy_balance = bool(use_v14 or use_v18 or (use_v15 and k_reliability < 0.25))
+        proxy_balance = bool(use_v14 or use_v18 or use_v20 or (use_v15 and k_reliability < 0.25))
         proxy_bundle_rows = 4 if use_v16 else 1
         proxy_analogy = bool(use_v17 or use_v18)
         proxy_gate_enabled = bool(use_v19)
+        if use_v20:
+            proxy_weight = 0.0
+            proxy_top_pairs = int(max(6, min(12, round(0.35 * max(new_count, 1.0)))))
         overrides.update(
             {
                 "support_guided_proxy_weight": proxy_weight,
@@ -4408,7 +4533,7 @@ def _adaptive_qknn_overrides(
                 "support_guided_proxy_gate_mean_tol": 0.0,
             }
         )
-    if use_v11 or use_v12 or use_v13 or use_v14 or use_v15 or use_v16 or use_v17 or use_v18 or use_v19:
+    if use_v11 or use_v12 or use_v13 or use_v14 or use_v15 or use_v16 or use_v17 or use_v18 or use_v19 or use_v20:
         # ASLR: Adaptive Support-LOO Rescue. v12 adds compressed pairwise
         # linear boundaries; v13 adds compressed support-proxy direction rescue.
         # These variants do not persist raw support or query state.
@@ -4541,6 +4666,8 @@ def main() -> None:
     parser.add_argument("--support_loo_pair_rescue_alpha_grid", default="0.1")
     parser.add_argument("--support_loo_pair_rescue_clip_grid", default="2.0")
     parser.add_argument("--support_loo_pair_rescue_scope_grid", default="new")
+    parser.add_argument("--support_loo_pair_rescue_proto_neighbors_grid", default="0")
+    parser.add_argument("--support_loo_pair_rescue_proto_min_sim_grid", default="1.1")
     parser.add_argument("--support_loo_pair_linear_weight_grid", default="0")
     parser.add_argument("--support_loo_pair_linear_top_pairs_grid", default="0")
     parser.add_argument("--support_loo_pair_linear_min_errors_grid", default="1")
@@ -4743,6 +4870,8 @@ def main() -> None:
             qknn._parse_float_csv(args.support_loo_pair_rescue_alpha_grid),
             qknn._parse_float_csv(args.support_loo_pair_rescue_clip_grid),
             qknn._parse_csv(args.support_loo_pair_rescue_scope_grid),
+            qknn._parse_int_csv(args.support_loo_pair_rescue_proto_neighbors_grid),
+            qknn._parse_float_csv(args.support_loo_pair_rescue_proto_min_sim_grid),
             qknn._parse_float_csv(args.support_loo_pair_linear_weight_grid),
             qknn._parse_int_csv(args.support_loo_pair_linear_top_pairs_grid),
             qknn._parse_int_csv(args.support_loo_pair_linear_min_errors_grid),
@@ -4937,6 +5066,8 @@ def main() -> None:
                     support_loo_pair_rescue_alpha,
                     support_loo_pair_rescue_clip,
                     support_loo_pair_rescue_scope,
+                    support_loo_pair_rescue_proto_neighbors,
+                    support_loo_pair_rescue_proto_min_sim,
                     support_loo_pair_linear_weight,
                     support_loo_pair_linear_top_pairs,
                     support_loo_pair_linear_min_errors,
@@ -5045,6 +5176,8 @@ def main() -> None:
                         "support_loo_pair_rescue_alpha": float(support_loo_pair_rescue_alpha),
                         "support_loo_pair_rescue_clip": float(support_loo_pair_rescue_clip),
                         "support_loo_pair_rescue_scope": str(support_loo_pair_rescue_scope),
+                        "support_loo_pair_rescue_proto_neighbors": int(support_loo_pair_rescue_proto_neighbors),
+                        "support_loo_pair_rescue_proto_min_sim": float(support_loo_pair_rescue_proto_min_sim),
                         "support_loo_pair_linear_weight": float(support_loo_pair_linear_weight),
                         "support_loo_pair_linear_top_pairs": int(support_loo_pair_linear_top_pairs),
                         "support_loo_pair_linear_min_errors": int(support_loo_pair_linear_min_errors),
@@ -5183,6 +5316,14 @@ def main() -> None:
                             ),
                             "support_loo_pair_rescue_scope": adaptive_overrides.get(
                                 "support_loo_pair_rescue_scope", params["support_loo_pair_rescue_scope"]
+                            ),
+                            "support_loo_pair_rescue_proto_neighbors": adaptive_overrides.get(
+                                "support_loo_pair_rescue_proto_neighbors",
+                                params["support_loo_pair_rescue_proto_neighbors"],
+                            ),
+                            "support_loo_pair_rescue_proto_min_sim": adaptive_overrides.get(
+                                "support_loo_pair_rescue_proto_min_sim",
+                                params["support_loo_pair_rescue_proto_min_sim"],
                             ),
                             "support_loo_pair_linear_weight": adaptive_overrides.get(
                                 "support_loo_pair_linear_weight", params["support_loo_pair_linear_weight"]
@@ -5378,6 +5519,8 @@ def main() -> None:
                         support_loo_pair_rescue_alpha=float(params["support_loo_pair_rescue_alpha"]),
                         support_loo_pair_rescue_clip=float(params["support_loo_pair_rescue_clip"]),
                         support_loo_pair_rescue_scope=str(params["support_loo_pair_rescue_scope"]),
+                        support_loo_pair_rescue_proto_neighbors=int(params["support_loo_pair_rescue_proto_neighbors"]),
+                        support_loo_pair_rescue_proto_min_sim=float(params["support_loo_pair_rescue_proto_min_sim"]),
                         support_loo_pair_linear_weight=float(params["support_loo_pair_linear_weight"]),
                         support_loo_pair_linear_top_pairs=int(params["support_loo_pair_linear_top_pairs"]),
                         support_loo_pair_linear_min_errors=int(params["support_loo_pair_linear_min_errors"]),
@@ -5648,7 +5791,10 @@ def main() -> None:
         "support_loo_pair_rescue_alpha",
         "support_loo_pair_rescue_clip",
         "support_loo_pair_rescue_scope",
+        "support_loo_pair_rescue_proto_neighbors",
+        "support_loo_pair_rescue_proto_min_sim",
         "support_loo_pair_rescue_count",
+        "support_loo_pair_rescue_pairs",
         "support_loo_pair_rescue_loo_min_acc",
         "support_loo_pair_rescue_loo_mean_acc",
         "stored_support_loo_pair_rescue_scalars",
