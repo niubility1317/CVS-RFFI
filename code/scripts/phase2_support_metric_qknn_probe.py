@@ -1727,6 +1727,8 @@ def _query_cluster_align_scores(
     temperature: float,
     clip: float,
     scope: str,
+    agreement_min: float,
+    margin_min: float,
 ) -> tuple[np.ndarray, int, int]:
     """Align temporary query clusters to support prototypes under known quotas.
 
@@ -1812,8 +1814,11 @@ def _query_cluster_align_scores(
                 np.arange(local_base_scores.shape[0]), base_second
             ]
             agreement = float(np.mean(base_top == assigned_local))
-            margin_floor = 0.02 + 0.01 * np.log1p(len(labels_subset))
-            if agreement < 0.70 or float(np.mean(base_margin)) < margin_floor:
+            if float(margin_min) < 0.0:
+                margin_floor = 0.02 + 0.01 * np.log1p(len(labels_subset))
+            else:
+                margin_floor = max(float(margin_min), 0.0)
+            if agreement < float(agreement_min) or float(np.mean(base_margin)) < margin_floor:
                 continue
         local_scores = local_scores - np.mean(local_scores, axis=1, keepdims=True)
         local_scores = local_scores / (np.std(local_scores, axis=1, keepdims=True) + 1e-6)
@@ -3184,6 +3189,8 @@ def _evaluate_metric_qknn(
     query_cluster_temperature: float,
     query_cluster_clip: float,
     query_cluster_scope: str,
+    query_cluster_agreement_min: float,
+    query_cluster_margin_min: float,
     local_competition_weight: float,
     local_competition_k: int,
     local_competition_clip: float,
@@ -4003,6 +4010,8 @@ def _evaluate_metric_qknn(
             temperature=float(query_cluster_temperature),
             clip=float(query_cluster_clip),
             scope=str(query_cluster_scope),
+            agreement_min=float(query_cluster_agreement_min),
+            margin_min=float(query_cluster_margin_min),
         )
     transductive_proto_count = 0
     if float(transductive_proto_weight) != 0.0 and int(transductive_proto_rounds) > 0:
@@ -4290,6 +4299,8 @@ def _evaluate_metric_qknn(
         "query_cluster_temperature": float(query_cluster_temperature),
         "query_cluster_clip": float(query_cluster_clip),
         "query_cluster_scope": str(query_cluster_scope),
+        "query_cluster_agreement_min": float(query_cluster_agreement_min),
+        "query_cluster_margin_min": float(query_cluster_margin_min),
         "query_cluster_temp_proto_count": int(query_cluster_temp_proto_count),
         "query_cluster_assigned_rows": int(query_cluster_assigned_rows),
         "local_competition_weight": float(local_competition_weight),
@@ -4492,6 +4503,8 @@ def _adaptive_qknn_overrides(
         "stable_dualview_v20",
         "dualview_support_v21",
         "stable_dualview_v21",
+        "dualview_support_v22",
+        "stable_dualview_v22",
     }:
         raise ValueError(f"unsupported adaptive_qknn_policy: {policy}")
     use_v2 = name in {"dualview_support_v2", "stable_dualview_v2"}
@@ -4514,6 +4527,7 @@ def _adaptive_qknn_overrides(
     use_v19 = name in {"dualview_support_v19", "stable_dualview_v19"}
     use_v20 = name in {"dualview_support_v20", "stable_dualview_v20"}
     use_v21 = name in {"dualview_support_v21", "stable_dualview_v21"}
+    use_v22 = name in {"dualview_support_v22", "stable_dualview_v22"}
 
     min_k = float(geometry["adaptive_support_min_k"])
     new_count = float(geometry["adaptive_new_class_count"])
@@ -4521,7 +4535,7 @@ def _adaptive_qknn_overrides(
     p90_sim = float(geometry["adaptive_support_p90_offdiag_proto_sim"])
     radius = float(geometry["adaptive_support_mean_radius"])
     hardness = _clip01(max((max_sim - 0.82) / 0.16, (p90_sim - 0.68) / 0.22, (radius - 0.08) / 0.20))
-    if use_v3 or use_v4 or use_v5 or use_v7 or use_v8 or use_v9 or use_v10 or use_v11 or use_v12 or use_v13 or use_v14 or use_v15 or use_v16 or use_v17 or use_v18 or use_v19 or use_v20 or use_v21:
+    if use_v3 or use_v4 or use_v5 or use_v7 or use_v8 or use_v9 or use_v10 or use_v11 or use_v12 or use_v13 or use_v14 or use_v15 or use_v16 or use_v17 or use_v18 or use_v19 or use_v20 or use_v21 or use_v22:
         class_load = _clip01((new_count - 2.0) / 18.0)
     else:
         class_load = _clip01((new_count - 10.0) / 20.0)
@@ -4566,7 +4580,7 @@ def _adaptive_qknn_overrides(
         "source_guard_conf_min": 0.0,
         "source_guard_margin_min": 0.0,
     }
-    if use_v2 or use_v3 or use_v4 or use_v5 or use_v6 or use_v7 or use_v8 or use_v9 or use_v10 or use_v11 or use_v12 or use_v13 or use_v14 or use_v15 or use_v16 or use_v17 or use_v18 or use_v19 or use_v20 or use_v21:
+    if use_v2 or use_v3 or use_v4 or use_v5 or use_v6 or use_v7 or use_v8 or use_v9 or use_v10 or use_v11 or use_v12 or use_v13 or use_v14 or use_v15 or use_v16 or use_v17 or use_v18 or use_v19 or use_v20 or use_v21 or use_v22:
         competition_load = class_load
         if (
             use_v3
@@ -4588,6 +4602,7 @@ def _adaptive_qknn_overrides(
             or use_v19
             or use_v20
             or use_v21
+            or use_v22
         ) and new_count >= 2.0:
             competition_load = max(competition_load, 0.25)
         overrides.update(
@@ -4615,6 +4630,7 @@ def _adaptive_qknn_overrides(
                             or use_v19
                             or use_v20
                             or use_v21
+                            or use_v22
                         )
                         and stable_gate >= 0.50
                     )
@@ -4680,7 +4696,7 @@ def _adaptive_qknn_overrides(
                 "support_loo_pair_rescue_scope": "new",
             }
         )
-    if use_v7 or use_v8 or use_v9 or use_v11 or use_v12 or use_v13 or use_v14 or use_v15 or use_v16 or use_v17 or use_v18 or use_v19 or use_v20 or use_v21:
+    if use_v7 or use_v8 or use_v9 or use_v11 or use_v12 or use_v13 or use_v14 or use_v15 or use_v16 or use_v17 or use_v18 or use_v19 or use_v20 or use_v21 or use_v22:
         pair_gate = _clip01(max(stable_gate, class_load) * (0.35 + 0.65 * k_reliability))
         labelprop_gate = _clip01(k_reliability * stable_gate * (1.0 - 0.5 * class_load))
         labelprop_weight = float(np.clip(0.50 * labelprop_gate, 0.0, 0.18))
@@ -4703,7 +4719,7 @@ def _adaptive_qknn_overrides(
                 "pair_logreg_scope": "new",
             }
         )
-    if use_v8 or use_v9 or use_v11 or use_v12 or use_v13 or use_v14 or use_v15 or use_v16 or use_v17 or use_v18 or use_v19 or use_v20 or use_v21:
+    if use_v8 or use_v9 or use_v11 or use_v12 or use_v13 or use_v14 or use_v15 or use_v16 or use_v17 or use_v18 or use_v19 or use_v20 or use_v21 or use_v22:
         low_load_residual = float(np.clip(0.20 - 0.30 * k_reliability, 0.05, 0.20))
         high_load_residual = float(np.clip(0.10 + 0.60 * k_reliability, 0.10, 0.30))
         load_blend = _clip01((class_load - 0.50) / 0.25)
@@ -4718,9 +4734,9 @@ def _adaptive_qknn_overrides(
                 "old_residual_new_clip": 2.0,
             }
         )
-    if use_v9 or use_v10 or use_v11 or use_v12 or use_v13 or use_v14 or use_v15 or use_v16 or use_v17 or use_v18 or use_v19 or use_v20 or use_v21:
+    if use_v9 or use_v10 or use_v11 or use_v12 or use_v13 or use_v14 or use_v15 or use_v16 or use_v17 or use_v18 or use_v19 or use_v20 or use_v21 or use_v22:
         rescue_gate = _clip01(max(stable_gate, class_load))
-        if use_v11 or use_v12 or use_v13 or use_v14 or use_v15 or use_v16 or use_v17 or use_v18 or use_v19 or use_v20 or use_v21:
+        if use_v11 or use_v12 or use_v13 or use_v14 or use_v15 or use_v16 or use_v17 or use_v18 or use_v19 or use_v20 or use_v21 or use_v22:
             rescue_weight = float(np.clip((0.10 + 0.30 * k_reliability) * rescue_gate, 0.05, 0.20))
         else:
             rescue_weight = float(np.clip((0.10 - 0.15 * k_reliability) * rescue_gate, 0.02, 0.10))
@@ -4758,13 +4774,13 @@ def _adaptive_qknn_overrides(
                 "support_loo_pair_linear_scope": "new",
             }
         )
-    if use_v13 or use_v14 or use_v15 or use_v16 or use_v17 or use_v18 or use_v19 or use_v20 or use_v21:
+    if use_v13 or use_v14 or use_v15 or use_v16 or use_v17 or use_v18 or use_v19 or use_v20 or use_v21 or use_v22:
         proxy_gate = _clip01(max(stable_gate, class_load))
         proxy_weight = float(np.clip((0.10 + 0.90 * k_reliability) * proxy_gate, 0.0, 0.40))
         proxy_top_pairs = int(max(8, min(16, round(0.40 * max(new_count, 1.0)))))
         if use_v16:
             proxy_top_pairs = int(max(16, min(32, round(0.80 * max(new_count, 1.0)))))
-        proxy_balance = bool(use_v14 or use_v18 or use_v20 or (use_v15 and k_reliability < 0.25))
+        proxy_balance = bool(use_v14 or use_v18 or use_v20 or ((use_v15 or use_v22) and k_reliability < 0.25))
         proxy_bundle_rows = 4 if use_v16 else 1
         proxy_analogy = bool(use_v17 or use_v18)
         proxy_gate_enabled = bool(use_v19)
@@ -4786,11 +4802,18 @@ def _adaptive_qknn_overrides(
                 "support_guided_proxy_gate_mean_tol": 0.0,
             }
         )
-    if use_v21:
+    if use_v21 or use_v22:
         cluster_gate = _clip01(max(stable_gate, class_load) * (0.55 + 0.45 * k_reliability))
-        cluster_weight = float(
-            np.clip((0.05 + 0.11 * class_load + 0.07 * (1.0 - k_reliability)) * cluster_gate, 0.03, 0.16)
-        )
+        if use_v22:
+            v22_base_weight = 0.04 * (1.0 - 0.35 * k_reliability) + 0.02 * class_load * k_reliability
+            v22_overload_gate = 1.0 - _clip01((class_load - 0.55) / 0.45) * (1.0 - k_reliability)
+            cluster_weight = float(
+                np.clip(v22_base_weight * (0.50 + 0.50 * stable_gate) * v22_overload_gate, 0.0, 0.06)
+            )
+        else:
+            cluster_weight = float(
+                np.clip((0.05 + 0.11 * class_load + 0.07 * (1.0 - k_reliability)) * cluster_gate, 0.03, 0.16)
+            )
         cluster_support_weight = float(np.clip(0.55 + 0.25 * k_reliability - 0.10 * class_load, 0.40, 0.75))
         cluster_temperature = float(np.clip(0.10 - 0.04 * k_reliability + 0.02 * class_load, 0.05, 0.12))
         overrides.update(
@@ -4803,14 +4826,21 @@ def _adaptive_qknn_overrides(
                 "query_cluster_scope": "new",
             }
         )
-        if k_reliability < 0.15:
+        if use_v22:
+            overrides.update(
+                {
+                    "query_cluster_agreement_min": float(np.clip(0.35 + 0.35 * k_reliability, 0.35, 0.70)),
+                    "query_cluster_margin_min": float(np.clip(0.005 + 0.025 * k_reliability, 0.005, 0.03)),
+                }
+            )
+        if use_v21 and k_reliability < 0.15:
             overrides.update(
                 {
                     "support_loo_pair_rescue_weight": 0.0,
                     "support_loo_pair_rescue_top_pairs": 0,
                 }
             )
-    if use_v11 or use_v12 or use_v13 or use_v14 or use_v15 or use_v16 or use_v17 or use_v18 or use_v19 or use_v20 or use_v21:
+    if use_v11 or use_v12 or use_v13 or use_v14 or use_v15 or use_v16 or use_v17 or use_v18 or use_v19 or use_v20 or use_v21 or use_v22:
         # ASLR: Adaptive Support-LOO Rescue. v12 adds compressed pairwise
         # linear boundaries; v13 adds compressed support-proxy direction rescue.
         # These variants do not persist raw support or query state.
@@ -4976,6 +5006,8 @@ def main() -> None:
     parser.add_argument("--query_cluster_temperature_grid", default="0.08")
     parser.add_argument("--query_cluster_clip_grid", default="2.0")
     parser.add_argument("--query_cluster_scope_grid", default="new")
+    parser.add_argument("--query_cluster_agreement_min_grid", default="0.70")
+    parser.add_argument("--query_cluster_margin_min_grid", default="-1")
     parser.add_argument("--local_competition_weight_grid", default="0")
     parser.add_argument("--local_competition_k_grid", default="4")
     parser.add_argument("--local_competition_clip_grid", default="1.0")
@@ -5186,6 +5218,8 @@ def main() -> None:
             qknn._parse_float_csv(args.query_cluster_temperature_grid),
             qknn._parse_float_csv(args.query_cluster_clip_grid),
             qknn._parse_csv(args.query_cluster_scope_grid),
+            qknn._parse_float_csv(args.query_cluster_agreement_min_grid),
+            qknn._parse_float_csv(args.query_cluster_margin_min_grid),
             qknn._parse_float_csv(args.local_competition_weight_grid),
             qknn._parse_int_csv(args.local_competition_k_grid),
             qknn._parse_float_csv(args.local_competition_clip_grid),
@@ -5388,6 +5422,8 @@ def main() -> None:
                     query_cluster_temperature,
                     query_cluster_clip,
                     query_cluster_scope,
+                    query_cluster_agreement_min,
+                    query_cluster_margin_min,
                     local_competition_weight,
                     local_competition_k,
                     local_competition_clip,
@@ -5493,6 +5529,8 @@ def main() -> None:
                         "query_cluster_temperature": float(query_cluster_temperature),
                         "query_cluster_clip": float(query_cluster_clip),
                         "query_cluster_scope": str(query_cluster_scope),
+                        "query_cluster_agreement_min": float(query_cluster_agreement_min),
+                        "query_cluster_margin_min": float(query_cluster_margin_min),
                         "query_proto_refine_weight": float(query_proto_refine_weight),
                         "query_proto_refine_topm": int(query_proto_refine_topm),
                         "query_proto_refine_clip": float(query_proto_refine_clip),
@@ -5673,6 +5711,12 @@ def main() -> None:
                             ),
                             "query_cluster_scope": adaptive_overrides.get(
                                 "query_cluster_scope", params["query_cluster_scope"]
+                            ),
+                            "query_cluster_agreement_min": adaptive_overrides.get(
+                                "query_cluster_agreement_min", params["query_cluster_agreement_min"]
+                            ),
+                            "query_cluster_margin_min": adaptive_overrides.get(
+                                "query_cluster_margin_min", params["query_cluster_margin_min"]
                             ),
                             "query_proto_refine_weight": adaptive_overrides.get(
                                 "query_proto_refine_weight", params["query_proto_refine_weight"]
@@ -5871,6 +5915,8 @@ def main() -> None:
                         query_cluster_temperature=float(params["query_cluster_temperature"]),
                         query_cluster_clip=float(params["query_cluster_clip"]),
                         query_cluster_scope=str(params["query_cluster_scope"]),
+                        query_cluster_agreement_min=float(params["query_cluster_agreement_min"]),
+                        query_cluster_margin_min=float(params["query_cluster_margin_min"]),
                         local_competition_weight=float(params["local_competition_weight"]),
                         local_competition_k=int(params["local_competition_k"]),
                         local_competition_clip=float(params["local_competition_clip"]),
@@ -6160,6 +6206,8 @@ def main() -> None:
         "query_cluster_temperature",
         "query_cluster_clip",
         "query_cluster_scope",
+        "query_cluster_agreement_min",
+        "query_cluster_margin_min",
         "query_cluster_temp_proto_count",
         "query_cluster_assigned_rows",
         "local_competition_weight",

@@ -202,6 +202,79 @@ Interpretation:
 
 Current goal status: active, not achieved.
 
+## Adaptive v22 Load-Gated Query Cluster
+
+Objective: continue qKNN optimization without adding K anchors. `K=5` and `K=10` remain the only anchors, using the maximum query split from the 80-sample-per-class feature file. A diagnostic mismatch was first corrected: the earlier current-code K5 legacy check accidentally used `pool_per_old=10,pool_per_new=10`; the valid maximum-query K5 protocol is `pool_per_old=5,pool_per_new=5`, leaving 75 query samples per class. With the corrected split, current code exactly reproduces the archived v15 K5 row.
+
+Implementation change:
+
+- Added `dualview_support_v22` / `stable_dualview_v22` in `code/scripts/phase2_support_metric_qknn_probe.py`.
+- v22 keeps the compressed qKNN head: no raw support vectors are stored; persistent state is quantized support codes, class prototypes, transform scalars, residual/logistic scalars, support-proxy scalars, and support-LOO rescue scalars.
+- v22 adds a temporary unlabeled-query cluster alignment term. Query clusters are batch-local and discarded after scoring. The persistent classifier still stores no query state.
+- v22 adapts by support geometry rather than per-K hand tuning: low `k_reliability` enables class-balanced support-proxy selection; query-cluster weight is generated from `k_reliability`, `class_load`, and `stable_gate`; a high-load/low-K overload gate disables query-cluster injection for N20 K5 where it hurts floor.
+
+Verification:
+
+| command | result |
+|---|---|
+| `conda run -n ssr-gpu python -m py_compile code\scripts\phase2_support_metric_qknn_probe.py` | PASS |
+| `n10_k5_v22_final_seed421037.csv` | completed |
+| `n10_k10_v22_final_seed421029.csv` | completed |
+| `n20_k5_v22_final_seed421037.csv` | completed |
+| `n20_k10_v22_final_seed421029.csv` | completed |
+
+Final maximum-query summary:
+
+| scope | K | query/class | old_acc | min_old | new_acc | min_new | query-cluster rows | raw support stored | verdict |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|---|
+| N10 | 5 | 75 | 91.56% | 77.33% | 86.00% | 64.00% | 750 | 0 | improves mean, floor still failed |
+| N10 | 10 | 70 | 92.14% | 77.14% | 85.43% | 64.29% | 700 | 0 | improves mean, floor still failed |
+| N20 | 5 | 75 | 92.22% | 78.67% | 69.33% | 48.00% | overload-gated | 0 | no regression vs v15, failed |
+| N20 | 10 | 70 | 92.62% | 78.57% | 70.14% | 51.43% | gated out | 0 | no regression vs v15, failed |
+
+Comparison to corrected v15:
+
+| scope | K | v15 new_acc | v15 min_new | v22 new_acc | v22 min_new | delta |
+|---|---:|---:|---:|---:|---:|---|
+| N10 | 5 | 85.07% | 64.00% | 86.00% | 64.00% | +0.93pp mean, same floor |
+| N10 | 10 | 85.29% | 64.29% | 85.43% | 64.29% | +0.14pp mean, same floor |
+| N20 | 5 | 69.33% | 48.00% | 69.33% | 48.00% | same after overload fallback |
+| N20 | 10 | 70.14% | 51.43% | 70.14% | 51.43% | same after gate fallback |
+
+Per-class accuracy:
+
+| TX | N10 K5 | N10 K10 | N20 K5 | N20 K10 |
+|---|---:|---:|---:|---:|
+| `10-10` | 90.67% | 91.43% | 80.00% | 84.29% |
+| `11-10` | 76.00% | 78.57% | 60.00% | 55.71% |
+| `18-5` | 94.67% | 95.71% | 50.67% | 62.86% |
+| `19-3` | 97.33% | 95.71% | 56.00% | 62.86% |
+| `2-13` | 64.00% | 64.29% | 49.33% | 51.43% |
+| `2-5` | 84.00% | 81.43% | 81.33% | 78.57% |
+| `3-8` | 88.00% | 91.43% | 86.67% | 80.00% |
+| `4-10` | 88.00% | 87.14% | 88.00% | 88.57% |
+| `8-18` | 84.00% | 77.14% | 82.67% | 70.00% |
+| `8-3` | 93.33% | 91.43% | 77.33% | 72.86% |
+| `1-1` | - | - | 69.33% | 57.14% |
+| `1-10` | - | - | 86.67% | 84.29% |
+| `1-11` | - | - | 85.33% | 85.71% |
+| `1-12` | - | - | 66.67% | 62.86% |
+| `1-14` | - | - | 48.00% | 68.57% |
+| `1-15` | - | - | 76.00% | 80.00% |
+| `1-16` | - | - | 65.33% | 70.00% |
+| `1-18` | - | - | 48.00% | 57.14% |
+| `1-19` | - | - | 68.00% | 72.86% |
+| `1-2` | - | - | 61.33% | 57.14% |
+
+Interpretation:
+
+- v22 is a safe incremental qKNN improvement for N10: it raises mean new accuracy without reducing the weakest class and keeps K5 slightly above K10 on mean new accuracy.
+- v22 does not solve the active target. The ten-class floor remains 64.00%/64.29%, below the 75% requirement.
+- For N20, the overload gate correctly prevents query-cluster collapse, but the result remains at the v15 boundary. The many-new failure is dominated by separability of `1-14`,`1-18`,`2-13`,`11-10`,`18-5`,`19-3`,`1-2`, not by raw support storage or KNN extensibility.
+- The next credible optimization is representation/enrollment repair for these hard ManyTx classes, or a support-selection protocol that improves per-class separability while preserving the same K=5/K=10 budget and no-query-label fitting rule.
+
+Current goal status: active, not achieved.
+
 ## v21 Self-Gated Query Cluster Diagnostic
 
 Objective: continue optimizing qKNN without adding K anchors. The only K settings remain `K=10` and `K=5`; query stays at the feature-file maximum, namely 70 query samples per class for `K=10` and 75 for `K=5`.
