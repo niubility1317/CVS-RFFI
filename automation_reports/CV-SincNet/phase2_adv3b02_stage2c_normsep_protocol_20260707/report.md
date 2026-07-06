@@ -8,7 +8,7 @@
 |timestamp|2026-07-07|
 |operator|Codex|
 |objective|在qKNNV42目标下继续推进旧类域适应、新类增多坍塌和最低类过低问题；本轮补齐真实Stage2-C导出协议，使NORM_SEP类表征能同时导出`target_old`、`target_new`和`target_unknown`|
-|status|本地代码和launcher准备完成；未访问N607，未启动训练|
+|status|本地代码和launcher准备完成；N607直连预检通过，但GPU满载且每卡多条训练计算进程，本轮延期启动；未同步远端文件，未启动训练|
 
 ## 协议边界
 
@@ -48,9 +48,43 @@ dry-run关键输出：
 [STAGE2C-NORMSEP] proxy_pool_excludes_target_new_and_target_unknown=true
 ```
 
+## N607预检与延期记录
+
+2026-07-07 01:58 CST执行项目规定的只读直连预检：
+
+```powershell
+powershell -ExecutionPolicy Bypass -File tools\n607_ssh_preflight.ps1
+```
+
+预检结果：PASS。直接`N607`目标、身份文件、服务器时间、项目根目录`/home/szu2070436088/2510044040/CV-SincNet`和GPU可见性均通过。
+
+随后执行只读GPU/进程占用检查。关键证据：
+
+```text
+0, 100, 12201, 24576
+1, 100, 11863, 24576
+2, 100, 11967, 24576
+3, 100, 11763, 24576
+4, 100, 12239, 24576
+5, 100, 12267, 24576
+6, 99, 11807, 24576
+7, 99, 12561, 24576
+```
+
+`nvidia-smi --query-compute-apps`显示每张GPU均有多条`/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python`计算进程；`ps`显示这些进程来自`/home/szu2070436088/2510044040/CV-SincNet/code/SSDG/train_ssdg.py`，当前已有`phase1_dgleo_directmetric16_20260706`队列运行。
+
+决策：不在当前占用状态下追加`phase2_adv3b02_stage2c_normsep_protocol_20260707`。理由是当前8张GPU均接近满载，且每卡已有多条训练计算进程，超过默认“每GPU最多两条训练实验”的启动边界。为避免影响在跑队列，本轮未执行`scp`、未远端覆盖脚本、未启动launcher。
+
+本地SSH清理检查：
+
+|检查|结果|
+|---|---|
+|`Get-Process ssh -ErrorAction SilentlyContinue`|无残留`ssh.exe`|
+|`Get-NetTCPConnection -RemotePort 22 -State Established`|无到22端口的ESTABLISHED连接|
+
 ## 预期N607使用方式
 
-本轮未执行N607预检。若下一步启动，必须先运行：
+下一步恢复启动前，必须重新运行：
 
 ```powershell
 powershell -ExecutionPolicy Bypass -File tools\n607_ssh_preflight.ps1
