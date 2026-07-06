@@ -202,6 +202,101 @@ Interpretation:
 
 Current goal status: active, not achieved.
 
+## Adaptive v23 Support-Gated Aux Safety
+
+Objective: continue optimizing qKNN without expanding the K grid. The only evaluated anchors remain `K=5` and `K=10`, using the maximum query split from the 80-sample-per-class feature file. This run tests whether an adaptive support-only auxiliary-view reliability gate can improve stability when the number of enrolled new classes increases.
+
+Implementation change:
+
+- Added `dualview_support_v23` / `stable_dualview_v23` in `code/scripts/phase2_support_metric_qknn_probe.py`.
+- v23 keeps the compressed qKNN deployment property: no raw support vectors are stored. Persistent state is quantized support codes, class prototypes, transform scalars, and small rescue/proxy scalars.
+- v23 extends support-only auxiliary-view gating to the current query-cluster lineage. Before mixing an auxiliary view, it computes primary-view and auxiliary-view support LOO mean/minimum-class accuracy. If the auxiliary view has weak minimum-class support LOO or does not improve support reliability enough, `effective_aux_score_weight` is reduced toward zero.
+- The query-cluster execution guard now treats near-zero weights as zero, so overload-gated N20 K5 does not report misleading temporary cluster rows.
+
+Verification:
+
+| command/artifact | result |
+|---|---|
+| `conda run -n ssr-gpu python -m py_compile code\scripts\phase2_support_metric_qknn_probe.py` | PASS |
+| `artifacts\n10_k5_v23_seed421037.json` | completed |
+| `artifacts\n10_k10_v23_seed421029.json` | completed |
+| `artifacts\n10_k5_v23_head_seed421037.json` | completed; HEAD aux rejected by support gate |
+| `artifacts\n10_k10_v23_head_seed421029.json` | completed; HEAD aux effective weight 4.18% |
+| `artifacts\n20_k5_v23_seed421037.json` | completed |
+| `artifacts\n20_k10_v23_seed421029.json` | completed |
+
+Maximum-query summary:
+
+| scope | K | query/class | old_acc | min_old | new_acc | min_new | effective_aux | query-cluster rows | verdict |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|---|
+| N10 NORM | 5 | 75 | 91.56% | 77.33% | 86.00% | 64.00% | 0.00% | 750 | failed floor |
+| N10 NORM | 10 | 70 | 92.14% | 77.14% | 85.43% | 64.29% | 0.00% | 700 | failed floor |
+| N10 NORM+HEAD | 5 | 75 | 91.56% | 77.33% | 86.00% | 64.00% | 0.00% | 750 | aux safely rejected |
+| N10 NORM+HEAD | 10 | 70 | 92.14% | 77.14% | 85.43% | 64.29% | 4.18% | 700 | no gain |
+| N20 NORM | 5 | 75 | 92.22% | 78.67% | 69.33% | 48.00% | 0.00% | 0 | failed; many-new collapse persists |
+| N20 NORM | 10 | 70 | 92.62% | 78.57% | 70.14% | 51.43% | 0.00% | 0 | failed; many-new collapse persists |
+
+N10 per-TX details:
+
+| TX | role | K5 acc | K10 acc |
+|---|---|---:|---:|
+| `14-10` | old | 96.00% | 95.71% |
+| `14-7` | old | 77.33% | 80.00% |
+| `20-15` | old | 98.67% | 100.00% |
+| `20-19` | old | 77.33% | 77.14% |
+| `6-15` | old | 100.00% | 100.00% |
+| `8-20` | old | 100.00% | 100.00% |
+| `10-10` | new | 90.67% | 91.43% |
+| `11-10` | new | 76.00% | 78.57% |
+| `18-5` | new | 94.67% | 95.71% |
+| `19-3` | new | 97.33% | 95.71% |
+| `2-13` | new | 64.00% | 64.29% |
+| `2-5` | new | 84.00% | 81.43% |
+| `3-8` | new | 88.00% | 91.43% |
+| `4-10` | new | 88.00% | 87.14% |
+| `8-18` | new | 84.00% | 77.14% |
+| `8-3` | new | 93.33% | 91.43% |
+
+N20 per-TX details:
+
+| TX | role | K5 acc | K10 acc |
+|---|---|---:|---:|
+| `14-10` | old | 97.33% | 95.71% |
+| `14-7` | old | 78.67% | 81.43% |
+| `20-15` | old | 98.67% | 100.00% |
+| `20-19` | old | 78.67% | 78.57% |
+| `6-15` | old | 100.00% | 100.00% |
+| `8-20` | old | 100.00% | 100.00% |
+| `10-10` | new | 80.00% | 84.29% |
+| `11-10` | new | 60.00% | 55.71% |
+| `18-5` | new | 50.67% | 62.86% |
+| `19-3` | new | 56.00% | 62.86% |
+| `2-13` | new | 49.33% | 51.43% |
+| `2-5` | new | 81.33% | 78.57% |
+| `3-8` | new | 86.67% | 80.00% |
+| `4-10` | new | 88.00% | 88.57% |
+| `8-18` | new | 82.67% | 70.00% |
+| `8-3` | new | 77.33% | 72.86% |
+| `1-1` | new | 69.33% | 57.14% |
+| `1-10` | new | 86.67% | 84.29% |
+| `1-11` | new | 85.33% | 85.71% |
+| `1-12` | new | 66.67% | 62.86% |
+| `1-14` | new | 48.00% | 68.57% |
+| `1-15` | new | 76.00% | 80.00% |
+| `1-16` | new | 65.33% | 70.00% |
+| `1-18` | new | 48.00% | 57.14% |
+| `1-19` | new | 68.00% | 72.86% |
+| `1-2` | new | 61.33% | 57.14% |
+
+Interpretation:
+
+- v23 improves safety, not accuracy. It prevents harmful auxiliary-view fusion without storing raw support samples or using query labels, but it does not lift the weakest new class.
+- Ten-new-class target is still not achieved: `2-13` remains at 64.00%/64.29%, below the 75% per-class floor.
+- Twenty-new-class pressure test still collapses: N20 minimum new-class accuracy is 48.00%/51.43%, far below the requested stability requirement.
+- The remaining failure is concentrated in feature/local-boundary separability for `2-13`,`11-10`,`18-5`,`19-3`,`1-14`,`1-18`,`1-2`, not in K expansion or raw-support storage.
+
+Current goal status: active, not achieved.
+
 ## Adaptive v22 Load-Gated Query Cluster
 
 Objective: continue qKNN optimization without adding K anchors. `K=5` and `K=10` remain the only anchors, using the maximum query split from the 80-sample-per-class feature file. A diagnostic mismatch was first corrected: the earlier current-code K5 legacy check accidentally used `pool_per_old=10,pool_per_new=10`; the valid maximum-query K5 protocol is `pool_per_old=5,pool_per_new=5`, leaving 75 query samples per class. With the corrected split, current code exactly reproduces the archived v15 K5 row.

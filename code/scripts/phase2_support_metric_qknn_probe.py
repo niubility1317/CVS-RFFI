@@ -3356,6 +3356,8 @@ def _evaluate_metric_qknn(
             "stable_dualview_v11",
             "dualview_support_v12",
             "stable_dualview_v12",
+            "dualview_support_v23",
+            "stable_dualview_v23",
         }:
             primary_loo_scores = _support_loo_base_scores(
                 features=adapted,
@@ -3411,11 +3413,18 @@ def _evaluate_metric_qknn(
             )
             aux_support_loo_delta = float(aux_support_aux_loo_acc - aux_support_primary_loo_acc)
             aux_support_min_delta = float(aux_support_aux_loo_min_acc - aux_support_primary_loo_min_acc)
-            mean_gate = float(np.clip((aux_support_loo_delta + 0.02) / 0.08, 0.0, 1.0))
-            floor_gate = float(np.clip((aux_support_min_delta + 0.05) / 0.12, 0.0, 1.0))
-            aux_support_absolute_floor_gate = float(
-                np.clip((aux_support_aux_loo_min_acc - 0.20) / 0.30, 0.0, 1.0)
-            )
+            if policy_name in {"dualview_support_v23", "stable_dualview_v23"}:
+                mean_gate = float(np.clip((aux_support_loo_delta + 0.01) / 0.05, 0.0, 1.0))
+                floor_gate = float(np.clip((aux_support_min_delta + 0.02) / 0.06, 0.0, 1.0))
+                aux_support_absolute_floor_gate = float(
+                    np.clip((aux_support_aux_loo_min_acc - 0.40) / 0.25, 0.0, 1.0)
+                )
+            else:
+                mean_gate = float(np.clip((aux_support_loo_delta + 0.02) / 0.08, 0.0, 1.0))
+                floor_gate = float(np.clip((aux_support_min_delta + 0.05) / 0.12, 0.0, 1.0))
+                aux_support_absolute_floor_gate = float(
+                    np.clip((aux_support_aux_loo_min_acc - 0.20) / 0.30, 0.0, 1.0)
+                )
             aux_support_gate_factor = float(min(mean_gate, floor_gate, aux_support_absolute_floor_gate))
             effective_aux_score_weight = float(aux_score_weight) * aux_support_gate_factor
         scores = (1.0 - effective_aux_score_weight) * scores + effective_aux_score_weight * aux_scores
@@ -3993,7 +4002,7 @@ def _evaluate_metric_qknn(
     )
     query_cluster_temp_proto_count = 0
     query_cluster_assigned_rows = 0
-    if float(query_cluster_weight) != 0.0 and int(query_cluster_rounds) > 0:
+    if abs(float(query_cluster_weight)) > 1e-12 and int(query_cluster_rounds) > 0:
         scores, query_cluster_temp_proto_count, query_cluster_assigned_rows = _query_cluster_align_scores(
             scores,
             features=adapted,
@@ -4505,6 +4514,8 @@ def _adaptive_qknn_overrides(
         "stable_dualview_v21",
         "dualview_support_v22",
         "stable_dualview_v22",
+        "dualview_support_v23",
+        "stable_dualview_v23",
     }:
         raise ValueError(f"unsupported adaptive_qknn_policy: {policy}")
     use_v2 = name in {"dualview_support_v2", "stable_dualview_v2"}
@@ -4528,6 +4539,7 @@ def _adaptive_qknn_overrides(
     use_v20 = name in {"dualview_support_v20", "stable_dualview_v20"}
     use_v21 = name in {"dualview_support_v21", "stable_dualview_v21"}
     use_v22 = name in {"dualview_support_v22", "stable_dualview_v22"}
+    use_v23 = name in {"dualview_support_v23", "stable_dualview_v23"}
 
     min_k = float(geometry["adaptive_support_min_k"])
     new_count = float(geometry["adaptive_new_class_count"])
@@ -4535,7 +4547,7 @@ def _adaptive_qknn_overrides(
     p90_sim = float(geometry["adaptive_support_p90_offdiag_proto_sim"])
     radius = float(geometry["adaptive_support_mean_radius"])
     hardness = _clip01(max((max_sim - 0.82) / 0.16, (p90_sim - 0.68) / 0.22, (radius - 0.08) / 0.20))
-    if use_v3 or use_v4 or use_v5 or use_v7 or use_v8 or use_v9 or use_v10 or use_v11 or use_v12 or use_v13 or use_v14 or use_v15 or use_v16 or use_v17 or use_v18 or use_v19 or use_v20 or use_v21 or use_v22:
+    if use_v3 or use_v4 or use_v5 or use_v7 or use_v8 or use_v9 or use_v10 or use_v11 or use_v12 or use_v13 or use_v14 or use_v15 or use_v16 or use_v17 or use_v18 or use_v19 or use_v20 or use_v21 or use_v22 or use_v23:
         class_load = _clip01((new_count - 2.0) / 18.0)
     else:
         class_load = _clip01((new_count - 10.0) / 20.0)
@@ -4580,7 +4592,7 @@ def _adaptive_qknn_overrides(
         "source_guard_conf_min": 0.0,
         "source_guard_margin_min": 0.0,
     }
-    if use_v2 or use_v3 or use_v4 or use_v5 or use_v6 or use_v7 or use_v8 or use_v9 or use_v10 or use_v11 or use_v12 or use_v13 or use_v14 or use_v15 or use_v16 or use_v17 or use_v18 or use_v19 or use_v20 or use_v21 or use_v22:
+    if use_v2 or use_v3 or use_v4 or use_v5 or use_v6 or use_v7 or use_v8 or use_v9 or use_v10 or use_v11 or use_v12 or use_v13 or use_v14 or use_v15 or use_v16 or use_v17 or use_v18 or use_v19 or use_v20 or use_v21 or use_v22 or use_v23:
         competition_load = class_load
         if (
             use_v3
@@ -4603,6 +4615,7 @@ def _adaptive_qknn_overrides(
             or use_v20
             or use_v21
             or use_v22
+            or use_v23
         ) and new_count >= 2.0:
             competition_load = max(competition_load, 0.25)
         overrides.update(
@@ -4631,6 +4644,7 @@ def _adaptive_qknn_overrides(
                             or use_v20
                             or use_v21
                             or use_v22
+                            or use_v23
                         )
                         and stable_gate >= 0.50
                     )
@@ -4696,7 +4710,7 @@ def _adaptive_qknn_overrides(
                 "support_loo_pair_rescue_scope": "new",
             }
         )
-    if use_v7 or use_v8 or use_v9 or use_v11 or use_v12 or use_v13 or use_v14 or use_v15 or use_v16 or use_v17 or use_v18 or use_v19 or use_v20 or use_v21 or use_v22:
+    if use_v7 or use_v8 or use_v9 or use_v11 or use_v12 or use_v13 or use_v14 or use_v15 or use_v16 or use_v17 or use_v18 or use_v19 or use_v20 or use_v21 or use_v22 or use_v23:
         pair_gate = _clip01(max(stable_gate, class_load) * (0.35 + 0.65 * k_reliability))
         labelprop_gate = _clip01(k_reliability * stable_gate * (1.0 - 0.5 * class_load))
         labelprop_weight = float(np.clip(0.50 * labelprop_gate, 0.0, 0.18))
@@ -4719,7 +4733,7 @@ def _adaptive_qknn_overrides(
                 "pair_logreg_scope": "new",
             }
         )
-    if use_v8 or use_v9 or use_v11 or use_v12 or use_v13 or use_v14 or use_v15 or use_v16 or use_v17 or use_v18 or use_v19 or use_v20 or use_v21 or use_v22:
+    if use_v8 or use_v9 or use_v11 or use_v12 or use_v13 or use_v14 or use_v15 or use_v16 or use_v17 or use_v18 or use_v19 or use_v20 or use_v21 or use_v22 or use_v23:
         low_load_residual = float(np.clip(0.20 - 0.30 * k_reliability, 0.05, 0.20))
         high_load_residual = float(np.clip(0.10 + 0.60 * k_reliability, 0.10, 0.30))
         load_blend = _clip01((class_load - 0.50) / 0.25)
@@ -4734,9 +4748,9 @@ def _adaptive_qknn_overrides(
                 "old_residual_new_clip": 2.0,
             }
         )
-    if use_v9 or use_v10 or use_v11 or use_v12 or use_v13 or use_v14 or use_v15 or use_v16 or use_v17 or use_v18 or use_v19 or use_v20 or use_v21 or use_v22:
+    if use_v9 or use_v10 or use_v11 or use_v12 or use_v13 or use_v14 or use_v15 or use_v16 or use_v17 or use_v18 or use_v19 or use_v20 or use_v21 or use_v22 or use_v23:
         rescue_gate = _clip01(max(stable_gate, class_load))
-        if use_v11 or use_v12 or use_v13 or use_v14 or use_v15 or use_v16 or use_v17 or use_v18 or use_v19 or use_v20 or use_v21 or use_v22:
+        if use_v11 or use_v12 or use_v13 or use_v14 or use_v15 or use_v16 or use_v17 or use_v18 or use_v19 or use_v20 or use_v21 or use_v22 or use_v23:
             rescue_weight = float(np.clip((0.10 + 0.30 * k_reliability) * rescue_gate, 0.05, 0.20))
         else:
             rescue_weight = float(np.clip((0.10 - 0.15 * k_reliability) * rescue_gate, 0.02, 0.10))
@@ -4774,13 +4788,13 @@ def _adaptive_qknn_overrides(
                 "support_loo_pair_linear_scope": "new",
             }
         )
-    if use_v13 or use_v14 or use_v15 or use_v16 or use_v17 or use_v18 or use_v19 or use_v20 or use_v21 or use_v22:
+    if use_v13 or use_v14 or use_v15 or use_v16 or use_v17 or use_v18 or use_v19 or use_v20 or use_v21 or use_v22 or use_v23:
         proxy_gate = _clip01(max(stable_gate, class_load))
         proxy_weight = float(np.clip((0.10 + 0.90 * k_reliability) * proxy_gate, 0.0, 0.40))
         proxy_top_pairs = int(max(8, min(16, round(0.40 * max(new_count, 1.0)))))
         if use_v16:
             proxy_top_pairs = int(max(16, min(32, round(0.80 * max(new_count, 1.0)))))
-        proxy_balance = bool(use_v14 or use_v18 or use_v20 or ((use_v15 or use_v22) and k_reliability < 0.25))
+        proxy_balance = bool(use_v14 or use_v18 or use_v20 or ((use_v15 or use_v22 or use_v23) and k_reliability < 0.25))
         proxy_bundle_rows = 4 if use_v16 else 1
         proxy_analogy = bool(use_v17 or use_v18)
         proxy_gate_enabled = bool(use_v19)
@@ -4802,9 +4816,9 @@ def _adaptive_qknn_overrides(
                 "support_guided_proxy_gate_mean_tol": 0.0,
             }
         )
-    if use_v21 or use_v22:
+    if use_v21 or use_v22 or use_v23:
         cluster_gate = _clip01(max(stable_gate, class_load) * (0.55 + 0.45 * k_reliability))
-        if use_v22:
+        if use_v22 or use_v23:
             v22_base_weight = 0.04 * (1.0 - 0.35 * k_reliability) + 0.02 * class_load * k_reliability
             v22_overload_gate = 1.0 - _clip01((class_load - 0.55) / 0.45) * (1.0 - k_reliability)
             cluster_weight = float(
@@ -4826,7 +4840,7 @@ def _adaptive_qknn_overrides(
                 "query_cluster_scope": "new",
             }
         )
-        if use_v22:
+        if use_v22 or use_v23:
             overrides.update(
                 {
                     "query_cluster_agreement_min": float(np.clip(0.35 + 0.35 * k_reliability, 0.35, 0.70)),
@@ -4840,7 +4854,7 @@ def _adaptive_qknn_overrides(
                     "support_loo_pair_rescue_top_pairs": 0,
                 }
             )
-    if use_v11 or use_v12 or use_v13 or use_v14 or use_v15 or use_v16 or use_v17 or use_v18 or use_v19 or use_v20 or use_v21 or use_v22:
+    if use_v11 or use_v12 or use_v13 or use_v14 or use_v15 or use_v16 or use_v17 or use_v18 or use_v19 or use_v20 or use_v21 or use_v22 or use_v23:
         # ASLR: Adaptive Support-LOO Rescue. v12 adds compressed pairwise
         # linear boundaries; v13 adds compressed support-proxy direction rescue.
         # These variants do not persist raw support or query state.
