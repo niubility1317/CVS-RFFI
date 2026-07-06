@@ -62,6 +62,25 @@ def _topm_mean(scores: np.ndarray, topm: int) -> np.ndarray:
     return np.mean(part, axis=1)
 
 
+def _scenario_class_fallback_mask(
+    *,
+    support_labels: np.ndarray,
+    support_scenarios: np.ndarray,
+    scenario: str,
+    class_labels: list[str],
+) -> np.ndarray:
+    scenario_mask = np.asarray(support_scenarios, dtype=object).astype(str) == str(scenario)
+    labels = np.asarray(support_labels, dtype=object).astype(str)
+    if int(np.sum(scenario_mask)) == 0:
+        return np.ones(labels.shape[0], dtype=bool)
+    keep = scenario_mask.copy()
+    scenario_labels = {str(label) for label in labels[scenario_mask].tolist()}
+    for label in class_labels:
+        if str(label) not in scenario_labels:
+            keep = keep | (labels == str(label))
+    return keep
+
+
 def _class_scores(
     *,
     features: np.ndarray,
@@ -80,6 +99,7 @@ def _class_scores(
     neg_margin: float,
     mutual_only: bool,
     scenario_aware: bool,
+    scenario_class_fallback: bool = False,
 ) -> tuple[np.ndarray, dict[str, float], np.ndarray]:
     if scenario_aware:
         query_scenarios = np.asarray(scenarios[query_indices], dtype=object).astype(str)
@@ -89,7 +109,15 @@ def _class_scores(
         proto_sim = np.zeros((len(class_labels), len(class_labels)), dtype=np.float64)
         for scenario in sorted({str(value) for value in query_scenarios.tolist()}):
             query_mask = query_scenarios == scenario
-            support_mask = support_scenarios == scenario
+            if bool(scenario_class_fallback):
+                support_mask = _scenario_class_fallback_mask(
+                    support_labels=support_labels,
+                    support_scenarios=support_scenarios,
+                    scenario=str(scenario),
+                    class_labels=class_labels,
+                )
+            else:
+                support_mask = support_scenarios == scenario
             if int(np.sum(support_mask)) < max(1, int(topm)) or len(set(support_labels[support_mask].tolist())) < 2:
                 support_mask = np.ones_like(support_mask, dtype=bool)
             sub_scores, sub_radii, sub_proto_sim = _class_scores(

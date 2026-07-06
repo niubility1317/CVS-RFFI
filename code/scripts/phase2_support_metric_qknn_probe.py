@@ -4301,6 +4301,15 @@ def _evaluate_metric_qknn(
         new_query.extend(query.tolist())
     query_indices = np.asarray(old_query + new_query, dtype=int)
     old_count = len(old_query)
+    support_label_array = np.asarray(support_labels, dtype=object).astype(str)
+    support_min_k = min(
+        (int(np.sum(support_label_array == str(label))) for label in list(old_labels) + list(new_labels)),
+        default=0,
+    )
+    enable_scenario_class_fallback = str(adaptive_qknn_policy).strip().lower() in {
+        "dualview_support_v45",
+        "stable_dualview_v45",
+    } and int(support_min_k) >= 10
 
     transform = metric._fit_transform(
         features[support_indices],
@@ -4350,6 +4359,7 @@ def _evaluate_metric_qknn(
             neg_margin=float(neg_margin),
             mutual_only=bool(mutual_only),
             scenario_aware=bool(scenario_aware),
+            scenario_class_fallback=bool(enable_scenario_class_fallback),
         )
     effective_aux_score_weight = float(aux_score_weight)
     aux_support_gate_factor = 1.0
@@ -4409,6 +4419,7 @@ def _evaluate_metric_qknn(
                 neg_margin=float(neg_margin),
                 mutual_only=bool(mutual_only),
                 scenario_aware=bool(scenario_aware),
+                scenario_class_fallback=bool(enable_scenario_class_fallback),
             )
         policy_name = str(adaptive_qknn_policy).strip().lower()
         if policy_name in {
@@ -4440,6 +4451,8 @@ def _evaluate_metric_qknn(
             "stable_dualview_v43",
             "dualview_support_v44",
             "stable_dualview_v44",
+            "dualview_support_v45",
+            "stable_dualview_v45",
         }:
             primary_loo_scores = _support_loo_base_scores(
                 features=adapted,
@@ -4516,6 +4529,8 @@ def _evaluate_metric_qknn(
                 "stable_dualview_v43",
                 "dualview_support_v44",
                 "stable_dualview_v44",
+                "dualview_support_v45",
+                "stable_dualview_v45",
             }:
                 mean_gate = float(np.clip((aux_support_loo_delta + 0.01) / 0.05, 0.0, 1.0))
                 floor_gate = float(np.clip((aux_support_min_delta + 0.02) / 0.06, 0.0, 1.0))
@@ -4793,6 +4808,8 @@ def _evaluate_metric_qknn(
         "stable_dualview_v43",
         "dualview_support_v44",
         "stable_dualview_v44",
+        "dualview_support_v45",
+        "stable_dualview_v45",
     }:
         transport_policy = str(adaptive_qknn_policy).strip().lower()
         label_counts = [
@@ -4849,6 +4866,8 @@ def _evaluate_metric_qknn(
                 "stable_dualview_v43",
                 "dualview_support_v44",
                 "stable_dualview_v44",
+                "dualview_support_v45",
+                "stable_dualview_v45",
             }
         ):
             source_target_transport_gate_mode = "support_loo_class_gate"
@@ -5363,6 +5382,8 @@ def _evaluate_metric_qknn(
         "stable_dualview_v43",
         "dualview_support_v44",
         "stable_dualview_v44",
+        "dualview_support_v45",
+        "stable_dualview_v45",
     }:
         if support_loo_scores is None:
             support_loo_scores = _support_loo_base_scores(
@@ -5435,6 +5456,8 @@ def _evaluate_metric_qknn(
                 "stable_dualview_v43",
                 "dualview_support_v44",
                 "stable_dualview_v44",
+                "dualview_support_v45",
+                "stable_dualview_v45",
             }
             else 0.0,
         )
@@ -6233,6 +6256,8 @@ def _adaptive_qknn_overrides(
         "stable_dualview_v43",
         "dualview_support_v44",
         "stable_dualview_v44",
+        "dualview_support_v45",
+        "stable_dualview_v45",
     }:
         raise ValueError(f"unsupported adaptive_qknn_policy: {policy}")
     use_v2 = name in {"dualview_support_v2", "stable_dualview_v2"}
@@ -6267,7 +6292,8 @@ def _adaptive_qknn_overrides(
     use_v34 = name in {"dualview_support_v34", "stable_dualview_v34"}
     use_v35 = name in {"dualview_support_v35", "stable_dualview_v35"}
     use_v43 = name in {"dualview_support_v43", "stable_dualview_v43"}
-    use_v44 = name in {"dualview_support_v44", "stable_dualview_v44"}
+    use_v45 = name in {"dualview_support_v45", "stable_dualview_v45"}
+    use_v44 = name in {"dualview_support_v44", "stable_dualview_v44"} or use_v45
     use_v42 = name in {"dualview_support_v42", "stable_dualview_v42"} or use_v43 or use_v44
     use_v40 = name in {"dualview_support_v40", "stable_dualview_v40"} or use_v42
     use_v39 = name in {"dualview_support_v39", "stable_dualview_v39"} or use_v40
@@ -6812,6 +6838,8 @@ def _adaptive_qknn_overrides(
                 "dense_cluster_weight": 0.0,
             }
         )
+    if use_v45:
+        overrides["scenario_class_fallback"] = bool(k_reliability >= 0.25)
     return overrides
 
 
