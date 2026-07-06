@@ -1408,6 +1408,88 @@ def _support_loo_proxy_candidate_rows(
     return balanced[: int(top_rows)]
 
 
+def _gate_support_guided_proxy_rows(
+    *,
+    scores: np.ndarray,
+    features: np.ndarray,
+    tx_ids: np.ndarray,
+    roles: np.ndarray,
+    support_indices: np.ndarray,
+    support_labels: np.ndarray,
+    class_labels: list[str],
+    old_labels: list[str],
+    new_labels: list[str],
+    candidate_rows: list[dict[str, Any]],
+    weight: float,
+    max_rows: int,
+    clip: float,
+    floor_tol: float,
+    mean_tol: float,
+) -> tuple[list[dict[str, Any]], float, float, float, float]:
+    if not candidate_rows or int(max_rows) <= 0 or float(weight) == 0.0:
+        before_min, before_mean = _support_loo_accuracy_summary(
+            scores,
+            support_labels=support_labels,
+            old_labels=old_labels,
+            new_labels=new_labels,
+        )
+        return [], before_min, before_mean, before_min, before_mean
+    gate_scores = np.asarray(scores, dtype=np.float64).copy()
+    before_min, before_mean = _support_loo_accuracy_summary(
+        gate_scores,
+        support_labels=support_labels,
+        old_labels=old_labels,
+        new_labels=new_labels,
+    )
+    current_min = before_min
+    current_mean = before_mean
+    accepted: list[dict[str, Any]] = []
+    seen: set[tuple[str, str, str, str]] = set()
+    for row in candidate_rows:
+        key = (
+            str(row.get("target_new", "")),
+            str(row.get("hard_label", row.get("hard_old", ""))),
+            str(row.get("left_proxy", "")),
+            str(row.get("right_proxy", "")),
+        )
+        if key in seen:
+            continue
+        seen.add(key)
+        trial_scores, used, _stored = _support_guided_proxy_adjust_scores(
+            gate_scores,
+            features=features,
+            tx_ids=tx_ids,
+            roles=roles,
+            support_indices=support_indices,
+            support_labels=support_labels,
+            query_indices=support_indices,
+            class_labels=class_labels,
+            candidate_rows=[row],
+            weight=float(weight),
+            top_pairs=1,
+            clip=float(clip),
+        )
+        if int(used) <= 0:
+            continue
+        trial_min, trial_mean = _support_loo_accuracy_summary(
+            trial_scores,
+            support_labels=support_labels,
+            old_labels=old_labels,
+            new_labels=new_labels,
+        )
+        if trial_min + float(floor_tol) < current_min:
+            continue
+        if trial_mean + float(mean_tol) < current_mean:
+            continue
+        accepted.append(row)
+        gate_scores = trial_scores
+        current_min = trial_min
+        current_mean = trial_mean
+        if len(accepted) >= int(max_rows):
+            break
+    return accepted, before_min, before_mean, current_min, current_mean
+
+
 def _pair_logreg_adjust_scores(
     scores: np.ndarray,
     *,
@@ -2708,6 +2790,9 @@ def _evaluate_metric_qknn(
     support_guided_proxy_balance: bool,
     support_guided_proxy_bundle_rows: int,
     support_guided_proxy_analogy: bool,
+    support_guided_proxy_gate: bool,
+    support_guided_proxy_gate_floor_tol: float,
+    support_guided_proxy_gate_mean_tol: float,
     pair_logreg_similarity: float,
     pair_logreg_weight: float,
     pair_logreg_alpha: float,
@@ -3046,6 +3131,10 @@ def _evaluate_metric_qknn(
     effective_support_guided_proxy_rows = support_guided_proxy_rows
     support_guided_proxy_auto_rows = 0
     support_guided_proxy_auto_pairs = ""
+    support_guided_proxy_gate_before_min_acc = 0.0
+    support_guided_proxy_gate_before_mean_acc = 0.0
+    support_guided_proxy_gate_after_min_acc = 0.0
+    support_guided_proxy_gate_after_mean_acc = 0.0
     if (
         not effective_support_guided_proxy_rows
         and float(support_guided_proxy_weight) > 0.0
@@ -3068,6 +3157,9 @@ def _evaluate_metric_qknn(
             mutual_only=bool(mutual_only),
             scenario_aware=bool(scenario_aware),
         )
+        candidate_budget = int(support_guided_proxy_top_pairs)
+        if bool(support_guided_proxy_gate):
+            candidate_budget = max(candidate_budget, int(support_guided_proxy_top_pairs) * 4)
         effective_support_guided_proxy_rows = _support_loo_proxy_candidate_rows(
             features=adapted,
             tx_ids=tx_ids,
@@ -3078,13 +3170,37 @@ def _evaluate_metric_qknn(
             class_labels=old_labels + new_labels,
             old_labels=old_labels,
             new_labels=new_labels,
-            top_rows=int(support_guided_proxy_top_pairs),
+            top_rows=int(candidate_budget),
             min_errors=int(support_guided_proxy_min_errors),
             scope=str(support_guided_proxy_scope),
             balance_classes=bool(support_guided_proxy_balance),
             bundle_rows=int(support_guided_proxy_bundle_rows),
             analogy_mode=bool(support_guided_proxy_analogy),
         )
+        if bool(support_guided_proxy_gate):
+            (
+                effective_support_guided_proxy_rows,
+                support_guided_proxy_gate_before_min_acc,
+                support_guided_proxy_gate_before_mean_acc,
+                support_guided_proxy_gate_after_min_acc,
+                support_guided_proxy_gate_after_mean_acc,
+            ) = _gate_support_guided_proxy_rows(
+                scores=proxy_support_loo_scores,
+                features=adapted,
+                tx_ids=tx_ids,
+                roles=roles,
+                support_indices=support_indices,
+                support_labels=support_labels,
+                class_labels=old_labels + new_labels,
+                old_labels=old_labels,
+                new_labels=new_labels,
+                candidate_rows=effective_support_guided_proxy_rows,
+                weight=float(support_guided_proxy_weight),
+                max_rows=int(support_guided_proxy_top_pairs),
+                clip=float(support_guided_proxy_clip),
+                floor_tol=float(support_guided_proxy_gate_floor_tol),
+                mean_tol=float(support_guided_proxy_gate_mean_tol),
+            )
         support_guided_proxy_auto_rows = len(effective_support_guided_proxy_rows)
         support_guided_proxy_auto_pairs = ";".join(
             f"{row.get('target_new')}->{row.get('hard_label')}" for row in effective_support_guided_proxy_rows[:16]
@@ -3704,6 +3820,13 @@ def _evaluate_metric_qknn(
         "support_guided_proxy_balance": bool(support_guided_proxy_balance),
         "support_guided_proxy_bundle_rows": int(support_guided_proxy_bundle_rows),
         "support_guided_proxy_analogy": bool(support_guided_proxy_analogy),
+        "support_guided_proxy_gate": bool(support_guided_proxy_gate),
+        "support_guided_proxy_gate_floor_tol": float(support_guided_proxy_gate_floor_tol),
+        "support_guided_proxy_gate_mean_tol": float(support_guided_proxy_gate_mean_tol),
+        "support_guided_proxy_gate_before_min_acc": float(support_guided_proxy_gate_before_min_acc),
+        "support_guided_proxy_gate_before_mean_acc": float(support_guided_proxy_gate_before_mean_acc),
+        "support_guided_proxy_gate_after_min_acc": float(support_guided_proxy_gate_after_min_acc),
+        "support_guided_proxy_gate_after_mean_acc": float(support_guided_proxy_gate_after_mean_acc),
         "support_guided_proxy_auto_rows": int(support_guided_proxy_auto_rows),
         "support_guided_proxy_auto_pairs": support_guided_proxy_auto_pairs,
         "support_guided_proxy_count": int(support_guided_proxy_count),
@@ -4007,6 +4130,8 @@ def _adaptive_qknn_overrides(
         "stable_dualview_v17",
         "dualview_support_v18",
         "stable_dualview_v18",
+        "dualview_support_v19",
+        "stable_dualview_v19",
     }:
         raise ValueError(f"unsupported adaptive_qknn_policy: {policy}")
     use_v2 = name in {"dualview_support_v2", "stable_dualview_v2"}
@@ -4026,6 +4151,7 @@ def _adaptive_qknn_overrides(
     use_v16 = name in {"dualview_support_v16", "stable_dualview_v16"}
     use_v17 = name in {"dualview_support_v17", "stable_dualview_v17"}
     use_v18 = name in {"dualview_support_v18", "stable_dualview_v18"}
+    use_v19 = name in {"dualview_support_v19", "stable_dualview_v19"}
 
     min_k = float(geometry["adaptive_support_min_k"])
     new_count = float(geometry["adaptive_new_class_count"])
@@ -4033,7 +4159,7 @@ def _adaptive_qknn_overrides(
     p90_sim = float(geometry["adaptive_support_p90_offdiag_proto_sim"])
     radius = float(geometry["adaptive_support_mean_radius"])
     hardness = _clip01(max((max_sim - 0.82) / 0.16, (p90_sim - 0.68) / 0.22, (radius - 0.08) / 0.20))
-    if use_v3 or use_v4 or use_v5 or use_v7 or use_v8 or use_v9 or use_v10 or use_v11 or use_v12 or use_v13 or use_v14 or use_v15 or use_v16 or use_v17 or use_v18:
+    if use_v3 or use_v4 or use_v5 or use_v7 or use_v8 or use_v9 or use_v10 or use_v11 or use_v12 or use_v13 or use_v14 or use_v15 or use_v16 or use_v17 or use_v18 or use_v19:
         class_load = _clip01((new_count - 2.0) / 18.0)
     else:
         class_load = _clip01((new_count - 10.0) / 20.0)
@@ -4078,7 +4204,7 @@ def _adaptive_qknn_overrides(
         "source_guard_conf_min": 0.0,
         "source_guard_margin_min": 0.0,
     }
-    if use_v2 or use_v3 or use_v4 or use_v5 or use_v6 or use_v7 or use_v8 or use_v9 or use_v10 or use_v11 or use_v12 or use_v13 or use_v14 or use_v15 or use_v16 or use_v17 or use_v18:
+    if use_v2 or use_v3 or use_v4 or use_v5 or use_v6 or use_v7 or use_v8 or use_v9 or use_v10 or use_v11 or use_v12 or use_v13 or use_v14 or use_v15 or use_v16 or use_v17 or use_v18 or use_v19:
         competition_load = class_load
         if (
             use_v3
@@ -4097,6 +4223,7 @@ def _adaptive_qknn_overrides(
             or use_v16
             or use_v17
             or use_v18
+            or use_v19
         ) and new_count >= 2.0:
             competition_load = max(competition_load, 0.25)
         overrides.update(
@@ -4121,6 +4248,7 @@ def _adaptive_qknn_overrides(
                             or use_v16
                             or use_v17
                             or use_v18
+                            or use_v19
                         )
                         and stable_gate >= 0.50
                     )
@@ -4186,7 +4314,7 @@ def _adaptive_qknn_overrides(
                 "support_loo_pair_rescue_scope": "new",
             }
         )
-    if use_v7 or use_v8 or use_v9 or use_v11 or use_v12 or use_v13 or use_v14 or use_v15 or use_v16 or use_v17 or use_v18:
+    if use_v7 or use_v8 or use_v9 or use_v11 or use_v12 or use_v13 or use_v14 or use_v15 or use_v16 or use_v17 or use_v18 or use_v19:
         pair_gate = _clip01(max(stable_gate, class_load) * (0.35 + 0.65 * k_reliability))
         labelprop_gate = _clip01(k_reliability * stable_gate * (1.0 - 0.5 * class_load))
         labelprop_weight = float(np.clip(0.50 * labelprop_gate, 0.0, 0.18))
@@ -4209,7 +4337,7 @@ def _adaptive_qknn_overrides(
                 "pair_logreg_scope": "new",
             }
         )
-    if use_v8 or use_v9 or use_v11 or use_v12 or use_v13 or use_v14 or use_v15 or use_v16 or use_v17 or use_v18:
+    if use_v8 or use_v9 or use_v11 or use_v12 or use_v13 or use_v14 or use_v15 or use_v16 or use_v17 or use_v18 or use_v19:
         low_load_residual = float(np.clip(0.20 - 0.30 * k_reliability, 0.05, 0.20))
         high_load_residual = float(np.clip(0.10 + 0.60 * k_reliability, 0.10, 0.30))
         load_blend = _clip01((class_load - 0.50) / 0.25)
@@ -4224,9 +4352,9 @@ def _adaptive_qknn_overrides(
                 "old_residual_new_clip": 2.0,
             }
         )
-    if use_v9 or use_v10 or use_v11 or use_v12 or use_v13 or use_v14 or use_v15 or use_v16 or use_v17 or use_v18:
+    if use_v9 or use_v10 or use_v11 or use_v12 or use_v13 or use_v14 or use_v15 or use_v16 or use_v17 or use_v18 or use_v19:
         rescue_gate = _clip01(max(stable_gate, class_load))
-        if use_v11 or use_v12 or use_v13 or use_v14 or use_v15 or use_v16 or use_v17 or use_v18:
+        if use_v11 or use_v12 or use_v13 or use_v14 or use_v15 or use_v16 or use_v17 or use_v18 or use_v19:
             rescue_weight = float(np.clip((0.10 + 0.30 * k_reliability) * rescue_gate, 0.05, 0.20))
         else:
             rescue_weight = float(np.clip((0.10 - 0.15 * k_reliability) * rescue_gate, 0.02, 0.10))
@@ -4255,7 +4383,7 @@ def _adaptive_qknn_overrides(
                 "support_loo_pair_linear_scope": "new",
             }
         )
-    if use_v13 or use_v14 or use_v15 or use_v16 or use_v17 or use_v18:
+    if use_v13 or use_v14 or use_v15 or use_v16 or use_v17 or use_v18 or use_v19:
         proxy_gate = _clip01(max(stable_gate, class_load))
         proxy_weight = float(np.clip((0.10 + 0.90 * k_reliability) * proxy_gate, 0.0, 0.40))
         proxy_top_pairs = int(max(8, min(16, round(0.40 * max(new_count, 1.0)))))
@@ -4264,6 +4392,7 @@ def _adaptive_qknn_overrides(
         proxy_balance = bool(use_v14 or use_v18 or (use_v15 and k_reliability < 0.25))
         proxy_bundle_rows = 4 if use_v16 else 1
         proxy_analogy = bool(use_v17 or use_v18)
+        proxy_gate_enabled = bool(use_v19)
         overrides.update(
             {
                 "support_guided_proxy_weight": proxy_weight,
@@ -4274,9 +4403,12 @@ def _adaptive_qknn_overrides(
                 "support_guided_proxy_balance": proxy_balance,
                 "support_guided_proxy_bundle_rows": proxy_bundle_rows,
                 "support_guided_proxy_analogy": proxy_analogy,
+                "support_guided_proxy_gate": proxy_gate_enabled,
+                "support_guided_proxy_gate_floor_tol": 0.0,
+                "support_guided_proxy_gate_mean_tol": 0.0,
             }
         )
-    if use_v11 or use_v12 or use_v13 or use_v14 or use_v15 or use_v16 or use_v17 or use_v18:
+    if use_v11 or use_v12 or use_v13 or use_v14 or use_v15 or use_v16 or use_v17 or use_v18 or use_v19:
         # ASLR: Adaptive Support-LOO Rescue. v12 adds compressed pairwise
         # linear boundaries; v13 adds compressed support-proxy direction rescue.
         # These variants do not persist raw support or query state.
@@ -4358,6 +4490,9 @@ def main() -> None:
     parser.add_argument("--support_guided_proxy_balance_grid", default="false")
     parser.add_argument("--support_guided_proxy_bundle_rows_grid", default="1")
     parser.add_argument("--support_guided_proxy_analogy_grid", default="false")
+    parser.add_argument("--support_guided_proxy_gate_grid", default="false")
+    parser.add_argument("--support_guided_proxy_gate_floor_tol_grid", default="0")
+    parser.add_argument("--support_guided_proxy_gate_mean_tol_grid", default="0")
     parser.add_argument("--pair_logreg_similarity_grid", default="1.1")
     parser.add_argument("--pair_logreg_weight_grid", default="0")
     parser.add_argument("--pair_logreg_alpha_grid", default="1.0")
@@ -4557,6 +4692,9 @@ def main() -> None:
             qknn._parse_csv(args.support_guided_proxy_balance_grid),
             qknn._parse_int_csv(args.support_guided_proxy_bundle_rows_grid),
             qknn._parse_csv(args.support_guided_proxy_analogy_grid),
+            qknn._parse_csv(args.support_guided_proxy_gate_grid),
+            qknn._parse_float_csv(args.support_guided_proxy_gate_floor_tol_grid),
+            qknn._parse_float_csv(args.support_guided_proxy_gate_mean_tol_grid),
             qknn._parse_float_csv(args.pair_logreg_similarity_grid),
             qknn._parse_float_csv(args.pair_logreg_weight_grid),
             qknn._parse_float_csv(args.pair_logreg_alpha_grid),
@@ -4748,6 +4886,9 @@ def main() -> None:
                     support_guided_proxy_balance,
                     support_guided_proxy_bundle_rows,
                     support_guided_proxy_analogy,
+                    support_guided_proxy_gate,
+                    support_guided_proxy_gate_floor_tol,
+                    support_guided_proxy_gate_mean_tol,
                     pair_logreg_similarity,
                     pair_logreg_weight,
                     pair_logreg_alpha,
@@ -4890,6 +5031,9 @@ def main() -> None:
                         "support_guided_proxy_balance": str(support_guided_proxy_balance).lower() == "true",
                         "support_guided_proxy_bundle_rows": int(support_guided_proxy_bundle_rows),
                         "support_guided_proxy_analogy": str(support_guided_proxy_analogy).lower() == "true",
+                        "support_guided_proxy_gate": str(support_guided_proxy_gate).lower() == "true",
+                        "support_guided_proxy_gate_floor_tol": float(support_guided_proxy_gate_floor_tol),
+                        "support_guided_proxy_gate_mean_tol": float(support_guided_proxy_gate_mean_tol),
                         "role_balanced_assignment": bool(args.role_balanced_assignment),
                         "local_competition_weight": float(local_competition_weight),
                         "local_competition_k": int(local_competition_k),
@@ -4999,6 +5143,15 @@ def main() -> None:
                             ),
                             "support_guided_proxy_analogy": adaptive_overrides.get(
                                 "support_guided_proxy_analogy", params["support_guided_proxy_analogy"]
+                            ),
+                            "support_guided_proxy_gate": adaptive_overrides.get(
+                                "support_guided_proxy_gate", params["support_guided_proxy_gate"]
+                            ),
+                            "support_guided_proxy_gate_floor_tol": adaptive_overrides.get(
+                                "support_guided_proxy_gate_floor_tol", params["support_guided_proxy_gate_floor_tol"]
+                            ),
+                            "support_guided_proxy_gate_mean_tol": adaptive_overrides.get(
+                                "support_guided_proxy_gate_mean_tol", params["support_guided_proxy_gate_mean_tol"]
                             ),
                             "role_balanced_assignment": adaptive_overrides.get(
                                 "role_balanced_assignment", params["role_balanced_assignment"]
@@ -5174,6 +5327,9 @@ def main() -> None:
                         support_guided_proxy_balance=bool(params["support_guided_proxy_balance"]),
                         support_guided_proxy_bundle_rows=int(params["support_guided_proxy_bundle_rows"]),
                         support_guided_proxy_analogy=bool(params["support_guided_proxy_analogy"]),
+                        support_guided_proxy_gate=bool(params["support_guided_proxy_gate"]),
+                        support_guided_proxy_gate_floor_tol=float(params["support_guided_proxy_gate_floor_tol"]),
+                        support_guided_proxy_gate_mean_tol=float(params["support_guided_proxy_gate_mean_tol"]),
                         pair_logreg_similarity=float(params["pair_logreg_similarity"]),
                         pair_logreg_weight=float(params["pair_logreg_weight"]),
                         pair_logreg_alpha=float(params["pair_logreg_alpha"]),
@@ -5411,6 +5567,13 @@ def main() -> None:
         "support_guided_proxy_balance",
         "support_guided_proxy_bundle_rows",
         "support_guided_proxy_analogy",
+        "support_guided_proxy_gate",
+        "support_guided_proxy_gate_floor_tol",
+        "support_guided_proxy_gate_mean_tol",
+        "support_guided_proxy_gate_before_min_acc",
+        "support_guided_proxy_gate_before_mean_acc",
+        "support_guided_proxy_gate_after_min_acc",
+        "support_guided_proxy_gate_after_mean_acc",
         "support_guided_proxy_auto_rows",
         "support_guided_proxy_auto_pairs",
         "support_guided_proxy_count",

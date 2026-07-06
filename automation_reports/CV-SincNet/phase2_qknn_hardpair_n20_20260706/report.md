@@ -337,6 +337,96 @@ Interpretation:
 
 Current goal status: active, not achieved.
 
+## v19 Support-LOO-Gated Proxy Check
+
+Objective: test the support-only validation gate proposed after v16/v17/v18. The new policy `dualview_support_v19` still uses compressed support-proxy directions, but automatically generated proxy rows are accepted only if applying the row to support leave-one-out scores does not reduce support class floor or support mean. This keeps the route deployable: no raw support vectors are stored in the classifier head, and no query labels are used for gating.
+
+Implementation change:
+
+- Added `support_guided_proxy_gate` plus floor/mean tolerance arguments to `code/scripts/phase2_support_metric_qknn_probe.py`.
+- Added `_gate_support_guided_proxy_rows(...)` to validate candidate proxy rows on support leave-one-out scores before query scoring.
+- Added `dualview_support_v19` / `stable_dualview_v19` adaptive policies.
+- Added CSV fields for gate enablement and support-LOO before/after floor/mean.
+
+Verification:
+
+| command | result |
+|---|---|
+| `conda run -n ssr-gpu python -m py_compile code\scripts\phase2_support_metric_qknn_probe.py` | PASS |
+| `n10_k10_v19_gated_proxy_seed421029.csv` | completed |
+| `n10_k5_v19_gated_proxy_seed421037.csv` | completed |
+| `n20_k10_v19_gated_proxy_seed421029.csv` | completed |
+| `n20_k5_v19_gated_proxy_seed421037.csv` | completed |
+
+Maximum-query v19 summary:
+
+| scope | K | query per class | old_acc | min_old | new_acc | min_new | gate support floor before->after | accepted proxy rows | proxy pairs | verdict |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|---|---|
+| N10 | 10 | 70 | 92.14% | 77.14% | 84.86% | 65.71% | 89.38%->89.38% | 1 | `11-10->18-5` | failed target floor |
+| N10 | 5 | 75 | 91.56% | 77.33% | 85.60% | 61.33% | 72.50%->76.25% | 8 | `8-3->2-5` repeated | failed, worse than v15 floor |
+| N20 | 10 | 70 | 92.62% | 78.57% | 70.14% | 51.43% | 66.15%->66.15% | 1 | `1-15->19-3` | failed, tied v15 floor |
+| N20 | 5 | 75 | 92.22% | 78.67% | 70.07% | 48.00% | 54.62%->55.38% | 1 | `1-14->1-16` | failed, tied v15 floor |
+
+N10 v19 per-class details:
+
+| TX | K10 correct/total | K10 acc | K5 correct/total | K5 acc |
+|---|---:|---:|---:|---:|
+| `14-10` | 67/70 | 95.71% | 72/75 | 96.00% |
+| `14-7` | 56/70 | 80.00% | 58/75 | 77.33% |
+| `20-15` | 70/70 | 100.00% | 74/75 | 98.67% |
+| `20-19` | 54/70 | 77.14% | 58/75 | 77.33% |
+| `6-15` | 70/70 | 100.00% | 75/75 | 100.00% |
+| `8-20` | 70/70 | 100.00% | 75/75 | 100.00% |
+| `10-10` | 64/70 | 91.43% | 68/75 | 90.67% |
+| `11-10` | 55/70 | 78.57% | 55/75 | 73.33% |
+| `18-5` | 65/70 | 92.86% | 72/75 | 96.00% |
+| `19-3` | 67/70 | 95.71% | 72/75 | 96.00% |
+| `2-13` | 46/70 | 65.71% | 46/75 | 61.33% |
+| `2-5` | 56/70 | 80.00% | 64/75 | 85.33% |
+| `3-8` | 64/70 | 91.43% | 66/75 | 88.00% |
+| `4-10` | 61/70 | 87.14% | 67/75 | 89.33% |
+| `8-18` | 53/70 | 75.71% | 62/75 | 82.67% |
+| `8-3` | 63/70 | 90.00% | 70/75 | 93.33% |
+
+N20 v19 per-class details:
+
+| TX | K10 correct/total | K10 acc | K5 correct/total | K5 acc |
+|---|---:|---:|---:|---:|
+| `14-10` | 67/70 | 95.71% | 73/75 | 97.33% |
+| `14-7` | 57/70 | 81.43% | 59/75 | 78.67% |
+| `20-15` | 70/70 | 100.00% | 74/75 | 98.67% |
+| `20-19` | 55/70 | 78.57% | 59/75 | 78.67% |
+| `6-15` | 70/70 | 100.00% | 75/75 | 100.00% |
+| `8-20` | 70/70 | 100.00% | 75/75 | 100.00% |
+| `10-10` | 59/70 | 84.29% | 61/75 | 81.33% |
+| `11-10` | 39/70 | 55.71% | 48/75 | 64.00% |
+| `18-5` | 44/70 | 62.86% | 41/75 | 54.67% |
+| `19-3` | 44/70 | 62.86% | 41/75 | 54.67% |
+| `2-13` | 36/70 | 51.43% | 36/75 | 48.00% |
+| `2-5` | 55/70 | 78.57% | 61/75 | 81.33% |
+| `3-8` | 56/70 | 80.00% | 64/75 | 85.33% |
+| `4-10` | 62/70 | 88.57% | 66/75 | 88.00% |
+| `8-18` | 49/70 | 70.00% | 61/75 | 81.33% |
+| `8-3` | 51/70 | 72.86% | 59/75 | 78.67% |
+| `1-1` | 40/70 | 57.14% | 52/75 | 69.33% |
+| `1-10` | 59/70 | 84.29% | 65/75 | 86.67% |
+| `1-11` | 60/70 | 85.71% | 64/75 | 85.33% |
+| `1-12` | 44/70 | 62.86% | 50/75 | 66.67% |
+| `1-14` | 48/70 | 68.57% | 43/75 | 57.33% |
+| `1-15` | 56/70 | 80.00% | 55/75 | 73.33% |
+| `1-16` | 49/70 | 70.00% | 48/75 | 64.00% |
+| `1-18` | 40/70 | 57.14% | 40/75 | 53.33% |
+| `1-19` | 51/70 | 72.86% | 52/75 | 69.33% |
+| `1-2` | 40/70 | 57.14% | 44/75 | 58.67% |
+
+Interpretation:
+
+- v19 is useful as a safety gate, not as the current best route. It prevents some support-LOO degradation and records whether accepted proxy rows are support-consistent, but the query floor remains dominated by `2-13` and the dense `1-*` groups.
+- The gate is not sufficient because support-LOO improvement does not reliably transfer to query floor. N10 K5 is the clearest example: support floor rises from 72.50% to 76.25%, while query floor stays at 61.33%.
+- Current best automatic route remains v15 for the active route family. v19 should be kept as a diagnostic/safety component, but the next improvement must change the candidate objective toward the repeatedly weak classes rather than validating the same candidate pool.
+
+Current goal status: active, not achieved.
+
 ## v14/v15 Class-Floor-Aware Support-Proxy Check
 
 Objective: address the v13 failure mode where all automatic proxy directions collapse onto one support-hard pair. v14 adds class-balanced round-robin selection over support-only hard-pair candidates. v15 keeps the same compressed proxy-direction representation but makes the balance gate adaptive: low-shot support (`adaptive_k_reliability<0.25`) uses class-balanced selection; higher-reliability support keeps v13's concentrated bundle.
