@@ -4636,3 +4636,29 @@ K5严格路线仍未解决。最佳K5只把`seen_new`推进到86.71%，`min_new`
 `scenario_pair_refine`作为默认关闭诊断机制可保留，因为它可追踪、可测试且不改变既有默认行为；但它没有解决K5严格路线。K5 strict当前仍停在`old=92.38%,min_old=80.00%,seen_new=86.71%,min_new=74.29%`，最低类仍是`19-3=52/70`。历史`old_stable_new_scenario_centroid`的`min_new=75.71%`行必须标为`pool_per=80`主动候选池诊断，不能提升为用户本轮要求的`K=5`少样本协议结果。
 
 K10 strict正向候选仍保持上一节结论：`k10_strict_residual_labelprop_grid_20260706.csv`中`old=94.05%,min_old=84.29%,seen_new=88.36%,min_new=75.71%`，但unknown拒识/FAR未评估。下一步若继续严格K5，应优先寻找能改变`19-3`底层分数排序的support-only风险估计，而不是pair线性边界、同场景强配额或`pool_per=80`主动选择。
+
+### 2026-07-07严格K同场景pair中心化复核
+
+本节继续上一节K5严格路线，在当前K5残差+labelprop最佳配置上测试同场景pair边界的无标签query中心化版本。中心化只使用query特征分布本身，不读取query真值；query真值仅用于离线评估。特征文件和分割与当前K5基线一致：`features_hardpair_HP08L5_n20.npz`，`old_role=target_old`，`new_role=target_unknown`，`K=5`，`pool_per_old=5,pool_per_new=5`，`exclude_pool_from_query=false`。本节没有N607 preflight、没有scp、没有远端启动。
+
+#### 代码变更与验证
+
+| item | result |
+| --- | --- |
+| `code/scripts/phase2_support_metric_qknn_probe.py` | 为`_scenario_pair_refine_scores`新增`center`参数和`--scenario_pair_refine_center_grid`，支持`none/query_median/query_mean`；默认`none`保持旧行为。 |
+| `code/tests/test_phase2_qknn_scenario_residual_completion.py` | 更新同场景pair边界单测，显式覆盖默认`center=none`路径。 |
+| `conda run --no-capture-output -n ssr-gpu python -m py_compile code\scripts\phase2_support_metric_qknn_probe.py code\tests\test_phase2_qknn_scenario_residual_completion.py` | PASS |
+| `conda run --no-capture-output -n ssr-gpu python code\tests\test_phase2_qknn_scenario_residual_completion.py` | PASS，5 tests |
+
+#### 严格K5结果
+
+| diagnostic | K | rows | setting | old | min_old | seen_new | min_new | 结论 |
+| --- | ---: | ---: | --- | ---: | ---: | ---: | ---: | --- |
+| `k5_strict_scenario_pair_center_grid_20260707.csv` | 5 | 128 | `weight=0,0.04,0.08,0.12;center=none/query_median;top_pairs=30;min_sim=0/0.5` | 92.38% | 80.00% | 86.71% | 74.29% | 最优仍全部为`weight=0`；非零中心化pair边界没有提升`19-3=52/70`。 |
+| `k5_strict_scenario_pair_center_strong_grid_20260707.csv` | 5 | 64 | `weight=0.2,0.5,1.0,2.0;center=query_median;top_pairs=12/30;min_sim=0.5` | 92.38% | 80.00% | 83.43% | 72.86% | 强权重没有提升`19-3`，反而把低类转移到`1-2/2-13=51/70`并降低新类均值。 |
+
+#### 当前决策
+
+`scenario_pair_refine_center`作为默认关闭诊断参数可保留，因为它不改变既有默认路线且能复现实验假设；但它不是K5修复方向。当前K5严格最佳仍是上一节残差+labelprop行：`old=92.38%,min_old=80.00%,seen_new=86.71%,min_new=74.29%`，最低类仍为`19-3=52/70`。中心化pair边界最多提升`1-15`到54/70以上，但不能把`19-3`过75%，强权重还会压低`1-2/2-13`。
+
+下一步不应继续增加pair边界权重。更合理的方向是做逐query分数审计后的“低类安全重排”或“scenario内候选集局部最小类保护”，但必须只使用K-shot support和无标签query分布，且要先证明不会牺牲`1-2/2-13/1-12`地板。

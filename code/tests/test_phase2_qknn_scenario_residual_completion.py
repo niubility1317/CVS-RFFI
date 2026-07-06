@@ -182,6 +182,7 @@ class Phase2ScenarioResidualCompletionTest(unittest.TestCase):
             clip=1.0,
             query_topm=0,
             scope="new",
+            center="none",
         )
 
         self.assertGreater(count, 0)

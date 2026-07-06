@@ -568,6 +568,7 @@ def _scenario_pair_refine_scores(
     clip: float,
     query_topm: int,
     scope: str,
+    center: str,
 ) -> tuple[np.ndarray, int, int, str]:
     """Apply same-scenario compact pair boundaries for high-similarity classes."""
     if float(weight) == 0.0 or int(top_pairs) <= 0 or scores.size == 0:
@@ -575,6 +576,9 @@ def _scenario_pair_refine_scores(
     mode = str(scope).strip().lower()
     if mode not in {"all", "old", "new", "role"}:
         raise ValueError(f"unsupported scenario_pair_refine_scope: {scope}")
+    center_mode = str(center).strip().lower()
+    if center_mode not in {"none", "", "query_median", "query_mean"}:
+        raise ValueError(f"unsupported scenario_pair_refine_center: {center}")
     support_indices = np.asarray(support_indices, dtype=int)
     query_indices = np.asarray(query_indices, dtype=int)
     if support_indices.size == 0 or query_indices.size == 0:
@@ -671,12 +675,18 @@ def _scenario_pair_refine_scores(
                 [query[rows], np.ones((rows.size, 1), dtype=np.float64)],
                 axis=1,
             )
-            margin = np.clip(qx @ coeff, -float(clip), float(clip))
+            raw_margin = qx @ coeff
+            if center_mode == "query_median":
+                raw_margin = raw_margin - float(np.median(raw_margin))
+            elif center_mode == "query_mean":
+                raw_margin = raw_margin - float(np.mean(raw_margin))
+            margin = np.clip(raw_margin, -float(clip), float(clip))
             adjusted[rows, left_idx] += float(weight) * margin
             adjusted[rows, right_idx] -= float(weight) * margin
             used += 1
-            stored_scalars += int(coeff.size + 3)
-            used_pairs.append(f"{scenario}:{left}<->{right}@{sim:.3f}")
+            stored_scalars += int(coeff.size + 3 + (0 if center_mode in {"none", ""} else 1))
+            center_note = "" if center_mode in {"none", ""} else f":{center_mode}"
+            used_pairs.append(f"{scenario}:{left}<->{right}@{sim:.3f}{center_note}")
     return adjusted, int(used), int(stored_scalars), ";".join(used_pairs[:32])
 
 
@@ -4691,6 +4701,7 @@ def _evaluate_metric_qknn(
     scenario_pair_refine_clip: float,
     scenario_pair_refine_query_topm: int,
     scenario_pair_refine_scope: str,
+    scenario_pair_refine_center: str,
     query_proto_refine_weight: float,
     query_proto_refine_topm: int,
     query_proto_refine_clip: float,
@@ -6291,6 +6302,7 @@ def _evaluate_metric_qknn(
         clip=float(scenario_pair_refine_clip),
         query_topm=int(scenario_pair_refine_query_topm),
         scope=str(scenario_pair_refine_scope),
+        center=str(scenario_pair_refine_center),
     )
     labelprop_edges = 0
     if float(labelprop_weight) != 0.0:
@@ -6767,6 +6779,7 @@ def _evaluate_metric_qknn(
         "scenario_pair_refine_clip": float(scenario_pair_refine_clip),
         "scenario_pair_refine_query_topm": int(scenario_pair_refine_query_topm),
         "scenario_pair_refine_scope": str(scenario_pair_refine_scope),
+        "scenario_pair_refine_center": str(scenario_pair_refine_center),
         "scenario_pair_refine_count": int(scenario_pair_refine_count),
         "scenario_pair_refine_pairs": str(scenario_pair_refine_pairs),
         "stored_scenario_pair_refine_scalars": int(stored_scenario_pair_refine_scalars),
@@ -7909,6 +7922,7 @@ def main() -> None:
     parser.add_argument("--scenario_pair_refine_clip_grid", default="1.0")
     parser.add_argument("--scenario_pair_refine_query_topm_grid", default="0")
     parser.add_argument("--scenario_pair_refine_scope_grid", default="new")
+    parser.add_argument("--scenario_pair_refine_center_grid", default="none")
     parser.add_argument("--query_proto_refine_weight_grid", default="0")
     parser.add_argument("--query_proto_refine_topm_grid", default="0")
     parser.add_argument("--query_proto_refine_clip_grid", default="2.0")
@@ -8145,6 +8159,7 @@ def main() -> None:
             qknn._parse_float_csv(args.scenario_pair_refine_clip_grid),
             qknn._parse_int_csv(args.scenario_pair_refine_query_topm_grid),
             qknn._parse_csv(args.scenario_pair_refine_scope_grid),
+            qknn._parse_csv(args.scenario_pair_refine_center_grid),
             qknn._parse_float_csv(args.query_proto_refine_weight_grid),
             qknn._parse_int_csv(args.query_proto_refine_topm_grid),
             qknn._parse_float_csv(args.query_proto_refine_clip_grid),
@@ -8372,6 +8387,7 @@ def main() -> None:
                     scenario_pair_refine_clip,
                     scenario_pair_refine_query_topm,
                     scenario_pair_refine_scope,
+                    scenario_pair_refine_center,
                     query_proto_refine_weight,
                     query_proto_refine_topm,
                     query_proto_refine_clip,
@@ -8469,6 +8485,7 @@ def main() -> None:
                         "scenario_pair_refine_clip": float(scenario_pair_refine_clip),
                         "scenario_pair_refine_query_topm": int(scenario_pair_refine_query_topm),
                         "scenario_pair_refine_scope": str(scenario_pair_refine_scope),
+                        "scenario_pair_refine_center": str(scenario_pair_refine_center),
                         "support_bias_weight": float(support_bias_weight),
                         "support_bias_step": float(support_bias_step),
                         "support_bias_rounds": int(support_bias_rounds),
@@ -8714,6 +8731,9 @@ def main() -> None:
                             ),
                             "scenario_pair_refine_scope": adaptive_overrides.get(
                                 "scenario_pair_refine_scope", params["scenario_pair_refine_scope"]
+                            ),
+                            "scenario_pair_refine_center": adaptive_overrides.get(
+                                "scenario_pair_refine_center", params["scenario_pair_refine_center"]
                             ),
                             "query_graph_weight": adaptive_overrides.get(
                                 "query_graph_weight", params["query_graph_weight"]
@@ -8981,6 +9001,7 @@ def main() -> None:
                         scenario_pair_refine_clip=float(params["scenario_pair_refine_clip"]),
                         scenario_pair_refine_query_topm=int(params["scenario_pair_refine_query_topm"]),
                         scenario_pair_refine_scope=str(params["scenario_pair_refine_scope"]),
+                        scenario_pair_refine_center=str(params["scenario_pair_refine_center"]),
                         query_proto_refine_weight=float(params["query_proto_refine_weight"]),
                         query_proto_refine_topm=int(params["query_proto_refine_topm"]),
                         query_proto_refine_clip=float(params["query_proto_refine_clip"]),
@@ -9329,6 +9350,7 @@ def main() -> None:
         "scenario_pair_refine_clip",
         "scenario_pair_refine_query_topm",
         "scenario_pair_refine_scope",
+        "scenario_pair_refine_center",
         "scenario_pair_refine_count",
         "scenario_pair_refine_pairs",
         "stored_scenario_pair_refine_scalars",
