@@ -248,6 +248,54 @@ N607同步与验证：
 | remote launch | 本次未启动N607实验。 |
 | SSH cleanup | 本地无残留`ssh.exe`，无到`172.31.111.215:22`的ESTABLISHED连接。 |
 
+## 2026-07-06本地V55低Kquery-cluster候选
+
+本节继续优化`qKNNV42`后续路线。协议边界保持不变：K5/K10少量`target receiver`样本用于旧类域适应和新类注册识别；阶段二部署在卫星端，support/query目标域样本均视为叠加LEO星地信道后的接收样本；query真值只用于离线评估和失败诊断，不写入可部署策略。
+
+`E:\type10-7`根目录不是Git仓库。本轮代码仍只修改Git承载面`E:\type10-7\github_publish\CVS-RFFI-repo`，并把本报告镜像到Git承载面报告路径。由于K5最低类仍未过75%，本轮没有同步N607、没有启动远端实验。
+
+### 诊断与取舍
+
+| probe | K | setting | old | min_old | seen_new | min_new | 结论 |
+| --- | ---: | --- | ---: | ---: | ---: | ---: | --- |
+| `k5_v54_no_scenario_aware` | 5 | 关闭`scenario_aware` | 92.38% | 80.00% | 67.14% | 35.71% | 全局取消scenario约束会导致新类坍塌，不可用。 |
+| `k5_v55_policy_verify` | 5 | 低K新类scenario fallback | 92.38% | 80.00% | 83.57% | 71.43% | 不能提升`1-2`地板，还损伤旧类；撤回。 |
+| `k5_v55_no_quality_policy_verify` | 5 | 去掉support quality | 93.10% | 81.43% | 67.29% | 31.43% | support quality是防坍塌必要项。 |
+| `k5_v54_query_pair_cluster_grid/wide` | 5 | query-pair cluster网格 | 92.86%-93.10% | 81.43% | 82.57%-83.86% | 71.43% | 能触达`2-13<->1-2`，但不能抬高最低类。 |
+| `k5_v55_query_cluster_clean_verify` | 5 | V55新类query-cluster | 93.10% | 81.43% | 84.07% | 71.43% | 相对V54只提升新类均值+0.14pp，地板仍未解决。 |
+
+K5主要失败不是简单权重问题。`1-2`在该split中仍为50/70；其`leo_low_elev_weak`子场景为50/55正确，而`leo_clear_weak`为0/15正确。K5 support缺少`1-2`的`leo_clear_weak`样本，严格scenario-aware路径会屏蔽该类；但全局放开scenario又会造成新类整体坍塌。因此本轮只保留较保守的query-cluster均值候选，撤回低K新类scenario fallback和labelprop fallback实验分支。
+
+### 代码变更
+
+| file | change |
+| --- | --- |
+| `code/scripts/phase2_support_metric_qknn_probe.py` | 新增`stable_dualview_v55`策略入口。K<10继承V54低K参数`topm=2`,`proto_mix=0.45`,`aux_score_weight=0.26`，并启用新类范围`query_cluster_weight=0.05`,`query_cluster_rounds=3`,`query_cluster_support_weight=0.55`,`query_cluster_temperature=0.08`,`query_cluster_clip=1.0`；K>=10仍映射`stable_dualview_v49`，保留高K旧类保护。 |
+| `code/tests/test_phase2_support_metric_qknn_v55_policy.py` | 覆盖V55低K自有策略与高K映射V49。 |
+| `code/tests/test_phase2_qknn_scenario_class_fallback.py` | 移除已撤回的labelprop scenario fallback测试，保留`_class_scores`级别fallback语义测试。 |
+
+### 本地验证
+
+| command/artifact | result |
+| --- | --- |
+| `conda run -n ssr-gpu python -m py_compile code\scripts\phase2_support_metric_qknn_probe.py code\tests\test_phase2_support_metric_qknn_v55_policy.py` | PASS |
+| `conda run -n ssr-gpu python code\tests\test_phase2_support_metric_qknn_v55_policy.py` | PASS，1 test |
+| `conda run -n ssr-gpu python code\tests\test_phase2_support_metric_qknn_v54_policy.py` | PASS，1 test |
+| `conda run -n ssr-gpu python code\tests\test_phase2_qknn_scenario_class_fallback.py` | PASS，2 tests |
+| `conda run -n ssr-gpu python code\tests\test_phase2_qknn_old_only_scenario_fallback.py` | PASS，1 test |
+| `local_v55_policy_verify_20260706/k5_v55_query_cluster_clean_verify.json` | K5 V55复现`old=93.10%`,`min_old=81.43%`,`seen_new=84.07%`,`min_new=71.43%`。 |
+| `local_v55_policy_verify_20260706/k10_v55_query_cluster_clean_verify.json` | K10请求V55但有效策略为V49，`old=93.57%`,`min_old=84.29%`,`seen_new=87.64%`,`min_new=78.57%`，通过joint target。 |
+
+### 当前结论
+
+| candidate | K | requested policy | effective policy | old | min_old | seen_new | min_new | verdict |
+| --- | ---: | --- | --- | ---: | ---: | ---: | ---: | --- |
+| V54 | 5 | `stable_dualview_v54` | `stable_dualview_v54` | 93.10% | 81.43% | 83.93% | 71.43% | 旧类域适应与新类均值已优于V36，但K5地板未解决。 |
+| V55 | 5 | `stable_dualview_v55` | `stable_dualview_v55` | 93.10% | 81.43% | 84.07% | 71.43% | 只带来+0.14pp新类均值，最低类仍为`1-2=50/70`；不作为完成目标。 |
+| V55 | 10 | `stable_dualview_v55` | `stable_dualview_v49` | 93.57% | 84.29% | 87.64% | 78.57% | 高K保护路径正常，可作为K10稳态映射。 |
+
+后续优化应优先围绕“support场景覆盖缺失时的可部署风险估计”设计，而不是继续扩大query真值导向的pair bias。当前最可疑目标是`1-2`在`leo_clear_weak`无support覆盖时的保守注册机制；任何新机制都必须先证明不会复现“关闭scenario-aware导致seen_new坍塌”的失败模式。
+
 ## Adaptive v23 Support-Gated Aux Safety
 
 Objective: continue optimizing qKNN without expanding the K grid. The only evaluated anchors remain `K=5` and `K=10`, using the maximum query split from the 80-sample-per-class feature file. This run tests whether an adaptive support-only auxiliary-view reliability gate can improve stability when the number of enrolled new classes increases.

@@ -6592,6 +6592,8 @@ def _adaptive_qknn_overrides(
         "stable_dualview_v53",
         "dualview_support_v54",
         "stable_dualview_v54",
+        "dualview_support_v55",
+        "stable_dualview_v55",
     }:
         raise ValueError(f"unsupported adaptive_qknn_policy: {policy}")
     min_k_for_policy = float(geometry["adaptive_support_min_k"])
@@ -6637,7 +6639,8 @@ def _adaptive_qknn_overrides(
     use_v52 = name in {"dualview_support_v52", "stable_dualview_v52"}
     use_v53 = name in {"dualview_support_v53", "stable_dualview_v53"}
     use_v54 = name in {"dualview_support_v54", "stable_dualview_v54"}
-    use_v49 = use_v49 or ((use_v53 or use_v54) and min_k_for_policy >= 10.0)
+    use_v55 = name in {"dualview_support_v55", "stable_dualview_v55"}
+    use_v49 = use_v49 or ((use_v53 or use_v54 or use_v55) and min_k_for_policy >= 10.0)
     use_v44 = (
         name in {"dualview_support_v44", "stable_dualview_v44"}
         or use_v45
@@ -6659,6 +6662,7 @@ def _adaptive_qknn_overrides(
         or use_v37
         or (use_v53 and min_k_for_policy < 10.0)
         or (use_v54 and min_k_for_policy < 10.0)
+        or (use_v55 and min_k_for_policy < 10.0)
     )
     use_v32 = name in {"dualview_support_v32", "stable_dualview_v32"} or use_v33 or use_v34 or use_v35 or use_v36
     use_v31 = name in {"dualview_support_v31", "stable_dualview_v31"} or use_v32
@@ -6687,7 +6691,9 @@ def _adaptive_qknn_overrides(
 
     effective_policy_name = (
         "stable_dualview_v49"
-        if (use_v53 or use_v54) and min_k_for_policy >= 10.0
+        if (use_v53 or use_v54 or use_v55) and min_k_for_policy >= 10.0
+        else "stable_dualview_v55"
+        if use_v55
         else "stable_dualview_v54"
         if use_v54
         else "stable_dualview_v36"
@@ -6696,7 +6702,7 @@ def _adaptive_qknn_overrides(
     )
     overrides: dict[str, Any] = {
         "adaptive_qknn_policy": effective_policy_name,
-        "adaptive_qknn_requested_policy": name if (use_v53 or use_v54) else "",
+        "adaptive_qknn_requested_policy": name if (use_v53 or use_v54 or use_v55) else "",
         "adaptive_qknn_effective_policy": effective_policy_name,
         "adaptive_support_hardness": hardness,
         "adaptive_class_load": class_load,
@@ -7098,12 +7104,25 @@ def _adaptive_qknn_overrides(
                 "support_loo_pair_linear_scope": "new",
             }
         )
-    if use_v54 and min_k_for_policy < 10.0:
+    if (use_v54 or use_v55) and min_k_for_policy < 10.0:
         overrides.update(
             {
                 "topm": 2,
                 "proto_mix": 0.45,
                 "aux_score_weight": 0.26 if bool(aux_available) else 0.0,
+            }
+        )
+    if use_v55 and min_k_for_policy < 10.0:
+        overrides.update(
+            {
+                "query_cluster_weight": 0.05,
+                "query_cluster_rounds": 3,
+                "query_cluster_support_weight": 0.55,
+                "query_cluster_temperature": 0.08,
+                "query_cluster_clip": 1.0,
+                "query_cluster_scope": "new",
+                "query_cluster_agreement_min": 0.0,
+                "query_cluster_margin_min": 0.0,
             }
         )
     if use_v11 or use_v12 or use_v13 or use_v14 or use_v15 or use_v16 or use_v17 or use_v18 or use_v19 or use_v20 or use_v21 or use_v22 or use_v23 or use_v24 or use_v25:
