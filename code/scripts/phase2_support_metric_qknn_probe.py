@@ -4666,6 +4666,8 @@ def _evaluate_metric_qknn(
         "stable_dualview_v33",
         "dualview_support_v34",
         "stable_dualview_v34",
+        "dualview_support_v35",
+        "stable_dualview_v35",
     }:
         if support_loo_scores is None:
             support_loo_scores = _support_loo_base_scores(
@@ -4697,7 +4699,18 @@ def _evaluate_metric_qknn(
         neighborhood_gate_neighbor_count = int(max(2, min(4, round(2.0 + 2.0 * class_load_gate))))
         neighborhood_gate_margin = float(np.clip(0.22 + 0.08 * class_load_gate + 0.10 * low_k_gate, 0.20, 0.42))
         neighborhood_gate_query_weight = float(np.clip(0.018 + 0.034 * class_load_gate, 0.0, 0.055))
-        if policy_norm in {"dualview_support_v32", "stable_dualview_v32", "dualview_support_v34", "stable_dualview_v34"} and low_k_gate >= 0.75:
+        if (
+            policy_norm
+            in {
+                "dualview_support_v32",
+                "stable_dualview_v32",
+                "dualview_support_v34",
+                "stable_dualview_v34",
+                "dualview_support_v35",
+                "stable_dualview_v35",
+            }
+            and low_k_gate >= 0.75
+        ):
             neighborhood_gate_weight = 0.0
             neighborhood_gate_query_weight = 0.0
         if policy_norm in {"dualview_support_v33", "stable_dualview_v33"}:
@@ -5489,6 +5502,8 @@ def _adaptive_qknn_overrides(
         "stable_dualview_v33",
         "dualview_support_v34",
         "stable_dualview_v34",
+        "dualview_support_v35",
+        "stable_dualview_v35",
     }:
         raise ValueError(f"unsupported adaptive_qknn_policy: {policy}")
     use_v2 = name in {"dualview_support_v2", "stable_dualview_v2"}
@@ -5521,7 +5536,8 @@ def _adaptive_qknn_overrides(
     use_v30 = name in {"dualview_support_v30", "stable_dualview_v30"}
     use_v33 = name in {"dualview_support_v33", "stable_dualview_v33"}
     use_v34 = name in {"dualview_support_v34", "stable_dualview_v34"}
-    use_v32 = name in {"dualview_support_v32", "stable_dualview_v32"} or use_v33 or use_v34
+    use_v35 = name in {"dualview_support_v35", "stable_dualview_v35"}
+    use_v32 = name in {"dualview_support_v32", "stable_dualview_v32"} or use_v33 or use_v34 or use_v35
     use_v31 = name in {"dualview_support_v31", "stable_dualview_v31"} or use_v32
     use_v9 = use_v9 or use_v27 or use_v28 or use_v29 or use_v30 or use_v31
 
@@ -5902,6 +5918,15 @@ def _adaptive_qknn_overrides(
                     "labelprop_scope": "scenario",
                 }
             )
+    if use_v35:
+        bias_gate = _clip01(max(stable_gate, class_load) * class_load * ((1.0 - k_reliability) ** 2.0))
+        overrides.update(
+            {
+                "support_bias_weight": float(np.clip(0.040 * bias_gate, 0.0, 0.045)),
+                "support_bias_step": float(np.clip(0.005 + 0.005 * bias_gate, 0.005, 0.010)),
+                "support_bias_rounds": int(4 + round(6.0 * bias_gate)),
+            }
+        )
     if use_v11 or use_v12 or use_v13 or use_v14 or use_v15 or use_v16 or use_v17 or use_v18 or use_v19 or use_v20 or use_v21 or use_v22 or use_v23 or use_v24 or use_v25:
         # ASLR: Adaptive Support-LOO Rescue. v12 adds compressed pairwise
         # linear boundaries; v13 adds compressed support-proxy direction rescue.
