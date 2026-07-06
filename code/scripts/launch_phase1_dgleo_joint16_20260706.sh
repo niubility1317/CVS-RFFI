@@ -280,7 +280,7 @@ launch_candidate() {
     echo "[ERROR] refusing to overwrite existing log: ${log_path}" >&2
     exit 3
   fi
-  "${CMD[@]}" > "${log_path}" 2>&1 &
+  nohup "${CMD[@]}" > "${log_path}" 2>&1 &
   echo "[DGLEO-LAUNCHED] id=${cid} pid=$! gpu=${gpu} log=${log_path}"
   sleep "${LAUNCH_SETTLE_SECONDS}"
 }
