@@ -158,6 +158,36 @@ def _role_split_old_only_fallback_scores(
     return adjusted
 
 
+def _top2_pair_gate_policy_settings(
+    *,
+    policy: str,
+    new_class_count: int,
+    min_support: float,
+) -> dict[str, float | int]:
+    policy_norm = str(policy).strip().lower()
+    if policy_norm in {"dualview_support_v50", "stable_dualview_v50"}:
+        if float(min_support) < 10.0 or int(new_class_count) < 14:
+            return {"weight": 0.0, "top_pairs": 0, "margin": 0.0, "query_pair_weight": 0.0}
+        class_load_gate = float(np.clip((float(new_class_count) - 14.0) / 6.0, 0.0, 1.0))
+        return {
+            "weight": float(np.clip(0.018 + 0.004 * class_load_gate, 0.018, 0.022)),
+            "top_pairs": int(max(3, min(4, round(0.18 * max(float(new_class_count), 1.0))))),
+            "margin": float(np.clip(0.18 + 0.04 * class_load_gate, 0.18, 0.22)),
+            "query_pair_weight": 0.0,
+        }
+    if policy_norm in {"dualview_support_v51", "stable_dualview_v51"}:
+        if float(min_support) < 10.0 or int(new_class_count) < 14:
+            return {"weight": 0.0, "top_pairs": 0, "margin": 0.0, "query_pair_weight": 0.0}
+        class_load_gate = float(np.clip((float(new_class_count) - 14.0) / 6.0, 0.0, 1.0))
+        return {
+            "weight": float(np.clip(0.020 + 0.005 * class_load_gate, 0.020, 0.025)),
+            "top_pairs": int(max(5, min(6, round(0.28 * max(float(new_class_count), 1.0))))),
+            "margin": float(np.clip(0.22 + 0.04 * class_load_gate, 0.22, 0.26)),
+            "query_pair_weight": float(np.clip(0.008 + 0.004 * class_load_gate, 0.008, 0.012)),
+        }
+    return {"weight": 0.0, "top_pairs": 0, "margin": 0.0, "query_pair_weight": 0.0}
+
+
 def _quota_predict_fast(
     scores: np.ndarray,
     *,
@@ -4331,6 +4361,10 @@ def _evaluate_metric_qknn(
         "stable_dualview_v48",
         "dualview_support_v49",
         "stable_dualview_v49",
+        "dualview_support_v50",
+        "stable_dualview_v50",
+        "dualview_support_v51",
+        "stable_dualview_v51",
     } and int(support_min_k) >= 10
     scenario_class_fallback_labels = (
         {str(label) for label in old_labels}
@@ -4342,12 +4376,25 @@ def _evaluate_metric_qknn(
             "stable_dualview_v48",
             "dualview_support_v49",
             "stable_dualview_v49",
+            "dualview_support_v50",
+            "stable_dualview_v50",
+            "dualview_support_v51",
+            "stable_dualview_v51",
         }
         and bool(enable_scenario_class_fallback)
         else None
     )
     use_role_split_old_only_fallback = (
-        fallback_policy in {"dualview_support_v49", "stable_dualview_v49"} and bool(enable_scenario_class_fallback)
+        fallback_policy
+        in {
+            "dualview_support_v49",
+            "stable_dualview_v49",
+            "dualview_support_v50",
+            "stable_dualview_v50",
+            "dualview_support_v51",
+            "stable_dualview_v51",
+        }
+        and bool(enable_scenario_class_fallback)
     )
 
     transform = metric._fit_transform(
@@ -4554,6 +4601,10 @@ def _evaluate_metric_qknn(
             "stable_dualview_v48",
             "dualview_support_v49",
             "stable_dualview_v49",
+            "dualview_support_v50",
+            "stable_dualview_v50",
+            "dualview_support_v51",
+            "stable_dualview_v51",
         }:
             primary_loo_scores = _support_loo_base_scores(
                 features=adapted,
@@ -4640,6 +4691,10 @@ def _evaluate_metric_qknn(
                 "stable_dualview_v48",
                 "dualview_support_v49",
                 "stable_dualview_v49",
+                "dualview_support_v50",
+                "stable_dualview_v50",
+                "dualview_support_v51",
+                "stable_dualview_v51",
             }:
                 mean_gate = float(np.clip((aux_support_loo_delta + 0.01) / 0.05, 0.0, 1.0))
                 floor_gate = float(np.clip((aux_support_min_delta + 0.02) / 0.06, 0.0, 1.0))
@@ -4927,6 +4982,10 @@ def _evaluate_metric_qknn(
         "stable_dualview_v48",
         "dualview_support_v49",
         "stable_dualview_v49",
+        "dualview_support_v50",
+        "stable_dualview_v50",
+        "dualview_support_v51",
+        "stable_dualview_v51",
     }:
         transport_policy = str(adaptive_qknn_policy).strip().lower()
         label_counts = [
@@ -4993,6 +5052,10 @@ def _evaluate_metric_qknn(
                 "stable_dualview_v48",
                 "dualview_support_v49",
                 "stable_dualview_v49",
+                "dualview_support_v50",
+                "stable_dualview_v50",
+                "dualview_support_v51",
+                "stable_dualview_v51",
             }
         ):
             source_target_transport_gate_mode = "support_loo_class_gate"
@@ -5517,6 +5580,10 @@ def _evaluate_metric_qknn(
         "stable_dualview_v48",
         "dualview_support_v49",
         "stable_dualview_v49",
+        "dualview_support_v50",
+        "stable_dualview_v50",
+        "dualview_support_v51",
+        "stable_dualview_v51",
     }:
         if support_loo_scores is None:
             support_loo_scores = _support_loo_base_scores(
@@ -5599,6 +5666,10 @@ def _evaluate_metric_qknn(
                 "stable_dualview_v48",
                 "dualview_support_v49",
                 "stable_dualview_v49",
+                "dualview_support_v50",
+                "stable_dualview_v50",
+                "dualview_support_v51",
+                "stable_dualview_v51",
             }
             else 0.0,
         )
@@ -5607,6 +5678,10 @@ def _evaluate_metric_qknn(
         "stable_dualview_v25",
         "dualview_support_v28",
         "stable_dualview_v28",
+        "dualview_support_v50",
+        "stable_dualview_v50",
+        "dualview_support_v51",
+        "stable_dualview_v51",
     }:
         if support_loo_scores is None:
             support_loo_scores = _support_loo_base_scores(
@@ -5638,6 +5713,21 @@ def _evaluate_metric_qknn(
             top2_pair_gate_top_pairs = int(max(2, min(6, round(0.22 * max(float(len(new_labels)), 1.0)))))
             top2_pair_gate_margin = float(np.clip(0.18 + 0.12 * k_gate + 0.06 * class_load_gate, 0.16, 0.36))
             top2_pair_gate_query_weight = float(np.clip(0.020 + 0.020 * class_load_gate, 0.0, 0.040))
+        elif policy_norm in {
+            "dualview_support_v50",
+            "stable_dualview_v50",
+            "dualview_support_v51",
+            "stable_dualview_v51",
+        }:
+            top2_settings = _top2_pair_gate_policy_settings(
+                policy=policy_norm,
+                new_class_count=len(new_labels),
+                min_support=min_support,
+            )
+            top2_pair_gate_weight = float(top2_settings["weight"])
+            top2_pair_gate_top_pairs = int(top2_settings["top_pairs"])
+            top2_pair_gate_margin = float(top2_settings["margin"])
+            top2_pair_gate_query_weight = float(top2_settings["query_pair_weight"])
         else:
             top2_pair_gate_weight = float(np.clip(0.035 + 0.030 * class_load_gate + 0.020 * k_gate, 0.03, 0.08))
             top2_pair_gate_top_pairs = int(max(2, min(8, round(0.30 * max(float(len(new_labels)), 1.0)))))
@@ -6407,6 +6497,10 @@ def _adaptive_qknn_overrides(
         "stable_dualview_v48",
         "dualview_support_v49",
         "stable_dualview_v49",
+        "dualview_support_v50",
+        "stable_dualview_v50",
+        "dualview_support_v51",
+        "stable_dualview_v51",
     }:
         raise ValueError(f"unsupported adaptive_qknn_policy: {policy}")
     use_v2 = name in {"dualview_support_v2", "stable_dualview_v2"}
@@ -6446,6 +6540,8 @@ def _adaptive_qknn_overrides(
     use_v47 = name in {"dualview_support_v47", "stable_dualview_v47"}
     use_v48 = name in {"dualview_support_v48", "stable_dualview_v48"}
     use_v49 = name in {"dualview_support_v49", "stable_dualview_v49"}
+    use_v50 = name in {"dualview_support_v50", "stable_dualview_v50"}
+    use_v51 = name in {"dualview_support_v51", "stable_dualview_v51"}
     use_v44 = (
         name in {"dualview_support_v44", "stable_dualview_v44"}
         or use_v45
@@ -6453,6 +6549,8 @@ def _adaptive_qknn_overrides(
         or use_v47
         or use_v48
         or use_v49
+        or use_v50
+        or use_v51
     )
     use_v42 = name in {"dualview_support_v42", "stable_dualview_v42"} or use_v43 or use_v44
     use_v40 = name in {"dualview_support_v40", "stable_dualview_v40"} or use_v42
@@ -7032,7 +7130,7 @@ def _adaptive_qknn_overrides(
                     "support_loo_pair_rescue_proto_min_sim": 1.1,
                 }
             )
-    if use_v49:
+    if use_v49 or use_v50 or use_v51:
         overrides["scenario_class_fallback"] = "old_role_only" if k_reliability >= 0.25 else False
         if k_reliability >= 0.25:
             overrides.update(
