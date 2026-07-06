@@ -4434,6 +4434,8 @@ def _evaluate_metric_qknn(
             "stable_dualview_v33",
             "dualview_support_v34",
             "stable_dualview_v34",
+            "dualview_support_v42",
+            "stable_dualview_v42",
         }:
             primary_loo_scores = _support_loo_base_scores(
                 features=adapted,
@@ -4504,6 +4506,8 @@ def _evaluate_metric_qknn(
                 "stable_dualview_v33",
                 "dualview_support_v34",
                 "stable_dualview_v34",
+                "dualview_support_v42",
+                "stable_dualview_v42",
             }:
                 mean_gate = float(np.clip((aux_support_loo_delta + 0.01) / 0.05, 0.0, 1.0))
                 floor_gate = float(np.clip((aux_support_min_delta + 0.02) / 0.06, 0.0, 1.0))
@@ -4775,6 +4779,8 @@ def _evaluate_metric_qknn(
         "stable_dualview_v39",
         "dualview_support_v40",
         "stable_dualview_v40",
+        "dualview_support_v42",
+        "stable_dualview_v42",
     }:
         transport_policy = str(adaptive_qknn_policy).strip().lower()
         label_counts = [
@@ -4821,7 +4827,8 @@ def _evaluate_metric_qknn(
             stored_source_target_transport_scalars = 0
         if (
             source_target_transport_weight > 0.0
-            and transport_policy in {"dualview_support_v40", "stable_dualview_v40"}
+            and transport_policy
+            in {"dualview_support_v40", "stable_dualview_v40", "dualview_support_v42", "stable_dualview_v42"}
         ):
             source_target_transport_gate_mode = "support_loo_class_gate"
             support_base_scores = _support_loo_base_scores(
@@ -5272,6 +5279,8 @@ def _evaluate_metric_qknn(
                 "stable_dualview_v39",
                 "dualview_support_v40",
                 "stable_dualview_v40",
+                "dualview_support_v42",
+                "stable_dualview_v42",
             }
             and low_k_gate >= 0.75
         ):
@@ -5319,6 +5328,8 @@ def _evaluate_metric_qknn(
         "stable_dualview_v39",
         "dualview_support_v40",
         "stable_dualview_v40",
+        "dualview_support_v42",
+        "stable_dualview_v42",
     }:
         if support_loo_scores is None:
             support_loo_scores = _support_loo_base_scores(
@@ -5383,6 +5394,8 @@ def _evaluate_metric_qknn(
                 "stable_dualview_v39",
                 "dualview_support_v40",
                 "stable_dualview_v40",
+                "dualview_support_v42",
+                "stable_dualview_v42",
             }
             else 0.0,
         )
@@ -6175,6 +6188,8 @@ def _adaptive_qknn_overrides(
         "stable_dualview_v39",
         "dualview_support_v40",
         "stable_dualview_v40",
+        "dualview_support_v42",
+        "stable_dualview_v42",
     }:
         raise ValueError(f"unsupported adaptive_qknn_policy: {policy}")
     use_v2 = name in {"dualview_support_v2", "stable_dualview_v2"}
@@ -6208,7 +6223,8 @@ def _adaptive_qknn_overrides(
     use_v33 = name in {"dualview_support_v33", "stable_dualview_v33"}
     use_v34 = name in {"dualview_support_v34", "stable_dualview_v34"}
     use_v35 = name in {"dualview_support_v35", "stable_dualview_v35"}
-    use_v40 = name in {"dualview_support_v40", "stable_dualview_v40"}
+    use_v42 = name in {"dualview_support_v42", "stable_dualview_v42"}
+    use_v40 = name in {"dualview_support_v40", "stable_dualview_v40"} or use_v42
     use_v39 = name in {"dualview_support_v39", "stable_dualview_v39"} or use_v40
     use_v38 = name in {"dualview_support_v38", "stable_dualview_v38"} or use_v39
     use_v37 = name in {"dualview_support_v37", "stable_dualview_v37"} or use_v38
