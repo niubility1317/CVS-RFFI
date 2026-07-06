@@ -109,6 +109,14 @@ def _normalize_rows(matrix: np.ndarray) -> np.ndarray:
     return x / np.maximum(norm, 1e-12)
 
 
+def _to_torch_float(array: np.ndarray, device: torch.device) -> torch.Tensor:
+    arr = np.asarray(array, dtype=np.float32, order="C")
+    try:
+        return torch.as_tensor(arr.copy(), dtype=torch.float32, device=device)
+    except Exception:
+        return torch.tensor(arr.tolist(), dtype=torch.float32, device=device)
+
+
 def _apply_view(
     batch: np.ndarray,
     scenarios: np.ndarray,
@@ -124,7 +132,7 @@ def _apply_view(
     gen = make_torch_generator(device, int(seed))
     for scenario in sorted({str(v) for v in scenarios.tolist()}):
         local = np.where(scenarios.astype(str) == scenario)[0]
-        x = torch.from_numpy(batch[local]).to(device=device, dtype=torch.float32)
+        x = _to_torch_float(batch[local], device)
         with torch.no_grad():
             y, _ = apply_sat_channel_for_scenario(x, scenario, args, gen=gen, return_meta=False)
         out = y.detach().cpu().numpy().reshape(len(local), -1)
