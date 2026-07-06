@@ -59,6 +59,7 @@ try:
     from cvsrffi.losses import (
         PrototypeMemoryBank,
         compute_core_losses,
+        direct_metric_acceptance_loss,
         fishr_logit_gradient_variance_loss,
         make_soft_unknown_mixup,
         open_world_feature_space_loss,
@@ -93,6 +94,7 @@ except ModuleNotFoundError:
     GradScaler = autocast = None
     WiSigCompactDataset = WiSigSubsetDataset = None
     PrototypeMemoryBank = None
+    direct_metric_acceptance_loss = None
     make_soft_unknown_mixup = None
     open_world_feature_space_loss = None
     proxy_unknown_energy_loss = None
@@ -383,6 +385,47 @@ def build_arg_parser() -> argparse.ArgumentParser:
     parser.add_argument("--source_episode_min_sigma_deg", type=float, default=3.0)
     parser.add_argument("--source_episode_mixup_weight", type=float, default=0.0)
     parser.add_argument("--source_episode_mixup_hard_k", type=int, default=2)
+    parser.add_argument("--lambda_direct_metric_accept", type=float, default=0.0)
+    parser.add_argument("--direct_metric_start_epoch", type=int, default=20)
+    parser.add_argument("--direct_metric_warmup_epochs", type=int, default=20)
+    parser.add_argument("--direct_metric_virtual_count", type=int, default=32)
+    parser.add_argument("--direct_metric_virtual_mode", type=str, default="hard", choices=["legacy", "hard", "mixed", "legacy_hard"])
+    parser.add_argument("--direct_metric_virtual_detach", type=str2bool, default=True)
+    parser.add_argument("--direct_metric_core_quantile", type=float, default=0.70)
+    parser.add_argument("--direct_metric_accept_quantile", type=float, default=0.80)
+    parser.add_argument("--direct_metric_tail_quantile", type=float, default=0.90)
+    parser.add_argument("--direct_metric_overflow_quantile", type=float, default=0.97)
+    parser.add_argument("--direct_metric_zid_p50_target_deg", type=float, default=28.0)
+    parser.add_argument("--direct_metric_zid_p95_target_deg", type=float, default=54.0)
+    parser.add_argument("--direct_metric_zid_p99_target_deg", type=float, default=70.0)
+    parser.add_argument("--direct_metric_zid_tail_cvar_target_deg", type=float, default=56.0)
+    parser.add_argument("--direct_metric_source_overflow_target", type=float, default=0.45)
+    parser.add_argument("--direct_metric_proxy_vaccept_target", type=float, default=0.35)
+    parser.add_argument("--direct_metric_bridge_accept_target", type=float, default=0.25)
+    parser.add_argument("--direct_metric_low_density_accept_target", type=float, default=0.12)
+    parser.add_argument("--direct_metric_tail_accept_target", type=float, default=0.35)
+    parser.add_argument("--direct_metric_overflow_accept_target", type=float, default=0.20)
+    parser.add_argument("--direct_metric_radius_inter_ratio_target", type=float, default=0.85)
+    parser.add_argument("--direct_metric_core_accept_target", type=float, default=0.82)
+    parser.add_argument("--direct_metric_sat_pair_target_deg", type=float, default=10.0)
+    parser.add_argument("--direct_metric_zid_quantile_weight", type=float, default=1.0)
+    parser.add_argument("--direct_metric_source_overflow_weight", type=float, default=1.0)
+    parser.add_argument("--direct_metric_proxy_vaccept_weight", type=float, default=1.0)
+    parser.add_argument("--direct_metric_bridge_accept_weight", type=float, default=1.0)
+    parser.add_argument("--direct_metric_low_density_accept_weight", type=float, default=1.0)
+    parser.add_argument("--direct_metric_tail_accept_weight", type=float, default=1.0)
+    parser.add_argument("--direct_metric_overflow_accept_weight", type=float, default=1.0)
+    parser.add_argument("--direct_metric_radius_inter_ratio_weight", type=float, default=1.0)
+    parser.add_argument("--direct_metric_core_accept_weight", type=float, default=0.25)
+    parser.add_argument("--direct_metric_sat_pair_weight", type=float, default=0.0)
+    parser.add_argument("--direct_metric_quantile_temperature_deg", type=float, default=3.0)
+    parser.add_argument("--direct_metric_accept_temperature", type=float, default=0.04)
+    parser.add_argument("--direct_metric_component_temperature_deg", type=float, default=3.0)
+    parser.add_argument("--direct_metric_density_temperature_deg", type=float, default=3.0)
+    parser.add_argument("--direct_metric_component_margin_deg", type=float, default=4.0)
+    parser.add_argument("--direct_metric_source_margin_deg", type=float, default=2.0)
+    parser.add_argument("--direct_metric_shell_width_deg", type=float, default=4.0)
+    parser.add_argument("--direct_metric_accept_cvar_alpha", type=float, default=0.25)
     parser.add_argument("--run_id", type=str, default="")
     parser.add_argument("--candidate_id", type=str, default="")
     parser.add_argument("--base_candidate", type=str, default="")
@@ -907,6 +950,7 @@ def _phase2_audit_requested(args) -> bool:
         "lambda_proxy_unknown",
         "lambda_soft_unknown_mixup",
         "lambda_source_episode",
+        "lambda_direct_metric_accept",
     )
     return any(bool(getattr(args, key, False)) for key in flags) or any(float(getattr(args, key, 0.0)) > 0.0 for key in weights)
 
@@ -945,6 +989,7 @@ def _phase2_audit_state(args) -> Dict[str, Any]:
         "proxy_unknown": float(getattr(args, "lambda_proxy_unknown", 0.0)),
         "soft_unknown_mixup": float(getattr(args, "lambda_soft_unknown_mixup", 0.0)),
         "source_episode": float(getattr(args, "lambda_source_episode", 0.0)),
+        "direct_metric_accept": float(getattr(args, "lambda_direct_metric_accept", 0.0)),
     }
     legacy_unwired = {
         key: value
@@ -962,7 +1007,7 @@ def _phase2_audit_state(args) -> Dict[str, Any]:
     active_loss = bool(getattr(args, "use_proto_memory", False)) or any(
         value > 0.0
         for key, value in weights.items()
-        if key in {"proto_memory", "open_world_feat", "zid_compact", "proxy_unknown", "soft_unknown_mixup", "source_episode"}
+        if key in {"proto_memory", "open_world_feat", "zid_compact", "proxy_unknown", "soft_unknown_mixup", "source_episode", "direct_metric_accept"}
     )
     return {
         "requested": bool(requested),
@@ -978,6 +1023,7 @@ def _phase2_audit_state(args) -> Dict[str, Any]:
         "use_proxy_unknown_loss": float(getattr(args, "lambda_proxy_unknown", 0.0)) > 0.0,
         "use_soft_unknown_mixup_loss": float(getattr(args, "lambda_soft_unknown_mixup", 0.0)) > 0.0,
         "use_source_episode_loss": float(getattr(args, "lambda_source_episode", 0.0)) > 0.0,
+        "use_direct_metric_acceptance_loss": float(getattr(args, "lambda_direct_metric_accept", 0.0)) > 0.0,
         "phase2_export_prototypes": bool(getattr(args, "phase2_export_prototypes", False)),
         "imports": import_status,
         "weights": weights,
@@ -1114,6 +1160,7 @@ def _loss_weights(args, stage_state: Mapping[str, Any] | None) -> Dict[str, floa
         "proxy_unknown": float(getattr(args, "lambda_proxy_unknown", 0.0)),
         "soft_unknown_mixup": float(getattr(args, "lambda_soft_unknown_mixup", 0.0)),
         "source_episode": float(getattr(args, "lambda_source_episode", 0.0)),
+        "direct_metric_accept": float(getattr(args, "lambda_direct_metric_accept", 0.0)),
     }
 
 
@@ -1446,6 +1493,7 @@ def _build_ssdg_epoch_telemetry_row(
         "lambda_zid_compact",
         "lambda_proxy_unknown",
         "lambda_soft_unknown_mixup",
+        "lambda_direct_metric_accept",
         "proto_domain_align_weight",
         "ow_feat_radius_deg",
         "ow_feat_inter_margin_deg",
@@ -1469,6 +1517,38 @@ def _build_ssdg_epoch_telemetry_row(
         "source_episode_core_quantile",
         "source_episode_radius_cap_deg",
         "source_episode_min_sigma_deg",
+        "direct_metric_start_epoch",
+        "direct_metric_warmup_epochs",
+        "direct_metric_virtual_count",
+        "direct_metric_virtual_mode",
+        "direct_metric_core_quantile",
+        "direct_metric_accept_quantile",
+        "direct_metric_tail_quantile",
+        "direct_metric_overflow_quantile",
+        "direct_metric_zid_p50_target_deg",
+        "direct_metric_zid_p95_target_deg",
+        "direct_metric_zid_p99_target_deg",
+        "direct_metric_zid_tail_cvar_target_deg",
+        "direct_metric_source_overflow_target",
+        "direct_metric_proxy_vaccept_target",
+        "direct_metric_bridge_accept_target",
+        "direct_metric_low_density_accept_target",
+        "direct_metric_tail_accept_target",
+        "direct_metric_overflow_accept_target",
+        "direct_metric_radius_inter_ratio_target",
+        "direct_metric_core_accept_target",
+        "direct_metric_sat_pair_target_deg",
+        "direct_metric_zid_quantile_weight",
+        "direct_metric_source_overflow_weight",
+        "direct_metric_proxy_vaccept_weight",
+        "direct_metric_bridge_accept_weight",
+        "direct_metric_low_density_accept_weight",
+        "direct_metric_tail_accept_weight",
+        "direct_metric_overflow_accept_weight",
+        "direct_metric_radius_inter_ratio_weight",
+        "direct_metric_core_accept_weight",
+        "direct_metric_sat_pair_weight",
+        "direct_metric_accept_cvar_alpha",
         "ow_feat_vacuum_weight",
         "ow_feat_vacuum_width_deg",
         "proxy_unknown_component_radius_mode",
@@ -1609,6 +1689,7 @@ def format_ssdg_epoch_block(
     loss_ow_feat = _log_value(train_logs, "train/loss_open_world_feat")
     loss_soft_unknown_mixup = _log_value(train_logs, "train/loss_soft_unknown_mixup")
     loss_source_episode = _log_value(train_logs, "train/loss_source_episode")
+    loss_direct_metric_accept = _log_value(train_logs, "train/loss_direct_metric_accept")
     loss_cons = _log_value(train_logs, "train/loss_cons_labeled")
     loss_u = _log_value(train_logs, "train/loss_unlabeled")
     w_cls = _log_value(train_logs, "train/w_loss_tx_labeled", loss_cls)
@@ -1624,6 +1705,7 @@ def format_ssdg_epoch_block(
     w_ow_feat = _log_value(train_logs, "train/w_loss_open_world_feat", loss_ow_feat)
     w_soft_unknown_mixup = _log_value(train_logs, "train/w_loss_soft_unknown_mixup", loss_soft_unknown_mixup)
     w_source_episode = _log_value(train_logs, "train/w_loss_source_episode", loss_source_episode)
+    w_direct_metric_accept = _log_value(train_logs, "train/w_loss_direct_metric_accept", loss_direct_metric_accept)
     reliable = _log_value(train_logs, "train/reliable_ratio")
     pseudo_conf = _log_value(train_logs, "train/pseudo_conf")
     domain_pass = _log_value(train_logs, "train/domain_pass")
@@ -1694,11 +1776,13 @@ def format_ssdg_epoch_block(
         f"[LOSS-DG-RAW]   proto={loss_proto:.4f} "
         f"proto_cos={_log_value(train_logs, 'train/proto_pull_cos'):.4f} "
         f"supcon=0.0000 fishr={loss_fishr:.4f} ow_feat={loss_ow_feat:.4f} "
-        f"soft_unknown_mixup={loss_soft_unknown_mixup:.4f} source_episode={loss_source_episode:.4f}"
+        f"soft_unknown_mixup={loss_soft_unknown_mixup:.4f} source_episode={loss_source_episode:.4f} "
+        f"direct_metric={loss_direct_metric_accept:.4f}"
     )
     lines.append(
         f"[LOSS-DG-W]     proto={w_proto:.4f} supcon=0.0000 fishr={w_fishr:.4f} "
-        f"ow_feat={w_ow_feat:.4f} soft_unknown_mixup={w_soft_unknown_mixup:.4f} source_episode={w_source_episode:.4f}"
+        f"ow_feat={w_ow_feat:.4f} soft_unknown_mixup={w_soft_unknown_mixup:.4f} source_episode={w_source_episode:.4f} "
+        f"direct_metric={w_direct_metric_accept:.4f}"
     )
     lines.append(
         "[OW-FEAT] "
@@ -1780,6 +1864,24 @@ def format_ssdg_epoch_block(
         f"mix_gap={_log_value(train_logs, 'train/source_episode_mixup_margin_deg'):.2f}deg"
     )
     lines.append(
+        "[DM-ACCEPT] "
+        f"active={_log_value(train_logs, 'train/dm_accept_active'):.1f} "
+        f"classes={_log_value(train_logs, 'train/dm_accept_active_classes'):.1f} "
+        f"p50={_log_value(train_logs, 'train/dm_accept_zid_p50_deg'):.2f}deg "
+        f"p95={_log_value(train_logs, 'train/dm_accept_zid_p95_deg'):.2f}deg "
+        f"p99={_log_value(train_logs, 'train/dm_accept_zid_p99_deg'):.2f}deg "
+        f"tail_cvar={_log_value(train_logs, 'train/dm_accept_zid_tail_cvar_deg'):.2f}deg "
+        f"source_overflow={_log_value(train_logs, 'train/dm_accept_source_overflow'):.4f} "
+        f"proxy_vaccept={_log_value(train_logs, 'train/dm_accept_proxy_vaccept'):.4f} "
+        f"bridge={_log_value(train_logs, 'train/dm_accept_bridge_accept_rate'):.4f} "
+        f"low_den={_log_value(train_logs, 'train/dm_accept_low_density_accept_rate'):.4f} "
+        f"tail_accept={_log_value(train_logs, 'train/dm_accept_tail_accept_rate'):.4f} "
+        f"overflow_accept={_log_value(train_logs, 'train/dm_accept_overflow_accept_rate'):.4f} "
+        f"radius_inter={_log_value(train_logs, 'train/dm_accept_radius_to_inter_ratio'):.4f} "
+        f"core_accept={_log_value(train_logs, 'train/dm_accept_core_accept_rate'):.4f} "
+        f"sat_pair_p95={_log_value(train_logs, 'train/dm_accept_sat_pair_angle_p95_deg'):.2f}deg"
+    )
+    lines.append(
         "[LOSS-WEIGHT] "
         f"dom={float(stage_state.get('dom_scale', loss_weights.get('dom', 0.0))):.3f} "
         f"adv={float(stage_state.get('adv_scale', loss_weights.get('adv', 0.0))):.3f} "
@@ -1790,6 +1892,7 @@ def format_ssdg_epoch_block(
         f"ow_feat={float(loss_weights.get('open_world_feat', 0.0)):.6g} "
         f"soft_unknown_mixup={float(loss_weights.get('soft_unknown_mixup', 0.0)):.6g} "
         f"source_episode={float(loss_weights.get('source_episode', 0.0)):.6g} "
+        f"direct_metric={float(loss_weights.get('direct_metric_accept', 0.0)):.6g} "
         "aux_scale=0.000"
     )
     lines.append(
@@ -1808,6 +1911,7 @@ def format_ssdg_epoch_block(
                 "ow_feat": w_ow_feat,
                 "soft_unknown_mixup": w_soft_unknown_mixup,
                 "source_episode": w_source_episode,
+                "direct_metric": w_direct_metric_accept,
             }
         )
     )
@@ -2143,6 +2247,7 @@ def train(args) -> int:
                 f"proxy_gate_w={float(args.proxy_unknown_component_gate_weight):.6g} "
                 f"lambda_soft_unknown_mixup={float(args.lambda_soft_unknown_mixup):.6g} "
                 f"lambda_source_episode={float(args.lambda_source_episode):.6g} "
+                f"lambda_direct_metric_accept={float(args.lambda_direct_metric_accept):.6g} "
                 f"lambda_u={float(args.lambda_u):.6g} lambda_ent={float(args.lambda_ent):.6g} "
                 f"label_smoothing={float(args.label_smoothing):.6g}",
                 "[CONFIG-TEACHER] "
@@ -2162,6 +2267,20 @@ def train(args) -> int:
                 f"bridge_target={float(args.proxy_unknown_bridge_accept_target):.6g} "
                 f"tail_target={float(args.proxy_unknown_tail_accept_target):.6g} "
                 f"overflow_target={float(args.proxy_unknown_overflow_accept_target):.6g}",
+                "[CONFIG-DM-ACCEPT] "
+                f"start={int(args.direct_metric_start_epoch)} warmup={int(args.direct_metric_warmup_epochs)} "
+                f"virtual={int(args.direct_metric_virtual_count)} mode={args.direct_metric_virtual_mode} "
+                f"targets=p50:{float(args.direct_metric_zid_p50_target_deg):.2f},p95:{float(args.direct_metric_zid_p95_target_deg):.2f},"
+                f"p99:{float(args.direct_metric_zid_p99_target_deg):.2f},tail:{float(args.direct_metric_zid_tail_cvar_target_deg):.2f},"
+                f"source_overflow:{float(args.direct_metric_source_overflow_target):.3f},proxy_vaccept:{float(args.direct_metric_proxy_vaccept_target):.3f},"
+                f"bridge:{float(args.direct_metric_bridge_accept_target):.3f},low_den:{float(args.direct_metric_low_density_accept_target):.3f},"
+                f"tail_accept:{float(args.direct_metric_tail_accept_target):.3f},overflow_accept:{float(args.direct_metric_overflow_accept_target):.3f},"
+                f"radius_inter:{float(args.direct_metric_radius_inter_ratio_target):.3f},sat_pair_deg:{float(args.direct_metric_sat_pair_target_deg):.2f} "
+                f"weights=zid:{float(args.direct_metric_zid_quantile_weight):.3f},source:{float(args.direct_metric_source_overflow_weight):.3f},"
+                f"proxy:{float(args.direct_metric_proxy_vaccept_weight):.3f},bridge:{float(args.direct_metric_bridge_accept_weight):.3f},"
+                f"low_den:{float(args.direct_metric_low_density_accept_weight):.3f},tail:{float(args.direct_metric_tail_accept_weight):.3f},"
+                f"overflow:{float(args.direct_metric_overflow_accept_weight):.3f},ratio:{float(args.direct_metric_radius_inter_ratio_weight):.3f},"
+                f"core:{float(args.direct_metric_core_accept_weight):.3f},sat_pair:{float(args.direct_metric_sat_pair_weight):.3f}",
                 "[CONFIG-PSEUDO] "
                 f"use_unlabeled={int(bool(args.use_unlabeled))} threshold_mode={args.pseudo_threshold_mode} "
                 f"tau_min={float(args.tau_min):.6g} tau_max={float(args.tau_max):.6g} quantile={float(args.pseudo_quantile):.6g} "
@@ -2234,7 +2353,7 @@ def train(args) -> int:
         f"metrics_csv={metrics_csv_path} metrics_jsonl={metrics_jsonl_path} "
         "loss_terms=loss,loss_labeled,loss_tx,loss_domain,loss_adv,loss_cons,"
         "loss_orth,loss_group_ce,loss_fishr,loss_sat_cls,loss_sat_cons,"
-        "loss_unlabeled,weighted_losses,grad_norms,pseudo_stats,eval_stats",
+        "loss_direct_metric_accept,loss_unlabeled,weighted_losses,grad_norms,pseudo_stats,eval_stats",
         flush=True,
     )
 
@@ -2512,6 +2631,11 @@ def train(args) -> int:
                     start_epoch=int(getattr(args, "source_episode_start_epoch", 1)),
                     warmup_epochs=int(getattr(args, "source_episode_warmup_epochs", 0)),
                 )
+                direct_metric_stage_scale = _stage_gate_scale(
+                    epoch,
+                    start_epoch=int(getattr(args, "direct_metric_start_epoch", 20)),
+                    warmup_epochs=int(getattr(args, "direct_metric_warmup_epochs", 20)),
+                )
                 soft_mixup_start_epoch = int(getattr(args, "soft_unknown_mixup_start_epoch", -1))
                 if soft_mixup_start_epoch <= 0:
                     soft_mixup_start_epoch = int(getattr(args, "proxy_unknown_start_epoch", 40))
@@ -2668,6 +2792,85 @@ def train(args) -> int:
                         mixup_order=int(args.soft_unknown_mixup_order),
                         mixup_hard_k=int(args.source_episode_mixup_hard_k),
                     )
+                loss_direct_metric_accept_l = z_id_l.sum() * 0.0
+                direct_metric_info: Dict[str, float] = {
+                    "active": 0.0,
+                    "active_classes": 0.0,
+                    "zid_p50_deg": float("nan"),
+                    "zid_p95_deg": float("nan"),
+                    "zid_p99_deg": float("nan"),
+                    "zid_tail_cvar_deg": float("nan"),
+                    "source_overflow": float("nan"),
+                    "source_overflow_loss": 0.0,
+                    "proxy_vaccept": float("nan"),
+                    "proxy_vaccept_loss": 0.0,
+                    "bridge_accept_rate": float("nan"),
+                    "bridge_accept_loss": 0.0,
+                    "shell_accept_rate": float("nan"),
+                    "outward_accept_rate": float("nan"),
+                    "low_density_accept_rate": float("nan"),
+                    "low_density_accept_loss": 0.0,
+                    "tail_accept_rate": float("nan"),
+                    "tail_accept_loss": 0.0,
+                    "overflow_accept_rate": float("nan"),
+                    "overflow_accept_loss": 0.0,
+                    "radius_to_inter_ratio": float("nan"),
+                    "radius_inter_ratio_loss": 0.0,
+                    "core_accept_rate": float("nan"),
+                    "core_accept_loss": 0.0,
+                    "sat_pair_angle_p95_deg": float("nan"),
+                    "sat_pair_loss": 0.0,
+                    "zid_quantile_loss": 0.0,
+                    "virtual_count": 0.0,
+                }
+                if float(getattr(args, "lambda_direct_metric_accept", 0.0)) > 0.0 and direct_metric_stage_scale > 0.0:
+                    if direct_metric_acceptance_loss is None:
+                        raise ImportError("cvsrffi.losses.direct_metric_acceptance_loss is required for --lambda_direct_metric_accept")
+                    paired_view_count = concat_sat_clean_bsz if concat_sat_full_batch else 0
+                    loss_direct_metric_accept_l, direct_metric_info = direct_metric_acceptance_loss(
+                        z_id_l,
+                        y_l,
+                        d_l,
+                        paired_view_count=paired_view_count,
+                        virtual_count=int(args.direct_metric_virtual_count),
+                        virtual_mode=str(args.direct_metric_virtual_mode),
+                        core_quantile=float(args.direct_metric_core_quantile),
+                        accept_quantile=float(args.direct_metric_accept_quantile),
+                        tail_quantile=float(args.direct_metric_tail_quantile),
+                        overflow_quantile=float(args.direct_metric_overflow_quantile),
+                        zid_p50_target_rad=math.radians(float(args.direct_metric_zid_p50_target_deg)),
+                        zid_p95_target_rad=math.radians(float(args.direct_metric_zid_p95_target_deg)),
+                        zid_p99_target_rad=math.radians(float(args.direct_metric_zid_p99_target_deg)),
+                        zid_tail_cvar_target_rad=math.radians(float(args.direct_metric_zid_tail_cvar_target_deg)),
+                        source_overflow_target=float(args.direct_metric_source_overflow_target),
+                        proxy_vaccept_target=float(args.direct_metric_proxy_vaccept_target),
+                        bridge_accept_target=float(args.direct_metric_bridge_accept_target),
+                        low_density_accept_target=float(args.direct_metric_low_density_accept_target),
+                        tail_accept_target=float(args.direct_metric_tail_accept_target),
+                        overflow_accept_target=float(args.direct_metric_overflow_accept_target),
+                        radius_inter_ratio_target=float(args.direct_metric_radius_inter_ratio_target),
+                        core_accept_target=float(args.direct_metric_core_accept_target),
+                        sat_pair_target_rad=math.radians(float(args.direct_metric_sat_pair_target_deg)),
+                        zid_quantile_weight=float(args.direct_metric_zid_quantile_weight),
+                        source_overflow_weight=float(args.direct_metric_source_overflow_weight),
+                        proxy_vaccept_weight=float(args.direct_metric_proxy_vaccept_weight),
+                        bridge_accept_weight=float(args.direct_metric_bridge_accept_weight),
+                        low_density_accept_weight=float(args.direct_metric_low_density_accept_weight),
+                        tail_accept_weight=float(args.direct_metric_tail_accept_weight),
+                        overflow_accept_weight=float(args.direct_metric_overflow_accept_weight),
+                        radius_inter_ratio_weight=float(args.direct_metric_radius_inter_ratio_weight),
+                        core_accept_weight=float(args.direct_metric_core_accept_weight),
+                        sat_pair_weight=float(args.direct_metric_sat_pair_weight),
+                        quantile_temperature_rad=math.radians(float(args.direct_metric_quantile_temperature_deg)),
+                        accept_temperature=float(args.direct_metric_accept_temperature),
+                        component_temperature_rad=math.radians(float(args.direct_metric_component_temperature_deg)),
+                        density_temperature_rad=math.radians(float(args.direct_metric_density_temperature_deg)),
+                        component_margin_rad=math.radians(float(args.direct_metric_component_margin_deg)),
+                        source_margin_rad=math.radians(float(args.direct_metric_source_margin_deg)),
+                        shell_width_rad=math.radians(float(args.direct_metric_shell_width_deg)),
+                        accept_cvar_alpha=float(args.direct_metric_accept_cvar_alpha),
+                        virtual_detach=bool(args.direct_metric_virtual_detach),
+                    )
                 zero_sat = out_l["tx_logits"].sum() * 0.0
                 loss_sat_cls_l = zero_sat
                 loss_sat_cons_l = zero_sat
@@ -2793,6 +2996,7 @@ def train(args) -> int:
                     + (cur_w["proxy_unknown"] * proxy_stage_scale) * sanitize_loss("ssdg_proxy_unknown", loss_proxy_unknown_l, z_id_l, loss_warn_counts)
                     + (cur_w["soft_unknown_mixup"] * soft_unknown_mixup_stage_scale) * sanitize_loss("ssdg_soft_unknown_mixup", loss_soft_unknown_mixup_l, z_id_l, loss_warn_counts)
                     + (cur_w["source_episode"] * source_episode_stage_scale) * sanitize_loss("ssdg_source_episode", loss_source_episode_l, z_id_l, loss_warn_counts)
+                    + (cur_w["direct_metric_accept"] * direct_metric_stage_scale) * sanitize_loss("ssdg_direct_metric_accept", loss_direct_metric_accept_l, z_id_l, loss_warn_counts)
                     + cur_w["sat_cls"] * loss_sat_cls_l
                     + cur_w["sat_cons"] * loss_sat_cons_l
                     + (float(args.lambda_teacher_clean_kl) * teacher_scale) * sanitize_loss("teacher_clean_kl", loss_teacher_clean_kl_l, z_id_l, loss_warn_counts)
@@ -2912,6 +3116,7 @@ def train(args) -> int:
                     "train/loss_proxy_unknown": loss_proxy_unknown_l.detach(),
                     "train/loss_soft_unknown_mixup": loss_soft_unknown_mixup_l.detach(),
                     "train/loss_source_episode": loss_source_episode_l.detach(),
+                    "train/loss_direct_metric_accept": loss_direct_metric_accept_l.detach(),
                     "train/loss_sat_cls_labeled": loss_sat_cls_l.detach(),
                     "train/loss_sat_cons_labeled": loss_sat_cons_l.detach(),
                     "train/loss_teacher_clean_kl": loss_teacher_clean_kl_l.detach(),
@@ -2930,6 +3135,7 @@ def train(args) -> int:
                     "train/w_loss_proxy_unknown": ((cur_w["proxy_unknown"] * proxy_stage_scale) * loss_proxy_unknown_l).detach(),
                     "train/w_loss_soft_unknown_mixup": ((cur_w["soft_unknown_mixup"] * soft_unknown_mixup_stage_scale) * loss_soft_unknown_mixup_l).detach(),
                     "train/w_loss_source_episode": ((cur_w["source_episode"] * source_episode_stage_scale) * loss_source_episode_l).detach(),
+                    "train/w_loss_direct_metric_accept": ((cur_w["direct_metric_accept"] * direct_metric_stage_scale) * loss_direct_metric_accept_l).detach(),
                     "train/w_loss_sat_cls_labeled": (cur_w["sat_cls"] * loss_sat_cls_l).detach(),
                     "train/w_loss_sat_cons_labeled": (cur_w["sat_cons"] * loss_sat_cons_l).detach(),
                     "train/w_loss_teacher_clean_kl": ((float(args.lambda_teacher_clean_kl) * teacher_scale) * loss_teacher_clean_kl_l).detach(),
@@ -3076,6 +3282,35 @@ def train(args) -> int:
                     "train/source_episode_mixup_overflow_rate": source_episode_info.get("source_episode_mixup_overflow_rate", float("nan")),
                     "train/source_episode_mixup_margin_deg": source_episode_info.get("source_episode_mixup_margin_deg", float("nan")),
                     "train/source_episode_stage_scale": float(source_episode_stage_scale),
+                    "train/dm_accept_active": direct_metric_info.get("active", float("nan")),
+                    "train/dm_accept_active_classes": direct_metric_info.get("active_classes", float("nan")),
+                    "train/dm_accept_zid_p50_deg": direct_metric_info.get("zid_p50_deg", float("nan")),
+                    "train/dm_accept_zid_p95_deg": direct_metric_info.get("zid_p95_deg", float("nan")),
+                    "train/dm_accept_zid_p99_deg": direct_metric_info.get("zid_p99_deg", float("nan")),
+                    "train/dm_accept_zid_tail_cvar_deg": direct_metric_info.get("zid_tail_cvar_deg", float("nan")),
+                    "train/dm_accept_source_overflow": direct_metric_info.get("source_overflow", float("nan")),
+                    "train/dm_accept_source_overflow_loss": direct_metric_info.get("source_overflow_loss", float("nan")),
+                    "train/dm_accept_proxy_vaccept": direct_metric_info.get("proxy_vaccept", float("nan")),
+                    "train/dm_accept_proxy_vaccept_loss": direct_metric_info.get("proxy_vaccept_loss", float("nan")),
+                    "train/dm_accept_bridge_accept_rate": direct_metric_info.get("bridge_accept_rate", float("nan")),
+                    "train/dm_accept_bridge_accept_loss": direct_metric_info.get("bridge_accept_loss", float("nan")),
+                    "train/dm_accept_shell_accept_rate": direct_metric_info.get("shell_accept_rate", float("nan")),
+                    "train/dm_accept_outward_accept_rate": direct_metric_info.get("outward_accept_rate", float("nan")),
+                    "train/dm_accept_low_density_accept_rate": direct_metric_info.get("low_density_accept_rate", float("nan")),
+                    "train/dm_accept_low_density_accept_loss": direct_metric_info.get("low_density_accept_loss", float("nan")),
+                    "train/dm_accept_tail_accept_rate": direct_metric_info.get("tail_accept_rate", float("nan")),
+                    "train/dm_accept_tail_accept_loss": direct_metric_info.get("tail_accept_loss", float("nan")),
+                    "train/dm_accept_overflow_accept_rate": direct_metric_info.get("overflow_accept_rate", float("nan")),
+                    "train/dm_accept_overflow_accept_loss": direct_metric_info.get("overflow_accept_loss", float("nan")),
+                    "train/dm_accept_radius_to_inter_ratio": direct_metric_info.get("radius_to_inter_ratio", float("nan")),
+                    "train/dm_accept_radius_inter_ratio_loss": direct_metric_info.get("radius_inter_ratio_loss", float("nan")),
+                    "train/dm_accept_core_accept_rate": direct_metric_info.get("core_accept_rate", float("nan")),
+                    "train/dm_accept_core_accept_loss": direct_metric_info.get("core_accept_loss", float("nan")),
+                    "train/dm_accept_sat_pair_angle_p95_deg": direct_metric_info.get("sat_pair_angle_p95_deg", float("nan")),
+                    "train/dm_accept_sat_pair_loss": direct_metric_info.get("sat_pair_loss", float("nan")),
+                    "train/dm_accept_zid_quantile_loss": direct_metric_info.get("zid_quantile_loss", float("nan")),
+                    "train/dm_accept_virtual_count": direct_metric_info.get("virtual_count", float("nan")),
+                    "train/dm_accept_stage_scale": float(direct_metric_stage_scale),
                 }
             )
 
