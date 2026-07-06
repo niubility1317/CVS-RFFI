@@ -4438,6 +4438,8 @@ def _evaluate_metric_qknn(
             "stable_dualview_v42",
             "dualview_support_v43",
             "stable_dualview_v43",
+            "dualview_support_v44",
+            "stable_dualview_v44",
         }:
             primary_loo_scores = _support_loo_base_scores(
                 features=adapted,
@@ -4512,6 +4514,8 @@ def _evaluate_metric_qknn(
                 "stable_dualview_v42",
                 "dualview_support_v43",
                 "stable_dualview_v43",
+                "dualview_support_v44",
+                "stable_dualview_v44",
             }:
                 mean_gate = float(np.clip((aux_support_loo_delta + 0.01) / 0.05, 0.0, 1.0))
                 floor_gate = float(np.clip((aux_support_min_delta + 0.02) / 0.06, 0.0, 1.0))
@@ -4787,6 +4791,8 @@ def _evaluate_metric_qknn(
         "stable_dualview_v42",
         "dualview_support_v43",
         "stable_dualview_v43",
+        "dualview_support_v44",
+        "stable_dualview_v44",
     }:
         transport_policy = str(adaptive_qknn_policy).strip().lower()
         label_counts = [
@@ -4841,6 +4847,8 @@ def _evaluate_metric_qknn(
                 "stable_dualview_v42",
                 "dualview_support_v43",
                 "stable_dualview_v43",
+                "dualview_support_v44",
+                "stable_dualview_v44",
             }
         ):
             source_target_transport_gate_mode = "support_loo_class_gate"
@@ -5353,6 +5361,8 @@ def _evaluate_metric_qknn(
         "stable_dualview_v42",
         "dualview_support_v43",
         "stable_dualview_v43",
+        "dualview_support_v44",
+        "stable_dualview_v44",
     }:
         if support_loo_scores is None:
             support_loo_scores = _support_loo_base_scores(
@@ -5423,6 +5433,8 @@ def _evaluate_metric_qknn(
                 "stable_dualview_v42",
                 "dualview_support_v43",
                 "stable_dualview_v43",
+                "dualview_support_v44",
+                "stable_dualview_v44",
             }
             else 0.0,
         )
@@ -6219,6 +6231,8 @@ def _adaptive_qknn_overrides(
         "stable_dualview_v42",
         "dualview_support_v43",
         "stable_dualview_v43",
+        "dualview_support_v44",
+        "stable_dualview_v44",
     }:
         raise ValueError(f"unsupported adaptive_qknn_policy: {policy}")
     use_v2 = name in {"dualview_support_v2", "stable_dualview_v2"}
@@ -6253,7 +6267,8 @@ def _adaptive_qknn_overrides(
     use_v34 = name in {"dualview_support_v34", "stable_dualview_v34"}
     use_v35 = name in {"dualview_support_v35", "stable_dualview_v35"}
     use_v43 = name in {"dualview_support_v43", "stable_dualview_v43"}
-    use_v42 = name in {"dualview_support_v42", "stable_dualview_v42"} or use_v43
+    use_v44 = name in {"dualview_support_v44", "stable_dualview_v44"}
+    use_v42 = name in {"dualview_support_v42", "stable_dualview_v42"} or use_v43 or use_v44
     use_v40 = name in {"dualview_support_v40", "stable_dualview_v40"} or use_v42
     use_v39 = name in {"dualview_support_v39", "stable_dualview_v39"} or use_v40
     use_v38 = name in {"dualview_support_v38", "stable_dualview_v38"} or use_v39
@@ -6746,6 +6761,51 @@ def _adaptive_qknn_overrides(
                 "support_loo_pair_linear_scope": "new",
                 "source_target_transport_weight": float(
                     np.clip(0.018 + 0.026 * many_new_gate + 0.016 * _clip01(1.0 - k_reliability), 0.0, 0.060)
+                ),
+                "query_cluster_weight": 0.0,
+                "transductive_proto_weight": 0.0,
+                "dense_cluster_weight": 0.0,
+            }
+        )
+    if use_v44:
+        floor_gate = _clip01(max(stable_gate, class_load))
+        many_new_gate = _clip01((new_count - 10.0) / 10.0)
+        low_k_gate = _clip01(1.0 - k_reliability)
+        rescue_weight = float(
+            np.clip(
+                (0.10 - 0.15 * k_reliability) * floor_gate,
+                0.02,
+                0.10,
+            )
+        )
+        linear_weight = float(
+            np.clip(
+                (0.0080 - 0.0040 * k_reliability + 0.0015 * class_load) * floor_gate,
+                0.0,
+                0.010,
+            )
+        )
+        floor_top_pairs = int(max(4, min(8, round(0.40 * max(new_count, 1.0)))))
+        overrides.update(
+            {
+                "topm": 1 if k_reliability >= 0.25 and new_count >= 14.0 else 4,
+                "role_balanced_assignment": True,
+                "support_loo_pair_rescue_weight": rescue_weight,
+                "support_loo_pair_rescue_top_pairs": floor_top_pairs,
+                "support_loo_pair_rescue_min_errors": 1,
+                "support_loo_pair_rescue_alpha": 0.1,
+                "support_loo_pair_rescue_clip": 2.0,
+                "support_loo_pair_rescue_scope": "new",
+                "support_loo_pair_rescue_proto_neighbors": 0,
+                "support_loo_pair_rescue_proto_min_sim": 1.1,
+                "support_loo_pair_linear_weight": linear_weight,
+                "support_loo_pair_linear_top_pairs": floor_top_pairs,
+                "support_loo_pair_linear_min_errors": 1,
+                "support_loo_pair_linear_alpha": float(np.clip(0.10 + 0.90 * k_reliability, 0.10, 1.00)),
+                "support_loo_pair_linear_clip": 1.0,
+                "support_loo_pair_linear_scope": "new",
+                "source_target_transport_weight": float(
+                    np.clip(0.018 + 0.026 * many_new_gate + 0.016 * low_k_gate, 0.0, 0.060)
                 ),
                 "query_cluster_weight": 0.0,
                 "transductive_proto_weight": 0.0,
@@ -7364,6 +7424,7 @@ def main() -> None:
                     params: dict[str, Any] = {
                         "mode": mode,
                         "strength": float(strength),
+                        "topm": int(topm),
                         "proto_mix": float(proto_mix),
                         "aux_score_weight": float(aux_score_weight),
                         "pair_gaussian_similarity": float(pair_gaussian_similarity),
@@ -7473,6 +7534,7 @@ def main() -> None:
                         {
                             "mode": adaptive_overrides.get("transform_mode", params["mode"]),
                             "strength": adaptive_overrides.get("transform_strength", params["strength"]),
+                            "topm": adaptive_overrides.get("topm", params["topm"]),
                             "proto_mix": adaptive_overrides.get("proto_mix", params["proto_mix"]),
                             "aux_score_weight": adaptive_overrides.get("aux_score_weight", params["aux_score_weight"]),
                             "pair_gaussian_similarity": adaptive_overrides.get("pair_gaussian_similarity", params["pair_gaussian_similarity"]),
@@ -7747,7 +7809,7 @@ def main() -> None:
                         new_labels=new_labels,
                         transform_mode=params["mode"],
                         transform_strength=float(params["strength"]),
-                        topm=int(topm),
+                        topm=int(params["topm"]),
                         proto_mix=float(params["proto_mix"]),
                         aux_score_weight=float(params["aux_score_weight"]),
                         adaptive_qknn_policy=str(
