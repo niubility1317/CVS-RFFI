@@ -133,6 +133,10 @@ def _select_support(
     seed: int,
 ) -> list[int]:
     ordered = _stable_order(candidates, label=f"{role}:{label}", seed=seed)
+    if policy == "old_stable_new_scenario_centroid":
+        if role == "target_old":
+            return ordered[:k].astype(int).tolist()
+        return _scenario_centroid(features, ordered, scenarios, k, diverse_fill=False)
     if policy == "stable_first":
         return ordered[:k].astype(int).tolist()
     if policy == "centroid":

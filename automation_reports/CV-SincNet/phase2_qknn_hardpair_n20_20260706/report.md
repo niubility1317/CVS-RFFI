@@ -308,6 +308,19 @@ V55提交后继续做了三组本地只读诊断，均未形成可提交策略�
 
 这三组结果强化了当前判断：K5地板需要新的support-only可观测风险建模，不能靠已有scenario fallback、query-pair后验或低Ktransport简单叠加解决。
 
+### Active-enrollment支持选择诊断
+
+继续检查support覆盖是否是K5地板主因。该诊断使用`pool_per_old=80,pool_per_new=80`再选K=5个support，因此只代表“active enrollment / support selection upper-bound”诊断，不是严格只有K=5个目标标签到达时的部署证据。
+
+| diagnostic | policy | seed scope | old | min_old | seen_new | min_new | 结论 |
+| --- | --- | --- | ---: | ---: | ---: | ---: | --- |
+| `k5_v55_active_enrollment_policy_grid` | `scenario_centroid` | 421038 | 91.90% | 78.57% | 86.64% | 71.43% | 能把`1-2`抬到81.43%，但旧类地板跌破80%，且最低类转移到`1-1`。 |
+| `k5_v55_active_enrollment_seed_sweep` | `scenario_centroid` | 421030-421049 | 91.90% | 78.57% | 86.71% | 74.29% | 多seed下新类地板接近75%，但旧类地板仍不合格。 |
+| `k5_v55_oldstable_newscenario_seed_sweep` | `old_stable_new_scenario_centroid` | 421030-421049 | 92.86% | 81.43% | 86.79% | 74.29% | 旧类恢复合格，新类仍差1个query；低类集中在`1-1/1-12/8-3/2-13`。 |
+| `k5_v55_oldstable_newscenario_scenariobalanced` | `old_stable_new_scenario_centroid` + scenario-balanced assignment | 421030-421049 | 最优行仍不超过74.29%地板；部分行严重坍塌 | - | - | - | scenario-balanced assignment不是安全补丁。 |
+
+为便于后续复现实验，Git承载面新增`old_stable_new_scenario_centroid`支持选择策略：旧类保持`stable_first`以保护旧类域适应，新类使用`scenario_centroid`以覆盖LEO场景。该策略当前只作为诊断入口；在严格K-shot协议下，除非实际只用K=5个已接收标签且不依赖额外标注pool，否则不得声明为Stage2-C完成证据。
+
 ## Adaptive v23 Support-Gated Aux Safety
 
 Objective: continue optimizing qKNN without expanding the K grid. The only evaluated anchors remain `K=5` and `K=10`, using the maximum query split from the 80-sample-per-class feature file. This run tests whether an adaptive support-only auxiliary-view reliability gate can improve stability when the number of enrolled new classes increases.
