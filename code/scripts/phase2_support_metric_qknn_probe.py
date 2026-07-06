@@ -188,6 +188,48 @@ def _top2_pair_gate_policy_settings(
     return {"weight": 0.0, "top_pairs": 0, "margin": 0.0, "query_pair_weight": 0.0}
 
 
+def _query_cluster_policy_settings(
+    *,
+    policy: str,
+    new_class_count: int,
+    min_support: float,
+) -> dict[str, float | int | str]:
+    policy_norm = str(policy).strip().lower()
+    if policy_norm in {"dualview_support_v52", "stable_dualview_v52"}:
+        if float(min_support) < 10.0 or int(new_class_count) < 14:
+            return {
+                "weight": 0.0,
+                "rounds": 0,
+                "support_weight": 0.0,
+                "temperature": 0.08,
+                "clip": 0.0,
+                "scope": "new",
+                "agreement_min": 1.0,
+                "margin_min": 0.0,
+            }
+        class_load_gate = float(np.clip((float(new_class_count) - 14.0) / 6.0, 0.0, 1.0))
+        return {
+            "weight": float(np.clip(0.004 + 0.004 * class_load_gate, 0.004, 0.008)),
+            "rounds": 2,
+            "support_weight": float(np.clip(0.76 - 0.06 * class_load_gate, 0.70, 0.76)),
+            "temperature": float(np.clip(0.070 + 0.010 * class_load_gate, 0.070, 0.080)),
+            "clip": 1.0,
+            "scope": "new",
+            "agreement_min": 0.0,
+            "margin_min": 0.0,
+        }
+    return {
+        "weight": 0.0,
+        "rounds": 0,
+        "support_weight": 0.0,
+        "temperature": 0.08,
+        "clip": 0.0,
+        "scope": "new",
+        "agreement_min": 1.0,
+        "margin_min": 0.0,
+    }
+
+
 def _quota_predict_fast(
     scores: np.ndarray,
     *,
@@ -4365,6 +4407,8 @@ def _evaluate_metric_qknn(
         "stable_dualview_v50",
         "dualview_support_v51",
         "stable_dualview_v51",
+        "dualview_support_v52",
+        "stable_dualview_v52",
     } and int(support_min_k) >= 10
     scenario_class_fallback_labels = (
         {str(label) for label in old_labels}
@@ -4380,6 +4424,8 @@ def _evaluate_metric_qknn(
             "stable_dualview_v50",
             "dualview_support_v51",
             "stable_dualview_v51",
+            "dualview_support_v52",
+            "stable_dualview_v52",
         }
         and bool(enable_scenario_class_fallback)
         else None
@@ -4393,6 +4439,8 @@ def _evaluate_metric_qknn(
             "stable_dualview_v50",
             "dualview_support_v51",
             "stable_dualview_v51",
+            "dualview_support_v52",
+            "stable_dualview_v52",
         }
         and bool(enable_scenario_class_fallback)
     )
@@ -4605,6 +4653,8 @@ def _evaluate_metric_qknn(
             "stable_dualview_v50",
             "dualview_support_v51",
             "stable_dualview_v51",
+            "dualview_support_v52",
+            "stable_dualview_v52",
         }:
             primary_loo_scores = _support_loo_base_scores(
                 features=adapted,
@@ -4695,6 +4745,8 @@ def _evaluate_metric_qknn(
                 "stable_dualview_v50",
                 "dualview_support_v51",
                 "stable_dualview_v51",
+                "dualview_support_v52",
+                "stable_dualview_v52",
             }:
                 mean_gate = float(np.clip((aux_support_loo_delta + 0.01) / 0.05, 0.0, 1.0))
                 floor_gate = float(np.clip((aux_support_min_delta + 0.02) / 0.06, 0.0, 1.0))
@@ -4986,6 +5038,8 @@ def _evaluate_metric_qknn(
         "stable_dualview_v50",
         "dualview_support_v51",
         "stable_dualview_v51",
+        "dualview_support_v52",
+        "stable_dualview_v52",
     }:
         transport_policy = str(adaptive_qknn_policy).strip().lower()
         label_counts = [
@@ -5056,6 +5110,8 @@ def _evaluate_metric_qknn(
                 "stable_dualview_v50",
                 "dualview_support_v51",
                 "stable_dualview_v51",
+                "dualview_support_v52",
+                "stable_dualview_v52",
             }
         ):
             source_target_transport_gate_mode = "support_loo_class_gate"
@@ -5584,6 +5640,8 @@ def _evaluate_metric_qknn(
         "stable_dualview_v50",
         "dualview_support_v51",
         "stable_dualview_v51",
+        "dualview_support_v52",
+        "stable_dualview_v52",
     }:
         if support_loo_scores is None:
             support_loo_scores = _support_loo_base_scores(
@@ -5670,6 +5728,8 @@ def _evaluate_metric_qknn(
                 "stable_dualview_v50",
                 "dualview_support_v51",
                 "stable_dualview_v51",
+                "dualview_support_v52",
+                "stable_dualview_v52",
             }
             else 0.0,
         )
@@ -6501,6 +6561,8 @@ def _adaptive_qknn_overrides(
         "stable_dualview_v50",
         "dualview_support_v51",
         "stable_dualview_v51",
+        "dualview_support_v52",
+        "stable_dualview_v52",
     }:
         raise ValueError(f"unsupported adaptive_qknn_policy: {policy}")
     use_v2 = name in {"dualview_support_v2", "stable_dualview_v2"}
@@ -6542,6 +6604,7 @@ def _adaptive_qknn_overrides(
     use_v49 = name in {"dualview_support_v49", "stable_dualview_v49"}
     use_v50 = name in {"dualview_support_v50", "stable_dualview_v50"}
     use_v51 = name in {"dualview_support_v51", "stable_dualview_v51"}
+    use_v52 = name in {"dualview_support_v52", "stable_dualview_v52"}
     use_v44 = (
         name in {"dualview_support_v44", "stable_dualview_v44"}
         or use_v45
@@ -6551,6 +6614,7 @@ def _adaptive_qknn_overrides(
         or use_v49
         or use_v50
         or use_v51
+        or use_v52
     )
     use_v42 = name in {"dualview_support_v42", "stable_dualview_v42"} or use_v43 or use_v44
     use_v40 = name in {"dualview_support_v40", "stable_dualview_v40"} or use_v42
@@ -7130,13 +7194,34 @@ def _adaptive_qknn_overrides(
                     "support_loo_pair_rescue_proto_min_sim": 1.1,
                 }
             )
-    if use_v49 or use_v50 or use_v51:
+    if use_v49 or use_v50 or use_v51 or use_v52:
         overrides["scenario_class_fallback"] = "old_role_only" if k_reliability >= 0.25 else False
         if k_reliability >= 0.25:
             overrides.update(
                 {
                     "support_loo_pair_rescue_proto_neighbors": 0,
                     "support_loo_pair_rescue_proto_min_sim": 1.1,
+                }
+            )
+    if use_v52:
+        cluster_settings = _query_cluster_policy_settings(
+            policy=name,
+            new_class_count=int(round(new_count)),
+            min_support=min_k,
+        )
+        if float(cluster_settings["weight"]) > 0.0:
+            overrides.update(
+                {
+                    "query_cluster_weight": float(cluster_settings["weight"]),
+                    "query_cluster_rounds": int(cluster_settings["rounds"]),
+                    "query_cluster_support_weight": float(cluster_settings["support_weight"]),
+                    "query_cluster_temperature": float(cluster_settings["temperature"]),
+                    "query_cluster_clip": float(cluster_settings["clip"]),
+                    "query_cluster_scope": str(cluster_settings["scope"]),
+                    "query_cluster_agreement_min": float(cluster_settings["agreement_min"]),
+                    "query_cluster_margin_min": float(cluster_settings["margin_min"]),
+                    "transductive_proto_weight": 0.0,
+                    "dense_cluster_weight": 0.0,
                 }
             )
     return overrides
