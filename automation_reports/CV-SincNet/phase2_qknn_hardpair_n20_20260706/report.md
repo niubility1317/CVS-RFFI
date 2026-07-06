@@ -235,6 +235,19 @@ Current goal status: active, not achieved.
 
 边界：V54相对本节V36/K5对照提升old +1.19pp、min_old +1.43pp、seen_new +0.71pp；但K5最低新类仍为71.43%，未达到75%地板，不能声称解决“新类增多下最低类过低”问题。当前目标仍active，未完成。
 
+N607同步与验证：
+
+| item | value |
+| --- | --- |
+| Git commit | `92cfbe0 Add adaptive qKNN v54 low-K policy` |
+| N607 preflight | direct `N607`通过；server time 2026-07-06 21:14:31 CST；project root可见；8张RTX3090空闲显存约10MiB。 |
+| project process check | 未见当前用户CV-SincNet/qKNN/python训练进程。 |
+| synced files | `code/scripts/phase2_support_metric_qknn_probe.py`、`code/scripts/launch_phase2_qknn_fftlogmag_v54_20260706.sh`、`code/tests/test_phase2_support_metric_qknn_v54_policy.py`、本报告`report.md`。 |
+| synced code sha256 | `a7cff15a61545c5bf0a1fe64e0736e4196e75f6f9ae1f0ccab60b040634ff209`、`db60165a2ed2dc53e143c447511dd139d447f740cca2f29e1ba5ebc0d8c7626f`、`37d946be527698dd7063019914aff2eb0c01561e958e3bdcdb8a9700f670c3f0`；本地与N607一致。报告文件在写入本节后单独重新同步。 |
+| remote verification | N607 `py_compile` PASS；V54单元测试PASS；launcher `bash -n` PASS；`--dry-run`展开K5/K10正式`stable_dualview_v54`命令和`*_v54_fftlogmag_policy_20260706.*`输出路径。 |
+| remote launch | 本次未启动N607实验。 |
+| SSH cleanup | 本地无残留`ssh.exe`，无到`172.31.111.215:22`的ESTABLISHED连接。 |
+
 ## Adaptive v23 Support-Gated Aux Safety
 
 Objective: continue optimizing qKNN without expanding the K grid. The only evaluated anchors remain `K=5` and `K=10`, using the maximum query split from the 80-sample-per-class feature file. This run tests whether an adaptive support-only auxiliary-view reliability gate can improve stability when the number of enrolled new classes increases.
