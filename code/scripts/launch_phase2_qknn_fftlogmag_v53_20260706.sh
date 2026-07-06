@@ -87,7 +87,9 @@ do
     --topm_grid 4 \
     --proto_mix_grid "${proto_mix}" \
     --aux_score_weight_grid "${aux_weight}" \
-    --adaptive_qknn_policy_grid stable_dualview_v42,stable_dualview_v49
+    --adaptive_qknn_policy_grid stable_dualview_v42,stable_dualview_v49 \
+    --scenario_aware \
+    --balanced_assignment
 done
 
 date
