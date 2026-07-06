@@ -4455,3 +4455,42 @@ V55提交后继续做了三组本地只读诊断，均未形成可提交策略�
 一次较大的strict K5 transductive+dense cluster网格在本地超过3分钟超时，未生成完整结果文件；已清理本地残留`conda/python`进程，未把该超时视为实验成败证据。
 
 当前边界：active-enrollment证明“如果星上/地面流程允许从更大目标域带标签pool中主动挑选K=5个support”，新类均值可到87.71%，旧类地板仍合格，但新类最低类仍差1个query；严格K5到达样本下仍停在71.43%地板。因此本轮不能声明qKNNV42后续优化已解决K5新类最低类过低问题，也不应同步N607正式跑。下一步应优先研究`1-2`严格K5支持场景缺失与`1-12`active pool80近邻混淆的共同可观测风险，而不是继续叠加全局query结构补丁。
+
+### 2026-07-06显式scenario fallback与K10复核
+
+本节继续围绕qKNNV42后续路线做本地验证。协议边界不变：K=5/K=10目标域support来自叠加LEO星地信道后的接收样本；query真值只用于离线评估。`E:\type10-7`根目录仍不是Git仓库，代码改动只落在Git承载面`E:\type10-7\github_publish\CVS-RFFI-repo`。本节没有N607 preflight、没有scp、没有远端启动。
+
+#### 代码变更
+
+| file | change |
+| --- | --- |
+| `code/scripts/phase2_support_metric_qknn_probe.py` | 新增`--scenario_class_fallback_grid`显式诊断开关，支持`none/all/old_only/new_only/old_role_only`，默认`none`，不改变既有adaptive策略。该开关只在某类缺少同scenario support时允许该类回退到全support评分，用于验证K5`1-2`场景缺失是否只是硬mask问题。 |
+| `code/tests/test_phase2_support_metric_qknn_scenario_fallback_cli.py` | 新增解析测试，覆盖`new_only`、`none`保留adaptive状态和非法模式拒绝。 |
+
+#### 本地验证
+
+| command/artifact | result |
+| --- | --- |
+| `conda run --no-capture-output -n ssr-gpu python -m py_compile code\scripts\phase2_support_metric_qknn_probe.py` | PASS |
+| `conda run --no-capture-output -n ssr-gpu python code\tests\test_phase2_support_metric_qknn_scenario_fallback_cli.py` | PASS，3 tests |
+| `conda run --no-capture-output -n ssr-gpu python code\tests\test_phase2_qknn_scenario_class_fallback.py` | PASS，2 tests |
+| `conda run --no-capture-output -n ssr-gpu python code\tests\test_phase2_qknn_old_only_scenario_fallback.py` | PASS，1 test |
+| `conda run --no-capture-output -n ssr-gpu python code\tests\test_phase2_support_metric_qknn_v55_policy.py` | PASS，1 test |
+
+#### 结果表
+
+| diagnostic | K | setting | old | min_old | seen_new | min_new | 低类/结论 |
+| --- | ---: | --- | ---: | ---: | ---: | ---: | --- |
+| `k5_strict_topm1_source_proto_anchor_grid` | 5 | source prototype anchor，`topm=1,aux=0.30` | 93.10% | 81.43% | 84.21% | 71.43% | 最优仍为关闭该机制；`1-2=50/70`。 |
+| `k5_strict_topm1_source_guard_grid` | 5 | source old guard | 93.10% | 81.43% | 84.21% | 71.43% | 分配结果不变，旧类保护没有带来额外收益。 |
+| `k5_strict_topm1_support_metric_grid` | 5 | class-diag/mahal support-only metric | 93.10% | 81.43% | 84.29% | 71.43% | 仅提升seen_new+0.07pp，地板不变。 |
+| `k5_strict_topm1_query_proto_refine_grid` | 5 | unlabeled query proto refine | 93.10% | 81.43% | 84.43% | 71.43% | transductive均值小幅提升，但`1-2`仍50/70。 |
+| `k5_strict_topm1_scenario_fallback_grid` | 5 | `scenario_class_fallback=none/new_only/all` | 93.10% | 81.43% | 84.43% | 71.43% | 显式解mask没有抬高`1-2`，`new_only/all`还会把`2-13`拉到71.43%。 |
+| `k10_strict_topm1_scenario_fallback_grid` | 10 | K10同参fallback复核 | 94.05% | 84.29% | 86.00% | 70.00% | K10旧类更强，但最低类转为`1-12=49/70`。 |
+| `k10_strict_topm_proto_aux_grid` | 10 | `topm=1/2,proto=0.35/0.45/0.55,aux=0.22/0.26/0.30/0.34` | 94.05% | 84.29% | 87.07% | 71.43% | 最优`topm=1,proto=0.45,aux=0.34,qpr=0.01`；`1-12=50/70`仍不过75%。 |
+
+#### 解释边界
+
+逐样本预测确认，K5严格split中`1-2`的`leo_clear_weak`查询15/15全错，原严格scenario-aware下truth score被压到约`-9.55e8`；但显式`new_only/all`fallback后仍未增加`1-2`正确数，说明当前瓶颈不是单纯硬mask，而是缺少同场景support后，`1-2`在清晰弱信道上的相似度仍输给`1-18/1-19/10-10`等相邻类。K10增加support后`1-2`可到80%+，但最低类转移到`1-12`，说明“最低类过低”是多类局部混淆问题，不是单一`1-2`补丁可以解决。
+
+当前可保留的工程产物是显式fallback诊断开关和测试；该开关默认关闭，不作为新默认策略。当前不能声明qKNNV42后续优化已解决K5/K10新类地板问题，也不应启动N607正式实验。下一步应把优化重点转向可部署的support场景覆盖风险估计与类簇级保守注册，而不是继续叠加全局fallback或query真值导向后验。

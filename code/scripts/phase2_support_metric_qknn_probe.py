@@ -15,7 +15,7 @@ import json
 import sys
 from itertools import combinations, product
 from pathlib import Path
-from typing import Any
+from typing import Any, Sequence
 
 import numpy as np
 
@@ -4197,6 +4197,34 @@ def _metadata_domain_values(
     raise ValueError(f"unsupported domain_refine_key: {key}")
 
 
+def _resolve_scenario_class_fallback_mode(
+    mode: str,
+    *,
+    old_labels: Sequence[str],
+    new_labels: Sequence[str],
+    enable_scenario_class_fallback: bool,
+    scenario_class_fallback_labels: set[str] | None,
+    use_role_split_old_only_fallback: bool,
+) -> tuple[bool, set[str] | None, bool, str]:
+    normalized = str(mode).strip().lower()
+    if normalized in {"", "none", "false", "0"}:
+        return (
+            bool(enable_scenario_class_fallback),
+            scenario_class_fallback_labels,
+            bool(use_role_split_old_only_fallback),
+            "none",
+        )
+    if normalized in {"all", "true", "1"}:
+        return True, None, False, "all"
+    if normalized in {"old", "old_only"}:
+        return True, {str(label) for label in old_labels}, False, "old_only"
+    if normalized in {"new", "new_only"}:
+        return True, {str(label) for label in new_labels}, False, "new_only"
+    if normalized in {"old_role", "old_role_only"}:
+        return True, {str(label) for label in old_labels}, True, "old_role_only"
+    raise ValueError(f"unsupported scenario_class_fallback_mode: {mode}")
+
+
 def _evaluate_metric_qknn(
     *,
     features: np.ndarray,
@@ -4216,6 +4244,7 @@ def _evaluate_metric_qknn(
     proto_mix: float,
     aux_score_weight: float,
     adaptive_qknn_policy: str,
+    scenario_class_fallback_mode: str,
     radius_norm: float,
     old_bias: float,
     neg_lambda: float,
@@ -4455,6 +4484,19 @@ def _evaluate_metric_qknn(
             "stable_dualview_v54",
         }
         and bool(enable_scenario_class_fallback)
+    )
+    (
+        enable_scenario_class_fallback,
+        scenario_class_fallback_labels,
+        use_role_split_old_only_fallback,
+        explicit_fallback_mode,
+    ) = _resolve_scenario_class_fallback_mode(
+        scenario_class_fallback_mode,
+        old_labels=old_labels,
+        new_labels=new_labels,
+        enable_scenario_class_fallback=enable_scenario_class_fallback,
+        scenario_class_fallback_labels=scenario_class_fallback_labels,
+        use_role_split_old_only_fallback=use_role_split_old_only_fallback,
     )
 
     transform = metric._fit_transform(
@@ -6118,6 +6160,7 @@ def _evaluate_metric_qknn(
         "neg_margin": float(neg_margin),
         "mutual_only": bool(mutual_only),
         "scenario_aware": bool(scenario_aware),
+        "scenario_class_fallback_mode": explicit_fallback_mode or "none",
         "balanced_assignment": bool(balanced_assignment),
         "role_balanced_assignment": bool(role_balanced_assignment),
         "fast_role_balanced_assignment": bool(fast_role_balanced_assignment),
@@ -7479,6 +7522,7 @@ def main() -> None:
     parser.add_argument("--source_proto_anchor_mode_grid", default="none")
     parser.add_argument("--source_proto_anchor_weight_grid", default="0")
     parser.add_argument("--source_proto_anchor_center_grid", default="0")
+    parser.add_argument("--scenario_class_fallback_grid", default="none")
     parser.add_argument("--scenario_aware", action="store_true")
     parser.add_argument("--balanced_assignment", action="store_true")
     parser.add_argument("--role_balanced_assignment", action="store_true")
@@ -7698,6 +7742,7 @@ def main() -> None:
             qknn._parse_csv(args.source_proto_anchor_mode_grid),
             qknn._parse_float_csv(args.source_proto_anchor_weight_grid),
             qknn._parse_float_csv(args.source_proto_anchor_center_grid),
+            qknn._parse_csv(args.scenario_class_fallback_grid),
         )
     )
 
@@ -7908,6 +7953,7 @@ def main() -> None:
                     source_proto_anchor_mode,
                     source_proto_anchor_weight,
                     source_proto_anchor_center,
+                    scenario_class_fallback_mode,
                 ) in search_grid:
                     params: dict[str, Any] = {
                         "mode": mode,
@@ -8017,6 +8063,7 @@ def main() -> None:
                         "query_pair_cluster_query_weight": float(query_pair_cluster_query_weight),
                         "query_pair_cluster_clip": float(query_pair_cluster_clip),
                         "query_pair_cluster_scope": str(query_pair_cluster_scope),
+                        "scenario_class_fallback_mode": str(scenario_class_fallback_mode),
                     }
                     params.update(
                         {
@@ -8303,6 +8350,7 @@ def main() -> None:
                         adaptive_qknn_policy=str(
                             params.get("adaptive_qknn_policy", adaptive_overrides.get("adaptive_qknn_policy", ""))
                         ),
+                        scenario_class_fallback_mode=str(params["scenario_class_fallback_mode"]),
                         radius_norm=float(radius_norm),
                         old_bias=float(old_bias),
                         neg_lambda=float(neg_lambda),
@@ -8563,6 +8611,7 @@ def main() -> None:
         "neg_margin",
         "mutual_only",
         "scenario_aware",
+        "scenario_class_fallback_mode",
         "balanced_assignment",
         "role_balanced_assignment",
         "fast_role_balanced_assignment",
