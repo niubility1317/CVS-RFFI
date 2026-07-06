@@ -43,6 +43,7 @@ try:
     )
     from training_controls import parse_sat_scenarios
     from baseline_origin_sat_view import parse_sat_view_schedule
+    from concat_sat_channel_aug import ConcatSatChannelAugment
     from training_test_eval import should_run_training_test
     from cvsrffi.tensors import build_domain_label_map
     from cvsrffi.eval import (
@@ -108,6 +109,7 @@ except ModuleNotFoundError:
     mean_logs = merge_checkpoint_args = move_batch = resolve_device = save_payload = set_seed = None
     parse_sat_scenarios = None
     parse_sat_view_schedule = None
+    ConcatSatChannelAugment = None
     should_run_training_test = None
     build_domain_label_map = evaluate_loader = evaluate_named_loaders = make_loader = parse_csv_indices = None
     apply_sat_channel_for_scenario = fishr_logit_gradient_variance_loss = make_torch_generator = None
@@ -190,6 +192,9 @@ def build_arg_parser() -> argparse.ArgumentParser:
     parser.add_argument("--concat_sat_ce_only", dest="concat_sat_ce_only", action="store_true", default=False)
     parser.add_argument("--no_concat_sat_ce_only", dest="concat_sat_ce_only", action="store_false")
     parser.add_argument("--concat_sat_ce_weight", type=float, default=1.0)
+    parser.add_argument("--concat_sat_start_epoch", type=int, default=1)
+    parser.add_argument("--sat_view_prob", type=float, default=1.0)
+    parser.add_argument("--sat_view_seed", type=int, default=2027)
     parser.add_argument("--lambda_sat_cls", type=float, default=0.10)
     parser.add_argument("--lambda_sat_cons", type=float, default=0.0)
     parser.add_argument("--sat_cons_start_epoch", type=int, default=20)
@@ -1432,6 +1437,10 @@ def _build_ssdg_epoch_telemetry_row(
         "lambda_fishr",
         "lambda_sat_cls",
         "lambda_sat_cons",
+        "concat_sat_start_epoch",
+        "concat_sat_ce_weight",
+        "sat_view_prob",
+        "sat_view_seed",
         "lambda_proto",
         "lambda_open_world_feat",
         "lambda_zid_compact",
@@ -1915,6 +1924,76 @@ def format_ssdg_epoch_block(
     return "\n".join(lines)
 
 
+def _safe_iq_tensor(x):
+    if torch is None:
+        return x
+    return torch.nan_to_num(x, nan=0.0, posinf=0.0, neginf=0.0)
+
+
+def _prepare_concat_sat_batch_for_training(
+    concat_sat_aug,
+    x,
+    y,
+    d,
+    *,
+    args,
+    epoch: int,
+    batch_idx: int,
+):
+    """Apply EPOC-style clean+satellite expansion for the full SSDG objective."""
+    bsz = int(x.size(0)) if hasattr(x, "size") else 0
+    info: Dict[str, Any] = {
+        "active": 0.0,
+        "expanded": 0.0,
+        "applied": 0.0,
+        "clean_batch_size": float(bsz),
+        "total_batch_size": float(bsz),
+        "view_prob": float(getattr(args, "sat_view_prob", 1.0)),
+        "stage_start_epoch": float("nan"),
+        "stage_index": float("nan"),
+        "scenario_code": float("nan"),
+    }
+    if concat_sat_aug is None or int(epoch) < int(getattr(args, "concat_sat_start_epoch", 1)):
+        return x, y, d, None, info
+    if bool(getattr(args, "concat_sat_ce_only", False)):
+        sat_view = concat_sat_aug.transform(x, args=args, epoch=epoch, batch_idx=batch_idx)
+        info.update(
+            {
+                "active": 1.0,
+                "applied": 1.0 if bool(sat_view.applied) else 0.0,
+                "clean_batch_size": float(int(sat_view.clean_batch_size)),
+                "total_batch_size": float(int(sat_view.clean_batch_size)),
+                "view_prob": float(sat_view.view_prob),
+                "stage_start_epoch": float(int(sat_view.stage_start_epoch)),
+                "stage_index": float(int(sat_view.stage_index)),
+                "scenario_code": float(abs(hash(str(sat_view.scenario))) % 1000000),
+            }
+        )
+        return x, y, d, sat_view, info
+    concat_batch = concat_sat_aug.expand(
+        x,
+        y,
+        d,
+        args=args,
+        epoch=epoch,
+        batch_idx=batch_idx,
+    )
+    info.update(
+        {
+            "active": 1.0,
+            "expanded": 1.0,
+            "applied": 1.0 if bool(concat_batch.applied) else 0.0,
+            "clean_batch_size": float(int(concat_batch.clean_batch_size)),
+            "total_batch_size": float(int(concat_batch.total_batch_size)),
+            "view_prob": float(concat_batch.view_prob),
+            "stage_start_epoch": float(int(concat_batch.stage_start_epoch)),
+            "stage_index": float(int(concat_batch.stage_index)),
+            "scenario_code": float(abs(hash(str(concat_batch.scenario))) % 1000000),
+        }
+    )
+    return _safe_iq_tensor(concat_batch.x), concat_batch.y, concat_batch.d_raw, None, info
+
+
 def train(args) -> int:
     total_epochs = _resolve_epoch_schedule(args)
     args.epochs = total_epochs
@@ -1938,10 +2017,18 @@ def train(args) -> int:
         args.sat_train_scenario_list = [args.sat_train_scenario]
     args.sat_train_scenario = args.sat_train_scenario_list[0]
     args.sat_view_schedule = str(getattr(args, "sat_view_schedule", "") or "").strip()
+    if float(getattr(args, "sat_view_prob", 1.0)) < 0.0 or float(getattr(args, "sat_view_prob", 1.0)) > 1.0:
+        raise ValueError("--sat_view_prob must be in [0, 1]")
     if args.sat_view_schedule and parse_sat_view_schedule is not None:
-        args.sat_view_stages = tuple(parse_sat_view_schedule(args.sat_view_schedule, default_prob=1.0))
+        args.sat_view_stages = tuple(
+            parse_sat_view_schedule(args.sat_view_schedule, default_prob=float(getattr(args, "sat_view_prob", 1.0)))
+        )
     else:
         args.sat_view_stages = tuple()
+    if float(getattr(args, "concat_sat_ce_weight", 1.0)) < 0.0:
+        raise ValueError("--concat_sat_ce_weight must be >= 0")
+    if bool(getattr(args, "concat_sat_ce_only", False)) and not bool(getattr(args, "use_concat_sat_channel_aug", False)):
+        print("[WARN] --concat_sat_ce_only has no effect unless --use_concat_sat_channel_aug is enabled.", flush=True)
     if args.dry_run:
         print(
             f"[DRY-RUN] Parsed arguments and skipped data/model construction. "
@@ -2017,6 +2104,17 @@ def train(args) -> int:
         )
     loss_warn_counts: Dict[str, int] = {}
     sat_gen = make_torch_generator(device, int(args.seed) + 991) if make_torch_generator is not None else None
+    concat_sat_aug = None
+    if bool(getattr(args, "use_concat_sat_channel_aug", False)):
+        if ConcatSatChannelAugment is None or apply_sat_channel_for_scenario is None:
+            raise ImportError("concat_sat_channel_aug.py and sat_channel.py support are required for --use_concat_sat_channel_aug.")
+        concat_sat_aug = ConcatSatChannelAugment(
+            scenarios=getattr(args, "sat_train_scenario_list", [args.sat_train_scenario]),
+            schedule=str(getattr(args, "sat_view_schedule", "") or ""),
+            p=float(getattr(args, "sat_view_prob", 1.0)),
+            seed=int(getattr(args, "sat_view_seed", args.seed)),
+            apply_fn=apply_sat_channel_for_scenario,
+        )
     aug_base_cfg = build_aug_base_cfg(args) if bool(args.use_aug) and build_aug_base_cfg is not None else None
     augmentor = make_augmentor(aug_base_cfg) if aug_base_cfg is not None and make_augmentor is not None else None
     print(
@@ -2077,6 +2175,14 @@ def train(args) -> int:
                 f"sat_view_schedule={getattr(args, 'sat_view_schedule', '') or '<none>'} "
                 f"sat_cons_start_epoch={int(args.sat_cons_start_epoch)} eval_sat_channel={int(bool(args.eval_sat_channel))} "
                 f"eval_sat_scenarios={args.eval_sat_scenarios}",
+                "[CONFIG-CONCAT-SAT] "
+                f"enabled={int(concat_sat_aug is not None)} "
+                f"mode={'ce_only_aux' if bool(getattr(args, 'concat_sat_ce_only', False)) else 'full_2b_core_domain'} "
+                f"scenario_cycle={','.join(concat_sat_aug.scenarios) if concat_sat_aug is not None else '<none>'} "
+                f"start_epoch={int(getattr(args, 'concat_sat_start_epoch', 1))} "
+                f"view_prob={float(getattr(args, 'sat_view_prob', 1.0)):.3f} "
+                f"seed={int(getattr(args, 'sat_view_seed', args.seed))} "
+                f"ce_weight={float(getattr(args, 'concat_sat_ce_weight', 1.0)):.3f}",
                 "[CONFIG-TELEMETRY] "
                 f"metrics_csv={metrics_csv_path} metrics_jsonl={metrics_jsonl_path} "
                 "per_epoch_loss_terms=raw_and_weighted",
@@ -2171,6 +2277,17 @@ def train(args) -> int:
         for batch_idx, labeled_batch in enumerate(data_ctx["train_loader"], start=1):
             x_l, y_l, extra_l = move_batch(labeled_batch, device)
             d_l = domain_from_extra(extra_l, data_ctx["domain_label_map"], device)
+            x_l, y_l, d_l, concat_sat_ce_view, concat_sat_info = _prepare_concat_sat_batch_for_training(
+                concat_sat_aug,
+                x_l,
+                y_l,
+                d_l,
+                args=args,
+                epoch=epoch,
+                batch_idx=batch_idx,
+            )
+            concat_sat_full_batch = bool(concat_sat_info.get("expanded", 0.0) > 0.0)
+            concat_sat_clean_bsz = int(concat_sat_info.get("clean_batch_size", 0.0))
             if augmentor is not None:
                 x_l_main = torch.nan_to_num(
                     augmentor(x_l, labels=y_l, no_pa=(not bool(args.aug_enable_pa_normal))),
@@ -2551,10 +2668,48 @@ def train(args) -> int:
                         mixup_order=int(args.soft_unknown_mixup_order),
                         mixup_hard_k=int(args.source_episode_mixup_hard_k),
                     )
-                use_sat_train = bool(args.use_sat_consistency) and epoch >= int(args.sat_cons_start_epoch) and (
-                    cur_w["sat_cls"] > 0.0 or cur_w["sat_cons"] > 0.0
+                zero_sat = out_l["tx_logits"].sum() * 0.0
+                loss_sat_cls_l = zero_sat
+                loss_sat_cons_l = zero_sat
+                use_sat_train = (
+                    bool(args.use_sat_consistency)
+                    and (not concat_sat_full_batch)
+                    and concat_sat_ce_view is None
+                    and epoch >= int(args.sat_cons_start_epoch)
+                    and (cur_w["sat_cls"] > 0.0 or cur_w["sat_cons"] > 0.0)
                 )
-                if use_sat_train:
+                if (
+                    concat_sat_full_batch
+                    and concat_sat_clean_bsz > 0
+                    and int(y_l.numel()) >= 2 * concat_sat_clean_bsz
+                    and epoch >= int(args.sat_cons_start_epoch)
+                    and (cur_w["sat_cls"] > 0.0 or cur_w["sat_cons"] > 0.0)
+                ):
+                    clean_slice = slice(0, concat_sat_clean_bsz)
+                    sat_slice = slice(concat_sat_clean_bsz, 2 * concat_sat_clean_bsz)
+                    sat_logits = out_l["tx_logits"][sat_slice]
+                    sat_y = y_l[sat_slice]
+                    if cur_w["sat_cls"] > 0.0:
+                        loss_sat_cls_l = F.cross_entropy(sat_logits, sat_y)
+                    if cur_w["sat_cons"] > 0.0:
+                        clean_prob = out_l["tx_logits"][clean_slice].detach().softmax(dim=1)
+                        loss_sat_cons_l = F.kl_div(
+                            F.log_softmax(sat_logits, dim=1),
+                            clean_prob,
+                            reduction="batchmean",
+                        )
+                    if (
+                        teacher_model is not None
+                        and teacher_scale > 0.0
+                        and float(args.lambda_teacher_sat_kl) > 0.0
+                        and teacher_clean_out is not None
+                    ):
+                        loss_teacher_sat_kl_l = one_way_kl_from_teacher(
+                            sat_logits,
+                            teacher_clean_out["tx_logits"][clean_slice],
+                            temperature=float(args.teacher_distill_temperature),
+                        )
+                elif use_sat_train:
                     if apply_sat_channel_for_scenario is None:
                         raise ImportError("sat_channel.py support is required when --use_sat_consistency is enabled.")
                     sat_train_scenarios = list(getattr(args, "sat_train_scenario_list", [args.sat_train_scenario]))
@@ -2601,9 +2756,29 @@ def train(args) -> int:
                             teacher_clean_out["tx_logits"],
                             temperature=float(args.teacher_distill_temperature),
                         )
-                else:
-                    loss_sat_cls_l = out_l["tx_logits"].sum() * 0.0
-                    loss_sat_cons_l = out_l["tx_logits"].sum() * 0.0
+                elif concat_sat_ce_view is not None and epoch >= int(args.sat_cons_start_epoch):
+                    x_sat = _safe_iq_tensor(concat_sat_ce_view.x)
+                    out_sat = model(x_sat, y_tx=y_l, grl_lambda=1.0, return_aux=True, domain_labels=d_l)
+                    if cur_w["sat_cls"] > 0.0:
+                        loss_sat_cls_l = float(args.concat_sat_ce_weight) * F.cross_entropy(out_sat["tx_logits"], y_l)
+                    if cur_w["sat_cons"] > 0.0:
+                        clean_prob = out_l["tx_logits"].detach().softmax(dim=1)
+                        loss_sat_cons_l = F.kl_div(
+                            F.log_softmax(out_sat["tx_logits"], dim=1),
+                            clean_prob,
+                            reduction="batchmean",
+                        )
+                    if (
+                        teacher_model is not None
+                        and teacher_scale > 0.0
+                        and float(args.lambda_teacher_sat_kl) > 0.0
+                        and teacher_clean_out is not None
+                    ):
+                        loss_teacher_sat_kl_l = one_way_kl_from_teacher(
+                            out_sat["tx_logits"],
+                            teacher_clean_out["tx_logits"],
+                            temperature=float(args.teacher_distill_temperature),
+                        )
                 loss_l = (
                     loss_tx_l
                     + cur_w["dom"] * loss_dom_l
@@ -2761,6 +2936,14 @@ def train(args) -> int:
                     "train/w_loss_teacher_sat_kl": ((float(args.lambda_teacher_sat_kl) * teacher_scale) * loss_teacher_sat_kl_l).detach(),
                     "train/w_loss_teacher_zid_mse": ((float(args.lambda_teacher_zid_mse) * teacher_scale) * loss_teacher_zid_mse_l).detach(),
                     "train/teacher_distill_scale": float(teacher_scale),
+                    "train/concat_sat_active": float(concat_sat_info.get("active", 0.0)),
+                    "train/concat_sat_expanded": float(concat_sat_info.get("expanded", 0.0)),
+                    "train/concat_sat_applied": float(concat_sat_info.get("applied", 0.0)),
+                    "train/concat_sat_clean_batch_size": float(concat_sat_info.get("clean_batch_size", 0.0)),
+                    "train/concat_sat_total_batch_size": float(concat_sat_info.get("total_batch_size", 0.0)),
+                    "train/concat_sat_view_prob": float(concat_sat_info.get("view_prob", 0.0)),
+                    "train/concat_sat_stage_start_epoch": float(concat_sat_info.get("stage_start_epoch", float("nan"))),
+                    "train/concat_sat_stage_index": float(concat_sat_info.get("stage_index", float("nan"))),
                     "train/loss_unlabeled": loss_u.detach(),
                     "train/tx_acc": 100.0 * (out_l["tx_logits"].argmax(dim=1) == y_l).float().mean().detach(),
                     "train/dom_acc": core_losses.get("dom_acc", float("nan")),
