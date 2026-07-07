@@ -155,6 +155,86 @@ class CollaborativeOpenSetQknnEvalTest(unittest.TestCase):
         self.assertLess(rescued_event["candidate_set_label_unknown_risk_for_accept"], 0.50)
         self.assertGreater(rescued_event["candidate_set_label_unknown_risk_for_accept_raw"], 0.80)
 
+    def test_seen_new_contrast_risk_relief_requires_class_support_floor(self):
+        from evaluation.collaborative_open_set_qknn_eval import evaluate_collaborative_open_set_evidence
+
+        rows = [
+            {
+                "event_id": "new-weak-class",
+                "receiver_id": receiver,
+                "role": "seen_new",
+                "true_label": "new-weak",
+                "predicted_label": "new-weak",
+                "known_score": 0.92,
+                "known_margin": 0.20,
+                "unknown_risk": 0.90,
+                "score_risk": 0.90,
+                "radius_risk": 0.20,
+                "margin_risk": 0.20,
+                "class_shell_risk": 0.20,
+                "class_conformal_pvalue": 0.45,
+                "class_conformal_support_count": 1,
+                "receiver_class_reliability": 0.40,
+                "support_density": 0.90,
+                "seen_new_old_contrast_delta": 0.12,
+                "class_evidence_top_m": 1,
+                "class_evidence_top1_label": "new-weak",
+                "class_evidence_top1_receiver_class_reliability": 0.40,
+                "latency_ms": 1.0,
+                "bytes": 64,
+            }
+            for receiver in ("rx-a", "rx-b")
+        ]
+        kwargs = {
+            "collab_counts": [2],
+            "fusion_policy": "candidate_set_cvs",
+            "label_fusion_policy": "vote_sum",
+            "candidate_set_min_receivers": 2,
+            "candidate_set_min_top1_receivers": 2,
+            "candidate_set_min_conformal_pvalue": 0.0,
+            "candidate_set_min_label_receiver_class_reliability": 0.0,
+            "candidate_set_max_label_unknown_risk": 0.50,
+            "candidate_set_max_event_unknown_risk": 0.50,
+            "candidate_set_unknown_reject_risk": 0.80,
+            "candidate_set_max_label_risk_component_agreement": 0.60,
+            "candidate_set_min_score_gap": 0.0,
+            "seen_new_contrast_gate_enabled": True,
+            "seen_new_contrast_gate_min_delta": 0.05,
+            "seen_new_contrast_gate_min_receivers": 2,
+            "seen_new_contrast_risk_relief_enabled": True,
+            "seen_new_contrast_risk_relief_min_delta": 0.05,
+            "seen_new_contrast_risk_relief_min_receivers": 2,
+            "seen_new_contrast_label_risk_scale": 0.50,
+            "seen_new_contrast_event_risk_scale": 0.50,
+            "seen_new_contrast_component_agreement_scale": 0.50,
+            "seen_new_contrast_risk_relief_min_support_count": 3,
+            "seen_new_contrast_risk_relief_min_pvalue": 0.70,
+            "seen_new_contrast_risk_relief_min_receiver_class_reliability": 0.70,
+            "receiver_class_reliability_policy": "support_calibrated",
+            "include_event_results": True,
+            "protocol_metadata": {
+                "target_receiver_ids": ["rx-a", "rx-b"],
+                "source_receiver_ids": ["src-a"],
+                "old_tx_ids": ["old-a"],
+                "seen_new_tx_ids": ["new-weak"],
+                "unknown_tx_ids": ["unk-a"],
+                "target_channel_view": "leo_clear_weak",
+            },
+        }
+
+        try:
+            result = evaluate_collaborative_open_set_evidence(rows, **kwargs)
+        except TypeError as exc:
+            self.fail(f"risk relief support-floor parameters should be accepted: {exc}")
+
+        event = result["counts"]["2"]["event_results"][0]
+        self.assertEqual(event["decision"], "unknown_reject")
+        self.assertFalse(event["seen_new_contrast_risk_relief_applied"])
+        self.assertFalse(event["seen_new_contrast_risk_relief_support_passed"])
+        self.assertIn("support_count", event["seen_new_contrast_risk_relief_reason"])
+        self.assertIn("pvalue", event["seen_new_contrast_risk_relief_reason"])
+        self.assertIn("receiver_class_reliability", event["seen_new_contrast_risk_relief_reason"])
+
     def test_rescue_unknown_veto_blocks_rescued_unknown_false_accept(self):
         from evaluation.collaborative_open_set_qknn_eval import evaluate_collaborative_open_set_evidence
 

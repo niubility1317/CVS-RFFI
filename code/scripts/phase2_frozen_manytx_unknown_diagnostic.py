@@ -293,6 +293,15 @@ def run_diagnostic(args: argparse.Namespace) -> dict[str, Any]:
         seen_new_contrast_risk_relief_enabled=bool(args.seen_new_contrast_risk_relief_enabled),
         seen_new_contrast_risk_relief_min_delta=float(args.seen_new_contrast_risk_relief_min_delta),
         seen_new_contrast_risk_relief_min_receivers=int(args.seen_new_contrast_risk_relief_min_receivers),
+        seen_new_contrast_risk_relief_min_support_count=int(
+            args.seen_new_contrast_risk_relief_min_support_count
+        ),
+        seen_new_contrast_risk_relief_min_pvalue=float(
+            args.seen_new_contrast_risk_relief_min_pvalue
+        ),
+        seen_new_contrast_risk_relief_min_receiver_class_reliability=float(
+            args.seen_new_contrast_risk_relief_min_receiver_class_reliability
+        ),
         seen_new_contrast_label_risk_scale=float(args.seen_new_contrast_label_risk_scale),
         seen_new_contrast_event_risk_scale=float(args.seen_new_contrast_event_risk_scale),
         seen_new_contrast_component_agreement_scale=float(args.seen_new_contrast_component_agreement_scale),
@@ -302,6 +311,9 @@ def run_diagnostic(args: argparse.Namespace) -> dict[str, Any]:
         candidate_set_max_label_unknown_risk=float(args.candidate_set_max_label_unknown_risk),
         candidate_set_max_event_unknown_risk=float(args.candidate_set_max_event_unknown_risk),
         candidate_set_max_label_risk_component_agreement=float(args.candidate_set_max_label_risk_component_agreement),
+        candidate_set_min_label_receiver_class_reliability=float(
+            args.candidate_set_min_label_receiver_class_reliability
+        ),
         candidate_set_unknown_reject_risk=float(args.candidate_set_unknown_reject_risk),
         latency_budget_ms=float(args.latency_budget_ms),
         max_event_bytes=float(args.max_event_bytes),
@@ -454,6 +466,13 @@ def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
     p.add_argument("--seen_new_contrast_risk_relief_enabled", action="store_true")
     p.add_argument("--seen_new_contrast_risk_relief_min_delta", type=float, default=0.0)
     p.add_argument("--seen_new_contrast_risk_relief_min_receivers", type=_positive_int, default=1)
+    p.add_argument("--seen_new_contrast_risk_relief_min_support_count", type=int, default=0)
+    p.add_argument("--seen_new_contrast_risk_relief_min_pvalue", type=float, default=0.0)
+    p.add_argument(
+        "--seen_new_contrast_risk_relief_min_receiver_class_reliability",
+        type=float,
+        default=0.0,
+    )
     p.add_argument("--seen_new_contrast_label_risk_scale", type=float, default=1.0)
     p.add_argument("--seen_new_contrast_event_risk_scale", type=float, default=1.0)
     p.add_argument("--seen_new_contrast_component_agreement_scale", type=float, default=1.0)
@@ -463,6 +482,7 @@ def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
     p.add_argument("--candidate_set_max_label_unknown_risk", type=float, default=0.82)
     p.add_argument("--candidate_set_max_event_unknown_risk", type=float, default=0.88)
     p.add_argument("--candidate_set_max_label_risk_component_agreement", type=float, default=0.72)
+    p.add_argument("--candidate_set_min_label_receiver_class_reliability", type=float, default=0.0)
     p.add_argument("--candidate_set_unknown_reject_risk", type=float, default=0.72)
     p.add_argument("--latency_budget_ms", type=float, default=0.0)
     p.add_argument("--max_event_bytes", type=float, default=0.0)

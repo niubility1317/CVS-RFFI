@@ -240,6 +240,12 @@ class Phase2FrozenManytxUnknownDiagnosticTest(unittest.TestCase):
                 "0.05",
                 "--seen_new_contrast_risk_relief_min_receivers",
                 "2",
+                "--seen_new_contrast_risk_relief_min_support_count",
+                "3",
+                "--seen_new_contrast_risk_relief_min_pvalue",
+                "0.7",
+                "--seen_new_contrast_risk_relief_min_receiver_class_reliability",
+                "0.75",
                 "--seen_new_contrast_label_risk_scale",
                 "0.5",
                 "--seen_new_contrast_event_risk_scale",
@@ -257,6 +263,9 @@ class Phase2FrozenManytxUnknownDiagnosticTest(unittest.TestCase):
         self.assertTrue(args.seen_new_contrast_risk_relief_enabled)
         self.assertEqual(args.seen_new_contrast_risk_relief_min_delta, 0.05)
         self.assertEqual(args.seen_new_contrast_risk_relief_min_receivers, 2)
+        self.assertEqual(args.seen_new_contrast_risk_relief_min_support_count, 3)
+        self.assertEqual(args.seen_new_contrast_risk_relief_min_pvalue, 0.7)
+        self.assertEqual(args.seen_new_contrast_risk_relief_min_receiver_class_reliability, 0.75)
         self.assertEqual(args.seen_new_contrast_label_risk_scale, 0.5)
         self.assertEqual(args.seen_new_contrast_event_risk_scale, 0.6)
         self.assertEqual(args.seen_new_contrast_component_agreement_scale, 0.7)

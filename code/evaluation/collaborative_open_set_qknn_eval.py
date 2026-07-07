@@ -491,6 +491,9 @@ def _fuse_event(
     seen_new_contrast_risk_relief_enabled: bool = False,
     seen_new_contrast_risk_relief_min_delta: float = 0.0,
     seen_new_contrast_risk_relief_min_receivers: int = 1,
+    seen_new_contrast_risk_relief_min_support_count: int = 0,
+    seen_new_contrast_risk_relief_min_pvalue: float = 0.0,
+    seen_new_contrast_risk_relief_min_receiver_class_reliability: float = 0.0,
     seen_new_contrast_label_risk_scale: float = 1.0,
     seen_new_contrast_event_risk_scale: float = 1.0,
     seen_new_contrast_component_agreement_scale: float = 1.0,
@@ -613,6 +616,18 @@ def _fuse_event(
         "seen_new_contrast_risk_relief_min_delta",
     )
     seen_new_contrast_risk_relief_min_receivers = max(1, int(seen_new_contrast_risk_relief_min_receivers))
+    seen_new_contrast_risk_relief_min_support_count = max(
+        0,
+        int(seen_new_contrast_risk_relief_min_support_count),
+    )
+    seen_new_contrast_risk_relief_min_pvalue = _validate_unit_interval(
+        seen_new_contrast_risk_relief_min_pvalue,
+        "seen_new_contrast_risk_relief_min_pvalue",
+    )
+    seen_new_contrast_risk_relief_min_receiver_class_reliability = _validate_unit_interval(
+        seen_new_contrast_risk_relief_min_receiver_class_reliability,
+        "seen_new_contrast_risk_relief_min_receiver_class_reliability",
+    )
     seen_new_contrast_label_risk_scale = _validate_unit_interval(
         seen_new_contrast_label_risk_scale,
         "seen_new_contrast_label_risk_scale",
@@ -1334,10 +1349,11 @@ def _fuse_event(
             )
         return not reasons, ",".join(reasons)
 
-    def _seen_new_contrast_risk_relief_decision() -> tuple[bool, str]:
+    def _seen_new_contrast_risk_relief_decision() -> tuple[bool, bool, str]:
         if not seen_new_contrast_risk_relief_enabled or output_label_set != "seen_new":
-            return False, ""
+            return False, True, ""
         reasons = []
+        support_reasons = []
         if selected_label_seen_new_old_contrast_delta < float(seen_new_contrast_risk_relief_min_delta):
             reasons.append(
                 "contrast_delta:"
@@ -1352,7 +1368,30 @@ def _fuse_event(
                 f"{selected_label_seen_new_old_contrast_receiver_count}<"
                 f"{int(seen_new_contrast_risk_relief_min_receivers)}"
             )
-        return not reasons, ",".join(reasons)
+        if label_class_conformal_support_count < int(
+            seen_new_contrast_risk_relief_min_support_count
+        ):
+            support_reasons.append(
+                "support_count:"
+                f"{label_class_conformal_support_count:.6g}<"
+                f"{int(seen_new_contrast_risk_relief_min_support_count)}"
+            )
+        if label_class_conformal_pvalue < float(seen_new_contrast_risk_relief_min_pvalue):
+            support_reasons.append(
+                "pvalue:"
+                f"{label_class_conformal_pvalue:.6g}<"
+                f"{float(seen_new_contrast_risk_relief_min_pvalue):.6g}"
+            )
+        if label_receiver_class_reliability < float(
+            seen_new_contrast_risk_relief_min_receiver_class_reliability
+        ):
+            support_reasons.append(
+                "receiver_class_reliability:"
+                f"{label_receiver_class_reliability:.6g}<"
+                f"{float(seen_new_contrast_risk_relief_min_receiver_class_reliability):.6g}"
+            )
+        reasons.extend(support_reasons)
+        return not reasons, not support_reasons, ",".join(reasons)
 
     def _class_set_gate_decision() -> tuple[bool, str]:
         if not class_set_gate_enabled or output_label_set not in {"old", "seen_new"}:
@@ -1503,6 +1542,7 @@ def _fuse_event(
         seen_new_contrast_gate_passed, seen_new_contrast_gate_reason = _seen_new_contrast_gate_decision()
         (
             seen_new_contrast_risk_relief_applied,
+            seen_new_contrast_risk_relief_support_passed,
             seen_new_contrast_risk_relief_reason,
         ) = _seen_new_contrast_risk_relief_decision()
         gate_passed, gate_reason = _class_set_gate_decision()
@@ -2315,6 +2355,15 @@ def _fuse_event(
         "seen_new_contrast_risk_relief_min_receivers": int(
             seen_new_contrast_risk_relief_min_receivers
         ),
+        "seen_new_contrast_risk_relief_min_support_count": int(
+            seen_new_contrast_risk_relief_min_support_count
+        ),
+        "seen_new_contrast_risk_relief_min_pvalue": float(
+            seen_new_contrast_risk_relief_min_pvalue
+        ),
+        "seen_new_contrast_risk_relief_min_receiver_class_reliability": float(
+            seen_new_contrast_risk_relief_min_receiver_class_reliability
+        ),
         "seen_new_contrast_label_risk_scale": float(seen_new_contrast_label_risk_scale),
         "seen_new_contrast_event_risk_scale": float(seen_new_contrast_event_risk_scale),
         "seen_new_contrast_component_agreement_scale": float(
@@ -2322,6 +2371,9 @@ def _fuse_event(
         ),
         "seen_new_contrast_risk_relief_applied": bool(
             locals().get("seen_new_contrast_risk_relief_applied", False)
+        ),
+        "seen_new_contrast_risk_relief_support_passed": bool(
+            locals().get("seen_new_contrast_risk_relief_support_passed", True)
         ),
         "seen_new_contrast_risk_relief_reason": str(
             locals().get("seen_new_contrast_risk_relief_reason", "")
@@ -2663,6 +2715,9 @@ def _fuse_progressive_event(
     seen_new_contrast_risk_relief_enabled: bool = False,
     seen_new_contrast_risk_relief_min_delta: float = 0.0,
     seen_new_contrast_risk_relief_min_receivers: int = 1,
+    seen_new_contrast_risk_relief_min_support_count: int = 0,
+    seen_new_contrast_risk_relief_min_pvalue: float = 0.0,
+    seen_new_contrast_risk_relief_min_receiver_class_reliability: float = 0.0,
     seen_new_contrast_label_risk_scale: float = 1.0,
     seen_new_contrast_event_risk_scale: float = 1.0,
     seen_new_contrast_component_agreement_scale: float = 1.0,
@@ -2722,6 +2777,13 @@ def _fuse_progressive_event(
             seen_new_contrast_risk_relief_enabled=seen_new_contrast_risk_relief_enabled,
             seen_new_contrast_risk_relief_min_delta=seen_new_contrast_risk_relief_min_delta,
             seen_new_contrast_risk_relief_min_receivers=seen_new_contrast_risk_relief_min_receivers,
+            seen_new_contrast_risk_relief_min_support_count=(
+                seen_new_contrast_risk_relief_min_support_count
+            ),
+            seen_new_contrast_risk_relief_min_pvalue=seen_new_contrast_risk_relief_min_pvalue,
+            seen_new_contrast_risk_relief_min_receiver_class_reliability=(
+                seen_new_contrast_risk_relief_min_receiver_class_reliability
+            ),
             seen_new_contrast_label_risk_scale=seen_new_contrast_label_risk_scale,
             seen_new_contrast_event_risk_scale=seen_new_contrast_event_risk_scale,
             seen_new_contrast_component_agreement_scale=seen_new_contrast_component_agreement_scale,
@@ -3008,6 +3070,9 @@ def _fuse_adaptive_gain_event(
     seen_new_contrast_risk_relief_enabled: bool = False,
     seen_new_contrast_risk_relief_min_delta: float = 0.0,
     seen_new_contrast_risk_relief_min_receivers: int = 1,
+    seen_new_contrast_risk_relief_min_support_count: int = 0,
+    seen_new_contrast_risk_relief_min_pvalue: float = 0.0,
+    seen_new_contrast_risk_relief_min_receiver_class_reliability: float = 0.0,
     seen_new_contrast_label_risk_scale: float = 1.0,
     seen_new_contrast_event_risk_scale: float = 1.0,
     seen_new_contrast_component_agreement_scale: float = 1.0,
@@ -3073,6 +3138,13 @@ def _fuse_adaptive_gain_event(
             seen_new_contrast_risk_relief_enabled=seen_new_contrast_risk_relief_enabled,
             seen_new_contrast_risk_relief_min_delta=seen_new_contrast_risk_relief_min_delta,
             seen_new_contrast_risk_relief_min_receivers=seen_new_contrast_risk_relief_min_receivers,
+            seen_new_contrast_risk_relief_min_support_count=(
+                seen_new_contrast_risk_relief_min_support_count
+            ),
+            seen_new_contrast_risk_relief_min_pvalue=seen_new_contrast_risk_relief_min_pvalue,
+            seen_new_contrast_risk_relief_min_receiver_class_reliability=(
+                seen_new_contrast_risk_relief_min_receiver_class_reliability
+            ),
             seen_new_contrast_label_risk_scale=seen_new_contrast_label_risk_scale,
             seen_new_contrast_event_risk_scale=seen_new_contrast_event_risk_scale,
             seen_new_contrast_component_agreement_scale=seen_new_contrast_component_agreement_scale,
@@ -3194,6 +3266,9 @@ def _fuse_support_utility_event(
     seen_new_contrast_risk_relief_enabled: bool = False,
     seen_new_contrast_risk_relief_min_delta: float = 0.0,
     seen_new_contrast_risk_relief_min_receivers: int = 1,
+    seen_new_contrast_risk_relief_min_support_count: int = 0,
+    seen_new_contrast_risk_relief_min_pvalue: float = 0.0,
+    seen_new_contrast_risk_relief_min_receiver_class_reliability: float = 0.0,
     seen_new_contrast_label_risk_scale: float = 1.0,
     seen_new_contrast_event_risk_scale: float = 1.0,
     seen_new_contrast_component_agreement_scale: float = 1.0,
@@ -3259,6 +3334,13 @@ def _fuse_support_utility_event(
             seen_new_contrast_risk_relief_enabled=seen_new_contrast_risk_relief_enabled,
             seen_new_contrast_risk_relief_min_delta=seen_new_contrast_risk_relief_min_delta,
             seen_new_contrast_risk_relief_min_receivers=seen_new_contrast_risk_relief_min_receivers,
+            seen_new_contrast_risk_relief_min_support_count=(
+                seen_new_contrast_risk_relief_min_support_count
+            ),
+            seen_new_contrast_risk_relief_min_pvalue=seen_new_contrast_risk_relief_min_pvalue,
+            seen_new_contrast_risk_relief_min_receiver_class_reliability=(
+                seen_new_contrast_risk_relief_min_receiver_class_reliability
+            ),
             seen_new_contrast_label_risk_scale=seen_new_contrast_label_risk_scale,
             seen_new_contrast_event_risk_scale=seen_new_contrast_event_risk_scale,
             seen_new_contrast_component_agreement_scale=seen_new_contrast_component_agreement_scale,
@@ -3385,6 +3467,9 @@ def _fuse_rb_capr_event(
     seen_new_contrast_risk_relief_enabled: bool = False,
     seen_new_contrast_risk_relief_min_delta: float = 0.0,
     seen_new_contrast_risk_relief_min_receivers: int = 1,
+    seen_new_contrast_risk_relief_min_support_count: int = 0,
+    seen_new_contrast_risk_relief_min_pvalue: float = 0.0,
+    seen_new_contrast_risk_relief_min_receiver_class_reliability: float = 0.0,
     seen_new_contrast_label_risk_scale: float = 1.0,
     seen_new_contrast_event_risk_scale: float = 1.0,
     seen_new_contrast_component_agreement_scale: float = 1.0,
@@ -3457,6 +3542,13 @@ def _fuse_rb_capr_event(
             seen_new_contrast_risk_relief_enabled=seen_new_contrast_risk_relief_enabled,
             seen_new_contrast_risk_relief_min_delta=seen_new_contrast_risk_relief_min_delta,
             seen_new_contrast_risk_relief_min_receivers=seen_new_contrast_risk_relief_min_receivers,
+            seen_new_contrast_risk_relief_min_support_count=(
+                seen_new_contrast_risk_relief_min_support_count
+            ),
+            seen_new_contrast_risk_relief_min_pvalue=seen_new_contrast_risk_relief_min_pvalue,
+            seen_new_contrast_risk_relief_min_receiver_class_reliability=(
+                seen_new_contrast_risk_relief_min_receiver_class_reliability
+            ),
             seen_new_contrast_label_risk_scale=seen_new_contrast_label_risk_scale,
             seen_new_contrast_event_risk_scale=seen_new_contrast_event_risk_scale,
             seen_new_contrast_component_agreement_scale=seen_new_contrast_component_agreement_scale,
@@ -3647,6 +3739,9 @@ def _fuse_dual_route_event(
     seen_new_contrast_risk_relief_enabled: bool = False,
     seen_new_contrast_risk_relief_min_delta: float = 0.0,
     seen_new_contrast_risk_relief_min_receivers: int = 1,
+    seen_new_contrast_risk_relief_min_support_count: int = 0,
+    seen_new_contrast_risk_relief_min_pvalue: float = 0.0,
+    seen_new_contrast_risk_relief_min_receiver_class_reliability: float = 0.0,
     seen_new_contrast_label_risk_scale: float = 1.0,
     seen_new_contrast_event_risk_scale: float = 1.0,
     seen_new_contrast_component_agreement_scale: float = 1.0,
@@ -3758,6 +3853,13 @@ def _fuse_dual_route_event(
         seen_new_contrast_risk_relief_enabled=seen_new_contrast_risk_relief_enabled,
         seen_new_contrast_risk_relief_min_delta=seen_new_contrast_risk_relief_min_delta,
         seen_new_contrast_risk_relief_min_receivers=seen_new_contrast_risk_relief_min_receivers,
+        seen_new_contrast_risk_relief_min_support_count=(
+            seen_new_contrast_risk_relief_min_support_count
+        ),
+        seen_new_contrast_risk_relief_min_pvalue=seen_new_contrast_risk_relief_min_pvalue,
+        seen_new_contrast_risk_relief_min_receiver_class_reliability=(
+            seen_new_contrast_risk_relief_min_receiver_class_reliability
+        ),
         seen_new_contrast_label_risk_scale=seen_new_contrast_label_risk_scale,
         seen_new_contrast_event_risk_scale=seen_new_contrast_event_risk_scale,
         seen_new_contrast_component_agreement_scale=seen_new_contrast_component_agreement_scale,
@@ -3867,6 +3969,13 @@ def _fuse_dual_route_event(
         seen_new_contrast_risk_relief_enabled=seen_new_contrast_risk_relief_enabled,
         seen_new_contrast_risk_relief_min_delta=seen_new_contrast_risk_relief_min_delta,
         seen_new_contrast_risk_relief_min_receivers=seen_new_contrast_risk_relief_min_receivers,
+        seen_new_contrast_risk_relief_min_support_count=(
+            seen_new_contrast_risk_relief_min_support_count
+        ),
+        seen_new_contrast_risk_relief_min_pvalue=seen_new_contrast_risk_relief_min_pvalue,
+        seen_new_contrast_risk_relief_min_receiver_class_reliability=(
+            seen_new_contrast_risk_relief_min_receiver_class_reliability
+        ),
         seen_new_contrast_label_risk_scale=seen_new_contrast_label_risk_scale,
         seen_new_contrast_event_risk_scale=seen_new_contrast_event_risk_scale,
         seen_new_contrast_component_agreement_scale=seen_new_contrast_component_agreement_scale,
@@ -4612,6 +4721,9 @@ def evaluate_collaborative_open_set_evidence(
     seen_new_contrast_risk_relief_enabled: bool = False,
     seen_new_contrast_risk_relief_min_delta: float = 0.0,
     seen_new_contrast_risk_relief_min_receivers: int = 1,
+    seen_new_contrast_risk_relief_min_support_count: int = 0,
+    seen_new_contrast_risk_relief_min_pvalue: float = 0.0,
+    seen_new_contrast_risk_relief_min_receiver_class_reliability: float = 0.0,
     seen_new_contrast_label_risk_scale: float = 1.0,
     seen_new_contrast_event_risk_scale: float = 1.0,
     seen_new_contrast_component_agreement_scale: float = 1.0,
@@ -4844,6 +4956,13 @@ def evaluate_collaborative_open_set_evidence(
                     seen_new_contrast_risk_relief_enabled=seen_new_contrast_risk_relief_enabled,
                     seen_new_contrast_risk_relief_min_delta=seen_new_contrast_risk_relief_min_delta,
                     seen_new_contrast_risk_relief_min_receivers=seen_new_contrast_risk_relief_min_receivers,
+                    seen_new_contrast_risk_relief_min_support_count=(
+                        seen_new_contrast_risk_relief_min_support_count
+                    ),
+                    seen_new_contrast_risk_relief_min_pvalue=seen_new_contrast_risk_relief_min_pvalue,
+                    seen_new_contrast_risk_relief_min_receiver_class_reliability=(
+                        seen_new_contrast_risk_relief_min_receiver_class_reliability
+                    ),
                     seen_new_contrast_label_risk_scale=seen_new_contrast_label_risk_scale,
                     seen_new_contrast_event_risk_scale=seen_new_contrast_event_risk_scale,
                     seen_new_contrast_component_agreement_scale=seen_new_contrast_component_agreement_scale,
@@ -4912,6 +5031,13 @@ def evaluate_collaborative_open_set_evidence(
                     seen_new_contrast_risk_relief_enabled=seen_new_contrast_risk_relief_enabled,
                     seen_new_contrast_risk_relief_min_delta=seen_new_contrast_risk_relief_min_delta,
                     seen_new_contrast_risk_relief_min_receivers=seen_new_contrast_risk_relief_min_receivers,
+                    seen_new_contrast_risk_relief_min_support_count=(
+                        seen_new_contrast_risk_relief_min_support_count
+                    ),
+                    seen_new_contrast_risk_relief_min_pvalue=seen_new_contrast_risk_relief_min_pvalue,
+                    seen_new_contrast_risk_relief_min_receiver_class_reliability=(
+                        seen_new_contrast_risk_relief_min_receiver_class_reliability
+                    ),
                     seen_new_contrast_label_risk_scale=seen_new_contrast_label_risk_scale,
                     seen_new_contrast_event_risk_scale=seen_new_contrast_event_risk_scale,
                     seen_new_contrast_component_agreement_scale=seen_new_contrast_component_agreement_scale,
@@ -5046,6 +5172,13 @@ def evaluate_collaborative_open_set_evidence(
                     seen_new_contrast_risk_relief_enabled=seen_new_contrast_risk_relief_enabled,
                     seen_new_contrast_risk_relief_min_delta=seen_new_contrast_risk_relief_min_delta,
                     seen_new_contrast_risk_relief_min_receivers=seen_new_contrast_risk_relief_min_receivers,
+                    seen_new_contrast_risk_relief_min_support_count=(
+                        seen_new_contrast_risk_relief_min_support_count
+                    ),
+                    seen_new_contrast_risk_relief_min_pvalue=seen_new_contrast_risk_relief_min_pvalue,
+                    seen_new_contrast_risk_relief_min_receiver_class_reliability=(
+                        seen_new_contrast_risk_relief_min_receiver_class_reliability
+                    ),
                     seen_new_contrast_label_risk_scale=seen_new_contrast_label_risk_scale,
                     seen_new_contrast_event_risk_scale=seen_new_contrast_event_risk_scale,
                     seen_new_contrast_component_agreement_scale=seen_new_contrast_component_agreement_scale,
@@ -5104,6 +5237,13 @@ def evaluate_collaborative_open_set_evidence(
                     seen_new_contrast_risk_relief_enabled=seen_new_contrast_risk_relief_enabled,
                     seen_new_contrast_risk_relief_min_delta=seen_new_contrast_risk_relief_min_delta,
                     seen_new_contrast_risk_relief_min_receivers=seen_new_contrast_risk_relief_min_receivers,
+                    seen_new_contrast_risk_relief_min_support_count=(
+                        seen_new_contrast_risk_relief_min_support_count
+                    ),
+                    seen_new_contrast_risk_relief_min_pvalue=seen_new_contrast_risk_relief_min_pvalue,
+                    seen_new_contrast_risk_relief_min_receiver_class_reliability=(
+                        seen_new_contrast_risk_relief_min_receiver_class_reliability
+                    ),
                     seen_new_contrast_label_risk_scale=seen_new_contrast_label_risk_scale,
                     seen_new_contrast_event_risk_scale=seen_new_contrast_event_risk_scale,
                     seen_new_contrast_component_agreement_scale=seen_new_contrast_component_agreement_scale,

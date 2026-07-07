@@ -3229,6 +3229,15 @@ def run_evaluation(args: argparse.Namespace) -> dict[str, Any]:
         seen_new_contrast_risk_relief_enabled=bool(args.seen_new_contrast_risk_relief_enabled),
         seen_new_contrast_risk_relief_min_delta=float(args.seen_new_contrast_risk_relief_min_delta),
         seen_new_contrast_risk_relief_min_receivers=int(args.seen_new_contrast_risk_relief_min_receivers),
+        seen_new_contrast_risk_relief_min_support_count=int(
+            args.seen_new_contrast_risk_relief_min_support_count
+        ),
+        seen_new_contrast_risk_relief_min_pvalue=float(
+            args.seen_new_contrast_risk_relief_min_pvalue
+        ),
+        seen_new_contrast_risk_relief_min_receiver_class_reliability=float(
+            args.seen_new_contrast_risk_relief_min_receiver_class_reliability
+        ),
         seen_new_contrast_label_risk_scale=float(args.seen_new_contrast_label_risk_scale),
         seen_new_contrast_event_risk_scale=float(args.seen_new_contrast_event_risk_scale),
         seen_new_contrast_component_agreement_scale=float(args.seen_new_contrast_component_agreement_scale),
@@ -3545,6 +3554,13 @@ def parse_args() -> argparse.Namespace:
     p.add_argument("--seen_new_contrast_risk_relief_enabled", action="store_true")
     p.add_argument("--seen_new_contrast_risk_relief_min_delta", type=float, default=0.0)
     p.add_argument("--seen_new_contrast_risk_relief_min_receivers", type=int, default=1)
+    p.add_argument("--seen_new_contrast_risk_relief_min_support_count", type=int, default=0)
+    p.add_argument("--seen_new_contrast_risk_relief_min_pvalue", type=float, default=0.0)
+    p.add_argument(
+        "--seen_new_contrast_risk_relief_min_receiver_class_reliability",
+        type=float,
+        default=0.0,
+    )
     p.add_argument("--seen_new_contrast_label_risk_scale", type=float, default=1.0)
     p.add_argument("--seen_new_contrast_event_risk_scale", type=float, default=1.0)
     p.add_argument("--seen_new_contrast_component_agreement_scale", type=float, default=1.0)
