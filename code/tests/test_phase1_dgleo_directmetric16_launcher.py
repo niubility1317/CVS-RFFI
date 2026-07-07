@@ -46,9 +46,17 @@ def test_directmetric16_declares_protocol_and_full_concat_sat_training():
     assert "--tail_safety_state_machine true" in out
     assert "--tail_safety_p99_expansion_block_final_delta 2.0" in out
     assert "--tail_safety_p99_expansion_block_best_delta 3.5" in out
+    assert "--tail_safety_cvar_expansion_block_final_delta 4.0" in out
+    assert "--tail_safety_cvar_expansion_block_best_delta 6.0" in out
     assert "--os_eff_min_budget 0.15" in out
+    assert "--phase1_v2_os_eff_all_phases true" in out
+    assert "--phase1_v2_guard_blocks_final true" in out
     assert "--source_episode_density_gate true" in out
     assert "--source_episode_overflow_warn 0.90" in out
+    assert "--source_episode_min_local_components 4" in out
+    assert "--u_tri_state_required true" in out
+    assert "--feasibility_gate true" in out
+    assert "--feasibility_stage full" in out
     assert "leo_clear_weak" in out
     assert "leo_low_elev_weak" in out
     assert "leo_rain_weak" in out

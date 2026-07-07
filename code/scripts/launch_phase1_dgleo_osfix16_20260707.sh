@@ -56,13 +56,20 @@ PHASE1_V2_FLAGS=(
   --tail_safety_proxy_vaccept_target 0.35
   --tail_safety_p99_expansion_block_final_delta 2.0
   --tail_safety_p99_expansion_block_best_delta 3.5
+  --tail_safety_cvar_expansion_block_final_delta 4.0
+  --tail_safety_cvar_expansion_block_best_delta 6.0
   --os_eff_min_budget 0.15
+  --phase1_v2_os_eff_all_phases true
+  --phase1_v2_guard_blocks_final true
   --u_tri_state_required true
   --u_direct_idle_blocks_promotion true
   --source_episode_density_gate true
   --source_episode_overflow_warn 0.90
-  --source_episode_min_local_components 1
-  --feasibility_gate false
+  --source_episode_min_local_components 4
+  --feasibility_gate true
+  --feasibility_stage full
+  --feasibility_relaxed_pass false
+  --feasibility_local_pass false
 )
 
 candidate_enabled() {
@@ -105,7 +112,7 @@ launch_candidate() {
   local proxy_vaccept_w
   proxy_vaccept_w="$(awk -v p="${proxy_w}" 'BEGIN { printf "%.5f", (p > 0 ? 0.030 + p * 8.0 : 0.000) }')"
 
-  echo "[OSFIX16-CANDIDATE] id=${cid} group=${group} route=${route} algorithm=DGLEO_OSFIX16 base=EPOC_CONCAT_SAT_DIRECT_METRIC_UOPT phase1_dataset=ManySig_only source_only=1 dg_primary=1 leo_primary=1 concat_sa=1 concat_sat_mode=full_2b_core_domain concat_sat_full_loss=1 concat_sat_ce_only=0 direct_open_set_metric_loss=1 direct_metric_primary=proxy_vaccept,source_overflow,bridge_accept,low_density_accept,tail_overflow_accept,radius_inter,zid_quantiles unlabeled_domain_supervision=1 unlabeled_satellite_consistency=1 unlabeled_direct_metric_accept=1 unlabeled_quarantine_accept=1 domain_loss_on=1 adv_loss_on=1 phase1_v2_hard_gates=1 endpoint_accept_v1=1 tail_safety_state_machine=1 os_eff_min_budget=0.15 u_tri_state_required=1 real_unknown_classes_in_training=0 target_receiver_samples_in_training=0 target_unknown_training_count=0 manytx_in_training=0 proxy_unknown_real_tx_calibration=0 virtual_unknown_only=1 stage2_unknown_query_eval_only=1 stage2_success_claim=0 deployment_success_claim=0 gpu=${gpu}"
+  echo "[OSFIX16-CANDIDATE] id=${cid} group=${group} route=${route} algorithm=DGLEO_OSFIX16 base=EPOC_CONCAT_SAT_DIRECT_METRIC_UOPT phase1_dataset=ManySig_only source_only=1 dg_primary=1 leo_primary=1 concat_sa=1 concat_sat_mode=full_2b_core_domain concat_sat_full_loss=1 concat_sat_ce_only=0 direct_open_set_metric_loss=1 direct_metric_primary=proxy_vaccept,source_overflow,bridge_accept,low_density_accept,tail_overflow_accept,radius_inter,zid_quantiles unlabeled_domain_supervision=1 unlabeled_satellite_consistency=1 unlabeled_direct_metric_accept=1 unlabeled_quarantine_accept=1 domain_loss_on=1 adv_loss_on=1 phase1_v2_hard_gates=1 endpoint_accept_v1=1 tail_safety_state_machine=1 os_eff_min_budget=0.15 u_tri_state_required=1 feasibility_gate=1 final_export_fail_closed=1 real_unknown_classes_in_training=0 target_receiver_samples_in_training=0 target_unknown_training_count=0 manytx_in_training=0 proxy_unknown_real_tx_calibration=0 virtual_unknown_only=1 stage2_unknown_query_eval_only=1 stage2_success_claim=0 deployment_success_claim=0 gpu=${gpu}"
 
   CMD=(env "PYTHONPATH=${ROOT}/code:${ROOT}:${PYTHONPATH:-}" "CUDA_VISIBLE_DEVICES=${gpu}" "${PYTHON}" -u "${ROOT}/code/SSDG/train_ssdg.py"
     --wisig_pkl "${WISIG_PKL}"
@@ -382,7 +389,7 @@ if [[ "${DRY_RUN}" != "1" ]]; then
   mkdir -p "${RUNS_ROOT}" "${LOG_ROOT}"
 fi
 
-echo "[OSFIX16] run_id=${RUN_ID} dry_run=${DRY_RUN} candidates=${#CANDIDATES[@]} max_active_per_gpu=${MAX_ACTIVE_PER_GPU} two_per_gpu=1 teacher=ADV3B02_CORE90_SOFT_E200 base=EPOC_CONCAT_SAT_DIRECT_METRIC_UOPT phase1_dataset=ManySig_only source_only=1 dg_primary=1 leo_primary=1 direct_open_set_metric_loss=1 unlabeled_quarantine_accept=1 concat_sat_mode=full_2b_core_domain concat_sat_ce_only=0 phase1_v2_hard_gates=1 endpoint_accept_v1=1 tail_safety_state_machine=1 os_eff_min_budget=0.15 u_tri_state_required=1 stage2_success_claim=0 deployment_success_claim=0 only=${ONLY_CANDIDATES:-ALL}"
+echo "[OSFIX16] run_id=${RUN_ID} dry_run=${DRY_RUN} candidates=${#CANDIDATES[@]} max_active_per_gpu=${MAX_ACTIVE_PER_GPU} two_per_gpu=1 teacher=ADV3B02_CORE90_SOFT_E200 base=EPOC_CONCAT_SAT_DIRECT_METRIC_UOPT phase1_dataset=ManySig_only source_only=1 dg_primary=1 leo_primary=1 direct_open_set_metric_loss=1 unlabeled_quarantine_accept=1 concat_sat_mode=full_2b_core_domain concat_sat_ce_only=0 phase1_v2_hard_gates=1 endpoint_accept_v1=1 tail_safety_state_machine=1 os_eff_min_budget=0.15 u_tri_state_required=1 feasibility_gate=1 final_export_fail_closed=1 stage2_success_claim=0 deployment_success_claim=0 only=${ONLY_CANDIDATES:-ALL}"
 
 for spec in "${CANDIDATES[@]}"; do
   launch_candidate "${spec}"

@@ -18,6 +18,7 @@
 - `E:\type10-7\code`不是Git仓库：`git -C E:\type10-7\code status -sb`返回`fatal: not a git repository`。
 - 初版v2预编辑快照：`E:\type10-7\code\snapshots\phase1_v2_hardgates_20260707_160634`。
 - 本次P0补齐生产代码预编辑快照：`E:\type10-7\code\snapshots\phase1_v2_osfix_supplement_20260707_164438`。
+- P0/P1闭环补丁生产代码预编辑快照：`E:\type10-7\code\snapshots\phase1_v2_p0p1_closure_20260707_170911`。
 
 ## 改动文件
 
@@ -30,6 +31,7 @@
 | `E:\type10-7\code\scripts\launch_phase1_dgleo_uopt24_20260707.sh` | uopt24接入`PHASE1_V2_FLAGS`，强制U_s三态门控。 |
 | `E:\type10-7\code\scripts\launch_phase1_dgleo_osfix16_20260707.sh` | osfix16接入`PHASE1_V2_FLAGS`，强制U_s三态门控。 |
 | `E:\type10-7\code\tests\test_phase1_v2_control.py` | 新增v2控制模块单元测试和parser暴露测试。 |
+| `E:\type10-7\code\tests\test_open_world_feature_space_loss.py` | 增加source episode真实local component、core/tail/outside和分位数证据测试。 |
 | `E:\type10-7\code\tests\test_phase1_dgleo_directmetric16_launcher.py` | launcher dry-run新增v2参数断言。 |
 | `E:\type10-7\code\tests\test_phase1_unlabeled_direct_training.py` | uopt24 dry-run新增v2和U_s三态断言。 |
 | `E:\type10-7\code\tests\test_phase1_dgleo_osfix16_launcher.py` | osfix16 dry-run新增v2和U_s三态断言。 |
@@ -38,13 +40,13 @@
 
 | 问题 | 落地措施 | 失败时动作 |
 |---|---|---|
-| 动态软门控不等于最终拒识边界 | `assess_endpoint_contract`要求保留`endpoint_accept_v1`、source-val-only阈值来源、禁止把dynamic dm/loss gate导出为最终边界、禁止Phase1声明真实unknown/Stage2成功。 | `phase1_v2_guard_fired=1`，禁止best更新。 |
-| known域太散/source-only几何矛盾 | tail safety状态机直接监控p95、p99、tail_cvar、proxy_vaccept；新增best p99到当前/final扩张量。`p99_delta>2.0`阻断final export，`p99_delta>3.5`阻断promotion/best。 | 标记`tail_expansion_blocks_final`或`tail_expansion_blocks_promotion`；final export跳过并声明`NON_PROMOTABLE_DIAGNOSTIC`。 |
-| 闭集/KD/sat压过open-set几何 | `assess_open_set_effective_budget`计算OS加权loss相对CE/KD/sat/domain的有效预算，launcher默认`--os_eff_min_budget 0.15`。 | pseudo阶段预算不足则禁止best更新。 |
-| 无标签分支空转 | `assess_unlabeled_tri_state`检查U_s direct loss、active、selected和三态计数；训练日志新增`trusted_core/ambiguous_tail/outside_reject`三态字段；uopt24/osfix16默认`--u_tri_state_required true`。 | U_s direct idle、缺少selected或缺少三态证据时禁止best更新。 |
+| 动态软门控不等于最终拒识边界 | `assess_endpoint_contract`要求保留`endpoint_accept_v1`，并硬校验`endpoint_threshold_source=source_val_only`和`endpoint_calibration_split=source_val`；禁止把dynamic dm/loss gate导出为最终边界，禁止Phase1声明真实unknown/Stage2成功。 | `phase1_v2_guard_fired=1`，禁止best更新；关键P0原因同时触发final export fail-closed。 |
+| known域太散/source-only几何矛盾 | tail safety状态机直接监控p95、p99、tail_cvar、proxy_vaccept；新增best p99和tail_cvar到当前/final扩张量。`p99_delta>2.0`或`tail_cvar_delta>4.0`阻断final export，`p99_delta>3.5`或`tail_cvar_delta>6.0`阻断promotion/best。 | 标记`tail_expansion_blocks_*`或`tail_cvar_expansion_blocks_*`；final export跳过并声明`NON_PROMOTABLE_DIAGNOSTIC`。 |
+| 闭集/KD/sat压过open-set几何 | `assess_open_set_effective_budget`计算OS加权loss相对CE/KD/sat/domain的有效预算，launcher默认`--os_eff_min_budget 0.15`，并启用`--phase1_v2_os_eff_all_phases true`。 | 任一阶段预算不足则禁止best更新并阻断final export。 |
+| 无标签分支空转 | `assess_unlabeled_tri_state`检查U_s direct loss、active、selected和三态计数；三组launcher统一`--u_tri_state_required true`。 | U_s direct idle、缺少selected或缺少三态证据时禁止best更新并阻断final export。 |
 | 训练后期扩大tail | tail safety状态机跨epoch累计unsafe计数，WARNING/ROLLBACK/STOP逐级fail-closed。 | 后期tail恶化不再允许事后挑best或继续导出final。 |
-| source_episode_overflow长期约0.97 | 新增`assess_source_episode_density_gate`，要求source episode overflow低于告警阈值，同时必须有receiver-aware local component计数、core/tail/outside ready和density gate active证据。 | `SOURCE_EPISODE_OVERFLOW_HIGH`、`RECEIVER_AWARE_LOCAL_COMPONENT_MISSING`、`CORE_TAIL_OUTSIDE_NOT_READY`或`SOURCE_EPISODE_DENSITY_GATE_INACTIVE`禁止best更新。 |
-| 目标阈值差距过大导致罚很多但推不动 | `assess_feasibility_gate`提供relaxed/local/full三阶段可达性审计接口；launcher当前默认`--feasibility_gate false`，避免未定义目标直接阻断已有复现实验。 | 后续开启后可将不可达目标标为诊断负例。 |
+| source_episode_overflow长期约0.97 | `source_episode_three_sigma_loss`改为输出TX×held-out-domain local component数、core/tail/outside计数/比例、p50/p95/p99/tail_CVaR；`assess_source_episode_density_gate`要求overflow、local component、三态ready、density active和分位数证据同时存在。 | `SOURCE_EPISODE_OVERFLOW_HIGH`、`RECEIVER_AWARE_LOCAL_COMPONENT_MISSING`、`CORE_TAIL_OUTSIDE_NOT_READY`、`SOURCE_EPISODE_DENSITY_GATE_INACTIVE`或`SOURCE_EPISODE_QUANTILES_MISSING`禁止best更新并阻断final export。 |
+| 目标阈值差距过大导致罚很多但推不动 | `assess_feasibility_gate`接入P0 fail-closed路径；三组launcher启用`--feasibility_gate true --feasibility_stage full --feasibility_relaxed_pass false --feasibility_local_pass false`，默认把不可达全目标标为诊断负例。 | 不可达时禁止best更新并阻断final export。 |
 
 ## 启动脚本关键配置
 
@@ -64,24 +66,20 @@
 --tail_safety_proxy_vaccept_target 0.35
 --tail_safety_p99_expansion_block_final_delta 2.0
 --tail_safety_p99_expansion_block_best_delta 3.5
+--tail_safety_cvar_expansion_block_final_delta 4.0
+--tail_safety_cvar_expansion_block_best_delta 6.0
 --os_eff_min_budget 0.15
+--phase1_v2_os_eff_all_phases true
+--phase1_v2_guard_blocks_final true
 --source_episode_density_gate true
 --source_episode_overflow_warn 0.90
---source_episode_min_local_components 1
+--source_episode_min_local_components 4
 --u_direct_idle_blocks_promotion true
---feasibility_gate false
-```
-
-uopt24/osfix16额外设置：
-
-```bash
 --u_tri_state_required true
-```
-
-directmetric16设置：
-
-```bash
---u_tri_state_required false
+--feasibility_gate true
+--feasibility_stage full
+--feasibility_relaxed_pass false
+--feasibility_local_pass false
 ```
 
 ## 验证记录
@@ -93,6 +91,8 @@ directmetric16设置：
 | `conda run --no-capture-output -n ssr-gpu python -m pytest code\tests\test_phase1_dgleo_directmetric16_launcher.py code\tests\test_phase1_unlabeled_direct_training.py code\tests\test_phase1_dgleo_osfix16_launcher.py -q` | 10 passed |
 | `conda run --no-capture-output -n ssr-gpu python -m pytest code\tests\test_phase1_v2_control.py -q` | 10 passed |
 | `conda run --no-capture-output -n ssr-gpu python -m pytest code\tests\test_phase1_v2_control.py code\tests\test_ssdg_guard.py code\tests\test_direct_metric_acceptance_loss.py code\tests\test_unlabeled_quarantine_acceptance_loss.py code\tests\test_phase1_unlabeled_direct_training.py code\tests\test_phase1_dgleo_directmetric16_launcher.py code\tests\test_phase1_dgleo_osfix16_launcher.py -q` | 30 passed |
+| `conda run --no-capture-output -n ssr-gpu python -m pytest code\tests\test_phase1_v2_control.py code\tests\test_open_world_feature_space_loss.py code\tests\test_phase1_dgleo_directmetric16_launcher.py code\tests\test_phase1_unlabeled_direct_training.py code\tests\test_phase1_dgleo_osfix16_launcher.py -q` | 34 passed |
+| `conda run --no-capture-output -n ssr-gpu python -m pytest code\tests\test_phase1_v2_control.py code\tests\test_open_world_feature_space_loss.py code\tests\test_ssdg_guard.py code\tests\test_direct_metric_acceptance_loss.py code\tests\test_unlabeled_quarantine_acceptance_loss.py code\tests\test_phase1_unlabeled_direct_training.py code\tests\test_phase1_dgleo_directmetric16_launcher.py code\tests\test_phase1_dgleo_osfix16_launcher.py -q` | 44 passed |
 
 备注：pytest有本地`.pytest_cache`写权限告警，不影响测试断言。
 

@@ -297,3 +297,48 @@ def test_source_episode_default_radius_is_core_safe_not_three_sigma_shell():
     assert default_metrics["source_episode_radius_safe_deg"] < shell_metrics["source_episode_radius_safe_deg"]
     assert default_metrics["source_overflow"] == default_metrics["source_episode_overflow_rate"]
     assert torch.isfinite(default_loss)
+
+
+def test_source_episode_reports_receiver_local_component_tri_state_and_quantiles():
+    labels = torch.tensor([0, 0, 0, 0, 1, 1, 1, 1])
+    domains = torch.tensor([0, 0, 1, 1, 0, 0, 1, 1])
+    features = torch.tensor(
+        [
+            [1.0, 0.0],
+            [0.996, 0.087],
+            [0.985, 0.174],
+            [0.174, 0.985],
+            [0.0, 1.0],
+            [0.087, 0.996],
+            [0.174, 0.985],
+            [0.985, 0.174],
+        ],
+        dtype=torch.float32,
+        requires_grad=True,
+    )
+
+    loss, metrics = source_episode_three_sigma_loss(
+        features,
+        labels,
+        domains,
+        min_domains=2,
+        radius_mode="core_quantile",
+        core_quantile=0.50,
+        radius_cap_rad=math.radians(90.0),
+    )
+    loss.backward()
+
+    assert metrics["source_episode_receiver_local_component_count"] == 4.0
+    assert (
+        metrics["source_episode_core_count"]
+        + metrics["source_episode_tail_count"]
+        + metrics["source_episode_outside_count"]
+    ) == 8.0
+    assert metrics["source_episode_tail_count"] >= 0.0
+    assert metrics["source_episode_outside_count"] > 0.0
+    assert metrics["source_episode_core_tail_outside_ready"] == 1.0
+    assert metrics["source_episode_density_gate_active"] == 1.0
+    assert metrics["source_episode_zid_p99_deg"] >= metrics["source_episode_zid_p95_deg"] >= metrics["source_episode_zid_p50_deg"]
+    assert metrics["source_episode_zid_tail_cvar_deg"] >= metrics["source_episode_zid_p95_deg"]
+    assert features.grad is not None
+    assert torch.isfinite(features.grad).all()

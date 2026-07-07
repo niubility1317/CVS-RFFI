@@ -86,6 +86,7 @@ try:
         assess_endpoint_contract,
         assess_feasibility_gate,
         assess_open_set_effective_budget,
+        assess_phase1_v2_final_export_policy,
         assess_source_episode_density_gate,
         assess_unlabeled_tri_state,
     )
@@ -132,6 +133,7 @@ except ModuleNotFoundError:
     TailSafetyConfig = TailSafetyStateMachine = None
     assess_endpoint_contract = assess_feasibility_gate = None
     assess_open_set_effective_budget = assess_unlabeled_tri_state = None
+    assess_phase1_v2_final_export_policy = None
     assess_source_episode_density_gate = None
     one_way_kl_from_teacher = None
     build_aug_base_cfg = build_stage_state = configure_augmentor_for_epoch = configure_mixstyle_for_epoch = None
@@ -310,7 +312,11 @@ def build_arg_parser() -> argparse.ArgumentParser:
     parser.add_argument("--tail_safety_proxy_vaccept_target", type=float, default=0.35)
     parser.add_argument("--tail_safety_p99_expansion_block_final_delta", type=float, default=2.0)
     parser.add_argument("--tail_safety_p99_expansion_block_best_delta", type=float, default=3.5)
+    parser.add_argument("--tail_safety_cvar_expansion_block_final_delta", type=float, default=4.0)
+    parser.add_argument("--tail_safety_cvar_expansion_block_best_delta", type=float, default=6.0)
     parser.add_argument("--os_eff_min_budget", type=float, default=0.0)
+    parser.add_argument("--phase1_v2_os_eff_all_phases", type=str2bool, default=True)
+    parser.add_argument("--phase1_v2_guard_blocks_final", type=str2bool, default=True)
     parser.add_argument("--u_tri_state_required", type=str2bool, default=False)
     parser.add_argument("--u_direct_idle_blocks_promotion", type=str2bool, default=True)
     parser.add_argument("--source_episode_density_gate", type=str2bool, default=False)
@@ -1188,6 +1194,12 @@ def _maybe_export_phase2_prototypes_ssdg(
                 "source": "SSDG.train_ssdg default-off Phase2 export hook",
                 "base_protocol": "Safe-SSDG-CVS-R01",
                 "default_training_behavior_changed": False,
+                "claim": "PHASE1_SOURCE_ONLY_EXPORT_ONLY",
+                "phase1_source_only": True,
+                "stage2_success_claim": False,
+                "deployment_success_claim": False,
+                "final_reject_boundary": False,
+                "endpoint_policy_id": str(getattr(args, "endpoint_accept_policy_id", "endpoint_accept_v1")),
             },
         )
         if bool(getattr(args, "phase2_fuse_prototypes", False)):
@@ -1213,9 +1225,12 @@ def _maybe_export_phase2_prototypes_ssdg(
             package["paths"] = paths
         paths = package.get("paths", {}) if isinstance(package, dict) else {}
         print(
-            f"[PHASE2-EXPORT] wrote prototypes={paths.get('pt_path', output_path)} "
+            f"[PHASE1-EXPORT] wrote prototypes={paths.get('pt_path', output_path)} "
             f"json={paths.get('json_path', '')} feature={getattr(args, 'phase2_export_feature_key', 'z_id')} "
-            f"split={loader_name} fused={int(bool(getattr(args, 'phase2_fuse_prototypes', False)))}",
+            f"split={loader_name} fused={int(bool(getattr(args, 'phase2_fuse_prototypes', False)))} "
+            "claim=PHASE1_SOURCE_ONLY_EXPORT_ONLY stage2_success_claim=0 "
+            "deployment_success_claim=0 final_reject_boundary=0 "
+            f"endpoint_policy_id={str(getattr(args, 'endpoint_accept_policy_id', 'endpoint_accept_v1'))}",
             flush=True,
         )
         return package
@@ -2508,8 +2523,12 @@ def train(args) -> int:
                 f"tail_targets=p95:{float(args.tail_safety_p95_target_deg):.2f},p99:{float(args.tail_safety_p99_target_deg):.2f},"
                 f"cvar:{float(args.tail_safety_cvar_target_deg):.2f},proxy:{float(args.tail_safety_proxy_vaccept_target):.3f} "
                 f"tail_expansion_delta=final:{float(args.tail_safety_p99_expansion_block_final_delta):.2f},"
-                f"best:{float(args.tail_safety_p99_expansion_block_best_delta):.2f} "
+                f"best:{float(args.tail_safety_p99_expansion_block_best_delta):.2f},"
+                f"cvar_final:{float(args.tail_safety_cvar_expansion_block_final_delta):.2f},"
+                f"cvar_best:{float(args.tail_safety_cvar_expansion_block_best_delta):.2f} "
                 f"os_eff_min={float(args.os_eff_min_budget):.3f} "
+                f"os_eff_all_phases={int(bool(args.phase1_v2_os_eff_all_phases))} "
+                f"guard_blocks_final={int(bool(args.phase1_v2_guard_blocks_final))} "
                 f"u_tri_state_required={int(bool(args.u_tri_state_required))} "
                 f"source_episode_density_gate={int(bool(args.source_episode_density_gate))} "
                 f"source_episode_overflow_warn={float(args.source_episode_overflow_warn):.3f} "
@@ -2581,6 +2600,8 @@ def train(args) -> int:
                 max_rollbacks=int(args.tail_safety_max_rollbacks),
                 p99_expansion_block_final_delta=float(args.tail_safety_p99_expansion_block_final_delta),
                 p99_expansion_block_best_delta=float(args.tail_safety_p99_expansion_block_best_delta),
+                tail_cvar_expansion_block_final_delta=float(args.tail_safety_cvar_expansion_block_final_delta),
+                tail_cvar_expansion_block_best_delta=float(args.tail_safety_cvar_expansion_block_best_delta),
             )
         )
     for epoch in range(1, total_epochs + 1):
@@ -3816,6 +3837,21 @@ def train(args) -> int:
                 "train/source_episode_receiver_local_component_count": source_episode_info.get(
                     "source_episode_receiver_local_component_count", float("nan")
                 ),
+                "train/source_episode_local_component_coverage": source_episode_info.get(
+                    "source_episode_local_component_coverage", float("nan")
+                ),
+                "train/source_episode_core_count": source_episode_info.get("source_episode_core_count", float("nan")),
+                "train/source_episode_tail_count": source_episode_info.get("source_episode_tail_count", float("nan")),
+                "train/source_episode_outside_count": source_episode_info.get("source_episode_outside_count", float("nan")),
+                "train/source_episode_core_rate": source_episode_info.get("source_episode_core_rate", float("nan")),
+                "train/source_episode_tail_rate": source_episode_info.get("source_episode_tail_rate", float("nan")),
+                "train/source_episode_outside_rate": source_episode_info.get("source_episode_outside_rate", float("nan")),
+                "train/source_episode_zid_p50_deg": source_episode_info.get("source_episode_zid_p50_deg", float("nan")),
+                "train/source_episode_zid_p95_deg": source_episode_info.get("source_episode_zid_p95_deg", float("nan")),
+                "train/source_episode_zid_p99_deg": source_episode_info.get("source_episode_zid_p99_deg", float("nan")),
+                "train/source_episode_zid_tail_cvar_deg": source_episode_info.get(
+                    "source_episode_zid_tail_cvar_deg", float("nan")
+                ),
                 "train/source_episode_core_tail_outside_ready": source_episode_info.get(
                     "source_episode_core_tail_outside_ready", float("nan")
                 ),
@@ -3983,6 +4019,7 @@ def train(args) -> int:
                 assess_endpoint_contract is None
                 or assess_open_set_effective_budget is None
                 or assess_unlabeled_tri_state is None
+                or assess_phase1_v2_final_export_policy is None
                 or assess_source_episode_density_gate is None
             ):
                 raise ImportError("cvsrffi.phase1_v2_control is required for --phase1_v2_hard_gates.")
@@ -4005,7 +4042,9 @@ def train(args) -> int:
             guard_state.update({f"phase1_v2_endpoint_{key}": value for key, value in endpoint_decision.details.items()})
             if endpoint_decision.fired:
                 phase1_v2_reasons.append(endpoint_decision.reason)
-            if float(getattr(args, "os_eff_min_budget", 0.0)) > 0.0 and phase == "pseudo":
+            if float(getattr(args, "os_eff_min_budget", 0.0)) > 0.0 and (
+                bool(getattr(args, "phase1_v2_os_eff_all_phases", True)) or phase == "pseudo"
+            ):
                 os_eff_decision = assess_open_set_effective_budget(
                     train_logs,
                     min_budget=float(args.os_eff_min_budget),
@@ -4065,6 +4104,16 @@ def train(args) -> int:
             if tail_decision.blocks_best:
                 phase1_v2_reasons.append(tail_decision.reason or f"tail_state_{tail_decision.state}")
             if tail_decision.blocks_final and bool(getattr(args, "tail_stop_blocks_final", True)):
+                phase1_v2_final_blocked = True
+        if bool(getattr(args, "phase1_v2_hard_gates", False)) and assess_phase1_v2_final_export_policy is not None:
+            final_export_decision = assess_phase1_v2_final_export_policy(
+                phase1_v2_reasons,
+                tail_blocks_final=bool(phase1_v2_final_blocked),
+                fail_closed=bool(getattr(args, "phase1_v2_guard_blocks_final", True)),
+            )
+            guard_state["phase1_v2_final_export_policy_fired"] = bool(final_export_decision.fired)
+            guard_state.update({f"phase1_v2_final_export_{key}": value for key, value in final_export_decision.details.items()})
+            if final_export_decision.fired:
                 phase1_v2_final_blocked = True
         phase1_v2_reasons = [reason for reason in phase1_v2_reasons if str(reason).strip()]
         phase1_v2_guard_fired = bool(phase1_v2_reasons)

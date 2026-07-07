@@ -23,6 +23,8 @@ class TailSafetyConfig:
     max_rollbacks: int = 1
     p99_expansion_block_final_delta: float = 2.0
     p99_expansion_block_best_delta: float = 3.5
+    tail_cvar_expansion_block_final_delta: float = 4.0
+    tail_cvar_expansion_block_best_delta: float = 6.0
 
 
 @dataclass(frozen=True)
@@ -80,9 +82,16 @@ def assess_endpoint_contract(row: Mapping[str, Any]) -> ControlDecision:
     if source_only and (_truthy(row.get("stage2_success_claim", False)) or _truthy(row.get("deployment_success_claim", False))):
         reasons.append("phase1_overclaims_stage2_or_deployment_success")
     if policy == "endpoint_accept_v1":
-        for key in ("endpoint_threshold_source", "endpoint_calibration_split"):
-            if not str(row.get(key, "")).strip():
-                reasons.append(f"missing_{key}")
+        threshold_source = str(row.get("endpoint_threshold_source", "")).strip()
+        calibration_split = str(row.get("endpoint_calibration_split", "")).strip()
+        if not threshold_source:
+            reasons.append("missing_endpoint_threshold_source")
+        elif threshold_source != "source_val_only":
+            reasons.append("invalid_endpoint_threshold_source")
+        if not calibration_split:
+            reasons.append("missing_endpoint_calibration_split")
+        elif calibration_split != "source_val":
+            reasons.append("invalid_endpoint_calibration_split")
 
     fired = bool(reasons)
     return ControlDecision(
@@ -111,6 +120,7 @@ class TailSafetyStateMachine:
         self.rollback_count = 0
         self.safe_best = float("inf")
         self.best_p99 = float("inf")
+        self.best_tail_cvar = float("inf")
 
     def update(self, metrics: Mapping[str, Any]) -> TailSafetyDecision:
         cfg = self.config
@@ -120,9 +130,14 @@ class TailSafetyStateMachine:
         proxy = _metric_value(metrics, "train/dm_accept_proxy_vaccept", "dm_accept_proxy_vaccept")
         if math.isfinite(p99):
             self.best_p99 = min(self.best_p99, float(p99))
+        if math.isfinite(cvar):
+            self.best_tail_cvar = min(self.best_tail_cvar, float(cvar))
         p99_delta = float("nan")
         if math.isfinite(p99) and math.isfinite(self.best_p99):
             p99_delta = max(0.0, float(p99) - float(self.best_p99))
+        cvar_delta = float("nan")
+        if math.isfinite(cvar) and math.isfinite(self.best_tail_cvar):
+            cvar_delta = max(0.0, float(cvar) - float(self.best_tail_cvar))
         pairs = (
             ("p95", p95, cfg.p95_target_deg),
             ("p99", p99, cfg.p99_target_deg),
@@ -177,6 +192,13 @@ class TailSafetyStateMachine:
             if p99_delta > float(cfg.p99_expansion_block_best_delta):
                 expansion_blocks_best = True
                 expansion_reasons.append("tail_expansion_blocks_promotion")
+        if math.isfinite(cvar_delta):
+            if cvar_delta > float(cfg.tail_cvar_expansion_block_final_delta):
+                expansion_blocks_final = True
+                expansion_reasons.append("tail_cvar_expansion_blocks_final")
+            if cvar_delta > float(cfg.tail_cvar_expansion_block_best_delta):
+                expansion_blocks_best = True
+                expansion_reasons.append("tail_cvar_expansion_blocks_promotion")
 
         reasons: list[str] = []
         if unsafe:
@@ -192,8 +214,13 @@ class TailSafetyStateMachine:
             "tail_expansion_p99_best": self.best_p99 if math.isfinite(self.best_p99) else float("nan"),
             "tail_expansion_p99_current": p99,
             "tail_expansion_p99_delta": p99_delta,
+            "tail_expansion_cvar_best": self.best_tail_cvar if math.isfinite(self.best_tail_cvar) else float("nan"),
+            "tail_expansion_cvar_current": cvar,
+            "tail_expansion_cvar_delta": cvar_delta,
             "tail_expansion_block_final_delta": float(cfg.p99_expansion_block_final_delta),
             "tail_expansion_block_best_delta": float(cfg.p99_expansion_block_best_delta),
+            "tail_cvar_expansion_block_final_delta": float(cfg.tail_cvar_expansion_block_final_delta),
+            "tail_cvar_expansion_block_best_delta": float(cfg.tail_cvar_expansion_block_best_delta),
             **{f"tail_ratio_{key}": value for key, value in ratios.items()},
         }
         return TailSafetyDecision(
@@ -321,6 +348,13 @@ def assess_source_episode_density_gate(
         "train/source_episode_density_gate_active",
         "source_episode_density_gate_active",
     )
+    p95 = _metric_value(metrics, "train/source_episode_zid_p95_deg", "source_episode_zid_p95_deg")
+    p99 = _metric_value(metrics, "train/source_episode_zid_p99_deg", "source_episode_zid_p99_deg")
+    tail_cvar = _metric_value(
+        metrics,
+        "train/source_episode_zid_tail_cvar_deg",
+        "source_episode_zid_tail_cvar_deg",
+    )
     reasons: list[str] = []
     if not math.isfinite(overflow):
         reasons.append("SOURCE_EPISODE_OVERFLOW_MISSING")
@@ -332,6 +366,8 @@ def assess_source_episode_density_gate(
         reasons.append("CORE_TAIL_OUTSIDE_NOT_READY")
     if (not math.isfinite(density_gate_active)) or density_gate_active <= 0.0:
         reasons.append("SOURCE_EPISODE_DENSITY_GATE_INACTIVE")
+    if not (math.isfinite(p95) and math.isfinite(p99) and math.isfinite(tail_cvar)):
+        reasons.append("SOURCE_EPISODE_QUANTILES_MISSING")
     fired = bool(reasons)
     return ControlDecision(
         fired=fired,
@@ -342,6 +378,53 @@ def assess_source_episode_density_gate(
             "source_episode_receiver_local_component_count": local_components,
             "source_episode_core_tail_outside_ready": core_tail_outside_ready,
             "source_episode_density_gate_active": density_gate_active,
+            "source_episode_zid_p95_deg": p95,
+            "source_episode_zid_p99_deg": p99,
+            "source_episode_zid_tail_cvar_deg": tail_cvar,
+        },
+    )
+
+
+def assess_phase1_v2_final_export_policy(
+    reasons: Iterable[str] | str,
+    *,
+    tail_blocks_final: bool = False,
+    fail_closed: bool = True,
+) -> ControlDecision:
+    if isinstance(reasons, str):
+        reason_items = [part.strip() for part in reasons.split(";") if part.strip()]
+    else:
+        reason_items = [str(part).strip() for part in reasons if str(part).strip()]
+    critical_prefixes = (
+        "missing_endpoint",
+        "invalid_endpoint",
+        "loss_gate_exported",
+        "ambiguous_proxy_final_metric",
+        "phase1_claim_contains_real_unknown_metric",
+        "phase1_overclaims_stage2_or_deployment_success",
+        "B_os_eff_below_min",
+        "US_DIRECT_LOSS_IDLE",
+        "US_TRI_STATE",
+        "SOURCE_EPISODE_",
+        "RELAXED_UNREACHABLE",
+        "LOCAL_UPPER_BOUND",
+        "LOSS_GEOMETRY_DECOUPLED",
+    )
+    critical = [
+        reason
+        for item in reason_items
+        for reason in item.split(";")
+        if any(reason.startswith(prefix) for prefix in critical_prefixes)
+    ]
+    fired = bool(tail_blocks_final) or (bool(fail_closed) and bool(critical))
+    final_reason = "phase1_v2_guard_blocks_final_export" if fired else ""
+    return ControlDecision(
+        fired=fired,
+        reason=final_reason,
+        details={
+            "final_export_allowed": 0.0 if fired else 1.0,
+            "tail_blocks_final": 1.0 if tail_blocks_final else 0.0,
+            "critical_guard_count": float(len(critical)),
         },
     )
 

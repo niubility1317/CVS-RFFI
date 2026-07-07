@@ -15,6 +15,7 @@ from cvsrffi.phase1_v2_control import (  # noqa: E402
     assess_endpoint_contract,
     assess_feasibility_gate,
     assess_open_set_effective_budget,
+    assess_phase1_v2_final_export_policy,
     assess_source_episode_density_gate,
     assess_unlabeled_tri_state,
 )
@@ -60,6 +61,25 @@ def test_endpoint_contract_accepts_phase1_proxy_only_with_endpoint_v1_and_no_rea
 
     assert not decision.fired
     assert decision.details["endpoint_contract_pass"] == 1.0
+
+
+def test_endpoint_contract_rejects_non_source_val_threshold_or_calibration_split():
+    decision = assess_endpoint_contract(
+        {
+            "phase": "Phase1_source_only",
+            "endpoint_policy_id": "endpoint_accept_v1",
+            "endpoint_accept_boundary_exported": True,
+            "endpoint_threshold_source": "target_query",
+            "endpoint_calibration_split": "unknown_query",
+            "loss_gate_exported": False,
+            "stage2_success_claim": False,
+            "deployment_success_claim": False,
+        }
+    )
+
+    assert decision.fired
+    assert "invalid_endpoint_threshold_source" in decision.reason
+    assert "invalid_endpoint_calibration_split" in decision.reason
 
 
 def test_tail_state_machine_blocks_late_tail_expansion_after_warning_and_rollback():
@@ -163,6 +183,42 @@ def test_tail_state_machine_blocks_best_and_final_on_best_p99_to_current_expansi
     assert promotion_block.details["tail_expansion_p99_delta"] == 4.0
 
 
+def test_tail_state_machine_blocks_final_on_tail_cvar_expansion():
+    machine = TailSafetyStateMachine(
+        TailSafetyConfig(
+            p95_target_deg=90.0,
+            p99_target_deg=90.0,
+            tail_cvar_target_deg=90.0,
+            proxy_vaccept_target=0.90,
+            tail_cvar_expansion_block_final_delta=4.0,
+            tail_cvar_expansion_block_best_delta=6.0,
+        )
+    )
+
+    best = machine.update(
+        {
+            "train/dm_accept_zid_p95_deg": 60.0,
+            "train/dm_accept_zid_p99_deg": 80.0,
+            "train/dm_accept_zid_tail_cvar_deg": 70.0,
+            "train/dm_accept_proxy_vaccept": 0.12,
+        }
+    )
+    final_block = machine.update(
+        {
+            "train/dm_accept_zid_p95_deg": 61.0,
+            "train/dm_accept_zid_p99_deg": 80.5,
+            "train/dm_accept_zid_tail_cvar_deg": 74.5,
+            "train/dm_accept_proxy_vaccept": 0.12,
+        }
+    )
+
+    assert not best.fired
+    assert final_block.blocks_final
+    assert not final_block.blocks_best
+    assert "tail_cvar_expansion_blocks_final" in final_block.reason
+    assert final_block.details["tail_expansion_cvar_delta"] == 4.5
+
+
 def test_open_set_effective_budget_uses_weighted_loss_families_and_fails_closed_when_os_is_too_small():
     decision = assess_open_set_effective_budget(
         {
@@ -236,6 +292,25 @@ def test_source_episode_density_gate_blocks_global_overflow_without_local_compon
     assert "SOURCE_EPISODE_DENSITY_GATE_INACTIVE" in decision.reason
 
 
+def test_source_episode_density_gate_requires_quantile_and_density_evidence():
+    decision = assess_source_episode_density_gate(
+        {
+            "train/source_episode_overflow_rate": 0.40,
+            "train/source_episode_receiver_local_component_count": 4.0,
+            "train/source_episode_core_tail_outside_ready": 1.0,
+            "train/source_episode_density_gate_active": 1.0,
+            "train/source_episode_zid_p95_deg": float("nan"),
+            "train/source_episode_zid_p99_deg": float("nan"),
+            "train/source_episode_zid_tail_cvar_deg": float("nan"),
+        },
+        overflow_warn=0.90,
+        min_local_components=2,
+    )
+
+    assert decision.fired
+    assert "SOURCE_EPISODE_QUANTILES_MISSING" in decision.reason
+
+
 def test_feasibility_gate_stops_full_target_when_relaxed_stage_is_unreachable():
     decision = assess_feasibility_gate(
         {
@@ -248,6 +323,21 @@ def test_feasibility_gate_stops_full_target_when_relaxed_stage_is_unreachable():
 
     assert decision.fired
     assert "RELAXED_UNREACHABLE_STOP_FULL_TARGET" in decision.reason
+
+
+def test_phase1_v2_final_export_policy_blocks_non_tail_guard_failures():
+    decision = assess_phase1_v2_final_export_policy(
+        [
+            "B_os_eff_below_min",
+            "US_DIRECT_LOSS_IDLE",
+            "SOURCE_EPISODE_OVERFLOW_HIGH",
+        ],
+        tail_blocks_final=False,
+    )
+
+    assert decision.fired
+    assert "phase1_v2_guard_blocks_final_export" in decision.reason
+    assert decision.details["final_export_allowed"] == 0.0
 
 
 def test_train_parser_exposes_phase1_v2_hard_gate_args():
@@ -266,6 +356,10 @@ def test_train_parser_exposes_phase1_v2_hard_gate_args():
             "2.0",
             "--tail_safety_p99_expansion_block_best_delta",
             "3.5",
+            "--tail_safety_cvar_expansion_block_final_delta",
+            "4.0",
+            "--tail_safety_cvar_expansion_block_best_delta",
+            "6.0",
             "--os_eff_min_budget",
             "0.20",
             "--u_tri_state_required",
@@ -282,6 +376,8 @@ def test_train_parser_exposes_phase1_v2_hard_gate_args():
     assert args.tail_safety_state_machine is True
     assert args.tail_safety_p99_expansion_block_final_delta == 2.0
     assert args.tail_safety_p99_expansion_block_best_delta == 3.5
+    assert args.tail_safety_cvar_expansion_block_final_delta == 4.0
+    assert args.tail_safety_cvar_expansion_block_best_delta == 6.0
     assert args.os_eff_min_budget == 0.20
     assert args.u_tri_state_required is True
     assert args.source_episode_density_gate is True

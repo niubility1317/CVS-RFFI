@@ -2179,6 +2179,17 @@ def source_episode_three_sigma_loss(
         "source_episode_mixup_overflow_rate": 0.0,
         "source_episode_mixup_margin_deg": float("nan"),
         "source_episode_receiver_local_component_count": 0.0,
+        "source_episode_local_component_coverage": 0.0,
+        "source_episode_core_count": 0.0,
+        "source_episode_tail_count": 0.0,
+        "source_episode_outside_count": 0.0,
+        "source_episode_core_rate": 0.0,
+        "source_episode_tail_rate": 0.0,
+        "source_episode_outside_rate": 0.0,
+        "source_episode_zid_p50_deg": float("nan"),
+        "source_episode_zid_p95_deg": float("nan"),
+        "source_episode_zid_p99_deg": float("nan"),
+        "source_episode_zid_tail_cvar_deg": float("nan"),
         "source_episode_core_tail_outside_ready": 0.0,
         "source_episode_density_gate_active": 0.0,
     }
@@ -2200,17 +2211,24 @@ def source_episode_three_sigma_loss(
     core_radii = []
     safe_radii = []
     val_angles_all = []
+    val_angles_flat = []
     tail_query_rates = []
     episode_centers = []
     episode_radii = []
+    component_keys = set()
     used_classes = set()
     used_domains = set()
+    core_count = 0.0
+    tail_count = 0.0
+    outside_count = 0.0
+    possible_components = 0.0
     min_cell = max(1, int(min_samples_per_class_domain))
     for cls in torch.unique(labels[valid]):
         cls_mask = valid & labels.eq(cls)
         doms = [dom for dom in torch.unique(domains[cls_mask]) if int((cls_mask & domains.eq(dom)).sum().item()) >= min_cell]
         if len(doms) < max(2, int(min_domains)):
             continue
+        possible_components += float(len(doms))
         for val_dom in doms:
             train_mask = cls_mask & domains.ne(val_dom)
             val_mask = cls_mask & domains.eq(val_dom)
@@ -2266,10 +2284,21 @@ def source_episode_three_sigma_loss(
             radii.append(radius_3sigma.detach())
             core_radii.append(radius_core.detach())
             safe_radii.append(radius.detach())
-            val_angles_all.append(val_angles.detach().mean())
-            tail_query_rates.append(float((val_angles.detach() > radius_core).float().mean().item()))
+            val_det = val_angles.detach()
+            radius_core_det = radius_core.detach()
+            radius_det = radius.detach()
+            val_angles_all.append(val_det.mean())
+            val_angles_flat.append(val_det)
+            is_core = val_det <= radius_core_det
+            is_outside = val_det > radius_det
+            is_tail = (~is_core) & (~is_outside)
+            core_count += float(is_core.float().sum().item())
+            tail_count += float(is_tail.float().sum().item())
+            outside_count += float(is_outside.float().sum().item())
+            tail_query_rates.append(float((val_det > radius_core_det).float().mean().item()))
             episode_centers.append(center)
             episode_radii.append(radius.detach())
+            component_keys.add((int(cls.item()), int(val_dom.item())))
             used_classes.add(int(cls.item()))
             used_domains.add(int(val_dom.item()))
     if not losses:
@@ -2304,6 +2333,20 @@ def source_episode_three_sigma_loss(
             mixup_margin = nearest_margin.mean()
             mixup_count = float(mix_norm.size(0))
     loss = source_loss + max(0.0, float(mixup_weight)) * mixup_loss
+    all_val_angles = torch.cat(val_angles_flat, dim=0) if val_angles_flat else z.new_zeros(0)
+    if all_val_angles.numel() > 0:
+        zid_p50 = torch.quantile(all_val_angles, 0.50)
+        zid_p95 = torch.quantile(all_val_angles, 0.95)
+        zid_p99 = torch.quantile(all_val_angles, 0.99)
+        tail_values = all_val_angles[all_val_angles >= zid_p95]
+        zid_tail_cvar = tail_values.mean() if tail_values.numel() > 0 else zid_p95
+    else:
+        zid_p50 = zid_p95 = zid_p99 = zid_tail_cvar = z.new_tensor(float("nan"))
+    tri_total = max(1.0, core_count + tail_count + outside_count)
+    component_count = float(len(component_keys))
+    component_coverage = component_count / possible_components if possible_components > 0.0 else 0.0
+    tri_ready = component_count > 0.0 and (core_count + tail_count + outside_count) > 0.0
+    density_active = tri_ready and torch.isfinite(zid_p95).item() and torch.isfinite(zid_p99).item()
     metrics = {
         "source_episode_loss": _scalar_metric(source_loss),
         "source_episode_overflow_rate": float(np.mean(overflow_rates)) if overflow_rates else 0.0,
@@ -2321,9 +2364,20 @@ def source_episode_three_sigma_loss(
         "source_episode_mixup_loss": _scalar_metric(mixup_loss),
         "source_episode_mixup_overflow_rate": float(mixup_overflow_rate),
         "source_episode_mixup_margin_deg": math.degrees(_scalar_metric(mixup_margin)),
-        "source_episode_receiver_local_component_count": float(len(episode_centers)),
-        "source_episode_core_tail_outside_ready": 1.0,
-        "source_episode_density_gate_active": 1.0,
+        "source_episode_receiver_local_component_count": component_count,
+        "source_episode_local_component_coverage": float(component_coverage),
+        "source_episode_core_count": float(core_count),
+        "source_episode_tail_count": float(tail_count),
+        "source_episode_outside_count": float(outside_count),
+        "source_episode_core_rate": float(core_count / tri_total),
+        "source_episode_tail_rate": float(tail_count / tri_total),
+        "source_episode_outside_rate": float(outside_count / tri_total),
+        "source_episode_zid_p50_deg": math.degrees(_scalar_metric(zid_p50)),
+        "source_episode_zid_p95_deg": math.degrees(_scalar_metric(zid_p95)),
+        "source_episode_zid_p99_deg": math.degrees(_scalar_metric(zid_p99)),
+        "source_episode_zid_tail_cvar_deg": math.degrees(_scalar_metric(zid_tail_cvar)),
+        "source_episode_core_tail_outside_ready": 1.0 if tri_ready else 0.0,
+        "source_episode_density_gate_active": 1.0 if density_active else 0.0,
     }
     return loss, metrics
 
