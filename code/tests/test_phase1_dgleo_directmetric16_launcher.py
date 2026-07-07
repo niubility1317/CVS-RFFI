@@ -41,6 +41,14 @@ def test_directmetric16_declares_protocol_and_full_concat_sat_training():
     assert "--direct_metric_bridge_accept_weight 1.20" in out
     assert "--direct_metric_sat_pair_weight 0.50" in out
     assert "--direct_metric_zid_p95_target_deg 52" in out
+    assert "--phase1_v2_hard_gates true" in out
+    assert "--endpoint_accept_policy_id endpoint_accept_v1" in out
+    assert "--tail_safety_state_machine true" in out
+    assert "--tail_safety_p99_expansion_block_final_delta 2.0" in out
+    assert "--tail_safety_p99_expansion_block_best_delta 3.5" in out
+    assert "--os_eff_min_budget 0.15" in out
+    assert "--source_episode_density_gate true" in out
+    assert "--source_episode_overflow_warn 0.90" in out
     assert "leo_clear_weak" in out
     assert "leo_low_elev_weak" in out
     assert "leo_rain_weak" in out

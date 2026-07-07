@@ -39,6 +39,32 @@ validate_source_wisig_pkl() {
 
 validate_source_wisig_pkl "${WISIG_PKL}"
 
+PHASE1_V2_FLAGS=(
+  --phase1_v2_hard_gates true
+  --endpoint_accept_policy_id endpoint_accept_v1
+  --endpoint_threshold_source source_val_only
+  --endpoint_calibration_split source_val
+  --loss_gate_exported false
+  --tail_safety_state_machine true
+  --tail_stop_blocks_final true
+  --tail_safety_warning_patience 2
+  --tail_safety_rollback_patience 1
+  --tail_safety_max_rollbacks 1
+  --tail_safety_p95_target_deg 54
+  --tail_safety_p99_target_deg 70
+  --tail_safety_cvar_target_deg 56
+  --tail_safety_proxy_vaccept_target 0.35
+  --tail_safety_p99_expansion_block_final_delta 2.0
+  --tail_safety_p99_expansion_block_best_delta 3.5
+  --os_eff_min_budget 0.15
+  --u_tri_state_required true
+  --u_direct_idle_blocks_promotion true
+  --source_episode_density_gate true
+  --source_episode_overflow_warn 0.90
+  --source_episode_min_local_components 1
+  --feasibility_gate false
+)
+
 candidate_enabled() {
   local cid="$1"
   [[ -z "${ONLY_CANDIDATES}" || ",${ONLY_CANDIDATES}," == *",${cid},"* ]]
@@ -79,7 +105,7 @@ launch_candidate() {
   local proxy_vaccept_w
   proxy_vaccept_w="$(awk -v p="${proxy_w}" 'BEGIN { printf "%.5f", (p > 0 ? 0.025 + p * 8.0 : 0.000) }')"
 
-  echo "[UOPT24-CANDIDATE] id=${cid} group=${group} route=${route} algorithm=DGLEO_UOPT24 base=EPOC_CONCAT_SAT_DIRECT_METRIC_UNLABELED phase1_dataset=ManySig_only source_only=1 dg_primary=1 leo_primary=1 concat_sa=1 concat_sat_mode=full_2b_core_domain concat_sat_full_loss=1 concat_sat_ce_only=0 unlabeled_direct_optimization=1 unlabeled_domain_supervision=1 unlabeled_satellite_consistency=1 unlabeled_direct_metric_accept=1 domain_loss_on=1 adv_loss_on=1 direct_metric_validation=1 real_unknown_classes_in_training=0 target_receiver_samples_in_training=0 target_unknown_training_count=0 manytx_in_training=0 proxy_unknown_real_tx_calibration=0 virtual_unknown_only=1 stage2_unknown_query_eval_only=1 stage2_success_claim=0 deployment_success_claim=0 gpu=${gpu}"
+  echo "[UOPT24-CANDIDATE] id=${cid} group=${group} route=${route} algorithm=DGLEO_UOPT24 base=EPOC_CONCAT_SAT_DIRECT_METRIC_UNLABELED phase1_dataset=ManySig_only source_only=1 dg_primary=1 leo_primary=1 concat_sa=1 concat_sat_mode=full_2b_core_domain concat_sat_full_loss=1 concat_sat_ce_only=0 unlabeled_direct_optimization=1 unlabeled_domain_supervision=1 unlabeled_satellite_consistency=1 unlabeled_direct_metric_accept=1 domain_loss_on=1 adv_loss_on=1 direct_metric_validation=1 phase1_v2_hard_gates=1 endpoint_accept_v1=1 tail_safety_state_machine=1 os_eff_min_budget=0.15 u_tri_state_required=1 real_unknown_classes_in_training=0 target_receiver_samples_in_training=0 target_unknown_training_count=0 manytx_in_training=0 proxy_unknown_real_tx_calibration=0 virtual_unknown_only=1 stage2_unknown_query_eval_only=1 stage2_success_claim=0 deployment_success_claim=0 gpu=${gpu}"
 
   CMD=(env "PYTHONPATH=${ROOT}/code:${ROOT}:${PYTHONPATH:-}" "CUDA_VISIBLE_DEVICES=${gpu}" "${PYTHON}" -u "${ROOT}/code/SSDG/train_ssdg.py"
     --wisig_pkl "${WISIG_PKL}"
@@ -114,6 +140,7 @@ launch_candidate() {
     --paic_guard_reliable_drop 0.005
     --paic_guard_cooldown_epochs 1
     --paic_guard_sat_scale 0.62
+    "${PHASE1_V2_FLAGS[@]}"
     --teacher_distill_start_epoch 1
     --teacher_distill_warmup_epochs 30
     --teacher_distill_temperature 2.5
@@ -349,7 +376,7 @@ if [[ "${DRY_RUN}" != "1" ]]; then
   mkdir -p "${RUNS_ROOT}" "${LOG_ROOT}"
 fi
 
-echo "[UOPT24] run_id=${RUN_ID} dry_run=${DRY_RUN} candidates=${#CANDIDATES[@]} max_active_per_gpu=${MAX_ACTIVE_PER_GPU} add_three_per_gpu=1 expected_existing_per_gpu=2 teacher=ADV3B02_CORE90_SOFT_E200 base=EPOC_CONCAT_SAT_DIRECT_METRIC_UNLABELED phase1_dataset=ManySig_only source_only=1 dg_primary=1 leo_primary=1 domain_loss_on=1 unlabeled_direct_optimization=1 concat_sat_mode=full_2b_core_domain concat_sat_ce_only=0 stage2_success_claim=0 deployment_success_claim=0 only=${ONLY_CANDIDATES:-ALL}"
+echo "[UOPT24] run_id=${RUN_ID} dry_run=${DRY_RUN} candidates=${#CANDIDATES[@]} max_active_per_gpu=${MAX_ACTIVE_PER_GPU} add_three_per_gpu=1 expected_existing_per_gpu=2 teacher=ADV3B02_CORE90_SOFT_E200 base=EPOC_CONCAT_SAT_DIRECT_METRIC_UNLABELED phase1_dataset=ManySig_only source_only=1 dg_primary=1 leo_primary=1 domain_loss_on=1 unlabeled_direct_optimization=1 concat_sat_mode=full_2b_core_domain concat_sat_ce_only=0 phase1_v2_hard_gates=1 endpoint_accept_v1=1 tail_safety_state_machine=1 os_eff_min_budget=0.15 u_tri_state_required=1 stage2_success_claim=0 deployment_success_claim=0 only=${ONLY_CANDIDATES:-ALL}"
 
 for spec in "${CANDIDATES[@]}"; do
   launch_candidate "${spec}"

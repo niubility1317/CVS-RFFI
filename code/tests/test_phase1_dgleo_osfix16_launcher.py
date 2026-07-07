@@ -49,6 +49,16 @@ def test_osfix16_declares_direct_open_set_and_unlabeled_quarantine_protocol():
     assert "--direct_metric_tail_accept_weight" in out
     assert "--direct_metric_overflow_accept_weight" in out
     assert "--direct_metric_radius_inter_ratio_weight" in out
+    assert "--phase1_v2_hard_gates true" in out
+    assert "--endpoint_accept_policy_id endpoint_accept_v1" in out
+    assert "--tail_safety_state_machine true" in out
+    assert "--tail_safety_p99_expansion_block_final_delta 2.0" in out
+    assert "--tail_safety_p99_expansion_block_best_delta 3.5" in out
+    assert "--os_eff_min_budget 0.15" in out
+    assert "--source_episode_density_gate true" in out
+    assert "--source_episode_overflow_warn 0.90" in out
+    assert "--u_tri_state_required true" in out
+    assert "--u_direct_idle_blocks_promotion true" in out
     assert "ManyTx.pkl" not in out
 
 

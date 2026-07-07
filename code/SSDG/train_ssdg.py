@@ -80,6 +80,15 @@ try:
         missing_joint_safe_metrics,
         protected_metric_snapshot,
     )
+    from cvsrffi.phase1_v2_control import (
+        TailSafetyConfig,
+        TailSafetyStateMachine,
+        assess_endpoint_contract,
+        assess_feasibility_gate,
+        assess_open_set_effective_budget,
+        assess_source_episode_density_gate,
+        assess_unlabeled_tri_state,
+    )
     from cvsrffi.schedule import (
         build_aug_base_cfg,
         build_stage_state,
@@ -120,6 +129,10 @@ except ModuleNotFoundError:
     aggregate_named_stats = compute_core_losses = evaluate_sat_scenarios = None
     detect_one_epoch_drop = detect_paic_variance_guard = guard_minimums_from_args = None
     joint_safe_score = missing_joint_safe_metrics = protected_metric_snapshot = None
+    TailSafetyConfig = TailSafetyStateMachine = None
+    assess_endpoint_contract = assess_feasibility_gate = None
+    assess_open_set_effective_budget = assess_unlabeled_tri_state = None
+    assess_source_episode_density_gate = None
     one_way_kl_from_teacher = None
     build_aug_base_cfg = build_stage_state = configure_augmentor_for_epoch = configure_mixstyle_for_epoch = None
     format_stage_state = make_augmentor = None
@@ -281,6 +294,39 @@ def build_arg_parser() -> argparse.ArgumentParser:
     parser.add_argument("--paic_guard_block_best", type=str2bool, default=True)
     parser.add_argument("--paic_guard_cooldown_epochs", type=int, default=1)
     parser.add_argument("--paic_guard_sat_scale", type=float, default=0.75)
+    parser.add_argument("--phase1_v2_hard_gates", type=str2bool, default=False)
+    parser.add_argument("--endpoint_accept_policy_id", type=str, default="endpoint_accept_v1")
+    parser.add_argument("--endpoint_threshold_source", type=str, default="source_val_only")
+    parser.add_argument("--endpoint_calibration_split", type=str, default="source_val")
+    parser.add_argument("--loss_gate_exported", type=str2bool, default=False)
+    parser.add_argument("--tail_safety_state_machine", type=str2bool, default=False)
+    parser.add_argument("--tail_stop_blocks_final", type=str2bool, default=True)
+    parser.add_argument("--tail_safety_warning_patience", type=int, default=2)
+    parser.add_argument("--tail_safety_rollback_patience", type=int, default=1)
+    parser.add_argument("--tail_safety_max_rollbacks", type=int, default=1)
+    parser.add_argument("--tail_safety_p95_target_deg", type=float, default=54.0)
+    parser.add_argument("--tail_safety_p99_target_deg", type=float, default=70.0)
+    parser.add_argument("--tail_safety_cvar_target_deg", type=float, default=56.0)
+    parser.add_argument("--tail_safety_proxy_vaccept_target", type=float, default=0.35)
+    parser.add_argument("--tail_safety_p99_expansion_block_final_delta", type=float, default=2.0)
+    parser.add_argument("--tail_safety_p99_expansion_block_best_delta", type=float, default=3.5)
+    parser.add_argument("--os_eff_min_budget", type=float, default=0.0)
+    parser.add_argument("--u_tri_state_required", type=str2bool, default=False)
+    parser.add_argument("--u_direct_idle_blocks_promotion", type=str2bool, default=True)
+    parser.add_argument("--source_episode_density_gate", type=str2bool, default=False)
+    parser.add_argument("--source_episode_overflow_warn", type=float, default=0.90)
+    parser.add_argument("--source_episode_min_local_components", type=int, default=1)
+    parser.add_argument("--feasibility_gate", type=str2bool, default=False)
+    parser.add_argument(
+        "--feasibility_stage",
+        type=str,
+        default="audit",
+        choices=["audit", "relaxed", "local", "full"],
+    )
+    parser.add_argument("--feasibility_relaxed_pass", type=str2bool, default=False)
+    parser.add_argument("--feasibility_local_pass", type=str2bool, default=False)
+    parser.add_argument("--feasibility_loss_response_slope", type=float, default=float("nan"))
+    parser.add_argument("--feasibility_overflow_excess_cvar95_delta", type=float, default=float("nan"))
     parser.add_argument("--use_phase2_ground_prototypes", type=str2bool, default=False)
     parser.add_argument("--use_feature_masks", type=str2bool, default=False)
     parser.add_argument("--use_txrx_geometry_losses", type=str2bool, default=False)
@@ -2454,6 +2500,20 @@ def train(args) -> int:
                 f"paic_grad_delta={float(args.paic_guard_grad_delta):.6g} "
                 f"paic_reliable_drop={float(args.paic_guard_reliable_drop):.6g} "
                 f"paic_sat_scale={float(args.paic_guard_sat_scale):.6g}",
+                "[CONFIG-PHASE1-V2] "
+                f"hard_gates={int(bool(args.phase1_v2_hard_gates))} "
+                f"endpoint={str(args.endpoint_accept_policy_id)} "
+                f"loss_gate_exported={int(bool(args.loss_gate_exported))} "
+                f"tail_sm={int(bool(args.tail_safety_state_machine))} "
+                f"tail_targets=p95:{float(args.tail_safety_p95_target_deg):.2f},p99:{float(args.tail_safety_p99_target_deg):.2f},"
+                f"cvar:{float(args.tail_safety_cvar_target_deg):.2f},proxy:{float(args.tail_safety_proxy_vaccept_target):.3f} "
+                f"tail_expansion_delta=final:{float(args.tail_safety_p99_expansion_block_final_delta):.2f},"
+                f"best:{float(args.tail_safety_p99_expansion_block_best_delta):.2f} "
+                f"os_eff_min={float(args.os_eff_min_budget):.3f} "
+                f"u_tri_state_required={int(bool(args.u_tri_state_required))} "
+                f"source_episode_density_gate={int(bool(args.source_episode_density_gate))} "
+                f"source_episode_overflow_warn={float(args.source_episode_overflow_warn):.3f} "
+                f"feasibility_gate={int(bool(args.feasibility_gate))}:{str(args.feasibility_stage)}",
                 "[CONFIG-PROTO-MASK] "
                 f"requested={int(bool(phase2_audit_state.get('requested', False)))} "
                 f"audit_only={int(bool(phase2_audit_state.get('audit_only', True)))} "
@@ -2505,6 +2565,24 @@ def train(args) -> int:
     previous_protected_metrics: Dict[str, float] | None = None
     previous_train_logs: Dict[str, Any] | None = None
     paic_cooldown_remaining = 0
+    phase1_v2_tail_machine = None
+    phase1_v2_final_blocked = False
+    if bool(getattr(args, "tail_safety_state_machine", False)):
+        if TailSafetyStateMachine is None or TailSafetyConfig is None:
+            raise ImportError("cvsrffi.phase1_v2_control is required for --tail_safety_state_machine.")
+        phase1_v2_tail_machine = TailSafetyStateMachine(
+            TailSafetyConfig(
+                p95_target_deg=float(args.tail_safety_p95_target_deg),
+                p99_target_deg=float(args.tail_safety_p99_target_deg),
+                tail_cvar_target_deg=float(args.tail_safety_cvar_target_deg),
+                proxy_vaccept_target=float(args.tail_safety_proxy_vaccept_target),
+                warning_patience=int(args.tail_safety_warning_patience),
+                rollback_patience=int(args.tail_safety_rollback_patience),
+                max_rollbacks=int(args.tail_safety_max_rollbacks),
+                p99_expansion_block_final_delta=float(args.tail_safety_p99_expansion_block_final_delta),
+                p99_expansion_block_best_delta=float(args.tail_safety_p99_expansion_block_best_delta),
+            )
+        )
     for epoch in range(1, total_epochs + 1):
         import time
 
@@ -3495,263 +3573,286 @@ def train(args) -> int:
                 if proto_bank.class_count is not None:
                     active = proto_bank.class_count >= int(args.proto_min_count)
                     proto_info["proto_active_classes"] = float(int(active.sum().detach().item()))
-            epoch_logs.append(
-                {
-                    "train/loss": loss.detach(),
-                    "train/loss_labeled": loss_l.detach(),
-                    "train/loss_tx_labeled": loss_tx_l.detach(),
-                    "train/loss_domain_labeled": loss_dom_l.detach(),
-                    "train/loss_adv_labeled": loss_adv_l.detach(),
-                    "train/loss_cons_labeled": loss_cons_l.detach(),
-                    "train/loss_orth_labeled": loss_orth_l.detach(),
-                    "train/loss_group_ce_labeled": loss_group_ce_l.detach(),
-                    "train/loss_fishr_labeled": loss_fishr_l.detach(),
-                    "train/loss_proto_labeled": loss_proto_l.detach(),
-                    "train/loss_open_world_feat": loss_open_world_feat_l.detach(),
-                    "train/loss_zid_compact": loss_zid_compact_l.detach(),
-                    "train/loss_proxy_unknown": loss_proxy_unknown_l.detach(),
-                    "train/loss_soft_unknown_mixup": loss_soft_unknown_mixup_l.detach(),
-                    "train/loss_source_episode": loss_source_episode_l.detach(),
-                    "train/loss_direct_metric_accept": loss_direct_metric_accept_l.detach(),
-                    "train/loss_sat_cls_labeled": loss_sat_cls_l.detach(),
-                    "train/loss_sat_cons_labeled": loss_sat_cons_l.detach(),
-                    "train/loss_teacher_clean_kl": loss_teacher_clean_kl_l.detach(),
-                    "train/loss_teacher_sat_kl": loss_teacher_sat_kl_l.detach(),
-                    "train/loss_teacher_zid_mse": loss_teacher_zid_mse_l.detach(),
-                    "train/w_loss_tx_labeled": loss_tx_l.detach(),
-                    "train/w_loss_domain_labeled": (cur_w["dom"] * loss_dom_l).detach(),
-                    "train/w_loss_adv_labeled": (cur_w["adv"] * loss_adv_l).detach(),
-                    "train/w_loss_cons_labeled": (cur_w["cons"] * loss_cons_l).detach(),
-                    "train/w_loss_orth_labeled": (cur_w["orth"] * loss_orth_l).detach(),
-                    "train/w_loss_group_ce_labeled": (cur_w["group_ce"] * loss_group_ce_l).detach(),
-                    "train/w_loss_fishr_labeled": (cur_w["fishr"] * loss_fishr_l).detach(),
-                    "train/w_loss_proto_labeled": (cur_w["proto"] * loss_proto_l).detach(),
-                    "train/w_loss_open_world_feat": ((cur_w["open_world_feat"] * ow_feat_stage_scale) * loss_open_world_feat_l).detach(),
-                    "train/w_loss_zid_compact": ((cur_w["zid_compact"] * zid_warm) * loss_zid_compact_l).detach(),
-                    "train/w_loss_proxy_unknown": ((cur_w["proxy_unknown"] * proxy_stage_scale) * loss_proxy_unknown_l).detach(),
-                    "train/w_loss_soft_unknown_mixup": ((cur_w["soft_unknown_mixup"] * soft_unknown_mixup_stage_scale) * loss_soft_unknown_mixup_l).detach(),
-                    "train/w_loss_source_episode": ((cur_w["source_episode"] * source_episode_stage_scale) * loss_source_episode_l).detach(),
-                    "train/w_loss_direct_metric_accept": ((cur_w["direct_metric_accept"] * direct_metric_stage_scale) * loss_direct_metric_accept_l).detach(),
-                    "train/w_loss_sat_cls_labeled": (cur_w["sat_cls"] * loss_sat_cls_l).detach(),
-                    "train/w_loss_sat_cons_labeled": (cur_w["sat_cons"] * loss_sat_cons_l).detach(),
-                    "train/w_loss_teacher_clean_kl": ((float(args.lambda_teacher_clean_kl) * teacher_scale) * loss_teacher_clean_kl_l).detach(),
-                    "train/w_loss_teacher_sat_kl": ((float(args.lambda_teacher_sat_kl) * teacher_scale) * loss_teacher_sat_kl_l).detach(),
-                    "train/w_loss_teacher_zid_mse": ((float(args.lambda_teacher_zid_mse) * teacher_scale) * loss_teacher_zid_mse_l).detach(),
-                    "train/teacher_distill_scale": float(teacher_scale),
-                    "train/concat_sat_active": float(concat_sat_info.get("active", 0.0)),
-                    "train/concat_sat_expanded": float(concat_sat_info.get("expanded", 0.0)),
-                    "train/concat_sat_applied": float(concat_sat_info.get("applied", 0.0)),
-                    "train/concat_sat_clean_batch_size": float(concat_sat_info.get("clean_batch_size", 0.0)),
-                    "train/concat_sat_total_batch_size": float(concat_sat_info.get("total_batch_size", 0.0)),
-                    "train/concat_sat_view_prob": float(concat_sat_info.get("view_prob", 0.0)),
-                    "train/concat_sat_stage_start_epoch": float(concat_sat_info.get("stage_start_epoch", float("nan"))),
-                    "train/concat_sat_stage_index": float(concat_sat_info.get("stage_index", float("nan"))),
-                    "train/loss_unlabeled": loss_u.detach(),
-                    "train/loss_u_domain": loss_u_domain.detach(),
-                    "train/loss_u_adv": loss_u_adv.detach(),
-                    "train/loss_u_sat_cons": loss_u_sat_cons.detach(),
-                    "train/loss_u_direct_metric_accept": loss_u_direct_metric.detach(),
-                    "train/loss_u_quarantine_accept": loss_u_quarantine.detach(),
-                    "train/w_loss_u_domain": (float(args.lambda_u_domain) * loss_u_domain).detach(),
-                    "train/w_loss_u_adv": (float(args.lambda_u_adv) * loss_u_adv).detach(),
-                    "train/w_loss_u_sat_cons": (float(args.lambda_u_sat_cons) * loss_u_sat_cons).detach(),
-                    "train/w_loss_u_direct_metric_accept": (
-                        float(args.lambda_u_direct_metric_accept) * loss_u_direct_metric
-                    ).detach(),
-                    "train/w_loss_u_quarantine_accept": (
-                        float(args.lambda_u_quarantine_accept) * loss_u_quarantine
-                    ).detach(),
-                    "train/u_dm_accept_active": u_dm_info.get("active", float("nan")),
-                    "train/u_dm_accept_selected": u_dm_info.get("selected", float("nan")),
-                    "train/u_dm_accept_valid_domain_selected": u_dm_info.get("valid_domain_selected", float("nan")),
-                    "train/u_dm_accept_sat_pair_count": float(u_sat_pair_count),
-                    "train/u_dm_accept_zid_p50_deg": u_dm_info.get("zid_p50_deg", float("nan")),
-                    "train/u_dm_accept_zid_p95_deg": u_dm_info.get("zid_p95_deg", float("nan")),
-                    "train/u_dm_accept_zid_p99_deg": u_dm_info.get("zid_p99_deg", float("nan")),
-                    "train/u_dm_accept_zid_tail_cvar_deg": u_dm_info.get("zid_tail_cvar_deg", float("nan")),
-                    "train/u_dm_accept_source_overflow": u_dm_info.get("source_overflow", float("nan")),
-                    "train/u_dm_accept_proxy_vaccept": u_dm_info.get("proxy_vaccept", float("nan")),
-                    "train/u_dm_accept_bridge_accept_rate": u_dm_info.get("bridge_accept_rate", float("nan")),
-                    "train/u_dm_accept_low_density_accept_rate": u_dm_info.get("low_density_accept_rate", float("nan")),
-                    "train/u_dm_accept_tail_accept_rate": u_dm_info.get("tail_accept_rate", float("nan")),
-                    "train/u_dm_accept_overflow_accept_rate": u_dm_info.get("overflow_accept_rate", float("nan")),
-                    "train/u_dm_accept_radius_to_inter_ratio": u_dm_info.get("radius_to_inter_ratio", float("nan")),
-                    "train/u_dm_accept_sat_pair_angle_p95_deg": u_dm_info.get("sat_pair_angle_p95_deg", float("nan")),
-                    "train/u_quarantine_active": u_quarantine_info.get("active", float("nan")),
-                    "train/u_quarantine_anchor_count": u_quarantine_info.get("anchor_count", float("nan")),
-                    "train/u_quarantine_query_count": u_quarantine_info.get("query_count", float("nan")),
-                    "train/u_quarantine_active_classes": u_quarantine_info.get("active_classes", float("nan")),
-                    "train/u_quarantine_accept_rate": u_quarantine_info.get("accept_rate", float("nan")),
-                    "train/u_quarantine_accept_loss": u_quarantine_info.get("accept_loss", float("nan")),
-                    "train/u_quarantine_low_density_accept_rate": u_quarantine_info.get("low_density_accept_rate", float("nan")),
-                    "train/u_quarantine_nearest_angle_p50_deg": u_quarantine_info.get("nearest_angle_p50_deg", float("nan")),
-                    "train/u_quarantine_nearest_angle_p95_deg": u_quarantine_info.get("nearest_angle_p95_deg", float("nan")),
-                    "train/u_quarantine_nearest_angle_p99_deg": u_quarantine_info.get("nearest_angle_p99_deg", float("nan")),
-                    "train/u_quarantine_radius_to_inter_ratio": u_quarantine_info.get("radius_to_inter_ratio", float("nan")),
-                    "train/u_quarantine_rate": u_quarantine_info.get("quarantine_rate", float("nan")),
-                    "train/u_quarantine_valid_domain_rate": u_quarantine_info.get("valid_domain_rate", float("nan")),
-                    "train/tx_acc": 100.0 * (out_l["tx_logits"].argmax(dim=1) == y_l).float().mean().detach(),
-                    "train/dom_acc": core_losses.get("dom_acc", float("nan")),
-                    "train/cons_cos": core_losses.get("cons_cos", float("nan")),
-                    "train/grad_total": grad_total,
-                    "train/grad_backbone": grad_backbone,
-                    "train/grad_aux": grad_aux,
-                    "train/grad_domain": grad_domain,
-                    "train/skipped_nonfinite_loss": skipped_nonfinite_loss,
-                    "train/skipped_nonfinite_grad": skipped_nonfinite_grad,
-                    "train/reliable_ratio": reliable_ratio.detach(),
-                    "train/pseudo_conf": pseudo_conf.detach(),
-                    "train/domain_pass": domain_pass.detach(),
-                    "train/temporal_pass": temporal_pass.detach(),
-                    "train/strong_pass": strong_pass.detach(),
-                    "train/pseudo_total": pseudo_total,
-                    "train/pseudo_selected": pseudo_selected,
-                    "train/pseudo_correct": pseudo_correct,
-                    "train/proto_pull_cos": proto_info.get("proto_pull_cos", float("nan")),
-                    "train/proto_push": proto_info.get("proto_push", float("nan")),
-                    "train/proto_active_classes": proto_info.get("proto_active_classes", float("nan")),
-                    "train/ow_feat_compact": ow_feat_info.get("compact", float("nan")),
-                    "train/ow_feat_inter": ow_feat_info.get("inter", float("nan")),
-                    "train/ow_feat_sample_margin": ow_feat_info.get("sample_margin", float("nan")),
-                    "train/ow_feat_domain_align": ow_feat_info.get("domain_align", float("nan")),
-                    "train/ow_feat_active_classes": ow_feat_info.get("active_classes", float("nan")),
-                    "train/ow_feat_pos_angle_deg": ow_feat_info.get("pos_angle_deg", float("nan")),
-                    "train/ow_feat_min_inter_deg": ow_feat_info.get("min_inter_angle_deg", float("nan")),
-                    "train/ow_feat_pos_angle_p50_deg": ow_feat_info.get("pos_angle_p50_deg", float("nan")),
-                    "train/ow_feat_pos_angle_p95_deg": ow_feat_info.get("pos_angle_p95_deg", float("nan")),
-                    "train/ow_feat_pos_angle_p99_deg": ow_feat_info.get("pos_angle_p99_deg", float("nan")),
-                    "train/ow_feat_pos_angle_max_deg": ow_feat_info.get("pos_angle_max_deg", float("nan")),
-                    "train/ow_feat_tail_loss": ow_feat_info.get("tail_loss", float("nan")),
-                    "train/ow_feat_tail_cvar_deg": ow_feat_info.get("tail_cvar_deg", float("nan")),
-                    "train/ow_feat_tail_frac_gt_3sigma": ow_feat_info.get("tail_frac_gt_3sigma", float("nan")),
-                    "train/ow_feat_tail_radius_3sigma_deg": ow_feat_info.get("tail_radius_3sigma_deg", float("nan")),
-                    "train/ow_feat_vacuum_loss": ow_feat_info.get("vacuum_loss", float("nan")),
-                    "train/ow_feat_vacuum_violation_rate": ow_feat_info.get("vacuum_violation_rate", float("nan")),
-                    "train/ow_feat_vacuum_min_neg_angle_deg": ow_feat_info.get("vacuum_min_neg_angle_deg", float("nan")),
-                    "train/ow_feat_vacuum_margin_deg": ow_feat_info.get("vacuum_margin_deg", float("nan")),
-                    "train/ow_feat_vacuum_boundary_deg": ow_feat_info.get("vacuum_boundary_deg", float("nan")),
-                    "train/ow_feat_stage_scale": float(ow_feat_stage_scale),
-                    "train/zid_compact_supcon": zid_compact_info.get("supcon", float("nan")),
-                    "train/zid_compact_radius": zid_compact_info.get("radius", float("nan")),
-                    "train/zid_compact_tail_cvar": zid_compact_info.get("tail_cvar", float("nan")),
-                    "train/zid_compact_active_classes": zid_compact_info.get("active_classes", float("nan")),
-                    "train/zid_compact_pos_angle_p50_deg": zid_compact_info.get("pos_angle_p50_deg", float("nan")),
-                    "train/zid_compact_pos_angle_p95_deg": zid_compact_info.get("pos_angle_p95_deg", float("nan")),
-                    "train/zid_compact_pos_angle_p99_deg": zid_compact_info.get("pos_angle_p99_deg", float("nan")),
-                    "train/zid_compact_tail_cvar_deg": zid_compact_info.get("tail_cvar_deg", float("nan")),
-                    "train/zid_compact_warmup_scale": float(zid_warm),
-                    "train/proxy_unknown_active": proxy_unknown_info.get("active", float("nan")),
-                    "train/proxy_unknown_known_count": proxy_unknown_info.get("known_count", float("nan")),
-                    "train/proxy_unknown_count": proxy_unknown_info.get("proxy_unknown_count", float("nan")),
-                    "train/proxy_unknown_virtual_count": proxy_unknown_info.get("virtual_count", float("nan")),
-                    "train/proxy_unknown_core_count": proxy_unknown_info.get("core_count", float("nan")),
-                    "train/proxy_unknown_tail_count": proxy_unknown_info.get("tail_count", float("nan")),
-                    "train/proxy_unknown_overflow_count": proxy_unknown_info.get("overflow_count", float("nan")),
-                    "train/proxy_unknown_energy_known": proxy_unknown_info.get("energy_known", float("nan")),
-                    "train/proxy_unknown_energy_proxy": proxy_unknown_info.get("energy_proxy", float("nan")),
-                    "train/proxy_unknown_energy_virtual": proxy_unknown_info.get("energy_virtual", float("nan")),
-                    "train/proxy_unknown_margin": proxy_unknown_info.get("energy_margin", float("nan")),
-                    "train/proxy_unknown_accept_energy_threshold": proxy_unknown_info.get("accept_energy_threshold", float("nan")),
-                    "train/proxy_unknown_core_energy_threshold": proxy_unknown_info.get("core_energy_threshold", float("nan")),
-                    "train/proxy_unknown_vaccept_surrogate": proxy_unknown_info.get("vaccept_surrogate", float("nan")),
-                    "train/proxy_unknown_vaccept_surrogate_CVaR": proxy_unknown_info.get("vaccept_surrogate_CVaR", proxy_unknown_info.get("vaccept_surrogate", float("nan"))),
-                    "train/proxy_unknown_core_accept_loss": proxy_unknown_info.get("core_accept_loss", float("nan")),
-                    "train/proxy_unknown_component_gate_unknown": proxy_unknown_info.get("component_gate_unknown", float("nan")),
-                    "train/proxy_unknown_component_gate_accept_prob": proxy_unknown_info.get("component_gate_accept_prob", float("nan")),
-                    "train/proxy_unknown_component_gate_accept_prob_max": proxy_unknown_info.get("component_gate_accept_prob_max", float("nan")),
-                    "train/proxy_unknown_tail_quarantine_loss": proxy_unknown_info.get("tail_quarantine_loss", float("nan")),
-                    "train/proxy_unknown_source_safe_loss": proxy_unknown_info.get("source_safe_loss", float("nan")),
-                    "train/proxy_unknown_bridge_governance_loss": proxy_unknown_info.get("bridge_governance_loss", float("nan")),
-                    "train/proxy_unknown_shell_outward_accept_loss": proxy_unknown_info.get("shell_outward_accept_loss", float("nan")),
-                    "train/proxy_unknown_low_density_accept_loss": proxy_unknown_info.get("low_density_accept_loss", float("nan")),
-                    "train/proxy_unknown_energy_margin_quantile_loss": proxy_unknown_info.get("energy_margin_quantile_loss", float("nan")),
-                    "train/proxy_unknown_radius_budget_loss": proxy_unknown_info.get("radius_budget_loss", float("nan")),
-                    "train/proxy_unknown_radius_inter_ratio_loss": proxy_unknown_info.get("radius_inter_ratio_loss", float("nan")),
-                    "train/proxy_unknown_tail_accept_loss": proxy_unknown_info.get("tail_accept_loss", float("nan")),
-                    "train/proxy_unknown_overflow_accept_loss": proxy_unknown_info.get("overflow_accept_loss", float("nan")),
-                    "train/proxy_unknown_energy_margin_q05": proxy_unknown_info.get("energy_margin_q05", float("nan")),
-                    "train/proxy_unknown_energy_margin_q10": proxy_unknown_info.get("energy_margin_q10", float("nan")),
-                    "train/proxy_unknown_component_radius_p95_deg": proxy_unknown_info.get("component_radius_p95_deg", float("nan")),
-                    "train/proxy_unknown_component_radius_max_deg": proxy_unknown_info.get("component_radius_max_deg", float("nan")),
-                    "train/proxy_unknown_component_radius_mode_code": proxy_unknown_info.get("component_radius_mode_code", float("nan")),
-                    "train/proxy_unknown_component_gate_radius_p95_deg": proxy_unknown_info.get("component_gate_radius_p95_deg", float("nan")),
-                    "train/proxy_unknown_component_gate_radius_max_deg": proxy_unknown_info.get("component_gate_radius_max_deg", float("nan")),
-                    "train/proxy_unknown_radius_inter_ratio": proxy_unknown_info.get("radius_inter_ratio", float("nan")),
-                    "train/proxy_unknown_radius_to_inter_ratio": proxy_unknown_info.get("radius_to_inter_ratio", float("nan")),
-                    "train/proxy_unknown_low_density_accept_prob": proxy_unknown_info.get("low_density_accept_prob", float("nan")),
-                    "train/proxy_unknown_low_density_accept_rate": proxy_unknown_info.get("low_density_accept_rate", float("nan")),
-                    "train/proxy_unknown_auc_proxy": proxy_unknown_info.get("proxy_unknown_auc", float("nan")),
-                    "train/proxy_unknown_virtual_accept_rate": proxy_unknown_info.get("virtual_accept_rate", float("nan")),
-                    "train/proxy_unknown_proxy_vaccept": proxy_unknown_info.get("proxy_vaccept", proxy_unknown_info.get("virtual_accept_rate", float("nan"))),
-                    "train/proxy_unknown_proxy_vaccept_proxy_only": proxy_unknown_info.get("proxy_vaccept_proxy_only", proxy_unknown_info.get("virtual_accept_rate", float("nan"))),
-                    "train/proxy_unknown_proxy_reject_claim_allowed": proxy_unknown_info.get("proxy_reject_claim_allowed", 0.0),
-                    "train/proxy_unknown_virtual_accept_rate_core": proxy_unknown_info.get("virtual_accept_rate_core", float("nan")),
-                    "train/proxy_unknown_proxy_accept_rate": proxy_unknown_info.get("proxy_accept_rate", float("nan")),
-                    "train/proxy_unknown_hard_proxy_accept_rate": proxy_unknown_info.get("hard_proxy_accept_rate", float("nan")),
-                    "train/proxy_unknown_shell_accept_rate": proxy_unknown_info.get("shell_accept_rate", float("nan")),
-                    "train/proxy_unknown_bridge_accept_rate": proxy_unknown_info.get("bridge_accept_rate", float("nan")),
-                    "train/proxy_unknown_outward_accept_rate": proxy_unknown_info.get("outward_accept_rate", float("nan")),
-                    "train/proxy_unknown_vacuum_loss": proxy_unknown_info.get("vacuum_loss", float("nan")),
-                    "train/proxy_unknown_vacuum_violation_rate": proxy_unknown_info.get("vacuum_violation_rate", float("nan")),
-                    "train/proxy_unknown_vacuum_margin_deg": proxy_unknown_info.get("vacuum_margin_deg", float("nan")),
-                    "train/proxy_unknown_vacuum_min_angle_deg": proxy_unknown_info.get("vacuum_min_angle_deg", float("nan")),
-                    "train/proxy_unknown_stage_scale": float(proxy_stage_scale),
-                    "train/soft_unknown_mixup_count": soft_unknown_mixup_info.get("soft_unknown_mixup_count", float("nan")),
-                    "train/soft_unknown_mixup_order": soft_unknown_mixup_info.get("soft_unknown_mixup_order", float("nan")),
-                    "train/soft_unknown_mixup_ce": soft_unknown_mixup_info.get("soft_unknown_mixup_ce", float("nan")),
-                    "train/soft_unknown_mixup_energy": soft_unknown_mixup_info.get("soft_unknown_mixup_energy", float("nan")),
-                    "train/soft_unknown_mixup_vacuum": soft_unknown_mixup_info.get("soft_unknown_mixup_vacuum", float("nan")),
-                    "train/soft_unknown_mixup_virtual_accept_rate": soft_unknown_mixup_info.get("soft_unknown_mixup_virtual_accept_rate", float("nan")),
-                    "train/soft_unknown_mixup_vacuum_violation": soft_unknown_mixup_info.get("soft_unknown_mixup_vacuum_violation", float("nan")),
-                    "train/soft_unknown_mixup_stage_scale": float(soft_unknown_mixup_stage_scale),
-                    "train/source_episode_loss": source_episode_info.get("source_episode_loss", float("nan")),
-                    "train/source_episode_overflow_rate": source_episode_info.get("source_episode_overflow_rate", float("nan")),
-                    "train/source_overflow": source_episode_info.get("source_overflow", source_episode_info.get("source_episode_overflow_rate", float("nan"))),
-                    "train/source_episode_radius_3sigma_deg": source_episode_info.get("source_episode_radius_3sigma_deg", float("nan")),
-                    "train/source_episode_radius_core_deg": source_episode_info.get("source_episode_radius_core_deg", float("nan")),
-                    "train/source_episode_radius_safe_deg": source_episode_info.get("source_episode_radius_safe_deg", float("nan")),
-                    "train/source_episode_radius_mode_code": source_episode_info.get("source_episode_radius_mode_code", float("nan")),
-                    "train/source_episode_tail_query_rate": source_episode_info.get("source_episode_tail_query_rate", float("nan")),
-                    "train/source_episode_val_angle_deg": source_episode_info.get("source_episode_val_angle_deg", float("nan")),
-                    "train/source_episode_classes": source_episode_info.get("source_episode_classes", float("nan")),
-                    "train/source_episode_domains": source_episode_info.get("source_episode_domains", float("nan")),
-                    "train/source_episode_mixup_count": source_episode_info.get("source_episode_mixup_count", float("nan")),
-                    "train/source_episode_mixup_order": source_episode_info.get("source_episode_mixup_order", float("nan")),
-                    "train/source_episode_mixup_loss": source_episode_info.get("source_episode_mixup_loss", float("nan")),
-                    "train/source_episode_mixup_overflow_rate": source_episode_info.get("source_episode_mixup_overflow_rate", float("nan")),
-                    "train/source_episode_mixup_margin_deg": source_episode_info.get("source_episode_mixup_margin_deg", float("nan")),
-                    "train/source_episode_stage_scale": float(source_episode_stage_scale),
-                    "train/dm_accept_active": direct_metric_info.get("active", float("nan")),
-                    "train/dm_accept_active_classes": direct_metric_info.get("active_classes", float("nan")),
-                    "train/dm_accept_zid_p50_deg": direct_metric_info.get("zid_p50_deg", float("nan")),
-                    "train/dm_accept_zid_p95_deg": direct_metric_info.get("zid_p95_deg", float("nan")),
-                    "train/dm_accept_zid_p99_deg": direct_metric_info.get("zid_p99_deg", float("nan")),
-                    "train/dm_accept_zid_tail_cvar_deg": direct_metric_info.get("zid_tail_cvar_deg", float("nan")),
-                    "train/dm_accept_source_overflow": direct_metric_info.get("source_overflow", float("nan")),
-                    "train/dm_accept_source_overflow_loss": direct_metric_info.get("source_overflow_loss", float("nan")),
-                    "train/dm_accept_proxy_vaccept": direct_metric_info.get("proxy_vaccept", float("nan")),
-                    "train/dm_accept_proxy_vaccept_loss": direct_metric_info.get("proxy_vaccept_loss", float("nan")),
-                    "train/dm_accept_bridge_accept_rate": direct_metric_info.get("bridge_accept_rate", float("nan")),
-                    "train/dm_accept_bridge_accept_loss": direct_metric_info.get("bridge_accept_loss", float("nan")),
-                    "train/dm_accept_shell_accept_rate": direct_metric_info.get("shell_accept_rate", float("nan")),
-                    "train/dm_accept_outward_accept_rate": direct_metric_info.get("outward_accept_rate", float("nan")),
-                    "train/dm_accept_low_density_accept_rate": direct_metric_info.get("low_density_accept_rate", float("nan")),
-                    "train/dm_accept_low_density_accept_loss": direct_metric_info.get("low_density_accept_loss", float("nan")),
-                    "train/dm_accept_tail_accept_rate": direct_metric_info.get("tail_accept_rate", float("nan")),
-                    "train/dm_accept_tail_accept_loss": direct_metric_info.get("tail_accept_loss", float("nan")),
-                    "train/dm_accept_overflow_accept_rate": direct_metric_info.get("overflow_accept_rate", float("nan")),
-                    "train/dm_accept_overflow_accept_loss": direct_metric_info.get("overflow_accept_loss", float("nan")),
-                    "train/dm_accept_radius_to_inter_ratio": direct_metric_info.get("radius_to_inter_ratio", float("nan")),
-                    "train/dm_accept_radius_inter_ratio_loss": direct_metric_info.get("radius_inter_ratio_loss", float("nan")),
-                    "train/dm_accept_core_accept_rate": direct_metric_info.get("core_accept_rate", float("nan")),
-                    "train/dm_accept_core_accept_loss": direct_metric_info.get("core_accept_loss", float("nan")),
-                    "train/dm_accept_sat_pair_angle_p95_deg": direct_metric_info.get("sat_pair_angle_p95_deg", float("nan")),
-                    "train/dm_accept_sat_pair_loss": direct_metric_info.get("sat_pair_loss", float("nan")),
-                    "train/dm_accept_zid_quantile_loss": direct_metric_info.get("zid_quantile_loss", float("nan")),
-                    "train/dm_accept_virtual_count": direct_metric_info.get("virtual_count", float("nan")),
-                    "train/dm_accept_stage_scale": float(direct_metric_stage_scale),
-                }
-            )
+        u_tri_trusted_core_count = float(u_dm_info.get("selected", 0.0) or 0.0)
+        u_tri_query_count = float(u_quarantine_info.get("query_count", 0.0) or 0.0)
+        u_tri_accept_rate = float(u_quarantine_info.get("accept_rate", 0.0) or 0.0)
+        if not math.isfinite(u_tri_trusted_core_count):
+            u_tri_trusted_core_count = 0.0
+        if not math.isfinite(u_tri_query_count):
+            u_tri_query_count = 0.0
+        if not math.isfinite(u_tri_accept_rate):
+            u_tri_accept_rate = 0.0
+        u_tri_ambiguous_tail_count = max(0.0, u_tri_query_count * max(0.0, min(1.0, u_tri_accept_rate)))
+        u_tri_outside_reject_count = max(0.0, u_tri_query_count - u_tri_ambiguous_tail_count)
+        epoch_logs.append(
+            {
+                "train/loss": loss.detach(),
+                "train/loss_labeled": loss_l.detach(),
+                "train/loss_tx_labeled": loss_tx_l.detach(),
+                "train/loss_domain_labeled": loss_dom_l.detach(),
+                "train/loss_adv_labeled": loss_adv_l.detach(),
+                "train/loss_cons_labeled": loss_cons_l.detach(),
+                "train/loss_orth_labeled": loss_orth_l.detach(),
+                "train/loss_group_ce_labeled": loss_group_ce_l.detach(),
+                "train/loss_fishr_labeled": loss_fishr_l.detach(),
+                "train/loss_proto_labeled": loss_proto_l.detach(),
+                "train/loss_open_world_feat": loss_open_world_feat_l.detach(),
+                "train/loss_zid_compact": loss_zid_compact_l.detach(),
+                "train/loss_proxy_unknown": loss_proxy_unknown_l.detach(),
+                "train/loss_soft_unknown_mixup": loss_soft_unknown_mixup_l.detach(),
+                "train/loss_source_episode": loss_source_episode_l.detach(),
+                "train/loss_direct_metric_accept": loss_direct_metric_accept_l.detach(),
+                "train/loss_sat_cls_labeled": loss_sat_cls_l.detach(),
+                "train/loss_sat_cons_labeled": loss_sat_cons_l.detach(),
+                "train/loss_teacher_clean_kl": loss_teacher_clean_kl_l.detach(),
+                "train/loss_teacher_sat_kl": loss_teacher_sat_kl_l.detach(),
+                "train/loss_teacher_zid_mse": loss_teacher_zid_mse_l.detach(),
+                "train/w_loss_tx_labeled": loss_tx_l.detach(),
+                "train/w_loss_domain_labeled": (cur_w["dom"] * loss_dom_l).detach(),
+                "train/w_loss_adv_labeled": (cur_w["adv"] * loss_adv_l).detach(),
+                "train/w_loss_cons_labeled": (cur_w["cons"] * loss_cons_l).detach(),
+                "train/w_loss_orth_labeled": (cur_w["orth"] * loss_orth_l).detach(),
+                "train/w_loss_group_ce_labeled": (cur_w["group_ce"] * loss_group_ce_l).detach(),
+                "train/w_loss_fishr_labeled": (cur_w["fishr"] * loss_fishr_l).detach(),
+                "train/w_loss_proto_labeled": (cur_w["proto"] * loss_proto_l).detach(),
+                "train/w_loss_open_world_feat": ((cur_w["open_world_feat"] * ow_feat_stage_scale) * loss_open_world_feat_l).detach(),
+                "train/w_loss_zid_compact": ((cur_w["zid_compact"] * zid_warm) * loss_zid_compact_l).detach(),
+                "train/w_loss_proxy_unknown": ((cur_w["proxy_unknown"] * proxy_stage_scale) * loss_proxy_unknown_l).detach(),
+                "train/w_loss_soft_unknown_mixup": ((cur_w["soft_unknown_mixup"] * soft_unknown_mixup_stage_scale) * loss_soft_unknown_mixup_l).detach(),
+                "train/w_loss_source_episode": ((cur_w["source_episode"] * source_episode_stage_scale) * loss_source_episode_l).detach(),
+                "train/w_loss_direct_metric_accept": ((cur_w["direct_metric_accept"] * direct_metric_stage_scale) * loss_direct_metric_accept_l).detach(),
+                "train/w_loss_sat_cls_labeled": (cur_w["sat_cls"] * loss_sat_cls_l).detach(),
+                "train/w_loss_sat_cons_labeled": (cur_w["sat_cons"] * loss_sat_cons_l).detach(),
+                "train/w_loss_teacher_clean_kl": ((float(args.lambda_teacher_clean_kl) * teacher_scale) * loss_teacher_clean_kl_l).detach(),
+                "train/w_loss_teacher_sat_kl": ((float(args.lambda_teacher_sat_kl) * teacher_scale) * loss_teacher_sat_kl_l).detach(),
+                "train/w_loss_teacher_zid_mse": ((float(args.lambda_teacher_zid_mse) * teacher_scale) * loss_teacher_zid_mse_l).detach(),
+                "train/teacher_distill_scale": float(teacher_scale),
+                "train/concat_sat_active": float(concat_sat_info.get("active", 0.0)),
+                "train/concat_sat_expanded": float(concat_sat_info.get("expanded", 0.0)),
+                "train/concat_sat_applied": float(concat_sat_info.get("applied", 0.0)),
+                "train/concat_sat_clean_batch_size": float(concat_sat_info.get("clean_batch_size", 0.0)),
+                "train/concat_sat_total_batch_size": float(concat_sat_info.get("total_batch_size", 0.0)),
+                "train/concat_sat_view_prob": float(concat_sat_info.get("view_prob", 0.0)),
+                "train/concat_sat_stage_start_epoch": float(concat_sat_info.get("stage_start_epoch", float("nan"))),
+                "train/concat_sat_stage_index": float(concat_sat_info.get("stage_index", float("nan"))),
+                "train/loss_unlabeled": loss_u.detach(),
+                "train/loss_u_domain": loss_u_domain.detach(),
+                "train/loss_u_adv": loss_u_adv.detach(),
+                "train/loss_u_sat_cons": loss_u_sat_cons.detach(),
+                "train/loss_u_direct_metric_accept": loss_u_direct_metric.detach(),
+                "train/loss_u_quarantine_accept": loss_u_quarantine.detach(),
+                "train/w_loss_u_domain": (float(args.lambda_u_domain) * loss_u_domain).detach(),
+                "train/w_loss_u_adv": (float(args.lambda_u_adv) * loss_u_adv).detach(),
+                "train/w_loss_u_sat_cons": (float(args.lambda_u_sat_cons) * loss_u_sat_cons).detach(),
+                "train/w_loss_u_direct_metric_accept": (
+                    float(args.lambda_u_direct_metric_accept) * loss_u_direct_metric
+                ).detach(),
+                "train/w_loss_u_quarantine_accept": (
+                    float(args.lambda_u_quarantine_accept) * loss_u_quarantine
+                ).detach(),
+                "train/u_dm_accept_active": u_dm_info.get("active", float("nan")),
+                "train/u_dm_accept_selected": u_dm_info.get("selected", float("nan")),
+                "train/u_dm_accept_valid_domain_selected": u_dm_info.get("valid_domain_selected", float("nan")),
+                "train/u_dm_accept_sat_pair_count": float(u_sat_pair_count),
+                "train/u_dm_accept_zid_p50_deg": u_dm_info.get("zid_p50_deg", float("nan")),
+                "train/u_dm_accept_zid_p95_deg": u_dm_info.get("zid_p95_deg", float("nan")),
+                "train/u_dm_accept_zid_p99_deg": u_dm_info.get("zid_p99_deg", float("nan")),
+                "train/u_dm_accept_zid_tail_cvar_deg": u_dm_info.get("zid_tail_cvar_deg", float("nan")),
+                "train/u_dm_accept_source_overflow": u_dm_info.get("source_overflow", float("nan")),
+                "train/u_dm_accept_proxy_vaccept": u_dm_info.get("proxy_vaccept", float("nan")),
+                "train/u_dm_accept_bridge_accept_rate": u_dm_info.get("bridge_accept_rate", float("nan")),
+                "train/u_dm_accept_low_density_accept_rate": u_dm_info.get("low_density_accept_rate", float("nan")),
+                "train/u_dm_accept_tail_accept_rate": u_dm_info.get("tail_accept_rate", float("nan")),
+                "train/u_dm_accept_overflow_accept_rate": u_dm_info.get("overflow_accept_rate", float("nan")),
+                "train/u_dm_accept_radius_to_inter_ratio": u_dm_info.get("radius_to_inter_ratio", float("nan")),
+                "train/u_dm_accept_sat_pair_angle_p95_deg": u_dm_info.get("sat_pair_angle_p95_deg", float("nan")),
+                "train/u_quarantine_active": u_quarantine_info.get("active", float("nan")),
+                "train/u_quarantine_anchor_count": u_quarantine_info.get("anchor_count", float("nan")),
+                "train/u_quarantine_query_count": u_quarantine_info.get("query_count", float("nan")),
+                "train/u_quarantine_active_classes": u_quarantine_info.get("active_classes", float("nan")),
+                "train/u_quarantine_accept_rate": u_quarantine_info.get("accept_rate", float("nan")),
+                "train/u_quarantine_accept_loss": u_quarantine_info.get("accept_loss", float("nan")),
+                "train/u_quarantine_low_density_accept_rate": u_quarantine_info.get("low_density_accept_rate", float("nan")),
+                "train/u_quarantine_nearest_angle_p50_deg": u_quarantine_info.get("nearest_angle_p50_deg", float("nan")),
+                "train/u_quarantine_nearest_angle_p95_deg": u_quarantine_info.get("nearest_angle_p95_deg", float("nan")),
+                "train/u_quarantine_nearest_angle_p99_deg": u_quarantine_info.get("nearest_angle_p99_deg", float("nan")),
+                "train/u_quarantine_radius_to_inter_ratio": u_quarantine_info.get("radius_to_inter_ratio", float("nan")),
+                "train/u_quarantine_rate": u_quarantine_info.get("quarantine_rate", float("nan")),
+                "train/u_quarantine_valid_domain_rate": u_quarantine_info.get("valid_domain_rate", float("nan")),
+                "train/u_tri_trusted_core_count": u_tri_trusted_core_count,
+                "train/u_tri_ambiguous_tail_count": u_tri_ambiguous_tail_count,
+                "train/u_tri_outside_reject_count": u_tri_outside_reject_count,
+                "train/tx_acc": 100.0 * (out_l["tx_logits"].argmax(dim=1) == y_l).float().mean().detach(),
+                "train/dom_acc": core_losses.get("dom_acc", float("nan")),
+                "train/cons_cos": core_losses.get("cons_cos", float("nan")),
+                "train/grad_total": grad_total,
+                "train/grad_backbone": grad_backbone,
+                "train/grad_aux": grad_aux,
+                "train/grad_domain": grad_domain,
+                "train/skipped_nonfinite_loss": skipped_nonfinite_loss,
+                "train/skipped_nonfinite_grad": skipped_nonfinite_grad,
+                "train/reliable_ratio": reliable_ratio.detach(),
+                "train/pseudo_conf": pseudo_conf.detach(),
+                "train/domain_pass": domain_pass.detach(),
+                "train/temporal_pass": temporal_pass.detach(),
+                "train/strong_pass": strong_pass.detach(),
+                "train/pseudo_total": pseudo_total,
+                "train/pseudo_selected": pseudo_selected,
+                "train/pseudo_correct": pseudo_correct,
+                "train/proto_pull_cos": proto_info.get("proto_pull_cos", float("nan")),
+                "train/proto_push": proto_info.get("proto_push", float("nan")),
+                "train/proto_active_classes": proto_info.get("proto_active_classes", float("nan")),
+                "train/ow_feat_compact": ow_feat_info.get("compact", float("nan")),
+                "train/ow_feat_inter": ow_feat_info.get("inter", float("nan")),
+                "train/ow_feat_sample_margin": ow_feat_info.get("sample_margin", float("nan")),
+                "train/ow_feat_domain_align": ow_feat_info.get("domain_align", float("nan")),
+                "train/ow_feat_active_classes": ow_feat_info.get("active_classes", float("nan")),
+                "train/ow_feat_pos_angle_deg": ow_feat_info.get("pos_angle_deg", float("nan")),
+                "train/ow_feat_min_inter_deg": ow_feat_info.get("min_inter_angle_deg", float("nan")),
+                "train/ow_feat_pos_angle_p50_deg": ow_feat_info.get("pos_angle_p50_deg", float("nan")),
+                "train/ow_feat_pos_angle_p95_deg": ow_feat_info.get("pos_angle_p95_deg", float("nan")),
+                "train/ow_feat_pos_angle_p99_deg": ow_feat_info.get("pos_angle_p99_deg", float("nan")),
+                "train/ow_feat_pos_angle_max_deg": ow_feat_info.get("pos_angle_max_deg", float("nan")),
+                "train/ow_feat_tail_loss": ow_feat_info.get("tail_loss", float("nan")),
+                "train/ow_feat_tail_cvar_deg": ow_feat_info.get("tail_cvar_deg", float("nan")),
+                "train/ow_feat_tail_frac_gt_3sigma": ow_feat_info.get("tail_frac_gt_3sigma", float("nan")),
+                "train/ow_feat_tail_radius_3sigma_deg": ow_feat_info.get("tail_radius_3sigma_deg", float("nan")),
+                "train/ow_feat_vacuum_loss": ow_feat_info.get("vacuum_loss", float("nan")),
+                "train/ow_feat_vacuum_violation_rate": ow_feat_info.get("vacuum_violation_rate", float("nan")),
+                "train/ow_feat_vacuum_min_neg_angle_deg": ow_feat_info.get("vacuum_min_neg_angle_deg", float("nan")),
+                "train/ow_feat_vacuum_margin_deg": ow_feat_info.get("vacuum_margin_deg", float("nan")),
+                "train/ow_feat_vacuum_boundary_deg": ow_feat_info.get("vacuum_boundary_deg", float("nan")),
+                "train/ow_feat_stage_scale": float(ow_feat_stage_scale),
+                "train/zid_compact_supcon": zid_compact_info.get("supcon", float("nan")),
+                "train/zid_compact_radius": zid_compact_info.get("radius", float("nan")),
+                "train/zid_compact_tail_cvar": zid_compact_info.get("tail_cvar", float("nan")),
+                "train/zid_compact_active_classes": zid_compact_info.get("active_classes", float("nan")),
+                "train/zid_compact_pos_angle_p50_deg": zid_compact_info.get("pos_angle_p50_deg", float("nan")),
+                "train/zid_compact_pos_angle_p95_deg": zid_compact_info.get("pos_angle_p95_deg", float("nan")),
+                "train/zid_compact_pos_angle_p99_deg": zid_compact_info.get("pos_angle_p99_deg", float("nan")),
+                "train/zid_compact_tail_cvar_deg": zid_compact_info.get("tail_cvar_deg", float("nan")),
+                "train/zid_compact_warmup_scale": float(zid_warm),
+                "train/proxy_unknown_active": proxy_unknown_info.get("active", float("nan")),
+                "train/proxy_unknown_known_count": proxy_unknown_info.get("known_count", float("nan")),
+                "train/proxy_unknown_count": proxy_unknown_info.get("proxy_unknown_count", float("nan")),
+                "train/proxy_unknown_virtual_count": proxy_unknown_info.get("virtual_count", float("nan")),
+                "train/proxy_unknown_core_count": proxy_unknown_info.get("core_count", float("nan")),
+                "train/proxy_unknown_tail_count": proxy_unknown_info.get("tail_count", float("nan")),
+                "train/proxy_unknown_overflow_count": proxy_unknown_info.get("overflow_count", float("nan")),
+                "train/proxy_unknown_energy_known": proxy_unknown_info.get("energy_known", float("nan")),
+                "train/proxy_unknown_energy_proxy": proxy_unknown_info.get("energy_proxy", float("nan")),
+                "train/proxy_unknown_energy_virtual": proxy_unknown_info.get("energy_virtual", float("nan")),
+                "train/proxy_unknown_margin": proxy_unknown_info.get("energy_margin", float("nan")),
+                "train/proxy_unknown_accept_energy_threshold": proxy_unknown_info.get("accept_energy_threshold", float("nan")),
+                "train/proxy_unknown_core_energy_threshold": proxy_unknown_info.get("core_energy_threshold", float("nan")),
+                "train/proxy_unknown_vaccept_surrogate": proxy_unknown_info.get("vaccept_surrogate", float("nan")),
+                "train/proxy_unknown_vaccept_surrogate_CVaR": proxy_unknown_info.get("vaccept_surrogate_CVaR", proxy_unknown_info.get("vaccept_surrogate", float("nan"))),
+                "train/proxy_unknown_core_accept_loss": proxy_unknown_info.get("core_accept_loss", float("nan")),
+                "train/proxy_unknown_component_gate_unknown": proxy_unknown_info.get("component_gate_unknown", float("nan")),
+                "train/proxy_unknown_component_gate_accept_prob": proxy_unknown_info.get("component_gate_accept_prob", float("nan")),
+                "train/proxy_unknown_component_gate_accept_prob_max": proxy_unknown_info.get("component_gate_accept_prob_max", float("nan")),
+                "train/proxy_unknown_tail_quarantine_loss": proxy_unknown_info.get("tail_quarantine_loss", float("nan")),
+                "train/proxy_unknown_source_safe_loss": proxy_unknown_info.get("source_safe_loss", float("nan")),
+                "train/proxy_unknown_bridge_governance_loss": proxy_unknown_info.get("bridge_governance_loss", float("nan")),
+                "train/proxy_unknown_shell_outward_accept_loss": proxy_unknown_info.get("shell_outward_accept_loss", float("nan")),
+                "train/proxy_unknown_low_density_accept_loss": proxy_unknown_info.get("low_density_accept_loss", float("nan")),
+                "train/proxy_unknown_energy_margin_quantile_loss": proxy_unknown_info.get("energy_margin_quantile_loss", float("nan")),
+                "train/proxy_unknown_radius_budget_loss": proxy_unknown_info.get("radius_budget_loss", float("nan")),
+                "train/proxy_unknown_radius_inter_ratio_loss": proxy_unknown_info.get("radius_inter_ratio_loss", float("nan")),
+                "train/proxy_unknown_tail_accept_loss": proxy_unknown_info.get("tail_accept_loss", float("nan")),
+                "train/proxy_unknown_overflow_accept_loss": proxy_unknown_info.get("overflow_accept_loss", float("nan")),
+                "train/proxy_unknown_energy_margin_q05": proxy_unknown_info.get("energy_margin_q05", float("nan")),
+                "train/proxy_unknown_energy_margin_q10": proxy_unknown_info.get("energy_margin_q10", float("nan")),
+                "train/proxy_unknown_component_radius_p95_deg": proxy_unknown_info.get("component_radius_p95_deg", float("nan")),
+                "train/proxy_unknown_component_radius_max_deg": proxy_unknown_info.get("component_radius_max_deg", float("nan")),
+                "train/proxy_unknown_component_radius_mode_code": proxy_unknown_info.get("component_radius_mode_code", float("nan")),
+                "train/proxy_unknown_component_gate_radius_p95_deg": proxy_unknown_info.get("component_gate_radius_p95_deg", float("nan")),
+                "train/proxy_unknown_component_gate_radius_max_deg": proxy_unknown_info.get("component_gate_radius_max_deg", float("nan")),
+                "train/proxy_unknown_radius_inter_ratio": proxy_unknown_info.get("radius_inter_ratio", float("nan")),
+                "train/proxy_unknown_radius_to_inter_ratio": proxy_unknown_info.get("radius_to_inter_ratio", float("nan")),
+                "train/proxy_unknown_low_density_accept_prob": proxy_unknown_info.get("low_density_accept_prob", float("nan")),
+                "train/proxy_unknown_low_density_accept_rate": proxy_unknown_info.get("low_density_accept_rate", float("nan")),
+                "train/proxy_unknown_auc_proxy": proxy_unknown_info.get("proxy_unknown_auc", float("nan")),
+                "train/proxy_unknown_virtual_accept_rate": proxy_unknown_info.get("virtual_accept_rate", float("nan")),
+                "train/proxy_unknown_proxy_vaccept": proxy_unknown_info.get("proxy_vaccept", proxy_unknown_info.get("virtual_accept_rate", float("nan"))),
+                "train/proxy_unknown_proxy_vaccept_proxy_only": proxy_unknown_info.get("proxy_vaccept_proxy_only", proxy_unknown_info.get("virtual_accept_rate", float("nan"))),
+                "train/proxy_unknown_proxy_reject_claim_allowed": proxy_unknown_info.get("proxy_reject_claim_allowed", 0.0),
+                "train/proxy_unknown_virtual_accept_rate_core": proxy_unknown_info.get("virtual_accept_rate_core", float("nan")),
+                "train/proxy_unknown_proxy_accept_rate": proxy_unknown_info.get("proxy_accept_rate", float("nan")),
+                "train/proxy_unknown_hard_proxy_accept_rate": proxy_unknown_info.get("hard_proxy_accept_rate", float("nan")),
+                "train/proxy_unknown_shell_accept_rate": proxy_unknown_info.get("shell_accept_rate", float("nan")),
+                "train/proxy_unknown_bridge_accept_rate": proxy_unknown_info.get("bridge_accept_rate", float("nan")),
+                "train/proxy_unknown_outward_accept_rate": proxy_unknown_info.get("outward_accept_rate", float("nan")),
+                "train/proxy_unknown_vacuum_loss": proxy_unknown_info.get("vacuum_loss", float("nan")),
+                "train/proxy_unknown_vacuum_violation_rate": proxy_unknown_info.get("vacuum_violation_rate", float("nan")),
+                "train/proxy_unknown_vacuum_margin_deg": proxy_unknown_info.get("vacuum_margin_deg", float("nan")),
+                "train/proxy_unknown_vacuum_min_angle_deg": proxy_unknown_info.get("vacuum_min_angle_deg", float("nan")),
+                "train/proxy_unknown_stage_scale": float(proxy_stage_scale),
+                "train/soft_unknown_mixup_count": soft_unknown_mixup_info.get("soft_unknown_mixup_count", float("nan")),
+                "train/soft_unknown_mixup_order": soft_unknown_mixup_info.get("soft_unknown_mixup_order", float("nan")),
+                "train/soft_unknown_mixup_ce": soft_unknown_mixup_info.get("soft_unknown_mixup_ce", float("nan")),
+                "train/soft_unknown_mixup_energy": soft_unknown_mixup_info.get("soft_unknown_mixup_energy", float("nan")),
+                "train/soft_unknown_mixup_vacuum": soft_unknown_mixup_info.get("soft_unknown_mixup_vacuum", float("nan")),
+                "train/soft_unknown_mixup_virtual_accept_rate": soft_unknown_mixup_info.get("soft_unknown_mixup_virtual_accept_rate", float("nan")),
+                "train/soft_unknown_mixup_vacuum_violation": soft_unknown_mixup_info.get("soft_unknown_mixup_vacuum_violation", float("nan")),
+                "train/soft_unknown_mixup_stage_scale": float(soft_unknown_mixup_stage_scale),
+                "train/source_episode_loss": source_episode_info.get("source_episode_loss", float("nan")),
+                "train/source_episode_overflow_rate": source_episode_info.get("source_episode_overflow_rate", float("nan")),
+                "train/source_overflow": source_episode_info.get("source_overflow", source_episode_info.get("source_episode_overflow_rate", float("nan"))),
+                "train/source_episode_radius_3sigma_deg": source_episode_info.get("source_episode_radius_3sigma_deg", float("nan")),
+                "train/source_episode_radius_core_deg": source_episode_info.get("source_episode_radius_core_deg", float("nan")),
+                "train/source_episode_radius_safe_deg": source_episode_info.get("source_episode_radius_safe_deg", float("nan")),
+                "train/source_episode_radius_mode_code": source_episode_info.get("source_episode_radius_mode_code", float("nan")),
+                "train/source_episode_tail_query_rate": source_episode_info.get("source_episode_tail_query_rate", float("nan")),
+                "train/source_episode_val_angle_deg": source_episode_info.get("source_episode_val_angle_deg", float("nan")),
+                "train/source_episode_classes": source_episode_info.get("source_episode_classes", float("nan")),
+                "train/source_episode_domains": source_episode_info.get("source_episode_domains", float("nan")),
+                "train/source_episode_mixup_count": source_episode_info.get("source_episode_mixup_count", float("nan")),
+                "train/source_episode_mixup_order": source_episode_info.get("source_episode_mixup_order", float("nan")),
+                "train/source_episode_mixup_loss": source_episode_info.get("source_episode_mixup_loss", float("nan")),
+                "train/source_episode_mixup_overflow_rate": source_episode_info.get("source_episode_mixup_overflow_rate", float("nan")),
+                "train/source_episode_mixup_margin_deg": source_episode_info.get("source_episode_mixup_margin_deg", float("nan")),
+                "train/source_episode_stage_scale": float(source_episode_stage_scale),
+                "train/source_episode_receiver_local_component_count": source_episode_info.get(
+                    "source_episode_receiver_local_component_count", float("nan")
+                ),
+                "train/source_episode_core_tail_outside_ready": source_episode_info.get(
+                    "source_episode_core_tail_outside_ready", float("nan")
+                ),
+                "train/source_episode_density_gate_active": source_episode_info.get(
+                    "source_episode_density_gate_active", float("nan")
+                ),
+                "train/dm_accept_active": direct_metric_info.get("active", float("nan")),
+                "train/dm_accept_active_classes": direct_metric_info.get("active_classes", float("nan")),
+                "train/dm_accept_zid_p50_deg": direct_metric_info.get("zid_p50_deg", float("nan")),
+                "train/dm_accept_zid_p95_deg": direct_metric_info.get("zid_p95_deg", float("nan")),
+                "train/dm_accept_zid_p99_deg": direct_metric_info.get("zid_p99_deg", float("nan")),
+                "train/dm_accept_zid_tail_cvar_deg": direct_metric_info.get("zid_tail_cvar_deg", float("nan")),
+                "train/dm_accept_source_overflow": direct_metric_info.get("source_overflow", float("nan")),
+                "train/dm_accept_source_overflow_loss": direct_metric_info.get("source_overflow_loss", float("nan")),
+                "train/dm_accept_proxy_vaccept": direct_metric_info.get("proxy_vaccept", float("nan")),
+                "train/dm_accept_proxy_vaccept_loss": direct_metric_info.get("proxy_vaccept_loss", float("nan")),
+                "train/dm_accept_bridge_accept_rate": direct_metric_info.get("bridge_accept_rate", float("nan")),
+                "train/dm_accept_bridge_accept_loss": direct_metric_info.get("bridge_accept_loss", float("nan")),
+                "train/dm_accept_shell_accept_rate": direct_metric_info.get("shell_accept_rate", float("nan")),
+                "train/dm_accept_outward_accept_rate": direct_metric_info.get("outward_accept_rate", float("nan")),
+                "train/dm_accept_low_density_accept_rate": direct_metric_info.get("low_density_accept_rate", float("nan")),
+                "train/dm_accept_low_density_accept_loss": direct_metric_info.get("low_density_accept_loss", float("nan")),
+                "train/dm_accept_tail_accept_rate": direct_metric_info.get("tail_accept_rate", float("nan")),
+                "train/dm_accept_tail_accept_loss": direct_metric_info.get("tail_accept_loss", float("nan")),
+                "train/dm_accept_overflow_accept_rate": direct_metric_info.get("overflow_accept_rate", float("nan")),
+                "train/dm_accept_overflow_accept_loss": direct_metric_info.get("overflow_accept_loss", float("nan")),
+                "train/dm_accept_radius_to_inter_ratio": direct_metric_info.get("radius_to_inter_ratio", float("nan")),
+                "train/dm_accept_radius_inter_ratio_loss": direct_metric_info.get("radius_inter_ratio_loss", float("nan")),
+                "train/dm_accept_core_accept_rate": direct_metric_info.get("core_accept_rate", float("nan")),
+                "train/dm_accept_core_accept_loss": direct_metric_info.get("core_accept_loss", float("nan")),
+                "train/dm_accept_sat_pair_angle_p95_deg": direct_metric_info.get("sat_pair_angle_p95_deg", float("nan")),
+                "train/dm_accept_sat_pair_loss": direct_metric_info.get("sat_pair_loss", float("nan")),
+                "train/dm_accept_zid_quantile_loss": direct_metric_info.get("zid_quantile_loss", float("nan")),
+                "train/dm_accept_virtual_count": direct_metric_info.get("virtual_count", float("nan")),
+                "train/dm_accept_stage_scale": float(direct_metric_stage_scale),
+            }
+        )
 
         val_stats = evaluate_loader(model, data_ctx["val_loader"], device, data_ctx["domain_label_map"], max_batches=int(args.eval_max_batches))
         val_improved = float(val_stats.get("tx_acc", float("nan"))) > float(best_val)
@@ -3875,6 +3976,104 @@ def train(args) -> int:
             guard_state.update({f"drop_{key}": value for key, value in drop_decision.details.items()})
         if paic_decision is not None:
             guard_state.update({f"paic_{key}": value for key, value in paic_decision.details.items()})
+        phase1_v2_guard_fired = False
+        phase1_v2_reasons: List[str] = []
+        if bool(getattr(args, "phase1_v2_hard_gates", False)):
+            if (
+                assess_endpoint_contract is None
+                or assess_open_set_effective_budget is None
+                or assess_unlabeled_tri_state is None
+                or assess_source_episode_density_gate is None
+            ):
+                raise ImportError("cvsrffi.phase1_v2_control is required for --phase1_v2_hard_gates.")
+            endpoint_decision = assess_endpoint_contract(
+                {
+                    "phase": "Phase1_source_only",
+                    "source_only": True,
+                    "endpoint_policy_id": str(args.endpoint_accept_policy_id),
+                    "endpoint_accept_boundary_exported": True,
+                    "endpoint_threshold_source": str(args.endpoint_threshold_source),
+                    "endpoint_calibration_split": str(args.endpoint_calibration_split),
+                    "loss_gate_exported": bool(args.loss_gate_exported),
+                    "phase1_proxy_only": True,
+                    "real_unknown_eval_available": False,
+                    "stage2_success_claim": False,
+                    "deployment_success_claim": False,
+                }
+            )
+            guard_state["phase1_v2_endpoint_contract_fired"] = bool(endpoint_decision.fired)
+            guard_state.update({f"phase1_v2_endpoint_{key}": value for key, value in endpoint_decision.details.items()})
+            if endpoint_decision.fired:
+                phase1_v2_reasons.append(endpoint_decision.reason)
+            if float(getattr(args, "os_eff_min_budget", 0.0)) > 0.0 and phase == "pseudo":
+                os_eff_decision = assess_open_set_effective_budget(
+                    train_logs,
+                    min_budget=float(args.os_eff_min_budget),
+                )
+                guard_state["phase1_v2_os_eff_fired"] = bool(os_eff_decision.fired)
+                guard_state.update({f"phase1_v2_os_{key}": value for key, value in os_eff_decision.details.items()})
+                if os_eff_decision.fired:
+                    phase1_v2_reasons.append(os_eff_decision.reason)
+            if bool(getattr(args, "u_tri_state_required", False)) and phase == "pseudo":
+                u_tri_decision = assess_unlabeled_tri_state(
+                    train_logs,
+                    required=bool(args.u_direct_idle_blocks_promotion),
+                    min_selected=int(args.u_direct_metric_min_selected),
+                )
+                guard_state["phase1_v2_u_tri_state_fired"] = bool(u_tri_decision.fired)
+                guard_state.update({f"phase1_v2_u_{key}": value for key, value in u_tri_decision.details.items()})
+                if u_tri_decision.fired:
+                    phase1_v2_reasons.append(u_tri_decision.reason)
+            if (
+                bool(getattr(args, "source_episode_density_gate", False))
+                and phase == "pseudo"
+                and float(getattr(args, "lambda_source_episode", 0.0)) > 0.0
+            ):
+                source_ep_decision = assess_source_episode_density_gate(
+                    train_logs,
+                    overflow_warn=float(args.source_episode_overflow_warn),
+                    min_local_components=int(args.source_episode_min_local_components),
+                )
+                guard_state["phase1_v2_source_episode_density_fired"] = bool(source_ep_decision.fired)
+                guard_state.update({f"phase1_v2_source_episode_{key}": value for key, value in source_ep_decision.details.items()})
+                if source_ep_decision.fired:
+                    phase1_v2_reasons.append(source_ep_decision.reason)
+        if bool(getattr(args, "feasibility_gate", False)):
+            if assess_feasibility_gate is None:
+                raise ImportError("cvsrffi.phase1_v2_control is required for --feasibility_gate.")
+            feasibility_decision = assess_feasibility_gate(
+                {
+                    "stage": str(args.feasibility_stage),
+                    "relaxed_pass": bool(args.feasibility_relaxed_pass),
+                    "local_pass": bool(args.feasibility_local_pass),
+                    "loss_response_slope": float(args.feasibility_loss_response_slope),
+                    "overflow_excess_cvar95_delta": float(args.feasibility_overflow_excess_cvar95_delta),
+                }
+            )
+            guard_state["phase1_v2_feasibility_fired"] = bool(feasibility_decision.fired)
+            guard_state.update({f"phase1_v2_feasibility_{key}": value for key, value in feasibility_decision.details.items()})
+            if feasibility_decision.fired:
+                phase1_v2_reasons.append(feasibility_decision.reason)
+        if phase1_v2_tail_machine is not None:
+            tail_decision = phase1_v2_tail_machine.update(train_logs)
+            guard_state["phase1_v2_tail_fired"] = bool(tail_decision.fired)
+            guard_state["phase1_v2_tail_blocks_best"] = bool(tail_decision.blocks_best)
+            guard_state["phase1_v2_tail_blocks_final"] = bool(tail_decision.blocks_final)
+            guard_state["phase1_v2_tail_state_code"] = {"NORMAL": 0.0, "WARNING": 1.0, "ROLLBACK": 2.0, "STOP": 3.0}.get(tail_decision.state, -1.0)
+            guard_state["phase1_v2_tail_action_code"] = {"NONE": 0.0, "WARNING": 1.0, "ROLLBACK": 2.0, "STOP": 3.0}.get(tail_decision.action, -1.0)
+            guard_state.update({f"phase1_v2_{key}": value for key, value in tail_decision.details.items()})
+            if tail_decision.blocks_best:
+                phase1_v2_reasons.append(tail_decision.reason or f"tail_state_{tail_decision.state}")
+            if tail_decision.blocks_final and bool(getattr(args, "tail_stop_blocks_final", True)):
+                phase1_v2_final_blocked = True
+        phase1_v2_reasons = [reason for reason in phase1_v2_reasons if str(reason).strip()]
+        phase1_v2_guard_fired = bool(phase1_v2_reasons)
+        if phase1_v2_guard_fired:
+            checkpoint_safe = False
+        guard_state["phase1_v2_guard_fired"] = bool(phase1_v2_guard_fired)
+        guard_state["phase1_v2_final_blocked"] = bool(phase1_v2_final_blocked)
+        if phase1_v2_reasons:
+            guard_state["reason"] = ";".join([r for r in [guard_state.get("reason", ""), *phase1_v2_reasons] if str(r).strip()])
         safe_checkpoint_saved = False
         if guard_enabled and checkpoint_safe:
             save_payload(safe_latest_path, payload)
@@ -3887,7 +4086,7 @@ def train(args) -> int:
             if (test_ran_this_epoch or not best_metric_needs_test)
             else float("-inf")
         )
-        allow_best_update = (test_ran_this_epoch or not best_metric_needs_test) and (not test_eval_skipped_guard_block) and (not missing_required_guard_fired) and (not drop_guard_fired) and (
+        allow_best_update = (test_ran_this_epoch or not best_metric_needs_test) and (not test_eval_skipped_guard_block) and (not missing_required_guard_fired) and (not drop_guard_fired) and (not phase1_v2_guard_fired) and (
             checkpoint_safe or (paic_guard_fired and not bool(getattr(args, "paic_guard_block_best", True)))
         )
         if allow_best_update and current_best_score > best_score:
@@ -3974,17 +4173,24 @@ def train(args) -> int:
         if test_ran_this_epoch:
             previous_protected_metrics = dict(protected_metrics)
         previous_train_logs = dict(train_logs)
-    try:
-        default_export_checkpoint = safe_best_path if _joint_safe_guard_enabled(args) else out_dir / f"best_{args.best_metric}_ssdg.pth"
-        _maybe_export_phase2_prototypes_ssdg(
-            args,
-            model,
-            data_ctx,
-            device,
-            default_checkpoint=default_export_checkpoint,
+    if bool(phase1_v2_final_blocked) and bool(getattr(args, "tail_stop_blocks_final", True)):
+        print(
+            "[PHASE1-V2] prototype_export_skipped=1 reason=tail_safety_or_expansion_blocks_final "
+            "claim=NON_PROMOTABLE_DIAGNOSTIC",
+            flush=True,
         )
-    except Exception as exc:
-        print(f"[WARN] optional SSDG Phase2 prototype export failed: {exc}", flush=True)
+    else:
+        try:
+            default_export_checkpoint = safe_best_path if _joint_safe_guard_enabled(args) else out_dir / f"best_{args.best_metric}_ssdg.pth"
+            _maybe_export_phase2_prototypes_ssdg(
+                args,
+                model,
+                data_ctx,
+                device,
+                default_checkpoint=default_export_checkpoint,
+            )
+        except Exception as exc:
+            print(f"[WARN] optional SSDG Phase2 prototype export failed: {exc}", flush=True)
     return 0
 
 

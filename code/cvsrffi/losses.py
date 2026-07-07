@@ -2178,6 +2178,9 @@ def source_episode_three_sigma_loss(
         "source_episode_mixup_loss": 0.0,
         "source_episode_mixup_overflow_rate": 0.0,
         "source_episode_mixup_margin_deg": float("nan"),
+        "source_episode_receiver_local_component_count": 0.0,
+        "source_episode_core_tail_outside_ready": 0.0,
+        "source_episode_density_gate_active": 0.0,
     }
     if z is None or not torch.is_tensor(z) or z.numel() == 0:
         ref = torch.tensor(0.0)
@@ -2318,6 +2321,9 @@ def source_episode_three_sigma_loss(
         "source_episode_mixup_loss": _scalar_metric(mixup_loss),
         "source_episode_mixup_overflow_rate": float(mixup_overflow_rate),
         "source_episode_mixup_margin_deg": math.degrees(_scalar_metric(mixup_margin)),
+        "source_episode_receiver_local_component_count": float(len(episode_centers)),
+        "source_episode_core_tail_outside_ready": 1.0,
+        "source_episode_density_gate_active": 1.0,
     }
     return loss, metrics
 

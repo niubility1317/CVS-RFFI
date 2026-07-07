@@ -74,6 +74,16 @@ def test_uopt24_declares_source_only_unlabeled_concat_sat_direct_training():
     assert "--lambda_u_sat_cons 0.26" in out
     assert "--lambda_u_direct_metric_accept 0.0045" in out
     assert "--u_direct_metric_min_selected 20" in out
+    assert "--phase1_v2_hard_gates true" in out
+    assert "--endpoint_accept_policy_id endpoint_accept_v1" in out
+    assert "--tail_safety_state_machine true" in out
+    assert "--tail_safety_p99_expansion_block_final_delta 2.0" in out
+    assert "--tail_safety_p99_expansion_block_best_delta 3.5" in out
+    assert "--os_eff_min_budget 0.15" in out
+    assert "--source_episode_density_gate true" in out
+    assert "--source_episode_overflow_warn 0.90" in out
+    assert "--u_tri_state_required true" in out
+    assert "--u_direct_idle_blocks_promotion true" in out
     assert "--new_wisig_pkl" not in out
     assert "--target_unknown" not in out
     assert "ManyTx.pkl" not in out
