@@ -360,6 +360,36 @@ def test_prototype_predict_can_disable_rejection_for_old_only_domain_adaptation(
     assert info["unknown_rejection_enabled"] is False
 
 
+def test_prototype_predict_normalized_euclidean_removes_feature_norm_bias():
+    support_z = torch.tensor([[100.0, 0.0], [120.0, 0.0], [0.0, 1.0], [0.0, 1.2]])
+    support_y = torch.tensor([0, 0, 1, 1])
+    query_z = torch.tensor([[0.0, 12.0], [9.0, 0.1]])
+
+    raw_pred, _, raw_info = _prototype_predict(
+        support_z,
+        support_y,
+        query_z,
+        margin=0.0,
+        metric="euclidean",
+        rejection_enabled=False,
+    )
+    norm_pred, norm_scores, norm_info = _prototype_predict(
+        support_z,
+        support_y,
+        query_z,
+        margin=0.0,
+        metric="normalized_euclidean",
+        rejection_enabled=False,
+    )
+
+    assert raw_pred.tolist() == [1, 1]
+    assert raw_info["gate_method"] == "prototype_euclidean_no_rejection"
+    assert norm_pred.tolist() == [1, 0]
+    assert norm_scores.shape == torch.Size([2])
+    assert norm_info["gate_method"] == "prototype_normalized_euclidean_no_rejection"
+    assert norm_info["unknown_score_kind"] == "min_normalized_euclidean_distance"
+
+
 def test_support_head_finetune_uses_support_labels_only_for_head_adaptation():
     support_z = torch.tensor([[2.0, 0.0], [2.2, 0.1], [0.0, 2.0], [0.1, 2.2]])
     support_y = torch.tensor([0, 0, 1, 1])

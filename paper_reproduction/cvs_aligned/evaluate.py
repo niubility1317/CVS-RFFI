@@ -702,6 +702,26 @@ def _prototype_predict(
             "threshold": threshold,
             "unknown_rejection_enabled": bool(rejection_enabled),
         }
+    if metric in {"normalized_euclidean", "norm_euclidean", "l2_euclidean"}:
+        support_n = F.normalize(support_z.float(), dim=1)
+        query_n = F.normalize(query_z.float(), dim=1)
+        protos = torch.stack([support_n[support_y == label].mean(dim=0) for label in labels], dim=0)
+        protos = F.normalize(protos, dim=1)
+        query_dist = torch.cdist(query_n, protos)
+        min_dist, argmin = query_dist.min(dim=1)
+        support_dist = torch.cdist(support_n, protos).min(dim=1).values
+        threshold = float(torch.quantile(support_dist, 0.95).item()) + float(margin)
+        pred = labels[argmin].clone()
+        if rejection_enabled:
+            pred[min_dist > threshold] = -1
+        return pred.cpu(), min_dist.cpu(), {
+            "gate_method": "prototype_normalized_euclidean_support_quantile"
+            if rejection_enabled
+            else "prototype_normalized_euclidean_no_rejection",
+            "unknown_score_kind": "min_normalized_euclidean_distance",
+            "threshold": threshold,
+            "unknown_rejection_enabled": bool(rejection_enabled),
+        }
     raise ValueError(f"unsupported prototype_metric: {metric}")
 
 
