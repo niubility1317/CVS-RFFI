@@ -467,6 +467,13 @@ def _fuse_event(
     conformal_rescue_min_pvalue: float = 0.05,
     conformal_rescue_risk_scale: float = 0.5,
     conformal_rescue_min_agreement: float = 0.5,
+    rescue_unknown_veto_enabled: bool = False,
+    rescue_unknown_veto_event_risk: float = 1.0,
+    rescue_unknown_veto_label_risk: float = 1.0,
+    rescue_unknown_veto_shell_risk: float = 1.0,
+    rescue_unknown_veto_component_agreement: float = 1.0,
+    rescue_unknown_veto_min_sources: int = 1,
+    rescue_unknown_veto_action: str = "unknown_reject",
     class_set_gate_enabled: bool = False,
     old_gate_min_receivers: int = 1,
     old_gate_max_effective_unknown_risk: float = 1.0,
@@ -607,6 +614,28 @@ def _fuse_event(
         candidate_set_shell_reject_risk,
         "candidate_set_shell_reject_risk",
     )
+    rescue_unknown_veto_event_risk = _validate_unit_interval(
+        rescue_unknown_veto_event_risk,
+        "rescue_unknown_veto_event_risk",
+    )
+    rescue_unknown_veto_label_risk = _validate_unit_interval(
+        rescue_unknown_veto_label_risk,
+        "rescue_unknown_veto_label_risk",
+    )
+    rescue_unknown_veto_shell_risk = _validate_unit_interval(
+        rescue_unknown_veto_shell_risk,
+        "rescue_unknown_veto_shell_risk",
+    )
+    rescue_unknown_veto_component_agreement = _validate_unit_interval(
+        rescue_unknown_veto_component_agreement,
+        "rescue_unknown_veto_component_agreement",
+    )
+    rescue_unknown_veto_min_sources = max(1, int(rescue_unknown_veto_min_sources))
+    rescue_unknown_veto_action = _normalize_scope(rescue_unknown_veto_action or "unknown_reject")
+    if rescue_unknown_veto_action not in {"unknown_reject", "defer", "request_more"}:
+        raise ValueError(
+            "rescue_unknown_veto_action must be unknown_reject, defer, or request_more"
+        )
     candidate_set_max_receiver_pair_label_disagreement = _validate_unit_interval(
         candidate_set_max_receiver_pair_label_disagreement,
         "candidate_set_max_receiver_pair_label_disagreement",
@@ -1367,6 +1396,21 @@ def _fuse_event(
         effective_unknown_risk = decision_unknown_risk * risk_scale
         high_risk = effective_unknown_risk >= float(unknown_risk_threshold)
         multi_channel_risk = decision_risk_component_agreement >= float(scorer_component_vote_threshold)
+        rescue_unknown_veto_sources: list[str] = []
+        if unknown_risk >= float(rescue_unknown_veto_event_risk):
+            rescue_unknown_veto_sources.append("event_unknown_risk")
+        if label_unknown_risk >= float(rescue_unknown_veto_label_risk):
+            rescue_unknown_veto_sources.append("label_unknown_risk")
+        if label_shell_risk_observed and label_shell_risk >= float(rescue_unknown_veto_shell_risk):
+            rescue_unknown_veto_sources.append("label_shell_risk")
+        if decision_risk_component_agreement >= float(rescue_unknown_veto_component_agreement):
+            rescue_unknown_veto_sources.append("component_agreement")
+        rescue_unknown_veto_hit = bool(
+            rescue_unknown_veto_enabled
+            and (rescue_applied or conformal_rescue_applied)
+            and output_label_set in {"old", "seen_new"}
+            and len(rescue_unknown_veto_sources) >= int(rescue_unknown_veto_min_sources)
+        )
         gate_passed, gate_reason = _class_set_gate_decision()
         support_router_accept = bool(
             policy == "support_router_cvs"
@@ -2030,6 +2074,15 @@ def _fuse_event(
         elif policy == "candidate_set_cvs":
             decision = "defer"
             output_label = ""
+        elif rescue_unknown_veto_hit and rescue_unknown_veto_action == "request_more" and within_request_budget:
+            decision = "request_more"
+            output_label = ""
+        elif rescue_unknown_veto_hit and rescue_unknown_veto_action == "defer":
+            decision = "defer"
+            output_label = ""
+        elif rescue_unknown_veto_hit:
+            decision = "unknown_reject"
+            output_label = UNKNOWN_LABEL
         elif high_risk and multi_channel_risk and (policy == "cp_set_cvs" or not strong_known):
             decision = "unknown_reject"
             output_label = UNKNOWN_LABEL
@@ -2108,6 +2161,15 @@ def _fuse_event(
         "seen_new_rescue_applied": bool(locals().get("rescue_applied", False)),
         "seen_new_rescue_label_match": bool(rescue_label_match if policy == "scorer_cvs" else False),
         "conformal_rescue_applied": bool(locals().get("conformal_rescue_applied", False)),
+        "rescue_unknown_veto_enabled": bool(rescue_unknown_veto_enabled),
+        "rescue_unknown_veto_hit": bool(locals().get("rescue_unknown_veto_hit", False)),
+        "rescue_unknown_veto_action": str(rescue_unknown_veto_action),
+        "rescue_unknown_veto_sources": ",".join(
+            locals().get("rescue_unknown_veto_sources", [])
+        ),
+        "rescue_unknown_veto_source_count": int(
+            len(locals().get("rescue_unknown_veto_sources", []))
+        ),
         "label_class_conformal_pvalue": float(label_class_conformal_pvalue),
         "label_class_conformal_support_count": float(label_class_conformal_support_count),
         "label_candidate_receiver_count": int(selected_label_candidate_receivers),
@@ -2414,6 +2476,13 @@ def _fuse_progressive_event(
     conformal_rescue_min_pvalue: float = 0.05,
     conformal_rescue_risk_scale: float = 0.5,
     conformal_rescue_min_agreement: float = 0.5,
+    rescue_unknown_veto_enabled: bool = False,
+    rescue_unknown_veto_event_risk: float = 1.0,
+    rescue_unknown_veto_label_risk: float = 1.0,
+    rescue_unknown_veto_shell_risk: float = 1.0,
+    rescue_unknown_veto_component_agreement: float = 1.0,
+    rescue_unknown_veto_min_sources: int = 1,
+    rescue_unknown_veto_action: str = "unknown_reject",
     class_set_gate_enabled: bool = False,
     old_gate_min_receivers: int = 1,
     old_gate_max_effective_unknown_risk: float = 1.0,
@@ -2457,6 +2526,13 @@ def _fuse_progressive_event(
             conformal_rescue_min_pvalue=conformal_rescue_min_pvalue,
             conformal_rescue_risk_scale=conformal_rescue_risk_scale,
             conformal_rescue_min_agreement=conformal_rescue_min_agreement,
+            rescue_unknown_veto_enabled=rescue_unknown_veto_enabled,
+            rescue_unknown_veto_event_risk=rescue_unknown_veto_event_risk,
+            rescue_unknown_veto_label_risk=rescue_unknown_veto_label_risk,
+            rescue_unknown_veto_shell_risk=rescue_unknown_veto_shell_risk,
+            rescue_unknown_veto_component_agreement=rescue_unknown_veto_component_agreement,
+            rescue_unknown_veto_min_sources=rescue_unknown_veto_min_sources,
+            rescue_unknown_veto_action=rescue_unknown_veto_action,
             class_set_gate_enabled=class_set_gate_enabled,
             old_gate_min_receivers=old_gate_min_receivers,
             old_gate_max_effective_unknown_risk=old_gate_max_effective_unknown_risk,
@@ -2727,6 +2803,13 @@ def _fuse_adaptive_gain_event(
     conformal_rescue_min_pvalue: float = 0.05,
     conformal_rescue_risk_scale: float = 0.5,
     conformal_rescue_min_agreement: float = 0.5,
+    rescue_unknown_veto_enabled: bool = False,
+    rescue_unknown_veto_event_risk: float = 1.0,
+    rescue_unknown_veto_label_risk: float = 1.0,
+    rescue_unknown_veto_shell_risk: float = 1.0,
+    rescue_unknown_veto_component_agreement: float = 1.0,
+    rescue_unknown_veto_min_sources: int = 1,
+    rescue_unknown_veto_action: str = "unknown_reject",
     class_set_gate_enabled: bool = False,
     old_gate_min_receivers: int = 1,
     old_gate_max_effective_unknown_risk: float = 1.0,
@@ -2776,6 +2859,13 @@ def _fuse_adaptive_gain_event(
             conformal_rescue_min_pvalue=conformal_rescue_min_pvalue,
             conformal_rescue_risk_scale=conformal_rescue_risk_scale,
             conformal_rescue_min_agreement=conformal_rescue_min_agreement,
+            rescue_unknown_veto_enabled=rescue_unknown_veto_enabled,
+            rescue_unknown_veto_event_risk=rescue_unknown_veto_event_risk,
+            rescue_unknown_veto_label_risk=rescue_unknown_veto_label_risk,
+            rescue_unknown_veto_shell_risk=rescue_unknown_veto_shell_risk,
+            rescue_unknown_veto_component_agreement=rescue_unknown_veto_component_agreement,
+            rescue_unknown_veto_min_sources=rescue_unknown_veto_min_sources,
+            rescue_unknown_veto_action=rescue_unknown_veto_action,
             class_set_gate_enabled=class_set_gate_enabled,
             old_gate_min_receivers=old_gate_min_receivers,
             old_gate_max_effective_unknown_risk=old_gate_max_effective_unknown_risk,
@@ -2881,6 +2971,13 @@ def _fuse_support_utility_event(
     conformal_rescue_min_pvalue: float = 0.05,
     conformal_rescue_risk_scale: float = 0.5,
     conformal_rescue_min_agreement: float = 0.5,
+    rescue_unknown_veto_enabled: bool = False,
+    rescue_unknown_veto_event_risk: float = 1.0,
+    rescue_unknown_veto_label_risk: float = 1.0,
+    rescue_unknown_veto_shell_risk: float = 1.0,
+    rescue_unknown_veto_component_agreement: float = 1.0,
+    rescue_unknown_veto_min_sources: int = 1,
+    rescue_unknown_veto_action: str = "unknown_reject",
     class_set_gate_enabled: bool = False,
     old_gate_min_receivers: int = 1,
     old_gate_max_effective_unknown_risk: float = 1.0,
@@ -2930,6 +3027,13 @@ def _fuse_support_utility_event(
             conformal_rescue_min_pvalue=conformal_rescue_min_pvalue,
             conformal_rescue_risk_scale=conformal_rescue_risk_scale,
             conformal_rescue_min_agreement=conformal_rescue_min_agreement,
+            rescue_unknown_veto_enabled=rescue_unknown_veto_enabled,
+            rescue_unknown_veto_event_risk=rescue_unknown_veto_event_risk,
+            rescue_unknown_veto_label_risk=rescue_unknown_veto_label_risk,
+            rescue_unknown_veto_shell_risk=rescue_unknown_veto_shell_risk,
+            rescue_unknown_veto_component_agreement=rescue_unknown_veto_component_agreement,
+            rescue_unknown_veto_min_sources=rescue_unknown_veto_min_sources,
+            rescue_unknown_veto_action=rescue_unknown_veto_action,
             class_set_gate_enabled=class_set_gate_enabled,
             old_gate_min_receivers=old_gate_min_receivers,
             old_gate_max_effective_unknown_risk=old_gate_max_effective_unknown_risk,
@@ -3040,6 +3144,13 @@ def _fuse_rb_capr_event(
     conformal_rescue_min_pvalue: float = 0.05,
     conformal_rescue_risk_scale: float = 0.5,
     conformal_rescue_min_agreement: float = 0.5,
+    rescue_unknown_veto_enabled: bool = False,
+    rescue_unknown_veto_event_risk: float = 1.0,
+    rescue_unknown_veto_label_risk: float = 1.0,
+    rescue_unknown_veto_shell_risk: float = 1.0,
+    rescue_unknown_veto_component_agreement: float = 1.0,
+    rescue_unknown_veto_min_sources: int = 1,
+    rescue_unknown_veto_action: str = "unknown_reject",
     class_set_gate_enabled: bool = False,
     old_gate_min_receivers: int = 1,
     old_gate_max_effective_unknown_risk: float = 1.0,
@@ -3096,6 +3207,13 @@ def _fuse_rb_capr_event(
             conformal_rescue_min_pvalue=conformal_rescue_min_pvalue,
             conformal_rescue_risk_scale=conformal_rescue_risk_scale,
             conformal_rescue_min_agreement=conformal_rescue_min_agreement,
+            rescue_unknown_veto_enabled=rescue_unknown_veto_enabled,
+            rescue_unknown_veto_event_risk=rescue_unknown_veto_event_risk,
+            rescue_unknown_veto_label_risk=rescue_unknown_veto_label_risk,
+            rescue_unknown_veto_shell_risk=rescue_unknown_veto_shell_risk,
+            rescue_unknown_veto_component_agreement=rescue_unknown_veto_component_agreement,
+            rescue_unknown_veto_min_sources=rescue_unknown_veto_min_sources,
+            rescue_unknown_veto_action=rescue_unknown_veto_action,
             class_set_gate_enabled=class_set_gate_enabled,
             old_gate_min_receivers=old_gate_min_receivers,
             old_gate_max_effective_unknown_risk=old_gate_max_effective_unknown_risk,
@@ -3270,6 +3388,13 @@ def _fuse_dual_route_event(
     conformal_rescue_min_pvalue: float = 0.05,
     conformal_rescue_risk_scale: float = 0.5,
     conformal_rescue_min_agreement: float = 0.5,
+    rescue_unknown_veto_enabled: bool = False,
+    rescue_unknown_veto_event_risk: float = 1.0,
+    rescue_unknown_veto_label_risk: float = 1.0,
+    rescue_unknown_veto_shell_risk: float = 1.0,
+    rescue_unknown_veto_component_agreement: float = 1.0,
+    rescue_unknown_veto_min_sources: int = 1,
+    rescue_unknown_veto_action: str = "unknown_reject",
     class_set_gate_enabled: bool = False,
     old_gate_min_receivers: int = 1,
     old_gate_max_effective_unknown_risk: float = 1.0,
@@ -3365,6 +3490,13 @@ def _fuse_dual_route_event(
         conformal_rescue_min_pvalue=conformal_rescue_min_pvalue,
         conformal_rescue_risk_scale=conformal_rescue_risk_scale,
         conformal_rescue_min_agreement=conformal_rescue_min_agreement,
+        rescue_unknown_veto_enabled=rescue_unknown_veto_enabled,
+        rescue_unknown_veto_event_risk=rescue_unknown_veto_event_risk,
+        rescue_unknown_veto_label_risk=rescue_unknown_veto_label_risk,
+        rescue_unknown_veto_shell_risk=rescue_unknown_veto_shell_risk,
+        rescue_unknown_veto_component_agreement=rescue_unknown_veto_component_agreement,
+        rescue_unknown_veto_min_sources=rescue_unknown_veto_min_sources,
+        rescue_unknown_veto_action=rescue_unknown_veto_action,
         class_set_gate_enabled=class_set_gate_enabled,
         old_gate_min_receivers=old_gate_min_receivers,
         old_gate_max_effective_unknown_risk=old_gate_max_effective_unknown_risk,
@@ -3458,6 +3590,13 @@ def _fuse_dual_route_event(
         conformal_rescue_min_pvalue=conformal_rescue_min_pvalue,
         conformal_rescue_risk_scale=conformal_rescue_risk_scale,
         conformal_rescue_min_agreement=conformal_rescue_min_agreement,
+        rescue_unknown_veto_enabled=rescue_unknown_veto_enabled,
+        rescue_unknown_veto_event_risk=rescue_unknown_veto_event_risk,
+        rescue_unknown_veto_label_risk=rescue_unknown_veto_label_risk,
+        rescue_unknown_veto_shell_risk=rescue_unknown_veto_shell_risk,
+        rescue_unknown_veto_component_agreement=rescue_unknown_veto_component_agreement,
+        rescue_unknown_veto_min_sources=rescue_unknown_veto_min_sources,
+        rescue_unknown_veto_action=rescue_unknown_veto_action,
         class_set_gate_enabled=class_set_gate_enabled,
         old_gate_min_receivers=old_gate_min_receivers,
         old_gate_max_effective_unknown_risk=old_gate_max_effective_unknown_risk,
@@ -3591,6 +3730,8 @@ def _finalize_metrics(
     resource_budget_violations = 0
     adaptive_stop_reasons: defaultdict[str, int] = defaultdict(int)
     seen_new_rescue_total = 0
+    rescue_unknown_veto_total = 0
+    rescue_unknown_veto_by_role: defaultdict[str, int] = defaultdict(int)
     candidate_set_high_unknown_veto_total = 0
     candidate_set_high_unknown_veto_by_role: defaultdict[str, int] = defaultdict(int)
     candidate_set_shell_veto_total = 0
@@ -3729,6 +3870,9 @@ def _finalize_metrics(
         if stop_reason:
             adaptive_stop_reasons[stop_reason] += 1
         seen_new_rescue_total += int(bool(item.get("seen_new_rescue_applied", False)))
+        if bool(item.get("rescue_unknown_veto_hit", False)):
+            rescue_unknown_veto_total += 1
+            rescue_unknown_veto_by_role[role] += 1
         role_totals[role] += 1
         if role in {"old", "seen_new"}:
             role_accepted[role] += int(accepted)
@@ -3896,6 +4040,9 @@ def _finalize_metrics(
         "collaboration_stop_reasons": dict(sorted(adaptive_stop_reasons.items())),
         "seen_new_rescue_count": int(seen_new_rescue_total),
         "seen_new_rescue_rate": _safe_rate(seen_new_rescue_total, total_events),
+        "rescue_unknown_veto_count": int(rescue_unknown_veto_total),
+        "rescue_unknown_veto_rate": _safe_rate(rescue_unknown_veto_total, total_events),
+        "rescue_unknown_veto_by_role": dict(sorted(rescue_unknown_veto_by_role.items())),
         "candidate_set_high_unknown_veto_count": int(candidate_set_high_unknown_veto_total),
         "candidate_set_high_unknown_veto_rate": _safe_rate(candidate_set_high_unknown_veto_total, total_events),
         "candidate_set_high_unknown_veto_by_role": dict(sorted(candidate_set_high_unknown_veto_by_role.items())),
@@ -4179,6 +4326,13 @@ def evaluate_collaborative_open_set_evidence(
     conformal_rescue_min_pvalue: float = 0.05,
     conformal_rescue_risk_scale: float = 0.5,
     conformal_rescue_min_agreement: float = 0.5,
+    rescue_unknown_veto_enabled: bool = False,
+    rescue_unknown_veto_event_risk: float = 1.0,
+    rescue_unknown_veto_label_risk: float = 1.0,
+    rescue_unknown_veto_shell_risk: float = 1.0,
+    rescue_unknown_veto_component_agreement: float = 1.0,
+    rescue_unknown_veto_min_sources: int = 1,
+    rescue_unknown_veto_action: str = "unknown_reject",
     class_set_gate_enabled: bool = False,
     old_gate_min_receivers: int = 1,
     old_gate_max_effective_unknown_risk: float = 1.0,
@@ -4395,6 +4549,13 @@ def evaluate_collaborative_open_set_evidence(
                     conformal_rescue_min_pvalue=conformal_rescue_min_pvalue,
                     conformal_rescue_risk_scale=conformal_rescue_risk_scale,
                     conformal_rescue_min_agreement=conformal_rescue_min_agreement,
+                    rescue_unknown_veto_enabled=rescue_unknown_veto_enabled,
+                    rescue_unknown_veto_event_risk=rescue_unknown_veto_event_risk,
+                    rescue_unknown_veto_label_risk=rescue_unknown_veto_label_risk,
+                    rescue_unknown_veto_shell_risk=rescue_unknown_veto_shell_risk,
+                    rescue_unknown_veto_component_agreement=rescue_unknown_veto_component_agreement,
+                    rescue_unknown_veto_min_sources=rescue_unknown_veto_min_sources,
+                    rescue_unknown_veto_action=rescue_unknown_veto_action,
                     class_set_gate_enabled=class_set_gate_enabled,
                     old_gate_min_receivers=old_gate_min_receivers,
                     old_gate_max_effective_unknown_risk=old_gate_max_effective_unknown_risk,
@@ -4447,6 +4608,13 @@ def evaluate_collaborative_open_set_evidence(
                     conformal_rescue_min_pvalue=conformal_rescue_min_pvalue,
                     conformal_rescue_risk_scale=conformal_rescue_risk_scale,
                     conformal_rescue_min_agreement=conformal_rescue_min_agreement,
+                    rescue_unknown_veto_enabled=rescue_unknown_veto_enabled,
+                    rescue_unknown_veto_event_risk=rescue_unknown_veto_event_risk,
+                    rescue_unknown_veto_label_risk=rescue_unknown_veto_label_risk,
+                    rescue_unknown_veto_shell_risk=rescue_unknown_veto_shell_risk,
+                    rescue_unknown_veto_component_agreement=rescue_unknown_veto_component_agreement,
+                    rescue_unknown_veto_min_sources=rescue_unknown_veto_min_sources,
+                    rescue_unknown_veto_action=rescue_unknown_veto_action,
                     class_set_gate_enabled=class_set_gate_enabled,
                     old_gate_min_receivers=old_gate_min_receivers,
                     old_gate_max_effective_unknown_risk=old_gate_max_effective_unknown_risk,
@@ -4565,6 +4733,13 @@ def evaluate_collaborative_open_set_evidence(
                     conformal_rescue_min_pvalue=conformal_rescue_min_pvalue,
                     conformal_rescue_risk_scale=conformal_rescue_risk_scale,
                     conformal_rescue_min_agreement=conformal_rescue_min_agreement,
+                    rescue_unknown_veto_enabled=rescue_unknown_veto_enabled,
+                    rescue_unknown_veto_event_risk=rescue_unknown_veto_event_risk,
+                    rescue_unknown_veto_label_risk=rescue_unknown_veto_label_risk,
+                    rescue_unknown_veto_shell_risk=rescue_unknown_veto_shell_risk,
+                    rescue_unknown_veto_component_agreement=rescue_unknown_veto_component_agreement,
+                    rescue_unknown_veto_min_sources=rescue_unknown_veto_min_sources,
+                    rescue_unknown_veto_action=rescue_unknown_veto_action,
                     class_set_gate_enabled=class_set_gate_enabled,
                     old_gate_min_receivers=old_gate_min_receivers,
                     old_gate_max_effective_unknown_risk=old_gate_max_effective_unknown_risk,
@@ -4607,6 +4782,13 @@ def evaluate_collaborative_open_set_evidence(
                     conformal_rescue_min_pvalue=conformal_rescue_min_pvalue,
                     conformal_rescue_risk_scale=conformal_rescue_risk_scale,
                     conformal_rescue_min_agreement=conformal_rescue_min_agreement,
+                    rescue_unknown_veto_enabled=rescue_unknown_veto_enabled,
+                    rescue_unknown_veto_event_risk=rescue_unknown_veto_event_risk,
+                    rescue_unknown_veto_label_risk=rescue_unknown_veto_label_risk,
+                    rescue_unknown_veto_shell_risk=rescue_unknown_veto_shell_risk,
+                    rescue_unknown_veto_component_agreement=rescue_unknown_veto_component_agreement,
+                    rescue_unknown_veto_min_sources=rescue_unknown_veto_min_sources,
+                    rescue_unknown_veto_action=rescue_unknown_veto_action,
                     class_set_gate_enabled=class_set_gate_enabled,
                     old_gate_min_receivers=old_gate_min_receivers,
                     old_gate_max_effective_unknown_risk=old_gate_max_effective_unknown_risk,

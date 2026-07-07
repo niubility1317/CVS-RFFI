@@ -184,6 +184,19 @@ class Phase2FrozenManytxUnknownDiagnosticTest(unittest.TestCase):
                 "0.3",
                 "--conformal_rescue_min_agreement",
                 "0.7",
+                "--rescue_unknown_veto_enabled",
+                "--rescue_unknown_veto_event_risk",
+                "0.9",
+                "--rescue_unknown_veto_label_risk",
+                "0.8",
+                "--rescue_unknown_veto_shell_risk",
+                "0.85",
+                "--rescue_unknown_veto_component_agreement",
+                "0.6",
+                "--rescue_unknown_veto_min_sources",
+                "2",
+                "--rescue_unknown_veto_action",
+                "defer",
             ]
         )
 
@@ -196,6 +209,13 @@ class Phase2FrozenManytxUnknownDiagnosticTest(unittest.TestCase):
         self.assertEqual(args.conformal_rescue_min_pvalue, 0.2)
         self.assertEqual(args.conformal_rescue_risk_scale, 0.3)
         self.assertEqual(args.conformal_rescue_min_agreement, 0.7)
+        self.assertTrue(args.rescue_unknown_veto_enabled)
+        self.assertEqual(args.rescue_unknown_veto_event_risk, 0.9)
+        self.assertEqual(args.rescue_unknown_veto_label_risk, 0.8)
+        self.assertEqual(args.rescue_unknown_veto_shell_risk, 0.85)
+        self.assertEqual(args.rescue_unknown_veto_component_agreement, 0.6)
+        self.assertEqual(args.rescue_unknown_veto_min_sources, 2)
+        self.assertEqual(args.rescue_unknown_veto_action, "defer")
 
     def test_can_repair_legacy_target_new_unknown_roles_from_manifest(self):
         from phase2_frozen_manytx_unknown_diagnostic import main

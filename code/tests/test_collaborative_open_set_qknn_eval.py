@@ -9,6 +9,77 @@ if str(ROOT) not in sys.path:
 
 
 class CollaborativeOpenSetQknnEvalTest(unittest.TestCase):
+    def test_rescue_unknown_veto_blocks_rescued_unknown_false_accept(self):
+        from evaluation.collaborative_open_set_qknn_eval import evaluate_collaborative_open_set_evidence
+
+        def row(event_id, receiver_id, role, truth, label, score, margin, unknown_risk):
+            component_risk = 0.10
+            return {
+                "event_id": event_id,
+                "receiver_id": receiver_id,
+                "role": role,
+                "true_label": truth,
+                "predicted_label": label,
+                "known_score": score,
+                "known_margin": margin,
+                "unknown_risk": unknown_risk,
+                "score_risk": component_risk,
+                "radius_risk": component_risk,
+                "margin_risk": component_risk,
+                "class_shell_risk": unknown_risk,
+                "label_shell_risk_observed": True,
+                "class_conformal_pvalue": 0.90,
+                "class_conformal_support_count": 3,
+                "receiver_class_reliability": 0.90,
+                "support_density": 0.90,
+                "latency_ms": 1.0,
+                "bytes": 64,
+            }
+
+        rows = [
+            row("new-1", "rx-a", "seen_new", "new-a", "new-a", 0.92, 0.20, 0.20),
+            row("new-1", "rx-b", "seen_new", "new-a", "new-a", 0.90, 0.18, 0.22),
+            row("unk-1", "rx-a", "unknown", "__unknown__", "new-a", 0.91, 0.20, 0.96),
+            row("unk-1", "rx-b", "unknown", "__unknown__", "new-a", 0.90, 0.19, 0.95),
+        ]
+
+        result = evaluate_collaborative_open_set_evidence(
+            rows,
+            collab_counts=[2],
+            fusion_policy="scorer_cvs",
+            seen_new_rescue_enabled=True,
+            seen_new_rescue_risk_scale=0.25,
+            seen_new_rescue_min_agreement=0.50,
+            rescue_unknown_veto_enabled=True,
+            rescue_unknown_veto_event_risk=0.90,
+            rescue_unknown_veto_label_risk=0.90,
+            rescue_unknown_veto_shell_risk=0.90,
+            rescue_unknown_veto_min_sources=2,
+            unknown_risk_threshold=0.90,
+            accept_margin_threshold=0.05,
+            consensus_score_threshold=0.05,
+            scorer_component_vote_threshold=0.75,
+            include_event_results=True,
+            protocol_metadata={
+                "target_receiver_ids": ["rx-a", "rx-b"],
+                "source_receiver_ids": ["src-a"],
+                "old_tx_ids": ["old-a"],
+                "seen_new_tx_ids": ["new-a"],
+                "unknown_tx_ids": ["unk-a"],
+                "target_channel_view": "leo_clear_weak",
+            },
+        )
+
+        events = {event["event_id"]: event for event in result["counts"]["2"]["event_results"]}
+        self.assertEqual(events["new-1"]["decision"], "accept")
+        self.assertEqual(events["new-1"]["output_label"], "new-a")
+        self.assertEqual(events["unk-1"]["decision"], "unknown_reject")
+        self.assertTrue(events["unk-1"]["seen_new_rescue_applied"])
+        self.assertTrue(events["unk-1"]["rescue_unknown_veto_hit"])
+        self.assertEqual(result["counts"]["2"]["seen_new_acc"], 1.0)
+        self.assertEqual(result["counts"]["2"]["unknown_reject_rate"], 1.0)
+        self.assertEqual(result["counts"]["2"]["rescue_unknown_veto_by_role"], {"unknown": 1})
+
     def test_ospr_ci_pp_uses_support_protected_unknown_confirmation(self):
         from evaluation.collaborative_open_set_qknn_eval import evaluate_collaborative_open_set_evidence
 
