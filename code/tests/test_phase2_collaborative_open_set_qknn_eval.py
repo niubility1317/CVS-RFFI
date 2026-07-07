@@ -95,7 +95,7 @@ class Phase2CollaborativeOpenSetQknnEvalTest(unittest.TestCase):
 
         self.assertEqual(args.fusion_policy, "ospr_ci_pp")
 
-    def test_cli_accepts_rescue_veto_seen_new_exemption_knobs(self):
+    def test_cli_accepts_phase2_registered_only_fusion_policy(self):
         from phase2_collaborative_open_set_qknn_eval import parse_args
 
         with patch.object(
@@ -107,36 +107,13 @@ class Phase2CollaborativeOpenSetQknnEvalTest(unittest.TestCase):
                 "features.npz",
                 "--output_json",
                 "out.json",
-                "--rescue_unknown_veto_enabled",
-                "--rescue_unknown_veto_event_risk",
-                "0.9",
-                "--rescue_unknown_veto_label_risk",
-                "0.8",
-                "--rescue_unknown_veto_shell_risk",
-                "0.85",
-                "--rescue_unknown_veto_component_agreement",
-                "0.6",
-                "--rescue_unknown_veto_min_sources",
-                "2",
-                "--rescue_unknown_veto_action",
-                "defer",
-                "--rescue_unknown_veto_seen_new_exemption_enabled",
-                "--rescue_unknown_veto_seen_new_min_support_count",
-                "3",
-                "--rescue_unknown_veto_seen_new_min_pvalue",
-                "0.7",
-                "--rescue_unknown_veto_seen_new_min_receiver_class_reliability",
-                "0.8",
+                "--fusion_policy",
+                "phase2_registered_only",
             ],
         ):
             args = parse_args()
 
-        self.assertTrue(args.rescue_unknown_veto_enabled)
-        self.assertEqual(args.rescue_unknown_veto_action, "defer")
-        self.assertTrue(args.rescue_unknown_veto_seen_new_exemption_enabled)
-        self.assertEqual(args.rescue_unknown_veto_seen_new_min_support_count, 3)
-        self.assertEqual(args.rescue_unknown_veto_seen_new_min_pvalue, 0.7)
-        self.assertEqual(args.rescue_unknown_veto_seen_new_min_receiver_class_reliability, 0.8)
+        self.assertEqual(args.fusion_policy, "phase2_registered_only")
 
     def test_seen_new_old_contrast_only_boosts_non_old_outside_old_centroids(self):
         from phase2_collaborative_open_set_qknn_eval import build_qknn_memory, _qknn_label_score_matrix

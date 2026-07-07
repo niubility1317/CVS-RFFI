@@ -3212,27 +3212,6 @@ def run_evaluation(args: argparse.Namespace) -> dict[str, Any]:
         conformal_rescue_min_pvalue=float(args.conformal_rescue_min_pvalue),
         conformal_rescue_risk_scale=float(args.conformal_rescue_risk_scale),
         conformal_rescue_min_agreement=float(args.conformal_rescue_min_agreement),
-        rescue_unknown_veto_enabled=bool(args.rescue_unknown_veto_enabled),
-        rescue_unknown_veto_event_risk=float(args.rescue_unknown_veto_event_risk),
-        rescue_unknown_veto_label_risk=float(args.rescue_unknown_veto_label_risk),
-        rescue_unknown_veto_shell_risk=float(args.rescue_unknown_veto_shell_risk),
-        rescue_unknown_veto_component_agreement=float(
-            args.rescue_unknown_veto_component_agreement
-        ),
-        rescue_unknown_veto_min_sources=int(args.rescue_unknown_veto_min_sources),
-        rescue_unknown_veto_action=str(args.rescue_unknown_veto_action),
-        rescue_unknown_veto_seen_new_exemption_enabled=bool(
-            args.rescue_unknown_veto_seen_new_exemption_enabled
-        ),
-        rescue_unknown_veto_seen_new_min_support_count=int(
-            args.rescue_unknown_veto_seen_new_min_support_count
-        ),
-        rescue_unknown_veto_seen_new_min_pvalue=float(
-            args.rescue_unknown_veto_seen_new_min_pvalue
-        ),
-        rescue_unknown_veto_seen_new_min_receiver_class_reliability=float(
-            args.rescue_unknown_veto_seen_new_min_receiver_class_reliability
-        ),
         class_set_gate_enabled=bool(args.class_set_gate_enabled),
         old_gate_min_receivers=int(args.old_gate_min_receivers),
         old_gate_max_effective_unknown_risk=float(args.old_gate_max_effective_unknown_risk),
@@ -3505,6 +3484,7 @@ def parse_args() -> argparse.Namespace:
             "scg_qknn_cvs",
             "old_protected_unknown_confirm_cvs",
             "ospr_ci_pp",
+            "phase2_registered_only",
         ],
     )
     p.add_argument(
@@ -3558,25 +3538,6 @@ def parse_args() -> argparse.Namespace:
     p.add_argument("--conformal_rescue_min_pvalue", type=float, default=0.05)
     p.add_argument("--conformal_rescue_risk_scale", type=float, default=0.5)
     p.add_argument("--conformal_rescue_min_agreement", type=float, default=0.5)
-    p.add_argument("--rescue_unknown_veto_enabled", action="store_true")
-    p.add_argument("--rescue_unknown_veto_event_risk", type=float, default=1.0)
-    p.add_argument("--rescue_unknown_veto_label_risk", type=float, default=1.0)
-    p.add_argument("--rescue_unknown_veto_shell_risk", type=float, default=1.0)
-    p.add_argument("--rescue_unknown_veto_component_agreement", type=float, default=1.0)
-    p.add_argument("--rescue_unknown_veto_min_sources", type=int, default=1)
-    p.add_argument(
-        "--rescue_unknown_veto_action",
-        choices=["unknown_reject", "defer", "request_more"],
-        default="unknown_reject",
-    )
-    p.add_argument("--rescue_unknown_veto_seen_new_exemption_enabled", action="store_true")
-    p.add_argument("--rescue_unknown_veto_seen_new_min_support_count", type=int, default=0)
-    p.add_argument("--rescue_unknown_veto_seen_new_min_pvalue", type=float, default=0.0)
-    p.add_argument(
-        "--rescue_unknown_veto_seen_new_min_receiver_class_reliability",
-        type=float,
-        default=0.0,
-    )
     p.add_argument("--class_set_gate_enabled", action="store_true")
     p.add_argument("--old_gate_min_receivers", type=int, default=1)
     p.add_argument("--old_gate_max_effective_unknown_risk", type=float, default=1.0)

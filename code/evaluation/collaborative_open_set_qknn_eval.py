@@ -59,6 +59,7 @@ FUSION_POLICIES = {
     "scg_qknn_cvs",
     "old_protected_unknown_confirm_cvs",
     "ospr_ci_pp",
+    "phase2_registered_only",
 }
 
 
@@ -1466,6 +1467,7 @@ def _fuse_event(
         "selective_confirm_cvs",
         "known_guarded_rescue_cvs",
         "scg_qknn_cvs",
+        "phase2_registered_only",
     }:
         strong_consensus = (
             vote_gap > float(consensus_gap_threshold) or score_gap_ratio > float(consensus_gap_threshold)
@@ -1549,23 +1551,24 @@ def _fuse_event(
             rescue_unknown_veto_sources.append("label_shell_risk")
         if decision_risk_component_agreement >= float(rescue_unknown_veto_component_agreement):
             rescue_unknown_veto_sources.append("component_agreement")
-        rescue_unknown_veto_seen_new_exemption_passed = bool(
-            rescue_unknown_veto_seen_new_exemption_enabled
-            and output_label_set == "seen_new"
-            and (rescue_applied or conformal_rescue_applied)
-            and label_class_conformal_support_count
-            >= int(rescue_unknown_veto_seen_new_min_support_count)
-            and label_class_conformal_pvalue
-            >= float(rescue_unknown_veto_seen_new_min_pvalue)
-            and label_receiver_class_reliability
-            >= float(rescue_unknown_veto_seen_new_min_receiver_class_reliability)
-        )
         rescue_unknown_veto_hit = bool(
             rescue_unknown_veto_enabled
             and (rescue_applied or conformal_rescue_applied)
             and output_label_set in {"old", "seen_new"}
             and len(rescue_unknown_veto_sources) >= int(rescue_unknown_veto_min_sources)
-            and not rescue_unknown_veto_seen_new_exemption_passed
+        )
+        rescue_unknown_veto_seen_new_exemption_applied = bool(
+            rescue_unknown_veto_hit
+            and bool(rescue_unknown_veto_seen_new_exemption_enabled)
+            and output_label_set == "seen_new"
+            and label_class_conformal_support_count
+            >= int(rescue_unknown_veto_seen_new_min_support_count)
+            and label_class_conformal_pvalue >= float(rescue_unknown_veto_seen_new_min_pvalue)
+            and label_receiver_class_reliability
+            >= float(rescue_unknown_veto_seen_new_min_receiver_class_reliability)
+        )
+        effective_rescue_unknown_veto_hit = bool(
+            rescue_unknown_veto_hit and not rescue_unknown_veto_seen_new_exemption_applied
         )
         seen_new_contrast_gate_passed, seen_new_contrast_gate_reason = _seen_new_contrast_gate_decision()
         (
@@ -2164,9 +2167,28 @@ def _fuse_event(
                 or decision_risk_component_agreement > float(scorer_component_vote_threshold)
             )
         )
+        phase2_registered_only_accept = bool(
+            policy == "phase2_registered_only"
+            and output_label_set in {"old", "seen_new"}
+            and selected_label_candidate_receivers >= max(1, int(candidate_set_min_receivers))
+            and selected_label_top1_receivers >= max(0, int(candidate_set_min_top1_receivers))
+            and label_class_conformal_pvalue >= float(candidate_set_min_conformal_pvalue)
+            and label_receiver_class_reliability
+            >= float(candidate_set_min_label_receiver_class_reliability)
+            and mean_score >= float(consensus_score_threshold)
+            and mean_margin >= float(accept_margin_threshold)
+            and score_gap_ratio >= float(candidate_set_min_score_gap)
+            and seen_new_contrast_gate_passed
+        )
         if policy == "support_router_cvs" and support_router_accept:
             decision = "accept"
             output_label = label
+        elif policy == "phase2_registered_only" and phase2_registered_only_accept:
+            decision = "accept"
+            output_label = label
+        elif policy == "phase2_registered_only":
+            decision = "defer"
+            output_label = ""
         elif policy == "scg_qknn_cvs" and scg_accept:
             decision = "accept"
             output_label = label
@@ -2264,13 +2286,17 @@ def _fuse_event(
         elif policy == "candidate_set_cvs":
             decision = "defer"
             output_label = ""
-        elif rescue_unknown_veto_hit and rescue_unknown_veto_action == "request_more" and within_request_budget:
+        elif (
+            effective_rescue_unknown_veto_hit
+            and rescue_unknown_veto_action == "request_more"
+            and within_request_budget
+        ):
             decision = "request_more"
             output_label = ""
-        elif rescue_unknown_veto_hit and rescue_unknown_veto_action == "defer":
+        elif effective_rescue_unknown_veto_hit and rescue_unknown_veto_action == "defer":
             decision = "defer"
             output_label = ""
-        elif rescue_unknown_veto_hit:
+        elif effective_rescue_unknown_veto_hit:
             decision = "unknown_reject"
             output_label = UNKNOWN_LABEL
         elif high_risk and multi_channel_risk and (policy == "cp_set_cvs" or not strong_known):
@@ -2353,18 +2379,11 @@ def _fuse_event(
         "conformal_rescue_applied": bool(locals().get("conformal_rescue_applied", False)),
         "rescue_unknown_veto_enabled": bool(rescue_unknown_veto_enabled),
         "rescue_unknown_veto_hit": bool(locals().get("rescue_unknown_veto_hit", False)),
-        "rescue_unknown_veto_action": str(rescue_unknown_veto_action),
-        "rescue_unknown_veto_sources": ",".join(
-            locals().get("rescue_unknown_veto_sources", [])
-        ),
-        "rescue_unknown_veto_source_count": int(
-            len(locals().get("rescue_unknown_veto_sources", []))
-        ),
         "rescue_unknown_veto_seen_new_exemption_enabled": bool(
             rescue_unknown_veto_seen_new_exemption_enabled
         ),
-        "rescue_unknown_veto_seen_new_exemption_passed": bool(
-            locals().get("rescue_unknown_veto_seen_new_exemption_passed", False)
+        "rescue_unknown_veto_seen_new_exemption_applied": bool(
+            locals().get("rescue_unknown_veto_seen_new_exemption_applied", False)
         ),
         "rescue_unknown_veto_seen_new_min_support_count": int(
             rescue_unknown_veto_seen_new_min_support_count
@@ -2374,6 +2393,13 @@ def _fuse_event(
         ),
         "rescue_unknown_veto_seen_new_min_receiver_class_reliability": float(
             rescue_unknown_veto_seen_new_min_receiver_class_reliability
+        ),
+        "rescue_unknown_veto_action": str(rescue_unknown_veto_action),
+        "rescue_unknown_veto_sources": ",".join(
+            locals().get("rescue_unknown_veto_sources", [])
+        ),
+        "rescue_unknown_veto_source_count": int(
+            len(locals().get("rescue_unknown_veto_sources", []))
         ),
         "label_class_conformal_pvalue": float(label_class_conformal_pvalue),
         "label_class_conformal_support_count": float(label_class_conformal_support_count),
@@ -2428,6 +2454,9 @@ def _fuse_event(
         "class_set_gate_passed": bool(locals().get("gate_passed", True)),
         "class_set_gate_reason": str(locals().get("gate_reason", "")),
         "candidate_set_accept": bool(locals().get("candidate_set_accept", False)),
+        "phase2_registered_only_accept": bool(
+            locals().get("phase2_registered_only_accept", False)
+        ),
         "scg_qknn_accept": bool(locals().get("scg_accept", False)),
         "scg_qknn_unknown_evidence": bool(locals().get("scg_unknown_evidence", False)),
         "scg_qknn_unknown_evidence_source_count": int(
@@ -2813,9 +2842,7 @@ def _fuse_progressive_event(
             rescue_unknown_veto_seen_new_min_support_count=(
                 rescue_unknown_veto_seen_new_min_support_count
             ),
-            rescue_unknown_veto_seen_new_min_pvalue=(
-                rescue_unknown_veto_seen_new_min_pvalue
-            ),
+            rescue_unknown_veto_seen_new_min_pvalue=rescue_unknown_veto_seen_new_min_pvalue,
             rescue_unknown_veto_seen_new_min_receiver_class_reliability=(
                 rescue_unknown_veto_seen_new_min_receiver_class_reliability
             ),
@@ -3190,9 +3217,7 @@ def _fuse_adaptive_gain_event(
             rescue_unknown_veto_seen_new_min_support_count=(
                 rescue_unknown_veto_seen_new_min_support_count
             ),
-            rescue_unknown_veto_seen_new_min_pvalue=(
-                rescue_unknown_veto_seen_new_min_pvalue
-            ),
+            rescue_unknown_veto_seen_new_min_pvalue=rescue_unknown_veto_seen_new_min_pvalue,
             rescue_unknown_veto_seen_new_min_receiver_class_reliability=(
                 rescue_unknown_veto_seen_new_min_receiver_class_reliability
             ),
@@ -3402,9 +3427,7 @@ def _fuse_support_utility_event(
             rescue_unknown_veto_seen_new_min_support_count=(
                 rescue_unknown_veto_seen_new_min_support_count
             ),
-            rescue_unknown_veto_seen_new_min_pvalue=(
-                rescue_unknown_veto_seen_new_min_pvalue
-            ),
+            rescue_unknown_veto_seen_new_min_pvalue=rescue_unknown_veto_seen_new_min_pvalue,
             rescue_unknown_veto_seen_new_min_receiver_class_reliability=(
                 rescue_unknown_veto_seen_new_min_receiver_class_reliability
             ),
@@ -3626,9 +3649,7 @@ def _fuse_rb_capr_event(
             rescue_unknown_veto_seen_new_min_support_count=(
                 rescue_unknown_veto_seen_new_min_support_count
             ),
-            rescue_unknown_veto_seen_new_min_pvalue=(
-                rescue_unknown_veto_seen_new_min_pvalue
-            ),
+            rescue_unknown_veto_seen_new_min_pvalue=rescue_unknown_veto_seen_new_min_pvalue,
             rescue_unknown_veto_seen_new_min_receiver_class_reliability=(
                 rescue_unknown_veto_seen_new_min_receiver_class_reliability
             ),
@@ -3953,9 +3974,7 @@ def _fuse_dual_route_event(
         rescue_unknown_veto_seen_new_min_support_count=(
             rescue_unknown_veto_seen_new_min_support_count
         ),
-        rescue_unknown_veto_seen_new_min_pvalue=(
-            rescue_unknown_veto_seen_new_min_pvalue
-        ),
+        rescue_unknown_veto_seen_new_min_pvalue=rescue_unknown_veto_seen_new_min_pvalue,
         rescue_unknown_veto_seen_new_min_receiver_class_reliability=(
             rescue_unknown_veto_seen_new_min_receiver_class_reliability
         ),
@@ -4081,9 +4100,7 @@ def _fuse_dual_route_event(
         rescue_unknown_veto_seen_new_min_support_count=(
             rescue_unknown_veto_seen_new_min_support_count
         ),
-        rescue_unknown_veto_seen_new_min_pvalue=(
-            rescue_unknown_veto_seen_new_min_pvalue
-        ),
+        rescue_unknown_veto_seen_new_min_pvalue=rescue_unknown_veto_seen_new_min_pvalue,
         rescue_unknown_veto_seen_new_min_receiver_class_reliability=(
             rescue_unknown_veto_seen_new_min_receiver_class_reliability
         ),
@@ -4237,8 +4254,9 @@ def _finalize_metrics(
     adaptive_stop_reasons: defaultdict[str, int] = defaultdict(int)
     seen_new_rescue_total = 0
     rescue_unknown_veto_total = 0
-    rescue_unknown_veto_seen_new_exemption_total = 0
     rescue_unknown_veto_by_role: defaultdict[str, int] = defaultdict(int)
+    rescue_unknown_veto_seen_new_exemption_total = 0
+    rescue_unknown_veto_seen_new_exemption_by_role: defaultdict[str, int] = defaultdict(int)
     candidate_set_high_unknown_veto_total = 0
     candidate_set_high_unknown_veto_by_role: defaultdict[str, int] = defaultdict(int)
     candidate_set_shell_veto_total = 0
@@ -4263,6 +4281,8 @@ def _finalize_metrics(
     support_router_unknown_evidence_by_role: defaultdict[str, int] = defaultdict(int)
     scg_qknn_accept_total = 0
     scg_qknn_accept_by_role: defaultdict[str, int] = defaultdict(int)
+    phase2_registered_only_accept_total = 0
+    phase2_registered_only_accept_by_role: defaultdict[str, int] = defaultdict(int)
     scg_qknn_unknown_evidence_total = 0
     scg_qknn_unknown_evidence_by_role: defaultdict[str, int] = defaultdict(int)
     selective_confirm_accept_total = 0
@@ -4346,6 +4366,9 @@ def _finalize_metrics(
         if bool(item.get("scg_qknn_accept", False)):
             scg_qknn_accept_total += 1
             scg_qknn_accept_by_role[role] += 1
+        if bool(item.get("phase2_registered_only_accept", False)):
+            phase2_registered_only_accept_total += 1
+            phase2_registered_only_accept_by_role[role] += 1
         if bool(item.get("scg_qknn_unknown_evidence", False)):
             scg_qknn_unknown_evidence_total += 1
             scg_qknn_unknown_evidence_by_role[role] += 1
@@ -4377,12 +4400,12 @@ def _finalize_metrics(
         if stop_reason:
             adaptive_stop_reasons[stop_reason] += 1
         seen_new_rescue_total += int(bool(item.get("seen_new_rescue_applied", False)))
-        rescue_unknown_veto_seen_new_exemption_total += int(
-            bool(item.get("rescue_unknown_veto_seen_new_exemption_passed", False))
-        )
         if bool(item.get("rescue_unknown_veto_hit", False)):
             rescue_unknown_veto_total += 1
             rescue_unknown_veto_by_role[role] += 1
+        if bool(item.get("rescue_unknown_veto_seen_new_exemption_applied", False)):
+            rescue_unknown_veto_seen_new_exemption_total += 1
+            rescue_unknown_veto_seen_new_exemption_by_role[role] += 1
         role_totals[role] += 1
         if role in {"old", "seen_new"}:
             role_accepted[role] += int(accepted)
@@ -4552,6 +4575,7 @@ def _finalize_metrics(
         "seen_new_rescue_rate": _safe_rate(seen_new_rescue_total, total_events),
         "rescue_unknown_veto_count": int(rescue_unknown_veto_total),
         "rescue_unknown_veto_rate": _safe_rate(rescue_unknown_veto_total, total_events),
+        "rescue_unknown_veto_by_role": dict(sorted(rescue_unknown_veto_by_role.items())),
         "rescue_unknown_veto_seen_new_exemption_count": int(
             rescue_unknown_veto_seen_new_exemption_total
         ),
@@ -4559,7 +4583,9 @@ def _finalize_metrics(
             rescue_unknown_veto_seen_new_exemption_total,
             total_events,
         ),
-        "rescue_unknown_veto_by_role": dict(sorted(rescue_unknown_veto_by_role.items())),
+        "rescue_unknown_veto_seen_new_exemption_by_role": dict(
+            sorted(rescue_unknown_veto_seen_new_exemption_by_role.items())
+        ),
         "candidate_set_high_unknown_veto_count": int(candidate_set_high_unknown_veto_total),
         "candidate_set_high_unknown_veto_rate": _safe_rate(candidate_set_high_unknown_veto_total, total_events),
         "candidate_set_high_unknown_veto_by_role": dict(sorted(candidate_set_high_unknown_veto_by_role.items())),
@@ -4632,6 +4658,14 @@ def _finalize_metrics(
         "scg_qknn_accept_count": int(scg_qknn_accept_total),
         "scg_qknn_accept_rate": _safe_rate(scg_qknn_accept_total, total_events),
         "scg_qknn_accept_by_role": dict(sorted(scg_qknn_accept_by_role.items())),
+        "phase2_registered_only_accept_count": int(phase2_registered_only_accept_total),
+        "phase2_registered_only_accept_rate": _safe_rate(
+            phase2_registered_only_accept_total,
+            total_events,
+        ),
+        "phase2_registered_only_accept_by_role": dict(
+            sorted(phase2_registered_only_accept_by_role.items())
+        ),
         "scg_qknn_unknown_evidence_count": int(scg_qknn_unknown_evidence_total),
         "scg_qknn_unknown_evidence_rate": _safe_rate(
             scg_qknn_unknown_evidence_total,
@@ -5257,25 +5291,6 @@ def evaluate_collaborative_open_set_evidence(
                     candidate_set_pairguard_soft_min_agreement=candidate_set_pairguard_soft_min_agreement,
                     candidate_set_pairguard_soft_min_pvalue=candidate_set_pairguard_soft_min_pvalue,
                     candidate_set_pairguard_soft_min_reliability=candidate_set_pairguard_soft_min_reliability,
-                    orbit_latency_weight=orbit_latency_weight,
-                    orbit_radius_risk_weight=orbit_radius_risk_weight,
-                    orbit_staleness_weight=orbit_staleness_weight,
-                    orbit_min_trust=orbit_min_trust,
-                    orbit_unknown_veto_risk=orbit_unknown_veto_risk,
-                    orbit_old_floor_rescue_enabled=orbit_old_floor_rescue_enabled,
-                    orbit_old_floor_max_rank=orbit_old_floor_max_rank,
-                    orbit_old_floor_min_receivers=orbit_old_floor_min_receivers,
-                    orbit_old_floor_min_pvalue=orbit_old_floor_min_pvalue,
-                    orbit_old_floor_min_receiver_class_reliability=(
-                        orbit_old_floor_min_receiver_class_reliability
-                    ),
-                    orbit_old_floor_min_support_density=orbit_old_floor_min_support_density,
-                    orbit_old_floor_min_margin=orbit_old_floor_min_margin,
-                    orbit_old_floor_max_label_unknown_risk=orbit_old_floor_max_label_unknown_risk,
-                    orbit_old_floor_max_event_unknown_risk=orbit_old_floor_max_event_unknown_risk,
-                    orbit_old_floor_max_shell_risk=orbit_old_floor_max_shell_risk,
-                    orbit_old_floor_max_component_agreement=orbit_old_floor_max_component_agreement,
-                    orbit_old_floor_min_trust=orbit_old_floor_min_trust,
                     dual_route_rescue_min_pvalue=dual_route_rescue_min_pvalue,
                     dual_route_rescue_min_receiver_class_reliability=(
                         dual_route_rescue_min_receiver_class_reliability
