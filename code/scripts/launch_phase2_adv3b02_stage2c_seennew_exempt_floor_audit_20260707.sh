@@ -138,7 +138,13 @@ for path in sorted(case_dir.glob("*/*/stage2c_qknn_*_k10.json")):
         item["profile"] = profile
         item["json_path"] = str(path)
         rows.append(item)
-    metrics = payload.get("counts", {}).get("3", {})
+    counts = payload.get("counts", {})
+    if counts:
+        max_count_key = sorted(counts, key=lambda value: int(value))[-1]
+        metrics = counts.get(max_count_key, {})
+    else:
+        max_count_key = ""
+        metrics = {}
     events = metrics.get("event_results", [])
     seen_new_candidates = [
         e for e in events
@@ -157,6 +163,7 @@ for path in sorted(case_dir.glob("*/*/stage2c_qknn_*_k10.json")):
     event_rows.append({
         "variant": variant,
         "profile": profile,
+        "audit_count": max_count_key,
         "event_count": len(events),
         "seen_new_candidate_events": len(seen_new_candidates),
         "rescued_seen_new_candidate_events": len(rescued_seen_new),
