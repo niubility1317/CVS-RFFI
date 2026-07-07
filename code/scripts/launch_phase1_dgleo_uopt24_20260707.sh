@@ -67,7 +67,7 @@ PHASE1_V2_FLAGS=(
   --source_episode_overflow_warn 0.90
   --source_episode_min_local_components 4
   --feasibility_gate true
-  --feasibility_stage full
+  --feasibility_stage audit
   --feasibility_relaxed_pass false
   --feasibility_local_pass false
 )
@@ -109,10 +109,11 @@ launch_candidate() {
 
   local out_dir="${RUNS_ROOT}/${cid}"
   local log_path="${LOG_ROOT}/${cid}.out"
-  local proxy_vaccept_w
+  local proxy_vaccept_w u_quarantine_w
   proxy_vaccept_w="$(awk -v p="${proxy_w}" 'BEGIN { printf "%.5f", (p > 0 ? 0.025 + p * 8.0 : 0.000) }')"
+  u_quarantine_w="$(awk -v u="${u_dm}" 'BEGIN { printf "%.5f", (u > 0 ? u * 0.45 : 0.000) }')"
 
-  echo "[UOPT24-CANDIDATE] id=${cid} group=${group} route=${route} algorithm=DGLEO_UOPT24 base=EPOC_CONCAT_SAT_DIRECT_METRIC_UNLABELED phase1_dataset=ManySig_only source_only=1 dg_primary=1 leo_primary=1 concat_sa=1 concat_sat_mode=full_2b_core_domain concat_sat_full_loss=1 concat_sat_ce_only=0 unlabeled_direct_optimization=1 unlabeled_domain_supervision=1 unlabeled_satellite_consistency=1 unlabeled_direct_metric_accept=1 domain_loss_on=1 adv_loss_on=1 direct_metric_validation=1 phase1_v2_hard_gates=1 endpoint_accept_v1=1 tail_safety_state_machine=1 os_eff_min_budget=0.15 u_tri_state_required=1 feasibility_gate=1 final_export_fail_closed=1 real_unknown_classes_in_training=0 target_receiver_samples_in_training=0 target_unknown_training_count=0 manytx_in_training=0 proxy_unknown_real_tx_calibration=0 virtual_unknown_only=1 stage2_unknown_query_eval_only=1 stage2_success_claim=0 deployment_success_claim=0 gpu=${gpu}"
+  echo "[UOPT24-CANDIDATE] id=${cid} group=${group} route=${route} algorithm=DGLEO_UOPT24 base=EPOC_CONCAT_SAT_DIRECT_METRIC_UNLABELED phase1_dataset=ManySig_only source_only=1 dg_primary=1 leo_primary=1 concat_sa=1 concat_sat_mode=full_2b_core_domain concat_sat_full_loss=1 concat_sat_ce_only=0 unlabeled_direct_optimization=1 unlabeled_domain_supervision=1 unlabeled_satellite_consistency=1 unlabeled_direct_metric_accept=1 unlabeled_quarantine_accept=1 domain_loss_on=1 adv_loss_on=1 direct_metric_validation=1 phase1_v2_hard_gates=1 endpoint_accept_v1=1 tail_safety_state_machine=1 os_eff_min_budget=0.15 u_tri_state_required=1 feasibility_gate=1 feasibility_stage=audit final_export_fail_closed=1 real_unknown_classes_in_training=0 target_receiver_samples_in_training=0 target_unknown_training_count=0 manytx_in_training=0 proxy_unknown_real_tx_calibration=0 virtual_unknown_only=1 stage2_unknown_query_eval_only=1 stage2_success_claim=0 deployment_success_claim=0 gpu=${gpu}"
 
   CMD=(env "PYTHONPATH=${ROOT}/code:${ROOT}:${PYTHONPATH:-}" "CUDA_VISIBLE_DEVICES=${gpu}" "${PYTHON}" -u "${ROOT}/code/SSDG/train_ssdg.py"
     --wisig_pkl "${WISIG_PKL}"
@@ -285,11 +286,21 @@ launch_candidate() {
     --lambda_u_adv "${u_adv}"
     --lambda_u_sat_cons "${u_sat}"
     --lambda_u_direct_metric_accept "${u_dm}"
+    --lambda_u_quarantine_accept "${u_quarantine_w}"
     --u_domain_start_epoch 1
     --u_sat_cons_start_epoch 1
     --u_direct_metric_start_epoch "${u_dm_start}"
     --u_direct_metric_min_selected "${u_min}"
     --u_direct_metric_use_sat_pair true
+    --u_quarantine_start_epoch "${u_dm_start}"
+    --u_quarantine_valid_domain_only true
+    --u_quarantine_include_sat_view true
+    --u_quarantine_min_count 4
+    --u_quarantine_core_quantile 0.70
+    --u_quarantine_accept_quantile 0.78
+    --u_quarantine_accept_target 0.16
+    --u_quarantine_cvar_alpha 0.20
+    --u_quarantine_accept_temperature 0.04
     --u_sat_zid_cons_weight 0.25
     --tau_min 0.93
     --tau_max 0.985
@@ -383,7 +394,7 @@ if [[ "${DRY_RUN}" != "1" ]]; then
   mkdir -p "${RUNS_ROOT}" "${LOG_ROOT}"
 fi
 
-echo "[UOPT24] run_id=${RUN_ID} dry_run=${DRY_RUN} candidates=${#CANDIDATES[@]} max_active_per_gpu=${MAX_ACTIVE_PER_GPU} add_three_per_gpu=1 expected_existing_per_gpu=2 teacher=ADV3B02_CORE90_SOFT_E200 base=EPOC_CONCAT_SAT_DIRECT_METRIC_UNLABELED phase1_dataset=ManySig_only source_only=1 dg_primary=1 leo_primary=1 domain_loss_on=1 unlabeled_direct_optimization=1 concat_sat_mode=full_2b_core_domain concat_sat_ce_only=0 phase1_v2_hard_gates=1 endpoint_accept_v1=1 tail_safety_state_machine=1 os_eff_min_budget=0.15 u_tri_state_required=1 feasibility_gate=1 final_export_fail_closed=1 stage2_success_claim=0 deployment_success_claim=0 only=${ONLY_CANDIDATES:-ALL}"
+echo "[UOPT24] run_id=${RUN_ID} dry_run=${DRY_RUN} candidates=${#CANDIDATES[@]} max_active_per_gpu=${MAX_ACTIVE_PER_GPU} add_three_per_gpu=1 expected_existing_per_gpu=2 teacher=ADV3B02_CORE90_SOFT_E200 base=EPOC_CONCAT_SAT_DIRECT_METRIC_UNLABELED phase1_dataset=ManySig_only source_only=1 dg_primary=1 leo_primary=1 domain_loss_on=1 unlabeled_direct_optimization=1 unlabeled_quarantine_accept=1 concat_sat_mode=full_2b_core_domain concat_sat_ce_only=0 phase1_v2_hard_gates=1 endpoint_accept_v1=1 tail_safety_state_machine=1 os_eff_min_budget=0.15 u_tri_state_required=1 feasibility_gate=1 feasibility_stage=audit final_export_fail_closed=1 stage2_success_claim=0 deployment_success_claim=0 only=${ONLY_CANDIDATES:-ALL}"
 
 for spec in "${CANDIDATES[@]}"; do
   launch_candidate "${spec}"

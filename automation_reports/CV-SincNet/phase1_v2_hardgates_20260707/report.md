@@ -127,6 +127,38 @@
 | `conda run --no-capture-output -n ssr-gpu python -m pytest code\tests\test_phase1_v2_control.py code\tests\test_open_world_feature_space_loss.py code\tests\test_local_component_hard_gate.py code\tests\test_phase1_open_set_reject_eval.py code\tests\test_vacuum_gaussian_prototype_bank.py -q` | 29 passed |
 | Git承载面`E:\type10-7\github_publish\CVS-RFFI-repo`复跑上述py_compile、16项焦点pytest、三脚本`bash -n`和29项相关回归 | 全部通过 |
 
+## 审查问题修复
+
+### 2026-07-07补丁2
+
+- 快照：`E:\type10-7\code\snapshots\phase1_v2_review_fix_20260707_182635`。
+- 目标：修复多agent审查指出的P0/P1硬冲突，使v2控制面不再默认必失败，并避免几何artifact被hard gate错误消费。
+
+| 审查问题 | 修复 |
+|---|---|
+| 三组launcher把`feasibility_stage=full`和`feasibility_relaxed_pass=false`写死，导致每个epoch触发`RELAXED_UNREACHABLE_STOP_FULL_TARGET` | 三组最新launcher默认改为`--feasibility_stage audit`，保留feasibility gate记录，但不把未实证的full目标作为必失败门槛。 |
+| `directmetric16`没有U_s direct loss却要求`u_tri_state_required=true` | `directmetric16`改为`--u_tri_state_required false --u_direct_idle_blocks_promotion false`，避免把无U_s分支的DM16变成必然`US_DIRECT_LOSS_IDLE`负例。 |
+| `U_s`三态required可被fallback反推计数伪通过 | `assess_unlabeled_tri_state`新增`u_tri_state_source_code/geometry`、`u_tri_query_count`和计数守恒校验；required时必须来自几何三态，且三态计数和必须匹配query_count。训练侧写入`train/u_tri_state_source_code`、`train/u_tri_state_geometry`和`train/u_tri_query_count`。 |
+| `uopt24`只启用U_s direct metric，没有quarantine三态来源 | `uopt24`新增轻量`--lambda_u_quarantine_accept`和quarantine参数，权重从`u_dm`派生，用于生成几何三态证据。 |
+| density/NLL导出与hard gate消费方向不一致 | `VacuumGaussianPrototypeBank.knn_density`改为与导出一致的`exp(-angle/r_accept)`，`tangent_mahalanobis_nll`改为`angle/r_accept`，保证中心样本密度高、NLL低。 |
+| 非tail v2硬阻断可能被`tail_stop_blocks_final=false`绕过 | 新增`should_skip_phase1_v2_final_export`，final export跳过直接由`phase1_v2_final_blocked`决定；`tail_stop_blocks_final`不再削弱endpoint/OS预算/U_s/source episode/feasibility硬阻断。 |
+
+### TDD红灯
+
+| 命令 | 红灯结果 |
+|---|---|
+| `conda run --no-capture-output -n ssr-gpu python -m pytest code\tests\test_phase1_v2_control.py code\tests\test_local_component_hard_gate.py code\tests\test_phase1_dgleo_directmetric16_launcher.py code\tests\test_phase1_unlabeled_direct_training.py code\tests\test_phase1_dgleo_osfix16_launcher.py -q` | 7 failed, 23 passed；失败点为U_s三态fallback未被拒、final export helper缺失、density/NLL core样本被拒、三组launcher仍为必失败feasibility配置、DM16仍要求U_s三态、UOPT缺quarantine。 |
+
+### 补丁后验证
+
+| 命令 | 结果 |
+|---|---|
+| `conda run --no-capture-output -n ssr-gpu python -m pytest code\tests\test_phase1_v2_control.py code\tests\test_local_component_hard_gate.py code\tests\test_phase1_dgleo_directmetric16_launcher.py code\tests\test_phase1_unlabeled_direct_training.py code\tests\test_phase1_dgleo_osfix16_launcher.py -q` | 30 passed |
+| `conda run --no-capture-output -n ssr-gpu python -m py_compile code\cvsrffi\phase1_v2_control.py code\cvsrffi\prototype_bank.py code\cvsrffi\hard_gate.py code\SSDG\train_ssdg.py` | 通过 |
+| `bash -n code/scripts/launch_phase1_dgleo_directmetric16_20260706.sh; bash -n code/scripts/launch_phase1_dgleo_uopt24_20260707.sh; bash -n code/scripts/launch_phase1_dgleo_osfix16_20260707.sh` | 通过 |
+| `conda run --no-capture-output -n ssr-gpu python -m pytest code\tests\test_phase2_prototype_fusion_export.py code\tests\test_unlabeled_quarantine_acceptance_loss.py code\tests\test_phase1_open_set_reject_eval.py code\tests\test_vacuum_gaussian_prototype_bank.py code\tests\test_open_world_feature_space_loss.py code\tests\test_direct_metric_acceptance_loss.py -q` | 21 passed |
+| Git承载面`E:\type10-7\github_publish\CVS-RFFI-repo`复跑上述py_compile、三脚本`bash -n`、30项焦点pytest和21项相关回归 | 全部通过 |
+
 ## N607状态
 
 - 本次只完成本地代码、测试、launcher dry-run闭环。

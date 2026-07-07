@@ -89,6 +89,7 @@ try:
         assess_phase1_v2_final_export_policy,
         assess_source_episode_density_gate,
         assess_unlabeled_tri_state,
+        should_skip_phase1_v2_final_export,
     )
     from cvsrffi.schedule import (
         build_aug_base_cfg,
@@ -135,6 +136,7 @@ except ModuleNotFoundError:
     assess_open_set_effective_budget = assess_unlabeled_tri_state = None
     assess_phase1_v2_final_export_policy = None
     assess_source_episode_density_gate = None
+    should_skip_phase1_v2_final_export = None
     one_way_kl_from_teacher = None
     build_aug_base_cfg = build_stage_state = configure_augmentor_for_epoch = configure_mixstyle_for_epoch = None
     format_stage_state = make_augmentor = None
@@ -3609,10 +3611,12 @@ def train(args) -> int:
             and u_tri_query_count > 0.0
         )
         if has_geometry_tri_state:
+            u_tri_state_source = "geometry"
             u_tri_trusted_core_count = q_tri_trusted_core_count
             u_tri_ambiguous_tail_count = q_tri_ambiguous_tail_count
             u_tri_outside_reject_count = q_tri_outside_reject_count
         else:
+            u_tri_state_source = "fallback"
             u_tri_trusted_core_count = float(u_dm_info.get("selected", 0.0) or 0.0)
             u_tri_accept_rate = float(u_quarantine_info.get("accept_rate", 0.0) or 0.0)
             if not math.isfinite(u_tri_trusted_core_count):
@@ -3718,6 +3722,9 @@ def train(args) -> int:
                 "train/u_quarantine_radius_to_inter_ratio": u_quarantine_info.get("radius_to_inter_ratio", float("nan")),
                 "train/u_quarantine_rate": u_quarantine_info.get("quarantine_rate", float("nan")),
                 "train/u_quarantine_valid_domain_rate": u_quarantine_info.get("valid_domain_rate", float("nan")),
+                "train/u_tri_state_source_code": 1.0 if u_tri_state_source == "geometry" else 0.0,
+                "train/u_tri_state_geometry": 1.0 if u_tri_state_source == "geometry" else 0.0,
+                "train/u_tri_query_count": u_tri_query_count,
                 "train/u_tri_trusted_core_count": u_tri_trusted_core_count,
                 "train/u_tri_ambiguous_tail_count": u_tri_ambiguous_tail_count,
                 "train/u_tri_outside_reject_count": u_tri_outside_reject_count,
@@ -4039,6 +4046,7 @@ def train(args) -> int:
                 or assess_unlabeled_tri_state is None
                 or assess_phase1_v2_final_export_policy is None
                 or assess_source_episode_density_gate is None
+                or should_skip_phase1_v2_final_export is None
             ):
                 raise ImportError("cvsrffi.phase1_v2_control is required for --phase1_v2_hard_gates.")
             endpoint_decision = assess_endpoint_contract(
@@ -4240,9 +4248,12 @@ def train(args) -> int:
         if test_ran_this_epoch:
             previous_protected_metrics = dict(protected_metrics)
         previous_train_logs = dict(train_logs)
-    if bool(phase1_v2_final_blocked) and bool(getattr(args, "tail_stop_blocks_final", True)):
+    if should_skip_phase1_v2_final_export is not None and should_skip_phase1_v2_final_export(
+        phase1_v2_final_blocked=bool(phase1_v2_final_blocked),
+        tail_stop_blocks_final=bool(getattr(args, "tail_stop_blocks_final", True)),
+    ):
         print(
-            "[PHASE1-V2] prototype_export_skipped=1 reason=tail_safety_or_expansion_blocks_final "
+            "[PHASE1-V2] prototype_export_skipped=1 reason=phase1_v2_guard_blocks_final "
             "claim=NON_PROMOTABLE_DIAGNOSTIC",
             flush=True,
         )

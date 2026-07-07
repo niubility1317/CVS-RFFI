@@ -87,3 +87,64 @@ def test_hard_gate_rejects_interclass_midpoint_and_nan():
     assert midpoint["decision"].startswith("REJECT")
     assert bad["decision"] == "REJECT_NAN"
 
+
+def test_hard_gate_accepts_core_with_exported_density_and_nll_thresholds():
+    bank = VacuumGaussianPrototypeBank.from_phase2_package(
+        {
+            "feature_key": "z_id",
+            "fusion_components": [
+                [
+                    {
+                        "component_id": 0,
+                        "source_domains": [0],
+                        "n_samples": 20,
+                        "mu": [1.0, 0.0],
+                        "r_core_deg": 6.0,
+                        "r_accept_deg": 12.0,
+                        "r_tail_deg": 18.0,
+                        "r_vac_deg": 24.0,
+                        "density_p05": 0.60,
+                        "density_p10": 0.50,
+                        "nll_p95": 0.90,
+                        "nll_tail_p95": 1.20,
+                        "accept_enabled": True,
+                    }
+                ],
+                [
+                    {
+                        "component_id": 0,
+                        "source_domains": [0],
+                        "n_samples": 20,
+                        "mu": [0.0, 1.0],
+                        "r_core_deg": 6.0,
+                        "r_accept_deg": 12.0,
+                        "r_tail_deg": 18.0,
+                        "r_vac_deg": 24.0,
+                        "density_p05": 0.60,
+                        "density_p10": 0.50,
+                        "nll_p95": 0.90,
+                        "nll_tail_p95": 1.20,
+                        "accept_enabled": True,
+                    }
+                ],
+            ],
+        }
+    )
+    gate = LocalComponentHardGate(
+        bank,
+        GateThresholds(
+            logit_margin_core_min=0.5,
+            logit_margin_tail_min=2.0,
+            geo_margin_core_min_deg=2.0,
+            geo_margin_tail_min_deg=4.0,
+            use_density_gate=True,
+            use_nll_gate=True,
+            use_energy_gate=False,
+        ),
+    )
+
+    core = gate.decide(torch.tensor([1.0, 0.0]), logits=torch.tensor([4.0, 1.0]))
+
+    assert core["decision"] == "ACCEPT_KNOWN_CORE"
+    assert core["debug"]["gates"]["density"] is True
+    assert core["debug"]["gates"]["nll"] is True

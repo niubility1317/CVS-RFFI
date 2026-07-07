@@ -54,9 +54,10 @@ def test_directmetric16_declares_protocol_and_full_concat_sat_training():
     assert "--source_episode_density_gate true" in out
     assert "--source_episode_overflow_warn 0.90" in out
     assert "--source_episode_min_local_components 4" in out
-    assert "--u_tri_state_required true" in out
+    assert "--u_tri_state_required false" in out
+    assert "--u_direct_idle_blocks_promotion false" in out
     assert "--feasibility_gate true" in out
-    assert "--feasibility_stage full" in out
+    assert "--feasibility_stage audit" in out
     assert "phase1_source_zid_prototypes.pt" in out
     assert "phase2_zid_prototypes.pt" not in out
     assert "leo_clear_weak" in out

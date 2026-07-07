@@ -299,11 +299,22 @@ def assess_unlabeled_tri_state(
         "train/u_tri_outside_reject_count",
     )
     counts = [finite_float(metrics.get(key), 0.0) for key in tri_keys]
+    query_count = finite_float(metrics.get("train/u_tri_query_count"), float("nan"))
+    source = str(metrics.get("train/u_tri_state_source", "")).strip().lower()
+    source_code = finite_float(metrics.get("train/u_tri_state_source_code"), float("nan"))
+    has_geometry_source = source == "geometry" or (math.isfinite(source_code) and source_code >= 0.5)
+    count_sum = sum(max(0.0, value) for value in counts)
     if any(key in metrics for key in tri_keys):
-        if sum(max(0.0, value) for value in counts) <= 0.0:
+        if count_sum <= 0.0:
             reasons.append("US_TRI_STATE_EMPTY")
     else:
         reasons.append("US_TRI_STATE_COUNTS_MISSING")
+    if not has_geometry_source:
+        reasons.append("US_TRI_STATE_NOT_GEOMETRY" if source else "US_TRI_STATE_SOURCE_MISSING")
+    if not math.isfinite(query_count) or query_count <= 0.0:
+        reasons.append("US_TRI_STATE_QUERY_COUNT_MISSING")
+    elif abs(count_sum - query_count) > max(1e-6, 0.01 * query_count):
+        reasons.append("US_TRI_STATE_COUNT_MISMATCH")
     fired = bool(reasons)
     return ControlDecision(
         fired=fired,
@@ -314,6 +325,9 @@ def assess_unlabeled_tri_state(
             "u_direct_active": active,
             "u_direct_selected": selected,
             "u_pseudo_selected": pseudo_selected,
+            "u_tri_query_count": query_count,
+            "u_tri_count_sum": count_sum,
+            "u_tri_geometry_source": 1.0 if has_geometry_source else 0.0,
             "u_tri_trusted_core_count": counts[0] if len(counts) > 0 else 0.0,
             "u_tri_ambiguous_tail_count": counts[1] if len(counts) > 1 else 0.0,
             "u_tri_outside_reject_count": counts[2] if len(counts) > 2 else 0.0,
@@ -427,6 +441,20 @@ def assess_phase1_v2_final_export_policy(
             "critical_guard_count": float(len(critical)),
         },
     )
+
+
+def should_skip_phase1_v2_final_export(
+    *,
+    phase1_v2_final_blocked: bool,
+    tail_stop_blocks_final: bool = True,
+) -> bool:
+    """Return whether final prototype export must be skipped after any v2 block.
+
+    ``tail_stop_blocks_final`` is retained for caller compatibility, but it must
+    not weaken endpoint, OS-budget, U_s, source-episode, or feasibility blocks.
+    """
+    _ = tail_stop_blocks_final
+    return bool(phase1_v2_final_blocked)
 
 
 def assess_feasibility_gate(state: Mapping[str, Any]) -> ControlDecision:

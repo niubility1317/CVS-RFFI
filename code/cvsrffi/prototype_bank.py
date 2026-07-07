@@ -111,13 +111,14 @@ class VacuumGaussianPrototypeBank:
             return None
         d = float(angular_distance_deg(z, component.mu).item())
         scale = max(1e-6, float(component.r_accept_deg))
-        return (d / scale) ** 2
+        return d / scale
 
     def knn_density(self, z: torch.Tensor, component: ComponentStats) -> Optional[float]:
         if component.density_core_min is None and component.density_tail_min is None:
             return None
         d = float(angular_distance_deg(z, component.mu).item())
-        return -d
+        scale = max(1e-6, float(component.r_accept_deg))
+        return math.exp(-(d / scale))
 
     def to_json_dict(self) -> Dict[str, Any]:
         classes = {}
@@ -218,4 +219,3 @@ def _components_from_legacy_package(package: Mapping[str, Any]) -> Dict[int, lis
             )
         ]
     return out
-

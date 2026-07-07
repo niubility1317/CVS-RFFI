@@ -9,6 +9,7 @@ CODE_ROOT = PROJECT_ROOT / "code"
 if str(CODE_ROOT) not in sys.path:
     sys.path.insert(0, str(CODE_ROOT))
 
+import cvsrffi.phase1_v2_control as phase1_v2_control  # noqa: E402
 from cvsrffi.phase1_v2_control import (  # noqa: E402
     TailSafetyConfig,
     TailSafetyStateMachine,
@@ -260,6 +261,8 @@ def test_unlabeled_tri_state_requires_named_core_tail_outside_counts():
             "train/w_loss_u_direct_metric_accept": 0.03,
             "train/u_dm_accept_active": 1.0,
             "train/u_dm_accept_selected": 48.0,
+            "train/u_tri_state_source": "geometry",
+            "train/u_tri_query_count": 48.0,
             "train/u_tri_trusted_core_count": 20.0,
             "train/u_tri_ambiguous_tail_count": 16.0,
             "train/u_tri_outside_reject_count": 12.0,
@@ -272,6 +275,46 @@ def test_unlabeled_tri_state_requires_named_core_tail_outside_counts():
     assert decision.details["u_tri_trusted_core_count"] == 20.0
     assert decision.details["u_tri_ambiguous_tail_count"] == 16.0
     assert decision.details["u_tri_outside_reject_count"] == 12.0
+
+
+def test_unlabeled_tri_state_required_rejects_fallback_counts():
+    decision = assess_unlabeled_tri_state(
+        {
+            "train/w_loss_u_direct_metric_accept": 0.03,
+            "train/u_dm_accept_active": 1.0,
+            "train/u_dm_accept_selected": 48.0,
+            "train/u_tri_state_source": "fallback",
+            "train/u_tri_query_count": 48.0,
+            "train/u_tri_trusted_core_count": 20.0,
+            "train/u_tri_ambiguous_tail_count": 16.0,
+            "train/u_tri_outside_reject_count": 12.0,
+        },
+        required=True,
+        min_selected=16,
+    )
+
+    assert decision.fired
+    assert "US_TRI_STATE_NOT_GEOMETRY" in decision.reason
+
+
+def test_unlabeled_tri_state_required_checks_query_count_conservation():
+    decision = assess_unlabeled_tri_state(
+        {
+            "train/w_loss_u_direct_metric_accept": 0.03,
+            "train/u_dm_accept_active": 1.0,
+            "train/u_dm_accept_selected": 48.0,
+            "train/u_tri_state_source": "geometry",
+            "train/u_tri_query_count": 50.0,
+            "train/u_tri_trusted_core_count": 20.0,
+            "train/u_tri_ambiguous_tail_count": 16.0,
+            "train/u_tri_outside_reject_count": 12.0,
+        },
+        required=True,
+        min_selected=16,
+    )
+
+    assert decision.fired
+    assert "US_TRI_STATE_COUNT_MISMATCH" in decision.reason
 
 
 def test_source_episode_density_gate_blocks_global_overflow_without_local_components():
@@ -338,6 +381,14 @@ def test_phase1_v2_final_export_policy_blocks_non_tail_guard_failures():
     assert decision.fired
     assert "phase1_v2_guard_blocks_final_export" in decision.reason
     assert decision.details["final_export_allowed"] == 0.0
+
+
+def test_final_export_skip_does_not_depend_on_tail_stop_flag_after_guard_block():
+    assert hasattr(phase1_v2_control, "should_skip_phase1_v2_final_export")
+    assert phase1_v2_control.should_skip_phase1_v2_final_export(
+        phase1_v2_final_blocked=True,
+        tail_stop_blocks_final=False,
+    )
 
 
 def test_train_parser_exposes_phase1_v2_hard_gate_args():

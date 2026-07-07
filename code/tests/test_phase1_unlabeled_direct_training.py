@@ -73,6 +73,7 @@ def test_uopt24_declares_source_only_unlabeled_concat_sat_direct_training():
     assert "--lambda_u_adv 0.08" in out
     assert "--lambda_u_sat_cons 0.26" in out
     assert "--lambda_u_direct_metric_accept 0.0045" in out
+    assert "--lambda_u_quarantine_accept" in out
     assert "--u_direct_metric_min_selected 20" in out
     assert "--phase1_v2_hard_gates true" in out
     assert "--endpoint_accept_policy_id endpoint_accept_v1" in out
@@ -90,7 +91,7 @@ def test_uopt24_declares_source_only_unlabeled_concat_sat_direct_training():
     assert "--u_tri_state_required true" in out
     assert "--u_direct_idle_blocks_promotion true" in out
     assert "--feasibility_gate true" in out
-    assert "--feasibility_stage full" in out
+    assert "--feasibility_stage audit" in out
     assert "phase1_source_zid_prototypes.pt" in out
     assert "phase2_zid_prototypes.pt" not in out
     assert "--new_wisig_pkl" not in out
