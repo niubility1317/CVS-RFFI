@@ -736,14 +736,31 @@ def _support_head_finetune_predict(
     weight_decay: float,
     device: torch.device,
     rejection_enabled: bool = True,
+    normalize: bool = False,
+    init: str = "random",
+    temperature: float = 1.0,
 ) -> tuple[torch.Tensor, torch.Tensor, dict[str, Any]]:
     labels = torch.unique(support_y).sort().values
     compact = torch.empty_like(support_y)
     for i, label in enumerate(labels):
         compact[support_y == label] = int(i)
     x = support_z.float().to(device)
+    q = query_z.float().to(device)
+    if normalize:
+        x = F.normalize(x, dim=1)
+        q = F.normalize(q, dim=1)
     y = compact.to(device)
     head = nn.Linear(int(support_z.shape[1]), int(labels.numel())).to(device)
+    init = str(init).lower()
+    if init == "prototype":
+        with torch.no_grad():
+            protos = torch.stack([x[y == i].mean(dim=0) for i in range(int(labels.numel()))], dim=0)
+            if normalize:
+                protos = F.normalize(protos, dim=1)
+            head.weight.copy_(protos * float(temperature))
+            head.bias.zero_()
+    elif init != "random":
+        raise ValueError(f"unsupported support_head_init: {init}")
     opt = torch.optim.AdamW(head.parameters(), lr=float(lr), weight_decay=float(weight_decay))
     for _ in range(max(1, int(steps))):
         opt.zero_grad(set_to_none=True)
@@ -753,7 +770,7 @@ def _support_head_finetune_predict(
     with torch.no_grad():
         support_conf = F.softmax(head(x), dim=1).max(dim=1).values
         threshold = float(torch.quantile(support_conf.detach().cpu(), 0.05).item()) - float(margin)
-        probs = F.softmax(head(query_z.float().to(device)), dim=1)
+        probs = F.softmax(head(q), dim=1)
         max_prob, argmax = probs.max(dim=1)
     pred = labels[argmax.detach().cpu()].clone()
     if rejection_enabled:
@@ -764,6 +781,9 @@ def _support_head_finetune_predict(
         "threshold": threshold,
         "support_finetune_steps": int(steps),
         "unknown_rejection_enabled": bool(rejection_enabled),
+        "support_finetune_normalize": bool(normalize),
+        "support_head_init": init,
+        "support_head_temperature": float(temperature),
     }
 
 
@@ -810,6 +830,9 @@ def _run(config: dict[str, Any], args: argparse.Namespace) -> dict[str, Any]:
                 weight_decay=float(config.get("support_finetune_weight_decay", 0.0)),
                 device=device,
                 rejection_enabled=unknown_rejection_enabled,
+                normalize=bool(config.get("support_finetune_normalize", False)),
+                init=str(config.get("support_head_init", "random")),
+                temperature=float(config.get("support_head_temperature", 1.0)),
             )
         else:
             pred, unknown_scores, gate_info = _prototype_predict(
@@ -888,6 +911,9 @@ def _run(config: dict[str, Any], args: argparse.Namespace) -> dict[str, Any]:
         "unknown_rejection_enabled": unknown_rejection_enabled,
         "prototype_metric": config.get("prototype_metric", ""),
         "support_finetune_steps": config.get("support_finetune_steps", 0),
+        "support_finetune_normalize": bool(config.get("support_finetune_normalize", False)),
+        "support_head_init": config.get("support_head_init", ""),
+        "support_head_temperature": config.get("support_head_temperature", ""),
     }
     result = {
         "experiment_id": config.get("experiment_id", "cvs_aligned_stage2"),
@@ -909,6 +935,9 @@ def _run(config: dict[str, Any], args: argparse.Namespace) -> dict[str, Any]:
             "gate_method": str(gate_info["gate_method"]),
             "unknown_score_kind": str(gate_info["unknown_score_kind"]),
             "unknown_rejection_enabled": unknown_rejection_enabled,
+            "support_finetune_normalize": gate_info.get("support_finetune_normalize", False),
+            "support_head_init": gate_info.get("support_head_init", ""),
+            "support_head_temperature": gate_info.get("support_head_temperature", ""),
             "support_query_channel_view": str(config.get("target_channel_view", "clean")),
             "support_query_channel_scenarios": target_scenarios,
             "support_query_satellite_augmentation_enabled": support_query_satellite,

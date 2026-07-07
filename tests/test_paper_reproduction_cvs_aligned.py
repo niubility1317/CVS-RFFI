@@ -411,3 +411,30 @@ def test_support_head_finetune_uses_support_labels_only_for_head_adaptation():
     assert scores.shape == torch.Size([3])
     assert info["gate_method"] == "support_head_confidence_quantile"
     assert info["support_finetune_steps"] == 80
+
+
+def test_support_head_finetune_can_use_normalized_prototype_initialization():
+    support_z = torch.tensor([[100.0, 0.0], [120.0, 0.0], [0.0, 1.0], [0.0, 1.2]])
+    support_y = torch.tensor([0, 0, 1, 1])
+    query_z = torch.tensor([[0.0, 12.0], [9.0, 0.1]])
+
+    pred, scores, info = _support_head_finetune_predict(
+        support_z,
+        support_y,
+        query_z,
+        margin=0.0,
+        steps=1,
+        lr=0.0,
+        weight_decay=0.0,
+        device=torch.device("cpu"),
+        rejection_enabled=False,
+        normalize=True,
+        init="prototype",
+        temperature=10.0,
+    )
+
+    assert pred.tolist() == [1, 0]
+    assert scores.shape == torch.Size([2])
+    assert info["support_finetune_normalize"] is True
+    assert info["support_head_init"] == "prototype"
+    assert info["support_head_temperature"] == 10.0
