@@ -79,4 +79,44 @@ RUN_ID=riei_drift_current_sat_supervised_r010_stage2b_targetold_rxhead_normproto
 
 ## 结果
 
-待N607运行完成后追加。
+完成状态：4个候选均已完成，GPU回到空闲；远端错误扫描为空，本地artifact已拉回：
+
+- `E:\type10-7\automation_reports\CV-SincNet\riei_drift_current_sat_supervised_r010_stage2b_targetold_rxhead_normproto_20260707_230956\artifacts\`
+
+主结果：
+
+| candidate | baseline | K | old_acc | clear | low | rain | coverage | lat_ms | fallback |
+|---|---|---:|---:|---:|---:|---:|---:|---:|---|
+| `riei_fd_current_sat_k5_leo_rxhead_normproto_seed1337` | RIEI | 5 | 0.6583 | 0.6683 | 0.6550 | 0.6517 | 1.0000 | 0.970 | `[]` |
+| `riei_fd_current_sat_k10_leo_rxhead_normproto_seed1337` | RIEI | 10 | 0.6533 | 0.6583 | 0.6317 | 0.6700 | 1.0000 | 1.118 | `[]` |
+| `drift_current_sat_k10_leo_rxhead_normproto_seed1337` | DRIFT | 10 | 0.6400 | 0.6650 | 0.6433 | 0.6117 | 1.0000 | 1.043 | `[]` |
+| `drift_current_sat_k5_leo_rxhead_normproto_seed1337` | DRIFT | 5 | 0.5539 | 0.5550 | 0.5683 | 0.5383 | 1.0000 | 0.983 | `[]` |
+
+对比前序路线：
+
+| baseline | K | rxhead old_acc | global support-head | delta pp | source-logit | delta pp | verdict |
+|---|---:|---:|---:|---:|---:|---:|---|
+| RIEI | 5 | 0.6583 | 0.5556 | +10.27 | 0.5422 | +11.61 | receiver-conditioned修复有效 |
+| RIEI | 10 | 0.6533 | 0.5417 | +11.16 | 0.5361 | +11.72 | receiver-conditioned修复有效 |
+| DRIFT | 5 | 0.5539 | 0.4972 | +5.67 | 0.5333 | +2.06 | 小幅有效 |
+| DRIFT | 10 | 0.6400 | 0.5650 | +7.50 | 0.5183 | +12.17 | receiver-conditioned修复有效 |
+
+逐TX和逐receiver分解：
+
+| candidate | weak TX | strong TX | weak receiver | strong receiver | remaining top confusion |
+|---|---|---|---|---|---|
+| DRIFT K5 | `20-19` 0.347、`6-15` 0.373、`14-7` 0.507 | `8-20` 0.837、`20-15` 0.667 | `20-1` 0.444、`3-19` 0.531 | `7-14` 0.642、`7-7` 0.589 | `6-15->1`、`20-19->1/4/0` |
+| DRIFT K10 | `20-19` 0.480、`6-15` 0.493、`14-7` 0.563 | `8-20` 0.873、`20-15` 0.727 | `20-1` 0.578、`3-19` 0.592 | `8-8` 0.697、`7-7` 0.681 | `6-15->1`、`20-19->1/0/4` |
+| RIEI K5 | `6-15` 0.473、`20-19` 0.477、`14-7` 0.540 | `8-20` 0.930、`20-15` 0.873 | `3-19` 0.553、`8-8` 0.614 | `7-7` 0.728、`7-14` 0.711 | `20-19->1`、`14-7->3`、`6-15->1` |
+| RIEI K10 | `6-15` 0.430、`20-19` 0.557、`14-7` 0.567 | `8-20` 0.917、`20-15` 0.813 | `3-19` 0.481、`8-8` 0.619 | `20-1` 0.753、`7-14` 0.714 | `20-19->1`、`6-15->3/1`、`14-7->3` |
+
+日志扫描：
+
+- 4个`.out`均完整解析；无`Traceback`、`RuntimeError`、CUDA OOM、`Killed`、参数错误或`ValueError`。
+- `receiver_conditioned_fallback_groups=[]`，说明所有目标receiver都有本receiver support，没有回退到全局support。
+
+## 解释
+
+本次修复确认了一个真实问题：全局prototype/head会把多目标receiver的support合并，导致receiver-specific响应被混合。按receiver分组后，最强RIEI K5达到0.6583，超过全局support-head K5的0.5556，也超过全局K20/K50诊断中的RIEI K50 0.5756；DRIFT K10达到0.6400，超过全局support-head K10的0.5650和DRIFT K50 0.5878。
+
+但结果仍低于PHASE2_ADAPT_NEWCLASS_FIRST旧类阶段门槛`old_acc>=0.80`。残余错误主要集中在`20-19`、`6-15`、`14-7`几类之间，说明receiver-conditioned修复解决了跨receiver混合，但类间identity特征仍有纠缠。下一步应优先做receiver-conditioned K20/K50饱和诊断，若仍低于0.70，则转向小adapter/BN affine或特征空间重训练，而不是继续调source classifier logit。
