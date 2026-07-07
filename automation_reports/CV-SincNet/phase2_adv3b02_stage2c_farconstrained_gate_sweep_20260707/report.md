@@ -47,3 +47,14 @@
 |---|---|---|
 |Bash语法|`bash -n code/scripts/launch_phase2_adv3b02_stage2c_farconstrained_gate_sweep_20260707.sh`|通过|
 |dry-run任务展开|`env ROOT=/tmp/type10_stage2c_far_gate_dryrun SOURCE_RUNS_ROOT=/tmp/type10_stage2c_normsep_source RUNS_ROOT=/tmp/type10_stage2c_far_gate_dryrun/runs LOG_ROOT=/tmp/type10_stage2c_far_gate_dryrun/logs PYTHON=python bash code/scripts/launch_phase2_adv3b02_stage2c_farconstrained_gate_sweep_20260707.sh --dry-run`|通过；展开40个诊断组合|
+
+## 启动前版本与N607上下文
+
+|项目|记录|
+|---|---|
+|Git基线|`20ba436 Add Stage2-C FAR constrained gate sweep`|
+|Git状态|Git承载面在本任务文件提交后仅剩非本任务untracked目录：`local_artifacts/phase2_adv3b02_proxy_mined_20260704/`、`local_artifacts/phase2_adv3b02_smec_ci_20260704/`|
+|N607预检|2026-07-07 11:11 CST，`tools\n607_ssh_preflight.ps1`直连通过；项目根和GPU可见|
+|远端占用|8张RTX3090均有既有训练负载，约92%到97%GPU利用率；每GPU已有2个`train_ssdg.py`进程。本轮不干预既有训练，只运行已导出特征上的qKNN诊断|
+|磁盘|`/home`可用约7.6T|
+|同步映射|`E:\type10-7\github_publish\CVS-RFFI-repo\code\scripts\launch_phase2_adv3b02_stage2c_farconstrained_gate_sweep_20260707.sh` -> `N607:/home/szu2070436088/2510044040/CV-SincNet/code/scripts/launch_phase2_adv3b02_stage2c_farconstrained_gate_sweep_20260707.sh`|
