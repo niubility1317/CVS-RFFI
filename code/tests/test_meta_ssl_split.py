@@ -64,3 +64,24 @@ def test_meta_ssl_split_masks_unlabeled_tx_and_is_disjoint():
     assert "true_tx_i" in meta_unlabeled
     assert y_val >= 0
     assert meta_val["meta_ssl_role"] == "source_val"
+
+
+def test_meta_ssl_split_label_matches_requested_ratios():
+    _, unlabeled, source_val, info = make_wisig_meta_ssl_source_split(
+        _fake_wisig(samples_per_combo=10),
+        train_days=[0, 1],
+        holdout_days=[2, 3],
+        train_rxs=[0, 1],
+        holdout_rxs=[2],
+        labeled_ratio=0.1,
+        unlabeled_ratio=0.6,
+        val_ratio=0.3,
+        seed=11,
+    )
+
+    assert len(unlabeled) > 0
+    assert len(source_val) > 0
+    assert info["source_ssl_split"] == "0.1L/0.6U/0.3Val"
+    assert info["mode"] == "meta_ssl_source_only_0p1L_0p6U_0p3Val"
+    assert unlabeled.split_source == "meta_ssl_unlabeled_source_0p6_tx_masked"
+    assert source_val.split_source == "meta_ssl_source_val_0p3_tx_visible_eval_only"

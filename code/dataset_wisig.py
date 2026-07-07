@@ -640,6 +640,14 @@ def _meta_ssl_partition_group(
     return labeled, unlabeled, source_val
 
 
+def _meta_ssl_ratio_label(value: float) -> str:
+    return f"{float(value):g}"
+
+
+def _meta_ssl_ratio_token(value: float) -> str:
+    return _meta_ssl_ratio_label(value).replace(".", "p")
+
+
 def make_wisig_meta_ssl_source_split(
     ds: Dict[str, Any],
     *,
@@ -719,6 +727,16 @@ def make_wisig_meta_ssl_source_split(
     labeled_sel: List[int] = []
     unlabeled_sel: List[int] = []
     val_sel: List[int] = []
+    split_label = (
+        f"{_meta_ssl_ratio_label(labeled_ratio)}L/"
+        f"{_meta_ssl_ratio_label(unlabeled_ratio)}U/"
+        f"{_meta_ssl_ratio_label(val_ratio)}Val"
+    )
+    split_token = (
+        f"{_meta_ssl_ratio_token(labeled_ratio)}L_"
+        f"{_meta_ssl_ratio_token(unlabeled_ratio)}U_"
+        f"{_meta_ssl_ratio_token(val_ratio)}Val"
+    )
     for _, idxs_sorted in sorted(groups.items()):
         lab, unl, val = _meta_ssl_partition_group(
             idxs_sorted,
@@ -734,7 +752,7 @@ def make_wisig_meta_ssl_source_split(
     labeled_ds = WiSigMetaSslSubsetDataset(
         base,
         sorted(labeled_sel),
-        split_source="meta_ssl_labeled_train_0p1_source",
+        split_source=f"meta_ssl_labeled_train_{_meta_ssl_ratio_token(labeled_ratio)}_source",
         role="labeled_train",
         tx_label_visible=True,
         transform=transform_labeled,
@@ -742,7 +760,7 @@ def make_wisig_meta_ssl_source_split(
     unlabeled_ds = WiSigMetaSslSubsetDataset(
         base,
         sorted(unlabeled_sel),
-        split_source="meta_ssl_unlabeled_source_0p7_tx_masked",
+        split_source=f"meta_ssl_unlabeled_source_{_meta_ssl_ratio_token(unlabeled_ratio)}_tx_masked",
         role="unlabeled_source",
         tx_label_visible=False,
         transform=transform_unlabeled,
@@ -750,7 +768,7 @@ def make_wisig_meta_ssl_source_split(
     source_val_ds = WiSigMetaSslSubsetDataset(
         base,
         sorted(val_sel),
-        split_source="meta_ssl_source_val_0p2_tx_visible_eval_only",
+        split_source=f"meta_ssl_source_val_{_meta_ssl_ratio_token(val_ratio)}_tx_visible_eval_only",
         role="source_val",
         tx_label_visible=True,
         transform=transform_val,
@@ -760,8 +778,8 @@ def make_wisig_meta_ssl_source_split(
     overlap_count = len((sets[0] & sets[1]) | (sets[0] & sets[2]) | (sets[1] & sets[2]))
     total = len(base)
     info = {
-        "mode": "meta_ssl_source_only_0p1L_0p7U_0p2Val",
-        "source_ssl_split": "0.1L/0.7U/0.2Val",
+        "mode": f"meta_ssl_source_only_{split_token}",
+        "source_ssl_split": split_label,
         "ground_dg_claim_scope": "source_only",
         "labeled_ratio": float(labeled_ratio),
         "unlabeled_ratio": float(unlabeled_ratio),
