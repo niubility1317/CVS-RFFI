@@ -102,3 +102,16 @@ bash code/scripts/launch_phase2_adv3b02_stage2c_rescue_veto_sweep_20260707.sh
 |`code/scripts/launch_phase2_adv3b02_stage2c_center_veto_probe_20260707.sh`|运行`CENTER_VETO_E95_ANY_M1`与`CENTER_VETO_E92L92S92_M2`，覆盖NORM/HEAD与K=5/10，共8组冻结诊断|
 
 当前状态：第一轮结果已拉回并审计；第二轮center-veto probe脚本已创建，待本地验证、提交、同步N607。
+
+## 第二轮结果
+
+第二轮`phase2_adv3b02_stage2c_center_veto_probe_20260707`已完成，独立报告见`automation_reports/CV-SincNet/phase2_adv3b02_stage2c_center_veto_probe_20260707/report.md`。
+
+|variant/profile/K|old_acc|min_old|seen_new_acc|min_seen|unknown_FAR|判定|
+|---|---:|---:|---:|---:|---:|---|
+|`STAGE2C_HEAD_SEP/CENTER_VETO_E95_ANY_M1/K10`|0.6190|0.1286|0.0107|0.0000|0.2393|旧类尚可，新类塌缩，FAR过高|
+|`STAGE2C_NORM_SEP/CENTER_VETO_E95_ANY_M1/K10`|0.6452|0.0571|0.0143|0.0000|0.2393|旧类尚可，新类塌缩，FAR过高|
+|`STAGE2C_NORM_SEP/CENTER_VETO_E92L92S92_M2/K10`|0.6310|0.0000|0.0071|0.0000|0.2125|退化为旧类路线|
+|K=5全部|0.0000|0.0000|0.0000|0.0000|0.0000-0.0036|全拒绝/近全拒绝|
+
+最终结论：rescue后二级unknown veto和support-center叠加都没有解决qKNNV42的新类坍塌。当前最好的非可部署诊断仍是无veto的`SCORER_CONFORMAL_SEEN/K10`（old约0.80、seen-new约0.39、但FAR约0.96）和center无vetoK10（old约0.63、seen-new约0.38、FAR约0.67）。可行下一步应修改新类注册打分/校准机制，而不是继续扩大unknown风险阈值搜索。
