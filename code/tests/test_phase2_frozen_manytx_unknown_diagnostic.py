@@ -230,11 +230,19 @@ class Phase2FrozenManytxUnknownDiagnosticTest(unittest.TestCase):
                 "0.25",
                 "--seen_new_old_contrast_margin",
                 "0.02",
+                "--seen_new_contrast_gate_enabled",
+                "--seen_new_contrast_gate_min_delta",
+                "0.08",
+                "--seen_new_contrast_gate_min_receivers",
+                "2",
             ]
         )
 
         self.assertEqual(args.seen_new_old_contrast_weight, 0.25)
         self.assertEqual(args.seen_new_old_contrast_margin, 0.02)
+        self.assertTrue(args.seen_new_contrast_gate_enabled)
+        self.assertEqual(args.seen_new_contrast_gate_min_delta, 0.08)
+        self.assertEqual(args.seen_new_contrast_gate_min_receivers, 2)
 
     def test_can_repair_legacy_target_new_unknown_roles_from_manifest(self):
         from phase2_frozen_manytx_unknown_diagnostic import main

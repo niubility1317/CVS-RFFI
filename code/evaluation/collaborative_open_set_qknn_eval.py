@@ -485,6 +485,9 @@ def _fuse_event(
     seen_new_gate_max_component_agreement: float = 1.0,
     seen_new_gate_min_support_density: float = 0.0,
     seen_new_gate_max_radius_z: float = 1.0e12,
+    seen_new_contrast_gate_enabled: bool = False,
+    seen_new_contrast_gate_min_delta: float = 0.0,
+    seen_new_contrast_gate_min_receivers: int = 1,
     candidate_set_min_receivers: int = 2,
     candidate_set_min_top1_receivers: int = 0,
     candidate_set_min_conformal_pvalue: float = 0.0,
@@ -594,6 +597,11 @@ def _fuse_event(
         orbit_old_floor_min_trust,
         "orbit_old_floor_min_trust",
     )
+    seen_new_contrast_gate_min_delta = _validate_non_negative(
+        seen_new_contrast_gate_min_delta,
+        "seen_new_contrast_gate_min_delta",
+    )
+    seen_new_contrast_gate_min_receivers = max(1, int(seen_new_contrast_gate_min_receivers))
     candidate_set_event_high_unknown_risk_veto = _validate_non_negative(
         candidate_set_event_high_unknown_risk_veto,
         "candidate_set_event_high_unknown_risk_veto",
@@ -720,6 +728,7 @@ def _fuse_event(
     label_class_reliability_values: defaultdict[str, list[float]] = defaultdict(list)
     label_receiver_class_reliability_values: defaultdict[str, list[float]] = defaultdict(list)
     label_orbit_trust_values: defaultdict[str, list[float]] = defaultdict(list)
+    label_seen_new_old_contrast_delta_values: defaultdict[str, list[float]] = defaultdict(list)
     label_candidate_receiver_counts: defaultdict[str, int] = defaultdict(int)
     label_top1_receiver_counts: defaultdict[str, int] = defaultdict(int)
     label_min_evidence_rank: defaultdict[str, int] = defaultdict(lambda: 10**9)
@@ -774,6 +783,7 @@ def _fuse_event(
         class_negative_risk_value: float,
         class_shell_risk_value: float,
         class_shell_risk_is_missing: bool,
+        seen_new_old_contrast_delta_value: float,
         receiver_class_reliability_value: float | None,
         latency_ms_value: float,
         staleness_value: float,
@@ -875,6 +885,7 @@ def _fuse_event(
         label_class_reliability_values[label].append(class_weight)
         label_receiver_class_reliability_values[label].append(receiver_class_weight)
         label_orbit_trust_values[label].append(orbit_trust)
+        label_seen_new_old_contrast_delta_values[label].append(float(seen_new_old_contrast_delta_value))
         row_component_values = {
             "score": float(score_risk_value),
             "radius": float(radius_risk_value),
@@ -963,6 +974,7 @@ def _fuse_event(
                 class_negative_risk_value=_float(row, "class_negative_risk", 0.0),
                 class_shell_risk_value=_float(row, "class_shell_risk", 0.0),
                 class_shell_risk_is_missing=not _has_finite_float(row, "class_shell_risk"),
+                seen_new_old_contrast_delta_value=_float(row, "seen_new_old_contrast_delta", 0.0),
                 receiver_class_reliability_value=(
                     _float(row, "receiver_class_reliability", 1.0)
                     if _has_finite_float(row, "receiver_class_reliability")
@@ -1021,6 +1033,11 @@ def _fuse_event(
                     class_shell_risk_is_missing=not (
                         _has_finite_float(row, f"class_evidence_top{rank}_class_shell_risk")
                         or _has_finite_float(row, "class_shell_risk")
+                    ),
+                    seen_new_old_contrast_delta_value=_float(
+                        row,
+                        f"class_evidence_top{rank}_seen_new_old_contrast_delta",
+                        _float(row, "seen_new_old_contrast_delta", 0.0),
                     ),
                     receiver_class_reliability_value=(
                         _float(
@@ -1194,6 +1211,7 @@ def _fuse_event(
     selected_label_class_reliability_values = label_class_reliability_values[label]
     selected_label_receiver_class_reliability_values = label_receiver_class_reliability_values[label]
     selected_label_orbit_trust_values = label_orbit_trust_values[label]
+    selected_label_seen_new_old_contrast_values = label_seen_new_old_contrast_delta_values[label]
     selected_label_shell_risk_observed_values = label_shell_risk_observed_values[label]
     label_support_density_missing = any(label_support_density_missing_values[label])
     label_radius_z_missing = any(label_radius_z_missing_values[label])
@@ -1247,6 +1265,16 @@ def _fuse_event(
         if selected_label_orbit_trust_values
         else 0.0
     )
+    selected_label_seen_new_old_contrast_delta = (
+        max(selected_label_seen_new_old_contrast_values)
+        if selected_label_seen_new_old_contrast_values
+        else 0.0
+    )
+    selected_label_seen_new_old_contrast_receiver_count = sum(
+        1
+        for value in selected_label_seen_new_old_contrast_values
+        if value >= float(seen_new_contrast_gate_min_delta)
+    )
     latency_ms = float(max((_float(row, "latency_ms", 0.0) for row in selected), default=0.0))
     within_request_budget = bool(
         can_request_more
@@ -1264,6 +1292,24 @@ def _fuse_event(
         output_label_set = "other"
     else:
         output_label_set = ""
+
+    def _seen_new_contrast_gate_decision() -> tuple[bool, str]:
+        if not seen_new_contrast_gate_enabled or output_label_set != "seen_new":
+            return True, ""
+        reasons = []
+        if selected_label_seen_new_old_contrast_delta < float(seen_new_contrast_gate_min_delta):
+            reasons.append(
+                "contrast_delta:"
+                f"{selected_label_seen_new_old_contrast_delta:.6g}<"
+                f"{float(seen_new_contrast_gate_min_delta):.6g}"
+            )
+        if selected_label_seen_new_old_contrast_receiver_count < int(seen_new_contrast_gate_min_receivers):
+            reasons.append(
+                "contrast_receivers:"
+                f"{selected_label_seen_new_old_contrast_receiver_count}<"
+                f"{int(seen_new_contrast_gate_min_receivers)}"
+            )
+        return not reasons, ",".join(reasons)
 
     def _class_set_gate_decision() -> tuple[bool, str]:
         if not class_set_gate_enabled or output_label_set not in {"old", "seen_new"}:
@@ -1411,6 +1457,7 @@ def _fuse_event(
             and output_label_set in {"old", "seen_new"}
             and len(rescue_unknown_veto_sources) >= int(rescue_unknown_veto_min_sources)
         )
+        seen_new_contrast_gate_passed, seen_new_contrast_gate_reason = _seen_new_contrast_gate_decision()
         gate_passed, gate_reason = _class_set_gate_decision()
         support_router_accept = bool(
             policy == "support_router_cvs"
@@ -1428,6 +1475,7 @@ def _fuse_event(
             and label_risk_component_agreement
             <= float(candidate_set_max_label_risk_component_agreement)
             and label_shell_risk <= float(candidate_set_max_label_shell_risk)
+            and seen_new_contrast_gate_passed
             and gate_passed
         )
         support_router_unknown_evidence = bool(
@@ -1456,6 +1504,7 @@ def _fuse_event(
             and label_risk_component_agreement
             <= float(candidate_set_max_label_risk_component_agreement)
             and label_shell_risk <= float(candidate_set_max_label_shell_risk)
+            and seen_new_contrast_gate_passed
             and gate_passed
         )
         selective_confirm_weak_label_evidence = bool(
@@ -1473,6 +1522,7 @@ def _fuse_event(
                 or score_gap_ratio < float(candidate_set_min_score_gap)
                 or label_risk_component_agreement
                 > float(candidate_set_max_label_risk_component_agreement)
+                or not seen_new_contrast_gate_passed
                 or not gate_passed
             )
         )
@@ -1531,6 +1581,7 @@ def _fuse_event(
             <= float(candidate_set_max_receiver_pair_label_disagreement)
             and receiver_pair_unknown_risk_range
             <= float(candidate_set_max_receiver_pair_unknown_risk_range)
+            and seen_new_contrast_gate_passed
             and gate_passed
         )
         if policy == "known_guarded_rescue_cvs":
@@ -1612,6 +1663,7 @@ def _fuse_event(
             <= float(candidate_set_max_receiver_pair_label_disagreement)
             and receiver_pair_unknown_risk_range
             <= float(candidate_set_max_receiver_pair_unknown_risk_range)
+            and seen_new_contrast_gate_passed
             and gate_passed
         )
         scg_support_protected_known = bool(
@@ -1650,6 +1702,7 @@ def _fuse_event(
                 > float(candidate_set_max_receiver_pair_label_disagreement)
                 or receiver_pair_unknown_risk_range
                 > float(candidate_set_max_receiver_pair_unknown_risk_range)
+                or not seen_new_contrast_gate_passed
                 or not gate_passed
             )
         )
@@ -1673,6 +1726,8 @@ def _fuse_event(
                 scg_block_reason_parts.append("pair_label_disagreement")
             if receiver_pair_unknown_risk_range > float(candidate_set_max_receiver_pair_unknown_risk_range):
                 scg_block_reason_parts.append("pair_unknown_risk_range")
+            if not seen_new_contrast_gate_passed:
+                scg_block_reason_parts.append("seen_new_contrast_gate")
             if not gate_passed:
                 scg_block_reason_parts.append("class_set_gate")
         scg_block_reason = ",".join(scg_block_reason_parts)
@@ -1934,6 +1989,7 @@ def _fuse_event(
             <= float(candidate_set_max_label_risk_component_agreement)
             and score_gap_ratio >= float(candidate_set_min_score_gap)
             and candidate_set_pairguard_accept_passed
+            and seen_new_contrast_gate_passed
         )
         orbit_coproto_accept = bool(
             policy == "orbit_coproto"
@@ -1945,6 +2001,7 @@ def _fuse_event(
             and label_unknown_risk <= float(candidate_set_max_label_unknown_risk)
             and unknown_risk < float(orbit_unknown_veto_risk)
             and decision_risk_component_agreement <= float(scorer_component_vote_threshold)
+            and seen_new_contrast_gate_passed
             and gate_passed
         )
         orbit_old_floor_rescue_accept = bool(
@@ -2175,6 +2232,19 @@ def _fuse_event(
         "label_candidate_receiver_count": int(selected_label_candidate_receivers),
         "label_top1_receiver_count": int(selected_label_top1_receivers),
         "label_min_evidence_rank": int(selected_label_min_evidence_rank),
+        "selected_label_seen_new_old_contrast_delta": float(selected_label_seen_new_old_contrast_delta),
+        "selected_label_seen_new_old_contrast_receiver_count": int(
+            selected_label_seen_new_old_contrast_receiver_count
+        ),
+        "seen_new_contrast_gate_enabled": bool(seen_new_contrast_gate_enabled),
+        "seen_new_contrast_gate_min_delta": float(seen_new_contrast_gate_min_delta),
+        "seen_new_contrast_gate_min_receivers": int(seen_new_contrast_gate_min_receivers),
+        "seen_new_contrast_gate_passed": bool(
+            locals().get("seen_new_contrast_gate_passed", True)
+        ),
+        "seen_new_contrast_gate_reason": str(
+            locals().get("seen_new_contrast_gate_reason", "")
+        ),
         "label_risk_component_agreement": float(label_risk_component_agreement),
         "filtered_candidate_count": int(filtered_candidate_count),
         "cp_set_gate_passed": bool(locals().get("cp_set_gate_passed", True)),
@@ -2494,6 +2564,9 @@ def _fuse_progressive_event(
     seen_new_gate_max_component_agreement: float = 1.0,
     seen_new_gate_min_support_density: float = 0.0,
     seen_new_gate_max_radius_z: float = 1.0e12,
+    seen_new_contrast_gate_enabled: bool = False,
+    seen_new_contrast_gate_min_delta: float = 0.0,
+    seen_new_contrast_gate_min_receivers: int = 1,
 ) -> dict[str, Any]:
     max_receivers = max(1, int(max_receivers))
     last: dict[str, Any] | None = None
@@ -2544,6 +2617,9 @@ def _fuse_progressive_event(
             seen_new_gate_max_component_agreement=seen_new_gate_max_component_agreement,
             seen_new_gate_min_support_density=seen_new_gate_min_support_density,
             seen_new_gate_max_radius_z=seen_new_gate_max_radius_z,
+            seen_new_contrast_gate_enabled=seen_new_contrast_gate_enabled,
+            seen_new_contrast_gate_min_delta=seen_new_contrast_gate_min_delta,
+            seen_new_contrast_gate_min_receivers=seen_new_contrast_gate_min_receivers,
         )
         fused["participating_receiver_budget"] = int(max_receivers)
         fused["participating_receivers_used"] = int(used)
@@ -2821,6 +2897,9 @@ def _fuse_adaptive_gain_event(
     seen_new_gate_max_component_agreement: float = 1.0,
     seen_new_gate_min_support_density: float = 0.0,
     seen_new_gate_max_radius_z: float = 1.0e12,
+    seen_new_contrast_gate_enabled: bool = False,
+    seen_new_contrast_gate_min_delta: float = 0.0,
+    seen_new_contrast_gate_min_receivers: int = 1,
 ) -> dict[str, Any]:
     max_receivers = max(1, int(max_receivers))
     if not ordered:
@@ -2877,6 +2956,9 @@ def _fuse_adaptive_gain_event(
             seen_new_gate_max_component_agreement=seen_new_gate_max_component_agreement,
             seen_new_gate_min_support_density=seen_new_gate_min_support_density,
             seen_new_gate_max_radius_z=seen_new_gate_max_radius_z,
+            seen_new_contrast_gate_enabled=seen_new_contrast_gate_enabled,
+            seen_new_contrast_gate_min_delta=seen_new_contrast_gate_min_delta,
+            seen_new_contrast_gate_min_receivers=seen_new_contrast_gate_min_receivers,
         )
         fused["participating_receiver_budget"] = int(max_receivers)
         fused["participating_receivers_used"] = int(len(selected))
@@ -2989,6 +3071,9 @@ def _fuse_support_utility_event(
     seen_new_gate_max_component_agreement: float = 1.0,
     seen_new_gate_min_support_density: float = 0.0,
     seen_new_gate_max_radius_z: float = 1.0e12,
+    seen_new_contrast_gate_enabled: bool = False,
+    seen_new_contrast_gate_min_delta: float = 0.0,
+    seen_new_contrast_gate_min_receivers: int = 1,
 ) -> dict[str, Any]:
     max_receivers = max(1, int(max_receivers))
     if not ordered:
@@ -3045,6 +3130,9 @@ def _fuse_support_utility_event(
             seen_new_gate_max_component_agreement=seen_new_gate_max_component_agreement,
             seen_new_gate_min_support_density=seen_new_gate_min_support_density,
             seen_new_gate_max_radius_z=seen_new_gate_max_radius_z,
+            seen_new_contrast_gate_enabled=seen_new_contrast_gate_enabled,
+            seen_new_contrast_gate_min_delta=seen_new_contrast_gate_min_delta,
+            seen_new_contrast_gate_min_receivers=seen_new_contrast_gate_min_receivers,
         )
         fused["participating_receiver_budget"] = int(max_receivers)
         fused["participating_receivers_used"] = int(len(selected))
@@ -3162,6 +3250,9 @@ def _fuse_rb_capr_event(
     seen_new_gate_max_component_agreement: float = 1.0,
     seen_new_gate_min_support_density: float = 0.0,
     seen_new_gate_max_radius_z: float = 1.0e12,
+    seen_new_contrast_gate_enabled: bool = False,
+    seen_new_contrast_gate_min_delta: float = 0.0,
+    seen_new_contrast_gate_min_receivers: int = 1,
     rb_capr_utility_min_delta: float = 0.02,
     rb_capr_seen_new_balance_weight: float = 0.50,
     rb_capr_old_floor_weight: float = 0.35,
@@ -3225,6 +3316,9 @@ def _fuse_rb_capr_event(
             seen_new_gate_max_component_agreement=seen_new_gate_max_component_agreement,
             seen_new_gate_min_support_density=seen_new_gate_min_support_density,
             seen_new_gate_max_radius_z=seen_new_gate_max_radius_z,
+            seen_new_contrast_gate_enabled=seen_new_contrast_gate_enabled,
+            seen_new_contrast_gate_min_delta=seen_new_contrast_gate_min_delta,
+            seen_new_contrast_gate_min_receivers=seen_new_contrast_gate_min_receivers,
         )
         fused["participating_receiver_budget"] = int(max_receivers)
         fused["participating_receivers_used"] = int(len(selected))
@@ -3406,6 +3500,9 @@ def _fuse_dual_route_event(
     seen_new_gate_max_component_agreement: float = 1.0,
     seen_new_gate_min_support_density: float = 0.0,
     seen_new_gate_max_radius_z: float = 1.0e12,
+    seen_new_contrast_gate_enabled: bool = False,
+    seen_new_contrast_gate_min_delta: float = 0.0,
+    seen_new_contrast_gate_min_receivers: int = 1,
     candidate_set_min_receivers: int = 2,
     candidate_set_min_top1_receivers: int = 0,
     candidate_set_min_conformal_pvalue: float = 0.0,
@@ -3508,6 +3605,9 @@ def _fuse_dual_route_event(
         seen_new_gate_max_component_agreement=seen_new_gate_max_component_agreement,
         seen_new_gate_min_support_density=seen_new_gate_min_support_density,
         seen_new_gate_max_radius_z=seen_new_gate_max_radius_z,
+        seen_new_contrast_gate_enabled=seen_new_contrast_gate_enabled,
+        seen_new_contrast_gate_min_delta=seen_new_contrast_gate_min_delta,
+        seen_new_contrast_gate_min_receivers=seen_new_contrast_gate_min_receivers,
         candidate_set_min_receivers=candidate_set_min_receivers,
         candidate_set_min_top1_receivers=candidate_set_min_top1_receivers,
         candidate_set_min_conformal_pvalue=candidate_set_min_conformal_pvalue,
@@ -3608,6 +3708,9 @@ def _fuse_dual_route_event(
         seen_new_gate_max_component_agreement=seen_new_gate_max_component_agreement,
         seen_new_gate_min_support_density=seen_new_gate_min_support_density,
         seen_new_gate_max_radius_z=seen_new_gate_max_radius_z,
+        seen_new_contrast_gate_enabled=seen_new_contrast_gate_enabled,
+        seen_new_contrast_gate_min_delta=seen_new_contrast_gate_min_delta,
+        seen_new_contrast_gate_min_receivers=seen_new_contrast_gate_min_receivers,
         candidate_set_min_receivers=candidate_set_min_receivers,
         candidate_set_min_top1_receivers=candidate_set_min_top1_receivers,
         candidate_set_min_conformal_pvalue=candidate_set_min_conformal_pvalue,
@@ -4344,6 +4447,9 @@ def evaluate_collaborative_open_set_evidence(
     seen_new_gate_max_component_agreement: float = 1.0,
     seen_new_gate_min_support_density: float = 0.0,
     seen_new_gate_max_radius_z: float = 1.0e12,
+    seen_new_contrast_gate_enabled: bool = False,
+    seen_new_contrast_gate_min_delta: float = 0.0,
+    seen_new_contrast_gate_min_receivers: int = 1,
     candidate_set_min_receivers: int = 2,
     candidate_set_min_top1_receivers: int = 0,
     candidate_set_min_conformal_pvalue: float = 0.0,
@@ -4567,6 +4673,9 @@ def evaluate_collaborative_open_set_evidence(
                     seen_new_gate_max_component_agreement=seen_new_gate_max_component_agreement,
                     seen_new_gate_min_support_density=seen_new_gate_min_support_density,
                     seen_new_gate_max_radius_z=seen_new_gate_max_radius_z,
+                    seen_new_contrast_gate_enabled=seen_new_contrast_gate_enabled,
+                    seen_new_contrast_gate_min_delta=seen_new_contrast_gate_min_delta,
+                    seen_new_contrast_gate_min_receivers=seen_new_contrast_gate_min_receivers,
                 )
             elif collaboration_policy == "dual_route_cvs":
                 safety_selected = _select_receivers(
@@ -4626,6 +4735,9 @@ def evaluate_collaborative_open_set_evidence(
                     seen_new_gate_max_component_agreement=seen_new_gate_max_component_agreement,
                     seen_new_gate_min_support_density=seen_new_gate_min_support_density,
                     seen_new_gate_max_radius_z=seen_new_gate_max_radius_z,
+                    seen_new_contrast_gate_enabled=seen_new_contrast_gate_enabled,
+                    seen_new_contrast_gate_min_delta=seen_new_contrast_gate_min_delta,
+                    seen_new_contrast_gate_min_receivers=seen_new_contrast_gate_min_receivers,
                     candidate_set_min_receivers=candidate_set_min_receivers,
                     candidate_set_min_top1_receivers=candidate_set_min_top1_receivers,
                     candidate_set_min_conformal_pvalue=candidate_set_min_conformal_pvalue,
@@ -4751,6 +4863,9 @@ def evaluate_collaborative_open_set_evidence(
                     seen_new_gate_max_component_agreement=seen_new_gate_max_component_agreement,
                     seen_new_gate_min_support_density=seen_new_gate_min_support_density,
                     seen_new_gate_max_radius_z=seen_new_gate_max_radius_z,
+                    seen_new_contrast_gate_enabled=seen_new_contrast_gate_enabled,
+                    seen_new_contrast_gate_min_delta=seen_new_contrast_gate_min_delta,
+                    seen_new_contrast_gate_min_receivers=seen_new_contrast_gate_min_receivers,
                     **rb_capr_kwargs,
                 )
             else:
@@ -4800,6 +4915,9 @@ def evaluate_collaborative_open_set_evidence(
                     seen_new_gate_max_component_agreement=seen_new_gate_max_component_agreement,
                     seen_new_gate_min_support_density=seen_new_gate_min_support_density,
                     seen_new_gate_max_radius_z=seen_new_gate_max_radius_z,
+                    seen_new_contrast_gate_enabled=seen_new_contrast_gate_enabled,
+                    seen_new_contrast_gate_min_delta=seen_new_contrast_gate_min_delta,
+                    seen_new_contrast_gate_min_receivers=seen_new_contrast_gate_min_receivers,
                     candidate_set_min_receivers=candidate_set_min_receivers,
                     candidate_set_min_top1_receivers=candidate_set_min_top1_receivers,
                     candidate_set_min_conformal_pvalue=candidate_set_min_conformal_pvalue,
@@ -4967,6 +5085,9 @@ def evaluate_collaborative_open_set_evidence(
         "seen_new_gate_max_component_agreement": float(seen_new_gate_max_component_agreement),
         "seen_new_gate_min_support_density": float(seen_new_gate_min_support_density),
         "seen_new_gate_max_radius_z": float(seen_new_gate_max_radius_z),
+        "seen_new_contrast_gate_enabled": bool(seen_new_contrast_gate_enabled),
+        "seen_new_contrast_gate_min_delta": float(seen_new_contrast_gate_min_delta),
+        "seen_new_contrast_gate_min_receivers": int(seen_new_contrast_gate_min_receivers),
         "candidate_set_min_receivers": int(candidate_set_min_receivers),
         "candidate_set_min_top1_receivers": int(candidate_set_min_top1_receivers),
         "candidate_set_min_conformal_pvalue": float(candidate_set_min_conformal_pvalue),

@@ -287,6 +287,9 @@ def run_diagnostic(args: argparse.Namespace) -> dict[str, Any]:
         seen_new_gate_max_effective_unknown_risk=float(args.seen_new_gate_max_effective_unknown_risk),
         seen_new_gate_max_component_agreement=float(args.seen_new_gate_max_component_agreement),
         seen_new_gate_min_support_density=float(args.seen_new_gate_min_support_density),
+        seen_new_contrast_gate_enabled=bool(args.seen_new_contrast_gate_enabled),
+        seen_new_contrast_gate_min_delta=float(args.seen_new_contrast_gate_min_delta),
+        seen_new_contrast_gate_min_receivers=int(args.seen_new_contrast_gate_min_receivers),
         candidate_set_min_receivers=int(args.candidate_set_min_receivers),
         candidate_set_min_top1_receivers=int(args.candidate_set_min_top1_receivers),
         candidate_set_min_conformal_pvalue=float(args.candidate_set_min_conformal_pvalue),
@@ -439,6 +442,9 @@ def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
     p.add_argument("--seen_new_gate_max_effective_unknown_risk", type=float, default=0.90)
     p.add_argument("--seen_new_gate_max_component_agreement", type=float, default=0.85)
     p.add_argument("--seen_new_gate_min_support_density", type=float, default=0.05)
+    p.add_argument("--seen_new_contrast_gate_enabled", action="store_true")
+    p.add_argument("--seen_new_contrast_gate_min_delta", type=float, default=0.0)
+    p.add_argument("--seen_new_contrast_gate_min_receivers", type=_positive_int, default=1)
     p.add_argument("--candidate_set_min_receivers", type=_positive_int, default=2)
     p.add_argument("--candidate_set_min_top1_receivers", type=int, default=1)
     p.add_argument("--candidate_set_min_conformal_pvalue", type=float, default=0.0)

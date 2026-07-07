@@ -135,6 +135,38 @@ class Phase2CollaborativeOpenSetQknnEvalTest(unittest.TestCase):
         self.assertAlmostEqual(base[1, old_col], contrasted[1, contrast_old_col])
         self.assertAlmostEqual(base[1, new_col], contrasted[1, contrast_new_col])
 
+    def test_records_seen_new_old_contrast_diagnostics_in_evidence(self):
+        from phase2_collaborative_open_set_qknn_eval import load_feature_npz, build_collaborative_evidence
+
+        with tempfile.TemporaryDirectory() as td:
+            npz = Path(td) / "features.npz"
+            _write_npz(npz)
+            evidence, _ = build_collaborative_evidence(
+                load_feature_npz(npz),
+                k_shot=1,
+                query_per_class=1,
+                qknn_k=1,
+                class_evidence_top_m=2,
+                seen_new_old_contrast_weight=0.25,
+                seen_new_old_contrast_margin=0.0,
+            )
+
+        seen_new_rows = [
+            row
+            for row in evidence
+            if row["role"] == "seen_new" and row["true_label"] == "new-a"
+        ]
+        self.assertTrue(seen_new_rows)
+        row = seen_new_rows[0]
+        self.assertIn("seen_new_old_contrast_delta", row)
+        self.assertGreater(row["seen_new_old_contrast_delta"], 0.0)
+        self.assertEqual(row["seen_new_old_contrast_positive"], 1)
+        top_deltas = [
+            row.get(f"class_evidence_top{rank}_seen_new_old_contrast_delta", 0.0)
+            for rank in range(1, int(row["class_evidence_top_m"]) + 1)
+        ]
+        self.assertTrue(any(float(value) > 0.0 for value in top_deltas))
+
     def test_builds_qknn8_evidence_and_reports_one_to_all_receivers(self):
         from phase2_collaborative_open_set_qknn_eval import load_feature_npz, build_collaborative_evidence
         from evaluation.collaborative_open_set_qknn_eval import evaluate_collaborative_open_set_evidence

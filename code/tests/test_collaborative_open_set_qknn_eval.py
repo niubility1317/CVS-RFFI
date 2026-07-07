@@ -9,6 +9,79 @@ if str(ROOT) not in sys.path:
 
 
 class CollaborativeOpenSetQknnEvalTest(unittest.TestCase):
+    def test_seen_new_contrast_gate_blocks_low_contrast_seen_new_accept(self):
+        from evaluation.collaborative_open_set_qknn_eval import evaluate_collaborative_open_set_evidence
+
+        def row(receiver_id, delta):
+            return {
+                "event_id": "new-1",
+                "receiver_id": receiver_id,
+                "role": "seen_new",
+                "true_label": "new-a",
+                "predicted_label": "new-a",
+                "known_score": 0.92,
+                "known_margin": 0.20,
+                "unknown_risk": 0.10,
+                "score_risk": 0.10,
+                "radius_risk": 0.10,
+                "margin_risk": 0.10,
+                "class_shell_risk": 0.10,
+                "class_conformal_pvalue": 0.90,
+                "class_conformal_support_count": 3,
+                "receiver_class_reliability": 0.90,
+                "support_density": 0.90,
+                "seen_new_old_contrast_delta": delta,
+                "latency_ms": 1.0,
+                "bytes": 64,
+            }
+
+        common_kwargs = {
+            "collab_counts": [2],
+            "fusion_policy": "candidate_set_cvs",
+            "label_fusion_policy": "vote_sum",
+            "candidate_set_min_receivers": 2,
+            "candidate_set_min_top1_receivers": 2,
+            "candidate_set_min_conformal_pvalue": 0.50,
+            "candidate_set_max_label_unknown_risk": 0.50,
+            "candidate_set_max_event_unknown_risk": 0.50,
+            "candidate_set_unknown_reject_risk": 0.80,
+            "candidate_set_max_label_risk_component_agreement": 0.50,
+            "candidate_set_min_score_gap": 0.0,
+            "seen_new_contrast_gate_enabled": True,
+            "include_event_results": True,
+            "protocol_metadata": {
+                "target_receiver_ids": ["rx-a", "rx-b"],
+                "source_receiver_ids": ["src-a"],
+                "old_tx_ids": ["old-a"],
+                "seen_new_tx_ids": ["new-a"],
+                "unknown_tx_ids": ["unk-a"],
+                "target_channel_view": "leo_clear_weak",
+            },
+        }
+        rows = [row("rx-a", 0.10), row("rx-b", 0.12)]
+
+        blocked = evaluate_collaborative_open_set_evidence(
+            rows,
+            seen_new_contrast_gate_min_delta=0.20,
+            seen_new_contrast_gate_min_receivers=2,
+            **common_kwargs,
+        )
+        accepted = evaluate_collaborative_open_set_evidence(
+            rows,
+            seen_new_contrast_gate_min_delta=0.05,
+            seen_new_contrast_gate_min_receivers=2,
+            **common_kwargs,
+        )
+
+        blocked_event = blocked["counts"]["2"]["event_results"][0]
+        accepted_event = accepted["counts"]["2"]["event_results"][0]
+        self.assertEqual(blocked_event["decision"], "defer")
+        self.assertFalse(blocked_event["seen_new_contrast_gate_passed"])
+        self.assertIn("contrast_delta", blocked_event["seen_new_contrast_gate_reason"])
+        self.assertEqual(accepted_event["decision"], "accept")
+        self.assertTrue(accepted_event["seen_new_contrast_gate_passed"])
+        self.assertEqual(accepted_event["output_label"], "new-a")
+
     def test_rescue_unknown_veto_blocks_rescued_unknown_false_accept(self):
         from evaluation.collaborative_open_set_qknn_eval import evaluate_collaborative_open_set_evidence
 

@@ -851,6 +851,47 @@ def _qknn_label_score_matrix(
     return labels, out
 
 
+def _seen_new_old_contrast_diagnostics(
+    memory: QknnMemory,
+    query_features: np.ndarray,
+    label: str,
+    *,
+    margin: float = 0.0,
+) -> dict[str, float | int]:
+    query = _normalize_rows(query_features)
+    if query.shape[0] == 0:
+        return {
+            "old_reference_score": 0.0,
+            "label_centroid_score": 0.0,
+            "delta": 0.0,
+            "margin_adjusted_delta": 0.0,
+            "positive": 0,
+        }
+    label_name = str(label)
+    class_to_pos = {str(value): int(pos) for pos, value in enumerate(memory.centroid_labels.tolist())}
+    label_pos = class_to_pos.get(label_name)
+    old_positions = [
+        int(pos)
+        for pos, value in enumerate(memory.centroid_labels.tolist())
+        if str(value) in memory.old_labels
+    ]
+    centroid_scores = _centroid_scores(memory, query[:1])
+    old_reference = max((float(centroid_scores[0, pos]) for pos in old_positions), default=0.0)
+    label_score = float(centroid_scores[0, label_pos]) if label_pos is not None else 0.0
+    if label_name in memory.old_labels or label_pos is None or not old_positions:
+        delta = 0.0
+    else:
+        delta = label_score - old_reference
+    adjusted = delta - max(0.0, float(margin))
+    return {
+        "old_reference_score": float(old_reference),
+        "label_centroid_score": float(label_score),
+        "delta": float(delta),
+        "margin_adjusted_delta": float(adjusted),
+        "positive": int(adjusted > 0.0),
+    }
+
+
 def _split_support_query(
     payload: Mapping[str, Any],
     *,
@@ -2634,6 +2675,12 @@ def build_collaborative_evidence(
                                 label_name,
                                 1.0,
                             )
+                            label_contrast = _seen_new_old_contrast_diagnostics(
+                                memory,
+                                query_feature,
+                                label_name,
+                                margin=seen_contrast_margin,
+                            )
                             (
                                 label_class_negative_effective_risk,
                                 label_class_negative_weakness,
@@ -2651,6 +2698,21 @@ def build_collaborative_evidence(
                             class_evidence_fields[f"class_evidence_top{rank}_label"] = label_name
                             class_evidence_fields[f"class_evidence_top{rank}_score"] = float(label_score)
                             class_evidence_fields[f"class_evidence_top{rank}_margin"] = float(label_margin)
+                            class_evidence_fields[
+                                f"class_evidence_top{rank}_seen_new_old_contrast_old_reference_score"
+                            ] = float(label_contrast["old_reference_score"])
+                            class_evidence_fields[
+                                f"class_evidence_top{rank}_seen_new_old_contrast_label_centroid_score"
+                            ] = float(label_contrast["label_centroid_score"])
+                            class_evidence_fields[f"class_evidence_top{rank}_seen_new_old_contrast_delta"] = float(
+                                label_contrast["delta"]
+                            )
+                            class_evidence_fields[
+                                f"class_evidence_top{rank}_seen_new_old_contrast_margin_adjusted_delta"
+                            ] = float(label_contrast["margin_adjusted_delta"])
+                            class_evidence_fields[f"class_evidence_top{rank}_seen_new_old_contrast_positive"] = int(
+                                label_contrast["positive"]
+                            )
                             class_evidence_fields[f"class_evidence_top{rank}_conformal_pvalue"] = (
                                 float(label_pvalue) if bool(class_conformal_enabled) else 0.0
                             )
@@ -2755,6 +2817,12 @@ def build_collaborative_evidence(
                         weak_reliability=float(class_negative_weak_reliability),
                         risk_floor=float(class_negative_risk_floor),
                     )
+                    selected_contrast = _seen_new_old_contrast_diagnostics(
+                        memory,
+                        query_feature,
+                        str(pred[0]),
+                        margin=seen_contrast_margin,
+                    )
                     candidate_audit_risk = 0.0
                     if bool(candidate_audit_unknown_risk_enabled):
                         if candidate_audit_disagreement:
@@ -2844,6 +2912,17 @@ def build_collaborative_evidence(
                             "seen_new_old_contrast_weight": seen_contrast_weight,
                             "seen_new_old_contrast_margin": seen_contrast_margin,
                             "seen_new_old_contrast_assisted": int(seen_contrast_weight > 0.0),
+                            "seen_new_old_contrast_old_reference_score": float(
+                                selected_contrast["old_reference_score"]
+                            ),
+                            "seen_new_old_contrast_label_centroid_score": float(
+                                selected_contrast["label_centroid_score"]
+                            ),
+                            "seen_new_old_contrast_delta": float(selected_contrast["delta"]),
+                            "seen_new_old_contrast_margin_adjusted_delta": float(
+                                selected_contrast["margin_adjusted_delta"]
+                            ),
+                            "seen_new_old_contrast_positive": int(selected_contrast["positive"]),
                             "feature_adapter_policy": feature_adapter.policy,
                             "feature_adapter_strength": float(feature_adapter.strength),
                             "feature_adapter_variance_floor": adapter_var_floor,
@@ -3144,6 +3223,9 @@ def run_evaluation(args: argparse.Namespace) -> dict[str, Any]:
         seen_new_gate_max_component_agreement=float(args.seen_new_gate_max_component_agreement),
         seen_new_gate_min_support_density=float(args.seen_new_gate_min_support_density),
         seen_new_gate_max_radius_z=float(args.seen_new_gate_max_radius_z),
+        seen_new_contrast_gate_enabled=bool(args.seen_new_contrast_gate_enabled),
+        seen_new_contrast_gate_min_delta=float(args.seen_new_contrast_gate_min_delta),
+        seen_new_contrast_gate_min_receivers=int(args.seen_new_contrast_gate_min_receivers),
         candidate_set_min_receivers=int(args.candidate_set_min_receivers),
         candidate_set_min_top1_receivers=int(args.candidate_set_min_top1_receivers),
         candidate_set_min_conformal_pvalue=float(args.candidate_set_min_conformal_pvalue),
@@ -3451,6 +3533,9 @@ def parse_args() -> argparse.Namespace:
     p.add_argument("--seen_new_gate_max_component_agreement", type=float, default=1.0)
     p.add_argument("--seen_new_gate_min_support_density", type=float, default=0.0)
     p.add_argument("--seen_new_gate_max_radius_z", type=float, default=1.0e12)
+    p.add_argument("--seen_new_contrast_gate_enabled", action="store_true")
+    p.add_argument("--seen_new_contrast_gate_min_delta", type=float, default=0.0)
+    p.add_argument("--seen_new_contrast_gate_min_receivers", type=int, default=1)
     p.add_argument("--candidate_set_min_receivers", type=int, default=2)
     p.add_argument("--candidate_set_min_top1_receivers", type=int, default=0)
     p.add_argument("--candidate_set_min_conformal_pvalue", type=float, default=0.0)
