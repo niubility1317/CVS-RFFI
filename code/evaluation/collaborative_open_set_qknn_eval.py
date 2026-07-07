@@ -5420,6 +5420,15 @@ def evaluate_collaborative_open_set_evidence(
         "seen_new_contrast_risk_relief_enabled": bool(seen_new_contrast_risk_relief_enabled),
         "seen_new_contrast_risk_relief_min_delta": float(seen_new_contrast_risk_relief_min_delta),
         "seen_new_contrast_risk_relief_min_receivers": int(seen_new_contrast_risk_relief_min_receivers),
+        "seen_new_contrast_risk_relief_min_support_count": int(
+            seen_new_contrast_risk_relief_min_support_count
+        ),
+        "seen_new_contrast_risk_relief_min_pvalue": float(
+            seen_new_contrast_risk_relief_min_pvalue
+        ),
+        "seen_new_contrast_risk_relief_min_receiver_class_reliability": float(
+            seen_new_contrast_risk_relief_min_receiver_class_reliability
+        ),
         "seen_new_contrast_label_risk_scale": float(seen_new_contrast_label_risk_scale),
         "seen_new_contrast_event_risk_scale": float(seen_new_contrast_event_risk_scale),
         "seen_new_contrast_component_agreement_scale": float(
