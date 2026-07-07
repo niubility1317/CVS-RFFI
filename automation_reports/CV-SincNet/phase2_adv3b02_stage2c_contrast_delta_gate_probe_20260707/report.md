@@ -81,4 +81,36 @@ cd /home/szu2070436088/2510044040/CV-SincNet && nohup bash code/scripts/launch_p
 
 ## Results
 
-pending
+completed:2026-07-07 13:04 CST。summary已拉回本地：
+
+- `E:\type10-7\automation_reports\CV-SincNet\phase2_adv3b02_stage2c_contrast_delta_gate_probe_20260707\stage2c_contrast_delta_gate_probe_summary.json`
+- `E:\type10-7\automation_reports\CV-SincNet\phase2_adv3b02_stage2c_contrast_delta_gate_probe_20260707\stage2c_contrast_delta_gate_probe_summary.csv`
+
+### Result Table
+
+| variant | profile | K | old_acc | min_old | seen_new | min_seen | unknown_FAR | unknown_reject | known_coverage | defer | verdict |
+| --- | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | --- |
+| HEAD | DELTA_U085_W025_D002 | 5 | 0.0000 | 0.0000 | 0.0000 | 0.0000 | 0.0000 | 1.0000 | 0.0000 | 0.0000 | low-FAR但全拒绝known |
+| HEAD | DELTA_U090_W025_D002 | 5 | 0.0000 | 0.0000 | 0.0000 | 0.0000 | 0.0000 | 1.0000 | 0.0000 | 0.0000 | low-FAR但全拒绝known |
+| HEAD | DELTA_U090_W025_D005 | 5 | 0.0000 | 0.0000 | 0.0000 | 0.0000 | 0.0000 | 1.0000 | 0.0000 | 0.0000 | low-FAR但全拒绝known |
+| HEAD | DELTA_U095_W025_D005 | 5 | 0.0000 | 0.0000 | 0.0000 | 0.0000 | 0.0000 | 1.0000 | 0.0000 | 0.0000 | low-FAR但全拒绝known |
+| HEAD | DELTA_U095_W050M02_D005 | 5 | 0.0000 | 0.0000 | 0.0000 | 0.0000 | 0.0000 | 1.0000 | 0.0000 | 0.0000 | low-FAR但全拒绝known |
+| HEAD | DELTA_U095_W050M02_D008 | 5 | 0.0000 | 0.0000 | 0.0000 | 0.0000 | 0.0000 | 1.0000 | 0.0000 | 0.0000 | low-FAR但全拒绝known |
+| NORM | DELTA_U085_W025_D002 | 5 | 0.0000 | 0.0000 | 0.0000 | 0.0000 | 0.0000 | 1.0000 | 0.0000 | 0.0000 | low-FAR但全拒绝known |
+| NORM | DELTA_U090_W025_D002 | 5 | 0.0000 | 0.0000 | 0.0000 | 0.0000 | 0.0000 | 1.0000 | 0.0000 | 0.0000 | low-FAR但全拒绝known |
+| NORM | DELTA_U090_W025_D005 | 5 | 0.0000 | 0.0000 | 0.0000 | 0.0000 | 0.0000 | 1.0000 | 0.0000 | 0.0000 | low-FAR但全拒绝known |
+| NORM | DELTA_U095_W025_D005 | 5 | 0.0000 | 0.0000 | 0.0000 | 0.0000 | 0.0000 | 1.0000 | 0.0000 | 0.0000 | low-FAR但全拒绝known |
+| HEAD | DELTA_U085_W025_D002 | 10 | 0.5286 | 0.0000 | 0.0018 | 0.0000 | 0.1286 | 0.8714 | 0.2633 | 0.0000 | seen-new非零但FAR超0.10且最低类仍0 |
+| HEAD | DELTA_U090_W025_D002 | 10 | 0.5548 | 0.0000 | 0.0018 | 0.0000 | 0.1554 | 0.8446 | 0.2816 | 0.0000 | seen-new非零但FAR升高 |
+| NORM | DELTA_U095_W025_D005 | 10 | 0.6357 | 0.0857 | 0.0089 | 0.0000 | 0.2107 | 0.7839 | 0.3276 | 0.0032 | old略恢复但FAR高，min_seen仍0 |
+| HEAD | DELTA_U095_W050M02_D005 | 10 | 0.6048 | 0.1429 | 0.0107 | 0.0000 | 0.2143 | 0.7839 | 0.3173 | 0.0013 | 本轮seen-new最高但FAR高，min_seen仍0 |
+
+### Interpretation
+
+- `seen_new_contrast_gate`单独作为接收过滤器不是可推广路线：当`unknown_FAR<=0.10`时，全部可行行都是`known_coverage=0`，没有旧类或新类接收。
+- K=10比K=5有少量恢复，但同一行最高`seen_new_acc`只有0.0107，`min_seen_new_class_acc=0`，不能解决新类增多下最低类坍塌。
+- 负向证据说明问题不是“缺少一个更紧的gate”，而是candidate risk仍把seen-new当unknown压死；contrast证据需要作为seen-new专用risk relief或校准项进入接收风险，而不是只作为过滤器。
+
+### Next Route
+
+下一步实现默认关闭的`seen_new_contrast_risk_relief_*`：仅当输出label属于seen-new且contrast delta/receiver-count达标时，降低candidate-set接收使用的label/event unknown risk和component agreement；同时保留contrast gate用于unknown FAR控制。该路线是诊断扩展，不改变`项目.md`协议，不使用target unknown训练或校准。
