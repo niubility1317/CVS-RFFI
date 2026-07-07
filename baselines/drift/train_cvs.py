@@ -164,8 +164,9 @@ def main() -> None:
         return model(batch["iq"].to(device), grl_lambda=0.0)
 
     pseudo_cfg = build_pseudo_label_config(args)
+    pseudo_loader = loaders.unlabeled if loaders.unlabeled is not None else loaders.train
     pseudo_step = (
-        build_pseudo_step_fn(cfg=pseudo_cfg, loader=loaders.train, optimizer=optimizer, forward_fn=forward_eval)
+        build_pseudo_step_fn(cfg=pseudo_cfg, loader=pseudo_loader, optimizer=optimizer, forward_fn=forward_eval)
         if pseudo_cfg.enabled
         else None
     )

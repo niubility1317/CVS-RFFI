@@ -117,8 +117,13 @@ def compute_pseudo_label_loss(
         "pseudo/total": float(total),
         "pseudo/selected": float(selected),
     }
-    if "label" in batch and torch.is_tensor(batch["label"]):
-        y = _move_batch_tensor(batch["label"], device).long()
+    label_key = "label"
+    if "true_label" in batch and torch.is_tensor(batch["true_label"]):
+        true_y = _move_batch_tensor(batch["true_label"], device).long()
+        if bool((true_y >= 0).any().detach().item()):
+            label_key = "true_label"
+    if label_key in batch and torch.is_tensor(batch[label_key]):
+        y = _move_batch_tensor(batch[label_key], device).long()
         metrics["pseudo/precision"] = float(pseudo[mask].eq(y[mask]).float().mean().detach().cpu()) if selected else 0.0
     return PseudoLabelBatchResult(loss=loss, active=True, total=total, selected=selected, metrics=metrics)
 

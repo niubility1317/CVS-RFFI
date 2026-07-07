@@ -20,6 +20,7 @@ if _CODE_DIR.is_dir():
 from dataset_wisig import (
     load_wisig_compact_pkl,
     make_wisig_drift_day1_split,
+    make_wisig_meta_ssl_source_split,
     make_wisig_riei_receiver_holdout_split,
     make_wisig_trainval_test_by_day_rx,
 )
@@ -59,6 +60,14 @@ def add_cvs_data_args(parser: argparse.ArgumentParser) -> argparse.ArgumentParse
     parser.add_argument("--wisig_out_len", type=int, default=256)
     parser.add_argument("--wisig_train_ratio", type=float, default=0.2)
     parser.add_argument("--wisig_val_ratio", type=float, default=-1.0)
+    parser.add_argument(
+        "--use_source_ssl_split",
+        action="store_true",
+        help="Use a source-only labeled/unlabeled/validation split for pseudo-label training.",
+    )
+    parser.add_argument("--wisig_labeled_ratio", type=float, default=0.1)
+    parser.add_argument("--wisig_unlabeled_ratio", type=float, default=0.6)
+    parser.add_argument("--wisig_source_val_ratio", type=float, default=0.3)
     parser.add_argument("--wisig_guard_gap", type=int, default=8)
     parser.add_argument("--wisig_train_days", type=str, default="0,1")
     parser.add_argument("--wisig_test_days", type=str, default="2,3")
@@ -129,6 +138,7 @@ class CVSDictDataset(Dataset):
         return {
             "iq": x,
             "label": int(y),
+            "true_label": int(meta.get("true_tx_i", y)),
             "domain": int(d),
             "receiver": int(meta.get("rx_i", d)),
             "day": int(meta.get("day_i", -1)),
@@ -167,6 +177,7 @@ def collate_cvs_dict(batch: Sequence[Dict[str, Any]]) -> Dict[str, Any]:
     return {
         "iq": torch.stack([b["iq"] for b in batch], dim=0),
         "label": torch.tensor([int(b["label"]) for b in batch], dtype=torch.long),
+        "true_label": torch.tensor([int(b.get("true_label", b["label"])) for b in batch], dtype=torch.long),
         "domain": torch.tensor([int(b.get("domain", b.get("receiver", -1))) for b in batch], dtype=torch.long),
         "receiver": torch.tensor([int(b["receiver"]) for b in batch], dtype=torch.long),
         "day": torch.tensor([int(b.get("day", -1)) for b in batch], dtype=torch.long),
@@ -178,6 +189,7 @@ def collate_cvs_dict(batch: Sequence[Dict[str, Any]]) -> Dict[str, Any]:
 @dataclass
 class CVSSplit:
     train: Dataset
+    unlabeled: Optional[Dataset]
     val: Dataset
     test: Dataset
     named_tests: Dict[str, Dataset]
@@ -201,7 +213,69 @@ def build_cvs_split(
     ds_w = load_wisig_compact_pkl(args.wisig_pkl)
     eq = "both" if str(args.wisig_equalized).lower() == "both" else int(args.wisig_equalized)
     protocol = str(getattr(args, "wisig_protocol", "cvs_day_rx")).lower()
-    if protocol == "drift_day1":
+    unlabeled_ds = None
+    if bool(getattr(args, "use_source_ssl_split", False)):
+        if protocol != "cvs_day_rx":
+            raise ValueError("Source SSL split is only valid with wisig_protocol=cvs_day_rx.")
+        labeled_ds, unlabeled_ds, val_ds, ssl_info = make_wisig_meta_ssl_source_split(
+            ds_w,
+            equalized=eq,
+            out_len=int(args.wisig_out_len),
+            domain=str(args.wisig_domain),
+            normalize=True,
+            crop_mode="center",
+            transform_labeled=None,
+            transform_unlabeled=None,
+            transform_val=None,
+            labeled_ratio=float(args.wisig_labeled_ratio),
+            unlabeled_ratio=float(args.wisig_unlabeled_ratio),
+            val_ratio=float(args.wisig_source_val_ratio),
+            train_days=parse_csv_indices(args.wisig_train_days),
+            holdout_days=parse_csv_indices(args.wisig_test_days),
+            train_rxs=parse_csv_indices(args.wisig_train_rxs),
+            holdout_rxs=parse_csv_indices(args.wisig_test_rxs),
+            max_samples_per_combo_source=_cap_arg(args.wisig_max_day123_per_combo),
+            seed=int(getattr(args, "seed", 1337)),
+            sample_strategy=str(getattr(args, "wisig_cap_strategy", "random")),
+        )
+        _, _, test_ds, named_tests, named_test_meta, test_info = make_wisig_trainval_test_by_day_rx(
+            ds_w,
+            equalized=eq,
+            out_len=int(args.wisig_out_len),
+            domain=str(args.wisig_domain),
+            normalize=True,
+            crop_mode="center",
+            transform_train=None,
+            transform_eval=None,
+            train_ratio=float(args.wisig_labeled_ratio),
+            guard_gap=int(args.wisig_guard_gap),
+            train_days=parse_csv_indices(args.wisig_train_days),
+            test_days=parse_csv_indices(args.wisig_test_days),
+            train_rxs=parse_csv_indices(args.wisig_train_rxs),
+            test_rxs=parse_csv_indices(args.wisig_test_rxs),
+            max_samples_per_combo_day123=_cap_arg(args.wisig_max_day123_per_combo),
+            max_samples_per_combo_train=_cap_arg(args.wisig_max_train_per_combo),
+            max_samples_per_combo_val=_cap_arg(args.wisig_max_val_per_combo),
+            max_samples_per_combo_test=_cap_arg(args.wisig_max_test_per_combo),
+            max_samples_per_class_train=_cap_arg(getattr(args, "wisig_train_shots_per_class", 0)),
+            seed=int(getattr(args, "seed", 1337)),
+            split_strategy=str(getattr(args, "wisig_split_strategy", "random")),
+            cap_strategy=str(getattr(args, "wisig_cap_strategy", "random")),
+            train_class_cap_strategy=str(getattr(args, "wisig_train_shot_strategy", "domain_balanced")),
+        )
+        train_ds = labeled_ds
+        split_info = {
+            **test_info,
+            **ssl_info,
+            "mode": "source_ssl_cvs_day_rx_with_explicit_holdout_tests",
+            "test_days_idx": test_info.get("test_days_idx", []),
+            "test_days_label": test_info.get("test_days_label", []),
+            "test_rxs_idx": test_info.get("test_rxs_idx", []),
+            "test_rxs_label": test_info.get("test_rxs_label", []),
+            "named_test_sizes": test_info.get("named_test_sizes", {}),
+            "test_size": test_info.get("test_size", len(test_ds)),
+        }
+    elif protocol == "drift_day1":
         train_ds, val_ds, test_ds, named_tests, named_test_meta, split_info = make_wisig_drift_day1_split(
             ds_w,
             equalized=eq,
@@ -266,6 +340,7 @@ def build_cvs_split(
         )
     return CVSSplit(
         train=CVSDictDataset(train_ds, transform=transform_train),
+        unlabeled=CVSDictDataset(unlabeled_ds, transform=transform_train) if unlabeled_ds is not None else None,
         val=CVSDictDataset(val_ds, transform=transform_eval),
         test=CVSDictDataset(test_ds, transform=transform_eval),
         named_tests={name: CVSDictDataset(ds, transform=transform_eval) for name, ds in named_tests.items()},
@@ -295,6 +370,7 @@ def make_cvs_loader(dataset: Dataset, *, batch_size: int, shuffle: bool, num_wor
 @dataclass
 class CVSLoaders:
     train: DataLoader
+    unlabeled: Optional[DataLoader]
     val: DataLoader
     test: DataLoader
     named_tests: Dict[str, DataLoader]
@@ -317,6 +393,19 @@ def build_cvs_loaders(
         device=device,
         drop_last=bool(getattr(args, "train_drop_last", True)),
         prefetch_factor=int(args.prefetch_factor),
+    )
+    unlabeled_loader = (
+        make_cvs_loader(
+            split.unlabeled,
+            batch_size=int(args.batch_size),
+            shuffle=True,
+            num_workers=int(args.num_workers),
+            device=device,
+            drop_last=bool(getattr(args, "train_drop_last", True)),
+            prefetch_factor=int(args.prefetch_factor),
+        )
+        if split.unlabeled is not None
+        else None
     )
     val_loader = make_cvs_loader(
         split.val,
@@ -348,4 +437,4 @@ def build_cvs_loaders(
         )
         for name, ds in split.named_tests.items()
     }
-    return CVSLoaders(train=train_loader, val=val_loader, test=test_loader, named_tests=named, split=split)
+    return CVSLoaders(train=train_loader, unlabeled=unlabeled_loader, val=val_loader, test=test_loader, named_tests=named, split=split)

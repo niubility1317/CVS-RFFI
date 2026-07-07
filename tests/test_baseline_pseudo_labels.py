@@ -79,6 +79,30 @@ class BaselinePseudoLabelModuleTest(unittest.TestCase):
         self.assertGreater(float(active.loss.detach()), 0.0)
         self.assertAlmostEqual(active.metrics["pseudo/coverage"], 1.0)
 
+    def test_pseudo_label_precision_uses_true_label_for_masked_source_samples(self):
+        from baselines.common.pseudo_labels import PseudoLabelConfig, compute_pseudo_label_loss
+
+        class TinyModel(nn.Module):
+            def __init__(self):
+                super().__init__()
+                self.w = nn.Parameter(torch.tensor([[4.0, -4.0], [-4.0, 4.0]]))
+
+            def forward(self, x):
+                return x @ self.w
+
+        batch = {
+            "iq": torch.eye(2),
+            "label": torch.tensor([-1, -1], dtype=torch.long),
+            "true_label": torch.tensor([0, 1], dtype=torch.long),
+        }
+        cfg = PseudoLabelConfig(enabled=True, start_epoch=1, threshold=0.90, margin=0.10, weight=1.0)
+
+        active = compute_pseudo_label_loss(TinyModel(), batch, torch.device("cpu"), cfg, epoch=1)
+
+        self.assertTrue(active.active)
+        self.assertEqual(active.selected, 2)
+        self.assertAlmostEqual(active.metrics["pseudo/precision"], 1.0)
+
 
 class BaselinePseudoLabelTrainerHookTest(unittest.TestCase):
     def test_training_loop_calls_pseudo_step_after_start_epoch_and_merges_loss(self):
@@ -148,6 +172,8 @@ class BaselinePseudoLabelEntrypointTest(unittest.TestCase):
                 )
                 self.assertEqual(proc.returncode, 0, proc.stdout + proc.stderr)
                 self.assertIn("--use_pseudo_labels", proc.stdout)
+                self.assertIn("--use_source_ssl_split", proc.stdout)
+                self.assertIn("--wisig_unlabeled_ratio", proc.stdout)
                 self.assertIn("--pseudo_start_epoch", proc.stdout)
                 self.assertIn("--pseudo_threshold", proc.stdout)
                 self.assertIn("--lambda_pseudo", proc.stdout)
