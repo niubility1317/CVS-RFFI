@@ -1965,6 +1965,174 @@ def direct_metric_acceptance_loss(
     return loss, metrics
 
 
+def unlabeled_known_acceptance_quarantine_loss(
+    anchor_z: torch.Tensor,
+    anchor_y: torch.Tensor,
+    query_z: torch.Tensor,
+    query_mask: Optional[torch.Tensor] = None,
+    *,
+    core_quantile: float = 0.70,
+    accept_quantile: float = 0.80,
+    accept_target: float = 0.20,
+    cvar_alpha: float = 0.25,
+    accept_temperature: float = 0.04,
+    component_temperature_rad: float = math.radians(3.0),
+    density_temperature_rad: float = math.radians(3.0),
+    component_margin_rad: float = math.radians(4.0),
+    min_classes: int = 2,
+    min_samples_per_class: int = 2,
+) -> Tuple[torch.Tensor, Dict[str, float]]:
+    """Penalize untrusted source-unlabeled samples that fall inside known gates.
+
+    Phase1 has no true unknown TXs. This loss therefore uses only labeled or
+    trusted pseudo-labeled source anchors to build known prototypes, then treats
+    untrusted source-unlabeled views as quarantine queries and directly reduces
+    their local-component acceptance probability.
+    """
+    default_metrics = {
+        "active": 0.0,
+        "anchor_count": 0.0,
+        "query_count": 0.0,
+        "active_classes": 0.0,
+        "accept_rate": float("nan"),
+        "accept_loss": 0.0,
+        "low_density_accept_rate": float("nan"),
+        "nearest_angle_p50_deg": float("nan"),
+        "nearest_angle_p95_deg": float("nan"),
+        "nearest_angle_p99_deg": float("nan"),
+        "radius_to_inter_ratio": float("nan"),
+    }
+    if (
+        anchor_z is None
+        or query_z is None
+        or (not torch.is_tensor(anchor_z))
+        or (not torch.is_tensor(query_z))
+        or anchor_z.numel() == 0
+        or query_z.numel() == 0
+    ):
+        ref = anchor_z if torch.is_tensor(anchor_z) else query_z if torch.is_tensor(query_z) else torch.tensor(0.0)
+        return zero_like_with_grad(ref), default_metrics
+    if anchor_z.dim() != 2 or query_z.dim() != 2:
+        raise ValueError(
+            "unlabeled_known_acceptance_quarantine_loss expects 2D anchor/query features, "
+            f"got anchor={tuple(anchor_z.shape)} query={tuple(query_z.shape)}"
+        )
+    labels = anchor_y.view(-1).long()
+    if labels.numel() != anchor_z.size(0):
+        raise ValueError(f"anchor label count {labels.numel()} does not match feature batch {anchor_z.size(0)}")
+    if query_mask is not None:
+        if not torch.is_tensor(query_mask) or query_mask.numel() != query_z.size(0):
+            raise ValueError("query_mask must be a tensor with one value per query feature")
+        query_z = query_z[query_mask.view(-1).bool()]
+    if query_z.numel() == 0:
+        return zero_like_with_grad(anchor_z), default_metrics
+
+    anchor_norm = safe_l2_normalize(torch.nan_to_num(anchor_z.float(), nan=0.0, posinf=0.0, neginf=0.0), dim=1)
+    query_norm = safe_l2_normalize(torch.nan_to_num(query_z.float(), nan=0.0, posinf=0.0, neginf=0.0), dim=1)
+    valid = labels >= 0
+    centers = []
+    class_ids = []
+    sample_mask = torch.zeros_like(valid, dtype=torch.bool)
+    min_count = max(1, int(min_samples_per_class))
+    for cls in torch.unique(labels[valid]):
+        cls_mask = valid & labels.eq(cls)
+        if int(cls_mask.sum().item()) < min_count:
+            continue
+        centers.append(safe_l2_normalize(anchor_norm[cls_mask].mean(dim=0, keepdim=True), dim=1).squeeze(0))
+        class_ids.append(cls)
+        sample_mask |= cls_mask
+
+    active_classes = len(centers)
+    default_metrics["anchor_count"] = float(int(sample_mask.sum().detach().item()))
+    default_metrics["query_count"] = float(int(query_norm.size(0)))
+    default_metrics["active_classes"] = float(active_classes)
+    if active_classes < max(1, int(min_classes)):
+        return zero_like_with_grad(anchor_z), default_metrics
+
+    proto = torch.stack(centers, dim=0)
+    center_labels = torch.stack(class_ids, dim=0).to(device=labels.device)
+    sample_z = anchor_norm[sample_mask]
+    sample_labels = labels[sample_mask]
+    sample_cos = (sample_z @ proto.t()).clamp(-1.0 + 1e-6, 1.0 - 1e-6)
+    own_center = sample_labels.view(-1, 1).eq(center_labels.view(1, -1))
+    pos_angles = _safe_angle_from_cos(sample_cos[own_center])
+    if pos_angles.numel() == 0:
+        return zero_like_with_grad(anchor_z), default_metrics
+
+    core_q = max(0.0, min(1.0, float(core_quantile)))
+    accept_q = max(core_q, min(1.0, float(accept_quantile)))
+    accept_radius_vec = []
+    core_mask = torch.zeros((sample_z.size(0),), device=sample_z.device, dtype=torch.bool)
+    for cls in center_labels:
+        cls_mask = sample_labels.eq(cls)
+        cls_angles = pos_angles[cls_mask]
+        if cls_angles.numel() == 0:
+            accept_radius_vec.append(sample_z.new_tensor(math.radians(40.0)))
+            continue
+        det = cls_angles.detach()
+        core_radius = torch.quantile(det, core_q) if det.numel() > 1 else det.max()
+        accept_radius = torch.quantile(det, accept_q) if det.numel() > 1 else det.max()
+        accept_radius_vec.append(accept_radius.clamp_min(1e-4))
+        core_mask |= cls_mask & (pos_angles <= core_radius)
+    accept_radius_vec_t = torch.stack(accept_radius_vec, dim=0).to(device=sample_z.device, dtype=sample_z.dtype)
+    if not bool(core_mask.any()):
+        core_mask = torch.ones_like(core_mask)
+    z_core_density = sample_z[core_mask]
+    density_radius = (
+        torch.quantile(pos_angles[core_mask].detach(), min(0.95, max(0.50, core_q)))
+        if bool(core_mask.any())
+        else accept_radius_vec_t.detach().median()
+    )
+
+    query_angles = _safe_angle_from_cos((query_norm @ proto.t()).clamp(-1.0 + 1e-6, 1.0 - 1e-6))
+    radius_gate = torch.sigmoid(
+        (accept_radius_vec_t.detach().view(1, -1) - query_angles) / max(1e-4, float(component_temperature_rad))
+    )
+    if query_angles.size(1) > 1:
+        sorted_angles = torch.sort(query_angles.detach(), dim=1).values
+        class_gap = sorted_angles[:, 1] - sorted_angles[:, 0]
+        margin_gate = torch.sigmoid(
+            (class_gap - float(component_margin_rad)) / max(1e-4, float(component_temperature_rad))
+        ).view(-1, 1)
+    else:
+        margin_gate = torch.ones((query_angles.size(0), 1), device=query_angles.device, dtype=query_angles.dtype)
+    core_cos = (query_norm @ z_core_density.detach().t()).clamp(-1.0 + 1e-6, 1.0 - 1e-6)
+    nearest_core_angle = _safe_angle_from_cos(core_cos.max(dim=1).values)
+    density_gate = torch.sigmoid((density_radius - nearest_core_angle) / max(1e-4, float(density_temperature_rad))).view(-1, 1)
+    low_density_prob = torch.sigmoid((nearest_core_angle - density_radius) / max(1e-4, float(density_temperature_rad)))
+    accept_prob = (radius_gate * margin_gate * density_gate).max(dim=1).values
+    cvar_frac = max(1e-6, min(1.0, float(cvar_alpha)))
+    tau = max(1e-4, float(accept_temperature))
+    accept_loss = _top_cvar_mean(F.softplus((accept_prob - float(accept_target)) / tau), cvar_frac)
+
+    with torch.no_grad():
+        nearest_angle = query_angles.min(dim=1).values.detach()
+        q50 = torch.quantile(nearest_angle, 0.50) if nearest_angle.numel() > 1 else nearest_angle.mean()
+        q95 = torch.quantile(nearest_angle, 0.95) if nearest_angle.numel() > 1 else nearest_angle.mean()
+        q99 = torch.quantile(nearest_angle, 0.99) if nearest_angle.numel() > 1 else nearest_angle.mean()
+        radius_inter_ratio_metric = sample_z.new_tensor(float("nan"))
+        if proto.size(0) > 1:
+            inter_angles = _safe_angle_from_cos((proto @ proto.t()).clamp(-1.0 + 1e-6, 1.0 - 1e-6))
+            diag = torch.eye(inter_angles.size(0), device=inter_angles.device, dtype=torch.bool)
+            nearest_inter = inter_angles.masked_fill(diag, float("inf")).min(dim=1).values.detach().clamp_min(1e-4)
+            radius_inter_ratio_metric = (accept_radius_vec_t.detach() / nearest_inter).max()
+
+    metrics = {
+        "active": 1.0,
+        "anchor_count": float(int(sample_mask.sum().detach().item())),
+        "query_count": float(int(query_norm.size(0))),
+        "active_classes": float(active_classes),
+        "accept_rate": _scalar_metric(accept_prob.detach().mean()),
+        "accept_loss": _scalar_metric(accept_loss),
+        "low_density_accept_rate": _scalar_metric((accept_prob.detach() * low_density_prob.detach()).mean()),
+        "nearest_angle_p50_deg": math.degrees(_scalar_metric(q50)),
+        "nearest_angle_p95_deg": math.degrees(_scalar_metric(q95)),
+        "nearest_angle_p99_deg": math.degrees(_scalar_metric(q99)),
+        "radius_to_inter_ratio": _scalar_metric(radius_inter_ratio_metric),
+    }
+    return accept_loss, metrics
+
+
 def _binary_auc(known_scores: torch.Tensor, unknown_scores: torch.Tensor) -> float:
     if known_scores.numel() == 0 or unknown_scores.numel() == 0:
         return float("nan")
