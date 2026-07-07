@@ -24,6 +24,7 @@
 - 根目录`E:\type10-7`不是Git仓库；代码变更进入Git承载面`E:\type10-7\github_publish\CVS-RFFI-repo`，并同步到根目录运行面后再发往N607。
 - Git branch:`codex/cvs-rffi-release-20260626`
 - base result commit:`1e679f4 Record Stage2-C contrast relief results`
+- implementation commit:`653c6cc Add Stage2-C contrast floor probe`
 
 | changed file | purpose |
 | --- | --- |
