@@ -1,4 +1,6 @@
 import argparse
+import contextlib
+import io
 import subprocess
 import sys
 import tempfile
@@ -69,8 +71,13 @@ class BaselinePseudoLabelModuleTest(unittest.TestCase):
 
         early = compute_pseudo_label_loss(model, batch, torch.device("cpu"), cfg, epoch=2)
         self.assertFalse(early.active)
-        self.assertEqual(early.total, 0)
+        self.assertEqual(early.total, 2)
+        self.assertEqual(early.selected, 2)
         self.assertEqual(float(early.loss), 0.0)
+        self.assertAlmostEqual(early.metrics["pseudo/active"], 0.0)
+        self.assertAlmostEqual(early.metrics["pseudo/coverage"], 1.0)
+        self.assertGreater(early.metrics["pseudo/confidence_all"], 0.0)
+        self.assertIn("pseudo/confidence_max", early.metrics)
 
         active = compute_pseudo_label_loss(model, batch, torch.device("cpu"), cfg, epoch=3)
         self.assertTrue(active.active)
@@ -131,23 +138,26 @@ class BaselinePseudoLabelTrainerHookTest(unittest.TestCase):
             return {"loss": 0.5, "pseudo/active": 1.0, "pseudo/selected": 2.0}
 
         with tempfile.TemporaryDirectory() as tmp:
-            history = run_validation_gated_training(
-                model=TinyModel(),
-                train_loader=[batch([[1.0, 0.0], [0.0, 1.0]], [0, 1])],
-                val_loader=[batch([[1.0, 0.0], [0.0, 1.0]], [0, 1])],
-                named_test_loaders={"test_unseen_day_unseen_rx": [batch([[1.0, 0.0]], [0])]},
-                device=torch.device("cpu"),
-                epochs=2,
-                optimizer=torch.optim.SGD(TinyModel().parameters(), lr=0.1),
-                train_step_fn=train_step,
-                pseudo_step_fn=pseudo_step,
-                output_dir=tmp,
-            )
+            stdout = io.StringIO()
+            with contextlib.redirect_stdout(stdout):
+                history = run_validation_gated_training(
+                    model=TinyModel(),
+                    train_loader=[batch([[1.0, 0.0], [0.0, 1.0]], [0, 1])],
+                    val_loader=[batch([[1.0, 0.0], [0.0, 1.0]], [0, 1])],
+                    named_test_loaders={"test_unseen_day_unseen_rx": [batch([[1.0, 0.0]], [0])]},
+                    device=torch.device("cpu"),
+                    epochs=2,
+                    optimizer=torch.optim.SGD(TinyModel().parameters(), lr=0.1),
+                    train_step_fn=train_step,
+                    pseudo_step_fn=pseudo_step,
+                    output_dir=tmp,
+                )
 
         self.assertEqual(pseudo_epochs, [1, 2])
         self.assertAlmostEqual(history.epochs[0]["train_loss"], 1.0)
         self.assertAlmostEqual(history.epochs[1]["train_loss"], 1.5)
         self.assertEqual(history.epochs[1]["train_pseudo"]["pseudo/selected"], 2.0)
+        self.assertIn("[PSEUDO-METRICS]", stdout.getvalue())
 
 
 class BaselinePseudoLabelEntrypointTest(unittest.TestCase):

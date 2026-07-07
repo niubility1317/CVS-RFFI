@@ -84,13 +84,15 @@ def compute_pseudo_label_loss(
     epoch: int,
     forward_fn: Optional[Callable[[Any, Dict[str, Any], torch.device], Any]] = None,
 ) -> PseudoLabelBatchResult:
-    if not cfg.enabled or int(epoch) < int(cfg.start_epoch):
+    if not cfg.enabled:
         return PseudoLabelBatchResult(loss=_model_zero(model, device), active=False)
 
-    if forward_fn is None:
-        output = model(batch["iq"].to(device))
-    else:
-        output = forward_fn(model, batch, device)
+    active = int(epoch) >= int(cfg.start_epoch)
+    with torch.set_grad_enabled(active):
+        if forward_fn is None:
+            output = model(batch["iq"].to(device))
+        else:
+            output = forward_fn(model, batch, device)
     logits = logits_from_output(output)
     prob = logits.softmax(dim=1)
     conf, pseudo = prob.max(dim=1)
@@ -102,18 +104,26 @@ def compute_pseudo_label_loss(
     mask = (conf >= float(cfg.threshold)) & (margin >= float(cfg.margin))
     selected = int(mask.sum().detach().item())
     total = int(mask.numel())
-    if selected > 0:
+    if active and selected > 0:
         raw_loss = F.cross_entropy(logits[mask], pseudo.detach()[mask])
     else:
         raw_loss = logits.sum() * 0.0
-    loss = float(cfg.weight) * raw_loss
+    loss = float(cfg.weight) * raw_loss if active else _model_zero(model, device)
 
     metrics: Dict[str, float] = {
-        "pseudo/active": 1.0,
+        "pseudo/enabled": 1.0,
+        "pseudo/active": 1.0 if active else 0.0,
+        "pseudo/ready": 1.0 if active and selected > 0 else 0.0,
+        "pseudo/start_epoch": float(cfg.start_epoch),
+        "pseudo/threshold": float(cfg.threshold),
+        "pseudo/margin_threshold": float(cfg.margin),
         "pseudo/loss": float(loss.detach().cpu()),
         "pseudo/coverage": float(mask.float().mean().detach().cpu()) if total else 0.0,
         "pseudo/confidence": float(conf[mask].mean().detach().cpu()) if selected else 0.0,
+        "pseudo/confidence_all": float(conf.mean().detach().cpu()) if total else 0.0,
+        "pseudo/confidence_max": float(conf.max().detach().cpu()) if total else 0.0,
         "pseudo/margin": float(margin[mask].mean().detach().cpu()) if selected else 0.0,
+        "pseudo/margin_all": float(margin.mean().detach().cpu()) if total else 0.0,
         "pseudo/total": float(total),
         "pseudo/selected": float(selected),
     }
@@ -125,7 +135,7 @@ def compute_pseudo_label_loss(
     if label_key in batch and torch.is_tensor(batch[label_key]):
         y = _move_batch_tensor(batch[label_key], device).long()
         metrics["pseudo/precision"] = float(pseudo[mask].eq(y[mask]).float().mean().detach().cpu()) if selected else 0.0
-    return PseudoLabelBatchResult(loss=loss, active=True, total=total, selected=selected, metrics=metrics)
+    return PseudoLabelBatchResult(loss=loss, active=active, total=total, selected=selected, metrics=metrics)
 
 
 def build_pseudo_step_fn(
@@ -145,7 +155,7 @@ def build_pseudo_step_fn(
         if batch is None:
             return {"loss": 0.0, "pseudo/active": 0.0}
         result = compute_pseudo_label_loss(model, batch, device, cfg, epoch=epoch, forward_fn=forward_fn)
-        if result.active:
+        if result.active and result.selected > 0:
             optimizer.zero_grad()
             result.loss.backward()
             optimizer.step()

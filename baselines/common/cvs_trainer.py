@@ -478,6 +478,32 @@ def run_validation_gated_training(
         if epoch_stats.get("train_metrics"):
             parts = [f"{key}={value:.6g}" for key, value in epoch_stats["train_metrics"].items()]
             print("[TRAIN-METRICS] " + " ".join(parts), flush=True)
+        if epoch_stats.get("train_pseudo"):
+            pseudo = epoch_stats["train_pseudo"]
+            order = [
+                "pseudo/enabled",
+                "pseudo/active",
+                "pseudo/ready",
+                "pseudo/start_epoch",
+                "pseudo/threshold",
+                "pseudo/margin_threshold",
+                "pseudo/coverage",
+                "pseudo/selected",
+                "pseudo/total",
+                "pseudo/confidence",
+                "pseudo/confidence_all",
+                "pseudo/confidence_max",
+                "pseudo/margin",
+                "pseudo/margin_all",
+                "pseudo/precision",
+                "pseudo/loss",
+            ]
+            parts = [
+                f"{key}={float(pseudo[key]):.6g}"
+                for key in order
+                if key in pseudo
+            ]
+            print("[PSEUDO-METRICS] " + " ".join(parts), flush=True)
         if epoch_stats.get("tested"):
             if "test_named_obs" in epoch_stats:
                 print(
