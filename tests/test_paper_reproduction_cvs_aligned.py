@@ -7,6 +7,7 @@ import torch
 
 from paper_reproduction.cvs_aligned.metrics import compute_cvs_stage2_metrics
 from paper_reproduction.cvs_aligned.evaluate import (
+    _embed,
     _filter_kwargs_for_callable,
     _prototype_predict,
     _scenario_counts_for_steps,
@@ -92,6 +93,28 @@ def test_stage2_protocol_payload_requires_disjoint_receivers_and_tx_sets():
         raise AssertionError("overlapping Y_new/Y_unknown should be rejected")
 
 
+def test_stage2b_old_only_allows_no_unknown_when_rejection_disabled():
+    payload = {
+        "stage": "Stage2-B",
+        "source_receiver_labels": ["1-1", "1-19"],
+        "target_receiver_labels": ["20-1", "3-19"],
+        "target_old_tx_labels": ["14-10", "14-7"],
+        "target_new_tx_labels": [],
+        "target_unknown_tx_labels": [],
+        "unknown_rejection_enabled": False,
+        "k_shot": 5,
+        "target_channel_view": "satellite/LEO",
+        "target_channel_scenarios": ["leo_clear_weak", "leo_low_elev_weak", "leo_rain_weak"],
+        "threshold_scope": "support_only_no_unknown_query",
+    }
+
+    checked = validate_stage2_protocol_payload(payload)
+
+    assert checked["stage"] == "Stage2-B"
+    assert checked["stage2_seen_new_identity_allowed"] is False
+    assert checked["unknown_rejection_enabled"] is False
+
+
 def test_satellite_train_scenario_counts_are_round_robin_and_auditable():
     scenarios = ["leo_clear_weak", "leo_low_elev_weak", "leo_rain_weak"]
 
@@ -173,6 +196,125 @@ def test_cvs_aligned_cli_dry_run_validates_formal_config(tmp_path):
     assert "H_old_new" in result.stdout
 
 
+def test_riei_drift_stage2c_leo_configs_validate_formally():
+    root = Path(__file__).resolve().parents[1]
+    configs = [
+        "paper_reproduction/configs/riei_fd_cvs_stage2c_k5_leo_protonet_cda_n607.json",
+        "paper_reproduction/configs/riei_fd_cvs_stage2c_k10_leo_protonet_cda_n607.json",
+        "paper_reproduction/configs/drift_cvs_stage2c_k5_leo_protonet_cda_n607.json",
+        "paper_reproduction/configs/drift_cvs_stage2c_k10_leo_protonet_cda_n607.json",
+    ]
+
+    for config in configs:
+        result = subprocess.run(
+            [
+                sys.executable,
+                "-m",
+                "paper_reproduction.cvs_aligned.evaluate",
+                "--config",
+                config,
+                "--dry-run",
+                "--formal",
+            ],
+            cwd=root,
+            text=True,
+            capture_output=True,
+            check=False,
+        )
+
+        assert result.returncode == 0, result.stderr
+        assert '"cvs_extension": true' in result.stdout
+        assert '"stage": "Stage2-C"' in result.stdout
+        assert "unknown_FAR" in result.stdout
+
+
+def test_finaltest_r010_stage2b_old_only_configs_validate_formally():
+    root = Path(__file__).resolve().parents[1]
+    configs = [
+        "paper_reproduction/configs/riei_fd_finaltest_r010_cvs_stage2b_k5_leo_protonet_cda_n607.json",
+        "paper_reproduction/configs/riei_fd_finaltest_r010_cvs_stage2b_k10_leo_protonet_cda_n607.json",
+        "paper_reproduction/configs/drift_finaltest_r010_cvs_stage2b_k5_leo_protonet_cda_n607.json",
+        "paper_reproduction/configs/drift_finaltest_r010_cvs_stage2b_k10_leo_protonet_cda_n607.json",
+    ]
+
+    for config in configs:
+        result = subprocess.run(
+            [
+                sys.executable,
+                "-m",
+                "paper_reproduction.cvs_aligned.evaluate",
+                "--config",
+                config,
+                "--dry-run",
+                "--formal",
+            ],
+            cwd=root,
+            text=True,
+            capture_output=True,
+            check=False,
+        )
+
+        assert result.returncode == 0, result.stderr
+        assert '"stage": "Stage2-B"' in result.stdout
+        assert '"unknown_rejection_enabled": false' in result.stdout
+        assert "seen_new_acc" not in result.stdout
+        assert "unknown_FAR" not in result.stdout
+
+
+def test_current_sat_supervised_stage2b_old_only_configs_validate_formally():
+    root = Path(__file__).resolve().parents[1]
+    configs = [
+        "paper_reproduction/configs/riei_fd_current_sat_supervised_r010_cvs_stage2b_k5_leo_protonet_cda_n607.json",
+        "paper_reproduction/configs/riei_fd_current_sat_supervised_r010_cvs_stage2b_k10_leo_protonet_cda_n607.json",
+        "paper_reproduction/configs/drift_current_sat_supervised_r010_cvs_stage2b_k5_leo_protonet_cda_n607.json",
+        "paper_reproduction/configs/drift_current_sat_supervised_r010_cvs_stage2b_k10_leo_protonet_cda_n607.json",
+    ]
+
+    for config in configs:
+        result = subprocess.run(
+            [
+                sys.executable,
+                "-m",
+                "paper_reproduction.cvs_aligned.evaluate",
+                "--config",
+                config,
+                "--dry-run",
+                "--formal",
+            ],
+            cwd=root,
+            text=True,
+            capture_output=True,
+            check=False,
+        )
+
+        assert result.returncode == 0, result.stderr
+        assert '"stage": "Stage2-B"' in result.stdout
+        assert '"unknown_rejection_enabled": false' in result.stdout
+        assert "seen_new_acc" not in result.stdout
+        assert "unknown_FAR" not in result.stdout
+
+
+def test_riei_and_drift_embedding_routes_use_identity_features():
+    class RieiDummy(torch.nn.Module):
+        def forward(self, x):
+            return {"z_e": torch.ones(x.shape[0], 3), "z_r": torch.zeros(x.shape[0], 2)}
+
+    class DriftDummy(torch.nn.Module):
+        def forward(self, x, grl_lambda=1.0):
+            del grl_lambda
+            return {"z_tx": torch.full((x.shape[0], 4), 2.0), "z_rx": torch.zeros(x.shape[0], 2)}
+
+    x = torch.zeros(2, 2, 256)
+
+    riei_z = _embed(RieiDummy(), "riei_fd", x, torch.device("cpu"))
+    drift_z = _embed(DriftDummy(), "drift", x, torch.device("cpu"))
+
+    assert riei_z.shape == torch.Size([2, 3])
+    assert torch.allclose(riei_z, torch.ones(2, 3))
+    assert drift_z.shape == torch.Size([2, 4])
+    assert torch.allclose(drift_z, torch.full((2, 4), 2.0))
+
+
 def test_filter_kwargs_for_callable_drops_remote_incompatible_dataset_args():
     def old_dataset_ctor(*, out_len, equalized):
         return out_len, equalized
@@ -196,6 +338,26 @@ def test_prototype_predict_supports_euclidean_scores_and_rejection():
     assert scores[2] > scores[0]
     assert info["gate_method"] == "prototype_euclidean_support_quantile"
     assert info["unknown_score_kind"] == "min_euclidean_distance"
+
+
+def test_prototype_predict_can_disable_rejection_for_old_only_domain_adaptation():
+    support_z = torch.tensor([[0.0, 0.0], [0.1, 0.0], [3.0, 3.0], [3.1, 3.0]])
+    support_y = torch.tensor([0, 0, 1, 1])
+    query_z = torch.tensor([[0.05, 0.0], [3.05, 3.0], [10.0, 10.0]])
+
+    pred, scores, info = _prototype_predict(
+        support_z,
+        support_y,
+        query_z,
+        margin=0.1,
+        metric="euclidean",
+        rejection_enabled=False,
+    )
+
+    assert pred.tolist() == [0, 1, 1]
+    assert scores[2] > scores[0]
+    assert info["gate_method"] == "prototype_euclidean_no_rejection"
+    assert info["unknown_rejection_enabled"] is False
 
 
 def test_support_head_finetune_uses_support_labels_only_for_head_adaptation():

@@ -40,8 +40,9 @@ def validate_stage2_protocol_payload(payload: dict[str, Any]) -> dict[str, Any]:
         raise ValueError("Y_new and Y_unknown must be disjoint")
     if normalized_stage == "Stage2-C" and not new:
         raise ValueError("Stage2-C requires target_new_tx_labels")
-    if not unknown:
-        raise ValueError("target_unknown_tx_labels are required for unknown rejection metrics")
+    unknown_rejection_enabled = bool(payload.get("unknown_rejection_enabled", True))
+    if not unknown and unknown_rejection_enabled:
+        raise ValueError("target_unknown_tx_labels are required when unknown_rejection_enabled=true")
 
     k_shot = int(payload.get("k_shot", 0))
     if k_shot <= 0:
@@ -72,6 +73,7 @@ def validate_stage2_protocol_payload(payload: dict[str, Any]) -> dict[str, Any]:
             "y_old_y_new_disjoint": not bool(old & new),
             "y_unknown_disjoint_from_old_new": not bool(unknown & (old | new)),
             "stage2_seen_new_identity_allowed": normalized_stage == "Stage2-C",
+            "unknown_rejection_enabled": unknown_rejection_enabled,
             "is_deployment_primary": bool(is_satellite),
             "is_clean_control": bool(is_clean),
             "unknown_query_used_for_threshold": False,

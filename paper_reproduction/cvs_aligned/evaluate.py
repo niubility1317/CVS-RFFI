@@ -25,6 +25,11 @@ from paper_reproduction.feature_separation_crossrx.losses import feature_separat
 from paper_reproduction.feature_separation_crossrx.model import FeatureSeparationNet, build_wisig_fusion_representation
 from paper_reproduction.protonet_cda.train import ProtoEmbeddingNet, _group_indices, _sample_episode
 
+from baselines.drift.losses import ReceiverCenterEMA, compute_drift_loss
+from baselines.drift.model import DRIFTModel
+from baselines.riei_fd.model import RIEIModel
+from baselines.riei_fd.train import alternating_training_step
+
 
 ROOT = Path(__file__).resolve().parents[2]
 CODE_DIR = ROOT / "code"
@@ -154,6 +159,11 @@ def _scenario_counts_for_steps(scenarios: list[str], steps: int) -> dict[str, in
     return counts
 
 
+def _compact_receiver_targets(raw_rx: torch.Tensor, mapping: dict[int, int], *, device: torch.device) -> torch.Tensor:
+    values = [int(mapping[int(v)]) for v in raw_rx.detach().cpu().reshape(-1).tolist()]
+    return torch.tensor(values, dtype=torch.long, device=device)
+
+
 def _apply_scenario(x: torch.Tensor, scenario: str, *, seed: int) -> torch.Tensor:
     if str(scenario) == "clean":
         return x
@@ -161,6 +171,25 @@ def _apply_scenario(x: torch.Tensor, scenario: str, *, seed: int) -> torch.Tenso
     gen = torch.Generator(device=x.device).manual_seed(int(seed))
     y, _ = apply_sat_channel_for_scenario(x, scenario, args, gen=gen, return_meta=False)
     return y
+
+
+def _load_checkpoint_state(model: nn.Module, checkpoint_path: str, device: torch.device) -> dict[str, Any]:
+    path = Path(checkpoint_path)
+    if not checkpoint_path:
+        return {}
+    ckpt = torch.load(path, map_location=device)
+    if not isinstance(ckpt, dict):
+        raise ValueError(f"checkpoint must be a dict: {checkpoint_path}")
+    state = ckpt.get("model") or ckpt.get("model_state_dict") or ckpt.get("state_dict")
+    if not isinstance(state, dict):
+        raise ValueError(f"checkpoint has no model state dict: {checkpoint_path}")
+    model.load_state_dict(state, strict=True)
+    return {
+        "checkpoint_path": str(checkpoint_path),
+        "checkpoint_epoch": ckpt.get("epoch"),
+        "checkpoint_stats": ckpt.get("stats", {}),
+        "checkpoint_loaded_strict": True,
+    }
 
 
 def _train_model(config: dict[str, Any], manysig: dict[str, Any], device: torch.device):
@@ -268,6 +297,210 @@ def _train_model(config: dict[str, Any], manysig: dict[str, Any], device: torch.
                 "entropy_target": "cross_branch_logits",
             },
         }
+
+    if baseline == "riei_fd":
+        rx_labels = [str(v) for v in config["source_receiver_labels"]]
+        rx_mapping = {_idx(list(manysig.get("rx_list", [])), label): i for i, label in enumerate(rx_labels)}
+        model = RIEIModel(
+            num_emitters=len(manysig.get("tx_list", [])),
+            num_receivers=len(rx_mapping),
+            feature_dim=int(config.get("feature_dim", 512)),
+            dropout=float(config.get("dropout", 0.0)),
+            encoder_use_projection=bool(config.get("use_resnet_projection", False)),
+        ).to(device)
+        checkpoint_info = _load_checkpoint_state(
+            model,
+            str(config.get("source_checkpoint_path") or config.get("checkpoint_path") or ""),
+            device,
+        )
+        if checkpoint_info:
+            return model, {
+                "source_train_size": len(source_ds),
+                "steps": 0,
+                "train_channel_view": str(config.get("train_channel_view", config.get("target_channel_view", "clean"))),
+                "train_channel_scenarios": _train_scenarios(config),
+                "satellite_train_augmentation_enabled": any(scenario != "clean" for scenario in _train_scenarios(config)),
+                "training_origin": str(config.get("training_origin", "pretrained_source_checkpoint")),
+                "dg_reproduction_method": "RIEI",
+                "method_version": str(config.get("method_version", "paper_original_finaltest")),
+                "phase2_adapter": str(config.get("phase2_adapter", "ProtoNet-CDA")),
+                "identity_embedding": "z_e",
+                "source_checkpoint_run_id": str(config.get("source_checkpoint_run_id", "")),
+                "source_train_ratio": float(config.get("rho_label", config.get("source_train_ratio", 0.0))),
+                **checkpoint_info,
+            }
+        opt_all = torch.optim.Adam(
+            model.parameters(),
+            lr=float(config.get("lr_all", config.get("learning_rate", 1.0e-4))),
+            weight_decay=float(config.get("weight_decay_all", 0.0)),
+        )
+        opt_fed = torch.optim.Adam(
+            model.fed.parameters(),
+            lr=float(config.get("lr_fed", config.get("learning_rate", 1.0e-4))),
+            weight_decay=float(config.get("weight_decay_fed", 0.0)),
+        )
+        loader = DataLoader(
+            source_ds,
+            batch_size=int(config.get("batch_size", 64)),
+            shuffle=True,
+            collate_fn=collate_wisig,
+            drop_last=False,
+        )
+        steps = 0
+        scenarios = _train_scenarios(config)
+        scenario_counts = {scenario: 0 for scenario in scenarios}
+        while steps < max_steps:
+            for batch in loader:
+                scenario = scenarios[steps % len(scenarios)]
+                scenario_counts[scenario] = scenario_counts.get(scenario, 0) + 1
+                iq = _apply_scenario(batch["iq"].to(device), scenario, seed=seed + 40_000 + steps)
+                receiver_target = _compact_receiver_targets(batch["domain"], rx_mapping, device=device)
+                train_batch = {
+                    "iq": iq,
+                    "label": batch["label"].to(device),
+                    "receiver": batch["domain"].to(device),
+                    "receiver_target": receiver_target,
+                }
+                alternating_training_step(
+                    model,
+                    train_batch,
+                    opt_all,
+                    opt_fed,
+                    lambda_mi=float(config.get("lambda_mi", 1.2)),
+                    lambda_ie=float(config.get("lambda_ie", 1.2)),
+                    device=device,
+                    mi_mode=str(config.get("mi_mode", "cosine_abs")),
+                    ie_temperature=float(config.get("ie_temperature", 1.0)),
+                    ce_reduction=str(config.get("ce_reduction", "mean")),
+                    mi_reduction=str(config.get("mi_reduction", "mean")),
+                    ie_reduction=str(config.get("ie_reduction", "mean")),
+                    disentangle_steps=int(config.get("disentangle_steps", 1)),
+                    grad_clip_norm=float(config.get("grad_clip_norm", 0.0)),
+                    lambda_feature_norm=float(config.get("lambda_feature_norm", 0.0)),
+                )
+                steps += 1
+                if steps >= max_steps:
+                    break
+        return model, {
+            "source_train_size": len(source_ds),
+            "steps": steps,
+            "train_channel_view": str(config.get("train_channel_view", config.get("target_channel_view", "clean"))),
+            "train_channel_scenarios": scenarios,
+            "train_channel_scenario_counts": scenario_counts,
+            "satellite_train_augmentation_enabled": any(scenario != "clean" for scenario in scenarios),
+            "training_origin": str(config.get("training_origin", "source_domain_dg_reproduction_random_init")),
+            "dg_reproduction_method": "RIEI",
+            "method_version": str(config.get("method_version", "fix_optimized")),
+            "phase2_adapter": str(config.get("phase2_adapter", "ProtoNet-CDA")),
+            "identity_embedding": "z_e",
+            "lambda_mi": float(config.get("lambda_mi", 1.2)),
+            "lambda_ie": float(config.get("lambda_ie", 1.2)),
+            "lambda_feature_norm": float(config.get("lambda_feature_norm", 0.0)),
+        }
+
+    if baseline == "drift":
+        rx_labels = [str(v) for v in config["source_receiver_labels"]]
+        rx_mapping = {_idx(list(manysig.get("rx_list", [])), label): i for i, label in enumerate(rx_labels)}
+        model = DRIFTModel(
+            num_tx=len(manysig.get("tx_list", [])),
+            num_rx=len(rx_mapping),
+            embedding_dim=int(config.get("embedding_dim", 512)),
+            split_dim=int(config.get("split_dim", 256)),
+            dropout=float(config.get("dropout", 0.0)),
+            encoder_use_projection=bool(config.get("use_resnet_projection", False)),
+            domain_discriminator_layers=int(config.get("domain_discriminator_layers", 2)),
+        ).to(device)
+        checkpoint_info = _load_checkpoint_state(
+            model,
+            str(config.get("source_checkpoint_path") or config.get("checkpoint_path") or ""),
+            device,
+        )
+        if checkpoint_info:
+            return model, {
+                "source_train_size": len(source_ds),
+                "steps": 0,
+                "train_channel_view": str(config.get("train_channel_view", config.get("target_channel_view", "clean"))),
+                "train_channel_scenarios": _train_scenarios(config),
+                "satellite_train_augmentation_enabled": any(scenario != "clean" for scenario in _train_scenarios(config)),
+                "training_origin": str(config.get("training_origin", "pretrained_source_checkpoint")),
+                "dg_reproduction_method": "DRIFT",
+                "method_version": str(config.get("method_version", "paper_original_finaltest")),
+                "phase2_adapter": str(config.get("phase2_adapter", "ProtoNet-CDA")),
+                "identity_embedding": "z_tx",
+                "source_checkpoint_run_id": str(config.get("source_checkpoint_run_id", "")),
+                "source_train_ratio": float(config.get("rho_label", config.get("source_train_ratio", 0.0))),
+                **checkpoint_info,
+            }
+        opt_cls = torch.optim.AdamW if str(config.get("optimizer", "adam")) == "adamw" else torch.optim.Adam
+        opt = opt_cls(
+            model.parameters(),
+            lr=float(config.get("learning_rate", config.get("lr", 1.0e-4))),
+            weight_decay=float(config.get("weight_decay", 0.0)),
+        )
+        center_memory = None
+        if str(config.get("center_mode", "ema")) == "ema":
+            center_memory = ReceiverCenterEMA(
+                num_receivers=len(rx_mapping),
+                feature_dim=model.embedding_dim - model.split_dim,
+                momentum=float(config.get("center_momentum", 0.95)),
+            ).to(device)
+        loader = DataLoader(
+            source_ds,
+            batch_size=int(config.get("batch_size", 64)),
+            shuffle=True,
+            collate_fn=collate_wisig,
+            drop_last=False,
+        )
+        steps = 0
+        scenarios = _train_scenarios(config)
+        scenario_counts = {scenario: 0 for scenario in scenarios}
+        while steps < max_steps:
+            for batch in loader:
+                scenario = scenarios[steps % len(scenarios)]
+                scenario_counts[scenario] = scenario_counts.get(scenario, 0) + 1
+                iq = _apply_scenario(batch["iq"].to(device), scenario, seed=seed + 50_000 + steps)
+                receiver_target = _compact_receiver_targets(batch["domain"], rx_mapping, device=device)
+                out = model(iq, grl_lambda=float(config.get("grl_coeff", 1.0)))
+                losses = compute_drift_loss(
+                    out,
+                    batch["label"].to(device),
+                    receiver_target,
+                    lambda_grl=float(config.get("lambda_grl", 1.0)),
+                    lambda_center=float(config.get("lambda_center", 0.01)),
+                    lambda_mse=float(config.get("lambda_mse", 0.02)),
+                    normalize_features_for_mse=bool(config.get("normalize_features_for_mse", False)),
+                    mse_reduction=str(config.get("mse_reduction", "sum")),
+                    mse_cap=float(config.get("mse_cap", 0.0)),
+                    lambda_feature_norm=float(config.get("lambda_feature_norm", 0.0)),
+                    feature_norm_target=float(config.get("feature_norm_target", 0.0)),
+                    center_mode=str(config.get("center_mode", "ema")),
+                    center_memory=center_memory,
+                )
+                opt.zero_grad(set_to_none=True)
+                losses["loss"].backward()
+                if float(config.get("grad_clip_norm", 0.0)) > 0.0:
+                    torch.nn.utils.clip_grad_norm_(model.parameters(), float(config.get("grad_clip_norm", 0.0)))
+                opt.step()
+                steps += 1
+                if steps >= max_steps:
+                    break
+        return model, {
+            "source_train_size": len(source_ds),
+            "steps": steps,
+            "train_channel_view": str(config.get("train_channel_view", config.get("target_channel_view", "clean"))),
+            "train_channel_scenarios": scenarios,
+            "train_channel_scenario_counts": scenario_counts,
+            "satellite_train_augmentation_enabled": any(scenario != "clean" for scenario in scenarios),
+            "training_origin": str(config.get("training_origin", "source_domain_dg_reproduction_random_init")),
+            "dg_reproduction_method": "DRIFT",
+            "method_version": str(config.get("method_version", "fix_optimized")),
+            "phase2_adapter": str(config.get("phase2_adapter", "ProtoNet-CDA")),
+            "identity_embedding": "z_tx",
+            "lambda_grl": float(config.get("lambda_grl", 1.0)),
+            "lambda_center": float(config.get("lambda_center", 0.01)),
+            "lambda_mse": float(config.get("lambda_mse", 0.02)),
+            "mse_cap": float(config.get("mse_cap", 0.0)),
+        }
     raise ValueError(f"unsupported baseline: {baseline}")
 
 
@@ -277,37 +510,47 @@ def _embed(model, baseline: str, x: torch.Tensor, device: torch.device) -> torch
         x = x.to(device)
         if baseline == "feature_separation_crossrx":
             return model(build_wisig_fusion_representation(x))["tx_features"].detach().cpu()
+        if baseline == "riei_fd":
+            return model(x)["z_e"].detach().cpu()
+        if baseline == "drift":
+            return model(x, grl_lambda=0.0)["z_tx"].detach().cpu()
         return model(x).detach().cpu()
 
 
 def _select_target_sets(config: dict[str, Any], manysig: dict[str, Any], manytx: dict[str, Any]) -> dict[str, Any]:
-    target_rx = str(config["target_receiver_labels"][0])
+    target_rxs = [str(v) for v in config["target_receiver_labels"]]
     equalized = int(config.get("equalized", 1))
     day_i = int(config.get("target_day", 0))
     k = int(config["k_shot"])
     q = int(config.get("query_per_tx", 20))
     old_labels = [str(v) for v in config["target_old_tx_labels"]]
     needed_old = k + q
-    for label in old_labels:
-        _available_count(manysig, tx_label=label, rx_label=target_rx, day_i=day_i, equalized=equalized)
-        if _available_count(manysig, tx_label=label, rx_label=target_rx, day_i=day_i, equalized=equalized) < needed_old:
-            raise ValueError(f"insufficient old target samples for {label}")
+    for target_rx in target_rxs:
+        for label in old_labels:
+            _available_count(manysig, tx_label=label, rx_label=target_rx, day_i=day_i, equalized=equalized)
+            if _available_count(manysig, tx_label=label, rx_label=target_rx, day_i=day_i, equalized=equalized) < needed_old:
+                raise ValueError(f"insufficient old target samples for {label} on {target_rx}")
     return {
-        "target_receiver_label": target_rx,
-        "manysig_target_receiver_index": _idx(list(manysig.get("rx_list", [])), target_rx),
-        "manytx_receiver_index": _idx(list(manytx.get("rx_list", [])), target_rx),
+        "target_receiver_label": target_rxs[0],
+        "target_receiver_labels": target_rxs,
+        "manysig_target_receiver_indices": {
+            target_rx: _idx(list(manysig.get("rx_list", [])), target_rx) for target_rx in target_rxs
+        },
+        "manytx_receiver_indices": {
+            target_rx: _idx(list(manytx.get("rx_list", [])), target_rx) for target_rx in target_rxs
+        },
     }
 
 
 def _build_stage2_tensors(config: dict[str, Any], manysig: dict[str, Any], manytx: dict[str, Any]) -> dict[str, Any]:
-    target_rx = str(config["target_receiver_labels"][0])
+    target_rxs = [str(v) for v in config["target_receiver_labels"]]
     day_i = int(config.get("target_day", 0))
     equalized = int(config.get("equalized", 1))
     k = int(config["k_shot"])
     q = int(config.get("query_per_tx", 20))
     old_labels = [str(v) for v in config["target_old_tx_labels"]]
     new_labels = [str(v) for v in config.get("target_new_tx_labels", [])]
-    unknown_labels = [str(v) for v in config["target_unknown_tx_labels"]]
+    unknown_labels = [str(v) for v in config.get("target_unknown_tx_labels", [])]
     class_map = {label: i for i, label in enumerate(old_labels)}
     class_map.update({label: len(old_labels) + i for i, label in enumerate(new_labels)})
 
@@ -318,81 +561,82 @@ def _build_stage2_tensors(config: dict[str, Any], manysig: dict[str, Any], manyt
     support_meta: list[dict[str, Any]] = []
     query_meta: list[dict[str, Any]] = []
 
-    for label in old_labels:
-        xs, ys, meta = _take_samples(
-            manysig,
-            tx_label=label,
-            rx_label=target_rx,
-            day_i=day_i,
-            equalized=equalized,
-            count=k,
-            offset=0,
-            class_label=class_map[label],
-            role="target_old_support",
-        )
-        support_x.extend(xs)
-        support_y.extend(ys)
-        support_meta.extend(meta)
-        xs, ys, meta = _take_samples(
-            manysig,
-            tx_label=label,
-            rx_label=target_rx,
-            day_i=day_i,
-            equalized=equalized,
-            count=q,
-            offset=k,
-            class_label=class_map[label],
-            role="target_old_query",
-        )
-        query_x.extend(xs)
-        query_y.extend(ys)
-        query_meta.extend(meta)
+    for target_rx in target_rxs:
+        for label in old_labels:
+            xs, ys, meta = _take_samples(
+                manysig,
+                tx_label=label,
+                rx_label=target_rx,
+                day_i=day_i,
+                equalized=equalized,
+                count=k,
+                offset=0,
+                class_label=class_map[label],
+                role="target_old_support",
+            )
+            support_x.extend(xs)
+            support_y.extend(ys)
+            support_meta.extend(meta)
+            xs, ys, meta = _take_samples(
+                manysig,
+                tx_label=label,
+                rx_label=target_rx,
+                day_i=day_i,
+                equalized=equalized,
+                count=q,
+                offset=k,
+                class_label=class_map[label],
+                role="target_old_query",
+            )
+            query_x.extend(xs)
+            query_y.extend(ys)
+            query_meta.extend(meta)
 
-    for label in new_labels:
-        xs, ys, meta = _take_samples(
-            manytx,
-            tx_label=label,
-            rx_label=target_rx,
-            day_i=day_i,
-            equalized=equalized,
-            count=k,
-            offset=0,
-            class_label=class_map[label],
-            role="target_new_support",
-        )
-        support_x.extend(xs)
-        support_y.extend(ys)
-        support_meta.extend(meta)
-        xs, ys, meta = _take_samples(
-            manytx,
-            tx_label=label,
-            rx_label=target_rx,
-            day_i=day_i,
-            equalized=equalized,
-            count=q,
-            offset=k,
-            class_label=class_map[label],
-            role="target_new_query",
-        )
-        query_x.extend(xs)
-        query_y.extend(ys)
-        query_meta.extend(meta)
+        for label in new_labels:
+            xs, ys, meta = _take_samples(
+                manytx,
+                tx_label=label,
+                rx_label=target_rx,
+                day_i=day_i,
+                equalized=equalized,
+                count=k,
+                offset=0,
+                class_label=class_map[label],
+                role="target_new_support",
+            )
+            support_x.extend(xs)
+            support_y.extend(ys)
+            support_meta.extend(meta)
+            xs, ys, meta = _take_samples(
+                manytx,
+                tx_label=label,
+                rx_label=target_rx,
+                day_i=day_i,
+                equalized=equalized,
+                count=q,
+                offset=k,
+                class_label=class_map[label],
+                role="target_new_query",
+            )
+            query_x.extend(xs)
+            query_y.extend(ys)
+            query_meta.extend(meta)
 
-    for label in unknown_labels:
-        xs, ys, meta = _take_samples(
-            manytx,
-            tx_label=label,
-            rx_label=target_rx,
-            day_i=day_i,
-            equalized=equalized,
-            count=q,
-            offset=0,
-            class_label=-1,
-            role="target_unknown_query",
-        )
-        query_x.extend(xs)
-        query_y.extend(ys)
-        query_meta.extend(meta)
+        for label in unknown_labels:
+            xs, ys, meta = _take_samples(
+                manytx,
+                tx_label=label,
+                rx_label=target_rx,
+                day_i=day_i,
+                equalized=equalized,
+                count=q,
+                offset=0,
+                class_label=-1,
+                role="target_unknown_query",
+            )
+            query_x.extend(xs)
+            query_y.extend(ys)
+            query_meta.extend(meta)
 
     support_ids = {m["sample_id"] for m in support_meta}
     query_ids = {m["sample_id"] for m in query_meta}
@@ -419,6 +663,7 @@ def _prototype_predict(
     *,
     margin: float,
     metric: str = "cosine",
+    rejection_enabled: bool = True,
 ) -> tuple[torch.Tensor, torch.Tensor, dict[str, Any]]:
     labels = torch.unique(support_y).sort().values
     metric = str(metric).lower()
@@ -432,11 +677,13 @@ def _prototype_predict(
         support_sim = (support_n @ protos.t()).max(dim=1).values
         threshold = float(torch.quantile(support_sim, 0.05).item()) - float(margin)
         pred = labels[argmax].clone()
-        pred[max_sim < threshold] = -1
+        if rejection_enabled:
+            pred[max_sim < threshold] = -1
         return pred.cpu(), (-max_sim).cpu(), {
-            "gate_method": "prototype_cosine_support_quantile",
+            "gate_method": "prototype_cosine_support_quantile" if rejection_enabled else "prototype_cosine_no_rejection",
             "unknown_score_kind": "negative_max_similarity",
             "threshold": threshold,
+            "unknown_rejection_enabled": bool(rejection_enabled),
         }
     if metric == "euclidean":
         support_f = support_z.float()
@@ -447,11 +694,13 @@ def _prototype_predict(
         support_dist = torch.cdist(support_f, protos).min(dim=1).values
         threshold = float(torch.quantile(support_dist, 0.95).item()) + float(margin)
         pred = labels[argmin].clone()
-        pred[min_dist > threshold] = -1
+        if rejection_enabled:
+            pred[min_dist > threshold] = -1
         return pred.cpu(), min_dist.cpu(), {
-            "gate_method": "prototype_euclidean_support_quantile",
+            "gate_method": "prototype_euclidean_support_quantile" if rejection_enabled else "prototype_euclidean_no_rejection",
             "unknown_score_kind": "min_euclidean_distance",
             "threshold": threshold,
+            "unknown_rejection_enabled": bool(rejection_enabled),
         }
     raise ValueError(f"unsupported prototype_metric: {metric}")
 
@@ -466,6 +715,7 @@ def _support_head_finetune_predict(
     lr: float,
     weight_decay: float,
     device: torch.device,
+    rejection_enabled: bool = True,
 ) -> tuple[torch.Tensor, torch.Tensor, dict[str, Any]]:
     labels = torch.unique(support_y).sort().values
     compact = torch.empty_like(support_y)
@@ -486,12 +736,14 @@ def _support_head_finetune_predict(
         probs = F.softmax(head(query_z.float().to(device)), dim=1)
         max_prob, argmax = probs.max(dim=1)
     pred = labels[argmax.detach().cpu()].clone()
-    pred[max_prob.detach().cpu() < threshold] = -1
+    if rejection_enabled:
+        pred[max_prob.detach().cpu() < threshold] = -1
     return pred.cpu(), (-max_prob.detach().cpu()), {
-        "gate_method": "support_head_confidence_quantile",
+        "gate_method": "support_head_confidence_quantile" if rejection_enabled else "support_head_no_rejection",
         "unknown_score_kind": "negative_head_confidence",
         "threshold": threshold,
         "support_finetune_steps": int(steps),
+        "unknown_rejection_enabled": bool(rejection_enabled),
     }
 
 
@@ -517,6 +769,7 @@ def _run(config: dict[str, Any], args: argparse.Namespace) -> dict[str, Any]:
     baseline = str(config["baseline"])
     target_scenarios = _target_scenarios(config)
     support_query_satellite = any(scenario != "clean" for scenario in target_scenarios)
+    unknown_rejection_enabled = bool(config.get("unknown_rejection_enabled", True))
     metrics_by_scenario: dict[str, Any] = {}
     score_rows: list[dict[str, Any]] = []
     t0 = time.perf_counter()
@@ -536,6 +789,7 @@ def _run(config: dict[str, Any], args: argparse.Namespace) -> dict[str, Any]:
                 lr=float(config.get("support_finetune_lr", 0.05)),
                 weight_decay=float(config.get("support_finetune_weight_decay", 0.0)),
                 device=device,
+                rejection_enabled=unknown_rejection_enabled,
             )
         else:
             pred, unknown_scores, gate_info = _prototype_predict(
@@ -544,6 +798,7 @@ def _run(config: dict[str, Any], args: argparse.Namespace) -> dict[str, Any]:
                 query_z,
                 margin=float(config.get("threshold_margin", 0.02)),
                 metric=str(config.get("prototype_metric", "cosine")),
+                rejection_enabled=unknown_rejection_enabled,
             )
         metrics = compute_cvs_stage2_metrics(
             true_labels=tensors["query_y"],
@@ -569,8 +824,13 @@ def _run(config: dict[str, Any], args: argparse.Namespace) -> dict[str, Any]:
             )
     elapsed = max(1e-9, time.perf_counter() - t0)
 
+    metric_keys = ["old_acc", "target_old_accepted_acc", "target_old_coverage"]
+    if config.get("target_new_tx_labels"):
+        metric_keys.extend(["seen_new_acc", "H_old_new"])
+    if unknown_rejection_enabled:
+        metric_keys.extend(["unknown_FAR", "FPR95", "AUROC"])
     aggregate: dict[str, Any] = {}
-    for key in ["old_acc", "seen_new_acc", "H_old_new", "unknown_FAR", "FPR95", "AUROC"]:
+    for key in metric_keys:
         vals = [float(m[key]) for m in metrics_by_scenario.values() if key in m and np.isfinite(float(m[key]))]
         if vals:
             aggregate[f"{key}_mean"] = float(np.mean(vals))
@@ -581,7 +841,8 @@ def _run(config: dict[str, Any], args: argparse.Namespace) -> dict[str, Any]:
             **target_info,
             "target_old_tx_labels": config["target_old_tx_labels"],
             "target_new_tx_labels": config.get("target_new_tx_labels", []),
-            "target_unknown_tx_labels": config["target_unknown_tx_labels"],
+            "target_unknown_tx_labels": config.get("target_unknown_tx_labels", []),
+            "unknown_rejection_enabled": unknown_rejection_enabled,
         }
     )
     split_manifest = {
@@ -603,7 +864,8 @@ def _run(config: dict[str, Any], args: argparse.Namespace) -> dict[str, Any]:
         "target_query_satellite_augmentation_enabled": support_query_satellite,
         "gate_method": str(gate_info["gate_method"]),
         "threshold_fit_scope": config.get("threshold_scope", "support_only_no_unknown_query"),
-        "label_scope": "old_and_seen_new_support; unknown_query_eval_only",
+        "label_scope": "old_only_support_query" if not config.get("target_new_tx_labels") else "old_and_seen_new_support; unknown_query_eval_only",
+        "unknown_rejection_enabled": unknown_rejection_enabled,
         "prototype_metric": config.get("prototype_metric", ""),
         "support_finetune_steps": config.get("support_finetune_steps", 0),
     }
@@ -623,9 +885,10 @@ def _run(config: dict[str, Any], args: argparse.Namespace) -> dict[str, Any]:
             "latency_per_query_ms": float(elapsed * 1000.0 / max(1, len(score_rows))),
             "prototype_storage": int(len(tensors["support_y"].unique()) * support_z.shape[1]),
             "memory": {"embedding_dim": int(support_z.shape[1]), "support_count": int(tensors["support_y"].numel())},
-            "required_metric_bundle": ["old_acc", "seen_new_acc", "H_old_new", "unknown_FAR", "FPR95", "AUROC"],
+            "required_metric_bundle": metric_keys,
             "gate_method": str(gate_info["gate_method"]),
             "unknown_score_kind": str(gate_info["unknown_score_kind"]),
+            "unknown_rejection_enabled": unknown_rejection_enabled,
             "support_query_channel_view": str(config.get("target_channel_view", "clean")),
             "support_query_channel_scenarios": target_scenarios,
             "support_query_satellite_augmentation_enabled": support_query_satellite,
@@ -659,6 +922,11 @@ def main() -> int:
     if args.formal and contains_unresolved_placeholder(config):
         raise ValueError("formal CVS-aligned config still contains unresolved placeholder")
     checked = validate_stage2_protocol_payload(config)
+    expected_metrics = ["old_acc", "target_old_accepted_acc", "target_old_coverage"]
+    if config.get("target_new_tx_labels"):
+        expected_metrics.extend(["seen_new_acc", "H_old_new"])
+    if bool(config.get("unknown_rejection_enabled", True)):
+        expected_metrics.extend(["unknown_FAR", "FPR95", "AUROC"])
     if args.dry_run:
         print(
             json.dumps(
@@ -667,7 +935,7 @@ def main() -> int:
                     "stage": checked["stage"],
                     "cvs_extension": True,
                     "protocol": checked,
-                    "expected_metrics": ["old_acc", "seen_new_acc", "H_old_new", "unknown_FAR", "FPR95", "AUROC"],
+                    "expected_metrics": expected_metrics,
                 },
                 ensure_ascii=False,
                 sort_keys=True,
