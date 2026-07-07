@@ -8,7 +8,7 @@
 |timestamp|2026-07-07|
 |operator|Codex|
 |objective|在qKNNV42目标下继续推进旧类域适应、新类增多坍塌和最低类过低问题；本轮补齐真实Stage2-C导出协议，使NORM_SEP类表征能同时导出`target_old`、`target_new`和`target_unknown`|
-|status|本地代码和launcher准备完成；2026-07-07 01:58、02:01与02:04三次N607直连预检/复查均通过，但GPU持续满载且每卡5条Python计算进程，达到连续三次容量阻塞；未同步远端文件，未启动训练|
+|status|本地代码和launcher准备完成；2026-07-07 10:46 N607容量恢复且本地预启动验证通过；待同步远端文件、远端验证并启动训练|
 
 ## 协议边界
 
@@ -159,6 +159,51 @@ powershell -ExecutionPolicy Bypass -File tools\n607_ssh_preflight.ps1
 |---|---|
 |`Get-Process ssh -ErrorAction SilentlyContinue`|无残留`ssh.exe`|
 |`Get-NetTCPConnection -RemotePort 22 -State Established`|无到22端口的ESTABLISHED连接|
+
+### 2026-07-07 10:46 CST容量恢复与本地预启动验证
+
+目标恢复后重新执行只读直连预检，结果PASS。N607项目根目录可见，8张GPU均空闲：
+
+```text
+0, NVIDIA GeForce RTX 3090, 0, 10, 24576
+1, NVIDIA GeForce RTX 3090, 0, 10, 24576
+2, NVIDIA GeForce RTX 3090, 0, 10, 24576
+3, NVIDIA GeForce RTX 3090, 0, 10, 24576
+4, NVIDIA GeForce RTX 3090, 0, 10, 24576
+5, NVIDIA GeForce RTX 3090, 0, 10, 24576
+6, NVIDIA GeForce RTX 3090, 0, 10, 24576
+7, NVIDIA GeForce RTX 3090, 0, 10, 24576
+```
+
+独立占用复查显示GPU0-7除`Xorg`外无计算进程，满足默认启动边界。
+
+Git承载面状态：
+
+```text
+codex/cvs-rffi-release-20260626 ahead 690
+HEAD=1d07972 Analyze Phase1 DG-LEO training results
+```
+
+`HEAD`只新增`phase1_dgleo_joint_analysis_20260707/report.md`，未改动本轮Stage2-C脚本。
+
+待同步文件当前SHA256：
+
+|文件|SHA256|
+|---|---|
+|`code/scripts/train_apply_phase1_iq_preadapter_20260703.py`|`0168C0DA746A73C4BB5623250403A704556DE03B0169AB384B3719E7FDA23B88`|
+|`code/scripts/launch_phase2_adv3b02_stage2c_normsep_protocol_20260707.sh`|`5F6F02E25A3DB09B45A7AACE447A3A4F57C6B188FEDD094A0246AC3C1CB3032F`|
+|`code/tests/test_train_apply_phase1_iq_preadapter_cells.py`|`49221F2A558D26DE7514C2DB3D1599A2C027F14B8369E5EFB6765575175A8812`|
+
+本地预启动验证：
+
+|命令|结果|
+|---|---|
+|`conda run -n ssr-gpu python -m py_compile code\scripts\train_apply_phase1_iq_preadapter_20260703.py code\tests\test_train_apply_phase1_iq_preadapter_cells.py`|PASS|
+|`conda run -n ssr-gpu python -m unittest discover -s code\tests -p test_train_apply_phase1_iq_preadapter_cells.py -v`|PASS，3个测试通过|
+|`bash -n ./code/scripts/launch_phase2_adv3b02_stage2c_normsep_protocol_20260707.sh`|PASS|
+|`bash -lc '... launch_phase2_adv3b02_stage2c_normsep_protocol_20260707.sh --dry-run'`|PASS，输出`target_new`、`target_unknown`、proxy排除和成功门槛|
+
+决策：容量阻塞解除，可以进入`scp`同步、远端语法/哈希/dry-run验证和启动步骤。
 
 ## 预期N607使用方式
 
