@@ -222,3 +222,7 @@ launcher返回：`[OSFIX16-SUBMIT-COMPLETE]`
 ### 交接前只读复查
 
 2026-07-07交接前复查仍为健康启动状态：`nvidia-smi pmon -c 1`显示16个训练Python进程，GPU0-7均为2个训练进程；`logs/phase1_dgleo_osfix16_20260707`下16个`.out`存在；`runs/phase1_dgleo_osfix16_20260707`下16个`metrics_epoch.csv`存在；对16个日志扫描`Traceback|RuntimeError|Killed|unrecognized`未命中。
+
+### 运行耗时估算
+
+2026-07-07 12:10 CST只读复查：launcher总epoch为200；16个候选处于第64-67个epoch；主训练PID已运行约72.8-74.9分钟；平均每epoch约65.8-69.2秒。按当前速度线性外推，预计各候选完成200epoch的时间窗口为2026-07-07 14:35-14:47 CST，最慢候选暂为`DGLEO_OSFIX_TAIL_A`，ETA约14:46:50 CST。考虑final评估、checkpoint/prototype导出和文件flush，建议把完整可分析时间窗口按14:50-15:05 CST观察。
