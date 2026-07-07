@@ -125,3 +125,96 @@ MAX_ACTIVE_PER_GPU=2 LAUNCH_SETTLE_SECONDS=8 bash code/scripts/launch_phase1_dgl
 ## 当前不能声明
 
 这是Phase1 source-only训练。本实验启动和完成后也不能直接声明真实unknown_FAR、FPR95、Stage2 old_acc、seen_new_acc或H_old_new改善；只能说明闭集DG能力、星地压力鲁棒性、known特征几何、proxy/virtual unknown风险和prototype导出质量。
+
+## N607落地状态
+
+更新时间：2026-07-07 10:53-11:05 CST
+本地Git承载面commit：`fc83410 Add Phase1 DG-LEO OSFIX16 training route`
+状态：已完成本地实现、镜像提交、N607直连preflight、文件同步、远端语法/编译/dry-run验证，并已启动16个Phase1训练候选。当前是启动健康通过，不是完成结果。
+
+### N607 preflight与占用
+
+|检查项|结果|
+|---|---|
+|直连目标|`N607`可用|
+|服务器时间|`2026年 07月 07日 星期二 10:53:50 CST`|
+|远端项目根|`/home/szu2070436088/2510044040/CV-SincNet`可见|
+|GPU|8张RTX3090可见|
+|启动前训练进程|未发现`train_ssdg.py`或同run launcher|
+|启动前GPU占用|仅Xorg背景进程|
+|磁盘|`/home`约11T，总用量约27%，可用约7.6T|
+
+### 同步与远端验证
+
+|文件|SHA256|远端验证|
+|---|---|---|
+|`code/cvsrffi/losses.py`|`94d5d26bcc7fc799658bf67a3949e067e4beedc3c0b04b57cb86b6c5007f6d6b`|matched|
+|`code/SSDG/train_ssdg.py`|`fcf3ca59cf3f6c6758c97cfb2cb917bbfd04373152ac2ab2478d51692f83688c`|matched|
+|`code/scripts/launch_phase1_dgleo_osfix16_20260707.sh`|`97a78ace17b91116b3db7107b937d99814da6f4f893238980113e00175ea89f8`|matched|
+|`code/tests/test_unlabeled_quarantine_acceptance_loss.py`|`6a26d4e50c0d8c41d5602dc875cce4df79ec9722d8f611843c40436c4ffb7aba`|matched|
+|`code/tests/test_phase1_dgleo_osfix16_launcher.py`|`b39287eac22d13245ae805127449dfe435c6652502dadc6e67bdcc3c5a0e72ca`|matched|
+
+远端验证命令均通过：
+
+```bash
+cd /home/szu2070436088/2510044040/CV-SincNet
+/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -m py_compile code/cvsrffi/losses.py code/SSDG/train_ssdg.py
+bash -n code/scripts/launch_phase1_dgleo_osfix16_20260707.sh
+bash code/scripts/launch_phase1_dgleo_osfix16_20260707.sh --dry-run --only=DGLEO_OSFIX_JOINT_A
+```
+
+dry-run确认关键标志存在：`use_concat_sat_channel_aug=1`、`concat_sat_ce_only=0`、`direct_open_set_metric_loss=1`、`unlabeled_quarantine_accept=1`、`stage2_success_claim=0`。
+
+### 启动命令与健康检查
+
+实际启动命令：
+
+```bash
+cd /home/szu2070436088/2510044040/CV-SincNet
+MAX_ACTIVE_PER_GPU=2 LAUNCH_SETTLE_SECONDS=8 bash code/scripts/launch_phase1_dgleo_osfix16_20260707.sh
+```
+
+launcher返回：`[OSFIX16-SUBMIT-COMPLETE]`
+
+启动后健康检查：
+
+|检查项|结果|
+|---|---|
+|GPU训练进程|16个Python训练进程，严格2个/GPU|
+|日志文件|16个`.out`已生成|
+|run目录|16个候选目录已生成|
+|`metrics_epoch.csv`|16个已生成|
+|错误扫描|未发现`Traceback`、`RuntimeError`、`Killed`、`unrecognized`|
+|配置marker|`CONFIG-U-DIRECT`、`CONFIG-DM-ACCEPT`、`CONFIG-SAT`均存在|
+
+### 候选落地表
+
+|candidate|GPU|主PID|log|run目录|
+|---|---:|---:|---|---|
+|`DGLEO_OSFIX_CORE_A`|0|4057265|`logs/phase1_dgleo_osfix16_20260707/DGLEO_OSFIX_CORE_A.out`|`runs/phase1_dgleo_osfix16_20260707/DGLEO_OSFIX_CORE_A`|
+|`DGLEO_OSFIX_CORE_B`|0|4057673|`logs/phase1_dgleo_osfix16_20260707/DGLEO_OSFIX_CORE_B.out`|`runs/phase1_dgleo_osfix16_20260707/DGLEO_OSFIX_CORE_B`|
+|`DGLEO_OSFIX_DENSITY_A`|1|4058076|`logs/phase1_dgleo_osfix16_20260707/DGLEO_OSFIX_DENSITY_A.out`|`runs/phase1_dgleo_osfix16_20260707/DGLEO_OSFIX_DENSITY_A`|
+|`DGLEO_OSFIX_DENSITY_B`|1|4058891|`logs/phase1_dgleo_osfix16_20260707/DGLEO_OSFIX_DENSITY_B.out`|`runs/phase1_dgleo_osfix16_20260707/DGLEO_OSFIX_DENSITY_B`|
+|`DGLEO_OSFIX_PROXY_A`|2|4059311|`logs/phase1_dgleo_osfix16_20260707/DGLEO_OSFIX_PROXY_A.out`|`runs/phase1_dgleo_osfix16_20260707/DGLEO_OSFIX_PROXY_A`|
+|`DGLEO_OSFIX_PROXY_B`|2|4059718|`logs/phase1_dgleo_osfix16_20260707/DGLEO_OSFIX_PROXY_B.out`|`runs/phase1_dgleo_osfix16_20260707/DGLEO_OSFIX_PROXY_B`|
+|`DGLEO_OSFIX_BRIDGE_A`|3|4060156|`logs/phase1_dgleo_osfix16_20260707/DGLEO_OSFIX_BRIDGE_A.out`|`runs/phase1_dgleo_osfix16_20260707/DGLEO_OSFIX_BRIDGE_A`|
+|`DGLEO_OSFIX_BRIDGE_B`|3|4060562|`logs/phase1_dgleo_osfix16_20260707/DGLEO_OSFIX_BRIDGE_B.out`|`runs/phase1_dgleo_osfix16_20260707/DGLEO_OSFIX_BRIDGE_B`|
+|`DGLEO_OSFIX_TAIL_A`|4|4061000|`logs/phase1_dgleo_osfix16_20260707/DGLEO_OSFIX_TAIL_A.out`|`runs/phase1_dgleo_osfix16_20260707/DGLEO_OSFIX_TAIL_A`|
+|`DGLEO_OSFIX_TAIL_B`|4|4061406|`logs/phase1_dgleo_osfix16_20260707/DGLEO_OSFIX_TAIL_B.out`|`runs/phase1_dgleo_osfix16_20260707/DGLEO_OSFIX_TAIL_B`|
+|`DGLEO_OSFIX_SATOPEN_A`|5|4062249|`logs/phase1_dgleo_osfix16_20260707/DGLEO_OSFIX_SATOPEN_A.out`|`runs/phase1_dgleo_osfix16_20260707/DGLEO_OSFIX_SATOPEN_A`|
+|`DGLEO_OSFIX_SATOPEN_B`|5|4062656|`logs/phase1_dgleo_osfix16_20260707/DGLEO_OSFIX_SATOPEN_B.out`|`runs/phase1_dgleo_osfix16_20260707/DGLEO_OSFIX_SATOPEN_B`|
+|`DGLEO_OSFIX_UQ_A`|6|4063093|`logs/phase1_dgleo_osfix16_20260707/DGLEO_OSFIX_UQ_A.out`|`runs/phase1_dgleo_osfix16_20260707/DGLEO_OSFIX_UQ_A`|
+|`DGLEO_OSFIX_UQ_B`|6|4063500|`logs/phase1_dgleo_osfix16_20260707/DGLEO_OSFIX_UQ_B.out`|`runs/phase1_dgleo_osfix16_20260707/DGLEO_OSFIX_UQ_B`|
+|`DGLEO_OSFIX_JOINT_A`|7|4063937|`logs/phase1_dgleo_osfix16_20260707/DGLEO_OSFIX_JOINT_A.out`|`runs/phase1_dgleo_osfix16_20260707/DGLEO_OSFIX_JOINT_A`|
+|`DGLEO_OSFIX_JOINT_B`|7|4064343|`logs/phase1_dgleo_osfix16_20260707/DGLEO_OSFIX_JOINT_B.out`|`runs/phase1_dgleo_osfix16_20260707/DGLEO_OSFIX_JOINT_B`|
+
+注意：`pgrep -af`会显示DataLoader worker继承的长命令行，不能把这些worker都当作主训练PID。上表主PID来自`nvidia-smi pmon`中的GPU计算进程。
+
+### 后续完成判定
+
+本轮只完成启动与早期健康验证。完成后必须按同候选同epoch联合判断：
+
+- 泛化：`overall_tx`、`strict_udu`、receiver floor、satellite mean/floor、best-final gap。
+- open-set代理：`proxy_vaccept`、`source_overflow`、`bridge_accept_rate`、`low_density_accept_rate`、`tail/overflow_accept`、`radius_to_inter_ratio`、`zid_p50/p95/p99`、`zid_tail_cvar`。
+- 无标签：`u_dm_accept_*`和`u_quarantine_accept_rate/low_density_accept_rate`是否改善，同时不牺牲receiver floor和satellite floor。
+- 候选推进：只有同时保护泛化并降低p99/tail/proxy/source overflow风险的候选，才可进入Stage2真实unknown评估；Phase1结果本身不能声明真实unknown_FAR或FPR95改善。
