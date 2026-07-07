@@ -95,6 +95,46 @@ class Phase2CollaborativeOpenSetQknnEvalTest(unittest.TestCase):
 
         self.assertEqual(args.fusion_policy, "ospr_ci_pp")
 
+    def test_seen_new_old_contrast_only_boosts_non_old_outside_old_centroids(self):
+        from phase2_collaborative_open_set_qknn_eval import build_qknn_memory, _qknn_label_score_matrix
+
+        features = np.asarray(
+            [
+                [1.0, 0.0, 0.0],
+                [0.0, 1.0, 0.0],
+            ],
+            dtype=np.float32,
+        )
+        memory = build_qknn_memory(features, ["old-a", "new-a"], old_labels={"old-a"})
+        queries = np.asarray(
+            [
+                [0.20, 0.98, 0.0],
+                [0.98, 0.20, 0.0],
+            ],
+            dtype=np.float32,
+        )
+
+        labels, base = _qknn_label_score_matrix(memory, queries, top_k=1)
+        contrast_labels, contrasted = _qknn_label_score_matrix(
+            memory,
+            queries,
+            top_k=1,
+            seen_new_old_contrast_weight=0.5,
+            seen_new_old_contrast_margin=0.0,
+        )
+        label_to_col = {str(label): int(pos) for pos, label in enumerate(labels.tolist())}
+        contrast_label_to_col = {str(label): int(pos) for pos, label in enumerate(contrast_labels.tolist())}
+        old_col = label_to_col["old-a"]
+        new_col = label_to_col["new-a"]
+        contrast_old_col = contrast_label_to_col["old-a"]
+        contrast_new_col = contrast_label_to_col["new-a"]
+
+        self.assertTrue(np.array_equal(labels, contrast_labels))
+        self.assertAlmostEqual(base[0, old_col], contrasted[0, contrast_old_col])
+        self.assertGreater(contrasted[0, contrast_new_col], base[0, new_col])
+        self.assertAlmostEqual(base[1, old_col], contrasted[1, contrast_old_col])
+        self.assertAlmostEqual(base[1, new_col], contrasted[1, contrast_new_col])
+
     def test_builds_qknn8_evidence_and_reports_one_to_all_receivers(self):
         from phase2_collaborative_open_set_qknn_eval import load_feature_npz, build_collaborative_evidence
         from evaluation.collaborative_open_set_qknn_eval import evaluate_collaborative_open_set_evidence

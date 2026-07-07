@@ -230,6 +230,8 @@ def run_diagnostic(args: argparse.Namespace) -> dict[str, Any]:
         receiver_class_reliability_policy=str(args.receiver_class_reliability_policy),
         prototype_score_blend=float(args.prototype_score_blend),
         mahalanobis_score_blend=float(args.mahalanobis_score_blend),
+        seen_new_old_contrast_weight=float(args.seen_new_old_contrast_weight),
+        seen_new_old_contrast_margin=float(args.seen_new_old_contrast_margin),
         source_old_prototype_shrinkage_alpha=float(args.source_old_prototype_shrinkage_alpha),
         feature_adapter_policy=str(args.feature_adapter_policy),
         feature_adapter_strength=float(args.feature_adapter_strength),
@@ -390,6 +392,8 @@ def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
     p.add_argument("--receiver_class_reliability_policy", default="support_calibrated", choices=["none", "support_calibrated"])
     p.add_argument("--prototype_score_blend", type=float, default=0.25)
     p.add_argument("--mahalanobis_score_blend", type=float, default=0.15)
+    p.add_argument("--seen_new_old_contrast_weight", type=float, default=0.0)
+    p.add_argument("--seen_new_old_contrast_margin", type=float, default=0.0)
     p.add_argument("--source_old_prototype_shrinkage_alpha", type=float, default=0.10)
     p.add_argument("--feature_adapter_policy", default="none", choices=["none", "support_center", "support_bn_affine"])
     p.add_argument("--feature_adapter_strength", type=float, default=0.0)

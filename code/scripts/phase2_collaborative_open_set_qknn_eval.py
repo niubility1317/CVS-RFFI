@@ -590,6 +590,8 @@ def qknn_scores(
     prototype_score_blend: float = 0.0,
     mahalanobis_score_blend: float = 0.0,
     mahalanobis_score_temperature: float = 0.20,
+    seen_new_old_contrast_weight: float = 0.0,
+    seen_new_old_contrast_margin: float = 0.0,
 ) -> tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray, np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
     proto_blend = float(prototype_score_blend)
     if proto_blend < 0.0:
@@ -597,12 +599,21 @@ def qknn_scores(
     maha_blend = float(mahalanobis_score_blend)
     if maha_blend < 0.0:
         raise ValueError("mahalanobis_score_blend must be >= 0")
+    seen_contrast_weight = float(seen_new_old_contrast_weight)
+    if seen_contrast_weight < 0.0:
+        raise ValueError("seen_new_old_contrast_weight must be >= 0")
+    seen_contrast_margin = max(0.0, float(seen_new_old_contrast_margin))
     maha_temp = max(float(mahalanobis_score_temperature), 1e-6)
     query = _normalize_rows(query_features)
     support = _normalize_rows(memory.qfeatures.astype(np.float32) / float(memory.scale))
     centroid_scores = _centroid_scores(memory, query)
     mahalanobis_scores = _mahalanobis_known_scores(memory, query, temperature=maha_temp) if maha_blend > 0.0 else None
     class_to_pos = {str(label): int(pos) for pos, label in enumerate(memory.centroid_labels.tolist())}
+    old_centroid_positions = [
+        int(pos)
+        for pos, label in enumerate(memory.centroid_labels.tolist())
+        if str(label) in memory.old_labels
+    ]
     class_top_m = int(candidate_class_top_m)
     if class_top_m < 0:
         raise ValueError("candidate_class_top_m must be >= 0")
@@ -676,6 +687,22 @@ def qknn_scores(
                 if pos is not None:
                     per_label[label] += maha_blend * max(0.0, float(mahalanobis_scores[row_i, pos]))
                     per_label_count.setdefault(label, 0)
+        if seen_contrast_weight > 0.0 and old_centroid_positions:
+            old_reference = max(float(centroid_scores[row_i, pos]) for pos in old_centroid_positions)
+            candidate_labels = sorted({str(label) for label in memory.labels[support_mask].tolist()})
+            for label in candidate_labels:
+                if label in memory.old_labels:
+                    continue
+                pos = class_to_pos.get(label)
+                if pos is None:
+                    continue
+                contrast = max(
+                    0.0,
+                    float(centroid_scores[row_i, pos]) - old_reference - seen_contrast_margin,
+                )
+                if contrast > 0.0:
+                    per_label[label] += seen_contrast_weight * contrast
+                    per_label_count.setdefault(label, 0)
         ranked = sorted(per_label.items(), key=lambda item: (item[1], item[0]), reverse=True)
         best_label, best_score = ranked[0]
         second_label = ranked[1][0] if len(ranked) > 1 else ""
@@ -716,6 +743,8 @@ def _qknn_label_score_matrix(
     prototype_score_blend: float = 0.0,
     mahalanobis_score_blend: float = 0.0,
     mahalanobis_score_temperature: float = 0.20,
+    seen_new_old_contrast_weight: float = 0.0,
+    seen_new_old_contrast_margin: float = 0.0,
 ) -> tuple[np.ndarray, np.ndarray]:
     proto_blend = float(prototype_score_blend)
     if proto_blend < 0.0:
@@ -723,12 +752,21 @@ def _qknn_label_score_matrix(
     maha_blend = float(mahalanobis_score_blend)
     if maha_blend < 0.0:
         raise ValueError("mahalanobis_score_blend must be >= 0")
+    seen_contrast_weight = float(seen_new_old_contrast_weight)
+    if seen_contrast_weight < 0.0:
+        raise ValueError("seen_new_old_contrast_weight must be >= 0")
+    seen_contrast_margin = max(0.0, float(seen_new_old_contrast_margin))
     maha_temp = max(float(mahalanobis_score_temperature), 1e-6)
     query = _normalize_rows(query_features)
     support = _normalize_rows(memory.qfeatures.astype(np.float32) / float(memory.scale))
     centroid_scores = _centroid_scores(memory, query)
     mahalanobis_scores = _mahalanobis_known_scores(memory, query, temperature=maha_temp) if maha_blend > 0.0 else None
     class_to_pos = {str(label): int(pos) for pos, label in enumerate(memory.centroid_labels.tolist())}
+    old_centroid_positions = [
+        int(pos)
+        for pos, label in enumerate(memory.centroid_labels.tolist())
+        if str(label) in memory.old_labels
+    ]
     labels = np.asarray([str(label) for label in memory.centroid_labels.tolist()], dtype=object)
     label_to_col = {str(label): int(pos) for pos, label in enumerate(labels.tolist())}
     class_top_m = int(candidate_class_top_m)
@@ -791,6 +829,20 @@ def _qknn_label_score_matrix(
                 pos = class_to_pos.get(label)
                 if pos is not None:
                     per_label[label] += maha_blend * max(0.0, float(mahalanobis_scores[row_i, pos]))
+        if seen_contrast_weight > 0.0 and old_centroid_positions:
+            old_reference = max(float(centroid_scores[row_i, pos]) for pos in old_centroid_positions)
+            for label in candidate_labels:
+                if label in memory.old_labels:
+                    continue
+                pos = class_to_pos.get(label)
+                if pos is None:
+                    continue
+                contrast = max(
+                    0.0,
+                    float(centroid_scores[row_i, pos]) - old_reference - seen_contrast_margin,
+                )
+                if contrast > 0.0:
+                    per_label[label] += seen_contrast_weight * contrast
         score_denom = max(float(row_k) + proto_blend + maha_blend, 1.0)
         for label, value in per_label.items():
             col = label_to_col.get(str(label))
@@ -983,6 +1035,8 @@ def _threshold_from_calibration(
     prototype_score_blend: float = 0.0,
     mahalanobis_score_blend: float = 0.0,
     mahalanobis_score_temperature: float = 0.20,
+    seen_new_old_contrast_weight: float = 0.0,
+    seen_new_old_contrast_margin: float = 0.0,
 ) -> tuple[float, str]:
     calibration_mode = str(support_calibration_mode or "self").strip().lower()
     if calibration_mode not in {"self", "leave_one_out", "loo"}:
@@ -1001,6 +1055,8 @@ def _threshold_from_calibration(
         prototype_score_blend=prototype_score_blend,
         mahalanobis_score_blend=mahalanobis_score_blend,
         mahalanobis_score_temperature=mahalanobis_score_temperature,
+        seen_new_old_contrast_weight=seen_new_old_contrast_weight,
+        seen_new_old_contrast_margin=seen_new_old_contrast_margin,
     )
     threshold = float(np.quantile(support_scores, float(support_quantile))) if support_scores.size else 0.0
     scope = "support_known_only"
@@ -1017,6 +1073,8 @@ def _threshold_from_calibration(
             prototype_score_blend=prototype_score_blend,
             mahalanobis_score_blend=mahalanobis_score_blend,
             mahalanobis_score_temperature=mahalanobis_score_temperature,
+            seen_new_old_contrast_weight=seen_new_old_contrast_weight,
+            seen_new_old_contrast_margin=seen_new_old_contrast_margin,
         )
         if proxy_scores.size:
             threshold = max(threshold, float(np.quantile(proxy_scores, float(proxy_quantile))))
@@ -1043,6 +1101,8 @@ def _label_thresholds_from_calibration(
     prototype_score_blend: float = 0.0,
     mahalanobis_score_blend: float = 0.0,
     mahalanobis_score_temperature: float = 0.20,
+    seen_new_old_contrast_weight: float = 0.0,
+    seen_new_old_contrast_margin: float = 0.0,
     min_support: int = 1,
 ) -> dict[str, float]:
     labels_arr = np.asarray([canonical_tx_id(label) for label in support_labels], dtype=object)
@@ -1063,6 +1123,8 @@ def _label_thresholds_from_calibration(
         prototype_score_blend=prototype_score_blend,
         mahalanobis_score_blend=mahalanobis_score_blend,
         mahalanobis_score_temperature=mahalanobis_score_temperature,
+        seen_new_old_contrast_weight=seen_new_old_contrast_weight,
+        seen_new_old_contrast_margin=seen_new_old_contrast_margin,
     )
     label_to_col = {str(label): int(pos) for pos, label in enumerate(score_labels.tolist())}
     thresholds: dict[str, float] = {}
@@ -1084,6 +1146,8 @@ def _label_thresholds_from_calibration(
             prototype_score_blend=prototype_score_blend,
             mahalanobis_score_blend=mahalanobis_score_blend,
             mahalanobis_score_temperature=mahalanobis_score_temperature,
+            seen_new_old_contrast_weight=seen_new_old_contrast_weight,
+            seen_new_old_contrast_margin=seen_new_old_contrast_margin,
         )
         proxy_label_to_col = {str(label): int(pos) for pos, label in enumerate(proxy_score_labels.tolist())}
         proxy_pred, proxy_scores, _, _, _, _, _, _ = qknn_scores(
@@ -1098,6 +1162,8 @@ def _label_thresholds_from_calibration(
             prototype_score_blend=prototype_score_blend,
             mahalanobis_score_blend=mahalanobis_score_blend,
             mahalanobis_score_temperature=mahalanobis_score_temperature,
+            seen_new_old_contrast_weight=seen_new_old_contrast_weight,
+            seen_new_old_contrast_margin=seen_new_old_contrast_margin,
         )
         for label in sorted({str(label) for label in proxy_pred.tolist()}):
             col = proxy_label_to_col.get(label)
@@ -1125,6 +1191,8 @@ def _label_score_samples_from_calibration(
     prototype_score_blend: float = 0.0,
     mahalanobis_score_blend: float = 0.0,
     mahalanobis_score_temperature: float = 0.20,
+    seen_new_old_contrast_weight: float = 0.0,
+    seen_new_old_contrast_margin: float = 0.0,
     min_support: int = 1,
 ) -> dict[str, list[float]]:
     labels_arr = np.asarray([canonical_tx_id(label) for label in support_labels], dtype=object)
@@ -1145,6 +1213,8 @@ def _label_score_samples_from_calibration(
         prototype_score_blend=prototype_score_blend,
         mahalanobis_score_blend=mahalanobis_score_blend,
         mahalanobis_score_temperature=mahalanobis_score_temperature,
+        seen_new_old_contrast_weight=seen_new_old_contrast_weight,
+        seen_new_old_contrast_margin=seen_new_old_contrast_margin,
     )
     label_to_col = {str(label): int(pos) for pos, label in enumerate(score_labels.tolist())}
     out: dict[str, list[float]] = {}
@@ -1525,6 +1595,8 @@ def _support_quality_class_verifier(
     prototype_blend: float,
     mahalanobis_blend: float,
     mahalanobis_score_temp: float,
+    seen_new_old_contrast_weight: float = 0.0,
+    seen_new_old_contrast_margin: float = 0.0,
     receiver_threshold: float,
     receiver_class_thresholds: Mapping[str, Mapping[str, float]],
     receiver_class_conformal_scores: Mapping[str, Mapping[str, Sequence[float]]],
@@ -1570,6 +1642,8 @@ def _support_quality_class_verifier(
         prototype_score_blend=float(prototype_blend),
         mahalanobis_score_blend=float(mahalanobis_blend),
         mahalanobis_score_temperature=float(mahalanobis_score_temp),
+        seen_new_old_contrast_weight=float(seen_new_old_contrast_weight),
+        seen_new_old_contrast_margin=float(seen_new_old_contrast_margin),
     )
     label_scores = [
         (str(label), float(score_value))
@@ -1823,6 +1897,8 @@ def build_collaborative_evidence(
     prototype_score_blend: float = 0.0,
     mahalanobis_score_blend: float = 0.0,
     mahalanobis_score_temperature: float = 0.20,
+    seen_new_old_contrast_weight: float = 0.0,
+    seen_new_old_contrast_margin: float = 0.0,
     prototype_calibration_policy: str = "none",
     prototype_calibration_alpha: float = 0.0,
     prototype_calibration_top_m: int = 2,
@@ -1919,6 +1995,10 @@ def build_collaborative_evidence(
     if mahalanobis_blend < 0.0:
         raise ValueError("mahalanobis_score_blend must be >= 0")
     mahalanobis_score_temp = max(float(mahalanobis_score_temperature), 1e-6)
+    seen_contrast_weight = float(seen_new_old_contrast_weight)
+    if seen_contrast_weight < 0.0:
+        raise ValueError("seen_new_old_contrast_weight must be >= 0")
+    seen_contrast_margin = max(0.0, float(seen_new_old_contrast_margin))
     class_verifier = str(class_verifier_policy or "none").strip().lower()
     if class_verifier not in {"none", "support_quality"}:
         raise ValueError("class_verifier_policy must be none or support_quality")
@@ -2104,6 +2184,8 @@ def build_collaborative_evidence(
             prototype_score_blend=prototype_blend,
             mahalanobis_score_blend=mahalanobis_blend,
             mahalanobis_score_temperature=mahalanobis_score_temp,
+            seen_new_old_contrast_weight=seen_contrast_weight,
+            seen_new_old_contrast_margin=seen_contrast_margin,
         )
         if scope == "source_only" and proxy_idx.size:
             threshold_scope = scope
@@ -2131,6 +2213,8 @@ def build_collaborative_evidence(
                 prototype_score_blend=prototype_blend,
                 mahalanobis_score_blend=mahalanobis_blend,
                 mahalanobis_score_temperature=mahalanobis_score_temp,
+                seen_new_old_contrast_weight=seen_contrast_weight,
+                seen_new_old_contrast_margin=seen_contrast_margin,
                 min_support=int(class_score_threshold_min_support),
             )
         conformal_scores: dict[str, list[float]] = {}
@@ -2149,6 +2233,8 @@ def build_collaborative_evidence(
                 prototype_score_blend=prototype_blend,
                 mahalanobis_score_blend=mahalanobis_blend,
                 mahalanobis_score_temperature=mahalanobis_score_temp,
+                seen_new_old_contrast_weight=seen_contrast_weight,
+                seen_new_old_contrast_margin=seen_contrast_margin,
                 min_support=int(class_conformal_min_support),
             )
         if receiver_class_policy == "support_calibrated" and not conformal_scores:
@@ -2267,6 +2353,8 @@ def build_collaborative_evidence(
                         prototype_score_blend=prototype_blend,
                         mahalanobis_score_blend=mahalanobis_blend,
                         mahalanobis_score_temperature=mahalanobis_score_temp,
+                        seen_new_old_contrast_weight=seen_contrast_weight,
+                        seen_new_old_contrast_margin=seen_contrast_margin,
                     )
                     if int(candidate_class_top_m) > 0:
                         (
@@ -2290,6 +2378,8 @@ def build_collaborative_evidence(
                             prototype_score_blend=prototype_blend,
                             mahalanobis_score_blend=mahalanobis_blend,
                             mahalanobis_score_temperature=mahalanobis_score_temp,
+                            seen_new_old_contrast_weight=seen_contrast_weight,
+                            seen_new_old_contrast_margin=seen_contrast_margin,
                         )
                     else:
                         audit_pred = pred
@@ -2343,6 +2433,8 @@ def build_collaborative_evidence(
                             prototype_blend=prototype_blend,
                             mahalanobis_blend=mahalanobis_blend,
                             mahalanobis_score_temp=mahalanobis_score_temp,
+                            seen_new_old_contrast_weight=seen_contrast_weight,
+                            seen_new_old_contrast_margin=seen_contrast_margin,
                             receiver_threshold=float(receiver_thresholds[rx]),
                             receiver_class_thresholds=receiver_class_thresholds,
                             receiver_class_conformal_scores=receiver_class_conformal_scores,
@@ -2453,6 +2545,8 @@ def build_collaborative_evidence(
                             prototype_score_blend=prototype_blend,
                             mahalanobis_score_blend=mahalanobis_blend,
                             mahalanobis_score_temperature=mahalanobis_score_temp,
+                            seen_new_old_contrast_weight=seen_contrast_weight,
+                            seen_new_old_contrast_margin=seen_contrast_margin,
                         )
                         label_scores_for_event = [
                             (str(label), float(score_value))
@@ -2747,6 +2841,9 @@ def build_collaborative_evidence(
                             "mahalanobis_score_blend": mahalanobis_blend,
                             "mahalanobis_score_temperature": mahalanobis_score_temp,
                             "mahalanobis_score_assisted": int(mahalanobis_blend > 0.0),
+                            "seen_new_old_contrast_weight": seen_contrast_weight,
+                            "seen_new_old_contrast_margin": seen_contrast_margin,
+                            "seen_new_old_contrast_assisted": int(seen_contrast_weight > 0.0),
                             "feature_adapter_policy": feature_adapter.policy,
                             "feature_adapter_strength": float(feature_adapter.strength),
                             "feature_adapter_variance_floor": adapter_var_floor,
@@ -2859,6 +2956,9 @@ def build_collaborative_evidence(
         "mahalanobis_score_blend": mahalanobis_blend,
         "mahalanobis_score_temperature": mahalanobis_score_temp,
         "mahalanobis_score_assisted_qknn": mahalanobis_blend > 0.0,
+        "seen_new_old_contrast_weight": seen_contrast_weight,
+        "seen_new_old_contrast_margin": seen_contrast_margin,
+        "seen_new_old_contrast_assisted_qknn": seen_contrast_weight > 0.0,
         "feature_adapter_policy": adapter_policy,
         "feature_adapter_strength": adapter_strength,
         "feature_adapter_variance_floor": adapter_var_floor,
@@ -2979,6 +3079,8 @@ def run_evaluation(args: argparse.Namespace) -> dict[str, Any]:
         prototype_score_blend=float(args.prototype_score_blend),
         mahalanobis_score_blend=float(args.mahalanobis_score_blend),
         mahalanobis_score_temperature=float(args.mahalanobis_score_temperature),
+        seen_new_old_contrast_weight=float(args.seen_new_old_contrast_weight),
+        seen_new_old_contrast_margin=float(args.seen_new_old_contrast_margin),
         prototype_calibration_policy=str(args.prototype_calibration_policy),
         prototype_calibration_alpha=float(args.prototype_calibration_alpha),
         prototype_calibration_top_m=int(args.prototype_calibration_top_m),
@@ -3199,6 +3301,8 @@ def parse_args() -> argparse.Namespace:
     p.add_argument("--prototype_score_blend", type=float, default=0.0)
     p.add_argument("--mahalanobis_score_blend", type=float, default=0.0)
     p.add_argument("--mahalanobis_score_temperature", type=float, default=0.20)
+    p.add_argument("--seen_new_old_contrast_weight", type=float, default=0.0)
+    p.add_argument("--seen_new_old_contrast_margin", type=float, default=0.0)
     p.add_argument(
         "--prototype_calibration_policy",
         default="none",

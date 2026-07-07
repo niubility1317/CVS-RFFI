@@ -217,6 +217,25 @@ class Phase2FrozenManytxUnknownDiagnosticTest(unittest.TestCase):
         self.assertEqual(args.rescue_unknown_veto_min_sources, 2)
         self.assertEqual(args.rescue_unknown_veto_action, "defer")
 
+    def test_accepts_seen_new_old_contrast_cli_knobs(self):
+        from phase2_frozen_manytx_unknown_diagnostic import parse_args
+
+        args = parse_args(
+            [
+                "--feature_npz",
+                "x.npz",
+                "--output_json",
+                "out.json",
+                "--seen_new_old_contrast_weight",
+                "0.25",
+                "--seen_new_old_contrast_margin",
+                "0.02",
+            ]
+        )
+
+        self.assertEqual(args.seen_new_old_contrast_weight, 0.25)
+        self.assertEqual(args.seen_new_old_contrast_margin, 0.02)
+
     def test_can_repair_legacy_target_new_unknown_roles_from_manifest(self):
         from phase2_frozen_manytx_unknown_diagnostic import main
 
