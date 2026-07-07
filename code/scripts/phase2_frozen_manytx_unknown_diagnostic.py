@@ -56,6 +56,13 @@ def _float_metric(metrics: Mapping[str, Any], key: str) -> float:
         return 0.0
 
 
+def _int_metric(metrics: Mapping[str, Any], key: str) -> int:
+    try:
+        return int(metrics.get(key, 0))
+    except (TypeError, ValueError):
+        return 0
+
+
 def _role_counts(payload: Mapping[str, Any]) -> dict[str, int]:
     roles = np.asarray(payload["dataset_role"]).astype(str)
     return {str(role): int(np.sum(roles == role)) for role in sorted(set(roles.tolist()))}
@@ -128,6 +135,8 @@ def _summary_row(count: str, metrics: Mapping[str, Any]) -> dict[str, Any]:
         "known_coverage": _float_metric(metrics, "known_coverage"),
         "defer_rate": _float_metric(metrics, "defer_rate"),
         "request_more_rate": _float_metric(metrics, "request_more_rate"),
+        "candidate_set_shell_veto_count": _int_metric(metrics, "candidate_set_shell_veto_count"),
+        "candidate_set_shell_veto_rate": _float_metric(metrics, "candidate_set_shell_veto_rate"),
         "bytes_per_event": _float_metric(metrics, "bytes_per_event"),
         "latency_ms_p95": _float_metric(metrics, "latency_ms_p95"),
         "meets_old_goal": old_acc >= GOAL_OLD_ACC and min_old >= GOAL_MIN_OLD_CLASS_ACC,
@@ -310,11 +319,13 @@ def run_diagnostic(args: argparse.Namespace) -> dict[str, Any]:
         candidate_set_min_conformal_pvalue=float(args.candidate_set_min_conformal_pvalue),
         candidate_set_max_label_unknown_risk=float(args.candidate_set_max_label_unknown_risk),
         candidate_set_max_event_unknown_risk=float(args.candidate_set_max_event_unknown_risk),
+        candidate_set_max_label_shell_risk=float(args.candidate_set_max_label_shell_risk),
         candidate_set_max_label_risk_component_agreement=float(args.candidate_set_max_label_risk_component_agreement),
         candidate_set_min_label_receiver_class_reliability=float(
             args.candidate_set_min_label_receiver_class_reliability
         ),
         candidate_set_unknown_reject_risk=float(args.candidate_set_unknown_reject_risk),
+        candidate_set_shell_reject_risk=float(args.candidate_set_shell_reject_risk),
         latency_budget_ms=float(args.latency_budget_ms),
         max_event_bytes=float(args.max_event_bytes),
         max_event_latency_ms=float(args.max_event_latency_ms),
@@ -481,9 +492,11 @@ def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
     p.add_argument("--candidate_set_min_conformal_pvalue", type=float, default=0.0)
     p.add_argument("--candidate_set_max_label_unknown_risk", type=float, default=0.82)
     p.add_argument("--candidate_set_max_event_unknown_risk", type=float, default=0.88)
+    p.add_argument("--candidate_set_max_label_shell_risk", type=float, default=1.0)
     p.add_argument("--candidate_set_max_label_risk_component_agreement", type=float, default=0.72)
     p.add_argument("--candidate_set_min_label_receiver_class_reliability", type=float, default=0.0)
     p.add_argument("--candidate_set_unknown_reject_risk", type=float, default=0.72)
+    p.add_argument("--candidate_set_shell_reject_risk", type=float, default=1.0e12)
     p.add_argument("--latency_budget_ms", type=float, default=0.0)
     p.add_argument("--max_event_bytes", type=float, default=0.0)
     p.add_argument("--max_event_latency_ms", type=float, default=0.0)

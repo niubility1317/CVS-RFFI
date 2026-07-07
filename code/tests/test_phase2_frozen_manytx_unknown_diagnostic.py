@@ -136,6 +136,9 @@ class Phase2FrozenManytxUnknownDiagnosticTest(unittest.TestCase):
         self.assertEqual(safety["receiver_count"], 3)
         self.assertEqual(safety["threshold_scope"], "support_known_only")
         self.assertEqual([row["collab_count"] for row in payload["summary_rows"]], [1, 2, 3])
+        for row in payload["summary_rows"]:
+            self.assertIn("candidate_set_shell_veto_count", row)
+            self.assertIn("candidate_set_shell_veto_rate", row)
         self.assertTrue(summary_exists)
 
     def test_rejects_bad_non_positive_query_per_class(self):
@@ -252,6 +255,10 @@ class Phase2FrozenManytxUnknownDiagnosticTest(unittest.TestCase):
                 "0.6",
                 "--seen_new_contrast_component_agreement_scale",
                 "0.7",
+                "--candidate_set_max_label_shell_risk",
+                "0.65",
+                "--candidate_set_shell_reject_risk",
+                "0.72",
             ]
         )
 
@@ -269,6 +276,8 @@ class Phase2FrozenManytxUnknownDiagnosticTest(unittest.TestCase):
         self.assertEqual(args.seen_new_contrast_label_risk_scale, 0.5)
         self.assertEqual(args.seen_new_contrast_event_risk_scale, 0.6)
         self.assertEqual(args.seen_new_contrast_component_agreement_scale, 0.7)
+        self.assertEqual(args.candidate_set_max_label_shell_risk, 0.65)
+        self.assertEqual(args.candidate_set_shell_reject_risk, 0.72)
 
     def test_can_repair_legacy_target_new_unknown_roles_from_manifest(self):
         from phase2_frozen_manytx_unknown_diagnostic import main
