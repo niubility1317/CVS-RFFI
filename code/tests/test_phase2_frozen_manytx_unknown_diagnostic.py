@@ -137,6 +137,10 @@ class Phase2FrozenManytxUnknownDiagnosticTest(unittest.TestCase):
         self.assertEqual(safety["threshold_scope"], "support_known_only")
         self.assertEqual([row["collab_count"] for row in payload["summary_rows"]], [1, 2, 3])
         for row in payload["summary_rows"]:
+            self.assertIn("seen_new_rescue_count", row)
+            self.assertIn("seen_new_rescue_rate", row)
+            self.assertIn("rescue_unknown_veto_count", row)
+            self.assertIn("rescue_unknown_veto_rate", row)
             self.assertIn("candidate_set_shell_veto_count", row)
             self.assertIn("candidate_set_shell_veto_rate", row)
         self.assertTrue(summary_exists)
