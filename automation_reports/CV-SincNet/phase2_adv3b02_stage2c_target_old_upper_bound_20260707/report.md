@@ -11,6 +11,7 @@
 - Variants: `STAGE2C_NORM_SEP`, `STAGE2C_HEAD_SEP`.
 - K: `5`, `10`.
 - Models: frozen feature prototype, support-only ridge linear probe, fixed-epoch support-only MLP adapter.
+- Explicit target-old TX IDs: `14-10,14-7,20-15,20-19,6-15,8-20`.
 
 ## Rationale
 
@@ -34,6 +35,7 @@ Before adding more open-set gates, this diagnostic checks whether the frozen Sta
 - Base commit before this launcher: `a8228a1 Record Stage2-C seen-new exemption floor audit results`.
 - New launcher: `code/scripts/launch_phase2_adv3b02_stage2c_target_old_upper_bound_20260707.sh`.
 - Report mirror: `E:\type10-7\automation_reports\CV-SincNet\phase2_adv3b02_stage2c_target_old_upper_bound_20260707\report.md`.
+- Repair note: first remote attempt failed closed because the feature package did not expose `manifest.target_old_tx_ids`; launcher was repaired to pass the project-protocol `Y_old` list explicitly.
 
 ## Local Verification Plan
 

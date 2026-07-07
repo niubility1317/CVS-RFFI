@@ -9,6 +9,7 @@ CASE_ID="${CASE_ID:-PHASE2_STAGE2C_RX7_14}"
 SOURCE_RUNS_ROOT="${SOURCE_RUNS_ROOT:-${ROOT}/runs/${SOURCE_RUN_ID}}"
 RUNS_ROOT="${ROOT}/runs/${RUN_ID}"
 LOG_ROOT="${ROOT}/logs/${RUN_ID}"
+TARGET_OLD_TX_IDS="${TARGET_OLD_TX_IDS:-14-10,14-7,20-15,20-19,6-15,8-20}"
 DRY_RUN="${DRY_RUN:-0}"
 
 for arg in "$@"; do
@@ -24,7 +25,7 @@ declare -a MODES=("proto" "linear" "mlp")
 mkdir -p "${RUNS_ROOT}/${CASE_ID}" "${LOG_ROOT}"
 echo "[STAGE2C-TARGET-OLD-UPPER] run_id=${RUN_ID} source_run_id=${SOURCE_RUN_ID} dry_run=${DRY_RUN}"
 echo "[STAGE2C-TARGET-OLD-UPPER] variants=${VARIANTS[*]} modes=${MODES[*]} k=5,10"
-echo "[STAGE2C-TARGET-OLD-UPPER] diagnostic_only=true target_old_only=true"
+echo "[STAGE2C-TARGET-OLD-UPPER] diagnostic_only=true target_old_only=true target_old_tx_ids=${TARGET_OLD_TX_IDS}"
 
 run_one() {
   local variant="$1"
@@ -40,6 +41,7 @@ run_one() {
     proto)
       "${PYTHON}" -u "${ROOT}/code/scripts/eval_target_old_only_upper_bound.py" \
         --feature_npz "${feature_npz}" \
+        --target_old_tx_ids "${TARGET_OLD_TX_IDS}" \
         --k_values 5,10 \
         --output_json "${out_dir}/target_old_proto_upper.json" \
         --summary_csv "${out_dir}/target_old_proto_upper.csv" \
@@ -48,6 +50,7 @@ run_one() {
     linear)
       "${PYTHON}" -u "${ROOT}/code/scripts/eval_target_old_linear_probe_upper_bound.py" \
         --feature_npz "${feature_npz}" \
+        --target_old_tx_ids "${TARGET_OLD_TX_IDS}" \
         --k_values 5,10 \
         --ridge_lambdas 0.001,0.01,0.1,1.0,10.0 \
         --output_json "${out_dir}/target_old_linear_upper.json" \
@@ -57,6 +60,7 @@ run_one() {
     mlp)
       "${PYTHON}" -u "${ROOT}/code/scripts/eval_target_old_mlp_adapter_upper_bound.py" \
         --feature_npz "${feature_npz}" \
+        --target_old_tx_ids "${TARGET_OLD_TX_IDS}" \
         --k_values 5,10 \
         --seeds 1,7,13 \
         --epochs 120 \
