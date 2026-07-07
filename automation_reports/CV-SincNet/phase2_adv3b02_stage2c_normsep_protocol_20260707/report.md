@@ -8,7 +8,7 @@
 |timestamp|2026-07-07|
 |operator|Codex|
 |objective|在qKNNV42目标下继续推进旧类域适应、新类增多坍塌和最低类过低问题；本轮补齐真实Stage2-C导出协议，使NORM_SEP类表征能同时导出`target_old`、`target_new`和`target_unknown`|
-|status|本地代码和launcher准备完成；2026-07-07 10:46 N607容量恢复，本地预启动验证、远端同步和远端dry-run均通过；待正式启动训练|
+|status|N607训练与K5/K10诊断已完成；真实Stage2-C NORM/HEAD路线未达OLD80，seen-new全为0，判定为负结果并进入下一轮支持集阈值/过拒识修复|
 
 ## 协议边界
 
@@ -242,6 +242,68 @@ PY=/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python
 ```
 
 决策：远端验证通过，可在重新确认GPU空闲后正式启动。
+
+### 2026-07-07 10:50-10:54 CST启动、完成与结果
+
+正式启动命令原始SSH会话在本地超时，按规则未直接判定成功。随后只读落地核查确认已经landed：
+
+|项|证据|
+|---|---|
+|driver脚本|`bash code/scripts/launch_phase2_adv3b02_stage2c_normsep_protocol_20260707.sh`|
+|driver进程|`PID 4053764`，启动后派生两个variant进程|
+|variant进程|`STAGE2C_NORM_SEP`训练`PID 4053770`，GPU0；`STAGE2C_HEAD_SEP`训练`PID 4053771`，GPU1|
+|driver日志|`/home/szu2070436088/2510044040/CV-SincNet/logs/phase2_adv3b02_stage2c_normsep_protocol_20260707.driver.out`|
+|run根目录|`/home/szu2070436088/2510044040/CV-SincNet/runs/phase2_adv3b02_stage2c_normsep_protocol_20260707/`|
+|log根目录|`/home/szu2070436088/2510044040/CV-SincNet/logs/phase2_adv3b02_stage2c_normsep_protocol_20260707/`|
+
+启动健康检查：两个variant均进入训练，日志到epoch35时无`Traceback`、`RuntimeError`、OOM、argparse错误或`NaN`命中。10:54复查时driver完成，GPU重新空闲，日志出现：
+
+```text
+[STAGE2C-NORMSEP-VARIANT-DONE] name=STAGE2C_NORM_SEP gpu=0 end=2026-07-07T10:53:31+08:00
+[STAGE2C-NORMSEP-VARIANT-DONE] name=STAGE2C_HEAD_SEP gpu=1 end=2026-07-07T10:53:30+08:00
+[STAGE2C-NORMSEP-DONE] run_id=phase2_adv3b02_stage2c_normsep_protocol_20260707
+```
+
+小型结果artifact已拉回本地并镜像到Git承载面：
+
+|artifact|本地路径|
+|---|---|
+|summary JSON|`remote_artifacts/stage2c_normsep_protocol_summary.json`|
+|summary CSV|`remote_artifacts/stage2c_normsep_protocol_summary.csv`|
+|NORM K5 JSON|`remote_artifacts/STAGE2C_NORM_SEP_stage2c_qknn_k5.json`|
+|NORM K10 JSON|`remote_artifacts/STAGE2C_NORM_SEP_stage2c_qknn_k10.json`|
+|HEAD K5 JSON|`remote_artifacts/STAGE2C_HEAD_SEP_stage2c_qknn_k5.json`|
+|HEAD K10 JSON|`remote_artifacts/STAGE2C_HEAD_SEP_stage2c_qknn_k10.json`|
+
+结果总表：
+
+|variant|K|old_acc|min_old_class_acc|seen_new_acc|min_seen_new_class_acc|unknown_FAR|unknown_reject_rate|known_coverage|verdict|
+|---|---:|---:|---:|---:|---:|---:|---:|---:|---|
+|`STAGE2C_NORM_SEP`|10|0.3738|0.0000|0.0000|0.0000|0.0482|0.9518|0.1786|负结果；未达OLD80，seen-new坍塌|
+|`STAGE2C_HEAD_SEP`|10|0.3024|0.0000|0.0000|0.0000|0.0482|0.9518|0.1480|负结果；未达OLD80，seen-new坍塌|
+|`STAGE2C_NORM_SEP`|5|0.0000|0.0000|0.0000|0.0000|0.0000|1.0000|0.0000|全量过拒识|
+|`STAGE2C_HEAD_SEP`|5|0.0000|0.0000|0.0000|0.0000|0.0000|1.0000|0.0000|全量过拒识|
+
+最佳行是`STAGE2C_NORM_SEP,K=10`，但只达到`old_acc=0.3738`，远低于OLD80；`seen_new_acc=0`，`min_seen_new_class_acc=0`。该结果不得写作Stage2-C成功或部署成功。协议安全字段显示`unknown_query_eval_only=True`、`uses_unknown_query_for_threshold=False`、`threshold_scope=source_only`。
+
+K10 NORM按类旧类结果：
+
+|old class|acc|decision summary|
+|---|---:|---|
+|`14-10`|0.0571|4 accept，66 reject|
+|`14-7`|0.5286|42 accept，28 reject|
+|`20-15`|0.0429|3 accept，67 reject|
+|`20-19`|0.6571|46 accept，24 reject|
+|`6-15`|0.0000|0 accept，70 reject|
+|`8-20`|0.9571|67 accept，3 reject|
+
+seen-new按类结果全部为0。K10 NORM中seen-new多数被拒识，少量误接受到旧类标签；例如`1-12`输出到`14-7/20-19`，`1-18`输出到`14-10`，`1-8/10-4`输出到`8-20`。
+
+解释与下一步：
+
+1. 真实Stage2-C显式`target_new/target_unknown`路线已证明当前NORM/HEAD表征和source-only阈值组合不能自动继承先前OLD80 target-old-only表现。
+2. 主要失败模式不是unknown FAR失控，而是支持集注册后的known侧覆盖极低：K5 known coverage为0，K10 known coverage仅0.1480-0.1786；旧类和seen-new大量被unknown拒识。
+3. 下一轮应保持协议不变，改动重点转向“仅用target-old/target-new support校准known接收阈值和旧/新原型半径”，仍禁止unknown query参与阈值拟合。候选方向是新增Stage2-C support-calibrated accept radius/temperature或soft acceptance floor，目标先把K10旧类覆盖和`min_old_class_acc`拉起，再观察seen-new注册是否恢复。
 
 ## 预期N607使用方式
 
