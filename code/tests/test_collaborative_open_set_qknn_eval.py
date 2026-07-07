@@ -1372,6 +1372,77 @@ class CollaborativeOpenSetQknnEvalTest(unittest.TestCase):
         self.assertNotEqual(unknown_event["decision"], "accept")
         self.assertFalse(unknown_event["orbit_old_floor_rescue_accept"])
 
+    def test_dual_route_forwards_orbit_old_floor_knobs_to_inner_fusers(self):
+        from evaluation.collaborative_open_set_qknn_eval import evaluate_collaborative_open_set_evidence
+
+        rows = [
+            {
+                "event_id": "old-floor-event",
+                "receiver_id": "rx-a",
+                "role": "old",
+                "true_label": "old-floor",
+                "predicted_label": "old-floor",
+                "known_score": 0.82,
+                "known_margin": 0.05,
+                "unknown_risk": 0.20,
+                "radius_risk": 0.20,
+                "margin_risk": 0.20,
+                "class_shell_risk": 0.30,
+                "support_density": 0.80,
+                "class_conformal_pvalue": 0.40,
+                "class_conformal_support_count": 3,
+                "receiver_class_reliability": 0.50,
+                "latency_ms": 1.0,
+                "bytes": 40,
+            }
+        ]
+
+        result = evaluate_collaborative_open_set_evidence(
+            rows,
+            collab_counts="1",
+            collaboration_policy="dual_route_cvs",
+            fusion_policy="orbit_coproto",
+            label_fusion_policy="weighted_vote_margin",
+            candidate_set_min_receivers=1,
+            candidate_set_max_label_unknown_risk=0.10,
+            candidate_set_unknown_reject_risk=0.80,
+            accept_margin_threshold=0.20,
+            consensus_score_threshold=0.10,
+            scorer_component_vote_threshold=0.75,
+            orbit_min_trust=0.22,
+            orbit_unknown_veto_risk=0.83,
+            orbit_old_floor_rescue_enabled=True,
+            orbit_old_floor_min_receivers=1,
+            orbit_old_floor_min_pvalue=0.31,
+            orbit_old_floor_max_label_unknown_risk=0.77,
+            orbit_old_floor_max_event_unknown_risk=0.79,
+            orbit_old_floor_max_shell_risk=0.37,
+            orbit_old_floor_max_component_agreement=0.41,
+            orbit_old_floor_min_trust=0.23,
+            protocol_metadata={
+                "target_receiver_ids": ["rx-a"],
+                "source_receiver_ids": ["src-a"],
+                "old_tx_ids": ["old-floor"],
+                "seen_new_tx_ids": ["new-a"],
+                "unknown_tx_ids": ["unk-a"],
+                "target_channel_view": "satellite/LEO",
+            },
+            strict_protocol_metadata=True,
+            include_event_results=True,
+        )
+
+        event = result["counts"]["1"]["event_results"][0]
+        self.assertEqual(event["orbit_min_trust"], 0.22)
+        self.assertEqual(event["orbit_unknown_veto_risk"], 0.83)
+        self.assertTrue(event["orbit_old_floor_rescue_enabled"])
+        self.assertEqual(event["orbit_old_floor_min_receivers"], 1)
+        self.assertEqual(event["orbit_old_floor_min_pvalue"], 0.31)
+        self.assertEqual(event["orbit_old_floor_max_label_unknown_risk"], 0.77)
+        self.assertEqual(event["orbit_old_floor_max_event_unknown_risk"], 0.79)
+        self.assertEqual(event["orbit_old_floor_max_shell_risk"], 0.37)
+        self.assertEqual(event["orbit_old_floor_max_component_agreement"], 0.41)
+        self.assertEqual(event["orbit_old_floor_min_trust"], 0.23)
+
     def test_reports_counts_metrics_and_resource_telemetry_for_one_to_all_receivers(self):
         from evaluation.collaborative_open_set_qknn_eval import evaluate_collaborative_open_set_evidence
 

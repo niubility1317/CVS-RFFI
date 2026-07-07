@@ -5257,6 +5257,25 @@ def evaluate_collaborative_open_set_evidence(
                     candidate_set_pairguard_soft_min_agreement=candidate_set_pairguard_soft_min_agreement,
                     candidate_set_pairguard_soft_min_pvalue=candidate_set_pairguard_soft_min_pvalue,
                     candidate_set_pairguard_soft_min_reliability=candidate_set_pairguard_soft_min_reliability,
+                    orbit_latency_weight=orbit_latency_weight,
+                    orbit_radius_risk_weight=orbit_radius_risk_weight,
+                    orbit_staleness_weight=orbit_staleness_weight,
+                    orbit_min_trust=orbit_min_trust,
+                    orbit_unknown_veto_risk=orbit_unknown_veto_risk,
+                    orbit_old_floor_rescue_enabled=orbit_old_floor_rescue_enabled,
+                    orbit_old_floor_max_rank=orbit_old_floor_max_rank,
+                    orbit_old_floor_min_receivers=orbit_old_floor_min_receivers,
+                    orbit_old_floor_min_pvalue=orbit_old_floor_min_pvalue,
+                    orbit_old_floor_min_receiver_class_reliability=(
+                        orbit_old_floor_min_receiver_class_reliability
+                    ),
+                    orbit_old_floor_min_support_density=orbit_old_floor_min_support_density,
+                    orbit_old_floor_min_margin=orbit_old_floor_min_margin,
+                    orbit_old_floor_max_label_unknown_risk=orbit_old_floor_max_label_unknown_risk,
+                    orbit_old_floor_max_event_unknown_risk=orbit_old_floor_max_event_unknown_risk,
+                    orbit_old_floor_max_shell_risk=orbit_old_floor_max_shell_risk,
+                    orbit_old_floor_max_component_agreement=orbit_old_floor_max_component_agreement,
+                    orbit_old_floor_min_trust=orbit_old_floor_min_trust,
                     dual_route_rescue_min_pvalue=dual_route_rescue_min_pvalue,
                     dual_route_rescue_min_receiver_class_reliability=(
                         dual_route_rescue_min_receiver_class_reliability
