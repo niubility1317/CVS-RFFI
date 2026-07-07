@@ -161,12 +161,9 @@ CANONICAL_STAGE2_GPU_COUNT = 8
 CANONICAL_STAGE2_SLOTS = tuple("ABCDEFGH")
 DEFAULT_STAGE2_STATE = Path("automation_reports") / "CV-SincNet" / "stage2_optimizer_state.json"
 REQUIRED_ONBOARD_ADAPTATION_BUNDLE_TOKENS = (
-    "weibull_evt",
     "target_adapter",
-    "pseudo_unknown_energy",
     "seen_new_evidence_gate",
     "seen_new_anchor_gate",
-    "siamese_verifier",
     "accepted_only_online_update",
     "stage2_receiver_domain",
 )
@@ -174,26 +171,23 @@ REQUIRED_OLD80_FIRST_BUNDLE_TOKENS = (
     "target_adapter",
     "target_old_support_old80_head",
     "no_unknown_query_threshold_tuning",
-    "open_set_gates_restore_after_old80",
+    "stage2_c_seen_new_after_old80",
 )
 REQUIRED_OPGAC_METRIC_BUNDLE_TOKENS = (
     "old_acc",
     "old80_gap",
-    "unknown_far",
-    "old_unknown_hmean",
+    "seen_new_acc",
+    "h_old_new",
     "coverage",
     "old_frr",
     "rollback",
     "defer",
-    "auroc",
-    "fpr95",
     "same_row_rank",
 )
 REQUIRED_OPGAC_SCORE_TABLE_TOKENS = (
     "candidate_label",
     "best_old_score",
     "best_seen_new_score",
-    "best_reject_score",
     "top2_margin",
     "threshold_delta",
     "opgac_old_score",
@@ -374,7 +368,8 @@ def paic_required_field_issues(item: Mapping[str, Any]) -> List[Dict[str, Any]]:
         target_view = normalized_status(item.get("target_channel_view"))
         if "satellite" not in target_view and "leo" not in target_view:
             issues.append({"candidate_id": cid, "issue": "paic_stage2_target_channel_view_must_be_satellite_leo"})
-        if not is_true_like(item.get("unknown_query_eval_only")):
+        unknown_query_present = first_present(item, ["unknown_leo_query", "unknown_query", "unseen_new_leo_query"]) not in (None, "", [])
+        if unknown_query_present and not is_true_like(item.get("unknown_query_eval_only")):
             issues.append({"candidate_id": cid, "issue": "paic_stage2_unknown_query_must_be_eval_only"})
         if not is_true_like(item.get("target_new_query_not_threshold_fit")):
             issues.append({"candidate_id": cid, "issue": "paic_stage2_target_new_query_must_not_fit_threshold"})
@@ -928,7 +923,6 @@ def opgac_required_field_issues(item: Mapping[str, Any]) -> List[Dict[str, Any]]
         "opgac_local_code_hook",
         "opgac_eval_tool",
         "opgac_query_update_forbidden",
-        "unknown_query_eval_only",
         "target_new_query_not_threshold_fit",
         "model_output_semantics",
         "opgac_overlap_policy",
@@ -990,11 +984,18 @@ def opgac_required_field_issues(item: Mapping[str, Any]) -> List[Dict[str, Any]]
         )
 
     semantics = normalized_status(item.get("model_output_semantics"))
-    if not semantics or not all(token in semantics for token in ("old", "reject")) or not any(token in semantics for token in ("ambiguous", "uncertain", "defer")):
+    unknown_query_present = first_present(item, ["unknown_leo_query", "unknown_query", "unseen_new_leo_query"]) not in (None, "", [])
+    required_output_tokens = ("old", "seen") if "seen" in semantics else ("old",)
+    if (
+        not semantics
+        or not all(token in semantics for token in required_output_tokens)
+        or (unknown_query_present and "reject" not in semantics)
+        or not any(token in semantics for token in ("ambiguous", "uncertain", "defer"))
+    ):
         issues.append(
             {
                 "candidate_id": cid,
-                "issue": "opgac_output_semantics_must_distinguish_old_reject_ambiguous",
+                "issue": "opgac_output_semantics_must_distinguish_phase2_outputs",
                 "model_output_semantics": item.get("model_output_semantics"),
             }
         )
@@ -1024,7 +1025,7 @@ def opgac_required_field_issues(item: Mapping[str, Any]) -> List[Dict[str, Any]]
 
     mode_text = stage2_mode_text(item)
     if "stage2-c" in mode_text or "old_new_enrollment" in mode_text or "seen_new" in mode_text or "seen-new" in mode_text:
-        missing_stage2c_tokens = [token for token in ("seen_new_acc", "h_old_new", "unknown_to_seen_new") if token not in metric_bundle]
+        missing_stage2c_tokens = [token for token in ("seen_new_acc", "h_old_new") if token not in metric_bundle]
         if missing_stage2c_tokens:
             issues.append(
                 {
@@ -1036,12 +1037,12 @@ def opgac_required_field_issues(item: Mapping[str, Any]) -> List[Dict[str, Any]]
             )
 
     priority_phase = normalized_status(item.get("stage2_priority_phase"))
-    if "old80_first" in priority_phase:
+    if "old80_first" in priority_phase or "phase2_adapt_newclass_first" in priority_phase:
         if is_true_like(item.get("deployment_success_claim_allowed")):
             issues.append(
                 {
                     "candidate_id": cid,
-                    "issue": "opgac_old80_first_must_not_allow_deployment_success_claim",
+                    "issue": "opgac_phase2_adapt_newclass_first_must_not_allow_deployment_success_claim",
                     "deployment_success_claim_allowed": item.get("deployment_success_claim_allowed"),
                 }
             )
@@ -1053,7 +1054,7 @@ def opgac_required_field_issues(item: Mapping[str, Any]) -> List[Dict[str, Any]]
             issues.append(
                 {
                     "candidate_id": cid,
-                    "issue": "opgac_old80_first_target_must_be_at_least_0p80",
+                    "issue": "opgac_phase2_adapt_newclass_first_old_target_must_be_at_least_0p80",
                     "old_acc_target": item.get("old_acc_target"),
                 }
             )
@@ -1086,9 +1087,7 @@ def oa_mse_required_field_issues(item: Mapping[str, Any]) -> List[Dict[str, Any]
         "source_target_fusion_policy",
         "fusion_inputs",
         "threshold_selection_label_scope",
-        "unknown_query_eval_only",
         "target_new_query_not_threshold_fit",
-        "unknown_FAR_target",
         "model_output_semantics",
         "uncertain_policy",
         "seen_new_evidence_gate_calibration_scope",
@@ -1123,7 +1122,10 @@ def oa_mse_required_field_issues(item: Mapping[str, Any]) -> List[Dict[str, Any]
     )
     old_unknown_only = explicit_old_unknown_only and target_new_k_value == 0 and not target_new_ids_text
     semantics = normalized_status(item.get("model_output_semantics"))
-    required_semantics = ["old", "reject", "uncertain", "defer"] if old_unknown_only else ["old", "seen", "reject", "uncertain", "defer"]
+    unknown_query_present = first_present(item, ["unknown_leo_query", "unknown_query", "unseen_new_leo_query"]) not in (None, "", [])
+    required_semantics = ["old", "uncertain", "defer"] if old_unknown_only else ["old", "seen", "uncertain", "defer"]
+    if unknown_query_present:
+        required_semantics.append("reject")
     if not semantics or not all(token in semantics for token in required_semantics):
         issues.append(
             {
@@ -1140,12 +1142,13 @@ def oa_mse_required_field_issues(item: Mapping[str, Any]) -> List[Dict[str, Any]
                 "model_output_semantics": item.get("model_output_semantics"),
             }
         )
-    try:
-        far_target = float(item.get("unknown_FAR_target"))
-    except (TypeError, ValueError):
-        far_target = float("nan")
-    if not (far_target <= 0.05):
-        issues.append({"candidate_id": cid, "issue": "oa_mse_unknown_far_target_must_be_at_most_0p05", "unknown_FAR_target": item.get("unknown_FAR_target")})
+    if item.get("unknown_FAR_target") not in (None, "", []):
+        try:
+            far_target = float(item.get("unknown_FAR_target"))
+        except (TypeError, ValueError):
+            far_target = float("nan")
+        if not (far_target <= 0.05):
+            issues.append({"candidate_id": cid, "issue": "oa_mse_unknown_far_target_must_be_at_most_0p05", "unknown_FAR_target": item.get("unknown_FAR_target")})
     if item.get("seen_new_evidence_gate_unknown_query_calibration") not in (None, "", []):
         if is_true_like(item.get("seen_new_evidence_gate_unknown_query_calibration")):
             issues.append(
@@ -1533,8 +1536,6 @@ def stage2_sample_protocol_issues(item: Mapping[str, Any], sample_protocol: Opti
         missing_split_fields.append("target_old_leo_query_or_old_support_query_split")
     if first_present(item, ["target_new_leo_query", "target_new_query", "new_support_query_split"]) in (None, "", []):
         missing_split_fields.append("target_new_leo_query_or_new_support_query_split")
-    if first_present(item, ["unknown_leo_query", "unknown_query", "unseen_new_leo_query"]) in (None, "", []):
-        missing_split_fields.append("unknown_leo_query")
     if missing_split_fields:
         issues.append({"candidate_id": cid, "issue": "missing_target_receiver_query_split_fields", "fields": missing_split_fields})
 
@@ -1613,7 +1614,7 @@ def stage2_sample_protocol_issues(item: Mapping[str, Any], sample_protocol: Opti
     threshold_scope = normalized_status(item.get("threshold_selection_label_scope"))
     missing_guard_fields = [
         field
-        for field in ("unknown_query_eval_only", "target_new_query_not_threshold_fit", "unknown_FAR_target")
+        for field in ("target_new_query_not_threshold_fit",)
         if item.get(field) in (None, "", [])
     ]
     if missing_guard_fields:
@@ -1676,12 +1677,9 @@ def stage2_sample_protocol_issues(item: Mapping[str, Any], sample_protocol: Opti
         "max_adapt_steps",
         "old_acc_target",
         "seen_new_acc_target",
-        "weibull_evt_required",
         "target_adapter_required",
-        "pseudo_unknown_energy_required",
         "seen_new_evidence_gate_required",
         "seen_new_anchor_gate_required",
-        "siamese_verifier_required",
         "accepted_only_online_update_required",
         "oa_mse_onboard_adaptation_bundle",
     ]
@@ -1693,12 +1691,9 @@ def stage2_sample_protocol_issues(item: Mapping[str, Any], sample_protocol: Opti
         if old80_head_bundle_allowed
         else (
             "onboard_low_compute_training",
-            "weibull_evt_required",
             "target_adapter_required",
-            "pseudo_unknown_energy_required",
             "seen_new_evidence_gate_required",
             "seen_new_anchor_gate_required",
-            "siamese_verifier_required",
             "accepted_only_online_update_required",
         )
     )

@@ -2,14 +2,14 @@
 
 ## 场景定义
 
-CVS的主场景是天基RFFI中的弱标注跨接收机域泛化与在轨跨域少样本适应。模型在地面训练，部署到目标卫星接收机域后只允许推理、prototype更新、轻量校准、阈值微调或小adapter更新。
+CVS的主场景是天基RFFI中的弱标注跨接收机域泛化与在轨跨域少样本适应。模型在地面训练，部署到目标卫星接收机域后只允许推理、prototype更新、轻量校准、阈值微调或小adapter更新。自2026-07-07起，Phase2主线是使用叠加简化LEO星地信道的少量目标域旧类样本和新类样本，完成目标域适应、旧类校准和新类学习；open-set/unknown拒识下沉为Phase3备用项。
 
 项目需要处理四个约束：
 
 - 星上算力受限，完整训练放在地面完成。
 - 发射机身份标签稀缺，receiver、day、rx_day和信道场景等domain label更容易获得。
 - 星地链路中的residual Doppler/CFO、相位噪声、低SNR、低仰角、弱多径和弱Rician/shadowed-Rician fading会破坏raw IQ中的发射机细节。
-- 在轨部署会遇到旧类和新类少样本，并需要对未知类拒识。
+- 在轨部署会遇到旧类和新类少样本。Phase2主线先处理旧类适应和新类学习；未知类拒识作为Phase3备用安全扩展。
 
 ## 集合定义
 
@@ -32,7 +32,7 @@ intersection(Y_new, Y_old) = empty
 intersection(Y_unknown, union(Y_old, Y_new)) = empty
 ```
 
-`R_t`可以是单接收机，也可以是多接收机deployment proxy domain。关键条件是`R_t`与`R_s`不相交，并且target-old、target-new和unknown的support/query权限都按同一个`R_t`定义。
+`R_t`可以是单接收机，也可以是多接收机deployment proxy domain。关键条件是`R_t`与`R_s`不相交，并且target-old、target-new的support/query权限都按同一个`R_t`定义。若启用Phase3 open-set备用项，unknown query也必须来自同一个`R_t`，且不能参与Phase2阈值拟合或主线排序。
 
 ## 地面阶段
 
@@ -59,7 +59,7 @@ raw IQ -> CV-SincNet/CVS -> z_id, z_dom
 
 ## 部署阶段
 
-在轨部署阶段面对目标接收机域`R_t`。Stage2-B/C必须记录正整数`K`、support/query划分、receiver/TX split、threshold scope和satellite/LEO target view。
+在轨部署阶段面对目标接收机域`R_t`。Stage2-B/C必须记录正整数`K`、support/query划分、receiver/TX split、threshold scope和satellite/LEO target view。Phase2主线row必须包含target-old和target-new目标域样本，并按简化LEO目标视图构造；unknown/open-set字段只作为Phase3备用或diagnostic metadata。
 
 推荐`K`锚点为`{1,2,5,10,15,20,50}`。`K<=20`可称few-shot/low-shot；`K>20`应称higher-shot、medium-shot或saturation point。
 
@@ -71,7 +71,8 @@ raw IQ -> CV-SincNet/CVS -> z_id, z_dom
 - WiSig/ManySig是terrestrial proxy benchmark / ground-accessible source domain family。
 - satellite stress是物理启发部署压力测试。
 - Stage2-B是旧类目标域校准。
-- Stage2-C是seen-new enrollment，前提是`Y_new`与`Y_old`不相交，且`R_t`与`R_s`不相交。
+- Stage2-C是Phase2主线的target-old adaptation + seen-new enrollment，前提是`Y_new`与`Y_old`不相交，且`R_t`与`R_s`不相交。
+- Phase3是open-set/unknown rejection备用项，不是当前主线。
 
 禁止声明：
 
@@ -80,6 +81,7 @@ raw IQ -> CV-SincNet/CVS -> z_id, z_dom
 - source-only DG等价于few-shot learning。
 - 旧类target support提升就是新类识别。
 - Stage2-A/B拒识结果就是seen-new identity accuracy。
+- open-set/unknown FAR结果就是Phase2主线成功。
 - `R_t`与`R_s`重叠后仍称部署泛化。
 - 缺少target-old或target-new样本覆盖时仍声称完整Stage2-C。
 

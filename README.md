@@ -1,15 +1,15 @@
 # CVS-RFFI / CV-SincNet
 
-CVS面向天基射频指纹识别中的弱标注跨接收机域泛化与在轨跨域少样本适应。项目采用`地面训练、天上部署`架构：地面端学习跨接收机稳定的发射机身份表征，部署端在目标卫星接收机域内用少量样本完成旧类校准、新类注册和未知类拒识。
+CVS面向天基射频指纹识别中的弱标注跨接收机域泛化与在轨跨域少样本适应。项目采用`地面训练、天上部署`架构：地面端学习跨接收机稳定的发射机身份表征，部署端在目标卫星接收机域内用叠加简化LEO星地信道的少量旧类样本和新类样本完成目标域适应、旧类校准和新类学习。open-set/unknown拒识现在是Phase3备用项，不是Phase2主线。
 
 本仓库是从本地实验工作区整理出的干净发布包。它包含源码、协议文档、论文复现扩展和小规模测试，不包含WiSig/ManySig数据、模型权重、N607私有自动化配置、远端日志、实验报告归档、PPT或第三方论文PDF。
 
 ## 当前协议版本
 
-- 协议日期：2026-06-24
+- 协议日期：2026-07-07
 - 科研主线：weak-label/semi-supervised source-domain DG + spaceborne few-shot adaptation
 - 地面训练：集中式训练版和元学习版并列
-- 在轨部署：Stage2-A/B/C三段协议
+- 在轨部署：Phase2主线为Stage2-A/B/C目标域适应与新类学习；Phase3为open-set备用项
 - 声明边界：satellite/LEO stress是物理启发部署压力测试，不是真实在轨验证
 
 ## 项目边界
@@ -25,9 +25,10 @@ CVS不应被表述为普通WiSig少样本分类、普通全监督域泛化、纯
 | 地面训练 | 集中式训练版 | `code/train.py --train_mode centralized` | 汇聚`R_s`内弱标注和无TX标签样本，训练CV-SincNet/CVS身份表征 |
 | 地面训练 | 元学习版 | `code/train.py --use_meta_ssl_cvs --use_meta_rxday_episodes` | 在`R_s`内部用receiver/day/rx_day组织episodic source split，模拟未见接收机外推 |
 | 地面评估 | source-only DG | `code/eval_feature_diagnosis.py`、`code/training_test_eval.py` | 评估strict UDU、receiver floor、satellite stress、leakage probe |
-| 在轨部署 | Stage2-A | `code/cvsrffi/spaceborne_fewshot.py` | 零目标标签下旧类识别和非旧类拒识 |
-| 在轨部署 | Stage2-B | `code/cvsrffi/spaceborne_fewshot.py` | 目标域旧类`K`shot校准，不声明seen-new identity accuracy |
-| 在轨部署 | Stage2-C | `paper_reproduction/cvs_aligned/`、`code/cvsrffi/spaceborne_fewshot.py` | 目标域旧类校准+seen-new enrollment+unknown拒识 |
+| 在轨部署 | Stage2-A | `code/cvsrffi/spaceborne_fewshot.py` | 零目标标签下旧类识别和target-new未注册参考 |
+| 在轨部署 | Stage2-B | `code/cvsrffi/spaceborne_fewshot.py` | 叠加LEO目标域旧类`K`shot适应和校准，不声明seen-new identity accuracy |
+| 在轨部署 | Stage2-C | `paper_reproduction/cvs_aligned/`、`code/cvsrffi/spaceborne_fewshot.py` | Phase2主线：叠加LEO目标域旧类校准+seen-new enrollment |
+| 在轨部署 | Phase3 | `code/cvsrffi/spaceborne_fewshot.py` | 备用项：open-set/unknown rejection安全扩展 |
 
 ## 仓库结构
 
@@ -118,6 +119,7 @@ bash scripts/launchers/run_cvs_baseline_queue.sh --methods drift --wisig-protoco
 - `Y_old`、`Y_new`和`Y_unknown`必须互斥。
 - Stage2-A/B不能声明seen-new identity accuracy。
 - Stage2-C只有在目标域同时存在target-old和target-new support/query时才成立。
+- open-set/unknown FAR属于Phase3备用项，不能作为Phase2主线成功。
 - clean view只能作为control/reference，不能单独作为deployment success。
 - 本仓库不含真实数据、权重或远端运行证据；任何结果声明必须绑定具体run、split、K-shot、satellite/LEO view和完整同row指标。
 

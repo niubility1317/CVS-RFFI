@@ -19,9 +19,9 @@ Rule ownership is separate from load order:
 
 - `AGENTS.md` owns project safety, local-first editing, Conda environment,
   N607 SSH/SCP rules, reporting, and version management.
-- `项目.md` owns the CVS scientific scenario, data protocol, single-satellite
-  receiver deployment semantics, Stage2-A/B/C boundaries, and metric claim
-  limits.
+- `项目.md` owns the CVS scientific scenario, data protocol, target receiver
+  deployment semantics, Phase2 Stage2-A/B/C mainline boundaries, Phase3
+  open-set backup boundary, and metric claim limits.
 - The active `stage2_prompt.md` owns orchestration sequence for the recurring
   automation.
 - `tools/optimizer_workflow_contract.md` owns durable optimizer and runner
@@ -49,6 +49,12 @@ Rule ownership is separate from load order:
   deployment-primary simplified channel metadata; and the state file owns the
   current machine-readable default. Legacy five-scenario satellite views are
   controls/diagnostics only unless `项目.md` is explicitly revised.
+- Phase2/Phase3 boundary is split the same way: `项目.md` owns the rule that
+  Phase2 mainline is target-old adaptation plus target-new learning under
+  simplified LEO target view, while open-set / unknown rejection is Phase3
+  backup; the contract and validator own launchable field requirements and
+  guard checks; the state file owns current machine-readable defaults. Updating
+  only one surface is control-plane drift.
 - Matrix timing is also split this way: the active prompt owns the
   evidence-first current-run matrix execution sequence, the contract owns the
   runner gate that says next-run matrix handoff is audit-only, and the state file
@@ -193,9 +199,9 @@ forbid launch.
 Each optimizer turn should use at least three independent review roles when the
 runtime exposes subagent tools:
 
-- `Protocol Agent`: verifies Stage2-A/B/C taxonomy, CEN51 base selection,
-  receiver split, ManySig old-TX split, target-new/unknown split, and support
-  versus query usage.
+- `Protocol Agent`: verifies Phase2 Stage2-A/B/C taxonomy, CEN51 base
+  selection, receiver split, ManySig old-TX split, target-new split, optional
+  Phase3 unknown split, and support versus query usage.
 - `Evidence Agent`: audits completed-lane evidence, retired routes, invalid
   route ledger entries, metric claims, and partial-evidence boundaries.
 - `Runner Agent`: checks local-first verification, candidate paths, registry

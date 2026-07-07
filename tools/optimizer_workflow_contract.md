@@ -435,24 +435,28 @@ OPGAC rows must additionally include:
 - `opgac_local_code_hook=code/cvsrffi/opgac_net.py`
 - `opgac_eval_tool=tools/evaluate_opgac_stage2.py`
 - `opgac_query_update_forbidden=true`
-- `unknown_query_eval_only=true`
+- `unknown_query_eval_only=true` only when unknown query is present as Phase3
+  backup metadata
 - `target_new_query_not_threshold_fit=true`
 - `model_output_semantics`, explicitly distinguishing old label, seen-new
-  label when Stage2-C is legal, reject, ambiguous, and defer
+  label when Stage2-C is legal, ambiguous, and defer; reject is required only
+  when Phase3 backup is enabled
 - `opgac_overlap_policy`, requiring provisional or ambiguous handling for old
   versus seen-new overlap rather than forced registration
 - `opgac_rollback_policy`, requiring rollback to ground-old memory or the
-  previous support-only snapshot on drift/FAR harm
+  previous support-only snapshot on drift/harm
 - `opgac_metric_bundle`, containing at least `old_acc`, `old80_gap`,
-  `unknown_FAR`, `old_unknown_hmean`, `coverage`, `old_FRR`, `AUROC`, `FPR95`,
-  rollback rate, defer rate, confusion counts, and `same_row_rank`
-- `opgac_primary_selection_metric`, such as constrained OLD80-first
-  same-row score or `old_unknown_hmean` under `unknown_FAR<=0.05`
+  `seen_new_acc` when Stage2-C is active, `H_old_new` when Stage2-C is active,
+  coverage, `old_FRR`, rollback rate, defer rate, old/new confusion counts,
+  and `same_row_rank`; unknown/FAR metrics are Phase3 backup only
+- `opgac_primary_selection_metric`, such as constrained old/new same-row score,
+  `H_old_new`, or OLD80-first deficit before seen-new optimization
 - `opgac_same_row_ranking_required=true`
 - `opgac_score_table_required_columns`, containing at least candidate label,
-  best old score, best seen-new score, best reject score, top-2 margin,
-  threshold delta, `opgac_old_score`, and `opgac_new_score`
-- `stage2_priority_phase=OLD80_FIRST`
+  best old score, best seen-new score, top-2 margin, threshold delta,
+  `opgac_old_score`, and `opgac_new_score`; best reject score is Phase3 backup
+  only
+- `stage2_priority_phase=PHASE2_ADAPT_NEWCLASS_FIRST`
 - `old_acc_target>=0.80`, only as an intermediate old-class recovery gate
 - `deployment_success_claim_allowed=false` while using the OLD80 intermediate
   gate
@@ -469,12 +473,15 @@ OA-MSE rows must additionally include:
 - `source_target_fusion_policy`
 - `fusion_inputs`
 - `threshold_selection_label_scope`
-- `unknown_query_role=eval_only`
-- `unknown_query_eval_only=true`
+- `unknown_query_role=eval_only` only when unknown query is present as Phase3
+  backup metadata
+- `unknown_query_eval_only=true` only when unknown query is present as Phase3
+  backup metadata
 - `target_new_query_not_threshold_fit=true`
 - `model_output_semantics`, explicitly distinguishing old label, seen-new
-  label, reject, uncertain, and defer
-- `unknown_FAR_target<=0.05`
+  label, uncertain, and defer; reject is required only when Phase3 backup is
+  enabled
+- `unknown_FAR_target<=0.05` only for Phase3 backup rows
 - `uncertain_policy`
 - `onboard_low_compute_training=true`
 - `compute_budget_profile`, naming feature-level / low-rank / no-full-backbone
@@ -482,22 +489,20 @@ OA-MSE rows must additionally include:
 - `adapter_trainable_params_cap`
 - `max_adapt_steps`
 - `old_acc_target>=0.90`, except rows explicitly marked
-  `stage2_priority_phase=OLD80_FIRST`, where `old_acc_target>=0.80` is allowed
+  `stage2_priority_phase=PHASE2_ADAPT_NEWCLASS_FIRST`, where
+  `old_acc_target>=0.80` is allowed
   only as an intermediate old-class recovery gate and never as deployment
   success
 - `seen_new_acc_target>=0.75`
-- `weibull_evt_required=true`
 - `target_adapter_required=true`
-- `pseudo_unknown_energy_required=true`
 - `seen_new_evidence_gate_required=true`
 - `seen_new_anchor_gate_required=true`
-- `siamese_verifier_required=true`
 - `accepted_only_online_update_required=true`
-- `oa_mse_onboard_adaptation_bundle=weibull_evt+target_adapter+pseudo_unknown_energy+seen_new_evidence_gate+seen_new_anchor_gate+siamese_verifier+accepted_only_online_update+stage2_receiver_domain`
+- `oa_mse_onboard_adaptation_bundle=target_adapter+seen_new_evidence_gate+seen_new_anchor_gate+accepted_only_online_update+stage2_receiver_domain`, with Weibull EVT, pseudo-unknown energy, and Siamese verifier allowed only as Phase3 backup components
 
-The onboard adaptation bundle is indivisible for launchable OA-MSE rows. A row
-that proposes only a subset of Weibull EVT, Target Adapter, pseudo-unknown
-energy, seen-new evidence gate, Siamese verifier, accepted-only online update,
+The Phase2 onboard adaptation bundle is indivisible for launchable OA-MSE rows.
+A row that proposes only a subset of Target Adapter, seen-new evidence gate,
+seen-new anchor gate, accepted-only online update,
 and Stage2 receiver-domain separation must be classified as `LOCAL_PATCH_REQUIRED` or
 `NON_LAUNCH_DIAGNOSTIC`, not launchable.
 
@@ -526,11 +531,11 @@ gates, launcher generation must omit or set `PHASE2_LOCAL_PATCH_REQUIRED=0`
 and let the scheduler launch the verified Phase2 rows while preserving exact
 deferred retry records for non-launchable rows.
 
-For Phase2 sample selection, target receiver domain may contain one or more receivers. The target receiver domain must be disjoint from CEN51 train receivers, and launchable Phase2 rows must expose target-old and target-new sample coverage. The controller must repair or replace only invalid rows; do not require exactly one r_sat, and do not set all-lane PHASE2_LOCAL_PATCH_REQUIRED when any Phase2 row is launchable.
+For Phase2 sample selection, target receiver domain may contain one or more receivers. The target receiver domain must be disjoint from CEN51 train receivers, and launchable Phase2 mainline rows must expose target-old and target-new sample coverage under the simplified LEO target view. Open-set / unknown rejection is Phase3 backup, not a Phase2 mainline blocker. The controller must repair or replace only invalid rows; do not require exactly one r_sat, and do not set all-lane PHASE2_LOCAL_PATCH_REQUIRED when any Phase2 row is launchable.
 
 ## Phase2 Sample Protocol
 
-Phase2 launchable rows must obey the corrected 2026-06-18 sample boundary.
+Phase2 launchable rows must obey the corrected 2026-07-07 sample boundary: target-old adaptation plus target-new learning on the same target receiver domain and simplified LEO target view is the Phase2 mainline; open-set rejection and unknown FAR are Phase3 backup.
 
 ### Base Model
 
@@ -569,21 +574,25 @@ Phase2 launchable rows must obey the corrected 2026-06-18 sample boundary.
 
 - Old classes are the six ManySig transmitters.
 - Working TX assumption until audit: `target_old_tx_ids=0,1,2,3,4,5`.
-- `target_new_tx_ids` and `unknown_tx_ids` must be outside the six old TX IDs.
-- New/unknown TX samples must be received by the target receiver domain used
-  for old-class target samples.
+- `target_new_tx_ids` must be outside the six old TX IDs.
+- New TX samples must be received by the target receiver domain used for
+  old-class target samples.
+- `unknown_tx_ids` are required only for Phase3 open-set backup rows or
+  optional evaluation-only metadata. When present, they must be outside the six
+  old TX IDs and disjoint from `target_new_tx_ids`.
 - WiSig `ManyTx` rows must expose resolved `target_new_tx_labels` and
   `unknown_tx_labels` copied from the actual `ManyTx.pkl tx_list`. Synthetic
   numeric placeholders, subset-local ranks, or prose such as "resolve labels
   later" are not launchable IDs. If compatibility `*_tx_ids` fields are kept,
   they must contain the same resolved labels or be treated as descriptive
   metadata only by the runner.
-- Before launch, each resolved target-new/unknown TX label must be checked for
-  all of the following under the row's target receiver label: not in the
-  ManySig old-label set, disjoint between `Y_new` and `Y_unknown`, resolvable
-  in `ManyTx.tx_list`, and enough receiver-specific samples for the row's
-  support/query request. Aggregate non-old counts or aggregate sample totals do
-  not prove per-TX launchability.
+- Before launch, each resolved target-new TX label must be checked for all of
+  the following under the row's target receiver label: not in the ManySig
+  old-label set, resolvable in `ManyTx.tx_list`, and enough receiver-specific
+  samples for the row's support/query request. If a Phase3 backup row carries
+  unknown TX labels, those labels must pass the same checks and remain disjoint
+  from `Y_new`. Aggregate non-old counts or aggregate sample totals do not
+  prove per-TX launchability.
 - Launchable Phase2 rows must expose target-old and target-new sample coverage;
   if local data lacks one side, mark the row `LOCAL_DATASET_EXTENSION_REQUIRED`,
   `LOCAL_PROTOCOL_REPAIR_REQUIRED`, or `NON_LAUNCH_DIAGNOSTIC` instead of
@@ -597,8 +606,9 @@ The sample grain is `target receiver x transmitter`.
 
 - `target_old`: ManySig old TX received by target/satellite receiver.
 - `target_new`: non-ManySig TX received by target/satellite receiver.
-- `unknown`: non-old TX held out for rejection, received by target/satellite
-  receiver.
+- `unknown`: Phase3 backup non-old TX held out for rejection, received by
+  target/satellite receiver. It may be present as evaluation-only metadata in
+  Phase2 rows, but it is not a Phase2 mainline success gate.
 - Source receiver samples may anchor prototypes, controls, replay, or base
   CEN51 references. They are not evidence that target-receiver old classes
   improved.
@@ -608,9 +618,10 @@ The sample grain is `target receiver x transmitter`.
 `Stage2-A_zero_label_deploy`
 
 - Support: empty target-label support.
-- Query: target-old and target-new/unknown on target/satellite receivers.
-- Output space: old classes plus rejection.
-- Allowed claims: old target recognition and non-old rejection.
+- Query: target-old and target-new reference query on target/satellite
+  receivers. Unknown query is optional Phase3-backup evaluation metadata.
+- Output space: old classes, plus optional Phase3-backup rejection.
+- Allowed claims: old target recognition and target-new non-enrolled reference.
 - Forbidden claims: new identity recognition and target-label threshold fitting.
 - OPGAC mapping: build memory from ground/source old prototypes only; evaluate
   target-old query and reject target-new/unknown query. No target support,
@@ -621,11 +632,12 @@ The sample grain is `target receiver x transmitter`.
 `Stage2-B_old_label_calibration`
 
 - Support: small labeled target-old support only.
-- Query: separate target-old query plus target-new/unknown rejection query on the
-  same target/satellite receiver set.
-- Output space: old classes plus rejection.
-- Allowed claims: old target lift, old retention, unknown FAR/rejection,
-  rollback, and deployment cost.
+- Query: separate target-old query plus target-new non-enrolled reference query
+  on the same target/satellite receiver set. Unknown query is optional
+  Phase3-backup evaluation metadata.
+- Output space: old classes, with optional uncertain/defer behavior.
+- Allowed claims: old target lift, old retention, rollback, and deployment
+  cost.
 - Forbidden claims: seen-new identity accuracy.
 - OPGAC mapping: target-old support may update support-only old Gaussian
   calibration, radii, and rollback/defer thresholds under the same target
@@ -639,10 +651,12 @@ The sample grain is `target receiver x transmitter`.
 
 - Only applies if labeled target-new support is explicitly allowed.
 - Support: target-old plus target-new seen support.
-- Query: target-old, seen-new, and separate unseen-new/unknown rejection query.
-- Output space: old classes, seen-new classes, plus rejection.
-- If new labels are unavailable, this mode remains rejection-only and must not
-  report seen-new identity accuracy.
+- Query: target-old and seen-new query. Unknown query is optional
+  Phase3-backup evaluation metadata.
+- Output space: old classes, seen-new classes, uncertain, and defer; rejection
+  is optional when Phase3 backup is enabled.
+- If new labels are unavailable, this mode is not a valid Phase2 mainline
+  Stage2-C row and must not report seen-new identity accuracy.
 - OA-MSE mapping: full old calibration plus seen-new registration is allowed
   only when target-new support is explicit. Unknown query remains evaluation
   only and cannot fit thresholds.
@@ -662,16 +676,19 @@ Launchable Phase2 rows and reports must expose:
 - `target_receiver_ids`
 - `target_old_tx_ids`
 - `target_new_tx_ids`
-- `unknown_tx_ids`
-- `target_new_tx_labels` and `unknown_tx_labels` for WiSig `ManyTx` rows; these
-  must be exact `tx_list` labels, not synthetic numeric ranks or unresolved
-  explanatory text.
+- `unknown_tx_ids` only for Phase3 backup rows or optional evaluation-only
+  metadata.
+- `target_new_tx_labels` for WiSig `ManyTx` rows; these must be exact
+  `tx_list` labels, not synthetic numeric ranks or unresolved explanatory text.
+- `unknown_tx_labels` when Phase3 backup is enabled; these must also be exact
+  `tx_list` labels.
 - `target_old_leo_support` for Stage2-B/C, or explicit empty/NA for Stage2-A
 - `target_old_leo_query`
 - `target_new_leo_support` only for Stage2-C seen-new enrollment; it must be
   empty/NA for Stage2-A/B
 - `target_new_leo_query`
-- `unknown_leo_query`
+- `unknown_leo_query` only for Phase3 backup rows or optional evaluation-only
+  metadata.
 - `k_shot` or explicit `target_old_support_per_tx` / `target_new_support_per_tx`
   for Stage2-B/C. K must be a positive integer. `{1,2,5,10,15,20,50}` are
   recommended anchor values for comparable curves, not the only launchable
@@ -681,17 +698,17 @@ Launchable Phase2 rows and reports must expose:
 - `new_support_query_split`, with empty target-new support for Stage2-A/B
 - `target_channel_view=satellite/LEO`
 - `threshold_selection_label_scope`
-- `unknown_query_eval_only=true`
+- `unknown_query_eval_only=true` when unknown query is present
 - `target_new_query_not_threshold_fit=true`
-- `unknown_FAR_target<=0.05`
-- `FPR95_target`
+- `unknown_FAR_target<=0.05` only for Phase3 backup rows
+- `FPR95_target` only for Phase3 backup rows
 - `uncertain_policy`
 - `old_acc_delta_pp`
 - `new_acc_drop_pp` when Stage2-C is active
 - `H_old_new` when Stage2-C is active
-- `unknown_FAR`
-- AUROC/FPR95
-- old->new, new->old, unknown->new confusion
+- `unknown_FAR` only for Phase3 backup rows
+- AUROC/FPR95 only for Phase3 backup rows
+- old->new and new->old confusion; unknown confusion only for Phase3 backup
 - score-table diagnostics: candidate label/group, best old score, best
   seen-new score, seen-new-minus-old contrast, threshold deltas, and
   seen-new anchor similarity/delta
@@ -699,8 +716,9 @@ Launchable Phase2 rows and reports must expose:
   label, best old score, best seen-new score, best reject score, top-2 margin,
   threshold delta, `opgac_old_score`, and `opgac_new_score`
 - OPGAC optimizer metrics when `route_family=OPGAC_NET`: `old80_gap`,
-  `old_unknown_hmean`, same-row rank, metric deficit vector, rollback rate,
-  defer rate, `old_FRR`, AUROC, FPR95, and confusion counts
+  `old_new_hmean` or `H_old_new`, same-row rank, metric deficit vector,
+  rollback rate, defer rate, and confusion counts; unknown/FAR metrics are
+  Phase3 backup only
 - `rescue`, `harm`, `net_gain`, `changed_pred_rate`
 - rollback and deployed FAR status
 
@@ -712,17 +730,18 @@ launch it as a Stage2 job.
 
 - `old_acc = P[h(x)=y | y in Y_o]`.
 - `seen_new_acc = P[h(x)=y | y in Y_n_seen]`; only Stage2-C may use this.
-- `unknown_FAR = P[h(x) != reject | y in Y_n_unseen]`.
-- `unknown_rejection = 1 - unknown_FAR`.
+- `unknown_FAR = P[h(x) != reject | y in Y_n_unseen]`; Phase3 backup only.
+- `unknown_rejection = 1 - unknown_FAR`; Phase3 backup only.
 - `old_FRR = P[h(x)=reject | y in Y_o]`.
 - `H_old_new = 2*old_acc*seen_new_acc/(old_acc+seen_new_acc)`.
 - Optional `H_open` may include unknown rejection, but it must be labeled
   separately and not confused with `H_old_new`.
-- `old80_gap = max(0, 0.80 - old_acc)` for current OLD80_FIRST route
+- `old80_gap = max(0, 0.80 - old_acc)` for current
+  PHASE2_ADAPT_NEWCLASS_FIRST route
   selection. It is a repair deficit, not a deployment-success score.
 - `old_unknown_hmean = 2*old_acc*(1-unknown_FAR)/(old_acc+1-unknown_FAR)`.
-  Use it only as a constrained Stage2-B/old-unknown selector; it must not
-  replace Stage2-C `H_old_new`.
+  Use it only as a Phase3 backup selector; it must not replace Phase2
+  Stage2-C `H_old_new`.
 - `opgac_same_row_rank` ranks complete candidate rows using metrics from the
   same run/candidate. Do not combine a best old accuracy from one row with a
   best FAR, AUROC, or coverage from another row.
@@ -731,36 +750,37 @@ launch it as a Stage2 job.
   harm. Optimizer actions should target the deficit vector rather than a
   single decorative aggregate.
 
-Stage2-C deployable success requires constrained improvement, not raw
-acceptance:
+Stage2-C Phase2 mainline success requires constrained old/new improvement, not
+raw acceptance:
 
 - maximize `H_old_new` or constrained `seen_new_acc`
-- satisfy `unknown_FAR <= 0.05`
 - satisfy `old_acc >= old_floor`
 - satisfy `new_acc_drop_pp <= 2`
 - satisfy `rollback = False`
 - satisfy deployment cost bound `Cost <= C_max`
 
-Exploratory FAR stress up to `0.10` must be labeled stress and cannot be
-reported as deployable success.
+Exploratory FAR stress and `unknown_FAR <= 0.05` belong to Phase3 backup. They
+must be labeled separately and cannot be reported as Phase2 mainline success.
 
-Current H06/Phase2 optimization order is `OLD80_FIRST`:
+Current H06/Phase2 optimization order is `PHASE2_ADAPT_NEWCLASS_FIRST`:
 
 - First recover target-old performance to `old_acc>=0.80` under the applicable
   Stage2-B or Stage2-C protocol.
 - Only after the OLD80 gate is reached may the optimizer treat `seen_new_acc`
-  and unknown rejection/FAR as the next primary objectives.
-- Stage2-B old/unknown-only rows may carry the OLD80 gate and monitor
-  `unknown_FAR`, but they must not claim `seen_new_acc`; seen-new optimization
+  and `H_old_new` as the next primary objectives.
+- Stage2-B rows may carry the OLD80 gate and optional Phase3-backup unknown
+  diagnostics, but they must not claim `seen_new_acc`; seen-new optimization
   requires Stage2-C with target-new support/query legality.
-- For current OPGAC rows, OLD80_FIRST means first reduce `old80_gap` using
+- For current OPGAC rows, PHASE2_ADAPT_NEWCLASS_FIRST means first reduce
+  `old80_gap` using
   support-only old Gaussian calibration under `JREF_C9_MULTICOMP_M2_E220`.
-  A low `unknown_FAR`, high AUROC, or high coverage row that keeps
-  `old_acc<0.80` is diagnostic-negative for the current priority, not a
-  promotable route.
+  A low `unknown_FAR`, high AUROC, or high coverage row is Phase3-backup
+  diagnostic evidence only and cannot promote a Phase2 route that keeps
+  `old_acc<0.80` or lacks target-new learning evidence.
 - OLD80 is an intermediate route-selection gate. It does not weaken
-  deployment success requirements, Stage2-C success requirements, target split
-  rules, unknown-query calibration bans, or clean-view claim boundaries.
+  deployment success requirements, Stage2-C old/new success requirements,
+  target split rules, unknown-query calibration bans, or clean-view claim
+  boundaries.
 
 ## Deployment View
 
