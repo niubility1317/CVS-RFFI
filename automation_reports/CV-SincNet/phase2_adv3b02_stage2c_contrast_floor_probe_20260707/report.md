@@ -25,6 +25,7 @@
 - Git branch:`codex/cvs-rffi-release-20260626`
 - base result commit:`1e679f4 Record Stage2-C contrast relief results`
 - implementation commit:`653c6cc Add Stage2-C contrast floor probe`
+- follow-up commit:`f5f85a1 Expose contrast floor config in qKNN results`
 
 | changed file | purpose |
 | --- | --- |
@@ -73,13 +74,42 @@ cd /home/szu2070436088/2510044040/CV-SincNet && setsid bash code/scripts/launch_
 
 ## Launch Record
 
-- preflight:pending
-- sync:pending
-- remote_verification:pending
-- remote_command:pending
-- pid:pending
-- status:pending
+- preflight:PASS，`powershell -ExecutionPolicy Bypass -File tools\n607_ssh_preflight.ps1`，直连`N607`可用，项目根目录与GPU可见。
+- sync:PASS，已同步4个运行文件到`/home/szu2070436088/2510044040/CV-SincNet`。
+- synced_files:
+  - `code/evaluation/collaborative_open_set_qknn_eval.py`，sha256=`a4b5b4704d4f944d3ea6bba8abbd595297fc47a94780efc76fe7764f3cb77eba`
+  - `code/scripts/phase2_collaborative_open_set_qknn_eval.py`，sha256=`18213f8effe4674956002a75b76323d6010e82b5029bb41fa4b25b4fbeafe3b6`
+  - `code/scripts/phase2_frozen_manytx_unknown_diagnostic.py`，sha256=`679f1f477319c7fdb31f043e8c5e7c05649b9db9ad343b52e76edb4430c84b7c`
+  - `code/scripts/launch_phase2_adv3b02_stage2c_contrast_floor_probe_20260707.sh`，sha256=`d678ff9ef0146cbd49b331fcf1142ff7e6dbfdba31433bf4abbd847cdf32d441`
+- remote_verification:PASS，远端hash一致；远端`py_compile`、`bash -n`和`--dry-run`通过，dry-run展开16个冻结特征诊断组合。
+- remote_prelaunch_context:source NORM/HEAD NPZ存在；`/home`剩余约7.6T；同run_id目录由dry-run创建但启动前未发现结果文件。
+- remote_command:`cd /home/szu2070436088/2510044040/CV-SincNet && setsid bash code/scripts/launch_phase2_adv3b02_stage2c_contrast_floor_probe_20260707.sh > logs/phase2_adv3b02_stage2c_contrast_floor_probe_20260707/launch_background.out 2>&1 &`
+- landed_processes:launcher PID`4155635`，观察到Python子任务PID`4156350`和后续`4157068`执行。
+- launch_log:`/home/szu2070436088/2510044040/CV-SincNet/logs/phase2_adv3b02_stage2c_contrast_floor_probe_20260707/launch_background.out`
+- local_ssh_cleanup:启动命令超时后清理本地残留`ssh.exe` PID`30368`；后续检查无本地`ssh.exe`和无ESTABLISHED TCP22连接。
+- status:COMPLETED，summary生成于2026-07-07 13:45 CST。
 
 ## Results
 
-pending
+summary已拉回本地：
+
+- `E:\type10-7\automation_reports\CV-SincNet\phase2_adv3b02_stage2c_contrast_floor_probe_20260707\stage2c_contrast_floor_probe_summary.json`
+- `E:\type10-7\automation_reports\CV-SincNet\phase2_adv3b02_stage2c_contrast_floor_probe_20260707\stage2c_contrast_floor_probe_summary.csv`
+
+说明：本run使用`f5f85a1`之前的远端顶层输出，summary中的`seen_new_contrast_risk_relief_min_support_count/min_pvalue/min_receiver_class_reliability`字段显示为0，这是输出记录字段遗漏，不代表命令未传入floor。实际floor以launcher profile和launch log中的`floors=...`为准；该记录字段遗漏已由`f5f85a1`修复并同步至N607，后续run会直接在summary中显示。
+
+### Result Table
+
+| variant | profile group | K | old_acc | min_old | seen_new | min_seen | unknown_FAR | unknown_reject | known_coverage | verdict |
+| --- | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | --- |
+| HEAD | all floor profiles | 5 | 0.0000 | 0.0000 | 0.0000 | 0.0000 | 0.0000 | 1.0000 | 0.0000 | floor过强，全拒绝known |
+| NORM | all floor profiles | 5 | 0.0000 | 0.0000 | 0.0000 | 0.0000 | 0.0000 | 1.0000 | 0.0000 | floor过强，全拒绝known |
+| HEAD | all floor profiles | 10 | 0.6048 | 0.1429 | 0.0107 | 0.0000 | 0.2143 | 0.7839 | 0.3173 | old恢复但seen-new退回gate-only，FAR仍高 |
+| NORM | all floor profiles | 10 | 0.6357 | 0.0857 | 0.0089 | 0.0000 | 0.2107 | 0.7839 | 0.3276 | old恢复但seen-new退回gate-only，FAR仍高 |
+
+### Interpretation
+
+- support-floor relief是负向诊断：它把上一轮低FAR K=5的`seen_new_acc=0.1143`压回0，同时old仍为0。
+- K=10下旧类保持`old_acc=0.6048-0.6357`，但seen-new仅`0.0089-0.0107`，与上一轮contrast gate-only水平相同；unknown FAR约0.21，仍高于`<=0.10`约束。
+- 所有16行`min_seen_new_class_acc=0`，最低seen-new类坍塌未解决。
+- 结论：单纯support-floor会把relief变成过滤器，不能解决“old保留+seen-new增加+低FAR”的三目标冲突。下一步应转向class-balanced quota/最低类曝光补偿或unknown shell veto，而不是继续提高support floor。
