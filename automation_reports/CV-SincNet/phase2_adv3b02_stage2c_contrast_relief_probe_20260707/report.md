@@ -66,12 +66,48 @@ cd /home/szu2070436088/2510044040/CV-SincNet && nohup bash code/scripts/launch_p
 
 ## Launch Record
 
-- preflight:pending
-- sync:pending
-- remote_command:pending
-- pid:pending
-- status:pending
+- preflight:PASS，`powershell -ExecutionPolicy Bypass -File tools\n607_ssh_preflight.ps1`，直连`N607`可用，项目根目录与GPU可见。
+- sync:PASS，已同步4个运行文件到`/home/szu2070436088/2510044040/CV-SincNet`。
+- synced_files:
+  - `code/evaluation/collaborative_open_set_qknn_eval.py`，sha256=`fb331fd3ded748e1a8f55cde159fbe7f950e1624d8279320076d5801b9226c68`
+  - `code/scripts/phase2_collaborative_open_set_qknn_eval.py`，sha256=`70edfe5ea10a52cd91919542ae565c6866e9e282881cd58fee8eb085bc2ba420`
+  - `code/scripts/phase2_frozen_manytx_unknown_diagnostic.py`，sha256=`56832b0cdaac1b707cabd59ae127643002a95ebb212c8a5a1ff0119dfd329fad`
+  - `code/scripts/launch_phase2_adv3b02_stage2c_contrast_relief_probe_20260707.sh`，sha256=`e82ab1fe87be02a1319fb5121a96542aa9d5458d9c01852f2fdfb6fb028a486d`
+- remote_verification:PASS，远端`py_compile`、`bash -n`和`--dry-run`通过，dry-run展开24个冻结特征诊断组合。
+- remote_prelaunch_context:source NORM/HEAD NPZ存在；`/home`剩余约7.6T；同run_id启动前无既有任务。
+- remote_command:`cd /home/szu2070436088/2510044040/CV-SincNet && setsid bash code/scripts/launch_phase2_adv3b02_stage2c_contrast_relief_probe_20260707.sh > logs/phase2_adv3b02_stage2c_contrast_relief_probe_20260707/launch_background.out 2>&1 &`
+- landed_processes:launcher PID`4143375`，观察到Python子任务PID`4143636`开始执行。
+- launch_log:`/home/szu2070436088/2510044040/CV-SincNet/logs/phase2_adv3b02_stage2c_contrast_relief_probe_20260707/launch_background.out`
+- local_ssh_cleanup:启动命令超时后清理本地残留`ssh.exe` PID`30256`；后续检查无本地`ssh.exe`和无ESTABLISHED TCP22连接。
+- status:COMPLETED，summary生成于2026-07-07 13:20 CST。
 
 ## Results
 
-pending
+summary已拉回本地：
+
+- `E:\type10-7\automation_reports\CV-SincNet\phase2_adv3b02_stage2c_contrast_relief_probe_20260707\stage2c_contrast_relief_probe_summary.json`
+- `E:\type10-7\automation_reports\CV-SincNet\phase2_adv3b02_stage2c_contrast_relief_probe_20260707\stage2c_contrast_relief_probe_summary.csv`
+
+### Result Table
+
+| variant | profile | K | old_acc | min_old | seen_new | min_seen | unknown_FAR | unknown_reject | known_coverage | verdict |
+| --- | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | --- |
+| NORM | RELIEF_U095_W050M02_D008_R035 | 5 | 0.0000 | 0.0000 | 0.1143 | 0.0000 | 0.0982 | 0.9018 | 0.1224 | low-FAR下seen-new恢复，但old全拒绝，min_seen仍0 |
+| NORM | RELIEF_U095_W050M02_D008_R050 | 5 | 0.0000 | 0.0000 | 0.1143 | 0.0000 | 0.0982 | 0.9018 | 0.1224 | 同上，label scale 0.35/0.50无差异 |
+| HEAD | RELIEF_U095_W050M02_D008_R035 | 5 | 0.0000 | 0.0000 | 0.1054 | 0.0000 | 0.1000 | 0.9000 | 0.1214 | FAR刚好0.10，但old全拒绝 |
+| HEAD | RELIEF_U095_W050M02_D008_R050 | 5 | 0.0000 | 0.0000 | 0.1054 | 0.0000 | 0.1000 | 0.9000 | 0.1214 | FAR刚好0.10，但old全拒绝 |
+| HEAD | RELIEF_U095_W050M02_D008_R035 | 10 | 0.6048 | 0.1429 | 0.1357 | 0.0000 | 0.3286 | 0.6696 | 0.4520 | old与seen-new同时恢复，但FAR过高 |
+| HEAD | RELIEF_U095_W050M02_D008_R050 | 10 | 0.6048 | 0.1429 | 0.1357 | 0.0000 | 0.3286 | 0.6696 | 0.4520 | 同上 |
+| NORM | RELIEF_U095_W050M02_D008_R035 | 10 | 0.6357 | 0.0857 | 0.1196 | 0.0000 | 0.3321 | 0.6625 | 0.4571 | old较好但FAR过高 |
+| HEAD | RELIEF_U095_W050M02_D005_R050 | 10 | 0.6048 | 0.1429 | 0.1500 | 0.0000 | 0.4018 | 0.5964 | 0.4898 | seen-new最高但FAR不可接受 |
+
+### Interpretation
+
+- risk relief相对上一轮有明确正向：低FAR可行行不再全拒绝known，`seen_new_acc`从0提升到0.1143，同时`unknown_FAR=0.0982`。
+- 但该可行行`old_acc=0`，说明单一路径的seen-new relief牺牲了旧类域适应，不能作为qKNNV42当前最优路线。
+- K=10下old_acc可回到0.6048-0.6357，seen_new_acc也可到0.1196-0.1500，但unknown_FAR升至0.3286-0.4018，远超可接受边界。
+- 所有24行`min_seen_new_class_acc=0`，新类最低类坍塌没有解决。下一步必须显式做seen-new类均衡/最低类保护，而不是只做全局risk relief。
+
+### Next Route
+
+建议下一步实现双保护融合：old路径保持原candidate risk guard；seen-new路径只对contrast达标候选做relief，并叠加per-seen-new class minimum exposure/receiver evidence约束，目标是在`unknown_FAR<=0.10`下避免old全拒绝，同时让`min_seen_new_class_acc>0`。
