@@ -80,8 +80,51 @@ cd /home/szu2070436088/2510044040/CV-SincNet && nohup bash code/scripts/launch_p
 
 ## N607 Execution
 
-Pending.
+| Item | Value |
+|---|---|
+| Direct SSH preflight | PASS |
+| Remote sync | PASS |
+| Remote hash check | PASS, matched local SHA256 for evaluator, diagnostic wrapper, direct qKNN CLI, and launcher |
+| Remote verification | PASS: py_compile, bash -n, remote dry-run produced 24 log lines; final local dry-run had 20 planned diagnostics |
+| Launch status | Completed after initial local SSH timeout; landed evidence confirmed by launch log, active process probe, and final summary |
+| JSON outputs | 20 |
+| Summary pulled local | E:\type10-7\automation_reports\CV-SincNet\phase2_adv3b02_stage2c_seennew_exempt_veto_probe_20260707\stage2c_seennew_exempt_veto_probe_summary.json |
+| CSV pulled local | E:\type10-7\automation_reports\CV-SincNet\phase2_adv3b02_stage2c_seennew_exempt_veto_probe_20260707\stage2c_seennew_exempt_veto_probe_summary.csv |
+| SSH cleanup | No local ssh.exe or established TCP22 connection after preflight, SCP, launch-time cleanup, monitor, and pull tasks |
 
 ## Result Interpretation
 
-Pending.
+This route is diagnostic-negative for the requested qKNNV42 optimization.
+
+- Total rows: 20. FAR-feasible rows (unknown_FAR<=0.10): 18. Strict FAR rows (unknown_FAR<=0.05): 10.
+- Best FAR-feasible utility row: STAGE2C_NORM_SEP/EXEMPT_STRICTVETO_E075_L075_S085_C065_X3P070R070/K=10 with old_acc=0.4714, unknown_FAR=0.0786, known_coverage=0.2306.
+- The same best row still has min_old_class_acc=0.0000, seen_new_acc=0.0000, and min_seen_new_class_acc=0.0000. Lowest-class collapse remains unresolved.
+- rescue_unknown_veto_seen_new_exemption_count is 0 for every row, including the open-seen profile. The implemented exemption works in unit evidence, but current Stage2-C evidence never satisfies the seen-new exemption condition under these support/p-value/reliability floors.
+- This means the current path did not improve over the prior conformal-veto row (old_acc=0.4810, unknown_FAR=0.0857, seen_new_acc=0). It slightly changes the best FAR/old tradeoff but does not restore seen-new recognition.
+
+Recommended next route: run a tiny event-audit diagnostic with --include_event_results or a deliberately floorless exemption (support=0, pvalue=0, reliability=0) on the K=10 rows. That will separate two failure modes: no predicted seen-new label reaches the exemption branch, or labels reach it but support/reliability evidence is too weak. Do not promote this route.
+
+## Full Result Table
+
+| variant | profile | K | old | min_old | seen | min_seen | FAR | reject | cov | rescue_n | veto_n | exempt_n | feasible |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| STAGE2C_NORM_SEP | EXEMPT_STRICTVETO_E075_L075_S085_C065_X3P070R070 | 10 | 0.4714 | 0.0000 | 0.0000 | 0.0000 | 0.0786 | 0.8857 | 0.2306 | 772 | 1242 | 0 | True |
+| STAGE2C_NORM_SEP | EXEMPT_OLDPROT_E080_L080_S085_C070_X4P080R080 | 10 | 0.4810 | 0.0000 | 0.0000 | 0.0000 | 0.0857 | 0.8786 | 0.2367 | 772 | 1232 | 0 | True |
+| STAGE2C_NORM_SEP | EXEMPT_OPENSEEN_E080_L080_S085_C070_X2P050R050 | 10 | 0.4810 | 0.0000 | 0.0000 | 0.0000 | 0.0857 | 0.8786 | 0.2367 | 772 | 1232 | 0 | True |
+| STAGE2C_NORM_SEP | EXEMPT_STRICT_E080_L080_S085_C070_X3P070R070 | 10 | 0.4810 | 0.0000 | 0.0000 | 0.0000 | 0.0857 | 0.8786 | 0.2367 | 772 | 1232 | 0 | True |
+| STAGE2C_HEAD_SEP | EXEMPT_STRICTVETO_E075_L075_S085_C065_X3P070R070 | 10 | 0.4167 | 0.0000 | 0.0000 | 0.0000 | 0.0714 | 0.8839 | 0.2071 | 722 | 1268 | 0 | True |
+| STAGE2C_HEAD_SEP | EXEMPT_OLDPROT_E080_L080_S085_C070_X4P080R080 | 10 | 0.4310 | 0.0000 | 0.0000 | 0.0000 | 0.0821 | 0.8732 | 0.2153 | 722 | 1254 | 0 | True |
+| STAGE2C_HEAD_SEP | EXEMPT_OPENSEEN_E080_L080_S085_C070_X2P050R050 | 10 | 0.4310 | 0.0000 | 0.0000 | 0.0000 | 0.0821 | 0.8732 | 0.2153 | 722 | 1254 | 0 | True |
+| STAGE2C_HEAD_SEP | EXEMPT_STRICT_E080_L080_S085_C070_X3P070R070 | 10 | 0.4310 | 0.0000 | 0.0000 | 0.0000 | 0.0821 | 0.8732 | 0.2153 | 722 | 1254 | 0 | True |
+| STAGE2C_HEAD_SEP | EXEMPT_MID_E085_L085_S085_C070_X3P070R070 | 5 | 0.0000 | 0.0000 | 0.0000 | 0.0000 | 0.0000 | 0.8696 | 0.0000 | 570 | 1407 | 0 | True |
+| STAGE2C_HEAD_SEP | EXEMPT_OLDPROT_E080_L080_S085_C070_X4P080R080 | 5 | 0.0000 | 0.0000 | 0.0000 | 0.0000 | 0.0000 | 0.8696 | 0.0000 | 570 | 1407 | 0 | True |
+| STAGE2C_HEAD_SEP | EXEMPT_OPENSEEN_E080_L080_S085_C070_X2P050R050 | 5 | 0.0000 | 0.0000 | 0.0000 | 0.0000 | 0.0000 | 0.8696 | 0.0000 | 570 | 1407 | 0 | True |
+| STAGE2C_HEAD_SEP | EXEMPT_STRICTVETO_E075_L075_S085_C065_X3P070R070 | 5 | 0.0000 | 0.0000 | 0.0000 | 0.0000 | 0.0000 | 0.8696 | 0.0000 | 570 | 1407 | 0 | True |
+| STAGE2C_HEAD_SEP | EXEMPT_STRICT_E080_L080_S085_C070_X3P070R070 | 5 | 0.0000 | 0.0000 | 0.0000 | 0.0000 | 0.0000 | 0.8696 | 0.0000 | 570 | 1407 | 0 | True |
+| STAGE2C_NORM_SEP | EXEMPT_MID_E085_L085_S085_C070_X3P070R070 | 5 | 0.0000 | 0.0000 | 0.0000 | 0.0000 | 0.0000 | 0.8696 | 0.0000 | 580 | 1415 | 0 | True |
+| STAGE2C_NORM_SEP | EXEMPT_OLDPROT_E080_L080_S085_C070_X4P080R080 | 5 | 0.0000 | 0.0000 | 0.0000 | 0.0000 | 0.0000 | 0.8696 | 0.0000 | 580 | 1415 | 0 | True |
+| STAGE2C_NORM_SEP | EXEMPT_OPENSEEN_E080_L080_S085_C070_X2P050R050 | 5 | 0.0000 | 0.0000 | 0.0000 | 0.0000 | 0.0000 | 0.8696 | 0.0000 | 580 | 1415 | 0 | True |
+| STAGE2C_NORM_SEP | EXEMPT_STRICTVETO_E075_L075_S085_C065_X3P070R070 | 5 | 0.0000 | 0.0000 | 0.0000 | 0.0000 | 0.0000 | 0.8696 | 0.0000 | 580 | 1415 | 0 | True |
+| STAGE2C_NORM_SEP | EXEMPT_STRICT_E080_L080_S085_C070_X3P070R070 | 5 | 0.0000 | 0.0000 | 0.0000 | 0.0000 | 0.0000 | 0.8696 | 0.0000 | 580 | 1415 | 0 | True |
+| STAGE2C_NORM_SEP | EXEMPT_MID_E085_L085_S085_C070_X3P070R070 | 10 | 0.5286 | 0.0000 | 0.0000 | 0.0000 | 0.1054 | 0.8589 | 0.2602 | 772 | 1198 | 0 | False |
+| STAGE2C_HEAD_SEP | EXEMPT_MID_E085_L085_S085_C070_X3P070R070 | 10 | 0.5286 | 0.0000 | 0.0000 | 0.0000 | 0.1286 | 0.8268 | 0.2622 | 722 | 1182 | 0 | False |
