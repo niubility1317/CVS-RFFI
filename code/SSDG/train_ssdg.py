@@ -1142,7 +1142,7 @@ def _resolve_sat_eval_max_batches(args) -> int:
 
 def _derive_phase2_export_path(checkpoint_path: str | Path) -> str:
     path = Path(str(checkpoint_path).strip() or "best_joint_safe_ssdg.pth")
-    return str(path.with_name(f"{path.stem}_phase2_prototypes.pt"))
+    return str(path.with_name(f"{path.stem}_phase1_source_prototypes.pt"))
 
 
 def _maybe_export_phase2_prototypes_ssdg(
@@ -3594,17 +3594,35 @@ def train(args) -> int:
                 if proto_bank.class_count is not None:
                     active = proto_bank.class_count >= int(args.proto_min_count)
                     proto_info["proto_active_classes"] = float(int(active.sum().detach().item()))
-        u_tri_trusted_core_count = float(u_dm_info.get("selected", 0.0) or 0.0)
         u_tri_query_count = float(u_quarantine_info.get("query_count", 0.0) or 0.0)
-        u_tri_accept_rate = float(u_quarantine_info.get("accept_rate", 0.0) or 0.0)
-        if not math.isfinite(u_tri_trusted_core_count):
-            u_tri_trusted_core_count = 0.0
-        if not math.isfinite(u_tri_query_count):
-            u_tri_query_count = 0.0
-        if not math.isfinite(u_tri_accept_rate):
-            u_tri_accept_rate = 0.0
-        u_tri_ambiguous_tail_count = max(0.0, u_tri_query_count * max(0.0, min(1.0, u_tri_accept_rate)))
-        u_tri_outside_reject_count = max(0.0, u_tri_query_count - u_tri_ambiguous_tail_count)
+        q_tri_trusted_core_count = float(u_quarantine_info.get("tri_trusted_core_count", float("nan")))
+        q_tri_ambiguous_tail_count = float(u_quarantine_info.get("tri_ambiguous_tail_count", float("nan")))
+        q_tri_outside_reject_count = float(u_quarantine_info.get("tri_outside_reject_count", float("nan")))
+        q_tri_counts = [
+            q_tri_trusted_core_count,
+            q_tri_ambiguous_tail_count,
+            q_tri_outside_reject_count,
+        ]
+        has_geometry_tri_state = (
+            all(math.isfinite(v) and v >= 0.0 for v in q_tri_counts)
+            and sum(q_tri_counts) > 0.0
+            and u_tri_query_count > 0.0
+        )
+        if has_geometry_tri_state:
+            u_tri_trusted_core_count = q_tri_trusted_core_count
+            u_tri_ambiguous_tail_count = q_tri_ambiguous_tail_count
+            u_tri_outside_reject_count = q_tri_outside_reject_count
+        else:
+            u_tri_trusted_core_count = float(u_dm_info.get("selected", 0.0) or 0.0)
+            u_tri_accept_rate = float(u_quarantine_info.get("accept_rate", 0.0) or 0.0)
+            if not math.isfinite(u_tri_trusted_core_count):
+                u_tri_trusted_core_count = 0.0
+            if not math.isfinite(u_tri_query_count):
+                u_tri_query_count = 0.0
+            if not math.isfinite(u_tri_accept_rate):
+                u_tri_accept_rate = 0.0
+            u_tri_ambiguous_tail_count = max(0.0, u_tri_query_count * max(0.0, min(1.0, u_tri_accept_rate)))
+            u_tri_outside_reject_count = max(0.0, u_tri_query_count - u_tri_ambiguous_tail_count)
         epoch_logs.append(
             {
                 "train/loss": loss.detach(),

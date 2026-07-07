@@ -65,12 +65,29 @@ def test_fuse_tx_domain_prototypes_exports_v2_gate_schema():
             assert "r_accept_deg" in comp
             assert "r_tail_deg" in comp
             assert "density_p05" in comp
+            assert "density_p10" in comp
             assert "nll_p95" in comp
+            assert "nll_tail_p95" in comp
             assert "nearest_other_deg" in comp
+            assert comp["density_p05"] is not None
+            assert comp["density_p10"] is not None
+            assert comp["nll_p95"] is not None
+            assert comp["nll_tail_p95"] is not None
+            assert math.isfinite(float(comp["density_p05"]))
+            assert math.isfinite(float(comp["density_p10"]))
+            assert math.isfinite(float(comp["nll_p95"]))
+            assert math.isfinite(float(comp["nll_tail_p95"]))
             if comp.get("tail_sentinel"):
                 assert comp["accept_enabled"] is False
             else:
                 assert comp["accept_enabled"] is True
+
+
+def test_ssdg_default_export_path_is_phase1_source_named():
+    export_path = train_ssdg._derive_phase2_export_path("runs/candidate/best_joint_safe_ssdg.pth")
+
+    assert export_path.endswith("best_joint_safe_ssdg_phase1_source_prototypes.pt")
+    assert "phase2_prototypes" not in export_path
 
 
 def test_ssdg_phase2_export_executes_fusion_when_flag_enabled(monkeypatch, tmp_path):

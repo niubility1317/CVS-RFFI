@@ -57,6 +57,8 @@ def test_directmetric16_declares_protocol_and_full_concat_sat_training():
     assert "--u_tri_state_required true" in out
     assert "--feasibility_gate true" in out
     assert "--feasibility_stage full" in out
+    assert "phase1_source_zid_prototypes.pt" in out
+    assert "phase2_zid_prototypes.pt" not in out
     assert "leo_clear_weak" in out
     assert "leo_low_elev_weak" in out
     assert "leo_rain_weak" in out

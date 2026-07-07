@@ -2001,6 +2001,12 @@ def unlabeled_known_acceptance_quarantine_loss(
         "nearest_angle_p95_deg": float("nan"),
         "nearest_angle_p99_deg": float("nan"),
         "radius_to_inter_ratio": float("nan"),
+        "tri_trusted_core_count": 0.0,
+        "tri_ambiguous_tail_count": 0.0,
+        "tri_outside_reject_count": 0.0,
+        "tri_trusted_core_rate": float("nan"),
+        "tri_ambiguous_tail_rate": float("nan"),
+        "tri_outside_reject_rate": float("nan"),
     }
     if (
         anchor_z is None
@@ -2062,19 +2068,24 @@ def unlabeled_known_acceptance_quarantine_loss(
     core_q = max(0.0, min(1.0, float(core_quantile)))
     accept_q = max(core_q, min(1.0, float(accept_quantile)))
     accept_radius_vec = []
+    core_radius_vec = []
     core_mask = torch.zeros((sample_z.size(0),), device=sample_z.device, dtype=torch.bool)
     for cls in center_labels:
         cls_mask = sample_labels.eq(cls)
         cls_angles = pos_angles[cls_mask]
         if cls_angles.numel() == 0:
-            accept_radius_vec.append(sample_z.new_tensor(math.radians(40.0)))
+            fallback_radius = sample_z.new_tensor(math.radians(40.0))
+            core_radius_vec.append(fallback_radius)
+            accept_radius_vec.append(fallback_radius)
             continue
         det = cls_angles.detach()
         core_radius = torch.quantile(det, core_q) if det.numel() > 1 else det.max()
         accept_radius = torch.quantile(det, accept_q) if det.numel() > 1 else det.max()
+        core_radius_vec.append(core_radius.clamp_min(1e-4))
         accept_radius_vec.append(accept_radius.clamp_min(1e-4))
         core_mask |= cls_mask & (pos_angles <= core_radius)
     accept_radius_vec_t = torch.stack(accept_radius_vec, dim=0).to(device=sample_z.device, dtype=sample_z.dtype)
+    core_radius_vec_t = torch.stack(core_radius_vec, dim=0).to(device=sample_z.device, dtype=sample_z.dtype)
     if not bool(core_mask.any()):
         core_mask = torch.ones_like(core_mask)
     z_core_density = sample_z[core_mask]
@@ -2106,7 +2117,14 @@ def unlabeled_known_acceptance_quarantine_loss(
     accept_loss = _top_cvar_mean(F.softplus((accept_prob - float(accept_target)) / tau), cvar_frac)
 
     with torch.no_grad():
-        nearest_angle = query_angles.min(dim=1).values.detach()
+        nearest = query_angles.min(dim=1)
+        nearest_angle = nearest.values.detach()
+        nearest_idx = nearest.indices.detach()
+        nearest_core_radius = core_radius_vec_t.detach()[nearest_idx]
+        nearest_accept_radius = accept_radius_vec_t.detach()[nearest_idx]
+        tri_trusted_core = nearest_angle <= nearest_core_radius
+        tri_outside_reject = nearest_angle > nearest_accept_radius
+        tri_ambiguous_tail = (~tri_trusted_core) & (~tri_outside_reject)
         q50 = torch.quantile(nearest_angle, 0.50) if nearest_angle.numel() > 1 else nearest_angle.mean()
         q95 = torch.quantile(nearest_angle, 0.95) if nearest_angle.numel() > 1 else nearest_angle.mean()
         q99 = torch.quantile(nearest_angle, 0.99) if nearest_angle.numel() > 1 else nearest_angle.mean()
@@ -2116,6 +2134,10 @@ def unlabeled_known_acceptance_quarantine_loss(
             diag = torch.eye(inter_angles.size(0), device=inter_angles.device, dtype=torch.bool)
             nearest_inter = inter_angles.masked_fill(diag, float("inf")).min(dim=1).values.detach().clamp_min(1e-4)
             radius_inter_ratio_metric = (accept_radius_vec_t.detach() / nearest_inter).max()
+        tri_query_count = max(1, int(query_norm.size(0)))
+        tri_trusted_core_count = float(int(tri_trusted_core.sum().item()))
+        tri_ambiguous_tail_count = float(int(tri_ambiguous_tail.sum().item()))
+        tri_outside_reject_count = float(int(tri_outside_reject.sum().item()))
 
     metrics = {
         "active": 1.0,
@@ -2129,6 +2151,12 @@ def unlabeled_known_acceptance_quarantine_loss(
         "nearest_angle_p95_deg": math.degrees(_scalar_metric(q95)),
         "nearest_angle_p99_deg": math.degrees(_scalar_metric(q99)),
         "radius_to_inter_ratio": _scalar_metric(radius_inter_ratio_metric),
+        "tri_trusted_core_count": tri_trusted_core_count,
+        "tri_ambiguous_tail_count": tri_ambiguous_tail_count,
+        "tri_outside_reject_count": tri_outside_reject_count,
+        "tri_trusted_core_rate": tri_trusted_core_count / float(tri_query_count),
+        "tri_ambiguous_tail_rate": tri_ambiguous_tail_count / float(tri_query_count),
+        "tri_outside_reject_rate": tri_outside_reject_count / float(tri_query_count),
     }
     return accept_loss, metrics
 

@@ -96,6 +96,37 @@
 
 备注：pytest有本地`.pytest_cache`写权限告警，不影响测试断言。
 
+## 硬冲突补充闭环
+
+### 2026-07-07补丁
+
+- 快照：`E:\type10-7\code\snapshots\phase1_v2_hard_conflict_closure_20260707_172306`。
+- 目标：补齐方案v2审查中仍存在的硬冲突，确保Phase1 source-only导出、endpoint_accept_v1、U_s三态和local component artifact不是口头约束。
+
+| 硬冲突 | 修改 |
+|---|---|
+| 动态dm软门控可能被误认为最终拒识边界 | 保留CLI兼容的`--phase2_export_*`旧参数名，但默认导出文件名改为`*_phase1_source_prototypes.pt`，三组最新Phase1 launcher显式写`phase1_source_zid_prototypes.pt`，避免artifact层面继续写成Phase2成功候选。 |
+| fusion/local component字段存在但density/NLL为空 | `fuse_tx_domain_prototypes`为每个component计算样本数加权的`density_p05`、`density_p10`、`nll_p95`和`nll_tail_p95`，不再输出`None`占位；后续hard gate可把这些字段作为真实密度证据。 |
+| U_s三态仍由selected和accept_rate反推 | `unlabeled_known_acceptance_quarantine_loss`直接输出`tri_trusted_core_count`、`tri_ambiguous_tail_count`、`tri_outside_reject_count`及对应rate；`train_ssdg.py`优先消费这些几何三态，只有缺失时才回退旧反推逻辑。 |
+
+### TDD红灯
+
+先新增失败测试并确认失败：
+
+| 命令 | 红灯结果 |
+|---|---|
+| `conda run --no-capture-output -n ssr-gpu python -m pytest code\tests\test_phase2_prototype_fusion_export.py code\tests\test_unlabeled_quarantine_acceptance_loss.py code\tests\test_phase1_dgleo_directmetric16_launcher.py code\tests\test_phase1_unlabeled_direct_training.py code\tests\test_phase1_dgleo_osfix16_launcher.py -q` | 6 failed, 10 passed；失败点为density/NLL为`None`、默认导出名仍含`phase2_prototypes`、U_s三态key缺失、三组launcher仍输出`phase2_zid_prototypes.pt`。 |
+
+### 补丁后验证
+
+| 命令 | 结果 |
+|---|---|
+| `conda run --no-capture-output -n ssr-gpu python -m py_compile code\cvsrffi\phase2_prototypes.py code\cvsrffi\losses.py code\SSDG\train_ssdg.py` | 通过 |
+| `conda run --no-capture-output -n ssr-gpu python -m pytest code\tests\test_phase2_prototype_fusion_export.py code\tests\test_unlabeled_quarantine_acceptance_loss.py code\tests\test_phase1_dgleo_directmetric16_launcher.py code\tests\test_phase1_unlabeled_direct_training.py code\tests\test_phase1_dgleo_osfix16_launcher.py -q` | 16 passed |
+| `bash -n code/scripts/launch_phase1_dgleo_directmetric16_20260706.sh; bash -n code/scripts/launch_phase1_dgleo_uopt24_20260707.sh; bash -n code/scripts/launch_phase1_dgleo_osfix16_20260707.sh` | 通过 |
+| `conda run --no-capture-output -n ssr-gpu python -m pytest code\tests\test_phase1_v2_control.py code\tests\test_open_world_feature_space_loss.py code\tests\test_local_component_hard_gate.py code\tests\test_phase1_open_set_reject_eval.py code\tests\test_vacuum_gaussian_prototype_bank.py -q` | 29 passed |
+| Git承载面`E:\type10-7\github_publish\CVS-RFFI-repo`复跑上述py_compile、16项焦点pytest、三脚本`bash -n`和29项相关回归 | 全部通过 |
+
 ## N607状态
 
 - 本次只完成本地代码、测试、launcher dry-run闭环。

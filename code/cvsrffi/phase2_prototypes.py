@@ -461,6 +461,52 @@ def _component_center(vectors: torch.Tensor, counts: torch.Tensor, eps: float = 
     return _normalize(center, dim=1).squeeze(0)
 
 
+def _weighted_quantile_1d(values: torch.Tensor, weights: torch.Tensor, q: float) -> float:
+    values = torch.nan_to_num(values.detach().float().view(-1), nan=0.0, posinf=0.0, neginf=0.0)
+    weights = torch.nan_to_num(weights.detach().float().view(-1), nan=0.0, posinf=0.0, neginf=0.0)
+    if values.numel() == 0:
+        return 0.0
+    if weights.numel() != values.numel():
+        weights = torch.ones_like(values)
+    weights = weights.clamp_min(0.0)
+    if float(weights.sum().item()) <= 0.0:
+        weights = torch.ones_like(values)
+    order = torch.argsort(values)
+    sorted_values = values[order]
+    sorted_weights = weights[order]
+    total = sorted_weights.sum().clamp_min(1e-6)
+    threshold = float(max(0.0, min(1.0, q))) * float(total.item())
+    idx = int(torch.searchsorted(sorted_weights.cumsum(dim=0), torch.tensor(threshold, dtype=sorted_weights.dtype)).item())
+    idx = max(0, min(idx, int(sorted_values.numel()) - 1))
+    return float(sorted_values[idx].item())
+
+
+def _component_density_nll_stats(domain_angles: Iterable[float], counts: torch.Tensor, accept_radius: float) -> Dict[str, float]:
+    angles = torch.tensor([float(a) for a in domain_angles], dtype=torch.float32)
+    if angles.numel() == 0:
+        return {"density_p05": 1.0, "density_p10": 1.0, "nll_p95": 0.0, "nll_tail_p95": 0.0}
+    weights = torch.clamp(counts.detach().float().cpu().view(-1), min=1.0)
+    if weights.numel() != angles.numel():
+        weights = torch.ones_like(angles)
+    scale = max(float(accept_radius), math.radians(1.0), 1e-6)
+    nll = (angles / scale).clamp_min(0.0).clamp_max(50.0)
+    density = torch.exp(-nll).clamp_min(1e-12)
+    tail_cut = _weighted_quantile_1d(angles, weights, 0.80)
+    tail_mask = angles >= float(tail_cut)
+    if bool(tail_mask.any()):
+        tail_nll = nll[tail_mask]
+        tail_weights = weights[tail_mask]
+    else:
+        tail_nll = nll
+        tail_weights = weights
+    return {
+        "density_p05": _weighted_quantile_1d(density, weights, 0.05),
+        "density_p10": _weighted_quantile_1d(density, weights, 0.10),
+        "nll_p95": _weighted_quantile_1d(nll, weights, 0.95),
+        "nll_tail_p95": _weighted_quantile_1d(tail_nll, tail_weights, 0.95),
+    }
+
+
 def fuse_tx_domain_prototypes(package: Mapping[str, Any], config: PrototypeFusionConfig | None = None) -> Dict[str, Any]:
     """Compress redundant per-domain TX prototypes into local angular components.
 
@@ -551,6 +597,7 @@ def fuse_tx_domain_prototypes(package: Mapping[str, Any], config: PrototypeFusio
             accept_radius = min(cap, float(accept_base_t[tx].item()), float(evidence_radius))
             p95_delta = max(0.0, float(evidence_radius) - float(accept_base_t[tx].item()))
             over_fused = bool(math.degrees(p95_delta) > float(cfg.max_p95_increase_deg))
+            density_stats = _component_density_nll_stats(domain_angles, cts, float(accept_radius))
             comp_rows.append(
                 {
                     "domains": doms,
@@ -564,6 +611,10 @@ def fuse_tx_domain_prototypes(package: Mapping[str, Any], config: PrototypeFusio
                     "tail_sentinel": tail_sentinel,
                     "global_angle": float(global_angle),
                     "max_domain_angle": float(max_domain_angle),
+                    "density_p05": float(density_stats["density_p05"]),
+                    "density_p10": float(density_stats["density_p10"]),
+                    "nll_p95": float(density_stats["nll_p95"]),
+                    "nll_tail_p95": float(density_stats["nll_tail_p95"]),
                 }
             )
         comp_rows.sort(key=lambda row: (bool(row["tail_sentinel"]), -int(row["count"]), row["domains"][0]))
@@ -597,10 +648,10 @@ def fuse_tx_domain_prototypes(package: Mapping[str, Any], config: PrototypeFusio
                     "r_accept_deg": math.degrees(float(row["accept_radius"])),
                     "r_tail_deg": math.degrees(float(row["radius"])),
                     "r_vac_deg": max(math.degrees(float(row["radius"])), math.degrees(float(row["accept_radius"])) + 4.0),
-                    "density_p05": None,
-                    "density_p10": None,
-                    "nll_p95": None,
-                    "nll_tail_p95": None,
+                    "density_p05": float(row["density_p05"]),
+                    "density_p10": float(row["density_p10"]),
+                    "nll_p95": float(row["nll_p95"]),
+                    "nll_tail_p95": float(row["nll_tail_p95"]),
                     "nearest_other_deg": None,
                     "accept_enabled": not bool(row["tail_sentinel"]),
                     "domains": list(row["domains"]),

@@ -310,7 +310,7 @@ launch_candidate() {
     --lambda_sat_cls "${sat_cls}"
     --lambda_sat_cons "${sat_cons}"
     --phase2_export_prototypes true
-    --phase2_export_path "${out_dir}/phase2_zid_prototypes.pt"
+    --phase2_export_path "${out_dir}/phase1_source_zid_prototypes.pt"
     --phase2_export_feature_key z_id
     --phase2_export_split train
     --phase2_fuse_prototypes true

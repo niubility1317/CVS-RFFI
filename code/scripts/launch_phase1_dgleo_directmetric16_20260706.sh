@@ -284,7 +284,7 @@ launch_candidate() {
     --soft_unknown_mixup_vacuum_weight 0.020
     --soft_unknown_mixup_vacuum_width_deg 5
     --phase2_export_prototypes true
-    --phase2_export_path "${out_dir}/phase2_zid_prototypes.pt"
+    --phase2_export_path "${out_dir}/phase1_source_zid_prototypes.pt"
     --phase2_export_feature_key z_id
     --phase2_export_split train
     --phase2_fuse_prototypes true

@@ -91,6 +91,8 @@ def test_uopt24_declares_source_only_unlabeled_concat_sat_direct_training():
     assert "--u_direct_idle_blocks_promotion true" in out
     assert "--feasibility_gate true" in out
     assert "--feasibility_stage full" in out
+    assert "phase1_source_zid_prototypes.pt" in out
+    assert "phase2_zid_prototypes.pt" not in out
     assert "--new_wisig_pkl" not in out
     assert "--target_unknown" not in out
     assert "ManyTx.pkl" not in out
