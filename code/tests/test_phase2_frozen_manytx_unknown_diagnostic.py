@@ -159,6 +159,44 @@ class Phase2FrozenManytxUnknownDiagnosticTest(unittest.TestCase):
         )
         self.assertEqual(args.support_selection_policy, "strict_event_query_preserve")
 
+    def test_accepts_seen_new_rescue_cli_knobs(self):
+        from phase2_frozen_manytx_unknown_diagnostic import parse_args
+
+        args = parse_args(
+            [
+                "--feature_npz",
+                "x.npz",
+                "--output_json",
+                "out.json",
+                "--seen_new_rescue_enabled",
+                "--seen_new_rescue_risk_scale",
+                "0.4",
+                "--seen_new_rescue_min_score",
+                "0.7",
+                "--seen_new_rescue_min_margin",
+                "0.1",
+                "--seen_new_rescue_min_agreement",
+                "0.6",
+                "--conformal_rescue_enabled",
+                "--conformal_rescue_min_pvalue",
+                "0.2",
+                "--conformal_rescue_risk_scale",
+                "0.3",
+                "--conformal_rescue_min_agreement",
+                "0.7",
+            ]
+        )
+
+        self.assertTrue(args.seen_new_rescue_enabled)
+        self.assertEqual(args.seen_new_rescue_risk_scale, 0.4)
+        self.assertEqual(args.seen_new_rescue_min_score, 0.7)
+        self.assertEqual(args.seen_new_rescue_min_margin, 0.1)
+        self.assertEqual(args.seen_new_rescue_min_agreement, 0.6)
+        self.assertTrue(args.conformal_rescue_enabled)
+        self.assertEqual(args.conformal_rescue_min_pvalue, 0.2)
+        self.assertEqual(args.conformal_rescue_risk_scale, 0.3)
+        self.assertEqual(args.conformal_rescue_min_agreement, 0.7)
+
     def test_can_repair_legacy_target_new_unknown_roles_from_manifest(self):
         from phase2_frozen_manytx_unknown_diagnostic import main
 

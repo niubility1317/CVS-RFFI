@@ -258,6 +258,15 @@ def run_diagnostic(args: argparse.Namespace) -> dict[str, Any]:
         scorer_component_vote_threshold=float(args.scorer_component_vote_threshold),
         class_reliability_policy=str(args.class_reliability_policy),
         receiver_class_reliability_policy=str(args.receiver_class_reliability_policy),
+        seen_new_rescue_enabled=bool(args.seen_new_rescue_enabled),
+        seen_new_rescue_risk_scale=float(args.seen_new_rescue_risk_scale),
+        seen_new_rescue_min_score=float(args.seen_new_rescue_min_score),
+        seen_new_rescue_min_margin=float(args.seen_new_rescue_min_margin),
+        seen_new_rescue_min_agreement=float(args.seen_new_rescue_min_agreement),
+        conformal_rescue_enabled=bool(args.conformal_rescue_enabled),
+        conformal_rescue_min_pvalue=float(args.conformal_rescue_min_pvalue),
+        conformal_rescue_risk_scale=float(args.conformal_rescue_risk_scale),
+        conformal_rescue_min_agreement=float(args.conformal_rescue_min_agreement),
         class_set_gate_enabled=bool(args.class_set_gate_enabled),
         old_gate_min_receivers=int(args.old_gate_min_receivers),
         old_gate_max_effective_unknown_risk=float(args.old_gate_max_effective_unknown_risk),
@@ -388,6 +397,15 @@ def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
     p.add_argument("--consensus_score_threshold", type=float, default=0.03)
     p.add_argument("--scorer_component_vote_threshold", type=float, default=0.50)
     p.add_argument("--class_reliability_policy", default="conformal_margin_risk")
+    p.add_argument("--seen_new_rescue_enabled", action="store_true")
+    p.add_argument("--seen_new_rescue_risk_scale", type=float, default=1.0)
+    p.add_argument("--seen_new_rescue_min_score", type=float, default=0.0)
+    p.add_argument("--seen_new_rescue_min_margin", type=float, default=0.0)
+    p.add_argument("--seen_new_rescue_min_agreement", type=float, default=0.5)
+    p.add_argument("--conformal_rescue_enabled", action="store_true")
+    p.add_argument("--conformal_rescue_min_pvalue", type=float, default=0.05)
+    p.add_argument("--conformal_rescue_risk_scale", type=float, default=0.5)
+    p.add_argument("--conformal_rescue_min_agreement", type=float, default=0.5)
     p.add_argument("--class_set_gate_enabled", action="store_true", default=True)
     p.add_argument("--old_gate_min_receivers", type=_positive_int, default=1)
     p.add_argument("--old_gate_max_effective_unknown_risk", type=float, default=0.90)
