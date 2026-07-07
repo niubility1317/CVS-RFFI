@@ -66,8 +66,54 @@ cd /home/szu2070436088/2510044040/CV-SincNet && nohup bash code/scripts/launch_p
 
 ## N607 Execution
 
-Pending.
+| Item | Value |
+|---|---|
+| Direct SSH preflight | PASS |
+| Remote sync | PASS |
+| Remote hash check | PASS, matched local SHA256 for launcher and upper-bound scripts |
+| Remote verification | PASS: py_compile, bash -n, remote dry-run |
+| First launch | Failed closed because feature package did not expose manifest.target_old_tx_ids |
+| Repair | Launcher now passes explicit project-protocol Y_old list: 14-10,14-7,20-15,20-19,6-15,8-20 |
+| Relaunch PID | 7537 |
+| Launch status | Completed |
+| JSON outputs | 6 |
+| Summary pulled local | E:\type10-7\automation_reports\CV-SincNet\phase2_adv3b02_stage2c_target_old_upper_bound_20260707\stage2c_target_old_upper_bound_summary.json |
+| CSV pulled local | E:\type10-7\automation_reports\CV-SincNet\phase2_adv3b02_stage2c_target_old_upper_bound_20260707\stage2c_target_old_upper_bound_summary.csv |
+| SSH cleanup | No local ssh.exe or established TCP22 connection after preflight, SCP, launch, monitor, and pull tasks |
 
 ## Result Interpretation
 
-Pending.
+This diagnostic proves the target-old signal is present in the frozen Stage2-C features under the same LEO target view.
+
+- Best row: STAGE2C_NORM_SEP/linear/K=10 with old_acc=0.9286, macro_old_acc=0.9286, min_old_class_acc=0.8143.
+- Best prototype-only row: STAGE2C_NORM_SEP/K=10 with old_acc=0.9262 and min_old_class_acc=0.8286.
+- This exceeds OLD80_FIRST for target-old-only diagnosis, including the minimum old-class floor for the best prototype row.
+- Because qKNNV42 Stage2-C rows around the same feature package kept old_acc near 0.48 and min_old=0.0 under open-set arbitration, the old-class bottleneck is not feature separability. The bottleneck is qKNNV42 decision arbitration: unknown/seen-new gates are discarding or relabeling target-old candidates.
+- This remains non-deployment evidence because it ignores target_new/unknown rows for fitting and does not report unknown FAR or Stage2-C success.
+
+Recommended next route: implement an old-prototype retention branch in qKNNV42 that protects target-old labels using support-only old prototypes before seen-new rescue/unknown veto arbitration, then combine it with a separate unknown-specific verifier. The old branch should be evaluated under full Stage2-C, not as this upper-bound diagnostic.
+
+## Top Result Rows
+
+| variant | mode | K | ridge | seed | old | macro_old | min_old | support | query | train_acc |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| STAGE2C_NORM_SEP | linear | 10 | 10.0 |  | 0.9286 | 0.9286 | 0.8143 | 60 | 420 |  |
+| STAGE2C_NORM_SEP | mlp | 10 |  | 13 | 0.9286 | 0.9286 | 0.8000 | 60 | 420 | 1.0000 |
+| STAGE2C_NORM_SEP | mlp | 10 |  | 7 | 0.9286 | 0.9286 | 0.7857 | 60 | 420 | 1.0000 |
+| STAGE2C_NORM_SEP | proto | 10 |  |  | 0.9262 | 0.9262 | 0.8286 | 60 | 420 |  |
+| STAGE2C_NORM_SEP | linear | 10 | 0.1 |  | 0.9214 | 0.9214 | 0.8429 | 60 | 420 |  |
+| STAGE2C_NORM_SEP | linear | 10 | 1.0 |  | 0.9214 | 0.9214 | 0.8143 | 60 | 420 |  |
+| STAGE2C_HEAD_SEP | linear | 10 | 1.0 |  | 0.9167 | 0.9167 | 0.7571 | 60 | 420 |  |
+| STAGE2C_NORM_SEP | mlp | 5 |  | 7 | 0.9156 | 0.9156 | 0.8133 | 30 | 450 | 1.0000 |
+| STAGE2C_NORM_SEP | mlp | 10 |  | 1 | 0.9143 | 0.9143 | 0.7857 | 60 | 420 | 1.0000 |
+| STAGE2C_HEAD_SEP | linear | 10 | 0.1 |  | 0.9143 | 0.9143 | 0.7571 | 60 | 420 |  |
+| STAGE2C_NORM_SEP | linear | 10 | 0.01 |  | 0.9119 | 0.9119 | 0.8286 | 60 | 420 |  |
+| STAGE2C_HEAD_SEP | linear | 10 | 10.0 |  | 0.9119 | 0.9119 | 0.7714 | 60 | 420 |  |
+| STAGE2C_HEAD_SEP | linear | 10 | 0.01 |  | 0.9119 | 0.9119 | 0.7571 | 60 | 420 |  |
+| STAGE2C_NORM_SEP | mlp | 5 |  | 1 | 0.9111 | 0.9111 | 0.8000 | 30 | 450 | 1.0000 |
+| STAGE2C_HEAD_SEP | mlp | 5 |  | 7 | 0.9111 | 0.9111 | 0.7600 | 30 | 450 | 1.0000 |
+| STAGE2C_NORM_SEP | proto | 5 |  |  | 0.9111 | 0.9111 | 0.7067 | 30 | 450 |  |
+| STAGE2C_HEAD_SEP | proto | 10 |  |  | 0.9095 | 0.9095 | 0.7857 | 60 | 420 |  |
+| STAGE2C_HEAD_SEP | linear | 10 | 0.001 |  | 0.9095 | 0.9095 | 0.7571 | 60 | 420 |  |
+| STAGE2C_NORM_SEP | mlp | 5 |  | 13 | 0.9089 | 0.9089 | 0.7867 | 30 | 450 | 1.0000 |
+| STAGE2C_HEAD_SEP | proto | 5 |  |  | 0.9089 | 0.9089 | 0.7333 | 30 | 450 |  |
