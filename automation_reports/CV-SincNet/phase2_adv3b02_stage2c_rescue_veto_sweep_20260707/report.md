@@ -65,4 +65,40 @@ bash code/scripts/launch_phase2_adv3b02_stage2c_rescue_veto_sweep_20260707.sh
 
 ## 当前状态
 
-本地实现、窄测试和dry-run已完成；尚未同步N607，尚未产生远端结果。
+## 第一轮远端结果
+
+远端运行已完成，输出路径：
+
+|项目|路径|
+|---|---|
+|runs|`/home/szu2070436088/2510044040/CV-SincNet/runs/phase2_adv3b02_stage2c_rescue_veto_sweep_20260707`|
+|logs|`/home/szu2070436088/2510044040/CV-SincNet/logs/phase2_adv3b02_stage2c_rescue_veto_sweep_20260707`|
+|summary|`automation_reports/CV-SincNet/phase2_adv3b02_stage2c_rescue_veto_sweep_20260707/remote_artifacts/stage2c_rescue_veto_sweep_summary.json`|
+
+关键结论：单纯在rescue之后按原始unknown风险做二级veto没有形成可部署折中。`unknown_FAR<=0.05`的行全部known为0；known非零的最好行仍有`unknown_FAR≈0.21`且seen-new几乎归零。
+
+|variant/profile/K|old_acc|min_old|seen_new_acc|min_seen|unknown_FAR|defer|结论|
+|---|---:|---:|---:|---:|---:|---:|---|
+|`STAGE2C_NORM_SEP/CONF_VETO_E95_ANY_M1/K10`|0.6357|0.0857|0.0089|0.0000|0.2161|0.0182|旧类恢复尚可，但seen-new塌缩|
+|`STAGE2C_HEAD_SEP/CONF_VETO_E95_ANY_M1/K10`|0.6048|0.1429|0.0089|0.0000|0.2143|0.0188|同样退化为旧类路线|
+|`STAGE2C_NORM_SEP/CONF_VETO_E90L90S90_M2/K10`|0.6024|0.0000|0.0000|0.0000|0.1679|0.0182|接近前序FAR-constrained旧类路线|
+|`STAGE2C_HEAD_SEP/CONF_VETO_E90L90S90_M2/K10`|0.5548|0.0000|0.0018|0.0000|0.1554|0.0188|仍不可用|
+
+事件级审计显示，`E95_ANY_M1`的veto强烈误伤seen-new：
+
+|detail|rescue事件|veto_by_role|confusion摘要|
+|---|---|---|---|
+|NORM/K10|old 418；seen-new 554；unknown 540|old 136；seen-new 515；unknown 419|seen-new仅5/560正确接收；unknown仍121/560误接收old/new|
+|HEAD/K10|old 419；seen-new 557；unknown 535|old 153；seen-new 513；unknown 415|seen-new仅7/560正确接收；unknown仍120/560误接收old/new|
+
+解释：`event_unknown_risk`与`label_unknown_risk`在true seen-new和unknown false accept上高度同形。以它们为二级veto会同时杀掉真实新类注册，不能解决“新类增多下性能坍塌”。
+
+## 第二轮center-veto probe
+
+上一轮`SCORER_CENTER_SEEN/K10`仍保留old与seen-new的联合信号：NORM/K10为`old_acc=0.631,seen_new=0.377,FAR=0.671`；HEAD/K10为`old_acc=0.571,seen_new=0.352,FAR=0.627`。因此追加一个更小的`support_center + rescue_unknown_veto`probe，验证support-center是否能在veto后保住seen-new。
+
+|新增脚本|用途|
+|---|---|
+|`code/scripts/launch_phase2_adv3b02_stage2c_center_veto_probe_20260707.sh`|运行`CENTER_VETO_E95_ANY_M1`与`CENTER_VETO_E92L92S92_M2`，覆盖NORM/HEAD与K=5/10，共8组冻结诊断|
+
+当前状态：第一轮结果已拉回并审计；第二轮center-veto probe脚本已创建，待本地验证、提交、同步N607。
