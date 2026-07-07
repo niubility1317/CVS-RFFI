@@ -73,3 +73,46 @@ bash code/scripts/launch_phase2_adv3b02_stage2c_seennew_contrast_probe_20260707.
 - contrast可能提高seen-new分数但同步提高unknown误收，需要后续低FAR门控复查。
 - `CENTER_CONTRAST_W025_M00`可能重复support_center对seen-new的伤害，因此单独标注为组合诊断，不作为默认路线。
 - 本次为冻结特征诊断，不是部署成功证据。
+
+## N607完成状态
+
+- launch_pid:4118154
+- remote_status:completed
+- remote_command:`cd /home/szu2070436088/2510044040/CV-SincNet && nohup bash code/scripts/launch_phase2_adv3b02_stage2c_seennew_contrast_probe_20260707.sh > logs/phase2_adv3b02_stage2c_seennew_contrast_probe_20260707/launch_background.out 2>&1 &`
+- remote_json_count:12/12
+- summary_json:`E:\type10-7\automation_reports\CV-SincNet\phase2_adv3b02_stage2c_seennew_contrast_probe_20260707\stage2c_seennew_contrast_probe_summary.json`
+- summary_csv:`E:\type10-7\automation_reports\CV-SincNet\phase2_adv3b02_stage2c_seennew_contrast_probe_20260707\stage2c_seennew_contrast_probe_summary.csv`
+- ssh_cleanup:checked,no local`ssh.exe`,no ESTABLISHED TCP22 after preflight,sync,launch,monitor,pull
+
+## 结果表
+
+以下每行均为同一candidate/run上下文内的联合指标。`unknown_FAR<=0.05`没有可行行。
+
+| variant | profile | K | old_acc | min_old | seen_new | min_seen_new | unknown_FAR | known_coverage | verdict |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|---|
+| HEAD | CENTER_CONTRAST_W025_M00 | 5 | 0.8143 | 0.6571 | 0.3107 | 0.1429 | 0.8196 | 0.9459 | 注册恢复但FAR过高 |
+| HEAD | CENTER_CONTRAST_W025_M00 | 10 | 0.7952 | 0.5714 | 0.3518 | 0.2286 | 0.9446 | 0.9969 | min_seen最高但FAR过高 |
+| HEAD | CONTRAST_W050_M02 | 10 | 0.7929 | 0.6000 | 0.3554 | 0.2143 | 0.9554 | 0.9959 | seen-new恢复但FAR过高 |
+| HEAD | CONTRAST_W025_M00 | 10 | 0.7929 | 0.6000 | 0.3536 | 0.2143 | 0.9554 | 0.9959 | seen-new恢复但FAR过高 |
+| NORM | CONTRAST_W025_M00 | 10 | 0.8024 | 0.5143 | 0.3875 | 0.1857 | 0.9661 | 0.9918 | seen_new最高但FAR过高 |
+| NORM | CONTRAST_W050_M02 | 10 | 0.8024 | 0.5143 | 0.3875 | 0.1857 | 0.9661 | 0.9918 | seen_new最高但FAR过高 |
+| NORM | CENTER_CONTRAST_W025_M00 | 10 | 0.8143 | 0.5286 | 0.3768 | 0.1571 | 0.9607 | 0.9929 | old高但FAR过高 |
+| NORM | CENTER_CONTRAST_W025_M00 | 5 | 0.8071 | 0.6571 | 0.2714 | 0.0714 | 0.8411 | 0.9367 | K5较稳但seen_new不足 |
+| HEAD | CONTRAST_W025_M00 | 5 | 0.8071 | 0.6286 | 0.2893 | 0.0714 | 0.8696 | 0.9398 | K5注册不足,FAR过高 |
+| HEAD | CONTRAST_W050_M02 | 5 | 0.8071 | 0.6286 | 0.2893 | 0.0714 | 0.8696 | 0.9398 | K5注册不足,FAR过高 |
+| NORM | CONTRAST_W025_M00 | 5 | 0.8071 | 0.6429 | 0.2768 | 0.0571 | 0.8696 | 0.9469 | K5注册不足,FAR过高 |
+| NORM | CONTRAST_W050_M02 | 5 | 0.8048 | 0.6286 | 0.2750 | 0.0571 | 0.8696 | 0.9459 | K5注册不足,FAR过高 |
+
+## 解释
+
+- 与此前rescue-veto/center-veto几乎全拒绝seen-new不同，本次contrast打分层能把seen_new_acc恢复到0.27-0.39区间，说明“新类原型超过old包络”是有效注册证据。
+- 最强seen_new行是NORM K10的`CONTRAST_W025_M00/W050_M02`:seen_new=0.3875,min_seen_new=0.1857,old_acc=0.8024,min_old=0.5143，但unknown_FAR=0.9661，不能作为开放集部署路线。
+- 最强min_seen_new行是HEAD K10的`CENTER_CONTRAST_W025_M00`:seen_new=0.3518,min_seen_new=0.2286,old_acc=0.7952,min_old=0.5714，但unknown_FAR=0.9446，仍不可部署。
+- 最低FAR行是HEAD K5的`CENTER_CONTRAST_W025_M00`:unknown_FAR=0.8196，仍远高于`<=0.05`门槛。
+- 结论:contrast是qKNNV42下一轮的注册打分组件候选，但必须配套“contrast-aware unknown gate”，不能沿用旧veto把seen-new打回unknown，也不能无门控直接接受高FAR结果。
+
+## 下一步
+
+1. 固定HEAD/NORM K10的contrast打分作为候选证据，新增low-FAR门控:对unknown使用old-envelope和seen-new-contrast margin的双阈值，而不是只看全局unknown risk。
+2. 对比`seen_new_old_contrast_delta`、`old_reference_score`、`seen_new_centroid_score`的事件级分布，找出unknown误收是否来自unknown靠近seen-new原型还是门控阈值过松。
+3. 只在低FAR门控出现`unknown_FAR<=0.05`且seen_new/min_seen不坍塌后，才进入更大矩阵或部署候选判定。
