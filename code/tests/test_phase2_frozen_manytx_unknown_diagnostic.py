@@ -296,6 +296,63 @@ class Phase2FrozenManytxUnknownDiagnosticTest(unittest.TestCase):
         self.assertEqual(args.candidate_set_max_label_shell_risk, 0.65)
         self.assertEqual(args.candidate_set_shell_reject_risk, 0.72)
 
+    def test_accepts_orbit_old_floor_cli_knobs(self):
+        from phase2_frozen_manytx_unknown_diagnostic import parse_args
+
+        args = parse_args(
+            [
+                "--feature_npz",
+                "x.npz",
+                "--output_json",
+                "out.json",
+                "--fusion_policy",
+                "orbit_coproto",
+                "--orbit_min_trust",
+                "0.35",
+                "--orbit_unknown_veto_risk",
+                "0.88",
+                "--orbit_old_floor_rescue_enabled",
+                "--orbit_old_floor_max_rank",
+                "2",
+                "--orbit_old_floor_min_receivers",
+                "1",
+                "--orbit_old_floor_min_pvalue",
+                "0.45",
+                "--orbit_old_floor_min_receiver_class_reliability",
+                "0.25",
+                "--orbit_old_floor_min_support_density",
+                "0.0",
+                "--orbit_old_floor_min_margin",
+                "0.0",
+                "--orbit_old_floor_max_label_unknown_risk",
+                "0.78",
+                "--orbit_old_floor_max_event_unknown_risk",
+                "0.82",
+                "--orbit_old_floor_max_shell_risk",
+                "0.35",
+                "--orbit_old_floor_max_component_agreement",
+                "0.50",
+                "--orbit_old_floor_min_trust",
+                "0.40",
+            ]
+        )
+
+        self.assertEqual(args.fusion_policy, "orbit_coproto")
+        self.assertEqual(args.orbit_min_trust, 0.35)
+        self.assertEqual(args.orbit_unknown_veto_risk, 0.88)
+        self.assertTrue(args.orbit_old_floor_rescue_enabled)
+        self.assertEqual(args.orbit_old_floor_max_rank, 2)
+        self.assertEqual(args.orbit_old_floor_min_receivers, 1)
+        self.assertEqual(args.orbit_old_floor_min_pvalue, 0.45)
+        self.assertEqual(args.orbit_old_floor_min_receiver_class_reliability, 0.25)
+        self.assertEqual(args.orbit_old_floor_min_support_density, 0.0)
+        self.assertEqual(args.orbit_old_floor_min_margin, 0.0)
+        self.assertEqual(args.orbit_old_floor_max_label_unknown_risk, 0.78)
+        self.assertEqual(args.orbit_old_floor_max_event_unknown_risk, 0.82)
+        self.assertEqual(args.orbit_old_floor_max_shell_risk, 0.35)
+        self.assertEqual(args.orbit_old_floor_max_component_agreement, 0.50)
+        self.assertEqual(args.orbit_old_floor_min_trust, 0.40)
+
     def test_can_repair_legacy_target_new_unknown_roles_from_manifest(self):
         from phase2_frozen_manytx_unknown_diagnostic import main
 

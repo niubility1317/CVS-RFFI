@@ -348,6 +348,22 @@ def run_diagnostic(args: argparse.Namespace) -> dict[str, Any]:
         ),
         candidate_set_unknown_reject_risk=float(args.candidate_set_unknown_reject_risk),
         candidate_set_shell_reject_risk=float(args.candidate_set_shell_reject_risk),
+        orbit_min_trust=float(args.orbit_min_trust),
+        orbit_unknown_veto_risk=float(args.orbit_unknown_veto_risk),
+        orbit_old_floor_rescue_enabled=bool(args.orbit_old_floor_rescue_enabled),
+        orbit_old_floor_max_rank=int(args.orbit_old_floor_max_rank),
+        orbit_old_floor_min_receivers=int(args.orbit_old_floor_min_receivers),
+        orbit_old_floor_min_pvalue=float(args.orbit_old_floor_min_pvalue),
+        orbit_old_floor_min_receiver_class_reliability=float(
+            args.orbit_old_floor_min_receiver_class_reliability
+        ),
+        orbit_old_floor_min_support_density=float(args.orbit_old_floor_min_support_density),
+        orbit_old_floor_min_margin=float(args.orbit_old_floor_min_margin),
+        orbit_old_floor_max_label_unknown_risk=float(args.orbit_old_floor_max_label_unknown_risk),
+        orbit_old_floor_max_event_unknown_risk=float(args.orbit_old_floor_max_event_unknown_risk),
+        orbit_old_floor_max_shell_risk=float(args.orbit_old_floor_max_shell_risk),
+        orbit_old_floor_max_component_agreement=float(args.orbit_old_floor_max_component_agreement),
+        orbit_old_floor_min_trust=float(args.orbit_old_floor_min_trust),
         latency_budget_ms=float(args.latency_budget_ms),
         max_event_bytes=float(args.max_event_bytes),
         max_event_latency_ms=float(args.max_event_latency_ms),
@@ -527,6 +543,20 @@ def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
     p.add_argument("--candidate_set_min_label_receiver_class_reliability", type=float, default=0.0)
     p.add_argument("--candidate_set_unknown_reject_risk", type=float, default=0.72)
     p.add_argument("--candidate_set_shell_reject_risk", type=float, default=1.0e12)
+    p.add_argument("--orbit_min_trust", type=float, default=0.10)
+    p.add_argument("--orbit_unknown_veto_risk", type=float, default=0.80)
+    p.add_argument("--orbit_old_floor_rescue_enabled", action="store_true")
+    p.add_argument("--orbit_old_floor_max_rank", type=int, default=3)
+    p.add_argument("--orbit_old_floor_min_receivers", type=_positive_int, default=2)
+    p.add_argument("--orbit_old_floor_min_pvalue", type=float, default=0.25)
+    p.add_argument("--orbit_old_floor_min_receiver_class_reliability", type=float, default=0.30)
+    p.add_argument("--orbit_old_floor_min_support_density", type=float, default=0.20)
+    p.add_argument("--orbit_old_floor_min_margin", type=float, default=0.03)
+    p.add_argument("--orbit_old_floor_max_label_unknown_risk", type=float, default=0.55)
+    p.add_argument("--orbit_old_floor_max_event_unknown_risk", type=float, default=0.75)
+    p.add_argument("--orbit_old_floor_max_shell_risk", type=float, default=0.65)
+    p.add_argument("--orbit_old_floor_max_component_agreement", type=float, default=0.50)
+    p.add_argument("--orbit_old_floor_min_trust", type=float, default=0.0)
     p.add_argument("--latency_budget_ms", type=float, default=0.0)
     p.add_argument("--max_event_bytes", type=float, default=0.0)
     p.add_argument("--max_event_latency_ms", type=float, default=0.0)
