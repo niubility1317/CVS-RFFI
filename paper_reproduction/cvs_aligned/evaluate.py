@@ -517,6 +517,19 @@ def _embed(model, baseline: str, x: torch.Tensor, device: torch.device) -> torch
         return model(x).detach().cpu()
 
 
+def _source_logits(model, baseline: str, x: torch.Tensor, device: torch.device) -> torch.Tensor:
+    model.eval()
+    with torch.no_grad():
+        x = x.to(device)
+        if baseline == "riei_fd":
+            return model(x)["emitter_logits"].detach().cpu()
+        if baseline == "drift":
+            return model(x, grl_lambda=0.0)["tx_logits"].detach().cpu()
+        if baseline == "feature_separation_crossrx":
+            return model(build_wisig_fusion_representation(x))["tx_logits"].detach().cpu()
+    raise ValueError(f"source logits are unavailable for baseline: {baseline}")
+
+
 def _select_target_sets(config: dict[str, Any], manysig: dict[str, Any], manytx: dict[str, Any]) -> dict[str, Any]:
     target_rxs = [str(v) for v in config["target_receiver_labels"]]
     equalized = int(config.get("equalized", 1))
@@ -787,6 +800,58 @@ def _support_head_finetune_predict(
     }
 
 
+def _source_logit_bias_predict(
+    support_logits: torch.Tensor,
+    support_y: torch.Tensor,
+    query_logits: torch.Tensor,
+    *,
+    source_class_ids: list[int],
+    margin: float,
+    steps: int,
+    lr: float,
+    weight_decay: float,
+    temperature: float,
+    device: torch.device,
+    rejection_enabled: bool = True,
+) -> tuple[torch.Tensor, torch.Tensor, dict[str, Any]]:
+    labels = torch.unique(support_y).sort().values
+    if int(labels.max().item()) >= len(source_class_ids):
+        raise ValueError("support label is outside source_class_ids mapping")
+    selected_ids = [int(source_class_ids[int(label.item())]) for label in labels]
+    compact = torch.empty_like(support_y)
+    for i, label in enumerate(labels):
+        compact[support_y == label] = int(i)
+    temp = max(1.0e-6, float(temperature))
+    x = (support_logits.float()[:, selected_ids] / temp).to(device)
+    q = (query_logits.float()[:, selected_ids] / temp).to(device)
+    y = compact.to(device)
+    bias = nn.Parameter(torch.zeros(int(labels.numel()), device=device))
+    opt = torch.optim.AdamW([bias], lr=float(lr), weight_decay=float(weight_decay))
+    for _ in range(max(0, int(steps))):
+        opt.zero_grad(set_to_none=True)
+        loss = F.cross_entropy(x + bias, y)
+        loss.backward()
+        opt.step()
+    with torch.no_grad():
+        support_conf = F.softmax(x + bias, dim=1).max(dim=1).values
+        threshold = float(torch.quantile(support_conf.detach().cpu(), 0.05).item()) - float(margin)
+        probs = F.softmax(q + bias, dim=1)
+        max_prob, argmax = probs.max(dim=1)
+    pred = labels[argmax.detach().cpu()].clone()
+    if rejection_enabled:
+        pred[max_prob.detach().cpu() < threshold] = -1
+    return pred.cpu(), (-max_prob.detach().cpu()), {
+        "gate_method": "source_logit_bias_confidence_quantile"
+        if rejection_enabled
+        else "source_logit_bias_no_rejection",
+        "unknown_score_kind": "negative_source_logit_confidence",
+        "threshold": threshold,
+        "source_logit_bias_steps": int(steps),
+        "source_logit_temperature": temp,
+        "unknown_rejection_enabled": bool(rejection_enabled),
+    }
+
+
 def _write_score_table(path: Path, *, rows: list[dict[str, Any]]) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     fieldnames = sorted({key for row in rows for key in row.keys()})
@@ -810,6 +875,9 @@ def _run(config: dict[str, Any], args: argparse.Namespace) -> dict[str, Any]:
     target_scenarios = _target_scenarios(config)
     support_query_satellite = any(scenario != "clean" for scenario in target_scenarios)
     unknown_rejection_enabled = bool(config.get("unknown_rejection_enabled", True))
+    source_class_ids = [
+        _idx(list(manysig.get("tx_list", [])), label) for label in [str(v) for v in config["target_old_tx_labels"]]
+    ]
     metrics_by_scenario: dict[str, Any] = {}
     score_rows: list[dict[str, Any]] = []
     t0 = time.perf_counter()
@@ -819,7 +887,23 @@ def _run(config: dict[str, Any], args: argparse.Namespace) -> dict[str, Any]:
         support_z = _embed(model, baseline, support_x, device)
         query_z = _embed(model, baseline, query_x, device)
         adaptation_mode = str(config.get("adaptation_mode", "support_prototype_registration"))
-        if adaptation_mode == "support_head_finetune":
+        if adaptation_mode == "source_logit_bias_calibration":
+            support_logits = _source_logits(model, baseline, support_x, device)
+            query_logits = _source_logits(model, baseline, query_x, device)
+            pred, unknown_scores, gate_info = _source_logit_bias_predict(
+                support_logits,
+                tensors["support_y"],
+                query_logits,
+                source_class_ids=source_class_ids,
+                margin=float(config.get("threshold_margin", 0.02)),
+                steps=int(config.get("source_logit_bias_steps", 80)),
+                lr=float(config.get("source_logit_bias_lr", 0.05)),
+                weight_decay=float(config.get("source_logit_bias_weight_decay", 0.0)),
+                temperature=float(config.get("source_logit_temperature", 1.0)),
+                device=device,
+                rejection_enabled=unknown_rejection_enabled,
+            )
+        elif adaptation_mode == "support_head_finetune":
             pred, unknown_scores, gate_info = _support_head_finetune_predict(
                 support_z,
                 tensors["support_y"],
@@ -914,6 +998,8 @@ def _run(config: dict[str, Any], args: argparse.Namespace) -> dict[str, Any]:
         "support_finetune_normalize": bool(config.get("support_finetune_normalize", False)),
         "support_head_init": config.get("support_head_init", ""),
         "support_head_temperature": config.get("support_head_temperature", ""),
+        "source_logit_bias_steps": config.get("source_logit_bias_steps", 0),
+        "source_logit_temperature": config.get("source_logit_temperature", ""),
     }
     result = {
         "experiment_id": config.get("experiment_id", "cvs_aligned_stage2"),
@@ -938,6 +1024,8 @@ def _run(config: dict[str, Any], args: argparse.Namespace) -> dict[str, Any]:
             "support_finetune_normalize": gate_info.get("support_finetune_normalize", False),
             "support_head_init": gate_info.get("support_head_init", ""),
             "support_head_temperature": gate_info.get("support_head_temperature", ""),
+            "source_logit_bias_steps": gate_info.get("source_logit_bias_steps", 0),
+            "source_logit_temperature": gate_info.get("source_logit_temperature", ""),
             "support_query_channel_view": str(config.get("target_channel_view", "clean")),
             "support_query_channel_scenarios": target_scenarios,
             "support_query_satellite_augmentation_enabled": support_query_satellite,

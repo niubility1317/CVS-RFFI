@@ -11,6 +11,7 @@ from paper_reproduction.cvs_aligned.evaluate import (
     _filter_kwargs_for_callable,
     _prototype_predict,
     _scenario_counts_for_steps,
+    _source_logit_bias_predict,
     _support_head_finetune_predict,
 )
 from paper_reproduction.cvs_aligned.protocol import validate_stage2_protocol_payload
@@ -438,3 +439,49 @@ def test_support_head_finetune_can_use_normalized_prototype_initialization():
     assert info["support_finetune_normalize"] is True
     assert info["support_head_init"] == "prototype"
     assert info["support_head_temperature"] == 10.0
+
+
+def test_source_logit_bias_predict_uses_support_only_bias_calibration():
+    support_logits = torch.tensor(
+        [
+            [0.0, 1.0],
+            [0.1, 0.9],
+            [0.0, 3.0],
+            [0.2, 2.9],
+        ]
+    )
+    support_y = torch.tensor([0, 0, 1, 1])
+    query_logits = torch.tensor([[0.0, 0.8], [0.3, 3.0]])
+
+    pred_before, _, _ = _source_logit_bias_predict(
+        support_logits,
+        support_y,
+        query_logits,
+        source_class_ids=[0, 1],
+        margin=0.0,
+        steps=0,
+        lr=0.0,
+        weight_decay=0.0,
+        temperature=1.0,
+        device=torch.device("cpu"),
+        rejection_enabled=False,
+    )
+    pred_after, scores, info = _source_logit_bias_predict(
+        support_logits,
+        support_y,
+        query_logits,
+        source_class_ids=[0, 1],
+        margin=0.0,
+        steps=80,
+        lr=0.1,
+        weight_decay=0.0,
+        temperature=1.0,
+        device=torch.device("cpu"),
+        rejection_enabled=False,
+    )
+
+    assert pred_before.tolist() == [1, 1]
+    assert pred_after.tolist() == [0, 1]
+    assert scores.shape == torch.Size([2])
+    assert info["gate_method"] == "source_logit_bias_no_rejection"
+    assert info["source_logit_bias_steps"] == 80
