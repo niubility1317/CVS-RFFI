@@ -75,3 +75,51 @@
 |`seen_new_acc`和`min_seen_new_class_acc`不为0|说明新类注册没有被旧类floor或unknown veto完全压掉。|
 |`orbit_old_floor_rescue_by_role`主要为old|若unknown或seen-new大量触发旧类floor，说明该门限不可用。|
 |同一行同时报告old、seen-new、unknown FAR|不得用不同候选的单项最值拼接成功叙述。|
+
+## 远端执行与修复记录
+
+### 首次运行
+
+- 远端运行ID：`phase2_adv3b02_stage2c_qknnv42_oldfloor_combo_20260707`
+- 状态：完成，生成20个JSON和summary。
+- 发现：wrapper顶层已解析`orbit_old_floor_*`参数，但event级记录仍显示底层默认值，例如`orbit_old_floor_min_receivers=2`、`orbit_old_floor_max_label_unknown_risk=0.55`。根因是`evaluate_collaborative_open_set_evidence`在默认`collaboration_policy=dual_route_cvs`路径调用`_fuse_dual_route_event`时漏传`orbit_*`参数。
+- 本地修复：`code/evaluation/collaborative_open_set_qknn_eval.py`补齐dual-route外层到内层fuser的`orbit_*`透传；`code/tests/test_collaborative_open_set_qknn_eval.py`新增回归测试。
+- 修复验证：新增dual-route测试先失败于`orbit_min_trust`回落默认值0.10；补丁后`2 passed`，随后`test_phase2_frozen_manytx_unknown_diagnostic.py`加两项旧floor测试共`9 passed`；`py_compile`通过。并发`conda run`曾触发Windows临时锁，串行重跑通过。
+
+### retry1结果
+
+- 远端运行ID：`phase2_adv3b02_stage2c_qknnv42_oldfloor_combo_retry1_20260707`
+- 状态：完成，生成20个JSON和summary。
+- 本地汇总路径：
+  - `E:\type10-7\automation_reports\CV-SincNet\phase2_adv3b02_stage2c_qknnv42_oldfloor_combo_retry1_20260707\stage2c_qknnv42_oldfloor_combo_summary.json`
+  - `E:\type10-7\automation_reports\CV-SincNet\phase2_adv3b02_stage2c_qknnv42_oldfloor_combo_retry1_20260707\stage2c_qknnv42_oldfloor_combo_summary.csv`
+
+|variant|profile|K|old_acc|min_old|seen_new_acc|min_seen|unknown_FAR|unknown_reject|known_coverage|old_floor_rescue_count|rescue_by_role|判定|
+|---|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---|---|
+|`STAGE2C_NORM_SEP`|`OLDFLOOR_BALANCED`|10|0.611905|0.000000|0.000000|0.000000|0.182143|0.816071|0.303061|237|`{"old":194,"seen_new":12,"unknown":31}`|旧类提升但FAR超标，且min_old仍为0。|
+|`STAGE2C_NORM_SEP`|`OLDFLOOR_RELAXED`|10|0.611905|0.000000|0.000000|0.000000|0.182143|0.816071|0.303061|269|`{"old":206,"seen_new":18,"unknown":45}`|继续放宽只增加非old触发，未提升old。|
+|`STAGE2C_NORM_SEP`|`ORBIT_BASE`|10|0.611905|0.000000|0.000000|0.000000|0.182143|0.816071|0.303061|0|`{}`|仅透传orbit基础门限后旧类升高，但FAR已不可接受。|
+|`STAGE2C_HEAD_SEP`|`OLDFLOOR_BALANCED`|10|0.566667|0.000000|0.003571|0.000000|0.167857|0.832143|0.289796|205|`{"old":169,"seen_new":10,"unknown":26}`|同样不满足old80或低FAR。|
+|任一variant|任一profile|5|0.000000|0.000000|0.000000|0.000000|0.000000|1.000000|0.000000|0或仅veto|见summary|K=5在当前orbit路径全拒识，不能作为优化解。|
+
+### 旧类坍塌分析
+
+`STAGE2C_NORM_SEP/OLDFLOOR_RELAXED/K=10`的逐类old结果：
+
+|old TX|acc|主要现象|
+|---|---:|---|
+|`14-10`|0.628571|部分正确，仍有unknown_reject。|
+|`14-7`|0.557143|旧类floor能救一部分，但有`20-19`混淆。|
+|`20-15`|0.671429|旧类floor救回一部分。|
+|`20-19`|0.842857|已超过0.80。|
+|`6-15`|0.000000|70个query全失败；36次候选为`6-15`但被`effective_unknown_risk>0.92`拒识，34次被seen-new候选挤占。|
+|`8-20`|0.971429|表现稳定。|
+
+对`6-15`做离线阈值模拟，只有进一步放宽unknown risk时才出现非零min_old；最早可见窗口约为`old_acc=0.623810,min_old=0.071429,unknown_FAR=0.185714`，仍明显不满足低FAR要求。结论：继续调`orbit_old_floor`不是可推广优化路线。
+
+## 当前结论
+
+1. target-old-only上限已经证明旧类目标域特征可分，`STAGE2C_NORM_SEP/proto/K=10`可到`old_acc=0.926190,min_old=0.828571`。
+2. qKNNV42的当前问题不是旧类特征完全不可分，而是Stage2-C open-set仲裁中target-old support候选未被充分用于旧类保留。
+3. `orbit_coproto+old_floor`在dual-route透传修复后只能把旧类提升到0.612，同时把unknown FAR推到0.18，且`6-15`仍为0；该路线应标记为诊断负证据。
+4. 下一步应实现或诊断“target-old support-only old classifier/linear probe作为旧类保留仲裁分支”，并且必须用unknown/seen-new门控验证，不能只继承target-old-only上限。
