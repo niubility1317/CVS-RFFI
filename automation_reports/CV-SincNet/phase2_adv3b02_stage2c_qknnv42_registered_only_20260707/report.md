@@ -104,12 +104,12 @@
 | 15 | `STAGE2C_HEAD_SEP` | `REGISTERED_CENTER_CONTRAST` | 10 | false | 3.230052 | 0.795238 | 0.351786 | 0.487790 | 0.571429 | 0.228571 | 1.000000 | 0.000000 | 1.000000 | 2.051 |
 | 16 | `STAGE2C_HEAD_SEP` | `REGISTERED_CENTER` | 10 | false | 3.224841 | 0.792857 | 0.351786 | 0.487341 | 0.571429 | 0.228571 | 1.000000 | 0.000000 | 1.000000 | 1.517 |
 
-## 结论
+## 更正结论
 
-当前完整Stage2-C互斥unknown包中的最佳qKNNV42优化版本是：
+本实验不能登记为qKNNV42当前最佳版本。
 
-`phase2_registered_only + STAGE2C_HEAD_SEP + REGISTERED_CENTER_CONTRAST + K=5`
+原因：本实验仍然使用带独立`target_unknown`字段的冻结诊断包作为输入，并在报告中按“完整Stage2-C互斥unknown包”描述结果。该口径与当前Phase2主线要求不一致。当前Phase2主线只评估K=5/K=10目标域LEO旧类适应和seen-new注册识别；unknown互斥/拒识不得作为当前最佳版本的主评价包或主排序依据。
 
-该行达到`old_acc=0.826190`、`min_old=0.657143`、`seen_new_acc=0.321429`、`min_seen=0.142857`、`H_old_new=0.462804`、`phase2_joint_score=3.236613`、`known_coverage=1.0`、`defer_rate=0`。它显著修复旧`oldfloor_combo`路线中`old_acc=0.611905,min_old=0,seen_new_acc=0`的问题，证明Phase2主线在去除unknown拒识主导后能恢复old/seen-new注册识别。
+本实验只能保留为错误口径诊断：它说明在该冻结诊断包上去掉unknown拒识主导后，old/seen-new仍没有恢复到no-unknown主线水平，最佳行只有`old_acc=0.826190`、`min_old=0.657143`、`seen_new_acc=0.321429`、`min_seen=0.142857`。它不得覆盖`phase2_qknn_hardpair_n20_20260706`中no-unknown主线的当前最佳结论。
 
-边界：该结果仍不是完整部署成功。`unknown_FAR=1.0`是预期诊断结果，因为本策略按`项目.md`将unknown拒识下沉为Phase3备用项，Phase2主线只评价已注册old/seen-new。seen-new最低类仍偏低，下一步应在`phase2_registered_only`基础上加入可部署的seen-new类簇局部保护，而不是重新把unknown veto放回Phase2主排序。
+当前应引用的no-unknown主线最佳为`phase2_qknn_hardpair_n20_20260706`报告中的K5严格高floor候选：`seed=421070`，参数`aux_score_weight=0.34,labelprop_weight=0.025,labelprop_alpha=0.76,scenario_residual_weight=0.5,old_bias=0.001`，指标`old=94.52%,min_old=85.71%,seen_new=90.14%,min_new=81.43%`。该候选使用N20 HP08L5注册新类包，目标域support/query均为LEO叠加视图；不以unknown互斥或unknown FAR为主任务。
