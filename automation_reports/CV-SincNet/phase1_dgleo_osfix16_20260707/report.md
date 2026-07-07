@@ -218,3 +218,7 @@ launcher返回：`[OSFIX16-SUBMIT-COMPLETE]`
 - open-set代理：`proxy_vaccept`、`source_overflow`、`bridge_accept_rate`、`low_density_accept_rate`、`tail/overflow_accept`、`radius_to_inter_ratio`、`zid_p50/p95/p99`、`zid_tail_cvar`。
 - 无标签：`u_dm_accept_*`和`u_quarantine_accept_rate/low_density_accept_rate`是否改善，同时不牺牲receiver floor和satellite floor。
 - 候选推进：只有同时保护泛化并降低p99/tail/proxy/source overflow风险的候选，才可进入Stage2真实unknown评估；Phase1结果本身不能声明真实unknown_FAR或FPR95改善。
+
+### 交接前只读复查
+
+2026-07-07交接前复查仍为健康启动状态：`nvidia-smi pmon -c 1`显示16个训练Python进程，GPU0-7均为2个训练进程；`logs/phase1_dgleo_osfix16_20260707`下16个`.out`存在；`runs/phase1_dgleo_osfix16_20260707`下16个`metrics_epoch.csv`存在；对16个日志扫描`Traceback|RuntimeError|Killed|unrecognized`未命中。
