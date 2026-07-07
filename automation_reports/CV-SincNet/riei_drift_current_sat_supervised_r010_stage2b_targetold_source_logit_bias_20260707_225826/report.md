@@ -84,7 +84,38 @@ RUN_ID=riei_drift_current_sat_supervised_r010_stage2b_targetold_source_logit_bia
 
 ## 结果
 
-待N607运行完成后追加。
+完成状态：4个候选均已完成，GPU回到空闲；本地artifact已拉回：
+
+- `E:\type10-7\automation_reports\CV-SincNet\riei_drift_current_sat_supervised_r010_stage2b_targetold_source_logit_bias_20260707_225826\artifacts\`
+
+主结果：
+
+| candidate | baseline | K | old_acc | clear | low | rain | coverage | lat_ms | verdict |
+|---|---|---:|---:|---:|---:|---:|---:|---:|---|
+| `riei_fd_current_sat_k5_leo_source_logit_bias_seed1337` | RIEI | 5 | 0.5422 | 0.5550 | 0.5533 | 0.5183 | 1.0000 | 0.676 | below best support-head |
+| `riei_fd_current_sat_k10_leo_source_logit_bias_seed1337` | RIEI | 10 | 0.5361 | 0.5317 | 0.5450 | 0.5317 | 1.0000 | 0.568 | below best support-head |
+| `drift_current_sat_k5_leo_source_logit_bias_seed1337` | DRIFT | 5 | 0.5333 | 0.5350 | 0.5450 | 0.5200 | 1.0000 | 0.583 | below best support-head |
+| `drift_current_sat_k10_leo_source_logit_bias_seed1337` | DRIFT | 10 | 0.5183 | 0.5217 | 0.5150 | 0.5183 | 1.0000 | 0.594 | below best support-head |
+
+逐类和逐receiver诊断：
+
+| candidate | weak TX | strong TX | weak receiver | strong receiver | top confusion |
+|---|---|---|---|---|---|
+| DRIFT K5 | `6-15` 0.247、`14-7` 0.290、`14-10` 0.410 | `8-20` 0.917、`20-15` 0.890 | `20-1` 0.408、`3-19` 0.403 | `7-14` 0.731、`8-8` 0.647 | `14-7->3`、`20-19->1`、`6-15->1` |
+| DRIFT K10 | `14-7` 0.277、`6-15` 0.283、`14-10` 0.380 | `8-20` 0.907、`20-15` 0.820 | `3-19` 0.350、`20-1` 0.392 | `7-14` 0.722、`8-8` 0.625 | `14-7->3`、`6-15->1`、`14-10->4` |
+| RIEI K5 | `6-15` 0.283、`14-7` 0.320、`14-10` 0.350 | `8-20` 0.937、`20-15` 0.863 | `20-1` 0.358、`3-19` 0.419 | `7-14` 0.778、`8-8` 0.614 | `14-7->3`、`14-10->1`、`6-15->1` |
+| RIEI K10 | `6-15` 0.313、`14-7` 0.317、`14-10` 0.360 | `8-20` 0.917、`20-15` 0.840 | `20-1` 0.367、`3-19` 0.414 | `7-14` 0.794、`8-8` 0.603 | `14-7->3`、`6-15->1`、`14-10->4` |
+
+日志扫描：
+
+- 4个`.out`均完整解析；无`Traceback`、`RuntimeError`、CUDA OOM、`Killed`或参数错误。
+- 日志中出现`NaN`只来自`AUROC/FPR95/unknown_FAR`在unknown disabled场景下的JSON字段，不是训练或推理数值异常。
+
+## 解释
+
+SourceLogitBias-CDA没有修复性能差问题：最好的RIEI K5仅0.5422，与normalized Euclidean基本相同，低于support-head的0.5556；DRIFT从support-head K10的0.5650退回到0.5183。结论是源分类器logit并没有比目标support上重新拟合的head保留更好的LEO目标域决策面。
+
+更关键的诊断信号是误差同时按TX和receiver集中：`20-15`/`8-20`稳定高，而`14-7`/`6-15`/`14-10`稳定低；`7-14`明显好于`20-1`/`3-19`。这说明当前全局prototype/head把5个目标receiver的support合并后，可能混掉receiver-specific响应。下一步已转向`ReceiverConditionedSupportHead-CDA`，即每个目标receiver只用本receiver的support训练轻量head并预测本receiver query。
 
 ## 风险与观察点
 

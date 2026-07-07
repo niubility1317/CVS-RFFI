@@ -800,6 +800,72 @@ def _support_head_finetune_predict(
     }
 
 
+def _receiver_conditioned_support_head_predict(
+    support_z: torch.Tensor,
+    support_y: torch.Tensor,
+    query_z: torch.Tensor,
+    *,
+    support_meta: list[dict[str, Any]],
+    query_meta: list[dict[str, Any]],
+    margin: float,
+    steps: int,
+    lr: float,
+    weight_decay: float,
+    device: torch.device,
+    rejection_enabled: bool = True,
+    normalize: bool = False,
+    init: str = "random",
+    temperature: float = 1.0,
+) -> tuple[torch.Tensor, torch.Tensor, dict[str, Any]]:
+    if support_z.shape[0] != len(support_meta):
+        raise ValueError("support_z/support_meta length mismatch")
+    if query_z.shape[0] != len(query_meta):
+        raise ValueError("query_z/query_meta length mismatch")
+    pred = torch.full((query_z.shape[0],), -1, dtype=torch.long)
+    unknown_scores = torch.full((query_z.shape[0],), float("inf"), dtype=torch.float32)
+    rx_values = sorted({str(m.get("rx_label", "")) for m in query_meta})
+    fallback_groups: list[str] = []
+    for rx_label in rx_values:
+        support_idx = [i for i, meta in enumerate(support_meta) if str(meta.get("rx_label", "")) == rx_label]
+        query_idx = [i for i, meta in enumerate(query_meta) if str(meta.get("rx_label", "")) == rx_label]
+        if not query_idx:
+            continue
+        if not support_idx:
+            support_idx = list(range(len(support_meta)))
+            fallback_groups.append(rx_label)
+        group_pred, group_scores, _ = _support_head_finetune_predict(
+            support_z[torch.tensor(support_idx, dtype=torch.long)],
+            support_y[torch.tensor(support_idx, dtype=torch.long)],
+            query_z[torch.tensor(query_idx, dtype=torch.long)],
+            margin=margin,
+            steps=steps,
+            lr=lr,
+            weight_decay=weight_decay,
+            device=device,
+            rejection_enabled=rejection_enabled,
+            normalize=normalize,
+            init=init,
+            temperature=temperature,
+        )
+        pred[torch.tensor(query_idx, dtype=torch.long)] = group_pred
+        unknown_scores[torch.tensor(query_idx, dtype=torch.long)] = group_scores
+    return pred.cpu(), unknown_scores.cpu(), {
+        "gate_method": "receiver_conditioned_support_head_confidence_quantile"
+        if rejection_enabled
+        else "receiver_conditioned_support_head_no_rejection",
+        "unknown_score_kind": "negative_head_confidence",
+        "threshold": "",
+        "support_finetune_steps": int(steps),
+        "unknown_rejection_enabled": bool(rejection_enabled),
+        "support_finetune_normalize": bool(normalize),
+        "support_head_init": str(init).lower(),
+        "support_head_temperature": float(temperature),
+        "receiver_conditioned": True,
+        "receiver_conditioned_groups": rx_values,
+        "receiver_conditioned_fallback_groups": fallback_groups,
+    }
+
+
 def _source_logit_bias_predict(
     support_logits: torch.Tensor,
     support_y: torch.Tensor,
@@ -918,6 +984,23 @@ def _run(config: dict[str, Any], args: argparse.Namespace) -> dict[str, Any]:
                 init=str(config.get("support_head_init", "random")),
                 temperature=float(config.get("support_head_temperature", 1.0)),
             )
+        elif adaptation_mode == "receiver_conditioned_support_head":
+            pred, unknown_scores, gate_info = _receiver_conditioned_support_head_predict(
+                support_z,
+                tensors["support_y"],
+                query_z,
+                support_meta=tensors["support_meta"],
+                query_meta=tensors["query_meta"],
+                margin=float(config.get("threshold_margin", 0.02)),
+                steps=int(config.get("support_finetune_steps", 100)),
+                lr=float(config.get("support_finetune_lr", 0.05)),
+                weight_decay=float(config.get("support_finetune_weight_decay", 0.0)),
+                device=device,
+                rejection_enabled=unknown_rejection_enabled,
+                normalize=bool(config.get("support_finetune_normalize", False)),
+                init=str(config.get("support_head_init", "random")),
+                temperature=float(config.get("support_head_temperature", 1.0)),
+            )
         else:
             pred, unknown_scores, gate_info = _prototype_predict(
                 support_z,
@@ -998,6 +1081,9 @@ def _run(config: dict[str, Any], args: argparse.Namespace) -> dict[str, Any]:
         "support_finetune_normalize": bool(config.get("support_finetune_normalize", False)),
         "support_head_init": config.get("support_head_init", ""),
         "support_head_temperature": config.get("support_head_temperature", ""),
+        "receiver_conditioned": bool(gate_info.get("receiver_conditioned", False)),
+        "receiver_conditioned_groups": gate_info.get("receiver_conditioned_groups", []),
+        "receiver_conditioned_fallback_groups": gate_info.get("receiver_conditioned_fallback_groups", []),
         "source_logit_bias_steps": config.get("source_logit_bias_steps", 0),
         "source_logit_temperature": config.get("source_logit_temperature", ""),
     }
@@ -1024,6 +1110,9 @@ def _run(config: dict[str, Any], args: argparse.Namespace) -> dict[str, Any]:
             "support_finetune_normalize": gate_info.get("support_finetune_normalize", False),
             "support_head_init": gate_info.get("support_head_init", ""),
             "support_head_temperature": gate_info.get("support_head_temperature", ""),
+            "receiver_conditioned": bool(gate_info.get("receiver_conditioned", False)),
+            "receiver_conditioned_groups": gate_info.get("receiver_conditioned_groups", []),
+            "receiver_conditioned_fallback_groups": gate_info.get("receiver_conditioned_fallback_groups", []),
             "source_logit_bias_steps": gate_info.get("source_logit_bias_steps", 0),
             "source_logit_temperature": gate_info.get("source_logit_temperature", ""),
             "support_query_channel_view": str(config.get("target_channel_view", "clean")),

@@ -10,6 +10,7 @@ from paper_reproduction.cvs_aligned.evaluate import (
     _embed,
     _filter_kwargs_for_callable,
     _prototype_predict,
+    _receiver_conditioned_support_head_predict,
     _scenario_counts_for_steps,
     _source_logit_bias_predict,
     _support_head_finetune_predict,
@@ -485,3 +486,51 @@ def test_source_logit_bias_predict_uses_support_only_bias_calibration():
     assert scores.shape == torch.Size([2])
     assert info["gate_method"] == "source_logit_bias_no_rejection"
     assert info["source_logit_bias_steps"] == 80
+
+
+def test_receiver_conditioned_support_head_uses_same_receiver_support():
+    support_z = torch.tensor(
+        [
+            [1.0, 0.0],
+            [0.9, 0.1],
+            [0.0, 1.0],
+            [0.1, 0.9],
+            [0.0, 1.0],
+            [0.1, 0.9],
+            [1.0, 0.0],
+            [0.9, 0.1],
+        ]
+    )
+    support_y = torch.tensor([0, 0, 1, 1, 0, 0, 1, 1])
+    query_z = torch.tensor(
+        [
+            [1.0, 0.0],
+            [0.0, 1.0],
+            [0.0, 1.0],
+            [1.0, 0.0],
+        ]
+    )
+    support_meta = [{"rx_label": "rxA"}] * 4 + [{"rx_label": "rxB"}] * 4
+    query_meta = [{"rx_label": "rxA"}, {"rx_label": "rxA"}, {"rx_label": "rxB"}, {"rx_label": "rxB"}]
+
+    pred, scores, info = _receiver_conditioned_support_head_predict(
+        support_z,
+        support_y,
+        query_z,
+        support_meta=support_meta,
+        query_meta=query_meta,
+        margin=0.0,
+        steps=30,
+        lr=0.05,
+        weight_decay=0.0,
+        device=torch.device("cpu"),
+        rejection_enabled=False,
+        normalize=True,
+        init="prototype",
+        temperature=10.0,
+    )
+
+    assert pred.tolist() == [0, 1, 0, 1]
+    assert scores.shape == torch.Size([4])
+    assert info["gate_method"] == "receiver_conditioned_support_head_no_rejection"
+    assert info["receiver_conditioned_groups"] == ["rxA", "rxB"]
