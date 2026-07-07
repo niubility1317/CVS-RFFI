@@ -64,11 +64,20 @@ cd /home/szu2070436088/2510044040/CV-SincNet && nohup bash code/scripts/launch_p
 
 ## Launch Record
 
-- preflight:pending
-- sync:pending
-- remote_command:pending
-- pid:pending
-- status:pending
+- preflight:PASS，`powershell -ExecutionPolicy Bypass -File tools\n607_ssh_preflight.ps1`，直连`N607`可用，项目根目录与GPU可见。
+- sync:PASS，已同步4个运行文件到`/home/szu2070436088/2510044040/CV-SincNet`。
+- synced_files:
+  - `code/evaluation/collaborative_open_set_qknn_eval.py`，sha256=`ff455f81d4c5cd8fc6f91727542ec6bf9a88b7004939b6910381b2c7171e0f68`
+  - `code/scripts/phase2_collaborative_open_set_qknn_eval.py`，sha256=`982ba014cb6a25b23caecd8a079378a99a28be03274634ad1f98c15cb942e254`
+  - `code/scripts/phase2_frozen_manytx_unknown_diagnostic.py`，sha256=`7fb2513ce38a3a22f53bb6c17878c3661bde5b5e3020b66b993c93507845e869`
+  - `code/scripts/launch_phase2_adv3b02_stage2c_contrast_delta_gate_probe_20260707.sh`，sha256=`020c2bc50427950f7248d6378b97811c9a60e6fe9a46aa144b57c6b463945024`
+- remote_verification:PASS，远端`py_compile`、`bash -n`和`--dry-run`通过，dry-run展开24个冻结特征诊断组合。
+- remote_prelaunch_context:source NORM/HEAD NPZ存在；`/home`剩余约7.6T；同run_id启动前无既有进程。
+- remote_command:`cd /home/szu2070436088/2510044040/CV-SincNet && nohup bash code/scripts/launch_phase2_adv3b02_stage2c_contrast_delta_gate_probe_20260707.sh > logs/phase2_adv3b02_stage2c_contrast_delta_gate_probe_20260707/launch_background.out 2>&1 &`
+- landed_processes:launcher PID`4133484`，观察到Python子任务PID`4134196`正在执行`DELTA_U095_W025_D005_k5`。
+- launch_log:`/home/szu2070436088/2510044040/CV-SincNet/logs/phase2_adv3b02_stage2c_contrast_delta_gate_probe_20260707/launch_background.out`
+- local_ssh_cleanup:启动命令超时后清理本地残留`ssh.exe` PID`8280`；后续检查无本地`ssh.exe`和无ESTABLISHED TCP22连接。
+- status:RUNNING
 
 ## Results
 
