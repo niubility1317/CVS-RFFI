@@ -55,3 +55,40 @@
 |远端占用|8张RTX3090均有既有训练负载，约95%到99%GPU利用率；`train_ssdg.py`进程族活跃。本轮不干预既有训练，只运行已导出特征上的qKNN诊断|
 |磁盘|`/home`可用约7.6T|
 |同步映射|`E:\type10-7\github_publish\CVS-RFFI-repo\code\scripts\launch_phase2_adv3b02_stage2c_policy_router_sweep_20260707.sh` -> `N607:/home/szu2070436088/2510044040/CV-SincNet/code/scripts/launch_phase2_adv3b02_stage2c_policy_router_sweep_20260707.sh`|
+
+## N607运行与结果
+
+|项目|记录|
+|---|---|
+|同步校验|远端脚本`sha256=230b1c68eb54d9c049ef0d36b5167c911435e6f937c03c0f024e0c52a249f512`，与本地一致|
+|远端验证|`bash -n`通过；远端`--dry-run`展开16个诊断组合|
+|正式命令|`cd /home/szu2070436088/2510044040/CV-SincNet && bash code/scripts/launch_phase2_adv3b02_stage2c_policy_router_sweep_20260707.sh`|
+|耗时|约130秒|
+|运行状态|完成；未启动训练；输出summary JSON/CSV已拉回到`remote_artifacts/`|
+
+### 全量结果表
+
+|variant|profile|K|old_acc|min_old|seen_new|min_seen|unknown_FAR|coverage|unknown_reject|verdict|
+|---|---|---:|---:|---:|---:|---:|---:|---:|---:|---|
+|STAGE2C_NORM_SEP|CS_CLASS_SCORE_BAL|10|0.5643|0.0000|0.0000|0.0000|0.1196|0.2776|0.8464|旧类恢复但FAR超限|
+|STAGE2C_NORM_SEP|KGR_CLASS_SCORE_BAL|10|0.5643|0.0000|0.0000|0.0000|0.1196|0.2776|0.8161|旧类恢复但FAR超限|
+|STAGE2C_HEAD_SEP|CS_CLASS_SCORE_BAL|10|0.5357|0.0000|0.0000|0.0000|0.1393|0.2673|0.8500|旧类恢复但FAR超限|
+|STAGE2C_HEAD_SEP|KGR_CLASS_SCORE_BAL|10|0.5357|0.0000|0.0000|0.0000|0.1393|0.2673|0.8321|旧类恢复但FAR超限|
+|STAGE2C_HEAD_SEP|SR_CENTER_GUARD|10|0.5238|0.0000|0.0000|0.0000|0.1446|0.2663|0.8554|旧类恢复但FAR超限|
+|STAGE2C_NORM_SEP|SR_CENTER_GUARD|10|0.5143|0.0000|0.0000|0.0000|0.1232|0.2582|0.8768|旧类恢复但FAR超限|
+|STAGE2C_HEAD_SEP|SR_CLASS_SCORE_GUARD|10|0.5024|0.0000|0.0000|0.0000|0.1089|0.2490|0.8911|旧类恢复但FAR超限|
+|STAGE2C_NORM_SEP|SR_CLASS_SCORE_GUARD|10|0.4976|0.0000|0.0000|0.0000|0.0929|0.2459|0.9071|旧类恢复但FAR超限|
+|STAGE2C_HEAD_SEP|CS_CLASS_SCORE_BAL|5|0.0000|0.0000|0.0000|0.0000|0.0000|0.0000|1.0000|FAR可行但全拒绝|
+|STAGE2C_HEAD_SEP|KGR_CLASS_SCORE_BAL|5|0.0000|0.0000|0.0000|0.0000|0.0000|0.0000|1.0000|FAR可行但全拒绝|
+|STAGE2C_HEAD_SEP|SR_CENTER_GUARD|5|0.0000|0.0000|0.0000|0.0000|0.0000|0.0000|1.0000|FAR可行但全拒绝|
+|STAGE2C_HEAD_SEP|SR_CLASS_SCORE_GUARD|5|0.0000|0.0000|0.0000|0.0000|0.0000|0.0000|1.0000|FAR可行但全拒绝|
+|STAGE2C_NORM_SEP|CS_CLASS_SCORE_BAL|5|0.0000|0.0000|0.0000|0.0000|0.0000|0.0000|1.0000|FAR可行但全拒绝|
+|STAGE2C_NORM_SEP|KGR_CLASS_SCORE_BAL|5|0.0000|0.0000|0.0000|0.0000|0.0000|0.0000|1.0000|FAR可行但全拒绝|
+|STAGE2C_NORM_SEP|SR_CENTER_GUARD|5|0.0000|0.0000|0.0000|0.0000|0.0000|0.0000|1.0000|FAR可行但全拒绝|
+|STAGE2C_NORM_SEP|SR_CLASS_SCORE_GUARD|5|0.0000|0.0000|0.0000|0.0000|0.0000|0.0000|1.0000|FAR可行但全拒绝|
+
+## 解释与下一步
+
+policy-router策略没有形成新突破。K5仍全部全拒绝；K10最高为`STAGE2C_NORM_SEP/CS_CLASS_SCORE_BAL`和`STAGE2C_NORM_SEP/KGR_CLASS_SCORE_BAL`，`old_acc=0.5643`、`unknown_FAR=0.1196`，低于supportcal极端relax的旧类恢复，也仍高于FAR约束；所有K10行`min_old=0`且`seen_new=0`。
+
+本轮结论是：仅切换现有fusion policy不能解决qKNNV42真实Stage2-C的新类注册坍塌和最低类过低问题。下一步需要把底层已有的seen-new rescue/支持质量救援参数暴露到`phase2_frozen_manytx_unknown_diagnostic.py`，或新增一个明确区分old保护与seen-new注册的二级决策接口；继续只调`unknown_risk_threshold`或policy名不会产生可用候选。
