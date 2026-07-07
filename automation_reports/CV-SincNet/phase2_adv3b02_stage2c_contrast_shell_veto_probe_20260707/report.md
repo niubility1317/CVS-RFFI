@@ -74,6 +74,70 @@ cd /home/szu2070436088/2510044040/CV-SincNet && nohup bash code/scripts/launch_p
 - Expected summary JSON: `/home/szu2070436088/2510044040/CV-SincNet/logs/phase2_adv3b02_stage2c_contrast_shell_veto_probe_20260707/stage2c_contrast_shell_veto_probe_summary.json`.
 - Expected summary CSV: `/home/szu2070436088/2510044040/CV-SincNet/logs/phase2_adv3b02_stage2c_contrast_shell_veto_probe_20260707/stage2c_contrast_shell_veto_probe_summary.csv`.
 
-## Pending Results
+## N607 Execution
 
-Not launched yet. Final result table will be appended after N607 completion.
+| Item | Value |
+|---|---|
+| Direct SSH preflight | PASS |
+| Remote sync | PASS |
+| Remote hash check | PASS, matched local SHA256 for wrapper and launcher |
+| Remote verification | PASS: `py_compile`, `bash -n`, remote dry-run |
+| Launch PID | `4163824` |
+| Launch status | Completed |
+| JSON outputs | `36` |
+| Summary pulled local | `E:\type10-7\automation_reports\CV-SincNet\phase2_adv3b02_stage2c_contrast_shell_veto_probe_20260707\stage2c_contrast_shell_veto_probe_summary.json` |
+| CSV pulled local | `E:\type10-7\automation_reports\CV-SincNet\phase2_adv3b02_stage2c_contrast_shell_veto_probe_20260707\stage2c_contrast_shell_veto_probe_summary.csv` |
+| SSH cleanup | No local `ssh.exe` or established TCP22 connection after SCP/monitor tasks |
+
+## Result Interpretation
+
+This route is diagnostic-negative as a qKNNV42 improvement path.
+
+- FAR feasibility improved in 17/36 rows, with minimum `unknown_FAR=0.0571`.
+- All FAR-feasible rows have `old_acc=0.0000` and `min_old_class_acc=0.0000`, so they cannot support old-class adaptation.
+- The best old-class rows are K=10 NORM with `old_acc=0.6357`, but their `unknown_FAR` remains at least `0.3143`, well above the 0.10 diagnostic bound.
+- `min_seen_new_class_acc` remains `0.0000` in every row, so shell-veto does not solve lowest seen-new class collapse.
+- Shell veto is therefore useful only as evidence that shell-risk thresholds can trade FAR down; it does not provide a promotable route under the current Stage2-C objective.
+
+Recommended next route: stop escalating pure unknown-shell veto. Move to a known-class-preserving mechanism, such as class-balanced seen-new quota or receiver-class reliability compensation that protects old support coverage first, then applies unknown confirmation as a second layer.
+
+## Full Result Table
+
+| variant | profile | K | c | old | min_old | seen | min_seen | FAR | reject | cov | shell_n | shell_r | feasible |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| STAGE2C_NORM_SEP | RELIEF_U095_W050M02_D008_R035_SHELL_L065_R085 | 5.0000 | 1.0000 | 0.0000 | 0.0000 | 0.1089 | 0.0000 | 0.0571 | 0.9286 | 0.1041 | 276.0000 | 0.1792 | True |
+| STAGE2C_NORM_SEP | RELIEF_U095_W050M02_D008_R050_SHELL_L065_R085 | 5.0000 | 1.0000 | 0.0000 | 0.0000 | 0.1089 | 0.0000 | 0.0571 | 0.9286 | 0.1041 | 276.0000 | 0.1792 | True |
+| STAGE2C_NORM_SEP | RELIEF_U095_W050M02_D005_R050_SHELL_L065_R085 | 5.0000 | 1.0000 | 0.0000 | 0.0000 | 0.1286 | 0.0000 | 0.0768 | 0.9036 | 0.1245 | 276.0000 | 0.1792 | True |
+| STAGE2C_NORM_SEP | RELIEF_U095_W050M02_D008_R035_SHELL_L075_R090 | 5.0000 | 1.0000 | 0.0000 | 0.0000 | 0.1125 | 0.0000 | 0.0643 | 0.9250 | 0.1092 | 222.0000 | 0.1442 | True |
+| STAGE2C_NORM_SEP | RELIEF_U095_W050M02_D008_R050_SHELL_L075_R090 | 5.0000 | 1.0000 | 0.0000 | 0.0000 | 0.1125 | 0.0000 | 0.0643 | 0.9250 | 0.1092 | 222.0000 | 0.1442 | True |
+| STAGE2C_NORM_SEP | RELIEF_U095_W050M02_D005_R050_SHELL_L075_R090 | 5.0000 | 1.0000 | 0.0000 | 0.0000 | 0.1321 | 0.0000 | 0.0875 | 0.8982 | 0.1316 | 222.0000 | 0.1442 | True |
+| STAGE2C_NORM_SEP | RELIEF_U095_W050M02_D008_R035_SHELL_L085_R095 | 5.0000 | 1.0000 | 0.0000 | 0.0000 | 0.1143 | 0.0000 | 0.0714 | 0.9161 | 0.1153 | 163.0000 | 0.1058 | True |
+| STAGE2C_NORM_SEP | RELIEF_U095_W050M02_D008_R050_SHELL_L085_R095 | 5.0000 | 1.0000 | 0.0000 | 0.0000 | 0.1143 | 0.0000 | 0.0714 | 0.9161 | 0.1153 | 163.0000 | 0.1058 | True |
+| STAGE2C_NORM_SEP | RELIEF_U095_W050M02_D005_R050_SHELL_L085_R095 | 5.0000 | 1.0000 | 0.0000 | 0.0000 | 0.1339 | 0.0000 | 0.0964 | 0.8857 | 0.1398 | 163.0000 | 0.1058 | True |
+| STAGE2C_HEAD_SEP | RELIEF_U095_W050M02_D008_R035_SHELL_L065_R085 | 5.0000 | 1.0000 | 0.0000 | 0.0000 | 0.1000 | 0.0000 | 0.0696 | 0.9196 | 0.1051 | 289.0000 | 0.1877 | True |
+| STAGE2C_HEAD_SEP | RELIEF_U095_W050M02_D008_R050_SHELL_L065_R085 | 5.0000 | 1.0000 | 0.0000 | 0.0000 | 0.1000 | 0.0000 | 0.0696 | 0.9196 | 0.1051 | 289.0000 | 0.1877 | True |
+| STAGE2C_HEAD_SEP | RELIEF_U095_W050M02_D005_R050_SHELL_L065_R085 | 5.0000 | 1.0000 | 0.0000 | 0.0000 | 0.1196 | 0.0000 | 0.0929 | 0.8893 | 0.1316 | 289.0000 | 0.1877 | True |
+| STAGE2C_HEAD_SEP | RELIEF_U095_W050M02_D008_R035_SHELL_L085_R095 | 5.0000 | 1.0000 | 0.0000 | 0.0000 | 0.1054 | 0.0000 | 0.0804 | 0.9125 | 0.1153 | 150.0000 | 0.0974 | True |
+| STAGE2C_HEAD_SEP | RELIEF_U095_W050M02_D008_R050_SHELL_L085_R095 | 5.0000 | 1.0000 | 0.0000 | 0.0000 | 0.1054 | 0.0000 | 0.0804 | 0.9125 | 0.1153 | 150.0000 | 0.0974 | True |
+| STAGE2C_HEAD_SEP | RELIEF_U095_W050M02_D008_R035_SHELL_L075_R090 | 5.0000 | 1.0000 | 0.0000 | 0.0000 | 0.1018 | 0.0000 | 0.0768 | 0.9179 | 0.1102 | 229.0000 | 0.1487 | True |
+| STAGE2C_HEAD_SEP | RELIEF_U095_W050M02_D008_R050_SHELL_L075_R090 | 5.0000 | 1.0000 | 0.0000 | 0.0000 | 0.1018 | 0.0000 | 0.0768 | 0.9179 | 0.1102 | 229.0000 | 0.1487 | True |
+| STAGE2C_HEAD_SEP | RELIEF_U095_W050M02_D005_R050_SHELL_L075_R090 | 5.0000 | 1.0000 | 0.0000 | 0.0000 | 0.1214 | 0.0000 | 0.1000 | 0.8857 | 0.1378 | 229.0000 | 0.1487 | True |
+| STAGE2C_HEAD_SEP | RELIEF_U095_W050M02_D008_R035_SHELL_L065_R085 | 10.0000 | 1.0000 | 0.6048 | 0.1429 | 0.1357 | 0.0000 | 0.3179 | 0.6714 | 0.4490 | 80.0000 | 0.0519 | False |
+| STAGE2C_HEAD_SEP | RELIEF_U095_W050M02_D008_R050_SHELL_L065_R085 | 10.0000 | 1.0000 | 0.6048 | 0.1429 | 0.1357 | 0.0000 | 0.3179 | 0.6714 | 0.4490 | 80.0000 | 0.0519 | False |
+| STAGE2C_HEAD_SEP | RELIEF_U095_W050M02_D008_R035_SHELL_L075_R090 | 10.0000 | 1.0000 | 0.6048 | 0.1429 | 0.1357 | 0.0000 | 0.3268 | 0.6714 | 0.4520 | 58.0000 | 0.0377 | False |
+| STAGE2C_HEAD_SEP | RELIEF_U095_W050M02_D008_R035_SHELL_L085_R095 | 10.0000 | 1.0000 | 0.6048 | 0.1429 | 0.1357 | 0.0000 | 0.3268 | 0.6714 | 0.4520 | 41.0000 | 0.0266 | False |
+| STAGE2C_HEAD_SEP | RELIEF_U095_W050M02_D008_R050_SHELL_L075_R090 | 10.0000 | 1.0000 | 0.6048 | 0.1429 | 0.1357 | 0.0000 | 0.3268 | 0.6714 | 0.4520 | 58.0000 | 0.0377 | False |
+| STAGE2C_HEAD_SEP | RELIEF_U095_W050M02_D008_R050_SHELL_L085_R095 | 10.0000 | 1.0000 | 0.6048 | 0.1429 | 0.1357 | 0.0000 | 0.3268 | 0.6714 | 0.4520 | 41.0000 | 0.0266 | False |
+| STAGE2C_NORM_SEP | RELIEF_U095_W050M02_D008_R035_SHELL_L065_R085 | 10.0000 | 1.0000 | 0.6357 | 0.0857 | 0.1196 | 0.0000 | 0.3143 | 0.6714 | 0.4541 | 74.0000 | 0.0481 | False |
+| STAGE2C_NORM_SEP | RELIEF_U095_W050M02_D008_R050_SHELL_L065_R085 | 10.0000 | 1.0000 | 0.6357 | 0.0857 | 0.1196 | 0.0000 | 0.3143 | 0.6714 | 0.4541 | 74.0000 | 0.0481 | False |
+| STAGE2C_NORM_SEP | RELIEF_U095_W050M02_D008_R035_SHELL_L075_R090 | 10.0000 | 1.0000 | 0.6357 | 0.0857 | 0.1196 | 0.0000 | 0.3214 | 0.6696 | 0.4541 | 59.0000 | 0.0383 | False |
+| STAGE2C_NORM_SEP | RELIEF_U095_W050M02_D008_R050_SHELL_L075_R090 | 10.0000 | 1.0000 | 0.6357 | 0.0857 | 0.1196 | 0.0000 | 0.3214 | 0.6696 | 0.4541 | 59.0000 | 0.0383 | False |
+| STAGE2C_NORM_SEP | RELIEF_U095_W050M02_D008_R035_SHELL_L085_R095 | 10.0000 | 1.0000 | 0.6357 | 0.0857 | 0.1196 | 0.0000 | 0.3232 | 0.6661 | 0.4551 | 44.0000 | 0.0286 | False |
+| STAGE2C_NORM_SEP | RELIEF_U095_W050M02_D008_R050_SHELL_L085_R095 | 10.0000 | 1.0000 | 0.6357 | 0.0857 | 0.1196 | 0.0000 | 0.3232 | 0.6661 | 0.4551 | 44.0000 | 0.0286 | False |
+| STAGE2C_HEAD_SEP | RELIEF_U095_W050M02_D005_R050_SHELL_L065_R085 | 10.0000 | 1.0000 | 0.6048 | 0.1429 | 0.1500 | 0.0000 | 0.3768 | 0.6054 | 0.4867 | 80.0000 | 0.0519 | False |
+| STAGE2C_NORM_SEP | RELIEF_U095_W050M02_D005_R050_SHELL_L065_R085 | 10.0000 | 1.0000 | 0.6357 | 0.0857 | 0.1357 | 0.0000 | 0.3554 | 0.6268 | 0.4755 | 74.0000 | 0.0481 | False |
+| STAGE2C_HEAD_SEP | RELIEF_U095_W050M02_D005_R050_SHELL_L075_R090 | 10.0000 | 1.0000 | 0.6048 | 0.1429 | 0.1500 | 0.0000 | 0.3893 | 0.6054 | 0.4898 | 58.0000 | 0.0377 | False |
+| STAGE2C_HEAD_SEP | RELIEF_U095_W050M02_D005_R050_SHELL_L085_R095 | 10.0000 | 1.0000 | 0.6048 | 0.1429 | 0.1500 | 0.0000 | 0.3929 | 0.6036 | 0.4898 | 41.0000 | 0.0266 | False |
+| STAGE2C_NORM_SEP | RELIEF_U095_W050M02_D005_R050_SHELL_L075_R090 | 10.0000 | 1.0000 | 0.6357 | 0.0857 | 0.1357 | 0.0000 | 0.3661 | 0.6250 | 0.4765 | 59.0000 | 0.0383 | False |
+| STAGE2C_NORM_SEP | RELIEF_U095_W050M02_D005_R050_SHELL_L085_R095 | 10.0000 | 1.0000 | 0.6357 | 0.0857 | 0.1357 | 0.0000 | 0.3679 | 0.6179 | 0.4776 | 44.0000 | 0.0286 | False |
+| STAGE2C_HEAD_SEP | RELIEF_U095_W050M02_D005_R050_SHELL_L085_R095 | 5.0000 | 1.0000 | 0.0000 | 0.0000 | 0.1250 | 0.0000 | 0.1107 | 0.8732 | 0.1469 | 150.0000 | 0.0974 | False |
