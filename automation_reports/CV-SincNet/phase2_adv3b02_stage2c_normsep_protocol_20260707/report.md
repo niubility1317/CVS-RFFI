@@ -8,7 +8,7 @@
 |timestamp|2026-07-07|
 |operator|Codex|
 |objective|在qKNNV42目标下继续推进旧类域适应、新类增多坍塌和最低类过低问题；本轮补齐真实Stage2-C导出协议，使NORM_SEP类表征能同时导出`target_old`、`target_new`和`target_unknown`|
-|status|本地代码和launcher准备完成；2026-07-07 10:46 N607容量恢复且本地预启动验证通过；待同步远端文件、远端验证并启动训练|
+|status|本地代码和launcher准备完成；2026-07-07 10:46 N607容量恢复，本地预启动验证、远端同步和远端dry-run均通过；待正式启动训练|
 
 ## 协议边界
 
@@ -204,6 +204,44 @@ HEAD=1d07972 Analyze Phase1 DG-LEO training results
 |`bash -lc '... launch_phase2_adv3b02_stage2c_normsep_protocol_20260707.sh --dry-run'`|PASS，输出`target_new`、`target_unknown`、proxy排除和成功门槛|
 
 决策：容量阻塞解除，可以进入`scp`同步、远端语法/哈希/dry-run验证和启动步骤。
+
+### 2026-07-07 10:47 CST远端同步与验证
+
+已通过直接`N607`目标同步：
+
+|local|remote|结果|
+|---|---|---|
+|`E:\type10-7\github_publish\CVS-RFFI-repo\code\scripts\train_apply_phase1_iq_preadapter_20260703.py`|`/home/szu2070436088/2510044040/CV-SincNet/code/scripts/train_apply_phase1_iq_preadapter_20260703.py`|`scp`成功|
+|`E:\type10-7\github_publish\CVS-RFFI-repo\code\scripts\launch_phase2_adv3b02_stage2c_normsep_protocol_20260707.sh`|`/home/szu2070436088/2510044040/CV-SincNet/code/scripts/launch_phase2_adv3b02_stage2c_normsep_protocol_20260707.sh`|`scp`成功|
+
+远端Python环境：
+
+```text
+PY=/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python
+```
+
+远端验证：
+
+|命令/检查|结果|
+|---|---|
+|`sha256sum code/scripts/train_apply_phase1_iq_preadapter_20260703.py`|`0168c0da746a73c4bb5623250403a704556de03b0169ab384b3719e7fda23b88`，匹配本地|
+|`sha256sum code/scripts/launch_phase2_adv3b02_stage2c_normsep_protocol_20260707.sh`|`5f6f02e25a3db09b45a7aace447a3a4f57c6b188fedd094a0246ac3c1cb3032f`，匹配本地|
+|`$PY -m py_compile code/scripts/train_apply_phase1_iq_preadapter_20260703.py`|PASS|
+|`bash -n code/scripts/launch_phase2_adv3b02_stage2c_normsep_protocol_20260707.sh`|PASS|
+|远端`--dry-run`|PASS，输出`target_new`、`target_unknown`、proxy排除和成功门槛|
+
+远端dry-run关键输出：
+
+```text
+[STAGE2C-NORMSEP] run_id=phase2_adv3b02_stage2c_normsep_protocol_20260707 dry_run=1 target_rx=7-14 gpus=0,1
+[STAGE2C-NORMSEP] target_new=1-10,1-12,1-14,1-16,1-18,1-8,10-11,10-4
+[STAGE2C-NORMSEP] target_unknown=10-7,11-1,11-10,11-19,11-4,11-7,12-19,12-20
+[STAGE2C-NORMSEP] proxy_pool_excludes_target_new_and_target_unknown=true
+[STAGE2C-NORMSEP] success=K5/K10 old_acc>=0.80, improved seen_new floor, unknown_FAR<=0.05
+[STAGE2C-NORMSEP-DRY-RUN-DONE]
+```
+
+决策：远端验证通过，可在重新确认GPU空闲后正式启动。
 
 ## 预期N607使用方式
 
