@@ -3226,6 +3226,12 @@ def run_evaluation(args: argparse.Namespace) -> dict[str, Any]:
         seen_new_contrast_gate_enabled=bool(args.seen_new_contrast_gate_enabled),
         seen_new_contrast_gate_min_delta=float(args.seen_new_contrast_gate_min_delta),
         seen_new_contrast_gate_min_receivers=int(args.seen_new_contrast_gate_min_receivers),
+        seen_new_contrast_risk_relief_enabled=bool(args.seen_new_contrast_risk_relief_enabled),
+        seen_new_contrast_risk_relief_min_delta=float(args.seen_new_contrast_risk_relief_min_delta),
+        seen_new_contrast_risk_relief_min_receivers=int(args.seen_new_contrast_risk_relief_min_receivers),
+        seen_new_contrast_label_risk_scale=float(args.seen_new_contrast_label_risk_scale),
+        seen_new_contrast_event_risk_scale=float(args.seen_new_contrast_event_risk_scale),
+        seen_new_contrast_component_agreement_scale=float(args.seen_new_contrast_component_agreement_scale),
         candidate_set_min_receivers=int(args.candidate_set_min_receivers),
         candidate_set_min_top1_receivers=int(args.candidate_set_min_top1_receivers),
         candidate_set_min_conformal_pvalue=float(args.candidate_set_min_conformal_pvalue),
@@ -3536,6 +3542,12 @@ def parse_args() -> argparse.Namespace:
     p.add_argument("--seen_new_contrast_gate_enabled", action="store_true")
     p.add_argument("--seen_new_contrast_gate_min_delta", type=float, default=0.0)
     p.add_argument("--seen_new_contrast_gate_min_receivers", type=int, default=1)
+    p.add_argument("--seen_new_contrast_risk_relief_enabled", action="store_true")
+    p.add_argument("--seen_new_contrast_risk_relief_min_delta", type=float, default=0.0)
+    p.add_argument("--seen_new_contrast_risk_relief_min_receivers", type=int, default=1)
+    p.add_argument("--seen_new_contrast_label_risk_scale", type=float, default=1.0)
+    p.add_argument("--seen_new_contrast_event_risk_scale", type=float, default=1.0)
+    p.add_argument("--seen_new_contrast_component_agreement_scale", type=float, default=1.0)
     p.add_argument("--candidate_set_min_receivers", type=int, default=2)
     p.add_argument("--candidate_set_min_top1_receivers", type=int, default=0)
     p.add_argument("--candidate_set_min_conformal_pvalue", type=float, default=0.0)

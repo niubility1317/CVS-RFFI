@@ -235,6 +235,17 @@ class Phase2FrozenManytxUnknownDiagnosticTest(unittest.TestCase):
                 "0.08",
                 "--seen_new_contrast_gate_min_receivers",
                 "2",
+                "--seen_new_contrast_risk_relief_enabled",
+                "--seen_new_contrast_risk_relief_min_delta",
+                "0.05",
+                "--seen_new_contrast_risk_relief_min_receivers",
+                "2",
+                "--seen_new_contrast_label_risk_scale",
+                "0.5",
+                "--seen_new_contrast_event_risk_scale",
+                "0.6",
+                "--seen_new_contrast_component_agreement_scale",
+                "0.7",
             ]
         )
 
@@ -243,6 +254,12 @@ class Phase2FrozenManytxUnknownDiagnosticTest(unittest.TestCase):
         self.assertTrue(args.seen_new_contrast_gate_enabled)
         self.assertEqual(args.seen_new_contrast_gate_min_delta, 0.08)
         self.assertEqual(args.seen_new_contrast_gate_min_receivers, 2)
+        self.assertTrue(args.seen_new_contrast_risk_relief_enabled)
+        self.assertEqual(args.seen_new_contrast_risk_relief_min_delta, 0.05)
+        self.assertEqual(args.seen_new_contrast_risk_relief_min_receivers, 2)
+        self.assertEqual(args.seen_new_contrast_label_risk_scale, 0.5)
+        self.assertEqual(args.seen_new_contrast_event_risk_scale, 0.6)
+        self.assertEqual(args.seen_new_contrast_component_agreement_scale, 0.7)
 
     def test_can_repair_legacy_target_new_unknown_roles_from_manifest(self):
         from phase2_frozen_manytx_unknown_diagnostic import main
