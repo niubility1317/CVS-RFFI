@@ -139,6 +139,12 @@ def _summary_row(count: str, metrics: Mapping[str, Any]) -> dict[str, Any]:
         "seen_new_rescue_rate": _float_metric(metrics, "seen_new_rescue_rate"),
         "rescue_unknown_veto_count": _int_metric(metrics, "rescue_unknown_veto_count"),
         "rescue_unknown_veto_rate": _float_metric(metrics, "rescue_unknown_veto_rate"),
+        "rescue_unknown_veto_seen_new_exemption_count": _int_metric(
+            metrics, "rescue_unknown_veto_seen_new_exemption_count"
+        ),
+        "rescue_unknown_veto_seen_new_exemption_rate": _float_metric(
+            metrics, "rescue_unknown_veto_seen_new_exemption_rate"
+        ),
         "candidate_set_shell_veto_count": _int_metric(metrics, "candidate_set_shell_veto_count"),
         "candidate_set_shell_veto_rate": _float_metric(metrics, "candidate_set_shell_veto_rate"),
         "bytes_per_event": _float_metric(metrics, "bytes_per_event"),
@@ -291,6 +297,18 @@ def run_diagnostic(args: argparse.Namespace) -> dict[str, Any]:
         ),
         rescue_unknown_veto_min_sources=int(args.rescue_unknown_veto_min_sources),
         rescue_unknown_veto_action=str(args.rescue_unknown_veto_action),
+        rescue_unknown_veto_seen_new_exemption_enabled=bool(
+            args.rescue_unknown_veto_seen_new_exemption_enabled
+        ),
+        rescue_unknown_veto_seen_new_min_support_count=int(
+            args.rescue_unknown_veto_seen_new_min_support_count
+        ),
+        rescue_unknown_veto_seen_new_min_pvalue=float(
+            args.rescue_unknown_veto_seen_new_min_pvalue
+        ),
+        rescue_unknown_veto_seen_new_min_receiver_class_reliability=float(
+            args.rescue_unknown_veto_seen_new_min_receiver_class_reliability
+        ),
         class_set_gate_enabled=bool(args.class_set_gate_enabled),
         old_gate_min_receivers=int(args.old_gate_min_receivers),
         old_gate_max_effective_unknown_risk=float(args.old_gate_max_effective_unknown_risk),
@@ -465,6 +483,14 @@ def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
         "--rescue_unknown_veto_action",
         choices=["unknown_reject", "defer", "request_more"],
         default="unknown_reject",
+    )
+    p.add_argument("--rescue_unknown_veto_seen_new_exemption_enabled", action="store_true")
+    p.add_argument("--rescue_unknown_veto_seen_new_min_support_count", type=int, default=0)
+    p.add_argument("--rescue_unknown_veto_seen_new_min_pvalue", type=float, default=0.0)
+    p.add_argument(
+        "--rescue_unknown_veto_seen_new_min_receiver_class_reliability",
+        type=float,
+        default=0.0,
     )
     p.add_argument("--class_set_gate_enabled", action="store_true", default=True)
     p.add_argument("--old_gate_min_receivers", type=_positive_int, default=1)

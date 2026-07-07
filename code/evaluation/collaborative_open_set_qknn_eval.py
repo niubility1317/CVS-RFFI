@@ -474,6 +474,10 @@ def _fuse_event(
     rescue_unknown_veto_component_agreement: float = 1.0,
     rescue_unknown_veto_min_sources: int = 1,
     rescue_unknown_veto_action: str = "unknown_reject",
+    rescue_unknown_veto_seen_new_exemption_enabled: bool = False,
+    rescue_unknown_veto_seen_new_min_support_count: int = 0,
+    rescue_unknown_veto_seen_new_min_pvalue: float = 0.0,
+    rescue_unknown_veto_seen_new_min_receiver_class_reliability: float = 0.0,
     class_set_gate_enabled: bool = False,
     old_gate_min_receivers: int = 1,
     old_gate_max_effective_unknown_risk: float = 1.0,
@@ -682,6 +686,18 @@ def _fuse_event(
         raise ValueError(
             "rescue_unknown_veto_action must be unknown_reject, defer, or request_more"
         )
+    rescue_unknown_veto_seen_new_min_support_count = max(
+        0,
+        int(rescue_unknown_veto_seen_new_min_support_count),
+    )
+    rescue_unknown_veto_seen_new_min_pvalue = _validate_unit_interval(
+        rescue_unknown_veto_seen_new_min_pvalue,
+        "rescue_unknown_veto_seen_new_min_pvalue",
+    )
+    rescue_unknown_veto_seen_new_min_receiver_class_reliability = _validate_unit_interval(
+        rescue_unknown_veto_seen_new_min_receiver_class_reliability,
+        "rescue_unknown_veto_seen_new_min_receiver_class_reliability",
+    )
     candidate_set_max_receiver_pair_label_disagreement = _validate_unit_interval(
         candidate_set_max_receiver_pair_label_disagreement,
         "candidate_set_max_receiver_pair_label_disagreement",
@@ -1533,11 +1549,23 @@ def _fuse_event(
             rescue_unknown_veto_sources.append("label_shell_risk")
         if decision_risk_component_agreement >= float(rescue_unknown_veto_component_agreement):
             rescue_unknown_veto_sources.append("component_agreement")
+        rescue_unknown_veto_seen_new_exemption_passed = bool(
+            rescue_unknown_veto_seen_new_exemption_enabled
+            and output_label_set == "seen_new"
+            and (rescue_applied or conformal_rescue_applied)
+            and label_class_conformal_support_count
+            >= int(rescue_unknown_veto_seen_new_min_support_count)
+            and label_class_conformal_pvalue
+            >= float(rescue_unknown_veto_seen_new_min_pvalue)
+            and label_receiver_class_reliability
+            >= float(rescue_unknown_veto_seen_new_min_receiver_class_reliability)
+        )
         rescue_unknown_veto_hit = bool(
             rescue_unknown_veto_enabled
             and (rescue_applied or conformal_rescue_applied)
             and output_label_set in {"old", "seen_new"}
             and len(rescue_unknown_veto_sources) >= int(rescue_unknown_veto_min_sources)
+            and not rescue_unknown_veto_seen_new_exemption_passed
         )
         seen_new_contrast_gate_passed, seen_new_contrast_gate_reason = _seen_new_contrast_gate_decision()
         (
@@ -2332,6 +2360,21 @@ def _fuse_event(
         "rescue_unknown_veto_source_count": int(
             len(locals().get("rescue_unknown_veto_sources", []))
         ),
+        "rescue_unknown_veto_seen_new_exemption_enabled": bool(
+            rescue_unknown_veto_seen_new_exemption_enabled
+        ),
+        "rescue_unknown_veto_seen_new_exemption_passed": bool(
+            locals().get("rescue_unknown_veto_seen_new_exemption_passed", False)
+        ),
+        "rescue_unknown_veto_seen_new_min_support_count": int(
+            rescue_unknown_veto_seen_new_min_support_count
+        ),
+        "rescue_unknown_veto_seen_new_min_pvalue": float(
+            rescue_unknown_veto_seen_new_min_pvalue
+        ),
+        "rescue_unknown_veto_seen_new_min_receiver_class_reliability": float(
+            rescue_unknown_veto_seen_new_min_receiver_class_reliability
+        ),
         "label_class_conformal_pvalue": float(label_class_conformal_pvalue),
         "label_class_conformal_support_count": float(label_class_conformal_support_count),
         "label_candidate_receiver_count": int(selected_label_candidate_receivers),
@@ -2698,6 +2741,10 @@ def _fuse_progressive_event(
     rescue_unknown_veto_component_agreement: float = 1.0,
     rescue_unknown_veto_min_sources: int = 1,
     rescue_unknown_veto_action: str = "unknown_reject",
+    rescue_unknown_veto_seen_new_exemption_enabled: bool = False,
+    rescue_unknown_veto_seen_new_min_support_count: int = 0,
+    rescue_unknown_veto_seen_new_min_pvalue: float = 0.0,
+    rescue_unknown_veto_seen_new_min_receiver_class_reliability: float = 0.0,
     class_set_gate_enabled: bool = False,
     old_gate_min_receivers: int = 1,
     old_gate_max_effective_unknown_risk: float = 1.0,
@@ -2760,6 +2807,18 @@ def _fuse_progressive_event(
             rescue_unknown_veto_component_agreement=rescue_unknown_veto_component_agreement,
             rescue_unknown_veto_min_sources=rescue_unknown_veto_min_sources,
             rescue_unknown_veto_action=rescue_unknown_veto_action,
+            rescue_unknown_veto_seen_new_exemption_enabled=(
+                rescue_unknown_veto_seen_new_exemption_enabled
+            ),
+            rescue_unknown_veto_seen_new_min_support_count=(
+                rescue_unknown_veto_seen_new_min_support_count
+            ),
+            rescue_unknown_veto_seen_new_min_pvalue=(
+                rescue_unknown_veto_seen_new_min_pvalue
+            ),
+            rescue_unknown_veto_seen_new_min_receiver_class_reliability=(
+                rescue_unknown_veto_seen_new_min_receiver_class_reliability
+            ),
             class_set_gate_enabled=class_set_gate_enabled,
             old_gate_min_receivers=old_gate_min_receivers,
             old_gate_max_effective_unknown_risk=old_gate_max_effective_unknown_risk,
@@ -3053,6 +3112,10 @@ def _fuse_adaptive_gain_event(
     rescue_unknown_veto_component_agreement: float = 1.0,
     rescue_unknown_veto_min_sources: int = 1,
     rescue_unknown_veto_action: str = "unknown_reject",
+    rescue_unknown_veto_seen_new_exemption_enabled: bool = False,
+    rescue_unknown_veto_seen_new_min_support_count: int = 0,
+    rescue_unknown_veto_seen_new_min_pvalue: float = 0.0,
+    rescue_unknown_veto_seen_new_min_receiver_class_reliability: float = 0.0,
     class_set_gate_enabled: bool = False,
     old_gate_min_receivers: int = 1,
     old_gate_max_effective_unknown_risk: float = 1.0,
@@ -3121,6 +3184,18 @@ def _fuse_adaptive_gain_event(
             rescue_unknown_veto_component_agreement=rescue_unknown_veto_component_agreement,
             rescue_unknown_veto_min_sources=rescue_unknown_veto_min_sources,
             rescue_unknown_veto_action=rescue_unknown_veto_action,
+            rescue_unknown_veto_seen_new_exemption_enabled=(
+                rescue_unknown_veto_seen_new_exemption_enabled
+            ),
+            rescue_unknown_veto_seen_new_min_support_count=(
+                rescue_unknown_veto_seen_new_min_support_count
+            ),
+            rescue_unknown_veto_seen_new_min_pvalue=(
+                rescue_unknown_veto_seen_new_min_pvalue
+            ),
+            rescue_unknown_veto_seen_new_min_receiver_class_reliability=(
+                rescue_unknown_veto_seen_new_min_receiver_class_reliability
+            ),
             class_set_gate_enabled=class_set_gate_enabled,
             old_gate_min_receivers=old_gate_min_receivers,
             old_gate_max_effective_unknown_risk=old_gate_max_effective_unknown_risk,
@@ -3249,6 +3324,10 @@ def _fuse_support_utility_event(
     rescue_unknown_veto_component_agreement: float = 1.0,
     rescue_unknown_veto_min_sources: int = 1,
     rescue_unknown_veto_action: str = "unknown_reject",
+    rescue_unknown_veto_seen_new_exemption_enabled: bool = False,
+    rescue_unknown_veto_seen_new_min_support_count: int = 0,
+    rescue_unknown_veto_seen_new_min_pvalue: float = 0.0,
+    rescue_unknown_veto_seen_new_min_receiver_class_reliability: float = 0.0,
     class_set_gate_enabled: bool = False,
     old_gate_min_receivers: int = 1,
     old_gate_max_effective_unknown_risk: float = 1.0,
@@ -3317,6 +3396,18 @@ def _fuse_support_utility_event(
             rescue_unknown_veto_component_agreement=rescue_unknown_veto_component_agreement,
             rescue_unknown_veto_min_sources=rescue_unknown_veto_min_sources,
             rescue_unknown_veto_action=rescue_unknown_veto_action,
+            rescue_unknown_veto_seen_new_exemption_enabled=(
+                rescue_unknown_veto_seen_new_exemption_enabled
+            ),
+            rescue_unknown_veto_seen_new_min_support_count=(
+                rescue_unknown_veto_seen_new_min_support_count
+            ),
+            rescue_unknown_veto_seen_new_min_pvalue=(
+                rescue_unknown_veto_seen_new_min_pvalue
+            ),
+            rescue_unknown_veto_seen_new_min_receiver_class_reliability=(
+                rescue_unknown_veto_seen_new_min_receiver_class_reliability
+            ),
             class_set_gate_enabled=class_set_gate_enabled,
             old_gate_min_receivers=old_gate_min_receivers,
             old_gate_max_effective_unknown_risk=old_gate_max_effective_unknown_risk,
@@ -3450,6 +3541,10 @@ def _fuse_rb_capr_event(
     rescue_unknown_veto_component_agreement: float = 1.0,
     rescue_unknown_veto_min_sources: int = 1,
     rescue_unknown_veto_action: str = "unknown_reject",
+    rescue_unknown_veto_seen_new_exemption_enabled: bool = False,
+    rescue_unknown_veto_seen_new_min_support_count: int = 0,
+    rescue_unknown_veto_seen_new_min_pvalue: float = 0.0,
+    rescue_unknown_veto_seen_new_min_receiver_class_reliability: float = 0.0,
     class_set_gate_enabled: bool = False,
     old_gate_min_receivers: int = 1,
     old_gate_max_effective_unknown_risk: float = 1.0,
@@ -3525,6 +3620,18 @@ def _fuse_rb_capr_event(
             rescue_unknown_veto_component_agreement=rescue_unknown_veto_component_agreement,
             rescue_unknown_veto_min_sources=rescue_unknown_veto_min_sources,
             rescue_unknown_veto_action=rescue_unknown_veto_action,
+            rescue_unknown_veto_seen_new_exemption_enabled=(
+                rescue_unknown_veto_seen_new_exemption_enabled
+            ),
+            rescue_unknown_veto_seen_new_min_support_count=(
+                rescue_unknown_veto_seen_new_min_support_count
+            ),
+            rescue_unknown_veto_seen_new_min_pvalue=(
+                rescue_unknown_veto_seen_new_min_pvalue
+            ),
+            rescue_unknown_veto_seen_new_min_receiver_class_reliability=(
+                rescue_unknown_veto_seen_new_min_receiver_class_reliability
+            ),
             class_set_gate_enabled=class_set_gate_enabled,
             old_gate_min_receivers=old_gate_min_receivers,
             old_gate_max_effective_unknown_risk=old_gate_max_effective_unknown_risk,
@@ -3722,6 +3829,10 @@ def _fuse_dual_route_event(
     rescue_unknown_veto_component_agreement: float = 1.0,
     rescue_unknown_veto_min_sources: int = 1,
     rescue_unknown_veto_action: str = "unknown_reject",
+    rescue_unknown_veto_seen_new_exemption_enabled: bool = False,
+    rescue_unknown_veto_seen_new_min_support_count: int = 0,
+    rescue_unknown_veto_seen_new_min_pvalue: float = 0.0,
+    rescue_unknown_veto_seen_new_min_receiver_class_reliability: float = 0.0,
     class_set_gate_enabled: bool = False,
     old_gate_min_receivers: int = 1,
     old_gate_max_effective_unknown_risk: float = 1.0,
@@ -3836,6 +3947,18 @@ def _fuse_dual_route_event(
         rescue_unknown_veto_component_agreement=rescue_unknown_veto_component_agreement,
         rescue_unknown_veto_min_sources=rescue_unknown_veto_min_sources,
         rescue_unknown_veto_action=rescue_unknown_veto_action,
+        rescue_unknown_veto_seen_new_exemption_enabled=(
+            rescue_unknown_veto_seen_new_exemption_enabled
+        ),
+        rescue_unknown_veto_seen_new_min_support_count=(
+            rescue_unknown_veto_seen_new_min_support_count
+        ),
+        rescue_unknown_veto_seen_new_min_pvalue=(
+            rescue_unknown_veto_seen_new_min_pvalue
+        ),
+        rescue_unknown_veto_seen_new_min_receiver_class_reliability=(
+            rescue_unknown_veto_seen_new_min_receiver_class_reliability
+        ),
         class_set_gate_enabled=class_set_gate_enabled,
         old_gate_min_receivers=old_gate_min_receivers,
         old_gate_max_effective_unknown_risk=old_gate_max_effective_unknown_risk,
@@ -3952,6 +4075,18 @@ def _fuse_dual_route_event(
         rescue_unknown_veto_component_agreement=rescue_unknown_veto_component_agreement,
         rescue_unknown_veto_min_sources=rescue_unknown_veto_min_sources,
         rescue_unknown_veto_action=rescue_unknown_veto_action,
+        rescue_unknown_veto_seen_new_exemption_enabled=(
+            rescue_unknown_veto_seen_new_exemption_enabled
+        ),
+        rescue_unknown_veto_seen_new_min_support_count=(
+            rescue_unknown_veto_seen_new_min_support_count
+        ),
+        rescue_unknown_veto_seen_new_min_pvalue=(
+            rescue_unknown_veto_seen_new_min_pvalue
+        ),
+        rescue_unknown_veto_seen_new_min_receiver_class_reliability=(
+            rescue_unknown_veto_seen_new_min_receiver_class_reliability
+        ),
         class_set_gate_enabled=class_set_gate_enabled,
         old_gate_min_receivers=old_gate_min_receivers,
         old_gate_max_effective_unknown_risk=old_gate_max_effective_unknown_risk,
@@ -4102,6 +4237,7 @@ def _finalize_metrics(
     adaptive_stop_reasons: defaultdict[str, int] = defaultdict(int)
     seen_new_rescue_total = 0
     rescue_unknown_veto_total = 0
+    rescue_unknown_veto_seen_new_exemption_total = 0
     rescue_unknown_veto_by_role: defaultdict[str, int] = defaultdict(int)
     candidate_set_high_unknown_veto_total = 0
     candidate_set_high_unknown_veto_by_role: defaultdict[str, int] = defaultdict(int)
@@ -4241,6 +4377,9 @@ def _finalize_metrics(
         if stop_reason:
             adaptive_stop_reasons[stop_reason] += 1
         seen_new_rescue_total += int(bool(item.get("seen_new_rescue_applied", False)))
+        rescue_unknown_veto_seen_new_exemption_total += int(
+            bool(item.get("rescue_unknown_veto_seen_new_exemption_passed", False))
+        )
         if bool(item.get("rescue_unknown_veto_hit", False)):
             rescue_unknown_veto_total += 1
             rescue_unknown_veto_by_role[role] += 1
@@ -4413,6 +4552,13 @@ def _finalize_metrics(
         "seen_new_rescue_rate": _safe_rate(seen_new_rescue_total, total_events),
         "rescue_unknown_veto_count": int(rescue_unknown_veto_total),
         "rescue_unknown_veto_rate": _safe_rate(rescue_unknown_veto_total, total_events),
+        "rescue_unknown_veto_seen_new_exemption_count": int(
+            rescue_unknown_veto_seen_new_exemption_total
+        ),
+        "rescue_unknown_veto_seen_new_exemption_rate": _safe_rate(
+            rescue_unknown_veto_seen_new_exemption_total,
+            total_events,
+        ),
         "rescue_unknown_veto_by_role": dict(sorted(rescue_unknown_veto_by_role.items())),
         "candidate_set_high_unknown_veto_count": int(candidate_set_high_unknown_veto_total),
         "candidate_set_high_unknown_veto_rate": _safe_rate(candidate_set_high_unknown_veto_total, total_events),
@@ -4704,6 +4850,10 @@ def evaluate_collaborative_open_set_evidence(
     rescue_unknown_veto_component_agreement: float = 1.0,
     rescue_unknown_veto_min_sources: int = 1,
     rescue_unknown_veto_action: str = "unknown_reject",
+    rescue_unknown_veto_seen_new_exemption_enabled: bool = False,
+    rescue_unknown_veto_seen_new_min_support_count: int = 0,
+    rescue_unknown_veto_seen_new_min_pvalue: float = 0.0,
+    rescue_unknown_veto_seen_new_min_receiver_class_reliability: float = 0.0,
     class_set_gate_enabled: bool = False,
     old_gate_min_receivers: int = 1,
     old_gate_max_effective_unknown_risk: float = 1.0,
@@ -4939,6 +5089,18 @@ def evaluate_collaborative_open_set_evidence(
                     rescue_unknown_veto_component_agreement=rescue_unknown_veto_component_agreement,
                     rescue_unknown_veto_min_sources=rescue_unknown_veto_min_sources,
                     rescue_unknown_veto_action=rescue_unknown_veto_action,
+                    rescue_unknown_veto_seen_new_exemption_enabled=(
+                        rescue_unknown_veto_seen_new_exemption_enabled
+                    ),
+                    rescue_unknown_veto_seen_new_min_support_count=(
+                        rescue_unknown_veto_seen_new_min_support_count
+                    ),
+                    rescue_unknown_veto_seen_new_min_pvalue=(
+                        rescue_unknown_veto_seen_new_min_pvalue
+                    ),
+                    rescue_unknown_veto_seen_new_min_receiver_class_reliability=(
+                        rescue_unknown_veto_seen_new_min_receiver_class_reliability
+                    ),
                     class_set_gate_enabled=class_set_gate_enabled,
                     old_gate_min_receivers=old_gate_min_receivers,
                     old_gate_max_effective_unknown_risk=old_gate_max_effective_unknown_risk,
@@ -5014,6 +5176,18 @@ def evaluate_collaborative_open_set_evidence(
                     rescue_unknown_veto_component_agreement=rescue_unknown_veto_component_agreement,
                     rescue_unknown_veto_min_sources=rescue_unknown_veto_min_sources,
                     rescue_unknown_veto_action=rescue_unknown_veto_action,
+                    rescue_unknown_veto_seen_new_exemption_enabled=(
+                        rescue_unknown_veto_seen_new_exemption_enabled
+                    ),
+                    rescue_unknown_veto_seen_new_min_support_count=(
+                        rescue_unknown_veto_seen_new_min_support_count
+                    ),
+                    rescue_unknown_veto_seen_new_min_pvalue=(
+                        rescue_unknown_veto_seen_new_min_pvalue
+                    ),
+                    rescue_unknown_veto_seen_new_min_receiver_class_reliability=(
+                        rescue_unknown_veto_seen_new_min_receiver_class_reliability
+                    ),
                     class_set_gate_enabled=class_set_gate_enabled,
                     old_gate_min_receivers=old_gate_min_receivers,
                     old_gate_max_effective_unknown_risk=old_gate_max_effective_unknown_risk,
@@ -5155,6 +5329,18 @@ def evaluate_collaborative_open_set_evidence(
                     rescue_unknown_veto_component_agreement=rescue_unknown_veto_component_agreement,
                     rescue_unknown_veto_min_sources=rescue_unknown_veto_min_sources,
                     rescue_unknown_veto_action=rescue_unknown_veto_action,
+                    rescue_unknown_veto_seen_new_exemption_enabled=(
+                        rescue_unknown_veto_seen_new_exemption_enabled
+                    ),
+                    rescue_unknown_veto_seen_new_min_support_count=(
+                        rescue_unknown_veto_seen_new_min_support_count
+                    ),
+                    rescue_unknown_veto_seen_new_min_pvalue=(
+                        rescue_unknown_veto_seen_new_min_pvalue
+                    ),
+                    rescue_unknown_veto_seen_new_min_receiver_class_reliability=(
+                        rescue_unknown_veto_seen_new_min_receiver_class_reliability
+                    ),
                     class_set_gate_enabled=class_set_gate_enabled,
                     old_gate_min_receivers=old_gate_min_receivers,
                     old_gate_max_effective_unknown_risk=old_gate_max_effective_unknown_risk,
@@ -5220,6 +5406,18 @@ def evaluate_collaborative_open_set_evidence(
                     rescue_unknown_veto_component_agreement=rescue_unknown_veto_component_agreement,
                     rescue_unknown_veto_min_sources=rescue_unknown_veto_min_sources,
                     rescue_unknown_veto_action=rescue_unknown_veto_action,
+                    rescue_unknown_veto_seen_new_exemption_enabled=(
+                        rescue_unknown_veto_seen_new_exemption_enabled
+                    ),
+                    rescue_unknown_veto_seen_new_min_support_count=(
+                        rescue_unknown_veto_seen_new_min_support_count
+                    ),
+                    rescue_unknown_veto_seen_new_min_pvalue=(
+                        rescue_unknown_veto_seen_new_min_pvalue
+                    ),
+                    rescue_unknown_veto_seen_new_min_receiver_class_reliability=(
+                        rescue_unknown_veto_seen_new_min_receiver_class_reliability
+                    ),
                     class_set_gate_enabled=class_set_gate_enabled,
                     old_gate_min_receivers=old_gate_min_receivers,
                     old_gate_max_effective_unknown_risk=old_gate_max_effective_unknown_risk,

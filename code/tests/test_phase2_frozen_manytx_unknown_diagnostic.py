@@ -141,6 +141,8 @@ class Phase2FrozenManytxUnknownDiagnosticTest(unittest.TestCase):
             self.assertIn("seen_new_rescue_rate", row)
             self.assertIn("rescue_unknown_veto_count", row)
             self.assertIn("rescue_unknown_veto_rate", row)
+            self.assertIn("rescue_unknown_veto_seen_new_exemption_count", row)
+            self.assertIn("rescue_unknown_veto_seen_new_exemption_rate", row)
             self.assertIn("candidate_set_shell_veto_count", row)
             self.assertIn("candidate_set_shell_veto_rate", row)
         self.assertTrue(summary_exists)
@@ -204,6 +206,13 @@ class Phase2FrozenManytxUnknownDiagnosticTest(unittest.TestCase):
                 "2",
                 "--rescue_unknown_veto_action",
                 "defer",
+                "--rescue_unknown_veto_seen_new_exemption_enabled",
+                "--rescue_unknown_veto_seen_new_min_support_count",
+                "3",
+                "--rescue_unknown_veto_seen_new_min_pvalue",
+                "0.7",
+                "--rescue_unknown_veto_seen_new_min_receiver_class_reliability",
+                "0.8",
             ]
         )
 
@@ -223,6 +232,10 @@ class Phase2FrozenManytxUnknownDiagnosticTest(unittest.TestCase):
         self.assertEqual(args.rescue_unknown_veto_component_agreement, 0.6)
         self.assertEqual(args.rescue_unknown_veto_min_sources, 2)
         self.assertEqual(args.rescue_unknown_veto_action, "defer")
+        self.assertTrue(args.rescue_unknown_veto_seen_new_exemption_enabled)
+        self.assertEqual(args.rescue_unknown_veto_seen_new_min_support_count, 3)
+        self.assertEqual(args.rescue_unknown_veto_seen_new_min_pvalue, 0.7)
+        self.assertEqual(args.rescue_unknown_veto_seen_new_min_receiver_class_reliability, 0.8)
 
     def test_accepts_seen_new_old_contrast_cli_knobs(self):
         from phase2_frozen_manytx_unknown_diagnostic import parse_args
