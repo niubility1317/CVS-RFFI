@@ -116,7 +116,7 @@ def _compress_support_codes(
         return support_indices.copy(), support_labels.copy()
 
     mode_norm = str(mode).strip().lower()
-    if mode_norm not in {"centroid", "scenario_centroid", "centroid_hard_neighbor"}:
+    if mode_norm not in {"centroid", "scenario_centroid", "centroid_hard_neighbor", "centroid_hard_diverse"}:
         raise ValueError(f"unsupported support_code_budget_mode: {mode}")
 
     scenario_values = np.asarray(scenarios, dtype=object).astype(str)
@@ -125,7 +125,7 @@ def _compress_support_codes(
     kept_labels: list[str] = []
     seen_labels = list(dict.fromkeys(support_labels.tolist()))
     label_prototypes: dict[str, np.ndarray] = {}
-    if mode_norm == "centroid_hard_neighbor":
+    if mode_norm in {"centroid_hard_neighbor", "centroid_hard_diverse"}:
         for label in seen_labels:
             label_indices = support_indices[support_labels == str(label)]
             if label_indices.size == 0:
@@ -144,9 +144,10 @@ def _compress_support_codes(
             if mode_norm == "centroid":
                 order = np.lexsort((label_indices.astype(int), -similarity))
                 chosen = label_indices[order[:budget]].astype(int).tolist()
-            elif mode_norm == "centroid_hard_neighbor":
+            elif mode_norm in {"centroid_hard_neighbor", "centroid_hard_diverse"}:
                 centroid_order = np.lexsort((label_indices.astype(int), -similarity))
                 chosen = [int(label_indices[centroid_order[0]])]
+                chosen_positions = [int(centroid_order[0])]
                 other_protos = [
                     proto for other_label, proto in label_prototypes.items() if str(other_label) != str(label)
                 ]
@@ -158,8 +159,29 @@ def _compress_support_codes(
                         candidate = int(label_indices[local_index])
                         if candidate not in chosen:
                             chosen.append(candidate)
+                            chosen_positions.append(int(local_index))
+                            if mode_norm == "centroid_hard_diverse":
+                                break
                         if len(chosen) >= budget:
                             break
+                if mode_norm == "centroid_hard_diverse" and len(chosen) < budget:
+                    while len(chosen) < budget:
+                        remaining = np.asarray(
+                            [
+                                local_index
+                                for local_index in range(label_indices.size)
+                                if int(label_indices[local_index]) not in chosen
+                            ],
+                            dtype=int,
+                        )
+                        if remaining.size == 0:
+                            break
+                        selected_vectors = label_vectors[np.asarray(chosen_positions, dtype=int)]
+                        max_similarity = np.max(label_vectors[remaining] @ selected_vectors.T, axis=1)
+                        diverse_order = np.lexsort((label_indices[remaining].astype(int), max_similarity))
+                        local_index = int(remaining[diverse_order[0]])
+                        chosen.append(int(label_indices[local_index]))
+                        chosen_positions.append(local_index)
                 if len(chosen) < budget:
                     for local_index in centroid_order:
                         candidate = int(label_indices[local_index])
