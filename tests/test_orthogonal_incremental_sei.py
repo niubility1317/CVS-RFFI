@@ -667,3 +667,57 @@ def test_formal_wisig_runner_applies_training_loss_early_stop(tmp_path) -> None:
     assert len(inc_epochs) == 2
     assert result["early_stop"]["base"]["stopped_epoch"] == 2
     assert result["early_stop"]["increment"]["1"]["stopped_epoch"] == 2
+
+
+def test_new_label_scan_ranks_candidate_transmitters(tmp_path) -> None:
+    from paper_reproduction.orthogonal_incremental_sei.train import run_new_label_scan
+
+    rng = np.random.default_rng(789)
+    data = []
+    for tx in range(6):
+        tx_items = []
+        rx_items = []
+        eq_items = [rng.normal(loc=tx * 0.2, scale=0.02, size=(8, 64, 2)).astype(np.float32)]
+        rx_items.append(eq_items)
+        tx_items.append(rx_items)
+        data.append(tx_items)
+    pkl_path = tmp_path / "fake_wisig.pkl"
+    with pkl_path.open("wb") as handle:
+        pickle.dump(
+            {
+                "data": data,
+                "tx_list": [f"tx-{i}" for i in range(6)],
+                "rx_list": ["rx-a"],
+                "capture_date_list": ["day-a"],
+                "equalized_list": [1],
+            },
+            handle,
+        )
+
+    result = run_new_label_scan(
+        {
+            "seed": 5,
+            "input_length": 64,
+            "embedding_dim": 8,
+            "pseudo_targets": 7,
+            "base_classes": 3,
+            "base_epochs": 1,
+            "scan_increment_epochs": 1,
+            "batch_size": 12,
+            "eval_batch_size": 8,
+            "min_samples_per_transmitter": 4,
+            "base_train_ratio": 0.5,
+            "shot": 1,
+            "receiver_label": "rx-a",
+            "optimizer": "SGD",
+            "labels": ["tx-0", "tx-1", "tx-2"],
+        },
+        wisig_pkl=str(pkl_path),
+        run_dir=tmp_path / "scan",
+        device="cpu",
+    )
+
+    labels = [row["tx_label"] for row in result["ranked_candidates"]]
+    assert labels == ["tx-3", "tx-4", "tx-5"]
+    assert result["base_labels"] == ["tx-0", "tx-1", "tx-2"]
+    assert (tmp_path / "scan" / "new_label_scan.json").is_file()

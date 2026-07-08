@@ -93,6 +93,24 @@ def _resolve_label_indices(available: list[Any], requested: list[Any] | None, *,
     return out[:limit]
 
 
+def _resolve_all_requested_label_indices(available: list[Any], requested: list[Any]) -> list[int]:
+    lookup = {str(value): idx for idx, value in enumerate(available)}
+    out: list[int] = []
+    missing: list[Any] = []
+    for value in requested:
+        if isinstance(value, int) and 0 <= value < len(available):
+            out.append(int(value))
+            continue
+        key = str(value)
+        if key not in lookup:
+            missing.append(value)
+        else:
+            out.append(lookup[key])
+    if missing:
+        raise ValueError(f"requested transmitter labels not found: {missing[:8]}")
+    return out
+
+
 def _resolve_single_receiver(available: list[Any], requested: Any | None) -> int:
     if requested is None:
         if not available:
@@ -115,6 +133,15 @@ def _resolve_config_labels(config: dict) -> list[Any] | None:
     if preset:
         raise ValueError(f"label_preset={preset} requires an explicit labels list in this standalone runner")
     return None
+
+
+def _base_requested_labels(config: dict, *, base_classes: int) -> list[Any] | None:
+    labels = _resolve_config_labels(config)
+    if labels is None:
+        return None
+    if len(labels) < base_classes:
+        raise ValueError(f"labels list has {len(labels)} entries, need at least base_classes={base_classes}")
+    return list(labels[:base_classes])
 
 
 def _split_class_samples(
@@ -220,6 +247,102 @@ def _load_wisig_fscil_tensors(config: dict, *, wisig_pkl: str, seed: int) -> tup
         "claim_boundary": "formal_wisig_closed_set_fscil_not_adsb_not_cvs_stage2",
     }
     return train_by_class, query_by_class, split_info
+
+
+def _load_wisig_new_label_scan_tensors(
+    config: dict,
+    *,
+    wisig_pkl: str,
+    seed: int,
+) -> tuple[dict[int, torch.Tensor], dict[int, torch.Tensor], dict[int, tuple[torch.Tensor, torch.Tensor]], dict[str, Any]]:
+    ds = load_wisig_compact_pkl(wisig_pkl)
+    base_classes = int(config.get("base_classes", 60))
+    tx_labels = list(ds.get("tx_list", []))
+    rx_labels = list(ds.get("rx_list", []))
+    base_requested = _base_requested_labels(config, base_classes=base_classes)
+    base_tx = _resolve_label_indices(tx_labels, base_requested, limit=base_classes)
+    if config.get("candidate_labels") is not None:
+        candidate_tx = _resolve_all_requested_label_indices(tx_labels, list(config["candidate_labels"]))
+    else:
+        candidate_tx = [idx for idx in range(len(tx_labels)) if idx not in set(base_tx)]
+    candidate_tx = [idx for idx in candidate_tx if idx not in set(base_tx)]
+    if not candidate_tx:
+        raise ValueError("new-label scan requires at least one candidate transmitter")
+    selected_tx = base_tx + candidate_tx
+    receiver_key = config.get("receiver_label", config.get("receiver", config.get("target_receiver")))
+    receiver = _resolve_single_receiver(rx_labels, receiver_key)
+    compact = WiSigCompactDataset(
+        ds,
+        out_len=int(config.get("input_length", 256)),
+        crop_mode=str(config.get("crop_mode", "center")),
+        normalize=bool(config.get("rms_normalize", True)),
+        equalized=config.get("equalized", 1),
+        tx_keep=selected_tx,
+        rx_keep=[receiver],
+        day_keep=config.get("day_indices"),
+        domain="day",
+        max_samples_per_combo=config.get("max_samples_per_combo"),
+        sample_strategy=str(config.get("sample_strategy", "front")),
+        seed=seed,
+        build_index=True,
+    )
+    tx_to_local = {int(tx_i): local_i for local_i, tx_i in enumerate(selected_tx)}
+    grouped: dict[int, list[torch.Tensor]] = {idx: [] for idx in range(len(selected_tx))}
+    for idx in range(len(compact)):
+        x, _label, _domain, meta = compact[idx]
+        grouped[tx_to_local[int(meta["tx_i"])]].append(x.float())
+    train_by_class: dict[int, torch.Tensor] = {}
+    query_by_class: dict[int, torch.Tensor] = {}
+    candidate_by_class: dict[int, tuple[torch.Tensor, torch.Tensor]] = {}
+    min_samples = int(config.get("min_samples_per_transmitter", 50))
+    train_ratio = float(config.get("base_train_ratio", 0.8))
+    shot = int(config.get("shot", config.get("k_shot", 5)))
+    skipped: list[dict[str, Any]] = []
+    for class_id in range(base_classes):
+        train_x, query_x = _split_class_samples(
+            grouped[class_id],
+            train_ratio=train_ratio,
+            seed=seed,
+            class_id=class_id,
+            min_samples=min_samples,
+        )
+        train_by_class[class_id] = train_x
+        query_by_class[class_id] = query_x
+    for offset, tx_index in enumerate(candidate_tx):
+        class_id = base_classes + offset
+        local_id = base_classes + offset
+        try:
+            train_x, query_x = _split_incremental_samples(
+                grouped[local_id],
+                shot=shot,
+                seed=seed,
+                class_id=class_id,
+                min_samples=min_samples,
+            )
+        except ValueError as exc:
+            skipped.append(
+                {
+                    "tx_index": int(tx_index),
+                    "tx_label": tx_labels[tx_index] if tx_index < len(tx_labels) else tx_index,
+                    "reason": str(exc),
+                }
+            )
+            continue
+        candidate_by_class[class_id] = (train_x, query_x)
+    split_info = {
+        "wisig_pkl": wisig_pkl,
+        "receiver_index": receiver,
+        "receiver_label": rx_labels[receiver] if receiver < len(rx_labels) else receiver,
+        "base_tx_indices": base_tx,
+        "base_tx_labels": [tx_labels[i] if i < len(tx_labels) else i for i in base_tx],
+        "candidate_tx_indices": candidate_tx,
+        "candidate_tx_labels": [tx_labels[i] if i < len(tx_labels) else i for i in candidate_tx],
+        "candidate_class_ids": sorted(candidate_by_class),
+        "skipped_candidates": skipped,
+        "shot": shot,
+        "claim_boundary": "new_label_scan_diagnostic_not_full_paper_reproduction",
+    }
+    return train_by_class, query_by_class, candidate_by_class, split_info
 
 
 def _make_tensor_dataset(by_class: dict[int, torch.Tensor], class_ids: list[int], *, limit_per_class: int = 0) -> TensorDataset:
@@ -350,6 +473,68 @@ def _early_stop_should_break(*, current_loss: float, best_loss: float, stale_epo
         return current_loss, 0, False
     stale_epochs += 1
     return best_loss, stale_epochs, stale_epochs > patience
+
+
+def _train_base_encoder(
+    config: dict,
+    train_by_class: dict[int, torch.Tensor],
+    *,
+    base_classes: int,
+    pseudo_targets: torch.Tensor,
+    perturbed: torch.Tensor,
+    assigned: dict[int, torch.Tensor],
+    encoder: nn.Module,
+    device: torch.device,
+) -> list[dict[str, Any]]:
+    batch_size = int(config.get("batch_size", 128))
+    base_epochs = int(config.get("base_epochs", 100))
+    early_stop_patience = int(config.get("early_stop_patience", -1))
+    early_stop_min_delta = float(config.get("early_stop_min_delta", 0.0))
+    base_dataset = _make_tensor_dataset(train_by_class, list(range(base_classes)))
+    base_loader = DataLoader(base_dataset, batch_size=batch_size, shuffle=True)
+    opt_name = str(config.get("optimizer", "SGD")).lower()
+    if opt_name == "sgd":
+        optimizer = torch.optim.SGD(encoder.parameters(), lr=float(config.get("base_lr", 0.01)))
+    elif opt_name == "adam":
+        optimizer = torch.optim.Adam(encoder.parameters(), lr=float(config.get("base_lr", 0.001)))
+    else:
+        raise ValueError(f"unsupported optimizer: {config.get('optimizer')}")
+    history: list[dict[str, Any]] = []
+    best_loss = float("inf")
+    stale_epochs = 0
+    for epoch in range(1, base_epochs + 1):
+        encoder.train()
+        losses: list[float] = []
+        for xb, yb in base_loader:
+            xb = xb.to(device)
+            yb = yb.to(device)
+            optimizer.zero_grad(set_to_none=True)
+            loss, _terms = base_training_loss(
+                encoder(xb),
+                yb,
+                assigned,
+                pseudo_targets,
+                perturbed,
+                contrast_temperature=_paper_float(config, "contrast_temperature", "tau_s", default=0.1),
+                center_temperature=_paper_float(config, "center_temperature", "tau_c", default=0.1),
+            )
+            loss.backward()
+            optimizer.step()
+            losses.append(float(loss.detach().cpu().item()))
+        epoch_loss = float(sum(losses) / max(1, len(losses)))
+        history.append({"phase": "base", "epoch": epoch, "loss": epoch_loss})
+        best_loss, stale_epochs, should_stop = _early_stop_should_break(
+            current_loss=epoch_loss,
+            best_loss=best_loss,
+            stale_epochs=stale_epochs,
+            patience=early_stop_patience,
+            min_delta=early_stop_min_delta,
+        )
+        if should_stop:
+            history[-1]["early_stop"] = True
+            history[-1]["best_loss"] = best_loss
+            break
+    return history
 
 
 def run_formal_wisig(config: dict, *, wisig_pkl: str, run_dir: str | Path, device: str = "cuda:0") -> dict[str, Any]:
@@ -578,6 +763,156 @@ def run_formal_wisig(config: dict, *, wisig_pkl: str, run_dir: str | Path, devic
     return result
 
 
+def run_new_label_scan(config: dict, *, wisig_pkl: str, run_dir: str | Path, device: str = "cuda:0") -> dict[str, Any]:
+    seed = int(config.get("seed", 1337))
+    set_seed(seed)
+    dev = torch.device(device)
+    train_by_class, query_by_class, candidate_by_class, split_info = _load_wisig_new_label_scan_tensors(config, wisig_pkl=wisig_pkl, seed=seed)
+    feature_dim = int(config.get("embedding_dim", 256))
+    base_classes = int(config.get("base_classes", 60))
+    eval_batch_size = int(config.get("eval_batch_size", int(config.get("batch_size", 128))))
+    encoder = SixBlockConv1DEncoder(input_channels=2, embedding_dim=feature_dim).to(dev)
+    pseudo_targets, pseudo_target_steps = _build_pseudo_targets(config, device=dev)
+    perturbed = perturb_pseudo_targets(pseudo_targets, noise_range=float(config.get("noise_range", 0.01)), seed=seed).to(dev)
+    assigned = assign_base_targets(range(base_classes), pseudo_targets)
+    history = _train_base_encoder(
+        config,
+        train_by_class,
+        base_classes=base_classes,
+        pseudo_targets=pseudo_targets,
+        perturbed=perturbed,
+        assigned=assigned,
+        encoder=encoder,
+        device=dev,
+    )
+    for parameter in encoder.parameters():
+        parameter.requires_grad_(False)
+    feature_mean_base_weights = _fit_base_classifier_weights(
+        encoder,
+        train_by_class,
+        base_classes=base_classes,
+        device=dev,
+        batch_size=eval_batch_size,
+    )
+    base_weights, base_weight_source = _base_classifier_weights(
+        assigned,
+        feature_mean_base_weights,
+        base_classes=base_classes,
+        source=str(config.get("base_weight_source", "paper_pseudo_targets")),
+    )
+    base_acc = _evaluate_class_group_accuracy(
+        encoder,
+        query_by_class,
+        base_weights,
+        seen_class_ids=list(range(base_classes)),
+        eval_class_ids=list(range(base_classes)),
+        device=dev,
+        batch_size=eval_batch_size,
+    )
+    ranked: list[dict[str, Any]] = []
+    tx_labels = split_info["candidate_tx_labels"]
+    tx_indices = split_info["candidate_tx_indices"]
+    scan_epochs = int(config.get("scan_increment_epochs", config.get("increment_epochs", 50)))
+    for rank_offset, class_id in enumerate(split_info["candidate_class_ids"]):
+        candidate_offset = int(class_id) - base_classes
+        support_x, query_x = candidate_by_class[int(class_id)]
+        support_y = torch.full((support_x.size(0),), int(class_id), dtype=torch.long)
+        support_features = _extract_features(encoder, support_x, device=dev, batch_size=eval_batch_size).to(dev)
+        support_y = support_y.to(dev)
+        init_weights, class_ids_tensor = class_mean_weights(support_features, support_y)
+        new_weights = nn.Parameter(init_weights.detach().clone())
+        inc_optimizer = torch.optim.SGD([new_weights], lr=float(config.get("increment_lr", 0.08)))
+        old_weights = base_weights.to(dev)
+        last_loss = 0.0
+        last_hard_count = 0.0
+        for _epoch in range(1, scan_epochs + 1):
+            inc_optimizer.zero_grad(set_to_none=True)
+            inc_loss, inc_terms = incremental_calibration_loss(
+                support_features,
+                support_y,
+                old_weights,
+                new_weights,
+                new_class_ids=class_ids_tensor,
+                prototypes=init_weights.detach(),
+                top_k=int(config.get("top_k", 60)),
+                margin=_paper_float(config, "margin", "q", default=0.2),
+                tau_fuse=float(config.get("tau_fuse", 0.01)),
+                lambda_align=_paper_float(config, "lambda_align", "lambda_a", default=1.6),
+            )
+            inc_loss.backward()
+            inc_optimizer.step()
+            last_loss = float(inc_loss.detach().cpu().item())
+            last_hard_count = float(inc_terms["hard_count"].detach().cpu().item())
+        scan_query_by_class = dict(query_by_class)
+        scan_query_by_class[int(class_id)] = query_x
+        scan_weights = concat_classifier_weights(base_weights, new_weights.detach().cpu())
+        seen_class_ids = list(range(base_classes)) + [int(class_id)]
+        candidate_acc = _evaluate_class_group_accuracy(
+            encoder,
+            scan_query_by_class,
+            scan_weights,
+            seen_class_ids=seen_class_ids,
+            eval_class_ids=[int(class_id)],
+            device=dev,
+            batch_size=eval_batch_size,
+        )
+        old_acc = _evaluate_class_group_accuracy(
+            encoder,
+            scan_query_by_class,
+            scan_weights,
+            seen_class_ids=seen_class_ids,
+            eval_class_ids=list(range(base_classes)),
+            device=dev,
+            batch_size=eval_batch_size,
+        )
+        combined_acc, _task_accs = _evaluate_sessions(
+            encoder,
+            scan_query_by_class,
+            scan_weights,
+            seen_class_ids=seen_class_ids,
+            task_class_ids=[list(range(base_classes)), [int(class_id)]],
+            device=dev,
+            batch_size=eval_batch_size,
+        )
+        ranked.append(
+            {
+                "candidate_rank_input": int(rank_offset),
+                "class_id": int(class_id),
+                "tx_index": int(tx_indices[candidate_offset]),
+                "tx_label": tx_labels[candidate_offset],
+                "support_count": int(support_x.size(0)),
+                "query_count": int(query_x.size(0)),
+                "candidate_acc": candidate_acc,
+                "old_acc_with_candidate": old_acc,
+                "combined_acc": combined_acc,
+                "last_increment_loss": last_loss,
+                "last_hard_count": last_hard_count,
+            }
+        )
+    ranked.sort(key=lambda row: (float(row["candidate_acc"]), float(row["combined_acc"])), reverse=True)
+    recommended_count = int(config.get("recommend_new_label_count", 70))
+    result = {
+        "method_id": "orthogonal_incremental_sei_new_label_scan",
+        "mode": "new_label_scan",
+        "claim_boundary": "diagnostic_candidate_tx_scan_not_full_incremental_reproduction",
+        "seed": seed,
+        "pseudo_target_steps": pseudo_target_steps,
+        "base_classes": base_classes,
+        "shot": int(config.get("shot", config.get("k_shot", 5))),
+        "base_weight_source": base_weight_source,
+        "base_acc": base_acc,
+        "base_labels": split_info["base_tx_labels"],
+        "ranked_candidates": ranked,
+        "recommended_new_labels": [row["tx_label"] for row in ranked[:recommended_count]],
+        "split_info": split_info,
+        "history": history,
+    }
+    out_dir = Path(run_dir)
+    write_json(out_dir / "new_label_scan.json", result)
+    write_json(out_dir / "resolved_config.json", config)
+    return result
+
+
 def run_dry_run(config: dict, *, device: str = "cpu") -> dict[str, object]:
     seed = int(config.get("seed", 1337))
     torch.manual_seed(seed)
@@ -662,6 +997,7 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--device", default="cpu")
     parser.add_argument("--dry-run", action="store_true")
     parser.add_argument("--formal", action="store_true")
+    parser.add_argument("--scan-new-labels", action="store_true")
     parser.add_argument("--wisig-pkl", default="")
     parser.add_argument("--run-dir", default="runs/orthogonal_incremental_sei")
     args = parser.parse_args(argv)
@@ -676,6 +1012,19 @@ def main(argv: list[str] | None = None) -> int:
         print(
             json.dumps(
                 run_formal_wisig(config, wisig_pkl=wisig_pkl, run_dir=args.run_dir, device=args.device),
+                ensure_ascii=False,
+                indent=2,
+                sort_keys=True,
+            )
+        )
+        return 0
+    if args.scan_new_labels:
+        wisig_pkl = args.wisig_pkl or str(config.get("wisig_pkl", ""))
+        if not wisig_pkl:
+            raise SystemExit("new-label scan requires --wisig-pkl or config.wisig_pkl")
+        print(
+            json.dumps(
+                run_new_label_scan(config, wisig_pkl=wisig_pkl, run_dir=args.run_dir, device=args.device),
                 ensure_ascii=False,
                 indent=2,
                 sort_keys=True,
