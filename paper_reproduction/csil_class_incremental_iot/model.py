@@ -6,19 +6,20 @@ import torch.nn.functional as F
 
 
 class ZeroBiasCosineClassifier(nn.Module):
-    def __init__(self, in_features: int, out_features: int) -> None:
+    def __init__(self, in_features: int, out_features: int, *, norm_mag: float = 5.0) -> None:
         super().__init__()
         if in_features <= 0 or out_features <= 0:
             raise ValueError("in_features and out_features must be positive")
         self.in_features = int(in_features)
         self.out_features = int(out_features)
+        self.norm_mag = float(norm_mag)
         self.weight = nn.Parameter(torch.empty(self.out_features, self.in_features))
         nn.init.kaiming_uniform_(self.weight, a=5**0.5)
 
     def forward(self, features: torch.Tensor) -> torch.Tensor:
         normalized_features = F.normalize(features, dim=1)
         normalized_weights = F.normalize(self.weight, dim=1)
-        return normalized_features @ normalized_weights.T
+        return self.norm_mag * (normalized_features @ normalized_weights.T) + self.norm_mag
 
 
 class CSILClassifier(nn.Module):
@@ -48,15 +49,19 @@ class CSILClassifier(nn.Module):
         new_dim = old_dim + int(added_embedding_dim)
         old_classes = int(old_classifier.out_features)
         total_classes = old_classes + int(new_classes)
+        device = old_embedding.weight.device
+        dtype = old_embedding.weight.dtype
 
-        expanded_embedding = nn.Linear(self.input_dim, new_dim)
+        expanded_embedding = nn.Linear(self.input_dim, new_dim).to(device=device, dtype=dtype)
         with torch.no_grad():
             expanded_embedding.weight[:old_dim, :] = old_embedding.weight
             expanded_embedding.bias[:old_dim] = old_embedding.bias
             nn.init.kaiming_uniform_(expanded_embedding.weight[old_dim:, :], a=5**0.5)
             expanded_embedding.bias[old_dim:].zero_()
 
-        expanded_classifier = ZeroBiasCosineClassifier(new_dim, total_classes)
+        expanded_classifier = ZeroBiasCosineClassifier(
+            new_dim, total_classes, norm_mag=old_classifier.norm_mag
+        ).to(device=device, dtype=dtype)
         with torch.no_grad():
             expanded_classifier.weight.zero_()
             expanded_classifier.weight[:old_classes, :old_dim] = old_classifier.weight
@@ -82,3 +87,43 @@ class CSILClassifier(nn.Module):
             self.embedding.weight.grad.mul_(self.embedding_train_mask)
         if self.embedding.bias.grad is not None:
             self.embedding.bias.grad.mul_(self.embedding_bias_train_mask)
+
+
+def csil_masked_sgd_step(
+    model: CSILClassifier,
+    *,
+    lr: float,
+    momentum: float,
+    weight_decay: float,
+    state: dict[str, torch.Tensor] | None = None,
+) -> dict[str, torch.Tensor]:
+    """Apply the paper-style mask to the full SGD+L2+momentum update.
+
+    The official MATLAB code masks the velocity update, not only the raw
+    gradient. This prevents old CSIL blocks from drifting through L2 decay or
+    stale momentum.
+    """
+    state = {} if state is None else dict(state)
+    masks = {
+        "embedding.weight": model.embedding_train_mask,
+        "embedding.bias": model.embedding_bias_train_mask,
+        "classifier.weight": model.classifier_train_mask,
+    }
+    next_state: dict[str, torch.Tensor] = {}
+    with torch.no_grad():
+        for name, parameter in model.named_parameters():
+            if parameter.grad is None:
+                continue
+            mask = masks.get(name)
+            if mask is None:
+                mask = torch.ones_like(parameter)
+            mask = mask.to(device=parameter.device, dtype=parameter.dtype)
+            previous_velocity = state.get(name, torch.zeros_like(parameter)).to(
+                device=parameter.device, dtype=parameter.dtype
+            )
+            raw_update = parameter.grad + float(weight_decay) * parameter
+            velocity = float(momentum) * previous_velocity + float(lr) * raw_update
+            velocity = velocity * mask
+            parameter -= velocity
+            next_state[name] = velocity.detach().clone()
+    return next_state

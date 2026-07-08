@@ -11,11 +11,13 @@ Paper-faithful scope:
 - `mitigating_receiver_impact_da/`: paper-faithful Liu Yang et al. IEEE IoT Journal 2024 components for DV-KL domain alignment, CPL adaptive pseudo-labeling, class weighting, GAD min-max training, and dry-run protocol validation.
 - `dadda_cross_receiver/`: paper-faithful Feng et al. IEEE Internet of Things Journal 2025 components for closed-set cross-receiver DADDA with a 1-D ResNet18-style `G_f` approximation, a 1-D multiscale `G_m` approximation, MMD, LMMD, and dynamic adaptive factor.
 - `orthogonal_incremental_sei/`: paper-faithful closed-set FSCIL-SEI components for orthogonal pseudo targets, base-stage CE/contrastive/center losses, incremental classifier-weight calibration, and A/H/F metrics.
+- `csil_class_incremental_iot/`: paper-faithful ADS-B class-incremental CSIL components aligned to the official MATLAB repository, including shifted zero-bias cosine fingerprints, channel expansion, KD/EWC helpers, masked SGD update, and dry-run protocol validation.
 - `configs/receiver_agnostic_twostage_uda_manysig_paper_faithful.json`: paper-faithful dry-run configuration for the closed-set WiSig ManySig receiver-ratio matrix.
 - `configs/mitigating_receiver_impact_da_manysig_paper_faithful.json`: paper-faithful dry-run configuration for the IoTJ 2024 closed-set WiSig ManySig cross-receiver/cross-day matrix.
 - `configs/dadda_cross_receiver_manysig_paper_faithful.json`: paper-faithful dry-run configuration for the DADDA closed-set WiSig ManySig receiver-transfer matrix.
 - `configs/orthogonal_incremental_sei_smoke.json`: synthetic dry-run configuration for the orthogonal-space FSCIL-SEI wiring check.
 - `configs/orthogonal_incremental_sei_wisig.json`: paper-protocol WiFi/WiSig configuration skeleton for closed-set FSCIL; it is not CVS Stage2 evidence.
+- `configs/csil_adsb_paper_faithful.json`: ADS-B CSIL dry-run configuration for the original paper protocol; it is not CVS Stage2 evidence.
 - `paper_original_matrix.md`: release-level ledger mapping paper items to implemented, smoke-only, and pending reproduction evidence.
 
 CVS extension scope:

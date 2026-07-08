@@ -6,9 +6,9 @@ from pathlib import Path
 
 import torch
 
-from paper_reproduction.csil_class_incremental_iot.losses import compute_csil_loss
+from paper_reproduction.csil_class_incremental_iot.losses import compute_csil_loss, compute_ewc_penalty
 from paper_reproduction.csil_class_incremental_iot.metrics import degree_of_conflict, stage_accuracy_breakdown
-from paper_reproduction.csil_class_incremental_iot.model import CSILClassifier
+from paper_reproduction.csil_class_incremental_iot.model import CSILClassifier, ZeroBiasCosineClassifier, csil_masked_sgd_step
 from paper_reproduction.csil_class_incremental_iot.protocol import (
     build_stage_plan,
     validate_paper_faithful_config,
@@ -45,6 +45,16 @@ def test_csil_classifier_expands_channels_and_keeps_old_fingerprints_fixed():
     assert logits.shape == (7, 5)
 
 
+def test_zero_bias_classifier_matches_official_normmag_shifted_cosine():
+    classifier = ZeroBiasCosineClassifier(2, 2)
+    with torch.no_grad():
+        classifier.weight.copy_(torch.tensor([[1.0, 0.0], [0.0, 2.0]]))
+
+    logits = classifier(torch.tensor([[3.0, 0.0], [0.0, 4.0], [-1.0, 0.0]]))
+
+    assert torch.allclose(logits, torch.tensor([[10.0, 5.0], [5.0, 10.0], [0.0, 5.0]]), atol=1e-6)
+
+
 def test_csil_gradient_masks_lock_old_embedding_bias_and_weights():
     model = CSILClassifier(input_dim=4, embedding_dim=3, num_classes=2, stage_id=0)
     model.expand_for_stage(new_classes=1, added_embedding_dim=2, stage_id=1)
@@ -56,6 +66,88 @@ def test_csil_gradient_masks_lock_old_embedding_bias_and_weights():
     assert torch.count_nonzero(model.embedding.weight.grad[:3, :]).item() == 0
     assert torch.count_nonzero(model.embedding.bias.grad[:3]).item() == 0
     assert torch.count_nonzero(model.classifier.weight.grad[:2, :]).item() == 0
+
+
+def test_csil_expansion_preserves_existing_device_and_dtype():
+    model = CSILClassifier(input_dim=4, embedding_dim=3, num_classes=2, stage_id=0).to(dtype=torch.float64)
+
+    model.expand_for_stage(new_classes=1, added_embedding_dim=2, stage_id=1)
+
+    assert model.embedding.weight.dtype == torch.float64
+    assert model.embedding.bias.dtype == torch.float64
+    assert model.classifier.weight.dtype == torch.float64
+    assert model.embedding_train_mask.dtype == torch.float64
+    assert model.classifier_train_mask.dtype == torch.float64
+
+
+def test_ewc_penalty_slices_expanded_current_parameters_to_previous_shape():
+    current = torch.zeros(5, 6)
+    current[:3, :4] = 2.0
+    previous = torch.ones(3, 4)
+    fisher = torch.full((3, 4), 0.5)
+
+    penalty = compute_ewc_penalty(
+        params={"classifier.weight": current},
+        previous_params={"classifier.weight": previous},
+        fisher={"classifier.weight": fisher},
+        reference=current,
+    )
+
+    assert torch.isclose(penalty, torch.tensor(3.0))
+
+
+def test_kd_loss_rejects_mismatched_shapes_and_detaches_previous_response():
+    logits = torch.tensor([[2.0, 0.1], [0.2, 1.7]], requires_grad=True)
+    labels = torch.tensor([0, 1])
+    current_old_response = torch.tensor([[0.8, 0.2], [0.3, 0.7]], requires_grad=True)
+    previous_old_response = torch.tensor([[1.0, 0.0], [0.0, 1.0]], requires_grad=True)
+
+    result = compute_csil_loss(
+        logits=logits,
+        labels=labels,
+        current_old_response=current_old_response,
+        previous_old_response=previous_old_response,
+        kd_weight=1.0,
+    )
+    result.total.backward()
+
+    assert current_old_response.grad is not None
+    assert previous_old_response.grad is None
+
+    bad_previous = torch.ones(2, 3)
+    try:
+        compute_csil_loss(
+            logits=logits.detach(),
+            labels=labels,
+            current_old_response=current_old_response.detach(),
+            previous_old_response=bad_previous,
+        )
+    except ValueError as exc:
+        assert "KD responses must have the same shape" in str(exc)
+    else:
+        raise AssertionError("mismatched KD responses should be rejected")
+
+
+def test_masked_sgd_step_locks_old_parameters_against_weight_decay_and_momentum():
+    model = CSILClassifier(input_dim=4, embedding_dim=3, num_classes=2, stage_id=0)
+    model.expand_for_stage(new_classes=1, added_embedding_dim=2, stage_id=1)
+    old_embedding = model.embedding.weight[:3, :].detach().clone()
+    old_classifier = model.classifier.weight[:2, :].detach().clone()
+
+    for parameter in model.parameters():
+        parameter.grad = torch.ones_like(parameter)
+    state = {
+        "embedding.weight": torch.full_like(model.embedding.weight, 5.0),
+        "embedding.bias": torch.full_like(model.embedding.bias, 5.0),
+        "classifier.weight": torch.full_like(model.classifier.weight, 5.0),
+    }
+
+    next_state = csil_masked_sgd_step(model, lr=0.1, momentum=0.9, weight_decay=0.01, state=state)
+
+    assert torch.allclose(model.embedding.weight[:3, :], old_embedding)
+    assert torch.allclose(model.classifier.weight[:2, :], old_classifier)
+    assert not torch.allclose(next_state["embedding.weight"][3:, :], torch.full_like(next_state["embedding.weight"][3:, :], 5.0))
+    assert not torch.allclose(model.embedding.weight[3:, :], torch.zeros_like(model.embedding.weight[3:, :]))
 
 
 def test_degree_of_conflict_is_zero_for_simplex_fingerprints_and_positive_for_collision():

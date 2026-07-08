@@ -29,3 +29,24 @@
 
 - 独立审计要求逐条覆盖任务设定、输入信号、标签协议、数据划分、特征构造、模型主干、zero-bias层、DoC、CSIL结构、增量训练损失、参数锁定、增量批次、训练超参、baselines、upper bound、Fig.7/8/9、TableI/II和代码不可见假设。
 - 当前实现完成协议校验、CSIL分类头/通道扩展、损失、DoC/accuracy指标、dry-run边界和单元测试；真实ADS-B训练、baseline矩阵、消融矩阵和图表复现实验仍未完成。
+
+## Official Public Sources
+
+- 官方GitHub仓库`https://github.com/pcwhy/CSIL`已克隆到`E:\type10-7\local_artifacts\external_refs\pcwhy_CSIL`，本地HEAD为`8ce8637daf4dc60eeb1c56bff64c050c5b2353e9`。
+- 官方README指出原始数据为`adsb_bladerf2_10M_qt0.mat`，预处理数据为`adsb-107loaded.mat`，均来自IEEE DataPort；本轮按用户要求不下载数据。
+- 官方仓库目录分工：`ContinualLearning\WorkStage`是多阶段增量学习与算法比较；`ContinualLearning\adsb_recognition_singleBurst_*`是简单两阶段样例；`numericalSimOfDoC`是Remark 1/DoC数值模拟；`zeroBiasFCLayer.m`是zero-bias fingerprint层。
+- 官方README/DataPort写`BladeRF2`、`10MHz`，桌面PDF抽取记录写`USRP B210`、`8MHz`。后续报告必须区分`local_pdf_protocol`与`official_repo_dataport_protocol`，不能混用采集参数。
+
+## Official MATLAB Migration Findings
+
+- 官方`zeroBiasFCLayer.m`输出不是裸cosine，而是`5*cosine+5`；当前`ZeroBiasCosineClassifier`已按官方默认修正。
+- 官方EWC在扩展层只比较旧尺寸切片；当前`compute_ewc_penalty`已支持当前参数大于旧参数时切片。
+- 官方KD是旧类fingerprint/logit响应MSE，不是KL蒸馏；当前loss会检查KD响应shape并对旧响应`detach`。
+- 官方`sgdmFunctionL2`把mask乘到完整`momentum + lr*(grad + 2*L2*param)`更新；当前新增`csil_masked_sgd_step`避免冻结块被weight decay或旧momentum移动。
+- 官方主控默认调用`CSILLockOldFPsChessBoardPast5000`系列，不应把裸`CSIL.m`直接当最终主方法。`Past5000`旧样本策略与论文“不用historical data”叙述存在潜在差异，真实复现实验需单独说明。
+
+## CVS Alignment Findings
+
+- ADS-B官方CSIL只能作为`paper_reproduction/csil_class_incremental_iot`原始论文层，不能直接声明CVS Stage2或satellite/LEO部署成功。
+- 若将CSIL用作CVS新类注册/增量头，应放入`paper_reproduction/cvs_aligned`，并显式输出`cvs_extension=true`、`R_s/R_t`、`Y_old/Y_new/Y_unknown`、`K-shot`、satellite/LEO view、support/query划分和同row指标。
+- CVS Phase2主线仍以`old_acc`、`seen_new_acc`、`H_old_new`为核心；unknown FAR、FPR95、AUROC只能作为Phase3备用诊断。

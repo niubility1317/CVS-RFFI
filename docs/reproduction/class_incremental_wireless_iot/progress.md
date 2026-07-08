@@ -17,3 +17,9 @@
 - Re-ran `conda run -n ssr-gpu python -m pytest tests/test_paper_reproduction_csil_class_incremental.py -q`; result was `7 passed`.
 - Re-ran `conda run -n ssr-gpu python -m compileall -q paper_reproduction/csil_class_incremental_iot`; result exit code 0 after a serial retry.
 - Ran `conda run -n ssr-gpu python -m paper_reproduction.csil_class_incremental_iot.train --config paper_reproduction/configs/csil_adsb_paper_faithful.json --dry-run --formal`; result exit code 0.
+- Searched public sources and cloned official `pcwhy/CSIL` to `E:\type10-7\local_artifacts\external_refs\pcwhy_CSIL`; local HEAD is `8ce8637daf4dc60eeb1c56bff64c050c5b2353e9`.
+- Spawned three read-only subagents for official repo structure, MATLAB mechanism migration, and CVS protocol alignment.
+- Added RED tests for official zero-bias `5*cosine+5`, expansion dtype/device preservation, EWC old-block slicing, KD shape/detach, and masked SGD over full momentum/L2 update.
+- Verified RED failures, then updated `model.py` and `losses.py` to match the official MATLAB semantics.
+- Ran `conda run -n ssr-gpu python -m pytest tests/test_paper_reproduction_csil_class_incremental.py -q`; result was `12 passed`.
+- Added `public_sources.md` and `official_repo_migration.md` under `docs/reproduction/class_incremental_wireless_iot/`.

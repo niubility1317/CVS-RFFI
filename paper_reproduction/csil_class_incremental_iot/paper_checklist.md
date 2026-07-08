@@ -8,9 +8,10 @@
 |---|---|---|---|---|
 |ADS-B NDI class-incremental任务，不使用historical data|p1-p2|`protocol.py`、`train.py`|已实现协议校验和dry-run声明|尚未接入真实ADS-B数据artifact|
 |100类分5批，每批20类，60/40训练验证|p6-p7|`protocol.py`、`configs/csil_adsb_paper_faithful.json`|已实现stage plan与配置校验|具体transponder ID和seed为PDF缺失项|
-|zero-bias cosine similarity fingerprint layer|p3 Fig.2/公式(3)|`model.py`|已实现`ZeroBiasCosineClassifier`与`CSILClassifier`|当前为分类头/嵌入层单元实现，完整Conv2d流水线仍需ADS-B训练入口补齐|
-|CSIL通道扩展和新旧fingerprint零块隔离|p5 Fig.5，p6公式(16)(17)|`model.py`|已实现`expand_for_stage`复制旧权重、扩展新通道、块状零mask和旧embedding bias梯度mask|尚未跑五阶段真实训练验证梯度mask曲线|
-|损失`L=L_CE+L_D+L_EWC`|p6公式(18)-(20)|`losses.py`|已实现CE、KD MSE和EWC Fisher penalty组合|KD/EWC权重为配置/实现选择，PDF未给数值|
+|zero-bias cosine similarity fingerprint layer|p3 Fig.2/公式(3)，官方`zeroBiasFCLayer.m`|`model.py`|已实现`ZeroBiasCosineClassifier`与`CSILClassifier`，默认输出`5*cosine+5`|当前为分类头/嵌入层单元实现，完整Conv2d流水线仍需ADS-B训练入口补齐|
+|CSIL通道扩展和新旧fingerprint零块隔离|p5 Fig.5，p6公式(16)(17)|`model.py`|已实现`expand_for_stage`复制旧权重、扩展新通道、块状零mask、旧embedding bias梯度mask和device/dtype保持|尚未跑五阶段真实训练验证梯度mask曲线|
+|损失`L=L_CE+L_D+L_EWC`|p6公式(18)-(20)，官方`CSIL*.m`|`losses.py`|已实现CE、KD MSE、KD shape/detach校验和EWC旧块切片penalty组合|Fisher估计器仍需按官方`exp(grad^2)`近似补齐|
+|masked SGD更新|官方`sgdmFunctionL2`|`model.py`|已实现`csil_masked_sgd_step`，mask作用于完整momentum+L2更新|真实训练入口仍需强制使用或等价排除冻结参数|
 |DoC/fingerprint conflict诊断|p4公式(5)-(13)，p7 Fig.7|`metrics.py`|已实现topological degree与相对理想simplex的conflict deviation|需要真实stage输出重画Fig.7|
 |old/new/overall accuracy|p7 Fig.8/Fig.9|`metrics.py`|已实现stage指标拆分|需要真实ADS-B实验产出曲线|
 |TableI冲突诊断|p5 TableI|本文件记录数值|未实验复现|需18旧类+16新类诊断run|
