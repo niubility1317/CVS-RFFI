@@ -42,8 +42,9 @@ class ResidualBlock1D(nn.Module):
 class ResNet18FeatureExtractor1D(nn.Module):
     """Feature extractor E from the IoTJ 2024 paper: ResNet18 with 1-D convolutions."""
 
-    def __init__(self, feature_dim: int = 128, base_channels: int = 32) -> None:
+    def __init__(self, feature_dim: int = 512, base_channels: int = 64) -> None:
         super().__init__()
+        self.output_channels = int(base_channels) * 8
         self.stem = nn.Sequential(
             nn.Conv1d(2, base_channels, kernel_size=7, stride=2, padding=3, bias=False),
             nn.BatchNorm1d(base_channels),
@@ -56,7 +57,10 @@ class ResNet18FeatureExtractor1D(nn.Module):
         self.layer3 = self._make_layer(base_channels * 4, blocks=2, stride=2)
         self.layer4 = self._make_layer(base_channels * 8, blocks=2, stride=2)
         self.pool = nn.AdaptiveAvgPool1d(1)
-        self.projection = nn.Linear(base_channels * 8, int(feature_dim))
+        if int(feature_dim) == self.output_channels:
+            self.projection = nn.Identity()
+        else:
+            self.projection = nn.Linear(self.output_channels, int(feature_dim))
 
     def _make_layer(self, out_channels: int, *, blocks: int, stride: int) -> nn.Sequential:
         layers = [ResidualBlock1D(self.in_channels, out_channels, stride=stride)]
@@ -97,12 +101,13 @@ class ThreeLayerFCNet(nn.Module):
 class ReceiverImpactGADNet(nn.Module):
     """GAD model with feature extractor E, classifier C, and estimate network T."""
 
-    def __init__(self, *, num_tx: int, feature_dim: int = 128, hidden_dim: int = 128) -> None:
+    def __init__(self, *, num_tx: int, feature_dim: int = 512, hidden_dim: int | None = None) -> None:
         super().__init__()
         self.num_tx = int(num_tx)
+        resolved_hidden_dim = int(feature_dim if hidden_dim is None else hidden_dim)
         self.feature_extractor = ResNet18FeatureExtractor1D(feature_dim=feature_dim)
-        self.classifier = ThreeLayerFCNet(feature_dim, self.num_tx, hidden_dim)
-        self.estimate_network = ThreeLayerFCNet(feature_dim, 1, hidden_dim)
+        self.classifier = ThreeLayerFCNet(feature_dim, self.num_tx, resolved_hidden_dim)
+        self.estimate_network = ThreeLayerFCNet(feature_dim, 1, resolved_hidden_dim)
 
     def forward(self, x: torch.Tensor, *, return_activations: bool = False) -> dict[str, torch.Tensor | list[torch.Tensor]]:
         features, activations = self.feature_extractor(x, return_activations=return_activations)

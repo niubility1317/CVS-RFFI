@@ -66,6 +66,22 @@ def test_iotj2024_model_exposes_classifier_and_estimate_networks():
     assert "domain_logits" not in outputs
 
 
+def test_iotj2024_default_model_uses_standard_resnet18_widths():
+    from torch import nn
+
+    from paper_reproduction.mitigating_receiver_impact_da.model import ReceiverImpactGADNet
+
+    model = ReceiverImpactGADNet(num_tx=6)
+    batch = torch.randn(2, 2, 256)
+
+    outputs = model(batch)
+
+    assert model.feature_extractor.stem[0].out_channels == 64
+    assert model.feature_extractor.layer4[-1].bn2.num_features == 512
+    assert isinstance(model.feature_extractor.projection, nn.Identity)
+    assert outputs["features"].shape == (2, 512)
+
+
 def test_iotj2024_model_can_export_classifier_without_estimate_network():
     from paper_reproduction.mitigating_receiver_impact_da.model import ReceiverImpactGADNet
 
