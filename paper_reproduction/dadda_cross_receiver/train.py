@@ -47,7 +47,7 @@ def build_dry_run_payload(config: dict[str, Any]) -> dict[str, Any]:
         "method_id": "dadda_cross_receiver",
         "paper": PAPER_TITLE,
         "citation": "Junhao Feng, Shengliang Fang, and Youchen Fan, IEEE Internet of Things Journal, 2025",
-        "algorithm": "DADDA: 1-D ResNet18-style G_f approximation + 1-D multiscale G_m approximation + MMD + LMMD + dynamic adaptive factor",
+        "algorithm": "DADDA: modified ResNet18-style G_f + 2-D paper-shaped multiscale G_m + shared-kernel MMD/LMMD + dynamic adaptive factor",
         "paper_scope": "paper_faithful_closed_set_single_source_UDA",
         "cvs_extension": False,
         "dataset": config.get("dataset", "WiSig ManySig"),
@@ -69,12 +69,15 @@ def build_dry_run_payload(config: dict[str, Any]) -> dict[str, Any]:
         "paper_reported_hyperparameters": {
             "epochs": 100,
             "batch_size": 128,
+            "samples_per_receiver_domain": 4000,
             "optimizer": "SGD",
             "momentum": 0.9,
             "weight_decay": 0.0005,
             "lr_schedule": "lr_p=0.0001/(1+10p)^0.75",
             "lambda_schedule": "lambda_p=2/(1+exp(-10p))-1",
             "classifier_hidden": [512, 128],
+            "model_variant": "conv2d_paper",
+            "normalize": "paper uses upstream energy normalization; rerun configs may set runtime normalize false for ablation",
         },
         "paper_evidence_targets": dict(PAPER_EVIDENCE_TARGETS),
         "pending_paper_artifacts": build_pending_paper_artifacts(),
@@ -165,6 +168,16 @@ def resolve_table2_run_settings(config: dict[str, Any], args: argparse.Namespace
         "weight_decay": float(args.weight_decay)
         if args.weight_decay is not None
         else _config_value(config, "weight_decay", 0.0005, float),
+        "paper_domain_sample_count": int(getattr(args, "paper_domain_sample_count", None))
+        if getattr(args, "paper_domain_sample_count", None) is not None
+        else config.get("paper_domain_sample_count"),
+        "normalize": getattr(args, "normalize", None) if getattr(args, "normalize", None) is not None else config.get("normalize"),
+        "crop_mode": getattr(args, "crop_mode", None) if getattr(args, "crop_mode", None) is not None else config.get("crop_mode"),
+        "detach_target_probabilities": bool(
+            getattr(args, "detach_target_probabilities", None)
+            if getattr(args, "detach_target_probabilities", None) is not None
+            else config.get("detach_target_probabilities", False)
+        ),
     }
 
 
@@ -241,6 +254,7 @@ def run_dadda_training_loop(
     max_batches_per_epoch: int | None = None,
     base_lr: float = 0.0001,
     bandwidth: float | None = None,
+    detach_target_probabilities: bool = False,
 ) -> dict[str, Any]:
     history = []
     total_batches = 0
@@ -269,6 +283,7 @@ def run_dadda_training_loop(
                 source_y,
                 tradeoff_lambda=tradeoff,
                 bandwidth=bandwidth,
+                detach_target_probabilities=detach_target_probabilities,
             )
             terms["loss"].backward()
             optimizer.step()
@@ -314,6 +329,7 @@ def _make_model(config: dict[str, Any], *, device: torch.device) -> DADDANet:
         base_channels=int(config.get("base_channels", 16)),
         classifier_hidden1=int(config.get("classifier_hidden1", 512)),
         classifier_hidden2=int(config.get("classifier_hidden2", 128)),
+        model_variant=str(config.get("model_variant", "conv1d")),
     ).to(device)
 
 
@@ -329,11 +345,15 @@ def run_table2_reproduction(
     momentum: float = 0.9,
     weight_decay: float = 0.0005,
     max_samples_per_combo: int | None = None,
+    paper_domain_sample_count: int | None = None,
+    normalize: bool | None = None,
+    crop_mode: str | None = None,
     max_batches_per_epoch: int | None = None,
     seed: int = 0,
     device: torch.device | str | None = None,
     num_workers: int = 0,
     model_config: dict[str, Any] | None = None,
+    detach_target_probabilities: bool = False,
     smoke: bool | None = None,
     config_path: Path | str | None = None,
 ) -> dict[str, Any]:
@@ -353,6 +373,9 @@ def run_table2_reproduction(
             task=task,
             batch_size=batch_size,
             max_samples_per_combo=max_samples_per_combo,
+            paper_domain_sample_count=paper_domain_sample_count,
+            normalize=normalize,
+            crop_mode=crop_mode,
             seed=seed,
             num_workers=num_workers,
         )
@@ -386,6 +409,7 @@ def run_table2_reproduction(
                     device=resolved_device,
                     max_batches_per_epoch=max_batches_per_epoch,
                     base_lr=learning_rate,
+                    detach_target_probabilities=detach_target_probabilities,
                 )
             else:
                 rows.append(
@@ -473,6 +497,10 @@ def run_table2_reproduction(
         "lr_schedule": "lr_p=0.0001/(1+10p)^0.75",
         "lambda_schedule": "lambda_p=2/(1+exp(-10p))-1",
         "max_samples_per_combo": max_samples_per_combo,
+        "paper_domain_sample_count": paper_domain_sample_count,
+        "normalize": normalize,
+        "crop_mode": crop_mode,
+        "detach_target_probabilities": bool(detach_target_probabilities),
         "max_batches_per_epoch": max_batches_per_epoch,
         "config_path": str(config_path) if config_path is not None else None,
         "config_sha256": _sha256_file(Path(config_path)) if config_path is not None else None,
@@ -503,6 +531,10 @@ def main() -> int:
     parser.add_argument("--momentum", type=float, default=None)
     parser.add_argument("--weight-decay", type=float, default=None)
     parser.add_argument("--max-samples-per-combo", type=int, default=None)
+    parser.add_argument("--paper-domain-sample-count", type=int, default=None)
+    parser.add_argument("--normalize", action=argparse.BooleanOptionalAction, default=None)
+    parser.add_argument("--crop-mode", type=str, default=None, choices=["left", "center"])
+    parser.add_argument("--detach-target-probabilities", action=argparse.BooleanOptionalAction, default=None)
     parser.add_argument("--max-batches-per-epoch", type=int, default=None)
     parser.add_argument("--seed", type=int, default=0)
     parser.add_argument("--device", type=str, default=None)
@@ -540,6 +572,9 @@ def main() -> int:
         )
         tasks = [token.strip() for token in args.tasks.split(",") if token.strip()] or None
         methods = [token.strip() for token in args.methods.split(",") if token.strip()]
+        model_config = dict(config.get("model_config", {}))
+        if "model_variant" in config:
+            model_config["model_variant"] = config["model_variant"]
         payload = run_table2_reproduction(
             args.manysig_pkl,
             tasks=tasks,
@@ -551,12 +586,17 @@ def main() -> int:
             momentum=settings["momentum"],
             weight_decay=settings["weight_decay"],
             max_samples_per_combo=args.max_samples_per_combo,
+            paper_domain_sample_count=settings["paper_domain_sample_count"],
+            normalize=settings["normalize"],
+            crop_mode=settings["crop_mode"],
             max_batches_per_epoch=args.max_batches_per_epoch,
             seed=args.seed,
             device=args.device,
             num_workers=args.num_workers,
             smoke=args.smoke,
             config_path=args.config,
+            model_config=model_config,
+            detach_target_probabilities=settings["detach_target_probabilities"],
         )
         if args.output is not None:
             write_json(args.output, payload)

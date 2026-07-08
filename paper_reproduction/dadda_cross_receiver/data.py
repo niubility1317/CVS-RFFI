@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import sys
 from pathlib import Path
+from collections import defaultdict
 from typing import Any
 
 import torch
@@ -111,11 +112,58 @@ def _tx_coverage(dataset: WiSigCompactDataset) -> set[int]:
     return out
 
 
+def _apply_domain_sample_count(dataset: WiSigCompactDataset, total_samples: int | None) -> dict[str, Any] | None:
+    if total_samples is None:
+        return None
+    target = int(total_samples)
+    if target <= 0:
+        raise ValueError("paper_domain_sample_count must be positive")
+    if len(dataset.index) <= target:
+        return {
+            "requested": target,
+            "before": len(dataset.index),
+            "after": len(dataset.index),
+            "applied": False,
+            "policy": "balanced_front_by_tx_rx_day_eq",
+        }
+
+    groups: dict[tuple[int, int, int, int], list[Any]] = defaultdict(list)
+    for item in dataset.index:
+        groups[(int(item.tx_i), int(item.rx_i), int(item.day_i), int(item.eq_i))].append(item)
+    group_keys = sorted(groups)
+    base = target // len(group_keys)
+    remainder = target % len(group_keys)
+    selected = []
+    for offset, key in enumerate(group_keys):
+        take = base + (1 if offset < remainder else 0)
+        bucket = groups[key]
+        if take > len(bucket):
+            raise ValueError(
+                "paper_domain_sample_count cannot be balanced because a tx/rx/day/eq group is too small: "
+                f"group={key}, requested={take}, available={len(bucket)}"
+            )
+        selected.extend(bucket[:take])
+    dataset.index = selected
+    return {
+        "requested": target,
+        "before": sum(len(items) for items in groups.values()),
+        "after": len(dataset.index),
+        "applied": True,
+        "policy": "balanced_front_by_tx_rx_day_eq",
+        "groups": len(group_keys),
+        "base_per_group": base,
+        "remainder_groups": remainder,
+    }
+
+
 def build_manysig_task_datasets(
     compact: dict[str, Any],
     *,
     task: str,
     max_samples_per_combo: int | None = None,
+    paper_domain_sample_count: int | None = None,
+    normalize: bool | None = None,
+    crop_mode: str | None = None,
     seed: int = 0,
 ) -> dict[str, Any]:
     tx_labels = list(compact.get("tx_list", []))
@@ -146,8 +194,8 @@ def build_manysig_task_datasets(
 
     common = {
         "out_len": PAPER_PREPROCESSING["out_len"],
-        "crop_mode": PAPER_PREPROCESSING["crop_mode"],
-        "normalize": PAPER_PREPROCESSING["normalize"],
+        "crop_mode": str(crop_mode or PAPER_PREPROCESSING["crop_mode"]),
+        "normalize": PAPER_PREPROCESSING["normalize"] if normalize is None else bool(normalize),
         "equalized": PAPER_PREPROCESSING["equalized"],
         "domain": "rx_day",
         "max_samples_per_combo": max_samples_per_combo,
@@ -156,6 +204,8 @@ def build_manysig_task_datasets(
     }
     source = WiSigCompactDataset(compact, rx_keep=source_rx, day_keep=source_days, **common)
     target = WiSigCompactDataset(compact, rx_keep=target_rx, day_keep=target_days, **common)
+    source_domain_cap = _apply_domain_sample_count(source, paper_domain_sample_count)
+    target_domain_cap = _apply_domain_sample_count(target, paper_domain_sample_count)
     if len(source) == 0 or len(target) == 0:
         raise ValueError(f"empty source/target dataset for DADDA task {task}")
     expected_tx = set(range(len(tx_labels)))
@@ -184,7 +234,14 @@ def build_manysig_task_datasets(
             "target_tx_ids": sorted(target_tx),
             "tx_labels": tx_labels,
             "target_label_role": "hidden_for_UDA_training_available_for_final_accuracy_only",
-            "preprocessing": dict(PAPER_PREPROCESSING),
+            "preprocessing": {
+                **dict(PAPER_PREPROCESSING),
+                "normalize": common["normalize"],
+                "crop_mode": common["crop_mode"],
+            },
+            "paper_domain_sample_count": paper_domain_sample_count,
+            "source_domain_sample_cap": source_domain_cap,
+            "target_domain_sample_cap": target_domain_cap,
             "seed": int(seed),
         },
     }
@@ -196,6 +253,9 @@ def build_manysig_task_loaders(
     task: str,
     batch_size: int,
     max_samples_per_combo: int | None = None,
+    paper_domain_sample_count: int | None = None,
+    normalize: bool | None = None,
+    crop_mode: str | None = None,
     seed: int = 0,
     num_workers: int = 0,
 ) -> dict[str, Any]:
@@ -204,6 +264,9 @@ def build_manysig_task_loaders(
         compact,
         task=task,
         max_samples_per_combo=max_samples_per_combo,
+        paper_domain_sample_count=paper_domain_sample_count,
+        normalize=normalize,
+        crop_mode=crop_mode,
         seed=seed,
     )
     return {

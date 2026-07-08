@@ -73,6 +73,29 @@ def test_dadda_default_model_locks_paper_widths_and_multiscale_branches():
     assert model.multiscale_extractor.branch4[0].__class__.__name__ == "AvgPool1d"
 
 
+def test_dadda_conv2d_paper_model_uses_fig4_kernel_shapes():
+    from paper_reproduction.dadda_cross_receiver.model import DADDANet
+
+    model = DADDANet(
+        num_classes=6,
+        feature_dim=16,
+        multiscale_dim=16,
+        base_channels=4,
+        classifier_hidden1=16,
+        classifier_hidden2=8,
+        model_variant="conv2d_paper",
+    )
+    outputs = model(torch.randn(3, 2, 256))
+
+    assert outputs["global_features"].shape == (3, 16)
+    assert outputs["local_features"].shape == (3, 16)
+    assert outputs["logits"].shape == (3, 6)
+    assert model.multiscale_extractor.branch1[0].kernel_size == (2, 1)
+    assert model.multiscale_extractor.branch2[2].kernel_size == (1, 3)
+    assert model.multiscale_extractor.branch3[2].kernel_size == (1, 5)
+    assert model.multiscale_extractor.branch4[0].__class__.__name__ == "AvgPool2d"
+
+
 def test_dadda_dynamic_objective_combines_ce_mmd_lmmd():
     from paper_reproduction.dadda_cross_receiver.losses import (
         dadda_objective,
@@ -121,6 +144,21 @@ def test_dadda_dynamic_objective_combines_ce_mmd_lmmd():
     assert float(target_global.grad.abs().sum()) > 0.0
     assert float(source_local.grad.abs().sum()) > 0.0
     assert float(target_local.grad.abs().sum()) > 0.0
+
+
+def test_dadda_mmd_uses_one_shared_batch_bandwidth():
+    from paper_reproduction.dadda_cross_receiver.losses import estimate_rbf_bandwidth, mmd_loss, rbf_kernel
+
+    source = torch.tensor([[0.0, 0.0], [1.0, 2.0], [3.0, 1.0]], dtype=torch.float32)
+    target = torch.tensor([[2.0, 0.0], [2.5, 2.0], [4.0, 1.0]], dtype=torch.float32)
+    bandwidth = estimate_rbf_bandwidth(source, target)
+    expected = (
+        rbf_kernel(source, source, bandwidth=bandwidth).mean()
+        + rbf_kernel(target, target, bandwidth=bandwidth).mean()
+        - 2.0 * rbf_kernel(source, target, bandwidth=bandwidth).mean()
+    ).clamp_min(0.0)
+
+    assert torch.allclose(mmd_loss(source, target), expected)
 
 
 def test_dadda_objective_supports_fixed_alpha_ablation():
@@ -224,6 +262,7 @@ def test_dadda_dry_run_declares_closed_set_uda_not_cvs():
 
     assert payload["method_id"] == "dadda_cross_receiver"
     assert payload["paper"].startswith("Cross-Receiver Radio Frequency Fingerprint Identification")
+    assert "2-D paper-shaped" in payload["algorithm"]
     assert payload["cvs_extension"] is False
     assert payload["target_labels_scope"] == "evaluation_only"
     assert payload["paper_task_plan"][0]["compare_method_ids"][-1] == "dadda"
@@ -269,6 +308,26 @@ def test_dadda_manysig_task_builder_keeps_target_labels_evaluation_only():
     assert built["meta"]["target_label_role"] == "hidden_for_UDA_training_available_for_final_accuracy_only"
     assert built["meta"]["source_tx_ids"] == [0, 1, 2, 3, 4, 5]
     assert built["meta"]["target_tx_ids"] == [0, 1, 2, 3, 4, 5]
+
+
+def test_dadda_task_builder_can_match_paper_domain_sample_count_and_preprocessing():
+    from paper_reproduction.dadda_cross_receiver.data import build_manysig_task_datasets
+
+    built = build_manysig_task_datasets(
+        _synthetic_manysig_compact(),
+        task="1-1->8-8",
+        paper_domain_sample_count=24,
+        normalize=False,
+        crop_mode="center",
+    )
+
+    assert len(built["source"]) == 24
+    assert len(built["target"]) == 24
+    assert built["meta"]["source_domain_sample_cap"]["applied"] is True
+    assert built["meta"]["source_domain_sample_cap"]["groups"] == 24
+    assert built["meta"]["source_domain_sample_cap"]["base_per_group"] == 1
+    assert built["meta"]["preprocessing"]["normalize"] is False
+    assert built["meta"]["preprocessing"]["crop_mode"] == "center"
 
 
 def test_dadda_target_train_loader_does_not_expose_target_labels():
@@ -376,6 +435,41 @@ def test_dadda_smoke_runner_trains_literal_dadda_method(tmp_path):
     assert (tmp_path / "1-1_to_8-8_dadda.pt").exists()
 
 
+def test_dadda_runner_forwards_detach_target_probabilities(monkeypatch, tmp_path):
+    from paper_reproduction.dadda_cross_receiver import train as train_module
+
+    observed = []
+
+    def fake_loop(*args, **kwargs):
+        observed.append(kwargs["detach_target_probabilities"])
+        return {"history": [{"epoch": 1, "batches": 1}]}
+
+    monkeypatch.setattr(train_module, "run_dadda_training_loop", fake_loop)
+    result = train_module.run_table2_reproduction(
+        _synthetic_manysig_compact(),
+        tasks=["1-1->8-8"],
+        methods=["dadda"],
+        output_dir=tmp_path,
+        epochs=1,
+        batch_size=4,
+        max_samples_per_combo=1,
+        max_batches_per_epoch=1,
+        seed=5,
+        device="cpu",
+        model_config={
+            "feature_dim": 8,
+            "multiscale_dim": 8,
+            "base_channels": 2,
+            "classifier_hidden1": 8,
+            "classifier_hidden2": 4,
+        },
+        detach_target_probabilities=True,
+    )
+
+    assert observed == [True]
+    assert result["detach_target_probabilities"] is True
+
+
 def test_dadda_missing_paper_baselines_are_structured_rows(tmp_path):
     from paper_reproduction.dadda_cross_receiver.train import run_table2_reproduction
 
@@ -450,6 +544,7 @@ def test_dadda_table2_settings_default_to_paper_config_and_gate_smoke():
     assert settings["learning_rate"] == 0.0001
     assert settings["momentum"] == 0.9
     assert settings["weight_decay"] == 0.0005
+    assert settings["detach_target_probabilities"] is False
     validate_formal_or_smoke_settings(
         config=config,
         settings=settings,
@@ -479,6 +574,26 @@ def test_dadda_table2_settings_default_to_paper_config_and_gate_smoke():
         max_samples_per_combo=1,
         max_batches_per_epoch=1,
     )
+
+
+def test_dadda_table2_settings_allow_cli_to_disable_config_detach():
+    from paper_reproduction.dadda_cross_receiver.train import resolve_table2_run_settings
+
+    config = {"detach_target_probabilities": True}
+    args = SimpleNamespace(
+        epochs=None,
+        batch_size=None,
+        learning_rate=None,
+        momentum=None,
+        weight_decay=None,
+        paper_domain_sample_count=None,
+        normalize=None,
+        crop_mode=None,
+        detach_target_probabilities=False,
+    )
+    settings = resolve_table2_run_settings(config, args)
+
+    assert settings["detach_target_probabilities"] is False
 
 
 def test_dadda_cli_requires_formal_for_real_table2(tmp_path):
