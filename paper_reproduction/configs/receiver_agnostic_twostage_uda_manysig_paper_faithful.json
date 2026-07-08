@@ -4,14 +4,18 @@
   "dataset": "WiSig ManySig",
   "total_receivers": 12,
   "tx_count": 6,
+  "capture_days": 4,
   "source_receiver_counts": [1, 2, 3, 4, 6],
+  "receiver_split_policy": "paper-unspecified; formal runs must record concrete source/target receiver IDs per ratio",
+  "seed_policy": "paper-unspecified; formal runs must record seed/repeat for each row",
   "target_unlabeled_allowed": true,
   "input_representation": "equalized time-domain WiFi preamble, power-normalized, CFO preserved, first 256 IQ samples as [256,2]",
   "stage1": "DANN global domain adaptation with source TX CE and source/target domain BCE through GRL",
   "stage2": "LMMD relevant subdomain adaptation using source labels and target predicted probabilities",
   "optional_finetune": {
-    "selection": "uncertainty sampling",
+    "selection": ["random", "entropy", "margin", "least_confidence"],
     "target_labeled_budget": "1/50 of target unlabeled pool",
+    "iterations_to_report": [0, 25, 50, 75, 100],
     "source_replay": true,
     "freeze_policy": "paper-unspecified"
   }

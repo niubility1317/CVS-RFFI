@@ -9,10 +9,16 @@ from baselines.common.grl import gradient_reverse
 def _to_paper_conv_input(x: torch.Tensor) -> torch.Tensor:
     """Convert WiSig IQ tensors to the paper's Conv2D input layout [B,1,256,2]."""
     if x.ndim == 3 and x.shape[1] == 2:
+        if x.shape[2] != 256:
+            raise ValueError("paper-faithful IQ inputs must contain exactly 256 samples")
         return x.transpose(1, 2).unsqueeze(1)
     if x.ndim == 3 and x.shape[-1] == 2:
+        if x.shape[1] != 256:
+            raise ValueError("paper-faithful IQ inputs must contain exactly 256 samples")
         return x.unsqueeze(1)
     if x.ndim == 4 and x.shape[1] == 1 and x.shape[-1] == 2:
+        if x.shape[2] != 256:
+            raise ValueError("paper-faithful IQ inputs must contain exactly 256 samples")
         return x
     raise ValueError("expected IQ input shaped [batch,2,256], [batch,256,2], or [batch,1,256,2]")
 
@@ -86,7 +92,7 @@ class ReceiverAgnosticUDANet(nn.Module):
         super().__init__()
         self.feature_extractor = ReceiverAgnosticFeatureExtractor(feature_dim=feature_dim)
         self.tx_classifier = DenseReLUHead(feature_dim, int(num_tx), classifier_hidden_dim)
-        self.domain_classifier = DenseReLUHead(feature_dim, 1, classifier_hidden_dim)
+        self.domain_classifier = DenseReLUHead(feature_dim, 2, classifier_hidden_dim)
 
     def forward(self, x: torch.Tensor, *, grl_lambda: float = 1.0, return_activations: bool = False) -> dict[str, torch.Tensor | list[torch.Tensor]]:
         features, activations = self.feature_extractor(x, return_activations=return_activations)

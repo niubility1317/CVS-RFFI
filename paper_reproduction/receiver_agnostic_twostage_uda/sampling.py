@@ -3,10 +3,18 @@ from __future__ import annotations
 import torch
 
 
-def rank_uncertain_samples(logits: torch.Tensor, *, strategy: str, k: int | None = None) -> torch.Tensor:
+def rank_uncertain_samples(
+    logits: torch.Tensor,
+    *,
+    strategy: str,
+    k: int | None = None,
+    seed: int | None = None,
+) -> torch.Tensor:
     """Rank target samples for the paper's uncertainty-sampling fine-tuning step."""
     if logits.ndim != 2:
         raise ValueError("logits must have shape [batch, num_classes]")
+    if k is not None and k < 0:
+        raise ValueError("k must be non-negative")
     probs = torch.softmax(logits, dim=1)
     strategy = strategy.lower().strip()
     if strategy == "entropy":
@@ -20,7 +28,11 @@ def rank_uncertain_samples(logits: torch.Tensor, *, strategy: str, k: int | None
         score = probs.max(dim=1).values
         order = torch.argsort(score, descending=False, stable=True)
     elif strategy == "random":
-        order = torch.randperm(logits.shape[0], device=logits.device)
+        generator = None
+        if seed is not None:
+            generator = torch.Generator(device=logits.device)
+            generator.manual_seed(int(seed))
+        order = torch.randperm(logits.shape[0], generator=generator, device=logits.device)
     else:
         raise ValueError(f"unknown uncertainty sampling strategy: {strategy}")
     if k is None:

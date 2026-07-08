@@ -1,5 +1,9 @@
 from __future__ import annotations
 
+import subprocess
+import sys
+
+import pytest
 import torch
 
 
@@ -13,8 +17,48 @@ def test_receiver_agnostic_model_matches_paper_shapes():
 
     assert outputs["features"].shape == (4, 128)
     assert outputs["tx_logits"].shape == (4, 6)
-    assert outputs["domain_logits"].shape == (4, 1)
+    assert outputs["domain_logits"].shape == (4, 2)
     assert len(outputs["activations"]) == 4
+
+
+def test_receiver_agnostic_model_rejects_non_256_iq_inputs():
+    from paper_reproduction.receiver_agnostic_twostage_uda.model import ReceiverAgnosticUDANet
+
+    model = ReceiverAgnosticUDANet(num_tx=6)
+
+    with pytest.raises(ValueError, match="256"):
+        model(torch.randn(2, 2, 320))
+
+
+def test_grl_reverses_feature_gradient_sign():
+    from baselines.common.grl import gradient_reverse
+
+    x = torch.tensor([2.0], requires_grad=True)
+    y = gradient_reverse(x, 0.5) * 4.0
+
+    y.backward()
+
+    assert torch.allclose(x.grad, torch.tensor([-2.0]))
+
+
+def test_dann_loss_combines_source_tx_and_two_class_domain_ce():
+    from paper_reproduction.receiver_agnostic_twostage_uda.losses import dann_loss
+
+    source_outputs = {
+        "tx_logits": torch.randn(4, 6, requires_grad=True),
+        "domain_logits": torch.randn(4, 2, requires_grad=True),
+    }
+    target_outputs = {
+        "tx_logits": torch.randn(5, 6, requires_grad=True),
+        "domain_logits": torch.randn(5, 2, requires_grad=True),
+    }
+    source_labels = torch.tensor([0, 1, 2, 3])
+
+    losses = dann_loss(source_outputs, target_outputs, source_labels)
+
+    assert set(losses) == {"loss", "loss_tx", "loss_domain"}
+    assert losses["loss"].ndim == 0
+    assert torch.isfinite(losses["loss"])
 
 
 def test_lmmd_loss_uses_target_probabilities_without_target_labels():
@@ -35,6 +79,35 @@ def test_lmmd_loss_uses_target_probabilities_without_target_labels():
     assert target_features.grad is not None
 
 
+def test_lmmd_loss_rejects_non_probability_target_inputs():
+    from paper_reproduction.receiver_agnostic_twostage_uda.losses import lmmd_loss
+
+    with pytest.raises(ValueError, match="sum to 1"):
+        lmmd_loss(
+            torch.randn(3, 4),
+            torch.randn(3, 4),
+            torch.tensor([0, 1, 2]),
+            torch.ones(3, 3),
+            num_classes=3,
+        )
+
+
+def test_stage2_lmmd_objective_matches_eq16_components():
+    from paper_reproduction.receiver_agnostic_twostage_uda.losses import stage2_lmmd_objective
+    from paper_reproduction.receiver_agnostic_twostage_uda.model import ReceiverAgnosticUDANet
+
+    model = ReceiverAgnosticUDANet(num_tx=3)
+    source_outputs = model(torch.randn(4, 2, 256), return_activations=True)
+    target_outputs = model(torch.randn(5, 2, 256), return_activations=True)
+    source_labels = torch.tensor([0, 1, 2, 0])
+
+    losses = stage2_lmmd_objective(source_outputs, target_outputs, source_labels, num_classes=3, lmmd_lambda=0.25)
+
+    assert set(losses) == {"loss", "loss_tx", "loss_lmmd"}
+    assert torch.allclose(losses["loss"], losses["loss_tx"] + 0.25 * losses["loss_lmmd"])
+    assert torch.isfinite(losses["loss"])
+
+
 def test_uncertainty_sampling_orders_hard_target_samples():
     from paper_reproduction.receiver_agnostic_twostage_uda.sampling import rank_uncertain_samples
 
@@ -52,6 +125,18 @@ def test_uncertainty_sampling_orders_hard_target_samples():
     assert rank_uncertain_samples(logits, strategy="least_confidence", k=2).tolist() == [1, 2]
 
 
+def test_random_sampling_is_reproducible_with_seed():
+    from paper_reproduction.receiver_agnostic_twostage_uda.sampling import rank_uncertain_samples
+
+    logits = torch.randn(12, 3)
+
+    first = rank_uncertain_samples(logits, strategy="random", k=5, seed=17)
+    second = rank_uncertain_samples(logits, strategy="random", k=5, seed=17)
+
+    assert first.tolist() == second.tolist()
+    assert len(set(first.tolist())) == 5
+
+
 def test_paper_faithful_protocol_builds_receiver_ratio_plan():
     from paper_reproduction.receiver_agnostic_twostage_uda.protocol import (
         build_receiver_ratio_plan,
@@ -64,6 +149,7 @@ def test_paper_faithful_protocol_builds_receiver_ratio_plan():
         "total_receivers": 12,
         "source_receiver_counts": [1, 2, 3, 4, 6],
         "tx_count": 6,
+        "capture_days": 4,
         "target_unlabeled_allowed": True,
         "cvs_extension": False,
     }
@@ -73,6 +159,11 @@ def test_paper_faithful_protocol_builds_receiver_ratio_plan():
 
     assert [row["ratio"] for row in plan] == ["1:11", "2:10", "3:9", "4:8", "6:6"]
     assert plan[-1]["table_i_target_receiver_count"] == 6
+    assert plan[-1]["table_i_paper_reference_accuracy"] == [0.89, 0.94, 0.87, 0.91, 0.92, 0.92]
+    assert plan[-1]["table_i_reference_only"] is True
+    assert plan[0]["receiver_split_ids"] is None
+    assert plan[0]["seed"] is None
+    assert plan[0]["fine_tune_iterations_to_report"][-1] == 100
     assert checked["claim_boundary"] == "paper-faithful closed-set cross-receiver UDA"
 
 
@@ -85,6 +176,7 @@ def test_paper_faithful_protocol_rejects_cvs_extension_mixing():
         "total_receivers": 12,
         "source_receiver_counts": [6],
         "tx_count": 6,
+        "capture_days": 4,
         "target_unlabeled_allowed": True,
         "cvs_extension": True,
     }
@@ -95,3 +187,43 @@ def test_paper_faithful_protocol_rejects_cvs_extension_mixing():
         assert "cvs_extension" in str(exc)
     else:
         raise AssertionError("paper-faithful config must reject cvs_extension mixing")
+
+
+def test_finetune_budget_and_source_replay_helpers_are_bounded():
+    from paper_reproduction.receiver_agnostic_twostage_uda.sampling import (
+        balanced_source_replay_indices,
+        fine_tune_budget_from_unlabeled,
+    )
+
+    labels = torch.tensor([0, 0, 0, 1, 1, 2])
+    replay = balanced_source_replay_indices(labels, per_class=2, seed=7)
+
+    assert fine_tune_budget_from_unlabeled(2500) == 50
+    assert fine_tune_budget_from_unlabeled(3) == 1
+    assert replay.numel() == 5
+    assert torch.bincount(labels[replay], minlength=3).tolist() == [2, 2, 1]
+
+
+def test_non_dry_run_does_not_write_output(tmp_path):
+    output = tmp_path / "should_not_exist.json"
+    config = "paper_reproduction/configs/receiver_agnostic_twostage_uda_manysig_paper_faithful.json"
+
+    result = subprocess.run(
+        [
+            sys.executable,
+            "-m",
+            "paper_reproduction.receiver_agnostic_twostage_uda.train",
+            "--config",
+            config,
+            "--output",
+            str(output),
+        ],
+        cwd=".",
+        text=True,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        check=False,
+    )
+
+    assert result.returncode != 0
+    assert not output.exists()

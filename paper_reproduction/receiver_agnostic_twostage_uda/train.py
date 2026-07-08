@@ -36,12 +36,12 @@ def main() -> int:
     args = parser.parse_args()
 
     config = load_json_config(args.config)
+    if not args.dry_run:
+        raise SystemExit("formal training is intentionally gated; run --dry-run first and fill paper-unspecified fields")
     payload = build_dry_run_payload(config)
     if args.output is not None:
         write_json(args.output, payload)
     print(json.dumps(payload, ensure_ascii=False, sort_keys=True))
-    if not args.dry_run:
-        raise SystemExit("formal training is intentionally gated; run --dry-run first and fill paper-unspecified fields")
     return 0
 
 

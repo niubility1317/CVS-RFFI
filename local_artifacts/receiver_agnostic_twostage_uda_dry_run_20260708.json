@@ -9,6 +9,10 @@
       "target_receiver_count": 11,
       "closed_set_tx_count": 6,
       "target_data_role": "unlabeled_for_UDA_labeled_only_for_optional_finetune",
+      "receiver_split_policy": "paper-unspecified; formal runs must record concrete source/target receiver IDs per ratio",
+      "receiver_split_ids": null,
+      "seed": null,
+      "seed_policy": "paper-unspecified; formal runs must record seed/repeat for each row",
       "compare_methods": [
         "source_only_lower_bound",
         "target_labeled_retrain_upper_bound",
@@ -16,7 +20,17 @@
         "DANN_plus_LMMD_subdomain_adaptation",
         "optional_uncertainty_finetune"
       ],
-      "table_i_target_receiver_count": null
+      "table_i_target_receiver_count": null,
+      "table_i_paper_reference_accuracy": null,
+      "table_i_reference_only": false,
+      "fine_tune_required_for_fig8": true,
+      "fine_tune_iterations_to_report": [
+        0,
+        25,
+        50,
+        75,
+        100
+      ]
     },
     {
       "ratio": "2:10",
@@ -24,6 +38,10 @@
       "target_receiver_count": 10,
       "closed_set_tx_count": 6,
       "target_data_role": "unlabeled_for_UDA_labeled_only_for_optional_finetune",
+      "receiver_split_policy": "paper-unspecified; formal runs must record concrete source/target receiver IDs per ratio",
+      "receiver_split_ids": null,
+      "seed": null,
+      "seed_policy": "paper-unspecified; formal runs must record seed/repeat for each row",
       "compare_methods": [
         "source_only_lower_bound",
         "target_labeled_retrain_upper_bound",
@@ -31,7 +49,17 @@
         "DANN_plus_LMMD_subdomain_adaptation",
         "optional_uncertainty_finetune"
       ],
-      "table_i_target_receiver_count": null
+      "table_i_target_receiver_count": null,
+      "table_i_paper_reference_accuracy": null,
+      "table_i_reference_only": false,
+      "fine_tune_required_for_fig8": true,
+      "fine_tune_iterations_to_report": [
+        0,
+        25,
+        50,
+        75,
+        100
+      ]
     },
     {
       "ratio": "3:9",
@@ -39,6 +67,10 @@
       "target_receiver_count": 9,
       "closed_set_tx_count": 6,
       "target_data_role": "unlabeled_for_UDA_labeled_only_for_optional_finetune",
+      "receiver_split_policy": "paper-unspecified; formal runs must record concrete source/target receiver IDs per ratio",
+      "receiver_split_ids": null,
+      "seed": null,
+      "seed_policy": "paper-unspecified; formal runs must record seed/repeat for each row",
       "compare_methods": [
         "source_only_lower_bound",
         "target_labeled_retrain_upper_bound",
@@ -46,7 +78,17 @@
         "DANN_plus_LMMD_subdomain_adaptation",
         "optional_uncertainty_finetune"
       ],
-      "table_i_target_receiver_count": null
+      "table_i_target_receiver_count": null,
+      "table_i_paper_reference_accuracy": null,
+      "table_i_reference_only": false,
+      "fine_tune_required_for_fig8": true,
+      "fine_tune_iterations_to_report": [
+        0,
+        25,
+        50,
+        75,
+        100
+      ]
     },
     {
       "ratio": "4:8",
@@ -54,6 +96,10 @@
       "target_receiver_count": 8,
       "closed_set_tx_count": 6,
       "target_data_role": "unlabeled_for_UDA_labeled_only_for_optional_finetune",
+      "receiver_split_policy": "paper-unspecified; formal runs must record concrete source/target receiver IDs per ratio",
+      "receiver_split_ids": null,
+      "seed": null,
+      "seed_policy": "paper-unspecified; formal runs must record seed/repeat for each row",
       "compare_methods": [
         "source_only_lower_bound",
         "target_labeled_retrain_upper_bound",
@@ -61,7 +107,11 @@
         "DANN_plus_LMMD_subdomain_adaptation",
         "optional_uncertainty_finetune"
       ],
-      "table_i_target_receiver_count": null
+      "table_i_target_receiver_count": null,
+      "table_i_paper_reference_accuracy": null,
+      "table_i_reference_only": false,
+      "fine_tune_required_for_fig8": false,
+      "fine_tune_iterations_to_report": []
     },
     {
       "ratio": "6:6",
@@ -69,6 +119,10 @@
       "target_receiver_count": 6,
       "closed_set_tx_count": 6,
       "target_data_role": "unlabeled_for_UDA_labeled_only_for_optional_finetune",
+      "receiver_split_policy": "paper-unspecified; formal runs must record concrete source/target receiver IDs per ratio",
+      "receiver_split_ids": null,
+      "seed": null,
+      "seed_policy": "paper-unspecified; formal runs must record seed/repeat for each row",
       "compare_methods": [
         "source_only_lower_bound",
         "target_labeled_retrain_upper_bound",
@@ -76,7 +130,18 @@
         "DANN_plus_LMMD_subdomain_adaptation",
         "optional_uncertainty_finetune"
       ],
-      "table_i_target_receiver_count": 6
+      "table_i_target_receiver_count": 6,
+      "table_i_paper_reference_accuracy": [
+        0.89,
+        0.94,
+        0.87,
+        0.91,
+        0.92,
+        0.92
+      ],
+      "table_i_reference_only": true,
+      "fine_tune_required_for_fig8": false,
+      "fine_tune_iterations_to_report": []
     }
   ],
   "paper_unspecified_fields": [

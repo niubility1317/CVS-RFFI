@@ -11,6 +11,8 @@ def transmitter_ce_loss(tx_logits: torch.Tensor, tx_labels: torch.Tensor) -> tor
 
 
 def domain_bce_loss(domain_logits: torch.Tensor, domain_labels: torch.Tensor) -> torch.Tensor:
+    if domain_logits.ndim >= 2 and domain_logits.shape[-1] == 2:
+        return F.cross_entropy(domain_logits, domain_labels.long().view(-1))
     labels = domain_labels.float().view_as(domain_logits)
     return F.binary_cross_entropy_with_logits(domain_logits, labels)
 
@@ -22,9 +24,9 @@ def dann_loss(
     *,
     domain_weight: float = 1.0,
 ) -> dict[str, torch.Tensor]:
-    source_domain = torch.zeros_like(source_outputs["domain_logits"])
-    target_domain = torch.ones_like(target_outputs["domain_logits"])
     domain_logits = torch.cat([source_outputs["domain_logits"], target_outputs["domain_logits"]], dim=0)
+    source_domain = torch.zeros(source_outputs["domain_logits"].shape[0], dtype=torch.long, device=domain_logits.device)
+    target_domain = torch.ones(target_outputs["domain_logits"].shape[0], dtype=torch.long, device=domain_logits.device)
     domain_labels = torch.cat([source_domain, target_domain], dim=0)
     loss_tx = transmitter_ce_loss(source_outputs["tx_logits"], source_labels)
     loss_domain = domain_bce_loss(domain_logits, domain_labels)
@@ -61,13 +63,31 @@ def _gaussian_kernel(
     return sum(kernels)
 
 
-def _class_weights(labels_or_probs: torch.Tensor, num_classes: int, *, eps: float = 1e-8) -> torch.Tensor:
+def _validate_probability_simplex(probs: torch.Tensor, *, eps: float = 1e-5) -> None:
+    if not torch.isfinite(probs).all():
+        raise ValueError("target probabilities must be finite")
+    if (probs < -eps).any():
+        raise ValueError("target probabilities must be non-negative")
+    row_sums = probs.sum(dim=1)
+    if not torch.allclose(row_sums, torch.ones_like(row_sums), atol=eps, rtol=0.0):
+        raise ValueError("target probabilities must sum to 1 along each row")
+
+
+def _class_weights(
+    labels_or_probs: torch.Tensor,
+    num_classes: int,
+    *,
+    eps: float = 1e-8,
+    validate_probabilities: bool = False,
+) -> torch.Tensor:
     if labels_or_probs.ndim == 1:
         probs = F.one_hot(labels_or_probs.long(), num_classes=int(num_classes)).float()
     elif labels_or_probs.ndim == 2:
         if labels_or_probs.shape[1] != int(num_classes):
             raise ValueError("probability columns must match num_classes")
         probs = labels_or_probs.float()
+        if validate_probabilities:
+            _validate_probability_simplex(probs)
     else:
         raise ValueError("labels_or_probs must be 1-D labels or 2-D probabilities")
     return probs / probs.sum(dim=0, keepdim=True).clamp_min(eps)
@@ -91,7 +111,7 @@ def lmmd_loss(
     if source.shape[1] != target.shape[1]:
         raise ValueError("source and target feature dimensions must match")
     source_w = _class_weights(source_labels, num_classes, eps=eps).to(source.device)
-    target_w = _class_weights(target_probs, num_classes, eps=eps).to(target.device)
+    target_w = _class_weights(target_probs, num_classes, eps=eps, validate_probabilities=True).to(target.device)
     kernels = _gaussian_kernel(source, target, kernel_mul=kernel_mul, kernel_num=kernel_num, fix_sigma=fix_sigma)
     ns = source.shape[0]
     k_ss = kernels[:ns, :ns]
@@ -102,13 +122,12 @@ def lmmd_loss(
         ws = source_w[:, class_idx]
         wt = target_w[:, class_idx]
         if ws.sum() <= eps or wt.sum() <= eps:
+            losses.append(source.sum() * 0.0)
             continue
         ss = (ws[:, None] * ws[None, :] * k_ss).sum()
         tt = (wt[:, None] * wt[None, :] * k_tt).sum()
         st = (ws[:, None] * wt[None, :] * k_st).sum()
         losses.append(ss + tt - 2.0 * st)
-    if not losses:
-        return source.sum() * 0.0
     return torch.stack(losses).mean().clamp_min(0.0)
 
 
@@ -130,3 +149,33 @@ def multi_layer_lmmd_loss(
     if not terms:
         raise ValueError("at least one activation layer is required for LMMD")
     return float(lmmd_weight) * torch.stack(terms).sum()
+
+
+def stage2_lmmd_objective(
+    source_outputs: dict[str, torch.Tensor | list[torch.Tensor]],
+    target_outputs: dict[str, torch.Tensor | list[torch.Tensor]],
+    source_labels: torch.Tensor,
+    *,
+    num_classes: int,
+    lmmd_lambda: float = 1.0,
+    target_probs: torch.Tensor | None = None,
+) -> dict[str, torch.Tensor]:
+    """Eq.16 objective: source transmitter CE plus weighted multi-layer LMMD."""
+    if "activations" not in source_outputs or "activations" not in target_outputs:
+        raise ValueError("stage2 LMMD objective requires return_activations=True outputs")
+    if target_probs is None:
+        target_probs = torch.softmax(target_outputs["tx_logits"], dim=1)
+    loss_tx = transmitter_ce_loss(source_outputs["tx_logits"], source_labels)
+    loss_lmmd = multi_layer_lmmd_loss(
+        source_outputs["activations"],
+        target_outputs["activations"],
+        source_labels,
+        target_probs,
+        num_classes=num_classes,
+        lmmd_weight=1.0,
+    )
+    return {
+        "loss": loss_tx + float(lmmd_lambda) * loss_lmmd,
+        "loss_tx": loss_tx,
+        "loss_lmmd": loss_lmmd,
+    }

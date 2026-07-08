@@ -15,6 +15,10 @@ PAPER_UNSPECIFIED_FIELDS = [
     "fine-tuning freeze policy",
 ]
 
+PAPER_FIG7_SOURCE_RECEIVER_COUNTS = [1, 2, 3, 4, 6]
+
+TABLE_I_PAPER_REFERENCE_ACCURACY = [0.89, 0.94, 0.87, 0.91, 0.92, 0.92]
+
 
 def validate_paper_faithful_config(config: dict[str, Any]) -> dict[str, Any]:
     if bool(config.get("cvs_extension", False)):
@@ -29,11 +33,15 @@ def validate_paper_faithful_config(config: dict[str, Any]) -> dict[str, Any]:
         raise ValueError("Bao et al. paper-faithful ManySig protocol expects 12 receivers")
     if tx_count != 6:
         raise ValueError("Bao et al. paper-faithful ManySig protocol expects 6 transmitters")
+    if int(config.get("capture_days", 0)) != 4:
+        raise ValueError("Bao et al. paper-faithful ManySig protocol expects 4 capture days")
     if not bool(config.get("target_unlabeled_allowed", False)):
         raise ValueError("target unlabeled data must be allowed for the UDA stages")
     counts = [int(v) for v in config.get("source_receiver_counts", [])]
     if not counts:
         raise ValueError("source_receiver_counts cannot be empty")
+    if counts != PAPER_FIG7_SOURCE_RECEIVER_COUNTS:
+        raise ValueError("source_receiver_counts must match the Fig.7 paper matrix [1,2,3,4,6]")
     for count in counts:
         if count <= 0 or count >= total_receivers:
             raise ValueError("each source receiver count must be in [1,total_receivers)")
@@ -41,6 +49,7 @@ def validate_paper_faithful_config(config: dict[str, Any]) -> dict[str, Any]:
     checked["source_receiver_counts"] = counts
     checked["claim_boundary"] = "paper-faithful closed-set cross-receiver UDA"
     checked["paper_unspecified_fields"] = PAPER_UNSPECIFIED_FIELDS
+    checked["table_i_paper_reference_accuracy"] = TABLE_I_PAPER_REFERENCE_ACCURACY
     return checked
 
 
@@ -56,6 +65,10 @@ def build_receiver_ratio_plan(config: dict[str, Any]) -> list[dict[str, Any]]:
                 "target_receiver_count": target_count,
                 "closed_set_tx_count": int(config["tx_count"]),
                 "target_data_role": "unlabeled_for_UDA_labeled_only_for_optional_finetune",
+                "receiver_split_policy": config.get("receiver_split_policy", "paper-unspecified"),
+                "receiver_split_ids": None,
+                "seed": None,
+                "seed_policy": config.get("seed_policy", "paper-unspecified"),
                 "compare_methods": [
                     "source_only_lower_bound",
                     "target_labeled_retrain_upper_bound",
@@ -64,6 +77,10 @@ def build_receiver_ratio_plan(config: dict[str, Any]) -> list[dict[str, Any]]:
                     "optional_uncertainty_finetune",
                 ],
                 "table_i_target_receiver_count": target_count if int(source_count) == 6 else None,
+                "table_i_paper_reference_accuracy": TABLE_I_PAPER_REFERENCE_ACCURACY if int(source_count) == 6 else None,
+                "table_i_reference_only": int(source_count) == 6,
+                "fine_tune_required_for_fig8": int(source_count) < 4,
+                "fine_tune_iterations_to_report": [0, 25, 50, 75, 100] if int(source_count) < 4 else [],
             }
         )
     return rows
