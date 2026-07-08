@@ -90,6 +90,8 @@ GROUP_FIELDNAMES = [
 ]
 
 LOG_ROOTS = [
+    "logs/cvs",
+    "paper_reproduction/logs",
     "logs",
     "code/logs",
     "server_log_backups",
@@ -113,6 +115,8 @@ SKIP_PARTS = {
     "paper",
     "paper_reading_work",
     "tmp",
+}
+SKIP_PREFIXES = {
     "code/snapshots",
 }
 
@@ -525,7 +529,9 @@ def discover_sources(project_root: Path, roots: Iterable[str]) -> list[Path]:
                 continue
             rel_parts = set(_rel(path, project_root).split("/")[:-1])
             rel_joined = _rel(path, project_root)
-            if rel_parts & SKIP_PARTS or any(skip in rel_joined for skip in SKIP_PARTS):
+            if rel_parts & SKIP_PARTS:
+                continue
+            if any(rel_joined == prefix or rel_joined.startswith(f"{prefix}/") for prefix in SKIP_PREFIXES):
                 continue
             if path.name in {"logs.jsonl", "metrics.json"} or path.suffix.lower() in {".log", ".out"}:
                 paths.append(path)

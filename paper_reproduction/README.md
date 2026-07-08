@@ -14,3 +14,10 @@ Boundary:
 
 - These files do not claim paper reproduction completion.
 - Any result claim must name the CVS split, target receiver, K-shot support/query protocol, satellite/stress view, seed, and full same-row metrics.
+
+Log separation:
+
+- Reproduction and comparison-method logs, including RIEI, DRIFT, Fedbase, ProtoNet CDA, Feature Separation, CVCNN, and TIFS, must use `paper_reproduction/logs/`.
+- Reproduction and comparison run outputs, checkpoints, and structured results must use `paper_reproduction/runs/`.
+- CVS mainline, Phase1/Phase2, Stage2, spaceborne, and CV-SincNet optimization logs must stay under `logs/cvs/`.
+- Do not write reproduction or comparison-method logs to the top-level `logs/` directory.

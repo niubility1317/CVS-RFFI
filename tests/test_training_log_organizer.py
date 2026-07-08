@@ -2,12 +2,29 @@ import json
 from pathlib import Path
 
 from tools.training_log_organizer import (
+    LOG_ROOTS,
     _route_from_context,
+    discover_sources,
     parse_baseline_metrics_json,
     parse_federated_jsonl,
     parse_stdout_log,
     summarize_groups,
 )
+
+
+def test_default_roots_include_separated_log_buckets():
+    assert "logs/cvs" in LOG_ROOTS
+    assert "paper_reproduction/logs" in LOG_ROOTS
+
+
+def test_discover_sources_keeps_paper_reproduction_logs(tmp_path: Path):
+    log_path = tmp_path / "paper_reproduction" / "logs" / "run_a" / "train.log"
+    log_path.parent.mkdir(parents=True)
+    log_path.write_text("EXP_ID=run_a\n", encoding="utf-8")
+
+    discovered = discover_sources(tmp_path, ["paper_reproduction/logs"])
+
+    assert discovered == [log_path]
 
 
 def test_parse_stdout_log_classifies_centralized_bex_run(tmp_path: Path):
