@@ -49,7 +49,16 @@ Run B completed with the following target accuracies. Paper Fig. 7 references ar
 
 LMMD pseudo-label coverage remained high (`0.96875` to `0.99609`), so the low-R gap is unlikely to be caused by empty target LMMD batches. The main unresolved issue is receiver identity/composition, especially `18-2` and `3-19`.
 
-Run C remains active with PID `894243`; latest probe showed active CPU/GPU use but no `results.jsonl` yet.
+Run C produced its R=1 Fig8 row and remains active on R=2 with PID `894243`.
+
+| Fig8 strategy, R=1 | iter 0 | iter 25 | iter 50 | iter 75 | iter 100 | gain |
+|---|---:|---:|---:|---:|---:|---:|
+| random | `0.562693` | `0.630485` | `0.643443` | `0.657280` | `0.666939` | `+0.104246` |
+| entropy | `0.562693` | `0.584110` | `0.602670` | `0.602701` | `0.604057` | `+0.041364` |
+| margin | `0.562693` | `0.592114` | `0.615879` | `0.631292` | `0.634735` | `+0.072042` |
+| least_confidence | `0.562693` | `0.590508` | `0.612379` | `0.619962` | `0.625530` | `+0.062837` |
+
+This confirms class-balanced target selection plus classifier-only fine-tuning improves R=1, but it remains far below the paper Fig. 8 R=1:11 100-iteration level, visually around `0.93`.
 
 ## Pending
 
