@@ -1,0 +1,15 @@
+{
+  "seed": 1337,
+  "dataset": "synthetic_smoke",
+  "protocol": "paper_faithful_closed_set_fscil",
+  "input_length": 256,
+  "embedding_dim": 16,
+  "pseudo_targets": 8,
+  "base_classes": 3,
+  "shot": 1,
+  "noise_range": 0.01,
+  "top_k": 4,
+  "margin": 0.2,
+  "tau_fuse": 0.01,
+  "lambda_align": 1.6
+}
