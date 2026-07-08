@@ -99,8 +99,9 @@ class ReceiverImpactGADNet(nn.Module):
 
     def __init__(self, *, num_tx: int, feature_dim: int = 128, hidden_dim: int = 128) -> None:
         super().__init__()
+        self.num_tx = int(num_tx)
         self.feature_extractor = ResNet18FeatureExtractor1D(feature_dim=feature_dim)
-        self.classifier = ThreeLayerFCNet(feature_dim, int(num_tx), hidden_dim)
+        self.classifier = ThreeLayerFCNet(feature_dim, self.num_tx, hidden_dim)
         self.estimate_network = ThreeLayerFCNet(feature_dim, 1, hidden_dim)
 
     def forward(self, x: torch.Tensor, *, return_activations: bool = False) -> dict[str, torch.Tensor | list[torch.Tensor]]:
@@ -118,3 +119,12 @@ class ReceiverImpactGADNet(nn.Module):
         """Inference path after training: use E and C, drop estimate network T."""
         features, _ = self.feature_extractor(x, return_activations=False)
         return self.classifier(features)
+
+    def inference_state_dict(self) -> dict[str, torch.Tensor]:
+        """Export the post-training E/C state; the estimate network T is dropped."""
+        state = self.state_dict()
+        return {
+            key: value.detach().clone()
+            for key, value in state.items()
+            if key.startswith("feature_extractor.") or key.startswith("classifier.")
+        }

@@ -1,18 +1,21 @@
-# CVS-aligned paper baseline adapters
+# Paper Reproduction Modules
 
-This directory keeps only the baseline components needed by the CVS Stage2-C extension path.
+This directory keeps paper-faithful reproduction components and the separate CVS Stage2-C extension path.
 The original paper-only training queues, paper parity tests, local PDF evidence paths, unresolved repro notes, and non-CVS smoke configs are intentionally excluded from the GitHub release.
 
-Kept scope:
+Paper-faithful scope:
 
-- `cvs_aligned/`: CVS Stage2-C protocol, metrics, and evaluation adapter.
 - `protonet_cda/`: model code used by the CVS-aligned adapter.
 - `feature_separation_crossrx/`: model/loss code used by the CVS-aligned adapter.
 - `receiver_agnostic_twostage_uda/`: paper-faithful Bao et al. GLOBECOM 2023 components for DANN, LMMD, uncertainty fine-tuning selection, and dry-run protocol validation.
 - `mitigating_receiver_impact_da/`: paper-faithful Liu Yang et al. IEEE IoT Journal 2024 components for DV-KL domain alignment, CPL adaptive pseudo-labeling, class weighting, GAD min-max training, and dry-run protocol validation.
-- `configs/*_cvs_stage2c_*.json`: sanitized CVS Stage2-C example configs.
 - `configs/receiver_agnostic_twostage_uda_manysig_paper_faithful.json`: paper-faithful dry-run configuration for the closed-set WiSig ManySig receiver-ratio matrix.
 - `configs/mitigating_receiver_impact_da_manysig_paper_faithful.json`: paper-faithful dry-run configuration for the IoTJ 2024 closed-set WiSig ManySig cross-receiver/cross-day matrix.
+
+CVS extension scope:
+
+- `cvs_aligned/`: CVS Stage2-C protocol, metrics, and evaluation adapter.
+- `configs/*_cvs_stage2c_*.json`: sanitized CVS Stage2-C example configs.
 
 Boundary:
 

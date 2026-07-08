@@ -1,4 +1,5 @@
 {
+  "method_id": "mitigating_receiver_impact_da",
   "paper": "Mitigating Receiver Impact on Radio Frequency Fingerprint Identification via Domain Adaptation",
   "citation": "Liu Yang, Qiang Li, Xiaoyang Ren, Yi Fang, and Shafei Wang, IEEE Internet of Things Journal, 2024",
   "algorithm": "GAD adversarial training with DV-KL domain alignment and adaptive pseudo-labeling",
@@ -200,8 +201,17 @@
     "epoch count or convergence criterion",
     "optimizer apart from the reported learning rate",
     "ResNet18 1-D stem/kernel implementation details",
-    "target validation policy without target-label leakage"
+    "target validation policy without target-label leakage",
+    "first-batch class-weight fallback",
+    "empty pseudo-label target loss fallback",
+    "zero-count CPL threshold floor"
   ],
+  "paper_evidence_targets": {
+    "Table II": "task/display-method plan only",
+    "Table III": "not reproduced in dry-run",
+    "Table IV": "not reproduced in dry-run",
+    "Fig.5-7": "not reproduced in dry-run"
+  },
   "claim_blocks": [
     "not CVS Stage2-A/B/C",
     "not satellite/LEO deployment evidence",

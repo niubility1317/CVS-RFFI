@@ -9,6 +9,9 @@ PAPER_UNSPECIFIED_FIELDS = [
     "optimizer apart from the reported learning rate",
     "ResNet18 1-D stem/kernel implementation details",
     "target validation policy without target-label leakage",
+    "first-batch class-weight fallback",
+    "empty pseudo-label target loss fallback",
+    "zero-count CPL threshold floor",
 ]
 
 

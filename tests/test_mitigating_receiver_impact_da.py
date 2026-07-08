@@ -1,5 +1,9 @@
 from __future__ import annotations
 
+import subprocess
+import sys
+from pathlib import Path
+
 import torch
 
 
@@ -43,6 +47,18 @@ def test_iotj2024_model_can_export_classifier_without_estimate_network():
     logits = model.classify(batch)
 
     assert logits.shape == (2, 6)
+
+
+def test_iotj2024_model_exports_ec_only_inference_state_without_t():
+    from paper_reproduction.mitigating_receiver_impact_da.model import ReceiverImpactGADNet
+
+    model = ReceiverImpactGADNet(num_tx=6, feature_dim=128, hidden_dim=128)
+
+    inference_state = model.inference_state_dict()
+
+    assert inference_state
+    assert all(key.startswith(("feature_extractor.", "classifier.")) for key in inference_state)
+    assert not any(key.startswith("estimate_network.") for key in inference_state)
 
 
 def test_dv_kl_alignment_and_gada_objective_follow_paper_terms():
@@ -203,10 +219,18 @@ def test_protocol_dry_run_names_iotj2024_gada_matrix_not_receiver_agnostic_twost
     display_methods = {name for row in payload["paper_task_plan"] for name in row["paper_display_methods"]}
 
     assert payload["paper"].startswith("Mitigating Receiver Impact")
+    assert payload["method_id"] == "mitigating_receiver_impact_da"
     assert payload["algorithm"] == "GAD adversarial training with DV-KL domain alignment and adaptive pseudo-labeling"
     assert "Proposed_GAD_DVKL_CPL_class_weighting" in method_names
     assert display_methods == {"Source only", "DANN", "MCD", "SHOT", "Proposed"}
     assert payload["target_labels_scope"] == "evaluation_only"
+    assert "first-batch class-weight fallback" in payload["paper_unspecified_fields"]
+    assert "empty pseudo-label target loss fallback" in payload["paper_unspecified_fields"]
+    assert "zero-count CPL threshold floor" in payload["paper_unspecified_fields"]
+    assert payload["paper_evidence_targets"]["Table II"] == "task/display-method plan only"
+    assert payload["paper_evidence_targets"]["Table III"] == "not reproduced in dry-run"
+    assert payload["paper_evidence_targets"]["Table IV"] == "not reproduced in dry-run"
+    assert payload["paper_evidence_targets"]["Fig.5-7"] == "not reproduced in dry-run"
     assert "DANN_plus_LMMD_subdomain_adaptation" not in method_names
     assert "target_labeled_retrain_upper_bound" not in method_names
     assert "receiver_ratio_plan" not in payload
@@ -232,3 +256,81 @@ def test_protocol_rejects_target_label_training_scope():
         assert "target_labels_scope" in str(exc)
     else:
         raise AssertionError("target_labels_scope other than evaluation_only must be rejected")
+
+
+def test_algorithm1_training_loop_runs_epochs_and_writes_checkpoint(tmp_path):
+    from paper_reproduction.mitigating_receiver_impact_da.model import ReceiverImpactGADNet
+    from paper_reproduction.mitigating_receiver_impact_da.train import run_gada_training_loop
+
+    torch.manual_seed(2)
+    model = ReceiverImpactGADNet(num_tx=3, feature_dim=8, hidden_dim=8)
+    optimizer_t = CountingOptimizer(model.estimate_network.parameters())
+    optimizer_ec = CountingOptimizer(list(model.feature_extractor.parameters()) + list(model.classifier.parameters()))
+    source_batches = [
+        {"iq": torch.randn(3, 2, 256), "label": torch.tensor([0, 1, 2])},
+        {"iq": torch.randn(3, 2, 256), "label": torch.tensor([1, 2, 0])},
+    ]
+    target_batches = [{"iq": torch.randn(4, 2, 256)}]
+    checkpoint_path = tmp_path / "gada_smoke.pt"
+
+    result = run_gada_training_loop(
+        model,
+        source_batches,
+        target_batches,
+        optimizer_t=optimizer_t,
+        optimizer_ec=optimizer_ec,
+        epochs=2,
+        checkpoint_path=checkpoint_path,
+    )
+
+    assert result["epochs"] == 2
+    assert result["batches"] == 4
+    assert len(result["history"]) == 2
+    assert result["state"]["total_seen"] == 16
+    assert optimizer_t.step_calls == 28
+    assert optimizer_ec.step_calls == 4
+    checkpoint = torch.load(checkpoint_path, map_location="cpu")
+    assert checkpoint["paper"] == "Mitigating Receiver Impact on Radio Frequency Fingerprint Identification via Domain Adaptation"
+    assert checkpoint["algorithm"] == "Algorithm 1 GAD training loop"
+    assert checkpoint["epoch"] == 2
+    assert "model_state_dict" in checkpoint
+
+
+def test_algorithm1_training_loop_requires_unlabeled_target_batches():
+    from paper_reproduction.mitigating_receiver_impact_da.model import ReceiverImpactGADNet
+    from paper_reproduction.mitigating_receiver_impact_da.train import run_gada_training_loop
+
+    model = ReceiverImpactGADNet(num_tx=3, feature_dim=8, hidden_dim=8)
+
+    try:
+        run_gada_training_loop(
+            model,
+            [{"iq": torch.randn(3, 2, 256), "label": torch.tensor([0, 1, 2])}],
+            [],
+            optimizer_t=CountingOptimizer(model.estimate_network.parameters()),
+            optimizer_ec=CountingOptimizer(list(model.feature_extractor.parameters()) + list(model.classifier.parameters())),
+            epochs=1,
+        )
+    except ValueError as exc:
+        assert "target" in str(exc)
+    else:
+        raise AssertionError("GAD training must require unlabeled target batches")
+
+
+def test_cli_non_dry_run_fails_before_writing_output(tmp_path):
+    output_path = tmp_path / "should_not_exist.json"
+    command = [
+        sys.executable,
+        "-m",
+        "paper_reproduction.mitigating_receiver_impact_da.train",
+        "--config",
+        "paper_reproduction/configs/mitigating_receiver_impact_da_manysig_paper_faithful.json",
+        "--output",
+        str(output_path),
+    ]
+
+    completed = subprocess.run(command, cwd=Path(__file__).resolve().parents[1], capture_output=True, text=True)
+
+    assert completed.returncode != 0
+    assert "formal WiSig training CLI is intentionally gated" in completed.stderr
+    assert not output_path.exists()
