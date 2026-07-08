@@ -69,7 +69,8 @@ def build_dry_run_payload(config: dict[str, Any]) -> dict[str, Any]:
         "paper_reported_hyperparameters": {
             "epochs": 100,
             "batch_size": 128,
-            "samples_per_receiver_domain": 4000,
+            "samples_per_tx_receiver_domain": 4000,
+            "samples_per_receiver_domain_in_manysig": "6 x 4000 = 24000",
             "optimizer": "SGD",
             "momentum": 0.9,
             "weight_decay": 0.0005,

@@ -19,7 +19,7 @@ Scope boundary: DADDA is closed-set single-source UDA. It is not CVS Stage2-A/B/
 | Eq. (3)-(4) LMMD | Implemented and unit-tested with one shared batch kernel bandwidth | `paper_reproduction/dadda_cross_receiver/losses.py` | Formal real-data result |
 | Eq. (5) dynamic adaptive factor | Implemented with class-wise LMMD sum | `paper_reproduction/dadda_cross_receiver/losses.py` | Ablation against fixed weights |
 | Eq. (6)-(10) total objective and training loop | Implemented smoke path | `paper_reproduction/dadda_cross_receiver/train.py` | Full 100-epoch real-data Table II run |
-| Section V-B optimizer, schedules, and domain sample count | Implemented and config-backed, including 4000 samples per receiver-domain control | `paper_reproduction/configs/dadda_cross_receiver_manysig_paper_faithful.json` | Hardware-matched formal run evidence |
+| Section V-B optimizer, schedules, and sample count | Implemented and config-backed. Current DADDA interpretation is 4000 samples per transmitter within each receiver domain, i.e. `6 x 4000 = 24000` samples per receiver domain in ManySig. | `paper_reproduction/configs/dadda_cross_receiver_manysig_paper_faithful.json` | Hardware-matched formal run evidence |
 | Table II 12 receiver-transfer tasks | Task matrix implemented | `PAPER_TABLE2_TASKS` and config file | Full numerical run plus all paper baselines |
 | Table II DANN/DAN/DSAN/WD/DCORAL/CDAN baselines | Not implemented in this module | Runner emits structured missing-baseline rows | Baseline runners and result table |
 | Fig. 5 SNR robustness | Plan scaffold only | `paper_reproduction/dadda_cross_receiver/experiment_plans.py` | AWGN/SNR runner and plots |

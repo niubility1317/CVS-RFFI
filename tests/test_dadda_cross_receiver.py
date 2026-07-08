@@ -279,6 +279,8 @@ def test_dadda_paper_config_keeps_energy_normalization_enabled():
     config = json.loads(config_path.read_text(encoding="utf-8"))
 
     assert config["normalize"] is True
+    assert config["paper_domain_sample_count"] is None
+    assert "6 x 4000" in config["paper_sample_interpretation"]
     assert config.get("allow_unnormalized_ablation") is None
 
 
