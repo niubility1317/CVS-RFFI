@@ -168,6 +168,39 @@ def test_cpl_thresholds_pseudo_labels_and_class_weights_match_paper_direction():
     assert weights[0] < weights[1] < weights[2]
 
 
+def test_class_balance_weights_are_smoothed_clipped_and_mean_normalized():
+    from paper_reproduction.mitigating_receiver_impact_da.losses import class_balance_weights
+
+    weights = class_balance_weights(
+        predicted_counts=torch.tensor([100.0, 0.0, 0.0]),
+        total_seen=100,
+        prior=torch.tensor([1.0 / 3.0, 1.0 / 3.0, 1.0 / 3.0]),
+    )
+
+    assert torch.isfinite(weights).all()
+    assert float(weights.max()) <= 10.0
+    assert float(weights.min()) >= 0.1
+    assert torch.isclose(weights.mean(), torch.tensor(1.0), atol=1e-6)
+
+
+def test_estimator_update_features_do_not_mutate_feature_extractor_state():
+    from paper_reproduction.mitigating_receiver_impact_da.algorithm import _estimate_outputs
+    from paper_reproduction.mitigating_receiver_impact_da.model import ReceiverImpactGADNet
+
+    torch.manual_seed(4)
+    model = ReceiverImpactGADNet(num_tx=3, feature_dim=8, hidden_dim=8)
+    model.train()
+    before = {key: value.detach().clone() for key, value in model.feature_extractor.state_dict().items()}
+
+    _estimate_outputs(model, torch.randn(4, 2, 256), torch.randn(5, 2, 256))
+
+    after = model.feature_extractor.state_dict()
+    changed = [key for key, value in before.items() if not torch.equal(value, after[key])]
+    assert changed == []
+    assert model.training
+    assert model.feature_extractor.training
+
+
 def test_algorithm1_batch_step_updates_estimator_m_times_then_ec_once():
     from paper_reproduction.mitigating_receiver_impact_da.algorithm import PseudoLabelState, gada_batch_step
     from paper_reproduction.mitigating_receiver_impact_da.model import ReceiverImpactGADNet
@@ -332,6 +365,8 @@ def test_table2_runner_smoke_trains_source_only_and_proposed_rows(tmp_path):
     assert all(0.0 <= row["target_accuracy"] <= 1.0 for row in result["rows"])
     assert len(result["rows"][0]["history"]) == 2
     assert len(result["rows"][1]["history"]) == 2
+    assert "source_pretrain_history" in result["rows"][1]
+    assert len(result["rows"][1]["source_pretrain_history"]) == 2
     assert (tmp_path / "14-7_to_3-19_source_only.pt").exists()
     assert (tmp_path / "14-7_to_3-19_proposed.pt").exists()
 

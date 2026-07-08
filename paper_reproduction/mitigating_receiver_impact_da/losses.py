@@ -45,6 +45,9 @@ def class_balance_weights(
     total_seen: int | float,
     prior: torch.Tensor | None = None,
     eps: float = 1e-8,
+    smoothing: float = 10.0,
+    clip_min: float = 0.1,
+    clip_max: float = 10.0,
 ) -> torch.Tensor:
     """Class weighting from prior probability over estimated target class frequency."""
     counts = predicted_counts.float()
@@ -53,6 +56,10 @@ def class_balance_weights(
     total = float(total_seen)
     if total <= 0:
         raise ValueError("total_seen must be positive")
+    if float(smoothing) < 0.0:
+        raise ValueError("smoothing must be non-negative")
+    if not (0.0 < float(clip_min) <= float(clip_max)):
+        raise ValueError("clip_min and clip_max must satisfy 0 < clip_min <= clip_max")
     if prior is None:
         prior_probs = torch.full_like(counts, 1.0 / max(counts.numel(), 1))
     else:
@@ -60,8 +67,11 @@ def class_balance_weights(
         if prior_probs.shape != counts.shape:
             raise ValueError("prior must match predicted_counts")
         prior_probs = prior_probs / prior_probs.sum().clamp_min(eps)
-    estimated = counts / max(total, eps)
-    return prior_probs / estimated.clamp_min(eps)
+    smoothed_counts = counts + float(smoothing)
+    estimated = smoothed_counts / smoothed_counts.sum().clamp_min(eps)
+    weights = prior_probs / estimated.clamp_min(eps)
+    weights = weights.clamp(min=float(clip_min), max=float(clip_max))
+    return weights / weights.mean().clamp_min(eps)
 
 
 def _weighted_ce(logits: torch.Tensor, labels: torch.Tensor, class_weights: torch.Tensor) -> torch.Tensor:

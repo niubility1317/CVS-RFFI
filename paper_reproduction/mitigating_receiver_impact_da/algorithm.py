@@ -64,9 +64,14 @@ def _restore_requires_grad(module: torch.nn.Module, previous: list[bool]) -> Non
 
 
 def _estimate_outputs(model: ReceiverImpactGADNet, source_x: torch.Tensor, target_x: torch.Tensor) -> tuple[torch.Tensor, torch.Tensor]:
-    with torch.no_grad():
-        source_features, _ = model.feature_extractor(source_x, return_activations=False)
-        target_features, _ = model.feature_extractor(target_x, return_activations=False)
+    was_training = model.feature_extractor.training
+    model.feature_extractor.eval()
+    try:
+        with torch.no_grad():
+            source_features, _ = model.feature_extractor(source_x, return_activations=False)
+            target_features, _ = model.feature_extractor(target_x, return_activations=False)
+    finally:
+        model.feature_extractor.train(was_training)
     return model.estimate_network(source_features.detach()), model.estimate_network(target_features.detach())
 
 
@@ -106,6 +111,7 @@ def gada_batch_step(
         source_outputs = model(source_x)
         target_outputs = model(target_x)
         target_probs = torch.softmax(target_outputs["tx_logits"].detach(), dim=1)
+        target_confidence = target_probs.max(dim=1).values
         thresholds = state.thresholds(base_tau=base_tau, device=target_probs.device)
         pseudo_labels, target_mask = adaptive_pseudo_labels(target_probs, thresholds)
         class_weights = state.class_weights(prior=class_prior, device=target_probs.device)
@@ -128,8 +134,13 @@ def gada_batch_step(
     return {
         "loss": terms["loss"].detach(),
         "loss_weighted_ce": terms["loss_weighted_ce"].detach(),
+        "loss_source": terms["loss_source"].detach(),
+        "loss_target": terms["loss_target"].detach(),
         "loss_kl": terms["loss_kl"].detach(),
         "target_selected": target_mask.sum().detach(),
+        "target_conf_mean": target_confidence.mean().detach(),
+        "class_weight_min": class_weights.min().detach(),
+        "class_weight_max": class_weights.max().detach(),
         "estimate_steps": int(estimate_steps),
         "estimate_loss": torch.tensor(0.0) if last_estimate_loss is None else last_estimate_loss,
     }

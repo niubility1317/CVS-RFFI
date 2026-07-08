@@ -117,7 +117,13 @@ def run_gada_training_loop(
     for epoch_index in range(int(epochs)):
         epoch_batches = 0
         epoch_loss = 0.0
+        epoch_loss_source = 0.0
+        epoch_loss_target = 0.0
+        epoch_loss_kl = 0.0
+        epoch_conf = 0.0
         epoch_selected = 0
+        epoch_weight_min = float("inf")
+        epoch_weight_max = float("-inf")
         source_iterator = iter(source_batches)
         for source_batch in source_iterator:
             if max_batches_per_epoch is not None and epoch_batches >= int(max_batches_per_epoch):
@@ -143,7 +149,13 @@ def run_gada_training_loop(
             epoch_batches += 1
             total_batches += 1
             epoch_loss += float(result["loss"].item())
+            epoch_loss_source += float(result["loss_source"].item())
+            epoch_loss_target += float(result["loss_target"].item())
+            epoch_loss_kl += float(result["loss_kl"].item())
+            epoch_conf += float(result["target_conf_mean"].item())
             epoch_selected += int(result["target_selected"].item())
+            epoch_weight_min = min(epoch_weight_min, float(result["class_weight_min"].item()))
+            epoch_weight_max = max(epoch_weight_max, float(result["class_weight_max"].item()))
 
         if epoch_batches == 0:
             raise ValueError("source batches cannot be empty")
@@ -152,6 +164,12 @@ def run_gada_training_loop(
                 "epoch": epoch_index + 1,
                 "batches": epoch_batches,
                 "loss_mean": epoch_loss / float(epoch_batches),
+                "loss_source_mean": epoch_loss_source / float(epoch_batches),
+                "loss_target_mean": epoch_loss_target / float(epoch_batches),
+                "loss_kl_mean": epoch_loss_kl / float(epoch_batches),
+                "target_conf_mean": epoch_conf / float(epoch_batches),
+                "class_weight_min": epoch_weight_min,
+                "class_weight_max": epoch_weight_max,
                 "target_selected": epoch_selected,
                 "target_seen_total": int(state.total_seen),
             }
@@ -266,6 +284,7 @@ def run_table2_reproduction(
     learning_rate: float = 0.0006,
     max_samples_per_combo: int | None = None,
     max_batches_per_epoch: int | None = None,
+    source_pretrain_epochs: int | None = None,
     seed: int = 0,
     device: torch.device | str | None = None,
     num_workers: int = 0,
@@ -325,6 +344,23 @@ def run_table2_reproduction(
                     checkpoint_path,
                 )
             else:
+                resolved_pretrain_epochs = int(epochs if source_pretrain_epochs is None else source_pretrain_epochs)
+                if resolved_pretrain_epochs < 0:
+                    raise ValueError("source_pretrain_epochs must be non-negative")
+                source_pretrain_result: dict[str, Any] | None = None
+                if resolved_pretrain_epochs > 0:
+                    source_optimizer = torch.optim.Adam(
+                        list(model.feature_extractor.parameters()) + list(model.classifier.parameters()),
+                        lr=float(learning_rate),
+                    )
+                    source_pretrain_result = _train_source_only(
+                        model,
+                        loaders["source"],
+                        optimizer=source_optimizer,
+                        epochs=resolved_pretrain_epochs,
+                        device=resolved_device,
+                        max_batches_per_epoch=max_batches_per_epoch,
+                    )
                 optimizer_t = torch.optim.Adam(model.estimate_network.parameters(), lr=float(learning_rate))
                 optimizer_ec = torch.optim.Adam(
                     list(model.feature_extractor.parameters()) + list(model.classifier.parameters()),
@@ -337,24 +373,48 @@ def run_table2_reproduction(
                     optimizer_t=optimizer_t,
                     optimizer_ec=optimizer_ec,
                     epochs=epochs,
-                    checkpoint_path=checkpoint_path,
+                    checkpoint_path=None,
                     device=resolved_device,
                     max_batches_per_epoch=max_batches_per_epoch,
                 )
+                if source_pretrain_result is not None:
+                    train_result["source_pretrain_history"] = source_pretrain_result["history"]
+                torch.save(
+                    {
+                        "paper": "Mitigating Receiver Impact on Radio Frequency Fingerprint Identification via Domain Adaptation",
+                        "method": method,
+                        "task": task,
+                        "model_state_dict": model.inference_state_dict(),
+                        "history": train_result["history"],
+                        "source_pretrain_history": train_result.get("source_pretrain_history", []),
+                        "adaptation": {
+                            "algorithm": train_result["algorithm"],
+                            "epochs": train_result["epochs"],
+                            "estimate_steps": train_result["estimate_steps"],
+                            "base_tau": train_result["base_tau"],
+                            "mu": train_result["mu"],
+                            "kl_weight": train_result["kl_weight"],
+                            "state": train_result["state"],
+                        },
+                    },
+                    checkpoint_path,
+                )
+                train_result["checkpoint_path"] = str(checkpoint_path)
             target_accuracy = _evaluate_target_accuracy(model, loaders["target_eval"], device=resolved_device)
-            rows.append(
-                {
-                    "task": task,
-                    "method": method,
-                    "status": "completed",
-                    "target_accuracy": float(target_accuracy),
-                    "target_labels_scope": "evaluation_only",
-                    "target_label_role": loaders["meta"]["target_label_role"],
-                    "checkpoint_path": str(checkpoint_path),
-                    "history": train_result["history"],
-                    "task_meta": loaders["meta"],
-                }
-            )
+            row = {
+                "task": task,
+                "method": method,
+                "status": "completed",
+                "target_accuracy": float(target_accuracy),
+                "target_labels_scope": "evaluation_only",
+                "target_label_role": loaders["meta"]["target_label_role"],
+                "checkpoint_path": str(checkpoint_path),
+                "history": train_result["history"],
+                "task_meta": loaders["meta"],
+            }
+            if method == "proposed":
+                row["source_pretrain_history"] = train_result.get("source_pretrain_history", [])
+            rows.append(row)
 
     return {
         "method_id": "mitigating_receiver_impact_da",
@@ -366,6 +426,7 @@ def run_table2_reproduction(
         "learning_rate": float(learning_rate),
         "max_samples_per_combo": max_samples_per_combo,
         "max_batches_per_epoch": max_batches_per_epoch,
+        "source_pretrain_epochs": int(epochs if source_pretrain_epochs is None else source_pretrain_epochs),
         "seed": int(seed),
         "device": str(resolved_device),
         "result_claim_status": "smoke_or_formal_metrics_depend_on_dataset",
@@ -386,6 +447,7 @@ def main() -> int:
     parser.add_argument("--learning-rate", type=float, default=0.0006)
     parser.add_argument("--max-samples-per-combo", type=int, default=None)
     parser.add_argument("--max-batches-per-epoch", type=int, default=None)
+    parser.add_argument("--source-pretrain-epochs", type=int, default=None)
     parser.add_argument("--seed", type=int, default=0)
     parser.add_argument("--device", type=str, default=None)
     parser.add_argument("--num-workers", type=int, default=0)
@@ -409,6 +471,7 @@ def main() -> int:
             learning_rate=args.learning_rate,
             max_samples_per_combo=args.max_samples_per_combo,
             max_batches_per_epoch=args.max_batches_per_epoch,
+            source_pretrain_epochs=args.source_pretrain_epochs,
             seed=args.seed,
             device=args.device,
             num_workers=args.num_workers,
