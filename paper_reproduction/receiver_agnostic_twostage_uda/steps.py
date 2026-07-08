@@ -8,6 +8,7 @@ import torch.nn.functional as F
 from paper_reproduction.receiver_agnostic_twostage_uda.losses import dann_loss, stage2_lmmd_objective
 from paper_reproduction.receiver_agnostic_twostage_uda.sampling import (
     balanced_source_replay_indices,
+    balanced_target_selection,
     fine_tune_budget_from_unlabeled,
     rank_uncertain_samples,
 )
@@ -55,6 +56,10 @@ def lmmd_stage2_train_step(
     num_classes: int,
     lmmd_lambda: float = 1.0,
     lmmd_layers: str = "activations",
+    target_temperature: float = 1.0,
+    target_confidence_threshold: float = 0.0,
+    target_pseudo_quota_per_class: int = 0,
+    detach_target_probs: bool = False,
     device: torch.device | str | None = None,
 ) -> dict[str, float]:
     """One paper Stage2 LMMD update; target labels remain hidden for UDA."""
@@ -72,6 +77,10 @@ def lmmd_stage2_train_step(
         num_classes=num_classes,
         lmmd_lambda=lmmd_lambda,
         lmmd_layers=lmmd_layers,
+        target_temperature=target_temperature,
+        target_confidence_threshold=target_confidence_threshold,
+        target_pseudo_quota_per_class=target_pseudo_quota_per_class,
+        detach_target_probs=detach_target_probs,
     )
     losses["loss"].backward()
     optimizer.step()
@@ -84,14 +93,25 @@ def select_fig8_labeled_target_indices(
     strategy: str,
     denominator: int = 50,
     seed: int | None = None,
+    labels: torch.Tensor | None = None,
+    receivers: list[str] | None = None,
+    balance_mode: str = "none",
 ) -> dict[str, Any]:
     budget = fine_tune_budget_from_unlabeled(int(logits.shape[0]), denominator=denominator)
-    selected = rank_uncertain_samples(logits, strategy=strategy, k=budget, seed=seed)
+    ranked = rank_uncertain_samples(logits, strategy=strategy, k=None, seed=seed)
+    selected = balanced_target_selection(
+        ranked,
+        k=budget,
+        labels=labels,
+        receivers=receivers,
+        balance_mode=balance_mode,
+    )
     return {
         "selected": selected,
         "budget": int(budget),
         "strategy": strategy,
         "denominator": int(denominator),
+        "balance_mode": str(balance_mode),
         "synthetic_smoke": False,
         "result_claim": False,
     }

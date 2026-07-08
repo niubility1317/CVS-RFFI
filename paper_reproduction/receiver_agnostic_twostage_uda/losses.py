@@ -160,17 +160,53 @@ def stage2_lmmd_objective(
     lmmd_lambda: float = 1.0,
     target_probs: torch.Tensor | None = None,
     lmmd_layers: str = "activations",
+    target_temperature: float = 1.0,
+    target_confidence_threshold: float = 0.0,
+    target_pseudo_quota_per_class: int = 0,
+    detach_target_probs: bool = False,
 ) -> dict[str, torch.Tensor]:
     """Eq.16 objective: source transmitter CE plus weighted LMMD over the selected layer set."""
     if target_probs is None:
-        target_probs = torch.softmax(target_outputs["tx_logits"], dim=1)
+        temperature = float(target_temperature)
+        if temperature <= 0:
+            raise ValueError("target_temperature must be positive")
+        target_probs = torch.softmax(target_outputs["tx_logits"] / temperature, dim=1)
+    if bool(detach_target_probs):
+        target_probs = target_probs.detach()
+    target_conf, target_pred = target_probs.max(dim=1)
+    target_mask = torch.ones(target_probs.shape[0], dtype=torch.bool, device=target_probs.device)
+    if float(target_confidence_threshold) > 0:
+        target_mask &= target_conf >= float(target_confidence_threshold)
+    if int(target_pseudo_quota_per_class) > 0:
+        quota_mask = torch.zeros_like(target_mask)
+        for class_idx in range(int(num_classes)):
+            idx = torch.nonzero(target_mask & (target_pred == class_idx), as_tuple=False).flatten()
+            if idx.numel() == 0:
+                continue
+            order = idx[torch.argsort(target_conf[idx], descending=True, stable=True)]
+            quota_mask[order[: int(target_pseudo_quota_per_class)]] = True
+        target_mask &= quota_mask
     loss_tx = transmitter_ce_loss(source_outputs["tx_logits"], source_labels)
+    if not bool(target_mask.any()):
+        zero = loss_tx * 0.0
+        return {
+            "loss": loss_tx,
+            "loss_tx": loss_tx,
+            "loss_lmmd": zero,
+            "target_pseudo_count": zero,
+            "target_pseudo_coverage": zero,
+        }
+    target_probs = target_probs[target_mask]
+
+    def _target_tensor(value: torch.Tensor) -> torch.Tensor:
+        return value[target_mask]
+
     if lmmd_layers == "activations":
         if "activations" not in source_outputs or "activations" not in target_outputs:
             raise ValueError("activation LMMD requires return_activations=True outputs")
         loss_lmmd = multi_layer_lmmd_loss(
             source_outputs["activations"],
-            target_outputs["activations"],
+            [_target_tensor(t) for t in target_outputs["activations"]],
             source_labels,
             target_probs,
             num_classes=num_classes,
@@ -179,7 +215,7 @@ def stage2_lmmd_objective(
     elif lmmd_layers == "features":
         loss_lmmd = lmmd_loss(
             source_outputs["features"],
-            target_outputs["features"],
+            _target_tensor(target_outputs["features"]),
             source_labels,
             target_probs,
             num_classes=num_classes,
@@ -189,13 +225,13 @@ def stage2_lmmd_objective(
             raise ValueError("feature+activation LMMD requires return_activations=True outputs")
         loss_lmmd = lmmd_loss(
             source_outputs["features"],
-            target_outputs["features"],
+            _target_tensor(target_outputs["features"]),
             source_labels,
             target_probs,
             num_classes=num_classes,
         ) + multi_layer_lmmd_loss(
             source_outputs["activations"],
-            target_outputs["activations"],
+            [_target_tensor(t) for t in target_outputs["activations"]],
             source_labels,
             target_probs,
             num_classes=num_classes,
@@ -207,4 +243,6 @@ def stage2_lmmd_objective(
         "loss": loss_tx + float(lmmd_lambda) * loss_lmmd,
         "loss_tx": loss_tx,
         "loss_lmmd": loss_lmmd,
+        "target_pseudo_count": target_mask.float().sum(),
+        "target_pseudo_coverage": target_mask.float().mean(),
     }

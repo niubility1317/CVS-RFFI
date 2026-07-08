@@ -10,10 +10,10 @@ from typing import Any
 
 import torch
 import torch.nn.functional as F
-from torch.utils.data import DataLoader, Subset
+from torch.utils.data import DataLoader, Subset, WeightedRandomSampler
 
 from paper_reproduction.common.config import load_json_config
-from paper_reproduction.common.wisig_runtime import make_loader, set_seed, write_json
+from paper_reproduction.common.wisig_runtime import collate_wisig, make_loader, set_seed, write_json
 from paper_reproduction.receiver_agnostic_twostage_uda.data import build_manysig_receiver_uda_datasets
 from paper_reproduction.receiver_agnostic_twostage_uda.model import ReceiverAgnosticUDANet
 from paper_reproduction.receiver_agnostic_twostage_uda.protocol import (
@@ -71,6 +71,23 @@ def _as_device(value: str) -> torch.device:
 
 def _loader(dataset, *, batch_size: int, shuffle: bool, num_workers: int) -> DataLoader:
     return make_loader(dataset, batch_size=batch_size, shuffle=shuffle, num_workers=num_workers)
+
+
+def _dataset_labels(dataset) -> torch.Tensor:
+    labels: list[int] = []
+    for idx in range(len(dataset)):
+        item = dataset[idx]
+        labels.append(int(item[1]))
+    return torch.tensor(labels, dtype=torch.long)
+
+
+def _class_balanced_loader(dataset, *, batch_size: int, num_workers: int, seed: int) -> DataLoader:
+    labels = _dataset_labels(dataset)
+    counts = torch.bincount(labels).float().clamp_min(1.0)
+    weights = (1.0 / counts[labels]).double()
+    generator = torch.Generator().manual_seed(int(seed))
+    sampler = WeightedRandomSampler(weights, num_samples=len(weights), replacement=True, generator=generator)
+    return DataLoader(dataset, batch_size=batch_size, sampler=sampler, num_workers=num_workers, collate_fn=collate_wisig)
 
 
 def _split_indices(n: int, *, eval_fraction: float, seed: int) -> tuple[list[int], list[int]]:
@@ -146,6 +163,69 @@ def _csv_strings(value: str) -> list[str]:
     return [part.strip() for part in str(value).split(",") if part.strip()]
 
 
+def _resolve_receiver_token(labels: list[Any], item: str) -> int:
+    if item in labels:
+        return labels.index(item)
+    text = str(item).strip()
+    if text.lstrip("-").isdigit():
+        idx = int(text)
+        if 0 <= idx < len(labels):
+            return idx
+    raise ValueError(f"cannot resolve receiver {item!r} from {labels}")
+
+
+def _resolve_receiver_split(rx_labels: list[Any], source_count: int, args: argparse.Namespace) -> tuple[list[int], list[int], str]:
+    source_tokens = _csv_strings(args.source_receiver_labels)
+    target_tokens = _csv_strings(args.target_receiver_labels)
+    if not source_tokens and not target_tokens:
+        source_ids = list(range(int(source_count)))
+        target_ids = list(range(int(source_count), len(rx_labels)))
+        return source_ids, target_ids, "deterministic_first_n"
+    source_ids = [_resolve_receiver_token(rx_labels, token) for token in source_tokens]
+    target_ids = [_resolve_receiver_token(rx_labels, token) for token in target_tokens]
+    all_ids = set(range(len(rx_labels)))
+    if source_ids and not target_ids:
+        target_ids = sorted(all_ids.difference(source_ids))
+    if target_ids and not source_ids:
+        source_ids = sorted(all_ids.difference(target_ids))
+    if len(source_ids) != int(source_count):
+        raise ValueError(f"explicit source receiver split has {len(source_ids)} receivers, expected source_count={source_count}")
+    overlap = sorted(set(source_ids).intersection(target_ids))
+    if overlap:
+        raise ValueError(f"explicit source/target receivers must be disjoint, overlap={overlap}")
+    if not target_ids:
+        raise ValueError("explicit target receiver set cannot be empty")
+    return source_ids, target_ids, "explicit_receiver_labels"
+
+
+def _parse_r_specific_lmmd(value: str) -> dict[int, dict[str, float | int | str]]:
+    out: dict[int, dict[str, float | int | str]] = {}
+    for spec in str(value or "").split(";"):
+        spec = spec.strip()
+        if not spec:
+            continue
+        parts = [p.strip() for p in spec.split(":")]
+        if len(parts) != 5:
+            raise ValueError("R-specific LMMD spec must be R:layers:lambda:steps:lr")
+        r, layers, lmmd_lambda, steps, lr = parts
+        out[int(r)] = {
+            "lmmd_layers": layers,
+            "lmmd_lambda": float(lmmd_lambda),
+            "stage2_steps": int(steps),
+            "stage2_lr": float(lr),
+        }
+    return out
+
+
+def _schedule_value(kind: str, base: float, step_idx: int, total_steps: int) -> float:
+    kind = str(kind).lower().strip()
+    if kind in {"", "fixed"}:
+        return float(base)
+    if kind == "linear":
+        return float(base) * min(1.0, max(0.0, float(step_idx) / max(1.0, float(total_steps))))
+    raise ValueError(f"unknown schedule: {kind}")
+
+
 @torch.no_grad()
 def _evaluate(model: torch.nn.Module, loader: DataLoader, *, device: torch.device) -> dict[str, Any]:
     model.eval()
@@ -181,20 +261,24 @@ def _evaluate(model: torch.nn.Module, loader: DataLoader, *, device: torch.devic
 
 
 @torch.no_grad()
-def _collect_logits_and_samples(model: torch.nn.Module, loader: DataLoader, *, device: torch.device) -> dict[str, torch.Tensor]:
+def _collect_logits_and_samples(model: torch.nn.Module, loader: DataLoader, *, device: torch.device) -> dict[str, Any]:
     model.eval()
     logits_parts: list[torch.Tensor] = []
     iq_parts: list[torch.Tensor] = []
     label_parts: list[torch.Tensor] = []
+    receivers: list[str] = []
     for batch in loader:
         iq = batch["iq"].to(device).float()
         logits_parts.append(model(iq)["tx_logits"].detach().cpu())
         iq_parts.append(batch["iq"].detach().cpu())
         label_parts.append(batch["label"].detach().cpu().long())
+        for meta in batch.get("meta", []):
+            receivers.append(str(meta.get("rx", meta.get("rx_i", "unknown"))))
     return {
         "logits": torch.cat(logits_parts, dim=0),
         "iq": torch.cat(iq_parts, dim=0),
         "label": torch.cat(label_parts, dim=0),
+        "receivers": receivers,
     }
 
 
@@ -213,6 +297,13 @@ def _fit_base_model(
     reset_stage2_optimizer: bool,
     lmmd_lambda: float,
     lmmd_layers: str,
+    target_temperature: float,
+    target_confidence_threshold: float,
+    target_pseudo_quota_per_class: int,
+    detach_target_probs: bool,
+    domain_weight: float,
+    grl_lambda: float,
+    grl_schedule: str,
     progress_every: int,
 ) -> tuple[torch.nn.Module, dict[str, Any]]:
     model = ReceiverAgnosticUDANet(num_tx=num_tx).to(device)
@@ -234,16 +325,23 @@ def _fit_base_model(
             progress_every=progress_every,
         )
     elif method in {"dann", "dann_lmmd"}:
-        train_meta["stage1_dann_last"] = _run_steps(
-            lambda: dann_stage1_train_step(
+        stage1_state = {"step": 0}
+
+        def _dann_step() -> dict[str, float]:
+            stage1_state["step"] += 1
+            current_grl = _schedule_value(grl_schedule, grl_lambda, stage1_state["step"], stage1_steps)
+            return dann_stage1_train_step(
                 model,
                 next(source_iter),
                 next(target_iter),
                 optimizer,
-                domain_weight=1.0,
-                grl_lambda=1.0,
+                domain_weight=domain_weight,
+                grl_lambda=current_grl,
                 device=device,
-            ),
+            )
+
+        train_meta["stage1_dann_last"] = _run_steps(
+            _dann_step,
             steps=stage1_steps,
             progress_every=progress_every,
         )
@@ -267,6 +365,10 @@ def _fit_base_model(
                     num_classes=num_tx,
                     lmmd_lambda=lmmd_lambda,
                     lmmd_layers=lmmd_layers,
+                    target_temperature=target_temperature,
+                    target_confidence_threshold=target_confidence_threshold,
+                    target_pseudo_quota_per_class=target_pseudo_quota_per_class,
+                    detach_target_probs=detach_target_probs,
                     device=device,
                 ),
                 steps=stage2_steps,
@@ -285,26 +387,39 @@ def _fit_stage1_dann_model(
     lr: float,
     weight_decay: float,
     stage1_steps: int,
+    domain_weight: float,
+    grl_lambda: float,
+    grl_schedule: str,
     progress_every: int,
 ) -> tuple[torch.nn.Module, dict[str, Any]]:
     model = ReceiverAgnosticUDANet(num_tx=num_tx).to(device)
     optimizer = torch.optim.Adam(model.parameters(), lr=float(lr), weight_decay=float(weight_decay))
     source_iter = _cycle(loaders["source_train"])
     target_iter = _cycle(loaders["target_adapt"])
+    stage1_state = {"step": 0}
+
+    def _dann_step() -> dict[str, float]:
+        stage1_state["step"] += 1
+        current_grl = _schedule_value(grl_schedule, grl_lambda, stage1_state["step"], stage1_steps)
+        return dann_stage1_train_step(
+            model,
+            next(source_iter),
+            next(target_iter),
+            optimizer,
+            domain_weight=domain_weight,
+            grl_lambda=current_grl,
+            device=device,
+        )
+
     train_meta = {
         "stage1_dann_last": _run_steps(
-            lambda: dann_stage1_train_step(
-                model,
-                next(source_iter),
-                next(target_iter),
-                optimizer,
-                domain_weight=1.0,
-                grl_lambda=1.0,
-                device=device,
-            ),
+            _dann_step,
             steps=stage1_steps,
             progress_every=progress_every,
-        )
+        ),
+        "stage1_domain_weight": float(domain_weight),
+        "stage1_grl_lambda": float(grl_lambda),
+        "stage1_grl_schedule": str(grl_schedule),
     }
     return model, train_meta
 
@@ -320,6 +435,10 @@ def _run_lmmd_grid(
     layers: list[str],
     steps_options: list[int],
     lrs: list[float],
+    target_temperature: float,
+    target_confidence_threshold: float,
+    target_pseudo_quota_per_class: int,
+    detach_target_probs: bool,
     progress_every: int,
 ) -> list[dict[str, Any]]:
     rows: list[dict[str, Any]] = []
@@ -340,6 +459,10 @@ def _run_lmmd_grid(
                             num_classes=num_tx,
                             lmmd_lambda=float(lmmd_lambda),
                             lmmd_layers=str(lmmd_layers),
+                            target_temperature=target_temperature,
+                            target_confidence_threshold=target_confidence_threshold,
+                            target_pseudo_quota_per_class=target_pseudo_quota_per_class,
+                            detach_target_probs=detach_target_probs,
                             device=device,
                         ),
                         steps=int(stage2_steps),
@@ -353,6 +476,10 @@ def _run_lmmd_grid(
                             "stage2_steps": int(stage2_steps),
                             "stage2_lr": float(stage2_lr),
                             "optimizer_policy": "reset_after_stage1",
+                            "target_temperature": float(target_temperature),
+                            "target_confidence_threshold": float(target_confidence_threshold),
+                            "target_pseudo_quota_per_class": int(target_pseudo_quota_per_class),
+                            "detach_target_probs": bool(detach_target_probs),
                             "train": {"stage2_lmmd_last": train_last},
                             "target_eval": _evaluate(model, loaders["target_eval"], device=device),
                         }
@@ -371,6 +498,8 @@ def _run_fig8(
     weight_decay: float,
     source_replay_per_class: int,
     seed: int,
+    target_balance_mode: str,
+    finetune_scope: str,
 ) -> list[dict[str, Any]]:
     target_cache = _collect_logits_and_samples(base_model, loaders["target_adapt"], device=device)
     source_cache = _collect_logits_and_samples(base_model, loaders["source_train"], device=device)
@@ -383,9 +512,22 @@ def _run_fig8(
             strategy=strategy,
             denominator=50,
             seed=seed,
+            labels=target_cache["label"],
+            receivers=target_cache["receivers"],
+            balance_mode=target_balance_mode,
         )
         model = copy.deepcopy(base_model).to(device)
-        optimizer = torch.optim.Adam(model.parameters(), lr=float(lr), weight_decay=float(weight_decay))
+        if str(finetune_scope).lower().strip() == "classifier":
+            for param in model.parameters():
+                param.requires_grad_(False)
+            for param in model.tx_classifier.parameters():
+                param.requires_grad_(True)
+            trainable_params = [p for p in model.parameters() if p.requires_grad]
+        elif str(finetune_scope).lower().strip() == "full":
+            trainable_params = list(model.parameters())
+        else:
+            raise ValueError(f"unknown Fig.8 finetune scope: {finetune_scope}")
+        optimizer = torch.optim.Adam(trainable_params, lr=float(lr), weight_decay=float(weight_decay))
         batch = compose_fig8_finetune_batch(
             target_cache["iq"].to(device),
             target_cache["label"].to(device),
@@ -408,6 +550,8 @@ def _run_fig8(
                 "budget": int(selected["budget"]),
                 "budget_denominator": 50,
                 "source_replay_per_class": int(source_replay_per_class),
+                "target_balance_mode": str(target_balance_mode),
+                "finetune_scope": str(finetune_scope),
                 "points": points,
             }
         )
@@ -441,6 +585,7 @@ def run_formal(config: dict[str, Any], args: argparse.Namespace) -> dict[str, An
     lmmd_grid_layers = _csv_strings(args.lmmd_grid_layers)
     lmmd_grid_steps = _csv_ints(args.lmmd_grid_steps)
     lmmd_grid_lrs = _csv_floats(args.lmmd_grid_lrs)
+    r_specific_lmmd = _parse_r_specific_lmmd(args.r_specific_lmmd)
     output_dir = Path(args.output_dir)
     output_dir.mkdir(parents=True, exist_ok=True)
     jsonl_path = output_dir / "results.jsonl"
@@ -459,8 +604,7 @@ def run_formal(config: dict[str, Any], args: argparse.Namespace) -> dict[str, An
             rows.append(row)
 
     for source_count in ratio_counts:
-        source_ids = list(range(int(source_count)))
-        target_ids = list(range(int(source_count), len(rx_labels)))
+        source_ids, target_ids, receiver_split_policy = _resolve_receiver_split(rx_labels, int(source_count), args)
         if not target_ids:
             raise ValueError("target receiver set cannot be empty")
         row_seed = int(args.seed) + int(source_count) * 1009
@@ -478,7 +622,11 @@ def run_formal(config: dict[str, Any], args: argparse.Namespace) -> dict[str, An
             transductive_target_eval=bool(args.transductive_target_eval),
         )
         loaders = {
-            "source_train": _loader(datasets["source"], batch_size=args.batch_size, shuffle=True, num_workers=args.num_workers),
+            "source_train": (
+                _class_balanced_loader(datasets["source"], batch_size=args.batch_size, num_workers=args.num_workers, seed=row_seed)
+                if args.class_balanced_source_sampler
+                else _loader(datasets["source"], batch_size=args.batch_size, shuffle=True, num_workers=args.num_workers)
+            ),
             "target_adapt": _loader(Subset(datasets["target"], target_adapt_ids), batch_size=args.batch_size, shuffle=True, num_workers=args.num_workers),
             "target_eval": _loader(Subset(datasets["target"], target_eval_ids), batch_size=args.eval_batch_size, shuffle=False, num_workers=args.num_workers),
         }
@@ -506,6 +654,7 @@ def run_formal(config: dict[str, Any], args: argparse.Namespace) -> dict[str, An
                     "target_receiver_count": len(target_ids),
                     "source_receivers": datasets["meta"]["source_receiver_labels"],
                     "target_receivers": datasets["meta"]["target_receiver_labels"],
+                    "receiver_split_policy": receiver_split_policy,
                     "source_size": len(datasets["source"]),
                     "target_adapt_size": len(target_adapt_ids),
                     "target_eval_size": len(target_eval_ids),
@@ -525,6 +674,9 @@ def run_formal(config: dict[str, Any], args: argparse.Namespace) -> dict[str, An
                 weight_decay=float(args.weight_decay),
                 stage1_steps=stage1_steps,
                 progress_every=int(args.progress_every),
+                domain_weight=float(args.domain_weight),
+                grl_lambda=float(args.grl_lambda),
+                grl_schedule=str(args.grl_schedule),
             )
             base_row: dict[str, Any] = {
                 "artifact_type": "formal_training_result",
@@ -553,6 +705,11 @@ def run_formal(config: dict[str, Any], args: argparse.Namespace) -> dict[str, An
                     "target_eval_fraction": float(args.target_eval_fraction),
                     "transductive_target_eval": bool(args.transductive_target_eval),
                     "lmmd_grid": True,
+                    "domain_weight": float(args.domain_weight),
+                    "grl_lambda": float(args.grl_lambda),
+                    "grl_schedule": str(args.grl_schedule),
+                    "class_balanced_source_sampler": bool(args.class_balanced_source_sampler),
+                    "receiver_split_policy": receiver_split_policy,
                     "paper_status": "paper-unspecified LMMD lambda/layer/optimizer choices; grid rows are diagnostics",
                 },
                 "train": base_train_meta,
@@ -583,6 +740,10 @@ def run_formal(config: dict[str, Any], args: argparse.Namespace) -> dict[str, An
                 layers=lmmd_grid_layers,
                 steps_options=lmmd_grid_steps,
                 lrs=lmmd_grid_lrs,
+                target_temperature=float(args.target_temperature),
+                target_confidence_threshold=float(args.target_confidence_threshold),
+                target_pseudo_quota_per_class=int(args.target_pseudo_quota_per_class),
+                detach_target_probs=bool(args.detach_target_probs),
                 progress_every=int(args.progress_every),
             )
             for grid in grid_results:
@@ -623,6 +784,11 @@ def run_formal(config: dict[str, Any], args: argparse.Namespace) -> dict[str, An
         for method in methods:
             if (int(source_count), method) in completed_keys:
                 continue
+            lmmd_params = dict(r_specific_lmmd.get(int(source_count), {}))
+            row_lmmd_lambda = float(lmmd_params.get("lmmd_lambda", args.lmmd_lambda))
+            row_lmmd_layers = str(lmmd_params.get("lmmd_layers", args.lmmd_layers))
+            row_stage2_steps = int(lmmd_params.get("stage2_steps", stage2_steps))
+            row_stage2_lr = float(lmmd_params.get("stage2_lr", args.stage2_lr))
             model, train_meta = _fit_base_model(
                 method,
                 loaders=loaders,
@@ -632,11 +798,18 @@ def run_formal(config: dict[str, Any], args: argparse.Namespace) -> dict[str, An
                 weight_decay=float(args.weight_decay),
                 supervised_steps=supervised_steps_by_method.get(method, source_steps),
                 stage1_steps=stage1_steps,
-                stage2_steps=stage2_steps,
-                stage2_lr=float(args.stage2_lr),
+                stage2_steps=row_stage2_steps,
+                stage2_lr=row_stage2_lr,
                 reset_stage2_optimizer=bool(args.reset_stage2_optimizer),
-                lmmd_lambda=float(args.lmmd_lambda),
-                lmmd_layers=str(args.lmmd_layers),
+                lmmd_lambda=row_lmmd_lambda,
+                lmmd_layers=row_lmmd_layers,
+                target_temperature=float(args.target_temperature),
+                target_confidence_threshold=float(args.target_confidence_threshold),
+                target_pseudo_quota_per_class=int(args.target_pseudo_quota_per_class),
+                detach_target_probs=bool(args.detach_target_probs),
+                domain_weight=float(args.domain_weight),
+                grl_lambda=float(args.grl_lambda),
+                grl_schedule=str(args.grl_schedule),
                 progress_every=int(args.progress_every),
             )
             row: dict[str, Any] = {
@@ -664,13 +837,23 @@ def run_formal(config: dict[str, Any], args: argparse.Namespace) -> dict[str, An
                     "source_epochs": int(args.source_epochs),
                     "stage1_epochs": int(args.stage1_epochs),
                     "stage2_epochs": int(args.stage2_epochs),
-                    "stage2_steps": int(stage2_steps),
-                    "stage2_lr": float(args.stage2_lr),
+                    "stage2_steps": int(row_stage2_steps),
+                    "stage2_lr": float(row_stage2_lr),
                     "reset_stage2_optimizer": bool(args.reset_stage2_optimizer),
+                    "r_specific_lmmd_applied": int(source_count) in r_specific_lmmd,
                     "target_eval_fraction": float(args.target_eval_fraction),
                     "transductive_target_eval": bool(args.transductive_target_eval),
-                    "lmmd_lambda": float(args.lmmd_lambda),
-                    "lmmd_layers": str(args.lmmd_layers),
+                    "lmmd_lambda": float(row_lmmd_lambda),
+                    "lmmd_layers": str(row_lmmd_layers),
+                    "target_temperature": float(args.target_temperature),
+                    "target_confidence_threshold": float(args.target_confidence_threshold),
+                    "target_pseudo_quota_per_class": int(args.target_pseudo_quota_per_class),
+                    "detach_target_probs": bool(args.detach_target_probs),
+                    "domain_weight": float(args.domain_weight),
+                    "grl_lambda": float(args.grl_lambda),
+                    "grl_schedule": str(args.grl_schedule),
+                    "class_balanced_source_sampler": bool(args.class_balanced_source_sampler),
+                    "receiver_split_policy": receiver_split_policy,
                     "max_samples_per_combo": args.max_samples_per_combo,
                     "paper_status": "paper-unspecified optimizer/batch/epoch choices; recorded for reproducibility",
                 },
@@ -689,6 +872,8 @@ def run_formal(config: dict[str, Any], args: argparse.Namespace) -> dict[str, An
                     weight_decay=float(args.weight_decay),
                     source_replay_per_class=int(args.source_replay_per_class),
                     seed=row_seed,
+                    target_balance_mode=str(args.fig8_target_balance),
+                    finetune_scope=str(args.fig8_finetune_scope),
                 )
             if not args.no_save_checkpoints:
                 ckpt_dir = output_dir / "checkpoints"
@@ -753,6 +938,8 @@ def main() -> int:
     parser.add_argument("--device", type=str, default="cuda:0")
     parser.add_argument("--seed", type=int, default=20260708)
     parser.add_argument("--source-receiver-counts", nargs="*", type=int, default=None)
+    parser.add_argument("--source-receiver-labels", type=str, default="", help="Comma-separated explicit source receiver labels or indices.")
+    parser.add_argument("--target-receiver-labels", type=str, default="", help="Comma-separated explicit target receiver labels or indices.")
     parser.add_argument("--limit-ratios", type=int, default=0)
     parser.add_argument("--methods", type=str, default="source_only,target_labeled_upper,dann,dann_lmmd")
     parser.add_argument("--batch-size", type=int, default=256)
@@ -773,6 +960,11 @@ def main() -> int:
         help="Use all target receiver samples as unlabeled UDA data and evaluate on the same target pool, matching transductive UDA reporting.",
     )
     parser.add_argument("--lmmd-lambda", type=float, default=1.0)
+    parser.add_argument("--r-specific-lmmd", type=str, default="", help="Semicolon-separated R:layers:lambda:steps:lr overrides.")
+    parser.add_argument("--target-temperature", type=float, default=1.0)
+    parser.add_argument("--target-confidence-threshold", type=float, default=0.0)
+    parser.add_argument("--target-pseudo-quota-per-class", type=int, default=0)
+    parser.add_argument("--detach-target-probs", action="store_true")
     parser.add_argument(
         "--lmmd-layers",
         choices=["activations", "features", "features_and_activations"],
@@ -785,11 +977,17 @@ def main() -> int:
     parser.add_argument("--lmmd-grid-lrs", type=str, default="0.0001")
     parser.add_argument("--lr", type=float, default=1e-3)
     parser.add_argument("--weight-decay", type=float, default=1e-4)
+    parser.add_argument("--domain-weight", type=float, default=1.0)
+    parser.add_argument("--grl-lambda", type=float, default=1.0)
+    parser.add_argument("--grl-schedule", choices=["fixed", "linear"], default="fixed")
+    parser.add_argument("--class-balanced-source-sampler", action="store_true")
     parser.add_argument("--progress-every", type=int, default=100)
     parser.add_argument("--run-fig8", action="store_true")
     parser.add_argument("--fig8-strategies", type=str, default="random,entropy")
     parser.add_argument("--fig8-iterations", type=str, default="0,25,50,75,100")
     parser.add_argument("--finetune-lr", type=float, default=1e-4)
+    parser.add_argument("--fig8-target-balance", choices=["none", "class", "receiver"], default="none")
+    parser.add_argument("--fig8-finetune-scope", choices=["full", "classifier"], default="full")
     parser.add_argument("--source-replay-per-class", type=int, default=20)
     parser.add_argument("--resume", action="store_true")
     parser.add_argument("--no-save-checkpoints", action="store_true")

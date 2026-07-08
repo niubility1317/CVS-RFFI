@@ -49,6 +49,59 @@ def fine_tune_budget_from_unlabeled(unlabeled_count: int, *, denominator: int = 
     return max(1, int(unlabeled_count) // int(denominator))
 
 
+def balanced_target_selection(
+    ranked_indices: torch.Tensor,
+    *,
+    k: int,
+    labels: torch.Tensor | None = None,
+    receivers: list[str] | None = None,
+    balance_mode: str = "none",
+) -> torch.Tensor:
+    """Select target labels from a ranked list with optional class/receiver balance."""
+    if ranked_indices.ndim != 1:
+        raise ValueError("ranked_indices must be 1-D")
+    if k < 0:
+        raise ValueError("k must be non-negative")
+    if k == 0:
+        return ranked_indices[:0]
+    mode = str(balance_mode).lower().strip()
+    if mode in {"", "none"}:
+        return ranked_indices[: int(k)]
+    if mode == "class":
+        if labels is None:
+            raise ValueError("class-balanced target selection requires labels")
+        groups = [str(int(labels[int(i)].item())) for i in ranked_indices.detach().cpu()]
+    elif mode == "receiver":
+        if receivers is None:
+            raise ValueError("receiver-balanced target selection requires receivers")
+        groups = [str(receivers[int(i)]) for i in ranked_indices.detach().cpu()]
+    else:
+        raise ValueError(f"unknown target balance mode: {balance_mode}")
+    unique_groups = sorted(set(groups))
+    if not unique_groups:
+        return ranked_indices[: int(k)]
+    quota = max(1, (int(k) + len(unique_groups) - 1) // len(unique_groups))
+    counts = {group: 0 for group in unique_groups}
+    selected_positions: list[int] = []
+    for pos, group in enumerate(groups):
+        if counts[group] >= quota:
+            continue
+        selected_positions.append(pos)
+        counts[group] += 1
+        if len(selected_positions) >= int(k):
+            break
+    if len(selected_positions) < int(k):
+        used = set(selected_positions)
+        for pos in range(len(groups)):
+            if pos in used:
+                continue
+            selected_positions.append(pos)
+            if len(selected_positions) >= int(k):
+                break
+    take = torch.as_tensor(selected_positions[: int(k)], dtype=torch.long, device=ranked_indices.device)
+    return ranked_indices[take]
+
+
 def balanced_source_replay_indices(labels: torch.Tensor, *, per_class: int, seed: int = 0) -> torch.Tensor:
     """Select a small balanced source replay set for preserving source-domain performance."""
     if labels.ndim != 1:

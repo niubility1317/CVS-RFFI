@@ -106,7 +106,7 @@ def test_stage2_lmmd_objective_matches_eq16_components():
 
     losses = stage2_lmmd_objective(source_outputs, target_outputs, source_labels, num_classes=3, lmmd_lambda=0.25)
 
-    assert set(losses) == {"loss", "loss_tx", "loss_lmmd"}
+    assert set(losses) == {"loss", "loss_tx", "loss_lmmd", "target_pseudo_count", "target_pseudo_coverage"}
     assert torch.allclose(losses["loss"], losses["loss_tx"] + 0.25 * losses["loss_lmmd"])
     assert torch.isfinite(losses["loss"])
 
@@ -283,16 +283,20 @@ def test_manysig_receiver_uda_dataset_contract_uses_first256_equalized_rx_domain
 def test_finetune_budget_and_source_replay_helpers_are_bounded():
     from paper_reproduction.receiver_agnostic_twostage_uda.sampling import (
         balanced_source_replay_indices,
+        balanced_target_selection,
         fine_tune_budget_from_unlabeled,
     )
 
     labels = torch.tensor([0, 0, 0, 1, 1, 2])
     replay = balanced_source_replay_indices(labels, per_class=2, seed=7)
+    ranked = torch.tensor([0, 1, 2, 3, 4, 5])
+    target_selected = balanced_target_selection(ranked, k=3, labels=labels, balance_mode="class")
 
     assert fine_tune_budget_from_unlabeled(2500) == 50
     assert fine_tune_budget_from_unlabeled(3) == 1
     assert replay.numel() == 5
     assert torch.bincount(labels[replay], minlength=3).tolist() == [2, 2, 1]
+    assert torch.bincount(labels[target_selected], minlength=3).tolist() == [1, 1, 1]
 
 
 def test_single_batch_training_steps_are_reachable_without_target_labels():
@@ -310,11 +314,22 @@ def test_single_batch_training_steps_are_reachable_without_target_labels():
     before = next(model.parameters()).detach().clone()
 
     dann_metrics = dann_stage1_train_step(model, source, target, optimizer)
-    lmmd_metrics = lmmd_stage2_train_step(model, source, target, optimizer, num_classes=3, lmmd_lambda=0.1)
+    lmmd_metrics = lmmd_stage2_train_step(
+        model,
+        source,
+        target,
+        optimizer,
+        num_classes=3,
+        lmmd_lambda=0.1,
+        target_temperature=2.0,
+        target_confidence_threshold=0.0,
+        target_pseudo_quota_per_class=2,
+        detach_target_probs=True,
+    )
     finetune_metrics = fig8_finetune_train_step(model, source, optimizer)
 
     assert set(dann_metrics) == {"loss", "loss_tx", "loss_domain"}
-    assert set(lmmd_metrics) == {"loss", "loss_tx", "loss_lmmd"}
+    assert set(lmmd_metrics) == {"loss", "loss_tx", "loss_lmmd", "target_pseudo_count", "target_pseudo_coverage"}
     assert torch.isfinite(torch.tensor([dann_metrics["loss"], lmmd_metrics["loss"], finetune_metrics["loss"]])).all()
     assert not torch.allclose(before, next(model.parameters()).detach())
 
@@ -326,7 +341,13 @@ def test_fig8_selection_and_batch_composition_keep_roles():
     )
 
     logits = torch.randn(2500, 3)
-    selected = select_fig8_labeled_target_indices(logits, strategy="random", seed=5)
+    selected = select_fig8_labeled_target_indices(
+        logits,
+        strategy="random",
+        seed=5,
+        labels=torch.arange(2500) % 3,
+        balance_mode="class",
+    )
     source_labels = torch.tensor([0, 0, 1, 1, 2, 2])
     batch = compose_fig8_finetune_batch(
         torch.randn(2500, 2, 256),
@@ -339,6 +360,7 @@ def test_fig8_selection_and_batch_composition_keep_roles():
     )
 
     assert selected["budget"] == 50
+    assert selected["balance_mode"] == "class"
     assert selected["result_claim"] is False
     assert batch["iq"].shape[0] == 53
     assert batch["role"].tolist().count(1) == 50
@@ -393,6 +415,8 @@ def test_formal_training_smoke_writes_paper_scoped_rows(tmp_path):
             "cpu",
             "--limit-ratios",
             "1",
+            "--target-receiver-labels",
+            "rx1,rx2,rx3,rx4,rx5,rx6,rx7,rx8,rx9,rx10,rx11",
             "--methods",
             "source_only,dann_lmmd",
             "--source-epochs",
@@ -420,6 +444,20 @@ def test_formal_training_smoke_writes_paper_scoped_rows(tmp_path):
             "0.05",
             "--lmmd-layers",
             "features",
+            "--target-temperature",
+            "1.5",
+            "--target-confidence-threshold",
+            "0.1",
+            "--target-pseudo-quota-per-class",
+            "2",
+            "--detach-target-probs",
+            "--domain-weight",
+            "0.5",
+            "--grl-lambda",
+            "0.8",
+            "--grl-schedule",
+            "linear",
+            "--class-balanced-source-sampler",
             "--stage2-lr",
             "0.0001",
             "--reset-stage2-optimizer",
@@ -444,6 +482,15 @@ def test_formal_training_smoke_writes_paper_scoped_rows(tmp_path):
     assert rows[0]["target_adapt_size"] == rows[0]["target_eval_size"]
     assert rows[1]["hyperparameters"]["lmmd_lambda"] == 0.05
     assert rows[1]["hyperparameters"]["lmmd_layers"] == "features"
+    assert rows[1]["hyperparameters"]["target_temperature"] == 1.5
+    assert rows[1]["hyperparameters"]["target_confidence_threshold"] == 0.1
+    assert rows[1]["hyperparameters"]["target_pseudo_quota_per_class"] == 2
+    assert rows[1]["hyperparameters"]["detach_target_probs"] is True
+    assert rows[1]["hyperparameters"]["domain_weight"] == 0.5
+    assert rows[1]["hyperparameters"]["grl_lambda"] == 0.8
+    assert rows[1]["hyperparameters"]["grl_schedule"] == "linear"
+    assert rows[1]["hyperparameters"]["class_balanced_source_sampler"] is True
+    assert rows[1]["hyperparameters"]["receiver_split_policy"] == "explicit_receiver_labels"
     assert rows[1]["hyperparameters"]["stage2_steps"] == 1
     assert rows[1]["hyperparameters"]["stage2_lr"] == 0.0001
     assert rows[1]["hyperparameters"]["reset_stage2_optimizer"] is True
@@ -514,3 +561,82 @@ def test_lmmd_grid_reuses_one_dann_base_and_writes_variant_rows(tmp_path):
     assert [row["method"] for row in rows] == ["dann_grid_base", "dann_lmmd_grid"]
     assert rows[1]["variant_id"] == "layers=features|lambda=0.01|steps=1|lr=0.0001"
     assert rows[1]["hyperparameters"]["optimizer_policy"] == "reset_after_stage1"
+
+
+def test_r_specific_lmmd_and_fig8_diagnostics_are_recorded(tmp_path):
+    pkl_path = tmp_path / "ManySig.pkl"
+    with pkl_path.open("wb") as f:
+        pickle.dump(_synthetic_manysig_compact(), f)
+    output_dir = tmp_path / "r_specific"
+    config = "paper_reproduction/configs/receiver_agnostic_twostage_uda_manysig_paper_faithful.json"
+
+    result = subprocess.run(
+        [
+            sys.executable,
+            "-m",
+            "paper_reproduction.receiver_agnostic_twostage_uda.train",
+            "--config",
+            config,
+            "--formal",
+            "--manysig-pkl",
+            str(pkl_path),
+            "--output-dir",
+            str(output_dir),
+            "--device",
+            "cpu",
+            "--source-receiver-counts",
+            "1",
+            "--methods",
+            "dann_lmmd",
+            "--source-epochs",
+            "1",
+            "--stage1-epochs",
+            "1",
+            "--stage2-epochs",
+            "1",
+            "--max-train-steps",
+            "1",
+            "--max-stage2-steps",
+            "2",
+            "--max-samples-per-combo",
+            "1",
+            "--batch-size",
+            "4",
+            "--eval-batch-size",
+            "8",
+            "--num-workers",
+            "0",
+            "--progress-every",
+            "0",
+            "--transductive-target-eval",
+            "--r-specific-lmmd",
+            "1:features_and_activations:0.02:1:0.0002",
+            "--run-fig8",
+            "--fig8-strategies",
+            "random",
+            "--fig8-iterations",
+            "0,1",
+            "--fig8-target-balance",
+            "receiver",
+            "--fig8-finetune-scope",
+            "classifier",
+            "--source-replay-per-class",
+            "1",
+            "--no-save-checkpoints",
+        ],
+        cwd=".",
+        text=True,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        check=False,
+    )
+
+    assert result.returncode == 0, result.stderr
+    row = json.loads((output_dir / "results.jsonl").read_text(encoding="utf-8").splitlines()[0])
+    assert row["hyperparameters"]["r_specific_lmmd_applied"] is True
+    assert row["hyperparameters"]["lmmd_lambda"] == 0.02
+    assert row["hyperparameters"]["lmmd_layers"] == "features_and_activations"
+    assert row["hyperparameters"]["stage2_steps"] == 1
+    assert row["hyperparameters"]["stage2_lr"] == 0.0002
+    assert row["fig8_finetune"][0]["target_balance_mode"] == "receiver"
+    assert row["fig8_finetune"][0]["finetune_scope"] == "classifier"
