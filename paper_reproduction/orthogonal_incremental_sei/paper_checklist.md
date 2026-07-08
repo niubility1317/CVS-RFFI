@@ -50,4 +50,12 @@
 - 论文未给出的六层CNN通道数、卷积核、stride、`tau_s`、`tau_c`、边际`q`具体数值等细节。
 - 正式表2-表7和图4-图9需要在数据和GPU运行可用后生成，本目录当前只提供论文机制复现骨架和dry-run验证。
 
+## 2026-07-09差距定位记录
+
+- 已验证“新增类TX选择”是主要影响因素之一：固定旧类60个TX和5-shot不变，仅把后70个新类替换为ManyTx`3-19`单候选扫描top70后，`A_bar`从65.79%提升到78.57%，但仍低于论文WiFi平均准确率91.56%。
+- 已否定“简单均衡新类session难度”作为改进路线：将同一top70集合round-robin分配到7个session后，A7新类准确率从33.47%升至61.33%，但旧类保持显著变差，`A_bar`降至70.12%。
+- 已否定“直接套用eq1/left/RMS预处理”作为改进路线：在同一top70集合下改为`equalized=1`、`crop_mode=left`、`rms_normalize=true`后，`A_bar`降至67.98%。仓库中其他WiSig论文的equalized preamble/first256IQ约束不能直接证明适用于本论文当前ManyTx代理。
+- 当前最强闭集WiFi代理结果为`orthogonal_incremental_top70_formal_20260708_230006`：`A=[95.13,94.05,89.46,82.67,77.66,72.73,69.04,64.38]`，`A_bar=78.57%`，`H_bar=68.70%`，`F_bar=0.77%`。
+- 剩余差距优先归因于论文官方WiFi数据源/真实130类TX顺序/receiver选择/未公开CNN通道与卷积细节，而不是已验证的训练轮数、学习率、旧权重冻结范围、基础对比损失公式或上述预处理三元组。
+
 根目录`paper_reproduction/paper_original_matrix.md`和`paper_reproduction/repro_gap.md`记录了跨论文复现矩阵与缺口登记；本子目录不单独复制这两个文件，避免发布面把机制骨架误读为完整论文结果。
