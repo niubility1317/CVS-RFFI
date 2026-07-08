@@ -50,10 +50,28 @@ python -m paper_reproduction.receiver_agnostic_twostage_uda.train \
   --methods dann,dann_lmmd \
   --transductive-target-eval \
   --lmmd-lambda 0.05 \
-  --lmmd-layers features
+  --lmmd-layers features \
+  --stage2-lr 0.0001 \
+  --reset-stage2-optimizer \
+  --max-stage2-steps 500
 ```
 
-Use `--transductive-target-eval` when reproducing the paper-style UDA reporting pool: all target receiver samples are available as unlabeled target-domain data, and labels are used only for reporting. The held-out target split remains the default for stricter internal validation. `--lmmd-lambda` and `--lmmd-layers` are diagnostic knobs because the paper does not publish the LMMD trade-off weight or the concrete layer set `L`.
+Use `--transductive-target-eval` when reproducing the paper-style UDA reporting pool: all target receiver samples are available as unlabeled target-domain data, and labels are used only for reporting. The held-out target split remains the default for stricter internal validation. `--lmmd-lambda`, `--lmmd-layers`, `--stage2-lr`, and `--reset-stage2-optimizer` are diagnostic knobs because the paper does not publish the LMMD trade-off weight, the concrete layer set `L`, or the stage2 optimizer policy.
+
+For LMMD-sensitive diagnosis, reuse one DANN base and sweep reset-optimizer LMMD variants:
+
+```bash
+python -m paper_reproduction.receiver_agnostic_twostage_uda.train \
+  --config paper_reproduction/configs/receiver_agnostic_twostage_uda_manysig_n607_formal.json \
+  --formal \
+  --source-receiver-counts 6 \
+  --lmmd-grid \
+  --lmmd-grid-lambdas 0.005,0.01 \
+  --lmmd-grid-layers features,activations \
+  --lmmd-grid-steps 250,500 \
+  --lmmd-grid-lrs 0.0001 \
+  --transductive-target-eval
+```
 
 DADDA dry-run:
 

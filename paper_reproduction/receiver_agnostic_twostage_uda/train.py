@@ -209,6 +209,8 @@ def _fit_base_model(
     supervised_steps: int,
     stage1_steps: int,
     stage2_steps: int,
+    stage2_lr: float,
+    reset_stage2_optimizer: bool,
     lmmd_lambda: float,
     lmmd_layers: str,
     progress_every: int,
@@ -246,12 +248,22 @@ def _fit_base_model(
             progress_every=progress_every,
         )
         if method == "dann_lmmd":
+            stage2_optimizer = optimizer
+            if reset_stage2_optimizer:
+                stage2_optimizer = torch.optim.Adam(model.parameters(), lr=float(stage2_lr), weight_decay=float(weight_decay))
+                train_meta["stage2_optimizer_policy"] = "reset_after_stage1"
+            elif float(stage2_lr) != float(lr):
+                for group in stage2_optimizer.param_groups:
+                    group["lr"] = float(stage2_lr)
+                train_meta["stage2_optimizer_policy"] = "reuse_after_stage1_lr_changed"
+            else:
+                train_meta["stage2_optimizer_policy"] = "reuse_after_stage1"
             train_meta["stage2_lmmd_last"] = _run_steps(
                 lambda: lmmd_stage2_train_step(
                     model,
                     next(source_iter),
                     next(target_iter),
-                    optimizer,
+                    stage2_optimizer,
                     num_classes=num_tx,
                     lmmd_lambda=lmmd_lambda,
                     lmmd_layers=lmmd_layers,
@@ -484,6 +496,8 @@ def run_formal(config: dict[str, Any], args: argparse.Namespace) -> dict[str, An
             }
             stage1_steps = max(1, min(stage1_steps, int(args.max_train_steps)))
             stage2_steps = max(1, min(stage2_steps, int(args.max_train_steps)))
+        if args.max_stage2_steps > 0:
+            stage2_steps = max(1, min(stage2_steps, int(args.max_stage2_steps)))
         print(
             json.dumps(
                 {
@@ -619,6 +633,8 @@ def run_formal(config: dict[str, Any], args: argparse.Namespace) -> dict[str, An
                 supervised_steps=supervised_steps_by_method.get(method, source_steps),
                 stage1_steps=stage1_steps,
                 stage2_steps=stage2_steps,
+                stage2_lr=float(args.stage2_lr),
+                reset_stage2_optimizer=bool(args.reset_stage2_optimizer),
                 lmmd_lambda=float(args.lmmd_lambda),
                 lmmd_layers=str(args.lmmd_layers),
                 progress_every=int(args.progress_every),
@@ -648,6 +664,9 @@ def run_formal(config: dict[str, Any], args: argparse.Namespace) -> dict[str, An
                     "source_epochs": int(args.source_epochs),
                     "stage1_epochs": int(args.stage1_epochs),
                     "stage2_epochs": int(args.stage2_epochs),
+                    "stage2_steps": int(stage2_steps),
+                    "stage2_lr": float(args.stage2_lr),
+                    "reset_stage2_optimizer": bool(args.reset_stage2_optimizer),
                     "target_eval_fraction": float(args.target_eval_fraction),
                     "transductive_target_eval": bool(args.transductive_target_eval),
                     "lmmd_lambda": float(args.lmmd_lambda),
@@ -742,7 +761,10 @@ def main() -> int:
     parser.add_argument("--source-epochs", type=int, default=20)
     parser.add_argument("--stage1-epochs", type=int, default=20)
     parser.add_argument("--stage2-epochs", type=int, default=10)
+    parser.add_argument("--stage2-lr", type=float, default=1e-3)
+    parser.add_argument("--reset-stage2-optimizer", action="store_true")
     parser.add_argument("--max-train-steps", type=int, default=0)
+    parser.add_argument("--max-stage2-steps", type=int, default=0)
     parser.add_argument("--max-samples-per-combo", type=int, default=None)
     parser.add_argument("--target-eval-fraction", type=float, default=0.5)
     parser.add_argument(

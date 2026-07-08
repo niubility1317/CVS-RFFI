@@ -27,6 +27,7 @@
     "source_epochs": 20,
     "stage1_epochs": 20,
     "stage2_epochs": 10,
+    "max_stage2_steps": 0,
     "batch_size": 256,
     "eval_batch_size": 512,
     "lr": 0.001,
@@ -35,6 +36,8 @@
     "transductive_target_eval": false,
     "lmmd_lambda": 1.0,
     "lmmd_layers": "activations",
+    "stage2_lr": 0.001,
+    "reset_stage2_optimizer": false,
     "paper_status": "optimizer, batch size, epochs, split seed, and train/eval target split are implementation choices because the paper does not publish them"
   },
   "optional_finetune": {

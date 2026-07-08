@@ -403,6 +403,8 @@ def test_formal_training_smoke_writes_paper_scoped_rows(tmp_path):
             "1",
             "--max-train-steps",
             "1",
+            "--max-stage2-steps",
+            "1",
             "--max-samples-per-combo",
             "1",
             "--batch-size",
@@ -418,6 +420,9 @@ def test_formal_training_smoke_writes_paper_scoped_rows(tmp_path):
             "0.05",
             "--lmmd-layers",
             "features",
+            "--stage2-lr",
+            "0.0001",
+            "--reset-stage2-optimizer",
         ],
         cwd=".",
         text=True,
@@ -439,6 +444,10 @@ def test_formal_training_smoke_writes_paper_scoped_rows(tmp_path):
     assert rows[0]["target_adapt_size"] == rows[0]["target_eval_size"]
     assert rows[1]["hyperparameters"]["lmmd_lambda"] == 0.05
     assert rows[1]["hyperparameters"]["lmmd_layers"] == "features"
+    assert rows[1]["hyperparameters"]["stage2_steps"] == 1
+    assert rows[1]["hyperparameters"]["stage2_lr"] == 0.0001
+    assert rows[1]["hyperparameters"]["reset_stage2_optimizer"] is True
+    assert rows[1]["train"]["stage2_optimizer_policy"] == "reset_after_stage1"
     assert rows[0]["claim_blocks"] == [
         "not CVS Stage2-C",
         "not satellite/LEO deployment evidence",
