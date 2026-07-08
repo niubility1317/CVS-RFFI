@@ -272,6 +272,49 @@ def test_dadda_dry_run_declares_closed_set_uda_not_cvs():
     assert payload["pending_paper_artifacts"][0]["paper_item"] == "Fig.5"
 
 
+def test_dadda_paper_config_keeps_energy_normalization_enabled():
+    import json
+
+    config_path = Path(__file__).resolve().parents[1] / "paper_reproduction" / "configs" / "dadda_cross_receiver_manysig_paper_faithful.json"
+    config = json.loads(config_path.read_text(encoding="utf-8"))
+
+    assert config["normalize"] is True
+    assert config.get("allow_unnormalized_ablation") is None
+
+
+def test_dadda_paper_config_rejects_unnormalized_formal_runs():
+    from paper_reproduction.dadda_cross_receiver.train import validate_formal_or_smoke_settings, validate_paper_faithful_config
+
+    config = {
+        "cvs_extension": False,
+        "target_labels_scope": "evaluation_only",
+        "epochs": 100,
+        "normalize": False,
+    }
+
+    try:
+        validate_paper_faithful_config(config)
+    except ValueError as exc:
+        assert "normalization" in str(exc)
+    else:
+        raise AssertionError("paper-faithful DADDA config must reject normalize=false")
+
+    validate_paper_faithful_config({**config, "allow_unnormalized_ablation": True})
+
+    try:
+        validate_formal_or_smoke_settings(
+            config={**config, "allow_unnormalized_ablation": False},
+            settings={"epochs": 100, "normalize": False},
+            smoke=False,
+            max_samples_per_combo=None,
+            max_batches_per_epoch=None,
+        )
+    except SystemExit as exc:
+        assert "--no-normalize is not paper-faithful" in str(exc)
+    else:
+        raise AssertionError("formal DADDA run must reject --no-normalize without ablation flag")
+
+
 def test_dadda_paper_artifact_plan_covers_pending_figures_and_tables():
     from paper_reproduction.dadda_cross_receiver.experiment_plans import build_paper_artifact_plan
 

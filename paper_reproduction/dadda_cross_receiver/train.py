@@ -155,6 +155,11 @@ def validate_paper_faithful_config(config: dict[str, Any]) -> None:
         raise ValueError("DADDA paper-faithful config must set cvs_extension=false")
     if config.get("target_labels_scope", "evaluation_only") != "evaluation_only":
         raise ValueError("target labels are evaluation-only in the paper-faithful UDA protocol")
+    if config.get("normalize", True) is False and not config.get("allow_unnormalized_ablation", False):
+        raise ValueError(
+            "DADDA paper-faithful config must keep energy/RMS normalization enabled; "
+            "set allow_unnormalized_ablation=true only for explicitly labeled ablations"
+        )
 
 
 def resolve_table2_run_settings(config: dict[str, Any], args: argparse.Namespace) -> dict[str, Any]:
@@ -192,6 +197,8 @@ def validate_formal_or_smoke_settings(
     paper_epochs = _config_value(config, "epochs", 100, int)
     if smoke:
         return
+    if settings.get("normalize") is False and not config.get("allow_unnormalized_ablation", False):
+        raise SystemExit("--no-normalize is not paper-faithful; use --smoke or set allow_unnormalized_ablation=true for an ablation")
     if int(settings["epochs"]) < paper_epochs:
         raise SystemExit("--smoke is required when --epochs is below the paper config epochs")
     if max_samples_per_combo is not None or max_batches_per_epoch is not None:
