@@ -172,6 +172,46 @@ class Phase2SupportMetricQknnV56CompressionTest(unittest.TestCase):
         self.assertEqual(high_k["topm"], 1)
         self.assertEqual(high_k["scenario_class_fallback"], "old_role_only")
 
+    def test_v59_applies_hard_diverse_compression_overlay_only_for_k10(self):
+        from phase2_support_metric_qknn_probe import _adaptive_qknn_overrides
+
+        many_new_low_k = {
+            "adaptive_support_min_k": 5.0,
+            "adaptive_new_class_count": 20.0,
+            "adaptive_support_max_offdiag_proto_sim": 0.982,
+            "adaptive_support_p90_offdiag_proto_sim": 0.822,
+            "adaptive_support_mean_radius": 0.104,
+        }
+        many_new_high_k = dict(many_new_low_k)
+        many_new_high_k["adaptive_support_min_k"] = 10.0
+
+        low_k = _adaptive_qknn_overrides(
+            policy="stable_dualview_v59",
+            geometry=many_new_low_k,
+            aux_available=True,
+        )
+        high_k = _adaptive_qknn_overrides(
+            policy="stable_dualview_v59",
+            geometry=many_new_high_k,
+            aux_available=True,
+        )
+
+        self.assertEqual(low_k["adaptive_qknn_requested_policy"], "stable_dualview_v59")
+        self.assertEqual(low_k["adaptive_qknn_policy"], "stable_dualview_v59")
+        self.assertNotIn("support_code_budget_per_class", low_k)
+        self.assertNotIn("support_code_budget_mode", low_k)
+        self.assertNotIn("transform_mode", low_k)
+        self.assertNotIn("topm", low_k)
+        self.assertNotIn("proto_mix", low_k)
+
+        self.assertEqual(high_k["adaptive_qknn_requested_policy"], "stable_dualview_v59")
+        self.assertEqual(high_k["adaptive_qknn_policy"], "stable_dualview_v59")
+        self.assertEqual(high_k["support_code_budget_per_class"], 8)
+        self.assertEqual(high_k["support_code_budget_mode"], "centroid_hard_diverse")
+        self.assertNotIn("transform_mode", high_k)
+        self.assertNotIn("topm", high_k)
+        self.assertNotIn("proto_mix", high_k)
+
     def test_support_proto_anchor_recovers_class_score_without_raw_support_codes(self):
         from phase2_support_metric_qknn_probe import _support_proto_anchor_scores
 

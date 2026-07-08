@@ -7414,6 +7414,8 @@ def _adaptive_qknn_overrides(
         "stable_dualview_v55",
         "dualview_support_v56",
         "stable_dualview_v56",
+        "dualview_support_v59",
+        "stable_dualview_v59",
     }:
         raise ValueError(f"unsupported adaptive_qknn_policy: {policy}")
     min_k_for_policy = float(geometry["adaptive_support_min_k"])
@@ -7461,6 +7463,7 @@ def _adaptive_qknn_overrides(
     use_v54 = name in {"dualview_support_v54", "stable_dualview_v54"}
     use_v55 = name in {"dualview_support_v55", "stable_dualview_v55"}
     use_v56 = name in {"dualview_support_v56", "stable_dualview_v56"}
+    use_v59 = name in {"dualview_support_v59", "stable_dualview_v59"}
     use_v49 = use_v49 or ((use_v53 or use_v54 or use_v55 or use_v56) and min_k_for_policy >= 10.0)
     use_v44 = (
         name in {"dualview_support_v44", "stable_dualview_v44"}
@@ -7503,6 +7506,26 @@ def _adaptive_qknn_overrides(
     k_reliability = _clip01((min_k - 5.0) / 15.0)
     stable_gate = _clip01(max(hardness, 0.6 * class_load))
     enhancement_gate = _clip01((1.0 - stable_gate) * k_reliability)
+
+    if use_v59:
+        overrides = {
+            "adaptive_qknn_policy": name,
+            "adaptive_qknn_requested_policy": name,
+            "adaptive_qknn_effective_policy": name,
+            "adaptive_support_hardness": hardness,
+            "adaptive_class_load": class_load,
+            "adaptive_k_reliability": k_reliability,
+            "adaptive_stable_gate": stable_gate,
+            "adaptive_enhancement_gate": enhancement_gate,
+        }
+        if min_k_for_policy >= 10.0:
+            overrides.update(
+                {
+                    "support_code_budget_per_class": 8,
+                    "support_code_budget_mode": "centroid_hard_diverse",
+                }
+            )
+        return overrides
 
     aux_weight = 0.0
     if bool(aux_available):
