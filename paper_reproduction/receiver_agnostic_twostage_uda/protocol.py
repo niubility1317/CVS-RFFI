@@ -19,6 +19,15 @@ PAPER_FIG7_SOURCE_RECEIVER_COUNTS = [1, 2, 3, 4, 6]
 
 TABLE_I_PAPER_REFERENCE_ACCURACY = [0.89, 0.94, 0.87, 0.91, 0.92, 0.92]
 
+PAPER_PREPROCESSING_REQUIRED = {
+    "equalized": 1,
+    "normalize": True,
+    "normalization": "RMS/power normalization",
+    "crop_mode": "left",
+    "out_len": 256,
+    "cfo_policy": "preserved",
+}
+
 
 def validate_paper_faithful_config(config: dict[str, Any]) -> dict[str, Any]:
     if bool(config.get("cvs_extension", False)):
@@ -37,6 +46,10 @@ def validate_paper_faithful_config(config: dict[str, Any]) -> dict[str, Any]:
         raise ValueError("Bao et al. paper-faithful ManySig protocol expects 4 capture days")
     if not bool(config.get("target_unlabeled_allowed", False)):
         raise ValueError("target unlabeled data must be allowed for the UDA stages")
+    preprocessing = dict(config.get("preprocessing", {}))
+    for key, expected in PAPER_PREPROCESSING_REQUIRED.items():
+        if preprocessing.get(key) != expected:
+            raise ValueError(f"paper-faithful preprocessing requires {key}={expected!r}")
     counts = [int(v) for v in config.get("source_receiver_counts", [])]
     if not counts:
         raise ValueError("source_receiver_counts cannot be empty")
@@ -50,6 +63,14 @@ def validate_paper_faithful_config(config: dict[str, Any]) -> dict[str, Any]:
     checked["claim_boundary"] = "paper-faithful closed-set cross-receiver UDA"
     checked["paper_unspecified_fields"] = PAPER_UNSPECIFIED_FIELDS
     checked["table_i_paper_reference_accuracy"] = TABLE_I_PAPER_REFERENCE_ACCURACY
+    checked["preprocessing"] = {
+        **PAPER_PREPROCESSING_REQUIRED,
+        "raw_sync_preamble_extraction": preprocessing.get(
+            "raw_sync_preamble_extraction",
+            "upstream WiSig/ManySig compact pkl prerequisite",
+        ),
+        "execution_status": "requires_real_manysig_pkl_for_runtime_evidence",
+    }
     return checked
 
 

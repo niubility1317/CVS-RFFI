@@ -1,7 +1,13 @@
 {
+  "artifact_type": "dry_run_only",
+  "schema_version": 2,
   "paper": "Receiver-Agnostic Radio Frequency Fingerprinting Based on Two-stage Unsupervised Domain Adaptation and Fine-tuning",
   "scope": "paper-faithful closed-set cross-receiver UDA",
   "dataset": "WiSig ManySig",
+  "formal_training_status": "blocked",
+  "result_claim_status": "no_formal_metrics",
+  "synthetic_smoke_allowed": true,
+  "requires_real_manysig_for_fig7_table_i_fig8": true,
   "receiver_ratio_plan": [
     {
       "ratio": "1:11",
@@ -155,6 +161,16 @@
     "LMMD kernel and layer set",
     "fine-tuning freeze policy"
   ],
+  "preprocessing": {
+    "equalized": 1,
+    "normalize": true,
+    "normalization": "RMS/power normalization",
+    "crop_mode": "left",
+    "out_len": 256,
+    "cfo_policy": "preserved",
+    "raw_sync_preamble_extraction": "upstream WiSig/ManySig compact pkl prerequisite",
+    "execution_status": "requires_real_manysig_pkl_for_runtime_evidence"
+  },
   "claim_blocks": [
     "not CVS Stage2-C",
     "not satellite/LEO deployment evidence",

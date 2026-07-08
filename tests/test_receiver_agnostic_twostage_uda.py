@@ -3,6 +3,7 @@ from __future__ import annotations
 import subprocess
 import sys
 
+import numpy as np
 import pytest
 import torch
 
@@ -150,6 +151,14 @@ def test_paper_faithful_protocol_builds_receiver_ratio_plan():
         "source_receiver_counts": [1, 2, 3, 4, 6],
         "tx_count": 6,
         "capture_days": 4,
+        "preprocessing": {
+            "equalized": 1,
+            "normalize": True,
+            "normalization": "RMS/power normalization",
+            "crop_mode": "left",
+            "out_len": 256,
+            "cfo_policy": "preserved",
+        },
         "target_unlabeled_allowed": True,
         "cvs_extension": False,
     }
@@ -177,6 +186,14 @@ def test_paper_faithful_protocol_rejects_cvs_extension_mixing():
         "source_receiver_counts": [6],
         "tx_count": 6,
         "capture_days": 4,
+        "preprocessing": {
+            "equalized": 1,
+            "normalize": True,
+            "normalization": "RMS/power normalization",
+            "crop_mode": "left",
+            "out_len": 256,
+            "cfo_policy": "preserved",
+        },
         "target_unlabeled_allowed": True,
         "cvs_extension": True,
     }
@@ -187,6 +204,56 @@ def test_paper_faithful_protocol_rejects_cvs_extension_mixing():
         assert "cvs_extension" in str(exc)
     else:
         raise AssertionError("paper-faithful config must reject cvs_extension mixing")
+
+
+def _synthetic_manysig_compact() -> dict:
+    data = []
+    for tx_i in range(6):
+        tx_rows = []
+        for rx_i in range(12):
+            rx_rows = []
+            for day_i in range(4):
+                eq_rows = []
+                for eq_i in range(2):
+                    sample = np.zeros((2, 320, 2), dtype=np.float32)
+                    sample[:, :, 0] = float(tx_i + 1)
+                    sample[:, :, 1] = float(rx_i + day_i + eq_i)
+                    sample[:, 0, 0] = 1000.0 + tx_i
+                    eq_rows.append(sample)
+                rx_rows.append(eq_rows)
+            tx_rows.append(rx_rows)
+        data.append(tx_rows)
+    return {
+        "data": data,
+        "tx_list": [f"tx{i}" for i in range(6)],
+        "rx_list": [f"rx{i}" for i in range(12)],
+        "capture_date_list": [f"day{i}" for i in range(4)],
+        "equalized_list": [0, 1],
+    }
+
+
+def test_manysig_receiver_uda_dataset_contract_uses_first256_equalized_rx_domains():
+    from paper_reproduction.receiver_agnostic_twostage_uda.data import build_manysig_receiver_uda_datasets
+
+    built = build_manysig_receiver_uda_datasets(
+        _synthetic_manysig_compact(),
+        source_receivers=["rx0", "rx1"],
+        target_receivers=["rx2"],
+        max_samples_per_combo=1,
+    )
+    source_x, source_y, source_d, source_meta = built["source"][0]
+    target_x, _, target_d, target_meta = built["target"][0]
+
+    assert source_x.shape == (2, 256)
+    assert abs(float(source_x[0, 0])) > 1.0
+    assert source_meta["equalized"] == 1
+    assert target_meta["equalized"] == 1
+    assert set(built["meta"]["source_receiver_ids"]).isdisjoint(built["meta"]["target_receiver_ids"])
+    assert built["meta"]["preprocessing"]["crop_mode"] == "left"
+    assert built["meta"]["target_label_role"] == "hidden_for_UDA_available_only_for_eval_or_optional_finetune"
+    assert int(source_y) in range(6)
+    assert int(source_d) in built["meta"]["source_receiver_ids"]
+    assert int(target_d) in built["meta"]["target_receiver_ids"]
 
 
 def test_finetune_budget_and_source_replay_helpers_are_bounded():
@@ -202,6 +269,56 @@ def test_finetune_budget_and_source_replay_helpers_are_bounded():
     assert fine_tune_budget_from_unlabeled(3) == 1
     assert replay.numel() == 5
     assert torch.bincount(labels[replay], minlength=3).tolist() == [2, 2, 1]
+
+
+def test_single_batch_training_steps_are_reachable_without_target_labels():
+    from paper_reproduction.receiver_agnostic_twostage_uda.model import ReceiverAgnosticUDANet
+    from paper_reproduction.receiver_agnostic_twostage_uda.steps import (
+        dann_stage1_train_step,
+        fig8_finetune_train_step,
+        lmmd_stage2_train_step,
+    )
+
+    model = ReceiverAgnosticUDANet(num_tx=3)
+    optimizer = torch.optim.SGD(model.parameters(), lr=0.01)
+    source = {"iq": torch.randn(4, 2, 256), "label": torch.tensor([0, 1, 2, 0])}
+    target = {"iq": torch.randn(5, 2, 256), "label": torch.tensor([2, 2, 1, 0, 1])}
+    before = next(model.parameters()).detach().clone()
+
+    dann_metrics = dann_stage1_train_step(model, source, target, optimizer)
+    lmmd_metrics = lmmd_stage2_train_step(model, source, target, optimizer, num_classes=3, lmmd_lambda=0.1)
+    finetune_metrics = fig8_finetune_train_step(model, source, optimizer)
+
+    assert set(dann_metrics) == {"loss", "loss_tx", "loss_domain"}
+    assert set(lmmd_metrics) == {"loss", "loss_tx", "loss_lmmd"}
+    assert torch.isfinite(torch.tensor([dann_metrics["loss"], lmmd_metrics["loss"], finetune_metrics["loss"]])).all()
+    assert not torch.allclose(before, next(model.parameters()).detach())
+
+
+def test_fig8_selection_and_batch_composition_keep_roles():
+    from paper_reproduction.receiver_agnostic_twostage_uda.steps import (
+        compose_fig8_finetune_batch,
+        select_fig8_labeled_target_indices,
+    )
+
+    logits = torch.randn(2500, 3)
+    selected = select_fig8_labeled_target_indices(logits, strategy="random", seed=5)
+    source_labels = torch.tensor([0, 0, 1, 1, 2, 2])
+    batch = compose_fig8_finetune_batch(
+        torch.randn(2500, 2, 256),
+        torch.arange(2500) % 3,
+        selected["selected"],
+        torch.randn(6, 2, 256),
+        source_labels,
+        source_replay_per_class=1,
+        seed=11,
+    )
+
+    assert selected["budget"] == 50
+    assert selected["result_claim"] is False
+    assert batch["iq"].shape[0] == 53
+    assert batch["role"].tolist().count(1) == 50
+    assert batch["role"].tolist().count(0) == 3
 
 
 def test_non_dry_run_does_not_write_output(tmp_path):

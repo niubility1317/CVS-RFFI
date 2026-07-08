@@ -15,11 +15,18 @@ from paper_reproduction.receiver_agnostic_twostage_uda.protocol import (
 def build_dry_run_payload(config: dict) -> dict:
     checked = validate_paper_faithful_config(config)
     return {
+        "artifact_type": "dry_run_only",
+        "schema_version": 2,
         "paper": "Receiver-Agnostic Radio Frequency Fingerprinting Based on Two-stage Unsupervised Domain Adaptation and Fine-tuning",
         "scope": checked["claim_boundary"],
         "dataset": checked["dataset"],
+        "formal_training_status": "blocked",
+        "result_claim_status": "no_formal_metrics",
+        "synthetic_smoke_allowed": True,
+        "requires_real_manysig_for_fig7_table_i_fig8": True,
         "receiver_ratio_plan": build_receiver_ratio_plan(checked),
         "paper_unspecified_fields": checked["paper_unspecified_fields"],
+        "preprocessing": checked["preprocessing"],
         "claim_blocks": [
             "not CVS Stage2-C",
             "not satellite/LEO deployment evidence",

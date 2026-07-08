@@ -109,3 +109,27 @@
 ## 8.本轮执行边界
 
 本轮审计为只读多agent对照审计。未访问N607，未启动训练，未修改复现代码，未修改现有dirty文件。新增本文件用于持久化多子agent审计结论。
+
+## 9.后续修正状态更新
+
+更新时间：2026-07-08后续审查。
+
+以下早期审计问题已经由后续提交修正，不应继续作为当前阻断项引用：
+
+|原问题|当前状态|
+|---|---|
+|非`--dry-run`失败前仍可能写出payload|已修复。`train.py`先gate正式训练，再允许dry-run payload写出；测试覆盖非dry-run不写output。|
+|domain classifier使用1-logit+BCE|已修复。当前domain head输出2类logits，loss优先使用cross entropy以贴合论文softmax classifier表述。|
+|LMMD缺target probability单纯形校验|已修复。`lmmd_loss`会校验target probabilities非负且逐行和为1。|
+|缺GRL符号、DANN loss、非dry-run no-output测试|已补测试。|
+
+以下仍是当前阻断或未完成项：
+
+|论文复现项|当前状态|
+|---|---|
+|真实ManySig预处理/loader运行证据|仍blocked。本地未登记真实`ManySig.pkl`；同步/前导提取/信道均衡只能作为WiSig compact pkl上游前提。|
+|Stage1 DANN与Stage2 LMMD正式训练|仍partial。已有单batch step和合成smoke测试，但没有epoch训练、checkpoint、真实receiver split或正式metrics。|
+|Fig.8 fine-tuning正式曲线|仍helper-only。已有采样、1/50预算、source replay、合成batch和single-step测试；没有真实target labeled pool和100iteration accuracy曲线。|
+|Fig.7/TableI正式结果|仍deferred。dry-run只保存论文矩阵和论文参考值，不是复现实验结果。|
+
+后续提交说明必须继续限定为“paper-faithful复现骨架、协议、数据管线或训练原语修正”，不得写“全方位复现完成”或“达到论文结果”。
