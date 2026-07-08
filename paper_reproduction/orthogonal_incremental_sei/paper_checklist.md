@@ -12,9 +12,11 @@
 |基类交叉熵损失`Lce`|`losses.py`|已实现|
 |自监督对比损失`Ls`|`losses.py`|已实现论文等价结构；样本锚点正集包含自身和同类样本，分母保持论文负集口径|
 |类中心分离损失`Lc`|`losses.py`|已实现|
-|增量阶段冻结特征提取器、类均值初始化新权重|`train.py` dry-run|已覆盖流程骨架；dry-run显式冻结encoder并只优化新类权重|
+|增量阶段冻结特征提取器、类均值初始化新权重|`train.py`|已覆盖正式runner流程；基类旧权重由训练后特征均值生成，新类权重由5-shot支持集特征均值初始化，增量阶段显式冻结encoder并只优化新类权重|
 |边际竞争校准`Lh`与原型对齐`La`|`losses.py`|已实现；配置使用论文符号`lambda_a`|
-|`A_bar/H_bar/F_bar`指标|`metrics.py`|已实现；`F_bar`默认按论文增量任务分母，不做非负截断|
+|`A_bar/H_bar/F_bar`指标|`metrics.py`|已实现；`A_bar/H_bar`默认按论文表格口径跳过A0并对A1...AT取均值，`F_bar`默认按论文增量任务分母，不做非负截断；可显式设`average_denominator=total_sessions`复现旧口径|
+|WiFi增量5-shot测试协议|`train.py`|已修正：基类仍按80%/20%划分；增量类按每类K个support样本训练，其余样本全部作为query|
+|表1早停轮数|`train.py`|已接入`early_stop_patience`和`early_stop_min_delta`，base和每个increment session分别记录`early_stop`状态|
 
 ## 子agent逐项对照结论
 
@@ -23,13 +25,13 @@
 |摘要贡献：正交伪目标与扰动伪目标|`pseudo_targets.py`、对应单元测试|机制已覆盖；正式训练收益未验证|
 |摘要贡献：`Lce/Ls/Lc`协同优化|`losses.py`、base loss梯度测试|公式机制已覆盖；仍需真实batch训练曲线|
 |摘要贡献：增量阶段分类器权重校准|`incremental_calibration_loss`、dry-run增量梯度检查|校准损失已覆盖；多session增量训练未完成|
-|算法1基础阶段训练|`train.py --dry-run`|仅流程骨架；缺少真实数据、epoch、checkpoint与正式结果|
-|算法2小样本增量训练|`train.py --dry-run`|仅验证新权重可优化；缺少1-shot/5-shot正式session|
+|算法1基础阶段训练|`run_formal_wisig`|已支持真实WiFi/ManyTx闭集FSCIL训练、早停和训练后base class-mean权重；严格论文官方WiFi数据源仍需另行提供|
+|算法2小样本增量训练|`run_formal_wisig`|已支持K-shot支持集、剩余样本query、冻结encoder、class-mean初始化新权重和多session校准；严格同论文receiver/TX顺序仍需查证|
 |公式(4)正交空间目标|`pseudo_target_orthogonal_loss`、`optimize_pseudo_targets`、`train._build_pseudo_targets`|已覆盖闭式构造、可选迭代优化和训练入口配置|
 |公式(18)-(29)基础阶段损失|`base_training_loss`|已覆盖；`Ls`已按论文正负样本集合和逐正样本平均修正|
 |公式(30)-(36)增量校准|`incremental_calibration_loss`|已覆盖；已补shape/device检查|
-|公式(37)-(41)评价指标|`metrics.py`|已覆盖；已补空old/new集合、长度检查、遗忘率差值口径和`F_bar`分母口径|
-|表1仿真参数|配置文件与清单登记|已使用论文符号`tau_s`、`tau_c`、`q`、`lambda_a`登记；数值仍属implementation choice，需作者代码或网格确认|
+|公式(37)-(41)评价指标|`metrics.py`|已覆盖；已补空old/new集合、长度检查、`A_bar/H_bar`论文表格口径、遗忘率差值口径和`F_bar`分母口径|
+|表1仿真参数|配置文件与清单登记|已使用论文符号`tau_s`、`tau_c`、`q`、`lambda_a`登记，并执行早停轮数；数值仍属implementation choice，需作者代码或网格确认|
 |表2-表5 ADS-B/WiFi正式结果|无正式输出|未完成；需要ADS-B100类和WiFi/WiSig130类loader与训练运行|
 |图4/图7遗忘率曲线|无正式输出|未完成；需要正式session accuracy matrix与遗忘率曲线数据|
 |图5/图6类别数量敏感性|无正式输出|未完成；需要初始类数量和增量类数量网格运行|

@@ -135,9 +135,30 @@ def _split_class_samples(
     return torch.stack(shuffled[:train_n], dim=0), torch.stack(shuffled[train_n:], dim=0)
 
 
+def _split_incremental_samples(
+    tensors: list[torch.Tensor],
+    *,
+    shot: int,
+    seed: int,
+    class_id: int,
+    min_samples: int,
+) -> tuple[torch.Tensor, torch.Tensor]:
+    if shot <= 0:
+        raise ValueError("shot must be positive")
+    if len(tensors) < min_samples:
+        raise ValueError(f"class {class_id} has {len(tensors)} samples, below min_samples={min_samples}")
+    if len(tensors) <= shot:
+        raise ValueError(f"class {class_id} has {len(tensors)} samples, need more than shot={shot}")
+    generator = torch.Generator().manual_seed(int(seed) + int(class_id) * 1009)
+    order = torch.randperm(len(tensors), generator=generator).tolist()
+    shuffled = [tensors[int(i)] for i in order]
+    return torch.stack(shuffled[:shot], dim=0), torch.stack(shuffled[shot:], dim=0)
+
+
 def _load_wisig_fscil_tensors(config: dict, *, wisig_pkl: str, seed: int) -> tuple[dict[int, torch.Tensor], dict[int, torch.Tensor], dict[str, Any]]:
     ds = load_wisig_compact_pkl(wisig_pkl)
-    total_classes = int(config.get("base_classes", 60)) + int(config.get("increment_classes_per_session", 10)) * int(config.get("num_increment_sessions", 7))
+    base_classes = int(config.get("base_classes", 60))
+    total_classes = base_classes + int(config.get("increment_classes_per_session", 10)) * int(config.get("num_increment_sessions", 7))
     tx_labels = list(ds.get("tx_list", []))
     rx_labels = list(ds.get("rx_list", []))
     selected_tx = _resolve_label_indices(tx_labels, _resolve_config_labels(config), limit=total_classes)
@@ -167,14 +188,24 @@ def _load_wisig_fscil_tensors(config: dict, *, wisig_pkl: str, seed: int) -> tup
     query_by_class: dict[int, torch.Tensor] = {}
     min_samples = int(config.get("min_samples_per_transmitter", 50))
     train_ratio = float(config.get("base_train_ratio", 0.8))
+    shot = int(config.get("shot", config.get("k_shot", 5)))
     for class_id in range(total_classes):
-        train_x, query_x = _split_class_samples(
-            grouped[class_id],
-            train_ratio=train_ratio,
-            seed=seed,
-            class_id=class_id,
-            min_samples=min_samples,
-        )
+        if class_id < base_classes:
+            train_x, query_x = _split_class_samples(
+                grouped[class_id],
+                train_ratio=train_ratio,
+                seed=seed,
+                class_id=class_id,
+                min_samples=min_samples,
+            )
+        else:
+            train_x, query_x = _split_incremental_samples(
+                grouped[class_id],
+                shot=shot,
+                seed=seed,
+                class_id=class_id,
+                min_samples=min_samples,
+            )
         train_by_class[class_id] = train_x
         query_by_class[class_id] = query_x
     split_info = {
@@ -211,6 +242,24 @@ def _extract_features(encoder: nn.Module, x: torch.Tensor, *, device: torch.devi
         for (xb,) in loader:
             features.append(encoder(xb.to(device)).detach().cpu())
     return torch.cat(features, dim=0)
+
+
+def _fit_base_classifier_weights(
+    encoder: nn.Module,
+    train_by_class: dict[int, torch.Tensor],
+    *,
+    base_classes: int,
+    device: torch.device,
+    batch_size: int,
+) -> torch.Tensor:
+    base_dataset = _make_tensor_dataset(train_by_class, list(range(base_classes)))
+    base_x, base_y = base_dataset.tensors
+    base_features = _extract_features(encoder, base_x, device=device, batch_size=batch_size).to(device)
+    weights, class_ids = class_mean_weights(base_features, base_y.to(device))
+    expected = torch.arange(base_classes, device=class_ids.device)
+    if not torch.equal(class_ids, expected):
+        raise ValueError("base class ids must be contiguous and sorted")
+    return weights.detach().cpu()
 
 
 def _predict_with_weights(encoder: nn.Module, dataset: TensorDataset, weights: torch.Tensor, *, device: torch.device, batch_size: int) -> tuple[torch.Tensor, torch.Tensor]:
@@ -253,6 +302,32 @@ def _evaluate_sessions(
     return session_acc, task_accs
 
 
+def _evaluate_class_group_accuracy(
+    encoder: nn.Module,
+    query_by_class: dict[int, torch.Tensor],
+    weights: torch.Tensor,
+    *,
+    seen_class_ids: list[int],
+    eval_class_ids: list[int],
+    device: torch.device,
+    batch_size: int,
+) -> float:
+    dataset = _make_tensor_dataset(query_by_class, eval_class_ids)
+    pred_rows, labels = _predict_with_weights(encoder, dataset, weights, device=device, batch_size=batch_size)
+    row_to_class = torch.tensor(seen_class_ids, dtype=torch.long)
+    preds = row_to_class[pred_rows]
+    return top1_accuracy(preds, labels)
+
+
+def _early_stop_should_break(*, current_loss: float, best_loss: float, stale_epochs: int, patience: int, min_delta: float) -> tuple[float, int, bool]:
+    if patience < 0:
+        return min(best_loss, current_loss), 0, False
+    if current_loss < best_loss - min_delta:
+        return current_loss, 0, False
+    stale_epochs += 1
+    return best_loss, stale_epochs, stale_epochs > patience
+
+
 def run_formal_wisig(config: dict, *, wisig_pkl: str, run_dir: str | Path, device: str = "cuda:0") -> dict[str, Any]:
     seed = int(config.get("seed", 1337))
     set_seed(seed)
@@ -266,6 +341,8 @@ def run_formal_wisig(config: dict, *, wisig_pkl: str, run_dir: str | Path, devic
     eval_batch_size = int(config.get("eval_batch_size", batch_size))
     base_epochs = int(config.get("base_epochs", 100))
     increment_epochs = int(config.get("increment_epochs", 50))
+    early_stop_patience = int(config.get("early_stop_patience", -1))
+    early_stop_min_delta = float(config.get("early_stop_min_delta", 0.0))
     encoder = SixBlockConv1DEncoder(input_channels=2, embedding_dim=feature_dim).to(dev)
     pseudo_targets, pseudo_target_steps = _build_pseudo_targets(config, device=dev)
     perturbed = perturb_pseudo_targets(pseudo_targets, noise_range=float(config.get("noise_range", 0.01)), seed=seed).to(dev)
@@ -280,6 +357,9 @@ def run_formal_wisig(config: dict, *, wisig_pkl: str, run_dir: str | Path, devic
     else:
         raise ValueError(f"unsupported optimizer: {config.get('optimizer')}")
     history: list[dict[str, Any]] = []
+    early_stop_info: dict[str, Any] = {"base": {"stopped_epoch": 0}, "increment": {}}
+    best_loss = float("inf")
+    stale_epochs = 0
     for epoch in range(1, base_epochs + 1):
         encoder.train()
         losses: list[float] = []
@@ -299,11 +379,28 @@ def run_formal_wisig(config: dict, *, wisig_pkl: str, run_dir: str | Path, devic
             loss.backward()
             optimizer.step()
             losses.append(float(loss.detach().cpu().item()))
-        history.append({"phase": "base", "epoch": epoch, "loss": float(sum(losses) / max(1, len(losses)))})
+        epoch_loss = float(sum(losses) / max(1, len(losses)))
+        history.append({"phase": "base", "epoch": epoch, "loss": epoch_loss})
+        best_loss, stale_epochs, should_stop = _early_stop_should_break(
+            current_loss=epoch_loss,
+            best_loss=best_loss,
+            stale_epochs=stale_epochs,
+            patience=early_stop_patience,
+            min_delta=early_stop_min_delta,
+        )
+        if should_stop:
+            early_stop_info["base"] = {"stopped_epoch": epoch, "best_loss": best_loss}
+            break
 
     for parameter in encoder.parameters():
         parameter.requires_grad_(False)
-    base_weights = torch.stack([assigned[i].detach().cpu() for i in range(base_classes)], dim=0)
+    base_weights = _fit_base_classifier_weights(
+        encoder,
+        train_by_class,
+        base_classes=base_classes,
+        device=dev,
+        batch_size=eval_batch_size,
+    )
     learned_new_weights: list[torch.Tensor] = []
     seen_class_ids = list(range(base_classes))
     task_class_ids: list[list[int]] = [list(range(base_classes))]
@@ -337,6 +434,8 @@ def run_formal_wisig(config: dict, *, wisig_pkl: str, run_dir: str | Path, devic
         inc_optimizer = torch.optim.SGD([new_weights], lr=float(config.get("increment_lr", 0.08)))
         current_old_weights = concat_classifier_weights(base_weights, torch.cat(learned_new_weights, dim=0)) if learned_new_weights else base_weights
         current_old_weights = current_old_weights.to(dev)
+        best_loss = float("inf")
+        stale_epochs = 0
         for epoch in range(1, increment_epochs + 1):
             inc_optimizer.zero_grad(set_to_none=True)
             inc_loss, inc_terms = incremental_calibration_loss(
@@ -362,6 +461,16 @@ def run_formal_wisig(config: dict, *, wisig_pkl: str, run_dir: str | Path, devic
                     "hard_count": float(inc_terms["hard_count"].detach().cpu().item()),
                 }
             )
+            best_loss, stale_epochs, should_stop = _early_stop_should_break(
+                current_loss=float(inc_loss.detach().cpu().item()),
+                best_loss=best_loss,
+                stale_epochs=stale_epochs,
+                patience=early_stop_patience,
+                min_delta=early_stop_min_delta,
+            )
+            if should_stop:
+                early_stop_info["increment"][str(session)] = {"stopped_epoch": epoch, "best_loss": best_loss}
+                break
         learned_new_weights.append(new_weights.detach().cpu())
         seen_class_ids.extend(new_class_ids)
         task_class_ids.append(new_class_ids)
@@ -376,9 +485,28 @@ def run_formal_wisig(config: dict, *, wisig_pkl: str, run_dir: str | Path, devic
             batch_size=eval_batch_size,
         )
         session_accuracies.append(session_acc)
-        previous_tasks = task_accs[:-1]
-        old_accuracies.append(float(sum(previous_tasks) / max(1, len(previous_tasks))))
-        new_accuracies.append(float(task_accs[-1]))
+        old_accuracies.append(
+            _evaluate_class_group_accuracy(
+                encoder,
+                query_by_class,
+                weights,
+                seen_class_ids=seen_class_ids,
+                eval_class_ids=seen_class_ids[: -len(new_class_ids)],
+                device=dev,
+                batch_size=eval_batch_size,
+            )
+        )
+        new_accuracies.append(
+            _evaluate_class_group_accuracy(
+                encoder,
+                query_by_class,
+                weights,
+                seen_class_ids=seen_class_ids,
+                eval_class_ids=new_class_ids,
+                device=dev,
+                batch_size=eval_batch_size,
+            )
+        )
         accuracy_rows.append(task_accs)
 
     total_sessions = 1 + inc_sessions
@@ -390,6 +518,7 @@ def run_formal_wisig(config: dict, *, wisig_pkl: str, run_dir: str | Path, devic
         old_accuracies=old_accuracies,
         new_accuracies=new_accuracies,
         accuracy_matrix=matrix,
+        average_denominator=str(config.get("average_denominator", "incremental_sessions")),
         forgetting_denominator=str(config.get("forgetting_denominator", "incremental_sessions")),
     )
     result = {
@@ -407,6 +536,8 @@ def run_formal_wisig(config: dict, *, wisig_pkl: str, run_dir: str | Path, devic
         "new_accuracies": new_accuracies,
         "accuracy_matrix": matrix.tolist(),
         "summary": summary,
+        "base_weight_source": "class_mean_features",
+        "early_stop": early_stop_info,
         "split_info": split_info,
         "history": history,
     }

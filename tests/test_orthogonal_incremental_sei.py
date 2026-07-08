@@ -345,7 +345,7 @@ def test_encoder_classifier_weights_and_metrics_cover_fscil_flow() -> None:
             ]
         ),
     )
-    assert summary["A_bar"] == pytest.approx(0.8)
+    assert summary["A_bar"] == pytest.approx(0.75)
     assert summary["H_bar"] < 0.9
     assert summary["F_bar"] > 0
     assert summary["F_bar"] == pytest.approx((0.05 + 0.10) / 2.0)
@@ -382,6 +382,24 @@ def test_encoder_classifier_weights_and_metrics_cover_fscil_flow() -> None:
             new_accuracies=[],
             accuracy_matrix=torch.eye(2),
         )
+
+
+def test_average_incremental_metrics_can_report_legacy_total_session_mean() -> None:
+    summary = average_incremental_metrics(
+        session_accuracies=[0.9, 0.8, 0.7],
+        old_accuracies=[0.9, 0.82, 0.75],
+        new_accuracies=[0.9, 0.7, 0.6],
+        accuracy_matrix=torch.tensor(
+            [
+                [0.90, float("nan"), float("nan")],
+                [0.85, 0.80, float("nan")],
+                [0.80, 0.70, 0.70],
+            ]
+        ),
+        average_denominator="total_sessions",
+    )
+
+    assert summary["A_bar"] == pytest.approx(0.8)
 
 
 def test_dry_run_consumes_paper_named_temperatures_and_margin() -> None:
@@ -481,3 +499,135 @@ def test_formal_wisig_runner_writes_incremental_metrics(tmp_path) -> None:
     assert result["summary"]["A_bar"] >= 0.0
     assert len(result["session_accuracies"]) == 3
     assert (tmp_path / "run" / "metrics.json").is_file()
+
+
+def test_wisig_split_uses_five_shot_support_and_remaining_query_for_incremental_classes(tmp_path) -> None:
+    from paper_reproduction.orthogonal_incremental_sei.train import _load_wisig_fscil_tensors
+
+    rng = np.random.default_rng(321)
+    data = []
+    for tx in range(5):
+        tx_items = []
+        rx_items = []
+        eq_items = [rng.normal(loc=tx * 0.1, scale=0.01, size=(8, 64, 2)).astype(np.float32)]
+        rx_items.append(eq_items)
+        tx_items.append(rx_items)
+        data.append(tx_items)
+    pkl_path = tmp_path / "fake_wisig.pkl"
+    with pkl_path.open("wb") as handle:
+        pickle.dump(
+            {
+                "data": data,
+                "tx_list": [f"tx-{i}" for i in range(5)],
+                "rx_list": ["rx-a"],
+                "capture_date_list": ["day-a"],
+                "equalized_list": [1],
+            },
+            handle,
+        )
+
+    train_by_class, query_by_class, split_info = _load_wisig_fscil_tensors(
+        {
+            "seed": 3,
+            "input_length": 64,
+            "base_classes": 3,
+            "increment_classes_per_session": 1,
+            "num_increment_sessions": 2,
+            "base_train_ratio": 0.5,
+            "shot": 2,
+            "receiver_label": "rx-a",
+            "min_samples_per_transmitter": 4,
+        },
+        wisig_pkl=str(pkl_path),
+        seed=3,
+    )
+
+    assert [train_by_class[i].size(0) for i in range(3)] == [4, 4, 4]
+    assert [query_by_class[i].size(0) for i in range(3)] == [4, 4, 4]
+    assert [train_by_class[i].size(0) for i in range(3, 5)] == [2, 2]
+    assert [query_by_class[i].size(0) for i in range(3, 5)] == [6, 6]
+    assert split_info["train_samples_per_class"]["3"] == 2
+    assert split_info["query_samples_per_class"]["3"] == 6
+
+
+def test_base_classifier_weights_are_extracted_from_trained_features() -> None:
+    from paper_reproduction.orthogonal_incremental_sei.train import _fit_base_classifier_weights
+
+    class ToyEncoder(torch.nn.Module):
+        def forward(self, x: torch.Tensor) -> torch.Tensor:
+            return x[:, :, 0]
+
+    train_by_class = {
+        0: torch.tensor([[[1.0, 0.0], [0.0, 0.0]], [[1.0, 0.0], [0.0, 0.0]]]),
+        1: torch.tensor([[[0.0, 0.0], [1.0, 0.0]], [[0.0, 0.0], [1.0, 0.0]]]),
+    }
+
+    weights = _fit_base_classifier_weights(
+        ToyEncoder(),
+        train_by_class,
+        base_classes=2,
+        device=torch.device("cpu"),
+        batch_size=4,
+    )
+
+    assert weights.shape == (2, 2)
+    assert torch.allclose(weights, torch.eye(2), atol=1e-6)
+
+
+def test_formal_wisig_runner_applies_training_loss_early_stop(tmp_path) -> None:
+    from paper_reproduction.orthogonal_incremental_sei.train import run_formal_wisig
+
+    rng = np.random.default_rng(456)
+    data = []
+    for tx in range(4):
+        tx_items = []
+        rx_items = []
+        eq_items = [rng.normal(loc=tx * 0.1, scale=0.01, size=(8, 64, 2)).astype(np.float32)]
+        rx_items.append(eq_items)
+        tx_items.append(rx_items)
+        data.append(tx_items)
+    pkl_path = tmp_path / "fake_wisig.pkl"
+    with pkl_path.open("wb") as handle:
+        pickle.dump(
+            {
+                "data": data,
+                "tx_list": [f"tx-{i}" for i in range(4)],
+                "rx_list": ["rx-a"],
+                "capture_date_list": ["day-a"],
+                "equalized_list": [1],
+            },
+            handle,
+        )
+
+    result = run_formal_wisig(
+        {
+            "seed": 3,
+            "input_length": 64,
+            "embedding_dim": 8,
+            "pseudo_targets": 5,
+            "base_classes": 3,
+            "increment_classes_per_session": 1,
+            "num_increment_sessions": 1,
+            "base_epochs": 5,
+            "increment_epochs": 5,
+            "early_stop_patience": 0,
+            "early_stop_min_delta": 1e9,
+            "batch_size": 12,
+            "eval_batch_size": 8,
+            "min_samples_per_transmitter": 4,
+            "base_train_ratio": 0.5,
+            "shot": 1,
+            "receiver_label": "rx-a",
+            "optimizer": "SGD",
+        },
+        wisig_pkl=str(pkl_path),
+        run_dir=tmp_path / "run",
+        device="cpu",
+    )
+
+    base_epochs = [row for row in result["history"] if row["phase"] == "base"]
+    inc_epochs = [row for row in result["history"] if row["phase"] == "increment"]
+    assert len(base_epochs) == 2
+    assert len(inc_epochs) == 2
+    assert result["early_stop"]["base"]["stopped_epoch"] == 2
+    assert result["early_stop"]["increment"]["1"]["stopped_epoch"] == 2

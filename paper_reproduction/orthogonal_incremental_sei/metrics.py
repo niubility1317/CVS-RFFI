@@ -46,6 +46,7 @@ def average_incremental_metrics(
     old_accuracies: Sequence[float],
     new_accuracies: Sequence[float],
     accuracy_matrix: torch.Tensor,
+    average_denominator: str = "incremental_sessions",
     forgetting_denominator: str = "incremental_sessions",
 ) -> dict[str, float]:
     if not session_accuracies:
@@ -58,13 +59,19 @@ def average_incremental_metrics(
         raise ValueError("session_accuracies must match old/new accuracy length")
     if accuracy_matrix.size(0) != len(session_accuracies):
         raise ValueError("accuracy_matrix size must match session_accuracies length")
+    if average_denominator not in {"total_sessions", "incremental_sessions"}:
+        raise ValueError("average_denominator must be total_sessions or incremental_sessions")
     if forgetting_denominator not in {"total_sessions", "incremental_sessions"}:
         raise ValueError("forgetting_denominator must be total_sessions or incremental_sessions")
     h_values = [harmonic_accuracy(old_accuracy=o, new_accuracy=n) for o, n in zip(old_accuracies, new_accuracies)]
+    a_values = list(map(float, session_accuracies))
+    if average_denominator == "incremental_sessions" and len(a_values) > 1:
+        a_values = a_values[1:]
+        h_values = h_values[1:]
     f_values = forgetting_by_session(accuracy_matrix)
     f_denominator = len(session_accuracies) if forgetting_denominator == "total_sessions" else len(f_values)
     return {
-        "A_bar": float(sum(map(float, session_accuracies)) / len(session_accuracies)),
+        "A_bar": float(sum(a_values) / len(a_values)),
         "H_bar": float(sum(h_values) / len(h_values)) if h_values else 0.0,
         "F_bar": float(sum(f_values) / f_denominator) if f_denominator else 0.0,
     }
