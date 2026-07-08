@@ -163,6 +163,70 @@ def _compress_support_codes(
     return np.asarray(kept_indices, dtype=int), np.asarray(kept_labels, dtype=object).astype(str)
 
 
+def _support_proto_anchor_scores(
+    scores: np.ndarray,
+    *,
+    features: np.ndarray,
+    support_indices: np.ndarray,
+    support_labels: np.ndarray,
+    query_indices: np.ndarray,
+    class_labels: list[str],
+    old_labels: set[str],
+    weight: float,
+    radius_norm: float,
+    old_bias: float,
+    clip: float,
+) -> tuple[np.ndarray, int]:
+    """Blend compressed-support scores toward full-support class prototypes."""
+    base_scores = np.asarray(scores, dtype=np.float64)
+    if float(weight) <= 0.0 or base_scores.size == 0:
+        return base_scores.copy(), 0
+
+    support_indices = np.asarray(support_indices, dtype=int)
+    support_labels = np.asarray(support_labels, dtype=object).astype(str)
+    query_indices = np.asarray(query_indices, dtype=int)
+    if support_indices.size == 0 or query_indices.size == 0:
+        return base_scores.copy(), 0
+
+    vectors = np.asarray(features, dtype=np.float64)
+    support = qknn._normalize_rows(vectors[support_indices])
+    query = qknn._normalize_rows(vectors[query_indices])
+    proto_rows: list[np.ndarray] = []
+    radii: list[float] = []
+    valid_labels: list[str] = []
+    for label in class_labels:
+        mask = support_labels == str(label)
+        if not bool(np.any(mask)):
+            continue
+        class_support = support[mask]
+        proto = qknn._normalize_rows(class_support.mean(axis=0, keepdims=True))[0]
+        proto_rows.append(proto)
+        valid_labels.append(str(label))
+        radii.append(float(np.mean(1.0 - class_support @ proto)))
+    if not proto_rows:
+        return base_scores.copy(), 0
+
+    proto_matrix = qknn._normalize_rows(np.stack(proto_rows, axis=0))
+    anchor_scores = query @ proto_matrix.T
+    if float(radius_norm) != 0.0:
+        denom = np.power(np.maximum(np.asarray(radii, dtype=np.float64), 1e-4), float(radius_norm))[None, :]
+        anchor_scores = 1.0 - ((1.0 - anchor_scores) / denom)
+    if float(old_bias) != 0.0:
+        for index, label in enumerate(valid_labels):
+            if str(label) in old_labels:
+                anchor_scores[:, index] += float(old_bias)
+
+    adjusted = base_scores.copy()
+    label_to_score_col = {str(label): index for index, label in enumerate(class_labels)}
+    for anchor_col, label in enumerate(valid_labels):
+        score_col = label_to_score_col.get(str(label))
+        if score_col is None:
+            continue
+        delta = anchor_scores[:, anchor_col] - adjusted[:, score_col]
+        adjusted[:, score_col] += float(weight) * np.clip(delta, -float(clip), float(clip))
+    return adjusted, int(len(valid_labels) * vectors.shape[1])
+
+
 def _topm_mean(scores: np.ndarray, topm: int) -> np.ndarray:
     k = max(1, min(int(topm), int(scores.shape[1])))
     part = np.partition(scores, kth=scores.shape[1] - k, axis=1)[:, -k:]
@@ -4925,6 +4989,8 @@ def _evaluate_metric_qknn(
     new_floor: float,
     support_code_budget_per_class: int,
     support_code_budget_mode: str,
+    support_proto_anchor_weight: float,
+    support_proto_anchor_clip: float,
     collect_predictions: bool,
 ) -> dict[str, Any]:
     support_indices, support_labels = _collect_support(old_splits, new_splits, old_labels, new_labels)
@@ -5355,6 +5421,19 @@ def _evaluate_metric_qknn(
             aux_support_gate_factor = float(min(mean_gate, floor_gate, aux_support_absolute_floor_gate))
             effective_aux_score_weight = float(aux_score_weight) * aux_support_gate_factor
         scores = (1.0 - effective_aux_score_weight) * scores + effective_aux_score_weight * aux_scores
+    scores, stored_support_proto_anchor_scalars = _support_proto_anchor_scores(
+        scores,
+        features=adapted,
+        support_indices=full_support_indices,
+        support_labels=full_support_labels,
+        query_indices=query_indices,
+        class_labels=old_labels + new_labels,
+        old_labels=set(old_labels),
+        weight=float(support_proto_anchor_weight),
+        radius_norm=float(radius_norm),
+        old_bias=float(old_bias),
+        clip=float(support_proto_anchor_clip),
+    )
     scores, pair_axis_count = _pair_axis_adjust_scores(
         scores,
         features=adapted,
@@ -7051,6 +7130,9 @@ def _evaluate_metric_qknn(
         "raw_support_code_count": int(raw_support_code_count),
         "support_code_budget_per_class": int(support_code_budget_per_class),
         "support_code_budget_mode": str(support_code_budget_mode),
+        "support_proto_anchor_weight": float(support_proto_anchor_weight),
+        "support_proto_anchor_clip": float(support_proto_anchor_clip),
+        "stored_support_proto_anchor_scalars": int(stored_support_proto_anchor_scalars),
         "stored_quantized_support_code_count": int(support_indices.size),
         "stored_raw_support_count": 0,
         "stored_class_prototype_count": int(len(old_labels) + len(new_labels)),
@@ -8109,6 +8191,8 @@ def main() -> None:
     parser.add_argument("--support_loo_pair_linear_scope_grid", default="new")
     parser.add_argument("--support_code_budget_per_class_grid", default="0")
     parser.add_argument("--support_code_budget_mode_grid", default="centroid")
+    parser.add_argument("--support_proto_anchor_weight_grid", default="0")
+    parser.add_argument("--support_proto_anchor_clip_grid", default="2.0")
     parser.add_argument("--mahal_proto_weight_grid", default="0")
     parser.add_argument("--mahal_proto_alpha_grid", default="1.0")
     parser.add_argument("--mahal_proto_diag_mix_grid", default="0.5")
@@ -8355,6 +8439,8 @@ def main() -> None:
             qknn._parse_csv(args.support_loo_pair_linear_scope_grid),
             qknn._parse_int_csv(args.support_code_budget_per_class_grid),
             qknn._parse_csv(args.support_code_budget_mode_grid),
+            qknn._parse_float_csv(args.support_proto_anchor_weight_grid),
+            qknn._parse_float_csv(args.support_proto_anchor_clip_grid),
             qknn._parse_float_csv(args.mahal_proto_weight_grid),
             qknn._parse_float_csv(args.mahal_proto_alpha_grid),
             qknn._parse_float_csv(args.mahal_proto_diag_mix_grid),
@@ -8592,6 +8678,8 @@ def main() -> None:
                     support_loo_pair_linear_scope,
                     support_code_budget_per_class,
                     support_code_budget_mode,
+                    support_proto_anchor_weight,
+                    support_proto_anchor_clip,
                     mahal_proto_weight,
                     mahal_proto_alpha,
                     mahal_proto_diag_mix,
@@ -8767,6 +8855,8 @@ def main() -> None:
                         "support_loo_pair_linear_scope": str(support_loo_pair_linear_scope),
                         "support_code_budget_per_class": int(support_code_budget_per_class),
                         "support_code_budget_mode": str(support_code_budget_mode),
+                        "support_proto_anchor_weight": float(support_proto_anchor_weight),
+                        "support_proto_anchor_clip": float(support_proto_anchor_clip),
                         "labelprop_weight": float(labelprop_weight),
                         "labelprop_k": int(labelprop_k),
                         "labelprop_alpha": float(labelprop_alpha),
@@ -8972,6 +9062,12 @@ def main() -> None:
                             ),
                             "support_code_budget_mode": adaptive_overrides.get(
                                 "support_code_budget_mode", params["support_code_budget_mode"]
+                            ),
+                            "support_proto_anchor_weight": adaptive_overrides.get(
+                                "support_proto_anchor_weight", params["support_proto_anchor_weight"]
+                            ),
+                            "support_proto_anchor_clip": adaptive_overrides.get(
+                                "support_proto_anchor_clip", params["support_proto_anchor_clip"]
                             ),
                             "labelprop_weight": adaptive_overrides.get("labelprop_weight", params["labelprop_weight"]),
                             "labelprop_k": adaptive_overrides.get("labelprop_k", params["labelprop_k"]),
@@ -9319,6 +9415,8 @@ def main() -> None:
                         new_floor=float(args.seen_new_floor),
                         support_code_budget_per_class=int(params["support_code_budget_per_class"]),
                         support_code_budget_mode=str(params["support_code_budget_mode"]),
+                        support_proto_anchor_weight=float(params["support_proto_anchor_weight"]),
+                        support_proto_anchor_clip=float(params["support_proto_anchor_clip"]),
                         collect_predictions=bool(str(args.output_predictions_csv).strip()),
                     )
                     row.update(support_geometry)
@@ -9728,6 +9826,9 @@ def main() -> None:
         "raw_support_code_count",
         "support_code_budget_per_class",
         "support_code_budget_mode",
+        "support_proto_anchor_weight",
+        "support_proto_anchor_clip",
+        "stored_support_proto_anchor_scalars",
         "stored_quantized_support_code_count",
         "stored_raw_support_count",
         "stored_class_prototype_count",

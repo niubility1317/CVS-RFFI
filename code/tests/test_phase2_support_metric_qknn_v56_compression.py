@@ -107,6 +107,41 @@ class Phase2SupportMetricQknnV56CompressionTest(unittest.TestCase):
         self.assertEqual(high_k["topm"], 1)
         self.assertEqual(high_k["scenario_class_fallback"], "old_role_only")
 
+    def test_support_proto_anchor_recovers_class_score_without_raw_support_codes(self):
+        from phase2_support_metric_qknn_probe import _support_proto_anchor_scores
+
+        features = np.asarray(
+            [
+                [1.00, 0.00],
+                [0.80, 0.20],
+                [0.00, 1.00],
+                [0.20, 0.80],
+                [0.95, 0.05],
+            ],
+            dtype=float,
+        )
+        support_indices = np.asarray([0, 1, 2, 3], dtype=int)
+        support_labels = np.asarray(["old-a", "old-a", "new-b", "new-b"], dtype=object)
+        query_indices = np.asarray([4], dtype=int)
+        compressed_scores = np.asarray([[0.10, 0.20]], dtype=float)
+
+        adjusted, stored_scalars = _support_proto_anchor_scores(
+            compressed_scores,
+            features=features,
+            support_indices=support_indices,
+            support_labels=support_labels,
+            query_indices=query_indices,
+            class_labels=["old-a", "new-b"],
+            old_labels={"old-a"},
+            weight=0.50,
+            radius_norm=0.0,
+            old_bias=0.0,
+            clip=2.0,
+        )
+
+        self.assertEqual(stored_scalars, 4)
+        self.assertGreater(adjusted[0, 0], adjusted[0, 1])
+
 
 if __name__ == "__main__":
     unittest.main()
