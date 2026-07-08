@@ -4,6 +4,8 @@ Scope: paper-faithful closed-set UDA reproduction for Feng et al. (IEEE IoT Jour
 
 | Paper item | Paper evidence | Code evidence | Test/result evidence | Current status |
 |---|---|---|---|---|
+| Eq. (1) receiver-signal model | Section III signal model and receiver-domain motivation | Documentation/protocol only | No numerical channel-model test claimed | Documentation-only context |
+| Table I related-work comparison | Table I contrasts prior RFFI/domain adaptation methods | `paper_reproduction/paper_original_matrix.md` | No code artifact required | Documentation-only context |
 | Task definition | Section III: labeled source receiver plus unlabeled target receiver; `Y_s=Y_t` | `paper_reproduction/dadda_cross_receiver/data.py`; `train.py` dry-run payload | `tests/test_dadda_cross_receiver.py::test_dadda_dry_run_declares_closed_set_uda_not_cvs` | Implemented as closed-set UDA |
 | CVS boundary | `项目.md` requires CVS old/new/unknown split for Stage2-C; DADDA does not | `paper_reproduction/configs/dadda_cross_receiver_manysig_paper_faithful.json` has `cvs_extension=false` | Dry-run claim blocks | Implemented boundary guard |
 | Input shape | Section V-A: `2x256` IQ samples | `DADDAFeatureExtractor`; `build_manysig_task_datasets` | Model and data task tests | Implemented |
@@ -16,13 +18,14 @@ Scope: paper-faithful closed-set UDA reproduction for Feng et al. (IEEE IoT Jour
 | Dynamic factor Eq. (5) | `alpha=d_MMD/(d_MMD+sum d_LMMD)` and `alpha in [0,1]` | `dynamic_adaptive_factor`; `dadda_objective` passes the class-wise LMMD sum and treats alpha as a differentiable dynamic weight | objective test | Implemented |
 | Total objective Eq. (6)-(9) | `CE + lambda*((1-alpha)MMD + alpha*LMMD)` | `dadda_objective`; `run_dadda_training_loop` | smoke runner history logs `alpha_mean`, `mmd_mean`, `lmmd_mean` | Implemented |
 | Algorithm 1 | each batch uses `x_s,y_s,x_t`, target labels hidden for training; epoch loop uses paired source/target batches | `run_dadda_training_loop` stops at the shorter source/target batch stream | smoke runner test | Implemented smoke path |
-| Optimizer and schedules | Section V-B: SGD, momentum 0.9, L2 decay 0.0005, lr/lambda schedules | `train.py`; config file | dry-run hyperparameters; smoke history | Implemented |
+| Optimizer and schedules | Section V-B: SGD, momentum 0.9, L2 decay 0.0005, lr/lambda schedules | `train.py`; config file | dry-run hyperparameters; smoke history | Implemented as config/schedule wiring; formal hardware-matched run pending |
 | Table II tasks | twelve receiver-transfer tasks | `PAPER_TABLE2_TASKS`; config file | dry-run task plan | Implemented task matrix |
 | Table II metrics | source-only and DADDA target-domain accuracy; baselines DANN/DAN/DSAN/WD/DCORAL/CDAN | `run_table2_reproduction` supports `source_only` and `dadda`/`proposed`; other baselines explicitly not implemented here | formal WiSig run required | Partially implemented; full Table II reproduction pending real data/GPU runs and missing baselines |
-| SNR Fig. 5 | AWGN SNR 0-20 dB on two tasks | no SNR runner yet | pending | Pending |
-| Ablation Tables III-IV | module ablations and dynamic-alpha comparison | no ablation matrix yet | pending | Pending |
-| Kernel Table V | kernel sensitivity, params, FLOPs | no kernel sweep yet | pending | Pending |
-| Fig. 6-8 analyses | A-distance, t-SNE, confusion matrix | no visualization scripts yet | pending | Pending |
-| Time Table VI | per-epoch train/test time on the paper hardware | no timing hook yet | pending | Pending |
+| SNR Fig. 5 | AWGN SNR 0-20 dB on two tasks | `experiment_plans.py` plan scaffold | plan-only test | Plan scaffold only; no formal result |
+| Ablation Tables III-IV | module ablations and dynamic-alpha comparison | `experiment_plans.py`; fixed-alpha objective mode | plan/objective tests | Plan scaffold only; no formal result |
+| Kernel Table V | kernel sensitivity, params, FLOPs | `experiment_plans.py` artifact schema | plan-only test | Artifact schema only; no formal result |
+| Fig. 6-8 analyses | A-distance, t-SNE, confusion matrix | `experiment_plans.py` artifact schema | plan-only test | Artifact schema only; no formal result |
+| Time Table VI | per-epoch train/test time on the paper hardware | `experiment_plans.py` artifact schema | plan-only test | Artifact schema only; no formal result |
+| Multi-source/multi-target extension | Conclusion/future direction | no implementation in current paper-faithful module | explicit matrix boundary | Out of current release scope |
 
 Known paper ambiguity: the prose names a tradeoff parameter `gamma`, while Eq. (9) and Algorithm 1 use `lambda`. This implementation follows Eq. (9) and Algorithm 1 and records the lambda schedule in dry-run output.

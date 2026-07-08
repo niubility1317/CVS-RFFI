@@ -48,8 +48,10 @@ paper_reproduction/
   feature_separation_crossrx/  # Feature Separation跨接收机基线
   receiver_agnostic_twostage_uda/ # Bao et al. GLOBECOM 2023 DANN+LMMD闭集UDA复现
   mitigating_receiver_impact_da/  # Liu Yang et al. IoTJ 2024 GAD/DV-KL/CPL复现
+  dadda_cross_receiver/       # Feng et al. IoTJ 2025 DADDA闭集跨接收机UDA复现
   cvs_aligned/                 # CVS Stage2-B/C协议扩展评估层
   configs/                     # 脱敏示例配置
+  paper_original_matrix.md     # 论文原始方法逐项覆盖审计表
 baselines/
   common/、cvcnn_ce/、drift/、riei_fd/、ra_collab/
 tests/

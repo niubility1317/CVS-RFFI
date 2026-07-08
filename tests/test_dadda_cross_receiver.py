@@ -123,6 +123,33 @@ def test_dadda_dynamic_objective_combines_ce_mmd_lmmd():
     assert float(target_local.grad.abs().sum()) > 0.0
 
 
+def test_dadda_objective_supports_fixed_alpha_ablation():
+    from paper_reproduction.dadda_cross_receiver.losses import dadda_objective
+
+    source_outputs = {
+        "global_features": torch.tensor([[0.0, 0.0], [1.0, 1.0]], requires_grad=True),
+        "local_features": torch.tensor([[0.0, 1.0], [1.0, 0.0]], requires_grad=True),
+        "logits": torch.tensor([[4.0, 0.1], [0.2, 3.0]], requires_grad=True),
+    }
+    target_outputs = {
+        "global_features": torch.tensor([[0.2, 0.0], [1.2, 1.0]], requires_grad=True),
+        "local_features": torch.tensor([[0.2, 1.1], [1.2, 0.1]], requires_grad=True),
+        "logits": torch.tensor([[3.0, 0.2], [0.5, 2.8]], requires_grad=True),
+    }
+    terms = dadda_objective(
+        source_outputs,
+        target_outputs,
+        torch.tensor([0, 1]),
+        tradeoff_lambda=1.0,
+        alpha_mode="fixed",
+        fixed_alpha=0.5,
+    )
+
+    assert torch.isclose(terms["alpha"], torch.tensor(0.5), atol=1e-6)
+    expected_dynamic = 0.5 * terms["mmd"] + 0.5 * terms["lmmd"]
+    assert torch.allclose(terms["dynamic_joint"], expected_dynamic, atol=1e-6)
+
+
 def test_dadda_schedules_match_paper_formula():
     from paper_reproduction.dadda_cross_receiver.train import lambda_schedule, learning_rate_schedule
 
@@ -203,6 +230,27 @@ def test_dadda_dry_run_declares_closed_set_uda_not_cvs():
     assert "not target-new enrollment" in payload["claim_blocks"]
     assert "Table V" in payload["paper_evidence_targets"]
     assert "Table VI" in payload["paper_evidence_targets"]
+    assert payload["pending_paper_artifacts"][0]["paper_item"] == "Fig.5"
+
+
+def test_dadda_paper_artifact_plan_covers_pending_figures_and_tables():
+    from paper_reproduction.dadda_cross_receiver.experiment_plans import build_paper_artifact_plan
+
+    plan = build_paper_artifact_plan()
+
+    assert plan["formal_result"] is False
+    assert plan["table2_methods"]["missing"] == ["dann", "dan", "dsan", "wd", "dcoral", "cdan"]
+    snr_plan = plan["pending_paper_artifacts"][0]
+    assert snr_plan["paper_item"] == "Fig.5"
+    assert len(snr_plan["tasks"]) == 2
+    assert snr_plan["snr_db"] == [0, 5, 10, 15, 20]
+    table3 = plan["pending_paper_artifacts"][1]
+    assert table3["paper_item"] == "Table III"
+    assert len(table3["variants"]) == 8
+    table4 = plan["pending_paper_artifacts"][2]
+    assert [item["variant"] for item in table4["variants"]] == ["fixed_0p5", "dynamic"]
+    analysis_items = {item["paper_item"] for item in plan["pending_paper_artifacts"][3]["artifacts"]}
+    assert {"Fig.6", "Fig.7", "Fig.8", "Table V", "Table VI"} <= analysis_items
 
 
 def test_dadda_manysig_task_builder_keeps_target_labels_evaluation_only():
@@ -287,7 +335,14 @@ def test_dadda_smoke_runner_trains_source_only_and_dadda_rows(tmp_path):
     assert [row["method"] for row in result["rows"]] == ["source_only", "proposed"]
     assert all(row["target_labels_scope"] == "evaluation_only" for row in result["rows"])
     assert all(0.0 <= row["target_accuracy"] <= 1.0 for row in result["rows"])
+    assert result["expected_table2_tasks"] == 12
+    assert result["completed_task_count"] == 1
+    assert result["missing_task_ids"]
+    assert result["paper_scope"] == "paper_faithful_closed_set_single_source_UDA"
+    assert result["cvs_extension"] is False
+    assert result["not_cvs_stage2"] is True
     assert "alpha_mean" in result["rows"][1]["history"][0]
+    assert "checkpoint_sha256" in result["rows"][1]
     assert (tmp_path / "1-1_to_8-8_source_only.pt").exists()
     assert (tmp_path / "1-1_to_8-8_proposed.pt").exists()
 
@@ -319,6 +374,35 @@ def test_dadda_smoke_runner_trains_literal_dadda_method(tmp_path):
     assert result["result_claim_status"] == "smoke_only_not_paper_formal"
     assert result["rows"][0]["result_claim_status"] == "smoke_only_not_paper_formal"
     assert (tmp_path / "1-1_to_8-8_dadda.pt").exists()
+
+
+def test_dadda_missing_paper_baselines_are_structured_rows(tmp_path):
+    from paper_reproduction.dadda_cross_receiver.train import run_table2_reproduction
+
+    result = run_table2_reproduction(
+        _synthetic_manysig_compact(),
+        tasks=["1-1->8-8"],
+        methods=["dan", "cdan"],
+        output_dir=tmp_path,
+        epochs=1,
+        batch_size=4,
+        max_samples_per_combo=1,
+        max_batches_per_epoch=1,
+        seed=5,
+        device="cpu",
+        model_config={
+            "feature_dim": 8,
+            "multiscale_dim": 8,
+            "base_channels": 2,
+            "classifier_hidden1": 8,
+            "classifier_hidden2": 4,
+        },
+    )
+
+    assert [row["status"] for row in result["rows"]] == ["not_implemented", "not_implemented"]
+    assert all(row["paper_table2_required"] is True for row in result["rows"])
+    assert all(row["result_claim_status"] == "missing_required_paper_baseline" for row in result["rows"])
+    assert all(row["claim_blocks"] for row in result["rows"])
 
 
 def test_dadda_training_loop_stops_at_shorter_source_target_stream():

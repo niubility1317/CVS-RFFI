@@ -10,8 +10,10 @@ Scope boundary: DADDA is closed-set single-source UDA. It is not CVS Stage2-A/B/
 
 | Paper item | Release status | Code or artifact | Missing for full reproduction |
 |---|---|---|---|
+| Eq. (1) receiver-signal model | Documentation/protocol narrative only | `paper_reproduction/dadda_cross_receiver/paper_checklist.md` | No numerical channel-model implementation is claimed |
+| Table I related-work comparison | Documentation-only paper context | This matrix | No code artifact required |
 | Section III closed-set source-to-target receiver UDA | Implemented protocol scaffold | `paper_reproduction/dadda_cross_receiver/data.py` | Real WiSig formal runs |
-| Fig. 3 DADDA `G_f/G_m/G_l` pipeline | Implemented as runnable 1-D approximation | `paper_reproduction/dadda_cross_receiver/model.py` | Layer-for-layer 2-D Fig. 3 replica if required |
+| Fig. 3 DADDA `G_f/G_m/G_l` pipeline | Implemented as runnable 1-D approximation | `paper_reproduction/dadda_cross_receiver/model.py` | Layer-for-layer 2-D Fig. 3 replica required for full architecture reproduction |
 | Fig. 4 multiscale `G_m` | Implemented as 1-D four-branch approximation | `paper_reproduction/dadda_cross_receiver/model.py` | Exact 2-D `2x1/1x3/1x5` module |
 | Eq. (2) MMD | Implemented and unit-tested | `paper_reproduction/dadda_cross_receiver/losses.py` | Formal real-data result |
 | Eq. (3)-(4) LMMD | Implemented and unit-tested | `paper_reproduction/dadda_cross_receiver/losses.py` | Formal real-data result |
@@ -19,14 +21,15 @@ Scope boundary: DADDA is closed-set single-source UDA. It is not CVS Stage2-A/B/
 | Eq. (6)-(10) total objective and training loop | Implemented smoke path | `paper_reproduction/dadda_cross_receiver/train.py` | Full 100-epoch real-data Table II run |
 | Section V-B optimizer and schedules | Implemented and config-backed | `paper_reproduction/configs/dadda_cross_receiver_manysig_paper_faithful.json` | Hardware-matched formal run evidence |
 | Table II 12 receiver-transfer tasks | Task matrix implemented | `PAPER_TABLE2_TASKS` and config file | Full numerical run plus all paper baselines |
-| Table II DANN/DAN/DSAN/WD/DCORAL/CDAN baselines | Not implemented in this module | Runner marks unsupported methods `not_implemented` | Baseline runners and result table |
-| Fig. 5 SNR robustness | Pending | Checklist only | AWGN/SNR runner and plots |
-| Table III module ablation | Pending | Checklist only | Ablation runner and result table |
-| Table IV dynamic alpha ablation | Pending | Checklist only | Fixed-weight comparison runner |
-| Table V kernel sensitivity/params/FLOPs | Pending | Checklist only | Kernel sweep and complexity script |
-| Fig. 6 A-distance | Pending | Checklist only | Feature-distance analysis script |
-| Fig. 7 t-SNE | Pending | Checklist only | Visualization script and figure export |
-| Fig. 8 confusion matrix | Pending | Checklist only | Confusion-matrix script and figure export |
-| Table VI train/test time | Pending | Checklist only | Timing hook on declared hardware |
+| Table II DANN/DAN/DSAN/WD/DCORAL/CDAN baselines | Not implemented in this module | Runner emits structured missing-baseline rows | Baseline runners and result table |
+| Fig. 5 SNR robustness | Plan scaffold only | `paper_reproduction/dadda_cross_receiver/experiment_plans.py` | AWGN/SNR runner and plots |
+| Table III module ablation | Plan scaffold only | `paper_reproduction/dadda_cross_receiver/experiment_plans.py` | Ablation runner and result table |
+| Table IV dynamic alpha ablation | Fixed/dynamic alpha loss and plan scaffold | `paper_reproduction/dadda_cross_receiver/losses.py`; `experiment_plans.py` | Fixed-weight comparison runner and result table |
+| Table V kernel sensitivity/params/FLOPs | Artifact schema scaffold only | `paper_reproduction/dadda_cross_receiver/experiment_plans.py` | Kernel sweep and complexity script |
+| Fig. 6 A-distance | Artifact schema scaffold only | `paper_reproduction/dadda_cross_receiver/experiment_plans.py` | Feature-distance analysis script |
+| Fig. 7 t-SNE | Artifact schema scaffold only | `paper_reproduction/dadda_cross_receiver/experiment_plans.py` | Visualization script and figure export |
+| Fig. 8 confusion matrix | Artifact schema scaffold only | `paper_reproduction/dadda_cross_receiver/experiment_plans.py` | Confusion-matrix script and figure export |
+| Table VI train/test time | Artifact schema scaffold only | `paper_reproduction/dadda_cross_receiver/experiment_plans.py` | Timing hook on declared hardware |
+| Multi-source/multi-target extension | Out of current paper-faithful release scope | This matrix | Future-work extension design |
 
 Current claim: paper-faithful DADDA method scaffold with formula-level and smoke verification. Full paper reproduction remains pending until the missing baselines, real-data metrics, ablations, robustness, visualization, complexity, and timing artifacts are produced.

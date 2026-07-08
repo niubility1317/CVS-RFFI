@@ -1,5 +1,7 @@
 # DADDA Cross-Receiver Reproduction Implementation Plan
 
+Historical implementation plan: checkbox state in this file is not authoritative after implementation. Current DADDA coverage status is tracked in `paper_reproduction/paper_original_matrix.md` and `paper_reproduction/dadda_cross_receiver/paper_checklist.md`.
+
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
 **Goal:** Build a paper-faithful reproduction surface for Feng et al., "Cross-Receiver Radio Frequency Fingerprint Identification Based on Domain Adaptation With Dynamic Distribution Alignment."

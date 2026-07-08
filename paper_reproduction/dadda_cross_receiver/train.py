@@ -12,6 +12,12 @@ import torch.nn.functional as F
 from paper_reproduction.common.config import load_json_config
 from paper_reproduction.common.wisig_runtime import set_seed, tx_accuracy, write_json
 from paper_reproduction.dadda_cross_receiver.data import PAPER_TABLE2_TASKS, build_manysig_task_loaders, load_wisig_compact_pkl
+from paper_reproduction.dadda_cross_receiver.experiment_plans import (
+    IMPLEMENTED_TABLE2_METHODS,
+    PAPER_TABLE2_METHODS,
+    build_paper_artifact_plan,
+    build_pending_paper_artifacts,
+)
 from paper_reproduction.dadda_cross_receiver.losses import dadda_objective
 from paper_reproduction.dadda_cross_receiver.model import DADDANet
 
@@ -35,10 +41,7 @@ CLAIM_BLOCKS = [
 
 
 def build_dry_run_payload(config: dict[str, Any]) -> dict[str, Any]:
-    if config.get("cvs_extension") is not False:
-        raise ValueError("DADDA paper-faithful config must set cvs_extension=false")
-    if config.get("target_labels_scope", "evaluation_only") != "evaluation_only":
-        raise ValueError("target labels are evaluation-only in the paper-faithful UDA protocol")
+    validate_paper_faithful_config(config)
     tasks = list(config.get("source_target_tasks") or PAPER_TABLE2_TASKS)
     return {
         "method_id": "dadda_cross_receiver",
@@ -74,6 +77,7 @@ def build_dry_run_payload(config: dict[str, Any]) -> dict[str, Any]:
             "classifier_hidden": [512, 128],
         },
         "paper_evidence_targets": dict(PAPER_EVIDENCE_TARGETS),
+        "pending_paper_artifacts": build_pending_paper_artifacts(),
         "claim_blocks": list(CLAIM_BLOCKS),
     }
 
@@ -141,6 +145,13 @@ def _sha256_file(path: Path | None) -> str | None:
 
 def _config_value(config: dict[str, Any], key: str, default: Any, cast: Any) -> Any:
     return cast(config.get(key, default))
+
+
+def validate_paper_faithful_config(config: dict[str, Any]) -> None:
+    if config.get("cvs_extension") is not False:
+        raise ValueError("DADDA paper-faithful config must set cvs_extension=false")
+    if config.get("target_labels_scope", "evaluation_only") != "evaluation_only":
+        raise ValueError("target labels are evaluation-only in the paper-faithful UDA protocol")
 
 
 def resolve_table2_run_settings(config: dict[str, Any], args: argparse.Namespace) -> dict[str, Any]:
@@ -382,7 +393,13 @@ def run_table2_reproduction(
                         "task": task,
                         "method": method,
                         "status": "not_implemented",
+                        "result_claim_status": "missing_required_paper_baseline"
+                        if method in PAPER_TABLE2_METHODS
+                        else "unsupported_method_not_paper_table2",
+                        "paper_table2_required": method in PAPER_TABLE2_METHODS,
+                        "missing_reason": "baseline runner is not implemented in this DADDA module",
                         "target_labels_scope": "evaluation_only",
+                        "claim_blocks": list(CLAIM_BLOCKS),
                     }
                 )
                 continue
@@ -396,6 +413,7 @@ def run_table2_reproduction(
                 },
                 checkpoint_path,
             )
+            checkpoint_sha256 = _sha256_file(checkpoint_path)
             rows.append(
                 {
                     "task": task,
@@ -406,6 +424,7 @@ def run_table2_reproduction(
                     "target_labels_scope": "evaluation_only",
                     "target_label_role": loaders["meta"]["target_label_role"],
                     "checkpoint_path": str(checkpoint_path),
+                    "checkpoint_sha256": checkpoint_sha256,
                     "history": train_result["history"],
                     "task_meta": loaders["meta"],
                     "source_sample_count": len(loaders["source"].dataset),
@@ -417,14 +436,33 @@ def run_table2_reproduction(
                     "partial_batch_policy": "DataLoader drop_last=False; Algorithm 1 pairing stops at the shorter source/target stream",
                 }
             )
+    completed_methods_by_task: dict[str, list[str]] = {}
+    for row in rows:
+        if row["status"] == "completed":
+            completed_methods_by_task.setdefault(str(row["task"]), []).append(str(row["method"]))
+    requested_task_set = set(requested_tasks)
+    expected_task_set = set(PAPER_TABLE2_TASKS)
     return {
         "method_id": "dadda_cross_receiver",
         "paper": PAPER_TITLE,
         "artifact_type": "table2_reproduction_run",
+        "paper_scope": "paper_faithful_closed_set_single_source_UDA",
+        "cvs_extension": False,
+        "not_cvs_stage2": True,
+        "not_leo_deployment_evidence": True,
+        "not_open_set_evidence": True,
         "result_claim_status": "smoke_only_not_paper_formal" if is_smoke else "formal_run_partial_table2_requires_missing_baselines",
-        "implemented_methods": ["source_only", "dadda", "proposed"],
-        "not_implemented_paper_baselines": ["dann", "dan", "dsan", "wd", "dcoral", "cdan"],
+        "expected_table2_tasks": len(PAPER_TABLE2_TASKS),
+        "requested_task_count": len(requested_tasks),
+        "completed_task_count": len(completed_methods_by_task),
+        "missing_task_ids": [task for task in PAPER_TABLE2_TASKS if task not in requested_task_set],
+        "unexpected_task_ids": [task for task in requested_tasks if task not in expected_task_set],
+        "completed_method_ids_by_task": completed_methods_by_task,
+        "paper_table2_required_methods": list(PAPER_TABLE2_METHODS),
+        "implemented_methods": list(IMPLEMENTED_TABLE2_METHODS),
+        "not_implemented_paper_baselines": [method for method in PAPER_TABLE2_METHODS if method not in {"source_only", "dadda"}],
         "paper_evidence_targets": dict(PAPER_EVIDENCE_TARGETS),
+        "pending_paper_artifacts": build_pending_paper_artifacts(),
         "claim_blocks": list(CLAIM_BLOCKS),
         "epochs": int(epochs),
         "batch_size": int(batch_size),
@@ -455,6 +493,7 @@ def main() -> int:
     parser.add_argument("--formal", action="store_true")
     parser.add_argument("--smoke", action="store_true")
     parser.add_argument("--run-table2", action="store_true")
+    parser.add_argument("--plan-paper-artifacts", action="store_true")
     parser.add_argument("--manysig-pkl", type=Path, default=None)
     parser.add_argument("--tasks", type=str, default="")
     parser.add_argument("--methods", type=str, default="source_only,dadda")
@@ -473,8 +512,15 @@ def main() -> int:
     args = parser.parse_args()
 
     config = load_json_config(args.config)
+    validate_paper_faithful_config(config)
     if args.dry_run:
         payload = build_dry_run_payload(config)
+        if args.output is not None:
+            write_json(args.output, payload)
+        print(json.dumps(payload, ensure_ascii=False, sort_keys=True))
+        return 0
+    if args.plan_paper_artifacts:
+        payload = build_paper_artifact_plan()
         if args.output is not None:
             write_json(args.output, payload)
         print(json.dumps(payload, ensure_ascii=False, sort_keys=True))
