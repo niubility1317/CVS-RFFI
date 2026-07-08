@@ -4,7 +4,7 @@
 - 时间:2026-07-07
 - operator:Codex
 - 目标:设计Phase1地面source-only域泛化训练矩阵,验证v2闭环机制,直接优化open-set几何指标,同时保护跨receiver/date和LEO星地压力泛化。
-- 状态:已完成本地矩阵脚本、干跑测试和报告;未连接N607,未sync,未启动训练。
+- 状态:已完成本地矩阵脚本、干跑测试、N607同步和主8候选启动;当前RUN_ID为`phase1_dgleo_v2full32_main8_20260708`,8个训练进程均已进入训练循环。
 - 协议边界:Phase1 source-only,训练数据限定`ManySig.pkl`;不使用真实unknown类、不使用target receiver样本、不声明真实unknown_FAR/FPR95/Stage2成功。
 
 ## 本地文件
@@ -84,4 +84,95 @@
 |`bash code/scripts/launch_phase1_dgleo_v2full32_20260707.sh --dry-run --only=DGLEO_V2FULL32_DM_OFF,DGLEO_V2FULL32_SOURCE_OFF,DGLEO_V2FULL32_PROXY_OFF,DGLEO_V2FULL32_U_OFF`|确认对应消融实际置零loss权重,不是只改候选名|
 
 ## N607启动边界
-尚未连接N607。若后续启动,必须先执行`tools\n607_ssh_preflight.ps1`,记录GPU占用和server时间,再sync本地脚本/测试/报告。用户本轮指定每张卡4个实验,脚本默认`MAX_ACTIVE_PER_GPU=4`;启动前仍需确认当前GPU占用,避免覆盖已有日志或超过用户允许的并发边界。
+启动前边界:必须先执行`tools\n607_ssh_preflight.ps1`,记录GPU占用和server时间,再sync本地脚本/测试/报告。用户原始矩阵指定每张卡4个实验,脚本默认`MAX_ACTIVE_PER_GPU=4`;本次用户要求先启动主8候选,因此实际使用`MAX_ACTIVE_PER_GPU=1`,每张GPU一个实验,避免占满全32矩阵并保留后续扩展空间。
+
+## 2026-07-08主8候选启动计划
+用户要求先启动主要8个实验。本次不启动全32矩阵,只从每个机制组选择一个代表候选,每张GPU一个实验。
+
+|GPU|candidate|选择理由|
+|---:|---|---|
+|0|DGLEO_V2FULL32_FULL_STABLE|全机制稳定主参照|
+|1|DGLEO_V2FULL32_DM_PROXY_ALIGNED|验证DM训练代理与旧proxy/endpoint风险代理是否同步|
+|2|DGLEO_V2FULL32_RECEIVER_LOCAL_SAFE|验证receiver-aware local component与source episode density gate|
+|3|DGLEO_V2FULL32_BRIDGE_LOW_DENSITY|直接压bridge_accept和low_density_accept|
+|4|DGLEO_V2FULL32_U_TRISTATE_FULL|验证U_s trusted_core/ambiguous_tail/outside_reject三态全开|
+|5|DGLEO_V2FULL32_SAT_OPEN_PAIR|验证星地concat视图下open-set几何和sat pair约束|
+|6|DGLEO_V2FULL32_BUDGET_OS_HIGH_SAFE|验证提高open-set预算并用KD/sat保护泛化floor|
+|7|DGLEO_V2FULL32_EXPORT_PROMOTE_SAFE|验证promotion-safe导出、endpoint_accept_v1和tail delta gate|
+
+本地验证:
+- `bash -n code/scripts/launch_phase1_dgleo_v2full32_20260707.sh`:通过。
+- `conda run --no-capture-output -n ssr-gpu python -m pytest code\tests\test_phase1_dgleo_v2full32_launcher.py -q`:4 passed,仅`.pytest_cache`权限warning。
+- 8候选`--dry-run --only=...`:确认只输出上述8个candidate,每个GPU一个。
+
+N607只读预检:
+- `powershell -ExecutionPolicy Bypass -File tools\n607_ssh_preflight.ps1`:通过;server time为2026-07-08 09:52:00 CST;project root存在;8张RTX3090可见。
+- 启动前GPU占用:0-7号GPU显存均约10MiB,无训练显存占用。
+- `runs/phase1_dgleo_v2full32_20260707`和`logs/phase1_dgleo_v2full32_20260707`启动前不存在或为空。
+- 远端`code/scripts/launch_phase1_dgleo_v2full32_20260707.sh`启动前缺失,需要同步。
+
+同步计划:
+|local|remote|
+|---|---|
+|`E:\type10-7\code\scripts\launch_phase1_dgleo_v2full32_20260707.sh`|`/home/szu2070436088/2510044040/CV-SincNet/code/scripts/launch_phase1_dgleo_v2full32_20260707.sh`|
+|`E:\type10-7\code\tests\test_phase1_dgleo_v2full32_launcher.py`|`/home/szu2070436088/2510044040/CV-SincNet/code/tests/test_phase1_dgleo_v2full32_launcher.py`|
+
+## 2026-07-08主8候选N607启动记录
+
+### 本地验证与同步
+- 本地验证:
+  - `bash -n code/scripts/launch_phase1_dgleo_v2full32_20260707.sh`:通过。
+  - `conda run --no-capture-output -n ssr-gpu python -m pytest code\tests\test_phase1_dgleo_v2full32_launcher.py -q`:4 passed;仅`.pytest_cache`权限warning。
+  - `conda run --no-capture-output -n ssr-gpu python -m pytest code\tests\test_phase1_v2_control.py -q`:17 passed;仅`.pytest_cache`权限warning。
+- N607预检:`powershell -ExecutionPolicy Bypass -File tools\n607_ssh_preflight.ps1`通过;server为`dell-DSS8440`;project root为`/home/szu2070436088/2510044040/CV-SincNet`;8张RTX3090可见。
+- 首次同步文件:
+  - `code/scripts/launch_phase1_dgleo_v2full32_20260707.sh` -> `/home/szu2070436088/2510044040/CV-SincNet/code/scripts/launch_phase1_dgleo_v2full32_20260707.sh`,远端SHA256:`01e569943215d67a3b79158583e81a74ca73a12d24143679b59a743b414dcbc5`。
+  - `code/tests/test_phase1_dgleo_v2full32_launcher.py` -> `/home/szu2070436088/2510044040/CV-SincNet/code/tests/test_phase1_dgleo_v2full32_launcher.py`,远端SHA256:`f14e3db8cac2d70e541c40d027940c3f2e93ff243d2ecc10ea59456cfc8162c7`。
+  - 本报告 -> `/home/szu2070436088/2510044040/CV-SincNet/automation_reports/CV-SincNet/phase1_dgleo_v2full32_20260707/report.md`。
+
+### 首次启动异常与修复
+- 首次RUN_ID:`phase1_dgleo_v2full32_20260707`。
+- 首次PIDs:`507343`,`507422`,`507501`,`507580`,`507659`,`507738`,`507817`,`507896`。
+- 异常:8个进程均快速退出,日志报`train_ssdg.py: error: unrecognized arguments: --phase1_v2_hard_gates ...`。
+- 根因:远端`code/SSDG/train_ssdg.py`为旧版本,缺少v2 parser参数;远端`code/cvsrffi/phase1_v2_control.py`缺失。
+- 修复同步:
+  - `E:\type10-7\code\SSDG\train_ssdg.py` -> `/home/szu2070436088/2510044040/CV-SincNet/code/SSDG/train_ssdg.py`,SHA256:`9e86a3c7e8b082815cfc378bf28b4f8e5fc66493d0735d2770e8a0df1f71aa7e`。
+  - `E:\type10-7\code\cvsrffi\phase1_v2_control.py` -> `/home/szu2070436088/2510044040/CV-SincNet/code/cvsrffi/phase1_v2_control.py`,SHA256:`48a94e6ae1f01c18d1bc752251ee327abbeec9fad91b1a3f6ffd3bae0df862da`。
+- 修复验证:
+  - `/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -m py_compile code/SSDG/train_ssdg.py code/cvsrffi/phase1_v2_control.py`:通过。
+  - `train_ssdg.py --help`已包含`--phase1_v2_hard_gates`,`--endpoint_accept_policy_id`,`--tail_safety_state_machine`,`--u_tri_state_required`,`--feasibility_stage`。
+
+### 成功启动
+- 成功RUN_ID:`phase1_dgleo_v2full32_main8_20260708`。使用新RUN_ID是为了保留首次失败日志,避免覆盖`phase1_dgleo_v2full32_20260707`下已有失败artifact。
+- 启动命令:
+
+```bash
+cd /home/szu2070436088/2510044040/CV-SincNet
+mkdir -p logs/phase1_dgleo_v2full32_main8_20260708
+RUN_ID=phase1_dgleo_v2full32_main8_20260708 MAX_ACTIVE_PER_GPU=1 LAUNCH_SETTLE_SECONDS=2 \
+  bash code/scripts/launch_phase1_dgleo_v2full32_20260707.sh \
+  --only=DGLEO_V2FULL32_FULL_STABLE,DGLEO_V2FULL32_DM_PROXY_ALIGNED,DGLEO_V2FULL32_RECEIVER_LOCAL_SAFE,DGLEO_V2FULL32_BRIDGE_LOW_DENSITY,DGLEO_V2FULL32_U_TRISTATE_FULL,DGLEO_V2FULL32_SAT_OPEN_PAIR,DGLEO_V2FULL32_BUDGET_OS_HIGH_SAFE,DGLEO_V2FULL32_EXPORT_PROMOTE_SAFE \
+  > logs/phase1_dgleo_v2full32_main8_20260708/launcher_main8_20260708.out 2>&1
+```
+
+|GPU|candidate|PID|log|metrics|
+|---:|---|---:|---|---|
+|0|DGLEO_V2FULL32_FULL_STABLE|511004|`logs/phase1_dgleo_v2full32_main8_20260708/DGLEO_V2FULL32_FULL_STABLE.out`|`runs/phase1_dgleo_v2full32_main8_20260708/DGLEO_V2FULL32_FULL_STABLE/metrics_epoch.csv`|
+|1|DGLEO_V2FULL32_DM_PROXY_ALIGNED|511087|`logs/phase1_dgleo_v2full32_main8_20260708/DGLEO_V2FULL32_DM_PROXY_ALIGNED.out`|`runs/phase1_dgleo_v2full32_main8_20260708/DGLEO_V2FULL32_DM_PROXY_ALIGNED/metrics_epoch.csv`|
+|2|DGLEO_V2FULL32_RECEIVER_LOCAL_SAFE|511172|`logs/phase1_dgleo_v2full32_main8_20260708/DGLEO_V2FULL32_RECEIVER_LOCAL_SAFE.out`|`runs/phase1_dgleo_v2full32_main8_20260708/DGLEO_V2FULL32_RECEIVER_LOCAL_SAFE/metrics_epoch.csv`|
+|3|DGLEO_V2FULL32_BRIDGE_LOW_DENSITY|511586|`logs/phase1_dgleo_v2full32_main8_20260708/DGLEO_V2FULL32_BRIDGE_LOW_DENSITY.out`|`runs/phase1_dgleo_v2full32_main8_20260708/DGLEO_V2FULL32_BRIDGE_LOW_DENSITY/metrics_epoch.csv`|
+|4|DGLEO_V2FULL32_U_TRISTATE_FULL|511998|`logs/phase1_dgleo_v2full32_main8_20260708/DGLEO_V2FULL32_U_TRISTATE_FULL.out`|`runs/phase1_dgleo_v2full32_main8_20260708/DGLEO_V2FULL32_U_TRISTATE_FULL/metrics_epoch.csv`|
+|5|DGLEO_V2FULL32_SAT_OPEN_PAIR|512411|`logs/phase1_dgleo_v2full32_main8_20260708/DGLEO_V2FULL32_SAT_OPEN_PAIR.out`|`runs/phase1_dgleo_v2full32_main8_20260708/DGLEO_V2FULL32_SAT_OPEN_PAIR/metrics_epoch.csv`|
+|6|DGLEO_V2FULL32_BUDGET_OS_HIGH_SAFE|512824|`logs/phase1_dgleo_v2full32_main8_20260708/DGLEO_V2FULL32_BUDGET_OS_HIGH_SAFE.out`|`runs/phase1_dgleo_v2full32_main8_20260708/DGLEO_V2FULL32_BUDGET_OS_HIGH_SAFE/metrics_epoch.csv`|
+|7|DGLEO_V2FULL32_EXPORT_PROMOTE_SAFE|513239|`logs/phase1_dgleo_v2full32_main8_20260708/DGLEO_V2FULL32_EXPORT_PROMOTE_SAFE.out`|`runs/phase1_dgleo_v2full32_main8_20260708/DGLEO_V2FULL32_EXPORT_PROMOTE_SAFE/metrics_epoch.csv`|
+
+### 启动健康检查
+- 2026-07-08 10:13:20 CST复查:8个PID均为`RUNNING`;各候选已到`E021/200`至`E023/200`,每个`metrics_epoch.csv`已有21至23行训练指标。
+- 8个日志均包含`[CONFIG-PHASE1-V2]`,并已进入`[EPOCH-BEGIN]`训练循环。
+- 错误扫描:未发现`Traceback`,`RuntimeError`,`unrecognized arguments`,`CUDA out of memory`,`NaN`。早前`memory`字符串命中仅为`proto_memory`配置字段,不是OOM证据。
+- GPU状态:8张卡均有训练显存占用和GPU利用率;10:10 CST约为GPU0 2313MiB/GPU1 2151MiB/GPU2 2509MiB/GPU3 2187MiB/GPU4 2405MiB/GPU5 2501MiB/GPU6 2371MiB/GPU7 2299MiB。
+- SSH清理:本地已确认无残留`ssh.exe`,无到`172.31.111.215:22`的`ESTABLISHED`连接。
+
+### 后续检查要点
+- 本次只说明主8候选已落地并启动健康,不说明open-set指标已改善,也不声明真实unknown_FAR、FPR95或Stage2成功。
+- 下一次监控优先读取同一RUN_ID下8个`metrics_epoch.csv`,重点看`strict_udu`,`receiver_floor`,`sat_floor`,`zid_p95/p99`,`zid_tail_cvar`,`source_episode_overflow`,`proxy_vaccept`,`bridge_accept_rate`,`low_density_accept_rate`,`tail/overflow_accept`,`radius_to_inter_ratio`以及best-final tail expansion。
