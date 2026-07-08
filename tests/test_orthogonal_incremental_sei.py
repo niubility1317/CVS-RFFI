@@ -590,6 +590,26 @@ def test_base_classifier_weights_are_extracted_from_trained_features() -> None:
     assert torch.allclose(weights, torch.eye(2), atol=1e-6)
 
 
+def test_paper_default_base_weights_use_assigned_pseudo_targets() -> None:
+    from paper_reproduction.orthogonal_incremental_sei.train import _base_classifier_weights
+
+    assigned = {
+        0: torch.tensor([1.0, 0.0]),
+        1: torch.tensor([0.0, 1.0]),
+    }
+    feature_mean_weights = torch.tensor([[0.0, 1.0], [1.0, 0.0]])
+
+    weights, source = _base_classifier_weights(
+        assigned,
+        feature_mean_weights,
+        base_classes=2,
+        source="paper_pseudo_targets",
+    )
+
+    assert source == "paper_pseudo_targets"
+    assert torch.allclose(weights, torch.eye(2), atol=1e-6)
+
+
 def test_formal_wisig_runner_applies_training_loss_early_stop(tmp_path) -> None:
     from paper_reproduction.orthogonal_incremental_sei.train import run_formal_wisig
 

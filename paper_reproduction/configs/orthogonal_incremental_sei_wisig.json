@@ -31,6 +31,7 @@
   "eval_batch_size": 256,
   "optimizer": "SGD",
   "base_lr": 0.01,
+  "base_weight_source": "paper_pseudo_targets",
   "increment_lr": 0.08,
   "early_stop_patience": 4,
   "noise_range": 0.01,

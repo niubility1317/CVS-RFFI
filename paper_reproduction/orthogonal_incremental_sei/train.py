@@ -262,6 +262,30 @@ def _fit_base_classifier_weights(
     return weights.detach().cpu()
 
 
+def _assigned_base_target_weights(assigned_targets: dict[int, torch.Tensor], *, base_classes: int) -> torch.Tensor:
+    missing = [class_id for class_id in range(base_classes) if class_id not in assigned_targets]
+    if missing:
+        raise ValueError(f"missing assigned pseudo targets for base classes: {missing[:8]}")
+    return torch.stack([assigned_targets[class_id].detach().cpu() for class_id in range(base_classes)], dim=0)
+
+
+def _base_classifier_weights(
+    assigned_targets: dict[int, torch.Tensor],
+    feature_mean_weights: torch.Tensor,
+    *,
+    base_classes: int,
+    source: str = "paper_pseudo_targets",
+) -> tuple[torch.Tensor, str]:
+    source_key = str(source or "paper_pseudo_targets").strip().lower()
+    if source_key in {"paper_pseudo_targets", "pseudo_targets", "paper"}:
+        return _assigned_base_target_weights(assigned_targets, base_classes=base_classes), "paper_pseudo_targets"
+    if source_key in {"class_mean_features", "feature_means", "class_means"}:
+        if feature_mean_weights.size(0) != base_classes:
+            raise ValueError("feature_mean_weights must contain one row per base class")
+        return feature_mean_weights.detach().cpu(), "class_mean_features"
+    raise ValueError("base_weight_source must be paper_pseudo_targets or class_mean_features")
+
+
 def _predict_with_weights(encoder: nn.Module, dataset: TensorDataset, weights: torch.Tensor, *, device: torch.device, batch_size: int) -> tuple[torch.Tensor, torch.Tensor]:
     preds: list[torch.Tensor] = []
     labels: list[torch.Tensor] = []
@@ -394,12 +418,18 @@ def run_formal_wisig(config: dict, *, wisig_pkl: str, run_dir: str | Path, devic
 
     for parameter in encoder.parameters():
         parameter.requires_grad_(False)
-    base_weights = _fit_base_classifier_weights(
+    feature_mean_base_weights = _fit_base_classifier_weights(
         encoder,
         train_by_class,
         base_classes=base_classes,
         device=dev,
         batch_size=eval_batch_size,
+    )
+    base_weights, base_weight_source = _base_classifier_weights(
+        assigned,
+        feature_mean_base_weights,
+        base_classes=base_classes,
+        source=str(config.get("base_weight_source", "paper_pseudo_targets")),
     )
     learned_new_weights: list[torch.Tensor] = []
     seen_class_ids = list(range(base_classes))
@@ -536,7 +566,7 @@ def run_formal_wisig(config: dict, *, wisig_pkl: str, run_dir: str | Path, devic
         "new_accuracies": new_accuracies,
         "accuracy_matrix": matrix.tolist(),
         "summary": summary,
-        "base_weight_source": "class_mean_features",
+        "base_weight_source": base_weight_source,
         "early_stop": early_stop_info,
         "split_info": split_info,
         "history": history,
