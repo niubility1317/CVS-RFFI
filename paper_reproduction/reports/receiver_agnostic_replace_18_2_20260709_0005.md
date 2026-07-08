@@ -24,3 +24,16 @@ Fig8 is split into three runs because the runner accepts one explicit source/tar
 ## Local State
 
 No code changes are introduced by this report. Current working tree had unrelated dirty files under `code/` and unrelated untracked `local_artifacts/` directories before this report was added.
+
+## Launch
+
+Launched on N607 at `2026-07-09 00:05-00:06 CST`.
+
+| run | PID | GPU |
+|---|---:|---|
+| `receiver_agnostic_r6_replace_18_2_with_2_1_20260709_0005` | `930981` | `cuda:0` |
+| `receiver_agnostic_fig8_no18_r1_20260709_0005` | `930983` | `cuda:1` |
+| `receiver_agnostic_fig8_no18_r2_20260709_0005` | `930985` | `cuda:2` |
+| `receiver_agnostic_fig8_no18_r3_20260709_0005` | `930987` | `cuda:3` |
+
+The first launch attempt did not land any matching remote process because local PowerShell expanded remote shell variables. The successful launch used a base64-encoded remote bash script.
