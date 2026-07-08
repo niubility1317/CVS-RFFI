@@ -26,7 +26,7 @@
   "method": "DADDA with a modified ResNet18-style G_f, 2-D paper-shaped multiscale G_m, MMD, LMMD, and dynamic adaptive factor alpha",
   "model_variant": "conv2d_paper",
   "paper_domain_sample_count": 4000,
-  "normalize": false,
+  "normalize": true,
   "crop_mode": "left",
   "detach_target_probabilities": true,
   "optimizer": "SGD",
