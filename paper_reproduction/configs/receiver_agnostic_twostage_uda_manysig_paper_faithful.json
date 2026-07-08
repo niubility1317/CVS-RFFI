@@ -1,0 +1,18 @@
+{
+  "paper_scope": "paper_faithful",
+  "cvs_extension": false,
+  "dataset": "WiSig ManySig",
+  "total_receivers": 12,
+  "tx_count": 6,
+  "source_receiver_counts": [1, 2, 3, 4, 6],
+  "target_unlabeled_allowed": true,
+  "input_representation": "equalized time-domain WiFi preamble, power-normalized, CFO preserved, first 256 IQ samples as [256,2]",
+  "stage1": "DANN global domain adaptation with source TX CE and source/target domain BCE through GRL",
+  "stage2": "LMMD relevant subdomain adaptation using source labels and target predicted probabilities",
+  "optional_finetune": {
+    "selection": "uncertainty sampling",
+    "target_labeled_budget": "1/50 of target unlabeled pool",
+    "source_replay": true,
+    "freeze_policy": "paper-unspecified"
+  }
+}

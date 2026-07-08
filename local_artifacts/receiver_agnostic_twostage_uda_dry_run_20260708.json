@@ -1,0 +1,98 @@
+{
+  "paper": "Receiver-Agnostic Radio Frequency Fingerprinting Based on Two-stage Unsupervised Domain Adaptation and Fine-tuning",
+  "scope": "paper-faithful closed-set cross-receiver UDA",
+  "dataset": "WiSig ManySig",
+  "receiver_ratio_plan": [
+    {
+      "ratio": "1:11",
+      "source_receiver_count": 1,
+      "target_receiver_count": 11,
+      "closed_set_tx_count": 6,
+      "target_data_role": "unlabeled_for_UDA_labeled_only_for_optional_finetune",
+      "compare_methods": [
+        "source_only_lower_bound",
+        "target_labeled_retrain_upper_bound",
+        "DANN_global_domain_adaptation",
+        "DANN_plus_LMMD_subdomain_adaptation",
+        "optional_uncertainty_finetune"
+      ],
+      "table_i_target_receiver_count": null
+    },
+    {
+      "ratio": "2:10",
+      "source_receiver_count": 2,
+      "target_receiver_count": 10,
+      "closed_set_tx_count": 6,
+      "target_data_role": "unlabeled_for_UDA_labeled_only_for_optional_finetune",
+      "compare_methods": [
+        "source_only_lower_bound",
+        "target_labeled_retrain_upper_bound",
+        "DANN_global_domain_adaptation",
+        "DANN_plus_LMMD_subdomain_adaptation",
+        "optional_uncertainty_finetune"
+      ],
+      "table_i_target_receiver_count": null
+    },
+    {
+      "ratio": "3:9",
+      "source_receiver_count": 3,
+      "target_receiver_count": 9,
+      "closed_set_tx_count": 6,
+      "target_data_role": "unlabeled_for_UDA_labeled_only_for_optional_finetune",
+      "compare_methods": [
+        "source_only_lower_bound",
+        "target_labeled_retrain_upper_bound",
+        "DANN_global_domain_adaptation",
+        "DANN_plus_LMMD_subdomain_adaptation",
+        "optional_uncertainty_finetune"
+      ],
+      "table_i_target_receiver_count": null
+    },
+    {
+      "ratio": "4:8",
+      "source_receiver_count": 4,
+      "target_receiver_count": 8,
+      "closed_set_tx_count": 6,
+      "target_data_role": "unlabeled_for_UDA_labeled_only_for_optional_finetune",
+      "compare_methods": [
+        "source_only_lower_bound",
+        "target_labeled_retrain_upper_bound",
+        "DANN_global_domain_adaptation",
+        "DANN_plus_LMMD_subdomain_adaptation",
+        "optional_uncertainty_finetune"
+      ],
+      "table_i_target_receiver_count": null
+    },
+    {
+      "ratio": "6:6",
+      "source_receiver_count": 6,
+      "target_receiver_count": 6,
+      "closed_set_tx_count": 6,
+      "target_data_role": "unlabeled_for_UDA_labeled_only_for_optional_finetune",
+      "compare_methods": [
+        "source_only_lower_bound",
+        "target_labeled_retrain_upper_bound",
+        "DANN_global_domain_adaptation",
+        "DANN_plus_LMMD_subdomain_adaptation",
+        "optional_uncertainty_finetune"
+      ],
+      "table_i_target_receiver_count": 6
+    }
+  ],
+  "paper_unspecified_fields": [
+    "conv kernel/channel schedule beyond four Conv-BN-ReLU-MaxPool blocks",
+    "optimizer",
+    "learning rate",
+    "batch size",
+    "epoch count",
+    "GRL lambda schedule",
+    "LMMD lambda",
+    "LMMD kernel and layer set",
+    "fine-tuning freeze policy"
+  ],
+  "claim_blocks": [
+    "not CVS Stage2-C",
+    "not satellite/LEO deployment evidence",
+    "not open-set or new-class registration"
+  ]
+}

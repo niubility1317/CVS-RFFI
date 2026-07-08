@@ -8,12 +8,15 @@ Kept scope:
 - `cvs_aligned/`: CVS Stage2-C protocol, metrics, and evaluation adapter.
 - `protonet_cda/`: model code used by the CVS-aligned adapter.
 - `feature_separation_crossrx/`: model/loss code used by the CVS-aligned adapter.
+- `receiver_agnostic_twostage_uda/`: paper-faithful Bao et al. GLOBECOM 2023 components for DANN, LMMD, uncertainty fine-tuning selection, and dry-run protocol validation.
 - `configs/*_cvs_stage2c_*.json`: sanitized CVS Stage2-C example configs.
+- `configs/receiver_agnostic_twostage_uda_manysig_paper_faithful.json`: paper-faithful dry-run configuration for the closed-set WiSig ManySig receiver-ratio matrix.
 
 Boundary:
 
 - These files do not claim paper reproduction completion.
 - Any result claim must name the CVS split, target receiver, K-shot support/query protocol, satellite/stress view, seed, and full same-row metrics.
+- Receiver-Agnostic Two-stage UDA dry-runs are paper-faithful closed-set cross-receiver checks only. They are not CVS Stage2-C, satellite/LEO deployment, open-set, or new-class registration evidence.
 
 Log separation:
 
