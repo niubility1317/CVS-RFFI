@@ -31,7 +31,16 @@ class PseudoLabelState:
     def thresholds(self, *, base_tau: float, device: torch.device) -> torch.Tensor:
         return curriculum_thresholds(self.pseudo_counts.to(device), base_tau=base_tau)
 
-    def class_weights(self, *, prior: torch.Tensor | None, device: torch.device) -> torch.Tensor:
+    def class_weights(
+        self,
+        *,
+        prior: torch.Tensor | None,
+        device: torch.device,
+        smoothing: float = 0.0,
+        clip_min: float | None = None,
+        clip_max: float | None = None,
+        mean_normalize: bool = False,
+    ) -> torch.Tensor:
         if self.total_seen <= 0:
             # Eq. (9) depends on previous target predictions; the first batch has no denominator.
             return torch.ones(int(self.num_classes), dtype=torch.float32, device=device)
@@ -40,6 +49,10 @@ class PseudoLabelState:
             self.predicted_counts.to(device),
             total_seen=self.total_seen,
             prior=prior_on_device,
+            smoothing=smoothing,
+            clip_min=clip_min,
+            clip_max=clip_max,
+            mean_normalize=mean_normalize,
         )
 
     def update(self, predicted_labels: torch.Tensor, selected_labels: torch.Tensor) -> None:
@@ -63,16 +76,28 @@ def _restore_requires_grad(module: torch.nn.Module, previous: list[bool]) -> Non
         parameter.requires_grad_(enabled)
 
 
-def _estimate_outputs(model: ReceiverImpactGADNet, source_x: torch.Tensor, target_x: torch.Tensor) -> tuple[torch.Tensor, torch.Tensor]:
+def _estimate_outputs(
+    model: ReceiverImpactGADNet,
+    source_x: torch.Tensor,
+    target_x: torch.Tensor,
+    *,
+    detach_features: bool = True,
+) -> tuple[torch.Tensor, torch.Tensor]:
     was_training = model.feature_extractor.training
     model.feature_extractor.eval()
     try:
-        with torch.no_grad():
+        if detach_features:
+            with torch.no_grad():
+                source_features, _ = model.feature_extractor(source_x, return_activations=False)
+                target_features, _ = model.feature_extractor(target_x, return_activations=False)
+            source_features = source_features.detach()
+            target_features = target_features.detach()
+        else:
             source_features, _ = model.feature_extractor(source_x, return_activations=False)
             target_features, _ = model.feature_extractor(target_x, return_activations=False)
     finally:
         model.feature_extractor.train(was_training)
-    return model.estimate_network(source_features.detach()), model.estimate_network(target_features.detach())
+    return model.estimate_network(source_features), model.estimate_network(target_features)
 
 
 def gada_batch_step(
@@ -90,6 +115,10 @@ def gada_batch_step(
     mu: float = 0.5,
     kl_weight: float = 0.005,
     class_prior: torch.Tensor | None = None,
+    class_weight_smoothing: float = 0.0,
+    class_weight_clip_min: float | None = None,
+    class_weight_clip_max: float | None = None,
+    class_weight_mean_normalize: bool = False,
 ) -> dict[str, torch.Tensor | int]:
     """Run one Algorithm 1 batch: T ascent, pseudo-labeling, then E/C descent."""
     if estimate_steps <= 0:
@@ -109,13 +138,30 @@ def gada_batch_step(
     optimizer_ec.zero_grad()
     previous_t_grad = _set_requires_grad(model.estimate_network, False)
     try:
+        source_estimate_logits, target_estimate_logits = _estimate_outputs(
+            model,
+            source_x,
+            target_x,
+            detach_features=False,
+        )
         source_outputs = model(source_x)
         target_outputs = model(target_x)
+        source_outputs = dict(source_outputs)
+        target_outputs = dict(target_outputs)
+        source_outputs["estimate_logits"] = source_estimate_logits
+        target_outputs["estimate_logits"] = target_estimate_logits
         target_probs = torch.softmax(target_outputs["tx_logits"].detach(), dim=1)
         target_confidence = target_probs.max(dim=1).values
         thresholds = state.thresholds(base_tau=base_tau, device=target_probs.device)
         pseudo_labels, target_mask = adaptive_pseudo_labels(target_probs, thresholds)
-        class_weights = state.class_weights(prior=class_prior, device=target_probs.device)
+        class_weights = state.class_weights(
+            prior=class_prior,
+            device=target_probs.device,
+            smoothing=class_weight_smoothing,
+            clip_min=class_weight_clip_min,
+            clip_max=class_weight_clip_max,
+            mean_normalize=class_weight_mean_normalize,
+        )
         terms = gada_minimax_objective(
             source_outputs,
             target_outputs,

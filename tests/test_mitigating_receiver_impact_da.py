@@ -168,6 +168,18 @@ def test_cpl_thresholds_pseudo_labels_and_class_weights_match_paper_direction():
     assert weights[0] < weights[1] < weights[2]
 
 
+def test_class_balance_weights_default_matches_paper_eq9_ratio():
+    from paper_reproduction.mitigating_receiver_impact_da.losses import class_balance_weights
+
+    weights = class_balance_weights(
+        predicted_counts=torch.tensor([30.0, 10.0, 5.0]),
+        total_seen=45,
+        prior=torch.tensor([1.0 / 3.0, 1.0 / 3.0, 1.0 / 3.0]),
+    )
+
+    assert torch.allclose(weights, torch.tensor([0.5, 1.5, 3.0]), atol=1e-6)
+
+
 def test_class_balance_weights_are_smoothed_clipped_and_mean_normalized():
     from paper_reproduction.mitigating_receiver_impact_da.losses import class_balance_weights
 
@@ -175,6 +187,10 @@ def test_class_balance_weights_are_smoothed_clipped_and_mean_normalized():
         predicted_counts=torch.tensor([100.0, 0.0, 0.0]),
         total_seen=100,
         prior=torch.tensor([1.0 / 3.0, 1.0 / 3.0, 1.0 / 3.0]),
+        smoothing=10.0,
+        clip_min=0.1,
+        clip_max=10.0,
+        mean_normalize=True,
     )
 
     assert torch.isfinite(weights).all()
@@ -239,6 +255,64 @@ def test_algorithm1_batch_step_updates_estimator_m_times_then_ec_once():
     assert set(["target_selected_correct", "target_audit_total", "target_pred_correct"]).issubset(result)
     assert int(result["target_audit_total"].item()) == 5
     assert torch.isfinite(result["loss"])
+
+
+def test_algorithm1_ec_kl_uses_same_estimator_feature_path_as_t_step():
+    from paper_reproduction.mitigating_receiver_impact_da.algorithm import PseudoLabelState, gada_batch_step
+    from paper_reproduction.mitigating_receiver_impact_da.losses import dv_kl_domain_alignment
+
+    class ModeSensitiveFeatureExtractor(torch.nn.Module):
+        def __init__(self):
+            super().__init__()
+            self.weight = torch.nn.Parameter(torch.tensor([[1.0]]))
+
+        def forward(self, x, *, return_activations=False):
+            base = x[:, :1, :1].flatten(1) @ self.weight
+            scale = 10.0 if self.training else 1.0
+            return base * scale, []
+
+    class TinyGADModel(torch.nn.Module):
+        num_tx = 2
+
+        def __init__(self):
+            super().__init__()
+            self.feature_extractor = ModeSensitiveFeatureExtractor()
+            self.classifier = torch.nn.Linear(1, 2, bias=False)
+            self.estimate_network = torch.nn.Linear(1, 1, bias=False)
+            with torch.no_grad():
+                self.classifier.weight.zero_()
+                self.estimate_network.weight.fill_(1.0)
+
+        def forward(self, x):
+            features, _ = self.feature_extractor(x, return_activations=False)
+            return {
+                "features": features,
+                "tx_logits": self.classifier(features),
+                "estimate_logits": self.estimate_network(features),
+            }
+
+    model = TinyGADModel()
+    source_x = torch.zeros(2, 2, 256)
+    target_x = torch.zeros(2, 2, 256)
+    source_x[:, 0, 0] = torch.tensor([0.0, 1.0])
+    target_x[:, 0, 0] = torch.tensor([2.0, 3.0])
+    optimizer_t = CountingOptimizer(model.estimate_network.parameters())
+    optimizer_ec = CountingOptimizer(list(model.feature_extractor.parameters()) + list(model.classifier.parameters()))
+
+    result = gada_batch_step(
+        model,
+        source_x,
+        torch.tensor([0, 1]),
+        target_x,
+        state=PseudoLabelState(num_classes=2),
+        optimizer_t=optimizer_t,
+        optimizer_ec=optimizer_ec,
+        estimate_steps=1,
+    )
+    expected_eval_path = dv_kl_domain_alignment(torch.tensor([[0.0], [1.0]]), torch.tensor([[2.0], [3.0]]))
+
+    assert torch.allclose(result["estimate_zeta"], expected_eval_path, atol=1e-5)
+    assert torch.allclose(result["loss_kl"], expected_eval_path, atol=1e-5)
 
 
 def test_algorithm1_batch_step_defaults_to_paper_m7_estimator_updates():
@@ -357,6 +431,7 @@ def test_table2_runner_smoke_trains_source_only_and_proposed_rows(tmp_path):
         max_samples_per_combo=1,
         max_batches_per_epoch=1,
         base_tau=0.95,
+        class_prior_mode="source",
         seed=3,
         device="cpu",
     )
@@ -379,6 +454,29 @@ def test_table2_runner_smoke_trains_source_only_and_proposed_rows(tmp_path):
     assert {row["tau"] for row in result["rows"][1]["source_pretrain_target_audit"]["tau_sweep"]} == {0.7, 0.95}
     assert (tmp_path / "14-7_to_3-19_source_only.pt").exists()
     assert (tmp_path / "14-7_to_3-19_proposed.pt").exists()
+
+
+def test_table2_runner_defaults_to_paper_uniform_prior_and_tau(tmp_path):
+    from paper_reproduction.mitigating_receiver_impact_da.train import run_table2_reproduction
+
+    result = run_table2_reproduction(
+        _synthetic_manysig_compact(),
+        tasks=["14-7->3-19"],
+        methods=["proposed"],
+        output_dir=tmp_path,
+        epochs=1,
+        batch_size=4,
+        max_samples_per_combo=1,
+        max_batches_per_epoch=1,
+        seed=4,
+        device="cpu",
+    )
+
+    row = result["rows"][0]
+    assert result["base_tau"] == 0.7
+    assert result["class_prior_mode"] == "uniform"
+    assert row["class_prior_mode"] == "uniform"
+    assert torch.allclose(torch.tensor(row["class_prior"]), torch.full((6,), 1.0 / 6.0))
 
 
 def test_source_class_prior_is_counted_from_labeled_source_index():

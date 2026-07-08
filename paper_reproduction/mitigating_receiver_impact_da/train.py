@@ -113,6 +113,10 @@ def run_gada_training_loop(
     mu: float = 0.5,
     kl_weight: float = 0.005,
     class_prior: torch.Tensor | None = None,
+    class_weight_smoothing: float = 0.0,
+    class_weight_clip_min: float | None = None,
+    class_weight_clip_max: float | None = None,
+    class_weight_mean_normalize: bool = False,
     max_batches_per_epoch: int | None = None,
 ) -> dict[str, Any]:
     """Execute the Algorithm 1 GAD loop over caller-provided source/target batches.
@@ -172,6 +176,10 @@ def run_gada_training_loop(
                 mu=mu,
                 kl_weight=kl_weight,
                 class_prior=class_prior,
+                class_weight_smoothing=class_weight_smoothing,
+                class_weight_clip_min=class_weight_clip_min,
+                class_weight_clip_max=class_weight_clip_max,
+                class_weight_mean_normalize=class_weight_mean_normalize,
             )
             epoch_batches += 1
             total_batches += 1
@@ -219,6 +227,10 @@ def run_gada_training_loop(
         "base_tau": float(base_tau),
         "mu": float(mu),
         "kl_weight": float(kl_weight),
+        "class_weight_smoothing": float(class_weight_smoothing),
+        "class_weight_clip_min": None if class_weight_clip_min is None else float(class_weight_clip_min),
+        "class_weight_clip_max": None if class_weight_clip_max is None else float(class_weight_clip_max),
+        "class_weight_mean_normalize": bool(class_weight_mean_normalize),
         "history": history,
         "state": _state_payload(state),
     }
@@ -418,7 +430,11 @@ def run_table2_reproduction(
     source_pretrain_epochs: int | None = None,
     estimate_steps: int = 7,
     base_tau: float = 0.7,
-    class_prior_mode: str = "source",
+    class_prior_mode: str = "uniform",
+    class_weight_smoothing: float = 0.0,
+    class_weight_clip_min: float | None = None,
+    class_weight_clip_max: float | None = None,
+    class_weight_mean_normalize: bool = False,
     seed: int = 0,
     device: torch.device | str | None = None,
     num_workers: int = 0,
@@ -523,6 +539,10 @@ def run_table2_reproduction(
                     estimate_steps=estimate_steps,
                     base_tau=base_tau,
                     class_prior=None if source_class_prior is None else source_class_prior.to(resolved_device),
+                    class_weight_smoothing=class_weight_smoothing,
+                    class_weight_clip_min=class_weight_clip_min,
+                    class_weight_clip_max=class_weight_clip_max,
+                    class_weight_mean_normalize=class_weight_mean_normalize,
                     max_batches_per_epoch=max_batches_per_epoch,
                 )
                 if source_pretrain_result is not None:
@@ -548,6 +568,10 @@ def run_table2_reproduction(
                             "class_prior": None
                             if source_class_prior is None
                             else [float(v) for v in source_class_prior.tolist()],
+                            "class_weight_smoothing": train_result["class_weight_smoothing"],
+                            "class_weight_clip_min": train_result["class_weight_clip_min"],
+                            "class_weight_clip_max": train_result["class_weight_clip_max"],
+                            "class_weight_mean_normalize": train_result["class_weight_mean_normalize"],
                             "state": train_result["state"],
                         },
                     },
@@ -587,6 +611,10 @@ def run_table2_reproduction(
         "estimate_steps": int(estimate_steps),
         "base_tau": float(base_tau),
         "class_prior_mode": class_prior_mode,
+        "class_weight_smoothing": float(class_weight_smoothing),
+        "class_weight_clip_min": None if class_weight_clip_min is None else float(class_weight_clip_min),
+        "class_weight_clip_max": None if class_weight_clip_max is None else float(class_weight_clip_max),
+        "class_weight_mean_normalize": bool(class_weight_mean_normalize),
         "seed": int(seed),
         "device": str(resolved_device),
         "result_claim_status": "smoke_or_formal_metrics_depend_on_dataset",
@@ -610,7 +638,11 @@ def main() -> int:
     parser.add_argument("--source-pretrain-epochs", type=int, default=None)
     parser.add_argument("--estimate-steps", type=int, default=7)
     parser.add_argument("--base-tau", type=float, default=0.7)
-    parser.add_argument("--class-prior-mode", type=str, default="source", choices=("source", "uniform", "none"))
+    parser.add_argument("--class-prior-mode", type=str, default="uniform", choices=("source", "uniform", "none"))
+    parser.add_argument("--class-weight-smoothing", type=float, default=0.0)
+    parser.add_argument("--class-weight-clip-min", type=float, default=None)
+    parser.add_argument("--class-weight-clip-max", type=float, default=None)
+    parser.add_argument("--class-weight-mean-normalize", action="store_true")
     parser.add_argument("--seed", type=int, default=0)
     parser.add_argument("--device", type=str, default=None)
     parser.add_argument("--num-workers", type=int, default=0)
@@ -638,6 +670,10 @@ def main() -> int:
             estimate_steps=args.estimate_steps,
             base_tau=args.base_tau,
             class_prior_mode=args.class_prior_mode,
+            class_weight_smoothing=args.class_weight_smoothing,
+            class_weight_clip_min=args.class_weight_clip_min,
+            class_weight_clip_max=args.class_weight_clip_max,
+            class_weight_mean_normalize=args.class_weight_mean_normalize,
             seed=args.seed,
             device=args.device,
             num_workers=args.num_workers,
