@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import json
+import pickle
 import subprocess
 import sys
 
@@ -344,3 +346,70 @@ def test_non_dry_run_does_not_write_output(tmp_path):
 
     assert result.returncode != 0
     assert not output.exists()
+
+
+def test_formal_training_smoke_writes_paper_scoped_rows(tmp_path):
+    pkl_path = tmp_path / "ManySig.pkl"
+    with pkl_path.open("wb") as f:
+        pickle.dump(_synthetic_manysig_compact(), f)
+    output_dir = tmp_path / "formal"
+    config = "paper_reproduction/configs/receiver_agnostic_twostage_uda_manysig_paper_faithful.json"
+
+    result = subprocess.run(
+        [
+            sys.executable,
+            "-m",
+            "paper_reproduction.receiver_agnostic_twostage_uda.train",
+            "--config",
+            config,
+            "--formal",
+            "--manysig-pkl",
+            str(pkl_path),
+            "--output-dir",
+            str(output_dir),
+            "--device",
+            "cpu",
+            "--limit-ratios",
+            "1",
+            "--methods",
+            "source_only,dann_lmmd",
+            "--source-epochs",
+            "1",
+            "--stage1-epochs",
+            "1",
+            "--stage2-epochs",
+            "1",
+            "--max-train-steps",
+            "1",
+            "--max-samples-per-combo",
+            "1",
+            "--batch-size",
+            "4",
+            "--eval-batch-size",
+            "8",
+            "--num-workers",
+            "0",
+            "--progress-every",
+            "0",
+        ],
+        cwd=".",
+        text=True,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        check=False,
+    )
+
+    assert result.returncode == 0, result.stderr
+    summary = json.loads((output_dir / "summary.json").read_text(encoding="utf-8"))
+    rows = [json.loads(line) for line in (output_dir / "results.jsonl").read_text(encoding="utf-8").splitlines()]
+
+    assert [row["method"] for row in rows] == ["source_only", "dann_lmmd"]
+    assert summary["paper_scope"] == "paper-faithful closed-set cross-receiver UDA"
+    assert rows[0]["artifact_type"] == "formal_training_result"
+    assert rows[0]["source_receiver_count"] == 1
+    assert rows[0]["target_receiver_count"] == 11
+    assert rows[0]["claim_blocks"] == [
+        "not CVS Stage2-C",
+        "not satellite/LEO deployment evidence",
+        "not open-set or new-class registration",
+    ]

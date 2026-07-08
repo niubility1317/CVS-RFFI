@@ -1,0 +1,44 @@
+{
+  "paper_scope": "paper_faithful",
+  "cvs_extension": false,
+  "dataset": "WiSig ManySig",
+  "total_receivers": 12,
+  "tx_count": 6,
+  "capture_days": 4,
+  "manysig_pkl": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+  "source_receiver_counts": [1, 2, 3, 4, 6],
+  "receiver_split_policy": "deterministic receiver-order split: first N receivers are source, remaining receivers are target; paper does not publish exact split seeds",
+  "seed_policy": "single recorded seed per row; paper does not publish repeats",
+  "target_unlabeled_allowed": true,
+  "preprocessing": {
+    "equalized": 1,
+    "normalize": true,
+    "normalization": "RMS/power normalization",
+    "crop_mode": "left",
+    "out_len": 256,
+    "cfo_policy": "preserved",
+    "raw_sync_preamble_extraction": "upstream WiSig/ManySig compact pkl prerequisite"
+  },
+  "input_representation": "equalized time-domain WiFi preamble, power-normalized, CFO preserved, first 256 IQ samples as [256,2]",
+  "stage1": "DANN global domain adaptation with source TX CE and source/target domain BCE through GRL",
+  "stage2": "LMMD relevant subdomain adaptation using source labels and target predicted probabilities",
+  "formal_training_defaults": {
+    "methods": ["source_only", "target_labeled_upper", "dann", "dann_lmmd"],
+    "source_epochs": 20,
+    "stage1_epochs": 20,
+    "stage2_epochs": 10,
+    "batch_size": 256,
+    "eval_batch_size": 512,
+    "lr": 0.001,
+    "weight_decay": 0.0001,
+    "target_eval_fraction": 0.5,
+    "paper_status": "optimizer, batch size, epochs, split seed, and train/eval target split are implementation choices because the paper does not publish them"
+  },
+  "optional_finetune": {
+    "selection": ["random", "entropy", "margin", "least_confidence"],
+    "target_labeled_budget": "1/50 of target unlabeled pool",
+    "iterations_to_report": [0, 25, 50, 75, 100],
+    "source_replay": true,
+    "freeze_policy": "paper-unspecified"
+  }
+}

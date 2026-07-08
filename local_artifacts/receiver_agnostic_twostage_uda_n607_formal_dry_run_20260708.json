@@ -1,0 +1,179 @@
+{
+  "artifact_type": "dry_run_only",
+  "schema_version": 2,
+  "paper": "Receiver-Agnostic Radio Frequency Fingerprinting Based on Two-stage Unsupervised Domain Adaptation and Fine-tuning",
+  "scope": "paper-faithful closed-set cross-receiver UDA",
+  "dataset": "WiSig ManySig",
+  "formal_training_status": "blocked",
+  "result_claim_status": "no_formal_metrics",
+  "synthetic_smoke_allowed": true,
+  "requires_real_manysig_for_fig7_table_i_fig8": true,
+  "receiver_ratio_plan": [
+    {
+      "ratio": "1:11",
+      "source_receiver_count": 1,
+      "target_receiver_count": 11,
+      "closed_set_tx_count": 6,
+      "target_data_role": "unlabeled_for_UDA_labeled_only_for_optional_finetune",
+      "receiver_split_policy": "deterministic receiver-order split: first N receivers are source, remaining receivers are target; paper does not publish exact split seeds",
+      "receiver_split_ids": null,
+      "seed": null,
+      "seed_policy": "single recorded seed per row; paper does not publish repeats",
+      "compare_methods": [
+        "source_only_lower_bound",
+        "target_labeled_retrain_upper_bound",
+        "DANN_global_domain_adaptation",
+        "DANN_plus_LMMD_subdomain_adaptation",
+        "optional_uncertainty_finetune"
+      ],
+      "table_i_target_receiver_count": null,
+      "table_i_paper_reference_accuracy": null,
+      "table_i_reference_only": false,
+      "fine_tune_required_for_fig8": true,
+      "fine_tune_iterations_to_report": [
+        0,
+        25,
+        50,
+        75,
+        100
+      ]
+    },
+    {
+      "ratio": "2:10",
+      "source_receiver_count": 2,
+      "target_receiver_count": 10,
+      "closed_set_tx_count": 6,
+      "target_data_role": "unlabeled_for_UDA_labeled_only_for_optional_finetune",
+      "receiver_split_policy": "deterministic receiver-order split: first N receivers are source, remaining receivers are target; paper does not publish exact split seeds",
+      "receiver_split_ids": null,
+      "seed": null,
+      "seed_policy": "single recorded seed per row; paper does not publish repeats",
+      "compare_methods": [
+        "source_only_lower_bound",
+        "target_labeled_retrain_upper_bound",
+        "DANN_global_domain_adaptation",
+        "DANN_plus_LMMD_subdomain_adaptation",
+        "optional_uncertainty_finetune"
+      ],
+      "table_i_target_receiver_count": null,
+      "table_i_paper_reference_accuracy": null,
+      "table_i_reference_only": false,
+      "fine_tune_required_for_fig8": true,
+      "fine_tune_iterations_to_report": [
+        0,
+        25,
+        50,
+        75,
+        100
+      ]
+    },
+    {
+      "ratio": "3:9",
+      "source_receiver_count": 3,
+      "target_receiver_count": 9,
+      "closed_set_tx_count": 6,
+      "target_data_role": "unlabeled_for_UDA_labeled_only_for_optional_finetune",
+      "receiver_split_policy": "deterministic receiver-order split: first N receivers are source, remaining receivers are target; paper does not publish exact split seeds",
+      "receiver_split_ids": null,
+      "seed": null,
+      "seed_policy": "single recorded seed per row; paper does not publish repeats",
+      "compare_methods": [
+        "source_only_lower_bound",
+        "target_labeled_retrain_upper_bound",
+        "DANN_global_domain_adaptation",
+        "DANN_plus_LMMD_subdomain_adaptation",
+        "optional_uncertainty_finetune"
+      ],
+      "table_i_target_receiver_count": null,
+      "table_i_paper_reference_accuracy": null,
+      "table_i_reference_only": false,
+      "fine_tune_required_for_fig8": true,
+      "fine_tune_iterations_to_report": [
+        0,
+        25,
+        50,
+        75,
+        100
+      ]
+    },
+    {
+      "ratio": "4:8",
+      "source_receiver_count": 4,
+      "target_receiver_count": 8,
+      "closed_set_tx_count": 6,
+      "target_data_role": "unlabeled_for_UDA_labeled_only_for_optional_finetune",
+      "receiver_split_policy": "deterministic receiver-order split: first N receivers are source, remaining receivers are target; paper does not publish exact split seeds",
+      "receiver_split_ids": null,
+      "seed": null,
+      "seed_policy": "single recorded seed per row; paper does not publish repeats",
+      "compare_methods": [
+        "source_only_lower_bound",
+        "target_labeled_retrain_upper_bound",
+        "DANN_global_domain_adaptation",
+        "DANN_plus_LMMD_subdomain_adaptation",
+        "optional_uncertainty_finetune"
+      ],
+      "table_i_target_receiver_count": null,
+      "table_i_paper_reference_accuracy": null,
+      "table_i_reference_only": false,
+      "fine_tune_required_for_fig8": false,
+      "fine_tune_iterations_to_report": []
+    },
+    {
+      "ratio": "6:6",
+      "source_receiver_count": 6,
+      "target_receiver_count": 6,
+      "closed_set_tx_count": 6,
+      "target_data_role": "unlabeled_for_UDA_labeled_only_for_optional_finetune",
+      "receiver_split_policy": "deterministic receiver-order split: first N receivers are source, remaining receivers are target; paper does not publish exact split seeds",
+      "receiver_split_ids": null,
+      "seed": null,
+      "seed_policy": "single recorded seed per row; paper does not publish repeats",
+      "compare_methods": [
+        "source_only_lower_bound",
+        "target_labeled_retrain_upper_bound",
+        "DANN_global_domain_adaptation",
+        "DANN_plus_LMMD_subdomain_adaptation",
+        "optional_uncertainty_finetune"
+      ],
+      "table_i_target_receiver_count": 6,
+      "table_i_paper_reference_accuracy": [
+        0.89,
+        0.94,
+        0.87,
+        0.91,
+        0.92,
+        0.92
+      ],
+      "table_i_reference_only": true,
+      "fine_tune_required_for_fig8": false,
+      "fine_tune_iterations_to_report": []
+    }
+  ],
+  "paper_unspecified_fields": [
+    "conv kernel/channel schedule beyond four Conv-BN-ReLU-MaxPool blocks",
+    "optimizer",
+    "learning rate",
+    "batch size",
+    "epoch count",
+    "GRL lambda schedule",
+    "LMMD lambda",
+    "LMMD kernel and layer set",
+    "fine-tuning freeze policy"
+  ],
+  "preprocessing": {
+    "equalized": 1,
+    "normalize": true,
+    "normalization": "RMS/power normalization",
+    "crop_mode": "left",
+    "out_len": 256,
+    "cfo_policy": "preserved",
+    "raw_sync_preamble_extraction": "upstream WiSig/ManySig compact pkl prerequisite",
+    "execution_status": "requires_real_manysig_pkl_for_runtime_evidence"
+  },
+  "claim_blocks": [
+    "not CVS Stage2-C",
+    "not satellite/LEO deployment evidence",
+    "not open-set or new-class registration"
+  ]
+}
