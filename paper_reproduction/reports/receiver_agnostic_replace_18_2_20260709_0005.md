@@ -50,3 +50,21 @@ All four runs were confirmed active. The explicit receiver splits are correct an
 | Fig8 R=3 no18 | `930987` | stage1 step `500/2000` |
 
 No startup `Traceback`, argparse failure, OOM, or empty-target split was observed.
+
+## Interim Results
+
+`receiver_agnostic_r6_replace_18_2_with_2_1_20260709_0005` completed on N607.
+
+| target receiver | accuracy | correct / total |
+|---|---:|---:|
+| `19-2` | `0.875333` | `21008 / 24000` |
+| `2-1` | `0.834542` | `20029 / 24000` |
+| `2-19` | `0.667625` | `16023 / 24000` |
+| `7-14` | `0.908167` | `21796 / 24000` |
+| `7-7` | `0.827208` | `19853 / 24000` |
+| `8-8` | `0.808208` | `19397 / 24000` |
+| mean | `0.820181` | `118106 / 144000` |
+
+This is only `+0.001730` above the previous R=6 replacement mean `0.818451` and remains `-0.088153` below the paper Table I R=6 mean `0.908333`. The weak point moved from `18-2` to `2-19=0.667625`, so replacing `18-2` alone does not solve the R=6 gap.
+
+At `2026-07-09 00:17 CST`, the three Fig8 no-`18-2` target runs were still active on GPUs 1-3. All had completed stage1 and stage2, with no `Traceback`, argparse failure, OOM, or empty-target split observed. Their `results.jsonl` files had not landed yet.
