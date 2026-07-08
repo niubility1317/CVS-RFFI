@@ -138,6 +138,44 @@ class Phase2SupportMetricQknnV56CompressionTest(unittest.TestCase):
         self.assertEqual(kept_indices.tolist(), [0, 2, 3, 4, 6, 7])
         self.assertEqual(kept_labels.tolist(), ["old-a", "old-a", "old-a", "new-b", "new-b", "new-b"])
 
+    def test_role_specific_budget_can_compress_old_while_preserving_new_codes(self):
+        from phase2_support_metric_qknn_probe import _compress_support_codes
+
+        features = np.asarray(
+            [
+                [1.00, 0.00],
+                [0.90, 0.10],
+                [0.00, 1.00],
+                [0.00, -1.00],
+                [-1.00, 0.00],
+                [-0.90, 0.10],
+                [0.00, 1.00],
+                [0.00, -1.00],
+            ],
+            dtype=float,
+        )
+        support_indices = np.asarray([0, 1, 2, 3, 4, 5, 6, 7], dtype=int)
+        support_labels = np.asarray(
+            ["old-a", "old-a", "old-a", "old-a", "new-b", "new-b", "new-b", "new-b"],
+            dtype=object,
+        )
+        scenarios = np.asarray(["r1", "r1", "r2", "r3", "r1", "r1", "r2", "r3"], dtype=object)
+
+        kept_indices, kept_labels = _compress_support_codes(
+            features=features,
+            support_indices=support_indices,
+            support_labels=support_labels,
+            scenarios=scenarios,
+            per_class=0,
+            mode="centroid_hard_diverse",
+            old_labels={"old-a"},
+            old_per_class=1,
+            new_per_class=3,
+        )
+
+        self.assertEqual(kept_indices.tolist(), [0, 4, 6, 7])
+        self.assertEqual(kept_labels.tolist(), ["old-a", "new-b", "new-b", "new-b"])
+
     def test_v56_keeps_support_code_budget_off_and_high_k_uses_v49_guard(self):
         from phase2_support_metric_qknn_probe import _adaptive_qknn_overrides
 

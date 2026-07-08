@@ -655,3 +655,35 @@ E:\type10-7\automation_reports\CV-SincNet\phase2_qknn_v42_stage2c_unknown_202607
 4.不要继续把unknown FAR作为Phase2主线目标。真实unknown应另开Phase3表示学习或拒识机制，不能用qKNNV42后处理硬补。
 
 5.后续所有报告保持同row表格：candidate、K、receiver、old_acc、min_old、seen_new_acc、min_new、unknown诊断、support/query指纹和verdict必须同行出现。
+
+## 12.2026-07-09非unknown优化更新
+
+本节只更新Phase2 target-old适应和target-new seen-new注册识别，不引入unknown互斥、拒识或open-set成功声明。历史结果表若含`new_role=target_unknown`字段，该字段在本N20 HP08L5包中按注册新类集合解释，不作为真实未知类。
+
+新增三条诊断路线：
+
+|路线|机制|40seed结论|是否晋升|
+|---|---|---|---|
+|qKNNV61 support质量加权|在support-only质量分数上加权类别得分|K10 budget8/10均随权重升高损伤seen-new均值和最低类|不晋升|
+|qKNNV61场景原型细化|用support scenario-level原型残差细化类别得分|旧类均值保持，但seen-new最低类持续下降|不晋升|
+|qKNNV62角色非对称压缩|只压缩旧类support码，seen-new K-shot全量保留|`old_budget=5`在230/260码下提升旧类均值和地板，seen-new近似持平但最低类未改善|作为默认关闭部署预算候选|
+
+K10 40seed当前同row数据如下：
+
+|候选|stored codes|old mean|old p10|min_old mean|min_old p10|seen_new mean|seen_new p10|min_new mean|min_new p10|min_new>=75|判定|
+|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---|
+|不压缩性能上限|260|94.39%|93.57%|85.25%|82.86%|92.22%|90.78%|78.46%|70.00%|32/40|当前K10性能最强行|
+|V59统一hard-diverse budget8|208|94.43%|93.57%|85.46%|82.86%|91.95%|90.29%|77.57%|69.86%|29/40|20%压缩候选，但seen-new地板有退化|
+|V62旧类budget5、新类全量|230|94.58%|93.31%|85.82%|82.71%|92.17%|90.83%|78.29%|70.00%|31/40|当前更稳的K10部署预算候选；旧类更强，seen-new近似持平|
+
+因此当前最佳边界更新为：
+
+|目标|当前最佳/候选|数据|边界|
+|---|---|---|---|
+|K10性能上限|不压缩K10 40seed|`old=94.39%`、`min_old=85.25%`、`seen_new=92.22%`、`min_new=78.46%`、`min_new>=75=32/40`|存储260码，不是压缩部署最优|
+|K10轻量部署候选|qKNNV62旧类budget5、新类全量|`stored=230`、`old=94.58%`、`min_old=85.82%`、`seen_new=92.17%`、`min_new=78.29%`、`min_new>=75=31/40`|旧类适应更强，但新类最低类没有突破|
+|K5单split强行|K5不压缩seed421070|`old=94.52%`、`min_old=85.71%`、`seen_new=90.14%`、`min_new=81.43%`|仍是support敏感证据，需oracle-free support选择复核|
+
+技术实现更新：`code/scripts/phase2_support_metric_qknn_probe.py`新增默认关闭参数`support_code_old_budget_per_class`和`support_code_new_budget_per_class`，用于按旧类/新类角色分别控制support码预算；默认值均为0时不改变原有行为。测试`code/tests/test_phase2_support_metric_qknn_v56_compression.py`新增角色预算单测，验证旧类可压缩而seen-new support可保留。
+
+下一步不应再走unknown互斥路线，而应直接围绕seen-new最低类做support-only新类弱类识别、类内多原型分配、新类query-free校准和更多target receiver域复核。

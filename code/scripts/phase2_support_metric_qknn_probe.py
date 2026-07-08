@@ -107,12 +107,18 @@ def _compress_support_codes(
     scenarios: np.ndarray,
     per_class: int,
     mode: str,
+    old_labels: set[str] | None = None,
+    old_per_class: int = 0,
+    new_per_class: int = 0,
 ) -> tuple[np.ndarray, np.ndarray]:
     """Select deployed qKNN support codes while preserving class coverage."""
     support_indices = np.asarray(support_indices, dtype=int)
     support_labels = np.asarray(support_labels, dtype=object).astype(str)
     budget = int(per_class)
-    if budget <= 0 or support_indices.size == 0:
+    old_budget = int(old_per_class)
+    new_budget = int(new_per_class)
+    role_budget_enabled = old_budget > 0 or new_budget > 0
+    if (budget <= 0 and not role_budget_enabled) or support_indices.size == 0:
         return support_indices.copy(), support_labels.copy()
 
     mode_norm = str(mode).strip().lower()
@@ -135,7 +141,15 @@ def _compress_support_codes(
     for label in seen_labels:
         label_mask = support_labels == str(label)
         label_indices = support_indices[label_mask]
-        if label_indices.size <= budget:
+        label_budget = budget
+        if role_budget_enabled:
+            old_label_set = {str(value) for value in (old_labels or set())}
+            is_old_label = str(label) in old_label_set
+            if is_old_label and old_budget > 0:
+                label_budget = old_budget
+            elif (not is_old_label) and new_budget > 0:
+                label_budget = new_budget
+        if label_budget <= 0 or label_indices.size <= label_budget:
             chosen = label_indices.astype(int).tolist()
         else:
             label_vectors = qknn._normalize_rows(vectors[label_indices])
@@ -143,7 +157,7 @@ def _compress_support_codes(
             similarity = label_vectors @ centroid
             if mode_norm == "centroid":
                 order = np.lexsort((label_indices.astype(int), -similarity))
-                chosen = label_indices[order[:budget]].astype(int).tolist()
+                chosen = label_indices[order[:label_budget]].astype(int).tolist()
             elif mode_norm in {"centroid_hard_neighbor", "centroid_hard_diverse"}:
                 centroid_order = np.lexsort((label_indices.astype(int), -similarity))
                 chosen = [int(label_indices[centroid_order[0]])]
@@ -151,7 +165,7 @@ def _compress_support_codes(
                 other_protos = [
                     proto for other_label, proto in label_prototypes.items() if str(other_label) != str(label)
                 ]
-                if other_protos and len(chosen) < budget:
+                if other_protos and len(chosen) < label_budget:
                     other_matrix = np.stack(other_protos, axis=0)
                     hard_score = np.max(label_vectors @ other_matrix.T, axis=1)
                     hard_order = np.lexsort((label_indices.astype(int), -hard_score))
@@ -162,10 +176,10 @@ def _compress_support_codes(
                             chosen_positions.append(int(local_index))
                             if mode_norm == "centroid_hard_diverse":
                                 break
-                        if len(chosen) >= budget:
+                        if len(chosen) >= label_budget:
                             break
-                if mode_norm == "centroid_hard_diverse" and len(chosen) < budget:
-                    while len(chosen) < budget:
+                if mode_norm == "centroid_hard_diverse" and len(chosen) < label_budget:
+                    while len(chosen) < label_budget:
                         remaining = np.asarray(
                             [
                                 local_index
@@ -182,12 +196,12 @@ def _compress_support_codes(
                         local_index = int(remaining[diverse_order[0]])
                         chosen.append(int(label_indices[local_index]))
                         chosen_positions.append(local_index)
-                if len(chosen) < budget:
+                if len(chosen) < label_budget:
                     for local_index in centroid_order:
                         candidate = int(label_indices[local_index])
                         if candidate not in chosen:
                             chosen.append(candidate)
-                        if len(chosen) >= budget:
+                        if len(chosen) >= label_budget:
                             break
             else:
                 label_scenarios = scenario_values[label_indices]
@@ -200,9 +214,9 @@ def _compress_support_codes(
                         (label_indices[scenario_rows].astype(int), -similarity[scenario_rows])
                     )
                     chosen.append(int(label_indices[scenario_rows[local_order[0]]]))
-                    if len(chosen) >= budget:
+                    if len(chosen) >= label_budget:
                         break
-                if len(chosen) < budget:
+                if len(chosen) < label_budget:
                     chosen_set = set(chosen)
                     remaining = np.asarray(
                         [idx for idx in range(label_indices.size) if int(label_indices[idx]) not in chosen_set],
@@ -210,7 +224,9 @@ def _compress_support_codes(
                     )
                     if remaining.size > 0:
                         fill_order = np.lexsort((label_indices[remaining].astype(int), -similarity[remaining]))
-                        chosen.extend(label_indices[remaining[fill_order[: budget - len(chosen)]]].astype(int).tolist())
+                        chosen.extend(
+                            label_indices[remaining[fill_order[: label_budget - len(chosen)]]].astype(int).tolist()
+                        )
         kept_indices.extend(chosen)
         kept_labels.extend([str(label)] * len(chosen))
     return np.asarray(kept_indices, dtype=int), np.asarray(kept_labels, dtype=object).astype(str)
@@ -5042,6 +5058,8 @@ def _evaluate_metric_qknn(
     new_floor: float,
     support_code_budget_per_class: int,
     support_code_budget_mode: str,
+    support_code_old_budget_per_class: int,
+    support_code_new_budget_per_class: int,
     support_proto_anchor_weight: float,
     support_proto_anchor_clip: float,
     collect_predictions: bool,
@@ -5156,6 +5174,9 @@ def _evaluate_metric_qknn(
         scenarios=scenarios,
         per_class=int(support_code_budget_per_class),
         mode=str(support_code_budget_mode),
+        old_labels={str(label) for label in old_labels},
+        old_per_class=int(support_code_old_budget_per_class),
+        new_per_class=int(support_code_new_budget_per_class),
     )
     if float(proto_repel_lambda) > 0.0 and int(proto_repel_steps) > 0:
         scores, radii, proto_sim = _repelled_class_scores(
@@ -7183,6 +7204,8 @@ def _evaluate_metric_qknn(
         "raw_support_code_count": int(raw_support_code_count),
         "support_code_budget_per_class": int(support_code_budget_per_class),
         "support_code_budget_mode": str(support_code_budget_mode),
+        "support_code_old_budget_per_class": int(support_code_old_budget_per_class),
+        "support_code_new_budget_per_class": int(support_code_new_budget_per_class),
         "support_proto_anchor_weight": float(support_proto_anchor_weight),
         "support_proto_anchor_clip": float(support_proto_anchor_clip),
         "stored_support_proto_anchor_scalars": int(stored_support_proto_anchor_scalars),
@@ -8267,6 +8290,8 @@ def main() -> None:
     parser.add_argument("--support_loo_pair_linear_scope_grid", default="new")
     parser.add_argument("--support_code_budget_per_class_grid", default="0")
     parser.add_argument("--support_code_budget_mode_grid", default="centroid")
+    parser.add_argument("--support_code_old_budget_per_class_grid", default="0")
+    parser.add_argument("--support_code_new_budget_per_class_grid", default="0")
     parser.add_argument("--support_proto_anchor_weight_grid", default="0")
     parser.add_argument("--support_proto_anchor_clip_grid", default="2.0")
     parser.add_argument("--mahal_proto_weight_grid", default="0")
@@ -8515,6 +8540,8 @@ def main() -> None:
             qknn._parse_csv(args.support_loo_pair_linear_scope_grid),
             qknn._parse_int_csv(args.support_code_budget_per_class_grid),
             qknn._parse_csv(args.support_code_budget_mode_grid),
+            qknn._parse_int_csv(args.support_code_old_budget_per_class_grid),
+            qknn._parse_int_csv(args.support_code_new_budget_per_class_grid),
             qknn._parse_float_csv(args.support_proto_anchor_weight_grid),
             qknn._parse_float_csv(args.support_proto_anchor_clip_grid),
             qknn._parse_float_csv(args.mahal_proto_weight_grid),
@@ -8754,6 +8781,8 @@ def main() -> None:
                     support_loo_pair_linear_scope,
                     support_code_budget_per_class,
                     support_code_budget_mode,
+                    support_code_old_budget_per_class,
+                    support_code_new_budget_per_class,
                     support_proto_anchor_weight,
                     support_proto_anchor_clip,
                     mahal_proto_weight,
@@ -8931,6 +8960,8 @@ def main() -> None:
                         "support_loo_pair_linear_scope": str(support_loo_pair_linear_scope),
                         "support_code_budget_per_class": int(support_code_budget_per_class),
                         "support_code_budget_mode": str(support_code_budget_mode),
+                        "support_code_old_budget_per_class": int(support_code_old_budget_per_class),
+                        "support_code_new_budget_per_class": int(support_code_new_budget_per_class),
                         "support_proto_anchor_weight": float(support_proto_anchor_weight),
                         "support_proto_anchor_clip": float(support_proto_anchor_clip),
                         "labelprop_weight": float(labelprop_weight),
@@ -9138,6 +9169,12 @@ def main() -> None:
                             ),
                             "support_code_budget_mode": adaptive_overrides.get(
                                 "support_code_budget_mode", params["support_code_budget_mode"]
+                            ),
+                            "support_code_old_budget_per_class": adaptive_overrides.get(
+                                "support_code_old_budget_per_class", params["support_code_old_budget_per_class"]
+                            ),
+                            "support_code_new_budget_per_class": adaptive_overrides.get(
+                                "support_code_new_budget_per_class", params["support_code_new_budget_per_class"]
                             ),
                             "support_proto_anchor_weight": adaptive_overrides.get(
                                 "support_proto_anchor_weight", params["support_proto_anchor_weight"]
@@ -9491,6 +9528,8 @@ def main() -> None:
                         new_floor=float(args.seen_new_floor),
                         support_code_budget_per_class=int(params["support_code_budget_per_class"]),
                         support_code_budget_mode=str(params["support_code_budget_mode"]),
+                        support_code_old_budget_per_class=int(params["support_code_old_budget_per_class"]),
+                        support_code_new_budget_per_class=int(params["support_code_new_budget_per_class"]),
                         support_proto_anchor_weight=float(params["support_proto_anchor_weight"]),
                         support_proto_anchor_clip=float(params["support_proto_anchor_clip"]),
                         collect_predictions=bool(str(args.output_predictions_csv).strip()),
@@ -9902,6 +9941,8 @@ def main() -> None:
         "raw_support_code_count",
         "support_code_budget_per_class",
         "support_code_budget_mode",
+        "support_code_old_budget_per_class",
+        "support_code_new_budget_per_class",
         "support_proto_anchor_weight",
         "support_proto_anchor_clip",
         "stored_support_proto_anchor_scalars",
