@@ -262,6 +262,48 @@ def _evaluate_target_accuracy(model: ReceiverImpactGADNet, loader: Iterable[Any]
     return 0.0 if total == 0 else correct / float(total)
 
 
+def _source_class_prior_from_dataset(dataset: Any, *, num_classes: int) -> torch.Tensor:
+    """Estimate Eq. (9) p_prior(k) from the labeled source set."""
+    counts = torch.zeros(int(num_classes), dtype=torch.float32)
+    index = getattr(dataset, "index", None)
+    if index is not None:
+        for item in index:
+            label = getattr(item, "tx_i", None)
+            if label is None and isinstance(item, dict):
+                label = item.get("tx_i")
+            if label is None:
+                break
+            label_i = int(label)
+            if 0 <= label_i < int(num_classes):
+                counts[label_i] += 1.0
+        if counts.sum() > 0:
+            return counts / counts.sum()
+
+    if not hasattr(dataset, "__len__") or not hasattr(dataset, "__getitem__"):
+        raise ValueError("source dataset must expose labels through index or __getitem__")
+    for item_index in range(len(dataset)):
+        label_tensor = _batch_tensor(dataset[item_index], "label", 1).long().flatten()
+        for label in label_tensor.tolist():
+            label_i = int(label)
+            if 0 <= label_i < int(num_classes):
+                counts[label_i] += 1.0
+    if counts.sum() <= 0:
+        raise ValueError("source class prior cannot be estimated from an empty or unlabeled source dataset")
+    return counts / counts.sum()
+
+
+def _resolve_class_prior(source_loader: Any, *, num_classes: int, mode: str) -> torch.Tensor | None:
+    normalized = str(mode).strip().lower()
+    if normalized == "source":
+        dataset = getattr(source_loader, "dataset", source_loader)
+        return _source_class_prior_from_dataset(dataset, num_classes=num_classes)
+    if normalized == "uniform":
+        return torch.full((int(num_classes),), 1.0 / float(num_classes), dtype=torch.float32)
+    if normalized in {"none", "disabled"}:
+        return None
+    raise ValueError("class_prior_mode must be one of: source, uniform, none")
+
+
 def _train_source_only(
     model: ReceiverImpactGADNet,
     source_loader: Iterable[Any],
@@ -317,6 +359,8 @@ def run_table2_reproduction(
     max_samples_per_combo: int | None = None,
     max_batches_per_epoch: int | None = None,
     source_pretrain_epochs: int | None = None,
+    base_tau: float = 0.7,
+    class_prior_mode: str = "source",
     seed: int = 0,
     device: torch.device | str | None = None,
     num_workers: int = 0,
@@ -338,6 +382,11 @@ def run_table2_reproduction(
             max_samples_per_combo=max_samples_per_combo,
             seed=seed,
             num_workers=num_workers,
+        )
+        source_class_prior = _resolve_class_prior(
+            loaders["source"],
+            num_classes=6,
+            mode=class_prior_mode,
         )
         for method in requested_methods:
             if method not in {"source_only", "proposed"}:
@@ -407,6 +456,8 @@ def run_table2_reproduction(
                     epochs=epochs,
                     checkpoint_path=None,
                     device=resolved_device,
+                    base_tau=base_tau,
+                    class_prior=None if source_class_prior is None else source_class_prior.to(resolved_device),
                     max_batches_per_epoch=max_batches_per_epoch,
                 )
                 if source_pretrain_result is not None:
@@ -426,6 +477,10 @@ def run_table2_reproduction(
                             "base_tau": train_result["base_tau"],
                             "mu": train_result["mu"],
                             "kl_weight": train_result["kl_weight"],
+                            "class_prior_mode": class_prior_mode,
+                            "class_prior": None
+                            if source_class_prior is None
+                            else [float(v) for v in source_class_prior.tolist()],
                             "state": train_result["state"],
                         },
                     },
@@ -446,6 +501,8 @@ def run_table2_reproduction(
             }
             if method == "proposed":
                 row["source_pretrain_history"] = train_result.get("source_pretrain_history", [])
+                row["class_prior_mode"] = class_prior_mode
+                row["class_prior"] = None if source_class_prior is None else [float(v) for v in source_class_prior.tolist()]
             rows.append(row)
 
     return {
@@ -459,6 +516,8 @@ def run_table2_reproduction(
         "max_samples_per_combo": max_samples_per_combo,
         "max_batches_per_epoch": max_batches_per_epoch,
         "source_pretrain_epochs": int(epochs if source_pretrain_epochs is None else source_pretrain_epochs),
+        "base_tau": float(base_tau),
+        "class_prior_mode": class_prior_mode,
         "seed": int(seed),
         "device": str(resolved_device),
         "result_claim_status": "smoke_or_formal_metrics_depend_on_dataset",
@@ -480,6 +539,8 @@ def main() -> int:
     parser.add_argument("--max-samples-per-combo", type=int, default=None)
     parser.add_argument("--max-batches-per-epoch", type=int, default=None)
     parser.add_argument("--source-pretrain-epochs", type=int, default=None)
+    parser.add_argument("--base-tau", type=float, default=0.7)
+    parser.add_argument("--class-prior-mode", type=str, default="source", choices=("source", "uniform", "none"))
     parser.add_argument("--seed", type=int, default=0)
     parser.add_argument("--device", type=str, default=None)
     parser.add_argument("--num-workers", type=int, default=0)
@@ -504,6 +565,8 @@ def main() -> int:
             max_samples_per_combo=args.max_samples_per_combo,
             max_batches_per_epoch=args.max_batches_per_epoch,
             source_pretrain_epochs=args.source_pretrain_epochs,
+            base_tau=args.base_tau,
+            class_prior_mode=args.class_prior_mode,
             seed=args.seed,
             device=args.device,
             num_workers=args.num_workers,

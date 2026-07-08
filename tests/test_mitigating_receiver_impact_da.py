@@ -356,6 +356,7 @@ def test_table2_runner_smoke_trains_source_only_and_proposed_rows(tmp_path):
         batch_size=4,
         max_samples_per_combo=1,
         max_batches_per_epoch=1,
+        base_tau=0.95,
         seed=3,
         device="cpu",
     )
@@ -370,8 +371,32 @@ def test_table2_runner_smoke_trains_source_only_and_proposed_rows(tmp_path):
     assert len(result["rows"][1]["history"]) == 2
     assert "source_pretrain_history" in result["rows"][1]
     assert len(result["rows"][1]["source_pretrain_history"]) == 2
+    assert result["base_tau"] == 0.95
+    assert result["class_prior_mode"] == "source"
+    assert result["rows"][1]["class_prior_mode"] == "source"
+    assert torch.allclose(torch.tensor(result["rows"][1]["class_prior"]), torch.full((6,), 1.0 / 6.0))
     assert (tmp_path / "14-7_to_3-19_source_only.pt").exists()
     assert (tmp_path / "14-7_to_3-19_proposed.pt").exists()
+
+
+def test_source_class_prior_is_counted_from_labeled_source_index():
+    from dataclasses import dataclass
+
+    from paper_reproduction.mitigating_receiver_impact_da.train import _source_class_prior_from_dataset
+
+    @dataclass(frozen=True)
+    class Item:
+        tx_i: int
+
+    class SourceDataset:
+        index = [Item(0), Item(0), Item(1), Item(2)]
+
+        def __len__(self):
+            return len(self.index)
+
+    prior = _source_class_prior_from_dataset(SourceDataset(), num_classes=3)
+
+    assert torch.allclose(prior, torch.tensor([0.5, 0.25, 0.25]))
 
 
 def test_algorithm1_training_loop_runs_epochs_and_writes_checkpoint(tmp_path):
