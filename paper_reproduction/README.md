@@ -40,6 +40,21 @@ Log separation:
 - CVS mainline, Phase1/Phase2, Stage2, spaceborne, and CV-SincNet optimization logs must stay under `logs/cvs/`.
 - Do not write reproduction or comparison-method logs to the top-level `logs/` directory.
 
+Receiver-Agnostic Two-stage UDA diagnostics:
+
+```bash
+python -m paper_reproduction.receiver_agnostic_twostage_uda.train \
+  --config paper_reproduction/configs/receiver_agnostic_twostage_uda_manysig_n607_formal.json \
+  --formal \
+  --source-receiver-counts 6 \
+  --methods dann,dann_lmmd \
+  --transductive-target-eval \
+  --lmmd-lambda 0.05 \
+  --lmmd-layers features
+```
+
+Use `--transductive-target-eval` when reproducing the paper-style UDA reporting pool: all target receiver samples are available as unlabeled target-domain data, and labels are used only for reporting. The held-out target split remains the default for stricter internal validation. `--lmmd-lambda` and `--lmmd-layers` are diagnostic knobs because the paper does not publish the LMMD trade-off weight or the concrete layer set `L`.
+
 DADDA dry-run:
 
 ```bash
