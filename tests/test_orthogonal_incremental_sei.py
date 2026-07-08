@@ -101,8 +101,12 @@ def test_base_target_assignment_is_stable_for_unsorted_labels() -> None:
     targets = make_simplex_pseudo_targets(num_targets=5, feature_dim=4)
     assigned = assign_base_targets(base_labels=[10, 2], pseudo_targets=targets)
 
-    assert torch.allclose(assigned[2], targets[0])
-    assert torch.allclose(assigned[10], targets[1])
+    assert torch.allclose(assigned[10], targets[0])
+    assert torch.allclose(assigned[2], targets[1])
+
+    sorted_assigned = assign_base_targets(base_labels=[10, 2], pseudo_targets=targets, sort_labels=True)
+    assert torch.allclose(sorted_assigned[2], targets[0])
+    assert torch.allclose(sorted_assigned[10], targets[1])
 
 
 def test_supervised_anchor_contrastive_loss_matches_paper_sets() -> None:
@@ -133,10 +137,10 @@ def test_supervised_anchor_contrastive_loss_matches_paper_sets() -> None:
     z = torch.nn.functional.normalize(features, dim=1)
     target_norm = torch.nn.functional.normalize(targets, dim=1)
     pert_norm = torch.nn.functional.normalize(perturbed, dim=1)
-    # Anchor sample 0 has positives: same-class sample 1, assigned target row 0,
+    # Anchor sample 0 has positives: itself, same-class sample 1, assigned target row 0,
     # assigned perturb row 0. Its negatives are only different-class features.
     anchor = z[0]
-    positives = torch.stack([z[1], target_norm[0], pert_norm[0]])
+    positives = torch.stack([z[0], z[1], target_norm[0], pert_norm[0]])
     negatives = z[labels != 2]
     expected_first = -((positives @ anchor / tau) - torch.logsumexp(negatives @ anchor / tau, dim=0)).mean()
     # Unassigned pseudo target row 2 has positive perturbed row 2 and negatives:
@@ -206,6 +210,26 @@ def test_incremental_calibration_moves_weights_to_feature_device_and_checks_shap
             prototypes=torch.randn(1, 3),
         )
 
+    with pytest.raises(ValueError, match="new_labels must have one label per feature"):
+        incremental_calibration_loss(
+            new_features,
+            new_labels[:2],
+            old_weights,
+            new_weights.detach(),
+            new_class_ids=torch.tensor([20, 30]),
+            prototypes=prototypes,
+        )
+
+    with pytest.raises(ValueError, match="new_labels contain classes outside new_class_ids"):
+        incremental_calibration_loss(
+            new_features,
+            torch.tensor([20, 20, 40, 40]),
+            old_weights,
+            new_weights.detach(),
+            new_class_ids=torch.tensor([20, 30]),
+            prototypes=prototypes,
+        )
+
 
 def test_dry_run_performs_incremental_backward_and_rejects_invalid_shot() -> None:
     from paper_reproduction.orthogonal_incremental_sei.train import run_dry_run
@@ -223,6 +247,7 @@ def test_dry_run_performs_incremental_backward_and_rejects_invalid_shot() -> Non
     )
     assert result["incremental_grad_norm"] > 0
     assert result["encoder_grad_after_increment"] == 0
+    assert result["encoder_trainable_after_increment"] == 0
 
     with pytest.raises(ValueError, match="shot must be positive"):
         run_dry_run({"shot": 0}, device="cpu")
@@ -237,6 +262,9 @@ def test_encoder_classifier_weights_and_metrics_cover_fscil_flow() -> None:
     classifier = CosineClassifier(embedding_dim=16, num_classes=3)
     logits = classifier(z)
     assert logits.shape == (4, 3)
+    override = torch.randn(2, 16, dtype=torch.float64)
+    override_logits = classifier(z, weight_override=override)
+    assert override_logits.shape == (4, 2)
 
     labels = torch.tensor([5, 5, 7, 7])
     weights, class_ids = class_mean_weights(torch.randn(4, 16), labels)
@@ -261,9 +289,9 @@ def test_encoder_classifier_weights_and_metrics_cover_fscil_flow() -> None:
     assert summary["A_bar"] == pytest.approx(0.8)
     assert summary["H_bar"] < 0.9
     assert summary["F_bar"] > 0
-    assert summary["F_bar"] == pytest.approx((0.05 + 0.10) / 3.0)
+    assert summary["F_bar"] == pytest.approx((0.05 + 0.10) / 2.0)
 
-    increment_only = average_incremental_metrics(
+    total_session_denominator = average_incremental_metrics(
         session_accuracies=[0.9, 0.8, 0.7],
         old_accuracies=[0.9, 0.82, 0.75],
         new_accuracies=[0.9, 0.7, 0.6],
@@ -274,9 +302,19 @@ def test_encoder_classifier_weights_and_metrics_cover_fscil_flow() -> None:
                 [0.80, 0.70, 0.70],
             ]
         ),
-        forgetting_denominator="incremental_sessions",
+        forgetting_denominator="total_sessions",
     )
-    assert increment_only["F_bar"] == pytest.approx((0.05 + 0.10) / 2.0)
+    assert total_session_denominator["F_bar"] == pytest.approx((0.05 + 0.10) / 3.0)
+
+    negative_forgetting = forgetting_by_session(
+        torch.tensor(
+            [
+                [0.50, float("nan")],
+                [0.60, 0.70],
+            ]
+        )
+    )
+    assert negative_forgetting == pytest.approx([-0.10])
 
     with pytest.raises(ValueError, match="old_accuracies and new_accuracies"):
         average_incremental_metrics(
@@ -290,10 +328,35 @@ def test_encoder_classifier_weights_and_metrics_cover_fscil_flow() -> None:
 def test_dry_run_consumes_paper_named_temperatures_and_margin() -> None:
     from paper_reproduction.orthogonal_incremental_sei.train import _paper_float
 
-    config = {"tau_s": 0.11, "tau_c": 0.22, "q": 0.33}
+    config = {"tau_s": 0.11, "tau_c": 0.22, "q": 0.33, "lambda_a": 0.44}
     assert _paper_float(config, "contrast_temperature", "tau_s", default=0.1) == pytest.approx(0.11)
     assert _paper_float(config, "center_temperature", "tau_c", default=0.1) == pytest.approx(0.22)
     assert _paper_float(config, "margin", "q", default=0.2) == pytest.approx(0.33)
+    assert _paper_float(config, "lambda_align", "lambda_a", default=1.6) == pytest.approx(0.44)
+
+
+def test_supervised_anchor_contrastive_loss_reports_protocol_errors() -> None:
+    targets = make_simplex_pseudo_targets(num_targets=3, feature_dim=4)
+    assigned = assign_base_targets([0, 1], targets)
+    perturbed = perturb_pseudo_targets(targets, noise_range=0.01, seed=3)
+
+    with pytest.raises(ValueError, match="labels contain classes without assigned pseudo targets"):
+        supervised_anchor_contrastive_loss(
+            torch.randn(3, 4),
+            torch.tensor([0, 1, 9]),
+            assigned,
+            targets,
+            perturbed,
+        )
+
+    with pytest.raises(ValueError, match="at least two classes"):
+        supervised_anchor_contrastive_loss(
+            torch.randn(3, 4),
+            torch.tensor([0, 0, 0]),
+            assigned,
+            targets,
+            perturbed,
+        )
 
 
 def test_encoder_rejects_too_short_input_before_pooling_crash() -> None:

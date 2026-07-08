@@ -16,11 +16,12 @@ The paper setting is not CVS Stage2-B/C evidence. The paper does not define disj
 | Formula (4) orthogonal pseudo-target loss and optional iterative optimization | `pseudo_target_orthogonal_loss`, `optimize_pseudo_targets` |
 | Formula (6) perturbed pseudo targets | `perturb_pseudo_targets`; default behavior is the paper's additive `target + epsilon` form, with renormalization only as an explicit implementation option. |
 | Six Conv1D-BN-MaxPool encoder and cosine classifier | `model.py` |
-| Base losses `Lce`, `Ls`, `Lc`, and `Linit` | `losses.py`; `Ls` follows the paper's sample-anchor negative set, unassigned-pseudo negative set, and per-positive averaging form. |
-| Incremental calibration `Lh`, `La`, and `Linc` | `incremental_calibration_loss` |
-| FSCIL metrics `A_bar`, `H_bar`, `F_bar` | `metrics.py`; `F_bar` defaults to the paper-style total-session denominator and exposes an explicit incremental-session option. |
+| Base losses `Lce`, `Ls`, `Lc`, and `Linit` | `losses.py`; `Ls` follows the paper's sample-anchor positive/negative sets, unassigned-pseudo negative set, and per-positive averaging form. |
+| Incremental calibration `Lh`, `La`, and `Linc` | `incremental_calibration_loss`; input shape/class validation now rejects silent sample drops. |
+| FSCIL metrics `A_bar`, `H_bar`, `F_bar` | `metrics.py`; `F_bar` defaults to the paper's incremental-task denominator and does not clamp negative forgetting. |
 | Synthetic wiring verification | `configs/orthogonal_incremental_sei_smoke.json` and `train.py --dry-run` |
-| Paper-named dry-run hyperparameters | Configs use `tau_s`, `tau_c`, and `q`; the entrypoint keeps compatibility aliases for older configs. |
+| Paper-named dry-run hyperparameters | Configs use `tau_s`, `tau_c`, `q`, and `lambda_a`; the entrypoint keeps compatibility aliases for older configs. |
+| Incremental freeze boundary | Dry-run explicitly freezes the encoder and reports `encoder_trainable_after_increment=0`. |
 
 ## Remaining Gaps
 
@@ -30,7 +31,7 @@ The paper setting is not CVS Stage2-B/C evidence. The paper does not define disj
 | WiFi/WiSig table reproduction | The paper requires same-receiver filtering, at least 50 samples per transmitter, and a 130-class set; the loader and class list still need to be implemented. |
 | Formal incremental training loop | The current entrypoint is a dry-run scaffold; it verifies losses and calibration wiring but does not run full sessions. |
 | Exact backbone hyperparameters | The paper describes six Conv1D modules but does not provide channel sizes, kernel sizes, or strides. Current values are implementation choices. |
-| Exact temperature/margin grid | `tau_fuse=0.01`, `top_k=60`, and perturbation `0.01` are paper-supported defaults; `tau_s`, `tau_c`, and margin need author-code confirmation or a documented grid. |
+| Exact temperature/margin grid | `tau_fuse=0.01`, `top_k=60`, perturbation `0.01`, and `lambda_a=1.6` are paper-supported defaults; `tau_s`, `tau_c`, and `q` need author-code confirmation or a documented grid. |
 | Source evidence publication | The root workspace keeps the detailed matrix and gap ledger in `paper_reproduction/paper_original_matrix.md` and `paper_reproduction/repro_gap.md`; this GitHub release keeps only a bounded summary. |
 
 ## Verification

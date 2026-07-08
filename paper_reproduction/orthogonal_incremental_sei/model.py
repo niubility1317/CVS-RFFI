@@ -66,6 +66,7 @@ class CosineClassifier(nn.Module):
             raise ValueError("features and weights must be rank-2")
         if features.size(1) != weights.size(1):
             raise ValueError("feature dimension mismatch")
+        weights = weights.to(device=features.device, dtype=features.dtype)
         return self.scale * (F.normalize(features, dim=1) @ F.normalize(weights, dim=1).t())
 
 

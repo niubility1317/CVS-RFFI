@@ -35,7 +35,7 @@ def forgetting_by_session(accuracy_matrix: torch.Tensor) -> list[float]:
             history = accuracy_matrix[:t, k]
             history = history[torch.isfinite(history)]
             if torch.isfinite(current) and history.numel() > 0:
-                drops.append(float((history.max() - current).clamp_min(0).item()))
+                drops.append(float((history.max() - current).item()))
         values.append(sum(drops) / len(drops) if drops else 0.0)
     return values
 
@@ -46,7 +46,7 @@ def average_incremental_metrics(
     old_accuracies: Sequence[float],
     new_accuracies: Sequence[float],
     accuracy_matrix: torch.Tensor,
-    forgetting_denominator: str = "total_sessions",
+    forgetting_denominator: str = "incremental_sessions",
 ) -> dict[str, float]:
     if not session_accuracies:
         raise ValueError("session_accuracies must not be empty")

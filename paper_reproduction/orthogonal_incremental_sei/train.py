@@ -56,7 +56,12 @@ def run_dry_run(config: dict, *, device: str = "cpu") -> dict[str, float | int |
     old_weights = torch.stack([assigned[index] for index in range(base_classes)], dim=0).to(dev)
     new_x = torch.randn(4, 2, int(config.get("input_length", 256)), device=dev)
     new_labels = torch.tensor([base_classes, base_classes, base_classes + 1, base_classes + 1], device=dev)
-    new_features = encoder(new_x).detach()
+    for parameter in encoder.parameters():
+        parameter.grad = None
+        parameter.requires_grad_(False)
+    encoder.eval()
+    with torch.no_grad():
+        new_features = encoder(new_x)
     new_weights_init, new_class_ids = class_mean_weights(new_features, new_labels)
     new_weights = nn.Parameter(new_weights_init.detach().clone())
     optimizer = torch.optim.SGD([new_weights], lr=float(config.get("increment_lr", 0.08)))
@@ -71,7 +76,7 @@ def run_dry_run(config: dict, *, device: str = "cpu") -> dict[str, float | int |
         top_k=int(config.get("top_k", 4)),
         margin=_paper_float(config, "margin", "q", default=0.2),
         tau_fuse=float(config.get("tau_fuse", 0.01)),
-        lambda_align=float(config.get("lambda_align", 1.6)),
+        lambda_align=_paper_float(config, "lambda_align", "lambda_a", default=1.6),
     )
     inc_loss.backward()
     grad_norm = float(new_weights.grad.detach().norm().cpu().item()) if new_weights.grad is not None else 0.0
@@ -80,6 +85,7 @@ def run_dry_run(config: dict, *, device: str = "cpu") -> dict[str, float | int |
     for parameter in encoder.parameters():
         if parameter.grad is not None:
             encoder_grad += float(parameter.grad.detach().abs().sum().cpu().item())
+    encoder_trainable = sum(1 for parameter in encoder.parameters() if parameter.requires_grad)
     return {
         "mode": "dry-run",
         "seed": seed,
@@ -88,6 +94,7 @@ def run_dry_run(config: dict, *, device: str = "cpu") -> dict[str, float | int |
         "hard_count": int(inc_terms["hard_count"].detach().cpu().item()),
         "incremental_grad_norm": grad_norm,
         "encoder_grad_after_increment": encoder_grad,
+        "encoder_trainable_after_increment": encoder_trainable,
     }
 
 

@@ -136,8 +136,15 @@ def perturb_pseudo_targets(
     return F.normalize(out, dim=1) if renormalize else out
 
 
-def assign_base_targets(base_labels: Iterable[int], pseudo_targets: torch.Tensor) -> dict[int, torch.Tensor]:
-    labels = sorted(int(label) for label in base_labels)
+def assign_base_targets(
+    base_labels: Iterable[int],
+    pseudo_targets: torch.Tensor,
+    *,
+    sort_labels: bool = False,
+) -> dict[int, torch.Tensor]:
+    labels = [int(label) for label in base_labels]
+    if sort_labels:
+        labels = sorted(labels)
     if len(set(labels)) != len(labels):
         raise ValueError("base_labels must be unique")
     if len(labels) > pseudo_targets.size(0):

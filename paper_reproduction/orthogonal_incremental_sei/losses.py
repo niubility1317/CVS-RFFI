@@ -9,7 +9,7 @@ def _normalize(x: torch.Tensor) -> torch.Tensor:
 
 
 def _assigned_labels_and_weights(assigned_targets: dict[int, torch.Tensor], device: torch.device) -> tuple[torch.Tensor, torch.Tensor]:
-    labels = torch.tensor(sorted(assigned_targets), dtype=torch.long, device=device)
+    labels = torch.tensor(list(assigned_targets), dtype=torch.long, device=device)
     weights = torch.stack([assigned_targets[int(label)].to(device=device) for label in labels.tolist()], dim=0)
     return labels, _normalize(weights)
 
@@ -52,19 +52,28 @@ def supervised_anchor_contrastive_loss(
 ) -> torch.Tensor:
     if temperature <= 0:
         raise ValueError("temperature must be positive")
+    if features.ndim != 2:
+        raise ValueError("features must have shape [batch, feature_dim]")
+    if labels.ndim != 1 or labels.numel() != features.size(0):
+        raise ValueError("labels must have one label per feature")
+    label_ids = torch.tensor(list(assigned_targets), dtype=torch.long, device=labels.device)
+    if not torch.isin(labels, label_ids).all():
+        raise ValueError("labels contain classes without assigned pseudo targets")
+    if torch.unique(labels).numel() < 2:
+        raise ValueError("contrastive batch must contain at least two classes")
     z = _normalize(features)
     all_targets = _normalize(pseudo_targets.to(device=features.device))
     all_perturbed = _normalize(perturbed_targets.to(device=features.device))
     assigned_values = {label: target.to(device=features.device) for label, target in assigned_targets.items()}
+    assigned_label_order = list(assigned_targets)
     losses = []
 
     for idx, (anchor, label_tensor) in enumerate(zip(z, labels)):
         label = int(label_tensor.item())
         same_mask = labels == label
-        same_mask[idx] = False
         positives = [z[same_mask]]
         positives.append(_normalize(assigned_values[label].view(1, -1)))
-        target_index = sorted(assigned_targets).index(label)
+        target_index = assigned_label_order.index(label)
         positives.append(all_perturbed[target_index : target_index + 1])
         pos = torch.cat([p for p in positives if p.numel() > 0], dim=0)
         neg = z[labels != label]
@@ -92,7 +101,7 @@ def class_center_separation_loss(
         raise ValueError("temperature must be positive")
     centers = []
     device = features.device
-    for label in sorted(assigned_targets):
+    for label in assigned_targets:
         mask = labels == int(label)
         if bool(mask.any()):
             centers.append(features[mask].mean(dim=0))
@@ -158,10 +167,20 @@ def incremental_calibration_loss(
     if tau_fuse <= 0:
         raise ValueError("tau_fuse must be positive")
     device = new_features.device
+    if new_features.ndim != 2:
+        raise ValueError("new_features must have shape [batch, feature_dim]")
+    if new_labels.ndim != 1 or new_labels.numel() != new_features.size(0):
+        raise ValueError("new_labels must have one label per feature")
+    if old_weights.ndim != 2 or new_weights.ndim != 2 or prototypes.ndim != 2:
+        raise ValueError("old_weights, new_weights, and prototypes must be rank-2")
+    if old_weights.size(1) != new_features.size(1) or new_weights.size(1) != new_features.size(1):
+        raise ValueError("classifier weight feature dimension mismatch")
     if prototypes.shape != new_weights.shape:
         raise ValueError("prototypes and new_weights must have matching shape")
     if new_class_ids.numel() != new_weights.size(0):
         raise ValueError("new_class_ids must have one id per new weight row")
+    if not torch.isin(new_labels.detach().cpu(), new_class_ids.detach().cpu()).all():
+        raise ValueError("new_labels contain classes outside new_class_ids")
     z = _normalize(new_features)
     old_w = _normalize(old_weights.to(device=device))
     new_w = _normalize(new_weights.to(device=device))
