@@ -139,6 +139,7 @@ def run_gada_training_loop(
         epoch_loss_source = 0.0
         epoch_loss_target = 0.0
         epoch_loss_kl = 0.0
+        epoch_estimate_zeta = 0.0
         epoch_conf = 0.0
         epoch_selected = 0
         epoch_selected_correct = 0
@@ -178,6 +179,7 @@ def run_gada_training_loop(
             epoch_loss_source += float(result["loss_source"].item())
             epoch_loss_target += float(result["loss_target"].item())
             epoch_loss_kl += float(result["loss_kl"].item())
+            epoch_estimate_zeta += float(result["estimate_zeta"].item())
             epoch_conf += float(result["target_conf_mean"].item())
             epoch_selected += int(result["target_selected"].item())
             if "target_audit_total" in result:
@@ -197,6 +199,7 @@ def run_gada_training_loop(
                 "loss_source_mean": epoch_loss_source / float(epoch_batches),
                 "loss_target_mean": epoch_loss_target / float(epoch_batches),
                 "loss_kl_mean": epoch_loss_kl / float(epoch_batches),
+                "estimate_zeta_mean": epoch_estimate_zeta / float(epoch_batches),
                 "target_conf_mean": epoch_conf / float(epoch_batches),
                 "class_weight_min": epoch_weight_min,
                 "class_weight_max": epoch_weight_max,
@@ -267,17 +270,20 @@ def _source_class_prior_from_dataset(dataset: Any, *, num_classes: int) -> torch
     counts = torch.zeros(int(num_classes), dtype=torch.float32)
     index = getattr(dataset, "index", None)
     if index is not None:
+        index_complete = True
         for item in index:
             label = getattr(item, "tx_i", None)
             if label is None and isinstance(item, dict):
                 label = item.get("tx_i")
             if label is None:
+                index_complete = False
                 break
             label_i = int(label)
             if 0 <= label_i < int(num_classes):
                 counts[label_i] += 1.0
-        if counts.sum() > 0:
+        if index_complete and counts.sum() > 0:
             return counts / counts.sum()
+        counts.zero_()
 
     if not hasattr(dataset, "__len__") or not hasattr(dataset, "__getitem__"):
         raise ValueError("source dataset must expose labels through index or __getitem__")
@@ -302,6 +308,57 @@ def _resolve_class_prior(source_loader: Any, *, num_classes: int, mode: str) -> 
     if normalized in {"none", "disabled"}:
         return None
     raise ValueError("class_prior_mode must be one of: source, uniform, none")
+
+
+def _audit_target_predictions(
+    model: Any,
+    loader: Iterable[Any],
+    *,
+    device: torch.device | str,
+    tau_values: tuple[float, ...] = (0.7, 0.95),
+) -> dict[str, Any]:
+    model.eval()
+    tau_stats = {
+        float(tau): {
+            "selected": 0,
+            "selected_correct": 0,
+        }
+        for tau in tau_values
+    }
+    correct = 0
+    total = 0
+    conf_sum = 0.0
+    with torch.no_grad():
+        for batch in loader:
+            x = _batch_tensor(batch, "iq", 0).to(device)
+            y = _batch_tensor(batch, "label", 1).long().to(device)
+            probs = torch.softmax(model.classify(x), dim=1)
+            confidence, pred = probs.max(dim=1)
+            batch_correct = pred == y
+            correct += int(batch_correct.sum().item())
+            total += int(y.numel())
+            conf_sum += float(confidence.sum().item())
+            for tau, stats in tau_stats.items():
+                selected = confidence > float(tau)
+                stats["selected"] += int(selected.sum().item())
+                stats["selected_correct"] += int((batch_correct & selected).sum().item())
+    tau_sweep = []
+    for tau, stats in sorted(tau_stats.items()):
+        selected = int(stats["selected"])
+        tau_sweep.append(
+            {
+                "tau": float(tau),
+                "selected": selected,
+                "coverage": 0.0 if total <= 0 else selected / float(total),
+                "selected_acc": None if selected <= 0 else int(stats["selected_correct"]) / float(selected),
+            }
+        )
+    return {
+        "total": int(total),
+        "target_pred_acc": None if total <= 0 else correct / float(total),
+        "target_conf_mean": None if total <= 0 else conf_sum / float(total),
+        "tau_sweep": tau_sweep,
+    }
 
 
 def _train_source_only(
@@ -359,6 +416,7 @@ def run_table2_reproduction(
     max_samples_per_combo: int | None = None,
     max_batches_per_epoch: int | None = None,
     source_pretrain_epochs: int | None = None,
+    estimate_steps: int = 7,
     base_tau: float = 0.7,
     class_prior_mode: str = "source",
     seed: int = 0,
@@ -442,6 +500,12 @@ def run_table2_reproduction(
                         device=resolved_device,
                         max_batches_per_epoch=max_batches_per_epoch,
                     )
+                source_pretrain_target_audit = _audit_target_predictions(
+                    model,
+                    loaders["target_eval"],
+                    device=resolved_device,
+                    tau_values=tuple(sorted({0.7, float(base_tau)})),
+                )
                 optimizer_t = torch.optim.Adam(model.estimate_network.parameters(), lr=float(learning_rate))
                 optimizer_ec = torch.optim.Adam(
                     list(model.feature_extractor.parameters()) + list(model.classifier.parameters()),
@@ -456,12 +520,14 @@ def run_table2_reproduction(
                     epochs=epochs,
                     checkpoint_path=None,
                     device=resolved_device,
+                    estimate_steps=estimate_steps,
                     base_tau=base_tau,
                     class_prior=None if source_class_prior is None else source_class_prior.to(resolved_device),
                     max_batches_per_epoch=max_batches_per_epoch,
                 )
                 if source_pretrain_result is not None:
                     train_result["source_pretrain_history"] = source_pretrain_result["history"]
+                train_result["source_pretrain_target_audit"] = source_pretrain_target_audit
                 torch.save(
                     {
                         "paper": "Mitigating Receiver Impact on Radio Frequency Fingerprint Identification via Domain Adaptation",
@@ -470,6 +536,7 @@ def run_table2_reproduction(
                         "model_state_dict": model.inference_state_dict(),
                         "history": train_result["history"],
                         "source_pretrain_history": train_result.get("source_pretrain_history", []),
+                        "source_pretrain_target_audit": source_pretrain_target_audit,
                         "adaptation": {
                             "algorithm": train_result["algorithm"],
                             "epochs": train_result["epochs"],
@@ -501,6 +568,7 @@ def run_table2_reproduction(
             }
             if method == "proposed":
                 row["source_pretrain_history"] = train_result.get("source_pretrain_history", [])
+                row["source_pretrain_target_audit"] = train_result.get("source_pretrain_target_audit", {})
                 row["class_prior_mode"] = class_prior_mode
                 row["class_prior"] = None if source_class_prior is None else [float(v) for v in source_class_prior.tolist()]
             rows.append(row)
@@ -516,6 +584,7 @@ def run_table2_reproduction(
         "max_samples_per_combo": max_samples_per_combo,
         "max_batches_per_epoch": max_batches_per_epoch,
         "source_pretrain_epochs": int(epochs if source_pretrain_epochs is None else source_pretrain_epochs),
+        "estimate_steps": int(estimate_steps),
         "base_tau": float(base_tau),
         "class_prior_mode": class_prior_mode,
         "seed": int(seed),
@@ -539,6 +608,7 @@ def main() -> int:
     parser.add_argument("--max-samples-per-combo", type=int, default=None)
     parser.add_argument("--max-batches-per-epoch", type=int, default=None)
     parser.add_argument("--source-pretrain-epochs", type=int, default=None)
+    parser.add_argument("--estimate-steps", type=int, default=7)
     parser.add_argument("--base-tau", type=float, default=0.7)
     parser.add_argument("--class-prior-mode", type=str, default="source", choices=("source", "uniform", "none"))
     parser.add_argument("--seed", type=int, default=0)
@@ -565,6 +635,7 @@ def main() -> int:
             max_samples_per_combo=args.max_samples_per_combo,
             max_batches_per_epoch=args.max_batches_per_epoch,
             source_pretrain_epochs=args.source_pretrain_epochs,
+            estimate_steps=args.estimate_steps,
             base_tau=args.base_tau,
             class_prior_mode=args.class_prior_mode,
             seed=args.seed,

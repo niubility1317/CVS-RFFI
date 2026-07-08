@@ -144,6 +144,7 @@ def gada_batch_step(
         "class_weight_max": class_weights.max().detach(),
         "estimate_steps": int(estimate_steps),
         "estimate_loss": torch.tensor(0.0) if last_estimate_loss is None else last_estimate_loss,
+        "estimate_zeta": torch.tensor(0.0) if last_estimate_loss is None else -last_estimate_loss,
     }
     if target_y_audit is not None:
         audit_labels = target_y_audit.to(pseudo_labels.device).long()

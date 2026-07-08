@@ -375,6 +375,8 @@ def test_table2_runner_smoke_trains_source_only_and_proposed_rows(tmp_path):
     assert result["class_prior_mode"] == "source"
     assert result["rows"][1]["class_prior_mode"] == "source"
     assert torch.allclose(torch.tensor(result["rows"][1]["class_prior"]), torch.full((6,), 1.0 / 6.0))
+    assert result["rows"][1]["source_pretrain_target_audit"]["total"] > 0
+    assert {row["tau"] for row in result["rows"][1]["source_pretrain_target_audit"]["tau_sweep"]} == {0.7, 0.95}
     assert (tmp_path / "14-7_to_3-19_source_only.pt").exists()
     assert (tmp_path / "14-7_to_3-19_proposed.pt").exists()
 
@@ -397,6 +399,64 @@ def test_source_class_prior_is_counted_from_labeled_source_index():
     prior = _source_class_prior_from_dataset(SourceDataset(), num_classes=3)
 
     assert torch.allclose(prior, torch.tensor([0.5, 0.25, 0.25]))
+
+
+def test_source_class_prior_falls_back_when_index_lacks_tx_labels():
+    from dataclasses import dataclass
+
+    from paper_reproduction.mitigating_receiver_impact_da.train import _source_class_prior_from_dataset
+
+    @dataclass(frozen=True)
+    class Item:
+        tx_i: int | None = None
+
+    class SourceDataset:
+        index = [Item(0), Item(None)]
+
+        def __len__(self):
+            return 3
+
+        def __getitem__(self, idx):
+            labels = [2, 2, 1]
+            return torch.zeros(2, 256), labels[idx], 0, {}
+
+    prior = _source_class_prior_from_dataset(SourceDataset(), num_classes=3)
+
+    assert torch.allclose(prior, torch.tensor([0.0, 1.0 / 3.0, 2.0 / 3.0]))
+
+
+def test_target_prediction_audit_reports_tau_precision_and_coverage():
+    from paper_reproduction.mitigating_receiver_impact_da.train import _audit_target_predictions
+
+    class FixedModel:
+        def eval(self):
+            return self
+
+        def classify(self, x):
+            return torch.tensor(
+                [
+                    [4.0, 0.0],
+                    [0.0, 4.0],
+                    [2.0, 3.0],
+                    [1.0, 2.0],
+                ]
+            )[: x.shape[0]]
+
+    loader = [
+        {
+            "iq": torch.zeros(4, 2, 256),
+            "label": torch.tensor([0, 1, 0, 0]),
+        }
+    ]
+
+    audit = _audit_target_predictions(FixedModel(), loader, device="cpu", tau_values=(0.7, 0.95))
+
+    assert audit["target_pred_acc"] == 0.5
+    by_tau = {row["tau"]: row for row in audit["tau_sweep"]}
+    assert by_tau[0.7]["selected"] == 4
+    assert by_tau[0.7]["selected_acc"] == 0.5
+    assert by_tau[0.95]["selected"] == 2
+    assert by_tau[0.95]["selected_acc"] == 1.0
 
 
 def test_algorithm1_training_loop_runs_epochs_and_writes_checkpoint(tmp_path):
@@ -429,6 +489,7 @@ def test_algorithm1_training_loop_runs_epochs_and_writes_checkpoint(tmp_path):
     assert len(result["history"]) == 2
     assert "target_pseudo_selected_acc" in result["history"][0]
     assert "target_pred_acc" in result["history"][0]
+    assert "estimate_zeta_mean" in result["history"][0]
     assert result["state"]["total_seen"] == 16
     assert optimizer_t.step_calls == 28
     assert optimizer_ec.step_calls == 4
