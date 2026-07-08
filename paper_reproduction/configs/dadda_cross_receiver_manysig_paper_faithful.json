@@ -1,0 +1,36 @@
+{
+  "paper_scope": "paper_faithful",
+  "cvs_extension": false,
+  "paper_title": "Cross-Receiver Radio Frequency Fingerprint Identification Based on Domain Adaptation With Dynamic Distribution Alignment",
+  "dataset": "WiSig ManySig",
+  "total_receivers": 12,
+  "capture_days": 4,
+  "tx_count": 6,
+  "source_target_tasks": [
+    "1-1->8-8",
+    "8-8->1-1",
+    "19-2->1-1",
+    "1-1->19-2",
+    "20-1->2-1",
+    "2-1->20-1",
+    "7-14->2-19",
+    "2-19->7-14",
+    "1-19->2-19",
+    "2-19->1-19",
+    "14-7->7-7",
+    "7-7->14-7"
+  ],
+  "target_unlabeled_allowed": true,
+  "target_labels_scope": "evaluation_only",
+  "input_representation": "WiSig compact IQ [2,256] after channel equalization and energy normalization",
+  "method": "DADDA with ResNet18 G_f, multiscale G_m, MMD, LMMD, and dynamic adaptive factor alpha",
+  "optimizer": "SGD",
+  "learning_rate_formula": "lr_p=0.0001/(1+10p)^0.75",
+  "lambda_formula": "lambda_p=2/(1+exp(-10p))-1",
+  "momentum": 0.9,
+  "weight_decay": 0.0005,
+  "epochs": 100,
+  "batch_size": 128,
+  "classifier_hidden": [512, 128]
+}
+
