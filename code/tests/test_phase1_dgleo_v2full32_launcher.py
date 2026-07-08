@@ -49,6 +49,7 @@ def test_v2full32_declares_full_mechanism_source_only_protocol():
     assert "--lambda_u_direct_metric_accept" in out
     assert "--lambda_u_quarantine_accept" in out
     assert "--lambda_direct_metric_accept" in out
+    assert "--direct_metric_virtual_detach false" in out
     assert "--direct_metric_proxy_vaccept_weight" in out
     assert "--direct_metric_source_overflow_weight" in out
     assert "--direct_metric_bridge_accept_weight" in out

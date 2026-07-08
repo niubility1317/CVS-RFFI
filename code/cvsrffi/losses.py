@@ -336,8 +336,16 @@ def domain_aware_supcon_loss(
     return -pos_log_prob[has_pos].mean()
 
 
-def _safe_angle_from_cos(cos: torch.Tensor) -> torch.Tensor:
-    return torch.acos(torch.clamp(cos, -1.0 + 1e-6, 1.0 - 1e-6))
+def _safe_angle_from_cos(cos: torch.Tensor, *, eps: float = 1e-6) -> torch.Tensor:
+    eps_f = max(1e-7, min(1e-2, float(eps)))
+    cos_f = torch.nan_to_num(cos.float(), nan=0.0, posinf=1.0 - eps_f, neginf=-1.0 + eps_f)
+    angle = torch.acos(torch.clamp(cos_f, -1.0 + eps_f, 1.0 - eps_f))
+    return torch.nan_to_num(angle, nan=math.pi / 2.0, posinf=math.pi - eps_f, neginf=eps_f)
+
+
+def _bounded_softplus(value: torch.Tensor, *, clip: float = 20.0) -> torch.Tensor:
+    value_f = torch.nan_to_num(value.float(), nan=0.0, posinf=float(clip), neginf=-float(clip))
+    return F.softplus(torch.clamp(value_f, -float(clip), float(clip)))
 
 
 def _scalar_metric(value: torch.Tensor) -> float:
@@ -1692,6 +1700,10 @@ def direct_metric_acceptance_loss(
         "sat_pair_loss": 0.0,
         "zid_quantile_loss": 0.0,
         "virtual_count": 0.0,
+        "geometry_stabilized": 1.0,
+        "geometry_reference_detached": 1.0,
+        "angle_clamp_eps": 1e-4,
+        "softplus_clip": 20.0,
     }
     if z is None or not torch.is_tensor(z) or z.numel() == 0:
         ref = torch.tensor(0.0)
@@ -1721,13 +1733,16 @@ def direct_metric_acceptance_loss(
         return zero_like_with_grad(z), default_metrics
 
     proto = torch.stack(centers, dim=0)
+    angle_eps = 1e-4
+    softplus_clip = 20.0
+    proto_ref = proto.detach()
     center_labels = torch.stack(class_ids, dim=0).to(device=labels.device)
     sample_z = z_norm[sample_mask]
     sample_labels = labels[sample_mask]
     sample_domains = d.view(-1).long()[sample_mask] if d is not None and torch.is_tensor(d) and d.numel() == labels.numel() else None
-    sample_cos = (sample_z @ proto.t()).clamp(-1.0 + 1e-6, 1.0 - 1e-6)
+    sample_cos = (sample_z @ proto_ref.t()).clamp(-1.0 + angle_eps, 1.0 - angle_eps)
     own_center = sample_labels.view(-1, 1).eq(center_labels.view(1, -1))
-    pos_angles = _safe_angle_from_cos(sample_cos[own_center])
+    pos_angles = _safe_angle_from_cos(sample_cos[own_center], eps=angle_eps)
     proto_index_per_sample = own_center.float().argmax(dim=1).long()
     if pos_angles.numel() == 0:
         return zero_like_with_grad(z), default_metrics
@@ -1768,7 +1783,7 @@ def direct_metric_acceptance_loss(
     cvar_frac = max(1e-6, min(1.0, float(accept_cvar_alpha)))
 
     def _angle_target_loss(target_rad: float, frac: float) -> torch.Tensor:
-        terms = F.softplus((pos_angles - float(target_rad)) / tau_q)
+        terms = _bounded_softplus((pos_angles - float(target_rad)) / tau_q, clip=softplus_clip)
         return _top_cvar_mean(terms, frac)
 
     zid_quantile_loss = (
@@ -1795,7 +1810,10 @@ def direct_metric_acceptance_loss(
         if feat is None or feat.numel() == 0:
             return sample_z.new_zeros((0,)), sample_z.new_zeros((0,))
         feat_norm = safe_l2_normalize(feat, dim=1)
-        feat_angles = _safe_angle_from_cos((feat_norm @ proto.t()).clamp(-1.0 + 1e-6, 1.0 - 1e-6))
+        feat_angles = _safe_angle_from_cos(
+            (feat_norm @ proto_ref.t()).clamp(-1.0 + angle_eps, 1.0 - angle_eps),
+            eps=angle_eps,
+        )
         radius_gate = torch.sigmoid(
             (accept_radius_vec_t.detach().view(1, -1) - feat_angles) / max(1e-4, float(component_temperature_rad))
         )
@@ -1808,8 +1826,8 @@ def direct_metric_acceptance_loss(
         else:
             margin_gate = torch.ones((feat_angles.size(0), 1), device=feat_angles.device, dtype=feat_angles.dtype)
         if z_core_density.numel():
-            core_cos = (feat_norm @ z_core_density.detach().t()).clamp(-1.0 + 1e-6, 1.0 - 1e-6)
-            nearest_core_angle = _safe_angle_from_cos(core_cos.max(dim=1).values)
+            core_cos = (feat_norm @ z_core_density.detach().t()).clamp(-1.0 + angle_eps, 1.0 - angle_eps)
+            nearest_core_angle = _safe_angle_from_cos(core_cos.max(dim=1).values, eps=angle_eps)
             density_gate = torch.sigmoid((density_radius - nearest_core_angle) / max(1e-4, float(density_temperature_rad))).view(-1, 1)
             low_density_prob = torch.sigmoid((nearest_core_angle - density_radius) / max(1e-4, float(density_temperature_rad)))
         else:
@@ -1820,11 +1838,11 @@ def direct_metric_acceptance_loss(
     def _accept_loss(prob: torch.Tensor, target: float) -> torch.Tensor:
         if prob.numel() == 0:
             return sample_z.new_tensor(0.0)
-        return _top_cvar_mean(F.softplus((prob - float(target)) / tau_a), cvar_frac)
+        return _top_cvar_mean(_bounded_softplus((prob - float(target)) / tau_a, clip=softplus_clip), cvar_frac)
 
     core_prob, _ = _geometry_accept_prob(sample_z[core_mask])
     core_accept_loss = (
-        _top_cvar_mean(F.softplus((float(core_accept_target) - core_prob) / tau_a), cvar_frac)
+        _top_cvar_mean(_bounded_softplus((float(core_accept_target) - core_prob) / tau_a, clip=softplus_clip), cvar_frac)
         if core_prob.numel()
         else sample_z.new_tensor(0.0)
     )
@@ -1837,7 +1855,7 @@ def direct_metric_acceptance_loss(
         sample_z,
         sample_labels,
         center_labels,
-        proto,
+        proto_ref,
         radius_vec_t,
         count=max(0, int(virtual_count)),
         mode=str(virtual_mode or "hard"),
@@ -1874,13 +1892,19 @@ def direct_metric_acceptance_loss(
     radius_inter_ratio_loss = sample_z.new_tensor(0.0)
     radius_inter_ratio_metric = sample_z.new_tensor(float("nan"))
     if proto.size(0) > 1:
-        inter_angles = _safe_angle_from_cos((proto @ proto.t()).clamp(-1.0 + 1e-6, 1.0 - 1e-6))
+        inter_angles = _safe_angle_from_cos(
+            (proto_ref @ proto_ref.t()).clamp(-1.0 + angle_eps, 1.0 - angle_eps),
+            eps=angle_eps,
+        )
         diag = torch.eye(inter_angles.size(0), device=inter_angles.device, dtype=torch.bool)
         nearest_inter = inter_angles.masked_fill(diag, float("inf")).min(dim=1).values.detach().clamp_min(1e-4)
         sample_inter = nearest_inter[proto_index_per_sample]
         ratio = pos_angles / sample_inter
         radius_inter_ratio_metric = ratio.detach().max() if ratio.numel() else sample_z.new_tensor(float("nan"))
-        radius_inter_ratio_loss = _top_cvar_mean(F.softplus((ratio - float(radius_inter_ratio_target)) / tau_a), cvar_frac)
+        radius_inter_ratio_loss = _top_cvar_mean(
+            _bounded_softplus((ratio - float(radius_inter_ratio_target)) / tau_a, clip=softplus_clip),
+            cvar_frac,
+        )
 
     source_probs = []
     if sample_domains is not None:
@@ -1894,14 +1918,20 @@ def direct_metric_acceptance_loss(
                 query = cls_mask & (~sample_domains.eq(dom))
                 if int(support.sum().item()) < min_count or not bool(query.any()):
                     continue
-                support_center = safe_l2_normalize(sample_z[support].mean(dim=0, keepdim=True), dim=1).squeeze(0)
-                support_angles = _safe_angle_from_cos((sample_z[support] * support_center.view(1, -1)).sum(dim=1).clamp(-1.0 + 1e-6, 1.0 - 1e-6))
+                support_center = safe_l2_normalize(sample_z[support].mean(dim=0, keepdim=True), dim=1).squeeze(0).detach()
+                support_angles = _safe_angle_from_cos(
+                    (sample_z[support] * support_center.view(1, -1)).sum(dim=1).clamp(-1.0 + angle_eps, 1.0 - angle_eps),
+                    eps=angle_eps,
+                )
                 support_radius = (
                     torch.quantile(support_angles.detach(), core_q)
                     if support_angles.numel() > 1
                     else support_angles.detach().max()
                 ) + max(0.0, float(source_margin_rad))
-                query_angles = _safe_angle_from_cos((sample_z[query] * support_center.view(1, -1)).sum(dim=1).clamp(-1.0 + 1e-6, 1.0 - 1e-6))
+                query_angles = _safe_angle_from_cos(
+                    (sample_z[query] * support_center.view(1, -1)).sum(dim=1).clamp(-1.0 + angle_eps, 1.0 - angle_eps),
+                    eps=angle_eps,
+                )
                 source_probs.append(torch.sigmoid((query_angles - support_radius) / tau_q))
     source_overflow_prob = torch.cat(source_probs, dim=0) if source_probs else sample_z.new_zeros((0,))
     source_overflow_loss = _accept_loss(source_overflow_prob, float(source_overflow_target))
@@ -1912,8 +1942,11 @@ def direct_metric_acceptance_loss(
     if pair_n > 0 and z_norm.size(0) >= 2 * pair_n:
         clean = z_norm[:pair_n]
         sat = z_norm[pair_n : 2 * pair_n]
-        pair_angles = _safe_angle_from_cos((clean * sat).sum(dim=1).clamp(-1.0 + 1e-6, 1.0 - 1e-6))
-        sat_pair_loss = _top_cvar_mean(F.softplus((pair_angles - float(sat_pair_target_rad)) / tau_q), cvar_frac)
+        pair_angles = _safe_angle_from_cos((clean * sat).sum(dim=1).clamp(-1.0 + angle_eps, 1.0 - angle_eps), eps=angle_eps)
+        sat_pair_loss = _top_cvar_mean(
+            _bounded_softplus((pair_angles - float(sat_pair_target_rad)) / tau_q, clip=softplus_clip),
+            cvar_frac,
+        )
         sat_pair_p95 = torch.quantile(pair_angles.detach(), 0.95) if pair_angles.numel() > 1 else pair_angles.detach().mean()
 
     loss = (
@@ -1961,6 +1994,10 @@ def direct_metric_acceptance_loss(
         "sat_pair_loss": _scalar_metric(sat_pair_loss),
         "zid_quantile_loss": _scalar_metric(zid_quantile_loss),
         "virtual_count": float(int(virtual_all.size(0))),
+        "geometry_stabilized": 1.0,
+        "geometry_reference_detached": 1.0,
+        "angle_clamp_eps": float(angle_eps),
+        "softplus_clip": float(softplus_clip),
     }
     return loss, metrics
 

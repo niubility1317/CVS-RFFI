@@ -124,3 +124,56 @@ def test_direct_metric_acceptance_loss_uses_concat_sat_pair_view():
     assert metrics["sat_pair_loss"] > 0.0
     assert features.grad is not None
     assert torch.isfinite(features.grad).all()
+
+
+def test_direct_metric_acceptance_loss_reports_stable_geometry_contract():
+    torch.manual_seed(20260708)
+    centers = torch.randn(4, 8)
+    centers = torch.nn.functional.normalize(centers, dim=1)
+    centers[1] = torch.nn.functional.normalize(0.995 * centers[0] + 0.005 * centers[1], dim=0)
+    features = []
+    labels = []
+    domains = []
+    for cls in range(4):
+        for dom in range(4):
+            noise = 0.025 * torch.randn(8)
+            features.append(centers[cls] + noise)
+            labels.append(cls)
+            domains.append(dom)
+    features = torch.stack(features, dim=0)
+    features = torch.nn.functional.normalize(features, dim=1).requires_grad_(True)
+
+    loss, metrics = direct_metric_acceptance_loss(
+        features,
+        torch.tensor(labels),
+        torch.tensor(domains),
+        virtual_count=24,
+        virtual_mode="hard",
+        core_quantile=0.50,
+        accept_quantile=0.65,
+        tail_quantile=0.80,
+        overflow_quantile=0.90,
+        zid_p50_target_rad=math.radians(4.0),
+        zid_p95_target_rad=math.radians(7.0),
+        zid_p99_target_rad=math.radians(9.0),
+        zid_tail_cvar_target_rad=math.radians(8.0),
+        proxy_vaccept_target=0.12,
+        bridge_accept_target=0.10,
+        low_density_accept_target=0.08,
+        tail_accept_target=0.12,
+        overflow_accept_target=0.08,
+        radius_inter_ratio_target=0.35,
+        quantile_temperature_rad=math.radians(2.0),
+        accept_temperature=0.025,
+        component_temperature_rad=math.radians(2.0),
+        density_temperature_rad=math.radians(2.0),
+        accept_cvar_alpha=0.20,
+    )
+    loss.backward()
+
+    assert metrics["geometry_stabilized"] == 1.0
+    assert metrics["geometry_reference_detached"] == 1.0
+    assert metrics["angle_clamp_eps"] >= 1e-4
+    assert torch.isfinite(loss)
+    assert features.grad is not None
+    assert torch.isfinite(features.grad).all()

@@ -253,7 +253,7 @@ launch_candidate() {
     --direct_metric_warmup_epochs 32
     --direct_metric_virtual_count 88
     --direct_metric_virtual_mode hard
-    --direct_metric_virtual_detach true
+    --direct_metric_virtual_detach false
     --direct_metric_core_quantile 0.70
     --direct_metric_accept_quantile 0.80
     --direct_metric_tail_quantile 0.90
