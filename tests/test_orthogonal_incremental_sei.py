@@ -1,7 +1,9 @@
 from __future__ import annotations
 
 import math
+import pickle
 
+import numpy as np
 import pytest
 import torch
 
@@ -422,3 +424,60 @@ def test_encoder_rejects_too_short_input_before_pooling_crash() -> None:
         encoder(torch.randn(2, 2, 32))
     with pytest.raises(ValueError, match="input channel mismatch"):
         encoder(torch.randn(2, 1, 128))
+
+
+def test_formal_wisig_runner_writes_incremental_metrics(tmp_path) -> None:
+    from paper_reproduction.orthogonal_incremental_sei.train import run_formal_wisig
+
+    rng = np.random.default_rng(123)
+    data = []
+    for tx in range(5):
+        tx_items = []
+        for _rx in range(1):
+            rx_items = []
+            for _day in range(1):
+                eq_items = [rng.normal(loc=tx * 0.1, scale=0.01, size=(8, 64, 2)).astype(np.float32)]
+                rx_items.append(eq_items)
+            tx_items.append(rx_items)
+        data.append(tx_items)
+    pkl_path = tmp_path / "fake_wisig.pkl"
+    with pkl_path.open("wb") as handle:
+        pickle.dump(
+            {
+                "data": data,
+                "tx_list": [f"tx-{i}" for i in range(5)],
+                "rx_list": ["rx-a"],
+                "capture_date_list": ["day-a"],
+                "equalized_list": [1],
+            },
+            handle,
+        )
+
+    result = run_formal_wisig(
+        {
+            "seed": 3,
+            "input_length": 64,
+            "embedding_dim": 8,
+            "pseudo_targets": 6,
+            "base_classes": 3,
+            "increment_classes_per_session": 1,
+            "num_increment_sessions": 2,
+            "base_epochs": 1,
+            "increment_epochs": 1,
+            "batch_size": 12,
+            "eval_batch_size": 8,
+            "min_samples_per_transmitter": 4,
+            "base_train_ratio": 0.5,
+            "shot": 1,
+            "receiver_label": "rx-a",
+            "optimizer": "SGD",
+        },
+        wisig_pkl=str(pkl_path),
+        run_dir=tmp_path / "run",
+        device="cpu",
+    )
+
+    assert result["mode"] == "formal_wisig_fscil"
+    assert result["summary"]["A_bar"] >= 0.0
+    assert len(result["session_accuracies"]) == 3
+    assert (tmp_path / "run" / "metrics.json").is_file()
