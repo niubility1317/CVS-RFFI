@@ -65,6 +65,31 @@ def test_iterative_pseudo_target_optimization_reduces_formula4_loss() -> None:
     assert torch.allclose(optimized.norm(dim=1), torch.ones(4), atol=1e-5)
     assert after.item() < before.item()
 
+    with pytest.raises(ValueError, match="num_targets must be positive"):
+        optimize_pseudo_targets(num_targets=0, feature_dim=6, steps=1)
+
+    with pytest.raises(ValueError, match="feature_dim must be positive"):
+        optimize_pseudo_targets(num_targets=4, feature_dim=0, steps=1)
+
+
+def test_train_entrypoint_builds_formula4_pseudo_targets_from_config() -> None:
+    from paper_reproduction.orthogonal_incremental_sei.train import _build_pseudo_targets
+
+    targets, steps = _build_pseudo_targets(
+        {
+            "seed": 19,
+            "pseudo_targets": 4,
+            "embedding_dim": 6,
+            "pseudo_target_steps": 10,
+            "tau_c": 0.2,
+        },
+        device="cpu",
+    )
+
+    assert steps == 10
+    assert targets.shape == (4, 6)
+    assert torch.allclose(targets.norm(dim=1), torch.ones(4), atol=1e-5)
+
 
 def test_pseudo_target_perturbation_defaults_to_paper_additive_formula() -> None:
     targets = make_simplex_pseudo_targets(num_targets=4, feature_dim=6)
@@ -231,6 +256,19 @@ def test_incremental_calibration_moves_weights_to_feature_device_and_checks_shap
         )
 
 
+def test_base_losses_validate_pseudo_target_shapes() -> None:
+    targets = make_simplex_pseudo_targets(num_targets=3, feature_dim=4)
+    assigned = assign_base_targets([0, 1], targets)
+    features = torch.randn(4, 4)
+    labels = torch.tensor([0, 0, 1, 1])
+
+    with pytest.raises(ValueError, match="perturbed_targets must match pseudo_targets shape"):
+        supervised_anchor_contrastive_loss(features, labels, assigned, targets, targets[:2])
+
+    with pytest.raises(ValueError, match="pseudo_targets feature dimension mismatch"):
+        class_center_separation_loss(features, labels, assigned, torch.randn(3, 5))
+
+
 def test_dry_run_performs_incremental_backward_and_rejects_invalid_shot() -> None:
     from paper_reproduction.orthogonal_incremental_sei.train import run_dry_run
 
@@ -248,9 +286,28 @@ def test_dry_run_performs_incremental_backward_and_rejects_invalid_shot() -> Non
     assert result["incremental_grad_norm"] > 0
     assert result["encoder_grad_after_increment"] == 0
     assert result["encoder_trainable_after_increment"] == 0
+    assert result["claim_boundary"] == "synthetic_dry_run_not_formal_reproduction"
 
     with pytest.raises(ValueError, match="shot must be positive"):
         run_dry_run({"shot": 0}, device="cpu")
+
+    protocol_result = run_dry_run(
+        {
+            "seed": 7,
+            "embedding_dim": 8,
+            "pseudo_targets": 5,
+            "base_classes": 3,
+            "shot": 1,
+            "input_length": 128,
+            "shot_grid": [1, 5],
+            "base_epochs": 100,
+            "same_receiver_only": True,
+        },
+        device="cpu",
+    )
+    assert "shot_grid" in protocol_result["unsupported_config_fields"]
+    assert "base_epochs" in protocol_result["unsupported_config_fields"]
+    assert "same_receiver_only" in protocol_result["unsupported_config_fields"]
 
 
 def test_encoder_classifier_weights_and_metrics_cover_fscil_flow() -> None:
@@ -363,3 +420,5 @@ def test_encoder_rejects_too_short_input_before_pooling_crash() -> None:
     encoder = SixBlockConv1DEncoder(input_channels=2, embedding_dim=8)
     with pytest.raises(ValueError, match="at least 64"):
         encoder(torch.randn(2, 2, 32))
+    with pytest.raises(ValueError, match="input channel mismatch"):
+        encoder(torch.randn(2, 1, 128))

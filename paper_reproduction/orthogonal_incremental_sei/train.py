@@ -9,7 +9,25 @@ from torch import nn
 
 from .losses import base_training_loss, incremental_calibration_loss
 from .model import SixBlockConv1DEncoder, class_mean_weights
-from .pseudo_targets import assign_base_targets, make_simplex_pseudo_targets, perturb_pseudo_targets
+from .pseudo_targets import assign_base_targets, optimize_pseudo_targets, perturb_pseudo_targets
+
+
+FORMAL_PROTOCOL_FIELDS = {
+    "shot_grid",
+    "base_train_ratio",
+    "base_test_ratio",
+    "same_receiver_only",
+    "min_samples_per_transmitter",
+    "base_epochs",
+    "increment_epochs",
+    "batch_size",
+    "optimizer",
+    "base_lr",
+    "early_stop_patience",
+    "increment_classes_per_session",
+    "num_increment_sessions",
+    "cvs_extension",
+}
 
 
 def load_config(path: str | Path) -> dict:
@@ -23,7 +41,28 @@ def _paper_float(config: dict, implementation_key: str, paper_key: str, *, defau
     return float(config.get(implementation_key, default))
 
 
-def run_dry_run(config: dict, *, device: str = "cpu") -> dict[str, float | int | str]:
+def _build_pseudo_targets(config: dict, *, device: str | torch.device) -> tuple[torch.Tensor, int]:
+    feature_dim = int(config.get("embedding_dim", 16))
+    num_targets = int(config.get("pseudo_targets", min(feature_dim + 1, 8)))
+    base_classes = int(config.get("base_classes", min(3, num_targets)))
+    steps = int(config.get("pseudo_target_steps", 0))
+    targets = optimize_pseudo_targets(
+        num_targets=num_targets,
+        feature_dim=feature_dim,
+        total_classes=base_classes,
+        temperature=_paper_float(config, "pseudo_target_temperature", "tau_c", default=0.01),
+        steps=steps,
+        seed=int(config.get("seed", 1337)),
+        device=device,
+    )
+    return targets, steps
+
+
+def _unsupported_config_fields(config: dict) -> list[str]:
+    return sorted(field for field in FORMAL_PROTOCOL_FIELDS if field in config)
+
+
+def run_dry_run(config: dict, *, device: str = "cpu") -> dict[str, object]:
     seed = int(config.get("seed", 1337))
     torch.manual_seed(seed)
     shot = int(config.get("shot", 1))
@@ -40,7 +79,7 @@ def run_dry_run(config: dict, *, device: str = "cpu") -> dict[str, float | int |
     x = torch.randn(base_classes * max(shot, 2), 2, int(config.get("input_length", 256)), device=dev)
     labels = torch.arange(base_classes, device=dev).repeat_interleave(max(shot, 2))
     features = encoder(x)
-    targets = make_simplex_pseudo_targets(num_targets=num_targets, feature_dim=feature_dim, device=dev)
+    targets, pseudo_target_steps = _build_pseudo_targets(config, device=dev)
     perturbed = perturb_pseudo_targets(targets, noise_range=float(config.get("noise_range", 0.01)), seed=seed)
     assigned = assign_base_targets(range(base_classes), targets)
     base_loss, _ = base_training_loss(
@@ -88,7 +127,10 @@ def run_dry_run(config: dict, *, device: str = "cpu") -> dict[str, float | int |
     encoder_trainable = sum(1 for parameter in encoder.parameters() if parameter.requires_grad)
     return {
         "mode": "dry-run",
+        "claim_boundary": "synthetic_dry_run_not_formal_reproduction",
+        "unsupported_config_fields": _unsupported_config_fields(config),
         "seed": seed,
+        "pseudo_target_steps": pseudo_target_steps,
         "base_loss": float(base_loss.detach().cpu().item()),
         "incremental_loss": float(inc_loss.detach().cpu().item()),
         "hard_count": int(inc_terms["hard_count"].detach().cpu().item()),

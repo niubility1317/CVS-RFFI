@@ -5,6 +5,7 @@
   "input_length": 256,
   "embedding_dim": 16,
   "pseudo_targets": 8,
+  "pseudo_target_steps": 10,
   "base_classes": 3,
   "shot": 1,
   "noise_range": 0.01,

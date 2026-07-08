@@ -13,7 +13,7 @@ The paper setting is not CVS Stage2-B/C evidence. The paper does not define disj
 | Paper requirement | Implementation |
 |---|---|
 | Pseudo-target bound `|C| <= N <= d + 1` and simplex geometry | `paper_reproduction/orthogonal_incremental_sei/pseudo_targets.py` |
-| Formula (4) orthogonal pseudo-target loss and optional iterative optimization | `pseudo_target_orthogonal_loss`, `optimize_pseudo_targets` |
+| Formula (4) orthogonal pseudo-target loss and iterative optimization | `pseudo_target_orthogonal_loss`, `optimize_pseudo_targets`, and the dry-run entrypoint; paper-protocol configs enable iterative optimization through `pseudo_target_steps`. |
 | Formula (6) perturbed pseudo targets | `perturb_pseudo_targets`; default behavior is the paper's additive `target + epsilon` form, with renormalization only as an explicit implementation option. |
 | Six Conv1D-BN-MaxPool encoder and cosine classifier | `model.py` |
 | Base losses `Lce`, `Ls`, `Lc`, and `Linit` | `losses.py`; `Ls` follows the paper's sample-anchor positive/negative sets, unassigned-pseudo negative set, and per-positive averaging form. |
@@ -22,6 +22,7 @@ The paper setting is not CVS Stage2-B/C evidence. The paper does not define disj
 | Synthetic wiring verification | `configs/orthogonal_incremental_sei_smoke.json` and `train.py --dry-run` |
 | Paper-named dry-run hyperparameters | Configs use `tau_s`, `tau_c`, `q`, and `lambda_a`; the entrypoint keeps compatibility aliases for older configs. |
 | Incremental freeze boundary | Dry-run explicitly freezes the encoder and reports `encoder_trainable_after_increment=0`. |
+| Claim boundary guard | Dry-run emits `claim_boundary=synthetic_dry_run_not_formal_reproduction` and reports unsupported formal protocol fields. |
 
 ## Remaining Gaps
 
@@ -30,6 +31,7 @@ The paper setting is not CVS Stage2-B/C evidence. The paper does not define disj
 | ADS-B table reproduction | The public ADS-B file path, 100-class filtering, and class order are not wired yet. |
 | WiFi/WiSig table reproduction | The paper requires same-receiver filtering, at least 50 samples per transmitter, and a 130-class set; the loader and class list still need to be implemented. |
 | Formal incremental training loop | The current entrypoint is a dry-run scaffold; it verifies losses and calibration wiring but does not run full sessions. |
+| Figure 4-7 reproduction | Forgetting-rate curves and initial/incremental class-count sensitivity curves are not generated yet. |
 | Exact backbone hyperparameters | The paper describes six Conv1D modules but does not provide channel sizes, kernel sizes, or strides. Current values are implementation choices. |
 | Exact temperature/margin grid | `tau_fuse=0.01`, `top_k=60`, perturbation `0.01`, and `lambda_a=1.6` are paper-supported defaults; `tau_s`, `tau_c`, and `q` need author-code confirmation or a documented grid. |
 | Source evidence publication | The root workspace keeps the detailed matrix and gap ledger in `paper_reproduction/paper_original_matrix.md` and `paper_reproduction/repro_gap.md`; this GitHub release keeps only a bounded summary. |

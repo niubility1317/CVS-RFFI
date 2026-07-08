@@ -56,6 +56,12 @@ def supervised_anchor_contrastive_loss(
         raise ValueError("features must have shape [batch, feature_dim]")
     if labels.ndim != 1 or labels.numel() != features.size(0):
         raise ValueError("labels must have one label per feature")
+    if pseudo_targets.ndim != 2 or perturbed_targets.ndim != 2:
+        raise ValueError("pseudo_targets and perturbed_targets must be rank-2")
+    if perturbed_targets.shape != pseudo_targets.shape:
+        raise ValueError("perturbed_targets must match pseudo_targets shape")
+    if pseudo_targets.size(1) != features.size(1):
+        raise ValueError("pseudo_targets feature dimension mismatch")
     label_ids = torch.tensor(list(assigned_targets), dtype=torch.long, device=labels.device)
     if not torch.isin(labels, label_ids).all():
         raise ValueError("labels contain classes without assigned pseudo targets")
@@ -99,6 +105,14 @@ def class_center_separation_loss(
 ) -> torch.Tensor:
     if temperature <= 0:
         raise ValueError("temperature must be positive")
+    if features.ndim != 2:
+        raise ValueError("features must have shape [batch, feature_dim]")
+    if labels.ndim != 1 or labels.numel() != features.size(0):
+        raise ValueError("labels must have one label per feature")
+    if pseudo_targets.ndim != 2:
+        raise ValueError("pseudo_targets must be rank-2")
+    if pseudo_targets.size(1) != features.size(1):
+        raise ValueError("pseudo_targets feature dimension mismatch")
     centers = []
     device = features.device
     for label in assigned_targets:

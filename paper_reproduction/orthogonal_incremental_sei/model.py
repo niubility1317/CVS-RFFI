@@ -24,6 +24,7 @@ class SixBlockConv1DEncoder(nn.Module):
         if len(channels) != 6:
             raise ValueError("channels must define exactly six convolution blocks")
 
+        self.input_channels = int(input_channels)
         layers: list[nn.Module] = []
         in_channels = input_channels
         padding = kernel_size // 2
@@ -44,6 +45,8 @@ class SixBlockConv1DEncoder(nn.Module):
     def forward(self, x: torch.Tensor) -> torch.Tensor:
         if x.ndim != 3:
             raise ValueError("input must have shape [batch, channels, length]")
+        if x.shape[1] != self.input_channels:
+            raise ValueError("input channel mismatch")
         if x.shape[-1] < 64:
             raise ValueError("input length must be at least 64 for six MaxPool1d blocks")
         z = self.features(x.float())

@@ -74,6 +74,10 @@ def optimize_pseudo_targets(
         raise ValueError("temperature must be positive")
     if steps < 0:
         raise ValueError("steps must be non-negative")
+    if num_targets <= 0:
+        raise ValueError("num_targets must be positive")
+    if feature_dim <= 0:
+        raise ValueError("feature_dim must be positive")
     if seed is not None:
         torch.manual_seed(int(seed))
     if steps == 0:
