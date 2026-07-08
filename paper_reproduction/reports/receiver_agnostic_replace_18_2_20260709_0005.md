@@ -67,4 +67,14 @@ No startup `Traceback`, argparse failure, OOM, or empty-target split was observe
 
 This is only `+0.001730` above the previous R=6 replacement mean `0.818451` and remains `-0.088153` below the paper Table I R=6 mean `0.908333`. The weak point moved from `18-2` to `2-19=0.667625`, so replacing `18-2` alone does not solve the R=6 gap.
 
-At `2026-07-09 00:17 CST`, the three Fig8 no-`18-2` target runs were still active on GPUs 1-3. All had completed stage1 and stage2, with no `Traceback`, argparse failure, OOM, or empty-target split observed. Their `results.jsonl` files had not landed yet.
+The three Fig8 no-`18-2` target runs completed by `2026-07-09 00:23 CST`.
+
+| R | source receivers | target count | base | random@100 | entropy@100 | margin@100 | least_conf@100 | best@100 |
+|---:|---|---:|---:|---:|---:|---:|---:|---:|
+| 1 | `18-2` | 11 | `0.611799` | `0.784295` | `0.537572` | `0.710617` | `0.587193` | `0.784295` |
+| 2 | `1-1,18-2` | 10 | `0.738112` | `0.845325` | `0.730646` | `0.776046` | `0.759387` | `0.845325` |
+| 3 | `1-1,1-19,18-2` | 9 | `0.807250` | `0.866356` | `0.817778` | `0.839875` | `0.833583` | `0.866356` |
+
+Compared with the previous Fig8 run, current R=1 improves from base `0.562693` to `0.611799` and random@100 from `0.666939` to `0.784295`; R=2 base improves from `0.658425` to `0.738112`; R=3 improves from base `0.615611` to `0.807250` and random@100 from `0.732028` to `0.866356`.
+
+Residual weak receivers after the best random@100 strategy are `3-19=0.631417` for R=1, `3-19=0.686958` for R=2, and `3-19=0.773083` for R=3. This confirms that removing `18-2` from target-side Fig8 materially improves the diagnostic curves, but it is a receiver-replacement sensitivity result rather than a strict paper-faithful Fig8 reproduction because `18-2` was moved into the source set to preserve receiver-count ratios.
