@@ -84,7 +84,8 @@ def _estimate_outputs(
     detach_features: bool = True,
 ) -> tuple[torch.Tensor, torch.Tensor]:
     was_training = model.feature_extractor.training
-    model.feature_extractor.eval()
+    if detach_features:
+        model.feature_extractor.eval()
     try:
         if detach_features:
             with torch.no_grad():
@@ -96,7 +97,8 @@ def _estimate_outputs(
             source_features, _ = model.feature_extractor(source_x, return_activations=False)
             target_features, _ = model.feature_extractor(target_x, return_activations=False)
     finally:
-        model.feature_extractor.train(was_training)
+        if detach_features:
+            model.feature_extractor.train(was_training)
     return model.estimate_network(source_features), model.estimate_network(target_features)
 
 

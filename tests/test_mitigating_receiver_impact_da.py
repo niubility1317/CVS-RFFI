@@ -273,7 +273,7 @@ def test_algorithm1_batch_step_updates_estimator_m_times_then_ec_once():
     assert torch.isfinite(result["loss"])
 
 
-def test_algorithm1_ec_kl_uses_same_estimator_feature_path_as_t_step():
+def test_algorithm1_ec_kl_updates_feature_extractor_on_training_path():
     from paper_reproduction.mitigating_receiver_impact_da.algorithm import PseudoLabelState, gada_batch_step
     from paper_reproduction.mitigating_receiver_impact_da.losses import dv_kl_domain_alignment
 
@@ -326,9 +326,10 @@ def test_algorithm1_ec_kl_uses_same_estimator_feature_path_as_t_step():
         estimate_steps=1,
     )
     expected_eval_path = dv_kl_domain_alignment(torch.tensor([[0.0], [1.0]]), torch.tensor([[2.0], [3.0]]))
+    expected_training_path = dv_kl_domain_alignment(torch.tensor([[0.0], [10.0]]), torch.tensor([[20.0], [30.0]]))
 
     assert torch.allclose(result["estimate_zeta"], expected_eval_path, atol=1e-5)
-    assert torch.allclose(result["loss_kl"], expected_eval_path, atol=1e-5)
+    assert torch.allclose(result["loss_kl"], expected_training_path, atol=1e-5)
 
 
 def test_algorithm1_batch_step_defaults_to_paper_m7_estimator_updates():
