@@ -21,7 +21,10 @@
   "increment_lr": 0.08,
   "early_stop_patience": 4,
   "noise_range": 0.01,
+  "tau_s": 0.1,
+  "tau_c": 0.1,
   "top_k": 60,
+  "q": 0.2,
   "tau_fuse": 0.01,
   "lambda_align": 1.6,
   "cvs_extension": false

@@ -120,8 +120,10 @@ def perturb_pseudo_targets(
     *,
     noise_range: float,
     seed: int | None = None,
-    renormalize: bool = True,
+    renormalize: bool = False,
 ) -> torch.Tensor:
+    """Apply the paper's additive pseudo-target perturbation from formula (6)."""
+
     if noise_range < 0:
         raise ValueError("noise_range must be non-negative")
     if seed is not None:

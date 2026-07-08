@@ -8,8 +8,10 @@
   "base_classes": 3,
   "shot": 1,
   "noise_range": 0.01,
+  "tau_s": 0.1,
+  "tau_c": 0.1,
   "top_k": 4,
-  "margin": 0.2,
+  "q": 0.2,
   "tau_fuse": 0.01,
   "lambda_align": 1.6
 }

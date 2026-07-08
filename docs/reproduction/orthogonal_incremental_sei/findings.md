@@ -14,12 +14,13 @@ The paper setting is not CVS Stage2-B/C evidence. The paper does not define disj
 |---|---|
 | Pseudo-target bound `|C| <= N <= d + 1` and simplex geometry | `paper_reproduction/orthogonal_incremental_sei/pseudo_targets.py` |
 | Formula (4) orthogonal pseudo-target loss and optional iterative optimization | `pseudo_target_orthogonal_loss`, `optimize_pseudo_targets` |
-| Perturbed pseudo targets | `perturb_pseudo_targets` |
+| Formula (6) perturbed pseudo targets | `perturb_pseudo_targets`; default behavior is the paper's additive `target + epsilon` form, with renormalization only as an explicit implementation option. |
 | Six Conv1D-BN-MaxPool encoder and cosine classifier | `model.py` |
 | Base losses `Lce`, `Ls`, `Lc`, and `Linit` | `losses.py`; `Ls` follows the paper's sample-anchor negative set, unassigned-pseudo negative set, and per-positive averaging form. |
 | Incremental calibration `Lh`, `La`, and `Linc` | `incremental_calibration_loss` |
-| FSCIL metrics `A_bar`, `H_bar`, `F_bar` | `metrics.py` |
+| FSCIL metrics `A_bar`, `H_bar`, `F_bar` | `metrics.py`; `F_bar` defaults to the paper-style total-session denominator and exposes an explicit incremental-session option. |
 | Synthetic wiring verification | `configs/orthogonal_incremental_sei_smoke.json` and `train.py --dry-run` |
+| Paper-named dry-run hyperparameters | Configs use `tau_s`, `tau_c`, and `q`; the entrypoint keeps compatibility aliases for older configs. |
 
 ## Remaining Gaps
 

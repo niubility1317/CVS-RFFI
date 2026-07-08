@@ -66,6 +66,15 @@ def test_iterative_pseudo_target_optimization_reduces_formula4_loss() -> None:
     assert after.item() < before.item()
 
 
+def test_pseudo_target_perturbation_defaults_to_paper_additive_formula() -> None:
+    targets = make_simplex_pseudo_targets(num_targets=4, feature_dim=6)
+    perturbed = perturb_pseudo_targets(targets, noise_range=0.05, seed=23)
+    additive = perturb_pseudo_targets(targets, noise_range=0.05, seed=23, renormalize=False)
+
+    assert torch.allclose(perturbed, additive)
+    assert not torch.allclose(perturbed.norm(dim=1), torch.ones(4), atol=1e-6)
+
+
 def test_pseudo_target_losses_are_finite_and_backpropagate() -> None:
     torch.manual_seed(7)
     targets = make_simplex_pseudo_targets(num_targets=6, feature_dim=5)
@@ -252,6 +261,22 @@ def test_encoder_classifier_weights_and_metrics_cover_fscil_flow() -> None:
     assert summary["A_bar"] == pytest.approx(0.8)
     assert summary["H_bar"] < 0.9
     assert summary["F_bar"] > 0
+    assert summary["F_bar"] == pytest.approx((0.05 + 0.10) / 3.0)
+
+    increment_only = average_incremental_metrics(
+        session_accuracies=[0.9, 0.8, 0.7],
+        old_accuracies=[0.9, 0.82, 0.75],
+        new_accuracies=[0.9, 0.7, 0.6],
+        accuracy_matrix=torch.tensor(
+            [
+                [0.90, float("nan"), float("nan")],
+                [0.85, 0.80, float("nan")],
+                [0.80, 0.70, 0.70],
+            ]
+        ),
+        forgetting_denominator="incremental_sessions",
+    )
+    assert increment_only["F_bar"] == pytest.approx((0.05 + 0.10) / 2.0)
 
     with pytest.raises(ValueError, match="old_accuracies and new_accuracies"):
         average_incremental_metrics(
@@ -260,6 +285,15 @@ def test_encoder_classifier_weights_and_metrics_cover_fscil_flow() -> None:
             new_accuracies=[],
             accuracy_matrix=torch.eye(2),
         )
+
+
+def test_dry_run_consumes_paper_named_temperatures_and_margin() -> None:
+    from paper_reproduction.orthogonal_incremental_sei.train import _paper_float
+
+    config = {"tau_s": 0.11, "tau_c": 0.22, "q": 0.33}
+    assert _paper_float(config, "contrast_temperature", "tau_s", default=0.1) == pytest.approx(0.11)
+    assert _paper_float(config, "center_temperature", "tau_c", default=0.1) == pytest.approx(0.22)
+    assert _paper_float(config, "margin", "q", default=0.2) == pytest.approx(0.33)
 
 
 def test_encoder_rejects_too_short_input_before_pooling_crash() -> None:

@@ -17,6 +17,12 @@ def load_config(path: str | Path) -> dict:
         return json.load(handle)
 
 
+def _paper_float(config: dict, implementation_key: str, paper_key: str, *, default: float) -> float:
+    if paper_key in config:
+        return float(config[paper_key])
+    return float(config.get(implementation_key, default))
+
+
 def run_dry_run(config: dict, *, device: str = "cpu") -> dict[str, float | int | str]:
     seed = int(config.get("seed", 1337))
     torch.manual_seed(seed)
@@ -37,7 +43,15 @@ def run_dry_run(config: dict, *, device: str = "cpu") -> dict[str, float | int |
     targets = make_simplex_pseudo_targets(num_targets=num_targets, feature_dim=feature_dim, device=dev)
     perturbed = perturb_pseudo_targets(targets, noise_range=float(config.get("noise_range", 0.01)), seed=seed)
     assigned = assign_base_targets(range(base_classes), targets)
-    base_loss, _ = base_training_loss(features, labels, assigned, targets, perturbed)
+    base_loss, _ = base_training_loss(
+        features,
+        labels,
+        assigned,
+        targets,
+        perturbed,
+        contrast_temperature=_paper_float(config, "contrast_temperature", "tau_s", default=0.1),
+        center_temperature=_paper_float(config, "center_temperature", "tau_c", default=0.1),
+    )
 
     old_weights = torch.stack([assigned[index] for index in range(base_classes)], dim=0).to(dev)
     new_x = torch.randn(4, 2, int(config.get("input_length", 256)), device=dev)
@@ -55,7 +69,7 @@ def run_dry_run(config: dict, *, device: str = "cpu") -> dict[str, float | int |
         new_class_ids=new_class_ids,
         prototypes=new_weights.detach(),
         top_k=int(config.get("top_k", 4)),
-        margin=float(config.get("margin", 0.2)),
+        margin=_paper_float(config, "margin", "q", default=0.2),
         tau_fuse=float(config.get("tau_fuse", 0.01)),
         lambda_align=float(config.get("lambda_align", 1.6)),
     )
