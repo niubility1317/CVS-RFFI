@@ -116,7 +116,7 @@ def _compress_support_codes(
         return support_indices.copy(), support_labels.copy()
 
     mode_norm = str(mode).strip().lower()
-    if mode_norm not in {"centroid", "scenario_centroid"}:
+    if mode_norm not in {"centroid", "scenario_centroid", "centroid_hard_neighbor"}:
         raise ValueError(f"unsupported support_code_budget_mode: {mode}")
 
     scenario_values = np.asarray(scenarios, dtype=object).astype(str)
@@ -124,6 +124,14 @@ def _compress_support_codes(
     kept_indices: list[int] = []
     kept_labels: list[str] = []
     seen_labels = list(dict.fromkeys(support_labels.tolist()))
+    label_prototypes: dict[str, np.ndarray] = {}
+    if mode_norm == "centroid_hard_neighbor":
+        for label in seen_labels:
+            label_indices = support_indices[support_labels == str(label)]
+            if label_indices.size == 0:
+                continue
+            label_vectors = qknn._normalize_rows(vectors[label_indices])
+            label_prototypes[str(label)] = qknn._normalize_rows(label_vectors.mean(axis=0, keepdims=True))[0]
     for label in seen_labels:
         label_mask = support_labels == str(label)
         label_indices = support_indices[label_mask]
@@ -136,6 +144,29 @@ def _compress_support_codes(
             if mode_norm == "centroid":
                 order = np.lexsort((label_indices.astype(int), -similarity))
                 chosen = label_indices[order[:budget]].astype(int).tolist()
+            elif mode_norm == "centroid_hard_neighbor":
+                centroid_order = np.lexsort((label_indices.astype(int), -similarity))
+                chosen = [int(label_indices[centroid_order[0]])]
+                other_protos = [
+                    proto for other_label, proto in label_prototypes.items() if str(other_label) != str(label)
+                ]
+                if other_protos and len(chosen) < budget:
+                    other_matrix = np.stack(other_protos, axis=0)
+                    hard_score = np.max(label_vectors @ other_matrix.T, axis=1)
+                    hard_order = np.lexsort((label_indices.astype(int), -hard_score))
+                    for local_index in hard_order:
+                        candidate = int(label_indices[local_index])
+                        if candidate not in chosen:
+                            chosen.append(candidate)
+                        if len(chosen) >= budget:
+                            break
+                if len(chosen) < budget:
+                    for local_index in centroid_order:
+                        candidate = int(label_indices[local_index])
+                        if candidate not in chosen:
+                            chosen.append(candidate)
+                        if len(chosen) >= budget:
+                            break
             else:
                 label_scenarios = scenario_values[label_indices]
                 chosen = []

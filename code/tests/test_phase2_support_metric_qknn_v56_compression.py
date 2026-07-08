@@ -73,6 +73,36 @@ class Phase2SupportMetricQknnV56CompressionTest(unittest.TestCase):
         self.assertEqual(kept_indices.tolist(), [1, 2, 4, 5])
         self.assertEqual(kept_labels.tolist(), ["old-a", "old-a", "new-b", "new-b"])
 
+    def test_centroid_hard_neighbor_budget_keeps_center_and_boundary_codes(self):
+        from phase2_support_metric_qknn_probe import _compress_support_codes
+
+        features = np.asarray(
+            [
+                [1.00, 0.00],
+                [0.96, 0.04],
+                [0.20, 0.98],
+                [-1.00, 0.00],
+                [-0.96, 0.04],
+                [0.30, 0.95],
+            ],
+            dtype=float,
+        )
+        support_indices = np.asarray([0, 1, 2, 3, 4, 5], dtype=int)
+        support_labels = np.asarray(["old-a", "old-a", "old-a", "new-b", "new-b", "new-b"], dtype=object)
+        scenarios = np.asarray(["r1", "r1", "r2", "r1", "r1", "r2"], dtype=object)
+
+        kept_indices, kept_labels = _compress_support_codes(
+            features=features,
+            support_indices=support_indices,
+            support_labels=support_labels,
+            scenarios=scenarios,
+            per_class=2,
+            mode="centroid_hard_neighbor",
+        )
+
+        self.assertEqual(kept_indices.tolist(), [1, 2, 4, 5])
+        self.assertEqual(kept_labels.tolist(), ["old-a", "old-a", "new-b", "new-b"])
+
     def test_v56_keeps_support_code_budget_off_and_high_k_uses_v49_guard(self):
         from phase2_support_metric_qknn_probe import _adaptive_qknn_overrides
 
