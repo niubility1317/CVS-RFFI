@@ -20,7 +20,7 @@ Scope: Bao et al. receiver-agnostic two-stage UDA WiSig/ManySig paper-faithful c
 | run | status | GPU | PID | objective |
 |---|---|---|---:|---|
 | `receiver_agnostic_r6_replace_20_1_3_19_20260708_2240` | completed | `cuda:4` | `892055` | replace weak target receivers `20-1` and `3-19` |
-| `receiver_agnostic_rspecific_confdiag_r1234_20260708_2240` | running, R=1 complete | `cuda:5` | `893123` | R-specific LMMD, confidence threshold, temperature, detach target probabilities, source balance, GRL schedule |
+| `receiver_agnostic_rspecific_confdiag_r1234_20260708_2240` | completed | `cuda:5` | `893123` | R-specific LMMD, confidence threshold, temperature, detach target probabilities, source balance, GRL schedule |
 | `receiver_agnostic_fig8_balanced_classifier_r123_20260708_2240` | running | `cuda:6` | `894243` | Fig8 class-balanced target labels and classifier-only fine-tuning |
 
 ## Interim Result
@@ -38,8 +38,19 @@ Run A completed with target accuracy `0.818451`, below the paper Table I R=6 ref
 
 The replacement did not improve R=6 because `18-2` became the dominant low point. The next receiver replacement pass should avoid treating `18-2` as paper-comparable unless the paper receiver mapping can be verified.
 
-Run B produced its first R=1 row with target accuracy `0.603663`. LMMD pseudo-label coverage remained high at stage2 step 500 (`248/256`, coverage `0.96875`), so the low-R gap is unlikely to be caused by empty target LMMD batches. The main weak target receivers were `18-2` (`0.238708`) and `3-19` (`0.242000`).
+Run B completed with the following target accuracies. Paper Fig. 7 references are approximate visual reads from the plot, not exact table values.
+
+| R | reproduction | paper Fig. 7 Proposed approx | gap | note |
+|---:|---:|---:|---:|---|
+| 1 | `0.603663` | `~0.63` | `~-0.026` | close but low |
+| 2 | `0.651221` | `~0.64` | `~+0.011` | roughly matched |
+| 3 | `0.593380` | `~0.74` | `~-0.147` | failed; `18-2` and `3-19` dominate |
+| 4 | `0.856609` | `~0.87` | `~-0.013` | close |
+
+LMMD pseudo-label coverage remained high (`0.96875` to `0.99609`), so the low-R gap is unlikely to be caused by empty target LMMD batches. The main unresolved issue is receiver identity/composition, especially `18-2` and `3-19`.
+
+Run C remains active with PID `894243`; latest probe showed active CPU/GPU use but no `results.jsonl` yet.
 
 ## Pending
 
-Monitor B and C until `formal_training_summary` appears, then update the local report with final tables and compare R=1/2/3/4 and Fig8 curves against the previous reproduction and the paper.
+Monitor C until `formal_training_summary` appears, then update the local report with Fig8 per-strategy/per-iteration rows and compare against Fig. 8.
