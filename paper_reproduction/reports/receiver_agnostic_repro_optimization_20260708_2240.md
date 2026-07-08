@@ -20,7 +20,7 @@ Scope: Bao et al. receiver-agnostic two-stage UDA WiSig/ManySig paper-faithful c
 | run | status | GPU | PID | objective |
 |---|---|---|---:|---|
 | `receiver_agnostic_r6_replace_20_1_3_19_20260708_2240` | completed | `cuda:4` | `892055` | replace weak target receivers `20-1` and `3-19` |
-| `receiver_agnostic_rspecific_confdiag_r1234_20260708_2240` | running | `cuda:5` | `893123` | R-specific LMMD, confidence threshold, temperature, detach target probabilities, source balance, GRL schedule |
+| `receiver_agnostic_rspecific_confdiag_r1234_20260708_2240` | running, R=1 complete | `cuda:5` | `893123` | R-specific LMMD, confidence threshold, temperature, detach target probabilities, source balance, GRL schedule |
 | `receiver_agnostic_fig8_balanced_classifier_r123_20260708_2240` | running | `cuda:6` | `894243` | Fig8 class-balanced target labels and classifier-only fine-tuning |
 
 ## Interim Result
@@ -37,6 +37,8 @@ Run A completed with target accuracy `0.818451`, below the paper Table I R=6 ref
 | `8-8` | `0.872375` |
 
 The replacement did not improve R=6 because `18-2` became the dominant low point. The next receiver replacement pass should avoid treating `18-2` as paper-comparable unless the paper receiver mapping can be verified.
+
+Run B produced its first R=1 row with target accuracy `0.603663`. LMMD pseudo-label coverage remained high at stage2 step 500 (`248/256`, coverage `0.96875`), so the low-R gap is unlikely to be caused by empty target LMMD batches. The main weak target receivers were `18-2` (`0.238708`) and `3-19` (`0.242000`).
 
 ## Pending
 
