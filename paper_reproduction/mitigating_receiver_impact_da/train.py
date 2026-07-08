@@ -6,12 +6,15 @@ from pathlib import Path
 from typing import Any, Iterable
 
 import torch
+import torch.nn.functional as F
 
 from paper_reproduction.common.config import load_json_config
-from paper_reproduction.common.wisig_runtime import write_json
+from paper_reproduction.common.wisig_runtime import set_seed, tx_accuracy, write_json
 from paper_reproduction.mitigating_receiver_impact_da.algorithm import PseudoLabelState, gada_batch_step
+from paper_reproduction.mitigating_receiver_impact_da.data import build_manysig_task_loaders, load_wisig_compact_pkl
 from paper_reproduction.mitigating_receiver_impact_da.model import ReceiverImpactGADNet
 from paper_reproduction.mitigating_receiver_impact_da.protocol import (
+    PAPER_TASKS,
     build_paper_task_plan,
     validate_paper_faithful_config,
 )
@@ -181,17 +184,243 @@ def run_gada_training_loop(
     return payload
 
 
+def _limited_batches(loader: Iterable[Any], max_batches: int | None) -> Iterable[Any]:
+    if max_batches is None:
+        return loader
+    limit = int(max_batches)
+
+    def _generator() -> Iterable[Any]:
+        for index, batch in enumerate(loader):
+            if index >= limit:
+                break
+            yield batch
+
+    return _generator()
+
+
+def _evaluate_target_accuracy(model: ReceiverImpactGADNet, loader: Iterable[Any], *, device: torch.device | str) -> float:
+    model.eval()
+    correct = 0
+    total = 0
+    with torch.no_grad():
+        for batch in loader:
+            x = _batch_tensor(batch, "iq", 0).to(device)
+            y = _batch_tensor(batch, "label", 1).long().to(device)
+            logits = model.classify(x)
+            correct += int((logits.argmax(dim=1) == y).sum().item())
+            total += int(y.numel())
+    return 0.0 if total == 0 else correct / float(total)
+
+
+def _train_source_only(
+    model: ReceiverImpactGADNet,
+    source_loader: Iterable[Any],
+    *,
+    optimizer: torch.optim.Optimizer,
+    epochs: int,
+    device: torch.device | str,
+    max_batches_per_epoch: int | None,
+) -> dict[str, Any]:
+    history: list[dict[str, float | int]] = []
+    for epoch_index in range(int(epochs)):
+        model.train()
+        loss_sum = 0.0
+        acc_sum = 0.0
+        batches = 0
+        for batch in _limited_batches(source_loader, max_batches_per_epoch):
+            x = _batch_tensor(batch, "iq", 0).to(device)
+            y = _batch_tensor(batch, "label", 1).long().to(device)
+            optimizer.zero_grad(set_to_none=True)
+            logits = model.classify(x)
+            loss = F.cross_entropy(logits, y)
+            loss.backward()
+            optimizer.step()
+            loss_sum += float(loss.detach().cpu())
+            acc_sum += tx_accuracy(logits.detach().cpu(), y.detach().cpu())
+            batches += 1
+        if batches == 0:
+            raise ValueError("source batches cannot be empty")
+        history.append(
+            {
+                "epoch": epoch_index + 1,
+                "batches": batches,
+                "loss_mean": loss_sum / float(batches),
+                "source_batch_acc_mean": acc_sum / float(batches),
+            }
+        )
+    return {"history": history}
+
+
+def _task_slug(task: str) -> str:
+    return str(task).replace("->", "_to_").replace("/", "_")
+
+
+def run_table2_reproduction(
+    compact_or_path: dict[str, Any] | str | Path,
+    *,
+    tasks: list[str] | None = None,
+    methods: list[str] | None = None,
+    output_dir: Path | str,
+    epochs: int,
+    batch_size: int,
+    learning_rate: float = 0.0006,
+    max_samples_per_combo: int | None = None,
+    max_batches_per_epoch: int | None = None,
+    seed: int = 0,
+    device: torch.device | str | None = None,
+    num_workers: int = 0,
+) -> dict[str, Any]:
+    set_seed(int(seed))
+    resolved_device = torch.device(device or ("cuda" if torch.cuda.is_available() else "cpu"))
+    requested_tasks = list(PAPER_TASKS if tasks is None else tasks)
+    requested_methods = [str(method).lower() for method in (methods or ["source_only", "proposed"])]
+    output_path = Path(output_dir)
+    output_path.mkdir(parents=True, exist_ok=True)
+    compact = load_wisig_compact_pkl(str(compact_or_path)) if isinstance(compact_or_path, (str, Path)) else compact_or_path
+    rows: list[dict[str, Any]] = []
+
+    for task in requested_tasks:
+        loaders = build_manysig_task_loaders(
+            compact,
+            task=task,
+            batch_size=batch_size,
+            max_samples_per_combo=max_samples_per_combo,
+            seed=seed,
+            num_workers=num_workers,
+        )
+        for method in requested_methods:
+            if method not in {"source_only", "proposed"}:
+                rows.append(
+                    {
+                        "task": task,
+                        "method": method,
+                        "status": "not_implemented",
+                        "target_labels_scope": "evaluation_only",
+                    }
+                )
+                continue
+            model = ReceiverImpactGADNet(num_tx=6).to(resolved_device)
+            checkpoint_path = output_path / f"{_task_slug(task)}_{method}.pt"
+            if method == "source_only":
+                optimizer = torch.optim.Adam(
+                    list(model.feature_extractor.parameters()) + list(model.classifier.parameters()),
+                    lr=float(learning_rate),
+                )
+                train_result = _train_source_only(
+                    model,
+                    loaders["source"],
+                    optimizer=optimizer,
+                    epochs=epochs,
+                    device=resolved_device,
+                    max_batches_per_epoch=max_batches_per_epoch,
+                )
+                torch.save(
+                    {
+                        "paper": "Mitigating Receiver Impact on Radio Frequency Fingerprint Identification via Domain Adaptation",
+                        "method": method,
+                        "task": task,
+                        "model_state_dict": model.inference_state_dict(),
+                        "history": train_result["history"],
+                    },
+                    checkpoint_path,
+                )
+            else:
+                optimizer_t = torch.optim.Adam(model.estimate_network.parameters(), lr=float(learning_rate))
+                optimizer_ec = torch.optim.Adam(
+                    list(model.feature_extractor.parameters()) + list(model.classifier.parameters()),
+                    lr=float(learning_rate),
+                )
+                train_result = run_gada_training_loop(
+                    model,
+                    _limited_batches(loaders["source"], max_batches_per_epoch),
+                    loaders["target_train"],
+                    optimizer_t=optimizer_t,
+                    optimizer_ec=optimizer_ec,
+                    epochs=epochs,
+                    checkpoint_path=checkpoint_path,
+                    device=resolved_device,
+                    max_batches_per_epoch=max_batches_per_epoch,
+                )
+            target_accuracy = _evaluate_target_accuracy(model, loaders["target_eval"], device=resolved_device)
+            rows.append(
+                {
+                    "task": task,
+                    "method": method,
+                    "status": "completed",
+                    "target_accuracy": float(target_accuracy),
+                    "target_labels_scope": "evaluation_only",
+                    "target_label_role": loaders["meta"]["target_label_role"],
+                    "checkpoint_path": str(checkpoint_path),
+                    "history": train_result["history"],
+                    "task_meta": loaders["meta"],
+                }
+            )
+
+    return {
+        "method_id": "mitigating_receiver_impact_da",
+        "paper": "Mitigating Receiver Impact on Radio Frequency Fingerprint Identification via Domain Adaptation",
+        "artifact_type": "table2_reproduction_run",
+        "dataset": "WiSig ManySig",
+        "epochs": int(epochs),
+        "batch_size": int(batch_size),
+        "learning_rate": float(learning_rate),
+        "max_samples_per_combo": max_samples_per_combo,
+        "max_batches_per_epoch": max_batches_per_epoch,
+        "seed": int(seed),
+        "device": str(resolved_device),
+        "result_claim_status": "smoke_or_formal_metrics_depend_on_dataset",
+        "rows": rows,
+    }
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description="Paper-faithful dry-run entrypoint for the IoTJ 2024 receiver-impact DA RFFI paper.")
     parser.add_argument("--config", type=Path, required=True)
     parser.add_argument("--dry-run", action="store_true", help="Validate config and print the reproduction matrix.")
+    parser.add_argument("--run-table2", action="store_true", help="Run Table II source-only/proposed rows on a WiSig ManySig pkl.")
+    parser.add_argument("--manysig-pkl", type=Path, default=None)
+    parser.add_argument("--methods", type=str, default="source_only,proposed")
+    parser.add_argument("--tasks", type=str, default="")
+    parser.add_argument("--epochs", type=int, default=1)
+    parser.add_argument("--batch-size", type=int, default=64)
+    parser.add_argument("--learning-rate", type=float, default=0.0006)
+    parser.add_argument("--max-samples-per-combo", type=int, default=None)
+    parser.add_argument("--max-batches-per-epoch", type=int, default=None)
+    parser.add_argument("--seed", type=int, default=0)
+    parser.add_argument("--device", type=str, default=None)
+    parser.add_argument("--num-workers", type=int, default=0)
+    parser.add_argument("--checkpoint-dir", type=Path, default=Path("paper_reproduction/runs/mitigating_receiver_impact_da"))
     parser.add_argument("--output", type=Path, default=None, help="Optional JSON output path for dry-run payload.")
     args = parser.parse_args()
 
-    if not args.dry_run:
-        raise SystemExit("formal WiSig training CLI is intentionally gated; use --dry-run or call run_gada_training_loop with explicit loaders")
-
     config = load_json_config(args.config)
+    if args.run_table2:
+        if args.manysig_pkl is None:
+            raise SystemExit("--manysig-pkl is required with --run-table2")
+        tasks = [token.strip() for token in args.tasks.split(",") if token.strip()] or None
+        methods = [token.strip() for token in args.methods.split(",") if token.strip()]
+        payload = run_table2_reproduction(
+            args.manysig_pkl,
+            tasks=tasks,
+            methods=methods,
+            output_dir=args.checkpoint_dir,
+            epochs=args.epochs,
+            batch_size=args.batch_size,
+            learning_rate=args.learning_rate,
+            max_samples_per_combo=args.max_samples_per_combo,
+            max_batches_per_epoch=args.max_batches_per_epoch,
+            seed=args.seed,
+            device=args.device,
+            num_workers=args.num_workers,
+        )
+        if args.output is not None:
+            write_json(args.output, payload)
+        print(json.dumps(payload, ensure_ascii=False, sort_keys=True))
+        return 0
+
+    if not args.dry_run:
+        raise SystemExit("formal WiSig training CLI is intentionally gated; use --dry-run or --run-table2")
+
     payload = build_dry_run_payload(config)
     if args.output is not None:
         write_json(args.output, payload)

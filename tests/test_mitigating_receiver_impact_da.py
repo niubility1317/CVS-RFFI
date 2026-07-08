@@ -4,6 +4,7 @@ import subprocess
 import sys
 from pathlib import Path
 
+import numpy as np
 import torch
 
 
@@ -22,6 +23,33 @@ class CountingOptimizer:
 
     def step(self):
         self.step_calls += 1
+
+
+def _synthetic_manysig_compact() -> dict:
+    data = []
+    rx_labels = ["1-1", "1-19", "3-19", "7-7", "8-8", "14-7", "rx6", "rx7", "rx8", "rx9", "rx10", "rx11"]
+    for tx_i in range(6):
+        tx_rows = []
+        for rx_i in range(12):
+            rx_rows = []
+            for day_i in range(4):
+                eq_rows = []
+                for _eq_i in range(2):
+                    samples = np.zeros((2, 320, 2), dtype=np.float32)
+                    samples[:, :, 0] = float(tx_i + 1)
+                    samples[:, :, 1] = float(rx_i + day_i)
+                    samples[:, 0, 0] = 100.0 + tx_i
+                    eq_rows.append(samples)
+                rx_rows.append(eq_rows)
+            tx_rows.append(rx_rows)
+        data.append(tx_rows)
+    return {
+        "data": data,
+        "tx_list": [f"tx{i}" for i in range(6)],
+        "rx_list": rx_labels,
+        "capture_date_list": ["d0", "d1", "d2", "d3"],
+        "equalized_list": [0, 1],
+    }
 
 
 def test_iotj2024_model_exposes_classifier_and_estimate_networks():
@@ -256,6 +284,54 @@ def test_protocol_rejects_target_label_training_scope():
         assert "target_labels_scope" in str(exc)
     else:
         raise AssertionError("target_labels_scope other than evaluation_only must be rejected")
+
+
+def test_manysig_task_builder_matches_table2_receiver_and_day_tasks():
+    from paper_reproduction.mitigating_receiver_impact_da.data import build_manysig_task_datasets
+
+    cross_rx = build_manysig_task_datasets(_synthetic_manysig_compact(), task="14-7->3-19", max_samples_per_combo=1)
+    source_x, source_y, _source_d, source_meta = cross_rx["source"][0]
+    target_x, target_y, _target_d, target_meta = cross_rx["target"][0]
+
+    assert source_x.shape == (2, 256)
+    assert target_x.shape == (2, 256)
+    assert int(source_y) in range(6)
+    assert int(target_y) in range(6)
+    assert source_meta["rx"] == "14-7"
+    assert target_meta["rx"] == "3-19"
+    assert cross_rx["meta"]["target_label_role"] == "hidden_for_UDA_training_available_for_final_accuracy"
+
+    cross_day = build_manysig_task_datasets(_synthetic_manysig_compact(), task="d01->d23", max_samples_per_combo=1)
+    source_days = {meta["day"] for *_unused, meta in [cross_day["source"][idx] for idx in range(len(cross_day["source"]))]}
+    target_days = {meta["day"] for *_unused, meta in [cross_day["target"][idx] for idx in range(len(cross_day["target"]))]}
+    assert source_days == {"d0", "d1"}
+    assert target_days == {"d2", "d3"}
+
+
+def test_table2_runner_smoke_trains_source_only_and_proposed_rows(tmp_path):
+    from paper_reproduction.mitigating_receiver_impact_da.train import run_table2_reproduction
+
+    result = run_table2_reproduction(
+        _synthetic_manysig_compact(),
+        tasks=["14-7->3-19"],
+        methods=["source_only", "proposed"],
+        output_dir=tmp_path,
+        epochs=1,
+        batch_size=4,
+        max_samples_per_combo=1,
+        max_batches_per_epoch=1,
+        seed=3,
+        device="cpu",
+    )
+
+    assert result["method_id"] == "mitigating_receiver_impact_da"
+    assert result["result_claim_status"] == "smoke_or_formal_metrics_depend_on_dataset"
+    assert [row["method"] for row in result["rows"]] == ["source_only", "proposed"]
+    assert all(row["task"] == "14-7->3-19" for row in result["rows"])
+    assert all(row["target_labels_scope"] == "evaluation_only" for row in result["rows"])
+    assert all(0.0 <= row["target_accuracy"] <= 1.0 for row in result["rows"])
+    assert (tmp_path / "14-7_to_3-19_source_only.pt").exists()
+    assert (tmp_path / "14-7_to_3-19_proposed.pt").exists()
 
 
 def test_algorithm1_training_loop_runs_epochs_and_writes_checkpoint(tmp_path):
