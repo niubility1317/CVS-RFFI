@@ -159,21 +159,50 @@ def stage2_lmmd_objective(
     num_classes: int,
     lmmd_lambda: float = 1.0,
     target_probs: torch.Tensor | None = None,
+    lmmd_layers: str = "activations",
 ) -> dict[str, torch.Tensor]:
-    """Eq.16 objective: source transmitter CE plus weighted multi-layer LMMD."""
-    if "activations" not in source_outputs or "activations" not in target_outputs:
-        raise ValueError("stage2 LMMD objective requires return_activations=True outputs")
+    """Eq.16 objective: source transmitter CE plus weighted LMMD over the selected layer set."""
     if target_probs is None:
         target_probs = torch.softmax(target_outputs["tx_logits"], dim=1)
     loss_tx = transmitter_ce_loss(source_outputs["tx_logits"], source_labels)
-    loss_lmmd = multi_layer_lmmd_loss(
-        source_outputs["activations"],
-        target_outputs["activations"],
-        source_labels,
-        target_probs,
-        num_classes=num_classes,
-        lmmd_weight=1.0,
-    )
+    if lmmd_layers == "activations":
+        if "activations" not in source_outputs or "activations" not in target_outputs:
+            raise ValueError("activation LMMD requires return_activations=True outputs")
+        loss_lmmd = multi_layer_lmmd_loss(
+            source_outputs["activations"],
+            target_outputs["activations"],
+            source_labels,
+            target_probs,
+            num_classes=num_classes,
+            lmmd_weight=1.0,
+        )
+    elif lmmd_layers == "features":
+        loss_lmmd = lmmd_loss(
+            source_outputs["features"],
+            target_outputs["features"],
+            source_labels,
+            target_probs,
+            num_classes=num_classes,
+        )
+    elif lmmd_layers == "features_and_activations":
+        if "activations" not in source_outputs or "activations" not in target_outputs:
+            raise ValueError("feature+activation LMMD requires return_activations=True outputs")
+        loss_lmmd = lmmd_loss(
+            source_outputs["features"],
+            target_outputs["features"],
+            source_labels,
+            target_probs,
+            num_classes=num_classes,
+        ) + multi_layer_lmmd_loss(
+            source_outputs["activations"],
+            target_outputs["activations"],
+            source_labels,
+            target_probs,
+            num_classes=num_classes,
+            lmmd_weight=1.0,
+        )
+    else:
+        raise ValueError(f"unknown LMMD layer set: {lmmd_layers}")
     return {
         "loss": loss_tx + float(lmmd_lambda) * loss_lmmd,
         "loss_tx": loss_tx,

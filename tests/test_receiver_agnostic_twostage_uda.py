@@ -111,6 +111,28 @@ def test_stage2_lmmd_objective_matches_eq16_components():
     assert torch.isfinite(losses["loss"])
 
 
+def test_stage2_lmmd_objective_can_align_feature_layer_only():
+    from paper_reproduction.receiver_agnostic_twostage_uda.losses import stage2_lmmd_objective
+    from paper_reproduction.receiver_agnostic_twostage_uda.model import ReceiverAgnosticUDANet
+
+    model = ReceiverAgnosticUDANet(num_tx=3)
+    source_outputs = model(torch.randn(4, 2, 256))
+    target_outputs = model(torch.randn(5, 2, 256))
+    source_labels = torch.tensor([0, 1, 2, 0])
+
+    losses = stage2_lmmd_objective(
+        source_outputs,
+        target_outputs,
+        source_labels,
+        num_classes=3,
+        lmmd_lambda=0.05,
+        lmmd_layers="features",
+    )
+
+    assert torch.allclose(losses["loss"], losses["loss_tx"] + 0.05 * losses["loss_lmmd"])
+    assert torch.isfinite(losses["loss"])
+
+
 def test_uncertainty_sampling_orders_hard_target_samples():
     from paper_reproduction.receiver_agnostic_twostage_uda.sampling import rank_uncertain_samples
 
@@ -391,6 +413,11 @@ def test_formal_training_smoke_writes_paper_scoped_rows(tmp_path):
             "0",
             "--progress-every",
             "0",
+            "--transductive-target-eval",
+            "--lmmd-lambda",
+            "0.05",
+            "--lmmd-layers",
+            "features",
         ],
         cwd=".",
         text=True,
@@ -408,6 +435,10 @@ def test_formal_training_smoke_writes_paper_scoped_rows(tmp_path):
     assert rows[0]["artifact_type"] == "formal_training_result"
     assert rows[0]["source_receiver_count"] == 1
     assert rows[0]["target_receiver_count"] == 11
+    assert rows[0]["target_eval_protocol"] == "transductive_all_target_unlabeled_for_UDA_and_eval"
+    assert rows[0]["target_adapt_size"] == rows[0]["target_eval_size"]
+    assert rows[1]["hyperparameters"]["lmmd_lambda"] == 0.05
+    assert rows[1]["hyperparameters"]["lmmd_layers"] == "features"
     assert rows[0]["claim_blocks"] == [
         "not CVS Stage2-C",
         "not satellite/LEO deployment evidence",

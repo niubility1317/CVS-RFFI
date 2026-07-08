@@ -32,6 +32,9 @@
     "lr": 0.001,
     "weight_decay": 0.0001,
     "target_eval_fraction": 0.5,
+    "transductive_target_eval": false,
+    "lmmd_lambda": 1.0,
+    "lmmd_layers": "activations",
     "paper_status": "optimizer, batch size, epochs, split seed, and train/eval target split are implementation choices because the paper does not publish them"
   },
   "optional_finetune": {

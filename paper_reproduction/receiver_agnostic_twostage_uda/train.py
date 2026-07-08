@@ -85,6 +85,22 @@ def _split_indices(n: int, *, eval_fraction: float, seed: int) -> tuple[list[int
     return adapt_ids, eval_ids
 
 
+def _target_adapt_eval_indices(
+    n: int,
+    *,
+    eval_fraction: float,
+    seed: int,
+    transductive_target_eval: bool,
+) -> tuple[list[int], list[int], str]:
+    if bool(transductive_target_eval):
+        if n < 1:
+            raise ValueError("formal training requires at least one target sample")
+        ids = list(range(int(n)))
+        return ids, ids, "transductive_all_target_unlabeled_for_UDA_and_eval"
+    adapt_ids, eval_ids = _split_indices(n, eval_fraction=eval_fraction, seed=seed)
+    return adapt_ids, eval_ids, "heldout_target_eval_split"
+
+
 def _cycle(loader: DataLoader):
     while True:
         for batch in loader:
@@ -181,6 +197,8 @@ def _fit_base_model(
     supervised_steps: int,
     stage1_steps: int,
     stage2_steps: int,
+    lmmd_lambda: float,
+    lmmd_layers: str,
     progress_every: int,
 ) -> tuple[torch.nn.Module, dict[str, Any]]:
     model = ReceiverAgnosticUDANet(num_tx=num_tx).to(device)
@@ -223,7 +241,8 @@ def _fit_base_model(
                     next(target_iter),
                     optimizer,
                     num_classes=num_tx,
-                    lmmd_lambda=1.0,
+                    lmmd_lambda=lmmd_lambda,
+                    lmmd_layers=lmmd_layers,
                     device=device,
                 ),
                 steps=stage2_steps,
@@ -341,10 +360,11 @@ def run_formal(config: dict[str, Any], args: argparse.Namespace) -> dict[str, An
             seed=row_seed,
             max_samples_per_combo=args.max_samples_per_combo,
         )
-        target_adapt_ids, target_eval_ids = _split_indices(
+        target_adapt_ids, target_eval_ids, target_eval_protocol = _target_adapt_eval_indices(
             len(datasets["target"]),
             eval_fraction=float(args.target_eval_fraction),
             seed=row_seed,
+            transductive_target_eval=bool(args.transductive_target_eval),
         )
         loaders = {
             "source_train": _loader(datasets["source"], batch_size=args.batch_size, shuffle=True, num_workers=args.num_workers),
@@ -376,6 +396,7 @@ def run_formal(config: dict[str, Any], args: argparse.Namespace) -> dict[str, An
                     "source_size": len(datasets["source"]),
                     "target_adapt_size": len(target_adapt_ids),
                     "target_eval_size": len(target_eval_ids),
+                    "target_eval_protocol": target_eval_protocol,
                 },
                 ensure_ascii=False,
                 sort_keys=True,
@@ -395,6 +416,8 @@ def run_formal(config: dict[str, Any], args: argparse.Namespace) -> dict[str, An
                 supervised_steps=supervised_steps_by_method.get(method, source_steps),
                 stage1_steps=stage1_steps,
                 stage2_steps=stage2_steps,
+                lmmd_lambda=float(args.lmmd_lambda),
+                lmmd_layers=str(args.lmmd_layers),
                 progress_every=int(args.progress_every),
             )
             row: dict[str, Any] = {
@@ -412,6 +435,7 @@ def run_formal(config: dict[str, Any], args: argparse.Namespace) -> dict[str, An
                 "preprocessing": datasets["meta"]["preprocessing"],
                 "target_adapt_size": len(target_adapt_ids),
                 "target_eval_size": len(target_eval_ids),
+                "target_eval_protocol": target_eval_protocol,
                 "seed": row_seed,
                 "hyperparameters": {
                     "batch_size": int(args.batch_size),
@@ -422,6 +446,9 @@ def run_formal(config: dict[str, Any], args: argparse.Namespace) -> dict[str, An
                     "stage1_epochs": int(args.stage1_epochs),
                     "stage2_epochs": int(args.stage2_epochs),
                     "target_eval_fraction": float(args.target_eval_fraction),
+                    "transductive_target_eval": bool(args.transductive_target_eval),
+                    "lmmd_lambda": float(args.lmmd_lambda),
+                    "lmmd_layers": str(args.lmmd_layers),
                     "max_samples_per_combo": args.max_samples_per_combo,
                     "paper_status": "paper-unspecified optimizer/batch/epoch choices; recorded for reproducibility",
                 },
@@ -515,6 +542,17 @@ def main() -> int:
     parser.add_argument("--max-train-steps", type=int, default=0)
     parser.add_argument("--max-samples-per-combo", type=int, default=None)
     parser.add_argument("--target-eval-fraction", type=float, default=0.5)
+    parser.add_argument(
+        "--transductive-target-eval",
+        action="store_true",
+        help="Use all target receiver samples as unlabeled UDA data and evaluate on the same target pool, matching transductive UDA reporting.",
+    )
+    parser.add_argument("--lmmd-lambda", type=float, default=1.0)
+    parser.add_argument(
+        "--lmmd-layers",
+        choices=["activations", "features", "features_and_activations"],
+        default="activations",
+    )
     parser.add_argument("--lr", type=float, default=1e-3)
     parser.add_argument("--weight-decay", type=float, default=1e-4)
     parser.add_argument("--progress-every", type=int, default=100)

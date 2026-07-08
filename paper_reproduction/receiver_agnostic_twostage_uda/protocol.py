@@ -12,6 +12,7 @@ PAPER_UNSPECIFIED_FIELDS = [
     "GRL lambda schedule",
     "LMMD lambda",
     "LMMD kernel and layer set",
+    "target-domain train/evaluation split versus transductive UDA reporting pool",
     "fine-tuning freeze policy",
 ]
 

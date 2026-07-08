@@ -54,6 +54,7 @@ def lmmd_stage2_train_step(
     *,
     num_classes: int,
     lmmd_lambda: float = 1.0,
+    lmmd_layers: str = "activations",
     device: torch.device | str | None = None,
 ) -> dict[str, float]:
     """One paper Stage2 LMMD update; target labels remain hidden for UDA."""
@@ -70,6 +71,7 @@ def lmmd_stage2_train_step(
         source_labels,
         num_classes=num_classes,
         lmmd_lambda=lmmd_lambda,
+        lmmd_layers=lmmd_layers,
     )
     losses["loss"].backward()
     optimizer.step()
