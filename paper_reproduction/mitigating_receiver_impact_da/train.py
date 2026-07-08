@@ -79,6 +79,17 @@ def _optional_batch_tensor(batch: Any, key: str, fallback_index: int) -> torch.T
     return value
 
 
+def _batch_base_indices(batch: Any) -> torch.Tensor | None:
+    if not isinstance(batch, dict) or "meta" not in batch:
+        return None
+    indices: list[int] = []
+    for meta in batch["meta"]:
+        if not isinstance(meta, dict) or "base_index" not in meta:
+            return None
+        indices.append(int(meta["base_index"]))
+    return torch.tensor(indices, dtype=torch.long)
+
+
 def _next_cycling(iterator: Iterable[Any], current_iterator: Any, *, name: str) -> tuple[Any, Any]:
     try:
         return next(current_iterator), current_iterator
@@ -95,6 +106,65 @@ def _state_payload(state: PseudoLabelState) -> dict[str, Any]:
         "pseudo_counts": [float(v) for v in state.pseudo_counts.tolist()],
         "predicted_counts": [float(v) for v in state.predicted_counts.tolist()],
         "total_seen": int(state.total_seen),
+    }
+
+
+def _target_state_shape(target_batches: Iterable[Any]) -> tuple[int | None, int | None]:
+    try:
+        dataset = getattr(target_batches, "dataset", None)
+        target_size = None if dataset is None else int(len(dataset))
+    except TypeError:
+        target_size = None
+    try:
+        target_batch_count = int(len(target_batches))  # type: ignore[arg-type]
+    except TypeError:
+        target_batch_count = None
+    return target_size, target_batch_count
+
+
+def _iterate_paired_batches(
+    source_batches: Iterable[Any],
+    target_batches: Iterable[Any],
+    *,
+    mode: str,
+    target_iterator: Any,
+) -> tuple[Iterable[tuple[Any, Any]], Any]:
+    normalized = str(mode).strip().lower()
+    if normalized == "zip_min":
+        return zip(iter(source_batches), iter(target_batches)), target_iterator
+    if normalized == "cycle_target":
+        def _generator() -> Iterable[tuple[Any, Any]]:
+            nonlocal target_iterator
+            for source_batch in iter(source_batches):
+                target_batch, target_iterator = _next_cycling(target_batches, target_iterator, name="target")
+                yield source_batch, target_batch
+
+        return _generator(), target_iterator
+    raise ValueError("batch_pairing must be one of: cycle_target, zip_min")
+
+
+def _evaluate_target_loss_accuracy(model: ReceiverImpactGADNet, loader: Iterable[Any], *, device: torch.device | str) -> dict[str, float | int]:
+    model.eval()
+    loss_sum = 0.0
+    correct = 0
+    total = 0
+    batches = 0
+    with torch.no_grad():
+        for batch in loader:
+            x = _batch_tensor(batch, "iq", 0).to(device)
+            y = _batch_tensor(batch, "label", 1).long().to(device)
+            logits = model.classify(x)
+            loss_sum += float(F.cross_entropy(logits, y).detach().cpu())
+            correct += int((logits.argmax(dim=1) == y).sum().item())
+            total += int(y.numel())
+            batches += 1
+    if batches == 0:
+        raise ValueError("target evaluation batches cannot be empty")
+    return {
+        "target_loss": loss_sum / float(batches),
+        "target_accuracy": 0.0 if total <= 0 else correct / float(total),
+        "target_total": int(total),
+        "target_batches": int(batches),
     }
 
 
@@ -117,6 +187,18 @@ def run_gada_training_loop(
     class_weight_clip_min: float | None = None,
     class_weight_clip_max: float | None = None,
     class_weight_mean_normalize: bool = False,
+    kl_estimator_mode: str = "dvkl",
+    mine_ma_rate: float = 0.01,
+    mine_update_scale: float = 0.5,
+    pseudo_threshold_mode: str = "paper",
+    pseudo_score_mode: str = "probability",
+    class_weight_timing: str = "previous",
+    pseudo_state_scope: str = "global",
+    batch_pairing: str = "cycle_target",
+    adapt_start_epoch: int = 0,
+    label_smoothing: float = 0.0,
+    target_eval_batches: Iterable[Any] | None = None,
+    target_model_selection: str = "final",
     max_batches_per_epoch: int | None = None,
 ) -> dict[str, Any]:
     """Execute the Algorithm 1 GAD loop over caller-provided source/target batches.
@@ -132,12 +214,30 @@ def run_gada_training_loop(
 
     resolved_device = torch.device(device) if device is not None else next(model.parameters()).device
     model.to(resolved_device)
-    state = PseudoLabelState(num_classes=int(model.num_tx))
+    state_scope = str(pseudo_state_scope).strip().lower()
+    if state_scope not in {"global", "epoch"}:
+        raise ValueError("pseudo_state_scope must be one of: global, epoch")
+    target_size, target_batches_count = _target_state_shape(target_batches)
+    state = PseudoLabelState(
+        num_classes=int(model.num_tx),
+        target_size=target_size if state_scope == "epoch" else None,
+        target_batches=target_batches_count if state_scope == "epoch" else None,
+    )
     target_iterator = iter(target_batches)
     history: list[dict[str, float | int]] = []
+    target_eval_history: list[dict[str, float | int]] = []
     total_batches = 0
+    best_target_loss = float("inf")
+    best_target_epoch: int | None = None
+    best_target_state: dict[str, torch.Tensor] | None = None
+    normalized_selection = str(target_model_selection).strip().lower()
+    if normalized_selection not in {"final", "target_loss_best"}:
+        raise ValueError("target_model_selection must be one of: final, target_loss_best")
 
     for epoch_index in range(int(epochs)):
+        epoch_number = epoch_index + 1
+        if state_scope == "epoch":
+            state.reset_epoch()
         epoch_batches = 0
         epoch_loss = 0.0
         epoch_loss_source = 0.0
@@ -151,36 +251,70 @@ def run_gada_training_loop(
         epoch_pred_correct = 0
         epoch_weight_min = float("inf")
         epoch_weight_max = float("-inf")
-        source_iterator = iter(source_batches)
-        for source_batch in source_iterator:
+        paired_batches, target_iterator = _iterate_paired_batches(
+            source_batches,
+            target_batches,
+            mode=batch_pairing,
+            target_iterator=target_iterator,
+        )
+        for source_batch, target_batch in paired_batches:
             if max_batches_per_epoch is not None and epoch_batches >= int(max_batches_per_epoch):
                 break
-            target_batch, target_iterator = _next_cycling(target_batches, target_iterator, name="target")
             source_x = _batch_tensor(source_batch, "iq", 0).to(resolved_device)
             source_y = _batch_tensor(source_batch, "label", 1).long().to(resolved_device)
             target_x = _batch_tensor(target_batch, "iq", 0).to(resolved_device)
             target_y_audit = _optional_batch_tensor(target_batch, "label", 1)
             if target_y_audit is not None:
                 target_y_audit = target_y_audit.long().to(resolved_device)
-            result = gada_batch_step(
-                model,
-                source_x,
-                source_y,
-                target_x,
-                target_y_audit=target_y_audit,
-                state=state,
-                optimizer_t=optimizer_t,
-                optimizer_ec=optimizer_ec,
-                estimate_steps=estimate_steps,
-                base_tau=base_tau,
-                mu=mu,
-                kl_weight=kl_weight,
-                class_prior=class_prior,
-                class_weight_smoothing=class_weight_smoothing,
-                class_weight_clip_min=class_weight_clip_min,
-                class_weight_clip_max=class_weight_clip_max,
-                class_weight_mean_normalize=class_weight_mean_normalize,
-            )
+            target_indices = _batch_base_indices(target_batch) if state_scope == "epoch" else None
+            if epoch_number <= int(adapt_start_epoch):
+                model.train()
+                optimizer_ec.zero_grad()
+                logits = model.classify(source_x)
+                source_loss = F.cross_entropy(logits, source_y, label_smoothing=float(label_smoothing))
+                source_loss.backward()
+                optimizer_ec.step()
+                result = {
+                    "loss": source_loss.detach(),
+                    "loss_weighted_ce": source_loss.detach(),
+                    "loss_source": source_loss.detach(),
+                    "loss_target": source_loss.detach() * 0.0,
+                    "loss_kl": source_loss.detach() * 0.0,
+                    "target_selected": torch.tensor(0, device=resolved_device),
+                    "target_conf_mean": torch.tensor(0.0, device=resolved_device),
+                    "class_weight_min": torch.tensor(1.0, device=resolved_device),
+                    "class_weight_max": torch.tensor(1.0, device=resolved_device),
+                    "estimate_steps": 0,
+                    "estimate_loss": torch.tensor(0.0, device=resolved_device),
+                    "estimate_zeta": torch.tensor(0.0, device=resolved_device),
+                }
+            else:
+                result = gada_batch_step(
+                    model,
+                    source_x,
+                    source_y,
+                    target_x,
+                    target_y_audit=target_y_audit,
+                    state=state,
+                    optimizer_t=optimizer_t,
+                    optimizer_ec=optimizer_ec,
+                    estimate_steps=estimate_steps,
+                    base_tau=base_tau,
+                    mu=mu,
+                    kl_weight=kl_weight,
+                    class_prior=class_prior,
+                    class_weight_smoothing=class_weight_smoothing,
+                    class_weight_clip_min=class_weight_clip_min,
+                    class_weight_clip_max=class_weight_clip_max,
+                    class_weight_mean_normalize=class_weight_mean_normalize,
+                    kl_estimator_mode=kl_estimator_mode,
+                    mine_ma_rate=mine_ma_rate,
+                    mine_update_scale=mine_update_scale,
+                    pseudo_threshold_mode=pseudo_threshold_mode,
+                    pseudo_score_mode=pseudo_score_mode,
+                    class_weight_timing=class_weight_timing,
+                    target_indices=target_indices,
+                )
             epoch_batches += 1
             total_batches += 1
             epoch_loss += float(result["loss"].item())
@@ -199,9 +333,13 @@ def run_gada_training_loop(
 
         if epoch_batches == 0:
             raise ValueError("source batches cannot be empty")
+        if not torch.isfinite(torch.tensor(epoch_weight_min)):
+            epoch_weight_min = 1.0
+        if not torch.isfinite(torch.tensor(epoch_weight_max)):
+            epoch_weight_max = 1.0
         history.append(
             {
-                "epoch": epoch_index + 1,
+                "epoch": epoch_number,
                 "batches": epoch_batches,
                 "loss_mean": epoch_loss / float(epoch_batches),
                 "loss_source_mean": epoch_loss_source / float(epoch_batches),
@@ -217,6 +355,20 @@ def run_gada_training_loop(
                 "target_pred_acc": None if epoch_audit_total <= 0 else epoch_pred_correct / float(epoch_audit_total),
             }
         )
+        if target_eval_batches is not None:
+            eval_row = _evaluate_target_loss_accuracy(model, target_eval_batches, device=resolved_device)
+            eval_row["epoch"] = epoch_number
+            target_eval_history.append(eval_row)
+            if normalized_selection == "target_loss_best" and float(eval_row["target_loss"]) < best_target_loss:
+                best_target_loss = float(eval_row["target_loss"])
+                best_target_epoch = epoch_number
+                best_target_state = {
+                    key: value.detach().cpu().clone()
+                    for key, value in model.state_dict().items()
+                }
+
+    if normalized_selection == "target_loss_best" and best_target_state is not None:
+        model.load_state_dict(best_target_state)
 
     payload: dict[str, Any] = {
         "paper": "Mitigating Receiver Impact on Radio Frequency Fingerprint Identification via Domain Adaptation",
@@ -231,6 +383,20 @@ def run_gada_training_loop(
         "class_weight_clip_min": None if class_weight_clip_min is None else float(class_weight_clip_min),
         "class_weight_clip_max": None if class_weight_clip_max is None else float(class_weight_clip_max),
         "class_weight_mean_normalize": bool(class_weight_mean_normalize),
+        "kl_estimator_mode": str(kl_estimator_mode),
+        "mine_ma_rate": float(mine_ma_rate),
+        "mine_update_scale": float(mine_update_scale),
+        "pseudo_threshold_mode": str(pseudo_threshold_mode),
+        "pseudo_score_mode": str(pseudo_score_mode),
+        "class_weight_timing": str(class_weight_timing),
+        "pseudo_state_scope": str(pseudo_state_scope),
+        "batch_pairing": str(batch_pairing),
+        "adapt_start_epoch": int(adapt_start_epoch),
+        "label_smoothing": float(label_smoothing),
+        "target_model_selection": str(target_model_selection),
+        "target_eval_history": target_eval_history,
+        "best_target_loss_epoch": best_target_epoch,
+        "best_target_loss": None if best_target_epoch is None else best_target_loss,
         "history": history,
         "state": _state_payload(state),
     }
@@ -381,6 +547,7 @@ def _train_source_only(
     epochs: int,
     device: torch.device | str,
     max_batches_per_epoch: int | None,
+    label_smoothing: float = 0.0,
 ) -> dict[str, Any]:
     history: list[dict[str, float | int]] = []
     for epoch_index in range(int(epochs)):
@@ -393,7 +560,7 @@ def _train_source_only(
             y = _batch_tensor(batch, "label", 1).long().to(device)
             optimizer.zero_grad(set_to_none=True)
             logits = model.classify(x)
-            loss = F.cross_entropy(logits, y)
+            loss = F.cross_entropy(logits, y, label_smoothing=float(label_smoothing))
             loss.backward()
             optimizer.step()
             loss_sum += float(loss.detach().cpu())
@@ -435,12 +602,35 @@ def run_table2_reproduction(
     class_weight_clip_min: float | None = None,
     class_weight_clip_max: float | None = None,
     class_weight_mean_normalize: bool = False,
+    kl_estimator_mode: str = "dvkl",
+    mine_ma_rate: float = 0.01,
+    mine_update_scale: float = 0.5,
+    pseudo_threshold_mode: str = "paper",
+    pseudo_score_mode: str = "probability",
+    class_weight_timing: str = "previous",
+    pseudo_state_scope: str = "global",
+    batch_pairing: str = "cycle_target",
+    adapt_start_epoch: int = 0,
+    label_smoothing: float = 0.0,
+    target_model_selection: str = "final",
+    official_compat: bool = False,
     seed: int = 0,
     device: torch.device | str | None = None,
     num_workers: int = 0,
 ) -> dict[str, Any]:
     set_seed(int(seed))
     resolved_device = torch.device(device or ("cuda" if torch.cuda.is_available() else "cpu"))
+    if official_compat:
+        if class_prior_mode == "uniform":
+            class_prior_mode = "source"
+        kl_estimator_mode = "mine_ma"
+        pseudo_threshold_mode = "official"
+        pseudo_score_mode = "logit"
+        class_weight_timing = "current"
+        pseudo_state_scope = "epoch"
+        batch_pairing = "zip_min"
+        if source_pretrain_epochs is None:
+            source_pretrain_epochs = 0
     requested_tasks = list(PAPER_TASKS if tasks is None else tasks)
     requested_methods = [str(method).lower() for method in (methods or ["source_only", "proposed"])]
     output_path = Path(output_dir)
@@ -487,6 +677,7 @@ def run_table2_reproduction(
                     epochs=epochs,
                     device=resolved_device,
                     max_batches_per_epoch=max_batches_per_epoch,
+                    label_smoothing=label_smoothing,
                 )
                 torch.save(
                     {
@@ -515,6 +706,7 @@ def run_table2_reproduction(
                         epochs=resolved_pretrain_epochs,
                         device=resolved_device,
                         max_batches_per_epoch=max_batches_per_epoch,
+                        label_smoothing=label_smoothing,
                     )
                 source_pretrain_target_audit = _audit_target_predictions(
                     model,
@@ -543,6 +735,18 @@ def run_table2_reproduction(
                     class_weight_clip_min=class_weight_clip_min,
                     class_weight_clip_max=class_weight_clip_max,
                     class_weight_mean_normalize=class_weight_mean_normalize,
+                    kl_estimator_mode=kl_estimator_mode,
+                    mine_ma_rate=mine_ma_rate,
+                    mine_update_scale=mine_update_scale,
+                    pseudo_threshold_mode=pseudo_threshold_mode,
+                    pseudo_score_mode=pseudo_score_mode,
+                    class_weight_timing=class_weight_timing,
+                    pseudo_state_scope=pseudo_state_scope,
+                    batch_pairing=batch_pairing,
+                    adapt_start_epoch=adapt_start_epoch,
+                    label_smoothing=label_smoothing,
+                    target_eval_batches=loaders["target_eval"] if target_model_selection == "target_loss_best" else None,
+                    target_model_selection=target_model_selection,
                     max_batches_per_epoch=max_batches_per_epoch,
                 )
                 if source_pretrain_result is not None:
@@ -572,6 +776,20 @@ def run_table2_reproduction(
                             "class_weight_clip_min": train_result["class_weight_clip_min"],
                             "class_weight_clip_max": train_result["class_weight_clip_max"],
                             "class_weight_mean_normalize": train_result["class_weight_mean_normalize"],
+                            "kl_estimator_mode": train_result["kl_estimator_mode"],
+                            "mine_ma_rate": train_result["mine_ma_rate"],
+                            "mine_update_scale": train_result["mine_update_scale"],
+                            "pseudo_threshold_mode": train_result["pseudo_threshold_mode"],
+                            "pseudo_score_mode": train_result["pseudo_score_mode"],
+                            "class_weight_timing": train_result["class_weight_timing"],
+                            "pseudo_state_scope": train_result["pseudo_state_scope"],
+                            "batch_pairing": train_result["batch_pairing"],
+                            "adapt_start_epoch": train_result["adapt_start_epoch"],
+                            "label_smoothing": train_result["label_smoothing"],
+                            "target_model_selection": train_result["target_model_selection"],
+                            "target_eval_history": train_result["target_eval_history"],
+                            "best_target_loss_epoch": train_result["best_target_loss_epoch"],
+                            "best_target_loss": train_result["best_target_loss"],
                             "state": train_result["state"],
                         },
                     },
@@ -595,6 +813,17 @@ def run_table2_reproduction(
                 row["source_pretrain_target_audit"] = train_result.get("source_pretrain_target_audit", {})
                 row["class_prior_mode"] = class_prior_mode
                 row["class_prior"] = None if source_class_prior is None else [float(v) for v in source_class_prior.tolist()]
+                row["official_compat"] = bool(official_compat)
+                row["kl_estimator_mode"] = train_result.get("kl_estimator_mode")
+                row["pseudo_threshold_mode"] = train_result.get("pseudo_threshold_mode")
+                row["pseudo_score_mode"] = train_result.get("pseudo_score_mode")
+                row["class_weight_timing"] = train_result.get("class_weight_timing")
+                row["pseudo_state_scope"] = train_result.get("pseudo_state_scope")
+                row["batch_pairing"] = train_result.get("batch_pairing")
+                row["target_model_selection"] = train_result.get("target_model_selection")
+                row["target_eval_history"] = train_result.get("target_eval_history", [])
+                row["best_target_loss_epoch"] = train_result.get("best_target_loss_epoch")
+                row["best_target_loss"] = train_result.get("best_target_loss")
             rows.append(row)
 
     return {
@@ -615,6 +844,18 @@ def run_table2_reproduction(
         "class_weight_clip_min": None if class_weight_clip_min is None else float(class_weight_clip_min),
         "class_weight_clip_max": None if class_weight_clip_max is None else float(class_weight_clip_max),
         "class_weight_mean_normalize": bool(class_weight_mean_normalize),
+        "kl_estimator_mode": str(kl_estimator_mode),
+        "mine_ma_rate": float(mine_ma_rate),
+        "mine_update_scale": float(mine_update_scale),
+        "pseudo_threshold_mode": str(pseudo_threshold_mode),
+        "pseudo_score_mode": str(pseudo_score_mode),
+        "class_weight_timing": str(class_weight_timing),
+        "pseudo_state_scope": str(pseudo_state_scope),
+        "batch_pairing": str(batch_pairing),
+        "adapt_start_epoch": int(adapt_start_epoch),
+        "label_smoothing": float(label_smoothing),
+        "target_model_selection": str(target_model_selection),
+        "official_compat": bool(official_compat),
         "seed": int(seed),
         "device": str(resolved_device),
         "result_claim_status": "smoke_or_formal_metrics_depend_on_dataset",
@@ -643,6 +884,18 @@ def main() -> int:
     parser.add_argument("--class-weight-clip-min", type=float, default=None)
     parser.add_argument("--class-weight-clip-max", type=float, default=None)
     parser.add_argument("--class-weight-mean-normalize", action="store_true")
+    parser.add_argument("--kl-estimator-mode", type=str, default="dvkl", choices=("dvkl", "mine_ma"))
+    parser.add_argument("--mine-ma-rate", type=float, default=0.01)
+    parser.add_argument("--mine-update-scale", type=float, default=0.5)
+    parser.add_argument("--pseudo-threshold-mode", type=str, default="paper", choices=("paper", "official"))
+    parser.add_argument("--pseudo-score-mode", type=str, default="probability", choices=("probability", "logit"))
+    parser.add_argument("--class-weight-timing", type=str, default="previous", choices=("previous", "current"))
+    parser.add_argument("--pseudo-state-scope", type=str, default="global", choices=("global", "epoch"))
+    parser.add_argument("--batch-pairing", type=str, default="cycle_target", choices=("cycle_target", "zip_min"))
+    parser.add_argument("--adapt-start-epoch", type=int, default=0)
+    parser.add_argument("--label-smoothing", type=float, default=0.0)
+    parser.add_argument("--target-model-selection", type=str, default="final", choices=("final", "target_loss_best"))
+    parser.add_argument("--official-compat", action="store_true", help="Use details exposed by the released official trainer.")
     parser.add_argument("--seed", type=int, default=0)
     parser.add_argument("--device", type=str, default=None)
     parser.add_argument("--num-workers", type=int, default=0)
@@ -674,6 +927,18 @@ def main() -> int:
             class_weight_clip_min=args.class_weight_clip_min,
             class_weight_clip_max=args.class_weight_clip_max,
             class_weight_mean_normalize=args.class_weight_mean_normalize,
+            kl_estimator_mode=args.kl_estimator_mode,
+            mine_ma_rate=args.mine_ma_rate,
+            mine_update_scale=args.mine_update_scale,
+            pseudo_threshold_mode=args.pseudo_threshold_mode,
+            pseudo_score_mode=args.pseudo_score_mode,
+            class_weight_timing=args.class_weight_timing,
+            pseudo_state_scope=args.pseudo_state_scope,
+            batch_pairing=args.batch_pairing,
+            adapt_start_epoch=args.adapt_start_epoch,
+            label_smoothing=args.label_smoothing,
+            target_model_selection=args.target_model_selection,
+            official_compat=args.official_compat,
             seed=args.seed,
             device=args.device,
             num_workers=args.num_workers,

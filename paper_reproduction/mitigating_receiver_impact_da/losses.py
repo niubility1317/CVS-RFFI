@@ -15,6 +15,34 @@ def dv_kl_domain_alignment(source_estimates: torch.Tensor, target_estimates: tor
     )
 
 
+def mine_kl_stabilized_objective(
+    source_estimates: torch.Tensor,
+    target_estimates: torch.Tensor,
+    *,
+    ma_et: torch.Tensor | float = 1.0,
+    ma_rate: float = 0.01,
+    eps: float = 1e-4,
+) -> dict[str, torch.Tensor]:
+    """Official MINE objective used by the released trainer.
+
+    The released code logs the DV estimate, but optimizes the moving-average
+    surrogate from MINE to reduce instability in the exponential target term.
+    """
+    source = source_estimates.flatten()
+    target = target_estimates.flatten()
+    if source.numel() == 0 or target.numel() == 0:
+        raise ValueError("source and target estimate batches must be non-empty")
+    if not (0.0 < float(ma_rate) <= 1.0):
+        raise ValueError("ma_rate must be in (0,1]")
+    source_mean = source.mean()
+    target_exp_mean = torch.exp(target).mean()
+    ma_prev = torch.as_tensor(ma_et, dtype=target_exp_mean.dtype, device=target_exp_mean.device)
+    ma_next = (1.0 - float(ma_rate)) * ma_prev + float(ma_rate) * target_exp_mean
+    kl = source_mean - torch.log(target_exp_mean + float(eps))
+    loss = source_mean - (1.0 / ma_next.mean()).detach() * target_exp_mean
+    return {"kl": kl, "ma_et": ma_next.detach(), "loss": loss}
+
+
 def curriculum_thresholds(pseudo_counts: torch.Tensor, *, base_tau: float = 0.7, eps: float = 1e-8) -> torch.Tensor:
     """CPL class thresholds: classes with more pseudo labels keep a higher threshold."""
     counts = pseudo_counts.float()
@@ -97,6 +125,7 @@ def gada_minimax_objective(
     class_weights: torch.Tensor,
     mu: float = 0.5,
     kl_weight: float = 0.005,
+    kl_loss_override: torch.Tensor | None = None,
 ) -> dict[str, torch.Tensor]:
     """Paper Eq.10-Eq.11 objective for E/C minimization with T's DV-KL term."""
     if not (0.0 < float(mu) < 1.0):
@@ -109,7 +138,11 @@ def gada_minimax_objective(
     else:
         loss_target = source_outputs["tx_logits"].sum() * 0.0
     loss_weighted_ce = float(mu) * loss_source + (1.0 - float(mu)) * loss_target
-    loss_kl = dv_kl_domain_alignment(source_outputs["estimate_logits"], target_outputs["estimate_logits"])
+    loss_kl = (
+        dv_kl_domain_alignment(source_outputs["estimate_logits"], target_outputs["estimate_logits"])
+        if kl_loss_override is None
+        else kl_loss_override
+    )
     loss = loss_weighted_ce + float(kl_weight) * loss_kl
     return {
         "loss": loss,

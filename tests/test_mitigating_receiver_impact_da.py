@@ -147,6 +147,24 @@ def test_dv_kl_alignment_and_gada_objective_follow_paper_terms():
     assert torch.isfinite(terms["loss"])
 
 
+def test_official_mine_stabilized_objective_matches_released_trainer_formula():
+    from paper_reproduction.mitigating_receiver_impact_da.losses import mine_kl_stabilized_objective
+
+    source = torch.tensor([[0.2], [0.4], [0.6]], requires_grad=True)
+    target = torch.tensor([[0.1], [0.3]], requires_grad=True)
+
+    terms = mine_kl_stabilized_objective(source, target, ma_et=1.0, ma_rate=0.01)
+    et_mean = torch.exp(target.flatten()).mean()
+    expected_ma = 0.99 * torch.tensor(1.0) + 0.01 * et_mean
+    expected_loss = source.flatten().mean() - (1.0 / expected_ma).detach() * et_mean
+    expected_kl = source.flatten().mean() - torch.log(et_mean + 1e-4)
+
+    assert torch.allclose(terms["ma_et"], expected_ma.detach())
+    assert torch.allclose(terms["loss"], expected_loss)
+    assert torch.allclose(terms["kl"], expected_kl)
+    assert terms["loss"].requires_grad
+
+
 def test_cpl_thresholds_pseudo_labels_and_class_weights_match_paper_direction():
     from paper_reproduction.mitigating_receiver_impact_da.losses import (
         adaptive_pseudo_labels,
@@ -182,6 +200,38 @@ def test_cpl_thresholds_pseudo_labels_and_class_weights_match_paper_direction():
     )
 
     assert weights[0] < weights[1] < weights[2]
+
+
+def test_official_epoch_state_uses_target_indices_and_zero_count_weights():
+    from paper_reproduction.mitigating_receiver_impact_da.algorithm import PseudoLabelState
+
+    state = PseudoLabelState(num_classes=3, target_size=5, target_batches=2)
+    labels = torch.tensor([0, 1, 1])
+    confidence = torch.tensor([0.8, 0.2, 0.9])
+
+    mask = state.official_threshold_mask(labels, confidence, base_tau=0.7)
+    assert mask.tolist() == [True, False, True]
+
+    state.update(
+        labels,
+        labels[mask],
+        target_indices=torch.tensor([0, 2, 4]),
+        target_mask=mask,
+    )
+    assert state.total_seen == 3
+    assert state.predicted_counts.tolist() == [1.0, 2.0, 0.0]
+    assert state.pseudo_counts.tolist() == [1.0, 1.0, 0.0]
+
+    weights = state.class_weights(
+        prior=torch.full((3,), 1.0 / 3.0),
+        device=torch.device("cpu"),
+    )
+    assert torch.allclose(weights, torch.tensor([1.0, 0.5, 1.0]), atol=1e-6)
+
+    state.reset_epoch()
+    assert state.total_seen == 0
+    assert state.predicted_counts.sum().item() == 0
+    assert state.pseudo_counts.sum().item() == 0
 
 
 def test_class_balance_weights_default_matches_paper_eq9_ratio():
@@ -493,6 +543,39 @@ def test_table2_runner_defaults_to_paper_uniform_prior_and_tau(tmp_path):
     assert result["class_prior_mode"] == "uniform"
     assert row["class_prior_mode"] == "uniform"
     assert torch.allclose(torch.tensor(row["class_prior"]), torch.full((6,), 1.0 / 6.0))
+
+
+def test_table2_runner_official_compat_records_released_trainer_path(tmp_path):
+    from paper_reproduction.mitigating_receiver_impact_da.train import run_table2_reproduction
+
+    result = run_table2_reproduction(
+        _synthetic_manysig_compact(),
+        tasks=["14-7->3-19"],
+        methods=["proposed"],
+        output_dir=tmp_path,
+        epochs=1,
+        batch_size=4,
+        max_samples_per_combo=1,
+        max_batches_per_epoch=1,
+        target_model_selection="target_loss_best",
+        official_compat=True,
+        seed=5,
+        device="cpu",
+    )
+
+    row = result["rows"][0]
+    assert result["official_compat"] is True
+    assert result["kl_estimator_mode"] == "mine_ma"
+    assert result["pseudo_threshold_mode"] == "official"
+    assert result["pseudo_score_mode"] == "logit"
+    assert result["class_weight_timing"] == "current"
+    assert result["pseudo_state_scope"] == "epoch"
+    assert result["batch_pairing"] == "zip_min"
+    assert result["source_pretrain_epochs"] == 0
+    assert row["official_compat"] is True
+    assert row["target_model_selection"] == "target_loss_best"
+    assert row["best_target_loss_epoch"] == 1
+    assert len(row["target_eval_history"]) == 1
 
 
 def test_source_class_prior_is_counted_from_labeled_source_index():
