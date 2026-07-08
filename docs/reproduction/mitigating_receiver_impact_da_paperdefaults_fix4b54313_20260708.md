@@ -35,3 +35,12 @@ git diff --check -- paper_reproduction/mitigating_receiver_impact_da/losses.py p
 ## N607验证边界
 
 计划运行`mitigating_receiver_impact_da_paperdefaults_14-7_to_3-19_20260708_fix4b54313`，只验证修复后默认设置和短跑方向。该运行使用5个epoch和50样本/组合，不声明完整Table II复现。
+
+## N607短诊断结果
+
+| 方法 | 任务 | 设置 | 目标准确率 | 相对source_only | 相对论文Table II proposed 92.42% |
+|---|---|---|---:|---:|---:|
+| source_only | `14-7->3-19` | 5epoch，50样本/组合 | 23.58% | 0.00pp | - |
+| proposed | `14-7->3-19` | `base_tau=0.7`，`class_prior_mode=uniform`，无类别权重稳定化默认项 | 42.33% | +18.75pp | -50.09pp |
+
+同一行诊断显示，source预训练后的目标域预测准确率为18.25%，`tau=0.7`高置信伪标签覆盖率为94.00%，但选择正确率只有18.00%。因此修复后的短诊断已恢复`proposed > source_only`，但距离论文Table II仍大，主要剩余风险是本次运行不是完整收敛训练，且初始模型`h0`在目标receiver上的伪标签质量仍偏低。
