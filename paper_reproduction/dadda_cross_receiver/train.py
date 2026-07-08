@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 from pathlib import Path
 from typing import Any, Iterable
@@ -16,6 +17,21 @@ from paper_reproduction.dadda_cross_receiver.model import DADDANet
 
 
 PAPER_TITLE = "Cross-Receiver Radio Frequency Fingerprint Identification Based on Domain Adaptation With Dynamic Distribution Alignment"
+PAPER_EVIDENCE_TARGETS = {
+    "Table II": "twelve receiver-transfer tasks; full formal reproduction also requires DANN/DAN/DSAN/WD/DCORAL/CDAN baselines and real WiSig runs",
+    "Table III": "module ablation matrix not produced by dry-run/smoke",
+    "Table IV": "dynamic alpha ablation not produced by dry-run/smoke",
+    "Table V": "kernel sensitivity, parameter count, and FLOPs sweep not produced by dry-run/smoke",
+    "Table VI": "per-epoch training/testing timing not produced by dry-run/smoke",
+    "Fig.5": "SNR robustness not produced by dry-run/smoke",
+    "Fig.6-8": "A-distance, t-SNE, and confusion matrix visualizations not produced by dry-run/smoke",
+}
+CLAIM_BLOCKS = [
+    "not CVS Stage2-A/B/C",
+    "not target-new enrollment",
+    "not unknown/open-set rejection evidence",
+    "not satellite/LEO deployment evidence",
+]
 
 
 def build_dry_run_payload(config: dict[str, Any]) -> dict[str, Any]:
@@ -28,7 +44,7 @@ def build_dry_run_payload(config: dict[str, Any]) -> dict[str, Any]:
         "method_id": "dadda_cross_receiver",
         "paper": PAPER_TITLE,
         "citation": "Junhao Feng, Shengliang Fang, and Youchen Fan, IEEE Internet of Things Journal, 2025",
-        "algorithm": "DADDA: ResNet18 G_f + multiscale G_m + MMD + LMMD + dynamic adaptive factor",
+        "algorithm": "DADDA: 1-D ResNet18-style G_f approximation + 1-D multiscale G_m approximation + MMD + LMMD + dynamic adaptive factor",
         "paper_scope": "paper_faithful_closed_set_single_source_UDA",
         "cvs_extension": False,
         "dataset": config.get("dataset", "WiSig ManySig"),
@@ -57,19 +73,8 @@ def build_dry_run_payload(config: dict[str, Any]) -> dict[str, Any]:
             "lambda_schedule": "lambda_p=2/(1+exp(-10p))-1",
             "classifier_hidden": [512, 128],
         },
-        "paper_evidence_targets": {
-            "Table II": "twelve receiver-transfer tasks; formal metrics require real WiSig runs",
-            "Table III": "ablation matrix not produced by dry-run",
-            "Table IV": "dynamic alpha ablation not produced by dry-run",
-            "Fig.5": "SNR robustness not produced by dry-run",
-            "Fig.6-8": "feature visualization/confusion matrices not produced by dry-run",
-        },
-        "claim_blocks": [
-            "not CVS Stage2-A/B/C",
-            "not target-new enrollment",
-            "not unknown/open-set rejection evidence",
-            "not satellite/LEO deployment evidence",
-        ],
+        "paper_evidence_targets": dict(PAPER_EVIDENCE_TARGETS),
+        "claim_blocks": list(CLAIM_BLOCKS),
     }
 
 
@@ -122,6 +127,51 @@ def _evaluate_target_accuracy(model: DADDANet, loader: Iterable[Any], *, device:
 def _set_optimizer_lr(optimizer: torch.optim.Optimizer, lr: float) -> None:
     for group in optimizer.param_groups:
         group["lr"] = float(lr)
+
+
+def _sha256_file(path: Path | None) -> str | None:
+    if path is None:
+        return None
+    digest = hashlib.sha256()
+    with path.open("rb") as handle:
+        for chunk in iter(lambda: handle.read(1024 * 1024), b""):
+            digest.update(chunk)
+    return digest.hexdigest()
+
+
+def _config_value(config: dict[str, Any], key: str, default: Any, cast: Any) -> Any:
+    return cast(config.get(key, default))
+
+
+def resolve_table2_run_settings(config: dict[str, Any], args: argparse.Namespace) -> dict[str, Any]:
+    return {
+        "epochs": int(args.epochs) if args.epochs is not None else _config_value(config, "epochs", 100, int),
+        "batch_size": int(args.batch_size) if args.batch_size is not None else _config_value(config, "batch_size", 128, int),
+        "learning_rate": float(args.learning_rate)
+        if args.learning_rate is not None
+        else 0.0001,
+        "momentum": float(args.momentum) if args.momentum is not None else _config_value(config, "momentum", 0.9, float),
+        "weight_decay": float(args.weight_decay)
+        if args.weight_decay is not None
+        else _config_value(config, "weight_decay", 0.0005, float),
+    }
+
+
+def validate_formal_or_smoke_settings(
+    *,
+    config: dict[str, Any],
+    settings: dict[str, Any],
+    smoke: bool,
+    max_samples_per_combo: int | None,
+    max_batches_per_epoch: int | None,
+) -> None:
+    paper_epochs = _config_value(config, "epochs", 100, int)
+    if smoke:
+        return
+    if int(settings["epochs"]) < paper_epochs:
+        raise SystemExit("--smoke is required when --epochs is below the paper config epochs")
+    if max_samples_per_combo is not None or max_batches_per_epoch is not None:
+        raise SystemExit("--smoke is required when limiting samples or batches")
 
 
 def _train_source_only(
@@ -273,6 +323,8 @@ def run_table2_reproduction(
     device: torch.device | str | None = None,
     num_workers: int = 0,
     model_config: dict[str, Any] | None = None,
+    smoke: bool | None = None,
+    config_path: Path | str | None = None,
 ) -> dict[str, Any]:
     set_seed(int(seed))
     resolved_device = torch.device(device or ("cuda" if torch.cuda.is_available() else "cpu"))
@@ -280,7 +332,9 @@ def run_table2_reproduction(
     requested_methods = [method.lower() for method in (methods or ["source_only", "dadda"])]
     output_path = Path(output_dir)
     output_path.mkdir(parents=True, exist_ok=True)
-    compact = load_wisig_compact_pkl(str(compact_or_path)) if isinstance(compact_or_path, (str, Path)) else compact_or_path
+    dataset_path = Path(compact_or_path) if isinstance(compact_or_path, (str, Path)) else None
+    compact = load_wisig_compact_pkl(str(compact_or_path)) if dataset_path is not None else compact_or_path
+    is_smoke = bool(smoke) if smoke is not None else int(epochs) < 100 or max_samples_per_combo is not None or max_batches_per_epoch is not None
     rows = []
     for task in requested_tasks:
         loaders = build_manysig_task_loaders(
@@ -347,26 +401,47 @@ def run_table2_reproduction(
                     "task": task,
                     "method": method,
                     "status": "completed",
+                    "result_claim_status": "smoke_only_not_paper_formal" if is_smoke else "formal_run_partial_table2_requires_missing_baselines",
                     "target_accuracy": _evaluate_target_accuracy(model, loaders["target_eval"], device=resolved_device),
                     "target_labels_scope": "evaluation_only",
                     "target_label_role": loaders["meta"]["target_label_role"],
                     "checkpoint_path": str(checkpoint_path),
                     "history": train_result["history"],
                     "task_meta": loaders["meta"],
+                    "source_sample_count": len(loaders["source"].dataset),
+                    "target_train_sample_count": len(loaders["target_train"].dataset),
+                    "target_eval_sample_count": len(loaders["target_eval"].dataset),
+                    "source_loader_batches": len(loaders["source"]),
+                    "target_train_loader_batches": len(loaders["target_train"]),
+                    "drop_last": False,
+                    "partial_batch_policy": "DataLoader drop_last=False; Algorithm 1 pairing stops at the shorter source/target stream",
                 }
             )
     return {
         "method_id": "dadda_cross_receiver",
         "paper": PAPER_TITLE,
         "artifact_type": "table2_reproduction_run",
-        "result_claim_status": "smoke_or_formal_metrics_depend_on_dataset",
-        "paper_evidence_targets": build_dry_run_payload({"cvs_extension": False})["paper_evidence_targets"],
-        "claim_blocks": build_dry_run_payload({"cvs_extension": False})["claim_blocks"],
+        "result_claim_status": "smoke_only_not_paper_formal" if is_smoke else "formal_run_partial_table2_requires_missing_baselines",
+        "implemented_methods": ["source_only", "dadda", "proposed"],
+        "not_implemented_paper_baselines": ["dann", "dan", "dsan", "wd", "dcoral", "cdan"],
+        "paper_evidence_targets": dict(PAPER_EVIDENCE_TARGETS),
+        "claim_blocks": list(CLAIM_BLOCKS),
         "epochs": int(epochs),
         "batch_size": int(batch_size),
+        "optimizer": "SGD",
         "learning_rate": float(learning_rate),
         "momentum": float(momentum),
         "weight_decay": float(weight_decay),
+        "lr_schedule": "lr_p=0.0001/(1+10p)^0.75",
+        "lambda_schedule": "lambda_p=2/(1+exp(-10p))-1",
+        "max_samples_per_combo": max_samples_per_combo,
+        "max_batches_per_epoch": max_batches_per_epoch,
+        "config_path": str(config_path) if config_path is not None else None,
+        "config_sha256": _sha256_file(Path(config_path)) if config_path is not None else None,
+        "dataset_path": str(dataset_path) if dataset_path is not None else None,
+        "dataset_sha256": _sha256_file(dataset_path),
+        "drop_last": False,
+        "partial_batch_policy": "DataLoader drop_last=False; Algorithm 1 pairing stops at the shorter source/target stream",
         "seed": int(seed),
         "device": str(resolved_device),
         "rows": rows,
@@ -378,13 +453,16 @@ def main() -> int:
     parser.add_argument("--config", type=Path, required=True)
     parser.add_argument("--dry-run", action="store_true")
     parser.add_argument("--formal", action="store_true")
+    parser.add_argument("--smoke", action="store_true")
     parser.add_argument("--run-table2", action="store_true")
     parser.add_argument("--manysig-pkl", type=Path, default=None)
     parser.add_argument("--tasks", type=str, default="")
     parser.add_argument("--methods", type=str, default="source_only,dadda")
-    parser.add_argument("--epochs", type=int, default=1)
-    parser.add_argument("--batch-size", type=int, default=128)
-    parser.add_argument("--learning-rate", type=float, default=0.0001)
+    parser.add_argument("--epochs", type=int, default=None)
+    parser.add_argument("--batch-size", type=int, default=None)
+    parser.add_argument("--learning-rate", type=float, default=None)
+    parser.add_argument("--momentum", type=float, default=None)
+    parser.add_argument("--weight-decay", type=float, default=None)
     parser.add_argument("--max-samples-per-combo", type=int, default=None)
     parser.add_argument("--max-batches-per-epoch", type=int, default=None)
     parser.add_argument("--seed", type=int, default=0)
@@ -406,6 +484,14 @@ def main() -> int:
             raise SystemExit("--formal is required for real DADDA Table II runs")
         if args.manysig_pkl is None:
             raise SystemExit("--manysig-pkl is required with --run-table2")
+        settings = resolve_table2_run_settings(config, args)
+        validate_formal_or_smoke_settings(
+            config=config,
+            settings=settings,
+            smoke=args.smoke,
+            max_samples_per_combo=args.max_samples_per_combo,
+            max_batches_per_epoch=args.max_batches_per_epoch,
+        )
         tasks = [token.strip() for token in args.tasks.split(",") if token.strip()] or None
         methods = [token.strip() for token in args.methods.split(",") if token.strip()]
         payload = run_table2_reproduction(
@@ -413,14 +499,18 @@ def main() -> int:
             tasks=tasks,
             methods=methods,
             output_dir=args.checkpoint_dir,
-            epochs=args.epochs,
-            batch_size=args.batch_size,
-            learning_rate=args.learning_rate,
+            epochs=settings["epochs"],
+            batch_size=settings["batch_size"],
+            learning_rate=settings["learning_rate"],
+            momentum=settings["momentum"],
+            weight_decay=settings["weight_decay"],
             max_samples_per_combo=args.max_samples_per_combo,
             max_batches_per_epoch=args.max_batches_per_epoch,
             seed=args.seed,
             device=args.device,
             num_workers=args.num_workers,
+            smoke=args.smoke,
+            config_path=args.config,
         )
         if args.output is not None:
             write_json(args.output, payload)

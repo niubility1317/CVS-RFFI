@@ -5,7 +5,7 @@ Scope: paper-faithful closed-set UDA reproduction for Feng et al. (IEEE IoT Jour
 | Paper item | Paper evidence | Code evidence | Test/result evidence | Current status |
 |---|---|---|---|---|
 | Task definition | Section III: labeled source receiver plus unlabeled target receiver; `Y_s=Y_t` | `paper_reproduction/dadda_cross_receiver/data.py`; `train.py` dry-run payload | `tests/test_dadda_cross_receiver.py::test_dadda_dry_run_declares_closed_set_uda_not_cvs` | Implemented as closed-set UDA |
-| CVS boundary | `项目.md` requires CVS old/new/unknown split for Stage2-C; DADDA does not | `configs/dadda_cross_receiver_manysig_paper_faithful.json` has `cvs_extension=false` | Dry-run claim blocks | Implemented boundary guard |
+| CVS boundary | `项目.md` requires CVS old/new/unknown split for Stage2-C; DADDA does not | `paper_reproduction/configs/dadda_cross_receiver_manysig_paper_faithful.json` has `cvs_extension=false` | Dry-run claim blocks | Implemented boundary guard |
 | Input shape | Section V-A: `2x256` IQ samples | `DADDAFeatureExtractor`; `build_manysig_task_datasets` | Model and data task tests | Implemented |
 | WiSig subset | Section V-A: six transmitters, twelve receivers, four days | `build_manysig_task_datasets` validates counts | synthetic ManySig fixture test | Implemented validation |
 | Backbone `G_f` | Section IV-B and Fig. 3: modified ResNet18 | `DADDAFeatureExtractor` | model shape test | Implemented as runnable 1-D ResNet-style approximation; not a layer-for-layer replica |
@@ -13,7 +13,7 @@ Scope: paper-faithful closed-set UDA reproduction for Feng et al. (IEEE IoT Jour
 | Classifier `G_l` | Section V-B: two FC layers with 512 and 128 neurons | `DADDAClassifier`; config hidden widths | model shape test and dry-run hyperparameters | Implemented |
 | MMD Eq. (2) | global alignment on `G_f(X_s),G_f(X_t)` | `mmd_loss` | objective test | Implemented |
 | LMMD Eq. (3)-(4) | source one-hot labels; target predicted probabilities | `lmmd_loss` | objective test | Implemented |
-| Dynamic factor Eq. (5) | `alpha=d_MMD/(d_MMD+sum d_LMMD)` and `alpha in [0,1]` | `dynamic_adaptive_factor`; `dadda_objective` passes the class-wise LMMD sum | objective test | Implemented |
+| Dynamic factor Eq. (5) | `alpha=d_MMD/(d_MMD+sum d_LMMD)` and `alpha in [0,1]` | `dynamic_adaptive_factor`; `dadda_objective` passes the class-wise LMMD sum and treats alpha as a differentiable dynamic weight | objective test | Implemented |
 | Total objective Eq. (6)-(9) | `CE + lambda*((1-alpha)MMD + alpha*LMMD)` | `dadda_objective`; `run_dadda_training_loop` | smoke runner history logs `alpha_mean`, `mmd_mean`, `lmmd_mean` | Implemented |
 | Algorithm 1 | each batch uses `x_s,y_s,x_t`, target labels hidden for training; epoch loop uses paired source/target batches | `run_dadda_training_loop` stops at the shorter source/target batch stream | smoke runner test | Implemented smoke path |
 | Optimizer and schedules | Section V-B: SGD, momentum 0.9, L2 decay 0.0005, lr/lambda schedules | `train.py`; config file | dry-run hyperparameters; smoke history | Implemented |

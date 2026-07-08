@@ -38,7 +38,7 @@ class ResidualBlock1D(nn.Module):
 
 
 class DADDAFeatureExtractor(nn.Module):
-    """ResNet18-style 1-D IQ feature extractor G_f from the DADDA paper."""
+    """ResNet18-style 1-D IQ feature extractor G_f; not a layer-for-layer Fig. 3 replica."""
 
     def __init__(self, *, feature_dim: int = 128, base_channels: int = 16) -> None:
         super().__init__()
@@ -76,7 +76,7 @@ class DADDAFeatureExtractor(nn.Module):
 
 
 class DADDAMultiscaleExtractor(nn.Module):
-    """Multiscale feature extractor G_m with the four branches described in Fig. 4."""
+    """1-D multiscale G_m approximation of the four-branch Fig. 4 module."""
 
     def __init__(self, *, in_channels: int, multiscale_dim: int = 128) -> None:
         super().__init__()
@@ -163,4 +163,3 @@ class DADDANet(nn.Module):
 
     def classify(self, x: torch.Tensor) -> torch.Tensor:
         return self.forward(x)["logits"]
-

@@ -128,6 +128,6 @@ Expected: PASS and no whitespace errors.
 
 ## Self-Review
 
-- Spec coverage: model, losses, data protocol, training smoke, documentation, and paper-to-code audit are covered. Full Table II/III numerical reproduction requires real WiSig ManySig data and GPU formal runs after the implementation is locally verified.
+- Spec coverage: model scaffold, losses, data protocol, training smoke, documentation, and paper-to-code audit are covered. Full paper reproduction remains pending for Table II baselines and real metrics, Table III/IV/V/VI, and Fig.5-8.
 - Placeholder scan: no task relies on `TBD`; the only intentionally unresolved field is the real WiSig pkl path in the config.
 - Type consistency: module names and output keys are fixed across tasks.

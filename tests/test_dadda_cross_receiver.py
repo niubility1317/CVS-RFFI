@@ -3,6 +3,7 @@ from __future__ import annotations
 import subprocess
 import sys
 import math
+from types import SimpleNamespace
 from pathlib import Path
 
 import numpy as np
@@ -56,6 +57,22 @@ def test_dadda_model_outputs_paper_named_modules():
     assert model.classify(torch.randn(2, 256, 2)).shape == (2, 6)
 
 
+def test_dadda_default_model_locks_paper_widths_and_multiscale_branches():
+    from paper_reproduction.dadda_cross_receiver.model import DADDANet
+
+    model = DADDANet(num_classes=6)
+    outputs = model(torch.randn(2, 2, 256))
+
+    assert outputs["global_features"].shape == (2, 128)
+    assert outputs["local_features"].shape == (2, 128)
+    assert model.classifier.net[0].out_features == 512
+    assert model.classifier.net[2].out_features == 128
+    assert model.multiscale_extractor.branch1[0].kernel_size == (1,)
+    assert model.multiscale_extractor.branch2[2].kernel_size == (3,)
+    assert model.multiscale_extractor.branch3[2].kernel_size == (5,)
+    assert model.multiscale_extractor.branch4[0].__class__.__name__ == "AvgPool1d"
+
+
 def test_dadda_dynamic_objective_combines_ce_mmd_lmmd():
     from paper_reproduction.dadda_cross_receiver.losses import (
         dadda_objective,
@@ -70,14 +87,16 @@ def test_dadda_dynamic_objective_combines_ce_mmd_lmmd():
 
     assert mmd_loss(source_global, target_global) < mmd_loss(source_global, shifted)
 
+    source_local = torch.tensor([[0.0, 1.0], [1.0, 0.0], [2.0, 1.0]], requires_grad=True)
+    target_local = torch.tensor([[0.2, 1.1], [1.2, 0.1], [2.3, 1.0]], requires_grad=True)
     source_outputs = {
         "global_features": source_global,
-        "local_features": torch.tensor([[0.0, 1.0], [1.0, 0.0], [2.0, 1.0]], requires_grad=True),
+        "local_features": source_local,
         "logits": torch.tensor([[4.0, 0.1], [0.2, 3.0], [2.5, 0.4]], requires_grad=True),
     }
     target_outputs = {
         "global_features": shifted,
-        "local_features": torch.tensor([[0.2, 1.1], [1.2, 0.1], [2.3, 1.0]], requires_grad=True),
+        "local_features": target_local,
         "logits": torch.tensor([[3.0, 0.2], [0.5, 2.8], [2.2, 0.3]], requires_grad=True),
     }
     labels = torch.tensor([0, 1, 0])
@@ -94,7 +113,14 @@ def test_dadda_dynamic_objective_combines_ce_mmd_lmmd():
     assert set(terms) == {"loss", "cross_entropy", "mmd", "lmmd", "lmmd_sum", "alpha", "dynamic_joint"}
     expected_alpha = terms["mmd"] / (terms["mmd"] + terms["lmmd_sum"] + 1e-8)
     assert torch.allclose(terms["alpha"], expected_alpha, atol=1e-6)
+    explicit_dynamic = (1.0 - terms["alpha"]) * terms["mmd"] + terms["alpha"] * terms["lmmd"]
+    assert torch.allclose(terms["dynamic_joint"], explicit_dynamic, atol=1e-6)
     assert 0.0 <= float(terms["alpha"]) <= 1.0
+    terms["loss"].backward()
+    assert float(source_global.grad.abs().sum()) > 0.0
+    assert float(target_global.grad.abs().sum()) > 0.0
+    assert float(source_local.grad.abs().sum()) > 0.0
+    assert float(target_local.grad.abs().sum()) > 0.0
 
 
 def test_dadda_schedules_match_paper_formula():
@@ -123,6 +149,36 @@ def test_lmmd_skips_classes_missing_from_source_or_target_batch():
     assert torch.isclose(loss, torch.tensor(0.0))
 
 
+def test_lmmd_sum_and_mean_reductions_use_classwise_terms():
+    from paper_reproduction.dadda_cross_receiver.losses import lmmd_loss
+
+    source_features = torch.tensor([[0.0, 0.0], [1.0, 0.0]])
+    target_features = torch.tensor([[0.5, 0.0], [1.5, 0.0]])
+    source_labels = torch.tensor([0, 1])
+    target_probs = torch.tensor([[1.0, 0.0], [0.0, 1.0]])
+
+    mean_loss = lmmd_loss(
+        source_features,
+        target_features,
+        source_labels,
+        target_probs,
+        num_classes=2,
+        target_is_probabilities=True,
+    )
+    sum_loss = lmmd_loss(
+        source_features,
+        target_features,
+        source_labels,
+        target_probs,
+        num_classes=2,
+        reduction="sum",
+        target_is_probabilities=True,
+    )
+
+    assert torch.isfinite(mean_loss)
+    assert torch.allclose(sum_loss, mean_loss * 2.0, atol=1e-6)
+
+
 def test_dadda_dry_run_declares_closed_set_uda_not_cvs():
     from paper_reproduction.dadda_cross_receiver.train import build_dry_run_payload
 
@@ -145,6 +201,8 @@ def test_dadda_dry_run_declares_closed_set_uda_not_cvs():
     assert payload["target_labels_scope"] == "evaluation_only"
     assert payload["paper_task_plan"][0]["compare_method_ids"][-1] == "dadda"
     assert "not target-new enrollment" in payload["claim_blocks"]
+    assert "Table V" in payload["paper_evidence_targets"]
+    assert "Table VI" in payload["paper_evidence_targets"]
 
 
 def test_dadda_manysig_task_builder_keeps_target_labels_evaluation_only():
@@ -163,6 +221,18 @@ def test_dadda_manysig_task_builder_keeps_target_labels_evaluation_only():
     assert built["meta"]["target_label_role"] == "hidden_for_UDA_training_available_for_final_accuracy_only"
     assert built["meta"]["source_tx_ids"] == [0, 1, 2, 3, 4, 5]
     assert built["meta"]["target_tx_ids"] == [0, 1, 2, 3, 4, 5]
+
+
+def test_dadda_target_train_loader_does_not_expose_target_labels():
+    from paper_reproduction.dadda_cross_receiver.data import build_manysig_task_loaders
+
+    loaders = build_manysig_task_loaders(_synthetic_manysig_compact(), task="1-1->8-8", batch_size=4, max_samples_per_combo=1)
+    target_batch = next(iter(loaders["target_train"]))
+    eval_batch = next(iter(loaders["target_eval"]))
+
+    assert set(target_batch) == {"iq"}
+    assert "label" not in target_batch
+    assert len(eval_batch) == 4
 
 
 def test_dadda_manysig_task_builder_resolves_non_index_receiver_labels():
@@ -213,13 +283,42 @@ def test_dadda_smoke_runner_trains_source_only_and_dadda_rows(tmp_path):
     )
 
     assert result["method_id"] == "dadda_cross_receiver"
-    assert result["result_claim_status"] == "smoke_or_formal_metrics_depend_on_dataset"
+    assert result["result_claim_status"] == "smoke_only_not_paper_formal"
     assert [row["method"] for row in result["rows"]] == ["source_only", "proposed"]
     assert all(row["target_labels_scope"] == "evaluation_only" for row in result["rows"])
     assert all(0.0 <= row["target_accuracy"] <= 1.0 for row in result["rows"])
     assert "alpha_mean" in result["rows"][1]["history"][0]
     assert (tmp_path / "1-1_to_8-8_source_only.pt").exists()
     assert (tmp_path / "1-1_to_8-8_proposed.pt").exists()
+
+
+def test_dadda_smoke_runner_trains_literal_dadda_method(tmp_path):
+    from paper_reproduction.dadda_cross_receiver.train import run_table2_reproduction
+
+    result = run_table2_reproduction(
+        _synthetic_manysig_compact(),
+        tasks=["1-1->8-8"],
+        methods=["dadda"],
+        output_dir=tmp_path,
+        epochs=1,
+        batch_size=4,
+        max_samples_per_combo=1,
+        max_batches_per_epoch=1,
+        seed=5,
+        device="cpu",
+        model_config={
+            "feature_dim": 8,
+            "multiscale_dim": 8,
+            "base_channels": 2,
+            "classifier_hidden1": 8,
+            "classifier_hidden2": 4,
+        },
+    )
+
+    assert result["rows"][0]["method"] == "dadda"
+    assert result["result_claim_status"] == "smoke_only_not_paper_formal"
+    assert result["rows"][0]["result_claim_status"] == "smoke_only_not_paper_formal"
+    assert (tmp_path / "1-1_to_8-8_dadda.pt").exists()
 
 
 def test_dadda_training_loop_stops_at_shorter_source_target_stream():
@@ -253,6 +352,49 @@ def test_dadda_training_loop_stops_at_shorter_source_target_stream():
 
     assert result["batches"] == 1
     assert result["history"][0]["batches"] == 1
+
+
+def test_dadda_table2_settings_default_to_paper_config_and_gate_smoke():
+    from paper_reproduction.dadda_cross_receiver.train import resolve_table2_run_settings, validate_formal_or_smoke_settings
+
+    config = {"epochs": 100, "batch_size": 128, "momentum": 0.9, "weight_decay": 0.0005}
+    args = SimpleNamespace(epochs=None, batch_size=None, learning_rate=None, momentum=None, weight_decay=None)
+    settings = resolve_table2_run_settings(config, args)
+
+    assert settings["epochs"] == 100
+    assert settings["batch_size"] == 128
+    assert settings["learning_rate"] == 0.0001
+    assert settings["momentum"] == 0.9
+    assert settings["weight_decay"] == 0.0005
+    validate_formal_or_smoke_settings(
+        config=config,
+        settings=settings,
+        smoke=False,
+        max_samples_per_combo=None,
+        max_batches_per_epoch=None,
+    )
+
+    limited = dict(settings, epochs=1)
+    try:
+        validate_formal_or_smoke_settings(
+            config=config,
+            settings=limited,
+            smoke=False,
+            max_samples_per_combo=1,
+            max_batches_per_epoch=None,
+        )
+    except SystemExit as exc:
+        assert "--smoke is required" in str(exc)
+    else:
+        raise AssertionError("non-paper formal settings must require --smoke")
+
+    validate_formal_or_smoke_settings(
+        config=config,
+        settings=limited,
+        smoke=True,
+        max_samples_per_combo=1,
+        max_batches_per_epoch=1,
+    )
 
 
 def test_dadda_cli_requires_formal_for_real_table2(tmp_path):

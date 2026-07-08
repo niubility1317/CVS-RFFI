@@ -4,6 +4,9 @@ import sys
 from pathlib import Path
 from typing import Any
 
+import torch
+from torch.utils.data import DataLoader, Dataset
+
 from paper_reproduction.common.wisig_runtime import make_loader
 
 
@@ -38,6 +41,24 @@ PAPER_PREPROCESSING = {
     "crop_mode": "left",
     "input_shape": "[2,256] IQ",
 }
+
+
+class TargetUnlabeledDataset(Dataset):
+    """Target-domain training view that exposes IQ only; labels remain evaluation-only."""
+
+    def __init__(self, base: WiSigCompactDataset) -> None:
+        self.base = base
+
+    def __len__(self) -> int:
+        return len(self.base)
+
+    def __getitem__(self, index: int) -> dict[str, Any]:
+        iq, *_rest = self.base[index]
+        return {"iq": iq}
+
+
+def collate_target_unlabeled(batch: list[dict[str, Any]]) -> dict[str, torch.Tensor]:
+    return {"iq": torch.stack([item["iq"] for item in batch], dim=0)}
 
 
 def _resolve_one(labels: list[Any], token: Any, *, name: str) -> int:
@@ -187,7 +208,14 @@ def build_manysig_task_loaders(
     )
     return {
         "source": make_loader(built["source"], batch_size=batch_size, shuffle=True, num_workers=num_workers),
-        "target_train": make_loader(built["target"], batch_size=batch_size, shuffle=True, num_workers=num_workers),
+        "target_train": DataLoader(
+            TargetUnlabeledDataset(built["target"]),
+            batch_size=int(batch_size),
+            shuffle=True,
+            num_workers=int(num_workers),
+            collate_fn=collate_target_unlabeled,
+            drop_last=False,
+        ),
         "target_eval": make_loader(built["target"], batch_size=batch_size, shuffle=False, num_workers=num_workers),
         "meta": built["meta"],
     }

@@ -23,7 +23,7 @@
   "target_unlabeled_allowed": true,
   "target_labels_scope": "evaluation_only",
   "input_representation": "WiSig compact IQ [2,256] after channel equalization and energy normalization",
-  "method": "DADDA with ResNet18 G_f, multiscale G_m, MMD, LMMD, and dynamic adaptive factor alpha",
+  "method": "DADDA with a 1-D ResNet18-style G_f approximation, 1-D multiscale G_m approximation, MMD, LMMD, and dynamic adaptive factor alpha",
   "optimizer": "SGD",
   "learning_rate_formula": "lr_p=0.0001/(1+10p)^0.75",
   "lambda_formula": "lambda_p=2/(1+exp(-10p))-1",
@@ -33,4 +33,3 @@
   "batch_size": 128,
   "classifier_hidden": [512, 128]
 }
-

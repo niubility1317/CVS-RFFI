@@ -59,6 +59,7 @@ def lmmd_loss(
     num_classes: int | None = None,
     bandwidth: float | None = None,
     reduction: str = "mean",
+    target_is_probabilities: bool | None = None,
 ) -> torch.Tensor:
     """Paper Eq. (3)-(4): local MMD weighted by source labels and target soft labels."""
     if source_features.ndim != 2 or target_features.ndim != 2:
@@ -73,7 +74,12 @@ def lmmd_loss(
         raise ValueError("target logits/probabilities must have shape [batch,num_classes]")
     if reduction not in {"mean", "sum"}:
         raise ValueError("reduction must be 'mean' or 'sum'")
-    target_probs = _as_probabilities(target_logits_or_probs)
+    if target_is_probabilities is True:
+        target_probs = target_logits_or_probs.clamp_min(0.0)
+    elif target_is_probabilities is False:
+        target_probs = F.softmax(target_logits_or_probs, dim=1)
+    else:
+        target_probs = _as_probabilities(target_logits_or_probs)
     source_weights = _class_weights(source_probs)
     target_weights = _class_weights(target_probs)
     k_ss = rbf_kernel(source_features, source_features, bandwidth=bandwidth)
@@ -121,6 +127,7 @@ def dadda_objective(
         target_outputs["logits"],
         num_classes=source_outputs["logits"].shape[1],
         bandwidth=bandwidth,
+        target_is_probabilities=False,
     )
     local_lmmd_sum = lmmd_loss(
         source_outputs["local_features"],
@@ -130,8 +137,10 @@ def dadda_objective(
         num_classes=source_outputs["logits"].shape[1],
         bandwidth=bandwidth,
         reduction="sum",
+        target_is_probabilities=False,
     )
     alpha = dynamic_adaptive_factor(global_mmd, local_lmmd_sum)
+    # Interpret alpha as the differentiable dynamic distribution weight from Eq. (5).
     dynamic_joint = (1.0 - alpha) * global_mmd + alpha * local_lmmd
     total = ce + float(tradeoff_lambda) * dynamic_joint
     return {
