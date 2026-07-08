@@ -60,6 +60,25 @@ def _batch_tensor(batch: Any, key: str, fallback_index: int) -> torch.Tensor:
     return value
 
 
+def _optional_batch_tensor(batch: Any, key: str, fallback_index: int) -> torch.Tensor | None:
+    try:
+        if isinstance(batch, dict):
+            if key not in batch:
+                return None
+            value = batch[key]
+        else:
+            if not hasattr(batch, "__len__") or len(batch) <= fallback_index:
+                return None
+            value = batch[fallback_index]
+    except (KeyError, IndexError, TypeError):
+        return None
+    if value is None:
+        return None
+    if not isinstance(value, torch.Tensor):
+        value = torch.as_tensor(value)
+    return value
+
+
 def _next_cycling(iterator: Iterable[Any], current_iterator: Any, *, name: str) -> tuple[Any, Any]:
     try:
         return next(current_iterator), current_iterator
@@ -122,6 +141,9 @@ def run_gada_training_loop(
         epoch_loss_kl = 0.0
         epoch_conf = 0.0
         epoch_selected = 0
+        epoch_selected_correct = 0
+        epoch_audit_total = 0
+        epoch_pred_correct = 0
         epoch_weight_min = float("inf")
         epoch_weight_max = float("-inf")
         source_iterator = iter(source_batches)
@@ -132,11 +154,15 @@ def run_gada_training_loop(
             source_x = _batch_tensor(source_batch, "iq", 0).to(resolved_device)
             source_y = _batch_tensor(source_batch, "label", 1).long().to(resolved_device)
             target_x = _batch_tensor(target_batch, "iq", 0).to(resolved_device)
+            target_y_audit = _optional_batch_tensor(target_batch, "label", 1)
+            if target_y_audit is not None:
+                target_y_audit = target_y_audit.long().to(resolved_device)
             result = gada_batch_step(
                 model,
                 source_x,
                 source_y,
                 target_x,
+                target_y_audit=target_y_audit,
                 state=state,
                 optimizer_t=optimizer_t,
                 optimizer_ec=optimizer_ec,
@@ -154,6 +180,10 @@ def run_gada_training_loop(
             epoch_loss_kl += float(result["loss_kl"].item())
             epoch_conf += float(result["target_conf_mean"].item())
             epoch_selected += int(result["target_selected"].item())
+            if "target_audit_total" in result:
+                epoch_selected_correct += int(result["target_selected_correct"].item())
+                epoch_audit_total += int(result["target_audit_total"].item())
+                epoch_pred_correct += int(result["target_pred_correct"].item())
             epoch_weight_min = min(epoch_weight_min, float(result["class_weight_min"].item()))
             epoch_weight_max = max(epoch_weight_max, float(result["class_weight_max"].item()))
 
@@ -172,6 +202,8 @@ def run_gada_training_loop(
                 "class_weight_max": epoch_weight_max,
                 "target_selected": epoch_selected,
                 "target_seen_total": int(state.total_seen),
+                "target_pseudo_selected_acc": None if epoch_selected <= 0 else epoch_selected_correct / float(epoch_selected),
+                "target_pred_acc": None if epoch_audit_total <= 0 else epoch_pred_correct / float(epoch_audit_total),
             }
         )
 

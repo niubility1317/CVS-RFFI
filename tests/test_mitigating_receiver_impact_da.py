@@ -220,6 +220,7 @@ def test_algorithm1_batch_step_updates_estimator_m_times_then_ec_once():
         source_x,
         source_y,
         target_x,
+        target_y_audit=torch.tensor([0, 1, 2, 1, 0]),
         state=state,
         optimizer_t=optimizer_t,
         optimizer_ec=optimizer_ec,
@@ -235,6 +236,8 @@ def test_algorithm1_batch_step_updates_estimator_m_times_then_ec_once():
     assert state.total_seen == 5
     assert int(state.pseudo_counts.sum().item()) == int(result["target_selected"].item())
     assert int(state.predicted_counts.sum().item()) == 5
+    assert set(["target_selected_correct", "target_audit_total", "target_pred_correct"]).issubset(result)
+    assert int(result["target_audit_total"].item()) == 5
     assert torch.isfinite(result["loss"])
 
 
@@ -383,7 +386,7 @@ def test_algorithm1_training_loop_runs_epochs_and_writes_checkpoint(tmp_path):
         {"iq": torch.randn(3, 2, 256), "label": torch.tensor([0, 1, 2])},
         {"iq": torch.randn(3, 2, 256), "label": torch.tensor([1, 2, 0])},
     ]
-    target_batches = [{"iq": torch.randn(4, 2, 256)}]
+    target_batches = [{"iq": torch.randn(4, 2, 256), "label": torch.tensor([0, 1, 2, 1])}]
     checkpoint_path = tmp_path / "gada_smoke.pt"
 
     result = run_gada_training_loop(
@@ -399,6 +402,8 @@ def test_algorithm1_training_loop_runs_epochs_and_writes_checkpoint(tmp_path):
     assert result["epochs"] == 2
     assert result["batches"] == 4
     assert len(result["history"]) == 2
+    assert "target_pseudo_selected_acc" in result["history"][0]
+    assert "target_pred_acc" in result["history"][0]
     assert result["state"]["total_seen"] == 16
     assert optimizer_t.step_calls == 28
     assert optimizer_ec.step_calls == 4

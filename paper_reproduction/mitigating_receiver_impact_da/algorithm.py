@@ -81,6 +81,7 @@ def gada_batch_step(
     source_y: torch.Tensor,
     target_x: torch.Tensor,
     *,
+    target_y_audit: torch.Tensor | None = None,
     state: PseudoLabelState,
     optimizer_t: Any,
     optimizer_ec: Any,
@@ -131,7 +132,7 @@ def gada_batch_step(
         _restore_requires_grad(model.estimate_network, previous_t_grad)
 
     state.update(pseudo_labels, pseudo_labels[target_mask])
-    return {
+    result = {
         "loss": terms["loss"].detach(),
         "loss_weighted_ce": terms["loss_weighted_ce"].detach(),
         "loss_source": terms["loss_source"].detach(),
@@ -144,3 +145,19 @@ def gada_batch_step(
         "estimate_steps": int(estimate_steps),
         "estimate_loss": torch.tensor(0.0) if last_estimate_loss is None else last_estimate_loss,
     }
+    if target_y_audit is not None:
+        audit_labels = target_y_audit.to(pseudo_labels.device).long()
+        if audit_labels.shape[0] != pseudo_labels.shape[0]:
+            raise ValueError("target_y_audit must have one label per target sample")
+        selected_correct = ((pseudo_labels == audit_labels) & target_mask).sum()
+        pred_correct = (pseudo_labels == audit_labels).sum()
+        result.update(
+            {
+                "target_selected_correct": selected_correct.detach(),
+                "target_audit_total": torch.as_tensor(
+                    int(audit_labels.numel()), dtype=torch.long, device=pseudo_labels.device
+                ),
+                "target_pred_correct": pred_correct.detach(),
+            }
+        )
+    return result
