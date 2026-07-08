@@ -5,6 +5,7 @@ import json
 from pathlib import Path
 
 import torch
+from torch import nn
 
 from .losses import base_training_loss, incremental_calibration_loss
 from .model import SixBlockConv1DEncoder, class_mean_weights
@@ -19,10 +20,12 @@ def load_config(path: str | Path) -> dict:
 def run_dry_run(config: dict, *, device: str = "cpu") -> dict[str, float | int | str]:
     seed = int(config.get("seed", 1337))
     torch.manual_seed(seed)
+    shot = int(config.get("shot", 1))
+    if shot <= 0:
+        raise ValueError("shot must be positive")
     feature_dim = int(config.get("embedding_dim", 16))
     num_targets = int(config.get("pseudo_targets", min(feature_dim + 1, 8)))
     base_classes = int(config.get("base_classes", min(3, num_targets)))
-    shot = int(config.get("shot", 1))
     if base_classes > num_targets:
         raise ValueError("base_classes must be <= pseudo_targets")
 
@@ -40,7 +43,10 @@ def run_dry_run(config: dict, *, device: str = "cpu") -> dict[str, float | int |
     new_x = torch.randn(4, 2, int(config.get("input_length", 256)), device=dev)
     new_labels = torch.tensor([base_classes, base_classes, base_classes + 1, base_classes + 1], device=dev)
     new_features = encoder(new_x).detach()
-    new_weights, new_class_ids = class_mean_weights(new_features, new_labels)
+    new_weights_init, new_class_ids = class_mean_weights(new_features, new_labels)
+    new_weights = nn.Parameter(new_weights_init.detach().clone())
+    optimizer = torch.optim.SGD([new_weights], lr=float(config.get("increment_lr", 0.08)))
+    optimizer.zero_grad(set_to_none=True)
     inc_loss, inc_terms = incremental_calibration_loss(
         new_features,
         new_labels,
@@ -53,12 +59,21 @@ def run_dry_run(config: dict, *, device: str = "cpu") -> dict[str, float | int |
         tau_fuse=float(config.get("tau_fuse", 0.01)),
         lambda_align=float(config.get("lambda_align", 1.6)),
     )
+    inc_loss.backward()
+    grad_norm = float(new_weights.grad.detach().norm().cpu().item()) if new_weights.grad is not None else 0.0
+    optimizer.step()
+    encoder_grad = 0.0
+    for parameter in encoder.parameters():
+        if parameter.grad is not None:
+            encoder_grad += float(parameter.grad.detach().abs().sum().cpu().item())
     return {
         "mode": "dry-run",
         "seed": seed,
         "base_loss": float(base_loss.detach().cpu().item()),
         "incremental_loss": float(inc_loss.detach().cpu().item()),
         "hard_count": int(inc_terms["hard_count"].detach().cpu().item()),
+        "incremental_grad_norm": grad_norm,
+        "encoder_grad_after_increment": encoder_grad,
     }
 
 

@@ -16,7 +16,7 @@ The paper setting is not CVS Stage2-B/C evidence. The paper does not define disj
 | Formula (4) orthogonal pseudo-target loss and optional iterative optimization | `pseudo_target_orthogonal_loss`, `optimize_pseudo_targets` |
 | Perturbed pseudo targets | `perturb_pseudo_targets` |
 | Six Conv1D-BN-MaxPool encoder and cosine classifier | `model.py` |
-| Base losses `Lce`, `Ls`, `Lc`, and `Linit` | `losses.py` |
+| Base losses `Lce`, `Ls`, `Lc`, and `Linit` | `losses.py`; `Ls` follows the paper's sample-anchor negative set, unassigned-pseudo negative set, and per-positive averaging form. |
 | Incremental calibration `Lh`, `La`, and `Linc` | `incremental_calibration_loss` |
 | FSCIL metrics `A_bar`, `H_bar`, `F_bar` | `metrics.py` |
 | Synthetic wiring verification | `configs/orthogonal_incremental_sei_smoke.json` and `train.py --dry-run` |
@@ -30,6 +30,7 @@ The paper setting is not CVS Stage2-B/C evidence. The paper does not define disj
 | Formal incremental training loop | The current entrypoint is a dry-run scaffold; it verifies losses and calibration wiring but does not run full sessions. |
 | Exact backbone hyperparameters | The paper describes six Conv1D modules but does not provide channel sizes, kernel sizes, or strides. Current values are implementation choices. |
 | Exact temperature/margin grid | `tau_fuse=0.01`, `top_k=60`, and perturbation `0.01` are paper-supported defaults; `tau_s`, `tau_c`, and margin need author-code confirmation or a documented grid. |
+| Source evidence publication | The root workspace keeps the detailed matrix and gap ledger in `paper_reproduction/paper_original_matrix.md` and `paper_reproduction/repro_gap.md`; this GitHub release keeps only a bounded summary. |
 
 ## Verification
 

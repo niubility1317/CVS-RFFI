@@ -49,8 +49,14 @@ def average_incremental_metrics(
 ) -> dict[str, float]:
     if not session_accuracies:
         raise ValueError("session_accuracies must not be empty")
+    if not old_accuracies or not new_accuracies:
+        raise ValueError("old_accuracies and new_accuracies must not be empty")
     if len(old_accuracies) != len(new_accuracies):
         raise ValueError("old_accuracies and new_accuracies must have matching lengths")
+    if len(session_accuracies) != len(old_accuracies):
+        raise ValueError("session_accuracies must match old/new accuracy length")
+    if accuracy_matrix.size(0) != len(session_accuracies):
+        raise ValueError("accuracy_matrix size must match session_accuracies length")
     h_values = [harmonic_accuracy(old_accuracy=o, new_accuracy=n) for o, n in zip(old_accuracies, new_accuracies)]
     f_values = forgetting_by_session(accuracy_matrix)
     return {

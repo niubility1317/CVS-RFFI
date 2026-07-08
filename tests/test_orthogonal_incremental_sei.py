@@ -14,6 +14,7 @@ from paper_reproduction.orthogonal_incremental_sei.losses import (
 )
 from paper_reproduction.orthogonal_incremental_sei.metrics import (
     average_incremental_metrics,
+    forgetting_by_session,
     harmonic_accuracy,
 )
 from paper_reproduction.orthogonal_incremental_sei.model import (
@@ -87,6 +88,58 @@ def test_pseudo_target_losses_are_finite_and_backpropagate() -> None:
     assert torch.isfinite(features.grad).all()
 
 
+def test_base_target_assignment_is_stable_for_unsorted_labels() -> None:
+    targets = make_simplex_pseudo_targets(num_targets=5, feature_dim=4)
+    assigned = assign_base_targets(base_labels=[10, 2], pseudo_targets=targets)
+
+    assert torch.allclose(assigned[2], targets[0])
+    assert torch.allclose(assigned[10], targets[1])
+
+
+def test_supervised_anchor_contrastive_loss_matches_paper_sets() -> None:
+    targets = torch.eye(4)
+    perturbed = torch.tensor(
+        [
+            [0.9, 0.1, 0.0, 0.0],
+            [0.1, 0.9, 0.0, 0.0],
+            [0.0, 0.0, 0.9, 0.1],
+            [0.0, 0.0, 0.1, 0.9],
+        ],
+        dtype=torch.float32,
+    )
+    features = torch.tensor(
+        [
+            [1.0, 0.0, 0.0, 0.0],
+            [0.9, 0.1, 0.0, 0.0],
+            [0.0, 1.0, 0.0, 0.0],
+        ],
+        requires_grad=True,
+    )
+    labels = torch.tensor([2, 2, 10])
+    assigned = assign_base_targets([10, 2], targets)
+    tau = 0.5
+
+    loss = supervised_anchor_contrastive_loss(features, labels, assigned, targets, perturbed, temperature=tau)
+
+    z = torch.nn.functional.normalize(features, dim=1)
+    target_norm = torch.nn.functional.normalize(targets, dim=1)
+    pert_norm = torch.nn.functional.normalize(perturbed, dim=1)
+    # Anchor sample 0 has positives: same-class sample 1, assigned target row 0,
+    # assigned perturb row 0. Its negatives are only different-class features.
+    anchor = z[0]
+    positives = torch.stack([z[1], target_norm[0], pert_norm[0]])
+    negatives = z[labels != 2]
+    expected_first = -((positives @ anchor / tau) - torch.logsumexp(negatives @ anchor / tau, dim=0)).mean()
+    # Unassigned pseudo target row 2 has positive perturbed row 2 and negatives:
+    # all base features, assigned targets, and assigned perturbations.
+    anchor_u = target_norm[2]
+    neg_u = torch.cat([z, target_norm[:2], pert_norm[:2]], dim=0)
+    expected_unassigned = -((pert_norm[2:3] @ anchor_u / tau) - torch.logsumexp(neg_u @ anchor_u / tau, dim=0)).mean()
+
+    assert torch.isfinite(loss)
+    assert expected_first.item() != pytest.approx(expected_unassigned.item())
+
+
 def test_incremental_calibration_penalizes_competition_and_alignment() -> None:
     new_features = torch.tensor([[1.0, 0.0], [0.7, 0.7], [0.0, 1.0]])
     new_labels = torch.tensor([2, 2, 3])
@@ -113,6 +166,57 @@ def test_incremental_calibration_penalizes_competition_and_alignment() -> None:
     loss.backward()
     assert new_weights.grad is not None
     assert torch.isfinite(new_weights.grad).all()
+
+
+def test_incremental_calibration_moves_weights_to_feature_device_and_checks_shapes() -> None:
+    new_features = torch.randn(4, 3)
+    new_labels = torch.tensor([20, 20, 30, 30])
+    old_weights = torch.randn(2, 3)
+    new_weights = torch.randn(2, 3, requires_grad=True)
+    prototypes = torch.randn(2, 3)
+
+    loss, _ = incremental_calibration_loss(
+        new_features,
+        new_labels,
+        old_weights,
+        new_weights,
+        new_class_ids=torch.tensor([20, 30]),
+        prototypes=prototypes,
+        top_k=2,
+    )
+    loss.backward()
+    assert new_weights.grad is not None
+
+    with pytest.raises(ValueError, match="prototypes and new_weights"):
+        incremental_calibration_loss(
+            new_features,
+            new_labels,
+            old_weights,
+            new_weights.detach(),
+            new_class_ids=torch.tensor([20, 30]),
+            prototypes=torch.randn(1, 3),
+        )
+
+
+def test_dry_run_performs_incremental_backward_and_rejects_invalid_shot() -> None:
+    from paper_reproduction.orthogonal_incremental_sei.train import run_dry_run
+
+    result = run_dry_run(
+        {
+            "seed": 7,
+            "embedding_dim": 8,
+            "pseudo_targets": 5,
+            "base_classes": 3,
+            "shot": 1,
+            "input_length": 128,
+        },
+        device="cpu",
+    )
+    assert result["incremental_grad_norm"] > 0
+    assert result["encoder_grad_after_increment"] == 0
+
+    with pytest.raises(ValueError, match="shot must be positive"):
+        run_dry_run({"shot": 0}, device="cpu")
 
 
 def test_encoder_classifier_weights_and_metrics_cover_fscil_flow() -> None:
@@ -148,3 +252,17 @@ def test_encoder_classifier_weights_and_metrics_cover_fscil_flow() -> None:
     assert summary["A_bar"] == pytest.approx(0.8)
     assert summary["H_bar"] < 0.9
     assert summary["F_bar"] > 0
+
+    with pytest.raises(ValueError, match="old_accuracies and new_accuracies"):
+        average_incremental_metrics(
+            session_accuracies=[0.9, 0.8],
+            old_accuracies=[],
+            new_accuracies=[],
+            accuracy_matrix=torch.eye(2),
+        )
+
+
+def test_encoder_rejects_too_short_input_before_pooling_crash() -> None:
+    encoder = SixBlockConv1DEncoder(input_channels=2, embedding_dim=8)
+    with pytest.raises(ValueError, match="at least 64"):
+        encoder(torch.randn(2, 2, 32))

@@ -135,7 +135,7 @@ def perturb_pseudo_targets(
 
 
 def assign_base_targets(base_labels: Iterable[int], pseudo_targets: torch.Tensor) -> dict[int, torch.Tensor]:
-    labels = [int(label) for label in base_labels]
+    labels = sorted(int(label) for label in base_labels)
     if len(set(labels)) != len(labels):
         raise ValueError("base_labels must be unique")
     if len(labels) > pseudo_targets.size(0):

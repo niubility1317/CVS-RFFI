@@ -32,10 +32,13 @@ def pseudo_target_cross_entropy(
 
 
 def _log_prob(anchor: torch.Tensor, positives: torch.Tensor, negatives: torch.Tensor, temperature: float) -> torch.Tensor:
-    candidates = torch.cat([positives, negatives], dim=0)
-    logits = candidates @ anchor / temperature
-    pos_logits = logits[: positives.size(0)]
-    return -(torch.logsumexp(pos_logits, dim=0) - torch.logsumexp(logits, dim=0))
+    if positives.numel() == 0:
+        raise ValueError("contrastive positives must not be empty")
+    if negatives.numel() == 0:
+        raise ValueError("contrastive negatives must not be empty")
+    pos_logits = positives @ anchor / temperature
+    neg_logits = negatives @ anchor / temperature
+    return -(pos_logits - torch.logsumexp(neg_logits, dim=0)).mean()
 
 
 def supervised_anchor_contrastive_loss(
@@ -64,14 +67,14 @@ def supervised_anchor_contrastive_loss(
         target_index = sorted(assigned_targets).index(label)
         positives.append(all_perturbed[target_index : target_index + 1])
         pos = torch.cat([p for p in positives if p.numel() > 0], dim=0)
-        neg = torch.cat([z[labels != label], all_targets[torch.arange(all_targets.size(0), device=z.device) != target_index]], dim=0)
+        neg = z[labels != label]
         losses.append(_log_prob(anchor, pos, neg, temperature))
 
     assigned_count = len(assigned_targets)
     for target_index in range(assigned_count, all_targets.size(0)):
         anchor = all_targets[target_index]
         pos = all_perturbed[target_index : target_index + 1]
-        neg = torch.cat([z, all_targets[:assigned_count]], dim=0)
+        neg = torch.cat([z, all_targets[:assigned_count], all_perturbed[:assigned_count]], dim=0)
         losses.append(_log_prob(anchor, pos, neg, temperature))
 
     return torch.stack(losses).mean()
@@ -154,9 +157,14 @@ def incremental_calibration_loss(
         raise ValueError("top_k must be positive")
     if tau_fuse <= 0:
         raise ValueError("tau_fuse must be positive")
+    device = new_features.device
+    if prototypes.shape != new_weights.shape:
+        raise ValueError("prototypes and new_weights must have matching shape")
+    if new_class_ids.numel() != new_weights.size(0):
+        raise ValueError("new_class_ids must have one id per new weight row")
     z = _normalize(new_features)
-    old_w = _normalize(old_weights)
-    new_w = _normalize(new_weights)
+    old_w = _normalize(old_weights.to(device=device))
+    new_w = _normalize(new_weights.to(device=device))
     all_w = torch.cat([old_w, new_w], dim=0)
     old_count = old_w.size(0)
     class_to_row = {int(label): idx for idx, label in enumerate(new_class_ids.detach().cpu().tolist())}
@@ -176,7 +184,7 @@ def incremental_calibration_loss(
     margin_tensor = torch.stack(margin_terms)
     hard_mask = margin_tensor > 0
     margin_loss = margin_tensor[hard_mask].mean() if bool(hard_mask.any()) else margin_tensor.sum() * 0.0
-    proto = _normalize(prototypes.to(device=new_weights.device))
+    proto = _normalize(prototypes.to(device=device))
     align_loss = (1.0 - (proto * new_w).sum(dim=1)).mean()
     total = margin_loss + float(lambda_align) * align_loss
     terms = {

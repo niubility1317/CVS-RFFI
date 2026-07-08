@@ -44,6 +44,8 @@ class SixBlockConv1DEncoder(nn.Module):
     def forward(self, x: torch.Tensor) -> torch.Tensor:
         if x.ndim != 3:
             raise ValueError("input must have shape [batch, channels, length]")
+        if x.shape[-1] < 64:
+            raise ValueError("input length must be at least 64 for six MaxPool1d blocks")
         z = self.features(x.float())
         z = self.pool(z).squeeze(-1)
         return self.projection(z)
