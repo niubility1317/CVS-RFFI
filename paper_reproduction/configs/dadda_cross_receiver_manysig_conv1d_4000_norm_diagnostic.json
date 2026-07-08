@@ -1,0 +1,29 @@
+{
+  "paper_scope": "diagnostic_ablation",
+  "cvs_extension": false,
+  "paper_title": "Cross-Receiver Radio Frequency Fingerprint Identification Based on Domain Adaptation With Dynamic Distribution Alignment",
+  "dataset": "WiSig ManySig",
+  "total_receivers": 12,
+  "capture_days": 4,
+  "tx_count": 6,
+  "source_target_tasks": [
+    "20-1->2-1"
+  ],
+  "target_unlabeled_allowed": true,
+  "target_labels_scope": "evaluation_only",
+  "input_representation": "WiSig compact IQ [2,256] after channel equalization and energy normalization",
+  "method": "DADDA diagnostic ablation using the legacy 1-D backbone with the paper 4000-sample receiver-domain cap",
+  "model_variant": "conv1d",
+  "paper_domain_sample_count": 4000,
+  "normalize": true,
+  "crop_mode": "left",
+  "detach_target_probabilities": true,
+  "optimizer": "SGD",
+  "learning_rate_formula": "lr_p=0.0001/(1+10p)^0.75",
+  "lambda_formula": "lambda_p=2/(1+exp(-10p))-1",
+  "momentum": 0.9,
+  "weight_decay": 0.0005,
+  "epochs": 100,
+  "batch_size": 128,
+  "classifier_hidden": [512, 128]
+}
