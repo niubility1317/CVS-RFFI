@@ -4,6 +4,7 @@
   "algorithm": "GAD adversarial training with DV-KL domain alignment and adaptive pseudo-labeling",
   "scope": "paper-faithful closed-set cross-receiver DA with unlabeled target adaptation",
   "dataset": "WiSig ManySig",
+  "capture_days": 4,
   "source_target_tasks": [
     "d01->d23",
     "14-7->3-19",
@@ -11,27 +12,29 @@
     "1-1->8-8",
     "7-7->8-8"
   ],
-  "receiver_ratio_plan": [
+  "target_labels_scope": "evaluation_only",
+  "paper_task_plan": [
     {
-      "ratio": "1:11",
-      "source_receiver_count": 1,
-      "target_receiver_count": 11,
+      "task": "d01->d23",
+      "task_type": "cross_day",
+      "source_domain": "d01",
+      "target_domain": "d23",
       "closed_set_tx_count": 6,
-      "target_data_role": "unlabeled_for_UDA_labeled_only_for_optional_finetune",
-      "compare_methods": [
-        "source_only_lower_bound",
-        "target_labeled_retrain_upper_bound",
-        "DANN_baseline",
-        "MCD_baseline",
-        "SHOT_baseline",
-        "proposed_GAD_DVKL_CPL_class_weighting"
+      "capture_days": 4,
+      "target_data_role": "unlabeled_for_UDA_labels_evaluation_only",
+      "compare_method_ids": [
+        "Source_only",
+        "DANN",
+        "MCD",
+        "SHOT",
+        "Proposed_GAD_DVKL_CPL_class_weighting"
       ],
-      "paper_tasks": [
-        "d01->d23",
-        "14-7->3-19",
-        "1-1->1-19",
-        "1-1->8-8",
-        "7-7->8-8"
+      "paper_display_methods": [
+        "Source only",
+        "DANN",
+        "MCD",
+        "SHOT",
+        "Proposed"
       ],
       "reported_hyperparameters": {
         "feature_extractor": "ResNet18 with 1-D convolutions",
@@ -43,29 +46,29 @@
         "estimate_update_frequency_m": 7,
         "initial_pseudo_label_threshold_tau": 0.7
       },
-      "primary_metric": "target receiver closed-set classification accuracy",
-      "table_i_target_receiver_count": null
+      "primary_metric": "target receiver closed-set classification accuracy"
     },
     {
-      "ratio": "2:10",
-      "source_receiver_count": 2,
-      "target_receiver_count": 10,
+      "task": "14-7->3-19",
+      "task_type": "cross_receiver",
+      "source_domain": "14-7",
+      "target_domain": "3-19",
       "closed_set_tx_count": 6,
-      "target_data_role": "unlabeled_for_UDA_labeled_only_for_optional_finetune",
-      "compare_methods": [
-        "source_only_lower_bound",
-        "target_labeled_retrain_upper_bound",
-        "DANN_baseline",
-        "MCD_baseline",
-        "SHOT_baseline",
-        "proposed_GAD_DVKL_CPL_class_weighting"
+      "capture_days": 4,
+      "target_data_role": "unlabeled_for_UDA_labels_evaluation_only",
+      "compare_method_ids": [
+        "Source_only",
+        "DANN",
+        "MCD",
+        "SHOT",
+        "Proposed_GAD_DVKL_CPL_class_weighting"
       ],
-      "paper_tasks": [
-        "d01->d23",
-        "14-7->3-19",
-        "1-1->1-19",
-        "1-1->8-8",
-        "7-7->8-8"
+      "paper_display_methods": [
+        "Source only",
+        "DANN",
+        "MCD",
+        "SHOT",
+        "Proposed"
       ],
       "reported_hyperparameters": {
         "feature_extractor": "ResNet18 with 1-D convolutions",
@@ -77,29 +80,29 @@
         "estimate_update_frequency_m": 7,
         "initial_pseudo_label_threshold_tau": 0.7
       },
-      "primary_metric": "target receiver closed-set classification accuracy",
-      "table_i_target_receiver_count": null
+      "primary_metric": "target receiver closed-set classification accuracy"
     },
     {
-      "ratio": "3:9",
-      "source_receiver_count": 3,
-      "target_receiver_count": 9,
+      "task": "1-1->1-19",
+      "task_type": "cross_receiver",
+      "source_domain": "1-1",
+      "target_domain": "1-19",
       "closed_set_tx_count": 6,
-      "target_data_role": "unlabeled_for_UDA_labeled_only_for_optional_finetune",
-      "compare_methods": [
-        "source_only_lower_bound",
-        "target_labeled_retrain_upper_bound",
-        "DANN_baseline",
-        "MCD_baseline",
-        "SHOT_baseline",
-        "proposed_GAD_DVKL_CPL_class_weighting"
+      "capture_days": 4,
+      "target_data_role": "unlabeled_for_UDA_labels_evaluation_only",
+      "compare_method_ids": [
+        "Source_only",
+        "DANN",
+        "MCD",
+        "SHOT",
+        "Proposed_GAD_DVKL_CPL_class_weighting"
       ],
-      "paper_tasks": [
-        "d01->d23",
-        "14-7->3-19",
-        "1-1->1-19",
-        "1-1->8-8",
-        "7-7->8-8"
+      "paper_display_methods": [
+        "Source only",
+        "DANN",
+        "MCD",
+        "SHOT",
+        "Proposed"
       ],
       "reported_hyperparameters": {
         "feature_extractor": "ResNet18 with 1-D convolutions",
@@ -111,29 +114,29 @@
         "estimate_update_frequency_m": 7,
         "initial_pseudo_label_threshold_tau": 0.7
       },
-      "primary_metric": "target receiver closed-set classification accuracy",
-      "table_i_target_receiver_count": null
+      "primary_metric": "target receiver closed-set classification accuracy"
     },
     {
-      "ratio": "4:8",
-      "source_receiver_count": 4,
-      "target_receiver_count": 8,
+      "task": "1-1->8-8",
+      "task_type": "cross_receiver",
+      "source_domain": "1-1",
+      "target_domain": "8-8",
       "closed_set_tx_count": 6,
-      "target_data_role": "unlabeled_for_UDA_labeled_only_for_optional_finetune",
-      "compare_methods": [
-        "source_only_lower_bound",
-        "target_labeled_retrain_upper_bound",
-        "DANN_baseline",
-        "MCD_baseline",
-        "SHOT_baseline",
-        "proposed_GAD_DVKL_CPL_class_weighting"
+      "capture_days": 4,
+      "target_data_role": "unlabeled_for_UDA_labels_evaluation_only",
+      "compare_method_ids": [
+        "Source_only",
+        "DANN",
+        "MCD",
+        "SHOT",
+        "Proposed_GAD_DVKL_CPL_class_weighting"
       ],
-      "paper_tasks": [
-        "d01->d23",
-        "14-7->3-19",
-        "1-1->1-19",
-        "1-1->8-8",
-        "7-7->8-8"
+      "paper_display_methods": [
+        "Source only",
+        "DANN",
+        "MCD",
+        "SHOT",
+        "Proposed"
       ],
       "reported_hyperparameters": {
         "feature_extractor": "ResNet18 with 1-D convolutions",
@@ -145,29 +148,29 @@
         "estimate_update_frequency_m": 7,
         "initial_pseudo_label_threshold_tau": 0.7
       },
-      "primary_metric": "target receiver closed-set classification accuracy",
-      "table_i_target_receiver_count": null
+      "primary_metric": "target receiver closed-set classification accuracy"
     },
     {
-      "ratio": "6:6",
-      "source_receiver_count": 6,
-      "target_receiver_count": 6,
+      "task": "7-7->8-8",
+      "task_type": "cross_receiver",
+      "source_domain": "7-7",
+      "target_domain": "8-8",
       "closed_set_tx_count": 6,
-      "target_data_role": "unlabeled_for_UDA_labeled_only_for_optional_finetune",
-      "compare_methods": [
-        "source_only_lower_bound",
-        "target_labeled_retrain_upper_bound",
-        "DANN_baseline",
-        "MCD_baseline",
-        "SHOT_baseline",
-        "proposed_GAD_DVKL_CPL_class_weighting"
+      "capture_days": 4,
+      "target_data_role": "unlabeled_for_UDA_labels_evaluation_only",
+      "compare_method_ids": [
+        "Source_only",
+        "DANN",
+        "MCD",
+        "SHOT",
+        "Proposed_GAD_DVKL_CPL_class_weighting"
       ],
-      "paper_tasks": [
-        "d01->d23",
-        "14-7->3-19",
-        "1-1->1-19",
-        "1-1->8-8",
-        "7-7->8-8"
+      "paper_display_methods": [
+        "Source only",
+        "DANN",
+        "MCD",
+        "SHOT",
+        "Proposed"
       ],
       "reported_hyperparameters": {
         "feature_extractor": "ResNet18 with 1-D convolutions",
@@ -179,8 +182,7 @@
         "estimate_update_frequency_m": 7,
         "initial_pseudo_label_threshold_tau": 0.7
       },
-      "primary_metric": "target receiver closed-set classification accuracy",
-      "table_i_target_receiver_count": 6
+      "primary_metric": "target receiver closed-set classification accuracy"
     }
   ],
   "paper_reported_hyperparameters": {
@@ -201,7 +203,7 @@
     "target validation policy without target-label leakage"
   ],
   "claim_blocks": [
-    "not CVS Stage2-C",
+    "not CVS Stage2-A/B/C",
     "not satellite/LEO deployment evidence",
     "not open-set or new-class registration",
     "target labels are evaluation-only in paper-faithful DA"

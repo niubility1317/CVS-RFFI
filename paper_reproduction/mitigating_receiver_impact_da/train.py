@@ -7,7 +7,7 @@ from pathlib import Path
 from paper_reproduction.common.config import load_json_config
 from paper_reproduction.common.wisig_runtime import write_json
 from paper_reproduction.mitigating_receiver_impact_da.protocol import (
-    build_receiver_ratio_plan,
+    build_paper_task_plan,
     validate_paper_faithful_config,
 )
 
@@ -20,12 +20,14 @@ def build_dry_run_payload(config: dict) -> dict:
         "algorithm": "GAD adversarial training with DV-KL domain alignment and adaptive pseudo-labeling",
         "scope": checked["claim_boundary"],
         "dataset": checked["dataset"],
+        "capture_days": checked["capture_days"],
         "source_target_tasks": checked["source_target_tasks"],
-        "receiver_ratio_plan": build_receiver_ratio_plan(checked),
+        "target_labels_scope": "evaluation_only",
+        "paper_task_plan": build_paper_task_plan(checked),
         "paper_reported_hyperparameters": checked["paper_reported_hyperparameters"],
         "paper_unspecified_fields": checked["paper_unspecified_fields"],
         "claim_blocks": [
-            "not CVS Stage2-C",
+            "not CVS Stage2-A/B/C",
             "not satellite/LEO deployment evidence",
             "not open-set or new-class registration",
             "target labels are evaluation-only in paper-faithful DA",

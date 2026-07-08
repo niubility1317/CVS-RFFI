@@ -18,7 +18,7 @@ Boundary:
 
 - These files do not claim paper reproduction completion.
 - Any result claim must name the CVS split, target receiver, K-shot support/query protocol, satellite/stress view, seed, and full same-row metrics.
-- Receiver-Agnostic Two-stage UDA dry-runs and Mitigating Receiver Impact DA dry-runs are paper-faithful closed-set cross-receiver checks only. They are not CVS Stage2-C, satellite/LEO deployment, open-set, or new-class registration evidence.
+- Receiver-Agnostic Two-stage UDA dry-runs and Mitigating Receiver Impact DA dry-runs are paper-faithful closed-set cross-receiver checks only. They are not CVS Stage2-A/B/C, satellite/LEO deployment, open-set, or new-class registration evidence.
 
 Log separation:
 

@@ -113,3 +113,8 @@ class ReceiverImpactGADNet(nn.Module):
         if return_activations:
             outputs["activations"] = activations
         return outputs
+
+    def classify(self, x: torch.Tensor) -> torch.Tensor:
+        """Inference path after training: use E and C, drop estimate network T."""
+        features, _ = self.feature_extractor(x, return_activations=False)
+        return self.classifier(features)

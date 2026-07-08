@@ -46,6 +46,8 @@ code/
 paper_reproduction/
   protonet_cda/                # ProtoNet-CDA论文复现基线
   feature_separation_crossrx/  # Feature Separation跨接收机基线
+  receiver_agnostic_twostage_uda/ # Bao et al. GLOBECOM 2023 DANN+LMMD闭集UDA复现
+  mitigating_receiver_impact_da/  # Liu Yang et al. IoTJ 2024 GAD/DV-KL/CPL复现
   cvs_aligned/                 # CVS Stage2-B/C协议扩展评估层
   configs/                     # 脱敏示例配置
 baselines/

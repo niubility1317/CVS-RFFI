@@ -24,7 +24,9 @@ PAPER_REPORTED_HYPERPARAMETERS = {
 }
 
 
-PAPER_TASKS = ["d01->d23", "1-1->1-19", "1-1->8-8", "7-7->8-8", "14-7->3-19"]
+PAPER_TASKS = ["d01->d23", "14-7->3-19", "1-1->1-19", "1-1->8-8", "7-7->8-8"]
+PAPER_COMPARE_METHOD_IDS = ["Source_only", "DANN", "MCD", "SHOT", "Proposed_GAD_DVKL_CPL_class_weighting"]
+PAPER_DISPLAY_METHODS = ["Source only", "DANN", "MCD", "SHOT", "Proposed"]
 
 
 def validate_paper_faithful_config(config: dict[str, Any]) -> dict[str, Any]:
@@ -42,48 +44,51 @@ def validate_paper_faithful_config(config: dict[str, Any]) -> dict[str, Any]:
         raise ValueError("IoTJ 2024 paper-faithful ManySig protocol expects 6 transmitters")
     if not bool(config.get("target_unlabeled_allowed", False)):
         raise ValueError("target unlabeled data must be allowed for the UDA stages")
+    if str(config.get("target_labels_scope", "evaluation_only")).strip() != "evaluation_only":
+        raise ValueError("target_labels_scope must be evaluation_only for paper-faithful UDA")
+    capture_days = int(config.get("capture_days", 4))
+    if capture_days != 4:
+        raise ValueError("IoTJ 2024 paper-faithful ManySig protocol expects 4 capture days")
     tasks = [str(v) for v in config.get("source_target_tasks", PAPER_TASKS)]
     if not tasks:
         raise ValueError("source_target_tasks cannot be empty")
-    counts = [int(v) for v in config.get("source_receiver_counts", [])]
-    if not counts:
-        raise ValueError("source_receiver_counts cannot be empty")
-    for count in counts:
-        if count <= 0 or count >= total_receivers:
-            raise ValueError("each source receiver count must be in [1,total_receivers)")
     checked = dict(config)
-    checked["source_receiver_counts"] = counts
     checked["source_target_tasks"] = tasks
     checked["claim_boundary"] = "paper-faithful closed-set cross-receiver DA with unlabeled target adaptation"
     checked["paper_unspecified_fields"] = PAPER_UNSPECIFIED_FIELDS
     checked["paper_reported_hyperparameters"] = PAPER_REPORTED_HYPERPARAMETERS
+    checked["capture_days"] = capture_days
+    checked["target_labels_scope"] = "evaluation_only"
     return checked
 
 
-def build_receiver_ratio_plan(config: dict[str, Any]) -> list[dict[str, Any]]:
-    total = int(config["total_receivers"])
+def _parse_task(task: str) -> tuple[str, str]:
+    if "->" not in task:
+        raise ValueError(f"paper task must use source->target form: {task}")
+    source, target = [part.strip() for part in task.split("->", 1)]
+    if not source or not target:
+        raise ValueError(f"paper task must include source and target domains: {task}")
+    return source, target
+
+
+def build_paper_task_plan(config: dict[str, Any]) -> list[dict[str, Any]]:
     rows: list[dict[str, Any]] = []
-    for source_count in config["source_receiver_counts"]:
-        target_count = total - int(source_count)
+    for task in config["source_target_tasks"]:
+        source, target = _parse_task(str(task))
+        task_type = "cross_day" if source.startswith("d") or target.startswith("d") else "cross_receiver"
         rows.append(
             {
-                "ratio": f"{int(source_count)}:{target_count}",
-                "source_receiver_count": int(source_count),
-                "target_receiver_count": target_count,
+                "task": str(task),
+                "task_type": task_type,
+                "source_domain": source,
+                "target_domain": target,
                 "closed_set_tx_count": int(config["tx_count"]),
-                "target_data_role": "unlabeled_for_UDA_labeled_only_for_optional_finetune",
-                "compare_methods": [
-                    "source_only_lower_bound",
-                    "target_labeled_retrain_upper_bound",
-                    "DANN_baseline",
-                    "MCD_baseline",
-                    "SHOT_baseline",
-                    "proposed_GAD_DVKL_CPL_class_weighting",
-                ],
-                "paper_tasks": list(config["source_target_tasks"]),
+                "capture_days": int(config["capture_days"]),
+                "target_data_role": "unlabeled_for_UDA_labels_evaluation_only",
+                "compare_method_ids": list(PAPER_COMPARE_METHOD_IDS),
+                "paper_display_methods": list(PAPER_DISPLAY_METHODS),
                 "reported_hyperparameters": dict(PAPER_REPORTED_HYPERPARAMETERS),
                 "primary_metric": "target receiver closed-set classification accuracy",
-                "table_i_target_receiver_count": target_count if int(source_count) == 6 else None,
             }
         )
     return rows
