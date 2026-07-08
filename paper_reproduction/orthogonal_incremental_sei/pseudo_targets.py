@@ -80,7 +80,7 @@ def optimize_pseudo_targets(
         raise ValueError("feature_dim must be positive")
     if seed is not None:
         torch.manual_seed(int(seed))
-    if steps == 0:
+    if num_targets <= feature_dim + 1:
         return make_simplex_pseudo_targets(
             num_targets=num_targets,
             feature_dim=feature_dim,

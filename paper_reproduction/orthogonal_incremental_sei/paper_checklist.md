@@ -4,7 +4,7 @@
 
 |论文项|实现位置|状态|
 |---|---|---|
-|伪目标数量边界`|C|<=N<=d+1`与规则单纯形几何|`pseudo_targets.py`、`train.py`|已实现闭式构造和可配置公式(4)迭代优化入口；论文协议配置默认启用迭代，`pseudo_target_steps=0`仅作闭式等价选项|
+|伪目标数量边界`|C|<=N<=d+1`与规则单纯形几何|`pseudo_targets.py`、`train.py`|已实现闭式规则单纯形构造；当`N<=d+1`时直接使用理论最优几何，避免随机迭代劣化伪目标内积边界；超出可行边界才保留迭代优化路径|
 |伪目标扰动`\tilde t_i=t_i+epsilon_i`|`pseudo_targets.py`|已实现，默认严格加性扰动；归一化需显式开启|
 |固定映射函数`h:C->{1,...,N}`|`pseudo_targets.py`|已实现；默认保持输入class/session顺序，显式`sort_labels=True`才按数值排序|
 |六层Conv1D-BN-MaxPool特征提取器|`model.py`|已实现可运行骨架，通道数为实现选择|
@@ -27,7 +27,7 @@
 |摘要贡献：增量阶段分类器权重校准|`incremental_calibration_loss`、dry-run增量梯度检查|校准损失已覆盖；多session增量训练未完成|
 |算法1基础阶段训练|`run_formal_wisig`|已支持真实WiFi/ManyTx闭集FSCIL训练、早停和训练后base class-mean权重；严格论文官方WiFi数据源仍需另行提供|
 |算法2小样本增量训练|`run_formal_wisig`|已支持K-shot支持集、剩余样本query、冻结encoder、class-mean初始化新权重和多session校准；严格同论文receiver/TX顺序仍需查证|
-|公式(4)正交空间目标|`pseudo_target_orthogonal_loss`、`optimize_pseudo_targets`、`train._build_pseudo_targets`|已覆盖闭式构造、可选迭代优化和训练入口配置|
+|公式(4)正交空间目标|`pseudo_target_orthogonal_loss`、`optimize_pseudo_targets`、`train._build_pseudo_targets`|已覆盖闭式构造、几何保持测试、可选迭代优化和训练入口配置|
 |公式(18)-(29)基础阶段损失|`base_training_loss`|已覆盖；`Ls`已按论文正负样本集合和逐正样本平均修正|
 |公式(30)-(36)增量校准|`incremental_calibration_loss`|已覆盖；已补shape/device检查|
 |公式(37)-(41)评价指标|`metrics.py`|已覆盖；已补空old/new集合、长度检查、`A_bar/H_bar`论文表格口径、遗忘率差值口径和`F_bar`分母口径|
@@ -45,6 +45,8 @@
 
 - ADS-B公开数据文件路径、类别排序与100类筛选规则。
 - WiFi/WiSig同一接收机样本筛选后的130类清单。
+- 论文表3实际class order、receiver ID和seed/多seed平均策略。
+- 论文增量校准公式(31)-(36)的完整排版细节；当前PDF文本抽取在公式区混排严重，仍需原PDF截图或作者代码核验困难样本风险定义。
 - 论文未给出的六层CNN通道数、卷积核、stride、`tau_s`、`tau_c`、边际`q`具体数值等细节。
 - 正式表2-表7和图4-图9需要在数据和GPU运行可用后生成，本目录当前只提供论文机制复现骨架和dry-run验证。
 

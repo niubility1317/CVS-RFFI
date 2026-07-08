@@ -74,6 +74,22 @@ def test_iterative_pseudo_target_optimization_reduces_formula4_loss() -> None:
         optimize_pseudo_targets(num_targets=4, feature_dim=0, steps=1)
 
 
+def test_pseudo_target_optimization_preserves_simplex_geometry_when_feasible() -> None:
+    optimized = optimize_pseudo_targets(
+        num_targets=6,
+        feature_dim=8,
+        total_classes=5,
+        temperature=0.01,
+        steps=100,
+        seed=19,
+    )
+
+    gram = optimized @ optimized.t()
+    off_diag = gram[~torch.eye(6, dtype=torch.bool)]
+    assert torch.allclose(optimized.norm(dim=1), torch.ones(6), atol=1e-6)
+    assert torch.allclose(off_diag, torch.full_like(off_diag, -0.2), atol=1e-4)
+
+
 def test_train_entrypoint_builds_formula4_pseudo_targets_from_config() -> None:
     from paper_reproduction.orthogonal_incremental_sei.train import _build_pseudo_targets
 
