@@ -15,6 +15,29 @@ from paper_reproduction.mitigating_receiver_impact_da.losses import (
 from paper_reproduction.mitigating_receiver_impact_da.model import ReceiverImpactGADNet
 
 
+def _snapshot_batch_norm_buffers(module: torch.nn.Module) -> list[tuple[torch.nn.Module, torch.Tensor | None, torch.Tensor | None, torch.Tensor | None]]:
+    snapshots: list[tuple[torch.nn.Module, torch.Tensor | None, torch.Tensor | None, torch.Tensor | None]] = []
+    for child in module.modules():
+        if isinstance(child, torch.nn.modules.batchnorm._BatchNorm):
+            running_mean = None if child.running_mean is None else child.running_mean.detach().clone()
+            running_var = None if child.running_var is None else child.running_var.detach().clone()
+            batches = None if child.num_batches_tracked is None else child.num_batches_tracked.detach().clone()
+            snapshots.append((child, running_mean, running_var, batches))
+    return snapshots
+
+
+def _restore_batch_norm_buffers(
+    snapshots: list[tuple[torch.nn.Module, torch.Tensor | None, torch.Tensor | None, torch.Tensor | None]]
+) -> None:
+    for child, running_mean, running_var, batches in snapshots:
+        if running_mean is not None and child.running_mean is not None:
+            child.running_mean.copy_(running_mean)
+        if running_var is not None and child.running_var is not None:
+            child.running_var.copy_(running_var)
+        if batches is not None and child.num_batches_tracked is not None:
+            child.num_batches_tracked.copy_(batches)
+
+
 @dataclass
 class PseudoLabelState:
     """Batch-to-batch CPL and class-weighting state from Algorithm 1."""
@@ -83,9 +106,7 @@ def _estimate_outputs(
     *,
     detach_features: bool = True,
 ) -> tuple[torch.Tensor, torch.Tensor]:
-    was_training = model.feature_extractor.training
-    if detach_features:
-        model.feature_extractor.eval()
+    bn_snapshot = _snapshot_batch_norm_buffers(model.feature_extractor) if detach_features else []
     try:
         if detach_features:
             with torch.no_grad():
@@ -98,7 +119,7 @@ def _estimate_outputs(
             target_features, _ = model.feature_extractor(target_x, return_activations=False)
     finally:
         if detach_features:
-            model.feature_extractor.train(was_training)
+            _restore_batch_norm_buffers(bn_snapshot)
     return model.estimate_network(source_features), model.estimate_network(target_features)
 
 

@@ -325,10 +325,9 @@ def test_algorithm1_ec_kl_updates_feature_extractor_on_training_path():
         optimizer_ec=optimizer_ec,
         estimate_steps=1,
     )
-    expected_eval_path = dv_kl_domain_alignment(torch.tensor([[0.0], [1.0]]), torch.tensor([[2.0], [3.0]]))
     expected_training_path = dv_kl_domain_alignment(torch.tensor([[0.0], [10.0]]), torch.tensor([[20.0], [30.0]]))
 
-    assert torch.allclose(result["estimate_zeta"], expected_eval_path, atol=1e-5)
+    assert torch.allclose(result["estimate_zeta"], expected_training_path, atol=1e-5)
     assert torch.allclose(result["loss_kl"], expected_training_path, atol=1e-5)
 
 
