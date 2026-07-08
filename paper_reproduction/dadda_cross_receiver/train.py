@@ -92,17 +92,6 @@ def _batch_tensor(batch: Any, key: str, fallback_index: int) -> torch.Tensor:
     return value
 
 
-def _next_cycling(iterator: Iterable[Any], current_iterator: Any, *, name: str) -> tuple[Any, Any]:
-    try:
-        return next(current_iterator), current_iterator
-    except StopIteration:
-        current_iterator = iter(iterator)
-    try:
-        return next(current_iterator), current_iterator
-    except StopIteration as exc:
-        raise ValueError(f"{name} batches cannot be empty") from exc
-
-
 def _limited_batches(loader: Iterable[Any], max_batches: int | None) -> Iterable[Any]:
     if max_batches is None:
         return loader
@@ -193,7 +182,6 @@ def run_dadda_training_loop(
     bandwidth: float | None = None,
 ) -> dict[str, Any]:
     history = []
-    target_iterator = iter(target_loader)
     total_batches = 0
     for epoch in range(int(epochs)):
         model.train()
@@ -207,8 +195,7 @@ def run_dadda_training_loop(
         mmd_sum = 0.0
         lmmd_sum = 0.0
         alpha_sum = 0.0
-        for source_batch in _limited_batches(source_loader, max_batches_per_epoch):
-            target_batch, target_iterator = _next_cycling(target_loader, target_iterator, name="target")
+        for source_batch, target_batch in zip(_limited_batches(source_loader, max_batches_per_epoch), target_loader):
             source_x = _batch_tensor(source_batch, "iq", 0).to(device)
             source_y = _batch_tensor(source_batch, "label", 1).long().to(device)
             target_x = _batch_tensor(target_batch, "iq", 0).to(device)
@@ -232,7 +219,7 @@ def run_dadda_training_loop(
             lmmd_sum += float(terms["lmmd"].cpu())
             alpha_sum += float(terms["alpha"].cpu())
         if batches == 0:
-            raise ValueError("source batches cannot be empty")
+            raise ValueError("source/target batches cannot be empty")
         history.append(
             {
                 "epoch": epoch + 1,
@@ -373,6 +360,8 @@ def run_table2_reproduction(
         "paper": PAPER_TITLE,
         "artifact_type": "table2_reproduction_run",
         "result_claim_status": "smoke_or_formal_metrics_depend_on_dataset",
+        "paper_evidence_targets": build_dry_run_payload({"cvs_extension": False})["paper_evidence_targets"],
+        "claim_blocks": build_dry_run_payload({"cvs_extension": False})["claim_blocks"],
         "epochs": int(epochs),
         "batch_size": int(batch_size),
         "learning_rate": float(learning_rate),
@@ -442,4 +431,3 @@ def main() -> int:
 
 if __name__ == "__main__":
     raise SystemExit(main())
-

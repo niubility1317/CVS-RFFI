@@ -40,6 +40,12 @@ def _one_hot(labels: torch.Tensor, num_classes: int) -> torch.Tensor:
     return F.one_hot(labels.long(), num_classes=int(num_classes)).to(dtype=torch.float32, device=labels.device)
 
 
+def _as_probabilities(values: torch.Tensor, eps: float = 1e-8) -> torch.Tensor:
+    if (values >= -eps).all() and torch.allclose(values.sum(dim=1), torch.ones_like(values.sum(dim=1)), atol=1e-4):
+        return values.clamp_min(0.0)
+    return F.softmax(values, dim=1)
+
+
 def _class_weights(probabilities: torch.Tensor, eps: float = 1e-8) -> torch.Tensor:
     return probabilities / probabilities.sum(dim=0, keepdim=True).clamp_min(eps)
 
@@ -52,6 +58,7 @@ def lmmd_loss(
     *,
     num_classes: int | None = None,
     bandwidth: float | None = None,
+    reduction: str = "mean",
 ) -> torch.Tensor:
     """Paper Eq. (3)-(4): local MMD weighted by source labels and target soft labels."""
     if source_features.ndim != 2 or target_features.ndim != 2:
@@ -62,11 +69,11 @@ def lmmd_loss(
         raise ValueError("target probabilities must match target feature batch")
     resolved_classes = int(num_classes or target_logits_or_probs.shape[1])
     source_probs = _one_hot(source_labels, resolved_classes)
-    target_probs = target_logits_or_probs
-    if target_probs.ndim != 2 or target_probs.shape[1] != resolved_classes:
+    if target_logits_or_probs.ndim != 2 or target_logits_or_probs.shape[1] != resolved_classes:
         raise ValueError("target logits/probabilities must have shape [batch,num_classes]")
-    if not torch.allclose(target_probs.sum(dim=1), torch.ones_like(target_probs.sum(dim=1)), atol=1e-4):
-        target_probs = F.softmax(target_probs, dim=1)
+    if reduction not in {"mean", "sum"}:
+        raise ValueError("reduction must be 'mean' or 'sum'")
+    target_probs = _as_probabilities(target_logits_or_probs)
     source_weights = _class_weights(source_probs)
     target_weights = _class_weights(target_probs)
     k_ss = rbf_kernel(source_features, source_features, bandwidth=bandwidth)
@@ -84,11 +91,14 @@ def lmmd_loss(
         losses.append(term)
     if not losses:
         return source_features.sum() * 0.0
-    return torch.stack(losses).mean().clamp_min(0.0)
+    stacked = torch.stack(losses)
+    if reduction == "sum":
+        return stacked.sum().clamp_min(0.0)
+    return stacked.mean().clamp_min(0.0)
 
 
 def dynamic_adaptive_factor(global_mmd: torch.Tensor, local_lmmd: torch.Tensor, eps: float = 1e-8) -> torch.Tensor:
-    """Paper Eq. (5): alpha balances global MMD and subdomain LMMD."""
+    """Paper Eq. (5): alpha balances global MMD and the class-wise LMMD sum."""
     alpha = global_mmd / (global_mmd + local_lmmd + float(eps))
     return alpha.clamp(0.0, 1.0)
 
@@ -112,7 +122,16 @@ def dadda_objective(
         num_classes=source_outputs["logits"].shape[1],
         bandwidth=bandwidth,
     )
-    alpha = dynamic_adaptive_factor(global_mmd, local_lmmd)
+    local_lmmd_sum = lmmd_loss(
+        source_outputs["local_features"],
+        target_outputs["local_features"],
+        source_labels,
+        target_outputs["logits"],
+        num_classes=source_outputs["logits"].shape[1],
+        bandwidth=bandwidth,
+        reduction="sum",
+    )
+    alpha = dynamic_adaptive_factor(global_mmd, local_lmmd_sum)
     dynamic_joint = (1.0 - alpha) * global_mmd + alpha * local_lmmd
     total = ce + float(tradeoff_lambda) * dynamic_joint
     return {
@@ -120,6 +139,7 @@ def dadda_objective(
         "cross_entropy": ce.detach(),
         "mmd": global_mmd.detach(),
         "lmmd": local_lmmd.detach(),
+        "lmmd_sum": local_lmmd_sum.detach(),
         "alpha": alpha.detach(),
         "dynamic_joint": dynamic_joint.detach(),
     }

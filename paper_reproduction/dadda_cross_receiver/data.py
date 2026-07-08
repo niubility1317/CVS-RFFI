@@ -80,6 +80,16 @@ def _parse_task(task: str) -> tuple[str, str]:
     return source, target
 
 
+def _tx_coverage(dataset: WiSigCompactDataset) -> set[int]:
+    out = set()
+    for item in dataset.index:
+        if hasattr(item, "tx_i"):
+            out.add(int(item.tx_i))
+        else:
+            out.add(int(item[0]))
+    return out
+
+
 def build_manysig_task_datasets(
     compact: dict[str, Any],
     *,
@@ -127,6 +137,14 @@ def build_manysig_task_datasets(
     target = WiSigCompactDataset(compact, rx_keep=target_rx, day_keep=target_days, **common)
     if len(source) == 0 or len(target) == 0:
         raise ValueError(f"empty source/target dataset for DADDA task {task}")
+    expected_tx = set(range(len(tx_labels)))
+    source_tx = _tx_coverage(source)
+    target_tx = _tx_coverage(target)
+    if source_tx != expected_tx or target_tx != expected_tx:
+        raise ValueError(
+            "DADDA closed-set protocol requires source and target datasets to cover all six TX classes; "
+            f"source={sorted(source_tx)}, target={sorted(target_tx)}"
+        )
     return {
         "source": source,
         "target": target,
@@ -141,6 +159,9 @@ def build_manysig_task_datasets(
             "target_day_ids": target_days,
             "source_day_labels": [day_labels[i] for i in source_days],
             "target_day_labels": [day_labels[i] for i in target_days],
+            "source_tx_ids": sorted(source_tx),
+            "target_tx_ids": sorted(target_tx),
+            "tx_labels": tx_labels,
             "target_label_role": "hidden_for_UDA_training_available_for_final_accuracy_only",
             "preprocessing": dict(PAPER_PREPROCESSING),
             "seed": int(seed),
@@ -170,4 +191,3 @@ def build_manysig_task_loaders(
         "target_eval": make_loader(built["target"], batch_size=batch_size, shuffle=False, num_workers=num_workers),
         "meta": built["meta"],
     }
-
