@@ -99,6 +99,70 @@ def _collect_support(
     return np.asarray(support_indices, dtype=int), np.asarray(support_labels, dtype=object).astype(str)
 
 
+def _compress_support_codes(
+    *,
+    features: np.ndarray,
+    support_indices: np.ndarray,
+    support_labels: np.ndarray,
+    scenarios: np.ndarray,
+    per_class: int,
+    mode: str,
+) -> tuple[np.ndarray, np.ndarray]:
+    """Select deployed qKNN support codes while preserving class coverage."""
+    support_indices = np.asarray(support_indices, dtype=int)
+    support_labels = np.asarray(support_labels, dtype=object).astype(str)
+    budget = int(per_class)
+    if budget <= 0 or support_indices.size == 0:
+        return support_indices.copy(), support_labels.copy()
+
+    mode_norm = str(mode).strip().lower()
+    if mode_norm not in {"centroid", "scenario_centroid"}:
+        raise ValueError(f"unsupported support_code_budget_mode: {mode}")
+
+    scenario_values = np.asarray(scenarios, dtype=object).astype(str)
+    vectors = np.asarray(features, dtype=np.float64)
+    kept_indices: list[int] = []
+    kept_labels: list[str] = []
+    seen_labels = list(dict.fromkeys(support_labels.tolist()))
+    for label in seen_labels:
+        label_mask = support_labels == str(label)
+        label_indices = support_indices[label_mask]
+        if label_indices.size <= budget:
+            chosen = label_indices.astype(int).tolist()
+        else:
+            label_vectors = qknn._normalize_rows(vectors[label_indices])
+            centroid = qknn._normalize_rows(label_vectors.mean(axis=0, keepdims=True))[0]
+            similarity = label_vectors @ centroid
+            if mode_norm == "centroid":
+                order = np.lexsort((label_indices.astype(int), -similarity))
+                chosen = label_indices[order[:budget]].astype(int).tolist()
+            else:
+                label_scenarios = scenario_values[label_indices]
+                chosen = []
+                for scenario in list(dict.fromkeys(label_scenarios.tolist())):
+                    scenario_rows = np.flatnonzero(label_scenarios == scenario)
+                    if scenario_rows.size == 0:
+                        continue
+                    local_order = np.lexsort(
+                        (label_indices[scenario_rows].astype(int), -similarity[scenario_rows])
+                    )
+                    chosen.append(int(label_indices[scenario_rows[local_order[0]]]))
+                    if len(chosen) >= budget:
+                        break
+                if len(chosen) < budget:
+                    chosen_set = set(chosen)
+                    remaining = np.asarray(
+                        [idx for idx in range(label_indices.size) if int(label_indices[idx]) not in chosen_set],
+                        dtype=int,
+                    )
+                    if remaining.size > 0:
+                        fill_order = np.lexsort((label_indices[remaining].astype(int), -similarity[remaining]))
+                        chosen.extend(label_indices[remaining[fill_order[: budget - len(chosen)]]].astype(int).tolist())
+        kept_indices.extend(chosen)
+        kept_labels.extend([str(label)] * len(chosen))
+    return np.asarray(kept_indices, dtype=int), np.asarray(kept_labels, dtype=object).astype(str)
+
+
 def _topm_mean(scores: np.ndarray, topm: int) -> np.ndarray:
     k = max(1, min(int(topm), int(scores.shape[1])))
     part = np.partition(scores, kth=scores.shape[1] - k, axis=1)[:, -k:]
@@ -4859,6 +4923,8 @@ def _evaluate_metric_qknn(
     old_floor: float,
     new_target: float,
     new_floor: float,
+    support_code_budget_per_class: int,
+    support_code_budget_mode: str,
     collect_predictions: bool,
 ) -> dict[str, Any]:
     support_indices, support_labels = _collect_support(old_splits, new_splits, old_labels, new_labels)
@@ -4961,6 +5027,17 @@ def _evaluate_metric_qknn(
         float(transform_strength),
     )
     adapted = metric._apply_transform(features, transform)
+    raw_support_code_count = int(support_indices.size)
+    full_support_indices = support_indices.copy()
+    full_support_labels = support_labels.copy()
+    support_indices, support_labels = _compress_support_codes(
+        features=adapted,
+        support_indices=support_indices,
+        support_labels=support_labels,
+        scenarios=scenarios,
+        per_class=int(support_code_budget_per_class),
+        mode=str(support_code_budget_mode),
+    )
     if float(proto_repel_lambda) > 0.0 and int(proto_repel_steps) > 0:
         scores, radii, proto_sim = _repelled_class_scores(
             features=adapted,
@@ -5042,8 +5119,8 @@ def _evaluate_metric_qknn(
     aux_support_absolute_floor_gate = 1.0
     if aux_features is not None and float(aux_score_weight) > 0.0:
         aux_transform = metric._fit_transform(
-            aux_features[support_indices],
-            support_labels,
+            aux_features[full_support_indices],
+            full_support_labels,
             str(transform_mode),
             float(transform_strength),
         )
@@ -6971,6 +7048,9 @@ def _evaluate_metric_qknn(
         "source_proto_anchor_count": int(source_proto_anchor_count),
         "stored_source_proto_anchor_scalars": int(stored_source_proto_anchor_scalars),
         "stored_mahal_proto_scalars": int(stored_mahal_proto_scalars),
+        "raw_support_code_count": int(raw_support_code_count),
+        "support_code_budget_per_class": int(support_code_budget_per_class),
+        "support_code_budget_mode": str(support_code_budget_mode),
         "stored_quantized_support_code_count": int(support_indices.size),
         "stored_raw_support_count": 0,
         "stored_class_prototype_count": int(len(old_labels) + len(new_labels)),
@@ -7197,6 +7277,8 @@ def _adaptive_qknn_overrides(
         "stable_dualview_v54",
         "dualview_support_v55",
         "stable_dualview_v55",
+        "dualview_support_v56",
+        "stable_dualview_v56",
     }:
         raise ValueError(f"unsupported adaptive_qknn_policy: {policy}")
     min_k_for_policy = float(geometry["adaptive_support_min_k"])
@@ -7243,7 +7325,8 @@ def _adaptive_qknn_overrides(
     use_v53 = name in {"dualview_support_v53", "stable_dualview_v53"}
     use_v54 = name in {"dualview_support_v54", "stable_dualview_v54"}
     use_v55 = name in {"dualview_support_v55", "stable_dualview_v55"}
-    use_v49 = use_v49 or ((use_v53 or use_v54 or use_v55) and min_k_for_policy >= 10.0)
+    use_v56 = name in {"dualview_support_v56", "stable_dualview_v56"}
+    use_v49 = use_v49 or ((use_v53 or use_v54 or use_v55 or use_v56) and min_k_for_policy >= 10.0)
     use_v44 = (
         name in {"dualview_support_v44", "stable_dualview_v44"}
         or use_v45
@@ -7266,6 +7349,7 @@ def _adaptive_qknn_overrides(
         or (use_v53 and min_k_for_policy < 10.0)
         or (use_v54 and min_k_for_policy < 10.0)
         or (use_v55 and min_k_for_policy < 10.0)
+        or (use_v56 and min_k_for_policy < 10.0)
     )
     use_v32 = name in {"dualview_support_v32", "stable_dualview_v32"} or use_v33 or use_v34 or use_v35 or use_v36
     use_v31 = name in {"dualview_support_v31", "stable_dualview_v31"} or use_v32
@@ -7294,7 +7378,9 @@ def _adaptive_qknn_overrides(
 
     effective_policy_name = (
         "stable_dualview_v49"
-        if (use_v53 or use_v54 or use_v55) and min_k_for_policy >= 10.0
+        if (use_v53 or use_v54 or use_v55 or use_v56) and min_k_for_policy >= 10.0
+        else "stable_dualview_v56"
+        if use_v56
         else "stable_dualview_v55"
         if use_v55
         else "stable_dualview_v54"
@@ -7305,7 +7391,7 @@ def _adaptive_qknn_overrides(
     )
     overrides: dict[str, Any] = {
         "adaptive_qknn_policy": effective_policy_name,
-        "adaptive_qknn_requested_policy": name if (use_v53 or use_v54 or use_v55) else "",
+        "adaptive_qknn_requested_policy": name if (use_v53 or use_v54 or use_v55 or use_v56) else "",
         "adaptive_qknn_effective_policy": effective_policy_name,
         "adaptive_support_hardness": hardness,
         "adaptive_class_load": class_load,
@@ -7707,7 +7793,7 @@ def _adaptive_qknn_overrides(
                 "support_loo_pair_linear_scope": "new",
             }
         )
-    if (use_v54 or use_v55) and min_k_for_policy < 10.0:
+    if (use_v54 or use_v55 or use_v56) and min_k_for_policy < 10.0:
         overrides.update(
             {
                 "topm": 2,
@@ -7715,7 +7801,7 @@ def _adaptive_qknn_overrides(
                 "aux_score_weight": 0.26 if bool(aux_available) else 0.0,
             }
         )
-    if use_v55 and min_k_for_policy < 10.0:
+    if (use_v55 or use_v56) and min_k_for_policy < 10.0:
         overrides.update(
             {
                 "query_cluster_weight": 0.05,
@@ -8021,6 +8107,8 @@ def main() -> None:
     parser.add_argument("--support_loo_pair_linear_alpha_grid", default="0.1")
     parser.add_argument("--support_loo_pair_linear_clip_grid", default="1.5")
     parser.add_argument("--support_loo_pair_linear_scope_grid", default="new")
+    parser.add_argument("--support_code_budget_per_class_grid", default="0")
+    parser.add_argument("--support_code_budget_mode_grid", default="centroid")
     parser.add_argument("--mahal_proto_weight_grid", default="0")
     parser.add_argument("--mahal_proto_alpha_grid", default="1.0")
     parser.add_argument("--mahal_proto_diag_mix_grid", default="0.5")
@@ -8265,6 +8353,8 @@ def main() -> None:
             qknn._parse_float_csv(args.support_loo_pair_linear_alpha_grid),
             qknn._parse_float_csv(args.support_loo_pair_linear_clip_grid),
             qknn._parse_csv(args.support_loo_pair_linear_scope_grid),
+            qknn._parse_int_csv(args.support_code_budget_per_class_grid),
+            qknn._parse_csv(args.support_code_budget_mode_grid),
             qknn._parse_float_csv(args.mahal_proto_weight_grid),
             qknn._parse_float_csv(args.mahal_proto_alpha_grid),
             qknn._parse_float_csv(args.mahal_proto_diag_mix_grid),
@@ -8500,6 +8590,8 @@ def main() -> None:
                     support_loo_pair_linear_alpha,
                     support_loo_pair_linear_clip,
                     support_loo_pair_linear_scope,
+                    support_code_budget_per_class,
+                    support_code_budget_mode,
                     mahal_proto_weight,
                     mahal_proto_alpha,
                     mahal_proto_diag_mix,
@@ -8673,6 +8765,8 @@ def main() -> None:
                         "support_loo_pair_linear_alpha": float(support_loo_pair_linear_alpha),
                         "support_loo_pair_linear_clip": float(support_loo_pair_linear_clip),
                         "support_loo_pair_linear_scope": str(support_loo_pair_linear_scope),
+                        "support_code_budget_per_class": int(support_code_budget_per_class),
+                        "support_code_budget_mode": str(support_code_budget_mode),
                         "labelprop_weight": float(labelprop_weight),
                         "labelprop_k": int(labelprop_k),
                         "labelprop_alpha": float(labelprop_alpha),
@@ -8872,6 +8966,12 @@ def main() -> None:
                             ),
                             "support_loo_pair_linear_scope": adaptive_overrides.get(
                                 "support_loo_pair_linear_scope", params["support_loo_pair_linear_scope"]
+                            ),
+                            "support_code_budget_per_class": adaptive_overrides.get(
+                                "support_code_budget_per_class", params["support_code_budget_per_class"]
+                            ),
+                            "support_code_budget_mode": adaptive_overrides.get(
+                                "support_code_budget_mode", params["support_code_budget_mode"]
                             ),
                             "labelprop_weight": adaptive_overrides.get("labelprop_weight", params["labelprop_weight"]),
                             "labelprop_k": adaptive_overrides.get("labelprop_k", params["labelprop_k"]),
@@ -9217,6 +9317,8 @@ def main() -> None:
                         old_floor=float(args.old_floor),
                         new_target=float(args.seen_new_target),
                         new_floor=float(args.seen_new_floor),
+                        support_code_budget_per_class=int(params["support_code_budget_per_class"]),
+                        support_code_budget_mode=str(params["support_code_budget_mode"]),
                         collect_predictions=bool(str(args.output_predictions_csv).strip()),
                     )
                     row.update(support_geometry)
@@ -9623,6 +9725,9 @@ def main() -> None:
         "new_query_index_sha16",
         "query_index_sha16",
         "split_fingerprint",
+        "raw_support_code_count",
+        "support_code_budget_per_class",
+        "support_code_budget_mode",
         "stored_quantized_support_code_count",
         "stored_raw_support_count",
         "stored_class_prototype_count",
