@@ -316,7 +316,7 @@ def test_table2_runner_smoke_trains_source_only_and_proposed_rows(tmp_path):
         tasks=["14-7->3-19"],
         methods=["source_only", "proposed"],
         output_dir=tmp_path,
-        epochs=1,
+        epochs=2,
         batch_size=4,
         max_samples_per_combo=1,
         max_batches_per_epoch=1,
@@ -330,6 +330,8 @@ def test_table2_runner_smoke_trains_source_only_and_proposed_rows(tmp_path):
     assert all(row["task"] == "14-7->3-19" for row in result["rows"])
     assert all(row["target_labels_scope"] == "evaluation_only" for row in result["rows"])
     assert all(0.0 <= row["target_accuracy"] <= 1.0 for row in result["rows"])
+    assert len(result["rows"][0]["history"]) == 2
+    assert len(result["rows"][1]["history"]) == 2
     assert (tmp_path / "14-7_to_3-19_source_only.pt").exists()
     assert (tmp_path / "14-7_to_3-19_proposed.pt").exists()
 

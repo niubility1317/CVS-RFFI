@@ -332,7 +332,7 @@ def run_table2_reproduction(
                 )
                 train_result = run_gada_training_loop(
                     model,
-                    _limited_batches(loaders["source"], max_batches_per_epoch),
+                    loaders["source"],
                     loaders["target_train"],
                     optimizer_t=optimizer_t,
                     optimizer_ec=optimizer_ec,
