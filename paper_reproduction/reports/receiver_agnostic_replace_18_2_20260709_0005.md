@@ -37,3 +37,16 @@ Launched on N607 at `2026-07-09 00:05-00:06 CST`.
 | `receiver_agnostic_fig8_no18_r3_20260709_0005` | `930987` | `cuda:3` |
 
 The first launch attempt did not land any matching remote process because local PowerShell expanded remote shell variables. The successful launch used a base64-encoded remote bash script.
+
+## Startup Health
+
+All four runs were confirmed active. The explicit receiver splits are correct and `18-2` is absent from every target set:
+
+| run | PID | latest observed progress |
+|---|---:|---|
+| R=6 replacement | `930981` | stage1 step `500/2000` |
+| Fig8 R=1 no18 | `930983` | stage1 step `500/1880` |
+| Fig8 R=2 no18 | `930985` | stage1 step `500/2000` |
+| Fig8 R=3 no18 | `930987` | stage1 step `500/2000` |
+
+No startup `Traceback`, argparse failure, OOM, or empty-target split was observed.
