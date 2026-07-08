@@ -1,7 +1,16 @@
 {
-  "paper": "Receiver-Agnostic Radio Frequency Fingerprinting Based on Two-stage Unsupervised Domain Adaptation and Fine-tuning",
-  "scope": "paper-faithful closed-set cross-receiver UDA",
+  "paper": "Mitigating Receiver Impact on Radio Frequency Fingerprint Identification via Domain Adaptation",
+  "citation": "Liu Yang, Qiang Li, Xiaoyang Ren, Yi Fang, and Shafei Wang, IEEE Internet of Things Journal, 2024",
+  "algorithm": "GAD adversarial training with DV-KL domain alignment and adaptive pseudo-labeling",
+  "scope": "paper-faithful closed-set cross-receiver DA with unlabeled target adaptation",
   "dataset": "WiSig ManySig",
+  "source_target_tasks": [
+    "d01->d23",
+    "14-7->3-19",
+    "1-1->1-19",
+    "1-1->8-8",
+    "7-7->8-8"
+  ],
   "receiver_ratio_plan": [
     {
       "ratio": "1:11",
@@ -12,10 +21,29 @@
       "compare_methods": [
         "source_only_lower_bound",
         "target_labeled_retrain_upper_bound",
-        "DANN_global_domain_adaptation",
-        "DANN_plus_LMMD_subdomain_adaptation",
-        "optional_uncertainty_finetune"
+        "DANN_baseline",
+        "MCD_baseline",
+        "SHOT_baseline",
+        "proposed_GAD_DVKL_CPL_class_weighting"
       ],
+      "paper_tasks": [
+        "d01->d23",
+        "14-7->3-19",
+        "1-1->1-19",
+        "1-1->8-8",
+        "7-7->8-8"
+      ],
+      "reported_hyperparameters": {
+        "feature_extractor": "ResNet18 with 1-D convolutions",
+        "classifier": "three-layer fully connected network",
+        "estimate_network": "three-layer fully connected network",
+        "learning_rate": 0.0006,
+        "kl_weight_lambda": 0.005,
+        "mu": 0.5,
+        "estimate_update_frequency_m": 7,
+        "initial_pseudo_label_threshold_tau": 0.7
+      },
+      "primary_metric": "target receiver closed-set classification accuracy",
       "table_i_target_receiver_count": null
     },
     {
@@ -27,10 +55,29 @@
       "compare_methods": [
         "source_only_lower_bound",
         "target_labeled_retrain_upper_bound",
-        "DANN_global_domain_adaptation",
-        "DANN_plus_LMMD_subdomain_adaptation",
-        "optional_uncertainty_finetune"
+        "DANN_baseline",
+        "MCD_baseline",
+        "SHOT_baseline",
+        "proposed_GAD_DVKL_CPL_class_weighting"
       ],
+      "paper_tasks": [
+        "d01->d23",
+        "14-7->3-19",
+        "1-1->1-19",
+        "1-1->8-8",
+        "7-7->8-8"
+      ],
+      "reported_hyperparameters": {
+        "feature_extractor": "ResNet18 with 1-D convolutions",
+        "classifier": "three-layer fully connected network",
+        "estimate_network": "three-layer fully connected network",
+        "learning_rate": 0.0006,
+        "kl_weight_lambda": 0.005,
+        "mu": 0.5,
+        "estimate_update_frequency_m": 7,
+        "initial_pseudo_label_threshold_tau": 0.7
+      },
+      "primary_metric": "target receiver closed-set classification accuracy",
       "table_i_target_receiver_count": null
     },
     {
@@ -42,10 +89,29 @@
       "compare_methods": [
         "source_only_lower_bound",
         "target_labeled_retrain_upper_bound",
-        "DANN_global_domain_adaptation",
-        "DANN_plus_LMMD_subdomain_adaptation",
-        "optional_uncertainty_finetune"
+        "DANN_baseline",
+        "MCD_baseline",
+        "SHOT_baseline",
+        "proposed_GAD_DVKL_CPL_class_weighting"
       ],
+      "paper_tasks": [
+        "d01->d23",
+        "14-7->3-19",
+        "1-1->1-19",
+        "1-1->8-8",
+        "7-7->8-8"
+      ],
+      "reported_hyperparameters": {
+        "feature_extractor": "ResNet18 with 1-D convolutions",
+        "classifier": "three-layer fully connected network",
+        "estimate_network": "three-layer fully connected network",
+        "learning_rate": 0.0006,
+        "kl_weight_lambda": 0.005,
+        "mu": 0.5,
+        "estimate_update_frequency_m": 7,
+        "initial_pseudo_label_threshold_tau": 0.7
+      },
+      "primary_metric": "target receiver closed-set classification accuracy",
       "table_i_target_receiver_count": null
     },
     {
@@ -57,10 +123,29 @@
       "compare_methods": [
         "source_only_lower_bound",
         "target_labeled_retrain_upper_bound",
-        "DANN_global_domain_adaptation",
-        "DANN_plus_LMMD_subdomain_adaptation",
-        "optional_uncertainty_finetune"
+        "DANN_baseline",
+        "MCD_baseline",
+        "SHOT_baseline",
+        "proposed_GAD_DVKL_CPL_class_weighting"
       ],
+      "paper_tasks": [
+        "d01->d23",
+        "14-7->3-19",
+        "1-1->1-19",
+        "1-1->8-8",
+        "7-7->8-8"
+      ],
+      "reported_hyperparameters": {
+        "feature_extractor": "ResNet18 with 1-D convolutions",
+        "classifier": "three-layer fully connected network",
+        "estimate_network": "three-layer fully connected network",
+        "learning_rate": 0.0006,
+        "kl_weight_lambda": 0.005,
+        "mu": 0.5,
+        "estimate_update_frequency_m": 7,
+        "initial_pseudo_label_threshold_tau": 0.7
+      },
+      "primary_metric": "target receiver closed-set classification accuracy",
       "table_i_target_receiver_count": null
     },
     {
@@ -72,27 +157,53 @@
       "compare_methods": [
         "source_only_lower_bound",
         "target_labeled_retrain_upper_bound",
-        "DANN_global_domain_adaptation",
-        "DANN_plus_LMMD_subdomain_adaptation",
-        "optional_uncertainty_finetune"
+        "DANN_baseline",
+        "MCD_baseline",
+        "SHOT_baseline",
+        "proposed_GAD_DVKL_CPL_class_weighting"
       ],
+      "paper_tasks": [
+        "d01->d23",
+        "14-7->3-19",
+        "1-1->1-19",
+        "1-1->8-8",
+        "7-7->8-8"
+      ],
+      "reported_hyperparameters": {
+        "feature_extractor": "ResNet18 with 1-D convolutions",
+        "classifier": "three-layer fully connected network",
+        "estimate_network": "three-layer fully connected network",
+        "learning_rate": 0.0006,
+        "kl_weight_lambda": 0.005,
+        "mu": 0.5,
+        "estimate_update_frequency_m": 7,
+        "initial_pseudo_label_threshold_tau": 0.7
+      },
+      "primary_metric": "target receiver closed-set classification accuracy",
       "table_i_target_receiver_count": 6
     }
   ],
+  "paper_reported_hyperparameters": {
+    "feature_extractor": "ResNet18 with 1-D convolutions",
+    "classifier": "three-layer fully connected network",
+    "estimate_network": "three-layer fully connected network",
+    "learning_rate": 0.0006,
+    "kl_weight_lambda": 0.005,
+    "mu": 0.5,
+    "estimate_update_frequency_m": 7,
+    "initial_pseudo_label_threshold_tau": 0.7
+  },
   "paper_unspecified_fields": [
-    "conv kernel/channel schedule beyond four Conv-BN-ReLU-MaxPool blocks",
-    "optimizer",
-    "learning rate",
     "batch size",
-    "epoch count",
-    "GRL lambda schedule",
-    "LMMD lambda",
-    "LMMD kernel and layer set",
-    "fine-tuning freeze policy"
+    "epoch count or convergence criterion",
+    "optimizer apart from the reported learning rate",
+    "ResNet18 1-D stem/kernel implementation details",
+    "target validation policy without target-label leakage"
   ],
   "claim_blocks": [
     "not CVS Stage2-C",
     "not satellite/LEO deployment evidence",
-    "not open-set or new-class registration"
+    "not open-set or new-class registration",
+    "target labels are evaluation-only in paper-faithful DA"
   ]
 }

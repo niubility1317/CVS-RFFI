@@ -1,18 +1,22 @@
 {
   "paper_scope": "paper_faithful",
   "cvs_extension": false,
+  "paper_title": "Mitigating Receiver Impact on Radio Frequency Fingerprint Identification via Domain Adaptation",
   "dataset": "WiSig ManySig",
   "total_receivers": 12,
   "tx_count": 6,
   "source_receiver_counts": [1, 2, 3, 4, 6],
+  "source_target_tasks": ["d01->d23", "14-7->3-19", "1-1->1-19", "1-1->8-8", "7-7->8-8"],
   "target_unlabeled_allowed": true,
-  "input_representation": "equalized time-domain WiFi preamble, power-normalized, CFO preserved, first 256 IQ samples as [256,2]",
-  "stage1": "DANN global domain adaptation with source TX CE and source/target domain BCE through GRL",
-  "stage2": "LMMD relevant subdomain adaptation using source labels and target predicted probabilities",
-  "optional_finetune": {
-    "selection": "uncertainty sampling",
-    "target_labeled_budget": "1/50 of target unlabeled pool",
-    "source_replay": true,
-    "freeze_policy": "paper-unspecified"
-  }
+  "input_representation": "WiSig signal after energy detection, L-STF/L-LTF packet processing, MMSE channel equalization, and signal normalization; IQ accepted as [256,2] or [2,256]",
+  "method": "GAD adversarial training with DV-KL domain alignment, CPL adaptive pseudo-labeling, and class weighting",
+  "feature_extractor": "ResNet18 with 1-D convolutions",
+  "classifier": "three-layer fully connected network",
+  "estimate_network": "three-layer fully connected network dropped after training",
+  "learning_rate": 0.0006,
+  "kl_weight_lambda": 0.005,
+  "mu": 0.5,
+  "estimate_update_frequency_m": 7,
+  "initial_pseudo_label_threshold_tau": 0.7,
+  "target_labels_scope": "evaluation_only"
 }

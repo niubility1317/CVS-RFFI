@@ -1,2 +1,1 @@
-"""Paper-faithful components for Bao et al. GLOBECOM 2023 receiver-agnostic RFFI."""
-
+"""Paper-faithful components for the IoTJ 2024 receiver-impact DA RFFI paper."""

@@ -1,28 +1,36 @@
-# Receiver-Agnostic Two-stage UDA复现逐项对应表
+# Mitigating Receiver Impact DA复现逐项对应表
 
-范围：Bao et al., "Receiver-Agnostic Radio Frequency Fingerprinting Based on Two-stage Unsupervised Domain Adaptation and Fine-tuning", IEEE GLOBECOM 2023。
+范围：Liu Yang, Qiang Li, Xiaoyang Ren, Yi Fang, and Shafei Wang, "Mitigating Receiver Impact on Radio Frequency Fingerprint Identification via Domain Adaptation", IEEE Internet of Things Journal, 2024。
 
-边界：本表先做paper-faithful reproduction。CVS Stage2-A/B/C、satellite/LEO、`Y_old/Y_new/Y_unknown`和N607运行若出现，必须另标`cvs_extension=true`。
+边界：本表只覆盖paper-faithful closed-set cross-receiver domain adaptation。CVSStage2-A/B/C、satellite/LEO、`Y_old/Y_new/Y_unknown`和N607运行若出现，必须另标`cvs_extension=true`并分表报告。
 
-|ID|Source section|Requirement|Target files|Status|Verification|Notes|
+|ID|论文位置|复现要求|本地落点|状态|验证/证据|边界|
 |---|---|---|---|---|---|---|
-|RAU-01|Abstract, Sec.III-A|两阶段UDA：先DANN全局域对抗，再LMMD相关子域适配。|`paper_reproduction/receiver_agnostic_twostage_uda/model.py`; `losses.py`; `train.py`|implemented|`pytest tests/test_receiver_agnostic_twostage_uda.py` passed|干跑入口仍是gate，不执行正式长跑。|
-|RAU-02|Eq.6-Eq.9, Fig.2|source有TX标签，target只有无标签；模型含feature extractor、TX classifier、domain classifier、GRL。|`model.py`; `losses.py`; tests|verified|模型shape测试通过|domain label按source=0,target=1。|
-|RAU-03|Eq.10-Eq.13|DANN损失和GRL更新语义：TX CE + domain BCE，feature梯度反转。|`losses.py`; tests|implemented|`py_compile` passed|后续可补GRL梯度符号单测。|
-|RAU-04|Eq.14-Eq.16, Fig.3|LMMD按source one-hot label与target预测概率计算类别权重，支持多层activation。|`losses.py`; tests|verified|LMMD backward测试通过|目标标签不被要求为真实标签。|
-|RAU-05|Sec.III-C, Fig.4|fine-tuning使用target不确定性采样得到少量标注样本，并混入少量source样本保持source性能。|`sampling.py`; `train.py`; tests|verified|uncertainty ranking测试通过|冻结策略仍为paper-unspecified。|
-|RAU-06|Sec.IV-A|WiSig ManySig，6 TX、12 RX、4 days；equalized time-domain preamble，power normalization，保留CFO，取前256 IQ并组织为`[batch,1,256,2]`。|`model.py`; config/report|partial|模型入口`[batch,2,256]`转换测试通过|正式数据split/loader长跑未执行。|
-|RAU-07|Sec.IV-B|feature extractor为4个Conv-BN-ReLU-MaxPool block，输出128维；TX/domain classifier为Dense128+ReLU+softmax。|`model.py`; tests|verified|模型shape和activation数量测试通过|卷积核/通道数属implementation choice。|
-|RAU-08|Sec.IV-C Fig.7|总体实验按source:target receiver比例`R`评估：source-only下界、target-labeled retrain上界、DANN、DANN+LMMD。|`configs/receiver_agnostic_twostage_uda_manysig_paper_faithful.json`; `train.py`|verified|CLI dry-run生成`local_artifacts/receiver_agnostic_twostage_uda_dry_run_20260708.json`|长跑矩阵已生成，未启动N607。|
-|RAU-09|Sec.IV-C Table I|`R=6:6`逐target receiver accuracy表：0.89/0.94/0.87/0.91/0.92/0.92为目标复现对照。|future report|deferred||需要正式训练/评估结果，当前不得声明达到。|
-|RAU-10|Sec.IV-C Fig.8|`R<4:8`时比较fine-tuning不确定性采样策略和迭代次数；标注样本数为unlabeled dataset的1/50。|`sampling.py`; `train.py`; report|partial|sampling测试通过|fine-tune训练循环和100 iteration曲线待长跑实现/验证。|
-|RAU-11|项目协议|paper-faithful与CVS extension分离；不把target unlabeled UDA写成CVS source-only DG或Stage2成功。|README; config; `protocol.py`|verified|protocol测试拒绝`cvs_extension=true`混入|硬门槛。|
+|MRI-01|Abstract, Sec.I-II|源接收机有标签`S={(x_i^s,y_i^s)}`，目标接收机只有无标签`T={x_i^t}`，目标是缓解cross-receiver RFFI性能下降。|`protocol.py`; `train.py`; config|implemented|dry-run payload写入`target_labels_scope=evaluation_only`|闭集UDA，不是CVSStage2。|
+|MRI-02|Sec.II|预处理包括energy detection、L-STF/L-LTF辅助channel equalization、signal normalization。|config/report字段|documented|配置记录输入表示；正式数据loader仍依赖WiSig compact pkl|若本地pkl已预处理，只能记录为dataset-provided equivalent。|
+|MRI-03|Sec.II|信号模型区分发射机非理想`phi`和接收机特性`psi`，receiver impact是目标域偏移来源。|traceability/report|documented|本表记录机理，不改CVS项目物理场景|不能写成真实卫星链路验证。|
+|MRI-04|Sec.IV-A, Fig.4|模型包含feature extractor`E`、classifier`C`、estimate network`T`；`T`训练后丢弃。|`model.py`: `ReceiverImpactGADNet`, `ResNet18FeatureExtractor1D`, `ThreeLayerFCNet`|implemented|shape测试覆盖`features`、`tx_logits`、`estimate_logits`|旧`ReceiverAgnosticUDANet`只保留兼容，不作为本PDF主方法。|
+|MRI-05|Sec.IV-B, Eq.(5)-(6)|用Donsker-Varadhan表示估计KL域差异：`zeta=mean T(E(x_s))-log mean exp T(E(x_t))`。|`losses.py`: `dv_kl_domain_alignment`|implemented|单测按`logsumexp-log(n_t)`核对数值|这是estimate network min-max项，不是DANN的domain BCE。|
+|MRI-06|Sec.IV-C, Eq.(8)|CPL按累计伪标签数缩放阈值：`beta_l(k)=sigma_{l-1}(k)/max_i sigma_{l-1}(i)`，`tau_l(k)=beta_l(k)tau`。|`losses.py`: `curriculum_thresholds`, `adaptive_pseudo_labels`|implemented|单测确认高伪标签类保留更高阈值|初始全零计数退回统一`tau`。|
+|MRI-07|Sec.IV-C, Eq.(9)|class weighting按`p_prior(k)/(sigma'_{l-1}(k)/n^t_{l-1})`提升低估类别权重。|`losses.py`: `class_balance_weights`|implemented|单测确认低频预测类别权重更高|需要正式训练记录每类伪标签统计。|
+|MRI-08|Sec.IV-D, Eq.(10)-(11)|总目标为`min_{theta_E,theta_C} max_{theta_T} weighted CE + lambda*zeta`，源/目标分类损失由`mu`权衡。|`losses.py`: `gada_minimax_objective`|implemented|单测确认返回`loss/loss_weighted_ce/loss_source/loss_target/loss_kl`|训练循环仍是dry-run gate，未启动长跑。|
+|MRI-09|Algorithm 1|GAD训练：每batch先更新`T`共`m`次，再生成伪标签、计算class weight和总损失，更新`E/C`。|`train.py`; `protocol.py`; config|partial|dry-run记录`m=7`和算法名称|完整多epoch训练循环待正式实现/验证。|
+|MRI-10|Sec.V-A|实验子集为WiSig 6个Tx、12个Rx、4天；cross-receiver任务包括`14-7->3-19`、`1-1->1-19`、`1-1->8-8`、`7-7->8-8`，另有`d01->d23`跨天控制。|config; `protocol.py`|implemented|dry-run写入任务行|target标签只能最终评估使用。|
+|MRI-11|Sec.V-A|超参：1D-ResNet18，三层FC`C/T`，`lr=0.0006`、`lambda=0.005`、`mu=0.5`、`m=7`、`tau=0.7`。|config; `protocol.py`; `model.py`|implemented|dry-run payload包含`paper_reported_hyperparameters`|batch size、epoch和优化器细节属paper-unspecified。|
+|MRI-12|Sec.V-B|对比方法：Source only、DANN、MCD、SHOT、Proposed。|`protocol.py`: `build_receiver_ratio_plan`|implemented|单测确认方法矩阵不再出现DANN+LMMD错误项|对照baseline训练入口未在本轮长跑。|
+|MRI-13|Table II|目标复现读数：Proposed在`d01->d23`为`93.34±0.02`，`14-7->3-19`为`92.42±0.16`，`1-1->1-19`为`95.44±0.51`，`1-1->8-8`为`99.78±0.01`，`7-7->8-8`为`99.74±0.04`。|future report|deferred|只记录目标表值；本轮未生成训练结果|不得声明已达到。|
+|MRI-14|Table III-IV, Fig.5-7|消融与敏感性：domain alignment、CPL、class weighting、`lambda`、`tau`、`p_prior`、t-SNE。|future report; `losses.py`核心算子|partial|核心算子已测，曲线和表格待长跑|不得用单次smoke替代表格复现。|
+|MRI-15|项目协议|paper-faithful与CVS扩展隔离；A层target accuracy不能写成CVSStage2或部署成功。|README; config; `protocol.py`; traceability|implemented|protocol拒绝`cvs_extension=true`混入|硬边界。|
 
-## 当前阻断与风险
+## 当前验证命令
 
-- 原文未给完整优化器、batch size、epoch、GRL系数、LMMD kernel细节和fine-tuning冻结策略；这些字段必须标为`paper-unspecified`或`implementation choice`。
-- 本轮尚未运行N607；所有结果声明只能到本地代码/测试和复现实验设计层。
-- 本轮验证命令：
-  - `conda run -n ssr-gpu python -m pytest -q tests/test_receiver_agnostic_twostage_uda.py`
-  - `conda run -n ssr-gpu python -m py_compile paper_reproduction/receiver_agnostic_twostage_uda/model.py paper_reproduction/receiver_agnostic_twostage_uda/losses.py paper_reproduction/receiver_agnostic_twostage_uda/sampling.py paper_reproduction/receiver_agnostic_twostage_uda/protocol.py paper_reproduction/receiver_agnostic_twostage_uda/train.py`
-  - `conda run -n ssr-gpu python -m paper_reproduction.receiver_agnostic_twostage_uda.train --config paper_reproduction/configs/receiver_agnostic_twostage_uda_manysig_paper_faithful.json --dry-run --output local_artifacts/receiver_agnostic_twostage_uda_dry_run_20260708.json`
+- `conda run -n ssr-gpu python -m pytest tests/test_receiver_agnostic_twostage_uda.py -q`
+- `conda run -n ssr-gpu python -m py_compile paper_reproduction/receiver_agnostic_twostage_uda/model.py paper_reproduction/receiver_agnostic_twostage_uda/losses.py paper_reproduction/receiver_agnostic_twostage_uda/sampling.py paper_reproduction/receiver_agnostic_twostage_uda/protocol.py paper_reproduction/receiver_agnostic_twostage_uda/train.py`
+- `conda run -n ssr-gpu python -m paper_reproduction.receiver_agnostic_twostage_uda.train --config paper_reproduction/configs/receiver_agnostic_twostage_uda_manysig_paper_faithful.json --dry-run --output local_artifacts/receiver_agnostic_twostage_uda_dry_run_20260708.json`
+
+## 剩余工作
+
+1.实现正式训练循环并记录target标签evaluation-only边界。
+2.在N607真实WiSig pkl上运行Table II任务与baseline矩阵。
+3.补Table III-IV消融、Fig.5-7敏感性与可视化。
+4.若做CVS扩展，另建`cvs_extension=true`配置和报告，不回写为本文paper-faithful结果。

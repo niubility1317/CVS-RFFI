@@ -15,21 +15,26 @@ from paper_reproduction.receiver_agnostic_twostage_uda.protocol import (
 def build_dry_run_payload(config: dict) -> dict:
     checked = validate_paper_faithful_config(config)
     return {
-        "paper": "Receiver-Agnostic Radio Frequency Fingerprinting Based on Two-stage Unsupervised Domain Adaptation and Fine-tuning",
+        "paper": "Mitigating Receiver Impact on Radio Frequency Fingerprint Identification via Domain Adaptation",
+        "citation": "Liu Yang, Qiang Li, Xiaoyang Ren, Yi Fang, and Shafei Wang, IEEE Internet of Things Journal, 2024",
+        "algorithm": "GAD adversarial training with DV-KL domain alignment and adaptive pseudo-labeling",
         "scope": checked["claim_boundary"],
         "dataset": checked["dataset"],
+        "source_target_tasks": checked["source_target_tasks"],
         "receiver_ratio_plan": build_receiver_ratio_plan(checked),
+        "paper_reported_hyperparameters": checked["paper_reported_hyperparameters"],
         "paper_unspecified_fields": checked["paper_unspecified_fields"],
         "claim_blocks": [
             "not CVS Stage2-C",
             "not satellite/LEO deployment evidence",
             "not open-set or new-class registration",
+            "target labels are evaluation-only in paper-faithful DA",
         ],
     }
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description="Paper-faithful dry-run entrypoint for Bao et al. two-stage UDA RFFI.")
+    parser = argparse.ArgumentParser(description="Paper-faithful dry-run entrypoint for the IoTJ 2024 receiver-impact DA RFFI paper.")
     parser.add_argument("--config", type=Path, required=True)
     parser.add_argument("--dry-run", action="store_true", help="Validate config and print the reproduction matrix.")
     parser.add_argument("--output", type=Path, default=None, help="Optional JSON output path for dry-run payload.")
@@ -47,4 +52,3 @@ def main() -> int:
 
 if __name__ == "__main__":
     raise SystemExit(main())
-
