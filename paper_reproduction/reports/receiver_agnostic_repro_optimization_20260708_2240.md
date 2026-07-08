@@ -49,7 +49,7 @@ Run B completed with the following target accuracies. Paper Fig. 7 references ar
 
 LMMD pseudo-label coverage remained high (`0.96875` to `0.99609`), so the low-R gap is unlikely to be caused by empty target LMMD batches. The main unresolved issue is receiver identity/composition, especially `18-2` and `3-19`.
 
-Run C produced its R=1 Fig8 row and remains active on R=2 with PID `894243`.
+Run C produced its R=1 Fig8 row and remains active with PID `894243`. Latest probe showed R=2 stage1 and LMMD completed, with R=2 likely in the Fig8 fine-tuning/evaluation loop and no second `results.jsonl` row yet.
 
 | Fig8 strategy, R=1 | iter 0 | iter 25 | iter 50 | iter 75 | iter 100 | gain |
 |---|---:|---:|---:|---:|---:|---:|
