@@ -134,6 +134,18 @@ def _run_steps(step_fn, *, steps: int, progress_every: int) -> dict[str, float]:
     return last
 
 
+def _csv_floats(value: str) -> list[float]:
+    return [float(part.strip()) for part in str(value).split(",") if part.strip()]
+
+
+def _csv_ints(value: str) -> list[int]:
+    return [int(part.strip()) for part in str(value).split(",") if part.strip()]
+
+
+def _csv_strings(value: str) -> list[str]:
+    return [part.strip() for part in str(value).split(",") if part.strip()]
+
+
 @torch.no_grad()
 def _evaluate(model: torch.nn.Module, loader: DataLoader, *, device: torch.device) -> dict[str, Any]:
     model.eval()
@@ -253,6 +265,89 @@ def _fit_base_model(
     return model, train_meta
 
 
+def _fit_stage1_dann_model(
+    *,
+    loaders: dict[str, DataLoader],
+    device: torch.device,
+    num_tx: int,
+    lr: float,
+    weight_decay: float,
+    stage1_steps: int,
+    progress_every: int,
+) -> tuple[torch.nn.Module, dict[str, Any]]:
+    model = ReceiverAgnosticUDANet(num_tx=num_tx).to(device)
+    optimizer = torch.optim.Adam(model.parameters(), lr=float(lr), weight_decay=float(weight_decay))
+    source_iter = _cycle(loaders["source_train"])
+    target_iter = _cycle(loaders["target_adapt"])
+    train_meta = {
+        "stage1_dann_last": _run_steps(
+            lambda: dann_stage1_train_step(
+                model,
+                next(source_iter),
+                next(target_iter),
+                optimizer,
+                domain_weight=1.0,
+                grl_lambda=1.0,
+                device=device,
+            ),
+            steps=stage1_steps,
+            progress_every=progress_every,
+        )
+    }
+    return model, train_meta
+
+
+def _run_lmmd_grid(
+    base_model: torch.nn.Module,
+    *,
+    loaders: dict[str, DataLoader],
+    device: torch.device,
+    num_tx: int,
+    weight_decay: float,
+    lambdas: list[float],
+    layers: list[str],
+    steps_options: list[int],
+    lrs: list[float],
+    progress_every: int,
+) -> list[dict[str, Any]]:
+    rows: list[dict[str, Any]] = []
+    for lmmd_layers in layers:
+        for lmmd_lambda in lambdas:
+            for stage2_steps in steps_options:
+                for stage2_lr in lrs:
+                    model = copy.deepcopy(base_model).to(device)
+                    optimizer = torch.optim.Adam(model.parameters(), lr=float(stage2_lr), weight_decay=float(weight_decay))
+                    source_iter = _cycle(loaders["source_train"])
+                    target_iter = _cycle(loaders["target_adapt"])
+                    train_last = _run_steps(
+                        lambda: lmmd_stage2_train_step(
+                            model,
+                            next(source_iter),
+                            next(target_iter),
+                            optimizer,
+                            num_classes=num_tx,
+                            lmmd_lambda=float(lmmd_lambda),
+                            lmmd_layers=str(lmmd_layers),
+                            device=device,
+                        ),
+                        steps=int(stage2_steps),
+                        progress_every=progress_every,
+                    )
+                    rows.append(
+                        {
+                            "method": "dann_lmmd_grid",
+                            "lmmd_lambda": float(lmmd_lambda),
+                            "lmmd_layers": str(lmmd_layers),
+                            "stage2_steps": int(stage2_steps),
+                            "stage2_lr": float(stage2_lr),
+                            "optimizer_policy": "reset_after_stage1",
+                            "train": {"stage2_lmmd_last": train_last},
+                            "target_eval": _evaluate(model, loaders["target_eval"], device=device),
+                        }
+                    )
+    return rows
+
+
 def _run_fig8(
     base_model: torch.nn.Module,
     *,
@@ -328,8 +423,12 @@ def run_formal(config: dict[str, Any], args: argparse.Namespace) -> dict[str, An
     if args.limit_ratios > 0:
         ratio_counts = ratio_counts[: int(args.limit_ratios)]
     methods = [m.strip() for m in args.methods.split(",") if m.strip()]
-    fig8_strategies = [m.strip() for m in args.fig8_strategies.split(",") if m.strip()]
-    fig8_iterations = [int(x) for x in str(args.fig8_iterations).split(",") if str(x).strip()]
+    fig8_strategies = _csv_strings(args.fig8_strategies)
+    fig8_iterations = _csv_ints(args.fig8_iterations)
+    lmmd_grid_lambdas = _csv_floats(args.lmmd_grid_lambdas)
+    lmmd_grid_layers = _csv_strings(args.lmmd_grid_layers)
+    lmmd_grid_steps = _csv_ints(args.lmmd_grid_steps)
+    lmmd_grid_lrs = _csv_floats(args.lmmd_grid_lrs)
     output_dir = Path(args.output_dir)
     output_dir.mkdir(parents=True, exist_ok=True)
     jsonl_path = output_dir / "results.jsonl"
@@ -403,6 +502,110 @@ def run_formal(config: dict[str, Any], args: argparse.Namespace) -> dict[str, An
             ),
             flush=True,
         )
+        if args.lmmd_grid:
+            base_model, base_train_meta = _fit_stage1_dann_model(
+                loaders=loaders,
+                device=device,
+                num_tx=int(config.get("tx_count", 6)),
+                lr=float(args.lr),
+                weight_decay=float(args.weight_decay),
+                stage1_steps=stage1_steps,
+                progress_every=int(args.progress_every),
+            )
+            base_row: dict[str, Any] = {
+                "artifact_type": "formal_training_result",
+                "paper_scope": checked["claim_boundary"],
+                "paper": PAPER_TITLE,
+                "dataset": checked["dataset"],
+                "method": "dann_grid_base",
+                "source_receiver_count": int(source_count),
+                "target_receiver_count": len(target_ids),
+                "source_receiver_ids": source_ids,
+                "target_receiver_ids": target_ids,
+                "source_receiver_labels": datasets["meta"]["source_receiver_labels"],
+                "target_receiver_labels": datasets["meta"]["target_receiver_labels"],
+                "preprocessing": datasets["meta"]["preprocessing"],
+                "target_adapt_size": len(target_adapt_ids),
+                "target_eval_size": len(target_eval_ids),
+                "target_eval_protocol": target_eval_protocol,
+                "seed": row_seed,
+                "hyperparameters": {
+                    "batch_size": int(args.batch_size),
+                    "eval_batch_size": int(args.eval_batch_size),
+                    "lr": float(args.lr),
+                    "weight_decay": float(args.weight_decay),
+                    "stage1_epochs": int(args.stage1_epochs),
+                    "stage1_steps": int(stage1_steps),
+                    "target_eval_fraction": float(args.target_eval_fraction),
+                    "transductive_target_eval": bool(args.transductive_target_eval),
+                    "lmmd_grid": True,
+                    "paper_status": "paper-unspecified LMMD lambda/layer/optimizer choices; grid rows are diagnostics",
+                },
+                "train": base_train_meta,
+                "target_eval": _evaluate(base_model, loaders["target_eval"], device=device),
+                "claim_blocks": CLAIM_BLOCKS,
+            }
+            _write_jsonl(jsonl_path, base_row)
+            rows.append(base_row)
+            print(
+                json.dumps(
+                    {
+                        "event": "row_complete",
+                        "method": base_row["method"],
+                        "source_receiver_count": int(source_count),
+                        "target_accuracy": base_row["target_eval"]["accuracy"],
+                    },
+                    sort_keys=True,
+                ),
+                flush=True,
+            )
+            grid_results = _run_lmmd_grid(
+                base_model,
+                loaders=loaders,
+                device=device,
+                num_tx=int(config.get("tx_count", 6)),
+                weight_decay=float(args.weight_decay),
+                lambdas=lmmd_grid_lambdas,
+                layers=lmmd_grid_layers,
+                steps_options=lmmd_grid_steps,
+                lrs=lmmd_grid_lrs,
+                progress_every=int(args.progress_every),
+            )
+            for grid in grid_results:
+                row = {
+                    **base_row,
+                    "method": grid["method"],
+                    "variant_id": (
+                        f"layers={grid['lmmd_layers']}|lambda={grid['lmmd_lambda']}"
+                        f"|steps={grid['stage2_steps']}|lr={grid['stage2_lr']}"
+                    ),
+                    "hyperparameters": {
+                        **base_row["hyperparameters"],
+                        "lmmd_lambda": grid["lmmd_lambda"],
+                        "lmmd_layers": grid["lmmd_layers"],
+                        "stage2_steps": grid["stage2_steps"],
+                        "stage2_lr": grid["stage2_lr"],
+                        "optimizer_policy": grid["optimizer_policy"],
+                    },
+                    "train": {**base_train_meta, **grid["train"]},
+                    "target_eval": grid["target_eval"],
+                }
+                _write_jsonl(jsonl_path, row)
+                rows.append(row)
+                print(
+                    json.dumps(
+                        {
+                            "event": "row_complete",
+                            "method": row["method"],
+                            "variant_id": row["variant_id"],
+                            "source_receiver_count": int(source_count),
+                            "target_accuracy": row["target_eval"]["accuracy"],
+                        },
+                        sort_keys=True,
+                    ),
+                    flush=True,
+                )
+            continue
         for method in methods:
             if (int(source_count), method) in completed_keys:
                 continue
@@ -553,6 +756,11 @@ def main() -> int:
         choices=["activations", "features", "features_and_activations"],
         default="activations",
     )
+    parser.add_argument("--lmmd-grid", action="store_true", help="Train one DANN base model and evaluate a reset-optimizer LMMD diagnostic grid.")
+    parser.add_argument("--lmmd-grid-lambdas", type=str, default="0.005,0.01,0.02")
+    parser.add_argument("--lmmd-grid-layers", type=str, default="features,activations")
+    parser.add_argument("--lmmd-grid-steps", type=str, default="500,1000")
+    parser.add_argument("--lmmd-grid-lrs", type=str, default="0.0001")
     parser.add_argument("--lr", type=float, default=1e-3)
     parser.add_argument("--weight-decay", type=float, default=1e-4)
     parser.add_argument("--progress-every", type=int, default=100)

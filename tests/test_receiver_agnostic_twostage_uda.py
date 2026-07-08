@@ -444,3 +444,64 @@ def test_formal_training_smoke_writes_paper_scoped_rows(tmp_path):
         "not satellite/LEO deployment evidence",
         "not open-set or new-class registration",
     ]
+
+
+def test_lmmd_grid_reuses_one_dann_base_and_writes_variant_rows(tmp_path):
+    pkl_path = tmp_path / "ManySig.pkl"
+    with pkl_path.open("wb") as f:
+        pickle.dump(_synthetic_manysig_compact(), f)
+    output_dir = tmp_path / "lmmd_grid"
+    config = "paper_reproduction/configs/receiver_agnostic_twostage_uda_manysig_paper_faithful.json"
+
+    result = subprocess.run(
+        [
+            sys.executable,
+            "-m",
+            "paper_reproduction.receiver_agnostic_twostage_uda.train",
+            "--config",
+            config,
+            "--formal",
+            "--manysig-pkl",
+            str(pkl_path),
+            "--output-dir",
+            str(output_dir),
+            "--device",
+            "cpu",
+            "--limit-ratios",
+            "1",
+            "--lmmd-grid",
+            "--lmmd-grid-lambdas",
+            "0.01",
+            "--lmmd-grid-layers",
+            "features",
+            "--lmmd-grid-steps",
+            "1",
+            "--lmmd-grid-lrs",
+            "0.0001",
+            "--max-train-steps",
+            "1",
+            "--max-samples-per-combo",
+            "1",
+            "--batch-size",
+            "4",
+            "--eval-batch-size",
+            "8",
+            "--num-workers",
+            "0",
+            "--progress-every",
+            "0",
+            "--no-save-checkpoints",
+        ],
+        cwd=".",
+        text=True,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        check=False,
+    )
+
+    assert result.returncode == 0, result.stderr
+    rows = [json.loads(line) for line in (output_dir / "results.jsonl").read_text(encoding="utf-8").splitlines()]
+
+    assert [row["method"] for row in rows] == ["dann_grid_base", "dann_lmmd_grid"]
+    assert rows[1]["variant_id"] == "layers=features|lambda=0.01|steps=1|lr=0.0001"
+    assert rows[1]["hyperparameters"]["optimizer_policy"] == "reset_after_stage1"
