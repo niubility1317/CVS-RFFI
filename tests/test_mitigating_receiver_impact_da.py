@@ -25,6 +25,14 @@ class CountingOptimizer:
         self.step_calls += 1
 
 
+class CountingScheduler:
+    def __init__(self):
+        self.step_calls = 0
+
+    def step(self):
+        self.step_calls += 1
+
+
 def _synthetic_manysig_compact() -> dict:
     data = []
     rx_labels = ["1-1", "1-19", "3-19", "7-7", "8-8", "14-7", "rx6", "rx7", "rx8", "rx9", "rx10", "rx11"]
@@ -545,6 +553,36 @@ def test_table2_runner_defaults_to_paper_uniform_prior_and_tau(tmp_path):
     assert torch.allclose(torch.tensor(row["class_prior"]), torch.full((6,), 1.0 / 6.0))
 
 
+def test_table2_runner_records_step_lr_scheduler_path(tmp_path):
+    from paper_reproduction.mitigating_receiver_impact_da.train import run_table2_reproduction
+
+    result = run_table2_reproduction(
+        _synthetic_manysig_compact(),
+        tasks=["14-7->3-19"],
+        methods=["proposed"],
+        output_dir=tmp_path,
+        epochs=1,
+        batch_size=4,
+        max_samples_per_combo=1,
+        max_batches_per_epoch=1,
+        source_pretrain_epochs=0,
+        lr_scheduler_mode="step",
+        lr_step_size=1,
+        lr_gamma=0.6,
+        seed=6,
+        device="cpu",
+    )
+
+    row = result["rows"][0]
+    assert result["lr_scheduler_mode"] == "step"
+    assert result["lr_step_size"] == 1
+    assert result["lr_gamma"] == 0.6
+    assert row["lr_scheduler_mode"] == "step"
+    assert row["lr_scheduler_active"] is True
+    assert row["history"][0]["lr_ec"] < result["learning_rate"]
+    assert row["history"][0]["lr_t"] < result["learning_rate"]
+
+
 def test_table2_runner_official_compat_records_released_trainer_path(tmp_path):
     from paper_reproduction.mitigating_receiver_impact_da.train import run_table2_reproduction
 
@@ -728,6 +766,43 @@ def test_algorithm1_training_loop_runs_epochs_and_writes_checkpoint(tmp_path):
     assert checkpoint["algorithm"] == "Algorithm 1 GAD training loop"
     assert checkpoint["epoch"] == 2
     assert "model_state_dict" in checkpoint
+
+
+def test_algorithm1_training_loop_steps_lr_schedulers_once_per_batch():
+    from paper_reproduction.mitigating_receiver_impact_da.model import ReceiverImpactGADNet
+    from paper_reproduction.mitigating_receiver_impact_da.train import run_gada_training_loop
+
+    torch.manual_seed(7)
+    model = ReceiverImpactGADNet(num_tx=3, feature_dim=8, hidden_dim=8)
+    optimizer_t = CountingOptimizer(model.estimate_network.parameters())
+    optimizer_ec = CountingOptimizer(list(model.feature_extractor.parameters()) + list(model.classifier.parameters()))
+    scheduler_t = CountingScheduler()
+    scheduler_ec = CountingScheduler()
+    source_batches = [
+        {"iq": torch.randn(3, 2, 256), "label": torch.tensor([0, 1, 2])},
+        {"iq": torch.randn(3, 2, 256), "label": torch.tensor([1, 2, 0])},
+    ]
+    target_batches = [{"iq": torch.randn(4, 2, 256), "label": torch.tensor([0, 1, 2, 1])}]
+
+    result = run_gada_training_loop(
+        model,
+        source_batches,
+        target_batches,
+        optimizer_t=optimizer_t,
+        optimizer_ec=optimizer_ec,
+        scheduler_t=scheduler_t,
+        scheduler_ec=scheduler_ec,
+        epochs=2,
+    )
+
+    assert result["batches"] == 4
+    assert result["lr_scheduler_active"] is True
+    assert scheduler_t.step_calls == 4
+    assert scheduler_ec.step_calls == 4
+    assert optimizer_t.step_calls == 28
+    assert optimizer_ec.step_calls == 4
+    assert "lr_ec" in result["history"][0]
+    assert "lr_t" in result["history"][0]
 
 
 def test_algorithm1_training_loop_requires_unlabeled_target_batches():

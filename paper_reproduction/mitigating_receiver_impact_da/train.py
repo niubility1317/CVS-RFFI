@@ -168,6 +168,37 @@ def _evaluate_target_loss_accuracy(model: ReceiverImpactGADNet, loader: Iterable
     }
 
 
+def _build_lr_scheduler(
+    optimizer: torch.optim.Optimizer,
+    *,
+    mode: str,
+    step_size: int,
+    gamma: float,
+) -> torch.optim.lr_scheduler.LRScheduler | None:
+    normalized = str(mode).strip().lower()
+    if normalized == "none":
+        return None
+    if normalized != "step":
+        raise ValueError("lr_scheduler_mode must be one of: none, step")
+    if int(step_size) <= 0:
+        raise ValueError("lr_step_size must be positive when StepLR is enabled")
+    if not (0.0 < float(gamma) <= 1.0):
+        raise ValueError("lr_gamma must be in (0,1] when StepLR is enabled")
+    return torch.optim.lr_scheduler.StepLR(optimizer, step_size=int(step_size), gamma=float(gamma))
+
+
+def _scheduler_step(scheduler: Any | None) -> None:
+    if scheduler is not None:
+        scheduler.step()
+
+
+def _optimizer_lr(optimizer: Any) -> float | None:
+    param_groups = getattr(optimizer, "param_groups", None)
+    if not param_groups:
+        return None
+    return float(param_groups[0].get("lr", 0.0))
+
+
 def run_gada_training_loop(
     model: ReceiverImpactGADNet,
     source_batches: Iterable[Any],
@@ -175,6 +206,8 @@ def run_gada_training_loop(
     *,
     optimizer_t: Any,
     optimizer_ec: Any,
+    scheduler_t: Any | None = None,
+    scheduler_ec: Any | None = None,
     epochs: int,
     checkpoint_path: Path | str | None = None,
     device: torch.device | str | None = None,
@@ -315,6 +348,8 @@ def run_gada_training_loop(
                     class_weight_timing=class_weight_timing,
                     target_indices=target_indices,
                 )
+            _scheduler_step(scheduler_ec)
+            _scheduler_step(scheduler_t)
             epoch_batches += 1
             total_batches += 1
             epoch_loss += float(result["loss"].item())
@@ -353,6 +388,8 @@ def run_gada_training_loop(
                 "target_seen_total": int(state.total_seen),
                 "target_pseudo_selected_acc": None if epoch_selected <= 0 else epoch_selected_correct / float(epoch_selected),
                 "target_pred_acc": None if epoch_audit_total <= 0 else epoch_pred_correct / float(epoch_audit_total),
+                "lr_ec": _optimizer_lr(optimizer_ec),
+                "lr_t": _optimizer_lr(optimizer_t),
             }
         )
         if target_eval_batches is not None:
@@ -393,6 +430,7 @@ def run_gada_training_loop(
         "batch_pairing": str(batch_pairing),
         "adapt_start_epoch": int(adapt_start_epoch),
         "label_smoothing": float(label_smoothing),
+        "lr_scheduler_active": bool(scheduler_t is not None or scheduler_ec is not None),
         "target_model_selection": str(target_model_selection),
         "target_eval_history": target_eval_history,
         "best_target_loss_epoch": best_target_epoch,
@@ -544,6 +582,7 @@ def _train_source_only(
     source_loader: Iterable[Any],
     *,
     optimizer: torch.optim.Optimizer,
+    scheduler: Any | None = None,
     epochs: int,
     device: torch.device | str,
     max_batches_per_epoch: int | None,
@@ -563,6 +602,7 @@ def _train_source_only(
             loss = F.cross_entropy(logits, y, label_smoothing=float(label_smoothing))
             loss.backward()
             optimizer.step()
+            _scheduler_step(scheduler)
             loss_sum += float(loss.detach().cpu())
             acc_sum += tx_accuracy(logits.detach().cpu(), y.detach().cpu())
             batches += 1
@@ -574,6 +614,7 @@ def _train_source_only(
                 "batches": batches,
                 "loss_mean": loss_sum / float(batches),
                 "source_batch_acc_mean": acc_sum / float(batches),
+                "lr": _optimizer_lr(optimizer),
             }
         )
     return {"history": history}
@@ -592,6 +633,9 @@ def run_table2_reproduction(
     epochs: int,
     batch_size: int,
     learning_rate: float = 0.0006,
+    lr_scheduler_mode: str = "none",
+    lr_step_size: int = 2500,
+    lr_gamma: float = 0.6,
     max_samples_per_combo: int | None = None,
     max_batches_per_epoch: int | None = None,
     source_pretrain_epochs: int | None = None,
@@ -675,10 +719,17 @@ def run_table2_reproduction(
                     list(model.feature_extractor.parameters()) + list(model.classifier.parameters()),
                     lr=float(learning_rate),
                 )
+                scheduler = _build_lr_scheduler(
+                    optimizer,
+                    mode=lr_scheduler_mode,
+                    step_size=lr_step_size,
+                    gamma=lr_gamma,
+                )
                 train_result = _train_source_only(
                     model,
                     loaders["source"],
                     optimizer=optimizer,
+                    scheduler=scheduler,
                     epochs=epochs,
                     device=resolved_device,
                     max_batches_per_epoch=max_batches_per_epoch,
@@ -704,10 +755,17 @@ def run_table2_reproduction(
                         list(model.feature_extractor.parameters()) + list(model.classifier.parameters()),
                         lr=float(learning_rate),
                     )
+                    source_scheduler = _build_lr_scheduler(
+                        source_optimizer,
+                        mode=lr_scheduler_mode,
+                        step_size=lr_step_size,
+                        gamma=lr_gamma,
+                    )
                     source_pretrain_result = _train_source_only(
                         model,
                         loaders["source"],
                         optimizer=source_optimizer,
+                        scheduler=source_scheduler,
                         epochs=resolved_pretrain_epochs,
                         device=resolved_device,
                         max_batches_per_epoch=max_batches_per_epoch,
@@ -724,12 +782,26 @@ def run_table2_reproduction(
                     list(model.feature_extractor.parameters()) + list(model.classifier.parameters()),
                     lr=float(learning_rate),
                 )
+                scheduler_t = _build_lr_scheduler(
+                    optimizer_t,
+                    mode=lr_scheduler_mode,
+                    step_size=lr_step_size,
+                    gamma=lr_gamma,
+                )
+                scheduler_ec = _build_lr_scheduler(
+                    optimizer_ec,
+                    mode=lr_scheduler_mode,
+                    step_size=lr_step_size,
+                    gamma=lr_gamma,
+                )
                 train_result = run_gada_training_loop(
                     model,
                     loaders["source"],
                     loaders["target_train"],
                     optimizer_t=optimizer_t,
                     optimizer_ec=optimizer_ec,
+                    scheduler_t=scheduler_t,
+                    scheduler_ec=scheduler_ec,
                     epochs=epochs,
                     checkpoint_path=None,
                     device=resolved_device,
@@ -791,6 +863,10 @@ def run_table2_reproduction(
                             "batch_pairing": train_result["batch_pairing"],
                             "adapt_start_epoch": train_result["adapt_start_epoch"],
                             "label_smoothing": train_result["label_smoothing"],
+                            "lr_scheduler_mode": lr_scheduler_mode,
+                            "lr_step_size": int(lr_step_size),
+                            "lr_gamma": float(lr_gamma),
+                            "lr_scheduler_active": train_result["lr_scheduler_active"],
                             "target_model_selection": train_result["target_model_selection"],
                             "target_eval_history": train_result["target_eval_history"],
                             "best_target_loss_epoch": train_result["best_target_loss_epoch"],
@@ -827,6 +903,10 @@ def run_table2_reproduction(
                 row["pseudo_state_scope"] = train_result.get("pseudo_state_scope")
                 row["batch_pairing"] = train_result.get("batch_pairing")
                 row["target_model_selection"] = train_result.get("target_model_selection")
+                row["lr_scheduler_mode"] = lr_scheduler_mode
+                row["lr_step_size"] = int(lr_step_size)
+                row["lr_gamma"] = float(lr_gamma)
+                row["lr_scheduler_active"] = train_result.get("lr_scheduler_active")
                 row["target_eval_history"] = train_result.get("target_eval_history", [])
                 row["best_target_loss_epoch"] = train_result.get("best_target_loss_epoch")
                 row["best_target_loss"] = train_result.get("best_target_loss")
@@ -840,6 +920,9 @@ def run_table2_reproduction(
         "epochs": int(epochs),
         "batch_size": int(batch_size),
         "learning_rate": float(learning_rate),
+        "lr_scheduler_mode": str(lr_scheduler_mode),
+        "lr_step_size": int(lr_step_size),
+        "lr_gamma": float(lr_gamma),
         "max_samples_per_combo": max_samples_per_combo,
         "max_batches_per_epoch": max_batches_per_epoch,
         "source_pretrain_epochs": int(epochs if source_pretrain_epochs is None else source_pretrain_epochs),
@@ -881,6 +964,9 @@ def main() -> int:
     parser.add_argument("--epochs", type=int, default=1)
     parser.add_argument("--batch-size", type=int, default=64)
     parser.add_argument("--learning-rate", type=float, default=0.0006)
+    parser.add_argument("--lr-scheduler-mode", type=str, default="none", choices=("none", "step"))
+    parser.add_argument("--lr-step-size", type=int, default=2500)
+    parser.add_argument("--lr-gamma", type=float, default=0.6)
     parser.add_argument("--max-samples-per-combo", type=int, default=None)
     parser.add_argument("--max-batches-per-epoch", type=int, default=None)
     parser.add_argument("--source-pretrain-epochs", type=int, default=None)
@@ -929,6 +1015,9 @@ def main() -> int:
             epochs=args.epochs,
             batch_size=args.batch_size,
             learning_rate=args.learning_rate,
+            lr_scheduler_mode=args.lr_scheduler_mode,
+            lr_step_size=args.lr_step_size,
+            lr_gamma=args.lr_gamma,
             max_samples_per_combo=args.max_samples_per_combo,
             max_batches_per_epoch=args.max_batches_per_epoch,
             source_pretrain_epochs=args.source_pretrain_epochs,
