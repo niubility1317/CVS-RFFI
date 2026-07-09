@@ -33,3 +33,17 @@ Scope boundary: DADDA is closed-set single-source UDA. It is not CVS Stage2-A/B/
 | Multi-source/multi-target extension | Out of current paper-faithful release scope | This matrix | Future-work extension design |
 
 Current claim: paper-faithful DADDA method scaffold with formula-level and smoke verification. Full paper reproduction remains pending until the missing baselines, real-data metrics, ablations, robustness, visualization, complexity, and timing artifacts are produced.
+
+## MoPC-HR Non-Exemplar Class-Incremental SEI
+
+Paper: `Non-Exemplar Class-Incremental Learning via Prototype Correction and Hierarchical Regularization for Specific Emitter Identification`.
+
+Official code: https://github.com/xmuLdz/MoPC-HR.git
+
+Scope boundary: source intake only. This entry is not CVS Stage2-A/B/C, target-new enrollment, unknown/open-set rejection, or satellite/LEO deployment evidence.
+
+| Paper item | Release status | Code or artifact | Missing for full reproduction |
+|---|---|---|---|
+| PDF and official repository pointer | Registered in local workspace and Git-backed source note | `paper_reproduction/mopc_hr_non_exemplar_cil_sei/README.md` | Formula extraction, method checklist, paper-faithful implementation, configs, tests, dry-run, and real-data validation |
+
+Current claim: MoPC-HR paper source has been staged for future paper-faithful reproduction. No implementation or numerical reproduction result is claimed yet.
