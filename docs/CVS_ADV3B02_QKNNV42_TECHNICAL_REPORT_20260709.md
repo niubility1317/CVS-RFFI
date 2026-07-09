@@ -1062,6 +1062,7 @@ qKNNV42的贡献在Phase2部署方式，而不是新神经网络结构：
 |V83 K10窄support邻域对比诊断|202|94.67%|93.31%|86.14%|82.71%|92.54%|91.27%|78.71%|70.00%|33/40|21/40|
 |V84 K10微support邻域对比诊断|202|94.67%|93.31%|86.14%|82.71%|92.59%|91.32%|78.68%|70.00%|33/40|22/40|
 |V86 K10辅视图增强正式策略|202|94.90%|93.52%|86.57%|82.86%|93.31%|91.84%|80.14%|71.29%|34/40|25/40|
+|V87 K10辅视图floor稳定正式策略|202|96.06%|94.29%|89.43%|84.29%|95.77%|94.41%|85.07%|77.00%|37/40|34/40|
 |V77 K5 scenario_diverse support选择|130|95.02%|94.05%|86.79%|84.29%|91.67%|89.29%|76.64%|68.57%|24/40|14/40|
 |V77 K5+V56 support-LOO重链诊断|130|93.96%|93.10%|83.93%|81.43%|85.47%|84.00%|68.96%|61.43%|3/40|0/40|
 
@@ -1101,6 +1102,7 @@ qKNNV42的贡献在Phase2部署方式，而不是新神经网络结构：
 - V84微对比只覆盖1个support-only最高风险seen-new类，新增平均164.93个标量，在同202个support code下保持V81的`min_new>=75=33/40`和`min_new>=80=22/40`，并把`min_new mean`从78.61%小幅升到78.68%。但V84没有改善`min_new p10=70.00%`、worst seed 64.29%或floor80数量，因此只能作为可选微对比分支；默认最佳仍是无额外标量的V81。
 - V85在V81的202码结构上扫描`labelprop_weight`、`scenario_residual_weight`和`scenario_residual_clip`。较轻传播能提高old/new均值，但会损失floor75或floor80；保留`min_new>=75=33/40`且`min_new>=80=22/40`的最好组合仍是V81原参数。因此V85是负诊断，不注册稳定策略。
 - V86固定V81的202码压缩结构，只把已有辅视图融合权重从0.34提高到0.38，并把旧类偏置设为0.002；不增加support code，不增加邻域对比标量。正式40seed复验达到`old=94.90%`、`min_old=86.57%`、`seen_new=93.31%`、`min_new=80.14%`、`min_new p10=71.29%`、`min_new>=75=34/40`、`min_new>=80=25/40`、worst seed 65.71%。因此`stable_dualview_v86`取代V81/V84/V76，成为当前K10默认最佳优化版本。
+- V87继续固定V86的202码压缩结构，只把已有辅视图融合权重提高到0.58，并保持`old_bias=0.002`；不增加support code，不增加邻域对比标量。正式40seed复验达到`old=96.06%`、`min_old=89.43%`、`seen_new=95.77%`、`min_new=85.07%`、`min_new p10=77.00%`、`min_new>=75=37/40`、`min_new>=80=34/40`、worst seed 70.00%。相对V86，old均值+1.15pp、min old均值+2.86pp、seen-new均值+2.46pp、min new均值+4.93pp；40个seed里seen-new全提升，min-new为36升、3平、1降。因此`stable_dualview_v87`取代V86，成为当前K10默认最佳优化版本。0.64高权重诊断均值更高，但`min_new p10=75.71%`、`min_new>=80=33/40`低于0.58，故不作为默认入口。
 
 ## 10.证据索引
 
@@ -1132,6 +1134,8 @@ qKNNV42的贡献在Phase2部署方式，而不是新神经网络结构：
 |qKNNV84微support邻域对比诊断|`E:\type10-7\automation_reports\CV-SincNet\phase2_qknn_hardpair_n20_20260706\artifacts\v84_k10_micro_neighbor_contrast_20260709\k10_v84_micro_neighbor_contrast_seed421038_40.csv`|`stable_dualview_v84` 202码微support-only邻域对比非负诊断|
 |qKNNV85轻传播/残差负诊断|`E:\type10-7\automation_reports\CV-SincNet\phase2_qknn_hardpair_n20_20260706\artifacts\v85_k10_v81_light_knobs_20260709\k10_v85_v81_light_knobs_seed421038_40.csv`、`E:\type10-7\automation_reports\CV-SincNet\phase2_qknn_hardpair_n20_20260706\artifacts\v85b_k10_v81_clip_knobs_20260709\k10_v85b_v81_clip_knobs_seed421038_40.csv`|V81 202码结构下labelprop和scenario residual扫描，未超过V81 floor约束|
 |qKNNV86辅视图增强正式策略证据|`E:\type10-7\automation_reports\CV-SincNet\phase2_qknn_hardpair_n20_20260706\artifacts\v86_policy_20260709\k10_v86_policy_seed421038_40.csv`|`stable_dualview_v86` 202码当前K10默认最佳分支40seed复验|
+|qKNNV87辅视图高权重诊断|`E:\type10-7\automation_reports\CV-SincNet\phase2_qknn_hardpair_n20_20260706\artifacts\v87_auxhigh_diag_20260709\k10_v87_auxhigh_seed421038_40.csv`、`E:\type10-7\automation_reports\CV-SincNet\phase2_qknn_hardpair_n20_20260706\artifacts\v87_auxhigher_diag_20260709\k10_v87_auxhigher_seed421038_40.csv`、`E:\type10-7\automation_reports\CV-SincNet\phase2_qknn_hardpair_n20_20260706\artifacts\v87_auxmax_diag_20260709\k10_v87_auxmax_seed421038_40.csv`、`E:\type10-7\automation_reports\CV-SincNet\phase2_qknn_hardpair_n20_20260706\artifacts\v87_auxupper_diag_20260709\k10_v87_auxupper_seed421038_40.csv`|V86 202码结构下`aux_score_weight=0.40..0.64`扫描，用于选择floor稳定权重0.58|
+|qKNNV87辅视图floor稳定正式策略证据|`E:\type10-7\automation_reports\CV-SincNet\phase2_qknn_hardpair_n20_20260706\artifacts\v87_policy_20260709\k10_v87_policy_seed421038_40.csv`|`stable_dualview_v87` 202码当前K10默认最佳分支40seed复验|
 
 ## 11.下一步
 
@@ -1141,6 +1145,6 @@ qKNNV42的贡献在Phase2部署方式，而不是新神经网络结构：
 
 3.K5 strong support已通过V77转成oracle-free `scenario_diverse` support selection；下一步不再尝试简单紧凑或边界选择，应转向类内多原型或更细的弱类簇支持覆盖机制。
 
-4.K10当前默认最佳为V86 202码辅视图增强分支，V79保留为198码最低存储分支，V76保留为历史均衡基线；下一步应针对`1-1/1-12/8-3`和`19-3/1-15`做低类专门的support-only类簇机制，而不是继续单纯增加support预算、调全局传播权重或加重邻域对比。
+4.K10当前默认最佳为V87 202码辅视图floor稳定分支，V79保留为198码最低存储分支，V76保留为历史均衡基线；下一步应针对`19-3/1-15`和局部`1-1/1-12`做低类专门的support-only类簇机制，并同步复验K5路线，而不是继续单纯增加support预算或加重邻域对比。
 
 5.继续复核更多`R_t`目标接收机域，避免单receiver或单support split过拟合。
