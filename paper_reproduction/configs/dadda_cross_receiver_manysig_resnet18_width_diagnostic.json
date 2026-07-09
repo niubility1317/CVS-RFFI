@@ -23,7 +23,7 @@
   "target_unlabeled_allowed": true,
   "target_labels_scope": "evaluation_only",
   "input_representation": "WiSig compact IQ [2,256] after channel equalization and energy normalization",
-  "method": "DADDA diagnostic with ResNet18-width G_f, 2-D paper-shaped multiscale G_m, MMD, LMMD, and dynamic adaptive factor alpha",
+  "method": "DADDA diagnostic with ResNet18-width G_f, 2-D paper-shaped multiscale G_m, MMD, LMMD, and dynamic adaptive factor alpha treated as a batch scalar weight",
   "model_variant": "conv2d_paper",
   "model_config": {
     "base_channels": 64,
@@ -37,6 +37,7 @@
   "normalize": true,
   "crop_mode": "left",
   "detach_target_probabilities": false,
+  "detach_dynamic_alpha": true,
   "optimizer": "SGD",
   "learning_rate_formula": "lr_p=0.0001/(1+10p)^0.75",
   "lambda_formula": "lambda_p=2/(1+exp(-10p))-1",
@@ -44,5 +45,5 @@
   "weight_decay": 0.0005,
   "epochs": 100,
   "batch_size": 128,
-  "diagnostic_reason": "The paper describes a modified ResNet18 backbone. The default paper-shaped config preserves the topology but uses base_channels=16; this diagnostic restores standard ResNet18 channel width and removes target-probability detaching, which is not stated in the paper formula."
+  "diagnostic_reason": "The paper describes a modified ResNet18 backbone. The default paper-shaped config preserves the topology but uses base_channels=16; this diagnostic restores standard ResNet18 channel width, removes target-probability detaching, and treats dynamic alpha as a batch scalar weight rather than a differentiable loss path."
 }
