@@ -14,6 +14,29 @@ from paper_reproduction.receiver_agnostic_twostage_uda.sampling import (
 )
 
 
+def _count_selected(values: list[str] | torch.Tensor | None, selected: torch.Tensor) -> dict[str, int]:
+    if values is None:
+        return {}
+    counts: dict[str, int] = {}
+    for idx in selected.detach().cpu().tolist():
+        if isinstance(values, torch.Tensor):
+            key = str(int(values[int(idx)].item()))
+        else:
+            key = str(values[int(idx)])
+        counts[key] = counts.get(key, 0) + 1
+    return dict(sorted(counts.items()))
+
+
+def _count_selected_pairs(labels: torch.Tensor | None, receivers: list[str] | None, selected: torch.Tensor) -> dict[str, int]:
+    if labels is None or receivers is None:
+        return {}
+    counts: dict[str, int] = {}
+    for idx in selected.detach().cpu().tolist():
+        key = f"{int(labels[int(idx)].item())}|{receivers[int(idx)]}"
+        counts[key] = counts.get(key, 0) + 1
+    return dict(sorted(counts.items()))
+
+
 def _tensor_batch(batch: dict[str, Any], key: str, *, device: torch.device | str | None = None) -> torch.Tensor:
     value = batch[key]
     if not isinstance(value, torch.Tensor):
@@ -112,6 +135,9 @@ def select_fig8_labeled_target_indices(
         "strategy": strategy,
         "denominator": int(denominator),
         "balance_mode": str(balance_mode),
+        "selected_label_counts": _count_selected(labels, selected),
+        "selected_receiver_counts": _count_selected(receivers, selected),
+        "selected_pair_counts": _count_selected_pairs(labels, receivers, selected),
         "synthetic_smoke": False,
         "result_claim": False,
     }

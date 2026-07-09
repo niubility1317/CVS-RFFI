@@ -75,6 +75,10 @@ def balanced_target_selection(
         if receivers is None:
             raise ValueError("receiver-balanced target selection requires receivers")
         groups = [str(receivers[int(i)]) for i in ranked_indices.detach().cpu()]
+    elif mode in {"class_receiver", "receiver_class"}:
+        if labels is None or receivers is None:
+            raise ValueError("class_receiver-balanced target selection requires labels and receivers")
+        groups = [f"{int(labels[int(i)].item())}|{receivers[int(i)]}" for i in ranked_indices.detach().cpu()]
     else:
         raise ValueError(f"unknown target balance mode: {balance_mode}")
     unique_groups = sorted(set(groups))

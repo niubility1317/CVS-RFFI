@@ -552,6 +552,14 @@ def _run_fig8(
                 "source_replay_per_class": int(source_replay_per_class),
                 "target_balance_mode": str(target_balance_mode),
                 "finetune_scope": str(finetune_scope),
+                "selected_label_counts": selected.get("selected_label_counts", {}),
+                "selected_receiver_counts": selected.get("selected_receiver_counts", {}),
+                "selected_pair_counts_top": dict(
+                    sorted(
+                        selected.get("selected_pair_counts", {}).items(),
+                        key=lambda item: (-int(item[1]), str(item[0])),
+                    )[:24]
+                ),
                 "points": points,
             }
         )
@@ -986,7 +994,7 @@ def main() -> int:
     parser.add_argument("--fig8-strategies", type=str, default="random,entropy")
     parser.add_argument("--fig8-iterations", type=str, default="0,25,50,75,100")
     parser.add_argument("--finetune-lr", type=float, default=1e-4)
-    parser.add_argument("--fig8-target-balance", choices=["none", "class", "receiver"], default="none")
+    parser.add_argument("--fig8-target-balance", choices=["none", "class", "receiver", "class_receiver"], default="none")
     parser.add_argument("--fig8-finetune-scope", choices=["full", "classifier"], default="full")
     parser.add_argument("--source-replay-per-class", type=int, default=20)
     parser.add_argument("--resume", action="store_true")

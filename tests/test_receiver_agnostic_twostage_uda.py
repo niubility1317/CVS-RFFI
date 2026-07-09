@@ -291,12 +291,20 @@ def test_finetune_budget_and_source_replay_helpers_are_bounded():
     replay = balanced_source_replay_indices(labels, per_class=2, seed=7)
     ranked = torch.tensor([0, 1, 2, 3, 4, 5])
     target_selected = balanced_target_selection(ranked, k=3, labels=labels, balance_mode="class")
+    receiver_selected = balanced_target_selection(
+        torch.tensor([0, 1, 2, 3, 4, 5]),
+        k=4,
+        labels=labels,
+        receivers=["r0", "r0", "r1", "r1", "r2", "r2"],
+        balance_mode="class_receiver",
+    )
 
     assert fine_tune_budget_from_unlabeled(2500) == 50
     assert fine_tune_budget_from_unlabeled(3) == 1
     assert replay.numel() == 5
     assert torch.bincount(labels[replay], minlength=3).tolist() == [2, 2, 1]
     assert torch.bincount(labels[target_selected], minlength=3).tolist() == [1, 1, 1]
+    assert receiver_selected.tolist() == [0, 2, 3, 4]
 
 
 def test_single_batch_training_steps_are_reachable_without_target_labels():
@@ -361,6 +369,7 @@ def test_fig8_selection_and_batch_composition_keep_roles():
 
     assert selected["budget"] == 50
     assert selected["balance_mode"] == "class"
+    assert sum(selected["selected_label_counts"].values()) == 50
     assert selected["result_claim"] is False
     assert batch["iq"].shape[0] == 53
     assert batch["role"].tolist().count(1) == 50
@@ -617,7 +626,7 @@ def test_r_specific_lmmd_and_fig8_diagnostics_are_recorded(tmp_path):
             "--fig8-iterations",
             "0,1",
             "--fig8-target-balance",
-            "receiver",
+            "class_receiver",
             "--fig8-finetune-scope",
             "classifier",
             "--source-replay-per-class",
@@ -638,5 +647,7 @@ def test_r_specific_lmmd_and_fig8_diagnostics_are_recorded(tmp_path):
     assert row["hyperparameters"]["lmmd_layers"] == "features_and_activations"
     assert row["hyperparameters"]["stage2_steps"] == 1
     assert row["hyperparameters"]["stage2_lr"] == 0.0002
-    assert row["fig8_finetune"][0]["target_balance_mode"] == "receiver"
+    assert row["fig8_finetune"][0]["target_balance_mode"] == "class_receiver"
     assert row["fig8_finetune"][0]["finetune_scope"] == "classifier"
+    assert row["fig8_finetune"][0]["selected_label_counts"]
+    assert row["fig8_finetune"][0]["selected_receiver_counts"]
