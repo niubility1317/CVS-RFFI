@@ -398,6 +398,53 @@ class Phase2SupportMetricQknnV56CompressionTest(unittest.TestCase):
         self.assertNotIn("topm", high_k)
         self.assertNotIn("proto_mix", high_k)
 
+    def test_v67_applies_deeper_weak_new_class_protected_compression_only_for_k10(self):
+        from phase2_support_metric_qknn_probe import _adaptive_qknn_overrides
+
+        many_new_low_k = {
+            "adaptive_support_min_k": 5.0,
+            "adaptive_new_class_count": 20.0,
+            "adaptive_support_max_offdiag_proto_sim": 0.982,
+            "adaptive_support_p90_offdiag_proto_sim": 0.822,
+            "adaptive_support_mean_radius": 0.104,
+        }
+        many_new_high_k = dict(many_new_low_k)
+        many_new_high_k["adaptive_support_min_k"] = 10.0
+
+        low_k = _adaptive_qknn_overrides(
+            policy="stable_dualview_v67",
+            geometry=many_new_low_k,
+            aux_available=True,
+        )
+        high_k = _adaptive_qknn_overrides(
+            policy="stable_dualview_v67",
+            geometry=many_new_high_k,
+            aux_available=True,
+        )
+
+        self.assertEqual(low_k["adaptive_qknn_requested_policy"], "stable_dualview_v67")
+        self.assertEqual(low_k["adaptive_qknn_policy"], "stable_dualview_v67")
+        self.assertNotIn("support_code_old_budget_per_class", low_k)
+        self.assertNotIn("support_code_new_protect_top_classes", low_k)
+        self.assertNotIn("local_competition_weight", low_k)
+        self.assertNotIn("transform_mode", low_k)
+
+        self.assertEqual(high_k["adaptive_qknn_requested_policy"], "stable_dualview_v67")
+        self.assertEqual(high_k["adaptive_qknn_policy"], "stable_dualview_v67")
+        self.assertEqual(high_k["support_code_budget_per_class"], 0)
+        self.assertEqual(high_k["support_code_budget_mode"], "centroid_hard_diverse")
+        self.assertEqual(high_k["support_code_old_budget_per_class"], 5)
+        self.assertEqual(high_k["support_code_new_budget_per_class"], 8)
+        self.assertEqual(high_k["support_code_new_protect_top_classes"], 8)
+        self.assertEqual(high_k["support_code_new_protect_metric"], "radius")
+        self.assertEqual(high_k["local_competition_weight"], 0.02)
+        self.assertEqual(high_k["local_competition_k"], 5)
+        self.assertEqual(high_k["local_competition_clip"], 2.0)
+        self.assertEqual(high_k["local_competition_scope"], "role")
+        self.assertNotIn("transform_mode", high_k)
+        self.assertNotIn("topm", high_k)
+        self.assertNotIn("proto_mix", high_k)
+
     def test_support_proto_anchor_recovers_class_score_without_raw_support_codes(self):
         from phase2_support_metric_qknn_probe import _support_proto_anchor_scores
 
