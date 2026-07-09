@@ -519,6 +519,45 @@ def test_dadda_runner_forwards_detach_target_probabilities(monkeypatch, tmp_path
     assert result["fixed_alpha"] == 0.5
 
 
+def test_dadda_table2_resets_seed_for_each_task_method(monkeypatch, tmp_path):
+    from paper_reproduction.dadda_cross_receiver import train as train_module
+
+    seed_calls = []
+
+    def fake_set_seed(value):
+        seed_calls.append(int(value))
+
+    def fake_loop(*args, **kwargs):
+        return {"history": [{"epoch": 1, "batches": 1}]}
+
+    monkeypatch.setattr(train_module, "set_seed", fake_set_seed)
+    monkeypatch.setattr(train_module, "run_dadda_training_loop", fake_loop)
+
+    result = train_module.run_table2_reproduction(
+        _synthetic_manysig_compact(),
+        tasks=["1-1->8-8", "8-8->1-1"],
+        methods=["dadda"],
+        output_dir=tmp_path,
+        epochs=1,
+        batch_size=4,
+        max_samples_per_combo=1,
+        max_batches_per_epoch=1,
+        seed=7,
+        device="cpu",
+        model_config={
+            "feature_dim": 8,
+            "multiscale_dim": 8,
+            "base_channels": 2,
+            "classifier_hidden1": 8,
+            "classifier_hidden2": 4,
+        },
+    )
+
+    assert seed_calls == [7, 7, 7]
+    assert [row["task_seed"] for row in result["rows"]] == [7, 7]
+    assert "independent of lane order" in result["seed_policy"]
+
+
 def test_dadda_missing_paper_baselines_are_structured_rows(tmp_path):
     from paper_reproduction.dadda_cross_receiver.train import run_table2_reproduction
 

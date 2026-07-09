@@ -403,6 +403,8 @@ def run_table2_reproduction(
         )
         for method in requested_methods:
             config = dict(model_config or {})
+            task_seed = int(seed)
+            set_seed(task_seed)
             model = _make_model(config, device=resolved_device)
             optimizer = torch.optim.SGD(
                 model.parameters(),
@@ -480,6 +482,7 @@ def run_table2_reproduction(
                     "target_eval_sample_count": len(loaders["target_eval"].dataset),
                     "source_loader_batches": len(loaders["source"]),
                     "target_train_loader_batches": len(loaders["target_train"]),
+                    "task_seed": task_seed,
                     "drop_last": False,
                     "partial_batch_policy": "DataLoader drop_last=False; Algorithm 1 pairing stops at the shorter source/target stream",
                 }
@@ -535,6 +538,7 @@ def run_table2_reproduction(
         "drop_last": False,
         "partial_batch_policy": "DataLoader drop_last=False; Algorithm 1 pairing stops at the shorter source/target stream",
         "seed": int(seed),
+        "seed_policy": "reset base seed before each task/method model initialization so Table II rows are independent of lane order",
         "device": str(resolved_device),
         "rows": rows,
     }
