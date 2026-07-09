@@ -578,6 +578,39 @@ def test_table2_runner_official_compat_records_released_trainer_path(tmp_path):
     assert len(row["target_eval_history"]) == 1
 
 
+def test_table2_runner_official_compat_safe_pseudo_keeps_official_state_but_probability_cpl(tmp_path):
+    from paper_reproduction.mitigating_receiver_impact_da.train import run_table2_reproduction
+
+    result = run_table2_reproduction(
+        _synthetic_manysig_compact(),
+        tasks=["14-7->3-19"],
+        methods=["proposed"],
+        output_dir=tmp_path,
+        epochs=1,
+        batch_size=4,
+        max_samples_per_combo=1,
+        max_batches_per_epoch=1,
+        target_model_selection="target_loss_best",
+        official_compat=True,
+        official_compat_safe_pseudo=True,
+        seed=5,
+        device="cpu",
+    )
+
+    row = result["rows"][0]
+    assert result["official_compat"] is True
+    assert result["official_compat_safe_pseudo"] is True
+    assert result["kl_estimator_mode"] == "mine_ma"
+    assert result["pseudo_threshold_mode"] == "paper"
+    assert result["pseudo_score_mode"] == "probability"
+    assert result["class_weight_timing"] == "current"
+    assert result["pseudo_state_scope"] == "epoch"
+    assert result["batch_pairing"] == "zip_min"
+    assert result["source_pretrain_epochs"] == 0
+    assert row["official_compat"] is True
+    assert row["official_compat_safe_pseudo"] is True
+
+
 def test_source_class_prior_is_counted_from_labeled_source_index():
     from dataclasses import dataclass
 

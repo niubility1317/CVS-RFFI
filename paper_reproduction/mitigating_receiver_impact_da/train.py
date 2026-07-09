@@ -614,6 +614,7 @@ def run_table2_reproduction(
     label_smoothing: float = 0.0,
     target_model_selection: str = "final",
     official_compat: bool = False,
+    official_compat_safe_pseudo: bool = False,
     seed: int = 0,
     device: torch.device | str | None = None,
     num_workers: int = 0,
@@ -624,8 +625,12 @@ def run_table2_reproduction(
         if class_prior_mode == "uniform":
             class_prior_mode = "source"
         kl_estimator_mode = "mine_ma"
-        pseudo_threshold_mode = "official"
-        pseudo_score_mode = "logit"
+        if official_compat_safe_pseudo:
+            pseudo_threshold_mode = "paper"
+            pseudo_score_mode = "probability"
+        else:
+            pseudo_threshold_mode = "official"
+            pseudo_score_mode = "logit"
         class_weight_timing = "current"
         pseudo_state_scope = "epoch"
         batch_pairing = "zip_min"
@@ -814,6 +819,7 @@ def run_table2_reproduction(
                 row["class_prior_mode"] = class_prior_mode
                 row["class_prior"] = None if source_class_prior is None else [float(v) for v in source_class_prior.tolist()]
                 row["official_compat"] = bool(official_compat)
+                row["official_compat_safe_pseudo"] = bool(official_compat_safe_pseudo)
                 row["kl_estimator_mode"] = train_result.get("kl_estimator_mode")
                 row["pseudo_threshold_mode"] = train_result.get("pseudo_threshold_mode")
                 row["pseudo_score_mode"] = train_result.get("pseudo_score_mode")
@@ -856,6 +862,7 @@ def run_table2_reproduction(
         "label_smoothing": float(label_smoothing),
         "target_model_selection": str(target_model_selection),
         "official_compat": bool(official_compat),
+        "official_compat_safe_pseudo": bool(official_compat_safe_pseudo),
         "seed": int(seed),
         "device": str(resolved_device),
         "result_claim_status": "smoke_or_formal_metrics_depend_on_dataset",
@@ -896,6 +903,11 @@ def main() -> int:
     parser.add_argument("--label-smoothing", type=float, default=0.0)
     parser.add_argument("--target-model-selection", type=str, default="final", choices=("final", "target_loss_best"))
     parser.add_argument("--official-compat", action="store_true", help="Use details exposed by the released official trainer.")
+    parser.add_argument(
+        "--official-compat-safe-pseudo",
+        action="store_true",
+        help="With --official-compat, keep the official optimizer/state path but use paper CPL probabilities instead of raw-logit pseudo-label gating.",
+    )
     parser.add_argument("--seed", type=int, default=0)
     parser.add_argument("--device", type=str, default=None)
     parser.add_argument("--num-workers", type=int, default=0)
@@ -939,6 +951,7 @@ def main() -> int:
             label_smoothing=args.label_smoothing,
             target_model_selection=args.target_model_selection,
             official_compat=args.official_compat,
+            official_compat_safe_pseudo=args.official_compat_safe_pseudo,
             seed=args.seed,
             device=args.device,
             num_workers=args.num_workers,
