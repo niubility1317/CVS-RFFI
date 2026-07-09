@@ -4874,3 +4874,41 @@ K10 V91c同列聚合：
 | 0.68 | 9 | 175 | 96.61% | 95.00% | 90.61% | 87.14% | 95.97% | 94.31% | 85.36% | 75.71% | 68.57% | 37/40 | 33/40 |
 
 当前决策：没有超过V90/V88的新注册版本。K5仍用`scenario_diverse + stable_dualview_v90`；K10仍用`stable_dualview_v88`。V91的有效信息是：pair refine和support LOO rescue能推高少量均值，但会牺牲floor80或无法提升worst；K10提高aux或protect_top会推高seen-new/min-new均值，但floor75下降，不符合“新类增多下性能坍塌和最低类过低”问题的主目标。下一轮应转向不依赖query真值的support候选池选择或弱类簇保护，而不是继续增加类对校准强度。
+
+### 2026-07-09 qKNN V92：K5 support-prototype anchor微校准与压缩边界
+
+本节仅按Phase2 target-old旧类目标域适应和target-new/seen-new新类注册识别统计。support/query均来自叠加LEO星地信道后的目标域样本；query真值只用于离线评估。历史CSV字段`new_selection_role=target_unknown`来自旧脚本命名，本节不把拒识、open-set或unknown互斥作为优化目标、指标或结论。本轮只做本地扫描、代码注册、测试和报告更新；未访问N607、未scp、未远端启动。`E:\type10-7`根目录不是Git仓库，Git镜像报告同步到`E:\type10-7\github_publish\CVS-RFFI-repo`。
+
+V92注册参数：K5使用`scenario_diverse + stable_dualview_v92`，在V90 K5基础上加入轻量support-prototype anchor，`support_proto_anchor_weight=0.0025,clip=1.0`，仍为130个support code，额外保存4160个anchor标量；`aux_score_weight=0.68`、`old_bias=0.0`、`labelprop_weight=0.0`、`local_competition_weight=0.025`、`scenario_residual_weight=0.25,clip=0.4`保持V90设置。K10的`stable_dualview_v92`继承V88 180码高K压缩结构，作为统一入口。
+
+| candidate | K | support code | anchor scalars | old mean | old p10 | min-old mean | min-old p10 | seen-new mean | seen-new p10 | min-new mean | min-new p10 | floor75 | floor80 | worst | 决策 |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | --- |
+| V90 K5`scenario_diverse + stable_dualview_v90` | 5 | 130 | 0 | 96.62% | 95.45% | 90.54% | 87.14% | 95.09% | 93.47% | 83.82% | 75.71% | 37/40 | 33/40 | 72.86% | 被V92 K5替代 |
+| V92 K5`scenario_diverse + stable_dualview_v92` | 5 | 130 | 4160 | 96.62% | 95.45% | 90.54% | 87.14% | 95.10% | 93.41% | 83.89% | 75.71% | 38/40 | 33/40 | 72.86% | 当前K5最佳 |
+| V88 K10`stable_dualview_v88` | 10 | 180 | 0 | 96.40% | 94.76% | 90.07% | 87.00% | 95.92% | 94.42% | 85.50% | 77.14% | 39/40 | 34/40 | 72.86% | 当前K10最佳 |
+| V92 K10`stable_dualview_v92` | 10 | 180 | 0 | 96.40% | 94.76% | 90.07% | 87.00% | 95.92% | 94.42% | 85.50% | 77.14% | 39/40 | 34/40 | 72.86% | 与V88等价兼容入口 |
+
+V92扫描与压缩边界：
+
+| artifact | rows | 关键设置 | 最好观察 | 结论 |
+| --- | ---: | --- | --- | --- |
+| `artifacts/v92f_k5_anchor_confirm_20260709/k5_v92f_anchor_confirm_seed421038_40.csv/json` | 200 | K5，V90参数+anchor weight 0/0.0025/0.005/0.0075/0.01 | `0.0025`保持old、min-old、worst不回退，min-new mean从83.82%到83.89%，floor75从37/40到38/40；`0.0075/0.01`会使floor80降到32/40。 | 注册V92 K5，选择`support_proto_anchor_weight=0.0025`。 |
+| `artifacts/v92d_k5_light_compress_pool10_20260709/k5_v92d_light_compress_pool10_seed421038_40.csv/json` | 960 | K5，pool=10，old/new预算与protect扫描 | 124码+anchor可到min-new mean 83.89%、floor75 38/40，但old mean降到95.99%、min-old降到88.75%。 | 124码压缩伤旧类域适应，不注册。 |
+| `artifacts/v92e_k5_124_oldbias_aux_20260709/k5_v92e_124_oldbias_aux_seed421038_40.csv/json` | 480 | K5，124码，aux/old_bias补偿扫描 | old_bias最高只把old拉到96.02%，min-old仍约88.82%；aux=0.70会伤floor75/floor80和worst。 | 124码无法补回旧类最低类，不注册。 |
+| `artifacts/v92a_k10_anchor_compress_micro_20260709/k10_v92a_anchor_compress_micro_seed421038_40.csv/json` | 800 | K10，174/180码、anchor/clip微扫 | 174码能保floor75/floor80但old降到约95.89%、min-old约88.71%；180码anchor仅有微小波动。 | K10压缩不到174码；保持180码。 |
+| `artifacts/v92b_k10_174_oldbias_aux_20260709/k10_v92b_174_oldbias_aux_seed421038_40.csv/json` | 1080 | K10，174码，aux/old_bias/anchor补偿 | 最好仍无法恢复V88的old=96.40%和min-old=90.07%。 | 174码不注册。 |
+| `artifacts/v92c_k5_light_compress_20260709/k5_v92c_light_compress_seed421038_40.csv/json` | 960 | K5，误用pool=5 | 结果显著偏低。 | 参数面不一致，仅记为无效诊断。 |
+
+实现与验证：
+
+| file/command | result |
+| --- | --- |
+| `code/scripts/phase2_support_metric_qknn_probe.py` | 注册`dualview_support_v92/stable_dualview_v92`；K5注入`support_proto_anchor_weight=0.0025,clip=1.0`；K10继承V88/V90 180码结构。 |
+| `code/tests/test_phase2_support_metric_qknn_v56_compression.py` | 新增`test_v92_adds_k5_support_proto_anchor_and_keeps_v88_k10_compression`，覆盖K5 anchor与K10压缩继承。 |
+| `conda run --no-capture-output -n ssr-gpu python -m pytest code/tests/test_phase2_support_metric_qknn_v56_compression.py -k v92 -q` | TDD RED阶段失败于`unsupported adaptive_qknn_policy: stable_dualview_v92`；实现后通过。 |
+| `conda run --no-capture-output -n ssr-gpu python -m pytest code/tests/test_phase2_support_metric_qknn_v56_compression.py -q` | PASS，31项。 |
+| `conda run --no-capture-output -n ssr-gpu python -m py_compile code/scripts/phase2_support_metric_qknn_probe.py` | PASS；第一次并行触发本机`__conda_tmp_*.txt`临时锁噪声，串行重跑通过。 |
+| `artifacts/v92_policy_20260709/k5_v92_policy_seed421038_40.csv/json` | PASS，K5正式40seed复验，更新为当前K5最佳。 |
+| `artifacts/v92_policy_20260709/k10_v92_policy_seed421038_40.csv/json` | PASS，K10正式40seed复验，与V88同指标。 |
+
+当前决策：K5当前最佳更新为`scenario_diverse + stable_dualview_v92`。它不减少support code，但在不牺牲旧类域适应、floor80和worst的情况下，把K5新类低类覆盖`floor75`从37/40提升到38/40，`min-new mean`从83.82%提升到83.89%。K10当前最佳可写为`stable_dualview_v88`或等价入口`stable_dualview_v92`，仍是180个support code。继续压缩到K5 124码或K10 174码会伤旧类最低类，不符合当前“旧类域适应+新类增多下低类坍塌保护”的主目标。

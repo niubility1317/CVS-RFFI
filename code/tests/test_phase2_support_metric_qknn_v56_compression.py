@@ -1248,6 +1248,7 @@ class Phase2SupportMetricQknnV56CompressionTest(unittest.TestCase):
         self.assertNotIn("support_code_new_budget_per_class", low_k)
         self.assertNotIn("support_code_new_extra_budget_top_classes", low_k)
         self.assertEqual(low_k["aux_score_weight"], 0.68)
+        self.assertEqual(low_k["old_bias"], 0.0)
         self.assertEqual(low_k["labelprop_weight"], 0.0)
         self.assertEqual(low_k["local_competition_weight"], 0.025)
         self.assertEqual(low_k["local_competition_k"], 5)
@@ -1267,8 +1268,57 @@ class Phase2SupportMetricQknnV56CompressionTest(unittest.TestCase):
         self.assertEqual(high_k["support_code_new_protect_metric"], "radius_proto_sim")
         self.assertNotIn("support_code_new_extra_budget_top_classes", high_k)
         self.assertNotIn("support_code_new_extra_budget_per_class", high_k)
+
+    def test_v92_adds_k5_support_proto_anchor_and_keeps_v88_k10_compression(self):
+        from phase2_support_metric_qknn_probe import _adaptive_qknn_overrides
+
+        low_k = _adaptive_qknn_overrides(
+            policy="stable_dualview_v92",
+            geometry={
+                "adaptive_support_min_k": 5.0,
+                "adaptive_new_class_count": 20.0,
+                "adaptive_old_class_count": 6.0,
+                "adaptive_total_class_count": 26.0,
+                "adaptive_support_max_offdiag_proto_sim": 0.96,
+                "adaptive_support_p90_offdiag_proto_sim": 0.83,
+                "adaptive_support_mean_radius": 0.15,
+            },
+            aux_available=True,
+        )
+        high_k = _adaptive_qknn_overrides(
+            policy="stable_dualview_v92",
+            geometry={
+                "adaptive_support_min_k": 10.0,
+                "adaptive_new_class_count": 20.0,
+                "adaptive_old_class_count": 6.0,
+                "adaptive_total_class_count": 26.0,
+                "adaptive_support_max_offdiag_proto_sim": 0.96,
+                "adaptive_support_p90_offdiag_proto_sim": 0.83,
+                "adaptive_support_mean_radius": 0.15,
+            },
+            aux_available=True,
+        )
+
+        self.assertEqual(low_k["adaptive_qknn_requested_policy"], "stable_dualview_v92")
+        self.assertEqual(low_k["adaptive_qknn_policy"], "stable_dualview_v92")
+        self.assertEqual(low_k["aux_score_weight"], 0.68)
+        self.assertEqual(low_k["labelprop_weight"], 0.0)
+        self.assertEqual(low_k["local_competition_weight"], 0.025)
+        self.assertEqual(low_k["scenario_residual_clip"], 0.4)
+        self.assertEqual(low_k["support_proto_anchor_weight"], 0.0025)
+        self.assertEqual(low_k["support_proto_anchor_clip"], 1.0)
+        self.assertNotIn("support_code_old_budget_per_class", low_k)
+        self.assertNotIn("support_code_new_budget_per_class", low_k)
+
+        self.assertEqual(high_k["adaptive_qknn_requested_policy"], "stable_dualview_v92")
+        self.assertEqual(high_k["adaptive_qknn_policy"], "stable_dualview_v92")
+        self.assertEqual(high_k["support_code_old_budget_per_class"], 5)
+        self.assertEqual(high_k["support_code_new_budget_per_class"], 5)
+        self.assertEqual(high_k["support_code_new_protect_top_classes"], 10)
+        self.assertEqual(high_k["support_code_new_protect_metric"], "radius_proto_sim")
         self.assertEqual(high_k["aux_score_weight"], 0.64)
         self.assertEqual(high_k["old_bias"], 0.002)
+        self.assertNotIn("support_proto_anchor_weight", high_k)
         self.assertEqual(high_k["labelprop_weight"], 0.01)
         self.assertEqual(high_k["scenario_residual_weight"], 0.5)
         self.assertNotIn("neighbor_contrast_count", high_k)
