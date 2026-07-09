@@ -1105,6 +1105,7 @@ qKNNV42的贡献在Phase2部署方式，而不是新神经网络结构：
 - V86固定V81的202码压缩结构，只把已有辅视图融合权重从0.34提高到0.38，并把旧类偏置设为0.002；不增加support code，不增加邻域对比标量。正式40seed复验达到`old=94.90%`、`min_old=86.57%`、`seen_new=93.31%`、`min_new=80.14%`、`min_new p10=71.29%`、`min_new>=75=34/40`、`min_new>=80=25/40`、worst seed 65.71%。因此`stable_dualview_v86`取代V81/V84/V76，成为当前K10默认最佳优化版本。
 - V87继续固定V86的202码压缩结构，只把已有辅视图融合权重提高到0.58，并保持`old_bias=0.002`；不增加support code，不增加邻域对比标量。正式40seed复验达到`old=96.06%`、`min_old=89.43%`、`seen_new=95.77%`、`min_new=85.07%`、`min_new p10=77.00%`、`min_new>=75=37/40`、`min_new>=80=34/40`、worst seed 70.00%。相对V86，old均值+1.15pp、min old均值+2.86pp、seen-new均值+2.46pp、min new均值+4.93pp；40个seed里seen-new全提升，min-new为36升、3平、1降。因此`stable_dualview_v87`取代V86，成为当前K10默认最佳优化版本。0.64高权重诊断均值更高，但`min_new p10=75.71%`、`min_new>=80=33/40`低于0.58，故不作为默认入口。
 - V88在V87基础上同时提高辅视图融合权重和压缩效率：旧类5码/类、seen-new默认5码/类、`radius_proto_sim protect10`，不再使用额外新类support预算，最终保存180个support code。正式40seed复验达到`old=96.40%`、`min_old=90.07%`、`seen_new=95.92%`、`min_new=85.50%`、`min_new p10=77.14%`、`min_new>=75=39/40`、`min_new>=80=34/40`、worst seed 72.86%。相对V87，support code减少22个，old均值+0.34pp、min old均值+0.64pp、seen-new均值+0.14pp、min new均值+0.43pp，并保持floor80。因此`stable_dualview_v88`取代V87，成为当前K10默认最佳优化版本。
+- V89把K5从V77的support选择最佳推进到正式打分策略：在`K=5,pool=10`下仍使用`--policies scenario_diverse`，不再压缩support code，保持130个support code；`stable_dualview_v89`只注入`aux_score_weight=0.64`、`local_competition_weight=0.02`和`scenario_residual_weight=0.25,scope=new`，并显式关闭K5 labelprop。正式40seed复验达到`old=96.35%`、`min_old=89.89%`、`seen_new=94.96%`、`min_new=83.25%`、`min_new p10=75.71%`、`min_new>=75=37/40`、`min_new>=80=30/40`、worst seed 72.86%。相对V77 K5 `scenario_diverse`同40seed，old均值+1.32pp、min old均值+3.11pp、seen-new均值+3.29pp、min new均值+6.61pp，floor75从24/40升到37/40，floor80从14/40升到30/40。因此当前推荐口径为K5使用`scenario_diverse + stable_dualview_v89`，K10仍使用V88的180码结构；V89的K10入口仅作为继承V88机制的兼容策略，不替代V88作为K10命名基线。
 
 ## 10.证据索引
 
@@ -1140,6 +1141,8 @@ qKNNV42的贡献在Phase2部署方式，而不是新神经网络结构：
 |qKNNV87辅视图floor稳定正式策略证据|`E:\type10-7\automation_reports\CV-SincNet\phase2_qknn_hardpair_n20_20260706\artifacts\v87_policy_20260709\k10_v87_policy_seed421038_40.csv`|`stable_dualview_v87` 202码当前K10默认最佳分支40seed复验|
 |qKNNV88压缩扫描证据|`E:\type10-7\automation_reports\CV-SincNet\phase2_qknn_hardpair_n20_20260706\artifacts\v88_k10_compression_aux_diag_20260709\k10_v88_compression_aux_seed421038_40.csv`、`E:\type10-7\automation_reports\CV-SincNet\phase2_qknn_hardpair_n20_20260706\artifacts\v88_k10_deeper_compression_aux_diag_20260709\k10_v88_deeper_compression_aux_seed421038_40.csv`|V87之后的K10 support预算压缩扫描，用于选择180码正式结构|
 |qKNNV88 180码正式策略证据|`E:\type10-7\automation_reports\CV-SincNet\phase2_qknn_hardpair_n20_20260706\artifacts\v88_policy_20260709\k10_v88_policy_seed421038_40.csv`|`stable_dualview_v88` 180码当前K10默认最佳分支40seed复验|
+|qKNNV89 K5轻残差正式策略证据|`E:\type10-7\automation_reports\CV-SincNet\phase2_qknn_hardpair_n20_20260706\artifacts\v89_policy_20260709\k5_v89_policy_seed421038_40.csv`|`scenario_diverse + stable_dualview_v89` 130码当前K5默认最佳分支40seed复验|
+|qKNNV89 K10继承复验证据|`E:\type10-7\automation_reports\CV-SincNet\phase2_qknn_hardpair_n20_20260706\artifacts\v89_policy_20260709\k10_v89_policy_seed421038_40.csv`|`stable_dualview_v89` K10继承V88 180码结构的兼容复验|
 
 ## 11.下一步
 
@@ -1147,8 +1150,8 @@ qKNNV42的贡献在Phase2部署方式，而不是新神经网络结构：
 
 2.按qKNNV42组件跑Phase2消融，主表保留`K`、stored codes、old mean、min old、seen-new mean、min new、`H_old,new`和support/query指纹；当前主线只评价target-old旧类目标域适应和target-new/seen-new注册识别。
 
-3.K5 strong support已通过V77转成oracle-free `scenario_diverse` support selection；下一步不再尝试简单紧凑或边界选择，应转向类内多原型或更细的弱类簇支持覆盖机制。
+3.K5当前默认最佳为`scenario_diverse + stable_dualview_v89`，保持130个support code，并显著提升旧类域适应、seen-new注册和低类地板；下一步应继续围绕`1-1/1-12`、`19-3/1-15`和局部`2-13`做更细的support-only弱类簇机制。
 
-4.K10当前默认最佳为V88 180码高效压缩分支，V87保留为202码强基线，V79保留为198码历史高压缩对照；下一步应针对`19-3/1-15`和局部`1-1/1-12`做低类专门的support-only类簇机制，并同步复验K5路线，而不是继续单纯增加support预算或加重邻域对比。
+4.K10当前默认最佳为V88 180码高效压缩分支，V89在K10上只提供兼容继承入口，V87保留为202码强基线，V79保留为198码历史高压缩对照；下一步应针对`19-3/1-15`和局部`1-1/1-12`做低类专门的support-only类簇机制，而不是继续单纯增加support预算或加重邻域对比。
 
 5.继续复核更多`R_t`目标接收机域，避免单receiver或单support split过拟合。
