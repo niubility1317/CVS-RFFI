@@ -4780,7 +4780,7 @@ support quality gate结果为负。`support_quality_loo_mean_acc`与`query_min_s
 | `14-7` | old | 60/70 | 85.71% | `20-19`9，`14-10`1 |
 | `20-19` | old | 61/70 | 87.14% | `14-7`6，`14-10`3 |
 
-当前决策：K5严格路线已经存在两个可报告候选。若目标优先“seen-new均值”，保留`seed=421052`；若目标优先“新类增多下最低类不坍塌和旧类域适应”，`seed=421070`更强。但二者都仍是support样本敏感性证据，不是可部署selection gate。下一步应做注册期support候选池的oracle-free选择机制，或在完整Stage2-C包上重新生成互斥`Y_new/Y_unknown`的qKNN候选；不应把support LOO阈值作为默认放行条件。
+当前决策：K5严格路线已经存在两个可报告候选。若目标优先“seen-new均值”，保留`seed=421052`；若目标优先“新类增多下最低类不坍塌和旧类域适应”，`seed=421070`更强。但二者都仍是support样本敏感性证据，不是可部署selection gate。当前主线应做注册期support候选池的oracle-free选择机制和target-new低类保护，不应把support LOO阈值作为默认放行条件。
 
 #### K5高floor候选窄参数晋升
 
@@ -4812,4 +4812,32 @@ support quality gate结果为负。`support_quality_loo_mean_acc`与`query_min_s
 | `14-7` | old | 60/70 | 85.71% | `20-19`9，`14-10`1 |
 | `20-19` | old | 61/70 | 87.14% | `14-7`6，`14-10`3 |
 
-当前K5严格结论更新为：在N20 HP08L5注册新类包上，qKNNV42参数面存在一条同时满足旧类域适应和新类floor的候选，`old=94.52%,min_old=85.71%,seen_new=90.14%,min_new=81.43%`。该结果仍不能声明真实Stage2-C unknown/FAR，因为本包没有互斥`target_new/target_unknown`字段；它应作为K5旧类适应+seen-new注册识别晋升候选，下一步必须迁移到完整Stage2-C互斥未知包或实现不依赖query真值的注册期support选择机制。
+当前K5严格结论更新为：在N20 HP08L5注册新类包上，qKNNV42参数面存在一条同时满足旧类域适应和新类floor的候选，`old=94.52%,min_old=85.71%,seen_new=90.14%,min_new=81.43%`。该结果应作为K5旧类适应+seen-new注册识别晋升候选；后续按target-old旧类目标域适应与target-new/seen-new新类注册识别主线继续推进，重点是不依赖query真值的注册期support选择机制。
+
+### 2026-07-09 qKNN V90：K5轻残差再校准与target-new注册复验
+
+本节只针对Phase2 target-old旧类目标域适应与target-new/seen-new新类注册识别。support/query仍来自叠加LEO星地信道后的目标域样本；query真值只用于离线评估。代码变更在Git承载仓库`E:\type10-7\github_publish\CVS-RFFI-repo`完成并测试；未访问N607、未scp、未远端启动。
+
+V90在V89 K5基础上不增加support code，调优`aux_score_weight`、`local_competition_weight`和`scenario_residual_clip`。注册参数为：K5使用`scenario_diverse + stable_dualview_v90`，130个support code，`aux_score_weight=0.68`、`labelprop_weight=0.0`、`local_competition_weight=0.025,k=5,clip=2.0,scope=role`、`scenario_residual_weight=0.25,min_classes=2,clip=0.4,scope=new`。K10分支继承V88/V89 180码压缩结构。
+
+| artifact | rows | 结论 |
+| --- | ---: | --- |
+| `artifacts/v90b_k5_labelprop_fine_20260709/k5_v90b_labelprop_fine_seed421038_40.csv/json` | 280 | labelprop提升局部p10/floor75但降低worst和旧类指标，不注册。 |
+| `artifacts/v90c_k5_residual_fine_20260709/k5_v90c_residual_fine_seed421038_40.csv/json` | 1600 | residual/clip小幅提升floor80，给V90候选方向。 |
+| `artifacts/v90d_k5_residual_local_fine_20260709/k5_v90d_residual_local_fine_seed421038_40.csv/json` | 1120 | local `0.025`配合residual `0.25`、clip `0.40`较稳。 |
+| `artifacts/v90e_k5_aux_confirm_20260709/k5_v90e_aux_confirm_seed421038_40.csv/json` | 200 | aux `0.68`最优，worst不回退。 |
+| `artifacts/v90_policy_20260709/k5_v90_policy_seed421038_40.csv/json` | 40 | 正式K5复验，更新为当前K5最佳。 |
+| `artifacts/v90_policy_20260709/k10_v90_policy_seed421038_40.csv/json` | 40 | 正式K10兼容复验，与V88/V89高K结构同构。 |
+
+| candidate | K | support code | old mean | old p10 | min-old mean | min-old p10 | seen-new mean | seen-new p10 | min-new mean | min-new p10 | floor75 | floor80 | worst | 决策 |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | --- |
+| V89 K5 `scenario_diverse + stable_dualview_v89` | 5 | 130 | 96.35% | 95.00% | 89.89% | 87.00% | 94.96% | 93.26% | 83.25% | 75.71% | 37/40 | 30/40 | 72.86% | 被V90 K5替代 |
+| V90 K5 `scenario_diverse + stable_dualview_v90` | 5 | 130 | 96.62% | 95.45% | 90.54% | 87.14% | 95.09% | 93.47% | 83.82% | 75.71% | 37/40 | 33/40 | 72.86% | 当前K5最佳 |
+| V88 K10 `stable_dualview_v88` | 10 | 180 | 96.40% | 94.76% | 90.07% | 87.00% | 95.92% | 94.42% | 85.50% | 77.14% | 39/40 | 34/40 | 72.86% | 当前K10基准最佳 |
+| V90 K10 `stable_dualview_v90` | 10 | 180 | 96.39% | 94.76% | 90.04% | 87.00% | 95.92% | 94.42% | 85.50% | 77.14% | 39/40 | 34/40 | 72.86% | 兼容入口 |
+
+V90 K5最低seed集中在`19-3`、`1-15`、`1-1`、`1-12`和`2-13`。最低三行：`seed=421045 old=95.48%,min-old=87.14%,seen-new=93.21%,min-new=72.86%`；`seed=421065 old=96.90%,min-old=91.43%,seen-new=94.36%,min-new=74.29%`；`seed=421047 old=96.43%,min-old=90.00%,seen-new=93.00%,min-new=74.29%`。
+
+验证记录：`pytest -k v90`先按TDD失败于`unsupported adaptive_qknn_policy: stable_dualview_v90`，实现后通过；`conda run -n ssr-gpu python -m pytest code/tests/test_phase2_support_metric_qknn_v56_compression.py -q`通过30项；`conda run --no-capture-output -n ssr-gpu python -m py_compile code/scripts/phase2_support_metric_qknn_probe.py`通过。
+
+当前决策：K5当前最佳更新为`scenario_diverse + stable_dualview_v90`，仍为130个support code；相对V89 K5，old mean +0.27pp、old p10 +0.45pp、min-old mean +0.64pp、seen-new mean +0.14pp、seen-new p10 +0.40pp、min-new mean +0.57pp、floor80 +3/40，worst维持72.86%。K10仍以V88 180码结构作为主基准，V90 K10作为兼容入口。
