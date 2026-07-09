@@ -188,6 +188,34 @@ def test_dadda_objective_supports_fixed_alpha_ablation():
     assert torch.allclose(terms["dynamic_joint"], expected_dynamic, atol=1e-6)
 
 
+def test_dadda_objective_can_treat_dynamic_alpha_as_batch_weight():
+    from paper_reproduction.dadda_cross_receiver.losses import dadda_objective
+
+    source_outputs = {
+        "global_features": torch.tensor([[0.0, 0.0], [1.0, 1.0]], requires_grad=True),
+        "local_features": torch.tensor([[0.0, 1.0], [1.0, 0.0]], requires_grad=True),
+        "logits": torch.tensor([[4.0, 0.1], [0.2, 3.0]], requires_grad=True),
+    }
+    target_outputs = {
+        "global_features": torch.tensor([[0.3, 0.0], [1.4, 1.0]], requires_grad=True),
+        "local_features": torch.tensor([[0.2, 1.1], [1.2, 0.1]], requires_grad=True),
+        "logits": torch.tensor([[3.0, 0.2], [0.5, 2.8]], requires_grad=True),
+    }
+    terms = dadda_objective(
+        source_outputs,
+        target_outputs,
+        torch.tensor([0, 1]),
+        tradeoff_lambda=1.0,
+        detach_dynamic_alpha=True,
+    )
+
+    assert 0.0 <= float(terms["alpha"]) <= 1.0
+    assert terms["loss"].requires_grad
+    terms["loss"].backward()
+    assert float(source_outputs["global_features"].grad.abs().sum()) > 0.0
+    assert float(target_outputs["local_features"].grad.abs().sum()) > 0.0
+
+
 def test_dadda_schedules_match_paper_formula():
     from paper_reproduction.dadda_cross_receiver.train import lambda_schedule, learning_rate_schedule
 
@@ -486,7 +514,14 @@ def test_dadda_runner_forwards_detach_target_probabilities(monkeypatch, tmp_path
     observed = []
 
     def fake_loop(*args, **kwargs):
-        observed.append((kwargs["detach_target_probabilities"], kwargs["alpha_mode"], kwargs["fixed_alpha"]))
+        observed.append(
+            (
+                kwargs["detach_target_probabilities"],
+                kwargs["alpha_mode"],
+                kwargs["fixed_alpha"],
+                kwargs["detach_dynamic_alpha"],
+            )
+        )
         return {"history": [{"epoch": 1, "batches": 1}]}
 
     monkeypatch.setattr(train_module, "run_dadda_training_loop", fake_loop)
@@ -511,12 +546,14 @@ def test_dadda_runner_forwards_detach_target_probabilities(monkeypatch, tmp_path
         detach_target_probabilities=True,
         alpha_mode="fixed",
         fixed_alpha=0.5,
+        detach_dynamic_alpha=True,
     )
 
-    assert observed == [(True, "fixed", 0.5)]
+    assert observed == [(True, "fixed", 0.5, True)]
     assert result["detach_target_probabilities"] is True
     assert result["alpha_mode"] == "fixed"
     assert result["fixed_alpha"] == 0.5
+    assert result["detach_dynamic_alpha"] is True
 
 
 def test_dadda_table2_resets_seed_for_each_task_method(monkeypatch, tmp_path):
@@ -635,6 +672,7 @@ def test_dadda_table2_settings_default_to_paper_config_and_gate_smoke():
     assert settings["detach_target_probabilities"] is False
     assert settings["alpha_mode"] == "dynamic"
     assert settings["fixed_alpha"] == 0.5
+    assert settings["detach_dynamic_alpha"] is False
     validate_formal_or_smoke_settings(
         config=config,
         settings=settings,

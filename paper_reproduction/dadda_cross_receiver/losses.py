@@ -129,6 +129,7 @@ def dadda_objective(
     alpha_mode: str = "dynamic",
     fixed_alpha: float = 0.5,
     detach_target_probabilities: bool = False,
+    detach_dynamic_alpha: bool = False,
 ) -> dict[str, torch.Tensor]:
     """Paper Eq. (6)-(9): CE plus dynamic MMD/LMMD alignment."""
     ce = F.cross_entropy(source_outputs["logits"], source_labels.long())
@@ -156,6 +157,8 @@ def dadda_objective(
     )
     if alpha_mode == "dynamic":
         alpha = dynamic_adaptive_factor(global_mmd, local_lmmd_sum)
+        if detach_dynamic_alpha:
+            alpha = alpha.detach()
     elif alpha_mode == "fixed":
         alpha = torch.as_tensor(float(fixed_alpha), dtype=global_mmd.dtype, device=global_mmd.device).clamp(0.0, 1.0)
     else:
