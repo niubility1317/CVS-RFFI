@@ -6322,32 +6322,7 @@ def _evaluate_metric_qknn(
     neighbor_contrast_loo_mean_acc = 0.0
     neighbor_contrast_neighborhoods = ""
     policy_norm = str(adaptive_qknn_policy).strip().lower()
-    if policy_norm in {
-        "dualview_support_v29",
-        "stable_dualview_v29",
-        "dualview_support_v30",
-        "stable_dualview_v30",
-        "dualview_support_v31",
-        "stable_dualview_v31",
-        "dualview_support_v32",
-        "stable_dualview_v32",
-        "dualview_support_v33",
-        "stable_dualview_v33",
-        "dualview_support_v34",
-        "stable_dualview_v34",
-        "dualview_support_v35",
-        "stable_dualview_v35",
-        "dualview_support_v36",
-        "stable_dualview_v36",
-        "dualview_support_v37",
-        "stable_dualview_v37",
-        "dualview_support_v38",
-        "stable_dualview_v38",
-        "dualview_support_v39",
-        "stable_dualview_v39",
-        "dualview_support_v43",
-        "stable_dualview_v43",
-    }:
+    if _policy_enables_query_neighborhood_gate(policy_norm):
         if support_loo_scores is None:
             support_loo_scores = _support_loo_base_scores(
                 features=adapted,
@@ -6443,38 +6418,7 @@ def _evaluate_metric_qknn(
             gate_margin=neighborhood_gate_margin,
             query_neighbor_weight=neighborhood_gate_query_weight,
         )
-    if policy_norm in {
-        "dualview_support_v37",
-        "stable_dualview_v37",
-        "dualview_support_v38",
-        "stable_dualview_v38",
-        "dualview_support_v39",
-        "stable_dualview_v39",
-        "dualview_support_v40",
-        "stable_dualview_v40",
-        "dualview_support_v42",
-        "stable_dualview_v42",
-        "dualview_support_v43",
-        "stable_dualview_v43",
-        "dualview_support_v44",
-        "stable_dualview_v44",
-        "dualview_support_v45",
-        "stable_dualview_v45",
-        "dualview_support_v46",
-        "stable_dualview_v46",
-        "dualview_support_v47",
-        "stable_dualview_v47",
-        "dualview_support_v48",
-        "stable_dualview_v48",
-        "dualview_support_v49",
-        "stable_dualview_v49",
-        "dualview_support_v50",
-        "stable_dualview_v50",
-        "dualview_support_v51",
-        "stable_dualview_v51",
-        "dualview_support_v52",
-        "stable_dualview_v52",
-    }:
+    if _policy_enables_support_neighbor_contrast(policy_norm):
         if support_loo_scores is None:
             support_loo_scores = _support_loo_base_scores(
                 features=adapted,
@@ -6506,6 +6450,26 @@ def _evaluate_metric_qknn(
         contrast_margin = float(np.clip(0.20 + 0.10 * class_load_gate + 0.08 * low_k_gate, 0.20, 0.40))
         if policy_norm in {"dualview_support_v43", "stable_dualview_v43"}:
             contrast_weight = float(np.clip(1.15 * contrast_weight, 0.0, 0.063))
+        if policy_norm in {"dualview_support_v83", "stable_dualview_v83"}:
+            contrast_weight = float(np.clip(0.40 * contrast_weight, 0.0, 0.024))
+            contrast_top_classes = int(max(1, min(2, round(0.10 * max(float(len(new_labels)), 1.0)))))
+            contrast_neighbor_count = int(max(2, min(3, contrast_neighbor_count)))
+            contrast_margin = float(np.clip(0.70 * contrast_margin, 0.16, 0.26))
+        if policy_norm in {"dualview_support_v84", "stable_dualview_v84"}:
+            contrast_weight = float(np.clip(0.22 * contrast_weight, 0.0, 0.014))
+            contrast_top_classes = 1
+            contrast_neighbor_count = int(max(2, min(2, contrast_neighbor_count)))
+            contrast_margin = float(np.clip(0.58 * contrast_margin, 0.14, 0.22))
+        if policy_norm in {
+            "dualview_support_v82",
+            "stable_dualview_v82",
+            "dualview_support_v83",
+            "stable_dualview_v83",
+            "dualview_support_v84",
+            "stable_dualview_v84",
+        } and min_support < 10.0:
+            contrast_weight = 0.0
+            contrast_top_classes = 0
         (
             scores,
             neighbor_contrast_count,
@@ -6562,6 +6526,12 @@ def _evaluate_metric_qknn(
                 "stable_dualview_v51",
                 "dualview_support_v52",
                 "stable_dualview_v52",
+                "dualview_support_v82",
+                "stable_dualview_v82",
+                "dualview_support_v83",
+                "stable_dualview_v83",
+                "dualview_support_v84",
+                "stable_dualview_v84",
             }
             else 0.0,
         )
@@ -7398,6 +7368,78 @@ def _clip01(value: float) -> float:
     return float(np.clip(float(value), 0.0, 1.0))
 
 
+def _policy_enables_query_neighborhood_gate(policy: str) -> bool:
+    name = str(policy).strip().lower()
+    return name in {
+        "dualview_support_v29",
+        "stable_dualview_v29",
+        "dualview_support_v30",
+        "stable_dualview_v30",
+        "dualview_support_v31",
+        "stable_dualview_v31",
+        "dualview_support_v32",
+        "stable_dualview_v32",
+        "dualview_support_v33",
+        "stable_dualview_v33",
+        "dualview_support_v34",
+        "stable_dualview_v34",
+        "dualview_support_v35",
+        "stable_dualview_v35",
+        "dualview_support_v36",
+        "stable_dualview_v36",
+        "dualview_support_v37",
+        "stable_dualview_v37",
+        "dualview_support_v38",
+        "stable_dualview_v38",
+        "dualview_support_v39",
+        "stable_dualview_v39",
+        "dualview_support_v43",
+        "stable_dualview_v43",
+    }
+
+
+def _policy_enables_support_neighbor_contrast(policy: str) -> bool:
+    name = str(policy).strip().lower()
+    return name in {
+        "dualview_support_v37",
+        "stable_dualview_v37",
+        "dualview_support_v38",
+        "stable_dualview_v38",
+        "dualview_support_v39",
+        "stable_dualview_v39",
+        "dualview_support_v40",
+        "stable_dualview_v40",
+        "dualview_support_v42",
+        "stable_dualview_v42",
+        "dualview_support_v43",
+        "stable_dualview_v43",
+        "dualview_support_v44",
+        "stable_dualview_v44",
+        "dualview_support_v45",
+        "stable_dualview_v45",
+        "dualview_support_v46",
+        "stable_dualview_v46",
+        "dualview_support_v47",
+        "stable_dualview_v47",
+        "dualview_support_v48",
+        "stable_dualview_v48",
+        "dualview_support_v49",
+        "stable_dualview_v49",
+        "dualview_support_v50",
+        "stable_dualview_v50",
+        "dualview_support_v51",
+        "stable_dualview_v51",
+        "dualview_support_v52",
+        "stable_dualview_v52",
+        "dualview_support_v82",
+        "stable_dualview_v82",
+        "dualview_support_v83",
+        "stable_dualview_v83",
+        "dualview_support_v84",
+        "stable_dualview_v84",
+    }
+
+
 def _adaptive_qknn_overrides(
     *,
     policy: str,
@@ -7543,6 +7585,12 @@ def _adaptive_qknn_overrides(
         "stable_dualview_v79",
         "dualview_support_v81",
         "stable_dualview_v81",
+        "dualview_support_v82",
+        "stable_dualview_v82",
+        "dualview_support_v83",
+        "stable_dualview_v83",
+        "dualview_support_v84",
+        "stable_dualview_v84",
     }:
         raise ValueError(f"unsupported adaptive_qknn_policy: {policy}")
     min_k_for_policy = float(geometry["adaptive_support_min_k"])
@@ -7601,6 +7649,9 @@ def _adaptive_qknn_overrides(
     use_v78 = name in {"dualview_support_v78", "stable_dualview_v78"}
     use_v79 = name in {"dualview_support_v79", "stable_dualview_v79"}
     use_v81 = name in {"dualview_support_v81", "stable_dualview_v81"}
+    use_v82 = name in {"dualview_support_v82", "stable_dualview_v82"}
+    use_v83 = name in {"dualview_support_v83", "stable_dualview_v83"}
+    use_v84 = name in {"dualview_support_v84", "stable_dualview_v84"}
     use_v49 = use_v49 or ((use_v53 or use_v54 or use_v55 or use_v56) and min_k_for_policy >= 10.0)
     use_v44 = (
         name in {"dualview_support_v44", "stable_dualview_v44"}
@@ -7656,6 +7707,9 @@ def _adaptive_qknn_overrides(
         or use_v78
         or use_v79
         or use_v81
+        or use_v82
+        or use_v83
+        or use_v84
     ):
         overrides = {
             "adaptive_qknn_policy": name,
@@ -7679,6 +7733,9 @@ def _adaptive_qknn_overrides(
                 or use_v78
                 or use_v79
                 or use_v81
+                or use_v82
+                or use_v83
+                or use_v84
             ):
                 overrides.update(
                     {
@@ -7686,7 +7743,7 @@ def _adaptive_qknn_overrides(
                         "support_code_budget_mode": "centroid_hard_diverse",
                         "support_code_old_budget_per_class": 5,
                         "support_code_new_budget_per_class": 6
-                        if (use_v78 or use_v79 or use_v81)
+                        if (use_v78 or use_v79 or use_v81 or use_v82 or use_v83 or use_v84)
                         else 7
                         if use_v76
                         else 8
@@ -7710,30 +7767,33 @@ def _adaptive_qknn_overrides(
                     or use_v78
                     or use_v79
                     or use_v81
+                    or use_v82
+                    or use_v83
+                    or use_v84
                 ):
                     overrides.update(
                         {
                             "support_code_new_protect_top_classes": 12
-                            if (use_v76 or use_v78 or use_v79 or use_v81)
+                            if (use_v76 or use_v78 or use_v79 or use_v81 or use_v82 or use_v83 or use_v84)
                             else 10
                             if use_v70
                             else 8,
                             "support_code_new_protect_metric": "radius_proto_sim"
-                            if (use_v73 or use_v76 or use_v78 or use_v79 or use_v81)
+                            if (use_v73 or use_v76 or use_v78 or use_v79 or use_v81 or use_v82 or use_v83 or use_v84)
                             else "radius",
                         }
                     )
-                if use_v81:
+                if use_v81 or use_v82 or use_v83 or use_v84:
                     overrides.update(
                         {
                             "support_code_new_extra_budget_top_classes": 14,
                             "support_code_new_extra_budget_per_class": 8,
                         }
                     )
-                if use_v69 or use_v70 or use_v73 or use_v76 or use_v78 or use_v79 or use_v81:
+                if use_v69 or use_v70 or use_v73 or use_v76 or use_v78 or use_v79 or use_v81 or use_v82 or use_v83 or use_v84:
                     overrides.update(
                         {
-                            "labelprop_weight": 0.01 if (use_v79 or use_v81) else 0.015,
+                            "labelprop_weight": 0.01 if (use_v79 or use_v81 or use_v82 or use_v83 or use_v84) else 0.015,
                             "labelprop_k": 10,
                             "labelprop_alpha": 0.72,
                             "labelprop_temperature": 0.05,

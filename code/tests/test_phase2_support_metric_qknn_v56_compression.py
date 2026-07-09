@@ -911,6 +911,128 @@ class Phase2SupportMetricQknnV56CompressionTest(unittest.TestCase):
         self.assertNotIn("topm", high_k)
         self.assertNotIn("proto_mix", high_k)
 
+    def test_v82_keeps_v81_compression_and_enables_support_only_neighbor_contrast_for_k10(self):
+        from phase2_support_metric_qknn_probe import (
+            _adaptive_qknn_overrides,
+            _policy_enables_query_neighborhood_gate,
+            _policy_enables_support_neighbor_contrast,
+        )
+
+        many_new_low_k = {
+            "adaptive_support_min_k": 5.0,
+            "adaptive_new_class_count": 20.0,
+            "adaptive_support_max_offdiag_proto_sim": 0.982,
+            "adaptive_support_p90_offdiag_proto_sim": 0.822,
+            "adaptive_support_mean_radius": 0.104,
+        }
+        many_new_high_k = dict(many_new_low_k)
+        many_new_high_k["adaptive_support_min_k"] = 10.0
+
+        low_k = _adaptive_qknn_overrides(
+            policy="stable_dualview_v82",
+            geometry=many_new_low_k,
+            aux_available=True,
+        )
+        high_k = _adaptive_qknn_overrides(
+            policy="stable_dualview_v82",
+            geometry=many_new_high_k,
+            aux_available=True,
+        )
+
+        self.assertEqual(low_k["adaptive_qknn_requested_policy"], "stable_dualview_v82")
+        self.assertEqual(low_k["adaptive_qknn_policy"], "stable_dualview_v82")
+        self.assertNotIn("support_code_old_budget_per_class", low_k)
+        self.assertNotIn("support_code_new_extra_budget_top_classes", low_k)
+
+        self.assertEqual(high_k["adaptive_qknn_requested_policy"], "stable_dualview_v82")
+        self.assertEqual(high_k["adaptive_qknn_policy"], "stable_dualview_v82")
+        self.assertEqual(high_k["support_code_budget_per_class"], 0)
+        self.assertEqual(high_k["support_code_budget_mode"], "centroid_hard_diverse")
+        self.assertEqual(high_k["support_code_old_budget_per_class"], 5)
+        self.assertEqual(high_k["support_code_new_budget_per_class"], 6)
+        self.assertEqual(high_k["support_code_new_protect_top_classes"], 12)
+        self.assertEqual(high_k["support_code_new_protect_metric"], "radius_proto_sim")
+        self.assertEqual(high_k["support_code_new_extra_budget_top_classes"], 14)
+        self.assertEqual(high_k["support_code_new_extra_budget_per_class"], 8)
+        self.assertEqual(high_k["labelprop_weight"], 0.01)
+        self.assertEqual(high_k["scenario_residual_weight"], 0.5)
+        self.assertTrue(_policy_enables_support_neighbor_contrast("stable_dualview_v82"))
+        self.assertFalse(_policy_enables_query_neighborhood_gate("stable_dualview_v82"))
+
+    def test_v83_keeps_v81_compression_and_uses_narrow_support_only_neighbor_contrast_for_k10(self):
+        from phase2_support_metric_qknn_probe import (
+            _adaptive_qknn_overrides,
+            _policy_enables_query_neighborhood_gate,
+            _policy_enables_support_neighbor_contrast,
+        )
+
+        many_new_low_k = {
+            "adaptive_support_min_k": 5.0,
+            "adaptive_new_class_count": 20.0,
+            "adaptive_support_max_offdiag_proto_sim": 0.982,
+            "adaptive_support_p90_offdiag_proto_sim": 0.822,
+            "adaptive_support_mean_radius": 0.104,
+        }
+        many_new_high_k = dict(many_new_low_k)
+        many_new_high_k["adaptive_support_min_k"] = 10.0
+
+        low_k = _adaptive_qknn_overrides(
+            policy="stable_dualview_v83",
+            geometry=many_new_low_k,
+            aux_available=True,
+        )
+        high_k = _adaptive_qknn_overrides(
+            policy="stable_dualview_v83",
+            geometry=many_new_high_k,
+            aux_available=True,
+        )
+
+        self.assertEqual(low_k["adaptive_qknn_requested_policy"], "stable_dualview_v83")
+        self.assertNotIn("support_code_new_extra_budget_top_classes", low_k)
+
+        self.assertEqual(high_k["adaptive_qknn_requested_policy"], "stable_dualview_v83")
+        self.assertEqual(high_k["support_code_old_budget_per_class"], 5)
+        self.assertEqual(high_k["support_code_new_budget_per_class"], 6)
+        self.assertEqual(high_k["support_code_new_protect_top_classes"], 12)
+        self.assertEqual(high_k["support_code_new_extra_budget_top_classes"], 14)
+        self.assertEqual(high_k["support_code_new_extra_budget_per_class"], 8)
+        self.assertEqual(high_k["labelprop_weight"], 0.01)
+        self.assertEqual(high_k["scenario_residual_weight"], 0.5)
+        self.assertTrue(_policy_enables_support_neighbor_contrast("stable_dualview_v83"))
+        self.assertFalse(_policy_enables_query_neighborhood_gate("stable_dualview_v83"))
+
+    def test_v84_keeps_v81_compression_and_uses_micro_support_only_neighbor_contrast_for_k10(self):
+        from phase2_support_metric_qknn_probe import (
+            _adaptive_qknn_overrides,
+            _policy_enables_query_neighborhood_gate,
+            _policy_enables_support_neighbor_contrast,
+        )
+
+        many_new_high_k = {
+            "adaptive_support_min_k": 10.0,
+            "adaptive_new_class_count": 20.0,
+            "adaptive_support_max_offdiag_proto_sim": 0.982,
+            "adaptive_support_p90_offdiag_proto_sim": 0.822,
+            "adaptive_support_mean_radius": 0.104,
+        }
+
+        high_k = _adaptive_qknn_overrides(
+            policy="stable_dualview_v84",
+            geometry=many_new_high_k,
+            aux_available=True,
+        )
+
+        self.assertEqual(high_k["adaptive_qknn_requested_policy"], "stable_dualview_v84")
+        self.assertEqual(high_k["support_code_old_budget_per_class"], 5)
+        self.assertEqual(high_k["support_code_new_budget_per_class"], 6)
+        self.assertEqual(high_k["support_code_new_protect_top_classes"], 12)
+        self.assertEqual(high_k["support_code_new_extra_budget_top_classes"], 14)
+        self.assertEqual(high_k["support_code_new_extra_budget_per_class"], 8)
+        self.assertEqual(high_k["labelprop_weight"], 0.01)
+        self.assertEqual(high_k["scenario_residual_weight"], 0.5)
+        self.assertTrue(_policy_enables_support_neighbor_contrast("stable_dualview_v84"))
+        self.assertFalse(_policy_enables_query_neighborhood_gate("stable_dualview_v84"))
+
     def test_support_proto_anchor_recovers_class_score_without_raw_support_codes(self):
         from phase2_support_metric_qknn_probe import _support_proto_anchor_scores
 

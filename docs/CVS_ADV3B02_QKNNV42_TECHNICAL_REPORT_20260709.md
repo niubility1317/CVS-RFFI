@@ -1056,6 +1056,11 @@ qKNNV42的贡献在Phase2部署方式，而不是新神经网络结构：
 |V78 K5 global max-min诊断|130|94.95%|94.05%|86.82%|84.29%|90.59%|86.94%|72.64%|62.00%|17/40|10/40|
 |V78 K5 scenario-edge诊断|130|94.95%|94.05%|86.82%|84.29%|91.65%|90.16%|75.43%|68.43%|23/40|16/40|
 |V78 K10 budget6 radius_proto_sim protect12高压缩分支|198|94.69%|93.31%|86.14%|82.71%|92.38%|91.06%|78.39%|70.00%|32/40|21/40|
+|V79 K10轻labelprop高压缩分支|198|94.67%|93.31%|86.14%|82.71%|92.51%|91.13%|78.32%|70.00%|33/40|21/40|
+|V81 K10风险类小额support预算|202|94.67%|93.31%|86.14%|82.71%|92.60%|91.32%|78.61%|70.00%|33/40|22/40|
+|V82 K10完整support邻域对比诊断|202|94.67%|93.31%|86.14%|82.71%|92.35%|91.14%|78.39%|71.29%|32/40|17/40|
+|V83 K10窄support邻域对比诊断|202|94.67%|93.31%|86.14%|82.71%|92.54%|91.27%|78.71%|70.00%|33/40|21/40|
+|V84 K10微support邻域对比诊断|202|94.67%|93.31%|86.14%|82.71%|92.59%|91.32%|78.68%|70.00%|33/40|22/40|
 |V77 K5 scenario_diverse support选择|130|95.02%|94.05%|86.79%|84.29%|91.67%|89.29%|76.64%|68.57%|24/40|14/40|
 |V77 K5+V56 support-LOO重链诊断|130|93.96%|93.10%|83.93%|81.43%|85.47%|84.00%|68.96%|61.43%|3/40|0/40|
 
@@ -1091,6 +1096,8 @@ qKNNV42的贡献在Phase2部署方式，而不是新神经网络结构：
 - V80验证了两个不应继续加重的方向：`support_proto_anchor`会新增4160个标量且把`min_new>=80`降到19/40；`core_proto`会新增52-78个core prototypes且最好也只到19/40。因此简单全量support原型回拉和通用类内多原型不是当前低类修复方向。
 - V81在V79基础上只给support-only风险排序第13-14的新类小额补码：保持旧类5码/类、seen-new默认6码/类、`radius_proto_sim protect12`，并设置`extra_top=14,extra_budget=8`。正式40seed复验达到202个support code、`old=94.67%`、`min_old=86.14%`、`seen_new=92.60%`、`min_new=78.61%`、`min_new>=75=33/40`、`min_new>=80=22/40`。因此V81成为当前K10“高效压缩+低类floor80折中”推荐分支：比V79多4码但恢复1个floor80 seed，仍比V76 historical少4码；若只看最低码数，V79仍保留为198码分支。
 - V81仍未改变`min_new p10=70.00%`和worst seed 64.29%的硬边界，最低类继续集中在`1-1/1-12`、`19-3/1-15`和局部`2-13`。后续不能再靠单纯增加support预算，应转向更细的support-only弱类簇判据。
+- V82-V84在V81的202码结构上尝试support-only邻域对比，不使用query分布门控，也不改变当前target-old和target-new/seen-new评估边界。V82完整对比新增平均889.02个标量，虽把`min_new p10`抬到71.29%，但`min_new>=80`从22/40坍塌到17/40，是负诊断。V83窄对比新增318.85个标量，`min_new mean`升到78.71%，但`min_new>=80`仍降到21/40，也不晋升。
+- V84微对比只覆盖1个support-only最高风险seen-new类，新增平均164.93个标量，在同202个support code下保持V81的`min_new>=75=33/40`和`min_new>=80=22/40`，并把`min_new mean`从78.61%小幅升到78.68%。但V84没有改善`min_new p10=70.00%`、worst seed 64.29%或floor80数量，因此只能作为可选微对比分支；默认最佳仍是无额外标量的V81。
 
 ## 10.证据索引
 
@@ -1117,6 +1124,9 @@ qKNNV42的贡献在Phase2部署方式，而不是新神经网络结构：
 |qKNNV80轻量原型负诊断|`E:\type10-7\automation_reports\CV-SincNet\phase2_qknn_hardpair_n20_20260706\artifacts\v80_k10_support_anchor_diag_20260709\k10_v80_support_anchor_diag_seed421038_40.csv`、`E:\type10-7\automation_reports\CV-SincNet\phase2_qknn_hardpair_n20_20260706\artifacts\v80_k10_core_proto_diag_20260709\k10_v80_core_proto_diag_seed421038_40.csv`|support anchor和core proto负诊断|
 |qKNNV81风险类小额预算诊断|`E:\type10-7\automation_reports\CV-SincNet\phase2_qknn_hardpair_n20_20260706\artifacts\v81_k10_extra_budget_diag_20260709\k10_v81_extra_budget_diag_seed421038_40.csv`|V79 198码结构上的额外风险类support预算扫描|
 |qKNNV81正式策略证据|`E:\type10-7\automation_reports\CV-SincNet\phase2_qknn_hardpair_n20_20260706\artifacts\v81_policy_20260709\k10_v81_policy_seed421038_40.csv`|`stable_dualview_v81` 202码当前K10效率-floor80折中分支40seed复验|
+|qKNNV82完整support邻域对比诊断|`E:\type10-7\automation_reports\CV-SincNet\phase2_qknn_hardpair_n20_20260706\artifacts\v82_k10_neighbor_contrast_20260709\k10_v82_neighbor_contrast_seed421038_40.csv`|`stable_dualview_v82` 202码完整support-only邻域对比负诊断|
+|qKNNV83窄support邻域对比诊断|`E:\type10-7\automation_reports\CV-SincNet\phase2_qknn_hardpair_n20_20260706\artifacts\v83_k10_narrow_neighbor_contrast_20260709\k10_v83_narrow_neighbor_contrast_seed421038_40.csv`|`stable_dualview_v83` 202码窄support-only邻域对比负诊断|
+|qKNNV84微support邻域对比诊断|`E:\type10-7\automation_reports\CV-SincNet\phase2_qknn_hardpair_n20_20260706\artifacts\v84_k10_micro_neighbor_contrast_20260709\k10_v84_micro_neighbor_contrast_seed421038_40.csv`|`stable_dualview_v84` 202码微support-only邻域对比非负诊断|
 
 ## 11.下一步
 
@@ -1126,6 +1136,6 @@ qKNNV42的贡献在Phase2部署方式，而不是新神经网络结构：
 
 3.K5 strong support已通过V77转成oracle-free `scenario_diverse` support selection；下一步不再尝试简单紧凑或边界选择，应转向类内多原型或更细的弱类簇支持覆盖机制。
 
-4.K10已有V76均衡高效压缩基线、V79 198码最低存储分支和V81 202码效率-floor80折中分支；下一步应针对`1-1/1-12/8-3`和`19-3/1-15`做低类专门的support-only类簇机制，而不是继续单纯增加support预算或调全局传播权重。
+4.K10已有V76均衡高效压缩基线、V79 198码最低存储分支、V81 202码默认效率-floor80折中分支和V84 202码微对比可选分支；下一步应针对`1-1/1-12/8-3`和`19-3/1-15`做低类专门的support-only类簇机制，而不是继续单纯增加support预算、调全局传播权重或加重邻域对比。
 
 5.继续复核更多`R_t`目标接收机域，避免单receiver或单support split过拟合。
