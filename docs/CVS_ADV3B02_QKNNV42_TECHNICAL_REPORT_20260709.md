@@ -1029,7 +1029,7 @@ qKNNV42的贡献在Phase2部署方式，而不是新神经网络结构：
 
 ## 9.K10非压缩/压缩更新
 
-当前同一Phase2口径下，K10 40seed结果为。该表只覆盖target-old旧类目标域适应和target-new/seen-new注册识别；不含unknown互斥、unknown拒识或open-set优化。
+当前同一Phase2口径下，K10 40seed结果为。该表只覆盖target-old旧类目标域适应和target-new/seen-new注册识别。
 
 |候选|stored codes|old mean|old p10|min old mean|min old p10|seen-new mean|seen-new p10|min new mean|min new p10|min new >=75|min new >=80|
 |---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
@@ -1060,7 +1060,7 @@ qKNNV42的贡献在Phase2部署方式，而不是新神经网络结构：
 - V70把V69机制移到更高效压缩：旧类5码/类，seen-new默认8码/类，按半径保护top10 seen-new类全量K10 support。它用210个support code保持old和min old基本不变，seen-new均值为92.45%，并把`min_new>=80`提升到23/40。因此V70取代V69成为当前K10均衡高效压缩候选；但`min_new p10=70.00%`仍未改善，`1-12`和`1-1`仍是低端瓶颈。
 - V71A继续压缩旧类support到4码/类，stored codes降到204，但旧类均值下降到94.43%、min old均值下降到85.46%、`min_new>=80`下降到21/40；旧类域适应损失超过压缩收益，不晋升。
 - V71B在V70基础上给额外高风险seen-new类更多support码，最好均值行为top14->10，seen-new均值升至92.54%，但stored codes回到218，旧类均值略降，`min_new p10`、`min_new>=75`和`min_new>=80`均不改善。因此最低类坍塌不是单纯增加seen-new support码可以解决，V71B只作为负诊断保留。
-- 当前K10最佳仍为V70：210个support code，old/seen-new同row平衡最好，且`min_new>=80=23/40`。后续应转向注册期support选择质量、低类query-free局部重排或类内多原型覆盖，而不是unknown拒识。
+- 当前K10最佳仍为V70：210个support code，old/seen-new同row平衡最好，且`min_new>=80=23/40`。后续应转向注册期support选择质量、低类query-free局部重排或类内多原型覆盖。
 - K5 `seed=421070`仍是单split强support证据，后续必须转成注册期可执行的support选择机制。
 
 ## 10.证据索引
@@ -1083,7 +1083,7 @@ qKNNV42的贡献在Phase2部署方式，而不是新神经网络结构：
 
 1.按模块A-D跑ADV3B02消融，主表保留strict UDU、receiver floor、sat_floor、prototype半径和Phase2 qKNN后续指标。
 
-2.按qKNNV42组件跑Phase2消融，主表保留`K`、stored codes、old mean、min old、seen-new mean、min new、`H_old,new`和support/query指纹；当前主线不得把unknown互斥/拒识作为优化目标。
+2.按qKNNV42组件跑Phase2消融，主表保留`K`、stored codes、old mean、min old、seen-new mean、min new、`H_old,new`和support/query指纹；当前主线只评价target-old旧类目标域适应和target-new/seen-new注册识别。
 
 3.把K5 strong support从`seed=421070`证据转成oracle-free support selection，例如支持集覆盖度、类内多原型和scenario coverage gate。
 
