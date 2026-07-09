@@ -1,689 +1,1053 @@
 # CVS阶段性成果技术报告：`ADV3B02_CORE90_SOFT_E200`与`qKNNV42`
 
 日期：2026-07-09
-作者：Codex本地审计与四子agent交叉验证
-承载面：`E:\type10-7\github_publish\CVS-RFFI-repo`
-本地协议源：`E:\type10-7\AGENTS.md`、`E:\type10-7\项目.md`
+修订说明：本版按用户要求重写模型分支、损失公式、创新模块和`qKNNV42`章节。所有符号和公式均使用LaTeX格式；`qKNNV42`只作为Phase2 Stage2-C轻量注册/适应头描述，类别集合限定为旧类和seen-new新类；ADV3B02创新模块C改写为源域core/tail几何稳健性模块。
 
-## 1.阶段性结论与声明边界
+## 1.结论边界
 
-本报告把`ADV3B02_CORE90_SOFT_E200`和`qKNNV42`定义为当前CVS路线的阶段性成果，但不把它们写成真实在轨部署完成或Phase3 unknown/open-set完成。
+本文将CVS当前成果拆成两个阶段：
 
-阶段性结论如下：
-
-|对象|当前可声明结论|不能声明|
-|---|---|---|
-|`ADV3B02_CORE90_SOFT_E200`|Phase1 source-only弱标注/半监督跨接收机DG表征基座；在ManySig源域上形成较强`z_id`身份表征、`z_dom`域表征、proxy/virtual unknown边界治理和prototype导出资产|不能声明Stage2 old/new适应已由它单独完成；不能声明真实unknown_FAR/FPR95改善；不能声明真实卫星IQ或在轨部署成功|
-|`qKNNV42`|冻结ADV3B02特征上的Phase2轻量support-memory注册/适应头；主线是同一目标接收机LEO目标域内target-old适应+target-new seen-new注册识别|不能写成新训练backbone；不能写成端到端深度模型；不能把历史字段`target_unknown`当真实unknown拒识成功；不能把Phase3诊断负证据包装成成功|
-|当前组合成果|在N20 HP08L5注册新类包上存在同row阶段性候选：`old_acc=94.52%`、`min_old=85.71%`、`seen_new_acc=90.14%`、`min_new=81.43%`、`H_old_new=92.28%`|该行没有独立真实unknown集合；unknown/FAR不属于此行主结论|
-
-协议边界来自`项目.md`：Phase1是source-only地面弱标注/半监督DG；Phase2主线是Stage2-B target-old适应和Stage2-C old+seen-new注册；unknown/open-set是Phase3备用或诊断项。所有结果解释必须保留`R_s/R_t`、`Y_old/Y_new/Y_unknown`和K-shot边界，禁止把不同候选的单项最值拼成一个结果。
-
-## 2.本轮证据来源与多agent交叉验证
-
-本报告基于本地只读审计、现有报告和代码路径；未访问N607远端、未启动训练、未修改实验脚本。
-
-四个子agent分工如下：
-
-|子agent|审计重点|交叉验证结论|
-|---|---|---|
-|ADV3B02机制审计|模型结构、训练入口、loss、参数、B02机制和Phase1结果|确认`ADV3B02_CORE90_SOFT_E200`是Phase1 source-only候选，机制为`core90/accept85/alpha30`，不是Stage2/unknown完成证据|
-|qKNNV42机制审计|support-memory结构、量化、打分、辅助视图门控、相似方法|确认`qKNNV42`是冻结特征上的压缩KNN/prototype部署头，不是独立训练模型|
-|结果证据审计|同row指标、artifact路径、unknown诊断负证据|确认当前可用阶段成果是K5 strict N20 HP08L5注册新类行；unknown/FAR仍是负证据或未纳入主线|
-|协议与报告结构审计|`项目.md`边界、章节口径、禁写项|确认最终报告必须写成CVS协议约束下的阶段性技术报告，而非完整在轨系统报告|
-
-本地Git状态边界：`E:\type10-7`根目录不是Git仓库；本报告写入Git承载面`E:\type10-7\github_publish\CVS-RFFI-repo`。承载面已有与本任务无关的未提交改动，本报告只新增本文档。
-
-## 3.CVS科学场景与符号定义
-
-CVS面向天基RFFI的核心问题是：在地面源接收机上获得低标签率训练数据后，学习能够迁移到目标接收机/目标LEO链路的发射机身份表征，并在目标接收机域内用少量K-shot support完成旧类适应和新类注册。
-
-符号定义：
-
-|符号|含义|
-|---|---|
-|`x`|原始IQ片段或由IQ派生的目标域特征输入|
-|`y`|发射机身份标签，即TX类|
-|`d`|域标签，通常由receiver/day/rx_day/channel/satellite view等组成|
-|`R_s`|源接收机集合，用于Phase1训练|
-|`R_t`|目标接收机集合，用于Phase2部署/评估，必须与`R_s`不相交|
-|`Y_old`|源域已知旧TX类，也是目标域需要保留识别能力的旧类|
-|`Y_new`|目标域注册新TX类，Phase2 Stage2-C可用少量support学习|
-|`Y_unknown`|真实未知TX类，Phase3/diagnostic-only，不能倒灌到Phase2主线|
-|`z_id`|身份表征，用于TX分类、prototype、few-shot support memory和qKNN检索|
-|`z_dom`|域/信道/接收机扰动表征，用于吸收receiver/day/channel/satellite nuisance和域诊断|
-
-CVS阶段边界：
-
-|阶段|目标|允许使用的数据|主指标|
+|阶段|对象|可声明内容|不可声明内容|
 |---|---|---|---|
-|Phase1|source-only弱标注/半监督DG表征学习|`R_s`上的ManySig旧类、低标签`L_s`、无标签`U_s`、源域派生LEO压力视图|source闭集DG、strict UDU、receiver floor、satellite floor、proxy/virtual unknown风险、prototype导出质量|
-|Stage2-B|目标旧类少样本适应|`R_t,Y_old`的K-shot support和query|`old_acc`、`min_old_class_acc`|
-|Stage2-C|目标旧类适应+seen-new注册|`R_t,Y_old`和`R_t,Y_new`的K-shot support/query|`old_acc`、`seen_new_acc`、`min_old`、`min_new`、`H_old_new`|
-|Phase3|未知类拒识备用/诊断|互斥`Y_unknown`只作eval-only，除非另有显式Phase3协议|AUROC、FPR95、unknown_reject、FAR、known保留率|
+|Phase1|`ADV3B02_CORE90_SOFT_E200`|source-only弱标注/半监督跨接收机DG表征基座；输出可用于后续目标域注册的身份表征$\mathbf z_{\mathrm{id}}$和域表征$\mathbf z_{\mathrm{dom}}$|不能单独声明Phase2 target-old/target-new完成|
+|Phase2 Stage2-C|`qKNNV42`|冻结ADV3B02表征后的目标域K-shot support-memory注册/适应头；目标是target-old保留和target-new seen-new注册|不是新backbone，不是端到端训练模型，不覆盖Phase2以外目标|
 
-本报告主结论只对应Phase1和Phase2 Stage2-C no-unknown主线。所有unknown/FAR证据单独列为负证据。
+当前组合成果来自N20 HP08L5注册新类包的同row候选：
 
-## 4.CVS总体方法流水线
+|seed|$K_{\mathrm{old}}$|$K_{\mathrm{new}}$|old acc|min old|seen-new acc|min new|$H_{\mathrm{old,new}}$|verdict|
+|---:|---:|---:|---:|---:|---:|---:|---:|---|
+|421070|5|5|94.52%|85.71%|90.14%|81.43%|92.28%|Phase2 K5旧类适应+seen-new注册候选|
 
-CVS方法可以写成三层：
+其中
 
-1.源域表征层：`raw IQ->CV-SincNet/CVS->z_id,z_dom`。`z_id`承载TX身份几何，`z_dom`承载receiver/day/channel/LEO扰动。
+$$
+H_{\mathrm{old,new}}=
+\frac{2\,A_{\mathrm{old}}A_{\mathrm{new}}}{A_{\mathrm{old}}+A_{\mathrm{new}}}
+=\frac{2\times0.945238\times0.901429}{0.945238+0.901429}
+=0.922814.
+$$
 
-2.源域训练层：在`rho_label=0.1`低标签比例下，把`L_s`监督CE、`U_s`伪标签SSL、域监督/域对抗、source episode、proxy/virtual unknown边界塑形和源域LEO压力视图合成一个source-only训练目标。
+## 2.符号与任务定义
 
-3.部署注册层：冻结Phase1 backbone，把目标接收机LEO域的K-shot support压缩为int8 support memory、class prototype、scenario metadata和少量校准标量。`qKNNV42`不重训backbone，只在冻结`z_id`空间进行少样本检索、旧类锚定和新类注册仲裁。
+地面训练阶段使用源域集合$\mathcal R_s$和旧类集合$\mathcal Y_{\mathrm{old}}$。目标域注册阶段使用目标接收机域$\mathcal R_t$，并满足
 
-## 5.`ADV3B02_CORE90_SOFT_E200`方法细节
+$$
+\mathcal R_t\cap\mathcal R_s=\varnothing,\qquad
+\mathcal Y_{\mathrm{new}}\cap\mathcal Y_{\mathrm{old}}=\varnothing.
+$$
 
-### 5.1身份与实验入口
+样本和标签记为
 
-`ADV3B02_CORE90_SOFT_E200`是ADV3机制32候选矩阵中的B02项。候选摘要为`core90/accept85/alpha30`，目标是提高known core保真并降低proxy/virtual unknown接受风险。
+$$
+x\in\mathbb R^{2\times L},\qquad
+y\in\mathcal Y_{\mathrm{old}},\qquad
+d\in\mathcal D_s,
+$$
 
-|项|值|
+其中$x$是IQ片段，$y$是TX身份，$d$是receiver/day/rx_day/channel view等域标签。CVS的观测模型写为
+
+$$
+x=R_d\!\left(H_d*T_y(s)\right)+n,
+$$
+
+其中$T_y$是发射机硬件非理想性，$H_d$是传播/星地信道扰动，$R_d$是接收机链路响应，$n$是噪声。
+
+Phase1训练集为
+
+$$
+\mathcal L_s=\{(x_i,y_i,d_i)\}_{i=1}^{N_l},\qquad
+\mathcal U_s=\{(u_j,d_j)\}_{j=1}^{N_u},
+$$
+
+标注比例为
+
+$$
+\rho_{\mathrm{label}}=
+\frac{|\mathcal L_s|}{|\mathcal L_s|+|\mathcal U_s|}
+=0.1.
+$$
+
+模型输出定义为
+
+$$
+f_\theta(x)=
+\left(
+\boldsymbol\ell_y,\boldsymbol\ell_d,\boldsymbol\ell_{\mathrm{adv}},
+\mathbf z_{\mathrm{id}},\mathbf z_{\mathrm{dom}}
+\right),
+$$
+
+其中$\boldsymbol\ell_y$是TX分类logits，$\boldsymbol\ell_d$是域分类logits，$\boldsymbol\ell_{\mathrm{adv}}$是经GRL后的域对抗logits，$\mathbf z_{\mathrm{id}}$用于身份分类、prototype和qKNN，$\mathbf z_{\mathrm{dom}}$用于接收机/信道扰动建模。
+
+## 3.ADV3B02实际模型配置
+
+`ADV3B02_CORE90_SOFT_E200`由`code/SSDG/train_ssdg.py`构建，实际使用默认结构参数：
+
+|参数|值|
 |---|---|
-|候选ID|`ADV3B02_CORE90_SOFT_E200`|
-|机制摘要|`direct vaccept core90 accept85 alpha30`、known core保真更强|
-|训练入口|`E:\type10-7\code\SSDG\train_ssdg.py`|
-|启动脚本快照|`E:\type10-7\code\snapshots\phase1_adv3_mechanism32_queue_20260701\launch_phase1_adv3_mechanism32_queue_20260701.sh`|
-|数据|`Dataset_WigSig/ManySig.pkl`|
-|split|`tx_rx_day_1_7_2`|
-|标签比例|`labeled/unlabeled/source-val=0.10/0.70/0.20`|
-|训练轮数|`epochs=200`|
-|最佳epoch|`best_epoch=194`|
-|label阶段|`label_epochs=130`|
-|pseudo阶段|`pseudo_epochs=70`|
-|seed|`392002`|
-|checkpoint|`best_joint_safe_ssdg.pth`|
-|prototype导出|`phase2_zid_prototypes.json/.pt`|
+|`model_size`|`M`|
+|`model_variant`|`lite_d`|
+|`arch_family`|`cvsincnet`|
+|`input_len`|$L=256$，由WiSig/ManySig数据上下文传入|
+|`num_classes`|$C=|\mathcal Y_{\mathrm{old}}|=6$|
+|`num_domains`|$D=|\mathcal D_s|$，由源域receiver/day映射确定|
+|identity branch ablation|`no_dac`|
+|domain branch ablation|`no_stats`|
+|shared stem|`lite_d`触发`sinc`和`hf`在identity/domain分支间共享|
+|identity feature key|`feat_joint`|
+|domain feature key|`feat_imp`|
+|domain enhancer|`rcn_stats`，strength$=0.35$|
 
-本候选的后续引用路径包括`E:\type10-7\code\scripts\launch_phase2_adv3b02_frozen_manytx_unknown_diag_20260706.sh`，该脚本把B02的`best_joint_safe_ssdg.pth`作为冻结基模型checkpoint。
+`lite_d`将CVSincNet主干缩窄为：
 
-### 5.2模型结构：物理先验CV-SincNet+双分支解耦
+|宽度参数|值|
+|---|---:|
+|`sinc_out`|24|
+|`sinc_kernel`|79|
+|`time_bottleneck`|48|
+|`emb_dim`|160|
+|`freq_bands`|32|
+|`time_ch1,time_ch2,time_ch3`|72,96,96|
+|`dac_ch`|32|
+|`freq_ch1,freq_ch2,freq_ch3`|16,32,32|
+|`pa_ch1,pa_ch2,pa_ch3`|48,64,64|
+|`pa_memory_depth`|4|
+|`pa_orders`|$(1,3,5)$|
+|`drop`|0.45|
 
-ADV3B02训练入口构建`DualCVSincNetDisentangle`，不是单一路径普通CNN。其核心是两个CVSincNet分支：
+由于identity branch使用`no_dac`，身份分支启用time/frequency/PA路径，不启用DAC路径。domain branch使用`no_stats`，保留time/DAC/frequency/PA路径，但禁用频谱统计投影、DAC subband聚合和PA统计增量。
 
-|分支|输出|功能|
+## 4.ADV3B02分支逐层结构
+
+### 4.1共享Sinc/IQ前端
+
+共享前端接收$x\in\mathbb R^{B\times2\times256}$。
+
+|层|参数|输出|
 |---|---|---|
-|identity backbone|`z_id`、`tx_logits`|学习TX身份不变特征，用于闭集分类、prototype、Phase2 few-shot和qKNN|
-|domain backbone|`z_dom`、`dom_logits`|学习receiver/day/channel/LEO扰动特征，用于域监督和域解释|
-|GRL adversarial head|`adv_dom_logits`|对`z_id`做域对抗，减少身份表征泄漏接收机/信道信息|
-|TX adversarial head|`tx_adv_logits`|约束`z_dom`不要承载过多TX身份信息|
+|`SincConv1d.forward_iq_pair`|out_channels$=24$，kernel$=79$，padding$=39$，stride$=1$，每个IQ通道共享同一24个可学习带通滤波器|$\mathbf s\in\mathbb R^{B\times48\times256}$|
+|`HighFreqEmphasis`|固定一阶差分核$[-1,1]$和二阶差分核$[1,-2,1]$，groups$=2$|$\mathbf h\in\mathbb R^{B\times4\times256}$|
 
-底层`CVSincNet`包含以下物理分支：
+Sinc滤波器参数为每个带通滤波器的低频和带宽：
 
-|组件|作用|
+$$
+\mathbf w_k(t)=
+\frac{\sin(2\pi f_{2,k}t)-\sin(2\pi f_{1,k}t)}{\pi t}\cdot
+\left(0.54-0.46\cos\frac{2\pi n}{78}\right),
+$$
+
+其中$f_{1,k}$和$f_{2,k}$由`low_hz_`和`band_hz_`学习得到。
+
+### 4.2identity branch：time path
+
+identity branch的time path把Sinc IQ、三阶非线性基和高频差分拼接：
+
+$$
+\mathbf t_0=
+\operatorname{concat}\left[
+\mathbf s,\;
+\mathbf s|\mathbf s|^2,\;
+\mathbf h
+\right]\in\mathbb R^{B\times100\times256}.
+$$
+
+|层|参数|输出通道|
+|---|---|---:|
+|`time_fuse`|Conv1d$100\to48$，kernel$=1$，bias$=0$；GroupNorm$g=16$；ReLU|48|
+|`time_down`|AvgPool1d，kernel$=2$|48|
+|`MixStyle`|仅identity branch；layers=`time_down,t1`；$p=0.18$，$\alpha=0.10$，mix=`same_tx_crossdomain`，strength$=0.70$，fallback=`skip`，late_start$=110$|48|
+|`t1`|Depthwise Conv1d$48\to48$，kernel$=5$，groups$=48$；Pointwise Conv1d$48\to72$；GroupNorm$g=8$；ReLU；MaxPool1d$2$；Dropout$0.10$|72|
+|`t2`|Depthwise Conv1d$72\to72$，kernel$=5$，groups$=72$；Pointwise Conv1d$72\to96$；GroupNorm$g=16$；ReLU；MaxPool1d$2$；Dropout$0.10$|96|
+|`t3`|Depthwise Conv1d$96\to96$，kernel$=3$，groups$=96$；Pointwise Conv1d$96\to96$；GroupNorm$g=16$；ReLU；pool=Identity；Dropout$0.10$|96|
+|`t_pool`|AdaptiveAvgPool1d$1$|96|
+|`t_proj`|Linear$96\to160$|160|
+
+输出为$\mathbf e_t\in\mathbb R^{B\times160}$。
+
+### 4.3identity branch：frequency path
+
+frequency path从原始IQ的镜像FFT统计构造
+
+$$
+\mathbf f_0=
+\left[
+\log(1+P_+),\;
+\log(1+P_-),\;
+\log\frac{P_++\epsilon}{P_-+\epsilon},\;
+\frac{|P_+-P_-|}{P_++P_-+\epsilon}
+\right]\in\mathbb R^{B\times4\times32}.
+$$
+
+|层|参数|输出通道|
+|---|---|---:|
+|`freq_gate`|Conv1d$4\to1$，kernel$=5$，padding$=2$；gate scale$=1+0.6(2\sigma(\cdot)-1)$|4|
+|`f1`|Depthwise Conv1d$4\to4$，kernel$=5$，groups$=4$；Pointwise Conv1d$4\to16$；GroupNorm$g=16$；ReLU；MaxPool1d$2$；Dropout$0.05$|16|
+|`f2`|Depthwise Conv1d$16\to16$，kernel$=5$，groups$=16$；Pointwise Conv1d$16\to32$；GroupNorm$g=16$；ReLU；MaxPool1d$2$；Dropout$0.05$|32|
+|`f3`|Depthwise Conv1d$32\to32$，kernel$=3$，groups$=32$；Pointwise Conv1d$32\to32$；GroupNorm$g=16$；ReLU；pool=Identity；Dropout$0.05$|32|
+|`f_pool`|AdaptiveAvgPool1d$1$|32|
+|`f_proj`|Linear$32\to160$|160|
+|`freq_stats_proj`|Linear$3\to160$；ReLU；Dropout$0.1125$|160|
+
+输出为
+
+$$
+\mathbf e_f=\operatorname{Linear}_{32\to160}(\operatorname{pool}(\mathbf f_3))
++\operatorname{MLP}_{3\to160}(\mathbf r_{\mathrm{freq}}).
+$$
+
+其中$\mathbf r_{\mathrm{freq}}$包含高频能量比例、镜像不对称均值和谱平坦度。
+
+### 4.4identity branch：PA path
+
+PA path使用memory polynomial lift。对$m\in\{0,1,2,3\}$和$p\in\{1,3,5\}$：
+
+$$
+\phi_{m,p}(x)[n]=x[n-m]\left|x[n-m]\right|^{p-1}.
+$$
+
+因此输入通道数为$2\times4\times3=24$。
+
+|层|参数|输出通道|
+|---|---|---:|
+|`pa_lift`|memory_depth$=4$，orders$=(1,3,5)$，clip$=2.0$|24|
+|`pa_gate`|EnvelopeGate Conv1d$1\to24$，kernel$=5$，padding$=2$，$\alpha=0.5$|24|
+|`pa_b1`|Conv1d$24\to48$，kernel$=7$，dilation$=1$，padding$=3$；GroupNorm$g=16$；SiLU；AvgPool1d$2$；Dropout$0.08$|48|
+|`pa_b2`|Conv1d$48\to64$，kernel$=7$，dilation$=2$，padding$=6$；GroupNorm$g=16$；SiLU；AvgPool1d$2$；Dropout$0.08$|64|
+|`pa_b3`|Conv1d$64\to64$，kernel$=5$，dilation$=4$，padding$=8$；GroupNorm$g=16$；SiLU；pool=Identity；Dropout$0.08$|64|
+|`pa_pool`|AdaptiveAvgPool1d$1$|64|
+|`pa_proj`|Linear$64\to160$；ReLU；Dropout$0.1125$|160|
+|`pa_stats_proj`|Linear$3\to160$；ReLU；Dropout$0.1125$|160|
+
+输出为
+
+$$
+\mathbf e_{\mathrm{pa}}=
+\operatorname{MLP}_{64\to160}(\operatorname{pool}(\mathbf p_3))
++0.25\,\operatorname{MLP}_{3\to160}(\mathbf r_{\mathrm{pa}}),
+$$
+
+其中$\mathbf r_{\mathrm{pa}}$包含edge ratio、regrowth ratio和谱峰度。
+
+### 4.5identity branch：融合和分类头
+
+由于identity branch关闭DAC路径，base输入为
+
+$$
+\mathbf b_{\mathrm{in}}=
+\operatorname{concat}(\mathbf e_t,\mathbf e_f,\rho)
+\in\mathbb R^{B\times321},
+$$
+
+其中$\rho=|\mathbb E[z^2]|/(\mathbb E[|z|^2]+\epsilon)$是circularity统计。
+
+|层|参数|输出|
+|---|---|---|
+|`fuse`|Linear$321\to160$；ReLU；Dropout$0.45$|$\mathbf b\in\mathbb R^{B\times160}$|
+|`con_proj`|Linear$160\to160$；ReLU；Dropout$0.1125$|`feat_con`|
+|`id_proj`|Linear$160\to160$；ReLU；Dropout$0.225$|`feat_cls`|
+|`pa_proj` in classifier|Linear$320\to160$；ReLU；Dropout$0.225$|`feat_pa`|
+|`id_gate`|Linear$160\to160$；Sigmoid；gate_alpha$=0.35$|identity gate|
+|`joint_proj`|Linear$320\to160$；ReLU；Dropout$0.225$|`feat_joint`$=\mathbf z_{\mathrm{id}}$|
+|`imp_merge`|Linear$160\to160$；ReLU；Dropout$0.1125$|`feat_imp`|
+|`CosFaceHead`|weight$\in\mathbb R^{6\times160}$，scale$s=30$，margin$m=0.35$|$\boldsymbol\ell_y$|
+|`pa_head`|Linear$160\to80$；ReLU；Linear$80\to1$；Sigmoid|PA辅助强度预测|
+
+CosFace logits为
+
+$$
+\ell_{y,c}
+=s\left(
+\frac{\mathbf z_{\mathrm{id}}^\top\mathbf w_c}
+{\|\mathbf z_{\mathrm{id}}\|_2\|\mathbf w_c\|_2}
+-m\cdot\mathbb 1[c=y]
+\right).
+$$
+
+### 4.6domain branch：域表征路径
+
+domain branch使用同样的`lite_d`主干，但配置为`domain_branch_ablation=no_stats`和`mixstyle_on=False`。它保留time、DAC、frequency、PA路径，禁用统计投影增量。time、frequency、PA路径的卷积层宽与identity branch相同；不同点如下：
+
+|组件|domain branch实际参数|
 |---|---|
-|Sinc滤波器前端|以可解释带通滤波捕获IQ频带结构|
-|time branch|从时间序列提取局部包络、相位和瞬态模式|
-|DAC branch|使用widely-linear complex block建模IQ非圆性、DAC不平衡和硬件缺陷|
-|frequency branch|提取频域/滤波组统计特征|
-|PA branch|使用memory polynomial lift和包络门控建模PA非线性与记忆效应|
-|CosFace/物理感知分类头|用角度margin增强身份类间分离|
-|`feat_id/feat_dac/feat_pa/feat_imp/feat_joint`|保留身份、DAC、PA、重要性和融合特征，供后续诊断与导出|
+|MixStyle|关闭|
+|stats path|关闭，`freq_stats_proj`、`pa_stats_proj`、`dac_subband_agg`不参与|
+|DAC HF projection|Conv1d$4\to48$，kernel$=1$，bias$=0$；GroupNorm$g=16$；SiLU|
+|`dac_b1`|WLComplexBlock，complex Conv$24\to24$，kernel$=5$，dilation$=1$，pool=Identity，Dropout$0.05$，residual=Identity|
+|`dac_b2`|WLComplexBlock，complex Conv$24\to32$，kernel$=3$，dilation$=1$，pool=Identity，Dropout$0.05$，residual Conv1d$48\to64$|
+|`dac_b3`|WLComplexBlock，complex Conv$32\to32$，kernel$=3$，dilation$=2$，AvgPool1d$2$，Dropout$0.05$，residual Conv1d$64\to64$+AvgPool1d$2$|
+|`dac_proj`|Linear$64\to160$；ReLU；Dropout$0.1125$|
 
-代码证据：`E:\type10-7\code\model.py`中`class CVSincNet`、`sinc_out=48`、`sinc_kernel=79`、`emb_dim=256`、`freq_bands=64`、`pa_memory_depth=4`、`margin_s=30.0`；`E:\type10-7\code\model_dual_cvsincnet.py`中`DualCVSincNetDisentangle.forward`返回`z_id`、`z_dom`、`dom_logits`、`adv_dom_logits`。
+WL complex convolution使用四个实卷积：
 
-### 5.3训练机制总览
+$$
+\begin{aligned}
+\mathbf y_r&=W_r\mathbf x_r-W_i\mathbf x_i+V_r\mathbf x_r+V_i\mathbf x_i,\\
+\mathbf y_i&=W_r\mathbf x_i+W_i\mathbf x_r-V_r\mathbf x_i+V_i\mathbf x_r.
+\end{aligned}
+$$
 
-ADV3B02不是只靠一个CE loss训练。其训练分为label阶段和pseudo阶段：
+domain backbone输出`feat_imp`作为$\mathbf z_{\mathrm{dom,raw}}$。随后`DomainFeatureEnhancer`把原始IQ的receiver/channel/noise统计注入域表征：
 
-|阶段|数据|主要动作|
+|层|参数|输出|
 |---|---|---|
-|label阶段|源域标注样本`L_s`|监督TX分类、域监督、域对抗、几何约束、proxy/soft未知压力、source episode、LEO压力视图|
-|pseudo阶段|源域无标签样本`U_s`+标注样本|继续监督训练，同时用EMA/当前模型为`U_s`生成TX伪标签，经多重门控后做strong view CE和熵约束|
+|`RCNStatEncoder`|18维IQ统计；Linear$18\to80$；LayerNorm$80$；SiLU；Dropout$0.05$；Linear$80\to160$|$\mathbf z_{\mathrm{rcn}}$|
+|gate|Linear$320\to160$；Sigmoid|$\mathbf g_{\mathrm{rcn}}$|
+|enhance|LayerNorm$\left(\mathbf z_{\mathrm{dom,raw}}+0.35\,\mathbf g_{\mathrm{rcn}}\odot\mathbf z_{\mathrm{rcn}}\right)$|$\mathbf z_{\mathrm{dom}}$|
 
-伪标签只来自source unlabeled，不是target receiver伪标签，也不是unknown类伪标签。伪标签模块不能被写成Stage2 target-new学习或Phase3 unknown拒识。
+域分类头和对抗头为
 
-### 5.4训练损失函数与优化目标
-
-ADV3B02总loss可概括为：
-
-```text
-L_total =
-  L_tx
-+ λ_dom L_dom
-+ λ_adv L_adv
-+ λ_group L_group_ce
-+ λ_fishr L_fishr
-+ λ_proto L_proto
-+ λ_zid L_zid_compact
-+ λ_ow L_open_world_feature
-+ λ_proxy L_proxy_unknown
-+ λ_soft L_soft_unknown_mixup
-+ λ_src L_source_episode
-+ λ_u L_pseudo_ce
-+ λ_ent L_entropy
-+ λ_sat_cls L_satellite_ce
-+ λ_sat_cons L_satellite_consistency
-```
-
-各项含义如下：
-
-|loss|作用|ADV3B02中的边界|
+|层|参数|输出|
 |---|---|---|
-|`L_tx`|源域标注TX分类CE，训练`z_id`身份识别能力|闭集身份主目标|
-|`L_dom`|域分类CE，训练`z_dom`表达receiver/day/channel差异|服务域解释和解耦|
-|`L_adv`|GRL域对抗CE，使`z_id`难以预测域|降低身份特征域泄漏|
-|`L_group_ce`|按receiver/domain group加权的CE或group robustness项|提升弱receiver floor|
-|`L_fishr`|约束跨域梯度/风险统计一致性|源域DG稳定性|
-|`L_proto`|prototype几何约束|改善Phase2可检索表征|
-|`L_zid_compact`|SupCon、角半径、tail CVaR等`z_id`几何约束|收紧同TX簇，扩大类间边界|
-|`L_open_world_feature`|类内compact、类间margin、domain align、tail/vacuum指标|源域代理开放边界，不等同真实unknown|
-|`L_proxy_unknown`|leave-one-TX-out代理未知边界治理|只在源域模拟未知风险|
-|`L_soft_unknown_mixup`|源域不同TX特征混合形成soft virtual unknown|不是目标域unknown监督|
-|`L_source_episode`|source-only leave-domain三sigma角壳目标|用于跨域episode压力，不代表Stage2结果|
-|`L_pseudo_ce`|对源域无标签样本的伪标签CE|只处理`U_s`|
-|`L_entropy`|降低/控制伪标签预测熵|辅助SSL稳定|
-|`L_satellite_ce`|源域派生LEO压力视图上的TX CE|是physics-informed stress，不是真实卫星部署证明|
-|`L_satellite_consistency`|clean/LEO强视图`z_id`一致性|B02配置中`lambda_sat_cons=0`，主要由satellite CE承担|
+|`dom_head`|Linear$160\to80$；ReLU；Dropout$0.10$；Linear$80\to D$|$\boldsymbol\ell_d$|
+|`adv_head`|GRL$(\mathbf z_{\mathrm{id}})$；Linear$160\to80$；ReLU；Dropout$0.10$；Linear$80\to D$|$\boldsymbol\ell_{\mathrm{adv}}$|
+|`tx_adv_head`|默认关闭|无|
 
-### 5.5ADV3B02关键训练参数
+GRL定义为
+
+$$
+\operatorname{GRL}_{\lambda}(\mathbf z)=\mathbf z,\qquad
+\frac{\partial\operatorname{GRL}_{\lambda}}{\partial\mathbf z}=-\lambda\mathbf I.
+$$
+
+## 5.训练参数
 
 |类别|参数|值|
 |---|---|---|
-|总训练|`epochs`|`200`|
-|阶段划分|`label_epochs`|`130`|
-|阶段划分|`pseudo_epochs`|`70`|
-|open-world warmup|`zid_start`、`ow_start`、`source_start`、`soft_start`、`proxy_start`|`8`、`12`、`20`、`25`、`45`|
-|warmup|`warmup`|`25`|
-|核心proxy|`proxy_core_q`|`0.90`|
-|核心proxy|`proxy_accept_q`|`0.85`|
-|核心proxy|`proxy_cvar_alpha`|`0.30`|
-|核心proxy|`proxy_core_w`|`0.45`|
-|proxy未知|`lambda_proxy_unknown`|`0.0045`|
-|proxy未知|`proxy_virtual_count`|`48`|
-|proxy未知|`proxy_virtual_mode`|`hard`|
-|proxy未知|`proxy_vaccept_w`|`1.00`|
-|proxy未知|`proxy_gate_w`|`0.65`|
-|proxy未知|`proxy_tail_w`、`proxy_source_w`|`0.20`、`0.20`|
-|proxy未知|`proxy_unknown_margin`、`proxy_known_margin`|`0.08`、`0.05`|
-|soft未知|`lambda_soft_unknown_mixup`|`0.0045`|
-|soft未知|`soft_unknown_mixup_count`|`24`|
-|soft未知|`soft_unknown_mixup_order`|`3`|
-|soft未知|`soft_unknown_mixup_alpha`|`0.5`|
-|soft未知|`soft_unknown_mixup_ce_weight`|`0.60`|
-|soft未知|`soft_unknown_mixup_vacuum_weight`|`0.35`|
-|source episode|`lambda_source_episode`|`0.0035`|
-|source episode|`source_episode_mixup_weight`|`0.75`|
-|source episode|`source_episode_radius_cap_deg`|`33`|
-|prototype|`lambda_proto`|`0.0032`|
-|伪标签|`tau_min`、`tau_max`|`0.92`、`0.97`|
-|伪标签|`pseudo_quantile`|`0.86`|
+|数据|`wisig_pkl`|`Dataset_WigSig/ManySig.pkl`|
+|数据|`split_mode`|`tx_rx_day_1_7_2`|
+|数据|`labeled_ratio,unlabeled_ratio,source_val_ratio`|$0.10,0.70,0.20$|
+|优化器|AdamW|learning rate$=2\times10^{-4}$，weight decay$=10^{-4}$|
+|训练轮数|`epochs`|200|
+|阶段|`label_epochs,pseudo_epochs`|130,70|
+|label smoothing|$\varepsilon_{\mathrm{ls}}$|0.01|
+|伪标签|`tau_min,tau_max,pseudo_quantile`|$0.92,0.97,0.86$|
 |伪标签|`pseudo_threshold_mode`|`rx_day_quantile`|
-|伪标签|`pseudo_domain_gate`、`pseudo_temporal_gate`、`pseudo_strong_agreement`|启用|
-|伪标签|`use_ema_teacher`|启用|
-|SSL权重|`lambda_u`、`lambda_ent`|`0.16`、`0.01`|
-|域对抗|`lambda_adv`|`0.35`|
-|Group/FishR|`lambda_group_ce`、`lambda_fishr`|`0.16`、`0.04`|
-|satellite stress|`sat_start`|`80`|
-|satellite stress|`lambda_sat_cls`、`lambda_sat_cons`|`0.68`、`0`|
-|satellite schedule|`sat_schedule`|`1@0.30:leo_clear_weak;41@0.60:leo_low_elev_weak,leo_rain_weak;91@0.80:leo_clear_weak,leo_low_elev_weak,leo_rain_weak`|
-|checkpoint选择|`best_metric`|`joint_safe`|
-|安全门控|`enable_joint_safe_guard`、`paic_guard_enabled`|启用|
+|伪标签|`use_ema_teacher`|true|
+|prototype|`lambda_proto`|0.0032|
+|prototype|`proto_domain_align_weight,proto_margin,proto_push_weight`|$0.10,0.15,0.10$|
+|身份几何|`lambda_zid_compact`|0.032|
+|身份几何|SupCon/radius/CVaR权重|$0.30,0.35,0.35$|
+|身份几何|radius,CVaR alpha|$40^\circ,0.95$|
+|源域边界|历史CLI名`lambda_proxy_unknown`|0.0045|
+|源域边界|core/accept/tail/overflow quantile|$0.90,0.85,0.92,0.97$|
+|源域边界|core/component/tail/source权重|$0.45,0.65,0.20,0.20$|
+|源域边界|CVaR alpha|0.30|
+|类间软混合|历史CLI名`lambda_soft_unknown_mixup`|0.0045|
+|类间软混合|count/order/alpha|$24,3,0.5$|
+|类间软混合|CE/energy/vacuum权重|$0.60,1.0,0.35$|
+|source episode|`lambda_source_episode`|0.0035|
+|source episode|start/warmup/min domains/radius cap|$20,25,2,33^\circ$|
+|源域LEO压力|`sat_train_scenarios`|`leo_clear_weak,leo_low_elev_weak,leo_rain_weak`|
+|源域LEO压力|`lambda_sat_cls,lambda_sat_cons`|$0.68,0$|
+|域损失|`lambda_domain,lambda_adv`|$1,0.35$|
+|Group/FishR|`lambda_group_ce,lambda_fishr`|$0.16,0.04$|
+|无标签|`lambda_u,lambda_ent`|$0.16,0.01$|
+|checkpoint|`best_metric`|`joint_safe`|
 
-### 5.6伪标签机制细节
+## 6.训练损失函数
 
-伪标签模块是ADV3B02必须单独作为创新/消融项处理的部分。
+### 6.1监督TX分类
 
-流程：
+带label smoothing的目标分布为
 
-1.在pseudo阶段，对源域无标签样本`x_u`构造weak view和strong view。
+$$
+\tilde{\mathbf y}_{i,c}=
+(1-\varepsilon_{\mathrm{ls}})\mathbb 1[c=y_i]
++\frac{\varepsilon_{\mathrm{ls}}}{C}.
+$$
 
-2.用EMA teacher优先生成weak view预测；若EMA不可用，则退回当前模型。
+监督TX分类损失为
 
-3.从`softmax(tx_logits)`得到`conf=max p(y|x_u)`和`pseudo=argmax p(y|x_u)`。
+$$
+\mathcal L_{\mathrm{tx}}
+=-\frac{1}{|\mathcal B_l|}
+\sum_{i\in\mathcal B_l}
+\sum_{c=1}^{C}
+\tilde{\mathbf y}_{i,c}\log p_\theta(c|x_i).
+$$
 
-4.按`rx_day_quantile`对不同域分组自适应阈值，阈值被限制在`[tau_min,tau_max]=[0.92,0.97]`，分位数为`0.86`。
+### 6.2域监督与域对抗
 
-5.额外叠加`pseudo_domain_gate`、`pseudo_temporal_gate`和`pseudo_strong_agreement`。只有通过门控的样本才进入`L_pseudo_ce`。
+域监督损失为
 
-6.对strong view使用伪标签CE，并记录`pseudo_total`、`pseudo_selected`、`pseudo_correct`和`pseudo_conf`。
+$$
+\mathcal L_{\mathrm{dom}}
+=-\frac{1}{|\mathcal B_l|}
+\sum_{i\in\mathcal B_l}
+\log p_\phi(d_i|\mathbf z_{\mathrm{dom},i}).
+$$
 
-这一路径的创新点不是“多给模型无标签数据”，而是把源域低标签率RFFI场景中的无TX标签样本纳入receiver/day-aware伪标签治理，尽量避免高置信但域偏置强的伪标签污染`z_id`。
+域对抗头从$\operatorname{GRL}(\mathbf z_{\mathrm{id}})$预测域标签：
 
-### 5.7ADV3B02训练结果
+$$
+\mathcal L_{\mathrm{adv}}
+=-\frac{1}{|\mathcal B_l|}
+\sum_{i\in\mathcal B_l}
+\log p_\psi(d_i|\operatorname{GRL}_{1.0}(\mathbf z_{\mathrm{id},i})).
+$$
 
-B02在ADV3机制矩阵中的同row结果如下：
+反向传播时$\mathcal L_{\mathrm{adv}}$对$\mathbf z_{\mathrm{id}}$的梯度符号被反转，从而压低身份表征中的域可预测性。
 
-|candidate|overall|strict_udu|receiver_floor|sat_floor|sat_strict_floor|weak_rx|proxy_auc|proxy_vaccept|hard_proxy_accept|bridge_accept|source_overflow|stage2_decision|
-|---|---:|---:|---:|---:|---:|---|---:|---:|---:|---:|---:|---|
-|`ADV3B02_CORE90_SOFT_E200`|89.1843|84.89|75.55|74.1848|68.7717|`rx7`|0.7494|0.4074|0.2457|1.0|0.4593|是-主诊断候选|
+### 6.3GroupCE与FishR
 
-解释边界：
+设$\mathcal G$为源域group集合，$\mathcal B_g=\{i\in\mathcal B_l:g_i=g\}$。GroupCE写为
 
-- 该结果说明B02有较强闭集DG、receiver floor和satellite stress鲁棒性。
-- `proxy_vaccept`和`hard_proxy_accept`相对前序近饱和proxy接受率显著下降，说明source-only代理未知治理有效。
-- `bridge_accept=1.0`和`source_overflow=0.4593`仍是风险，不能写成真实unknown拒识成功。
-- 本结果本身不包含Stage2 target-old/target-new适应指标，不能声明`old_acc`、`seen_new_acc`或`H_old_new`由B02单独完成。
+$$
+\mathcal L_{\mathrm{group}}
+=\sum_{g\in\mathcal G}
+\alpha_g
+\left(
+-\frac{1}{|\mathcal B_g|}
+\sum_{i\in\mathcal B_g}
+\log p_\theta(y_i|x_i)
+\right),
+$$
 
-## 6.ADV3B02创新模块划分与消融建议
+其中$\alpha_g$由实现中的弱域/困难域策略确定。FishR约束各group梯度方差一致：
 
-为后续论文和消融，建议把ADV3B02拆成4个模块。这样既覆盖伪标签，也避免把所有技巧混成不可解释的“大模型配置”。
+$$
+\mathcal L_{\mathrm{fishr}}
+=
+\sum_{g\in\mathcal G}
+\left\|
+\operatorname{Var}_{i\in\mathcal B_g}
+\left(\nabla_{\mathbf z_{\mathrm{id}}}\ell_i\right)
+-
+\frac{1}{|\mathcal G|}
+\sum_{g'\in\mathcal G}
+\operatorname{Var}_{i\in\mathcal B_{g'}}
+\left(\nabla_{\mathbf z_{\mathrm{id}}}\ell_i\right)
+\right\|_2^2.
+$$
 
-### 模块A：物理先验身份/域解耦主干
+### 6.4prototype几何损失
 
-组成：
+类原型为
 
-- CV-SincNet物理前端。
-- Sinc time path、DAC widely-linear complex path、frequency path、PA memory-polynomial path。
-- 双backbone：identity branch输出`z_id`，domain branch输出`z_dom`。
-- `domain_head`监督`z_dom`，`adv_domain_head`通过GRL约束`z_id`。
-- CosFace/角度margin分类头和`feat_joint`融合。
+$$
+\boldsymbol\mu_c=
+\frac{\sum_{i:y_i=c}\mathbf z_{\mathrm{id},i}}
+{\left\|\sum_{i:y_i=c}\mathbf z_{\mathrm{id},i}\right\|_2+\epsilon}.
+$$
 
-目标：
+prototype pull/push可写为
 
-- 让`z_id`保留TX硬件指纹。
-- 让`z_dom`吸收receiver/day/channel/satellite nuisance。
-- 降低跨接收机时身份表征的域泄漏。
+$$
+\mathcal L_{\mathrm{proto}}
+=
+\frac{1}{|\mathcal B_l|}
+\sum_{i\in\mathcal B_l}
+\left(1-\cos(\mathbf z_{\mathrm{id},i},\boldsymbol\mu_{y_i})\right)
++
+\frac{1}{C(C-1)}
+\sum_{c\ne c'}
+\max\left(0,m_{\mathrm{proto}}-\left(1-\cos(\boldsymbol\mu_c,\boldsymbol\mu_{c'})\right)\right).
+$$
 
-建议消融：
+### 6.5$\mathbf z_{\mathrm{id}}$紧致性损失
 
-|消融项|改法|预期观察|
+Supervised contrastive部分为
+
+$$
+\mathcal L_{\mathrm{supcon}}
+=
+\frac{1}{|\mathcal B_l|}
+\sum_{i\in\mathcal B_l}
+\frac{-1}{|\mathcal P(i)|}
+\sum_{p\in\mathcal P(i)}
+\log
+\frac{\exp(\cos(\mathbf z_i,\mathbf z_p)/\tau)}
+{\sum_{a\in\mathcal B_l\setminus\{i\}}\exp(\cos(\mathbf z_i,\mathbf z_a)/\tau)}.
+$$
+
+角半径项为
+
+$$
+\mathcal L_{\mathrm{rad}}
+=
+\frac{1}{|\mathcal B_l|}
+\sum_{i\in\mathcal B_l}
+\max\left(0,\angle(\mathbf z_i,\boldsymbol\mu_{y_i})-r_{\mathrm{id}}\right)^2,
+\qquad r_{\mathrm{id}}=40^\circ.
+$$
+
+tail CVaR项取每类角距离尾部均值：
+
+$$
+\mathcal L_{\mathrm{cvar}}
+=
+\frac{1}{C}\sum_{c=1}^{C}
+\operatorname{CVaR}_{0.95}
+\left(
+\{\angle(\mathbf z_i,\boldsymbol\mu_c):y_i=c\}
+\right).
+$$
+
+因此
+
+$$
+\mathcal L_{\mathrm{zid}}
+=0.30\,\mathcal L_{\mathrm{supcon}}
++0.35\,\mathcal L_{\mathrm{rad}}
++0.35\,\mathcal L_{\mathrm{cvar}}.
+$$
+
+### 6.6known-core保真与尾部风险抑制
+
+这一项在本文创新模块中按known-core保真和源域尾部风险抑制解释，代码参数名沿用`proxy_unknown_*`。给定一批源域类$\mathcal C_B$，每次留出一个源域TX类$c^-\in\mathcal C_B$构造边界压力样本，其他类作为known core。
+
+类$c$的core半径和accept半径为
+
+$$
+r^{\mathrm{core}}_c=Q_{0.90}\left(\{\angle(\mathbf z_i,\boldsymbol\mu_c):y_i=c\}\right),
+\qquad
+r^{\mathrm{acc}}_c=Q_{0.85}\left(\{\angle(\mathbf z_i,\boldsymbol\mu_c):y_i=c\}\right).
+$$
+
+known-core保真损失：
+
+$$
+\mathcal L_{\mathrm{core}}
+=
+\frac{1}{|\mathcal B_l|}
+\sum_{i\in\mathcal B_l}
+\max\left(0,\angle(\mathbf z_i,\boldsymbol\mu_{y_i})-r^{\mathrm{core}}_{y_i}\right)^2.
+$$
+
+边界接收风险使用最小类角距离
+
+$$
+a(\mathbf z)=\min_{c\in\mathcal C_B\setminus\{c^-\}}
+\angle(\mathbf z,\boldsymbol\mu_c),
+$$
+
+并定义尾部CVaR：
+
+$$
+\mathcal L_{\mathrm{tail}}
+=
+\operatorname{CVaR}_{0.30}
+\left(
+\{\max(0,r^{\mathrm{acc}}_{\hat c_j}-a(\mathbf v_j)):
+\mathbf v_j\in\mathcal V_B\}
+\right),
+$$
+
+其中$\mathcal V_B$是由源域留出类和类间扰动构造的边界压力集合，$\hat c_j$是最近known core类。component gate和source safe项可写为
+
+$$
+\mathcal L_{\mathrm{gate}}
+=
+\frac{1}{|\mathcal V_B|}
+\sum_{\mathbf v\in\mathcal V_B}
+\sigma\left(\frac{r^{\mathrm{acc}}_{\hat c}-a(\mathbf v)}{T_{\mathrm{comp}}}\right),
+$$
+
+$$
+\mathcal L_{\mathrm{safe}}
+=
+\frac{1}{|\mathcal B_l|}
+\sum_{i\in\mathcal B_l}
+\max(0,a(\mathbf z_i)-r^{\mathrm{acc}}_{y_i})^2.
+$$
+
+合并为
+
+$$
+\mathcal L_{\mathrm{coretail}}
+=
+0.45\,\mathcal L_{\mathrm{core}}
++1.00\,\mathcal L_{\mathrm{tail}}
++0.65\,\mathcal L_{\mathrm{gate}}
++0.20\,\mathcal L_{\mathrm{safe}}.
+$$
+
+### 6.7类间软标签mixup
+
+从不同TX类$a\ne b$抽取源域特征，构造
+
+$$
+\tilde{\mathbf z}
+=\lambda\mathbf z_a+(1-\lambda)\mathbf z_b,\qquad
+\tilde{\mathbf y}
+=\lambda\mathbf e_a+(1-\lambda)\mathbf e_b,\qquad
+\lambda\sim\operatorname{Beta}(0.5,0.5).
+$$
+
+软标签CE为
+
+$$
+\mathcal L_{\mathrm{mixCE}}
+=-\sum_{c=1}^{C}\tilde y_c\log p_\theta(c|\tilde{\mathbf z}).
+$$
+
+能量项使用
+
+$$
+E(\tilde{\mathbf z})
+=-\log\sum_{c=1}^{C}\exp(\ell_c(\tilde{\mathbf z})),
+$$
+
+并写为
+
+$$
+\mathcal L_{\mathrm{energy}}
+=\max(0,m_E-E(\tilde{\mathbf z})).
+$$
+
+vacuum项把混合样本推离任何单一类的窄角锥：
+
+$$
+\mathcal L_{\mathrm{vac}}
+=
+\min_{c\in\{1,\ldots,C\}}
+\max\left(0,r_{\mathrm{vac}}-\angle(\tilde{\mathbf z},\boldsymbol\mu_c)\right)^2.
+$$
+
+组合为
+
+$$
+\mathcal L_{\mathrm{softmix}}
+=0.60\,\mathcal L_{\mathrm{mixCE}}
++1.00\,\mathcal L_{\mathrm{energy}}
++0.35\,\mathcal L_{\mathrm{vac}}.
+$$
+
+### 6.8source episode三sigma损失
+
+对类$c$和源域$d$，用其他源域构造prototype：
+
+$$
+\boldsymbol\mu_{c}^{(-d)}
+=
+\frac{\sum_{i:y_i=c,d_i\ne d}\mathbf z_i}
+{\left\|\sum_{i:y_i=c,d_i\ne d}\mathbf z_i\right\|_2+\epsilon}.
+$$
+
+令角距离的均值和标准差为$\bar r_c$和$\sigma_c$，episode半径为
+
+$$
+r_c^{\mathrm{epi}}
+=
+\min\left(33^\circ,\bar r_c+3\sigma_c\right).
+$$
+
+损失为
+
+$$
+\mathcal L_{\mathrm{epi}}
+=
+\frac{1}{|\mathcal B_l|}
+\sum_{i\in\mathcal B_l}
+\max\left(0,\angle(\mathbf z_i,\boldsymbol\mu_{y_i}^{(-d_i)})-r_{y_i}^{\mathrm{epi}}\right)^2.
+$$
+
+### 6.9源域伪标签SSL
+
+EMA teacher参数为$\bar\theta$。对$u_j\in\mathcal U_s$，weak view预测为
+
+$$
+\mathbf q_j
+=p_{\bar\theta}(y|a_w(u_j)),\qquad
+\hat y_j=\arg\max_c q_{j,c},\qquad
+\kappa_j=\max_c q_{j,c}.
+$$
+
+按域自适应阈值为
+
+$$
+\tau_d=
+\operatorname{clip}
+\left(
+Q_{0.86}\left(\{\kappa_j:d_j=d\}\right),0.92,0.97
+\right).
+$$
+
+门控变量为
+
+$$
+m_j=
+\mathbb 1[\kappa_j\ge\tau_{d_j}]
+\cdot\mathbb 1[\mathrm{DomainGate}(u_j)=1]
+\cdot\mathbb 1[\mathrm{TemporalGate}(u_j)=1]
+\cdot\mathbb 1[
+\arg\max p_\theta(y|a_s(u_j))=\hat y_j
+].
+$$
+
+伪标签CE为
+
+$$
+\mathcal L_u
+=
+-\frac{1}{\sum_j m_j+\epsilon}
+\sum_{j\in\mathcal B_u}
+m_j\log p_\theta(\hat y_j|a_s(u_j)).
+$$
+
+熵项为
+
+$$
+\mathcal L_{\mathrm{ent}}
+=
+\frac{1}{|\mathcal B_u|}
+\sum_{j\in\mathcal B_u}
+\sum_{c=1}^{C}
+p_\theta(c|u_j)\log p_\theta(c|u_j).
+$$
+
+### 6.10源域LEO压力视图
+
+对源域样本$x_i$构造LEO压力视图$a_{\mathrm{leo}}(x_i)$，其监督CE为
+
+$$
+\mathcal L_{\mathrm{satCE}}
+=
+-\frac{1}{|\mathcal B_l|}
+\sum_{i\in\mathcal B_l}
+\log p_\theta(y_i|a_{\mathrm{leo}}(x_i)).
+$$
+
+一致性项定义为
+
+$$
+\mathcal L_{\mathrm{satCon}}
+=
+\frac{1}{|\mathcal B_l|}
+\sum_{i\in\mathcal B_l}
+\left(
+1-\cos(\mathbf z_{\mathrm{id}}(x_i),\mathbf z_{\mathrm{id}}(a_{\mathrm{leo}}(x_i)))
+\right),
+$$
+
+但B02中$\lambda_{\mathrm{satCon}}=0$，实际贡献为0。
+
+### 6.11总目标
+
+B02实际优化目标写为
+
+$$
+\begin{aligned}
+\mathcal L_{\mathrm{ADV3B02}}
+=&
+\mathcal L_{\mathrm{tx}}
++1.00\,\mathcal L_{\mathrm{dom}}
++0.35\,\mathcal L_{\mathrm{adv}}
++0.16\,\mathcal L_{\mathrm{group}}
++0.04\,\mathcal L_{\mathrm{fishr}}\\
+&+0.0032\,\mathcal L_{\mathrm{proto}}
++0.032\,\mathcal L_{\mathrm{zid}}
++0.0045\,\mathcal L_{\mathrm{coretail}}
++0.0045\,\mathcal L_{\mathrm{softmix}}\\
+&+0.0035\,\mathcal L_{\mathrm{epi}}
++0.16\,\mathcal L_u
++0.01\,\mathcal L_{\mathrm{ent}}
++0.68\,\mathcal L_{\mathrm{satCE}}
++0\cdot\mathcal L_{\mathrm{satCon}}.
+\end{aligned}
+$$
+
+## 7.创新模块划分与消融设计
+
+### 模块A：物理先验双表征主干
+
+模块A包括Sinc滤波前端、time path、frequency path、PA path、domain branch、GRL和$\mathbf z_{\mathrm{id}}/\mathbf z_{\mathrm{dom}}$解耦。它回答的问题是：硬件指纹和接收链路扰动能否在表征空间分离。
+
+|消融|改法|观察指标|
 |---|---|---|
-|`no_dac_path`|关闭DAC分支或DAC投影|观察非圆性/IQ失衡建模对receiver floor和hard class的影响|
-|`no_pa_path`|关闭PA memory-polynomial分支|观察PA非线性指纹对strict UDU和sat_floor的影响|
-|`single_backbone_no_zdom`|去掉domain branch和`z_dom`|检验身份/域解耦是否优于普通CVS分类器|
-|`no_grl`|关闭`adv_domain_head`或`lambda_adv=0`|检查`z_id`域泄漏和目标域泛化下降|
-|`no_group_fishr`|关闭GroupCE/FishR|检查弱receiver floor是否下降|
+|`single_backbone`|去掉domain backbone，只保留单CVSincNet|strict UDU、receiver floor、$\mathbf z_{\mathrm{id}}\to d$泄漏probe|
+|`no_pa_path`|关闭PA path|strict UDU、sat_floor、hard TX类|
+|`no_freq_path`|关闭frequency path|receiver floor、LEO压力视图鲁棒性|
+|`no_grl`|$\lambda_{\mathrm{adv}}=0$|域泄漏和目标域old acc|
+|`no_mixstyle`|关闭identity branch MixStyle|跨receiver泛化和弱receiver floor|
 
-### 模块B：源域伪标签一致性SSL
+### 模块B：源域半监督伪标签与一致性学习
 
-组成：
+模块B只处理$\mathcal U_s$中的源域无TX标签样本，不参与Phase2 support注册。它的创新点是receiver/day-aware阈值、EMA teacher、domain gate、temporal gate和strong-view一致性同时约束伪标签。
 
-- EMA teacher或当前模型生成weak view伪标签。
-- `rx_day_quantile`自适应阈值。
-- `tau_min=0.92`、`tau_max=0.97`、`pseudo_quantile=0.86`。
-- `pseudo_domain_gate`、`pseudo_temporal_gate`、`pseudo_strong_agreement`。
-- strong view伪标签CE和熵项。
-
-目标：
-
-- 在`rho_label=0.1`下利用源域无标签样本。
-- 让无标签样本补充TX身份几何，但避免域偏置伪标签污染。
-- 提高低标签RFFI训练下的闭集DG和prototype质量。
-
-建议消融：
-
-|消融项|改法|预期观察|
+|消融|改法|观察指标|
 |---|---|---|
-|`no_pseudo`|`lambda_u=0`或禁用pseudo阶段|衡量伪标签对overall/strict/receiver floor的贡献|
-|`no_ema_teacher`|只用当前模型生成伪标签|观察teacher稳定性影响|
-|`global_threshold`|从`rx_day_quantile`改为global阈值|检查按receiver/day分组是否降低域偏置|
-|`no_domain_gate`|关闭domain gate|观察弱receiver伪标签污染风险|
-|`no_temporal_gate`|关闭temporal gate|观察时序邻近一致性对伪标签质量的贡献|
-|`no_strong_agreement`|关闭strong view一致性门控|检查强增强下伪标签鲁棒性|
+|`no_ssl`|$\lambda_u=0$，不使用$\mathcal U_s$伪标签|source val、strict UDU、prototype质量|
+|`no_ema`|用student替代EMA teacher|伪标签稳定性、pseudo precision|
+|`global_tau`|$\tau_d$改为全局阈值|弱receiver伪标签覆盖率和错误率|
+|`no_temporal_gate`|移除TemporalGate|连续窗口伪标签一致性|
+|`no_strong_agreement`|移除strong-view一致性|增强扰动下伪标签污染率|
 
-### 模块C：core-aware proxy unknown边界治理
+### 模块C：known-core保真与类内尾部风险抑制
 
-组成：
+模块C的目标是在Phase1源域内保护每个旧类的高置信核心，同时抑制类内尾部和类间边界样本把prototype半径拉大。它不改变类别集合，也不参与Phase2类别注册；消融时只观察known core半径、tail CVaR、receiver floor和后续qKNN支持集稳定性。
 
-- source-only leave-one-TX-out代理未知。
-- B02特有`proxy_core_q=0.90`、`proxy_accept_q=0.85`、`proxy_cvar_alpha=0.30`、`proxy_core_w=0.45`。
-- `L_vaccept_CVaR`、component gate、tail quarantine、source safe项。
-- hard virtual unknown pool，`proxy_virtual_count=48`。
-
-目标：
-
-- 在没有真实`Y_unknown`参与训练的前提下，用源域代理未知压力减少“类外样本被旧类高置信吸收”的风险。
-- 保护known core，避免为降低proxy accept而牺牲旧类闭集DG。
-- 产生可推进到真实unknown dry-run的候选，而不是直接声明真实unknown成功。
-
-建议消融：
-
-|消融项|改法|预期观察|
+|消融|改法|观察指标|
 |---|---|---|
-|`no_proxy_unknown`|`lambda_proxy_unknown=0`|检查proxy_vaccept/hard_proxy_accept是否回到近饱和|
-|`core80_vs_core90`|对比B01/B02或调`proxy_core_q`|观察known core保真和receiver floor变化|
-|`accept80_vs_accept85`|调`proxy_accept_q`|观察proxy accept和closed-set精度的权衡|
-|`alpha20_vs_alpha30`|调`proxy_cvar_alpha`|观察tail风险惩罚强度|
-|`no_component_gate`|关闭component gate权重|检查局部簇边界对hard proxy accept的贡献|
+|`no_coretail`|关闭$\mathcal L_{\mathrm{coretail}}$|known core半径、tail CVaR、receiver floor|
+|`core80_vs_core90`|$Q_{\mathrm{core}}=0.80$与$0.90$对比|core保真与tail覆盖权衡|
+|`accept80_vs_accept85`|$Q_{\mathrm{acc}}=0.80$与$0.85$对比|accept半径和旧类召回|
+|`alpha20_vs_alpha30`|CVaR alpha$=0.20$与$0.30$对比|尾部风险抑制强度|
+|`no_component_gate`|关闭component gate|局部簇半径、component数量、source overflow|
 
-### 模块D：`z_id`几何、soft未知增强和LEO压力视图
+### 模块D：prototype几何、类间软混合和LEO压力视图
 
-组成：
+模块D把$\mathbf z_{\mathrm{id}}$变成可导出、可检索、可注册的Phase2资产。它包括prototype memory、$\mathbf z_{\mathrm{id}}$紧致性、类间软标签mixup、source episode和源域LEO压力视图。
 
-- `zid_compactness_loss`：SupCon、角半径、tail CVaR。
-- open-world feature loss：类内compact、类间margin、domain align、tail/vacuum。
-- `soft_unknown_mixup`：源域不同TX特征混合形成soft-label virtual unknown。
-- source episode三sigma角壳约束。
-- 源域派生LEO压力视图和satellite CE。
-- prototype导出：`phase2_zid_prototypes.json/.pt`。
-
-目标：
-
-- 让`z_id`成为可检索、可原型化、可少样本注册的身份空间。
-- 用soft virtual unknown和source episode压缩边界风险。
-- 用LEO压力视图提前暴露星地信道扰动，但不把它写成真实卫星验证。
-
-建议消融：
-
-|消融项|改法|预期观察|
+|消融|改法|观察指标|
 |---|---|---|
-|`no_zid_compact`|关闭`lambda_zid`|观察prototype导出质量、strict UDU和qKNN后续性能|
-|`no_soft_unknown_mixup`|`lambda_soft_unknown_mixup=0`|检查soft virtual unknown对proxy风险和known core的影响|
-|`no_source_episode`|`lambda_source_episode=0`|观察source overflow和跨域角壳稳定性|
-|`no_satellite_ce`|`lambda_sat_cls=0`|观察sat_floor和LEO压力鲁棒性|
-|`sat_cons_on`|把`lambda_sat_cons`从0提高到小权重|验证clean/LEO一致性是否能补强或引入过约束|
+|`no_proto`|$\lambda_{\mathrm{proto}}=0$|Phase2 prototype导出质量和qKNN支持集检索|
+|`no_zid_compact`|$\lambda_{\mathrm{zid}}=0$|类内角半径、min class acc|
+|`no_softmix`|$\lambda_{\mathrm{softmix}}=0$|类间边界混淆和tail风险|
+|`no_source_episode`|$\lambda_{\mathrm{epi}}=0$|跨源域episode外推|
+|`no_sat_ce`|$\lambda_{\mathrm{satCE}}=0$|LEO压力视图下sat_floor|
 
-## 7.`qKNNV42`方法细节
+## 8.qKNNV42：Phase2 Stage2-C轻量注册头
 
-### 7.1方法定位
+### 8.1任务定义
 
-`qKNNV42`不是新backbone，也不是独立`QKNNV42`深度模型类。它是冻结ADV3B02特征上的Phase2轻量部署头：
+qKNNV42只处理Phase2 Stage2-C：
 
-```text
-ADV3B02 backbone(frozen) -> z_id feature export
-target receiver K-shot support -> int8 qKNN support memory
-query feature -> qKNN/prototype/scenario-aware scoring -> old/new label
-```
+$$
+\mathcal S_t=
+\mathcal S_{\mathrm{old}}\cup\mathcal S_{\mathrm{new}},
+\qquad
+\mathcal Q_t=
+\mathcal Q_{\mathrm{old}}\cup\mathcal Q_{\mathrm{new}}.
+$$
 
-它服务Stage2-C：
+其中
 
-- target-old support用于旧类目标域适应。
-- target-new support用于seen-new注册识别。
-- query标签只用于离线审计。
-- unknown互斥集合不参与本主线，若出现`target_unknown`字段，在N20 HP08L5包中只是历史字段名，实际承载注册新类集合。
+$$
+\mathcal S_{\mathrm{old}}=\{(x_i,y_i):y_i\in\mathcal Y_{\mathrm{old}},x_i\in\mathcal R_t\},
+\qquad
+\mathcal S_{\mathrm{new}}=\{(x_i,y_i):y_i\in\mathcal Y_{\mathrm{new}},x_i\in\mathcal R_t\}.
+$$
 
-### 7.2输入与support memory
+qKNNV42不更新ADV3B02参数$\theta$，只在冻结特征
 
-输入包括：
+$$
+\mathbf z_i=
+\frac{g_\theta(x_i)}{\|g_\theta(x_i)\|_2}
+$$
 
-|输入|说明|
-|---|---|
-|主特征NPZ|`features_hardpair_HP08L5_n20.npz`|
-|辅助特征NPZ|`features_hardpair_HP08L5_n20_leo_fftlogmag96.npz`|
-|old TX|`14-10,14-7,20-15,20-19,6-15,8-20`|
-|new TX|20个ManyTx注册新类，如`1-1,1-10,...,8-3`|
-|K|当前主结果为`K_old=5,K_new=5`|
-|support选择|`support_selection_policy=stable_first`，`seed=421070`|
-|query|每类70条，query标签只用于审计|
+上建立support memory。
 
-`QknnMemory`保存：
+### 8.2int8量化support memory
 
-- int8量化support特征`qfeatures`。
-- support标签、old标签、scenario。
-- class centroid。
-- class radius/Mahalanobis/EVT/oldness阈值。
-- source-old prototype shrinkage元数据。
-- margin/score阈值。
-- 存储计数和压缩状态。
+每个support向量量化为
 
-量化公式：
+$$
+\mathbf q_i=
+\operatorname{clip}\left(
+\operatorname{round}(127\,\mathbf z_i),-127,127
+\right)\in\mathbb Z^{d}_{8}.
+$$
 
-```text
-z_i = normalize(feature_i)
-q_i = clip(round(127 * z_i), -127, 127).astype(int8)
-support_i ≈ normalize(q_i / 127)
-```
+推理时近似恢复为
 
-该设计避免保存原始support IQ，也避免重训backbone。主结果JSON记录`stored_raw_support_count=0`、`stored_quantized_support_code_count=130`、`stored_class_prototype_count=26`。
+$$
+\hat{\mathbf z}_i=
+\frac{\mathbf q_i/127}{\|\mathbf q_i/127\|_2+\epsilon}.
+$$
 
-### 7.3打分公式
+当前K5主结果中
 
-对query特征`x`：
+$$
+|\mathcal Y_{\mathrm{old}}|=6,\qquad
+|\mathcal Y_{\mathrm{new}}|=20,\qquad
+K_{\mathrm{old}}=K_{\mathrm{new}}=5,
+$$
 
-```text
-z = normalize(frozen_backbone(x))
-s_i = z^T normalize(q_i / 127)
-```
+因此support code数量为
 
-对每个候选类`c`，基础分数可写为：
+$$
+N_{\mathrm{code}}=(6+20)\times5=130.
+$$
 
-```text
-local_c = mean_topm({s_i | y_i=c})
-proto_c = cosine(z, centroid_c)
-score_c = (1 - λ_proto) * local_c + λ_proto * proto_c + b_old * I[c in Y_old]
-```
+### 8.3qKNNV42打分
 
-其中：
+query特征为
 
-- `topm`控制每类局部近邻均值。
-- `λ_proto=proto_mix`控制prototype混合。
-- `b_old=old_bias`给旧类小幅先验，防止新类注册时旧类遗忘。
-- scenario-aware mask在support场景足够时优先同LEO场景support。
-- auxiliary view先通过support LOO可靠性门控，再决定是否混入主分数。
+$$
+\mathbf z_q=\frac{g_\theta(x_q)}{\|g_\theta(x_q)\|_2}.
+$$
 
-V42门控思想：
+与support code的余弦相似度为
 
-```text
-primary_loo = support LOO accuracy in ADV3B02 z_id space
-aux_loo = support LOO accuracy in auxiliary LEO-sketch/fft-logmag space
-gate = min(mean_gate, floor_gate, absolute_floor_gate)
-effective_aux_score_weight = aux_score_weight * gate
-score = (1 - effective_aux_score_weight) * primary_score
-      + effective_aux_score_weight * aux_score
-```
+$$
+s_{qi}=\mathbf z_q^\top\hat{\mathbf z}_i.
+$$
 
-当辅助视图弱于主视图时，`effective_aux_score_weight`会自动降低。历史报告中多处显示旧LEO-sketch被V42门控拒绝，这是正确的负向保护，不应写成辅助视图必然增益。
+对类别$c$取类内top-$m$均值：
 
-### 7.4阶段性成果行
+$$
+\operatorname{KNN}_c(q)
+=
+\frac{1}{m}
+\sum_{i\in\operatorname{TopM}(\{s_{qj}:y_j=c\},m)}
+s_{qi}.
+$$
 
-当前最可写入阶段成果的是N20 HP08L5注册新类包中的K5 high-floor候选。该行来自：
+类别prototype为
+
+$$
+\boldsymbol\mu_c=
+\frac{\sum_{i:y_i=c}\hat{\mathbf z}_i}
+{\left\|\sum_{i:y_i=c}\hat{\mathbf z}_i\right\|_2+\epsilon},
+\qquad
+\operatorname{Proto}_c(q)=\mathbf z_q^\top\boldsymbol\mu_c.
+$$
+
+V42线路的主分数写为
+
+$$
+S_c(q)
+=
+(1-\lambda_p)\operatorname{KNN}_c(q)
++\lambda_p\operatorname{Proto}_c(q)
++b_{\mathrm{old}}\mathbb 1[c\in\mathcal Y_{\mathrm{old}}]
++\Delta_{\mathrm{scen}}(q,c)
++\Delta_{\mathrm{lp}}(q,c).
+$$
+
+其中当前K5 high-floor行使用
+
+$$
+\lambda_p=0.45,\qquad
+b_{\mathrm{old}}=0.001,\qquad
+m=1.
+$$
+
+$\Delta_{\mathrm{scen}}(q,c)$是scenario-aware residual补全项，$\Delta_{\mathrm{lp}}(q,c)$是support-query图传播项。当前行参数为
+
+$$
+\lambda_{\mathrm{lp}}=0.025,\quad
+k_{\mathrm{lp}}=10,\quad
+\alpha_{\mathrm{lp}}=0.76,\quad
+T_{\mathrm{lp}}=0.05,\quad
+R_{\mathrm{lp}}=8,
+$$
+
+以及
+
+$$
+\lambda_{\mathrm{scen}}=0.5,\qquad
+\mathrm{scope}_{\mathrm{scen}}=\mathcal Y_{\mathrm{new}}.
+$$
+
+预测为
+
+$$
+\hat y_q=\arg\max_{c\in\mathcal Y_{\mathrm{old}}\cup\mathcal Y_{\mathrm{new}}}S_c(q).
+$$
+
+### 8.4当前同row结果
+
+证据文件：
 
 ```text
 E:\type10-7\automation_reports\CV-SincNet\phase2_qknn_hardpair_n20_20260706\artifacts\v53_fftlogmag_20260706\local_v55_diagnostics_20260706\k5_strict_seed421070_floor_param_best_predictions_20260707.json
 ```
 
-同row结果：
-
-|seed|K_old|K_new|old_acc|min_old|seen_new_acc|min_new|H_old_new|old类数|new类数|support code|query sha|verdict|
-|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---|---|---|
-|421070|5|5|94.52%|85.71%|90.14%|81.43%|92.28%|6|20|`a84b66e28e565c52`|`75c99f6361810ca9`|Phase2 K5旧类适应+seen-new注册候选|
-
-该行关键参数：
-
 |参数|值|
 |---|---|
 |`transform_mode`|`diag_whiten_fisher`|
-|`transform_strength`|`0.1`|
-|`topm`|`1`|
-|`proto_mix`|`0.45`|
-|`aux_score_weight`|`0.34`|
-|`effective_aux_score_weight`|`0.34`|
-|`old_bias`|`0.001`|
-|`mutual_only`|`true`|
-|`scenario_aware`|`true`|
-|`balanced_assignment`|`true`|
-|`role_balanced_assignment`|`true`|
-|`labelprop_weight`|`0.025`|
-|`labelprop_k`|`10`|
-|`labelprop_alpha`|`0.76`|
-|`labelprop_temperature`|`0.05`|
-|`labelprop_rounds`|`8`|
-|`scenario_residual_weight`|`0.5`|
-|`scenario_residual_scope`|`new`|
-|`stored_quantized_support_code_count`|`130`|
-|`stored_raw_support_count`|`0`|
-|`stored_class_prototype_count`|`26`|
+|`transform_strength`|0.1|
+|`topm`|1|
+|`proto_mix`|0.45|
+|`old_bias`|0.001|
+|`labelprop_weight`|0.025|
+|`labelprop_alpha`|0.76|
+|`scenario_residual_weight`|0.5|
+|`stored_quantized_support_code_count`|130|
+|`stored_raw_support_count`|0|
+|`stored_class_prototype_count`|26|
+|`support_index_sha16`|`a84b66e28e565c52`|
+|`query_index_sha16`|`75c99f6361810ca9`|
 
-逐类结果：
+结果：
 
-|role|TX|acc|
-|---|---|---:|
-|old|`14-10`|94.29%|
-|old|`14-7`|85.71%|
-|old|`20-15`|100.00%|
-|old|`20-19`|87.14%|
-|old|`6-15`|100.00%|
-|old|`8-20`|100.00%|
-|new|`1-1`|85.71%|
-|new|`1-10`|88.57%|
-|new|`1-11`|94.29%|
-|new|`1-12`|81.43%|
-|new|`1-14`|81.43%|
-|new|`1-15`|84.29%|
-|new|`1-16`|94.29%|
-|new|`1-18`|95.71%|
-|new|`1-19`|91.43%|
-|new|`1-2`|87.14%|
-|new|`10-10`|92.86%|
-|new|`11-10`|92.86%|
-|new|`18-5`|95.71%|
-|new|`19-3`|84.29%|
-|new|`2-13`|84.29%|
-|new|`2-5`|92.86%|
-|new|`3-8`|97.14%|
-|new|`4-10`|94.29%|
-|new|`8-18`|95.71%|
-|new|`8-3`|88.57%|
+|metric|value|
+|---|---:|
+|$A_{\mathrm{old}}$|94.52%|
+|$\min_c A_{\mathrm{old},c}$|85.71%|
+|$A_{\mathrm{new}}$|90.14%|
+|$\min_c A_{\mathrm{new},c}$|81.43%|
+|$H_{\mathrm{old,new}}$|92.28%|
 
-该行是“同row、同split、同K”的主证据。不能把它与其他候选的unknown FAR或单项最大值拼接。
+### 8.5qKNNV42创新点
 
-### 7.5V42基线与后续参数面的关系
+qKNNV42的贡献在Phase2部署方式，而不是新神经网络结构：
 
-报告中应区分初始V42基线和后续V42线路参数面：
+|创新点|具体表现|
+|---|---|
+|冻结表征上的注册头|不更新ADV3B02参数，只写入目标域K-shot support memory|
+|int8 support code|用$\mathbf q_i\in\mathbb Z_8^d$保存support，不保存原始IQ|
+|旧类/新类同一评分空间|$\mathcal Y_{\mathrm{old}}$和$\mathcal Y_{\mathrm{new}}$共享$\mathbf z_{\mathrm{id}}$检索空间|
+|类内top-$m$+prototype混合|兼顾局部近邻和类中心稳定性|
+|old-class anchor|$b_{\mathrm{old}}$保护旧类适应，不让新类注册吞掉旧类|
+|scenario residual|用目标LEO场景support结构补足同场景缺失|
+|轻量图传播|$\Delta_{\mathrm{lp}}$只在冻结特征和support/query图上做分数平滑，不训练backbone|
 
-|设置|policy|topm|old_acc|min_old|seen_new_acc|min_new|结论|
-|---|---|---:|---:|---:|---:|---:|---|
-|K5,N14|V42|4|92.00%|80.00%|90.10%|73.33%|接近但未过新类floor|
-|K5,N20|V42|4|92.00%|80.00%|79.80%|69.33%|20新类floor不足|
-|K10,N14|V42|4|91.90%|82.86%|90.20%|68.57%|新类floor不足|
-|K10,N20|V42|4|91.90%|82.86%|84.64%|72.86%|新类floor不足|
-|K5,N20 high-floor行|V42线路参数面|1|94.52%|85.71%|90.14%|81.43%|阶段性候选，但仍需oracle-free support selection|
+相对现有RFFI，qKNNV42的差异是：普通RFFI闭集分类通常固定$\mathcal Y$并训练一个softmax分类器；qKNNV42在目标接收机域到达后，用少量support即时扩展类别集合$\mathcal Y_{\mathrm{old}}\cup\mathcal Y_{\mathrm{new}}$，并把部署状态限制为support code、prototype和少量标量。
 
-因此写法应为：`qKNNV42`给出了冻结特征压缩support-memory头的基本机制；当前最好行属于该机制路线上的参数面/支持集敏感性证据，证明该表征空间中存在同时保护旧类和20个seen-new新类的K5注册候选，但下一步必须把support选择和质量门控做成不依赖query真值的注册期机制。
-
-### 7.6qKNNV42相对现有RFFI的创新点
-
-相对常见RFFI闭集分类、普通微调和传统KNN，qKNNV42的创新主要在协议组合和部署状态设计，而不是发明全新的距离函数。
-
-|维度|现有RFFI常见做法|qKNNV42的具体差异|
-|---|---|---|
-|任务协议|固定receiver闭集分类，或源/目标域离线DA评估|同一`R_t`LEO目标域内同时做target-old保留和target-new注册|
-|模型更新|常见是重训/微调分类头或全模型|冻结ADV3B02 backbone，只更新support memory和轻量score状态|
-|部署状态|可能保存样本、logits、full checkpoint或分类器参数|保存int8量化support code、class prototype、半径/阈值/少量标量，不保存原始support IQ|
-|新类学习|常见闭集RFFI不处理新TX注册|把target-new support直接注册进class memory，支持seen-new识别|
-|旧类保护|新类注册可能导致旧类遗忘|通过old support、source-old prototype shrinkage和old bias保护`Y_old`|
-|场景扰动|常见把信道/receiver差异作为噪声或域标签|把LEO scenario作为support选择和残差补全条件|
-|质量估计|常见离线调参依赖query表现|V42引入support-only LOO门控评估辅助视图是否可用|
-|工程部署|常见模型大、状态重、不可解释|qKNNV42状态小、可审计、可按support指纹复现|
-
-更准确的论文表述应是：
-
-```text
-qKNNV42是面向CVS Stage2-C的压缩support-memory少样本注册头。它把冻结物理先验CV-SincNet学到的身份表征转化为目标接收机域内的量化近邻记忆，通过类内topm近邻、prototype混合、旧类锚定、scenario-aware仲裁和support-only辅助视图门控，在不重训backbone的条件下同时评估target-old保留和target-new seen-new注册。
-```
-
-### 7.7其他深度学习/机器学习中的类似思想
-
-qKNNV42与多类已有思想相似，但在CVS协议中的组合方式和边界不同：
+### 8.6与机器学习方法的关系
 
 |类似方法|相似点|qKNNV42差异|
 |---|---|---|
-|KNN/nearest neighbor|基于embedding距离做最近邻分类|使用冻结RFFI身份表征、int8压缩support、旧/新类角色、LEO scenario和support指纹|
-|Nearest Class Mean|使用类中心分类|qKNNV42同时混合类内topm近邻和prototype，不只用均值|
-|Prototypical Networks|few-shot support形成类原型|qKNNV42不训练episodic backbone，backbone已由ADV3B02冻结；重点是部署期support memory|
-|Matching Networks|query-support attention|qKNNV42的topm和label propagation有检索/传播味道，但不做端到端attention训练|
-|iCaRL/增量学习prototype|新类注册、旧类prototype保留|qKNNV42不存原始样本，不做分类器增量训练，强调目标接收机K-shot|
-|Mahalanobis/open-set score|类协方差/半径用于风险估计|在V42路线中是辅助风险信号，不构成Phase3成功|
-|OpenMax/EVT|用尾部分布做open-set拒识|qKNNV42代码可存EVT/半径阈值，但本报告不把unknown拒识写成已成功|
-|Conformal/support LOO|用校准集或LOO估计可靠性|qKNNV42的support LOO门控只用support，不用query真值；当前support quality门控也有负证据，不能夸大|
-|量化检索/边缘ANN|用int8/压缩embedding降低存储|qKNNV42将其用于RFFI在轨目标域few-shot support memory|
+|KNN|按embedding相似度分类|使用量化support code，并区分old/new角色|
+|Nearest Class Mean|使用类中心|同时使用top-$m$局部近邻和prototype|
+|Prototypical Networks|K-shot support形成prototype|backbone不做episodic训练，部署期只更新memory|
+|Matching Networks|query-support相似度|qKNNV42不用端到端attention训练|
+|iCaRL/增量prototype|新类注册和旧类保持|qKNNV42不保存原始样本，不训练分类器权重|
+|量化检索|int8 embedding降低存储|用于RFFI目标接收机K-shot注册|
 
-## 8.Phase3 unknown诊断负证据
+### 8.7qKNNV42消融
 
-必须把unknown/open-set结果单独列为负证据。当前不能把它们写成成功。
-
-完整互斥unknown诊断报告：
-
-```text
-E:\type10-7\automation_reports\CV-SincNet\phase2_qknn_v42_stage2c_unknown_20260707\report.md
-```
-
-关键结论：
-
-|诊断项|结果|解释|
+|组件|消融|观察指标|
 |---|---|---|
-|known-vs-target_unknown AUROC|约0.6006-0.6045|已知/未知几何重叠强|
-|FPR95|约0.945-0.9475|高召回已知时误接未知严重|
-|PCET最高old行|`old_acc≈0.4023`、`min_old≈0.1167`、`seen_new_acc≈0.1117`、`unknown_reject≈0.6373`、`FAR≈0.2409`|known和unknown无法同时满足|
-|最高unknown_reject行|`unknown_reject≈0.9845`、known几乎被拒|不能作为部署结果|
-|直接qKNN小扫|known平均最高仍低，seen-new多为0|冻结特征+后处理不能补齐Phase3|
+|int8量化|float support vs int8 support|old/new均值、min class、存储码数|
+|top-$m$|$m\in\{1,2,4\}$|新类最低类和旧类地板|
+|prototype mix|$\lambda_p\in\{0,0.25,0.45\}$|局部近邻/类中心权衡|
+|old bias|$b_{\mathrm{old}}\in\{0,0.001\}$|旧类遗忘和new-over-old混淆|
+|scenario residual|$\lambda_{\mathrm{scen}}\in\{0,0.5\}$|LEO场景缺失下的新类地板|
+|labelprop|$\lambda_{\mathrm{lp}}\in\{0,0.025\}$|query-free图平滑对弱类的影响|
+|support selection|不同seed/support策略|是否能把`seed=421070`式强support转成oracle-free注册机制|
 
-结论：qKNNV42在Phase3互斥unknown协议下是`NON_DEPLOYMENT_DIAGNOSTIC`。它暴露出当前表征空间中known/unknown重叠过强，需要表示重建或新的Phase3机制；不能用低FAR单项结果掩盖old/new不足。
+## 9.K10非压缩/压缩更新
 
-## 9.推荐论文/报告写法
+当前同一Phase2口径下，K10 40seed结果为：
 
-建议主文使用如下结构：
+|候选|stored codes|old mean|old p10|min old mean|min old p10|seen-new mean|seen-new p10|min new mean|min new p10|min new$\ge75$|
+|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+|不压缩性能上限|260|94.39%|93.57%|85.25%|82.86%|92.22%|90.78%|78.46%|70.00%|32/40|
+|V59统一hard-diverse budget8|208|94.43%|93.57%|85.46%|82.86%|91.95%|90.29%|77.57%|69.86%|29/40|
+|V62旧类budget5、新类全量|230|94.58%|93.31%|85.82%|82.71%|92.17%|90.83%|78.29%|70.00%|31/40|
 
-1.问题定义：地面弱标注跨接收机DG到目标接收机LEO少样本注册。
+解释：
 
-2.模型：CV-SincNet物理先验+`z_id/z_dom`解耦。
+- K10不压缩行是性能上限，存储260个support code。
+- V62把旧类support压缩到每类5码，seen-new support保留全量；旧类均值和地板更强，seen-new均值近似持平。
+- K5 `seed=421070`仍是单split强support证据，后续必须转成注册期可执行的support选择机制。
 
-3.Phase1训练：ADV3B02的source-only低标签训练机制，包括伪标签SSL、proxy/soft未知边界、source episode和LEO压力视图。
-
-4.Phase2部署头：qKNNV42压缩support-memory，冻结backbone，支持target-old和target-new。
-
-5.结果：先报告B02 Phase1指标，再报告qKNNV42同row old/new结果，最后单独报告unknown负证据。
-
-6.消融：按4个ADV3B02模块和qKNNV42组件逐项拆分。
-
-推荐摘要句：
-
-```text
-我们将CVS分解为source-only物理先验表征学习和目标域轻量注册两个阶段。`ADV3B02_CORE90_SOFT_E200`在ManySig源域低标签协议下学习`z_id/z_dom`解耦表征，并通过源域伪标签、core-aware proxy unknown和LEO压力视图提高跨接收机鲁棒性。`qKNNV42`在冻结`z_id`空间中构建int8压缩support memory，把target-old保留和target-new seen-new注册统一为目标接收机域内的少样本检索问题。在N20 HP08L5注册新类包上，当前同row候选达到`old_acc=94.52%`、`min_old=85.71%`、`seen_new_acc=90.14%`、`min_new=81.43%`。真实unknown拒识仍是Phase3诊断负项，不作为本阶段成功声明。
-```
-
-## 10.复现与证据索引
+## 10.证据索引
 
 |证据|路径|用途|
 |---|---|---|
-|项目协议|`E:\type10-7\项目.md`|CVS科学场景、数据协议、Stage2/Phase3边界|
-|AGENTS规则|`E:\type10-7\AGENTS.md`|Git、N607、报告、中文排版和安全规则|
+|项目协议|`E:\type10-7\项目.md`|CVS科学场景、数据协议、Stage2边界|
+|AGENTS规则|`E:\type10-7\AGENTS.md`|Git、N607、报告和中文排版规则|
 |ADV3B02主报告|`E:\type10-7\automation_reports\CV-SincNet\phase1_adv3_mechanism32_queue_20260701\report.md`|B02身份、数据、候选和prototype导出|
-|ADV3B02分析|`E:\type10-7\automation_reports\CV-SincNet\phase1_adv3_mechanism32_queue_20260701\full_analysis_20260702.md`|Phase1边界、B02结论和不可声明项|
-|ADV3B02候选表|`E:\type10-7\automation_reports\CV-SincNet\phase1_adv3_mechanism32_queue_20260701\adv3_m32_candidate_summary.csv`|同row指标|
+|ADV3B02分析|`E:\type10-7\automation_reports\CV-SincNet\phase1_adv3_mechanism32_queue_20260701\full_analysis_20260702.md`|Phase1边界和B02结论|
+|ADV3B02候选表|`E:\type10-7\automation_reports\CV-SincNet\phase1_adv3_mechanism32_queue_20260701\adv3_m32_candidate_summary.csv`|B02同row指标|
 |ADV3B02训练快照|`E:\type10-7\code\snapshots\phase1_adv3_mechanism32_queue_20260701\launch_phase1_adv3_mechanism32_queue_20260701.sh`|训练参数与候选variant|
-|CVS模型|`E:\type10-7\code\model.py`、`E:\type10-7\code\model_dual_cvsincnet.py`|CV-SincNet和双分支解耦结构|
+|CVS模型|`E:\type10-7\code\model.py`、`E:\type10-7\code\model_dual_cvsincnet.py`|CV-SincNet、双分支解耦和层参数|
 |SSDG训练|`E:\type10-7\code\SSDG\train_ssdg.py`|伪标签、loss、guard和日志字段|
-|qKNN主实现|`E:\type10-7\code\scripts\phase2_collaborative_open_set_qknn_eval.py`|`QknnMemory`、int8量化、KNN打分|
-|qKNNV42策略实现|`E:\type10-7\github_publish\CVS-RFFI-repo\code\scripts\phase2_support_metric_qknn_probe.py`|V42策略、support LOO门控、topm/prototype/labelprop/scenario残差|
-|qKNNV42主报告|`E:\type10-7\automation_reports\CV-SincNet\phase2_qknn_hardpair_n20_20260706\report.md`|V42矩阵、high-floor行解释、字段边界|
+|qKNNV42策略实现|`E:\type10-7\github_publish\CVS-RFFI-repo\code\scripts\phase2_support_metric_qknn_probe.py`|V42策略、top-$m$、prototype、labelprop、scenario residual|
+|qKNNV42主报告|`E:\type10-7\automation_reports\CV-SincNet\phase2_qknn_hardpair_n20_20260706\report.md`|V42矩阵和high-floor行解释|
 |qKNNV42最佳JSON|`E:\type10-7\automation_reports\CV-SincNet\phase2_qknn_hardpair_n20_20260706\artifacts\v53_fftlogmag_20260706\local_v55_diagnostics_20260706\k5_strict_seed421070_floor_param_best_predictions_20260707.json`|当前同row指标和support/query指纹|
-|逐query审计|`E:\type10-7\automation_reports\CV-SincNet\phase2_qknn_hardpair_n20_20260706\artifacts\v53_fftlogmag_20260706\local_v55_diagnostics_20260706\k5_strict_seed421070_floor_param_best_predictions_rows_20260707.csv`|逐样本预测证据|
-|unknown负证据|`E:\type10-7\automation_reports\CV-SincNet\phase2_qknn_v42_stage2c_unknown_20260707\report.md`|Phase3/unknown互斥诊断负结果|
 
-## 11.下一步建议
+## 11.下一步
 
-1.把ADV3B02的4模块消融做成正式矩阵：`backbone/disentangle`、`pseudo SSL`、`core proxy unknown`、`z_id geometry+soft unknown+LEO stress`。
+1.按模块A-D跑ADV3B02消融，主表保留strict UDU、receiver floor、sat_floor、prototype半径和Phase2 qKNN后续指标。
 
-2.把qKNNV42拆成可部署组件消融：`int8 qKNN`、`prototype mix`、`old bias`、`scenario-aware`、`support LOO aux gate`、`labelprop`、`scenario residual`。
+2.按qKNNV42组件跑Phase2消融，主表保留$K$、stored codes、old mean、min old、seen-new mean、min new、$H_{\mathrm{old,new}}$和support/query指纹。
 
-3.优先解决qKNNV42的oracle-free support selection。当前强行来自`seed=421070`，证明空间内存在强support组合，但还不是注册期自动选择机制。
+3.把K5 strong support从`seed=421070`证据转成oracle-free support selection，例如支持集覆盖度、类内多原型和scenario coverage gate。
 
-4.不要继续把unknown FAR作为Phase2主线目标。真实unknown应另开Phase3表示学习或拒识机制，不能用qKNNV42后处理硬补。
-
-5.后续所有报告保持同row表格：candidate、K、receiver、old_acc、min_old、seen_new_acc、min_new、unknown诊断、support/query指纹和verdict必须同行出现。
-
-## 12.2026-07-09非unknown优化更新
-
-本节只更新Phase2 target-old适应和target-new seen-new注册识别，不引入unknown互斥、拒识或open-set成功声明。历史结果表若含`new_role=target_unknown`字段，该字段在本N20 HP08L5包中按注册新类集合解释，不作为真实未知类。
-
-新增三条诊断路线：
-
-|路线|机制|40seed结论|是否晋升|
-|---|---|---|---|
-|qKNNV61 support质量加权|在support-only质量分数上加权类别得分|K10 budget8/10均随权重升高损伤seen-new均值和最低类|不晋升|
-|qKNNV61场景原型细化|用support scenario-level原型残差细化类别得分|旧类均值保持，但seen-new最低类持续下降|不晋升|
-|qKNNV62角色非对称压缩|只压缩旧类support码，seen-new K-shot全量保留|`old_budget=5`在230/260码下提升旧类均值和地板，seen-new近似持平但最低类未改善|作为默认关闭部署预算候选|
-
-K10 40seed当前同row数据如下：
-
-|候选|stored codes|old mean|old p10|min_old mean|min_old p10|seen_new mean|seen_new p10|min_new mean|min_new p10|min_new>=75|判定|
-|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---|
-|不压缩性能上限|260|94.39%|93.57%|85.25%|82.86%|92.22%|90.78%|78.46%|70.00%|32/40|当前K10性能最强行|
-|V59统一hard-diverse budget8|208|94.43%|93.57%|85.46%|82.86%|91.95%|90.29%|77.57%|69.86%|29/40|20%压缩候选，但seen-new地板有退化|
-|V62旧类budget5、新类全量|230|94.58%|93.31%|85.82%|82.71%|92.17%|90.83%|78.29%|70.00%|31/40|当前更稳的K10部署预算候选；旧类更强，seen-new近似持平|
-
-因此当前最佳边界更新为：
-
-|目标|当前最佳/候选|数据|边界|
-|---|---|---|---|
-|K10性能上限|不压缩K10 40seed|`old=94.39%`、`min_old=85.25%`、`seen_new=92.22%`、`min_new=78.46%`、`min_new>=75=32/40`|存储260码，不是压缩部署最优|
-|K10轻量部署候选|qKNNV62旧类budget5、新类全量|`stored=230`、`old=94.58%`、`min_old=85.82%`、`seen_new=92.17%`、`min_new=78.29%`、`min_new>=75=31/40`|旧类适应更强，但新类最低类没有突破|
-|K5单split强行|K5不压缩seed421070|`old=94.52%`、`min_old=85.71%`、`seen_new=90.14%`、`min_new=81.43%`|仍是support敏感证据，需oracle-free support选择复核|
-
-技术实现更新：`code/scripts/phase2_support_metric_qknn_probe.py`新增默认关闭参数`support_code_old_budget_per_class`和`support_code_new_budget_per_class`，用于按旧类/新类角色分别控制support码预算；默认值均为0时不改变原有行为。测试`code/tests/test_phase2_support_metric_qknn_v56_compression.py`新增角色预算单测，验证旧类可压缩而seen-new support可保留。
-
-下一步不应再走unknown互斥路线，而应直接围绕seen-new最低类做support-only新类弱类识别、类内多原型分配、新类query-free校准和更多target receiver域复核。
+4.继续复核更多$\mathcal R_t$目标接收机域，避免单receiver或单support split过拟合。
