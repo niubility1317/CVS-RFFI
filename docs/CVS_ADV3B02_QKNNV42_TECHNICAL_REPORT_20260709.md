@@ -1049,6 +1049,9 @@ qKNNV42的贡献在Phase2部署方式，而不是新神经网络结构：
 |V73C radius_proto_sim protect14诊断|218|94.70%|93.10%|86.11%|81.43%|92.49%|91.07%|78.82%|70.00%|33/40|22/40|
 |V74 radius_proto_sim extra top12->9诊断|210|94.68%|93.10%|86.04%|81.43%|92.44%|91.00%|78.79%|70.00%|33/40|21/40|
 |V74 radius_proto_sim extra top14->10诊断|218|94.70%|93.10%|86.11%|81.43%|92.49%|91.07%|78.82%|70.00%|33/40|22/40|
+|V75 query-pair cluster诊断|210|94.67%|93.10%|86.04%|81.43%|92.17%|90.36%|77.04%|70.00%|25/40|17/40|
+|V76 budget7 radius_proto_sim protect12|206|94.67%|93.10%|86.04%|81.43%|92.45%|91.14%|78.64%|70.00%|33/40|23/40|
+|V76 budget7 radius_proto_sim protect14诊断|212|94.67%|93.10%|86.04%|81.43%|92.48%|91.00%|78.82%|70.00%|33/40|23/40|
 
 解释：
 
@@ -1061,14 +1064,16 @@ qKNNV42的贡献在Phase2部署方式，而不是新神经网络结构：
 - V67把非保护seen-new类继续压到8码/类，总support code降到206，仍保持`min_new>=75=32/40`，但`min_new>=80`为21/40，低于V66的22/40。因此V67是当前高压缩候选，V66仍是均衡最优压缩候选。
 - V68新增默认关闭的分级预算诊断参数，尝试让中风险seen-new类从8码升到9码。当前最好同口径行仍只有`min_new>=80=21/40`，没有恢复V66的22/40，也不比V67更省码，因此不注册为稳定策略。
 - V69在V66压缩状态不变的前提下加入轻量`labelprop_weight=0.015`和`scenario_residual_weight=0.5,scope=new`。它仍为218个support code，但把旧类均值提升到94.68%、min old均值提升到86.07%、seen-new均值提升到92.44%、seen-new p10提升到91.14%、min new均值提升到78.68%，因此取代V66成为当前K10均衡最优压缩候选。边界不变：`min_new p10=70.00%`，`min_new>=75/80`仍为32/40和22/40，最低类坍塌尚未彻底解决。
-- V70把V69机制移到更高效压缩：旧类5码/类，seen-new默认8码/类，按半径保护top10 seen-new类全量K10 support。它用210个support code保持old和min old基本不变，seen-new均值为92.45%，并把`min_new>=80`提升到23/40。因此V70取代V69成为当前K10均衡高效压缩候选；但`min_new p10=70.00%`仍未改善，`1-12`和`1-1`仍是低端瓶颈。
+- V70把V69机制移到更高效压缩：旧类5码/类，seen-new默认8码/类，按半径保护top10 seen-new类全量K10 support。它用210个support code保持old和min old基本不变，seen-new均值为92.45%，并把`min_new>=80`提升到23/40。因此V70在当时取代V69成为K10均衡高效压缩候选；但`min_new p10=70.00%`仍未改善，`1-12`和`1-1`仍是低端瓶颈。
 - V71A继续压缩旧类support到4码/类，stored codes降到204，但旧类均值下降到94.43%、min old均值下降到85.46%、`min_new>=80`下降到21/40；旧类域适应损失超过压缩收益，不晋升。
 - V71B在V70基础上给额外高风险seen-new类更多support码，最好均值行为top14->10，seen-new均值升至92.54%，但stored codes回到218，旧类均值略降，`min_new p10`、`min_new>=75`和`min_new>=80`均不改善。因此最低类坍塌不是单纯增加seen-new support码可以解决，V71B只作为负诊断保留。
 - V72A support质量加权、V72C同场景pair refine和V73A slot release均未超过V70；V72B审计把低类失败定位到`1-1/1-12/8-3`雨弱簇和`19-3/1-15`晴弱簇。
 - V73把保护指标从单半径换成`radius_proto_sim`并保留top8 seen-new全量K10 support。它以206个support code把`min_new>=75`从32/40升到33/40，但`min_new>=80`降到20/40、seen-new均值略低。因此V73是高压缩/floor75分支，不替代V70。
 - V74修正当前实验语义：命令和输出主字段使用`new_role=target_new`，旧N20 HP08L5包的抽样来源单独记录为`new_selection_role=target_unknown`和`used_legacy_target_new_role=true`。这只是旧导出role名兼容，不改变当前任务边界；当前主线只评价target-old旧类目标域适应和target-new/seen-new注册识别。
 - V74继续扫描`radius_proto_sim`下的额外新类预算。最佳均值行top14->10达到218码、seen-new均值92.49%、min-new均值78.82%、`min_new>=75=33/40`，但`min_new>=80=22/40`仍低于V70；同码数top12->9也只有`min_new>=80=21/40`。因此V74不晋升，说明继续按同一风险排序补support码不能解决最低类坍塌。
-- 当前K10最佳仍为V70：210个support code，old/seen-new同row平衡最好，且`min_new>=80=23/40`。V73可作为强调存储压缩和75%最低类门槛的分支。后续应转向注册期support选择质量、低类query-free局部重排或类内多原型覆盖。
+- V75在V70上扫描query-pair cluster局部配额重排。最佳行仍把`min_new>=75`从32/40降到25/40，`min_new>=80`从23/40降到17/40，说明batch-local pair重排会放大当前低类簇不稳定性，不晋升。
+- V76把seen-new默认预算从8码压到7码，并用`radius_proto_sim protect12`保护高风险新类。该行仅保存206个support code，比V70少4码，同时保持`old=94.67%`、`min_old=86.04%`、`seen_new=92.45%`、`min_new>=80=23/40`，并把`seen_new p10`升到91.14%、`min_new>=75`升到33/40。因此`stable_dualview_v76`取代V70成为当前K10高效压缩最佳优化版本。
+- 当前边界仍未变：`min_new p10=70.00%`，最低类失败仍集中在`1-1/1-12/8-3`和`19-3/1-15`。V76解决的是更高效压缩和floor75覆盖，不是彻底解决最低类坍塌。
 - K5 `seed=421070`仍是单split强support证据，后续必须转成注册期可执行的support选择机制。
 
 ## 10.证据索引
