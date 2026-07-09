@@ -58,3 +58,46 @@ Launched at `2026-07-09 11:00 CST`:
 Full local report will track startup health, final results, and selected target diagnostics.
 
 Startup health passed at about `2026-07-09 11:01 CST`: all four PIDs were active on GPUs 3-6, each log had written the intended receiver split and reached stage1 step 500, and no `Traceback`, argparse/unrecognized argument error, OOM, or empty-target split was observed.
+
+## Final Results
+
+Runs completed by about `2026-07-09 11:47 CST`. Local evidence was copied to:
+
+`E:\type10-7\local_artifacts\receiver_agnostic_fig8_classrx_opt_20260709_105935\`
+
+### Strict Split
+
+Strict split keeps the deterministic source receiver order used by the current reproduction code.
+
+| R | source receivers | base | random@100 | best active@100 | weakest target receivers at random@100 |
+|---:|---|---:|---:|---:|---|
+| 1 | `1-1` | `56.22%` | `80.50%` | margin `78.09%` | `3-19` `52.28%`; `18-2` `55.87%`; `20-1` `73.33%` |
+| 2 | `1-1,1-19` | `64.50%` | `83.35%` | margin `83.61%` | `18-2` `59.90%`; `3-19` `74.10%`; `2-1` `83.28%` |
+| 3 | `1-1,1-19,14-7` | `62.46%` | `88.11%` | random `88.11%` | `18-2` `66.96%`; `3-19` `74.58%`; `2-1` `88.31%` |
+
+The selected target labels were exactly balanced: R=1 labels each `880` and receivers each `480`; R=2 labels each `800` and receivers each `480`; R=3 labels each `720` and receivers each `480`.
+
+### Receiver-Replacement Diagnostics
+
+| run | source receivers | base | random@100 | weakest target receivers at random@100 | verdict |
+|---|---|---:|---:|---|---|
+| R=1 move `3-19` | `3-19` | `52.59%` | `92.86%` | `18-2` `78.27%`; `7-7` `91.48%`; `2-1` `92.96%` | matches paper-level R=1 visual read, diagnostic only |
+| R=2 move `18-2,3-19` | `18-2,3-19` | `53.58%` | `96.10%` | `7-7` `91.84%`; `1-1` `93.42%`; `2-1` `95.65%` | confirms hard-receiver bottleneck |
+| R=3 move `18-2,3-19` | `1-1,18-2,3-19` | `66.94%` | `98.03%` | `7-7` `96.83%`; `19-2` `97.05%`; `1-19` `97.15%` | near-saturated Fig8 curve, diagnostic only |
+
+### Delta Versus Earlier Runs
+
+| line | R=1 random@100 | R=2 random@100 | R=3 random@100 |
+|---|---:|---:|---:|
+| previous strict tuned | `72.93%` | `79.81%` | `78.16%` |
+| previous no-`18-2` diagnostic | `78.43%` | `84.53%` | `86.64%` |
+| this strict class_receiver | `80.50%` | `83.35%` | `88.11%` |
+| this best replacement | `92.86%` | `96.10%` | `98.03%` |
+
+### Diagnosis and Boundary
+
+The previous low absolute Fig8 was partly caused by target label selection. Joint class/receiver balancing improved the strict line while proving that every target receiver and every class is covered evenly during fine-tuning.
+
+The remaining strict gap is dominated by target receiver composition. Even with balanced labels, `3-19` and `18-2` remain the weakest strict target receivers. Moving `3-19` into the R=1 source raises random@100 to `92.86%`, and moving both `18-2` and `3-19` into source raises R=2/R=3 to `96.10%`/`98.03%`.
+
+Therefore the implementation can reach paper-level Fig8 values, but the replacement lines cannot be claimed as strict paper-faithful unless the original paper's hidden receiver ordering is recovered or justified. The strict current line should be reported as improved but still below paper in absolute value, especially for R=1.
