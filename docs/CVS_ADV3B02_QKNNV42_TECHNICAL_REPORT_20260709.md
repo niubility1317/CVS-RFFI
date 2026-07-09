@@ -1052,6 +1052,8 @@ qKNNV42的贡献在Phase2部署方式，而不是新神经网络结构：
 |V75 query-pair cluster诊断|210|94.67%|93.10%|86.04%|81.43%|92.17%|90.36%|77.04%|70.00%|25/40|17/40|
 |V76 budget7 radius_proto_sim protect12|206|94.67%|93.10%|86.04%|81.43%|92.45%|91.14%|78.64%|70.00%|33/40|23/40|
 |V76 budget7 radius_proto_sim protect14诊断|212|94.67%|93.10%|86.04%|81.43%|92.48%|91.00%|78.82%|70.00%|33/40|23/40|
+|V77 K5 scenario_diverse support选择|130|95.02%|94.05%|86.79%|84.29%|91.67%|89.29%|76.64%|68.57%|24/40|14/40|
+|V77 K5+V56 support-LOO重链诊断|130|93.96%|93.10%|83.93%|81.43%|85.47%|84.00%|68.96%|61.43%|3/40|0/40|
 
 解释：
 
@@ -1074,7 +1076,9 @@ qKNNV42的贡献在Phase2部署方式，而不是新神经网络结构：
 - V75在V70上扫描query-pair cluster局部配额重排。最佳行仍把`min_new>=75`从32/40降到25/40，`min_new>=80`从23/40降到17/40，说明batch-local pair重排会放大当前低类簇不稳定性，不晋升。
 - V76把seen-new默认预算从8码压到7码，并用`radius_proto_sim protect12`保护高风险新类。该行仅保存206个support code，比V70少4码，同时保持`old=94.67%`、`min_old=86.04%`、`seen_new=92.45%`、`min_new>=80=23/40`，并把`seen_new p10`升到91.14%、`min_new>=75`升到33/40。因此`stable_dualview_v76`取代V70成为当前K10高效压缩最佳优化版本。
 - 当前边界仍未变：`min_new p10=70.00%`，最低类失败仍集中在`1-1/1-12/8-3`和`19-3/1-15`。V76解决的是更高效压缩和floor75覆盖，不是彻底解决最低类坍塌。
-- K5 `seed=421070`仍是单split强support证据，后续必须转成注册期可执行的support选择机制。
+- V77把K5从单split强support证据推进到注册期可执行的support选择机制：在`K=5,pool=10`下使用已有`scenario_diverse`策略，每个旧类和seen-new类仍只保存5个support code，总码数130，不增加存储；40seed均值达到`old=95.02%`、`min_old=86.79%`、`seen_new=91.67%`、`min_new=76.64%`，相对K5 `stable_first`的`old=94.11%`、`seen_new=87.88%`、`min_new=68.57%`明显提升。因此当前K5推荐执行口径为`--policies scenario_diverse`加K5严格qKNN打分，而不是继续依赖`seed=421070`单点。
+- V77的K5边界也必须保留：`min_new p10=68.57%`，最低类仍集中在`1-1/1-12/8-3`以及局部`19-3/1-15`。它解决的是K5 support选择稳定性和旧类域适应，不是彻底解决最低类坍塌。
+- K5+`stable_dualview_v56` support-LOO重链为负诊断：它额外引入平均4186个ridge标量、4160个old-residual标量、1288个pair-linear标量和20个query-cluster临时prototype，但seen-new均值降到85.47%、`min_new>=75`降到3/40，违背高效压缩方向，不晋升。
 
 ## 10.证据索引
 
@@ -1091,6 +1095,8 @@ qKNNV42的贡献在Phase2部署方式，而不是新神经网络结构：
 |qKNNV42策略实现|`E:\type10-7\github_publish\CVS-RFFI-repo\code\scripts\phase2_support_metric_qknn_probe.py`|V42策略、top-m、prototype、labelprop、scenario residual|
 |qKNNV42主报告|`E:\type10-7\automation_reports\CV-SincNet\phase2_qknn_hardpair_n20_20260706\report.md`|V42矩阵和high-floor行解释|
 |qKNNV42最佳JSON|`E:\type10-7\automation_reports\CV-SincNet\phase2_qknn_hardpair_n20_20260706\artifacts\v53_fftlogmag_20260706\local_v55_diagnostics_20260706\k5_strict_seed421070_floor_param_best_predictions_20260707.json`|当前同row指标和support/query指纹|
+|qKNNV77 K5 support选择证据|`E:\type10-7\automation_reports\CV-SincNet\phase2_qknn_hardpair_n20_20260706\artifacts\v77_k5_support_policy_20260709\k5_v77_support_policy_seed421038_40.csv`|K5 40seed support选择策略网格|
+|qKNNV77 K5负诊断证据|`E:\type10-7\automation_reports\CV-SincNet\phase2_qknn_hardpair_n20_20260706\artifacts\v77_k5_v56_scenariodiverse_20260709\k5_v77_v56_scenariodiverse_seed421038_40.csv`|K5 support-LOO重链负诊断|
 
 ## 11.下一步
 
