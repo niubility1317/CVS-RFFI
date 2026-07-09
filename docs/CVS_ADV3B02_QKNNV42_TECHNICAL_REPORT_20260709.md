@@ -1047,6 +1047,8 @@ qKNNV42的贡献在Phase2部署方式，而不是新神经网络结构：
 |V71B额外新类预算top14->10诊断|218|94.65%|93.31%|85.96%|82.71%|92.54%|91.27%|78.79%|70.00%|32/40|23/40|
 |V73 radius_proto_sim protect8压缩分支|206|94.69%|93.10%|86.07%|81.43%|92.37%|91.00%|78.54%|70.00%|33/40|20/40|
 |V73C radius_proto_sim protect14诊断|218|94.70%|93.10%|86.11%|81.43%|92.49%|91.07%|78.82%|70.00%|33/40|22/40|
+|V74 radius_proto_sim extra top12->9诊断|210|94.68%|93.10%|86.04%|81.43%|92.44%|91.00%|78.79%|70.00%|33/40|21/40|
+|V74 radius_proto_sim extra top14->10诊断|218|94.70%|93.10%|86.11%|81.43%|92.49%|91.07%|78.82%|70.00%|33/40|22/40|
 
 解释：
 
@@ -1064,6 +1066,8 @@ qKNNV42的贡献在Phase2部署方式，而不是新神经网络结构：
 - V71B在V70基础上给额外高风险seen-new类更多support码，最好均值行为top14->10，seen-new均值升至92.54%，但stored codes回到218，旧类均值略降，`min_new p10`、`min_new>=75`和`min_new>=80`均不改善。因此最低类坍塌不是单纯增加seen-new support码可以解决，V71B只作为负诊断保留。
 - V72A support质量加权、V72C同场景pair refine和V73A slot release均未超过V70；V72B审计把低类失败定位到`1-1/1-12/8-3`雨弱簇和`19-3/1-15`晴弱簇。
 - V73把保护指标从单半径换成`radius_proto_sim`并保留top8 seen-new全量K10 support。它以206个support code把`min_new>=75`从32/40升到33/40，但`min_new>=80`降到20/40、seen-new均值略低。因此V73是高压缩/floor75分支，不替代V70。
+- V74修正当前实验语义：命令和输出主字段使用`new_role=target_new`，旧N20 HP08L5包的抽样来源单独记录为`new_selection_role=target_unknown`和`used_legacy_target_new_role=true`。这只是旧导出role名兼容，不改变当前任务边界；当前主线只评价target-old旧类目标域适应和target-new/seen-new注册识别。
+- V74继续扫描`radius_proto_sim`下的额外新类预算。最佳均值行top14->10达到218码、seen-new均值92.49%、min-new均值78.82%、`min_new>=75=33/40`，但`min_new>=80=22/40`仍低于V70；同码数top12->9也只有`min_new>=80=21/40`。因此V74不晋升，说明继续按同一风险排序补support码不能解决最低类坍塌。
 - 当前K10最佳仍为V70：210个support code，old/seen-new同row平衡最好，且`min_new>=80=23/40`。V73可作为强调存储压缩和75%最低类门槛的分支。后续应转向注册期support选择质量、低类query-free局部重排或类内多原型覆盖。
 - K5 `seed=421070`仍是单split强support证据，后续必须转成注册期可执行的support选择机制。
 

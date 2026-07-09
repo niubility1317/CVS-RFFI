@@ -13,6 +13,7 @@ import csv
 import hashlib
 import json
 import sys
+from dataclasses import dataclass
 from itertools import combinations, product
 from pathlib import Path
 from typing import Any, Sequence
@@ -30,6 +31,35 @@ import phase2_source_guarded_qknn_sweep as qknn
 
 
 Split = tuple[np.ndarray, np.ndarray]
+
+
+@dataclass(frozen=True)
+class NewSplitRole:
+    requested_role: str
+    selection_role: str
+    used_legacy_target_new_role: bool
+
+
+def _resolve_new_split_role(roles: np.ndarray, requested_role: str) -> NewSplitRole:
+    role = str(requested_role).strip()
+    available = {str(value) for value in np.asarray(roles, dtype=object).tolist()}
+    if role in available:
+        return NewSplitRole(
+            requested_role=role,
+            selection_role=role,
+            used_legacy_target_new_role=False,
+        )
+    if role == "target_new" and "target_unknown" in available:
+        return NewSplitRole(
+            requested_role=role,
+            selection_role="target_unknown",
+            used_legacy_target_new_role=True,
+        )
+    return NewSplitRole(
+        requested_role=role,
+        selection_role=role,
+        used_legacy_target_new_role=False,
+    )
 
 
 def _sha256_file(path: Path) -> str:
@@ -8560,6 +8590,7 @@ def main() -> None:
                 raise ValueError(f"aux_feature_npz metadata mismatch for {key}: {args.aux_feature_npz}")
     old_labels = qknn._parse_csv(args.old_tx_ids)
     new_labels = qknn._parse_csv(args.new_tx_ids)
+    new_split_role = _resolve_new_split_role(roles=roles, requested_role=str(args.new_role))
     support_guided_proxy_rows: list[dict[str, Any]] = []
     if str(args.support_guided_proxy_json).strip():
         proxy_manifest = json.loads(Path(args.support_guided_proxy_json).read_text(encoding="utf-8"))
@@ -8791,7 +8822,7 @@ def main() -> None:
             )
             new_raw = active._build_active_splits(
                 labels=new_labels,
-                role=str(args.new_role),
+                role=str(new_split_role.selection_role),
                 k=int(args.k_new),
                 query_per_class=int(args.query_per_new),
                 pool_per_class=int(args.pool_per_new),
@@ -9712,7 +9743,9 @@ def main() -> None:
                     row["k_old"] = int(args.k_old)
                     row["k_new"] = int(args.k_new)
                     row["old_role"] = str(args.old_role)
-                    row["new_role"] = str(args.new_role)
+                    row["new_role"] = str(new_split_role.requested_role)
+                    row["new_selection_role"] = str(new_split_role.selection_role)
+                    row["used_legacy_target_new_role"] = bool(new_split_role.used_legacy_target_new_role)
                     row["query_per_old"] = int(args.query_per_old)
                     row["query_per_new"] = int(args.query_per_new)
                     row["pool_per_old"] = int(args.pool_per_old)
@@ -9739,6 +9772,9 @@ def main() -> None:
         "aux_feature_npz_sha256": _sha256_file(aux_feature_path) if aux_feature_path is not None else "",
         "old_tx_ids": old_labels,
         "new_tx_ids": new_labels,
+        "new_role": str(new_split_role.requested_role),
+        "new_selection_role": str(new_split_role.selection_role),
+        "used_legacy_target_new_role": bool(new_split_role.used_legacy_target_new_role),
         "rows_count": len(rows),
         "best": rows[:20],
     }
@@ -9781,6 +9817,8 @@ def main() -> None:
         "support_selection_policy",
         "old_role",
         "new_role",
+        "new_selection_role",
+        "used_legacy_target_new_role",
         "transform_mode",
         "transform_strength",
         "topm",

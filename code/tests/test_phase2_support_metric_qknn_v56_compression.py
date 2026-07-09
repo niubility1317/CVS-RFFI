@@ -13,6 +13,17 @@ for path in (str(ROOT), str(SCRIPTS)):
 
 
 class Phase2SupportMetricQknnV56CompressionTest(unittest.TestCase):
+    def test_target_new_role_reports_current_semantics_when_legacy_role_is_used_for_sampling(self):
+        from phase2_support_metric_qknn_probe import _resolve_new_split_role
+
+        roles = np.asarray(["target_old", "target_unknown", "target_unknown"], dtype=object)
+
+        resolved = _resolve_new_split_role(roles=roles, requested_role="target_new")
+
+        self.assertEqual(resolved.requested_role, "target_new")
+        self.assertEqual(resolved.selection_role, "target_unknown")
+        self.assertTrue(resolved.used_legacy_target_new_role)
+
     def test_centroid_budget_keeps_representative_codes_per_class(self):
         from phase2_support_metric_qknn_probe import _compress_support_codes
 
