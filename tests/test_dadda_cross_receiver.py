@@ -486,7 +486,7 @@ def test_dadda_runner_forwards_detach_target_probabilities(monkeypatch, tmp_path
     observed = []
 
     def fake_loop(*args, **kwargs):
-        observed.append(kwargs["detach_target_probabilities"])
+        observed.append((kwargs["detach_target_probabilities"], kwargs["alpha_mode"], kwargs["fixed_alpha"]))
         return {"history": [{"epoch": 1, "batches": 1}]}
 
     monkeypatch.setattr(train_module, "run_dadda_training_loop", fake_loop)
@@ -509,10 +509,14 @@ def test_dadda_runner_forwards_detach_target_probabilities(monkeypatch, tmp_path
             "classifier_hidden2": 4,
         },
         detach_target_probabilities=True,
+        alpha_mode="fixed",
+        fixed_alpha=0.5,
     )
 
-    assert observed == [True]
+    assert observed == [(True, "fixed", 0.5)]
     assert result["detach_target_probabilities"] is True
+    assert result["alpha_mode"] == "fixed"
+    assert result["fixed_alpha"] == 0.5
 
 
 def test_dadda_missing_paper_baselines_are_structured_rows(tmp_path):
@@ -590,6 +594,8 @@ def test_dadda_table2_settings_default_to_paper_config_and_gate_smoke():
     assert settings["momentum"] == 0.9
     assert settings["weight_decay"] == 0.0005
     assert settings["detach_target_probabilities"] is False
+    assert settings["alpha_mode"] == "dynamic"
+    assert settings["fixed_alpha"] == 0.5
     validate_formal_or_smoke_settings(
         config=config,
         settings=settings,
@@ -635,6 +641,8 @@ def test_dadda_table2_settings_allow_cli_to_disable_config_detach():
         normalize=None,
         crop_mode=None,
         detach_target_probabilities=False,
+        alpha_mode=None,
+        fixed_alpha=None,
     )
     settings = resolve_table2_run_settings(config, args)
 

@@ -184,6 +184,12 @@ def resolve_table2_run_settings(config: dict[str, Any], args: argparse.Namespace
             if getattr(args, "detach_target_probabilities", None) is not None
             else config.get("detach_target_probabilities", False)
         ),
+        "alpha_mode": str(getattr(args, "alpha_mode", None) or config.get("alpha_mode", "dynamic")),
+        "fixed_alpha": float(
+            getattr(args, "fixed_alpha", None)
+            if getattr(args, "fixed_alpha", None) is not None
+            else config.get("fixed_alpha", 0.5)
+        ),
     }
 
 
@@ -263,6 +269,8 @@ def run_dadda_training_loop(
     base_lr: float = 0.0001,
     bandwidth: float | None = None,
     detach_target_probabilities: bool = False,
+    alpha_mode: str = "dynamic",
+    fixed_alpha: float = 0.5,
 ) -> dict[str, Any]:
     history = []
     total_batches = 0
@@ -292,6 +300,8 @@ def run_dadda_training_loop(
                 tradeoff_lambda=tradeoff,
                 bandwidth=bandwidth,
                 detach_target_probabilities=detach_target_probabilities,
+                alpha_mode=alpha_mode,
+                fixed_alpha=fixed_alpha,
             )
             terms["loss"].backward()
             optimizer.step()
@@ -319,6 +329,8 @@ def run_dadda_training_loop(
         )
     return {
         "algorithm": "DADDA Algorithm 1 smoke loop",
+        "alpha_mode": alpha_mode,
+        "fixed_alpha": float(fixed_alpha),
         "epochs": int(epochs),
         "batches": total_batches,
         "history": history,
@@ -362,6 +374,8 @@ def run_table2_reproduction(
     num_workers: int = 0,
     model_config: dict[str, Any] | None = None,
     detach_target_probabilities: bool = False,
+    alpha_mode: str = "dynamic",
+    fixed_alpha: float = 0.5,
     smoke: bool | None = None,
     config_path: Path | str | None = None,
 ) -> dict[str, Any]:
@@ -418,6 +432,8 @@ def run_table2_reproduction(
                     max_batches_per_epoch=max_batches_per_epoch,
                     base_lr=learning_rate,
                     detach_target_probabilities=detach_target_probabilities,
+                    alpha_mode=alpha_mode,
+                    fixed_alpha=fixed_alpha,
                 )
             else:
                 rows.append(
@@ -509,6 +525,8 @@ def run_table2_reproduction(
         "normalize": normalize,
         "crop_mode": crop_mode,
         "detach_target_probabilities": bool(detach_target_probabilities),
+        "alpha_mode": alpha_mode,
+        "fixed_alpha": float(fixed_alpha),
         "max_batches_per_epoch": max_batches_per_epoch,
         "config_path": str(config_path) if config_path is not None else None,
         "config_sha256": _sha256_file(Path(config_path)) if config_path is not None else None,
@@ -543,6 +561,8 @@ def main() -> int:
     parser.add_argument("--normalize", action=argparse.BooleanOptionalAction, default=None)
     parser.add_argument("--crop-mode", type=str, default=None, choices=["left", "center"])
     parser.add_argument("--detach-target-probabilities", action=argparse.BooleanOptionalAction, default=None)
+    parser.add_argument("--alpha-mode", type=str, default=None, choices=["dynamic", "fixed"])
+    parser.add_argument("--fixed-alpha", type=float, default=None)
     parser.add_argument("--max-batches-per-epoch", type=int, default=None)
     parser.add_argument("--seed", type=int, default=0)
     parser.add_argument("--device", type=str, default=None)
@@ -605,6 +625,8 @@ def main() -> int:
             config_path=args.config,
             model_config=model_config,
             detach_target_probabilities=settings["detach_target_probabilities"],
+            alpha_mode=settings["alpha_mode"],
+            fixed_alpha=settings["fixed_alpha"],
         )
         if args.output is not None:
             write_json(args.output, payload)
