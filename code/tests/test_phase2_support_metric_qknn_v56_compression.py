@@ -1119,6 +1119,50 @@ class Phase2SupportMetricQknnV56CompressionTest(unittest.TestCase):
         self.assertEqual(high_k["scenario_residual_weight"], 0.5)
         self.assertNotIn("neighbor_contrast_count", high_k)
 
+    def test_v88_compresses_v87_to_180_codes_for_k10_only(self):
+        from phase2_support_metric_qknn_probe import _adaptive_qknn_overrides
+
+        many_new_low_k = {
+            "adaptive_support_min_k": 5.0,
+            "adaptive_new_class_count": 20.0,
+            "adaptive_support_max_offdiag_proto_sim": 0.982,
+            "adaptive_support_p90_offdiag_proto_sim": 0.822,
+            "adaptive_support_mean_radius": 0.104,
+        }
+        many_new_high_k = dict(many_new_low_k)
+        many_new_high_k["adaptive_support_min_k"] = 10.0
+
+        low_k = _adaptive_qknn_overrides(
+            policy="stable_dualview_v88",
+            geometry=many_new_low_k,
+            aux_available=True,
+        )
+        high_k = _adaptive_qknn_overrides(
+            policy="stable_dualview_v88",
+            geometry=many_new_high_k,
+            aux_available=True,
+        )
+
+        self.assertEqual(low_k["adaptive_qknn_requested_policy"], "stable_dualview_v88")
+        self.assertEqual(low_k["adaptive_qknn_policy"], "stable_dualview_v88")
+        self.assertNotIn("support_code_new_extra_budget_top_classes", low_k)
+        self.assertNotIn("aux_score_weight", low_k)
+        self.assertNotIn("old_bias", low_k)
+
+        self.assertEqual(high_k["adaptive_qknn_requested_policy"], "stable_dualview_v88")
+        self.assertEqual(high_k["adaptive_qknn_policy"], "stable_dualview_v88")
+        self.assertEqual(high_k["support_code_old_budget_per_class"], 5)
+        self.assertEqual(high_k["support_code_new_budget_per_class"], 5)
+        self.assertEqual(high_k["support_code_new_protect_top_classes"], 10)
+        self.assertEqual(high_k["support_code_new_protect_metric"], "radius_proto_sim")
+        self.assertNotIn("support_code_new_extra_budget_top_classes", high_k)
+        self.assertNotIn("support_code_new_extra_budget_per_class", high_k)
+        self.assertEqual(high_k["aux_score_weight"], 0.64)
+        self.assertEqual(high_k["old_bias"], 0.002)
+        self.assertEqual(high_k["labelprop_weight"], 0.01)
+        self.assertEqual(high_k["scenario_residual_weight"], 0.5)
+        self.assertNotIn("neighbor_contrast_count", high_k)
+
     def test_support_proto_anchor_recovers_class_score_without_raw_support_codes(self):
         from phase2_support_metric_qknn_probe import _support_proto_anchor_scores
 

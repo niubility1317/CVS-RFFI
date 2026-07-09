@@ -7595,6 +7595,8 @@ def _adaptive_qknn_overrides(
         "stable_dualview_v86",
         "dualview_support_v87",
         "stable_dualview_v87",
+        "dualview_support_v88",
+        "stable_dualview_v88",
     }:
         raise ValueError(f"unsupported adaptive_qknn_policy: {policy}")
     min_k_for_policy = float(geometry["adaptive_support_min_k"])
@@ -7658,6 +7660,7 @@ def _adaptive_qknn_overrides(
     use_v84 = name in {"dualview_support_v84", "stable_dualview_v84"}
     use_v86 = name in {"dualview_support_v86", "stable_dualview_v86"}
     use_v87 = name in {"dualview_support_v87", "stable_dualview_v87"}
+    use_v88 = name in {"dualview_support_v88", "stable_dualview_v88"}
     use_v49 = use_v49 or ((use_v53 or use_v54 or use_v55 or use_v56) and min_k_for_policy >= 10.0)
     use_v44 = (
         name in {"dualview_support_v44", "stable_dualview_v44"}
@@ -7718,6 +7721,7 @@ def _adaptive_qknn_overrides(
         or use_v84
         or use_v86
         or use_v87
+        or use_v88
     ):
         overrides = {
             "adaptive_qknn_policy": name,
@@ -7746,13 +7750,16 @@ def _adaptive_qknn_overrides(
                 or use_v84
                 or use_v86
                 or use_v87
+                or use_v88
             ):
                 overrides.update(
                     {
                         "support_code_budget_per_class": 0,
                         "support_code_budget_mode": "centroid_hard_diverse",
                         "support_code_old_budget_per_class": 5,
-                        "support_code_new_budget_per_class": 6
+                        "support_code_new_budget_per_class": 5
+                        if use_v88
+                        else 6
                         if (use_v78 or use_v79 or use_v81 or use_v82 or use_v83 or use_v84 or use_v86 or use_v87)
                         else 7
                         if use_v76
@@ -7782,16 +7789,19 @@ def _adaptive_qknn_overrides(
                     or use_v84
                     or use_v86
                     or use_v87
+                    or use_v88
                 ):
                     overrides.update(
                         {
-                            "support_code_new_protect_top_classes": 12
+                            "support_code_new_protect_top_classes": 10
+                            if use_v88
+                            else 12
                             if (use_v76 or use_v78 or use_v79 or use_v81 or use_v82 or use_v83 or use_v84 or use_v86 or use_v87)
                             else 10
                             if use_v70
                             else 8,
                             "support_code_new_protect_metric": "radius_proto_sim"
-                            if (use_v73 or use_v76 or use_v78 or use_v79 or use_v81 or use_v82 or use_v83 or use_v84 or use_v86 or use_v87)
+                            if (use_v73 or use_v76 or use_v78 or use_v79 or use_v81 or use_v82 or use_v83 or use_v84 or use_v86 or use_v87 or use_v88)
                             else "radius",
                         }
                     )
@@ -7802,10 +7812,10 @@ def _adaptive_qknn_overrides(
                             "support_code_new_extra_budget_per_class": 8,
                         }
                     )
-                if use_v69 or use_v70 or use_v73 or use_v76 or use_v78 or use_v79 or use_v81 or use_v82 or use_v83 or use_v84 or use_v86 or use_v87:
+                if use_v69 or use_v70 or use_v73 or use_v76 or use_v78 or use_v79 or use_v81 or use_v82 or use_v83 or use_v84 or use_v86 or use_v87 or use_v88:
                     overrides.update(
                         {
-                            "labelprop_weight": 0.01 if (use_v79 or use_v81 or use_v82 or use_v83 or use_v84 or use_v86 or use_v87) else 0.015,
+                            "labelprop_weight": 0.01 if (use_v79 or use_v81 or use_v82 or use_v83 or use_v84 or use_v86 or use_v87 or use_v88) else 0.015,
                             "labelprop_k": 10,
                             "labelprop_alpha": 0.72,
                             "labelprop_temperature": 0.05,
@@ -7829,6 +7839,13 @@ def _adaptive_qknn_overrides(
                     overrides.update(
                         {
                             "aux_score_weight": 0.58 if bool(aux_available) else 0.0,
+                            "old_bias": 0.002,
+                        }
+                    )
+                if use_v88:
+                    overrides.update(
+                        {
+                            "aux_score_weight": 0.64 if bool(aux_available) else 0.0,
                             "old_bias": 0.002,
                         }
                     )
