@@ -176,6 +176,63 @@ class Phase2SupportMetricQknnV56CompressionTest(unittest.TestCase):
         self.assertEqual(kept_indices.tolist(), [0, 4, 6, 7])
         self.assertEqual(kept_labels.tolist(), ["old-a", "new-b", "new-b", "new-b"])
 
+    def test_new_role_protection_keeps_high_radius_new_class_uncompressed(self):
+        from phase2_support_metric_qknn_probe import _compress_support_codes
+
+        features = np.asarray(
+            [
+                [1.00, 0.00],
+                [0.95, 0.05],
+                [0.90, 0.10],
+                [1.00, 0.00],
+                [0.00, 1.00],
+                [0.00, -1.00],
+                [1.00, 0.00],
+                [-1.00, 0.00],
+                [-1.00, 0.00],
+                [-0.95, 0.05],
+                [-0.90, 0.10],
+            ],
+            dtype=float,
+        )
+        support_indices = np.arange(features.shape[0], dtype=int)
+        support_labels = np.asarray(
+            [
+                "old-a",
+                "old-a",
+                "old-a",
+                "new-risk",
+                "new-risk",
+                "new-risk",
+                "new-risk",
+                "new-stable",
+                "new-stable",
+                "new-stable",
+                "new-stable",
+            ],
+            dtype=object,
+        )
+        scenarios = np.asarray(["r1"] * features.shape[0], dtype=object)
+
+        kept_indices, kept_labels = _compress_support_codes(
+            features=features,
+            support_indices=support_indices,
+            support_labels=support_labels,
+            scenarios=scenarios,
+            per_class=0,
+            mode="centroid_hard_diverse",
+            old_labels={"old-a"},
+            old_per_class=2,
+            new_per_class=2,
+            new_protect_top_classes=1,
+            new_protect_metric="radius",
+        )
+
+        self.assertEqual(kept_labels.tolist().count("old-a"), 2)
+        self.assertEqual(kept_labels.tolist().count("new-risk"), 4)
+        self.assertEqual(kept_labels.tolist().count("new-stable"), 2)
+        self.assertTrue({3, 4, 5, 6}.issubset(set(kept_indices.tolist())))
+
     def test_v56_keeps_support_code_budget_off_and_high_k_uses_v49_guard(self):
         from phase2_support_metric_qknn_probe import _adaptive_qknn_overrides
 
@@ -286,6 +343,53 @@ class Phase2SupportMetricQknnV56CompressionTest(unittest.TestCase):
         self.assertEqual(high_k["support_code_budget_mode"], "centroid_hard_diverse")
         self.assertEqual(high_k["support_code_old_budget_per_class"], 5)
         self.assertEqual(high_k["support_code_new_budget_per_class"], 0)
+        self.assertEqual(high_k["local_competition_weight"], 0.02)
+        self.assertEqual(high_k["local_competition_k"], 5)
+        self.assertEqual(high_k["local_competition_clip"], 2.0)
+        self.assertEqual(high_k["local_competition_scope"], "role")
+        self.assertNotIn("transform_mode", high_k)
+        self.assertNotIn("topm", high_k)
+        self.assertNotIn("proto_mix", high_k)
+
+    def test_v66_applies_weak_new_class_protected_compression_only_for_k10(self):
+        from phase2_support_metric_qknn_probe import _adaptive_qknn_overrides
+
+        many_new_low_k = {
+            "adaptive_support_min_k": 5.0,
+            "adaptive_new_class_count": 20.0,
+            "adaptive_support_max_offdiag_proto_sim": 0.982,
+            "adaptive_support_p90_offdiag_proto_sim": 0.822,
+            "adaptive_support_mean_radius": 0.104,
+        }
+        many_new_high_k = dict(many_new_low_k)
+        many_new_high_k["adaptive_support_min_k"] = 10.0
+
+        low_k = _adaptive_qknn_overrides(
+            policy="stable_dualview_v66",
+            geometry=many_new_low_k,
+            aux_available=True,
+        )
+        high_k = _adaptive_qknn_overrides(
+            policy="stable_dualview_v66",
+            geometry=many_new_high_k,
+            aux_available=True,
+        )
+
+        self.assertEqual(low_k["adaptive_qknn_requested_policy"], "stable_dualview_v66")
+        self.assertEqual(low_k["adaptive_qknn_policy"], "stable_dualview_v66")
+        self.assertNotIn("support_code_old_budget_per_class", low_k)
+        self.assertNotIn("support_code_new_protect_top_classes", low_k)
+        self.assertNotIn("local_competition_weight", low_k)
+        self.assertNotIn("transform_mode", low_k)
+
+        self.assertEqual(high_k["adaptive_qknn_requested_policy"], "stable_dualview_v66")
+        self.assertEqual(high_k["adaptive_qknn_policy"], "stable_dualview_v66")
+        self.assertEqual(high_k["support_code_budget_per_class"], 0)
+        self.assertEqual(high_k["support_code_budget_mode"], "centroid_hard_diverse")
+        self.assertEqual(high_k["support_code_old_budget_per_class"], 5)
+        self.assertEqual(high_k["support_code_new_budget_per_class"], 9)
+        self.assertEqual(high_k["support_code_new_protect_top_classes"], 8)
+        self.assertEqual(high_k["support_code_new_protect_metric"], "radius")
         self.assertEqual(high_k["local_competition_weight"], 0.02)
         self.assertEqual(high_k["local_competition_k"], 5)
         self.assertEqual(high_k["local_competition_clip"], 2.0)
