@@ -4841,3 +4841,36 @@ V90 K5最低seed集中在`19-3`、`1-15`、`1-1`、`1-12`和`2-13`。最低三�
 验证记录：`pytest -k v90`先按TDD失败于`unsupported adaptive_qknn_policy: stable_dualview_v90`，实现后通过；`conda run -n ssr-gpu python -m pytest code/tests/test_phase2_support_metric_qknn_v56_compression.py -q`通过30项；`conda run --no-capture-output -n ssr-gpu python -m py_compile code/scripts/phase2_support_metric_qknn_probe.py`通过。
 
 当前决策：K5当前最佳更新为`scenario_diverse + stable_dualview_v90`，仍为130个support code；相对V89 K5，old mean +0.27pp、old p10 +0.45pp、min-old mean +0.64pp、seen-new mean +0.14pp、seen-new p10 +0.40pp、min-new mean +0.57pp、floor80 +3/40，worst维持72.86%。K10仍以V88 180码结构作为主基准，V90 K10作为兼容入口。
+
+### 2026-07-09 qKNN V91诊断：target-new注册低类保护继续扫描
+
+本节按当前协议只评价target-old旧类目标域适应和target-new/seen-new注册识别；不使用unknown互斥、拒识或open-set指标作为优化目标。阶段二输入仍是叠加LEO星地信道后的目标域support/query样本，query真值只用于离线评估。本轮只做本地扫描与报告更新；未访问N607、未scp、未远端启动。`E:\type10-7`根目录不是Git仓库，Git镜像报告同步到`E:\type10-7\github_publish\CVS-RFFI-repo`。
+
+当前最佳仍未被V91扫描超过：
+
+| candidate | K | support code | old mean | old p10 | min-old mean | min-old p10 | seen-new mean | seen-new p10 | min-new mean | min-new p10 | floor75 | floor80 | worst | 决策 |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | --- |
+| V90 K5`scenario_diverse + stable_dualview_v90` | 5 | 130 | 96.62% | 95.45% | 90.54% | 87.14% | 95.09% | 93.47% | 83.82% | 75.71% | 37/40 | 33/40 | 72.86% | 当前K5最佳 |
+| V88 K10`stable_dualview_v88` | 10 | 180 | 96.40% | 94.76% | 90.07% | 87.00% | 95.92% | 94.42% | 85.50% | 77.14% | 39/40 | 34/40 | 72.86% | 当前K10最佳 |
+
+V91候选扫描结果：
+
+| artifact | rows | 关键设置 | 最好观察 | 结论 |
+| --- | ---: | --- | --- | --- |
+| `artifacts/v91a_k5_pair_refine_20260709/` | 0 | K5 broad scenario-pair refine网格 | 904s超时后无CSV输出；清理本地`conda/python`残留进程。 | 只记为中止扫描，不作为证据。 |
+| `artifacts/v91a2_k5_pair_refine_micro_20260709/k5_v91a2_pair_refine_micro_seed421038_40.csv/json` | 240 | K5，V90基线+new-scope scenario pair refine微扫 | 最高`min-new mean=83.89%`，但floor75=37/40、floor80=33/40、worst=72.86%，仅比V90均值+0.07pp。 | 没有解决最低类坍塌，不注册。 |
+| `artifacts/v91b_k5_support_loo_rescue_20260709/k5_v91b_support_loo_rescue_seed421038_40.csv/json` | 480 | K5，support LOO pair rescue | 最好`weight=0.010,top_pairs=12`：old=96.62%，min-old=90.54%，seen-new=95.10%，min-new=84.00%，但floor80从V90的33/40降到31/40。 | 均值略升但低类覆盖回退，不注册。 |
+| `artifacts/v91c_k10_aux_protect_fine_20260709/k10_v91c_aux_protect_fine_seed421038_40.csv/json` | 480 | K10，aux 0.62/0.64/0.66/0.68与protect_top 9/10/11细扫 | 最好均衡仍是V88行`aux=0.64,protect_top=10,codes=180`。185-code候选可到`seen-new=96.21%,min-new=86.04%`，但floor75降到37/40。 | 没有超过V88的joint row，不注册。 |
+
+K10 V91c同列聚合：
+
+| aux | protect_top | codes | old | old p10 | min-old | min-old p10 | seen-new | seen-new p10 | min-new | min-new p10 | worst | floor75 | floor80 |
+| ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| 0.64 | 10 | 180 | 96.40% | 94.76% | 90.07% | 87.00% | 95.92% | 94.42% | 85.50% | 77.14% | 72.86% | 39/40 | 34/40 |
+| 0.62 | 11 | 185 | 96.30% | 94.76% | 89.86% | 85.71% | 95.90% | 94.46% | 85.64% | 77.14% | 72.86% | 39/40 | 33/40 |
+| 0.64 | 11 | 185 | 96.41% | 94.76% | 90.11% | 87.00% | 96.06% | 94.49% | 85.89% | 77.14% | 72.86% | 38/40 | 34/40 |
+| 0.68 | 10 | 180 | 96.61% | 95.00% | 90.61% | 87.14% | 96.11% | 94.59% | 85.75% | 77.00% | 72.86% | 38/40 | 34/40 |
+| 0.68 | 11 | 185 | 96.61% | 95.00% | 90.61% | 87.14% | 96.21% | 94.60% | 86.04% | 77.00% | 72.86% | 37/40 | 34/40 |
+| 0.68 | 9 | 175 | 96.61% | 95.00% | 90.61% | 87.14% | 95.97% | 94.31% | 85.36% | 75.71% | 68.57% | 37/40 | 33/40 |
+
+当前决策：没有超过V90/V88的新注册版本。K5仍用`scenario_diverse + stable_dualview_v90`；K10仍用`stable_dualview_v88`。V91的有效信息是：pair refine和support LOO rescue能推高少量均值，但会牺牲floor80或无法提升worst；K10提高aux或protect_top会推高seen-new/min-new均值，但floor75下降，不符合“新类增多下性能坍塌和最低类过低”问题的主目标。下一轮应转向不依赖query真值的support候选池选择或弱类簇保护，而不是继续增加类对校准强度。
