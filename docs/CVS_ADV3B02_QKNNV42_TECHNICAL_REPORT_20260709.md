@@ -9,12 +9,12 @@
 
 |阶段|对象|可声明内容|不可声明内容|
 |---|---|---|---|
-|Phase1|`ADV3B02_CORE90_SOFT_E200`|source-only弱标注/半监督跨接收机DG表征基座；输出可用于后续目标域注册的身份表征$\mathbf z_{\mathrm{id}}$和域表征$\mathbf z_{\mathrm{dom}}$|不能单独声明Phase2 target-old/target-new完成|
+|Phase1|`ADV3B02_CORE90_SOFT_E200`|source-only弱标注/半监督跨接收机DG表征基座；输出可用于后续目标域注册的身份表征`z_id`和域表征`z_dom`|不能单独声明Phase2 target-old/target-new完成|
 |Phase2 Stage2-C|`qKNNV42`|冻结ADV3B02表征后的目标域K-shot support-memory注册/适应头；目标是target-old保留和target-new seen-new注册|不是新backbone，不是端到端训练模型，不覆盖Phase2以外目标|
 
 当前组合成果来自N20 HP08L5注册新类包的同row候选：
 
-|seed|$K_{\mathrm{old}}$|$K_{\mathrm{new}}$|old acc|min old|seen-new acc|min new|$H_{\mathrm{old,new}}$|verdict|
+|seed|K old|K new|old acc|min old|seen-new acc|min new|H old-new|verdict|
 |---:|---:|---:|---:|---:|---:|---:|---:|---|
 |421070|5|5|94.52%|85.71%|90.14%|81.43%|92.28%|Phase2 K5旧类适应+seen-new注册候选|
 
@@ -88,15 +88,15 @@ $$
 |`model_size`|`M`|
 |`model_variant`|`lite_d`|
 |`arch_family`|`cvsincnet`|
-|`input_len`|$L=256$，由WiSig/ManySig数据上下文传入|
-|`num_classes`|$C=|\mathcal Y_{\mathrm{old}}|=6$|
-|`num_domains`|$D=|\mathcal D_s|$，由源域receiver/day映射确定|
+|`input_len`|`L=256`，由WiSig/ManySig数据上下文传入|
+|`num_classes`|`C=6`，即`Y_old`旧类数量|
+|`num_domains`|`D`为源域receiver/day映射得到的domain数量|
 |identity branch ablation|`no_dac`|
 |domain branch ablation|`no_stats`|
 |shared stem|`lite_d`触发`sinc`和`hf`在identity/domain分支间共享|
 |identity feature key|`feat_joint`|
 |domain feature key|`feat_imp`|
-|domain enhancer|`rcn_stats`，strength$=0.35$|
+|domain enhancer|`rcn_stats`，`strength=0.35`|
 
 `lite_d`将CVSincNet主干缩窄为：
 
@@ -112,7 +112,7 @@ $$
 |`freq_ch1,freq_ch2,freq_ch3`|16,32,32|
 |`pa_ch1,pa_ch2,pa_ch3`|48,64,64|
 |`pa_memory_depth`|4|
-|`pa_orders`|$(1,3,5)$|
+|`pa_orders`|`(1,3,5)`|
 |`drop`|0.45|
 
 由于identity branch使用`no_dac`，身份分支启用time/frequency/PA路径，不启用DAC路径。domain branch使用`no_stats`，保留time/DAC/frequency/PA路径，但禁用频谱统计投影、DAC subband聚合和PA统计增量。
@@ -125,8 +125,8 @@ $$
 
 |层|参数|输出|
 |---|---|---|
-|`SincConv1d.forward_iq_pair`|out_channels$=24$，kernel$=79$，padding$=39$，stride$=1$，每个IQ通道共享同一24个可学习带通滤波器|$\mathbf s\in\mathbb R^{B\times48\times256}$|
-|`HighFreqEmphasis`|固定一阶差分核$[-1,1]$和二阶差分核$[1,-2,1]$，groups$=2$|$\mathbf h\in\mathbb R^{B\times4\times256}$|
+|`SincConv1d.forward_iq_pair`|`out_channels=24`，`kernel=79`，`padding=39`，`stride=1`，每个IQ通道共享同一24个可学习带通滤波器|`s: Bx48x256`|
+|`HighFreqEmphasis`|固定一阶差分核`[-1,1]`和二阶差分核`[1,-2,1]`，`groups=2`|`h: Bx4x256`|
 
 Sinc滤波器参数为每个带通滤波器的低频和带宽：
 
@@ -153,14 +153,14 @@ $$
 
 |层|参数|输出通道|
 |---|---|---:|
-|`time_fuse`|Conv1d$100\to48$，kernel$=1$，bias$=0$；GroupNorm$g=16$；ReLU|48|
-|`time_down`|AvgPool1d，kernel$=2$|48|
-|`MixStyle`|仅identity branch；layers=`time_down,t1`；$p=0.18$，$\alpha=0.10$，mix=`same_tx_crossdomain`，strength$=0.70$，fallback=`skip`，late_start$=110$|48|
-|`t1`|Depthwise Conv1d$48\to48$，kernel$=5$，groups$=48$；Pointwise Conv1d$48\to72$；GroupNorm$g=8$；ReLU；MaxPool1d$2$；Dropout$0.10$|72|
-|`t2`|Depthwise Conv1d$72\to72$，kernel$=5$，groups$=72$；Pointwise Conv1d$72\to96$；GroupNorm$g=16$；ReLU；MaxPool1d$2$；Dropout$0.10$|96|
-|`t3`|Depthwise Conv1d$96\to96$，kernel$=3$，groups$=96$；Pointwise Conv1d$96\to96$；GroupNorm$g=16$；ReLU；pool=Identity；Dropout$0.10$|96|
-|`t_pool`|AdaptiveAvgPool1d$1$|96|
-|`t_proj`|Linear$96\to160$|160|
+|`time_fuse`|`Conv1d 100->48`，`kernel=1`，`bias=0`；`GroupNorm g=16`；ReLU|48|
+|`time_down`|AvgPool1d，`kernel=2`|48|
+|`MixStyle`|仅identity branch；`layers=time_down,t1`；`p=0.18`，`alpha=0.10`，`mix=same_tx_crossdomain`，`strength=0.70`，`fallback=skip`，`late_start=110`|48|
+|`t1`|`Depthwise Conv1d 48->48`，`kernel=5`，`groups=48`；`Pointwise Conv1d 48->72`；`GroupNorm g=8`；ReLU；`MaxPool1d 2`；`Dropout 0.10`|72|
+|`t2`|`Depthwise Conv1d 72->72`，`kernel=5`，`groups=72`；`Pointwise Conv1d 72->96`；`GroupNorm g=16`；ReLU；`MaxPool1d 2`；`Dropout 0.10`|96|
+|`t3`|`Depthwise Conv1d 96->96`，`kernel=3`，`groups=96`；`Pointwise Conv1d 96->96`；`GroupNorm g=16`；ReLU；`pool=Identity`；`Dropout 0.10`|96|
+|`t_pool`|`AdaptiveAvgPool1d 1`|96|
+|`t_proj`|`Linear 96->160`|160|
 
 输出为$\mathbf e_t\in\mathbb R^{B\times160}$。
 
@@ -180,15 +180,21 @@ $$
 
 |层|参数|输出通道|
 |---|---|---:|
-|`freq_gate`|Conv1d$4\to1$，kernel$=5$，padding$=2$；gate scale$=1+0.6(2\sigma(\cdot)-1)$|4|
-|`f1`|Depthwise Conv1d$4\to4$，kernel$=5$，groups$=4$；Pointwise Conv1d$4\to16$；GroupNorm$g=16$；ReLU；MaxPool1d$2$；Dropout$0.05$|16|
-|`f2`|Depthwise Conv1d$16\to16$，kernel$=5$，groups$=16$；Pointwise Conv1d$16\to32$；GroupNorm$g=16$；ReLU；MaxPool1d$2$；Dropout$0.05$|32|
-|`f3`|Depthwise Conv1d$32\to32$，kernel$=3$，groups$=32$；Pointwise Conv1d$32\to32$；GroupNorm$g=16$；ReLU；pool=Identity；Dropout$0.05$|32|
-|`f_pool`|AdaptiveAvgPool1d$1$|32|
-|`f_proj`|Linear$32\to160$|160|
-|`freq_stats_proj`|Linear$3\to160$；ReLU；Dropout$0.1125$|160|
+|`freq_gate`|`Conv1d 4->1`，`kernel=5`，`padding=2`；gate scale见下方公式说明|4|
+|`f1`|`Depthwise Conv1d 4->4`，`kernel=5`，`groups=4`；`Pointwise Conv1d 4->16`；`GroupNorm g=16`；ReLU；`MaxPool1d 2`；`Dropout 0.05`|16|
+|`f2`|`Depthwise Conv1d 16->16`，`kernel=5`，`groups=16`；`Pointwise Conv1d 16->32`；`GroupNorm g=16`；ReLU；`MaxPool1d 2`；`Dropout 0.05`|32|
+|`f3`|`Depthwise Conv1d 32->32`，`kernel=3`，`groups=32`；`Pointwise Conv1d 32->32`；`GroupNorm g=16`；ReLU；`pool=Identity`；`Dropout 0.05`|32|
+|`f_pool`|`AdaptiveAvgPool1d 1`|32|
+|`f_proj`|`Linear 32->160`|160|
+|`freq_stats_proj`|`Linear 3->160`；ReLU；`Dropout 0.1125`|160|
 
 输出为
+
+frequency gate的缩放形式为
+
+$$
+g_{\mathrm{freq}}=1+0.6\left(2\sigma(\cdot)-1\right).
+$$
 
 $$
 \mathbf e_f=\operatorname{Linear}_{32\to160}(\operatorname{pool}(\mathbf f_3))
@@ -209,14 +215,14 @@ $$
 
 |层|参数|输出通道|
 |---|---|---:|
-|`pa_lift`|memory_depth$=4$，orders$=(1,3,5)$，clip$=2.0$|24|
-|`pa_gate`|EnvelopeGate Conv1d$1\to24$，kernel$=5$，padding$=2$，$\alpha=0.5$|24|
-|`pa_b1`|Conv1d$24\to48$，kernel$=7$，dilation$=1$，padding$=3$；GroupNorm$g=16$；SiLU；AvgPool1d$2$；Dropout$0.08$|48|
-|`pa_b2`|Conv1d$48\to64$，kernel$=7$，dilation$=2$，padding$=6$；GroupNorm$g=16$；SiLU；AvgPool1d$2$；Dropout$0.08$|64|
-|`pa_b3`|Conv1d$64\to64$，kernel$=5$，dilation$=4$，padding$=8$；GroupNorm$g=16$；SiLU；pool=Identity；Dropout$0.08$|64|
-|`pa_pool`|AdaptiveAvgPool1d$1$|64|
-|`pa_proj`|Linear$64\to160$；ReLU；Dropout$0.1125$|160|
-|`pa_stats_proj`|Linear$3\to160$；ReLU；Dropout$0.1125$|160|
+|`pa_lift`|`memory_depth=4`，`orders=(1,3,5)`，`clip=2.0`|24|
+|`pa_gate`|`EnvelopeGate Conv1d 1->24`，`kernel=5`，`padding=2`，`alpha=0.5`|24|
+|`pa_b1`|`Conv1d 24->48`，`kernel=7`，`dilation=1`，`padding=3`；`GroupNorm g=16`；SiLU；`AvgPool1d 2`；`Dropout 0.08`|48|
+|`pa_b2`|`Conv1d 48->64`，`kernel=7`，`dilation=2`，`padding=6`；`GroupNorm g=16`；SiLU；`AvgPool1d 2`；`Dropout 0.08`|64|
+|`pa_b3`|`Conv1d 64->64`，`kernel=5`，`dilation=4`，`padding=8`；`GroupNorm g=16`；SiLU；`pool=Identity`；`Dropout 0.08`|64|
+|`pa_pool`|`AdaptiveAvgPool1d 1`|64|
+|`pa_proj`|`Linear 64->160`；ReLU；`Dropout 0.1125`|160|
+|`pa_stats_proj`|`Linear 3->160`；ReLU；`Dropout 0.1125`|160|
 
 输出为
 
@@ -242,15 +248,15 @@ $$
 
 |层|参数|输出|
 |---|---|---|
-|`fuse`|Linear$321\to160$；ReLU；Dropout$0.45$|$\mathbf b\in\mathbb R^{B\times160}$|
-|`con_proj`|Linear$160\to160$；ReLU；Dropout$0.1125$|`feat_con`|
-|`id_proj`|Linear$160\to160$；ReLU；Dropout$0.225$|`feat_cls`|
-|`pa_proj` in classifier|Linear$320\to160$；ReLU；Dropout$0.225$|`feat_pa`|
-|`id_gate`|Linear$160\to160$；Sigmoid；gate_alpha$=0.35$|identity gate|
-|`joint_proj`|Linear$320\to160$；ReLU；Dropout$0.225$|`feat_joint`$=\mathbf z_{\mathrm{id}}$|
-|`imp_merge`|Linear$160\to160$；ReLU；Dropout$0.1125$|`feat_imp`|
-|`CosFaceHead`|weight$\in\mathbb R^{6\times160}$，scale$s=30$，margin$m=0.35$|$\boldsymbol\ell_y$|
-|`pa_head`|Linear$160\to80$；ReLU；Linear$80\to1$；Sigmoid|PA辅助强度预测|
+|`fuse`|`Linear 321->160`；ReLU；`Dropout 0.45`|`b: Bx160`|
+|`con_proj`|`Linear 160->160`；ReLU；`Dropout 0.1125`|`feat_con`|
+|`id_proj`|`Linear 160->160`；ReLU；`Dropout 0.225`|`feat_cls`|
+|`pa_proj` in classifier|`Linear 320->160`；ReLU；`Dropout 0.225`|`feat_pa`|
+|`id_gate`|`Linear 160->160`；Sigmoid；`gate_alpha=0.35`|identity gate|
+|`joint_proj`|`Linear 320->160`；ReLU；`Dropout 0.225`|`feat_joint=z_id`|
+|`imp_merge`|`Linear 160->160`；ReLU；`Dropout 0.1125`|`feat_imp`|
+|`CosFaceHead`|`weight: 6x160`，`scale=30`，`margin=0.35`|`tx logits`|
+|`pa_head`|`Linear 160->80`；ReLU；`Linear 80->1`；Sigmoid|PA辅助强度预测|
 
 CosFace logits为
 
@@ -271,11 +277,11 @@ domain branch使用同样的`lite_d`主干，但配置为`domain_branch_ablation
 |---|---|
 |MixStyle|关闭|
 |stats path|关闭，`freq_stats_proj`、`pa_stats_proj`、`dac_subband_agg`不参与|
-|DAC HF projection|Conv1d$4\to48$，kernel$=1$，bias$=0$；GroupNorm$g=16$；SiLU|
-|`dac_b1`|WLComplexBlock，complex Conv$24\to24$，kernel$=5$，dilation$=1$，pool=Identity，Dropout$0.05$，residual=Identity|
-|`dac_b2`|WLComplexBlock，complex Conv$24\to32$，kernel$=3$，dilation$=1$，pool=Identity，Dropout$0.05$，residual Conv1d$48\to64$|
-|`dac_b3`|WLComplexBlock，complex Conv$32\to32$，kernel$=3$，dilation$=2$，AvgPool1d$2$，Dropout$0.05$，residual Conv1d$64\to64$+AvgPool1d$2$|
-|`dac_proj`|Linear$64\to160$；ReLU；Dropout$0.1125$|
+|DAC HF projection|`Conv1d 4->48`，`kernel=1`，`bias=0`；`GroupNorm g=16`；SiLU|
+|`dac_b1`|WLComplexBlock，`complex Conv 24->24`，`kernel=5`，`dilation=1`，`pool=Identity`，`Dropout 0.05`，`residual=Identity`|
+|`dac_b2`|WLComplexBlock，`complex Conv 24->32`，`kernel=3`，`dilation=1`，`pool=Identity`，`Dropout 0.05`，`residual Conv1d 48->64`|
+|`dac_b3`|WLComplexBlock，`complex Conv 32->32`，`kernel=3`，`dilation=2`，`AvgPool1d 2`，`Dropout 0.05`，`residual Conv1d 64->64 + AvgPool1d 2`|
+|`dac_proj`|`Linear 64->160`；ReLU；`Dropout 0.1125`|
 
 WL complex convolution使用四个实卷积：
 
@@ -290,16 +296,27 @@ domain backbone输出`feat_imp`作为$\mathbf z_{\mathrm{dom,raw}}$。随后`Dom
 
 |层|参数|输出|
 |---|---|---|
-|`RCNStatEncoder`|18维IQ统计；Linear$18\to80$；LayerNorm$80$；SiLU；Dropout$0.05$；Linear$80\to160$|$\mathbf z_{\mathrm{rcn}}$|
-|gate|Linear$320\to160$；Sigmoid|$\mathbf g_{\mathrm{rcn}}$|
-|enhance|LayerNorm$\left(\mathbf z_{\mathrm{dom,raw}}+0.35\,\mathbf g_{\mathrm{rcn}}\odot\mathbf z_{\mathrm{rcn}}\right)$|$\mathbf z_{\mathrm{dom}}$|
+|`RCNStatEncoder`|18维IQ统计；`Linear 18->80`；`LayerNorm 80`；SiLU；`Dropout 0.05`；`Linear 80->160`|`z_rcn`|
+|gate|`Linear 320->160`；Sigmoid|`g_rcn`|
+|enhance|LayerNorm残差增强，公式见下文|`z_dom`|
 
 域分类头和对抗头为
 
+域增强的显式形式为
+
+$$
+\mathbf z_{\mathrm{dom}}
+=\operatorname{LayerNorm}
+\left(
+\mathbf z_{\mathrm{dom,raw}}
++0.35\,\mathbf g_{\mathrm{rcn}}\odot\mathbf z_{\mathrm{rcn}}
+\right).
+$$
+
 |层|参数|输出|
 |---|---|---|
-|`dom_head`|Linear$160\to80$；ReLU；Dropout$0.10$；Linear$80\to D$|$\boldsymbol\ell_d$|
-|`adv_head`|GRL$(\mathbf z_{\mathrm{id}})$；Linear$160\to80$；ReLU；Dropout$0.10$；Linear$80\to D$|$\boldsymbol\ell_{\mathrm{adv}}$|
+|`dom_head`|`Linear 160->80`；ReLU；`Dropout 0.10`；`Linear 80->D`|`domain logits`|
+|`adv_head`|`GRL(z_id)`；`Linear 160->80`；ReLU；`Dropout 0.10`；`Linear 80->D`|`adversarial domain logits`|
 |`tx_adv_head`|默认关闭|无|
 
 GRL定义为
@@ -315,33 +332,33 @@ $$
 |---|---|---|
 |数据|`wisig_pkl`|`Dataset_WigSig/ManySig.pkl`|
 |数据|`split_mode`|`tx_rx_day_1_7_2`|
-|数据|`labeled_ratio,unlabeled_ratio,source_val_ratio`|$0.10,0.70,0.20$|
-|优化器|AdamW|learning rate$=2\times10^{-4}$，weight decay$=10^{-4}$|
+|数据|`labeled_ratio,unlabeled_ratio,source_val_ratio`|`0.10,0.70,0.20`|
+|优化器|AdamW|`learning_rate=2e-4`，`weight_decay=1e-4`|
 |训练轮数|`epochs`|200|
 |阶段|`label_epochs,pseudo_epochs`|130,70|
-|label smoothing|$\varepsilon_{\mathrm{ls}}$|0.01|
-|伪标签|`tau_min,tau_max,pseudo_quantile`|$0.92,0.97,0.86$|
+|label smoothing|`epsilon_ls`|0.01|
+|伪标签|`tau_min,tau_max,pseudo_quantile`|`0.92,0.97,0.86`|
 |伪标签|`pseudo_threshold_mode`|`rx_day_quantile`|
 |伪标签|`use_ema_teacher`|true|
 |prototype|`lambda_proto`|0.0032|
-|prototype|`proto_domain_align_weight,proto_margin,proto_push_weight`|$0.10,0.15,0.10$|
+|prototype|`proto_domain_align_weight,proto_margin,proto_push_weight`|`0.10,0.15,0.10`|
 |身份几何|`lambda_zid_compact`|0.032|
-|身份几何|SupCon/radius/CVaR权重|$0.30,0.35,0.35$|
-|身份几何|radius,CVaR alpha|$40^\circ,0.95$|
+|身份几何|SupCon/radius/CVaR权重|`0.30,0.35,0.35`|
+|身份几何|radius,CVaR alpha|`40 deg,0.95`|
 |源域边界|历史CLI名`lambda_proxy_unknown`|0.0045|
-|源域边界|core/accept/tail/overflow quantile|$0.90,0.85,0.92,0.97$|
-|源域边界|core/component/tail/source权重|$0.45,0.65,0.20,0.20$|
+|源域边界|core/accept/tail/overflow quantile|`0.90,0.85,0.92,0.97`|
+|源域边界|core/component/tail/source权重|`0.45,0.65,0.20,0.20`|
 |源域边界|CVaR alpha|0.30|
 |类间软混合|历史CLI名`lambda_soft_unknown_mixup`|0.0045|
-|类间软混合|count/order/alpha|$24,3,0.5$|
-|类间软混合|CE/energy/vacuum权重|$0.60,1.0,0.35$|
+|类间软混合|count/order/alpha|`24,3,0.5`|
+|类间软混合|CE/energy/vacuum权重|`0.60,1.0,0.35`|
 |source episode|`lambda_source_episode`|0.0035|
-|source episode|start/warmup/min domains/radius cap|$20,25,2,33^\circ$|
+|source episode|start/warmup/min domains/radius cap|`20,25,2,33 deg`|
 |源域LEO压力|`sat_train_scenarios`|`leo_clear_weak,leo_low_elev_weak,leo_rain_weak`|
-|源域LEO压力|`lambda_sat_cls,lambda_sat_cons`|$0.68,0$|
-|域损失|`lambda_domain,lambda_adv`|$1,0.35$|
-|Group/FishR|`lambda_group_ce,lambda_fishr`|$0.16,0.04$|
-|无标签|`lambda_u,lambda_ent`|$0.16,0.01$|
+|源域LEO压力|`lambda_sat_cls,lambda_sat_cons`|`0.68,0`|
+|域损失|`lambda_domain,lambda_adv`|`1,0.35`|
+|Group/FishR|`lambda_group_ce,lambda_fishr`|`0.16,0.04`|
+|无标签|`lambda_u,lambda_ent`|`0.16,0.01`|
 |checkpoint|`best_metric`|`joint_safe`|
 
 ## 6.训练损失函数
@@ -444,7 +461,7 @@ $$
 \max\left(0,m_{\mathrm{proto}}-\left(1-\cos(\boldsymbol\mu_c,\boldsymbol\mu_{c'})\right)\right).
 $$
 
-### 6.5$\mathbf z_{\mathrm{id}}$紧致性损失
+### 6.5身份表征紧致性损失
 
 Supervised contrastive部分为
 
@@ -755,10 +772,10 @@ $$
 
 |消融|改法|观察指标|
 |---|---|---|
-|`single_backbone`|去掉domain backbone，只保留单CVSincNet|strict UDU、receiver floor、$\mathbf z_{\mathrm{id}}\to d$泄漏probe|
+|`single_backbone`|去掉domain backbone，只保留单CVSincNet|strict UDU、receiver floor、`z_id->d`泄漏probe|
 |`no_pa_path`|关闭PA path|strict UDU、sat_floor、hard TX类|
 |`no_freq_path`|关闭frequency path|receiver floor、LEO压力视图鲁棒性|
-|`no_grl`|$\lambda_{\mathrm{adv}}=0$|域泄漏和目标域old acc|
+|`no_grl`|`lambda_adv=0`|域泄漏和目标域old acc|
 |`no_mixstyle`|关闭identity branch MixStyle|跨receiver泛化和弱receiver floor|
 
 ### 模块B：源域半监督伪标签与一致性学习
@@ -767,9 +784,9 @@ $$
 
 |消融|改法|观察指标|
 |---|---|---|
-|`no_ssl`|$\lambda_u=0$，不使用$\mathcal U_s$伪标签|source val、strict UDU、prototype质量|
+|`no_ssl`|`lambda_u=0`，不使用`U_s`伪标签|source val、strict UDU、prototype质量|
 |`no_ema`|用student替代EMA teacher|伪标签稳定性、pseudo precision|
-|`global_tau`|$\tau_d$改为全局阈值|弱receiver伪标签覆盖率和错误率|
+|`global_tau`|`tau_d`改为全局阈值|弱receiver伪标签覆盖率和错误率|
 |`no_temporal_gate`|移除TemporalGate|连续窗口伪标签一致性|
 |`no_strong_agreement`|移除strong-view一致性|增强扰动下伪标签污染率|
 
@@ -779,10 +796,10 @@ $$
 
 |消融|改法|观察指标|
 |---|---|---|
-|`no_coretail`|关闭$\mathcal L_{\mathrm{coretail}}$|known core半径、tail CVaR、receiver floor|
-|`core80_vs_core90`|$Q_{\mathrm{core}}=0.80$与$0.90$对比|core保真与tail覆盖权衡|
-|`accept80_vs_accept85`|$Q_{\mathrm{acc}}=0.80$与$0.85$对比|accept半径和旧类召回|
-|`alpha20_vs_alpha30`|CVaR alpha$=0.20$与$0.30$对比|尾部风险抑制强度|
+|`no_coretail`|关闭`L_coretail`|known core半径、tail CVaR、receiver floor|
+|`core80_vs_core90`|`Q_core=0.80`与`0.90`对比|core保真与tail覆盖权衡|
+|`accept80_vs_accept85`|`Q_acc=0.80`与`0.85`对比|accept半径和旧类召回|
+|`alpha20_vs_alpha30`|`CVaR alpha=0.20`与`0.30`对比|尾部风险抑制强度|
 |`no_component_gate`|关闭component gate|局部簇半径、component数量、source overflow|
 
 ### 模块D：prototype几何、类间软混合和LEO压力视图
@@ -791,11 +808,11 @@ $$
 
 |消融|改法|观察指标|
 |---|---|---|
-|`no_proto`|$\lambda_{\mathrm{proto}}=0$|Phase2 prototype导出质量和qKNN支持集检索|
-|`no_zid_compact`|$\lambda_{\mathrm{zid}}=0$|类内角半径、min class acc|
-|`no_softmix`|$\lambda_{\mathrm{softmix}}=0$|类间边界混淆和tail风险|
-|`no_source_episode`|$\lambda_{\mathrm{epi}}=0$|跨源域episode外推|
-|`no_sat_ce`|$\lambda_{\mathrm{satCE}}=0$|LEO压力视图下sat_floor|
+|`no_proto`|`lambda_proto=0`|Phase2 prototype导出质量和qKNN支持集检索|
+|`no_zid_compact`|`lambda_zid=0`|类内角半径、min class acc|
+|`no_softmix`|`lambda_softmix=0`|类间边界混淆和tail风险|
+|`no_source_episode`|`lambda_epi=0`|跨源域episode外推|
+|`no_sat_ce`|`lambda_satCE=0`|LEO压力视图下sat_floor|
 
 ## 8.qKNNV42：Phase2 Stage2-C轻量注册头
 
@@ -965,11 +982,11 @@ E:\type10-7\automation_reports\CV-SincNet\phase2_qknn_hardpair_n20_20260706\arti
 
 |metric|value|
 |---|---:|
-|$A_{\mathrm{old}}$|94.52%|
-|$\min_c A_{\mathrm{old},c}$|85.71%|
-|$A_{\mathrm{new}}$|90.14%|
-|$\min_c A_{\mathrm{new},c}$|81.43%|
-|$H_{\mathrm{old,new}}$|92.28%|
+|A old|94.52%|
+|min old class acc|85.71%|
+|A new|90.14%|
+|min new class acc|81.43%|
+|H old-new|92.28%|
 
 ### 8.5qKNNV42创新点
 
@@ -978,12 +995,12 @@ qKNNV42的贡献在Phase2部署方式，而不是新神经网络结构：
 |创新点|具体表现|
 |---|---|
 |冻结表征上的注册头|不更新ADV3B02参数，只写入目标域K-shot support memory|
-|int8 support code|用$\mathbf q_i\in\mathbb Z_8^d$保存support，不保存原始IQ|
-|旧类/新类同一评分空间|$\mathcal Y_{\mathrm{old}}$和$\mathcal Y_{\mathrm{new}}$共享$\mathbf z_{\mathrm{id}}$检索空间|
-|类内top-$m$+prototype混合|兼顾局部近邻和类中心稳定性|
-|old-class anchor|$b_{\mathrm{old}}$保护旧类适应，不让新类注册吞掉旧类|
+|int8 support code|用`q_i in Z8^d`保存support，不保存原始IQ|
+|旧类/新类同一评分空间|`Y_old`和`Y_new`共享`z_id`检索空间|
+|类内top-m+prototype混合|兼顾局部近邻和类中心稳定性|
+|old-class anchor|`b_old`保护旧类适应，不让新类注册吞掉旧类|
 |scenario residual|用目标LEO场景support结构补足同场景缺失|
-|轻量图传播|$\Delta_{\mathrm{lp}}$只在冻结特征和support/query图上做分数平滑，不训练backbone|
+|轻量图传播|`Delta_lp`只在冻结特征和support/query图上做分数平滑，不训练backbone|
 
 相对现有RFFI，qKNNV42的差异是：普通RFFI闭集分类通常固定$\mathcal Y$并训练一个softmax分类器；qKNNV42在目标接收机域到达后，用少量support即时扩展类别集合$\mathcal Y_{\mathrm{old}}\cup\mathcal Y_{\mathrm{new}}$，并把部署状态限制为support code、prototype和少量标量。
 
@@ -992,7 +1009,7 @@ qKNNV42的贡献在Phase2部署方式，而不是新神经网络结构：
 |类似方法|相似点|qKNNV42差异|
 |---|---|---|
 |KNN|按embedding相似度分类|使用量化support code，并区分old/new角色|
-|Nearest Class Mean|使用类中心|同时使用top-$m$局部近邻和prototype|
+|Nearest Class Mean|使用类中心|同时使用top-m局部近邻和prototype|
 |Prototypical Networks|K-shot support形成prototype|backbone不做episodic训练，部署期只更新memory|
 |Matching Networks|query-support相似度|qKNNV42不用端到端attention训练|
 |iCaRL/增量prototype|新类注册和旧类保持|qKNNV42不保存原始样本，不训练分类器权重|
@@ -1003,18 +1020,18 @@ qKNNV42的贡献在Phase2部署方式，而不是新神经网络结构：
 |组件|消融|观察指标|
 |---|---|---|
 |int8量化|float support vs int8 support|old/new均值、min class、存储码数|
-|top-$m$|$m\in\{1,2,4\}$|新类最低类和旧类地板|
-|prototype mix|$\lambda_p\in\{0,0.25,0.45\}$|局部近邻/类中心权衡|
-|old bias|$b_{\mathrm{old}}\in\{0,0.001\}$|旧类遗忘和new-over-old混淆|
-|scenario residual|$\lambda_{\mathrm{scen}}\in\{0,0.5\}$|LEO场景缺失下的新类地板|
-|labelprop|$\lambda_{\mathrm{lp}}\in\{0,0.025\}$|query-free图平滑对弱类的影响|
+|top-m|`m in {1,2,4}`|新类最低类和旧类地板|
+|prototype mix|`lambda_p in {0,0.25,0.45}`|局部近邻/类中心权衡|
+|old bias|`b_old in {0,0.001}`|旧类遗忘和new-over-old混淆|
+|scenario residual|`lambda_scen in {0,0.5}`|LEO场景缺失下的新类地板|
+|labelprop|`lambda_lp in {0,0.025}`|query-free图平滑对弱类的影响|
 |support selection|不同seed/support策略|是否能把`seed=421070`式强support转成oracle-free注册机制|
 
 ## 9.K10非压缩/压缩更新
 
 当前同一Phase2口径下，K10 40seed结果为：
 
-|候选|stored codes|old mean|old p10|min old mean|min old p10|seen-new mean|seen-new p10|min new mean|min new p10|min new$\ge75$|
+|候选|stored codes|old mean|old p10|min old mean|min old p10|seen-new mean|seen-new p10|min new mean|min new p10|min new >=75|
 |---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
 |不压缩性能上限|260|94.39%|93.57%|85.25%|82.86%|92.22%|90.78%|78.46%|70.00%|32/40|
 |V59统一hard-diverse budget8|208|94.43%|93.57%|85.46%|82.86%|91.95%|90.29%|77.57%|69.86%|29/40|
@@ -1038,7 +1055,7 @@ qKNNV42的贡献在Phase2部署方式，而不是新神经网络结构：
 |ADV3B02训练快照|`E:\type10-7\code\snapshots\phase1_adv3_mechanism32_queue_20260701\launch_phase1_adv3_mechanism32_queue_20260701.sh`|训练参数与候选variant|
 |CVS模型|`E:\type10-7\code\model.py`、`E:\type10-7\code\model_dual_cvsincnet.py`|CV-SincNet、双分支解耦和层参数|
 |SSDG训练|`E:\type10-7\code\SSDG\train_ssdg.py`|伪标签、loss、guard和日志字段|
-|qKNNV42策略实现|`E:\type10-7\github_publish\CVS-RFFI-repo\code\scripts\phase2_support_metric_qknn_probe.py`|V42策略、top-$m$、prototype、labelprop、scenario residual|
+|qKNNV42策略实现|`E:\type10-7\github_publish\CVS-RFFI-repo\code\scripts\phase2_support_metric_qknn_probe.py`|V42策略、top-m、prototype、labelprop、scenario residual|
 |qKNNV42主报告|`E:\type10-7\automation_reports\CV-SincNet\phase2_qknn_hardpair_n20_20260706\report.md`|V42矩阵和high-floor行解释|
 |qKNNV42最佳JSON|`E:\type10-7\automation_reports\CV-SincNet\phase2_qknn_hardpair_n20_20260706\artifacts\v53_fftlogmag_20260706\local_v55_diagnostics_20260706\k5_strict_seed421070_floor_param_best_predictions_20260707.json`|当前同row指标和support/query指纹|
 
@@ -1046,8 +1063,8 @@ qKNNV42的贡献在Phase2部署方式，而不是新神经网络结构：
 
 1.按模块A-D跑ADV3B02消融，主表保留strict UDU、receiver floor、sat_floor、prototype半径和Phase2 qKNN后续指标。
 
-2.按qKNNV42组件跑Phase2消融，主表保留$K$、stored codes、old mean、min old、seen-new mean、min new、$H_{\mathrm{old,new}}$和support/query指纹。
+2.按qKNNV42组件跑Phase2消融，主表保留`K`、stored codes、old mean、min old、seen-new mean、min new、`H_old,new`和support/query指纹。
 
 3.把K5 strong support从`seed=421070`证据转成oracle-free support selection，例如支持集覆盖度、类内多原型和scenario coverage gate。
 
-4.继续复核更多$\mathcal R_t$目标接收机域，避免单receiver或单support split过拟合。
+4.继续复核更多`R_t`目标接收机域，避免单receiver或单support split过拟合。
