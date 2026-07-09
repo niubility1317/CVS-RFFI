@@ -44,4 +44,17 @@ Key settings: full fine-tune, lr `0.0005`, source replay per class `20`, Fig8 st
 
 ## Status
 
-Remote sync and verification completed. `py_compile` passed and the remote CLI exposes `--fig8-target-balance {none,class,receiver,class_receiver}`. Full local report will track exact N607 commands, PIDs, startup health, final results, and selected target diagnostics.
+Remote sync and verification completed. `py_compile` passed and the remote CLI exposes `--fig8-target-balance {none,class,receiver,class_receiver}`.
+
+Launched at `2026-07-09 11:00 CST`:
+
+| run | PID | GPU |
+|---|---:|---|
+| `receiver_agnostic_fig8_classrx_strict_r123_20260709_105935` | `1221716` | `cuda:3` |
+| `receiver_agnostic_fig8_move_3_19_r1_20260709_105935` | `1221718` | `cuda:4` |
+| `receiver_agnostic_fig8_move_18_2_3_19_r2_20260709_105935` | `1221720` | `cuda:5` |
+| `receiver_agnostic_fig8_move_18_2_3_19_r3_20260709_105935` | `1221722` | `cuda:6` |
+
+Full local report will track startup health, final results, and selected target diagnostics.
+
+Startup health passed at about `2026-07-09 11:01 CST`: all four PIDs were active on GPUs 3-6, each log had written the intended receiver split and reached stage1 step 500, and no `Traceback`, argparse/unrecognized argument error, OOM, or empty-target split was observed.
