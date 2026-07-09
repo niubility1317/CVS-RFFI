@@ -1,0 +1,391 @@
+{
+  "method_id": "mitigating_receiver_impact_da",
+  "paper": "Mitigating Receiver Impact on Radio Frequency Fingerprint Identification via Domain Adaptation",
+  "artifact_type": "table2_reproduction_run",
+  "dataset": "WiSig ManySig",
+  "epochs": 10,
+  "batch_size": 128,
+  "learning_rate": 0.0006,
+  "lr_scheduler_mode": "none",
+  "lr_step_size": 2500,
+  "lr_gamma": 0.6,
+  "max_samples_per_combo": null,
+  "max_batches_per_epoch": null,
+  "source_pretrain_epochs": 0,
+  "estimate_steps": 7,
+  "base_tau": 0.7,
+  "class_prior_mode": "source",
+  "class_weight_smoothing": 0.0,
+  "class_weight_clip_min": null,
+  "class_weight_clip_max": null,
+  "class_weight_mean_normalize": false,
+  "kl_estimator_mode": "mine_ma",
+  "mine_ma_rate": 0.01,
+  "mine_update_scale": 0.5,
+  "pseudo_threshold_mode": "paper",
+  "pseudo_score_mode": "probability",
+  "class_weight_timing": "current",
+  "pseudo_state_scope": "global",
+  "batch_pairing": "cycle_target",
+  "adapt_start_epoch": 0,
+  "label_smoothing": 0.0,
+  "target_model_selection": "target_loss_best",
+  "official_compat": false,
+  "official_compat_safe_pseudo": false,
+  "seed": 20260710,
+  "device": "cuda",
+  "result_claim_status": "smoke_or_formal_metrics_depend_on_dataset",
+  "rows": [
+    {
+      "task": "14-7->3-19",
+      "method": "proposed",
+      "status": "completed",
+      "target_accuracy": 0.6659166666666667,
+      "target_labels_scope": "evaluation_only",
+      "target_label_role": "hidden_for_UDA_training_available_for_final_accuracy",
+      "checkpoint_path": "paper_reproduction/runs/mitigating_da_table2_proposed_opt_parallel_14-7_to_3-19_b128_s20260710_20260709_1241/checkpoints/14-7_to_3-19_proposed.pt",
+      "history": [
+        {
+          "epoch": 1,
+          "batches": 188,
+          "loss_mean": 0.6230531508509228,
+          "loss_source_mean": 1.0755129502287402,
+          "loss_target_mean": 0.21993964800531876,
+          "loss_kl_mean": -4.9346310103985855,
+          "estimate_zeta_mean": -2.917965102940798,
+          "target_conf_mean": 0.897543100283501,
+          "class_weight_min": 0.2112211287021637,
+          "class_weight_max": 533.3333740234375,
+          "target_selected": 22320,
+          "target_seen_total": 24000,
+          "target_pseudo_selected_acc": 0.4099462365591398,
+          "target_pred_acc": 0.39566666666666667,
+          "lr_ec": 0.0006,
+          "lr_t": 0.0006
+        },
+        {
+          "epoch": 2,
+          "batches": 188,
+          "loss_mean": 0.01777008227617579,
+          "loss_source_mean": 0.013656981574312572,
+          "loss_target_mean": 0.022158729171311047,
+          "loss_kl_mean": -0.027554622197404822,
+          "estimate_zeta_mean": 1.2390918487564047,
+          "target_conf_mean": 0.9705901250560233,
+          "class_weight_min": 0.7639310956001282,
+          "class_weight_max": 1.1909918785095215,
+          "target_selected": 23401,
+          "target_seen_total": 48000,
+          "target_pseudo_selected_acc": 0.4619033374642109,
+          "target_pred_acc": 0.45858333333333334,
+          "lr_ec": 0.0006,
+          "lr_t": 0.0006
+        },
+        {
+          "epoch": 3,
+          "batches": 188,
+          "loss_mean": 0.009111561242458807,
+          "loss_source_mean": 0.011027831321880064,
+          "loss_target_mean": 0.010013883659105867,
+          "loss_kl_mean": -0.28185927265502037,
+          "estimate_zeta_mean": 0.7934559739809087,
+          "target_conf_mean": 0.9838911390050928,
+          "class_weight_min": 0.9386746883392334,
+          "class_weight_max": 1.0561611652374268,
+          "target_selected": 23587,
+          "target_seen_total": 72000,
+          "target_pseudo_selected_acc": 0.6914402001102302,
+          "target_pred_acc": 0.6865833333333333,
+          "lr_ec": 0.0006,
+          "lr_t": 0.0006
+        },
+        {
+          "epoch": 4,
+          "batches": 188,
+          "loss_mean": -0.001558097915976566,
+          "loss_source_mean": 0.0047549833937334945,
+          "loss_target_mean": 0.006045452156073186,
+          "loss_kl_mean": -1.3916632151033015,
+          "estimate_zeta_mean": -0.25730860764358904,
+          "target_conf_mean": 0.9903453423621806,
+          "class_weight_min": 0.949008584022522,
+          "class_weight_max": 1.0418328046798706,
+          "target_selected": 23761,
+          "target_seen_total": 96000,
+          "target_pseudo_selected_acc": 0.7740414965700096,
+          "target_pred_acc": 0.7700833333333333,
+          "lr_ec": 0.0006,
+          "lr_t": 0.0006
+        },
+        {
+          "epoch": 5,
+          "batches": 188,
+          "loss_mean": 0.01288273587712691,
+          "loss_source_mean": 0.02884542456266784,
+          "loss_target_mean": 0.008729883946913066,
+          "loss_kl_mean": -1.1809837250633444,
+          "estimate_zeta_mean": 0.00018982797306268774,
+          "target_conf_mean": 0.9849232882261276,
+          "class_weight_min": 0.9618956446647644,
+          "class_weight_max": 1.049078106880188,
+          "target_selected": 23584,
+          "target_seen_total": 120000,
+          "target_pseudo_selected_acc": 0.6994148575305291,
+          "target_pred_acc": 0.694375,
+          "lr_ec": 0.0006,
+          "lr_t": 0.0006
+        },
+        {
+          "epoch": 6,
+          "batches": 188,
+          "loss_mean": 0.0105341002199566,
+          "loss_source_mean": 0.012285422782514419,
+          "loss_target_mean": 0.008808628257185697,
+          "loss_kl_mean": -0.00258505716919899,
+          "estimate_zeta_mean": 1.0031380649021966,
+          "target_conf_mean": 0.9853289222463648,
+          "class_weight_min": 0.9347614645957947,
+          "class_weight_max": 1.048545479774475,
+          "target_selected": 23615,
+          "target_seen_total": 144000,
+          "target_pseudo_selected_acc": 0.7068388735972898,
+          "target_pred_acc": 0.702125,
+          "lr_ec": 0.0006,
+          "lr_t": 0.0006
+        },
+        {
+          "epoch": 7,
+          "batches": 188,
+          "loss_mean": 0.005120949754355218,
+          "loss_source_mean": 0.008488075299526481,
+          "loss_target_mean": 0.007363189666648395,
+          "loss_kl_mean": -0.5609365578027482,
+          "estimate_zeta_mean": 0.48548327338822345,
+          "target_conf_mean": 0.9894926500447253,
+          "class_weight_min": 0.9125530123710632,
+          "class_weight_max": 1.0825920104980469,
+          "target_selected": 23782,
+          "target_seen_total": 168000,
+          "target_pseudo_selected_acc": 0.6922462366495669,
+          "target_pred_acc": 0.689625,
+          "lr_ec": 0.0006,
+          "lr_t": 0.0006
+        },
+        {
+          "epoch": 8,
+          "batches": 188,
+          "loss_mean": 0.008777103759596085,
+          "loss_source_mean": 0.01305309516539726,
+          "loss_target_mean": 0.00690134675266776,
+          "loss_kl_mean": -0.24002343638146179,
+          "estimate_zeta_mean": 0.7704341033909549,
+          "target_conf_mean": 0.9896017718822399,
+          "class_weight_min": 0.9154905676841736,
+          "class_weight_max": 1.0869494676589966,
+          "target_selected": 23760,
+          "target_seen_total": 192000,
+          "target_pseudo_selected_acc": 0.7261363636363637,
+          "target_pred_acc": 0.72275,
+          "lr_ec": 0.0006,
+          "lr_t": 0.0006
+        },
+        {
+          "epoch": 9,
+          "batches": 188,
+          "loss_mean": 0.004409367588913425,
+          "loss_source_mean": 0.005287825938125631,
+          "loss_target_mean": 0.0052734041022089746,
+          "loss_kl_mean": -0.17424948592769338,
+          "estimate_zeta_mean": 0.8247244541949414,
+          "target_conf_mean": 0.9909156380181617,
+          "class_weight_min": 0.945371150970459,
+          "class_weight_max": 1.0560778379440308,
+          "target_selected": 23753,
+          "target_seen_total": 216000,
+          "target_pseudo_selected_acc": 0.7645771060497621,
+          "target_pred_acc": 0.76125,
+          "lr_ec": 0.0006,
+          "lr_t": 0.0006
+        },
+        {
+          "epoch": 10,
+          "batches": 188,
+          "loss_mean": 0.009687593844570616,
+          "loss_source_mean": 0.011888981160390109,
+          "loss_target_mean": 0.005712740269952152,
+          "loss_kl_mean": 0.17734664741982806,
+          "estimate_zeta_mean": 1.1990577485016052,
+          "target_conf_mean": 0.9904898357518176,
+          "class_weight_min": 0.9449675679206848,
+          "class_weight_max": 1.0519413948059082,
+          "target_selected": 23746,
+          "target_seen_total": 240000,
+          "target_pseudo_selected_acc": 0.6708498273393414,
+          "target_pred_acc": 0.6674583333333334,
+          "lr_ec": 0.0006,
+          "lr_t": 0.0006
+        }
+      ],
+      "task_meta": {
+        "task": "14-7->3-19",
+        "task_type": "cross_receiver",
+        "source_receiver_ids": [
+          2
+        ],
+        "target_receiver_ids": [
+          8
+        ],
+        "source_receiver_labels": [
+          "14-7"
+        ],
+        "target_receiver_labels": [
+          "3-19"
+        ],
+        "source_day_ids": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "target_day_ids": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "source_day_labels": [
+          "2021_03_01",
+          "2021_03_08",
+          "2021_03_15",
+          "2021_03_23"
+        ],
+        "target_day_labels": [
+          "2021_03_01",
+          "2021_03_08",
+          "2021_03_15",
+          "2021_03_23"
+        ],
+        "target_label_role": "hidden_for_UDA_training_available_for_final_accuracy",
+        "preprocessing": {
+          "input_source": "WiSig ManySig compact pkl after packet detection, channel equalization, and normalization",
+          "equalized": 1,
+          "normalize": true,
+          "out_len": 256,
+          "crop_mode": "left",
+          "representation": "[2,256] IQ tensor accepted by the 1-D ResNet feature extractor"
+        },
+        "seed": 20260710
+      },
+      "source_pretrain_history": [],
+      "source_pretrain_target_audit": {
+        "total": 24000,
+        "target_pred_acc": 0.16666666666666666,
+        "target_conf_mean": 0.1731070439418157,
+        "tau_sweep": [
+          {
+            "tau": 0.7,
+            "selected": 0,
+            "coverage": 0.0,
+            "selected_acc": null
+          }
+        ]
+      },
+      "class_prior_mode": "source",
+      "class_prior": [
+        0.1666666716337204,
+        0.1666666716337204,
+        0.1666666716337204,
+        0.1666666716337204,
+        0.1666666716337204,
+        0.1666666716337204
+      ],
+      "official_compat": false,
+      "official_compat_safe_pseudo": false,
+      "kl_estimator_mode": "mine_ma",
+      "pseudo_threshold_mode": "paper",
+      "pseudo_score_mode": "probability",
+      "class_weight_timing": "current",
+      "pseudo_state_scope": "global",
+      "batch_pairing": "cycle_target",
+      "target_model_selection": "target_loss_best",
+      "lr_scheduler_mode": "none",
+      "lr_step_size": 2500,
+      "lr_gamma": 0.6,
+      "lr_scheduler_active": false,
+      "target_eval_history": [
+        {
+          "target_loss": 6.439733855052916,
+          "target_accuracy": 0.35675,
+          "target_total": 24000,
+          "target_batches": 188,
+          "epoch": 1
+        },
+        {
+          "target_loss": 6.151417293868941,
+          "target_accuracy": 0.5117083333333333,
+          "target_total": 24000,
+          "target_batches": 188,
+          "epoch": 2
+        },
+        {
+          "target_loss": 3.6188860950861317,
+          "target_accuracy": 0.7345833333333334,
+          "target_total": 24000,
+          "target_batches": 188,
+          "epoch": 3
+        },
+        {
+          "target_loss": 4.308169630498259,
+          "target_accuracy": 0.7558333333333334,
+          "target_total": 24000,
+          "target_batches": 188,
+          "epoch": 4
+        },
+        {
+          "target_loss": 3.4956745860826386,
+          "target_accuracy": 0.6659166666666667,
+          "target_total": 24000,
+          "target_batches": 188,
+          "epoch": 5
+        },
+        {
+          "target_loss": 4.416276691384109,
+          "target_accuracy": 0.689375,
+          "target_total": 24000,
+          "target_batches": 188,
+          "epoch": 6
+        },
+        {
+          "target_loss": 7.087274413844933,
+          "target_accuracy": 0.6421666666666667,
+          "target_total": 24000,
+          "target_batches": 188,
+          "epoch": 7
+        },
+        {
+          "target_loss": 3.9729859084540307,
+          "target_accuracy": 0.76575,
+          "target_total": 24000,
+          "target_batches": 188,
+          "epoch": 8
+        },
+        {
+          "target_loss": 5.091683621470391,
+          "target_accuracy": 0.763125,
+          "target_total": 24000,
+          "target_batches": 188,
+          "epoch": 9
+        },
+        {
+          "target_loss": 6.9158858046207765,
+          "target_accuracy": 0.6104583333333333,
+          "target_total": 24000,
+          "target_batches": 188,
+          "epoch": 10
+        }
+      ],
+      "best_target_loss_epoch": 5,
+      "best_target_loss": 3.4956745860826386
+    }
+  ]
+}
