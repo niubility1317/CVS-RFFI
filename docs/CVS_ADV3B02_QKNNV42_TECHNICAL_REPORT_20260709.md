@@ -1086,6 +1086,8 @@ qKNNV42的贡献在Phase2部署方式，而不是新神经网络结构：
 - V78首先检查K5更轻量的support-only覆盖选择。紧凑补位把`min_new>=75`降到3/40，全局max-min把`min_new p10`降到62.00%，scenario-edge虽把`min_new>=80`升到16/40但在`seed=421050`出现`2-13=34.29%`极端坍塌。因此这些K5实验策略均为负诊断，未保留生产入口；K5默认仍是V77 `scenario_diverse`。
 - V78同时注册K10高压缩分支`stable_dualview_v78`：旧类5码/类，seen-new默认6码/类，按`radius_proto_sim`保护top12 seen-new类全量K10 support，并沿用V76轻量`local_competition`、`labelprop`和`scenario_residual`。正式40seed复验使用198个support code，相对当前worktree的V76复核少8码，保持`min_new>=75=32/40`和`min_new>=80=21/40`不降，旧类均值和min old略升，但seen-new均值从92.44%小降到92.38%、min new均值从78.54%小降到78.39%。因此V78是高压缩分支，不替代旧V76历史均衡最佳。
 - V78边界仍是`min_new p10=70.00%`，低类失败仍有`421069(1-1=64.29%)`、`421059(1-1=67.14%)`、`421066(1-12=68.57%)`、`421047/421045(19-3=70.00%)`、`421076(1-12=71.43%)`、`421068(2-13=74.29%)`等seed。它提升的是样本压缩效率，不是最低类坍塌的最终解。
+- V79在V78的198码结构上把`labelprop_weight`从0.015降到0.01，并保留`local_competition_weight=0.02`和`scenario_residual_weight=0.5`。正式40seed复验达到`old=94.67%`、`min_old=86.14%`、`seen_new=92.51%`、`min_new=78.32%`、`min_new>=75=33/40`、`min_new>=80=21/40`。因此V79成为当前推荐K10高压缩分支：同198码下比V78恢复floor75并提升seen-new均值；但若强调floor80，V76 historical仍是强基线。
+- V79边界仍是`min_new p10=70.00%`，最低seed为`421069(1-1=64.29%)`、`421059(1-1/1-12=67.14%)`、`421066(1-12=68.57%)`、`421047/421045(19-3=70.00%)`。它不是低类坍塌终解，下一步应面向`1-1/1-12/8-3`和`19-3/1-15`设计support-only弱类簇或轻量多原型机制。
 
 ## 10.证据索引
 
@@ -1107,6 +1109,8 @@ qKNNV42的贡献在Phase2部署方式，而不是新神经网络结构：
 |qKNNV78 K5覆盖选择负诊断|`E:\type10-7\automation_reports\CV-SincNet\phase2_qknn_hardpair_n20_20260706\artifacts\v78_k5_coverage_policy_20260709\k5_v78_coverage_policy_seed421038_40.csv`|K5 compact/max-min/scenario-edge support选择负诊断|
 |qKNNV78 K10预算扫描证据|`E:\type10-7\automation_reports\CV-SincNet\phase2_qknn_hardpair_n20_20260706\artifacts\v78_k10_budget5_6_protect_20260709\k10_v78_budget5_6_protect_seed421038_40.csv`|K10 V76机制下5/6/7码预算和保护范围扫描|
 |qKNNV78正式策略证据|`E:\type10-7\automation_reports\CV-SincNet\phase2_qknn_hardpair_n20_20260706\artifacts\v78_policy_20260709\k10_v78_policy_seed421038_40.csv`|`stable_dualview_v78` 198码高压缩分支40seed复验|
+|qKNNV79轻labelprop诊断证据|`E:\type10-7\automation_reports\CV-SincNet\phase2_qknn_hardpair_n20_20260706\artifacts\v79_k10_v78_light_knobs_20260709\k10_v79_v78_light_knobs_seed421038_40.csv`|V78 198码结构下`local_competition`、`labelprop`和`scenario_residual`轻量扫描|
+|qKNNV79正式策略证据|`E:\type10-7\automation_reports\CV-SincNet\phase2_qknn_hardpair_n20_20260706\artifacts\v79_policy_20260709\k10_v79_policy_seed421038_40.csv`|`stable_dualview_v79` 198码当前推荐高压缩分支40seed复验|
 
 ## 11.下一步
 
@@ -1116,6 +1120,6 @@ qKNNV42的贡献在Phase2部署方式，而不是新神经网络结构：
 
 3.K5 strong support已通过V77转成oracle-free `scenario_diverse` support selection；下一步不再尝试简单紧凑或边界选择，应转向类内多原型或更细的弱类簇支持覆盖机制。
 
-4.K10已有V76均衡高效压缩和V78高压缩分支；下一步应针对`1-1/1-12/8-3`和`19-3/1-15`做低类专门的support-only类簇机制，而不是继续单纯降低support预算。
+4.K10已有V76均衡高效压缩基线和V79当前推荐198码高压缩分支；下一步应针对`1-1/1-12/8-3`和`19-3/1-15`做低类专门的support-only类簇机制，而不是继续单纯降低support预算或调全局传播权重。
 
 5.继续复核更多`R_t`目标接收机域，避免单receiver或单support split过拟合。
