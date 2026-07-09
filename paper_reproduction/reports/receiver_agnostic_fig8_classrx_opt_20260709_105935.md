@@ -29,7 +29,8 @@ Verification: `C:\Users\lh594\.conda\envs\ssr-gpu\python.exe -m pytest tests/tes
 |---|---|---|
 | `receiver_agnostic_fig8_classrx_strict_r123_20260709_105935` | `cuda:3` | strict deterministic R=1/2/3 with `class_receiver` target labels |
 | `receiver_agnostic_fig8_move_3_19_r1_20260709_105935` | `cuda:4` | R=1 sensitivity: move `3-19` to source, target all other receivers |
-| `receiver_agnostic_fig8_move_18_2_3_19_r23_20260709_105935` | `cuda:5` | R=2/3 sensitivity: move `18-2,3-19` to source |
+| `receiver_agnostic_fig8_move_18_2_3_19_r2_20260709_105935` | `cuda:5` | R=2 sensitivity: move `18-2,3-19` to source |
+| `receiver_agnostic_fig8_move_18_2_3_19_r3_20260709_105935` | `cuda:6` | R=3 sensitivity: move `1-1,18-2,3-19` to source |
 
 Key settings: full fine-tune, lr `0.0005`, source replay per class `20`, Fig8 strategies `random,entropy,margin,least_confidence`, iterations `0,25,50,75,100`, R-specific LMMD for R=3 where applicable.
 
@@ -43,4 +44,4 @@ Key settings: full fine-tune, lr `0.0005`, source replay per class `20`, Fig8 st
 
 ## Status
 
-Created before sync/launch. Full local report will track exact N607 commands, PIDs, startup health, final results, and selected target diagnostics.
+Remote sync and verification completed. `py_compile` passed and the remote CLI exposes `--fig8-target-balance {none,class,receiver,class_receiver}`. Full local report will track exact N607 commands, PIDs, startup health, final results, and selected target diagnostics.
