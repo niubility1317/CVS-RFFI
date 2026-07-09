@@ -160,8 +160,9 @@ def dadda_objective(
         alpha = torch.as_tensor(float(fixed_alpha), dtype=global_mmd.dtype, device=global_mmd.device).clamp(0.0, 1.0)
     else:
         raise ValueError("alpha_mode must be 'dynamic' or 'fixed'")
-    # Dynamic mode interprets alpha as the differentiable distribution weight from Eq. (5).
-    dynamic_joint = (1.0 - alpha) * global_mmd + alpha * local_lmmd
+    # Eq. (5) defines alpha against the class-wise LMMD sum; use the same local
+    # distance in Eq. (9) so local alignment is not reduced by the class count.
+    dynamic_joint = (1.0 - alpha) * global_mmd + alpha * local_lmmd_sum
     total = ce + float(tradeoff_lambda) * dynamic_joint
     return {
         "loss": total,

@@ -136,7 +136,7 @@ def test_dadda_dynamic_objective_combines_ce_mmd_lmmd():
     assert set(terms) == {"loss", "cross_entropy", "mmd", "lmmd", "lmmd_sum", "alpha", "dynamic_joint"}
     expected_alpha = terms["mmd"] / (terms["mmd"] + terms["lmmd_sum"] + 1e-8)
     assert torch.allclose(terms["alpha"], expected_alpha, atol=1e-6)
-    explicit_dynamic = (1.0 - terms["alpha"]) * terms["mmd"] + terms["alpha"] * terms["lmmd"]
+    explicit_dynamic = (1.0 - terms["alpha"]) * terms["mmd"] + terms["alpha"] * terms["lmmd_sum"]
     assert torch.allclose(terms["dynamic_joint"], explicit_dynamic, atol=1e-6)
     assert 0.0 <= float(terms["alpha"]) <= 1.0
     terms["loss"].backward()
@@ -184,7 +184,7 @@ def test_dadda_objective_supports_fixed_alpha_ablation():
     )
 
     assert torch.isclose(terms["alpha"], torch.tensor(0.5), atol=1e-6)
-    expected_dynamic = 0.5 * terms["mmd"] + 0.5 * terms["lmmd"]
+    expected_dynamic = 0.5 * terms["mmd"] + 0.5 * terms["lmmd_sum"]
     assert torch.allclose(terms["dynamic_joint"], expected_dynamic, atol=1e-6)
 
 
