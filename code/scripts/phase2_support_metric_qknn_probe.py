@@ -7537,6 +7537,8 @@ def _adaptive_qknn_overrides(
         "stable_dualview_v73",
         "dualview_support_v76",
         "stable_dualview_v76",
+        "dualview_support_v78",
+        "stable_dualview_v78",
     }:
         raise ValueError(f"unsupported adaptive_qknn_policy: {policy}")
     min_k_for_policy = float(geometry["adaptive_support_min_k"])
@@ -7592,6 +7594,7 @@ def _adaptive_qknn_overrides(
     use_v70 = name in {"dualview_support_v70", "stable_dualview_v70"}
     use_v73 = name in {"dualview_support_v73", "stable_dualview_v73"}
     use_v76 = name in {"dualview_support_v76", "stable_dualview_v76"}
+    use_v78 = name in {"dualview_support_v78", "stable_dualview_v78"}
     use_v49 = use_v49 or ((use_v53 or use_v54 or use_v55 or use_v56) and min_k_for_policy >= 10.0)
     use_v44 = (
         name in {"dualview_support_v44", "stable_dualview_v44"}
@@ -7635,7 +7638,7 @@ def _adaptive_qknn_overrides(
     stable_gate = _clip01(max(hardness, 0.6 * class_load))
     enhancement_gate = _clip01((1.0 - stable_gate) * k_reliability)
 
-    if use_v59 or use_v63 or use_v66 or use_v67 or use_v69 or use_v70 or use_v73 or use_v76:
+    if use_v59 or use_v63 or use_v66 or use_v67 or use_v69 or use_v70 or use_v73 or use_v76 or use_v78:
         overrides = {
             "adaptive_qknn_policy": name,
             "adaptive_qknn_requested_policy": name,
@@ -7647,13 +7650,15 @@ def _adaptive_qknn_overrides(
             "adaptive_enhancement_gate": enhancement_gate,
         }
         if min_k_for_policy >= 10.0:
-            if use_v63 or use_v66 or use_v67 or use_v69 or use_v70 or use_v73 or use_v76:
+            if use_v63 or use_v66 or use_v67 or use_v69 or use_v70 or use_v73 or use_v76 or use_v78:
                 overrides.update(
                     {
                         "support_code_budget_per_class": 0,
                         "support_code_budget_mode": "centroid_hard_diverse",
                         "support_code_old_budget_per_class": 5,
-                        "support_code_new_budget_per_class": 7
+                        "support_code_new_budget_per_class": 6
+                        if use_v78
+                        else 7
                         if use_v76
                         else 8
                         if (use_v67 or use_v70 or use_v73)
@@ -7666,20 +7671,20 @@ def _adaptive_qknn_overrides(
                         "local_competition_scope": "role",
                     }
                 )
-                if use_v66 or use_v67 or use_v69 or use_v70 or use_v73 or use_v76:
+                if use_v66 or use_v67 or use_v69 or use_v70 or use_v73 or use_v76 or use_v78:
                     overrides.update(
                         {
                             "support_code_new_protect_top_classes": 12
-                            if use_v76
+                            if (use_v76 or use_v78)
                             else 10
                             if use_v70
                             else 8,
                             "support_code_new_protect_metric": "radius_proto_sim"
-                            if (use_v73 or use_v76)
+                            if (use_v73 or use_v76 or use_v78)
                             else "radius",
                         }
                     )
-                if use_v69 or use_v70 or use_v73 or use_v76:
+                if use_v69 or use_v70 or use_v73 or use_v76 or use_v78:
                     overrides.update(
                         {
                             "labelprop_weight": 0.015,

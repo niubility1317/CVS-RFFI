@@ -1052,6 +1052,10 @@ qKNNV42的贡献在Phase2部署方式，而不是新神经网络结构：
 |V75 query-pair cluster诊断|210|94.67%|93.10%|86.04%|81.43%|92.17%|90.36%|77.04%|70.00%|25/40|17/40|
 |V76 budget7 radius_proto_sim protect12|206|94.67%|93.10%|86.04%|81.43%|92.45%|91.14%|78.64%|70.00%|33/40|23/40|
 |V76 budget7 radius_proto_sim protect14诊断|212|94.67%|93.10%|86.04%|81.43%|92.48%|91.00%|78.82%|70.00%|33/40|23/40|
+|V78 K5 compact-diverse fill诊断|130|93.38%|92.83%|82.82%|81.43%|87.58%|85.59%|66.93%|61.14%|3/40|1/40|
+|V78 K5 global max-min诊断|130|94.95%|94.05%|86.82%|84.29%|90.59%|86.94%|72.64%|62.00%|17/40|10/40|
+|V78 K5 scenario-edge诊断|130|94.95%|94.05%|86.82%|84.29%|91.65%|90.16%|75.43%|68.43%|23/40|16/40|
+|V78 K10 budget6 radius_proto_sim protect12高压缩分支|198|94.69%|93.31%|86.14%|82.71%|92.38%|91.06%|78.39%|70.00%|32/40|21/40|
 |V77 K5 scenario_diverse support选择|130|95.02%|94.05%|86.79%|84.29%|91.67%|89.29%|76.64%|68.57%|24/40|14/40|
 |V77 K5+V56 support-LOO重链诊断|130|93.96%|93.10%|83.93%|81.43%|85.47%|84.00%|68.96%|61.43%|3/40|0/40|
 
@@ -1079,6 +1083,9 @@ qKNNV42的贡献在Phase2部署方式，而不是新神经网络结构：
 - V77把K5从单split强support证据推进到注册期可执行的support选择机制：在`K=5,pool=10`下使用已有`scenario_diverse`策略，每个旧类和seen-new类仍只保存5个support code，总码数130，不增加存储；40seed均值达到`old=95.02%`、`min_old=86.79%`、`seen_new=91.67%`、`min_new=76.64%`，相对K5 `stable_first`的`old=94.11%`、`seen_new=87.88%`、`min_new=68.57%`明显提升。因此当前K5推荐执行口径为`--policies scenario_diverse`加K5严格qKNN打分，而不是继续依赖`seed=421070`单点。
 - V77的K5边界也必须保留：`min_new p10=68.57%`，最低类仍集中在`1-1/1-12/8-3`以及局部`19-3/1-15`。它解决的是K5 support选择稳定性和旧类域适应，不是彻底解决最低类坍塌。
 - K5+`stable_dualview_v56` support-LOO重链为负诊断：它额外引入平均4186个ridge标量、4160个old-residual标量、1288个pair-linear标量和20个query-cluster临时prototype，但seen-new均值降到85.47%、`min_new>=75`降到3/40，违背高效压缩方向，不晋升。
+- V78首先检查K5更轻量的support-only覆盖选择。紧凑补位把`min_new>=75`降到3/40，全局max-min把`min_new p10`降到62.00%，scenario-edge虽把`min_new>=80`升到16/40但在`seed=421050`出现`2-13=34.29%`极端坍塌。因此这些K5实验策略均为负诊断，未保留生产入口；K5默认仍是V77 `scenario_diverse`。
+- V78同时注册K10高压缩分支`stable_dualview_v78`：旧类5码/类，seen-new默认6码/类，按`radius_proto_sim`保护top12 seen-new类全量K10 support，并沿用V76轻量`local_competition`、`labelprop`和`scenario_residual`。正式40seed复验使用198个support code，相对当前worktree的V76复核少8码，保持`min_new>=75=32/40`和`min_new>=80=21/40`不降，旧类均值和min old略升，但seen-new均值从92.44%小降到92.38%、min new均值从78.54%小降到78.39%。因此V78是高压缩分支，不替代旧V76历史均衡最佳。
+- V78边界仍是`min_new p10=70.00%`，低类失败仍有`421069(1-1=64.29%)`、`421059(1-1=67.14%)`、`421066(1-12=68.57%)`、`421047/421045(19-3=70.00%)`、`421076(1-12=71.43%)`、`421068(2-13=74.29%)`等seed。它提升的是样本压缩效率，不是最低类坍塌的最终解。
 
 ## 10.证据索引
 
@@ -1097,6 +1104,9 @@ qKNNV42的贡献在Phase2部署方式，而不是新神经网络结构：
 |qKNNV42最佳JSON|`E:\type10-7\automation_reports\CV-SincNet\phase2_qknn_hardpair_n20_20260706\artifacts\v53_fftlogmag_20260706\local_v55_diagnostics_20260706\k5_strict_seed421070_floor_param_best_predictions_20260707.json`|当前同row指标和support/query指纹|
 |qKNNV77 K5 support选择证据|`E:\type10-7\automation_reports\CV-SincNet\phase2_qknn_hardpair_n20_20260706\artifacts\v77_k5_support_policy_20260709\k5_v77_support_policy_seed421038_40.csv`|K5 40seed support选择策略网格|
 |qKNNV77 K5负诊断证据|`E:\type10-7\automation_reports\CV-SincNet\phase2_qknn_hardpair_n20_20260706\artifacts\v77_k5_v56_scenariodiverse_20260709\k5_v77_v56_scenariodiverse_seed421038_40.csv`|K5 support-LOO重链负诊断|
+|qKNNV78 K5覆盖选择负诊断|`E:\type10-7\automation_reports\CV-SincNet\phase2_qknn_hardpair_n20_20260706\artifacts\v78_k5_coverage_policy_20260709\k5_v78_coverage_policy_seed421038_40.csv`|K5 compact/max-min/scenario-edge support选择负诊断|
+|qKNNV78 K10预算扫描证据|`E:\type10-7\automation_reports\CV-SincNet\phase2_qknn_hardpair_n20_20260706\artifacts\v78_k10_budget5_6_protect_20260709\k10_v78_budget5_6_protect_seed421038_40.csv`|K10 V76机制下5/6/7码预算和保护范围扫描|
+|qKNNV78正式策略证据|`E:\type10-7\automation_reports\CV-SincNet\phase2_qknn_hardpair_n20_20260706\artifacts\v78_policy_20260709\k10_v78_policy_seed421038_40.csv`|`stable_dualview_v78` 198码高压缩分支40seed复验|
 
 ## 11.下一步
 
@@ -1104,6 +1114,8 @@ qKNNV42的贡献在Phase2部署方式，而不是新神经网络结构：
 
 2.按qKNNV42组件跑Phase2消融，主表保留`K`、stored codes、old mean、min old、seen-new mean、min new、`H_old,new`和support/query指纹；当前主线只评价target-old旧类目标域适应和target-new/seen-new注册识别。
 
-3.把K5 strong support从`seed=421070`证据转成oracle-free support selection，例如支持集覆盖度、类内多原型和scenario coverage gate。
+3.K5 strong support已通过V77转成oracle-free `scenario_diverse` support selection；下一步不再尝试简单紧凑或边界选择，应转向类内多原型或更细的弱类簇支持覆盖机制。
 
-4.继续复核更多`R_t`目标接收机域，避免单receiver或单support split过拟合。
+4.K10已有V76均衡高效压缩和V78高压缩分支；下一步应针对`1-1/1-12/8-3`和`19-3/1-15`做低类专门的support-only类簇机制，而不是继续单纯降低support预算。
+
+5.继续复核更多`R_t`目标接收机域，避免单receiver或单support split过拟合。
