@@ -233,6 +233,74 @@ class Phase2SupportMetricQknnV56CompressionTest(unittest.TestCase):
         self.assertEqual(kept_labels.tolist().count("new-stable"), 2)
         self.assertTrue({3, 4, 5, 6}.issubset(set(kept_indices.tolist())))
 
+    def test_new_role_extra_budget_gives_medium_risk_class_more_codes(self):
+        from phase2_support_metric_qknn_probe import _compress_support_codes
+
+        features = np.asarray(
+            [
+                [1.00, 0.00],
+                [0.95, 0.05],
+                [0.90, 0.10],
+                [1.00, 0.00],
+                [0.00, 1.00],
+                [0.00, -1.00],
+                [-1.00, 0.00],
+                [0.00, 1.00],
+                [0.50, 0.86],
+                [-0.50, 0.86],
+                [0.00, 0.95],
+                [-1.00, 0.00],
+                [-0.98, 0.02],
+                [-0.96, 0.04],
+                [-0.94, 0.06],
+            ],
+            dtype=float,
+        )
+        support_indices = np.arange(features.shape[0], dtype=int)
+        support_labels = np.asarray(
+            [
+                "old-a",
+                "old-a",
+                "old-a",
+                "new-risk",
+                "new-risk",
+                "new-risk",
+                "new-risk",
+                "new-medium",
+                "new-medium",
+                "new-medium",
+                "new-medium",
+                "new-stable",
+                "new-stable",
+                "new-stable",
+                "new-stable",
+            ],
+            dtype=object,
+        )
+        scenarios = np.asarray(["r1"] * features.shape[0], dtype=object)
+
+        kept_indices, kept_labels = _compress_support_codes(
+            features=features,
+            support_indices=support_indices,
+            support_labels=support_labels,
+            scenarios=scenarios,
+            per_class=0,
+            mode="centroid_hard_diverse",
+            old_labels={"old-a"},
+            old_per_class=2,
+            new_per_class=2,
+            new_protect_top_classes=1,
+            new_protect_metric="radius",
+            new_extra_budget_top_classes=2,
+            new_extra_budget_per_class=3,
+        )
+
+        self.assertEqual(kept_labels.tolist().count("old-a"), 2)
+        self.assertEqual(kept_labels.tolist().count("new-risk"), 4)
+        self.assertEqual(kept_labels.tolist().count("new-medium"), 3)
+        self.assertEqual(kept_labels.tolist().count("new-stable"), 2)
+        self.assertTrue({3, 4, 5, 6}.issubset(set(kept_indices.tolist())))
+
     def test_v56_keeps_support_code_budget_off_and_high_k_uses_v49_guard(self):
         from phase2_support_metric_qknn_probe import _adaptive_qknn_overrides
 

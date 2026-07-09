@@ -112,6 +112,8 @@ def _compress_support_codes(
     new_per_class: int = 0,
     new_protect_top_classes: int = 0,
     new_protect_metric: str = "radius",
+    new_extra_budget_top_classes: int = 0,
+    new_extra_budget_per_class: int = 0,
 ) -> tuple[np.ndarray, np.ndarray]:
     """Select deployed qKNN support codes while preserving class coverage."""
     support_indices = np.asarray(support_indices, dtype=int)
@@ -142,8 +144,11 @@ def _compress_support_codes(
             label_prototypes[str(label)] = qknn._normalize_rows(label_vectors.mean(axis=0, keepdims=True))[0]
     old_label_set = {str(value) for value in (old_labels or set())}
     protected_new_labels: set[str] = set()
+    extra_budget_new_labels: set[str] = set()
     protect_count = max(0, int(new_protect_top_classes))
-    if protect_count > 0:
+    extra_count = max(0, int(new_extra_budget_top_classes))
+    extra_budget = max(0, int(new_extra_budget_per_class))
+    if protect_count > 0 or (extra_count > 0 and extra_budget > 0):
         metric_norm = str(new_protect_metric).strip().lower()
         if metric_norm not in {"radius", "proto_sim", "radius_proto_sim"}:
             raise ValueError(f"unsupported support_code_new_protect_metric: {new_protect_metric}")
@@ -171,6 +176,7 @@ def _compress_support_codes(
             risk_rows.append((float(risk), label_str))
         risk_rows.sort(key=lambda row: (-row[0], row[1]))
         protected_new_labels = {label for _risk, label in risk_rows[:protect_count]}
+        extra_budget_new_labels = {label for _risk, label in risk_rows[:extra_count]}
     for label in seen_labels:
         label_mask = support_labels == str(label)
         label_indices = support_indices[label_mask]
@@ -181,6 +187,8 @@ def _compress_support_codes(
                 label_budget = old_budget
             elif (not is_old_label) and new_budget > 0:
                 label_budget = new_budget
+            if (not is_old_label) and str(label) in extra_budget_new_labels and extra_budget > 0:
+                label_budget = max(label_budget, extra_budget)
             if (not is_old_label) and str(label) in protected_new_labels:
                 label_budget = 0
         if label_budget <= 0 or label_indices.size <= label_budget:
@@ -5096,6 +5104,8 @@ def _evaluate_metric_qknn(
     support_code_new_budget_per_class: int,
     support_code_new_protect_top_classes: int,
     support_code_new_protect_metric: str,
+    support_code_new_extra_budget_top_classes: int,
+    support_code_new_extra_budget_per_class: int,
     support_proto_anchor_weight: float,
     support_proto_anchor_clip: float,
     collect_predictions: bool,
@@ -5215,6 +5225,8 @@ def _evaluate_metric_qknn(
         new_per_class=int(support_code_new_budget_per_class),
         new_protect_top_classes=int(support_code_new_protect_top_classes),
         new_protect_metric=str(support_code_new_protect_metric),
+        new_extra_budget_top_classes=int(support_code_new_extra_budget_top_classes),
+        new_extra_budget_per_class=int(support_code_new_extra_budget_per_class),
     )
     if float(proto_repel_lambda) > 0.0 and int(proto_repel_steps) > 0:
         scores, radii, proto_sim = _repelled_class_scores(
@@ -7246,6 +7258,8 @@ def _evaluate_metric_qknn(
         "support_code_new_budget_per_class": int(support_code_new_budget_per_class),
         "support_code_new_protect_top_classes": int(support_code_new_protect_top_classes),
         "support_code_new_protect_metric": str(support_code_new_protect_metric),
+        "support_code_new_extra_budget_top_classes": int(support_code_new_extra_budget_top_classes),
+        "support_code_new_extra_budget_per_class": int(support_code_new_extra_budget_per_class),
         "support_proto_anchor_weight": float(support_proto_anchor_weight),
         "support_proto_anchor_clip": float(support_proto_anchor_clip),
         "stored_support_proto_anchor_scalars": int(stored_support_proto_anchor_scalars),
@@ -8364,6 +8378,8 @@ def main() -> None:
     parser.add_argument("--support_code_new_budget_per_class_grid", default="0")
     parser.add_argument("--support_code_new_protect_top_classes_grid", default="0")
     parser.add_argument("--support_code_new_protect_metric_grid", default="radius")
+    parser.add_argument("--support_code_new_extra_budget_top_classes_grid", default="0")
+    parser.add_argument("--support_code_new_extra_budget_per_class_grid", default="0")
     parser.add_argument("--support_proto_anchor_weight_grid", default="0")
     parser.add_argument("--support_proto_anchor_clip_grid", default="2.0")
     parser.add_argument("--mahal_proto_weight_grid", default="0")
@@ -8616,6 +8632,8 @@ def main() -> None:
             qknn._parse_int_csv(args.support_code_new_budget_per_class_grid),
             qknn._parse_int_csv(args.support_code_new_protect_top_classes_grid),
             qknn._parse_csv(args.support_code_new_protect_metric_grid),
+            qknn._parse_int_csv(args.support_code_new_extra_budget_top_classes_grid),
+            qknn._parse_int_csv(args.support_code_new_extra_budget_per_class_grid),
             qknn._parse_float_csv(args.support_proto_anchor_weight_grid),
             qknn._parse_float_csv(args.support_proto_anchor_clip_grid),
             qknn._parse_float_csv(args.mahal_proto_weight_grid),
@@ -8859,6 +8877,8 @@ def main() -> None:
                     support_code_new_budget_per_class,
                     support_code_new_protect_top_classes,
                     support_code_new_protect_metric,
+                    support_code_new_extra_budget_top_classes,
+                    support_code_new_extra_budget_per_class,
                     support_proto_anchor_weight,
                     support_proto_anchor_clip,
                     mahal_proto_weight,
@@ -9040,6 +9060,12 @@ def main() -> None:
                         "support_code_new_budget_per_class": int(support_code_new_budget_per_class),
                         "support_code_new_protect_top_classes": int(support_code_new_protect_top_classes),
                         "support_code_new_protect_metric": str(support_code_new_protect_metric),
+                        "support_code_new_extra_budget_top_classes": int(
+                            support_code_new_extra_budget_top_classes
+                        ),
+                        "support_code_new_extra_budget_per_class": int(
+                            support_code_new_extra_budget_per_class
+                        ),
                         "support_proto_anchor_weight": float(support_proto_anchor_weight),
                         "support_proto_anchor_clip": float(support_proto_anchor_clip),
                         "labelprop_weight": float(labelprop_weight),
@@ -9260,6 +9286,14 @@ def main() -> None:
                             ),
                             "support_code_new_protect_metric": adaptive_overrides.get(
                                 "support_code_new_protect_metric", params["support_code_new_protect_metric"]
+                            ),
+                            "support_code_new_extra_budget_top_classes": adaptive_overrides.get(
+                                "support_code_new_extra_budget_top_classes",
+                                params["support_code_new_extra_budget_top_classes"],
+                            ),
+                            "support_code_new_extra_budget_per_class": adaptive_overrides.get(
+                                "support_code_new_extra_budget_per_class",
+                                params["support_code_new_extra_budget_per_class"],
                             ),
                             "support_proto_anchor_weight": adaptive_overrides.get(
                                 "support_proto_anchor_weight", params["support_proto_anchor_weight"]
@@ -9617,6 +9651,12 @@ def main() -> None:
                         support_code_new_budget_per_class=int(params["support_code_new_budget_per_class"]),
                         support_code_new_protect_top_classes=int(params["support_code_new_protect_top_classes"]),
                         support_code_new_protect_metric=str(params["support_code_new_protect_metric"]),
+                        support_code_new_extra_budget_top_classes=int(
+                            params["support_code_new_extra_budget_top_classes"]
+                        ),
+                        support_code_new_extra_budget_per_class=int(
+                            params["support_code_new_extra_budget_per_class"]
+                        ),
                         support_proto_anchor_weight=float(params["support_proto_anchor_weight"]),
                         support_proto_anchor_clip=float(params["support_proto_anchor_clip"]),
                         collect_predictions=bool(str(args.output_predictions_csv).strip()),
@@ -10032,6 +10072,8 @@ def main() -> None:
         "support_code_new_budget_per_class",
         "support_code_new_protect_top_classes",
         "support_code_new_protect_metric",
+        "support_code_new_extra_budget_top_classes",
+        "support_code_new_extra_budget_per_class",
         "support_proto_anchor_weight",
         "support_proto_anchor_clip",
         "stored_support_proto_anchor_scalars",
