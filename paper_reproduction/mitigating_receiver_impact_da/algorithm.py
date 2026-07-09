@@ -271,7 +271,10 @@ def _select_pseudo_labels(
     base_tau: float,
     threshold_mode: str,
     score_mode: str,
-) -> tuple[torch.Tensor, torch.Tensor, torch.Tensor]:
+    threshold_floor: float = 0.0,
+    quota_mode: str = "none",
+    quota_per_class: int | None = None,
+) -> tuple[torch.Tensor, torch.Tensor, torch.Tensor, torch.Tensor]:
     normalized_score_mode = str(score_mode).strip().lower()
     if normalized_score_mode == "probability":
         scores = torch.softmax(target_logits.detach(), dim=1)
@@ -280,15 +283,40 @@ def _select_pseudo_labels(
     else:
         raise ValueError("pseudo_score_mode must be one of: probability, logit")
     confidence, labels = scores.max(dim=1)
+    if not (0.0 <= float(threshold_floor) < 1.0):
+        raise ValueError("pseudo_threshold_floor must be in [0,1)")
     normalized_threshold_mode = str(threshold_mode).strip().lower()
     if normalized_threshold_mode == "paper":
         thresholds = state.thresholds(base_tau=base_tau, device=scores.device)
+        thresholds = thresholds.clamp_min(float(threshold_floor))
         mask = confidence > thresholds[labels]
     elif normalized_threshold_mode == "official":
+        thresholds = torch.full((int(state.num_classes),), float(base_tau), dtype=scores.dtype, device=scores.device)
+        thresholds = thresholds.clamp_min(float(threshold_floor))
         mask = state.official_threshold_mask(labels, confidence, base_tau=base_tau)
+        if float(threshold_floor) > 0.0:
+            mask = mask & (confidence > float(threshold_floor))
     else:
         raise ValueError("pseudo_threshold_mode must be one of: paper, official")
-    return labels, mask, confidence
+    normalized_quota_mode = str(quota_mode).strip().lower()
+    if normalized_quota_mode == "none":
+        return labels, mask, confidence, thresholds
+    if normalized_quota_mode != "balanced_topk":
+        raise ValueError("pseudo_quota_mode must be one of: none, balanced_topk")
+    if quota_per_class is None or int(quota_per_class) <= 0:
+        raise ValueError("pseudo_quota_per_class must be positive when balanced_topk is enabled")
+    quota_mask = torch.zeros_like(mask)
+    selected_indices = torch.nonzero(mask, as_tuple=False).flatten()
+    if selected_indices.numel() > 0:
+        for class_index in range(int(state.num_classes)):
+            class_indices = selected_indices[labels[selected_indices] == int(class_index)]
+            if class_indices.numel() == 0:
+                continue
+            keep_count = min(int(quota_per_class), int(class_indices.numel()))
+            class_conf = confidence[class_indices]
+            top_local = torch.topk(class_conf, k=keep_count, largest=True, sorted=False).indices
+            quota_mask[class_indices[top_local]] = True
+    return labels, quota_mask, confidence, thresholds
 
 
 def gada_batch_step(
@@ -315,6 +343,9 @@ def gada_batch_step(
     mine_update_scale: float = 0.5,
     pseudo_threshold_mode: str = "paper",
     pseudo_score_mode: str = "probability",
+    pseudo_threshold_floor: float = 0.0,
+    pseudo_quota_mode: str = "none",
+    pseudo_quota_per_class: int | None = None,
     class_weight_timing: str = "previous",
     target_indices: torch.Tensor | None = None,
 ) -> dict[str, torch.Tensor | int]:
@@ -365,12 +396,15 @@ def gada_batch_step(
         target_outputs = dict(target_outputs)
         source_outputs["estimate_logits"] = source_estimate_logits
         target_outputs["estimate_logits"] = target_estimate_logits
-        pseudo_labels, target_mask, target_confidence = _select_pseudo_labels(
+        pseudo_labels, target_mask, target_confidence, pseudo_thresholds = _select_pseudo_labels(
             target_outputs["tx_logits"],
             state,
             base_tau=base_tau,
             threshold_mode=pseudo_threshold_mode,
             score_mode=pseudo_score_mode,
+            threshold_floor=pseudo_threshold_floor,
+            quota_mode=pseudo_quota_mode,
+            quota_per_class=pseudo_quota_per_class,
         )
         if str(class_weight_timing).strip().lower() == "current":
             class_weights = state.class_weights_after_predictions(
@@ -425,6 +459,10 @@ def gada_batch_step(
         target_indices=target_indices,
         target_mask=target_mask,
     )
+    num_classes = int(state.num_classes)
+    target_pred_hist = torch.bincount(pseudo_labels.detach().cpu(), minlength=num_classes).to(pseudo_labels.device)
+    selected_labels = pseudo_labels[target_mask]
+    target_pseudo_selected_hist = torch.bincount(selected_labels.detach().cpu(), minlength=num_classes).to(pseudo_labels.device)
     result = {
         "loss": terms["loss"].detach(),
         "loss_weighted_ce": terms["loss_weighted_ce"].detach(),
@@ -435,6 +473,10 @@ def gada_batch_step(
         "target_conf_mean": target_confidence.mean().detach(),
         "class_weight_min": class_weights.min().detach(),
         "class_weight_max": class_weights.max().detach(),
+        "class_weight_vector": class_weights.detach(),
+        "pseudo_threshold_vector": pseudo_thresholds.detach(),
+        "target_pred_hist": target_pred_hist.detach(),
+        "target_pseudo_selected_hist": target_pseudo_selected_hist.detach(),
         "estimate_steps": int(estimate_steps),
         "estimate_loss": torch.tensor(0.0) if last_estimate_loss is None else last_estimate_loss,
         "estimate_zeta": torch.tensor(0.0) if last_estimate_zeta is None else last_estimate_zeta,
@@ -445,6 +487,17 @@ def gada_batch_step(
             raise ValueError("target_y_audit must have one label per target sample")
         selected_correct = ((pseudo_labels == audit_labels) & target_mask).sum()
         pred_correct = (pseudo_labels == audit_labels).sum()
+        target_true_hist = torch.bincount(audit_labels.detach().cpu(), minlength=num_classes).to(pseudo_labels.device)
+        target_pred_correct_by_true = torch.bincount(
+            audit_labels[pseudo_labels == audit_labels].detach().cpu(),
+            minlength=num_classes,
+        ).to(pseudo_labels.device)
+        selected_true = audit_labels[target_mask]
+        selected_true_hist = torch.bincount(selected_true.detach().cpu(), minlength=num_classes).to(pseudo_labels.device)
+        selected_correct_true = audit_labels[(pseudo_labels == audit_labels) & target_mask]
+        selected_correct_by_true = torch.bincount(selected_correct_true.detach().cpu(), minlength=num_classes).to(pseudo_labels.device)
+        selected_correct_pred = pseudo_labels[(pseudo_labels == audit_labels) & target_mask]
+        selected_correct_by_pred = torch.bincount(selected_correct_pred.detach().cpu(), minlength=num_classes).to(pseudo_labels.device)
         result.update(
             {
                 "target_selected_correct": selected_correct.detach(),
@@ -452,6 +505,11 @@ def gada_batch_step(
                     int(audit_labels.numel()), dtype=torch.long, device=pseudo_labels.device
                 ),
                 "target_pred_correct": pred_correct.detach(),
+                "target_true_hist": target_true_hist.detach(),
+                "target_pred_correct_by_true_class": target_pred_correct_by_true.detach(),
+                "target_pseudo_selected_true_hist": selected_true_hist.detach(),
+                "target_pseudo_selected_correct_by_true_class": selected_correct_by_true.detach(),
+                "target_pseudo_selected_correct_by_pred_class": selected_correct_by_pred.detach(),
             }
         )
     return result

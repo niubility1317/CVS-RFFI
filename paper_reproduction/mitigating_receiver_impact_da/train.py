@@ -109,6 +109,22 @@ def _state_payload(state: PseudoLabelState) -> dict[str, Any]:
     }
 
 
+def _tensor_int_list(value: torch.Tensor) -> list[int]:
+    return [int(v) for v in value.detach().cpu().flatten().tolist()]
+
+
+def _tensor_float_list(value: torch.Tensor) -> list[float]:
+    return [float(v) for v in value.detach().cpu().flatten().tolist()]
+
+
+def _safe_ratio_lists(numerator: torch.Tensor, denominator: torch.Tensor) -> list[float | None]:
+    out: list[float | None] = []
+    for num, den in zip(numerator.detach().cpu().flatten().tolist(), denominator.detach().cpu().flatten().tolist()):
+        den_f = float(den)
+        out.append(None if den_f <= 0.0 else float(num) / den_f)
+    return out
+
+
 def _target_state_shape(target_batches: Iterable[Any]) -> tuple[int | None, int | None]:
     try:
         dataset = getattr(target_batches, "dataset", None)
@@ -143,29 +159,64 @@ def _iterate_paired_batches(
     raise ValueError("batch_pairing must be one of: cycle_target, zip_min")
 
 
-def _evaluate_target_loss_accuracy(model: ReceiverImpactGADNet, loader: Iterable[Any], *, device: torch.device | str) -> dict[str, float | int]:
+def _evaluate_target_metrics(
+    model: ReceiverImpactGADNet,
+    loader: Iterable[Any],
+    *,
+    device: torch.device | str,
+    include_loss: bool = False,
+) -> dict[str, Any]:
     model.eval()
     loss_sum = 0.0
     correct = 0
     total = 0
     batches = 0
+    confusion: torch.Tensor | None = None
     with torch.no_grad():
         for batch in loader:
             x = _batch_tensor(batch, "iq", 0).to(device)
             y = _batch_tensor(batch, "label", 1).long().to(device)
             logits = model.classify(x)
-            loss_sum += float(F.cross_entropy(logits, y).detach().cpu())
-            correct += int((logits.argmax(dim=1) == y).sum().item())
+            if include_loss:
+                loss_sum += float(F.cross_entropy(logits, y).detach().cpu())
+            pred = logits.argmax(dim=1)
+            if confusion is None:
+                num_classes = int(getattr(model, "num_tx", int(logits.shape[1])))
+                confusion = torch.zeros((num_classes, num_classes), dtype=torch.long)
+            batch_correct = pred == y
+            correct += int(batch_correct.sum().item())
             total += int(y.numel())
             batches += 1
+            for true_label, pred_label in zip(y.detach().cpu().flatten().tolist(), pred.detach().cpu().flatten().tolist()):
+                true_i = int(true_label)
+                pred_i = int(pred_label)
+                if 0 <= true_i < confusion.shape[0] and 0 <= pred_i < confusion.shape[1]:
+                    confusion[true_i, pred_i] += 1
     if batches == 0:
         raise ValueError("target evaluation batches cannot be empty")
-    return {
-        "target_loss": loss_sum / float(batches),
+    if confusion is None:
+        raise ValueError("target evaluation produced no predictions")
+    total_by_class = confusion.sum(dim=1)
+    pred_hist = confusion.sum(dim=0)
+    correct_by_class = confusion.diag()
+    payload: dict[str, Any] = {
         "target_accuracy": 0.0 if total <= 0 else correct / float(total),
         "target_total": int(total),
         "target_batches": int(batches),
+        "target_true_hist": _tensor_int_list(total_by_class),
+        "target_pred_hist": _tensor_int_list(pred_hist),
+        "target_correct_by_class": _tensor_int_list(correct_by_class),
+        "target_total_by_class": _tensor_int_list(total_by_class),
+        "target_accuracy_by_class": _safe_ratio_lists(correct_by_class, total_by_class),
+        "target_confusion_matrix": [[int(v) for v in row] for row in confusion.detach().cpu().tolist()],
     }
+    if include_loss:
+        payload["target_loss"] = loss_sum / float(batches)
+    return payload
+
+
+def _evaluate_target_loss_accuracy(model: ReceiverImpactGADNet, loader: Iterable[Any], *, device: torch.device | str) -> dict[str, Any]:
+    return _evaluate_target_metrics(model, loader, device=device, include_loss=True)
 
 
 def _build_lr_scheduler(
@@ -225,6 +276,9 @@ def run_gada_training_loop(
     mine_update_scale: float = 0.5,
     pseudo_threshold_mode: str = "paper",
     pseudo_score_mode: str = "probability",
+    pseudo_threshold_floor: float = 0.0,
+    pseudo_quota_mode: str = "none",
+    pseudo_quota_per_class: int | None = None,
     class_weight_timing: str = "previous",
     pseudo_state_scope: str = "global",
     batch_pairing: str = "cycle_target",
@@ -266,6 +320,11 @@ def run_gada_training_loop(
     normalized_selection = str(target_model_selection).strip().lower()
     if normalized_selection not in {"final", "target_loss_best"}:
         raise ValueError("target_model_selection must be one of: final, target_loss_best")
+    normalized_quota = str(pseudo_quota_mode).strip().lower()
+    if normalized_quota not in {"none", "balanced_topk"}:
+        raise ValueError("pseudo_quota_mode must be one of: none, balanced_topk")
+    if normalized_quota == "balanced_topk" and (pseudo_quota_per_class is None or int(pseudo_quota_per_class) <= 0):
+        raise ValueError("pseudo_quota_per_class must be positive when balanced_topk is enabled")
 
     for epoch_index in range(int(epochs)):
         epoch_number = epoch_index + 1
@@ -284,6 +343,18 @@ def run_gada_training_loop(
         epoch_pred_correct = 0
         epoch_weight_min = float("inf")
         epoch_weight_max = float("-inf")
+        num_classes = int(model.num_tx)
+        epoch_pred_hist = torch.zeros(num_classes, dtype=torch.long)
+        epoch_true_hist = torch.zeros(num_classes, dtype=torch.long)
+        epoch_pred_correct_by_true = torch.zeros(num_classes, dtype=torch.long)
+        epoch_selected_hist = torch.zeros(num_classes, dtype=torch.long)
+        epoch_selected_true_hist = torch.zeros(num_classes, dtype=torch.long)
+        epoch_selected_correct_by_true = torch.zeros(num_classes, dtype=torch.long)
+        epoch_selected_correct_by_pred = torch.zeros(num_classes, dtype=torch.long)
+        epoch_weight_vector_sum = torch.zeros(num_classes, dtype=torch.float64)
+        epoch_threshold_vector_sum = torch.zeros(num_classes, dtype=torch.float64)
+        epoch_weight_vector_last = torch.ones(num_classes, dtype=torch.float64)
+        epoch_threshold_vector_last = torch.full((num_classes,), float(base_tau), dtype=torch.float64)
         paired_batches, target_iterator = _iterate_paired_batches(
             source_batches,
             target_batches,
@@ -345,6 +416,9 @@ def run_gada_training_loop(
                     mine_update_scale=mine_update_scale,
                     pseudo_threshold_mode=pseudo_threshold_mode,
                     pseudo_score_mode=pseudo_score_mode,
+                    pseudo_threshold_floor=pseudo_threshold_floor,
+                    pseudo_quota_mode=normalized_quota,
+                    pseudo_quota_per_class=pseudo_quota_per_class,
                     class_weight_timing=class_weight_timing,
                     target_indices=target_indices,
                 )
@@ -363,6 +437,28 @@ def run_gada_training_loop(
                 epoch_selected_correct += int(result["target_selected_correct"].item())
                 epoch_audit_total += int(result["target_audit_total"].item())
                 epoch_pred_correct += int(result["target_pred_correct"].item())
+            if "target_pred_hist" in result:
+                epoch_pred_hist += result["target_pred_hist"].detach().cpu().long()
+            if "target_pseudo_selected_hist" in result:
+                epoch_selected_hist += result["target_pseudo_selected_hist"].detach().cpu().long()
+            if "target_true_hist" in result:
+                epoch_true_hist += result["target_true_hist"].detach().cpu().long()
+            if "target_pred_correct_by_true_class" in result:
+                epoch_pred_correct_by_true += result["target_pred_correct_by_true_class"].detach().cpu().long()
+            if "target_pseudo_selected_true_hist" in result:
+                epoch_selected_true_hist += result["target_pseudo_selected_true_hist"].detach().cpu().long()
+            if "target_pseudo_selected_correct_by_true_class" in result:
+                epoch_selected_correct_by_true += result["target_pseudo_selected_correct_by_true_class"].detach().cpu().long()
+            if "target_pseudo_selected_correct_by_pred_class" in result:
+                epoch_selected_correct_by_pred += result["target_pseudo_selected_correct_by_pred_class"].detach().cpu().long()
+            if "class_weight_vector" in result:
+                weight_vector = result["class_weight_vector"].detach().cpu().double()
+                epoch_weight_vector_sum += weight_vector
+                epoch_weight_vector_last = weight_vector
+            if "pseudo_threshold_vector" in result:
+                threshold_vector = result["pseudo_threshold_vector"].detach().cpu().double()
+                epoch_threshold_vector_sum += threshold_vector
+                epoch_threshold_vector_last = threshold_vector
             epoch_weight_min = min(epoch_weight_min, float(result["class_weight_min"].item()))
             epoch_weight_max = max(epoch_weight_max, float(result["class_weight_max"].item()))
 
@@ -384,8 +480,22 @@ def run_gada_training_loop(
                 "target_conf_mean": epoch_conf / float(epoch_batches),
                 "class_weight_min": epoch_weight_min,
                 "class_weight_max": epoch_weight_max,
+                "class_weight_mean_by_class": _tensor_float_list(epoch_weight_vector_sum / float(epoch_batches)),
+                "class_weight_last_by_class": _tensor_float_list(epoch_weight_vector_last),
+                "pseudo_threshold_mean_by_class": _tensor_float_list(epoch_threshold_vector_sum / float(epoch_batches)),
+                "pseudo_threshold_last_by_class": _tensor_float_list(epoch_threshold_vector_last),
                 "target_selected": epoch_selected,
                 "target_seen_total": int(state.total_seen),
+                "target_pred_hist": _tensor_int_list(epoch_pred_hist),
+                "target_true_hist": _tensor_int_list(epoch_true_hist),
+                "target_pred_correct_by_true_class": _tensor_int_list(epoch_pred_correct_by_true),
+                "target_pred_acc_by_true_class": _safe_ratio_lists(epoch_pred_correct_by_true, epoch_true_hist),
+                "target_pseudo_selected_hist": _tensor_int_list(epoch_selected_hist),
+                "target_pseudo_selected_true_hist": _tensor_int_list(epoch_selected_true_hist),
+                "target_pseudo_selected_correct_by_true_class": _tensor_int_list(epoch_selected_correct_by_true),
+                "target_pseudo_selected_correct_by_pred_class": _tensor_int_list(epoch_selected_correct_by_pred),
+                "target_pseudo_selected_acc_by_true_class": _safe_ratio_lists(epoch_selected_correct_by_true, epoch_selected_true_hist),
+                "target_pseudo_selected_acc_by_pred_class": _safe_ratio_lists(epoch_selected_correct_by_pred, epoch_selected_hist),
                 "target_pseudo_selected_acc": None if epoch_selected <= 0 else epoch_selected_correct / float(epoch_selected),
                 "target_pred_acc": None if epoch_audit_total <= 0 else epoch_pred_correct / float(epoch_audit_total),
                 "lr_ec": _optimizer_lr(optimizer_ec),
@@ -425,6 +535,9 @@ def run_gada_training_loop(
         "mine_update_scale": float(mine_update_scale),
         "pseudo_threshold_mode": str(pseudo_threshold_mode),
         "pseudo_score_mode": str(pseudo_score_mode),
+        "pseudo_threshold_floor": float(pseudo_threshold_floor),
+        "pseudo_quota_mode": normalized_quota,
+        "pseudo_quota_per_class": None if pseudo_quota_per_class is None else int(pseudo_quota_per_class),
         "class_weight_timing": str(class_weight_timing),
         "pseudo_state_scope": str(pseudo_state_scope),
         "batch_pairing": str(batch_pairing),
@@ -468,17 +581,7 @@ def _limited_batches(loader: Iterable[Any], max_batches: int | None) -> Iterable
 
 
 def _evaluate_target_accuracy(model: ReceiverImpactGADNet, loader: Iterable[Any], *, device: torch.device | str) -> float:
-    model.eval()
-    correct = 0
-    total = 0
-    with torch.no_grad():
-        for batch in loader:
-            x = _batch_tensor(batch, "iq", 0).to(device)
-            y = _batch_tensor(batch, "label", 1).long().to(device)
-            logits = model.classify(x)
-            correct += int((logits.argmax(dim=1) == y).sum().item())
-            total += int(y.numel())
-    return 0.0 if total == 0 else correct / float(total)
+    return float(_evaluate_target_metrics(model, loader, device=device, include_loss=False)["target_accuracy"])
 
 
 def _source_class_prior_from_dataset(dataset: Any, *, num_classes: int) -> torch.Tensor:
@@ -544,35 +647,71 @@ def _audit_target_predictions(
     correct = 0
     total = 0
     conf_sum = 0.0
+    true_hist: torch.Tensor | None = None
+    pred_hist: torch.Tensor | None = None
+    correct_by_true: torch.Tensor | None = None
     with torch.no_grad():
         for batch in loader:
             x = _batch_tensor(batch, "iq", 0).to(device)
             y = _batch_tensor(batch, "label", 1).long().to(device)
             probs = torch.softmax(model.classify(x), dim=1)
             confidence, pred = probs.max(dim=1)
+            if true_hist is None:
+                num_classes = int(probs.shape[1])
+                true_hist = torch.zeros(num_classes, dtype=torch.long)
+                pred_hist = torch.zeros(num_classes, dtype=torch.long)
+                correct_by_true = torch.zeros(num_classes, dtype=torch.long)
             batch_correct = pred == y
             correct += int(batch_correct.sum().item())
             total += int(y.numel())
             conf_sum += float(confidence.sum().item())
+            true_hist += torch.bincount(y.detach().cpu(), minlength=int(probs.shape[1]))
+            pred_hist += torch.bincount(pred.detach().cpu(), minlength=int(probs.shape[1]))
+            correct_by_true += torch.bincount(y[batch_correct].detach().cpu(), minlength=int(probs.shape[1]))
             for tau, stats in tau_stats.items():
                 selected = confidence > float(tau)
                 stats["selected"] += int(selected.sum().item())
                 stats["selected_correct"] += int((batch_correct & selected).sum().item())
+                stats.setdefault("selected_pred_hist", torch.zeros(int(probs.shape[1]), dtype=torch.long))
+                stats.setdefault("selected_true_hist", torch.zeros(int(probs.shape[1]), dtype=torch.long))
+                stats.setdefault("selected_correct_by_true_class", torch.zeros(int(probs.shape[1]), dtype=torch.long))
+                stats["selected_pred_hist"] += torch.bincount(pred[selected].detach().cpu(), minlength=int(probs.shape[1]))
+                stats["selected_true_hist"] += torch.bincount(y[selected].detach().cpu(), minlength=int(probs.shape[1]))
+                stats["selected_correct_by_true_class"] += torch.bincount(
+                    y[selected & batch_correct].detach().cpu(),
+                    minlength=int(probs.shape[1]),
+                )
     tau_sweep = []
     for tau, stats in sorted(tau_stats.items()):
         selected = int(stats["selected"])
+        selected_true_hist = stats.get("selected_true_hist")
+        selected_correct_by_true = stats.get("selected_correct_by_true_class")
         tau_sweep.append(
             {
                 "tau": float(tau),
                 "selected": selected,
                 "coverage": 0.0 if total <= 0 else selected / float(total),
                 "selected_acc": None if selected <= 0 else int(stats["selected_correct"]) / float(selected),
+                "selected_pred_hist": [] if "selected_pred_hist" not in stats else _tensor_int_list(stats["selected_pred_hist"]),
+                "selected_true_hist": [] if selected_true_hist is None else _tensor_int_list(selected_true_hist),
+                "selected_correct_by_true_class": []
+                if selected_correct_by_true is None
+                else _tensor_int_list(selected_correct_by_true),
+                "selected_acc_by_true_class": []
+                if selected_true_hist is None or selected_correct_by_true is None
+                else _safe_ratio_lists(selected_correct_by_true, selected_true_hist),
             }
         )
+    if true_hist is None or pred_hist is None or correct_by_true is None:
+        raise ValueError("target audit batches cannot be empty")
     return {
         "total": int(total),
         "target_pred_acc": None if total <= 0 else correct / float(total),
         "target_conf_mean": None if total <= 0 else conf_sum / float(total),
+        "target_true_hist": _tensor_int_list(true_hist),
+        "target_pred_hist": _tensor_int_list(pred_hist),
+        "target_correct_by_true_class": _tensor_int_list(correct_by_true),
+        "target_acc_by_true_class": _safe_ratio_lists(correct_by_true, true_hist),
         "tau_sweep": tau_sweep,
     }
 
@@ -651,6 +790,9 @@ def run_table2_reproduction(
     mine_update_scale: float = 0.5,
     pseudo_threshold_mode: str = "paper",
     pseudo_score_mode: str = "probability",
+    pseudo_threshold_floor: float = 0.0,
+    pseudo_quota_mode: str = "none",
+    pseudo_quota_per_class: int | None = None,
     class_weight_timing: str = "previous",
     pseudo_state_scope: str = "global",
     batch_pairing: str = "cycle_target",
@@ -817,6 +959,9 @@ def run_table2_reproduction(
                     mine_update_scale=mine_update_scale,
                     pseudo_threshold_mode=pseudo_threshold_mode,
                     pseudo_score_mode=pseudo_score_mode,
+                    pseudo_threshold_floor=pseudo_threshold_floor,
+                    pseudo_quota_mode=pseudo_quota_mode,
+                    pseudo_quota_per_class=pseudo_quota_per_class,
                     class_weight_timing=class_weight_timing,
                     pseudo_state_scope=pseudo_state_scope,
                     batch_pairing=batch_pairing,
@@ -858,6 +1003,9 @@ def run_table2_reproduction(
                             "mine_update_scale": train_result["mine_update_scale"],
                             "pseudo_threshold_mode": train_result["pseudo_threshold_mode"],
                             "pseudo_score_mode": train_result["pseudo_score_mode"],
+                            "pseudo_threshold_floor": train_result["pseudo_threshold_floor"],
+                            "pseudo_quota_mode": train_result["pseudo_quota_mode"],
+                            "pseudo_quota_per_class": train_result["pseudo_quota_per_class"],
                             "class_weight_timing": train_result["class_weight_timing"],
                             "pseudo_state_scope": train_result["pseudo_state_scope"],
                             "batch_pairing": train_result["batch_pairing"],
@@ -877,12 +1025,18 @@ def run_table2_reproduction(
                     checkpoint_path,
                 )
                 train_result["checkpoint_path"] = str(checkpoint_path)
-            target_accuracy = _evaluate_target_accuracy(model, loaders["target_eval"], device=resolved_device)
+            target_metrics = _evaluate_target_metrics(model, loaders["target_eval"], device=resolved_device, include_loss=False)
             row = {
                 "task": task,
                 "method": method,
                 "status": "completed",
-                "target_accuracy": float(target_accuracy),
+                "target_accuracy": float(target_metrics["target_accuracy"]),
+                "target_true_hist": target_metrics["target_true_hist"],
+                "target_pred_hist": target_metrics["target_pred_hist"],
+                "target_correct_by_class": target_metrics["target_correct_by_class"],
+                "target_total_by_class": target_metrics["target_total_by_class"],
+                "target_accuracy_by_class": target_metrics["target_accuracy_by_class"],
+                "target_confusion_matrix": target_metrics["target_confusion_matrix"],
                 "target_labels_scope": "evaluation_only",
                 "target_label_role": loaders["meta"]["target_label_role"],
                 "checkpoint_path": str(checkpoint_path),
@@ -899,6 +1053,9 @@ def run_table2_reproduction(
                 row["kl_estimator_mode"] = train_result.get("kl_estimator_mode")
                 row["pseudo_threshold_mode"] = train_result.get("pseudo_threshold_mode")
                 row["pseudo_score_mode"] = train_result.get("pseudo_score_mode")
+                row["pseudo_threshold_floor"] = train_result.get("pseudo_threshold_floor")
+                row["pseudo_quota_mode"] = train_result.get("pseudo_quota_mode")
+                row["pseudo_quota_per_class"] = train_result.get("pseudo_quota_per_class")
                 row["class_weight_timing"] = train_result.get("class_weight_timing")
                 row["pseudo_state_scope"] = train_result.get("pseudo_state_scope")
                 row["batch_pairing"] = train_result.get("batch_pairing")
@@ -938,6 +1095,9 @@ def run_table2_reproduction(
         "mine_update_scale": float(mine_update_scale),
         "pseudo_threshold_mode": str(pseudo_threshold_mode),
         "pseudo_score_mode": str(pseudo_score_mode),
+        "pseudo_threshold_floor": float(pseudo_threshold_floor),
+        "pseudo_quota_mode": str(pseudo_quota_mode),
+        "pseudo_quota_per_class": None if pseudo_quota_per_class is None else int(pseudo_quota_per_class),
         "class_weight_timing": str(class_weight_timing),
         "pseudo_state_scope": str(pseudo_state_scope),
         "batch_pairing": str(batch_pairing),
@@ -982,6 +1142,9 @@ def main() -> int:
     parser.add_argument("--mine-update-scale", type=float, default=0.5)
     parser.add_argument("--pseudo-threshold-mode", type=str, default="paper", choices=("paper", "official"))
     parser.add_argument("--pseudo-score-mode", type=str, default="probability", choices=("probability", "logit"))
+    parser.add_argument("--pseudo-threshold-floor", type=float, default=0.0)
+    parser.add_argument("--pseudo-quota-mode", type=str, default="none", choices=("none", "balanced_topk"))
+    parser.add_argument("--pseudo-quota-per-class", type=int, default=None)
     parser.add_argument("--class-weight-timing", type=str, default="previous", choices=("previous", "current"))
     parser.add_argument("--pseudo-state-scope", type=str, default="global", choices=("global", "epoch"))
     parser.add_argument("--batch-pairing", type=str, default="cycle_target", choices=("cycle_target", "zip_min"))
@@ -1033,6 +1196,9 @@ def main() -> int:
             mine_update_scale=args.mine_update_scale,
             pseudo_threshold_mode=args.pseudo_threshold_mode,
             pseudo_score_mode=args.pseudo_score_mode,
+            pseudo_threshold_floor=args.pseudo_threshold_floor,
+            pseudo_quota_mode=args.pseudo_quota_mode,
+            pseudo_quota_per_class=args.pseudo_quota_per_class,
             class_weight_timing=args.class_weight_timing,
             pseudo_state_scope=args.pseudo_state_scope,
             batch_pairing=args.batch_pairing,

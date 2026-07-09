@@ -520,6 +520,9 @@ def test_table2_runner_smoke_trains_source_only_and_proposed_rows(tmp_path):
     assert len(result["rows"][1]["history"]) == 2
     assert "source_pretrain_history" in result["rows"][1]
     assert len(result["rows"][1]["source_pretrain_history"]) == 2
+    assert result["rows"][1]["target_true_hist"] == [4, 4, 4, 4, 4, 4]
+    assert len(result["rows"][1]["target_accuracy_by_class"]) == 6
+    assert len(result["rows"][1]["target_confusion_matrix"]) == 6
     assert result["base_tau"] == 0.95
     assert result["class_prior_mode"] == "source"
     assert result["rows"][1]["class_prior_mode"] == "source"
@@ -581,6 +584,36 @@ def test_table2_runner_records_step_lr_scheduler_path(tmp_path):
     assert row["lr_scheduler_active"] is True
     assert row["history"][0]["lr_ec"] < result["learning_rate"]
     assert row["history"][0]["lr_t"] < result["learning_rate"]
+
+
+def test_table2_runner_records_pseudo_floor_and_quota_controls(tmp_path):
+    from paper_reproduction.mitigating_receiver_impact_da.train import run_table2_reproduction
+
+    result = run_table2_reproduction(
+        _synthetic_manysig_compact(),
+        tasks=["14-7->3-19"],
+        methods=["proposed"],
+        output_dir=tmp_path,
+        epochs=1,
+        batch_size=4,
+        max_samples_per_combo=1,
+        max_batches_per_epoch=1,
+        source_pretrain_epochs=0,
+        pseudo_threshold_floor=0.4,
+        pseudo_quota_mode="balanced_topk",
+        pseudo_quota_per_class=2,
+        seed=6,
+        device="cpu",
+    )
+
+    row = result["rows"][0]
+    assert result["pseudo_threshold_floor"] == 0.4
+    assert result["pseudo_quota_mode"] == "balanced_topk"
+    assert result["pseudo_quota_per_class"] == 2
+    assert row["pseudo_threshold_floor"] == 0.4
+    assert row["pseudo_quota_mode"] == "balanced_topk"
+    assert row["pseudo_quota_per_class"] == 2
+    assert "target_pseudo_selected_hist" in row["history"][0]
 
 
 def test_table2_runner_official_compat_records_released_trainer_path(tmp_path):
@@ -723,8 +756,82 @@ def test_target_prediction_audit_reports_tau_precision_and_coverage():
     by_tau = {row["tau"]: row for row in audit["tau_sweep"]}
     assert by_tau[0.7]["selected"] == 4
     assert by_tau[0.7]["selected_acc"] == 0.5
+    assert audit["target_true_hist"] == [3, 1]
+    assert audit["target_pred_hist"] == [1, 3]
+    assert audit["target_acc_by_true_class"] == [1.0 / 3.0, 1.0]
+    assert by_tau[0.7]["selected_true_hist"] == [3, 1]
+    assert by_tau[0.7]["selected_acc_by_true_class"] == [1.0 / 3.0, 1.0]
     assert by_tau[0.95]["selected"] == 2
     assert by_tau[0.95]["selected_acc"] == 1.0
+
+
+def test_target_metric_evaluation_reports_per_class_confusion():
+    from paper_reproduction.mitigating_receiver_impact_da.train import _evaluate_target_metrics
+
+    class FixedModel:
+        num_tx = 3
+
+        def eval(self):
+            return self
+
+        def classify(self, x):
+            return torch.tensor(
+                [
+                    [5.0, 1.0, 0.0],
+                    [0.0, 5.0, 1.0],
+                    [0.0, 4.0, 3.0],
+                    [1.0, 0.0, 5.0],
+                ]
+            )[: x.shape[0]]
+
+    loader = [
+        {
+            "iq": torch.zeros(4, 2, 256),
+            "label": torch.tensor([0, 1, 2, 2]),
+        }
+    ]
+
+    metrics = _evaluate_target_metrics(FixedModel(), loader, device="cpu", include_loss=True)
+
+    assert metrics["target_accuracy"] == 0.75
+    assert metrics["target_true_hist"] == [1, 1, 2]
+    assert metrics["target_pred_hist"] == [1, 2, 1]
+    assert metrics["target_correct_by_class"] == [1, 1, 1]
+    assert metrics["target_accuracy_by_class"] == [1.0, 1.0, 0.5]
+    assert metrics["target_confusion_matrix"] == [[1, 0, 0], [0, 1, 0], [0, 1, 1]]
+    assert "target_loss" in metrics
+
+
+def test_pseudo_threshold_floor_and_balanced_quota_limit_selected_labels():
+    from paper_reproduction.mitigating_receiver_impact_da.algorithm import PseudoLabelState, _select_pseudo_labels
+
+    state = PseudoLabelState(num_classes=2)
+    logits = torch.log(
+        torch.tensor(
+            [
+                [0.91, 0.09],
+                [0.88, 0.12],
+                [0.72, 0.28],
+                [0.15, 0.85],
+            ]
+        )
+    )
+
+    labels, mask, confidence, thresholds = _select_pseudo_labels(
+        logits,
+        state,
+        base_tau=0.7,
+        threshold_mode="paper",
+        score_mode="probability",
+        threshold_floor=0.8,
+        quota_mode="balanced_topk",
+        quota_per_class=1,
+    )
+
+    assert labels.tolist() == [0, 0, 0, 1]
+    assert torch.allclose(confidence, torch.tensor([0.91, 0.88, 0.72, 0.85]))
+    assert torch.allclose(thresholds, torch.tensor([0.8, 0.8]))
+    assert mask.tolist() == [True, False, False, True]
 
 
 def test_algorithm1_training_loop_runs_epochs_and_writes_checkpoint(tmp_path):
@@ -757,6 +864,12 @@ def test_algorithm1_training_loop_runs_epochs_and_writes_checkpoint(tmp_path):
     assert len(result["history"]) == 2
     assert "target_pseudo_selected_acc" in result["history"][0]
     assert "target_pred_acc" in result["history"][0]
+    assert "target_pred_hist" in result["history"][0]
+    assert "target_pseudo_selected_hist" in result["history"][0]
+    assert "target_pred_acc_by_true_class" in result["history"][0]
+    assert "target_pseudo_selected_acc_by_pred_class" in result["history"][0]
+    assert "class_weight_mean_by_class" in result["history"][0]
+    assert "pseudo_threshold_mean_by_class" in result["history"][0]
     assert "estimate_zeta_mean" in result["history"][0]
     assert result["state"]["total_seen"] == 16
     assert optimizer_t.step_calls == 28
@@ -803,6 +916,34 @@ def test_algorithm1_training_loop_steps_lr_schedulers_once_per_batch():
     assert optimizer_ec.step_calls == 4
     assert "lr_ec" in result["history"][0]
     assert "lr_t" in result["history"][0]
+
+
+def test_algorithm1_training_loop_records_pseudo_floor_and_quota():
+    from paper_reproduction.mitigating_receiver_impact_da.model import ReceiverImpactGADNet
+    from paper_reproduction.mitigating_receiver_impact_da.train import run_gada_training_loop
+
+    torch.manual_seed(8)
+    model = ReceiverImpactGADNet(num_tx=3, feature_dim=8, hidden_dim=8)
+    source_batches = [{"iq": torch.randn(3, 2, 256), "label": torch.tensor([0, 1, 2])}]
+    target_batches = [{"iq": torch.randn(6, 2, 256), "label": torch.tensor([0, 1, 2, 0, 1, 2])}]
+
+    result = run_gada_training_loop(
+        model,
+        source_batches,
+        target_batches,
+        optimizer_t=CountingOptimizer(model.estimate_network.parameters()),
+        optimizer_ec=CountingOptimizer(list(model.feature_extractor.parameters()) + list(model.classifier.parameters())),
+        epochs=1,
+        pseudo_threshold_floor=0.3,
+        pseudo_quota_mode="balanced_topk",
+        pseudo_quota_per_class=2,
+    )
+
+    assert result["pseudo_threshold_floor"] == 0.3
+    assert result["pseudo_quota_mode"] == "balanced_topk"
+    assert result["pseudo_quota_per_class"] == 2
+    assert result["history"][0]["target_selected"] <= 6
+    assert max(result["history"][0]["target_pseudo_selected_hist"]) <= 2
 
 
 def test_algorithm1_training_loop_requires_unlabeled_target_batches():
