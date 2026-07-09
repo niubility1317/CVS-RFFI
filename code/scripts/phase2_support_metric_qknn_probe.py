@@ -7499,6 +7499,8 @@ def _adaptive_qknn_overrides(
         "stable_dualview_v66",
         "dualview_support_v67",
         "stable_dualview_v67",
+        "dualview_support_v69",
+        "stable_dualview_v69",
     }:
         raise ValueError(f"unsupported adaptive_qknn_policy: {policy}")
     min_k_for_policy = float(geometry["adaptive_support_min_k"])
@@ -7550,6 +7552,7 @@ def _adaptive_qknn_overrides(
     use_v63 = name in {"dualview_support_v63", "stable_dualview_v63"}
     use_v66 = name in {"dualview_support_v66", "stable_dualview_v66"}
     use_v67 = name in {"dualview_support_v67", "stable_dualview_v67"}
+    use_v69 = name in {"dualview_support_v69", "stable_dualview_v69"}
     use_v49 = use_v49 or ((use_v53 or use_v54 or use_v55 or use_v56) and min_k_for_policy >= 10.0)
     use_v44 = (
         name in {"dualview_support_v44", "stable_dualview_v44"}
@@ -7593,7 +7596,7 @@ def _adaptive_qknn_overrides(
     stable_gate = _clip01(max(hardness, 0.6 * class_load))
     enhancement_gate = _clip01((1.0 - stable_gate) * k_reliability)
 
-    if use_v59 or use_v63 or use_v66 or use_v67:
+    if use_v59 or use_v63 or use_v66 or use_v67 or use_v69:
         overrides = {
             "adaptive_qknn_policy": name,
             "adaptive_qknn_requested_policy": name,
@@ -7605,24 +7608,40 @@ def _adaptive_qknn_overrides(
             "adaptive_enhancement_gate": enhancement_gate,
         }
         if min_k_for_policy >= 10.0:
-            if use_v63 or use_v66 or use_v67:
+            if use_v63 or use_v66 or use_v67 or use_v69:
                 overrides.update(
                     {
                         "support_code_budget_per_class": 0,
                         "support_code_budget_mode": "centroid_hard_diverse",
                         "support_code_old_budget_per_class": 5,
-                        "support_code_new_budget_per_class": 8 if use_v67 else 9 if use_v66 else 0,
+                        "support_code_new_budget_per_class": 8 if use_v67 else 9 if (use_v66 or use_v69) else 0,
                         "local_competition_weight": 0.02,
                         "local_competition_k": 5,
                         "local_competition_clip": 2.0,
                         "local_competition_scope": "role",
                     }
                 )
-                if use_v66 or use_v67:
+                if use_v66 or use_v67 or use_v69:
                     overrides.update(
                         {
                             "support_code_new_protect_top_classes": 8,
                             "support_code_new_protect_metric": "radius",
+                        }
+                    )
+                if use_v69:
+                    overrides.update(
+                        {
+                            "labelprop_weight": 0.015,
+                            "labelprop_k": 10,
+                            "labelprop_alpha": 0.72,
+                            "labelprop_temperature": 0.05,
+                            "labelprop_rounds": 8,
+                            "labelprop_clip": 2.0,
+                            "labelprop_scope": "all",
+                            "scenario_residual_weight": 0.5,
+                            "scenario_residual_min_classes": 2,
+                            "scenario_residual_clip": 0.5,
+                            "scenario_residual_scope": "new",
                         }
                     )
             else:
@@ -8253,8 +8272,20 @@ def _adaptive_qknn_overrides(
                     "transductive_proto_weight": 0.0,
                     "dense_cluster_weight": 0.0,
                 }
-            )
+        )
     return overrides
+
+
+def _adaptive_qknn_scenario_residual_overrides(
+    params: dict[str, Any], adaptive_overrides: dict[str, Any]
+) -> dict[str, Any]:
+    keys = (
+        "scenario_residual_weight",
+        "scenario_residual_min_classes",
+        "scenario_residual_clip",
+        "scenario_residual_scope",
+    )
+    return {key: adaptive_overrides.get(key, params[key]) for key in keys}
 
 
 def main() -> None:
@@ -9435,6 +9466,7 @@ def main() -> None:
                             ),
                         }
                     )
+                    params.update(_adaptive_qknn_scenario_residual_overrides(params, adaptive_overrides))
                     row = _evaluate_metric_qknn(
                         features=features,
                         aux_features=aux_features,

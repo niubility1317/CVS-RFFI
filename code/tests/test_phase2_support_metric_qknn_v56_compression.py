@@ -513,6 +513,87 @@ class Phase2SupportMetricQknnV56CompressionTest(unittest.TestCase):
         self.assertNotIn("topm", high_k)
         self.assertNotIn("proto_mix", high_k)
 
+    def test_v69_applies_lighter_labelprop_v66_compression_only_for_k10(self):
+        from phase2_support_metric_qknn_probe import _adaptive_qknn_overrides
+
+        many_new_low_k = {
+            "adaptive_support_min_k": 5.0,
+            "adaptive_new_class_count": 20.0,
+            "adaptive_support_max_offdiag_proto_sim": 0.982,
+            "adaptive_support_p90_offdiag_proto_sim": 0.822,
+            "adaptive_support_mean_radius": 0.104,
+        }
+        many_new_high_k = dict(many_new_low_k)
+        many_new_high_k["adaptive_support_min_k"] = 10.0
+
+        low_k = _adaptive_qknn_overrides(
+            policy="stable_dualview_v69",
+            geometry=many_new_low_k,
+            aux_available=True,
+        )
+        high_k = _adaptive_qknn_overrides(
+            policy="stable_dualview_v69",
+            geometry=many_new_high_k,
+            aux_available=True,
+        )
+
+        self.assertEqual(low_k["adaptive_qknn_requested_policy"], "stable_dualview_v69")
+        self.assertEqual(low_k["adaptive_qknn_policy"], "stable_dualview_v69")
+        self.assertNotIn("support_code_old_budget_per_class", low_k)
+        self.assertNotIn("support_code_new_protect_top_classes", low_k)
+        self.assertNotIn("labelprop_weight", low_k)
+        self.assertNotIn("scenario_residual_weight", low_k)
+
+        self.assertEqual(high_k["adaptive_qknn_requested_policy"], "stable_dualview_v69")
+        self.assertEqual(high_k["adaptive_qknn_policy"], "stable_dualview_v69")
+        self.assertEqual(high_k["support_code_budget_per_class"], 0)
+        self.assertEqual(high_k["support_code_budget_mode"], "centroid_hard_diverse")
+        self.assertEqual(high_k["support_code_old_budget_per_class"], 5)
+        self.assertEqual(high_k["support_code_new_budget_per_class"], 9)
+        self.assertEqual(high_k["support_code_new_protect_top_classes"], 8)
+        self.assertEqual(high_k["support_code_new_protect_metric"], "radius")
+        self.assertEqual(high_k["local_competition_weight"], 0.02)
+        self.assertEqual(high_k["local_competition_k"], 5)
+        self.assertEqual(high_k["local_competition_clip"], 2.0)
+        self.assertEqual(high_k["local_competition_scope"], "role")
+        self.assertEqual(high_k["labelprop_weight"], 0.015)
+        self.assertEqual(high_k["labelprop_k"], 10)
+        self.assertEqual(high_k["labelprop_alpha"], 0.72)
+        self.assertEqual(high_k["labelprop_temperature"], 0.05)
+        self.assertEqual(high_k["labelprop_rounds"], 8)
+        self.assertEqual(high_k["labelprop_clip"], 2.0)
+        self.assertEqual(high_k["labelprop_scope"], "all")
+        self.assertEqual(high_k["scenario_residual_weight"], 0.5)
+        self.assertEqual(high_k["scenario_residual_min_classes"], 2)
+        self.assertEqual(high_k["scenario_residual_clip"], 0.5)
+        self.assertEqual(high_k["scenario_residual_scope"], "new")
+        self.assertNotIn("transform_mode", high_k)
+        self.assertNotIn("topm", high_k)
+        self.assertNotIn("proto_mix", high_k)
+
+    def test_adaptive_override_merges_scenario_residual_params(self):
+        from phase2_support_metric_qknn_probe import _adaptive_qknn_scenario_residual_overrides
+
+        params = {
+            "scenario_residual_weight": 0.0,
+            "scenario_residual_min_classes": 1,
+            "scenario_residual_clip": 0.3,
+            "scenario_residual_scope": "all",
+        }
+        adaptive_overrides = {
+            "scenario_residual_weight": 0.5,
+            "scenario_residual_min_classes": 2,
+            "scenario_residual_clip": 0.5,
+            "scenario_residual_scope": "new",
+        }
+
+        merged = _adaptive_qknn_scenario_residual_overrides(params, adaptive_overrides)
+
+        self.assertEqual(merged["scenario_residual_weight"], 0.5)
+        self.assertEqual(merged["scenario_residual_min_classes"], 2)
+        self.assertEqual(merged["scenario_residual_clip"], 0.5)
+        self.assertEqual(merged["scenario_residual_scope"], "new")
+
     def test_support_proto_anchor_recovers_class_score_without_raw_support_codes(self):
         from phase2_support_metric_qknn_probe import _support_proto_anchor_scores
 
