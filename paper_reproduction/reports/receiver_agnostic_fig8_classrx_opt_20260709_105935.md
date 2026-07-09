@@ -67,7 +67,7 @@ Runs completed by about `2026-07-09 11:47 CST`. Local evidence was copied to:
 
 ### Strict Split
 
-Strict split keeps the deterministic source receiver order used by the current reproduction code.
+Strict split keeps the deterministic source receiver order used by the current reproduction code. Because this round uses `class_receiver` target-label balancing and tuned Fig8/LMMD settings not explicitly specified by the paper, this table is an optimized strict-split diagnostic, not a fully paper-faithful headline.
 
 | R | source receivers | base | random@100 | best active@100 | weakest target receivers at random@100 |
 |---:|---|---:|---:|---:|---|
@@ -101,3 +101,16 @@ The previous low absolute Fig8 was partly caused by target label selection. Join
 The remaining strict gap is dominated by target receiver composition. Even with balanced labels, `3-19` and `18-2` remain the weakest strict target receivers. Moving `3-19` into the R=1 source raises random@100 to `92.86%`, and moving both `18-2` and `3-19` into source raises R=2/R=3 to `96.10%`/`98.03%`.
 
 Therefore the implementation can reach paper-level Fig8 values, but the replacement lines cannot be claimed as strict paper-faithful unless the original paper's hidden receiver ordering is recovered or justified. The strict current line should be reported as improved but still below paper in absolute value, especially for R=1.
+
+### Method-Faithfulness Audit
+
+Independent method review found that this run family should be reported as `Fig8 optimized diagnostic/sensitivity`, not as the strict paper-faithful headline:
+
+| item | current implementation | boundary |
+|---|---|---|
+| target label selection | `class_receiver` uses target true class and receiver metadata to enforce joint quotas | useful diagnostic, but not explicitly described in Fig8 |
+| R-specific LMMD | R=3 uses tuned `features_and_activations`, `lambda=0.01`, `250` steps, `lr=0.0001` | optimization choice, not confirmed paper protocol |
+| Fig8 fine-tune | full fine-tune, `finetune_lr=0.0005`, source replay per class `20` | paper does not fully specify lr, replay, or scope |
+| receiver replacement | manual source receiver changes such as `3-19` or `18-2,3-19` | receiver-order sensitivity only unless original paper order is recovered |
+
+Future strict paper-faithful runs should keep a declared receiver split, avoid true-label joint quotas unless the paper split protocol is recovered, avoid R-specific tuning, and separate those results from the optimized diagnostic table above.
