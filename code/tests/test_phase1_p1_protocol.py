@@ -147,6 +147,24 @@ def test_ssdg_dry_run_fails_closed_when_schedule_hides_eval_family_overlap(tmp_p
         train_ssdg.train(args)
 
 
+def test_source_val_heavy_eval_schedule_is_sparse_then_dense_and_final_mandatory():
+    args = SimpleNamespace(
+        source_val_heavy_eval_start_epoch=10,
+        source_val_heavy_eval_interval=10,
+        source_val_heavy_eval_final_window=20,
+        source_val_heavy_eval_final_interval=2,
+    )
+    observed = [
+        epoch
+        for epoch in range(1, 201)
+        if train_ssdg._should_run_source_val_heavy_eval(epoch, 200, args)
+    ]
+    assert observed == list(range(10, 181, 10)) + list(range(182, 201, 2))
+    args.source_val_heavy_eval_interval = 999
+    args.source_val_heavy_eval_final_interval = 999
+    assert train_ssdg._should_run_source_val_heavy_eval(200, 200, args) is True
+
+
 def test_terminal_status_distinguishes_missing_p1_mechanisms():
     status = train_ssdg._resolve_phase1_terminal_status(
         tail_stopped=False,

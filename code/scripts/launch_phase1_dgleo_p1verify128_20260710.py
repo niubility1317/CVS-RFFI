@@ -17,6 +17,7 @@ DEFAULT_RUN_ID = "phase1_dgleo_p1verify128_20260710"
 DEFAULT_ROOT = Path("/home/szu2070436088/2510044040/CV-SincNet")
 DEFAULT_PYTHON = Path("/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python")
 PAIRED_SEEDS = (710101, 710211, 710307, 710403)
+SOURCE_VAL_EVAL_COHORT = "source_val_heavy_E10_180_every10_E182_200_every2_v1"
 
 
 BASE: Dict[str, Any] = {
@@ -236,6 +237,7 @@ def build_matrix() -> List[Dict[str, Any]]:
                     "source_only": True,
                     "phase1_proxy_only": True,
                     "checkpoint_selection": "final_only",
+                    "eval_schedule_cohort": SOURCE_VAL_EVAL_COHORT,
                     "sat_train_family": "simplified_leo_residual_weak_v1",
                     "sat_eval_family": "legacy_satellite_physics_holdout_v1",
                     "config": config,
@@ -264,6 +266,18 @@ def validate_matrix(rows: Sequence[Mapping[str, Any]]) -> None:
             raise ValueError(f"non-source Phase1 row: {row['candidate_id']}")
         if row.get("sat_train_family") == row.get("sat_eval_family"):
             raise ValueError(f"satellite train/eval family overlap: {row['candidate_id']}")
+
+
+def filter_matrix(rows: Sequence[Mapping[str, Any]], exclude_spec: str) -> List[Dict[str, Any]]:
+    excluded = {value.strip() for value in str(exclude_spec or "").split(",") if value.strip()}
+    known = {str(row["candidate_id"]) for row in rows}
+    unknown = sorted(excluded - known)
+    if unknown:
+        raise ValueError("unknown excluded candidates: " + ",".join(unknown))
+    selected = [dict(row) for row in rows if str(row["candidate_id"]) not in excluded]
+    if not selected:
+        raise ValueError("candidate exclusion removed the complete matrix")
+    return selected
 
 
 def _append(args: List[str], name: str, value: Any) -> None:
@@ -295,6 +309,8 @@ def build_command(
         ("--enable_joint_safe_guard", "false"), ("--test_eval_policy", "interval_final"),
         ("--test_eval_start_epoch", 999999), ("--test_eval_interval", 0),
         ("--test_eval_final_window", 0), ("--test_eval_final_interval", 0),
+        ("--source_val_heavy_eval_start_epoch", 10), ("--source_val_heavy_eval_interval", 10),
+        ("--source_val_heavy_eval_final_window", 20), ("--source_val_heavy_eval_final_interval", 2),
         ("--phase1_v2_hard_gates", "true"), ("--endpoint_accept_policy_id", "endpoint_accept_v1"),
         ("--endpoint_threshold_source", "source_val_only"), ("--endpoint_calibration_split", "source_val"),
         ("--loss_gate_exported", "false"), ("--tail_safety_state_machine", "true"),
@@ -491,6 +507,7 @@ def matrix_payload(rows: Sequence[Mapping[str, Any]], run_id: str, max_active: i
         "gpu_total_counts": dict(sorted(Counter(int(row["gpu"]) for row in rows).items())),
         "max_active_per_gpu": int(max_active),
         "backfill_policy": "same_gpu_launch_next_after_any_terminal_exit",
+        "eval_schedule_cohort": SOURCE_VAL_EVAL_COHORT,
         "claim_boundary": "PHASE1_SOURCE_ONLY_PROXY_DIAGNOSTIC_NO_TRUE_UNKNOWN_SUCCESS_CLAIM",
         "candidates": list(rows),
     }
@@ -628,7 +645,7 @@ def run_scheduler(args: argparse.Namespace, rows: Sequence[Mapping[str, Any]]) -
                     )
                     own_on_gpu += 1
                     time.sleep(float(args.launch_settle_seconds))
-            if active:
+            if active or any(queues[gpu] for gpu in queues):
                 time.sleep(float(args.poll_seconds))
         print(f"[P1V128-SCHEDULER-COMPLETE] run_id={args.run_id} candidates={len(rows)}", flush=True)
     return 0
@@ -645,13 +662,20 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--poll-seconds", type=float, default=30.0)
     parser.add_argument("--launch-settle-seconds", type=float, default=4.0)
     parser.add_argument("--emit-matrix", default="")
+    parser.add_argument(
+        "--exclude-candidates",
+        default="",
+        help="Comma-separated candidate IDs already running or completed in an earlier queue cohort.",
+    )
     parser.add_argument("--dry-run", action="store_true")
     return parser
 
 
 def main() -> int:
     args = build_parser().parse_args()
-    rows = build_matrix()
+    full_rows = build_matrix()
+    rows = filter_matrix(full_rows, args.exclude_candidates)
+    excluded_count = len(full_rows) - len(rows)
     if args.emit_matrix:
         write_matrix(Path(args.emit_matrix), rows, args.run_id, args.max_active_per_gpu)
     if args.dry_run:
@@ -669,7 +693,10 @@ def main() -> int:
                 {
                     "run_id": args.run_id,
                     "candidate_count": len(rows),
-                    "cell_count": len(CELLS),
+                    "excluded_candidate_count": excluded_count,
+                    "cell_count": len({row["cell"] for row in rows}),
+                    "original_cell_count": len(CELLS),
+                    "eval_schedule_cohort": SOURCE_VAL_EVAL_COHORT,
                     "gpu_total_counts": dict(sorted(Counter(int(row["gpu"]) for row in rows).items())),
                     "max_active_per_gpu": args.max_active_per_gpu,
                     "unique_command_count": len({tuple(command) for command in commands}),

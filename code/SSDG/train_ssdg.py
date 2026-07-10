@@ -320,6 +320,30 @@ def build_arg_parser() -> argparse.ArgumentParser:
         default=0,
         help="For --test_eval_policy interval_final, run named test-set and satellite evaluation every N epochs inside --test_eval_final_window; final epoch still runs.",
     )
+    parser.add_argument(
+        "--source_val_heavy_eval_start_epoch",
+        type=int,
+        default=1,
+        help="First epoch eligible for heavy source-val tail and satellite evaluation.",
+    )
+    parser.add_argument(
+        "--source_val_heavy_eval_interval",
+        type=int,
+        default=1,
+        help="Run heavy source-val tail and satellite evaluation every N epochs before the final window.",
+    )
+    parser.add_argument(
+        "--source_val_heavy_eval_final_window",
+        type=int,
+        default=0,
+        help="Use a denser heavy source-val evaluation interval inside the final N epochs; 0 disables.",
+    )
+    parser.add_argument(
+        "--source_val_heavy_eval_final_interval",
+        type=int,
+        default=1,
+        help="Heavy source-val evaluation interval inside the final window. The final epoch always runs.",
+    )
     parser.add_argument("--enable_joint_safe_guard", type=str2bool, default=False)
     parser.add_argument("--joint_guard_require_satellite", type=str2bool, default=True)
     parser.add_argument("--joint_guard_min_strict_udu", type=float, default=0.0)
@@ -1116,6 +1140,24 @@ def _strong_augment(x: torch.Tensor, std: float) -> torch.Tensor:
         return x
     noise = torch.randn_like(x) * float(std)
     return torch.nan_to_num(x + noise, nan=0.0, posinf=0.0, neginf=0.0)
+
+
+def _should_run_source_val_heavy_eval(epoch: int, total_epochs: int, args: Any) -> bool:
+    """Schedule expensive source-val geometry/satellite passes without weakening final evidence."""
+
+    epoch = int(epoch)
+    total_epochs = int(total_epochs)
+    if epoch >= total_epochs:
+        return True
+    start_epoch = max(1, int(getattr(args, "source_val_heavy_eval_start_epoch", 1)))
+    if epoch < start_epoch:
+        return False
+    final_window = max(0, int(getattr(args, "source_val_heavy_eval_final_window", 0)))
+    if final_window > 0 and epoch > total_epochs - final_window:
+        final_interval = int(getattr(args, "source_val_heavy_eval_final_interval", 1))
+        return final_interval > 0 and epoch % final_interval == 0
+    interval = int(getattr(args, "source_val_heavy_eval_interval", 1))
+    return interval > 0 and epoch % interval == 0
 
 
 def _threshold_mask(conf: torch.Tensor, domains: torch.Tensor | None, args) -> torch.Tensor:
@@ -3485,6 +3527,14 @@ def train(args) -> int:
         )
     if str(args.best_metric) == "source_val_sat_hmean" and not bool(getattr(args, "eval_sat_channel", False)):
         raise ValueError("source_val_sat_hmean requires --eval_sat_channel true")
+    if int(getattr(args, "source_val_heavy_eval_start_epoch", 1)) < 1:
+        raise ValueError("--source_val_heavy_eval_start_epoch must be >= 1")
+    if int(getattr(args, "source_val_heavy_eval_interval", 1)) < 1:
+        raise ValueError("--source_val_heavy_eval_interval must be >= 1")
+    if int(getattr(args, "source_val_heavy_eval_final_window", 0)) < 0:
+        raise ValueError("--source_val_heavy_eval_final_window must be >= 0")
+    if int(getattr(args, "source_val_heavy_eval_final_interval", 1)) < 1:
+        raise ValueError("--source_val_heavy_eval_final_interval must be >= 1")
     if bool(getattr(args, "enable_joint_safe_guard", False)):
         raise ValueError(
             "Phase1 source-only checkpoint selection forbids held-out test joint guards; "
@@ -3808,6 +3858,9 @@ def train(args) -> int:
     tail_rollback_events: List[Dict[str, Any]] = []
     tail_reference_geometry: Dict[str, Any] = {}
     tail_reference_epoch = -1
+    last_source_val_tail_geometry: Dict[str, Any] = {}
+    last_source_val_sat_stats: Dict[str, Dict[str, Any]] = {}
+    last_source_val_heavy_eval_epoch = 0
     phase1_v2_tail_machine = None
     phase1_v2_final_blocked = False
     phase1_v2_reasons: List[str] = []
@@ -5589,7 +5642,16 @@ def train(args) -> int:
             )
 
         val_stats = evaluate_loader(model, data_ctx["val_loader"], device, data_ctx["domain_label_map"], max_batches=int(args.eval_max_batches))
-        source_val_tail_geometry = _evaluate_source_val_tail_geometry(model, data_ctx, device, args)
+        source_val_heavy_eval_ran = _should_run_source_val_heavy_eval(epoch, total_epochs, args)
+        if source_val_heavy_eval_ran:
+            source_val_tail_geometry = _evaluate_source_val_tail_geometry(model, data_ctx, device, args)
+            source_val_sat_stats = _evaluate_source_val_sat_if_enabled(model, data_ctx, device, args)
+            last_source_val_tail_geometry = deepcopy(source_val_tail_geometry)
+            last_source_val_sat_stats = deepcopy(source_val_sat_stats)
+            last_source_val_heavy_eval_epoch = int(epoch)
+        else:
+            source_val_tail_geometry = deepcopy(last_source_val_tail_geometry)
+            source_val_sat_stats = deepcopy(last_source_val_sat_stats)
         source_val_tail_observation = {
             "train/dm_accept_zid_p95_deg": source_val_tail_geometry.get("local_zid_p95_deg", float("nan")),
             "train/dm_accept_zid_p99_deg": source_val_tail_geometry.get("local_zid_p99_deg", float("nan")),
@@ -5598,8 +5660,14 @@ def train(args) -> int:
             ),
             "train/dm_accept_proxy_vaccept": source_val_tail_geometry.get("proxy_vaccept", float("nan")),
         }
-        stage_state["tail_observation_fixed_source_val"] = 1.0
-        source_val_sat_stats = _evaluate_source_val_sat_if_enabled(model, data_ctx, device, args)
+        stage_state["tail_observation_fixed_source_val"] = 1.0 if source_val_heavy_eval_ran else 0.0
+        stage_state["source_val_heavy_eval_ran"] = 1.0 if source_val_heavy_eval_ran else 0.0
+        stage_state["source_val_heavy_eval_stale"] = 0.0 if source_val_heavy_eval_ran else 1.0
+        stage_state["source_val_heavy_eval_epoch"] = float(last_source_val_heavy_eval_epoch)
+        stage_state["source_val_heavy_eval_start_epoch"] = float(args.source_val_heavy_eval_start_epoch)
+        stage_state["source_val_heavy_eval_interval"] = float(args.source_val_heavy_eval_interval)
+        stage_state["source_val_heavy_eval_final_window"] = float(args.source_val_heavy_eval_final_window)
+        stage_state["source_val_heavy_eval_final_interval"] = float(args.source_val_heavy_eval_final_interval)
         source_val_sat_scores = _satellite_tx_scores(source_val_sat_stats)
         stage_state["source_val_sat_mean_tx"] = (
             sum(source_val_sat_scores) / len(source_val_sat_scores) if source_val_sat_scores else float("nan")
@@ -5856,7 +5924,7 @@ def train(args) -> int:
             guard_state["phase1_v2_tail_action_code"] = 0.0
             guard_state["phase1_v2_tail_reference_ready"] = 0.0
             guard_state["phase1_v2_tail_deferred_to_pseudo"] = 1.0
-        if phase1_v2_tail_machine is not None and promotion_stage_ready:
+        if phase1_v2_tail_machine is not None and promotion_stage_ready and source_val_heavy_eval_ran:
             tail_decision = phase1_v2_tail_machine.update(source_val_tail_observation)
             guard_state["phase1_v2_tail_fired"] = bool(tail_decision.fired)
             guard_state["phase1_v2_tail_blocks_best"] = bool(tail_decision.blocks_best)
@@ -5889,6 +5957,11 @@ def train(args) -> int:
                     phase1_v2_reasons.append(
                         tail_decision.reason or f"tail_final_block_{tail_decision.state}"
                     )
+        elif phase1_v2_tail_machine is not None and promotion_stage_ready:
+            guard_state["phase1_v2_tail_eval_deferred"] = True
+            guard_state["phase1_v2_tail_fired"] = False
+            guard_state["phase1_v2_tail_blocks_best"] = False
+            guard_state["phase1_v2_tail_blocks_final"] = False
         if bool(getattr(args, "phase1_v2_hard_gates", False)) and assess_phase1_v2_final_export_policy is not None:
             final_export_decision = assess_phase1_v2_final_export_policy(
                 phase1_v2_reasons,
@@ -5938,7 +6011,8 @@ def train(args) -> int:
             if (test_ran_this_epoch or not best_metric_needs_test)
             else float("-inf")
         )
-        allow_best_update = test_ran_this_epoch or not best_metric_needs_test
+        source_val_best_is_fresh = best_metric_name != "source_val_sat_hmean" or source_val_heavy_eval_ran
+        allow_best_update = (test_ran_this_epoch or not best_metric_needs_test) and source_val_best_is_fresh
         if allow_best_update and current_best_score > best_score:
             best_score = float(current_best_score)
             best_val = float(val_stats["tx_acc"])

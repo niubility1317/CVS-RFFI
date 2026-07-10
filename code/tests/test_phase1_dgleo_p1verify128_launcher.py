@@ -59,6 +59,10 @@ def test_all_rows_preserve_source_only_disjoint_satellite_and_final_only_protoco
     assert "--zid_leakage_probe_required true" in joined
     assert "--test_eval_start_epoch 999999" in joined
     assert "--test_eval_interval 0" in joined
+    assert "--source_val_heavy_eval_start_epoch 10" in joined
+    assert "--source_val_heavy_eval_interval 10" in joined
+    assert "--source_val_heavy_eval_final_window 20" in joined
+    assert "--source_val_heavy_eval_final_interval 2" in joined
 
 
 def test_all_128_commands_parse_with_current_trainer_contract():
@@ -90,6 +94,30 @@ def test_scheduler_cli_hard_limits_each_gpu_to_two_active_experiments():
     args = parser.parse_args([])
     assert args.max_active_per_gpu == 2
     assert parser.parse_args(["--max-active-per-gpu", "2"]).max_active_per_gpu == 2
+
+
+def test_current_16_candidates_can_be_excluded_without_unbalancing_remaining_queue():
+    excluded = {
+        "P1V128_G0_FULL_WEAK_S1", "P1V128_G1_SAT_PAIR_FOCUS_S4",
+        "P1V128_G0_FULL_WEAK_S2", "P1V128_G0_FULL_BALANCED_S1",
+        "P1V128_G0_FULL_WEAK_S3", "P1V128_G0_FULL_BALANCED_S2",
+        "P1V128_G0_FULL_WEAK_S4", "P1V128_G0_FULL_BALANCED_S3",
+        "P1V128_G0_FULL_BALANCED_S4", "P1V128_G0_FULL_GEOM_HIGH_S3",
+        "P1V128_G0_FULL_GEOM_HIGH_S4", "P1V128_G0_FULL_DG_PROTECT_S3",
+        "P1V128_G0_FULL_DG_PROTECT_S4", "P1V128_G1_SAT_CE_CONTROL_S3",
+        "P1V128_G1_SAT_CE_CONTROL_S4", "P1V128_G1_SAT_PAIR_FOCUS_S3",
+    }
+    rows = MODULE.filter_matrix(MODULE.build_matrix(), ",".join(sorted(excluded)))
+    assert len(rows) == 112
+    assert len({row["cell"] for row in rows}) == 30
+    assert not ({row["candidate_id"] for row in rows} & excluded)
+    assert Counter(row["gpu"] for row in rows) == Counter({gpu: 14 for gpu in range(8)})
+    assert {row["eval_schedule_cohort"] for row in rows} == {MODULE.SOURCE_VAL_EVAL_COHORT}
+
+
+def test_scheduler_waits_when_only_external_jobs_fill_gpu_slots():
+    source = SCRIPT.read_text(encoding="utf-8")
+    assert "if active or any(queues[gpu] for gpu in queues):" in source
 
 
 def test_non_source_phase1_dataset_is_rejected():
