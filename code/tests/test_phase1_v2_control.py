@@ -844,4 +844,6 @@ def test_u_geometry_route_filters_pseudo_ce_entropy_and_direct_metric_to_paired_
     assert "routed_pseudo_mask = mask & u_geometry_core_mask" in source
     assert "entropy_per_sample[u_geometry_core_mask].mean()" in source
     assert "dm_mask = dm_mask & u_geometry_core_mask" in source
-    assert "clean_core = clean_core & sat_core" in source
+    assert "combined_core = torch.stack([row[0] for row in state_rows], dim=0).all(dim=0)" in source
+    assert "combined_outside = torch.stack([row[2] for row in state_rows], dim=0).any(dim=0)" in source
+    assert "combined_ambiguous = (~combined_core) & (~combined_outside)" in source

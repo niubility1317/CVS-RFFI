@@ -45,7 +45,7 @@ try:
         save_payload,
         set_seed,
     )
-    from training_controls import parse_sat_scenarios
+    from training_controls import parse_sat_scenarios, satellite_protocol_manifest
     from baseline_origin_sat_view import parse_sat_view_schedule
     from concat_sat_channel_aug import ConcatSatChannelAugment
     from cvsrffi.tensors import build_domain_label_map
@@ -73,9 +73,11 @@ try:
         sanitize_loss,
         soft_unknown_mixup_loss,
         source_episode_three_sigma_loss,
+        tx_conditional_domain_invariance_loss,
         unlabeled_known_acceptance_quarantine_loss,
         zid_compactness_loss,
     )
+    from cvsrffi.leakage_probe import frozen_ridge_linear_probe
     from cvsrffi.phase2_prototypes import (
         PrototypeFusionConfig,
         attach_endpoint_accept_v1_manifest,
@@ -131,6 +133,7 @@ except ModuleNotFoundError:
     sanitize_loss = None
     soft_unknown_mixup_loss = None
     source_episode_three_sigma_loss = None
+    tx_conditional_domain_invariance_loss = None
     unlabeled_known_acceptance_quarantine_loss = None
     zid_compactness_loss = None
     export_phase2_prototypes = None
@@ -143,7 +146,7 @@ except ModuleNotFoundError:
     _resolve_days = _resolve_rxs = load_wisig_compact_pkl = make_wisig_trainval_test_by_day_rx = None
     build_baseline_model = domain_from_extra = ensure_dir = load_checkpoint = None
     mean_logs = merge_checkpoint_args = move_batch = resolve_device = save_payload = set_seed = None
-    parse_sat_scenarios = None
+    parse_sat_scenarios = satellite_protocol_manifest = None
     parse_sat_view_schedule = None
     ConcatSatChannelAugment = None
     build_domain_label_map = evaluate_loader = evaluate_named_loaders = make_loader = parse_csv_indices = None
@@ -159,6 +162,7 @@ except ModuleNotFoundError:
     compute_open_set_budget_action = None
     should_skip_phase1_v2_final_export = None
     one_way_kl_from_teacher = None
+    frozen_ridge_linear_probe = None
     build_aug_base_cfg = build_stage_state = configure_augmentor_for_epoch = configure_mixstyle_for_epoch = None
     format_stage_state = make_augmentor = None
     format_named_test_lines = format_sat_test_lines = None
@@ -231,6 +235,15 @@ def build_arg_parser() -> argparse.ArgumentParser:
     parser.add_argument("--group_ce_min_domains", type=int, default=4)
     parser.add_argument("--group_ce_mode", type=str, default="hard")
     parser.add_argument("--lambda_fishr", type=float, default=0.02)
+    parser.add_argument("--lambda_zid_receiver_invariance", type=float, default=0.0)
+    parser.add_argument("--lambda_zid_day_invariance", type=float, default=0.0)
+    parser.add_argument("--lambda_zid_channel_invariance", type=float, default=0.0)
+    parser.add_argument("--lambda_u_zid_receiver_invariance", type=float, default=0.0)
+    parser.add_argument("--lambda_u_zid_day_invariance", type=float, default=0.0)
+    parser.add_argument("--lambda_u_zid_channel_invariance", type=float, default=0.0)
+    parser.add_argument("--zid_invariance_min_groups", type=int, default=2)
+    parser.add_argument("--zid_invariance_min_samples_per_group", type=int, default=2)
+    parser.add_argument("--zid_channel_pair_weight", type=float, default=1.0)
     parser.add_argument("--fishr_min_domains", type=int, default=4)
     parser.add_argument("--strong_noise_std", type=float, default=0.015)
     parser.add_argument("--use_unlabeled", type=str2bool, default=True)
@@ -261,6 +274,7 @@ def build_arg_parser() -> argparse.ArgumentParser:
     parser.add_argument("--concat_sat_start_epoch", type=int, default=1)
     parser.add_argument("--sat_view_prob", type=float, default=1.0)
     parser.add_argument("--sat_view_seed", type=int, default=2027)
+    parser.add_argument("--sat_protocol_disjoint_required", type=str2bool, default=False)
     parser.add_argument("--lambda_sat_cls", type=float, default=0.10)
     parser.add_argument("--lambda_sat_cons", type=float, default=0.0)
     parser.add_argument("--sat_cons_start_epoch", type=int, default=20)
@@ -269,8 +283,9 @@ def build_arg_parser() -> argparse.ArgumentParser:
         type=str,
         default="clean_val_tx",
         choices=["clean_val_tx", "source_val_sat_hmean", "test_overall_tx", "sat_mean_tx", "sat_worst_tx", "joint_safe"],
-        help="Metric used to update the best SSDG checkpoint.",
+        help="Source-val telemetry metric only; Phase1 checkpoint selection is final-only.",
     )
+    parser.add_argument("--checkpoint_selection", type=str, default="final_only", choices=["final_only"])
     parser.add_argument("--safe_best_path", type=str, default="", help="Optional path for the guarded best checkpoint.")
     parser.add_argument("--safe_latest_path", type=str, default="", help="Optional path for the latest guarded checkpoint.")
     parser.add_argument("--phase1_source_val_selection_only", type=str2bool, default=True)
@@ -373,6 +388,9 @@ def build_arg_parser() -> argparse.ArgumentParser:
     parser.add_argument("--source_episode_local_accept_weight", type=float, default=0.0)
     parser.add_argument("--source_episode_local_density_weight", type=float, default=0.0)
     parser.add_argument("--direct_metric_multiview_separate", type=str2bool, default=False)
+    parser.add_argument("--direct_metric_domain_local_components", type=str2bool, default=False)
+    parser.add_argument("--direct_metric_require_domain_local_components", type=str2bool, default=False)
+    parser.add_argument("--direct_metric_min_samples_per_component", type=int, default=2)
     parser.add_argument("--direct_metric_clean_weight", type=float, default=1.0)
     parser.add_argument("--direct_metric_sat_weight", type=float, default=1.0)
     parser.add_argument("--endpoint_require_artifact_on_export", type=str2bool, default=True)
@@ -381,6 +399,12 @@ def build_arg_parser() -> argparse.ArgumentParser:
     parser.add_argument("--endpoint_calibration_core_quantile", type=float, default=0.80)
     parser.add_argument("--endpoint_calibration_accept_quantile", type=float, default=0.95)
     parser.add_argument("--endpoint_calibration_tail_quantile", type=float, default=0.99)
+    parser.add_argument("--zid_leakage_probe_required", type=str2bool, default=False)
+    parser.add_argument("--zid_leakage_probe_max_batches", type=int, default=0)
+    parser.add_argument("--zid_leakage_probe_ridge", type=float, default=0.01)
+    parser.add_argument("--zid_receiver_probe_max_excess", type=float, default=0.20)
+    parser.add_argument("--zid_day_probe_max_excess", type=float, default=0.15)
+    parser.add_argument("--zid_channel_probe_max_excess", type=float, default=0.15)
     parser.add_argument("--feasibility_gate", type=str2bool, default=False)
     parser.add_argument(
         "--feasibility_stage",
@@ -890,6 +914,45 @@ def _meta_from_extra(extra) -> Mapping[str, Any] | None:
     return meta if isinstance(meta, Mapping) else None
 
 
+def _metadata_label_tensor(extra, key: str, device, expected_count: int) -> Optional[torch.Tensor]:
+    meta = _meta_from_extra(extra)
+    if meta is None or key not in meta:
+        return None
+    value = meta.get(key)
+    if torch.is_tensor(value):
+        out = value.detach().to(device=device).view(-1).long()
+    else:
+        try:
+            out = torch.as_tensor(_as_plain_list(value), device=device, dtype=torch.long).view(-1)
+        except Exception:
+            return None
+    if out.numel() != int(expected_count):
+        return None
+    return out
+
+
+def _expand_view_metadata(
+    labels: Optional[torch.Tensor],
+    *,
+    clean_count: int,
+    total_count: int,
+) -> Optional[torch.Tensor]:
+    if labels is None:
+        return None
+    if labels.numel() == total_count:
+        return labels
+    if labels.numel() == clean_count and total_count == 2 * clean_count:
+        return torch.cat([labels, labels], dim=0)
+    return None
+
+
+def _channel_view_labels(total_count: int, clean_count: int, applied: bool, device) -> torch.Tensor:
+    labels = torch.zeros(max(0, int(total_count)), device=device, dtype=torch.long)
+    if bool(applied) and int(clean_count) > 0 and int(total_count) >= 2 * int(clean_count):
+        labels[int(clean_count) : 2 * int(clean_count)] = 1
+    return labels
+
+
 def _temporal_mask_tensor(pseudo, conf, extra, args, device):
     meta = _meta_from_extra(extra)
     mask = temporal_neighbor_agreement_mask(
@@ -1002,6 +1065,15 @@ def _build_ssdg_wisig_data(args, device: torch.device):
         seed=int(args.seed),
     )
     labeled_loader = make_loader(labeled_ds, int(args.batch_size), True, int(args.num_workers), device, True, int(args.prefetch_factor))
+    probe_train_loader = make_loader(
+        labeled_ds,
+        int(args.eval_batch_size),
+        False,
+        int(args.num_workers),
+        device,
+        False,
+        int(args.prefetch_factor),
+    )
     unlabeled_loader = make_loader(
         unlabeled_ds,
         int(args.batch_size),
@@ -1019,6 +1091,7 @@ def _build_ssdg_wisig_data(args, device: torch.device):
     domain_label_map = build_domain_label_map(source_base)
     return {
         "train_loader": labeled_loader,
+        "probe_train_loader": probe_train_loader,
         "unlabeled_loader": unlabeled_loader,
         "val_loader": val_loader,
         "named_test_loaders": named_test_loaders,
@@ -1368,7 +1441,7 @@ def _maybe_export_phase2_prototypes_ssdg(
         raise ImportError("cvsrffi.phase2_prototypes export support is required for --phase2_export_prototypes")
     loader_name = str(getattr(args, "phase2_export_split", "train") or "train").strip().lower()
     if loader_name == "train":
-        loader = data_ctx["train_loader"]
+        loader = data_ctx.get("probe_train_loader", data_ctx["train_loader"])
     elif loader_name == "val":
         loader = data_ctx["val_loader"]
     else:
@@ -1376,6 +1449,9 @@ def _maybe_export_phase2_prototypes_ssdg(
     checkpoint_path = str(getattr(args, "phase2_export_checkpoint", "") or "").strip()
     if not checkpoint_path:
         checkpoint_path = str(default_checkpoint)
+    if str(getattr(args, "checkpoint_selection", "")) == "final_only":
+        if Path(checkpoint_path).resolve() != Path(default_checkpoint).resolve():
+            raise ValueError("Phase1 final-only export forbids a non-final --phase2_export_checkpoint")
     output_path = str(getattr(args, "phase2_export_path", "") or "").strip()
     if not output_path:
         output_path = _derive_phase2_export_path(checkpoint_path)
@@ -1383,6 +1459,7 @@ def _maybe_export_phase2_prototypes_ssdg(
     restore_state = deepcopy(getattr(model, "_orig_mod", model).state_dict())
     try:
         checkpoint_sha256 = ""
+        ckpt: Mapping[str, Any] = {}
         if checkpoint_path:
             ckpt = _validate_phase1_checkpoint_payload(torch.load(checkpoint_path, map_location=device), args, checkpoint_path)
             _load_phase1_checkpoint_strict(model, ckpt, checkpoint_path)
@@ -1418,6 +1495,9 @@ def _maybe_export_phase2_prototypes_ssdg(
                 "known_class_count": int(getattr(args, "num_classes", 0)),
                 "classification_head_contract": "dual_cvsincnet_tx_logits_v1",
                 "checkpoint_load_strict": True,
+                "checkpoint_selection": "final_only",
+                "satellite_protocol": dict(getattr(args, "sat_protocol_manifest", {}) or {}),
+                "zid_leakage_probe": ((ckpt.get("stats", {}) or {}).get("zid_leakage_probe", {})),
             },
         )
         if bool(getattr(args, "phase2_fuse_prototypes", False)):
@@ -1534,13 +1614,15 @@ def _evaluate_source_val_sat_if_enabled(model, data_ctx, device, args) -> Dict[s
     scenarios = list(getattr(args, "eval_sat_scenario_list", []))
     if not scenarios:
         return {}
+    source_val_args = deepcopy(args)
+    source_val_args.eval_sat_on = "all"
     return evaluate_sat_scenarios(
         model,
         {"source_val": data_ctx["val_loader"]},
         device,
         data_ctx["domain_label_map"],
         scenario_names=scenarios,
-        args=args,
+        args=source_val_args,
         max_batches=_resolve_sat_eval_max_batches(args),
     )
 
@@ -1552,8 +1634,11 @@ def _evaluate_source_val_tail_geometry(model, data_ctx, device, args) -> Dict[st
         return {"status": "FAILED", "reason": "direct_metric_acceptance_loss_unavailable"}
     was_training = bool(model.training)
     features: List[torch.Tensor] = []
+    sat_features: List[torch.Tensor] = []
     labels: List[torch.Tensor] = []
     domains: List[torch.Tensor] = []
+    sat_scenarios = list(getattr(args, "sat_train_protocol_scenario_list", []))
+    sat_generator = make_torch_generator(device, int(getattr(args, "seed", 0)) + 91079) if make_torch_generator is not None else None
     try:
         model.eval()
         with torch.no_grad():
@@ -1564,6 +1649,23 @@ def _evaluate_source_val_tail_geometry(model, data_ctx, device, args) -> Dict[st
                 d = domain_from_extra(extra, data_ctx["domain_label_map"], device)
                 out = model(x, y_tx=None, grl_lambda=1.0, return_aux=True, domain_labels=d)
                 features.append(out["z_id"].detach().float())
+                if sat_scenarios and apply_sat_channel_for_scenario is not None:
+                    scenario = sat_scenarios[(batch_idx - 1) % len(sat_scenarios)]
+                    x_sat, _ = apply_sat_channel_for_scenario(
+                        x,
+                        scenario,
+                        args,
+                        gen=sat_generator,
+                        return_meta=False,
+                    )
+                    sat_out = model(
+                        _safe_iq_tensor(x_sat),
+                        y_tx=None,
+                        grl_lambda=1.0,
+                        return_aux=True,
+                        domain_labels=d,
+                    )
+                    sat_features.append(sat_out["z_id"].detach().float())
                 labels.append(y.detach().long())
                 if d is not None:
                     domains.append(d.detach().long())
@@ -1575,14 +1677,35 @@ def _evaluate_source_val_tail_geometry(model, data_ctx, device, args) -> Dict[st
         cuda_devices = [int(device.index or 0)] if getattr(device, "type", "cpu") == "cuda" else []
         with torch.random.fork_rng(devices=cuda_devices):
             torch.manual_seed(int(getattr(args, "seed", 0)) + 91073)
-            _loss, info = direct_metric_acceptance_loss(z, y, d, **_direct_metric_kwargs(args))
+            if (
+                bool(getattr(args, "direct_metric_multiview_separate", False))
+                and len(sat_features) == len(features)
+                and sat_features
+                and multiview_direct_metric_acceptance_loss is not None
+            ):
+                z_sat = torch.cat(sat_features, dim=0)
+                _loss, info = multiview_direct_metric_acceptance_loss(
+                    z,
+                    z_sat,
+                    y,
+                    d,
+                    clean_weight=float(args.direct_metric_clean_weight),
+                    sat_weight=float(args.direct_metric_sat_weight),
+                    pair_weight=float(args.direct_metric_sat_pair_weight),
+                    sat_pair_target_rad=math.radians(float(args.direct_metric_sat_pair_target_deg)),
+                    **_direct_metric_kwargs(args),
+                )
+            else:
+                _loss, info = direct_metric_acceptance_loss(z, y, d, **_direct_metric_kwargs(args))
         result = {str(key): float(value) if isinstance(value, (int, float)) else value for key, value in info.items()}
         result.update(
             {
                 "status": "COMPLETE" if float(info.get("active", 0.0)) > 0.0 else "FAILED",
-                "protocol": "fixed_source_val_direct_metric_v1",
+                "protocol": "fixed_source_val_multiview_local_component_v2",
                 "sample_count": int(z.size(0)),
                 "seed": int(getattr(args, "seed", 0)) + 91073,
+                "satellite_scenarios": sat_scenarios,
+                "multiview_sample_count": int(torch.cat(sat_features, dim=0).size(0)) if sat_features else 0,
             }
         )
         if result["status"] != "COMPLETE":
@@ -1590,6 +1713,151 @@ def _evaluate_source_val_tail_geometry(model, data_ctx, device, args) -> Dict[st
         return result
     finally:
         model.train(was_training)
+
+
+def _evaluate_zid_leakage_probes(model, data_ctx, device, args) -> Dict[str, Any]:
+    """Fit frozen source-train probes and evaluate only on source validation."""
+
+    if frozen_ridge_linear_probe is None:
+        return {"status": "FAILED", "reason": "frozen_ridge_linear_probe_unavailable"}
+    train_scenarios = list(getattr(args, "sat_train_scenario_list", []))
+    eval_scenarios = list(getattr(args, "eval_sat_scenario_list", []))
+    max_batches = int(getattr(args, "zid_leakage_probe_max_batches", 0))
+    was_training = bool(model.training)
+
+    def _collect(loader, scenarios: Sequence[str], seed_offset: int) -> Dict[str, torch.Tensor]:
+        clean_features: List[torch.Tensor] = []
+        receiver_labels: List[torch.Tensor] = []
+        day_labels: List[torch.Tensor] = []
+        channel_features: List[torch.Tensor] = []
+        channel_labels: List[torch.Tensor] = []
+        generator = make_torch_generator(device, int(args.seed) + int(seed_offset)) if make_torch_generator is not None else None
+        with torch.no_grad():
+            for batch_idx, batch in enumerate(loader, start=1):
+                if max_batches > 0 and batch_idx > max_batches:
+                    break
+                x, _y, extra = move_batch(batch, device)
+                batch_size = int(x.size(0))
+                receiver = _metadata_label_tensor(extra, "rx_i", device, batch_size)
+                day = _metadata_label_tensor(extra, "day_i", device, batch_size)
+                if receiver is None or day is None:
+                    continue
+                d = domain_from_extra(extra, data_ctx["domain_label_map"], device)
+                clean_out = model(x, y_tx=None, grl_lambda=1.0, return_aux=True, domain_labels=d)
+                z_clean = clean_out["z_id"].detach().float().cpu()
+                clean_features.append(z_clean)
+                receiver_labels.append(receiver.detach().cpu())
+                day_labels.append(day.detach().cpu())
+                if scenarios and apply_sat_channel_for_scenario is not None:
+                    scenario = str(scenarios[(batch_idx - 1) % len(scenarios)])
+                    x_sat, _ = apply_sat_channel_for_scenario(
+                        x,
+                        scenario,
+                        args,
+                        gen=generator,
+                        return_meta=False,
+                    )
+                    sat_out = model(
+                        _safe_iq_tensor(x_sat),
+                        y_tx=None,
+                        grl_lambda=1.0,
+                        return_aux=True,
+                        domain_labels=d,
+                    )
+                    z_sat = sat_out["z_id"].detach().float().cpu()
+                    channel_features.extend([z_clean, z_sat])
+                    channel_labels.extend(
+                        [
+                            torch.zeros(batch_size, dtype=torch.long),
+                            torch.ones(batch_size, dtype=torch.long),
+                        ]
+                    )
+        return {
+            "clean_features": torch.cat(clean_features, dim=0) if clean_features else torch.empty((0, 0)),
+            "receiver_labels": torch.cat(receiver_labels, dim=0) if receiver_labels else torch.empty((0,), dtype=torch.long),
+            "day_labels": torch.cat(day_labels, dim=0) if day_labels else torch.empty((0,), dtype=torch.long),
+            "channel_features": torch.cat(channel_features, dim=0) if channel_features else torch.empty((0, 0)),
+            "channel_labels": torch.cat(channel_labels, dim=0) if channel_labels else torch.empty((0,), dtype=torch.long),
+        }
+
+    try:
+        model.eval()
+        train = _collect(data_ctx["probe_train_loader"], train_scenarios, 92011)
+        evaluate = _collect(data_ctx["val_loader"], eval_scenarios, 92029)
+        ridge = float(getattr(args, "zid_leakage_probe_ridge", 0.01))
+        receiver = frozen_ridge_linear_probe(
+            train["clean_features"],
+            train["receiver_labels"],
+            evaluate["clean_features"],
+            evaluate["receiver_labels"],
+            ridge=ridge,
+        )
+        day = frozen_ridge_linear_probe(
+            train["clean_features"],
+            train["day_labels"],
+            evaluate["clean_features"],
+            evaluate["day_labels"],
+            ridge=ridge,
+        )
+        channel = frozen_ridge_linear_probe(
+            train["channel_features"],
+            train["channel_labels"],
+            evaluate["channel_features"],
+            evaluate["channel_labels"],
+            ridge=ridge,
+        )
+        status = "COMPLETE" if all(obj.get("status") == "COMPLETE" for obj in (receiver, day, channel)) else "FAILED"
+        result: Dict[str, Any] = {
+            "status": status,
+            "schema": "phase1_zid_source_train_to_val_leakage_probe_v1",
+            "fit_split": "source_labeled_train",
+            "eval_split": "source_val",
+            "channel_fit_scenarios": train_scenarios,
+            "channel_eval_scenarios": eval_scenarios,
+            "receiver": receiver,
+            "day": day,
+            "channel": channel,
+        }
+        for name, obj in (("receiver", receiver), ("day", day), ("channel", channel)):
+            result[f"zid_{name}_probe_acc"] = obj.get("accuracy", float("nan"))
+            result[f"zid_{name}_probe_balanced_acc"] = obj.get("balanced_accuracy", float("nan"))
+            result[f"zid_{name}_probe_chance"] = obj.get("chance_accuracy", float("nan"))
+            result[f"zid_{name}_probe_raw_excess"] = obj.get("excess_accuracy", float("nan"))
+            result[f"zid_{name}_probe_balanced_chance"] = obj.get(
+                "balanced_chance_accuracy", float("nan")
+            )
+            result[f"zid_{name}_probe_excess"] = obj.get("balanced_excess_accuracy", float("nan"))
+        if status != "COMPLETE":
+            result["reason"] = "one_or_more_probes_incomplete"
+        return result
+    finally:
+        model.train(was_training)
+
+
+def _assess_zid_leakage_probe(probe: Mapping[str, Any], args) -> Dict[str, Any]:
+    limits = {
+        "receiver": float(args.zid_receiver_probe_max_excess),
+        "day": float(args.zid_day_probe_max_excess),
+        "channel": float(args.zid_channel_probe_max_excess),
+    }
+    reasons: List[str] = []
+    details: Dict[str, Any] = {"required": bool(args.zid_leakage_probe_required)}
+    if str(probe.get("status", "")) != "COMPLETE":
+        reasons.append("ZID_LEAKAGE_PROBE_INCOMPLETE")
+    for name, limit in limits.items():
+        value = float(probe.get(f"zid_{name}_probe_excess", float("nan")))
+        details[f"{name}_excess"] = value
+        details[f"{name}_max_excess"] = limit
+        if not math.isfinite(value):
+            reasons.append(f"ZID_{name.upper()}_PROBE_MISSING")
+        elif value > limit:
+            reasons.append(f"ZID_{name.upper()}_LEAKAGE_EXCESS")
+    fired = bool(args.zid_leakage_probe_required and reasons)
+    return {
+        "fired": fired,
+        "reason": ";".join(dict.fromkeys(reasons)) if fired else "",
+        "details": details,
+    }
 
 
 def _validate_phase1_checkpoint_payload(checkpoint: Any, args, path: str | Path) -> Mapping[str, Any]:
@@ -1609,6 +1877,8 @@ def _validate_phase1_checkpoint_payload(checkpoint: Any, args, path: str | Path)
     saved_args = checkpoint.get("args", {}) or {}
     if str(saved_args.get("best_metric", "")) != str(getattr(args, "best_metric", "")):
         raise ValueError(f"Phase1 checkpoint selection metric mismatch: {path}")
+    if str(checkpoint.get("checkpoint_selection", saved_args.get("checkpoint_selection", ""))) != "final_only":
+        raise ValueError(f"Phase1 checkpoint is not final-only: {path}")
     return checkpoint
 
 
@@ -1646,7 +1916,7 @@ def _evaluate_frozen_phase1_checkpoint(args, model, data_ctx, device, checkpoint
         )
         return {
             "status": "COMPLETE",
-            "selection_source": "source_val_only",
+            "selection_source": "training_final_only",
             "checkpoint": str(path),
             "checkpoint_sha256": _sha256_file(path),
             "checkpoint_epoch": int(checkpoint.get("epoch", -1)),
@@ -1689,6 +1959,7 @@ def _resolve_phase1_terminal_status(
     selected_checkpoint_exists: bool,
     heldout_eval_status: str,
     p0_mechanisms_ready: bool = True,
+    p1_mechanisms_ready: bool = True,
     endpoint_export_ready: bool = True,
 ) -> str:
     """Resolve a fail-closed Phase1 terminal state without overstating promotion readiness."""
@@ -1701,6 +1972,8 @@ def _resolve_phase1_terminal_status(
         return "NON_PROMOTABLE_GUARD_BLOCKED"
     if not p0_mechanisms_ready:
         return "NON_PROMOTABLE_P0_DISABLED"
+    if not p1_mechanisms_ready:
+        return "NON_PROMOTABLE_P1_DISABLED"
     if not selected_checkpoint_exists:
         return "NO_SAFE_CHECKPOINT"
     if str(heldout_eval_status).upper() != "COMPLETE":
@@ -1920,6 +2193,9 @@ def _direct_metric_kwargs(args) -> Dict[str, Any]:
         "shell_width_rad": math.radians(float(args.direct_metric_shell_width_deg)),
         "accept_cvar_alpha": float(args.direct_metric_accept_cvar_alpha),
         "virtual_detach": bool(args.direct_metric_virtual_detach),
+        "use_domain_local_components": bool(args.direct_metric_domain_local_components),
+        "require_domain_local_components": bool(args.direct_metric_require_domain_local_components),
+        "min_samples_per_component": int(args.direct_metric_min_samples_per_component),
     }
 
 
@@ -1935,6 +2211,8 @@ def _route_unlabeled_known_geometry(
     d_u: Optional[torch.Tensor],
     pseudo_mask: torch.Tensor,
     valid_u_mask: torch.Tensor,
+    labeled_view_count: int = 0,
+    labeled_sat_applied: bool = False,
 ) -> Tuple[torch.Tensor, Dict[str, Any], torch.Tensor]:
     zero = out_s["z_id"].sum() * 0.0
     geometry_core_mask = torch.zeros_like(pseudo_mask, dtype=torch.bool)
@@ -1958,50 +2236,112 @@ def _route_unlabeled_known_geometry(
             }
         )
         return zero, info, geometry_core_mask
-    anchor_parts = [z_id_l.detach()]
-    label_parts = [y_l.detach().long()]
-    domain_parts = [d_l.detach().long()] if d_l is not None else []
-    # Route against labeled receiver/day components only. Same-batch pseudo
-    # samples cannot nominate themselves as trusted anchors.
-    query_parts = [out_s["z_id"][quarantine_mask]]
-    query_label_parts = [pseudo[quarantine_mask].detach().long()]
-    query_domain_parts = [d_u[quarantine_mask].detach().long()] if d_u is not None else []
-    paired_count = 0
-    if bool(args.u_quarantine_include_sat_view) and out_u_sat is not None:
-        query_parts.append(out_u_sat["z_id"][quarantine_mask])
-        query_label_parts.append(pseudo[quarantine_mask].detach().long())
-        if d_u is not None:
-            query_domain_parts.append(d_u[quarantine_mask].detach().long())
-        paired_count = quarantine_count
-    loss, info = unlabeled_known_acceptance_quarantine_loss(
-        torch.cat(anchor_parts, dim=0),
-        torch.cat(label_parts, dim=0),
-        torch.cat(query_parts, dim=0),
-        anchor_d=torch.cat(domain_parts, dim=0) if domain_parts else None,
-        query_y=torch.cat(query_label_parts, dim=0),
-        query_d=torch.cat(query_domain_parts, dim=0) if query_domain_parts else None,
-        paired_view_count=paired_count,
-        return_state_masks=True,
-        core_quantile=float(args.u_quarantine_core_quantile),
-        accept_quantile=float(args.u_quarantine_accept_quantile),
-        accept_target=float(args.u_quarantine_accept_target),
-        core_accept_target=float(args.u_quarantine_core_accept_target),
-        cvar_alpha=float(args.u_quarantine_cvar_alpha),
-        accept_temperature=float(args.u_quarantine_accept_temperature),
-        component_temperature_rad=math.radians(float(args.direct_metric_component_temperature_deg)),
-        density_temperature_rad=math.radians(float(args.direct_metric_density_temperature_deg)),
-        component_margin_rad=math.radians(float(args.direct_metric_component_margin_deg)),
-        min_samples_per_class=int(args.u_quarantine_min_count),
+    anchor_count = int(labeled_view_count) if int(labeled_view_count) > 0 else int(y_l.numel())
+    if anchor_count > int(z_id_l.size(0)) or anchor_count > int(y_l.numel()):
+        return zero, {**info, "reason": "invalid_labeled_view_count"}, geometry_core_mask
+    clean_anchor_z = z_id_l[:anchor_count].detach()
+    clean_anchor_y = y_l[:anchor_count].detach().long()
+    clean_anchor_d = d_l[:anchor_count].detach().long() if d_l is not None else None
+    query_y = pseudo[quarantine_mask].detach().long()
+    query_d = d_u[quarantine_mask].detach().long() if d_u is not None else None
+
+    def _route_view(anchor_z, anchor_y, anchor_d, query_z) -> Tuple[torch.Tensor, Dict[str, Any]]:
+        return unlabeled_known_acceptance_quarantine_loss(
+            anchor_z,
+            anchor_y,
+            query_z,
+            anchor_d=anchor_d,
+            query_y=query_y,
+            query_d=query_d,
+            paired_view_count=0,
+            return_state_masks=True,
+            core_quantile=float(args.u_quarantine_core_quantile),
+            accept_quantile=float(args.u_quarantine_accept_quantile),
+            accept_target=float(args.u_quarantine_accept_target),
+            core_accept_target=float(args.u_quarantine_core_accept_target),
+            cvar_alpha=float(args.u_quarantine_cvar_alpha),
+            accept_temperature=float(args.u_quarantine_accept_temperature),
+            component_temperature_rad=math.radians(float(args.direct_metric_component_temperature_deg)),
+            density_temperature_rad=math.radians(float(args.direct_metric_density_temperature_deg)),
+            component_margin_rad=math.radians(float(args.direct_metric_component_margin_deg)),
+            min_samples_per_class=int(args.direct_metric_min_samples_per_component),
+            require_domain_local_components=bool(args.direct_metric_require_domain_local_components),
+        )
+
+    clean_loss, clean_info = _route_view(
+        clean_anchor_z,
+        clean_anchor_y,
+        clean_anchor_d,
+        out_s["z_id"][quarantine_mask],
     )
-    tri_core = info.pop("_tri_trusted_core_mask", None)
-    info.pop("_tri_ambiguous_tail_mask", None)
-    info.pop("_tri_outside_reject_mask", None)
-    if torch.is_tensor(tri_core) and int(tri_core.numel()) >= quarantine_count:
-        clean_core = tri_core[:quarantine_count].to(device=pseudo_mask.device).bool()
-        if paired_count > 0 and int(tri_core.numel()) >= 2 * quarantine_count:
-            sat_core = tri_core[quarantine_count : 2 * quarantine_count].to(device=pseudo_mask.device).bool()
-            clean_core = clean_core & sat_core
-        geometry_core_mask[quarantine_mask] = clean_core
+    view_infos = [("clean", clean_info)]
+    losses = [clean_loss]
+    if (
+        bool(args.u_quarantine_include_sat_view)
+        and out_u_sat is not None
+        and bool(labeled_sat_applied)
+        and int(z_id_l.size(0)) >= 2 * anchor_count
+        and int(y_l.numel()) >= 2 * anchor_count
+    ):
+        sat_anchor_d = d_l[anchor_count : 2 * anchor_count].detach().long() if d_l is not None else None
+        sat_loss, sat_info = _route_view(
+            z_id_l[anchor_count : 2 * anchor_count].detach(),
+            y_l[anchor_count : 2 * anchor_count].detach().long(),
+            sat_anchor_d,
+            out_u_sat["z_id"][quarantine_mask],
+        )
+        losses.append(sat_loss)
+        view_infos.append(("sat", sat_info))
+    loss = torch.stack(losses).mean()
+
+    state_rows = []
+    for view_name, view_info in view_infos:
+        core = view_info.pop("_tri_trusted_core_mask", None)
+        ambiguous = view_info.pop("_tri_ambiguous_tail_mask", None)
+        outside = view_info.pop("_tri_outside_reject_mask", None)
+        if not all(torch.is_tensor(value) and int(value.numel()) == quarantine_count for value in (core, ambiguous, outside)):
+            return zero, {**info, "reason": f"{view_name}_tri_state_missing"}, geometry_core_mask
+        state_rows.append((core.bool(), ambiguous.bool(), outside.bool()))
+    combined_core = torch.stack([row[0] for row in state_rows], dim=0).all(dim=0)
+    combined_outside = torch.stack([row[2] for row in state_rows], dim=0).any(dim=0)
+    combined_ambiguous = (~combined_core) & (~combined_outside)
+    geometry_core_mask[quarantine_mask] = combined_core.to(device=pseudo_mask.device)
+
+    numeric_keys = set.intersection(
+        *[
+            {key for key, value in view_info.items() if isinstance(value, (int, float))}
+            for _, view_info in view_infos
+        ]
+    ) if view_infos else set()
+    info = {}
+    for key in numeric_keys:
+        values = [float(view_info[key]) for _, view_info in view_infos if math.isfinite(float(view_info[key]))]
+        info[key] = max(values) if values else float("nan")
+    info.update(
+        {
+            "active": min(float(view_info.get("active", 0.0)) for _, view_info in view_infos),
+            "query_count": float(quarantine_count),
+            "tri_trusted_core_count": float(int(combined_core.sum().item())),
+            "tri_ambiguous_tail_count": float(int(combined_ambiguous.sum().item())),
+            "tri_outside_reject_count": float(int(combined_outside.sum().item())),
+            "tri_trusted_core_rate": float(combined_core.float().mean().item()),
+            "tri_ambiguous_tail_rate": float(combined_ambiguous.float().mean().item()),
+            "tri_outside_reject_rate": float(combined_outside.float().mean().item()),
+            "tri_pair_disagreement_rate": (
+                float((state_rows[0][0] != state_rows[1][0]).float().mean().item())
+                if len(state_rows) == 2
+                else 0.0
+            ),
+            "multiview_local_components": 1.0 if len(state_rows) == 2 else 0.0,
+            "global_component_fallback": max(
+                float(view_info.get("global_component_fallback", 1.0)) for _, view_info in view_infos
+            ),
+        }
+    )
+    for view_name, view_info in view_infos:
+        for key, value in view_info.items():
+            if isinstance(value, (int, float)):
+                info[f"{view_name}_{key}"] = value
     info["quarantine_rate"] = (
         float(info.get("tri_ambiguous_tail_count", 0.0)) + float(info.get("tri_outside_reject_count", 0.0))
     ) / float(max(1, quarantine_count))
@@ -2997,7 +3337,10 @@ def format_ssdg_epoch_block(
             f"best_safe={safe_best_path or '-'} status={'saved' if safe_best_exists else 'not_saved'} "
             f"saved_this_epoch={int(bool(safe_checkpoint_saved))}"
         )
-    lines.append(f"[CKPT]  latest -> {latest_path} (saved) | best -> {best_path}{' (updated)' if is_best else ''}")
+    lines.append(
+        f"[CKPT]  latest -> {latest_path} (recovery) | final_only -> {best_path} "
+        f"(written after training; telemetry_best={int(bool(is_best))})"
+    )
     lines.append(f"[EPOCH-END] E{int(epoch):03d}/{int(epochs):03d}")
     lines.append(sep)
     return "\n".join(lines)
@@ -3104,6 +3447,22 @@ def train(args) -> int:
         )
     else:
         args.sat_view_stages = tuple()
+    scheduled_train_scenarios = list(args.sat_train_scenario_list)
+    for stage in args.sat_view_stages:
+        scheduled_train_scenarios.extend(str(value) for value in stage.scenarios)
+    args.sat_train_protocol_scenario_list = list(
+        dict.fromkeys(str(value).strip().lower().replace("-", "_") for value in scheduled_train_scenarios)
+    )
+    args.eval_sat_scenario_list = (
+        parse_sat_scenarios(args.eval_sat_scenarios) if bool(args.eval_sat_channel) else []
+    )
+    if satellite_protocol_manifest is None:
+        raise ImportError("training_controls.satellite_protocol_manifest is required for Phase1 satellite protocol audit")
+    args.sat_protocol_manifest = satellite_protocol_manifest(
+        args.sat_train_protocol_scenario_list,
+        args.eval_sat_scenario_list,
+        require_disjoint=bool(args.sat_protocol_disjoint_required),
+    )
     if float(getattr(args, "concat_sat_ce_weight", 1.0)) < 0.0:
         raise ValueError("--concat_sat_ce_weight must be >= 0")
     if bool(getattr(args, "concat_sat_ce_only", False)) and not bool(getattr(args, "use_concat_sat_channel_aug", False)):
@@ -3112,6 +3471,12 @@ def train(args) -> int:
         raise ValueError(
             "Phase1 is source-only: --phase1_source_val_selection_only must remain true; "
             "held-out receiver/day/satellite test feedback is forbidden during training."
+        )
+    if str(getattr(args, "checkpoint_selection", "")) != "final_only":
+        raise ValueError("Phase1 checkpoint selection is final-only")
+    if bool(getattr(args, "tail_rollback_enabled", False)):
+        raise ValueError(
+            "Phase1 final-only mode forbids tail checkpoint rollback; retain tail references as metrics only."
         )
     if str(args.best_metric) not in {"clean_val_tx", "source_val_sat_hmean"}:
         raise ValueError(
@@ -3144,12 +3509,12 @@ def train(args) -> int:
     if str(args.dataset).lower() != "wisig":
         raise ValueError("SSDG.train_ssdg currently implements the WiSig tx_rx_day_1_7_2 protocol.")
     set_seed(int(args.seed))
-    args.eval_sat_scenario_list = parse_sat_scenarios(args.eval_sat_scenarios) if bool(args.eval_sat_channel) else []
     device = resolve_device(args.device)
     out_dir = ensure_dir(args.output_dir)
     stale_identity_paths = [
         out_dir / "phase1_terminal_status.json",
         out_dir / f"best_{args.best_metric}_ssdg.pth",
+        out_dir / "final_ssdg.pth",
         out_dir / "latest_ssdg.pth",
         out_dir / "tail_reference_ssdg.pth",
     ]
@@ -3161,6 +3526,7 @@ def train(args) -> int:
         )
     metrics_csv_path = Path(str(args.metrics_csv).strip()) if str(args.metrics_csv).strip() else out_dir / "metrics_epoch.csv"
     metrics_jsonl_path = Path(str(args.metrics_jsonl).strip()) if str(args.metrics_jsonl).strip() else out_dir / "metrics_epoch.jsonl"
+    final_path = out_dir / "final_ssdg.pth"
     default_safe_best_name = f"best_{args.best_metric}_ssdg.pth" if _joint_safe_guard_enabled(args) else f"best_{args.best_metric}_safe_ssdg.pth"
     safe_best_path = Path(str(args.safe_best_path).strip()) if str(args.safe_best_path).strip() else out_dir / default_safe_best_name
     safe_latest_path = Path(str(args.safe_latest_path).strip()) if str(args.safe_latest_path).strip() else out_dir / "latest_safe_ssdg.pth"
@@ -3265,6 +3631,21 @@ def train(args) -> int:
                 f"lambda_u_direct_metric_accept={float(args.lambda_u_direct_metric_accept):.6g} "
                 f"lambda_u_quarantine_accept={float(args.lambda_u_quarantine_accept):.6g} "
                 f"label_smoothing={float(args.label_smoothing):.6g}",
+                "[CONFIG-P1-INVARIANCE] "
+                f"checkpoint_selection={args.checkpoint_selection} "
+                f"sat_disjoint_required={int(bool(args.sat_protocol_disjoint_required))} "
+                f"sat_disjoint={int(bool((args.sat_protocol_manifest or {}).get('disjoint', False)))} "
+                f"sat_train_families={','.join((args.sat_protocol_manifest or {}).get('train_families', [])) or '-'} "
+                f"sat_eval_families={','.join((args.sat_protocol_manifest or {}).get('eval_families', [])) or '-'} "
+                f"zid_inv_l={float(args.lambda_zid_receiver_invariance):.4g}/"
+                f"{float(args.lambda_zid_day_invariance):.4g}/"
+                f"{float(args.lambda_zid_channel_invariance):.4g} "
+                f"zid_inv_u={float(args.lambda_u_zid_receiver_invariance):.4g}/"
+                f"{float(args.lambda_u_zid_day_invariance):.4g}/"
+                f"{float(args.lambda_u_zid_channel_invariance):.4g} "
+                f"dm_local={int(bool(args.direct_metric_domain_local_components))} "
+                f"dm_local_required={int(bool(args.direct_metric_require_domain_local_components))} "
+                f"leakage_probe_required={int(bool(args.zid_leakage_probe_required))}",
                 "[CONFIG-U-DIRECT] "
                 f"domain_start={int(args.u_domain_start_epoch)} sat_start={int(args.u_sat_cons_start_epoch)} "
                 f"dm_start={int(args.u_direct_metric_start_epoch)} dm_min_selected={int(args.u_direct_metric_min_selected)} "
@@ -3425,7 +3806,8 @@ def train(args) -> int:
     tail_rollback_cooldown_remaining = 0
     tail_early_stop_requested = False
     tail_rollback_events: List[Dict[str, Any]] = []
-    tail_reference_path = out_dir / "tail_reference_ssdg.pth"
+    tail_reference_geometry: Dict[str, Any] = {}
+    tail_reference_epoch = -1
     phase1_v2_tail_machine = None
     phase1_v2_final_blocked = False
     phase1_v2_reasons: List[str] = []
@@ -3489,6 +3871,9 @@ def train(args) -> int:
         unlabeled_iter = iter(data_ctx["unlabeled_loader"]) if phase == "pseudo" and bool(args.use_unlabeled) else None
         for batch_idx, labeled_batch in enumerate(data_ctx["train_loader"], start=1):
             x_l, y_l, extra_l = move_batch(labeled_batch, device)
+            labeled_clean_count = int(y_l.numel())
+            receiver_l_base = _metadata_label_tensor(extra_l, "rx_i", device, labeled_clean_count)
+            day_l_base = _metadata_label_tensor(extra_l, "day_i", device, labeled_clean_count)
             d_l = domain_from_extra(extra_l, data_ctx["domain_label_map"], device)
             concat_active = concat_sat_aug is not None and epoch >= int(getattr(args, "concat_sat_start_epoch", 1))
             if concat_active and augmentor is not None:
@@ -3509,6 +3894,22 @@ def train(args) -> int:
             )
             concat_sat_full_batch = bool(concat_sat_info.get("expanded", 0.0) > 0.0)
             concat_sat_clean_bsz = int(concat_sat_info.get("clean_batch_size", 0.0))
+            receiver_l = _expand_view_metadata(
+                receiver_l_base,
+                clean_count=labeled_clean_count,
+                total_count=int(y_l.numel()),
+            )
+            day_l = _expand_view_metadata(
+                day_l_base,
+                clean_count=labeled_clean_count,
+                total_count=int(y_l.numel()),
+            )
+            channel_l = _channel_view_labels(
+                int(y_l.numel()),
+                concat_sat_clean_bsz,
+                concat_sat_full_batch and float(concat_sat_info.get("applied", 0.0)) > 0.0,
+                device,
+            )
             if augmentor is not None and not concat_active:
                 x_l_main = torch.nan_to_num(
                     augmentor(x_l, labels=y_l, no_pa=(not bool(args.aug_enable_pa_normal))),
@@ -3557,6 +3958,44 @@ def train(args) -> int:
                 else:
                     loss_fishr_l = out_l["tx_logits"].sum() * 0.0
                 z_id_l = out_l["z_id"]
+                loss_zid_invariance_l = z_id_l.sum() * 0.0
+                zid_invariance_info: Dict[str, float] = {
+                    "active": 0.0,
+                    "receiver_active": 0.0,
+                    "day_active": 0.0,
+                    "channel_active": 0.0,
+                    "receiver_loss": 0.0,
+                    "day_loss": 0.0,
+                    "channel_loss": 0.0,
+                }
+                if any(
+                    float(value) > 0.0
+                    for value in (
+                        args.lambda_zid_receiver_invariance,
+                        args.lambda_zid_day_invariance,
+                        args.lambda_zid_channel_invariance,
+                    )
+                ):
+                    if tx_conditional_domain_invariance_loss is None:
+                        raise ImportError("cvsrffi.losses.tx_conditional_domain_invariance_loss is required")
+                    loss_zid_invariance_l, zid_invariance_info = tx_conditional_domain_invariance_loss(
+                        z_id_l,
+                        y_l,
+                        receiver_labels=receiver_l,
+                        day_labels=day_l,
+                        channel_labels=channel_l,
+                        receiver_weight=float(args.lambda_zid_receiver_invariance),
+                        day_weight=float(args.lambda_zid_day_invariance),
+                        channel_weight=float(args.lambda_zid_channel_invariance),
+                        channel_pair_weight=float(args.zid_channel_pair_weight),
+                        paired_view_count=(
+                            concat_sat_clean_bsz
+                            if concat_sat_full_batch and float(concat_sat_info.get("applied", 0.0)) > 0.0
+                            else 0
+                        ),
+                        min_groups=int(args.zid_invariance_min_groups),
+                        min_samples_per_group=int(args.zid_invariance_min_samples_per_group),
+                    )
                 teacher_scale = _teacher_distill_scale(args, epoch)
                 loss_teacher_clean_kl_l = z_id_l.sum() * 0.0
                 loss_teacher_sat_kl_l = z_id_l.sum() * 0.0
@@ -4099,6 +4538,7 @@ def train(args) -> int:
                         )
                 loss_closed_l = (
                     loss_tx_l
+                    + sanitize_loss("ssdg_zid_domain_invariance", loss_zid_invariance_l, z_id_l, loss_warn_counts)
                     + cur_w["dom"] * loss_dom_l
                     + cur_w["adv"] * loss_adv_l
                     + cur_w["orth"] * loss_orth_l
@@ -4128,6 +4568,9 @@ def train(args) -> int:
                         unlabeled_iter = iter(data_ctx["unlabeled_loader"])
                         unlabeled_batch = next(unlabeled_iter)
                     x_u, y_u, extra_u = move_batch(unlabeled_batch, device)
+                    unlabeled_count = int(y_u.numel())
+                    receiver_u = _metadata_label_tensor(extra_u, "rx_i", device, unlabeled_count)
+                    day_u = _metadata_label_tensor(extra_u, "day_i", device, unlabeled_count)
                     d_u = domain_from_extra(extra_u, data_ctx["domain_label_map"], device)
                     pseudo_source = ema_model if ema_model is not None else model
                     with torch.no_grad():
@@ -4173,6 +4616,16 @@ def train(args) -> int:
                     loss_u_sat_cons = zero_u
                     loss_u_direct_metric = zero_u
                     loss_u_quarantine = zero_u
+                    loss_u_zid_invariance = zero_u
+                    u_zid_invariance_info: Dict[str, float] = {
+                        "active": 0.0,
+                        "receiver_active": 0.0,
+                        "day_active": 0.0,
+                        "channel_active": 0.0,
+                        "receiver_loss": 0.0,
+                        "day_loss": 0.0,
+                        "channel_loss": 0.0,
+                    }
                     u_sat_pair_count = 0
                     u_dm_info: Dict[str, float] = {
                         "active": 0.0,
@@ -4228,6 +4681,7 @@ def train(args) -> int:
                     ):
                         loss_u_adv = F.cross_entropy(out_s["adv_dom_logits"][valid_u_mask].float(), d_u[valid_u_mask].long())
                     out_u_sat = None
+                    u_sat_applied = False
                     need_u_sat_view = bool(
                         concat_sat_aug is not None
                         and (
@@ -4248,6 +4702,7 @@ def train(args) -> int:
                     )
                     if need_u_sat_view:
                         u_sat_view = concat_sat_aug.transform(x_u, args=args, epoch=epoch, batch_idx=int(batch_idx) + 200000)
+                        u_sat_applied = bool(u_sat_view.applied)
                         x_u_sat = _safe_iq_tensor(u_sat_view.x)
                         out_u_sat = model(x_u_sat, y_tx=None, grl_lambda=1.0, return_aux=True, domain_labels=d_u)
                         if bool(mask.any()):
@@ -4302,6 +4757,12 @@ def train(args) -> int:
                             d_u=d_u,
                             pseudo_mask=mask,
                             valid_u_mask=valid_u_mask,
+                            labeled_view_count=(concat_sat_clean_bsz if concat_sat_full_batch else int(y_l.numel())),
+                            labeled_sat_applied=(
+                                concat_sat_full_batch
+                                and float(concat_sat_info.get("applied", 0.0)) > 0.0
+                                and u_sat_applied
+                            ),
                         )
                         if bool(getattr(args, "u_geometry_all_valid_queries", False)):
                             routed_pseudo_mask = mask & u_geometry_core_mask
@@ -4389,6 +4850,51 @@ def train(args) -> int:
                             u_dm_info["inactive_reason_code"] = 0.0 if float(u_dm_info.get("active", 0.0)) > 0.0 else 3.0
                         else:
                             u_dm_info["inactive_reason_code"] = 2.0
+                    if any(
+                        float(value) > 0.0
+                        for value in (
+                            args.lambda_u_zid_receiver_invariance,
+                            args.lambda_u_zid_day_invariance,
+                            args.lambda_u_zid_channel_invariance,
+                        )
+                    ):
+                        if tx_conditional_domain_invariance_loss is None:
+                            raise ImportError("cvsrffi.losses.tx_conditional_domain_invariance_loss is required")
+                        invariance_mask = mask & valid_u_mask
+                        if bool(invariance_mask.any()):
+                            inv_z = out_s["z_id"][invariance_mask]
+                            inv_y = pseudo[invariance_mask].long()
+                            inv_receiver = receiver_u[invariance_mask] if receiver_u is not None else None
+                            inv_day = day_u[invariance_mask] if day_u is not None else None
+                            inv_channel = torch.zeros(inv_y.numel(), device=device, dtype=torch.long)
+                            if out_u_sat is not None and u_sat_applied:
+                                inv_z = torch.cat([inv_z, out_u_sat["z_id"][invariance_mask]], dim=0)
+                                inv_y = torch.cat([inv_y, inv_y], dim=0)
+                                if inv_receiver is not None:
+                                    inv_receiver = torch.cat([inv_receiver, inv_receiver], dim=0)
+                                if inv_day is not None:
+                                    inv_day = torch.cat([inv_day, inv_day], dim=0)
+                                inv_channel = torch.cat(
+                                    [
+                                        inv_channel,
+                                        torch.ones(inv_channel.numel(), device=device, dtype=torch.long),
+                                    ],
+                                    dim=0,
+                                )
+                            loss_u_zid_invariance, u_zid_invariance_info = tx_conditional_domain_invariance_loss(
+                                inv_z,
+                                inv_y,
+                                receiver_labels=inv_receiver,
+                                day_labels=inv_day,
+                                channel_labels=inv_channel,
+                                receiver_weight=float(args.lambda_u_zid_receiver_invariance),
+                                day_weight=float(args.lambda_u_zid_day_invariance),
+                                channel_weight=float(args.lambda_u_zid_channel_invariance),
+                                channel_pair_weight=float(args.zid_channel_pair_weight),
+                                paired_view_count=(int(invariance_mask.sum().item()) if u_sat_applied else 0),
+                                min_groups=int(args.zid_invariance_min_groups),
+                                min_samples_per_group=int(args.zid_invariance_min_samples_per_group),
+                            )
                     reliable_ratio = mask.float().mean()
                     pseudo_conf = conf.mean()
                     domain_pass = domain_mask.float().mean()
@@ -4403,6 +4909,7 @@ def train(args) -> int:
                     loss_u_sat_cons = z
                     loss_u_direct_metric = z
                     loss_u_quarantine = z
+                    loss_u_zid_invariance = z
                     u_sat_pair_count = 0
                     u_dm_info = {
                         "active": 0.0,
@@ -4436,6 +4943,15 @@ def train(args) -> int:
                         "quarantine_rate": float("nan"),
                         "valid_domain_rate": float("nan"),
                     }
+                    u_zid_invariance_info = {
+                        "active": 0.0,
+                        "receiver_active": 0.0,
+                        "day_active": 0.0,
+                        "channel_active": 0.0,
+                        "receiver_loss": 0.0,
+                        "day_loss": 0.0,
+                        "channel_loss": 0.0,
+                    }
                     reliable_ratio = z.detach()
                     pseudo_conf = z.detach()
                     domain_pass = z.detach()
@@ -4446,6 +4962,7 @@ def train(args) -> int:
                     pseudo_correct = 0
                 loss_closed = (
                     loss_closed_l
+                    + sanitize_loss("ssdg_u_zid_domain_invariance", loss_u_zid_invariance, z_id_l, loss_warn_counts)
                     + float(args.lambda_u) * loss_u
                     + float(args.lambda_ent) * loss_ent
                     + float(args.lambda_u_domain) * sanitize_loss("ssdg_u_domain", loss_u_domain, z_id_l, loss_warn_counts)
@@ -4631,6 +5148,28 @@ def train(args) -> int:
                     "train/loss_orth_labeled": loss_orth_l.detach(),
                     "train/loss_group_ce_labeled": loss_group_ce_l.detach(),
                     "train/loss_fishr_labeled": loss_fishr_l.detach(),
+                    "train/loss_zid_domain_invariance": loss_zid_invariance_l.detach(),
+                    "train/zid_invariance_active": zid_invariance_info.get("active", 0.0),
+                    "train/zid_receiver_invariance_active": zid_invariance_info.get("receiver_active", 0.0),
+                    "train/zid_day_invariance_active": zid_invariance_info.get("day_active", 0.0),
+                    "train/zid_channel_invariance_active": zid_invariance_info.get("channel_active", 0.0),
+                    "train/zid_receiver_invariance_loss": zid_invariance_info.get("receiver_loss", 0.0),
+                    "train/zid_day_invariance_loss": zid_invariance_info.get("day_loss", 0.0),
+                    "train/zid_channel_invariance_loss": zid_invariance_info.get("channel_loss", 0.0),
+                    "train/zid_channel_pair_loss": zid_invariance_info.get("channel_pair_loss", 0.0),
+                    "train/zid_channel_pair_count": zid_invariance_info.get("channel_pair_count", 0.0),
+                    "train/zid_channel_pair_angle_deg": zid_invariance_info.get(
+                        "channel_pair_angle_deg", float("nan")
+                    ),
+                    "train/zid_receiver_center_angle_deg": zid_invariance_info.get(
+                        "receiver_mean_center_angle_deg", float("nan")
+                    ),
+                    "train/zid_day_center_angle_deg": zid_invariance_info.get(
+                        "day_mean_center_angle_deg", float("nan")
+                    ),
+                    "train/zid_channel_center_angle_deg": zid_invariance_info.get(
+                        "channel_mean_center_angle_deg", float("nan")
+                    ),
                     "train/loss_proto_labeled": loss_proto_l.detach(),
                     "train/loss_open_world_feat": loss_open_world_feat_l.detach(),
                     "train/loss_zid_compact": loss_zid_compact_l.detach(),
@@ -4677,6 +5216,16 @@ def train(args) -> int:
                     "train/loss_u_sat_cons": loss_u_sat_cons.detach(),
                     "train/loss_u_direct_metric_accept": loss_u_direct_metric.detach(),
                     "train/loss_u_quarantine_accept": loss_u_quarantine.detach(),
+                    "train/loss_u_zid_domain_invariance": loss_u_zid_invariance.detach(),
+                    "train/u_zid_invariance_active": u_zid_invariance_info.get("active", 0.0),
+                    "train/u_zid_receiver_invariance_active": u_zid_invariance_info.get("receiver_active", 0.0),
+                    "train/u_zid_day_invariance_active": u_zid_invariance_info.get("day_active", 0.0),
+                    "train/u_zid_channel_invariance_active": u_zid_invariance_info.get("channel_active", 0.0),
+                    "train/u_zid_receiver_invariance_loss": u_zid_invariance_info.get("receiver_loss", 0.0),
+                    "train/u_zid_day_invariance_loss": u_zid_invariance_info.get("day_loss", 0.0),
+                    "train/u_zid_channel_invariance_loss": u_zid_invariance_info.get("channel_loss", 0.0),
+                    "train/u_zid_channel_pair_loss": u_zid_invariance_info.get("channel_pair_loss", 0.0),
+                    "train/u_zid_channel_pair_count": u_zid_invariance_info.get("channel_pair_count", 0.0),
                     "train/w_loss_u_domain": (float(args.lambda_u_domain) * loss_u_domain).detach(),
                     "train/w_loss_u_adv": (float(args.lambda_u_adv) * loss_u_adv).detach(),
                     "train/w_loss_u_sat_cons": (float(args.lambda_u_sat_cons) * loss_u_sat_cons).detach(),
@@ -4709,6 +5258,12 @@ def train(args) -> int:
                     "train/u_quarantine_query_count": u_quarantine_info.get("query_count", float("nan")),
                 "train/u_quarantine_active_classes": u_quarantine_info.get("active_classes", float("nan")),
                 "train/u_quarantine_local_component_count": u_quarantine_info.get("local_component_count", float("nan")),
+                    "train/u_quarantine_multiview_local_components": u_quarantine_info.get(
+                        "multiview_local_components", 0.0
+                    ),
+                    "train/u_quarantine_global_component_fallback": u_quarantine_info.get(
+                        "global_component_fallback", 1.0
+                    ),
                     "train/u_quarantine_accept_rate": u_quarantine_info.get("accept_rate", float("nan")),
                     "train/u_quarantine_accept_loss": u_quarantine_info.get("accept_loss", float("nan")),
                     "train/u_quarantine_core_keep_loss": u_quarantine_info.get("core_keep_loss", float("nan")),
@@ -4968,6 +5523,37 @@ def train(args) -> int:
                     "train/dm_accept_multiview_separate_geometry": direct_metric_info.get(
                         "multiview_separate_geometry", 0.0
                     ),
+                    "train/dm_accept_domain_local_component_gate": direct_metric_info.get(
+                        "domain_local_component_gate", 0.0
+                    ),
+                    "train/dm_accept_global_ball_accept": direct_metric_info.get("global_ball_accept", 1.0),
+                    "train/dm_accept_local_component_count": direct_metric_info.get(
+                        "local_component_count", 0.0
+                    ),
+                    "train/dm_accept_local_component_class_coverage": direct_metric_info.get(
+                        "local_component_class_coverage", 0.0
+                    ),
+                    "train/dm_accept_local_zid_p50_deg": direct_metric_info.get("local_zid_p50_deg", float("nan")),
+                    "train/dm_accept_local_zid_p95_deg": direct_metric_info.get("local_zid_p95_deg", float("nan")),
+                    "train/dm_accept_local_zid_p99_deg": direct_metric_info.get("local_zid_p99_deg", float("nan")),
+                    "train/dm_accept_local_zid_tail_cvar_deg": direct_metric_info.get(
+                        "local_zid_tail_cvar_deg", float("nan")
+                    ),
+                    "train/dm_accept_global_diag_zid_p50_deg": direct_metric_info.get(
+                        "global_diag_zid_p50_deg", float("nan")
+                    ),
+                    "train/dm_accept_global_diag_zid_p95_deg": direct_metric_info.get(
+                        "global_diag_zid_p95_deg", float("nan")
+                    ),
+                    "train/dm_accept_global_diag_zid_p99_deg": direct_metric_info.get(
+                        "global_diag_zid_p99_deg", float("nan")
+                    ),
+                    "train/dm_accept_global_diag_zid_tail_cvar_deg": direct_metric_info.get(
+                        "global_diag_zid_tail_cvar_deg", float("nan")
+                    ),
+                    "train/dm_accept_quantile_optimization_scope_local": direct_metric_info.get(
+                        "quantile_optimization_scope_local", 0.0
+                    ),
                     "train/dm_accept_geometry_stabilized": direct_metric_info.get("geometry_stabilized", float("nan")),
                     "train/dm_accept_geometry_reference_detached": direct_metric_info.get(
                         "geometry_reference_detached", float("nan")
@@ -4991,6 +5577,11 @@ def train(args) -> int:
                             "tail_accept_rate",
                             "overflow_accept_rate",
                             "radius_to_inter_ratio",
+                            "domain_local_component_gate",
+                            "global_ball_accept",
+                            "local_component_count",
+                            "local_zid_p95_deg",
+                            "local_zid_p99_deg",
                         )
                     },
                     "train/dm_accept_stage_scale": float(direct_metric_stage_scale),
@@ -5000,10 +5591,10 @@ def train(args) -> int:
         val_stats = evaluate_loader(model, data_ctx["val_loader"], device, data_ctx["domain_label_map"], max_batches=int(args.eval_max_batches))
         source_val_tail_geometry = _evaluate_source_val_tail_geometry(model, data_ctx, device, args)
         source_val_tail_observation = {
-            "train/dm_accept_zid_p95_deg": source_val_tail_geometry.get("zid_p95_deg", float("nan")),
-            "train/dm_accept_zid_p99_deg": source_val_tail_geometry.get("zid_p99_deg", float("nan")),
+            "train/dm_accept_zid_p95_deg": source_val_tail_geometry.get("local_zid_p95_deg", float("nan")),
+            "train/dm_accept_zid_p99_deg": source_val_tail_geometry.get("local_zid_p99_deg", float("nan")),
             "train/dm_accept_zid_tail_cvar_deg": source_val_tail_geometry.get(
-                "zid_tail_cvar_deg", float("nan")
+                "local_zid_tail_cvar_deg", float("nan")
             ),
             "train/dm_accept_proxy_vaccept": source_val_tail_geometry.get("proxy_vaccept", float("nan")),
         }
@@ -5054,12 +5645,15 @@ def train(args) -> int:
             "val": val_stats,
             "source_val_sat_named": source_val_sat_stats,
             "source_val_tail_geometry": source_val_tail_geometry,
+            "satellite_protocol": dict(getattr(args, "sat_protocol_manifest", {}) or {}),
             "named_test": named_stats,
             "test": test_stats,
             "sat_test_named": sat_test_stats,
         }
         payload = {
             "checkpoint_schema": "ssdg_phase1_training_state_v2",
+            "checkpoint_role": "training_epoch_state_in_memory",
+            "checkpoint_selection": "final_only",
             "run_id": str(getattr(args, "run_id", "")),
             "candidate_id": str(getattr(args, "candidate_id", "")),
             "model": model.state_dict(),
@@ -5084,9 +5678,8 @@ def train(args) -> int:
             "split_info": data_ctx["split_info"],
             "stats": stats,
         }
-        latest_path = out_dir / "latest_ssdg.pth"
-        best_path = out_dir / f"best_{args.best_metric}_ssdg.pth"
-        save_payload(latest_path, payload)
+        latest_path = out_dir / "NOT_SAVED_FINAL_ONLY"
+        best_path = final_path
         protected_metrics = protected_metric_snapshot(
             val_stats=val_stats,
             test_stats=test_stats,
@@ -5272,139 +5865,18 @@ def train(args) -> int:
             guard_state["phase1_v2_tail_action_code"] = {"NONE": 0.0, "WARNING": 1.0, "ROLLBACK": 2.0, "STOP": 3.0}.get(tail_decision.action, -1.0)
             guard_state.update({f"phase1_v2_{key}": value for key, value in tail_decision.details.items()})
             if (
-                bool(getattr(args, "tail_rollback_enabled", False))
-                and float(tail_decision.details.get("tail_reference_improved", 0.0)) > 0.0
+                float(tail_decision.details.get("tail_reference_improved", 0.0)) > 0.0
                 and not bool(tail_decision.fired)
                 and bool(checkpoint_safe)
                 and not phase1_v2_reasons
             ):
                 phase1_v2_tail_machine.commit_reference(tail_decision)
-                reference_payload = dict(payload)
-                reference_payload["tail_state_machine"] = phase1_v2_tail_machine.state_dict()
-                reference_payload["tail_reference"] = {
-                    "kind": "checkpoint_safe_robust_tail_reference",
-                    "epoch": int(epoch),
-                    "absolute_tail_safe": True,
-                    "decision": dict(tail_decision.details),
-                }
-                save_payload(tail_reference_path, reference_payload)
+                tail_reference_geometry = deepcopy(source_val_tail_geometry)
+                tail_reference_geometry["reference_epoch"] = int(epoch)
+                tail_reference_geometry["reference_kind"] = "metric_only_robust_tail_reference"
+                tail_reference_geometry["reference_decision"] = dict(tail_decision.details)
+                tail_reference_epoch = int(epoch)
                 tail_reference_saved = True
-            if tail_decision.action == "ROLLBACK" and bool(getattr(args, "tail_rollback_enabled", False)):
-                if tail_reference_path.is_file():
-                    monotonic_rollback_count = int(phase1_v2_tail_machine.rollback_count)
-                    rejected_path = out_dir / f"tail_rejected_E{int(epoch):03d}.pth"
-                    save_payload(rejected_path, payload)
-                    tail_rejected_checkpoint_path = str(rejected_path)
-                    reference_payload = _validate_phase1_checkpoint_payload(
-                        torch.load(tail_reference_path, map_location=device), args, tail_reference_path
-                    )
-                    required_rollback_fields = (
-                        "optimizer",
-                        "scaler",
-                        "rng_state",
-                        "tail_state_machine",
-                        "guard_history",
-                    )
-                    missing_rollback_fields = [
-                        key for key in required_rollback_fields if reference_payload.get(key) is None
-                    ]
-                    if ema_model is not None and reference_payload.get("ema_model") is None:
-                        missing_rollback_fields.append("ema_model")
-                    if proto_bank is not None and reference_payload.get("prototype_memory") is None:
-                        missing_rollback_fields.append("prototype_memory")
-                    rng_state = reference_payload.get("rng_state")
-                    if not isinstance(rng_state, Mapping) or any(
-                        rng_state.get(key) is None for key in ("python", "numpy", "torch_cpu")
-                    ):
-                        missing_rollback_fields.append("rng_state_complete")
-                    if sat_gen is not None and (
-                        not isinstance(rng_state, Mapping) or rng_state.get("sat_generator") is None
-                    ):
-                        missing_rollback_fields.append("sat_generator_state")
-                    if getattr(device, "type", "cpu") == "cuda" and (
-                        not isinstance(rng_state, Mapping) or rng_state.get("torch_cuda") is None
-                    ):
-                        missing_rollback_fields.append("torch_cuda_rng_state")
-                    guard_history_obj = reference_payload.get("guard_history")
-                    if not isinstance(guard_history_obj, Mapping) or any(
-                        key not in guard_history_obj
-                        for key in ("previous_protected_metrics", "previous_train_logs")
-                    ):
-                        missing_rollback_fields.append("guard_history_complete")
-                    if missing_rollback_fields:
-                        raise ValueError(
-                            "Tail rollback reference has incomplete training state: "
-                            + ",".join(missing_rollback_fields)
-                        )
-                    _load_phase1_checkpoint_strict(model, reference_payload, tail_reference_path)
-                    if ema_model is not None:
-                        ema_model.load_state_dict(reference_payload["ema_model"], strict=True)
-                    optimizer.load_state_dict(reference_payload["optimizer"])
-                    scaler.load_state_dict(reference_payload["scaler"])
-                    if proto_bank is not None:
-                        proto_bank.load_state_dict(reference_payload["prototype_memory"])
-                    _restore_training_rng_state(reference_payload.get("rng_state", {}), sat_gen)
-                    phase1_v2_tail_machine.load_state_dict(reference_payload["tail_state_machine"])
-                    phase1_v2_tail_machine.rollback_count = max(
-                        int(phase1_v2_tail_machine.rollback_count), monotonic_rollback_count
-                    )
-                    restored_history = reference_payload.get("guard_history", {}) or {}
-                    previous_protected_metrics = deepcopy(restored_history.get("previous_protected_metrics"))
-                    previous_train_logs = deepcopy(restored_history.get("previous_train_logs"))
-                    tail_rollback_reference_epoch = int(
-                        (reference_payload.get("tail_reference", {}) or {}).get(
-                            "epoch", reference_payload.get("epoch", -1)
-                        )
-                    )
-                    tail_rollback_applied = True
-                    tail_rollback_cooldown_remaining = max(
-                        tail_rollback_cooldown_remaining,
-                        int(getattr(args, "tail_rollback_cooldown_epochs", 0)),
-                    )
-                    phase1_v2_tail_machine.acknowledge_rollback()
-                    observed_stats = payload.get("stats")
-                    payload["model"] = model.state_dict()
-                    payload["ema_model"] = ema_model.state_dict() if ema_model is not None else None
-                    payload["optimizer"] = optimizer.state_dict()
-                    payload["scaler"] = scaler.state_dict()
-                    payload["prototype_memory"] = proto_bank.state_dict() if proto_bank is not None else None
-                    payload["rng_state"] = _capture_training_rng_state(sat_gen)
-                    payload["tail_state_machine"] = phase1_v2_tail_machine.state_dict()
-                    payload["guard_history"] = {
-                        "previous_protected_metrics": deepcopy(previous_protected_metrics),
-                        "previous_train_logs": deepcopy(previous_train_logs),
-                    }
-                    payload["stats"] = deepcopy(reference_payload.get("stats", {}))
-                    payload["observed_stats"] = observed_stats
-                    payload["observed_epoch"] = int(epoch)
-                    payload["state_epoch"] = int(tail_rollback_reference_epoch)
-                    payload["tail_rollback"] = {
-                        "applied": True,
-                        "from_epoch": int(epoch),
-                        "reference_epoch": int(tail_rollback_reference_epoch),
-                        "reference_path": str(tail_reference_path),
-                        "reference_sha256": _sha256_file(tail_reference_path),
-                        "rejected_checkpoint_path": tail_rejected_checkpoint_path,
-                        "cooldown_epochs": int(getattr(args, "tail_rollback_cooldown_epochs", 0)),
-                    }
-                    tail_rollback_events.append(
-                        {
-                            "event_index": len(tail_rollback_events) + 1,
-                            "from_epoch": int(epoch),
-                            "reference_epoch": int(tail_rollback_reference_epoch),
-                            "reference_path": str(tail_reference_path),
-                            "reference_sha256": _sha256_file(tail_reference_path),
-                            "rejected_checkpoint_path": tail_rejected_checkpoint_path,
-                            "rejected_checkpoint_sha256": _sha256_file(rejected_path),
-                            "monotonic_rollback_count": int(phase1_v2_tail_machine.rollback_count),
-                        }
-                    )
-                    payload["tail_rollback_events"] = deepcopy(tail_rollback_events)
-                    save_payload(latest_path, payload)
-                else:
-                    phase1_v2_reasons.append("tail_rollback_reference_missing")
-                    phase1_v2_final_blocked = True
-                    tail_early_stop_requested = True
             if tail_decision.action == "STOP":
                 phase1_v2_final_blocked = True
                 tail_early_stop_requested = True
@@ -5434,7 +5906,7 @@ def train(args) -> int:
         guard_state["phase1_v2_guard_fired"] = bool(phase1_v2_guard_fired)
         guard_state["phase1_v2_final_blocked"] = bool(phase1_v2_final_blocked)
         guard_state["phase1_v2_tail_reference_saved"] = bool(tail_reference_saved)
-        guard_state["phase1_v2_tail_reference_path"] = str(tail_reference_path)
+        guard_state["phase1_v2_tail_reference_path"] = "METRIC_ONLY"
         guard_state["phase1_v2_tail_rollback_applied"] = bool(tail_rollback_applied)
         guard_state["phase1_v2_tail_rollback_reference_epoch"] = int(tail_rollback_reference_epoch)
         guard_state["phase1_v2_tail_rejected_checkpoint_path"] = tail_rejected_checkpoint_path
@@ -5450,11 +5922,7 @@ def train(args) -> int:
             "phase1_v2_final_blocked": bool(phase1_v2_final_blocked),
             "reason": str(guard_state.get("reason", "")),
         }
-        save_payload(latest_path, payload)
         safe_checkpoint_saved = False
-        if guard_enabled and checkpoint_safe:
-            save_payload(safe_latest_path, payload)
-            safe_checkpoint_saved = True
         is_best = False
         best_metric_name = str(args.best_metric)
         best_metric_needs_test = best_metric_name not in {"clean_val_tx", "source_val_sat_hmean"}
@@ -5470,23 +5938,12 @@ def train(args) -> int:
             if (test_ran_this_epoch or not best_metric_needs_test)
             else float("-inf")
         )
-        allow_best_update = (test_ran_this_epoch or not best_metric_needs_test) and (not test_eval_skipped_guard_block) and (not missing_required_guard_fired) and (not drop_guard_fired) and (not phase1_v2_guard_fired) and (
-            checkpoint_safe or (paic_guard_fired and not bool(getattr(args, "paic_guard_block_best", True)))
-        )
+        allow_best_update = test_ran_this_epoch or not best_metric_needs_test
         if allow_best_update and current_best_score > best_score:
             best_score = float(current_best_score)
             best_val = float(val_stats["tx_acc"])
             best_test = float(test_stats["tx_acc"])
             best_epoch = int(epoch)
-            payload["best_metric"] = str(args.best_metric)
-            payload["best_score"] = best_score
-            payload["protected_metrics"] = dict(protected_metrics)
-            payload["joint_guard"] = dict(guard_state)
-            save_payload(best_path, payload)
-            if guard_enabled and Path(best_path) != Path(safe_best_path):
-                save_payload(safe_best_path, payload)
-            elif guard_enabled:
-                safe_checkpoint_saved = True
             is_best = True
         elapsed = time.time() - t0
         telemetry_rows.append(
@@ -5565,56 +6022,191 @@ def train(args) -> int:
                 flush=True,
             )
             break
-    selected_checkpoint = out_dir / f"best_{args.best_metric}_ssdg.pth"
+    selected_checkpoint = final_path
     final_source_val_tail = _evaluate_source_val_tail_geometry(model, data_ctx, device, args)
-    best_source_val_tail = _evaluate_checkpoint_source_val_tail_geometry(
-        args, model, data_ctx, device, selected_checkpoint
+    final_zid_leakage_probe = _evaluate_zid_leakage_probes(model, data_ctx, device, args)
+    leakage_decision = _assess_zid_leakage_probe(final_zid_leakage_probe, args)
+    if bool(leakage_decision["fired"]):
+        phase1_v2_final_blocked = True
+        phase1_v2_reasons.extend(str(leakage_decision["reason"]).split(";"))
+    if bool(args.direct_metric_require_domain_local_components):
+        local_gate_ready = (
+            float(final_source_val_tail.get("domain_local_component_gate", 0.0)) > 0.0
+            and float(final_source_val_tail.get("global_ball_accept", 1.0)) == 0.0
+            and float(final_source_val_tail.get("local_component_count", 0.0)) > 0.0
+        )
+        if not local_gate_ready:
+            phase1_v2_final_blocked = True
+            phase1_v2_reasons.append("FINAL_LOCAL_COMPONENT_GEOMETRY_INCOMPLETE")
+
+    final_payload = deepcopy(payload)
+    final_payload.update(
+        {
+            "checkpoint_role": "training_final_only",
+            "checkpoint_selection": "final_only",
+            "model": getattr(model, "_orig_mod", model).state_dict(),
+            "ema_model": ema_model.state_dict() if ema_model is not None else None,
+            "optimizer": optimizer.state_dict(),
+            "scaler": scaler.state_dict(),
+            "prototype_memory": proto_bank.state_dict() if proto_bank is not None else None,
+            "rng_state": _capture_training_rng_state(sat_gen),
+            "tail_state_machine": phase1_v2_tail_machine.state_dict() if phase1_v2_tail_machine is not None else None,
+            "tail_rollback_events": deepcopy(tail_rollback_events),
+            "final_epoch": int(epoch),
+            "observed_epoch": int(epoch),
+        }
     )
-    best_final_tail_gate: Dict[str, Any] = {
+    final_payload.setdefault("stats", {})
+    final_payload["stats"]["source_val_tail_geometry"] = final_source_val_tail
+    final_payload["stats"]["zid_leakage_probe"] = final_zid_leakage_probe
+    final_payload["stats"]["satellite_protocol"] = dict(getattr(args, "sat_protocol_manifest", {}) or {})
+    final_payload["final_only_evidence"] = {
+        "selection_source": "training_final_only",
+        "telemetry_best_metric": str(args.best_metric),
+        "telemetry_best_epoch": int(best_epoch),
+        "telemetry_best_score": float(best_score) if math.isfinite(float(best_score)) else None,
+        "source_val_tail_geometry": final_source_val_tail,
+        "zid_leakage_probe": final_zid_leakage_probe,
+        "satellite_protocol": dict(getattr(args, "sat_protocol_manifest", {}) or {}),
+    }
+    reference_source_val_tail = (
+        deepcopy(tail_reference_geometry)
+        if tail_reference_geometry
+        else {"status": "NOT_AVAILABLE", "reason": "tail_reference_metric_missing"}
+    )
+    reference_final_tail_gate: Dict[str, Any] = {
         "status": "FAILED",
-        "protocol": "fixed_source_val_direct_metric_v1",
-        "best": best_source_val_tail,
+        "protocol": "fixed_source_val_multiview_local_component_v2",
+        "selection_policy": "final_only",
+        "reference": reference_source_val_tail,
         "final": final_source_val_tail,
         "p99_delta_deg": None,
+        "tail_cvar_delta_deg": None,
+        "proxy_vaccept_delta": None,
+        "satellite_protocol_registry_sha256": (args.sat_protocol_manifest or {}).get("registry_sha256", ""),
         "blocks_final_export": True,
         "blocks_promotion": True,
     }
     try:
-        best_p99 = float(best_source_val_tail.get("zid_p99_deg", float("nan")))
-        final_p99 = float(final_source_val_tail.get("zid_p99_deg", float("nan")))
-        p99_delta = final_p99 - best_p99
+        reference_p99 = float(reference_source_val_tail.get("local_zid_p99_deg", float("nan")))
+        final_p99 = float(final_source_val_tail.get("local_zid_p99_deg", float("nan")))
+        reference_cvar = float(reference_source_val_tail.get("local_zid_tail_cvar_deg", float("nan")))
+        final_cvar = float(final_source_val_tail.get("local_zid_tail_cvar_deg", float("nan")))
+        reference_proxy = float(reference_source_val_tail.get("proxy_vaccept", float("nan")))
+        final_proxy = float(final_source_val_tail.get("proxy_vaccept", float("nan")))
+        final_p95 = float(final_source_val_tail.get("local_zid_p95_deg", float("nan")))
+        p99_delta = final_p99 - reference_p99
+        cvar_delta = final_cvar - reference_cvar
+        proxy_delta = final_proxy - reference_proxy
         if (
-            str(best_source_val_tail.get("status", "")) == "COMPLETE"
+            str(reference_source_val_tail.get("status", "")) == "COMPLETE"
             and str(final_source_val_tail.get("status", "")) == "COMPLETE"
-            and math.isfinite(best_p99)
+            and math.isfinite(reference_p99)
             and math.isfinite(final_p99)
+            and math.isfinite(reference_cvar)
+            and math.isfinite(final_cvar)
+            and math.isfinite(reference_proxy)
+            and math.isfinite(final_proxy)
+            and math.isfinite(final_p95)
+            and float(reference_source_val_tail.get("domain_local_component_gate", 0.0)) > 0.0
+            and float(final_source_val_tail.get("domain_local_component_gate", 0.0)) > 0.0
+            and float(reference_source_val_tail.get("global_ball_accept", 1.0)) == 0.0
+            and float(final_source_val_tail.get("global_ball_accept", 1.0)) == 0.0
         ):
-            block_final = p99_delta > float(args.tail_safety_p99_expansion_block_final_delta)
-            block_promotion = p99_delta > float(args.tail_safety_p99_expansion_block_best_delta)
-            best_final_tail_gate.update(
+            absolute_unsafe = (
+                final_p95 > float(args.tail_safety_p95_target_deg)
+                or final_p99 > float(args.tail_safety_p99_target_deg)
+                or final_cvar > float(args.tail_safety_cvar_target_deg)
+                or final_proxy > float(args.tail_safety_proxy_vaccept_target)
+            )
+            block_final = (
+                absolute_unsafe
+                or p99_delta > float(args.tail_safety_p99_expansion_block_final_delta)
+                or cvar_delta > float(args.tail_safety_cvar_expansion_block_final_delta)
+            )
+            block_promotion = (
+                absolute_unsafe
+                or p99_delta > float(args.tail_safety_p99_expansion_block_best_delta)
+                or cvar_delta > float(args.tail_safety_cvar_expansion_block_best_delta)
+            )
+            reference_final_tail_gate.update(
                 {
                     "status": "COMPLETE",
                     "p99_delta_deg": float(p99_delta),
+                    "tail_cvar_delta_deg": float(cvar_delta),
+                    "proxy_vaccept_delta": float(proxy_delta),
+                    "absolute_unsafe": bool(absolute_unsafe),
+                    "final_local_p95_deg": final_p95,
+                    "final_local_p99_deg": final_p99,
+                    "final_local_tail_cvar_deg": final_cvar,
+                    "final_proxy_vaccept": final_proxy,
                     "blocks_final_export": bool(block_final),
                     "blocks_promotion": bool(block_promotion),
                 }
             )
             if block_final:
                 phase1_v2_final_blocked = True
-                phase1_v2_reasons.append("BEST_FINAL_P99_EXPANSION_BLOCKS_FINAL")
+                phase1_v2_reasons.append("REFERENCE_FINAL_TAIL_SAFETY_BLOCKS_FINAL")
             if block_promotion:
                 phase1_v2_final_blocked = True
-                phase1_v2_reasons.append("BEST_FINAL_P99_EXPANSION_BLOCKS_PROMOTION")
-        else:
+                phase1_v2_reasons.append("REFERENCE_FINAL_TAIL_SAFETY_BLOCKS_PROMOTION")
+        elif phase1_v2_tail_machine is not None:
             phase1_v2_final_blocked = True
-            phase1_v2_reasons.append("BEST_FINAL_TAIL_GEOMETRY_INCOMPLETE")
+            phase1_v2_reasons.append("REFERENCE_FINAL_TAIL_GEOMETRY_INCOMPLETE")
+        else:
+            reference_final_tail_gate.update(
+                {
+                    "status": "NOT_REQUIRED",
+                    "blocks_final_export": False,
+                    "blocks_promotion": False,
+                }
+            )
     except Exception as exc:
-        best_final_tail_gate["reason"] = str(exc)
-        phase1_v2_final_blocked = True
-        phase1_v2_reasons.append("BEST_FINAL_TAIL_GEOMETRY_INCOMPLETE")
+        reference_final_tail_gate["reason"] = str(exc)
+        if phase1_v2_tail_machine is not None:
+            phase1_v2_final_blocked = True
+            phase1_v2_reasons.append("REFERENCE_FINAL_TAIL_GEOMETRY_INCOMPLETE")
+    if bool(getattr(args, "phase1_v2_hard_gates", False)):
+        final_train_logs = (final_payload.get("stats", {}) or {}).get("train", {}) or {}
+        p1_preexport_checks = {
+            "SATELLITE_TRAIN_EVAL_NOT_DISJOINT": bool(args.sat_protocol_disjoint_required)
+            and bool((args.sat_protocol_manifest or {}).get("disjoint", False)),
+            "DIRECT_METRIC_LOCAL_COMPONENTS_DISABLED": bool(args.direct_metric_domain_local_components)
+            and bool(args.direct_metric_require_domain_local_components),
+            "DIRECT_METRIC_LOCAL_COMPONENT_RUNTIME_INACTIVE": _log_value(
+                final_train_logs, "train/dm_accept_domain_local_component_gate", 0.0
+            )
+            > 0.0
+            and _log_value(final_train_logs, "train/dm_accept_global_ball_accept", 1.0) == 0.0,
+            "LABELED_ZID_INVARIANCE_RUNTIME_INACTIVE": all(
+                _log_value(final_train_logs, f"train/zid_{name}_invariance_active", 0.0) > 0.0
+                for name in ("receiver", "day", "channel")
+            ),
+            "UNLABELED_ZID_INVARIANCE_RUNTIME_INACTIVE": _log_value(
+                final_train_logs, "train/u_zid_invariance_active", 0.0
+            )
+            > 0.0,
+            "UNLABELED_MULTIVIEW_LOCAL_ROUTING_INACTIVE": _log_value(
+                final_train_logs, "train/u_quarantine_multiview_local_components", 0.0
+            )
+            > 0.0
+            and _log_value(final_train_logs, "train/u_quarantine_global_component_fallback", 1.0)
+            == 0.0,
+            "ZID_LEAKAGE_PROBE_NOT_REQUIRED": bool(args.zid_leakage_probe_required),
+            "ZID_LEAKAGE_PROBE_GATE_FAILED": not bool(leakage_decision["fired"]),
+        }
+        failed_p1_checks = [reason for reason, passed in p1_preexport_checks.items() if not passed]
+        if failed_p1_checks:
+            phase1_v2_final_blocked = True
+            phase1_v2_reasons.extend(failed_p1_checks)
+        final_payload["p1_preexport_checks"] = p1_preexport_checks
     guard_state["phase1_v2_final_blocked"] = bool(phase1_v2_final_blocked)
-    guard_state["best_final_p99_delta_deg"] = best_final_tail_gate.get("p99_delta_deg")
-    guard_state["best_final_tail_gate_status"] = best_final_tail_gate.get("status")
+    guard_state["reference_final_p99_delta_deg"] = reference_final_tail_gate.get("p99_delta_deg")
+    guard_state["reference_final_tail_gate_status"] = reference_final_tail_gate.get("status")
+    guard_state["zid_leakage_probe_fired"] = bool(leakage_decision["fired"])
+    guard_state.update(
+        {f"zid_leakage_{key}": value for key, value in leakage_decision["details"].items()}
+    )
     if phase1_v2_reasons:
         guard_state["reason"] = ";".join(
             dict.fromkeys(
@@ -5626,8 +6218,17 @@ def train(args) -> int:
                 ]
             )
         )
-    (out_dir / "best_to_final_tail_safety.json").write_text(
-        json.dumps(best_final_tail_gate, ensure_ascii=False, indent=2, default=str),
+    final_payload["joint_guard"] = dict(guard_state)
+    final_payload["checkpoint_status"] = {
+        "state": "FINAL_ONLY",
+        "checkpoint_safe": not bool(phase1_v2_final_blocked),
+        "phase1_v2_final_blocked": bool(phase1_v2_final_blocked),
+        "reason": str(guard_state.get("reason", "")),
+    }
+    final_payload["final_only_evidence"]["reference_to_final_tail_safety"] = reference_final_tail_gate
+    save_payload(selected_checkpoint, final_payload)
+    (out_dir / "reference_to_final_tail_safety.json").write_text(
+        json.dumps(reference_final_tail_gate, ensure_ascii=False, indent=2, default=str),
         encoding="utf-8",
     )
     try:
@@ -5636,7 +6237,7 @@ def train(args) -> int:
         frozen_eval = {
             "status": "FAILED",
             "reason": str(exc),
-            "selection_source": "source_val_only",
+            "selection_source": "training_final_only",
             "checkpoint": str(selected_checkpoint),
             "claim": "PHASE1_FROZEN_HELDOUT_EVAL_INCOMPLETE",
         }
@@ -5661,7 +6262,7 @@ def train(args) -> int:
         }
     else:
         try:
-            default_export_checkpoint = safe_best_path if _joint_safe_guard_enabled(args) else out_dir / f"best_{args.best_metric}_ssdg.pth"
+            default_export_checkpoint = selected_checkpoint
             exported_package = _maybe_export_phase2_prototypes_ssdg(
                 args,
                 model,
@@ -5750,6 +6351,69 @@ def train(args) -> int:
         and str(export_status.get("source_checkpoint_sha256", "")) == selected_checkpoint_sha256,
     }
     p0_mechanisms_ready = all(p0_mechanism_flags.values())
+    probe_from_checkpoint = (
+        (selected_checkpoint_evidence.get("stats", {}) or {}).get("zid_leakage_probe", {})
+        if selected_checkpoint_evidence
+        else {}
+    )
+    p1_mechanism_flags = {
+        "checkpoint_selection_final_only": str(getattr(args, "checkpoint_selection", "")) == "final_only",
+        "selected_checkpoint_is_final": selected_checkpoint.name == "final_ssdg.pth",
+        "selected_checkpoint_role_final": str(selected_checkpoint_evidence.get("checkpoint_role", ""))
+        == "training_final_only",
+        "sat_protocol_disjoint_required": bool(getattr(args, "sat_protocol_disjoint_required", False)),
+        "sat_protocol_disjoint": bool((getattr(args, "sat_protocol_manifest", {}) or {}).get("disjoint", False)),
+        "direct_metric_domain_local_components": bool(
+            getattr(args, "direct_metric_domain_local_components", False)
+        ),
+        "direct_metric_local_components_required": bool(
+            getattr(args, "direct_metric_require_domain_local_components", False)
+        ),
+        "direct_metric_runtime_local_component_gate": _log_value(
+            selected_train_logs, "train/dm_accept_domain_local_component_gate", 0.0
+        )
+        > 0.0,
+        "direct_metric_runtime_global_ball_disabled": _log_value(
+            selected_train_logs, "train/dm_accept_global_ball_accept", 1.0
+        )
+        == 0.0,
+        "labeled_receiver_invariance_active": _log_value(
+            selected_train_logs, "train/zid_receiver_invariance_active", 0.0
+        )
+        > 0.0,
+        "labeled_day_invariance_active": _log_value(
+            selected_train_logs, "train/zid_day_invariance_active", 0.0
+        )
+        > 0.0,
+        "labeled_channel_invariance_active": _log_value(
+            selected_train_logs, "train/zid_channel_invariance_active", 0.0
+        )
+        > 0.0,
+        "unlabeled_invariance_configured": any(
+            float(getattr(args, key, 0.0)) > 0.0
+            for key in (
+                "lambda_u_zid_receiver_invariance",
+                "lambda_u_zid_day_invariance",
+                "lambda_u_zid_channel_invariance",
+            )
+        ),
+        "unlabeled_invariance_runtime_active": _log_value(
+            selected_train_logs, "train/u_zid_invariance_active", 0.0
+        )
+        > 0.0,
+        "unlabeled_multiview_local_routing_active": _log_value(
+            selected_train_logs, "train/u_quarantine_multiview_local_components", 0.0
+        )
+        > 0.0,
+        "unlabeled_global_component_fallback_disabled": _log_value(
+            selected_train_logs, "train/u_quarantine_global_component_fallback", 1.0
+        )
+        == 0.0,
+        "zid_leakage_probe_required": bool(getattr(args, "zid_leakage_probe_required", False)),
+        "zid_leakage_probe_complete": str(probe_from_checkpoint.get("status", "")) == "COMPLETE",
+        "zid_leakage_probe_gate_passed": not bool(leakage_decision["fired"]),
+    }
+    p1_mechanisms_ready = all(p1_mechanism_flags.values())
     endpoint_export_ready = bool(
         export_status.get("status") == "COMPLETE" and export_status.get("endpoint_artifact_ready", False)
     )
@@ -5760,6 +6424,7 @@ def train(args) -> int:
         selected_checkpoint_exists=bool(selected_checkpoint_exists),
         heldout_eval_status=str(frozen_eval.get("status", "")),
         p0_mechanisms_ready=bool(p0_mechanisms_ready),
+        p1_mechanisms_ready=bool(p1_mechanisms_ready),
         endpoint_export_ready=bool(endpoint_export_ready),
     )
     terminal_exit_code = int(exit_code)
@@ -5770,6 +6435,7 @@ def train(args) -> int:
             "NO_SAFE_CHECKPOINT": 6,
             "HELDOUT_EVAL_INCOMPLETE": 7,
             "NON_PROMOTABLE_P0_DISABLED": 8,
+            "NON_PROMOTABLE_P1_DISABLED": 11,
             "NON_PROMOTABLE_ENDPOINT_NOT_EXPORTED": 9,
         }.get(terminal_status, 10)
     terminal_manifest = {
@@ -5778,19 +6444,22 @@ def train(args) -> int:
         "candidate_id": str(getattr(args, "candidate_id", "")),
         "status": terminal_status,
         "exit_code": int(terminal_exit_code),
-        "selection_source": "source_val_only",
+        "selection_source": "training_final_only",
         "selected_checkpoint": str(selected_checkpoint),
         "selected_checkpoint_exists": bool(selected_checkpoint_exists),
         "selected_checkpoint_sha256": selected_checkpoint_sha256,
         "best_epoch": int(best_epoch),
         "best_source_val_tx": float(best_val) if math.isfinite(float(best_val)) else None,
         "heldout_eval": frozen_eval,
-        "tail_reference_path": str(tail_reference_path),
-        "tail_reference_exists": tail_reference_path.is_file(),
-        "tail_reference_sha256": _sha256_file(tail_reference_path) if tail_reference_path.is_file() else "",
+        "tail_reference_path": "METRIC_ONLY",
+        "tail_reference_exists": bool(tail_reference_geometry),
+        "tail_reference_sha256": "",
+        "tail_reference_epoch": int(tail_reference_epoch),
         "tail_rollback_count": int(phase1_v2_tail_machine.rollback_count) if phase1_v2_tail_machine is not None else 0,
         "tail_rollback_events": tail_rollback_events,
-        "best_to_final_tail_safety": best_final_tail_gate,
+        "reference_to_final_tail_safety": reference_final_tail_gate,
+        "satellite_protocol": dict(getattr(args, "sat_protocol_manifest", {}) or {}),
+        "zid_leakage_probe": final_zid_leakage_probe,
         "phase1_v2_final_blocked": bool(phase1_v2_final_blocked),
         "final_guard_reason": str((guard_state or {}).get("reason", "")),
         "prototype_export": export_status,
@@ -5799,6 +6468,8 @@ def train(args) -> int:
             selected_checkpoint_evidence.get("epoch", -1)
         ) if selected_checkpoint_evidence else -1,
         "p0_mechanisms_ready": bool(p0_mechanisms_ready),
+        "p1_mechanism_flags": p1_mechanism_flags,
+        "p1_mechanisms_ready": bool(p1_mechanisms_ready),
         "endpoint_export_ready": bool(endpoint_export_ready),
         "promotion_ready": terminal_status == "COMPLETE",
         "claim": "PHASE1_SOURCE_ONLY_NO_TRUE_UNKNOWN_SUCCESS_CLAIM",

@@ -15,6 +15,7 @@ from cvsrffi.losses import (  # noqa: E402
     multiview_direct_metric_acceptance_loss,
     multiview_source_episode_three_sigma_loss,
     source_episode_three_sigma_loss,
+    tx_conditional_domain_invariance_loss,
 )
 
 
@@ -313,3 +314,110 @@ def test_multiview_source_episode_does_not_pool_satellite_tail_into_clean_compon
     assert "clean_source_episode_zid_p99_deg" in metrics
     assert "sat_source_episode_zid_p99_deg" in metrics
     assert clean.grad is not None and satellite.grad is not None
+
+
+def test_direct_metric_uses_receiver_local_components_without_global_ball_fallback():
+    features = torch.tensor(
+        [
+            [1.0, 0.00], [0.99, 0.03], [0.94, 0.34], [0.92, 0.39],
+            [0.0, 1.00], [0.03, 0.99], [0.34, 0.94], [0.39, 0.92],
+        ],
+        dtype=torch.float32,
+        requires_grad=True,
+    )
+    labels = torch.tensor([0, 0, 0, 0, 1, 1, 1, 1])
+    domains = torch.tensor([0, 0, 1, 1, 0, 0, 1, 1])
+
+    loss, metrics = direct_metric_acceptance_loss(
+        features,
+        labels,
+        domains,
+        virtual_count=8,
+        virtual_detach=False,
+        use_domain_local_components=True,
+        require_domain_local_components=True,
+        min_samples_per_component=2,
+    )
+    loss.backward()
+
+    assert metrics["active"] == 1.0
+    assert metrics["domain_local_component_gate"] == 1.0
+    assert metrics["global_ball_accept"] == 0.0
+    assert metrics["local_component_count"] == 4.0
+    assert metrics["local_component_class_coverage"] == 2.0
+    assert math.isfinite(metrics["local_zid_p99_deg"])
+    assert metrics["quantile_optimization_scope_local"] == 1.0
+    assert metrics["global_diag_zid_p95_deg"] > metrics["local_zid_p95_deg"]
+    assert features.grad is not None
+    assert torch.isfinite(features.grad).all()
+
+
+def test_tx_conditional_invariance_aligns_nuisance_groups_without_cross_tx_collapse():
+    features = torch.tensor(
+        [
+            [1.0, 0.0], [0.98, 0.2], [1.0, 0.0], [0.98, 0.2],
+            [0.0, 1.0], [0.2, 0.98], [0.0, 1.0], [0.2, 0.98],
+        ],
+        dtype=torch.float32,
+        requires_grad=True,
+    )
+    tx = torch.tensor([0, 0, 0, 0, 1, 1, 1, 1])
+    receiver = torch.tensor([0, 0, 1, 1, 0, 0, 1, 1])
+    day = torch.tensor([0, 1, 0, 1, 0, 1, 0, 1])
+    channel = torch.tensor([0, 0, 1, 1, 0, 0, 1, 1])
+
+    loss, metrics = tx_conditional_domain_invariance_loss(
+        features,
+        tx,
+        receiver_labels=receiver,
+        day_labels=day,
+        channel_labels=channel,
+        min_samples_per_group=1,
+    )
+    loss.backward()
+
+    assert metrics["active"] == 1.0
+    assert metrics["receiver_active"] == 1.0
+    assert metrics["day_active"] == 1.0
+    assert metrics["channel_active"] == 1.0
+    assert float(loss.item()) > 0.0
+    assert features.grad is not None
+    assert float(features.grad.norm().item()) > 0.0
+
+
+def test_multiview_local_tail_projection_uses_worst_satellite_view():
+    clean = torch.tensor(
+        [
+            [1.0, 0.00], [0.999, 0.02], [0.94, 0.34], [0.93, 0.36],
+            [0.0, 1.00], [0.02, 0.999], [0.34, 0.94], [0.36, 0.93],
+        ],
+        dtype=torch.float32,
+        requires_grad=True,
+    )
+    satellite = torch.tensor(
+        [
+            [1.0, 0.00], [0.94, 0.34], [0.94, 0.34], [0.75, 0.66],
+            [0.0, 1.00], [0.34, 0.94], [0.34, 0.94], [0.66, 0.75],
+        ],
+        dtype=torch.float32,
+        requires_grad=True,
+    )
+    labels = torch.tensor([0, 0, 0, 0, 1, 1, 1, 1])
+    domains = torch.tensor([0, 0, 1, 1, 0, 0, 1, 1])
+
+    loss, metrics = multiview_direct_metric_acceptance_loss(
+        clean,
+        satellite,
+        labels,
+        domains,
+        use_domain_local_components=True,
+        require_domain_local_components=True,
+        min_samples_per_component=2,
+        virtual_count=8,
+    )
+    loss.backward()
+
+    assert metrics["domain_local_component_gate"] == 1.0
+    assert metrics["global_ball_accept"] == 0.0
+    assert metrics["sat_local_zid_p99_deg"] > metrics["clean_local_zid_p99_deg"]
+    assert metrics["local_zid_p99_deg"] == metrics["sat_local_zid_p99_deg"]

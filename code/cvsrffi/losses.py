@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import math
 from dataclasses import dataclass
-from typing import Any, Dict, Optional, Tuple
+from typing import Any, Dict, List, Optional, Tuple
 
 import numpy as np
 import torch
@@ -1546,15 +1546,28 @@ def _make_component_shell_outliers(
     return safe_l2_normalize(torch.stack(out, dim=0), dim=1)
 
 
-def _make_interclass_bridge_outliers(proto: torch.Tensor, *, count: int) -> torch.Tensor:
+def _make_interclass_bridge_outliers(
+    proto: torch.Tensor,
+    *,
+    count: int,
+    class_ids: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
     if count <= 0 or proto.numel() == 0 or proto.size(0) < 2:
         feat_dim = proto.size(1) if proto.dim() == 2 else 0
         return proto.new_zeros((0, feat_dim))
     out = []
     n_proto = proto.size(0)
     for i in range(int(count)):
-        p1 = proto[i % n_proto]
-        p2 = proto[(i + 1 + (i // n_proto)) % n_proto]
+        first = i % n_proto
+        second = (i + 1 + (i // n_proto)) % n_proto
+        if class_ids is not None and class_ids.numel() == n_proto:
+            for offset in range(1, n_proto + 1):
+                candidate = (first + offset + (i // n_proto)) % n_proto
+                if int(class_ids[candidate].item()) != int(class_ids[first].item()):
+                    second = candidate
+                    break
+        p1 = proto[first]
+        p2 = proto[second]
         out.append(p1 + p2)
     return safe_l2_normalize(torch.stack(out, dim=0), dim=1)
 
@@ -1610,12 +1623,115 @@ def _make_proxy_virtual_unknown_pool(
             count=shell_n,
             shell_width_rad=shell_width_rad,
         ),
-        "bridge": _make_interclass_bridge_outliers(proto, count=bridge_n),
+        "bridge": _make_interclass_bridge_outliers(proto, count=bridge_n, class_ids=class_ids),
         "outward": _make_tail_outward_outliers(z_known, proto, count=outward_n),
     }
     if mode_l in {"mixed", "hybrid", "legacy_hard"}:
         parts["legacy"] = _make_virtual_outliers(z_known, proto, count=count)
     return parts
+
+
+def tx_conditional_domain_invariance_loss(
+    z: torch.Tensor,
+    y: torch.Tensor,
+    *,
+    receiver_labels: Optional[torch.Tensor] = None,
+    day_labels: Optional[torch.Tensor] = None,
+    channel_labels: Optional[torch.Tensor] = None,
+    receiver_weight: float = 1.0,
+    day_weight: float = 1.0,
+    channel_weight: float = 1.0,
+    channel_pair_weight: float = 1.0,
+    paired_view_count: int = 0,
+    min_groups: int = 2,
+    min_samples_per_group: int = 2,
+) -> Tuple[torch.Tensor, Dict[str, float]]:
+    """Directly align nuisance-group centers inside each known TX class.
+
+    Conditioning every alignment term on TX prevents the invariance objective
+    from collapsing identity separation while still removing receiver, day and
+    clean/satellite channel shortcuts from ``z_id``.
+    """
+
+    if z.dim() != 2:
+        raise ValueError(f"tx_conditional_domain_invariance_loss expects [B,D], got {tuple(z.shape)}")
+    labels = y.view(-1).long()
+    if labels.numel() != z.size(0):
+        raise ValueError("TX labels must align with z_id features")
+    z_norm = safe_l2_normalize(torch.nan_to_num(z.float(), nan=0.0, posinf=0.0, neginf=0.0), dim=1)
+
+    def _field_loss(field: Optional[torch.Tensor]) -> Tuple[torch.Tensor, Dict[str, float]]:
+        zero = zero_like_with_grad(z_norm)
+        if field is None or not torch.is_tensor(field) or field.numel() != labels.numel():
+            return zero, {"active": 0.0, "tx_count": 0.0, "group_count": 0.0, "mean_center_angle_deg": float("nan")}
+        nuisance = field.view(-1).long().to(device=labels.device)
+        terms = []
+        angles = []
+        active_tx = 0
+        active_groups = 0
+        for cls in torch.unique(labels[labels >= 0]):
+            cls_mask = labels.eq(cls) & nuisance.ge(0)
+            valid_groups = []
+            for group in torch.unique(nuisance[cls_mask]):
+                group_mask = cls_mask & nuisance.eq(group)
+                if int(group_mask.sum().item()) >= max(1, int(min_samples_per_group)):
+                    valid_groups.append(group_mask)
+            if len(valid_groups) < max(2, int(min_groups)):
+                continue
+            active_tx += 1
+            active_groups += len(valid_groups)
+            tx_center = safe_l2_normalize(z_norm[cls_mask].mean(dim=0, keepdim=True), dim=1).squeeze(0)
+            for group_mask in valid_groups:
+                group_center = safe_l2_normalize(z_norm[group_mask].mean(dim=0, keepdim=True), dim=1).squeeze(0)
+                cos = (group_center * tx_center).sum().clamp(-1.0 + 1e-4, 1.0 - 1e-4)
+                terms.append(1.0 - cos)
+                angles.append(_safe_angle_from_cos(cos.view(1), eps=1e-4).squeeze(0))
+        if not terms:
+            return zero, {"active": 0.0, "tx_count": 0.0, "group_count": 0.0, "mean_center_angle_deg": float("nan")}
+        loss = torch.stack(terms).mean()
+        angle = torch.stack(angles).detach().mean()
+        return loss, {
+            "active": 1.0,
+            "tx_count": float(active_tx),
+            "group_count": float(active_groups),
+            "mean_center_angle_deg": math.degrees(_scalar_metric(angle)),
+        }
+
+    receiver_loss, receiver_info = _field_loss(receiver_labels)
+    day_loss, day_info = _field_loss(day_labels)
+    channel_loss, channel_info = _field_loss(channel_labels)
+    channel_pair_loss = zero_like_with_grad(z_norm)
+    channel_pair_angle = z_norm.new_tensor(float("nan"))
+    pair_n = max(0, int(paired_view_count))
+    if pair_n > 0 and z_norm.size(0) >= 2 * pair_n:
+        clean = z_norm[:pair_n]
+        satellite = z_norm[pair_n : 2 * pair_n]
+        pair_labels_match = labels[:pair_n].eq(labels[pair_n : 2 * pair_n])
+        if bool(pair_labels_match.any()):
+            pair_cos = (clean[pair_labels_match] * satellite[pair_labels_match]).sum(dim=1).clamp(
+                -1.0 + 1e-4, 1.0 - 1e-4
+            )
+            channel_pair_loss = (1.0 - pair_cos).mean()
+            channel_pair_angle = _safe_angle_from_cos(pair_cos.detach(), eps=1e-4).mean()
+    total = (
+        max(0.0, float(receiver_weight)) * receiver_loss
+        + max(0.0, float(day_weight)) * day_loss
+        + max(0.0, float(channel_weight))
+        * (channel_loss + max(0.0, float(channel_pair_weight)) * channel_pair_loss)
+    )
+    metrics: Dict[str, float] = {
+        "active": max(receiver_info["active"], day_info["active"], channel_info["active"]),
+        "receiver_loss": _scalar_metric(receiver_loss.detach()),
+        "day_loss": _scalar_metric(day_loss.detach()),
+        "channel_loss": _scalar_metric(channel_loss.detach()),
+        "channel_pair_loss": _scalar_metric(channel_pair_loss.detach()),
+        "channel_pair_count": float(pair_n),
+        "channel_pair_angle_deg": math.degrees(_scalar_metric(channel_pair_angle)),
+    }
+    for prefix, info in (("receiver", receiver_info), ("day", day_info), ("channel", channel_info)):
+        for key, value in info.items():
+            metrics[f"{prefix}_{key}"] = value
+    return total, metrics
 
 
 def direct_metric_acceptance_loss(
@@ -1664,6 +1780,9 @@ def direct_metric_acceptance_loss(
     virtual_detach: bool = True,
     min_classes: int = 2,
     min_samples_per_class: int = 2,
+    use_domain_local_components: bool = False,
+    require_domain_local_components: bool = False,
+    min_samples_per_component: int = 2,
 ) -> Tuple[torch.Tensor, Dict[str, float]]:
     """Directly optimize Phase1 source-only open-set proxy geometry metrics.
 
@@ -1704,6 +1823,14 @@ def direct_metric_acceptance_loss(
         "geometry_reference_detached": 1.0,
         "angle_clamp_eps": 1e-4,
         "softplus_clip": 20.0,
+        "domain_local_component_gate": 0.0,
+        "global_ball_accept": 1.0,
+        "local_component_count": 0.0,
+        "local_component_class_coverage": 0.0,
+        "local_zid_p50_deg": float("nan"),
+        "local_zid_p95_deg": float("nan"),
+        "local_zid_p99_deg": float("nan"),
+        "local_zid_tail_cvar_deg": float("nan"),
     }
     if z is None or not torch.is_tensor(z) or z.numel() == 0:
         ref = torch.tensor(0.0)
@@ -1753,6 +1880,8 @@ def direct_metric_acceptance_loss(
     overflow_q = max(tail_q, min(1.0, float(overflow_quantile)))
     radius_vec = []
     accept_radius_vec = []
+    tail_radius_vec = []
+    overflow_radius_vec = []
     core_mask = torch.zeros((sample_z.size(0),), device=sample_z.device, dtype=torch.bool)
     tail_mask = torch.zeros_like(core_mask)
     overflow_mask = torch.zeros_like(core_mask)
@@ -1762,6 +1891,8 @@ def direct_metric_acceptance_loss(
         if cls_angles.numel() == 0:
             radius_vec.append(sample_z.new_tensor(math.radians(40.0)))
             accept_radius_vec.append(sample_z.new_tensor(math.radians(40.0)))
+            tail_radius_vec.append(sample_z.new_tensor(math.radians(40.0)))
+            overflow_radius_vec.append(sample_z.new_tensor(math.radians(40.0)))
             continue
         det = cls_angles.detach()
         core_radius = torch.quantile(det, core_q) if det.numel() > 1 else det.max()
@@ -1770,20 +1901,133 @@ def direct_metric_acceptance_loss(
         overflow_radius = torch.quantile(det, overflow_q) if det.numel() > 1 else det.max()
         radius_vec.append(core_radius.clamp_min(1e-4))
         accept_radius_vec.append(accept_radius.clamp_min(1e-4))
+        tail_radius_vec.append(tail_radius.clamp_min(1e-4))
+        overflow_radius_vec.append(overflow_radius.clamp_min(1e-4))
         core_mask |= cls_mask & (pos_angles <= core_radius)
         tail_mask |= cls_mask & (pos_angles > core_radius) & (pos_angles <= tail_radius)
         overflow_mask |= cls_mask & (pos_angles > overflow_radius)
     radius_vec_t = torch.stack(radius_vec, dim=0).to(device=sample_z.device, dtype=sample_z.dtype)
     accept_radius_vec_t = torch.stack(accept_radius_vec, dim=0).to(device=sample_z.device, dtype=sample_z.dtype)
+    tail_radius_vec_t = torch.stack(tail_radius_vec, dim=0).to(device=sample_z.device, dtype=sample_z.dtype)
+    overflow_radius_vec_t = torch.stack(overflow_radius_vec, dim=0).to(device=sample_z.device, dtype=sample_z.dtype)
     if not bool(core_mask.any()):
         core_mask = torch.ones_like(core_mask)
+
+    gate_proto = proto
+    gate_labels = center_labels
+    gate_radius = accept_radius_vec_t
+    gate_shell_radius = radius_vec_t
+    gate_tail_radius = tail_radius_vec_t
+    gate_overflow_radius = overflow_radius_vec_t
+    gate_core_masks: List[torch.Tensor] = []
+    gate_density_radius: List[torch.Tensor] = []
+    for proto_idx, cls in enumerate(center_labels):
+        cls_mask = sample_labels.eq(cls)
+        gate_core_masks.append(cls_mask & core_mask)
+        gate_density_radius.append(radius_vec_t[proto_idx].detach())
+    local_component_active = False
+    local_pos_angles = sample_z.new_zeros((0,))
+    if bool(use_domain_local_components) and sample_domains is not None:
+        local_centers = []
+        local_labels = []
+        local_accept_radii = []
+        local_shell_radii = []
+        local_tail_radii = []
+        local_overflow_radii = []
+        local_core_masks = []
+        local_density_radii = []
+        local_angle_parts = []
+        component_min = max(1, int(min_samples_per_component))
+        for cls in center_labels:
+            cls_mask = sample_labels.eq(cls)
+            for domain_id in torch.unique(sample_domains[cls_mask]):
+                component_mask = cls_mask & sample_domains.eq(domain_id)
+                if int(component_mask.sum().item()) < component_min:
+                    continue
+                component_center = safe_l2_normalize(
+                    sample_z[component_mask].mean(dim=0, keepdim=True), dim=1
+                ).squeeze(0)
+                component_angles = _safe_angle_from_cos(
+                    (sample_z[component_mask] * component_center.detach().view(1, -1))
+                    .sum(dim=1)
+                    .clamp(-1.0 + angle_eps, 1.0 - angle_eps),
+                    eps=angle_eps,
+                )
+                det = component_angles.detach()
+                component_core_radius = torch.quantile(det, core_q) if det.numel() > 1 else det.max()
+                component_accept_radius = torch.quantile(det, accept_q) if det.numel() > 1 else det.max()
+                component_tail_radius = torch.quantile(det, tail_q) if det.numel() > 1 else det.max()
+                component_overflow_radius = torch.quantile(det, overflow_q) if det.numel() > 1 else det.max()
+                local_centers.append(component_center)
+                local_labels.append(cls)
+                local_shell_radii.append(component_core_radius.clamp_min(1e-4))
+                local_accept_radii.append(component_accept_radius.clamp_min(1e-4))
+                local_tail_radii.append(component_tail_radius.clamp_min(1e-4))
+                local_overflow_radii.append(component_overflow_radius.clamp_min(1e-4))
+                component_core_mask = component_mask.clone()
+                component_core_mask[component_mask] = component_angles <= component_core_radius
+                local_core_masks.append(component_core_mask)
+                local_density_radii.append(component_core_radius.clamp_min(1e-4))
+                local_angle_parts.append(component_angles)
+        local_class_coverage = len({int(v.item()) for v in local_labels})
+        if local_centers and local_class_coverage == active_classes:
+            gate_proto = torch.stack(local_centers, dim=0)
+            gate_labels = torch.stack(local_labels, dim=0).to(device=labels.device)
+            gate_radius = torch.stack(local_accept_radii, dim=0).to(device=sample_z.device, dtype=sample_z.dtype)
+            gate_shell_radius = torch.stack(local_shell_radii, dim=0).to(device=sample_z.device, dtype=sample_z.dtype)
+            gate_tail_radius = torch.stack(local_tail_radii, dim=0).to(
+                device=sample_z.device, dtype=sample_z.dtype
+            )
+            gate_overflow_radius = torch.stack(local_overflow_radii, dim=0).to(
+                device=sample_z.device, dtype=sample_z.dtype
+            )
+            gate_core_masks = local_core_masks
+            gate_density_radius = local_density_radii
+            local_pos_angles = torch.cat(local_angle_parts, dim=0)
+            local_component_active = True
+        elif bool(require_domain_local_components):
+            default_metrics.update(
+                {
+                    "global_ball_accept": 0.0,
+                    "local_component_count": float(len(local_centers)),
+                    "local_component_class_coverage": float(local_class_coverage),
+                }
+            )
+            return zero_like_with_grad(z), default_metrics
+
+    gate_proto_ref = gate_proto.detach()
+    if bool(require_domain_local_components) and not local_component_active:
+        default_metrics["global_ball_accept"] = 0.0
+        return zero_like_with_grad(z), default_metrics
+
+    global_pos_angles = pos_angles
+    global_q50 = torch.quantile(global_pos_angles.detach(), 0.50) if global_pos_angles.numel() > 1 else global_pos_angles.detach().mean()
+    global_q95 = torch.quantile(global_pos_angles.detach(), 0.95) if global_pos_angles.numel() > 1 else global_pos_angles.detach().mean()
+    global_q99 = torch.quantile(global_pos_angles.detach(), 0.99) if global_pos_angles.numel() > 1 else global_pos_angles.detach().mean()
+    global_tail_cvar = _top_cvar_mean(global_pos_angles.detach(), 0.05)
+    optimization_pos_angles = global_pos_angles
+    if local_component_active:
+        sample_gate_angles = _safe_angle_from_cos(
+            (sample_z @ gate_proto_ref.t()).clamp(-1.0 + angle_eps, 1.0 - angle_eps), eps=angle_eps
+        )
+        own_component = sample_labels.view(-1, 1).eq(gate_labels.view(1, -1))
+        own_local_angles = sample_gate_angles.masked_fill(~own_component, float("inf"))
+        local_pos_angles, local_component_index = own_local_angles.min(dim=1)
+        optimization_pos_angles = local_pos_angles
+        core_mask = local_pos_angles <= gate_shell_radius.detach()[local_component_index]
+        tail_mask = (local_pos_angles > gate_shell_radius.detach()[local_component_index]) & (
+            local_pos_angles <= gate_tail_radius.detach()[local_component_index]
+        )
+        overflow_mask = local_pos_angles > gate_overflow_radius.detach()[local_component_index]
+        if not bool(core_mask.any()):
+            core_mask = torch.ones_like(core_mask)
 
     tau_q = max(1e-4, float(quantile_temperature_rad))
     tau_a = max(1e-4, float(accept_temperature))
     cvar_frac = max(1e-6, min(1.0, float(accept_cvar_alpha)))
 
     def _angle_target_loss(target_rad: float, frac: float) -> torch.Tensor:
-        terms = _bounded_softplus((pos_angles - float(target_rad)) / tau_q, clip=softplus_clip)
+        terms = _bounded_softplus((optimization_pos_angles - float(target_rad)) / tau_q, clip=softplus_clip)
         return _top_cvar_mean(terms, frac)
 
     zid_quantile_loss = (
@@ -1794,45 +2038,61 @@ def direct_metric_acceptance_loss(
     )
 
     def _top_angle_mean(frac: float) -> torch.Tensor:
-        return _top_cvar_mean(pos_angles, max(1e-6, min(1.0, float(frac))))
+        return _top_cvar_mean(optimization_pos_angles, max(1e-6, min(1.0, float(frac))))
 
     with torch.no_grad():
-        pos_det = pos_angles.detach()
+        pos_det = optimization_pos_angles.detach()
         q50 = torch.quantile(pos_det, 0.50) if pos_det.numel() > 1 else pos_det.mean()
         q95 = torch.quantile(pos_det, 0.95) if pos_det.numel() > 1 else pos_det.mean()
         q99 = torch.quantile(pos_det, 0.99) if pos_det.numel() > 1 else pos_det.mean()
         tail_cvar_metric = _top_angle_mean(0.05).detach()
-
-    z_core_density = sample_z[core_mask]
-    density_radius = torch.quantile(pos_angles[core_mask].detach(), min(0.95, max(0.50, core_q))) if bool(core_mask.any()) else radius_vec_t.detach().median()
 
     def _geometry_accept_prob(feat: torch.Tensor) -> Tuple[torch.Tensor, torch.Tensor]:
         if feat is None or feat.numel() == 0:
             return sample_z.new_zeros((0,)), sample_z.new_zeros((0,))
         feat_norm = safe_l2_normalize(feat, dim=1)
         feat_angles = _safe_angle_from_cos(
-            (feat_norm @ proto_ref.t()).clamp(-1.0 + angle_eps, 1.0 - angle_eps),
+            (feat_norm @ gate_proto_ref.t()).clamp(-1.0 + angle_eps, 1.0 - angle_eps),
             eps=angle_eps,
         )
         radius_gate = torch.sigmoid(
-            (accept_radius_vec_t.detach().view(1, -1) - feat_angles) / max(1e-4, float(component_temperature_rad))
+            (gate_radius.detach().view(1, -1) - feat_angles) / max(1e-4, float(component_temperature_rad))
         )
-        if feat_angles.size(1) > 1:
-            sorted_angles = torch.sort(feat_angles.detach(), dim=1).values
-            class_gap = sorted_angles[:, 1] - sorted_angles[:, 0]
-            margin_gate = torch.sigmoid(
-                (class_gap - float(component_margin_rad)) / max(1e-4, float(component_temperature_rad))
-            ).view(-1, 1)
-        else:
-            margin_gate = torch.ones((feat_angles.size(0), 1), device=feat_angles.device, dtype=feat_angles.dtype)
-        if z_core_density.numel():
-            core_cos = (feat_norm @ z_core_density.detach().t()).clamp(-1.0 + angle_eps, 1.0 - angle_eps)
-            nearest_core_angle = _safe_angle_from_cos(core_cos.max(dim=1).values, eps=angle_eps)
-            density_gate = torch.sigmoid((density_radius - nearest_core_angle) / max(1e-4, float(density_temperature_rad))).view(-1, 1)
-            low_density_prob = torch.sigmoid((nearest_core_angle - density_radius) / max(1e-4, float(density_temperature_rad)))
-        else:
-            density_gate = torch.ones((feat_angles.size(0), 1), device=feat_angles.device, dtype=feat_angles.dtype)
-            low_density_prob = torch.zeros((feat_angles.size(0),), device=feat_angles.device, dtype=feat_angles.dtype)
+        margin_columns = []
+        density_columns = []
+        for component_idx in range(gate_proto_ref.size(0)):
+            other_class = gate_labels.ne(gate_labels[component_idx])
+            if bool(other_class.any()):
+                other_nearest = feat_angles[:, other_class].min(dim=1).values.detach()
+                class_gap = other_nearest - feat_angles[:, component_idx]
+                margin_columns.append(
+                    torch.sigmoid(
+                        (class_gap - float(component_margin_rad))
+                        / max(1e-4, float(component_temperature_rad))
+                    )
+                )
+            else:
+                margin_columns.append(torch.ones_like(feat_angles[:, component_idx]))
+            component_core = sample_z[gate_core_masks[component_idx]]
+            if component_core.numel():
+                nearest_core = _safe_angle_from_cos(
+                    (feat_norm @ component_core.detach().t())
+                    .clamp(-1.0 + angle_eps, 1.0 - angle_eps)
+                    .max(dim=1)
+                    .values,
+                    eps=angle_eps,
+                )
+                density_columns.append(
+                    torch.sigmoid(
+                        (gate_density_radius[component_idx].detach() - nearest_core)
+                        / max(1e-4, float(density_temperature_rad))
+                    )
+                )
+            else:
+                density_columns.append(torch.zeros_like(feat_angles[:, component_idx]))
+        margin_gate = torch.stack(margin_columns, dim=1)
+        density_gate = torch.stack(density_columns, dim=1)
+        low_density_prob = 1.0 - density_gate.max(dim=1).values
         return (radius_gate * margin_gate * density_gate).max(dim=1).values, low_density_prob
 
     def _accept_loss(prob: torch.Tensor, target: float) -> torch.Tensor:
@@ -1851,13 +2111,13 @@ def direct_metric_acceptance_loss(
     tail_accept_loss = _accept_loss(tail_prob, float(tail_accept_target))
     overflow_accept_loss = _accept_loss(overflow_prob, float(overflow_accept_target))
 
-    virtual_geometry_basis = proto_ref if bool(virtual_detach) else proto
+    virtual_geometry_basis = gate_proto_ref if bool(virtual_detach) else gate_proto
     virtual_parts = _make_proxy_virtual_unknown_pool(
         sample_z,
         sample_labels,
-        center_labels,
+        gate_labels,
         virtual_geometry_basis,
-        radius_vec_t,
+        gate_shell_radius,
         count=max(0, int(virtual_count)),
         mode=str(virtual_mode or "hard"),
         shell_width_rad=float(shell_width_rad),
@@ -1892,15 +2152,22 @@ def direct_metric_acceptance_loss(
 
     radius_inter_ratio_loss = sample_z.new_tensor(0.0)
     radius_inter_ratio_metric = sample_z.new_tensor(float("nan"))
-    if proto.size(0) > 1:
+    if gate_proto.size(0) > 1:
         inter_angles = _safe_angle_from_cos(
-            (proto_ref @ proto_ref.t()).clamp(-1.0 + angle_eps, 1.0 - angle_eps),
+            (gate_proto_ref @ gate_proto_ref.t()).clamp(-1.0 + angle_eps, 1.0 - angle_eps),
             eps=angle_eps,
         )
-        diag = torch.eye(inter_angles.size(0), device=inter_angles.device, dtype=torch.bool)
-        nearest_inter = inter_angles.masked_fill(diag, float("inf")).min(dim=1).values.detach().clamp_min(1e-4)
-        sample_inter = nearest_inter[proto_index_per_sample]
-        ratio = pos_angles / sample_inter
+        other_class = gate_labels.view(-1, 1).ne(gate_labels.view(1, -1))
+        nearest_inter = inter_angles.masked_fill(~other_class, float("inf")).min(dim=1).values.detach().clamp_min(1e-4)
+        sample_gate_angles = _safe_angle_from_cos(
+            (sample_z @ gate_proto_ref.t()).clamp(-1.0 + angle_eps, 1.0 - angle_eps), eps=angle_eps
+        )
+        own_component = sample_labels.view(-1, 1).eq(gate_labels.view(1, -1))
+        own_angles = sample_gate_angles.masked_fill(~own_component, float("inf"))
+        own_index = own_angles.argmin(dim=1)
+        nearest_own_angle = own_angles.gather(1, own_index.view(-1, 1)).squeeze(1)
+        sample_inter = nearest_inter[own_index]
+        ratio = nearest_own_angle / sample_inter
         radius_inter_ratio_metric = ratio.detach().max() if ratio.numel() else sample_z.new_tensor(float("nan"))
         radius_inter_ratio_loss = _top_cvar_mean(
             _bounded_softplus((ratio - float(radius_inter_ratio_target)) / tau_a, clip=softplus_clip),
@@ -1999,6 +2266,19 @@ def direct_metric_acceptance_loss(
         "geometry_reference_detached": 1.0 if bool(virtual_detach) else 0.0,
         "angle_clamp_eps": float(angle_eps),
         "softplus_clip": float(softplus_clip),
+        "domain_local_component_gate": 1.0 if local_component_active else 0.0,
+        "global_ball_accept": 0.0 if local_component_active else 1.0,
+        "local_component_count": float(int(gate_proto.size(0))) if local_component_active else 0.0,
+        "local_component_class_coverage": float(active_classes) if local_component_active else 0.0,
+        "local_zid_p50_deg": math.degrees(_scalar_metric(torch.quantile(local_pos_angles.detach(), 0.50))) if local_pos_angles.numel() else float("nan"),
+        "local_zid_p95_deg": math.degrees(_scalar_metric(torch.quantile(local_pos_angles.detach(), 0.95))) if local_pos_angles.numel() else float("nan"),
+        "local_zid_p99_deg": math.degrees(_scalar_metric(torch.quantile(local_pos_angles.detach(), 0.99))) if local_pos_angles.numel() else float("nan"),
+        "local_zid_tail_cvar_deg": math.degrees(_scalar_metric(_top_cvar_mean(local_pos_angles.detach(), 0.05))) if local_pos_angles.numel() else float("nan"),
+        "global_diag_zid_p50_deg": math.degrees(_scalar_metric(global_q50)),
+        "global_diag_zid_p95_deg": math.degrees(_scalar_metric(global_q95)),
+        "global_diag_zid_p99_deg": math.degrees(_scalar_metric(global_q99)),
+        "global_diag_zid_tail_cvar_deg": math.degrees(_scalar_metric(global_tail_cvar)),
+        "quantile_optimization_scope_local": 1.0 if local_component_active else 0.0,
     }
     return loss, metrics
 
@@ -2088,6 +2368,20 @@ def multiview_direct_metric_acceptance_loss(
         "sat_pair_angle_p95_deg": math.degrees(_scalar_metric(pair_p95)),
         "sat_pair_loss": _scalar_metric(pair_loss),
         "multiview_separate_geometry": 1.0,
+        "domain_local_component_gate": min(
+            float(clean_metrics.get("domain_local_component_gate", 0.0)),
+            float(sat_metrics.get("domain_local_component_gate", 0.0)),
+        ),
+        "global_ball_accept": max(
+            float(clean_metrics.get("global_ball_accept", 1.0)),
+            float(sat_metrics.get("global_ball_accept", 1.0)),
+        ),
+        "local_component_count": float(clean_metrics.get("local_component_count", 0.0))
+        + float(sat_metrics.get("local_component_count", 0.0)),
+        "local_component_class_coverage": min(
+            float(clean_metrics.get("local_component_class_coverage", 0.0)),
+            float(sat_metrics.get("local_component_class_coverage", 0.0)),
+        ),
     }
     conservative_keys = (
         "zid_p50_deg",
@@ -2101,12 +2395,24 @@ def multiview_direct_metric_acceptance_loss(
         "tail_accept_rate",
         "overflow_accept_rate",
         "radius_to_inter_ratio",
+        "local_zid_p50_deg",
+        "local_zid_p95_deg",
+        "local_zid_p99_deg",
+        "local_zid_tail_cvar_deg",
+        "global_diag_zid_p50_deg",
+        "global_diag_zid_p95_deg",
+        "global_diag_zid_p99_deg",
+        "global_diag_zid_tail_cvar_deg",
     )
     for key in conservative_keys:
         metrics[key] = _worst(key)
     for prefix, obj in (("clean", clean_metrics), ("sat", sat_metrics)):
         for key, value in obj.items():
             metrics[f"{prefix}_{key}"] = value
+    metrics["quantile_optimization_scope_local"] = min(
+        float(clean_metrics.get("quantile_optimization_scope_local", 0.0)),
+        float(sat_metrics.get("quantile_optimization_scope_local", 0.0)),
+    )
     return loss, metrics
 
 
@@ -2132,6 +2438,7 @@ def unlabeled_known_acceptance_quarantine_loss(
     component_margin_rad: float = math.radians(4.0),
     min_classes: int = 2,
     min_samples_per_class: int = 2,
+    require_domain_local_components: bool = False,
 ) -> Tuple[torch.Tensor, Dict[str, Any]]:
     """Route source-unlabeled known samples without treating them as unknown negatives.
 
@@ -2167,6 +2474,8 @@ def unlabeled_known_acceptance_quarantine_loss(
         "tri_pair_disagreement_rate": float("nan"),
         "tri_pseudo_component_agreement_rate": float("nan"),
         "outside_known_negative_disabled": 1.0,
+        "global_component_fallback": 0.0,
+        "domain_local_components_required": 1.0 if bool(require_domain_local_components) else 0.0,
     }
     if (
         anchor_z is None
@@ -2227,7 +2536,11 @@ def unlabeled_known_acceptance_quarantine_loss(
                 class_ids.append(cls)
                 sample_mask |= cell
                 class_component_count += 1
-        if class_component_count == 0 and int(cls_mask.sum().item()) >= min_count:
+        if (
+            class_component_count == 0
+            and not bool(require_domain_local_components)
+            and int(cls_mask.sum().item()) >= min_count
+        ):
             centers.append(safe_l2_normalize(anchor_norm[cls_mask].mean(dim=0, keepdim=True), dim=1).squeeze(0))
             class_ids.append(cls)
             sample_mask |= cls_mask
@@ -2402,6 +2715,8 @@ def unlabeled_known_acceptance_quarantine_loss(
         "tri_pair_disagreement_rate": tri_pair_disagreement_rate,
         "tri_pseudo_component_agreement_rate": tri_pseudo_component_agreement_rate,
         "outside_known_negative_disabled": 1.0,
+        "global_component_fallback": 0.0 if domains is not None else 1.0,
+        "domain_local_components_required": 1.0 if bool(require_domain_local_components) else 0.0,
     }
     if return_state_masks:
         metrics["_tri_trusted_core_mask"] = tri_trusted_core.detach()

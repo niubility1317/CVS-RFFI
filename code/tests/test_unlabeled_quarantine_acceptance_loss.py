@@ -10,7 +10,7 @@ if str(CODE_ROOT) not in sys.path:
     sys.path.insert(0, str(CODE_ROOT))
 
 from cvsrffi.losses import unlabeled_known_acceptance_quarantine_loss  # noqa: E402
-from SSDG.train_ssdg import build_arg_parser  # noqa: E402
+from SSDG.train_ssdg import _route_unlabeled_known_geometry, build_arg_parser  # noqa: E402
 
 
 def test_unlabeled_quarantine_loss_penalizes_known_acceptance():
@@ -174,3 +174,76 @@ def test_tristate_rejects_pseudo_label_that_disagrees_with_nearest_component():
     assert metrics["tri_trusted_core_count"] == 0.0
     assert metrics["tri_outside_reject_count"] == 1.0
     assert metrics["tri_pseudo_component_agreement_rate"] == 0.0
+
+
+def test_strict_local_quarantine_refuses_global_class_fallback_for_sparse_domains():
+    anchors = torch.tensor(
+        [[1.0, 0.0], [0.99, 0.02], [0.0, 1.0], [0.02, 0.99]], dtype=torch.float32
+    )
+    labels = torch.tensor([0, 0, 1, 1])
+    sparse_domains = torch.tensor([0, 1, 0, 1])
+    query = torch.tensor([[1.0, 0.0], [0.0, 1.0]], dtype=torch.float32)
+
+    _loss, metrics = unlabeled_known_acceptance_quarantine_loss(
+        anchors,
+        labels,
+        query,
+        anchor_d=sparse_domains,
+        query_y=torch.tensor([0, 1]),
+        min_samples_per_class=2,
+        require_domain_local_components=True,
+    )
+
+    assert metrics["active"] == 0.0
+    assert metrics["local_component_count"] == 0.0
+    assert metrics["global_component_fallback"] == 0.0
+    assert metrics["domain_local_components_required"] == 1.0
+
+
+def test_unlabeled_router_uses_separate_clean_sat_local_components_without_fallback():
+    args = build_arg_parser().parse_args(["--output_dir", "runs/tmp"])
+    args.u_geometry_all_valid_queries = True
+    args.u_quarantine_valid_domain_only = True
+    args.u_quarantine_min_count = 1
+    args.u_quarantine_include_sat_view = True
+    args.direct_metric_require_domain_local_components = True
+    args.direct_metric_min_samples_per_component = 2
+    clean = torch.tensor(
+        [
+            [1.0, 0.00], [0.99, 0.03], [0.94, 0.34], [0.93, 0.36],
+            [0.0, 1.00], [0.03, 0.99], [0.34, 0.94], [0.36, 0.93],
+        ],
+        dtype=torch.float32,
+    )
+    sat = torch.tensor(
+        [
+            [0.98, 0.18], [0.97, 0.20], [0.86, 0.51], [0.84, 0.54],
+            [0.18, 0.98], [0.20, 0.97], [0.51, 0.86], [0.54, 0.84],
+        ],
+        dtype=torch.float32,
+    )
+    y_clean = torch.tensor([0, 0, 0, 0, 1, 1, 1, 1])
+    d_clean = torch.tensor([0, 0, 1, 1, 0, 0, 1, 1])
+    pseudo = torch.tensor([0, 1])
+    d_u = torch.tensor([0, 0])
+
+    _loss, info, _core = _route_unlabeled_known_geometry(
+        args=args,
+        z_id_l=torch.cat([clean, sat], dim=0),
+        y_l=torch.cat([y_clean, y_clean], dim=0),
+        d_l=torch.cat([d_clean, d_clean], dim=0),
+        out_s={"z_id": torch.tensor([[1.0, 0.01], [0.01, 1.0]])},
+        out_u_sat={"z_id": torch.tensor([[0.98, 0.18], [0.18, 0.98]])},
+        pseudo=pseudo,
+        d_u=d_u,
+        pseudo_mask=torch.ones(2, dtype=torch.bool),
+        valid_u_mask=torch.ones(2, dtype=torch.bool),
+        labeled_view_count=8,
+        labeled_sat_applied=True,
+    )
+
+    assert info["active"] == 1.0
+    assert info["multiview_local_components"] == 1.0
+    assert info["global_component_fallback"] == 0.0
+    assert info["clean_local_component_count"] == 4.0
+    assert info["sat_local_component_count"] == 4.0

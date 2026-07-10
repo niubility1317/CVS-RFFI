@@ -60,26 +60,52 @@ def test_v2full32_declares_full_mechanism_source_only_protocol():
     assert "--direct_metric_tail_accept_weight" in out
     assert "--direct_metric_overflow_accept_weight" in out
     assert "--direct_metric_radius_inter_ratio_weight" in out
+    assert "--direct_metric_zid_p50_target_deg 8" in out
+    assert "--direct_metric_zid_p95_target_deg 14.70" in out
+    assert "--direct_metric_zid_p99_target_deg 39.68" in out
+    assert "--direct_metric_zid_tail_cvar_target_deg 26.00" in out
     assert "--phase1_v2_hard_gates true" in out
     assert "--endpoint_accept_policy_id endpoint_accept_v1" in out
     assert "--loss_gate_exported false" in out
     assert "--tail_safety_state_machine true" in out
     assert "--tail_safety_p99_expansion_block_final_delta 2.0" in out
     assert "--tail_safety_p99_expansion_block_best_delta 3.5" in out
+    assert "--tail_safety_p95_target_deg 16" in out
+    assert "--tail_safety_p99_target_deg 42" in out
+    assert "--tail_safety_cvar_target_deg 28" in out
     assert "--tail_safety_reference_window 5" in out
-    assert "--tail_rollback_enabled true" in out
+    assert "--tail_rollback_enabled false" in out
     assert "--os_eff_min_budget 0.15" in out
     assert "--os_budget_controller true" in out
     assert "--os_gradient_surgery true" in out
     assert "--u_geometry_all_valid_queries true" in out
     assert "--u_unlabeled_shuffle true" in out
     assert "--direct_metric_multiview_separate true" in out
+    assert "--direct_metric_domain_local_components true" in out
+    assert "--direct_metric_require_domain_local_components true" in out
+    assert "--checkpoint_selection final_only" in out
+    assert "--sat_protocol_disjoint_required true" in out
+    assert "--eval_sat_scenarios clear_leo\\,low_elev_leo\\,rain_leo\\,storm_mp\\,geo_clear\\,mixed_orbit" in out
+    assert "sat_channel_implementation_disjoint=1" in out
+    assert "--sat_train_scenarios leo_clear_weak\\,leo_low_elev_weak\\,leo_rain_weak" in out
+    assert "--zid_leakage_probe_required true" in out
+    assert "--lambda_zid_receiver_invariance 0.12" in out
+    assert "--lambda_zid_day_invariance 0.08" in out
+    assert "--lambda_zid_channel_invariance 0.12" in out
+    assert "--lambda_u_zid_receiver_invariance 0.06" in out
+    assert "--lambda_u_zid_day_invariance 0.04" in out
+    assert "--lambda_u_zid_channel_invariance 0.08" in out
     assert "--source_episode_local_accept_weight 0.35" in out
     assert "--source_episode_local_density_weight 0.25" in out
     assert "--endpoint_require_artifact_on_export true" in out
     assert "--phase1_source_val_selection_only true" in out
     assert "--best_metric source_val_sat_hmean" in out
     assert "--enable_joint_safe_guard false" in out
+    assert out.count("--test_eval_policy interval_final") == 1
+    assert "--test_eval_start_epoch 999999" in out
+    assert "--test_eval_interval 0" in out
+    assert "--test_eval_final_window 0" in out
+    assert "--test_eval_final_interval 0" in out
     assert "--u_tri_state_required true" in out
     assert "--u_direct_idle_blocks_promotion true" in out
     assert "--source_episode_density_gate true" in out
