@@ -154,7 +154,7 @@ Planned launcher: `paper_reproduction/mitigating_receiver_impact_da/launch_archi
 
 ### Round-2 local verification and sync manifest
 
-Local verification in `ssr-gpu`: 62 focused/adjacent tests passed; Python compile, `git diff --check`, launcher `bash -n`, CLI option inspection, model shape smoke, and parameter-count smoke passed. Independent algorithm review first issued NO-GO for four ablation loss scalings and target-BN leakage in the all-disabled control. Both defects were repaired, seven combinations and BN-state isolation were added to the tests, and the same reviewer then issued GO with no Critical/Important finding. Files below are the only runtime files planned for round-2 sync.
+Git commit: `63af9ab` (`Add receiver DA architecture and ablation validation`). Local verification in `ssr-gpu`: 62 focused/adjacent tests passed; Python compile, `git diff --check`, launcher `bash -n`, CLI option inspection, model shape smoke, and parameter-count smoke passed. Independent algorithm review first issued NO-GO for four ablation loss scalings and target-BN leakage in the all-disabled control. Both defects were repaired, seven combinations and BN-state isolation were added to the tests, and the same reviewer then issued GO with no Critical/Important finding. Files below are the only runtime files planned for round-2 sync.
 
 | Local/remote relative path | SHA256 |
 |---|---|
