@@ -109,7 +109,18 @@ def class_balance_weights(
     return weights
 
 
-def _weighted_ce(logits: torch.Tensor, labels: torch.Tensor, class_weights: torch.Tensor) -> torch.Tensor:
+def _weighted_ce(
+    logits: torch.Tensor,
+    labels: torch.Tensor,
+    class_weights: torch.Tensor,
+    *,
+    reduction_mode: str,
+) -> torch.Tensor:
+    normalized_mode = str(reduction_mode).strip().lower()
+    if normalized_mode == "pytorch_weighted_mean":
+        return F.cross_entropy(logits, labels.long(), weight=class_weights.to(logits.device))
+    if normalized_mode != "paper_sample_mean":
+        raise ValueError("weighted_ce_reduction must be one of: paper_sample_mean, pytorch_weighted_mean")
     losses = F.cross_entropy(logits, labels.long(), reduction="none")
     weights = class_weights.to(logits.device)[labels.long()]
     return (losses * weights).mean()
@@ -126,15 +137,26 @@ def gada_minimax_objective(
     mu: float = 0.5,
     kl_weight: float = 0.005,
     kl_loss_override: torch.Tensor | None = None,
+    weighted_ce_reduction: str = "paper_sample_mean",
 ) -> dict[str, torch.Tensor]:
     """Paper Eq.10-Eq.11 objective for E/C minimization with T's DV-KL term."""
     if not (0.0 < float(mu) < 1.0):
         raise ValueError("mu must be in (0,1)")
-    loss_source = _weighted_ce(source_outputs["tx_logits"], source_labels, class_weights)
+    loss_source = _weighted_ce(
+        source_outputs["tx_logits"],
+        source_labels,
+        class_weights,
+        reduction_mode=weighted_ce_reduction,
+    )
     if target_mask.any():
         target_logits = target_outputs["tx_logits"][target_mask]
         target_labels = target_pseudo_labels.to(target_logits.device)[target_mask]
-        loss_target = _weighted_ce(target_logits, target_labels, class_weights)
+        loss_target = _weighted_ce(
+            target_logits,
+            target_labels,
+            class_weights,
+            reduction_mode=weighted_ce_reduction,
+        )
     else:
         loss_target = source_outputs["tx_logits"].sum() * 0.0
     loss_weighted_ce = float(mu) * loss_source + (1.0 - float(mu)) * loss_target

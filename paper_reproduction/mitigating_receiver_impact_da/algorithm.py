@@ -347,6 +347,7 @@ def gada_batch_step(
     pseudo_quota_mode: str = "none",
     pseudo_quota_per_class: int | None = None,
     class_weight_timing: str = "previous",
+    weighted_ce_reduction: str = "paper_sample_mean",
     target_indices: torch.Tensor | None = None,
 ) -> dict[str, torch.Tensor | int]:
     """Run one Algorithm 1 batch: T ascent, pseudo-labeling, then E/C descent."""
@@ -357,10 +358,15 @@ def gada_batch_step(
     last_estimate_loss: torch.Tensor | None = None
     last_estimate_zeta: torch.Tensor | None = None
     ma_et: torch.Tensor | float = 1.0
+    source_outputs = model(source_x)
+    target_outputs = model(target_x)
+    source_features = source_outputs["features"]
+    target_features = target_outputs["features"]
     normalized_kl_mode = str(kl_estimator_mode).strip().lower()
     for _ in range(int(estimate_steps)):
         optimizer_t.zero_grad()
-        source_estimates, target_estimates = _estimate_outputs(model, source_x, target_x)
+        source_estimates = model.estimate_network(source_features.detach())
+        target_estimates = model.estimate_network(target_features.detach())
         if normalized_kl_mode == "dvkl":
             zeta = dv_kl_domain_alignment(source_estimates, target_estimates)
             estimate_loss = -zeta
@@ -368,7 +374,7 @@ def gada_batch_step(
             mine_terms = mine_kl_stabilized_objective(
                 source_estimates,
                 target_estimates,
-                ma_et=ma_et,
+                ma_et=1.0,
                 ma_rate=mine_ma_rate,
             )
             ma_et = mine_terms["ma_et"]
@@ -384,18 +390,10 @@ def gada_batch_step(
     optimizer_ec.zero_grad()
     previous_t_grad = _set_requires_grad(model.estimate_network, False)
     try:
-        source_estimate_logits, target_estimate_logits = _estimate_outputs(
-            model,
-            source_x,
-            target_x,
-            detach_features=False,
-        )
-        source_outputs = model(source_x)
-        target_outputs = model(target_x)
         source_outputs = dict(source_outputs)
         target_outputs = dict(target_outputs)
-        source_outputs["estimate_logits"] = source_estimate_logits
-        target_outputs["estimate_logits"] = target_estimate_logits
+        source_outputs["estimate_logits"] = model.estimate_network(source_features)
+        target_outputs["estimate_logits"] = model.estimate_network(target_features)
         pseudo_labels, target_mask, target_confidence, pseudo_thresholds = _select_pseudo_labels(
             target_outputs["tx_logits"],
             state,
@@ -431,8 +429,8 @@ def gada_batch_step(
         kl_loss_override = None
         if normalized_kl_mode == "mine_ma":
             mine_terms = mine_kl_stabilized_objective(
-                source_estimate_logits,
-                target_estimate_logits,
+                source_outputs["estimate_logits"],
+                target_outputs["estimate_logits"],
                 ma_et=ma_et,
                 ma_rate=mine_ma_rate,
             )
@@ -447,6 +445,7 @@ def gada_batch_step(
             mu=mu,
             kl_weight=kl_weight,
             kl_loss_override=kl_loss_override,
+            weighted_ce_reduction=weighted_ce_reduction,
         )
         terms["loss"].backward()
         optimizer_ec.step()

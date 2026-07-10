@@ -21,7 +21,9 @@ def _normalize_strategy(value: str, *, name: str, allowed: Sequence[str]) -> str
     return strategy
 
 
-def _rms_normalize_iq(x_2t: np.ndarray, eps: float = 1e-12) -> np.ndarray:
+def _rms_normalize_iq(x_2t: np.ndarray, eps: float = 1e-12, *, center: bool = False) -> np.ndarray:
+    if center:
+        x_2t = x_2t - np.mean(x_2t, axis=1, keepdims=True)
     p = np.mean(x_2t[0] * x_2t[0] + x_2t[1] * x_2t[1])
     s = np.sqrt(p + eps)
     return x_2t / s
@@ -112,6 +114,7 @@ class WiSigCompactDataset(Dataset):
         out_len: int = 256,
         crop_mode: str = "center",
         normalize: bool = True,
+        center: bool = False,
         equalized: Union[int, str] = 1,
         tx_keep: Optional[Sequence[int]] = None,
         rx_keep: Optional[Sequence[int]] = None,
@@ -133,6 +136,7 @@ class WiSigCompactDataset(Dataset):
         self.out_len = int(out_len)
         self.crop_mode = str(crop_mode)
         self.normalize = bool(normalize)
+        self.center = bool(center)
         self.domain = str(domain)
         self.transform = transform
         self.max_samples_per_combo = max_samples_per_combo
@@ -218,7 +222,7 @@ class WiSigCompactDataset(Dataset):
         if self.out_len != x_2t.shape[1]:
             x_2t = _pad_or_crop_2t(x_2t, self.out_len, mode=self.crop_mode)
         if self.normalize:
-            x_2t = _rms_normalize_iq(x_2t)
+            x_2t = _rms_normalize_iq(x_2t, center=self.center)
         x_t = _safe_to_torch_float_tensor(x_2t)
         if self.transform is not None:
             x_t = self.transform(x_t)

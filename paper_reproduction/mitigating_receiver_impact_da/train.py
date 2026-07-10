@@ -280,12 +280,13 @@ def run_gada_training_loop(
     pseudo_quota_mode: str = "none",
     pseudo_quota_per_class: int | None = None,
     class_weight_timing: str = "previous",
-    pseudo_state_scope: str = "global",
-    batch_pairing: str = "cycle_target",
+    pseudo_state_scope: str = "epoch",
+    batch_pairing: str = "zip_min",
     adapt_start_epoch: int = 0,
     label_smoothing: float = 0.0,
     target_eval_batches: Iterable[Any] | None = None,
     target_model_selection: str = "final",
+    weighted_ce_reduction: str = "paper_sample_mean",
     max_batches_per_epoch: int | None = None,
 ) -> dict[str, Any]:
     """Execute the Algorithm 1 GAD loop over caller-provided source/target batches.
@@ -420,6 +421,7 @@ def run_gada_training_loop(
                     pseudo_quota_mode=normalized_quota,
                     pseudo_quota_per_class=pseudo_quota_per_class,
                     class_weight_timing=class_weight_timing,
+                    weighted_ce_reduction=weighted_ce_reduction,
                     target_indices=target_indices,
                 )
             _scheduler_step(scheduler_ec)
@@ -545,6 +547,7 @@ def run_gada_training_loop(
         "label_smoothing": float(label_smoothing),
         "lr_scheduler_active": bool(scheduler_t is not None or scheduler_ec is not None),
         "target_model_selection": str(target_model_selection),
+        "weighted_ce_reduction": str(weighted_ce_reduction),
         "target_eval_history": target_eval_history,
         "best_target_loss_epoch": best_target_epoch,
         "best_target_loss": None if best_target_epoch is None else best_target_loss,
@@ -763,6 +766,127 @@ def _task_slug(task: str) -> str:
     return str(task).replace("->", "_to_").replace("/", "_")
 
 
+def _classify_reproduction_claim(
+    *,
+    official_compat: bool,
+    official_compat_safe_pseudo: bool,
+    class_prior_mode: str,
+    class_weight_smoothing: float,
+    class_weight_clip_min: float | None,
+    class_weight_clip_max: float | None,
+    class_weight_mean_normalize: bool,
+    kl_estimator_mode: str,
+    pseudo_threshold_mode: str,
+    pseudo_score_mode: str,
+    pseudo_threshold_floor: float,
+    pseudo_quota_mode: str,
+    class_weight_timing: str,
+    pseudo_state_scope: str,
+    batch_pairing: str,
+    adapt_start_epoch: int,
+    label_smoothing: float,
+    target_model_selection: str,
+    weighted_ce_reduction: str,
+    lr_scheduler_mode: str,
+    max_samples_per_combo: int | None,
+    max_batches_per_epoch: int | None,
+) -> dict[str, Any]:
+    reasons: list[str] = []
+    if str(target_model_selection).strip().lower() != "final":
+        return {
+            "reproduction_profile": "oracle_diagnostic",
+            "claim_status": "diagnostic_only",
+            "claim_reasons": ["target-label checkpoint/model selection"],
+        }
+    if max_samples_per_combo is not None or max_batches_per_epoch is not None:
+        reasons.append("bounded smoke/truncated data path")
+    if float(pseudo_threshold_floor) != 0.0:
+        reasons.append("pseudo threshold floor is not in the paper")
+    if str(pseudo_quota_mode).strip().lower() != "none":
+        reasons.append("pseudo quota is not in the paper or released trainer")
+    if float(class_weight_smoothing) != 0.0:
+        reasons.append("class-weight smoothing is not in the paper")
+    if class_weight_clip_min is not None or class_weight_clip_max is not None:
+        reasons.append("class-weight clipping is not in the paper")
+    if bool(class_weight_mean_normalize):
+        reasons.append("class-weight mean normalization is not in the paper")
+
+    if bool(official_compat):
+        expected = {
+            "official_compat_safe_pseudo": False,
+            "class_prior_mode": "source",
+            "kl_estimator_mode": "mine_ma",
+            "pseudo_threshold_mode": "official",
+            "pseudo_score_mode": "logit",
+            "class_weight_timing": "current",
+            "pseudo_state_scope": "epoch",
+            "batch_pairing": "zip_min",
+            "weighted_ce_reduction": "pytorch_weighted_mean",
+        }
+        actual = {
+            "official_compat_safe_pseudo": bool(official_compat_safe_pseudo),
+            "class_prior_mode": str(class_prior_mode),
+            "kl_estimator_mode": str(kl_estimator_mode),
+            "pseudo_threshold_mode": str(pseudo_threshold_mode),
+            "pseudo_score_mode": str(pseudo_score_mode),
+            "class_weight_timing": str(class_weight_timing),
+            "pseudo_state_scope": str(pseudo_state_scope),
+            "batch_pairing": str(batch_pairing),
+            "weighted_ce_reduction": str(weighted_ce_reduction),
+        }
+        reasons.extend(f"released trainer mismatch: {key}" for key, value in expected.items() if actual[key] != value)
+        if reasons:
+            return {
+                "reproduction_profile": "diagnostic_extension",
+                "claim_status": "diagnostic_only",
+                "claim_reasons": reasons,
+            }
+        return {
+            "reproduction_profile": "released_trainer_semantics_bounded",
+            "claim_status": "bounded_released_trainer_semantics",
+            "claim_reasons": ["public trainer omits model, data, and experiment config"],
+        }
+
+    expected = {
+        "class_prior_mode": "uniform",
+        "kl_estimator_mode": "dvkl",
+        "pseudo_threshold_mode": "paper",
+        "pseudo_score_mode": "probability",
+        "class_weight_timing": "previous",
+        "pseudo_state_scope": "epoch",
+        "batch_pairing": "zip_min",
+        "adapt_start_epoch": 0,
+        "label_smoothing": 0.0,
+        "weighted_ce_reduction": "paper_sample_mean",
+        "lr_scheduler_mode": "none",
+    }
+    actual = {
+        "class_prior_mode": str(class_prior_mode),
+        "kl_estimator_mode": str(kl_estimator_mode),
+        "pseudo_threshold_mode": str(pseudo_threshold_mode),
+        "pseudo_score_mode": str(pseudo_score_mode),
+        "class_weight_timing": str(class_weight_timing),
+        "pseudo_state_scope": str(pseudo_state_scope),
+        "batch_pairing": str(batch_pairing),
+        "adapt_start_epoch": int(adapt_start_epoch),
+        "label_smoothing": float(label_smoothing),
+        "weighted_ce_reduction": str(weighted_ce_reduction),
+        "lr_scheduler_mode": str(lr_scheduler_mode),
+    }
+    reasons.extend(f"strict paper mismatch: {key}" for key, value in expected.items() if actual[key] != value)
+    if reasons:
+        return {
+            "reproduction_profile": "diagnostic_extension",
+            "claim_status": "diagnostic_only",
+            "claim_reasons": reasons,
+        }
+    return {
+        "reproduction_profile": "paper_equations_bounded",
+        "claim_status": "bounded_paper_reproduction",
+        "claim_reasons": ["paper omits architecture details, optimizer, batch size, epochs, split, and stopping rule"],
+    }
+
+
 def run_table2_reproduction(
     compact_or_path: dict[str, Any] | str | Path,
     *,
@@ -794,11 +918,12 @@ def run_table2_reproduction(
     pseudo_quota_mode: str = "none",
     pseudo_quota_per_class: int | None = None,
     class_weight_timing: str = "previous",
-    pseudo_state_scope: str = "global",
-    batch_pairing: str = "cycle_target",
+    pseudo_state_scope: str = "epoch",
+    batch_pairing: str = "zip_min",
     adapt_start_epoch: int = 0,
     label_smoothing: float = 0.0,
     target_model_selection: str = "final",
+    weighted_ce_reduction: str = "paper_sample_mean",
     official_compat: bool = False,
     official_compat_safe_pseudo: bool = False,
     seed: int = 0,
@@ -820,8 +945,33 @@ def run_table2_reproduction(
         class_weight_timing = "current"
         pseudo_state_scope = "epoch"
         batch_pairing = "zip_min"
+        weighted_ce_reduction = "pytorch_weighted_mean"
         if source_pretrain_epochs is None:
             source_pretrain_epochs = 0
+    reproduction_claim = _classify_reproduction_claim(
+        official_compat=official_compat,
+        official_compat_safe_pseudo=official_compat_safe_pseudo,
+        class_prior_mode=class_prior_mode,
+        class_weight_smoothing=class_weight_smoothing,
+        class_weight_clip_min=class_weight_clip_min,
+        class_weight_clip_max=class_weight_clip_max,
+        class_weight_mean_normalize=class_weight_mean_normalize,
+        kl_estimator_mode=kl_estimator_mode,
+        pseudo_threshold_mode=pseudo_threshold_mode,
+        pseudo_score_mode=pseudo_score_mode,
+        pseudo_threshold_floor=pseudo_threshold_floor,
+        pseudo_quota_mode=pseudo_quota_mode,
+        class_weight_timing=class_weight_timing,
+        pseudo_state_scope=pseudo_state_scope,
+        batch_pairing=batch_pairing,
+        adapt_start_epoch=adapt_start_epoch,
+        label_smoothing=label_smoothing,
+        target_model_selection=target_model_selection,
+        weighted_ce_reduction=weighted_ce_reduction,
+        lr_scheduler_mode=lr_scheduler_mode,
+        max_samples_per_combo=max_samples_per_combo,
+        max_batches_per_epoch=max_batches_per_epoch,
+    )
     requested_tasks = list(PAPER_TASKS if tasks is None else tasks)
     requested_methods = [str(method).lower() for method in (methods or ["source_only", "proposed"])]
     output_path = Path(output_dir)
@@ -844,6 +994,7 @@ def run_table2_reproduction(
             mode=class_prior_mode,
         )
         for method in requested_methods:
+            set_seed(int(seed))
             if method not in {"source_only", "proposed"}:
                 rows.append(
                     {
@@ -969,6 +1120,7 @@ def run_table2_reproduction(
                     label_smoothing=label_smoothing,
                     target_eval_batches=loaders["target_eval"] if target_model_selection == "target_loss_best" else None,
                     target_model_selection=target_model_selection,
+                    weighted_ce_reduction=weighted_ce_reduction,
                     max_batches_per_epoch=max_batches_per_epoch,
                 )
                 if source_pretrain_result is not None:
@@ -1016,6 +1168,7 @@ def run_table2_reproduction(
                             "lr_gamma": float(lr_gamma),
                             "lr_scheduler_active": train_result["lr_scheduler_active"],
                             "target_model_selection": train_result["target_model_selection"],
+                            "weighted_ce_reduction": train_result["weighted_ce_reduction"],
                             "target_eval_history": train_result["target_eval_history"],
                             "best_target_loss_epoch": train_result["best_target_loss_epoch"],
                             "best_target_loss": train_result["best_target_loss"],
@@ -1026,10 +1179,23 @@ def run_table2_reproduction(
                 )
                 train_result["checkpoint_path"] = str(checkpoint_path)
             target_metrics = _evaluate_target_metrics(model, loaders["target_eval"], device=resolved_device, include_loss=False)
+            row_claim = (
+                reproduction_claim
+                if method == "proposed"
+                else {
+                    "reproduction_profile": "source_only_bounded",
+                    "claim_status": "bounded_source_only_baseline",
+                    "claim_reasons": ["paper omits optimizer, batch size, epochs, split, and stopping rule"],
+                }
+            )
             row = {
                 "task": task,
                 "method": method,
-                "status": "completed",
+                "status": "completed_diagnostic_only"
+                if row_claim["claim_status"] == "diagnostic_only"
+                else "completed",
+                "execution_status": "completed",
+                **row_claim,
                 "target_accuracy": float(target_metrics["target_accuracy"]),
                 "target_true_hist": target_metrics["target_true_hist"],
                 "target_pred_hist": target_metrics["target_pred_hist"],
@@ -1060,6 +1226,7 @@ def run_table2_reproduction(
                 row["pseudo_state_scope"] = train_result.get("pseudo_state_scope")
                 row["batch_pairing"] = train_result.get("batch_pairing")
                 row["target_model_selection"] = train_result.get("target_model_selection")
+                row["weighted_ce_reduction"] = train_result.get("weighted_ce_reduction")
                 row["lr_scheduler_mode"] = lr_scheduler_mode
                 row["lr_step_size"] = int(lr_step_size)
                 row["lr_gamma"] = float(lr_gamma)
@@ -1104,11 +1271,13 @@ def run_table2_reproduction(
         "adapt_start_epoch": int(adapt_start_epoch),
         "label_smoothing": float(label_smoothing),
         "target_model_selection": str(target_model_selection),
+        "weighted_ce_reduction": str(weighted_ce_reduction),
         "official_compat": bool(official_compat),
         "official_compat_safe_pseudo": bool(official_compat_safe_pseudo),
         "seed": int(seed),
         "device": str(resolved_device),
-        "result_claim_status": "smoke_or_formal_metrics_depend_on_dataset",
+        **reproduction_claim,
+        "result_claim_status": reproduction_claim["claim_status"],
         "rows": rows,
     }
 
@@ -1146,11 +1315,17 @@ def main() -> int:
     parser.add_argument("--pseudo-quota-mode", type=str, default="none", choices=("none", "balanced_topk"))
     parser.add_argument("--pseudo-quota-per-class", type=int, default=None)
     parser.add_argument("--class-weight-timing", type=str, default="previous", choices=("previous", "current"))
-    parser.add_argument("--pseudo-state-scope", type=str, default="global", choices=("global", "epoch"))
-    parser.add_argument("--batch-pairing", type=str, default="cycle_target", choices=("cycle_target", "zip_min"))
+    parser.add_argument("--pseudo-state-scope", type=str, default="epoch", choices=("global", "epoch"))
+    parser.add_argument("--batch-pairing", type=str, default="zip_min", choices=("cycle_target", "zip_min"))
     parser.add_argument("--adapt-start-epoch", type=int, default=0)
     parser.add_argument("--label-smoothing", type=float, default=0.0)
     parser.add_argument("--target-model-selection", type=str, default="final", choices=("final", "target_loss_best"))
+    parser.add_argument(
+        "--weighted-ce-reduction",
+        type=str,
+        default="paper_sample_mean",
+        choices=("paper_sample_mean", "pytorch_weighted_mean"),
+    )
     parser.add_argument("--official-compat", action="store_true", help="Use details exposed by the released official trainer.")
     parser.add_argument(
         "--official-compat-safe-pseudo",
@@ -1205,6 +1380,7 @@ def main() -> int:
             adapt_start_epoch=args.adapt_start_epoch,
             label_smoothing=args.label_smoothing,
             target_model_selection=args.target_model_selection,
+            weighted_ce_reduction=args.weighted_ce_reduction,
             official_compat=args.official_compat,
             official_compat_safe_pseudo=args.official_compat_safe_pseudo,
             seed=args.seed,

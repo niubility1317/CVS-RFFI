@@ -61,14 +61,21 @@ def collate_wisig(batch: Iterable[Any]) -> dict[str, Any]:
     }
 
 
-def make_loader(dataset, *, batch_size: int, shuffle: bool, num_workers: int = 0) -> DataLoader:
+def make_loader(
+    dataset,
+    *,
+    batch_size: int,
+    shuffle: bool,
+    num_workers: int = 0,
+    drop_last: bool = False,
+) -> DataLoader:
     return DataLoader(
         dataset,
         batch_size=int(batch_size),
         shuffle=bool(shuffle),
         num_workers=int(num_workers),
         collate_fn=collate_wisig,
-        drop_last=False,
+        drop_last=bool(drop_last),
     )
 
 
@@ -81,4 +88,3 @@ def tx_accuracy(logits: torch.Tensor, labels: torch.Tensor) -> float:
 def write_json(path: Path, payload: dict[str, Any]) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(json.dumps(payload, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
-

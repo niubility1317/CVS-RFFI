@@ -8,7 +8,7 @@
   "tx_count": 6,
   "source_target_tasks": ["d01->d23", "14-7->3-19", "1-1->1-19", "1-1->8-8", "7-7->8-8"],
   "target_unlabeled_allowed": true,
-  "input_representation": "WiSig signal after energy detection, L-STF/L-LTF packet processing, MMSE channel equalization, and signal normalization; IQ accepted as [256,2] or [2,256]",
+  "input_representation": "WiSig signal after energy detection, L-STF/L-LTF packet processing, MMSE channel equalization, mean subtraction, and power normalization; IQ accepted as [256,2] or [2,256]",
   "method": "GAD adversarial training with DV-KL domain alignment, CPL adaptive pseudo-labeling, and class weighting",
   "feature_extractor": "ResNet18 with 1-D convolutions",
   "classifier": "three-layer fully connected network",
@@ -18,5 +18,7 @@
   "mu": 0.5,
   "estimate_update_frequency_m": 7,
   "initial_pseudo_label_threshold_tau": 0.7,
+  "pseudo_state_scope": "epoch",
+  "batch_pairing": "zip_min_drop_last",
   "target_labels_scope": "evaluation_only"
 }

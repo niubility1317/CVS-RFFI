@@ -55,7 +55,7 @@ def _synthetic_manysig_compact() -> dict:
         "data": data,
         "tx_list": [f"tx{i}" for i in range(6)],
         "rx_list": rx_labels,
-        "capture_date_list": ["d0", "d1", "d2", "d3"],
+        "capture_date_list": ["2021_03_01", "2021_03_08", "2021_03_15", "2021_03_23"],
         "equalized_list": [0, 1],
     }
 
@@ -153,6 +153,24 @@ def test_dv_kl_alignment_and_gada_objective_follow_paper_terms():
     assert set(terms) == {"loss", "loss_weighted_ce", "loss_source", "loss_target", "loss_kl"}
     assert terms["loss"].requires_grad
     assert torch.isfinite(terms["loss"])
+
+
+def test_weighted_ce_supports_paper_and_released_trainer_reductions():
+    import torch.nn.functional as F
+
+    from paper_reproduction.mitigating_receiver_impact_da.losses import _weighted_ce
+
+    logits = torch.tensor([[2.0, 0.0], [0.0, 1.0], [0.5, 1.5]])
+    labels = torch.tensor([0, 1, 1])
+    weights = torch.tensor([0.5, 2.0])
+    per_sample = F.cross_entropy(logits, labels, reduction="none")
+
+    paper = _weighted_ce(logits, labels, weights, reduction_mode="paper_sample_mean")
+    released = _weighted_ce(logits, labels, weights, reduction_mode="pytorch_weighted_mean")
+
+    assert torch.allclose(paper, (per_sample * weights[labels]).mean())
+    assert torch.allclose(released, F.cross_entropy(logits, labels, weight=weights))
+    assert not torch.allclose(paper, released)
 
 
 def test_official_mine_stabilized_objective_matches_released_trainer_formula():
@@ -339,8 +357,10 @@ def test_algorithm1_ec_kl_updates_feature_extractor_on_training_path():
         def __init__(self):
             super().__init__()
             self.weight = torch.nn.Parameter(torch.tensor([[1.0]]))
+            self.forward_calls = 0
 
         def forward(self, x, *, return_activations=False):
+            self.forward_calls += 1
             base = x[:, :1, :1].flatten(1) @ self.weight
             scale = 10.0 if self.training else 1.0
             return base * scale, []
@@ -387,6 +407,36 @@ def test_algorithm1_ec_kl_updates_feature_extractor_on_training_path():
 
     assert torch.allclose(result["estimate_zeta"], expected_training_path, atol=1e-5)
     assert torch.allclose(result["loss_kl"], expected_training_path, atol=1e-5)
+    assert model.feature_extractor.forward_calls == 2
+
+
+def test_official_mine_resets_ma_for_each_t_step_and_reuses_last_for_ec(monkeypatch):
+    import paper_reproduction.mitigating_receiver_impact_da.algorithm as algorithm
+    from paper_reproduction.mitigating_receiver_impact_da.model import ReceiverImpactGADNet
+
+    observed_ma: list[float] = []
+
+    def fake_mine(source, target, *, ma_et=1.0, ma_rate=0.01, eps=1e-4):
+        del ma_rate, eps
+        observed_ma.append(float(torch.as_tensor(ma_et).mean().item()))
+        objective = source.mean() - target.mean()
+        return {"kl": objective, "ma_et": torch.tensor(2.0), "loss": objective}
+
+    monkeypatch.setattr(algorithm, "mine_kl_stabilized_objective", fake_mine)
+    model = ReceiverImpactGADNet(num_tx=3, feature_dim=8, hidden_dim=8)
+    algorithm.gada_batch_step(
+        model,
+        torch.randn(4, 2, 256),
+        torch.tensor([0, 1, 2, 1]),
+        torch.randn(4, 2, 256),
+        state=algorithm.PseudoLabelState(num_classes=3),
+        optimizer_t=CountingOptimizer(model.estimate_network.parameters()),
+        optimizer_ec=CountingOptimizer(list(model.feature_extractor.parameters()) + list(model.classifier.parameters())),
+        estimate_steps=3,
+        kl_estimator_mode="mine_ma",
+    )
+
+    assert observed_ma == [1.0, 1.0, 1.0, 2.0]
 
 
 def test_algorithm1_batch_step_defaults_to_paper_m7_estimator_updates():
@@ -488,8 +538,39 @@ def test_manysig_task_builder_matches_table2_receiver_and_day_tasks():
     cross_day = build_manysig_task_datasets(_synthetic_manysig_compact(), task="d01->d23", max_samples_per_combo=1)
     source_days = {meta["day"] for *_unused, meta in [cross_day["source"][idx] for idx in range(len(cross_day["source"]))]}
     target_days = {meta["day"] for *_unused, meta in [cross_day["target"][idx] for idx in range(len(cross_day["target"]))]}
-    assert source_days == {"d0", "d1"}
-    assert target_days == {"d2", "d3"}
+    assert source_days == {"2021_03_01"}
+    assert target_days == {"2021_03_23"}
+
+
+def test_paper_train_loaders_drop_partial_batches():
+    from paper_reproduction.mitigating_receiver_impact_da.data import build_manysig_task_loaders
+
+    loaders = build_manysig_task_loaders(
+        _synthetic_manysig_compact(),
+        task="14-7->3-19",
+        batch_size=5,
+        max_samples_per_combo=1,
+        seed=3,
+    )
+
+    assert len(loaders["source"].dataset) == 24
+    assert len(loaders["source"]) == 4
+    assert len(loaders["target_train"]) == 4
+    assert all(batch["iq"].shape[0] == 5 for batch in loaders["source"])
+    assert len(loaders["target_eval"]) == 5
+
+
+def test_paper_dataset_centers_then_power_normalizes_iq():
+    from paper_reproduction.mitigating_receiver_impact_da.data import build_manysig_task_datasets
+
+    built = build_manysig_task_datasets(
+        _synthetic_manysig_compact(), task="14-7->3-19", max_samples_per_combo=1
+    )
+    iq, *_ = built["source"][0]
+
+    assert torch.allclose(iq.mean(dim=1), torch.zeros(2), atol=1e-5)
+    assert torch.allclose((iq.square().sum(dim=0)).mean(), torch.tensor(1.0), atol=1e-5)
+    assert built["meta"]["preprocessing"]["center"] is True
 
 
 def test_table2_runner_smoke_trains_source_only_and_proposed_rows(tmp_path):
@@ -511,7 +592,8 @@ def test_table2_runner_smoke_trains_source_only_and_proposed_rows(tmp_path):
     )
 
     assert result["method_id"] == "mitigating_receiver_impact_da"
-    assert result["result_claim_status"] == "smoke_or_formal_metrics_depend_on_dataset"
+    assert result["result_claim_status"] == "diagnostic_only"
+    assert result["reproduction_profile"] == "diagnostic_extension"
     assert [row["method"] for row in result["rows"]] == ["source_only", "proposed"]
     assert all(row["task"] == "14-7->3-19" for row in result["rows"])
     assert all(row["target_labels_scope"] == "evaluation_only" for row in result["rows"])
@@ -554,6 +636,9 @@ def test_table2_runner_defaults_to_paper_uniform_prior_and_tau(tmp_path):
     assert result["class_prior_mode"] == "uniform"
     assert row["class_prior_mode"] == "uniform"
     assert torch.allclose(torch.tensor(row["class_prior"]), torch.full((6,), 1.0 / 6.0))
+    assert result["pseudo_state_scope"] == "epoch"
+    assert result["batch_pairing"] == "zip_min"
+    assert result["weighted_ce_reduction"] == "paper_sample_mean"
 
 
 def test_table2_runner_records_step_lr_scheduler_path(tmp_path):
@@ -614,6 +699,9 @@ def test_table2_runner_records_pseudo_floor_and_quota_controls(tmp_path):
     assert row["pseudo_quota_mode"] == "balanced_topk"
     assert row["pseudo_quota_per_class"] == 2
     assert "target_pseudo_selected_hist" in row["history"][0]
+    assert row["status"] == "completed_diagnostic_only"
+    assert row["claim_status"] == "diagnostic_only"
+    assert row["reproduction_profile"] == "diagnostic_extension"
 
 
 def test_table2_runner_official_compat_records_released_trainer_path(tmp_path):
@@ -642,9 +730,13 @@ def test_table2_runner_official_compat_records_released_trainer_path(tmp_path):
     assert result["class_weight_timing"] == "current"
     assert result["pseudo_state_scope"] == "epoch"
     assert result["batch_pairing"] == "zip_min"
+    assert result["weighted_ce_reduction"] == "pytorch_weighted_mean"
     assert result["source_pretrain_epochs"] == 0
     assert row["official_compat"] is True
     assert row["target_model_selection"] == "target_loss_best"
+    assert row["status"] == "completed_diagnostic_only"
+    assert row["reproduction_profile"] == "oracle_diagnostic"
+    assert row["claim_status"] == "diagnostic_only"
     assert row["best_target_loss_epoch"] == 1
     assert len(row["target_eval_history"]) == 1
 
@@ -680,6 +772,68 @@ def test_table2_runner_official_compat_safe_pseudo_keeps_official_state_but_prob
     assert result["source_pretrain_epochs"] == 0
     assert row["official_compat"] is True
     assert row["official_compat_safe_pseudo"] is True
+    assert row["reproduction_profile"] == "oracle_diagnostic"
+    assert row["claim_status"] == "diagnostic_only"
+
+
+def test_reproduction_profiles_fail_closed_for_strict_released_and_diagnostics():
+    from paper_reproduction.mitigating_receiver_impact_da.train import _classify_reproduction_claim
+
+    base = {
+        "official_compat": False,
+        "official_compat_safe_pseudo": False,
+        "class_prior_mode": "uniform",
+        "class_weight_smoothing": 0.0,
+        "class_weight_clip_min": None,
+        "class_weight_clip_max": None,
+        "class_weight_mean_normalize": False,
+        "kl_estimator_mode": "dvkl",
+        "pseudo_threshold_mode": "paper",
+        "pseudo_score_mode": "probability",
+        "pseudo_threshold_floor": 0.0,
+        "pseudo_quota_mode": "none",
+        "class_weight_timing": "previous",
+        "pseudo_state_scope": "epoch",
+        "batch_pairing": "zip_min",
+        "adapt_start_epoch": 0,
+        "label_smoothing": 0.0,
+        "target_model_selection": "final",
+        "weighted_ce_reduction": "paper_sample_mean",
+        "lr_scheduler_mode": "none",
+        "max_samples_per_combo": None,
+        "max_batches_per_epoch": None,
+    }
+
+    strict = _classify_reproduction_claim(**base)
+    assert strict["reproduction_profile"] == "paper_equations_bounded"
+    assert strict["claim_status"] == "bounded_paper_reproduction"
+
+    released_args = dict(base)
+    released_args.update(
+        official_compat=True,
+        class_prior_mode="source",
+        kl_estimator_mode="mine_ma",
+        pseudo_threshold_mode="official",
+        pseudo_score_mode="logit",
+        class_weight_timing="current",
+        adapt_start_epoch=10,
+        weighted_ce_reduction="pytorch_weighted_mean",
+    )
+    released = _classify_reproduction_claim(**released_args)
+    assert released["reproduction_profile"] == "released_trainer_semantics_bounded"
+    assert released["claim_status"] == "bounded_released_trainer_semantics"
+
+    quota_args = dict(base)
+    quota_args.update(pseudo_quota_mode="balanced_topk")
+    diagnostic = _classify_reproduction_claim(**quota_args)
+    assert diagnostic["reproduction_profile"] == "diagnostic_extension"
+    assert diagnostic["claim_status"] == "diagnostic_only"
+
+    oracle_args = dict(base)
+    oracle_args.update(target_model_selection="target_loss_best")
+    oracle = _classify_reproduction_claim(**oracle_args)
+    assert oracle["reproduction_profile"] == "oracle_diagnostic"
+    assert oracle["claim_status"] == "diagnostic_only"
 
 
 def test_source_class_prior_is_counted_from_labeled_source_index():
@@ -860,7 +1014,7 @@ def test_algorithm1_training_loop_runs_epochs_and_writes_checkpoint(tmp_path):
     )
 
     assert result["epochs"] == 2
-    assert result["batches"] == 4
+    assert result["batches"] == 2
     assert len(result["history"]) == 2
     assert "target_pseudo_selected_acc" in result["history"][0]
     assert "target_pred_acc" in result["history"][0]
@@ -871,14 +1025,50 @@ def test_algorithm1_training_loop_runs_epochs_and_writes_checkpoint(tmp_path):
     assert "class_weight_mean_by_class" in result["history"][0]
     assert "pseudo_threshold_mean_by_class" in result["history"][0]
     assert "estimate_zeta_mean" in result["history"][0]
-    assert result["state"]["total_seen"] == 16
-    assert optimizer_t.step_calls == 28
-    assert optimizer_ec.step_calls == 4
+    assert result["state"]["total_seen"] == 4
+    assert optimizer_t.step_calls == 14
+    assert optimizer_ec.step_calls == 2
     checkpoint = torch.load(checkpoint_path, map_location="cpu")
     assert checkpoint["paper"] == "Mitigating Receiver Impact on Radio Frequency Fingerprint Identification via Domain Adaptation"
     assert checkpoint["algorithm"] == "Algorithm 1 GAD training loop"
     assert checkpoint["epoch"] == 2
     assert "model_state_dict" in checkpoint
+
+
+def test_real_batch_norm_buffers_update_once_per_source_and_target_forward():
+    from paper_reproduction.mitigating_receiver_impact_da.algorithm import PseudoLabelState, gada_batch_step
+    from paper_reproduction.mitigating_receiver_impact_da.model import ReceiverImpactGADNet
+
+    model = ReceiverImpactGADNet(num_tx=3, feature_dim=8, hidden_dim=8)
+    tracked = model.feature_extractor.stem[1].num_batches_tracked
+    before = int(tracked.item())
+
+    gada_batch_step(
+        model,
+        torch.randn(4, 2, 256),
+        torch.tensor([0, 1, 2, 1]),
+        torch.randn(4, 2, 256),
+        state=PseudoLabelState(num_classes=3),
+        optimizer_t=CountingOptimizer(model.estimate_network.parameters()),
+        optimizer_ec=CountingOptimizer(list(model.feature_extractor.parameters()) + list(model.classifier.parameters())),
+        estimate_steps=1,
+    )
+
+    assert int(tracked.item()) - before == 2
+
+
+def test_reseeding_makes_model_initialization_independent_of_prior_rng_use():
+    from paper_reproduction.common.wisig_runtime import set_seed
+    from paper_reproduction.mitigating_receiver_impact_da.model import ReceiverImpactGADNet
+
+    set_seed(17)
+    first = ReceiverImpactGADNet(num_tx=3, feature_dim=8, hidden_dim=8)
+    _ = torch.randn(100)
+    set_seed(17)
+    second = ReceiverImpactGADNet(num_tx=3, feature_dim=8, hidden_dim=8)
+
+    for key, value in first.state_dict().items():
+        assert torch.equal(value, second.state_dict()[key])
 
 
 def test_algorithm1_training_loop_steps_lr_schedulers_once_per_batch():
@@ -908,12 +1098,12 @@ def test_algorithm1_training_loop_steps_lr_schedulers_once_per_batch():
         epochs=2,
     )
 
-    assert result["batches"] == 4
+    assert result["batches"] == 2
     assert result["lr_scheduler_active"] is True
-    assert scheduler_t.step_calls == 4
-    assert scheduler_ec.step_calls == 4
-    assert optimizer_t.step_calls == 28
-    assert optimizer_ec.step_calls == 4
+    assert scheduler_t.step_calls == 2
+    assert scheduler_ec.step_calls == 2
+    assert optimizer_t.step_calls == 14
+    assert optimizer_ec.step_calls == 2
     assert "lr_ec" in result["history"][0]
     assert "lr_t" in result["history"][0]
 

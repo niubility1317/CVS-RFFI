@@ -1,0 +1,14 @@
+# Paper-to-implementation traceability
+
+| ID | Source section | Requirement | Target files | Status | Verification | Notes |
+|---|---|---|---|---|---|---|
+| P01 | Dataset/experiment protocol | Reproduce the exact WiSig receiver/TX/domain split | `data.py` | blocked | Synthetic task tests; N607 count audit | Receiver/date mapping fixed, including `d01->d23`; PDF does not identify the subset as ManySig or list all IDs |
+| P02 | Input preprocessing | Match sample length, representation, normalization, and augmentation | `code/dataset_wisig.py`; `data.py` | verified | Center/power unit test; N607 shape/DC audit | Upstream pkl energy detection/MMSE provenance remains externally unverifiable |
+| P03 | Model architecture | Match encoder/classifier/domain-estimation architecture | `model.py` | blocked | Model shape tests | Paper omits stem, widths, activations, feature dimension, and initialization; public repo omits model wrapper/config |
+| P04 | Proposed objective | Match all loss terms, signs, detach paths, and coefficients | `losses.py`; `algorithm.py` | verified | Formula tests and gradient-path tests | Strict paper sample mean and public-trainer weighted mean are explicit separate modes |
+| P05 | Optimization procedure | Match reported E/C update order, batch pairing, and update counts | `algorithm.py`; `train.py`; `wisig_runtime.py` | verified | Single-forward, real-BN, MINE-MA, update-count, epoch/zip/drop-last tests | Unreported batch size, optimizer, scheduler, and convergence rule are tracked by P07 |
+| P06 | Pseudo-label/class prior | Match threshold, class weights, prior source, and update semantics | `losses.py`; `algorithm.py`; `train.py` | verified | CPL/weight/state tests | No floor/quota/smoothing/clipping in strict path; diagnostic controls remain optional |
+| P07 | Hyperparameters | Match `tau`, `m`, `lambda`, `mu`, batch size, epochs, optimizer, and seed handling | config; `protocol.py`; `train.py` | blocked | Dry-run payload and CLI tests | `tau=0.7`, `m=7`, `lambda=0.005`, `mu=0.5`, `lr=0.0006` verified; remaining values absent from paper |
+| P08 | Model selection | Use only paper-supported and UDA-valid checkpoint/stopping semantics | `train.py` | deferred | `final` path tests; oracle field audit | Formal run uses `final`; paper does not define stopping. `target_loss_best` stays diagnostic-only |
+| P09 | Evaluation | Match scenario metrics and same-run paper table rows | `train.py`; N607 artifacts | pending | Planned full five-task run | Per-class/confusion diagnostics retained separately |
+| P10 | Reporting boundary | Separate strict Proposed reproduction from diagnostic extensions | config; `train.py`; report | verified | Fail-closed profile tests | Floor/quota, mixed profiles, truncated smoke runs, and target-label checkpointing automatically become diagnostic-only |

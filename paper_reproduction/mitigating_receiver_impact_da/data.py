@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import re
 import sys
 from pathlib import Path
 from typing import Any
@@ -19,6 +20,7 @@ PAPER_PREPROCESSING = {
     "input_source": "WiSig ManySig compact pkl after packet detection, channel equalization, and normalization",
     "equalized": 1,
     "normalize": True,
+    "center": True,
     "out_len": 256,
     "crop_mode": "left",
     "representation": "[2,256] IQ tensor accepted by the 1-D ResNet feature extractor",
@@ -49,15 +51,16 @@ def _resolve_day_group(labels: list[Any], token: str) -> list[int]:
     digits = text[1:]
     if not digits:
         raise ValueError(f"day task token has no day ids: {token}")
-    out: list[int] = []
-    for char in digits:
-        if not char.isdigit():
-            raise ValueError(f"day task token must contain digits after d: {token}")
-        idx = int(char)
-        if idx >= len(labels):
-            raise ValueError(f"day index out of range in {token}: {idx}")
-        out.append(idx)
-    return out
+    if not digits.isdigit():
+        raise ValueError(f"day task token must contain digits after d: {token}")
+    day_of_month = int(digits)
+    suffix = re.compile(rf"(?:^|[_-])0?{day_of_month}$")
+    matches = [idx for idx, label in enumerate(labels) if suffix.search(str(label))]
+    if len(matches) == 1:
+        return matches
+    if len(digits) == 1 and day_of_month < len(labels):
+        return [day_of_month]
+    raise ValueError(f"cannot resolve paper capture date {token!r} from {labels}")
 
 
 def _parse_task(task: str) -> tuple[str, str]:
@@ -106,6 +109,7 @@ def build_manysig_task_datasets(
         "out_len": PAPER_PREPROCESSING["out_len"],
         "crop_mode": PAPER_PREPROCESSING["crop_mode"],
         "normalize": PAPER_PREPROCESSING["normalize"],
+        "center": PAPER_PREPROCESSING["center"],
         "equalized": PAPER_PREPROCESSING["equalized"],
         "domain": "rx_day",
         "max_samples_per_combo": max_samples_per_combo,
@@ -154,8 +158,12 @@ def build_manysig_task_loaders(
         seed=seed,
     )
     return {
-        "source": make_loader(built["source"], batch_size=batch_size, shuffle=True, num_workers=num_workers),
-        "target_train": make_loader(built["target"], batch_size=batch_size, shuffle=True, num_workers=num_workers),
+        "source": make_loader(
+            built["source"], batch_size=batch_size, shuffle=True, num_workers=num_workers, drop_last=True
+        ),
+        "target_train": make_loader(
+            built["target"], batch_size=batch_size, shuffle=True, num_workers=num_workers, drop_last=True
+        ),
         "target_eval": make_loader(built["target"], batch_size=batch_size, shuffle=False, num_workers=num_workers),
         "meta": built["meta"],
     }

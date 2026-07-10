@@ -12,6 +12,8 @@ PAPER_UNSPECIFIED_FIELDS = [
     "first-batch class-weight fallback",
     "empty pseudo-label target loss fallback",
     "zero-count CPL threshold floor",
+    "source pretraining duration",
+    "target adaptation/evaluation sample split",
 ]
 
 
@@ -24,6 +26,9 @@ PAPER_REPORTED_HYPERPARAMETERS = {
     "mu": 0.5,
     "estimate_update_frequency_m": 7,
     "initial_pseudo_label_threshold_tau": 0.7,
+    "pseudo_state_scope": "reset at each outer training iteration",
+    "batch_pairing": "min(floor(Ns/b), floor(Nt/b))",
+    "signal_normalization": "subtract mean, then divide by square root of power",
 }
 
 
