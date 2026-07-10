@@ -287,6 +287,9 @@ def run_gada_training_loop(
     target_eval_batches: Iterable[Any] | None = None,
     target_model_selection: str = "final",
     weighted_ce_reduction: str = "paper_sample_mean",
+    use_domain_alignment: bool = True,
+    use_pseudo: bool = True,
+    use_class_weight: bool = True,
     max_batches_per_epoch: int | None = None,
 ) -> dict[str, Any]:
     """Execute the Algorithm 1 GAD loop over caller-provided source/target batches.
@@ -422,6 +425,9 @@ def run_gada_training_loop(
                     pseudo_quota_per_class=pseudo_quota_per_class,
                     class_weight_timing=class_weight_timing,
                     weighted_ce_reduction=weighted_ce_reduction,
+                    use_domain_alignment=use_domain_alignment,
+                    use_pseudo=use_pseudo,
+                    use_class_weight=use_class_weight,
                     target_indices=target_indices,
                 )
             _scheduler_step(scheduler_ec)
@@ -522,6 +528,7 @@ def run_gada_training_loop(
     payload: dict[str, Any] = {
         "paper": "Mitigating Receiver Impact on Radio Frequency Fingerprint Identification via Domain Adaptation",
         "algorithm": "Algorithm 1 GAD training loop",
+        "model_profile": str(getattr(model, "model_profile", "unknown")),
         "epochs": int(epochs),
         "batches": total_batches,
         "estimate_steps": int(estimate_steps),
@@ -548,6 +555,9 @@ def run_gada_training_loop(
         "lr_scheduler_active": bool(scheduler_t is not None or scheduler_ec is not None),
         "target_model_selection": str(target_model_selection),
         "weighted_ce_reduction": str(weighted_ce_reduction),
+        "use_domain_alignment": bool(use_domain_alignment),
+        "use_pseudo": bool(use_pseudo),
+        "use_class_weight": bool(use_class_weight),
         "target_eval_history": target_eval_history,
         "best_target_loss_epoch": best_target_epoch,
         "best_target_loss": None if best_target_epoch is None else best_target_loss,
@@ -788,6 +798,15 @@ def _classify_reproduction_claim(
     target_model_selection: str,
     weighted_ce_reduction: str,
     lr_scheduler_mode: str,
+    model_profile: str,
+    learning_rate: float,
+    estimate_steps: int,
+    base_tau: float,
+    mu: float,
+    kl_weight: float,
+    use_domain_alignment: bool,
+    use_pseudo: bool,
+    use_class_weight: bool,
     max_samples_per_combo: int | None,
     max_batches_per_epoch: int | None,
 ) -> dict[str, Any]:
@@ -800,6 +819,24 @@ def _classify_reproduction_claim(
         }
     if max_samples_per_combo is not None or max_batches_per_epoch is not None:
         reasons.append("bounded smoke/truncated data path")
+    ablation_active = not (bool(use_domain_alignment) and bool(use_pseudo) and bool(use_class_weight))
+    diagnostic_profile = "diagnostic_extension"
+    if ablation_active:
+        enabled = [
+            name
+            for name, value in (
+                ("domain_alignment", use_domain_alignment),
+                ("pseudo_labeling", use_pseudo),
+                ("class_weight", use_class_weight),
+            )
+            if bool(value)
+        ]
+        reasons.append("Table III component ablation: " + "+".join(enabled or ["source_only"]))
+        diagnostic_profile = "paper_ablation_diagnostic"
+    if str(model_profile).strip().lower() != "standard_resnet18":
+        reasons.append("author-linked template architecture parameters are inferred, not published")
+        if not ablation_active:
+            diagnostic_profile = "architecture_hypothesis_diagnostic"
     if float(pseudo_threshold_floor) != 0.0:
         reasons.append("pseudo threshold floor is not in the paper")
     if str(pseudo_quota_mode).strip().lower() != "none":
@@ -810,6 +847,18 @@ def _classify_reproduction_claim(
         reasons.append("class-weight clipping is not in the paper")
     if bool(class_weight_mean_normalize):
         reasons.append("class-weight mean normalization is not in the paper")
+    reported_scalars = {
+        "learning_rate": (float(learning_rate), 0.0006),
+        "estimate_steps": (int(estimate_steps), 7),
+        "base_tau": (float(base_tau), 0.7),
+        "mu": (float(mu), 0.5),
+        "kl_weight": (float(kl_weight), 0.005),
+    }
+    reasons.extend(
+        f"reported paper scalar mismatch: {name}"
+        for name, (actual_value, expected_value) in reported_scalars.items()
+        if actual_value != expected_value
+    )
 
     if bool(official_compat):
         expected = {
@@ -837,7 +886,7 @@ def _classify_reproduction_claim(
         reasons.extend(f"released trainer mismatch: {key}" for key, value in expected.items() if actual[key] != value)
         if reasons:
             return {
-                "reproduction_profile": "diagnostic_extension",
+                "reproduction_profile": diagnostic_profile,
                 "claim_status": "diagnostic_only",
                 "claim_reasons": reasons,
             }
@@ -876,7 +925,7 @@ def _classify_reproduction_claim(
     reasons.extend(f"strict paper mismatch: {key}" for key, value in expected.items() if actual[key] != value)
     if reasons:
         return {
-            "reproduction_profile": "diagnostic_extension",
+            "reproduction_profile": diagnostic_profile,
             "claim_status": "diagnostic_only",
             "claim_reasons": reasons,
         }
@@ -904,6 +953,8 @@ def run_table2_reproduction(
     source_pretrain_epochs: int | None = None,
     estimate_steps: int = 7,
     base_tau: float = 0.7,
+    mu: float = 0.5,
+    kl_weight: float = 0.005,
     class_prior_mode: str = "uniform",
     class_weight_smoothing: float = 0.0,
     class_weight_clip_min: float | None = None,
@@ -926,6 +977,10 @@ def run_table2_reproduction(
     weighted_ce_reduction: str = "paper_sample_mean",
     official_compat: bool = False,
     official_compat_safe_pseudo: bool = False,
+    model_profile: str = "standard_resnet18",
+    use_domain_alignment: bool = True,
+    use_pseudo: bool = True,
+    use_class_weight: bool = True,
     seed: int = 0,
     device: torch.device | str | None = None,
     num_workers: int = 0,
@@ -969,6 +1024,15 @@ def run_table2_reproduction(
         target_model_selection=target_model_selection,
         weighted_ce_reduction=weighted_ce_reduction,
         lr_scheduler_mode=lr_scheduler_mode,
+        model_profile=model_profile,
+        learning_rate=learning_rate,
+        estimate_steps=estimate_steps,
+        base_tau=base_tau,
+        mu=mu,
+        kl_weight=kl_weight,
+        use_domain_alignment=use_domain_alignment,
+        use_pseudo=use_pseudo,
+        use_class_weight=use_class_weight,
         max_samples_per_combo=max_samples_per_combo,
         max_batches_per_epoch=max_batches_per_epoch,
     )
@@ -1005,7 +1069,7 @@ def run_table2_reproduction(
                     }
                 )
                 continue
-            model = ReceiverImpactGADNet(num_tx=6).to(resolved_device)
+            model = ReceiverImpactGADNet(num_tx=6, model_profile=model_profile).to(resolved_device)
             checkpoint_path = output_path / f"{_task_slug(task)}_{method}.pt"
             if method == "source_only":
                 optimizer = torch.optim.Adam(
@@ -1033,6 +1097,7 @@ def run_table2_reproduction(
                         "paper": "Mitigating Receiver Impact on Radio Frequency Fingerprint Identification via Domain Adaptation",
                         "method": method,
                         "task": task,
+                        "model_profile": str(model_profile),
                         "model_state_dict": model.inference_state_dict(),
                         "history": train_result["history"],
                     },
@@ -1100,6 +1165,8 @@ def run_table2_reproduction(
                     device=resolved_device,
                     estimate_steps=estimate_steps,
                     base_tau=base_tau,
+                    mu=mu,
+                    kl_weight=kl_weight,
                     class_prior=None if source_class_prior is None else source_class_prior.to(resolved_device),
                     class_weight_smoothing=class_weight_smoothing,
                     class_weight_clip_min=class_weight_clip_min,
@@ -1121,6 +1188,9 @@ def run_table2_reproduction(
                     target_eval_batches=loaders["target_eval"] if target_model_selection == "target_loss_best" else None,
                     target_model_selection=target_model_selection,
                     weighted_ce_reduction=weighted_ce_reduction,
+                    use_domain_alignment=use_domain_alignment,
+                    use_pseudo=use_pseudo,
+                    use_class_weight=use_class_weight,
                     max_batches_per_epoch=max_batches_per_epoch,
                 )
                 if source_pretrain_result is not None:
@@ -1169,6 +1239,9 @@ def run_table2_reproduction(
                             "lr_scheduler_active": train_result["lr_scheduler_active"],
                             "target_model_selection": train_result["target_model_selection"],
                             "weighted_ce_reduction": train_result["weighted_ce_reduction"],
+                            "use_domain_alignment": train_result["use_domain_alignment"],
+                            "use_pseudo": train_result["use_pseudo"],
+                            "use_class_weight": train_result["use_class_weight"],
                             "target_eval_history": train_result["target_eval_history"],
                             "best_target_loss_epoch": train_result["best_target_loss_epoch"],
                             "best_target_loss": train_result["best_target_loss"],
@@ -1205,6 +1278,12 @@ def run_table2_reproduction(
                 "target_confusion_matrix": target_metrics["target_confusion_matrix"],
                 "target_labels_scope": "evaluation_only",
                 "target_label_role": loaders["meta"]["target_label_role"],
+                "model_profile": str(model_profile),
+                "mu": float(mu),
+                "kl_weight": float(kl_weight),
+                "use_domain_alignment": bool(use_domain_alignment),
+                "use_pseudo": bool(use_pseudo),
+                "use_class_weight": bool(use_class_weight),
                 "checkpoint_path": str(checkpoint_path),
                 "history": train_result["history"],
                 "task_meta": loaders["meta"],
@@ -1252,6 +1331,8 @@ def run_table2_reproduction(
         "source_pretrain_epochs": int(epochs if source_pretrain_epochs is None else source_pretrain_epochs),
         "estimate_steps": int(estimate_steps),
         "base_tau": float(base_tau),
+        "mu": float(mu),
+        "kl_weight": float(kl_weight),
         "class_prior_mode": class_prior_mode,
         "class_weight_smoothing": float(class_weight_smoothing),
         "class_weight_clip_min": None if class_weight_clip_min is None else float(class_weight_clip_min),
@@ -1274,6 +1355,10 @@ def run_table2_reproduction(
         "weighted_ce_reduction": str(weighted_ce_reduction),
         "official_compat": bool(official_compat),
         "official_compat_safe_pseudo": bool(official_compat_safe_pseudo),
+        "model_profile": str(model_profile),
+        "use_domain_alignment": bool(use_domain_alignment),
+        "use_pseudo": bool(use_pseudo),
+        "use_class_weight": bool(use_class_weight),
         "seed": int(seed),
         "device": str(resolved_device),
         **reproduction_claim,
@@ -1301,6 +1386,8 @@ def main() -> int:
     parser.add_argument("--source-pretrain-epochs", type=int, default=None)
     parser.add_argument("--estimate-steps", type=int, default=7)
     parser.add_argument("--base-tau", type=float, default=0.7)
+    parser.add_argument("--mu", type=float, default=0.5)
+    parser.add_argument("--kl-weight", type=float, default=0.005)
     parser.add_argument("--class-prior-mode", type=str, default="uniform", choices=("source", "uniform", "none"))
     parser.add_argument("--class-weight-smoothing", type=float, default=0.0)
     parser.add_argument("--class-weight-clip-min", type=float, default=None)
@@ -1332,6 +1419,15 @@ def main() -> int:
         action="store_true",
         help="With --official-compat, keep the official optimizer/state path but use paper CPL probabilities instead of raw-logit pseudo-label gating.",
     )
+    parser.add_argument(
+        "--model-profile",
+        type=str,
+        default="standard_resnet18",
+        choices=("standard_resnet18", "pytorch_template_resnet18_hypothesis_v1"),
+    )
+    parser.add_argument("--no-domain-alignment", action="store_true")
+    parser.add_argument("--no-pseudo", action="store_true")
+    parser.add_argument("--no-class-weight", action="store_true")
     parser.add_argument("--seed", type=int, default=0)
     parser.add_argument("--device", type=str, default=None)
     parser.add_argument("--num-workers", type=int, default=0)
@@ -1361,6 +1457,8 @@ def main() -> int:
             source_pretrain_epochs=args.source_pretrain_epochs,
             estimate_steps=args.estimate_steps,
             base_tau=args.base_tau,
+            mu=args.mu,
+            kl_weight=args.kl_weight,
             class_prior_mode=args.class_prior_mode,
             class_weight_smoothing=args.class_weight_smoothing,
             class_weight_clip_min=args.class_weight_clip_min,
@@ -1383,6 +1481,10 @@ def main() -> int:
             weighted_ce_reduction=args.weighted_ce_reduction,
             official_compat=args.official_compat,
             official_compat_safe_pseudo=args.official_compat_safe_pseudo,
+            model_profile=args.model_profile,
+            use_domain_alignment=not args.no_domain_alignment,
+            use_pseudo=not args.no_pseudo,
+            use_class_weight=not args.no_class_weight,
             seed=args.seed,
             device=args.device,
             num_workers=args.num_workers,

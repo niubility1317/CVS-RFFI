@@ -348,6 +348,9 @@ def gada_batch_step(
     pseudo_quota_per_class: int | None = None,
     class_weight_timing: str = "previous",
     weighted_ce_reduction: str = "paper_sample_mean",
+    use_domain_alignment: bool = True,
+    use_pseudo: bool = True,
+    use_class_weight: bool = True,
     target_indices: torch.Tensor | None = None,
 ) -> dict[str, torch.Tensor | int]:
     """Run one Algorithm 1 batch: T ascent, pseudo-labeling, then E/C descent."""
@@ -359,33 +362,44 @@ def gada_batch_step(
     last_estimate_zeta: torch.Tensor | None = None
     ma_et: torch.Tensor | float = 1.0
     source_outputs = model(source_x)
-    target_outputs = model(target_x)
+    target_training_active = bool(use_domain_alignment or use_pseudo or use_class_weight)
+    if target_training_active:
+        target_outputs = model(target_x)
+    else:
+        was_training = model.training
+        model.eval()
+        try:
+            with torch.no_grad():
+                target_outputs = model(target_x)
+        finally:
+            model.train(was_training)
     source_features = source_outputs["features"]
     target_features = target_outputs["features"]
     normalized_kl_mode = str(kl_estimator_mode).strip().lower()
-    for _ in range(int(estimate_steps)):
-        optimizer_t.zero_grad()
-        source_estimates = model.estimate_network(source_features.detach())
-        target_estimates = model.estimate_network(target_features.detach())
-        if normalized_kl_mode == "dvkl":
-            zeta = dv_kl_domain_alignment(source_estimates, target_estimates)
-            estimate_loss = -zeta
-        elif normalized_kl_mode == "mine_ma":
-            mine_terms = mine_kl_stabilized_objective(
-                source_estimates,
-                target_estimates,
-                ma_et=1.0,
-                ma_rate=mine_ma_rate,
-            )
-            ma_et = mine_terms["ma_et"]
-            zeta = mine_terms["kl"]
-            estimate_loss = -float(mine_update_scale) * mine_terms["loss"]
-        else:
-            raise ValueError("kl_estimator_mode must be one of: dvkl, mine_ma")
-        estimate_loss.backward()
-        optimizer_t.step()
-        last_estimate_loss = estimate_loss.detach()
-        last_estimate_zeta = zeta.detach()
+    if use_domain_alignment:
+        for _ in range(int(estimate_steps)):
+            optimizer_t.zero_grad()
+            source_estimates = model.estimate_network(source_features.detach())
+            target_estimates = model.estimate_network(target_features.detach())
+            if normalized_kl_mode == "dvkl":
+                zeta = dv_kl_domain_alignment(source_estimates, target_estimates)
+                estimate_loss = -zeta
+            elif normalized_kl_mode == "mine_ma":
+                mine_terms = mine_kl_stabilized_objective(
+                    source_estimates,
+                    target_estimates,
+                    ma_et=1.0,
+                    ma_rate=mine_ma_rate,
+                )
+                ma_et = mine_terms["ma_et"]
+                zeta = mine_terms["kl"]
+                estimate_loss = -float(mine_update_scale) * mine_terms["loss"]
+            else:
+                raise ValueError("kl_estimator_mode must be one of: dvkl, mine_ma")
+            estimate_loss.backward()
+            optimizer_t.step()
+            last_estimate_loss = estimate_loss.detach()
+            last_estimate_zeta = zeta.detach()
 
     optimizer_ec.zero_grad()
     previous_t_grad = _set_requires_grad(model.estimate_network, False)
@@ -404,7 +418,11 @@ def gada_batch_step(
             quota_mode=pseudo_quota_mode,
             quota_per_class=pseudo_quota_per_class,
         )
-        if str(class_weight_timing).strip().lower() == "current":
+        if not use_pseudo:
+            target_mask = torch.zeros_like(target_mask)
+        if not use_class_weight:
+            class_weights = torch.ones(int(state.num_classes), device=target_outputs["tx_logits"].device)
+        elif str(class_weight_timing).strip().lower() == "current":
             class_weights = state.class_weights_after_predictions(
                 pseudo_labels,
                 target_indices=target_indices,
@@ -427,7 +445,9 @@ def gada_batch_step(
         else:
             raise ValueError("class_weight_timing must be one of: previous, current")
         kl_loss_override = None
-        if normalized_kl_mode == "mine_ma":
+        if not use_domain_alignment:
+            kl_loss_override = source_outputs["tx_logits"].sum() * 0.0
+        elif normalized_kl_mode == "mine_ma":
             mine_terms = mine_kl_stabilized_objective(
                 source_outputs["estimate_logits"],
                 target_outputs["estimate_logits"],
@@ -446,6 +466,8 @@ def gada_batch_step(
             kl_weight=kl_weight,
             kl_loss_override=kl_loss_override,
             weighted_ce_reduction=weighted_ce_reduction,
+            source_ce_scale=float(mu) if use_class_weight else 1.0,
+            target_ce_scale=(1.0 - float(mu)) if use_pseudo else 0.0,
         )
         terms["loss"].backward()
         optimizer_ec.step()
@@ -477,6 +499,11 @@ def gada_batch_step(
         "target_pred_hist": target_pred_hist.detach(),
         "target_pseudo_selected_hist": target_pseudo_selected_hist.detach(),
         "estimate_steps": int(estimate_steps),
+        "use_domain_alignment": int(bool(use_domain_alignment)),
+        "use_pseudo": int(bool(use_pseudo)),
+        "use_class_weight": int(bool(use_class_weight)),
+        "source_ce_scale": torch.tensor(float(mu) if use_class_weight else 1.0),
+        "target_ce_scale": torch.tensor((1.0 - float(mu)) if use_pseudo else 0.0),
         "estimate_loss": torch.tensor(0.0) if last_estimate_loss is None else last_estimate_loss,
         "estimate_zeta": torch.tensor(0.0) if last_estimate_zeta is None else last_estimate_zeta,
     }

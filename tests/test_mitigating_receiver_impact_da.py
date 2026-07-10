@@ -5,6 +5,7 @@ import sys
 from pathlib import Path
 
 import numpy as np
+import pytest
 import torch
 
 
@@ -88,6 +89,20 @@ def test_iotj2024_default_model_uses_standard_resnet18_widths():
     assert model.feature_extractor.layer4[-1].bn2.num_features == 512
     assert isinstance(model.feature_extractor.projection, nn.Identity)
     assert outputs["features"].shape == (2, 512)
+
+
+def test_iotj2024_linked_template_profile_matches_eight_block_resnet1d():
+    from paper_reproduction.mitigating_receiver_impact_da.model import ReceiverImpactGADNet
+
+    model = ReceiverImpactGADNet(num_tx=6, model_profile="pytorch_template_resnet18_hypothesis_v1")
+    outputs = model(torch.randn(2, 2, 256))
+
+    assert len(model.feature_extractor.blocks) == 8
+    assert [block.out_channels for block in model.feature_extractor.blocks] == [64, 64, 128, 128, 256, 256, 512, 512]
+    assert outputs["features"].shape == (2, 512)
+    assert outputs["tx_logits"].shape == (2, 6)
+    assert model.classifier.net[1].in_features == 512
+    assert isinstance(model.estimate_network.net[1], torch.nn.LeakyReLU)
 
 
 def test_iotj2024_model_can_export_classifier_without_estimate_network():
@@ -347,6 +362,124 @@ def test_algorithm1_batch_step_updates_estimator_m_times_then_ec_once():
     assert set(["target_selected_correct", "target_audit_total", "target_pred_correct"]).issubset(result)
     assert int(result["target_audit_total"].item()) == 5
     assert torch.isfinite(result["loss"])
+
+
+def test_table3_component_flags_disable_exact_objective_paths():
+    from paper_reproduction.mitigating_receiver_impact_da.algorithm import PseudoLabelState, gada_batch_step
+    from paper_reproduction.mitigating_receiver_impact_da.model import ReceiverImpactGADNet
+
+    model = ReceiverImpactGADNet(num_tx=3, feature_dim=8, hidden_dim=8)
+    optimizer_t = CountingOptimizer(model.estimate_network.parameters())
+    optimizer_ec = CountingOptimizer(list(model.feature_extractor.parameters()) + list(model.classifier.parameters()))
+    result = gada_batch_step(
+        model,
+        torch.randn(4, 2, 256),
+        torch.tensor([0, 1, 2, 1]),
+        torch.randn(5, 2, 256),
+        state=PseudoLabelState(num_classes=3),
+        optimizer_t=optimizer_t,
+        optimizer_ec=optimizer_ec,
+        estimate_steps=7,
+        use_domain_alignment=False,
+        use_pseudo=False,
+        use_class_weight=False,
+    )
+
+    assert optimizer_t.step_calls == 0
+    assert optimizer_ec.step_calls == 1
+    assert int(result["target_selected"].item()) == 0
+    assert float(result["loss_target"].item()) == 0.0
+    assert float(result["loss_kl"].item()) == 0.0
+    assert torch.equal(result["class_weight_vector"], torch.ones(3))
+
+
+@pytest.mark.parametrize(
+    ("use_domain_alignment", "use_pseudo", "use_class_weight", "source_scale", "target_scale"),
+    [
+        (True, False, False, 1.0, 0.0),
+        (False, True, False, 1.0, 0.5),
+        (False, False, True, 0.5, 0.0),
+        (True, True, False, 1.0, 0.5),
+        (True, False, True, 0.5, 0.0),
+        (False, True, True, 0.5, 0.5),
+        (True, True, True, 0.5, 0.5),
+    ],
+)
+def test_table3_seven_component_combinations_match_released_trainer_scales(
+    use_domain_alignment,
+    use_pseudo,
+    use_class_weight,
+    source_scale,
+    target_scale,
+):
+    from paper_reproduction.mitigating_receiver_impact_da.algorithm import PseudoLabelState, gada_batch_step
+    from paper_reproduction.mitigating_receiver_impact_da.model import ReceiverImpactGADNet
+
+    model = ReceiverImpactGADNet(num_tx=3, feature_dim=8, hidden_dim=8)
+    optimizer_t = CountingOptimizer(model.estimate_network.parameters())
+    optimizer_ec = CountingOptimizer(list(model.feature_extractor.parameters()) + list(model.classifier.parameters()))
+    result = gada_batch_step(
+        model,
+        torch.randn(4, 2, 256),
+        torch.tensor([0, 1, 2, 1]),
+        torch.randn(5, 2, 256),
+        state=PseudoLabelState(num_classes=3),
+        optimizer_t=optimizer_t,
+        optimizer_ec=optimizer_ec,
+        estimate_steps=1,
+        base_tau=0.7,
+        mu=0.5,
+        use_domain_alignment=use_domain_alignment,
+        use_pseudo=use_pseudo,
+        use_class_weight=use_class_weight,
+    )
+
+    assert float(result["source_ce_scale"].item()) == source_scale
+    assert float(result["target_ce_scale"].item()) == target_scale
+    assert optimizer_t.step_calls == (1 if use_domain_alignment else 0)
+    assert optimizer_ec.step_calls == 1
+    if not use_pseudo:
+        assert int(result["target_selected"].item()) == 0
+    if not use_class_weight:
+        assert torch.equal(result["class_weight_vector"], torch.ones(3))
+    assert torch.allclose(
+        result["loss_weighted_ce"],
+        source_scale * result["loss_source"] + target_scale * result["loss_target"],
+    )
+
+
+def test_component_source_only_diagnostic_does_not_update_bn_from_target():
+    from copy import deepcopy
+
+    from paper_reproduction.mitigating_receiver_impact_da.algorithm import PseudoLabelState, gada_batch_step
+    from paper_reproduction.mitigating_receiver_impact_da.model import ReceiverImpactGADNet
+
+    model = ReceiverImpactGADNet(num_tx=3, feature_dim=8, hidden_dim=8)
+    source_only_reference = deepcopy(model)
+    source_x = torch.randn(4, 2, 256)
+    source_y = torch.tensor([0, 1, 2, 1])
+    target_x = torch.randn(5, 2, 256) + 10.0
+
+    source_only_reference.train()
+    source_only_reference(source_x)
+    gada_batch_step(
+        model,
+        source_x,
+        source_y,
+        target_x,
+        state=PseudoLabelState(num_classes=3),
+        optimizer_t=CountingOptimizer(model.estimate_network.parameters()),
+        optimizer_ec=CountingOptimizer(list(model.feature_extractor.parameters()) + list(model.classifier.parameters())),
+        estimate_steps=1,
+        use_domain_alignment=False,
+        use_pseudo=False,
+        use_class_weight=False,
+    )
+
+    reference_buffers = dict(source_only_reference.feature_extractor.named_buffers())
+    actual_buffers = dict(model.feature_extractor.named_buffers())
+    assert reference_buffers.keys() == actual_buffers.keys()
+    assert all(torch.equal(reference_buffers[name], actual_buffers[name]) for name in reference_buffers)
 
 
 def test_algorithm1_ec_kl_updates_feature_extractor_on_training_path():
@@ -800,6 +933,15 @@ def test_reproduction_profiles_fail_closed_for_strict_released_and_diagnostics()
         "target_model_selection": "final",
         "weighted_ce_reduction": "paper_sample_mean",
         "lr_scheduler_mode": "none",
+        "model_profile": "standard_resnet18",
+        "learning_rate": 0.0006,
+        "estimate_steps": 7,
+        "base_tau": 0.7,
+        "mu": 0.5,
+        "kl_weight": 0.005,
+        "use_domain_alignment": True,
+        "use_pseudo": True,
+        "use_class_weight": True,
         "max_samples_per_combo": None,
         "max_batches_per_epoch": None,
     }
@@ -828,6 +970,30 @@ def test_reproduction_profiles_fail_closed_for_strict_released_and_diagnostics()
     diagnostic = _classify_reproduction_claim(**quota_args)
     assert diagnostic["reproduction_profile"] == "diagnostic_extension"
     assert diagnostic["claim_status"] == "diagnostic_only"
+
+    ablation_args = dict(base)
+    ablation_args.update(use_domain_alignment=False)
+    ablation = _classify_reproduction_claim(**ablation_args)
+    assert ablation["reproduction_profile"] == "paper_ablation_diagnostic"
+    assert ablation["claim_status"] == "diagnostic_only"
+
+    composite_args = dict(ablation_args)
+    composite_args.update(model_profile="pytorch_template_resnet18_hypothesis_v1", max_batches_per_epoch=1)
+    composite = _classify_reproduction_claim(**composite_args)
+    assert composite["reproduction_profile"] == "paper_ablation_diagnostic"
+    assert len(composite["claim_reasons"]) >= 3
+
+    architecture_args = dict(base)
+    architecture_args.update(model_profile="pytorch_template_resnet18_hypothesis_v1")
+    architecture = _classify_reproduction_claim(**architecture_args)
+    assert architecture["reproduction_profile"] == "architecture_hypothesis_diagnostic"
+    assert architecture["claim_status"] == "diagnostic_only"
+
+    scalar_args = dict(base)
+    scalar_args.update(mu=0.6)
+    scalar = _classify_reproduction_claim(**scalar_args)
+    assert scalar["reproduction_profile"] == "diagnostic_extension"
+    assert scalar["claim_status"] == "diagnostic_only"
 
     oracle_args = dict(base)
     oracle_args.update(target_model_selection="target_loss_best")

@@ -19,3 +19,14 @@
 - Supervisory review issued NO-GO until runtime claim profiles became fail-closed; algorithm/gradient/BN/MINE changes had no additional blocker.
 - Added mutually checked claim profiles: `paper_equations_bounded`, `released_trainer_semantics_bounded`, `diagnostic_extension`, and `oracle_diagnostic`. Mixed, truncated, quota/floor, and target-label-selected runs now downgrade automatically.
 - Local repair verification now passes 52 focused/adjacent tests and the paper-config dry-run.
+- Synced the nine locally verified runtime files to N607; remote SHA256, `py_compile`, `bash -n`, and paper dry-run all passed.
+- Launched eight Proposed-only validation runs at 11:22:34 CST, one per GPU. Startup process/GPU checks passed and no error marker was present.
+- Error: the first startup-health command embedded a PowerShell-expanded remote shell loop and failed before inspection. Resolution: verified no stale SSH process, then split process/GPU/error checks into three bounded SSH commands.
+- All eight first-matrix runs completed by 11:46 CST. Pulled all result JSON and complete `.out` logs; verified that no related process, local `ssh.exe`, or established N607 TCP/22 connection remained.
+- Parsed every epoch and final row. Strict five-task mean is 62.37% versus 96.14% in the paper; the corrected cross-day row is 85.73%, while receiver-pair rows remain 30.20%-75.40%.
+- Added a linked-template ResNet1D architecture hypothesis and paper Table III component switches. The architecture and every ablation fail closed to `diagnostic_only`.
+- Local verification now passes 62 focused/adjacent tests, model shape/parameter smoke (`3,839,303` parameters), Python compile, launcher syntax, and CLI option checks.
+- Spawned two additional independent reviewers for the component-ablation semantics and architecture/launcher before N607 sync.
+- Architecture/launcher reviewer issued GO for diagnostic-only execution and identified one provenance gap. Added explicit CLI/result fields and fail-closed checks for `lr`, `m`, `tau`, `mu`, and `lambda`; reran all 54 tests and syntax checks successfully.
+- Algorithm reviewer issued NO-GO because four Table III combinations used the wrong source CE scale and the all-disabled control leaked target BN state. Repaired the seven-combination coefficient map, made the all-disabled target audit eval/no-grad, preserved composite claim reasons, and added seven-combination plus BN-state tests.
+- The same algorithm reviewer completed a second pass and issued GO with no Critical/Important finding. Full local verification now passes 62 tests.

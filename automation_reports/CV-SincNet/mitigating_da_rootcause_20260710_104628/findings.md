@@ -33,3 +33,19 @@
 
 - The authors' public repository exposes only `mine_pseudo_classweight_trainer.py` and points to `YannLeo/Pytorch-Template`.
 - It does not publish the experiment TOML, WiSig dataset wrapper/split, model wrapper returning `(output, feature)`, MINE class, or exact ResNet18 constructor arguments. Exact author-code reproduction therefore remains underdetermined even after matching the exposed trainer.
+
+## First repaired matrix
+
+- All eight runs completed without runtime-error markers. The five-row strict-equation mean is 62.37%, versus the paper mean 96.14%, a gap of -33.77pp.
+- Correcting `d01->d23` materially improved traceability and produced 85.73%, only -7.61pp from the paper. The receiver-pair tasks remain much worse, so the residual problem is not a generic optimizer failure.
+- Source pretraining converged to 98.54%-99.92% source-batch accuracy. Initial target accuracy nevertheless ranged from 22.19% to 84.11%, proving that the source classifier is converged but its representation is receiver dependent.
+- On every strict task, epoch-1 CPL selects 97.78%-99.60% of target samples. On the hard receiver pairs pseudo-label precision is only 46.16%-59.14%, so the nominal `tau=0.7` curriculum threshold behaves as an almost-unfiltered self-training loop.
+- Per-class results show class-permutation collapse rather than uniform degradation. For example, `14-7->3-19` ends at `[0.28%,12.38%,39.38%,62.88%,60.73%,5.55%]`; `1-1->8-8` nearly loses classes 2 and 4 while retaining four classes near 100%.
+- The exposed released-trainer semantics produce 28.29% and 46.07% on the two hard pairs, so weighted-CE/MINE/public-threshold details do not close the gap.
+
+## Architecture and ablation localization
+
+- An independent model audit confirmed that the public trainer cannot directly instantiate the linked public `ResNet1D`: the trainer expects `(output, feature)`, while the template returns only dense output, and the public `MINE` class/config are absent.
+- Added a fail-closed `pytorch_template_resnet18_hypothesis_v1` diagnostic profile: 8 two-convolution residual blocks, SAME-padding stem/blocks, 64/128/256/512 stages, template shortcut semantics, ELU three-layer classifier, and LeakyReLU three-layer estimate network.
+- Added exact Table III component switches. Any component ablation or inferred architecture is automatically `diagnostic_only`; neither can be presented as the paper's full Proposed result.
+- Table III component scaling follows the exposed trainer: source CE is multiplied by `mu` only when class weighting is enabled; target CE is multiplied by `1-mu` only when CPL is enabled. The all-disabled diagnostic does not update target BatchNorm, but formal Source-only remains the independent `method=source_only` path because paired loaders would otherwise cap its batch count.

@@ -138,6 +138,8 @@ def gada_minimax_objective(
     kl_weight: float = 0.005,
     kl_loss_override: torch.Tensor | None = None,
     weighted_ce_reduction: str = "paper_sample_mean",
+    source_ce_scale: float | None = None,
+    target_ce_scale: float | None = None,
 ) -> dict[str, torch.Tensor]:
     """Paper Eq.10-Eq.11 objective for E/C minimization with T's DV-KL term."""
     if not (0.0 < float(mu) < 1.0):
@@ -159,7 +161,11 @@ def gada_minimax_objective(
         )
     else:
         loss_target = source_outputs["tx_logits"].sum() * 0.0
-    loss_weighted_ce = float(mu) * loss_source + (1.0 - float(mu)) * loss_target
+    resolved_source_scale = float(mu) if source_ce_scale is None else float(source_ce_scale)
+    resolved_target_scale = (1.0 - float(mu)) if target_ce_scale is None else float(target_ce_scale)
+    if resolved_source_scale < 0.0 or resolved_target_scale < 0.0:
+        raise ValueError("source_ce_scale and target_ce_scale must be non-negative")
+    loss_weighted_ce = resolved_source_scale * loss_source + resolved_target_scale * loss_target
     loss_kl = (
         dv_kl_domain_alignment(source_outputs["estimate_logits"], target_outputs["estimate_logits"])
         if kl_loss_override is None

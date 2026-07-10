@@ -17,7 +17,7 @@ Phase 4: in_progress
 - [x] Complete paper-spec audit.
 - [x] Complete algorithm/code audit.
 - [x] Parse all relevant logs and structured artifacts in full.
-- [ ] Run a supervisor cross-check of the independent findings.
+- [x] Run a supervisor cross-check of the independent findings.
 
 ### Phase 3: Fix design and local implementation
 - [x] Separate confirmed paper mismatches from diagnostic extensions and paper ambiguities.
@@ -26,13 +26,14 @@ Phase 4: in_progress
 - [x] Verify focused tests, syntax, CLI, and launcher dry-runs in `ssr-gpu`.
 
 ### Phase 4: N607 validation
-- [ ] Run direct preflight and inspect live GPU/process state.
-- [ ] Record report, Git state, sync map, commands, GPUs, PIDs, logs, and expected artifacts before launch.
-- [ ] Sync locally verified files and launch a bounded reproduction matrix without interfering with unrelated jobs.
-- [ ] Parse completed logs and metrics in full.
+- [x] Run direct preflight and inspect live GPU/process state.
+- [x] Record report, Git state, sync map, commands, GPUs, PIDs, logs, and expected artifacts before launch.
+- [x] Sync locally verified files and launch a bounded reproduction matrix without interfering with unrelated jobs.
+- [x] Parse the first repaired matrix logs and metrics in full.
+- [ ] Run and parse the architecture/Table III localization matrix.
 
 ### Phase 5: Final comparison and delivery
-- [ ] Compare each same-run result with the corresponding paper row.
+- [x] Compare each first-matrix same-run result with the corresponding paper row.
 - [ ] Update traceability statuses and report root causes, residual risks, and strict-vs-diagnostic claim boundaries.
 - [ ] Commit intended Git-backed changes without touching unrelated edits.
 
