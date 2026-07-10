@@ -22,3 +22,11 @@
 ## 证据边界
 
 r1的16行和r2的112行训练机制一致但评估频率不同。最终分析必须保留cohort字段；tail状态机触发次数、逐epoch曲线和运行时不可直接合并。Phase1结果仍只支持DG、satellite stress、known几何和proxy风险分析，不支持真实unknown或Stage2成功声明。
+
+## 发布状态
+
+- Git实现提交：`d4a270c`。
+- 新scheduler PID：`2130580`。
+- 新run：`phase1_dgleo_p1verify112r2_20260710`。
+- 启动53秒后：scheduler存活且CPU为0.0%；矩阵112行、每GPU14行；`LAUNCHED=0`、r2 candidate目录为0；r1的16个训练进程仍全部存活，GPU compute总数16。
+- 判定：新scheduler处于正确等待态，不会重复启动当前16行；后续槽位释放时按同GPU上限2自动补位。
