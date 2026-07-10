@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import hashlib
 import math
 from collections import defaultdict
 from dataclasses import dataclass
@@ -813,6 +814,268 @@ def extract_phase2_features(
     }
 
 
+@torch.no_grad()
+def extract_endpoint_calibration_features(
+    model,
+    loader: Iterable,
+    *,
+    device=None,
+    feature_key: str = "z_id",
+    max_batches: int = 0,
+    grl_lambda: float = 1.0,
+) -> Dict[str, torch.Tensor | str]:
+    """Extract source-validation geometry and logits for endpoint calibration."""
+
+    dev = torch.device(device) if device is not None else next(model.parameters()).device
+    was_training = bool(getattr(model, "training", False))
+    model.eval()
+    feats, labels, domains, logits = [], [], [], []
+    try:
+        for batch_idx, batch in enumerate(loader):
+            if int(max_batches) > 0 and batch_idx >= int(max_batches):
+                break
+            x, y, extra = unpack_batch(batch)
+            x = x.to(dev, non_blocking=True)
+            y = y.to(dev, non_blocking=True).view(-1).long()
+            d = extract_domain_from_extra(extra, dev)
+            out = model(x, y_tx=y, grl_lambda=float(grl_lambda), return_aux=True, domain_labels=d)
+            z = _select_phase2_feature(out, feature_key)
+            tx_logits = out.get("tx_logits")
+            if not torch.is_tensor(tx_logits) or tx_logits.ndim != 2:
+                raise ValueError("endpoint_accept_v1 calibration requires rank-2 tx_logits")
+            if z.ndim != 2 or z.size(0) != y.numel() or tx_logits.size(0) != y.numel():
+                raise ValueError("endpoint_accept_v1 calibration feature/logit batch mismatch")
+            d_cpu = (
+                torch.full((y.numel(),), -1, dtype=torch.long)
+                if d is None
+                else d.detach().view(-1).long().cpu()
+            )
+            feats.append(z.detach().float().cpu())
+            labels.append(y.detach().cpu())
+            domains.append(d_cpu)
+            logits.append(tx_logits.detach().float().cpu())
+    finally:
+        if was_training:
+            model.train()
+    if not feats:
+        raise ValueError("No source-validation batches were available for endpoint calibration")
+    return {
+        "features": torch.cat(feats, dim=0),
+        "labels": torch.cat(labels, dim=0).long(),
+        "domains": torch.cat(domains, dim=0).long(),
+        "logits": torch.cat(logits, dim=0).float(),
+        "feature_key": str(feature_key),
+    }
+
+
+def _finite_quantile(values: torch.Tensor, q: float) -> float:
+    finite = values.detach().float().view(-1)
+    finite = finite[torch.isfinite(finite)]
+    if finite.numel() == 0:
+        return float("nan")
+    return float(torch.quantile(finite, max(0.0, min(1.0, float(q)))).item())
+
+
+def calibrate_endpoint_accept_v1(
+    package: Mapping[str, Any],
+    calibration_features: torch.Tensor,
+    calibration_labels: torch.Tensor,
+    calibration_logits: torch.Tensor,
+    *,
+    min_component_samples: int = 4,
+    min_class_samples: int = 4,
+    core_quantile: float = 0.80,
+    accept_quantile: float = 0.95,
+    tail_quantile: float = 0.99,
+) -> Dict[str, Any]:
+    """Calibrate one deterministic local-component endpoint on source-val only."""
+
+    out = dict(package)
+    fused = torch.as_tensor(out.get("fused_tx_prototypes")).detach().float().cpu()
+    mask = torch.as_tensor(out.get("fused_tx_mask")).detach().bool().cpu()
+    components = out.get("fusion_components")
+    if fused.ndim != 3 or mask.shape != fused.shape[:2] or not isinstance(components, (list, tuple)):
+        raise ValueError("endpoint_accept_v1 calibration requires fused local components")
+    raw_z = calibration_features.detach().float().cpu()
+    y = calibration_labels.detach().view(-1).long().cpu()
+    logits = calibration_logits.detach().float().cpu()
+    if raw_z.ndim != 2 or y.numel() != raw_z.size(0) or logits.ndim != 2 or logits.size(0) != raw_z.size(0):
+        raise ValueError("endpoint_accept_v1 calibration tensors have incompatible shapes")
+    if not torch.isfinite(raw_z).all() or bool((raw_z.norm(dim=1) <= 1e-8).any()):
+        raise ValueError("endpoint_accept_v1 calibration features must be finite and non-zero")
+    if not torch.isfinite(logits).all():
+        raise ValueError("endpoint_accept_v1 calibration logits must be finite")
+    if logits.size(1) != fused.size(0):
+        raise ValueError("endpoint_accept_v1 calibration logits must exactly match known-class order")
+    z = F.normalize(raw_z, dim=1)
+
+    calibrated_components = [[dict(row) for row in (rows or [])] for rows in components]
+    accept_radii = torch.zeros_like(mask, dtype=torch.float32)
+    evidence_radii = torch.zeros_like(mask, dtype=torch.float32)
+    class_sample_counts: Dict[str, int] = {}
+    component_sample_counts: Dict[str, int] = {}
+    sample_own_distance = torch.full((z.size(0),), float("nan"), dtype=torch.float32)
+    sample_geo_margin = torch.full((z.size(0),), float("nan"), dtype=torch.float32)
+    sample_core = torch.zeros(z.size(0), dtype=torch.bool)
+    enabled_by_class = [0 for _ in range(fused.size(0))]
+
+    all_active_centers = []
+    all_active_classes = []
+    for class_id in range(fused.size(0)):
+        for comp_id in torch.where(mask[class_id])[0].tolist():
+            all_active_centers.append(_normalize(fused[class_id, comp_id].view(1, -1), dim=1).squeeze(0))
+            all_active_classes.append(class_id)
+    if not all_active_centers:
+        raise ValueError("endpoint_accept_v1 calibration found no active component centers")
+    all_centers = torch.stack(all_active_centers, dim=0)
+    all_center_classes = torch.tensor(all_active_classes, dtype=torch.long)
+
+    for class_id in range(fused.size(0)):
+        sample_idx = torch.where(y == class_id)[0]
+        class_sample_counts[str(class_id)] = int(sample_idx.numel())
+        active_ids = torch.where(mask[class_id])[0]
+        if sample_idx.numel() < max(1, int(min_class_samples)) or active_ids.numel() == 0:
+            for row in calibrated_components[class_id]:
+                row["accept_enabled"] = False
+                row["calibration_status"] = "insufficient_class_source_val"
+            continue
+        centers = _normalize(fused[class_id, active_ids], dim=1)
+        class_z = z[sample_idx]
+        angles = torch.rad2deg(torch.acos(torch.clamp(class_z @ centers.t(), -1.0 + 1e-6, 1.0 - 1e-6)))
+        nearest_angle, nearest_pos = angles.min(dim=1)
+        other_mask = all_center_classes != class_id
+        if bool(other_mask.any()):
+            other_angles = torch.rad2deg(
+                torch.acos(torch.clamp(class_z @ all_centers[other_mask].t(), -1.0 + 1e-6, 1.0 - 1e-6))
+            )
+            nearest_other = other_angles.min(dim=1).values
+            sample_geo_margin[sample_idx] = nearest_other - nearest_angle
+        sample_own_distance[sample_idx] = nearest_angle
+
+        row_by_id = {int(row.get("component_id", idx)): row for idx, row in enumerate(calibrated_components[class_id])}
+        for local_pos, comp_id_obj in enumerate(active_ids.tolist()):
+            comp_id = int(comp_id_obj)
+            assigned = nearest_pos == int(local_pos)
+            comp_angles = nearest_angle[assigned]
+            count = int(comp_angles.numel())
+            component_sample_counts[f"{class_id}:{comp_id}"] = count
+            row = row_by_id.get(comp_id)
+            if row is None:
+                continue
+            row["pre_calibration_r_core_deg"] = float(row.get("r_core_deg", 0.0))
+            row["pre_calibration_r_accept_deg"] = float(row.get("r_accept_deg", row.get("accept_radius_deg", 0.0)))
+            row["pre_calibration_r_tail_deg"] = float(row.get("r_tail_deg", row.get("radius_deg", 0.0)))
+            row["source_val_count"] = count
+            if count < max(1, int(min_component_samples)):
+                row["accept_enabled"] = False
+                row["calibration_status"] = "insufficient_component_source_val"
+                continue
+            r_core = _finite_quantile(comp_angles, core_quantile)
+            r_accept = max(r_core, _finite_quantile(comp_angles, accept_quantile))
+            r_tail = max(r_accept, _finite_quantile(comp_angles, tail_quantile))
+            if not all(math.isfinite(value) for value in (r_core, r_accept, r_tail)):
+                row["accept_enabled"] = False
+                row["calibration_status"] = "nonfinite_source_val_geometry"
+                continue
+            density = torch.exp(-torch.square(comp_angles / max(r_accept, 1e-6)))
+            nll = 0.5 * torch.square(comp_angles / max(r_accept, 1e-6))
+            core_values = comp_angles <= r_core
+            row.update(
+                {
+                    "r_core_deg": float(r_core),
+                    "r_accept_deg": float(r_accept),
+                    "r_tail_deg": float(r_tail),
+                    "r_vac_deg": float(max(r_tail, r_accept + 4.0)),
+                    "component_accept_radius_deg": float(r_accept),
+                    "accept_radius_deg": float(r_accept),
+                    "component_evidence_radius_deg": float(r_tail),
+                    "evidence_radius_deg": float(r_tail),
+                    "density_p05": _finite_quantile(density[core_values] if bool(core_values.any()) else density, 0.05),
+                    "density_p10": _finite_quantile(density, 0.10),
+                    "nll_p95": _finite_quantile(nll[core_values] if bool(core_values.any()) else nll, 0.95),
+                    "nll_tail_p95": _finite_quantile(nll, 0.95),
+                    "accept_enabled": True,
+                    "calibration_status": "source_val_calibrated",
+                }
+            )
+            accept_radii[class_id, comp_id] = math.radians(r_accept)
+            evidence_radii[class_id, comp_id] = math.radians(r_tail)
+            sample_core[sample_idx[assigned]] = comp_angles <= r_core
+            enabled_by_class[class_id] += 1
+
+    missing_classes = [idx for idx, count in enumerate(enabled_by_class) if count <= 0]
+    if missing_classes:
+        raise ValueError(f"endpoint_accept_v1 source-val calibration missing enabled classes: {missing_classes}")
+
+    pred = logits.argmax(dim=1)
+    correct = pred == y
+    top2 = torch.topk(logits, k=min(2, logits.size(1)), dim=1).values
+    margins = top2[:, 0] - top2[:, 1] if top2.size(1) > 1 else torch.full((logits.size(0),), float("inf"))
+    energies = -torch.logsumexp(logits, dim=1)
+    energy_max_by_class: Dict[str, float] = {}
+    for class_id in range(fused.size(0)):
+        values = energies[(y == class_id) & correct]
+        if values.numel() < max(1, int(min_class_samples)):
+            raise ValueError(f"endpoint_accept_v1 source-val calibration has insufficient correct class {class_id}")
+        energy_max_by_class[str(class_id)] = _finite_quantile(values, 0.95)
+    core_known = correct & sample_core
+    accepted_known = correct & torch.isfinite(sample_own_distance)
+    if core_known.sum().item() < max(1, int(min_class_samples)) or accepted_known.sum().item() < max(1, int(min_class_samples)):
+        raise ValueError("endpoint_accept_v1 source-val calibration lacks core/accepted known evidence")
+    core_geo = sample_geo_margin[core_known & torch.isfinite(sample_geo_margin)]
+    tail_geo = sample_geo_margin[accepted_known & ~sample_core & torch.isfinite(sample_geo_margin)]
+    if tail_geo.numel() == 0:
+        tail_geo = sample_geo_margin[accepted_known & torch.isfinite(sample_geo_margin)]
+    gate_thresholds = {
+        "energy_max_by_class": energy_max_by_class,
+        "energy_temperature": 1.0,
+        "energy_formula_id": "negative_logsumexp_temperature_v1",
+        "density_formula_id": "exp_neg_sq_normalized_angle_v1",
+        "nll_formula_id": "half_sq_normalized_angle_v1",
+        "logit_margin_core_min": max(0.0, _finite_quantile(margins[core_known], 0.05)),
+        "logit_margin_tail_min": max(0.0, _finite_quantile(margins[accepted_known], 0.10)),
+        "geo_margin_core_min_deg": max(2.0, _finite_quantile(core_geo, 0.05)),
+        "geo_margin_tail_min_deg": max(4.0, _finite_quantile(tail_geo, 0.05)),
+        "allow_tail_auto_accept": False,
+        "use_density_gate": True,
+        "use_nll_gate": True,
+        "use_energy_gate": True,
+        "use_geo_margin_gate": True,
+        "reject_nan": True,
+        "max_radius_to_inter_ratio": 0.50,
+    }
+    calibration = {
+        "schema": "endpoint_accept_v1_source_val_calibration_v1",
+        "threshold_source": "source_val_only",
+        "calibration_split": "source_val",
+        "num_samples": int(z.size(0)),
+        "correct_samples": int(correct.sum().item()),
+        "class_sample_counts": class_sample_counts,
+        "component_sample_counts": component_sample_counts,
+        "enabled_components_by_class": {str(i): int(v) for i, v in enumerate(enabled_by_class)},
+        "min_component_samples": int(min_component_samples),
+        "min_class_samples": int(min_class_samples),
+        "core_quantile": float(core_quantile),
+        "accept_quantile": float(accept_quantile),
+        "tail_quantile": float(tail_quantile),
+    }
+    out["fusion_components"] = calibrated_components
+    out["fused_tx_accept_radii"] = accept_radii
+    out["fused_tx_evidence_radii"] = evidence_radii
+    out["endpoint_gate_thresholds"] = gate_thresholds
+    out["endpoint_calibration"] = calibration
+    metadata = dict(out.get("metadata", {}) or {})
+    metadata.update(
+        {
+            "endpoint_threshold_source": "source_val_only",
+            "endpoint_calibration_split": "source_val",
+            "endpoint_calibration_schema": calibration["schema"],
+        }
+    )
+    out["metadata"] = metadata
+    return out
+
+
 def _valid_label_count(labels: torch.Tensor) -> int:
     valid = labels.view(-1).long()
     valid = valid[valid >= 0]
@@ -844,6 +1107,343 @@ def _as_jsonable(obj: Any) -> Any:
     if isinstance(obj, (list, tuple)):
         return [_as_jsonable(v) for v in obj]
     return obj
+
+
+_ENDPOINT_REASON_CODES = (
+    "ACCEPT_KNOWN_CORE",
+    "ACCEPT_KNOWN_TAIL_STRICT",
+    "REVIEW_KNOWN_TAIL",
+    "REJECT_OUTSIDE_RADIUS",
+    "REJECT_LOW_GEO_MARGIN",
+    "REJECT_LOW_DENSITY",
+    "REJECT_HIGH_NLL",
+    "REJECT_HIGH_ENERGY",
+    "REJECT_LOW_LOGIT_MARGIN",
+    "REJECT_INVALID_LOGITS",
+    "REJECT_INVALID_FEATURE",
+    "REJECT_ENERGY_MISMATCH",
+    "REJECT_NAN",
+)
+_SUPPORTED_ENDPOINT_BOUNDARY_VERSIONS = {"endpoint_accept_v1.1"}
+
+
+def _endpoint_boundary_spec(
+    package: Mapping[str, Any], *, require_runtime_parity: bool = True
+) -> Dict[str, Any]:
+    components = package.get("fusion_components")
+    fused = package.get("fused_tx_prototypes")
+    if not isinstance(components, (list, tuple)) or fused is None:
+        raise ValueError("endpoint_accept_v1 requires fused local components and component centers")
+    if str(package.get("fusion_accept_policy", "")) != "local_component":
+        raise ValueError("endpoint_accept_v1 requires local_component fusion acceptance")
+    if package.get("global_fused_radius_is_accept_region") is not False:
+        raise ValueError("endpoint_accept_v1 forbids global-ball acceptance")
+    fused_tensor = torch.as_tensor(fused).detach().float().cpu().contiguous()
+    if fused_tensor.ndim != 3 or fused_tensor.size(0) < 2 or not torch.isfinite(fused_tensor).all():
+        raise ValueError("endpoint_accept_v1 requires finite centers for at least two known classes")
+    metadata = package.get("metadata", {})
+    if not isinstance(metadata, Mapping):
+        raise ValueError("endpoint_accept_v1 requires inference identity metadata")
+    feature_key = str(package.get("feature_key", ""))
+    class_id_to_tx = metadata.get("class_id_to_tx")
+    logit_class_order = metadata.get("logit_class_order")
+    checkpoint_sha256 = str(metadata.get("source_checkpoint_sha256", ""))
+    inference_identity = {
+        "feature_key": feature_key,
+        "feature_dim": int(fused_tensor.size(-1)),
+        "known_class_count": int(metadata.get("known_class_count", 0) or 0),
+        "class_id_to_tx": list(class_id_to_tx) if isinstance(class_id_to_tx, (list, tuple)) else [],
+        "logit_class_order": list(logit_class_order) if isinstance(logit_class_order, (list, tuple)) else [],
+        "source_checkpoint_sha256": checkpoint_sha256,
+        "run_id": str(metadata.get("run_id", "")),
+        "candidate_id": str(metadata.get("candidate_id", "")),
+        "classification_head_contract": str(metadata.get("classification_head_contract", "")),
+        "checkpoint_load_strict": metadata.get("checkpoint_load_strict"),
+        "runtime_entry_parity_digest": str(metadata.get("endpoint_runtime_entry_parity_digest", "")),
+        "runtime_entry_parity_sample_count": int(
+            metadata.get("endpoint_runtime_entry_parity_sample_count", 0) or 0
+        ),
+    }
+    if feature_key != "z_id":
+        raise ValueError("endpoint_accept_v1 requires feature_key=z_id")
+    if inference_identity["known_class_count"] != int(fused_tensor.size(0)):
+        raise ValueError("endpoint_accept_v1 known-class count mismatch")
+    if len(inference_identity["class_id_to_tx"]) != int(fused_tensor.size(0)):
+        raise ValueError("endpoint_accept_v1 class-to-TX mapping is incomplete")
+    if inference_identity["logit_class_order"] != list(range(int(fused_tensor.size(0)))):
+        raise ValueError("endpoint_accept_v1 logit class order mismatch")
+    if len(checkpoint_sha256) != 64 or any(ch not in "0123456789abcdefABCDEF" for ch in checkpoint_sha256):
+        raise ValueError("endpoint_accept_v1 source checkpoint SHA256 is invalid")
+    if not inference_identity["run_id"] or not inference_identity["candidate_id"]:
+        raise ValueError("endpoint_accept_v1 requires run_id and candidate_id")
+    if not inference_identity["classification_head_contract"]:
+        raise ValueError("endpoint_accept_v1 classification-head contract is missing")
+    if inference_identity["checkpoint_load_strict"] is not True:
+        raise ValueError("endpoint_accept_v1 requires strict checkpoint loading")
+    parity_digest = inference_identity["runtime_entry_parity_digest"]
+    if require_runtime_parity and (
+        len(parity_digest) != 64
+        or any(ch not in "0123456789abcdefABCDEF" for ch in parity_digest)
+        or inference_identity["runtime_entry_parity_sample_count"] <= 0
+    ):
+        raise ValueError("endpoint_accept_v1 runtime entry parity evidence is missing")
+    centers_hash = hashlib.sha256(fused_tensor.numpy().tobytes()).hexdigest()
+    component_rows = []
+    enabled_by_class = [0 for _ in range(fused_tensor.size(0))]
+    for class_id, rows in enumerate(components):
+        for row_idx, row in enumerate(rows or []):
+            component_id = int(row.get("component_id", row_idx))
+            mu_obj = row.get("mu", fused_tensor[class_id, component_id])
+            mu_raw = torch.as_tensor(mu_obj).detach().float().cpu().view(-1)
+            if (
+                mu_raw.numel() != fused_tensor.size(-1)
+                or not torch.isfinite(mu_raw).all()
+                or float(mu_raw.norm().item()) <= 1e-8
+            ):
+                raise ValueError(f"endpoint_accept_v1 component center invalid: {class_id}:{component_id}")
+            mu = F.normalize(mu_raw.view(1, -1), dim=1).squeeze(0)
+            radii = {
+                "r_core_deg": float(row.get("r_core_deg", float("nan"))),
+                "r_accept_deg": float(row.get("r_accept_deg", row.get("accept_radius_deg", float("nan")))),
+                "r_tail_deg": float(row.get("r_tail_deg", row.get("radius_deg", float("nan")))),
+                "r_vac_deg": float(row.get("r_vac_deg", float("nan"))),
+            }
+            enabled_obj = row.get("accept_enabled", False)
+            if type(enabled_obj) is not bool:
+                raise ValueError(f"endpoint_accept_v1 component accept_enabled must be bool: {class_id}:{component_id}")
+            enabled = enabled_obj
+            if enabled:
+                values = tuple(radii.values())
+                if not all(math.isfinite(value) for value in values):
+                    raise ValueError(f"endpoint_accept_v1 component radii missing: {class_id}:{component_id}")
+                if not (0.0 <= radii["r_core_deg"] <= radii["r_accept_deg"] <= radii["r_tail_deg"] <= radii["r_vac_deg"]):
+                    raise ValueError(f"endpoint_accept_v1 component radius order invalid: {class_id}:{component_id}")
+                if radii["r_accept_deg"] <= 0.0 or radii["r_vac_deg"] > 180.0:
+                    raise ValueError(f"endpoint_accept_v1 component radius range invalid: {class_id}:{component_id}")
+                for key in ("density_p05", "density_p10", "nll_p95", "nll_tail_p95"):
+                    value = float(row.get(key, float("nan")))
+                    if not math.isfinite(value):
+                        raise ValueError(f"endpoint_accept_v1 component {key} missing: {class_id}:{component_id}")
+                    if key.startswith("density_") and not 0.0 <= value <= 1.0:
+                        raise ValueError(f"endpoint_accept_v1 component {key} outside [0,1]: {class_id}:{component_id}")
+                    if key.startswith("nll_") and value < 0.0:
+                        raise ValueError(f"endpoint_accept_v1 component {key} must be non-negative: {class_id}:{component_id}")
+                enabled_by_class[class_id] += 1
+            component_rows.append(
+                {
+                    "class_id": int(class_id),
+                    "component_id": component_id,
+                    "center": [float(value) for value in mu.tolist()],
+                    "source_domains": [int(v) for v in row.get("source_domains", row.get("domains", []))],
+                    **radii,
+                    "density_p05": row.get("density_p05"),
+                    "density_p10": row.get("density_p10"),
+                    "nll_p95": row.get("nll_p95"),
+                    "nll_tail_p95": row.get("nll_tail_p95"),
+                    "nearest_other_deg": row.get("nearest_other_deg"),
+                    "accept_enabled": enabled,
+                }
+            )
+    if not component_rows:
+        raise ValueError("endpoint_accept_v1 requires at least one local component")
+    missing_classes = [class_id for class_id, count in enumerate(enabled_by_class) if count <= 0]
+    if missing_classes:
+        raise ValueError(f"endpoint_accept_v1 has no enabled component for classes: {missing_classes}")
+    calibration = package.get("endpoint_calibration")
+    gate_thresholds = package.get("endpoint_gate_thresholds")
+    if not isinstance(calibration, Mapping):
+        raise ValueError("endpoint_accept_v1 requires source-val calibration evidence")
+    if str(calibration.get("threshold_source", "")) != "source_val_only" or str(
+        calibration.get("calibration_split", "")
+    ) != "source_val":
+        raise ValueError("endpoint_accept_v1 calibration must be source_val_only/source_val")
+    if not isinstance(gate_thresholds, Mapping) or not gate_thresholds:
+        raise ValueError("endpoint_accept_v1 requires calibrated gate thresholds")
+    energy = gate_thresholds.get("energy_max_by_class")
+    if not isinstance(energy, Mapping) or any(str(class_id) not in energy for class_id in range(fused_tensor.size(0))):
+        raise ValueError("endpoint_accept_v1 requires per-class energy thresholds")
+    if any(not math.isfinite(float(energy[str(class_id)])) for class_id in range(fused_tensor.size(0))):
+        raise ValueError("endpoint_accept_v1 energy thresholds must be finite")
+    for key in (
+        "energy_temperature",
+        "logit_margin_core_min",
+        "logit_margin_tail_min",
+        "geo_margin_core_min_deg",
+        "geo_margin_tail_min_deg",
+    ):
+        if not math.isfinite(float(gate_thresholds.get(key, float("nan")))):
+            raise ValueError(f"endpoint_accept_v1 gate threshold missing: {key}")
+    if float(gate_thresholds["energy_temperature"]) <= 0.0:
+        raise ValueError("endpoint_accept_v1 energy_temperature must be positive")
+    if str(gate_thresholds.get("energy_formula_id", "")) != "negative_logsumexp_temperature_v1":
+        raise ValueError("endpoint_accept_v1 energy formula mismatch")
+    max_radius_ratio = float(gate_thresholds.get("max_radius_to_inter_ratio", float("nan")))
+    if not math.isfinite(max_radius_ratio) or not 0.0 < max_radius_ratio <= 0.5:
+        raise ValueError("endpoint_accept_v1 max radius-to-inter ratio must be in (0,0.5]")
+    for key in (
+        "logit_margin_core_min",
+        "logit_margin_tail_min",
+        "geo_margin_core_min_deg",
+        "geo_margin_tail_min_deg",
+    ):
+        if float(gate_thresholds[key]) < 0.0:
+            raise ValueError(f"endpoint_accept_v1 gate threshold must be non-negative: {key}")
+    for key in ("use_density_gate", "use_nll_gate", "use_energy_gate", "use_geo_margin_gate", "reject_nan"):
+        if gate_thresholds.get(key) is not True:
+            raise ValueError(f"endpoint_accept_v1 requires {key}=true")
+    if gate_thresholds.get("allow_tail_auto_accept") is not False:
+        raise ValueError("endpoint_accept_v1 requires allow_tail_auto_accept=false")
+    if str(gate_thresholds.get("density_formula_id", "")) != "exp_neg_sq_normalized_angle_v1":
+        raise ValueError("endpoint_accept_v1 density formula mismatch")
+    if str(gate_thresholds.get("nll_formula_id", "")) != "half_sq_normalized_angle_v1":
+        raise ValueError("endpoint_accept_v1 NLL formula mismatch")
+    enabled_rows = [row for row in component_rows if row["accept_enabled"]]
+    for row in enabled_rows:
+        own = torch.tensor(row["center"], dtype=torch.float32)
+        other_rows = [candidate for candidate in enabled_rows if candidate["class_id"] != row["class_id"]]
+        if not other_rows:
+            raise ValueError("endpoint_accept_v1 requires another-class component for every class")
+        other = torch.tensor([candidate["center"] for candidate in other_rows], dtype=torch.float32)
+        nearest_inter = math.degrees(
+            float(torch.acos((other @ own).clamp(-1.0 + 1e-6, 1.0 - 1e-6)).min().item())
+        )
+        ratio = float(row["r_accept_deg"]) / max(1e-8, nearest_inter)
+        if ratio > max_radius_ratio + 1e-8:
+            raise ValueError(
+                "endpoint_accept_v1 component radius-to-inter ratio unsafe: "
+                f"class={row['class_id']} component={row['component_id']} ratio={ratio:.6f}"
+            )
+        row["nearest_other_deg"] = nearest_inter
+        row["radius_to_inter_ratio"] = ratio
+    return {
+        "inference_identity": inference_identity,
+        "accept_policy": "local_component",
+        "component_radius_key": "r_accept_deg",
+        "global_ball_accept": False,
+        "centers_hash": centers_hash,
+        "components": component_rows,
+        "gate_thresholds": _as_jsonable(gate_thresholds),
+        "calibration": _as_jsonable(calibration),
+        "reason_codes": list(_ENDPOINT_REASON_CODES),
+    }
+
+
+def attach_endpoint_accept_v1_manifest(
+    package: Mapping[str, Any],
+    *,
+    threshold_source: str = "source_val_only",
+    calibration_split: str = "source_val",
+    boundary_version: str = "endpoint_accept_v1.1",
+    require_runtime_parity: bool = True,
+) -> Dict[str, Any]:
+    """Attach one fail-closed boundary contract shared by export/eval/runtime."""
+
+    if str(boundary_version) not in _SUPPORTED_ENDPOINT_BOUNDARY_VERSIONS:
+        raise ValueError(f"unsupported endpoint_accept_v1 boundary version: {boundary_version}")
+    out = dict(package)
+    boundary = _endpoint_boundary_spec(out, require_runtime_parity=bool(require_runtime_parity))
+    canonical = json.dumps(boundary, ensure_ascii=True, sort_keys=True, separators=(",", ":"))
+    boundary_hash = hashlib.sha256(canonical.encode("utf-8")).hexdigest()
+    entry = {"boundary_version": str(boundary_version), "boundary_hash": boundary_hash}
+    manifest = {
+        "schema_version": 1,
+        "policy_id": "endpoint_accept_v1",
+        "boundary_version": str(boundary_version),
+        "boundary_hash": boundary_hash,
+        "threshold_source": str(threshold_source),
+        "calibration_split": str(calibration_split),
+        "fail_closed": True,
+        "loss_gate_exported": False,
+        "accept_policy": str(boundary["accept_policy"]),
+        "component_radius_key": str(boundary["component_radius_key"]),
+        "global_ball_accept": bool(boundary["global_ball_accept"]),
+        "inference_identity": _as_jsonable(boundary["inference_identity"]),
+        "reason_codes": list(_ENDPOINT_REASON_CODES),
+        "gate_thresholds": _as_jsonable(boundary["gate_thresholds"]),
+        "calibration_evidence": _as_jsonable(boundary["calibration"]),
+        "entry_points": {
+            "train_export": dict(entry),
+            "offline_eval": dict(entry),
+            "runtime_inference": dict(entry),
+        },
+    }
+    out["endpoint_accept_v1"] = manifest
+    metadata = dict(out.get("metadata", {}) or {})
+    metadata.update(
+        {
+            "endpoint_policy_id": "endpoint_accept_v1",
+            "endpoint_boundary_version": str(boundary_version),
+            "endpoint_boundary_hash": boundary_hash,
+            "endpoint_threshold_source": str(threshold_source),
+            "endpoint_calibration_split": str(calibration_split),
+            "endpoint_entry_parity": True,
+            "endpoint_accept_boundary_exported": True,
+            "final_reject_boundary": False,
+            "true_unknown_validated": False,
+            "loss_gate_exported": False,
+        }
+    )
+    out["metadata"] = metadata
+    out["schema_version"] = max(2, int(out.get("schema_version", 1) or 1))
+    return out
+
+
+def verify_endpoint_accept_v1_manifest(package: Mapping[str, Any]) -> Dict[str, Any]:
+    manifest = package.get("endpoint_accept_v1", {})
+    if not isinstance(manifest, Mapping):
+        raise ValueError("endpoint_accept_v1 manifest is missing")
+    if str(manifest.get("policy_id", "")) != "endpoint_accept_v1":
+        raise ValueError("endpoint_accept_v1 policy id mismatch")
+    if type(manifest.get("schema_version")) is not int or manifest.get("schema_version") != 1:
+        raise ValueError("endpoint_accept_v1 schema version mismatch")
+    if manifest.get("fail_closed") is not True or manifest.get("loss_gate_exported") is not False:
+        raise ValueError("endpoint_accept_v1 must be fail-closed and must not export a loss gate")
+    if str(manifest.get("threshold_source", "")) != "source_val_only" or str(
+        manifest.get("calibration_split", "")
+    ) != "source_val":
+        raise ValueError("endpoint_accept_v1 threshold provenance mismatch")
+    if str(manifest.get("accept_policy", "")) != "local_component" or manifest.get("global_ball_accept") is not False:
+        raise ValueError("endpoint_accept_v1 must use local components without global-ball acceptance")
+    if str(manifest.get("component_radius_key", "")) != "r_accept_deg":
+        raise ValueError("endpoint_accept_v1 component radius key mismatch")
+    if not isinstance(manifest.get("inference_identity"), Mapping):
+        raise ValueError("endpoint_accept_v1 inference identity is missing")
+    version = str(manifest.get("boundary_version", ""))
+    if version not in _SUPPORTED_ENDPOINT_BOUNDARY_VERSIONS:
+        raise ValueError(f"unsupported endpoint_accept_v1 boundary version: {version or '<missing>'}")
+    if tuple(manifest.get("reason_codes", ())) != tuple(_ENDPOINT_REASON_CODES):
+        raise ValueError("endpoint_accept_v1 reason-code schema mismatch")
+    boundary = _endpoint_boundary_spec(package)
+    canonical = json.dumps(boundary, ensure_ascii=True, sort_keys=True, separators=(",", ":"))
+    expected_hash = hashlib.sha256(canonical.encode("utf-8")).hexdigest()
+    actual_hash = str(manifest.get("boundary_hash", ""))
+    if actual_hash != expected_hash:
+        raise ValueError("endpoint_accept_v1 boundary hash mismatch")
+    manifest_gate = json.dumps(manifest.get("gate_thresholds", {}), ensure_ascii=True, sort_keys=True, separators=(",", ":"))
+    package_gate = json.dumps(boundary["gate_thresholds"], ensure_ascii=True, sort_keys=True, separators=(",", ":"))
+    manifest_calibration = json.dumps(
+        manifest.get("calibration_evidence", {}), ensure_ascii=True, sort_keys=True, separators=(",", ":")
+    )
+    package_calibration = json.dumps(
+        boundary["calibration"], ensure_ascii=True, sort_keys=True, separators=(",", ":")
+    )
+    manifest_identity = json.dumps(
+        manifest.get("inference_identity", {}), ensure_ascii=True, sort_keys=True, separators=(",", ":")
+    )
+    package_identity = json.dumps(
+        boundary["inference_identity"], ensure_ascii=True, sort_keys=True, separators=(",", ":")
+    )
+    if (
+        manifest_gate != package_gate
+        or manifest_calibration != package_calibration
+        or manifest_identity != package_identity
+    ):
+        raise ValueError("endpoint_accept_v1 manifest/package threshold evidence mismatch")
+    for entry in ("train_export", "offline_eval", "runtime_inference"):
+        row = manifest.get("entry_points", {}).get(entry, {})
+        if str(row.get("boundary_hash", "")) != expected_hash or str(row.get("boundary_version", "")) != version:
+            raise ValueError(f"endpoint_accept_v1 entry parity mismatch: {entry}")
+    return dict(manifest)
 
 
 def build_phase2_prototype_export(

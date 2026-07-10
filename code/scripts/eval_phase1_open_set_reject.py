@@ -48,6 +48,9 @@ def _load_features(path: str | Path) -> dict[str, Any]:
             "sat_scenarios": _as_str_array(pick("sat_scenarios", np.asarray([""] * n)), n),
             "channel_views": _as_str_array(pick("channel_views", np.asarray([""] * n)), n),
         }
+        logits_key = "logits" if "logits" in data.files else "tx_logits" if "tx_logits" in data.files else ""
+        if logits_key:
+            payload["logits"] = torch.as_tensor(np.asarray(data[logits_key]), dtype=torch.float32)
         if "manifest_json" in data.files:
             manifest_raw = data["manifest_json"]
             try:
@@ -172,32 +175,69 @@ def evaluate(args: argparse.Namespace) -> dict[str, Any]:
     class_to_tx = _class_tx_map(source_tx_ids)
     tx_to_class = {v: k for k, v in class_to_tx.items()}
 
-    bank = VacuumGaussianPrototypeBank.from_phase2_package(args.prototype_package)
-    bank, calibration = _calibrate_bank(
-        bank,
-        z,
-        tx_ids,
-        roles,
-        source_tx_ids=source_tx_ids,
-        calibration_roles=_parse_roles(args.calibration_roles),
-        core_quantile=float(args.core_quantile),
-        max_core_radius_deg=float(args.max_core_radius_deg),
-        min_samples_per_component=int(args.min_samples_per_component),
-    )
-    scores, nearest = _nearest_scores(bank, z)
-    gate = LocalComponentHardGate(
-        bank,
-        GateThresholds(
-            logit_margin_core_min=float(args.min_geo_margin_deg),
-            logit_margin_tail_min=float(args.min_geo_margin_deg),
-            geo_margin_core_min_deg=float(args.min_geo_margin_deg),
-            geo_margin_tail_min_deg=float(args.min_geo_margin_deg),
-            allow_tail_auto_accept=False,
-            use_density_gate=not bool(args.disable_density_gate),
-            use_nll_gate=not bool(args.disable_nll_gate),
-            use_energy_gate=False,
-        ),
-    )
+    if str(args.endpoint_mode) == "endpoint_accept_v1":
+        if args.disable_density_gate or args.disable_nll_gate:
+            raise ValueError("endpoint_accept_v1 forbids runtime gate disabling")
+        if bool(args.accept_tail_review):
+            raise ValueError("endpoint_accept_v1 forbids accepting REVIEW_KNOWN_TAIL")
+        scores = payload.get("logits")
+        if not torch.is_tensor(scores) or scores.ndim != 2 or int(scores.size(0)) != int(z.size(0)):
+            raise ValueError("endpoint_accept_v1 offline evaluation requires feature_npz logits [N,C]")
+        feature_manifest = payload.get("manifest", {})
+        feature_class_map = feature_manifest.get("class_id_to_tx")
+        feature_logit_order = feature_manifest.get("logit_class_order")
+        if not isinstance(feature_class_map, list) or not isinstance(feature_logit_order, list):
+            raise ValueError("endpoint_accept_v1 feature manifest requires class_id_to_tx and logit_class_order")
+        if feature_manifest.get("checkpoint_load_strict") is not True:
+            raise ValueError("endpoint_accept_v1 feature export requires strict checkpoint loading")
+        if list(feature_class_map) != list(source_tx_ids):
+            raise ValueError("feature manifest class_id_to_tx differs from --source_tx_ids")
+        runtime_identity = {
+            "feature_key": str(feature_manifest.get("feature_key", "")),
+            "feature_dim": int(z.size(1)) if z.ndim == 2 else 0,
+            "source_checkpoint_sha256": str(feature_manifest.get("source_checkpoint_sha256", "")),
+            "class_id_to_tx": list(feature_class_map),
+            "logit_class_order": list(feature_logit_order),
+            "classification_head_contract": str(feature_manifest.get("classification_head_contract", "")),
+            "checkpoint_load_strict": feature_manifest.get("checkpoint_load_strict"),
+        }
+        gate = LocalComponentHardGate.from_offline_eval(
+            args.prototype_package, runtime_identity=runtime_identity
+        )
+        bank = gate.bank
+        calibration = {
+            "mode": "artifact_source_val_only",
+            "endpoint_boundary_version": gate.boundary_version,
+            "endpoint_boundary_hash": gate.boundary_hash,
+        }
+    else:
+        bank = VacuumGaussianPrototypeBank.from_phase2_package(args.prototype_package)
+        bank, calibration = _calibrate_bank(
+            bank,
+            z,
+            tx_ids,
+            roles,
+            source_tx_ids=source_tx_ids,
+            calibration_roles=_parse_roles(args.calibration_roles),
+            core_quantile=float(args.core_quantile),
+            max_core_radius_deg=float(args.max_core_radius_deg),
+            min_samples_per_component=int(args.min_samples_per_component),
+        )
+        scores, _ = _nearest_scores(bank, z)
+        gate = LocalComponentHardGate.for_diagnostic_unverified(
+            bank,
+            GateThresholds(
+                logit_margin_core_min=float(args.min_geo_margin_deg),
+                logit_margin_tail_min=float(args.min_geo_margin_deg),
+                geo_margin_core_min_deg=float(args.min_geo_margin_deg),
+                geo_margin_tail_min_deg=float(args.min_geo_margin_deg),
+                allow_tail_auto_accept=False,
+                use_density_gate=not bool(args.disable_density_gate),
+                use_nll_gate=not bool(args.disable_nll_gate),
+                use_energy_gate=False,
+            ),
+        )
+    _, nearest = _nearest_scores(bank, z)
     decisions = gate.batch_decide(z, scores)
 
     known_roles = _parse_roles(args.known_query_roles)
@@ -260,6 +300,7 @@ def evaluate(args: argparse.Namespace) -> dict[str, Any]:
     metrics = {
         "phase": "phase1_only_open_set_reject",
         "threshold_scope": "source_calibrated_only_no_target_support_no_unknown_query_tuning",
+        "endpoint_mode": str(args.endpoint_mode),
         "feature_npz": str(args.feature_npz),
         "prototype_package": str(args.prototype_package),
         "source_tx_ids": source_tx_ids,
@@ -311,6 +352,11 @@ def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
     parser.add_argument("--feature_npz", required=True)
     parser.add_argument("--prototype_package", required=True)
     parser.add_argument("--source_tx_ids", required=True)
+    parser.add_argument(
+        "--endpoint_mode",
+        choices=["endpoint_accept_v1", "diagnostic_dynamic_gate_v0"],
+        default="endpoint_accept_v1",
+    )
     parser.add_argument("--unknown_tx_ids", default="")
     parser.add_argument("--known_query_roles", default="target_old")
     parser.add_argument("--unknown_query_roles", default="target_unknown")

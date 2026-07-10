@@ -26,6 +26,9 @@ def test_v2full32_declares_full_mechanism_source_only_protocol():
     assert "base=EPOC_CONCAT_SAT_OSFIX_V2" in out
     assert "phase1_dataset=ManySig_only" in out
     assert "source_only=1" in out
+    assert "rho_label=0.10" in out
+    assert "--labeled_ratio 0.08" in out
+    assert "--unlabeled_ratio 0.72" in out
     assert "concat_sa=1" in out
     assert "concat_sat_mode=full_2b_core_domain" in out
     assert "concat_sat_ce_only=0" in out
@@ -63,7 +66,20 @@ def test_v2full32_declares_full_mechanism_source_only_protocol():
     assert "--tail_safety_state_machine true" in out
     assert "--tail_safety_p99_expansion_block_final_delta 2.0" in out
     assert "--tail_safety_p99_expansion_block_best_delta 3.5" in out
+    assert "--tail_safety_reference_window 5" in out
+    assert "--tail_rollback_enabled true" in out
     assert "--os_eff_min_budget 0.15" in out
+    assert "--os_budget_controller true" in out
+    assert "--os_gradient_surgery true" in out
+    assert "--u_geometry_all_valid_queries true" in out
+    assert "--u_unlabeled_shuffle true" in out
+    assert "--direct_metric_multiview_separate true" in out
+    assert "--source_episode_local_accept_weight 0.35" in out
+    assert "--source_episode_local_density_weight 0.25" in out
+    assert "--endpoint_require_artifact_on_export true" in out
+    assert "--phase1_source_val_selection_only true" in out
+    assert "--best_metric source_val_sat_hmean" in out
+    assert "--enable_joint_safe_guard false" in out
     assert "--u_tri_state_required true" in out
     assert "--u_direct_idle_blocks_promotion true" in out
     assert "--source_episode_density_gate true" in out

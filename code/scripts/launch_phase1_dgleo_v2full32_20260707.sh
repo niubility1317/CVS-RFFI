@@ -50,22 +50,57 @@ PHASE1_V2_FLAGS=(
   --tail_safety_warning_patience 2
   --tail_safety_rollback_patience 1
   --tail_safety_max_rollbacks 1
-  --tail_safety_p95_target_deg 54
-  --tail_safety_p99_target_deg 70
-  --tail_safety_cvar_target_deg 56
-  --tail_safety_proxy_vaccept_target 0.35
+  --tail_safety_p95_target_deg 76
+  --tail_safety_p99_target_deg 86
+  --tail_safety_cvar_target_deg 80
+  --tail_safety_proxy_vaccept_target 0.65
   --tail_safety_p99_expansion_block_final_delta 2.0
   --tail_safety_p99_expansion_block_best_delta 3.5
   --tail_safety_cvar_expansion_block_final_delta 4.0
   --tail_safety_cvar_expansion_block_best_delta 6.0
+  --tail_safety_reference_window 5
+  --tail_rollback_enabled true
+  --tail_rollback_cooldown_epochs 2
+  --tail_rollback_closed_scale 0.60
   --os_eff_min_budget 0.15
+  --os_budget_controller true
+  --os_budget_max_scale 4.0
+  --os_budget_min_closed_scale 0.40
+  --os_gradient_surgery true
+  --os_gradient_surgery_interval 1
   --phase1_v2_os_eff_all_phases true
   --phase1_v2_guard_blocks_final true
   --u_tri_state_required true
   --u_direct_idle_blocks_promotion true
+  --u_tri_min_core_rate 0.05
+  --u_tri_max_core_rate 0.95
+  --u_tri_min_ambiguous_rate 0.01
+  --u_tri_max_outside_rate 0.80
+  --u_tri_min_class_coverage 2
+  --u_tri_min_domain_coverage 2
+  --u_tri_max_pair_disagreement_rate 0.25
+  --u_tri_min_pseudo_component_agreement 0.80
   --source_episode_density_gate true
   --source_episode_overflow_warn 0.90
   --source_episode_min_local_components 4
+  --source_episode_local_compact_weight 0.40
+  --source_episode_local_invariant_weight 0.25
+  --source_episode_local_inter_weight 0.20
+  --source_episode_local_inter_margin_deg 35
+  --source_episode_local_accept_weight 0.35
+  --source_episode_local_density_weight 0.25
+  --direct_metric_multiview_separate true
+  --direct_metric_clean_weight 1.0
+  --direct_metric_sat_weight 1.0
+  --u_geometry_all_valid_queries true
+  --u_unlabeled_shuffle true
+  --u_quarantine_core_accept_target 0.82
+  --endpoint_require_artifact_on_export true
+  --endpoint_calibration_min_component_samples 4
+  --endpoint_calibration_min_class_samples 4
+  --endpoint_calibration_core_quantile 0.80
+  --endpoint_calibration_accept_quantile 0.95
+  --endpoint_calibration_tail_quantile 0.99
   --feasibility_gate true
   --feasibility_stage audit
   --feasibility_relaxed_pass false
@@ -119,13 +154,13 @@ launch_candidate() {
   u_dm_on="$(awk -v v="${u_dm}" 'BEGIN { print ((v + 0) > 0.0) ? 1 : 0 }')"
   u_q_on="$(awk -v v="${u_q}" 'BEGIN { print ((v + 0) > 0.0) ? 1 : 0 }')"
 
-  echo "[V2FULL32-CANDIDATE] id=${cid} group=${group} strength=${strength} route=${route} algorithm=DGLEO_V2FULL32 base=EPOC_CONCAT_SAT_OSFIX_V2 phase1_dataset=ManySig_only source_only=1 dg_primary=1 leo_primary=1 concat_sa=1 concat_sat_mode=full_2b_core_domain concat_sat_full_loss=1 concat_sat_ce_only=0 direct_open_set_metric_loss=${dm_on} source_episode_loss=${source_on} proxy_unknown_loss=${proxy_on} direct_metric_primary=proxy_vaccept,source_overflow,bridge_accept,low_density_accept,tail_overflow_accept,radius_inter,zid_quantiles unlabeled_domain_supervision=${u_domain_on} unlabeled_satellite_consistency=${u_sat_on} unlabeled_direct_metric_accept=${u_dm_on} unlabeled_quarantine_accept=${u_q_on} trusted_core_ambiguous_tail_outside_reject=1 domain_loss_on=1 adv_loss_on=1 phase1_v2_hard_gates=1 endpoint_accept_v1=1 tail_safety_state_machine=1 os_eff_min_budget=0.15 u_tri_state_required=1 feasibility_gate=1 feasibility_stage=audit final_export_fail_closed=1 real_unknown_classes_in_training=0 target_receiver_samples_in_training=0 target_unknown_training_count=0 manytx_in_training=0 proxy_unknown_real_tx_calibration=0 virtual_unknown_only=1 stage2_unknown_query_eval_only=1 stage2_success_claim=0 deployment_success_claim=0 gpu=${gpu}"
+  echo "[V2FULL32-CANDIDATE] id=${cid} group=${group} strength=${strength} route=${route} algorithm=DGLEO_V2FULL32 base=EPOC_CONCAT_SAT_OSFIX_V2 phase1_dataset=ManySig_only source_only=1 rho_label=0.10 dg_primary=1 leo_primary=1 concat_sa=1 concat_sat_mode=full_2b_core_domain concat_sat_full_loss=1 concat_sat_ce_only=0 direct_open_set_metric_loss=${dm_on} source_episode_loss=${source_on} proxy_unknown_loss=${proxy_on} direct_metric_primary=proxy_vaccept,source_overflow,bridge_accept,low_density_accept,tail_overflow_accept,radius_inter,zid_quantiles unlabeled_domain_supervision=${u_domain_on} unlabeled_satellite_consistency=${u_sat_on} unlabeled_direct_metric_accept=${u_dm_on} unlabeled_quarantine_accept=${u_q_on} trusted_core_ambiguous_tail_outside_reject=1 domain_loss_on=1 adv_loss_on=1 phase1_v2_hard_gates=1 endpoint_accept_v1=1 tail_safety_state_machine=1 os_eff_min_budget=0.15 u_tri_state_required=1 feasibility_gate=1 feasibility_stage=audit final_export_fail_closed=1 real_unknown_classes_in_training=0 target_receiver_samples_in_training=0 target_unknown_training_count=0 manytx_in_training=0 proxy_unknown_real_tx_calibration=0 virtual_unknown_only=1 stage2_unknown_query_eval_only=1 stage2_success_claim=0 deployment_success_claim=0 gpu=${gpu}"
 
   CMD=(env "PYTHONPATH=${ROOT}/code:${ROOT}:${PYTHONPATH:-}" "CUDA_VISIBLE_DEVICES=${gpu}" "${PYTHON}" -u "${ROOT}/code/SSDG/train_ssdg.py"
     --wisig_pkl "${WISIG_PKL}"
     --split_mode tx_rx_day_1_7_2
-    --labeled_ratio 0.10
-    --unlabeled_ratio 0.70
+    --labeled_ratio 0.08
+    --unlabeled_ratio 0.72
     --source_val_ratio 0.20
     --baseline_ckpt "${TEACHER_CKPT}"
     --from_scratch false
@@ -141,8 +176,13 @@ launch_candidate() {
     --weight_decay 0.00008
     --batch_size 112
     --eval_batch_size 256
-    --best_metric joint_safe
-    --enable_joint_safe_guard true
+    --best_metric source_val_sat_hmean
+    --phase1_source_val_selection_only true
+    --enable_joint_safe_guard false
+    --test_eval_policy interval_final
+    --test_eval_interval 0
+    --test_eval_final_window 1
+    --test_eval_final_interval 1
     --joint_guard_require_satellite true
     --joint_guard_min_strict_udu 80
     --joint_guard_min_receiver_floor 68

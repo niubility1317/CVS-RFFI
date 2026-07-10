@@ -2,14 +2,18 @@ from __future__ import annotations
 
 import argparse
 import csv
+import hashlib
 import importlib
 import json
 import math
+import random
 from collections import defaultdict
 from copy import deepcopy
 import sys
 from pathlib import Path
 from typing import Any, Dict, List, Mapping, Optional, Sequence, Tuple
+
+import numpy as np
 
 if __package__ in (None, ""):
     sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
@@ -44,7 +48,6 @@ try:
     from training_controls import parse_sat_scenarios
     from baseline_origin_sat_view import parse_sat_view_schedule
     from concat_sat_channel_aug import ConcatSatChannelAugment
-    from training_test_eval import should_run_training_test
     from cvsrffi.tensors import build_domain_label_map
     from cvsrffi.eval import (
         aggregate_named_stats,
@@ -60,6 +63,8 @@ try:
         PrototypeMemoryBank,
         compute_core_losses,
         direct_metric_acceptance_loss,
+        multiview_direct_metric_acceptance_loss,
+        multiview_source_episode_three_sigma_loss,
         fishr_logit_gradient_variance_loss,
         make_soft_unknown_mixup,
         open_world_feature_space_loss,
@@ -71,7 +76,17 @@ try:
         unlabeled_known_acceptance_quarantine_loss,
         zid_compactness_loss,
     )
-    from cvsrffi.phase2_prototypes import PrototypeFusionConfig, export_phase2_prototypes, fuse_tx_domain_prototypes, save_phase2_prototype_export
+    from cvsrffi.phase2_prototypes import (
+        PrototypeFusionConfig,
+        attach_endpoint_accept_v1_manifest,
+        calibrate_endpoint_accept_v1,
+        export_phase2_prototypes,
+        extract_endpoint_calibration_features,
+        fuse_tx_domain_prototypes,
+        save_phase2_prototype_export,
+        verify_endpoint_accept_v1_manifest,
+    )
+    from cvsrffi.hard_gate import LocalComponentHardGate
     from cvsrffi.ssdg_guard import (
         detect_one_epoch_drop,
         detect_paic_variance_guard,
@@ -89,6 +104,7 @@ try:
         assess_phase1_v2_final_export_policy,
         assess_source_episode_density_gate,
         assess_unlabeled_tri_state,
+        compute_open_set_budget_action,
         should_skip_phase1_v2_final_export,
     )
     from cvsrffi.schedule import (
@@ -107,6 +123,8 @@ except ModuleNotFoundError:
     WiSigCompactDataset = WiSigSubsetDataset = None
     PrototypeMemoryBank = None
     direct_metric_acceptance_loss = None
+    multiview_direct_metric_acceptance_loss = None
+    multiview_source_episode_three_sigma_loss = None
     make_soft_unknown_mixup = None
     open_world_feature_space_loss = None
     proxy_unknown_energy_loss = None
@@ -119,13 +137,15 @@ except ModuleNotFoundError:
     fuse_tx_domain_prototypes = None
     save_phase2_prototype_export = None
     PrototypeFusionConfig = None
+    attach_endpoint_accept_v1_manifest = verify_endpoint_accept_v1_manifest = None
+    LocalComponentHardGate = None
+    calibrate_endpoint_accept_v1 = extract_endpoint_calibration_features = None
     _resolve_days = _resolve_rxs = load_wisig_compact_pkl = make_wisig_trainval_test_by_day_rx = None
     build_baseline_model = domain_from_extra = ensure_dir = load_checkpoint = None
     mean_logs = merge_checkpoint_args = move_batch = resolve_device = save_payload = set_seed = None
     parse_sat_scenarios = None
     parse_sat_view_schedule = None
     ConcatSatChannelAugment = None
-    should_run_training_test = None
     build_domain_label_map = evaluate_loader = evaluate_named_loaders = make_loader = parse_csv_indices = None
     apply_sat_channel_for_scenario = fishr_logit_gradient_variance_loss = make_torch_generator = None
     aggregate_named_stats = compute_core_losses = evaluate_sat_scenarios = None
@@ -136,6 +156,7 @@ except ModuleNotFoundError:
     assess_open_set_effective_budget = assess_unlabeled_tri_state = None
     assess_phase1_v2_final_export_policy = None
     assess_source_episode_density_gate = None
+    compute_open_set_budget_action = None
     should_skip_phase1_v2_final_export = None
     one_way_kl_from_teacher = None
     build_aug_base_cfg = build_stage_state = configure_augmentor_for_epoch = configure_mixstyle_for_epoch = None
@@ -148,9 +169,9 @@ def build_arg_parser() -> argparse.ArgumentParser:
     parser.add_argument("--baseline_ckpt", type=str, default="", help="Optional checkpoint. Empty means train SSDG from scratch.")
     parser.add_argument("--from_scratch", type=str2bool, default=True)
     parser.add_argument("--split_mode", type=str, default="tx_rx_day_1_6_3", choices=["tx_rx_day_1_6_3", "tx_rx_day_1_7_2"])
-    parser.add_argument("--labeled_ratio", type=float, default=0.10)
-    parser.add_argument("--unlabeled_ratio", type=float, default=0.60)
-    parser.add_argument("--source_val_ratio", type=float, default=0.30)
+    parser.add_argument("--labeled_ratio", type=float, default=0.08)
+    parser.add_argument("--unlabeled_ratio", type=float, default=0.72)
+    parser.add_argument("--source_val_ratio", type=float, default=0.20)
     parser.add_argument("--pseudo_threshold_mode", type=str, default="rx_day_quantile", choices=["global", "rx_day_quantile"])
     parser.add_argument("--pseudo_quantile", type=float, default=0.70)
     parser.add_argument("--tau_conf", type=float, default=0.0, help="Alias for --tau_min used by older launchers.")
@@ -197,6 +218,9 @@ def build_arg_parser() -> argparse.ArgumentParser:
     parser.add_argument("--u_quarantine_accept_target", type=float, default=0.20)
     parser.add_argument("--u_quarantine_cvar_alpha", type=float, default=0.25)
     parser.add_argument("--u_quarantine_accept_temperature", type=float, default=0.04)
+    parser.add_argument("--u_quarantine_core_accept_target", type=float, default=0.82)
+    parser.add_argument("--u_geometry_all_valid_queries", type=str2bool, default=False)
+    parser.add_argument("--u_unlabeled_shuffle", type=str2bool, default=True)
     parser.add_argument("--u_sat_zid_cons_weight", type=float, default=0.25)
     parser.add_argument("--lambda_domain", "--lambda_dom", dest="lambda_domain", type=float, default=1.0)
     parser.add_argument("--lambda_adv", type=float, default=0.45)
@@ -244,17 +268,18 @@ def build_arg_parser() -> argparse.ArgumentParser:
         "--best_metric",
         type=str,
         default="clean_val_tx",
-        choices=["clean_val_tx", "test_overall_tx", "sat_mean_tx", "sat_worst_tx", "joint_safe"],
+        choices=["clean_val_tx", "source_val_sat_hmean", "test_overall_tx", "sat_mean_tx", "sat_worst_tx", "joint_safe"],
         help="Metric used to update the best SSDG checkpoint.",
     )
     parser.add_argument("--safe_best_path", type=str, default="", help="Optional path for the guarded best checkpoint.")
     parser.add_argument("--safe_latest_path", type=str, default="", help="Optional path for the latest guarded checkpoint.")
+    parser.add_argument("--phase1_source_val_selection_only", type=str2bool, default=True)
     parser.add_argument(
         "--test_eval_policy",
         type=str,
         default="every_epoch",
         choices=["every_epoch", "val_improved_final", "interval_final"],
-        help="When to run named test-set and satellite evaluation during SSDG training.",
+        help="Legacy compatibility option; Phase1 source-only training never evaluates held-out tests by epoch.",
     )
     parser.add_argument(
         "--test_eval_start_epoch",
@@ -316,14 +341,46 @@ def build_arg_parser() -> argparse.ArgumentParser:
     parser.add_argument("--tail_safety_p99_expansion_block_best_delta", type=float, default=3.5)
     parser.add_argument("--tail_safety_cvar_expansion_block_final_delta", type=float, default=4.0)
     parser.add_argument("--tail_safety_cvar_expansion_block_best_delta", type=float, default=6.0)
+    parser.add_argument("--tail_safety_reference_window", type=int, default=5)
+    parser.add_argument("--tail_rollback_enabled", type=str2bool, default=False)
+    parser.add_argument("--tail_rollback_cooldown_epochs", type=int, default=2)
+    parser.add_argument("--tail_rollback_closed_scale", type=float, default=0.60)
     parser.add_argument("--os_eff_min_budget", type=float, default=0.0)
+    parser.add_argument("--os_budget_controller", type=str2bool, default=False)
+    parser.add_argument("--os_budget_max_scale", type=float, default=4.0)
+    parser.add_argument("--os_budget_min_closed_scale", type=float, default=0.35)
+    parser.add_argument("--os_gradient_surgery", type=str2bool, default=False)
+    parser.add_argument("--os_gradient_surgery_interval", type=int, default=1)
     parser.add_argument("--phase1_v2_os_eff_all_phases", type=str2bool, default=True)
     parser.add_argument("--phase1_v2_guard_blocks_final", type=str2bool, default=True)
     parser.add_argument("--u_tri_state_required", type=str2bool, default=False)
     parser.add_argument("--u_direct_idle_blocks_promotion", type=str2bool, default=True)
+    parser.add_argument("--u_tri_min_core_rate", type=float, default=0.05)
+    parser.add_argument("--u_tri_max_core_rate", type=float, default=0.95)
+    parser.add_argument("--u_tri_min_ambiguous_rate", type=float, default=0.01)
+    parser.add_argument("--u_tri_max_outside_rate", type=float, default=0.80)
+    parser.add_argument("--u_tri_min_class_coverage", type=int, default=2)
+    parser.add_argument("--u_tri_min_domain_coverage", type=int, default=2)
+    parser.add_argument("--u_tri_max_pair_disagreement_rate", type=float, default=0.25)
+    parser.add_argument("--u_tri_min_pseudo_component_agreement", type=float, default=0.80)
     parser.add_argument("--source_episode_density_gate", type=str2bool, default=False)
     parser.add_argument("--source_episode_overflow_warn", type=float, default=0.90)
     parser.add_argument("--source_episode_min_local_components", type=int, default=1)
+    parser.add_argument("--source_episode_local_compact_weight", type=float, default=0.0)
+    parser.add_argument("--source_episode_local_invariant_weight", type=float, default=0.0)
+    parser.add_argument("--source_episode_local_inter_weight", type=float, default=0.0)
+    parser.add_argument("--source_episode_local_inter_margin_deg", type=float, default=20.0)
+    parser.add_argument("--source_episode_local_accept_weight", type=float, default=0.0)
+    parser.add_argument("--source_episode_local_density_weight", type=float, default=0.0)
+    parser.add_argument("--direct_metric_multiview_separate", type=str2bool, default=False)
+    parser.add_argument("--direct_metric_clean_weight", type=float, default=1.0)
+    parser.add_argument("--direct_metric_sat_weight", type=float, default=1.0)
+    parser.add_argument("--endpoint_require_artifact_on_export", type=str2bool, default=True)
+    parser.add_argument("--endpoint_calibration_min_component_samples", type=int, default=4)
+    parser.add_argument("--endpoint_calibration_min_class_samples", type=int, default=4)
+    parser.add_argument("--endpoint_calibration_core_quantile", type=float, default=0.80)
+    parser.add_argument("--endpoint_calibration_accept_quantile", type=float, default=0.95)
+    parser.add_argument("--endpoint_calibration_tail_quantile", type=float, default=0.99)
     parser.add_argument("--feasibility_gate", type=str2bool, default=False)
     parser.add_argument(
         "--feasibility_stage",
@@ -655,6 +712,13 @@ def split_tx_rx_day_1_7_2(
     total = float(labeled_ratio) + float(unlabeled_ratio) + float(source_val_ratio)
     if abs(total - 1.0) > 1e-6:
         raise ValueError(f"split ratios must sum to 1.0, got {total}")
+    train_total = float(labeled_ratio) + float(unlabeled_ratio)
+    rho_label = float(labeled_ratio) / train_total if train_total > 0.0 else float("inf")
+    if not math.isfinite(rho_label) or rho_label > 0.1 + 1e-8:
+        raise ValueError(
+            "Phase1 weak-label protocol requires rho_label=|L_s|/(|L_s|+|U_s|)<=0.1, "
+            f"got {rho_label:.6f}"
+        )
     groups: Dict[Tuple[int, int, int, int], List[Tuple[int, int]]] = defaultdict(list)
     for global_i, item in enumerate(dataset.index):
         key = (int(item.tx_i), int(item.rx_i), int(item.day_i), int(getattr(item, "eq_i", 0)))
@@ -687,6 +751,60 @@ def split_tx_rx_day_1_7_2(
         labeled.extend(ordered[:n_l])
         unlabeled.extend(ordered[n_l : n_l + n_u])
         val.extend(ordered[n_l + n_u :])
+    realized_train = len(labeled) + len(unlabeled)
+    max_labeled = int(math.floor(0.1 * float(realized_train) + 1e-8))
+    if len(labeled) > max_labeled:
+        grouped_candidates: Dict[Tuple[int, int, int, int], List[int]] = defaultdict(list)
+        for idx in sorted(labeled):
+            item = dataset.index[idx]
+            key = (int(item.tx_i), int(item.rx_i), int(item.day_i), int(getattr(item, "eq_i", 0)))
+            grouped_candidates[key].append(int(idx))
+        tx_ids = sorted({key[0] for key in grouped_candidates})
+        if max_labeled < len(tx_ids):
+            raise ValueError(
+                "Phase1 rho_label budget is too small to retain one labeled sample per known TX: "
+                f"budget={max_labeled} known_tx={len(tx_ids)}"
+            )
+        tx_queues: Dict[int, List[int]] = {}
+        for tx_id in tx_ids:
+            keys = sorted(key for key in grouped_candidates if key[0] == tx_id)
+            queue: List[int] = []
+            depth = 0
+            while True:
+                added = False
+                for key in keys:
+                    values = grouped_candidates[key]
+                    if depth < len(values):
+                        queue.append(values[depth])
+                        added = True
+                if not added:
+                    break
+                depth += 1
+            tx_queues[tx_id] = queue
+        selected: List[int] = []
+        cursor = {tx_id: 0 for tx_id in tx_ids}
+        while len(selected) < max_labeled:
+            added = False
+            for tx_id in tx_ids:
+                pos = cursor[tx_id]
+                if pos < len(tx_queues[tx_id]) and len(selected) < max_labeled:
+                    selected.append(tx_queues[tx_id][pos])
+                    cursor[tx_id] = pos + 1
+                    added = True
+            if not added:
+                break
+        selected_set = set(selected)
+        demoted = [idx for idx in labeled if idx not in selected_set]
+        labeled = sorted(selected)
+        unlabeled.extend(demoted)
+    if not labeled:
+        raise ValueError("Phase1 weak-label split has no labeled samples after enforcing rho_label<=0.1")
+    realized_rho = float(len(labeled)) / float(realized_train) if realized_train > 0 else float("inf")
+    if not math.isfinite(realized_rho) or realized_rho > 0.1 + 1e-8:
+        raise ValueError(
+            "Phase1 realized weak-label split violates rho_label<=0.1 after group rounding: "
+            f"L_s={len(labeled)} U_s={len(unlabeled)} rho_label={realized_rho:.6f}"
+        )
     return sorted(labeled), sorted(unlabeled), sorted(val)
 
 
@@ -884,7 +1002,15 @@ def _build_ssdg_wisig_data(args, device: torch.device):
         seed=int(args.seed),
     )
     labeled_loader = make_loader(labeled_ds, int(args.batch_size), True, int(args.num_workers), device, True, int(args.prefetch_factor))
-    unlabeled_loader = make_loader(unlabeled_ds, int(args.batch_size), False, int(args.num_workers), device, True, int(args.prefetch_factor))
+    unlabeled_loader = make_loader(
+        unlabeled_ds,
+        int(args.batch_size),
+        bool(getattr(args, "u_unlabeled_shuffle", True)),
+        int(args.num_workers),
+        device,
+        True,
+        int(args.prefetch_factor),
+    )
     val_loader = make_loader(val_ds, int(args.eval_batch_size), False, int(args.num_workers), device, False, int(args.prefetch_factor))
     named_test_loaders = {
         name: make_loader(ds, int(args.eval_batch_size), False, int(args.num_workers), device, False, int(args.prefetch_factor))
@@ -899,11 +1025,13 @@ def _build_ssdg_wisig_data(args, device: torch.device):
         "domain_label_map": domain_label_map,
         "num_domains": max(1, len(domain_label_map)),
         "input_len": int(args.wisig_out_len),
+        "class_id_to_tx": [str(value) for value in list(getattr(source_base, "tx_list", []) or [])],
         "split_info": {
             "mode": str(args.split_mode),
             "labeled_size": len(labeled_ds),
             "unlabeled_size": len(unlabeled_ds),
             "source_val_size": len(val_ds),
+            "rho_label": float(len(labeled_ds)) / float(max(1, len(labeled_ds) + len(unlabeled_ds))),
             "test": test_split_info,
             "named_test_meta": named_meta,
         },
@@ -987,6 +1115,13 @@ def _best_score(
                 require_satellite=bool(getattr(args, "joint_guard_require_satellite", True)) if args is not None else False,
             )
         )
+    if metric == "source_val_sat_hmean":
+        clean = float(val_stats.get("tx_acc", float("-inf")))
+        sat_scores = _satellite_tx_scores(sat_test_stats)
+        if not math.isfinite(clean) or not sat_scores:
+            return float("-inf")
+        sat_floor = min(sat_scores)
+        return 2.0 * clean * sat_floor / max(1e-8, clean + sat_floor)
     sat_scores = _satellite_tx_scores(sat_test_stats)
     if not sat_scores:
         return float(val_stats.get("tx_acc", float("-inf")))
@@ -1147,6 +1282,78 @@ def _derive_phase2_export_path(checkpoint_path: str | Path) -> str:
     return str(path.with_name(f"{path.stem}_phase1_source_prototypes.pt"))
 
 
+def _endpoint_entry_decision_signature(gate, features: torch.Tensor, logits: torch.Tensor) -> List[Dict[str, Any]]:
+    outputs = gate.batch_decide(features, logits)
+    signatures: List[Dict[str, Any]] = []
+    for row in outputs:
+        debug = row.get("debug", {}) or {}
+        component_id = debug.get("component_id")
+        signatures.append({
+            "decision": str(row.get("decision", "")),
+            "class_id": int(row.get("class_id", -1)),
+            "component_id": int(component_id) if component_id is not None else -1,
+            "radius_region": str(debug.get("radius_region", "")),
+        })
+    return signatures
+
+
+def _attach_verified_endpoint_entry_parity(
+    package: Mapping[str, Any], calibration: Mapping[str, torch.Tensor]
+) -> Dict[str, Any]:
+    if LocalComponentHardGate is None:
+        raise ImportError("LocalComponentHardGate is required for endpoint entry parity")
+    features = calibration["features"].detach().float().cpu()[:64]
+    logits = calibration["logits"].detach().float().cpu()[:64]
+    if features.numel() == 0 or logits.size(0) != features.size(0):
+        raise ValueError("endpoint entry parity requires aligned source-val features/logits")
+    provisional = dict(package)
+    metadata = dict(provisional.get("metadata", {}) or {})
+    metadata["endpoint_runtime_entry_parity_digest"] = "0" * 64
+    metadata["endpoint_runtime_entry_parity_sample_count"] = int(features.size(0))
+    provisional["metadata"] = metadata
+    provisional = attach_endpoint_accept_v1_manifest(provisional)
+    provisional_identity = provisional["endpoint_accept_v1"]["inference_identity"]
+    signatures = [
+        _endpoint_entry_decision_signature(factory(provisional), features, logits)
+        for factory in (
+            LocalComponentHardGate.from_train_export,
+            lambda artifact: LocalComponentHardGate.from_offline_eval(
+                artifact, runtime_identity=provisional_identity
+            ),
+            lambda artifact: LocalComponentHardGate.from_runtime_inference(
+                artifact, runtime_identity=provisional_identity
+            ),
+        )
+    ]
+    if not (signatures[0] == signatures[1] == signatures[2]):
+        raise ValueError("endpoint_accept_v1 train/offline/runtime decision parity failed")
+    canonical = json.dumps(signatures[0], ensure_ascii=True, sort_keys=True, separators=(",", ":"))
+    digest = hashlib.sha256(canonical.encode("utf-8")).hexdigest()
+    final_package = dict(provisional)
+    final_metadata = dict(final_package.get("metadata", {}) or {})
+    final_metadata["endpoint_runtime_entry_parity_digest"] = digest
+    final_metadata["endpoint_runtime_entry_parity_sample_count"] = int(features.size(0))
+    final_metadata["endpoint_runtime_entry_parity_verified"] = True
+    final_package["metadata"] = final_metadata
+    final_package = attach_endpoint_accept_v1_manifest(final_package)
+    final_identity = final_package["endpoint_accept_v1"]["inference_identity"]
+    final_signatures = [
+        _endpoint_entry_decision_signature(factory(final_package), features, logits)
+        for factory in (
+            LocalComponentHardGate.from_train_export,
+            lambda artifact: LocalComponentHardGate.from_offline_eval(
+                artifact, runtime_identity=final_identity
+            ),
+            lambda artifact: LocalComponentHardGate.from_runtime_inference(
+                artifact, runtime_identity=final_identity
+            ),
+        )
+    ]
+    if not (final_signatures[0] == final_signatures[1] == final_signatures[2] == signatures[0]):
+        raise ValueError("endpoint_accept_v1 final artifact decision parity failed")
+    return final_package
+
+
 def _maybe_export_phase2_prototypes_ssdg(
     args,
     model,
@@ -1175,15 +1382,15 @@ def _maybe_export_phase2_prototypes_ssdg(
 
     restore_state = deepcopy(getattr(model, "_orig_mod", model).state_dict())
     try:
+        checkpoint_sha256 = ""
         if checkpoint_path:
-            ckpt = torch.load(checkpoint_path, map_location=device)
-            if not isinstance(ckpt, dict) or "model" not in ckpt:
-                raise ValueError(f"Phase2 export checkpoint must contain a 'model' field: {checkpoint_path}")
-            model.load_state_dict(ckpt["model"], strict=False)
+            ckpt = _validate_phase1_checkpoint_payload(torch.load(checkpoint_path, map_location=device), args, checkpoint_path)
+            _load_phase1_checkpoint_strict(model, ckpt, checkpoint_path)
+            checkpoint_sha256 = _sha256_file(checkpoint_path)
         package = export_phase2_prototypes(
             model,
             loader,
-            output_path=output_path,
+            output_path=None,
             device=device,
             feature_key=str(getattr(args, "phase2_export_feature_key", "z_id") or "z_id"),
             max_batches=int(getattr(args, "phase2_export_max_batches", 0) or 0),
@@ -1201,7 +1408,16 @@ def _maybe_export_phase2_prototypes_ssdg(
                 "stage2_success_claim": False,
                 "deployment_success_claim": False,
                 "final_reject_boundary": False,
+                "endpoint_accept_boundary_exported": False,
                 "endpoint_policy_id": str(getattr(args, "endpoint_accept_policy_id", "endpoint_accept_v1")),
+                "run_id": str(getattr(args, "run_id", "")),
+                "candidate_id": str(getattr(args, "candidate_id", "")),
+                "source_checkpoint_sha256": checkpoint_sha256,
+                "class_id_to_tx": list(data_ctx.get("class_id_to_tx", [])),
+                "logit_class_order": list(range(int(getattr(args, "num_classes", 0)))),
+                "known_class_count": int(getattr(args, "num_classes", 0)),
+                "classification_head_contract": "dual_cvsincnet_tx_logits_v1",
+                "checkpoint_load_strict": True,
             },
         )
         if bool(getattr(args, "phase2_fuse_prototypes", False)):
@@ -1222,22 +1438,77 @@ def _maybe_export_phase2_prototypes_ssdg(
                     tail_auto_accept=bool(getattr(args, "phase2_fuse_tail_auto_accept", False)),
                 ),
             )
-            paths = save_phase2_prototype_export(package, output_path)
-            package = dict(package)
-            package["paths"] = paths
+        endpoint_artifact_ready = False
+        if bool(getattr(args, "endpoint_require_artifact_on_export", True)):
+            if not bool(getattr(args, "phase2_fuse_prototypes", False)):
+                raise ValueError("endpoint_accept_v1 export requires --phase2_fuse_prototypes true")
+            if (
+                extract_endpoint_calibration_features is None
+                or calibrate_endpoint_accept_v1 is None
+                or attach_endpoint_accept_v1_manifest is None
+                or verify_endpoint_accept_v1_manifest is None
+                or assess_endpoint_contract is None
+            ):
+                raise ImportError("endpoint_accept_v1 source-val calibration support is unavailable")
+            calibration = extract_endpoint_calibration_features(
+                model,
+                data_ctx["val_loader"],
+                device=device,
+                feature_key=str(getattr(args, "phase2_export_feature_key", "z_id") or "z_id"),
+                max_batches=int(getattr(args, "phase2_export_max_batches", 0) or 0),
+            )
+            package = calibrate_endpoint_accept_v1(
+                package,
+                calibration["features"],
+                calibration["labels"],
+                calibration["logits"],
+                min_component_samples=int(getattr(args, "endpoint_calibration_min_component_samples", 4)),
+                min_class_samples=int(getattr(args, "endpoint_calibration_min_class_samples", 4)),
+                core_quantile=float(getattr(args, "endpoint_calibration_core_quantile", 0.80)),
+                accept_quantile=float(getattr(args, "endpoint_calibration_accept_quantile", 0.95)),
+                tail_quantile=float(getattr(args, "endpoint_calibration_tail_quantile", 0.99)),
+            )
+            package = _attach_verified_endpoint_entry_parity(package, calibration)
+            endpoint_manifest = verify_endpoint_accept_v1_manifest(package)
+            endpoint_decision = assess_endpoint_contract(
+                {
+                    "phase": "Phase1_source_only",
+                    "source_only": True,
+                    "endpoint_policy_id": str(getattr(args, "endpoint_accept_policy_id", "endpoint_accept_v1")),
+                    "endpoint_accept_boundary_exported": True,
+                    "endpoint_artifact_required": True,
+                    "endpoint_artifact": package,
+                    "endpoint_threshold_source": str(getattr(args, "endpoint_threshold_source", "source_val_only")),
+                    "endpoint_calibration_split": str(getattr(args, "endpoint_calibration_split", "source_val")),
+                    "loss_gate_exported": False,
+                    "phase1_proxy_only": True,
+                    "real_unknown_eval_available": False,
+                    "stage2_success_claim": False,
+                    "deployment_success_claim": False,
+                }
+            )
+            if endpoint_decision.fired:
+                raise ValueError(f"endpoint_accept_v1 artifact contract failed: {endpoint_decision.reason}")
+            endpoint_artifact_ready = True
+        if save_phase2_prototype_export is None:
+            raise ImportError("cvsrffi.phase2_prototypes save support is required for Phase2 export")
+        paths = save_phase2_prototype_export(package, output_path)
+        package = dict(package)
+        package["paths"] = paths
         paths = package.get("paths", {}) if isinstance(package, dict) else {}
         print(
             f"[PHASE1-EXPORT] wrote prototypes={paths.get('pt_path', output_path)} "
             f"json={paths.get('json_path', '')} feature={getattr(args, 'phase2_export_feature_key', 'z_id')} "
             f"split={loader_name} fused={int(bool(getattr(args, 'phase2_fuse_prototypes', False)))} "
             "claim=PHASE1_SOURCE_ONLY_EXPORT_ONLY stage2_success_claim=0 "
-            "deployment_success_claim=0 final_reject_boundary=0 "
+            "deployment_success_claim=0 true_unknown_validated=0 "
+            f"endpoint_artifact_ready={int(endpoint_artifact_ready)} "
             f"endpoint_policy_id={str(getattr(args, 'endpoint_accept_policy_id', 'endpoint_accept_v1'))}",
             flush=True,
         )
         return package
     finally:
-        model.load_state_dict(restore_state, strict=False)
+        model.load_state_dict(restore_state, strict=True)
 
 
 def _evaluate_sat_if_enabled(model, data_ctx, device, args) -> Dict[str, Dict[str, Any]]:
@@ -1255,6 +1526,188 @@ def _evaluate_sat_if_enabled(model, data_ctx, device, args) -> Dict[str, Dict[st
         args=args,
         max_batches=_resolve_sat_eval_max_batches(args),
     )
+
+
+def _evaluate_source_val_sat_if_enabled(model, data_ctx, device, args) -> Dict[str, Dict[str, Any]]:
+    if not bool(getattr(args, "eval_sat_channel", False)):
+        return {}
+    scenarios = list(getattr(args, "eval_sat_scenario_list", []))
+    if not scenarios:
+        return {}
+    return evaluate_sat_scenarios(
+        model,
+        {"source_val": data_ctx["val_loader"]},
+        device,
+        data_ctx["domain_label_map"],
+        scenario_names=scenarios,
+        args=args,
+        max_batches=_resolve_sat_eval_max_batches(args),
+    )
+
+
+def _evaluate_source_val_tail_geometry(model, data_ctx, device, args) -> Dict[str, Any]:
+    """Evaluate tail/proxy geometry on one fixed source-val protocol."""
+
+    if direct_metric_acceptance_loss is None:
+        return {"status": "FAILED", "reason": "direct_metric_acceptance_loss_unavailable"}
+    was_training = bool(model.training)
+    features: List[torch.Tensor] = []
+    labels: List[torch.Tensor] = []
+    domains: List[torch.Tensor] = []
+    try:
+        model.eval()
+        with torch.no_grad():
+            for batch_idx, batch in enumerate(data_ctx["val_loader"], start=1):
+                if int(args.eval_max_batches) > 0 and batch_idx > int(args.eval_max_batches):
+                    break
+                x, y, extra = move_batch(batch, device)
+                d = domain_from_extra(extra, data_ctx["domain_label_map"], device)
+                out = model(x, y_tx=None, grl_lambda=1.0, return_aux=True, domain_labels=d)
+                features.append(out["z_id"].detach().float())
+                labels.append(y.detach().long())
+                if d is not None:
+                    domains.append(d.detach().long())
+        if not features:
+            return {"status": "FAILED", "reason": "source_val_geometry_empty"}
+        z = torch.cat(features, dim=0)
+        y = torch.cat(labels, dim=0)
+        d = torch.cat(domains, dim=0) if len(domains) == len(features) else None
+        cuda_devices = [int(device.index or 0)] if getattr(device, "type", "cpu") == "cuda" else []
+        with torch.random.fork_rng(devices=cuda_devices):
+            torch.manual_seed(int(getattr(args, "seed", 0)) + 91073)
+            _loss, info = direct_metric_acceptance_loss(z, y, d, **_direct_metric_kwargs(args))
+        result = {str(key): float(value) if isinstance(value, (int, float)) else value for key, value in info.items()}
+        result.update(
+            {
+                "status": "COMPLETE" if float(info.get("active", 0.0)) > 0.0 else "FAILED",
+                "protocol": "fixed_source_val_direct_metric_v1",
+                "sample_count": int(z.size(0)),
+                "seed": int(getattr(args, "seed", 0)) + 91073,
+            }
+        )
+        if result["status"] != "COMPLETE":
+            result["reason"] = "source_val_direct_metric_inactive"
+        return result
+    finally:
+        model.train(was_training)
+
+
+def _validate_phase1_checkpoint_payload(checkpoint: Any, args, path: str | Path) -> Mapping[str, Any]:
+    if not isinstance(checkpoint, Mapping) or "model" not in checkpoint:
+        raise ValueError(f"Phase1 checkpoint is invalid: {path}")
+    if str(checkpoint.get("checkpoint_schema", "")) != "ssdg_phase1_training_state_v2":
+        raise ValueError(f"Phase1 checkpoint schema mismatch: {path}")
+    saved_run = str(checkpoint.get("run_id", ""))
+    saved_candidate = str(checkpoint.get("candidate_id", ""))
+    expected_run = str(getattr(args, "run_id", ""))
+    expected_candidate = str(getattr(args, "candidate_id", ""))
+    if saved_run != expected_run or saved_candidate != expected_candidate:
+        raise ValueError(
+            "Phase1 checkpoint identity mismatch: "
+            f"expected={expected_run}/{expected_candidate} saved={saved_run}/{saved_candidate} path={path}"
+        )
+    saved_args = checkpoint.get("args", {}) or {}
+    if str(saved_args.get("best_metric", "")) != str(getattr(args, "best_metric", "")):
+        raise ValueError(f"Phase1 checkpoint selection metric mismatch: {path}")
+    return checkpoint
+
+
+def _load_phase1_checkpoint_strict(model, checkpoint: Mapping[str, Any], path: str | Path) -> None:
+    try:
+        model.load_state_dict(checkpoint["model"], strict=True)
+    except Exception as exc:
+        raise ValueError(f"Phase1 checkpoint/model strict-load mismatch: {path}: {exc}") from exc
+
+
+def _evaluate_frozen_phase1_checkpoint(args, model, data_ctx, device, checkpoint_path: str | Path) -> Dict[str, Any]:
+    """Evaluate held-out receiver/day and satellite views once after source-val selection is frozen."""
+
+    path = Path(checkpoint_path)
+    if not path.is_file():
+        return {"status": "NOT_RUN", "reason": "frozen_source_val_checkpoint_missing", "checkpoint": str(path)}
+    restore_state = deepcopy(getattr(model, "_orig_mod", model).state_dict())
+    try:
+        checkpoint = _validate_phase1_checkpoint_payload(torch.load(path, map_location=device), args, path)
+        _load_phase1_checkpoint_strict(model, checkpoint, path)
+        named = evaluate_named_loaders(
+            model,
+            data_ctx["named_test_loaders"],
+            device,
+            data_ctx["domain_label_map"],
+            max_batches=int(args.eval_max_batches),
+        )
+        test_stats = _aggregate_main_test(named, str(args.dataset))
+        sat_stats = _evaluate_sat_if_enabled(model, data_ctx, device, args)
+        protected = protected_metric_snapshot(
+            val_stats=(checkpoint.get("stats", {}) or {}).get("val", {}),
+            test_stats=test_stats,
+            named_test_stats=named,
+            sat_test_stats=sat_stats,
+        )
+        return {
+            "status": "COMPLETE",
+            "selection_source": "source_val_only",
+            "checkpoint": str(path),
+            "checkpoint_sha256": _sha256_file(path),
+            "checkpoint_epoch": int(checkpoint.get("epoch", -1)),
+            "test": test_stats,
+            "named_test": named,
+            "sat_test_named": sat_stats,
+            "protected_metrics": protected,
+            "claim": "PHASE1_FROZEN_HELDOUT_EVAL_NOT_MODEL_SELECTION",
+        }
+    finally:
+        model.load_state_dict(restore_state, strict=True)
+
+
+def _evaluate_checkpoint_source_val_tail_geometry(args, model, data_ctx, device, checkpoint_path: str | Path) -> Dict[str, Any]:
+    path = Path(checkpoint_path)
+    if not path.is_file():
+        return {"status": "FAILED", "reason": "checkpoint_missing", "checkpoint": str(path)}
+    restore_state = deepcopy(getattr(model, "_orig_mod", model).state_dict())
+    try:
+        checkpoint = _validate_phase1_checkpoint_payload(torch.load(path, map_location=device), args, path)
+        _load_phase1_checkpoint_strict(model, checkpoint, path)
+        result = _evaluate_source_val_tail_geometry(model, data_ctx, device, args)
+        result.update(
+            {
+                "checkpoint": str(path),
+                "checkpoint_sha256": _sha256_file(path),
+                "checkpoint_epoch": int(checkpoint.get("epoch", -1)),
+            }
+        )
+        return result
+    finally:
+        model.load_state_dict(restore_state, strict=True)
+
+
+def _resolve_phase1_terminal_status(
+    *,
+    tail_stopped: bool,
+    export_failed: bool,
+    final_blocked: bool,
+    selected_checkpoint_exists: bool,
+    heldout_eval_status: str,
+    p0_mechanisms_ready: bool = True,
+    endpoint_export_ready: bool = True,
+) -> str:
+    """Resolve a fail-closed Phase1 terminal state without overstating promotion readiness."""
+
+    if tail_stopped:
+        return "STOPPED_TAIL"
+    if export_failed:
+        return "FAILED_EXPORT"
+    if final_blocked:
+        return "NON_PROMOTABLE_GUARD_BLOCKED"
+    if not p0_mechanisms_ready:
+        return "NON_PROMOTABLE_P0_DISABLED"
+    if not selected_checkpoint_exists:
+        return "NO_SAFE_CHECKPOINT"
+    if str(heldout_eval_status).upper() != "COMPLETE":
+        return "HELDOUT_EVAL_INCOMPLETE"
+    if not endpoint_export_ready:
+        return "NON_PROMOTABLE_ENDPOINT_NOT_EXPORTED"
+    return "COMPLETE"
 
 
 def _loss_weights(args, stage_state: Mapping[str, Any] | None) -> Dict[str, float]:
@@ -1429,6 +1882,265 @@ def _grads_are_finite(model) -> bool:
     return True
 
 
+def _direct_metric_kwargs(args) -> Dict[str, Any]:
+    return {
+        "virtual_count": int(args.direct_metric_virtual_count),
+        "virtual_mode": str(args.direct_metric_virtual_mode),
+        "core_quantile": float(args.direct_metric_core_quantile),
+        "accept_quantile": float(args.direct_metric_accept_quantile),
+        "tail_quantile": float(args.direct_metric_tail_quantile),
+        "overflow_quantile": float(args.direct_metric_overflow_quantile),
+        "zid_p50_target_rad": math.radians(float(args.direct_metric_zid_p50_target_deg)),
+        "zid_p95_target_rad": math.radians(float(args.direct_metric_zid_p95_target_deg)),
+        "zid_p99_target_rad": math.radians(float(args.direct_metric_zid_p99_target_deg)),
+        "zid_tail_cvar_target_rad": math.radians(float(args.direct_metric_zid_tail_cvar_target_deg)),
+        "source_overflow_target": float(args.direct_metric_source_overflow_target),
+        "proxy_vaccept_target": float(args.direct_metric_proxy_vaccept_target),
+        "bridge_accept_target": float(args.direct_metric_bridge_accept_target),
+        "low_density_accept_target": float(args.direct_metric_low_density_accept_target),
+        "tail_accept_target": float(args.direct_metric_tail_accept_target),
+        "overflow_accept_target": float(args.direct_metric_overflow_accept_target),
+        "radius_inter_ratio_target": float(args.direct_metric_radius_inter_ratio_target),
+        "core_accept_target": float(args.direct_metric_core_accept_target),
+        "zid_quantile_weight": float(args.direct_metric_zid_quantile_weight),
+        "source_overflow_weight": float(args.direct_metric_source_overflow_weight),
+        "proxy_vaccept_weight": float(args.direct_metric_proxy_vaccept_weight),
+        "bridge_accept_weight": float(args.direct_metric_bridge_accept_weight),
+        "low_density_accept_weight": float(args.direct_metric_low_density_accept_weight),
+        "tail_accept_weight": float(args.direct_metric_tail_accept_weight),
+        "overflow_accept_weight": float(args.direct_metric_overflow_accept_weight),
+        "radius_inter_ratio_weight": float(args.direct_metric_radius_inter_ratio_weight),
+        "core_accept_weight": float(args.direct_metric_core_accept_weight),
+        "quantile_temperature_rad": math.radians(float(args.direct_metric_quantile_temperature_deg)),
+        "accept_temperature": float(args.direct_metric_accept_temperature),
+        "component_temperature_rad": math.radians(float(args.direct_metric_component_temperature_deg)),
+        "density_temperature_rad": math.radians(float(args.direct_metric_density_temperature_deg)),
+        "component_margin_rad": math.radians(float(args.direct_metric_component_margin_deg)),
+        "source_margin_rad": math.radians(float(args.direct_metric_source_margin_deg)),
+        "shell_width_rad": math.radians(float(args.direct_metric_shell_width_deg)),
+        "accept_cvar_alpha": float(args.direct_metric_accept_cvar_alpha),
+        "virtual_detach": bool(args.direct_metric_virtual_detach),
+    }
+
+
+def _route_unlabeled_known_geometry(
+    *,
+    args,
+    z_id_l: torch.Tensor,
+    y_l: torch.Tensor,
+    d_l: Optional[torch.Tensor],
+    out_s: Mapping[str, torch.Tensor],
+    out_u_sat: Optional[Mapping[str, torch.Tensor]],
+    pseudo: torch.Tensor,
+    d_u: Optional[torch.Tensor],
+    pseudo_mask: torch.Tensor,
+    valid_u_mask: torch.Tensor,
+) -> Tuple[torch.Tensor, Dict[str, Any], torch.Tensor]:
+    zero = out_s["z_id"].sum() * 0.0
+    geometry_core_mask = torch.zeros_like(pseudo_mask, dtype=torch.bool)
+    info: Dict[str, Any] = {"active": 0.0, "routing_precomputed": 0.0}
+    if unlabeled_known_acceptance_quarantine_loss is None:
+        return zero, info, geometry_core_mask
+    if bool(getattr(args, "u_geometry_all_valid_queries", False)):
+        quarantine_mask = valid_u_mask.clone() if bool(args.u_quarantine_valid_domain_only) else torch.ones_like(pseudo_mask)
+    else:
+        quarantine_mask = ~pseudo_mask
+        if bool(args.u_quarantine_valid_domain_only):
+            quarantine_mask = quarantine_mask & valid_u_mask
+    quarantine_count = int(quarantine_mask.sum().detach().item())
+    quarantine_pool = int(valid_u_mask.sum().detach().item()) if bool(args.u_quarantine_valid_domain_only) else int(pseudo.numel())
+    if quarantine_count < int(args.u_quarantine_min_count):
+        info.update(
+            {
+                "query_count": float(quarantine_count),
+                "quarantine_rate": float(quarantine_count) / float(max(1, quarantine_pool)),
+                "routing_precomputed": 1.0,
+            }
+        )
+        return zero, info, geometry_core_mask
+    anchor_parts = [z_id_l.detach()]
+    label_parts = [y_l.detach().long()]
+    domain_parts = [d_l.detach().long()] if d_l is not None else []
+    # Route against labeled receiver/day components only. Same-batch pseudo
+    # samples cannot nominate themselves as trusted anchors.
+    query_parts = [out_s["z_id"][quarantine_mask]]
+    query_label_parts = [pseudo[quarantine_mask].detach().long()]
+    query_domain_parts = [d_u[quarantine_mask].detach().long()] if d_u is not None else []
+    paired_count = 0
+    if bool(args.u_quarantine_include_sat_view) and out_u_sat is not None:
+        query_parts.append(out_u_sat["z_id"][quarantine_mask])
+        query_label_parts.append(pseudo[quarantine_mask].detach().long())
+        if d_u is not None:
+            query_domain_parts.append(d_u[quarantine_mask].detach().long())
+        paired_count = quarantine_count
+    loss, info = unlabeled_known_acceptance_quarantine_loss(
+        torch.cat(anchor_parts, dim=0),
+        torch.cat(label_parts, dim=0),
+        torch.cat(query_parts, dim=0),
+        anchor_d=torch.cat(domain_parts, dim=0) if domain_parts else None,
+        query_y=torch.cat(query_label_parts, dim=0),
+        query_d=torch.cat(query_domain_parts, dim=0) if query_domain_parts else None,
+        paired_view_count=paired_count,
+        return_state_masks=True,
+        core_quantile=float(args.u_quarantine_core_quantile),
+        accept_quantile=float(args.u_quarantine_accept_quantile),
+        accept_target=float(args.u_quarantine_accept_target),
+        core_accept_target=float(args.u_quarantine_core_accept_target),
+        cvar_alpha=float(args.u_quarantine_cvar_alpha),
+        accept_temperature=float(args.u_quarantine_accept_temperature),
+        component_temperature_rad=math.radians(float(args.direct_metric_component_temperature_deg)),
+        density_temperature_rad=math.radians(float(args.direct_metric_density_temperature_deg)),
+        component_margin_rad=math.radians(float(args.direct_metric_component_margin_deg)),
+        min_samples_per_class=int(args.u_quarantine_min_count),
+    )
+    tri_core = info.pop("_tri_trusted_core_mask", None)
+    info.pop("_tri_ambiguous_tail_mask", None)
+    info.pop("_tri_outside_reject_mask", None)
+    if torch.is_tensor(tri_core) and int(tri_core.numel()) >= quarantine_count:
+        clean_core = tri_core[:quarantine_count].to(device=pseudo_mask.device).bool()
+        if paired_count > 0 and int(tri_core.numel()) >= 2 * quarantine_count:
+            sat_core = tri_core[quarantine_count : 2 * quarantine_count].to(device=pseudo_mask.device).bool()
+            clean_core = clean_core & sat_core
+        geometry_core_mask[quarantine_mask] = clean_core
+    info["quarantine_rate"] = (
+        float(info.get("tri_ambiguous_tail_count", 0.0)) + float(info.get("tri_outside_reject_count", 0.0))
+    ) / float(max(1, quarantine_count))
+    info["valid_domain_rate"] = float(int(valid_u_mask.sum().detach().item())) / float(max(1, int(pseudo.numel())))
+    info["routing_precomputed"] = 1.0
+    return loss, info, geometry_core_mask
+
+
+def _backward_with_open_set_projection(
+    model,
+    scaler,
+    closed_loss,
+    open_loss,
+    *,
+    project_conflicts: bool = True,
+    budget_controller: bool = False,
+    min_budget: float = 0.0,
+    max_os_scale: float = 4.0,
+    min_closed_scale: float = 0.35,
+) -> Dict[str, float]:
+    """Balance real gradient norms, optionally project conflicts, and leave AMP-scaled grads."""
+
+    named_params = [(name, param) for name, param in model.named_parameters() if param.requires_grad]
+    params = [param for _, param in named_params]
+    closed_scaled = scaler.scale(closed_loss)
+    open_scaled = scaler.scale(open_loss)
+    closed_grads = torch.autograd.grad(closed_scaled, params, retain_graph=True, allow_unused=True)
+    open_grads = torch.autograd.grad(open_scaled, params, retain_graph=False, allow_unused=True)
+    raw_dot = closed_loss.new_tensor(0.0)
+    closed_sq = closed_loss.new_tensor(0.0)
+    open_sq = closed_loss.new_tensor(0.0)
+    total_closed_sq = closed_loss.new_tensor(0.0)
+    total_open_sq = closed_loss.new_tensor(0.0)
+    shared_param_count = 0
+    for grad_closed, grad_open in zip(closed_grads, open_grads):
+        if grad_closed is not None:
+            total_closed_sq = total_closed_sq + grad_closed.detach().float().pow(2).sum()
+        if grad_open is not None:
+            total_open_sq = total_open_sq + grad_open.detach().float().pow(2).sum()
+        if grad_closed is not None and grad_open is not None:
+            shared_param_count += 1
+            closed_sq = closed_sq + grad_closed.detach().float().pow(2).sum()
+            open_sq = open_sq + grad_open.detach().float().pow(2).sum()
+            raw_dot = raw_dot + (grad_closed.detach().float() * grad_open.detach().float()).sum()
+    raw_denom = (closed_sq.sqrt() * open_sq.sqrt()).clamp_min(1e-12)
+    pre_cos = raw_dot / raw_denom if bool((raw_denom > 0).item()) else raw_dot.new_tensor(0.0)
+    scale = max(1.0, float(scaler.get_scale()))
+    closed_norm = float(closed_sq.sqrt().detach().cpu().item()) / scale
+    open_norm = float(open_sq.sqrt().detach().cpu().item()) / scale
+    total_closed_norm = float(total_closed_sq.sqrt().detach().cpu().item()) / scale
+    total_open_norm = float(total_open_sq.sqrt().detach().cpu().item()) / scale
+    pre_budget = open_norm / max(1e-12, open_norm + closed_norm)
+    os_scale = 1.0
+    closed_scale = 1.0
+    reason_code = 0.0
+    if bool(budget_controller) and compute_open_set_budget_action is not None:
+        action = compute_open_set_budget_action(
+            os_total=open_norm,
+            closed_total=closed_norm,
+            min_budget=float(min_budget),
+            max_os_scale=float(max_os_scale),
+            min_closed_scale=float(min_closed_scale),
+        )
+        os_scale = float(action.os_scale)
+        closed_scale = float(action.closed_scale)
+        reason_code = 1.0 if action.active else 2.0 if action.reason == "OS_LOSS_IDLE" else 0.0
+
+    balanced_closed = [grad * closed_scale if grad is not None else None for grad in closed_grads]
+    balanced_open = [grad * os_scale if grad is not None else None for grad in open_grads]
+    dot = closed_loss.new_tensor(0.0)
+    balanced_closed_sq = closed_loss.new_tensor(0.0)
+    balanced_open_sq = closed_loss.new_tensor(0.0)
+    for grad_closed, grad_open in zip(balanced_closed, balanced_open):
+        if grad_closed is not None and grad_open is not None:
+            balanced_closed_sq = balanced_closed_sq + grad_closed.detach().float().pow(2).sum()
+            balanced_open_sq = balanced_open_sq + grad_open.detach().float().pow(2).sum()
+            dot = dot + (grad_closed.detach().float() * grad_open.detach().float()).sum()
+    conflict = bool(project_conflicts) and bool((dot < 0).item()) and bool((balanced_closed_sq > 0).item())
+    coeff = dot / balanced_open_sq.clamp_min(1e-12) if conflict else dot.new_tensor(0.0)
+    post_dot = dot.new_tensor(0.0)
+    post_closed_sq = dot.new_tensor(0.0)
+    post_open_sq = dot.new_tensor(0.0)
+    for param, grad_closed, grad_open in zip(params, balanced_closed, balanced_open):
+        if grad_closed is None and grad_open is None:
+            param.grad = None
+            continue
+        if grad_closed is None:
+            combined = grad_open
+            projected_closed = None
+            projected_open = grad_open
+        elif grad_open is None:
+            combined = grad_closed
+            projected_closed = grad_closed
+            projected_open = None
+        else:
+            projected_closed = (
+                grad_closed - coeff.to(dtype=grad_closed.dtype, device=grad_closed.device) * grad_open
+                if conflict
+                else grad_closed
+            )
+            projected_open = grad_open
+            combined = projected_closed + projected_open
+        param.grad = combined.detach().clone()
+        if projected_closed is not None and projected_open is not None:
+            post_dot = post_dot + (projected_closed.detach().float() * projected_open.detach().float()).sum()
+        if projected_closed is not None and projected_open is not None:
+            post_closed_sq = post_closed_sq + projected_closed.detach().float().pow(2).sum()
+        if projected_open is not None and projected_closed is not None:
+            post_open_sq = post_open_sq + projected_open.detach().float().pow(2).sum()
+    post_denom = (post_closed_sq.sqrt() * post_open_sq.sqrt()).clamp_min(1e-12)
+    post_cos = post_dot / post_denom if bool((post_denom > 0).item()) else post_dot.new_tensor(0.0)
+    balanced_closed_norm = float(balanced_closed_sq.sqrt().detach().cpu().item()) / scale
+    balanced_open_norm = float(balanced_open_sq.sqrt().detach().cpu().item()) / scale
+    projected_closed_norm = float(post_closed_sq.sqrt().detach().cpu().item()) / scale
+    projected_open_norm = float(post_open_sq.sqrt().detach().cpu().item()) / scale
+    post_budget = projected_open_norm / max(1e-12, projected_open_norm + projected_closed_norm)
+    return {
+        "active": 1.0,
+        "conflict": 1.0 if conflict else 0.0,
+        "pre_cosine": float(pre_cos.detach().cpu().item()),
+        "post_cosine": float(post_cos.detach().cpu().item()),
+        "closed_grad_norm": closed_norm,
+        "open_grad_norm": open_norm,
+        "total_closed_grad_norm": total_closed_norm,
+        "total_open_grad_norm": total_open_norm,
+        "shared_param_count": float(shared_param_count),
+        "budget_scope_shared_zid_path": 1.0,
+        "balanced_closed_grad_norm": balanced_closed_norm,
+        "balanced_open_grad_norm": balanced_open_norm,
+        "effective_closed_grad_norm": projected_closed_norm,
+        "effective_open_grad_norm": projected_open_norm,
+        "os_scale": os_scale,
+        "closed_scale": closed_scale,
+        "pre_budget": pre_budget,
+        "post_budget": post_budget,
+        "reason_code": reason_code,
+    }
+
+
 def _log_value(logs: Mapping[str, Any], key: str, default: float = 0.0) -> float:
     try:
         return float(logs.get(key, default))
@@ -1441,6 +2153,46 @@ def _sum_log_values(log_items: Sequence[Mapping[str, Any]], key: str) -> float:
     for logs in log_items:
         total += _log_value(logs, key)
     return total
+
+
+def _max_log_value(log_items: Sequence[Mapping[str, Any]], key: str) -> float:
+    values = [_log_value(logs, key, float("nan")) for logs in log_items]
+    finite = [value for value in values if math.isfinite(value)]
+    return max(finite) if finite else float("nan")
+
+
+def _capture_training_rng_state(sat_gen=None) -> Dict[str, Any]:
+    state: Dict[str, Any] = {
+        "python": random.getstate(),
+        "numpy": np.random.get_state(),
+        "torch_cpu": torch.get_rng_state(),
+        "torch_cuda": torch.cuda.get_rng_state_all() if torch.cuda.is_available() else None,
+        "sat_generator": sat_gen.get_state() if sat_gen is not None else None,
+    }
+    return state
+
+
+def _restore_training_rng_state(state: Mapping[str, Any], sat_gen=None) -> None:
+    if not isinstance(state, Mapping):
+        return
+    if state.get("python") is not None:
+        random.setstate(state["python"])
+    if state.get("numpy") is not None:
+        np.random.set_state(state["numpy"])
+    if state.get("torch_cpu") is not None:
+        torch.set_rng_state(state["torch_cpu"])
+    if torch.cuda.is_available() and state.get("torch_cuda") is not None:
+        torch.cuda.set_rng_state_all(state["torch_cuda"])
+    if sat_gen is not None and state.get("sat_generator") is not None:
+        sat_gen.set_state(state["sat_generator"])
+
+
+def _sha256_file(path: str | Path) -> str:
+    digest = hashlib.sha256()
+    with Path(path).open("rb") as handle:
+        for chunk in iter(lambda: handle.read(1024 * 1024), b""):
+            digest.update(chunk)
+    return digest.hexdigest()
 
 
 def _safe_percent(value: Any) -> str:
@@ -2122,7 +2874,23 @@ def format_ssdg_epoch_block(
         f"aux={_log_value(train_logs, 'train/grad_aux'):.3f} "
         f"domain={_log_value(train_logs, 'train/grad_domain'):.3f}"
     )
+    lines.append(
+        "[OS-GRAD] "
+        f"pre_budget={_log_value(train_logs, 'train/os_budget_controller_pre'):.4f} "
+        f"post_budget={_log_value(train_logs, 'train/os_budget_controller_post'):.4f} "
+        f"os_scale={_log_value(train_logs, 'train/os_budget_controller_os_scale', 1.0):.3f} "
+        f"closed_scale={_log_value(train_logs, 'train/os_budget_controller_closed_scale', 1.0):.3f} "
+        f"conflict={int(_log_value(train_logs, 'train/os_gradient_conflict', 0.0) >= 0.5)} "
+        f"step_rate={_log_value(train_logs, 'train/optimizer_step_applied'):.3f}"
+    )
     lines.append(f"[VAL]   tx={_safe_percent(val_stats.get('tx_acc'))}% dom={_safe_percent(val_stats.get('dom_acc'))}%")
+    if math.isfinite(_log_value(stage_state, "source_val_sat_mean_tx", float("nan"))):
+        lines.append(
+            "[SOURCE-VAL-SAT] "
+            f"mean_tx={_safe_percent(stage_state.get('source_val_sat_mean_tx'))}% "
+            f"floor_tx={_safe_percent(stage_state.get('source_val_sat_floor_tx'))}% "
+            "selection_safe=1"
+        )
     lines.append(
         f"[TEST]  overall_tx={_safe_percent(test_stats.get('tx_acc'))}% "
         f"({int(test_stats.get('tx_correct', 0))}/{int(test_stats.get('tx_total', 0))})"
@@ -2203,12 +2971,31 @@ def format_ssdg_epoch_block(
             f"lambda_source_episode={float(weights.get('source_episode', 0.0)):.6g} "
             f"phase2_export={int(bool(phase2_audit_state.get('phase2_export_prototypes', False)))}"
         )
-    lines.append(f"[BEST-JOINT]  val_tx={float(best_val):.2f}% & test_tx={float(best_test):.2f}% @ E{int(best_epoch):03d}")
-    if bool(guard_state.get("enabled", False)) and (safe_latest_path or safe_best_path):
-        safe_note = "saved" if safe_checkpoint_saved else "protected"
+    if int(best_epoch) > 0 and math.isfinite(float(best_val)):
+        test_note = f"{float(best_test):.2f}%" if math.isfinite(float(best_test)) else "not_evaluated_on_frozen_best"
         lines.append(
-            f"[SAFE-CKPT] latest_safe -> {safe_latest_path or '-'} ({safe_note}) | "
-            f"best_safe -> {safe_best_path or '-'}"
+            f"[BEST-SOURCE-VAL] val_tx={float(best_val):.2f}% @ E{int(best_epoch):03d} "
+            f"heldout_test={test_note}"
+        )
+        lines.append(
+            "[TAIL-CONTROL] "
+            f"state={int(guard_state.get('phase1_v2_tail_state_code', -1))} "
+            f"action={int(guard_state.get('phase1_v2_tail_action_code', -1))} "
+            f"reference_ready={int(bool(guard_state.get('phase1_v2_tail_reference_ready', 0)))} "
+            f"reference_saved={int(bool(guard_state.get('phase1_v2_tail_reference_saved', False)))} "
+            f"rollback_applied={int(bool(guard_state.get('phase1_v2_tail_rollback_applied', False)))} "
+            f"final_blocked={int(bool(guard_state.get('phase1_v2_final_blocked', False)))}"
+        )
+    else:
+        lines.append("[BEST-SOURCE-VAL] status=not_saved reason=no_guard_safe_source_val_checkpoint")
+    if bool(guard_state.get("enabled", False)) and (safe_latest_path or safe_best_path):
+        safe_latest_exists = bool(safe_latest_path and Path(safe_latest_path).is_file())
+        safe_best_exists = bool(safe_best_path and Path(safe_best_path).is_file())
+        lines.append(
+            f"[SAFE-CKPT] latest_safe={safe_latest_path or '-'} "
+            f"status={'saved' if safe_latest_exists else 'not_saved'} | "
+            f"best_safe={safe_best_path or '-'} status={'saved' if safe_best_exists else 'not_saved'} "
+            f"saved_this_epoch={int(bool(safe_checkpoint_saved))}"
         )
     lines.append(f"[CKPT]  latest -> {latest_path} (saved) | best -> {best_path}{' (updated)' if is_best else ''}")
     lines.append(f"[EPOCH-END] E{int(epoch):03d}/{int(epochs):03d}")
@@ -2321,6 +3108,30 @@ def train(args) -> int:
         raise ValueError("--concat_sat_ce_weight must be >= 0")
     if bool(getattr(args, "concat_sat_ce_only", False)) and not bool(getattr(args, "use_concat_sat_channel_aug", False)):
         print("[WARN] --concat_sat_ce_only has no effect unless --use_concat_sat_channel_aug is enabled.", flush=True)
+    if not bool(getattr(args, "phase1_source_val_selection_only", True)):
+        raise ValueError(
+            "Phase1 is source-only: --phase1_source_val_selection_only must remain true; "
+            "held-out receiver/day/satellite test feedback is forbidden during training."
+        )
+    if str(args.best_metric) not in {"clean_val_tx", "source_val_sat_hmean"}:
+        raise ValueError(
+            "Phase1 source-only checkpoint selection forbids test/receiver/satellite-test best metrics; "
+            "use --best_metric clean_val_tx or source_val_sat_hmean."
+        )
+    if str(args.best_metric) == "source_val_sat_hmean" and not bool(getattr(args, "eval_sat_channel", False)):
+        raise ValueError("source_val_sat_hmean requires --eval_sat_channel true")
+    if bool(getattr(args, "enable_joint_safe_guard", False)):
+        raise ValueError(
+            "Phase1 source-only checkpoint selection forbids held-out test joint guards; "
+            "use Phase1 V2 source geometry guards and freeze before held-out evaluation."
+        )
+    if bool(getattr(args, "u_tri_state_required", False)) and not bool(
+        getattr(args, "u_geometry_all_valid_queries", False)
+    ):
+        raise ValueError(
+            "--u_tri_state_required true requires --u_geometry_all_valid_queries true; "
+            "selected U_s samples cannot bypass geometry-first routing."
+        )
     if args.dry_run:
         print(
             f"[DRY-RUN] Parsed arguments and skipped data/model construction. "
@@ -2336,6 +3147,18 @@ def train(args) -> int:
     args.eval_sat_scenario_list = parse_sat_scenarios(args.eval_sat_scenarios) if bool(args.eval_sat_channel) else []
     device = resolve_device(args.device)
     out_dir = ensure_dir(args.output_dir)
+    stale_identity_paths = [
+        out_dir / "phase1_terminal_status.json",
+        out_dir / f"best_{args.best_metric}_ssdg.pth",
+        out_dir / "latest_ssdg.pth",
+        out_dir / "tail_reference_ssdg.pth",
+    ]
+    stale_identity_paths = [path for path in stale_identity_paths if path.exists()]
+    if stale_identity_paths:
+        raise FileExistsError(
+            "Phase1 output directory contains stale run identity artifacts; use a new candidate directory: "
+            + ", ".join(str(path) for path in stale_identity_paths)
+        )
     metrics_csv_path = Path(str(args.metrics_csv).strip()) if str(args.metrics_csv).strip() else out_dir / "metrics_epoch.csv"
     metrics_jsonl_path = Path(str(args.metrics_jsonl).strip()) if str(args.metrics_jsonl).strip() else out_dir / "metrics_epoch.jsonl"
     default_safe_best_name = f"best_{args.best_metric}_ssdg.pth" if _joint_safe_guard_enabled(args) else f"best_{args.best_metric}_safe_ssdg.pth"
@@ -2449,6 +3272,8 @@ def train(args) -> int:
                 f"quarantine_start={int(args.u_quarantine_start_epoch)} quarantine_valid_domain_only={int(bool(args.u_quarantine_valid_domain_only))} "
                 f"quarantine_sat={int(bool(args.u_quarantine_include_sat_view))} quarantine_min={int(args.u_quarantine_min_count)} "
                 f"quarantine_target={float(args.u_quarantine_accept_target):.3f} "
+                f"geometry_all_valid={int(bool(args.u_geometry_all_valid_queries))} "
+                f"unlabeled_shuffle={int(bool(args.u_unlabeled_shuffle))} "
                 f"sat_zid_cons_w={float(args.u_sat_zid_cons_weight):.6g} "
                 f"domain_loss={float(args.lambda_u_domain):.6g} adv_loss={float(args.lambda_u_adv):.6g} "
                 f"sat_cons={float(args.lambda_u_sat_cons):.6g} dm_accept={float(args.lambda_u_direct_metric_accept):.6g} "
@@ -2528,12 +3353,23 @@ def train(args) -> int:
                 f"best:{float(args.tail_safety_p99_expansion_block_best_delta):.2f},"
                 f"cvar_final:{float(args.tail_safety_cvar_expansion_block_final_delta):.2f},"
                 f"cvar_best:{float(args.tail_safety_cvar_expansion_block_best_delta):.2f} "
+                f"tail_reference_window={int(args.tail_safety_reference_window)} "
+                f"tail_rollback={int(bool(args.tail_rollback_enabled))}:cooldown{int(args.tail_rollback_cooldown_epochs)} "
                 f"os_eff_min={float(args.os_eff_min_budget):.3f} "
+                f"os_budget_controller={int(bool(args.os_budget_controller))} "
+                f"os_gradient_surgery={int(bool(args.os_gradient_surgery))} "
                 f"os_eff_all_phases={int(bool(args.phase1_v2_os_eff_all_phases))} "
                 f"guard_blocks_final={int(bool(args.phase1_v2_guard_blocks_final))} "
                 f"u_tri_state_required={int(bool(args.u_tri_state_required))} "
                 f"source_episode_density_gate={int(bool(args.source_episode_density_gate))} "
                 f"source_episode_overflow_warn={float(args.source_episode_overflow_warn):.3f} "
+                f"local_component_weights=compact:{float(args.source_episode_local_compact_weight):.3f},"
+                f"invariant:{float(args.source_episode_local_invariant_weight):.3f},"
+                f"inter:{float(args.source_episode_local_inter_weight):.3f},"
+                f"accept:{float(args.source_episode_local_accept_weight):.3f},"
+                f"density:{float(args.source_episode_local_density_weight):.3f} "
+                f"multiview_separate={int(bool(args.direct_metric_multiview_separate))} "
+                f"endpoint_artifact_required={int(bool(args.endpoint_require_artifact_on_export))} "
                 f"feasibility_gate={int(bool(args.feasibility_gate))}:{str(args.feasibility_stage)}",
                 "[CONFIG-PROTO-MASK] "
                 f"requested={int(bool(phase2_audit_state.get('requested', False)))} "
@@ -2586,8 +3422,13 @@ def train(args) -> int:
     previous_protected_metrics: Dict[str, float] | None = None
     previous_train_logs: Dict[str, Any] | None = None
     paic_cooldown_remaining = 0
+    tail_rollback_cooldown_remaining = 0
+    tail_early_stop_requested = False
+    tail_rollback_events: List[Dict[str, Any]] = []
+    tail_reference_path = out_dir / "tail_reference_ssdg.pth"
     phase1_v2_tail_machine = None
     phase1_v2_final_blocked = False
+    phase1_v2_reasons: List[str] = []
     if bool(getattr(args, "tail_safety_state_machine", False)):
         if TailSafetyStateMachine is None or TailSafetyConfig is None:
             raise ImportError("cvsrffi.phase1_v2_control is required for --tail_safety_state_machine.")
@@ -2604,6 +3445,7 @@ def train(args) -> int:
                 p99_expansion_block_best_delta=float(args.tail_safety_p99_expansion_block_best_delta),
                 tail_cvar_expansion_block_final_delta=float(args.tail_safety_cvar_expansion_block_final_delta),
                 tail_cvar_expansion_block_best_delta=float(args.tail_safety_cvar_expansion_block_best_delta),
+                reference_window=int(args.tail_safety_reference_window),
             )
         )
     for epoch in range(1, total_epochs + 1):
@@ -2613,6 +3455,17 @@ def train(args) -> int:
         phase = "label" if epoch <= int(args.label_epochs) else "pseudo"
         stage_state = _stage_state_for_epoch(epoch, args, phase)
         cur_w = _loss_weights(args, stage_state)
+        tail_rollback_cooldown_active = bool(tail_rollback_cooldown_remaining > 0)
+        tail_closed_scale = (
+            max(0.0, min(1.0, float(args.tail_rollback_closed_scale)))
+            if tail_rollback_cooldown_active
+            else 1.0
+        )
+        stage_state["tail_rollback_cooldown_active"] = 1.0 if tail_rollback_cooldown_active else 0.0
+        stage_state["tail_rollback_cooldown_remaining"] = float(tail_rollback_cooldown_remaining)
+        stage_state["tail_rollback_closed_scale"] = float(tail_closed_scale)
+        if tail_rollback_cooldown_active:
+            tail_rollback_cooldown_remaining = max(0, tail_rollback_cooldown_remaining - 1)
         paic_cooldown_active = bool(phase == "pseudo" and paic_cooldown_remaining > 0)
         if paic_cooldown_active:
             scale = max(0.0, min(1.0, float(args.paic_guard_sat_scale)))
@@ -2637,6 +3490,14 @@ def train(args) -> int:
         for batch_idx, labeled_batch in enumerate(data_ctx["train_loader"], start=1):
             x_l, y_l, extra_l = move_batch(labeled_batch, device)
             d_l = domain_from_extra(extra_l, data_ctx["domain_label_map"], device)
+            concat_active = concat_sat_aug is not None and epoch >= int(getattr(args, "concat_sat_start_epoch", 1))
+            if concat_active and augmentor is not None:
+                x_l = torch.nan_to_num(
+                    augmentor(x_l, labels=y_l, no_pa=(not bool(args.aug_enable_pa_normal))),
+                    nan=0.0,
+                    posinf=0.0,
+                    neginf=0.0,
+                )
             x_l, y_l, d_l, concat_sat_ce_view, concat_sat_info = _prepare_concat_sat_batch_for_training(
                 concat_sat_aug,
                 x_l,
@@ -2648,7 +3509,7 @@ def train(args) -> int:
             )
             concat_sat_full_batch = bool(concat_sat_info.get("expanded", 0.0) > 0.0)
             concat_sat_clean_bsz = int(concat_sat_info.get("clean_batch_size", 0.0))
-            if augmentor is not None:
+            if augmentor is not None and not concat_active:
                 x_l_main = torch.nan_to_num(
                     augmentor(x_l, labels=y_l, no_pa=(not bool(args.aug_enable_pa_normal))),
                     nan=0.0,
@@ -3019,10 +3880,7 @@ def train(args) -> int:
                 if float(args.lambda_source_episode) > 0.0 and source_episode_stage_scale > 0.0:
                     if source_episode_three_sigma_loss is None:
                         raise ImportError("cvsrffi.losses.source_episode_three_sigma_loss is required for --lambda_source_episode")
-                    loss_source_episode_l, source_episode_info = source_episode_three_sigma_loss(
-                        z_id_l,
-                        y_l,
-                        d_l,
+                    source_episode_kwargs = dict(
                         min_domains=int(args.source_episode_min_domains),
                         radius_cap_rad=math.radians(float(args.source_episode_radius_cap_deg)),
                         min_sigma_rad=math.radians(float(args.source_episode_min_sigma_deg)),
@@ -3032,7 +3890,37 @@ def train(args) -> int:
                         mixup_weight=float(args.source_episode_mixup_weight),
                         mixup_order=int(args.soft_unknown_mixup_order),
                         mixup_hard_k=int(args.source_episode_mixup_hard_k),
+                        local_component_compact_weight=float(args.source_episode_local_compact_weight),
+                        local_component_invariant_weight=float(args.source_episode_local_invariant_weight),
+                        local_component_inter_weight=float(args.source_episode_local_inter_weight),
+                        local_component_inter_margin_rad=math.radians(float(args.source_episode_local_inter_margin_deg)),
+                        local_component_accept_weight=float(args.source_episode_local_accept_weight),
+                        local_component_density_weight=float(args.source_episode_local_density_weight),
                     )
+                    if (
+                        concat_sat_full_batch
+                        and concat_sat_clean_bsz > 0
+                        and z_id_l.size(0) >= 2 * concat_sat_clean_bsz
+                        and multiview_source_episode_three_sigma_loss is not None
+                    ):
+                        clean_slice = slice(0, concat_sat_clean_bsz)
+                        sat_slice = slice(concat_sat_clean_bsz, 2 * concat_sat_clean_bsz)
+                        loss_source_episode_l, source_episode_info = multiview_source_episode_three_sigma_loss(
+                            z_id_l[clean_slice],
+                            z_id_l[sat_slice],
+                            y_l[clean_slice],
+                            d_l[clean_slice] if d_l is not None else None,
+                            clean_weight=float(args.direct_metric_clean_weight),
+                            sat_weight=float(args.direct_metric_sat_weight),
+                            **source_episode_kwargs,
+                        )
+                    else:
+                        loss_source_episode_l, source_episode_info = source_episode_three_sigma_loss(
+                            z_id_l,
+                            y_l,
+                            d_l,
+                            **source_episode_kwargs,
+                        )
                 loss_direct_metric_accept_l = z_id_l.sum() * 0.0
                 direct_metric_info: Dict[str, float] = {
                     "active": 0.0,
@@ -3068,50 +3956,36 @@ def train(args) -> int:
                     if direct_metric_acceptance_loss is None:
                         raise ImportError("cvsrffi.losses.direct_metric_acceptance_loss is required for --lambda_direct_metric_accept")
                     paired_view_count = concat_sat_clean_bsz if concat_sat_full_batch else 0
-                    loss_direct_metric_accept_l, direct_metric_info = direct_metric_acceptance_loss(
-                        z_id_l,
-                        y_l,
-                        d_l,
-                        paired_view_count=paired_view_count,
-                        virtual_count=int(args.direct_metric_virtual_count),
-                        virtual_mode=str(args.direct_metric_virtual_mode),
-                        core_quantile=float(args.direct_metric_core_quantile),
-                        accept_quantile=float(args.direct_metric_accept_quantile),
-                        tail_quantile=float(args.direct_metric_tail_quantile),
-                        overflow_quantile=float(args.direct_metric_overflow_quantile),
-                        zid_p50_target_rad=math.radians(float(args.direct_metric_zid_p50_target_deg)),
-                        zid_p95_target_rad=math.radians(float(args.direct_metric_zid_p95_target_deg)),
-                        zid_p99_target_rad=math.radians(float(args.direct_metric_zid_p99_target_deg)),
-                        zid_tail_cvar_target_rad=math.radians(float(args.direct_metric_zid_tail_cvar_target_deg)),
-                        source_overflow_target=float(args.direct_metric_source_overflow_target),
-                        proxy_vaccept_target=float(args.direct_metric_proxy_vaccept_target),
-                        bridge_accept_target=float(args.direct_metric_bridge_accept_target),
-                        low_density_accept_target=float(args.direct_metric_low_density_accept_target),
-                        tail_accept_target=float(args.direct_metric_tail_accept_target),
-                        overflow_accept_target=float(args.direct_metric_overflow_accept_target),
-                        radius_inter_ratio_target=float(args.direct_metric_radius_inter_ratio_target),
-                        core_accept_target=float(args.direct_metric_core_accept_target),
-                        sat_pair_target_rad=math.radians(float(args.direct_metric_sat_pair_target_deg)),
-                        zid_quantile_weight=float(args.direct_metric_zid_quantile_weight),
-                        source_overflow_weight=float(args.direct_metric_source_overflow_weight),
-                        proxy_vaccept_weight=float(args.direct_metric_proxy_vaccept_weight),
-                        bridge_accept_weight=float(args.direct_metric_bridge_accept_weight),
-                        low_density_accept_weight=float(args.direct_metric_low_density_accept_weight),
-                        tail_accept_weight=float(args.direct_metric_tail_accept_weight),
-                        overflow_accept_weight=float(args.direct_metric_overflow_accept_weight),
-                        radius_inter_ratio_weight=float(args.direct_metric_radius_inter_ratio_weight),
-                        core_accept_weight=float(args.direct_metric_core_accept_weight),
-                        sat_pair_weight=float(args.direct_metric_sat_pair_weight),
-                        quantile_temperature_rad=math.radians(float(args.direct_metric_quantile_temperature_deg)),
-                        accept_temperature=float(args.direct_metric_accept_temperature),
-                        component_temperature_rad=math.radians(float(args.direct_metric_component_temperature_deg)),
-                        density_temperature_rad=math.radians(float(args.direct_metric_density_temperature_deg)),
-                        component_margin_rad=math.radians(float(args.direct_metric_component_margin_deg)),
-                        source_margin_rad=math.radians(float(args.direct_metric_source_margin_deg)),
-                        shell_width_rad=math.radians(float(args.direct_metric_shell_width_deg)),
-                        accept_cvar_alpha=float(args.direct_metric_accept_cvar_alpha),
-                        virtual_detach=bool(args.direct_metric_virtual_detach),
-                    )
+                    dm_kwargs = _direct_metric_kwargs(args)
+                    if (
+                        bool(getattr(args, "direct_metric_multiview_separate", False))
+                        and concat_sat_full_batch
+                        and paired_view_count > 0
+                        and multiview_direct_metric_acceptance_loss is not None
+                    ):
+                        clean_slice = slice(0, paired_view_count)
+                        sat_slice = slice(paired_view_count, 2 * paired_view_count)
+                        loss_direct_metric_accept_l, direct_metric_info = multiview_direct_metric_acceptance_loss(
+                            z_id_l[clean_slice],
+                            z_id_l[sat_slice],
+                            y_l[clean_slice],
+                            d_l[clean_slice] if d_l is not None else None,
+                            clean_weight=float(args.direct_metric_clean_weight),
+                            sat_weight=float(args.direct_metric_sat_weight),
+                            pair_weight=float(args.direct_metric_sat_pair_weight),
+                            sat_pair_target_rad=math.radians(float(args.direct_metric_sat_pair_target_deg)),
+                            **dm_kwargs,
+                        )
+                    else:
+                        loss_direct_metric_accept_l, direct_metric_info = direct_metric_acceptance_loss(
+                            z_id_l,
+                            y_l,
+                            d_l,
+                            paired_view_count=paired_view_count,
+                            sat_pair_target_rad=math.radians(float(args.direct_metric_sat_pair_target_deg)),
+                            sat_pair_weight=float(args.direct_metric_sat_pair_weight),
+                            **dm_kwargs,
+                        )
                 zero_sat = out_l["tx_logits"].sum() * 0.0
                 loss_sat_cls_l = zero_sat
                 loss_sat_cons_l = zero_sat
@@ -3223,7 +4097,7 @@ def train(args) -> int:
                             teacher_clean_out["tx_logits"],
                             temperature=float(args.teacher_distill_temperature),
                         )
-                loss_l = (
+                loss_closed_l = (
                     loss_tx_l
                     + cur_w["dom"] * loss_dom_l
                     + cur_w["adv"] * loss_adv_l
@@ -3231,19 +4105,22 @@ def train(args) -> int:
                     + cur_w["cons"] * loss_cons_l
                     + cur_w["group_ce"] * loss_group_ce_l
                     + cur_w["fishr"] * loss_fishr_l
-                    + cur_w["proto"] * sanitize_loss("ssdg_proto", loss_proto_l, z_id_l, loss_warn_counts)
-                    + (cur_w["open_world_feat"] * ow_feat_stage_scale) * sanitize_loss("ssdg_open_world_feat", loss_open_world_feat_l, z_id_l, loss_warn_counts)
-                    + (cur_w["zid_compact"] * zid_warm) * sanitize_loss("ssdg_zid_compact", loss_zid_compact_l, z_id_l, loss_warn_counts)
-                    + (cur_w["proxy_unknown"] * proxy_stage_scale) * sanitize_loss("ssdg_proxy_unknown", loss_proxy_unknown_l, z_id_l, loss_warn_counts)
-                    + (cur_w["soft_unknown_mixup"] * soft_unknown_mixup_stage_scale) * sanitize_loss("ssdg_soft_unknown_mixup", loss_soft_unknown_mixup_l, z_id_l, loss_warn_counts)
-                    + (cur_w["source_episode"] * source_episode_stage_scale) * sanitize_loss("ssdg_source_episode", loss_source_episode_l, z_id_l, loss_warn_counts)
-                    + (cur_w["direct_metric_accept"] * direct_metric_stage_scale) * sanitize_loss("ssdg_direct_metric_accept", loss_direct_metric_accept_l, z_id_l, loss_warn_counts)
                     + cur_w["sat_cls"] * loss_sat_cls_l
                     + cur_w["sat_cons"] * loss_sat_cons_l
                     + (float(args.lambda_teacher_clean_kl) * teacher_scale) * sanitize_loss("teacher_clean_kl", loss_teacher_clean_kl_l, z_id_l, loss_warn_counts)
                     + (float(args.lambda_teacher_sat_kl) * teacher_scale) * sanitize_loss("teacher_sat_kl", loss_teacher_sat_kl_l, z_id_l, loss_warn_counts)
                     + (float(args.lambda_teacher_zid_mse) * teacher_scale) * sanitize_loss("teacher_zid_mse", loss_teacher_zid_mse_l, z_id_l, loss_warn_counts)
                 )
+                loss_open_l = (
+                    cur_w["proto"] * sanitize_loss("ssdg_proto", loss_proto_l, z_id_l, loss_warn_counts)
+                    + (cur_w["open_world_feat"] * ow_feat_stage_scale) * sanitize_loss("ssdg_open_world_feat", loss_open_world_feat_l, z_id_l, loss_warn_counts)
+                    + (cur_w["zid_compact"] * zid_warm) * sanitize_loss("ssdg_zid_compact", loss_zid_compact_l, z_id_l, loss_warn_counts)
+                    + (cur_w["proxy_unknown"] * proxy_stage_scale) * sanitize_loss("ssdg_proxy_unknown", loss_proxy_unknown_l, z_id_l, loss_warn_counts)
+                    + (cur_w["soft_unknown_mixup"] * soft_unknown_mixup_stage_scale) * sanitize_loss("ssdg_soft_unknown_mixup", loss_soft_unknown_mixup_l, z_id_l, loss_warn_counts)
+                    + (cur_w["source_episode"] * source_episode_stage_scale) * sanitize_loss("ssdg_source_episode", loss_source_episode_l, z_id_l, loss_warn_counts)
+                    + (cur_w["direct_metric_accept"] * direct_metric_stage_scale) * sanitize_loss("ssdg_direct_metric_accept", loss_direct_metric_accept_l, z_id_l, loss_warn_counts)
+                )
+                loss_l = loss_closed_l + loss_open_l
                 if phase == "pseudo" and bool(args.use_unlabeled):
                     try:
                         unlabeled_batch = next(unlabeled_iter)
@@ -3288,7 +4165,8 @@ def train(args) -> int:
                     else:
                         loss_u = out_s["tx_logits"].sum() * 0.0
                     prob_s = out_s["tx_logits"].softmax(dim=1)
-                    loss_ent = -(prob_s * prob_s.clamp_min(1e-8).log()).sum(dim=1).mean()
+                    entropy_per_sample = -(prob_s * prob_s.clamp_min(1e-8).log()).sum(dim=1)
+                    loss_ent = entropy_per_sample.mean()
                     zero_u = out_s["tx_logits"].sum() * 0.0
                     loss_u_domain = zero_u
                     loss_u_adv = zero_u
@@ -3298,6 +4176,8 @@ def train(args) -> int:
                     u_sat_pair_count = 0
                     u_dm_info: Dict[str, float] = {
                         "active": 0.0,
+                        "active_classes": 0.0,
+                        "inactive_reason_code": 1.0,
                         "selected": float(pseudo_selected),
                         "valid_domain_selected": float("nan"),
                         "zid_p50_deg": float("nan"),
@@ -3348,24 +4228,43 @@ def train(args) -> int:
                     ):
                         loss_u_adv = F.cross_entropy(out_s["adv_dom_logits"][valid_u_mask].float(), d_u[valid_u_mask].long())
                     out_u_sat = None
-                    if (
-                        float(args.lambda_u_sat_cons) > 0.0
-                        and epoch >= int(args.u_sat_cons_start_epoch)
-                        and concat_sat_aug is not None
-                    ):
+                    need_u_sat_view = bool(
+                        concat_sat_aug is not None
+                        and (
+                            (float(args.lambda_u_sat_cons) > 0.0 and epoch >= int(args.u_sat_cons_start_epoch))
+                            or (
+                                float(args.lambda_u_direct_metric_accept) > 0.0
+                                and bool(args.u_direct_metric_use_sat_pair)
+                                and epoch >= int(args.u_direct_metric_start_epoch)
+                            )
+                            or (
+                                float(args.lambda_u_quarantine_accept) > 0.0
+                                and bool(args.u_quarantine_include_sat_view)
+                                and epoch >= int(args.u_quarantine_start_epoch)
+                            )
+                            or (float(args.lambda_u_domain) > 0.0 and epoch >= int(args.u_domain_start_epoch))
+                            or (float(args.lambda_u_adv) > 0.0 and epoch >= int(args.u_domain_start_epoch))
+                        )
+                    )
+                    if need_u_sat_view:
                         u_sat_view = concat_sat_aug.transform(x_u, args=args, epoch=epoch, batch_idx=int(batch_idx) + 200000)
                         x_u_sat = _safe_iq_tensor(u_sat_view.x)
                         out_u_sat = model(x_u_sat, y_tx=None, grl_lambda=1.0, return_aux=True, domain_labels=d_u)
-                        loss_u_sat_kl = F.kl_div(
-                            F.log_softmax(out_u_sat["tx_logits"], dim=1),
-                            prob_s.detach(),
-                            reduction="batchmean",
-                        )
-                        loss_u_sat_zid = F.mse_loss(
-                            F.normalize(out_u_sat["z_id"].float(), dim=1),
-                            F.normalize(out_s["z_id"].detach().float(), dim=1),
-                        )
-                        loss_u_sat_cons = loss_u_sat_kl + float(args.u_sat_zid_cons_weight) * loss_u_sat_zid
+                        if bool(mask.any()):
+                            loss_u = 0.5 * (
+                                loss_u + F.cross_entropy(out_u_sat["tx_logits"][mask], pseudo[mask])
+                            )
+                        if float(args.lambda_u_sat_cons) > 0.0 and epoch >= int(args.u_sat_cons_start_epoch):
+                            loss_u_sat_kl = F.kl_div(
+                                F.log_softmax(out_u_sat["tx_logits"], dim=1),
+                                prob_s.detach(),
+                                reduction="batchmean",
+                            )
+                            loss_u_sat_zid = F.mse_loss(
+                                F.normalize(out_u_sat["z_id"].float(), dim=1),
+                                F.normalize(out_s["z_id"].detach().float(), dim=1),
+                            )
+                            loss_u_sat_cons = loss_u_sat_kl + float(args.u_sat_zid_cons_weight) * loss_u_sat_zid
                         if (
                             float(args.lambda_u_domain) > 0.0
                             and epoch >= int(args.u_domain_start_epoch)
@@ -3386,116 +4285,110 @@ def train(args) -> int:
                                 loss_u_adv
                                 + F.cross_entropy(out_u_sat["adv_dom_logits"][valid_u_mask].float(), d_u[valid_u_mask].long())
                             )
+                    u_geometry_core_mask = torch.ones_like(mask, dtype=torch.bool)
+                    if (
+                        float(args.lambda_u_quarantine_accept) > 0.0
+                        and epoch >= int(args.u_quarantine_start_epoch)
+                        and unlabeled_known_acceptance_quarantine_loss is not None
+                    ):
+                        loss_u_quarantine, u_quarantine_info, u_geometry_core_mask = _route_unlabeled_known_geometry(
+                            args=args,
+                            z_id_l=z_id_l,
+                            y_l=y_l,
+                            d_l=d_l,
+                            out_s=out_s,
+                            out_u_sat=out_u_sat,
+                            pseudo=pseudo,
+                            d_u=d_u,
+                            pseudo_mask=mask,
+                            valid_u_mask=valid_u_mask,
+                        )
+                        if bool(getattr(args, "u_geometry_all_valid_queries", False)):
+                            routed_pseudo_mask = mask & u_geometry_core_mask
+                            if bool(routed_pseudo_mask.any()):
+                                loss_u = F.cross_entropy(
+                                    out_s["tx_logits"][routed_pseudo_mask], pseudo[routed_pseudo_mask]
+                                )
+                                if out_u_sat is not None:
+                                    loss_u = 0.5 * (
+                                        loss_u
+                                        + F.cross_entropy(
+                                            out_u_sat["tx_logits"][routed_pseudo_mask],
+                                            pseudo[routed_pseudo_mask],
+                                        )
+                                    )
+                            else:
+                                loss_u = out_s["tx_logits"].sum() * 0.0
+                            pseudo_selected = int(routed_pseudo_mask.sum().detach().item())
+                            pseudo_correct = int(
+                                ((pseudo == y_u) & routed_pseudo_mask).sum().detach().item()
+                            )
+                            mask = routed_pseudo_mask
+                            loss_ent = (
+                                entropy_per_sample[u_geometry_core_mask].mean()
+                                if bool(u_geometry_core_mask.any())
+                                else entropy_per_sample.sum() * 0.0
+                            )
                     if (
                         float(args.lambda_u_direct_metric_accept) > 0.0
                         and epoch >= int(args.u_direct_metric_start_epoch)
                         and direct_metric_acceptance_loss is not None
                     ):
                         dm_mask = mask
+                        if bool(getattr(args, "u_geometry_all_valid_queries", False)):
+                            dm_mask = dm_mask & u_geometry_core_mask
                         if bool(getattr(args, "u_direct_metric_valid_domain_only", True)):
                             dm_mask = dm_mask & valid_u_mask
                         dm_selected = int(dm_mask.sum().detach().item())
                         u_dm_info["selected"] = float(dm_selected)
                         u_dm_info["valid_domain_selected"] = float(int((mask & valid_u_mask).sum().detach().item()))
                         if dm_selected >= int(args.u_direct_metric_min_selected):
-                            dm_z = out_s["z_id"][dm_mask]
+                            dm_z_clean = out_s["z_id"][dm_mask]
                             dm_y = pseudo[dm_mask].long()
                             dm_d = d_u[dm_mask].long() if valid_u_domain else None
                             paired_view_count_u = 0
-                            if bool(args.u_direct_metric_use_sat_pair) and out_u_sat is not None:
-                                dm_z = torch.cat([dm_z, out_u_sat["z_id"][dm_mask]], dim=0)
-                                dm_y = torch.cat([dm_y, dm_y], dim=0)
-                                if dm_d is not None:
-                                    dm_d = torch.cat([dm_d, dm_d], dim=0)
+                            if (
+                                bool(args.u_direct_metric_use_sat_pair)
+                                and out_u_sat is not None
+                                and bool(getattr(args, "direct_metric_multiview_separate", False))
+                                and multiview_direct_metric_acceptance_loss is not None
+                            ):
                                 paired_view_count_u = int(dm_selected)
                                 u_sat_pair_count = paired_view_count_u
-                            loss_u_direct_metric, u_dm_info = direct_metric_acceptance_loss(
-                                dm_z,
-                                dm_y,
-                                dm_d,
-                                paired_view_count=paired_view_count_u,
-                                virtual_count=int(args.direct_metric_virtual_count),
-                                virtual_mode=str(args.direct_metric_virtual_mode),
-                                core_quantile=float(args.direct_metric_core_quantile),
-                                accept_quantile=float(args.direct_metric_accept_quantile),
-                                tail_quantile=float(args.direct_metric_tail_quantile),
-                                overflow_quantile=float(args.direct_metric_overflow_quantile),
-                                zid_p50_target_rad=math.radians(float(args.direct_metric_zid_p50_target_deg)),
-                                zid_p95_target_rad=math.radians(float(args.direct_metric_zid_p95_target_deg)),
-                                zid_p99_target_rad=math.radians(float(args.direct_metric_zid_p99_target_deg)),
-                                zid_tail_cvar_target_rad=math.radians(float(args.direct_metric_zid_tail_cvar_target_deg)),
-                                source_overflow_target=float(args.direct_metric_source_overflow_target),
-                                proxy_vaccept_target=float(args.direct_metric_proxy_vaccept_target),
-                                bridge_accept_target=float(args.direct_metric_bridge_accept_target),
-                                low_density_accept_target=float(args.direct_metric_low_density_accept_target),
-                                tail_accept_target=float(args.direct_metric_tail_accept_target),
-                                overflow_accept_target=float(args.direct_metric_overflow_accept_target),
-                                radius_inter_ratio_target=float(args.direct_metric_radius_inter_ratio_target),
-                                core_accept_target=float(args.direct_metric_core_accept_target),
-                                sat_pair_target_rad=math.radians(float(args.direct_metric_sat_pair_target_deg)),
-                                zid_quantile_weight=float(args.direct_metric_zid_quantile_weight),
-                                source_overflow_weight=float(args.direct_metric_source_overflow_weight),
-                                proxy_vaccept_weight=float(args.direct_metric_proxy_vaccept_weight),
-                                bridge_accept_weight=float(args.direct_metric_bridge_accept_weight),
-                                low_density_accept_weight=float(args.direct_metric_low_density_accept_weight),
-                                tail_accept_weight=float(args.direct_metric_tail_accept_weight),
-                                overflow_accept_weight=float(args.direct_metric_overflow_accept_weight),
-                                radius_inter_ratio_weight=float(args.direct_metric_radius_inter_ratio_weight),
-                                core_accept_weight=float(args.direct_metric_core_accept_weight),
-                                sat_pair_weight=float(args.direct_metric_sat_pair_weight) if paired_view_count_u > 0 else 0.0,
-                                quantile_temperature_rad=math.radians(float(args.direct_metric_quantile_temperature_deg)),
-                                accept_temperature=float(args.direct_metric_accept_temperature),
-                                component_temperature_rad=math.radians(float(args.direct_metric_component_temperature_deg)),
-                                density_temperature_rad=math.radians(float(args.direct_metric_density_temperature_deg)),
-                                component_margin_rad=math.radians(float(args.direct_metric_component_margin_deg)),
-                                source_margin_rad=math.radians(float(args.direct_metric_source_margin_deg)),
-                                shell_width_rad=math.radians(float(args.direct_metric_shell_width_deg)),
-                                accept_cvar_alpha=float(args.direct_metric_accept_cvar_alpha),
-                                virtual_detach=bool(args.direct_metric_virtual_detach),
-                            )
+                                loss_u_direct_metric, u_dm_info = multiview_direct_metric_acceptance_loss(
+                                    dm_z_clean,
+                                    out_u_sat["z_id"][dm_mask],
+                                    dm_y,
+                                    dm_d,
+                                    clean_weight=float(args.direct_metric_clean_weight),
+                                    sat_weight=float(args.direct_metric_sat_weight),
+                                    pair_weight=float(args.direct_metric_sat_pair_weight),
+                                    sat_pair_target_rad=math.radians(float(args.direct_metric_sat_pair_target_deg)),
+                                    **_direct_metric_kwargs(args),
+                                )
+                            else:
+                                dm_z = dm_z_clean
+                                if bool(args.u_direct_metric_use_sat_pair) and out_u_sat is not None:
+                                    dm_z = torch.cat([dm_z_clean, out_u_sat["z_id"][dm_mask]], dim=0)
+                                    dm_y = torch.cat([dm_y, dm_y], dim=0)
+                                    if dm_d is not None:
+                                        dm_d = torch.cat([dm_d, dm_d], dim=0)
+                                    paired_view_count_u = int(dm_selected)
+                                    u_sat_pair_count = paired_view_count_u
+                                loss_u_direct_metric, u_dm_info = direct_metric_acceptance_loss(
+                                    dm_z,
+                                    dm_y,
+                                    dm_d,
+                                    paired_view_count=paired_view_count_u,
+                                    sat_pair_target_rad=math.radians(float(args.direct_metric_sat_pair_target_deg)),
+                                    sat_pair_weight=float(args.direct_metric_sat_pair_weight) if paired_view_count_u > 0 else 0.0,
+                                    **_direct_metric_kwargs(args),
+                                )
                             u_dm_info["selected"] = float(dm_selected)
                             u_dm_info["valid_domain_selected"] = float(int((mask & valid_u_mask).sum().detach().item()))
-                    if (
-                        float(args.lambda_u_quarantine_accept) > 0.0
-                        and epoch >= int(args.u_quarantine_start_epoch)
-                        and unlabeled_known_acceptance_quarantine_loss is not None
-                    ):
-                        quarantine_mask = ~mask
-                        if bool(getattr(args, "u_quarantine_valid_domain_only", True)):
-                            quarantine_mask = quarantine_mask & valid_u_mask
-                        quarantine_count = int(quarantine_mask.sum().detach().item())
-                        quarantine_pool = int(valid_u_mask.sum().detach().item()) if bool(getattr(args, "u_quarantine_valid_domain_only", True)) else int(pseudo.numel())
-                        u_quarantine_info["quarantine_rate"] = float(quarantine_count) / float(max(1, quarantine_pool))
-                        u_quarantine_info["valid_domain_rate"] = float(int(valid_u_mask.sum().detach().item())) / float(max(1, int(pseudo.numel())))
-                        if quarantine_count >= int(args.u_quarantine_min_count):
-                            anchor_parts = [z_id_l.detach()]
-                            label_parts = [y_l.detach().long()]
-                            trusted_anchor_mask = mask & valid_u_mask if bool(getattr(args, "u_quarantine_valid_domain_only", True)) else mask
-                            if bool(trusted_anchor_mask.any()):
-                                anchor_parts.append(out_s["z_id"][trusted_anchor_mask].detach())
-                                label_parts.append(pseudo[trusted_anchor_mask].detach().long())
-                            anchor_z = torch.cat(anchor_parts, dim=0)
-                            anchor_y = torch.cat(label_parts, dim=0)
-                            query_parts = [out_s["z_id"][quarantine_mask]]
-                            if bool(args.u_quarantine_include_sat_view) and out_u_sat is not None:
-                                query_parts.append(out_u_sat["z_id"][quarantine_mask])
-                            query_z = torch.cat(query_parts, dim=0)
-                            loss_u_quarantine, u_quarantine_info = unlabeled_known_acceptance_quarantine_loss(
-                                anchor_z,
-                                anchor_y,
-                                query_z,
-                                core_quantile=float(args.u_quarantine_core_quantile),
-                                accept_quantile=float(args.u_quarantine_accept_quantile),
-                                accept_target=float(args.u_quarantine_accept_target),
-                                cvar_alpha=float(args.u_quarantine_cvar_alpha),
-                                accept_temperature=float(args.u_quarantine_accept_temperature),
-                                component_temperature_rad=math.radians(float(args.direct_metric_component_temperature_deg)),
-                                density_temperature_rad=math.radians(float(args.direct_metric_density_temperature_deg)),
-                                component_margin_rad=math.radians(float(args.direct_metric_component_margin_deg)),
-                                min_samples_per_class=int(args.u_quarantine_min_count),
-                            )
-                            u_quarantine_info["quarantine_rate"] = float(quarantine_count) / float(max(1, quarantine_pool))
-                            u_quarantine_info["valid_domain_rate"] = float(int(valid_u_mask.sum().detach().item())) / float(max(1, int(pseudo.numel())))
+                            u_dm_info["inactive_reason_code"] = 0.0 if float(u_dm_info.get("active", 0.0)) > 0.0 else 3.0
+                        else:
+                            u_dm_info["inactive_reason_code"] = 2.0
                     reliable_ratio = mask.float().mean()
                     pseudo_conf = conf.mean()
                     domain_pass = domain_mask.float().mean()
@@ -3551,24 +4444,96 @@ def train(args) -> int:
                     pseudo_total = 0
                     pseudo_selected = 0
                     pseudo_correct = 0
-                loss = (
-                    loss_l
+                loss_closed = (
+                    loss_closed_l
                     + float(args.lambda_u) * loss_u
                     + float(args.lambda_ent) * loss_ent
                     + float(args.lambda_u_domain) * sanitize_loss("ssdg_u_domain", loss_u_domain, z_id_l, loss_warn_counts)
                     + float(args.lambda_u_adv) * sanitize_loss("ssdg_u_adv", loss_u_adv, z_id_l, loss_warn_counts)
                     + float(args.lambda_u_sat_cons) * sanitize_loss("ssdg_u_sat_cons", loss_u_sat_cons, z_id_l, loss_warn_counts)
+                )
+                loss_open = (
+                    loss_open_l
                     + float(args.lambda_u_direct_metric_accept)
                     * sanitize_loss("ssdg_u_direct_metric_accept", loss_u_direct_metric, z_id_l, loss_warn_counts)
                     + float(args.lambda_u_quarantine_accept)
                     * sanitize_loss("ssdg_u_quarantine_accept", loss_u_quarantine, z_id_l, loss_warn_counts)
                 )
+                os_budget_info = {
+                    "active": 0.0,
+                    "os_scale": 1.0,
+                    "closed_scale": 1.0,
+                    "pre_budget": 0.0,
+                    "post_budget": 0.0,
+                    "target_budget": float(args.os_eff_min_budget),
+                    "reason_code": 0.0,
+                }
+                scaled_closed_loss = float(tail_closed_scale) * loss_closed
+                scaled_open_loss = loss_open
+                loss = scaled_closed_loss + scaled_open_loss
             loss_is_finite = bool(torch.isfinite(loss.detach()).item())
             skipped_nonfinite_loss = 0
             skipped_nonfinite_grad = 0
             optimizer_step_applied = False
+            os_grad_info = {
+                "active": 0.0,
+                "conflict": 0.0,
+                "pre_cosine": float("nan"),
+                "post_cosine": float("nan"),
+                "closed_grad_norm": float("nan"),
+                "open_grad_norm": float("nan"),
+                "total_closed_grad_norm": float("nan"),
+                "total_open_grad_norm": float("nan"),
+                "shared_param_count": 0.0,
+                "budget_scope_shared_zid_path": 0.0,
+                "balanced_closed_grad_norm": float("nan"),
+                "balanced_open_grad_norm": float("nan"),
+                "effective_closed_grad_norm": float("nan"),
+                "effective_open_grad_norm": float("nan"),
+                "os_scale": 1.0,
+                "closed_scale": 1.0,
+                "pre_budget": 0.0,
+                "post_budget": 0.0,
+                "reason_code": 0.0,
+            }
             if loss_is_finite:
-                scaler.scale(loss).backward()
+                use_os_control = (
+                    (
+                        bool(getattr(args, "os_gradient_surgery", False))
+                        or bool(getattr(args, "os_budget_controller", False))
+                    )
+                    and epoch >= int(args.direct_metric_start_epoch)
+                    and (batch_idx % max(1, int(args.os_gradient_surgery_interval)) == 0)
+                    and bool(scaled_closed_loss.requires_grad)
+                    and bool(scaled_open_loss.requires_grad)
+                )
+                if use_os_control:
+                    os_grad_info = _backward_with_open_set_projection(
+                        model,
+                        scaler,
+                        scaled_closed_loss,
+                        scaled_open_loss,
+                        project_conflicts=bool(getattr(args, "os_gradient_surgery", False)),
+                        budget_controller=bool(getattr(args, "os_budget_controller", False)),
+                        min_budget=float(args.os_eff_min_budget),
+                        max_os_scale=float(args.os_budget_max_scale),
+                        min_closed_scale=float(args.os_budget_min_closed_scale),
+                    )
+                    os_budget_info = {
+                        "active": 1.0 if float(os_grad_info["reason_code"]) == 1.0 else 0.0,
+                        "os_scale": float(os_grad_info["os_scale"]),
+                        "closed_scale": float(os_grad_info["closed_scale"]),
+                        "pre_budget": float(os_grad_info["pre_budget"]),
+                        "post_budget": float(os_grad_info["post_budget"]),
+                        "target_budget": float(args.os_eff_min_budget),
+                        "reason_code": float(os_grad_info["reason_code"]),
+                    }
+                    loss = (
+                        float(os_grad_info["closed_scale"]) * scaled_closed_loss
+                        + float(os_grad_info["os_scale"]) * scaled_open_loss
+                    )
+                else:
+                    scaler.scale(loss).backward()
                 scaler.unscale_(optimizer)
                 grad_total = _grad_norm(model)
                 grad_backbone = _grad_norm(model, lambda name: "backbone" in name)
@@ -3596,341 +4561,462 @@ def train(args) -> int:
                 if proto_bank.class_count is not None:
                     active = proto_bank.class_count >= int(args.proto_min_count)
                     proto_info["proto_active_classes"] = float(int(active.sum().detach().item()))
-        u_tri_query_count = float(u_quarantine_info.get("query_count", 0.0) or 0.0)
-        q_tri_trusted_core_count = float(u_quarantine_info.get("tri_trusted_core_count", float("nan")))
-        q_tri_ambiguous_tail_count = float(u_quarantine_info.get("tri_ambiguous_tail_count", float("nan")))
-        q_tri_outside_reject_count = float(u_quarantine_info.get("tri_outside_reject_count", float("nan")))
-        q_tri_counts = [
-            q_tri_trusted_core_count,
-            q_tri_ambiguous_tail_count,
-            q_tri_outside_reject_count,
-        ]
-        has_geometry_tri_state = (
-            all(math.isfinite(v) and v >= 0.0 for v in q_tri_counts)
-            and sum(q_tri_counts) > 0.0
-            and u_tri_query_count > 0.0
-        )
-        if has_geometry_tri_state:
-            u_tri_state_source = "geometry"
-            u_tri_trusted_core_count = q_tri_trusted_core_count
-            u_tri_ambiguous_tail_count = q_tri_ambiguous_tail_count
-            u_tri_outside_reject_count = q_tri_outside_reject_count
-        else:
-            u_tri_state_source = "fallback"
-            u_tri_trusted_core_count = float(u_dm_info.get("selected", 0.0) or 0.0)
-            u_tri_accept_rate = float(u_quarantine_info.get("accept_rate", 0.0) or 0.0)
-            if not math.isfinite(u_tri_trusted_core_count):
-                u_tri_trusted_core_count = 0.0
-            if not math.isfinite(u_tri_query_count):
-                u_tri_query_count = 0.0
-            if not math.isfinite(u_tri_accept_rate):
-                u_tri_accept_rate = 0.0
-            u_tri_ambiguous_tail_count = max(0.0, u_tri_query_count * max(0.0, min(1.0, u_tri_accept_rate)))
-            u_tri_outside_reject_count = max(0.0, u_tri_query_count - u_tri_ambiguous_tail_count)
-        epoch_logs.append(
-            {
-                "train/loss": loss.detach(),
-                "train/loss_labeled": loss_l.detach(),
-                "train/loss_tx_labeled": loss_tx_l.detach(),
-                "train/loss_domain_labeled": loss_dom_l.detach(),
-                "train/loss_adv_labeled": loss_adv_l.detach(),
-                "train/loss_cons_labeled": loss_cons_l.detach(),
-                "train/loss_orth_labeled": loss_orth_l.detach(),
-                "train/loss_group_ce_labeled": loss_group_ce_l.detach(),
-                "train/loss_fishr_labeled": loss_fishr_l.detach(),
-                "train/loss_proto_labeled": loss_proto_l.detach(),
-                "train/loss_open_world_feat": loss_open_world_feat_l.detach(),
-                "train/loss_zid_compact": loss_zid_compact_l.detach(),
-                "train/loss_proxy_unknown": loss_proxy_unknown_l.detach(),
-                "train/loss_soft_unknown_mixup": loss_soft_unknown_mixup_l.detach(),
-                "train/loss_source_episode": loss_source_episode_l.detach(),
-                "train/loss_direct_metric_accept": loss_direct_metric_accept_l.detach(),
-                "train/loss_sat_cls_labeled": loss_sat_cls_l.detach(),
-                "train/loss_sat_cons_labeled": loss_sat_cons_l.detach(),
-                "train/loss_teacher_clean_kl": loss_teacher_clean_kl_l.detach(),
-                "train/loss_teacher_sat_kl": loss_teacher_sat_kl_l.detach(),
-                "train/loss_teacher_zid_mse": loss_teacher_zid_mse_l.detach(),
-                "train/w_loss_tx_labeled": loss_tx_l.detach(),
-                "train/w_loss_domain_labeled": (cur_w["dom"] * loss_dom_l).detach(),
-                "train/w_loss_adv_labeled": (cur_w["adv"] * loss_adv_l).detach(),
-                "train/w_loss_cons_labeled": (cur_w["cons"] * loss_cons_l).detach(),
-                "train/w_loss_orth_labeled": (cur_w["orth"] * loss_orth_l).detach(),
-                "train/w_loss_group_ce_labeled": (cur_w["group_ce"] * loss_group_ce_l).detach(),
-                "train/w_loss_fishr_labeled": (cur_w["fishr"] * loss_fishr_l).detach(),
-                "train/w_loss_proto_labeled": (cur_w["proto"] * loss_proto_l).detach(),
-                "train/w_loss_open_world_feat": ((cur_w["open_world_feat"] * ow_feat_stage_scale) * loss_open_world_feat_l).detach(),
-                "train/w_loss_zid_compact": ((cur_w["zid_compact"] * zid_warm) * loss_zid_compact_l).detach(),
-                "train/w_loss_proxy_unknown": ((cur_w["proxy_unknown"] * proxy_stage_scale) * loss_proxy_unknown_l).detach(),
-                "train/w_loss_soft_unknown_mixup": ((cur_w["soft_unknown_mixup"] * soft_unknown_mixup_stage_scale) * loss_soft_unknown_mixup_l).detach(),
-                "train/w_loss_source_episode": ((cur_w["source_episode"] * source_episode_stage_scale) * loss_source_episode_l).detach(),
-                "train/w_loss_direct_metric_accept": ((cur_w["direct_metric_accept"] * direct_metric_stage_scale) * loss_direct_metric_accept_l).detach(),
-                "train/w_loss_sat_cls_labeled": (cur_w["sat_cls"] * loss_sat_cls_l).detach(),
-                "train/w_loss_sat_cons_labeled": (cur_w["sat_cons"] * loss_sat_cons_l).detach(),
-                "train/w_loss_teacher_clean_kl": ((float(args.lambda_teacher_clean_kl) * teacher_scale) * loss_teacher_clean_kl_l).detach(),
-                "train/w_loss_teacher_sat_kl": ((float(args.lambda_teacher_sat_kl) * teacher_scale) * loss_teacher_sat_kl_l).detach(),
-                "train/w_loss_teacher_zid_mse": ((float(args.lambda_teacher_zid_mse) * teacher_scale) * loss_teacher_zid_mse_l).detach(),
-                "train/teacher_distill_scale": float(teacher_scale),
-                "train/concat_sat_active": float(concat_sat_info.get("active", 0.0)),
-                "train/concat_sat_expanded": float(concat_sat_info.get("expanded", 0.0)),
-                "train/concat_sat_applied": float(concat_sat_info.get("applied", 0.0)),
-                "train/concat_sat_clean_batch_size": float(concat_sat_info.get("clean_batch_size", 0.0)),
-                "train/concat_sat_total_batch_size": float(concat_sat_info.get("total_batch_size", 0.0)),
-                "train/concat_sat_view_prob": float(concat_sat_info.get("view_prob", 0.0)),
-                "train/concat_sat_stage_start_epoch": float(concat_sat_info.get("stage_start_epoch", float("nan"))),
-                "train/concat_sat_stage_index": float(concat_sat_info.get("stage_index", float("nan"))),
-                "train/loss_unlabeled": loss_u.detach(),
-                "train/loss_u_domain": loss_u_domain.detach(),
-                "train/loss_u_adv": loss_u_adv.detach(),
-                "train/loss_u_sat_cons": loss_u_sat_cons.detach(),
-                "train/loss_u_direct_metric_accept": loss_u_direct_metric.detach(),
-                "train/loss_u_quarantine_accept": loss_u_quarantine.detach(),
-                "train/w_loss_u_domain": (float(args.lambda_u_domain) * loss_u_domain).detach(),
-                "train/w_loss_u_adv": (float(args.lambda_u_adv) * loss_u_adv).detach(),
-                "train/w_loss_u_sat_cons": (float(args.lambda_u_sat_cons) * loss_u_sat_cons).detach(),
-                "train/w_loss_u_direct_metric_accept": (
-                    float(args.lambda_u_direct_metric_accept) * loss_u_direct_metric
-                ).detach(),
-                "train/w_loss_u_quarantine_accept": (
-                    float(args.lambda_u_quarantine_accept) * loss_u_quarantine
-                ).detach(),
-                "train/u_dm_accept_active": u_dm_info.get("active", float("nan")),
-                "train/u_dm_accept_selected": u_dm_info.get("selected", float("nan")),
-                "train/u_dm_accept_valid_domain_selected": u_dm_info.get("valid_domain_selected", float("nan")),
-                "train/u_dm_accept_sat_pair_count": float(u_sat_pair_count),
-                "train/u_dm_accept_zid_p50_deg": u_dm_info.get("zid_p50_deg", float("nan")),
-                "train/u_dm_accept_zid_p95_deg": u_dm_info.get("zid_p95_deg", float("nan")),
-                "train/u_dm_accept_zid_p99_deg": u_dm_info.get("zid_p99_deg", float("nan")),
-                "train/u_dm_accept_zid_tail_cvar_deg": u_dm_info.get("zid_tail_cvar_deg", float("nan")),
-                "train/u_dm_accept_source_overflow": u_dm_info.get("source_overflow", float("nan")),
-                "train/u_dm_accept_proxy_vaccept": u_dm_info.get("proxy_vaccept", float("nan")),
-                "train/u_dm_accept_bridge_accept_rate": u_dm_info.get("bridge_accept_rate", float("nan")),
-                "train/u_dm_accept_low_density_accept_rate": u_dm_info.get("low_density_accept_rate", float("nan")),
-                "train/u_dm_accept_tail_accept_rate": u_dm_info.get("tail_accept_rate", float("nan")),
-                "train/u_dm_accept_overflow_accept_rate": u_dm_info.get("overflow_accept_rate", float("nan")),
-                "train/u_dm_accept_radius_to_inter_ratio": u_dm_info.get("radius_to_inter_ratio", float("nan")),
-                "train/u_dm_accept_sat_pair_angle_p95_deg": u_dm_info.get("sat_pair_angle_p95_deg", float("nan")),
-                "train/u_quarantine_active": u_quarantine_info.get("active", float("nan")),
-                "train/u_quarantine_anchor_count": u_quarantine_info.get("anchor_count", float("nan")),
-                "train/u_quarantine_query_count": u_quarantine_info.get("query_count", float("nan")),
+            u_tri_query_count = float(u_quarantine_info.get("query_count", 0.0) or 0.0)
+            q_tri_trusted_core_count = float(u_quarantine_info.get("tri_trusted_core_count", float("nan")))
+            q_tri_ambiguous_tail_count = float(u_quarantine_info.get("tri_ambiguous_tail_count", float("nan")))
+            q_tri_outside_reject_count = float(u_quarantine_info.get("tri_outside_reject_count", float("nan")))
+            q_tri_counts = [
+                q_tri_trusted_core_count,
+                q_tri_ambiguous_tail_count,
+                q_tri_outside_reject_count,
+            ]
+            has_geometry_tri_state = (
+                all(math.isfinite(v) and v >= 0.0 for v in q_tri_counts)
+                and sum(q_tri_counts) > 0.0
+                and u_tri_query_count > 0.0
+            )
+            if has_geometry_tri_state:
+                u_tri_state_source = "geometry"
+                u_tri_trusted_core_count = q_tri_trusted_core_count
+                u_tri_ambiguous_tail_count = q_tri_ambiguous_tail_count
+                u_tri_outside_reject_count = q_tri_outside_reject_count
+            else:
+                u_tri_state_source = "fallback"
+                u_tri_trusted_core_count = float(u_dm_info.get("selected", 0.0) or 0.0)
+                u_tri_accept_rate = float(u_quarantine_info.get("accept_rate", 0.0) or 0.0)
+                if not math.isfinite(u_tri_trusted_core_count):
+                    u_tri_trusted_core_count = 0.0
+                if not math.isfinite(u_tri_query_count):
+                    u_tri_query_count = 0.0
+                if not math.isfinite(u_tri_accept_rate):
+                    u_tri_accept_rate = 0.0
+                u_tri_ambiguous_tail_count = max(0.0, u_tri_query_count * max(0.0, min(1.0, u_tri_accept_rate)))
+                u_tri_outside_reject_count = max(0.0, u_tri_query_count - u_tri_ambiguous_tail_count)
+            epoch_logs.append(
+                {
+                    "train/loss": loss.detach(),
+                    "train/loss_labeled": loss_l.detach(),
+                    "train/loss_closed_group": loss_closed.detach(),
+                    "train/loss_open_group": loss_open.detach(),
+                    "train/os_budget_controller_active": float(os_budget_info["active"]),
+                    "train/os_budget_controller_os_scale": float(os_budget_info["os_scale"]),
+                    "train/os_budget_controller_closed_scale": float(os_budget_info["closed_scale"]),
+                    "train/os_budget_controller_pre": float(os_budget_info["pre_budget"]),
+                    "train/os_budget_controller_post": float(os_budget_info["post_budget"]),
+                    "train/os_budget_controller_target": float(os_budget_info["target_budget"]),
+                    "train/os_budget_controller_reason_code": float(os_budget_info["reason_code"]),
+                    "train/tail_rollback_cooldown_active": 1.0 if tail_rollback_cooldown_active else 0.0,
+                    "train/tail_rollback_cooldown_remaining": float(stage_state["tail_rollback_cooldown_remaining"]),
+                    "train/tail_rollback_closed_scale": float(tail_closed_scale),
+                    "train/os_gradient_surgery_active": float(os_grad_info["active"]),
+                    "train/os_gradient_conflict": float(os_grad_info["conflict"]),
+                    "train/os_gradient_pre_cosine": float(os_grad_info["pre_cosine"]),
+                    "train/os_gradient_post_cosine": float(os_grad_info["post_cosine"]),
+                "train/os_gradient_closed_norm": float(os_grad_info["closed_grad_norm"]),
+                "train/os_gradient_open_norm": float(os_grad_info["open_grad_norm"]),
+                "train/os_gradient_total_closed_norm": float(os_grad_info["total_closed_grad_norm"]),
+                "train/os_gradient_total_open_norm": float(os_grad_info["total_open_grad_norm"]),
+                "train/os_gradient_shared_param_count": float(os_grad_info["shared_param_count"]),
+                "train/os_gradient_budget_scope_shared_zid_path": float(
+                    os_grad_info["budget_scope_shared_zid_path"]
+                ),
+                "train/os_gradient_balanced_closed_norm": float(os_grad_info["balanced_closed_grad_norm"]),
+                "train/os_gradient_balanced_open_norm": float(os_grad_info["balanced_open_grad_norm"]),
+                "train/os_gradient_effective_open_norm": float(os_grad_info["effective_open_grad_norm"]),
+                "train/os_gradient_effective_closed_norm": float(os_grad_info["effective_closed_grad_norm"]),
+                    "train/loss_tx_labeled": loss_tx_l.detach(),
+                    "train/loss_domain_labeled": loss_dom_l.detach(),
+                    "train/loss_adv_labeled": loss_adv_l.detach(),
+                    "train/loss_cons_labeled": loss_cons_l.detach(),
+                    "train/loss_orth_labeled": loss_orth_l.detach(),
+                    "train/loss_group_ce_labeled": loss_group_ce_l.detach(),
+                    "train/loss_fishr_labeled": loss_fishr_l.detach(),
+                    "train/loss_proto_labeled": loss_proto_l.detach(),
+                    "train/loss_open_world_feat": loss_open_world_feat_l.detach(),
+                    "train/loss_zid_compact": loss_zid_compact_l.detach(),
+                    "train/loss_proxy_unknown": loss_proxy_unknown_l.detach(),
+                    "train/loss_soft_unknown_mixup": loss_soft_unknown_mixup_l.detach(),
+                    "train/loss_source_episode": loss_source_episode_l.detach(),
+                    "train/loss_direct_metric_accept": loss_direct_metric_accept_l.detach(),
+                    "train/loss_sat_cls_labeled": loss_sat_cls_l.detach(),
+                    "train/loss_sat_cons_labeled": loss_sat_cons_l.detach(),
+                    "train/loss_teacher_clean_kl": loss_teacher_clean_kl_l.detach(),
+                    "train/loss_teacher_sat_kl": loss_teacher_sat_kl_l.detach(),
+                    "train/loss_teacher_zid_mse": loss_teacher_zid_mse_l.detach(),
+                    "train/w_loss_tx_labeled": loss_tx_l.detach(),
+                    "train/w_loss_domain_labeled": (cur_w["dom"] * loss_dom_l).detach(),
+                    "train/w_loss_adv_labeled": (cur_w["adv"] * loss_adv_l).detach(),
+                    "train/w_loss_cons_labeled": (cur_w["cons"] * loss_cons_l).detach(),
+                    "train/w_loss_orth_labeled": (cur_w["orth"] * loss_orth_l).detach(),
+                    "train/w_loss_group_ce_labeled": (cur_w["group_ce"] * loss_group_ce_l).detach(),
+                    "train/w_loss_fishr_labeled": (cur_w["fishr"] * loss_fishr_l).detach(),
+                    "train/w_loss_proto_labeled": (cur_w["proto"] * loss_proto_l).detach(),
+                    "train/w_loss_open_world_feat": ((cur_w["open_world_feat"] * ow_feat_stage_scale) * loss_open_world_feat_l).detach(),
+                    "train/w_loss_zid_compact": ((cur_w["zid_compact"] * zid_warm) * loss_zid_compact_l).detach(),
+                    "train/w_loss_proxy_unknown": ((cur_w["proxy_unknown"] * proxy_stage_scale) * loss_proxy_unknown_l).detach(),
+                    "train/w_loss_soft_unknown_mixup": ((cur_w["soft_unknown_mixup"] * soft_unknown_mixup_stage_scale) * loss_soft_unknown_mixup_l).detach(),
+                    "train/w_loss_source_episode": ((cur_w["source_episode"] * source_episode_stage_scale) * loss_source_episode_l).detach(),
+                    "train/w_loss_direct_metric_accept": ((cur_w["direct_metric_accept"] * direct_metric_stage_scale) * loss_direct_metric_accept_l).detach(),
+                    "train/w_loss_sat_cls_labeled": (cur_w["sat_cls"] * loss_sat_cls_l).detach(),
+                    "train/w_loss_sat_cons_labeled": (cur_w["sat_cons"] * loss_sat_cons_l).detach(),
+                    "train/w_loss_teacher_clean_kl": ((float(args.lambda_teacher_clean_kl) * teacher_scale) * loss_teacher_clean_kl_l).detach(),
+                    "train/w_loss_teacher_sat_kl": ((float(args.lambda_teacher_sat_kl) * teacher_scale) * loss_teacher_sat_kl_l).detach(),
+                    "train/w_loss_teacher_zid_mse": ((float(args.lambda_teacher_zid_mse) * teacher_scale) * loss_teacher_zid_mse_l).detach(),
+                    "train/teacher_distill_scale": float(teacher_scale),
+                    "train/concat_sat_active": float(concat_sat_info.get("active", 0.0)),
+                    "train/concat_sat_expanded": float(concat_sat_info.get("expanded", 0.0)),
+                    "train/concat_sat_applied": float(concat_sat_info.get("applied", 0.0)),
+                    "train/concat_sat_clean_batch_size": float(concat_sat_info.get("clean_batch_size", 0.0)),
+                    "train/concat_sat_total_batch_size": float(concat_sat_info.get("total_batch_size", 0.0)),
+                    "train/concat_sat_view_prob": float(concat_sat_info.get("view_prob", 0.0)),
+                    "train/concat_sat_stage_start_epoch": float(concat_sat_info.get("stage_start_epoch", float("nan"))),
+                    "train/concat_sat_stage_index": float(concat_sat_info.get("stage_index", float("nan"))),
+                    "train/loss_unlabeled": loss_u.detach(),
+                    "train/loss_u_domain": loss_u_domain.detach(),
+                    "train/loss_u_adv": loss_u_adv.detach(),
+                    "train/loss_u_sat_cons": loss_u_sat_cons.detach(),
+                    "train/loss_u_direct_metric_accept": loss_u_direct_metric.detach(),
+                    "train/loss_u_quarantine_accept": loss_u_quarantine.detach(),
+                    "train/w_loss_u_domain": (float(args.lambda_u_domain) * loss_u_domain).detach(),
+                    "train/w_loss_u_adv": (float(args.lambda_u_adv) * loss_u_adv).detach(),
+                    "train/w_loss_u_sat_cons": (float(args.lambda_u_sat_cons) * loss_u_sat_cons).detach(),
+                    "train/w_loss_u_direct_metric_accept": (
+                        float(args.lambda_u_direct_metric_accept) * loss_u_direct_metric
+                    ).detach(),
+                    "train/w_loss_u_quarantine_accept": (
+                        float(args.lambda_u_quarantine_accept) * loss_u_quarantine
+                    ).detach(),
+                    "train/u_dm_accept_active": u_dm_info.get("active", float("nan")),
+                    "train/u_dm_accept_active_classes": u_dm_info.get("active_classes", float("nan")),
+                    "train/u_dm_accept_inactive_reason_code": u_dm_info.get("inactive_reason_code", float("nan")),
+                    "train/u_dm_accept_selected": u_dm_info.get("selected", float("nan")),
+                    "train/u_dm_accept_valid_domain_selected": u_dm_info.get("valid_domain_selected", float("nan")),
+                    "train/u_dm_accept_sat_pair_count": float(u_sat_pair_count),
+                    "train/u_dm_accept_zid_p50_deg": u_dm_info.get("zid_p50_deg", float("nan")),
+                    "train/u_dm_accept_zid_p95_deg": u_dm_info.get("zid_p95_deg", float("nan")),
+                    "train/u_dm_accept_zid_p99_deg": u_dm_info.get("zid_p99_deg", float("nan")),
+                    "train/u_dm_accept_zid_tail_cvar_deg": u_dm_info.get("zid_tail_cvar_deg", float("nan")),
+                    "train/u_dm_accept_source_overflow": u_dm_info.get("source_overflow", float("nan")),
+                    "train/u_dm_accept_proxy_vaccept": u_dm_info.get("proxy_vaccept", float("nan")),
+                    "train/u_dm_accept_bridge_accept_rate": u_dm_info.get("bridge_accept_rate", float("nan")),
+                    "train/u_dm_accept_low_density_accept_rate": u_dm_info.get("low_density_accept_rate", float("nan")),
+                    "train/u_dm_accept_tail_accept_rate": u_dm_info.get("tail_accept_rate", float("nan")),
+                    "train/u_dm_accept_overflow_accept_rate": u_dm_info.get("overflow_accept_rate", float("nan")),
+                    "train/u_dm_accept_radius_to_inter_ratio": u_dm_info.get("radius_to_inter_ratio", float("nan")),
+                    "train/u_dm_accept_sat_pair_angle_p95_deg": u_dm_info.get("sat_pair_angle_p95_deg", float("nan")),
+                    "train/u_quarantine_active": u_quarantine_info.get("active", float("nan")),
+                    "train/u_quarantine_anchor_count": u_quarantine_info.get("anchor_count", float("nan")),
+                    "train/u_quarantine_query_count": u_quarantine_info.get("query_count", float("nan")),
                 "train/u_quarantine_active_classes": u_quarantine_info.get("active_classes", float("nan")),
-                "train/u_quarantine_accept_rate": u_quarantine_info.get("accept_rate", float("nan")),
-                "train/u_quarantine_accept_loss": u_quarantine_info.get("accept_loss", float("nan")),
-                "train/u_quarantine_low_density_accept_rate": u_quarantine_info.get("low_density_accept_rate", float("nan")),
-                "train/u_quarantine_nearest_angle_p50_deg": u_quarantine_info.get("nearest_angle_p50_deg", float("nan")),
-                "train/u_quarantine_nearest_angle_p95_deg": u_quarantine_info.get("nearest_angle_p95_deg", float("nan")),
-                "train/u_quarantine_nearest_angle_p99_deg": u_quarantine_info.get("nearest_angle_p99_deg", float("nan")),
-                "train/u_quarantine_radius_to_inter_ratio": u_quarantine_info.get("radius_to_inter_ratio", float("nan")),
-                "train/u_quarantine_rate": u_quarantine_info.get("quarantine_rate", float("nan")),
-                "train/u_quarantine_valid_domain_rate": u_quarantine_info.get("valid_domain_rate", float("nan")),
-                "train/u_tri_state_source_code": 1.0 if u_tri_state_source == "geometry" else 0.0,
-                "train/u_tri_state_geometry": 1.0 if u_tri_state_source == "geometry" else 0.0,
-                "train/u_tri_query_count": u_tri_query_count,
-                "train/u_tri_trusted_core_count": u_tri_trusted_core_count,
-                "train/u_tri_ambiguous_tail_count": u_tri_ambiguous_tail_count,
-                "train/u_tri_outside_reject_count": u_tri_outside_reject_count,
-                "train/tx_acc": 100.0 * (out_l["tx_logits"].argmax(dim=1) == y_l).float().mean().detach(),
-                "train/dom_acc": core_losses.get("dom_acc", float("nan")),
-                "train/cons_cos": core_losses.get("cons_cos", float("nan")),
-                "train/grad_total": grad_total,
-                "train/grad_backbone": grad_backbone,
-                "train/grad_aux": grad_aux,
-                "train/grad_domain": grad_domain,
-                "train/skipped_nonfinite_loss": skipped_nonfinite_loss,
-                "train/skipped_nonfinite_grad": skipped_nonfinite_grad,
-                "train/reliable_ratio": reliable_ratio.detach(),
-                "train/pseudo_conf": pseudo_conf.detach(),
-                "train/domain_pass": domain_pass.detach(),
-                "train/temporal_pass": temporal_pass.detach(),
-                "train/strong_pass": strong_pass.detach(),
-                "train/pseudo_total": pseudo_total,
-                "train/pseudo_selected": pseudo_selected,
-                "train/pseudo_correct": pseudo_correct,
-                "train/proto_pull_cos": proto_info.get("proto_pull_cos", float("nan")),
-                "train/proto_push": proto_info.get("proto_push", float("nan")),
-                "train/proto_active_classes": proto_info.get("proto_active_classes", float("nan")),
-                "train/ow_feat_compact": ow_feat_info.get("compact", float("nan")),
-                "train/ow_feat_inter": ow_feat_info.get("inter", float("nan")),
-                "train/ow_feat_sample_margin": ow_feat_info.get("sample_margin", float("nan")),
-                "train/ow_feat_domain_align": ow_feat_info.get("domain_align", float("nan")),
-                "train/ow_feat_active_classes": ow_feat_info.get("active_classes", float("nan")),
-                "train/ow_feat_pos_angle_deg": ow_feat_info.get("pos_angle_deg", float("nan")),
-                "train/ow_feat_min_inter_deg": ow_feat_info.get("min_inter_angle_deg", float("nan")),
-                "train/ow_feat_pos_angle_p50_deg": ow_feat_info.get("pos_angle_p50_deg", float("nan")),
-                "train/ow_feat_pos_angle_p95_deg": ow_feat_info.get("pos_angle_p95_deg", float("nan")),
-                "train/ow_feat_pos_angle_p99_deg": ow_feat_info.get("pos_angle_p99_deg", float("nan")),
-                "train/ow_feat_pos_angle_max_deg": ow_feat_info.get("pos_angle_max_deg", float("nan")),
-                "train/ow_feat_tail_loss": ow_feat_info.get("tail_loss", float("nan")),
-                "train/ow_feat_tail_cvar_deg": ow_feat_info.get("tail_cvar_deg", float("nan")),
-                "train/ow_feat_tail_frac_gt_3sigma": ow_feat_info.get("tail_frac_gt_3sigma", float("nan")),
-                "train/ow_feat_tail_radius_3sigma_deg": ow_feat_info.get("tail_radius_3sigma_deg", float("nan")),
-                "train/ow_feat_vacuum_loss": ow_feat_info.get("vacuum_loss", float("nan")),
-                "train/ow_feat_vacuum_violation_rate": ow_feat_info.get("vacuum_violation_rate", float("nan")),
-                "train/ow_feat_vacuum_min_neg_angle_deg": ow_feat_info.get("vacuum_min_neg_angle_deg", float("nan")),
-                "train/ow_feat_vacuum_margin_deg": ow_feat_info.get("vacuum_margin_deg", float("nan")),
-                "train/ow_feat_vacuum_boundary_deg": ow_feat_info.get("vacuum_boundary_deg", float("nan")),
-                "train/ow_feat_stage_scale": float(ow_feat_stage_scale),
-                "train/zid_compact_supcon": zid_compact_info.get("supcon", float("nan")),
-                "train/zid_compact_radius": zid_compact_info.get("radius", float("nan")),
-                "train/zid_compact_tail_cvar": zid_compact_info.get("tail_cvar", float("nan")),
-                "train/zid_compact_active_classes": zid_compact_info.get("active_classes", float("nan")),
-                "train/zid_compact_pos_angle_p50_deg": zid_compact_info.get("pos_angle_p50_deg", float("nan")),
-                "train/zid_compact_pos_angle_p95_deg": zid_compact_info.get("pos_angle_p95_deg", float("nan")),
-                "train/zid_compact_pos_angle_p99_deg": zid_compact_info.get("pos_angle_p99_deg", float("nan")),
-                "train/zid_compact_tail_cvar_deg": zid_compact_info.get("tail_cvar_deg", float("nan")),
-                "train/zid_compact_warmup_scale": float(zid_warm),
-                "train/proxy_unknown_active": proxy_unknown_info.get("active", float("nan")),
-                "train/proxy_unknown_known_count": proxy_unknown_info.get("known_count", float("nan")),
-                "train/proxy_unknown_count": proxy_unknown_info.get("proxy_unknown_count", float("nan")),
-                "train/proxy_unknown_virtual_count": proxy_unknown_info.get("virtual_count", float("nan")),
-                "train/proxy_unknown_core_count": proxy_unknown_info.get("core_count", float("nan")),
-                "train/proxy_unknown_tail_count": proxy_unknown_info.get("tail_count", float("nan")),
-                "train/proxy_unknown_overflow_count": proxy_unknown_info.get("overflow_count", float("nan")),
-                "train/proxy_unknown_energy_known": proxy_unknown_info.get("energy_known", float("nan")),
-                "train/proxy_unknown_energy_proxy": proxy_unknown_info.get("energy_proxy", float("nan")),
-                "train/proxy_unknown_energy_virtual": proxy_unknown_info.get("energy_virtual", float("nan")),
-                "train/proxy_unknown_margin": proxy_unknown_info.get("energy_margin", float("nan")),
-                "train/proxy_unknown_accept_energy_threshold": proxy_unknown_info.get("accept_energy_threshold", float("nan")),
-                "train/proxy_unknown_core_energy_threshold": proxy_unknown_info.get("core_energy_threshold", float("nan")),
-                "train/proxy_unknown_vaccept_surrogate": proxy_unknown_info.get("vaccept_surrogate", float("nan")),
-                "train/proxy_unknown_vaccept_surrogate_CVaR": proxy_unknown_info.get("vaccept_surrogate_CVaR", proxy_unknown_info.get("vaccept_surrogate", float("nan"))),
-                "train/proxy_unknown_core_accept_loss": proxy_unknown_info.get("core_accept_loss", float("nan")),
-                "train/proxy_unknown_component_gate_unknown": proxy_unknown_info.get("component_gate_unknown", float("nan")),
-                "train/proxy_unknown_component_gate_accept_prob": proxy_unknown_info.get("component_gate_accept_prob", float("nan")),
-                "train/proxy_unknown_component_gate_accept_prob_max": proxy_unknown_info.get("component_gate_accept_prob_max", float("nan")),
-                "train/proxy_unknown_tail_quarantine_loss": proxy_unknown_info.get("tail_quarantine_loss", float("nan")),
-                "train/proxy_unknown_source_safe_loss": proxy_unknown_info.get("source_safe_loss", float("nan")),
-                "train/proxy_unknown_bridge_governance_loss": proxy_unknown_info.get("bridge_governance_loss", float("nan")),
-                "train/proxy_unknown_shell_outward_accept_loss": proxy_unknown_info.get("shell_outward_accept_loss", float("nan")),
-                "train/proxy_unknown_low_density_accept_loss": proxy_unknown_info.get("low_density_accept_loss", float("nan")),
-                "train/proxy_unknown_energy_margin_quantile_loss": proxy_unknown_info.get("energy_margin_quantile_loss", float("nan")),
-                "train/proxy_unknown_radius_budget_loss": proxy_unknown_info.get("radius_budget_loss", float("nan")),
-                "train/proxy_unknown_radius_inter_ratio_loss": proxy_unknown_info.get("radius_inter_ratio_loss", float("nan")),
-                "train/proxy_unknown_tail_accept_loss": proxy_unknown_info.get("tail_accept_loss", float("nan")),
-                "train/proxy_unknown_overflow_accept_loss": proxy_unknown_info.get("overflow_accept_loss", float("nan")),
-                "train/proxy_unknown_energy_margin_q05": proxy_unknown_info.get("energy_margin_q05", float("nan")),
-                "train/proxy_unknown_energy_margin_q10": proxy_unknown_info.get("energy_margin_q10", float("nan")),
-                "train/proxy_unknown_component_radius_p95_deg": proxy_unknown_info.get("component_radius_p95_deg", float("nan")),
-                "train/proxy_unknown_component_radius_max_deg": proxy_unknown_info.get("component_radius_max_deg", float("nan")),
-                "train/proxy_unknown_component_radius_mode_code": proxy_unknown_info.get("component_radius_mode_code", float("nan")),
-                "train/proxy_unknown_component_gate_radius_p95_deg": proxy_unknown_info.get("component_gate_radius_p95_deg", float("nan")),
-                "train/proxy_unknown_component_gate_radius_max_deg": proxy_unknown_info.get("component_gate_radius_max_deg", float("nan")),
-                "train/proxy_unknown_radius_inter_ratio": proxy_unknown_info.get("radius_inter_ratio", float("nan")),
-                "train/proxy_unknown_radius_to_inter_ratio": proxy_unknown_info.get("radius_to_inter_ratio", float("nan")),
-                "train/proxy_unknown_low_density_accept_prob": proxy_unknown_info.get("low_density_accept_prob", float("nan")),
-                "train/proxy_unknown_low_density_accept_rate": proxy_unknown_info.get("low_density_accept_rate", float("nan")),
-                "train/proxy_unknown_auc_proxy": proxy_unknown_info.get("proxy_unknown_auc", float("nan")),
-                "train/proxy_unknown_virtual_accept_rate": proxy_unknown_info.get("virtual_accept_rate", float("nan")),
-                "train/proxy_unknown_proxy_vaccept": proxy_unknown_info.get("proxy_vaccept", proxy_unknown_info.get("virtual_accept_rate", float("nan"))),
-                "train/proxy_unknown_proxy_vaccept_proxy_only": proxy_unknown_info.get("proxy_vaccept_proxy_only", proxy_unknown_info.get("virtual_accept_rate", float("nan"))),
-                "train/proxy_unknown_proxy_reject_claim_allowed": proxy_unknown_info.get("proxy_reject_claim_allowed", 0.0),
-                "train/proxy_unknown_virtual_accept_rate_core": proxy_unknown_info.get("virtual_accept_rate_core", float("nan")),
-                "train/proxy_unknown_proxy_accept_rate": proxy_unknown_info.get("proxy_accept_rate", float("nan")),
-                "train/proxy_unknown_hard_proxy_accept_rate": proxy_unknown_info.get("hard_proxy_accept_rate", float("nan")),
-                "train/proxy_unknown_shell_accept_rate": proxy_unknown_info.get("shell_accept_rate", float("nan")),
-                "train/proxy_unknown_bridge_accept_rate": proxy_unknown_info.get("bridge_accept_rate", float("nan")),
-                "train/proxy_unknown_outward_accept_rate": proxy_unknown_info.get("outward_accept_rate", float("nan")),
-                "train/proxy_unknown_vacuum_loss": proxy_unknown_info.get("vacuum_loss", float("nan")),
-                "train/proxy_unknown_vacuum_violation_rate": proxy_unknown_info.get("vacuum_violation_rate", float("nan")),
-                "train/proxy_unknown_vacuum_margin_deg": proxy_unknown_info.get("vacuum_margin_deg", float("nan")),
-                "train/proxy_unknown_vacuum_min_angle_deg": proxy_unknown_info.get("vacuum_min_angle_deg", float("nan")),
-                "train/proxy_unknown_stage_scale": float(proxy_stage_scale),
-                "train/soft_unknown_mixup_count": soft_unknown_mixup_info.get("soft_unknown_mixup_count", float("nan")),
-                "train/soft_unknown_mixup_order": soft_unknown_mixup_info.get("soft_unknown_mixup_order", float("nan")),
-                "train/soft_unknown_mixup_ce": soft_unknown_mixup_info.get("soft_unknown_mixup_ce", float("nan")),
-                "train/soft_unknown_mixup_energy": soft_unknown_mixup_info.get("soft_unknown_mixup_energy", float("nan")),
-                "train/soft_unknown_mixup_vacuum": soft_unknown_mixup_info.get("soft_unknown_mixup_vacuum", float("nan")),
-                "train/soft_unknown_mixup_virtual_accept_rate": soft_unknown_mixup_info.get("soft_unknown_mixup_virtual_accept_rate", float("nan")),
-                "train/soft_unknown_mixup_vacuum_violation": soft_unknown_mixup_info.get("soft_unknown_mixup_vacuum_violation", float("nan")),
-                "train/soft_unknown_mixup_stage_scale": float(soft_unknown_mixup_stage_scale),
+                "train/u_quarantine_local_component_count": u_quarantine_info.get("local_component_count", float("nan")),
+                    "train/u_quarantine_accept_rate": u_quarantine_info.get("accept_rate", float("nan")),
+                    "train/u_quarantine_accept_loss": u_quarantine_info.get("accept_loss", float("nan")),
+                    "train/u_quarantine_core_keep_loss": u_quarantine_info.get("core_keep_loss", float("nan")),
+                    "train/u_quarantine_tail_quarantine_loss": u_quarantine_info.get("tail_quarantine_loss", float("nan")),
+                    "train/u_quarantine_outside_reject_loss": u_quarantine_info.get("outside_reject_loss", float("nan")),
+                    "train/u_quarantine_low_density_accept_rate": u_quarantine_info.get("low_density_accept_rate", float("nan")),
+                    "train/u_quarantine_nearest_angle_p50_deg": u_quarantine_info.get("nearest_angle_p50_deg", float("nan")),
+                    "train/u_quarantine_nearest_angle_p95_deg": u_quarantine_info.get("nearest_angle_p95_deg", float("nan")),
+                    "train/u_quarantine_nearest_angle_p99_deg": u_quarantine_info.get("nearest_angle_p99_deg", float("nan")),
+                    "train/u_quarantine_radius_to_inter_ratio": u_quarantine_info.get("radius_to_inter_ratio", float("nan")),
+                    "train/u_quarantine_rate": u_quarantine_info.get("quarantine_rate", float("nan")),
+                    "train/u_quarantine_valid_domain_rate": u_quarantine_info.get("valid_domain_rate", float("nan")),
+                    "train/u_quarantine_outside_known_negative_disabled": u_quarantine_info.get(
+                        "outside_known_negative_disabled", float("nan")
+                    ),
+                    "train/u_tri_state_source_code": 1.0 if u_tri_state_source == "geometry" else 0.0,
+                    "train/u_tri_state_geometry": 1.0 if u_tri_state_source == "geometry" else 0.0,
+                    "train/u_tri_query_count": u_tri_query_count,
+                    "train/u_tri_trusted_core_count": u_tri_trusted_core_count,
+                    "train/u_tri_ambiguous_tail_count": u_tri_ambiguous_tail_count,
+                    "train/u_tri_outside_reject_count": u_tri_outside_reject_count,
+                    "train/u_tri_class_coverage": u_quarantine_info.get("tri_class_coverage", float("nan")),
+                    "train/u_tri_domain_coverage": u_quarantine_info.get("tri_domain_coverage", float("nan")),
+                    "train/u_tri_pair_disagreement_rate": u_quarantine_info.get(
+                        "tri_pair_disagreement_rate", float("nan")
+                    ),
+                    "train/u_tri_pseudo_component_agreement_rate": u_quarantine_info.get(
+                        "tri_pseudo_component_agreement_rate", float("nan")
+                    ),
+                    "train/tx_acc": 100.0 * (out_l["tx_logits"].argmax(dim=1) == y_l).float().mean().detach(),
+                    "train/dom_acc": core_losses.get("dom_acc", float("nan")),
+                    "train/cons_cos": core_losses.get("cons_cos", float("nan")),
+                    "train/grad_total": grad_total,
+                    "train/grad_backbone": grad_backbone,
+                    "train/grad_aux": grad_aux,
+                    "train/grad_domain": grad_domain,
+                    "train/skipped_nonfinite_loss": skipped_nonfinite_loss,
+                    "train/skipped_nonfinite_grad": skipped_nonfinite_grad,
+                    "train/optimizer_step_applied": 1.0 if optimizer_step_applied else 0.0,
+                    "train/reliable_ratio": reliable_ratio.detach(),
+                    "train/pseudo_conf": pseudo_conf.detach(),
+                    "train/domain_pass": domain_pass.detach(),
+                    "train/temporal_pass": temporal_pass.detach(),
+                    "train/strong_pass": strong_pass.detach(),
+                    "train/pseudo_total": pseudo_total,
+                    "train/pseudo_selected": pseudo_selected,
+                    "train/pseudo_correct": pseudo_correct,
+                    "train/proto_pull_cos": proto_info.get("proto_pull_cos", float("nan")),
+                    "train/proto_push": proto_info.get("proto_push", float("nan")),
+                    "train/proto_active_classes": proto_info.get("proto_active_classes", float("nan")),
+                    "train/ow_feat_compact": ow_feat_info.get("compact", float("nan")),
+                    "train/ow_feat_inter": ow_feat_info.get("inter", float("nan")),
+                    "train/ow_feat_sample_margin": ow_feat_info.get("sample_margin", float("nan")),
+                    "train/ow_feat_domain_align": ow_feat_info.get("domain_align", float("nan")),
+                    "train/ow_feat_active_classes": ow_feat_info.get("active_classes", float("nan")),
+                    "train/ow_feat_pos_angle_deg": ow_feat_info.get("pos_angle_deg", float("nan")),
+                    "train/ow_feat_min_inter_deg": ow_feat_info.get("min_inter_angle_deg", float("nan")),
+                    "train/ow_feat_pos_angle_p50_deg": ow_feat_info.get("pos_angle_p50_deg", float("nan")),
+                    "train/ow_feat_pos_angle_p95_deg": ow_feat_info.get("pos_angle_p95_deg", float("nan")),
+                    "train/ow_feat_pos_angle_p99_deg": ow_feat_info.get("pos_angle_p99_deg", float("nan")),
+                    "train/ow_feat_pos_angle_max_deg": ow_feat_info.get("pos_angle_max_deg", float("nan")),
+                    "train/ow_feat_tail_loss": ow_feat_info.get("tail_loss", float("nan")),
+                    "train/ow_feat_tail_cvar_deg": ow_feat_info.get("tail_cvar_deg", float("nan")),
+                    "train/ow_feat_tail_frac_gt_3sigma": ow_feat_info.get("tail_frac_gt_3sigma", float("nan")),
+                    "train/ow_feat_tail_radius_3sigma_deg": ow_feat_info.get("tail_radius_3sigma_deg", float("nan")),
+                    "train/ow_feat_vacuum_loss": ow_feat_info.get("vacuum_loss", float("nan")),
+                    "train/ow_feat_vacuum_violation_rate": ow_feat_info.get("vacuum_violation_rate", float("nan")),
+                    "train/ow_feat_vacuum_min_neg_angle_deg": ow_feat_info.get("vacuum_min_neg_angle_deg", float("nan")),
+                    "train/ow_feat_vacuum_margin_deg": ow_feat_info.get("vacuum_margin_deg", float("nan")),
+                    "train/ow_feat_vacuum_boundary_deg": ow_feat_info.get("vacuum_boundary_deg", float("nan")),
+                    "train/ow_feat_stage_scale": float(ow_feat_stage_scale),
+                    "train/zid_compact_supcon": zid_compact_info.get("supcon", float("nan")),
+                    "train/zid_compact_radius": zid_compact_info.get("radius", float("nan")),
+                    "train/zid_compact_tail_cvar": zid_compact_info.get("tail_cvar", float("nan")),
+                    "train/zid_compact_active_classes": zid_compact_info.get("active_classes", float("nan")),
+                    "train/zid_compact_pos_angle_p50_deg": zid_compact_info.get("pos_angle_p50_deg", float("nan")),
+                    "train/zid_compact_pos_angle_p95_deg": zid_compact_info.get("pos_angle_p95_deg", float("nan")),
+                    "train/zid_compact_pos_angle_p99_deg": zid_compact_info.get("pos_angle_p99_deg", float("nan")),
+                    "train/zid_compact_tail_cvar_deg": zid_compact_info.get("tail_cvar_deg", float("nan")),
+                    "train/zid_compact_warmup_scale": float(zid_warm),
+                    "train/proxy_unknown_active": proxy_unknown_info.get("active", float("nan")),
+                    "train/proxy_unknown_known_count": proxy_unknown_info.get("known_count", float("nan")),
+                    "train/proxy_unknown_count": proxy_unknown_info.get("proxy_unknown_count", float("nan")),
+                    "train/proxy_unknown_virtual_count": proxy_unknown_info.get("virtual_count", float("nan")),
+                    "train/proxy_unknown_core_count": proxy_unknown_info.get("core_count", float("nan")),
+                    "train/proxy_unknown_tail_count": proxy_unknown_info.get("tail_count", float("nan")),
+                    "train/proxy_unknown_overflow_count": proxy_unknown_info.get("overflow_count", float("nan")),
+                    "train/proxy_unknown_energy_known": proxy_unknown_info.get("energy_known", float("nan")),
+                    "train/proxy_unknown_energy_proxy": proxy_unknown_info.get("energy_proxy", float("nan")),
+                    "train/proxy_unknown_energy_virtual": proxy_unknown_info.get("energy_virtual", float("nan")),
+                    "train/proxy_unknown_margin": proxy_unknown_info.get("energy_margin", float("nan")),
+                    "train/proxy_unknown_accept_energy_threshold": proxy_unknown_info.get("accept_energy_threshold", float("nan")),
+                    "train/proxy_unknown_core_energy_threshold": proxy_unknown_info.get("core_energy_threshold", float("nan")),
+                    "train/proxy_unknown_vaccept_surrogate": proxy_unknown_info.get("vaccept_surrogate", float("nan")),
+                    "train/proxy_unknown_vaccept_surrogate_CVaR": proxy_unknown_info.get("vaccept_surrogate_CVaR", proxy_unknown_info.get("vaccept_surrogate", float("nan"))),
+                    "train/proxy_unknown_core_accept_loss": proxy_unknown_info.get("core_accept_loss", float("nan")),
+                    "train/proxy_unknown_component_gate_unknown": proxy_unknown_info.get("component_gate_unknown", float("nan")),
+                    "train/proxy_unknown_component_gate_accept_prob": proxy_unknown_info.get("component_gate_accept_prob", float("nan")),
+                    "train/proxy_unknown_component_gate_accept_prob_max": proxy_unknown_info.get("component_gate_accept_prob_max", float("nan")),
+                    "train/proxy_unknown_tail_quarantine_loss": proxy_unknown_info.get("tail_quarantine_loss", float("nan")),
+                    "train/proxy_unknown_source_safe_loss": proxy_unknown_info.get("source_safe_loss", float("nan")),
+                    "train/proxy_unknown_bridge_governance_loss": proxy_unknown_info.get("bridge_governance_loss", float("nan")),
+                    "train/proxy_unknown_shell_outward_accept_loss": proxy_unknown_info.get("shell_outward_accept_loss", float("nan")),
+                    "train/proxy_unknown_low_density_accept_loss": proxy_unknown_info.get("low_density_accept_loss", float("nan")),
+                    "train/proxy_unknown_energy_margin_quantile_loss": proxy_unknown_info.get("energy_margin_quantile_loss", float("nan")),
+                    "train/proxy_unknown_radius_budget_loss": proxy_unknown_info.get("radius_budget_loss", float("nan")),
+                    "train/proxy_unknown_radius_inter_ratio_loss": proxy_unknown_info.get("radius_inter_ratio_loss", float("nan")),
+                    "train/proxy_unknown_tail_accept_loss": proxy_unknown_info.get("tail_accept_loss", float("nan")),
+                    "train/proxy_unknown_overflow_accept_loss": proxy_unknown_info.get("overflow_accept_loss", float("nan")),
+                    "train/proxy_unknown_energy_margin_q05": proxy_unknown_info.get("energy_margin_q05", float("nan")),
+                    "train/proxy_unknown_energy_margin_q10": proxy_unknown_info.get("energy_margin_q10", float("nan")),
+                    "train/proxy_unknown_component_radius_p95_deg": proxy_unknown_info.get("component_radius_p95_deg", float("nan")),
+                    "train/proxy_unknown_component_radius_max_deg": proxy_unknown_info.get("component_radius_max_deg", float("nan")),
+                    "train/proxy_unknown_component_radius_mode_code": proxy_unknown_info.get("component_radius_mode_code", float("nan")),
+                    "train/proxy_unknown_component_gate_radius_p95_deg": proxy_unknown_info.get("component_gate_radius_p95_deg", float("nan")),
+                    "train/proxy_unknown_component_gate_radius_max_deg": proxy_unknown_info.get("component_gate_radius_max_deg", float("nan")),
+                    "train/proxy_unknown_radius_inter_ratio": proxy_unknown_info.get("radius_inter_ratio", float("nan")),
+                    "train/proxy_unknown_radius_to_inter_ratio": proxy_unknown_info.get("radius_to_inter_ratio", float("nan")),
+                    "train/proxy_unknown_low_density_accept_prob": proxy_unknown_info.get("low_density_accept_prob", float("nan")),
+                    "train/proxy_unknown_low_density_accept_rate": proxy_unknown_info.get("low_density_accept_rate", float("nan")),
+                    "train/proxy_unknown_auc_proxy": proxy_unknown_info.get("proxy_unknown_auc", float("nan")),
+                    "train/proxy_unknown_virtual_accept_rate": proxy_unknown_info.get("virtual_accept_rate", float("nan")),
+                    "train/proxy_unknown_proxy_vaccept": proxy_unknown_info.get("proxy_vaccept", proxy_unknown_info.get("virtual_accept_rate", float("nan"))),
+                    "train/proxy_unknown_proxy_vaccept_proxy_only": proxy_unknown_info.get("proxy_vaccept_proxy_only", proxy_unknown_info.get("virtual_accept_rate", float("nan"))),
+                    "train/proxy_unknown_proxy_reject_claim_allowed": proxy_unknown_info.get("proxy_reject_claim_allowed", 0.0),
+                    "train/proxy_unknown_virtual_accept_rate_core": proxy_unknown_info.get("virtual_accept_rate_core", float("nan")),
+                    "train/proxy_unknown_proxy_accept_rate": proxy_unknown_info.get("proxy_accept_rate", float("nan")),
+                    "train/proxy_unknown_hard_proxy_accept_rate": proxy_unknown_info.get("hard_proxy_accept_rate", float("nan")),
+                    "train/proxy_unknown_shell_accept_rate": proxy_unknown_info.get("shell_accept_rate", float("nan")),
+                    "train/proxy_unknown_bridge_accept_rate": proxy_unknown_info.get("bridge_accept_rate", float("nan")),
+                    "train/proxy_unknown_outward_accept_rate": proxy_unknown_info.get("outward_accept_rate", float("nan")),
+                    "train/proxy_unknown_vacuum_loss": proxy_unknown_info.get("vacuum_loss", float("nan")),
+                    "train/proxy_unknown_vacuum_violation_rate": proxy_unknown_info.get("vacuum_violation_rate", float("nan")),
+                    "train/proxy_unknown_vacuum_margin_deg": proxy_unknown_info.get("vacuum_margin_deg", float("nan")),
+                    "train/proxy_unknown_vacuum_min_angle_deg": proxy_unknown_info.get("vacuum_min_angle_deg", float("nan")),
+                    "train/proxy_unknown_stage_scale": float(proxy_stage_scale),
+                    "train/soft_unknown_mixup_count": soft_unknown_mixup_info.get("soft_unknown_mixup_count", float("nan")),
+                    "train/soft_unknown_mixup_order": soft_unknown_mixup_info.get("soft_unknown_mixup_order", float("nan")),
+                    "train/soft_unknown_mixup_ce": soft_unknown_mixup_info.get("soft_unknown_mixup_ce", float("nan")),
+                    "train/soft_unknown_mixup_energy": soft_unknown_mixup_info.get("soft_unknown_mixup_energy", float("nan")),
+                    "train/soft_unknown_mixup_vacuum": soft_unknown_mixup_info.get("soft_unknown_mixup_vacuum", float("nan")),
+                    "train/soft_unknown_mixup_virtual_accept_rate": soft_unknown_mixup_info.get("soft_unknown_mixup_virtual_accept_rate", float("nan")),
+                    "train/soft_unknown_mixup_vacuum_violation": soft_unknown_mixup_info.get("soft_unknown_mixup_vacuum_violation", float("nan")),
+                    "train/soft_unknown_mixup_stage_scale": float(soft_unknown_mixup_stage_scale),
                 "train/source_episode_loss": source_episode_info.get("source_episode_loss", float("nan")),
-                "train/source_episode_overflow_rate": source_episode_info.get("source_episode_overflow_rate", float("nan")),
-                "train/source_overflow": source_episode_info.get("source_overflow", source_episode_info.get("source_episode_overflow_rate", float("nan"))),
-                "train/source_episode_radius_3sigma_deg": source_episode_info.get("source_episode_radius_3sigma_deg", float("nan")),
-                "train/source_episode_radius_core_deg": source_episode_info.get("source_episode_radius_core_deg", float("nan")),
-                "train/source_episode_radius_safe_deg": source_episode_info.get("source_episode_radius_safe_deg", float("nan")),
-                "train/source_episode_radius_mode_code": source_episode_info.get("source_episode_radius_mode_code", float("nan")),
-                "train/source_episode_tail_query_rate": source_episode_info.get("source_episode_tail_query_rate", float("nan")),
-                "train/source_episode_val_angle_deg": source_episode_info.get("source_episode_val_angle_deg", float("nan")),
-                "train/source_episode_classes": source_episode_info.get("source_episode_classes", float("nan")),
-                "train/source_episode_domains": source_episode_info.get("source_episode_domains", float("nan")),
-                "train/source_episode_mixup_count": source_episode_info.get("source_episode_mixup_count", float("nan")),
-                "train/source_episode_mixup_order": source_episode_info.get("source_episode_mixup_order", float("nan")),
-                "train/source_episode_mixup_loss": source_episode_info.get("source_episode_mixup_loss", float("nan")),
-                "train/source_episode_mixup_overflow_rate": source_episode_info.get("source_episode_mixup_overflow_rate", float("nan")),
-                "train/source_episode_mixup_margin_deg": source_episode_info.get("source_episode_mixup_margin_deg", float("nan")),
-                "train/source_episode_stage_scale": float(source_episode_stage_scale),
-                "train/source_episode_receiver_local_component_count": source_episode_info.get(
-                    "source_episode_receiver_local_component_count", float("nan")
+                "train/source_episode_leave_domain_loss": source_episode_info.get(
+                    "source_episode_leave_domain_loss", float("nan")
                 ),
-                "train/source_episode_local_component_coverage": source_episode_info.get(
-                    "source_episode_local_component_coverage", float("nan")
+                    "train/source_episode_overflow_rate": source_episode_info.get("source_episode_overflow_rate", float("nan")),
+                    "train/source_overflow": source_episode_info.get("source_overflow", source_episode_info.get("source_episode_overflow_rate", float("nan"))),
+                    "train/source_episode_radius_3sigma_deg": source_episode_info.get("source_episode_radius_3sigma_deg", float("nan")),
+                    "train/source_episode_radius_core_deg": source_episode_info.get("source_episode_radius_core_deg", float("nan")),
+                    "train/source_episode_radius_safe_deg": source_episode_info.get("source_episode_radius_safe_deg", float("nan")),
+                    "train/source_episode_radius_mode_code": source_episode_info.get("source_episode_radius_mode_code", float("nan")),
+                    "train/source_episode_tail_query_rate": source_episode_info.get("source_episode_tail_query_rate", float("nan")),
+                    "train/source_episode_val_angle_deg": source_episode_info.get("source_episode_val_angle_deg", float("nan")),
+                    "train/source_episode_classes": source_episode_info.get("source_episode_classes", float("nan")),
+                    "train/source_episode_domains": source_episode_info.get("source_episode_domains", float("nan")),
+                    "train/source_episode_mixup_count": source_episode_info.get("source_episode_mixup_count", float("nan")),
+                    "train/source_episode_mixup_order": source_episode_info.get("source_episode_mixup_order", float("nan")),
+                    "train/source_episode_mixup_loss": source_episode_info.get("source_episode_mixup_loss", float("nan")),
+                    "train/source_episode_mixup_overflow_rate": source_episode_info.get("source_episode_mixup_overflow_rate", float("nan")),
+                    "train/source_episode_mixup_margin_deg": source_episode_info.get("source_episode_mixup_margin_deg", float("nan")),
+                    "train/source_episode_stage_scale": float(source_episode_stage_scale),
+                    "train/source_episode_receiver_local_component_count": source_episode_info.get(
+                        "source_episode_receiver_local_component_count", float("nan")
+                    ),
+                    "train/source_episode_local_component_coverage": source_episode_info.get(
+                        "source_episode_local_component_coverage", float("nan")
+                    ),
+                    "train/source_episode_local_component_compact_loss": source_episode_info.get(
+                        "source_episode_local_component_compact_loss", float("nan")
+                    ),
+                    "train/source_episode_local_component_invariant_loss": source_episode_info.get(
+                        "source_episode_local_component_invariant_loss", float("nan")
+                    ),
+                    "train/source_episode_local_component_inter_loss": source_episode_info.get(
+                    "source_episode_local_component_inter_loss", float("nan")
                 ),
-                "train/source_episode_core_count": source_episode_info.get("source_episode_core_count", float("nan")),
-                "train/source_episode_tail_count": source_episode_info.get("source_episode_tail_count", float("nan")),
-                "train/source_episode_outside_count": source_episode_info.get("source_episode_outside_count", float("nan")),
-                "train/source_episode_core_rate": source_episode_info.get("source_episode_core_rate", float("nan")),
-                "train/source_episode_tail_rate": source_episode_info.get("source_episode_tail_rate", float("nan")),
-                "train/source_episode_outside_rate": source_episode_info.get("source_episode_outside_rate", float("nan")),
-                "train/source_episode_zid_p50_deg": source_episode_info.get("source_episode_zid_p50_deg", float("nan")),
-                "train/source_episode_zid_p95_deg": source_episode_info.get("source_episode_zid_p95_deg", float("nan")),
-                "train/source_episode_zid_p99_deg": source_episode_info.get("source_episode_zid_p99_deg", float("nan")),
-                "train/source_episode_zid_tail_cvar_deg": source_episode_info.get(
-                    "source_episode_zid_tail_cvar_deg", float("nan")
+                "train/source_episode_local_component_accept_loss": source_episode_info.get(
+                    "source_episode_local_component_accept_loss", float("nan")
                 ),
-                "train/source_episode_core_tail_outside_ready": source_episode_info.get(
-                    "source_episode_core_tail_outside_ready", float("nan")
+                "train/source_episode_local_component_density_loss": source_episode_info.get(
+                    "source_episode_local_component_density_loss", float("nan")
                 ),
+                    "train/source_episode_local_component_radius_p95_deg": source_episode_info.get(
+                        "source_episode_local_component_radius_p95_deg", float("nan")
+                    ),
+                    "train/source_episode_local_component_center_spread_deg": source_episode_info.get(
+                        "source_episode_local_component_center_spread_deg", float("nan")
+                    ),
+                    "train/source_episode_local_component_structural_active": source_episode_info.get(
+                        "source_episode_local_component_structural_active", float("nan")
+                    ),
+                    "train/source_episode_core_count": source_episode_info.get("source_episode_core_count", float("nan")),
+                    "train/source_episode_tail_count": source_episode_info.get("source_episode_tail_count", float("nan")),
+                    "train/source_episode_outside_count": source_episode_info.get("source_episode_outside_count", float("nan")),
+                    "train/source_episode_core_rate": source_episode_info.get("source_episode_core_rate", float("nan")),
+                    "train/source_episode_tail_rate": source_episode_info.get("source_episode_tail_rate", float("nan")),
+                    "train/source_episode_outside_rate": source_episode_info.get("source_episode_outside_rate", float("nan")),
+                    "train/source_episode_zid_p50_deg": source_episode_info.get("source_episode_zid_p50_deg", float("nan")),
+                    "train/source_episode_zid_p95_deg": source_episode_info.get("source_episode_zid_p95_deg", float("nan")),
+                    "train/source_episode_zid_p99_deg": source_episode_info.get("source_episode_zid_p99_deg", float("nan")),
+                    "train/source_episode_zid_tail_cvar_deg": source_episode_info.get(
+                        "source_episode_zid_tail_cvar_deg", float("nan")
+                    ),
+                    "train/source_episode_core_tail_outside_ready": source_episode_info.get(
+                        "source_episode_core_tail_outside_ready", float("nan")
+                    ),
                 "train/source_episode_density_gate_active": source_episode_info.get(
                     "source_episode_density_gate_active", float("nan")
                 ),
-                "train/dm_accept_active": direct_metric_info.get("active", float("nan")),
-                "train/dm_accept_active_classes": direct_metric_info.get("active_classes", float("nan")),
-                "train/dm_accept_zid_p50_deg": direct_metric_info.get("zid_p50_deg", float("nan")),
-                "train/dm_accept_zid_p95_deg": direct_metric_info.get("zid_p95_deg", float("nan")),
-                "train/dm_accept_zid_p99_deg": direct_metric_info.get("zid_p99_deg", float("nan")),
-                "train/dm_accept_zid_tail_cvar_deg": direct_metric_info.get("zid_tail_cvar_deg", float("nan")),
-                "train/dm_accept_source_overflow": direct_metric_info.get("source_overflow", float("nan")),
-                "train/dm_accept_source_overflow_loss": direct_metric_info.get("source_overflow_loss", float("nan")),
-                "train/dm_accept_proxy_vaccept": direct_metric_info.get("proxy_vaccept", float("nan")),
-                "train/dm_accept_proxy_vaccept_loss": direct_metric_info.get("proxy_vaccept_loss", float("nan")),
-                "train/dm_accept_bridge_accept_rate": direct_metric_info.get("bridge_accept_rate", float("nan")),
-                "train/dm_accept_bridge_accept_loss": direct_metric_info.get("bridge_accept_loss", float("nan")),
-                "train/dm_accept_shell_accept_rate": direct_metric_info.get("shell_accept_rate", float("nan")),
-                "train/dm_accept_outward_accept_rate": direct_metric_info.get("outward_accept_rate", float("nan")),
-                "train/dm_accept_low_density_accept_rate": direct_metric_info.get("low_density_accept_rate", float("nan")),
-                "train/dm_accept_low_density_accept_loss": direct_metric_info.get("low_density_accept_loss", float("nan")),
-                "train/dm_accept_tail_accept_rate": direct_metric_info.get("tail_accept_rate", float("nan")),
-                "train/dm_accept_tail_accept_loss": direct_metric_info.get("tail_accept_loss", float("nan")),
-                "train/dm_accept_overflow_accept_rate": direct_metric_info.get("overflow_accept_rate", float("nan")),
-                "train/dm_accept_overflow_accept_loss": direct_metric_info.get("overflow_accept_loss", float("nan")),
-                "train/dm_accept_radius_to_inter_ratio": direct_metric_info.get("radius_to_inter_ratio", float("nan")),
-                "train/dm_accept_radius_inter_ratio_loss": direct_metric_info.get("radius_inter_ratio_loss", float("nan")),
-                "train/dm_accept_core_accept_rate": direct_metric_info.get("core_accept_rate", float("nan")),
-                "train/dm_accept_core_accept_loss": direct_metric_info.get("core_accept_loss", float("nan")),
-                "train/dm_accept_sat_pair_angle_p95_deg": direct_metric_info.get("sat_pair_angle_p95_deg", float("nan")),
-                "train/dm_accept_sat_pair_loss": direct_metric_info.get("sat_pair_loss", float("nan")),
-                "train/dm_accept_zid_quantile_loss": direct_metric_info.get("zid_quantile_loss", float("nan")),
-                "train/dm_accept_virtual_count": direct_metric_info.get("virtual_count", float("nan")),
-                "train/dm_accept_stage_scale": float(direct_metric_stage_scale),
-            }
-        )
+                "train/source_episode_multiview_separate_geometry": source_episode_info.get(
+                    "source_episode_multiview_separate_geometry", 0.0
+                ),
+                **{
+                    f"train/source_episode_{view}_{key}": source_episode_info.get(
+                        f"{view}_{key}", float("nan")
+                    )
+                    for view in ("clean", "sat")
+                    for key in (
+                        "source_episode_overflow_rate",
+                        "source_episode_zid_p95_deg",
+                        "source_episode_zid_p99_deg",
+                        "source_episode_zid_tail_cvar_deg",
+                        "source_episode_local_component_radius_p95_deg",
+                    )
+                },
+                    "train/dm_accept_active": direct_metric_info.get("active", float("nan")),
+                    "train/dm_accept_active_classes": direct_metric_info.get("active_classes", float("nan")),
+                    "train/dm_accept_zid_p50_deg": direct_metric_info.get("zid_p50_deg", float("nan")),
+                    "train/dm_accept_zid_p95_deg": direct_metric_info.get("zid_p95_deg", float("nan")),
+                    "train/dm_accept_zid_p99_deg": direct_metric_info.get("zid_p99_deg", float("nan")),
+                    "train/dm_accept_zid_tail_cvar_deg": direct_metric_info.get("zid_tail_cvar_deg", float("nan")),
+                    "train/dm_accept_source_overflow": direct_metric_info.get("source_overflow", float("nan")),
+                    "train/dm_accept_source_overflow_loss": direct_metric_info.get("source_overflow_loss", float("nan")),
+                    "train/dm_accept_proxy_vaccept": direct_metric_info.get("proxy_vaccept", float("nan")),
+                    "train/dm_accept_proxy_vaccept_loss": direct_metric_info.get("proxy_vaccept_loss", float("nan")),
+                    "train/dm_accept_bridge_accept_rate": direct_metric_info.get("bridge_accept_rate", float("nan")),
+                    "train/dm_accept_bridge_accept_loss": direct_metric_info.get("bridge_accept_loss", float("nan")),
+                    "train/dm_accept_shell_accept_rate": direct_metric_info.get("shell_accept_rate", float("nan")),
+                    "train/dm_accept_outward_accept_rate": direct_metric_info.get("outward_accept_rate", float("nan")),
+                    "train/dm_accept_low_density_accept_rate": direct_metric_info.get("low_density_accept_rate", float("nan")),
+                    "train/dm_accept_low_density_accept_loss": direct_metric_info.get("low_density_accept_loss", float("nan")),
+                    "train/dm_accept_tail_accept_rate": direct_metric_info.get("tail_accept_rate", float("nan")),
+                    "train/dm_accept_tail_accept_loss": direct_metric_info.get("tail_accept_loss", float("nan")),
+                    "train/dm_accept_overflow_accept_rate": direct_metric_info.get("overflow_accept_rate", float("nan")),
+                    "train/dm_accept_overflow_accept_loss": direct_metric_info.get("overflow_accept_loss", float("nan")),
+                    "train/dm_accept_radius_to_inter_ratio": direct_metric_info.get("radius_to_inter_ratio", float("nan")),
+                    "train/dm_accept_radius_inter_ratio_loss": direct_metric_info.get("radius_inter_ratio_loss", float("nan")),
+                    "train/dm_accept_core_accept_rate": direct_metric_info.get("core_accept_rate", float("nan")),
+                    "train/dm_accept_core_accept_loss": direct_metric_info.get("core_accept_loss", float("nan")),
+                    "train/dm_accept_sat_pair_angle_p95_deg": direct_metric_info.get("sat_pair_angle_p95_deg", float("nan")),
+                    "train/dm_accept_sat_pair_loss": direct_metric_info.get("sat_pair_loss", float("nan")),
+                    "train/dm_accept_zid_quantile_loss": direct_metric_info.get("zid_quantile_loss", float("nan")),
+                    "train/dm_accept_virtual_count": direct_metric_info.get("virtual_count", float("nan")),
+                    "train/dm_accept_multiview_separate_geometry": direct_metric_info.get(
+                        "multiview_separate_geometry", 0.0
+                    ),
+                    "train/dm_accept_geometry_stabilized": direct_metric_info.get("geometry_stabilized", float("nan")),
+                    "train/dm_accept_geometry_reference_detached": direct_metric_info.get(
+                        "geometry_reference_detached", float("nan")
+                    ),
+                    "train/dm_accept_angle_clamp_eps": direct_metric_info.get("angle_clamp_eps", float("nan")),
+                    "train/dm_accept_softplus_clip": direct_metric_info.get("softplus_clip", float("nan")),
+                    **{
+                        f"train/dm_accept_{view}_{key}": direct_metric_info.get(f"{view}_{key}", float("nan"))
+                        for view in ("clean", "sat")
+                        for key in (
+                            "active",
+                            "active_classes",
+                            "zid_p50_deg",
+                            "zid_p95_deg",
+                            "zid_p99_deg",
+                            "zid_tail_cvar_deg",
+                            "source_overflow",
+                            "proxy_vaccept",
+                            "bridge_accept_rate",
+                            "low_density_accept_rate",
+                            "tail_accept_rate",
+                            "overflow_accept_rate",
+                            "radius_to_inter_ratio",
+                        )
+                    },
+                    "train/dm_accept_stage_scale": float(direct_metric_stage_scale),
+                }
+            )
 
         val_stats = evaluate_loader(model, data_ctx["val_loader"], device, data_ctx["domain_label_map"], max_batches=int(args.eval_max_batches))
-        val_improved = float(val_stats.get("tx_acc", float("nan"))) > float(best_val)
-        test_ran_this_epoch = (
-            should_run_training_test(
-                str(args.test_eval_policy),
-                epoch=epoch,
-                epochs=total_epochs,
-                val_improved=bool(val_improved),
-                start_epoch=int(args.test_eval_start_epoch),
-                interval=int(args.test_eval_interval),
-                final_window=int(args.test_eval_final_window),
-                final_interval=int(args.test_eval_final_interval),
-            )
-            if should_run_training_test is not None
-            else True
+        source_val_tail_geometry = _evaluate_source_val_tail_geometry(model, data_ctx, device, args)
+        source_val_tail_observation = {
+            "train/dm_accept_zid_p95_deg": source_val_tail_geometry.get("zid_p95_deg", float("nan")),
+            "train/dm_accept_zid_p99_deg": source_val_tail_geometry.get("zid_p99_deg", float("nan")),
+            "train/dm_accept_zid_tail_cvar_deg": source_val_tail_geometry.get(
+                "zid_tail_cvar_deg", float("nan")
+            ),
+            "train/dm_accept_proxy_vaccept": source_val_tail_geometry.get("proxy_vaccept", float("nan")),
+        }
+        stage_state["tail_observation_fixed_source_val"] = 1.0
+        source_val_sat_stats = _evaluate_source_val_sat_if_enabled(model, data_ctx, device, args)
+        source_val_sat_scores = _satellite_tx_scores(source_val_sat_stats)
+        stage_state["source_val_sat_mean_tx"] = (
+            sum(source_val_sat_scores) / len(source_val_sat_scores) if source_val_sat_scores else float("nan")
         )
+        stage_state["source_val_sat_floor_tx"] = min(source_val_sat_scores) if source_val_sat_scores else float("nan")
+        # Phase1 is source-only. Held-out receiver/day and satellite-test views are
+        # evaluated exactly once after the source-val-selected checkpoint is frozen.
+        test_ran_this_epoch = False
         if test_ran_this_epoch:
             named_stats = evaluate_named_loaders(
                 model,
@@ -3942,6 +5028,14 @@ def train(args) -> int:
         else:
             named_stats = {}
         train_logs = mean_logs(epoch_logs)
+        for tail_key in (
+            "train/dm_accept_zid_p95_deg",
+            "train/dm_accept_zid_p99_deg",
+            "train/dm_accept_zid_tail_cvar_deg",
+            "train/dm_accept_proxy_vaccept",
+        ):
+            train_logs[tail_key] = _max_log_value(epoch_logs, tail_key)
+        train_logs["train/tail_epoch_aggregation_max_batch"] = 1.0
         train_logs["train/pseudo_total"] = _sum_log_values(epoch_logs, "train/pseudo_total")
         train_logs["train/pseudo_selected"] = _sum_log_values(epoch_logs, "train/pseudo_selected")
         train_logs["train/pseudo_correct"] = _sum_log_values(epoch_logs, "train/pseudo_correct")
@@ -3955,12 +5049,35 @@ def train(args) -> int:
         stage_state["test_eval_interval"] = float(getattr(args, "test_eval_interval", 0))
         stage_state["test_eval_final_window"] = float(getattr(args, "test_eval_final_window", 0))
         stage_state["test_eval_final_interval"] = float(getattr(args, "test_eval_final_interval", 0))
-        stats = {"train": train_logs, "val": val_stats, "named_test": named_stats, "test": test_stats, "sat_test_named": sat_test_stats}
+        stats = {
+            "train": train_logs,
+            "val": val_stats,
+            "source_val_sat_named": source_val_sat_stats,
+            "source_val_tail_geometry": source_val_tail_geometry,
+            "named_test": named_stats,
+            "test": test_stats,
+            "sat_test_named": sat_test_stats,
+        }
         payload = {
+            "checkpoint_schema": "ssdg_phase1_training_state_v2",
+            "run_id": str(getattr(args, "run_id", "")),
+            "candidate_id": str(getattr(args, "candidate_id", "")),
             "model": model.state_dict(),
             "ema_model": ema_model.state_dict() if ema_model is not None else None,
+            "optimizer": optimizer.state_dict(),
+            "scaler": scaler.state_dict(),
+            "prototype_memory": proto_bank.state_dict() if proto_bank is not None else None,
+            "rng_state": _capture_training_rng_state(sat_gen),
+            "tail_state_machine": phase1_v2_tail_machine.state_dict() if phase1_v2_tail_machine is not None else None,
+            "tail_rollback_events": deepcopy(tail_rollback_events),
+            "guard_history": {
+                "previous_protected_metrics": deepcopy(previous_protected_metrics),
+                "previous_train_logs": deepcopy(previous_train_logs),
+            },
             "baseline_ckpt": args.baseline_ckpt,
             "epoch": epoch,
+            "observed_epoch": epoch,
+            "state_epoch": epoch,
             "phase": phase,
             "args": vars(args),
             "baseline_args": vars(model_args),
@@ -4038,7 +5155,12 @@ def train(args) -> int:
         if paic_decision is not None:
             guard_state.update({f"paic_{key}": value for key, value in paic_decision.details.items()})
         phase1_v2_guard_fired = False
+        phase1_v2_final_blocked = False
         phase1_v2_reasons: List[str] = []
+        tail_reference_saved = False
+        tail_rollback_applied = False
+        tail_rollback_reference_epoch = -1
+        tail_rejected_checkpoint_path = ""
         if bool(getattr(args, "phase1_v2_hard_gates", False)):
             if (
                 assess_endpoint_contract is None
@@ -4054,7 +5176,8 @@ def train(args) -> int:
                     "phase": "Phase1_source_only",
                     "source_only": True,
                     "endpoint_policy_id": str(args.endpoint_accept_policy_id),
-                    "endpoint_accept_boundary_exported": True,
+                    "endpoint_accept_boundary_exported": False,
+                    "endpoint_artifact_required": False,
                     "endpoint_threshold_source": str(args.endpoint_threshold_source),
                     "endpoint_calibration_split": str(args.endpoint_calibration_split),
                     "loss_gate_exported": bool(args.loss_gate_exported),
@@ -4084,6 +5207,14 @@ def train(args) -> int:
                     train_logs,
                     required=bool(args.u_direct_idle_blocks_promotion),
                     min_selected=int(args.u_direct_metric_min_selected),
+                    min_core_rate=float(args.u_tri_min_core_rate),
+                    max_core_rate=float(args.u_tri_max_core_rate),
+                    min_ambiguous_rate=float(args.u_tri_min_ambiguous_rate),
+                    max_outside_rate=float(args.u_tri_max_outside_rate),
+                    min_class_coverage=int(args.u_tri_min_class_coverage),
+                    min_domain_coverage=int(args.u_tri_min_domain_coverage),
+                    max_pair_disagreement_rate=float(args.u_tri_max_pair_disagreement_rate),
+                    min_pseudo_component_agreement=float(args.u_tri_min_pseudo_component_agreement),
                 )
                 guard_state["phase1_v2_u_tri_state_fired"] = bool(u_tri_decision.fired)
                 guard_state.update({f"phase1_v2_u_{key}": value for key, value in u_tri_decision.details.items()})
@@ -4119,18 +5250,173 @@ def train(args) -> int:
             guard_state.update({f"phase1_v2_feasibility_{key}": value for key, value in feasibility_decision.details.items()})
             if feasibility_decision.fired:
                 phase1_v2_reasons.append(feasibility_decision.reason)
-        if phase1_v2_tail_machine is not None:
-            tail_decision = phase1_v2_tail_machine.update(train_logs)
+        promotion_stage_ready = not bool(getattr(args, "u_tri_state_required", False)) or phase == "pseudo"
+        guard_state["phase1_v2_promotion_stage_ready"] = bool(promotion_stage_ready)
+        if phase1_v2_tail_machine is not None and not promotion_stage_ready:
+            phase1_v2_reasons.append("US_STAGE_NOT_READY")
+            phase1_v2_final_blocked = True
+            checkpoint_safe = False
+            guard_state["phase1_v2_tail_fired"] = True
+            guard_state["phase1_v2_tail_blocks_best"] = True
+            guard_state["phase1_v2_tail_blocks_final"] = True
+            guard_state["phase1_v2_tail_state_code"] = 4.0
+            guard_state["phase1_v2_tail_action_code"] = 0.0
+            guard_state["phase1_v2_tail_reference_ready"] = 0.0
+            guard_state["phase1_v2_tail_deferred_to_pseudo"] = 1.0
+        if phase1_v2_tail_machine is not None and promotion_stage_ready:
+            tail_decision = phase1_v2_tail_machine.update(source_val_tail_observation)
             guard_state["phase1_v2_tail_fired"] = bool(tail_decision.fired)
             guard_state["phase1_v2_tail_blocks_best"] = bool(tail_decision.blocks_best)
             guard_state["phase1_v2_tail_blocks_final"] = bool(tail_decision.blocks_final)
-            guard_state["phase1_v2_tail_state_code"] = {"NORMAL": 0.0, "WARNING": 1.0, "ROLLBACK": 2.0, "STOP": 3.0}.get(tail_decision.state, -1.0)
+            guard_state["phase1_v2_tail_state_code"] = {"NORMAL": 0.0, "WARNING": 1.0, "ROLLBACK": 2.0, "STOP": 3.0, "INSUFFICIENT": 4.0}.get(tail_decision.state, -1.0)
             guard_state["phase1_v2_tail_action_code"] = {"NONE": 0.0, "WARNING": 1.0, "ROLLBACK": 2.0, "STOP": 3.0}.get(tail_decision.action, -1.0)
             guard_state.update({f"phase1_v2_{key}": value for key, value in tail_decision.details.items()})
+            if (
+                bool(getattr(args, "tail_rollback_enabled", False))
+                and float(tail_decision.details.get("tail_reference_improved", 0.0)) > 0.0
+                and not bool(tail_decision.fired)
+                and bool(checkpoint_safe)
+                and not phase1_v2_reasons
+            ):
+                phase1_v2_tail_machine.commit_reference(tail_decision)
+                reference_payload = dict(payload)
+                reference_payload["tail_state_machine"] = phase1_v2_tail_machine.state_dict()
+                reference_payload["tail_reference"] = {
+                    "kind": "checkpoint_safe_robust_tail_reference",
+                    "epoch": int(epoch),
+                    "absolute_tail_safe": True,
+                    "decision": dict(tail_decision.details),
+                }
+                save_payload(tail_reference_path, reference_payload)
+                tail_reference_saved = True
+            if tail_decision.action == "ROLLBACK" and bool(getattr(args, "tail_rollback_enabled", False)):
+                if tail_reference_path.is_file():
+                    monotonic_rollback_count = int(phase1_v2_tail_machine.rollback_count)
+                    rejected_path = out_dir / f"tail_rejected_E{int(epoch):03d}.pth"
+                    save_payload(rejected_path, payload)
+                    tail_rejected_checkpoint_path = str(rejected_path)
+                    reference_payload = _validate_phase1_checkpoint_payload(
+                        torch.load(tail_reference_path, map_location=device), args, tail_reference_path
+                    )
+                    required_rollback_fields = (
+                        "optimizer",
+                        "scaler",
+                        "rng_state",
+                        "tail_state_machine",
+                        "guard_history",
+                    )
+                    missing_rollback_fields = [
+                        key for key in required_rollback_fields if reference_payload.get(key) is None
+                    ]
+                    if ema_model is not None and reference_payload.get("ema_model") is None:
+                        missing_rollback_fields.append("ema_model")
+                    if proto_bank is not None and reference_payload.get("prototype_memory") is None:
+                        missing_rollback_fields.append("prototype_memory")
+                    rng_state = reference_payload.get("rng_state")
+                    if not isinstance(rng_state, Mapping) or any(
+                        rng_state.get(key) is None for key in ("python", "numpy", "torch_cpu")
+                    ):
+                        missing_rollback_fields.append("rng_state_complete")
+                    if sat_gen is not None and (
+                        not isinstance(rng_state, Mapping) or rng_state.get("sat_generator") is None
+                    ):
+                        missing_rollback_fields.append("sat_generator_state")
+                    if getattr(device, "type", "cpu") == "cuda" and (
+                        not isinstance(rng_state, Mapping) or rng_state.get("torch_cuda") is None
+                    ):
+                        missing_rollback_fields.append("torch_cuda_rng_state")
+                    guard_history_obj = reference_payload.get("guard_history")
+                    if not isinstance(guard_history_obj, Mapping) or any(
+                        key not in guard_history_obj
+                        for key in ("previous_protected_metrics", "previous_train_logs")
+                    ):
+                        missing_rollback_fields.append("guard_history_complete")
+                    if missing_rollback_fields:
+                        raise ValueError(
+                            "Tail rollback reference has incomplete training state: "
+                            + ",".join(missing_rollback_fields)
+                        )
+                    _load_phase1_checkpoint_strict(model, reference_payload, tail_reference_path)
+                    if ema_model is not None:
+                        ema_model.load_state_dict(reference_payload["ema_model"], strict=True)
+                    optimizer.load_state_dict(reference_payload["optimizer"])
+                    scaler.load_state_dict(reference_payload["scaler"])
+                    if proto_bank is not None:
+                        proto_bank.load_state_dict(reference_payload["prototype_memory"])
+                    _restore_training_rng_state(reference_payload.get("rng_state", {}), sat_gen)
+                    phase1_v2_tail_machine.load_state_dict(reference_payload["tail_state_machine"])
+                    phase1_v2_tail_machine.rollback_count = max(
+                        int(phase1_v2_tail_machine.rollback_count), monotonic_rollback_count
+                    )
+                    restored_history = reference_payload.get("guard_history", {}) or {}
+                    previous_protected_metrics = deepcopy(restored_history.get("previous_protected_metrics"))
+                    previous_train_logs = deepcopy(restored_history.get("previous_train_logs"))
+                    tail_rollback_reference_epoch = int(
+                        (reference_payload.get("tail_reference", {}) or {}).get(
+                            "epoch", reference_payload.get("epoch", -1)
+                        )
+                    )
+                    tail_rollback_applied = True
+                    tail_rollback_cooldown_remaining = max(
+                        tail_rollback_cooldown_remaining,
+                        int(getattr(args, "tail_rollback_cooldown_epochs", 0)),
+                    )
+                    phase1_v2_tail_machine.acknowledge_rollback()
+                    observed_stats = payload.get("stats")
+                    payload["model"] = model.state_dict()
+                    payload["ema_model"] = ema_model.state_dict() if ema_model is not None else None
+                    payload["optimizer"] = optimizer.state_dict()
+                    payload["scaler"] = scaler.state_dict()
+                    payload["prototype_memory"] = proto_bank.state_dict() if proto_bank is not None else None
+                    payload["rng_state"] = _capture_training_rng_state(sat_gen)
+                    payload["tail_state_machine"] = phase1_v2_tail_machine.state_dict()
+                    payload["guard_history"] = {
+                        "previous_protected_metrics": deepcopy(previous_protected_metrics),
+                        "previous_train_logs": deepcopy(previous_train_logs),
+                    }
+                    payload["stats"] = deepcopy(reference_payload.get("stats", {}))
+                    payload["observed_stats"] = observed_stats
+                    payload["observed_epoch"] = int(epoch)
+                    payload["state_epoch"] = int(tail_rollback_reference_epoch)
+                    payload["tail_rollback"] = {
+                        "applied": True,
+                        "from_epoch": int(epoch),
+                        "reference_epoch": int(tail_rollback_reference_epoch),
+                        "reference_path": str(tail_reference_path),
+                        "reference_sha256": _sha256_file(tail_reference_path),
+                        "rejected_checkpoint_path": tail_rejected_checkpoint_path,
+                        "cooldown_epochs": int(getattr(args, "tail_rollback_cooldown_epochs", 0)),
+                    }
+                    tail_rollback_events.append(
+                        {
+                            "event_index": len(tail_rollback_events) + 1,
+                            "from_epoch": int(epoch),
+                            "reference_epoch": int(tail_rollback_reference_epoch),
+                            "reference_path": str(tail_reference_path),
+                            "reference_sha256": _sha256_file(tail_reference_path),
+                            "rejected_checkpoint_path": tail_rejected_checkpoint_path,
+                            "rejected_checkpoint_sha256": _sha256_file(rejected_path),
+                            "monotonic_rollback_count": int(phase1_v2_tail_machine.rollback_count),
+                        }
+                    )
+                    payload["tail_rollback_events"] = deepcopy(tail_rollback_events)
+                    save_payload(latest_path, payload)
+                else:
+                    phase1_v2_reasons.append("tail_rollback_reference_missing")
+                    phase1_v2_final_blocked = True
+                    tail_early_stop_requested = True
+            if tail_decision.action == "STOP":
+                phase1_v2_final_blocked = True
+                tail_early_stop_requested = True
             if tail_decision.blocks_best:
                 phase1_v2_reasons.append(tail_decision.reason or f"tail_state_{tail_decision.state}")
             if tail_decision.blocks_final and bool(getattr(args, "tail_stop_blocks_final", True)):
                 phase1_v2_final_blocked = True
+                checkpoint_safe = False
+                if not tail_decision.blocks_best:
+                    phase1_v2_reasons.append(
+                        tail_decision.reason or f"tail_final_block_{tail_decision.state}"
+                    )
         if bool(getattr(args, "phase1_v2_hard_gates", False)) and assess_phase1_v2_final_export_policy is not None:
             final_export_decision = assess_phase1_v2_final_export_policy(
                 phase1_v2_reasons,
@@ -4147,17 +5433,40 @@ def train(args) -> int:
             checkpoint_safe = False
         guard_state["phase1_v2_guard_fired"] = bool(phase1_v2_guard_fired)
         guard_state["phase1_v2_final_blocked"] = bool(phase1_v2_final_blocked)
+        guard_state["phase1_v2_tail_reference_saved"] = bool(tail_reference_saved)
+        guard_state["phase1_v2_tail_reference_path"] = str(tail_reference_path)
+        guard_state["phase1_v2_tail_rollback_applied"] = bool(tail_rollback_applied)
+        guard_state["phase1_v2_tail_rollback_reference_epoch"] = int(tail_rollback_reference_epoch)
+        guard_state["phase1_v2_tail_rejected_checkpoint_path"] = tail_rejected_checkpoint_path
+        guard_state["phase1_v2_tail_early_stop_requested"] = bool(tail_early_stop_requested)
         if phase1_v2_reasons:
             guard_state["reason"] = ";".join([r for r in [guard_state.get("reason", ""), *phase1_v2_reasons] if str(r).strip()])
+        payload["joint_guard"] = dict(guard_state)
+        payload["tail_state_machine"] = phase1_v2_tail_machine.state_dict() if phase1_v2_tail_machine is not None else None
+        payload["checkpoint_status"] = {
+            "state": "STOPPED_TAIL" if tail_early_stop_requested else "RUNNING",
+            "checkpoint_safe": bool(checkpoint_safe),
+            "phase1_v2_guard_fired": bool(phase1_v2_guard_fired),
+            "phase1_v2_final_blocked": bool(phase1_v2_final_blocked),
+            "reason": str(guard_state.get("reason", "")),
+        }
+        save_payload(latest_path, payload)
         safe_checkpoint_saved = False
         if guard_enabled and checkpoint_safe:
             save_payload(safe_latest_path, payload)
             safe_checkpoint_saved = True
         is_best = False
         best_metric_name = str(args.best_metric)
-        best_metric_needs_test = best_metric_name != "clean_val_tx"
+        best_metric_needs_test = best_metric_name not in {"clean_val_tx", "source_val_sat_hmean"}
         current_best_score = (
-            _best_score(val_stats, test_stats, sat_test_stats, best_metric_name, named_stats, args)
+            _best_score(
+                val_stats,
+                test_stats,
+                source_val_sat_stats if best_metric_name == "source_val_sat_hmean" else sat_test_stats,
+                best_metric_name,
+                named_stats,
+                args,
+            )
             if (test_ran_this_epoch or not best_metric_needs_test)
             else float("-inf")
         )
@@ -4245,9 +5554,98 @@ def train(args) -> int:
             ),
             flush=True,
         )
-        if test_ran_this_epoch:
+        if test_ran_this_epoch and not tail_rollback_applied:
             previous_protected_metrics = dict(protected_metrics)
-        previous_train_logs = dict(train_logs)
+        if not tail_rollback_applied:
+            previous_train_logs = dict(train_logs)
+        if tail_early_stop_requested:
+            print(
+                f"[PHASE1-V2] training_stopped=1 epoch={int(epoch)} "
+                "reason=tail_safety_fail_closed final_export_blocked=1",
+                flush=True,
+            )
+            break
+    selected_checkpoint = out_dir / f"best_{args.best_metric}_ssdg.pth"
+    final_source_val_tail = _evaluate_source_val_tail_geometry(model, data_ctx, device, args)
+    best_source_val_tail = _evaluate_checkpoint_source_val_tail_geometry(
+        args, model, data_ctx, device, selected_checkpoint
+    )
+    best_final_tail_gate: Dict[str, Any] = {
+        "status": "FAILED",
+        "protocol": "fixed_source_val_direct_metric_v1",
+        "best": best_source_val_tail,
+        "final": final_source_val_tail,
+        "p99_delta_deg": None,
+        "blocks_final_export": True,
+        "blocks_promotion": True,
+    }
+    try:
+        best_p99 = float(best_source_val_tail.get("zid_p99_deg", float("nan")))
+        final_p99 = float(final_source_val_tail.get("zid_p99_deg", float("nan")))
+        p99_delta = final_p99 - best_p99
+        if (
+            str(best_source_val_tail.get("status", "")) == "COMPLETE"
+            and str(final_source_val_tail.get("status", "")) == "COMPLETE"
+            and math.isfinite(best_p99)
+            and math.isfinite(final_p99)
+        ):
+            block_final = p99_delta > float(args.tail_safety_p99_expansion_block_final_delta)
+            block_promotion = p99_delta > float(args.tail_safety_p99_expansion_block_best_delta)
+            best_final_tail_gate.update(
+                {
+                    "status": "COMPLETE",
+                    "p99_delta_deg": float(p99_delta),
+                    "blocks_final_export": bool(block_final),
+                    "blocks_promotion": bool(block_promotion),
+                }
+            )
+            if block_final:
+                phase1_v2_final_blocked = True
+                phase1_v2_reasons.append("BEST_FINAL_P99_EXPANSION_BLOCKS_FINAL")
+            if block_promotion:
+                phase1_v2_final_blocked = True
+                phase1_v2_reasons.append("BEST_FINAL_P99_EXPANSION_BLOCKS_PROMOTION")
+        else:
+            phase1_v2_final_blocked = True
+            phase1_v2_reasons.append("BEST_FINAL_TAIL_GEOMETRY_INCOMPLETE")
+    except Exception as exc:
+        best_final_tail_gate["reason"] = str(exc)
+        phase1_v2_final_blocked = True
+        phase1_v2_reasons.append("BEST_FINAL_TAIL_GEOMETRY_INCOMPLETE")
+    guard_state["phase1_v2_final_blocked"] = bool(phase1_v2_final_blocked)
+    guard_state["best_final_p99_delta_deg"] = best_final_tail_gate.get("p99_delta_deg")
+    guard_state["best_final_tail_gate_status"] = best_final_tail_gate.get("status")
+    if phase1_v2_reasons:
+        guard_state["reason"] = ";".join(
+            dict.fromkeys(
+                [
+                    part
+                    for value in [str(guard_state.get("reason", "")), *phase1_v2_reasons]
+                    for part in str(value).split(";")
+                    if part
+                ]
+            )
+        )
+    (out_dir / "best_to_final_tail_safety.json").write_text(
+        json.dumps(best_final_tail_gate, ensure_ascii=False, indent=2, default=str),
+        encoding="utf-8",
+    )
+    try:
+        frozen_eval = _evaluate_frozen_phase1_checkpoint(args, model, data_ctx, device, selected_checkpoint)
+    except Exception as exc:
+        frozen_eval = {
+            "status": "FAILED",
+            "reason": str(exc),
+            "selection_source": "source_val_only",
+            "checkpoint": str(selected_checkpoint),
+            "claim": "PHASE1_FROZEN_HELDOUT_EVAL_INCOMPLETE",
+        }
+    (out_dir / "frozen_phase1_heldout_eval.json").write_text(
+        json.dumps(frozen_eval, ensure_ascii=False, indent=2, default=str),
+        encoding="utf-8",
+    )
+    export_status: Dict[str, Any] = {"status": "NOT_REQUESTED"}
+    exit_code = 0
     if should_skip_phase1_v2_final_export is not None and should_skip_phase1_v2_final_export(
         phase1_v2_final_blocked=bool(phase1_v2_final_blocked),
         tail_stop_blocks_final=bool(getattr(args, "tail_stop_blocks_final", True)),
@@ -4257,19 +5655,165 @@ def train(args) -> int:
             "claim=NON_PROMOTABLE_DIAGNOSTIC",
             flush=True,
         )
+        export_status = {
+            "status": "SKIPPED_FAIL_CLOSED",
+            "reason": str((guard_state or {}).get("reason", "phase1_v2_guard_blocks_final")),
+        }
     else:
         try:
             default_export_checkpoint = safe_best_path if _joint_safe_guard_enabled(args) else out_dir / f"best_{args.best_metric}_ssdg.pth"
-            _maybe_export_phase2_prototypes_ssdg(
+            exported_package = _maybe_export_phase2_prototypes_ssdg(
                 args,
                 model,
                 data_ctx,
                 device,
                 default_checkpoint=default_export_checkpoint,
             )
+            if exported_package is not None:
+                endpoint_manifest = exported_package.get("endpoint_accept_v1", {})
+                export_status = {
+                    "status": "COMPLETE",
+                    "prototype_path": (exported_package.get("paths", {}) or {}).get("pt_path", ""),
+                    "endpoint_artifact_ready": bool(endpoint_manifest),
+                    "endpoint_boundary_version": endpoint_manifest.get("boundary_version", ""),
+                    "endpoint_boundary_hash": endpoint_manifest.get("boundary_hash", ""),
+                    "source_checkpoint_sha256": (
+                        endpoint_manifest.get("inference_identity", {}) or {}
+                    ).get("source_checkpoint_sha256", ""),
+                    "true_unknown_validated": False,
+                }
         except Exception as exc:
-            print(f"[WARN] optional SSDG Phase2 prototype export failed: {exc}", flush=True)
-    return 0
+            level = "ERROR" if bool(getattr(args, "endpoint_require_artifact_on_export", True)) else "WARN"
+            print(f"[{level}] SSDG Phase2 prototype export failed: {exc}", flush=True)
+            if bool(getattr(args, "phase2_export_prototypes", False)) and bool(
+                getattr(args, "endpoint_require_artifact_on_export", True)
+            ):
+                exit_code = 3
+            export_status = {"status": "FAILED", "reason": str(exc)}
+    selected_checkpoint_exists = selected_checkpoint.is_file()
+    selected_checkpoint_evidence: Mapping[str, Any] = {}
+    selected_train_logs: Mapping[str, Any] = {}
+    if selected_checkpoint_exists:
+        try:
+            selected_checkpoint_evidence = _validate_phase1_checkpoint_payload(
+                torch.load(selected_checkpoint, map_location="cpu"), args, selected_checkpoint
+            )
+            selected_train_logs = (
+                (selected_checkpoint_evidence.get("stats", {}) or {}).get("train", {}) or {}
+            )
+        except Exception:
+            selected_checkpoint_evidence = {}
+            selected_train_logs = {}
+    selected_checkpoint_sha256 = _sha256_file(selected_checkpoint) if selected_checkpoint_exists else ""
+    p0_mechanism_flags = {
+        "run_id_present": bool(str(getattr(args, "run_id", "")).strip()),
+        "candidate_id_present": bool(str(getattr(args, "candidate_id", "")).strip()),
+        "phase1_v2_hard_gates": bool(getattr(args, "phase1_v2_hard_gates", False)),
+        "tail_safety_state_machine": bool(getattr(args, "tail_safety_state_machine", False)),
+        "tail_rollback_enabled": bool(getattr(args, "tail_rollback_enabled", False)),
+        "os_budget_controller": bool(getattr(args, "os_budget_controller", False)),
+        "os_budget_target_positive": float(getattr(args, "os_eff_min_budget", 0.0)) > 0.0,
+        "os_gradient_surgery": bool(getattr(args, "os_gradient_surgery", False)),
+        "u_tri_state_required": bool(getattr(args, "u_tri_state_required", False)),
+        "u_geometry_all_valid_queries": bool(getattr(args, "u_geometry_all_valid_queries", False)),
+        "source_episode_density_gate": bool(getattr(args, "source_episode_density_gate", False)),
+        "feasibility_gate": bool(getattr(args, "feasibility_gate", False)),
+        "direct_metric_multiview_separate": bool(getattr(args, "direct_metric_multiview_separate", False)),
+        "concat_sat_channel_aug": bool(getattr(args, "use_concat_sat_channel_aug", False)),
+        "rho_label_protocol": float((data_ctx.get("split_info", {}) or {}).get("rho_label", 1.0)) <= 0.1 + 1e-8,
+        "direct_metric_loss_active": float(getattr(args, "lambda_direct_metric_accept", 0.0)) > 0.0,
+        "source_episode_loss_active": float(getattr(args, "lambda_source_episode", 0.0)) > 0.0,
+        "proxy_unknown_loss_active": float(getattr(args, "lambda_proxy_unknown", 0.0)) > 0.0,
+        "u_direct_metric_loss_active": float(getattr(args, "lambda_u_direct_metric_accept", 0.0)) > 0.0,
+        "u_quarantine_loss_active": float(getattr(args, "lambda_u_quarantine_accept", 0.0)) > 0.0,
+        "u_domain_loss_active": float(getattr(args, "lambda_u_domain", 0.0)) > 0.0,
+        "u_adv_loss_active": float(getattr(args, "lambda_u_adv", 0.0)) > 0.0,
+        "u_sat_consistency_active": float(getattr(args, "lambda_u_sat_cons", 0.0)) > 0.0,
+        "selected_checkpoint_evidence_bound": bool(selected_checkpoint_evidence),
+        "direct_metric_runtime_active": _log_value(selected_train_logs, "train/dm_accept_active", 0.0) > 0.0,
+        "source_episode_runtime_active": _log_value(
+            selected_train_logs, "train/source_episode_local_component_structural_active", 0.0
+        ) > 0.0,
+        "proxy_unknown_runtime_active": _log_value(selected_train_logs, "train/proxy_unknown_active", 0.0) > 0.0,
+        "u_direct_metric_runtime_active": _log_value(selected_train_logs, "train/u_dm_accept_active", 0.0) > 0.0,
+        "u_quarantine_runtime_active": _log_value(selected_train_logs, "train/u_quarantine_active", 0.0) > 0.0,
+        "open_gradient_runtime_active": _log_value(
+            selected_train_logs, "train/os_gradient_effective_open_norm", 0.0
+        ) > 0.0,
+        "open_gradient_budget_met": _log_value(
+            selected_train_logs, "train/os_budget_controller_post", 0.0
+        ) + 1e-8 >= float(getattr(args, "os_eff_min_budget", 0.0)),
+        "phase2_export_prototypes": bool(getattr(args, "phase2_export_prototypes", False)),
+        "phase2_fuse_prototypes": bool(getattr(args, "phase2_fuse_prototypes", False)),
+        "endpoint_artifact_required": bool(getattr(args, "endpoint_require_artifact_on_export", False)),
+        "endpoint_checkpoint_identity_match": bool(selected_checkpoint_sha256)
+        and str(export_status.get("source_checkpoint_sha256", "")) == selected_checkpoint_sha256,
+    }
+    p0_mechanisms_ready = all(p0_mechanism_flags.values())
+    endpoint_export_ready = bool(
+        export_status.get("status") == "COMPLETE" and export_status.get("endpoint_artifact_ready", False)
+    )
+    terminal_status = _resolve_phase1_terminal_status(
+        tail_stopped=bool(tail_early_stop_requested),
+        export_failed=bool(exit_code),
+        final_blocked=bool(phase1_v2_final_blocked),
+        selected_checkpoint_exists=bool(selected_checkpoint_exists),
+        heldout_eval_status=str(frozen_eval.get("status", "")),
+        p0_mechanisms_ready=bool(p0_mechanisms_ready),
+        endpoint_export_ready=bool(endpoint_export_ready),
+    )
+    terminal_exit_code = int(exit_code)
+    if terminal_exit_code == 0 and terminal_status != "COMPLETE":
+        terminal_exit_code = {
+            "STOPPED_TAIL": 4,
+            "NON_PROMOTABLE_GUARD_BLOCKED": 5,
+            "NO_SAFE_CHECKPOINT": 6,
+            "HELDOUT_EVAL_INCOMPLETE": 7,
+            "NON_PROMOTABLE_P0_DISABLED": 8,
+            "NON_PROMOTABLE_ENDPOINT_NOT_EXPORTED": 9,
+        }.get(terminal_status, 10)
+    terminal_manifest = {
+        "schema": "phase1_terminal_status_v2",
+        "run_id": str(getattr(args, "run_id", "")),
+        "candidate_id": str(getattr(args, "candidate_id", "")),
+        "status": terminal_status,
+        "exit_code": int(terminal_exit_code),
+        "selection_source": "source_val_only",
+        "selected_checkpoint": str(selected_checkpoint),
+        "selected_checkpoint_exists": bool(selected_checkpoint_exists),
+        "selected_checkpoint_sha256": selected_checkpoint_sha256,
+        "best_epoch": int(best_epoch),
+        "best_source_val_tx": float(best_val) if math.isfinite(float(best_val)) else None,
+        "heldout_eval": frozen_eval,
+        "tail_reference_path": str(tail_reference_path),
+        "tail_reference_exists": tail_reference_path.is_file(),
+        "tail_reference_sha256": _sha256_file(tail_reference_path) if tail_reference_path.is_file() else "",
+        "tail_rollback_count": int(phase1_v2_tail_machine.rollback_count) if phase1_v2_tail_machine is not None else 0,
+        "tail_rollback_events": tail_rollback_events,
+        "best_to_final_tail_safety": best_final_tail_gate,
+        "phase1_v2_final_blocked": bool(phase1_v2_final_blocked),
+        "final_guard_reason": str((guard_state or {}).get("reason", "")),
+        "prototype_export": export_status,
+        "p0_mechanism_flags": p0_mechanism_flags,
+        "p0_mechanism_evidence_checkpoint_epoch": int(
+            selected_checkpoint_evidence.get("epoch", -1)
+        ) if selected_checkpoint_evidence else -1,
+        "p0_mechanisms_ready": bool(p0_mechanisms_ready),
+        "endpoint_export_ready": bool(endpoint_export_ready),
+        "promotion_ready": terminal_status == "COMPLETE",
+        "claim": "PHASE1_SOURCE_ONLY_NO_TRUE_UNKNOWN_SUCCESS_CLAIM",
+    }
+    (out_dir / "phase1_terminal_status.json").write_text(
+        json.dumps(terminal_manifest, ensure_ascii=False, indent=2, default=str),
+        encoding="utf-8",
+    )
+    print(
+        f"[PHASE1-TERMINAL] status={terminal_status} exit_code={int(terminal_exit_code)} "
+        f"promotion_ready={int(terminal_status == 'COMPLETE')} "
+        f"endpoint_export_ready={int(endpoint_export_ready)}",
+        flush=True,
+    )
+    return int(terminal_exit_code)
 
 
 def main() -> int:

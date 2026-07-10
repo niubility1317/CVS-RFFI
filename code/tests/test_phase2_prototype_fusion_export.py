@@ -12,7 +12,13 @@ if str(CODE_ROOT) not in sys.path:
     sys.path.insert(0, str(CODE_ROOT))
 
 from SSDG import train_ssdg  # noqa: E402
-from cvsrffi.phase2_prototypes import PrototypeFusionConfig, fuse_tx_domain_prototypes  # noqa: E402
+from cvsrffi.phase2_prototypes import (  # noqa: E402
+    PrototypeFusionConfig,
+    attach_endpoint_accept_v1_manifest,
+    calibrate_endpoint_accept_v1,
+    fuse_tx_domain_prototypes,
+    verify_endpoint_accept_v1_manifest,
+)
 
 
 def _minimal_phase2_package():
@@ -33,7 +39,18 @@ def _minimal_phase2_package():
             "p99": torch.tensor([math.radians(12.0), math.radians(12.0)]),
             "r_3sigma": torch.tensor([math.radians(18.0), math.radians(18.0)]),
         },
-        "metadata": {},
+        "metadata": {
+            "source_checkpoint_sha256": "0" * 64,
+            "run_id": "unit",
+            "candidate_id": "fusion",
+            "known_class_count": 2,
+            "class_id_to_tx": ["tx0", "tx1"],
+            "logit_class_order": [0, 1],
+            "classification_head_contract": "dual_cvsincnet_tx_logits_v1",
+            "checkpoint_load_strict": True,
+            "endpoint_runtime_entry_parity_digest": "1" * 64,
+            "endpoint_runtime_entry_parity_sample_count": 8,
+        },
     }
 
 
@@ -141,6 +158,7 @@ def test_ssdg_phase2_export_executes_fusion_when_flag_enabled(monkeypatch, tmp_p
         phase2_fuse_max_p95_increase_deg=2.0,
         phase2_fuse_keep_tail_sentinel=True,
         phase2_fuse_global_ball_accept=False,
+        endpoint_require_artifact_on_export=False,
         dataset="",
         split_mode="",
     )
@@ -155,3 +173,127 @@ def test_ssdg_phase2_export_executes_fusion_when_flag_enabled(monkeypatch, tmp_p
 
     assert calls == {"fuse": 1, "save": 1}
     assert out["fusion_config"]["enabled"] is True
+
+
+def test_endpoint_accept_v1_calibrates_thresholds_from_source_val_and_verifies():
+    package = {
+        "feature_key": "z_id",
+        "fused_tx_prototypes": torch.tensor([[[1.0, 0.0]], [[0.0, 1.0]]]),
+        "fused_tx_mask": torch.ones(2, 1, dtype=torch.bool),
+        "fusion_accept_policy": "local_component",
+        "global_fused_radius_is_accept_region": False,
+        "metadata": dict(_minimal_phase2_package()["metadata"]),
+        "fusion_components": [
+            [{"component_id": 0, "source_domains": [0], "accept_enabled": True}],
+            [{"component_id": 0, "source_domains": [0], "accept_enabled": True}],
+        ],
+    }
+    features = torch.tensor(
+        [[1.0, 0.0], [0.999, 0.03], [0.995, -0.05], [0.998, 0.04],
+         [0.0, 1.0], [0.03, 0.999], [-0.05, 0.995], [0.04, 0.998]],
+        dtype=torch.float32,
+    )
+    labels = torch.tensor([0, 0, 0, 0, 1, 1, 1, 1])
+    logits = torch.tensor([[5.0, 0.0]] * 4 + [[0.0, 5.0]] * 4)
+
+    calibrated = calibrate_endpoint_accept_v1(
+        package,
+        features,
+        labels,
+        logits,
+        min_component_samples=2,
+        min_class_samples=2,
+    )
+    artifact = attach_endpoint_accept_v1_manifest(calibrated)
+    manifest = verify_endpoint_accept_v1_manifest(artifact)
+
+    assert manifest["threshold_source"] == "source_val_only"
+    assert manifest["calibration_evidence"]["num_samples"] == 8
+    assert manifest["gate_thresholds"]["energy_max_by_class"].keys() == {"0", "1"}
+    assert all(row[0]["calibration_status"] == "source_val_calibrated" for row in artifact["fusion_components"])
+
+
+def test_ssdg_export_hook_attaches_and_verifies_endpoint_artifact(monkeypatch, tmp_path):
+    calls = {"save": 0}
+
+    class FakeModel:
+        def state_dict(self):
+            return {}
+
+        def load_state_dict(self, state, strict=False):
+            return None
+
+    fused = {
+        "feature_key": "z_id",
+        "fused_tx_prototypes": torch.tensor([[[1.0, 0.0]], [[0.0, 1.0]]]),
+        "fused_tx_mask": torch.ones(2, 1, dtype=torch.bool),
+        "fusion_accept_policy": "local_component",
+        "global_fused_radius_is_accept_region": False,
+        "metadata": dict(_minimal_phase2_package()["metadata"]),
+        "fusion_components": [
+            [{"component_id": 0, "source_domains": [0], "accept_enabled": True}],
+            [{"component_id": 0, "source_domains": [0], "accept_enabled": True}],
+        ],
+    }
+    features = torch.tensor(
+        [[1.0, 0.0], [0.999, 0.03], [0.995, -0.05], [0.998, 0.04],
+         [0.0, 1.0], [0.03, 0.999], [-0.05, 0.995], [0.04, 0.998]],
+        dtype=torch.float32,
+    )
+    labels = torch.tensor([0, 0, 0, 0, 1, 1, 1, 1])
+    logits = torch.tensor([[5.0, 0.0]] * 4 + [[0.0, 5.0]] * 4)
+
+    monkeypatch.setattr(train_ssdg, "export_phase2_prototypes", lambda *a, **k: _minimal_phase2_package())
+    monkeypatch.setattr(train_ssdg, "fuse_tx_domain_prototypes", lambda *a, **k: dict(fused))
+    monkeypatch.setattr(
+        train_ssdg,
+        "extract_endpoint_calibration_features",
+        lambda *a, **k: {"features": features, "labels": labels, "logits": logits},
+    )
+
+    def fake_save(package, output_path):
+        calls["save"] += 1
+        verify_endpoint_accept_v1_manifest(package)
+        return {"pt_path": str(output_path), "json_path": str(Path(output_path).with_suffix(".json"))}
+
+    monkeypatch.setattr(train_ssdg, "save_phase2_prototype_export", fake_save)
+    args = SimpleNamespace(
+        phase2_export_prototypes=True,
+        phase2_export_path=str(tmp_path / "out.pt"),
+        phase2_export_checkpoint="",
+        phase2_export_split="train",
+        phase2_export_feature_key="z_id",
+        phase2_export_max_batches=0,
+        phase2_fuse_prototypes=True,
+        phase2_fuse_max_components=2,
+        phase2_fuse_merge_angle_deg=8.0,
+        phase2_fuse_radius_cap_deg=25.0,
+        phase2_fuse_tail_abs_deg=30.0,
+        phase2_fuse_accept_policy="local_component",
+        phase2_fuse_accept_radius_key="p95",
+        phase2_fuse_max_p95_increase_deg=2.0,
+        phase2_fuse_keep_tail_sentinel=True,
+        phase2_fuse_global_ball_accept=False,
+        endpoint_require_artifact_on_export=True,
+        endpoint_calibration_min_component_samples=2,
+        endpoint_calibration_min_class_samples=2,
+        endpoint_calibration_core_quantile=0.80,
+        endpoint_calibration_accept_quantile=0.95,
+        endpoint_calibration_tail_quantile=0.99,
+        endpoint_threshold_source="source_val_only",
+        endpoint_calibration_split="source_val",
+        endpoint_accept_policy_id="endpoint_accept_v1",
+        dataset="wisig",
+        split_mode="tx_rx_day_1_7_2",
+    )
+
+    package = train_ssdg._maybe_export_phase2_prototypes_ssdg(
+        args,
+        FakeModel(),
+        {"train_loader": [object()], "val_loader": [object()], "split_info": {}},
+        torch.device("cpu"),
+        default_checkpoint="",
+    )
+
+    assert calls["save"] == 1
+    assert package["endpoint_accept_v1"]["fail_closed"] is True

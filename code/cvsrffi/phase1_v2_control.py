@@ -1,7 +1,9 @@
 from __future__ import annotations
 
 import math
+from collections import deque
 from dataclasses import dataclass, field
+from statistics import median
 from typing import Any, Dict, Iterable, Mapping
 
 
@@ -25,6 +27,7 @@ class TailSafetyConfig:
     p99_expansion_block_best_delta: float = 3.5
     tail_cvar_expansion_block_final_delta: float = 4.0
     tail_cvar_expansion_block_best_delta: float = 6.0
+    reference_window: int = 5
 
 
 @dataclass(frozen=True)
@@ -33,6 +36,17 @@ class TailSafetyDecision(ControlDecision):
     action: str = "NONE"
     blocks_best: bool = False
     blocks_final: bool = False
+
+
+@dataclass(frozen=True)
+class OpenSetBudgetAction:
+    active: bool
+    reason: str
+    os_scale: float
+    closed_scale: float
+    pre_budget: float
+    post_budget: float
+    target_budget: float
 
 
 def finite_float(value: Any, default: float = float("nan")) -> float:
@@ -56,6 +70,93 @@ def _source_only_phase(row: Mapping[str, Any]) -> bool:
     return _truthy(row.get("source_only", False))
 
 
+def assess_endpoint_artifact(manifest: Any) -> ControlDecision:
+    """Validate the versioned endpoint boundary shared by export/eval/runtime."""
+
+    reasons: list[str] = []
+    package = manifest if isinstance(manifest, Mapping) and "endpoint_accept_v1" in manifest else None
+    obj: Mapping[str, Any] = {}
+    if package is None:
+        reasons.append("endpoint_artifact_unverified_manifest_only")
+        obj = manifest if isinstance(manifest, Mapping) else {}
+    else:
+        try:
+            from cvsrffi.phase2_prototypes import verify_endpoint_accept_v1_manifest
+
+            obj = verify_endpoint_accept_v1_manifest(package)
+        except Exception:
+            reasons.append("endpoint_artifact_package_verification_failed")
+            candidate = package.get("endpoint_accept_v1", {})
+            obj = candidate if isinstance(candidate, Mapping) else {}
+    if not obj:
+        reasons.append("endpoint_artifact_missing")
+    if str(obj.get("policy_id", "")).strip() != "endpoint_accept_v1":
+        reasons.append("endpoint_artifact_policy_mismatch")
+    if int(finite_float(obj.get("schema_version"), 0.0)) != 1:
+        reasons.append("endpoint_artifact_schema_mismatch")
+    boundary_version = str(obj.get("boundary_version", "")).strip()
+    boundary_hash = str(obj.get("boundary_hash", "")).strip()
+    if boundary_version != "endpoint_accept_v1.1":
+        reasons.append("endpoint_boundary_version_unsupported")
+    if not boundary_hash:
+        reasons.append("endpoint_boundary_hash_missing")
+    if str(obj.get("threshold_source", "")).strip() != "source_val_only":
+        reasons.append("endpoint_artifact_threshold_source_invalid")
+    if str(obj.get("calibration_split", "")).strip() != "source_val":
+        reasons.append("endpoint_artifact_calibration_split_invalid")
+    if not _truthy(obj.get("fail_closed", False)):
+        reasons.append("endpoint_artifact_not_fail_closed")
+    if _truthy(obj.get("loss_gate_exported", False)):
+        reasons.append("endpoint_artifact_exports_loss_gate")
+    if str(obj.get("accept_policy", "")).strip() != "local_component":
+        reasons.append("endpoint_artifact_accept_policy_invalid")
+    if _truthy(obj.get("global_ball_accept", False)):
+        reasons.append("endpoint_artifact_global_ball_accept_forbidden")
+    if str(obj.get("component_radius_key", "")).strip() != "r_accept_deg":
+        reasons.append("endpoint_artifact_radius_key_invalid")
+    reason_codes = obj.get("reason_codes", [])
+    if not isinstance(reason_codes, (list, tuple)) or not reason_codes:
+        reasons.append("endpoint_artifact_reason_codes_missing")
+    gate_thresholds = obj.get("gate_thresholds")
+    if not isinstance(gate_thresholds, Mapping) or not gate_thresholds:
+        reasons.append("endpoint_artifact_gate_thresholds_missing")
+    calibration = obj.get("calibration_evidence")
+    if not isinstance(calibration, Mapping):
+        reasons.append("endpoint_artifact_calibration_evidence_missing")
+    else:
+        if str(calibration.get("threshold_source", "")).strip() != "source_val_only":
+            reasons.append("endpoint_artifact_calibration_source_invalid")
+        if str(calibration.get("calibration_split", "")).strip() != "source_val":
+            reasons.append("endpoint_artifact_calibration_split_invalid")
+        if int(finite_float(calibration.get("num_samples"), 0.0)) <= 0:
+            reasons.append("endpoint_artifact_calibration_samples_missing")
+
+    entry_points = obj.get("entry_points", {})
+    required_entries = ("train_export", "offline_eval", "runtime_inference")
+    if not isinstance(entry_points, Mapping):
+        reasons.append("endpoint_entry_parity_missing")
+        entry_points = {}
+    for entry in required_entries:
+        row = entry_points.get(entry, {}) if isinstance(entry_points, Mapping) else {}
+        if not isinstance(row, Mapping):
+            reasons.append(f"endpoint_entry_{entry}_missing")
+            continue
+        if str(row.get("boundary_version", "")).strip() != boundary_version:
+            reasons.append(f"endpoint_entry_{entry}_version_mismatch")
+        if str(row.get("boundary_hash", "")).strip() != boundary_hash:
+            reasons.append(f"endpoint_entry_{entry}_hash_mismatch")
+
+    fired = bool(reasons)
+    return ControlDecision(
+        fired=fired,
+        reason=";".join(reasons),
+        details={
+            "endpoint_artifact_ready": 0.0 if fired else 1.0,
+            "endpoint_entry_parity_pass": 0.0 if fired else 1.0,
+        },
+    )
+
+
 def assess_endpoint_contract(row: Mapping[str, Any]) -> ControlDecision:
     """Fail closed when Phase1 proxy/loss gates are exported as final evidence."""
     reasons: list[str] = []
@@ -70,6 +171,7 @@ def assess_endpoint_contract(row: Mapping[str, Any]) -> ControlDecision:
         "endpoint_reject_rate",
     }
     exports_final_boundary = any(key in row for key in final_keys) or _truthy(row.get("endpoint_accept_boundary_exported", False))
+    artifact_required = _truthy(row.get("endpoint_artifact_required", False)) or exports_final_boundary
     if exports_final_boundary and policy != "endpoint_accept_v1":
         reasons.append("missing_endpoint_accept_v1")
     if _truthy(row.get("loss_gate_exported", False)):
@@ -93,11 +195,27 @@ def assess_endpoint_contract(row: Mapping[str, Any]) -> ControlDecision:
         elif calibration_split != "source_val":
             reasons.append("invalid_endpoint_calibration_split")
 
+    artifact_decision = None
+    if artifact_required:
+        artifact_decision = assess_endpoint_artifact(row.get("endpoint_artifact"))
+        if artifact_decision.fired:
+            reasons.extend(part for part in artifact_decision.reason.split(";") if part)
+
     fired = bool(reasons)
+    artifact_ready = (
+        float(artifact_decision.details.get("endpoint_artifact_ready", 0.0))
+        if artifact_decision is not None
+        else 0.0
+    )
     return ControlDecision(
         fired=fired,
         reason=";".join(reasons),
-        details={"endpoint_contract_pass": 0.0 if fired else 1.0},
+        details={
+            "endpoint_contract_pass": 0.0 if fired else 1.0,
+            "endpoint_config_pass": 0.0 if any(reason.startswith(("missing_endpoint", "invalid_endpoint", "loss_gate")) for reason in reasons) else 1.0,
+            "endpoint_artifact_required": 1.0 if artifact_required else 0.0,
+            "endpoint_artifact_ready": artifact_ready,
+        },
     )
 
 
@@ -119,8 +237,14 @@ class TailSafetyStateMachine:
         self.rollback_windows = 0
         self.rollback_count = 0
         self.safe_best = float("inf")
+        self.reference_best = float("inf")
         self.best_p99 = float("inf")
         self.best_tail_cvar = float("inf")
+        window = max(1, int(self.config.reference_window))
+        self._p95_window = deque(maxlen=window)
+        self._p99_window = deque(maxlen=window)
+        self._cvar_window = deque(maxlen=window)
+        self._proxy_window = deque(maxlen=window)
 
     def update(self, metrics: Mapping[str, Any]) -> TailSafetyDecision:
         cfg = self.config
@@ -128,10 +252,41 @@ class TailSafetyStateMachine:
         p99 = _metric_value(metrics, "train/dm_accept_zid_p99_deg", "dm_accept_zid_p99_deg")
         cvar = _metric_value(metrics, "train/dm_accept_zid_tail_cvar_deg", "dm_accept_zid_tail_cvar_deg")
         proxy = _metric_value(metrics, "train/dm_accept_proxy_vaccept", "dm_accept_proxy_vaccept")
-        if math.isfinite(p99):
-            self.best_p99 = min(self.best_p99, float(p99))
-        if math.isfinite(cvar):
-            self.best_tail_cvar = min(self.best_tail_cvar, float(cvar))
+        values = (p95, p99, cvar, proxy)
+        if not all(math.isfinite(value) for value in values):
+            return TailSafetyDecision(
+                fired=True,
+                reason="tail_reference_insufficient",
+                details={
+                    "tail_reference_ready": 0.0,
+                    "tail_reference_observation_count": float(len(self._p99_window)),
+                },
+                state="INSUFFICIENT",
+                action="NONE",
+                blocks_best=True,
+                blocks_final=True,
+            )
+        self._p95_window.append(float(p95))
+        self._p99_window.append(float(p99))
+        self._cvar_window.append(float(cvar))
+        self._proxy_window.append(float(proxy))
+        if len(self._p99_window) < max(1, int(self.config.reference_window)):
+            return TailSafetyDecision(
+                fired=True,
+                reason="tail_reference_insufficient",
+                details={
+                    "tail_reference_ready": 0.0,
+                    "tail_reference_observation_count": float(len(self._p99_window)),
+                },
+                state="INSUFFICIENT",
+                action="NONE",
+                blocks_best=True,
+                blocks_final=True,
+            )
+        p95 = float(median(self._p95_window))
+        p99 = float(median(self._p99_window))
+        cvar = float(median(self._cvar_window))
+        proxy = float(median(self._proxy_window))
         p99_delta = float("nan")
         if math.isfinite(p99) and math.isfinite(self.best_p99):
             p99_delta = max(0.0, float(p99) - float(self.best_p99))
@@ -156,10 +311,18 @@ class TailSafetyStateMachine:
                     unsafe_parts.append(f"{name}_over")
         finite_ratios = [value for value in ratios.values() if math.isfinite(value)]
         composite = sum(finite_ratios) / len(finite_ratios) if finite_ratios else float("inf")
-        if composite < self.safe_best and len(unsafe_parts) < 2:
+        p99_non_degrading = (not math.isfinite(self.best_p99)) or p99 <= self.best_p99 + 1e-8
+        cvar_non_degrading = (not math.isfinite(self.best_tail_cvar)) or cvar <= self.best_tail_cvar + 1e-8
+        reference_improved = (
+            math.isfinite(composite)
+            and composite < self.reference_best
+            and p99_non_degrading
+            and cvar_non_degrading
+        )
+        if composite < self.safe_best and not unsafe_parts:
             self.safe_best = composite
 
-        unsafe = len(unsafe_parts) >= 2 or not math.isfinite(composite)
+        unsafe = bool(unsafe_parts) or not math.isfinite(composite)
         action = "NONE"
         if unsafe:
             self.bad_windows += 1
@@ -167,10 +330,14 @@ class TailSafetyStateMachine:
                 self.state = "WARNING"
                 action = "WARNING"
             elif self.state == "WARNING" and self.bad_windows >= max(1, int(cfg.warning_patience)) + max(1, int(cfg.rollback_patience)):
-                self.state = "ROLLBACK"
-                self.rollback_count += 1
-                self.rollback_windows = 0
-                action = "ROLLBACK"
+                if self.rollback_count < max(0, int(cfg.max_rollbacks)):
+                    self.state = "ROLLBACK"
+                    self.rollback_count += 1
+                    self.rollback_windows = 0
+                    action = "ROLLBACK"
+                else:
+                    self.state = "STOP"
+                    action = "STOP"
             elif self.state == "ROLLBACK":
                 self.rollback_windows += 1
                 if self.rollback_count >= max(0, int(cfg.max_rollbacks)) and self.rollback_windows >= max(1, int(cfg.rollback_patience)):
@@ -208,6 +375,13 @@ class TailSafetyStateMachine:
         if self.state == "STOP":
             reason = (reason + ";" if reason else "") + "tail_stop_blocks_final"
         details = {
+            "tail_reference_ready": 1.0,
+            "tail_reference_observation_count": float(len(self._p99_window)),
+            "tail_reference_window": float(max(1, int(cfg.reference_window))),
+            "tail_reference_improved": 1.0 if reference_improved else 0.0,
+            "tail_reference_p99_non_degrading": 1.0 if p99_non_degrading else 0.0,
+            "tail_reference_cvar_non_degrading": 1.0 if cvar_non_degrading else 0.0,
+            "tail_reference_best_composite": self.reference_best,
             "tail_safety_composite_v1": composite,
             "tail_safety_bad_windows": float(self.bad_windows),
             "tail_safety_rollbacks": float(self.rollback_count),
@@ -229,9 +403,67 @@ class TailSafetyStateMachine:
             details=details,
             state=self.state,
             action=action,
-            blocks_best=expansion_blocks_best or self.state in {"WARNING", "ROLLBACK", "STOP"},
-            blocks_final=expansion_blocks_final or self.state == "STOP",
+            blocks_best=unsafe or expansion_blocks_best or self.state in {"WARNING", "ROLLBACK", "STOP"},
+            blocks_final=unsafe or expansion_blocks_final or self.state == "STOP",
         )
+
+    def acknowledge_rollback(self) -> None:
+        """Reset transient windows after the trainer restored a reference checkpoint."""
+
+        self.state = "NORMAL"
+        self.bad_windows = 0
+        self.rollback_windows = 0
+        self._p95_window.clear()
+        self._p99_window.clear()
+        self._cvar_window.clear()
+        self._proxy_window.clear()
+
+    def commit_reference(self, decision: TailSafetyDecision) -> None:
+        """Commit one trainer-verified safe checkpoint as the sole expansion reference."""
+
+        details = decision.details
+        composite = finite_float(details.get("tail_safety_composite_v1"))
+        p99 = finite_float(details.get("tail_expansion_p99_current"))
+        cvar = finite_float(details.get("tail_expansion_cvar_current"))
+        if decision.fired or not all(math.isfinite(value) for value in (composite, p99, cvar)):
+            raise ValueError("tail reference must come from one complete, non-fired safety decision")
+        self.reference_best = composite
+        self.best_p99 = p99
+        self.best_tail_cvar = cvar
+
+    def state_dict(self) -> Dict[str, Any]:
+        return {
+            "state": self.state,
+            "bad_windows": self.bad_windows,
+            "rollback_windows": self.rollback_windows,
+            "rollback_count": self.rollback_count,
+            "safe_best": self.safe_best,
+            "reference_best": self.reference_best,
+            "best_p99": self.best_p99,
+            "best_tail_cvar": self.best_tail_cvar,
+            "p95_window": list(self._p95_window),
+            "p99_window": list(self._p99_window),
+            "cvar_window": list(self._cvar_window),
+            "proxy_window": list(self._proxy_window),
+        }
+
+    def load_state_dict(self, state: Mapping[str, Any]) -> None:
+        self.state = str(state.get("state", "NORMAL"))
+        self.bad_windows = int(state.get("bad_windows", 0))
+        self.rollback_windows = int(state.get("rollback_windows", 0))
+        self.rollback_count = int(state.get("rollback_count", 0))
+        self.safe_best = finite_float(state.get("safe_best"), float("inf"))
+        self.reference_best = finite_float(state.get("reference_best"), float("inf"))
+        self.best_p99 = finite_float(state.get("best_p99"), float("inf"))
+        self.best_tail_cvar = finite_float(state.get("best_tail_cvar"), float("inf"))
+        for queue, key in (
+            (self._p95_window, "p95_window"),
+            (self._p99_window, "p99_window"),
+            (self._cvar_window, "cvar_window"),
+            (self._proxy_window, "proxy_window"),
+        ):
+            queue.clear()
+            queue.extend(float(value) for value in state.get(key, []))
 
 
 def _sum_abs(metrics: Mapping[str, Any], keys: Iterable[str]) -> float:
@@ -241,6 +473,46 @@ def _sum_abs(metrics: Mapping[str, Any], keys: Iterable[str]) -> float:
         if math.isfinite(value):
             total += abs(float(value))
     return total
+
+
+def compute_open_set_budget_action(
+    *,
+    os_total: float,
+    closed_total: float,
+    min_budget: float,
+    max_os_scale: float = 4.0,
+    min_closed_scale: float = 0.35,
+) -> OpenSetBudgetAction:
+    """Return bounded scales that make the open-set loss budget actionable."""
+
+    os_value = max(0.0, finite_float(os_total, 0.0))
+    closed_value = max(0.0, finite_float(closed_total, 0.0))
+    target = max(0.0, min(0.95, finite_float(min_budget, 0.0)))
+    denom = os_value + closed_value
+    pre = os_value / denom if denom > 0.0 else 0.0
+    if target <= 0.0 or pre >= target:
+        return OpenSetBudgetAction(False, "", 1.0, 1.0, pre, pre, target)
+    if os_value <= 0.0:
+        return OpenSetBudgetAction(False, "OS_LOSS_IDLE", 1.0, 1.0, pre, pre, target)
+
+    desired_os = (target * closed_value) / max(1e-8, 1.0 - target)
+    os_scale = min(max(1.0, desired_os / os_value), max(1.0, float(max_os_scale)))
+    closed_scale = 1.0
+    scaled_os = os_value * os_scale
+    post = scaled_os / max(1e-8, scaled_os + closed_value)
+    if post < target and closed_value > 0.0:
+        desired_closed = scaled_os * (1.0 - target) / max(1e-8, target)
+        closed_scale = max(max(0.0, min(1.0, float(min_closed_scale))), min(1.0, desired_closed / closed_value))
+        post = scaled_os / max(1e-8, scaled_os + closed_value * closed_scale)
+    return OpenSetBudgetAction(
+        True,
+        "B_os_eff_controller_active",
+        float(os_scale),
+        float(closed_scale),
+        float(pre),
+        float(post),
+        float(target),
+    )
 
 
 def assess_open_set_effective_budget(metrics: Mapping[str, Any], *, min_budget: float = 0.15) -> ControlDecision:
@@ -265,8 +537,17 @@ def assess_open_set_effective_budget(metrics: Mapping[str, Any], *, min_budget: 
         "train/w_loss_u_adv",
         "train/w_loss_u_sat_cons",
     )
-    os_total = _sum_abs(metrics, os_keys)
-    closed_total = _sum_abs(metrics, closed_keys)
+    effective_open_grad = finite_float(metrics.get("train/os_gradient_effective_open_norm"))
+    effective_closed_grad = finite_float(
+        metrics.get("train/os_gradient_effective_closed_norm", metrics.get("train/os_gradient_balanced_closed_norm"))
+    )
+    uses_gradient_budget = math.isfinite(effective_open_grad) and math.isfinite(effective_closed_grad)
+    if uses_gradient_budget:
+        os_total = max(0.0, effective_open_grad)
+        closed_total = max(0.0, effective_closed_grad)
+    else:
+        os_total = _sum_abs(metrics, os_keys)
+        closed_total = _sum_abs(metrics, closed_keys)
     denom = os_total + closed_total
     budget = os_total / denom if denom > 0.0 else 0.0
     fired = budget < max(0.0, float(min_budget))
@@ -274,7 +555,12 @@ def assess_open_set_effective_budget(metrics: Mapping[str, Any], *, min_budget: 
     return ControlDecision(
         fired=fired,
         reason=reason,
-        details={"B_os_eff": budget, "B_os_total": os_total, "B_closed_total": closed_total},
+        details={
+            "B_os_eff": budget,
+            "B_os_total": os_total,
+            "B_closed_total": closed_total,
+            "B_os_uses_gradient_norm": 1.0 if uses_gradient_budget else 0.0,
+        },
     )
 
 
@@ -283,6 +569,14 @@ def assess_unlabeled_tri_state(
     *,
     required: bool,
     min_selected: int = 16,
+    min_core_rate: float = 0.05,
+    max_core_rate: float = 0.95,
+    min_ambiguous_rate: float = 0.01,
+    max_outside_rate: float = 0.80,
+    min_class_coverage: int = 2,
+    min_domain_coverage: int = 2,
+    max_pair_disagreement_rate: float = 0.25,
+    min_pseudo_component_agreement: float = 0.80,
 ) -> ControlDecision:
     if not required:
         return ControlDecision(False, "", {"promotable": 1.0})
@@ -315,6 +609,34 @@ def assess_unlabeled_tri_state(
         reasons.append("US_TRI_STATE_QUERY_COUNT_MISSING")
     elif abs(count_sum - query_count) > max(1e-6, 0.01 * query_count):
         reasons.append("US_TRI_STATE_COUNT_MISMATCH")
+    core_rate = counts[0] / query_count if math.isfinite(query_count) and query_count > 0.0 else float("nan")
+    ambiguous_rate = counts[1] / query_count if math.isfinite(query_count) and query_count > 0.0 else float("nan")
+    outside_rate = counts[2] / query_count if math.isfinite(query_count) and query_count > 0.0 else float("nan")
+    class_coverage = finite_float(metrics.get("train/u_tri_class_coverage"), float("nan"))
+    domain_coverage = finite_float(metrics.get("train/u_tri_domain_coverage"), float("nan"))
+    pair_disagreement = finite_float(metrics.get("train/u_tri_pair_disagreement_rate"), float("nan"))
+    pseudo_component_agreement = finite_float(
+        metrics.get("train/u_tri_pseudo_component_agreement_rate"), float("nan")
+    )
+    if not math.isfinite(core_rate) or core_rate < float(min_core_rate):
+        reasons.append("US_TRI_STATE_CORE_COLLAPSE")
+    if math.isfinite(core_rate) and core_rate > float(max_core_rate):
+        reasons.append("US_TRI_STATE_ALL_CORE_DEGENERATE")
+    if not math.isfinite(ambiguous_rate) or ambiguous_rate < float(min_ambiguous_rate):
+        reasons.append("US_TRI_STATE_NO_AMBIGUOUS_QUARANTINE")
+    if not math.isfinite(outside_rate) or outside_rate > float(max_outside_rate):
+        reasons.append("US_TRI_STATE_OUTSIDE_COLLAPSE")
+    if not math.isfinite(class_coverage) or class_coverage < float(max(1, int(min_class_coverage))):
+        reasons.append("US_TRI_STATE_CLASS_COVERAGE_LOW")
+    if not math.isfinite(domain_coverage) or domain_coverage < float(max(1, int(min_domain_coverage))):
+        reasons.append("US_TRI_STATE_DOMAIN_COVERAGE_LOW")
+    if not math.isfinite(pair_disagreement) or pair_disagreement > float(max_pair_disagreement_rate):
+        reasons.append("US_TRI_STATE_CLEAN_SAT_PAIR_INCONSISTENT")
+    if (
+        not math.isfinite(pseudo_component_agreement)
+        or pseudo_component_agreement < float(min_pseudo_component_agreement)
+    ):
+        reasons.append("US_TRI_STATE_PSEUDO_COMPONENT_MISMATCH")
     fired = bool(reasons)
     return ControlDecision(
         fired=fired,
@@ -331,6 +653,13 @@ def assess_unlabeled_tri_state(
             "u_tri_trusted_core_count": counts[0] if len(counts) > 0 else 0.0,
             "u_tri_ambiguous_tail_count": counts[1] if len(counts) > 1 else 0.0,
             "u_tri_outside_reject_count": counts[2] if len(counts) > 2 else 0.0,
+            "u_tri_trusted_core_rate": core_rate,
+            "u_tri_ambiguous_tail_rate": ambiguous_rate,
+            "u_tri_outside_reject_rate": outside_rate,
+            "u_tri_class_coverage": class_coverage,
+            "u_tri_domain_coverage": domain_coverage,
+            "u_tri_pair_disagreement_rate": pair_disagreement,
+            "u_tri_pseudo_component_agreement_rate": pseudo_component_agreement,
         },
     )
 

@@ -1,5 +1,8 @@
+import json
+import math
 from dataclasses import dataclass
-from typing import Any, Dict, Optional
+from pathlib import Path
+from typing import Any, Dict, Mapping, Optional
 
 import torch
 
@@ -9,6 +12,8 @@ from cvsrffi.component_geometry import angular_distance_deg
 @dataclass
 class GateThresholds:
     energy_max_by_class: Optional[dict[int, float]] = None
+    energy_temperature: float = 1.0
+    energy_formula_id: str = "negative_logsumexp_temperature_v1"
     logit_margin_core_min: float = 0.0
     logit_margin_tail_min: float = 0.0
     geo_margin_core_min_deg: float = 2.0
@@ -19,6 +24,30 @@ class GateThresholds:
     use_energy_gate: bool = True
     use_geo_margin_gate: bool = True
     reject_nan: bool = True
+    max_radius_to_inter_ratio: float = 0.50
+
+    @classmethod
+    def from_mapping(cls, values: Mapping[str, Any]):
+        energy_obj = values.get("energy_max_by_class")
+        energy = None
+        if isinstance(energy_obj, Mapping):
+            energy = {int(key): float(value) for key, value in energy_obj.items()}
+        return cls(
+            energy_max_by_class=energy,
+            energy_temperature=float(values.get("energy_temperature", 1.0)),
+            energy_formula_id=str(values.get("energy_formula_id", "")),
+            logit_margin_core_min=float(values.get("logit_margin_core_min", 0.0)),
+            logit_margin_tail_min=float(values.get("logit_margin_tail_min", 0.0)),
+            geo_margin_core_min_deg=float(values.get("geo_margin_core_min_deg", 2.0)),
+            geo_margin_tail_min_deg=float(values.get("geo_margin_tail_min_deg", 4.0)),
+            allow_tail_auto_accept=bool(values.get("allow_tail_auto_accept", False)),
+            use_density_gate=bool(values.get("use_density_gate", True)),
+            use_nll_gate=bool(values.get("use_nll_gate", True)),
+            use_energy_gate=bool(values.get("use_energy_gate", True)),
+            use_geo_margin_gate=bool(values.get("use_geo_margin_gate", True)),
+            reject_nan=bool(values.get("reject_nan", True)),
+            max_radius_to_inter_ratio=float(values.get("max_radius_to_inter_ratio", float("nan"))),
+        )
 
 
 def energy_from_logits(logits: torch.Tensor, temperature: float = 1.0) -> torch.Tensor:
@@ -26,26 +55,157 @@ def energy_from_logits(logits: torch.Tensor, temperature: float = 1.0) -> torch.
 
 
 class LocalComponentHardGate:
+    policy_id = "endpoint_accept_v1"
+
     def __init__(self, bank, thresholds: GateThresholds):
+        manifest = getattr(bank, "endpoint_manifest", None)
+        if not isinstance(manifest, Mapping):
+            raise ValueError("LocalComponentHardGate requires a verified endpoint_accept_v1 artifact")
+        artifact_thresholds = GateThresholds.from_mapping(manifest.get("gate_thresholds", {}))
+        if thresholds != artifact_thresholds:
+            raise ValueError("LocalComponentHardGate thresholds differ from the verified artifact")
         self.bank = bank
         self.th = thresholds
+        self.boundary_version = str(manifest.get("boundary_version", ""))
+        self.boundary_hash = str(manifest.get("boundary_hash", ""))
+
+    @classmethod
+    def from_phase1_package(
+        cls,
+        path_or_dict,
+        thresholds: Optional[GateThresholds] = None,
+        *,
+        entry_point: str = "runtime_inference",
+        runtime_identity: Optional[Mapping[str, Any]] = None,
+    ):
+        from cvsrffi.prototype_bank import VacuumGaussianPrototypeBank
+        from cvsrffi.phase2_prototypes import verify_endpoint_accept_v1_manifest
+
+        if isinstance(path_or_dict, (str, Path)):
+            path = Path(path_or_dict)
+            if path.suffix.lower() == ".json":
+                with path.open("r", encoding="utf-8") as handle:
+                    package = json.load(handle)
+            else:
+                package = torch.load(path, map_location="cpu")
+        else:
+            package = dict(path_or_dict)
+        manifest = verify_endpoint_accept_v1_manifest(package)
+        if entry_point not in {"train_export", "offline_eval", "runtime_inference"}:
+            raise ValueError(f"unsupported endpoint_accept_v1 entry point: {entry_point}")
+        entry = manifest.get("entry_points", {}).get(entry_point, {})
+        if str(entry.get("boundary_hash", "")) != str(manifest.get("boundary_hash", "")):
+            raise ValueError(f"endpoint_accept_v1 entry-point hash mismatch: {entry_point}")
+        if entry_point in {"offline_eval", "runtime_inference"}:
+            if not isinstance(runtime_identity, Mapping):
+                raise ValueError(f"endpoint_accept_v1 {entry_point} requires actual runtime identity")
+            artifact_identity = manifest.get("inference_identity", {})
+            required_identity_keys = (
+                "feature_key",
+                "feature_dim",
+                "source_checkpoint_sha256",
+                "class_id_to_tx",
+                "logit_class_order",
+                "classification_head_contract",
+                "checkpoint_load_strict",
+            )
+            mismatched = [
+                key for key in required_identity_keys
+                if runtime_identity.get(key) != artifact_identity.get(key)
+            ]
+            if mismatched:
+                raise ValueError(
+                    f"endpoint_accept_v1 {entry_point} runtime identity mismatch: {','.join(mismatched)}"
+                )
+        artifact_thresholds = GateThresholds.from_mapping(manifest.get("gate_thresholds", {}))
+        if thresholds is not None and thresholds != artifact_thresholds:
+            raise ValueError("endpoint_accept_v1 runtime thresholds differ from the versioned artifact")
+
+        bank = VacuumGaussianPrototypeBank.from_phase2_package(
+            package,
+            require_endpoint_manifest=True,
+        )
+        return cls(bank, artifact_thresholds)
+
+    @classmethod
+    def from_train_export(cls, path_or_dict):
+        return cls.from_phase1_package(path_or_dict, entry_point="train_export")
+
+    @classmethod
+    def from_offline_eval(cls, path_or_dict, *, runtime_identity: Mapping[str, Any]):
+        return cls.from_phase1_package(
+            path_or_dict, entry_point="offline_eval", runtime_identity=runtime_identity
+        )
+
+    @classmethod
+    def from_runtime_inference(cls, path_or_dict, *, runtime_identity: Mapping[str, Any]):
+        return cls.from_phase1_package(
+            path_or_dict, entry_point="runtime_inference", runtime_identity=runtime_identity
+        )
+
+    @classmethod
+    def for_diagnostic_unverified(cls, bank, thresholds: GateThresholds):
+        """Build a non-exportable Phase1 proxy gate for legacy diagnostic scripts only."""
+
+        gate = cls.__new__(cls)
+        gate.bank = bank
+        gate.th = thresholds
+        gate.policy_id = "diagnostic_dynamic_gate_v0"
+        gate.boundary_version = "unversioned_non_exportable"
+        gate.boundary_hash = ""
+        return gate
 
     def decide(self, z: torch.Tensor, logits: Optional[torch.Tensor] = None, energy: Optional[float] = None) -> Dict[str, Any]:
-        z = z.detach().float().view(-1)
+        identity_debug = {
+            "endpoint_policy_id": self.policy_id,
+            "endpoint_boundary_version": self.boundary_version,
+            "endpoint_boundary_hash": self.boundary_hash,
+            "gates": {},
+            "radius_region": "nan",
+        }
+        if not torch.is_tensor(z) or z.dim() != 1 or int(z.numel()) != int(self.bank.feature_dim):
+            identity_debug["feature_shape"] = tuple(z.shape) if torch.is_tensor(z) else None
+            identity_debug["expected_feature_dim"] = int(self.bank.feature_dim)
+            return {"decision": "REJECT_INVALID_FEATURE", "debug": identity_debug}
+        z = z.detach().float()
         if self.th.reject_nan and (not torch.isfinite(z).all()):
-            return {"decision": "REJECT_NAN", "debug": {"gates": {}, "radius_region": "nan"}}
+            return {"decision": "REJECT_NAN", "debug": identity_debug}
         if logits is None:
-            raise ValueError("LocalComponentHardGate.decide requires logits for class selection")
-        logits = logits.detach().float().view(-1)
+            return {"decision": "REJECT_INVALID_LOGITS", "debug": identity_debug}
+        if not torch.is_tensor(logits) or logits.dim() != 1:
+            identity_debug["logit_shape"] = tuple(logits.shape) if torch.is_tensor(logits) else None
+            return {"decision": "REJECT_INVALID_LOGITS", "debug": identity_debug}
+        logits = logits.detach().float()
         if self.th.reject_nan and (not torch.isfinite(logits).all()):
-            return {"decision": "REJECT_NAN", "debug": {"gates": {}, "radius_region": "nan"}}
+            return {"decision": "REJECT_NAN", "debug": identity_debug}
+        expected_classes = len(getattr(self.bank, "classes", {}))
+        if logits.numel() < 2 or logits.numel() != expected_classes:
+            identity_debug["logit_count"] = int(logits.numel())
+            identity_debug["expected_class_count"] = int(expected_classes)
+            return {"decision": "REJECT_INVALID_LOGITS", "debug": identity_debug}
 
         top = torch.topk(logits, k=min(2, logits.numel()))
         pred = int(top.indices[0].item())
         second = int(top.indices[1].item()) if top.indices.numel() > 1 else None
         margin = float((top.values[0] - top.values[1]).item()) if top.values.numel() > 1 else float("inf")
-        energy_val = float(energy) if energy is not None else float(energy_from_logits(logits.view(1, -1)).item())
+        computed_energy = float(
+            energy_from_logits(logits.view(1, -1), temperature=float(self.th.energy_temperature)).item()
+        )
+        if not math.isfinite(computed_energy):
+            return {"decision": "REJECT_NAN", "debug": identity_debug}
+        if energy is not None:
+            supplied_energy = float(energy)
+            if not math.isfinite(supplied_energy):
+                return {"decision": "REJECT_NAN", "debug": identity_debug}
+            if abs(supplied_energy - computed_energy) > 1e-5 * max(1.0, abs(computed_energy)):
+                identity_debug["computed_energy"] = computed_energy
+                identity_debug["supplied_energy"] = supplied_energy
+                return {"decision": "REJECT_ENERGY_MISMATCH", "debug": identity_debug}
+        energy_val = computed_energy
         debug: Dict[str, Any] = {
+            "endpoint_policy_id": self.policy_id,
+            "endpoint_boundary_version": self.boundary_version,
+            "endpoint_boundary_hash": self.boundary_hash,
             "pred_class": pred,
             "second_class": second,
             "component_id": None,
@@ -85,8 +245,8 @@ class LocalComponentHardGate:
             debug["d_other_deg"] = d_other
             debug["geo_margin_deg"] = geo_margin
         except KeyError:
-            geo_margin = None
-            debug["gates"]["geo_margin"] = "skipped"
+            debug["gates"]["geo_margin"] = False
+            return {"decision": "REJECT_LOW_GEO_MARGIN", "class_id": pred, "debug": debug}
 
         if d_own <= float(own.r_core_deg):
             region = "core"
@@ -141,4 +301,3 @@ class LocalComponentHardGate:
             energy = float(energy_batch[i].item()) if energy_batch is not None else None
             rows.append(self.decide(z_batch[i], logits=logits, energy=energy))
         return rows
-

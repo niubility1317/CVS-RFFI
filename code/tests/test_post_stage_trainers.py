@@ -55,9 +55,9 @@ class PostStageTrainerEntrypointsTest(unittest.TestCase):
                 "--split_mode",
                 "tx_rx_day_1_7_2",
                 "--labeled_ratio",
-                "0.10",
+                "0.08",
                 "--unlabeled_ratio",
-                "0.70",
+                "0.72",
                 "--source_val_ratio",
                 "0.20",
                 "--pseudo_threshold_mode",
@@ -213,6 +213,8 @@ class PostStageTrainerEntrypointsTest(unittest.TestCase):
         self.assertEqual(train_ssdg._best_score(val, test, sat, "test_overall_tx"), 73.0)
         self.assertEqual(train_ssdg._best_score(val, test, sat, "sat_mean_tx"), 61.0)
         self.assertEqual(train_ssdg._best_score(val, test, sat, "sat_worst_tx"), 58.0)
+        expected_hmean = 2.0 * 91.0 * 58.0 / (91.0 + 58.0)
+        self.assertAlmostEqual(train_ssdg._best_score(val, test, sat, "source_val_sat_hmean"), expected_hmean)
 
     def test_train_ssdg_dry_run_does_not_require_dataset_or_model_context(self):
         from SSDG import train_ssdg
@@ -229,7 +231,7 @@ class PostStageTrainerEntrypointsTest(unittest.TestCase):
             self.assertEqual(train_ssdg.train(args), 0)
 
     def test_train_ssdg_sat_consistency_weight_is_part_of_training_loss(self):
-        text = pathlib.Path("SSDG/train_ssdg.py").read_text()
+        text = (pathlib.Path(__file__).resolve().parents[1] / "SSDG" / "train_ssdg.py").read_text(encoding="utf-8")
 
         self.assertIn("loss_sat_cons_l", text)
         self.assertIn('cur_w["sat_cons"] * loss_sat_cons_l', text)
@@ -248,9 +250,9 @@ class PostStageTrainerEntrypointsTest(unittest.TestCase):
         self.assertEqual(args.baseline_ckpt, "")
         self.assertTrue(args.from_scratch)
         self.assertEqual(args.split_mode, "tx_rx_day_1_6_3")
-        self.assertEqual(args.labeled_ratio, 0.10)
-        self.assertEqual(args.unlabeled_ratio, 0.60)
-        self.assertEqual(args.source_val_ratio, 0.30)
+        self.assertEqual(args.labeled_ratio, 0.08)
+        self.assertEqual(args.unlabeled_ratio, 0.72)
+        self.assertEqual(args.source_val_ratio, 0.20)
         self.assertEqual(args.label_epochs, 170)
         self.assertEqual(args.pseudo_epochs, 100)
         self.assertAlmostEqual(args.lr, 2e-4)
@@ -336,7 +338,7 @@ class PostStageTrainerEntrypointsTest(unittest.TestCase):
         self.assertIn("[TEST]  overall_tx=66.00% (66/100)", block)
         self.assertIn("[TEST-SPLIT]", block)
         self.assertIn("[SAT-TEST] scenario=clear_leo", block)
-        self.assertIn("[BEST-JOINT]  val_tx=89.00% & test_tx=67.00% @ E150", block)
+        self.assertIn("[BEST-SOURCE-VAL] val_tx=89.00% @ E150 heldout_test=67.00%", block)
         self.assertIn("[EPOCH-END] E171/270", block)
 
     def test_train_ssdg_pseudo_stats_count_selected_and_correct_labels(self):
@@ -383,17 +385,32 @@ class PostStageTrainerEntrypointsTest(unittest.TestCase):
 
         labeled, unlabeled, val = train_ssdg.split_tx_rx_day_1_7_2(
             dataset,
-            labeled_ratio=0.10,
-            unlabeled_ratio=0.70,
+            labeled_ratio=0.08,
+            unlabeled_ratio=0.72,
             source_val_ratio=0.20,
         )
 
-        self.assertEqual(len(labeled), 8)
-        self.assertEqual(len(unlabeled), 56)
+        self.assertEqual(len(labeled), 6)
+        self.assertEqual(len(unlabeled), 58)
         self.assertEqual(len(val), 16)
         self.assertEqual(set(labeled).intersection(unlabeled), set())
         self.assertEqual(set(labeled).intersection(val), set())
         self.assertEqual(set(unlabeled).intersection(val), set())
+        self.assertEqual({dataset.index[idx].tx_i for idx in labeled}, {0, 1})
+
+    def test_ssdg_split_rejects_rho_label_above_protocol_limit(self):
+        from SSDG import train_ssdg
+
+        dataset = SimpleNamespace(
+            index=[SimpleNamespace(tx_i=0, rx_i=0, day_i=0, eq_i=0, sig_i=i) for i in range(20)]
+        )
+        with self.assertRaisesRegex(ValueError, "rho_label"):
+            train_ssdg.split_tx_rx_day_1_7_2(
+                dataset,
+                labeled_ratio=0.10,
+                unlabeled_ratio=0.70,
+                source_val_ratio=0.20,
+            )
 
     def test_ssdg_temporal_gate_requires_neighbor_agreement_in_same_stream(self):
         from SSDG import train_ssdg

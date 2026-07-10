@@ -58,14 +58,40 @@ class ComponentStats:
 
 
 class VacuumGaussianPrototypeBank:
-    def __init__(self, classes: Mapping[int, Iterable[ComponentStats]], *, feature_key: str = "z_id"):
+    def __init__(
+        self,
+        classes: Mapping[int, Iterable[ComponentStats]],
+        *,
+        feature_key: str = "z_id",
+        endpoint_manifest: Optional[Mapping[str, Any]] = None,
+    ):
         self.feature_key = str(feature_key or "z_id")
+        self.endpoint_manifest = dict(endpoint_manifest) if isinstance(endpoint_manifest, Mapping) else None
         self.classes: Dict[int, list[ComponentStats]] = {
             int(k): [c for c in comps if bool(c.enabled)] for k, comps in classes.items()
         }
+        dims = {int(comp.mu.numel()) for comps in self.classes.values() for comp in comps}
+        if len(dims) != 1:
+            raise ValueError(f"prototype bank component feature dimensions are inconsistent: {sorted(dims)}")
+        self.feature_dim = next(iter(dims))
+        self.class_order = sorted(self.classes)
+        if self.class_order != list(range(len(self.class_order))):
+            raise ValueError("prototype bank classes must be contiguous and zero-based")
+        if self.endpoint_manifest is not None:
+            identity = self.endpoint_manifest.get("inference_identity", {})
+            if int(identity.get("feature_dim", 0) or 0) != int(self.feature_dim):
+                raise ValueError("prototype bank feature dimension differs from endpoint identity")
+            if list(identity.get("logit_class_order", [])) != self.class_order:
+                raise ValueError("prototype bank class order differs from endpoint identity")
 
     @classmethod
-    def from_phase2_package(cls, path_or_dict: str | Path | Mapping[str, Any], feature_key: str = "z_id"):
+    def from_phase2_package(
+        cls,
+        path_or_dict: str | Path | Mapping[str, Any],
+        feature_key: str = "z_id",
+        *,
+        require_endpoint_manifest: bool = False,
+    ):
         if isinstance(path_or_dict, (str, Path)):
             path = Path(path_or_dict)
             if path.suffix.lower() == ".json":
@@ -75,10 +101,23 @@ class VacuumGaussianPrototypeBank:
                 package = torch.load(path, map_location="cpu")
         else:
             package = dict(path_or_dict)
+        endpoint_manifest = None
+        if require_endpoint_manifest:
+            from cvsrffi.phase2_prototypes import verify_endpoint_accept_v1_manifest
+
+            endpoint_manifest = verify_endpoint_accept_v1_manifest(package)
         feature = str(package.get("feature_key", feature_key) or feature_key)
         if "fusion_components" in package:
-            return cls(_components_from_fusion_package(package), feature_key=feature)
-        return cls(_components_from_legacy_package(package), feature_key=feature)
+            return cls(
+                _components_from_fusion_package(package),
+                feature_key=feature,
+                endpoint_manifest=endpoint_manifest,
+            )
+        return cls(
+            _components_from_legacy_package(package),
+            feature_key=feature,
+            endpoint_manifest=endpoint_manifest,
+        )
 
     def iter_components(self) -> Iterable[ComponentStats]:
         for comps in self.classes.values():
@@ -111,14 +150,14 @@ class VacuumGaussianPrototypeBank:
             return None
         d = float(angular_distance_deg(z, component.mu).item())
         scale = max(1e-6, float(component.r_accept_deg))
-        return d / scale
+        return 0.5 * (d / scale) ** 2
 
     def knn_density(self, z: torch.Tensor, component: ComponentStats) -> Optional[float]:
         if component.density_core_min is None and component.density_tail_min is None:
             return None
         d = float(angular_distance_deg(z, component.mu).item())
         scale = max(1e-6, float(component.r_accept_deg))
-        return math.exp(-(d / scale))
+        return math.exp(-((d / scale) ** 2))
 
     def to_json_dict(self) -> Dict[str, Any]:
         classes = {}

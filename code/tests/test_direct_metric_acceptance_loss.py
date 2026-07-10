@@ -10,7 +10,12 @@ CODE_ROOT = PROJECT_ROOT / "code"
 if str(CODE_ROOT) not in sys.path:
     sys.path.insert(0, str(CODE_ROOT))
 
-from cvsrffi.losses import direct_metric_acceptance_loss  # noqa: E402
+from cvsrffi.losses import (  # noqa: E402
+    direct_metric_acceptance_loss,
+    multiview_direct_metric_acceptance_loss,
+    multiview_source_episode_three_sigma_loss,
+    source_episode_three_sigma_loss,
+)
 
 
 def test_direct_metric_acceptance_loss_reports_targets_and_backpropagates():
@@ -177,3 +182,134 @@ def test_direct_metric_acceptance_loss_reports_stable_geometry_contract():
     assert torch.isfinite(loss)
     assert features.grad is not None
     assert torch.isfinite(features.grad).all()
+
+
+def test_bridge_acceptance_term_has_nonzero_gradient_when_virtual_geometry_is_trainable():
+    features = torch.tensor(
+        [[1.0, 0.0], [0.98, 0.10], [0.0, 1.0], [0.10, 0.98]],
+        dtype=torch.float32,
+        requires_grad=True,
+    )
+    labels = torch.tensor([0, 0, 1, 1])
+
+    loss, metrics = direct_metric_acceptance_loss(
+        features,
+        labels,
+        virtual_count=6,
+        virtual_mode="hard",
+        virtual_detach=False,
+        zid_quantile_weight=0.0,
+        source_overflow_weight=0.0,
+        proxy_vaccept_weight=0.0,
+        bridge_accept_weight=1.0,
+        low_density_accept_weight=0.0,
+        tail_accept_weight=0.0,
+        overflow_accept_weight=0.0,
+        radius_inter_ratio_weight=0.0,
+        core_accept_weight=0.0,
+        bridge_accept_target=0.0,
+    )
+    loss.backward()
+
+    assert metrics["bridge_accept_loss"] > 0.0
+    assert metrics["geometry_reference_detached"] == 0.0
+    assert features.grad is not None
+    assert float(features.grad.norm().item()) > 0.0
+
+
+def test_receiver_local_component_terms_backpropagate_without_leave_domain_episode():
+    features = torch.tensor(
+        [[1.0, 0.0], [0.98, 0.10], [0.0, 1.0], [0.10, 0.98]],
+        dtype=torch.float32,
+        requires_grad=True,
+    )
+    labels = torch.tensor([0, 0, 1, 1])
+    domains = torch.zeros(4, dtype=torch.long)
+
+    loss, metrics = source_episode_three_sigma_loss(
+        features,
+        labels,
+        domains,
+        min_domains=2,
+        min_samples_per_class_domain=2,
+        local_component_compact_weight=1.0,
+        local_component_inter_weight=1.0,
+        local_component_accept_weight=1.0,
+        local_component_density_weight=1.0,
+        local_component_inter_margin_rad=math.radians(80.0),
+    )
+    loss.backward()
+
+    assert metrics["source_episode_receiver_local_component_count"] == 2.0
+    assert metrics["source_episode_local_component_structural_active"] == 1.0
+    assert torch.isfinite(loss)
+    assert features.grad is not None
+    assert float(features.grad.norm().item()) > 0.0
+
+
+def test_multiview_direct_metric_optimizes_clean_and_satellite_geometry_separately():
+    clean = torch.tensor(
+        [[1.0, 0.0], [0.98, 0.10], [0.0, 1.0], [0.10, 0.98]],
+        dtype=torch.float32,
+        requires_grad=True,
+    )
+    satellite = torch.tensor(
+        [[0.94, 0.34], [0.90, 0.43], [0.34, 0.94], [0.43, 0.90]],
+        dtype=torch.float32,
+        requires_grad=True,
+    )
+    labels = torch.tensor([0, 0, 1, 1])
+    domains = torch.tensor([0, 1, 0, 1])
+
+    loss, metrics = multiview_direct_metric_acceptance_loss(
+        clean,
+        satellite,
+        labels,
+        domains,
+        virtual_count=6,
+        virtual_detach=False,
+        pair_weight=1.0,
+        sat_pair_target_rad=math.radians(5.0),
+    )
+    loss.backward()
+
+    assert metrics["multiview_separate_geometry"] == 1.0
+    assert metrics["clean_active"] == 1.0
+    assert metrics["sat_active"] == 1.0
+    assert metrics["sat_zid_p95_deg"] != metrics["clean_zid_p95_deg"]
+    assert metrics["sat_pair_angle_p95_deg"] > 5.0
+    assert clean.grad is not None and satellite.grad is not None
+    assert float(clean.grad.norm().item()) > 0.0
+    assert float(satellite.grad.norm().item()) > 0.0
+
+
+def test_multiview_source_episode_does_not_pool_satellite_tail_into_clean_components():
+    clean = torch.tensor(
+        [[1.0, 0.0], [0.99, 0.03], [0.0, 1.0], [0.03, 0.99]],
+        dtype=torch.float32,
+        requires_grad=True,
+    )
+    satellite = torch.tensor(
+        [[0.94, 0.34], [0.90, 0.43], [0.34, 0.94], [0.43, 0.90]],
+        dtype=torch.float32,
+        requires_grad=True,
+    )
+    labels = torch.tensor([0, 0, 1, 1])
+    domains = torch.tensor([0, 1, 0, 1])
+
+    loss, metrics = multiview_source_episode_three_sigma_loss(
+        clean,
+        satellite,
+        labels,
+        domains,
+        min_domains=2,
+        local_component_compact_weight=1.0,
+        local_component_accept_weight=1.0,
+        local_component_density_weight=1.0,
+    )
+    loss.backward()
+
+    assert metrics["source_episode_multiview_separate_geometry"] == 1.0
+    assert "clean_source_episode_zid_p99_deg" in metrics
+    assert "sat_source_episode_zid_p99_deg" in metrics
+    assert clean.grad is not None and satellite.grad is not None

@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import sys
 from pathlib import Path
@@ -12,6 +13,14 @@ from typing import Any, Sequence
 import numpy as np
 import torch
 from torch.utils.data import DataLoader
+
+
+def _sha256_file(path: Path) -> str:
+    digest = hashlib.sha256()
+    with path.open("rb") as handle:
+        for chunk in iter(lambda: handle.read(1024 * 1024), b""):
+            digest.update(chunk)
+    return digest.hexdigest()
 
 CODE_ROOT = Path(__file__).resolve().parent
 REPO_ROOT = CODE_ROOT.parent
@@ -936,7 +945,13 @@ def main() -> int:
         }
     manifest = {
         "feature_name": str(args.feature_name),
+        "feature_key": str(args.feature_name),
         "checkpoint": str(args.ckpt),
+        "source_checkpoint_sha256": _sha256_file(args.ckpt),
+        "class_id_to_tx": list(source_info["tx_labels"]),
+        "logit_class_order": list(range(len(source_info["tx_labels"]))),
+        "classification_head_contract": "dual_cvsincnet_tx_logits_v1",
+        "checkpoint_load_strict": not missing and not unexpected and not skipped_mismatch,
         "target_new_channel_view": "disabled" if old_unknown_only else target_new_view,
         "target_unknown_channel_view": target_unknown_view,
         "target_channel_view": "satellite/LEO" if target_unknown_view == "satellite" else "clean",

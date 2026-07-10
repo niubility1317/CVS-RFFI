@@ -396,7 +396,7 @@ def open_world_feature_space_loss(
     vacuum_weight: float = 0.0,
     vacuum_width_rad: float = math.radians(4.0),
     vacuum_hard_k: int = 2,
-) -> Tuple[torch.Tensor, Dict[str, float]]:
+) -> Tuple[torch.Tensor, Dict[str, Any]]:
     """Batch-level angular geometry loss for open-world identity embeddings.
 
     The loss is intentionally stateless: it optimizes the selected identity
@@ -1851,11 +1851,12 @@ def direct_metric_acceptance_loss(
     tail_accept_loss = _accept_loss(tail_prob, float(tail_accept_target))
     overflow_accept_loss = _accept_loss(overflow_prob, float(overflow_accept_target))
 
+    virtual_geometry_basis = proto_ref if bool(virtual_detach) else proto
     virtual_parts = _make_proxy_virtual_unknown_pool(
         sample_z,
         sample_labels,
         center_labels,
-        proto_ref,
+        virtual_geometry_basis,
         radius_vec_t,
         count=max(0, int(virtual_count)),
         mode=str(virtual_mode or "hard"),
@@ -1995,10 +1996,117 @@ def direct_metric_acceptance_loss(
         "zid_quantile_loss": _scalar_metric(zid_quantile_loss),
         "virtual_count": float(int(virtual_all.size(0))),
         "geometry_stabilized": 1.0,
-        "geometry_reference_detached": 1.0,
+        "geometry_reference_detached": 1.0 if bool(virtual_detach) else 0.0,
         "angle_clamp_eps": float(angle_eps),
         "softplus_clip": float(softplus_clip),
     }
+    return loss, metrics
+
+
+def multiview_direct_metric_acceptance_loss(
+    clean_z: torch.Tensor,
+    sat_z: torch.Tensor,
+    y: torch.Tensor,
+    d: Optional[torch.Tensor] = None,
+    *,
+    clean_weight: float = 1.0,
+    sat_weight: float = 1.0,
+    pair_weight: float = 1.0,
+    sat_pair_target_rad: float = math.radians(10.0),
+    quantile_temperature_rad: float = math.radians(3.0),
+    accept_cvar_alpha: float = 0.25,
+    **kwargs,
+) -> Tuple[torch.Tensor, Dict[str, float]]:
+    """Optimize clean and satellite known geometry without one pooled class ball."""
+
+    if clean_z.dim() != 2 or sat_z.dim() != 2 or clean_z.shape != sat_z.shape:
+        raise ValueError(
+            "multiview_direct_metric_acceptance_loss expects aligned clean/sat [B,D] tensors, "
+            f"got clean={tuple(clean_z.shape)} sat={tuple(sat_z.shape)}"
+        )
+    if y.view(-1).numel() != clean_z.size(0):
+        raise ValueError("multiview labels must have one value per clean/satellite pair")
+
+    base_kwargs = dict(kwargs)
+    base_kwargs.pop("paired_view_count", None)
+    base_kwargs.pop("sat_pair_weight", None)
+    base_kwargs.pop("sat_pair_target_rad", None)
+    base_kwargs["quantile_temperature_rad"] = float(quantile_temperature_rad)
+    base_kwargs["accept_cvar_alpha"] = float(accept_cvar_alpha)
+    clean_loss, clean_metrics = direct_metric_acceptance_loss(
+        clean_z,
+        y,
+        d,
+        paired_view_count=0,
+        sat_pair_weight=0.0,
+        **base_kwargs,
+    )
+    sat_loss, sat_metrics = direct_metric_acceptance_loss(
+        sat_z,
+        y,
+        d,
+        paired_view_count=0,
+        sat_pair_weight=0.0,
+        **base_kwargs,
+    )
+
+    clean_norm = safe_l2_normalize(torch.nan_to_num(clean_z.float(), nan=0.0, posinf=0.0, neginf=0.0), dim=1)
+    sat_norm = safe_l2_normalize(torch.nan_to_num(sat_z.float(), nan=0.0, posinf=0.0, neginf=0.0), dim=1)
+    pair_angles = _safe_angle_from_cos(
+        (clean_norm * sat_norm).sum(dim=1).clamp(-1.0 + 1e-4, 1.0 - 1e-4),
+        eps=1e-4,
+    )
+    tau = max(1e-4, float(quantile_temperature_rad))
+    pair_loss = _top_cvar_mean(
+        _bounded_softplus((pair_angles - float(sat_pair_target_rad)) / tau),
+        max(1e-6, min(1.0, float(accept_cvar_alpha))),
+    )
+    pair_p95 = torch.quantile(pair_angles.detach(), 0.95) if pair_angles.numel() > 1 else pair_angles.detach().mean()
+    loss = (
+        max(0.0, float(clean_weight)) * clean_loss
+        + max(0.0, float(sat_weight)) * sat_loss
+        + max(0.0, float(pair_weight)) * pair_loss
+    )
+
+    def _worst(key: str) -> float:
+        values = []
+        for obj in (clean_metrics, sat_metrics):
+            try:
+                value = float(obj.get(key, float("nan")))
+            except Exception:
+                value = float("nan")
+            if math.isfinite(value):
+                values.append(value)
+        return max(values) if values else float("nan")
+
+    metrics: Dict[str, float] = {
+        "active": min(float(clean_metrics.get("active", 0.0)), float(sat_metrics.get("active", 0.0))),
+        "active_classes": min(
+            float(clean_metrics.get("active_classes", 0.0)),
+            float(sat_metrics.get("active_classes", 0.0)),
+        ),
+        "sat_pair_angle_p95_deg": math.degrees(_scalar_metric(pair_p95)),
+        "sat_pair_loss": _scalar_metric(pair_loss),
+        "multiview_separate_geometry": 1.0,
+    }
+    conservative_keys = (
+        "zid_p50_deg",
+        "zid_p95_deg",
+        "zid_p99_deg",
+        "zid_tail_cvar_deg",
+        "source_overflow",
+        "proxy_vaccept",
+        "bridge_accept_rate",
+        "low_density_accept_rate",
+        "tail_accept_rate",
+        "overflow_accept_rate",
+        "radius_to_inter_ratio",
+    )
+    for key in conservative_keys:
+        metrics[key] = _worst(key)
+    for prefix, obj in (("clean", clean_metrics), ("sat", sat_metrics)):
+        for key, value in obj.items():
+            metrics[f"{prefix}_{key}"] = value
     return loss, metrics
 
 
@@ -2008,9 +2116,15 @@ def unlabeled_known_acceptance_quarantine_loss(
     query_z: torch.Tensor,
     query_mask: Optional[torch.Tensor] = None,
     *,
+    anchor_d: Optional[torch.Tensor] = None,
+    query_y: Optional[torch.Tensor] = None,
+    query_d: Optional[torch.Tensor] = None,
+    paired_view_count: int = 0,
+    return_state_masks: bool = False,
     core_quantile: float = 0.70,
     accept_quantile: float = 0.80,
     accept_target: float = 0.20,
+    core_accept_target: float = 0.80,
     cvar_alpha: float = 0.25,
     accept_temperature: float = 0.04,
     component_temperature_rad: float = math.radians(3.0),
@@ -2018,21 +2132,25 @@ def unlabeled_known_acceptance_quarantine_loss(
     component_margin_rad: float = math.radians(4.0),
     min_classes: int = 2,
     min_samples_per_class: int = 2,
-) -> Tuple[torch.Tensor, Dict[str, float]]:
-    """Penalize untrusted source-unlabeled samples that fall inside known gates.
+) -> Tuple[torch.Tensor, Dict[str, Any]]:
+    """Route source-unlabeled known samples without treating them as unknown negatives.
 
-    Phase1 has no true unknown TXs. This loss therefore uses only labeled or
-    trusted pseudo-labeled source anchors to build known prototypes, then treats
-    untrusted source-unlabeled views as quarantine queries and directly reduces
-    their local-component acceptance probability.
+    ``outside_reject`` rejects a pseudo-label route, not known-class membership.
+    Only geometry-trusted core queries receive a known-core pull. Ambiguous and
+    outside queries are quarantined from class geometry and remain available to
+    domain and paired clean/satellite invariance losses.
     """
     default_metrics = {
         "active": 0.0,
         "anchor_count": 0.0,
         "query_count": 0.0,
         "active_classes": 0.0,
+        "local_component_count": 0.0,
         "accept_rate": float("nan"),
         "accept_loss": 0.0,
+        "core_keep_loss": 0.0,
+        "tail_quarantine_loss": 0.0,
+        "outside_reject_loss": 0.0,
         "low_density_accept_rate": float("nan"),
         "nearest_angle_p50_deg": float("nan"),
         "nearest_angle_p95_deg": float("nan"),
@@ -2044,6 +2162,11 @@ def unlabeled_known_acceptance_quarantine_loss(
         "tri_trusted_core_rate": float("nan"),
         "tri_ambiguous_tail_rate": float("nan"),
         "tri_outside_reject_rate": float("nan"),
+        "tri_class_coverage": 0.0,
+        "tri_domain_coverage": 0.0,
+        "tri_pair_disagreement_rate": float("nan"),
+        "tri_pseudo_component_agreement_rate": float("nan"),
+        "outside_known_negative_disabled": 1.0,
     }
     if (
         anchor_z is None
@@ -2067,28 +2190,53 @@ def unlabeled_known_acceptance_quarantine_loss(
         if not torch.is_tensor(query_mask) or query_mask.numel() != query_z.size(0):
             raise ValueError("query_mask must be a tensor with one value per query feature")
         query_z = query_z[query_mask.view(-1).bool()]
+        if query_y is not None:
+            query_y = query_y.view(-1)[query_mask.view(-1).bool()]
+        if query_d is not None:
+            query_d = query_d.view(-1)[query_mask.view(-1).bool()]
     if query_z.numel() == 0:
         return zero_like_with_grad(anchor_z), default_metrics
+    if query_y is None:
+        raise ValueError("query_y pseudo labels are required for fail-closed U_s geometry routing")
+    if int(query_y.numel()) != int(query_z.size(0)):
+        raise ValueError("query_y must have one pseudo label per query feature")
+    if query_d is not None and int(query_d.numel()) != int(query_z.size(0)):
+        raise ValueError("query_d must have one source-domain label per query feature")
 
     anchor_norm = safe_l2_normalize(torch.nan_to_num(anchor_z.float(), nan=0.0, posinf=0.0, neginf=0.0), dim=1)
     query_norm = safe_l2_normalize(torch.nan_to_num(query_z.float(), nan=0.0, posinf=0.0, neginf=0.0), dim=1)
     valid = labels >= 0
+    domains = None
+    if anchor_d is not None and torch.is_tensor(anchor_d):
+        domains = anchor_d.view(-1).long()
+        if domains.numel() != labels.numel():
+            raise ValueError("anchor_d must have one source-domain value per anchor")
     centers = []
     class_ids = []
     sample_mask = torch.zeros_like(valid, dtype=torch.bool)
     min_count = max(1, int(min_samples_per_class))
     for cls in torch.unique(labels[valid]):
         cls_mask = valid & labels.eq(cls)
-        if int(cls_mask.sum().item()) < min_count:
-            continue
-        centers.append(safe_l2_normalize(anchor_norm[cls_mask].mean(dim=0, keepdim=True), dim=1).squeeze(0))
-        class_ids.append(cls)
-        sample_mask |= cls_mask
+        class_component_count = 0
+        if domains is not None:
+            for dom in torch.unique(domains[cls_mask & (domains >= 0)]):
+                cell = cls_mask & domains.eq(dom)
+                if int(cell.sum().item()) < min_count:
+                    continue
+                centers.append(safe_l2_normalize(anchor_norm[cell].mean(dim=0, keepdim=True), dim=1).squeeze(0))
+                class_ids.append(cls)
+                sample_mask |= cell
+                class_component_count += 1
+        if class_component_count == 0 and int(cls_mask.sum().item()) >= min_count:
+            centers.append(safe_l2_normalize(anchor_norm[cls_mask].mean(dim=0, keepdim=True), dim=1).squeeze(0))
+            class_ids.append(cls)
+            sample_mask |= cls_mask
 
-    active_classes = len(centers)
+    active_classes = len({int(cls.item()) for cls in class_ids})
     default_metrics["anchor_count"] = float(int(sample_mask.sum().detach().item()))
     default_metrics["query_count"] = float(int(query_norm.size(0)))
     default_metrics["active_classes"] = float(active_classes)
+    default_metrics["local_component_count"] = float(len(centers))
     if active_classes < max(1, int(min_classes)):
         return zero_like_with_grad(anchor_z), default_metrics
 
@@ -2097,8 +2245,10 @@ def unlabeled_known_acceptance_quarantine_loss(
     sample_z = anchor_norm[sample_mask]
     sample_labels = labels[sample_mask]
     sample_cos = (sample_z @ proto.t()).clamp(-1.0 + 1e-6, 1.0 - 1e-6)
+    sample_angles = _safe_angle_from_cos(sample_cos)
     own_center = sample_labels.view(-1, 1).eq(center_labels.view(1, -1))
-    pos_angles = _safe_angle_from_cos(sample_cos[own_center])
+    own_angles = sample_angles.masked_fill(~own_center, float("inf"))
+    pos_angles, own_component_idx = own_angles.min(dim=1)
     if pos_angles.numel() == 0:
         return zero_like_with_grad(anchor_z), default_metrics
 
@@ -2107,8 +2257,8 @@ def unlabeled_known_acceptance_quarantine_loss(
     accept_radius_vec = []
     core_radius_vec = []
     core_mask = torch.zeros((sample_z.size(0),), device=sample_z.device, dtype=torch.bool)
-    for cls in center_labels:
-        cls_mask = sample_labels.eq(cls)
+    for component_idx in range(proto.size(0)):
+        cls_mask = own_component_idx.eq(component_idx)
         cls_angles = pos_angles[cls_mask]
         if cls_angles.numel() == 0:
             fallback_radius = sample_z.new_tensor(math.radians(40.0))
@@ -2136,8 +2286,13 @@ def unlabeled_known_acceptance_quarantine_loss(
     radius_gate = torch.sigmoid(
         (accept_radius_vec_t.detach().view(1, -1) - query_angles) / max(1e-4, float(component_temperature_rad))
     )
-    if query_angles.size(1) > 1:
-        sorted_angles = torch.sort(query_angles.detach(), dim=1).values
+    unique_classes = torch.unique(center_labels)
+    class_angle_columns = torch.stack(
+        [query_angles[:, center_labels.eq(cls)].min(dim=1).values for cls in unique_classes],
+        dim=1,
+    )
+    if class_angle_columns.size(1) > 1:
+        sorted_angles = torch.sort(class_angle_columns.detach(), dim=1).values
         class_gap = sorted_angles[:, 1] - sorted_angles[:, 0]
         margin_gate = torch.sigmoid(
             (class_gap - float(component_margin_rad)) / max(1e-4, float(component_temperature_rad))
@@ -2149,18 +2304,33 @@ def unlabeled_known_acceptance_quarantine_loss(
     density_gate = torch.sigmoid((density_radius - nearest_core_angle) / max(1e-4, float(density_temperature_rad))).view(-1, 1)
     low_density_prob = torch.sigmoid((nearest_core_angle - density_radius) / max(1e-4, float(density_temperature_rad)))
     accept_prob = (radius_gate * margin_gate * density_gate).max(dim=1).values
-    cvar_frac = max(1e-6, min(1.0, float(cvar_alpha)))
-    tau = max(1e-4, float(accept_temperature))
-    accept_loss = _top_cvar_mean(F.softplus((accept_prob - float(accept_target)) / tau), cvar_frac)
-
     with torch.no_grad():
         nearest = query_angles.min(dim=1)
         nearest_angle = nearest.values.detach()
         nearest_idx = nearest.indices.detach()
+        nearest_class = center_labels.detach()[nearest_idx]
+        tri_label_match = nearest_class.eq(query_y.view(-1).long().to(device=nearest_class.device))
         nearest_core_radius = core_radius_vec_t.detach()[nearest_idx]
         nearest_accept_radius = accept_radius_vec_t.detach()[nearest_idx]
-        tri_trusted_core = nearest_angle <= nearest_core_radius
-        tri_outside_reject = nearest_angle > nearest_accept_radius
+        tri_class_gap = class_gap.detach().view(-1)
+        tri_margin_safe = tri_class_gap >= float(component_margin_rad)
+        tri_margin_reject = tri_class_gap < 0.5 * float(component_margin_rad)
+        tri_density_safe = nearest_core_angle.detach() <= density_radius.detach()
+        tri_density_reject = nearest_core_angle.detach() > (
+            density_radius.detach() + max(1e-4, float(density_temperature_rad))
+        )
+        tri_trusted_core = (
+            (nearest_angle <= nearest_core_radius)
+            & tri_margin_safe
+            & tri_density_safe
+            & tri_label_match
+        )
+        tri_outside_reject = (
+            (nearest_angle > nearest_accept_radius)
+            | tri_margin_reject
+            | tri_density_reject
+            | (~tri_label_match)
+        )
         tri_ambiguous_tail = (~tri_trusted_core) & (~tri_outside_reject)
         q50 = torch.quantile(nearest_angle, 0.50) if nearest_angle.numel() > 1 else nearest_angle.mean()
         q95 = torch.quantile(nearest_angle, 0.95) if nearest_angle.numel() > 1 else nearest_angle.mean()
@@ -2168,21 +2338,54 @@ def unlabeled_known_acceptance_quarantine_loss(
         radius_inter_ratio_metric = sample_z.new_tensor(float("nan"))
         if proto.size(0) > 1:
             inter_angles = _safe_angle_from_cos((proto @ proto.t()).clamp(-1.0 + 1e-6, 1.0 - 1e-6))
-            diag = torch.eye(inter_angles.size(0), device=inter_angles.device, dtype=torch.bool)
-            nearest_inter = inter_angles.masked_fill(diag, float("inf")).min(dim=1).values.detach().clamp_min(1e-4)
+            different_class = center_labels.view(-1, 1).ne(center_labels.view(1, -1))
+            nearest_inter = inter_angles.masked_fill(~different_class, float("inf")).min(dim=1).values.detach().clamp_min(1e-4)
             radius_inter_ratio_metric = (accept_radius_vec_t.detach() / nearest_inter).max()
         tri_query_count = max(1, int(query_norm.size(0)))
         tri_trusted_core_count = float(int(tri_trusted_core.sum().item()))
         tri_ambiguous_tail_count = float(int(tri_ambiguous_tail.sum().item()))
         tri_outside_reject_count = float(int(tri_outside_reject.sum().item()))
+        tri_class_coverage = float(int(torch.unique(query_y.view(-1).long()).numel())) if query_y is not None else 0.0
+        tri_domain_coverage = float(int(torch.unique(query_d.view(-1).long()).numel())) if query_d is not None else 0.0
+        pair_count = max(0, int(paired_view_count))
+        tri_pair_disagreement_rate = float("nan")
+        if pair_count > 0:
+            if int(query_norm.size(0)) != 2 * pair_count:
+                raise ValueError("paired_view_count requires clean and satellite query blocks of equal size")
+            tri_state = torch.full_like(nearest_idx, 1)
+            tri_state[tri_trusted_core] = 0
+            tri_state[tri_outside_reject] = 2
+            tri_pair_disagreement_rate = float(
+                (tri_state[:pair_count] != tri_state[pair_count:]).float().mean().item()
+            )
+        tri_pseudo_component_agreement_rate = float(tri_label_match.float().mean().item())
+
+    cvar_frac = max(1e-6, min(1.0, float(cvar_alpha)))
+    tau = max(1e-4, float(accept_temperature))
+
+    def _masked_cvar(values: torch.Tensor) -> torch.Tensor:
+        return _top_cvar_mean(values, cvar_frac) if values.numel() else accept_prob.new_tensor(0.0)
+
+    core_keep_loss = _masked_cvar(
+        _bounded_softplus((float(core_accept_target) - accept_prob[tri_trusted_core]) / tau)
+    )
+    # U_s is sampled from known source TXs. Ambiguous/outside states block
+    # pseudo-label geometry; they must never be optimized as unknown negatives.
+    tail_quarantine_loss = accept_prob[tri_ambiguous_tail].sum() * 0.0
+    outside_reject_loss = accept_prob[tri_outside_reject].sum() * 0.0
+    accept_loss = core_keep_loss + tail_quarantine_loss + outside_reject_loss
 
     metrics = {
         "active": 1.0,
         "anchor_count": float(int(sample_mask.sum().detach().item())),
         "query_count": float(int(query_norm.size(0))),
         "active_classes": float(active_classes),
+        "local_component_count": float(proto.size(0)),
         "accept_rate": _scalar_metric(accept_prob.detach().mean()),
         "accept_loss": _scalar_metric(accept_loss),
+        "core_keep_loss": _scalar_metric(core_keep_loss),
+        "tail_quarantine_loss": _scalar_metric(tail_quarantine_loss),
+        "outside_reject_loss": _scalar_metric(outside_reject_loss),
         "low_density_accept_rate": _scalar_metric((accept_prob.detach() * low_density_prob.detach()).mean()),
         "nearest_angle_p50_deg": math.degrees(_scalar_metric(q50)),
         "nearest_angle_p95_deg": math.degrees(_scalar_metric(q95)),
@@ -2194,7 +2397,16 @@ def unlabeled_known_acceptance_quarantine_loss(
         "tri_trusted_core_rate": tri_trusted_core_count / float(tri_query_count),
         "tri_ambiguous_tail_rate": tri_ambiguous_tail_count / float(tri_query_count),
         "tri_outside_reject_rate": tri_outside_reject_count / float(tri_query_count),
+        "tri_class_coverage": tri_class_coverage,
+        "tri_domain_coverage": tri_domain_coverage,
+        "tri_pair_disagreement_rate": tri_pair_disagreement_rate,
+        "tri_pseudo_component_agreement_rate": tri_pseudo_component_agreement_rate,
+        "outside_known_negative_disabled": 1.0,
     }
+    if return_state_masks:
+        metrics["_tri_trusted_core_mask"] = tri_trusted_core.detach()
+        metrics["_tri_ambiguous_tail_mask"] = tri_ambiguous_tail.detach()
+        metrics["_tri_outside_reject_mask"] = tri_outside_reject.detach()
     return accept_loss, metrics
 
 
@@ -2202,6 +2414,61 @@ def _binary_auc(known_scores: torch.Tensor, unknown_scores: torch.Tensor) -> flo
     if known_scores.numel() == 0 or unknown_scores.numel() == 0:
         return float("nan")
     return float((unknown_scores.view(-1, 1) > known_scores.view(1, -1)).float().mean().item())
+
+
+def multiview_source_episode_three_sigma_loss(
+    clean_z: torch.Tensor,
+    sat_z: torch.Tensor,
+    y: torch.Tensor,
+    d: Optional[torch.Tensor],
+    *,
+    clean_weight: float = 1.0,
+    sat_weight: float = 1.0,
+    **kwargs,
+) -> Tuple[torch.Tensor, Dict[str, float]]:
+    """Keep clean/satellite receiver-local components separate and expose worst-view risk."""
+
+    if clean_z.shape != sat_z.shape or clean_z.dim() != 2:
+        raise ValueError("multiview source episode expects aligned clean/satellite [B,D] features")
+    clean_loss, clean_info = source_episode_three_sigma_loss(clean_z, y, d, **kwargs)
+    sat_loss, sat_info = source_episode_three_sigma_loss(sat_z, y, d, **kwargs)
+    loss = max(0.0, float(clean_weight)) * clean_loss + max(0.0, float(sat_weight)) * sat_loss
+    metrics: Dict[str, float] = {"source_episode_multiview_separate_geometry": 1.0}
+    for prefix, info in (("clean", clean_info), ("sat", sat_info)):
+        for key, value in info.items():
+            metrics[f"{prefix}_{key}"] = value
+    risk_keys = (
+        "source_episode_overflow_rate",
+        "source_overflow",
+        "source_episode_zid_p50_deg",
+        "source_episode_zid_p95_deg",
+        "source_episode_zid_p99_deg",
+        "source_episode_zid_tail_cvar_deg",
+        "source_episode_tail_query_rate",
+        "source_episode_local_component_radius_p95_deg",
+        "source_episode_local_component_center_spread_deg",
+    )
+    for key in risk_keys:
+        values = []
+        for info in (clean_info, sat_info):
+            try:
+                value = float(info.get(key, float("nan")))
+            except Exception:
+                value = float("nan")
+            if math.isfinite(value):
+                values.append(value)
+        metrics[key] = max(values) if values else float("nan")
+    metrics["source_episode_loss"] = _scalar_metric(loss)
+    for key in (
+        "source_episode_receiver_local_component_count",
+        "source_episode_local_component_coverage",
+        "source_episode_local_component_structural_active",
+        "source_episode_core_tail_outside_ready",
+        "source_episode_density_gate_active",
+    ):
+        values = [float(info.get(key, 0.0)) for info in (clean_info, sat_info)]
+        metrics[key] = min(values)
+    return loss, metrics
 
 
 def source_episode_three_sigma_loss(
@@ -2219,6 +2486,12 @@ def source_episode_three_sigma_loss(
     mixup_weight: float = 0.0,
     mixup_order: int = 3,
     mixup_hard_k: int = 2,
+    local_component_compact_weight: float = 0.0,
+    local_component_invariant_weight: float = 0.0,
+    local_component_inter_weight: float = 0.0,
+    local_component_inter_margin_rad: float = math.radians(20.0),
+    local_component_accept_weight: float = 0.0,
+    local_component_density_weight: float = 0.0,
 ) -> Tuple[torch.Tensor, Dict[str, float]]:
     """Source-only leave-domain angular shell objective.
 
@@ -2228,6 +2501,7 @@ def source_episode_three_sigma_loss(
     """
     default_metrics = {
         "source_episode_loss": 0.0,
+        "source_episode_leave_domain_loss": 0.0,
         "source_episode_overflow_rate": 0.0,
         "source_overflow": 0.0,
         "source_episode_radius_3sigma_deg": float("nan"),
@@ -2245,6 +2519,14 @@ def source_episode_three_sigma_loss(
         "source_episode_mixup_margin_deg": float("nan"),
         "source_episode_receiver_local_component_count": 0.0,
         "source_episode_local_component_coverage": 0.0,
+        "source_episode_local_component_compact_loss": 0.0,
+        "source_episode_local_component_invariant_loss": 0.0,
+        "source_episode_local_component_inter_loss": 0.0,
+        "source_episode_local_component_accept_loss": 0.0,
+        "source_episode_local_component_density_loss": 0.0,
+        "source_episode_local_component_radius_p95_deg": float("nan"),
+        "source_episode_local_component_center_spread_deg": float("nan"),
+        "source_episode_local_component_structural_active": 0.0,
         "source_episode_core_count": 0.0,
         "source_episode_tail_count": 0.0,
         "source_episode_outside_count": 0.0,
@@ -2277,17 +2559,105 @@ def source_episode_three_sigma_loss(
     safe_radii = []
     val_angles_all = []
     val_angles_flat = []
+    local_component_keys = set()
+    local_component_centers = []
+    local_component_labels = []
+    local_component_radii = []
+    local_component_spreads = []
+    local_compact_terms = []
+    local_invariant_terms = []
+    local_possible_components = 0.0
+    min_cell = max(1, int(min_samples_per_class_domain))
+    for cls in torch.unique(labels[valid]):
+        cls_mask = valid & labels.eq(cls)
+        cls_centers = []
+        for dom in torch.unique(domains[cls_mask]):
+            cell = cls_mask & domains.eq(dom)
+            if int(cell.sum().item()) < min_cell:
+                continue
+            local_possible_components += 1.0
+            center = safe_l2_normalize(z_norm[cell].mean(dim=0, keepdim=True), dim=1).squeeze(0)
+            angles = _safe_angle_from_cos(
+                (z_norm[cell] * center.view(1, -1)).sum(dim=1).clamp(-1.0 + 1e-6, 1.0 - 1e-6)
+            )
+            local_compact_terms.append(angles.pow(2).mean())
+            radius = torch.quantile(angles.detach(), 0.95) if angles.numel() > 1 else angles.detach().max()
+            local_component_radii.append(radius)
+            local_component_centers.append(center)
+            local_component_labels.append(cls)
+            cls_centers.append(center)
+            local_component_keys.add((int(cls.item()), int(dom.item())))
+        if len(cls_centers) >= max(2, int(min_domains)):
+            stacked = torch.stack(cls_centers, dim=0)
+            invariant_core = safe_l2_normalize(stacked.mean(dim=0, keepdim=True), dim=1).squeeze(0).detach()
+            spread = _safe_angle_from_cos(
+                (stacked * invariant_core.view(1, -1)).sum(dim=1).clamp(-1.0 + 1e-6, 1.0 - 1e-6)
+            )
+            local_component_spreads.append(spread.detach().mean())
+            local_invariant_terms.append(spread.pow(2).mean())
+
+    local_compact_loss = (
+        torch.stack(local_compact_terms).mean() if local_compact_terms else z_norm.sum() * 0.0
+    )
+    local_invariant_loss = (
+        torch.stack(local_invariant_terms).mean() if local_invariant_terms else z_norm.sum() * 0.0
+    )
+    local_inter_loss = z_norm.sum() * 0.0
+    local_accept_loss = z_norm.sum() * 0.0
+    local_density_loss = z_norm.sum() * 0.0
+    local_core_count = 0.0
+    local_tail_count = 0.0
+    local_outside_count = 0.0
+    if len(local_component_centers) > 1:
+        component_tensor = torch.stack(local_component_centers, dim=0)
+        component_labels = torch.stack(local_component_labels, dim=0).to(device=labels.device)
+        component_angles = _safe_angle_from_cos(
+            (component_tensor @ component_tensor.t()).clamp(-1.0 + 1e-6, 1.0 - 1e-6)
+        )
+        different_class = component_labels.view(-1, 1).ne(component_labels.view(1, -1))
+        if bool(different_class.any()):
+            local_inter_loss = F.relu(
+                float(local_component_inter_margin_rad) - component_angles[different_class]
+            ).pow(2).mean()
+        sample_local_angles = _safe_angle_from_cos(
+            (z_norm[valid] @ component_tensor.t()).clamp(-1.0 + 1e-6, 1.0 - 1e-6)
+        )
+        sample_labels_valid = labels[valid]
+        own_component = sample_labels_valid.view(-1, 1).eq(component_labels.view(1, -1))
+        own_angles = sample_local_angles.masked_fill(~own_component, float("inf"))
+        nearest_own, nearest_own_idx = own_angles.min(dim=1)
+        nearest_other = sample_local_angles.masked_fill(own_component, float("inf")).min(dim=1).values
+        component_radius_tensor = torch.stack(local_component_radii).to(
+            device=z_norm.device, dtype=z_norm.dtype
+        ).detach().clamp_min(1e-4)
+        own_radius = component_radius_tensor[nearest_own_idx]
+        finite_local = torch.isfinite(nearest_own) & torch.isfinite(nearest_other)
+        if bool(finite_local.any()):
+            own_valid = nearest_own[finite_local]
+            other_valid = nearest_other[finite_local]
+            radius_valid = own_radius[finite_local]
+            local_overflow = F.relu(own_valid - radius_valid).pow(2).mean()
+            local_bridge = F.relu(
+                float(local_component_inter_margin_rad) - (other_valid - own_valid)
+            ).pow(2).mean()
+            local_accept_loss = local_overflow + local_bridge
+            normalized_radius = own_valid / radius_valid
+            local_density_loss = _top_cvar_mean(F.relu(normalized_radius - 0.80).pow(2), 0.20)
+            with torch.no_grad():
+                local_core_count = float((normalized_radius <= 0.80).float().sum().item())
+                local_outside_count = float((normalized_radius > 1.0).float().sum().item())
+                local_tail_count = float(normalized_radius.numel()) - local_core_count - local_outside_count
     tail_query_rates = []
     episode_centers = []
     episode_radii = []
     component_keys = set()
     used_classes = set()
     used_domains = set()
-    core_count = 0.0
-    tail_count = 0.0
-    outside_count = 0.0
+    core_count = local_core_count
+    tail_count = local_tail_count
+    outside_count = local_outside_count
     possible_components = 0.0
-    min_cell = max(1, int(min_samples_per_class_domain))
+    mode_code = 2.0
     for cls in torch.unique(labels[valid]):
         cls_mask = valid & labels.eq(cls)
         doms = [dom for dom in torch.unique(domains[cls_mask]) if int((cls_mask & domains.eq(dom)).sum().item()) >= min_cell]
@@ -2366,9 +2736,7 @@ def source_episode_three_sigma_loss(
             component_keys.add((int(cls.item()), int(val_dom.item())))
             used_classes.add(int(cls.item()))
             used_domains.add(int(val_dom.item()))
-    if not losses:
-        return zero_like_with_grad(z), default_metrics
-    source_loss = torch.stack(losses).mean()
+    source_loss = torch.stack(losses).mean() if losses else z_norm.sum() * 0.0
     mixup_loss = z.new_tensor(0.0)
     mixup_overflow_rate = 0.0
     mixup_margin = z.new_tensor(float("nan"))
@@ -2397,7 +2765,15 @@ def source_episode_three_sigma_loss(
             mixup_overflow_rate = float((nearest_margin < 0.0).float().mean().item())
             mixup_margin = nearest_margin.mean()
             mixup_count = float(mix_norm.size(0))
-    loss = source_loss + max(0.0, float(mixup_weight)) * mixup_loss
+    loss = (
+        source_loss
+        + max(0.0, float(mixup_weight)) * mixup_loss
+        + max(0.0, float(local_component_compact_weight)) * local_compact_loss
+        + max(0.0, float(local_component_invariant_weight)) * local_invariant_loss
+        + max(0.0, float(local_component_inter_weight)) * local_inter_loss
+        + max(0.0, float(local_component_accept_weight)) * local_accept_loss
+        + max(0.0, float(local_component_density_weight)) * local_density_loss
+    )
     all_val_angles = torch.cat(val_angles_flat, dim=0) if val_angles_flat else z.new_zeros(0)
     if all_val_angles.numel() > 0:
         zid_p50 = torch.quantile(all_val_angles, 0.50)
@@ -2408,19 +2784,24 @@ def source_episode_three_sigma_loss(
     else:
         zid_p50 = zid_p95 = zid_p99 = zid_tail_cvar = z.new_tensor(float("nan"))
     tri_total = max(1.0, core_count + tail_count + outside_count)
-    component_count = float(len(component_keys))
-    component_coverage = component_count / possible_components if possible_components > 0.0 else 0.0
+    component_count = float(len(local_component_keys))
+    component_coverage = component_count / local_possible_components if local_possible_components > 0.0 else 0.0
     tri_ready = component_count > 0.0 and (core_count + tail_count + outside_count) > 0.0
-    density_active = tri_ready and torch.isfinite(zid_p95).item() and torch.isfinite(zid_p99).item()
+    density_active = (
+        component_count > 0.0
+        and float(local_component_density_weight) > 0.0
+        and torch.isfinite(local_density_loss.detach()).item()
+    )
     metrics = {
-        "source_episode_loss": _scalar_metric(source_loss),
+        "source_episode_loss": _scalar_metric(loss),
+        "source_episode_leave_domain_loss": _scalar_metric(source_loss),
         "source_episode_overflow_rate": float(np.mean(overflow_rates)) if overflow_rates else 0.0,
         "source_overflow": float(np.mean(overflow_rates)) if overflow_rates else 0.0,
-        "source_episode_radius_3sigma_deg": math.degrees(_scalar_metric(torch.stack(radii))),
-        "source_episode_radius_core_deg": math.degrees(_scalar_metric(torch.stack(core_radii))),
-        "source_episode_radius_safe_deg": math.degrees(_scalar_metric(torch.stack(safe_radii))),
+        "source_episode_radius_3sigma_deg": math.degrees(_scalar_metric(torch.stack(radii))) if radii else float("nan"),
+        "source_episode_radius_core_deg": math.degrees(_scalar_metric(torch.stack(core_radii))) if core_radii else float("nan"),
+        "source_episode_radius_safe_deg": math.degrees(_scalar_metric(torch.stack(safe_radii))) if safe_radii else float("nan"),
         "source_episode_radius_mode_code": float(mode_code),
-        "source_episode_val_angle_deg": math.degrees(_scalar_metric(torch.stack(val_angles_all))),
+        "source_episode_val_angle_deg": math.degrees(_scalar_metric(torch.stack(val_angles_all))) if val_angles_all else float("nan"),
         "source_episode_tail_query_rate": float(np.mean(tail_query_rates)) if tail_query_rates else 0.0,
         "source_episode_classes": float(len(used_classes)),
         "source_episode_domains": float(len(used_domains)),
@@ -2431,6 +2812,31 @@ def source_episode_three_sigma_loss(
         "source_episode_mixup_margin_deg": math.degrees(_scalar_metric(mixup_margin)),
         "source_episode_receiver_local_component_count": component_count,
         "source_episode_local_component_coverage": float(component_coverage),
+        "source_episode_local_component_compact_loss": _scalar_metric(local_compact_loss),
+        "source_episode_local_component_invariant_loss": _scalar_metric(local_invariant_loss),
+        "source_episode_local_component_inter_loss": _scalar_metric(local_inter_loss),
+        "source_episode_local_component_accept_loss": _scalar_metric(local_accept_loss),
+        "source_episode_local_component_density_loss": _scalar_metric(local_density_loss),
+        "source_episode_local_component_radius_p95_deg": (
+            math.degrees(_scalar_metric(torch.stack(local_component_radii).mean()))
+            if local_component_radii
+            else float("nan")
+        ),
+        "source_episode_local_component_center_spread_deg": (
+            math.degrees(_scalar_metric(torch.stack(local_component_spreads).mean()))
+            if local_component_spreads
+            else float("nan")
+        ),
+        "source_episode_local_component_structural_active": 1.0 if (
+            component_count > 0.0
+            and (
+                float(local_component_compact_weight) > 0.0
+                or float(local_component_invariant_weight) > 0.0
+                or float(local_component_inter_weight) > 0.0
+                or float(local_component_accept_weight) > 0.0
+                or float(local_component_density_weight) > 0.0
+            )
+        ) else 0.0,
         "source_episode_core_count": float(core_count),
         "source_episode_tail_count": float(tail_count),
         "source_episode_outside_count": float(outside_count),
@@ -2510,6 +2916,19 @@ class PrototypeMemoryBank:
         self.domain_proto = torch.zeros(self.num_classes, self.num_domains, int(feat_dim), device=device, dtype=dtype)
         self.class_count = torch.zeros(self.num_classes, device=device, dtype=torch.long)
         self.domain_count = torch.zeros(self.num_classes, self.num_domains, device=device, dtype=torch.long)
+
+    def state_dict(self) -> Dict[str, Any]:
+        return {
+            "class_proto": self.class_proto.detach().clone() if self.class_proto is not None else None,
+            "domain_proto": self.domain_proto.detach().clone() if self.domain_proto is not None else None,
+            "class_count": self.class_count.detach().clone() if self.class_count is not None else None,
+            "domain_count": self.domain_count.detach().clone() if self.domain_count is not None else None,
+        }
+
+    def load_state_dict(self, state: Mapping[str, Any]) -> None:
+        for name in ("class_proto", "domain_proto", "class_count", "domain_count"):
+            value = state.get(name)
+            setattr(self, name, value.detach().clone() if torch.is_tensor(value) else None)
 
     def loss(self, z: torch.Tensor, y: torch.Tensor, d: Optional[torch.Tensor]) -> Tuple[torch.Tensor, Dict[str, float]]:
         self._lazy_init(z.size(1), z.device, z.dtype)
