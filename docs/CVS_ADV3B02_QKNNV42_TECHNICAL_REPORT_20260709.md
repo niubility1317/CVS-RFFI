@@ -1,7 +1,7 @@
 # CVS阶段性成果技术报告：`ADV3B02_CORE90_SOFT_E200`与`qKNNV42`
 
-日期：2026-07-09
-修订说明：本版按用户要求重写模型分支、损失公式、创新模块和`qKNNV42`章节。所有符号和公式均使用LaTeX格式；`qKNNV42`只作为Phase2 Stage2-C轻量注册/适应头描述，类别集合限定为旧类和seen-new新类；ADV3B02创新模块C改写为源域core/tail几何稳健性模块。
+日期：2026-07-10
+修订说明：本版彻底移除正文行内数学和表格内LaTeX，所有正式符号与公式均使用独立LaTeX公式块；补全ADV3B02逐层参数、张量尺寸、分支作用、收益与代价；依据2026-07-01历史运行快照重建完整损失、符号表、局部符号表、阶段权重和优化方向；从严厉审稿视角把Phase1重组为物理双表征、可信伪标签、尾部角几何和源域反事实外推四个可消融模块。`qKNNV42`仍只作为Phase2 Stage2-C轻量注册/适应头，不包含unknown拒识主线。
 
 ## 1.结论边界
 
@@ -29,59 +29,92 @@ $$
 
 ## 2.符号与任务定义
 
-地面训练阶段使用源域集合$\mathcal R_s$和旧类集合$\mathcal Y_{\mathrm{old}}$。目标域注册阶段使用目标接收机域$\mathcal R_t$，并满足
+为适配当前Markdown渲染器，本文只在独立公式块中写LaTeX。正文和表格使用`x_i`、`z_id`等稳定文本别名；别名与公式块中的标准数学符号一一对应。全文禁止正文行内数学和表格内LaTeX。
+
+地面训练阶段的源域、旧类集合与Phase2目标域、新类集合分别定义为
 
 $$
-\mathcal R_t\cap\mathcal R_s=\varnothing,\qquad
-\mathcal Y_{\mathrm{new}}\cap\mathcal Y_{\mathrm{old}}=\varnothing.
+\mathcal{R}_{s},\qquad
+\mathcal{Y}_{\mathrm{old}},\qquad
+\mathcal{R}_{t},\qquad
+\mathcal{Y}_{\mathrm{new}}.
 $$
 
-样本和标签记为
+两个阶段必须满足接收机域不重叠和身份集合不重叠：
 
 $$
-x\in\mathbb R^{2\times L},\qquad
-y\in\mathcal Y_{\mathrm{old}},\qquad
-d\in\mathcal D_s,
+\mathcal{R}_{t}\cap\mathcal{R}_{s}=\varnothing,
+\qquad
+\mathcal{Y}_{\mathrm{new}}\cap\mathcal{Y}_{\mathrm{old}}=\varnothing.
 $$
 
-其中$x$是IQ片段，$y$是TX身份，$d$是receiver/day/rx_day/channel view等域标签。CVS的观测模型写为
+单个Phase1样本、TX标签和域标签为
 
 $$
-x=R_d\!\left(H_d*T_y(s)\right)+n,
+\mathbf{x}_{i}\in\mathbb{R}^{2\times L},
+\qquad
+y_i\in\mathcal{Y}_{\mathrm{old}},
+\qquad
+d_i\in\mathcal{D}_{s}.
 $$
 
-其中$T_y$是发射机硬件非理想性，$H_d$是传播/星地信道扰动，$R_d$是接收机链路响应，$n$是噪声。
-
-Phase1训练集为
+其中`x_i`是两通道IQ片段，`y_i`是TX身份，`d_i`是由receiver、day、rx_day或channel view构成的源域标签。CVS观测模型写为
 
 $$
-\mathcal L_s=\{(x_i,y_i,d_i)\}_{i=1}^{N_l},\qquad
-\mathcal U_s=\{(u_j,d_j)\}_{j=1}^{N_u},
+\mathbf{x}_{i}
+=\mathcal{R}_{d_i}\!\left(
+\mathcal{H}_{d_i}\circledast\mathcal{T}_{y_i}(\mathbf{s}_{i})
+\right)+\mathbf{n}_{i}.
 $$
 
-标注比例为
+`T_y`表示TX硬件非理想映射，`H_d`表示传播或星地信道作用，`R_d`表示接收机链路响应，`n_i`表示噪声。该分解解释了CVS为何同时需要身份表征和域表征：同一观测中，TX特征、传播效应和接收机响应是耦合的。
+
+Phase1标注集和无TX标签集为
 
 $$
-\rho_{\mathrm{label}}=
-\frac{|\mathcal L_s|}{|\mathcal L_s|+|\mathcal U_s|}
+\mathcal{L}_{s}
+=\left\{(\mathbf{x}_{i},y_i,d_i)\right\}_{i=1}^{N_l},
+\qquad
+\mathcal{U}_{s}
+=\left\{(\mathbf{u}_{j},d_j)\right\}_{j=1}^{N_u}.
+$$
+
+标注预算固定为
+
+$$
+\rho_{\mathrm{label}}
+=\frac{|\mathcal{L}_{s}|}
+{|\mathcal{L}_{s}|+|\mathcal{U}_{s}|}
 =0.1.
 $$
 
-模型输出定义为
+模型的主要输出定义为
 
 $$
-f_\theta(x)=
-\left(
-\boldsymbol\ell_y,\boldsymbol\ell_d,\boldsymbol\ell_{\mathrm{adv}},
-\mathbf z_{\mathrm{id}},\mathbf z_{\mathrm{dom}}
-\right),
+f_{\boldsymbol{\theta}}(\mathbf{x})
+=\left(
+\boldsymbol{\ell}^{\mathrm{tx}},
+\boldsymbol{\ell}^{\mathrm{dom}},
+\boldsymbol{\ell}^{\mathrm{adv}},
+\mathbf{z}^{\mathrm{id}},
+\mathbf{z}^{\mathrm{dom}}
+\right).
 $$
 
-其中$\boldsymbol\ell_y$是TX分类logits，$\boldsymbol\ell_d$是域分类logits，$\boldsymbol\ell_{\mathrm{adv}}$是经GRL后的域对抗logits，$\mathbf z_{\mathrm{id}}$用于身份分类、prototype和qKNN，$\mathbf z_{\mathrm{dom}}$用于接收机/信道扰动建模。
+|文本别名|对象|形状或集合|用途|
+|---|---|---|---|
+|`x_i`|IQ输入|2xL，B02中L=256|模型输入|
+|`y_i`|TX标签|`Y_old`|监督分类、原型和类条件几何|
+|`d_i`|源域标签|`D_s`|域监督、GRL、跨域一致性和分组风险|
+|`ell_tx`|TX logits|C维|CosFace分类|
+|`ell_dom`|域 logits|D维|训练domain branch保留接收机/日期信息|
+|`ell_adv`|对抗域 logits|D维|经GRL压低`z_id`中的域可预测性|
+|`z_id`|身份表征|160维|TX分类、原型、角几何和Phase2 qKNN|
+|`z_dom`|域表征|160维|吸收接收机、信道和噪声统计|
 
 ## 3.ADV3B02实际模型配置
 
-`ADV3B02_CORE90_SOFT_E200`由`code/SSDG/train_ssdg.py`构建，实际使用默认结构参数：
+`ADV3B02_CORE90_SOFT_E200`由`code/SSDG/train_ssdg.py`构建，实际使用默认结构参数。损失和调度公式以`code/snapshots/phase1_adv3_mechanism32_queue_20260701/train_ssdg.py`与同目录`losses.py`为历史运行权威；当前`code/`已经继续演化，不能反向替代B02训练语义。2026-07-01快照没有独立保存`model.py`与`model_dual_cvsincnet.py`的远端哈希；当前Git谱系显示两文件在该运行前后未变化，且checkpoint加载无missing/unexpected key。因此本章层结构属于谱系一致证据，但不声称拥有独立的远端模型文件哈希证明。
 
 |参数|值|
 |---|---|
@@ -121,210 +154,307 @@ $$
 
 ### 4.1共享Sinc/IQ前端
 
-共享前端接收$x\in\mathbb R^{B\times2\times256}$。
-
-|层|参数|输出|
-|---|---|---|
-|`SincConv1d.forward_iq_pair`|`out_channels=24`，`kernel=79`，`padding=39`，`stride=1`，每个IQ通道共享同一24个可学习带通滤波器|`s: Bx48x256`|
-|`HighFreqEmphasis`|固定一阶差分核`[-1,1]`和二阶差分核`[1,-2,1]`，`groups=2`|`h: Bx4x256`|
-
-Sinc滤波器参数为每个带通滤波器的低频和带宽：
+共享前端输入为
 
 $$
-\mathbf w_k(t)=
-\frac{\sin(2\pi f_{2,k}t)-\sin(2\pi f_{1,k}t)}{\pi t}\cdot
+\mathbf{X}\in\mathbb{R}^{B\times2\times256}.
+$$
+
+|层|完整参数|输入到输出|作用|
+|---|---|---|---|
+|`SincConv1d.forward_iq_pair`|24个可学习带通滤波器，`kernel=79`，`stride=1`，`padding=39`；I/Q共享滤波器参数|`Bx2x256 -> Bx48x256`|用受约束的带通核代替自由卷积，先按频带分解IQ，减少前端学习任意接收机纹理的自由度|
+|`HighFreqEmphasis`|每个IQ通道分别施加一阶差分`[-1,1]`和二阶差分`[1,-2,1]`，`groups=2`|`Bx2x256 -> Bx4x256`|显式放大瞬态边沿、相位变化和高频残差，为time/DAC路径提供局部变化线索|
+
+第k个Sinc带通核由可学习下截止频率和带宽决定。先定义离散时间和未归一化滤波器：
+
+$$
+ t_n=\frac{n}{f_s},
+\qquad
+\widetilde{w}_{k}[n]
+=\frac{
+\sin(2\pi f_{2,k}t_n)-\sin(2\pi f_{1,k}t_n)
+}{\pi t_n}
 \left(0.54-0.46\cos\frac{2\pi n}{78}\right),
+\qquad n\in\{-39,\ldots,39\}.
 $$
 
-其中$f_{1,k}$和$f_{2,k}$由`low_hz_`和`band_hz_`学习得到。
+中心点使用连续极限，最终每个滤波器按最大绝对值归一化：
+
+$$
+\widetilde{w}_{k}[0]=2(f_{2,k}-f_{1,k}),
+\qquad
+w_k[n]=
+\frac{\widetilde{w}_{k}[n]}
+{\max_{n'}|\widetilde{w}_{k}[n']|+\varepsilon}.
+$$
+
+其中`f_1k`和`f_2k`由`low_hz_`与`band_hz_`学习得到，并满足上截止频率高于下截止频率。WiSig上下文未显式提供采样率时，当前实现回退到25 MHz。
+
+作用与收益：该前端让identity和domain两条backbone在相同底层频带坐标系中比较特征，避免两条分支从第一层就产生不可对齐的尺度。它仍保留24个带通滤波器的自适应能力，因此不是固定滤波器组。代价是长度79的核计算量高于小卷积核，并且若采样率或频谱占用显著改变，需要重新校准滤波器频率范围。
 
 ### 4.2identity branch：time path
 
 identity branch的time path把Sinc IQ、三阶非线性基和高频差分拼接：
 
 $$
-\mathbf t_0=
+\mathbf{t}_0=
 \operatorname{concat}\left[
-\mathbf s,\;
-\mathbf s|\mathbf s|^2,\;
-\mathbf h
-\right]\in\mathbb R^{B\times100\times256}.
+\mathbf{s},\;
+\mathbf{s}|\mathbf{s}|^2,\;
+\mathbf{h}
+\right]\in\mathbb{R}^{B\times100\times256}.
 $$
 
-|层|参数|输出通道|
-|---|---|---:|
-|`time_fuse`|`Conv1d 100->48`，`kernel=1`，`bias=0`；`GroupNorm g=16`；ReLU|48|
-|`time_down`|AvgPool1d，`kernel=2`|48|
-|`MixStyle`|仅identity branch；`layers=time_down,t1`；`p=0.18`，`alpha=0.10`，`mix=same_tx_crossdomain`，`strength=0.70`，`fallback=skip`，`late_start=110`|48|
-|`t1`|`Depthwise Conv1d 48->48`，`kernel=5`，`groups=48`；`Pointwise Conv1d 48->72`；`GroupNorm g=8`；ReLU；`MaxPool1d 2`；`Dropout 0.10`|72|
-|`t2`|`Depthwise Conv1d 72->72`，`kernel=5`，`groups=72`；`Pointwise Conv1d 72->96`；`GroupNorm g=16`；ReLU；`MaxPool1d 2`；`Dropout 0.10`|96|
-|`t3`|`Depthwise Conv1d 96->96`，`kernel=3`，`groups=96`；`Pointwise Conv1d 96->96`；`GroupNorm g=16`；ReLU；`pool=Identity`；`Dropout 0.10`|96|
-|`t_pool`|`AdaptiveAvgPool1d 1`|96|
-|`t_proj`|`Linear 96->160`|160|
+|层|完整参数|输入到输出|作用|
+|---|---|---|---|
+|`time_fuse`|`Conv1d 100->48`，`kernel=1`，`stride=1`，`padding=0`，`bias=False`；`GroupNorm groups=16`；ReLU|`Bx100x256 -> Bx48x256`|压缩Sinc、三阶非线性基和差分特征，学习三类低层证据的逐时刻组合|
+|`time_down`|`AvgPool1d kernel=2,stride=2`|`Bx48x256 -> Bx48x128`|抑制高频采样噪声并降低后续卷积计算量|
+|`MixStyle@time_down`|仅identity branch；同TX跨域配对；基础`p=0.18,alpha=0.10,strength=0.70`，失败时跳过|`Bx48x128 -> Bx48x128`|交换同一TX在不同receiver/day中的通道统计，削弱身份分支对接收机风格的依赖|
+|`t1`|depthwise `Conv1d 48->48,k=5,groups=48`；pointwise `Conv1d 48->72,k=1`；`GroupNorm groups=8`；ReLU；`MaxPool1d 2`；`Dropout 0.10`|`Bx48x128 -> Bx72x64`|提取短时瞬态和局部包络变化；depthwise-separable结构控制参数量|
+|`MixStyle@t1`|参数同上|`Bx72x64 -> Bx72x64`|在更高层局部模式上继续做同身份跨域风格扰动|
+|`t2`|depthwise `72->72,k=5,groups=72`；pointwise `72->96,k=1`；`GroupNorm groups=16`；ReLU；`MaxPool1d 2`；`Dropout 0.10`|`Bx72x64 -> Bx96x32`|扩大有效感受野，组合较长时间尺度的调制与瞬态模式|
+|`t3`|depthwise `96->96,k=3,groups=96`；pointwise `96->96,k=1`；`GroupNorm groups=16`；ReLU；无池化；`Dropout 0.10`|`Bx96x32 -> Bx96x32`|在不继续丢失时间分辨率的条件下细化高层时域模式|
+|`t_pool`|`AdaptiveAvgPool1d 1`|`Bx96x32 -> Bx96`|把变长局部响应聚合为固定长度向量|
+|`t_proj`|`Linear 96->160`|`Bx96 -> Bx160`|投影到与frequency/PA路径一致的融合维度|
 
-输出为$\mathbf e_t\in\mathbb R^{B\times160}$。
+time path输出定义为
+
+$$
+\mathbf{e}^{\mathrm{time}}\in\mathbb{R}^{B\times160}.
+$$
+
+作用与收益：time path主要保留Sinc子带内的瞬态、局部相位/幅度变化和三阶非线性响应。这些线索比单纯功率谱更能区分硬件链路中的短时差异。两处同TX跨域MixStyle只作用于identity branch，使模型看到“身份不变、接收机风格变化”的反事实样本。其配对要求同时存在TX标签和域标签；无标签前向没有TX标签，因此MixStyle在无标签批次跳过。代价是过强MixStyle可能抹除与TX相关的幅度统计，因此第110轮后将概率和强度退火，给分类边界留出收敛阶段。
 
 ### 4.3identity branch：frequency path
 
-frequency path从原始IQ的镜像FFT统计构造
+frequency path把原始IQ压缩为32个频带，并构造正负频率镜像统计。正频率功率、负频率功率及两个派生比值定义为
 
 $$
-\mathbf f_0=
+\mathbf{F}_{0}=
 \left[
-\log(1+P_+),\;
-\log(1+P_-),\;
-\log\frac{P_++\epsilon}{P_-+\epsilon},\;
-\frac{|P_+-P_-|}{P_++P_-+\epsilon}
-\right]\in\mathbb R^{B\times4\times32}.
+\log(1+\mathbf{P}^{+}),\;
+\log(1+\mathbf{P}^{-}),\;
+\log\frac{\mathbf{P}^{+}+\varepsilon}{\mathbf{P}^{-}+\varepsilon},\;
+\frac{|\mathbf{P}^{+}-\mathbf{P}^{-}|}{\mathbf{P}^{+}+\mathbf{P}^{-}+\varepsilon}
+\right]\in\mathbb{R}^{B\times4\times32}.
 $$
 
-|层|参数|输出通道|
-|---|---|---:|
-|`freq_gate`|`Conv1d 4->1`，`kernel=5`，`padding=2`；gate scale见下方公式说明|4|
-|`f1`|`Depthwise Conv1d 4->4`，`kernel=5`，`groups=4`；`Pointwise Conv1d 4->16`；`GroupNorm g=16`；ReLU；`MaxPool1d 2`；`Dropout 0.05`|16|
-|`f2`|`Depthwise Conv1d 16->16`，`kernel=5`，`groups=16`；`Pointwise Conv1d 16->32`；`GroupNorm g=16`；ReLU；`MaxPool1d 2`；`Dropout 0.05`|32|
-|`f3`|`Depthwise Conv1d 32->32`，`kernel=3`，`groups=32`；`Pointwise Conv1d 32->32`；`GroupNorm g=16`；ReLU；`pool=Identity`；`Dropout 0.05`|32|
-|`f_pool`|`AdaptiveAvgPool1d 1`|32|
-|`f_proj`|`Linear 32->160`|160|
-|`freq_stats_proj`|`Linear 3->160`；ReLU；`Dropout 0.1125`|160|
+|层|完整参数|输入到输出|作用|
+|---|---|---|---|
+|`freq_gate`|`Conv1d 4->1,k=5,padding=2`；Sigmoid；缩放幅度0.6|`Bx4x32 -> Bx4x32`|按频带自适应增强或抑制镜像统计，避免所有频带等权|
+|`f1`|depthwise `4->4,k=5,groups=4`；pointwise `4->16,k=1`；`GroupNorm groups=16`；ReLU；`MaxPool1d 2`；`Dropout 0.05`|`Bx4x32 -> Bx16x16`|学习局部频带组合和镜像不对称模式|
+|`f2`|depthwise `16->16,k=5,groups=16`；pointwise `16->32,k=1`；`GroupNorm groups=16`；ReLU；`MaxPool1d 2`；`Dropout 0.05`|`Bx16x16 -> Bx32x8`|扩大频带感受野并提高通道容量|
+|`f3`|depthwise `32->32,k=3,groups=32`；pointwise `32->32,k=1`；`GroupNorm groups=16`；ReLU；无池化；`Dropout 0.05`|`Bx32x8 -> Bx32x8`|细化高层频谱模式，不再压缩频带轴|
+|`f_pool`|`AdaptiveAvgPool1d 1`|`Bx32x8 -> Bx32`|聚合频带响应|
+|`f_proj`|`Linear 32->160`|`Bx32 -> Bx160`|投影为频域嵌入|
+|`freq_stats_proj`|`Linear 3->160`；ReLU；`Dropout 0.1125`|`Bx3 -> Bx160`|注入高频能量比例、镜像不对称均值和谱平坦度|
 
-输出为
-
-frequency gate的缩放形式为
+frequency gate和频域嵌入为
 
 $$
-g_{\mathrm{freq}}=1+0.6\left(2\sigma(\cdot)-1\right).
+\mathbf{G}^{\mathrm{freq}}
+=1+0.6\left[
+2\sigma\!\left(\operatorname{Conv1D}_{4\to1}(\mathbf{F}_{0})\right)-1
+\right].
 $$
 
 $$
-\mathbf e_f=\operatorname{Linear}_{32\to160}(\operatorname{pool}(\mathbf f_3))
-+\operatorname{MLP}_{3\to160}(\mathbf r_{\mathrm{freq}}).
+\mathbf{e}^{\mathrm{freq}}
+=\operatorname{Linear}_{32\to160}\!\left(\operatorname{Pool}(\mathbf{F}_{3})\right)
++\operatorname{MLP}_{3\to160}(\mathbf{r}^{\mathrm{freq}}).
 $$
 
-其中$\mathbf r_{\mathrm{freq}}$包含高频能量比例、镜像不对称均值和谱平坦度。
+`r_freq`包含高频能量比例、镜像不对称均值和谱平坦度。
+
+作用与收益：频域路径补充time path难以稳定表达的长期频谱形状、镜像不对称和带外能量分布。32频带压缩使其计算量远小于直接处理256点频谱。其风险是频谱线索也会携带接收机滤波响应，因此该路径不能单独承担身份判别，必须与域解耦损失和time/PA证据联合使用。
 
 ### 4.4identity branch：PA path
 
-PA path使用memory polynomial lift。对$m\in\{0,1,2,3\}$和$p\in\{1,3,5\}$：
+PA path使用memory polynomial lift。记延迟索引为r、非线性阶数为o：
 
 $$
-\phi_{m,p}(x)[n]=x[n-m]\left|x[n-m]\right|^{p-1}.
+\phi_{r,o}(\mathbf{x})[n]
+=\mathbf{x}[n-r]\left|\mathbf{x}[n-r]\right|^{o-1},
+\qquad
+r\in\{0,1,2,3\},
+\quad
+o\in\{1,3,5\}.
 $$
 
-因此输入通道数为$2\times4\times3=24$。
+I/Q两通道、4个记忆延迟和3个奇数阶共同产生24个通道：
 
-|层|参数|输出通道|
-|---|---|---:|
-|`pa_lift`|`memory_depth=4`，`orders=(1,3,5)`，`clip=2.0`|24|
-|`pa_gate`|`EnvelopeGate Conv1d 1->24`，`kernel=5`，`padding=2`，`alpha=0.5`|24|
-|`pa_b1`|`Conv1d 24->48`，`kernel=7`，`dilation=1`，`padding=3`；`GroupNorm g=16`；SiLU；`AvgPool1d 2`；`Dropout 0.08`|48|
-|`pa_b2`|`Conv1d 48->64`，`kernel=7`，`dilation=2`，`padding=6`；`GroupNorm g=16`；SiLU；`AvgPool1d 2`；`Dropout 0.08`|64|
-|`pa_b3`|`Conv1d 64->64`，`kernel=5`，`dilation=4`，`padding=8`；`GroupNorm g=16`；SiLU；`pool=Identity`；`Dropout 0.08`|64|
-|`pa_pool`|`AdaptiveAvgPool1d 1`|64|
-|`pa_proj`|`Linear 64->160`；ReLU；`Dropout 0.1125`|160|
-|`pa_stats_proj`|`Linear 3->160`；ReLU；`Dropout 0.1125`|160|
+$$
+C_{\mathrm{PA}}=2\times4\times3=24.
+$$
+
+|层|完整参数|输入到输出|作用|
+|---|---|---|---|
+|`pa_lift`|`memory_depth=4`，`orders=(1,3,5)`，幅度截断2.0|`Bx2x256 -> Bx24x256`|显式展开PA奇数阶非线性和短记忆效应|
+|`pa_gate`|包络经`Conv1d 1->24,k=5,padding=2`；Sigmoid；`alpha=0.5`|`Bx24x256 -> Bx24x256`|让高包络、强非线性区间获得更高权重|
+|`pa_b1`|`Conv1d 24->48,k=7,dilation=1,padding=3`；`GroupNorm groups=16`；SiLU；`AvgPool1d 2`；`Dropout 0.08`|`Bx24x256 -> Bx48x128`|提取局部PA响应|
+|`pa_b2`|`Conv1d 48->64,k=7,dilation=2,padding=6`；`GroupNorm groups=16`；SiLU；`AvgPool1d 2`；`Dropout 0.08`|`Bx48x128 -> Bx64x64`|用膨胀卷积覆盖更长记忆范围|
+|`pa_b3`|`Conv1d 64->64,k=5,dilation=4,padding=8`；`GroupNorm groups=16`；SiLU；无池化；`Dropout 0.08`|`Bx64x64 -> Bx64x64`|进一步扩大有效感受野并保持64步分辨率|
+|`pa_pool`|`AdaptiveAvgPool1d 1`|`Bx64x64 -> Bx64`|聚合非线性响应|
+|`pa_proj`|`Linear 64->160`；ReLU；`Dropout 0.1125`|`Bx64 -> Bx160`|形成PA局部嵌入|
+|`pa_stats_proj`|`Linear 3->160`；ReLU；`Dropout 0.1125`|`Bx3 -> Bx160`|注入edge ratio、regrowth ratio和谱峰度|
 
 输出为
 
 $$
-\mathbf e_{\mathrm{pa}}=
-\operatorname{MLP}_{64\to160}(\operatorname{pool}(\mathbf p_3))
-+0.25\,\operatorname{MLP}_{3\to160}(\mathbf r_{\mathrm{pa}}),
+\mathbf{e}^{\mathrm{pa}}
+=\operatorname{MLP}_{64\to160}\!\left(\operatorname{Pool}(\mathbf{P}_{3})\right)
++0.25\,\operatorname{MLP}_{3\to160}(\mathbf{r}^{\mathrm{pa}}).
 $$
 
-其中$\mathbf r_{\mathrm{pa}}$包含edge ratio、regrowth ratio和谱峰度。
+`r_pa`包含edge ratio、regrowth ratio和谱峰度。
+
+作用与收益：PA path直接编码AM/AM、AM/PM相关非线性及短记忆效应，目标是提取更接近发射机硬件来源的证据。相比让普通卷积自己发现高阶乘积，memory polynomial提供了明确归纳偏置。代价是它仍可能受AGC、接收机非线性和信道幅度变化影响，因此需要包络门控、域分支和角几何共同约束，不能把PA path单独解释为纯TX特征。
 
 ### 4.5identity branch：融合和分类头
 
 由于identity branch关闭DAC路径，base输入为
 
 $$
-\mathbf b_{\mathrm{in}}=
-\operatorname{concat}(\mathbf e_t,\mathbf e_f,\rho)
-\in\mathbb R^{B\times321},
+\mathbf{b}^{\mathrm{in}}
+=\operatorname{Concat}
+\left(\mathbf{e}^{\mathrm{time}},\mathbf{e}^{\mathrm{freq}},\chi\right)
+\in\mathbb{R}^{B\times321}.
 $$
 
-其中$\rho=|\mathbb E[z^2]|/(\mathbb E[|z|^2]+\epsilon)$是circularity统计。
+复IQ信号及circularity统计定义为
 
-|层|参数|输出|
-|---|---|---|
-|`fuse`|`Linear 321->160`；ReLU；`Dropout 0.45`|`b: Bx160`|
-|`con_proj`|`Linear 160->160`；ReLU；`Dropout 0.1125`|`feat_con`|
-|`id_proj`|`Linear 160->160`；ReLU；`Dropout 0.225`|`feat_cls`|
-|`pa_proj` in classifier|`Linear 320->160`；ReLU；`Dropout 0.225`|`feat_pa`|
-|`id_gate`|`Linear 160->160`；Sigmoid；`gate_alpha=0.35`|identity gate|
-|`joint_proj`|`Linear 320->160`；ReLU；`Dropout 0.225`|`feat_joint=z_id`|
-|`imp_merge`|`Linear 160->160`；ReLU；`Dropout 0.1125`|`feat_imp`|
-|`CosFaceHead`|`weight: 6x160`，`scale=30`，`margin=0.35`|`tx logits`|
-|`pa_head`|`Linear 160->80`；ReLU；`Linear 80->1`；Sigmoid|PA辅助强度预测|
+$$
+z[n]=I[n]+\mathrm{j}Q[n],
+\qquad
+\chi=
+\frac{|\mathbb{E}\{z^2\}|}
+{\mathbb{E}\{|z|^2\}+\varepsilon}.
+$$
+
+|层|完整参数|输入到输出|作用|
+|---|---|---|---|
+|`fuse`|`Linear 321->160`；ReLU；`Dropout 0.45`|`Bx321 -> Bx160`|融合时域、频域和circularity证据，形成共享base|
+|`con_proj`|`Linear 160->160`；ReLU；`Dropout 0.1125`|`Bx160 -> Bx160`|产生`feat_con`；不是最终分类表征|
+|`id_proj`|`Linear 160->160`；ReLU；`Dropout 0.225`|`Bx160 -> Bx160`|形成基础身份向量`feat_cls`|
+|classifier内`pa_proj`|`Linear 320->160`；ReLU；`Dropout 0.225`|`Concat(base,pa_local): Bx320 -> Bx160`|把PA局部嵌入与base联合校准为`feat_pa`|
+|`id_gate`|`Linear 160->160`；Sigmoid；`gate_alpha=0.35`|`feat_pa: Bx160 -> Bx160`|由PA证据逐维调制基础身份向量，调制范围受0.35限制|
+|`joint_proj`|`Linear 320->160`；ReLU；`Dropout 0.225`|`Concat(feat_cls,feat_pa): Bx320 -> Bx160`|生成最终身份表征`z_id`|
+|`imp_merge`|`Linear 160->160`；ReLU；`Dropout 0.1125`|`feat_pa: Bx160 -> Bx160`|生成identity backbone的`feat_imp`；Phase1主身份输出不选该键|
+|`CosFaceHead`|权重矩阵`6x160`；`scale=30`；`margin=0.35`|`Bx160 -> Bx6`|在单位超球面上扩大真实类角间隔|
+|`pa_head`|`Linear 160->80`；ReLU；`Linear 80->1`；Sigmoid|`Bx160 -> Bx1`|输出PA强度辅助量；B02没有给该辅助头单独的非零监督权重|
 
 CosFace logits为
 
 $$
-\ell_{y,c}
-=s\left(
-\frac{\mathbf z_{\mathrm{id}}^\top\mathbf w_c}
-{\|\mathbf z_{\mathrm{id}}\|_2\|\mathbf w_c\|_2}
--m\cdot\mathbb 1[c=y]
-\right).
+\ell^{\mathrm{tx}}_{i,c}
+=s_{\mathrm{cf}}
+\left[
+\frac{(\mathbf{z}^{\mathrm{id}}_i)^{\top}\mathbf{w}_c}
+{\|\mathbf{z}^{\mathrm{id}}_i\|_2\|\mathbf{w}_c\|_2}
+-m_{\mathrm{cf}}\mathbf{1}[c=y_i]
+\right],
+\qquad
+s_{\mathrm{cf}}=30,
+\quad
+m_{\mathrm{cf}}=0.35.
 $$
+
+作用与收益：融合头不是简单拼接后分类。它先以time/frequency/circularity构造基础身份，再由PA证据做受限门控，最后投影到160维CosFace空间。该结构允许PA线索提高身份判别，但限制PA分支直接主导分类。代价是多级投影增加参数和过拟合风险，因此配合较高Dropout、角度margin和后述跨域几何损失。
 
 ### 4.6domain branch：域表征路径
 
-domain branch使用同样的`lite_d`主干，但配置为`domain_branch_ablation=no_stats`和`mixstyle_on=False`。它保留time、DAC、frequency、PA路径，禁用统计投影增量。time、frequency、PA路径的卷积层宽与identity branch相同；不同点如下：
+domain branch使用同样的`lite_d`宽度，但配置为`domain_branch_ablation=no_stats`和`mixstyle_on=False`。它保留time、DAC、frequency、PA路径，禁用`freq_stats_proj`、`pa_stats_proj`和`dac_subband_agg`。底层Sinc与HF对象同identity branch共享，后续卷积和投影参数独立。time、frequency和PA卷积层的通道宽度与identity branch相同；关键差异如下：
 
-|组件|domain branch实际参数|
-|---|---|
-|MixStyle|关闭|
-|stats path|关闭，`freq_stats_proj`、`pa_stats_proj`、`dac_subband_agg`不参与|
-|DAC HF projection|`Conv1d 4->48`，`kernel=1`，`bias=0`；`GroupNorm g=16`；SiLU|
-|`dac_b1`|WLComplexBlock，`complex Conv 24->24`，`kernel=5`，`dilation=1`，`pool=Identity`，`Dropout 0.05`，`residual=Identity`|
-|`dac_b2`|WLComplexBlock，`complex Conv 24->32`，`kernel=3`，`dilation=1`，`pool=Identity`，`Dropout 0.05`，`residual Conv1d 48->64`|
-|`dac_b3`|WLComplexBlock，`complex Conv 32->32`，`kernel=3`，`dilation=2`，`AvgPool1d 2`，`Dropout 0.05`，`residual Conv1d 64->64 + AvgPool1d 2`|
-|`dac_proj`|`Linear 64->160`；ReLU；`Dropout 0.1125`|
+|组件|完整参数|输入到输出|作用|
+|---|---|---|---|
+|MixStyle|关闭|形状不变|domain branch需要保留真实域统计，不能主动混洗接收机风格|
+|stats path|关闭`freq_stats_proj`、`pa_stats_proj`、`dac_subband_agg`|对应增量为0|避免手工谱统计重复注入；原始RCN统计由后置enhancer统一处理|
+|domain time path|`time_fuse,time_down,t1,t2,t3,t_pool,t_proj`参数与4.2完全相同，但参数独立且无MixStyle|`Bx100x256 -> Bx160`|保留与域相关的瞬态和局部变化|
+|domain frequency path|`freq_gate,f1,f2,f3,f_pool,f_proj`参数与4.3相同；`freq_stats_proj`关闭；circularity在`no_stats`下置0|`Bx4x32 -> Bx160`|保留学习得到的谱形，避免手工频谱统计重复注入|
+|domain PA path|`pa_lift,pa_gate,pa_b1,pa_b2,pa_b3,pa_pool,pa_proj`参数与4.4相同；`pa_stats_proj`增量为0|`Bx2x256 -> Bx160`|允许domain branch吸收接收链路相关的非线性变化|
+|domain `fuse`|`Concat(time160,freq160,circularity_zero1)`；`Linear 321->160`；ReLU；`Dropout 0.45`|`Bx321 -> Bx160`|形成同时供DAC和PA投影使用的domain base|
+|`dac_hf_proj`|`Conv1d 4->48,k=1,bias=False`；`GroupNorm groups=16`；SiLU；输出乘0.5后与Sinc IQ相加|`Bx4x256 -> Bx48x256`|把高频差分注入复滤波器组，突出接收机/DAC相关局部失真|
+|`dac_b1`|widely-linear complex `24->24,k=5,dilation=1`；无池化；`Dropout 0.05`；恒等残差|`Bx48x256 -> Bx48x256`|建模I/Q共轭耦合和一阶复失真|
+|`dac_b2`|widely-linear complex `24->32,k=3,dilation=1`；无池化；`Dropout 0.05`；残差`Conv1d 48->64`|`Bx48x256 -> Bx64x256`|提升复通道容量并保留残差信息|
+|`dac_b3`|widely-linear complex `32->32,k=3,dilation=2`；`AvgPool1d 2`；`Dropout 0.05`；残差`Conv1d 64->64 + AvgPool1d 2`|`Bx64x256 -> Bx64x128`|扩大复域感受野并降采样|
+|`dac_pool`|`AdaptiveAvgPool1d 1`|`Bx64x128 -> Bx64`|聚合DAC/IQ失衡证据|
+|`dac_proj`|`Linear 64->160`；ReLU；`Dropout 0.1125`|`Bx64 -> Bx160`|形成DAC局部域嵌入|
+|domain classifier内`dac_proj`|`Linear 320->160`；ReLU；`Dropout 0.225`|`Concat(base,dac_local): Bx320 -> Bx160`|生成`feat_dac`|
+|domain classifier内`pa_proj`|`Linear 320->160`；ReLU；`Dropout 0.225`|`Concat(base,pa_local): Bx320 -> Bx160`|生成`feat_pa`|
+|`imp_merge`|`Linear 320->160`；ReLU；`Dropout 0.1125`|`Concat(feat_dac,feat_pa): Bx320 -> Bx160`|形成`z_dom_raw`，同时吸收base、DAC和PA中的域相关成分|
 
 WL complex convolution使用四个实卷积：
 
 $$
 \begin{aligned}
-\mathbf y_r&=W_r\mathbf x_r-W_i\mathbf x_i+V_r\mathbf x_r+V_i\mathbf x_i,\\
-\mathbf y_i&=W_r\mathbf x_i+W_i\mathbf x_r-V_r\mathbf x_i+V_i\mathbf x_r.
+\mathbf{y}_{r}
+&=W_r\mathbf{x}_{r}-W_i\mathbf{x}_{i}
++V_r\mathbf{x}_{r}+V_i\mathbf{x}_{i},\\
+\mathbf{y}_{i}
+&=W_r\mathbf{x}_{i}+W_i\mathbf{x}_{r}
+-V_r\mathbf{x}_{i}+V_i\mathbf{x}_{r}.
 \end{aligned}
 $$
 
-domain backbone输出`feat_imp`作为$\mathbf z_{\mathrm{dom,raw}}$。随后`DomainFeatureEnhancer`把原始IQ的receiver/channel/noise统计注入域表征：
+domain backbone输出`feat_imp`作为`z_dom_raw`。随后`DomainFeatureEnhancer`从原始IQ计算18维receiver/channel/noise统计：I/Q/幅度的一阶与二阶统计、对数功率统计、I/Q相关与不平衡、差分幅度和相位增量摘要。
 
-|层|参数|输出|
-|---|---|---|
-|`RCNStatEncoder`|18维IQ统计；`Linear 18->80`；`LayerNorm 80`；SiLU；`Dropout 0.05`；`Linear 80->160`|`z_rcn`|
-|gate|`Linear 320->160`；Sigmoid|`g_rcn`|
-|enhance|LayerNorm残差增强，公式见下文|`z_dom`|
-
-域分类头和对抗头为
+|层|完整参数|输入到输出|作用|
+|---|---|---|---|
+|`RCNStatEncoder`|18维统计；`Linear 18->80`；`LayerNorm 80`；SiLU；`Dropout 0.05`；`Linear 80->160`|`Bx18 -> Bx160`|把显式接收机/信道/噪声统计映射为`z_rcn`|
+|RCN gate|`Linear 320->160`；Sigmoid|`Concat(z_dom_raw,z_rcn): Bx320 -> Bx160`|逐维决定需要注入多少显式域统计|
+|enhance|残差系数0.35；`LayerNorm 160`|`Bx160 -> Bx160`|以受限幅度增强域表征，防止手工统计覆盖学习特征|
 
 域增强的显式形式为
 
 $$
-\mathbf z_{\mathrm{dom}}
-=\operatorname{LayerNorm}
-\left(
-\mathbf z_{\mathrm{dom,raw}}
-+0.35\,\mathbf g_{\mathrm{rcn}}\odot\mathbf z_{\mathrm{rcn}}
+\mathbf{z}^{\mathrm{rcn}}
+=\operatorname{RCNEncoder}(\mathbf{X}),
+\qquad
+\mathbf{g}^{\mathrm{rcn}}
+=\sigma\!\left(
+W_g[\mathbf{z}^{\mathrm{dom,raw}};\mathbf{z}^{\mathrm{rcn}}]+\mathbf{b}_g
 \right).
 $$
 
-|层|参数|输出|
-|---|---|---|
-|`dom_head`|`Linear 160->80`；ReLU；`Dropout 0.10`；`Linear 80->D`|`domain logits`|
-|`adv_head`|`GRL(z_id)`；`Linear 160->80`；ReLU；`Dropout 0.10`；`Linear 80->D`|`adversarial domain logits`|
-|`tx_adv_head`|默认关闭|无|
+$$
+\mathbf{z}^{\mathrm{dom}}
+=\operatorname{LayerNorm}
+\left(
+\mathbf{z}^{\mathrm{dom,raw}}
++0.35\,\mathbf{g}^{\mathrm{rcn}}\odot\mathbf{z}^{\mathrm{rcn}}
+\right).
+$$
+
+|层|完整参数|输入到输出|作用|
+|---|---|---|---|
+|`dom_head`|`Linear 160->80`；ReLU；`Dropout 0.10`；`Linear 80->D`|`z_dom: Bx160 -> BxD`|要求domain branch保留可解释的域信息|
+|`adv_head`|GRL；`Linear 160->80`；ReLU；`Dropout 0.10`；`Linear 80->D`|`z_id: Bx160 -> BxD`|分类头学习域标签，GRL迫使identity backbone消除可预测域信息|
+|`tx_adv_head`|默认关闭|无|B02不对`z_dom`做TX对抗，不据此声称域表征完全无身份信息|
 
 GRL定义为
 
 $$
-\operatorname{GRL}_{\lambda}(\mathbf z)=\mathbf z,\qquad
-\frac{\partial\operatorname{GRL}_{\lambda}}{\partial\mathbf z}=-\lambda\mathbf I.
+\operatorname{GRL}_{\lambda}(\mathbf{z})=\mathbf{z},
+\qquad
+\frac{\partial\operatorname{GRL}_{\lambda}}
+{\partial\mathbf{z}}
+=-\lambda I.
 $$
+
+作用与收益：双分支采用非对称设计。identity branch关闭DAC并混洗同TX跨域风格，目标是保留TX稳定证据；domain branch保留DAC、关闭MixStyle并注入RCN统计，目标是主动吸收接收机和信道扰动。域监督、GRL、协方差正交和同TX跨域一致性共同训练这两个输出。该设计比单纯DANN更可解释，因为域信息不是只被擦除，而是由第二条分支显式承接。代价是双backbone增加训练计算量，且共享Sinc/HF意味着两种目标仍在底层耦合；因此报告只能声称“降低域泄漏”，不能声称严格统计独立。
+
+训练时`return_aux=True`，两条backbone都运行；快速推理时`return_aux=False`，模型只执行identity backbone，domain branch被绕过。domain backbone内部的`con_proj`、`id_proj`、`id_gate`、`joint_proj`、内部CosFace、`dac_head`和`pa_head`虽然会在训练辅助前向中执行，但当前损失不读取这些输出，因此没有有效梯度；真正参与`z_dom`优化的是base、`dac_proj`、`pa_proj`、`imp_merge`、RCN enhancer和域分类头。这是当前实现的计算冗余，不应包装成创新点。
+
+### 4.7分支协同总览
+
+|分支或机制|主要捕获对象|直接收益|主要风险|由什么机制约束|
+|---|---|---|---|---|
+|共享Sinc/HF|频带结构、瞬态差分|统一底层坐标并降低前端自由度|采样率变化敏感|可学习截止频率、后续多路径融合|
+|identity time|瞬态、局部相位/幅度、三阶非线性|补充短时硬件线索|接收机风格捷径|同TX跨域MixStyle、GRL、跨域一致性|
+|identity frequency|镜像不对称、频谱形状、带外能量|提供长期谱域证据|接收机滤波器泄漏|双分支解耦、GroupCE/FishR|
+|identity PA|PA奇数阶和记忆效应|增强TX硬件归因|AGC/接收机非线性混入|受限门控、角几何和域约束|
+|domain DAC/RCN|I/Q耦合、接收机、噪声和信道统计|为nuisance提供显式承接空间|可能残留TX信息|仅作域建模；不声称完全身份无关|
+|CosFace与角几何|单位超球面上的类内/类间结构|为跨域分类和Phase2检索提供统一距离|尾类可能仍扩张|prototype、CVaR、source episode|
 
 ## 5.训练参数
 
@@ -333,486 +463,1178 @@ $$
 |数据|`wisig_pkl`|`Dataset_WigSig/ManySig.pkl`|
 |数据|`split_mode`|`tx_rx_day_1_7_2`|
 |数据|`labeled_ratio,unlabeled_ratio,source_val_ratio`|`0.10,0.70,0.20`|
+|数据|实际L/U/V样本数|8400/58800/16800|
+|数据|`wisig_out_len`|256|
+|数据|TX类别/源域数|C=6，D=14；D由7个源receiver与2个源day的rx_day组合得到|
+|批处理|`batch_size,eval_batch_size`|128,256|
+|加载|`num_workers,prefetch_factor`|4,2|
 |优化器|AdamW|`learning_rate=2e-4`，`weight_decay=1e-4`|
+|AdamW内部参数|`betas,eps,amsgrad,maximize`|`(0.9,0.999),1e-8,false,false`|
+|数值|AMP|开启|
+|数值|学习率调度/梯度裁剪|均未启用|
+|模型|可训练参数量|1,049,665|
 |训练轮数|`epochs`|200|
 |阶段|`label_epochs,pseudo_epochs`|130,70|
+|阶段调度|`stage1_epochs,stage2_epochs,stage3_ramp_epochs`|16,68,17|
 |label smoothing|`epsilon_ls`|0.01|
 |伪标签|`tau_min,tau_max,pseudo_quantile`|`0.92,0.97,0.86`|
 |伪标签|`pseudo_threshold_mode`|`rx_day_quantile`|
-|伪标签|`use_ema_teacher`|true|
+|伪标签|EMA/门控|teacher=true，decay=0.999；domain/temporal/strong agreement均开启|
+|MixStyle|基础配置|`p=0.18,alpha=0.10,strength=0.70,same_tx_crossdomain`|
+|MixStyle|后期退火|第110轮起40轮退火至`p=0.05,strength=0.32`|
 |prototype|`lambda_proto`|0.0032|
 |prototype|`proto_domain_align_weight,proto_margin,proto_push_weight`|`0.10,0.15,0.10`|
+|prototype|memory momentum/min count|0.95/2|
+|角几何|历史CLI名`lambda_open_world_feat`|0.0024；start=12，warmup=25|
+|角几何|radius/inter/sample/tail/vacuum|12 deg/55 deg/5 deg/0.14/0.40|
 |身份几何|`lambda_zid_compact`|0.032|
-|身份几何|SupCon/radius/CVaR权重|`0.30,0.35,0.35`|
+|身份几何|start/warmup|8/25|
+|身份几何|跨域SupCon/radius/CVaR权重|`0.30,0.35,0.35`|
 |身份几何|radius,CVaR alpha|`40 deg,0.95`|
 |源域边界|历史CLI名`lambda_proxy_unknown`|0.0045|
+|源域边界|start/warmup/virtual mode/count|45/25/hard/48|
 |源域边界|core/accept/tail/overflow quantile|`0.90,0.85,0.92,0.97`|
-|源域边界|core/component/tail/source权重|`0.45,0.65,0.20,0.20`|
+|源域边界|vacuum/vaccept/core/component/tail/source权重|`0.55,1.00,0.45,0.65,0.20,0.20`|
 |源域边界|CVaR alpha|0.30|
 |类间软混合|历史CLI名`lambda_soft_unknown_mixup`|0.0045|
-|类间软混合|count/order/alpha|`24,3,0.5`|
+|类间软混合|start/warmup/count/order/alpha|`25,25,24,3,0.5`|
 |类间软混合|CE/energy/vacuum权重|`0.60,1.0,0.35`|
 |source episode|`lambda_source_episode`|0.0035|
-|source episode|start/warmup/min domains/radius cap|`20,25,2,33 deg`|
+|source episode|start/warmup/min domains/radius cap/mix weight|`20,25,2,33 deg,0.75`|
 |源域LEO压力|`sat_train_scenarios`|`leo_clear_weak,leo_low_elev_weak,leo_rain_weak`|
-|源域LEO压力|`lambda_sat_cls,lambda_sat_cons`|`0.68,0`|
-|域损失|`lambda_domain,lambda_adv`|`1,0.35`|
-|Group/FishR|`lambda_group_ce,lambda_fishr`|`0.16,0.04`|
+|源域LEO压力|start/`lambda_sat_cls,lambda_sat_cons`|`80/0.68/0`|
+|域解耦|`lambda_domain,lambda_adv,lambda_orth,lambda_cons`|`1,0.35,0.05,0.08`；还要乘训练stage scale|
+|Group/FishR|`lambda_group_ce,group_top_frac,lambda_fishr`|`0.16,0.35,0.04`|
+|Group/FishR|`group_ce_min_domains,fishr_min_domains`|4,4|
 |无标签|`lambda_u,lambda_ent`|`0.16,0.01`|
 |checkpoint|`best_metric`|`joint_safe`|
 
+ADV3B02的实际优化不是“全部损失从第1轮以固定权重同时开启”。训练有两个数据阶段和三个权重阶段：
+
+|epoch范围|数据阶段|权重阶段|主要变化|
+|---:|---|---|---|
+|1-16|label|S1 core|域对抗乘0.70，正交乘0.50，跨域一致性为0，GroupCE乘0.50|
+|17-68|label|S2 stabilize|域对抗、跨域一致性和GroupCE按幂次曲线逐步升高|
+|69-130|label|S3 refine|域对抗和GroupCE达到全权重；一致性从0.85倍升到1倍|
+|131-200|pseudo|S3 refine + SSL|在标注损失之外加入通过门控的源域无标签伪标签CE和熵最小化|
+
+配置存在但对B02总梯度贡献为0的项必须与有效损失分开：
+
+|零权重项|B02值|结论|
+|---|---:|---|
+|`lambda_sat_cons`|0|没有LEO clean/satellite一致性优化|
+|`lambda_tx_proto,lambda_rx_proto,lambda_mask_aux`|0|仅做Phase1分布审计，不参与训练|
+|`lambda_tx_supcon_masked,lambda_rx_supcon_masked,lambda_txrx_rect`|0|不进入总目标|
+|`lambda_teacher_clean_kl,lambda_teacher_sat_kl,lambda_teacher_zid_mse`|0|EMA用于伪标签，不是蒸馏teacher|
+|`lambda_u_domain,lambda_u_adv,lambda_u_sat_cons`|0|无标签样本不训练域头、对抗头或LEO一致性|
+|`lambda_u_direct_metric_accept,lambda_u_quarantine_accept`|0|无标签几何接收项不参与B02|
+|PA/DAC辅助分类与回归权重|0|PA辅助输出存在，但没有单独监督项|
+
 ## 6.训练损失函数
 
-### 6.1监督TX分类
+### 6.1总符号表
+
+表格中的符号采用稳定文本别名，标准数学形式全部放在独立公式块中。
+
+$$
+\begin{gathered}
+\mathcal{B}_{l}=\{(\mathbf{x}_i,y_i,d_i)\}_{i=1}^{N_l},
+\qquad
+\mathcal{B}_{u}=\{(\mathbf{u}_j,d_j)\}_{j=1}^{N_u},\\
+C=6,
+\qquad
+D=14,
+\qquad
+\overline{\mathbf{z}}=\frac{\mathbf{z}}{\|\mathbf{z}\|_2+\varepsilon},\\
+\vartheta(\mathbf{a},\mathbf{b})
+=\arccos\!\left(
+\overline{\mathbf{a}}^{\top}\overline{\mathbf{b}}
+\right),
+\qquad
+[v]_{+}=\max(0,v),\\
+\operatorname{sp}(v)=\log(1+\exp v),
+\qquad
+Q_q(\mathcal{A})=\mathcal{A}\text{的}q\text{分位数}.
+\end{gathered}
+$$
+
+|文本别名|标准对象|形状或范围|统一含义|
+|---|---|---|---|
+|`B_l`,`B_u`|标注批、无标签批|集合|当前mini-batch中的源域样本|
+|`N_l`,`N_u`|批内样本数|正整数|对应批大小|
+|`C`,`D`|TX类数、域数|6、14|分类输出维数|
+|`x_i`,`u_j`|标注/无标签IQ|2x256|模型输入|
+|`y_i`,`d_i`|TX/域标签|离散整数|类条件与域条件监督|
+|`z_i`,`z_id_i`|身份表征|160维|未归一化身份向量；两种写法同义|
+|`z_dom_i`|域表征|160维|接收机/日期/信道表征|
+|`bar_z`|L2归一化向量|单位球面|所有余弦和角距离的输入|
+|`vartheta(a,b)`|角距离|0到pi|归一化向量夹角|
+|`mu_c`|TX类原型|160维|类c的单位中心|
+|`mu_cd`|类域原型|160维|TX类c在域d中的单位中心|
+|`ell_tx`,`ell_dom`,`ell_adv`|三类logits|C维或D维|TX、域和对抗域未归一化分数|
+|`p_ic`,`q_jc`|预测概率|0到1|student或EMA teacher的softmax输出|
+|`e_c`|one-hot向量|C维|类别c的单位标签向量|
+|`Q_q`|分位数算子|q在0到1之间|构造域阈值、核心半径和尾部集合|
+|`TopK_k`|最大k项均值|k为正整数|强调最难样本或最危险类别|
+|`TopFrac_alpha`|最大alpha比例均值|alpha在0到1之间|实现经验CVaR尾部均值|
+|`sg`|stop-gradient|算子|前向保留数值，反向阻断梯度|
+|`sp`|softplus|非负平滑函数|替代硬hinge并保留梯度|
+|`1[condition]`|指示函数|0或1|控制样本选择或阶段启用|
+|`e`|训练epoch|1到200|不得与one-hot别名混用|
+|`r(e;s,w)`|线性warm-up门|0到1|从start轮起用w轮升到1|
+|`w_k(e)`|stage权重|非负实数|基础lambda与S1/S2/S3倍率的乘积|
+
+### 6.2阶段权重与完整总目标
+
+线性warm-up门定义为
+
+$$
+r(e;s,w)=
+\begin{cases}
+0, & e<s,\\
+\min\!\left(1,\dfrac{e-s+1}{w}\right), & e\ge s.
+\end{cases}
+$$
+
+S2与S3的幂次进度为
+
+$$
+t_2(e)=\left(\frac{e-16}{52}\right)^{1.75},
+\qquad
+t_3(e)=\min\!\left[
+1,\left(\frac{e-68}{17}\right)^{1.75}
+\right].
+$$
+
+有效域相关权重为
+
+$$
+\begin{array}{c|ccc}
+&e\le16&17\le e\le68&e\ge69\\
+\hline
+w_{\mathrm{dom}}(e)&1&1&1\\
+w_{\mathrm{adv}}(e)&0.245&0.35(0.70+0.30t_2)&0.35\\
+w_{\mathrm{orth}}(e)&0.025&0.05&0.05\\
+w_{\mathrm{cons}}(e)&0&0.08(0.20+0.55t_2)&0.08(0.85+0.15t_3)\\
+w_{\mathrm{group}}(e)&0.08&0.16(0.70+0.30t_2)&0.16
+\end{array}
+$$
+
+ADV3B02历史运行的完整目标为
+
+$$
+\begin{aligned}
+\mathcal{L}_{\mathrm{ADV3B02}}(e)
+={}&\mathcal{L}_{\mathrm{tx}}
++w_{\mathrm{dom}}(e)\mathcal{L}_{\mathrm{dom}}
++w_{\mathrm{adv}}(e)\mathcal{L}_{\mathrm{adv}}
++w_{\mathrm{orth}}(e)\mathcal{L}_{\mathrm{orth}}
++w_{\mathrm{cons}}(e)\mathcal{L}_{\mathrm{cons}}\\
+&+w_{\mathrm{group}}(e)\mathcal{L}_{\mathrm{group}}
++0.04\mathcal{L}_{\mathrm{fishr}}
++0.0032\mathcal{L}_{\mathrm{proto}}\\
+&+0.0024r(e;12,25)\mathcal{L}_{\mathrm{geo}}
++0.032r(e;8,25)\mathcal{L}_{\mathrm{zid}}\\
+&+0.0045r(e;45,25)\mathcal{L}_{\mathrm{coretail}}
++0.0045r(e;25,25)\mathcal{L}_{\mathrm{softmix}}\\
+&+0.0035r(e;20,25)\mathcal{L}_{\mathrm{epi}}
++0.68\mathbf{1}[e\ge80]\mathcal{L}_{\mathrm{satCE}}\\
+&+\mathbf{1}[e\ge131]
+\left(0.16\mathcal{L}_{u}+0.01\mathcal{L}_{\mathrm{ent}}\right).
+\end{aligned}
+$$
+
+这里把历史代码名`open_world_feat`记为`L_geo`，把历史代码名`proxy_unknown`记为`L_coretail`。两项在本报告中只解释为Phase1源域闭集角几何和尾部风险正则，不构成unknown拒识、FAR或open-set成功证据。
+
+|符号别名|意义|怎么优化|
+|---|---|---|
+|`r(e;s,w)`|延迟启用并线性升权|避免训练早期几何项压倒基础分类|
+|`w_adv,w_orth,w_cons,w_group`|S1/S2/S3有效权重|先学习可分类表征，再逐步加强域解耦与困难域约束|
+|`1[e>=131]`|SSL阶段门|前130轮只用标注源域学习teacher可依赖的基础表征|
+
+### 6.3监督TX分类
 
 带label smoothing的目标分布为
 
 $$
-\tilde{\mathbf y}_{i,c}=
-(1-\varepsilon_{\mathrm{ls}})\mathbb 1[c=y_i]
+\widetilde{y}_{i,c}=
+(1-\varepsilon_{\mathrm{ls}})\mathbf{1}[c=y_i]
 +\frac{\varepsilon_{\mathrm{ls}}}{C}.
 $$
 
 监督TX分类损失为
 
 $$
-\mathcal L_{\mathrm{tx}}
-=-\frac{1}{|\mathcal B_l|}
-\sum_{i\in\mathcal B_l}
+\mathcal{L}_{\mathrm{tx}}
+=-\frac{1}{|\mathcal{B}_l|}
+\sum_{i\in\mathcal{B}_l}
 \sum_{c=1}^{C}
-\tilde{\mathbf y}_{i,c}\log p_\theta(c|x_i).
+\widetilde{y}_{i,c}
+\log p_{\boldsymbol{\theta}}(c|\mathbf{x}_i),
+\qquad
+\varepsilon_{\mathrm{ls}}=0.01.
 $$
 
-### 6.2域监督与域对抗
+|符号别名|意义|
+|---|---|
+|`y_tilde_ic`|label smoothing后的类c目标概率|
+|`epsilon_ls`|0.01的平滑系数|
+|`p_theta(c given x_i)`|CosFace logits经softmax后的TX概率|
+|`C`|6个旧TX类别|
+
+优化方式：最小化该项提高真实TX的CosFace概率，同时用1%的均匀质量限制过度自信。梯度更新identity backbone、CosFace权重以及共享Sinc/HF；domain branch不直接接收该项梯度。
+
+### 6.4域监督、域对抗、正交与类条件一致性
 
 域监督损失为
 
 $$
-\mathcal L_{\mathrm{dom}}
-=-\frac{1}{|\mathcal B_l|}
-\sum_{i\in\mathcal B_l}
-\log p_\phi(d_i|\mathbf z_{\mathrm{dom},i}).
+\mathcal{L}_{\mathrm{dom}}
+=-\frac{1}{|\mathcal{B}_l|}
+\sum_{i\in\mathcal{B}_l}
+\log p_{\boldsymbol{\phi}}
+\left(d_i|\mathbf{z}^{\mathrm{dom}}_i\right).
 $$
 
-域对抗头从$\operatorname{GRL}(\mathbf z_{\mathrm{id}})$预测域标签：
+域对抗损失为
 
 $$
-\mathcal L_{\mathrm{adv}}
-=-\frac{1}{|\mathcal B_l|}
-\sum_{i\in\mathcal B_l}
-\log p_\psi(d_i|\operatorname{GRL}_{1.0}(\mathbf z_{\mathrm{id},i})).
+\mathcal{L}_{\mathrm{adv}}
+=-\frac{1}{|\mathcal{B}_l|}
+\sum_{i\in\mathcal{B}_l}
+\log p_{\boldsymbol{\psi}}
+\left[
+d_i|\operatorname{GRL}_{1}
+\left(\mathbf{z}^{\mathrm{id}}_i\right)
+\right].
 $$
 
-反向传播时$\mathcal L_{\mathrm{adv}}$对$\mathbf z_{\mathrm{id}}$的梯度符号被反转，从而压低身份表征中的域可预测性。
-
-### 6.3GroupCE与FishR
-
-设$\mathcal G$为源域group集合，$\mathcal B_g=\{i\in\mathcal B_l:g_i=g\}$。GroupCE写为
+对中心化后的批特征矩阵，协方差正交损失为
 
 $$
-\mathcal L_{\mathrm{group}}
-=\sum_{g\in\mathcal G}
-\alpha_g
-\left(
--\frac{1}{|\mathcal B_g|}
-\sum_{i\in\mathcal B_g}
-\log p_\theta(y_i|x_i)
-\right),
-$$
-
-其中$\alpha_g$由实现中的弱域/困难域策略确定。FishR约束各group梯度方差一致：
-
-$$
-\mathcal L_{\mathrm{fishr}}
-=
-\sum_{g\in\mathcal G}
+\mathcal{L}_{\mathrm{orth}}
+=\frac{1}{D_z^2}
 \left\|
-\operatorname{Var}_{i\in\mathcal B_g}
-\left(\nabla_{\mathbf z_{\mathrm{id}}}\ell_i\right)
--
-\frac{1}{|\mathcal G|}
-\sum_{g'\in\mathcal G}
-\operatorname{Var}_{i\in\mathcal B_{g'}}
-\left(\nabla_{\mathbf z_{\mathrm{id}}}\ell_i\right)
-\right\|_2^2.
+\frac{
+(Z_{\mathrm{id}}-\overline{Z}_{\mathrm{id}})^{\top}
+(Z_{\mathrm{dom}}-\overline{Z}_{\mathrm{dom}})
+}{|\mathcal{B}_l|-1}
+\right\|_F^2,
+\qquad
+D_z=160.
 $$
 
-### 6.4prototype几何损失
-
-类原型为
+同一TX在源域d中的批内中心为
 
 $$
-\boldsymbol\mu_c=
-\frac{\sum_{i:y_i=c}\mathbf z_{\mathrm{id},i}}
-{\left\|\sum_{i:y_i=c}\mathbf z_{\mathrm{id},i}\right\|_2+\epsilon}.
+\boldsymbol{\mu}_{c,d}
+=\frac{
+\sum_{i:y_i=c,d_i=d}\overline{\mathbf{z}}^{\mathrm{id}}_i
+}{
+\left\|
+\sum_{i:y_i=c,d_i=d}\overline{\mathbf{z}}^{\mathrm{id}}_i
+\right\|_2+\varepsilon
+}.
 $$
 
-prototype pull/push可写为
+跨域类条件一致性为
 
 $$
-\mathcal L_{\mathrm{proto}}
-=
-\frac{1}{|\mathcal B_l|}
-\sum_{i\in\mathcal B_l}
-\left(1-\cos(\mathbf z_{\mathrm{id},i},\boldsymbol\mu_{y_i})\right)
-+
-\frac{1}{C(C-1)}
-\sum_{c\ne c'}
-\max\left(0,m_{\mathrm{proto}}-\left(1-\cos(\boldsymbol\mu_c,\boldsymbol\mu_{c'})\right)\right).
+\mathcal{L}_{\mathrm{cons}}
+=\frac{1}{|\mathcal{P}|}
+\sum_{(c,d,d')\in\mathcal{P}}
+\left[
+1-\cos(\boldsymbol{\mu}_{c,d},\boldsymbol{\mu}_{c,d'})
+\right],
 $$
 
-### 6.5身份表征紧致性损失
-
-Supervised contrastive部分为
-
 $$
-\mathcal L_{\mathrm{supcon}}
-=
-\frac{1}{|\mathcal B_l|}
-\sum_{i\in\mathcal B_l}
-\frac{-1}{|\mathcal P(i)|}
-\sum_{p\in\mathcal P(i)}
-\log
-\frac{\exp(\cos(\mathbf z_i,\mathbf z_p)/\tau)}
-{\sum_{a\in\mathcal B_l\setminus\{i\}}\exp(\cos(\mathbf z_i,\mathbf z_a)/\tau)}.
+\mathcal{P}
+=\{(c,d,d'):d\ne d',\;n_{c,d}>0,\;n_{c,d'}>0\}.
 $$
 
-角半径项为
+|符号别名|意义|
+|---|---|
+|`phi`,`psi`|domain head和adversarial domain head参数|
+|`Z_id`,`Z_dom`|批内身份/域特征矩阵|
+|`bar_Z`|逐维批均值广播矩阵|
+|`D_z`|两种表征的维度160|
+|`mu_cd`|同TX同源域的单位中心|
+|`P`|批内可用的同TX跨域中心对集合|
+
+优化方式：`L_dom`提高`z_dom`的域可预测性；`L_adv`正常训练对抗域头，但GRL把传向identity backbone的梯度乘以负1，从而降低`z_id`的域可预测性；`L_orth`同时更新两条分支，使批内交叉协方差趋近0；`L_cons`直接拉近同一TX在不同源域中的身份中心。四项分别提供“域信息承接、域信息擦除、统计去相关、类条件对齐”，任一项都不能单独证明完全解耦。
+
+### 6.5困难域GroupCE与FishR梯度方差
+
+每个有效源域group的label-smoothed CE为
 
 $$
-\mathcal L_{\mathrm{rad}}
-=
-\frac{1}{|\mathcal B_l|}
-\sum_{i\in\mathcal B_l}
-\max\left(0,\angle(\mathbf z_i,\boldsymbol\mu_{y_i})-r_{\mathrm{id}}\right)^2,
-\qquad r_{\mathrm{id}}=40^\circ.
+\ell_g
+=-\frac{1}{|\mathcal{B}_g|}
+\sum_{i\in\mathcal{B}_g}
+\sum_{c=1}^{C}
+\widetilde{y}_{i,c}\log p_{i,c},
+\qquad
+\mathcal{B}_g=\{i\in\mathcal{B}_l:d_i=g\}.
 $$
 
-tail CVaR项取每类角距离尾部均值：
+B02实际使用hard-domain模式，不是一般形式的可学习GroupDRO权重。它选择域损失最大的前35%：
 
 $$
-\mathcal L_{\mathrm{cvar}}
-=
-\frac{1}{C}\sum_{c=1}^{C}
-\operatorname{CVaR}_{0.95}
-\left(
-\{\angle(\mathbf z_i,\boldsymbol\mu_c):y_i=c\}
+K_g=\left\lceil0.35|\mathcal{G}|\right\rceil,
+\qquad
+\mathcal{L}_{\mathrm{group}}
+=\frac{1}{K_g}
+\sum_{g\in\operatorname{TopK}_{K_g}
+(\{\ell_h:h\in\mathcal{G}\})}
+\ell_g.
+$$
+
+FishR使用logit交叉熵梯度代理，而不是对身份特征求逐样本真实梯度：
+
+$$
+\mathbf{g}_i
+=\mathbf{p}_i-\mathbf{e}_{y_i},
+\qquad
+\mathbf{V}_g
+=\operatorname{Var}_{i\in\mathcal{B}_g}(\mathbf{g}_i),
+\qquad
+\overline{\mathbf{V}}
+=\operatorname{sg}\!\left(
+\frac{1}{|\mathcal{G}|}\sum_{g\in\mathcal{G}}\mathbf{V}_g
 \right).
 $$
 
-因此
-
 $$
-\mathcal L_{\mathrm{zid}}
-=0.30\,\mathcal L_{\mathrm{supcon}}
-+0.35\,\mathcal L_{\mathrm{rad}}
-+0.35\,\mathcal L_{\mathrm{cvar}}.
+\mathcal{L}_{\mathrm{fishr}}
+=\frac{1}{|\mathcal{G}|C}
+\sum_{g\in\mathcal{G}}
+\|\mathbf{V}_g-\overline{\mathbf{V}}\|_2^2.
 $$
 
-### 6.6known-core保真与尾部风险抑制
+|符号别名|意义|
+|---|---|
+|`G`|当前批中样本数足够的源域集合|
+|`ell_g`|域g的平均TX交叉熵|
+|`K_g`|被选入GroupCE的困难域数量|
+|`p_i`|样本i的TX softmax概率向量|
+|`e_yi`|真实TX one-hot向量|
+|`g_i`|对分类logits的CE梯度代理|
+|`V_g`|域g中梯度代理的逐类方差|
 
-这一项在本文创新模块中按known-core保真和源域尾部风险抑制解释，代码参数名沿用`proxy_unknown_*`。给定一批源域类$\mathcal C_B$，每次留出一个源域TX类$c^-\in\mathcal C_B$构造边界压力样本，其他类作为known core。
+优化方式：`L_group`把更新重点放到当前批最难的receiver/day组，避免均值被容易域主导；`L_fishr`让不同源域的分类梯度方差接近公共目标，降低域特定优化方向。两者是稳健训练器，不应单独包装成RFFI原创模块。若有效域少于配置下限，相关项返回0。
 
-类$c$的core半径和accept半径为
+### 6.6跨epoch prototype memory
+
+prototype bank不是当前批均值，而是在成功optimizer step后用动量更新的跨epoch memory：
 
 $$
-r^{\mathrm{core}}_c=Q_{0.90}\left(\{\angle(\mathbf z_i,\boldsymbol\mu_c):y_i=c\}\right),
+\boldsymbol{\mu}_c^{(e)}
+=\operatorname{norm}\!\left[
+0.95\boldsymbol{\mu}_c^{(e-1)}
++0.05\widehat{\boldsymbol{\mu}}_c^{(e)}
+\right],
+$$
+
+$$
+\widehat{\boldsymbol{\mu}}_c^{(e)}
+=\operatorname{norm}\!\left(
+\sum_{i\in\mathcal{B}_l:y_i=c}
+\overline{\mathbf{z}}^{\mathrm{id}}_i
+\right).
+$$
+
+设`I_act`为累计样本数不少于2的活跃类样本集合，原型损失为
+
+$$
+\begin{aligned}
+\mathcal{L}_{\mathrm{proto}}
+={}&\frac{1}{|\mathcal{I}_{\mathrm{act}}|}
+\sum_{i\in\mathcal{I}_{\mathrm{act}}}
+\left[
+1-\cos\!\left(
+\overline{\mathbf{z}}^{\mathrm{id}}_i,
+\operatorname{sg}(\boldsymbol{\mu}_{y_i})
+\right)
+\right]\\
+&+0.10\operatorname{mean}_{c,d}
+\left[
+1-\cos\!\left(
+\boldsymbol{\mu}_{c,d},
+\operatorname{sg}(\boldsymbol{\mu}_c)
+\right)
+\right]\\
+&+0.10\operatorname{mean}_{c\ne c'}
+\left[
+\cos(\boldsymbol{\mu}_c,\boldsymbol{\mu}_{c'})-0.15
+\right]_{+}^{2}.
+\end{aligned}
+$$
+
+|符号别名|意义|
+|---|---|
+|`mu_c^(e)`|第e轮后类c的动量原型|
+|`mu_hat_c^(e)`|当前成功step中类c的批均值|
+|`mu_cd`|跨epoch类域原型memory|
+|`I_act`|原型计数达到2的样本集合|
+|`0.15`|prototype余弦相似度上界margin|
+
+优化方式：第一项把当前`z_id`拉向历史类中心，提供跨batch稳定锚点。当前实现中的class/domain prototype都是无梯度memory tensor，因此第二项和第三项会改变loss数值，但不会把梯度传入模型；它们不能按现实现解释为有效的domain-prototype对齐或prototype推远。报告必须保留这一实现边界，消融时应把主要可训练作用理解为prototype pull。
+
+### 6.7闭集角几何间隔
+
+该项在历史CLI中名为`open_world_feat`，但B02只使用源域旧类样本。本文将其记为闭集角几何损失。记样本到本类中心角为`theta_i+`，到最近异类中心角为`theta_i-`，类间中心角为`theta_cc'`：
+
+$$
+\theta_i^{+}
+=\vartheta(\mathbf{z}^{\mathrm{id}}_i,\boldsymbol{\mu}_{y_i}),
 \qquad
-r^{\mathrm{acc}}_c=Q_{0.85}\left(\{\angle(\mathbf z_i,\boldsymbol\mu_c):y_i=c\}\right).
+\cos\theta_i^{-}
+=\max_{c\ne y_i}
+\cos\!\left(
+\overline{\mathbf{z}}^{\mathrm{id}}_i,
+\boldsymbol{\mu}_{c}
+\right).
 $$
 
-known-core保真损失：
+每类robust-three-sigma半径定义为
 
 $$
-\mathcal L_{\mathrm{core}}
-=
-\frac{1}{|\mathcal B_l|}
-\sum_{i\in\mathcal B_l}
-\max\left(0,\angle(\mathbf z_i,\boldsymbol\mu_{y_i})-r^{\mathrm{core}}_{y_i}\right)^2.
+r_c^{3\sigma}
+=\min\!\left[
+\max\Theta_c,
+\operatorname{median}(\Theta_c)+3\sigma_{\mathrm{rob}}(\Theta_c)
+\right],
+\qquad
+\Theta_c=\{\theta_i^{+}:y_i=c\}.
 $$
 
-边界接收风险使用最小类角距离
+完整几何损失为
 
 $$
-a(\mathbf z)=\min_{c\in\mathcal C_B\setminus\{c^-\}}
-\angle(\mathbf z,\boldsymbol\mu_c),
+\begin{aligned}
+\mathcal{L}_{\mathrm{geo}}
+={}&\operatorname{mean}_i
+\left[
+\cos(12^\circ)-\cos\theta_i^{+}
+\right]_{+}^{2}\\
+&+\operatorname{mean}_{c<c'}
+\left[
+\cos\vartheta(\boldsymbol{\mu}_c,\boldsymbol{\mu}_{c'})
+-\cos(55^\circ)
+\right]_{+}^{2}\\
+&+\operatorname{mean}_i
+\left[
+\cos\theta_i^{-}+1-\cos(5^\circ)-\cos\theta_i^{+}
+\right]_{+}^{2}\\
+&+0.14\operatorname{mean}_i
+\left[
+\theta_i^{+}-r_{y_i}^{3\sigma}
+\right]_{+}^{2}\\
+&+0.40\operatorname{mean}_i
+\operatorname{TopK}_{3}
+\left\{
+\left[r_c^{3\sigma}+6^\circ
+-\vartheta(\mathbf{z}^{\mathrm{id}}_i,\boldsymbol{\mu}_c)
+\right]_{+}^{2}:c\ne y_i
+\right\}.
+\end{aligned}
 $$
 
-并定义尾部CVaR：
+|符号别名|意义|
+|---|---|
+|`theta_i+`|样本i到真实类中心的角距离|
+|`theta_i-`|样本i到最近异类中心的角距离|
+|`Theta_c`|类c全部类内角距离集合|
+|`sigma_rob`|依次用MAD、IQR或标准差回退的robust尺度|
+|`r_c_3sigma`|不超过类内最大角的robust-three-sigma半径|
+|`12,55,5 deg`|类内半径、类间中心和样本级角margin|
+|`6 deg`|异类vacuum宽度|
+
+优化方式：第一项压缩普通类内样本，第二项推远过近的类中心，第三项增加样本对真实类与最近异类的角差，第四项只惩罚超过robust半径的类内尾部，第五项把样本推出异类接收锥。全部中心由当前批特征计算，因此梯度回到identity branch。该项不使用目标域、新类或unknown样本。
+
+### 6.8身份表征紧致性与尾部CVaR
+
+跨域supervised contrastive的正样本集合只包含同TX、不同源域样本：
 
 $$
-\mathcal L_{\mathrm{tail}}
-=
-\operatorname{CVaR}_{0.30}
-\left(
-\{\max(0,r^{\mathrm{acc}}_{\hat c_j}-a(\mathbf v_j)):
-\mathbf v_j\in\mathcal V_B\}
+\mathcal{P}(i)
+=\{p:y_p=y_i,\;d_p\ne d_i,\;p\ne i\}.
+$$
+
+$$
+\mathcal{L}_{\mathrm{supcon}}
+=-\frac{1}{|\mathcal{I}_{+}|}
+\sum_{i\in\mathcal{I}_{+}}
+\frac{1}{|\mathcal{P}(i)|}
+\sum_{p\in\mathcal{P}(i)}
+\log
+\frac{
+\exp\!\left(
+\cos(\overline{\mathbf{z}}_i,\overline{\mathbf{z}}_p)/0.12
+\right)
+}{
+\sum_{a\in\mathcal{B}_l\setminus\{i\}}
+\exp\!\left(
+\cos(\overline{\mathbf{z}}_i,\overline{\mathbf{z}}_a)/0.12
+\right)
+}.
+$$
+
+角半径与类均衡尾部CVaR为
+
+$$
+\mathcal{L}_{\mathrm{rad}}
+=\operatorname{mean}_{i}
+\left[
+\vartheta(\mathbf{z}^{\mathrm{id}}_i,\boldsymbol{\mu}_{y_i})-40^\circ
+\right]_{+}^{2},
+$$
+
+$$
+\mathcal{L}_{\mathrm{cvar}}
+=\frac{1}{C}
+\sum_{c=1}^{C}
+\operatorname{TopFrac}_{0.05}
+\left\{
+\vartheta(\mathbf{z}^{\mathrm{id}}_i,\boldsymbol{\mu}_c):y_i=c
+\right\}.
+$$
+
+$$
+\mathcal{L}_{\mathrm{zid}}
+=0.30\mathcal{L}_{\mathrm{supcon}}
++0.35\mathcal{L}_{\mathrm{rad}}
++0.35\mathcal{L}_{\mathrm{cvar}}.
+$$
+
+|符号别名|意义|
+|---|---|
+|`P(i)`|样本i的同TX跨域正样本集合|
+|`I_+`|至少有一个有效正样本的anchor集合|
+|`0.12`|SupCon温度|
+|`40 deg`|允许的身份角半径|
+|`TopFrac_0.05`|每类角距离最差5%的均值|
+
+优化方式：`L_supcon`拉近同TX跨receiver/day样本并相对推远其余批样本；`L_rad`只压缩超过40度的样本；`L_cvar`持续压低每类最差5%尾部。三项均更新identity branch，核心目标不是提高均值，而是缩小最差类和最差接收机的长尾角半径。
+
+### 6.9源域留一类边界与尾部风险
+
+该项的历史代码名为`proxy_unknown_energy_loss`，但训练数据仍全部来自Phase1源域旧类。每个batch按epoch与batch索引循环留出一个TX类h，剩余类构成当前核心类集合：
+
+$$
+\mathcal{C}_{K}=\mathcal{C}_{B}\setminus\{h\}.
+$$
+
+留出类样本与48个源域特征派生样本合并为边界压力集合。hard模式把48个派生样本均分为component-shell、interclass-bridge和tail-outward三类：
+
+$$
+\mathcal{V}
+=\mathcal{Z}_{h}
+\cup\mathcal{V}_{\mathrm{shell}}
+\cup\mathcal{V}_{\mathrm{bridge}}
+\cup\mathcal{V}_{\mathrm{outward}}.
+$$
+
+相对核心类中心的能量为
+
+$$
+E(\mathbf{v})
+=-\log\sum_{c\in\mathcal{C}_{K}}
+\exp\!\left[
+\cos(\overline{\mathbf{v}},\boldsymbol{\mu}_c)
+\right].
+$$
+
+类内角距离的0.90分位定义核心样本；0.90到0.92分位定义tail；大于0.97分位定义overflow。核心能量阈值使用核心样本能量的0.85分位：
+
+$$
+\mathcal{I}_{\mathrm{core}}
+=\{i:\theta_i^{+}\le Q_{0.90}(\Theta_{y_i})\},
+\qquad
+t_E=Q_{0.85}\!\left(
+\{E(\mathbf{z}_i):i\in\mathcal{I}_{\mathrm{core}}\}
+\right).
+$$
+
+$$
+\mathcal{I}_{\mathrm{tail}}
+=\{i:Q_{0.90}(\Theta_{y_i})<\theta_i^{+}
+\le Q_{0.92}(\Theta_{y_i})\},
+\qquad
+\mathcal{I}_{\mathrm{overflow}}
+=\{i:\theta_i^{+}>Q_{0.97}(\Theta_{y_i})\}.
+$$
+
+component gate把类半径、能量、最近两类角间隔和核心密度四个门相乘，并在类别维取最大值：
+
+$$
+A(\mathbf{v})
+=\max_{c\in\mathcal{C}_{K}}
+G^{\mathrm{rad}}_c(\mathbf{v})
+G^{\mathrm{energy}}(\mathbf{v})
+G^{\mathrm{margin}}(\mathbf{v})
+G^{\mathrm{density}}(\mathbf{v}).
+$$
+
+各有效子损失定义为
+
+$$
+\mathcal{L}_{\mathrm{margin}}
+=\left[
+0-\left(
+\operatorname{mean}_{\mathbf{v}\in\mathcal{V}}E(\mathbf{v})
+-\operatorname{mean}_{i\notin\mathcal{Z}_h}E(\mathbf{z}_i)
+\right)
+\right]_{+}^{2},
+$$
+
+$$
+\mathcal{L}_{\mathrm{vac}}
+=\operatorname{mean}_{\mathbf{v}\in\mathcal{V}}
+\operatorname{TopK}_{3}
+\left\{
+\left[
+r_c^{\mathrm{gate}}+5^\circ
+-\vartheta(\mathbf{v},\boldsymbol{\mu}_c)
+\right]_{+}^{2}:c\in\mathcal{C}_{K}
+\right\},
+$$
+
+$$
+\mathcal{L}_{\mathrm{vaccept}}
+=\operatorname{TopFrac}_{0.30}
+\left\{
+\operatorname{sp}\!\left(
+\frac{t_E+0.08-E(\mathbf{v})}{0.04}
+\right):\mathbf{v}\in\mathcal{V}
+\right\},
+$$
+
+$$
+\mathcal{L}_{\mathrm{core}}
+=\operatorname{mean}_{i\in\mathcal{I}_{\mathrm{core}}}
+\operatorname{sp}\!\left(
+\frac{E(\mathbf{z}_i)-(t_E-0.05)}{0.04}
 \right),
 $$
 
-其中$\mathcal V_B$是由源域留出类和类间扰动构造的边界压力集合，$\hat c_j$是最近known core类。component gate和source safe项可写为
-
 $$
-\mathcal L_{\mathrm{gate}}
-=
-\frac{1}{|\mathcal V_B|}
-\sum_{\mathbf v\in\mathcal V_B}
-\sigma\left(\frac{r^{\mathrm{acc}}_{\hat c}-a(\mathbf v)}{T_{\mathrm{comp}}}\right),
+\mathcal{L}_{\mathrm{gate}}
+=\operatorname{TopFrac}_{0.30}
+\{A(\mathbf{v}):\mathbf{v}\in\mathcal{V}\},
 $$
 
 $$
-\mathcal L_{\mathrm{safe}}
-=
-\frac{1}{|\mathcal B_l|}
-\sum_{i\in\mathcal B_l}
-\max(0,a(\mathbf z_i)-r^{\mathrm{acc}}_{y_i})^2.
+\begin{aligned}
+\mathcal{L}_{\mathrm{tail}}
+={}&\operatorname{TopFrac}_{0.30}
+\left\{
+\operatorname{sp}\!\left(
+\frac{t_E+0.08-E(\mathbf{z}_i)}{0.04}
+\right):i\in\mathcal{I}_{\mathrm{tail}}
+\right\}\\
+&+\operatorname{TopFrac}_{0.30}
+\left\{
+\operatorname{sp}\!\left(
+\frac{A(\mathbf{z}_i)-0.45}{0.04}
+\right):i\in\mathcal{I}_{\mathrm{tail}}
+\right\},
+\end{aligned}
 $$
 
-合并为
-
 $$
-\mathcal L_{\mathrm{coretail}}
-=
-0.45\,\mathcal L_{\mathrm{core}}
-+1.00\,\mathcal L_{\mathrm{tail}}
-+0.65\,\mathcal L_{\mathrm{gate}}
-+0.20\,\mathcal L_{\mathrm{safe}}.
-$$
-
-### 6.7类间软标签mixup
-
-从不同TX类$a\ne b$抽取源域特征，构造
-
-$$
-\tilde{\mathbf z}
-=\lambda\mathbf z_a+(1-\lambda)\mathbf z_b,\qquad
-\tilde{\mathbf y}
-=\lambda\mathbf e_a+(1-\lambda)\mathbf e_b,\qquad
-\lambda\sim\operatorname{Beta}(0.5,0.5).
+\begin{aligned}
+\mathcal{L}_{\mathrm{safe}}
+={}&\operatorname{TopFrac}_{0.30}
+\left\{
+\operatorname{sp}\!\left(
+\frac{t_E+0.08-E(\mathbf{z}_i)}{0.04}
+\right):i\in\mathcal{I}_{\mathrm{overflow}}
+\right\}\\
+&+\operatorname{TopFrac}_{0.30}
+\left\{
+\operatorname{sp}\!\left(
+\frac{A(\mathbf{z}_i)-0.25}{0.04}
+\right):i\in\mathcal{I}_{\mathrm{overflow}}
+\right\}.
+\end{aligned}
 $$
 
-软标签CE为
+最终有效组合为
 
 $$
-\mathcal L_{\mathrm{mixCE}}
-=-\sum_{c=1}^{C}\tilde y_c\log p_\theta(c|\tilde{\mathbf z}).
+\mathcal{L}_{\mathrm{coretail}}
+=\mathcal{L}_{\mathrm{margin}}
++0.55\mathcal{L}_{\mathrm{vac}}
++1.00\mathcal{L}_{\mathrm{vaccept}}
++0.45\mathcal{L}_{\mathrm{core}}
++0.65\mathcal{L}_{\mathrm{gate}}
++0.20\mathcal{L}_{\mathrm{tail}}
++0.20\mathcal{L}_{\mathrm{safe}}.
 $$
 
-能量项使用
+|符号别名|意义|
+|---|---|
+|`h`|当前batch轮流留出的一个源域TX类|
+|`C_K`|除h外的核心类集合|
+|`V`|留出类样本与48个源域派生边界样本|
+|`E(v)`|相对核心类中心的负log-sum-exp能量|
+|`t_E`|核心样本能量的0.85分位阈值|
+|`r_c_gate`|类c角距离的0.80分位component半径|
+|`A(v)`|半径、能量、margin和密度门的联合软接收概率|
+|`0.30`|最危险30%样本的经验CVaR比例|
+|`0.04`|energy与accept softplus温度|
+
+优化方式：最小化`L_core`降低高置信核心能量；其余项提高留出类、派生边界、tail和overflow的能量或降低其软接收概率，并把边界样本推出各类角锥。`virtual_detach=false`，派生样本的梯度会回流到构造它们的源样本特征。该项只构造源域闭集边界压力，不能以其代理指标声明unknown拒识能力。
+
+### 6.10三类软混合边界整形
+
+B02实际不是两类Beta mixup。每个虚拟样本从三个不同TX来源采样均匀随机数，再以二次幂归一化为权重：
 
 $$
-E(\tilde{\mathbf z})
-=-\log\sum_{c=1}^{C}\exp(\ell_c(\tilde{\mathbf z})),
+a_r\sim\mathcal{U}(0,1),
+\qquad
+\lambda_r=\frac{a_r^2}{\sum_{s=1}^{3}a_s^2},
+\qquad
+\sum_{r=1}^{3}\lambda_r=1.
 $$
 
-并写为
+混合特征、软标签和混合logits为
 
 $$
-\mathcal L_{\mathrm{energy}}
-=\max(0,m_E-E(\tilde{\mathbf z})).
+\widetilde{\mathbf{z}}
+=\operatorname{norm}\!\left(
+\sum_{r=1}^{3}\lambda_r\mathbf{z}_{i_r}
+\right),
+\qquad
+\widetilde{\mathbf{y}}
+=\sum_{r=1}^{3}\lambda_r\mathbf{e}_{y_{i_r}},
 $$
 
-vacuum项把混合样本推离任何单一类的窄角锥：
-
 $$
-\mathcal L_{\mathrm{vac}}
-=
-\min_{c\in\{1,\ldots,C\}}
-\max\left(0,r_{\mathrm{vac}}-\angle(\tilde{\mathbf z},\boldsymbol\mu_c)\right)^2.
+\widetilde{\boldsymbol{\ell}}
+=\sum_{r=1}^{3}\lambda_r
+\boldsymbol{\ell}^{\mathrm{tx}}_{i_r}.
 $$
 
-组合为
+注意：CE使用原样本logits的加权和，不是把混合特征重新送入CosFace head。
 
 $$
-\mathcal L_{\mathrm{softmix}}
-=0.60\,\mathcal L_{\mathrm{mixCE}}
-+1.00\,\mathcal L_{\mathrm{energy}}
-+0.35\,\mathcal L_{\mathrm{vac}}.
+\mathcal{L}_{\mathrm{mixCE}}
+=-\operatorname{mean}
+\sum_{c=1}^{C}
+\widetilde{y}_{c}
+\log\operatorname{softmax}
+(\widetilde{\boldsymbol{\ell}})_c.
 $$
 
-### 6.8source episode三sigma损失
-
-对类$c$和源域$d$，用其他源域构造prototype：
+相对当前批类中心的能量差hinge为
 
 $$
-\boldsymbol\mu_{c}^{(-d)}
-=
-\frac{\sum_{i:y_i=c,d_i\ne d}\mathbf z_i}
-{\left\|\sum_{i:y_i=c,d_i\ne d}\mathbf z_i\right\|_2+\epsilon}.
+\mathcal{L}_{\mathrm{mixE}}
+=\left[
+1-\left(
+\operatorname{mean}E(\widetilde{\mathbf{z}})
+-\operatorname{mean}E(\mathbf{z})
+\right)
+\right]_{+}^{2}.
 $$
 
-令角距离的均值和标准差为$\bar r_c$和$\sigma_c$，episode半径为
+vacuum项使用每类robust-three-sigma半径和6度边界宽度：
 
 $$
-r_c^{\mathrm{epi}}
-=
-\min\left(33^\circ,\bar r_c+3\sigma_c\right).
+\mathcal{L}_{\mathrm{mixVac}}
+=\operatorname{mean}_{\widetilde{\mathbf{z}}}
+\operatorname{TopK}_{3}
+\left\{
+\left[
+r_c^{3\sigma}+6^\circ
+-\vartheta(\widetilde{\mathbf{z}},\boldsymbol{\mu}_c)
+\right]_{+}^{2}:c=1,\ldots,C
+\right\}.
 $$
 
-损失为
-
 $$
-\mathcal L_{\mathrm{epi}}
-=
-\frac{1}{|\mathcal B_l|}
-\sum_{i\in\mathcal B_l}
-\max\left(0,\angle(\mathbf z_i,\boldsymbol\mu_{y_i}^{(-d_i)})-r_{y_i}^{\mathrm{epi}}\right)^2.
+\mathcal{L}_{\mathrm{softmix}}
+=0.60\mathcal{L}_{\mathrm{mixCE}}
++1.00\mathcal{L}_{\mathrm{mixE}}
++0.35\mathcal{L}_{\mathrm{mixVac}}.
 $$
 
-### 6.9源域伪标签SSL
+|符号别名|意义|
+|---|---|
+|`i_1,i_2,i_3`|三个不同TX来源样本索引|
+|`a_r`|0到1均匀随机数|
+|`lambda_r`|归一化二次幂混合权重|
+|`z_tilde`|归一化三类混合特征|
+|`y_tilde`|三类soft target|
+|`ell_tilde`|三个源样本TX logits的加权和|
+|`mixup_count`|每批构造24个虚拟混合样本|
 
-EMA teacher参数为$\bar\theta$。对$u_j\in\mathcal U_s$，weak view预测为
+优化方式：`L_mixCE`让分类logits沿类间插值平滑；`L_mixE`要求三类混合特征比真实源样本具有更高能量；`L_mixVac`把混合特征推出任何单类的窄角锥。`detach_mixup=false`，三项梯度均可回流到来源特征，其中CE还更新TX head。
+
+### 6.11leave-one-source-domain episode
+
+对TX类c和被留出的源域d，使用其他源域样本构造单位中心：
 
 $$
-\mathbf q_j
-=p_{\bar\theta}(y|a_w(u_j)),\qquad
-\hat y_j=\arg\max_c q_{j,c},\qquad
+\boldsymbol{\mu}_{c,-d}
+=\operatorname{norm}\!\left(
+\sum_{i:y_i=c,d_i\ne d}
+\mathbf{z}^{\mathrm{id}}_i
+\right).
+$$
+
+其他域样本到该中心的角距离集合为
+
+$$
+\Theta_{c,-d}
+=\left\{
+\vartheta(\mathbf{z}^{\mathrm{id}}_i,\boldsymbol{\mu}_{c,-d})
+:y_i=c,d_i\ne d
+\right\}.
+$$
+
+robust尺度依次用MAD、IQR和标准差回退：
+
+$$
+\sigma_{\mathrm{rob}}(\Theta)
+=\begin{cases}
+1.4826\operatorname{MAD}(\Theta),&\operatorname{MAD}(\Theta)>0,\\
+0.7413\operatorname{IQR}(\Theta),&\operatorname{IQR}(\Theta)>0,\\
+\operatorname{Std}(\Theta),&\text{其他情况}.
+\end{cases}
+$$
+
+episode安全半径为
+
+$$
+r_{c,-d}^{\mathrm{epi}}
+=\min\!\left[
+33^\circ,
+\operatorname{median}(\Theta_{c,-d})
++3\sigma_{\mathrm{rob}}(\Theta_{c,-d})
+\right].
+$$
+
+被留出域的同类样本构成query，三类soft-mix特征同时作为边界压力样本：
+
+$$
+\mathcal{L}_{\mathrm{query}}
+=\operatorname{mean}_{c,d}
+\operatorname{mean}_{i:y_i=c,d_i=d}
+\left[
+\vartheta(\mathbf{z}^{\mathrm{id}}_i,\boldsymbol{\mu}_{c,-d})
+-r_{c,-d}^{\mathrm{epi}}
+\right]_{+}^{2},
+$$
+
+$$
+\mathcal{L}_{\mathrm{epiMix}}
+=\operatorname{mean}_{\widetilde{\mathbf{z}}}
+\operatorname{TopK}_{3}
+\left\{
+\left[
+r_{c,-d}^{\mathrm{epi}}
+-\vartheta(\widetilde{\mathbf{z}},\boldsymbol{\mu}_{c,-d})
+\right]_{+}^{2}
+\right\}.
+$$
+
+$$
+\mathcal{L}_{\mathrm{epi}}
+=\mathcal{L}_{\mathrm{query}}
++0.75\mathcal{L}_{\mathrm{epiMix}}.
+$$
+
+|符号别名|意义|
+|---|---|
+|`mu_c,-d`|由除d外的源域构造的类c中心|
+|`Theta_c,-d`|其他域类内角距离集合|
+|`sigma_rob`|robust尺度估计|
+|`r_epi_c,-d`|不超过33度的episode安全半径|
+|`L_query`|留出源域同类query超半径损失|
+|`L_epiMix`|三类混合特征进入任一episode球的惩罚|
+
+优化方式：`L_query`把留出域中的同TX样本拉入由其他域定义的类球，直接模拟未见源域外推；`L_epiMix`把类间混合样本推出这些球，防止单纯扩大半径获得低query损失。只有批内同一TX覆盖至少2个源域时该项有效。
+
+### 6.12receiver-day条件的源域伪标签SSL
+
+EMA teacher只由student参数的指数滑动平均更新：
+
+$$
+\overline{\boldsymbol{\theta}}
+\leftarrow
+0.999\overline{\boldsymbol{\theta}}
++0.001\boldsymbol{\theta}.
+$$
+
+对源域无TX标签样本，teacher在weak/clean view上输出
+
+$$
+\mathbf{q}_j
+=p_{\overline{\boldsymbol{\theta}}}
+(y|a_w(\mathbf{u}_j)),
+\qquad
+\widehat{y}_j
+=\operatorname*{arg\,max}_{c}q_{j,c},
+\qquad
 \kappa_j=\max_c q_{j,c}.
 $$
 
 按域自适应阈值为
 
 $$
-\tau_d=
-\operatorname{clip}
+\tau_d
+=\operatorname{clip}
 \left(
-Q_{0.86}\left(\{\kappa_j:d_j=d\}\right),0.92,0.97
+Q_{0.86}\!\left(\{\kappa_j:d_j=d\}\right),
+0.92,
+0.97
 \right).
 $$
 
-门控变量为
+domain gate要求teacher的域头预测与已知源域标签一致；temporal gate要求相邻时间窗口的伪标签和置信度一致；strong gate要求student在高斯噪声strong view上的类别与teacher一致。最终门控为
 
 $$
 m_j=
-\mathbb 1[\kappa_j\ge\tau_{d_j}]
-\cdot\mathbb 1[\mathrm{DomainGate}(u_j)=1]
-\cdot\mathbb 1[\mathrm{TemporalGate}(u_j)=1]
-\cdot\mathbb 1[
-\arg\max p_\theta(y|a_s(u_j))=\hat y_j
-].
+\mathbf{1}[\kappa_j\ge\tau_{d_j}]
+\mathbf{1}[\widehat d_j=d_j]
+\mathbf{1}[T_j=1]
+\mathbf{1}
+\left[
+\operatorname*{arg\,max}_{c}
+p_{\boldsymbol{\theta}}
+(c|a_s(\mathbf{u}_j))
+=\widehat y_j
+\right].
 $$
 
 伪标签CE为
 
 $$
-\mathcal L_u
-=
--\frac{1}{\sum_j m_j+\epsilon}
-\sum_{j\in\mathcal B_u}
-m_j\log p_\theta(\hat y_j|a_s(u_j)).
+\mathcal{L}_{u}
+=-\frac{1}{\sum_{j\in\mathcal{B}_u}m_j+\varepsilon}
+\sum_{j\in\mathcal{B}_u}
+m_j\log p_{\boldsymbol{\theta}}
+\left(\widehat y_j|a_s(\mathbf{u}_j)\right).
 $$
 
-熵项为
+代码实际最小化正的信息熵：
 
 $$
-\mathcal L_{\mathrm{ent}}
-=
-\frac{1}{|\mathcal B_u|}
-\sum_{j\in\mathcal B_u}
+\mathcal{L}_{\mathrm{ent}}
+=-\frac{1}{|\mathcal{B}_u|}
+\sum_{j\in\mathcal{B}_u}
 \sum_{c=1}^{C}
-p_\theta(c|u_j)\log p_\theta(c|u_j).
+p_{j,c}^{s}\log p_{j,c}^{s},
+\qquad
+\mathbf{p}_j^{s}
+=p_{\boldsymbol{\theta}}(y|a_s(\mathbf{u}_j)).
 $$
 
-### 6.10源域LEO压力视图
+|符号别名|意义|
+|---|---|
+|`theta_bar`|EMA teacher参数，不接收梯度|
+|`q_j`|teacher weak-view TX概率|
+|`y_hat_j`|teacher伪TX标签|
+|`kappa_j`|teacher最大置信度|
+|`tau_d`|域d内置信度0.86分位截断到0.92至0.97|
+|`d_hat_j`|teacher domain head预测|
+|`T_j`|时间邻域一致性指示量|
+|`m_j`|四个门全部通过时为1|
+|`p_j^s`|student strong-view TX概率|
 
-对源域样本$x_i$构造LEO压力视图$a_{\mathrm{leo}}(x_i)$，其监督CE为
+优化方式：`L_u`只拉近通过全部门控的strong view和EMA伪标签；`L_ent`对所有无标签strong view做熵最小化，使预测更尖锐。两项只在第131至200轮启用。门控本身不反向传播；EMA teacher通过成功optimizer step后的参数滑动平均更新。分域阈值的目的不是提高总体接收率，而是避免容易receiver/day垄断伪标签并保护困难域覆盖。
+
+### 6.13源域LEO压力视图
+
+对标注源域样本构造简化LEO残余信道视图，另做一次模型前向。实际启用的监督CE为
 
 $$
-\mathcal L_{\mathrm{satCE}}
+\mathcal{L}_{\mathrm{satCE}}
 =
--\frac{1}{|\mathcal B_l|}
-\sum_{i\in\mathcal B_l}
-\log p_\theta(y_i|a_{\mathrm{leo}}(x_i)).
+-\frac{1}{|\mathcal{B}_l|}
+\sum_{i\in\mathcal{B}_l}
+\log p_{\boldsymbol{\theta}}
+\left(y_i|a_{\mathrm{leo}}(\mathbf{x}_i)\right).
 $$
 
-一致性项定义为
+实现中若启用一致性，使用clean概率作为停止梯度teacher，对LEO logits计算单向KL：
 
 $$
-\mathcal L_{\mathrm{satCon}}
-=
-\frac{1}{|\mathcal B_l|}
-\sum_{i\in\mathcal B_l}
-\left(
-1-\cos(\mathbf z_{\mathrm{id}}(x_i),\mathbf z_{\mathrm{id}}(a_{\mathrm{leo}}(x_i)))
-\right),
+\mathcal{L}_{\mathrm{satCon}}
+=\frac{1}{|\mathcal{B}_l|}
+\sum_{i\in\mathcal{B}_l}
+\operatorname{KL}
+\left[
+\operatorname{sg}\!\left(
+p_{\boldsymbol{\theta}}(y|\mathbf{x}_i)
+\right)
+\;\middle\|\;
+p_{\boldsymbol{\theta}}
+(y|a_{\mathrm{leo}}(\mathbf{x}_i))
+\right].
 $$
 
-但B02中$\lambda_{\mathrm{satCon}}=0$，实际贡献为0。
+B02中该一致性项权重为0，只有`L_satCE`从第80轮起产生梯度。历史训练入口中的scenario schedule概率没有控制该快照的前向采样概率；实际生效的是按epoch切换场景列表。因此报告不能声称B02做了LEO表征一致性学习。
 
-### 6.11总目标
+|符号别名|意义|
+|---|---|
+|`a_leo`|简化LEO残余信道增强|
+|`p_clean`|clean IQ的TX概率，KL中停止梯度|
+|`p_leo`|LEO压力IQ的TX概率|
+|`lambda_satCE`|0.68，从第80轮启用|
+|`lambda_satCon`|0，不进入B02总目标|
 
-B02实际优化目标写为
+优化方式：`L_satCE`要求在LEO压力视图下保持原TX标签，更新identity backbone、TX head和共享前端。它只能支持“物理启发的源域压力鲁棒性”，不能替代真实卫星数据验证。
+
+### 6.14优化器、梯度流和实际数值行为
+
+AdamW对全部可训练参数执行最小化。忽略偏置修正记号后，更新可概括为
 
 $$
 \begin{aligned}
-\mathcal L_{\mathrm{ADV3B02}}
-=&
-\mathcal L_{\mathrm{tx}}
-+1.00\,\mathcal L_{\mathrm{dom}}
-+0.35\,\mathcal L_{\mathrm{adv}}
-+0.16\,\mathcal L_{\mathrm{group}}
-+0.04\,\mathcal L_{\mathrm{fishr}}\\
-&+0.0032\,\mathcal L_{\mathrm{proto}}
-+0.032\,\mathcal L_{\mathrm{zid}}
-+0.0045\,\mathcal L_{\mathrm{coretail}}
-+0.0045\,\mathcal L_{\mathrm{softmix}}\\
-&+0.0035\,\mathcal L_{\mathrm{epi}}
-+0.16\,\mathcal L_u
-+0.01\,\mathcal L_{\mathrm{ent}}
-+0.68\,\mathcal L_{\mathrm{satCE}}
-+0\cdot\mathcal L_{\mathrm{satCon}}.
+\mathbf{m}_t&=0.9\mathbf{m}_{t-1}+0.1\mathbf{g}_t,\\
+\mathbf{v}_t&=0.999\mathbf{v}_{t-1}+0.001\mathbf{g}_t^{\odot2},\\
+\boldsymbol{\theta}_{t+1}
+&=\boldsymbol{\theta}_t
+-2\times10^{-4}
+\frac{\widehat{\mathbf{m}}_t}
+{\sqrt{\widehat{\mathbf{v}}_t}+10^{-8}}
+-2\times10^{-4}\times10^{-4}\boldsymbol{\theta}_t.
 \end{aligned}
 $$
 
-## 7.创新模块划分与消融设计
-
-### 模块A：物理先验双表征主干
-
-模块A包括Sinc滤波前端、time path、frequency path、PA path、domain branch、GRL和$\mathbf z_{\mathrm{id}}/\mathbf z_{\mathrm{dom}}$解耦。它回答的问题是：硬件指纹和接收链路扰动能否在表征空间分离。
-
-|消融|改法|观察指标|
+|损失|主要更新对象|优化方向|
 |---|---|---|
-|`single_backbone`|去掉domain backbone，只保留单CVSincNet|strict UDU、receiver floor、`z_id->d`泄漏probe|
-|`no_pa_path`|关闭PA path|strict UDU、sat_floor、hard TX类|
-|`no_freq_path`|关闭frequency path|receiver floor、LEO压力视图鲁棒性|
-|`no_grl`|`lambda_adv=0`|域泄漏和目标域old acc|
-|`no_mixstyle`|关闭identity branch MixStyle|跨receiver泛化和弱receiver floor|
+|`L_tx`|identity backbone、CosFace、共享前端|提高真实TX概率|
+|`L_dom`|domain backbone、RCN enhancer、domain head、共享前端|提高域标签可预测性|
+|`L_adv`|adv head、identity backbone、共享前端|adv head识别域；GRL让identity路径混淆域|
+|`L_orth`|两条backbone及共享前端|减小身份/域交叉协方差|
+|`L_cons`|identity backbone|拉近同TX跨源域中心|
+|`L_group`,`L_fishr`|identity backbone、TX head|强调困难域并匹配域间梯度方差|
+|`L_proto`|主要是identity backbone|把当前特征拉向跨epoch类memory|
+|`L_geo`,`L_zid`|identity backbone|收紧类内/尾部角半径并扩大类间间隔|
+|`L_coretail`|identity backbone|保护源域核心并抬高边界/tail能量|
+|`L_softmix`|identity backbone、TX head|平滑类间logits并清理类间角空间|
+|`L_epi`|identity backbone|提升leave-one-source-domain外推|
+|`L_u`,`L_ent`|identity backbone、TX head|学习可信伪标签并降低无标签预测熵|
+|`L_satCE`|identity backbone、TX head、共享前端|在源域LEO压力视图保持TX身份|
 
-### 模块B：源域半监督伪标签与一致性学习
+数值执行边界：AMP开启，没有学习率scheduler和梯度裁剪；prototype memory只在成功optimizer step后更新；EMA同样只在成功step后更新。历史B02共200轮，约13000个batch中有12个batch因non-finite gradient跳过step，比例约0.092%；没有non-finite total loss。PAIC guard在该候选中未触发，因此没有实际把LEO权重乘0.75。上述事实属于训练执行审计，不改变最终损失定义。
 
-模块B只处理$\mathcal U_s$中的源域无TX标签样本，不参与Phase2 support注册。它的创新点是receiver/day-aware阈值、EMA teacher、domain gate、temporal gate和strong-view一致性同时约束伪标签。
+## 7.严厉审稿视角下的Phase1创新重组
 
-|消融|改法|观察指标|
-|---|---|---|
-|`no_ssl`|`lambda_u=0`，不使用`U_s`伪标签|source val、strict UDU、prototype质量|
-|`no_ema`|用student替代EMA teacher|伪标签稳定性、pseudo precision|
-|`global_tau`|`tau_d`改为全局阈值|弱receiver伪标签覆盖率和错误率|
-|`no_temporal_gate`|移除TemporalGate|连续窗口伪标签一致性|
-|`no_strong_agreement`|移除strong-view一致性|增强扰动下伪标签污染率|
+### 7.1对原A-D划分的主要批评
 
-### 模块C：known-core保真与类内尾部风险抑制
+原划分不宜直接写进论文方法贡献，原因不是模块数量不对，而是抽象层级和因果边界不成立。
 
-模块C的目标是在Phase1源域内保护每个旧类的高置信核心，同时抑制类内尾部和类间边界样本把prototype半径拉大。它不改变类别集合，也不参与Phase2类别注册；消融时只观察known core半径、tail CVaR、receiver floor和后续qKNN支持集稳定性。
+|审稿问题|原划分表现|为什么会被质疑|修订原则|
+|---|---|---|---|
+|粒度失衡|A是完整架构，C近似单个复合损失，D容纳五类机制|四个模块无法做同层级比较|按科学问题而非代码目录分组|
+|边界重叠|GRL、MixStyle、source episode、LEO增强都被解释为跨域不变性|性能变化无法归因|把表征分解、SSL、角风险和反事实外推分开|
+|改名代替论证|历史`proxy_unknown`直接改称known-core|代码名改变不构成方法创新|只依据实际源域闭集优化对象命名|
+|Phase2污染|用qKNN、target-old或support稳定性证明Phase1模块|违反Phase1 source-only边界|Phase1主消融只报告strict UDU、receiver floor和源域压力指标|
+|组件新颖性夸大|SincNet、GRL、MixStyle、EMA、SupCon、CVaR分别列为创新|这些机制均有通用先例|贡献放在RFFI任务特定耦合和可验证假设上|
+|无效项混入|把权重为0的sat consistency写成有效机制|公式与实际梯度不一致|只包装真实产生梯度的项|
 
-|消融|改法|观察指标|
-|---|---|---|
-|`no_coretail`|关闭`L_coretail`|known core半径、tail CVaR、receiver floor|
-|`core80_vs_core90`|`Q_core=0.80`与`0.90`对比|core保真与tail覆盖权衡|
-|`accept80_vs_accept85`|`Q_acc=0.80`与`0.85`对比|accept半径和旧类召回|
-|`alpha20_vs_alpha30`|`CVaR alpha=0.20`与`0.30`对比|尾部风险抑制强度|
-|`no_component_gate`|关闭component gate|局部簇半径、component数量、source overflow|
+重组后的四个模块互相正交到“可消融”层面：A回答如何表示，B回答如何利用无标签源数据，C回答如何控制最差角几何，D回答如何构造身份保持的域外挑战。
 
-### 模块D：prototype几何、类间软混合和LEO压力视图
+### 7.2模块A：物理分解式身份-域双表征
 
-模块D把$\mathbf z_{\mathrm{id}}$变成可导出、可检索、可注册的Phase2资产。它包括prototype memory、$\mathbf z_{\mathrm{id}}$紧致性、类间软标签mixup、source episode和源域LEO压力视图。
+核心假设：TX的PA非线性、频谱不对称和瞬态结构，与接收机I/Q耦合、日期漂移、信道和噪声统计具有部分可分性。单一embedding同时承担分类与域不变约束容易在identity-style conflict下走捷径；显式的`z_id`与`z_dom`分工更可控。
 
-|消融|改法|观察指标|
-|---|---|---|
-|`no_proto`|`lambda_proto=0`|Phase2 prototype导出质量和qKNN支持集检索|
-|`no_zid_compact`|`lambda_zid=0`|类内角半径、min class acc|
-|`no_softmix`|`lambda_softmix=0`|类间边界混淆和tail风险|
-|`no_source_episode`|`lambda_epi=0`|跨源域episode外推|
-|`no_sat_ce`|`lambda_satCE=0`|LEO压力视图下sat_floor|
+组成机制：共享Sinc/HF前端；identity的time/frequency/PA路径；domain的time/frequency/PA/DAC/RCN路径；`z_id/z_dom`双输出；域监督、GRL、协方差正交和同TX跨域中心一致性。MixStyle、source episode和LEO压力不归入本模块。
+
+重要性：这是后续SSL和角几何成立的表征基础。若`z_id`仍高度编码receiver，伪标签会放大接收机偏差，prototype也会按域而不是按TX聚类。
+
+相对现有方法的可辩护差异：不能声称SincNet、PA建模或GRL本身新颖。可检验差异是“RFFI物理多视图identity encoder + 显式receiver-nuisance encoder + 非对称分支保留/抑制策略”的联合设计，而不是单路DANN只擦除域信息。
+
+|最小消融|改法|必须观察的Phase1指标|可证伪结论|
+|---|---|---|---|
+|`A0_parameter_matched_single`|构造参数量匹配的单embedding模型，去掉`z_dom`、域头、GRL和正交|strict UDU、receiver floor、`z_id->receiver` probe、source val|若泄漏不降且UDU不升，双表征贡献不成立|
+|`A1_no_pa`|identity与domain均关闭PA path|strict UDU、min class、hard TX类|检验PA物理视图是否提供独立身份证据|
+|`A2_no_freq`|关闭frequency path|strict UDU、receiver floor、频谱扰动敏感度|检验镜像频谱视图价值|
+|`A3_no_dac_rcn`|domain关闭DAC和RCN enhancer|域分类准确率、`z_id`泄漏、receiver floor|检验显式nuisance承接路径|
+|`A4_no_grl_orth_cons`|保留双backbone但关闭三类解耦约束|同上|区分结构容量与解耦训练作用|
+
+声明边界：只有参数量匹配消融同时显示域泄漏下降和strict UDU/receiver floor提高，才能声称任务特定双表征有效。不能声称两种表征统计独立，也不能把domain branch内部无梯度层列为贡献。
+
+### 7.3模块B：receiver-day条件的可信伪标签闭环
+
+核心假设：不同receiver/day的置信度分布不可直接比较。全局阈值会过度接收容易域、排斥困难域，并把接收机偏差写入伪标签。在标注比例0.1下，伪标签质量必须按域校准并经过时间和增强一致性验证。
+
+组成机制：EMA teacher weak view；rx_day内0.86分位阈值及0.92至0.97截断；domain gate；temporal gate；strong-view类别一致性；伪标签CE；正熵最小化。
+
+重要性：无标签数据量是标注数据的7倍。错误伪标签不仅损伤平均准确率，还会扩大困难receiver的类内角尾部，因此需要把precision、coverage和域均衡同时作为优化对象。
+
+相对现有方法的可辩护差异：不能声称Mean Teacher或strong-view一致性新颖。候选差异是利用RFFI已有的receiver/day metadata定义分域可信集合，并将域正确性、时间邻接和增强一致性串成闭环。
+
+|最小消融|改法|必须观察的Phase1指标|可证伪结论|
+|---|---|---|---|
+|`B0_no_ssl`|`lambda_u=lambda_ent=0`|strict UDU、receiver floor、pseudo oracle audit|无标签闭环的整体增益|
+|`B1_global_equal_coverage`|全局阈值，但调到与分域阈值相同总体coverage|pseudo precision、per-receiver coverage、困难域精度|排除“只因接收更多样本”|
+|`B2_no_domain_gate`|去掉域预测一致性|伪标签污染率、域泄漏|检验receiver metadata门控|
+|`B3_no_temporal`|去掉时间邻域门|相邻窗口标签翻转率、pseudo precision|检验时间稳定性|
+|`B4_no_strong`|去掉strong-view agreement|增强后伪标签错误率、strict UDU|检验扰动一致性|
+|`B5_student_teacher`|EMA teacher替换为当前student|伪标签抖动、precision和coverage|检验teacher平滑作用|
+
+声明边界：若没有等coverage全局阈值对照，只能称为domain-aware SSL实现，不能声称阈值策略本身优于现有SSL。该模块只使用源域无TX标签样本，不是Phase2 support学习。
+
+### 7.4模块C：尾部风险约束的角原型判别几何
+
+核心假设：CosFace和平均prototype pull可以改善均值，但无法直接控制最差类别、最差receiver和类内角距离长尾。跨接收机失败往往集中在少数尾部样本；因此优化目标必须从均值几何扩展到类均衡CVaR、核心保真和类间边界。
+
+组成机制：跨epoch prototype pull；闭集角几何`L_geo`；跨域SupCon、40度半径和类均衡CVaR；源域留一类`L_coretail`；三类soft-mix边界整形。source episode归入模块D。
+
+重要性：该模块直接对应Phase1的worst receiver、receiver floor和min-class风险，而不是以平均accuracy掩盖少数类坍塌。
+
+相对现有方法的可辩护差异：不能声称prototype、SupCon、mixup或CVaR单项原创。候选差异是把中心、样本margin、类内尾部和类间混合边界放在同一160维角空间，并按类均衡尾部而非全局均值优化。
+
+|最小消融|改法|必须观察的Phase1指标|可证伪结论|
+|---|---|---|---|
+|`C0_no_angular_risk`|同时关闭`L_proto,L_geo,L_zid,L_coretail,L_softmix`|strict UDU、min class、receiver floor、Q90/Q95角半径|整套角风险目标的必要性|
+|`C1_mean_geometry_only`|只保留TX CE、CosFace和prototype pull|同上|建立普通均值度量学习基线|
+|`C2_plus_tail`|在C1上加入`L_zid`与`L_coretail`|tail CVaR、min class、receiver floor|检验尾部风险是否超越均值几何|
+|`C3_no_softmix`|关闭三类soft-mix|最小类间角、边界混淆、tail CVaR|检验类间虚拟边界|
+|`C4_core_q`|core 0.80/0.90对照，其余不变|核心召回、tail overflow、receiver floor|检验核心保真强度|
+|`C5_cvar_alpha`|0.20/0.30对照|尾部稳定性和平均准确率代价|检验风险敏感度|
+
+声明边界：该模块只用Phase1闭集DG指标证明成立，不跨用任何Phase2目标域support/query指标或qKNN结果。历史实现命名只作为代码兼容信息，不进入论文方法命名。prototype domain-align和push当前没有模型梯度，也不能列为有效创新。
+
+### 7.5模块D：身份保持的源域反事实外推课程
+
+核心假设：只要求表征域不变不足以覆盖未见receiver和LEO残余信道。训练中应构造“TX身份不变、观测域系统变化”的源域反事实挑战，并在模型已经具备基础分类能力后逐步增强。
+
+组成机制：标注批上的same-TX cross-domain MixStyle；leave-one-source-domain episode及其soft-mix边界项；从第80轮启用的简化LEO压力视图TX CE。GroupCE和FishR作为全局训练稳定器报告，不包装成独立创新；权重为0的sat consistency不属于模块D。
+
+重要性：MixStyle扰动receiver/day统计，source episode模拟留一域外推，LEO CE加入物理启发信道压力。三者分别覆盖风格、域划分和部署信道，均保持TX标签不变且严格source-only。
+
+相对现有方法的可辩护差异：普通MixStyle不要求同TX，通用episodic DG不必利用RFFI身份结构，常规信号增强也不对应残余CFO、相位噪声、Rician/shadowed-Rician、弱多径和SNR变化。创新候选是三类挑战围绕身份保持约束的课程化组合。
+
+|最小消融|改法|必须观察的Phase1指标|可证伪结论|
+|---|---|---|---|
+|`D0_no_counterfactual`|关闭MixStyle、`L_epi`和`L_satCE`|strict UDU、worst receiver、sat mean/floor|整体反事实课程价值|
+|`D1_mixstyle_only`|只开启MixStyle|receiver floor、clean准确率|风格外推贡献|
+|`D2_episode_only`|只开启source episode|leave-domain loss、strict UDU|显式域外推贡献|
+|`D3_leo_only`|只开启LEO CE|clean-to-stress drop、sat floor|物理压力训练贡献|
+|`D4_rx_by_leo_2x2`|receiver挑战开/关与LEO压力开/关二因素|strict UDU与sat floor同row|检验二者互补或冲突|
+|`D5_no_late_anneal`|取消MixStyle后期退火|后期收敛、source val和receiver floor|检验课程而非固定强扰动|
+
+声明边界：LEO增强只支持物理启发压力鲁棒性，不是真实在轨验证；MixStyle在无标签批次因缺少TX标签而跳过；sat consistency权重为0，不能写成有效机制。
+
+### 7.6贡献优先级与主消融顺序
+
+|优先级|模块|建议论文定位|先验风险|
+|---:|---|---|---|
+|1|A物理分解式双表征|核心架构贡献|参数量与计算量混杂，必须容量匹配|
+|2|B receiver-day可信伪标签|核心弱标注贡献|必须做等coverage阈值对照|
+|3|C尾部角原型几何|条件性方法贡献|组件多，必须先整体再逐层消融|
+|4|D源域反事实外推课程|部署导向训练策略|LEO增强不能替代真实部署证据|
+
+推荐先跑`A0/B0/C0/D0`四个模块级消融，再对通过模块级检验的模块做内部拆分。主表只使用Phase1指标：overall、strict UDU、min class、worst receiver、receiver floor、pseudo precision/coverage、`z_id->receiver` leakage、类内角尾部和satellite stress mean/floor。Phase2的target-old、seen-new、qKNN和support指标单独放在Phase2章节。
 
 ## 8.qKNNV42：Phase2 Stage2-C轻量注册头
 
@@ -821,53 +1643,66 @@ $$
 qKNNV42只处理Phase2 Stage2-C：
 
 $$
-\mathcal S_t=
-\mathcal S_{\mathrm{old}}\cup\mathcal S_{\mathrm{new}},
+\mathcal{S}_t
+=\mathcal{S}_{\mathrm{old}}\cup\mathcal{S}_{\mathrm{new}},
 \qquad
-\mathcal Q_t=
-\mathcal Q_{\mathrm{old}}\cup\mathcal Q_{\mathrm{new}}.
+\mathcal{Q}_t
+=\mathcal{Q}_{\mathrm{old}}\cup\mathcal{Q}_{\mathrm{new}}.
 $$
 
 其中
 
 $$
-\mathcal S_{\mathrm{old}}=\{(x_i,y_i):y_i\in\mathcal Y_{\mathrm{old}},x_i\in\mathcal R_t\},
+\mathcal{S}_{\mathrm{old}}
+=\{(\mathbf{x}_i,y_i):y_i\in\mathcal{Y}_{\mathrm{old}},
+\;r(\mathbf{x}_i)\in\mathcal{R}_t\},
 \qquad
-\mathcal S_{\mathrm{new}}=\{(x_i,y_i):y_i\in\mathcal Y_{\mathrm{new}},x_i\in\mathcal R_t\}.
+\mathcal{S}_{\mathrm{new}}
+=\{(\mathbf{x}_i,y_i):y_i\in\mathcal{Y}_{\mathrm{new}},
+\;r(\mathbf{x}_i)\in\mathcal{R}_t\}.
 $$
 
-qKNNV42不更新ADV3B02参数$\theta$，只在冻结特征
+其中`r(x_i)`返回样本对应的receiver domain；support与query来自同一目标接收机域，但样本索引互不重叠。query集合按相同方式定义。
+
+qKNNV42不更新ADV3B02参数。冻结参数记为
 
 $$
-\mathbf z_i=
-\frac{g_\theta(x_i)}{\|g_\theta(x_i)\|_2}
+\boldsymbol{\theta}^{\star}.
 $$
 
-上建立support memory。
+support memory使用冻结且L2归一化的身份特征：
+
+$$
+\mathbf{z}_i
+=\frac{g_{\boldsymbol{\theta}^{\star}}(\mathbf{x}_i)}
+{\|g_{\boldsymbol{\theta}^{\star}}(\mathbf{x}_i)\|_2+\varepsilon}
+$$
 
 ### 8.2int8量化support memory
 
 每个support向量量化为
 
 $$
-\mathbf q_i=
+\mathbf{q}_i=
 \operatorname{clip}\left(
-\operatorname{round}(127\,\mathbf z_i),-127,127
-\right)\in\mathbb Z^{d}_{8}.
+\operatorname{round}(127\,\mathbf{z}_i),-127,127
+\right)
+\in\{-127,\ldots,127\}^{D_z},
+\qquad D_z=160.
 $$
 
 推理时近似恢复为
 
 $$
-\hat{\mathbf z}_i=
-\frac{\mathbf q_i/127}{\|\mathbf q_i/127\|_2+\epsilon}.
+\widehat{\mathbf{z}}_i=
+\frac{\mathbf{q}_i/127}{\|\mathbf{q}_i/127\|_2+\varepsilon}.
 $$
 
 当前K5主结果中
 
 $$
-|\mathcal Y_{\mathrm{old}}|=6,\qquad
-|\mathcal Y_{\mathrm{new}}|=20,\qquad
+|\mathcal{Y}_{\mathrm{old}}|=6,\qquad
+|\mathcal{Y}_{\mathrm{new}}|=20,\qquad
 K_{\mathrm{old}}=K_{\mathrm{new}}=5,
 $$
 
@@ -882,33 +1717,39 @@ $$
 query特征为
 
 $$
-\mathbf z_q=\frac{g_\theta(x_q)}{\|g_\theta(x_q)\|_2}.
+\mathbf{z}_q
+=\frac{g_{\boldsymbol{\theta}^{\star}}(\mathbf{x}_q)}
+{\|g_{\boldsymbol{\theta}^{\star}}(\mathbf{x}_q)\|_2+\varepsilon}.
 $$
 
 与support code的余弦相似度为
 
 $$
-s_{qi}=\mathbf z_q^\top\hat{\mathbf z}_i.
+s_{qi}=\mathbf{z}_q^{\top}\widehat{\mathbf{z}}_i.
 $$
 
-对类别$c$取类内top-$m$均值：
+对每个类别取类内top-m均值。邻居数记为
+
+$$
+M_{\mathrm{nn}}.
+$$
 
 $$
 \operatorname{KNN}_c(q)
-=
-\frac{1}{m}
-\sum_{i\in\operatorname{TopM}(\{s_{qj}:y_j=c\},m)}
+=\frac{1}{M_{\mathrm{nn}}}
+\sum_{i\in\operatorname{TopM}
+(\{s_{qj}:y_j=c\},M_{\mathrm{nn}})}
 s_{qi}.
 $$
 
 类别prototype为
 
 $$
-\boldsymbol\mu_c=
-\frac{\sum_{i:y_i=c}\hat{\mathbf z}_i}
-{\left\|\sum_{i:y_i=c}\hat{\mathbf z}_i\right\|_2+\epsilon},
+\boldsymbol{\mu}_c
+=\frac{\sum_{i:y_i=c}\widehat{\mathbf{z}}_i}
+{\left\|\sum_{i:y_i=c}\widehat{\mathbf{z}}_i\right\|_2+\varepsilon},
 \qquad
-\operatorname{Proto}_c(q)=\mathbf z_q^\top\boldsymbol\mu_c.
+\operatorname{Proto}_c(q)=\mathbf{z}_q^{\top}\boldsymbol{\mu}_c.
 $$
 
 V42线路的主分数写为
@@ -918,7 +1759,7 @@ S_c(q)
 =
 (1-\lambda_p)\operatorname{KNN}_c(q)
 +\lambda_p\operatorname{Proto}_c(q)
-+b_{\mathrm{old}}\mathbb 1[c\in\mathcal Y_{\mathrm{old}}]
++b_{\mathrm{old}}\mathbf{1}[c\in\mathcal{Y}_{\mathrm{old}}]
 +\Delta_{\mathrm{scen}}(q,c)
 +\Delta_{\mathrm{lp}}(q,c).
 $$
@@ -926,12 +1767,93 @@ $$
 其中当前K5 high-floor行使用
 
 $$
-\lambda_p=0.45,\qquad
-b_{\mathrm{old}}=0.001,\qquad
-m=1.
+\lambda_p=0.45,
+\qquad
+b_{\mathrm{old}}=0.001,
+\qquad
+M_{\mathrm{nn}}=1.
 $$
 
-$\Delta_{\mathrm{scen}}(q,c)$是scenario-aware residual补全项，$\Delta_{\mathrm{lp}}(q,c)$是support-query图传播项。当前行参数为
+scenario-aware residual只用support估计场景偏移。设`C_s`为场景s中至少有support的类别集合：
+
+$$
+\boldsymbol{\mu}_{c,s}
+=\operatorname{norm}\!\left(
+\sum_{i:y_i=c,\,s_i=s}\widehat{\mathbf{z}}_i
+\right),
+\qquad
+\boldsymbol{\delta}_s
+=\frac{1}{|\mathcal{C}_s|}
+\sum_{c\in\mathcal{C}_s}
+(\boldsymbol{\mu}_{c,s}-\boldsymbol{\mu}_c).
+$$
+
+当新类c在场景s中没有support、但该场景至少有2个其他类时，合成场景prototype：
+
+$$
+\widetilde{\boldsymbol{\mu}}_{c,s}
+=\operatorname{norm}(\boldsymbol{\mu}_c+\boldsymbol{\delta}_s).
+$$
+
+对场景属于s的query，残差只补充正向分数差并截断到0.5：
+
+$$
+\Delta_{\mathrm{scen}}(q,c)
+=0.5\,\mathbf{1}[c\in\mathcal{Y}_{\mathrm{new}}]
+\mathbf{1}[c\notin\mathcal{C}_s]
+\operatorname{clip}
+\left(
+\left[
+\mathbf{z}_q^{\top}\widetilde{\boldsymbol{\mu}}_{c,s}
+-S_c^{\mathrm{pre}}(q)
+\right]_{+},
+0,
+0.5
+\right).
+$$
+
+label propagation在全部support和query特征上建立10近邻图，但只用support标签初始化。邻接权重为
+
+$$
+W_{ij}
+=\frac{
+\mathbf{1}[j\in\mathcal{N}_{10}(i)]
+\exp\!\left(
+\mathbf{z}_i^{\top}\mathbf{z}_j/0.05
+\right)
+}{
+\sum_{k\in\mathcal{N}_{10}(i)}
+\exp\!\left(
+\mathbf{z}_i^{\top}\mathbf{z}_k/0.05
+\right)
+}.
+$$
+
+设support行的Y为one-hot、query行为0，传播8轮并在每轮把support行钳回真实标签：
+
+$$
+F^{(0)}=Y,
+\qquad
+F^{(r+1)}=0.76WF^{(r)}+0.24Y,
+\qquad
+F_{\mathrm{sup}}^{(r+1)}=Y_{\mathrm{sup}}.
+$$
+
+query传播分数逐行标准化并截断：
+
+$$
+\Delta_{\mathrm{lp}}(q,c)
+=0.025\,
+\operatorname{clip}
+\left(
+\frac{F_{q,c}^{(8)}-\operatorname{mean}_{c'}F_{q,c'}^{(8)}}
+{\operatorname{std}_{c'}F_{q,c'}^{(8)}+10^{-6}},
+-2,
+2
+\right).
+$$
+
+当前行参数为
 
 $$
 \lambda_{\mathrm{lp}}=0.025,\quad
@@ -945,13 +1867,30 @@ $$
 
 $$
 \lambda_{\mathrm{scen}}=0.5,\qquad
-\mathrm{scope}_{\mathrm{scen}}=\mathcal Y_{\mathrm{new}}.
+\operatorname{scope}_{\mathrm{scen}}=\mathcal{Y}_{\mathrm{new}},
+\qquad
+\operatorname{clip}_{\mathrm{scen}}=0.5.
 $$
+
+|符号别名|意义|
+|---|---|
+|`M_nn`|类内top-m邻居数，当前为1|
+|`lambda_p`|prototype混合权重0.45|
+|`b_old`|旧类统一加分0.001|
+|`mu_c,s`|类c在场景s中的support prototype|
+|`delta_s`|由场景s中已有类估计的平均场景残差|
+|`S_pre`|加入scenario residual前的当前类别分数|
+|`W`|support-query 10近邻行归一化图|
+|`Y`,`F`|初始标签矩阵与传播状态|
+|`lambda_lp`|label propagation分数权重0.025|
 
 预测为
 
 $$
-\hat y_q=\arg\max_{c\in\mathcal Y_{\mathrm{old}}\cup\mathcal Y_{\mathrm{new}}}S_c(q).
+\widehat y_q
+=\operatorname*{arg\,max}_{c\in
+\mathcal{Y}_{\mathrm{old}}\cup\mathcal{Y}_{\mathrm{new}}}
+S_c(q).
 $$
 
 ### 8.4当前同row结果
@@ -1002,7 +1941,14 @@ qKNNV42的贡献在Phase2部署方式，而不是新神经网络结构：
 |scenario residual|用目标LEO场景support结构补足同场景缺失|
 |轻量图传播|`Delta_lp`只在冻结特征和support/query图上做分数平滑，不训练backbone|
 
-相对现有RFFI，qKNNV42的差异是：普通RFFI闭集分类通常固定$\mathcal Y$并训练一个softmax分类器；qKNNV42在目标接收机域到达后，用少量support即时扩展类别集合$\mathcal Y_{\mathrm{old}}\cup\mathcal Y_{\mathrm{new}}$，并把部署状态限制为support code、prototype和少量标量。
+相对常见闭集RFFI，qKNNV42不把训练期类别集合永久固定。部署期可识别集合由旧类和已注册新类组成：
+
+$$
+\mathcal{Y}_{\mathrm{deploy}}
+=\mathcal{Y}_{\mathrm{old}}\cup\mathcal{Y}_{\mathrm{new}}.
+$$
+
+目标接收机域到达后，系统用少量support即时扩展该集合，并把持久化部署状态限制为int8 support code、prototype和少量标量。该差异是部署期注册机制，不等于提出了新的神经网络backbone。
 
 ### 8.6与机器学习方法的关系
 
@@ -1010,7 +1956,7 @@ qKNNV42的贡献在Phase2部署方式，而不是新神经网络结构：
 |---|---|---|
 |KNN|按embedding相似度分类|使用量化support code，并区分old/new角色|
 |Nearest Class Mean|使用类中心|同时使用top-m局部近邻和prototype|
-|Prototypical Networks|K-shot support形成prototype|backbone不做episodic训练，部署期只更新memory|
+|Prototypical Networks|K-shot support形成prototype|backbone未按目标域K-shot分类episode端到端训练，部署期只更新memory|
 |Matching Networks|query-support相似度|qKNNV42不用端到端attention训练|
 |iCaRL/增量prototype|新类注册和旧类保持|qKNNV42不保存原始样本，不训练分类器权重|
 |量化检索|int8 embedding降低存储|用于RFFI目标接收机K-shot注册|
@@ -1024,7 +1970,7 @@ qKNNV42的贡献在Phase2部署方式，而不是新神经网络结构：
 |prototype mix|`lambda_p in {0,0.25,0.45}`|局部近邻/类中心权衡|
 |old bias|`b_old in {0,0.001}`|旧类遗忘和new-over-old混淆|
 |scenario residual|`lambda_scen in {0,0.5}`|LEO场景缺失下的新类地板|
-|labelprop|`lambda_lp in {0,0.025}`|query-free图平滑对弱类的影响|
+|labelprop|`lambda_lp in {0,0.025}`|无query标签的转导图平滑对弱类的影响|
 |support selection|不同seed/support策略|是否能把`seed=421070`式强support转成oracle-free注册机制|
 
 ## 9.K10非压缩/压缩更新
@@ -1116,9 +2062,11 @@ qKNNV42的贡献在Phase2部署方式，而不是新神经网络结构：
 |ADV3B02主报告|`E:\type10-7\automation_reports\CV-SincNet\phase1_adv3_mechanism32_queue_20260701\report.md`|B02身份、数据、候选和prototype导出|
 |ADV3B02分析|`E:\type10-7\automation_reports\CV-SincNet\phase1_adv3_mechanism32_queue_20260701\full_analysis_20260702.md`|Phase1边界和B02结论|
 |ADV3B02候选表|`E:\type10-7\automation_reports\CV-SincNet\phase1_adv3_mechanism32_queue_20260701\adv3_m32_candidate_summary.csv`|B02同row指标|
-|ADV3B02训练快照|`E:\type10-7\code\snapshots\phase1_adv3_mechanism32_queue_20260701\launch_phase1_adv3_mechanism32_queue_20260701.sh`|训练参数与候选variant|
-|CVS模型|`E:\type10-7\code\model.py`、`E:\type10-7\code\model_dual_cvsincnet.py`|CV-SincNet、双分支解耦和层参数|
-|SSDG训练|`E:\type10-7\code\SSDG\train_ssdg.py`|伪标签、loss、guard和日志字段|
+|ADV3B02训练入口快照|`E:\type10-7\code\snapshots\phase1_adv3_mechanism32_queue_20260701\launch_phase1_adv3_mechanism32_queue_20260701.sh`|B02参数、候选variant和启动语义|
+|ADV3B02训练逻辑快照|`E:\type10-7\code\snapshots\phase1_adv3_mechanism32_queue_20260701\train_ssdg.py`|B02实际损失装配、阶段调度、伪标签和优化器；本报告公式权威|
+|ADV3B02损失实现快照|`E:\type10-7\code\snapshots\phase1_adv3_mechanism32_queue_20260701\losses.py`|B02各子损失精确定义；本报告公式权威|
+|CVS模型谱系|`E:\type10-7\code\model.py`、`E:\type10-7\code\model_dual_cvsincnet.py`|CV-SincNet和双分支层参数；Git谱系一致，但缺少2026-07-01远端独立哈希|
+|当前SSDG演化版本|`E:\type10-7\code\SSDG\train_ssdg.py`|后续演化参考，不用于覆盖B02历史训练公式|
 |qKNNV42策略实现|`E:\type10-7\github_publish\CVS-RFFI-repo\code\scripts\phase2_support_metric_qknn_probe.py`|V42策略、top-m、prototype、labelprop、scenario residual|
 |qKNNV42主报告|`E:\type10-7\automation_reports\CV-SincNet\phase2_qknn_hardpair_n20_20260706\report.md`|V42矩阵和high-floor行解释|
 |qKNNV42最佳JSON|`E:\type10-7\automation_reports\CV-SincNet\phase2_qknn_hardpair_n20_20260706\artifacts\v53_fftlogmag_20260706\local_v55_diagnostics_20260706\k5_strict_seed421070_floor_param_best_predictions_20260707.json`|当前同row指标和support/query指纹|
@@ -1146,7 +2094,7 @@ qKNNV42的贡献在Phase2部署方式，而不是新神经网络结构：
 
 ## 11.下一步
 
-1.按模块A-D跑ADV3B02消融，主表保留strict UDU、receiver floor、sat_floor、prototype半径和Phase2 qKNN后续指标。
+1.按新模块A-D跑ADV3B02模块级消融，主表只保留Phase1指标：overall、strict UDU、min class、worst receiver、receiver floor、pseudo precision/coverage、`z_id->receiver` leakage、类内角尾部和satellite stress mean/floor。
 
 2.按qKNNV42组件跑Phase2消融，主表保留`K`、stored codes、old mean、min old、seen-new mean、min new、`H_old,new`和support/query指纹；当前主线只评价target-old旧类目标域适应和target-new/seen-new注册识别。
 
