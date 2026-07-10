@@ -29,3 +29,13 @@
 - 128个candidate ID和命令均唯一。
 - 每GPU恰好16行，调度器CLI只接受`--max-active-per-gpu 2`。
 - satellite train/eval family保持独立，checkpoint只允许`final_ssdg.pth`。
+
+## Server launch status
+
+- First attempt `phase1_dgleo_p1verify128_20260710` was stopped after a pre-training import failure caused by stale remote `phase2_prototypes.py`; 21 attempted rows are retained as failed startup evidence and excluded from the formal matrix.
+- Full P0 runtime dependencies were synchronized and hash-verified before retry.
+- Formal run: `phase1_dgleo_p1verify128r1_20260710`.
+- Scheduler PID: `1945261`.
+- Startup health: 16 active compute processes, exactly two per GPU, 16 non-empty metric files, no fatal markers.
+- The scheduler backfills the same GPU after any candidate writes a terminal exit until all 128 formal rows have run.
+- Current state is startup PASS only; no performance or promotion claim is made.
