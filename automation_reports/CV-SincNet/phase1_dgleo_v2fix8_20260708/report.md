@@ -199,3 +199,82 @@ E28后关键检查：
 ### 已知审计缺口
 
 `direct_metric_acceptance_loss`已返回`geometry_stabilized`、`geometry_reference_detached`、`angle_clamp_eps`和`softplus_clip`，并由本地单测覆盖。但当前`train_ssdg.py`只白名单写出既有`train/dm_accept_*`指标，未把这些新增稳定字段写入`metrics_epoch.csv`。本批运行已启动，不能通过修改文件影响已运行进程。后续若需要更完整artifact parity，应补丁`train_ssdg.py`日志白名单，并在下一批验证。
+
+## 2026-07-10完成结果与终局分析
+
+### 证据完整性
+
+N607只读检查确认8个训练进程均已退出。每个候选都有200行`metrics_epoch.csv`、200条完整epoch记录和约9194行stdout；完整stdout扫描未发现`Traceback`、`RuntimeError`、OOM、Killed、argparse错误或FATAL。E28以后8个候选的`train_skipped_nonfinite_grad`累计均为0，E30以后测试结果各有29至30个不同取值，证明梯度稳定性修复有效，旧主8的“E28后参数冻结/测试不变”问题已经消失。
+
+stdout中的`nan/-inf`主要来自未到启动epoch的inactive指标、未执行test的epoch和从未建立的best checkpoint字段，不是本轮训练loss非有限。该日志设计会污染自动fatal扫描，后续应把inactive/missing改为带reason code的空值或显式状态。
+
+远端每个run目录最终只有`latest_ssdg.pth`、`metrics_epoch.csv/jsonl`，没有`best_joint_safe_ssdg.pth`、`latest_safe_ssdg.pth`或prototype导出包。8个候选`safe_checkpoint_saved`全程为0，stdout的`BEST-JOINT`始终为`E000/val=-inf/test=nan`，最终均输出`prototype_export_skipped=1`。因此本组是完整训练完成的`NON_PROMOTABLE_DIAGNOSTIC`，不是可部署或可进入真实unknown评估的候选包。
+
+### 泛化与星地压力结果
+
+|candidate|best overall@epoch|final overall|best strict@epoch|final strict|final receiver floor|final sat mean|final sat floor|final sat strict floor|
+|---|---:|---:|---:|---:|---:|---:|---:|---:|
+|`BRIDGE_LOW_DENSITY`|89.99@30|89.42|85.95@30|84.73|70.69|78.76|77.80|71.91|
+|`BUDGET_OS_HIGH_SAFE`|90.08@10|89.37|85.75@10|84.93|72.53|78.67|77.71|71.92|
+|`DM_PROXY_ALIGNED`|89.93@188|89.18|85.79@186|84.27|71.86|78.23|77.26|71.08|
+|`EXPORT_PROMOTE_SAFE`|89.74@30|89.25|85.45@80|84.72|71.02|78.41|77.44|71.54|
+|`FULL_STABLE`|89.95@184|89.57|85.95@184|85.13|73.13|78.79|77.81|71.82|
+|`RECEIVER_LOCAL_SAFE`|89.79@30|89.25|85.80@50|84.90|73.09|78.50|77.54|71.46|
+|`SAT_OPEN_PAIR`|90.17@20|89.35|85.88@10|84.68|70.18|78.21|77.27|71.26|
+|`U_TRISTATE_FULL`|89.75@130|89.19|85.60@130|84.78|71.47|78.78|77.86|71.98|
+
+V2FIX8的final中位数为overall 89.30、strict UDU 84.76、receiver floor 71.67、sat floor 77.63、sat strict floor 71.68。相对OSFIX16中位数，overall下降0.17pp、strict UDU下降0.16pp，但sat floor提高2.34pp。星地压力鲁棒性是本组最清楚的正向结果；跨日期/跨接收机strict UDU和最弱receiver没有同步提高。8个候选的best-final strict gap约0.82至1.52pp，训练后期仍存在泛化回落。
+
+从组中位曲线看，sat floor从E10的75.29持续升至E200的77.63；strict UDU则从E20的85.46降至E200的84.76，receiver floor从75.18降至71.67。该方向与后期teacher/satellite目标主导一致：模型更适配训练分布内的LEO增强族，但没有学到更强的跨receiver/day不变RFF表征。
+
+### Open-set代理结果
+
+下表是E200同row结果。训练代理仍不等于真实unknown拒识，`old proxy`和`old bridge`指原有`proxy_unknown_*`端点评估代理。
+
+|candidate|p95|p99|tail cvar|source overflow|source episode overflow|dm proxy|old proxy|dm bridge|old bridge|low-density|tail/overflow accept|radius/inter|p99 delta|export|
+|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---|
+|`BRIDGE_LOW_DENSITY`|65.70|79.64|74.15|0.792|0.960|0.149|0.575|0.001|1.000|0.024|0.136/0.002|1.011|28.43|blocked|
+|`BUDGET_OS_HIGH_SAFE`|70.47|84.00|78.70|0.798|1.000|0.095|0.562|0.001|1.000|0.028|0.168/0.073|1.110|31.87|blocked|
+|`DM_PROXY_ALIGNED`|68.45|83.20|78.42|0.761|0.990|0.117|0.588|0.001|1.000|0.027|0.165/0.129|1.135|35.15|blocked|
+|`EXPORT_PROMOTE_SAFE`|79.01|84.61|82.30|0.792|0.995|0.155|0.500|0.011|1.000|0.028|0.151/0.103|1.185|35.27|blocked|
+|`FULL_STABLE`|53.54|80.10|72.14|0.762|0.946|0.112|0.663|0.000|1.000|0.029|0.150/0.026|0.999|20.49|blocked|
+|`RECEIVER_LOCAL_SAFE`|78.20|83.99|81.90|0.758|0.976|0.123|0.588|0.002|1.000|0.025|0.125/0.128|1.102|39.00|blocked|
+|`SAT_OPEN_PAIR`|74.52|83.92|79.41|0.777|0.983|0.160|0.488|0.006|1.000|0.027|0.139/0.104|1.127|38.37|blocked|
+|`U_TRISTATE_FULL`|68.07|80.23|77.24|0.814|0.987|0.141|0.600|0.002|1.000|0.022|0.144/0.004|1.078|32.47|blocked|
+
+E181-E200的跨候选稳健中位数为p95 72.55、p99 83.09、tail cvar 79.22、dm proxy 0.133、old proxy 0.613、source overflow 0.782、source episode overflow 0.981、dm bridge 0.001、old bridge 1.000、tail accept 0.152、overflow accept 0.083、radius/inter 1.077。相对OSFIX16，p95、p99、tail cvar、dm proxy、tail/overflow accept和radius/inter有小幅改善；source overflow和source episode overflow反而恶化，legacy bridge完全没有改善，legacy proxy只从约0.628降到约0.613。结论是“部分动态DM代理变好”，不是最终拒识边界变好。
+
+`p99 delta`为20.49至39.00，远超2.0/3.5阻断阈值。但当前state machine用每个随机训练batch的历史最小p99作为`best_p99`，再与当前随机batch比较；单batch偶然低值会永久制造巨大delta。该门能fail-closed阻断导出，却不能可靠度量“同一固定评估集上best checkpoint到final的tail扩张”。
+
+### 无标签、local component与损失预算
+
+8个候选E200均为`u_direct_active=0`、`u_quarantine_active=0`、`u_direct weighted loss=0`、`u_quarantine weighted loss=0`。虽然每batch约110个高置信样本被selected，三态全部退化为`trusted_core=110, ambiguous_tail=0, outside_reject=0`，guard持续报告`US_DIRECT_LOSS_IDLE`和`US_TRI_STATE_SOURCE_MISSING`。
+
+代码原因明确：无标签loader使用`shuffle=False`，而U_s direct metric至少需要两个有效类；有序U_s batch很容易成为单类/类数不足batch。quarantine又直接使用`~pseudo_confidence_mask`，当前110/112样本通过高置信门，剩余约2个低于`quarantine_min_count=4`，所以几何三态从未建立。当前实现把“伪标签高置信”近似成“几何core”，无法识别高置信但处在tail/bridge/low-density的样本。
+
+所谓receiver-aware local component也只在`source_episode_three_sigma_loss`中计数leave-one-domain episode。E200虽记录60至66个component和density gate active，但没有启用prototype memory、TX/RX local prototype head、balanced TX-RX sampler或可导出的local component接收球；`source_episode_overflow`仍约0.98。因此它是诊断统计，不是结构性多原型建模。
+
+E181-E200加权loss中位数显示teacher clean KL约4.27、teacher sat KL约9.52、sat CE约2.48；direct metric约1.22、proxy约0.075、source episode约0.0087，U_s direct/quarantine均为0。`B_os_eff`稳健中位约0.07，远低于配置下限0.15。当前`B_os_eff`只是checkpoint/export gate，不会动态重加权、做PCGrad/CAGrad或插入OS-only优化step，所以它能识别冲突，不能纠正梯度主方向。
+
+星地open-set闭环也未完成。训练和评估使用同一组`leo_clear_weak/leo_low_elev_weak/leo_rain_weak`增强族，日志只有clean-sat pair angle，没有clean/sat分视图的p95/p99、proxy_vaccept、bridge、low-density、source overflow和endpoint acceptance。E181-E200的sat pair p95仍约81至83度，而目标是9度；星地分类floor提高并不等于星地视图的open-set几何变紧。
+
+### 候选决策
+
+|candidate|泛化结论|拒识潜力|主要风险|可否推进真实unknown评估|动作|
+|---|---|---|---|---|---|
+|`FULL_STABLE`|本组final strict和receiver floor相对较好，sat floor高|p95/p99单点较低，但old proxy/bridge和source episode失败|后期回落、全部hard gate阻断|否|保留为修复后健康基线|
+|`BRIDGE_LOW_DENSITY`|E30最好，final回落|dm bridge/low-density低|old bridge=1，receiver floor低|否|只作动态门控负例|
+|`BUDGET_OS_HIGH_SAFE`|sat较强，strict无增益|dm proxy单点低|实际`B_os_eff`仍不足，source episode=1|否|验证“高权重不等于有效梯度预算”|
+|`DM_PROXY_ALIGNED`|后期可达best但final回落最大之一|old proxy无稳定特异改善|动态/legacy不对齐|否|不promotion|
+|`EXPORT_PROMOTE_SAFE`|无泛化优势|old proxy单点低但窗口不稳|没有best/safe checkpoint和export artifact|否|保留fail-closed控制负例|
+|`RECEIVER_LOCAL_SAFE`|receiver floor接近本组最好|source overflow略低|local component只是统计，source episode仍0.976|否|结构机制未被真正验证|
+|`SAT_OPEN_PAIR`|早期overall最好，final strict/floor偏弱|无星地分视图拒识证据|pair p95约82度，sat分类与几何脱节|否|仅作为sat压力诊断|
+|`U_TRISTATE_FULL`|sat floor最高之一，strict一般|U_s open-set损失为0|三态完全未落地|否|该候选不能算有效三态实验|
+
+### 最终判断
+
+本组发布是有效的“训练稳定性修复与机制审计实验”：它证明E28非有限梯度已经修复，测试曲线恢复变化，concat_sa+teacher/sat训练可明显提高已见LEO增强族的satellite floor，部分动态DM代理也能下降。
+
+本组不是有效的“可拒识跨域泛化表征”成功实验。没有候选同时提高strict UDU/receiver floor并降低source episode overflow、legacy proxy/bridge和固定endpoint风险；U_s三态、receiver-aware local component、有效open-set梯度预算和星地分视图拒识均未真正生效；8/8无best-safe checkpoint、无prototype artifact、无promotion资格。
+
+当前不能声明真实`unknown_FAR`、`FPR95`、Stage2/Phase2成功、最终拒识边界改善或deployment success。最值得保留的是`FULL_STABLE`作为下一轮机制修复基线，而不是作为Stage2候选。
