@@ -95,3 +95,12 @@ P1明确要求只保留`final_ssdg.pth`并禁止tail rollback，但终局P0 read
 6.导出闭环：主候选必须生成与final SHA绑定的`endpoint_accept_v1`和receiver-aware local prototype artifact；动态DM门控仍仅是训练代理。
 
 即使所有代理门槛通过，Phase1仍只产生Stage2真实unknown评估候选。真实unknown FAR/FPR95和old/new校准结论必须由后续Stage2 query实验给出。
+
+## 执行状态
+
+- 修复提交：`2398585 fix: bound Phase1 open-set geometry training`。
+- 本地验证：116项Phase1相关测试通过；16条生成命令均通过当前trainer parser。
+- N607同步：trainer、loss、control、launcher和测试文件SHA256与本地一致；远端py_compile、16命令parser、退化density和open budget运行时断言通过。
+- 启动时间：2026-07-12 03:28 CST；run ID=`phase1_dgleo_dualguard16_20260712`；scheduler PID=`2916266`。
+- 初始并发：16/16候选存活，GPU0-7各2条；无Traceback/OOM/RuntimeError/FATAL；E3-E5 source-val为98.49%-98.66%。
+- 最晚deadline：2026-07-12 13:28 CST。该时间是硬停止上界，不是已完成承诺；final结果必须从terminal artifact重新解析。
