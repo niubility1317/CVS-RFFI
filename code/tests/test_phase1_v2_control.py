@@ -22,6 +22,7 @@ from cvsrffi.phase1_v2_control import (  # noqa: E402
     assess_phase1_v2_final_export_policy,
     assess_source_episode_density_gate,
     assess_unlabeled_tri_state,
+    compute_open_set_budget_action,
 )
 from cvsrffi.phase2_prototypes import attach_endpoint_accept_v1_manifest  # noqa: E402
 from SSDG.train_ssdg import (  # noqa: E402
@@ -445,6 +446,21 @@ def test_open_set_effective_budget_prefers_effective_gradient_norms_over_large_z
     assert decision.details["B_os_uses_gradient_norm"] == 1.0
 
 
+def test_open_set_effective_budget_blocks_excessive_open_gradient_share():
+    decision = assess_open_set_effective_budget(
+        {
+            "train/os_gradient_effective_open_norm": 9.0,
+            "train/os_gradient_effective_closed_norm": 1.0,
+        },
+        min_budget=0.10,
+        max_budget=0.25,
+    )
+
+    assert decision.fired
+    assert decision.reason == "B_os_eff_above_max"
+    assert decision.details["B_os_eff"] == pytest.approx(0.9)
+
+
 def test_open_set_gradient_controller_scales_real_gradients_to_budget():
     model = torch.nn.Linear(2, 1, bias=False)
     x = torch.tensor([[1.0, 0.5]])
@@ -469,6 +485,53 @@ def test_open_set_gradient_controller_scales_real_gradients_to_budget():
     assert info["post_budget"] >= 0.20 - 1e-6
     assert info["os_scale"] > 1.0
     assert model.weight.grad is not None
+
+
+def test_open_set_gradient_controller_caps_excessive_open_budget_without_weakening_closed_loss():
+    action = compute_open_set_budget_action(
+        os_total=9.0,
+        closed_total=1.0,
+        min_budget=0.10,
+        max_budget=0.25,
+        max_os_scale=4.0,
+        min_closed_scale=1.0,
+    )
+
+    assert action.active
+    assert action.reason == "B_os_eff_upper_controller_active"
+    assert action.os_scale < 1.0
+    assert action.closed_scale == 1.0
+    assert action.post_budget <= 0.25 + 1e-6
+
+
+def test_open_set_backward_caps_excessive_open_gradient_budget():
+    model = torch.nn.Linear(2, 1, bias=False)
+    with torch.no_grad():
+        model.weight.zero_()
+    x = torch.tensor([[1.0, 0.5]])
+    output = model(x)
+    closed = 0.01 * (output - 1.0).pow(2).mean()
+    opened = 100.0 * (output + 1.0).pow(2).mean()
+    scaler = torch.cuda.amp.GradScaler(enabled=False)
+
+    info = _backward_with_open_set_projection(
+        model,
+        scaler,
+        closed,
+        opened,
+        project_conflicts=True,
+        budget_controller=True,
+        min_budget=0.10,
+        max_budget=0.25,
+        max_os_scale=4.0,
+        min_closed_scale=1.0,
+    )
+
+    assert info["reason_code"] == 3.0
+    assert info["os_scale"] < 1.0
+    assert info["closed_scale"] == 1.0
+    assert info["post_budget"] <= 0.25 + 1e-6
+    assert info["conflict_projection_priority_code"] == 1.0
 
 
 def test_open_set_gradient_budget_ignores_closed_only_head_gradients():

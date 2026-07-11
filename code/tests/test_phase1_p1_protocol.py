@@ -79,6 +79,15 @@ def test_frozen_ridge_probe_reports_nonempty_accuracy_chance_and_excess():
 def test_train_ssdg_source_enforces_final_only_selection_and_final_export():
     source = (CODE_ROOT / "SSDG" / "train_ssdg.py").read_text(encoding="utf-8")
     assert 'choices=["final_only"]' in source
+
+
+def test_open_set_gradient_control_covers_source_episode_before_direct_metric_start():
+    source = (CODE_ROOT / "SSDG" / "train_ssdg.py").read_text(encoding="utf-8")
+    assert 'os_control_epoch_ready = bool(getattr(args, "phase1_v2_os_eff_all_phases", True))' in source
+    assert "and os_control_epoch_ready" in source
+    assert "and open_loss_has_signal" in source
+    assert 'parser.add_argument("--os_eff_max_budget"' in source
+    assert 'parser.add_argument("--max_grad_norm"' in source
     assert 'selected_checkpoint = final_path' in source
     assert 'default_export_checkpoint = selected_checkpoint' in source
     assert 'save_payload(best_path, payload)' not in source

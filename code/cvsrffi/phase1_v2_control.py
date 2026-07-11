@@ -47,6 +47,7 @@ class OpenSetBudgetAction:
     pre_budget: float
     post_budget: float
     target_budget: float
+    max_budget: float = 1.0
 
 
 def finite_float(value: Any, default: float = float("nan")) -> float:
@@ -480,6 +481,7 @@ def compute_open_set_budget_action(
     os_total: float,
     closed_total: float,
     min_budget: float,
+    max_budget: float = 0.0,
     max_os_scale: float = 4.0,
     min_closed_scale: float = 0.35,
 ) -> OpenSetBudgetAction:
@@ -488,12 +490,29 @@ def compute_open_set_budget_action(
     os_value = max(0.0, finite_float(os_total, 0.0))
     closed_value = max(0.0, finite_float(closed_total, 0.0))
     target = max(0.0, min(0.95, finite_float(min_budget, 0.0)))
+    max_target_raw = finite_float(max_budget, 0.0)
+    max_target = 1.0 if max_target_raw <= 0.0 else max(target, min(0.99, max_target_raw))
     denom = os_value + closed_value
     pre = os_value / denom if denom > 0.0 else 0.0
+    if pre > max_target and os_value > 0.0 and closed_value > 0.0:
+        desired_os = (max_target * closed_value) / max(1e-8, 1.0 - max_target)
+        os_scale = max(0.0, min(1.0, desired_os / os_value))
+        scaled_os = os_value * os_scale
+        post = scaled_os / max(1e-8, scaled_os + closed_value)
+        return OpenSetBudgetAction(
+            True,
+            "B_os_eff_upper_controller_active",
+            float(os_scale),
+            1.0,
+            float(pre),
+            float(post),
+            float(target),
+            float(max_target),
+        )
     if target <= 0.0 or pre >= target:
-        return OpenSetBudgetAction(False, "", 1.0, 1.0, pre, pre, target)
+        return OpenSetBudgetAction(False, "", 1.0, 1.0, pre, pre, target, max_target)
     if os_value <= 0.0:
-        return OpenSetBudgetAction(False, "OS_LOSS_IDLE", 1.0, 1.0, pre, pre, target)
+        return OpenSetBudgetAction(False, "OS_LOSS_IDLE", 1.0, 1.0, pre, pre, target, max_target)
 
     desired_os = (target * closed_value) / max(1e-8, 1.0 - target)
     os_scale = min(max(1.0, desired_os / os_value), max(1.0, float(max_os_scale)))
@@ -512,10 +531,16 @@ def compute_open_set_budget_action(
         float(pre),
         float(post),
         float(target),
+        float(max_target),
     )
 
 
-def assess_open_set_effective_budget(metrics: Mapping[str, Any], *, min_budget: float = 0.15) -> ControlDecision:
+def assess_open_set_effective_budget(
+    metrics: Mapping[str, Any],
+    *,
+    min_budget: float = 0.15,
+    max_budget: float = 0.0,
+) -> ControlDecision:
     os_keys = (
         "train/w_loss_direct_metric_accept",
         "train/w_loss_source_episode",
@@ -550,8 +575,12 @@ def assess_open_set_effective_budget(metrics: Mapping[str, Any], *, min_budget: 
         closed_total = _sum_abs(metrics, closed_keys)
     denom = os_total + closed_total
     budget = os_total / denom if denom > 0.0 else 0.0
-    fired = budget < max(0.0, float(min_budget))
-    reason = "B_os_eff_below_min" if fired else ""
+    min_target = max(0.0, float(min_budget))
+    max_target = float(max_budget)
+    below_min = budget < min_target
+    above_max = max_target > 0.0 and budget > max_target
+    fired = below_min or above_max
+    reason = "B_os_eff_below_min" if below_min else "B_os_eff_above_max" if above_max else ""
     return ControlDecision(
         fired=fired,
         reason=reason,
@@ -560,6 +589,8 @@ def assess_open_set_effective_budget(metrics: Mapping[str, Any], *, min_budget: 
             "B_os_total": os_total,
             "B_closed_total": closed_total,
             "B_os_uses_gradient_norm": 1.0 if uses_gradient_budget else 0.0,
+            "B_os_min_target": min_target,
+            "B_os_max_target": max_target,
         },
     )
 

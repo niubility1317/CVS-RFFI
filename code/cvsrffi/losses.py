@@ -348,6 +348,14 @@ def _bounded_softplus(value: torch.Tensor, *, clip: float = 20.0) -> torch.Tenso
     return F.softplus(torch.clamp(value_f, -float(clip), float(clip)))
 
 
+def _bounded_positive_scalar_loss(value: torch.Tensor, *, cap: float) -> torch.Tensor:
+    """Bound a non-negative scalar objective while preserving its local gradient."""
+
+    cap_f = max(1e-6, float(cap))
+    value_f = torch.nan_to_num(value.float(), nan=0.0, posinf=cap_f * 20.0, neginf=0.0).clamp_min(0.0)
+    return value_f.new_tensor(cap_f) * torch.tanh(value_f / cap_f)
+
+
 def _scalar_metric(value: torch.Tensor) -> float:
     if not torch.is_tensor(value):
         return float(value)
@@ -2739,6 +2747,7 @@ def multiview_source_episode_three_sigma_loss(
     *,
     clean_weight: float = 1.0,
     sat_weight: float = 1.0,
+    normalize_active_weights: bool = True,
     **kwargs,
 ) -> Tuple[torch.Tensor, Dict[str, float]]:
     """Keep clean/satellite receiver-local components separate and expose worst-view risk."""
@@ -2747,8 +2756,17 @@ def multiview_source_episode_three_sigma_loss(
         raise ValueError("multiview source episode expects aligned clean/satellite [B,D] features")
     clean_loss, clean_info = source_episode_three_sigma_loss(clean_z, y, d, **kwargs)
     sat_loss, sat_info = source_episode_three_sigma_loss(sat_z, y, d, **kwargs)
-    loss = max(0.0, float(clean_weight)) * clean_loss + max(0.0, float(sat_weight)) * sat_loss
-    metrics: Dict[str, float] = {"source_episode_multiview_separate_geometry": 1.0}
+    clean_weight_f = max(0.0, float(clean_weight))
+    sat_weight_f = max(0.0, float(sat_weight))
+    active_weight = clean_weight_f + sat_weight_f
+    weighted_sum = clean_weight_f * clean_loss + sat_weight_f * sat_loss
+    loss = weighted_sum / max(active_weight, 1e-8) if bool(normalize_active_weights) else weighted_sum
+    metrics: Dict[str, float] = {
+        "source_episode_multiview_separate_geometry": 1.0,
+        "source_episode_multiview_active_weight": float(active_weight),
+        "source_episode_multiview_normalized": 1.0 if bool(normalize_active_weights) else 0.0,
+        "source_episode_multiview_weighted_sum_loss": _scalar_metric(weighted_sum),
+    }
     for prefix, info in (("clean", clean_info), ("sat", sat_info)):
         for key, value in info.items():
             metrics[f"{prefix}_{key}"] = value
@@ -2774,6 +2792,28 @@ def multiview_source_episode_three_sigma_loss(
                 values.append(value)
         metrics[key] = max(values) if values else float("nan")
     metrics["source_episode_loss"] = _scalar_metric(loss)
+    loss_keys = (
+        "source_episode_leave_domain_loss",
+        "source_episode_mixup_loss",
+        "source_episode_local_component_compact_loss",
+        "source_episode_local_component_invariant_loss",
+        "source_episode_local_component_inter_loss",
+        "source_episode_local_component_accept_loss",
+        "source_episode_local_component_density_loss",
+        "source_episode_local_component_accept_raw_loss",
+        "source_episode_local_component_density_raw_loss",
+    )
+    for key in loss_keys:
+        clean_value = float(clean_info.get(key, 0.0))
+        sat_value = float(sat_info.get(key, 0.0))
+        weighted_value = clean_weight_f * clean_value + sat_weight_f * sat_value
+        metrics[key] = weighted_value / max(active_weight, 1e-8) if bool(normalize_active_weights) else weighted_value
+    upper_bounds = [
+        float(info.get("source_episode_loss_upper_bound", float("nan")))
+        for info in (clean_info, sat_info)
+    ]
+    finite_upper_bounds = [value for value in upper_bounds if math.isfinite(value)]
+    metrics["source_episode_loss_upper_bound"] = max(finite_upper_bounds) if finite_upper_bounds else float("nan")
     for key in (
         "source_episode_receiver_local_component_count",
         "source_episode_local_component_coverage",
@@ -2807,6 +2847,11 @@ def source_episode_three_sigma_loss(
     local_component_inter_margin_rad: float = math.radians(20.0),
     local_component_accept_weight: float = 0.0,
     local_component_density_weight: float = 0.0,
+    local_component_min_samples: int = 2,
+    local_component_radius_floor_rad: float = math.radians(3.0),
+    local_component_density_beta: float = 0.20,
+    local_component_density_cap: float = 2.0,
+    local_component_term_cap: float = 4.0,
 ) -> Tuple[torch.Tensor, Dict[str, float]]:
     """Source-only leave-domain angular shell objective.
 
@@ -2839,12 +2884,23 @@ def source_episode_three_sigma_loss(
         "source_episode_local_component_inter_loss": 0.0,
         "source_episode_local_component_accept_loss": 0.0,
         "source_episode_local_component_density_loss": 0.0,
+        "source_episode_local_component_accept_raw_loss": 0.0,
+        "source_episode_local_component_density_raw_loss": 0.0,
         "source_episode_local_component_radius_p95_deg": float("nan"),
+        "source_episode_local_component_radius_min_deg": float("nan"),
+        "source_episode_local_component_loss_radius_floor_deg": math.degrees(
+            max(float(min_sigma_rad), float(local_component_radius_floor_rad))
+        ),
+        "source_episode_local_component_radius_floor_rate": 0.0,
         "source_episode_local_component_center_spread_deg": float("nan"),
         "source_episode_local_component_structural_active": 0.0,
+        "source_episode_loss_upper_bound": float("nan"),
         "source_episode_core_count": 0.0,
         "source_episode_tail_count": 0.0,
         "source_episode_outside_count": 0.0,
+        "source_episode_leave_domain_core_count": 0.0,
+        "source_episode_leave_domain_tail_count": 0.0,
+        "source_episode_leave_domain_outside_count": 0.0,
         "source_episode_core_rate": 0.0,
         "source_episode_tail_rate": 0.0,
         "source_episode_outside_rate": 0.0,
@@ -2883,12 +2939,13 @@ def source_episode_three_sigma_loss(
     local_invariant_terms = []
     local_possible_components = 0.0
     min_cell = max(1, int(min_samples_per_class_domain))
+    local_min_cell = max(min_cell, int(local_component_min_samples), 2)
     for cls in torch.unique(labels[valid]):
         cls_mask = valid & labels.eq(cls)
         cls_centers = []
         for dom in torch.unique(domains[cls_mask]):
             cell = cls_mask & domains.eq(dom)
-            if int(cell.sum().item()) < min_cell:
+            if int(cell.sum().item()) < local_min_cell:
                 continue
             local_possible_components += 1.0
             center = safe_l2_normalize(z_norm[cell].mean(dim=0, keepdim=True), dim=1).squeeze(0)
@@ -2911,18 +2968,25 @@ def source_episode_three_sigma_loss(
             local_component_spreads.append(spread.detach().mean())
             local_invariant_terms.append(spread.pow(2).mean())
 
-    local_compact_loss = (
+    local_compact_raw_loss = (
         torch.stack(local_compact_terms).mean() if local_compact_terms else z_norm.sum() * 0.0
     )
-    local_invariant_loss = (
+    local_invariant_raw_loss = (
         torch.stack(local_invariant_terms).mean() if local_invariant_terms else z_norm.sum() * 0.0
     )
+    local_inter_raw_loss = z_norm.sum() * 0.0
+    local_accept_raw_loss = z_norm.sum() * 0.0
+    local_density_raw_loss = z_norm.sum() * 0.0
+    local_compact_loss = _bounded_positive_scalar_loss(local_compact_raw_loss, cap=local_component_term_cap)
+    local_invariant_loss = _bounded_positive_scalar_loss(local_invariant_raw_loss, cap=local_component_term_cap)
     local_inter_loss = z_norm.sum() * 0.0
     local_accept_loss = z_norm.sum() * 0.0
     local_density_loss = z_norm.sum() * 0.0
     local_core_count = 0.0
     local_tail_count = 0.0
     local_outside_count = 0.0
+    local_radius_floor_count = 0.0
+    local_radius_count = 0.0
     if len(local_component_centers) > 1:
         component_tensor = torch.stack(local_component_centers, dim=0)
         component_labels = torch.stack(local_component_labels, dim=0).to(device=labels.device)
@@ -2931,9 +2995,13 @@ def source_episode_three_sigma_loss(
         )
         different_class = component_labels.view(-1, 1).ne(component_labels.view(1, -1))
         if bool(different_class.any()):
-            local_inter_loss = F.relu(
+            local_inter_raw_loss = F.relu(
                 float(local_component_inter_margin_rad) - component_angles[different_class]
             ).pow(2).mean()
+            local_inter_loss = _bounded_positive_scalar_loss(
+                local_inter_raw_loss,
+                cap=local_component_term_cap,
+            )
         sample_local_angles = _safe_angle_from_cos(
             (z_norm[valid] @ component_tensor.t()).clamp(-1.0 + 1e-6, 1.0 - 1e-6)
         )
@@ -2945,20 +3013,45 @@ def source_episode_three_sigma_loss(
         component_radius_tensor = torch.stack(local_component_radii).to(
             device=z_norm.device, dtype=z_norm.dtype
         ).detach().clamp_min(1e-4)
+        loss_radius_floor = max(
+            1e-4,
+            float(min_sigma_rad),
+            float(local_component_radius_floor_rad),
+        )
+        component_loss_radius_tensor = component_radius_tensor.clamp_min(loss_radius_floor)
         own_radius = component_radius_tensor[nearest_own_idx]
+        own_loss_radius = component_loss_radius_tensor[nearest_own_idx]
         finite_local = torch.isfinite(nearest_own) & torch.isfinite(nearest_other)
         if bool(finite_local.any()):
             own_valid = nearest_own[finite_local]
             other_valid = nearest_other[finite_local]
             radius_valid = own_radius[finite_local]
+            loss_radius_valid = own_loss_radius[finite_local]
             local_overflow = F.relu(own_valid - radius_valid).pow(2).mean()
             local_bridge = F.relu(
                 float(local_component_inter_margin_rad) - (other_valid - own_valid)
             ).pow(2).mean()
-            local_accept_loss = local_overflow + local_bridge
-            normalized_radius = own_valid / radius_valid
-            local_density_loss = _top_cvar_mean(F.relu(normalized_radius - 0.80).pow(2), 0.20)
+            local_accept_raw_loss = local_overflow + local_bridge
+            local_accept_loss = _bounded_positive_scalar_loss(
+                local_accept_raw_loss,
+                cap=local_component_term_cap,
+            )
+            normalized_radius = own_valid / loss_radius_valid
+            density_excess = F.relu(normalized_radius - 0.80)
+            density_terms = F.smooth_l1_loss(
+                density_excess,
+                torch.zeros_like(density_excess),
+                reduction="none",
+                beta=max(1e-4, float(local_component_density_beta)),
+            )
+            local_density_raw_loss = _top_cvar_mean(density_terms, 0.20)
+            local_density_loss = _bounded_positive_scalar_loss(
+                local_density_raw_loss,
+                cap=local_component_density_cap,
+            )
             with torch.no_grad():
+                local_radius_floor_count = float((radius_valid < loss_radius_floor).float().sum().item())
+                local_radius_count = float(radius_valid.numel())
                 local_core_count = float((normalized_radius <= 0.80).float().sum().item())
                 local_outside_count = float((normalized_radius > 1.0).float().sum().item())
                 local_tail_count = float(normalized_radius.numel()) - local_core_count - local_outside_count
@@ -2968,9 +3061,9 @@ def source_episode_three_sigma_loss(
     component_keys = set()
     used_classes = set()
     used_domains = set()
-    core_count = local_core_count
-    tail_count = local_tail_count
-    outside_count = local_outside_count
+    core_count = 0.0
+    tail_count = 0.0
+    outside_count = 0.0
     possible_components = 0.0
     mode_code = 2.0
     for cls in torch.unique(labels[valid]):
@@ -3089,6 +3182,15 @@ def source_episode_three_sigma_loss(
         + max(0.0, float(local_component_accept_weight)) * local_accept_loss
         + max(0.0, float(local_component_density_weight)) * local_density_loss
     )
+    loss_upper_bound = (
+        math.pi * math.pi
+        + max(0.0, float(mixup_weight)) * math.pi * math.pi
+        + max(0.0, float(local_component_compact_weight)) * max(1e-6, float(local_component_term_cap))
+        + max(0.0, float(local_component_invariant_weight)) * max(1e-6, float(local_component_term_cap))
+        + max(0.0, float(local_component_inter_weight)) * max(1e-6, float(local_component_term_cap))
+        + max(0.0, float(local_component_accept_weight)) * max(1e-6, float(local_component_term_cap))
+        + max(0.0, float(local_component_density_weight)) * max(1e-6, float(local_component_density_cap))
+    )
     all_val_angles = torch.cat(val_angles_flat, dim=0) if val_angles_flat else z.new_zeros(0)
     if all_val_angles.numel() > 0:
         zid_p50 = torch.quantile(all_val_angles, 0.50)
@@ -3098,14 +3200,21 @@ def source_episode_three_sigma_loss(
         zid_tail_cvar = tail_values.mean() if tail_values.numel() > 0 else zid_p95
     else:
         zid_p50 = zid_p95 = zid_p99 = zid_tail_cvar = z.new_tensor(float("nan"))
-    tri_total = max(1.0, core_count + tail_count + outside_count)
     component_count = float(len(local_component_keys))
     component_coverage = component_count / local_possible_components if local_possible_components > 0.0 else 0.0
+    leave_domain_core_count = float(core_count)
+    leave_domain_tail_count = float(tail_count)
+    leave_domain_outside_count = float(outside_count)
+    if component_count > 0.0 and local_radius_count > 0.0:
+        core_count = float(local_core_count)
+        tail_count = float(local_tail_count)
+        outside_count = float(local_outside_count)
+    tri_total = max(1.0, core_count + tail_count + outside_count)
     tri_ready = component_count > 0.0 and (core_count + tail_count + outside_count) > 0.0
     density_active = (
         component_count > 0.0
-        and float(local_component_density_weight) > 0.0
-        and torch.isfinite(local_density_loss.detach()).item()
+        and local_radius_count > 0.0
+        and torch.isfinite(local_density_raw_loss.detach()).item()
     )
     metrics = {
         "source_episode_loss": _scalar_metric(loss),
@@ -3132,10 +3241,23 @@ def source_episode_three_sigma_loss(
         "source_episode_local_component_inter_loss": _scalar_metric(local_inter_loss),
         "source_episode_local_component_accept_loss": _scalar_metric(local_accept_loss),
         "source_episode_local_component_density_loss": _scalar_metric(local_density_loss),
+        "source_episode_local_component_accept_raw_loss": _scalar_metric(local_accept_raw_loss),
+        "source_episode_local_component_density_raw_loss": _scalar_metric(local_density_raw_loss),
         "source_episode_local_component_radius_p95_deg": (
-            math.degrees(_scalar_metric(torch.stack(local_component_radii).mean()))
+            math.degrees(_scalar_metric(torch.quantile(torch.stack(local_component_radii), 0.95)))
             if local_component_radii
             else float("nan")
+        ),
+        "source_episode_local_component_radius_min_deg": (
+            math.degrees(_scalar_metric(torch.stack(local_component_radii).min()))
+            if local_component_radii
+            else float("nan")
+        ),
+        "source_episode_local_component_loss_radius_floor_deg": math.degrees(
+            max(float(min_sigma_rad), float(local_component_radius_floor_rad))
+        ),
+        "source_episode_local_component_radius_floor_rate": (
+            float(local_radius_floor_count / local_radius_count) if local_radius_count > 0.0 else 0.0
         ),
         "source_episode_local_component_center_spread_deg": (
             math.degrees(_scalar_metric(torch.stack(local_component_spreads).mean()))
@@ -3155,6 +3277,9 @@ def source_episode_three_sigma_loss(
         "source_episode_core_count": float(core_count),
         "source_episode_tail_count": float(tail_count),
         "source_episode_outside_count": float(outside_count),
+        "source_episode_leave_domain_core_count": leave_domain_core_count,
+        "source_episode_leave_domain_tail_count": leave_domain_tail_count,
+        "source_episode_leave_domain_outside_count": leave_domain_outside_count,
         "source_episode_core_rate": float(core_count / tri_total),
         "source_episode_tail_rate": float(tail_count / tri_total),
         "source_episode_outside_rate": float(outside_count / tri_total),
@@ -3164,6 +3289,7 @@ def source_episode_three_sigma_loss(
         "source_episode_zid_tail_cvar_deg": math.degrees(_scalar_metric(zid_tail_cvar)),
         "source_episode_core_tail_outside_ready": 1.0 if tri_ready else 0.0,
         "source_episode_density_gate_active": 1.0 if density_active else 0.0,
+        "source_episode_loss_upper_bound": float(loss_upper_bound),
     }
     return loss, metrics
 

@@ -199,6 +199,7 @@ def build_arg_parser() -> argparse.ArgumentParser:
     parser.add_argument("--epochs", type=int, default=0, help="Compatibility alias: when >0, sets total epochs.")
     parser.add_argument("--lr", type=float, default=2e-4)
     parser.add_argument("--weight_decay", type=float, default=1e-4)
+    parser.add_argument("--max_grad_norm", type=float, default=0.0)
     parser.add_argument("--label_smoothing", type=float, default=0.01)
     parser.add_argument("--lambda_u", type=float, default=1.0)
     parser.add_argument("--lambda_ent", type=float, default=0.01)
@@ -385,6 +386,7 @@ def build_arg_parser() -> argparse.ArgumentParser:
     parser.add_argument("--tail_rollback_cooldown_epochs", type=int, default=2)
     parser.add_argument("--tail_rollback_closed_scale", type=float, default=0.60)
     parser.add_argument("--os_eff_min_budget", type=float, default=0.0)
+    parser.add_argument("--os_eff_max_budget", type=float, default=0.0)
     parser.add_argument("--os_budget_controller", type=str2bool, default=False)
     parser.add_argument("--os_budget_max_scale", type=float, default=4.0)
     parser.add_argument("--os_budget_min_closed_scale", type=float, default=0.35)
@@ -392,6 +394,13 @@ def build_arg_parser() -> argparse.ArgumentParser:
     parser.add_argument("--os_gradient_surgery_interval", type=int, default=1)
     parser.add_argument("--phase1_v2_os_eff_all_phases", type=str2bool, default=True)
     parser.add_argument("--phase1_v2_guard_blocks_final", type=str2bool, default=True)
+    parser.add_argument("--source_val_dg_health_guard", type=str2bool, default=False)
+    parser.add_argument("--source_val_dg_health_start_epoch", type=int, default=10)
+    parser.add_argument("--source_val_dg_health_warning_drop_pp", type=float, default=3.0)
+    parser.add_argument("--source_val_dg_health_stop_drop_pp", type=float, default=8.0)
+    parser.add_argument("--source_val_dg_health_floor", type=float, default=60.0)
+    parser.add_argument("--source_val_dg_health_min_open_scale", type=float, default=0.20)
+    parser.add_argument("--source_val_dg_health_stop_patience", type=int, default=1)
     parser.add_argument("--u_tri_state_required", type=str2bool, default=False)
     parser.add_argument("--u_direct_idle_blocks_promotion", type=str2bool, default=True)
     parser.add_argument("--u_tri_min_core_rate", type=float, default=0.05)
@@ -411,6 +420,16 @@ def build_arg_parser() -> argparse.ArgumentParser:
     parser.add_argument("--source_episode_local_inter_margin_deg", type=float, default=20.0)
     parser.add_argument("--source_episode_local_accept_weight", type=float, default=0.0)
     parser.add_argument("--source_episode_local_density_weight", type=float, default=0.0)
+    parser.add_argument("--source_episode_local_min_samples", type=int, default=2)
+    parser.add_argument("--source_episode_local_radius_floor_deg", type=float, default=3.0)
+    parser.add_argument("--source_episode_local_density_beta", type=float, default=0.20)
+    parser.add_argument("--source_episode_local_density_cap", type=float, default=2.0)
+    parser.add_argument("--source_episode_local_term_cap", type=float, default=4.0)
+    parser.add_argument("--source_episode_structural_start_epoch", type=int, default=-1)
+    parser.add_argument("--source_episode_structural_warmup_epochs", type=int, default=-1)
+    parser.add_argument("--source_episode_clean_weight", type=float, default=1.0)
+    parser.add_argument("--source_episode_sat_weight", type=float, default=1.0)
+    parser.add_argument("--source_episode_multiview_normalize", type=str2bool, default=True)
     parser.add_argument("--direct_metric_multiview_separate", type=str2bool, default=False)
     parser.add_argument("--direct_metric_domain_local_components", type=str2bool, default=False)
     parser.add_argument("--direct_metric_require_domain_local_components", type=str2bool, default=False)
@@ -2401,6 +2420,7 @@ def _backward_with_open_set_projection(
     project_conflicts: bool = True,
     budget_controller: bool = False,
     min_budget: float = 0.0,
+    max_budget: float = 0.0,
     max_os_scale: float = 4.0,
     min_closed_scale: float = 0.35,
 ) -> Dict[str, float]:
@@ -2444,12 +2464,21 @@ def _backward_with_open_set_projection(
             os_total=open_norm,
             closed_total=closed_norm,
             min_budget=float(min_budget),
+            max_budget=float(max_budget),
             max_os_scale=float(max_os_scale),
             min_closed_scale=float(min_closed_scale),
         )
         os_scale = float(action.os_scale)
         closed_scale = float(action.closed_scale)
-        reason_code = 1.0 if action.active else 2.0 if action.reason == "OS_LOSS_IDLE" else 0.0
+        reason_code = (
+            3.0
+            if action.reason == "B_os_eff_upper_controller_active"
+            else 1.0
+            if action.active
+            else 2.0
+            if action.reason == "OS_LOSS_IDLE"
+            else 0.0
+        )
 
     balanced_closed = [grad * closed_scale if grad is not None else None for grad in closed_grads]
     balanced_open = [grad * os_scale if grad is not None else None for grad in open_grads]
@@ -2462,7 +2491,9 @@ def _backward_with_open_set_projection(
             balanced_open_sq = balanced_open_sq + grad_open.detach().float().pow(2).sum()
             dot = dot + (grad_closed.detach().float() * grad_open.detach().float()).sum()
     conflict = bool(project_conflicts) and bool((dot < 0).item()) and bool((balanced_closed_sq > 0).item())
-    coeff = dot / balanced_open_sq.clamp_min(1e-12) if conflict else dot.new_tensor(0.0)
+    preserve_closed_on_conflict = conflict and reason_code == 3.0
+    coeff_denom = balanced_closed_sq if preserve_closed_on_conflict else balanced_open_sq
+    coeff = dot / coeff_denom.clamp_min(1e-12) if conflict else dot.new_tensor(0.0)
     post_dot = dot.new_tensor(0.0)
     post_closed_sq = dot.new_tensor(0.0)
     post_open_sq = dot.new_tensor(0.0)
@@ -2479,12 +2510,21 @@ def _backward_with_open_set_projection(
             projected_closed = grad_closed
             projected_open = None
         else:
-            projected_closed = (
-                grad_closed - coeff.to(dtype=grad_closed.dtype, device=grad_closed.device) * grad_open
-                if conflict
-                else grad_closed
-            )
-            projected_open = grad_open
+            if conflict and preserve_closed_on_conflict:
+                projected_closed = grad_closed
+                projected_open = (
+                    grad_open
+                    - coeff.to(dtype=grad_open.dtype, device=grad_open.device) * grad_closed
+                )
+            elif conflict:
+                projected_closed = (
+                    grad_closed
+                    - coeff.to(dtype=grad_closed.dtype, device=grad_closed.device) * grad_open
+                )
+                projected_open = grad_open
+            else:
+                projected_closed = grad_closed
+                projected_open = grad_open
             combined = projected_closed + projected_open
         param.grad = combined.detach().clone()
         if projected_closed is not None and projected_open is not None:
@@ -2520,6 +2560,7 @@ def _backward_with_open_set_projection(
         "pre_budget": pre_budget,
         "post_budget": post_budget,
         "reason_code": reason_code,
+        "conflict_projection_priority_code": 1.0 if preserve_closed_on_conflict else 0.0,
     }
 
 
@@ -3535,6 +3576,36 @@ def train(args) -> int:
         raise ValueError("--source_val_heavy_eval_final_window must be >= 0")
     if int(getattr(args, "source_val_heavy_eval_final_interval", 1)) < 1:
         raise ValueError("--source_val_heavy_eval_final_interval must be >= 1")
+    if float(getattr(args, "max_grad_norm", 0.0)) < 0.0:
+        raise ValueError("--max_grad_norm must be >= 0")
+    if float(getattr(args, "os_eff_max_budget", 0.0)) > 0.0 and float(
+        getattr(args, "os_eff_max_budget", 0.0)
+    ) < float(getattr(args, "os_eff_min_budget", 0.0)):
+        raise ValueError("--os_eff_max_budget must be zero/disabled or >= --os_eff_min_budget")
+    if int(getattr(args, "source_episode_local_min_samples", 2)) < 2:
+        raise ValueError("--source_episode_local_min_samples must be >= 2")
+    if float(getattr(args, "source_episode_local_radius_floor_deg", 3.0)) <= 0.0:
+        raise ValueError("--source_episode_local_radius_floor_deg must be > 0")
+    if float(getattr(args, "source_episode_local_density_cap", 2.0)) <= 0.0:
+        raise ValueError("--source_episode_local_density_cap must be > 0")
+    if float(getattr(args, "source_episode_local_term_cap", 4.0)) <= 0.0:
+        raise ValueError("--source_episode_local_term_cap must be > 0")
+    if float(getattr(args, "source_episode_clean_weight", 1.0)) < 0.0 or float(
+        getattr(args, "source_episode_sat_weight", 1.0)
+    ) < 0.0:
+        raise ValueError("source-episode clean/satellite weights must be >= 0")
+    if float(getattr(args, "source_episode_clean_weight", 1.0)) + float(
+        getattr(args, "source_episode_sat_weight", 1.0)
+    ) <= 0.0:
+        raise ValueError("at least one source-episode view weight must be positive")
+    if float(getattr(args, "source_val_dg_health_stop_drop_pp", 8.0)) < float(
+        getattr(args, "source_val_dg_health_warning_drop_pp", 3.0)
+    ):
+        raise ValueError("source-val DG stop drop must be >= warning drop")
+    if not 0.0 <= float(getattr(args, "source_val_dg_health_min_open_scale", 0.20)) <= 1.0:
+        raise ValueError("--source_val_dg_health_min_open_scale must be in [0, 1]")
+    if int(getattr(args, "source_val_dg_health_stop_patience", 1)) < 1:
+        raise ValueError("--source_val_dg_health_stop_patience must be >= 1")
     if bool(getattr(args, "enable_joint_safe_guard", False)):
         raise ValueError(
             "Phase1 source-only checkpoint selection forbids held-out test joint guards; "
@@ -3787,9 +3858,14 @@ def train(args) -> int:
                 f"tail_reference_window={int(args.tail_safety_reference_window)} "
                 f"tail_rollback={int(bool(args.tail_rollback_enabled))}:cooldown{int(args.tail_rollback_cooldown_epochs)} "
                 f"os_eff_min={float(args.os_eff_min_budget):.3f} "
+                f"os_eff_max={float(args.os_eff_max_budget):.3f} "
                 f"os_budget_controller={int(bool(args.os_budget_controller))} "
                 f"os_gradient_surgery={int(bool(args.os_gradient_surgery))} "
                 f"os_eff_all_phases={int(bool(args.phase1_v2_os_eff_all_phases))} "
+                f"dg_health_guard={int(bool(args.source_val_dg_health_guard))}:"
+                f"warn{float(args.source_val_dg_health_warning_drop_pp):.1f}:"
+                f"stop{float(args.source_val_dg_health_stop_drop_pp):.1f}:"
+                f"min_open{float(args.source_val_dg_health_min_open_scale):.2f} "
                 f"guard_blocks_final={int(bool(args.phase1_v2_guard_blocks_final))} "
                 f"u_tri_state_required={int(bool(args.u_tri_state_required))} "
                 f"source_episode_density_gate={int(bool(args.source_episode_density_gate))} "
@@ -3799,6 +3875,16 @@ def train(args) -> int:
                 f"inter:{float(args.source_episode_local_inter_weight):.3f},"
                 f"accept:{float(args.source_episode_local_accept_weight):.3f},"
                 f"density:{float(args.source_episode_local_density_weight):.3f} "
+                f"local_min_samples={int(args.source_episode_local_min_samples)} "
+                f"local_radius_floor={float(args.source_episode_local_radius_floor_deg):.2f}deg "
+                f"local_caps=density:{float(args.source_episode_local_density_cap):.2f},"
+                f"term:{float(args.source_episode_local_term_cap):.2f} "
+                f"structural_schedule=start:{int(args.source_episode_structural_start_epoch)},"
+                f"warmup:{int(args.source_episode_structural_warmup_epochs)} "
+                f"source_views=clean:{float(args.source_episode_clean_weight):.2f},"
+                f"sat:{float(args.source_episode_sat_weight):.2f},"
+                f"normalized:{int(bool(args.source_episode_multiview_normalize))} "
+                f"max_grad_norm={float(args.max_grad_norm):.2f} "
                 f"multiview_separate={int(bool(args.direct_metric_multiview_separate))} "
                 f"endpoint_artifact_required={int(bool(args.endpoint_require_artifact_on_export))} "
                 f"feasibility_gate={int(bool(args.feasibility_gate))}:{str(args.feasibility_stage)}",
@@ -3855,6 +3941,11 @@ def train(args) -> int:
     paic_cooldown_remaining = 0
     tail_rollback_cooldown_remaining = 0
     tail_early_stop_requested = False
+    dg_health_early_stop_requested = False
+    dg_health_best_val = float("-inf")
+    dg_health_open_scale = 1.0
+    dg_health_bad_epochs = 0
+    dg_health_drop_pp = 0.0
     tail_rollback_events: List[Dict[str, Any]] = []
     tail_reference_geometry: Dict[str, Any] = {}
     tail_reference_epoch = -1
@@ -4225,6 +4316,21 @@ def train(args) -> int:
                     start_epoch=int(getattr(args, "source_episode_start_epoch", 1)),
                     warmup_epochs=int(getattr(args, "source_episode_warmup_epochs", 0)),
                 )
+                source_structural_start_epoch = int(
+                    getattr(args, "source_episode_structural_start_epoch", -1)
+                )
+                if source_structural_start_epoch <= 0:
+                    source_structural_start_epoch = int(getattr(args, "source_episode_start_epoch", 1))
+                source_structural_warmup_epochs = int(
+                    getattr(args, "source_episode_structural_warmup_epochs", -1)
+                )
+                if source_structural_warmup_epochs < 0:
+                    source_structural_warmup_epochs = int(getattr(args, "source_episode_warmup_epochs", 0))
+                source_episode_structural_stage_scale = _stage_gate_scale(
+                    epoch,
+                    start_epoch=source_structural_start_epoch,
+                    warmup_epochs=source_structural_warmup_epochs,
+                )
                 direct_metric_stage_scale = _stage_gate_scale(
                     epoch,
                     start_epoch=int(getattr(args, "direct_metric_start_epoch", 20)),
@@ -4382,12 +4488,34 @@ def train(args) -> int:
                         mixup_weight=float(args.source_episode_mixup_weight),
                         mixup_order=int(args.soft_unknown_mixup_order),
                         mixup_hard_k=int(args.source_episode_mixup_hard_k),
-                        local_component_compact_weight=float(args.source_episode_local_compact_weight),
-                        local_component_invariant_weight=float(args.source_episode_local_invariant_weight),
-                        local_component_inter_weight=float(args.source_episode_local_inter_weight),
+                        local_component_compact_weight=(
+                            float(args.source_episode_local_compact_weight)
+                            * source_episode_structural_stage_scale
+                        ),
+                        local_component_invariant_weight=(
+                            float(args.source_episode_local_invariant_weight)
+                            * source_episode_structural_stage_scale
+                        ),
+                        local_component_inter_weight=(
+                            float(args.source_episode_local_inter_weight)
+                            * source_episode_structural_stage_scale
+                        ),
                         local_component_inter_margin_rad=math.radians(float(args.source_episode_local_inter_margin_deg)),
-                        local_component_accept_weight=float(args.source_episode_local_accept_weight),
-                        local_component_density_weight=float(args.source_episode_local_density_weight),
+                        local_component_accept_weight=(
+                            float(args.source_episode_local_accept_weight)
+                            * source_episode_structural_stage_scale
+                        ),
+                        local_component_density_weight=(
+                            float(args.source_episode_local_density_weight)
+                            * source_episode_structural_stage_scale
+                        ),
+                        local_component_min_samples=int(args.source_episode_local_min_samples),
+                        local_component_radius_floor_rad=math.radians(
+                            float(args.source_episode_local_radius_floor_deg)
+                        ),
+                        local_component_density_beta=float(args.source_episode_local_density_beta),
+                        local_component_density_cap=float(args.source_episode_local_density_cap),
+                        local_component_term_cap=float(args.source_episode_local_term_cap),
                     )
                     if (
                         concat_sat_full_batch
@@ -4402,8 +4530,9 @@ def train(args) -> int:
                             z_id_l[sat_slice],
                             y_l[clean_slice],
                             d_l[clean_slice] if d_l is not None else None,
-                            clean_weight=float(args.direct_metric_clean_weight),
-                            sat_weight=float(args.direct_metric_sat_weight),
+                            clean_weight=float(args.source_episode_clean_weight),
+                            sat_weight=float(args.source_episode_sat_weight),
+                            normalize_active_weights=bool(args.source_episode_multiview_normalize),
                             **source_episode_kwargs,
                         )
                     else:
@@ -5029,17 +5158,24 @@ def train(args) -> int:
                     + float(args.lambda_u_quarantine_accept)
                     * sanitize_loss("ssdg_u_quarantine_accept", loss_u_quarantine, z_id_l, loss_warn_counts)
                 )
+                effective_os_min_budget = (
+                    float(args.os_eff_min_budget)
+                    if float(dg_health_open_scale) >= 1.0 - 1e-8
+                    else 0.0
+                )
                 os_budget_info = {
                     "active": 0.0,
                     "os_scale": 1.0,
                     "closed_scale": 1.0,
                     "pre_budget": 0.0,
                     "post_budget": 0.0,
-                    "target_budget": float(args.os_eff_min_budget),
+                    "target_budget": float(effective_os_min_budget),
+                    "configured_target_budget": float(args.os_eff_min_budget),
+                    "max_budget": float(args.os_eff_max_budget),
                     "reason_code": 0.0,
                 }
                 scaled_closed_loss = float(tail_closed_scale) * loss_closed
-                scaled_open_loss = loss_open
+                scaled_open_loss = float(dg_health_open_scale) * loss_open
                 loss = scaled_closed_loss + scaled_open_loss
             loss_is_finite = bool(torch.isfinite(loss.detach()).item())
             skipped_nonfinite_loss = 0
@@ -5065,14 +5201,22 @@ def train(args) -> int:
                 "pre_budget": 0.0,
                 "post_budget": 0.0,
                 "reason_code": 0.0,
+                "conflict_projection_priority_code": 0.0,
             }
             if loss_is_finite:
+                os_control_epoch_ready = bool(getattr(args, "phase1_v2_os_eff_all_phases", True)) or (
+                    epoch >= int(args.direct_metric_start_epoch)
+                )
+                open_loss_has_signal = bool(torch.isfinite(scaled_open_loss.detach()).item()) and (
+                    abs(float(scaled_open_loss.detach().float().item())) > 1e-12
+                )
                 use_os_control = (
                     (
                         bool(getattr(args, "os_gradient_surgery", False))
                         or bool(getattr(args, "os_budget_controller", False))
                     )
-                    and epoch >= int(args.direct_metric_start_epoch)
+                    and os_control_epoch_ready
+                    and open_loss_has_signal
                     and (batch_idx % max(1, int(args.os_gradient_surgery_interval)) == 0)
                     and bool(scaled_closed_loss.requires_grad)
                     and bool(scaled_open_loss.requires_grad)
@@ -5085,17 +5229,20 @@ def train(args) -> int:
                         scaled_open_loss,
                         project_conflicts=bool(getattr(args, "os_gradient_surgery", False)),
                         budget_controller=bool(getattr(args, "os_budget_controller", False)),
-                        min_budget=float(args.os_eff_min_budget),
+                        min_budget=float(effective_os_min_budget),
+                        max_budget=float(args.os_eff_max_budget),
                         max_os_scale=float(args.os_budget_max_scale),
                         min_closed_scale=float(args.os_budget_min_closed_scale),
                     )
                     os_budget_info = {
-                        "active": 1.0 if float(os_grad_info["reason_code"]) == 1.0 else 0.0,
+                        "active": 1.0 if float(os_grad_info["reason_code"]) in {1.0, 3.0} else 0.0,
                         "os_scale": float(os_grad_info["os_scale"]),
                         "closed_scale": float(os_grad_info["closed_scale"]),
                         "pre_budget": float(os_grad_info["pre_budget"]),
                         "post_budget": float(os_grad_info["post_budget"]),
-                        "target_budget": float(args.os_eff_min_budget),
+                        "target_budget": float(effective_os_min_budget),
+                        "configured_target_budget": float(args.os_eff_min_budget),
+                        "max_budget": float(args.os_eff_max_budget),
                         "reason_code": float(os_grad_info["reason_code"]),
                     }
                     loss = (
@@ -5105,6 +5252,13 @@ def train(args) -> int:
                 else:
                     scaler.scale(loss).backward()
                 scaler.unscale_(optimizer)
+                grad_norm_before_clip = _grad_norm(model)
+                if float(getattr(args, "max_grad_norm", 0.0)) > 0.0:
+                    torch.nn.utils.clip_grad_norm_(
+                        model.parameters(),
+                        max_norm=float(args.max_grad_norm),
+                        error_if_nonfinite=False,
+                    )
                 grad_total = _grad_norm(model)
                 grad_backbone = _grad_norm(model, lambda name: "backbone" in name)
                 grad_aux = _grad_norm(model, lambda name: "aux" in name)
@@ -5122,6 +5276,7 @@ def train(args) -> int:
             else:
                 skipped_nonfinite_loss = 1
                 optimizer.zero_grad(set_to_none=True)
+                grad_norm_before_clip = float("nan")
                 grad_total = float("nan")
                 grad_backbone = float("nan")
                 grad_aux = float("nan")
@@ -5174,7 +5329,12 @@ def train(args) -> int:
                     "train/os_budget_controller_pre": float(os_budget_info["pre_budget"]),
                     "train/os_budget_controller_post": float(os_budget_info["post_budget"]),
                     "train/os_budget_controller_target": float(os_budget_info["target_budget"]),
+                    "train/os_budget_controller_configured_target": float(
+                        os_budget_info["configured_target_budget"]
+                    ),
+                    "train/os_budget_controller_max": float(os_budget_info["max_budget"]),
                     "train/os_budget_controller_reason_code": float(os_budget_info["reason_code"]),
+                    "train/source_val_dg_health_open_scale": float(dg_health_open_scale),
                     "train/tail_rollback_cooldown_active": 1.0 if tail_rollback_cooldown_active else 0.0,
                     "train/tail_rollback_cooldown_remaining": float(stage_state["tail_rollback_cooldown_remaining"]),
                     "train/tail_rollback_closed_scale": float(tail_closed_scale),
@@ -5182,6 +5342,9 @@ def train(args) -> int:
                     "train/os_gradient_conflict": float(os_grad_info["conflict"]),
                     "train/os_gradient_pre_cosine": float(os_grad_info["pre_cosine"]),
                     "train/os_gradient_post_cosine": float(os_grad_info["post_cosine"]),
+                    "train/os_gradient_conflict_projection_priority_code": float(
+                        os_grad_info["conflict_projection_priority_code"]
+                    ),
                 "train/os_gradient_closed_norm": float(os_grad_info["closed_grad_norm"]),
                 "train/os_gradient_open_norm": float(os_grad_info["open_grad_norm"]),
                 "train/os_gradient_total_closed_norm": float(os_grad_info["total_closed_grad_norm"]),
@@ -5349,6 +5512,9 @@ def train(args) -> int:
                     "train/tx_acc": 100.0 * (out_l["tx_logits"].argmax(dim=1) == y_l).float().mean().detach(),
                     "train/dom_acc": core_losses.get("dom_acc", float("nan")),
                     "train/cons_cos": core_losses.get("cons_cos", float("nan")),
+                    "train/grad_before_clip": grad_norm_before_clip,
+                    "train/grad_clip_active": 1.0 if float(getattr(args, "max_grad_norm", 0.0)) > 0.0 else 0.0,
+                    "train/grad_clip_limit": float(getattr(args, "max_grad_norm", 0.0)),
                     "train/grad_total": grad_total,
                     "train/grad_backbone": grad_backbone,
                     "train/grad_aux": grad_aux,
@@ -5481,6 +5647,10 @@ def train(args) -> int:
                     "train/source_episode_mixup_overflow_rate": source_episode_info.get("source_episode_mixup_overflow_rate", float("nan")),
                     "train/source_episode_mixup_margin_deg": source_episode_info.get("source_episode_mixup_margin_deg", float("nan")),
                     "train/source_episode_stage_scale": float(source_episode_stage_scale),
+                    "train/source_episode_structural_stage_scale": float(source_episode_structural_stage_scale),
+                    "train/source_episode_loss_upper_bound": source_episode_info.get(
+                        "source_episode_loss_upper_bound", float("nan")
+                    ),
                     "train/source_episode_receiver_local_component_count": source_episode_info.get(
                         "source_episode_receiver_local_component_count", float("nan")
                     ),
@@ -5502,8 +5672,23 @@ def train(args) -> int:
                 "train/source_episode_local_component_density_loss": source_episode_info.get(
                     "source_episode_local_component_density_loss", float("nan")
                 ),
+                "train/source_episode_local_component_accept_raw_loss": source_episode_info.get(
+                    "source_episode_local_component_accept_raw_loss", float("nan")
+                ),
+                "train/source_episode_local_component_density_raw_loss": source_episode_info.get(
+                    "source_episode_local_component_density_raw_loss", float("nan")
+                ),
                     "train/source_episode_local_component_radius_p95_deg": source_episode_info.get(
                         "source_episode_local_component_radius_p95_deg", float("nan")
+                    ),
+                    "train/source_episode_local_component_radius_min_deg": source_episode_info.get(
+                        "source_episode_local_component_radius_min_deg", float("nan")
+                    ),
+                    "train/source_episode_local_component_loss_radius_floor_deg": source_episode_info.get(
+                        "source_episode_local_component_loss_radius_floor_deg", float("nan")
+                    ),
+                    "train/source_episode_local_component_radius_floor_rate": source_episode_info.get(
+                        "source_episode_local_component_radius_floor_rate", float("nan")
                     ),
                     "train/source_episode_local_component_center_spread_deg": source_episode_info.get(
                         "source_episode_local_component_center_spread_deg", float("nan")
@@ -5532,6 +5717,15 @@ def train(args) -> int:
                 "train/source_episode_multiview_separate_geometry": source_episode_info.get(
                     "source_episode_multiview_separate_geometry", 0.0
                 ),
+                "train/source_episode_multiview_active_weight": source_episode_info.get(
+                    "source_episode_multiview_active_weight", float("nan")
+                ),
+                "train/source_episode_multiview_normalized": source_episode_info.get(
+                    "source_episode_multiview_normalized", 0.0
+                ),
+                "train/source_episode_multiview_weighted_sum_loss": source_episode_info.get(
+                    "source_episode_multiview_weighted_sum_loss", float("nan")
+                ),
                 **{
                     f"train/source_episode_{view}_{key}": source_episode_info.get(
                         f"{view}_{key}", float("nan")
@@ -5543,6 +5737,16 @@ def train(args) -> int:
                         "source_episode_zid_p99_deg",
                         "source_episode_zid_tail_cvar_deg",
                         "source_episode_local_component_radius_p95_deg",
+                        "source_episode_local_component_radius_min_deg",
+                        "source_episode_local_component_radius_floor_rate",
+                        "source_episode_leave_domain_loss",
+                        "source_episode_local_component_compact_loss",
+                        "source_episode_local_component_invariant_loss",
+                        "source_episode_local_component_inter_loss",
+                        "source_episode_local_component_accept_loss",
+                        "source_episode_local_component_density_loss",
+                        "source_episode_local_component_accept_raw_loss",
+                        "source_episode_local_component_density_raw_loss",
                     )
                 },
                     "train/dm_accept_active": direct_metric_info.get("active", float("nan")),
@@ -5642,6 +5846,33 @@ def train(args) -> int:
             )
 
         val_stats = evaluate_loader(model, data_ctx["val_loader"], device, data_ctx["domain_label_map"], max_batches=int(args.eval_max_batches))
+        current_source_val = float(val_stats.get("tx_acc", float("nan")))
+        if math.isfinite(current_source_val):
+            dg_health_best_val = max(float(dg_health_best_val), current_source_val)
+            dg_health_drop_pp = max(0.0, float(dg_health_best_val) - current_source_val)
+        else:
+            dg_health_drop_pp = float("inf")
+        if bool(getattr(args, "source_val_dg_health_guard", False)) and epoch >= int(
+            getattr(args, "source_val_dg_health_start_epoch", 10)
+        ):
+            warning_drop = float(getattr(args, "source_val_dg_health_warning_drop_pp", 3.0))
+            stop_drop = float(getattr(args, "source_val_dg_health_stop_drop_pp", 8.0))
+            health_floor = float(getattr(args, "source_val_dg_health_floor", 60.0))
+            if dg_health_drop_pp >= warning_drop:
+                dg_health_open_scale = min(
+                    float(dg_health_open_scale),
+                    float(getattr(args, "source_val_dg_health_min_open_scale", 0.20)),
+                )
+            elif dg_health_drop_pp <= max(0.5, 0.25 * warning_drop):
+                dg_health_open_scale = min(1.0, float(dg_health_open_scale) + 0.20)
+            hard_bad = (
+                not math.isfinite(current_source_val)
+                or current_source_val < health_floor
+                or dg_health_drop_pp >= stop_drop
+            )
+            dg_health_bad_epochs = int(dg_health_bad_epochs + 1) if hard_bad else 0
+            if dg_health_bad_epochs >= int(getattr(args, "source_val_dg_health_stop_patience", 1)):
+                dg_health_early_stop_requested = True
         source_val_heavy_eval_ran = _should_run_source_val_heavy_eval(epoch, total_epochs, args)
         if source_val_heavy_eval_ran:
             source_val_tail_geometry = _evaluate_source_val_tail_geometry(model, data_ctx, device, args)
@@ -5818,6 +6049,10 @@ def train(args) -> int:
         phase1_v2_guard_fired = False
         phase1_v2_final_blocked = False
         phase1_v2_reasons: List[str] = []
+        if dg_health_early_stop_requested:
+            phase1_v2_reasons.append("SOURCE_VAL_DG_HEALTH_STOP")
+            phase1_v2_final_blocked = True
+            checkpoint_safe = False
         tail_reference_saved = False
         tail_rollback_applied = False
         tail_rollback_reference_epoch = -1
@@ -5858,6 +6093,7 @@ def train(args) -> int:
                 os_eff_decision = assess_open_set_effective_budget(
                     train_logs,
                     min_budget=float(args.os_eff_min_budget),
+                    max_budget=float(args.os_eff_max_budget),
                 )
                 guard_state["phase1_v2_os_eff_fired"] = bool(os_eff_decision.fired)
                 guard_state.update({f"phase1_v2_os_{key}": value for key, value in os_eff_decision.details.items()})
@@ -5984,12 +6220,28 @@ def train(args) -> int:
         guard_state["phase1_v2_tail_rollback_reference_epoch"] = int(tail_rollback_reference_epoch)
         guard_state["phase1_v2_tail_rejected_checkpoint_path"] = tail_rejected_checkpoint_path
         guard_state["phase1_v2_tail_early_stop_requested"] = bool(tail_early_stop_requested)
+        guard_state["source_val_dg_health_guard_enabled"] = bool(
+            getattr(args, "source_val_dg_health_guard", False)
+        )
+        guard_state["source_val_dg_health_best_val"] = float(dg_health_best_val)
+        guard_state["source_val_dg_health_drop_pp"] = float(dg_health_drop_pp)
+        guard_state["source_val_dg_health_open_scale"] = float(dg_health_open_scale)
+        guard_state["source_val_dg_health_bad_epochs"] = int(dg_health_bad_epochs)
+        guard_state["source_val_dg_health_early_stop_requested"] = bool(
+            dg_health_early_stop_requested
+        )
         if phase1_v2_reasons:
             guard_state["reason"] = ";".join([r for r in [guard_state.get("reason", ""), *phase1_v2_reasons] if str(r).strip()])
         payload["joint_guard"] = dict(guard_state)
         payload["tail_state_machine"] = phase1_v2_tail_machine.state_dict() if phase1_v2_tail_machine is not None else None
         payload["checkpoint_status"] = {
-            "state": "STOPPED_TAIL" if tail_early_stop_requested else "RUNNING",
+            "state": (
+                "STOPPED_TAIL"
+                if tail_early_stop_requested
+                else "STOPPED_DG_HEALTH"
+                if dg_health_early_stop_requested
+                else "RUNNING"
+            ),
             "checkpoint_safe": bool(checkpoint_safe),
             "phase1_v2_guard_fired": bool(phase1_v2_guard_fired),
             "phase1_v2_final_blocked": bool(phase1_v2_final_blocked),
@@ -6089,10 +6341,11 @@ def train(args) -> int:
             previous_protected_metrics = dict(protected_metrics)
         if not tail_rollback_applied:
             previous_train_logs = dict(train_logs)
-        if tail_early_stop_requested:
+        if tail_early_stop_requested or dg_health_early_stop_requested:
             print(
                 f"[PHASE1-V2] training_stopped=1 epoch={int(epoch)} "
-                "reason=tail_safety_fail_closed final_export_blocked=1",
+                f"reason={'tail_safety_fail_closed' if tail_early_stop_requested else 'source_val_dg_health'} "
+                "final_export_blocked=1",
                 flush=True,
             )
             break
@@ -6385,7 +6638,10 @@ def train(args) -> int:
         "candidate_id_present": bool(str(getattr(args, "candidate_id", "")).strip()),
         "phase1_v2_hard_gates": bool(getattr(args, "phase1_v2_hard_gates", False)),
         "tail_safety_state_machine": bool(getattr(args, "tail_safety_state_machine", False)),
-        "tail_rollback_enabled": bool(getattr(args, "tail_rollback_enabled", False)),
+        "tail_final_only_policy_valid": (
+            str(getattr(args, "checkpoint_selection", "")) == "final_only"
+            and not bool(getattr(args, "tail_rollback_enabled", False))
+        ),
         "os_budget_controller": bool(getattr(args, "os_budget_controller", False)),
         "os_budget_target_positive": float(getattr(args, "os_eff_min_budget", 0.0)) > 0.0,
         "os_gradient_surgery": bool(getattr(args, "os_gradient_surgery", False)),
@@ -6415,9 +6671,15 @@ def train(args) -> int:
         "open_gradient_runtime_active": _log_value(
             selected_train_logs, "train/os_gradient_effective_open_norm", 0.0
         ) > 0.0,
-        "open_gradient_budget_met": _log_value(
-            selected_train_logs, "train/os_budget_controller_post", 0.0
-        ) + 1e-8 >= float(getattr(args, "os_eff_min_budget", 0.0)),
+        "open_gradient_budget_met": (
+            _log_value(selected_train_logs, "train/os_budget_controller_post", 0.0) + 1e-8
+            >= float(getattr(args, "os_eff_min_budget", 0.0))
+            and (
+                float(getattr(args, "os_eff_max_budget", 0.0)) <= 0.0
+                or _log_value(selected_train_logs, "train/os_budget_controller_post", 1.0)
+                <= float(getattr(args, "os_eff_max_budget", 0.0)) + 1e-8
+            )
+        ),
         "phase2_export_prototypes": bool(getattr(args, "phase2_export_prototypes", False)),
         "phase2_fuse_prototypes": bool(getattr(args, "phase2_fuse_prototypes", False)),
         "endpoint_artifact_required": bool(getattr(args, "endpoint_require_artifact_on_export", False)),

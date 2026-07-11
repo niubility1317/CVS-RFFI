@@ -3,6 +3,7 @@ import sys
 from pathlib import Path
 
 import torch
+import pytest
 
 
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
@@ -313,7 +314,58 @@ def test_multiview_source_episode_does_not_pool_satellite_tail_into_clean_compon
     assert metrics["source_episode_multiview_separate_geometry"] == 1.0
     assert "clean_source_episode_zid_p99_deg" in metrics
     assert "sat_source_episode_zid_p99_deg" in metrics
+    clean_loss, _ = source_episode_three_sigma_loss(
+        clean,
+        labels,
+        domains,
+        min_domains=2,
+        local_component_compact_weight=1.0,
+        local_component_accept_weight=1.0,
+        local_component_density_weight=1.0,
+    )
+    sat_loss, _ = source_episode_three_sigma_loss(
+        satellite,
+        labels,
+        domains,
+        min_domains=2,
+        local_component_compact_weight=1.0,
+        local_component_accept_weight=1.0,
+        local_component_density_weight=1.0,
+    )
+    assert metrics["source_episode_multiview_normalized"] == 1.0
+    assert loss.detach().item() == pytest.approx(
+        0.5 * (clean_loss.detach().item() + sat_loss.detach().item()),
+        rel=1e-5,
+    )
     assert clean.grad is not None and satellite.grad is not None
+
+
+def test_source_episode_density_is_bounded_for_tiny_radius_outlier_component():
+    class0 = [[1.0, 0.0] for _ in range(20)] + [[0.0, 1.0]]
+    class1 = [[0.0, 1.0] for _ in range(20)] + [[-1.0, 0.0]]
+    features = torch.tensor(class0 + class1, dtype=torch.float32, requires_grad=True)
+    labels = torch.tensor([0] * 21 + [1] * 21)
+    domains = torch.zeros(42, dtype=torch.long)
+
+    loss, metrics = source_episode_three_sigma_loss(
+        features,
+        labels,
+        domains,
+        min_domains=2,
+        local_component_min_samples=2,
+        local_component_radius_floor_rad=math.radians(3.0),
+        local_component_density_weight=1.0,
+        local_component_density_cap=2.0,
+        local_component_term_cap=4.0,
+    )
+    loss.backward()
+
+    assert metrics["source_episode_local_component_density_raw_loss"] > 2.0
+    assert 0.0 <= metrics["source_episode_local_component_density_loss"] <= 2.0
+    assert metrics["source_episode_local_component_radius_floor_rate"] > 0.0
+    assert loss.detach().item() <= metrics["source_episode_loss_upper_bound"] + 1e-6
+    assert features.grad is not None
+    assert torch.isfinite(features.grad).all()
 
 
 def test_direct_metric_uses_receiver_local_components_without_global_ball_fallback():
