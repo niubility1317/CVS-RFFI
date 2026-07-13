@@ -116,3 +116,11 @@
 - 预定义输出包括：1000行run-level结果、3000行scenario-level结果、method×K均值/标准差/95%CI、method×receiver×K五seed统计、同receiver/K/seed配对的CVS差值及win/tie/loss摘要。Stage2-B参考为CVS-OPGAC，Stage2-C参考为CVS-qKNNV42。
 - 统计单位以每个receiver-seed run的三场景均值为主，避免把同一run的三个星地场景错误当作三个独立重复；scenario-level表单独保留用于场景敏感性分析。聚合脚本py_compile及单测通过。
 - 当前现场完成度：Stage2-B 220/500、Stage2-C 115/500、失败0；DRIFT到epoch126/200。聚合入口只在全部行完成并同步到远端后执行正式模式。
+
+### Phase1 CVS详细对比入口与声明边界（14:52）
+
+- Phase1 CVS对比行固定为本轮低标签半监督联合P0族中heldout原始性能最佳的`JP0_J5_U_TRI_STRONG/final_ssdg.pth`：epoch80、checkpoint hash=`e21dee17...af8`。其现有冻结heldout证据为LEO clear79.5235%、low-elev76.9642%、rain76.4608%，均为204000条main OOD样本。
+- 该J5行是`NON_PROMOTABLE_DIAGNOSTIC`：内部sat strict floor70.4933%未达到CVS promotion目标，且训练使用约0.08有标签+0.72源域无标签、ADV3B02 teacher初始化；因此只能作为CVS原始对比性能并明确披露额外无标签和teacher访问，不能写成同等监督数据预算或部署成功。
+- 新增`paper_reproduction/scripts/evaluate_cvs_phase1_ssdg_detailed.py`，严格从checkpoint args重建SSDG模型和split，固定三个正式LEO场景、sat seed2027及三个main OOD split，输出与baseline同结构的612000条sample score和receiver/transmitter/day六层统计；checkpoint missing/unexpected key必须为0。
+- 本地py_compile和入口测试通过。因当前N607存在活跃训练，按monitor-only边界暂不同步/启动；待现有矩阵worker退出后与manifest修正、统计聚合器一起同步，再执行J5详细后评估并用既有heldout逐场景正确数做一致性验收。
+- 最新现场进度：Stage2-B 235/500、Stage2-C 126/500、失败0；DRIFT到epoch127附近。
