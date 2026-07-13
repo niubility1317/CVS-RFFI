@@ -180,3 +180,10 @@
 - GPU0/1/2顶层PID分别为3898898/3898899/3898900；GPU0与GPU1已进入各自首条Orthogonal Incremental行，GPU2顺序链已进入Orthogonal子worker。启动后GPU0-2各465MiB，GPU3-7仍各一个主worker，总占用未超过每GPU两个实验。
 - 三个accelerator的命令、receiver、seed切分和独立日志根与启动前记录一致；主worker当前仍未进入receiver8-8，无同run并发写入。
 - 当前状态仅为landed，不计作完成。后续以完整500行网格逐行artifact contract为唯一完成证据；启动后本地`ssh_count=0`、N607及bridge的`ESTABLISHED`端口22连接数为0。
+
+### Stage2-C receiver7-7第二层安全加速计划（16:03）
+
+- 当前217/500，方法完成度为CVS-qKNNV42 125、CSIL 30、MoPC-HR 31、Orthogonal Incremental 31；receiver20-1已100/100，主worker在receiver3-19，receiver7-7仍仅25条CVS行。主worker到receiver7-7前还需完成receiver3-19与7-14共约150条训练行。
+- GPU3-7当前各一个主worker、显存约353–465MiB；按每GPU最多两个实验的项目上限，为receiver7-7增加五个单seed accelerator。GPU3-7分别固定seed713101–713105，每个执行CSIL、MoPC-HR、Orthogonal Incremental的K={1,2,5,10,20}共15行。
+- 每个accelerator使用独立日志根`accelerator_rx7_7_gpu{3..7}`，输出仍进入正式Stage2-C run根；与当前主worker及receiver8-8 accelerator不存在run_dir重叠。预计约1–2小时完成receiver7-7的75条训练行，早于主worker到达并由主worker按artifact contract跳过。
+- 该加速不改变训练预算、方法原生优化器、support/query、星地信道、seed或K网格。已知subset manifest覆盖仍在最终统一修复范围内。
