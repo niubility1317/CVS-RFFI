@@ -154,15 +154,21 @@ def _detailed_breakdown(
 ) -> list[dict[str, Any]]:
     if len(metadata) != int(truth.numel()) or predicted.shape != truth.shape:
         raise ValueError("metadata, truth, and predictions must align")
-    groups: dict[tuple[str, str, str], list[int]] = {}
+    groups: dict[tuple[str, str, str, str, str], list[int]] = {}
     for index, row in enumerate(metadata):
         rx = str(row.get("rx_label", ""))
         tx = str(row.get("tx_label", ""))
+        day = str(row.get("day_i", ""))
         role = str(row.get("role", ""))
-        for key in ((rx, "ALL", role), ("ALL", tx, role), (rx, tx, role)):
+        for key in (
+            ("per_receiver", rx, "ALL", "ALL", role),
+            ("per_transmitter", "ALL", tx, "ALL", role),
+            ("per_receiver_transmitter", rx, tx, "ALL", role),
+            ("per_receiver_transmitter_day", rx, tx, day, role),
+        ):
             groups.setdefault(key, []).append(index)
     rows: list[dict[str, Any]] = []
-    for (receiver, transmitter, role), indices in sorted(groups.items()):
+    for (group_type, receiver, transmitter, day, role), indices in sorted(groups.items()):
         index_tensor = torch.tensor(indices, dtype=torch.long)
         group_truth = truth[index_tensor].detach().cpu()
         group_predicted = predicted[index_tensor].detach().cpu()
@@ -174,8 +180,10 @@ def _detailed_breakdown(
         rows.append(
             {
                 "scenario": scenario,
+                "group_type": group_type,
                 "receiver_label": receiver,
                 "transmitter_label": transmitter,
+                "day": day,
                 "role": role,
                 "sample_count": len(indices),
                 "correct_count": correct,

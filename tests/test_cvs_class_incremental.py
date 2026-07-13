@@ -118,9 +118,27 @@ def test_detailed_breakdown_reports_receiver_transmitter_and_confusion_rows():
         {"rx_label": "rx-a", "tx_label": "tx-b", "role": "target_new_query"},
     ]
     rows = _detailed_breakdown(predicted, truth, metadata, scenario="leo_clear_weak")
-    tx_a = next(row for row in rows if row["receiver_label"] == "rx-a" and row["transmitter_label"] == "tx-a")
-    tx_b = next(row for row in rows if row["receiver_label"] == "rx-a" and row["transmitter_label"] == "tx-b")
+    tx_a = next(
+        row
+        for row in rows
+        if row["group_type"] == "per_receiver_transmitter"
+        and row["receiver_label"] == "rx-a"
+        and row["transmitter_label"] == "tx-a"
+    )
+    tx_b = next(
+        row
+        for row in rows
+        if row["group_type"] == "per_receiver_transmitter"
+        and row["receiver_label"] == "rx-a"
+        and row["transmitter_label"] == "tx-b"
+    )
     assert tx_a["sample_count"] == 2
     assert tx_a["accuracy"] == 0.5
     assert '"0->1": 1' in tx_a["confusion_json"]
     assert tx_b["accuracy"] == 0.5
+    assert {row["group_type"] for row in rows} == {
+        "per_receiver",
+        "per_transmitter",
+        "per_receiver_transmitter",
+        "per_receiver_transmitter_day",
+    }
