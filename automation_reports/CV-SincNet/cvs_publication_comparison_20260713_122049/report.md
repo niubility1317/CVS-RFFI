@@ -199,3 +199,9 @@
 - GPU3-7五个accelerator均正常退出；每个worker summary为assigned15、completed15、skipped0、failed0，合计75/75条训练行完整通过artifact contract。
 - receiver7-7由25条既有CVS行加75条accelerator训练行达到100/100。完整Stage2-C现场进度为419/500，Traceback为0；receiver3-19也已100/100，主worker当前处理receiver7-14，receiver8-8独立accelerator继续运行。
 - 方法完成度为CVS-qKNNV42 125/125、CSIL 98/125、MoPC-HR 99/125、Orthogonal Incremental 97/125。该进度仍不作为最终方法排序。
+
+### Stage2-C完整矩阵artifact完成（19:38）
+
+- 按完整默认网格现场重建并逐行执行artifact contract，Stage2-C达到500/500；CVS-qKNNV42、CSIL、MoPC-HR和Orthogonal Incremental各125行，五个target receiver各100行，incomplete为空。
+- 五个主worker及全部receiver7-7/8-8 accelerator均已退出；全日志根Traceback计数为0。每行均包含三个正式LEO星地场景、sample score、四层receiver/transmitter明细、split manifest和finite loss trace。
+- 该状态证明run artifact齐全，但canonical manifest仍被旧subset worker覆盖，尚不能代替最终论文聚合和审计。当前N607另有不属于本对比矩阵的Phase1训练进程，按monitor-only边界不热补远端脚本；下一步先回收Stage2-B/C只读artifact到本地，使用已提交脚本重建manifest、聚合统计并执行本地完整审计。
