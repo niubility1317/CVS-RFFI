@@ -160,3 +160,9 @@
 - 三场景正确数分别为37990/204000、37519/204000、38009/204000，与validation-selected checkpoint内置星地评估逐项完全一致；正式结果不含clean。
 - 输出覆盖overall、per-split、per-receiver、per-transmitter、per-receiver-transmitter、per-receiver-transmitter-day六层统计；已回收到`local_artifacts/cvs_publication_phase1_detailed_seed713101_20260713/drift/`并在`ssr-gpu`环境复核行数。
 - 当前Phase1三个对比baseline的详细星地artifact均已完成；CVS-J5详细复算仍须等待活跃Stage2 worker退出后同步本地严格评估入口再执行。最新Stage2现场完成度为Stage2-B 482/500、Stage2-C 169/500、Traceback 0；未据不完整矩阵给出最终排序。
+
+### Stage2-B监督域适应完整矩阵artifact完成（15:25）
+
+- 按本地完整默认网格现场重建并逐行执行artifact contract，Stage2-B达到500/500；ProtoNet CDA、MRIOR-SDA、DADDA-SDA和CVS-OPGAC各125行，所有行均使用有标签target support、固定query且测试叠加三种正式LEO星地信道。
+- 五个Stage2-B主worker均已退出；当前仅Stage2-C五个主worker继续运行。Stage2-C进度175/500，未发现Traceback。
+- 500/500仅表示逐run artifact完成。canonical manifest此前被subset accelerator覆盖，必须等待Stage2-C worker全部退出后同步manifest隔离修正并重建；随后才能运行完整统计聚合、paired CI和最终审计。因此此处不发布Stage2-B最终方法排序。
