@@ -227,7 +227,7 @@ def test_unlabeled_router_uses_separate_clean_sat_local_components_without_fallb
     pseudo = torch.tensor([0, 1])
     d_u = torch.tensor([0, 0])
 
-    _loss, info, _core = _route_unlabeled_known_geometry(
+    _loss, info, _core, _direct = _route_unlabeled_known_geometry(
         args=args,
         z_id_l=torch.cat([clean, sat], dim=0),
         y_l=torch.cat([y_clean, y_clean], dim=0),
@@ -244,6 +244,7 @@ def test_unlabeled_router_uses_separate_clean_sat_local_components_without_fallb
 
     assert info["active"] == 1.0
     assert info["multiview_local_components"] == 1.0
+    assert info["tri_direct_count"] >= info["tri_trusted_core_count"]
     assert info["global_component_fallback"] == 0.0
     assert info["clean_local_component_count"] == 4.0
     assert info["sat_local_component_count"] == 4.0

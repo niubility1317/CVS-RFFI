@@ -98,18 +98,20 @@ def test_default_satellite_evaluation_protocol_is_leo_weak():
 def test_unlabeled_geometry_masks_do_not_reapply_pseudo_confidence_to_direct_or_invariance():
     pseudo = torch.tensor([True, False, True, False, False])
     core = torch.tensor([True, True, False, False, True])
+    geometry_direct = torch.tensor([True, True, True, False, True])
     valid = torch.tensor([True, True, True, False, True])
 
     ce, direct, invariant = _select_unlabeled_geometry_masks(
         pseudo,
         core,
+        geometry_direct,
         valid,
         all_valid_queries=True,
         direct_valid_domain_only=True,
     )
 
     assert ce.tolist() == [True, False, False, False, False]
-    assert direct.tolist() == [True, True, False, False, True]
+    assert direct.tolist() == [True, True, True, False, True]
     assert invariant.tolist() == [True, True, True, False, True]
 
 

@@ -1775,6 +1775,9 @@ def direct_metric_acceptance_loss(
     tail_accept_weight: float = 1.0,
     overflow_accept_weight: float = 1.0,
     radius_inter_ratio_weight: float = 1.0,
+    global_quantile_weight: float = 0.0,
+    component_inter_margin_weight: float = 0.0,
+    component_overlap_weight: float = 0.0,
     core_accept_weight: float = 0.25,
     sat_pair_weight: float = 0.0,
     quantile_temperature_rad: float = math.radians(3.0),
@@ -1782,6 +1785,8 @@ def direct_metric_acceptance_loss(
     component_temperature_rad: float = math.radians(3.0),
     density_temperature_rad: float = math.radians(3.0),
     component_margin_rad: float = math.radians(4.0),
+    component_inter_margin_rad: float = math.radians(55.0),
+    component_overlap_margin_rad: float = math.radians(4.0),
     source_margin_rad: float = math.radians(2.0),
     shell_width_rad: float = math.radians(4.0),
     accept_cvar_alpha: float = 0.25,
@@ -1792,6 +1797,10 @@ def direct_metric_acceptance_loss(
     use_domain_local_components: bool = False,
     require_domain_local_components: bool = False,
     min_samples_per_component: int = 2,
+    hierarchical_class_gate: bool = False,
+    reference_z: Optional[torch.Tensor] = None,
+    reference_y: Optional[torch.Tensor] = None,
+    reference_d: Optional[torch.Tensor] = None,
 ) -> Tuple[torch.Tensor, Dict[str, float]]:
     """Directly optimize Phase1 source-only open-set proxy geometry metrics.
 
@@ -1822,6 +1831,11 @@ def direct_metric_acceptance_loss(
         "overflow_accept_loss": 0.0,
         "radius_to_inter_ratio": float("nan"),
         "radius_inter_ratio_loss": 0.0,
+        "component_inter_margin_loss": 0.0,
+        "component_overlap_loss": 0.0,
+        "component_min_inter_deg": float("nan"),
+        "hierarchical_class_gate": 0.0,
+        "global_zid_quantile_loss": 0.0,
         "core_accept_rate": float("nan"),
         "core_accept_loss": 0.0,
         "sat_pair_angle_p95_deg": float("nan"),
@@ -1842,29 +1856,56 @@ def direct_metric_acceptance_loss(
         "local_zid_p95_deg": float("nan"),
         "local_zid_p99_deg": float("nan"),
         "local_zid_tail_cvar_deg": float("nan"),
+        "reference_anchor_count": 0.0,
+        "query_count": 0.0,
     }
     if z is None or not torch.is_tensor(z) or z.numel() == 0:
         ref = torch.tensor(0.0)
         return ref, default_metrics
     if z.dim() != 2:
         raise ValueError(f"direct_metric_acceptance_loss expects 2D features, got shape={tuple(z.shape)}")
-    labels = y.view(-1).long()
-    if labels.numel() != z.size(0):
-        raise ValueError(f"label count {labels.numel()} does not match feature batch {z.size(0)}")
+    query_labels = y.view(-1).long()
+    if query_labels.numel() != z.size(0):
+        raise ValueError(f"label count {query_labels.numel()} does not match feature batch {z.size(0)}")
 
-    z_norm = safe_l2_normalize(torch.nan_to_num(z.float(), nan=0.0, posinf=0.0, neginf=0.0), dim=1)
+    query_z_norm = safe_l2_normalize(torch.nan_to_num(z.float(), nan=0.0, posinf=0.0, neginf=0.0), dim=1)
+    reference_count = 0
+    if reference_z is not None:
+        if reference_y is None or reference_z.dim() != 2 or reference_z.size(1) != z.size(1):
+            raise ValueError("direct metric reference features require aligned rank-2 reference_z/reference_y")
+        reference_labels = reference_y.view(-1).long().to(device=query_labels.device)
+        if reference_labels.numel() != reference_z.size(0):
+            raise ValueError("direct metric reference label count mismatch")
+        reference_z_norm = safe_l2_normalize(
+            torch.nan_to_num(reference_z.detach().float(), nan=0.0, posinf=0.0, neginf=0.0), dim=1
+        )
+        reference_count = int(reference_z_norm.size(0))
+        z_norm = torch.cat([reference_z_norm, query_z_norm], dim=0)
+        labels = torch.cat([reference_labels, query_labels], dim=0)
+        if reference_d is not None and d is not None:
+            domains = torch.cat(
+                [reference_d.view(-1).long().to(device=query_labels.device), d.view(-1).long()], dim=0
+            )
+        else:
+            domains = None
+    else:
+        z_norm = query_z_norm
+        labels = query_labels
+        domains = d.view(-1).long() if d is not None and torch.is_tensor(d) else None
+    query_full_mask = torch.arange(labels.numel(), device=labels.device) >= int(reference_count)
+    fit_full_mask = ~query_full_mask if reference_count > 0 else torch.ones_like(query_full_mask)
     valid = labels >= 0
     centers = []
     class_ids = []
     sample_mask = torch.zeros_like(valid, dtype=torch.bool)
     min_count = max(1, int(min_samples_per_class))
     for cls in torch.unique(labels[valid]):
-        cls_mask = valid & labels.eq(cls)
+        cls_mask = valid & labels.eq(cls) & fit_full_mask
         if int(cls_mask.sum().item()) < min_count:
             continue
         centers.append(safe_l2_normalize(z_norm[cls_mask].mean(dim=0, keepdim=True), dim=1).squeeze(0))
         class_ids.append(cls)
-        sample_mask |= cls_mask
+        sample_mask |= valid & labels.eq(cls)
     active_classes = len(centers)
     default_metrics["active_classes"] = float(active_classes)
     if active_classes < max(1, int(min_classes)):
@@ -1877,7 +1918,9 @@ def direct_metric_acceptance_loss(
     center_labels = torch.stack(class_ids, dim=0).to(device=labels.device)
     sample_z = z_norm[sample_mask]
     sample_labels = labels[sample_mask]
-    sample_domains = d.view(-1).long()[sample_mask] if d is not None and torch.is_tensor(d) and d.numel() == labels.numel() else None
+    sample_query_mask = query_full_mask[sample_mask]
+    sample_fit_mask = fit_full_mask[sample_mask]
+    sample_domains = domains[sample_mask] if domains is not None and domains.numel() == labels.numel() else None
     sample_cos = (sample_z @ proto_ref.t()).clamp(-1.0 + angle_eps, 1.0 - angle_eps)
     own_center = sample_labels.view(-1, 1).eq(center_labels.view(1, -1))
     pos_angles = _safe_angle_from_cos(sample_cos[own_center], eps=angle_eps)
@@ -1898,7 +1941,8 @@ def direct_metric_acceptance_loss(
     overflow_mask = torch.zeros_like(core_mask)
     for proto_idx, cls in enumerate(center_labels):
         cls_mask = sample_labels.eq(cls)
-        cls_angles = pos_angles[cls_mask]
+        fit_cls_mask = cls_mask & sample_fit_mask
+        cls_angles = pos_angles[fit_cls_mask]
         if cls_angles.numel() == 0:
             radius_vec.append(sample_z.new_tensor(math.radians(40.0)))
             accept_radius_vec.append(sample_z.new_tensor(math.radians(40.0)))
@@ -1914,15 +1958,15 @@ def direct_metric_acceptance_loss(
         accept_radius_vec.append(accept_radius.clamp_min(1e-4))
         tail_radius_vec.append(tail_radius.clamp_min(1e-4))
         overflow_radius_vec.append(overflow_radius.clamp_min(1e-4))
-        core_mask |= cls_mask & (pos_angles <= core_radius)
-        tail_mask |= cls_mask & (pos_angles > core_radius) & (pos_angles <= tail_radius)
-        overflow_mask |= cls_mask & (pos_angles > overflow_radius)
+        core_mask |= cls_mask & sample_query_mask & (pos_angles <= core_radius)
+        tail_mask |= cls_mask & sample_query_mask & (pos_angles > core_radius) & (pos_angles <= tail_radius)
+        overflow_mask |= cls_mask & sample_query_mask & (pos_angles > overflow_radius)
     radius_vec_t = torch.stack(radius_vec, dim=0).to(device=sample_z.device, dtype=sample_z.dtype)
     accept_radius_vec_t = torch.stack(accept_radius_vec, dim=0).to(device=sample_z.device, dtype=sample_z.dtype)
     tail_radius_vec_t = torch.stack(tail_radius_vec, dim=0).to(device=sample_z.device, dtype=sample_z.dtype)
     overflow_radius_vec_t = torch.stack(overflow_radius_vec, dim=0).to(device=sample_z.device, dtype=sample_z.dtype)
     if not bool(core_mask.any()):
-        core_mask = torch.ones_like(core_mask)
+        core_mask = sample_query_mask.clone()
 
     gate_proto = proto
     gate_labels = center_labels
@@ -1933,9 +1977,14 @@ def direct_metric_acceptance_loss(
     gate_core_masks: List[torch.Tensor] = []
     gate_density_radius: List[torch.Tensor] = []
     for proto_idx, cls in enumerate(center_labels):
-        cls_mask = sample_labels.eq(cls)
-        gate_core_masks.append(cls_mask & core_mask)
+        cls_mask = sample_labels.eq(cls) & sample_fit_mask
+        gate_core_masks.append(cls_mask & (pos_angles <= radius_vec_t[proto_idx].detach()))
         gate_density_radius.append(radius_vec_t[proto_idx].detach())
+    class_gate_proto = proto
+    class_gate_labels = center_labels
+    class_gate_radius = accept_radius_vec_t
+    class_gate_core_masks = list(gate_core_masks)
+    class_gate_density_radius = list(gate_density_radius)
     local_component_active = False
     local_pos_angles = sample_z.new_zeros((0,))
     if bool(use_domain_local_components) and sample_domains is not None:
@@ -1950,7 +1999,7 @@ def direct_metric_acceptance_loss(
         local_angle_parts = []
         component_min = max(1, int(min_samples_per_component))
         for cls in center_labels:
-            cls_mask = sample_labels.eq(cls)
+            cls_mask = sample_labels.eq(cls) & sample_fit_mask
             for domain_id in torch.unique(sample_domains[cls_mask]):
                 component_mask = cls_mask & sample_domains.eq(domain_id)
                 if int(component_mask.sum().item()) < component_min:
@@ -2007,11 +2056,14 @@ def direct_metric_acceptance_loss(
             return zero_like_with_grad(z), default_metrics
 
     gate_proto_ref = gate_proto.detach() if bool(gate_reference_detach) else gate_proto
+    class_gate_proto_ref = (
+        class_gate_proto.detach() if bool(gate_reference_detach) else class_gate_proto
+    )
     if bool(require_domain_local_components) and not local_component_active:
         default_metrics["global_ball_accept"] = 0.0
         return zero_like_with_grad(z), default_metrics
 
-    global_pos_angles = pos_angles
+    global_pos_angles = pos_angles[sample_query_mask]
     global_q50 = torch.quantile(global_pos_angles.detach(), 0.50) if global_pos_angles.numel() > 1 else global_pos_angles.detach().mean()
     global_q95 = torch.quantile(global_pos_angles.detach(), 0.95) if global_pos_angles.numel() > 1 else global_pos_angles.detach().mean()
     global_q99 = torch.quantile(global_pos_angles.detach(), 0.99) if global_pos_angles.numel() > 1 else global_pos_angles.detach().mean()
@@ -2024,29 +2076,39 @@ def direct_metric_acceptance_loss(
         own_component = sample_labels.view(-1, 1).eq(gate_labels.view(1, -1))
         own_local_angles = sample_gate_angles.masked_fill(~own_component, float("inf"))
         local_pos_angles, local_component_index = own_local_angles.min(dim=1)
-        optimization_pos_angles = local_pos_angles
-        core_mask = local_pos_angles <= gate_shell_radius.detach()[local_component_index]
-        tail_mask = (local_pos_angles > gate_shell_radius.detach()[local_component_index]) & (
-            local_pos_angles <= gate_tail_radius.detach()[local_component_index]
+        optimization_pos_angles = local_pos_angles[sample_query_mask]
+        query_local_angles = local_pos_angles
+        core_mask = sample_query_mask & (query_local_angles <= gate_shell_radius.detach()[local_component_index])
+        tail_mask = sample_query_mask & (query_local_angles > gate_shell_radius.detach()[local_component_index]) & (
+            query_local_angles <= gate_tail_radius.detach()[local_component_index]
         )
-        overflow_mask = local_pos_angles > gate_overflow_radius.detach()[local_component_index]
+        overflow_mask = sample_query_mask & (query_local_angles > gate_overflow_radius.detach()[local_component_index])
         if not bool(core_mask.any()):
-            core_mask = torch.ones_like(core_mask)
+            core_mask = sample_query_mask.clone()
 
     tau_q = max(1e-4, float(quantile_temperature_rad))
     tau_a = max(1e-4, float(accept_temperature))
     cvar_frac = max(1e-6, min(1.0, float(accept_cvar_alpha)))
 
-    def _angle_target_loss(target_rad: float, frac: float) -> torch.Tensor:
-        terms = _bounded_softplus((optimization_pos_angles - float(target_rad)) / tau_q, clip=softplus_clip)
+    def _angle_target_loss(angles: torch.Tensor, target_rad: float, frac: float) -> torch.Tensor:
+        terms = _bounded_softplus((angles - float(target_rad)) / tau_q, clip=softplus_clip)
         return _top_cvar_mean(terms, frac)
 
-    zid_quantile_loss = (
-        _angle_target_loss(float(zid_p50_target_rad), 0.50)
-        + _angle_target_loss(float(zid_p95_target_rad), 0.05)
-        + _angle_target_loss(float(zid_p99_target_rad), 0.01)
-        + _angle_target_loss(float(zid_tail_cvar_target_rad), cvar_frac)
+    local_zid_quantile_loss = (
+        _angle_target_loss(optimization_pos_angles, float(zid_p50_target_rad), 0.50)
+        + _angle_target_loss(optimization_pos_angles, float(zid_p95_target_rad), 0.05)
+        + _angle_target_loss(optimization_pos_angles, float(zid_p99_target_rad), 0.01)
+        + _angle_target_loss(optimization_pos_angles, float(zid_tail_cvar_target_rad), cvar_frac)
     )
+    global_zid_quantile_loss = (
+        _angle_target_loss(global_pos_angles, float(zid_p50_target_rad), 0.50)
+        + _angle_target_loss(global_pos_angles, float(zid_p95_target_rad), 0.05)
+        + _angle_target_loss(global_pos_angles, float(zid_p99_target_rad), 0.01)
+        + _angle_target_loss(global_pos_angles, float(zid_tail_cvar_target_rad), cvar_frac)
+    )
+    zid_quantile_loss = local_zid_quantile_loss + max(
+        0.0, float(global_quantile_weight)
+    ) * global_zid_quantile_loss
 
     def _top_angle_mean(frac: float) -> torch.Tensor:
         return _top_cvar_mean(optimization_pos_angles, max(1e-6, min(1.0, float(frac))))
@@ -2103,8 +2165,70 @@ def direct_metric_acceptance_loss(
                 density_columns.append(torch.zeros_like(feat_angles[:, component_idx]))
         margin_gate = torch.stack(margin_columns, dim=1)
         density_gate = torch.stack(density_columns, dim=1)
-        low_density_prob = 1.0 - density_gate.max(dim=1).values
-        return (radius_gate * margin_gate * density_gate).max(dim=1).values, low_density_prob
+        component_accept = radius_gate * margin_gate * density_gate
+        effective_density = density_gate
+        if bool(hierarchical_class_gate) and local_component_active:
+            class_angles = _safe_angle_from_cos(
+                (feat_norm @ class_gate_proto_ref.t()).clamp(
+                    -1.0 + angle_eps, 1.0 - angle_eps
+                ),
+                eps=angle_eps,
+            )
+            class_radius_gate = torch.sigmoid(
+                (
+                    class_gate_radius.detach().view(1, -1)
+                    - class_angles
+                )
+                / max(1e-4, float(component_temperature_rad))
+            )
+            class_margin_columns = []
+            class_density_columns = []
+            for class_idx in range(class_gate_proto_ref.size(0)):
+                other_class = class_gate_labels.ne(class_gate_labels[class_idx])
+                if bool(other_class.any()):
+                    other_nearest = class_angles[:, other_class].min(dim=1).values.detach()
+                    class_gap = other_nearest - class_angles[:, class_idx]
+                    class_margin_columns.append(
+                        torch.sigmoid(
+                            (class_gap - float(component_margin_rad))
+                            / max(1e-4, float(component_temperature_rad))
+                        )
+                    )
+                else:
+                    class_margin_columns.append(torch.ones_like(class_angles[:, class_idx]))
+                class_core = sample_z[class_gate_core_masks[class_idx]]
+                if class_core.numel():
+                    nearest_class_core = _safe_angle_from_cos(
+                        (feat_norm @ class_core.detach().t())
+                        .clamp(-1.0 + angle_eps, 1.0 - angle_eps)
+                        .max(dim=1)
+                        .values,
+                        eps=angle_eps,
+                    )
+                    class_density_columns.append(
+                        torch.sigmoid(
+                            (
+                                class_gate_density_radius[class_idx].detach()
+                                - nearest_class_core
+                            )
+                            / max(1e-4, float(density_temperature_rad))
+                        )
+                    )
+                else:
+                    class_density_columns.append(torch.zeros_like(class_angles[:, class_idx]))
+            class_margin_gate = torch.stack(class_margin_columns, dim=1)
+            class_density_gate = torch.stack(class_density_columns, dim=1)
+            class_accept = class_radius_gate * class_margin_gate * class_density_gate
+            class_index = torch.stack(
+                [
+                    torch.where(class_gate_labels.eq(label))[0][0]
+                    for label in gate_labels
+                ]
+            ).to(device=gate_labels.device)
+            component_accept = component_accept * class_accept[:, class_index]
+            effective_density = effective_density * class_density_gate[:, class_index]
+        low_density_prob = 1.0 - effective_density.max(dim=1).values
+        return component_accept.max(dim=1).values, low_density_prob
 
     def _accept_loss(prob: torch.Tensor, target: float) -> torch.Tensor:
         if prob.numel() == 0:
@@ -2124,8 +2248,8 @@ def direct_metric_acceptance_loss(
 
     virtual_geometry_basis = gate_proto.detach() if bool(virtual_detach) else gate_proto
     virtual_parts = _make_proxy_virtual_unknown_pool(
-        sample_z,
-        sample_labels,
+        sample_z[sample_fit_mask],
+        sample_labels[sample_fit_mask],
         gate_labels,
         virtual_geometry_basis,
         gate_shell_radius,
@@ -2162,39 +2286,72 @@ def direct_metric_acceptance_loss(
     low_density_accept_loss = _accept_loss(low_density_terms, float(low_density_accept_target))
 
     radius_inter_ratio_loss = sample_z.new_tensor(0.0)
+    component_inter_margin_loss = sample_z.new_tensor(0.0)
+    component_overlap_loss = sample_z.new_tensor(0.0)
     radius_inter_ratio_metric = sample_z.new_tensor(float("nan"))
+    component_min_inter = sample_z.new_tensor(float("nan"))
     if gate_proto.size(0) > 1:
         inter_angles = _safe_angle_from_cos(
             (gate_proto_ref @ gate_proto_ref.t()).clamp(-1.0 + angle_eps, 1.0 - angle_eps),
             eps=angle_eps,
         )
         other_class = gate_labels.view(-1, 1).ne(gate_labels.view(1, -1))
-        nearest_inter = inter_angles.masked_fill(~other_class, float("inf")).min(dim=1).values.detach().clamp_min(1e-4)
+        nearest_inter = inter_angles.masked_fill(~other_class, float("inf")).min(dim=1).values.clamp_min(1e-4)
+        component_min_inter = nearest_inter.detach().min()
+        query_sample_z = sample_z[sample_query_mask]
+        query_sample_labels = sample_labels[sample_query_mask]
         sample_gate_angles = _safe_angle_from_cos(
-            (sample_z @ gate_proto_ref.t()).clamp(-1.0 + angle_eps, 1.0 - angle_eps), eps=angle_eps
+            (query_sample_z @ gate_proto_ref.t()).clamp(-1.0 + angle_eps, 1.0 - angle_eps), eps=angle_eps
         )
-        own_component = sample_labels.view(-1, 1).eq(gate_labels.view(1, -1))
+        own_component = query_sample_labels.view(-1, 1).eq(gate_labels.view(1, -1))
         own_angles = sample_gate_angles.masked_fill(~own_component, float("inf"))
         own_index = own_angles.argmin(dim=1)
         nearest_own_angle = own_angles.gather(1, own_index.view(-1, 1)).squeeze(1)
         sample_inter = nearest_inter[own_index]
         ratio = nearest_own_angle / sample_inter
-        radius_inter_ratio_metric = ratio.detach().max() if ratio.numel() else sample_z.new_tensor(float("nan"))
-        radius_inter_ratio_loss = _top_cvar_mean(
+        sample_ratio_loss = _top_cvar_mean(
             _bounded_softplus((ratio - float(radius_inter_ratio_target)) / tau_a, clip=softplus_clip),
             cvar_frac,
+        )
+        component_ratio = gate_radius.detach() / nearest_inter
+        radius_inter_ratio_metric = (
+            component_ratio.detach().max()
+            if component_ratio.numel()
+            else sample_z.new_tensor(float("nan"))
+        )
+        component_ratio_loss = _top_cvar_mean(
+            _bounded_softplus(
+                (component_ratio - float(radius_inter_ratio_target)) / tau_a,
+                clip=softplus_clip,
+            ),
+            cvar_frac,
+        )
+        radius_inter_ratio_loss = sample_ratio_loss + component_ratio_loss
+        component_inter_margin_loss = _top_cvar_mean(
+            F.relu(float(component_inter_margin_rad) - nearest_inter).pow(2),
+            cvar_frac,
+        )
+        pair_radius = gate_radius.detach().view(-1, 1) + gate_radius.detach().view(1, -1)
+        overlap = F.relu(
+            pair_radius + float(component_overlap_margin_rad) - inter_angles
+        ).masked_select(other_class)
+        component_overlap_loss = (
+            _top_cvar_mean(overlap.pow(2), cvar_frac)
+            if overlap.numel()
+            else sample_z.new_tensor(0.0)
         )
 
     source_probs = []
     if sample_domains is not None:
         for cls in center_labels:
-            cls_mask = sample_labels.eq(cls)
-            domains = torch.unique(sample_domains[cls_mask])
-            if domains.numel() < 2:
+            cls_fit = sample_labels.eq(cls) & sample_fit_mask
+            cls_query = sample_labels.eq(cls) & sample_query_mask
+            class_domains = torch.unique(sample_domains[cls_fit])
+            if class_domains.numel() < 2 or not bool(cls_query.any()):
                 continue
-            for dom in domains:
-                support = cls_mask & sample_domains.eq(dom)
-                query = cls_mask & (~sample_domains.eq(dom))
+            for dom in class_domains:
+                support = cls_fit & sample_domains.eq(dom)
+                query = cls_query & (~sample_domains.eq(dom))
                 if int(support.sum().item()) < min_count or not bool(query.any()):
                     continue
                 support_center = safe_l2_normalize(sample_z[support].mean(dim=0, keepdim=True), dim=1).squeeze(0).detach()
@@ -2237,6 +2394,8 @@ def direct_metric_acceptance_loss(
         + max(0.0, float(tail_accept_weight)) * tail_accept_loss
         + max(0.0, float(overflow_accept_weight)) * overflow_accept_loss
         + max(0.0, float(radius_inter_ratio_weight)) * radius_inter_ratio_loss
+        + max(0.0, float(component_inter_margin_weight)) * component_inter_margin_loss
+        + max(0.0, float(component_overlap_weight)) * component_overlap_loss
         + max(0.0, float(core_accept_weight)) * core_accept_loss
         + max(0.0, float(sat_pair_weight)) * sat_pair_loss
     )
@@ -2267,6 +2426,11 @@ def direct_metric_acceptance_loss(
         "overflow_accept_loss": _scalar_metric(overflow_accept_loss),
         "radius_to_inter_ratio": _scalar_metric(radius_inter_ratio_metric),
         "radius_inter_ratio_loss": _scalar_metric(radius_inter_ratio_loss),
+        "component_inter_margin_loss": _scalar_metric(component_inter_margin_loss),
+        "component_overlap_loss": _scalar_metric(component_overlap_loss),
+        "component_min_inter_deg": math.degrees(_scalar_metric(component_min_inter)),
+        "hierarchical_class_gate": 1.0 if bool(hierarchical_class_gate) else 0.0,
+        "global_zid_quantile_loss": _scalar_metric(global_zid_quantile_loss),
         "core_accept_rate": _mean_prob(core_prob),
         "core_accept_loss": _scalar_metric(core_accept_loss),
         "sat_pair_angle_p95_deg": math.degrees(_scalar_metric(sat_pair_p95)),
@@ -2285,10 +2449,12 @@ def direct_metric_acceptance_loss(
         "global_ball_accept": 0.0 if local_component_active else 1.0,
         "local_component_count": float(int(gate_proto.size(0))) if local_component_active else 0.0,
         "local_component_class_coverage": float(active_classes) if local_component_active else 0.0,
-        "local_zid_p50_deg": math.degrees(_scalar_metric(torch.quantile(local_pos_angles.detach(), 0.50))) if local_pos_angles.numel() else float("nan"),
-        "local_zid_p95_deg": math.degrees(_scalar_metric(torch.quantile(local_pos_angles.detach(), 0.95))) if local_pos_angles.numel() else float("nan"),
-        "local_zid_p99_deg": math.degrees(_scalar_metric(torch.quantile(local_pos_angles.detach(), 0.99))) if local_pos_angles.numel() else float("nan"),
-        "local_zid_tail_cvar_deg": math.degrees(_scalar_metric(_top_cvar_mean(local_pos_angles.detach(), 0.05))) if local_pos_angles.numel() else float("nan"),
+        "local_zid_p50_deg": math.degrees(_scalar_metric(torch.quantile(optimization_pos_angles.detach(), 0.50))) if optimization_pos_angles.numel() else float("nan"),
+        "local_zid_p95_deg": math.degrees(_scalar_metric(torch.quantile(optimization_pos_angles.detach(), 0.95))) if optimization_pos_angles.numel() else float("nan"),
+        "local_zid_p99_deg": math.degrees(_scalar_metric(torch.quantile(optimization_pos_angles.detach(), 0.99))) if optimization_pos_angles.numel() else float("nan"),
+        "local_zid_tail_cvar_deg": math.degrees(_scalar_metric(_top_cvar_mean(optimization_pos_angles.detach(), 0.05))) if optimization_pos_angles.numel() else float("nan"),
+        "reference_anchor_count": float(reference_count),
+        "query_count": float(int(sample_query_mask.sum().item())),
         "global_diag_zid_p50_deg": math.degrees(_scalar_metric(global_q50)),
         "global_diag_zid_p95_deg": math.degrees(_scalar_metric(global_q95)),
         "global_diag_zid_p99_deg": math.degrees(_scalar_metric(global_q99)),
@@ -2312,6 +2478,10 @@ def multiview_direct_metric_acceptance_loss(
     accept_cvar_alpha: float = 0.25,
     virtual_detach: bool = True,
     gate_reference_detach: bool = True,
+    clean_reference_z: Optional[torch.Tensor] = None,
+    sat_reference_z: Optional[torch.Tensor] = None,
+    reference_y: Optional[torch.Tensor] = None,
+    reference_d: Optional[torch.Tensor] = None,
     **kwargs,
 ) -> Tuple[torch.Tensor, Dict[str, float]]:
     """Optimize clean and satellite known geometry without one pooled class ball."""
@@ -2338,6 +2508,9 @@ def multiview_direct_metric_acceptance_loss(
         d,
         paired_view_count=0,
         sat_pair_weight=0.0,
+        reference_z=clean_reference_z,
+        reference_y=reference_y,
+        reference_d=reference_d,
         **base_kwargs,
     )
     sat_loss, sat_metrics = direct_metric_acceptance_loss(
@@ -2346,6 +2519,9 @@ def multiview_direct_metric_acceptance_loss(
         d,
         paired_view_count=0,
         sat_pair_weight=0.0,
+        reference_z=sat_reference_z,
+        reference_y=reference_y,
+        reference_d=reference_d,
         **base_kwargs,
     )
 
@@ -2841,6 +3017,8 @@ def multiview_source_episode_three_sigma_loss(
         "source_episode_tail_query_rate",
         "source_episode_local_component_radius_p95_deg",
         "source_episode_local_component_center_spread_deg",
+        "source_episode_local_component_min_inter_deg",
+        "source_episode_local_component_max_radius_inter_ratio",
     )
     for key in risk_keys:
         values = []
@@ -2859,6 +3037,8 @@ def multiview_source_episode_three_sigma_loss(
         "source_episode_local_component_compact_loss",
         "source_episode_local_component_invariant_loss",
         "source_episode_local_component_inter_loss",
+        "source_episode_local_component_overlap_loss",
+        "source_episode_leave_domain_target_loss",
         "source_episode_local_component_accept_loss",
         "source_episode_local_component_density_loss",
         "source_episode_local_component_accept_raw_loss",
@@ -2906,6 +3086,9 @@ def source_episode_three_sigma_loss(
     local_component_invariant_weight: float = 0.0,
     local_component_inter_weight: float = 0.0,
     local_component_inter_margin_rad: float = math.radians(20.0),
+    local_component_center_target_rad: float = 0.0,
+    local_component_overlap_weight: float = 0.0,
+    local_component_overlap_margin_rad: float = math.radians(4.0),
     local_component_accept_weight: float = 0.0,
     local_component_density_weight: float = 0.0,
     local_component_min_samples: int = 2,
@@ -2913,6 +3096,9 @@ def source_episode_three_sigma_loss(
     local_component_density_beta: float = 0.20,
     local_component_density_cap: float = 2.0,
     local_component_term_cap: float = 4.0,
+    leave_domain_target_rad: float = math.radians(40.0),
+    leave_domain_target_weight: float = 0.0,
+    structural_cvar_alpha: float = 0.20,
 ) -> Tuple[torch.Tensor, Dict[str, float]]:
     """Source-only leave-domain angular shell objective.
 
@@ -2943,6 +3129,10 @@ def source_episode_three_sigma_loss(
         "source_episode_local_component_compact_loss": 0.0,
         "source_episode_local_component_invariant_loss": 0.0,
         "source_episode_local_component_inter_loss": 0.0,
+        "source_episode_local_component_overlap_loss": 0.0,
+        "source_episode_leave_domain_target_loss": 0.0,
+        "source_episode_local_component_min_inter_deg": float("nan"),
+        "source_episode_local_component_max_radius_inter_ratio": float("nan"),
         "source_episode_local_component_accept_loss": 0.0,
         "source_episode_local_component_density_loss": 0.0,
         "source_episode_local_component_accept_raw_loss": 0.0,
@@ -2998,6 +3188,7 @@ def source_episode_three_sigma_loss(
     local_component_spreads = []
     local_compact_terms = []
     local_invariant_terms = []
+    leave_domain_target_terms = []
     local_possible_components = 0.0
     min_cell = max(1, int(min_samples_per_class_domain))
     local_min_cell = max(min_cell, int(local_component_min_samples), 2)
@@ -3027,22 +3218,33 @@ def source_episode_three_sigma_loss(
                 (stacked * invariant_core.view(1, -1)).sum(dim=1).clamp(-1.0 + 1e-6, 1.0 - 1e-6)
             )
             local_component_spreads.append(spread.detach().mean())
-            local_invariant_terms.append(spread.pow(2).mean())
+            local_invariant_terms.append(
+                F.relu(spread - float(local_component_center_target_rad)).pow(2)
+            )
 
     local_compact_raw_loss = (
         torch.stack(local_compact_terms).mean() if local_compact_terms else z_norm.sum() * 0.0
     )
     local_invariant_raw_loss = (
-        torch.stack(local_invariant_terms).mean() if local_invariant_terms else z_norm.sum() * 0.0
+        _top_cvar_mean(
+            torch.cat([term.reshape(-1) for term in local_invariant_terms], dim=0),
+            max(1e-6, min(1.0, float(structural_cvar_alpha))),
+        )
+        if local_invariant_terms
+        else z_norm.sum() * 0.0
     )
     local_inter_raw_loss = z_norm.sum() * 0.0
     local_accept_raw_loss = z_norm.sum() * 0.0
     local_density_raw_loss = z_norm.sum() * 0.0
+    local_overlap_raw_loss = z_norm.sum() * 0.0
     local_compact_loss = _bounded_positive_scalar_loss(local_compact_raw_loss, cap=local_component_term_cap)
     local_invariant_loss = _bounded_positive_scalar_loss(local_invariant_raw_loss, cap=local_component_term_cap)
     local_inter_loss = z_norm.sum() * 0.0
     local_accept_loss = z_norm.sum() * 0.0
     local_density_loss = z_norm.sum() * 0.0
+    local_overlap_loss = z_norm.sum() * 0.0
+    local_min_inter = z_norm.new_tensor(float("nan"))
+    local_max_radius_inter_ratio = z_norm.new_tensor(float("nan"))
     local_core_count = 0.0
     local_tail_count = 0.0
     local_outside_count = 0.0
@@ -3056,13 +3258,45 @@ def source_episode_three_sigma_loss(
         )
         different_class = component_labels.view(-1, 1).ne(component_labels.view(1, -1))
         if bool(different_class.any()):
-            local_inter_raw_loss = F.relu(
-                float(local_component_inter_margin_rad) - component_angles[different_class]
-            ).pow(2).mean()
+            nearest_other_component = component_angles.masked_fill(
+                ~different_class, float("inf")
+            ).min(dim=1).values
+            finite_nearest = nearest_other_component[torch.isfinite(nearest_other_component)]
+            local_inter_raw_loss = _top_cvar_mean(
+                F.relu(
+                    float(local_component_inter_margin_rad) - finite_nearest
+                ).pow(2),
+                max(1e-6, min(1.0, float(structural_cvar_alpha))),
+            )
             local_inter_loss = _bounded_positive_scalar_loss(
                 local_inter_raw_loss,
                 cap=local_component_term_cap,
             )
+            local_min_inter = finite_nearest.detach().min()
+            component_radius_tensor_for_overlap = torch.stack(local_component_radii).to(
+                device=z_norm.device, dtype=z_norm.dtype
+            ).detach()
+            pair_radius = (
+                component_radius_tensor_for_overlap.view(-1, 1)
+                + component_radius_tensor_for_overlap.view(1, -1)
+            )
+            overlap = F.relu(
+                pair_radius
+                + float(local_component_overlap_margin_rad)
+                - component_angles
+            ).masked_select(different_class)
+            local_overlap_raw_loss = _top_cvar_mean(
+                overlap.pow(2),
+                max(1e-6, min(1.0, float(structural_cvar_alpha))),
+            )
+            local_overlap_loss = _bounded_positive_scalar_loss(
+                local_overlap_raw_loss,
+                cap=local_component_term_cap,
+            )
+            local_max_radius_inter_ratio = (
+                component_radius_tensor_for_overlap
+                / finite_nearest.detach().clamp_min(1e-4)
+            ).max()
         sample_local_angles = _safe_angle_from_cos(
             (z_norm[valid] @ component_tensor.t()).clamp(-1.0 + 1e-6, 1.0 - 1e-6)
         )
@@ -3184,6 +3418,9 @@ def source_episode_three_sigma_loss(
             val_angles = _safe_angle_from_cos(val_cos)
             overflow = torch.relu(val_angles - radius)
             losses.append(overflow.pow(2).mean())
+            leave_domain_target_terms.append(
+                F.relu(val_angles - float(leave_domain_target_rad)).pow(2)
+            )
             overflow_rates.append(float((val_angles.detach() > radius).float().mean().item()))
             radii.append(radius_3sigma.detach())
             core_radii.append(radius_core.detach())
@@ -3206,6 +3443,14 @@ def source_episode_three_sigma_loss(
             used_classes.add(int(cls.item()))
             used_domains.add(int(val_dom.item()))
     source_loss = torch.stack(losses).mean() if losses else z_norm.sum() * 0.0
+    leave_domain_target_loss = (
+        _top_cvar_mean(
+            torch.cat([term.reshape(-1) for term in leave_domain_target_terms], dim=0),
+            max(1e-6, min(1.0, float(structural_cvar_alpha))),
+        )
+        if leave_domain_target_terms
+        else z_norm.sum() * 0.0
+    )
     mixup_loss = z.new_tensor(0.0)
     mixup_overflow_rate = 0.0
     mixup_margin = z.new_tensor(float("nan"))
@@ -3240,8 +3485,10 @@ def source_episode_three_sigma_loss(
         + max(0.0, float(local_component_compact_weight)) * local_compact_loss
         + max(0.0, float(local_component_invariant_weight)) * local_invariant_loss
         + max(0.0, float(local_component_inter_weight)) * local_inter_loss
+        + max(0.0, float(local_component_overlap_weight)) * local_overlap_loss
         + max(0.0, float(local_component_accept_weight)) * local_accept_loss
         + max(0.0, float(local_component_density_weight)) * local_density_loss
+        + max(0.0, float(leave_domain_target_weight)) * leave_domain_target_loss
     )
     loss_upper_bound = (
         math.pi * math.pi
@@ -3249,8 +3496,10 @@ def source_episode_three_sigma_loss(
         + max(0.0, float(local_component_compact_weight)) * max(1e-6, float(local_component_term_cap))
         + max(0.0, float(local_component_invariant_weight)) * max(1e-6, float(local_component_term_cap))
         + max(0.0, float(local_component_inter_weight)) * max(1e-6, float(local_component_term_cap))
+        + max(0.0, float(local_component_overlap_weight)) * max(1e-6, float(local_component_term_cap))
         + max(0.0, float(local_component_accept_weight)) * max(1e-6, float(local_component_term_cap))
         + max(0.0, float(local_component_density_weight)) * max(1e-6, float(local_component_density_cap))
+        + max(0.0, float(leave_domain_target_weight)) * math.pi * math.pi
     )
     all_val_angles = torch.cat(val_angles_flat, dim=0) if val_angles_flat else z.new_zeros(0)
     if all_val_angles.numel() > 0:
@@ -3300,6 +3549,14 @@ def source_episode_three_sigma_loss(
         "source_episode_local_component_compact_loss": _scalar_metric(local_compact_loss),
         "source_episode_local_component_invariant_loss": _scalar_metric(local_invariant_loss),
         "source_episode_local_component_inter_loss": _scalar_metric(local_inter_loss),
+        "source_episode_local_component_overlap_loss": _scalar_metric(local_overlap_loss),
+        "source_episode_leave_domain_target_loss": _scalar_metric(leave_domain_target_loss),
+        "source_episode_local_component_min_inter_deg": math.degrees(
+            _scalar_metric(local_min_inter)
+        ),
+        "source_episode_local_component_max_radius_inter_ratio": _scalar_metric(
+            local_max_radius_inter_ratio
+        ),
         "source_episode_local_component_accept_loss": _scalar_metric(local_accept_loss),
         "source_episode_local_component_density_loss": _scalar_metric(local_density_loss),
         "source_episode_local_component_accept_raw_loss": _scalar_metric(local_accept_raw_loss),

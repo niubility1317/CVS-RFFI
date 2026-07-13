@@ -230,6 +230,11 @@ def build_arg_parser() -> argparse.ArgumentParser:
     parser.add_argument("--u_quarantine_accept_temperature", type=float, default=0.04)
     parser.add_argument("--u_quarantine_core_accept_target", type=float, default=0.82)
     parser.add_argument("--u_geometry_all_valid_queries", type=str2bool, default=False)
+    parser.add_argument("--u_direct_include_ambiguous", type=str2bool, default=False)
+    parser.add_argument("--u_tri_tail_pair_weight", type=float, default=0.0)
+    parser.add_argument("--u_tri_outside_pair_weight", type=float, default=0.0)
+    parser.add_argument("--u_tri_tail_pair_target_deg", type=float, default=12.0)
+    parser.add_argument("--u_tri_outside_pair_target_deg", type=float, default=20.0)
     parser.add_argument("--u_unlabeled_shuffle", type=str2bool, default=True)
     parser.add_argument("--u_sat_zid_cons_weight", type=float, default=0.25)
     parser.add_argument("--lambda_domain", "--lambda_dom", dest="lambda_domain", type=float, default=1.0)
@@ -398,6 +403,7 @@ def build_arg_parser() -> argparse.ArgumentParser:
     parser.add_argument("--os_budget_controller", type=str2bool, default=False)
     parser.add_argument("--os_budget_max_scale", type=float, default=4.0)
     parser.add_argument("--os_budget_min_closed_scale", type=float, default=0.35)
+    parser.add_argument("--os_budget_target_reserve", type=float, default=0.0)
     parser.add_argument("--os_gradient_surgery", type=str2bool, default=False)
     parser.add_argument("--os_gradient_surgery_interval", type=int, default=1)
     parser.add_argument("--os_gradient_protect_closed", type=str2bool, default=False)
@@ -434,6 +440,9 @@ def build_arg_parser() -> argparse.ArgumentParser:
     parser.add_argument("--source_episode_local_invariant_weight", type=float, default=0.0)
     parser.add_argument("--source_episode_local_inter_weight", type=float, default=0.0)
     parser.add_argument("--source_episode_local_inter_margin_deg", type=float, default=20.0)
+    parser.add_argument("--source_episode_local_center_target_deg", type=float, default=0.0)
+    parser.add_argument("--source_episode_local_overlap_weight", type=float, default=0.0)
+    parser.add_argument("--source_episode_local_overlap_margin_deg", type=float, default=4.0)
     parser.add_argument("--source_episode_local_accept_weight", type=float, default=0.0)
     parser.add_argument("--source_episode_local_density_weight", type=float, default=0.0)
     parser.add_argument("--source_episode_local_min_samples", type=int, default=2)
@@ -441,6 +450,9 @@ def build_arg_parser() -> argparse.ArgumentParser:
     parser.add_argument("--source_episode_local_density_beta", type=float, default=0.20)
     parser.add_argument("--source_episode_local_density_cap", type=float, default=2.0)
     parser.add_argument("--source_episode_local_term_cap", type=float, default=4.0)
+    parser.add_argument("--source_episode_leave_domain_target_deg", type=float, default=40.0)
+    parser.add_argument("--source_episode_leave_domain_target_weight", type=float, default=0.0)
+    parser.add_argument("--source_episode_structural_cvar_alpha", type=float, default=0.20)
     parser.add_argument("--source_episode_structural_start_epoch", type=int, default=-1)
     parser.add_argument("--source_episode_structural_warmup_epochs", type=int, default=-1)
     parser.add_argument("--source_episode_clean_weight", type=float, default=1.0)
@@ -452,12 +464,14 @@ def build_arg_parser() -> argparse.ArgumentParser:
     parser.add_argument("--direct_metric_min_samples_per_component", type=int, default=2)
     parser.add_argument("--direct_metric_clean_weight", type=float, default=1.0)
     parser.add_argument("--direct_metric_sat_weight", type=float, default=1.0)
+    parser.add_argument("--direct_metric_hierarchical_class_gate", type=str2bool, default=False)
     parser.add_argument("--endpoint_require_artifact_on_export", type=str2bool, default=True)
     parser.add_argument("--endpoint_calibration_min_component_samples", type=int, default=4)
     parser.add_argument("--endpoint_calibration_min_class_samples", type=int, default=4)
     parser.add_argument("--endpoint_calibration_core_quantile", type=float, default=0.80)
     parser.add_argument("--endpoint_calibration_accept_quantile", type=float, default=0.95)
     parser.add_argument("--endpoint_calibration_tail_quantile", type=float, default=0.99)
+    parser.add_argument("--phase1_export_diagnostic_on_block", type=str2bool, default=False)
     parser.add_argument("--zid_leakage_probe_required", type=str2bool, default=False)
     parser.add_argument("--zid_leakage_probe_max_batches", type=int, default=0)
     parser.add_argument("--zid_leakage_probe_ridge", type=float, default=0.01)
@@ -638,6 +652,9 @@ def build_arg_parser() -> argparse.ArgumentParser:
     parser.add_argument("--direct_metric_tail_accept_weight", type=float, default=1.0)
     parser.add_argument("--direct_metric_overflow_accept_weight", type=float, default=1.0)
     parser.add_argument("--direct_metric_radius_inter_ratio_weight", type=float, default=1.0)
+    parser.add_argument("--direct_metric_global_quantile_weight", type=float, default=0.0)
+    parser.add_argument("--direct_metric_component_inter_margin_weight", type=float, default=0.0)
+    parser.add_argument("--direct_metric_component_overlap_weight", type=float, default=0.0)
     parser.add_argument("--direct_metric_core_accept_weight", type=float, default=0.25)
     parser.add_argument("--direct_metric_sat_pair_weight", type=float, default=0.0)
     parser.add_argument("--direct_metric_quantile_temperature_deg", type=float, default=3.0)
@@ -645,6 +662,8 @@ def build_arg_parser() -> argparse.ArgumentParser:
     parser.add_argument("--direct_metric_component_temperature_deg", type=float, default=3.0)
     parser.add_argument("--direct_metric_density_temperature_deg", type=float, default=3.0)
     parser.add_argument("--direct_metric_component_margin_deg", type=float, default=4.0)
+    parser.add_argument("--direct_metric_component_inter_margin_deg", type=float, default=55.0)
+    parser.add_argument("--direct_metric_component_overlap_margin_deg", type=float, default=4.0)
     parser.add_argument("--direct_metric_source_margin_deg", type=float, default=2.0)
     parser.add_argument("--direct_metric_shell_width_deg", type=float, default=4.0)
     parser.add_argument("--direct_metric_accept_cvar_alpha", type=float, default=0.25)
@@ -1551,6 +1570,7 @@ def _maybe_export_phase2_prototypes_ssdg(
     device,
     *,
     default_checkpoint: str | Path,
+    diagnostic_only: bool = False,
 ) -> Optional[Dict[str, Any]]:
     if not bool(getattr(args, "phase2_export_prototypes", False)):
         return None
@@ -1572,6 +1592,9 @@ def _maybe_export_phase2_prototypes_ssdg(
     output_path = str(getattr(args, "phase2_export_path", "") or "").strip()
     if not output_path:
         output_path = _derive_phase2_export_path(checkpoint_path)
+    if bool(diagnostic_only):
+        path = Path(output_path)
+        output_path = str(path.with_name(f"{path.stem}_diagnostic{path.suffix}"))
 
     restore_state = deepcopy(getattr(model, "_orig_mod", model).state_dict())
     try:
@@ -1603,6 +1626,8 @@ def _maybe_export_phase2_prototypes_ssdg(
                 "deployment_success_claim": False,
                 "final_reject_boundary": False,
                 "endpoint_accept_boundary_exported": False,
+                "diagnostic_only": bool(diagnostic_only),
+                "promotion_ready": False if bool(diagnostic_only) else None,
                 "endpoint_policy_id": str(getattr(args, "endpoint_accept_policy_id", "endpoint_accept_v1")),
                 "run_id": str(getattr(args, "run_id", "")),
                 "candidate_id": str(getattr(args, "candidate_id", "")),
@@ -1636,7 +1661,9 @@ def _maybe_export_phase2_prototypes_ssdg(
                 ),
             )
         endpoint_artifact_ready = False
-        if bool(getattr(args, "endpoint_require_artifact_on_export", True)):
+        if bool(getattr(args, "endpoint_require_artifact_on_export", True)) and not bool(
+            diagnostic_only
+        ):
             if not bool(getattr(args, "phase2_fuse_prototypes", False)):
                 raise ValueError("endpoint_accept_v1 export requires --phase2_fuse_prototypes true")
             if (
@@ -1700,6 +1727,7 @@ def _maybe_export_phase2_prototypes_ssdg(
             "claim=PHASE1_SOURCE_ONLY_EXPORT_ONLY stage2_success_claim=0 "
             "deployment_success_claim=0 true_unknown_validated=0 "
             f"endpoint_artifact_ready={int(endpoint_artifact_ready)} "
+            f"diagnostic_only={int(bool(diagnostic_only))} "
             f"endpoint_policy_id={str(getattr(args, 'endpoint_accept_policy_id', 'endpoint_accept_v1'))}",
             flush=True,
         )
@@ -2300,12 +2328,23 @@ def _direct_metric_kwargs(args) -> Dict[str, Any]:
         "tail_accept_weight": float(args.direct_metric_tail_accept_weight),
         "overflow_accept_weight": float(args.direct_metric_overflow_accept_weight),
         "radius_inter_ratio_weight": float(args.direct_metric_radius_inter_ratio_weight),
+        "global_quantile_weight": float(args.direct_metric_global_quantile_weight),
+        "component_inter_margin_weight": float(
+            args.direct_metric_component_inter_margin_weight
+        ),
+        "component_overlap_weight": float(args.direct_metric_component_overlap_weight),
         "core_accept_weight": float(args.direct_metric_core_accept_weight),
         "quantile_temperature_rad": math.radians(float(args.direct_metric_quantile_temperature_deg)),
         "accept_temperature": float(args.direct_metric_accept_temperature),
         "component_temperature_rad": math.radians(float(args.direct_metric_component_temperature_deg)),
         "density_temperature_rad": math.radians(float(args.direct_metric_density_temperature_deg)),
         "component_margin_rad": math.radians(float(args.direct_metric_component_margin_deg)),
+        "component_inter_margin_rad": math.radians(
+            float(args.direct_metric_component_inter_margin_deg)
+        ),
+        "component_overlap_margin_rad": math.radians(
+            float(args.direct_metric_component_overlap_margin_deg)
+        ),
         "source_margin_rad": math.radians(float(args.direct_metric_source_margin_deg)),
         "shell_width_rad": math.radians(float(args.direct_metric_shell_width_deg)),
         "accept_cvar_alpha": float(args.direct_metric_accept_cvar_alpha),
@@ -2314,6 +2353,7 @@ def _direct_metric_kwargs(args) -> Dict[str, Any]:
         "use_domain_local_components": bool(args.direct_metric_domain_local_components),
         "require_domain_local_components": bool(args.direct_metric_require_domain_local_components),
         "min_samples_per_component": int(args.direct_metric_min_samples_per_component),
+        "hierarchical_class_gate": bool(args.direct_metric_hierarchical_class_gate),
     }
 
 
@@ -2331,12 +2371,13 @@ def _route_unlabeled_known_geometry(
     valid_u_mask: torch.Tensor,
     labeled_view_count: int = 0,
     labeled_sat_applied: bool = False,
-) -> Tuple[torch.Tensor, Dict[str, Any], torch.Tensor]:
+) -> Tuple[torch.Tensor, Dict[str, Any], torch.Tensor, torch.Tensor]:
     zero = out_s["z_id"].sum() * 0.0
     geometry_core_mask = torch.zeros_like(pseudo_mask, dtype=torch.bool)
+    geometry_direct_mask = torch.zeros_like(pseudo_mask, dtype=torch.bool)
     info: Dict[str, Any] = {"active": 0.0, "routing_precomputed": 0.0}
     if unlabeled_known_acceptance_quarantine_loss is None:
-        return zero, info, geometry_core_mask
+        return zero, info, geometry_core_mask, geometry_direct_mask
     if bool(getattr(args, "u_geometry_all_valid_queries", False)):
         quarantine_mask = valid_u_mask.clone() if bool(args.u_quarantine_valid_domain_only) else torch.ones_like(pseudo_mask)
     else:
@@ -2353,10 +2394,10 @@ def _route_unlabeled_known_geometry(
                 "routing_precomputed": 1.0,
             }
         )
-        return zero, info, geometry_core_mask
+        return zero, info, geometry_core_mask, geometry_direct_mask
     anchor_count = int(labeled_view_count) if int(labeled_view_count) > 0 else int(y_l.numel())
     if anchor_count > int(z_id_l.size(0)) or anchor_count > int(y_l.numel()):
-        return zero, {**info, "reason": "invalid_labeled_view_count"}, geometry_core_mask
+        return zero, {**info, "reason": "invalid_labeled_view_count"}, geometry_core_mask, geometry_direct_mask
     clean_anchor_z = z_id_l[:anchor_count].detach()
     clean_anchor_y = y_l[:anchor_count].detach().long()
     clean_anchor_d = d_l[:anchor_count].detach().long() if d_l is not None else None
@@ -2418,12 +2459,48 @@ def _route_unlabeled_known_geometry(
         ambiguous = view_info.pop("_tri_ambiguous_tail_mask", None)
         outside = view_info.pop("_tri_outside_reject_mask", None)
         if not all(torch.is_tensor(value) and int(value.numel()) == quarantine_count for value in (core, ambiguous, outside)):
-            return zero, {**info, "reason": f"{view_name}_tri_state_missing"}, geometry_core_mask
+            return zero, {**info, "reason": f"{view_name}_tri_state_missing"}, geometry_core_mask, geometry_direct_mask
         state_rows.append((core.bool(), ambiguous.bool(), outside.bool()))
     combined_core = torch.stack([row[0] for row in state_rows], dim=0).all(dim=0)
     combined_outside = torch.stack([row[2] for row in state_rows], dim=0).any(dim=0)
     combined_ambiguous = (~combined_core) & (~combined_outside)
     geometry_core_mask[quarantine_mask] = combined_core.to(device=pseudo_mask.device)
+    direct_local = combined_core | (
+        combined_ambiguous & bool(getattr(args, "u_direct_include_ambiguous", False))
+    )
+    geometry_direct_mask[quarantine_mask] = direct_local.to(device=pseudo_mask.device)
+
+    tail_pair_loss = zero
+    outside_pair_loss = zero
+    if out_u_sat is not None:
+        clean_query = F.normalize(out_s["z_id"][quarantine_mask].float(), dim=1)
+        sat_query = F.normalize(out_u_sat["z_id"][quarantine_mask].float(), dim=1)
+        pair_angles = torch.acos(
+            (clean_query * sat_query).sum(dim=1).clamp(-1.0 + 1e-6, 1.0 - 1e-6)
+        )
+
+        def _pair_state_loss(state_mask: torch.Tensor, target_deg: float) -> torch.Tensor:
+            if not bool(state_mask.any()):
+                return pair_angles.sum() * 0.0
+            excess = F.relu(pair_angles[state_mask] - math.radians(float(target_deg))).pow(2)
+            top_k = max(1, min(int(excess.numel()), int(math.ceil(0.25 * excess.numel()))))
+            return excess.topk(k=top_k, largest=True).values.mean()
+
+        tail_pair_loss = _pair_state_loss(
+            combined_ambiguous,
+            float(getattr(args, "u_tri_tail_pair_target_deg", 12.0)),
+        )
+        outside_pair_loss = _pair_state_loss(
+            combined_outside,
+            float(getattr(args, "u_tri_outside_pair_target_deg", 20.0)),
+        )
+        loss = (
+            loss
+            + max(0.0, float(getattr(args, "u_tri_tail_pair_weight", 0.0)))
+            * tail_pair_loss
+            + max(0.0, float(getattr(args, "u_tri_outside_pair_weight", 0.0)))
+            * outside_pair_loss
+        )
 
     numeric_keys = set.intersection(
         *[
@@ -2445,6 +2522,10 @@ def _route_unlabeled_known_geometry(
             "tri_trusted_core_rate": float(combined_core.float().mean().item()),
             "tri_ambiguous_tail_rate": float(combined_ambiguous.float().mean().item()),
             "tri_outside_reject_rate": float(combined_outside.float().mean().item()),
+            "tri_direct_count": float(int(direct_local.sum().item())),
+            "tri_direct_rate": float(direct_local.float().mean().item()),
+            "tri_tail_pair_loss": float(tail_pair_loss.detach().item()),
+            "tri_outside_pair_loss": float(outside_pair_loss.detach().item()),
             "tri_pair_disagreement_rate": (
                 float((state_rows[0][0] != state_rows[1][0]).float().mean().item())
                 if len(state_rows) == 2
@@ -2465,12 +2546,13 @@ def _route_unlabeled_known_geometry(
     ) / float(max(1, quarantine_count))
     info["valid_domain_rate"] = float(int(valid_u_mask.sum().detach().item())) / float(max(1, int(pseudo.numel())))
     info["routing_precomputed"] = 1.0
-    return loss, info, geometry_core_mask
+    return loss, info, geometry_core_mask, geometry_direct_mask
 
 
 def _select_unlabeled_geometry_masks(
     pseudo_mask: torch.Tensor,
     geometry_core_mask: torch.Tensor,
+    geometry_direct_mask: torch.Tensor,
     valid_domain_mask: torch.Tensor,
     *,
     all_valid_queries: bool,
@@ -2480,7 +2562,7 @@ def _select_unlabeled_geometry_masks(
 
     if all_valid_queries:
         ce_mask = pseudo_mask & geometry_core_mask
-        direct_mask = geometry_core_mask.clone()
+        direct_mask = geometry_direct_mask.clone()
         invariance_mask = valid_domain_mask.clone()
     else:
         ce_mask = pseudo_mask.clone()
@@ -3775,6 +3857,8 @@ def train(args) -> int:
         getattr(args, "os_eff_max_budget", 0.0)
     ) < float(getattr(args, "os_eff_min_budget", 0.0)):
         raise ValueError("--os_eff_max_budget must be zero/disabled or >= --os_eff_min_budget")
+    if float(getattr(args, "os_budget_target_reserve", 0.0)) < 0.0:
+        raise ValueError("--os_budget_target_reserve must be >= 0")
     objective_shares = [
         float(getattr(args, "os_objective_boundary_share", 0.40)),
         float(getattr(args, "os_objective_source_share", 0.25)),
@@ -4715,6 +4799,16 @@ def train(args) -> int:
                             * source_episode_structural_stage_scale
                         ),
                         local_component_inter_margin_rad=math.radians(float(args.source_episode_local_inter_margin_deg)),
+                        local_component_center_target_rad=math.radians(
+                            float(args.source_episode_local_center_target_deg)
+                        ),
+                        local_component_overlap_weight=(
+                            float(args.source_episode_local_overlap_weight)
+                            * source_episode_structural_stage_scale
+                        ),
+                        local_component_overlap_margin_rad=math.radians(
+                            float(args.source_episode_local_overlap_margin_deg)
+                        ),
                         local_component_accept_weight=(
                             float(args.source_episode_local_accept_weight)
                             * source_episode_structural_stage_scale
@@ -4730,6 +4824,14 @@ def train(args) -> int:
                         local_component_density_beta=float(args.source_episode_local_density_beta),
                         local_component_density_cap=float(args.source_episode_local_density_cap),
                         local_component_term_cap=float(args.source_episode_local_term_cap),
+                        leave_domain_target_rad=math.radians(
+                            float(args.source_episode_leave_domain_target_deg)
+                        ),
+                        leave_domain_target_weight=(
+                            float(args.source_episode_leave_domain_target_weight)
+                            * source_episode_structural_stage_scale
+                        ),
+                        structural_cvar_alpha=float(args.source_episode_structural_cvar_alpha),
                     )
                     if (
                         concat_sat_full_batch
@@ -5143,12 +5245,18 @@ def train(args) -> int:
                             )
                     strict_pseudo_mask = mask.clone()
                     u_geometry_core_mask = torch.ones_like(mask, dtype=torch.bool)
+                    u_geometry_direct_mask = torch.ones_like(mask, dtype=torch.bool)
                     if (
                         float(args.lambda_u_quarantine_accept) > 0.0
                         and epoch >= int(args.u_quarantine_start_epoch)
                         and unlabeled_known_acceptance_quarantine_loss is not None
                     ):
-                        loss_u_quarantine, u_quarantine_info, u_geometry_core_mask = _route_unlabeled_known_geometry(
+                        (
+                            loss_u_quarantine,
+                            u_quarantine_info,
+                            u_geometry_core_mask,
+                            u_geometry_direct_mask,
+                        ) = _route_unlabeled_known_geometry(
                             args=args,
                             z_id_l=z_id_l,
                             y_l=y_l,
@@ -5169,6 +5277,7 @@ def train(args) -> int:
                     routed_pseudo_mask, u_direct_geometry_mask, u_invariance_mask = _select_unlabeled_geometry_masks(
                         strict_pseudo_mask,
                         u_geometry_core_mask,
+                        u_geometry_direct_mask,
                         valid_u_mask,
                         all_valid_queries=bool(getattr(args, "u_geometry_all_valid_queries", False)),
                         direct_valid_domain_only=bool(getattr(args, "u_direct_metric_valid_domain_only", True)),
@@ -5208,6 +5317,23 @@ def train(args) -> int:
                         u_dm_info["selected"] = float(dm_selected)
                         u_dm_info["valid_domain_selected"] = float(int((dm_mask & valid_u_mask).sum().detach().item()))
                         if dm_selected >= int(args.u_direct_metric_min_selected):
+                            dm_anchor_count = (
+                                int(concat_sat_clean_bsz)
+                                if concat_sat_full_batch
+                                else int(y_l.numel())
+                            )
+                            dm_reference_clean = z_id_l[:dm_anchor_count].detach()
+                            dm_reference_y = y_l[:dm_anchor_count].detach().long()
+                            dm_reference_d = (
+                                d_l[:dm_anchor_count].detach().long()
+                                if d_l is not None
+                                else None
+                            )
+                            dm_reference_sat = dm_reference_clean
+                            if concat_sat_full_batch and int(z_id_l.size(0)) >= 2 * dm_anchor_count:
+                                dm_reference_sat = z_id_l[
+                                    dm_anchor_count : 2 * dm_anchor_count
+                                ].detach()
                             dm_z_clean = out_s["z_id"][dm_mask]
                             dm_y = pseudo[dm_mask].long()
                             dm_d = d_u[dm_mask].long() if valid_u_domain else None
@@ -5229,15 +5355,32 @@ def train(args) -> int:
                                     sat_weight=float(args.direct_metric_sat_weight),
                                     pair_weight=float(args.direct_metric_sat_pair_weight),
                                     sat_pair_target_rad=math.radians(float(args.direct_metric_sat_pair_target_deg)),
+                                    clean_reference_z=dm_reference_clean,
+                                    sat_reference_z=dm_reference_sat,
+                                    reference_y=dm_reference_y,
+                                    reference_d=dm_reference_d,
                                     **_direct_metric_kwargs(args),
                                 )
                             else:
                                 dm_z = dm_z_clean
+                                dm_reference_z = dm_reference_clean
+                                dm_reference_labels = dm_reference_y
+                                dm_reference_domains = dm_reference_d
                                 if bool(args.u_direct_metric_use_sat_pair) and out_u_sat is not None:
                                     dm_z = torch.cat([dm_z_clean, out_u_sat["z_id"][dm_mask]], dim=0)
                                     dm_y = torch.cat([dm_y, dm_y], dim=0)
+                                    dm_reference_z = torch.cat(
+                                        [dm_reference_clean, dm_reference_sat], dim=0
+                                    )
+                                    dm_reference_labels = torch.cat(
+                                        [dm_reference_y, dm_reference_y], dim=0
+                                    )
                                     if dm_d is not None:
                                         dm_d = torch.cat([dm_d, dm_d], dim=0)
+                                    if dm_reference_d is not None:
+                                        dm_reference_domains = torch.cat(
+                                            [dm_reference_d, dm_reference_d], dim=0
+                                        )
                                     paired_view_count_u = int(dm_selected)
                                     u_sat_pair_count = paired_view_count_u
                                 loss_u_direct_metric, u_dm_info = direct_metric_acceptance_loss(
@@ -5247,6 +5390,9 @@ def train(args) -> int:
                                     paired_view_count=paired_view_count_u,
                                     sat_pair_target_rad=math.radians(float(args.direct_metric_sat_pair_target_deg)),
                                     sat_pair_weight=float(args.direct_metric_sat_pair_weight) if paired_view_count_u > 0 else 0.0,
+                                    reference_z=dm_reference_z,
+                                    reference_y=dm_reference_labels,
+                                    reference_d=dm_reference_domains,
                                     **_direct_metric_kwargs(args),
                                 )
                             u_dm_info["selected"] = float(dm_selected)
@@ -5391,13 +5537,23 @@ def train(args) -> int:
                     if float(dg_health_open_scale) >= 1.0 - 1e-8
                     else 0.0
                 )
+                control_os_min_budget = effective_os_min_budget
+                if effective_os_min_budget > 0.0:
+                    control_os_min_budget = effective_os_min_budget + max(
+                        0.0, float(getattr(args, "os_budget_target_reserve", 0.0))
+                    )
+                    if float(args.os_eff_max_budget) > 0.0:
+                        control_os_min_budget = min(
+                            control_os_min_budget,
+                            float(args.os_eff_max_budget) - 1e-6,
+                        )
                 os_budget_info = {
                     "active": 0.0,
                     "os_scale": 1.0,
                     "closed_scale": 1.0,
                     "pre_budget": 0.0,
                     "post_budget": 0.0,
-                    "target_budget": float(effective_os_min_budget),
+                    "target_budget": float(control_os_min_budget),
                     "configured_target_budget": float(args.os_eff_min_budget),
                     "max_budget": float(args.os_eff_max_budget),
                     "reason_code": 0.0,
@@ -5459,7 +5615,7 @@ def train(args) -> int:
                         scaled_open_loss,
                         project_conflicts=bool(getattr(args, "os_gradient_surgery", False)),
                         budget_controller=bool(getattr(args, "os_budget_controller", False)),
-                        min_budget=float(effective_os_min_budget),
+                        min_budget=float(control_os_min_budget),
                         max_budget=float(args.os_eff_max_budget),
                         max_os_scale=float(args.os_budget_max_scale),
                         min_closed_scale=float(args.os_budget_min_closed_scale),
@@ -5795,6 +5951,12 @@ def train(args) -> int:
                     "train/u_tri_pair_disagreement_rate": u_quarantine_info.get(
                         "tri_pair_disagreement_rate", float("nan")
                     ),
+                    "train/u_tri_direct_count": u_quarantine_info.get("tri_direct_count", float("nan")),
+                    "train/u_tri_direct_rate": u_quarantine_info.get("tri_direct_rate", float("nan")),
+                    "train/u_tri_tail_pair_loss": u_quarantine_info.get("tri_tail_pair_loss", float("nan")),
+                    "train/u_tri_outside_pair_loss": u_quarantine_info.get(
+                        "tri_outside_pair_loss", float("nan")
+                    ),
                     "train/u_tri_pseudo_component_agreement_rate": u_quarantine_info.get(
                         "tri_pseudo_component_agreement_rate", float("nan")
                     ),
@@ -5954,20 +6116,32 @@ def train(args) -> int:
                         "source_episode_local_component_invariant_loss", float("nan")
                     ),
                     "train/source_episode_local_component_inter_loss": source_episode_info.get(
-                    "source_episode_local_component_inter_loss", float("nan")
-                ),
-                "train/source_episode_local_component_accept_loss": source_episode_info.get(
-                    "source_episode_local_component_accept_loss", float("nan")
-                ),
-                "train/source_episode_local_component_density_loss": source_episode_info.get(
-                    "source_episode_local_component_density_loss", float("nan")
-                ),
-                "train/source_episode_local_component_accept_raw_loss": source_episode_info.get(
-                    "source_episode_local_component_accept_raw_loss", float("nan")
-                ),
-                "train/source_episode_local_component_density_raw_loss": source_episode_info.get(
-                    "source_episode_local_component_density_raw_loss", float("nan")
-                ),
+                        "source_episode_local_component_inter_loss", float("nan")
+                    ),
+                    "train/source_episode_local_component_overlap_loss": source_episode_info.get(
+                        "source_episode_local_component_overlap_loss", float("nan")
+                    ),
+                    "train/source_episode_leave_domain_target_loss": source_episode_info.get(
+                        "source_episode_leave_domain_target_loss", float("nan")
+                    ),
+                    "train/source_episode_local_component_min_inter_deg": source_episode_info.get(
+                        "source_episode_local_component_min_inter_deg", float("nan")
+                    ),
+                    "train/source_episode_local_component_max_radius_inter_ratio": source_episode_info.get(
+                        "source_episode_local_component_max_radius_inter_ratio", float("nan")
+                    ),
+                    "train/source_episode_local_component_accept_loss": source_episode_info.get(
+                        "source_episode_local_component_accept_loss", float("nan")
+                    ),
+                    "train/source_episode_local_component_density_loss": source_episode_info.get(
+                        "source_episode_local_component_density_loss", float("nan")
+                    ),
+                    "train/source_episode_local_component_accept_raw_loss": source_episode_info.get(
+                        "source_episode_local_component_accept_raw_loss", float("nan")
+                    ),
+                    "train/source_episode_local_component_density_raw_loss": source_episode_info.get(
+                        "source_episode_local_component_density_raw_loss", float("nan")
+                    ),
                     "train/source_episode_local_component_radius_p95_deg": source_episode_info.get(
                         "source_episode_local_component_radius_p95_deg", float("nan")
                     ),
@@ -6061,6 +6235,21 @@ def train(args) -> int:
                     "train/dm_accept_overflow_accept_loss": direct_metric_info.get("overflow_accept_loss", float("nan")),
                     "train/dm_accept_radius_to_inter_ratio": direct_metric_info.get("radius_to_inter_ratio", float("nan")),
                     "train/dm_accept_radius_inter_ratio_loss": direct_metric_info.get("radius_inter_ratio_loss", float("nan")),
+                    "train/dm_accept_component_inter_margin_loss": direct_metric_info.get(
+                        "component_inter_margin_loss", float("nan")
+                    ),
+                    "train/dm_accept_component_overlap_loss": direct_metric_info.get(
+                        "component_overlap_loss", float("nan")
+                    ),
+                    "train/dm_accept_component_min_inter_deg": direct_metric_info.get(
+                        "component_min_inter_deg", float("nan")
+                    ),
+                    "train/dm_accept_global_zid_quantile_loss": direct_metric_info.get(
+                        "global_zid_quantile_loss", float("nan")
+                    ),
+                    "train/dm_accept_hierarchical_class_gate": direct_metric_info.get(
+                        "hierarchical_class_gate", float("nan")
+                    ),
                     "train/dm_accept_core_accept_rate": direct_metric_info.get("core_accept_rate", float("nan")),
                     "train/dm_accept_core_accept_loss": direct_metric_info.get("core_accept_loss", float("nan")),
                     "train/dm_accept_sat_pair_angle_p95_deg": direct_metric_info.get("sat_pair_angle_p95_deg", float("nan")),
@@ -6884,6 +7073,37 @@ def train(args) -> int:
             "status": "SKIPPED_FAIL_CLOSED",
             "reason": str((guard_state or {}).get("reason", "phase1_v2_guard_blocks_final")),
         }
+        if bool(getattr(args, "phase1_export_diagnostic_on_block", False)):
+            try:
+                diagnostic_package = _maybe_export_phase2_prototypes_ssdg(
+                    args,
+                    model,
+                    data_ctx,
+                    device,
+                    default_checkpoint=selected_checkpoint,
+                    diagnostic_only=True,
+                )
+                if diagnostic_package is not None:
+                    diagnostic_paths = diagnostic_package.get("paths", {}) or {}
+                    export_status.update(
+                        {
+                            "status": "DIAGNOSTIC_COMPLETE",
+                            "diagnostic_only": True,
+                            "promotion_ready": False,
+                            "prototype_path": diagnostic_paths.get("pt_path", ""),
+                            "prototype_json_path": diagnostic_paths.get("json_path", ""),
+                            "endpoint_artifact_ready": False,
+                            "true_unknown_validated": False,
+                        }
+                    )
+            except Exception as exc:
+                export_status.update(
+                    {
+                        "status": "DIAGNOSTIC_FAILED",
+                        "diagnostic_only": True,
+                        "diagnostic_reason": str(exc),
+                    }
+                )
     else:
         try:
             default_export_checkpoint = selected_checkpoint

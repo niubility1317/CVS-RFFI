@@ -468,6 +468,49 @@ def test_direct_metric_uses_receiver_local_components_without_global_ball_fallba
     assert torch.isfinite(features.grad).all()
 
 
+def test_sparse_unlabeled_queries_reuse_detached_labeled_component_reference():
+    reference = torch.tensor(
+        [
+            [1.00, 0.00], [0.99, 0.04], [0.98, 0.08], [0.97, 0.10],
+            [0.00, 1.00], [0.04, 0.99], [0.08, 0.98], [0.10, 0.97],
+        ],
+        dtype=torch.float32,
+    )
+    reference_y = torch.tensor([0, 0, 0, 0, 1, 1, 1, 1])
+    reference_d = torch.tensor([0, 0, 1, 1, 0, 0, 1, 1])
+    query = torch.tensor(
+        [[0.96, 0.18], [0.18, 0.96], [0.94, 0.22], [0.22, 0.94]],
+        dtype=torch.float32,
+        requires_grad=True,
+    )
+    query_y = torch.tensor([0, 1, 0, 1])
+    query_d = torch.tensor([0, 0, 1, 1])
+
+    loss, metrics = direct_metric_acceptance_loss(
+        query,
+        query_y,
+        query_d,
+        reference_z=reference,
+        reference_y=reference_y,
+        reference_d=reference_d,
+        use_domain_local_components=True,
+        require_domain_local_components=True,
+        min_samples_per_component=2,
+        hierarchical_class_gate=True,
+        global_quantile_weight=1.0,
+        component_inter_margin_weight=1.0,
+        component_overlap_weight=1.0,
+    )
+    loss.backward()
+
+    assert metrics["active"] == 1.0
+    assert metrics["reference_anchor_count"] == 8.0
+    assert metrics["query_count"] == 4.0
+    assert metrics["local_component_class_coverage"] == 2.0
+    assert query.grad is not None
+    assert float(query.grad.norm().item()) > 0.0
+
+
 def test_tx_conditional_invariance_aligns_nuisance_groups_without_cross_tx_collapse():
     features = torch.tensor(
         [

@@ -199,7 +199,7 @@ def main() -> int:
                     "schema": "phase1_p0closed8_capacity_queue_v2",
                     "run_id": str(args.run_id),
                     "state_path": str(state_path),
-                    "launcher": str(root / "code" / "scripts" / "launch_phase1_dgleo_p0closed8_20260713.py"),
+                    "launcher": str(Path(launcher.__file__).resolve()),
                     "candidate_count": len(rows),
                     "candidate_gpu_map": {str(row["candidate_id"]): int(row["gpu"]) for row in rows},
                     "unique_command_count": len({tuple(command) for command in commands.values()}),
