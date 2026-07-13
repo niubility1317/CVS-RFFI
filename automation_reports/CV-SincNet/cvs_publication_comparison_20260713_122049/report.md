@@ -26,3 +26,10 @@
 - 三个并行短任务分别使用GPU3/4/5，输出`runs/cvs_publication_adv3b02_feature_cache_20260713/{leo_clear_weak,leo_low_elev_weak,leo_rain_weak}.npz`，日志位于`paper_reproduction/logs/cvs_publication_adv3b02_feature_cache_20260713/`。
 - 精确服务器入口：`bash paper_reproduction/scripts/export_cvs_publication_adv3b02_features_20260713.sh`，环境`/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python`，工作目录`/home/szu2070436088/2510044040/CV-SincNet`。
 - 成功条件：三份NPZ非空；target-old/new行的`sat_scenarios`分别全部等于对应场景；五个receiver每个old/new TX至少包含40条以满足maxK20+query20；三场景sample ID集合一致；checkpoint hash和manifest可读取。任一条件失败则不启动CVS正式矩阵。
+
+### feature cache完成与CVS K5锚点计划
+
+- 导出PID3796469正常完成；三份NPZ均5300行、160维，target-old/new无unknown/proxy行。正式验证`PASS`：三场景target行均只含对应星地场景；五receiver每个old/new TX均满足maxK20+query20覆盖；三场景共享完全相同的5300个sample ID。
+- 本地回收：`local_artifacts/cvs_publication_adv3b02_feature_cache_20260713/`。SHA256：clear=`c5639f3c...a867`、low-elev=`912219b0...a872`、rain=`8f0b4e58...eb1a`。
+- 下一步先跑receiver20-1、K5、seed713101的CVS-OPGAC与CVS-qKNNV42正式锚点，输出根`paper_reproduction/runs/cvs_publication_cvs_anchor_k5_seed713101_20260713/{cvs_opgac,cvs_qknnv42}`。两者使用同一三场景cache；OPGAC只登记target-old support，qKNNV42登记target-old+target-new support；query标签不进入适应或选模。
+- 精确命令为`python -m paper_reproduction.cvs_aligned.cvs_method_runner --config paper_reproduction/configs/cvs_proposed_stage2_publication_features_n607.json --run-dir <method_dir> --method <cvs_opgac|cvs_qknnv42> --target-receiver 20-1 --seed 713101 --split-seed 713101 --k-shot 5 --device cpu`。成功条件为8个artifact、三场景、四层明细、finite trace、support/query无重叠及全测试星地增强。
