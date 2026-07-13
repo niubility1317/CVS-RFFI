@@ -52,6 +52,10 @@ def test_p0closed8_commands_enable_all_p0_closure_mechanisms():
         "--tail_safety_training_stop_enabled false",
         "--tail_safety_absolute_violation_drives_state false",
         "--tail_safety_reference_requires_absolute_safe false",
+        "--source_val_heavy_eval_start_epoch 10",
+        "--source_val_heavy_eval_interval 10",
+        "--source_val_heavy_eval_final_window 20",
+        "--source_val_heavy_eval_final_interval 2",
         "--eval_sat_on all",
         "--eval_sat_scenarios leo_clear_weak,leo_low_elev_weak,leo_rain_weak",
     ):
@@ -63,6 +67,10 @@ def test_p0closed8_commands_enable_all_p0_closure_mechanisms():
     assert parsed.os_objective_budget_controller is True
     assert parsed.direct_metric_gate_reference_detach is False
     assert parsed.eval_sat_on == "all"
+    assert parsed.source_val_heavy_eval_start_epoch == 10
+    assert parsed.source_val_heavy_eval_interval == 10
+    assert parsed.source_val_heavy_eval_final_window == 20
+    assert parsed.source_val_heavy_eval_final_interval == 2
 
 
 def test_p0closed8_dry_run_emits_eight_unique_commands():
