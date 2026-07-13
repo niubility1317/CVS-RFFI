@@ -65,6 +65,31 @@ def _stats(values: Sequence[float]) -> dict[str, float | int]:
     }
 
 
+def _run_metric(
+    payload: dict[str, Any],
+    scenario_metrics: dict[str, Any],
+    metric: str,
+    *,
+    run_dir: str,
+) -> tuple[float, str]:
+    mean_key = f"{metric}_mean"
+    metrics = payload.get("metrics", {})
+    if mean_key in metrics:
+        value = float(metrics[mean_key])
+        if not math.isfinite(value):
+            raise FloatingPointError(f"non-finite {mean_key} in {run_dir}/metrics.json")
+        return value, "payload_mean"
+    values: list[float] = []
+    for scenario in SCENARIOS:
+        if metric not in scenario_metrics.get(scenario, {}):
+            raise KeyError(f"{mean_key} and scenario {metric} missing from {run_dir}/metrics.json")
+        value = float(scenario_metrics[scenario][metric])
+        if not math.isfinite(value):
+            raise FloatingPointError(f"non-finite {metric} for {scenario} in {run_dir}")
+        values.append(value)
+    return statistics.fmean(values), "scenario_mean_fallback"
+
+
 def summarize_groups(
     rows: Iterable[dict[str, Any]],
     *,
@@ -193,10 +218,14 @@ def collect_phase(
         }
         run_item = dict(base)
         for metric in METRIC_KEYS[phase]:
-            mean_key = f"{metric}_mean"
-            if mean_key not in payload["metrics"]:
-                raise KeyError(f"{mean_key} missing from {row.run_dir}/metrics.json")
-            run_item[metric] = float(payload["metrics"][mean_key])
+            value, source = _run_metric(
+                payload,
+                scenario_metrics,
+                metric,
+                run_dir=row.run_dir,
+            )
+            run_item[metric] = value
+            run_item[f"{metric}_aggregation_source"] = source
         per_run.append(run_item)
         for scenario in SCENARIOS:
             scenario_item = {**base, "scenario": scenario}
