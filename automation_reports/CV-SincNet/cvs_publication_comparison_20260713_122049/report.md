@@ -72,3 +72,10 @@
 - Stage2-C五个worker：shard0-4分别为PID3806427/3806430/3806434/3806437/3806441，对应GPU3-7。
 - 启动后只读复核：10个worker均存活；GPU3-7显存约742/742/970/1012/742MiB，未超过每GPU两个实验；GPU0-2的Phase1进程保持原状。各阶段manifest为500行，每shard分配100行；worker逐行执行并在完整artifact contract通过后才记录complete，失败则该shard停止。
 - 启动脚本远端SHA256=`557b28c3...ed2`，remote `bash -n`及两阶段dry-run通过。此处只证明landed并开始执行，不等于artifact-complete或论文结果完成。
+
+### Phase1详细星地后评估启动前记录（14:25）
+
+- CVCNN-CE与RIEI-FD训练已完成并生成`best_by_val.pt`及`metrics.json`；DRIFT仍在GPU2训练，保持monitor-only。Stage2-B/C均无失败，继续占用GPU3-7。
+- 新增`paper_reproduction/scripts/evaluate_cvs_phase1_detailed.py`，严格加载validation选择的`best_by_val.pt`，只评估三个正式星地场景及三个main OOD split；输出sample score、overall、split、receiver、transmitter、receiver-transmitter、receiver-transmitter-day统计及混淆信息。clean不进入正式结果。
+- 数据协议与训练完全一致：ManySig、equalized=1、train ratio0.1、val ratio0.9、guard gap8、train day0/1、test day2/3、train receiver0-6、test receiver7-11、seed713101。星地随机种子与训练内置评估一致：sat seed2027及scenario/split确定性偏移。
+- 本地`py_compile`与聚合单测通过。计划分别在GPU0/1运行CVCNN/RIEI详细后评估，输出到各训练run的`detailed_satellite_eval/`；DRIFT完成后在GPU2运行同一入口。后评估不会修改checkpoint或训练结果。
