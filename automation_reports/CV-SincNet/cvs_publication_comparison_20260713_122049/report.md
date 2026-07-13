@@ -144,3 +144,9 @@
 - 启动前GPU2显存10MiB且无训练进程；GPU3-7的Stage2矩阵worker保持活跃，不触碰其进程或artifact。详细后评估只读`best_by_val.pt`并写入独立`detailed_satellite_eval/`，不覆盖训练结果。
 - 计划命令：`CUDA_VISIBLE_DEVICES=2 /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m paper_reproduction.scripts.evaluate_cvs_phase1_detailed --method drift --checkpoint paper_reproduction/runs/cvs_publication_phase1_seed713101_20260713/drift_seed713101/best_by_val.pt --output-dir paper_reproduction/runs/cvs_publication_phase1_seed713101_20260713/drift_seed713101/detailed_satellite_eval --seed 713101 --device cuda:0 --wisig_pkl ./Dataset_WigSig/ManySig.pkl --wisig_protocol cvs_day_rx --wisig_equalized 1 --wisig_domain rx_day --wisig_out_len 256 --wisig_train_ratio 0.1 --wisig_val_ratio 0.9 --wisig_guard_gap 8 --wisig_train_days 0,1 --wisig_test_days 2,3 --wisig_train_rxs 0,1,2,3,4,5,6 --wisig_test_rxs 7,8,9,10,11 --wisig_max_day123_per_combo 0 --wisig_max_train_per_combo 0 --wisig_max_val_per_combo 0 --wisig_max_test_per_combo 0 --eval_batch_size 256 --num_workers 0 --eval_sat_channel --eval_sat_on main --eval_sat_scenarios leo_clear_weak,leo_low_elev_weak,leo_rain_weak --sat_eval_max_batches 0 --sat_seed 2027 --sat_fs_hz 25e6 --sat_fc_hz 2.462e9`。
 - 日志：`paper_reproduction/logs/cvs_publication_phase1_seed713101_20260713/drift_detailed_satellite_eval.log`。成功条件为612000条sample score、894条六层明细、三个正式LEO场景、clean排除，并与checkpoint内置逐场景正确数完全一致。
+
+### DRIFT详细星地后评估已landed（15:12）
+
+- 进程PID3879889已在GPU2启动，启动后显存429MiB；命令行与启动前记录一致，Stage2 worker未受影响。
+- 当前只证明任务landed，尚未形成正式结果；需等待进程退出后核对逐场景正确数、612000条score和894条明细，再回收本地并执行Phase1审计。
+- 启动后本地`ssh_count=0`、N607及bridge的`ESTABLISHED`端口22连接数为0。
