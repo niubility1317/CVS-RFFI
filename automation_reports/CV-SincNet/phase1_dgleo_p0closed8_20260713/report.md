@@ -74,3 +74,13 @@
 - queue权威状态为`PARTIAL_RUNNING_WAITING_GPU_SLOTS`：本批3/8运行、5/8等待、0终止。DataLoader worker虽继承相同cmdline，但不是独立candidate；本批计数只使用queue登记的根trainer和candidate ID。
 - E2实测约154秒/epoch。C0的四组open有效梯度均非零：boundary/source/invariant/U约`6.68/2.82/3.56/2.86`；U direct selected约13.32，U invariance active=1，三态比例约`core/tail/outside=0.119/0.058/0.823`。
 - E2只证明机制已激活，不能声明几何改善：C0的source_episode_overflow仍约0.971，legacy proxy_vaccept约0.655，bridge_accept=1.0，source-episode p95/p99/tail-CVaR约`63.79/83.00/74.98°`。需看E10及后续同口径趋势。
+
+## 2026-07-13 18:23全量启动与中期趋势
+
+- v2 queue状态为`ALL_LAUNCHED_RUNNING`，8/8运行、0等待、0终止。C3-C7分别于17:48-17:50获得GPU3-7槽位，根trainer PID为`3987099/3984711/3985185/3986531/3984200`；C0-C2仍为`3925530/3925662/3926124`。
+- 进度：C0/C1约E45，C2约E55，C3-C7约E12-E13。除GPU2外，每GPU当前均为1个本批trainer+1个外部trainer；GPU2只有本批trainer。没有超过每GPU2个训练进程。
+- E10相对E2时，三组source-episode p95下降约6.2-6.5°、p99下降约6.4-7.0°、tail-CVaR下降约6.3-6.7°，但overflow仍约0.971-0.973、legacy bridge仍为1.0，只能说明tail角度早期收缩，不能说明接收边界闭合。
+- E20时legacy proxy_vaccept进一步降至约0.620-0.624，但source overflow升至0.975-0.978，legacy radius/inter由约0.96反弹至约1.02。DM内部p95下降到约53°，同时DM proxy_vaccept、bridge和radius/inter恶化，继续支持“动态gate改善不等于固定边界改善”的判断。
+- 当前较成熟行中，C1 E40的source overflow约0.9696但仍接近1；C2 E50的source-episode p95/p99/CVaR约`57.16/72.29/66.80°`，legacy proxy_vaccept约0.632、bridge=1、radius/inter约1.089。没有候选解决P0 overflow/bridge问题。
+- source-val `leo_weak`均值/地板约`91.55-91.65/90.17-90.32%`，这是源验证视图，不是held-out sat-strict UDU或receiver floor，不能用于目标达标声明。
+- 按各自实际`launched_at`和epoch吞吐，C0-C2预计21:30-23:30完成，C3-C7预计2026-07-14 00:30-02:30完成；终局E120评估可能使窗口后移，仍在各自10小时wall limit内。
