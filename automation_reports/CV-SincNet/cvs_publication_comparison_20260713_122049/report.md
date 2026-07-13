@@ -85,3 +85,14 @@
 - CVCNN-CE详细评估PID3817352、GPU0；RIEI-FD详细评估PID3817353、GPU1。两者工作目录、Python环境和数据协议均与训练记录一致，日志分别为`cvcnn_ce_detailed_satellite_eval.log`和`riei_fd_detailed_satellite_eval.log`。
 - 启动后进程与显存复核正常，无Traceback；此时仍在完整三场景前向，尚未生成终局`metrics.json`，因此只记为landed，不记为artifact-complete。
 - Stage2监控点：Stage2-B已完成72/500、失败0；Stage2-C已完成9/500、失败0，五个Orthogonal正式行仍在运行。DRIFT到epoch101/200。
+
+### CVCNN-CE与RIEI-FD详细Phase1结果完成（14:31）
+
+|方法|checkpoint epoch|LEO clear|LEO low-elev|LEO rain|sample rows|detail rows|结论|
+|---|---:|---:|---:|---:|---:|---:|---|
+|CVCNN-CE|101|21.5147%|20.7667%|20.9946%|612000|894|artifact PASS|
+|RIEI-FD|85|20.6515%|20.2760%|20.4554%|612000|894|artifact PASS|
+
+- 两方法详细结果均覆盖3场景×204000条测试样本，具备overall、per-split、per-receiver、per-transmitter、per-receiver-transmitter、per-receiver-transmitter-day六层统计；正式结果不含clean，全部经过星地信道。
+- 后评估总体正确数与训练时validation-selected checkpoint的内置星地评估逐场景完全一致，证明详细统计没有改变样本集合、随机星地扰动或checkpoint。
+- 本地回收路径：`local_artifacts/cvs_publication_phase1_detailed_seed713101_20260713/{cvcnn_ce,riei_fd}/`；本地复核score row分别为612000、detail row分别为894。当前Stage2-B为92/500、失败0；Stage2-C为9/500、失败0；DRIFT仍在训练并于epoch104触发新的validation-best测试。
