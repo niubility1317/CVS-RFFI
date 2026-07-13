@@ -187,3 +187,9 @@
 - GPU3-7当前各一个主worker、显存约353–465MiB；按每GPU最多两个实验的项目上限，为receiver7-7增加五个单seed accelerator。GPU3-7分别固定seed713101–713105，每个执行CSIL、MoPC-HR、Orthogonal Incremental的K={1,2,5,10,20}共15行。
 - 每个accelerator使用独立日志根`accelerator_rx7_7_gpu{3..7}`，输出仍进入正式Stage2-C run根；与当前主worker及receiver8-8 accelerator不存在run_dir重叠。预计约1–2小时完成receiver7-7的75条训练行，早于主worker到达并由主worker按artifact contract跳过。
 - 该加速不改变训练预算、方法原生优化器、support/query、星地信道、seed或K网格。已知subset manifest覆盖仍在最终统一修复范围内。
+
+### Stage2-C receiver7-7 accelerator已landed（16:04）
+
+- GPU3-7 accelerator PID分别为3913615/3913616/3913617/3913618/3913619，均已进入各自seed的首条CSIL行；每个run_dir唯一且与主worker当前receiver3-19隔离。
+- 各GPU当前最多为一个主worker加一个accelerator，符合并发上限。当前只证明landed，最终仍以完整网格逐行artifact contract、worker失败数和最终审计为准。
+- 启动后本地`ssh_count=0`、N607及bridge的`ESTABLISHED`端口22连接数为0。
