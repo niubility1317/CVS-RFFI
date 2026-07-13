@@ -166,3 +166,11 @@
 - 按本地完整默认网格现场重建并逐行执行artifact contract，Stage2-B达到500/500；ProtoNet CDA、MRIOR-SDA、DADDA-SDA和CVS-OPGAC各125行，所有行均使用有标签target support、固定query且测试叠加三种正式LEO星地信道。
 - 五个Stage2-B主worker均已退出；当前仅Stage2-C五个主worker继续运行。Stage2-C进度175/500，未发现Traceback。
 - 500/500仅表示逐run artifact完成。canonical manifest此前被subset accelerator覆盖，必须等待Stage2-C worker全部退出后同步manifest隔离修正并重建；随后才能运行完整统计聚合、paired CI和最终审计。因此此处不发布Stage2-B最终方法排序。
+
+### Stage2-C远端安全加速计划（15:37）
+
+- 现场完整网格为189/500：CVS-qKNNV42 122/125、CSIL 23/125、MoPC-HR 24/125、Orthogonal Incremental 20/125，Traceback为0。主worker仍在receiver20-1，receiver8-8除25条CVS行外尚无训练行；两者之间尚隔receiver3-19、7-14和7-7共225条训练行，因此选择receiver8-8作为不与当前主worker碰撞的远端加速区。
+- GPU0-2空闲；GPU3-7各一个Stage2-C主worker。按项目每GPU最多两个训练实验的上限，在GPU0-2各启动一个顺序worker，不改变方法、步数、support/query、seed、K或星地信道配置。
+- GPU0：Orthogonal Incremental、receiver8-8、seed713101/713102、K={1,2,5,10,20}，共10行；GPU1：同方法seed713103/713104，共10行；GPU2：先完成seed713105的5条Orthogonal行，再顺序执行receiver8-8全部五seed的CSIL和MoPC-HR共50行。
+- 三个accelerator均写入正式Stage2-C输出根，但使用独立日志根`accelerator_rx8_8_gpu{0,1,2}`。subset worker会再次覆盖当前无效canonical manifest；该已知控制面副作用不影响run artifact或主worker内存行列表，最终仍须同步`4368718`后的manifest隔离修正并以500行default dry-run重建canonical manifest。
+- 预计加速完成后receiver8-8达到100/100，主worker到达该receiver时按artifact contract跳过已完成行；任一accelerator失败即停止自身队列，不影响其他worker。
