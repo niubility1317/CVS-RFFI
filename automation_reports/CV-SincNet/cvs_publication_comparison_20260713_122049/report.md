@@ -79,3 +79,9 @@
 - 新增`paper_reproduction/scripts/evaluate_cvs_phase1_detailed.py`，严格加载validation选择的`best_by_val.pt`，只评估三个正式星地场景及三个main OOD split；输出sample score、overall、split、receiver、transmitter、receiver-transmitter、receiver-transmitter-day统计及混淆信息。clean不进入正式结果。
 - 数据协议与训练完全一致：ManySig、equalized=1、train ratio0.1、val ratio0.9、guard gap8、train day0/1、test day2/3、train receiver0-6、test receiver7-11、seed713101。星地随机种子与训练内置评估一致：sat seed2027及scenario/split确定性偏移。
 - 本地`py_compile`与聚合单测通过。计划分别在GPU0/1运行CVCNN/RIEI详细后评估，输出到各训练run的`detailed_satellite_eval/`；DRIFT完成后在GPU2运行同一入口。后评估不会修改checkpoint或训练结果。
+
+### Phase1详细星地后评估已landed（14:28）
+
+- CVCNN-CE详细评估PID3817352、GPU0；RIEI-FD详细评估PID3817353、GPU1。两者工作目录、Python环境和数据协议均与训练记录一致，日志分别为`cvcnn_ce_detailed_satellite_eval.log`和`riei_fd_detailed_satellite_eval.log`。
+- 启动后进程与显存复核正常，无Traceback；此时仍在完整三场景前向，尚未生成终局`metrics.json`，因此只记为landed，不记为artifact-complete。
+- Stage2监控点：Stage2-B已完成72/500、失败0；Stage2-C已完成9/500、失败0，五个Orthogonal正式行仍在运行。DRIFT到epoch101/200。
