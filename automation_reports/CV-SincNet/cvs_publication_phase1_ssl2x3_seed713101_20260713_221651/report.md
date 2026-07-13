@@ -55,6 +55,7 @@
 
 - `baselines/common/consistency.py`：新增soft增强一致性损失及训练step。
 - `baselines/common/cvs_trainer.py`：分别记录伪标签与一致性指标，不改变验证门控checkpoint语义。
+- `baselines/common/cvs_data.py`：补齐SSL数据划分入口、测试调度参数与非SSL分支状态复位，消除根目录/服务器与Git版本漂移。
 - `baselines/{cvcnn_ce,riei_fd,drift}/train_cvs.py`：接入互斥的两条无标签路线，并强制无标签路线使用source SSL split。
 - `scripts/launchers/run_cvs_baseline_queue.sh`：新增SSL模式、0.1/0.6/0.3划分和路线参数。
 - `scripts/launchers/run_phase1_ssl_baseline_matrix.sh`：新增2×3专用launcher，默认星地增强。
@@ -94,4 +95,3 @@
 - 每GPU同时运行同一方法的两条路线；启动后必须核验显存，若OOM只允许降低batch size并记录有效优化步差异，不得关闭星地增强或无标签机制。
 - 单seed结果仅支持受控配对比较，不支持显著性主张。
 - 伪标签precision使用隐藏真值仅作审计，不参与训练或checkpoint选择。
-

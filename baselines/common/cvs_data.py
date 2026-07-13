@@ -98,6 +98,8 @@ def add_cvs_data_args(parser: argparse.ArgumentParser) -> argparse.ArgumentParse
     parser.add_argument("--wisig_paper_test_samples_per_combo", type=int, default=200)
     parser.add_argument("--paper_eval_last_n", type=int, default=0)
     parser.add_argument("--paper_eval_name", type=str, default="")
+    parser.add_argument("--test_eval_interval", type=int, default=0)
+    parser.add_argument("--test_eval_start_epoch", type=int, default=1)
     parser.add_argument("--test_on_val_improve", dest="test_on_val_improve", action="store_true", default=True)
     parser.add_argument("--no_test_on_val_improve", dest="test_on_val_improve", action="store_false")
     parser.add_argument("--batch_size", type=int, default=128)
@@ -338,6 +340,7 @@ def build_cvs_split(
             cap_strategy=str(getattr(args, "wisig_cap_strategy", "random")),
             train_class_cap_strategy=str(getattr(args, "wisig_train_shot_strategy", "domain_balanced")),
         )
+        unlabeled_ds = None
     return CVSSplit(
         train=CVSDictDataset(train_ds, transform=transform_train),
         unlabeled=CVSDictDataset(unlabeled_ds, transform=transform_train) if unlabeled_ds is not None else None,
