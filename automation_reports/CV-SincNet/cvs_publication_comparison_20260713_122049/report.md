@@ -150,3 +150,13 @@
 - 进程PID3879889已在GPU2启动，启动后显存429MiB；命令行与启动前记录一致，Stage2 worker未受影响。
 - 当前只证明任务landed，尚未形成正式结果；需等待进程退出后核对逐场景正确数、612000条score和894条明细，再回收本地并执行Phase1审计。
 - 启动后本地`ssh_count=0`、N607及bridge的`ESTABLISHED`端口22连接数为0。
+
+### DRIFT详细Phase1结果完成（15:20）
+
+|方法|checkpoint epoch|LEO clear|LEO low-elev|LEO rain|sample rows|detail rows|结论|
+|---|---:|---:|---:|---:|---:|---:|---|
+|DRIFT|187|18.6225%|18.3917%|18.6319%|612000|894|artifact PASS|
+
+- 三场景正确数分别为37990/204000、37519/204000、38009/204000，与validation-selected checkpoint内置星地评估逐项完全一致；正式结果不含clean。
+- 输出覆盖overall、per-split、per-receiver、per-transmitter、per-receiver-transmitter、per-receiver-transmitter-day六层统计；已回收到`local_artifacts/cvs_publication_phase1_detailed_seed713101_20260713/drift/`并在`ssr-gpu`环境复核行数。
+- 当前Phase1三个对比baseline的详细星地artifact均已完成；CVS-J5详细复算仍须等待活跃Stage2 worker退出后同步本地严格评估入口再执行。最新Stage2现场完成度为Stage2-B 482/500、Stage2-C 169/500、Traceback 0；未据不完整矩阵给出最终排序。
