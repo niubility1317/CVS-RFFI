@@ -17,3 +17,12 @@
 - Stage2-B与Stage2-C正式矩阵均从3个对比方法扩为“CVS+3个对比方法”，每阶段为`4方法 x 5接收机 x 5K x 5seed=500`行。新dry-run manifest分别生成500行。
 - 训练预算采用双层报告：主表使用CVS任务下的common-budget，以控制训练计算量并保证同一数据、K、seed、receiver和query配对；论文原生epoch/batch只作为方法谱系敏感性附表，不作为主表直接混排。该选择避免Orthogonal的100/50 epoch与CSIL/MoPC短训练配置造成计算预算不等，但主表必须标为CVS extension而非论文原始结果。
 - 本地验证：`cvs_method_runner.py`与matrix worker py_compile通过；新增CVS runner与matrix聚焦测试`4 passed`。当前尚未生成三场景ADV3B02正式feature cache，也未启动500行矩阵。
+
+## ADV3B02正式feature cache导出计划（13:48）
+
+- 目标：为CVS-OPGAC与CVS-qKNNV42生成同一冻结`ADV3B02_CORE90_SOFT_E200`、同一原始样本集合的三份星地场景feature cache；每份包含clean source、五个target receiver的target-old与两个target-new TX。
+- 本地脚本：`paper_reproduction/scripts/export_cvs_publication_adv3b02_features_20260713.sh`；本地`bash -n`和`--dry-run`通过。导出只做冻结模型前向，不训练、不更新checkpoint。
+- checkpoint：`runs/phase1_adv3_mechanism32_queue_20260701/ADV3B02_CORE90_SOFT_E200/best_joint_safe_ssdg.pth`；特征`z_id`；ManySig old TX索引0-5；ManyTx new TX=`1-16,1-18`；target receivers=`20-1,3-19,7-14,7-7,8-8`；target day0；每TX最多400条。
+- 三个并行短任务分别使用GPU3/4/5，输出`runs/cvs_publication_adv3b02_feature_cache_20260713/{leo_clear_weak,leo_low_elev_weak,leo_rain_weak}.npz`，日志位于`paper_reproduction/logs/cvs_publication_adv3b02_feature_cache_20260713/`。
+- 精确服务器入口：`bash paper_reproduction/scripts/export_cvs_publication_adv3b02_features_20260713.sh`，环境`/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python`，工作目录`/home/szu2070436088/2510044040/CV-SincNet`。
+- 成功条件：三份NPZ非空；target-old/new行的`sat_scenarios`分别全部等于对应场景；五个receiver每个old/new TX至少包含40条以满足maxK20+query20；三场景sample ID集合一致；checkpoint hash和manifest可读取。任一条件失败则不启动CVS正式矩阵。
