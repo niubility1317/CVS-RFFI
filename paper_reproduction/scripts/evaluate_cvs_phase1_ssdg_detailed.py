@@ -36,6 +36,20 @@ def _sha256(path: Path) -> str:
     return digest.hexdigest()
 
 
+def _checkpoint_with_dataset_override(
+    checkpoint: dict[str, Any], override: str
+) -> tuple[dict[str, Any], str]:
+    original = str((checkpoint.get("args") or {}).get("wisig_pkl", ""))
+    if not override:
+        return checkpoint, original
+    dataset_path = Path(override).resolve()
+    if not dataset_path.is_file():
+        raise FileNotFoundError(f"WiSig override does not exist: {dataset_path}")
+    updated = dict(checkpoint)
+    updated["args"] = {**dict(checkpoint.get("args") or {}), "wisig_pkl": str(dataset_path)}
+    return updated, original
+
+
 @torch.no_grad()
 def run(args_cli: argparse.Namespace) -> dict[str, Any]:
     scenarios = tuple(parse_sat_scenarios(args_cli.scenarios))
@@ -49,6 +63,9 @@ def run(args_cli: argparse.Namespace) -> dict[str, Any]:
     )
     checkpoint_path = Path(args_cli.ckpt)
     checkpoint = torch.load(checkpoint_path, map_location=device, weights_only=False)
+    checkpoint, checkpoint_dataset_path = _checkpoint_with_dataset_override(
+        checkpoint, str(args_cli.wisig_pkl_override)
+    )
     model, named_loaders, named_meta, _domain_map, split_info, model_args, missing, unexpected = (
         _build_exact_ssdg_context(checkpoint, args_cli, device)
     )
@@ -60,6 +77,8 @@ def run(args_cli: argparse.Namespace) -> dict[str, Any]:
     if selected != list(MAIN_SAT_EVAL_ON_NAMES):
         raise ValueError(f"formal main OOD loaders missing: {selected}")
     dataset = load_wisig_compact_pkl(str(model_args.wisig_pkl))
+    dataset_path = Path(model_args.wisig_pkl)
+    dataset_sha256 = _sha256(dataset_path)
     tx_labels = [str(value) for value in dataset["tx_list"]]
     rx_labels = [str(value) for value in dataset["rx_list"]]
     day_labels = [str(value) for value in dataset["capture_date_list"]]
@@ -151,6 +170,7 @@ def run(args_cli: argparse.Namespace) -> dict[str, Any]:
         "seed": int(getattr(model_args, "seed", -1)),
         "checkpoint_epoch": checkpoint.get("epoch"),
         "checkpoint_sha256": _sha256(checkpoint_path),
+        "dataset_sha256": dataset_sha256,
         "scenarios": scenario_metrics,
         "score_row_count": len(score_rows),
         "detailed_row_count": len(detailed_rows),
@@ -171,10 +191,13 @@ def run(args_cli: argparse.Namespace) -> dict[str, Any]:
         "clean_control_in_formal_result": False,
         "checkpoint_load_strict": True,
         "heldout_reference_match": bool(heldout_reference),
+        "dataset_sha256": dataset_sha256,
     }
     resolved = {
         **vars(args_cli),
         "checkpoint_args": dict(checkpoint.get("args") or {}),
+        "checkpoint_dataset_path_original": checkpoint_dataset_path,
+        "dataset_sha256": dataset_sha256,
         "terminal_status": terminal_status,
         "heldout_reference": heldout_reference,
     }
@@ -193,6 +216,7 @@ def run(args_cli: argparse.Namespace) -> dict[str, Any]:
 def main() -> int:
     parser = argparse.ArgumentParser(description="Detailed satellite evaluation for CVS SSDG checkpoints")
     parser.add_argument("--ckpt", required=True)
+    parser.add_argument("--wisig-pkl-override", default="")
     parser.add_argument("--terminal-status", default="")
     parser.add_argument("--heldout-reference", default="")
     parser.add_argument("--output-dir", required=True)
