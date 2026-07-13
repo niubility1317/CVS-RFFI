@@ -124,3 +124,10 @@
 - 新增`paper_reproduction/scripts/evaluate_cvs_phase1_ssdg_detailed.py`，严格从checkpoint args重建SSDG模型和split，固定三个正式LEO场景、sat seed2027及三个main OOD split，输出与baseline同结构的612000条sample score和receiver/transmitter/day六层统计；checkpoint missing/unexpected key必须为0。
 - 本地py_compile和入口测试通过。因当前N607存在活跃训练，按monitor-only边界暂不同步/启动；待现有矩阵worker退出后与manifest修正、统计聚合器一起同步，再执行J5详细后评估并用既有heldout逐场景正确数做一致性验收。
 - 最新现场进度：Stage2-B 235/500、Stage2-C 126/500、失败0；DRIFT到epoch127附近。
+
+### 最终完成性审计器预落地（14:58）
+
+- 新增`tools/validate_cvs_publication_comparison.py`作为最终硬门：Phase1必须同时具备CVS-J5、CVCNN-CE、RIEI-FD、DRIFT四方法的612000条score和894条六层明细；Stage2-B/C必须各500行、每方法125行且逐行artifact contract通过；canonical manifest必须与完整实验ID集合完全一致；论文汇总必须为1000条run-level、3000条scenario-level且incomplete=0。
+- 审计同时强制三个正式LEO场景、`all_tests_satellite_augmented=true`、clean不进入正式结果，并要求per-receiver、per-transmitter和receiver-transmitter-day等详细层级完整。任一条件缺失即退出非零且生成带错误列表的审计JSON。
+- 本地py_compile及聚焦测试`5 passed`。当前现场完成度为Stage2-B 252/500、Stage2-C 129/500、失败0；DRIFT在epoch129后的validation-best完整星地评估中。
+- 审计器与前述两个待同步入口一样，仅在活跃worker全部退出、canonical manifest修复和论文聚合完成后同步并执行；目前不能用本地测试替代最终远端artifact审计。
