@@ -214,3 +214,11 @@
 - CVS Phase1方法固定为`cvs_jointp0_j5`，其基模/teacher为用户指定的`ADV3B02_CORE90_SOFT_E200`；必须继续披露J5额外使用0.08有标签与0.72源域无标签且终局为NON_PROMOTABLE_DIAGNOSTIC。
 - 计划在本机RTX5070Ti、`ssr-gpu`环境运行：`python -m paper_reproduction.scripts.evaluate_cvs_phase1_ssdg_detailed --ckpt E:/type10-7/local_artifacts/cvs_publication_inputs_20260713/final_ssdg.pth --wisig-pkl-override E:/type10-7/local_artifacts/cvs_publication_inputs_20260713/ManySig.pkl --heldout-reference E:/type10-7/local_artifacts/cvs_publication_inputs_20260713/frozen_phase1_heldout_eval.json --terminal-status E:/type10-7/local_artifacts/cvs_publication_inputs_20260713/phase1_terminal_status.json --output-dir E:/type10-7/github_publish/CVS-RFFI-repo/local_artifacts/cvs_publication_phase1_detailed_seed713101_20260713/cvs_jointp0_j5 --device cuda:0 --eval-batch-size 256 --num-workers 0 --max-batches -1 --sat-seed 2027`。
 - 成功条件：checkpoint严格加载、heldout三场景正确数逐项一致、612000条score、894条六层明细、clean排除、数据与checkpoint hash完整记录。
+
+
+### CVS Phase1本地数值一致性诊断与N607复算计划（20:10）
+
+- 本地RTX5070Ti全量复算两次均完成204000条clear推理后被heldout硬门阻断：未显式恢复训练端CUDA精度策略时为162230/204000，恢复TF32/high策略后为162234/204000；冻结N607 RTX3090证据为162228/204000。样本数、checkpoint hash、数据hash、batch size256、sat seed2027均一致，差异限定为跨GPU架构的边界样本数值漂移，不能伪造为heldout一致。
+- 已修复详细评估器对标准四字段WiSig batch的metadata解包错误并恢复训练端CUDA推理精度策略；聚焦回归5项通过，提交分别为`a06b21e`、`ad8910c`。
+- 为取得与冻结证据同架构的逐样本结果，按用户已授权的正式对比实验范围，在N607 RTX3090上执行一次只读checkpoint/数据的全量后评估。当前GPU6已有1个无关Phase1训练进程、显存3347MiB；新增评估后不超过每GPU两个实验，不终止、不重启、不改动该训练。
+- 本地脚本先经pytest与py_compile验证，再同步到独立评估入口；输出目录为`paper_reproduction/runs/cvs_publication_phase1_detailed_seed713101_20260713/cvs_jointp0_j5`，日志为同目录`eval.log`。命令固定使用`CUDA_VISIBLE_DEVICES=6`、`eval-batch-size=256`、`sat-seed=2027`、三个正式LEO场景和完整612000条样本；任一场景正确数与`frozen_phase1_heldout_eval.json`不一致即失败且不写正式artifact。
