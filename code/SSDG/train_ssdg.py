@@ -5913,6 +5913,22 @@ def train(args) -> int:
                     "train/u_dm_accept_tail_accept_rate": u_dm_info.get("tail_accept_rate", float("nan")),
                     "train/u_dm_accept_overflow_accept_rate": u_dm_info.get("overflow_accept_rate", float("nan")),
                     "train/u_dm_accept_radius_to_inter_ratio": u_dm_info.get("radius_to_inter_ratio", float("nan")),
+                    "train/u_dm_accept_component_min_inter_deg": u_dm_info.get(
+                        "component_min_inter_deg", float("nan")
+                    ),
+                    "train/u_dm_accept_component_inter_margin_loss": u_dm_info.get(
+                        "component_inter_margin_loss", float("nan")
+                    ),
+                    "train/u_dm_accept_component_overlap_loss": u_dm_info.get(
+                        "component_overlap_loss", float("nan")
+                    ),
+                    "train/u_dm_accept_global_zid_quantile_loss": u_dm_info.get(
+                        "global_zid_quantile_loss", float("nan")
+                    ),
+                    "train/u_dm_accept_reference_anchor_count": u_dm_info.get(
+                        "reference_anchor_count", float("nan")
+                    ),
+                    "train/u_dm_accept_query_count": u_dm_info.get("query_count", float("nan")),
                     "train/u_dm_accept_sat_pair_angle_p95_deg": u_dm_info.get("sat_pair_angle_p95_deg", float("nan")),
                     "train/u_quarantine_active": u_quarantine_info.get("active", float("nan")),
                     "train/u_quarantine_anchor_count": u_quarantine_info.get("anchor_count", float("nan")),

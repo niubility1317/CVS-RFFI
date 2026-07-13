@@ -578,5 +578,7 @@ def test_multiview_local_tail_projection_uses_worst_satellite_view():
 
     assert metrics["domain_local_component_gate"] == 1.0
     assert metrics["global_ball_accept"] == 0.0
+    assert math.isfinite(metrics["component_min_inter_deg"])
+    assert metrics["query_count"] == 8.0
     assert metrics["sat_local_zid_p99_deg"] > metrics["clean_local_zid_p99_deg"]
     assert metrics["local_zid_p99_deg"] == metrics["sat_local_zid_p99_deg"]

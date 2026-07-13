@@ -2607,6 +2607,22 @@ def multiview_direct_metric_acceptance_loss(
             float(clean_metrics.get("local_component_class_coverage", 0.0)),
             float(sat_metrics.get("local_component_class_coverage", 0.0)),
         ),
+        "component_min_inter_deg": min(
+            float(clean_metrics.get("component_min_inter_deg", float("inf"))),
+            float(sat_metrics.get("component_min_inter_deg", float("inf"))),
+        ),
+        "hierarchical_class_gate": min(
+            float(clean_metrics.get("hierarchical_class_gate", 0.0)),
+            float(sat_metrics.get("hierarchical_class_gate", 0.0)),
+        ),
+        "reference_anchor_count": min(
+            float(clean_metrics.get("reference_anchor_count", 0.0)),
+            float(sat_metrics.get("reference_anchor_count", 0.0)),
+        ),
+        "query_count": min(
+            float(clean_metrics.get("query_count", 0.0)),
+            float(sat_metrics.get("query_count", 0.0)),
+        ),
     }
     conservative_keys = (
         "zid_p50_deg",
@@ -2644,6 +2660,9 @@ def multiview_direct_metric_acceptance_loss(
         "tail_accept_loss",
         "overflow_accept_loss",
         "radius_inter_ratio_loss",
+        "component_inter_margin_loss",
+        "component_overlap_loss",
+        "global_zid_quantile_loss",
         "core_accept_loss",
     )
     for key in weighted_loss_keys:
