@@ -44,3 +44,11 @@
 ## 占用保护
 
 启动前N607存在1个DRIFT baseline及10个Stage2-B/C分片scheduler，GPU3-7各有2个现有任务。新增版本化排队器只在GPU compute与已知现有launcher全部退出并连续3次确认空闲后启动8卡矩阵；最长等待12小时，训练wall limit仍为10小时。排队超时返回75且不创建伪训练结果。
+
+## N607发布
+
+- 提交：`1972022`、`a6dce14`。
+- 远端快照：`code/snapshots/phase1_dgleo_p0closed8_20260713_pre_sync`。
+- 8个同步文件SHA逐项一致，远端`py_compile`通过。
+- queue PID=`3849944`；初始状态`WAITING_FOR_EXISTING_JOBS`，compute=10、blockers=13；本批trainer尚未启动。
+- 状态文件：`logs/phase1_dgleo_p0closed8_20260713_queue_state.json`；stdout：`logs/phase1_dgleo_p0closed8_20260713_queue.out`。
