@@ -66,7 +66,16 @@
 - 队列状态：`logs/phase1_dgleo_hiercore8_20260713_queue_state.json`。
 - GPU：0～7各1个候选，每卡1个实验。
 - 墙钟上限：每候选10小时；预期120 epoch训练约6～7小时，终局全量评估与导出约0.5～1小时。
-- 启动命令：`nohup <python> code/scripts/queue_phase1_dgleo_hiercore8_20260713.py --max-concurrent-per-gpu 1 --wall-hours 10 --max-wait-hours 12 > logs/phase1_dgleo_hiercore8_20260713_queue.out 2>&1 &`。
+- 启动命令：`nohup <python> code/scripts/queue_phase1_dgleo_hiercore8_20260713.py --max-concurrent-per-gpu 2 --wall-hours 10 --max-wait-hours 12 > logs/phase1_dgleo_hiercore8_20260713_queue.out 2>&1 &`。
+
+### 23:05实际落地状态
+
+- 队列PID：4142930。
+- GPU3～7已各启动1个候选：H3 PID4143350、H4 PID4143418、H5 PID4143888、H6 PID4144335、H7 PID4144806。
+- GPU0～2各有2个既存Phase1基线进程，达到每卡并发上限2；H0～H2处于`PENDING_GPU_SLOT`，队列会在既存任务结束释放slot后自动接续。
+- 未中断、未重启、未归属本实验的既存进程；`foreign_processes_count_as_candidates=false`，队列仅把它们计入容量。
+- 实际队列参数使用`--max-concurrent-per-gpu 2`，含义是服务器每卡总训练进程不超过2；本批自身仍严格每卡最多1个候选。
+- 同步版本：Git提交`a039244`加队列兼容修复`e622e35`；本地/远端5个同步文件SHA256一致，远端`py_compile`和launcher/queue dry-run通过。
 
 ## 风险
 
