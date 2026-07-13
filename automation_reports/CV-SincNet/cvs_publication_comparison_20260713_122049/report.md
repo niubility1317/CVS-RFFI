@@ -102,3 +102,10 @@
 - GPU0/1已完成Phase1详细后评估并空闲；GPU2继续DRIFT，GPU3-7保持完整矩阵worker。为避免长期闲置且不改变训练方法预算，仅提前执行未来四个receiver的无训练CVS feature-cache行：Stage2-B `cvs_opgac`和Stage2-C `cvs_qknnv42`。
 - 加速receiver限定为`3-19,7-14,7-7,8-8`，K/seed保持完整矩阵默认网格，各100行；输出根与正式矩阵相同，独立event log根为`.../accelerator_cvs_rows`。正式主worker到达时通过artifact contract跳过已完成行。
 - 不加速需要训练的ProtoNet/MRIOR/DADDA/CSIL/MoPC/Orthogonal，避免与现有worker未来相撞。精确入口为matrix worker的`--methods cvs_opgac`或`--methods cvs_qknnv42`、`--receivers 3-19,7-14,7-7,8-8`、`--execute`，分别使用GPU0/1。
+
+### CVS快速行完成与manifest隔离修正（14:37）
+
+- Stage2-B CVS加速PID3823666：assigned100、completed98、skipped2、failed0；Stage2-C CVS加速PID3823667：assigned100、completed100、failed0。按完整默认网格现场重建后，Stage2-B总artifact完成209/500，Stage2-C完成109/500。
+- 发现subset worker的shard0会覆盖canonical `matrix_manifest.json`。该问题不影响已启动main worker的内存行列表或任何run artifact，但当前远端canonical manifest暂时只反映subset，不能作为500行完成证据。
+- 本地已修正matrix worker：完整默认网格继续写`matrix_manifest.json`，任何方法/receiver/K/seed子集改写到基于选择哈希的`matrix_manifest_subset_<hash>.json`，新增防覆盖回归；聚焦回归`20 passed`。
+- 按active-job monitor-only边界，当前不热补远端worker文件。待现有完整worker退出后同步修正并用完整默认dry-run重建500行canonical manifest；完成度在此期间仅通过`build_rows(DEFAULT_*)`逐行执行artifact contract现场计算。

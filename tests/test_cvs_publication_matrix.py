@@ -10,6 +10,7 @@ from paper_reproduction.scripts.run_cvs_publication_matrix import (
     DEFAULT_SEEDS,
     PHASE_METHODS,
     _artifact_status,
+    _matrix_manifest_path,
     build_rows,
 )
 
@@ -30,6 +31,28 @@ def test_full_stage2_matrices_cover_methods_receivers_k_and_seeds(tmp_path: Path
         assert {row.receiver for row in rows} == set(DEFAULT_RECEIVERS)
         assert {row.k_shot for row in rows} == set(DEFAULT_K)
         assert {row.seed for row in rows} == set(DEFAULT_SEEDS)
+
+
+def test_subset_worker_cannot_overwrite_canonical_manifest(tmp_path: Path) -> None:
+    canonical = _matrix_manifest_path(
+        tmp_path,
+        phase="stage2b",
+        methods=PHASE_METHODS["stage2b"],
+        receivers=DEFAULT_RECEIVERS,
+        k_grid=DEFAULT_K,
+        seeds=DEFAULT_SEEDS,
+    )
+    subset = _matrix_manifest_path(
+        tmp_path,
+        phase="stage2b",
+        methods=("cvs_opgac",),
+        receivers=DEFAULT_RECEIVERS[1:],
+        k_grid=DEFAULT_K,
+        seeds=DEFAULT_SEEDS,
+    )
+    assert canonical.name == "matrix_manifest.json"
+    assert subset.name.startswith("matrix_manifest_subset_")
+    assert subset != canonical
 
 
 def test_artifact_contract_requires_satellite_scores_details_and_loss_trace(tmp_path: Path) -> None:

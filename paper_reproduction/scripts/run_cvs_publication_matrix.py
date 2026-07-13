@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import argparse
 import csv
+import hashlib
 import json
 import subprocess
 import sys
@@ -51,6 +52,38 @@ def _parse_strings(raw: str) -> tuple[str, ...]:
     if not values:
         raise ValueError("string grids must not be empty")
     return values
+
+
+def _matrix_manifest_path(
+    output_root: Path,
+    *,
+    phase: str,
+    methods: tuple[str, ...],
+    receivers: tuple[str, ...],
+    k_grid: tuple[int, ...],
+    seeds: tuple[int, ...],
+) -> Path:
+    canonical = (
+        methods == PHASE_METHODS[phase]
+        and receivers == DEFAULT_RECEIVERS
+        and k_grid == DEFAULT_K
+        and seeds == DEFAULT_SEEDS
+    )
+    if canonical:
+        return output_root / "matrix_manifest.json"
+    payload = json.dumps(
+        {
+            "phase": phase,
+            "methods": methods,
+            "receivers": receivers,
+            "k_grid": k_grid,
+            "seeds": seeds,
+        },
+        sort_keys=True,
+        separators=(",", ":"),
+    ).encode("utf-8")
+    digest = hashlib.sha256(payload).hexdigest()[:12]
+    return output_root / f"matrix_manifest_subset_{digest}.json"
 
 
 def build_rows(
@@ -216,18 +249,28 @@ def main() -> int:
     if args.shard_count <= 0 or not 0 <= args.shard_index < args.shard_count:
         raise ValueError("shard index must be in [0,shard_count)")
     methods = _parse_strings(args.methods) if args.methods else PHASE_METHODS[args.phase]
+    receivers = _parse_strings(args.receivers)
+    k_grid = _parse_ints(args.k_grid)
+    seeds = _parse_ints(args.seeds)
     rows = build_rows(
         phase=args.phase,
         methods=methods,
-        receivers=_parse_strings(args.receivers),
-        k_grid=_parse_ints(args.k_grid),
-        seeds=_parse_ints(args.seeds),
+        receivers=receivers,
+        k_grid=k_grid,
+        seeds=seeds,
         output_root=args.output_root,
         log_root=args.log_root,
     )
     args.output_root.mkdir(parents=True, exist_ok=True)
     args.log_root.mkdir(parents=True, exist_ok=True)
-    manifest_path = args.output_root / "matrix_manifest.json"
+    manifest_path = _matrix_manifest_path(
+        args.output_root,
+        phase=args.phase,
+        methods=methods,
+        receivers=receivers,
+        k_grid=k_grid,
+        seeds=seeds,
+    )
     if args.shard_index == 0:
         manifest_path.write_text(
             json.dumps(
