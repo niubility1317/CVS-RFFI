@@ -10,8 +10,8 @@
 |PUB-02|用户|CVCNN使用最常用结构和参数|`baselines/cvcnn_ce`及锁定配置|verified|三层ComplexBlock`32-64-128`、128维embedding、CE、AdamW`2e-4`、batch64、200epoch|Sinc、伪标签和sat训练增强默认关闭|
 |PUB-03|用户|Phase2域适应统一使用带标签target-old support|CVS监督适配协议|pending|待实现统一support manifest和监督入口|query不得参与训练/选模|
 |PUB-04|用户|ProtoNet CDA监督域适应|`paper_reproduction/protonet_cda`+CVS adapter|implemented|现有K-shot prototype/eval路径|需统一base checkpoint、support索引和LEO query|
-|PUB-05|用户|MRIOR改为监督域适应|`paper_reproduction/cvs_aligned/mrior_sda.py`|pending|待测试target CE和真实标签优先级|不得修改paper-faithful UDA声明|
-|PUB-06|用户|DADDA改为监督域适应|`paper_reproduction/cvs_aligned/dadda_sda.py`|pending|待测试target CE和真实标签LMMD|不得修改paper-faithful UDA声明|
+|PUB-05|用户|MRIOR改为监督域适应|`paper_reproduction/cvs_aligned/supervised_da.py`|verified|target CE、DV-KL梯度和support-only manifest测试通过|未修改paper-faithful UDA声明|
+|PUB-06|用户|DADDA改为监督域适应|`paper_reproduction/cvs_aligned/supervised_da.py`|verified|target CE、真实标签LMMD、动态alpha和梯度测试通过|未修改paper-faithful UDA声明|
 |PUB-07|用户|Phase2新类比较CSIL|CSIL CVS adapter|pending|待实现Stage2-C support/query路径|原实现是ADS-B闭集CIL|
 |PUB-08|用户|Phase2新类比较MoPC-HR|MoPC-HR复现与CVS adapter|blocked|当前只有PDF/官方代码登记|需本地实现和验证后才能启动|
 |PUB-09|用户|Phase2新类比较Orthogonal Incremental|Orthogonal CVS adapter|pending|原始WiSig闭集FSCIL已可运行|需同一`R_t`旧/新类Stage2-C适配|
@@ -22,7 +22,7 @@
 |PUB-14|发表要求|至少多seed并报告不确定性|结果聚合器|pending|待实现|主表计划5seed；先运行seed713101启动锚点|
 |PUB-15|发表要求|统计显著性与效应量|统计脚本/报告|pending|待实现|paired seed/bootstrap CI、校正后的检验、效应量|
 |PUB-16|发表要求|完整损失与final-vs-best证据|logs、metrics、loss trace|pending|完成后全日志解析|不得以启动PASS替代完成|
-|PUB-17|AGENTS|本地验证、Git、报告、sync和N607清理|报告、commit、manifest|pending|逐阶段更新|根目录非Git，发布面为`github_publish/CVS-RFFI-repo`|
+|PUB-17|AGENTS|本地验证、Git、报告、sync和N607清理|报告、commit、manifest|implemented|协议提交`271e50a/c93774c`；Phase1启动与SSH清理已记录|Phase2代码尚待提交/同步|
 
 ## 论文级主结果预登记
 
