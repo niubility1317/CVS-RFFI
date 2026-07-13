@@ -174,3 +174,9 @@
 - GPU0：Orthogonal Incremental、receiver8-8、seed713101/713102、K={1,2,5,10,20}，共10行；GPU1：同方法seed713103/713104，共10行；GPU2：先完成seed713105的5条Orthogonal行，再顺序执行receiver8-8全部五seed的CSIL和MoPC-HR共50行。
 - 三个accelerator均写入正式Stage2-C输出根，但使用独立日志根`accelerator_rx8_8_gpu{0,1,2}`。subset worker会再次覆盖当前无效canonical manifest；该已知控制面副作用不影响run artifact或主worker内存行列表，最终仍须同步`4368718`后的manifest隔离修正并以500行default dry-run重建canonical manifest。
 - 预计加速完成后receiver8-8达到100/100，主worker到达该receiver时按artifact contract跳过已完成行；任一accelerator失败即停止自身队列，不影响其他worker。
+
+### Stage2-C receiver8-8 accelerator已landed（15:39）
+
+- GPU0/1/2顶层PID分别为3898898/3898899/3898900；GPU0与GPU1已进入各自首条Orthogonal Incremental行，GPU2顺序链已进入Orthogonal子worker。启动后GPU0-2各465MiB，GPU3-7仍各一个主worker，总占用未超过每GPU两个实验。
+- 三个accelerator的命令、receiver、seed切分和独立日志根与启动前记录一致；主worker当前仍未进入receiver8-8，无同run并发写入。
+- 当前状态仅为landed，不计作完成。后续以完整500行网格逐行artifact contract为唯一完成证据；启动后本地`ssh_count=0`、N607及bridge的`ESTABLISHED`端口22连接数为0。
