@@ -50,6 +50,28 @@ def _checkpoint_with_dataset_override(
     return updated, original
 
 
+def _metadata_from_extra(extra: Any) -> dict[str, Any]:
+    """Recover the collated WiSig metadata returned after ``x, y``.
+
+    ``unpack_batch`` deliberately preserves every trailing field, so the
+    standard four-field WiSig batch arrives here as ``(domain, metadata)``.
+    Accepting a direct mapping as well keeps the evaluator compatible with
+    metadata-only loaders used by focused tests.
+    """
+    if isinstance(extra, dict):
+        metadata = extra
+    elif isinstance(extra, (tuple, list)):
+        metadata = next((item for item in reversed(extra) if isinstance(item, dict)), None)
+    else:
+        metadata = None
+    if metadata is None:
+        raise ValueError(f"WiSig batch metadata missing from extra fields: {type(extra).__name__}")
+    missing = [key for key in ("rx_i", "day_i", "sig_i") if key not in metadata]
+    if missing:
+        raise KeyError(f"WiSig batch metadata missing required keys: {missing}")
+    return metadata
+
+
 @torch.no_grad()
 def run(args_cli: argparse.Namespace) -> dict[str, Any]:
     scenarios = tuple(parse_sat_scenarios(args_cli.scenarios))
@@ -91,6 +113,7 @@ def run(args_cli: argparse.Namespace) -> dict[str, Any]:
             )
             for batch in named_loaders[split]:
                 x, y, extra = unpack_batch(batch)
+                metadata = _metadata_from_extra(extra)
                 x = x.to(device, non_blocking=True)
                 y = y.to(device, non_blocking=True)
                 x, _ = apply_sat_channel_for_scenario(
@@ -99,9 +122,9 @@ def run(args_cli: argparse.Namespace) -> dict[str, Any]:
                 output = model(x, y_tx=None, grl_lambda=1.0, return_aux=True)
                 probabilities = torch.softmax(output["tx_logits"], dim=1)
                 confidence, predicted = probabilities.max(dim=1)
-                rx_values = torch.as_tensor(extra["rx_i"]).long()
-                day_values = torch.as_tensor(extra["day_i"]).long()
-                sig_values = torch.as_tensor(extra["sig_i"]).long()
+                rx_values = torch.as_tensor(metadata["rx_i"]).long()
+                day_values = torch.as_tensor(metadata["day_i"]).long()
+                sig_values = torch.as_tensor(metadata["sig_i"]).long()
                 for index in range(int(predicted.numel())):
                     truth_i = int(y[index].cpu())
                     prediction_i = int(predicted[index].cpu())

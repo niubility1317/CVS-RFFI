@@ -1,5 +1,6 @@
 from paper_reproduction.scripts.evaluate_cvs_phase1_ssdg_detailed import (
     _checkpoint_with_dataset_override,
+    _metadata_from_extra,
     parse_sat_scenarios,
 )
 
@@ -20,3 +21,17 @@ def test_dataset_override_changes_only_checkpoint_dataset_path(tmp_path) -> None
     assert updated["args"]["seed"] == 7
     assert updated["epoch"] == 3
     assert original["args"]["wisig_pkl"] == "/remote/ManySig.pkl"
+
+
+def test_metadata_from_standard_four_field_wisig_batch() -> None:
+    metadata = {"rx_i": [1, 2], "day_i": [0, 1], "sig_i": [7, 8]}
+    assert _metadata_from_extra(([10, 11], metadata)) is metadata
+
+
+def test_metadata_from_extra_rejects_incomplete_mapping() -> None:
+    try:
+        _metadata_from_extra(({"rx_i": [1]},))
+    except KeyError as exc:
+        assert "day_i" in str(exc) and "sig_i" in str(exc)
+    else:
+        raise AssertionError("incomplete WiSig metadata must be rejected")
