@@ -58,3 +58,4 @@
 - 120epoch不变。held-out test仅在E120执行；source-val重评调度为E10-E100每10轮一次、最后20轮每2轮一次。该调度原本由基础launcher继承，本次在P0 wrapper中显式固定并增加回归测试，防止后续基础配置漂移。
 - N607现有DRIFT约E173/200；Stage2B完成/跳过约265/500行；Stage2C约39/500行。Stage2C的`orthogonal_incremental`单行中位耗时约1024秒，是当前排队主瓶颈。
 - 按当前吞吐，预计还需等待约7-8小时，之后连续3次空闲确认约3分钟；本批8卡训练预计5-6.5小时。因此从14:50起总完成时间约12-14.5小时，预计完成窗口为2026-07-14 03:00-05:30。该估计包含现有任务等待；本批训练自身仍受10小时wall limit约束。
+- 显式调度提交：`e3e769d`；相关launcher/protocol测试15 passed，`py_compile`通过。远端同步后SHA256=`0b1b2deb7531f3831cf060c2d32e1b266c85042eac95dca8a6fa5ea626e2246b`，dry-run确认四个调度参数，queue仍为`WAITING_FOR_EXISTING_JOBS`。
