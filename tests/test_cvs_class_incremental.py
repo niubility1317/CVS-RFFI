@@ -106,6 +106,8 @@ def test_stage2c_method_adapters_execute_without_query_in_training(method):
     assert 0.0 <= pre_old <= 1.0
     assert info["trainable_parameters"] > 0
     assert info["paper_mechanisms"]
+    assert [row["phase"] for row in info["loss_trace"]] == ["base", "old_support", "increment"]
+    assert all(torch.isfinite(torch.tensor(row["loss"])).item() for row in info["loss_trace"])
 
 
 def test_detailed_breakdown_reports_receiver_transmitter_and_confusion_rows():

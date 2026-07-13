@@ -5,6 +5,7 @@ import csv
 import hashlib
 import inspect
 import json
+import math
 import random
 import sys
 import time
@@ -238,6 +239,8 @@ def _train_model(config: dict[str, Any], manysig: dict[str, Any], device: torch.
         n_way = min(int(config.get("n_way", 6)), len(groups))
         scenarios = _train_scenarios(config)
         scenario_counts = {scenario: 0 for scenario in scenarios}
+        loss_trace: list[dict[str, Any]] = []
+        trace_every = max(1, int(config.get("loss_trace_every", 20)))
         for step in range(max_steps):
             sx, sy, qx, qy = _sample_episode(
                 source_ds,
@@ -264,6 +267,20 @@ def _train_model(config: dict[str, Any], manysig: dict[str, Any], device: torch.
             loss = F.cross_entropy(logits, compact)
             loss.backward()
             opt.step()
+            step_i = step + 1
+            if step_i == 1 or step_i == max_steps or step_i % trace_every == 0:
+                row = {
+                    "method": "protonet_cda",
+                    "scenario": "source_base",
+                    "phase": "base",
+                    "step": step_i,
+                    "total_steps": max_steps,
+                    "loss": float(loss.detach().cpu()),
+                }
+                if not math.isfinite(row["loss"]):
+                    raise FloatingPointError(f"non-finite ProtoNet base loss: {row}")
+                loss_trace.append(row)
+                print("[LOSS-TRACE] " + json.dumps(row, ensure_ascii=False, sort_keys=True), flush=True)
         return model, {
             "source_train_size": len(source_ds),
             "steps": max_steps,
@@ -272,6 +289,7 @@ def _train_model(config: dict[str, Any], manysig: dict[str, Any], device: torch.
             "train_channel_scenario_counts": scenario_counts,
             "satellite_train_augmentation_enabled": any(scenario != "clean" for scenario in scenarios),
             "training_origin": "paper_baseline_random_init",
+            "loss_trace": loss_trace,
         }
 
     if baseline == "feature_separation_crossrx":

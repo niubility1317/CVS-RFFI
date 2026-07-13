@@ -20,6 +20,7 @@ from paper_reproduction.cvs_aligned.class_incremental import (
     _cycle_batches,
     _detailed_breakdown,
     _source_loader,
+    _trace_loss,
 )
 from paper_reproduction.cvs_aligned.evaluate import (
     _apply_scenario,
@@ -127,8 +128,9 @@ def _train_base(
         ).to(device)
     optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate, weight_decay=weight_decay)
     last_loss = float("nan")
+    loss_trace: list[dict[str, Any]] = []
     model.train()
-    for batch in _cycle_batches(loader, base_steps):
+    for step, batch in enumerate(_cycle_batches(loader, base_steps), start=1):
         x = batch["iq"].to(device)
         y = _compact_source_labels(batch["label"], source_ids, device)
         outputs = model(x)
@@ -138,11 +140,20 @@ def _train_base(
         loss.backward()
         optimizer.step()
         last_loss = float(loss.detach().cpu())
+        _trace_loss(
+            loss_trace,
+            {**config, "method": method, "_active_scenario": "source_base"},
+            phase="base",
+            step=step,
+            total_steps=base_steps,
+            losses={"loss": loss},
+        )
     return model, {
         "base_steps": base_steps,
         "base_final_source_ce": last_loss,
         "source_train_channel_view": str(config.get("source_train_channel_view", "clean")),
         "training_origin": "source_supervised_random_init",
+        "loss_trace": loss_trace,
     }
 
 
@@ -179,8 +190,11 @@ def _adapt_parametric(
         weight_decay=float(config.get("adapt_weight_decay", config.get("weight_decay", 5.0e-4))),
     )
     last: dict[str, float] = {}
+    loss_trace: list[dict[str, Any]] = []
     model.train()
-    for source_batch, (target_x, target_y) in zip(source_batches, target_batches):
+    for step, (source_batch, (target_x, target_y)) in enumerate(
+        zip(source_batches, target_batches), start=1
+    ):
         source_x = source_batch["iq"].to(device)
         source_y = _compact_source_labels(source_batch["label"], source_ids, device)
         target_x = target_x.to(device)
@@ -214,6 +228,14 @@ def _adapt_parametric(
             for key, value in losses.items()
             if isinstance(value, torch.Tensor) and value.numel() == 1
         }
+        _trace_loss(
+            loss_trace,
+            {**config, "method": method},
+            phase="target_support_adaptation",
+            step=step,
+            total_steps=int(config["adapt_steps"]),
+            losses={key: value for key, value in losses.items() if value.numel() == 1},
+        )
     model.eval()
     with torch.no_grad():
         outputs = model(query_x.to(device))
@@ -225,6 +247,7 @@ def _adapt_parametric(
         if method == "mrior_sda"
         else "source_ce+target_support_ce+dynamic_mmd_lmmd",
         "final_adaptation_losses": last,
+        "loss_trace": loss_trace,
     }
 
 
@@ -244,6 +267,7 @@ def run(config: dict[str, Any], *, run_dir: Path, device: torch.device) -> dict[
         raise ValueError("Stage2-B requires old-only, disjoint target support/query")
     loader, source_ids = _source_loader(config, manysig)
     base_model, base_info = _train_base(config, manysig, loader, source_ids, device)
+    loss_trace_rows = list(base_info.pop("loss_trace", []))
     method = str(config["method_id"]).lower()
     source_features = source_labels = None
     if method == "protonet_cda":
@@ -275,7 +299,7 @@ def run(config: dict[str, Any], *, run_dir: Path, device: torch.device) -> dict[
             }
         else:
             predicted, before, method_info = _adapt_parametric(
-                config,
+                {**config, "_active_scenario": scenario},
                 base_model,
                 loader,
                 source_ids,
@@ -284,6 +308,7 @@ def run(config: dict[str, Any], *, run_dir: Path, device: torch.device) -> dict[
                 query_x,
                 device,
             )
+        loss_trace_rows.extend(method_info.pop("loss_trace", []))
         elapsed = time.perf_counter() - started
         after_acc = _accuracy(predicted, tensors["query_y"])
         before_acc = _accuracy(before, tensors["query_y"])
@@ -350,10 +375,16 @@ def run(config: dict[str, Any], *, run_dir: Path, device: torch.device) -> dict[
     write_json(run_dir / "split_manifest.json", manifest)
     write_json(run_dir / "resolved_config.json", config)
     write_json(run_dir / "detailed_metrics.json", detailed_rows)
+    write_json(run_dir / "loss_trace.json", loss_trace_rows)
     with (run_dir / "detailed_metrics.csv").open("w", encoding="utf-8", newline="") as handle:
         writer = csv.DictWriter(handle, fieldnames=list(detailed_rows[0].keys()))
         writer.writeheader()
         writer.writerows(detailed_rows)
+    trace_fields = sorted({key for row in loss_trace_rows for key in row})
+    with (run_dir / "loss_trace.csv").open("w", encoding="utf-8", newline="") as handle:
+        writer = csv.DictWriter(handle, fieldnames=trace_fields)
+        writer.writeheader()
+        writer.writerows(loss_trace_rows)
     with (run_dir / "score_table.csv").open("w", encoding="utf-8", newline="") as handle:
         fields = [
             "sample_id", "receiver_label", "transmitter_label", "day_i", "sig_i", "role",

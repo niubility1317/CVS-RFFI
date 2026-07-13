@@ -11,6 +11,7 @@ import argparse
 import copy
 import csv
 import json
+import math
 import time
 from pathlib import Path
 from typing import Any
@@ -114,6 +115,35 @@ def _cycle_batches(loader: DataLoader, steps: int):
             yield next(iterator)
 
 
+def _trace_loss(
+    trace: list[dict[str, Any]],
+    config: dict[str, Any],
+    *,
+    phase: str,
+    step: int,
+    total_steps: int,
+    losses: dict[str, torch.Tensor | float],
+) -> None:
+    every = max(1, int(config.get("loss_trace_every", 20)))
+    if int(step) != 1 and int(step) != int(total_steps) and int(step) % every != 0:
+        return
+    row: dict[str, Any] = {
+        "method": str(config.get("method", "")),
+        "scenario": str(config.get("_active_scenario", "")),
+        "phase": str(phase),
+        "step": int(step),
+        "total_steps": int(total_steps),
+    }
+    for key, value in losses.items():
+        row[str(key)] = float(value.detach().cpu()) if isinstance(value, torch.Tensor) else float(value)
+    if "loss" not in row and "total" in row:
+        row["loss"] = row["total"]
+    if not all(math.isfinite(float(value)) for key, value in row.items() if key not in {"method", "scenario", "phase"}):
+        raise FloatingPointError(f"non-finite loss trace row: {row}")
+    trace.append(row)
+    print("[LOSS-TRACE] " + json.dumps(row, ensure_ascii=False, sort_keys=True), flush=True)
+
+
 def _accuracy(predicted: torch.Tensor, truth: torch.Tensor, ids: set[int]) -> float:
     mask = torch.tensor([int(value) in ids for value in truth.detach().cpu().tolist()], dtype=torch.bool)
     if int(mask.sum()) == 0:
@@ -209,6 +239,7 @@ def _train_csil(
     device: torch.device,
 ) -> tuple[torch.Tensor, float, dict[str, Any]]:
     old_count, new_count = len(old_ids), len(new_ids)
+    trace: list[dict[str, Any]] = []
     model = CSILClassifier(
         input_dim=int(support_x[0].numel()),
         embedding_dim=int(config.get("csil_embedding_dim", 64)),
@@ -221,20 +252,26 @@ def _train_csil(
         weight_decay=float(config.get("weight_decay", 0.01)),
     )
     model.train()
-    for batch in _cycle_batches(loader, int(config["base_steps"])):
+    base_steps = int(config["base_steps"])
+    for step, batch in enumerate(_cycle_batches(loader, base_steps), start=1):
         x = batch["iq"].to(device).flatten(1)
         y = _compact_source_labels(batch["label"], source_ids, device)
         optimizer.zero_grad(set_to_none=True)
-        F.cross_entropy(model(x), y).backward()
+        loss = F.cross_entropy(model(x), y)
+        loss.backward()
         optimizer.step()
+        _trace_loss(trace, config, phase="base", step=step, total_steps=base_steps, losses={"loss": loss})
 
     old_mask = torch.tensor([int(v) in old_ids for v in support_y.tolist()], dtype=torch.bool)
     old_x = support_x[old_mask].to(device).flatten(1)
     old_y = support_y[old_mask].to(device)
-    for _ in range(int(config.get("old_support_steps", config["increment_steps"]))):
+    old_steps = int(config.get("old_support_steps", config["increment_steps"]))
+    for step in range(1, old_steps + 1):
         optimizer.zero_grad(set_to_none=True)
-        F.cross_entropy(model(old_x), old_y).backward()
+        loss = F.cross_entropy(model(old_x), old_y)
+        loss.backward()
         optimizer.step()
+        _trace_loss(trace, config, phase="old_support", step=step, total_steps=old_steps, losses={"loss": loss})
     with torch.no_grad():
         pre_pred = model(query_x.to(device).flatten(1)).argmax(dim=1).cpu()
     pre_old = _accuracy(pre_pred, query_y, old_ids)
@@ -249,7 +286,8 @@ def _train_csil(
     new_x = support_x[new_mask].to(device).flatten(1)
     new_y = support_y[new_mask].to(device)
     velocity: dict[str, torch.Tensor] = {}
-    for _ in range(int(config["increment_steps"])):
+    increment_steps = int(config["increment_steps"])
+    for step in range(1, increment_steps + 1):
         model.zero_grad(set_to_none=True)
         logits = model(new_x)
         with torch.no_grad():
@@ -269,12 +307,26 @@ def _train_csil(
             weight_decay=float(config.get("weight_decay", 0.01)),
             state=velocity,
         )
+        _trace_loss(
+            trace,
+            config,
+            phase="increment",
+            step=step,
+            total_steps=increment_steps,
+            losses={
+                "loss": loss.total,
+                "cross_entropy": loss.cross_entropy,
+                "knowledge_distillation": loss.knowledge_distillation,
+                "ewc": loss.ewc,
+            },
+        )
     with torch.no_grad():
         predicted = model(query_x.to(device).flatten(1)).argmax(dim=1).cpu()
     return predicted, pre_old, {
         "trainable_parameters": sum(p.numel() for p in model.parameters() if p.requires_grad),
         "prototype_storage": 0,
         "paper_mechanisms": ["zero_bias_cosine", "channel_separation", "old_block_gradient_mask", "KD"],
+        "loss_trace": trace,
     }
 
 
@@ -302,6 +354,7 @@ def _train_mopc(
     device: torch.device,
 ) -> tuple[torch.Tensor, float, dict[str, Any]]:
     old_count = len(old_ids)
+    trace: list[dict[str, Any]] = []
     model = _MoPCModel(int(config.get("embedding_dim", 64)), old_count + len(new_ids)).to(device)
     optimizer = torch.optim.SGD(
         model.parameters(),
@@ -309,22 +362,28 @@ def _train_mopc(
         momentum=float(config.get("momentum", 0.9)),
         weight_decay=float(config.get("weight_decay", 2e-4)),
     )
-    for batch in _cycle_batches(loader, int(config["base_steps"])):
+    base_steps = int(config["base_steps"])
+    for step, batch in enumerate(_cycle_batches(loader, base_steps), start=1):
         x = batch["iq"].to(device)
         y = _compact_source_labels(batch["label"], source_ids, device)
         optimizer.zero_grad(set_to_none=True)
         logits, _ = model(x)
-        F.cross_entropy(logits[:, :old_count], y).backward()
+        loss = F.cross_entropy(logits[:, :old_count], y)
+        loss.backward()
         optimizer.step()
+        _trace_loss(trace, config, phase="base", step=step, total_steps=base_steps, losses={"loss": loss})
 
     old_mask = torch.tensor([int(v) in old_ids for v in support_y.tolist()], dtype=torch.bool)
     old_x = support_x[old_mask].to(device)
     old_y = support_y[old_mask].to(device)
-    for _ in range(int(config.get("old_support_steps", config["increment_steps"]))):
+    old_steps = int(config.get("old_support_steps", config["increment_steps"]))
+    for step in range(1, old_steps + 1):
         optimizer.zero_grad(set_to_none=True)
         logits, _ = model(old_x)
-        F.cross_entropy(logits[:, :old_count], old_y).backward()
+        loss = F.cross_entropy(logits[:, :old_count], old_y)
+        loss.backward()
         optimizer.step()
+        _trace_loss(trace, config, phase="old_support", step=step, total_steps=old_steps, losses={"loss": loss})
     with torch.no_grad():
         pre_pred = model(query_x.to(device))[0][:, :old_count].argmax(dim=1).cpu()
         old_features = model(old_x)[1]
@@ -337,7 +396,8 @@ def _train_mopc(
     new_x = support_x[new_mask].to(device)
     new_y = support_y[new_mask].to(device)
     generator = torch.Generator(device=device).manual_seed(int(config.get("seed", 0)) + 991)
-    for _ in range(int(config["increment_steps"])):
+    increment_steps = int(config["increment_steps"])
+    for step in range(1, increment_steps + 1):
         optimizer.zero_grad(set_to_none=True)
         logits, _ = model(new_x)
         augmented, augmented_y = prototype_augmentation(
@@ -360,6 +420,19 @@ def _train_mopc(
         )
         loss.total.backward()
         optimizer.step()
+        _trace_loss(
+            trace,
+            config,
+            phase="increment",
+            step=step,
+            total_steps=increment_steps,
+            losses={
+                "loss": loss.total,
+                "cross_entropy": loss.cross_entropy,
+                "prototype_augmentation": loss.prototype_augmentation,
+                "hierarchical_regularization": loss.hierarchical_regularization,
+            },
+        )
 
     with torch.no_grad():
         new_previous = previous(new_x)[1]
@@ -379,6 +452,7 @@ def _train_mopc(
         "prototype_storage": int(corrected.numel() + current_prototypes.numel()),
         "paper_mechanisms": ["prototype_augmentation", "hierarchical_regularization", "momentum_prototype_correction"],
         "mopc_similarity_mode": str(config.get("mopc_similarity_mode", "paper_cosine")),
+        "loss_trace": trace,
     }
 
 
@@ -395,6 +469,7 @@ def _train_orthogonal(
     device: torch.device,
 ) -> tuple[torch.Tensor, float, dict[str, Any]]:
     old_count = len(old_ids)
+    trace: list[dict[str, Any]] = []
     total_count = old_count + len(new_ids)
     embedding_dim = int(config.get("embedding_dim", 64))
     encoder = SixBlockConv1DEncoder(input_channels=2, embedding_dim=embedding_dim).to(device)
@@ -411,23 +486,27 @@ def _train_orthogonal(
         momentum=float(config.get("momentum", 0.9)),
         weight_decay=float(config.get("weight_decay", 5e-4)),
     )
-    for batch in _cycle_batches(loader, int(config["base_steps"])):
+    base_steps = int(config["base_steps"])
+    for step, batch in enumerate(_cycle_batches(loader, base_steps), start=1):
         x = batch["iq"].to(device)
         y = _compact_source_labels(batch["label"], source_ids, device)
         optimizer.zero_grad(set_to_none=True)
         features = encoder(x)
-        loss, _ = base_training_loss(features, y, assigned, targets, perturbed)
+        loss, terms = base_training_loss(features, y, assigned, targets, perturbed)
         loss.backward()
         optimizer.step()
+        _trace_loss(trace, config, phase="base", step=step, total_steps=base_steps, losses=terms)
 
     old_mask = torch.tensor([int(v) in old_ids for v in support_y.tolist()], dtype=torch.bool)
     old_x = support_x[old_mask].to(device)
     old_y = support_y[old_mask].to(device)
-    for _ in range(int(config.get("old_support_steps", config["increment_steps"]))):
+    old_steps = int(config.get("old_support_steps", config["increment_steps"]))
+    for step in range(1, old_steps + 1):
         optimizer.zero_grad(set_to_none=True)
-        loss, _ = base_training_loss(encoder(old_x), old_y, assigned, targets, perturbed)
+        loss, terms = base_training_loss(encoder(old_x), old_y, assigned, targets, perturbed)
         loss.backward()
         optimizer.step()
+        _trace_loss(trace, config, phase="old_support", step=step, total_steps=old_steps, losses=terms)
     old_weights = torch.stack([assigned[index] for index in range(old_count)]).to(device)
     with torch.no_grad():
         pre_features = F.normalize(encoder(query_x.to(device)), dim=1)
@@ -444,9 +523,10 @@ def _train_orthogonal(
         prototypes, _ = compute_class_prototypes(new_features, new_y)
     new_weights = nn.Parameter(prototypes.detach().clone())
     increment_optimizer = torch.optim.SGD([new_weights], lr=float(config.get("increment_learning_rate", 0.01)))
-    for _ in range(int(config["increment_steps"])):
+    increment_steps = int(config["increment_steps"])
+    for step in range(1, increment_steps + 1):
         increment_optimizer.zero_grad(set_to_none=True)
-        loss, _ = incremental_calibration_loss(
+        loss, terms = incremental_calibration_loss(
             new_features,
             new_y,
             old_weights,
@@ -460,6 +540,7 @@ def _train_orthogonal(
         )
         loss.backward()
         increment_optimizer.step()
+        _trace_loss(trace, config, phase="increment", step=step, total_steps=increment_steps, losses=terms)
     weights = torch.cat([old_weights, new_weights.detach()], dim=0)
     with torch.no_grad():
         features = F.normalize(encoder(query_x.to(device)), dim=1)
@@ -468,6 +549,7 @@ def _train_orthogonal(
         "trainable_parameters": int(new_weights.numel()),
         "prototype_storage": int(weights.numel() + targets.numel()),
         "paper_mechanisms": ["orthogonal_pseudo_targets", "frozen_encoder", "incremental_calibration"],
+        "loss_trace": trace,
     }
 
 
@@ -494,6 +576,7 @@ def run(config: dict[str, Any], *, run_dir: Path, device: torch.device) -> dict[
     metrics_by_scenario: dict[str, dict[str, Any]] = {}
     predictions_by_scenario: dict[str, torch.Tensor] = {}
     detailed_rows: list[dict[str, Any]] = []
+    loss_trace_rows: list[dict[str, Any]] = []
     total_elapsed = 0.0
     for scenario_index, scenario in enumerate(scenarios):
         set_seed(seed)
@@ -505,7 +588,7 @@ def run(config: dict[str, Any], *, run_dir: Path, device: torch.device) -> dict[
         ).cpu()
         started = time.perf_counter()
         predicted, pre_old, method_info = RUNNERS[checked["method"]](
-            {**config, **checked},
+            {**config, **checked, "_active_scenario": scenario},
             loader,
             source_ids,
             support_x,
@@ -518,6 +601,7 @@ def run(config: dict[str, Any], *, run_dir: Path, device: torch.device) -> dict[
         )
         elapsed = time.perf_counter() - started
         total_elapsed += elapsed
+        loss_trace_rows.extend(method_info.pop("loss_trace", []))
         scenario_metrics = _stage_metrics(
             predicted,
             tensors["query_y"],
@@ -592,10 +676,16 @@ def run(config: dict[str, Any], *, run_dir: Path, device: torch.device) -> dict[
     write_json(run_dir / "split_manifest.json", split_manifest)
     write_json(run_dir / "resolved_config.json", {**config, **checked})
     write_json(run_dir / "detailed_metrics.json", detailed_rows)
+    write_json(run_dir / "loss_trace.json", loss_trace_rows)
     with (run_dir / "detailed_metrics.csv").open("w", encoding="utf-8", newline="") as handle:
         writer = csv.DictWriter(handle, fieldnames=list(detailed_rows[0].keys()))
         writer.writeheader()
         writer.writerows(detailed_rows)
+    trace_fields = sorted({key for row in loss_trace_rows for key in row})
+    with (run_dir / "loss_trace.csv").open("w", encoding="utf-8", newline="") as handle:
+        writer = csv.DictWriter(handle, fieldnames=trace_fields)
+        writer.writeheader()
+        writer.writerows(loss_trace_rows)
     with (run_dir / "score_table.csv").open("w", encoding="utf-8", newline="") as handle:
         writer = csv.DictWriter(
             handle,
