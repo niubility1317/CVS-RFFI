@@ -139,6 +139,8 @@ Strict five-task mean: paper 96.14%, reproduction 62.37%, gap -33.77pp.
 4. The final failures are class permutations, not a uniform loss of signal information. This points to an incompatible receiver-dependent feature geometry and/or a different author target split/model wrapper, not simply insufficient epochs.
 5. Exact author parity remains blocked by missing model/config/data-split artifacts. Any architecture inference or target-label-selected checkpoint must remain diagnostic-only.
 
+The dominant permutation patterns are `1-1->8-8`: class 1->3 (93.55%) and class 3->1 (99.68%); `7-7->8-8`: class 0->3 (98.08%), class 1->0 (91.75%), and class 3->1 (88.03%); `14-7->3-19`: classes 0/1/5 collapse mainly into class 3. All target classes contain 4000 samples, so class weighting observes a plausible marginal distribution even when class semantics are wrong. This explains why the `CPL+CW` mechanism can reinforce a high-confidence but label-permuted solution.
+
 ## Architecture and Table III localization matrix
 
 The next matrix keeps every published scalar explicitly fixed (`lr=0.0006`, `tau=0.7`, `m=7`, `lambda=0.005`, `mu=0.5`), writes all five values into the result JSON, uses final-checkpoint evaluation, and runs only the paper Proposed method or its paper Table III component ablations.
@@ -152,6 +154,8 @@ The next matrix keeps every published scalar explicitly fixed (`lr=0.0006`, `tau
 
 Planned launcher: `paper_reproduction/mitigating_receiver_impact_da/launch_architecture_ablation_validation_20260710.sh`. Planned remote group: `mitigating_da_arch_ablation_20260710_115000`.
 
+Exact server command: `cd /home/szu2070436088/2510044040/CV-SincNet && bash paper_reproduction/mitigating_receiver_impact_da/launch_architecture_ablation_validation_20260710.sh`. Python environment: `/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python`. Expected logs: `paper_reproduction/logs/mitigating_da_arch_ablation_20260710_115000/*.out`; expected results: `paper_reproduction/runs/mitigating_da_arch_ablation_20260710_115000/<run-id>/results.json`.
+
 ### Round-2 local verification and sync manifest
 
 Git commit: `63af9ab` (`Add receiver DA architecture and ablation validation`). Local verification in `ssr-gpu`: 62 focused/adjacent tests passed; Python compile, `git diff --check`, launcher `bash -n`, CLI option inspection, model shape smoke, and parameter-count smoke passed. Independent algorithm review first issued NO-GO for four ablation loss scalings and target-BN leakage in the all-disabled control. Both defects were repaired, seven combinations and BN-state isolation were added to the tests, and the same reviewer then issued GO with no Critical/Important finding. Files below are the only runtime files planned for round-2 sync.
@@ -163,3 +167,91 @@ Git commit: `63af9ab` (`Add receiver DA architecture and ablation validation`). 
 | `paper_reproduction/mitigating_receiver_impact_da/algorithm.py` | `010871faf555c4ba2ec0f298440312e928947bfb958328220aad64220d235393` |
 | `paper_reproduction/mitigating_receiver_impact_da/train.py` | `a843da29b07e0152209ee27585044f2d0a69504e4ab5450f44ff216b48b9a390` |
 | `paper_reproduction/mitigating_receiver_impact_da/launch_architecture_ablation_validation_20260710.sh` | `d1f7c0ca7cb701cab3450576b5d695cb380f4bbe9906072f7a12a2d999d70573` |
+
+### Round-2 launch record
+
+Remote verification passed and the manifest was created at 2026-07-10 12:05:58 CST.
+
+| Candidate/task | GPU | PID | Expected result |
+|---|---:|---:|---|
+| `template_hypothesis_v1` / `d01->d23` | 0 | `1866485` | `paper_reproduction/runs/mitigating_da_arch_ablation_20260710_115000/...template_hypothesis_v1_d01_to_d23.../results.json` |
+| `template_hypothesis_v1` / `14-7->3-19` | 1 | `1866487` | `paper_reproduction/runs/mitigating_da_arch_ablation_20260710_115000/...template_hypothesis_v1_14-7_to_3-19.../results.json` |
+| `template_hypothesis_v1` / `1-1->1-19` | 2 | `1866489` | `paper_reproduction/runs/mitigating_da_arch_ablation_20260710_115000/...template_hypothesis_v1_1-1_to_1-19.../results.json` |
+| `template_hypothesis_v1` / `1-1->8-8` | 3 | `1866494` | `paper_reproduction/runs/mitigating_da_arch_ablation_20260710_115000/...template_hypothesis_v1_1-1_to_8-8.../results.json` |
+| `template_hypothesis_v1` / `7-7->8-8` | 4 | `1866496` | `paper_reproduction/runs/mitigating_da_arch_ablation_20260710_115000/...template_hypothesis_v1_7-7_to_8-8.../results.json` |
+| `standard_da_only` / `14-7->3-19` | 5 | `1866498` | `paper_reproduction/runs/mitigating_da_arch_ablation_20260710_115000/...standard_da_only_14-7_to_3-19.../results.json` |
+| `standard_da_cw` / `14-7->3-19` | 6 | `1866500` | `paper_reproduction/runs/mitigating_da_arch_ablation_20260710_115000/...standard_da_cw_14-7_to_3-19.../results.json` |
+| `standard_cpl_cw` / `14-7->3-19` | 7 | `1866502` | `paper_reproduction/runs/mitigating_da_arch_ablation_20260710_115000/...standard_cpl_cw_14-7_to_3-19.../results.json` |
+
+Startup check at 12:06:31 CST: all eight PIDs alive, GPU utilization 21%-37%, memory 547-885 MiB, and no traceback/runtime/OOM/killed/argument/name-error marker.
+
+Five-minute health check at 12:11:32 CST: all eight PIDs remained alive, GPU utilization 18%-35%, memory 683-1345 MiB, zero result files yet, and no error marker.
+
+## Round-2 completed architecture and Table III results
+
+`remote_artifacts_round2`包含8组结果JSON与完整`.out`。逐组反序列化核对后，JSON与对应`.out`语义完全一致；每个run均完成20个source-pretrain epoch和20个adaptation epoch，未发现Traceback、RuntimeError、CUDA OOM、NaN、Killed或参数错误marker。全部8个run均为`completed_diagnostic_only`，不得作为正式论文复现成功、CVS Stage2或部署证据。
+
+| Candidate | Task | Components/profile | Result | Paper comparator | Gap | Final claim |
+|---|---|---|---:|---:|---:|---|
+| `template_hypothesis_v1` | `d01->d23` | inferred template Proposed | 89.9611% | 93.34% | -3.3789pp | `diagnostic_only` |
+| `template_hypothesis_v1` | `14-7->3-19` | inferred template Proposed | 52.1833% | 92.42% | -40.2367pp | `diagnostic_only` |
+| `template_hypothesis_v1` | `1-1->1-19` | inferred template Proposed | 37.2250% | 95.44% | -58.2150pp | `diagnostic_only` |
+| `template_hypothesis_v1` | `1-1->8-8` | inferred template Proposed | 89.6583% | 99.78% | -10.1217pp | `diagnostic_only` |
+| `template_hypothesis_v1` | `7-7->8-8` | inferred template Proposed | 80.6917% | 99.74% | -19.0483pp | `diagnostic_only` |
+| `standard_da_only` | `14-7->3-19` | DA only | 68.5667% | Table III 76.36% | -7.7933pp | `diagnostic_only` |
+| `standard_da_cw` | `14-7->3-19` | DA+CW | 40.9875% | Table III 77.02% | -36.0325pp | `diagnostic_only` |
+| `standard_cpl_cw` | `14-7->3-19` | CPL+CW | 22.2750% | Table III 77.11% | -54.8350pp | `diagnostic_only` |
+
+| Five-task profile | Mean | Paper mean | Gap to paper | Interpretation |
+|---|---:|---:|---:|---|
+| `pytorch_template_resnet18_hypothesis_v1` | 69.9439% | 96.1440% | -26.2001pp | 比standard高7.5697pp，但架构仍为推断且差距显著 |
+| `standard_resnet18` | 62.3742% | 96.1440% | -33.7698pp | 第一轮五个同run Proposed结果 |
+
+组件结果把残余故障进一步定位到CPL/CW路径：DA-only距离论文消融值7.7933pp，而加入CW但关闭CPL后差距扩大到36.0325pp，CPL+CW且关闭DA时差距达到54.8350pp。该证据支持“高覆盖低精度伪标签与类置换被自训练强化”的诊断，但不能单独证明论文实现中某一组件错误，因为作者模型、配置和目标划分仍不完整。
+
+## Full multiseed Proposed-only validation plan
+
+新launcher：`paper_reproduction/mitigating_receiver_impact_da/launch_full_multiseed_validation_20260713.sh`。矩阵为5个Table II任务×2个seed（20260711、20260712）×2个profile（`standard_resnet18`、`pytorch_template_resnet18_hypothesis_v1`）=20个Proposed-only运行。
+
+| Wave | Runs | Seed/profile coverage | GPU allocation | Launch boundary |
+|---|---:|---|---|---|
+| 1 | 8 | seed20260711的4个receiver任务×2profile | GPU0-7各1个 | 必须显式`--wave 1`；本任务不启动 |
+| 2 | 8 | seed20260711的cross-day×2profile；seed20260712的4个receiver任务，其中standard4项、template2项 | GPU0-7各1个 | 其他wave不得活跃；本任务不启动 |
+| 3 | 4 | seed20260712剩余cross-day×2profile及template剩余2项 | GPU0-3各1个 | 其他wave不得活跃；本任务不启动 |
+
+launcher生成并验证固定20行`expected_matrix.tsv`，要求组合和run ID唯一、wave计数严格为8/8/4；对既有run/log/result/manifest全部fail closed；使用`flock`防止并发启动器；检查其他wave manifest PID和相关训练命令；对本波涉及GPU要求现有compute process数小于2。因此在每GPU已有1个无关`phase1_dgleo`训练时，每卡再增加1个本实验进程后达到允许上限2，不会主动干预无关进程。
+
+GPU共享会增加训练时延和运行时方差。后续结果必须记录wave、GPU、并发占用、起止时间和同run指标；不能把共享GPU导致的耗时变化解释为模型质量变化。若任一GPU已有2个compute process、相关wave仍活跃或输出路径已存在，launcher必须NO-GO。
+
+### Supervisor review history
+
+初版launcher因缺少run/manifest防覆盖、跨wave并发/GPU上限守卫及20项完整性manifest被监督审查判定NO-GO，未提交、未同步、未启动。修正版补齐上述硬门控后通过独立复审GO。GO只代表launcher可进入本地验证、Git提交与远端文件同步，不代表授权启动任何wave。
+
+### 2026-07-13 local verification and sync map
+
+| Check | Command | Result |
+|---|---|---|
+| 62 related tests | `python -m pytest -q -p no:cacheprovider --basetemp <workspace-temp> tests/test_wisig_random_split.py tests/test_wisig_fewshot_payload.py tests/test_mitigating_receiver_impact_da.py` in `ssr-gpu` | PASS，62/62 |
+| Python syntax | `python -m py_compile paper_reproduction/mitigating_receiver_impact_da/*.py` in `ssr-gpu` | PASS |
+| Launcher syntax | `bash -n paper_reproduction/mitigating_receiver_impact_da/launch_full_multiseed_validation_20260713.sh` | PASS |
+| Diff whitespace | `git diff --check` | PASS；仅LF/CRLF转换提示 |
+
+新launcher本地SHA256：`df9de171051e97d23787aaf91bbc62a11193cdb9eb9922d37ea9085c990bc1de`。
+
+唯一远端同步映射：
+
+| Local | Remote |
+|---|---|
+| `E:/type10-7/github_publish/CVS-RFFI-repo/paper_reproduction/mitigating_receiver_impact_da/launch_full_multiseed_validation_20260713.sh` | `/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/mitigating_receiver_impact_da/launch_full_multiseed_validation_20260713.sh` |
+
+本次禁止同步报告、代码、配置或其他launcher，禁止启动wave1/2/3。
+
+### N607 sync verification
+
+- Pre-sync Git commit：`a3b7a331b60d6da08667aa8840c771cafb9532b4`；同步后仅amend本任务报告证据，不改变launcher内容。
+- 2026-07-13 11:20 CST直接N607 preflight通过：远端用户`szu2070436088`、主机`dell-DSS8440`、项目根可见、8张RTX3090可见。
+- `tools/n607_training_inventory.py --direct-only --pretty`确认唯一活跃训练族为无关`phase1_dgleo_jointp0_leoweak8r2_20260713`，其8个GPU compute子PID分别占用GPU0-7，每GPU恰好1个。
+- 精确`pgrep`匹配`paper_reproduction.mitigating_receiver_impact_da.train`返回空；本实验训练进程为0。
+- 仅同步`launch_full_multiseed_validation_20260713.sh`到约定远端同路径。远端SHA256为`df9de171051e97d23787aaf91bbc62a11193cdb9eb9922d37ea9085c990bc1de`，与本地一致；远端`bash -n`为PASS。
+- `paper_reproduction/logs`和`paper_reproduction/runs`下不存在`mitigating_da_full_multiseed_validation_20260713*`wave输出。本任务未启动wave1/2/3。
+- 每次SSH/SCP后均确认本地无`ssh.exe`且无N607或bridge TCP22 `ESTABLISHED`连接。

@@ -4,7 +4,7 @@
 Explain the large WiSig reproduction gap with paper-to-code and full-log evidence, implement only paper-aligned fixes, and validate them locally and on N607.
 
 ## Current Phase
-Phase 4: in_progress
+Phase 5: in_progress
 
 ## Phases
 
@@ -30,12 +30,13 @@ Phase 4: in_progress
 - [x] Record report, Git state, sync map, commands, GPUs, PIDs, logs, and expected artifacts before launch.
 - [x] Sync locally verified files and launch a bounded reproduction matrix without interfering with unrelated jobs.
 - [x] Parse the first repaired matrix logs and metrics in full.
-- [ ] Run and parse the architecture/Table III localization matrix.
+- [x] Run and parse the architecture/Table III localization matrix.
 
 ### Phase 5: Final comparison and delivery
 - [x] Compare each first-matrix same-run result with the corresponding paper row.
-- [ ] Update traceability statuses and report root causes, residual risks, and strict-vs-diagnostic claim boundaries.
-- [ ] Commit intended Git-backed changes without touching unrelated edits.
+- [x] Update traceability statuses and report root causes, residual risks, and strict-vs-diagnostic claim boundaries.
+- [x] Commit intended Git-backed changes without touching unrelated edits.
+- [x] Run N607 preflight, verify one unrelated process per GPU and no related process, then sync and verify only the new launcher without launching a wave.
 
 ## Errors Encountered
 
@@ -47,3 +48,7 @@ Phase 4: in_progress
 | First focused test command stayed in base Conda env | 1 | Load `conda-hook.ps1`, activate `ssr-gpu`, and rerun |
 | Initial multi-file patch included a wrong protocol context | 1 | Confirm no partial diff, then apply smaller patches |
 | First repaired MINE path referenced removed local names | 1 | Use the refreshed `source_outputs/target_outputs` estimate logits; rerun 36 tests |
+| Codex shell wrapper could not spawn the WindowsApps `pwsh.exe` alias | 1 | Use the persistent Node command runner with explicit executables; no project command ran in the failed attempt |
+| Broad recursive launcher scan hit an access-denied `.pytest_cache` path | 1 | Repeat with explicit cache exclusions and per-directory access handling |
+| First full-matrix launcher review returned NO-GO | 1 | Add no-clobber run/log/manifest checks, a launch lock, cross-wave/GPU capacity guards, and a validated 20-row expected matrix; independent re-review returned GO |
+| Pytest could not scan the user temp root for 8 `tmp_path` setups | 1 | Rerun the full 62-test set with a workspace-local `--basetemp` and cache disabled; all 62 passed and the temporary directory was removed |
