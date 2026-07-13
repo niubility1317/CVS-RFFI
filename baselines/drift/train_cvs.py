@@ -11,6 +11,11 @@ if str(_PROJECT_ROOT) not in sys.path:
 import torch
 
 from baselines.common.augmentation import add_sat_channel_view_args, build_sat_channel_view_augment, supervised_sat_view_batch
+from baselines.common.consistency import (
+    add_augmentation_consistency_args,
+    build_augmentation_consistency_config,
+    build_augmentation_consistency_step_fn,
+)
 from baselines.common.cvs_data import add_cvs_data_args, build_cvs_loaders
 from baselines.common.cvs_sat_eval import (
     add_cvs_sat_eval_args,
@@ -60,6 +65,7 @@ def main() -> None:
     add_cvs_data_args(parser)
     add_cvs_sat_eval_args(parser)
     add_pseudo_label_args(parser)
+    add_augmentation_consistency_args(parser)
     add_sat_channel_view_args(parser)
     parser.set_defaults(batch_size=64, eval_batch_size=256)
     add_drift_method_args(parser)
@@ -75,6 +81,8 @@ def main() -> None:
     )
     loaders = build_cvs_loaders(args, device)
     sat_view_aug = build_sat_channel_view_augment(args)
+    if args.use_pseudo_labels and args.use_augmentation_consistency:
+        raise ValueError("Pseudo-label and augmentation-consistency routes must run separately.")
     num_train_receivers = train_receiver_count(loaders.split.split_info, loaders.split.num_receivers)
     train_receivers = train_receiver_indices(loaders.split.split_info)
     receiver_mapping = {int(raw): int(idx) for idx, raw in enumerate(train_receivers)}
@@ -165,11 +173,32 @@ def main() -> None:
         return model(batch["iq"].to(device), grl_lambda=0.0)
 
     pseudo_cfg = build_pseudo_label_config(args)
-    pseudo_loader = loaders.unlabeled if loaders.unlabeled is not None else loaders.train
+    consistency_cfg = build_augmentation_consistency_config(args)
+    unlabeled_loader = loaders.unlabeled
+    if (pseudo_cfg.enabled or consistency_cfg.enabled) and unlabeled_loader is None:
+        raise ValueError("Unlabeled training requires --use_source_ssl_split.")
     pseudo_step = (
-        build_pseudo_step_fn(cfg=pseudo_cfg, loader=pseudo_loader, optimizer=optimizer, forward_fn=forward_eval)
+        build_pseudo_step_fn(cfg=pseudo_cfg, loader=unlabeled_loader, optimizer=optimizer, forward_fn=forward_eval)
         if pseudo_cfg.enabled
         else None
+    )
+    consistency_step = (
+        build_augmentation_consistency_step_fn(
+            cfg=consistency_cfg,
+            loader=unlabeled_loader,
+            optimizer=optimizer,
+            sat_augment=sat_view_aug,
+            forward_fn=forward_eval,
+        )
+        if consistency_cfg.enabled
+        else None
+    )
+    unlabeled_step = pseudo_step if pseudo_step is not None else consistency_step
+    print(
+        f"[CONFIG-UNLABELED] route={'pseudo_label' if pseudo_cfg.enabled else ('augmentation_consistency' if consistency_cfg.enabled else 'none')} "
+        f"labeled_ratio={args.wisig_labeled_ratio:.6g} unlabeled_ratio={args.wisig_unlabeled_ratio:.6g} "
+        f"source_val_ratio={args.wisig_source_val_ratio:.6g}",
+        flush=True,
     )
 
     def extra_test(model, device):
@@ -195,7 +224,7 @@ def main() -> None:
         epochs=args.epochs,
         optimizer=optimizer,
         train_step_fn=train_step,
-        pseudo_step_fn=pseudo_step,
+        pseudo_step_fn=unlabeled_step,
         forward_eval_fn=forward_eval,
         extra_test_fn=extra_test,
         paper_eval_last_n=args.paper_eval_last_n,

@@ -31,6 +31,17 @@ STOP_ON_FAIL="${STOP_ON_FAIL:-0}"
 SEED="${SEED:-1337}"
 TRAIN_RATIO="${TRAIN_RATIO:-0.1}"
 VAL_RATIO="${VAL_RATIO:-0.9}"
+SSL_MODE="${SSL_MODE:-none}"
+LABELED_RATIO="${LABELED_RATIO:-0.1}"
+UNLABELED_RATIO="${UNLABELED_RATIO:-0.6}"
+SOURCE_VAL_RATIO="${SOURCE_VAL_RATIO:-0.3}"
+PSEUDO_START_EPOCH="${PSEUDO_START_EPOCH:-1}"
+PSEUDO_THRESHOLD="${PSEUDO_THRESHOLD:-0.95}"
+PSEUDO_MARGIN="${PSEUDO_MARGIN:-0.0}"
+LAMBDA_PSEUDO="${LAMBDA_PSEUDO:-1.0}"
+CONSISTENCY_START_EPOCH="${CONSISTENCY_START_EPOCH:-1}"
+CONSISTENCY_TEMPERATURE="${CONSISTENCY_TEMPERATURE:-1.0}"
+LAMBDA_CONSISTENCY="${LAMBDA_CONSISTENCY:-1.0}"
 GUARD_GAP="${GUARD_GAP:-8}"
 TRAIN_DAYS_USER_SET="${TRAIN_DAYS+x}"
 TEST_DAYS_USER_SET="${TEST_DAYS+x}"
@@ -122,6 +133,11 @@ case "${WISIG_PROTOCOL}" in
   *) echo "ERROR: unsupported --wisig-protocol '${WISIG_PROTOCOL}'." >&2; exit 2 ;;
 esac
 
+case "${SSL_MODE}" in
+  none|pseudo_label|augmentation_consistency) ;;
+  *) echo "ERROR: unsupported SSL_MODE '${SSL_MODE}'." >&2; exit 2 ;;
+esac
+
 if [ "${WISIG_PROTOCOL}" = "drift_day1" ]; then
   [ -z "${TRAIN_DAYS_USER_SET}" ] && TRAIN_DAYS="0"
   [ -z "${TEST_DAYS_USER_SET}" ] && TEST_DAYS="0"
@@ -204,8 +220,6 @@ append_common_args() {
     --wisig_equalized "${WISIG_EQUALIZED}"
     --wisig_domain "${WISIG_DOMAIN}"
     --wisig_out_len "${WISIG_OUT_LEN}"
-    --wisig_train_ratio "${TRAIN_RATIO}"
-    --wisig_val_ratio "${VAL_RATIO}"
     --wisig_guard_gap "${GUARD_GAP}"
     --wisig_train_days "${TRAIN_DAYS}"
     --wisig_test_days "${TEST_DAYS}"
@@ -224,6 +238,16 @@ append_common_args() {
     --prefetch_factor "${PREFETCH_FACTOR}"
     --seed "${SEED}"
   )
+  if [ "${SSL_MODE}" = "none" ]; then
+    CMD+=(--wisig_train_ratio "${TRAIN_RATIO}" --wisig_val_ratio "${VAL_RATIO}")
+  else
+    CMD+=(
+      --use_source_ssl_split
+      --wisig_labeled_ratio "${LABELED_RATIO}"
+      --wisig_unlabeled_ratio "${UNLABELED_RATIO}"
+      --wisig_source_val_ratio "${SOURCE_VAL_RATIO}"
+    )
+  fi
   if [ "${SAT_EVAL}" = "1" ]; then
     CMD+=(
       --eval_sat_channel
@@ -259,6 +283,22 @@ append_method_args() {
   esac
   if [ "${method}" = "ra_collab" ]; then
     CMD+=(--collaborative_fusion soft)
+  fi
+  if [ "${SSL_MODE}" = "pseudo_label" ]; then
+    CMD+=(
+      --use_pseudo_labels
+      --pseudo_start_epoch "${PSEUDO_START_EPOCH}"
+      --pseudo_threshold "${PSEUDO_THRESHOLD}"
+      --pseudo_margin "${PSEUDO_MARGIN}"
+      --lambda_pseudo "${LAMBDA_PSEUDO}"
+    )
+  elif [ "${SSL_MODE}" = "augmentation_consistency" ]; then
+    CMD+=(
+      --use_augmentation_consistency
+      --consistency_start_epoch "${CONSISTENCY_START_EPOCH}"
+      --consistency_temperature "${CONSISTENCY_TEMPERATURE}"
+      --lambda_consistency "${LAMBDA_CONSISTENCY}"
+    )
   fi
 }
 
@@ -304,7 +344,12 @@ log_msg "[BASELINE-QUEUE] run_root=${RUN_ROOT}"
 log_msg "[BASELINE-QUEUE] log_root=${LOG_ROOT}"
 log_msg "[BASELINE-QUEUE] methods=${METHODS_CSV}"
 log_msg "[BASELINE-QUEUE] gpus=${GPU_IDS_CSV}"
-log_msg "[BASELINE-QUEUE] protocol=${WISIG_PROTOCOL} train_ratio=${TRAIN_RATIO} val_ratio=${VAL_RATIO} guard_gap=${GUARD_GAP}"
+if [ "${SSL_MODE}" = "none" ]; then
+  log_msg "[BASELINE-QUEUE] protocol=${WISIG_PROTOCOL} train_ratio=${TRAIN_RATIO} val_ratio=${VAL_RATIO} guard_gap=${GUARD_GAP}"
+else
+  log_msg "[BASELINE-QUEUE] protocol=${WISIG_PROTOCOL} source_ssl=1 guard_gap=${GUARD_GAP}"
+fi
+log_msg "[BASELINE-QUEUE] ssl_mode=${SSL_MODE} labeled_ratio=${LABELED_RATIO} unlabeled_ratio=${UNLABELED_RATIO} source_val_ratio=${SOURCE_VAL_RATIO}"
 log_msg "[BASELINE-QUEUE] train_days=${TRAIN_DAYS} test_days=${TEST_DAYS} train_rxs=${TRAIN_RXS} test_rxs=${TEST_RXS}"
 log_msg "[BASELINE-QUEUE] paper_samples train=${PAPER_TRAIN_SAMPLES_PER_COMBO} val=${PAPER_VAL_SAMPLES_PER_COMBO} test=${PAPER_TEST_SAMPLES_PER_COMBO}"
 log_msg "[BASELINE-QUEUE] paper_eval_last_n default=${DEFAULT_PAPER_EVAL_LAST_N} riei=${RIEI_PAPER_EVAL_LAST_N} drift=${DRIFT_PAPER_EVAL_LAST_N}"

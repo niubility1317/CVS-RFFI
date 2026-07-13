@@ -135,3 +135,8 @@ nohup bash scripts/launchers/run_cvs_baseline_queue.sh \
   - 方法日志以`baseline_<method>_cvs_day_rx_seed713101_<timestamp>.log`命名。
 - 每次SSH/SCP操作后均核验本地`ssh.exe=0`且到N607/桥接机的TCP22连接数为0。
 
+## 2026-07-13 22:09 HKT协议替代
+
+用户将正式Phase1矩阵修订为两条独立半监督路线：`pseudo_label×3方法`与`augmentation_consistency×3方法`，均采用0.1有标签、0.6无标签、0.3源验证并默认开启星地信道增强。因此本报告中的3条纯监督+星地增强运行被标记为`SUPERSEDED_DIAGNOSTIC`，不得进入正式结果表。
+
+已精确终止本轮自有worker PID：CVCNN-CE `4103528`、RIEI-FD `4108476`、DRIFT `4108483`；两个scheduler随后退出。日志、部分checkpoint和run目录均保留，未删除或覆盖。新正式矩阵转入报告`cvs_publication_phase1_ssl2x3_seed713101_20260713_221651/report.md`。

@@ -426,8 +426,8 @@ def run_validation_gated_training(
         n_batches = 0
         metric_sums: Dict[str, float] = {}
         metric_counts: Dict[str, int] = {}
-        pseudo_sums: Dict[str, float] = {}
-        pseudo_count = 0
+        unlabeled_sums: Dict[str, float] = {}
+        unlabeled_count = 0
         for batch in train_loader:
             metrics = train_step_fn(model, batch, device, epoch, step)
             batch_loss = float(metrics.get("loss", 0.0))
@@ -446,13 +446,13 @@ def run_validation_gated_training(
                 metric_sums[key] = metric_sums.get(key, 0.0) + metric_value
                 metric_counts[key] = metric_counts.get(key, 0) + 1
             if pseudo_step_fn is not None:
-                pseudo_metrics = pseudo_step_fn(model, device, epoch, step)
-                batch_loss += float(pseudo_metrics.get("loss", 0.0))
-                for key, value in pseudo_metrics.items():
+                unlabeled_metrics = pseudo_step_fn(model, device, epoch, step)
+                batch_loss += float(unlabeled_metrics.get("loss", 0.0))
+                for key, value in unlabeled_metrics.items():
                     if key == "loss":
                         continue
-                    pseudo_sums[key] = pseudo_sums.get(key, 0.0) + float(value)
-                pseudo_count += 1
+                    unlabeled_sums[key] = unlabeled_sums.get(key, 0.0) + float(value)
+                unlabeled_count += 1
             loss_sum += batch_loss
             n_batches += 1
             step += 1
@@ -475,14 +475,17 @@ def run_validation_gated_training(
                 key: metric_sums[key] / max(1, metric_counts[key])
                 for key in sorted(metric_sums.keys())
             }
-        if pseudo_count:
-            pseudo_stats: Dict[str, float] = {}
-            for key, value in pseudo_sums.items():
-                if key in {"pseudo/total", "pseudo/selected"}:
-                    pseudo_stats[key] = value
+        if unlabeled_count:
+            unlabeled_stats: Dict[str, float] = {}
+            for key, value in unlabeled_sums.items():
+                if key in {"pseudo/total", "pseudo/selected", "consistency/total"}:
+                    unlabeled_stats[key] = value
                 else:
-                    pseudo_stats[key] = value / max(1, pseudo_count)
-            epoch_stats["train_pseudo"] = pseudo_stats
+                    unlabeled_stats[key] = value / max(1, unlabeled_count)
+            if any(key.startswith("consistency/") for key in unlabeled_stats):
+                epoch_stats["train_consistency"] = unlabeled_stats
+            else:
+                epoch_stats["train_pseudo"] = unlabeled_stats
         if plateau_stats is not None:
             epoch_stats["plateau"] = {
                 "improved": plateau_stats.improved,
@@ -559,6 +562,25 @@ def run_validation_gated_training(
                 if key in pseudo
             ]
             print("[PSEUDO-METRICS] " + " ".join(parts), flush=True)
+        if epoch_stats.get("train_consistency"):
+            consistency = epoch_stats["train_consistency"]
+            order = [
+                "consistency/enabled",
+                "consistency/active",
+                "consistency/start_epoch",
+                "consistency/temperature",
+                "consistency/weight",
+                "consistency/agreement",
+                "consistency/clean_confidence",
+                "consistency/total",
+                "consistency/loss",
+            ]
+            parts = [
+                f"{key}={float(consistency[key]):.6g}"
+                for key in order
+                if key in consistency
+            ]
+            print("[CONSISTENCY-METRICS] " + " ".join(parts), flush=True)
         if epoch_stats.get("tested"):
             test_prefix = "[BEST-VAL-TEST]" if (val_improved and test_on_val_improve) else "[INTERVAL-TEST]"
             named_prefix = "[TEST-NAMED]" if (val_improved and test_on_val_improve) else "[INTERVAL-TEST-NAMED]"

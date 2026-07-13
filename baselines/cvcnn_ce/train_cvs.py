@@ -12,6 +12,11 @@ import torch
 import torch.nn.functional as F
 
 from baselines.common.augmentation import add_sat_channel_view_args, build_sat_channel_view_augment, supervised_sat_view_batch
+from baselines.common.consistency import (
+    add_augmentation_consistency_args,
+    build_augmentation_consistency_config,
+    build_augmentation_consistency_step_fn,
+)
 from baselines.common.cvs_data import add_cvs_data_args, build_cvs_loaders
 from baselines.common.cvs_sat_eval import (
     add_cvs_sat_eval_args,
@@ -29,6 +34,7 @@ def main() -> None:
     add_cvs_data_args(parser)
     add_cvs_sat_eval_args(parser)
     add_pseudo_label_args(parser)
+    add_augmentation_consistency_args(parser)
     add_sat_channel_view_args(parser)
     parser.add_argument("--epochs", type=int, default=200)
     parser.add_argument("--lr", type=float, default=2e-4)
@@ -57,6 +63,8 @@ def main() -> None:
     )
     loaders = build_cvs_loaders(args, device)
     sat_view_aug = build_sat_channel_view_augment(args)
+    if args.use_pseudo_labels and args.use_augmentation_consistency:
+        raise ValueError("Pseudo-label and augmentation-consistency routes must run separately.")
     model_cls = SincCVCNN if args.front_end == "sinc" else BasicCVCNN
     model_kwargs = {
         "num_classes": loaders.split.num_classes,
@@ -77,10 +85,31 @@ def main() -> None:
     optimizer = torch.optim.AdamW(model.parameters(), lr=args.lr, weight_decay=args.wd)
     scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=max(1, args.epochs), eta_min=args.lr_min)
     pseudo_cfg = build_pseudo_label_config(args)
+    consistency_cfg = build_augmentation_consistency_config(args)
+    unlabeled_loader = loaders.unlabeled
+    if (pseudo_cfg.enabled or consistency_cfg.enabled) and unlabeled_loader is None:
+        raise ValueError("Unlabeled training requires --use_source_ssl_split.")
     pseudo_step = (
-        build_pseudo_step_fn(cfg=pseudo_cfg, loader=loaders.train, optimizer=optimizer)
+        build_pseudo_step_fn(cfg=pseudo_cfg, loader=unlabeled_loader, optimizer=optimizer)
         if pseudo_cfg.enabled
         else None
+    )
+    consistency_step = (
+        build_augmentation_consistency_step_fn(
+            cfg=consistency_cfg,
+            loader=unlabeled_loader,
+            optimizer=optimizer,
+            sat_augment=sat_view_aug,
+        )
+        if consistency_cfg.enabled
+        else None
+    )
+    unlabeled_step = pseudo_step if pseudo_step is not None else consistency_step
+    print(
+        f"[CONFIG-UNLABELED] route={'pseudo_label' if pseudo_cfg.enabled else ('augmentation_consistency' if consistency_cfg.enabled else 'none')} "
+        f"labeled_ratio={args.wisig_labeled_ratio:.6g} unlabeled_ratio={args.wisig_unlabeled_ratio:.6g} "
+        f"source_val_ratio={args.wisig_source_val_ratio:.6g}",
+        flush=True,
     )
 
     def train_step(model, batch, device, epoch, step):
@@ -117,7 +146,7 @@ def main() -> None:
         optimizer=optimizer,
         scheduler=scheduler,
         train_step_fn=train_step,
-        pseudo_step_fn=pseudo_step,
+        pseudo_step_fn=unlabeled_step,
         extra_test_fn=extra_test,
         paper_eval_last_n=args.paper_eval_last_n,
         paper_eval_name=args.paper_eval_name,
