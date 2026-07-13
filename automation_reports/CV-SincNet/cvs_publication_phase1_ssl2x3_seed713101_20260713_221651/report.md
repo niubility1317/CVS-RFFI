@@ -95,3 +95,45 @@
 - 每GPU同时运行同一方法的两条路线；启动后必须核验显存，若OOM只允许降低batch size并记录有效优化步差异，不得关闭星地增强或无标签机制。
 - 单seed结果仅支持受控配对比较，不支持显著性主张。
 - 伪标签precision使用隐藏真值仅作审计，不参与训练或checkpoint选择。
++
+## 2026-07-13 N607同步与启动记录
+
+- Git提交：`c2efb94 feat: add separate Phase1 SSL baseline routes`；公共数据控制补齐提交：`a719943 fix: align baseline source SSL data controls`。
+- 22:26:17 HKT直接N607预检通过，GPU0–7均为空闲；同步8个精确目标文件后，本地`ssh.exe=0`且TCP22连接数为0。
+- 随后直接SSH在banner阶段暂时拒绝连接；按项目规则使用已验证实验室桥接路径，桥接预检确认host、时间、项目根目录和GPU状态正常。每次桥接任务后本地到N607及桥接机的SSH/TCP22连接均清零。
+- 远端8个目标文件SHA256与Git工作区完全一致；其中：
+  - `consistency.py=4fc57e466f08403b69b1c99476c34ae9ca6b62fa0659401e3d1dcc761ed8e5f4`
+  - `cvs_trainer.py=c63d65c93304af506c80e8d8196895a33f1c06b5cfe21d608ec99db3b9b06243`
+  - `cvs_data.py=a816082c144d7e00149b89a5af2d5e310379f3ee2c2dba8350af9a66b736fca7`
+  - `run_phase1_ssl_baseline_matrix.sh=cc275eb32604630a6b64678354b7e4246441a4aa3b022b566919ef2694af25be`
+- 远端dry-run计数：`cvcnn=2`、`riei=2`、`drift=2`、`pseudo=3`、`consistency=3`、`sat_aug=6`、`labeled=6`、`unlabeled=6`、`val=6`、`combined=0`。
+- outer matrix scheduler PID：`4124270`。
+- worker与GPU映射：
+
+|GPU|方法|伪标签PID|增强一致性PID|
+|---:|---|---:|---:|
+|0|CVCNN-CE|4124379|4124376|
+|1|RIEI-FD|4124404|4124400|
+|2|DRIFT|4124414|4124409|
+
+- 22:29:39 HKT启动健康检查：GPU0/1/2各恰好2条训练进程，显存分别约1130/1198/1142MiB，未超过项目每GPU两条上限；其余GPU空闲。
+- 6条worker命令均明确包含`--use_source_ssl_split`、`0.1/0.6/0.3`、`--use_sat_channel_view_aug`、三个`leo_*_weak`场景和200epoch。
+- 6条实验均完成epoch1并生成验证门控测试：
+  - 伪标签CVCNN-CE日志已出现`[PSEUDO-METRICS]`；
+  - 增强一致性CVCNN-CE日志已出现`[CONSISTENCY-METRICS]`；
+  - 三种方法的配置均显示各自独立路线；
+  - 最新日志未发现Traceback、OOM、RuntimeError、ValueError或NaN。
+- epoch1源验证准确率仅作为启动健康证据，不作为最终结论：CVCNN-CE伪标签61.87%、一致性70.75%；RIEI-FD伪标签70.32%、一致性88.60%；DRIFT伪标签30.19%、一致性39.13%。
+- exact launch command：
+
+```bash
+cd /home/szu2070436088/2510044040/CV-SincNet
+nohup env \
+  PYTHON_BIN=/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python \
+  SEED=713101 STANDARD_EPOCHS=200 \
+  RUN_ID=cvs_publication_phase1_ssl2x3_seed713101_20260713 \
+  RUN_ROOT_BASE=/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/runs/cvs_publication_phase1_ssl2x3_seed713101_20260713 \
+  LOG_ROOT_BASE=/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/logs/cvs_publication_phase1_ssl2x3_seed713101_20260713 \
+  bash scripts/launchers/run_phase1_ssl_baseline_matrix.sh \
+  > paper_reproduction/logs/cvs_publication_phase1_ssl2x3_seed713101_20260713/nohup.out 2>&1 &
+```
