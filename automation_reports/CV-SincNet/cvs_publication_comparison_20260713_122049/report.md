@@ -48,3 +48,12 @@
 - 为避免“统一步数”被误写成“统一优化器”，Stage2主表预算明确为`common_steps_method_native_optimizer`：相同base/adapt或increment步数，但保留各方法原生优化器与关键超参数。Stage2-C已分别设置CSIL SGD(lr0.01,momentum0.9,wd0.01)、MoPC SGD(lr0.01,momentum0.9,wd0.0002)、Orthogonal base/increment SGD(lr0.01/0.08,momentum0.9,wd0.0005)，并恢复Orthogonal noise0.01、top-k60、tau-fuse0.01、embedding256、pseudo-targets200。
 - Stage2-B中MRIOR-SDA采用本地论文方程复现谱系的Adam、lr0.0006、wd0；DADDA-SDA采用论文配置的SGD、momentum0.9、wd0.0005、base/adapt lr0.0001及`(1+10p)^-0.75`反比衰减。ProtoNet CDA保留既有ProtoNet训练入口。主表仍须标为CVS extension；MRIOR论文未报告优化器，因此Adam属于已披露的本地复现选择，不得声称论文原文指定。
 - 本地聚焦回归：`conda run -n ssr-gpu python -m pytest tests/test_cvs_supervised_da_runner.py tests/test_cvs_class_incremental.py tests/test_cvs_publication_matrix.py tests/test_cvs_proposed_stage2_runner.py -q`，结果`19 passed`。完整500行矩阵在方法原生trace smoke通过前不得启动。
+
+### 方法原生trace smoke启动前记录（14:08）
+
+- 本地版本：Git提交`6f09dd2`；同步文件为`class_incremental.py`、`supervised_da_runner.py`及Stage2-B/C正式配置。远端SHA256分别为`e0062f40...a3`、`e8853388...36`、`5e89e68...aa`、`df007515...02`，与本地一致；remote py_compile通过；Stage2-B/C各500行manifest的4行dry-run通过。
+- 服务器状态：Phase1 baseline仍各占GPU0/1/2一个进程，显存约448/528/502MiB；GPU3-7空闲。计划在GPU3-7各启动一个短smoke，不触碰Phase1，不超过每GPU两个训练进程。
+- 输出根：`paper_reproduction/runs/cvs_publication_method_native_trace_smoke_20260713/`；日志根：`paper_reproduction/logs/cvs_publication_method_native_trace_smoke_20260713/`；工作目录`/home/szu2070436088/2510044040/CV-SincNet`；Python`/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python`。
+- Stage2-B命令模板：`CUDA_VISIBLE_DEVICES=<3|4> python -m paper_reproduction.cvs_aligned.supervised_da_runner --config paper_reproduction/configs/cvs_stage2b_supervised_da_publication_base_n607.json --run-dir <mrior_sda|dadda_sda> --experiment-id <method>_native_trace_smoke --method <method> --target-receiver 20-1 --seed 713101 --split-seed 713101 --k-shot 5 --base-steps 5 --adapt-steps 3 --device cuda:0`。
+- Stage2-C命令模板：`CUDA_VISIBLE_DEVICES=<5|6|7> python -m paper_reproduction.cvs_aligned.class_incremental --config paper_reproduction/configs/cvs_stage2c_publication_base_n607.json --run-dir <csil|mopc_hr|orthogonal_incremental> --experiment-id <method>_native_trace_smoke --method <method> --target-receiver 20-1 --seed 713101 --split-seed 713101 --k-shot 5 --base-steps 5 --old-support-steps 3 --increment-steps 3 --device cuda:0`。
+- 这些短步数结果只验证方法原生优化器、有限loss trace和artifact契约，不作为性能排序。成功条件：进程退出0、8件artifact齐全、三种LEO场景、support/query不重叠、finite trace，并在resolved config/metrics中记录方法原生配置。
