@@ -399,6 +399,8 @@ def run_validation_gated_training(
     test_keys: Optional[list[str]] = None,
     paper_eval_last_n: int = 0,
     paper_eval_name: str = "",
+    test_eval_interval: int = 0,
+    test_eval_start_epoch: int = 1,
     test_on_val_improve: bool = True,
     checkpoint_name: str = "best_by_val.pt",
 ) -> TrainHistory:
@@ -411,6 +413,8 @@ def run_validation_gated_training(
     test_keys = test_keys or ["test_unseen_day_seen_rx", "test_seen_day_unseen_rx", "test_unseen_day_unseen_rx"]
     paper_eval_last_n = max(0, int(paper_eval_last_n))
     paper_eval_name = str(paper_eval_name or f"last{paper_eval_last_n}")
+    test_eval_interval = max(0, int(test_eval_interval))
+    test_eval_start_epoch = max(1, int(test_eval_start_epoch))
     test_on_val_improve = bool(test_on_val_improve)
     paper_window_records: list[Dict[str, Any]] = []
     best_path = os.path.join(output_dir, checkpoint_name)
@@ -490,6 +494,12 @@ def run_validation_gated_training(
             }
         gate_value = val_stats["tx_loss"] if best_metric == "loss" else val_stats["tx_acc"]
         val_improved = gate.should_test(gate_value, epoch)
+        interval_due = (
+            test_eval_interval > 0
+            and epoch >= test_eval_start_epoch
+            and ((epoch - test_eval_start_epoch) % test_eval_interval == 0)
+        )
+        should_test = (val_improved and test_on_val_improve) or interval_due
         if val_improved and not test_on_val_improve:
             history.best = {
                 "epoch": epoch,
@@ -499,7 +509,7 @@ def run_validation_gated_training(
                 "checkpoint": best_path,
             }
             torch.save({"model": model.state_dict(), "epoch": epoch, "stats": history.best}, best_path)
-        if val_improved and test_on_val_improve:
+        if should_test:
             test_result = evaluate_primary_and_obs_tests(
                 model=model,
                 named_test_loaders=named_test_loaders,
@@ -510,6 +520,9 @@ def run_validation_gated_training(
             )
             epoch_stats.update({
                 "tested": True,
+                "test_reason": "best_val_interval" if (val_improved and test_on_val_improve and interval_due) else (
+                    "best_val" if val_improved and test_on_val_improve else "interval"
+                ),
                 **test_result,
             })
         print(
@@ -547,6 +560,8 @@ def run_validation_gated_training(
             ]
             print("[PSEUDO-METRICS] " + " ".join(parts), flush=True)
         if epoch_stats.get("tested"):
+            test_prefix = "[BEST-VAL-TEST]" if (val_improved and test_on_val_improve) else "[INTERVAL-TEST]"
+            named_prefix = "[TEST-NAMED]" if (val_improved and test_on_val_improve) else "[INTERVAL-TEST-NAMED]"
             if "test_named_obs" in epoch_stats:
                 print(
                     f"[BEST-VAL-TEST-COLLAB] overall_tx={epoch_stats['test_overall_collab']['tx_acc']:.2f}%",
@@ -564,28 +579,29 @@ def run_validation_gated_training(
                 for line in format_named_test_lines(epoch_stats["test_named_obs"], prefix="[TEST-NAMED-OBS]"):
                     print(line, flush=True)
             else:
-                print(f"[BEST-VAL-TEST] overall_tx={epoch_stats['test_overall']['tx_acc']:.2f}%", flush=True)
+                print(f"{test_prefix} overall_tx={epoch_stats['test_overall']['tx_acc']:.2f}%", flush=True)
                 for line in format_named_test_lines(epoch_stats["test_named"]):
-                    print(line, flush=True)
+                    print(line.replace("[TEST-NAMED]", named_prefix, 1), flush=True)
             extra_tests = extra_test_fn(model, device) if extra_test_fn is not None else {}
             epoch_stats["extra_tests"] = extra_tests
             for line in format_extra_test_lines(extra_tests):
                 print(line, flush=True)
-            history.best = {
-                "epoch": epoch,
-                "best_rule": "val_tx_loss" if best_metric == "loss" else "val_tx_acc",
-                "val": val_stats,
-                "test_named": epoch_stats["test_named"],
-                "test_overall": epoch_stats["test_overall"],
-                "test_named_collab": epoch_stats.get("test_named_collab"),
-                "test_overall_collab": epoch_stats.get("test_overall_collab"),
-                "test_named_obs": epoch_stats.get("test_named_obs"),
-                "test_overall_obs": epoch_stats.get("test_overall_obs"),
-                "test_protocols": epoch_stats.get("test_protocols"),
-                "extra_tests": epoch_stats.get("extra_tests", {}),
-                "checkpoint": best_path,
-            }
-            torch.save({"model": model.state_dict(), "epoch": epoch, "stats": history.best}, best_path)
+            if val_improved and test_on_val_improve:
+                history.best = {
+                    "epoch": epoch,
+                    "best_rule": "val_tx_loss" if best_metric == "loss" else "val_tx_acc",
+                    "val": val_stats,
+                    "test_named": epoch_stats["test_named"],
+                    "test_overall": epoch_stats["test_overall"],
+                    "test_named_collab": epoch_stats.get("test_named_collab"),
+                    "test_overall_collab": epoch_stats.get("test_overall_collab"),
+                    "test_named_obs": epoch_stats.get("test_named_obs"),
+                    "test_overall_obs": epoch_stats.get("test_overall_obs"),
+                    "test_protocols": epoch_stats.get("test_protocols"),
+                    "extra_tests": epoch_stats.get("extra_tests", {}),
+                    "checkpoint": best_path,
+                }
+                torch.save({"model": model.state_dict(), "epoch": epoch, "stats": history.best}, best_path)
         elif val_improved and not test_on_val_improve:
             print(f"[BEST-VAL] epoch={epoch} checkpoint={best_path} test_on_val_improve=0", flush=True)
         if paper_eval_last_n and epoch > max(0, int(epochs) - paper_eval_last_n):

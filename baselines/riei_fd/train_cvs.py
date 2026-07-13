@@ -75,6 +75,7 @@ def main() -> None:
         f"feature_dim={args.feature_dim} lambda_mi={args.lambda_mi:.4f} "
         f"lambda_ie={args.lambda_ie:.4f} dropout={args.dropout:.4f} "
         f"paper_eval_last_n={args.paper_eval_last_n} paper_eval_name={args.paper_eval_name} "
+        f"test_eval_interval={args.test_eval_interval} test_eval_start_epoch={args.test_eval_start_epoch} "
         f"test_on_val_improve={int(bool(args.test_on_val_improve))}",
         flush=True,
     )
@@ -170,6 +171,8 @@ def main() -> None:
         extra_test_fn=extra_test,
         paper_eval_last_n=args.paper_eval_last_n,
         paper_eval_name=args.paper_eval_name,
+        test_eval_interval=args.test_eval_interval,
+        test_eval_start_epoch=args.test_eval_start_epoch,
         test_on_val_improve=args.test_on_val_improve,
         output_dir=args.output_dir,
     )

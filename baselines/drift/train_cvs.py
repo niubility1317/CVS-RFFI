@@ -88,6 +88,7 @@ def main() -> None:
         f"lambda_mse={args.lambda_mse:.4f} grl_schedule={args.grl_schedule} "
         f"normalize_features_for_mse={int(bool(args.normalize_features_for_mse))} "
         f"paper_eval_last_n={args.paper_eval_last_n} paper_eval_name={args.paper_eval_name} "
+        f"test_eval_interval={args.test_eval_interval} test_eval_start_epoch={args.test_eval_start_epoch} "
         f"test_on_val_improve={int(bool(args.test_on_val_improve))}",
         flush=True,
     )
@@ -199,6 +200,8 @@ def main() -> None:
         extra_test_fn=extra_test,
         paper_eval_last_n=args.paper_eval_last_n,
         paper_eval_name=args.paper_eval_name,
+        test_eval_interval=args.test_eval_interval,
+        test_eval_start_epoch=args.test_eval_start_epoch,
         test_on_val_improve=args.test_on_val_improve,
         output_dir=args.output_dir,
     )

@@ -406,6 +406,48 @@ class BaselineWiSigPaperProtocolTest(unittest.TestCase):
         self.assertEqual(metrics["final"]["reason"], "post_training")
         self.assertIn("test_overall", metrics["final"])
 
+    def test_interval_test_does_not_overwrite_best_validation_checkpoint(self):
+        from baselines.common.cvs_trainer import run_validation_gated_training
+
+        class TinyModel(nn.Module):
+            def __init__(self):
+                super().__init__()
+                self.w = nn.Parameter(torch.eye(2))
+
+            def forward(self, x):
+                return x @ self.w
+
+        def batch(x, y):
+            return {"iq": torch.tensor(x, dtype=torch.float32), "label": torch.tensor(y, dtype=torch.long)}
+
+        model = TinyModel()
+        loader = [batch([[1.0, 0.0], [0.0, 1.0]], [0, 1])]
+
+        def train_step(model, batch, device, epoch, step):
+            del model, batch, device, epoch, step
+            return {"loss": 0.0}
+
+        with tempfile.TemporaryDirectory() as tmp:
+            run_validation_gated_training(
+                model=model,
+                train_loader=loader,
+                val_loader=loader,
+                named_test_loaders={"test_seen_day_unseen_rx": loader},
+                device=torch.device("cpu"),
+                epochs=3,
+                optimizer=torch.optim.SGD(model.parameters(), lr=0.1),
+                train_step_fn=train_step,
+                test_eval_interval=2,
+                test_eval_start_epoch=2,
+                output_dir=tmp,
+            )
+            metrics = json.loads((Path(tmp) / "metrics.json").read_text(encoding="utf-8"))
+            checkpoint = torch.load(Path(tmp) / "best_by_val.pt", map_location="cpu", weights_only=False)
+
+        self.assertEqual(metrics["best"]["epoch"], 1)
+        self.assertEqual(checkpoint["epoch"], 1)
+        self.assertEqual(metrics["epochs"][1]["test_reason"], "interval")
+
 
 class BaselineServerLaunchTest(unittest.TestCase):
     def test_method_file_entrypoints_help_work_from_server_style_root(self):
