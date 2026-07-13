@@ -193,3 +193,9 @@
 - GPU3-7 accelerator PID分别为3913615/3913616/3913617/3913618/3913619，均已进入各自seed的首条CSIL行；每个run_dir唯一且与主worker当前receiver3-19隔离。
 - 各GPU当前最多为一个主worker加一个accelerator，符合并发上限。当前只证明landed，最终仍以完整网格逐行artifact contract、worker失败数和最终审计为准。
 - 启动后本地`ssh_count=0`、N607及bridge的`ESTABLISHED`端口22连接数为0。
+
+### Stage2-C receiver7-7 accelerator完成（17:51）
+
+- GPU3-7五个accelerator均正常退出；每个worker summary为assigned15、completed15、skipped0、failed0，合计75/75条训练行完整通过artifact contract。
+- receiver7-7由25条既有CVS行加75条accelerator训练行达到100/100。完整Stage2-C现场进度为419/500，Traceback为0；receiver3-19也已100/100，主worker当前处理receiver7-14，receiver8-8独立accelerator继续运行。
+- 方法完成度为CVS-qKNNV42 125/125、CSIL 98/125、MoPC-HR 99/125、Orthogonal Incremental 97/125。该进度仍不作为最终方法排序。
