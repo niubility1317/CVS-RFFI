@@ -12,6 +12,7 @@ if str(CODE_ROOT) not in sys.path:
     sys.path.insert(0, str(CODE_ROOT))
 
 from scripts import launch_phase1_dgleo_p0closed8_20260713 as launcher  # noqa: E402
+from scripts import queue_phase1_dgleo_p0closed8_20260713 as capacity_queue  # noqa: E402
 
 
 def test_p0closed8_matrix_is_one_candidate_per_gpu_with_normalized_objective_shares():
@@ -104,6 +105,42 @@ def test_capacity_queue_dry_run_binds_verified_launcher_without_polling_gpu():
         check=True,
     )
     payload = json.loads(completed.stdout)
-    assert payload["launch_command"][0] == str(Path(sys.executable).resolve())
-    assert payload["launch_command"][1].endswith("launch_phase1_dgleo_p0closed8_20260713.py")
-    assert payload["launch_command"][-2:] == ["--wall-hours", "10.0"]
+    assert payload["launcher"].endswith("launch_phase1_dgleo_p0closed8_20260713.py")
+    assert payload["candidate_count"] == 8
+    assert payload["unique_command_count"] == 8
+    assert payload["candidate_gpu_map"] == {
+        f"P0C_C{gpu}_{suffix}": gpu
+        for gpu, suffix in enumerate(
+            (
+                "BALANCED",
+                "SOURCE_HEAVY",
+                "INVARIANT_HEAVY",
+                "BOUNDARY_ALIGNED",
+                "U_GEOMETRY",
+                "SAT_INVARIANT",
+                "INTEGRATED_AGGRESSIVE",
+                "DG_PROTECTED",
+            )
+        )
+    }
+    assert payload["max_concurrent_per_gpu"] == 2
+    assert payload["launch_mode"] == "fixed_candidate_per_gpu_capacity_aware"
+    assert payload["foreign_processes_count_as_candidates"] is False
+
+
+def test_capacity_queue_occupancy_never_counts_foreign_process_as_own_candidate():
+    compute = [
+        {"gpu": 0, "pid": 101},
+        {"gpu": 0, "pid": 102},
+        {"gpu": 1, "pid": 201},
+    ]
+    occupancy = capacity_queue._gpu_occupancy(compute, own_pids=[102])
+    assert occupancy[0] == {
+        "total_count": 2,
+        "own_count": 1,
+        "external_count": 1,
+        "own_pids": [102],
+        "external_pids": [101],
+    }
+    assert occupancy[1]["own_count"] == 0
+    assert occupancy[1]["external_count"] == 1

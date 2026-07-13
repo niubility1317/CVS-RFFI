@@ -43,7 +43,7 @@
 
 ## 占用保护
 
-启动前N607存在1个DRIFT baseline及10个Stage2-B/C分片scheduler，GPU3-7各有2个现有任务。新增版本化排队器只在GPU compute与已知现有launcher全部退出并连续3次确认空闲后启动8卡矩阵；最长等待12小时，训练wall limit仍为10小时。排队超时返回75且不创建伪训练结果。
+启动前N607存在其他任务。旧v1排队器要求全机GPU compute与已知launcher全部退出，错误地把外部任务存在性当成本批业务依赖；该策略已于16:15审计后废止。v2只使用每GPU实时容量，每张卡固定绑定1个本批candidate，在总训练进程数低于2且连续2次确认后独立启动；外部PID只计入容量，永不计入本批candidate、epoch、完成率或状态。
 
 ## N607发布
 
@@ -53,9 +53,16 @@
 - queue PID=`3849944`；初始状态`WAITING_FOR_EXISTING_JOBS`，compute=10、blockers=13；本批trainer尚未启动。
 - 状态文件：`logs/phase1_dgleo_p0closed8_20260713_queue_state.json`；stdout：`logs/phase1_dgleo_p0closed8_20260713_queue.out`。
 
-## 2026-07-13 14:50调度复核
+## 2026-07-13 14:50历史估计（16:15撤回）
 
 - 120epoch不变。held-out test仅在E120执行；source-val重评调度为E10-E100每10轮一次、最后20轮每2轮一次。该调度原本由基础launcher继承，本次在P0 wrapper中显式固定并增加回归测试，防止后续基础配置漂移。
 - N607现有DRIFT约E173/200；Stage2B完成/跳过约265/500行；Stage2C约39/500行。Stage2C的`orthogonal_incremental`单行中位耗时约1024秒，是当前排队主瓶颈。
-- 按当前吞吐，预计还需等待约7-8小时，之后连续3次空闲确认约3分钟；本批8卡训练预计5-6.5小时。因此从14:50起总完成时间约12-14.5小时，预计完成窗口为2026-07-14 03:00-05:30。该估计包含现有任务等待；本批训练自身仍受10小时wall limit约束。
+- [已撤回]当时按外部任务吞吐估计等待7-8小时及2026-07-14 03:00-05:30完成窗口；该方法混入非本批进程，不作为当前ETA证据。
 - 显式调度提交：`e3e769d`；相关launcher/protocol测试15 passed，`py_compile`通过。远端同步后SHA256=`0b1b2deb7531f3831cf060c2d32e1b266c85042eac95dca8a6fa5ea626e2246b`，dry-run确认四个调度参数，queue仍为`WAITING_FOR_EXISTING_JOBS`。
+
+## 2026-07-13 16:15进程归属纠正
+
+- PID/CWD/cmdline复核证明：本批仅有旧queue PID=`3849944`，Phase1 trainer为0/8；其余13个GPU compute均属于独立Stage2C publication/accelerator，不是本批进程。
+- 14:50基于外部Stage2C行进度推算本批完成时间的方法无效，原预计窗口撤回。后续ETA只依据本批candidate的实际`launched_at`、epoch吞吐和终局评估耗时。
+- v2排队器状态字段分别记录`own_running_count`、`pending_count`、`own_terminal_count`和每GPU`external_count`；`foreign_processes_count_as_candidates=false`为硬约束。
+- 当前容量快照：GPU0-2各有1个外部训练进程，可作为本批第二槽位；GPU3-7各有2个外部训练进程，等待其中一个槽位释放。v2将分卡启动，不再等待全机清空。
