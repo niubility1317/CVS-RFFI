@@ -112,4 +112,26 @@ nohup bash scripts/launchers/run_cvs_baseline_queue.sh \
 - `sat_view_prob=1.0`会把每个clean batch扩展为clean+satellite双视图，单步显存与计算量高于旧实验；若OOM，只允许先降低batch size并记录有效优化步差异，不得关闭增强。
 - 三个训练场景随机采样会增加梯度方差；checkpoint仍只由source validation准确率选择，避免使用正式LEO test泄漏。
 - 单seed只能完成受控配对重跑，论文显著性主张仍需后续补齐多seed。
++
+
+## 2026-07-13启动与兼容修复记录
+
+- 21:50:59 HKT直接N607预检通过；GPU0/1/2均为空闲状态，仅分配给本实验。
+- 首次调度器PID：`4103472`；CVCNN-CE worker PID：`4103528`，GPU0。
+- 首次launcher已确认三种方法命令均包含`--use_sat_channel_view_aug`、三种LEO训练场景、`sat_view_prob=1.0`、`epochs=200`和`seed=713101`。
+- 首次启动中，RIEI-FD与DRIFT在进入epoch前因公共训练器接口同步不完整失败：`run_validation_gated_training() got an unexpected keyword argument 'test_eval_interval'`。该失败未生成checkpoint或metrics，不作为实验结果。
+- 本地Git工作区完成兼容修复，同时保留`satellite_detailed_metrics.csv`导出，并明确保证间隔测试不会改写`best_by_val.pt`；正式checkpoint仍只由未取整source validation TX accuracy严格提升触发。
+- 定向验证：`conda run -n ssr-gpu python -m pytest -q tests/test_baseline_training_behaviors.py tests/test_cvs_rffi_launcher.py`，结果23通过、1跳过。
+- 修复提交：`1952d52 fix: preserve validation-gated baseline checkpoints`。
+- 同步文件及远端SHA256：
+  - `baselines/common/cvs_trainer.py`→`0a5f9a693301a3253a34c6bc0bce2e3ae9357c1b35a067cc2f60db96a9d0c875`
+  - `baselines/riei_fd/train_cvs.py`→`fb9b5dba9d4e183e2ec82a4c5f3ac0e164b072870fd7a16536bd3a7434dd9342`
+  - `baselines/drift/train_cvs.py`→`2ef3d37200be54f2c147ffcc8c9a6273902fd07792184d3a7f161a70cc48b231`
+- 21:59:27 HKT仅重启失败的RIEI-FD与DRIFT；重试调度器PID：`4108427`；RIEI-FD worker PID：`4108476`（GPU1）；DRIFT worker PID：`4108483`（GPU2）。
+- 22:00:07 HKT启动健康检查：三个worker均存活，CVCNN-CE已进入epoch6，RIEI-FD与DRIFT均进入epoch1；GPU0/1/2各一个训练进程，均未超过并发上限；最新日志未发现新的Traceback、OOM或RuntimeError。
+- 启动日志：
+  - `paper_reproduction/logs/cvs_publication_phase1_leoaug_seed713101_20260713/nohup.out`
+  - `paper_reproduction/logs/cvs_publication_phase1_leoaug_seed713101_20260713/retry1_nohup.out`
+  - 方法日志以`baseline_<method>_cvs_day_rx_seed713101_<timestamp>.log`命名。
+- 每次SSH/SCP操作后均核验本地`ssh.exe=0`且到N607/桥接机的TCP22连接数为0。
 
