@@ -14,6 +14,7 @@ from scripts import launch_phase1_dgleo_hiercore8_20260713 as launcher  # noqa: 
 
 
 def test_hiercore_matrix_is_one_candidate_per_gpu_and_has_ablation():
+    assert launcher.dual is not None
     rows = launcher.build_matrix()
     assert len(rows) == 8
     assert sorted(int(row["gpu"]) for row in rows) == list(range(8))

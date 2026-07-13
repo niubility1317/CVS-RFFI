@@ -15,6 +15,10 @@ if str(SCRIPT_DIR) not in sys.path:
 
 import launch_phase1_dgleo_p0closed8_20260713 as previous
 
+# The capacity-aware scheduler consumes the shared process helpers through the
+# launcher module. Keep this explicit alias so wrapper launchers remain drop-in.
+dual = previous.dual
+
 
 DEFAULT_RUN_ID = "phase1_dgleo_hiercore8_20260713"
 DEFAULT_ROOT = previous.DEFAULT_ROOT

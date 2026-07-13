@@ -57,6 +57,8 @@
 
 ## N607落地信息
 
+- 首次队列包装启动在训练进程创建前因缺少共享`dual`别名退出；未创建run目录、未占用GPU。已在本地补齐兼容别名并重新验证后再发布。
+
 - 远端根目录：`/home/szu2070436088/2510044040/CV-SincNet`。
 - Python：`/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python`。
 - 运行目录：`runs/phase1_dgleo_hiercore8_20260713/<candidate>`。
