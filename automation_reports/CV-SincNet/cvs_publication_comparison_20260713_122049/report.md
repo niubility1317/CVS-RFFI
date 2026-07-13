@@ -222,3 +222,56 @@
 - 已修复详细评估器对标准四字段WiSig batch的metadata解包错误并恢复训练端CUDA推理精度策略；聚焦回归5项通过，提交分别为`a06b21e`、`ad8910c`。
 - 为取得与冻结证据同架构的逐样本结果，按用户已授权的正式对比实验范围，在N607 RTX3090上执行一次只读checkpoint/数据的全量后评估。当前GPU6已有1个无关Phase1训练进程、显存3347MiB；新增评估后不超过每GPU两个实验，不终止、不重启、不改动该训练。
 - 本地脚本先经pytest与py_compile验证，再同步到独立评估入口；输出目录为`paper_reproduction/runs/cvs_publication_phase1_detailed_seed713101_20260713/cvs_jointp0_j5`，日志为同目录`eval.log`。命令固定使用`CUDA_VISIBLE_DEVICES=6`、`eval-batch-size=256`、`sat-seed=2027`、三个正式LEO场景和完整612000条样本；任一场景正确数与`frozen_phase1_heldout_eval.json`不一致即失败且不写正式artifact。
+
+
+### 最终结果、统计审计与论文声明边界（20:20）
+
+#### 完整性结论
+
+- 最终审计`complete=true`、`errors=[]`。Phase1四种方法各有612000条逐样本score和894条六层明细；Stage2-B/C各500/500行、每方法125行；聚合表包含1000条run-level和3000条scenario-level记录，incomplete为0。
+- 审计文件为`github_publish/CVS-RFFI-repo/local_artifacts/cvs_publication_stage2_summary_20260713/final_audit.json`；Phase1明细根为`github_publish/CVS-RFFI-repo/local_artifacts/cvs_publication_phase1_detailed_seed713101_20260713/`；Stage2完整矩阵根为`github_publish/CVS-RFFI-repo/local_artifacts/cvs_publication_stage2_full_matrix_20260713/`。
+- CVS Phase1在N607 RTX3090同架构复算耗时175.3s、GPU6、前台有界SSH任务、退出码0；进程已退出，PID未持久化。checkpoint SHA256=`e21dee17...af8`、ManySig SHA256=`2b0a7a74...694f`，三个场景正确数与冻结heldout逐项完全一致。
+
+#### Phase1域泛化结果
+
+下表所有测试均叠加星地信道，每个场景204000条main OOD样本；数值为TX accuracy（%）。
+
+| 方法 | LEO clear | LEO low-elevation | LEO rain | 三场景均值 |
+|---|---:|---:|---:|---:|
+| CVS-JointP0-J5（ADV3B02基模） | 79.524 | 76.964 | 76.461 | 77.650 |
+| CVCNN-CE | 21.515 | 20.767 | 20.995 | 21.092 |
+| RIEI-FD | 20.651 | 20.276 | 20.455 | 20.461 |
+| DRIFT | 18.623 | 18.392 | 18.632 | 18.549 |
+
+#### Phase2-B监督域适应结果
+
+每个单元格为25个独立receiver-seed运行的target-old accuracy均值（%），目标域K-shot标签仅进入support/adaptation，query不参与适应。完整95%CI见`method_k_summary.csv`。
+
+| 方法 | K=1 | K=2 | K=5 | K=10 | K=20 |
+|---|---:|---:|---:|---:|---:|
+| CVS-OPGAC | 72.522 | 74.233 | 76.667 | 77.778 | 78.211 |
+| ProtoNet CDA | 20.544 | 24.333 | 22.933 | 26.578 | 27.422 |
+| MRIOR-SDA | 20.767 | 21.978 | 22.656 | 24.211 | 24.000 |
+| DADDA-SDA | 16.978 | 17.067 | 17.078 | 17.189 | 17.222 |
+
+配对统计以同receiver、seed、K的CVS-OPGAC为参照。ProtoNet CDA、MRIOR-SDA和DADDA-SDA在全部K上均为0胜/25负/0平；其accuracy差的95%CI均完全低于0。ProtoNet CDA相对自身适应前基线提升1.91–8.79pp，MRIOR-SDA为−2.07–2.39pp，DADDA-SDA为−0.07–0.18pp，说明“使用目标域标签”不等于在该星地信道协议下获得有效迁移。
+
+#### Phase2-C类增量/新类学习结果
+
+主指标为old/seen-new harmonic mean，表中为25个receiver-seed运行均值（%）。
+
+| 方法 | K=1 | K=2 | K=5 | K=10 | K=20 |
+|---|---:|---:|---:|---:|---:|
+| CVS-qKNNV42 | 41.035 | 48.067 | 55.866 | 59.096 | 62.217 |
+| CSIL | 16.234 | 19.337 | 18.050 | 17.692 | 9.451 |
+| MoPC-HR | 14.699 | 18.449 | 24.170 | 30.932 | 37.300 |
+| Orthogonal Incremental | 9.882 | 8.156 | 6.844 | 7.734 | 6.005 |
+
+三种对比方法在每个K上相对CVS-qKNNV42的配对H差95%CI均完全低于0，且均为0胜/25负/0平。CVS-qKNNV42从K=1到20的old accuracy由57.867%升至71.167%，seen-new accuracy由36.500%升至56.733%，平均遗忘由8.289%降至7.578%。Orthogonal Incremental在K=20保留71.111% old accuracy，但seen-new仅3.467%，所以不能用单独old accuracy替代old/new联合结论。
+
+#### 逐接收机/发射机数据与声明边界
+
+- Phase1每个方法的`detailed_metrics.csv/json`包含overall、split、receiver、transmitter、receiver×transmitter、receiver×transmitter×day六层894行；`score_table.csv`保留每条样本的receiver、TX、day、预测、置信度和正确性。
+- Stage2每个正式run目录保留三个LEO场景的sample score、receiver/TX明细、split manifest和loss trace；跨run的`receiver_k_summary.csv`、`per_run_results.csv`、`per_scenario_results.csv`可直接用于论文附录和统计复核。
+- CVS Phase1-J5使用0.08源域有标签样本、0.72源域无标签样本，并以ADV3B02同时作为base/teacher；其终局为`STOPPED_TAIL`且内部判定为`NON_PROMOTABLE_DIAGNOSTIC`。因此77.650%只能表述为冻结测试协议下的原始对比结果，不能写成等监督预算优势、可部署成功或真实卫星链路验证。
+- Stage2-B各方法继承的Phase1表征质量不同，主表回答“完整方法管线在相同support/query和星地信道协议下谁更好”，不能单独归因于适应模块。所有星地场景均为source-synthetic heldout channel stress，不是真实在轨信道测量。
