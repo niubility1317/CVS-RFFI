@@ -57,3 +57,11 @@
 - Stage2-B命令模板：`CUDA_VISIBLE_DEVICES=<3|4> python -m paper_reproduction.cvs_aligned.supervised_da_runner --config paper_reproduction/configs/cvs_stage2b_supervised_da_publication_base_n607.json --run-dir <mrior_sda|dadda_sda> --experiment-id <method>_native_trace_smoke --method <method> --target-receiver 20-1 --seed 713101 --split-seed 713101 --k-shot 5 --base-steps 5 --adapt-steps 3 --device cuda:0`。
 - Stage2-C命令模板：`CUDA_VISIBLE_DEVICES=<5|6|7> python -m paper_reproduction.cvs_aligned.class_incremental --config paper_reproduction/configs/cvs_stage2c_publication_base_n607.json --run-dir <csil|mopc_hr|orthogonal_incremental> --experiment-id <method>_native_trace_smoke --method <method> --target-receiver 20-1 --seed 713101 --split-seed 713101 --k-shot 5 --base-steps 5 --old-support-steps 3 --increment-steps 3 --device cuda:0`。
 - 这些短步数结果只验证方法原生优化器、有限loss trace和artifact契约，不作为性能排序。成功条件：进程退出0、8件artifact齐全、三种LEO场景、support/query不重叠、finite trace，并在resolved config/metrics中记录方法原生配置。
+
+### 方法原生trace smoke完成与完整矩阵启动计划（14:15）
+
+- 五个smoke均退出0：MRIOR-SDA PID3803644、DADDA-SDA PID3803645、CSIL PID3803646、MoPC-HR PID3803647、Orthogonal PID3803648。每方法8件artifact齐全、support/query overlap=false、三种正式LEO场景、finite trace；Stage2-B各360条score/57条明细，Stage2-C各480条score/78条明细。
+- 优化器审计PASS：MRIOR base/adapt均为Adam lr0.0006、wd0；DADDA base/adapt均为SGD momentum0.9、wd0.0005，trace从lr0.0001衰减至0.000016556；Stage2-C resolved config记录`common_steps_method_native_optimizer`及全部方法原生关键参数。smoke数值不进入性能排序。
+- Phase1只读状态：CVCNN在epoch199/200，RIEI在epoch198/200，DRIFT在epoch76/200；三个进程仍分别位于GPU0/1/2，不干预。DRIFT中间星地rain约20.37%只是epoch74附近诊断，不是终局结果。
+- 新增五分片resume-safe launcher：`paper_reproduction/scripts/launch_cvs_publication_stage2_matrix_20260713.sh`；本地`bash -n`与Stage2-B dry-run通过。每阶段500行按5个shard映射GPU3-7，输出分别为`cvs_publication_stage2b_full_matrix_20260713`与`cvs_publication_stage2c_full_matrix_20260713`。
+- 计划同时执行`bash paper_reproduction/scripts/launch_cvs_publication_stage2_matrix_20260713.sh stage2b --execute`和`bash paper_reproduction/scripts/launch_cvs_publication_stage2_matrix_20260713.sh stage2c --execute`。每GPU恰有两个矩阵worker，符合每GPU最多两个训练实验的项目上限；任一已有同shard进程会fail closed。正式完成条件是每阶段500行均通过artifact contract，之后才聚合同receiver/K/seed的配对统计。
