@@ -284,6 +284,18 @@ target_channel_view in {
 }
 ```
 
+自2026-07-13起，CVS后续Phase1/Phase2训练验证、候选比较、checkpoint终局评估和主报告中的默认测试增强统一使用上述三个`leo_*_weak`视图。训练和测试可以使用不同随机种子、不同样本扰动和独立固定评估缓存，但测试场景族不得再默认切换到`legacy_full`。任何launcher、runner或评估脚本若未显式指定测试场景，也必须解析为：
+
+```text
+eval_sat_scenarios = leo_clear_weak,leo_low_elev_weak,leo_rain_weak
+```
+
+自2026-07-13起，CVS与外部方法的正式对比实验中，所有进入论文主表、主图、统计检验或方法排序的测试样本都必须实际叠加上述简化LEO星地信道之一；不得把未叠加星地信道的clean测试混入正式主结果。clean只允许作为单独control/reference，必须与deployment-primary结果分表。若测试入口没有记录scenario、satellite seed或增强是否实际启用，该测试结果视为artifact-incomplete，不得形成论文结论。
+
+每个正式实验的最终测试artifact必须同时保留sample-level score table和分组详细统计。分组至少包含逐receiver、逐transmitter、receiver x transmitter以及receiver x transmitter x day四个层级；每组必须记录sample count、correct count、accuracy和稀疏confusion明细。Phase2还必须保留target-old/target-new角色、support/query sample ID和support/query overlap检查。只有overall accuracy而没有逐接收机/逐发射机详细结果的实验，不满足CVS发表证据要求。
+
+该约束用于统一项目主指标口径并避免把不同星地信道实现的结果直接横向比较。由于训练与测试使用同一简化LEO场景族，主报告必须明确写作`leo_weak`族内独立随机压力鲁棒性，不得把它扩大解释为跨信道模型、跨实现或真实在轨泛化。需要检验跨增强族能力时，旧场景必须以显式`legacy stress/control`附加评估运行，单列结果，不得参与默认checkpoint选择、候选promotion或deployment-primary成功门槛。
+
 旧场景 `clear_leo`、`low_elev_leo`、`rain_leo`、`storm_mp`、`mixed_orbit` 保留为 legacy stress/control。`storm_mp` 和 `mixed_orbit` 只能作为 diagnostic/sensitivity，不再作为默认 deployment-primary 成功门槛。
 
 clean view 是 control/reference。不得把 clean view 成功提升为 satellite/LEO deployment success。
