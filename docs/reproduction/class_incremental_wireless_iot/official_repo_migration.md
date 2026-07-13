@@ -4,7 +4,7 @@
 
 官方MATLAB仓库应作为论文忠实复现的源参照。当前移植策略是：
 
-1. `paper_reproduction/csil_class_incremental_iot`保留ADS-B论文原始层，只对齐官方MATLAB机制和论文图表，不声明CVS Stage2或卫星部署成功。
+1. `paper_reproduction/CSIL`保留ADS-B论文原始层，只对齐官方MATLAB机制和论文图表，不声明CVS Stage2或卫星部署成功。
 2. `paper_reproduction/cvs_aligned`只接收经过CVS协议重定义后的扩展实验，例如把CSIL增量头接到CVS`z_id`特征上。
 3. 服务器运行前先完成本地PyTorch机制校验、报告和同步清单；不把DataPort数据作为当前任务前置。
 

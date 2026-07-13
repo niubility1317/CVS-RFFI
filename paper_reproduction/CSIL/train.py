@@ -5,7 +5,7 @@ import json
 from pathlib import Path
 
 from paper_reproduction.common.config import contains_unresolved_placeholder, contains_unspecified, load_json_config
-from paper_reproduction.csil_class_incremental_iot.protocol import PAPER_TITLE, validate_paper_faithful_config
+from paper_reproduction.CSIL.protocol import PAPER_TITLE, validate_paper_faithful_config
 
 
 def build_dry_run_payload(config: dict) -> dict:

@@ -6,10 +6,10 @@ from pathlib import Path
 
 import torch
 
-from paper_reproduction.csil_class_incremental_iot.losses import compute_csil_loss, compute_ewc_penalty
-from paper_reproduction.csil_class_incremental_iot.metrics import degree_of_conflict, stage_accuracy_breakdown
-from paper_reproduction.csil_class_incremental_iot.model import CSILClassifier, ZeroBiasCosineClassifier, csil_masked_sgd_step
-from paper_reproduction.csil_class_incremental_iot.protocol import (
+from paper_reproduction.CSIL.losses import compute_csil_loss, compute_ewc_penalty
+from paper_reproduction.CSIL.metrics import degree_of_conflict, stage_accuracy_breakdown
+from paper_reproduction.CSIL.model import CSILClassifier, ZeroBiasCosineClassifier, csil_masked_sgd_step
+from paper_reproduction.CSIL.protocol import (
     build_stage_plan,
     validate_paper_faithful_config,
 )
@@ -242,7 +242,7 @@ def test_csil_dry_run_reports_paper_faithful_boundary(tmp_path):
         [
             sys.executable,
             "-m",
-            "paper_reproduction.csil_class_incremental_iot.train",
+            "paper_reproduction.CSIL.train",
             "--config",
             str(config),
             "--dry-run",

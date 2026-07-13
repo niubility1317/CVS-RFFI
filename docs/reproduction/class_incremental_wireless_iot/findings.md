@@ -16,7 +16,7 @@
 ## Repo Mapping
 
 - Git承载面中已有`paper_reproduction/protonet_cda`、`feature_separation_crossrx`、`receiver_agnostic_twostage_uda`、`mitigating_receiver_impact_da`和`cvs_aligned`。
-- 本论文应新增`paper_reproduction/csil_class_incremental_iot/`，不能放入`code/cvsrffi`主线。
+- 本论文应新增`paper_reproduction/CSIL/`，不能放入`code/cvsrffi`主线。
 - 可复用`paper_reproduction.common.config`的配置加载和formal placeholder检查；CVS扩展若后续需要，必须另放`cvs_extension=true`路径。
 
 ## Protocol Mapping
@@ -47,6 +47,6 @@
 
 ## CVS Alignment Findings
 
-- ADS-B官方CSIL只能作为`paper_reproduction/csil_class_incremental_iot`原始论文层，不能直接声明CVS Stage2或satellite/LEO部署成功。
+- ADS-B官方CSIL只能作为`paper_reproduction/CSIL`原始论文层，不能直接声明CVS Stage2或satellite/LEO部署成功。
 - 若将CSIL用作CVS新类注册/增量头，应放入`paper_reproduction/cvs_aligned`，并显式输出`cvs_extension=true`、`R_s/R_t`、`Y_old/Y_new/Y_unknown`、`K-shot`、satellite/LEO view、support/query划分和同row指标。
 - CVS Phase2主线仍以`old_acc`、`seen_new_acc`、`H_old_new`为核心；unknown FAR、FPR95、AUROC只能作为Phase3备用诊断。
