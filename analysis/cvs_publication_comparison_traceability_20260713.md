@@ -19,8 +19,8 @@
 |PUB-11|`项目.md`|Phase2`R_s/R_t`不相交且`Y_old/Y_new`互斥|Stage2 manifest|pending|协议validator|使用ManySig target-old+ManyTx target-new并按receiver label对齐|
 |PUB-12|`项目.md`|简化LEO残余信道是主结果|`leo_clear_weak/leo_low_elev_weak/leo_rain_weak`|implemented|baseline evaluator已支持这些scenario|clean单独作为control|
 |PUB-13|发表要求|公平训练/适应预算|预登记协议、配置|pending|矩阵审计|同checkpoint、support、query、K、seed、更新参数/步数预算|
-|PUB-14|发表要求|至少多seed并报告不确定性|结果聚合器|pending|待实现|主表计划5seed；先运行seed713101启动锚点|
-|PUB-15|发表要求|统计显著性与效应量|统计脚本/报告|pending|待实现|paired seed/bootstrap CI、校正后的检验、效应量|
+|PUB-14|发表要求|至少多seed并报告不确定性|`tools/analyze_publication_comparison.py`|implemented|确定性bootstrap mean/paired-delta 95%CI测试通过|正式证据仍需5seed完成结果|
+|PUB-15|发表要求|统计显著性与效应量|`tools/analyze_publication_comparison.py`|verified|exact paired sign-flip、paired dz和Holm校正测试通过|整体检验将在完整矩阵后按指标分组补充|
 |PUB-16|发表要求|完整损失与final-vs-best证据|logs、metrics、loss trace|pending|完成后全日志解析|不得以启动PASS替代完成|
 |PUB-17|AGENTS|本地验证、Git、报告、sync和N607清理|报告、commit、manifest|implemented|协议提交`271e50a/c93774c`；Phase1启动与SSH清理已记录|Phase2代码尚待提交/同步|
 
