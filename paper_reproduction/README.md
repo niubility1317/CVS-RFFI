@@ -9,7 +9,7 @@ Paper-faithful scope:
 - `feature_separation_crossrx/`: model/loss code used by the CVS-aligned adapter.
 - `receiver_agnostic_twostage_uda/`: paper-faithful Bao et al. GLOBECOM 2023 components for DANN, LMMD, uncertainty fine-tuning selection, and dry-run protocol validation.
 - `mitigating_receiver_impact_da/`: paper-faithful Liu Yang et al. IEEE IoT Journal 2024 components for DV-KL domain alignment, CPL adaptive pseudo-labeling, class weighting, GAD min-max training, and dry-run protocol validation.
-- `dadda_cross_receiver/`: paper-faithful Feng et al. IEEE Internet of Things Journal 2025 components for closed-set cross-receiver DADDA with a default 2-D paper-shaped `G_f/G_m` variant, legacy 1-D ablation support, shared-kernel MMD/LMMD, and dynamic adaptive factor.
+- `DADDA/`: paper-faithful Feng et al. IEEE Internet of Things Journal 2025 components for closed-set cross-receiver DADDA with a default 2-D paper-shaped `G_f/G_m` variant, legacy 1-D ablation support, shared-kernel MMD/LMMD, and dynamic adaptive factor.
 - `orthogonal_incremental_sei/`: paper-faithful closed-set FSCIL-SEI components for orthogonal pseudo targets, base-stage CE/contrastive/center losses, incremental classifier-weight calibration, and A/H/F metrics.
 - `CSIL/`: paper-faithful ADS-B class-incremental CSIL components aligned to the official MATLAB repository, including shifted zero-bias cosine fingerprints, channel expansion, KD/EWC helpers, masked SGD update, and dry-run protocol validation.
 - `mopc_hr_non_exemplar_cil_sei/`: source-intake note for MoPC-HR, `Non-Exemplar Class-Incremental Learning via Prototype Correction and Hierarchical Regularization for Specific Emitter Identification`; no reproduction implementation or result claim is included yet.
@@ -77,7 +77,7 @@ python -m paper_reproduction.receiver_agnostic_twostage_uda.train \
 DADDA dry-run:
 
 ```bash
-python -m paper_reproduction.dadda_cross_receiver.train \
+python -m paper_reproduction.DADDA.train \
   --config paper_reproduction/configs/dadda_cross_receiver_manysig_paper_faithful.json \
   --dry-run
 ```

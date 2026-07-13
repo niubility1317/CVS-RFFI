@@ -11,15 +11,15 @@ import torch.nn.functional as F
 
 from paper_reproduction.common.config import load_json_config
 from paper_reproduction.common.wisig_runtime import set_seed, tx_accuracy, write_json
-from paper_reproduction.dadda_cross_receiver.data import PAPER_TABLE2_TASKS, build_manysig_task_loaders, load_wisig_compact_pkl
-from paper_reproduction.dadda_cross_receiver.experiment_plans import (
+from paper_reproduction.DADDA.data import PAPER_TABLE2_TASKS, build_manysig_task_loaders, load_wisig_compact_pkl
+from paper_reproduction.DADDA.experiment_plans import (
     IMPLEMENTED_TABLE2_METHODS,
     PAPER_TABLE2_METHODS,
     build_paper_artifact_plan,
     build_pending_paper_artifacts,
 )
-from paper_reproduction.dadda_cross_receiver.losses import dadda_objective
-from paper_reproduction.dadda_cross_receiver.model import DADDANet
+from paper_reproduction.DADDA.losses import dadda_objective
+from paper_reproduction.DADDA.model import DADDANet
 
 
 PAPER_TITLE = "Cross-Receiver Radio Frequency Fingerprint Identification Based on Domain Adaptation With Dynamic Distribution Alignment"
@@ -583,7 +583,7 @@ def main() -> int:
     parser.add_argument("--seed", type=int, default=0)
     parser.add_argument("--device", type=str, default=None)
     parser.add_argument("--num-workers", type=int, default=0)
-    parser.add_argument("--checkpoint-dir", type=Path, default=Path("paper_reproduction/runs/dadda_cross_receiver"))
+    parser.add_argument("--checkpoint-dir", type=Path, default=Path("paper_reproduction/runs/DADDA"))
     parser.add_argument("--output", type=Path, default=None)
     args = parser.parse_args()
 

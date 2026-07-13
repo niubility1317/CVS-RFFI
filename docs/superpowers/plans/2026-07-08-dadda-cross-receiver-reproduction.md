@@ -1,12 +1,12 @@
 # DADDA Cross-Receiver Reproduction Implementation Plan
 
-Historical implementation plan: checkbox state in this file is not authoritative after implementation. Current DADDA coverage status is tracked in `paper_reproduction/paper_original_matrix.md` and `paper_reproduction/dadda_cross_receiver/paper_checklist.md`.
+Historical implementation plan: checkbox state in this file is not authoritative after implementation. Current DADDA coverage status is tracked in `paper_reproduction/paper_original_matrix.md` and `paper_reproduction/DADDA/paper_checklist.md`.
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
 **Goal:** Build a paper-faithful reproduction surface for Feng et al., "Cross-Receiver Radio Frequency Fingerprint Identification Based on Domain Adaptation With Dynamic Distribution Alignment."
 
-**Architecture:** Keep this reproduction separate from CVS deployment extensions. Add `paper_reproduction/dadda_cross_receiver/` for DADDA model, losses, protocol, data tasking, and a gated training entrypoint; keep CVS metrics in `paper_reproduction/cvs_aligned/` only if a later extension is explicitly requested.
+**Architecture:** Keep this reproduction separate from CVS deployment extensions. Add `paper_reproduction/DADDA/` for DADDA model, losses, protocol, data tasking, and a gated training entrypoint; keep CVS metrics in `paper_reproduction/cvs_aligned/` only if a later extension is explicitly requested.
 
 **Tech Stack:** Python, PyTorch, pytest, WiSig compact-pkl loader from `paper_reproduction.common.wisig_runtime`.
 
@@ -14,11 +14,11 @@ Historical implementation plan: checkbox state in this file is not authoritative
 
 ## File Structure
 
-- Create `paper_reproduction/dadda_cross_receiver/model.py`: ResNet18-style IQ feature extractor `G_f`, multiscale feature extractor `G_m`, two-layer classifier `G_l`, and composed `DADDANet`.
-- Create `paper_reproduction/dadda_cross_receiver/losses.py`: MMD, LMMD, dynamic adaptive factor alpha, and total DADDA objective.
-- Create `paper_reproduction/dadda_cross_receiver/data.py`: ManySig task builder for the 12 Table II receiver-transfer tasks and the day-domain control task.
-- Create `paper_reproduction/dadda_cross_receiver/train.py`: dry-run payload, source-only/proposed smoke runner, formal-run gate, and JSON output writer.
-- Create `paper_reproduction/dadda_cross_receiver/paper_checklist.md`: paper-to-code evidence matrix.
+- Create `paper_reproduction/DADDA/model.py`: ResNet18-style IQ feature extractor `G_f`, multiscale feature extractor `G_m`, two-layer classifier `G_l`, and composed `DADDANet`.
+- Create `paper_reproduction/DADDA/losses.py`: MMD, LMMD, dynamic adaptive factor alpha, and total DADDA objective.
+- Create `paper_reproduction/DADDA/data.py`: ManySig task builder for the 12 Table II receiver-transfer tasks and the day-domain control task.
+- Create `paper_reproduction/DADDA/train.py`: dry-run payload, source-only/proposed smoke runner, formal-run gate, and JSON output writer.
+- Create `paper_reproduction/DADDA/paper_checklist.md`: paper-to-code evidence matrix.
 - Create `paper_reproduction/configs/dadda_cross_receiver_manysig_paper_faithful.json`: paper-faithful configuration with unresolved data path left explicit.
 - Modify `paper_reproduction/README.md`: register DADDA as a paper-original baseline and state that it is closed-set UDA, not CVS Stage2 evidence.
 - Modify `paper_reproduction/paper_original_matrix.md`: add DADDA row family and current status.
@@ -27,8 +27,8 @@ Historical implementation plan: checkbox state in this file is not authoritative
 ### Task 1: Core Model
 
 **Files:**
-- Create: `paper_reproduction/dadda_cross_receiver/__init__.py`
-- Create: `paper_reproduction/dadda_cross_receiver/model.py`
+- Create: `paper_reproduction/DADDA/__init__.py`
+- Create: `paper_reproduction/DADDA/model.py`
 - Test: `tests/test_dadda_cross_receiver.py`
 
 - [ ] **Step 1: Write model shape tests**
@@ -50,7 +50,7 @@ Expected: PASS.
 ### Task 2: MMD, LMMD, and Dynamic Objective
 
 **Files:**
-- Create: `paper_reproduction/dadda_cross_receiver/losses.py`
+- Create: `paper_reproduction/DADDA/losses.py`
 - Test: `tests/test_dadda_cross_receiver.py`
 
 - [ ] **Step 1: Write formula tests**
@@ -70,8 +70,8 @@ Expected: PASS.
 ### Task 3: Paper Protocol and Data Tasking
 
 **Files:**
-- Create: `paper_reproduction/dadda_cross_receiver/data.py`
-- Create: `paper_reproduction/dadda_cross_receiver/train.py`
+- Create: `paper_reproduction/DADDA/data.py`
+- Create: `paper_reproduction/DADDA/train.py`
 - Create: `paper_reproduction/configs/dadda_cross_receiver_manysig_paper_faithful.json`
 - Test: `tests/test_dadda_cross_receiver.py`
 
@@ -90,7 +90,7 @@ Non-dry-run CLI must fail before writing output unless a real WiSig pkl path is 
 ### Task 4: Smoke Runner
 
 **Files:**
-- Modify: `paper_reproduction/dadda_cross_receiver/train.py`
+- Modify: `paper_reproduction/DADDA/train.py`
 - Test: `tests/test_dadda_cross_receiver.py`
 
 - [ ] **Step 1: Write smoke training test**
@@ -110,7 +110,7 @@ Expected: PASS.
 ### Task 5: Documentation and Paper-to-Code Audit
 
 **Files:**
-- Create: `paper_reproduction/dadda_cross_receiver/paper_checklist.md`
+- Create: `paper_reproduction/DADDA/paper_checklist.md`
 - Modify: `paper_reproduction/README.md`
 - Modify: `paper_reproduction/paper_original_matrix.md`
 

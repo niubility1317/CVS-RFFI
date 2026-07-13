@@ -39,7 +39,7 @@ def _synthetic_manysig_compact() -> dict:
 
 
 def test_dadda_model_outputs_paper_named_modules():
-    from paper_reproduction.dadda_cross_receiver.model import DADDANet
+    from paper_reproduction.DADDA.model import DADDANet
 
     model = DADDANet(
         num_classes=6,
@@ -58,7 +58,7 @@ def test_dadda_model_outputs_paper_named_modules():
 
 
 def test_dadda_default_model_locks_paper_widths_and_multiscale_branches():
-    from paper_reproduction.dadda_cross_receiver.model import DADDANet
+    from paper_reproduction.DADDA.model import DADDANet
 
     model = DADDANet(num_classes=6)
     outputs = model(torch.randn(2, 2, 256))
@@ -74,7 +74,7 @@ def test_dadda_default_model_locks_paper_widths_and_multiscale_branches():
 
 
 def test_dadda_conv2d_paper_model_uses_fig4_kernel_shapes():
-    from paper_reproduction.dadda_cross_receiver.model import DADDANet
+    from paper_reproduction.DADDA.model import DADDANet
 
     model = DADDANet(
         num_classes=6,
@@ -97,7 +97,7 @@ def test_dadda_conv2d_paper_model_uses_fig4_kernel_shapes():
 
 
 def test_dadda_dynamic_objective_combines_ce_mmd_lmmd():
-    from paper_reproduction.dadda_cross_receiver.losses import (
+    from paper_reproduction.DADDA.losses import (
         dadda_objective,
         dynamic_adaptive_factor,
         lmmd_loss,
@@ -147,7 +147,7 @@ def test_dadda_dynamic_objective_combines_ce_mmd_lmmd():
 
 
 def test_dadda_mmd_uses_one_shared_batch_bandwidth():
-    from paper_reproduction.dadda_cross_receiver.losses import estimate_rbf_bandwidth, mmd_loss, rbf_kernel
+    from paper_reproduction.DADDA.losses import estimate_rbf_bandwidth, mmd_loss, rbf_kernel
 
     source = torch.tensor([[0.0, 0.0], [1.0, 2.0], [3.0, 1.0]], dtype=torch.float32)
     target = torch.tensor([[2.0, 0.0], [2.5, 2.0], [4.0, 1.0]], dtype=torch.float32)
@@ -162,7 +162,7 @@ def test_dadda_mmd_uses_one_shared_batch_bandwidth():
 
 
 def test_dadda_objective_supports_fixed_alpha_ablation():
-    from paper_reproduction.dadda_cross_receiver.losses import dadda_objective
+    from paper_reproduction.DADDA.losses import dadda_objective
 
     source_outputs = {
         "global_features": torch.tensor([[0.0, 0.0], [1.0, 1.0]], requires_grad=True),
@@ -189,7 +189,7 @@ def test_dadda_objective_supports_fixed_alpha_ablation():
 
 
 def test_dadda_objective_can_treat_dynamic_alpha_as_batch_weight():
-    from paper_reproduction.dadda_cross_receiver.losses import dadda_objective
+    from paper_reproduction.DADDA.losses import dadda_objective
 
     source_outputs = {
         "global_features": torch.tensor([[0.0, 0.0], [1.0, 1.0]], requires_grad=True),
@@ -217,7 +217,7 @@ def test_dadda_objective_can_treat_dynamic_alpha_as_batch_weight():
 
 
 def test_dadda_schedules_match_paper_formula():
-    from paper_reproduction.dadda_cross_receiver.train import lambda_schedule, learning_rate_schedule
+    from paper_reproduction.DADDA.train import lambda_schedule, learning_rate_schedule
 
     assert lambda_schedule(0.0) == 0.0
     assert math.isclose(lambda_schedule(0.5), 2.0 / (1.0 + math.exp(-5.0)) - 1.0, rel_tol=1e-6)
@@ -230,7 +230,7 @@ def test_dadda_schedules_match_paper_formula():
 
 
 def test_lmmd_skips_classes_missing_from_source_or_target_batch():
-    from paper_reproduction.dadda_cross_receiver.losses import lmmd_loss
+    from paper_reproduction.DADDA.losses import lmmd_loss
 
     source_features = torch.tensor([[0.0, 0.0], [1.0, 1.0]])
     target_features = torch.tensor([[2.0, 2.0], [3.0, 3.0]])
@@ -243,7 +243,7 @@ def test_lmmd_skips_classes_missing_from_source_or_target_batch():
 
 
 def test_lmmd_sum_and_mean_reductions_use_classwise_terms():
-    from paper_reproduction.dadda_cross_receiver.losses import lmmd_loss
+    from paper_reproduction.DADDA.losses import lmmd_loss
 
     source_features = torch.tensor([[0.0, 0.0], [1.0, 0.0]])
     target_features = torch.tensor([[0.5, 0.0], [1.5, 0.0]])
@@ -273,7 +273,7 @@ def test_lmmd_sum_and_mean_reductions_use_classwise_terms():
 
 
 def test_dadda_dry_run_declares_closed_set_uda_not_cvs():
-    from paper_reproduction.dadda_cross_receiver.train import build_dry_run_payload
+    from paper_reproduction.DADDA.train import build_dry_run_payload
 
     payload = build_dry_run_payload(
         {
@@ -313,7 +313,7 @@ def test_dadda_paper_config_keeps_energy_normalization_enabled():
 
 
 def test_dadda_paper_config_rejects_unnormalized_formal_runs():
-    from paper_reproduction.dadda_cross_receiver.train import validate_formal_or_smoke_settings, validate_paper_faithful_config
+    from paper_reproduction.DADDA.train import validate_formal_or_smoke_settings, validate_paper_faithful_config
 
     config = {
         "cvs_extension": False,
@@ -346,7 +346,7 @@ def test_dadda_paper_config_rejects_unnormalized_formal_runs():
 
 
 def test_dadda_paper_artifact_plan_covers_pending_figures_and_tables():
-    from paper_reproduction.dadda_cross_receiver.experiment_plans import build_paper_artifact_plan
+    from paper_reproduction.DADDA.experiment_plans import build_paper_artifact_plan
 
     plan = build_paper_artifact_plan()
 
@@ -366,7 +366,7 @@ def test_dadda_paper_artifact_plan_covers_pending_figures_and_tables():
 
 
 def test_dadda_manysig_task_builder_keeps_target_labels_evaluation_only():
-    from paper_reproduction.dadda_cross_receiver.data import build_manysig_task_datasets
+    from paper_reproduction.DADDA.data import build_manysig_task_datasets
 
     built = build_manysig_task_datasets(_synthetic_manysig_compact(), task="1-1->8-8", max_samples_per_combo=1)
     source_x, source_y, _source_d, source_meta = built["source"][0]
@@ -384,7 +384,7 @@ def test_dadda_manysig_task_builder_keeps_target_labels_evaluation_only():
 
 
 def test_dadda_task_builder_can_match_paper_domain_sample_count_and_preprocessing():
-    from paper_reproduction.dadda_cross_receiver.data import build_manysig_task_datasets
+    from paper_reproduction.DADDA.data import build_manysig_task_datasets
 
     built = build_manysig_task_datasets(
         _synthetic_manysig_compact(),
@@ -404,7 +404,7 @@ def test_dadda_task_builder_can_match_paper_domain_sample_count_and_preprocessin
 
 
 def test_dadda_target_train_loader_does_not_expose_target_labels():
-    from paper_reproduction.dadda_cross_receiver.data import build_manysig_task_loaders
+    from paper_reproduction.DADDA.data import build_manysig_task_loaders
 
     loaders = build_manysig_task_loaders(_synthetic_manysig_compact(), task="1-1->8-8", batch_size=4, max_samples_per_combo=1)
     target_batch = next(iter(loaders["target_train"]))
@@ -416,7 +416,7 @@ def test_dadda_target_train_loader_does_not_expose_target_labels():
 
 
 def test_dadda_manysig_task_builder_resolves_non_index_receiver_labels():
-    from paper_reproduction.dadda_cross_receiver.data import build_manysig_task_datasets
+    from paper_reproduction.DADDA.data import build_manysig_task_datasets
 
     built = build_manysig_task_datasets(_synthetic_manysig_compact(), task="20-1->2-1", max_samples_per_combo=1)
 
@@ -425,7 +425,7 @@ def test_dadda_manysig_task_builder_resolves_non_index_receiver_labels():
 
 
 def test_dadda_manysig_task_builder_requires_all_six_tx_classes():
-    from paper_reproduction.dadda_cross_receiver.data import build_manysig_task_datasets
+    from paper_reproduction.DADDA.data import build_manysig_task_datasets
 
     compact = _synthetic_manysig_compact()
     for day_i in range(4):
@@ -440,7 +440,7 @@ def test_dadda_manysig_task_builder_requires_all_six_tx_classes():
 
 
 def test_dadda_smoke_runner_trains_source_only_and_dadda_rows(tmp_path):
-    from paper_reproduction.dadda_cross_receiver.train import run_table2_reproduction
+    from paper_reproduction.DADDA.train import run_table2_reproduction
 
     result = run_table2_reproduction(
         _synthetic_manysig_compact(),
@@ -480,7 +480,7 @@ def test_dadda_smoke_runner_trains_source_only_and_dadda_rows(tmp_path):
 
 
 def test_dadda_smoke_runner_trains_literal_dadda_method(tmp_path):
-    from paper_reproduction.dadda_cross_receiver.train import run_table2_reproduction
+    from paper_reproduction.DADDA.train import run_table2_reproduction
 
     result = run_table2_reproduction(
         _synthetic_manysig_compact(),
@@ -509,7 +509,7 @@ def test_dadda_smoke_runner_trains_literal_dadda_method(tmp_path):
 
 
 def test_dadda_runner_forwards_detach_target_probabilities(monkeypatch, tmp_path):
-    from paper_reproduction.dadda_cross_receiver import train as train_module
+    from paper_reproduction.DADDA import train as train_module
 
     observed = []
 
@@ -557,7 +557,7 @@ def test_dadda_runner_forwards_detach_target_probabilities(monkeypatch, tmp_path
 
 
 def test_dadda_table2_resets_seed_for_each_task_method(monkeypatch, tmp_path):
-    from paper_reproduction.dadda_cross_receiver import train as train_module
+    from paper_reproduction.DADDA import train as train_module
 
     seed_calls = []
 
@@ -596,7 +596,7 @@ def test_dadda_table2_resets_seed_for_each_task_method(monkeypatch, tmp_path):
 
 
 def test_dadda_missing_paper_baselines_are_structured_rows(tmp_path):
-    from paper_reproduction.dadda_cross_receiver.train import run_table2_reproduction
+    from paper_reproduction.DADDA.train import run_table2_reproduction
 
     result = run_table2_reproduction(
         _synthetic_manysig_compact(),
@@ -625,8 +625,8 @@ def test_dadda_missing_paper_baselines_are_structured_rows(tmp_path):
 
 
 def test_dadda_training_loop_stops_at_shorter_source_target_stream():
-    from paper_reproduction.dadda_cross_receiver.model import DADDANet
-    from paper_reproduction.dadda_cross_receiver.train import run_dadda_training_loop
+    from paper_reproduction.DADDA.model import DADDANet
+    from paper_reproduction.DADDA.train import run_dadda_training_loop
 
     model = DADDANet(
         num_classes=6,
@@ -658,7 +658,7 @@ def test_dadda_training_loop_stops_at_shorter_source_target_stream():
 
 
 def test_dadda_table2_settings_default_to_paper_config_and_gate_smoke():
-    from paper_reproduction.dadda_cross_receiver.train import resolve_table2_run_settings, validate_formal_or_smoke_settings
+    from paper_reproduction.DADDA.train import resolve_table2_run_settings, validate_formal_or_smoke_settings
 
     config = {"epochs": 100, "batch_size": 128, "momentum": 0.9, "weight_decay": 0.0005}
     args = SimpleNamespace(epochs=None, batch_size=None, learning_rate=None, momentum=None, weight_decay=None)
@@ -705,7 +705,7 @@ def test_dadda_table2_settings_default_to_paper_config_and_gate_smoke():
 
 
 def test_dadda_table2_settings_allow_cli_to_disable_config_detach():
-    from paper_reproduction.dadda_cross_receiver.train import resolve_table2_run_settings
+    from paper_reproduction.DADDA.train import resolve_table2_run_settings
 
     config = {"detach_target_probabilities": True}
     args = SimpleNamespace(
@@ -731,7 +731,7 @@ def test_dadda_cli_requires_formal_for_real_table2(tmp_path):
     command = [
         sys.executable,
         "-m",
-        "paper_reproduction.dadda_cross_receiver.train",
+        "paper_reproduction.DADDA.train",
         "--config",
         "paper_reproduction/configs/dadda_cross_receiver_manysig_paper_faithful.json",
         "--run-table2",
