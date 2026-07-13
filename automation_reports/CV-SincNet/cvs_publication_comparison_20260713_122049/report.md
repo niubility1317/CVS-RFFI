@@ -205,3 +205,12 @@
 - 按完整默认网格现场重建并逐行执行artifact contract，Stage2-C达到500/500；CVS-qKNNV42、CSIL、MoPC-HR和Orthogonal Incremental各125行，五个target receiver各100行，incomplete为空。
 - 五个主worker及全部receiver7-7/8-8 accelerator均已退出；全日志根Traceback计数为0。每行均包含三个正式LEO星地场景、sample score、四层receiver/transmitter明细、split manifest和finite loss trace。
 - 该状态证明run artifact齐全，但canonical manifest仍被旧subset worker覆盖，尚不能代替最终论文聚合和审计。当前N607另有不属于本对比矩阵的Phase1训练进程，按monitor-only边界不热补远端脚本；下一步先回收Stage2-B/C只读artifact到本地，使用已提交脚本重建manifest、聚合统计并执行本地完整审计。
+
+### 本地回收、Stage2聚合与ADV3B02谱系CVS Phase1复算计划（19:50）
+
+- Stage2-B/C远端run根已只读回收到Git工作区`local_artifacts/cvs_publication_stage2_full_matrix_20260713/`，体积约77MiB/115MiB；本地修正版worker重建两份500行canonical manifest后逐行复核均为500/500、每方法125行。
+- 正式Stage2聚合首次暴露CVS-qKNNV42只在`metrics_by_scenario`保留`old_acc_before_increment`、缺少顶层mean。已修正聚合器：优先显式mean，缺失时严格从固定三个LEO场景求均值并记录`scenario_mean_fallback`；回归`6 passed`，提交`d6388af`。正式聚合现为1000条run-level、3000条scenario-level、incomplete0。
+- 为避免N607当前无关Phase1训练期间热补脚本，已只读回收ManySig、J5 checkpoint、冻结heldout和terminal status。本地ManySig SHA256=`2b0a7a74...694f`与N607完全一致；checkpoint SHA256=`e21dee17...af8`一致。新增仅替换数据文件物理路径、不改变checkpoint其他args的可移植评估入口，并将数据hash写入正式artifact；回归`3 passed`，提交`7afe946`。
+- CVS Phase1方法固定为`cvs_jointp0_j5`，其基模/teacher为用户指定的`ADV3B02_CORE90_SOFT_E200`；必须继续披露J5额外使用0.08有标签与0.72源域无标签且终局为NON_PROMOTABLE_DIAGNOSTIC。
+- 计划在本机RTX5070Ti、`ssr-gpu`环境运行：`python -m paper_reproduction.scripts.evaluate_cvs_phase1_ssdg_detailed --ckpt E:/type10-7/local_artifacts/cvs_publication_inputs_20260713/final_ssdg.pth --wisig-pkl-override E:/type10-7/local_artifacts/cvs_publication_inputs_20260713/ManySig.pkl --heldout-reference E:/type10-7/local_artifacts/cvs_publication_inputs_20260713/frozen_phase1_heldout_eval.json --terminal-status E:/type10-7/local_artifacts/cvs_publication_inputs_20260713/phase1_terminal_status.json --output-dir E:/type10-7/github_publish/CVS-RFFI-repo/local_artifacts/cvs_publication_phase1_detailed_seed713101_20260713/cvs_jointp0_j5 --device cuda:0 --eval-batch-size 256 --num-workers 0 --max-batches -1 --sat-seed 2027`。
+- 成功条件：checkpoint严格加载、heldout三场景正确数逐项一致、612000条score、894条六层明细、clean排除、数据与checkpoint hash完整记录。
