@@ -94,6 +94,33 @@ def _transform_sat_batch(x_sat: torch.Tensor, transform: Optional[Callable[[torc
     return torch.stack([transform(x.cpu()).to(device=x_sat.device) for x in x_sat], dim=0)
 
 
+def _new_group(meta: dict[str, Any]) -> dict[str, Any]:
+    return {
+        "receiver_label": str(meta.get("rx", meta.get("rx_i", ""))),
+        "receiver_index": int(meta.get("rx_i", -1)),
+        "transmitter_label": str(meta.get("tx", meta.get("tx_i", ""))),
+        "transmitter_index": int(meta.get("tx_i", -1)),
+        "day_label": str(meta.get("day", meta.get("day_i", ""))),
+        "day_index": int(meta.get("day_i", -1)),
+        "sample_count": 0,
+        "correct_count": 0,
+        "confusion": {},
+    }
+
+
+def _update_group(group: dict[str, Any], *, truth: int, prediction: int) -> None:
+    group["sample_count"] += 1
+    group["correct_count"] += int(truth == prediction)
+    key = f"{truth}->{prediction}"
+    group["confusion"][key] = int(group["confusion"].get(key, 0)) + 1
+
+
+def _finalize_groups(groups: dict[str, dict[str, Any]]) -> dict[str, dict[str, Any]]:
+    for group in groups.values():
+        group["accuracy"] = 100.0 * int(group["correct_count"]) / max(1, int(group["sample_count"]))
+    return groups
+
+
 @torch.no_grad()
 def evaluate_loader_sat_channel(
     model,
@@ -106,10 +133,14 @@ def evaluate_loader_sat_channel(
     input_transform: Optional[Callable[[torch.Tensor], torch.Tensor]] = None,
     max_batches: int = 0,
     seed: int = 0,
-) -> Dict[str, float]:
+) -> Dict[str, Any]:
     model.eval()
     correct = 0
     total = 0
+    per_receiver: dict[str, dict[str, Any]] = {}
+    per_transmitter: dict[str, dict[str, Any]] = {}
+    per_receiver_transmitter: dict[str, dict[str, Any]] = {}
+    per_receiver_transmitter_day: dict[str, dict[str, Any]] = {}
     gen = make_torch_generator(device, int(seed))
     for batch_i, batch in enumerate(loader):
         if max_batches and batch_i >= int(max_batches):
@@ -124,10 +155,39 @@ def evaluate_loader_sat_channel(
         else:
             out = forward_fn(model, batch_sat, device)
         logits = logits_from_output(out)
+        predictions = logits.argmax(dim=1).detach().cpu().tolist()
+        truths = y.detach().cpu().tolist()
+        metadata = list(batch.get("meta", [{} for _ in truths]))
+        if len(metadata) != len(truths):
+            raise ValueError("batch metadata must align with labels for detailed satellite evaluation")
+        for truth, prediction, meta in zip(truths, predictions, metadata):
+            base = _new_group(meta)
+            rx_key = base["receiver_label"]
+            tx_key = base["transmitter_label"]
+            pair_key = f"{rx_key}|{tx_key}"
+            triple_key = f"{rx_key}|{tx_key}|{base['day_label']}"
+            for groups, key in (
+                (per_receiver, rx_key),
+                (per_transmitter, tx_key),
+                (per_receiver_transmitter, pair_key),
+                (per_receiver_transmitter_day, triple_key),
+            ):
+                group = groups.setdefault(key, {**base, "confusion": {}})
+                _update_group(group, truth=int(truth), prediction=int(prediction))
         counts = accuracy_counts(logits, y)
         correct += int(counts["tx_correct"])
         total += int(counts["tx_total"])
-    return {"tx_acc": 100.0 * correct / max(1, total), "tx_correct": correct, "tx_total": total}
+    return {
+        "tx_acc": 100.0 * correct / max(1, total),
+        "tx_correct": correct,
+        "tx_total": total,
+        "detailed": {
+            "per_receiver": _finalize_groups(per_receiver),
+            "per_transmitter": _finalize_groups(per_transmitter),
+            "per_receiver_transmitter": _finalize_groups(per_receiver_transmitter),
+            "per_receiver_transmitter_day": _finalize_groups(per_receiver_transmitter_day),
+        },
+    }
 
 
 @torch.no_grad()

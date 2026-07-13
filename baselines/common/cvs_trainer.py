@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import csv
 import json
 import math
 import os
@@ -19,6 +20,47 @@ def save_json(obj: Dict[str, Any], path: str) -> None:
     ensure_dir(os.path.dirname(path) or ".")
     with open(path, "w", encoding="utf-8") as f:
         json.dump(obj, f, indent=2, sort_keys=True)
+
+
+def save_satellite_detailed_csv(extra_tests: Dict[str, Any], path: str) -> int:
+    sat_stats = extra_tests.get("sat_channel") if isinstance(extra_tests, dict) else None
+    if not isinstance(sat_stats, dict):
+        return 0
+    rows: list[dict[str, Any]] = []
+    for scenario, scenario_stats in sat_stats.items():
+        named = scenario_stats.get("named", {}) if isinstance(scenario_stats, dict) else {}
+        for split_name, split_stats in named.items():
+            detailed = split_stats.get("detailed", {}) if isinstance(split_stats, dict) else {}
+            for group_type, groups in detailed.items():
+                if not isinstance(groups, dict):
+                    continue
+                for group_key, group in groups.items():
+                    rows.append(
+                        {
+                            "scenario": str(scenario),
+                            "split": str(split_name),
+                            "group_type": str(group_type),
+                            "group_key": str(group_key),
+                            "receiver_label": group.get("receiver_label", ""),
+                            "receiver_index": group.get("receiver_index", ""),
+                            "transmitter_label": group.get("transmitter_label", ""),
+                            "transmitter_index": group.get("transmitter_index", ""),
+                            "day_label": group.get("day_label", ""),
+                            "day_index": group.get("day_index", ""),
+                            "sample_count": group.get("sample_count", 0),
+                            "correct_count": group.get("correct_count", 0),
+                            "accuracy": group.get("accuracy", float("nan")),
+                            "confusion_json": json.dumps(group.get("confusion", {}), sort_keys=True),
+                        }
+                    )
+    if not rows:
+        return 0
+    ensure_dir(os.path.dirname(path) or ".")
+    with open(path, "w", encoding="utf-8", newline="") as handle:
+        writer = csv.DictWriter(handle, fieldnames=list(rows[0].keys()))
+        writer.writeheader()
+        writer.writerows(rows)
+    return len(rows)
 
 
 def logits_from_output(output: Any, preferred_key: str = "tx_logits") -> torch.Tensor:
@@ -613,6 +655,20 @@ def run_validation_gated_training(
                 print(line.replace("[TEST-NAMED]", "[FINAL-TEST-NAMED]", 1), flush=True)
         for line in format_extra_test_lines(extra_tests):
             print(line.replace("[SAT-TEST]", "[FINAL-SAT-TEST]", 1), flush=True)
+        detailed_row_count = save_satellite_detailed_csv(
+            extra_tests,
+            os.path.join(output_dir, "satellite_detailed_metrics.csv"),
+        )
+        final["satellite_detailed_metrics"] = {
+            "path": os.path.join(output_dir, "satellite_detailed_metrics.csv"),
+            "row_count": detailed_row_count,
+            "group_levels": [
+                "per_receiver",
+                "per_transmitter",
+                "per_receiver_transmitter",
+                "per_receiver_transmitter_day",
+            ],
+        }
         save_json(
             {"epochs": history.epochs, "best": history.best, "final": final},
             os.path.join(output_dir, "metrics.json"),
