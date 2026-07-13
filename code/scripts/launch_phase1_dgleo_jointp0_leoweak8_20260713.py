@@ -16,12 +16,13 @@ if str(SCRIPT_DIR) not in sys.path:
 import launch_phase1_dgleo_dualguard16_20260712 as dual
 
 
-DEFAULT_RUN_ID = "phase1_dgleo_jointp0_leoweak8_20260713"
+DEFAULT_RUN_ID = "phase1_dgleo_jointp0_leoweak8r2_20260713"
 DEFAULT_ROOT = dual.DEFAULT_ROOT
 DEFAULT_PYTHON = dual.DEFAULT_PYTHON
 WALL_HOURS = 10.0
 SEED = 713101
 LEO_WEAK = "leo_clear_weak,leo_low_elev_weak,leo_rain_weak"
+_DUAL_BUILD_COMMAND = dual.build_command
 
 
 BASE: Dict[str, Any] = deepcopy(dual.BASE)
@@ -157,7 +158,7 @@ def build_command(
     wisig_pkl: Path,
     teacher_ckpt: Path,
 ) -> List[str]:
-    command = dual.build_command(
+    command = _DUAL_BUILD_COMMAND(
         row,
         root=root,
         python=python,

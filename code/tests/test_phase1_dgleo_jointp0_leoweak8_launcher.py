@@ -73,3 +73,22 @@ def test_all_jointp0_commands_parse_with_current_trainer():
         assert parsed.source_episode_start_epoch == 1
         assert parsed.direct_metric_start_epoch == 1
         assert parsed.eval_sat_scenarios == module.LEO_WEAK
+
+
+def test_scheduler_callback_patch_does_not_recurse_into_joint_builder():
+    module = _load_module()
+    root = Path("/srv/CV-SincNet")
+    original = module.dual.build_command
+    try:
+        module.dual.build_command = module.build_command
+        command = module.build_command(
+            module.build_matrix()[0],
+            root=root,
+            python=Path("/opt/python"),
+            run_id="dry",
+            wisig_pkl=root / "Dataset_WigSig" / "ManySig.pkl",
+            teacher_ckpt=root / "teacher.pth",
+        )
+    finally:
+        module.dual.build_command = original
+    assert "--candidate_id" in command
