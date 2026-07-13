@@ -1,5 +1,6 @@
 from paper_reproduction.scripts.evaluate_cvs_phase1_ssdg_detailed import (
     _checkpoint_with_dataset_override,
+    _configure_inference_runtime,
     _metadata_from_extra,
     parse_sat_scenarios,
 )
@@ -35,3 +36,7 @@ def test_metadata_from_extra_rejects_incomplete_mapping() -> None:
         assert "day_i" in str(exc) and "sig_i" in str(exc)
     else:
         raise AssertionError("incomplete WiSig metadata must be rejected")
+
+
+def test_cpu_runtime_configuration_is_a_noop() -> None:
+    _configure_inference_runtime(__import__("torch").device("cpu"))

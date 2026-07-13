@@ -72,6 +72,19 @@ def _metadata_from_extra(extra: Any) -> dict[str, Any]:
     return metadata
 
 
+def _configure_inference_runtime(device: torch.device) -> None:
+    """Match the Phase1 trainer's CUDA inference precision policy."""
+    if device.type != "cuda":
+        return
+    torch.backends.cudnn.benchmark = True
+    torch.backends.cuda.matmul.allow_tf32 = True
+    torch.backends.cudnn.allow_tf32 = True
+    try:
+        torch.set_float32_matmul_precision("high")
+    except Exception:
+        pass
+
+
 @torch.no_grad()
 def run(args_cli: argparse.Namespace) -> dict[str, Any]:
     scenarios = tuple(parse_sat_scenarios(args_cli.scenarios))
@@ -83,6 +96,7 @@ def run(args_cli: argparse.Namespace) -> dict[str, Any]:
         if torch.cuda.is_available() or not str(args_cli.device).startswith("cuda")
         else "cpu"
     )
+    _configure_inference_runtime(device)
     checkpoint_path = Path(args_cli.ckpt)
     checkpoint = torch.load(checkpoint_path, map_location=device, weights_only=False)
     checkpoint, checkpoint_dataset_path = _checkpoint_with_dataset_override(
