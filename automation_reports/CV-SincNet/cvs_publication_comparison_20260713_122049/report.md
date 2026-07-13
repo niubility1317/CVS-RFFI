@@ -137,3 +137,10 @@
 - CVS-J5详细评估新增`--heldout-reference`，正式运行必须读取同run的`frozen_phase1_heldout_eval.json`，逐场景核对`tx_correct/tx_total`。任一场景与既有冻结heldout结果不一致即在写正式artifact前失败。
 - 最终审计器对CVS行额外要求`checkpoint_load_strict=true`和`heldout_reference_match=true`，防止模型重建缺键、样本集合漂移或星地随机种子漂移被612000行数量检查掩盖。
 - 本地py_compile和聚焦测试`2 passed`。当前现场Stage2-B 275/500、Stage2-C 129/500、失败0；DRIFT到epoch144/200。
+
+### DRIFT详细星地后评估启动前记录（15:10）
+
+- DRIFT训练PID3751461已正常退出，200个epoch完整，validation-best为epoch187、val accuracy97.6799%；该checkpoint内置正式星地评估为LEO clear18.6225%、low-elev18.3917%、rain18.6319%，每场景204000条。
+- 启动前GPU2显存10MiB且无训练进程；GPU3-7的Stage2矩阵worker保持活跃，不触碰其进程或artifact。详细后评估只读`best_by_val.pt`并写入独立`detailed_satellite_eval/`，不覆盖训练结果。
+- 计划命令：`CUDA_VISIBLE_DEVICES=2 /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m paper_reproduction.scripts.evaluate_cvs_phase1_detailed --method drift --checkpoint paper_reproduction/runs/cvs_publication_phase1_seed713101_20260713/drift_seed713101/best_by_val.pt --output-dir paper_reproduction/runs/cvs_publication_phase1_seed713101_20260713/drift_seed713101/detailed_satellite_eval --seed 713101 --device cuda:0 --wisig_pkl ./Dataset_WigSig/ManySig.pkl --wisig_protocol cvs_day_rx --wisig_equalized 1 --wisig_domain rx_day --wisig_out_len 256 --wisig_train_ratio 0.1 --wisig_val_ratio 0.9 --wisig_guard_gap 8 --wisig_train_days 0,1 --wisig_test_days 2,3 --wisig_train_rxs 0,1,2,3,4,5,6 --wisig_test_rxs 7,8,9,10,11 --wisig_max_day123_per_combo 0 --wisig_max_train_per_combo 0 --wisig_max_val_per_combo 0 --wisig_max_test_per_combo 0 --eval_batch_size 256 --num_workers 0 --eval_sat_channel --eval_sat_on main --eval_sat_scenarios leo_clear_weak,leo_low_elev_weak,leo_rain_weak --sat_eval_max_batches 0 --sat_seed 2027 --sat_fs_hz 25e6 --sat_fc_hz 2.462e9`。
+- 日志：`paper_reproduction/logs/cvs_publication_phase1_seed713101_20260713/drift_detailed_satellite_eval.log`。成功条件为612000条sample score、894条六层明细、三个正式LEO场景、clean排除，并与checkpoint内置逐场景正确数完全一致。
