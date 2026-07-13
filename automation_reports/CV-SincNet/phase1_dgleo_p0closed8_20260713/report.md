@@ -66,3 +66,11 @@
 - 14:50基于外部Stage2C行进度推算本批完成时间的方法无效，原预计窗口撤回。后续ETA只依据本批candidate的实际`launched_at`、epoch吞吐和终局评估耗时。
 - v2排队器状态字段分别记录`own_running_count`、`pending_count`、`own_terminal_count`和每GPU`external_count`；`foreign_processes_count_as_candidates=false`为硬约束。
 - 当前容量快照：GPU0-2各有1个外部训练进程，可作为本批第二槽位；GPU3-7各有2个外部训练进程，等待其中一个槽位释放。v2将分卡启动，不再等待全机清空。
+
+## 2026-07-13 16:22 v2发布与首轮核验
+
+- 提交`3084999`；queue专项与Phase1协议测试16 passed。远端同步前快照为`code/snapshots/phase1_dgleo_p0closed8_20260713_capacityv2_3084999_pre_sync/`，本地/远端SHA256均为`007f108b4086a140e3008d7826ea9a4bc2e06cca9eb0cedfbd27aa99c1ee9c7c`，远端`py_compile`和dry-run通过。
+- 旧v1 queue PID=`3849944`在确认0/8 trainer、run/log目录未创建后定向终止；v2 queue PID=`3925391`。GPU0-2分别启动`C0/C1/C2`，根trainer PID=`3925530/3925662/3926124`；GPU3-7的`C3-C7`只处于`PENDING_GPU_SLOT`。
+- queue权威状态为`PARTIAL_RUNNING_WAITING_GPU_SLOTS`：本批3/8运行、5/8等待、0终止。DataLoader worker虽继承相同cmdline，但不是独立candidate；本批计数只使用queue登记的根trainer和candidate ID。
+- E2实测约154秒/epoch。C0的四组open有效梯度均非零：boundary/source/invariant/U约`6.68/2.82/3.56/2.86`；U direct selected约13.32，U invariance active=1，三态比例约`core/tail/outside=0.119/0.058/0.823`。
+- E2只证明机制已激活，不能声明几何改善：C0的source_episode_overflow仍约0.971，legacy proxy_vaccept约0.655，bridge_accept=1.0，source-episode p95/p99/tail-CVaR约`63.79/83.00/74.98°`。需看E10及后续同口径趋势。
