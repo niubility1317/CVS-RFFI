@@ -61,6 +61,8 @@ def validate_class_incremental_manifest(payload: dict[str, Any]) -> dict[str, An
         raise ValueError("Stage2-C comparison excludes unknown/open-set rejection")
     if payload.get("target_unknown_tx_labels"):
         raise ValueError("Stage2-C comparison must not include unknown TX labels")
+    if len(payload.get("target_receiver_labels", [])) != 1:
+        raise ValueError("each Stage2-C run must adapt exactly one target receiver")
     if int(payload.get("query_per_tx", 0)) <= 0:
         raise ValueError("query_per_tx must be positive")
     if int(payload.get("base_steps", 0)) <= 0 or int(payload.get("increment_steps", 0)) <= 0:
@@ -640,6 +642,7 @@ def main() -> int:
     parser.add_argument("--dry-run", action="store_true")
     parser.add_argument("--experiment-id", default=None)
     parser.add_argument("--method", choices=sorted(METHODS), default=None)
+    parser.add_argument("--target-receiver", default=None)
     parser.add_argument("--seed", type=int, default=None)
     parser.add_argument("--split-seed", type=int, default=None)
     parser.add_argument("--k-shot", type=int, default=None)
@@ -661,6 +664,8 @@ def main() -> int:
         "weight_decay": args.weight_decay,
     }
     config.update({key: value for key, value in overrides.items() if value is not None})
+    if args.target_receiver is not None:
+        config["target_receiver_labels"] = [args.target_receiver]
     checked = validate_class_incremental_manifest(config)
     if args.dry_run:
         print(json.dumps(checked, ensure_ascii=False, sort_keys=True))

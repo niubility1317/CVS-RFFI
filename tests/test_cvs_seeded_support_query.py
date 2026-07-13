@@ -1,3 +1,5 @@
+from pathlib import Path
+
 from paper_reproduction.cvs_aligned.evaluate import _seeded_support_query_indices
 
 
@@ -34,3 +36,20 @@ def test_seeded_nested_split_changes_with_seed_or_identity():
     third = _seeded_support_query_indices(**{**base, "identity": "target_old|tx-b|rx-a|day0|eq1"})
     assert first != second
     assert first != third
+
+
+def test_stage2c_formal_config_uses_single_receiver_runs_with_receiver_grid():
+    from paper_reproduction.common.config import load_json_config
+    from paper_reproduction.cvs_aligned.class_incremental import validate_class_incremental_manifest
+
+    config = load_json_config(Path("paper_reproduction/configs/cvs_stage2c_publication_base_n607.json"))
+    checked = validate_class_incremental_manifest(config)
+    assert checked["target_receiver_labels"] == ["20-1"]
+    assert config["publication_target_receiver_grid"] == ["20-1", "3-19", "7-14", "7-7", "8-8"]
+    config["target_receiver_labels"] = ["20-1", "3-19"]
+    try:
+        validate_class_incremental_manifest(config)
+    except ValueError as exc:
+        assert "exactly one target receiver" in str(exc)
+    else:
+        raise AssertionError("pooled target-receiver Stage2-C adaptation should fail closed")
