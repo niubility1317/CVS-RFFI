@@ -125,13 +125,6 @@
   - 最新日志未发现Traceback、OOM、RuntimeError、ValueError或NaN。
 - epoch1源验证准确率仅作为启动健康证据，不作为最终结论：CVCNN-CE伪标签61.87%、一致性70.75%；RIEI-FD伪标签70.32%、一致性88.60%；DRIFT伪标签30.19%、一致性39.13%。
 - exact launch command：
-+
-## 2026-07-13伪标签监督预热修订
-
-用户要求伪标签必须在有标签监督模型训练成熟后再启用。正式参数修订为`pseudo_start_epoch=150`：epoch1–149仅执行0.1有标签监督训练与默认clean+satellite双视图增强；epoch150–200才对0.6无标签数据启用阈值0.95、权重1.0的硬伪标签CE。增强一致性路线仍从epoch1启用。
-
-当前`pseudo_label`目录中以`pseudo_start_epoch=1`启动的3条worker将标记为`SUPERSEDED_DIAGNOSTIC`并精确停止，不进入正式结果。3条增强一致性worker保持运行。新的正式伪标签输出将写入独立的`pseudo_label_warmup150`子目录，避免覆盖旧日志、checkpoint或metrics。
-
 
 ```bash
 cd /home/szu2070436088/2510044040/CV-SincNet
@@ -144,3 +137,23 @@ nohup env \
   bash scripts/launchers/run_phase1_ssl_baseline_matrix.sh \
   > paper_reproduction/logs/cvs_publication_phase1_ssl2x3_seed713101_20260713/nohup.out 2>&1 &
 ```
+
+## 2026-07-13 22:51 HKT伪标签预热重跑落地
+
+- 已精确终止旧伪标签worker：CVCNN-CE `4124379`、RIEI-FD `4124404`、DRIFT `4124414`；旧`pseudo_label`目录保留并标记为`SUPERSEDED_DIAGNOSTIC`。
+- 增强一致性worker `4124376`、`4124400`、`4124409`全过程保持运行，未停止或重启。
+- Git提交：`200f7c3 fix: warm up pseudo-label baselines before self-training`。
+- 新伪标签dry-run计数：`pseudo_start150=3`、`pseudo=3`、`consistency=0`、`sat_aug=3`。
+- 新伪标签scheduler PID：`4135869`。
+
+|GPU|方法|正式伪标签warmup150 PID|持续运行的一致性PID|
+|---:|---|---:|---:|
+|0|CVCNN-CE|4135917|4124376|
+|1|RIEI-FD|4135936|4124400|
+|2|DRIFT|4135944|4124409|
+
+- 新run：`paper_reproduction/runs/cvs_publication_phase1_ssl2x3_seed713101_20260713/pseudo_label_warmup150`。
+- 新log：`paper_reproduction/logs/cvs_publication_phase1_ssl2x3_seed713101_20260713/pseudo_label_warmup150`。
+- 3条新命令均包含`--pseudo_start_epoch 150`、0.1/0.6/0.3划分、三个`leo_*_weak`场景及星地增强；旧伪标签worker数量为0。
+- epoch1三种方法均记录`pseudo/active=0`和`pseudo/loss=0`，证明预热阶段未执行伪标签参数更新；从epoch150开始才切换为`pseudo/active=1`。
+- GPU0/1/2当前各恰好2条训练进程：1条warmup150伪标签+1条增强一致性，符合并发上限；最新日志未发现Traceback、OOM、RuntimeError、ValueError或NaN。
