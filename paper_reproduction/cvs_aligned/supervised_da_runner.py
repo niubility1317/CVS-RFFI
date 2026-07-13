@@ -40,6 +40,61 @@ from paper_reproduction.mitigating_receiver_impact_da.model import ReceiverImpac
 METHODS = {"protonet_cda", "mrior_sda", "dadda_sda"}
 
 
+def _parametric_optimizer(
+    config: dict[str, Any],
+    model: nn.Module,
+    *,
+    method: str,
+    phase: str,
+) -> tuple[torch.optim.Optimizer, dict[str, Any]]:
+    prefix = f"{method.removesuffix('_sda')}_{phase}"
+    if method == "dadda_sda":
+        learning_rate = float(config.get(f"{prefix}_learning_rate", 1.0e-4))
+        momentum = float(config.get("dadda_momentum", 0.9))
+        weight_decay = float(config.get("dadda_weight_decay", 5.0e-4))
+        optimizer = torch.optim.SGD(
+            model.parameters(), lr=learning_rate, momentum=momentum, weight_decay=weight_decay
+        )
+        profile = {
+            "optimizer": "SGD",
+            "learning_rate": learning_rate,
+            "momentum": momentum,
+            "weight_decay": weight_decay,
+            "schedule": "inverse_(1+10p)^-0.75",
+        }
+    elif method == "mrior_sda":
+        learning_rate = float(config.get(f"{prefix}_learning_rate", 6.0e-4))
+        weight_decay = float(config.get("mrior_weight_decay", 0.0))
+        optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate, weight_decay=weight_decay)
+        profile = {
+            "optimizer": "Adam",
+            "learning_rate": learning_rate,
+            "weight_decay": weight_decay,
+            "schedule": "constant",
+        }
+    else:
+        raise ValueError(f"no parametric optimizer for {method}")
+    return optimizer, profile
+
+
+def _set_method_learning_rate(
+    optimizer: torch.optim.Optimizer,
+    profile: dict[str, Any],
+    *,
+    step: int,
+    total_steps: int,
+) -> float:
+    base_lr = float(profile["learning_rate"])
+    if str(profile["schedule"]).startswith("inverse_"):
+        progress = float(step - 1) / float(max(1, total_steps - 1))
+        learning_rate = base_lr / ((1.0 + 10.0 * progress) ** 0.75)
+    else:
+        learning_rate = base_lr
+    for group in optimizer.param_groups:
+        group["lr"] = learning_rate
+    return learning_rate
+
+
 def _validate_config(config: dict[str, Any]) -> None:
     method = str(config.get("method_id", "")).lower()
     if method not in METHODS:
@@ -97,8 +152,6 @@ def _train_base(
 ) -> tuple[nn.Module, dict[str, Any]]:
     method = str(config["method_id"]).lower()
     base_steps = int(config["base_steps"])
-    learning_rate = float(config.get("learning_rate", 1.0e-3))
-    weight_decay = float(config.get("weight_decay", 5.0e-4))
     if method == "protonet_cda":
         model, info = _train_model(
             {
@@ -126,11 +179,16 @@ def _train_base(
             base_channels=int(config.get("base_channels", 16)),
             model_variant=str(config.get("dadda_model_variant", "conv1d")),
         ).to(device)
-    optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate, weight_decay=weight_decay)
+    optimizer, optimizer_profile = _parametric_optimizer(
+        config, model, method=method, phase="base"
+    )
     last_loss = float("nan")
     loss_trace: list[dict[str, Any]] = []
     model.train()
     for step, batch in enumerate(_cycle_batches(loader, base_steps), start=1):
+        learning_rate = _set_method_learning_rate(
+            optimizer, optimizer_profile, step=step, total_steps=base_steps
+        )
         x = batch["iq"].to(device)
         y = _compact_source_labels(batch["label"], source_ids, device)
         outputs = model(x)
@@ -146,13 +204,14 @@ def _train_base(
             phase="base",
             step=step,
             total_steps=base_steps,
-            losses={"loss": loss},
+            losses={"loss": loss, "learning_rate": learning_rate},
         )
     return model, {
         "base_steps": base_steps,
         "base_final_source_ce": last_loss,
         "source_train_channel_view": str(config.get("source_train_channel_view", "clean")),
         "training_origin": "source_supervised_random_init",
+        "optimizer_profile": optimizer_profile,
         "loss_trace": loss_trace,
     }
 
@@ -184,10 +243,8 @@ def _adapt_parametric(
     )
     source_batches = _cycle_batches(loader, int(config["adapt_steps"]))
     target_batches = _cycle_batches(target_loader, int(config["adapt_steps"]))
-    optimizer = torch.optim.Adam(
-        model.parameters(),
-        lr=float(config.get("adapt_learning_rate", 1.0e-4)),
-        weight_decay=float(config.get("adapt_weight_decay", config.get("weight_decay", 5.0e-4))),
+    optimizer, optimizer_profile = _parametric_optimizer(
+        config, model, method=method, phase="adapt"
     )
     last: dict[str, float] = {}
     loss_trace: list[dict[str, Any]] = []
@@ -195,6 +252,12 @@ def _adapt_parametric(
     for step, (source_batch, (target_x, target_y)) in enumerate(
         zip(source_batches, target_batches), start=1
     ):
+        learning_rate = _set_method_learning_rate(
+            optimizer,
+            optimizer_profile,
+            step=step,
+            total_steps=int(config["adapt_steps"]),
+        )
         source_x = source_batch["iq"].to(device)
         source_y = _compact_source_labels(source_batch["label"], source_ids, device)
         target_x = target_x.to(device)
@@ -234,7 +297,10 @@ def _adapt_parametric(
             phase="target_support_adaptation",
             step=step,
             total_steps=int(config["adapt_steps"]),
-            losses={key: value for key, value in losses.items() if value.numel() == 1},
+            losses={
+                **{key: value for key, value in losses.items() if value.numel() == 1},
+                "learning_rate": learning_rate,
+            },
         )
     model.eval()
     with torch.no_grad():
@@ -247,6 +313,7 @@ def _adapt_parametric(
         if method == "mrior_sda"
         else "source_ce+target_support_ce+dynamic_mmd_lmmd",
         "final_adaptation_losses": last,
+        "optimizer_profile": optimizer_profile,
         "loss_trace": loss_trace,
     }
 

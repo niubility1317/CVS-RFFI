@@ -40,3 +40,11 @@
 - v1数值：CVS-OPGAC适应前0.6722、适应后0.7361、delta+0.0639；CVS-qKNNV42 old0.6056、seen-new0.6333、H0.6170、forgetting0.0861。
 - 反向审计发现v1 qKNNV42遗漏技术报告中固定的`diag_whiten_fisher` support-only变换（strength0.1），因此v1 qKNNV42降级为实现诊断，不能进入主表。已补入严格support-only的类间/类内Fisher对角缩放与对角whitening；三场景中每个已登记类都有同场景support，故`scenario_residual_weight=0.5`按公式为零并显式记录，而不是静默省略。
 - 修正后py_compile及CVS runner+matrix测试仍为`4 passed`。需同步后写入新根`cvs_publication_cvs_anchor_k5_seed713101_v2_20260713`，不得覆盖v1。
+
+### CVS K5锚点v2与方法原生优化器修正（14:05）
+
+- qKNNV42修正版锚点已完成并回收到`local_artifacts/cvs_publication_cvs_anchor_k5_seed713101_v2_20260713/`。同一receiver20-1、K=5、seed713101下，CVS-OPGAC保持适应前0.6722、适应后0.7361、delta+0.0639；CVS-qKNNV42得到old=0.6417、seen-new=0.6500、H_old_new=0.6436、forgetting=0.0667。
+- v2两方法均含完整8件artifact、三种正式LEO场景、四层详细统计、sample-level score与finite loss trace。v1 qKNNV42因遗漏support-only变换继续仅作诊断，不进入主表；v2仍只是单receiver、单K、单seed锚点，不能据此给出正式排序。
+- 为避免“统一步数”被误写成“统一优化器”，Stage2主表预算明确为`common_steps_method_native_optimizer`：相同base/adapt或increment步数，但保留各方法原生优化器与关键超参数。Stage2-C已分别设置CSIL SGD(lr0.01,momentum0.9,wd0.01)、MoPC SGD(lr0.01,momentum0.9,wd0.0002)、Orthogonal base/increment SGD(lr0.01/0.08,momentum0.9,wd0.0005)，并恢复Orthogonal noise0.01、top-k60、tau-fuse0.01、embedding256、pseudo-targets200。
+- Stage2-B中MRIOR-SDA采用本地论文方程复现谱系的Adam、lr0.0006、wd0；DADDA-SDA采用论文配置的SGD、momentum0.9、wd0.0005、base/adapt lr0.0001及`(1+10p)^-0.75`反比衰减。ProtoNet CDA保留既有ProtoNet训练入口。主表仍须标为CVS extension；MRIOR论文未报告优化器，因此Adam属于已披露的本地复现选择，不得声称论文原文指定。
+- 本地聚焦回归：`conda run -n ssr-gpu python -m pytest tests/test_cvs_supervised_da_runner.py tests/test_cvs_class_incremental.py tests/test_cvs_publication_matrix.py tests/test_cvs_proposed_stage2_runner.py -q`，结果`19 passed`。完整500行矩阵在方法原生trace smoke通过前不得启动。

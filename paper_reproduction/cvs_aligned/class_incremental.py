@@ -247,9 +247,9 @@ def _train_csil(
     ).to(device)
     optimizer = torch.optim.SGD(
         model.parameters(),
-        lr=float(config.get("learning_rate", 0.01)),
-        momentum=float(config.get("momentum", 0.9)),
-        weight_decay=float(config.get("weight_decay", 0.01)),
+        lr=float(config.get("csil_learning_rate", config.get("learning_rate", 0.01))),
+        momentum=float(config.get("csil_momentum", config.get("momentum", 0.9))),
+        weight_decay=float(config.get("csil_weight_decay", config.get("weight_decay", 0.01))),
     )
     model.train()
     base_steps = int(config["base_steps"])
@@ -302,9 +302,9 @@ def _train_csil(
         loss.total.backward()
         velocity = csil_masked_sgd_step(
             model,
-            lr=float(config.get("learning_rate", 0.01)),
-            momentum=float(config.get("momentum", 0.9)),
-            weight_decay=float(config.get("weight_decay", 0.01)),
+            lr=float(config.get("csil_learning_rate", config.get("learning_rate", 0.01))),
+            momentum=float(config.get("csil_momentum", config.get("momentum", 0.9))),
+            weight_decay=float(config.get("csil_weight_decay", config.get("weight_decay", 0.01))),
             state=velocity,
         )
         _trace_loss(
@@ -358,9 +358,9 @@ def _train_mopc(
     model = _MoPCModel(int(config.get("embedding_dim", 64)), old_count + len(new_ids)).to(device)
     optimizer = torch.optim.SGD(
         model.parameters(),
-        lr=float(config.get("learning_rate", 0.01)),
-        momentum=float(config.get("momentum", 0.9)),
-        weight_decay=float(config.get("weight_decay", 2e-4)),
+        lr=float(config.get("mopc_learning_rate", config.get("learning_rate", 0.01))),
+        momentum=float(config.get("mopc_momentum", config.get("momentum", 0.9))),
+        weight_decay=float(config.get("mopc_weight_decay", 2e-4)),
     )
     base_steps = int(config["base_steps"])
     for step, batch in enumerate(_cycle_batches(loader, base_steps), start=1):
@@ -470,21 +470,21 @@ def _train_orthogonal(
 ) -> tuple[torch.Tensor, float, dict[str, Any]]:
     old_count = len(old_ids)
     trace: list[dict[str, Any]] = []
-    total_count = old_count + len(new_ids)
-    embedding_dim = int(config.get("embedding_dim", 64))
+    total_count = max(old_count + len(new_ids), int(config.get("orthogonal_pseudo_targets", old_count + len(new_ids))))
+    embedding_dim = int(config.get("orthogonal_embedding_dim", config.get("embedding_dim", 256)))
     encoder = SixBlockConv1DEncoder(input_channels=2, embedding_dim=embedding_dim).to(device)
     targets = make_simplex_pseudo_targets(num_targets=total_count, feature_dim=embedding_dim).to(device)
     assigned = assign_base_targets(list(range(old_count)), targets)
     perturbed = perturb_pseudo_targets(
         targets,
-        noise_range=float(config.get("orthogonal_noise_range", 0.05)),
+        noise_range=float(config.get("orthogonal_noise_range", 0.01)),
         seed=int(config.get("seed", 0)),
     )
     optimizer = torch.optim.SGD(
         encoder.parameters(),
-        lr=float(config.get("learning_rate", 0.01)),
-        momentum=float(config.get("momentum", 0.9)),
-        weight_decay=float(config.get("weight_decay", 5e-4)),
+        lr=float(config.get("orthogonal_base_learning_rate", config.get("learning_rate", 0.01))),
+        momentum=float(config.get("orthogonal_momentum", config.get("momentum", 0.9))),
+        weight_decay=float(config.get("orthogonal_weight_decay", 5e-4)),
     )
     base_steps = int(config["base_steps"])
     for step, batch in enumerate(_cycle_batches(loader, base_steps), start=1):
@@ -522,7 +522,9 @@ def _train_orthogonal(
         new_features = encoder(new_x)
         prototypes, _ = compute_class_prototypes(new_features, new_y)
     new_weights = nn.Parameter(prototypes.detach().clone())
-    increment_optimizer = torch.optim.SGD([new_weights], lr=float(config.get("increment_learning_rate", 0.01)))
+    increment_optimizer = torch.optim.SGD(
+        [new_weights], lr=float(config.get("orthogonal_increment_learning_rate", config.get("increment_learning_rate", 0.08)))
+    )
     increment_steps = int(config["increment_steps"])
     for step in range(1, increment_steps + 1):
         increment_optimizer.zero_grad(set_to_none=True)
@@ -533,9 +535,9 @@ def _train_orthogonal(
             new_weights,
             new_class_ids=torch.tensor(sorted(new_ids), device=device),
             prototypes=prototypes,
-            top_k=int(config.get("orthogonal_top_k", 2)),
+            top_k=int(config.get("orthogonal_top_k", 60)),
             margin=float(config.get("orthogonal_margin", 0.2)),
-            tau_fuse=float(config.get("orthogonal_tau_fuse", 0.5)),
+            tau_fuse=float(config.get("orthogonal_tau_fuse", 0.01)),
             lambda_align=float(config.get("orthogonal_lambda_align", 1.6)),
         )
         loss.backward()
