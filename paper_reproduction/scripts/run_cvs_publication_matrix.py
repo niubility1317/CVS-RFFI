@@ -15,8 +15,8 @@ DEFAULT_SEEDS = (713101, 713102, 713103, 713104, 713105)
 DEFAULT_K = (1, 2, 5, 10, 20)
 DEFAULT_RECEIVERS = ("20-1", "3-19", "7-14", "7-7", "8-8")
 PHASE_METHODS = {
-    "stage2b": ("protonet_cda", "mrior_sda", "dadda_sda"),
-    "stage2c": ("csil", "mopc_hr", "orthogonal_incremental"),
+    "stage2b": ("cvs_opgac", "protonet_cda", "mrior_sda", "dadda_sda"),
+    "stage2c": ("cvs_qknnv42", "csil", "mopc_hr", "orthogonal_incremental"),
 }
 MODULES = {
     "stage2b": "paper_reproduction.cvs_aligned.supervised_da_runner",
@@ -154,14 +154,22 @@ def _artifact_status(row: MatrixRow, *, scenarios: int = 3, query_per_tx: int = 
     }
 
 
-def _command(row: MatrixRow, *, python: str, config: Path) -> list[str]:
+def _command(row: MatrixRow, *, python: str, config: Path, cvs_config: Path | None = None) -> list[str]:
+    module = (
+        "paper_reproduction.cvs_aligned.cvs_method_runner"
+        if row.method in {"cvs_opgac", "cvs_qknnv42"}
+        else MODULES[row.phase]
+    )
+    selected_config = cvs_config if row.method in {"cvs_opgac", "cvs_qknnv42"} else config
+    if selected_config is None:
+        raise ValueError("--cvs-config is required when the matrix includes a proposed CVS method")
     command = [
         python,
         "-u",
         "-m",
-        MODULES[row.phase],
+        module,
         "--config",
-        str(config),
+        str(selected_config),
         "--run-dir",
         row.run_dir,
         "--device",
@@ -192,6 +200,7 @@ def main() -> int:
     parser = argparse.ArgumentParser(description="Resume-safe CVS Stage2 publication matrix worker")
     parser.add_argument("--phase", choices=sorted(PHASE_METHODS), required=True)
     parser.add_argument("--config", type=Path, required=True)
+    parser.add_argument("--cvs-config", type=Path, default=None)
     parser.add_argument("--output-root", type=Path, required=True)
     parser.add_argument("--log-root", type=Path, required=True)
     parser.add_argument("--methods", default=None)
@@ -266,7 +275,7 @@ def main() -> int:
             continue
         Path(row.run_dir).mkdir(parents=True, exist_ok=True)
         Path(row.log_path).parent.mkdir(parents=True, exist_ok=True)
-        command = _command(row, python=args.python, config=args.config)
+        command = _command(row, python=args.python, config=args.config, cvs_config=args.cvs_config)
         started = time.time()
         _append_event(event_path, {"event": "start", "row": asdict(row), "command": command, "time": started})
         with Path(row.log_path).open("w", encoding="utf-8") as log_handle:

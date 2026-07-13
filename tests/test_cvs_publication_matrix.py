@@ -25,7 +25,7 @@ def test_full_stage2_matrices_cover_methods_receivers_k_and_seeds(tmp_path: Path
             output_root=tmp_path / phase / "runs",
             log_root=tmp_path / phase / "logs",
         )
-        assert len(rows) == 3 * 5 * 5 * 5
+        assert len(rows) == len(PHASE_METHODS[phase]) * 5 * 5 * 5
         assert len({row.experiment_id for row in rows}) == len(rows)
         assert {row.receiver for row in rows} == set(DEFAULT_RECEIVERS)
         assert {row.k_shot for row in rows} == set(DEFAULT_K)
