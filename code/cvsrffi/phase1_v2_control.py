@@ -609,7 +609,10 @@ def assess_open_set_effective_budget(
         os_total = _sum_abs(metrics, os_keys)
         closed_total = _sum_abs(metrics, closed_keys)
     denom = os_total + closed_total
-    budget = os_total / denom if denom > 0.0 else 0.0
+    gradient_budget = os_total / denom if denom > 0.0 else 0.0
+    controller_post = finite_float(metrics.get("train/os_budget_controller_post"))
+    uses_controller_post = math.isfinite(controller_post)
+    budget = max(0.0, min(1.0, controller_post)) if uses_controller_post else gradient_budget
     min_target = max(0.0, float(min_budget))
     max_target = float(max_budget)
     below_min = budget < min_target
@@ -624,6 +627,8 @@ def assess_open_set_effective_budget(
             "B_os_total": os_total,
             "B_closed_total": closed_total,
             "B_os_uses_gradient_norm": 1.0 if uses_gradient_budget else 0.0,
+            "B_os_uses_controller_post": 1.0 if uses_controller_post else 0.0,
+            "B_os_gradient_ratio_diagnostic": gradient_budget,
             "B_os_min_target": min_target,
             "B_os_max_target": max_target,
         },

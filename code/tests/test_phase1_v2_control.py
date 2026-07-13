@@ -565,6 +565,23 @@ def test_open_set_effective_budget_blocks_excessive_open_gradient_share():
     assert decision.details["B_os_eff"] == pytest.approx(0.9)
 
 
+def test_open_set_effective_budget_uses_mean_controller_post_for_guard_parity():
+    decision = assess_open_set_effective_budget(
+        {
+            "train/os_gradient_effective_open_norm": 9.0,
+            "train/os_gradient_effective_closed_norm": 1.0,
+            "train/os_budget_controller_post": 0.20,
+        },
+        min_budget=0.16,
+        max_budget=0.24,
+    )
+
+    assert not decision.fired
+    assert decision.details["B_os_eff"] == pytest.approx(0.20)
+    assert decision.details["B_os_uses_controller_post"] == 1.0
+    assert decision.details["B_os_gradient_ratio_diagnostic"] == pytest.approx(0.9)
+
+
 def test_open_set_gradient_controller_scales_real_gradients_to_budget():
     model = torch.nn.Linear(2, 1, bias=False)
     x = torch.tensor([[1.0, 0.5]])
@@ -1010,7 +1027,7 @@ def test_u_geometry_route_separates_confident_ce_core_direct_and_all_valid_invar
     source = (CODE_ROOT / "SSDG" / "train_ssdg.py").read_text(encoding="utf-8")
 
     assert "ce_mask = pseudo_mask & geometry_core_mask" in source
-    assert "direct_mask = geometry_core_mask.clone()" in source
+    assert "direct_mask = geometry_direct_mask.clone()" in source
     assert "invariance_mask = valid_domain_mask.clone()" in source
     assert "entropy_per_sample[u_geometry_core_mask].mean()" in source
     assert "dm_mask = u_direct_geometry_mask" in source

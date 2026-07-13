@@ -8,6 +8,20 @@ from unittest import mock
 
 
 class PostStageTrainerEntrypointsTest(unittest.TestCase):
+    def test_mean_logs_ignores_nonfinite_optional_batch_metrics(self):
+        from post_stage_common import mean_logs
+
+        result = mean_logs(
+            [
+                {"active": 0.0, "optional": float("nan")},
+                {"active": 1.0, "optional": 3.0},
+                {"active": 1.0, "optional": float("inf")},
+            ]
+        )
+
+        self.assertEqual(result["active"], 2.0 / 3.0)
+        self.assertEqual(result["optional"], 3.0)
+
     def test_post_stage_sat_eval_defaults_to_three_main_ood_splits(self):
         from post_stage_cli import MAIN_SAT_EVAL_ON, add_sat_eval_args
         from cvsrffi.eval import MAIN_SAT_EVAL_ON_NAMES, resolve_sat_eval_loader_names

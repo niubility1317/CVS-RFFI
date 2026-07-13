@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import math
 import os
 from pathlib import Path
 from types import SimpleNamespace
@@ -368,6 +369,8 @@ def mean_logs(log_items: Iterable[Mapping[str, Any]]) -> Dict[str, float]:
                     val = float(value)
                 except Exception:
                     continue
+            if not math.isfinite(val):
+                continue
             acc[key] = acc.get(key, 0.0) + val
             count[key] = count.get(key, 0) + 1
     return {key: acc[key] / max(1, count[key]) for key in sorted(acc)}
