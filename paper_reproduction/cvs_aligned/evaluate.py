@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import argparse
 import csv
+import hashlib
 import inspect
 import json
 import random
@@ -87,18 +88,23 @@ def _take_samples(
     offset: int,
     class_label: int,
     role: str,
+    indices: list[int] | None = None,
 ) -> tuple[list[torch.Tensor], list[int], list[dict[str, Any]]]:
     tx_i = _idx(list(ds.get("tx_list", [])), tx_label)
     rx_i = _idx(list(ds.get("rx_list", [])), rx_label)
     eq_i = _eq_idx(ds, equalized)
     arr = ds["data"][tx_i][rx_i][int(day_i)][eq_i]
-    if arr is None or int(arr.shape[0]) < int(offset) + int(count):
+    requested_indices = list(range(int(offset), int(offset) + int(count))) if indices is None else [int(v) for v in indices]
+    if len(requested_indices) != int(count):
+        raise ValueError("explicit sample indices must match count")
+    required = max(requested_indices, default=-1) + 1
+    if arr is None or int(arr.shape[0]) < required:
         got = 0 if arr is None else int(arr.shape[0])
-        raise ValueError(f"insufficient samples for tx={tx_label} rx={rx_label}: need {offset + count}, got {got}")
+        raise ValueError(f"insufficient samples for tx={tx_label} rx={rx_label}: need index<{required}, got {got}")
     xs: list[torch.Tensor] = []
     ys: list[int] = []
     meta: list[dict[str, Any]] = []
-    for sig_i in range(int(offset), int(offset) + int(count)):
+    for sig_i in requested_indices:
         xs.append(_iq_from_raw(arr[sig_i]))
         ys.append(int(class_label))
         meta.append(
@@ -112,6 +118,33 @@ def _take_samples(
             }
         )
     return xs, ys, meta
+
+
+def _seeded_support_query_indices(
+    *,
+    available: int,
+    k_shot: int,
+    query_count: int,
+    support_pool_max_k: int,
+    seed: int,
+    identity: str,
+) -> tuple[list[int], list[int]]:
+    if k_shot <= 0 or query_count <= 0:
+        raise ValueError("k_shot and query_count must be positive")
+    if support_pool_max_k < k_shot:
+        raise ValueError("support_pool_max_k must be >= k_shot")
+    needed = support_pool_max_k + query_count
+    if available < needed:
+        raise ValueError(f"insufficient samples for seeded nested split: need {needed}, got {available}")
+    digest = hashlib.sha256(f"{int(seed)}|{identity}".encode("utf-8")).digest()
+    rng = random.Random(int.from_bytes(digest[:8], byteorder="big", signed=False))
+    permutation = list(range(int(available)))
+    rng.shuffle(permutation)
+    support = permutation[: int(k_shot)]
+    query = permutation[int(support_pool_max_k) : int(support_pool_max_k) + int(query_count)]
+    if set(support) & set(query):
+        raise RuntimeError("seeded support/query split unexpectedly overlaps")
+    return support, query
 
 
 def _make_source_dataset(config: dict[str, Any], ds: dict[str, Any]):
@@ -537,7 +570,8 @@ def _select_target_sets(config: dict[str, Any], manysig: dict[str, Any], manytx:
     k = int(config["k_shot"])
     q = int(config.get("query_per_tx", 20))
     old_labels = [str(v) for v in config["target_old_tx_labels"]]
-    needed_old = k + q
+    support_pool_max_k = int(config.get("support_pool_max_k", k))
+    needed_old = (support_pool_max_k if str(config.get("target_sample_strategy", "front")) == "seeded_nested" else k) + q
     for target_rx in target_rxs:
         for label in old_labels:
             _available_count(manysig, tx_label=label, rx_label=target_rx, day_i=day_i, equalized=equalized)
@@ -566,6 +600,28 @@ def _build_stage2_tensors(config: dict[str, Any], manysig: dict[str, Any], manyt
     unknown_labels = [str(v) for v in config.get("target_unknown_tx_labels", [])]
     class_map = {label: i for i, label in enumerate(old_labels)}
     class_map.update({label: len(old_labels) + i for i, label in enumerate(new_labels)})
+    sample_strategy = str(config.get("target_sample_strategy", "front"))
+    support_pool_max_k = int(config.get("support_pool_max_k", k))
+    split_seed = int(config.get("split_seed", config.get("seed", 1337)))
+
+    def split_indices(dataset: dict[str, Any], *, label: str, receiver: str, role: str):
+        if sample_strategy != "seeded_nested":
+            return None, None
+        available = _available_count(
+            dataset,
+            tx_label=label,
+            rx_label=receiver,
+            day_i=day_i,
+            equalized=equalized,
+        )
+        return _seeded_support_query_indices(
+            available=available,
+            k_shot=k,
+            query_count=q,
+            support_pool_max_k=support_pool_max_k,
+            seed=split_seed,
+            identity=f"{role}|{label}|{receiver}|day{day_i}|eq{equalized}",
+        )
 
     support_x: list[torch.Tensor] = []
     support_y: list[int] = []
@@ -576,6 +632,12 @@ def _build_stage2_tensors(config: dict[str, Any], manysig: dict[str, Any], manyt
 
     for target_rx in target_rxs:
         for label in old_labels:
+            support_indices, query_indices = split_indices(
+                manysig,
+                label=label,
+                receiver=target_rx,
+                role="target_old",
+            )
             xs, ys, meta = _take_samples(
                 manysig,
                 tx_label=label,
@@ -586,6 +648,7 @@ def _build_stage2_tensors(config: dict[str, Any], manysig: dict[str, Any], manyt
                 offset=0,
                 class_label=class_map[label],
                 role="target_old_support",
+                indices=support_indices,
             )
             support_x.extend(xs)
             support_y.extend(ys)
@@ -600,12 +663,19 @@ def _build_stage2_tensors(config: dict[str, Any], manysig: dict[str, Any], manyt
                 offset=k,
                 class_label=class_map[label],
                 role="target_old_query",
+                indices=query_indices,
             )
             query_x.extend(xs)
             query_y.extend(ys)
             query_meta.extend(meta)
 
         for label in new_labels:
+            support_indices, query_indices = split_indices(
+                manytx,
+                label=label,
+                receiver=target_rx,
+                role="target_new",
+            )
             xs, ys, meta = _take_samples(
                 manytx,
                 tx_label=label,
@@ -616,6 +686,7 @@ def _build_stage2_tensors(config: dict[str, Any], manysig: dict[str, Any], manyt
                 offset=0,
                 class_label=class_map[label],
                 role="target_new_support",
+                indices=support_indices,
             )
             support_x.extend(xs)
             support_y.extend(ys)
@@ -630,6 +701,7 @@ def _build_stage2_tensors(config: dict[str, Any], manysig: dict[str, Any], manyt
                 offset=k,
                 class_label=class_map[label],
                 role="target_new_query",
+                indices=query_indices,
             )
             query_x.extend(xs)
             query_y.extend(ys)
@@ -666,6 +738,9 @@ def _build_stage2_tensors(config: dict[str, Any], manysig: dict[str, Any], manyt
         "old_class_ids": set(class_map[label] for label in old_labels),
         "new_class_ids": set(class_map[label] for label in new_labels),
         "support_query_overlap": False,
+        "target_sample_strategy": sample_strategy,
+        "support_pool_max_k": support_pool_max_k,
+        "split_seed": split_seed,
     }
 
 

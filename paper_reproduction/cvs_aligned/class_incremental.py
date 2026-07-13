@@ -638,14 +638,51 @@ def main() -> int:
     parser.add_argument("--run-dir", type=Path, required=True)
     parser.add_argument("--device", default="cuda:0" if torch.cuda.is_available() else "cpu")
     parser.add_argument("--dry-run", action="store_true")
+    parser.add_argument("--experiment-id", default=None)
+    parser.add_argument("--method", choices=sorted(METHODS), default=None)
+    parser.add_argument("--seed", type=int, default=None)
+    parser.add_argument("--split-seed", type=int, default=None)
+    parser.add_argument("--k-shot", type=int, default=None)
+    parser.add_argument("--base-steps", type=int, default=None)
+    parser.add_argument("--old-support-steps", type=int, default=None)
+    parser.add_argument("--increment-steps", type=int, default=None)
+    parser.add_argument("--weight-decay", type=float, default=None)
     args = parser.parse_args()
     config = load_json_config(args.config)
+    overrides = {
+        "experiment_id": args.experiment_id,
+        "method": args.method,
+        "seed": args.seed,
+        "split_seed": args.split_seed,
+        "k_shot": args.k_shot,
+        "base_steps": args.base_steps,
+        "old_support_steps": args.old_support_steps,
+        "increment_steps": args.increment_steps,
+        "weight_decay": args.weight_decay,
+    }
+    config.update({key: value for key, value in overrides.items() if value is not None})
     checked = validate_class_incremental_manifest(config)
     if args.dry_run:
         print(json.dumps(checked, ensure_ascii=False, sort_keys=True))
         return 0
     result = run(config, run_dir=args.run_dir, device=torch.device(args.device))
-    print(json.dumps(result, ensure_ascii=False, sort_keys=True))
+    print(
+        json.dumps(
+            {
+                "experiment_id": result["experiment_id"],
+                "method": result["method"],
+                "seed": result["seed"],
+                "target_channel_scenarios": result["target_channel_scenarios"],
+                "metrics": result["metrics"],
+                "support_query_overlap": result["split_manifest"]["support_query_overlap"],
+                "all_tests_satellite_augmented": result["split_manifest"]["all_tests_satellite_augmented"],
+                "detailed_result_row_count": len(result["detailed_result_rows"]),
+                "run_dir": str(args.run_dir),
+            },
+            ensure_ascii=False,
+            sort_keys=True,
+        )
+    )
     return 0
 
 
