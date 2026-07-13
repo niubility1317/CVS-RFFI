@@ -125,6 +125,7 @@ class Phase1SslMatrixLauncherTest(unittest.TestCase):
         self.assertIn("--wisig_source_val_ratio 0.3", output)
         self.assertIn("--use_pseudo_labels", output)
         self.assertIn("--use_augmentation_consistency", output)
+        self.assertIn("--pseudo_start_epoch 150", output)
         self.assertIn("--pseudo_threshold 0.95", output)
         self.assertIn("--consistency_temperature 1.0", output)
         self.assertEqual(output.count("--use_sat_channel_view_aug"), 6)

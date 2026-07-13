@@ -43,7 +43,7 @@
 
 ## 无标签机制参数
 
-- 伪标签：`start_epoch=1`、`threshold=0.95`、`margin=0.0`、`lambda=1.0`。
+- 伪标签：epoch1–149仅执行有标签监督训练与星地增强；epoch150开始无标签伪标签训练，即`start_epoch=150`、`threshold=0.95`、`margin=0.0`、`lambda=1.0`。
 - 增强一致性：clean预测经stop-gradient作为soft target，LEO强增强视图作为student，使用KL；`start_epoch=1`、`temperature=1.0`、`lambda=1.0`。
 - 增强一致性路线不产生硬伪标签；伪标签路线不计算soft KL一致性损失。
 
@@ -84,7 +84,7 @@
 ## 成功条件
 
 - 6条实验均进入训练并完成200/200epoch；
-- 伪标签线日志出现`[PSEUDO-METRICS]`且不出现`[CONSISTENCY-METRICS]`；
+- 伪标签线epoch1–149记录`pseudo/active=0`，从epoch150开始记录`pseudo/active=1`，且不出现`[CONSISTENCY-METRICS]`；
 - 一致性线日志出现`[CONSISTENCY-METRICS]`且不出现`[PSEUDO-METRICS]`；
 - 两条路线均确认`sat_view_aug=1`和三个`leo_*_weak`训练场景；
 - 每个正式checkpoint均通过最高source validation accuracy复算；
@@ -125,6 +125,13 @@
   - 最新日志未发现Traceback、OOM、RuntimeError、ValueError或NaN。
 - epoch1源验证准确率仅作为启动健康证据，不作为最终结论：CVCNN-CE伪标签61.87%、一致性70.75%；RIEI-FD伪标签70.32%、一致性88.60%；DRIFT伪标签30.19%、一致性39.13%。
 - exact launch command：
++
+## 2026-07-13伪标签监督预热修订
+
+用户要求伪标签必须在有标签监督模型训练成熟后再启用。正式参数修订为`pseudo_start_epoch=150`：epoch1–149仅执行0.1有标签监督训练与默认clean+satellite双视图增强；epoch150–200才对0.6无标签数据启用阈值0.95、权重1.0的硬伪标签CE。增强一致性路线仍从epoch1启用。
+
+当前`pseudo_label`目录中以`pseudo_start_epoch=1`启动的3条worker将标记为`SUPERSEDED_DIAGNOSTIC`并精确停止，不进入正式结果。3条增强一致性worker保持运行。新的正式伪标签输出将写入独立的`pseudo_label_warmup150`子目录，避免覆盖旧日志、checkpoint或metrics。
+
 
 ```bash
 cd /home/szu2070436088/2510044040/CV-SincNet

@@ -23,7 +23,7 @@
 
 ## 无标签路线参数
 
-- `pseudo_label`：`pseudo_start_epoch=1`、`pseudo_threshold=0.95`、`pseudo_margin=0.0`、`lambda_pseudo=1.0`。
+- `pseudo_label`：epoch1–149仅执行有标签监督训练与默认星地增强；从epoch150开始启用无标签伪标签训练，即`pseudo_start_epoch=150`、`pseudo_threshold=0.95`、`pseudo_margin=0.0`、`lambda_pseudo=1.0`。
 - `augmentation_consistency`：clean预测经stop-gradient作为soft target，星地强增强视图作为student；`consistency_start_epoch=1`、`temperature=1.0`、`lambda_consistency=1.0`。
 - 一致性路线不调用硬伪标签CE；伪标签路线不调用soft KL一致性损失。
 
