@@ -40,3 +40,7 @@
 - 预计运行5-6.5小时，wall limit为10小时。
 
 远端sync、SHA、命令、PID、GPU和终局结果在发布后补充。
+
+## 占用保护
+
+启动前N607存在1个DRIFT baseline及10个Stage2-B/C分片scheduler，GPU3-7各有2个现有任务。新增版本化排队器只在GPU compute与已知现有launcher全部退出并连续3次确认空闲后启动8卡矩阵；最长等待12小时，训练wall limit仍为10小时。排队超时返回75且不创建伪训练结果。

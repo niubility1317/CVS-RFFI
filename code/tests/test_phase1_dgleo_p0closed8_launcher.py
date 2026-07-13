@@ -77,3 +77,25 @@ def test_p0closed8_dry_run_emits_eight_unique_commands():
     assert payload["candidate_count"] == 8
     assert payload["unique_command_count"] == 8
     assert payload["gpu_total_counts"] == {str(gpu): 1 for gpu in range(8)}
+
+
+def test_capacity_queue_dry_run_binds_verified_launcher_without_polling_gpu():
+    completed = subprocess.run(
+        [
+            sys.executable,
+            str(PROJECT_ROOT / "code/scripts/queue_phase1_dgleo_p0closed8_20260713.py"),
+            "--dry-run",
+            "--root",
+            str(PROJECT_ROOT),
+            "--python",
+            sys.executable,
+        ],
+        cwd=PROJECT_ROOT,
+        text=True,
+        capture_output=True,
+        check=True,
+    )
+    payload = json.loads(completed.stdout)
+    assert payload["launch_command"][0] == str(Path(sys.executable).resolve())
+    assert payload["launch_command"][1].endswith("launch_phase1_dgleo_p0closed8_20260713.py")
+    assert payload["launch_command"][-2:] == ["--wall-hours", "10.0"]
