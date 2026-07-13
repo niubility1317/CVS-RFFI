@@ -65,3 +65,10 @@
 - Phase1只读状态：CVCNN在epoch199/200，RIEI在epoch198/200，DRIFT在epoch76/200；三个进程仍分别位于GPU0/1/2，不干预。DRIFT中间星地rain约20.37%只是epoch74附近诊断，不是终局结果。
 - 新增五分片resume-safe launcher：`paper_reproduction/scripts/launch_cvs_publication_stage2_matrix_20260713.sh`；本地`bash -n`与Stage2-B dry-run通过。每阶段500行按5个shard映射GPU3-7，输出分别为`cvs_publication_stage2b_full_matrix_20260713`与`cvs_publication_stage2c_full_matrix_20260713`。
 - 计划同时执行`bash paper_reproduction/scripts/launch_cvs_publication_stage2_matrix_20260713.sh stage2b --execute`和`bash paper_reproduction/scripts/launch_cvs_publication_stage2_matrix_20260713.sh stage2c --execute`。每GPU恰有两个矩阵worker，符合每GPU最多两个训练实验的项目上限；任一已有同shard进程会fail closed。正式完成条件是每阶段500行均通过artifact contract，之后才聚合同receiver/K/seed的配对统计。
+
+### 完整Stage2矩阵已landed（14:17）
+
+- Stage2-B五个worker：shard0-4分别为PID3806411/3806413/3806417/3806420/3806423，对应GPU3-7。
+- Stage2-C五个worker：shard0-4分别为PID3806427/3806430/3806434/3806437/3806441，对应GPU3-7。
+- 启动后只读复核：10个worker均存活；GPU3-7显存约742/742/970/1012/742MiB，未超过每GPU两个实验；GPU0-2的Phase1进程保持原状。各阶段manifest为500行，每shard分配100行；worker逐行执行并在完整artifact contract通过后才记录complete，失败则该shard停止。
+- 启动脚本远端SHA256=`557b28c3...ed2`，remote `bash -n`及两阶段dry-run通过。此处只证明landed并开始执行，不等于artifact-complete或论文结果完成。
