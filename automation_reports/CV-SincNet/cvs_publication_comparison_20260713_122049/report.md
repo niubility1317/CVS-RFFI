@@ -131,3 +131,9 @@
 - 审计同时强制三个正式LEO场景、`all_tests_satellite_augmented=true`、clean不进入正式结果，并要求per-receiver、per-transmitter和receiver-transmitter-day等详细层级完整。任一条件缺失即退出非零且生成带错误列表的审计JSON。
 - 本地py_compile及聚焦测试`5 passed`。当前现场完成度为Stage2-B 252/500、Stage2-C 129/500、失败0；DRIFT在epoch129后的validation-best完整星地评估中。
 - 审计器与前述两个待同步入口一样，仅在活跃worker全部退出、canonical manifest修复和论文聚合完成后同步并执行；目前不能用本地测试替代最终远端artifact审计。
+
+### CVS Phase1逐样本复算一致性硬门（15:02）
+
+- CVS-J5详细评估新增`--heldout-reference`，正式运行必须读取同run的`frozen_phase1_heldout_eval.json`，逐场景核对`tx_correct/tx_total`。任一场景与既有冻结heldout结果不一致即在写正式artifact前失败。
+- 最终审计器对CVS行额外要求`checkpoint_load_strict=true`和`heldout_reference_match=true`，防止模型重建缺键、样本集合漂移或星地随机种子漂移被612000行数量检查掩盖。
+- 本地py_compile和聚焦测试`2 passed`。当前现场Stage2-B 275/500、Stage2-C 129/500、失败0；DRIFT到epoch144/200。

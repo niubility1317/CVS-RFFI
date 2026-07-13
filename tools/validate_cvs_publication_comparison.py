@@ -66,6 +66,11 @@ def validate_phase1(method: str, run_dir: Path) -> dict[str, Any]:
         errors.append("all_tests_satellite_augmented_not_true")
     if manifest.get("clean_control_in_formal_result") is not False:
         errors.append("clean_control_in_formal_result_not_false")
+    if method == "cvs_jointp0_j5":
+        if metrics.get("heldout_reference_match") is not True:
+            errors.append("cvs_heldout_reference_match_not_true")
+        if manifest.get("checkpoint_load_strict") is not True:
+            errors.append("cvs_checkpoint_load_strict_not_true")
     levels = {str(row.get("group_type")) for row in details}
     if levels != DETAIL_LEVELS:
         errors.append(f"detail_levels:{sorted(levels)}")

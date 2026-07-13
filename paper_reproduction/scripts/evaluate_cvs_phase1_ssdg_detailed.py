@@ -120,6 +120,20 @@ def run(args_cli: argparse.Namespace) -> dict[str, Any]:
             "correct_count": sum(int(row["correct"]) for row in rows),
             "sample_count": len(rows),
         }
+    heldout_reference = {}
+    if args_cli.heldout_reference:
+        heldout_reference = json.loads(Path(args_cli.heldout_reference).read_text(encoding="utf-8"))
+        reference_sat = heldout_reference.get("sat_test_named", {})
+        for scenario in scenarios:
+            expected = reference_sat.get(scenario, {}).get("aggregate", {})
+            actual = scenario_metrics[scenario]
+            if (
+                int(expected.get("tx_correct", -1)) != int(actual["correct_count"])
+                or int(expected.get("tx_total", -1)) != int(actual["sample_count"])
+            ):
+                raise ValueError(
+                    f"heldout reference mismatch for {scenario}: expected={expected}, actual={actual}"
+                )
     terminal_status = {}
     if args_cli.terminal_status:
         terminal_status = json.loads(Path(args_cli.terminal_status).read_text(encoding="utf-8"))
@@ -142,6 +156,7 @@ def run(args_cli: argparse.Namespace) -> dict[str, Any]:
         "detailed_row_count": len(detailed_rows),
         "terminal_verdict": terminal_status.get("verdict", terminal_status.get("status", "")),
         "claim_boundary": str(args_cli.claim_boundary),
+        "heldout_reference_match": bool(heldout_reference),
     }
     manifest = {
         "schema": "cvs_phase1_ssdg_detailed_split_manifest_v1",
@@ -155,11 +170,13 @@ def run(args_cli: argparse.Namespace) -> dict[str, Any]:
         "all_tests_satellite_augmented": True,
         "clean_control_in_formal_result": False,
         "checkpoint_load_strict": True,
+        "heldout_reference_match": bool(heldout_reference),
     }
     resolved = {
         **vars(args_cli),
         "checkpoint_args": dict(checkpoint.get("args") or {}),
         "terminal_status": terminal_status,
+        "heldout_reference": heldout_reference,
     }
     for name, payload in (
         ("metrics.json", metrics),
@@ -177,6 +194,7 @@ def main() -> int:
     parser = argparse.ArgumentParser(description="Detailed satellite evaluation for CVS SSDG checkpoints")
     parser.add_argument("--ckpt", required=True)
     parser.add_argument("--terminal-status", default="")
+    parser.add_argument("--heldout-reference", default="")
     parser.add_argument("--output-dir", required=True)
     parser.add_argument("--method-label", default="cvs_jointp0_j5")
     parser.add_argument(
