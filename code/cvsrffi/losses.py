@@ -3394,22 +3394,41 @@ class PrototypeMemoryBank:
             domain_losses = []
             for cls in torch.unique(y[valid_y]):
                 cls_int = int(cls.item())
+                cls_mask = valid_y & y.eq(cls)
+                if int(self.class_count[cls_int].item()) >= int(self.min_count):
+                    class_target = safe_l2_normalize(
+                        self.class_proto[cls_int].detach().view(1, -1), dim=1
+                    ).squeeze(0)
+                elif int(cls_mask.sum().item()) >= int(self.min_count):
+                    class_target = safe_l2_normalize(
+                        z_norm[cls_mask].mean(dim=0, keepdim=True), dim=1
+                    ).squeeze(0).detach()
+                else:
+                    continue
                 for dom in torch.unique(d[(y == cls) & (d >= 0)]):
                     dom_int = int(dom.item())
                     if dom_int < 0 or dom_int >= self.num_domains:
                         continue
-                    if int(self.domain_count[cls_int, dom_int].item()) < int(self.min_count):
+                    domain_mask = cls_mask & d.eq(dom)
+                    if int(domain_mask.sum().item()) < int(self.min_count):
                         continue
-                    domain_p = safe_l2_normalize(self.domain_proto[cls_int, dom_int].view(1, -1), dim=1)
-                    class_p = safe_l2_normalize(self.class_proto[cls_int].view(1, -1), dim=1)
-                    domain_losses.append(1.0 - (domain_p * class_p.detach()).sum())
+                    current_domain = safe_l2_normalize(
+                        z_norm[domain_mask].mean(dim=0, keepdim=True), dim=1
+                    ).squeeze(0)
+                    domain_losses.append(1.0 - (current_domain * class_target).sum())
             if domain_losses:
                 loss_domain = torch.stack(domain_losses).mean()
 
         loss_push = z.new_tensor(0.0)
-        active = self.class_count >= int(self.min_count)
-        if int(active.sum().item()) > 1:
-            P = safe_l2_normalize(self.class_proto[active], dim=1)
+        current_class_centers = []
+        for cls in torch.unique(y[valid_y]):
+            cls_mask = valid_y & y.eq(cls)
+            if int(cls_mask.sum().item()) >= int(self.min_count):
+                current_class_centers.append(
+                    safe_l2_normalize(z_norm[cls_mask].mean(dim=0, keepdim=True), dim=1).squeeze(0)
+                )
+        if len(current_class_centers) > 1:
+            P = torch.stack(current_class_centers, dim=0)
             sim = P @ P.t()
             eye = torch.eye(sim.size(0), device=sim.device, dtype=torch.bool)
             loss_push = F.relu(sim[~eye] - float(self.margin)).pow(2).mean()
@@ -3417,6 +3436,7 @@ class PrototypeMemoryBank:
         loss = loss_pull + float(self.domain_align_weight) * loss_domain + float(self.push_weight) * loss_push
         return loss, {
             "proto_pull_cos": pull_cos,
+            "proto_domain_align": float(loss_domain.detach().item()),
             "proto_push": float(loss_push.detach().item()) if torch.is_tensor(loss_push) else float("nan"),
         }
 

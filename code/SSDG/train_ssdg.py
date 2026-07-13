@@ -24,6 +24,7 @@ try:
     import torch
     import torch.nn.functional as F
     from torch.cuda.amp import GradScaler, autocast
+    from torch.utils.data import DataLoader
 
     from dataset_wisig import (
         WiSigCompactDataset,
@@ -49,6 +50,7 @@ try:
     from baseline_origin_sat_view import parse_sat_view_schedule
     from concat_sat_channel_aug import ConcatSatChannelAugment
     from cvsrffi.tensors import build_domain_label_map
+    from cvsrffi.balanced_tx_rx_sampler import BalancedTxDomainBatchSampler
     from cvsrffi.eval import (
         aggregate_named_stats,
         apply_sat_channel_for_scenario,
@@ -121,7 +123,8 @@ try:
 except ModuleNotFoundError:
     torch = None
     F = None
-    GradScaler = autocast = None
+    GradScaler = autocast = DataLoader = None
+    BalancedTxDomainBatchSampler = None
     WiSigCompactDataset = WiSigSubsetDataset = None
     PrototypeMemoryBank = None
     direct_metric_acceptance_loss = None
@@ -463,6 +466,10 @@ def build_arg_parser() -> argparse.ArgumentParser:
     parser.add_argument("--use_feature_masks", type=str2bool, default=False)
     parser.add_argument("--use_txrx_geometry_losses", type=str2bool, default=False)
     parser.add_argument("--use_tx_rx_balanced_sampler", type=str2bool, default=False)
+    parser.add_argument("--balanced_sampler_tx_per_batch", type=int, default=6)
+    parser.add_argument("--balanced_sampler_domain_per_batch", type=int, default=6)
+    parser.add_argument("--balanced_sampler_samples_per_cell", type=int, default=3)
+    parser.add_argument("--balanced_sampler_replacement", type=str2bool, default=True)
     parser.add_argument("--phase1_distribution_audit_only", type=str2bool, default=True)
     parser.add_argument("--lambda_tx_proto", type=float, default=0.0)
     parser.add_argument("--lambda_rx_proto", type=float, default=0.0)
@@ -1107,7 +1114,39 @@ def _build_ssdg_wisig_data(args, device: torch.device):
         max_samples_per_combo_test=None if int(args.wisig_max_test_per_combo) <= 0 else int(args.wisig_max_test_per_combo),
         seed=int(args.seed),
     )
-    labeled_loader = make_loader(labeled_ds, int(args.batch_size), True, int(args.num_workers), device, True, int(args.prefetch_factor))
+    balanced_sampler = None
+    if bool(getattr(args, "use_tx_rx_balanced_sampler", False)):
+        if BalancedTxDomainBatchSampler is None or DataLoader is None:
+            raise ImportError("BalancedTxDomainBatchSampler and torch DataLoader are required")
+        balanced_sampler = BalancedTxDomainBatchSampler(
+            labeled_ds,
+            tx_per_batch=int(args.balanced_sampler_tx_per_batch),
+            domain_per_batch=int(args.balanced_sampler_domain_per_batch),
+            samples_per_tx_domain=int(args.balanced_sampler_samples_per_cell),
+            replacement=bool(args.balanced_sampler_replacement),
+            seed=int(args.seed),
+            domain_key="rx_day",
+            drop_last=True,
+        )
+        loader_kwargs = {
+            "batch_sampler": balanced_sampler,
+            "num_workers": int(args.num_workers),
+            "pin_memory": device.type == "cuda",
+            "persistent_workers": int(args.num_workers) > 0,
+        }
+        if int(args.num_workers) > 0:
+            loader_kwargs["prefetch_factor"] = max(1, int(args.prefetch_factor))
+        labeled_loader = DataLoader(labeled_ds, **loader_kwargs)
+    else:
+        labeled_loader = make_loader(
+            labeled_ds,
+            int(args.batch_size),
+            True,
+            int(args.num_workers),
+            device,
+            True,
+            int(args.prefetch_factor),
+        )
     probe_train_loader = make_loader(
         labeled_ds,
         int(args.eval_batch_size),
@@ -1134,6 +1173,7 @@ def _build_ssdg_wisig_data(args, device: torch.device):
     domain_label_map = build_domain_label_map(source_base)
     return {
         "train_loader": labeled_loader,
+        "balanced_train_sampler": balanced_sampler,
         "probe_train_loader": probe_train_loader,
         "unlabeled_loader": unlabeled_loader,
         "val_loader": val_loader,
@@ -1148,6 +1188,8 @@ def _build_ssdg_wisig_data(args, device: torch.device):
             "unlabeled_size": len(unlabeled_ds),
             "source_val_size": len(val_ds),
             "rho_label": float(len(labeled_ds)) / float(max(1, len(labeled_ds) + len(unlabeled_ds))),
+            "balanced_sampler_active": bool(balanced_sampler is not None),
+            "balanced_sampler_batch_size": int(balanced_sampler.batch_size) if balanced_sampler is not None else int(args.batch_size),
             "test": test_split_info,
             "named_test_meta": named_meta,
         },
@@ -4011,6 +4053,9 @@ def train(args) -> int:
         else:
             aug_state = _fallback_aug_state(args)
         model.train()
+        balanced_train_sampler = data_ctx.get("balanced_train_sampler")
+        if balanced_train_sampler is not None and hasattr(balanced_train_sampler, "set_epoch"):
+            balanced_train_sampler.set_epoch(epoch)
         epoch_logs = []
         unlabeled_iter = iter(data_ctx["unlabeled_loader"]) if phase == "pseudo" and bool(args.use_unlabeled) else None
         for batch_idx, labeled_batch in enumerate(data_ctx["train_loader"], start=1):
@@ -4162,6 +4207,7 @@ def train(args) -> int:
                 loss_proto_l = z_id_l.sum() * 0.0
                 proto_info: Dict[str, float] = {
                     "proto_pull_cos": float("nan"),
+                    "proto_domain_align": 0.0,
                     "proto_push": 0.0,
                     "proto_active_classes": 0.0,
                 }
@@ -5531,6 +5577,7 @@ def train(args) -> int:
                     "train/pseudo_selected": pseudo_selected,
                     "train/pseudo_correct": pseudo_correct,
                     "train/proto_pull_cos": proto_info.get("proto_pull_cos", float("nan")),
+                    "train/proto_domain_align": proto_info.get("proto_domain_align", float("nan")),
                     "train/proto_push": proto_info.get("proto_push", float("nan")),
                     "train/proto_active_classes": proto_info.get("proto_active_classes", float("nan")),
                     "train/ow_feat_compact": ow_feat_info.get("compact", float("nan")),
@@ -6496,8 +6543,10 @@ def train(args) -> int:
     if bool(getattr(args, "phase1_v2_hard_gates", False)):
         final_train_logs = (final_payload.get("stats", {}) or {}).get("train", {}) or {}
         p1_preexport_checks = {
-            "SATELLITE_TRAIN_EVAL_NOT_DISJOINT": bool(args.sat_protocol_disjoint_required)
-            and bool((args.sat_protocol_manifest or {}).get("disjoint", False)),
+            "SATELLITE_PROTOCOL_REQUIREMENT_FAILED": (
+                not bool(args.sat_protocol_disjoint_required)
+                or bool((args.sat_protocol_manifest or {}).get("disjoint", False))
+            ),
             "DIRECT_METRIC_LOCAL_COMPONENTS_DISABLED": bool(args.direct_metric_domain_local_components)
             and bool(args.direct_metric_require_domain_local_components),
             "DIRECT_METRIC_LOCAL_COMPONENT_RUNTIME_INACTIVE": _log_value(

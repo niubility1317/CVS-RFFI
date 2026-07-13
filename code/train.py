@@ -177,7 +177,7 @@ from cvsrffi.ssl_pseudo_label import PseudoLabelGateConfig, select_pseudo_labels
 # "w_cls" "w_dom" "w_adv" "w_cls_pa" "w_sat_cls" "w_proto" "w_fishr"
 # name.startswith("test_unseen_day_rx_") on unseen_days
 
-SAT_EVAL_SCENARIOS_DEFAULT = "clear_leo,low_elev_leo,rain_leo,storm_mp,mixed_orbit"
+SAT_EVAL_SCENARIOS_DEFAULT = "leo_clear_weak,leo_low_elev_weak,leo_rain_weak"
 FEDERATED_MAIN_SAT_EVAL_ON = "test_unseen_day_seen_rx,test_seen_day_unseen_rx,test_unseen_day_unseen_rx"
 
 

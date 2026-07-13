@@ -54,6 +54,7 @@ class BalancedTxDomainBatchSampler(Sampler[List[int]]):
         self.tx_key = str(tx_key)
         self.domain_key = str(domain_key)
         self.drop_last = bool(drop_last)
+        self._epoch = 0
         if self.tx_per_batch <= 0 or self.domain_per_batch <= 0 or self.samples_per_tx_domain <= 0:
             raise ValueError("tx_per_batch, domain_per_batch, and samples_per_tx_domain must be positive")
         self.cells: Dict[Tuple[int, int], List[int]] = defaultdict(list)
@@ -79,7 +80,8 @@ class BalancedTxDomainBatchSampler(Sampler[List[int]]):
         return max(1, len(self.dataset) // max(1, self.batch_size))
 
     def __iter__(self) -> Iterator[List[int]]:
-        rng = random.Random(self.seed)
+        rng = random.Random(self.seed + self._epoch * 1000003)
+        self._epoch += 1
         for _ in range(len(self)):
             txs = rng.sample(self.tx_values, k=min(self.tx_per_batch, len(self.tx_values)))
             domains = rng.sample(self.domain_values, k=min(self.domain_per_batch, len(self.domain_values)))
@@ -97,6 +99,9 @@ class BalancedTxDomainBatchSampler(Sampler[List[int]]):
                 continue
             if batch:
                 yield batch
+
+    def set_epoch(self, epoch: int) -> None:
+        self._epoch = max(0, int(epoch))
 
     def batch_geometry_stats(self, batch_indices: Sequence[int]) -> Dict[str, float]:
         txs = []

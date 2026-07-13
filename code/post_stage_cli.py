@@ -98,8 +98,12 @@ def add_sat_eval_args(parser: argparse.ArgumentParser) -> None:
     parser.add_argument(
         "--eval_sat_scenarios",
         type=str,
-        default="clear_leo,low_elev_leo,rain_leo,storm_mp,mixed_orbit",
-        help="Satellite scenarios to evaluate. Built-ins: clear_leo,low_elev_leo,rain_leo,storm_mp,geo_clear,mixed_orbit.",
+        default="leo_clear_weak,leo_low_elev_weak,leo_rain_weak",
+        help=(
+            "Satellite scenarios to evaluate. The CVS deployment-primary default is "
+            "leo_clear_weak,leo_low_elev_weak,leo_rain_weak; legacy full-physics scenarios "
+            "must be requested explicitly as diagnostic stress."
+        ),
     )
     parser.add_argument(
         "--eval_sat_on",

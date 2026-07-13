@@ -538,7 +538,7 @@ class FederatedTrainIntegrationTest(unittest.TestCase):
             ],
         )
         self.assertEqual(args.eval_sat_on, FEDERATED_MAIN_SAT_EVAL_ON)
-        self.assertEqual(args.eval_sat_scenarios, "clear_leo,low_elev_leo,rain_leo,storm_mp,mixed_orbit")
+        self.assertEqual(args.eval_sat_scenarios, "leo_clear_weak,leo_low_elev_weak,leo_rain_weak")
 
         bad = SimpleNamespace(
             train_mode="fedavg",
