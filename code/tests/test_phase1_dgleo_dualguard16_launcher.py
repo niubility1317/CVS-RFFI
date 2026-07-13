@@ -44,6 +44,9 @@ def test_dualguard16_command_uses_bounded_geometry_dg_guard_and_disjoint_satelli
 
     assert "--epochs 120" in joined
     assert "--checkpoint_selection final_only" in joined
+    assert "--tail_safety_absolute_violation_drives_state false" in joined
+    assert "--tail_safety_training_stop_enabled false" in joined
+    assert "--tail_safety_reference_requires_absolute_safe false" in joined
     assert "--source_episode_multiview_normalize true" in joined
     assert "--source_episode_local_radius_floor_deg 4.0" in joined
     assert "--source_episode_local_density_cap 1.5" in joined
@@ -73,3 +76,57 @@ def test_dualguard16_hard_wall_clock_limit_cannot_exceed_ten_hours():
     assert "_terminate_process_groups(active)" in source
     assert "time.monotonic() >= deadline" in source
     assert "WALL_CLOCK_TIMEOUT" in source
+
+
+def test_dualguard16_scheduler_returns_nonzero_when_any_child_is_not_complete():
+    module = _module()
+    outcome, exit_code = module._scheduler_outcome(
+        [
+            {"candidate_id": "ok", "returncode": 0, "status": "COMPLETE"},
+            {"candidate_id": "tail", "returncode": 4, "status": "STOPPED_TAIL"},
+        ],
+        expected_count=2,
+        timed_out=False,
+    )
+
+    assert exit_code != 0
+    assert outcome["status"] == "CHILD_FAILURE"
+    assert outcome["candidate_status_counts"] == {"COMPLETE": 1, "STOPPED_TAIL": 1}
+    assert outcome["non_complete_candidates"] == ["tail"]
+
+
+def test_dualguard16_scheduler_returns_zero_only_when_every_child_is_complete():
+    module = _module()
+    outcome, exit_code = module._scheduler_outcome(
+        [
+            {"candidate_id": "a", "returncode": 0, "status": "COMPLETE"},
+            {"candidate_id": "b", "returncode": 0, "status": "COMPLETE"},
+        ],
+        expected_count=2,
+        timed_out=False,
+    )
+
+    assert exit_code == 0
+    assert outcome["status"] == "COMPLETE"
+    assert outcome["missing_terminal_count"] == 0
+    assert outcome["non_complete_candidates"] == []
+
+
+def test_dualguard16_scheduler_reports_missing_terminal_and_timeout_distinctly():
+    module = _module()
+    missing, missing_exit = module._scheduler_outcome(
+        [{"candidate_id": "a", "returncode": 0, "status": "COMPLETE"}],
+        expected_count=2,
+        timed_out=False,
+    )
+    timed_out, timeout_exit = module._scheduler_outcome(
+        [{"candidate_id": "a", "returncode": 0, "status": "COMPLETE"}],
+        expected_count=2,
+        timed_out=True,
+    )
+
+    assert missing_exit != 0
+    assert missing["status"] == "SCHEDULER_INCOMPLETE"
+    assert missing["missing_terminal_count"] == 1
+    assert timeout_exit == 124
+    assert timed_out["status"] == "WALL_CLOCK_TIMEOUT"

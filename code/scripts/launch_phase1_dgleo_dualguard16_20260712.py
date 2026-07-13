@@ -260,6 +260,9 @@ def build_command(
         "--tail_safety_proxy_vaccept_target": 0.60,
         "--tail_safety_warning_patience": 2,
         "--tail_safety_rollback_patience": 1,
+        "--tail_safety_absolute_violation_drives_state": "false",
+        "--tail_safety_training_stop_enabled": "false",
+        "--tail_safety_reference_requires_absolute_safe": "false",
         "--os_eff_min_budget": config["os_min_budget"],
         "--os_eff_max_budget": config["os_max_budget"],
         "--os_budget_min_closed_scale": config["os_min_closed_scale"],
@@ -346,6 +349,47 @@ def _terminal_status(out_dir: Path, returncode: int) -> str:
     return "PROCESS_COMPLETE" if returncode == 0 else "PROCESS_FAILED_NO_TERMINAL"
 
 
+def _scheduler_outcome(
+    terminal_results: Sequence[Mapping[str, Any]],
+    *,
+    expected_count: int,
+    timed_out: bool,
+) -> tuple[Dict[str, Any], int]:
+    status_counts = Counter(str(row.get("status") or "UNKNOWN") for row in terminal_results)
+    returncode_counts = Counter(int(row.get("returncode", -1)) for row in terminal_results)
+    non_complete = [
+        str(row.get("candidate_id") or "UNKNOWN")
+        for row in terminal_results
+        if str(row.get("status") or "UNKNOWN") != "COMPLETE" or int(row.get("returncode", -1)) != 0
+    ]
+    missing_count = max(0, int(expected_count) - len(terminal_results))
+    if timed_out:
+        status = "WALL_CLOCK_TIMEOUT"
+        exit_code = 124
+    elif missing_count:
+        status = "SCHEDULER_INCOMPLETE"
+        exit_code = 1
+    elif non_complete:
+        status = "CHILD_FAILURE"
+        exit_code = 1
+    else:
+        status = "COMPLETE"
+        exit_code = 0
+    return (
+        {
+            "status": status,
+            "terminal_count": len(terminal_results),
+            "missing_terminal_count": missing_count,
+            "candidate_status_counts": dict(sorted(status_counts.items())),
+            "child_returncode_counts": {
+                str(code): count for code, count in sorted(returncode_counts.items())
+            },
+            "non_complete_candidates": non_complete,
+        },
+        exit_code,
+    )
+
+
 def _terminate_process_groups(active: Mapping[int, Mapping[str, Any]], grace_seconds: float = 60.0) -> None:
     for pid in list(active):
         try:
@@ -398,6 +442,7 @@ def run_matrix(args: argparse.Namespace, rows: Sequence[Mapping[str, Any]]) -> i
     start_monotonic = time.monotonic()
     deadline = start_monotonic + float(args.wall_hours) * 3600.0
     timed_out = False
+    terminal_results: List[Dict[str, Any]] = []
     with events_path.open("w", encoding="utf-8", newline="") as events:
         writer = csv.writer(events, delimiter="\t")
         writer.writerow(["timestamp", "event", "candidate_id", "gpu", "seed", "pid", "returncode", "status", "log"])
@@ -453,22 +498,34 @@ def run_matrix(args: argparse.Namespace, rows: Sequence[Mapping[str, Any]]) -> i
                 writer.writerow(
                     [time.strftime("%Y-%m-%dT%H:%M:%S%z"), "TERMINAL", row["candidate_id"], row["gpu"], row["seed"], pid, code, status, state["log_path"]]
                 )
+                terminal_results.append(
+                    {
+                        "candidate_id": str(row["candidate_id"]),
+                        "returncode": int(code),
+                        "status": str(status),
+                    }
+                )
                 events.flush()
                 del active[pid]
             if active and not timed_out:
                 time.sleep(float(args.poll_seconds))
 
+    outcome, scheduler_exit_code = _scheduler_outcome(
+        terminal_results,
+        expected_count=len(rows),
+        timed_out=timed_out,
+    )
     summary = {
         "run_id": args.run_id,
-        "status": "WALL_CLOCK_TIMEOUT" if timed_out else "TERMINAL",
         "wall_hours_limit": float(args.wall_hours),
         "elapsed_hours": (time.monotonic() - start_monotonic) / 3600.0,
         "candidate_count": len(rows),
+        **outcome,
     }
     (log_root / "scheduler_summary.json").write_text(
         json.dumps(summary, indent=2, sort_keys=True), encoding="utf-8"
     )
-    return 124 if timed_out else 0
+    return scheduler_exit_code
 
 
 def build_parser() -> argparse.ArgumentParser:

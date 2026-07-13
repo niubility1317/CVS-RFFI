@@ -180,6 +180,8 @@ def test_direct_metric_acceptance_loss_reports_stable_geometry_contract():
 
     assert metrics["geometry_stabilized"] == 1.0
     assert metrics["geometry_reference_detached"] == 1.0
+    assert metrics["virtual_negative_detached"] == 1.0
+    assert metrics["gate_reference_detached"] == 1.0
     assert metrics["angle_clamp_eps"] >= 1e-4
     assert torch.isfinite(loss)
     assert features.grad is not None
@@ -215,8 +217,70 @@ def test_bridge_acceptance_term_has_nonzero_gradient_when_virtual_geometry_is_tr
 
     assert metrics["bridge_accept_loss"] > 0.0
     assert metrics["geometry_reference_detached"] == 0.0
+    assert metrics["virtual_negative_detached"] == 0.0
+    assert metrics["gate_reference_detached"] == 1.0
     assert features.grad is not None
     assert float(features.grad.norm().item()) > 0.0
+
+
+def test_fixed_virtual_negatives_keep_gate_prototype_path_trainable_and_multiview_telemetry_complete():
+    clean = torch.tensor(
+        [
+            [1.0, 0.00], [0.98, 0.10], [0.94, 0.34], [0.92, 0.39],
+            [0.0, 1.00], [0.10, 0.98], [0.34, 0.94], [0.39, 0.92],
+        ],
+        dtype=torch.float32,
+        requires_grad=True,
+    )
+    satellite = torch.tensor(
+        [
+            [0.99, 0.08], [0.96, 0.18], [0.88, 0.47], [0.84, 0.54],
+            [0.08, 0.99], [0.18, 0.96], [0.47, 0.88], [0.54, 0.84],
+        ],
+        dtype=torch.float32,
+        requires_grad=True,
+    )
+    labels = torch.tensor([0, 0, 0, 0, 1, 1, 1, 1])
+    domains = torch.tensor([0, 0, 1, 1, 0, 0, 1, 1])
+
+    loss, metrics = multiview_direct_metric_acceptance_loss(
+        clean,
+        satellite,
+        labels,
+        domains,
+        virtual_count=8,
+        virtual_detach=True,
+        gate_reference_detach=False,
+        pair_weight=0.0,
+        zid_quantile_weight=0.0,
+        source_overflow_weight=0.0,
+        proxy_vaccept_weight=1.0,
+        bridge_accept_weight=0.0,
+        low_density_accept_weight=0.0,
+        tail_accept_weight=0.0,
+        overflow_accept_weight=0.0,
+        radius_inter_ratio_weight=0.0,
+        core_accept_weight=0.0,
+        proxy_vaccept_target=0.0,
+    )
+    loss.backward()
+
+    assert metrics["virtual_negative_detached"] == 1.0
+    assert metrics["gate_reference_detached"] == 0.0
+    assert metrics["clean_virtual_negative_detached"] == 1.0
+    assert metrics["sat_virtual_negative_detached"] == 1.0
+    assert metrics["clean_gate_reference_detached"] == 0.0
+    assert metrics["sat_gate_reference_detached"] == 0.0
+    assert metrics["multiview_telemetry_aggregated"] == 1.0
+    assert metrics["proxy_vaccept_loss"] == pytest.approx(
+        metrics["clean_proxy_vaccept_loss"] + metrics["sat_proxy_vaccept_loss"]
+    )
+    assert metrics["virtual_count"] == (
+        metrics["clean_virtual_count"] + metrics["sat_virtual_count"]
+    )
+    assert clean.grad is not None and satellite.grad is not None
+    assert float(clean.grad.norm().item()) > 0.0
+    assert float(satellite.grad.norm().item()) > 0.0
 
 
 def test_receiver_local_component_terms_backpropagate_without_leave_domain_episode():

@@ -21,6 +21,8 @@ DEFAULT_DROP_KEYS = (
     "sat_floor_tx",
     "sat_strict_mean",
     "sat_strict_floor",
+    "sat_receiver_floor",
+    "sat_receiver_strict_floor",
 )
 
 JOINT_SAFE_REQUIRED_BASE_KEYS = (
@@ -86,6 +88,41 @@ def _sat_strict_scores(sat_test_stats: Mapping[str, Mapping[str, Any]] | None) -
     )
 
 
+def _sat_receiver_scores(
+    sat_test_stats: Mapping[str, Mapping[str, Any]] | None,
+    *,
+    strict: bool | None,
+) -> list[float]:
+    scores: list[float] = []
+    for scenario_stats in (sat_test_stats or {}).values():
+        if not isinstance(scenario_stats, Mapping):
+            continue
+        named = scenario_stats.get("named", {})
+        if not isinstance(named, Mapping):
+            continue
+        for name, stats in named.items():
+            name = str(name)
+            is_seen_day_receiver = name.startswith("test_rx_")
+            is_strict_receiver = name.startswith("test_unseen_day_rx_")
+            if strict is True and not is_strict_receiver:
+                continue
+            if strict is False and not is_seen_day_receiver:
+                continue
+            if strict is None and not (is_seen_day_receiver or is_strict_receiver):
+                continue
+            if isinstance(stats, Mapping):
+                score = _tx_acc(stats)
+                if math.isfinite(score):
+                    scores.append(score)
+    return scores
+
+
+def sat_protocol_requirement_satisfied(*, required: bool, actual_disjoint: bool) -> bool:
+    """Return the fail-closed readiness condition for satellite protocol separation."""
+
+    return (not bool(required)) or bool(actual_disjoint)
+
+
 def protected_metric_snapshot(
     *,
     val_stats: Mapping[str, Any] | None,
@@ -101,6 +138,9 @@ def protected_metric_snapshot(
 
     sat_agg = _sat_aggregate_scores(sat_test_stats)
     sat_strict = _sat_strict_scores(sat_test_stats)
+    sat_receiver = _sat_receiver_scores(sat_test_stats, strict=None)
+    sat_receiver_seen_day = _sat_receiver_scores(sat_test_stats, strict=False)
+    sat_receiver_strict = _sat_receiver_scores(sat_test_stats, strict=True)
     return {
         "val_tx": _tx_acc(val_stats),
         "overall_tx": _tx_acc(test_stats),
@@ -110,6 +150,9 @@ def protected_metric_snapshot(
         "sat_floor_tx": min(sat_agg) if sat_agg else float("nan"),
         "sat_strict_mean": sum(sat_strict) / len(sat_strict) if sat_strict else float("nan"),
         "sat_strict_floor": min(sat_strict) if sat_strict else float("nan"),
+        "sat_receiver_floor": min(sat_receiver) if sat_receiver else float("nan"),
+        "sat_receiver_seen_day_floor": min(sat_receiver_seen_day) if sat_receiver_seen_day else float("nan"),
+        "sat_receiver_strict_floor": min(sat_receiver_strict) if sat_receiver_strict else float("nan"),
     }
 
 

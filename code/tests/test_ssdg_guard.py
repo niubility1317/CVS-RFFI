@@ -14,6 +14,7 @@ from cvsrffi.ssdg_guard import (
     joint_safe_score,
     missing_joint_safe_metrics,
     protected_metric_snapshot,
+    sat_protocol_requirement_satisfied,
 )
 
 
@@ -48,9 +49,30 @@ def test_protected_metric_snapshot_extracts_satellite_mean_and_floors():
             "test_unseen_day_unseen_rx": {"tx_acc": 83.0},
         },
         sat_test_stats={
-            "leo_clear_weak": {"aggregate": {"tx_acc": 78.0}, "strict_udu": 71.0},
-            "leo_low_elev_weak": {"aggregate": {"tx_acc": 76.0}, "strict_udu": 69.0},
-            "leo_rain_weak": {"aggregate": {"tx_acc": 77.0}, "strict_udu": 70.0},
+            "leo_clear_weak": {
+                "aggregate": {"tx_acc": 78.0},
+                "strict_udu": 71.0,
+                "named": {
+                    "test_rx_9": {"tx_acc": 75.0},
+                    "test_unseen_day_rx_9": {"tx_acc": 68.0},
+                },
+            },
+            "leo_low_elev_weak": {
+                "aggregate": {"tx_acc": 76.0},
+                "strict_udu": 69.0,
+                "named": {
+                    "test_rx_9": {"tx_acc": 73.0},
+                    "test_unseen_day_rx_9": {"tx_acc": 66.0},
+                },
+            },
+            "leo_rain_weak": {
+                "aggregate": {"tx_acc": 77.0},
+                "strict_udu": 70.0,
+                "named": {
+                    "test_rx_9": {"tx_acc": 74.0},
+                    "test_unseen_day_rx_9": {"tx_acc": 67.0},
+                },
+            },
         },
     )
 
@@ -60,6 +82,16 @@ def test_protected_metric_snapshot_extracts_satellite_mean_and_floors():
     assert metrics["sat_floor_tx"] == 76.0
     assert metrics["sat_strict_mean"] == 70.0
     assert metrics["sat_strict_floor"] == 69.0
+    assert metrics["sat_receiver_floor"] == 66.0
+    assert metrics["sat_receiver_seen_day_floor"] == 73.0
+    assert metrics["sat_receiver_strict_floor"] == 66.0
+
+
+def test_satellite_protocol_readiness_uses_requirement_implication():
+    assert sat_protocol_requirement_satisfied(required=False, actual_disjoint=False)
+    assert sat_protocol_requirement_satisfied(required=False, actual_disjoint=True)
+    assert sat_protocol_requirement_satisfied(required=True, actual_disjoint=True)
+    assert not sat_protocol_requirement_satisfied(required=True, actual_disjoint=False)
 
 
 def test_joint_safe_requires_satellite_metrics_when_guarded():

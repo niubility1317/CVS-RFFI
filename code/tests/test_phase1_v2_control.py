@@ -412,6 +412,110 @@ def test_tail_safety_blocks_checkpoint_when_only_p99_is_over_target():
     assert "p99_over" in decision.reason
 
 
+def test_tail_absolute_violation_can_block_export_without_advancing_training_state():
+    machine = TailSafetyStateMachine(
+        TailSafetyConfig(
+            p95_target_deg=54.0,
+            p99_target_deg=70.0,
+            tail_cvar_target_deg=56.0,
+            proxy_vaccept_target=0.35,
+            warning_patience=1,
+            rollback_patience=1,
+            max_rollbacks=1,
+            reference_window=1,
+            absolute_violation_drives_state=False,
+        )
+    )
+    decisions = [
+        machine.update(
+            {
+                "train/dm_accept_zid_p95_deg": 60.0,
+                "train/dm_accept_zid_p99_deg": 84.0,
+                "train/dm_accept_zid_tail_cvar_deg": 70.0,
+                "train/dm_accept_proxy_vaccept": 0.50,
+            }
+        )
+        for _ in range(4)
+    ]
+
+    assert all(decision.fired for decision in decisions)
+    assert all(decision.blocks_best and decision.blocks_final for decision in decisions)
+    assert all(decision.state == "NORMAL" and decision.action == "NONE" for decision in decisions)
+    assert machine.bad_windows == 0
+    assert decisions[-1].details["tail_absolute_violation"] == 1.0
+    assert decisions[-1].details["tail_absolute_violation_drives_state"] == 0.0
+
+
+def test_tail_training_stop_disabled_keeps_final_only_training_running():
+    machine = TailSafetyStateMachine(
+        TailSafetyConfig(
+            reference_window=1,
+            warning_patience=1,
+            rollback_patience=1,
+            max_rollbacks=0,
+            absolute_violation_drives_state=True,
+            training_stop_enabled=False,
+        )
+    )
+    decisions = [
+        machine.update(
+            {
+                "train/dm_accept_zid_p95_deg": 80.0,
+                "train/dm_accept_zid_p99_deg": 88.0,
+                "train/dm_accept_zid_tail_cvar_deg": 84.0,
+                "train/dm_accept_proxy_vaccept": 0.80,
+            }
+        )
+        for _ in range(3)
+    ]
+
+    assert all(decision.state == "NORMAL" for decision in decisions)
+    assert all(decision.action == "NONE" for decision in decisions)
+    assert all(decision.blocks_final for decision in decisions)
+    assert decisions[-1].details["tail_training_stop_enabled"] == 0.0
+
+
+def test_tail_metric_reference_can_ignore_absolute_thresholds_when_explicitly_enabled():
+    machine = TailSafetyStateMachine(
+        TailSafetyConfig(
+            reference_window=1,
+            absolute_violation_drives_state=False,
+            reference_requires_absolute_safe=False,
+        )
+    )
+    over_target = machine.update(
+        {
+            "train/dm_accept_zid_p95_deg": 60.0,
+            "train/dm_accept_zid_p99_deg": 84.0,
+            "train/dm_accept_zid_tail_cvar_deg": 70.0,
+            "train/dm_accept_proxy_vaccept": 0.50,
+        }
+    )
+
+    assert over_target.fired
+    assert over_target.blocks_final
+    machine.commit_reference(over_target)
+    assert machine.best_p99 == 84.0
+    assert machine.best_tail_cvar == 70.0
+
+
+def test_tail_metric_reference_remains_absolute_safe_by_default():
+    machine = TailSafetyStateMachine(
+        TailSafetyConfig(reference_window=1, absolute_violation_drives_state=False)
+    )
+    over_target = machine.update(
+        {
+            "train/dm_accept_zid_p95_deg": 60.0,
+            "train/dm_accept_zid_p99_deg": 84.0,
+            "train/dm_accept_zid_tail_cvar_deg": 70.0,
+            "train/dm_accept_proxy_vaccept": 0.50,
+        }
+    )
+
+    with pytest.raises(ValueError, match="exceeds absolute safety targets"):
+        machine.commit_reference(over_target)
+
+
 def test_open_set_effective_budget_uses_weighted_loss_families_and_fails_closed_when_os_is_too_small():
     decision = assess_open_set_effective_budget(
         {
@@ -556,7 +660,8 @@ def test_open_set_gradient_budget_ignores_closed_only_head_gradients():
     )
 
     assert info["shared_param_count"] == 1.0
-    assert info["budget_scope_shared_zid_path"] == 1.0
+    assert info["budget_scope_shared_trainable_params"] == 1.0
+    assert info["budget_scope_shared_zid_path"] == 0.0
     assert info["pre_budget"] == pytest.approx(0.5)
     assert info["total_closed_grad_norm"] > 100.0 * info["closed_grad_norm"]
 
@@ -901,12 +1006,15 @@ def test_u_tri_state_route_defers_tail_reference_and_promotion_until_pseudo_stag
     assert 'phase1_v2_reasons.append("US_STAGE_NOT_READY")' in source
 
 
-def test_u_geometry_route_filters_pseudo_ce_entropy_and_direct_metric_to_paired_core():
+def test_u_geometry_route_separates_confident_ce_core_direct_and_all_valid_invariance():
     source = (CODE_ROOT / "SSDG" / "train_ssdg.py").read_text(encoding="utf-8")
 
-    assert "routed_pseudo_mask = mask & u_geometry_core_mask" in source
+    assert "ce_mask = pseudo_mask & geometry_core_mask" in source
+    assert "direct_mask = geometry_core_mask.clone()" in source
+    assert "invariance_mask = valid_domain_mask.clone()" in source
     assert "entropy_per_sample[u_geometry_core_mask].mean()" in source
-    assert "dm_mask = dm_mask & u_geometry_core_mask" in source
+    assert "dm_mask = u_direct_geometry_mask" in source
+    assert "invariance_mask = u_invariance_mask" in source
     assert "combined_core = torch.stack([row[0] for row in state_rows], dim=0).all(dim=0)" in source
     assert "combined_outside = torch.stack([row[2] for row in state_rows], dim=0).any(dim=0)" in source
     assert "combined_ambiguous = (~combined_core) & (~combined_outside)" in source

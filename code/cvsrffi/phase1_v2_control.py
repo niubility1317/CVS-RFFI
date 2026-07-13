@@ -28,6 +28,9 @@ class TailSafetyConfig:
     tail_cvar_expansion_block_final_delta: float = 4.0
     tail_cvar_expansion_block_best_delta: float = 6.0
     reference_window: int = 5
+    absolute_violation_drives_state: bool = True
+    training_stop_enabled: bool = True
+    reference_requires_absolute_safe: bool = True
 
 
 @dataclass(frozen=True)
@@ -323,9 +326,21 @@ class TailSafetyStateMachine:
         if composite < self.safe_best and not unsafe_parts:
             self.safe_best = composite
 
-        unsafe = bool(unsafe_parts) or not math.isfinite(composite)
+        absolute_unsafe = bool(unsafe_parts) or not math.isfinite(composite)
+        if (
+            (not cfg.absolute_violation_drives_state or not cfg.training_stop_enabled)
+            and self.state in {"WARNING", "ROLLBACK", "STOP"}
+        ):
+            self.state = "NORMAL"
+            self.bad_windows = 0
+            self.rollback_windows = 0
+        state_unsafe = bool(
+            absolute_unsafe
+            and cfg.absolute_violation_drives_state
+            and cfg.training_stop_enabled
+        )
         action = "NONE"
-        if unsafe:
+        if state_unsafe:
             self.bad_windows += 1
             if self.state == "NORMAL" and self.bad_windows >= max(1, int(cfg.warning_patience)):
                 self.state = "WARNING"
@@ -369,7 +384,7 @@ class TailSafetyStateMachine:
                 expansion_reasons.append("tail_cvar_expansion_blocks_promotion")
 
         reasons: list[str] = []
-        if unsafe:
+        if absolute_unsafe:
             reasons.append("tail_safety:" + ",".join(sorted(unsafe_parts)))
         reasons.extend(expansion_reasons)
         reason = ";".join(reasons)
@@ -383,6 +398,10 @@ class TailSafetyStateMachine:
             "tail_reference_p99_non_degrading": 1.0 if p99_non_degrading else 0.0,
             "tail_reference_cvar_non_degrading": 1.0 if cvar_non_degrading else 0.0,
             "tail_reference_best_composite": self.reference_best,
+            "tail_absolute_violation": 1.0 if absolute_unsafe else 0.0,
+            "tail_absolute_violation_drives_state": 1.0 if cfg.absolute_violation_drives_state else 0.0,
+            "tail_training_stop_enabled": 1.0 if cfg.training_stop_enabled else 0.0,
+            "tail_reference_requires_absolute_safe": 1.0 if cfg.reference_requires_absolute_safe else 0.0,
             "tail_safety_composite_v1": composite,
             "tail_safety_bad_windows": float(self.bad_windows),
             "tail_safety_rollbacks": float(self.rollback_count),
@@ -396,16 +415,18 @@ class TailSafetyStateMachine:
             "tail_expansion_block_best_delta": float(cfg.p99_expansion_block_best_delta),
             "tail_cvar_expansion_block_final_delta": float(cfg.tail_cvar_expansion_block_final_delta),
             "tail_cvar_expansion_block_best_delta": float(cfg.tail_cvar_expansion_block_best_delta),
+            "tail_expansion_blocks_final": 1.0 if expansion_blocks_final else 0.0,
+            "tail_expansion_blocks_promotion": 1.0 if expansion_blocks_best else 0.0,
             **{f"tail_ratio_{key}": value for key, value in ratios.items()},
         }
         return TailSafetyDecision(
-            fired=unsafe or expansion_blocks_final or expansion_blocks_best or self.state in {"WARNING", "ROLLBACK", "STOP"},
+            fired=absolute_unsafe or expansion_blocks_final or expansion_blocks_best or self.state in {"WARNING", "ROLLBACK", "STOP"},
             reason=reason,
             details=details,
             state=self.state,
             action=action,
-            blocks_best=unsafe or expansion_blocks_best or self.state in {"WARNING", "ROLLBACK", "STOP"},
-            blocks_final=unsafe or expansion_blocks_final or self.state == "STOP",
+            blocks_best=absolute_unsafe or expansion_blocks_best or self.state in {"WARNING", "ROLLBACK", "STOP"},
+            blocks_final=absolute_unsafe or expansion_blocks_final or self.state == "STOP",
         )
 
     def acknowledge_rollback(self) -> None:
@@ -420,14 +441,28 @@ class TailSafetyStateMachine:
         self._proxy_window.clear()
 
     def commit_reference(self, decision: TailSafetyDecision) -> None:
-        """Commit one trainer-verified safe checkpoint as the sole expansion reference."""
+        """Commit one finite metric reference without confusing it with export safety."""
 
         details = decision.details
         composite = finite_float(details.get("tail_safety_composite_v1"))
         p99 = finite_float(details.get("tail_expansion_p99_current"))
         cvar = finite_float(details.get("tail_expansion_cvar_current"))
-        if decision.fired or not all(math.isfinite(value) for value in (composite, p99, cvar)):
-            raise ValueError("tail reference must come from one complete, non-fired safety decision")
+        reference_ready = finite_float(details.get("tail_reference_ready"), 0.0) >= 1.0
+        reference_improved = finite_float(details.get("tail_reference_improved"), 0.0) >= 1.0
+        absolute_unsafe = finite_float(details.get("tail_absolute_violation"), 0.0) >= 1.0
+        expansion_blocked = (
+            finite_float(details.get("tail_expansion_blocks_final"), 0.0) >= 1.0
+            or finite_float(details.get("tail_expansion_blocks_promotion"), 0.0) >= 1.0
+        )
+        invalid_state = decision.state in {"WARNING", "ROLLBACK", "STOP", "INSUFFICIENT"}
+        if not reference_ready or not reference_improved:
+            raise ValueError("tail reference requires one complete, improved metric window")
+        if not all(math.isfinite(value) for value in (composite, p99, cvar)):
+            raise ValueError("tail reference metrics must be finite")
+        if expansion_blocked or invalid_state:
+            raise ValueError("tail reference cannot be committed from an expanding or stopped state")
+        if absolute_unsafe and self.config.reference_requires_absolute_safe:
+            raise ValueError("tail reference exceeds absolute safety targets")
         self.reference_best = composite
         self.best_p99 = p99
         self.best_tail_cvar = cvar

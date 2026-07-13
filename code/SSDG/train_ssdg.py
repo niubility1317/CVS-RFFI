@@ -98,6 +98,7 @@ try:
         joint_safe_score,
         missing_joint_safe_metrics,
         protected_metric_snapshot,
+        sat_protocol_requirement_satisfied,
     )
     from cvsrffi.phase1_v2_control import (
         TailSafetyConfig,
@@ -157,6 +158,7 @@ except ModuleNotFoundError:
     aggregate_named_stats = compute_core_losses = evaluate_sat_scenarios = None
     detect_one_epoch_drop = detect_paic_variance_guard = guard_minimums_from_args = None
     joint_safe_score = missing_joint_safe_metrics = protected_metric_snapshot = None
+    sat_protocol_requirement_satisfied = None
     TailSafetyConfig = TailSafetyStateMachine = None
     assess_endpoint_contract = assess_feasibility_gate = None
     assess_open_set_effective_budget = assess_unlabeled_tri_state = None
@@ -385,6 +387,9 @@ def build_arg_parser() -> argparse.ArgumentParser:
     parser.add_argument("--tail_safety_cvar_expansion_block_final_delta", type=float, default=4.0)
     parser.add_argument("--tail_safety_cvar_expansion_block_best_delta", type=float, default=6.0)
     parser.add_argument("--tail_safety_reference_window", type=int, default=5)
+    parser.add_argument("--tail_safety_absolute_violation_drives_state", type=str2bool, default=True)
+    parser.add_argument("--tail_safety_training_stop_enabled", type=str2bool, default=True)
+    parser.add_argument("--tail_safety_reference_requires_absolute_safe", type=str2bool, default=True)
     parser.add_argument("--tail_rollback_enabled", type=str2bool, default=False)
     parser.add_argument("--tail_rollback_cooldown_epochs", type=int, default=2)
     parser.add_argument("--tail_rollback_closed_scale", type=float, default=0.60)
@@ -395,6 +400,14 @@ def build_arg_parser() -> argparse.ArgumentParser:
     parser.add_argument("--os_budget_min_closed_scale", type=float, default=0.35)
     parser.add_argument("--os_gradient_surgery", type=str2bool, default=False)
     parser.add_argument("--os_gradient_surgery_interval", type=int, default=1)
+    parser.add_argument("--os_gradient_protect_closed", type=str2bool, default=False)
+    parser.add_argument("--os_objective_budget_controller", type=str2bool, default=False)
+    parser.add_argument("--os_objective_boundary_share", type=float, default=0.40)
+    parser.add_argument("--os_objective_source_share", type=float, default=0.25)
+    parser.add_argument("--os_objective_invariant_share", type=float, default=0.20)
+    parser.add_argument("--os_objective_u_share", type=float, default=0.15)
+    parser.add_argument("--os_objective_min_scale", type=float, default=0.25)
+    parser.add_argument("--os_objective_max_scale", type=float, default=8.0)
     parser.add_argument("--phase1_v2_os_eff_all_phases", type=str2bool, default=True)
     parser.add_argument("--phase1_v2_guard_blocks_final", type=str2bool, default=True)
     parser.add_argument("--source_val_dg_health_guard", type=str2bool, default=False)
@@ -599,6 +612,7 @@ def build_arg_parser() -> argparse.ArgumentParser:
     parser.add_argument("--direct_metric_virtual_count", type=int, default=32)
     parser.add_argument("--direct_metric_virtual_mode", type=str, default="hard", choices=["legacy", "hard", "mixed", "legacy_hard"])
     parser.add_argument("--direct_metric_virtual_detach", type=str2bool, default=True)
+    parser.add_argument("--direct_metric_gate_reference_detach", type=str2bool, default=True)
     parser.add_argument("--direct_metric_core_quantile", type=float, default=0.70)
     parser.add_argument("--direct_metric_accept_quantile", type=float, default=0.80)
     parser.add_argument("--direct_metric_tail_quantile", type=float, default=0.90)
@@ -2296,6 +2310,7 @@ def _direct_metric_kwargs(args) -> Dict[str, Any]:
         "shell_width_rad": math.radians(float(args.direct_metric_shell_width_deg)),
         "accept_cvar_alpha": float(args.direct_metric_accept_cvar_alpha),
         "virtual_detach": bool(args.direct_metric_virtual_detach),
+        "gate_reference_detach": bool(args.direct_metric_gate_reference_detach),
         "use_domain_local_components": bool(args.direct_metric_domain_local_components),
         "require_domain_local_components": bool(args.direct_metric_require_domain_local_components),
         "min_samples_per_component": int(args.direct_metric_min_samples_per_component),
@@ -2453,6 +2468,29 @@ def _route_unlabeled_known_geometry(
     return loss, info, geometry_core_mask
 
 
+def _select_unlabeled_geometry_masks(
+    pseudo_mask: torch.Tensor,
+    geometry_core_mask: torch.Tensor,
+    valid_domain_mask: torch.Tensor,
+    *,
+    all_valid_queries: bool,
+    direct_valid_domain_only: bool,
+) -> Tuple[torch.Tensor, torch.Tensor, torch.Tensor]:
+    """Keep CE confidence-gated while routing geometry and invariance independently."""
+
+    if all_valid_queries:
+        ce_mask = pseudo_mask & geometry_core_mask
+        direct_mask = geometry_core_mask.clone()
+        invariance_mask = valid_domain_mask.clone()
+    else:
+        ce_mask = pseudo_mask.clone()
+        direct_mask = pseudo_mask.clone()
+        invariance_mask = pseudo_mask & valid_domain_mask
+    if direct_valid_domain_only:
+        direct_mask = direct_mask & valid_domain_mask
+    return ce_mask, direct_mask, invariance_mask
+
+
 def _backward_with_open_set_projection(
     model,
     scaler,
@@ -2465,15 +2503,119 @@ def _backward_with_open_set_projection(
     max_budget: float = 0.0,
     max_os_scale: float = 4.0,
     min_closed_scale: float = 0.35,
+    protect_closed_on_conflict: bool = False,
+    open_loss_groups: Optional[Mapping[str, torch.Tensor]] = None,
+    open_group_shares: Optional[Mapping[str, float]] = None,
+    open_group_min_scale: float = 0.25,
+    open_group_max_scale: float = 8.0,
 ) -> Dict[str, float]:
-    """Balance real gradient norms, optionally project conflicts, and leave AMP-scaled grads."""
+    """Balance objective gradients, then protect closed gradients from open-set conflicts."""
 
     named_params = [(name, param) for name, param in model.named_parameters() if param.requires_grad]
     params = [param for _, param in named_params]
     closed_scaled = scaler.scale(closed_loss)
-    open_scaled = scaler.scale(open_loss)
     closed_grads = torch.autograd.grad(closed_scaled, params, retain_graph=True, allow_unused=True)
-    open_grads = torch.autograd.grad(open_scaled, params, retain_graph=False, allow_unused=True)
+    group_grads: Dict[str, Tuple[Optional[torch.Tensor], ...]] = {}
+    group_norms_scaled: Dict[str, float] = {}
+    group_scales: Dict[str, float] = {}
+    configured_groups = [
+        (str(name), loss)
+        for name, loss in (open_loss_groups or {}).items()
+        if torch.is_tensor(loss) and bool(loss.requires_grad)
+    ]
+    if configured_groups:
+        for group_index, (name, group_loss) in enumerate(configured_groups):
+            grads = torch.autograd.grad(
+                scaler.scale(group_loss),
+                params,
+                retain_graph=(group_index + 1 < len(configured_groups)),
+                allow_unused=True,
+            )
+            group_grads[name] = grads
+            group_sq = group_loss.new_tensor(0.0)
+            for grad in grads:
+                if grad is not None:
+                    group_sq = group_sq + grad.detach().float().pow(2).sum()
+            group_norms_scaled[name] = float(group_sq.sqrt().detach().cpu().item())
+
+        positive_groups = [
+            name
+            for name, _ in configured_groups
+            if math.isfinite(group_norms_scaled.get(name, 0.0))
+            and group_norms_scaled.get(name, 0.0) > 1e-12
+            and float((open_group_shares or {}).get(name, 0.0)) > 0.0
+        ]
+        share_total = sum(float((open_group_shares or {}).get(name, 0.0)) for name in positive_groups)
+        norm_total = sum(group_norms_scaled[name] for name in positive_groups)
+        for name, _ in configured_groups:
+            norm = group_norms_scaled.get(name, 0.0)
+            if name not in positive_groups or share_total <= 0.0 or norm_total <= 0.0:
+                group_scales[name] = 0.0 if norm <= 1e-12 else 1.0
+                continue
+            target_norm = norm_total * float((open_group_shares or {}).get(name, 0.0)) / share_total
+            group_scales[name] = max(
+                float(open_group_min_scale),
+                min(float(open_group_max_scale), target_norm / max(1e-12, norm)),
+            )
+        open_grads_list: List[Optional[torch.Tensor]] = []
+        for param_index in range(len(params)):
+            combined = None
+            for name, _ in configured_groups:
+                grad = group_grads[name][param_index]
+                if grad is None:
+                    continue
+                scaled_grad = grad * float(group_scales.get(name, 1.0))
+                combined = scaled_grad if combined is None else combined + scaled_grad
+            open_grads_list.append(combined)
+        open_grads = tuple(open_grads_list)
+    else:
+        open_scaled = scaler.scale(open_loss)
+        open_grads = torch.autograd.grad(open_scaled, params, retain_graph=False, allow_unused=True)
+
+    finite_gradient_bundle = all(
+        grad is None or bool(torch.isfinite(grad.detach()).all().item())
+        for gradients in (closed_grads, open_grads)
+        for grad in gradients
+    )
+    if not finite_gradient_bundle:
+        for param, grad_closed, grad_open in zip(params, closed_grads, open_grads):
+            if grad_closed is None and grad_open is None:
+                param.grad = None
+            elif grad_closed is None:
+                param.grad = grad_open.detach().clone()
+            elif grad_open is None:
+                param.grad = grad_closed.detach().clone()
+            else:
+                param.grad = (grad_closed + grad_open).detach().clone()
+        result = {
+            "active": 1.0,
+            "conflict": 0.0,
+            "pre_cosine": float("nan"),
+            "post_cosine": float("nan"),
+            "closed_grad_norm": float("nan"),
+            "open_grad_norm": float("nan"),
+            "total_closed_grad_norm": float("nan"),
+            "total_open_grad_norm": float("nan"),
+            "shared_param_count": 0.0,
+            "budget_scope_shared_trainable_params": 1.0,
+            "budget_scope_shared_zid_path": 0.0,
+            "balanced_closed_grad_norm": float("nan"),
+            "balanced_open_grad_norm": float("nan"),
+            "effective_closed_grad_norm": float("nan"),
+            "effective_open_grad_norm": float("nan"),
+            "os_scale": 1.0,
+            "closed_scale": 1.0,
+            "pre_budget": float("nan"),
+            "post_budget": float("nan"),
+            "reason_code": 4.0,
+            "conflict_projection_priority_code": 1.0 if protect_closed_on_conflict else 0.0,
+            "nonfinite_gradient_bundle": 1.0,
+        }
+        for name, _ in configured_groups:
+            result[f"objective_{name}_raw_norm"] = float("nan")
+            result[f"objective_{name}_scale"] = float(group_scales.get(name, 1.0))
+            result[f"objective_{name}_effective_norm"] = float("nan")
+        return result
     raw_dot = closed_loss.new_tensor(0.0)
     closed_sq = closed_loss.new_tensor(0.0)
     open_sq = closed_loss.new_tensor(0.0)
@@ -2533,7 +2675,7 @@ def _backward_with_open_set_projection(
             balanced_open_sq = balanced_open_sq + grad_open.detach().float().pow(2).sum()
             dot = dot + (grad_closed.detach().float() * grad_open.detach().float()).sum()
     conflict = bool(project_conflicts) and bool((dot < 0).item()) and bool((balanced_closed_sq > 0).item())
-    preserve_closed_on_conflict = conflict and reason_code == 3.0
+    preserve_closed_on_conflict = conflict and (bool(protect_closed_on_conflict) or reason_code == 3.0)
     coeff_denom = balanced_closed_sq if preserve_closed_on_conflict else balanced_open_sq
     coeff = dot / coeff_denom.clamp_min(1e-12) if conflict else dot.new_tensor(0.0)
     post_dot = dot.new_tensor(0.0)
@@ -2582,7 +2724,7 @@ def _backward_with_open_set_projection(
     projected_closed_norm = float(post_closed_sq.sqrt().detach().cpu().item()) / scale
     projected_open_norm = float(post_open_sq.sqrt().detach().cpu().item()) / scale
     post_budget = projected_open_norm / max(1e-12, projected_open_norm + projected_closed_norm)
-    return {
+    result = {
         "active": 1.0,
         "conflict": 1.0 if conflict else 0.0,
         "pre_cosine": float(pre_cos.detach().cpu().item()),
@@ -2592,7 +2734,8 @@ def _backward_with_open_set_projection(
         "total_closed_grad_norm": total_closed_norm,
         "total_open_grad_norm": total_open_norm,
         "shared_param_count": float(shared_param_count),
-        "budget_scope_shared_zid_path": 1.0,
+        "budget_scope_shared_trainable_params": 1.0,
+        "budget_scope_shared_zid_path": 0.0,
         "balanced_closed_grad_norm": balanced_closed_norm,
         "balanced_open_grad_norm": balanced_open_norm,
         "effective_closed_grad_norm": projected_closed_norm,
@@ -2603,7 +2746,15 @@ def _backward_with_open_set_projection(
         "post_budget": post_budget,
         "reason_code": reason_code,
         "conflict_projection_priority_code": 1.0 if preserve_closed_on_conflict else 0.0,
+        "nonfinite_gradient_bundle": 0.0,
     }
+    for name, _ in configured_groups:
+        raw_norm = float(group_norms_scaled.get(name, 0.0)) / scale
+        group_scale = float(group_scales.get(name, 1.0))
+        result[f"objective_{name}_raw_norm"] = raw_norm
+        result[f"objective_{name}_scale"] = group_scale
+        result[f"objective_{name}_effective_norm"] = raw_norm * group_scale * os_scale
+    return result
 
 
 def _log_value(logs: Mapping[str, Any], key: str, default: float = 0.0) -> float:
@@ -3624,6 +3775,20 @@ def train(args) -> int:
         getattr(args, "os_eff_max_budget", 0.0)
     ) < float(getattr(args, "os_eff_min_budget", 0.0)):
         raise ValueError("--os_eff_max_budget must be zero/disabled or >= --os_eff_min_budget")
+    objective_shares = [
+        float(getattr(args, "os_objective_boundary_share", 0.40)),
+        float(getattr(args, "os_objective_source_share", 0.25)),
+        float(getattr(args, "os_objective_invariant_share", 0.20)),
+        float(getattr(args, "os_objective_u_share", 0.15)),
+    ]
+    if any(value < 0.0 for value in objective_shares) or sum(objective_shares) <= 0.0:
+        raise ValueError("open-set objective shares must be non-negative with a positive total")
+    if float(getattr(args, "os_objective_min_scale", 0.25)) <= 0.0:
+        raise ValueError("--os_objective_min_scale must be > 0")
+    if float(getattr(args, "os_objective_max_scale", 8.0)) < float(
+        getattr(args, "os_objective_min_scale", 0.25)
+    ):
+        raise ValueError("--os_objective_max_scale must be >= --os_objective_min_scale")
     if int(getattr(args, "source_episode_local_min_samples", 2)) < 2:
         raise ValueError("--source_episode_local_min_samples must be >= 2")
     if float(getattr(args, "source_episode_local_radius_floor_deg", 3.0)) <= 0.0:
@@ -4014,6 +4179,9 @@ def train(args) -> int:
                 tail_cvar_expansion_block_final_delta=float(args.tail_safety_cvar_expansion_block_final_delta),
                 tail_cvar_expansion_block_best_delta=float(args.tail_safety_cvar_expansion_block_best_delta),
                 reference_window=int(args.tail_safety_reference_window),
+                absolute_violation_drives_state=bool(args.tail_safety_absolute_violation_drives_state),
+                training_stop_enabled=bool(args.tail_safety_training_stop_enabled),
+                reference_requires_absolute_safe=bool(args.tail_safety_reference_requires_absolute_safe),
             )
         )
     for epoch in range(1, total_epochs + 1):
@@ -4766,7 +4934,6 @@ def train(args) -> int:
                         )
                 loss_closed_l = (
                     loss_tx_l
-                    + sanitize_loss("ssdg_zid_domain_invariance", loss_zid_invariance_l, z_id_l, loss_warn_counts)
                     + cur_w["dom"] * loss_dom_l
                     + cur_w["adv"] * loss_adv_l
                     + cur_w["orth"] * loss_orth_l
@@ -4779,15 +4946,21 @@ def train(args) -> int:
                     + (float(args.lambda_teacher_sat_kl) * teacher_scale) * sanitize_loss("teacher_sat_kl", loss_teacher_sat_kl_l, z_id_l, loss_warn_counts)
                     + (float(args.lambda_teacher_zid_mse) * teacher_scale) * sanitize_loss("teacher_zid_mse", loss_teacher_zid_mse_l, z_id_l, loss_warn_counts)
                 )
-                loss_open_l = (
-                    cur_w["proto"] * sanitize_loss("ssdg_proto", loss_proto_l, z_id_l, loss_warn_counts)
-                    + (cur_w["open_world_feat"] * ow_feat_stage_scale) * sanitize_loss("ssdg_open_world_feat", loss_open_world_feat_l, z_id_l, loss_warn_counts)
+                loss_open_invariant_l = (
+                    sanitize_loss("ssdg_zid_domain_invariance", loss_zid_invariance_l, z_id_l, loss_warn_counts)
+                    + cur_w["proto"] * sanitize_loss("ssdg_proto", loss_proto_l, z_id_l, loss_warn_counts)
+                )
+                loss_open_boundary_l = (
+                    (cur_w["open_world_feat"] * ow_feat_stage_scale) * sanitize_loss("ssdg_open_world_feat", loss_open_world_feat_l, z_id_l, loss_warn_counts)
                     + (cur_w["zid_compact"] * zid_warm) * sanitize_loss("ssdg_zid_compact", loss_zid_compact_l, z_id_l, loss_warn_counts)
                     + (cur_w["proxy_unknown"] * proxy_stage_scale) * sanitize_loss("ssdg_proxy_unknown", loss_proxy_unknown_l, z_id_l, loss_warn_counts)
                     + (cur_w["soft_unknown_mixup"] * soft_unknown_mixup_stage_scale) * sanitize_loss("ssdg_soft_unknown_mixup", loss_soft_unknown_mixup_l, z_id_l, loss_warn_counts)
-                    + (cur_w["source_episode"] * source_episode_stage_scale) * sanitize_loss("ssdg_source_episode", loss_source_episode_l, z_id_l, loss_warn_counts)
                     + (cur_w["direct_metric_accept"] * direct_metric_stage_scale) * sanitize_loss("ssdg_direct_metric_accept", loss_direct_metric_accept_l, z_id_l, loss_warn_counts)
                 )
+                loss_open_source_l = (cur_w["source_episode"] * source_episode_stage_scale) * sanitize_loss(
+                    "ssdg_source_episode", loss_source_episode_l, z_id_l, loss_warn_counts
+                )
+                loss_open_l = loss_open_invariant_l + loss_open_boundary_l + loss_open_source_l
                 loss_l = loss_closed_l + loss_open_l
                 if phase == "pseudo" and bool(args.use_unlabeled):
                     try:
@@ -4968,6 +5141,7 @@ def train(args) -> int:
                                 loss_u_adv
                                 + F.cross_entropy(out_u_sat["adv_dom_logits"][valid_u_mask].float(), d_u[valid_u_mask].long())
                             )
+                    strict_pseudo_mask = mask.clone()
                     u_geometry_core_mask = torch.ones_like(mask, dtype=torch.bool)
                     if (
                         float(args.lambda_u_quarantine_accept) > 0.0
@@ -4992,45 +5166,47 @@ def train(args) -> int:
                                 and u_sat_applied
                             ),
                         )
-                        if bool(getattr(args, "u_geometry_all_valid_queries", False)):
-                            routed_pseudo_mask = mask & u_geometry_core_mask
-                            if bool(routed_pseudo_mask.any()):
-                                loss_u = F.cross_entropy(
-                                    out_s["tx_logits"][routed_pseudo_mask], pseudo[routed_pseudo_mask]
-                                )
-                                if out_u_sat is not None:
-                                    loss_u = 0.5 * (
-                                        loss_u
-                                        + F.cross_entropy(
-                                            out_u_sat["tx_logits"][routed_pseudo_mask],
-                                            pseudo[routed_pseudo_mask],
-                                        )
+                    routed_pseudo_mask, u_direct_geometry_mask, u_invariance_mask = _select_unlabeled_geometry_masks(
+                        strict_pseudo_mask,
+                        u_geometry_core_mask,
+                        valid_u_mask,
+                        all_valid_queries=bool(getattr(args, "u_geometry_all_valid_queries", False)),
+                        direct_valid_domain_only=bool(getattr(args, "u_direct_metric_valid_domain_only", True)),
+                    )
+                    if bool(getattr(args, "u_geometry_all_valid_queries", False)):
+                        if bool(routed_pseudo_mask.any()):
+                            loss_u = F.cross_entropy(
+                                out_s["tx_logits"][routed_pseudo_mask], pseudo[routed_pseudo_mask]
+                            )
+                            if out_u_sat is not None:
+                                loss_u = 0.5 * (
+                                    loss_u
+                                    + F.cross_entropy(
+                                        out_u_sat["tx_logits"][routed_pseudo_mask],
+                                        pseudo[routed_pseudo_mask],
                                     )
-                            else:
-                                loss_u = out_s["tx_logits"].sum() * 0.0
-                            pseudo_selected = int(routed_pseudo_mask.sum().detach().item())
-                            pseudo_correct = int(
-                                ((pseudo == y_u) & routed_pseudo_mask).sum().detach().item()
-                            )
-                            mask = routed_pseudo_mask
-                            loss_ent = (
-                                entropy_per_sample[u_geometry_core_mask].mean()
-                                if bool(u_geometry_core_mask.any())
-                                else entropy_per_sample.sum() * 0.0
-                            )
+                                )
+                        else:
+                            loss_u = out_s["tx_logits"].sum() * 0.0
+                        pseudo_selected = int(routed_pseudo_mask.sum().detach().item())
+                        pseudo_correct = int(
+                            ((pseudo == y_u) & routed_pseudo_mask).sum().detach().item()
+                        )
+                        mask = routed_pseudo_mask
+                        loss_ent = (
+                            entropy_per_sample[u_geometry_core_mask].mean()
+                            if bool(u_geometry_core_mask.any())
+                            else entropy_per_sample.sum() * 0.0
+                        )
                     if (
                         float(args.lambda_u_direct_metric_accept) > 0.0
                         and epoch >= int(args.u_direct_metric_start_epoch)
                         and direct_metric_acceptance_loss is not None
                     ):
-                        dm_mask = mask
-                        if bool(getattr(args, "u_geometry_all_valid_queries", False)):
-                            dm_mask = dm_mask & u_geometry_core_mask
-                        if bool(getattr(args, "u_direct_metric_valid_domain_only", True)):
-                            dm_mask = dm_mask & valid_u_mask
+                        dm_mask = u_direct_geometry_mask
                         dm_selected = int(dm_mask.sum().detach().item())
                         u_dm_info["selected"] = float(dm_selected)
-                        u_dm_info["valid_domain_selected"] = float(int((mask & valid_u_mask).sum().detach().item()))
+                        u_dm_info["valid_domain_selected"] = float(int((dm_mask & valid_u_mask).sum().detach().item()))
                         if dm_selected >= int(args.u_direct_metric_min_selected):
                             dm_z_clean = out_s["z_id"][dm_mask]
                             dm_y = pseudo[dm_mask].long()
@@ -5074,7 +5250,7 @@ def train(args) -> int:
                                     **_direct_metric_kwargs(args),
                                 )
                             u_dm_info["selected"] = float(dm_selected)
-                            u_dm_info["valid_domain_selected"] = float(int((mask & valid_u_mask).sum().detach().item()))
+                            u_dm_info["valid_domain_selected"] = float(int((dm_mask & valid_u_mask).sum().detach().item()))
                             u_dm_info["inactive_reason_code"] = 0.0 if float(u_dm_info.get("active", 0.0)) > 0.0 else 3.0
                         else:
                             u_dm_info["inactive_reason_code"] = 2.0
@@ -5088,7 +5264,7 @@ def train(args) -> int:
                     ):
                         if tx_conditional_domain_invariance_loss is None:
                             raise ImportError("cvsrffi.losses.tx_conditional_domain_invariance_loss is required")
-                        invariance_mask = mask & valid_u_mask
+                        invariance_mask = u_invariance_mask
                         if bool(invariance_mask.any()):
                             inv_z = out_s["z_id"][invariance_mask]
                             inv_y = pseudo[invariance_mask].long()
@@ -5190,20 +5366,26 @@ def train(args) -> int:
                     pseudo_correct = 0
                 loss_closed = (
                     loss_closed_l
-                    + sanitize_loss("ssdg_u_zid_domain_invariance", loss_u_zid_invariance, z_id_l, loss_warn_counts)
                     + float(args.lambda_u) * loss_u
                     + float(args.lambda_ent) * loss_ent
                     + float(args.lambda_u_domain) * sanitize_loss("ssdg_u_domain", loss_u_domain, z_id_l, loss_warn_counts)
                     + float(args.lambda_u_adv) * sanitize_loss("ssdg_u_adv", loss_u_adv, z_id_l, loss_warn_counts)
                     + float(args.lambda_u_sat_cons) * sanitize_loss("ssdg_u_sat_cons", loss_u_sat_cons, z_id_l, loss_warn_counts)
                 )
-                loss_open = (
-                    loss_open_l
+                loss_open_u = (
+                    sanitize_loss("ssdg_u_zid_domain_invariance", loss_u_zid_invariance, z_id_l, loss_warn_counts)
                     + float(args.lambda_u_direct_metric_accept)
                     * sanitize_loss("ssdg_u_direct_metric_accept", loss_u_direct_metric, z_id_l, loss_warn_counts)
                     + float(args.lambda_u_quarantine_accept)
                     * sanitize_loss("ssdg_u_quarantine_accept", loss_u_quarantine, z_id_l, loss_warn_counts)
                 )
+                loss_open = loss_open_l + loss_open_u
+                open_objective_losses = {
+                    "boundary": loss_open_boundary_l,
+                    "source": loss_open_source_l,
+                    "invariant": loss_open_invariant_l,
+                    "u_geometry": loss_open_u,
+                }
                 effective_os_min_budget = (
                     float(args.os_eff_min_budget)
                     if float(dg_health_open_scale) >= 1.0 - 1e-8
@@ -5237,6 +5419,7 @@ def train(args) -> int:
                 "total_closed_grad_norm": float("nan"),
                 "total_open_grad_norm": float("nan"),
                 "shared_param_count": 0.0,
+                "budget_scope_shared_trainable_params": 0.0,
                 "budget_scope_shared_zid_path": 0.0,
                 "balanced_closed_grad_norm": float("nan"),
                 "balanced_open_grad_norm": float("nan"),
@@ -5248,6 +5431,7 @@ def train(args) -> int:
                 "post_budget": 0.0,
                 "reason_code": 0.0,
                 "conflict_projection_priority_code": 0.0,
+                "nonfinite_gradient_bundle": 0.0,
             }
             if loss_is_finite:
                 os_control_epoch_ready = bool(getattr(args, "phase1_v2_os_eff_all_phases", True)) or (
@@ -5279,6 +5463,23 @@ def train(args) -> int:
                         max_budget=float(args.os_eff_max_budget),
                         max_os_scale=float(args.os_budget_max_scale),
                         min_closed_scale=float(args.os_budget_min_closed_scale),
+                        protect_closed_on_conflict=bool(getattr(args, "os_gradient_protect_closed", False)),
+                        open_loss_groups=(
+                            {
+                                key: float(dg_health_open_scale) * value
+                                for key, value in open_objective_losses.items()
+                            }
+                            if bool(getattr(args, "os_objective_budget_controller", False))
+                            else None
+                        ),
+                        open_group_shares={
+                            "boundary": float(getattr(args, "os_objective_boundary_share", 0.40)),
+                            "source": float(getattr(args, "os_objective_source_share", 0.25)),
+                            "invariant": float(getattr(args, "os_objective_invariant_share", 0.20)),
+                            "u_geometry": float(getattr(args, "os_objective_u_share", 0.15)),
+                        },
+                        open_group_min_scale=float(getattr(args, "os_objective_min_scale", 0.25)),
+                        open_group_max_scale=float(getattr(args, "os_objective_max_scale", 8.0)),
                     )
                     os_budget_info = {
                         "active": 1.0 if float(os_grad_info["reason_code"]) in {1.0, 3.0} else 0.0,
@@ -5391,18 +5592,60 @@ def train(args) -> int:
                     "train/os_gradient_conflict_projection_priority_code": float(
                         os_grad_info["conflict_projection_priority_code"]
                     ),
-                "train/os_gradient_closed_norm": float(os_grad_info["closed_grad_norm"]),
-                "train/os_gradient_open_norm": float(os_grad_info["open_grad_norm"]),
-                "train/os_gradient_total_closed_norm": float(os_grad_info["total_closed_grad_norm"]),
-                "train/os_gradient_total_open_norm": float(os_grad_info["total_open_grad_norm"]),
-                "train/os_gradient_shared_param_count": float(os_grad_info["shared_param_count"]),
-                "train/os_gradient_budget_scope_shared_zid_path": float(
-                    os_grad_info["budget_scope_shared_zid_path"]
-                ),
-                "train/os_gradient_balanced_closed_norm": float(os_grad_info["balanced_closed_grad_norm"]),
-                "train/os_gradient_balanced_open_norm": float(os_grad_info["balanced_open_grad_norm"]),
-                "train/os_gradient_effective_open_norm": float(os_grad_info["effective_open_grad_norm"]),
-                "train/os_gradient_effective_closed_norm": float(os_grad_info["effective_closed_grad_norm"]),
+                    "train/os_gradient_closed_norm": float(os_grad_info["closed_grad_norm"]),
+                    "train/os_gradient_open_norm": float(os_grad_info["open_grad_norm"]),
+                    "train/os_gradient_total_closed_norm": float(os_grad_info["total_closed_grad_norm"]),
+                    "train/os_gradient_total_open_norm": float(os_grad_info["total_open_grad_norm"]),
+                    "train/os_gradient_shared_param_count": float(os_grad_info["shared_param_count"]),
+                    "train/os_gradient_budget_scope_shared_trainable_params": float(
+                        os_grad_info.get("budget_scope_shared_trainable_params", 0.0)
+                    ),
+                    "train/os_gradient_budget_scope_shared_zid_path": float(
+                        os_grad_info["budget_scope_shared_zid_path"]
+                    ),
+                    "train/os_gradient_nonfinite_bundle": float(
+                        os_grad_info.get("nonfinite_gradient_bundle", 0.0)
+                    ),
+                    "train/os_gradient_balanced_closed_norm": float(os_grad_info["balanced_closed_grad_norm"]),
+                    "train/os_gradient_balanced_open_norm": float(os_grad_info["balanced_open_grad_norm"]),
+                    "train/os_gradient_effective_open_norm": float(os_grad_info["effective_open_grad_norm"]),
+                    "train/os_gradient_effective_closed_norm": float(os_grad_info["effective_closed_grad_norm"]),
+                    "train/os_objective_boundary_raw_norm": float(
+                        os_grad_info.get("objective_boundary_raw_norm", float("nan"))
+                    ),
+                    "train/os_objective_boundary_scale": float(
+                        os_grad_info.get("objective_boundary_scale", float("nan"))
+                    ),
+                    "train/os_objective_boundary_effective_norm": float(
+                        os_grad_info.get("objective_boundary_effective_norm", float("nan"))
+                    ),
+                    "train/os_objective_source_raw_norm": float(
+                        os_grad_info.get("objective_source_raw_norm", float("nan"))
+                    ),
+                    "train/os_objective_source_scale": float(
+                        os_grad_info.get("objective_source_scale", float("nan"))
+                    ),
+                    "train/os_objective_source_effective_norm": float(
+                        os_grad_info.get("objective_source_effective_norm", float("nan"))
+                    ),
+                    "train/os_objective_invariant_raw_norm": float(
+                        os_grad_info.get("objective_invariant_raw_norm", float("nan"))
+                    ),
+                    "train/os_objective_invariant_scale": float(
+                        os_grad_info.get("objective_invariant_scale", float("nan"))
+                    ),
+                    "train/os_objective_invariant_effective_norm": float(
+                        os_grad_info.get("objective_invariant_effective_norm", float("nan"))
+                    ),
+                    "train/os_objective_u_geometry_raw_norm": float(
+                        os_grad_info.get("objective_u_geometry_raw_norm", float("nan"))
+                    ),
+                    "train/os_objective_u_geometry_scale": float(
+                        os_grad_info.get("objective_u_geometry_scale", float("nan"))
+                    ),
+                    "train/os_objective_u_geometry_effective_norm": float(
+                        os_grad_info.get("objective_u_geometry_effective_norm", float("nan"))
+                    ),
                     "train/loss_tx_labeled": loss_tx_l.detach(),
                     "train/loss_domain_labeled": loss_dom_l.detach(),
                     "train/loss_adv_labeled": loss_adv_l.detach(),
@@ -6217,9 +6460,14 @@ def train(args) -> int:
             guard_state.update({f"phase1_v2_{key}": value for key, value in tail_decision.details.items()})
             if (
                 float(tail_decision.details.get("tail_reference_improved", 0.0)) > 0.0
-                and not bool(tail_decision.fired)
-                and bool(checkpoint_safe)
-                and not phase1_v2_reasons
+                and float(tail_decision.details.get("tail_reference_ready", 0.0)) > 0.0
+                and tail_decision.state == "NORMAL"
+                and float(tail_decision.details.get("tail_expansion_blocks_final", 0.0)) < 1.0
+                and float(tail_decision.details.get("tail_expansion_blocks_promotion", 0.0)) < 1.0
+                and (
+                    float(tail_decision.details.get("tail_absolute_violation", 0.0)) < 1.0
+                    or not bool(args.tail_safety_reference_requires_absolute_safe)
+                )
             ):
                 phase1_v2_tail_machine.commit_reference(tail_decision)
                 tail_reference_geometry = deepcopy(source_val_tail_geometry)
@@ -6228,7 +6476,7 @@ def train(args) -> int:
                 tail_reference_geometry["reference_decision"] = dict(tail_decision.details)
                 tail_reference_epoch = int(epoch)
                 tail_reference_saved = True
-            if tail_decision.action == "STOP":
+            if tail_decision.action == "STOP" and bool(args.tail_safety_training_stop_enabled):
                 phase1_v2_final_blocked = True
                 tail_early_stop_requested = True
             if tail_decision.blocks_best:
@@ -6741,13 +6989,21 @@ def train(args) -> int:
         if selected_checkpoint_evidence
         else {}
     )
+    sat_disjoint_required = bool(getattr(args, "sat_protocol_disjoint_required", False))
+    sat_protocol_disjoint = bool((getattr(args, "sat_protocol_manifest", {}) or {}).get("disjoint", False))
     p1_mechanism_flags = {
         "checkpoint_selection_final_only": str(getattr(args, "checkpoint_selection", "")) == "final_only",
         "selected_checkpoint_is_final": selected_checkpoint.name == "final_ssdg.pth",
         "selected_checkpoint_role_final": str(selected_checkpoint_evidence.get("checkpoint_role", ""))
         == "training_final_only",
-        "sat_protocol_disjoint_required": bool(getattr(args, "sat_protocol_disjoint_required", False)),
-        "sat_protocol_disjoint": bool((getattr(args, "sat_protocol_manifest", {}) or {}).get("disjoint", False)),
+        "sat_protocol_requirement_satisfied": (
+            sat_protocol_requirement_satisfied(
+                required=sat_disjoint_required,
+                actual_disjoint=sat_protocol_disjoint,
+            )
+            if sat_protocol_requirement_satisfied is not None
+            else ((not sat_disjoint_required) or sat_protocol_disjoint)
+        ),
         "direct_metric_domain_local_components": bool(
             getattr(args, "direct_metric_domain_local_components", False)
         ),
@@ -6854,6 +7110,10 @@ def train(args) -> int:
         ) if selected_checkpoint_evidence else -1,
         "p0_mechanisms_ready": bool(p0_mechanisms_ready),
         "p1_mechanism_flags": p1_mechanism_flags,
+        "p1_mechanism_facts": {
+            "sat_protocol_disjoint_required": sat_disjoint_required,
+            "sat_protocol_disjoint": sat_protocol_disjoint,
+        },
         "p1_mechanisms_ready": bool(p1_mechanisms_ready),
         "endpoint_export_ready": bool(endpoint_export_ready),
         "promotion_ready": terminal_status == "COMPLETE",

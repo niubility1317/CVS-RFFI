@@ -227,10 +227,13 @@ def evaluate_sat_scenarios(
 ):
     selected_names = resolve_sat_eval_loader_names(named_loaders, getattr(args, "eval_sat_on", MAIN_SAT_EVAL_ON))
     out = {}
+    seed_base = int(getattr(args, "sat_seed", 2027))
     for si, scenario in enumerate(scenario_names):
         named_stats = {}
+        named_seeds = {}
         for li, name in enumerate(selected_names):
-            named_stats[name] = evaluate_loader_sat_channel(
+            eval_seed = seed_base + si * 1009 + li * 97
+            stats = evaluate_loader_sat_channel(
                 model,
                 named_loaders[name],
                 device,
@@ -238,18 +241,54 @@ def evaluate_sat_scenarios(
                 scenario=scenario,
                 args=args,
                 max_batches=max_batches,
-                seed=int(getattr(args, "sat_seed", 2027)) + si * 1009 + li * 97,
+                seed=eval_seed,
             )
+            named_stats[name] = dict(stats, sat_seed=int(eval_seed))
+            named_seeds[name] = int(eval_seed)
         main_keys = [k for k in ["test_unseen_day_seen_rx", "test_seen_day_unseen_rx", "test_unseen_day_unseen_rx"] if k in named_stats]
         if not main_keys:
             main_keys = list(named_stats.keys())
         aggregate = aggregate_named_stats(named_stats, main_keys)
         strict = named_stats.get("test_unseen_day_unseen_rx", {}).get("tx_acc", float("nan"))
+        receiver_seen_day = {
+            name: stats for name, stats in named_stats.items() if str(name).startswith("test_rx_")
+        }
+        receiver_strict = {
+            name: stats
+            for name, stats in named_stats.items()
+            if str(name).startswith("test_unseen_day_rx_")
+        }
+        receiver_named = {**receiver_seen_day, **receiver_strict}
+
+        def _receiver_floor(rows: Dict[str, Dict[str, Any]]) -> float:
+            values = []
+            for stats in rows.values():
+                try:
+                    value = float(stats.get("tx_acc", float("nan")))
+                except Exception:
+                    continue
+                if math.isfinite(value):
+                    values.append(value)
+            return min(values) if values else float("nan")
+
         out[scenario] = {
             "aggregate": aggregate,
             "strict_udu": strict,
             "named": named_stats,
             "selected_names": list(selected_names),
+            "evaluation_seed": {
+                "base": int(seed_base),
+                "scenario_index": int(si),
+                "scenario_offset": int(si * 1009),
+                "loader_stride": 97,
+                "named": named_seeds,
+            },
+            "receiver_named": receiver_named,
+            "receiver_seen_day_named": receiver_seen_day,
+            "receiver_strict_named": receiver_strict,
+            "receiver_floor": _receiver_floor(receiver_named),
+            "receiver_seen_day_floor": _receiver_floor(receiver_seen_day),
+            "receiver_strict_floor": _receiver_floor(receiver_strict),
         }
     return out
 
@@ -260,10 +299,15 @@ def format_sat_test_lines(sat_stats: Dict[str, Dict[str, Any]]) -> List[str]:
         agg = stats.get("aggregate", {})
         strict = stats.get("strict_udu", float("nan"))
         selected = ",".join(stats.get("selected_names", []))
+        seed_base = (stats.get("evaluation_seed", {}) or {}).get("base", "")
         lines.append(
             f"[SAT-TEST] scenario={scenario} selected={selected} "
+            f"seed_base={seed_base} "
             f"overall_tx={agg.get('tx_acc', float('nan')):.2f}% "
             f"strict_udu={safe_nan(strict)}% "
+            f"receiver_floor={safe_nan(stats.get('receiver_floor', float('nan')))}% "
+            f"receiver_seen_day_floor={safe_nan(stats.get('receiver_seen_day_floor', float('nan')))}% "
+            f"receiver_strict_floor={safe_nan(stats.get('receiver_strict_floor', float('nan')))}% "
             f"({int(agg.get('tx_correct', 0))}/{int(agg.get('tx_total', 0))})"
         )
     return lines

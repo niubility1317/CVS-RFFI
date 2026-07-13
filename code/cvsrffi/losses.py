@@ -1786,6 +1786,7 @@ def direct_metric_acceptance_loss(
     shell_width_rad: float = math.radians(4.0),
     accept_cvar_alpha: float = 0.25,
     virtual_detach: bool = True,
+    gate_reference_detach: bool = True,
     min_classes: int = 2,
     min_samples_per_class: int = 2,
     use_domain_local_components: bool = False,
@@ -1829,6 +1830,8 @@ def direct_metric_acceptance_loss(
         "virtual_count": 0.0,
         "geometry_stabilized": 1.0,
         "geometry_reference_detached": 1.0,
+        "virtual_negative_detached": 1.0,
+        "gate_reference_detached": 1.0,
         "angle_clamp_eps": 1e-4,
         "softplus_clip": 20.0,
         "domain_local_component_gate": 0.0,
@@ -2003,7 +2006,7 @@ def direct_metric_acceptance_loss(
             )
             return zero_like_with_grad(z), default_metrics
 
-    gate_proto_ref = gate_proto.detach()
+    gate_proto_ref = gate_proto.detach() if bool(gate_reference_detach) else gate_proto
     if bool(require_domain_local_components) and not local_component_active:
         default_metrics["global_ball_accept"] = 0.0
         return zero_like_with_grad(z), default_metrics
@@ -2119,7 +2122,7 @@ def direct_metric_acceptance_loss(
     tail_accept_loss = _accept_loss(tail_prob, float(tail_accept_target))
     overflow_accept_loss = _accept_loss(overflow_prob, float(overflow_accept_target))
 
-    virtual_geometry_basis = gate_proto_ref if bool(virtual_detach) else gate_proto
+    virtual_geometry_basis = gate_proto.detach() if bool(virtual_detach) else gate_proto
     virtual_parts = _make_proxy_virtual_unknown_pool(
         sample_z,
         sample_labels,
@@ -2271,7 +2274,11 @@ def direct_metric_acceptance_loss(
         "zid_quantile_loss": _scalar_metric(zid_quantile_loss),
         "virtual_count": float(int(virtual_all.size(0))),
         "geometry_stabilized": 1.0,
+        # Retain the legacy field semantics while exposing the two independent
+        # gradient controls explicitly.
         "geometry_reference_detached": 1.0 if bool(virtual_detach) else 0.0,
+        "virtual_negative_detached": 1.0 if bool(virtual_detach) else 0.0,
+        "gate_reference_detached": 1.0 if bool(gate_reference_detach) else 0.0,
         "angle_clamp_eps": float(angle_eps),
         "softplus_clip": float(softplus_clip),
         "domain_local_component_gate": 1.0 if local_component_active else 0.0,
@@ -2303,6 +2310,8 @@ def multiview_direct_metric_acceptance_loss(
     sat_pair_target_rad: float = math.radians(10.0),
     quantile_temperature_rad: float = math.radians(3.0),
     accept_cvar_alpha: float = 0.25,
+    virtual_detach: bool = True,
+    gate_reference_detach: bool = True,
     **kwargs,
 ) -> Tuple[torch.Tensor, Dict[str, float]]:
     """Optimize clean and satellite known geometry without one pooled class ball."""
@@ -2321,6 +2330,8 @@ def multiview_direct_metric_acceptance_loss(
     base_kwargs.pop("sat_pair_target_rad", None)
     base_kwargs["quantile_temperature_rad"] = float(quantile_temperature_rad)
     base_kwargs["accept_cvar_alpha"] = float(accept_cvar_alpha)
+    base_kwargs["virtual_detach"] = bool(virtual_detach)
+    base_kwargs["gate_reference_detach"] = bool(gate_reference_detach)
     clean_loss, clean_metrics = direct_metric_acceptance_loss(
         clean_z,
         y,
@@ -2367,6 +2378,19 @@ def multiview_direct_metric_acceptance_loss(
                 values.append(value)
         return max(values) if values else float("nan")
 
+    def _weighted_view_sum(key: str) -> float:
+        total = 0.0
+        found = False
+        for weight, obj in ((clean_weight, clean_metrics), (sat_weight, sat_metrics)):
+            try:
+                value = float(obj.get(key, float("nan")))
+            except Exception:
+                value = float("nan")
+            if math.isfinite(value):
+                total += max(0.0, float(weight)) * value
+                found = True
+        return total if found else float("nan")
+
     metrics: Dict[str, float] = {
         "active": min(float(clean_metrics.get("active", 0.0)), float(sat_metrics.get("active", 0.0))),
         "active_classes": min(
@@ -2376,6 +2400,23 @@ def multiview_direct_metric_acceptance_loss(
         "sat_pair_angle_p95_deg": math.degrees(_scalar_metric(pair_p95)),
         "sat_pair_loss": _scalar_metric(pair_loss),
         "multiview_separate_geometry": 1.0,
+        "multiview_telemetry_aggregated": 1.0,
+        "geometry_stabilized": min(
+            float(clean_metrics.get("geometry_stabilized", 0.0)),
+            float(sat_metrics.get("geometry_stabilized", 0.0)),
+        ),
+        "geometry_reference_detached": min(
+            float(clean_metrics.get("geometry_reference_detached", 0.0)),
+            float(sat_metrics.get("geometry_reference_detached", 0.0)),
+        ),
+        "virtual_negative_detached": min(
+            float(clean_metrics.get("virtual_negative_detached", 0.0)),
+            float(sat_metrics.get("virtual_negative_detached", 0.0)),
+        ),
+        "gate_reference_detached": min(
+            float(clean_metrics.get("gate_reference_detached", 0.0)),
+            float(sat_metrics.get("gate_reference_detached", 0.0)),
+        ),
         "domain_local_component_gate": min(
             float(clean_metrics.get("domain_local_component_gate", 0.0)),
             float(sat_metrics.get("domain_local_component_gate", 0.0)),
@@ -2414,6 +2455,26 @@ def multiview_direct_metric_acceptance_loss(
     )
     for key in conservative_keys:
         metrics[key] = _worst(key)
+    metrics["core_accept_rate"] = min(
+        float(clean_metrics.get("core_accept_rate", float("nan"))),
+        float(sat_metrics.get("core_accept_rate", float("nan"))),
+    )
+    weighted_loss_keys = (
+        "zid_quantile_loss",
+        "source_overflow_loss",
+        "proxy_vaccept_loss",
+        "bridge_accept_loss",
+        "low_density_accept_loss",
+        "tail_accept_loss",
+        "overflow_accept_loss",
+        "radius_inter_ratio_loss",
+        "core_accept_loss",
+    )
+    for key in weighted_loss_keys:
+        metrics[key] = _weighted_view_sum(key)
+    metrics["virtual_count"] = float(clean_metrics.get("virtual_count", 0.0)) + float(
+        sat_metrics.get("virtual_count", 0.0)
+    )
     for prefix, obj in (("clean", clean_metrics), ("sat", sat_metrics)):
         for key, value in obj.items():
             metrics[f"{prefix}_{key}"] = value
