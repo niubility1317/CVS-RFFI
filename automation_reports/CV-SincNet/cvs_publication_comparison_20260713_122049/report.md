@@ -33,3 +33,10 @@
 - 本地回收：`local_artifacts/cvs_publication_adv3b02_feature_cache_20260713/`。SHA256：clear=`c5639f3c...a867`、low-elev=`912219b0...a872`、rain=`8f0b4e58...eb1a`。
 - 下一步先跑receiver20-1、K5、seed713101的CVS-OPGAC与CVS-qKNNV42正式锚点，输出根`paper_reproduction/runs/cvs_publication_cvs_anchor_k5_seed713101_20260713/{cvs_opgac,cvs_qknnv42}`。两者使用同一三场景cache；OPGAC只登记target-old support，qKNNV42登记target-old+target-new support；query标签不进入适应或选模。
 - 精确命令为`python -m paper_reproduction.cvs_aligned.cvs_method_runner --config paper_reproduction/configs/cvs_proposed_stage2_publication_features_n607.json --run-dir <method_dir> --method <cvs_opgac|cvs_qknnv42> --target-receiver 20-1 --seed 713101 --split-seed 713101 --k-shot 5 --device cpu`。成功条件为8个artifact、三场景、四层明细、finite trace、support/query无重叠及全测试星地增强。
+
+### CVS K5锚点v1审计与修正
+
+- v1两方法artifact链路PASS：OPGAC为360条score/57条明细/3条finite trace，qKNNV42为480条score/78条明细/3条finite trace；两者旧类support逐ID一致，均无重叠且全测试星地增强。
+- v1数值：CVS-OPGAC适应前0.6722、适应后0.7361、delta+0.0639；CVS-qKNNV42 old0.6056、seen-new0.6333、H0.6170、forgetting0.0861。
+- 反向审计发现v1 qKNNV42遗漏技术报告中固定的`diag_whiten_fisher` support-only变换（strength0.1），因此v1 qKNNV42降级为实现诊断，不能进入主表。已补入严格support-only的类间/类内Fisher对角缩放与对角whitening；三场景中每个已登记类都有同场景support，故`scenario_residual_weight=0.5`按公式为零并显式记录，而不是静默省略。
+- 修正后py_compile及CVS runner+matrix测试仍为`4 passed`。需同步后写入新根`cvs_publication_cvs_anchor_k5_seed713101_v2_20260713`，不得覆盖v1。

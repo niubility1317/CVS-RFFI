@@ -152,13 +152,42 @@ def _labelprop(
     return np.clip((q - q.mean(axis=1, keepdims=True)) / np.maximum(q.std(axis=1, keepdims=True), 1.0e-6), -2.0, 2.0)
 
 
+def _diag_whiten_fisher(
+    support: np.ndarray, labels: np.ndarray, query: np.ndarray, *, strength: float = 0.1,
+) -> tuple[np.ndarray, np.ndarray, dict[str, float]]:
+    support = _norm(support)
+    labels = labels.astype(str)
+    center = support.mean(axis=0)
+    centered = support - center
+    classes = sorted(set(labels.tolist()))
+    means = np.vstack([centered[labels == label].mean(axis=0) for label in classes])
+    counts = np.asarray([np.sum(labels == label) for label in classes], dtype=np.float64)
+    global_mean = np.average(means, axis=0, weights=counts)
+    between = np.average((means - global_mean) ** 2, axis=0, weights=counts)
+    within = np.concatenate([
+        (centered[labels == label] - centered[labels == label].mean(axis=0, keepdims=True)) ** 2
+        for label in classes
+    ]).mean(axis=0)
+    fisher = between / np.maximum(within, 1.0e-6)
+    fisher /= max(float(np.median(fisher)), 1.0e-6)
+    whiten = 1.0 / np.sqrt(np.maximum(centered.var(axis=0), 1.0e-5))
+    scale = np.power(np.clip(fisher, 0.05, 20.0), float(strength))
+    scale *= np.power(whiten / max(float(np.median(whiten)), 1.0e-6), 0.5)
+    scale = np.clip(scale, 0.05, 20.0)
+    return (
+        _norm((support - center[None, :]) * scale[None, :]),
+        _norm((_norm(query) - center[None, :]) * scale[None, :]),
+        {"transform_scale_min": float(scale.min()), "transform_scale_max": float(scale.max()),
+         "transform_scale_mean": float(scale.mean())},
+    )
+
+
 def _qknnv42_predict(
     support_x: np.ndarray, support_y: np.ndarray, query_x: np.ndarray, *, old_labels: set[str],
 ) -> tuple[np.ndarray, dict[str, Any]]:
-    support = _norm(support_x)
+    support, query, transform_info = _diag_whiten_fisher(support_x, support_y, query_x, strength=0.1)
     quantized = np.clip(np.rint(127.0 * support), -127, 127).astype(np.int8)
     restored = _norm(quantized.astype(np.float64) / 127.0)
-    query = _norm(query_x)
     labels = support_y.astype(str)
     classes = sorted(set(labels.tolist()))
     score_columns: list[np.ndarray] = []
@@ -179,11 +208,17 @@ def _qknnv42_predict(
     ]).T, axis=1)
     return predicted, {
         "adaptation_objective": "qknnv42_int8_top1_proto45_old_anchor_labelprop",
+        "transform_mode": "diag_whiten_fisher",
+        "transform_strength": 0.1,
+        **transform_info,
         "stored_quantized_support_code_count": int(len(restored)),
         "stored_raw_support_count": 0,
         "stored_class_prototype_count": len(classes),
         "feature_dim": int(restored.shape[1]),
         "query_labels_used_for_adaptation": False,
+        "scenario_residual_weight": 0.5,
+        "scenario_residual_applied": False,
+        "scenario_residual_note": "zero_by_full_same_scenario_support_for_every_registered_class",
         "loss": float(np.mean(compactness)),
     }
 
