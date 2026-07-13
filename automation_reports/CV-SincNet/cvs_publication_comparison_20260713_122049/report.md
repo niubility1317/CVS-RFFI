@@ -109,3 +109,10 @@
 - 发现subset worker的shard0会覆盖canonical `matrix_manifest.json`。该问题不影响已启动main worker的内存行列表或任何run artifact，但当前远端canonical manifest暂时只反映subset，不能作为500行完成证据。
 - 本地已修正matrix worker：完整默认网格继续写`matrix_manifest.json`，任何方法/receiver/K/seed子集改写到基于选择哈希的`matrix_manifest_subset_<hash>.json`，新增防覆盖回归；聚焦回归`20 passed`。
 - 按active-job monitor-only边界，当前不热补远端worker文件。待现有完整worker退出后同步修正并用完整默认dry-run重建500行canonical manifest；完成度在此期间仅通过`build_rows(DEFAULT_*)`逐行执行artifact contract现场计算。
+
+### 论文统计聚合入口预落地（14:45）
+
+- 新增`paper_reproduction/scripts/summarize_cvs_publication_stage2.py`，最终会严格按完整默认网格逐行执行artifact contract；任一行不完整时默认拒绝生成正式论文汇总。
+- 预定义输出包括：1000行run-level结果、3000行scenario-level结果、method×K均值/标准差/95%CI、method×receiver×K五seed统计、同receiver/K/seed配对的CVS差值及win/tie/loss摘要。Stage2-B参考为CVS-OPGAC，Stage2-C参考为CVS-qKNNV42。
+- 统计单位以每个receiver-seed run的三场景均值为主，避免把同一run的三个星地场景错误当作三个独立重复；scenario-level表单独保留用于场景敏感性分析。聚合脚本py_compile及单测通过。
+- 当前现场完成度：Stage2-B 220/500、Stage2-C 115/500、失败0；DRIFT到epoch126/200。聚合入口只在全部行完成并同步到远端后执行正式模式。
