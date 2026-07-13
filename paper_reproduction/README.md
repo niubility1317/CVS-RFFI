@@ -1,20 +1,20 @@
 # Paper Reproduction Modules
 
-This directory keeps paper-faithful reproduction components and the separate CVS Stage2-C extension path.
+This directory keeps paper-derived reproduction components with per-method evidence boundaries and the separate CVS Stage2-C extension path.
 The original paper-only training queues, paper parity tests, local PDF evidence paths, unresolved repro notes, and non-CVS smoke configs are intentionally excluded from the GitHub release.
 
-Paper-faithful scope:
+Paper-derived scope:
 
 - `protonet_cda/`: model code used by the CVS-aligned adapter.
 - `feature_separation_crossrx/`: model/loss code used by the CVS-aligned adapter.
 - `receiver_agnostic_twostage_uda/`: paper-faithful Bao et al. GLOBECOM 2023 components for DANN, LMMD, uncertainty fine-tuning selection, and dry-run protocol validation.
-- `mitigating_receiver_impact_da/`: paper-faithful Liu Yang et al. IEEE IoT Journal 2024 components for DV-KL domain alignment, CPL adaptive pseudo-labeling, class weighting, GAD min-max training, and dry-run protocol validation.
+- `mitigating_receiver_impact_da/`: bounded paper-equation implementation of Liu Yang et al. IEEE IoT Journal 2024 for DV-KL domain alignment, CPL adaptive pseudo-labeling, class weighting, and GAD min-max training. Exact parity remains blocked.
 - `DADDA/`: paper-faithful Feng et al. IEEE Internet of Things Journal 2025 components for closed-set cross-receiver DADDA with a default 2-D paper-shaped `G_f/G_m` variant, legacy 1-D ablation support, shared-kernel MMD/LMMD, and dynamic adaptive factor.
 - `orthogonal_incremental_sei/`: paper-faithful closed-set FSCIL-SEI components for orthogonal pseudo targets, base-stage CE/contrastive/center losses, incremental classifier-weight calibration, and A/H/F metrics.
 - `CSIL/`: paper-faithful ADS-B class-incremental CSIL components aligned to the official MATLAB repository, including shifted zero-bias cosine fingerprints, channel expansion, KD/EWC helpers, masked SGD update, and dry-run protocol validation.
 - `mopc_hr_non_exemplar_cil_sei/`: source-intake note for MoPC-HR, `Non-Exemplar Class-Incremental Learning via Prototype Correction and Hierarchical Regularization for Specific Emitter Identification`; no reproduction implementation or result claim is included yet.
 - `configs/receiver_agnostic_twostage_uda_manysig_paper_faithful.json`: paper-faithful dry-run configuration for the closed-set WiSig ManySig receiver-ratio matrix.
-- `configs/mitigating_receiver_impact_da_manysig_paper_faithful.json`: paper-faithful dry-run configuration for the IoTJ 2024 closed-set WiSig ManySig cross-receiver/cross-day matrix.
+- `configs/mitigating_receiver_impact_da_manysig_paper_faithful.json`: legacy filename for the bounded paper-equation IoTJ 2024 closed-set WiSig ManySig cross-receiver/cross-day configuration; exact paper parity is blocked by unpublished architecture, split, preprocessing provenance, and training details.
 - `configs/dadda_cross_receiver_manysig_paper_faithful.json`: paper-faithful dry-run configuration for the DADDA closed-set WiSig ManySig receiver-transfer matrix, including the 2-D paper-shaped variant and the current interpretation that each receiver domain contains `6 x 4000 = 24000` samples across the six transmitters.
 - `configs/orthogonal_incremental_sei_smoke.json`: synthetic dry-run configuration for the orthogonal-space FSCIL-SEI wiring check.
 - `configs/orthogonal_incremental_sei_wisig.json`: paper-protocol WiFi/WiSig configuration skeleton for closed-set FSCIL; it is not CVS Stage2 evidence.
@@ -30,7 +30,7 @@ Boundary:
 
 - These files do not claim paper reproduction completion.
 - Any result claim must name the CVS split, target receiver, K-shot support/query protocol, satellite/stress view, seed, and full same-row metrics.
-- Receiver-Agnostic Two-stage UDA dry-runs, Mitigating Receiver Impact DA dry-runs, and DADDA dry-runs/smoke runs are paper-faithful closed-set cross-receiver checks only. They are not CVS Stage2-A/B/C, satellite/LEO deployment, open-set, or new-class registration evidence.
+- Receiver-Agnostic Two-stage UDA and DADDA retain their own method-specific boundaries. Mitigating Receiver Impact DA is a bounded paper-equation closed-set check, not an exact paper reproduction. None of these are CVS Stage2-A/B/C, satellite/LEO deployment, open-set, or new-class registration evidence.
 - DADDA currently supports source-only and proposed DADDA rows; the paper's DANN, DAN, DSAN, WD, DCORAL, CDAN baselines, SNR robustness, ablations, visualizations, kernel sweep, and timing table remain pending.
 - Orthogonal Incremental SEI is a paper-faithful closed-set FSCIL baseline. It does not define disjoint `R_s/R_t`, target-old support, target-new support under LEO view, or unknown-query rejection; any CVS use must live in `cvs_aligned/` with explicit `cvs_extension=true`.
 

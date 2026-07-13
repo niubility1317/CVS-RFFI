@@ -1,5 +1,5 @@
 {
-  "paper_scope": "paper_faithful",
+  "paper_scope": "paper_equations_bounded",
   "cvs_extension": false,
   "paper_title": "Mitigating Receiver Impact on Radio Frequency Fingerprint Identification via Domain Adaptation",
   "dataset": "WiSig ManySig",
@@ -8,7 +8,7 @@
   "tx_count": 6,
   "source_target_tasks": ["d01->d23", "14-7->3-19", "1-1->1-19", "1-1->8-8", "7-7->8-8"],
   "target_unlabeled_allowed": true,
-  "input_representation": "WiSig signal after energy detection, L-STF/L-LTF packet processing, MMSE channel equalization, mean subtraction, and power normalization; IQ accepted as [256,2] or [2,256]",
+  "input_representation": "Assumed WiSig preprocessed artifact: equalized IQ selected from ManySig.pkl, then runtime mean subtraction and power normalization; the current repository does not independently verify energy detection, L-STF/L-LTF processing, MMSE provenance, or the unpublished paper input length",
   "method": "GAD adversarial training with DV-KL domain alignment, CPL adaptive pseudo-labeling, and class weighting",
   "feature_extractor": "ResNet18 with 1-D convolutions",
   "classifier": "three-layer fully connected network",

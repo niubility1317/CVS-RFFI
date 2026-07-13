@@ -10,6 +10,14 @@
 | Objective | Explain the large Table II gap, repair confirmed paper/public-trainer mismatches, and validate the repaired Proposed method on N607 |
 | Claim boundary | Closed-set WiSig UDA paper reproduction only; not CVS Stage2, new-class, open-set, satellite, or deployment evidence |
 
+## 2026-07-13 paper-first re-audit
+
+This report must be read as a bounded paper-equation reproduction, not an exact or strict reproduction. A fresh four-role audit separated PDF facts from implementation assumptions and the released trainer. The default full-component path matches the paper's DV direction, T-ascent/E-C-descent order, CPL equation, previous-batch class weighting, and mu/lambda objective. Exact parity remains blocked by the unpublished target train/test split, model layer details, optimizer, batch size, epochs, stopping rule, seeds/repeat count, and preprocessing provenance.
+
+A confirmed Table III bug was found and repaired: disabling class weighting also changed the source CE scale from mu to 1.0. That changes more than omega_l(k), contrary to Eq. (10). Therefore every result generated before this repair with class weighting disabled is invalid as a paper Table III ablation and requires rerun. Full-component Proposed rows and domain-alignment-only rows are not numerically changed by this fix.
+
+The current loader uses the same target dataset object for adaptation and final evaluation, and all runs produced before the 2026-07-13 audit logged target labels during training without using them in loss, gradients, or formal final checkpoint selection. Those existing rows are retrospectively `target-exposed diagnostic`, not independent bounded reproduction evidence. Future runs default to no training-time target-label audit. This is still a transductive implementation assumption, not a paper-confirmed split. The detailed mapping is in `analysis/mitigating_receiver_impact_da_core_mechanism_reaudit_20260713.md`.
+
 ## Root-cause assessment before repair
 
 The 48 locally available result JSON files contain 89 run rows, 840 epoch records, 330 target-evaluation records, and 200 source-pretraining records. The bad receiver pairs diverge in the first adaptation epoch: they select 93%-97% of target samples while pseudo-label precision is only 33%-49%. Later epochs enter different high-confidence class-permutation attractors; training longer does not repair the initial contamination.
@@ -106,7 +114,7 @@ Startup health at elapsed 118 seconds: all eight PIDs were alive; GPU utilizatio
 
 ## First repaired matrix results
 
-All eight runs completed by 11:46 CST. Formal numbers below are full target-evaluation rows from the final checkpoint; history maxima use target labels only as post-hoc diagnostics and were not selected or saved as formal results.
+All eight runs completed by 11:46 CST. These are target-exposed development diagnostics from the final checkpoint: target labels did not select the checkpoint, but they were logged during training and later used for cross-run diagnosis, so the rows are not independent label-blind reproduction evidence.
 
 | Profile | Task | Paper | Reproduction | Gap | Initial target `h0` | Epoch-1 pseudo precision | Epoch-1 coverage | Post-hoc history max |
 |---|---|---:|---:|---:|---:|---:|---:|---:|
@@ -189,7 +197,7 @@ Five-minute health check at 12:11:32 CST: all eight PIDs remained alive, GPU uti
 
 ## Round-2 completed architecture and Table III results
 
-`remote_artifacts_round2`包含8组结果JSON与完整`.out`。逐组反序列化核对后，JSON与对应`.out`语义完全一致；每个run均完成20个source-pretrain epoch和20个adaptation epoch，未发现Traceback、RuntimeError、CUDA OOM、NaN、Killed或参数错误marker。全部8个run均为`completed_diagnostic_only`，不得作为正式论文复现成功、CVS Stage2或部署证据。
+`remote_artifacts_round2`包含8组结果JSON与完整`.out`。逐组反序列化核对后，JSON与对应`.out`语义完全一致；每个run均完成20个source-pretrain epoch和20个adaptation epoch，未发现Traceback、RuntimeError、CUDA OOM、NaN、Killed或参数错误marker。全部8个run均为target-exposed development diagnostics，且部分消融受本轮确认的旧缩放错误影响，不得作为正式论文复现成功、Table III机制证据、CVS Stage2或部署证据。
 
 | Candidate | Task | Components/profile | Result | Paper comparator | Gap | Final claim |
 |---|---|---|---:|---:|---:|---|
@@ -198,16 +206,16 @@ Five-minute health check at 12:11:32 CST: all eight PIDs remained alive, GPU uti
 | `template_hypothesis_v1` | `1-1->1-19` | inferred template Proposed | 37.2250% | 95.44% | -58.2150pp | `diagnostic_only` |
 | `template_hypothesis_v1` | `1-1->8-8` | inferred template Proposed | 89.6583% | 99.78% | -10.1217pp | `diagnostic_only` |
 | `template_hypothesis_v1` | `7-7->8-8` | inferred template Proposed | 80.6917% | 99.74% | -19.0483pp | `diagnostic_only` |
-| `standard_da_only` | `14-7->3-19` | DA only | 68.5667% | Table III 76.36% | -7.7933pp | `diagnostic_only` |
-| `standard_da_cw` | `14-7->3-19` | DA+CW | 40.9875% | Table III 77.02% | -36.0325pp | `diagnostic_only` |
-| `standard_cpl_cw` | `14-7->3-19` | CPL+CW | 22.2750% | Table III 77.11% | -54.8350pp | `diagnostic_only` |
+| `standard_da_only` | `14-7->3-19` | custom toggle: DA on, pseudo/CW off | 68.5667% | Table III DA-only 76.36% | -7.7933pp | `target-exposed diagnostic` |
+| `standard_da_cw` | `14-7->3-19` | custom toggle: DA/CW on, target pseudo CE off | 40.9875% | Table III DA+CW 77.02% | -36.0325pp | `pre-fix invalid/custom diagnostic` |
+| `standard_cpl_cw` | `14-7->3-19` | custom toggle: target pseudo CE/CPL/CW on, DA off | 22.2750% | Table III CPL+CW 77.11% | -54.8350pp | `pre-fix invalid/custom diagnostic` |
 
 | Five-task profile | Mean | Paper mean | Gap to paper | Interpretation |
 |---|---:|---:|---:|---|
 | `pytorch_template_resnet18_hypothesis_v1` | 69.9439% | 96.1440% | -26.2001pp | 比standard高7.5697pp，但架构仍为推断且差距显著 |
 | `standard_resnet18` | 62.3742% | 96.1440% | -33.7698pp | 第一轮五个同run Proposed结果 |
 
-组件结果把残余故障进一步定位到CPL/CW路径：DA-only距离论文消融值7.7933pp，而加入CW但关闭CPL后差距扩大到36.0325pp，CPL+CW且关闭DA时差距达到54.8350pp。该证据支持“高覆盖低精度伪标签与类置换被自训练强化”的诊断，但不能单独证明论文实现中某一组件错误，因为作者模型、配置和目标划分仍不完整。
+这些旧组件结果只能描述修复前自定义开关的行为。论文没有公开“关闭CPL”时是否保留固定阈值伪标签CE；同时修复前no-class-weight路径改变了source CE缩放。因此它们不能映射为有效Table III机制结论，也不能用与论文数值的接近程度证明实现正确。
 
 ## Full multiseed Proposed-only validation plan
 
@@ -255,3 +263,48 @@ GPU共享会增加训练时延和运行时方差。后续结果必须记录wave�
 - 仅同步`launch_full_multiseed_validation_20260713.sh`到约定远端同路径。远端SHA256为`df9de171051e97d23787aaf91bbc62a11193cdb9eb9922d37ea9085c990bc1de`，与本地一致；远端`bash -n`为PASS。
 - `paper_reproduction/logs`和`paper_reproduction/runs`下不存在`mitigating_da_full_multiseed_validation_20260713*`wave输出。本任务未启动wave1/2/3。
 - 每次SSH/SCP后均确认本地无`ssh.exe`且无N607或bridge TCP22 `ESTABLISHED`连接。
+
+## Full multiseed execution record
+
+### Wave1 pre-launch gate
+
+- Gate time：2026-07-13 11:25:58-11:26:35 CST。
+- Direct preflight：PASS；远端用户`szu2070436088`、主机`dell-DSS8440`、项目根与8张RTX3090均可见。
+- GPU capacity：GPU0-7各恰有1个无关`phase1_dgleo` compute进程；本实验相关训练进程为0。wave1启动后每卡至多2个compute进程。
+- Disk：`/home`剩余7.6TB。
+- Prior-wave/output gate：wave1/2/3的目标run/log目录均不存在，满足首次启动条件。
+- Exact launch command：`cd /home/szu2070436088/2510044040/CV-SincNet && bash paper_reproduction/mitigating_receiver_impact_da/launch_full_multiseed_validation_20260713.sh --wave 1`。
+- Shared-GPU risk：本矩阵与无关phase1训练共享GPU，可能增加时延和运行时方差；不得把耗时差异解释为算法收益。
+- SSH cleanup after gate：本地`ssh.exe=0`；N607/bridge TCP22 `ESTABLISHED=0`。
+
+### Wave1 launch, health, and completion
+
+- Launch window：约2026-07-13 11:27 CST；launcher内置3秒检查记录8项`startup_alive`，仅作为启动健康证据。
+- Five-minute gate：11:31:35 CST，8个PID全部存活，每张GPU恰有2个compute进程，结果文件0，错误marker 0。日志尚未写出，但进程均为运行态并持续占用CPU/GPU，因此继续离散监控。
+- Completion window：约11:36-11:38 CST。8个PID全部退出，8个结果文件全部落盘。
+- Artifact destination：`E:/type10-7/automation_reports/CV-SincNet/mitigating_da_rootcause_20260710_104628/remote_artifacts_full_multiseed/wave1`。
+- Artifact verification：manifest 8行、8个JSON、8个`.out`；每个run均包含20个source-pretrain epoch和20个adaptation epoch；JSON与`.out`语义一致；全部数值有限；未发现Traceback、RuntimeError、OOM、Killed、NaN、NameError或参数错误marker。所有17个文件均已计算SHA256。
+
+| Profile | Task | Seed | GPU | PID | Final target accuracy | History max | Epoch1 pseudo acc / coverage | Final per-class accuracy | Verdict |
+|---|---|---:|---:|---:|---:|---:|---:|---|---|
+| standard | `14-7->3-19` | 20260711 | 0 | 3723051 | 42.2167% | 50.2214%@e1 | 50.5093% / 98.4375% | 57.65/22.53/1.23/82.15/89.10/0.65% | target-exposed diagnostic |
+| standard | `1-1->1-19` | 20260711 | 1 | 3723121 | 40.3125% | 80.3894%@e7 | 68.5281% / 99.2020% | 90.48/8.80/0/42.62/99.98/0% | target-exposed diagnostic |
+| standard | `1-1->8-8` | 20260711 | 2 | 3723603 | 96.7083% | 97.1800%@e16 | 75.2938% / 99.5488% | 99.58/99.20/99.80/81.85/99.98/99.85% | target-exposed diagnostic |
+| standard | `7-7->8-8` | 20260711 | 3 | 3723673 | 63.4625% | 63.8745%@e20 | 58.1906% / 99.5154% | 94.17/99.88/0.03/86.72/99.98/0% | target-exposed diagnostic |
+| template | `14-7->3-19` | 20260711 | 4 | 3723741 | 76.9708% | 79.3324%@e20 | 25.6996% / 96.4489% | 63.28/81.62/64.23/55.23/98.17/99.30% | target-exposed diagnostic |
+| template | `1-1->1-19` | 20260711 | 5 | 3723811 | 51.6708% | 57.7916%@e7 | 54.0456% / 99.3942% | 97.38/68.30/0.53/43.70/99.95/0.18% | target-exposed diagnostic |
+| template | `1-1->8-8` | 20260711 | 6 | 3723882 | 99.2833% | 99.5864%@e10 | 86.3749% / 99.5613% | 99.55/99.15/99.83/97.35/99.98/99.85% | target-exposed diagnostic |
+| template | `7-7->8-8` | 20260711 | 7 | 3723954 | 79.0958% | 99.8705%@e14 | 68.3861% / 98.6506% | 87.72/12.20/74.85/99.98/99.93/99.90% | target-exposed diagnostic |
+
+Shared-GPU observation：wave1运行期间每卡同时存在1个无关phase1进程和1个本矩阵进程；本表只解释模型指标，不以耗时作算法比较。SSH/SCP清理状态：每个远端命令和文件传输后本地`ssh.exe=0`且N607/bridge TCP22 `ESTABLISHED=0`。
+
+### Wave2 pre-launch gate
+
+- Gate time：2026-07-13 11:42:46 CST。
+- Direct preflight：PASS。
+- Previous-wave completeness：wave1 manifest 8行、results 8个、logs 8个，8个manifest PID均已退出。
+- GPU capacity：GPU0-7各恰有1个无关compute进程；本实验相关训练进程为0。
+- Disk：`/home`可用约7.54TiB。
+- Output gate：wave2 run/log目录不存在。
+- Exact launch command：`cd /home/szu2070436088/2510044040/CV-SincNet && bash paper_reproduction/mitigating_receiver_impact_da/launch_full_multiseed_validation_20260713.sh --wave 2`。
+- SSH cleanup after gate：本地`ssh.exe=0`；N607/bridge TCP22 `ESTABLISHED=0`。

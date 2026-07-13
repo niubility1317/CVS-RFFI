@@ -1,5 +1,7 @@
 # Mitigating Receiver Impact DA full reproduction optimization
 
+> **Superseded evidence boundary（2026-07-13）：**本报告记录的是目标标签暴露的开发诊断。它使用过`target_loss_best`及目标真值进行跨实验调参，不能作为无标签目标域的正式复现证据；文中的“已对齐”“最佳”只保留为历史描述，均被`analysis/mitigating_receiver_impact_da_core_mechanism_reaudit_20260713.md`取代。
+
 ## 基本信息
 
 | 字段 | 内容 |

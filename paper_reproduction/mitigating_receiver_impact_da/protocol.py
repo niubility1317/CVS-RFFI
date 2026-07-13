@@ -14,6 +14,13 @@ PAPER_UNSPECIFIED_FIELDS = [
     "zero-count CPL threshold floor",
     "source pretraining duration",
     "target adaptation/evaluation sample split",
+    "number of repeated runs and random seeds",
+    "deterministic training settings",
+    "ResNet18 feature dimension, normalization, activation, and initialization",
+    "classifier/estimate-network hidden widths and activations",
+    "optimizer momentum, betas, weight decay, and scheduler",
+    "BatchNorm source/target update semantics",
+    "WiSig subset file provenance and preprocessing artifact hash",
 ]
 
 
@@ -39,30 +46,31 @@ PAPER_DISPLAY_METHODS = ["Source only", "DANN", "MCD", "SHOT", "Proposed"]
 
 def validate_paper_faithful_config(config: dict[str, Any]) -> dict[str, Any]:
     if bool(config.get("cvs_extension", False)):
-        raise ValueError("paper-faithful Mitigating Receiver Impact DA config cannot set cvs_extension=true")
-    if str(config.get("paper_scope", "")).strip() != "paper_faithful":
-        raise ValueError("paper_scope must be paper_faithful")
+        raise ValueError("bounded paper-equation Mitigating Receiver Impact DA config cannot set cvs_extension=true")
+    if str(config.get("paper_scope", "")).strip() != "paper_equations_bounded":
+        raise ValueError("paper_scope must be paper_equations_bounded")
     if "ManySig" not in str(config.get("dataset", "")):
-        raise ValueError("paper-faithful reproduction expects WiSig ManySig")
+        raise ValueError("bounded paper-equation reproduction expects WiSig ManySig")
     total_receivers = int(config.get("total_receivers", 0))
     tx_count = int(config.get("tx_count", 0))
     if total_receivers != 12:
-        raise ValueError("IoTJ 2024 paper-faithful ManySig protocol expects 12 receivers")
+        raise ValueError("IoTJ 2024 bounded paper-equation protocol expects 12 receivers")
     if tx_count != 6:
-        raise ValueError("IoTJ 2024 paper-faithful ManySig protocol expects 6 transmitters")
+        raise ValueError("IoTJ 2024 bounded paper-equation protocol expects 6 transmitters")
     if not bool(config.get("target_unlabeled_allowed", False)):
         raise ValueError("target unlabeled data must be allowed for the UDA stages")
     if str(config.get("target_labels_scope", "evaluation_only")).strip() != "evaluation_only":
-        raise ValueError("target_labels_scope must be evaluation_only for paper-faithful UDA")
+        raise ValueError("target_labels_scope must be evaluation_only for bounded paper-equation UDA")
     capture_days = int(config.get("capture_days", 4))
     if capture_days != 4:
-        raise ValueError("IoTJ 2024 paper-faithful ManySig protocol expects 4 capture days")
+        raise ValueError("IoTJ 2024 bounded paper-equation protocol expects 4 capture days")
     tasks = [str(v) for v in config.get("source_target_tasks", PAPER_TASKS)]
     if not tasks:
         raise ValueError("source_target_tasks cannot be empty")
     checked = dict(config)
     checked["source_target_tasks"] = tasks
-    checked["claim_boundary"] = "paper-faithful closed-set cross-receiver DA with unlabeled target adaptation"
+    checked["claim_boundary"] = "bounded paper-equation closed-set cross-receiver DA"
+    checked["exact_paper_parity_status"] = "blocked_by_unpublished_architecture_split_and_training_details"
     checked["paper_unspecified_fields"] = PAPER_UNSPECIFIED_FIELDS
     checked["paper_reported_hyperparameters"] = PAPER_REPORTED_HYPERPARAMETERS
     checked["capture_days"] = capture_days

@@ -291,6 +291,7 @@ def run_gada_training_loop(
     use_pseudo: bool = True,
     use_class_weight: bool = True,
     max_batches_per_epoch: int | None = None,
+    enable_target_label_audit: bool = False,
 ) -> dict[str, Any]:
     """Execute the Algorithm 1 GAD loop over caller-provided source/target batches.
 
@@ -371,9 +372,11 @@ def run_gada_training_loop(
             source_x = _batch_tensor(source_batch, "iq", 0).to(resolved_device)
             source_y = _batch_tensor(source_batch, "label", 1).long().to(resolved_device)
             target_x = _batch_tensor(target_batch, "iq", 0).to(resolved_device)
-            target_y_audit = _optional_batch_tensor(target_batch, "label", 1)
-            if target_y_audit is not None:
-                target_y_audit = target_y_audit.long().to(resolved_device)
+            target_y_audit = None
+            if enable_target_label_audit:
+                target_y_audit = _optional_batch_tensor(target_batch, "label", 1)
+                if target_y_audit is not None:
+                    target_y_audit = target_y_audit.long().to(resolved_device)
             target_indices = _batch_base_indices(target_batch) if state_scope == "epoch" else None
             if epoch_number <= int(adapt_start_epoch):
                 model.train()
@@ -558,6 +561,7 @@ def run_gada_training_loop(
         "use_domain_alignment": bool(use_domain_alignment),
         "use_pseudo": bool(use_pseudo),
         "use_class_weight": bool(use_class_weight),
+        "target_label_audit_enabled": bool(enable_target_label_audit),
         "target_eval_history": target_eval_history,
         "best_target_loss_epoch": best_target_epoch,
         "best_target_loss": None if best_target_epoch is None else best_target_loss,
@@ -809,6 +813,7 @@ def _classify_reproduction_claim(
     use_class_weight: bool,
     max_samples_per_combo: int | None,
     max_batches_per_epoch: int | None,
+    enable_target_label_audit: bool = False,
 ) -> dict[str, Any]:
     reasons: list[str] = []
     if str(target_model_selection).strip().lower() != "final":
@@ -819,6 +824,8 @@ def _classify_reproduction_claim(
         }
     if max_samples_per_combo is not None or max_batches_per_epoch is not None:
         reasons.append("bounded smoke/truncated data path")
+    if bool(enable_target_label_audit):
+        reasons.append("target-label training-time audit is diagnostic-only")
     ablation_active = not (bool(use_domain_alignment) and bool(use_pseudo) and bool(use_class_weight))
     diagnostic_profile = "diagnostic_extension"
     if ablation_active:
@@ -984,6 +991,7 @@ def run_table2_reproduction(
     seed: int = 0,
     device: torch.device | str | None = None,
     num_workers: int = 0,
+    enable_target_label_audit: bool = False,
 ) -> dict[str, Any]:
     set_seed(int(seed))
     resolved_device = torch.device(device or ("cuda" if torch.cuda.is_available() else "cpu"))
@@ -1035,6 +1043,7 @@ def run_table2_reproduction(
         use_class_weight=use_class_weight,
         max_samples_per_combo=max_samples_per_combo,
         max_batches_per_epoch=max_batches_per_epoch,
+        enable_target_label_audit=enable_target_label_audit,
     )
     requested_tasks = list(PAPER_TASKS if tasks is None else tasks)
     requested_methods = [str(method).lower() for method in (methods or ["source_only", "proposed"])]
@@ -1051,6 +1060,7 @@ def run_table2_reproduction(
             max_samples_per_combo=max_samples_per_combo,
             seed=seed,
             num_workers=num_workers,
+            target_label_audit=enable_target_label_audit,
         )
         source_class_prior = _resolve_class_prior(
             loaders["source"],
@@ -1129,11 +1139,15 @@ def run_table2_reproduction(
                         max_batches_per_epoch=max_batches_per_epoch,
                         label_smoothing=label_smoothing,
                     )
-                source_pretrain_target_audit = _audit_target_predictions(
-                    model,
-                    loaders["target_eval"],
-                    device=resolved_device,
-                    tau_values=tuple(sorted({0.7, float(base_tau)})),
+                source_pretrain_target_audit = (
+                    _audit_target_predictions(
+                        model,
+                        loaders["target_eval"],
+                        device=resolved_device,
+                        tau_values=tuple(sorted({0.7, float(base_tau)})),
+                    )
+                    if enable_target_label_audit
+                    else {}
                 )
                 optimizer_t = torch.optim.Adam(model.estimate_network.parameters(), lr=float(learning_rate))
                 optimizer_ec = torch.optim.Adam(
@@ -1192,6 +1206,7 @@ def run_table2_reproduction(
                     use_pseudo=use_pseudo,
                     use_class_weight=use_class_weight,
                     max_batches_per_epoch=max_batches_per_epoch,
+                    enable_target_label_audit=enable_target_label_audit,
                 )
                 if source_pretrain_result is not None:
                     train_result["source_pretrain_history"] = source_pretrain_result["history"]
@@ -1238,6 +1253,7 @@ def run_table2_reproduction(
                             "lr_gamma": float(lr_gamma),
                             "lr_scheduler_active": train_result["lr_scheduler_active"],
                             "target_model_selection": train_result["target_model_selection"],
+                            "target_label_audit_enabled": train_result["target_label_audit_enabled"],
                             "weighted_ce_reduction": train_result["weighted_ce_reduction"],
                             "use_domain_alignment": train_result["use_domain_alignment"],
                             "use_pseudo": train_result["use_pseudo"],
@@ -1276,7 +1292,11 @@ def run_table2_reproduction(
                 "target_total_by_class": target_metrics["target_total_by_class"],
                 "target_accuracy_by_class": target_metrics["target_accuracy_by_class"],
                 "target_confusion_matrix": target_metrics["target_confusion_matrix"],
-                "target_labels_scope": "evaluation_only",
+                "target_labels_scope": (
+                    "training_time_audit_and_final_evaluation_no_optimization"
+                    if method == "proposed" and enable_target_label_audit
+                    else "evaluation_only"
+                ),
                 "target_label_role": loaders["meta"]["target_label_role"],
                 "model_profile": str(model_profile),
                 "mu": float(mu),
@@ -1305,6 +1325,7 @@ def run_table2_reproduction(
                 row["pseudo_state_scope"] = train_result.get("pseudo_state_scope")
                 row["batch_pairing"] = train_result.get("batch_pairing")
                 row["target_model_selection"] = train_result.get("target_model_selection")
+                row["target_label_audit_enabled"] = train_result.get("target_label_audit_enabled")
                 row["weighted_ce_reduction"] = train_result.get("weighted_ce_reduction")
                 row["lr_scheduler_mode"] = lr_scheduler_mode
                 row["lr_step_size"] = int(lr_step_size)
@@ -1352,6 +1373,7 @@ def run_table2_reproduction(
         "adapt_start_epoch": int(adapt_start_epoch),
         "label_smoothing": float(label_smoothing),
         "target_model_selection": str(target_model_selection),
+        "target_label_audit_enabled": bool(enable_target_label_audit),
         "weighted_ce_reduction": str(weighted_ce_reduction),
         "official_compat": bool(official_compat),
         "official_compat_safe_pseudo": bool(official_compat_safe_pseudo),
@@ -1407,6 +1429,11 @@ def main() -> int:
     parser.add_argument("--adapt-start-epoch", type=int, default=0)
     parser.add_argument("--label-smoothing", type=float, default=0.0)
     parser.add_argument("--target-model-selection", type=str, default="final", choices=("final", "target_loss_best"))
+    parser.add_argument(
+        "--enable-target-label-audit",
+        action="store_true",
+        help="Log target-label diagnostics during training; automatically diagnostic-only and disabled by default.",
+    )
     parser.add_argument(
         "--weighted-ce-reduction",
         type=str,
@@ -1478,6 +1505,7 @@ def main() -> int:
             adapt_start_epoch=args.adapt_start_epoch,
             label_smoothing=args.label_smoothing,
             target_model_selection=args.target_model_selection,
+            enable_target_label_audit=args.enable_target_label_audit,
             weighted_ce_reduction=args.weighted_ce_reduction,
             official_compat=args.official_compat,
             official_compat_safe_pseudo=args.official_compat_safe_pseudo,

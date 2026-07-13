@@ -396,16 +396,16 @@ def test_table3_component_flags_disable_exact_objective_paths():
 @pytest.mark.parametrize(
     ("use_domain_alignment", "use_pseudo", "use_class_weight", "source_scale", "target_scale"),
     [
-        (True, False, False, 1.0, 0.0),
-        (False, True, False, 1.0, 0.5),
+        (True, False, False, 0.5, 0.0),
+        (False, True, False, 0.5, 0.5),
         (False, False, True, 0.5, 0.0),
-        (True, True, False, 1.0, 0.5),
+        (True, True, False, 0.5, 0.5),
         (True, False, True, 0.5, 0.0),
         (False, True, True, 0.5, 0.5),
         (True, True, True, 0.5, 0.5),
     ],
 )
-def test_table3_seven_component_combinations_match_released_trainer_scales(
+def test_table3_seven_component_combinations_preserve_paper_mu_scales(
     use_domain_alignment,
     use_pseudo,
     use_class_weight,
@@ -600,7 +600,7 @@ def test_protocol_dry_run_names_iotj2024_gada_matrix_not_receiver_agnostic_twost
     from paper_reproduction.mitigating_receiver_impact_da.train import build_dry_run_payload
 
     config = {
-        "paper_scope": "paper_faithful",
+        "paper_scope": "paper_equations_bounded",
         "cvs_extension": False,
         "dataset": "WiSig ManySig",
         "total_receivers": 12,
@@ -636,7 +636,7 @@ def test_protocol_rejects_target_label_training_scope():
     from paper_reproduction.mitigating_receiver_impact_da.train import build_dry_run_payload
 
     config = {
-        "paper_scope": "paper_faithful",
+        "paper_scope": "paper_equations_bounded",
         "cvs_extension": False,
         "dataset": "WiSig ManySig",
         "total_receivers": 12,
@@ -690,6 +690,10 @@ def test_paper_train_loaders_drop_partial_batches():
     assert len(loaders["source"]) == 4
     assert len(loaders["target_train"]) == 4
     assert all(batch["iq"].shape[0] == 5 for batch in loaders["source"])
+    target_batch = next(iter(loaders["target_train"]))
+    assert "label" not in target_batch
+    assert all("tx" not in meta and "tx_i" not in meta for meta in target_batch["meta"])
+    assert all(meta["target_label_visible"] is False for meta in target_batch["meta"])
     assert len(loaders["target_eval"]) == 5
 
 
@@ -720,6 +724,7 @@ def test_table2_runner_smoke_trains_source_only_and_proposed_rows(tmp_path):
         max_batches_per_epoch=1,
         base_tau=0.95,
         class_prior_mode="source",
+        enable_target_label_audit=True,
         seed=3,
         device="cpu",
     )
@@ -729,7 +734,8 @@ def test_table2_runner_smoke_trains_source_only_and_proposed_rows(tmp_path):
     assert result["reproduction_profile"] == "diagnostic_extension"
     assert [row["method"] for row in result["rows"]] == ["source_only", "proposed"]
     assert all(row["task"] == "14-7->3-19" for row in result["rows"])
-    assert all(row["target_labels_scope"] == "evaluation_only" for row in result["rows"])
+    assert result["rows"][0]["target_labels_scope"] == "evaluation_only"
+    assert result["rows"][1]["target_labels_scope"] == "training_time_audit_and_final_evaluation_no_optimization"
     assert all(0.0 <= row["target_accuracy"] <= 1.0 for row in result["rows"])
     assert len(result["rows"][0]["history"]) == 2
     assert len(result["rows"][1]["history"]) == 2
@@ -1180,10 +1186,13 @@ def test_algorithm1_training_loop_runs_epochs_and_writes_checkpoint(tmp_path):
     )
 
     assert result["epochs"] == 2
+    assert result["target_label_audit_enabled"] is False
     assert result["batches"] == 2
     assert len(result["history"]) == 2
     assert "target_pseudo_selected_acc" in result["history"][0]
     assert "target_pred_acc" in result["history"][0]
+    assert result["history"][0]["target_pred_acc"] is None
+    assert result["history"][0]["target_true_hist"] == [0, 0, 0]
     assert "target_pred_hist" in result["history"][0]
     assert "target_pseudo_selected_hist" in result["history"][0]
     assert "target_pred_acc_by_true_class" in result["history"][0]

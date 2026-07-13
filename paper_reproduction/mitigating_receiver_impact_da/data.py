@@ -5,6 +5,9 @@ import sys
 from pathlib import Path
 from typing import Any
 
+import torch
+from torch.utils.data import DataLoader, Dataset
+
 from paper_reproduction.common.wisig_runtime import make_loader
 
 
@@ -25,6 +28,34 @@ PAPER_PREPROCESSING = {
     "crop_mode": "left",
     "representation": "[2,256] IQ tensor accepted by the 1-D ResNet feature extractor",
 }
+
+
+class UnlabeledTargetView(Dataset):
+    """Hide target TX truth from the adaptation loader and its metadata."""
+
+    def __init__(self, base: Dataset) -> None:
+        self.base = base
+
+    def __len__(self) -> int:
+        return len(self.base)
+
+    def __getitem__(self, index: int) -> dict[str, Any]:
+        iq, _label, domain, meta = self.base[index]
+        safe_meta = {
+            key: value
+            for key, value in dict(meta).items()
+            if key not in {"tx", "tx_i", "true_tx_i", "label"}
+        }
+        safe_meta["target_label_visible"] = False
+        return {"iq": iq, "domain": int(domain), "meta": safe_meta}
+
+
+def _collate_unlabeled_target(batch: list[dict[str, Any]]) -> dict[str, Any]:
+    return {
+        "iq": torch.stack([item["iq"] for item in batch], dim=0),
+        "domain": torch.tensor([item["domain"] for item in batch], dtype=torch.long),
+        "meta": [item["meta"] for item in batch],
+    }
 
 
 def _resolve_one(labels: list[Any], token: Any, *, name: str) -> int:
@@ -149,6 +180,7 @@ def build_manysig_task_loaders(
     max_samples_per_combo: int | None = None,
     seed: int = 0,
     num_workers: int = 0,
+    target_label_audit: bool = False,
 ) -> dict[str, Any]:
     compact = load_wisig_compact_pkl(str(compact_or_path)) if isinstance(compact_or_path, (str, Path)) else compact_or_path
     built = build_manysig_task_datasets(
@@ -161,8 +193,19 @@ def build_manysig_task_loaders(
         "source": make_loader(
             built["source"], batch_size=batch_size, shuffle=True, num_workers=num_workers, drop_last=True
         ),
-        "target_train": make_loader(
-            built["target"], batch_size=batch_size, shuffle=True, num_workers=num_workers, drop_last=True
+        "target_train": (
+            make_loader(
+                built["target"], batch_size=batch_size, shuffle=True, num_workers=num_workers, drop_last=True
+            )
+            if target_label_audit
+            else DataLoader(
+                UnlabeledTargetView(built["target"]),
+                batch_size=int(batch_size),
+                shuffle=True,
+                num_workers=int(num_workers),
+                collate_fn=_collate_unlabeled_target,
+                drop_last=True,
+            )
         ),
         "target_eval": make_loader(built["target"], batch_size=batch_size, shuffle=False, num_workers=num_workers),
         "meta": built["meta"],

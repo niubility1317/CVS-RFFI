@@ -466,7 +466,9 @@ def gada_batch_step(
             kl_weight=kl_weight,
             kl_loss_override=kl_loss_override,
             weighted_ce_reduction=weighted_ce_reduction,
-            source_ce_scale=float(mu) if use_class_weight else 1.0,
+            # Eq. (10) keeps the source/target mu balance when class weights are
+            # ablated; only omega_l(k) is replaced by one.
+            source_ce_scale=float(mu),
             target_ce_scale=(1.0 - float(mu)) if use_pseudo else 0.0,
         )
         terms["loss"].backward()
@@ -502,7 +504,7 @@ def gada_batch_step(
         "use_domain_alignment": int(bool(use_domain_alignment)),
         "use_pseudo": int(bool(use_pseudo)),
         "use_class_weight": int(bool(use_class_weight)),
-        "source_ce_scale": torch.tensor(float(mu) if use_class_weight else 1.0),
+        "source_ce_scale": torch.tensor(float(mu)),
         "target_ce_scale": torch.tensor((1.0 - float(mu)) if use_pseudo else 0.0),
         "estimate_loss": torch.tensor(0.0) if last_estimate_loss is None else last_estimate_loss,
         "estimate_zeta": torch.tensor(0.0) if last_estimate_zeta is None else last_estimate_zeta,

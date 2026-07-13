@@ -49,14 +49,14 @@
 - An independent model audit confirmed that the public trainer cannot directly instantiate the linked public `ResNet1D`: the trainer expects `(output, feature)`, while the template returns only dense output, and the public `MINE` class/config are absent.
 - Added a fail-closed `pytorch_template_resnet18_hypothesis_v1` diagnostic profile: 8 two-convolution residual blocks, SAME-padding stem/blocks, 64/128/256/512 stages, template shortcut semantics, ELU three-layer classifier, and LeakyReLU three-layer estimate network.
 - Added exact Table III component switches. Any component ablation or inferred architecture is automatically `diagnostic_only`; neither can be presented as the paper's full Proposed result.
-- Table III component scaling follows the exposed trainer: source CE is multiplied by `mu` only when class weighting is enabled; target CE is multiplied by `1-mu` only when CPL is enabled. The all-disabled diagnostic does not update target BatchNorm, but formal Source-only remains the independent `method=source_only` path because paired loaders would otherwise cap its batch count.
+- 2026-07-13 paper-first re-audit invalidated the old no-class-weight scaling: Eq.(10) keeps source CE at `mu` when `omega` is ablated. The code is repaired, so all pre-fix no-class-weight component rows are invalid as Table III evidence. The paper also does not specify whether disabling CPL retains fixed-threshold target pseudo-label CE; existing toggles remain custom/released-trainer diagnostics.
 
 ## Round-2 completed results
 
 - 完整解析`remote_artifacts_round2`中的8组JSON/`.out`。每组JSON与对应`.out`反序列化后完全一致，均包含20个source-pretrain epoch和20个adaptation epoch，未发现Traceback、RuntimeError、OOM、NaN、Killed或参数错误marker。
 - 8个结果的`claim_status`和`result_claim_status`均为`diagnostic_only`，row状态均为`completed_diagnostic_only`。template架构是假设性实现，3个组件消融不是论文完整Proposed，均不得进入正式复现或部署证据。
 - template五任务均值为69.9439%，standard五任务均值为62.3742%，论文五任务均值为96.1440%。template相对standard提高7.5697pp，但仍低于论文26.2001pp，不能解除架构与数据划分欠定问题。
-- Table III组件定位显示DA-only为68.5667%对论文76.36%（-7.7933pp）；DA+CW为40.9875%对77.02%（-36.0325pp）；CPL+CW为22.2750%对77.11%（-54.8350pp）。在当前实现与数据上，移除CPL后DA-only最接近论文消融值，CPL/CW路径会显著放大错误伪标签，而不是修复receiver-dependent类置换。
+- 旧组件行的数值仍可作为修复前自定义开关的观察值，但不能因接近或远离论文表值而推断机制已对齐。`DA+CW`/`CPL+CW`受no-class-weight缩放错误和CPL关闭语义未公开影响，均须保持`pre-fix invalid/custom diagnostic`。
 
 ## Full multiseed validation design
 
@@ -64,3 +64,11 @@
 - 三波分配为wave1=8、wave2=8、wave3=4；每波必须独立显式调用，不能跨wave并发。launcher固定并验证20行`expected_matrix.tsv`，拒绝重复组合、重复run ID和8/8/4计数漂移。
 - 初版监督审查因缺少防覆盖、跨wave/GPU上限守卫和20项完整性manifest给出NO-GO。修正版增加no-clobber目录/文件检查、`flock`启动锁、其他wave活跃PID/命令检查及GPU计算进程数小于2的门控，独立复审结论为GO。
 - 当前共享计划假设每张GPU已有1个无关`phase1_dgleo`训练，再增加本矩阵1个进程后达到每GPU最多2个训练进程的允许上限。共享GPU可能增加时延和运行时方差，因此结果比较必须保留wave、GPU、并发占用和时间信息，不能把运行时差异解释为算法收益。
+
+## Full multiseed wave1
+
+- wave1的8个seed20260711结果全部完成，20+20epoch与JSON/`.out`语义均完整，未发现运行时错误或非有限值。
+- standard final accuracy：`14-7->3-19`42.2167%、`1-1->1-19`40.3125%、`1-1->8-8`96.7083%、`7-7->8-8`63.4625%。
+- diagnostic template final accuracy：`14-7->3-19`76.9708%、`1-1->1-19`51.6708%、`1-1->8-8`99.2833%、`7-7->8-8`79.0958%。
+- 失败仍表现为逐类坍塌：standard `1-1->1-19`的class2/class5为0，standard `7-7->8-8`的class2为0.025%、class5为0；template `1-1->1-19`的class2/class5仅0.525%/0.175%。
+- epoch1 pseudo coverage仍高达96.45%-99.56%；template `14-7->3-19`的epoch1 pseudo accuracy仅25.70%，说明高覆盖伪标签放大错误的机制在新seed上仍存在。

@@ -1,5 +1,7 @@
 # Mitigating Receiver Impact DA纸面默认修复记录
 
+> **Superseded evidence boundary（2026-07-13）：**本文仅证明当时默认值和代码路径发生了变化。任何因结果接近论文表值而作出的“数据、模型或训练已对齐”推断均无效；当前方法边界以`analysis/mitigating_receiver_impact_da_core_mechanism_reaudit_20260713.md`为准。
+
 ## 范围
 
 - 方法：`mitigating_receiver_impact_da`
