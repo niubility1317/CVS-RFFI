@@ -96,3 +96,9 @@
 - 两方法详细结果均覆盖3场景×204000条测试样本，具备overall、per-split、per-receiver、per-transmitter、per-receiver-transmitter、per-receiver-transmitter-day六层统计；正式结果不含clean，全部经过星地信道。
 - 后评估总体正确数与训练时validation-selected checkpoint的内置星地评估逐场景完全一致，证明详细统计没有改变样本集合、随机星地扰动或checkpoint。
 - 本地回收路径：`local_artifacts/cvs_publication_phase1_detailed_seed713101_20260713/{cvcnn_ce,riei_fd}/`；本地复核score row分别为612000、detail row分别为894。当前Stage2-B为92/500、失败0；Stage2-C为9/500、失败0；DRIFT仍在训练并于epoch104触发新的validation-best测试。
+
+### CVS未来接收机快速行加速计划（14:35）
+
+- GPU0/1已完成Phase1详细后评估并空闲；GPU2继续DRIFT，GPU3-7保持完整矩阵worker。为避免长期闲置且不改变训练方法预算，仅提前执行未来四个receiver的无训练CVS feature-cache行：Stage2-B `cvs_opgac`和Stage2-C `cvs_qknnv42`。
+- 加速receiver限定为`3-19,7-14,7-7,8-8`，K/seed保持完整矩阵默认网格，各100行；输出根与正式矩阵相同，独立event log根为`.../accelerator_cvs_rows`。正式主worker到达时通过artifact contract跳过已完成行。
+- 不加速需要训练的ProtoNet/MRIOR/DADDA/CSIL/MoPC/Orthogonal，避免与现有worker未来相撞。精确入口为matrix worker的`--methods cvs_opgac`或`--methods cvs_qknnv42`、`--receivers 3-19,7-14,7-7,8-8`、`--execute`，分别使用GPU0/1。
