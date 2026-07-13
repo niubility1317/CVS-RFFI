@@ -193,6 +193,8 @@ def _adapt_parametric(
                 target_support_labels=target_y,
                 target_ce_weight=float(config.get("target_ce_weight", 1.0)),
                 dvkl_weight=float(config.get("dvkl_weight", 0.005)),
+                mu=float(config.get("mrior_mu", 0.5)),
+                class_balance_smoothing=float(config.get("class_balance_smoothing", 0.0)),
             )
         else:
             losses = dadda_sda_objective(
@@ -219,7 +221,7 @@ def _adapt_parametric(
         predicted = logits.argmax(dim=1).cpu()
     return predicted, before, {
         "adapt_steps": int(config["adapt_steps"]),
-        "adaptation_objective": "source_ce+target_support_ce+dvkl"
+        "adaptation_objective": "mrior_gad_true_support_class_weighting+dvkl"
         if method == "mrior_sda"
         else "source_ce+target_support_ce+dynamic_mmd_lmmd",
         "final_adaptation_losses": last,

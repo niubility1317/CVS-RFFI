@@ -26,6 +26,8 @@ def test_mrior_sda_uses_true_target_support_labels_and_backpropagates() -> None:
     )
     expected_target_ce = F.cross_entropy(target_logits, torch.tensor([1, 0]))
     assert torch.allclose(result["target_support_ce"], expected_target_ce)
+    assert torch.allclose(result["class_balance_weights"], torch.ones(2))
+    assert torch.allclose(result["weighted_ce"], 0.5 * result["source_ce"] + 0.375 * result["target_support_ce"])
     result["loss"].backward()
     assert source_logits.grad is not None
     assert target_logits.grad is not None

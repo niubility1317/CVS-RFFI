@@ -38,6 +38,8 @@
   "dadda_model_variant": "conv1d",
   "target_ce_weight": 1.0,
   "dvkl_weight": 0.005,
+  "mrior_mu": 0.5,
+  "class_balance_smoothing": 0.0,
   "alignment_weight": 1.0,
   "source_train_channel_view": "clean",
   "target_channel_view": "satellite/LEO",

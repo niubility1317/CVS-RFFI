@@ -10,7 +10,10 @@ from paper_reproduction.DADDA.losses import (
     lmmd_loss,
     mmd_loss,
 )
-from paper_reproduction.mitigating_receiver_impact_da.losses import dv_kl_domain_alignment
+from paper_reproduction.mitigating_receiver_impact_da.losses import (
+    class_balance_weights,
+    gada_minimax_objective,
+)
 
 
 def _require_labels(logits: torch.Tensor, labels: torch.Tensor, *, name: str) -> torch.Tensor:
@@ -32,6 +35,8 @@ def mrior_sda_objective(
     target_support_labels: torch.Tensor,
     target_ce_weight: float = 1.0,
     dvkl_weight: float = 0.005,
+    mu: float = 0.5,
+    class_balance_smoothing: float = 0.0,
 ) -> dict[str, torch.Tensor]:
     """CVS supervised extension of the MRIOR/GAD objective.
 
@@ -42,23 +47,46 @@ def mrior_sda_objective(
 
     if float(target_ce_weight) < 0.0 or float(dvkl_weight) < 0.0:
         raise ValueError("target_ce_weight and dvkl_weight must be non-negative")
+    if not 0.0 < float(mu) < 1.0:
+        raise ValueError("mu must be in (0,1)")
     source_y = _require_labels(source_outputs["tx_logits"], source_labels, name="source")
     target_y = _require_labels(
         target_support_outputs["tx_logits"], target_support_labels, name="target support"
     )
-    source_ce = F.cross_entropy(source_outputs["tx_logits"], source_y)
-    target_ce = F.cross_entropy(target_support_outputs["tx_logits"], target_y)
-    dvkl = dv_kl_domain_alignment(
-        source_outputs["estimate_logits"], target_support_outputs["estimate_logits"]
+    num_classes = int(source_outputs["tx_logits"].shape[1])
+    target_counts = torch.bincount(target_y, minlength=num_classes).to(
+        device=target_support_outputs["tx_logits"].device,
+        dtype=target_support_outputs["tx_logits"].dtype,
     )
-    total = source_ce + float(target_ce_weight) * target_ce + float(dvkl_weight) * dvkl
+    weights = class_balance_weights(
+        target_counts,
+        total_seen=int(target_y.numel()),
+        smoothing=float(class_balance_smoothing),
+        mean_normalize=True,
+    )
+    terms = gada_minimax_objective(
+        source_outputs,
+        target_support_outputs,
+        source_labels=source_y,
+        target_pseudo_labels=target_y,
+        target_mask=torch.ones_like(target_y, dtype=torch.bool),
+        class_weights=weights,
+        mu=float(mu),
+        kl_weight=float(dvkl_weight),
+        source_ce_scale=float(mu),
+        target_ce_scale=(1.0 - float(mu)) * float(target_ce_weight),
+    )
+    total = terms["loss"]
     return {
         "loss": total,
-        "source_ce": source_ce.detach(),
-        "target_support_ce": target_ce.detach(),
-        "dvkl": dvkl.detach(),
+        "source_ce": terms["loss_source"].detach(),
+        "target_support_ce": terms["loss_target"].detach(),
+        "weighted_ce": terms["loss_weighted_ce"].detach(),
+        "dvkl": terms["loss_kl"].detach(),
+        "class_balance_weights": weights.detach(),
         "target_ce_weight": torch.as_tensor(float(target_ce_weight), device=total.device),
         "dvkl_weight": torch.as_tensor(float(dvkl_weight), device=total.device),
+        "mu": torch.as_tensor(float(mu), device=total.device),
     }
 
 
