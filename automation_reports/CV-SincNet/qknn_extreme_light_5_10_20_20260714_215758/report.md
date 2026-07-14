@@ -292,3 +292,23 @@ PID=`852229`完成20epoch。DRO loss由`11.46986`降至`4.66735`，但普通prot
 本地实现涉及`extreme_light_adapter.py`、`cvs_method_runner.py`和matrix runner，新增参数范围校验、query batch扩展不变性与资源上限测试。`ssr-gpu`下47项相关pytest和`git diff --check`均PASS。
 
 直接N607 preflight于2026-07-15 02:24 CST PASS；GPU4–7空闲10MiB，GPU0–3各有1个约470MiB既有进程且不干预，项目盘剩余7.6TB。三个实现文件同步后远端SHA256与本地一致，远端`py_compile`PASS；首次dry-run因漏设`PYTHONPATH`在import前退出，未创建实验结果，不属于性能失败。补充`PYTHONPATH=.`后9-row dry-run PASS。实际命令为`cd /home/szu2070436088/2510044040/CV-SincNet && PYTHONPATH=. /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u paper_reproduction/scripts/run_cvs_extreme_light_matrix.py --config paper_reproduction/configs/cvs_qknnv42_extreme_light_20new_stage2c_k10_20260715_n607.json --output-root runs/qknn_extreme_light_gaussian_k10_screen_20260715_v6 --log-root logs/qknn_extreme_light_gaussian_k10_screen_20260715_v6 --mode smoke --arms el_gauss_aug3_fft_w2p0_s0p75_l0,el_gauss_aug3_fft_w2p0_s0p75_l0p25,el_gauss_aug3_fft_w2p0_s0p75_l0p5,el_gauss_aug3_fft_w2p0_s0p9_l0,el_gauss_aug3_fft_w2p0_s0p9_l0p25,el_gauss_aug3_fft_w2p0_s0p9_l0p5,el_gauss_aug3_fft_w2p0_s0p97_l0,el_gauss_aug3_fft_w2p0_s0p97_l0p25,el_gauss_aug3_fft_w2p0_s0p97_l0p5 --receivers 8-8 --seeds 713101 --k-grid 10 --new-class-counts 20 --device cpu`。该闭式screen不占GPU；每row预期输出`metrics.json`、逐类明细、split manifest、loss trace和resource字段。
+
+### 对角高斯结果与冻结基座结论
+
+9/9 rows完成、0失败、0权限违规；9个row的全部必需artifact均非空，27条scenario loss trace全部有限，9份完整日志共54行且错误扫描为0。所有row均为`receiver=8-8/new20/seed713101/K10`，状态53,352B、逐query估算26,906MAC、0epoch、0参数、query1-view。
+
+|候选|old|最低旧类|new20|H|最低新类|support accuracy|适配耗时|
+|---|---:|---:|---:|---:|---:|---:|---:|
+|shrink0.75/logdet0|71.67%|50.00%|71.17%|71.41%|11.67%|83.46%|3.92ms|
+|shrink0.75/logdet0.25|72.50%|46.67%|71.08%|71.77%|11.67%|83.08%|3.03ms|
+|shrink0.75/logdet0.5|73.06%|43.33%|70.75%|71.87%|13.33%|82.44%|2.07ms|
+|shrink0.90/logdet0|71.94%|40.00%|70.00%|70.94%|11.67%|80.38%|2.05ms|
+|shrink0.90/logdet0.25|71.11%|33.33%|69.83%|70.45%|11.67%|80.26%|2.08ms|
+|shrink0.90/logdet0.5|70.83%|31.67%|69.33%|70.05%|11.67%|80.26%|2.55ms|
+|shrink0.97/logdet0|68.89%|25.00%|68.33%|68.58%|13.33%|78.08%|2.54ms|
+|shrink0.97/logdet0.25|69.17%|25.00%|68.00%|68.55%|13.33%|78.21%|2.42ms|
+|shrink0.97/logdet0.5|69.44%|25.00%|68.08%|68.74%|13.33%|78.21%|3.45ms|
+
+该机制没有通过扩展gate。最佳floor50.00%仍低于v1 LoRA+prototype的51.67%；最佳old73.06%对应floor43.33%、new20仅70.75%，也明显弱于v4的76.94/48.33/92.42%。增加pooled收缩或logdet权重持续损害floor，说明问题不是prototype忽略类内尺度，而是冻结表示中的跨类均值重叠和support/query类条件漂移。该路线终止，不补第二seed、5/10类、K5、其它receiver或确认seed。
+
+至此在冻结ADV3B02约束内，轻量head、同viewRF统计、多prototype、闭式高斯、微型IQ、LoRA、late LoRA、分段20epoch和全类DRO都未能接近95% old/88% floor。下一步若要继续提升性能，必须按`项目.md`先设计并验证source-only域不变基座改进，再用本套严格Stage2-C极轻量适配协议复验；不能继续在同一个K10 query cell上扩大超参数自由度。
