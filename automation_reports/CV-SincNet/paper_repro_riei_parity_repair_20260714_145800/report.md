@@ -503,3 +503,5 @@
 - 新launcher：`code/scripts/launch_riei_momentum09_probe_20260715.sh`；预定run ID为`paper_repro_riei_momentum09_probe_seed1337_20260715_071500`。只覆盖row3、4、11、12，各使用一个GPU，共4个job。
 - 相对short-stem完整矩阵，唯一训练变量为`RIEI_SGD_MOMENTUM=0.9`；seed1337、稳定partition、short stem、CE/MI/IE mean、no-RMS、no-feature-norm、学习率`1e-4`、200epoch和paper last10均保持不变。既有momentum0同row last10写入scheduler manifest作为预注册control。
 - 本地`bash -n`通过；dry-run完整展开4个job、4个capacity gate、4条momentum0.9、4条short-stem和4条mean命令。launcher根目录、Git镜像及非Git快照SHA256均为`ee692628dd8725f923f9aa7ba1edd8ddfa98a86cb700fdeca4e8a32c2f9455d5`；快照位于`code/snapshots/paper_repro_riei_momentum09_probe_seed1337_20260715_071500/`。
+- Git提交为`23ca1c2 Probe RIEI SGD momentum parity`。07:07直接N607预检与实时process/CWD/cmdline检查通过：GPU0–7均无compute，目标run/log目录不存在；计划GPU0–3各新增1个训练，满足`existing_compute+planned_peak=1≤2`。
+- 仅同步新launcher；远端SHA256与本地一致，远端`bash -n`及4-job dry-run通过。正式命令为`bash code/scripts/launch_riei_momentum09_probe_20260715.sh --launch --gpu-ids 0,1,2,3 --max-train-per-gpu 2`。
