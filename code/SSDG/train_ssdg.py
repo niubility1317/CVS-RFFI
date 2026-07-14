@@ -260,6 +260,13 @@ def build_arg_parser() -> argparse.ArgumentParser:
     parser.add_argument("--use_unlabeled", type=str2bool, default=True)
     parser.add_argument("--pseudo_domain_gate", type=str2bool, default=True)
     parser.add_argument("--pseudo_temporal_gate", type=str2bool, default=True)
+    parser.add_argument(
+        "--pseudo_temporal_mode",
+        type=str,
+        default="batch_neighbor",
+        choices=["batch_neighbor", "epoch_bank"],
+    )
+    parser.add_argument("--pseudo_temporal_bank_min_streak", type=int, default=2)
     parser.add_argument("--pseudo_temporal_window", type=int, default=2)
     parser.add_argument("--pseudo_temporal_min_conf", type=float, default=0.80)
     parser.add_argument("--pseudo_strong_agreement", type=str2bool, default=True)
@@ -282,6 +289,8 @@ def build_arg_parser() -> argparse.ArgumentParser:
     parser.add_argument("--concat_sat_ce_only", dest="concat_sat_ce_only", action="store_true", default=False)
     parser.add_argument("--no_concat_sat_ce_only", dest="concat_sat_ce_only", action="store_false")
     parser.add_argument("--concat_sat_ce_weight", type=float, default=1.0)
+    parser.add_argument("--concat_sat_deduplicate_tx_ce", type=str2bool, default=False)
+    parser.add_argument("--concat_sat_teacher_clean_only", type=str2bool, default=False)
     parser.add_argument("--concat_sat_start_epoch", type=int, default=1)
     parser.add_argument("--sat_view_prob", type=float, default=1.0)
     parser.add_argument("--sat_view_seed", type=int, default=2027)
@@ -407,6 +416,12 @@ def build_arg_parser() -> argparse.ArgumentParser:
     parser.add_argument("--os_gradient_surgery", type=str2bool, default=False)
     parser.add_argument("--os_gradient_surgery_interval", type=int, default=1)
     parser.add_argument("--os_gradient_protect_closed", type=str2bool, default=False)
+    parser.add_argument(
+        "--os_budget_scope",
+        type=str,
+        default="all_shared",
+        choices=["all_shared", "zid_path"],
+    )
     parser.add_argument("--os_objective_budget_controller", type=str2bool, default=False)
     parser.add_argument("--os_objective_boundary_share", type=float, default=0.40)
     parser.add_argument("--os_objective_source_share", type=float, default=0.25)
@@ -465,6 +480,12 @@ def build_arg_parser() -> argparse.ArgumentParser:
     parser.add_argument("--direct_metric_clean_weight", type=float, default=1.0)
     parser.add_argument("--direct_metric_sat_weight", type=float, default=1.0)
     parser.add_argument("--direct_metric_hierarchical_class_gate", type=str2bool, default=False)
+    parser.add_argument(
+        "--direct_metric_hierarchical_combine",
+        type=str,
+        default="product",
+        choices=["product", "smooth_min"],
+    )
     parser.add_argument("--endpoint_require_artifact_on_export", type=str2bool, default=True)
     parser.add_argument("--endpoint_calibration_min_component_samples", type=int, default=4)
     parser.add_argument("--endpoint_calibration_min_class_samples", type=int, default=4)
@@ -627,6 +648,9 @@ def build_arg_parser() -> argparse.ArgumentParser:
     parser.add_argument("--direct_metric_virtual_mode", type=str, default="hard", choices=["legacy", "hard", "mixed", "legacy_hard"])
     parser.add_argument("--direct_metric_virtual_detach", type=str2bool, default=True)
     parser.add_argument("--direct_metric_gate_reference_detach", type=str2bool, default=True)
+    parser.add_argument("--direct_metric_reference_bank", type=str2bool, default=False)
+    parser.add_argument("--direct_metric_reference_refresh_epochs", type=int, default=10)
+    parser.add_argument("--direct_metric_reference_per_component", type=int, default=4)
     parser.add_argument("--direct_metric_core_quantile", type=float, default=0.70)
     parser.add_argument("--direct_metric_accept_quantile", type=float, default=0.80)
     parser.add_argument("--direct_metric_tail_quantile", type=float, default=0.90)
@@ -643,6 +667,7 @@ def build_arg_parser() -> argparse.ArgumentParser:
     parser.add_argument("--direct_metric_overflow_accept_target", type=float, default=0.20)
     parser.add_argument("--direct_metric_radius_inter_ratio_target", type=float, default=0.85)
     parser.add_argument("--direct_metric_core_accept_target", type=float, default=0.82)
+    parser.add_argument("--direct_metric_core_tpr_target", type=float, default=0.85)
     parser.add_argument("--direct_metric_sat_pair_target_deg", type=float, default=10.0)
     parser.add_argument("--direct_metric_zid_quantile_weight", type=float, default=1.0)
     parser.add_argument("--direct_metric_source_overflow_weight", type=float, default=1.0)
@@ -656,6 +681,7 @@ def build_arg_parser() -> argparse.ArgumentParser:
     parser.add_argument("--direct_metric_component_inter_margin_weight", type=float, default=0.0)
     parser.add_argument("--direct_metric_component_overlap_weight", type=float, default=0.0)
     parser.add_argument("--direct_metric_core_accept_weight", type=float, default=0.25)
+    parser.add_argument("--direct_metric_core_tpr_weight", type=float, default=0.0)
     parser.add_argument("--direct_metric_sat_pair_weight", type=float, default=0.0)
     parser.add_argument("--direct_metric_quantile_temperature_deg", type=float, default=3.0)
     parser.add_argument("--direct_metric_accept_temperature", type=float, default=0.04)
@@ -665,6 +691,7 @@ def build_arg_parser() -> argparse.ArgumentParser:
     parser.add_argument("--direct_metric_component_inter_margin_deg", type=float, default=55.0)
     parser.add_argument("--direct_metric_component_overlap_margin_deg", type=float, default=4.0)
     parser.add_argument("--direct_metric_source_margin_deg", type=float, default=2.0)
+    parser.add_argument("--direct_metric_source_radius_cap_deg", type=float, default=0.0)
     parser.add_argument("--direct_metric_shell_width_deg", type=float, default=4.0)
     parser.add_argument("--direct_metric_accept_cvar_alpha", type=float, default=0.25)
     parser.add_argument("--run_id", type=str, default="")
@@ -725,6 +752,12 @@ def build_arg_parser() -> argparse.ArgumentParser:
     parser.add_argument("--freeze_backbone", type=str2bool, default=False)
     parser.add_argument("--model_size", type=str, default="M")
     parser.add_argument("--model_variant", type=str, default="lite_d")
+    parser.add_argument(
+        "--id_feature_key",
+        type=str,
+        default="feat_joint",
+        choices=["feat_joint", "feat_cls", "feat_con", "base"],
+    )
     parser.add_argument("--branch_ablation", type=str, default="no_dac")
     parser.add_argument("--domain_branch_ablation", type=str, default="no_stats")
     parser.add_argument("--domain_enhancer", type=str, default="rcn_stats")
@@ -1036,6 +1069,118 @@ def _channel_view_labels(total_count: int, clean_count: int, applied: bool, devi
     return labels
 
 
+class FrozenDirectMetricReferenceBank:
+    """Window-frozen TX/domain/view anchors for direct acceptance geometry."""
+
+    def __init__(self, *, per_component: int = 4, refresh_epochs: int = 10):
+        self.per_component = max(1, int(per_component))
+        self.refresh_epochs = max(1, int(refresh_epochs))
+        self.active: Dict[Tuple[int, int, int], torch.Tensor] = {}
+        self.pending: Dict[Tuple[int, int, int], List[torch.Tensor]] = defaultdict(list)
+        self.pending_seen: Dict[Tuple[int, int, int], int] = defaultdict(int)
+        self.active_epoch = -1
+        self.version = 0
+
+    def maybe_promote(self, epoch: int) -> bool:
+        should_promote = int(epoch) >= 2 and (int(epoch) - 2) % self.refresh_epochs == 0
+        if not should_promote or not self.pending:
+            return False
+        self.active = {
+            key: torch.stack(values, dim=0).detach()
+            for key, values in self.pending.items()
+            if values
+        }
+        self.pending = defaultdict(list)
+        self.pending_seen = defaultdict(int)
+        self.active_epoch = int(epoch)
+        self.version += 1
+        return True
+
+    def observe(
+        self,
+        z: torch.Tensor,
+        y: torch.Tensor,
+        d: Optional[torch.Tensor],
+        *,
+        view: int,
+    ) -> None:
+        if z is None or not torch.is_tensor(z) or z.dim() != 2 or z.size(0) == 0:
+            return
+        labels = y.detach().view(-1).long()
+        domains = (
+            d.detach().view(-1).long()
+            if d is not None and torch.is_tensor(d) and d.numel() == labels.numel()
+            else torch.full_like(labels, -1)
+        )
+        features = F.normalize(
+            torch.nan_to_num(z.detach().float(), nan=0.0, posinf=0.0, neginf=0.0),
+            dim=1,
+        )
+        for index in range(features.size(0)):
+            label = int(labels[index].item())
+            if label < 0:
+                continue
+            key = (label, int(domains[index].item()), int(view))
+            seen = int(self.pending_seen[key])
+            slot = seen % self.per_component
+            value = features[index].clone()
+            if len(self.pending[key]) < self.per_component:
+                self.pending[key].append(value)
+            else:
+                self.pending[key][slot] = value
+            self.pending_seen[key] = seen + 1
+
+    def tensors(self, *, view: Optional[int] = None):
+        selected = [
+            (key, values)
+            for key, values in sorted(self.active.items())
+            if view is None or int(key[2]) == int(view)
+        ]
+        if not selected:
+            return None, None, None
+        z_parts = []
+        y_parts = []
+        d_parts = []
+        for (label, domain, _), values in selected:
+            z_parts.append(values)
+            y_parts.append(torch.full((values.size(0),), int(label), device=values.device, dtype=torch.long))
+            d_parts.append(torch.full((values.size(0),), int(domain), device=values.device, dtype=torch.long))
+        return torch.cat(z_parts, dim=0), torch.cat(y_parts, dim=0), torch.cat(d_parts, dim=0)
+
+    def paired_tensors(self):
+        """Return clean/satellite anchors with identical label/domain ordering."""
+
+        clean_parts = []
+        sat_parts = []
+        y_parts = []
+        d_parts = []
+        base_keys = sorted({(key[0], key[1]) for key in self.active})
+        for label, domain in base_keys:
+            clean = self.active.get((label, domain, 0))
+            sat = self.active.get((label, domain, 1))
+            if clean is None or sat is None:
+                continue
+            count = min(int(clean.size(0)), int(sat.size(0)))
+            if count <= 0:
+                continue
+            clean_parts.append(clean[:count])
+            sat_parts.append(sat[:count])
+            y_parts.append(torch.full((count,), int(label), device=clean.device, dtype=torch.long))
+            d_parts.append(torch.full((count,), int(domain), device=clean.device, dtype=torch.long))
+        if not clean_parts:
+            return None, None, None, None
+        return (
+            torch.cat(clean_parts, dim=0),
+            torch.cat(sat_parts, dim=0),
+            torch.cat(y_parts, dim=0),
+            torch.cat(d_parts, dim=0),
+        )
+
+    @property
+    def anchor_count(self) -> int:
+        return sum(int(values.size(0)) for values in self.active.values())
+
+
 def _temporal_mask_tensor(pseudo, conf, extra, args, device):
     meta = _meta_from_extra(extra)
     mask = temporal_neighbor_agreement_mask(
@@ -1046,6 +1191,52 @@ def _temporal_mask_tensor(pseudo, conf, extra, args, device):
         min_conf=float(args.pseudo_temporal_min_conf),
     )
     return torch.as_tensor(mask, dtype=torch.bool, device=device)
+
+
+def _temporal_bank_mask_tensor(
+    pseudo,
+    conf,
+    extra,
+    args,
+    device,
+    *,
+    epoch: int,
+    bank: Dict[Tuple[int, int, int, int, int], Tuple[int, int, int]],
+):
+    """Require cross-epoch prediction stability without relying on batch neighbors."""
+
+    meta = _meta_from_extra(extra)
+    pseudo_l = [int(v) for v in _as_plain_list(pseudo)]
+    conf_l = [float(v) for v in _as_plain_list(conf)]
+    n = min(len(pseudo_l), len(conf_l))
+    if meta is None or n == 0:
+        return torch.zeros(n, dtype=torch.bool, device=device)
+    fields = {
+        key: _as_plain_list(meta.get(key))
+        for key in ("rx_i", "day_i", "eq_i", "sig_i", "base_index")
+    }
+    if len(fields["base_index"]) < n:
+        fields["base_index"] = fields["sig_i"]
+    if any(len(values) < n for values in fields.values()):
+        return torch.zeros(n, dtype=torch.bool, device=device)
+    min_conf = float(args.pseudo_temporal_min_conf)
+    min_streak = max(1, int(getattr(args, "pseudo_temporal_bank_min_streak", 2)))
+    passed = []
+    for index in range(n):
+        key = tuple(int(fields[name][index]) for name in ("rx_i", "day_i", "eq_i", "sig_i", "base_index"))
+        pred = int(pseudo_l[index])
+        previous = bank.get(key)
+        streak = 1
+        if previous is not None:
+            previous_pred, previous_epoch, previous_streak = previous
+            if previous_pred == pred and int(previous_epoch) == int(epoch) - 1:
+                streak = int(previous_streak) + 1
+            elif previous_pred == pred and int(previous_epoch) == int(epoch):
+                streak = int(previous_streak)
+        if conf_l[index] >= min_conf:
+            bank[key] = (pred, int(epoch), streak)
+        passed.append(conf_l[index] >= min_conf and streak >= min_streak)
+    return torch.as_tensor(passed, dtype=torch.bool, device=device)
 
 
 def _update_ema_model(ema_model, model, decay: float) -> None:
@@ -1073,6 +1264,7 @@ def _apply_model_cli_args(model_args, args):
     for key in (
         "model_size",
         "model_variant",
+        "id_feature_key",
         "branch_ablation",
         "domain_branch_ablation",
         "domain_enhancer",
@@ -2320,6 +2512,7 @@ def _direct_metric_kwargs(args) -> Dict[str, Any]:
         "overflow_accept_target": float(args.direct_metric_overflow_accept_target),
         "radius_inter_ratio_target": float(args.direct_metric_radius_inter_ratio_target),
         "core_accept_target": float(args.direct_metric_core_accept_target),
+        "core_tpr_target": float(args.direct_metric_core_tpr_target),
         "zid_quantile_weight": float(args.direct_metric_zid_quantile_weight),
         "source_overflow_weight": float(args.direct_metric_source_overflow_weight),
         "proxy_vaccept_weight": float(args.direct_metric_proxy_vaccept_weight),
@@ -2334,6 +2527,7 @@ def _direct_metric_kwargs(args) -> Dict[str, Any]:
         ),
         "component_overlap_weight": float(args.direct_metric_component_overlap_weight),
         "core_accept_weight": float(args.direct_metric_core_accept_weight),
+        "core_tpr_weight": float(args.direct_metric_core_tpr_weight),
         "quantile_temperature_rad": math.radians(float(args.direct_metric_quantile_temperature_deg)),
         "accept_temperature": float(args.direct_metric_accept_temperature),
         "component_temperature_rad": math.radians(float(args.direct_metric_component_temperature_deg)),
@@ -2346,6 +2540,7 @@ def _direct_metric_kwargs(args) -> Dict[str, Any]:
             float(args.direct_metric_component_overlap_margin_deg)
         ),
         "source_margin_rad": math.radians(float(args.direct_metric_source_margin_deg)),
+        "source_radius_cap_rad": math.radians(float(args.direct_metric_source_radius_cap_deg)),
         "shell_width_rad": math.radians(float(args.direct_metric_shell_width_deg)),
         "accept_cvar_alpha": float(args.direct_metric_accept_cvar_alpha),
         "virtual_detach": bool(args.direct_metric_virtual_detach),
@@ -2354,6 +2549,7 @@ def _direct_metric_kwargs(args) -> Dict[str, Any]:
         "require_domain_local_components": bool(args.direct_metric_require_domain_local_components),
         "min_samples_per_component": int(args.direct_metric_min_samples_per_component),
         "hierarchical_class_gate": bool(args.direct_metric_hierarchical_class_gate),
+        "hierarchical_gate_combine": str(args.direct_metric_hierarchical_combine),
     }
 
 
@@ -2590,11 +2786,17 @@ def _backward_with_open_set_projection(
     open_group_shares: Optional[Mapping[str, float]] = None,
     open_group_min_scale: float = 0.25,
     open_group_max_scale: float = 8.0,
+    budget_param_filter=None,
 ) -> Dict[str, float]:
     """Balance objective gradients, then protect closed gradients from open-set conflicts."""
 
     named_params = [(name, param) for name, param in model.named_parameters() if param.requires_grad]
     params = [param for _, param in named_params]
+    budget_scope = [
+        bool(budget_param_filter(name)) if budget_param_filter is not None else True
+        for name, _ in named_params
+    ]
+    zid_scope_active = budget_param_filter is not None and any(budget_scope)
     closed_scaled = scaler.scale(closed_loss)
     closed_grads = torch.autograd.grad(closed_scaled, params, retain_graph=True, allow_unused=True)
     group_grads: Dict[str, Tuple[Optional[torch.Tensor], ...]] = {}
@@ -2615,8 +2817,8 @@ def _backward_with_open_set_projection(
             )
             group_grads[name] = grads
             group_sq = group_loss.new_tensor(0.0)
-            for grad in grads:
-                if grad is not None:
+            for in_scope, grad in zip(budget_scope, grads):
+                if in_scope and grad is not None:
                     group_sq = group_sq + grad.detach().float().pow(2).sum()
             group_norms_scaled[name] = float(group_sq.sqrt().detach().cpu().item())
 
@@ -2679,8 +2881,8 @@ def _backward_with_open_set_projection(
             "total_closed_grad_norm": float("nan"),
             "total_open_grad_norm": float("nan"),
             "shared_param_count": 0.0,
-            "budget_scope_shared_trainable_params": 1.0,
-            "budget_scope_shared_zid_path": 0.0,
+            "budget_scope_shared_trainable_params": 0.0 if zid_scope_active else 1.0,
+            "budget_scope_shared_zid_path": 1.0 if zid_scope_active else 0.0,
             "balanced_closed_grad_norm": float("nan"),
             "balanced_open_grad_norm": float("nan"),
             "effective_closed_grad_norm": float("nan"),
@@ -2704,12 +2906,12 @@ def _backward_with_open_set_projection(
     total_closed_sq = closed_loss.new_tensor(0.0)
     total_open_sq = closed_loss.new_tensor(0.0)
     shared_param_count = 0
-    for grad_closed, grad_open in zip(closed_grads, open_grads):
+    for in_scope, grad_closed, grad_open in zip(budget_scope, closed_grads, open_grads):
         if grad_closed is not None:
             total_closed_sq = total_closed_sq + grad_closed.detach().float().pow(2).sum()
         if grad_open is not None:
             total_open_sq = total_open_sq + grad_open.detach().float().pow(2).sum()
-        if grad_closed is not None and grad_open is not None:
+        if in_scope and grad_closed is not None and grad_open is not None:
             shared_param_count += 1
             closed_sq = closed_sq + grad_closed.detach().float().pow(2).sum()
             open_sq = open_sq + grad_open.detach().float().pow(2).sum()
@@ -2751,8 +2953,8 @@ def _backward_with_open_set_projection(
     dot = closed_loss.new_tensor(0.0)
     balanced_closed_sq = closed_loss.new_tensor(0.0)
     balanced_open_sq = closed_loss.new_tensor(0.0)
-    for grad_closed, grad_open in zip(balanced_closed, balanced_open):
-        if grad_closed is not None and grad_open is not None:
+    for in_scope, grad_closed, grad_open in zip(budget_scope, balanced_closed, balanced_open):
+        if in_scope and grad_closed is not None and grad_open is not None:
             balanced_closed_sq = balanced_closed_sq + grad_closed.detach().float().pow(2).sum()
             balanced_open_sq = balanced_open_sq + grad_open.detach().float().pow(2).sum()
             dot = dot + (grad_closed.detach().float() * grad_open.detach().float()).sum()
@@ -2763,7 +2965,7 @@ def _backward_with_open_set_projection(
     post_dot = dot.new_tensor(0.0)
     post_closed_sq = dot.new_tensor(0.0)
     post_open_sq = dot.new_tensor(0.0)
-    for param, grad_closed, grad_open in zip(params, balanced_closed, balanced_open):
+    for in_scope, param, grad_closed, grad_open in zip(budget_scope, params, balanced_closed, balanced_open):
         if grad_closed is None and grad_open is None:
             param.grad = None
             continue
@@ -2776,6 +2978,12 @@ def _backward_with_open_set_projection(
             projected_closed = grad_closed
             projected_open = None
         else:
+            if not in_scope:
+                projected_closed = grad_closed
+                projected_open = grad_open
+                combined = projected_closed + projected_open
+                param.grad = combined.detach().clone()
+                continue
             if conflict and preserve_closed_on_conflict:
                 projected_closed = grad_closed
                 projected_open = (
@@ -2816,8 +3024,8 @@ def _backward_with_open_set_projection(
         "total_closed_grad_norm": total_closed_norm,
         "total_open_grad_norm": total_open_norm,
         "shared_param_count": float(shared_param_count),
-        "budget_scope_shared_trainable_params": 1.0,
-        "budget_scope_shared_zid_path": 0.0,
+        "budget_scope_shared_trainable_params": 0.0 if zid_scope_active else 1.0,
+        "budget_scope_shared_zid_path": 1.0 if zid_scope_active else 0.0,
         "balanced_closed_grad_norm": balanced_closed_norm,
         "balanced_open_grad_norm": balanced_open_norm,
         "effective_closed_grad_norm": projected_closed_norm,
@@ -3041,6 +3249,7 @@ def _build_ssdg_epoch_telemetry_row(
         "pseudo_quantile": float(getattr(args, "pseudo_quantile", 0.0)),
         "pseudo_domain_gate": bool(getattr(args, "pseudo_domain_gate", False)),
         "pseudo_temporal_gate": bool(getattr(args, "pseudo_temporal_gate", False)),
+        "pseudo_temporal_mode": str(getattr(args, "pseudo_temporal_mode", "batch_neighbor")),
         "pseudo_strong_agreement": bool(getattr(args, "pseudo_strong_agreement", False)),
         "use_ema_teacher": bool(getattr(args, "use_ema_teacher", False)),
         "use_sat_consistency": bool(getattr(args, "use_sat_consistency", False)),
@@ -3049,6 +3258,13 @@ def _build_ssdg_epoch_telemetry_row(
         "sat_view_schedule": str(getattr(args, "sat_view_schedule", "") or ""),
         "use_concat_sat_channel_aug": bool(getattr(args, "use_concat_sat_channel_aug", False)),
         "concat_sat_ce_only": bool(getattr(args, "concat_sat_ce_only", False)),
+        "concat_sat_deduplicate_tx_ce": bool(getattr(args, "concat_sat_deduplicate_tx_ce", False)),
+        "concat_sat_teacher_clean_only": bool(getattr(args, "concat_sat_teacher_clean_only", False)),
+        "id_feature_key": str(getattr(args, "id_feature_key", "feat_joint")),
+        "os_budget_scope": str(getattr(args, "os_budget_scope", "all_shared")),
+        "direct_metric_hierarchical_combine": str(
+            getattr(args, "direct_metric_hierarchical_combine", "product")
+        ),
         "eval_sat_channel": bool(getattr(args, "eval_sat_channel", False)),
         "eval_sat_scenarios": str(getattr(args, "eval_sat_scenarios", "")),
         "nonfinite_train_metric_count": _count_nonfinite(train_logs),
@@ -3975,6 +4191,10 @@ def train(args) -> int:
             input_len=int(data_ctx["input_len"]),
             num_domains=int(data_ctx["num_domains"]),
         )
+        # Student and fixed teacher must expose the same z_id semantics.  This
+        # prevents teacher_zid_mse from silently pulling an invariant core back
+        # toward the legacy defect-gated joint feature.
+        teacher_model_args.id_feature_key = str(getattr(args, "id_feature_key", "feat_joint"))
         teacher_model = build_baseline_model(teacher_model_args, device)
         teacher_model.load_state_dict(teacher_ckpt["model"], strict=False)
         teacher_model.eval()
@@ -4240,6 +4460,15 @@ def train(args) -> int:
     tail_rollback_events: List[Dict[str, Any]] = []
     tail_reference_geometry: Dict[str, Any] = {}
     tail_reference_epoch = -1
+    pseudo_temporal_bank: Dict[Tuple[int, int, int, int, int], Tuple[int, int, int]] = {}
+    direct_metric_reference_bank = (
+        FrozenDirectMetricReferenceBank(
+            per_component=int(args.direct_metric_reference_per_component),
+            refresh_epochs=int(args.direct_metric_reference_refresh_epochs),
+        )
+        if bool(getattr(args, "direct_metric_reference_bank", False))
+        else None
+    )
     last_source_val_tail_geometry: Dict[str, Any] = {}
     last_source_val_sat_stats: Dict[str, Dict[str, Any]] = {}
     last_source_val_heavy_eval_epoch = 0
@@ -4269,6 +4498,8 @@ def train(args) -> int:
             )
         )
     for epoch in range(1, total_epochs + 1):
+        if direct_metric_reference_bank is not None:
+            direct_metric_reference_bank.maybe_promote(epoch)
         import time
 
         t0 = time.time()
@@ -4389,6 +4620,19 @@ def train(args) -> int:
                 loss_cons_l = core_losses["loss_cons"]
                 loss_orth_l = core_losses["loss_orth"] if cur_w["orth"] > 0.0 else out_l["tx_logits"].sum() * 0.0
                 loss_group_ce_l = core_losses["loss_group_ce"]
+                if (
+                    concat_sat_full_batch
+                    and concat_sat_clean_bsz > 0
+                    and bool(getattr(args, "concat_sat_deduplicate_tx_ce", False))
+                ):
+                    # concat_sa keeps both views in the domain/invariance path,
+                    # but TX CE is counted once per view: clean here and sat in
+                    # loss_sat_cls_l below.
+                    loss_tx_l = F.cross_entropy(
+                        out_l["tx_logits"][:concat_sat_clean_bsz],
+                        y_l[:concat_sat_clean_bsz],
+                        label_smoothing=float(args.label_smoothing),
+                    )
                 if d_l is not None and cur_w["fishr"] > 0.0:
                     loss_fishr_l = fishr_logit_gradient_variance_loss(
                         out_l["tx_logits"],
@@ -4443,17 +4687,36 @@ def train(args) -> int:
                 loss_teacher_zid_mse_l = z_id_l.sum() * 0.0
                 teacher_clean_out = None
                 if teacher_model is not None and teacher_scale > 0.0:
+                    teacher_clean_only = bool(
+                        concat_sat_full_batch
+                        and concat_sat_clean_bsz > 0
+                        and getattr(args, "concat_sat_teacher_clean_only", False)
+                    )
+                    teacher_clean_count = (
+                        int(concat_sat_clean_bsz)
+                        if teacher_clean_only
+                        else int(y_l.numel())
+                    )
+                    teacher_x = x_l_main[:teacher_clean_count]
+                    teacher_y = y_l[:teacher_clean_count]
+                    teacher_d = d_l[:teacher_clean_count] if d_l is not None else None
                     with torch.no_grad():
-                        teacher_clean_out = teacher_model(x_l_main, y_tx=y_l, grl_lambda=1.0, return_aux=True, domain_labels=d_l)
+                        teacher_clean_out = teacher_model(
+                            teacher_x,
+                            y_tx=teacher_y,
+                            grl_lambda=1.0,
+                            return_aux=True,
+                            domain_labels=teacher_d,
+                        )
                     if float(args.lambda_teacher_clean_kl) > 0.0:
                         loss_teacher_clean_kl_l = one_way_kl_from_teacher(
-                            out_l["tx_logits"],
+                            out_l["tx_logits"][:teacher_clean_count],
                             teacher_clean_out["tx_logits"],
                             temperature=float(args.teacher_distill_temperature),
                         )
                     if float(args.lambda_teacher_zid_mse) > 0.0:
                         loss_teacher_zid_mse_l = F.mse_loss(
-                            F.normalize(z_id_l.float(), dim=1),
+                            F.normalize(z_id_l[:teacher_clean_count].float(), dim=1),
                             F.normalize(teacher_clean_out["z_id"].detach().float(), dim=1),
                         )
                 loss_proto_l = z_id_l.sum() * 0.0
@@ -4889,6 +5152,35 @@ def train(args) -> int:
                     "zid_quantile_loss": 0.0,
                     "virtual_count": 0.0,
                 }
+                dm_bank_clean = dm_bank_clean_y = dm_bank_clean_d = None
+                dm_bank_sat = dm_bank_sat_y = dm_bank_sat_d = None
+                if direct_metric_reference_bank is not None:
+                    if concat_sat_full_batch:
+                        (
+                            dm_bank_clean,
+                            dm_bank_sat,
+                            dm_bank_clean_y,
+                            dm_bank_clean_d,
+                        ) = direct_metric_reference_bank.paired_tensors()
+                        dm_bank_sat_y = dm_bank_clean_y
+                        dm_bank_sat_d = dm_bank_clean_d
+                    else:
+                        dm_bank_clean, dm_bank_clean_y, dm_bank_clean_d = direct_metric_reference_bank.tensors(view=0)
+                    if concat_sat_full_batch and concat_sat_clean_bsz > 0:
+                        direct_metric_reference_bank.observe(
+                            z_id_l[:concat_sat_clean_bsz],
+                            y_l[:concat_sat_clean_bsz],
+                            d_l[:concat_sat_clean_bsz] if d_l is not None else None,
+                            view=0,
+                        )
+                        direct_metric_reference_bank.observe(
+                            z_id_l[concat_sat_clean_bsz : 2 * concat_sat_clean_bsz],
+                            y_l[concat_sat_clean_bsz : 2 * concat_sat_clean_bsz],
+                            d_l[concat_sat_clean_bsz : 2 * concat_sat_clean_bsz] if d_l is not None else None,
+                            view=1,
+                        )
+                    else:
+                        direct_metric_reference_bank.observe(z_id_l, y_l, d_l, view=0)
                 if float(getattr(args, "lambda_direct_metric_accept", 0.0)) > 0.0 and direct_metric_stage_scale > 0.0:
                     if direct_metric_acceptance_loss is None:
                         raise ImportError("cvsrffi.losses.direct_metric_acceptance_loss is required for --lambda_direct_metric_accept")
@@ -4911,9 +5203,20 @@ def train(args) -> int:
                             sat_weight=float(args.direct_metric_sat_weight),
                             pair_weight=float(args.direct_metric_sat_pair_weight),
                             sat_pair_target_rad=math.radians(float(args.direct_metric_sat_pair_target_deg)),
+                            clean_reference_z=dm_bank_clean,
+                            sat_reference_z=dm_bank_sat,
+                            reference_y=dm_bank_clean_y,
+                            reference_d=dm_bank_clean_d,
                             **dm_kwargs,
                         )
                     else:
+                        dm_bank_z = dm_bank_clean
+                        dm_bank_y = dm_bank_clean_y
+                        dm_bank_d = dm_bank_clean_d
+                        if dm_bank_clean is not None and dm_bank_sat is not None:
+                            dm_bank_z = torch.cat([dm_bank_clean, dm_bank_sat], dim=0)
+                            dm_bank_y = torch.cat([dm_bank_clean_y, dm_bank_sat_y], dim=0)
+                            dm_bank_d = torch.cat([dm_bank_clean_d, dm_bank_sat_d], dim=0)
                         loss_direct_metric_accept_l, direct_metric_info = direct_metric_acceptance_loss(
                             z_id_l,
                             y_l,
@@ -4921,6 +5224,9 @@ def train(args) -> int:
                             paired_view_count=paired_view_count,
                             sat_pair_target_rad=math.radians(float(args.direct_metric_sat_pair_target_deg)),
                             sat_pair_weight=float(args.direct_metric_sat_pair_weight),
+                            reference_z=dm_bank_z,
+                            reference_y=dm_bank_y,
+                            reference_d=dm_bank_d,
                             **dm_kwargs,
                         )
                 zero_sat = out_l["tx_logits"].sum() * 0.0
@@ -4961,7 +5267,7 @@ def train(args) -> int:
                     ):
                         loss_teacher_sat_kl_l = one_way_kl_from_teacher(
                             sat_logits,
-                            teacher_clean_out["tx_logits"][clean_slice],
+                            teacher_clean_out["tx_logits"][:concat_sat_clean_bsz],
                             temperature=float(args.teacher_distill_temperature),
                         )
                 elif use_sat_train:
@@ -5092,7 +5398,18 @@ def train(args) -> int:
                         else:
                             domain_mask = torch.ones_like(conf_mask)
                         if bool(args.pseudo_temporal_gate):
-                            temporal_mask = _temporal_mask_tensor(pseudo, conf, extra_u, args, device)
+                            if str(getattr(args, "pseudo_temporal_mode", "batch_neighbor")) == "epoch_bank":
+                                temporal_mask = _temporal_bank_mask_tensor(
+                                    pseudo,
+                                    conf,
+                                    extra_u,
+                                    args,
+                                    device,
+                                    epoch=epoch,
+                                    bank=pseudo_temporal_bank,
+                                )
+                            else:
+                                temporal_mask = _temporal_mask_tensor(pseudo, conf, extra_u, args, device)
                         else:
                             temporal_mask = torch.ones_like(conf_mask)
                         base_mask = conf_mask & domain_mask & temporal_mask
@@ -5334,6 +5651,15 @@ def train(args) -> int:
                                 dm_reference_sat = z_id_l[
                                     dm_anchor_count : 2 * dm_anchor_count
                                 ].detach()
+                            if dm_bank_clean is not None:
+                                dm_reference_clean = dm_bank_clean
+                                dm_reference_y = dm_bank_clean_y
+                                dm_reference_d = dm_bank_clean_d
+                                dm_reference_sat = (
+                                    dm_bank_sat
+                                    if dm_bank_sat is not None
+                                    else dm_bank_clean
+                                )
                             dm_z_clean = out_s["z_id"][dm_mask]
                             dm_y = pseudo[dm_mask].long()
                             dm_d = d_u[dm_mask].long() if valid_u_domain else None
@@ -5636,6 +5962,11 @@ def train(args) -> int:
                         },
                         open_group_min_scale=float(getattr(args, "os_objective_min_scale", 0.25)),
                         open_group_max_scale=float(getattr(args, "os_objective_max_scale", 8.0)),
+                        budget_param_filter=(
+                            (lambda name: str(name).startswith("id_backbone."))
+                            if str(getattr(args, "os_budget_scope", "all_shared")) == "zid_path"
+                            else None
+                        ),
                     )
                     os_budget_info = {
                         "active": 1.0 if float(os_grad_info["reason_code"]) in {1.0, 3.0} else 0.0,
@@ -6236,6 +6567,9 @@ def train(args) -> int:
                     "train/dm_accept_zid_p99_deg": direct_metric_info.get("zid_p99_deg", float("nan")),
                     "train/dm_accept_zid_tail_cvar_deg": direct_metric_info.get("zid_tail_cvar_deg", float("nan")),
                     "train/dm_accept_source_overflow": direct_metric_info.get("source_overflow", float("nan")),
+                    "train/dm_accept_source_overflow_hard": direct_metric_info.get(
+                        "source_overflow_hard", float("nan")
+                    ),
                     "train/dm_accept_source_overflow_loss": direct_metric_info.get("source_overflow_loss", float("nan")),
                     "train/dm_accept_proxy_vaccept": direct_metric_info.get("proxy_vaccept", float("nan")),
                     "train/dm_accept_proxy_vaccept_loss": direct_metric_info.get("proxy_vaccept_loss", float("nan")),
@@ -6268,6 +6602,24 @@ def train(args) -> int:
                     ),
                     "train/dm_accept_core_accept_rate": direct_metric_info.get("core_accept_rate", float("nan")),
                     "train/dm_accept_core_accept_loss": direct_metric_info.get("core_accept_loss", float("nan")),
+                    "train/dm_accept_core_hard_tpr": direct_metric_info.get("core_hard_tpr", float("nan")),
+                    "train/dm_accept_core_soft_tpr": direct_metric_info.get("core_soft_tpr", float("nan")),
+                    "train/dm_accept_core_tpr_loss": direct_metric_info.get("core_tpr_loss", float("nan")),
+                    "train/dm_reference_bank_anchor_count": float(
+                        direct_metric_reference_bank.anchor_count
+                        if direct_metric_reference_bank is not None
+                        else 0
+                    ),
+                    "train/dm_reference_bank_version": float(
+                        direct_metric_reference_bank.version
+                        if direct_metric_reference_bank is not None
+                        else 0
+                    ),
+                    "train/dm_reference_bank_active_epoch": float(
+                        direct_metric_reference_bank.active_epoch
+                        if direct_metric_reference_bank is not None
+                        else -1
+                    ),
                     "train/dm_accept_sat_pair_angle_p95_deg": direct_metric_info.get("sat_pair_angle_p95_deg", float("nan")),
                     "train/dm_accept_sat_pair_loss": direct_metric_info.get("sat_pair_loss", float("nan")),
                     "train/dm_accept_zid_quantile_loss": direct_metric_info.get("zid_quantile_loss", float("nan")),
@@ -6664,6 +7016,8 @@ def train(args) -> int:
             guard_state["phase1_v2_tail_action_code"] = {"NONE": 0.0, "WARNING": 1.0, "ROLLBACK": 2.0, "STOP": 3.0}.get(tail_decision.action, -1.0)
             guard_state.update({f"phase1_v2_{key}": value for key, value in tail_decision.details.items()})
             if (
+                int(epoch) < int(total_epochs)
+                and
                 float(tail_decision.details.get("tail_reference_improved", 0.0)) > 0.0
                 and float(tail_decision.details.get("tail_reference_ready", 0.0)) > 0.0
                 and tail_decision.state == "NORMAL"
@@ -6677,6 +7031,7 @@ def train(args) -> int:
                 phase1_v2_tail_machine.commit_reference(tail_decision)
                 tail_reference_geometry = deepcopy(source_val_tail_geometry)
                 tail_reference_geometry["reference_epoch"] = int(epoch)
+                tail_reference_geometry["final_epoch_excluded"] = True
                 tail_reference_geometry["reference_kind"] = "metric_only_robust_tail_reference"
                 tail_reference_geometry["reference_decision"] = dict(tail_decision.details)
                 tail_reference_epoch = int(epoch)

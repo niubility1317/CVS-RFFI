@@ -806,6 +806,9 @@ class PhysicalAwareClassifier(nn.Module):
         dac_delta: Optional[torch.Tensor],
         pa_delta: Optional[torch.Tensor],
     ) -> Tuple[torch.Tensor, torch.Tensor, torch.Tensor, list, torch.Tensor, torch.Tensor]:
+        # Keep the identity-core feature free of the explicit DAC/PA gate.  The
+        # closed-set classifier still consumes the gated joint feature below,
+        # while Phase1 can select feat_cls for open-set geometry.
         feat_id = self.id_proj(base)
         zero_emb = base.new_zeros((base.size(0), self.emb_dim))
         feat_dac = self.dac_proj(torch.cat([base, dac_local], dim=1)) if self.dac_proj is not None else zero_emb
@@ -821,11 +824,12 @@ class PhysicalAwareClassifier(nn.Module):
             defect_feats.append(feat_dac)
         if self.use_pa:
             defect_feats.append(feat_pa)
+        feat_id_joint = feat_id
         if self.id_gate is not None and len(defect_feats) > 0:
             g = self.id_gate(torch.cat(defect_feats, dim=1))
-            feat_id = feat_id * (1.0 + self.gate_alpha * g)
+            feat_id_joint = feat_id * (1.0 + self.gate_alpha * g)
 
-        feat_joint = self.joint_proj(torch.cat([feat_id] + defect_feats, dim=1))
+        feat_joint = self.joint_proj(torch.cat([feat_id_joint] + defect_feats, dim=1))
         return feat_id, feat_dac, feat_pa, defect_feats, feat_joint, zero_emb
 
     def forward_logits(

@@ -683,6 +683,37 @@ def test_open_set_gradient_budget_ignores_closed_only_head_gradients():
     assert info["total_closed_grad_norm"] > 100.0 * info["closed_grad_norm"]
 
 
+def test_open_set_gradient_budget_can_scope_control_to_identity_backbone():
+    class Toy(torch.nn.Module):
+        def __init__(self):
+            super().__init__()
+            self.id_backbone = torch.nn.Linear(1, 1, bias=False)
+            self.closed_head = torch.nn.Linear(1, 1, bias=False)
+
+    model = Toy()
+    x = torch.ones(1, 1)
+    shared = model.id_backbone(x)
+    closed = shared.square().mean() + 1000.0 * model.closed_head(x).square().mean()
+    opened = shared.square().mean()
+    scaler = torch.cuda.amp.GradScaler(enabled=False)
+
+    info = _backward_with_open_set_projection(
+        model,
+        scaler,
+        closed,
+        opened,
+        project_conflicts=False,
+        budget_controller=False,
+        budget_param_filter=lambda name: name.startswith("id_backbone."),
+    )
+
+    assert info["budget_scope_shared_zid_path"] == 1.0
+    assert info["budget_scope_shared_trainable_params"] == 0.0
+    assert info["shared_param_count"] == 1.0
+    assert model.id_backbone.weight.grad is not None
+    assert model.closed_head.weight.grad is not None
+
+
 def test_unlabeled_tri_state_marks_idle_direct_branch_non_promotable():
     decision = assess_unlabeled_tri_state(
         {

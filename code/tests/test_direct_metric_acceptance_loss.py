@@ -88,6 +88,47 @@ def test_direct_metric_acceptance_loss_reports_targets_and_backpropagates():
     assert torch.isfinite(features.grad).all()
 
 
+def test_hierarchical_gate_preserves_known_core_tpr_and_reports_fixed_radius_overflow():
+    reference = torch.tensor(
+        [[1.0, 0.0], [0.99, 0.10], [0.0, 1.0], [0.10, 0.99]],
+        dtype=torch.float32,
+    )
+    query = torch.tensor(
+        [[0.995, 0.05], [0.94, 0.34], [0.05, 0.995], [0.34, 0.94]],
+        dtype=torch.float32,
+        requires_grad=True,
+    )
+    labels = torch.tensor([0, 0, 1, 1])
+    domains = torch.tensor([0, 1, 0, 1])
+    loss, metrics = direct_metric_acceptance_loss(
+        query,
+        labels,
+        domains,
+        reference_z=reference,
+        reference_y=labels,
+        reference_d=domains,
+        use_domain_local_components=True,
+        hierarchical_class_gate=True,
+        hierarchical_gate_combine="smooth_min",
+        min_samples_per_component=1,
+        min_samples_per_class=1,
+        core_tpr_weight=4.0,
+        core_tpr_target=0.85,
+        source_radius_cap_rad=math.radians(12.0),
+        virtual_count=4,
+    )
+    loss.backward()
+
+    assert torch.isfinite(loss)
+    assert metrics["hierarchical_class_gate"] == 1.0
+    assert 0.0 <= metrics["core_hard_tpr"] <= 1.0
+    assert 0.0 <= metrics["core_soft_tpr"] <= 1.0
+    assert metrics["core_tpr_loss"] >= 0.0
+    assert 0.0 <= metrics["source_overflow_hard"] <= 1.0
+    assert query.grad is not None
+    assert torch.isfinite(query.grad).all()
+
+
 def test_direct_metric_acceptance_loss_uses_concat_sat_pair_view():
     clean = torch.tensor(
         [

@@ -97,6 +97,81 @@ def test_open_set_gradient_control_covers_source_episode_before_direct_metric_st
     assert '"Phase1 final-only mode forbids tail checkpoint rollback' in source
     assert source.count("save_payload(selected_checkpoint, final_payload)") == 1
     assert '"selection_source": "training_final_only"' in source
+    assert 'int(epoch) < int(total_epochs)' in source
+    assert 'tail_reference_geometry["final_epoch_excluded"] = True' in source
+    assert 'if str(getattr(args, "os_budget_scope", "all_shared")) == "zid_path"' in source
+
+
+def test_temporal_pseudo_bank_uses_cross_epoch_identity_instead_of_batch_neighbors():
+    args = SimpleNamespace(pseudo_temporal_min_conf=0.9, pseudo_temporal_bank_min_streak=2)
+    extra = (
+        None,
+        {
+            "rx_i": torch.tensor([1, 1]),
+            "day_i": torch.tensor([2, 2]),
+            "eq_i": torch.tensor([0, 0]),
+            "sig_i": torch.tensor([10, 20]),
+            "base_index": torch.tensor([100, 200]),
+        },
+    )
+    bank = {}
+    first = train_ssdg._temporal_bank_mask_tensor(
+        torch.tensor([3, 4]),
+        torch.tensor([0.99, 0.98]),
+        extra,
+        args,
+        torch.device("cpu"),
+        epoch=1,
+        bank=bank,
+    )
+    second = train_ssdg._temporal_bank_mask_tensor(
+        torch.tensor([3, 4]),
+        torch.tensor([0.99, 0.98]),
+        extra,
+        args,
+        torch.device("cpu"),
+        epoch=2,
+        bank=bank,
+    )
+    changed = train_ssdg._temporal_bank_mask_tensor(
+        torch.tensor([5, 4]),
+        torch.tensor([0.99, 0.98]),
+        extra,
+        args,
+        torch.device("cpu"),
+        epoch=3,
+        bank=bank,
+    )
+
+    assert first.tolist() == [False, False]
+    assert second.tolist() == [True, True]
+    assert changed.tolist() == [False, True]
+
+
+def test_direct_metric_reference_bank_freezes_active_window_until_refresh():
+    bank = train_ssdg.FrozenDirectMetricReferenceBank(per_component=2, refresh_epochs=3)
+    z1 = torch.tensor([[1.0, 0.0], [0.0, 1.0]])
+    labels = torch.tensor([0, 1])
+    domains = torch.tensor([2, 3])
+    bank.observe(z1, labels, domains, view=0)
+    bank.observe(z1.flip(1), labels, domains, view=1)
+
+    assert bank.maybe_promote(1) is False
+    assert bank.maybe_promote(2) is True
+    active_z, active_y, active_d = bank.tensors(view=0)
+    paired_clean, paired_sat, paired_y, paired_d = bank.paired_tensors()
+    frozen = active_z.clone()
+    bank.observe(torch.tensor([[0.5, 0.5], [-0.5, 0.5]]), labels, domains, view=0)
+
+    assert bank.maybe_promote(3) is False
+    assert torch.equal(bank.tensors(view=0)[0], frozen)
+    assert bank.maybe_promote(5) is True
+    assert not torch.equal(bank.tensors(view=0)[0], frozen)
+    assert active_y.tolist() == [0, 1]
+    assert active_d.tolist() == [2, 3]
+    assert paired_clean.size() == paired_sat.size()
+    assert paired_y.tolist() == [0, 1]
+    assert paired_d.tolist() == [2, 3]
 
 
 def test_source_val_satellite_eval_forces_source_val_loader_instead_of_main_test_alias(monkeypatch):

@@ -1766,6 +1766,7 @@ def direct_metric_acceptance_loss(
     overflow_accept_target: float = 0.20,
     radius_inter_ratio_target: float = 0.85,
     core_accept_target: float = 0.82,
+    core_tpr_target: float = 0.85,
     sat_pair_target_rad: float = math.radians(10.0),
     zid_quantile_weight: float = 1.0,
     source_overflow_weight: float = 1.0,
@@ -1779,6 +1780,7 @@ def direct_metric_acceptance_loss(
     component_inter_margin_weight: float = 0.0,
     component_overlap_weight: float = 0.0,
     core_accept_weight: float = 0.25,
+    core_tpr_weight: float = 0.0,
     sat_pair_weight: float = 0.0,
     quantile_temperature_rad: float = math.radians(3.0),
     accept_temperature: float = 0.04,
@@ -1788,6 +1790,7 @@ def direct_metric_acceptance_loss(
     component_inter_margin_rad: float = math.radians(55.0),
     component_overlap_margin_rad: float = math.radians(4.0),
     source_margin_rad: float = math.radians(2.0),
+    source_radius_cap_rad: float = 0.0,
     shell_width_rad: float = math.radians(4.0),
     accept_cvar_alpha: float = 0.25,
     virtual_detach: bool = True,
@@ -1798,6 +1801,7 @@ def direct_metric_acceptance_loss(
     require_domain_local_components: bool = False,
     min_samples_per_component: int = 2,
     hierarchical_class_gate: bool = False,
+    hierarchical_gate_combine: str = "product",
     reference_z: Optional[torch.Tensor] = None,
     reference_y: Optional[torch.Tensor] = None,
     reference_d: Optional[torch.Tensor] = None,
@@ -1816,6 +1820,7 @@ def direct_metric_acceptance_loss(
         "zid_p99_deg": float("nan"),
         "zid_tail_cvar_deg": float("nan"),
         "source_overflow": float("nan"),
+        "source_overflow_hard": float("nan"),
         "source_overflow_loss": 0.0,
         "proxy_vaccept": float("nan"),
         "proxy_vaccept_loss": 0.0,
@@ -1838,6 +1843,9 @@ def direct_metric_acceptance_loss(
         "global_zid_quantile_loss": 0.0,
         "core_accept_rate": float("nan"),
         "core_accept_loss": 0.0,
+        "core_hard_tpr": float("nan"),
+        "core_soft_tpr": float("nan"),
+        "core_tpr_loss": 0.0,
         "sat_pair_angle_p95_deg": float("nan"),
         "sat_pair_loss": 0.0,
         "zid_quantile_loss": 0.0,
@@ -2225,8 +2233,31 @@ def direct_metric_acceptance_loss(
                     for label in gate_labels
                 ]
             ).to(device=gate_labels.device)
-            component_accept = component_accept * class_accept[:, class_index]
-            effective_density = effective_density * class_density_gate[:, class_index]
+            class_component_accept = class_accept[:, class_index]
+            class_component_density = class_density_gate[:, class_index]
+            if str(hierarchical_gate_combine).strip().lower() == "smooth_min":
+                # A calibrated smooth minimum keeps the deployment-like AND
+                # semantics without the product gate's reject-all shortcut.
+                smooth_eps = 1e-6
+                component_accept = 0.5 * (
+                    component_accept
+                    + class_component_accept
+                    - torch.sqrt(
+                        (component_accept - class_component_accept).pow(2)
+                        + smooth_eps
+                    )
+                ).clamp(0.0, 1.0)
+                effective_density = 0.5 * (
+                    effective_density
+                    + class_component_density
+                    - torch.sqrt(
+                        (effective_density - class_component_density).pow(2)
+                        + smooth_eps
+                    )
+                ).clamp(0.0, 1.0)
+            else:
+                component_accept = component_accept * class_component_accept
+                effective_density = effective_density * class_component_density
         low_density_prob = 1.0 - effective_density.max(dim=1).values
         return component_accept.max(dim=1).values, low_density_prob
 
@@ -2241,6 +2272,12 @@ def direct_metric_acceptance_loss(
         if core_prob.numel()
         else sample_z.new_tensor(0.0)
     )
+    core_soft_tpr_tensor = (
+        torch.sigmoid((core_prob - 0.5) / tau_a).mean()
+        if core_prob.numel()
+        else sample_z.new_tensor(0.0)
+    )
+    core_tpr_loss = F.relu(float(core_tpr_target) - core_soft_tpr_tensor).pow(2)
     tail_prob, tail_low_density_prob = _geometry_accept_prob(sample_z[tail_mask])
     overflow_prob, overflow_low_density_prob = _geometry_accept_prob(sample_z[overflow_mask])
     tail_accept_loss = _accept_loss(tail_prob, float(tail_accept_target))
@@ -2342,6 +2379,7 @@ def direct_metric_acceptance_loss(
         )
 
     source_probs = []
+    source_hard_overflow = []
     if sample_domains is not None:
         for cls in center_labels:
             cls_fit = sample_labels.eq(cls) & sample_fit_mask
@@ -2364,11 +2402,14 @@ def direct_metric_acceptance_loss(
                     if support_angles.numel() > 1
                     else support_angles.detach().max()
                 ) + max(0.0, float(source_margin_rad))
+                if float(source_radius_cap_rad) > 0.0:
+                    support_radius = support_radius.clamp_max(float(source_radius_cap_rad))
                 query_angles = _safe_angle_from_cos(
                     (sample_z[query] * support_center.view(1, -1)).sum(dim=1).clamp(-1.0 + angle_eps, 1.0 - angle_eps),
                     eps=angle_eps,
                 )
                 source_probs.append(torch.sigmoid((query_angles - support_radius) / tau_q))
+                source_hard_overflow.append(query_angles.detach() > support_radius.detach())
     source_overflow_prob = torch.cat(source_probs, dim=0) if source_probs else sample_z.new_zeros((0,))
     source_overflow_loss = _accept_loss(source_overflow_prob, float(source_overflow_target))
 
@@ -2397,6 +2438,7 @@ def direct_metric_acceptance_loss(
         + max(0.0, float(component_inter_margin_weight)) * component_inter_margin_loss
         + max(0.0, float(component_overlap_weight)) * component_overlap_loss
         + max(0.0, float(core_accept_weight)) * core_accept_loss
+        + max(0.0, float(core_tpr_weight)) * core_tpr_loss
         + max(0.0, float(sat_pair_weight)) * sat_pair_loss
     )
 
@@ -2433,6 +2475,18 @@ def direct_metric_acceptance_loss(
         "global_zid_quantile_loss": _scalar_metric(global_zid_quantile_loss),
         "core_accept_rate": _mean_prob(core_prob),
         "core_accept_loss": _scalar_metric(core_accept_loss),
+        "core_hard_tpr": (
+            _scalar_metric((core_prob.detach() >= 0.5).float().mean())
+            if core_prob.numel()
+            else float("nan")
+        ),
+        "core_soft_tpr": _scalar_metric(core_soft_tpr_tensor.detach()),
+        "core_tpr_loss": _scalar_metric(core_tpr_loss),
+        "source_overflow_hard": (
+            _scalar_metric(torch.cat(source_hard_overflow).float().mean())
+            if source_hard_overflow
+            else float("nan")
+        ),
         "sat_pair_angle_p95_deg": math.degrees(_scalar_metric(sat_pair_p95)),
         "sat_pair_loss": _scalar_metric(sat_pair_loss),
         "zid_quantile_loss": _scalar_metric(zid_quantile_loss),
