@@ -48,3 +48,12 @@
 - 完整扫描当前已写入日志，未见Traceback、RuntimeError、OOM、Killed、NaN、Inf或未识别参数；硬错误计数0。`metrics_epoch.csv=0/8`、`PAPER-EVAL-SUMMARY=0/8`，符合产物在训练完成时落盘的当前阶段。
 - 证据边界：本次只能判定为`RUNNING_HEALTHY_THROUGH_LATEST_PARSED_EPOCH`，不是完整训练分析或结果达标。全部8个候选完成后再读取8×200epoch完整日志和正式last5产物。
 - 本次SSH命令完成后，本地`ssh.exe=0`、N607 TCP22已建立连接`=0`；未干预、重启、覆盖或删除任何远程状态。
+
+## 2026-07-14 18:21心跳监控
+
+- 直连N607只读预检再次通过；8/8 launcher和8/8 trainer仍与启动PID一致。
+- P01–P08最新完整日志进度为epoch `124,122,127,127,122,126,121,114/200`；日志行数分别为`462,628,451,455,440,456,453,404`，文件大小为`30.3–41.2KiB`。P08稍慢但持续前进，不构成stale log。
+- GPU0–7各仅1个本任务compute，显存`470–500MiB`，GPU利用率`10%–21%`；容量门仍满足。
+- 完整扫描截至18:21已写入的所有训练与launcher日志，硬错误计数0；未见Traceback、RuntimeError、OOM、Killed、NaN、Inf或参数错误。`metrics_epoch.csv=0/8`、`PAPER-EVAL-SUMMARY=0/8`，仍属训练中正常状态。
+- 当前证据只覆盖最新epoch114–127，判定为`RUNNING_HEALTHY_THROUGH_LATEST_PARSED_EPOCH`，不构成last5结果或论文复现结论。
+- 短连接已退出：本地`ssh.exe=0`、N607 TCP22已建立连接`=0`；未修改任何N607文件、进程或产物。
