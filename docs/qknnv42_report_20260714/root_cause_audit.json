@@ -1,0 +1,483 @@
+{
+  "schema_version": 1,
+  "generated_at": "2026-07-14T16:46:43+08:00",
+  "scope": "qKNNV42 legacy diagnostic versus 2026-07-13 formal Stage2-C matrix root-cause audit",
+  "claim_boundary": "诊断性反事实结果，不替代当前正式矩阵，不构成部署成功证据",
+  "protocol_comparison": [
+    {
+      "dimension": "评估任务",
+      "legacy": "批量转导式、角色已知、类别计数已知",
+      "formal": "8类统一逐样本分类"
+    },
+    {
+      "dimension": "receiver",
+      "legacy": "仅7-14",
+      "formal": "20-1、3-19、7-14、7-7、8-8"
+    },
+    {
+      "dimension": "类别",
+      "legacy": "6 old+20 new",
+      "formal": "6 old+2 seen-new"
+    },
+    {
+      "dimension": "场景覆盖",
+      "legacy": "TX只覆盖部分场景，场景与类别相关",
+      "formal": "每类均在clear、low、rain评估"
+    },
+    {
+      "dimension": "seed口径",
+      "legacy": "120-seed扫描后选421070，再做162-row精调",
+      "formal": "5个固定seed全部报告"
+    },
+    {
+      "dimension": "特征",
+      "legacy": "60 epoch adapter+5-view TTA+96维FFT辅助",
+      "formal": "冻结160维单视图z_id，无辅助特征"
+    },
+    {
+      "dimension": "决策",
+      "legacy": "old/new角色分区+每类等额quota+场景硬筛",
+      "formal": "无角色、quota和场景排除，独立argmax"
+    },
+    {
+      "dimension": "证据地位",
+      "legacy": "NON_DEPLOYMENT legacy diagnostic",
+      "formal": "当前Stage2-C正式矩阵候选证据"
+    }
+  ],
+  "legacy_replay": {
+    "checks": {
+      "metric_reproduction": true,
+      "support_hash_match": true,
+      "query_hash_match": true
+    },
+    "feature_bridge": {
+      "evidence": "legacy适配5-view特征+current-like head，2个new类，seed421038..421077",
+      "rows": 40,
+      "old_acc_mean": 0.8936904761904761,
+      "old_acc_std": 0.011978404701648092,
+      "seen_new_acc_mean": 0.7258928571428571,
+      "seen_new_acc_std": 0.06045111028503841,
+      "H_old_new_mean": 0.7996008817551699,
+      "H_old_new_std": 0.036125022469301146,
+      "H_old_new_min": 0.7275,
+      "H_old_new_max": 0.8677690802348337,
+      "comparison_limit": "与当前正式clear行receiver和类别近似对齐，但query样本与生成链仍不完全相同",
+      "current_rx7_14_k5_clear_old_acc": 0.8216666666666667,
+      "current_rx7_14_k5_clear_seen_new_acc": 0.5700000000000001,
+      "current_rx7_14_k5_clear_H_old_new": 0.6711224276566036,
+      "delta_old_pp": 7.202380952380949,
+      "delta_seen_new_pp": 15.589285714285705,
+      "delta_H_pp": 12.847845409856628
+    }
+  },
+  "legacy_ablations": [
+    {
+      "variant_id": "full_legacy",
+      "setting": "完整legacy：角色分区+等额quota+场景硬筛+FFT辅助+LP+场景残差",
+      "old_acc": 0.9452380952380952,
+      "seen_new_acc": 0.9014285714285715,
+      "H_old_new": 0.9228136742061446,
+      "min_old_class_acc": 0.8571428571428571,
+      "min_seen_new_class_acc": 0.8142857142857143,
+      "support_index_sha16": "a84b66e28e565c52",
+      "query_index_sha16": "75c99f6361810ca9",
+      "delta_H_vs_full_pp": 0.0
+    },
+    {
+      "variant_id": "global_quota",
+      "setting": "去掉old/new角色分区，仅保留全局等额quota",
+      "old_acc": 0.8785714285714286,
+      "seen_new_acc": 0.875,
+      "H_old_new": 0.8767820773930755,
+      "min_old_class_acc": 0.7,
+      "min_seen_new_class_acc": 0.7857142857142857,
+      "support_index_sha16": "a84b66e28e565c52",
+      "query_index_sha16": "75c99f6361810ca9",
+      "delta_H_vs_full_pp": -4.603159681306912
+    },
+    {
+      "variant_id": "plain_scenario",
+      "setting": "去掉角色分区和全部quota，保留场景硬筛",
+      "old_acc": 0.9095238095238095,
+      "seen_new_acc": 0.8242857142857143,
+      "H_old_new": 0.8648095107309609,
+      "min_old_class_acc": 0.7714285714285715,
+      "min_seen_new_class_acc": 0.4714285714285714,
+      "support_index_sha16": "a84b66e28e565c52",
+      "query_index_sha16": "75c99f6361810ca9",
+      "delta_H_vs_full_pp": -5.800416347518366
+    },
+    {
+      "variant_id": "role_no_scenario_info",
+      "setting": "保留角色quota，关闭场景硬筛和场景残差",
+      "old_acc": 0.9452380952380952,
+      "seen_new_acc": 0.7985714285714286,
+      "H_old_new": 0.8657369119138644,
+      "min_old_class_acc": 0.8571428571428571,
+      "min_seen_new_class_acc": 0.5857142857142857,
+      "support_index_sha16": "a84b66e28e565c52",
+      "query_index_sha16": "75c99f6361810ca9",
+      "delta_H_vs_full_pp": -5.707676229228021
+    },
+    {
+      "variant_id": "no_aux_fft",
+      "setting": "完整legacy但关闭96维FFT辅助分数",
+      "old_acc": 0.9404761904761905,
+      "seen_new_acc": 0.7735714285714286,
+      "H_old_new": 0.848897664358145,
+      "min_old_class_acc": 0.8428571428571429,
+      "min_seen_new_class_acc": 0.6142857142857143,
+      "support_index_sha16": "a84b66e28e565c52",
+      "query_index_sha16": "75c99f6361810ca9",
+      "delta_H_vs_full_pp": -7.391600984799962
+    },
+    {
+      "variant_id": "no_lp_residual",
+      "setting": "完整legacy但关闭label propagation和场景残差",
+      "old_acc": 0.9452380952380952,
+      "seen_new_acc": 0.8028571428571428,
+      "H_old_new": 0.8682492119702689,
+      "min_old_class_acc": 0.8571428571428571,
+      "min_seen_new_class_acc": 0.4857142857142857,
+      "support_index_sha16": "a84b66e28e565c52",
+      "query_index_sha16": "75c99f6361810ca9",
+      "delta_H_vs_full_pp": -5.456446223587563
+    },
+    {
+      "variant_id": "current_like_n20",
+      "setting": "历史强特征上的current-like统一argmax：无角色、quota、场景和FFT辅助",
+      "old_acc": 0.7642857142857142,
+      "seen_new_acc": 0.42714285714285716,
+      "H_old_new": 0.5480130181569031,
+      "min_old_class_acc": 0.4,
+      "min_seen_new_class_acc": 0.04285714285714286,
+      "support_index_sha16": "a84b66e28e565c52",
+      "query_index_sha16": "75c99f6361810ca9",
+      "delta_H_vs_full_pp": -37.48006560492415
+    }
+  ],
+  "scenario_shortcut": {
+    "support_index_sha16": "a84b66e28e565c52",
+    "query_index_sha16": "75c99f6361810ca9",
+    "roles": [
+      {
+        "role": "target-old",
+        "full_candidate_classes": 6,
+        "scenario_candidate_mean": 4.4,
+        "scenario_candidate_min": 2,
+        "scenario_candidate_max": 5,
+        "true_class_retained_rate": 1.0,
+        "query_rows": 420
+      },
+      {
+        "role": "seen-new",
+        "full_candidate_classes": 20,
+        "scenario_candidate_mean": 8.42,
+        "scenario_candidate_min": 5,
+        "scenario_candidate_max": 11,
+        "true_class_retained_rate": 0.9771428571428571,
+        "query_rows": 1400
+      }
+    ]
+  },
+  "seed_selection": {
+    "seed_rows": 120,
+    "old_acc_mean": 0.9370436507936508,
+    "old_acc_std": 0.008674603754279964,
+    "seen_new_acc_mean": 0.8710178571428571,
+    "seen_new_acc_std": 0.020864455973410124,
+    "H_old_new_mean": 0.9026645384034564,
+    "H_old_new_std": 0.011489618279995175,
+    "H_old_new_min": 0.8656497506600176,
+    "H_old_new_max": 0.92798329027648,
+    "selected_seed": 421070,
+    "selected_seed_pre_refine_H": 0.9186788997613806,
+    "selected_seed_H_rank": 7,
+    "refined_H": 0.9228136742061446,
+    "refinement_delta_pp": 0.41347744447639556,
+    "refined_vs_seed_mean_delta_pp": 2.014913580268818
+  },
+  "feature_stack": [
+    {
+      "stack": "历史legacy",
+      "base_checkpoint": "best_joint_safe_ssdg.pth",
+      "adapter": "id_norm_late_feature，60 epoch，289685个可训练参数",
+      "satellite_tta_views": 5,
+      "aux_feature": "96维FFT log-magnitude，score weight=0.34",
+      "decision": "scenario-aware+role-balanced equal-quota Hungarian"
+    },
+    {
+      "stack": "当前正式",
+      "base_checkpoint": "best_joint_safe_ssdg.pth",
+      "adapter": "无；冻结基础z_id",
+      "satellite_tta_views": 1,
+      "aux_feature": "无",
+      "decision": "8类逐样本统一argmax；无role/quota/scenario hard mask"
+    }
+  ],
+  "current_formal": {
+    "run_count": 125,
+    "scenario_row_count": 375,
+    "k_summary": [
+      {
+        "k_shot": 1,
+        "rows": 75,
+        "old_acc": 0.5786666666666667,
+        "seen_new_acc": 0.365,
+        "H_old_new": 0.4103507598585982,
+        "old_to_seen_new_rate": 0.11588888888888889,
+        "seen_new_to_old_rate": 0.43933333333333335
+      },
+      {
+        "k_shot": 2,
+        "rows": 75,
+        "old_acc": 0.6184444444444445,
+        "seen_new_acc": 0.4273333333333333,
+        "H_old_new": 0.4806698795901801,
+        "old_to_seen_new_rate": 0.10877777777777778,
+        "seen_new_to_old_rate": 0.395
+      },
+      {
+        "k_shot": 5,
+        "rows": 75,
+        "old_acc": 0.6741111111111111,
+        "seen_new_acc": 0.5036666666666666,
+        "H_old_new": 0.5586593588954331,
+        "old_to_seen_new_rate": 0.09966666666666667,
+        "seen_new_to_old_rate": 0.36033333333333334
+      },
+      {
+        "k_shot": 10,
+        "rows": 75,
+        "old_acc": 0.6967777777777777,
+        "seen_new_acc": 0.5336666666666666,
+        "H_old_new": 0.5909596169780901,
+        "old_to_seen_new_rate": 0.09377777777777778,
+        "seen_new_to_old_rate": 0.35233333333333333
+      },
+      {
+        "k_shot": 20,
+        "rows": 75,
+        "old_acc": 0.7116666666666667,
+        "seen_new_acc": 0.5673333333333332,
+        "H_old_new": 0.6221689809610939,
+        "old_to_seen_new_rate": 0.08466666666666667,
+        "seen_new_to_old_rate": 0.3373333333333333
+      }
+    ],
+    "receiver_summary": [
+      {
+        "receiver": "20-1",
+        "rows": 75,
+        "old_acc": 0.604111111111111,
+        "seen_new_acc": 0.6073333333333333,
+        "H_old_new": 0.5956628297291008,
+        "old_to_seen_new_rate": 0.11466666666666667,
+        "seen_new_to_old_rate": 0.15033333333333335
+      },
+      {
+        "receiver": "3-19",
+        "rows": 75,
+        "old_acc": 0.49088888888888893,
+        "seen_new_acc": 0.4036666666666667,
+        "H_old_new": 0.42731615348721175,
+        "old_to_seen_new_rate": 0.11077777777777778,
+        "seen_new_to_old_rate": 0.4606666666666666
+      },
+      {
+        "receiver": "7-14",
+        "rows": 75,
+        "old_acc": 0.805888888888889,
+        "seen_new_acc": 0.42233333333333334,
+        "H_old_new": 0.5380158628943086,
+        "old_to_seen_new_rate": 0.08022222222222222,
+        "seen_new_to_old_rate": 0.45899999999999996
+      },
+      {
+        "receiver": "7-7",
+        "rows": 75,
+        "old_acc": 0.7146666666666667,
+        "seen_new_acc": 0.49566666666666664,
+        "H_old_new": 0.576740138285856,
+        "old_to_seen_new_rate": 0.10044444444444445,
+        "seen_new_to_old_rate": 0.45399999999999996
+      },
+      {
+        "receiver": "8-8",
+        "rows": 75,
+        "old_acc": 0.6641111111111111,
+        "seen_new_acc": 0.468,
+        "H_old_new": 0.5250736118869181,
+        "old_to_seen_new_rate": 0.09666666666666666,
+        "seen_new_to_old_rate": 0.36033333333333334
+      }
+    ],
+    "scenario_summary": [
+      {
+        "scenario": "leo_clear_weak",
+        "rows": 125,
+        "old_acc": 0.6793333333333333,
+        "seen_new_acc": 0.5084,
+        "H_old_new": 0.5644928705097783,
+        "old_to_seen_new_rate": 0.1012,
+        "seen_new_to_old_rate": 0.352
+      },
+      {
+        "scenario": "leo_low_elev_weak",
+        "rows": 125,
+        "old_acc": 0.6292666666666666,
+        "seen_new_acc": 0.5122000000000001,
+        "H_old_new": 0.5444565089601321,
+        "old_to_seen_new_rate": 0.10626666666666666,
+        "seen_new_to_old_rate": 0.33
+      },
+      {
+        "scenario": "leo_rain_weak",
+        "rows": 125,
+        "old_acc": 0.6592,
+        "seen_new_acc": 0.4176,
+        "H_old_new": 0.4887357783001268,
+        "old_to_seen_new_rate": 0.0942,
+        "seen_new_to_old_rate": 0.4486
+      }
+    ],
+    "k5_summary": {
+      "k_shot": 5,
+      "rows": 75,
+      "old_acc": 0.6741111111111111,
+      "seen_new_acc": 0.5036666666666666,
+      "H_old_new": 0.5586593588954331,
+      "old_to_seen_new_rate": 0.09966666666666667,
+      "seen_new_to_old_rate": 0.36033333333333334
+    },
+    "k5_error_flow": [
+      {
+        "truth_role": "target-old",
+        "correct": 0.6741111111111111,
+        "cross_role_error": 0.09966666666666667,
+        "within_role_error": 0.2262222222222222,
+        "interpretation": "old侧除跨角色错误外，仍有显著old类内部混淆"
+      },
+      {
+        "truth_role": "seen-new",
+        "correct": 0.5036666666666666,
+        "cross_role_error": 0.36033333333333334,
+        "within_role_error": 0.13600000000000007,
+        "interpretation": "new侧首要错误是被吸入old类，而非两个new类互混"
+      }
+    ],
+    "rx7_14_k5_scenario_summary": [
+      {
+        "scenario": "leo_clear_weak",
+        "rows": 5,
+        "old_acc": 0.8216666666666667,
+        "seen_new_acc": 0.5700000000000001,
+        "H_old_new": 0.6711224276566036,
+        "old_to_seen_new_rate": 0.095,
+        "seen_new_to_old_rate": 0.29500000000000004
+      },
+      {
+        "scenario": "leo_low_elev_weak",
+        "rows": 5,
+        "old_acc": 0.7883333333333333,
+        "seen_new_acc": 0.425,
+        "H_old_new": 0.5433237172037477,
+        "old_to_seen_new_rate": 0.10166666666666666,
+        "seen_new_to_old_rate": 0.43
+      },
+      {
+        "scenario": "leo_rain_weak",
+        "rows": 5,
+        "old_acc": 0.7983333333333333,
+        "seen_new_acc": 0.385,
+        "H_old_new": 0.5032877163602107,
+        "old_to_seen_new_rate": 0.07833333333333334,
+        "seen_new_to_old_rate": 0.52
+      }
+    ],
+    "rx7_14_k5_seed_H_min": 0.5422662220433158,
+    "rx7_14_k5_seed_H_max": 0.6193691224516142,
+    "factor_spread": [
+      {
+        "factor": "K-shot",
+        "low_setting": "K=1",
+        "low_H": 0.4103507598585982,
+        "high_setting": "K=20",
+        "high_H": 0.6221689809610939,
+        "spread_pp": 21.181822110249566
+      },
+      {
+        "factor": "receiver",
+        "low_setting": "3-19",
+        "low_H": 0.42731615348721175,
+        "high_setting": "20-1",
+        "high_H": 0.5956628297291008,
+        "spread_pp": 16.834667624188903
+      },
+      {
+        "factor": "场景",
+        "low_setting": "leo_rain_weak",
+        "low_H": 0.4887357783001268,
+        "high_setting": "leo_clear_weak",
+        "high_H": 0.5644928705097783,
+        "spread_pp": 7.575709220965143
+      },
+      {
+        "factor": "support seed",
+        "low_setting": "rx7-14,K=5最弱seed",
+        "low_H": 0.5422662220433158,
+        "high_setting": "rx7-14,K=5最强seed",
+        "high_H": 0.6193691224516142,
+        "spread_pp": 7.7102900408298485
+      }
+    ]
+  },
+  "cause_ranking": [
+    {
+      "rank": "1",
+      "cause": "任务与决策协议不等价",
+      "evidence": "legacy利用old/new角色和每类等额quota；当前K5有36.03%的new→old错误，而legacy规则直接禁止该错误",
+      "judgement": "解释历史高分的首要原因"
+    },
+    {
+      "rank": "2",
+      "cause": "表示栈不等价",
+      "evidence": "legacy使用60 epoch adapter、5-view TTA和FFT辅助；当前使用冻结单视图z_id",
+      "judgement": "主要上游原因"
+    },
+    {
+      "rank": "3",
+      "cause": "场景-类别混杂与硬筛",
+      "evidence": "legacy场景硬筛把new候选类平均从20降至8.42，真实类仍保留97.7%",
+      "judgement": "形成强场景捷径"
+    },
+    {
+      "rank": "4",
+      "cause": "正式矩阵扩大receiver与场景覆盖",
+      "evidence": "receiver分组H相差16.83pp，rain场景H比clear低7.58pp",
+      "judgement": "暴露真实域泛化不足"
+    },
+    {
+      "rank": "5",
+      "cause": "seed选择与后验精调",
+      "evidence": "选中seed+精调相对120-seed H均值高约2.01pp，精调本身约0.41pp",
+      "judgement": "存在乐观偏差，但不是36.42pp差距主因"
+    }
+  ],
+  "limitations": [
+    "消融在历史split上进行，组件交互明显，delta不能相加为36.42pp的严格方差分解。",
+    "feature bridge对齐receiver、K、clear场景和2个new类，但query样本与特征生成链仍不完全相同。",
+    "当前score_table未保存逐类原始score，无法离线精确计算当前矩阵的role/quota oracle上界。",
+    "当前正式矩阵没有stdout日志；本审计完整读取结构化metrics、split、score和loss artifact。"
+  ],
+  "source_hashes": {
+    "legacy_runner_sha256": "c8d6ab7c617e5c3043fc3d254f0a47b10075fb484370b7f2e32f76745647017c",
+    "current_runner_sha256": "0fd2d9a96a36a198b42a96fc94c57b79dc13652e91eeba50a7c4e22dad9f5e7a",
+    "legacy_feature_sha256": "4cd41604c9aa34824371ecb66138f25356ba1c0372a98f155ea4f32ea0c80615",
+    "legacy_aux_sha256": "1235a5e977d180848d386b0f80f5e84715adaee356636d8daeb8c16309937594",
+    "legacy_best_sha256": "5a8ac691fd1fe147fb350ce2925f884bc3387fe6c40bed4109b3acf976f50e98",
+    "legacy_seed_sweep_sha256": "fa051f2685d0d657046f3f427a62023867b754647272f3980dfa1b243a8d5f0b",
+    "current_feature_sha256": "c5639f3caf417702a34b61caaa011d9be673431f6b800f2a800134926a76a867"
+  }
+}

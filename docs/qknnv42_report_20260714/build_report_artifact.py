@@ -29,6 +29,7 @@ HISTORICAL_JSON = (
     / "local_v55_diagnostics_20260706"
     / "k5_strict_seed421070_floor_param_best_predictions_20260707.json"
 )
+ROOT_CAUSE_JSON = REPORT_DIR / "root_cause_audit.json"
 
 QKNN_METHOD = "cvs_qknnv42"
 CURRENT_K = [1, 2, 5, 10, 20]
@@ -75,6 +76,7 @@ def assert_inputs() -> None:
         SUMMARY_ROOT / "final_audit.json",
         MATRIX_ROOT,
         HISTORICAL_JSON,
+        ROOT_CAUSE_JSON,
     ]
     missing = [str(path) for path in required if not path.exists()]
     if missing:
@@ -417,6 +419,18 @@ def build_historical() -> dict[str, Any]:
     }
 
 
+def build_root_cause() -> dict[str, Any]:
+    payload = json.loads(ROOT_CAUSE_JSON.read_text(encoding="utf-8-sig"))
+    replay_checks = payload["legacy_replay"]["checks"]
+    if not all(bool(value) for value in replay_checks.values()):
+        raise ValueError(f"Legacy replay checks failed: {replay_checks}")
+    if int(payload["current_formal"]["run_count"]) != 125:
+        raise ValueError("Root-cause audit does not contain 125 formal qKNNV42 runs")
+    if int(payload["current_formal"]["scenario_row_count"]) != 375:
+        raise ValueError("Root-cause audit does not contain 375 formal scenario rows")
+    return payload
+
+
 def build_artifact() -> dict[str, Any]:
     assert_inputs()
     method_summary = read_csv("method_k_summary.csv")
@@ -435,6 +449,7 @@ def build_artifact() -> dict[str, Any]:
     pairwise = build_pairwise(per_run)
     audit_rows, audit_details = build_structured_audit(runs)
     historical = build_historical()
+    root_cause = build_root_cause()
 
     qknn_overall = next(row for row in method_overall if row["method_id"] == QKNN_METHOD)
     k20 = next(row for row in k_curve if row["k_shot"] == 20)
@@ -442,6 +457,13 @@ def build_artifact() -> dict[str, Any]:
     pairwise_wins = sum(row["qknnv42_wins"] for row in pairwise)
     no_h80 = sum(f(row, "H_old_new") >= 0.80 for row in runs)
     both80 = sum(f(row, "old_acc") >= 0.80 and f(row, "seen_new_acc") >= 0.80 for row in runs)
+    current_k5 = root_cause["current_formal"]["k5_summary"]
+    legacy_full = next(
+        row for row in root_cause["legacy_ablations"] if row["variant_id"] == "full_legacy"
+    )
+    historical_gap_pp = 100.0 * (legacy_full["H_old_new"] - current_k5["H_old_new"])
+    feature_bridge = root_cause["legacy_replay"]["feature_bridge"]
+    seed_selection = root_cause["seed_selection"]
 
     headline = [
         {
@@ -451,6 +473,44 @@ def build_artifact() -> dict[str, Any]:
             "overall_H_old_new": qknn_overall["H_old_new"],
             "paired_H_win_rate": pairwise_wins / pairwise_total,
             "formal_runs": len(runs),
+            "legacy_H_old_new": legacy_full["H_old_new"],
+            "formal_k5_H_old_new": current_k5["H_old_new"],
+            "historical_gap_pp": historical_gap_pp,
+        }
+    ]
+
+    feature_bridge_rows = [
+        {
+            "evidence": "历史适配5-view特征+current-like head",
+            "scope": "receiver=7-14、K=5、clear近似对齐、2个new类、40个seed",
+            "old_acc": feature_bridge["old_acc_mean"],
+            "seen_new_acc": feature_bridge["seen_new_acc_mean"],
+            "H_old_new": feature_bridge["H_old_new_mean"],
+            "comparison_limit": feature_bridge["comparison_limit"],
+        },
+        {
+            "evidence": "当前正式冻结单视图特征",
+            "scope": "receiver=7-14、K=5、clear、2个new类、5个seed",
+            "old_acc": feature_bridge["current_rx7_14_k5_clear_old_acc"],
+            "seen_new_acc": feature_bridge["current_rx7_14_k5_clear_seen_new_acc"],
+            "H_old_new": feature_bridge["current_rx7_14_k5_clear_H_old_new"],
+            "comparison_limit": "当前正式同receiver/场景结果；与历史bridge的query样本仍不完全相同",
+        },
+    ]
+
+    seed_selection_rows = [
+        {
+            "seed_rows": seed_selection["seed_rows"],
+            "H_mean": seed_selection["H_old_new_mean"],
+            "H_std": seed_selection["H_old_new_std"],
+            "H_min": seed_selection["H_old_new_min"],
+            "H_max": seed_selection["H_old_new_max"],
+            "selected_seed": seed_selection["selected_seed"],
+            "selected_pre_refine_H": seed_selection["selected_seed_pre_refine_H"],
+            "selected_rank": seed_selection["selected_seed_H_rank"],
+            "refined_H": seed_selection["refined_H"],
+            "refinement_delta_pp": seed_selection["refinement_delta_pp"],
+            "refined_vs_mean_pp": seed_selection["refined_vs_seed_mean_delta_pp"],
         }
     ]
 
@@ -625,6 +685,26 @@ def build_artifact() -> dict[str, Any]:
                 "executed_at": "2026-07-14",
             },
         },
+        {
+            "id": "src_root_cause",
+            "label": "qKNNV42历史差距根因审计",
+            "path": rel(ROOT_CAUSE_JSON),
+            "query": {
+                "engine": "duckdb",
+                "sql": "SELECT * FROM read_json_auto('docs/qknnv42_report_20260714/root_cause_audit.json')",
+                "description": "精确重放历史split并完成同输入消融、场景候选审计、120-seed统计、40-seed特征bridge和125次正式矩阵错误流分析",
+                "executed_at": "2026-07-14",
+                "filters": [
+                    "legacy seed=421070,K=5,6 old+20 new",
+                    "formal phase=stage2c,method=cvs_qknnv42",
+                ],
+                "metric_definitions": [
+                    "分组H=原始row的H_old_new再平均，不由分组old/new均值重新计算",
+                    "delta_H_vs_full_pp=消融H减完整legacy H，单位为百分点",
+                    "cross_role_error=old→new或new→old错误率",
+                ],
+            },
+        },
     ]
 
     cards = [
@@ -648,6 +728,17 @@ def build_artifact() -> dict[str, Any]:
                 {"label": "全K总体H", "field": "overall_H_old_new", "format": "percent"},
                 {"label": "paired H胜率", "field": "paired_H_win_rate", "format": "percent"},
                 {"label": "正式qKNNV42运行", "field": "formal_runs", "format": "number"},
+            ],
+        },
+        {
+            "id": "card_historical_gap",
+            "description": "legacy diagnostic与当前正式K=5的非同协议差距",
+            "dataset": "headline",
+            "sourceId": "src_root_cause",
+            "metrics": [
+                {"label": "历史legacy H", "field": "legacy_H_old_new", "format": "percent"},
+                {"label": "正式K=5 H", "field": "formal_k5_H_old_new", "format": "percent"},
+                {"label": "表观H差距(pp)", "field": "historical_gap_pp", "format": "number"},
             ],
         },
     ]
@@ -886,6 +977,169 @@ def build_artifact() -> dict[str, Any]:
             ],
         },
         {
+            "id": "table_protocol_comparison",
+            "title": "历史legacy与当前正式矩阵的实验定义",
+            "subtitle": "两者共享qKNNV42名称，但receiver、类别、特征、场景、seed和决策器均不等价",
+            "dataset": "protocol_comparison",
+            "defaultSort": {"field": "dimension", "direction": "asc"},
+            "density": "spacious",
+            "sourceId": "src_root_cause",
+            "layout": "full",
+            "columns": [
+                {"field": "dimension", "label": "维度", "type": "text"},
+                {"field": "legacy", "label": "历史legacy diagnostic", "type": "text"},
+                {"field": "formal", "label": "当前正式矩阵", "type": "text"},
+            ],
+        },
+        {
+            "id": "table_legacy_ablation",
+            "title": "同一历史split上的反事实消融",
+            "subtitle": "support/query哈希保持不变；组件交互明显，ΔH不能相加为严格贡献分解",
+            "dataset": "legacy_ablations",
+            "defaultSort": {"field": "H_old_new", "direction": "desc"},
+            "density": "dense",
+            "sourceId": "src_root_cause",
+            "layout": "full",
+            "columns": [
+                {"field": "setting", "label": "推断配置", "type": "text"},
+                {"field": "old_acc", "label": "old_acc", "format": "percent"},
+                {"field": "seen_new_acc", "label": "seen_new_acc", "format": "percent"},
+                {"field": "H_old_new", "label": "H", "format": "percent"},
+                {"field": "delta_H_vs_full_pp", "label": "相对完整legacy ΔH(pp)", "format": "number", "movement": True},
+                {"field": "min_old_class_acc", "label": "min old", "format": "percent"},
+                {"field": "min_seen_new_class_acc", "label": "min new", "format": "percent"},
+            ],
+        },
+        {
+            "id": "table_feature_stack",
+            "title": "同一基础checkpoint之上存在两套不同表示栈",
+            "subtitle": "历史使用adapter、5-view TTA和FFT辅助；当前只使用冻结单视图z_id",
+            "dataset": "feature_stack",
+            "defaultSort": {"field": "stack", "direction": "asc"},
+            "density": "spacious",
+            "sourceId": "src_root_cause",
+            "layout": "full",
+            "columns": [
+                {"field": "stack", "label": "系统", "type": "text"},
+                {"field": "base_checkpoint", "label": "基础checkpoint", "type": "text"},
+                {"field": "adapter", "label": "adapter", "type": "text"},
+                {"field": "satellite_tta_views", "label": "TTA view", "format": "number"},
+                {"field": "aux_feature", "label": "辅助特征", "type": "text"},
+                {"field": "decision", "label": "决策规则", "type": "text"},
+            ],
+        },
+        {
+            "id": "table_scenario_shortcut",
+            "title": "历史场景硬筛显著缩小候选类别集合",
+            "subtitle": "在精确匹配seed421070的split上，按query场景统计可参与评分的同角色类别数",
+            "dataset": "scenario_shortcut",
+            "defaultSort": {"field": "role", "direction": "asc"},
+            "density": "dense",
+            "sourceId": "src_root_cause",
+            "layout": "full",
+            "columns": [
+                {"field": "role", "label": "角色", "type": "text"},
+                {"field": "full_candidate_classes", "label": "完整候选类", "format": "number"},
+                {"field": "scenario_candidate_mean", "label": "场景筛后均值", "format": "number"},
+                {"field": "scenario_candidate_min", "label": "最少", "format": "number"},
+                {"field": "scenario_candidate_max", "label": "最多", "format": "number"},
+                {"field": "true_class_retained_rate", "label": "真实类保留率", "format": "percent"},
+                {"field": "query_rows", "label": "query行", "format": "number"},
+            ],
+        },
+        {
+            "id": "table_current_error_flow",
+            "title": "当前正式K=5错误流",
+            "subtitle": "25个运行×3个场景=75行；new侧首要错误是跨角色吸入old类",
+            "dataset": "current_error_flow",
+            "defaultSort": {"field": "truth_role", "direction": "asc"},
+            "density": "spacious",
+            "sourceId": "src_root_cause",
+            "layout": "full",
+            "columns": [
+                {"field": "truth_role", "label": "真实角色", "type": "text"},
+                {"field": "correct", "label": "正确", "format": "percent"},
+                {"field": "cross_role_error", "label": "跨角色错误", "format": "percent"},
+                {"field": "within_role_error", "label": "同角色错误", "format": "percent"},
+                {"field": "interpretation", "label": "解释", "type": "text"},
+            ],
+        },
+        {
+            "id": "table_factor_spread",
+            "title": "125次运行差异具有可解释结构",
+            "subtitle": "按原始row的H再平均；spread为最强与最弱分组的百分点差",
+            "dataset": "factor_spread",
+            "defaultSort": {"field": "spread_pp", "direction": "desc"},
+            "density": "dense",
+            "sourceId": "src_root_cause",
+            "layout": "full",
+            "columns": [
+                {"field": "factor", "label": "因素", "type": "text"},
+                {"field": "low_setting", "label": "低H设置", "type": "text"},
+                {"field": "low_H", "label": "低H", "format": "percent"},
+                {"field": "high_setting", "label": "高H设置", "type": "text"},
+                {"field": "high_H", "label": "高H", "format": "percent"},
+                {"field": "spread_pp", "label": "差距(pp)", "format": "number"},
+            ],
+        },
+        {
+            "id": "table_feature_bridge",
+            "title": "同receiver、K、clear场景和2个new类的近似feature bridge",
+            "subtitle": "历史强表示仍高出12.85个H百分点；因query样本不完全相同，该差值只作表示栈诊断",
+            "dataset": "feature_bridge",
+            "defaultSort": {"field": "H_old_new", "direction": "desc"},
+            "density": "spacious",
+            "sourceId": "src_root_cause",
+            "layout": "full",
+            "columns": [
+                {"field": "evidence", "label": "证据", "type": "text"},
+                {"field": "scope", "label": "近似对齐范围", "type": "text"},
+                {"field": "old_acc", "label": "old_acc", "format": "percent"},
+                {"field": "seen_new_acc", "label": "seen_new_acc", "format": "percent"},
+                {"field": "H_old_new", "label": "H", "format": "percent"},
+                {"field": "comparison_limit", "label": "限制", "type": "text"},
+            ],
+        },
+        {
+            "id": "table_seed_selection",
+            "title": "历史单seed乐观偏差约2个H百分点",
+            "subtitle": "120-seed基线分布、seed421070精调前位置与162-row参数精调后的变化",
+            "dataset": "seed_selection",
+            "defaultSort": {"field": "selected_seed", "direction": "asc"},
+            "density": "dense",
+            "sourceId": "src_root_cause",
+            "layout": "full",
+            "columns": [
+                {"field": "seed_rows", "label": "seed数", "format": "number"},
+                {"field": "H_mean", "label": "H均值", "format": "percent"},
+                {"field": "H_std", "label": "H标准差", "format": "percent"},
+                {"field": "H_min", "label": "H最小", "format": "percent"},
+                {"field": "H_max", "label": "H最大", "format": "percent"},
+                {"field": "selected_seed", "label": "选中seed", "format": "number"},
+                {"field": "selected_pre_refine_H", "label": "精调前H", "format": "percent"},
+                {"field": "selected_rank", "label": "H排名", "format": "number"},
+                {"field": "refined_H", "label": "精调后H", "format": "percent"},
+                {"field": "refinement_delta_pp", "label": "精调ΔH(pp)", "format": "number", "movement": True},
+                {"field": "refined_vs_mean_pp", "label": "相对均值(pp)", "format": "number", "movement": True},
+            ],
+        },
+        {
+            "id": "table_cause_ranking",
+            "title": "根因优先级",
+            "subtitle": "排序区分“历史高分为何不可比”与“当前正式模型为何仍低”",
+            "dataset": "cause_ranking",
+            "defaultSort": {"field": "rank", "direction": "asc"},
+            "density": "spacious",
+            "sourceId": "src_root_cause",
+            "layout": "full",
+            "columns": [
+                {"field": "rank", "label": "优先级", "type": "text"},
+                {"field": "cause", "label": "根因", "type": "text"},
+                {"field": "evidence", "label": "直接证据", "type": "text"},
+                {"field": "judgement", "label": "判定", "type": "text"},
+            ],
+        },
+        {
             "id": "table_historical",
             "title": "历史高分单行与当前正式矩阵不可混用",
             "subtitle": "历史行用于说明机制潜力；当前主结论只能来自2026-07-13正式矩阵",
@@ -915,7 +1169,7 @@ def build_artifact() -> dict[str, Any]:
             "id": "title",
             "type": "markdown",
             "layout": "full",
-            "body": "# qKNNV42技术汇报：方法、输入输出与当前效果\n\n面向CVS-RFFI Stage2-C增量注册场景。结论基于2026-07-13正式全矩阵、当前实现代码与125个qKNNV42运行目录的完整结构化artifact审计。",
+            "body": "# qKNNV42技术汇报：方法、输入输出、当前效果与历史差距根因\n\n面向CVS-RFFI Stage2-C增量注册场景。结论基于2026-07-13正式全矩阵、当前实现代码、125个qKNNV42运行目录的完整结构化artifact审计，以及历史seed421070同split反事实消融。",
         },
         {
             "id": "technical_summary",
@@ -924,12 +1178,12 @@ def build_artifact() -> dict[str, Any]:
             "body": (
                 "## 技术摘要\n\n"
                 "qKNNV42不是从raw IQ端到端训练的新主干，而是接在冻结ADV3B02身份表征之后的轻量Stage2-C分类头。它以同一target receiver上的K-shot已标注support为记忆，用support-only对角Fisher/whitening尺度改善特征几何，把每条160维support特征量化为int8，再融合top-1余弦邻居、类prototype、微弱旧类锚与10-NN标签传播得到已注册类预测。整个适配过程没有梯度更新，也不保存raw support。\n\n"
+                f"历史old_acc=94.52%、seen_new_acc=90.14%、H={legacy_full['H_old_new']:.2%}不是当前正式K=5的可比基线。精确重放确认其support/query哈希与原结果一致；该行使用old/new角色分区、每类等额quota、场景硬筛、60 epoch adapter、5-view TTA和96维FFT辅助。撤掉这些legacy辅助并改用current-like统一argmax后，即使仍保留历史强特征，20个new类的H也降至{next(row for row in root_cause['legacy_ablations'] if row['variant_id'] == 'current_like_n20')['H_old_new']:.2%}。因此，{historical_gap_pp:.2f}个H百分点的表观差距首先来自任务、表示栈和决策协议不等价，而不是125次运行把同一模型“跑坏”。\n\n"
                 f"正式矩阵覆盖5个receiver、5个seed、K∈{{1,2,5,10,20}}和3种LEO弱场景，共125个qKNNV42运行、375个场景结果。K从1增至20时，H由{k_curve[0]['H_old_new']:.2%}升至{k20['H_old_new']:.2%}；全K总体H为{qknn_overall['H_old_new']:.2%}。相对CSIL、MoPC-HR和Orthogonal Incremental，qKNNV42在{pairwise_wins}/{pairwise_total}个完全配对的H比较中获胜。\n\n"
-                f"但这仍不是部署成功：各K仅有{', '.join(str(row['old80_rows']) for row in k_curve)}/25个运行达到old_acc≥80%，125个运行中H≥80%的数量为{no_h80}，同时old_acc与seen_new_acc均≥80%的数量为{both80}。当前证据只能支持“正式矩阵内联合性能最强的候选头”，不能支持“已达到通用OLD80”或“已完成真实卫星部署”。"
+                f"当前正式K=5的真实瓶颈是跨角色校准：seen-new正确率为{current_k5['seen_new_acc']:.2%}，其中{current_k5['seen_new_to_old_rate']:.2%}的new query被吸入old类。各K仅有{', '.join(str(row['old80_rows']) for row in k_curve)}/25个运行达到old_acc≥80%，125个运行中H≥80%的数量为{no_h80}，同时old_acc与seen_new_acc均≥80%的数量为{both80}。当前证据只能支持“正式矩阵内联合性能最强的候选头”，不能支持“已达到通用OLD80”或“已完成真实卫星部署”。"
             ),
-            "sourceId": "src_per_run",
         },
-        {"id": "headline_metrics", "type": "metric-strip", "layout": "full", "cardIds": ["card_k20", "card_matrix"]},
+        {"id": "headline_metrics", "type": "metric-strip", "layout": "full", "cardIds": ["card_historical_gap", "card_k20", "card_matrix"]},
         {
             "id": "scope_heading",
             "type": "markdown",
@@ -1026,21 +1280,84 @@ def build_artifact() -> dict[str, Any]:
             "id": "historical_heading",
             "type": "markdown",
             "layout": "full",
-            "body": "## 6.为什么历史94.52%不能当作当前正式结论\n\n2026-07-07曾出现K=5、6 old+20 new、seed421070的单行机制验证：old_acc=94.52%、seen_new_acc=90.14%、H=92.28%，类最小准确率也较高。但该JSON仍使用`new_role=target_unknown`历史别名，只有1个seed，支持选择为`stable_first`，new类数量、query规模和切分路径均不同于2026-07-13正式5 receiver×5 seed×5 K矩阵。它证明的是某个历史协议下的机制潜力，不是当前Stage2-C的正式可重复效果。",
-            "sourceId": "src_historical",
+            "body": (
+                "## 6.历史92.28%与正式K=5的55.87%测量的不是同一个任务\n\n"
+                f"历史seed421070行的old_acc、seen_new_acc和H分别为{legacy_full['old_acc']:.2%}、{legacy_full['seen_new_acc']:.2%}和{legacy_full['H_old_new']:.2%}；当前正式K=5的25个运行、75个场景行均值分别为{current_k5['old_acc']:.2%}、{current_k5['seen_new_acc']:.2%}和{current_k5['H_old_new']:.2%}。表观H相差{historical_gap_pp:.2f}个百分点。这个差值不是同一估计量的时间退化，因为两边的数据覆盖、特征表示和决策约束都发生了变化。\n\n"
+                "历史行的输出仍是类别标签，但它先知道每条query属于old还是new，再以Hungarian assignment强制每个类别获得等量query；当前正式runner则对每条query在8个已注册类中独立argmax。前者是带批次角色和类别计数先验的转导式约束分配，后者才是当前正式closed-set分类口径。"
+            ),
+            "sourceId": "src_root_cause",
         },
         {"id": "historical_table", "type": "table", "layout": "full", "tableId": "table_historical", "sourceId": "src_historical"},
+        {"id": "protocol_comparison_table", "type": "table", "layout": "full", "tableId": "table_protocol_comparison", "sourceId": "src_root_cause"},
+        {
+            "id": "ablation_heading",
+            "type": "markdown",
+            "layout": "full",
+            "body": (
+                "### 6.1同一support/query重放表明，legacy高分依赖整套辅助协议\n\n"
+                "根因审计使用保存的feature NPZ、seed421070与原始切分规则重新构造support/query。重放得到的support哈希`a84b66e28e565c52`、query哈希`75c99f6361810ca9`以及94.52%/90.14%指标全部与历史JSON一致；support/query交集为0。因此，问题不是同一样本同时进入support和query，而是测试时允许了更强的任务先验。\n\n"
+                f"保持相同split，只把历史系统改成无角色、无quota、无场景硬筛、无FFT辅助的current-like统一argmax，H从{legacy_full['H_old_new']:.2%}降到{next(row for row in root_cause['legacy_ablations'] if row['variant_id'] == 'current_like_n20')['H_old_new']:.2%}。各单项消融相互作用明显，不能把表中的ΔH相加成严格方差分解；它们共同证明92.28%属于完整legacy系统，而不是普通qKNN头的独立精度。"
+            ),
+            "sourceId": "src_root_cause",
+        },
+        {"id": "legacy_ablation_table", "type": "table", "layout": "full", "tableId": "table_legacy_ablation", "sourceId": "src_root_cause"},
+        {
+            "id": "scenario_feature_heading",
+            "type": "markdown",
+            "layout": "full",
+            "body": (
+                "### 6.2场景捷径和表示栈差异解释了第二层差距\n\n"
+                "历史`scenario_aware=True`只保留与query同场景的support类别。精确split中，old query的候选类平均由6个降至4.40个，new query由20个降至8.42个；真实类别保留率分别为100%和97.71%。这意味着场景字段在历史类-场景覆盖不均的切分中承担了粗粒度标签筛选作用。当前正式矩阵让每个已注册类都覆盖clear、low和rain，因此场景不能再排除类别。\n\n"
+                f"表示栈也不同。历史在同一基础checkpoint之上训练60 epoch、289685个参数的`id_norm_late_feature`适配器，使用5-view TTA和96维FFT辅助；当前只使用冻结单视图z_id。近似对齐receiver`7-14`、K=5、clear和2个new类后，历史强表示配current-like head的40-seed平均H为{feature_bridge['H_old_new_mean']:.2%}，当前正式H为{feature_bridge['current_rx7_14_k5_clear_H_old_new']:.2%}，相差{feature_bridge['delta_H_pp']:.2f}个百分点。由于两者query样本仍不完全相同，这个差值是表示栈诊断，不是严格因果效应。"
+            ),
+            "sourceId": "src_root_cause",
+        },
+        {"id": "feature_stack_table", "type": "table", "layout": "full", "tableId": "table_feature_stack", "sourceId": "src_root_cause"},
+        {"id": "scenario_shortcut_table", "type": "table", "layout": "full", "tableId": "table_scenario_shortcut", "sourceId": "src_root_cause"},
+        {"id": "feature_bridge_table", "type": "table", "layout": "full", "tableId": "table_feature_bridge", "sourceId": "src_root_cause"},
+        {
+            "id": "current_bottleneck_heading",
+            "type": "markdown",
+            "layout": "full",
+            "body": (
+                "### 6.3移除legacy捷径后，当前真实瓶颈是new→old校准和跨receiver表示\n\n"
+                f"正式K=5中，seen-new正确率为{current_k5['seen_new_acc']:.2%}；{current_k5['seen_new_to_old_rate']:.2%}的new query被预测为old类，仅{1.0-current_k5['seen_new_acc']-current_k5['seen_new_to_old_rate']:.2%}落到另一个new类。new侧首要问题不是两个新类互相混淆，而是old类分数系统性占优。old侧正确率为{current_k5['old_acc']:.2%}，其中{current_k5['old_to_seen_new_rate']:.2%}跨到new类，另有{1.0-current_k5['old_acc']-current_k5['old_to_seen_new_rate']:.2%}属于old类内部混淆。\n\n"
+                f"125次运行的差异不是无规律噪声：K从1到20带来{next(row['spread_pp'] for row in root_cause['current_formal']['factor_spread'] if row['factor']=='K-shot'):.2f}个H百分点跨度；receiver跨度为{next(row['spread_pp'] for row in root_cause['current_formal']['factor_spread'] if row['factor']=='receiver'):.2f}个百分点；场景跨度为{next(row['spread_pp'] for row in root_cause['current_formal']['factor_spread'] if row['factor']=='场景'):.2f}个百分点。receiver`7-14`、K=5下5个support seed仍产生{root_cause['current_formal']['rx7_14_k5_seed_H_min']:.2%}到{root_cause['current_formal']['rx7_14_k5_seed_H_max']:.2%}的H变化。"
+            ),
+            "sourceId": "src_root_cause",
+        },
+        {"id": "current_error_flow_table", "type": "table", "layout": "full", "tableId": "table_current_error_flow", "sourceId": "src_root_cause"},
+        {"id": "factor_spread_table", "type": "table", "layout": "full", "tableId": "table_factor_spread", "sourceId": "src_root_cause"},
+        {
+            "id": "seed_heading",
+            "type": "markdown",
+            "layout": "full",
+            "body": (
+                "### 6.4单seed和后验精调造成乐观偏差，但只解释约2个H百分点\n\n"
+                f"历史120-seed基线的H均值为{seed_selection['H_old_new_mean']:.2%}、标准差为{seed_selection['H_old_new_std']:.2%}，范围为{seed_selection['H_old_new_min']:.2%}到{seed_selection['H_old_new_max']:.2%}。seed421070精调前H为{seed_selection['selected_seed_pre_refine_H']:.2%}，在120个seed中排名第{seed_selection['selected_seed_H_rank']}；162-row参数精调再提高{seed_selection['refinement_delta_pp']:.2f}个百分点。最终92.28%比120-seed基线均值高{seed_selection['refined_vs_seed_mean_delta_pp']:.2f}个百分点，远小于与正式K=5之间的{historical_gap_pp:.2f}个百分点表观差距。"
+            ),
+            "sourceId": "src_root_cause",
+        },
+        {"id": "seed_selection_table", "type": "table", "layout": "full", "tableId": "table_seed_selection", "sourceId": "src_root_cause"},
+        {
+            "id": "cause_ranking_heading",
+            "type": "markdown",
+            "layout": "full",
+            "body": "### 6.5根因判定\n\n比较口径混用是第一层问题：同一个qKNNV42名称覆盖了两套不同特征、不同场景权限和不同决策器。协议修复后暴露的第二层问题才属于当前算法本身，即new→old分数失衡、old类内部混淆以及跨receiver/rain场景表示不足。历史92.28%应继续保留为`NON_DEPLOYMENT legacy diagnostic`，不得作为当前Stage2-C正式基线或部署证据。",
+            "sourceId": "src_root_cause",
+        },
+        {"id": "cause_ranking_table", "type": "table", "layout": "full", "tableId": "table_cause_ranking", "sourceId": "src_root_cause"},
         {
             "id": "limitations",
             "type": "markdown",
             "layout": "full",
-            "body": "## 7.局限性与稳健性边界\n\n- **尚未达到通用OLD80。**K=20也只有5/25个运行达到old_acc≥80%，且没有运行达到H≥80%。80%只是阶段性进展门槛，不等于部署成功。\n\n- **当前是transductive，不是严格inductive。**query特征参与support+query图传播；query标签不使用。若部署要求单样本独立到达，必须追加关闭label propagation的inductive消融。\n\n- **没有unknown/reject输出。**当前只在8个已注册类中argmax，不能将错误分类当作未知检测。\n\n- **场景残差在正式runner中未生效。**元数据保留`scenario_residual_weight=0.5`，但`scenario_residual_applied=False`；正式结果应按未应用解释。\n\n- **统计实现与协议文档有差异。**比较协议写明bootstrap CI、overall test、Holm校正和K轴AUC；当前summary manifest实际采用1.96×标准误的正态近似CI，现有summary artifact也没有overall test、Holm或AUC产物。\n\n- **artifact完整不等于已发布。**正式矩阵结构化产物完整，但截至本报告生成时仍位于Git未跟踪的`local_artifacts`目录，因此不能称为已版本化、已发布或已部署证据。\n\n- **不是实星验证。**LEO场景来自简化物理增强；本报告不把它表述为真实卫星链路或在轨部署结果。",
+            "body": "## 7.局限性与稳健性边界\n\n- **历史消融不是可加的因果分解。**所有消融保持同一历史split，但角色、quota、场景、辅助特征和图传播相互作用，表中ΔH不能相加为36.42个百分点的严格贡献率。\n\n- **feature bridge只是近似对齐。**它对齐receiver、K、clear场景和2个new类，但历史与当前query样本、生成链及query规模仍不完全相同；12.85个百分点只能说明表示栈值得优先验证。\n\n- **当前缺少逐类原始score。**现有`score_table.csv`不能精确回放role-restricted或equal-quota oracle上界，因此本报告只使用已保存的跨角色错误率，不把oracle诊断当正式结果。\n\n- **尚未达到通用OLD80。**K=20也只有5/25个运行达到old_acc≥80%，且没有运行达到H≥80%。80%只是阶段性进展门槛，不等于部署成功。\n\n- **当前是transductive，不是严格inductive。**query特征参与support+query图传播；query标签不使用。若部署要求单样本独立到达，必须追加关闭label propagation的inductive消融。\n\n- **没有unknown/reject输出。**当前只在8个已注册类中argmax，不能将错误分类当作未知检测。\n\n- **场景残差在正式runner中未生效。**元数据保留`scenario_residual_weight=0.5`，但`scenario_residual_applied=False`；正式结果应按未应用解释。\n\n- **统计实现与协议文档有差异。**比较协议写明bootstrap CI、overall test、Holm校正和K轴AUC；当前summary manifest实际采用1.96×标准误的正态近似CI，现有summary artifact也没有overall test、Holm或AUC产物。\n\n- **artifact完整不等于已发布。**正式矩阵结构化产物完整，但截至本报告生成时仍位于Git未跟踪的`local_artifacts`目录，因此不能称为已版本化、已发布或已部署证据。\n\n- **不是实星验证。**LEO场景来自简化物理增强；本报告不把它表述为真实卫星链路或在轨部署结果。",
         },
         {
             "id": "next_steps",
             "type": "markdown",
             "layout": "full",
-            "body": "## 8.建议的下一步\n\n1. 做严格inductive消融：保持同一split，分别关闭label propagation、old anchor、Fisher尺度和int8量化，量化每个模块对old/new/H的净贡献。\n\n2. 优先攻克receiver`3-19`和`leo_rain_weak`的新类瓶颈；所有改动仍需在同一5 receiver×5 seed×5 K正式矩阵复验。\n\n3. 给`score_table.csv`增加逐类分数、top-2 margin和校准置信度，同时保存stdout日志，补齐错误案例与完整训练/推理轨迹审计。\n\n4. 按比较协议补做bootstrap CI、overall paired test、Holm多重校正与K轴AUC，并把统计口径写入summary manifest。\n\n5. 将正式矩阵与summary artifact纳入Git承载面后，再使用“已发布证据”措辞；在达到预注册成功标准前继续使用“候选头”而非“部署方案”。",
+            "body": "## 8.建议的下一步\n\n1. 在当前5 receiver×3场景正式split上做预注册bridge：统一使用同一特征和support/query，依次比较逐样本argmax、role-restricted argmax和equal-quota assignment。后两者只能标为oracle upper-bound diagnostic，不进入正式排名。\n\n2. 固定正式逐样本argmax，做`冻结1-view→冻结5-view→adapter 1-view→adapter 5-view`表示消融；FFT辅助必须单独开关，避免再次把整套pipeline增益写成qKNN头增益。\n\n3. 给`score_table.csv`增加8类原始分数、top-2 margin、old/new聚合margin和校准置信度，直接优化当前K=5中36.03%的new→old错误。\n\n4. 做严格inductive消融：保持同一split，分别关闭label propagation、old anchor、Fisher尺度和int8量化；优先检查receiver`3-19`与`leo_rain_weak`。\n\n5. 按比较协议补做bootstrap CI、overall paired test、Holm多重校正与K轴AUC，并把统计口径写入summary manifest。\n\n6. 将正式矩阵与summary artifact纳入Git承载面后，再使用“已发布证据”措辞；在达到预注册成功标准前继续使用“候选头”而非“部署方案”。",
         },
         {
             "id": "further_questions",
@@ -1055,8 +1372,8 @@ def build_artifact() -> dict[str, Any]:
         "manifest": {
             "version": 1,
             "surface": "report",
-            "title": "qKNNV42技术汇报：方法、输入输出与当前效果",
-            "description": "基于当前Stage2-C正式矩阵、实现代码与完整结构化artifact审计的技术汇报",
+            "title": "qKNNV42技术汇报：方法、输入输出、当前效果与历史差距根因",
+            "description": "基于当前Stage2-C正式矩阵、实现代码、完整结构化artifact审计与历史同split反事实消融的技术汇报",
             "generatedAt": generated_at,
             "cards": cards,
             "charts": charts,
@@ -1080,6 +1397,15 @@ def build_artifact() -> dict[str, Any]:
                 "storage": storage,
                 "audit_rows": audit_rows,
                 "historical_vs_current": [current_reference, historical],
+                "protocol_comparison": root_cause["protocol_comparison"],
+                "legacy_ablations": root_cause["legacy_ablations"],
+                "feature_stack": root_cause["feature_stack"],
+                "scenario_shortcut": root_cause["scenario_shortcut"]["roles"],
+                "feature_bridge": feature_bridge_rows,
+                "current_error_flow": root_cause["current_formal"]["k5_error_flow"],
+                "factor_spread": root_cause["current_formal"]["factor_spread"],
+                "seed_selection": seed_selection_rows,
+                "cause_ranking": root_cause["cause_ranking"],
             },
         },
         "sources": sources,
