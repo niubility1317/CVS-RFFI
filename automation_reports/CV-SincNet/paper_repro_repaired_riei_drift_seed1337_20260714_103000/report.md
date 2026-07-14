@@ -45,3 +45,18 @@ DRIFT的raw negative-MSE、RIEI的CE/MI/IE sum reduction以及两篇论文的模
 ## 完成后检查
 
 完整读取13份200epoch训练日志与metrics；报告DRIFT同一run七receiver结果、RIEI Table III 12行结果、loss/feature norm曲线、硬错误、与旧run及论文逐行差值。best-val仅作诊断，不能替代论文last5/last10。
+
+## 同步与启动状态
+
+- 同步后N607 SHA256与本地快照一致：DRIFT losses=`40f709b0...`、DRIFT train=`fdead828...`、RIEI train=`e2f6797c...`、RIEI train_cvs=`5ad054a7...`、paper queue=`5f93bc7c...`、repaired launcher=`33fde40a...`。
+- 远端两个launcher均通过`bash -n`；repaired launcher dry-run展开13个job与8个顺序队列。
+- 正式启动时间：2026-07-14 10:35:18+08:00。
+- 精确命令：`bash code/scripts/launch_paper_repro_repaired_matrix_20260714.sh --launch --gpu-ids 0,1,2,3,4,5,6,7 --max-train-per-gpu 2`。
+- capacity gate实测GPU0-7均为`current=1,planned_peak=1,total_peak=2,max=2`。
+- queue PID：GPU0=`269549`、GPU1=`269551`、GPU2=`269553`、GPU3=`269557`、GPU4=`269560`、GPU5=`269567`、GPU6=`269573`、GPU7=`269580`。
+- 约1分钟健康检查：8个本任务训练均已进入epoch，DRIFT到epoch9，7个首批RIEI到epoch4-5；DRIFT日志确认`center_mode=batch`，RIEI日志确认CE/MI/IE均为`sum`；8份训练日志均无硬错误。
+- GPU证据：每张GPU恰有1个已有Phase1 compute process和1个本任务compute process，总计2/GPU；本矩阵未越过并发上限。
+- 连接清理：本轮SSH/SCP结束后本地`ssh.exe=0`，到N607的`ESTABLISHED TCP22=0`。
+- heartbeat`riei-drift`已更新为每30分钟监控本修复后run；运行中只读，不干预本run或已有Phase1。
+
+当前状态为`RUNNING_STARTUP_HEALTHY`，不是artifact-complete或论文复现成功结论。
