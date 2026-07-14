@@ -3,11 +3,16 @@ from __future__ import annotations
 import json
 from copy import deepcopy
 
+import numpy as np
+import pytest
+
 from paper_reproduction.scripts.benchmark_qknnv42_tta_policies import (
     METRICS,
     _aggregate,
     _apply_head_profile,
     _load_historical_reference,
+    _validate_frozen_feature_caches,
+    _validate_historical_reference_metrics,
 )
 
 
@@ -65,3 +70,41 @@ def test_historical_reference_loader_keeps_row_metrics_and_split_hash(tmp_path) 
     assert list(reference) == ["rx_target/seed_1/k_1"]
     assert reference["rx_target/seed_1/k_1"]["old_acc_mean"] == 0.5
     assert len(reference["rx_target/seed_1/k_1"]["split_manifest_sha256"]) == 64
+
+
+def test_historical_reference_metrics_are_locked() -> None:
+    reference = {"only": _row(0.5)}
+    with pytest.raises(ValueError, match="locked 125-run baseline"):
+        _validate_historical_reference_metrics(
+            reference,
+            {
+                "old_acc_mean": 84.07,
+                "seen_new_acc_mean": 93.24,
+                "H_old_new_mean": 88.23,
+            },
+        )
+
+
+def test_frozen_cache_manifest_is_required(tmp_path) -> None:
+    path = tmp_path / "features.npz"
+    checkpoint_hash = "a" * 64
+    manifest = {
+        "payload_source": "qknnv42_frozen_adv3b02_identity_only_features_v1",
+        "source_checkpoint_sha256": checkpoint_hash,
+        "feature_name": "z_id",
+        "identity_only_forward": True,
+        "domain_branch_executed_for_qknn": False,
+        "adapter": {"skip_adapter_training": True, "adv3b02_gradient_updates": 0},
+    }
+    np.savez(path, manifest_json=np.asarray(json.dumps(manifest)))
+    evidence = _validate_frozen_feature_caches(
+        {"target": {"leo_clear_weak": str(path)}}, checkpoint_hash
+    )
+    assert evidence["validated_cache_count"] == 1
+
+    manifest["adapter"]["adv3b02_gradient_updates"] = 60
+    np.savez(path, manifest_json=np.asarray(json.dumps(manifest)))
+    with pytest.raises(ValueError, match="not a frozen qKNN export"):
+        _validate_frozen_feature_caches(
+            {"target": {"leo_clear_weak": str(path)}}, checkpoint_hash
+        )

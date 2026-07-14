@@ -9,6 +9,8 @@ FEATURE_ROOT="${FEATURE_ROOT:-${ROOT}/runs/cvs_qknnv42_frozen_adv3b02_tta_featur
 OUT_ROOT="${OUT_ROOT:-${ROOT}/runs/${RUN_ID}}"
 LOG_ROOT="${LOG_ROOT:-${ROOT}/paper_reproduction/logs/${RUN_ID}}"
 HISTORICAL_REFERENCE_ROOT="${HISTORICAL_REFERENCE_ROOT:-${ROOT}/runs/cvs_qknnv42_full_legacy_oracle_strict125_20260714_183556}"
+CKPT="${ROOT}/runs/phase1_adv3_mechanism32_queue_20260701/ADV3B02_CORE90_SOFT_E200/best_joint_safe_ssdg.pth"
+EXPECTED_CHECKPOINT_SHA256="$(sha256sum "$CKPT" | awk '{print $1}')"
 
 OLD_TX="14-10,14-7,20-15,20-19,6-15,8-20"
 NEW_TX="1-16,1-18"
@@ -30,7 +32,7 @@ mkdir -p "$FEATURE_ROOT" "$OUT_ROOT" "$LOG_ROOT"
 cd "$ROOT"
 
 CUDA_VISIBLE_DEVICES="$GPU" "$PYTHON" -u code/scripts/train_apply_phase1_iq_preadapter_20260703.py \
-  --ckpt "${ROOT}/runs/phase1_adv3_mechanism32_queue_20260701/ADV3B02_CORE90_SOFT_E200/best_joint_safe_ssdg.pth" \
+  --ckpt "$CKPT" \
   --wisig_pkl "${ROOT}/Dataset_WigSig/ManySig.pkl" \
   --new_wisig_pkl "${ROOT}/Dataset_WigSig/ManyTx.pkl" \
   --runs_root "$FEATURE_ROOT" \
@@ -81,6 +83,7 @@ CUDA_VISIBLE_DEVICES="$GPU" "$PYTHON" -u code/scripts/train_apply_phase1_iq_prea
   --feature-subdir-base ADV3B02_FROZEN_QKNN_FFT96 \
   --feature-subdir-template '{base}_{policy}' \
   --feature-name features_frozen_adv3b02_fft96.npz \
+  --expected-checkpoint-sha256 "$EXPECTED_CHECKPOINT_SHA256" \
   --seed-grid 713101 713102 713103 713104 713105 \
   --k-grid 1 2 5 10 20 \
   --expected-runs 500 2>&1 | tee "$LOG_ROOT/tta_benchmark.out"

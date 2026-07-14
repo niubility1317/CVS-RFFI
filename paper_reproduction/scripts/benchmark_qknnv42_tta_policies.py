@@ -11,6 +11,8 @@ import sys
 from pathlib import Path
 from typing import Any
 
+import numpy as np
+
 from paper_reproduction.cvs_aligned.cvs_method_runner import SCENARIOS, run
 
 
@@ -26,6 +28,11 @@ from export_spaceborne_features import (  # noqa: E402
 
 
 METRICS = ("old_acc_mean", "seen_new_acc_mean", "H_old_new_mean")
+HISTORICAL_METRIC_DEFAULTS_PP = {
+    "old_acc_mean": 84.07,
+    "seen_new_acc_mean": 93.24,
+    "H_old_new_mean": 88.23,
+}
 
 
 def _mean(values: list[float]) -> float:
@@ -57,6 +64,8 @@ def _load_historical_reference(root: Path) -> dict[str, dict[str, Any]]:
         seed = int(payload["seed"])
         k_shot = int(path.parents[1].name.removeprefix("k_"))
         run_key = f"rx_{receiver}/seed_{seed}/k_{k_shot}"
+        if run_key in reference:
+            raise ValueError(f"duplicate historical run key: {run_key}")
         split_path = path.with_name("split_manifest.json")
         split = json.loads(split_path.read_text(encoding="utf-8"))
         split_payload = json.dumps(
@@ -70,6 +79,70 @@ def _load_historical_reference(root: Path) -> dict[str, dict[str, Any]]:
             "split_manifest_sha256": hashlib.sha256(split_payload).hexdigest(),
         }
     return reference
+
+
+def _validate_historical_reference_metrics(
+    reference: dict[str, dict[str, Any]], expected_pp: dict[str, float]
+) -> dict[str, float]:
+    actual_pp = {
+        metric: 100.0 * _mean([float(row[metric]) for row in reference.values()])
+        for metric in METRICS
+    }
+    mismatches = {
+        metric: {"actual_pp": actual_pp[metric], "expected_pp": float(expected_pp[metric])}
+        for metric in METRICS
+        if abs(actual_pp[metric] - float(expected_pp[metric])) > 0.0051
+    }
+    if mismatches:
+        raise ValueError(
+            "historical reference metrics do not match the locked 125-run baseline: "
+            f"{mismatches}"
+        )
+    return actual_pp
+
+
+def _load_feature_manifest(path: Path) -> dict[str, Any]:
+    with np.load(path, allow_pickle=False) as data:
+        if "manifest_json" not in data.files:
+            raise ValueError(f"feature cache has no manifest_json: {path}")
+        raw = np.asarray(data["manifest_json"]).item()
+    return json.loads(str(raw))
+
+
+def _validate_frozen_feature_caches(
+    mappings: dict[str, dict[str, Any]], expected_checkpoint_sha256: str
+) -> dict[str, Any]:
+    expected_hash = str(expected_checkpoint_sha256).strip().lower()
+    if len(expected_hash) != 64 or any(char not in "0123456789abcdef" for char in expected_hash):
+        raise ValueError("expected_checkpoint_sha256 must contain 64 hex characters")
+    manifests: dict[str, dict[str, Any]] = {}
+    for receiver_mapping in mappings.values():
+        for raw_path in receiver_mapping.values():
+            path = Path(str(raw_path))
+            if str(path) in manifests:
+                continue
+            manifest = _load_feature_manifest(path)
+            adapter = dict(manifest.get("adapter", {}))
+            checks = {
+                "payload_source": manifest.get("payload_source")
+                == "qknnv42_frozen_adv3b02_identity_only_features_v1",
+                "checkpoint_sha256": str(manifest.get("source_checkpoint_sha256", "")).lower()
+                == expected_hash,
+                "skip_adapter_training": adapter.get("skip_adapter_training") is True,
+                "adv3b02_gradient_updates": int(adapter.get("adv3b02_gradient_updates", -1)) == 0,
+                "identity_only_forward": manifest.get("identity_only_forward") is True,
+                "domain_branch_not_executed": manifest.get("domain_branch_executed_for_qknn")
+                is False,
+                "feature_name": str(manifest.get("feature_name", "")) == "z_id",
+            }
+            failed = [name for name, passed in checks.items() if not passed]
+            if failed:
+                raise ValueError(f"feature cache is not a frozen qKNN export ({failed}): {path}")
+            manifests[str(path)] = manifest
+    return {
+        "validated_cache_count": len(manifests),
+        "source_checkpoint_sha256": expected_hash,
+    }
 
 
 def _apply_head_profile(
@@ -167,6 +240,12 @@ def benchmark(args: argparse.Namespace) -> dict[str, Any]:
     feature_mappings = {
         policy: _feature_mapping(args, policy, receivers) for policy in policies
     }
+    feature_evidence = {
+        policy: _validate_frozen_feature_caches(
+            mapping, str(args.expected_checkpoint_sha256)
+        )
+        for policy, mapping in feature_mappings.items()
+    }
     historical = None
     if args.historical_reference_root is not None:
         historical = _load_historical_reference(args.historical_reference_root)
@@ -175,6 +254,16 @@ def benchmark(args: argparse.Namespace) -> dict[str, Any]:
             raise ValueError(
                 f"historical reference has {len(historical)} rows; expected {expected_reference}"
             )
+        historical_metrics_pp = _validate_historical_reference_metrics(
+            historical,
+            {
+                "old_acc_mean": float(args.expected_historical_old_acc_pp),
+                "seen_new_acc_mean": float(args.expected_historical_seen_new_acc_pp),
+                "H_old_new_mean": float(args.expected_historical_h_pp),
+            },
+        )
+    else:
+        historical_metrics_pp = None
     args.out_root.mkdir(parents=True, exist_ok=True)
     rows: list[dict[str, Any]] = []
     baseline: dict[str, dict[str, Any]] = {}
@@ -192,6 +281,10 @@ def benchmark(args: argparse.Namespace) -> dict[str, Any]:
                         "split_seed": int(seed),
                         "k_shot": int(k_shot),
                         "qknnv42_expected_tta_view_count": int(view_count),
+                        "backbone_id": (
+                            "ADV3B02_CORE90_SOFT_E200_STRICT_LOAD_FROZEN_ZID_"
+                            "QKNN_SUPPORT_DIAG_WHITEN_FISHER"
+                        ),
                     })
                     _apply_head_profile(
                         config,
@@ -282,6 +375,8 @@ def benchmark(args: argparse.Namespace) -> dict[str, Any]:
             if args.historical_reference_root is not None
             else ""
         ),
+        "historical_reference_metrics_pp": historical_metrics_pp,
+        "feature_cache_evidence": feature_evidence,
         "head_profile": str(args.head_profile),
         "head": (
             "fft96+dense_transductive+legacy_role_quota_oracle"
@@ -332,6 +427,22 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--feature-subdir-base", default="ADV3B02_ADAPTER60_FFT96")
     parser.add_argument("--feature-subdir-template", default="{base}_{policy}")
     parser.add_argument("--feature-name", default="features_adapter60_fft96.npz")
+    parser.add_argument("--expected-checkpoint-sha256", required=True)
+    parser.add_argument(
+        "--expected-historical-old-acc-pp",
+        type=float,
+        default=HISTORICAL_METRIC_DEFAULTS_PP["old_acc_mean"],
+    )
+    parser.add_argument(
+        "--expected-historical-seen-new-acc-pp",
+        type=float,
+        default=HISTORICAL_METRIC_DEFAULTS_PP["seen_new_acc_mean"],
+    )
+    parser.add_argument(
+        "--expected-historical-h-pp",
+        type=float,
+        default=HISTORICAL_METRIC_DEFAULTS_PP["H_old_new_mean"],
+    )
     parser.add_argument("--seed-grid", nargs="+", type=int, default=[713101, 713102, 713103, 713104, 713105])
     parser.add_argument("--k-grid", nargs="+", type=int, default=[1, 2, 5, 10, 20])
     parser.add_argument("--old-anchor-bias", type=float, default=-0.001)

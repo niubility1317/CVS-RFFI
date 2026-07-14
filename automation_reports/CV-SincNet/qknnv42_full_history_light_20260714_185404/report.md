@@ -81,11 +81,35 @@
 - `paper_reproduction/scripts/benchmark_qknnv42_tta_policies.py`：增加完整历史profile和严格历史≤3pp门槛；
 - `paper_reproduction/scripts/run_cvs_qknnv42_tta_ablation_20260714.sh`：改为冻结ADV3B02、零epoch、完整历史head的500行启动器。
 
-本地验证：Python编译通过；相关测试为`26 passed`；两个CLI`--help`和Bash`-n`通过；真实strict checkpoint的identity-only等价性为`z_id/logits max_abs_diff=0/0`。
+本地验证：Python编译通过；首轮相关测试为`26 passed`；审查修复后为`29 passed`；两个CLI`--help`和Bash`-n`通过；真实strict checkpoint的identity-only等价性为`z_id/logits max_abs_diff=0/0`。新增真实`DualCVSincNetDisentangle`回归测试同时验证完整`return_aux=True`与identity-only的`z_id/TX logits`逐元素一致，并确认轻型路径不调用`dom_backbone`。
 
-2026-07-14 18:47直连N607预检PASS，但仍有7个RIEI训练进程。按活动任务monitor-only规则，本轮尚未同步或启动500行矩阵；没有干预现有任务，SSH/TCP22连接已在每次检查后归零。
+2026-07-14 19:13直连N607预检再次PASS。19:15只读进程/GPU审计显示6个活动GPU训练进程及其调度器仍在运行，属于`phase1_dgleo_p0factorial8_20260714`。按活动任务monitor-only规则，本轮尚未同步或启动500行矩阵；没有干预现有任务，SSH/TCP22连接已在每次检查后归零。
 
-## 7.完成判据
+## 7.独立代码审查与修复
+
+独立审查首轮结论为`Request changes`，包含1项Critical、3项Important和2项Minor。现已全部处理：
+
+|审查问题|修复|验证|
+|---|---|---|
+|历史门槛目录只校验125行和split，未锁定`84.07/93.24/88.23`|新增历史125行三指标矩阵均值锁定，容差只允许原始精度向两位小数取整；重复run key直接失败|错误历史目录无法成为promotion reference|
+|候选继承历史`ID_NORM_LATE_FEATURE_E60`模型名|候选显式覆盖为`...FROZEN_ZID_QKNN_SUPPORT_DIAG_WHITEN_FISHER`|`resolved_config/split_manifest`不再冒充60epoch适配模型|
+|summary无条件声明零训练，但未校验feature cache|逐cache校验`payload_source`、checkpoint SHA256、`skip_adapter_training=true`、`adv3b02_gradient_updates=0`、identity-only和domain未执行|旧60epoch cache或错误checkpoint将fail closed|
+|直接调用exporter可覆盖已有artifact|每个cell的输出目录在数据加载和导出前拒绝非空目录|不会静默覆盖历史feature cache|
+|真实dual bit-exact缺少持续回归|新增真实dual逐元素等价与domain调用计数测试|纳入`29 passed`|
+|零训练顶层manifest仍称`phase1_iq_frontend`|改为`qknnv42_frozen_adv3b02_identity_only_features_v1`和`frozen_adv3b02_identity_only_z_id`|来源口径与执行路径一致|
+
+待同步文件SHA256：
+
+|文件|SHA256|
+|---|---|
+|`code/cvsrffi/identity_only_forward.py`|`8E262522BCFDC956A68835BCDD7AF1E33345B3F88CACDC1AE4BAC0D9F3DCB247`|
+|`code/export_spaceborne_features.py`|`70941AED6C9FE90F398096162613A1C613A88F57FBFBDECA80C82624A95D04B2`|
+|`code/scripts/train_apply_phase1_iq_preadapter_20260703.py`|`02833D5860C27AB37EE40C93A29B26F58709FA049DB025F4F5BB12CD528CAC44`|
+|`paper_reproduction/cvs_aligned/cvs_method_runner.py`|`89ED64745AEEF4CDA53584FC9F67AF2FB98A3EC9C2AEA7B54452B2B1BE033C80`|
+|`paper_reproduction/scripts/benchmark_qknnv42_tta_policies.py`|`16A730A774B94E6DAADD2511793FA4AB93C02EFC11A5EA70ABDA955D96E02145`|
+|`paper_reproduction/scripts/run_cvs_qknnv42_tta_ablation_20260714.sh`|`2026F46863C27B2F00C53B8E7001FB8F59BB6739120B726630327A2ADD5354B8`|
+
+## 8.完成判据
 
 - 新导出manifest必须为`checkpoint_load_strict=true`、`identity_only_forward=true`、`domain_branch_executed_for_qknn=false`、`adv3b02_gradient_updates=0`；
 - 4组policy均为125/125完成，无support/query重叠、无错误日志；

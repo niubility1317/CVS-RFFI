@@ -9,6 +9,7 @@ threshold calibration.
 from __future__ import annotations
 
 import argparse
+import hashlib
 import itertools
 import json
 import sys
@@ -50,6 +51,14 @@ from export_spaceborne_features import (  # noqa: E402
     _validate_star_ground_impl,
 )
 from training_controls import parse_sat_scenarios, sat_channel_config_for_scenario  # noqa: E402
+
+
+def _sha256_file(path: str | Path) -> str:
+    digest = hashlib.sha256()
+    with Path(path).open("rb") as handle:
+        for chunk in iter(lambda: handle.read(1024 * 1024), b""):
+            digest.update(chunk)
+    return digest.hexdigest()
 
 
 class IQResidualPreAdapter(nn.Module):
@@ -944,6 +953,9 @@ def export_cell(
 ) -> Path:
     cell_spec = _parse_export_cell(cell)
     name = cell_spec["name"]
+    out_dir = Path(args.runs_root) / name / str(args.out_subdir)
+    if out_dir.exists() and any(out_dir.iterdir()):
+        raise FileExistsError(f"refusing to overwrite non-empty export directory: {out_dir}")
     target_rx = cell_spec["target_rx"]
     target_new_tx = cell_spec["target_new_tx"]
     unknown_tx = cell_spec["target_unknown_tx"]
@@ -997,11 +1009,16 @@ def export_cell(
             if bool(args.export_clean_control):
                 identity_clean_parts.append(_export_role(identity_model, adapter, loader, args=args, device=device, role=role, scenarios=scenarios, seed=int(args.seed) + offset + 7000, channel_mode="clean", use_adapter=False))
     payload = _concat(parts)
+    frozen_qknn_export = bool(args.skip_adapter_training)
     manifest = {
         "payload_source": (
-            "phase1_model_feature_adapter_satonly_features_v29"
-            if str(args.model_adapter_mode).lower() != "none"
-            else "phase1_iq_frontend_satonly_features_v28"
+            "qknnv42_frozen_adv3b02_identity_only_features_v1"
+            if frozen_qknn_export
+            else (
+                "phase1_model_feature_adapter_satonly_features_v29"
+                if str(args.model_adapter_mode).lower() != "none"
+                else "phase1_iq_frontend_satonly_features_v28"
+            )
         ),
         "feature_name": str(args.feature_name),
         "identity_only_forward": can_use_identity_only_forward(model, str(args.feature_name)),
@@ -1009,12 +1026,21 @@ def export_cell(
             model, str(args.feature_name)
         ),
         "checkpoint": str(args.ckpt),
+        "source_checkpoint_sha256": _sha256_file(args.ckpt),
         "checkpoint_load_strict": True,
         "checkpoint_load_audit": dict(
             getattr(model, "_checkpoint_load_audit", {})
         ),
         "target_channel_view": "satellite/LEO",
-        "channel_views": ["model_feature_adapter" if str(args.model_adapter_mode).lower() != "none" else "iq_frontend"],
+        "channel_views": [
+            "frozen_adv3b02_identity_only_z_id"
+            if frozen_qknn_export
+            else (
+                "model_feature_adapter"
+                if str(args.model_adapter_mode).lower() != "none"
+                else "iq_frontend"
+            )
+        ],
         "satellite_tta_policy": str(args.satellite_tta_policy),
         "satellite_tta_view_count": _satellite_tta_view_count(str(args.satellite_tta_policy)),
         "satellite_tta_aggregation": "feature_logit_mean_per_physical_sample",
@@ -1038,7 +1064,6 @@ def export_cell(
         "adapter": train_info,
     }
     payload["manifest_json"] = np.asarray(json.dumps(manifest, ensure_ascii=False, sort_keys=True))
-    out_dir = Path(args.runs_root) / name / str(args.out_subdir)
     out_dir.mkdir(parents=True, exist_ok=True)
     out_path = out_dir / str(args.out_name)
     np.savez(out_path, **payload)
