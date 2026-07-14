@@ -118,7 +118,7 @@ DRIFT的best-val触发测试最高曾到`62.88%`，仍低于论文`75.62%`，且
 |`DRIFT-MSE-01`|DRIFT Eq.(26)，PDF第7页|逐样本对特征维求平方和，再对batch求均值并取负|`negative_mse_separation(reduction="sum")`|`verified`|现有精确数值单测|raw negative-MSE本身与论文一致，不改为feature mean或归一化MSE|
 |`DRIFT-GRL-01`|DRIFT Algorithm 1、实现细节，PDF第8页|two-layer domain discriminator；GRL符号与`lambda_1=1`|model/loss/launcher|`verified`|结构与梯度单测|当前实现一致|
 |`DRIFT-PROTO-01`|DRIFT Table I与实现细节，PDF第8-9页|Day1、指定3个source receiver/7个target receiver、Adam`1e-4`、batch64、200epoch、last5|split/launcher/evaluator|`verified`|dry-run+当前run配置/计数|当前run协议与计数一致|
-|`RIEI-ALT-01`|RIEI Eq.(10a-c)、Eq.(11)，PDF第3页|第一步用CE更新FED/EC/RC；第二步冻结EC/RC，仅用`lambda_MI L_MI-lambda_IE L_IE`更新FED|`alternating_training_step`|`verified`|训练步骤代码审计+单测|当前实现未在第一步重复加入MI/IE|
+|`RIEI-ALT-01`|RIEI Eq.(10a-c)、Eq.(11)，PDF第3页|第一步用CE更新FED/EC/RC；第二步冻结EC/RC，仅用`lambda_MI L_MI-lambda_IE L_IE`更新FED|`alternating_training_step`|`verified`|训练步骤代码审计+参数差分单测|改变MI/IE只改变FED第二步结果，不改变已冻结EC/RC；同时修复`receiver_target`存在时仍急切求值fallback的批字段错误|
 |`RIEI-LOSS-01`|RIEI Eq.(2-9)，PDF第3页|CE/MI/IE按论文求和，`lambda_MI=lambda_IE=1.2`|loss/launcher|`verified`|精确数值单测+当前run配置|当前paper launcher已显式使用`sum` reductions|
 |`RIEI-ARCH-01`|RIEI模型与实现细节，PDF第2-4页|WiSig使用ResNet1D-18 FED、512维拆成两个256维特征、EC/RC为三层FC|architecture/model|`verified`|结构代码审计|当前实现一致|
 |`RIEI-DATA-01`|RIEI实验设置，PDF第4页|WiSig去除无信号段并使用equalized数据；每receiver train/test计数与Table I一致|dataset/split/launcher|`verified`|`wisig_equalized=1`、split计数和当前run日志|`ManySig.pkl`按equalized键读取；train=14400、test=4800/receiver，额外val只用于监控，不改变paper last10|
@@ -140,3 +140,5 @@ DRIFT的best-val触发测试最高曾到`62.88%`，仍低于论文`75.62%`，且
 当前run的`center_mode=ema`不符合DRIFT Algorithm 1按mini-batch计算`c_d`的要求；同时中心项对3个receiver domain取均值，使Eq.(25)的中心约束再缩小3倍。修复后使用当前mini-batch receiver center并对domain求和。Eq.(26)仍严格保留“特征维平方和、batch均值、取负”的raw negative-MSE；不把论文复现偷偷改成归一化、cap或feature-norm正则。由于原公式的negative-MSE存在无界尺度风险，是否仅靠修正后的Eq.(25)足以恢复论文结果必须通过新的隔离run验证，不能用本地单测宣称性能已修复。
 
 本地验证：Git承载面`pytest tests/test_drift_eq25_paper_parity.py`为`2 passed`；根目录`python -m unittest tests.test_drift_table1_paper_parity`为`13/13 OK`；两个launcher均通过`bash -n`，paper-scope dry-run明确展开`--center_mode batch`且不再传`--center_momentum`。
+
+RIEI参数差分单测进一步确认Eq.(10)-(11)的交替训练边界：CE阶段更新FED/EC/RC；disentanglement阶段冻结EC/RC，仅FED随MI/IE变化。审计时同时发现`batch.get("receiver_target", batch["receiver"])`会急切读取fallback字段，现已改为显式条件分支；当前N607数据批同时含两个字段，故该错误不是本轮低性能原因，但修复后paper训练函数可正确接受仅提供compact `receiver_target`的批。

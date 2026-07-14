@@ -45,7 +45,7 @@ def alternating_training_step(
     lambda_feature_norm: float = 0.0,
 ):
     x, y = batch["iq"].to(device), batch["label"].to(device)
-    d = batch.get("receiver_target", batch["receiver"]).to(device)
+    d = batch["receiver_target"].to(device) if "receiver_target" in batch else batch["receiver"].to(device)
     set_requires_grad(model.ec, True)
     set_requires_grad(model.rc, True)
     out = model(x)
