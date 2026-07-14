@@ -31,3 +31,8 @@
 - 删除的旧可执行入口：`launch_optimizer_20260605_143743_paper_baseline_riei_drift.sh`、`launch_paper_repro_20260605_145347_riei_drift.sh`、`launch_paper_repro_original_matrix_20260714.sh`、`launch_paper_repro_repaired_matrix_20260714.sh`、`launch_paper_repro_fixopt_matrix_20260714.sh`、`defer_launch_paper_repro_fixopt_20260714.sh`、`launch_drift_v2_repair_matrix_20260714.sh`、`launch_drift_v2_confirm_v206_20260714.sh`。
 - 唯一新增入口：`code/scripts/launch_drift_paper_reproduction.sh`。
 - 验证：canonical launcher `bash -n`通过；5-job dry-run固定mean/no-cap/batch256/random/no-RMS/final；`ssr-gpu`聚焦测试`15 passed`。首次`conda run`因本机GBK包装输出异常失败，按项目规则用同一`ssr-gpu`解释器串行复跑通过。
+
+## RIEI启动前状态
+
+- DRIFT确认run已完全退出；N607仅GPU3保留1个Phase1 compute，RIEI每GPU1个job的容量门可通过。
+- RIEI本地代码、launcher、hash和8-job dry-run已重新验证；正式同步与启动将在Git报告提交后执行。
