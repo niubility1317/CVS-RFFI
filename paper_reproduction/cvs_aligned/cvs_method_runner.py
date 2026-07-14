@@ -852,6 +852,54 @@ def _attach_post_adapter_resources(
     info: dict[str, Any], cache_manifest: dict[str, Any], *, support_count: int,
     query_count: int,
 ) -> None:
+    payload_source = str(cache_manifest.get("payload_source", ""))
+    support_adapter = (
+        dict(cache_manifest.get("adapter", {}))
+        if payload_source.startswith("cvs_stage2c_support_only_")
+        else {}
+    )
+    if support_adapter:
+        resources = dict(support_adapter.get("resources", {}))
+        checks = {
+            "support_only": support_adapter.get("support_only") is True,
+            "no_query_update": support_adapter.get("query_update_forbidden") is True,
+            "no_query_labels": support_adapter.get("query_labels_used_for_training") is False,
+            "no_role_oracle": support_adapter.get("old_new_role_used_by_optimizer") is False,
+            "no_class_quota": support_adapter.get("class_quota_used_at_inference") is False,
+            "single_query_view": int(support_adapter.get("query_view_count", -1)) == 1,
+            "epoch_cap": 0 <= int(support_adapter.get("epochs", -1)) <= 20,
+            "checkpoint_frozen": int(
+                resources.get(
+                    "original_checkpoint_trainable_parameters",
+                    resources.get("backbone_trainable_parameters", -1),
+                )
+            )
+            == 0,
+            "checkpoint_no_updates": int(
+                resources.get(
+                    "original_checkpoint_gradient_updates",
+                    resources.get("backbone_gradient_updates", -1),
+                )
+            )
+            == 0,
+        }
+        failed = [name for name, passed in checks.items() if not passed]
+        if failed:
+            raise ValueError(f"invalid Stage2-C support adapter provenance: {failed}")
+        params = int(resources.get("trainable_parameters", -1))
+        macs_per_sample = int(resources.get("adapter_macs_per_query", -1))
+        state_bytes = int(
+            resources.get(
+                "adapter_state_bytes_fp16",
+                resources.get("adapter_state_bytes_fp32", -1),
+            )
+        )
+        if params < 0 or macs_per_sample < 0 or state_bytes < 0:
+            raise ValueError("Stage2-C support adapter resources must be nonnegative")
+        mode = str(support_adapter.get("method", "unknown_support_adapter"))
+    else:
+        params = macs_per_sample = state_bytes = 0
+        mode = "none"
     post_applied = cache_manifest.get("post_feature_adapter_applied") is True
     if (
         not post_applied
@@ -859,12 +907,7 @@ def _attach_post_adapter_resources(
     ):
         raise ValueError("post-adapter payload declares that the adapter was not applied")
     post = dict(cache_manifest.get("qknn_post_feature_adapter", {})) if post_applied else {}
-    if not post:
-        params = 0
-        macs_per_sample = 0
-        state_bytes = 0
-        mode = "none"
-    else:
+    if post:
         checks = {
             "payload_source": cache_manifest.get("payload_source")
             == "qknnv42_post_feature_adapter_v1",
@@ -899,6 +942,9 @@ def _attach_post_adapter_resources(
                 macs_per_sample * (int(support_count) + int(query_count))
             ),
             "post_feature_adapter_state_bytes": state_bytes,
+            "estimated_macs_per_query_with_post_adapter": int(
+                info.get("estimated_macs_per_query", 0) + macs_per_sample
+            ),
             "estimated_head_macs_with_post_adapter": int(
                 info["estimated_head_macs"]
                 + macs_per_sample * (int(support_count) + int(query_count))

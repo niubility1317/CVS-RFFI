@@ -254,3 +254,7 @@ PID=`843203`完成，20epoch最终loss=`1.43997`、support accuracy=`58.46%`、f
 feature-head-only LoRA已经把同头基线floor从18.33%提升到51.67%，说明adapter方向有效，但0epoch单prototype头仍是明显容量瓶颈。下一候选把20epoch总预算等分：先用同一rank8 feat-joint LoRA适配10epoch，再用现有全类对称`el_diag_aug3_e10`对角度量+余弦头训练10epoch。两阶段都只读相同合法support，query不进入任何训练或选模；总适配严格等于20epoch。20新类预计总可训练参数约19.9k、LoRA FP16加head FP32状态约54.0KB、持续query新增约19.9kMAC，仍低于50k/128KB并远低于单qKNN。
 
 首个组合cell固定`8-8/new20/seed713101/K10`。LoRA参数为scope=`feat_joint`、rank8、alpha8、学习率`1e-3`、anchor0.05、10epoch；输出根=`runs/qknn_extreme_light_support_lora10_20260715_v4`、日志根=`logs/qknn_extreme_light_support_lora10_20260715_v4`。随后`el_diag_aug3_e10`输出根=`runs/qknn_extreme_light_support_lora10_head10_20260715_v4`。只有该组合相对20epoch LoRA+0epoch prototype在old/floor上继续明显提高，才进入第二开发seed和5/10类；确认seed继续封存。
+
+10epoch LoRA最终loss=`1.53279`、support accuracy=`53.72%`。叠加10epoch对角头后得到`old=76.94%`、floor`=48.33%`、`new20=92.42%`、`H=83.96%`、最低新类`=63.33%`。组合路线把new20推到目标以上并把old提高3.88pp，但floor相对20epoch LoRA+prototype反而下降3.34pp，离old/floor门槛仍差18.06/39.67pp；按预注册gate暂不扩seed/5/10类。
+
+首次组合评估暴露资源审计缺口：head metrics只记录6,938个head参数和6,912MAC/query，未把cache manifest中的12,800个LoRA参数、25,600B FP16状态和12,800MAC/query相加。已在本地严格增加Stage2-C support-adapter provenance分支，只有support-only、无query更新/标签、无角色/配额Oracle、query1-view、≤20epoch且原始checkpoint零参数/零更新的cache才能计入；38项相关测试PASS。同步后将只重跑同一现有cache的评估生成审计修正版，不重新训练或覆盖v4。

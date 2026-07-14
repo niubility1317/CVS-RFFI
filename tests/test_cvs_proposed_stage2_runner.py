@@ -363,3 +363,38 @@ def test_qknnv42_post_adapter_resources_are_not_hidden() -> None:
     assert info["post_feature_adapter_total_macs"] == 220
     assert info["estimated_head_macs_with_post_adapter"] == 1220
     assert info["persistent_state_bytes_with_post_adapter"] == 240
+
+
+def test_stage2c_support_lora_resources_are_not_hidden() -> None:
+    info = {
+        "estimated_head_macs": 1000,
+        "estimated_macs_per_query": 30,
+        "persistent_state_bytes": 200,
+    }
+    manifest = {
+        "payload_source": "cvs_stage2c_support_only_feat_joint_lora_v1",
+        "adapter": {
+            "method": "support_only_feat_joint_lora_v1",
+            "support_only": True,
+            "query_update_forbidden": True,
+            "query_labels_used_for_training": False,
+            "old_new_role_used_by_optimizer": False,
+            "class_quota_used_at_inference": False,
+            "query_view_count": 1,
+            "epochs": 10,
+            "resources": {
+                "trainable_parameters": 12800,
+                "adapter_state_bytes_fp16": 25600,
+                "adapter_macs_per_query": 12800,
+                "original_checkpoint_trainable_parameters": 0,
+                "original_checkpoint_gradient_updates": 0,
+            },
+        },
+    }
+    _attach_post_adapter_resources(info, manifest, support_count=3, query_count=8)
+    assert info["post_feature_adapter_mode"] == "support_only_feat_joint_lora_v1"
+    assert info["post_feature_adapter_parameter_count"] == 12800
+    assert info["post_feature_adapter_query_macs"] == 102400
+    assert info["post_feature_adapter_state_bytes"] == 25600
+    assert info["estimated_macs_per_query_with_post_adapter"] == 12830
+    assert info["persistent_state_bytes_with_post_adapter"] == 25800
