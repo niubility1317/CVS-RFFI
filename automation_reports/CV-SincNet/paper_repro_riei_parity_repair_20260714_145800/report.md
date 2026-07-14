@@ -272,3 +272,10 @@
 - 本地launcher在`code/scripts/launch_riei_table3_partition_repair_20260714.sh`新增`RIEI_REDUCTION`显式参数，默认仍为mean；新run固定`RIEI_REDUCTION=sum`。非法值将fail closed，避免静默回退。
 - 成功阈值保持`MAE≤3pp且至少10/12进入论文±2SD`。若不达标，继续保留DRIFT唯一固定版本，RIEI不宣称复现；后续诊断优先比较ResNet1D-18常见实现与seed敏感性。
 - 本地验证：`ssr-gpu`解释器运行聚焦测试`20 passed,8 subtests passed`；唯一warning是根目录`.pytest_cache`无写权。launcher的`bash -n`通过；显式前缀`RUN_ID=... RIEI_REDUCTION=sum`的dry-run展开12个job、8个capacity gate，12条命令的CE/MI/IE均为sum且mean计数0。PowerShell仅设置`$env:`时，WSL Bash没有继承变量并回退默认mean，因此正式命令必须把两个环境变量写在同一Bash命令前缀中。
+
+## 2026-07-15 00:35 sum矩阵同步前容量门
+
+- 根目录不是Git仓库；脚本、测试、README、报告和traceability已镜像到Git承载面并以`b560cb9 Record RIEI partition result and sum diagnostic`提交。脚本快照位于`code/snapshots/paper_repro_riei_table3_sum_literal_seed1337_20260715_003000/`。
+- 直接N607预检通过。实时进程/CWD/cmdline检查没有训练进程，`nvidia-smi`的compute process计数为0；计划每GPU新增1个训练，所以`existing_compute+planned_peak=1≤2`。目标run/log目录均不存在。
+- 同步前远端launcher SHA256=`dd2896436ff00d24237b022961647a307a1d35954e639f12a412a7cea5414511`，等于上一轮启动时记录的已知版本；本地新launcher SHA256=`6c90bb827f0682c286fe93e69f46a4d67ea46b916de4442782f2fff5f7801374`。`code/dataset_wisig.py`远端SHA256仍为已验证的`bb2ccb83a57505066c2d156e8923a77d0c2dff7f40013b45e9ed952c25aa62ff`，本轮无需重传。
+- 唯一同步映射：本地`code/scripts/launch_riei_table3_partition_repair_20260714.sh`→N607同路径。同步后必须复核hash、远端`bash -n`和sum dry-run，再执行：`RUN_ID=paper_repro_riei_table3_sum_literal_seed1337_20260715_003000 RIEI_REDUCTION=sum bash code/scripts/launch_riei_table3_partition_repair_20260714.sh --launch --gpu-ids 0,1,2,3,4,5,6,7 --max-train-per-gpu 2`。
