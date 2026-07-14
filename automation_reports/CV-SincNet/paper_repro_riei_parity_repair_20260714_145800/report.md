@@ -216,3 +216,10 @@
 - 当前`metrics.json=8`、`PAPER-EVAL-SUMMARY=0`、`FINAL-TEST=0`、成功完成job=`0/12`，符合首批训练阶段；8份训练日志均确认`partition_strategy=stable_group_seed_shared_train_test_holdout`。
 - 完整扫描当前run全部已写日志，硬错误0；未见Traceback、RuntimeError、CUDA OOM、Killed、NaN或参数错误。GPU0–7各仅1个本任务compute，显存约`485MiB`，利用率`10%–26%`且epoch持续推进，容量合规。
 - 当前判定：`RUNNING_HEALTHY_THROUGH_EPOCH_38_40`，不是last10或复现成功证据。SSH短连接均已退出，本地`ssh.exe=0`、N607 TCP22已建立连接`=0`。
+
+## 2026-07-14 22:50心跳监控
+
+- N607直接预检通过；8/8原queue与8/8首批trainer持续运行。row1–8最新完整epoch为`125,125,125,124,122,124,122,127/200`，日志均持续增长至`584–666`行、`40.1–44.4KiB`。
+- 当前`metrics.json=8`、`PAPER-EVAL-SUMMARY=0`、`FINAL-TEST=0`、成功完成job=`0/12`；8份训练日志继续确认稳定全局partition marker，无协议回退。
+- 完整扫描当前run全部已写日志，硬错误0；GPU0–7各仅1个本任务compute，显存约`485MiB`，利用率`16%–30%`且训练持续推进，容量合规。
+- 当前判定：`RUNNING_HEALTHY_THROUGH_EPOCH_122_127`，仍不是论文last10或复现成功证据。SSH短连接均已退出，本地`ssh.exe=0`、N607 TCP22已建立连接`=0`。
