@@ -95,3 +95,9 @@ Git承载面实现提交：`f302b1f repair DRIFT v2 reproduction protocol`。提
 - 同步5个本地已验证文件，远端hash与本地一致；`bash -n`及8-job dry-run通过。
 - 计划命令：`bash code/scripts/launch_drift_v2_repair_matrix_20260714.sh --launch --gpu-ids 0,1,2,3,4,5,6,7 --max-train-per-gpu 2`。
 - run/log根独立为`paper_repro_drift_v2_repair_20260714_141223`，不覆盖fixopt或Phase1。
+
+## 2026-07-14 16:04启动与健康检查
+
+- 8候选通过实际容量门并启动；训练PID=`420472,420488,420512,420539,420559,420569,420575,420579`。
+- 约4–5分钟时8个训练均存活并到epoch45–82/200，所有协议/消融参数正确生效，硬错误为0。
+- GPU0、2–7各为Phase1＋本任务，GPU1仅本任务；未影响Phase1。当前为`RUNNING_HEALTHY`。
