@@ -54,7 +54,7 @@
 - train_ssdg.py SHA256：68F11ADFE5A680717DABF79B3233522629CF7B431FF823395F0F78A104E3FB96。
 - losses.py SHA256：C74BB63DC0BE820C832D84D17874B862D4111231B136F6426FE14B38D74599A2。
 - model.py SHA256：AFC6E6266A09FD5F5BE967FED85254C6C92FA0241A0336FD5FFA3EB12AA1C417。
-- launcher SHA256（资源门控补丁后）：9878130DEA9026F69F16E3690CDCACC4DCCAC0EF838FDF53E1CF6FBB1D9728A7。
+- launcher SHA256（空卡合同修复后）：C933A284915A43365051EFB33BF69B3FA17CA0049CF36C149F573E33C8EE5B60。
 - py_compile通过。
 - focused Phase1/模型/launcher测试80项通过；扩展集合中95项通过，另有5个既有federated fixture因缺少fed_fishr_bank属性失败，与本批未修改模块无关。
 - dry-run生成8条唯一命令，GPU0-7各1条，checkpoint_selection=final_only。
@@ -70,6 +70,9 @@
 - 2026-07-14 09:29 CST已启动资源等待launcher，PID 235974；命令为`python -u code/scripts/launch_phase1_dgleo_corepath8_20260714.py --run-id phase1_dgleo_corepath8_20260714 --wall-hours 10 --poll-seconds 30 --launch-settle-seconds 3 --max-total-compute-per-gpu 2 --resource-wait-timeout-seconds 10800 --resource-poll-seconds 60`。首个slot快照为GPU0-4各2个、GPU5-7各1个，因此正式Phase1训练保持0个，未抢占资源。
 - launcher日志：`logs/phase1_dgleo_corepath8_20260714_launcher.out`；资源满足后才创建8个候选训练进程，训练墙钟10小时从实际候选启动后计时。
 - 10:27 CST第一次资源等待结束时，外层门控允许GPU0和GPU3各保留1个复现进程，但底层`dualguard16`按空卡合同拒绝启动，报`requires empty GPUs`；8个Phase1候选均未创建。该不一致已修复为全空门控，失败日志保留为诊断证据。
+- 空卡合同修复提交：`de05a6d`。远端hash和`py_compile`通过，启动前RIEI/DRIFT=0、Phase1=0、NVIDIA compute client=0。
+- 正式重启launcher PID 262012，日志`logs/phase1_dgleo_corepath8_20260714_launcher_retry1.out`。候选于10:29:08-10:29:29依次落地：GPU0/262027、GPU1/262503、GPU2/262967、GPU3/263429、GPU4/263892、GPU5/264355、GPU6/264818、GPU7/265283。
+- `scheduler_events.tsv`记录8条LAUNCHED，`nvidia-smi pmon`确认每卡恰好1个主训练进程。`/proc`中另外64个同命令PID为8个候选各自的DataLoader worker，不计为独立实验或GPU compute client。
 - 预计单候选训练约5.1-5.5小时，final评估/probe/diagnostic导出约0.5-1小时；8卡并行总墙钟预计6-7小时，硬上限10小时。
 
 ## 运行冒烟验证
