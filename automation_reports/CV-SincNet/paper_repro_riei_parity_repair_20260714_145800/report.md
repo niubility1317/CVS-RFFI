@@ -387,3 +387,37 @@
 - 8份`metrics.json`均可完整解析，epoch序列分别写入`112,112,115,112,113,115,113,112`且均无`final`字段；与日志最新epoch只差1。当前`PAPER-EVAL-SUMMARY=0`、`FINAL-TEST=0`符合尚未进入epoch191–200正式窗口。
 - 对当前run全部已写训练日志做完整硬错误扫描，计数0；未见Traceback、RuntimeError、CUDA OOM、Killed、AssertionError、FileNotFound、NaN或参数错误。
 - GPU0–7各仅1个本任务compute，ImageNet式stem约485MiB、short stem约639MiB，利用率16%–33%；任何GPU总训练数均为1。当前判定：`RUNNING_HEALTHY_THROUGH_EPOCH_113_116`，不是正式架构选型结果。SSH短连接全部退出，本地`ssh.exe=0`、N607 TCP22已建立连接`=0`。
+
+## 2026-07-15 04:23架构诊断完整结果
+
+- 完成性：8/8个job均自然完成epoch200；8个`QUEUE-JOB-END status=0`、8个`PAPER-EVAL-SUMMARY`和8份含`FINAL-TEST`的训练日志齐全，原queue与trainer均已退出。完整分析覆盖8份metrics的1600个epoch以及24份日志的7600行/548720字节，硬错误0。
+- 小型证据包仅包含日志、metrics、manifest和调度文件，不含dataset/checkpoint。远端与本地SHA256均为`e9c450044328288835f9f2b79c1cacbc2f9af8a3af120181160608c49aefc498`；本地路径为`analysis_tmp/paper_repro_riei_archprobe_seed1337_20260715_030500/final_0423`。
+- 正式比较严格采用预注册的epoch191–200 last10，不使用target中间峰值选型。每个同row对照的partition、seed、SGD、mean、no-RMS、no-feature-norm和200epoch均一致，唯一变量为FED stem。
+
+|行|训练接收机→测试接收机|variant|论文均值±SD|last10均值±SD|差值|final|source val last10|last10 loss|CE/MI/IE/FN|论文±2SD|
+|---:|---|---|---:|---:|---:|---:|---:|---:|---|---|
+|3|`1-1,14-7`→`1-19`|`imagenet1d`|66.09±0.67%|74.05±2.40%|+7.96pp|71.83%|99.81±0.01%|-2.9479|0.0119/0.0142/2.4806/4.976|未命中|
+|3|`1-1,14-7`→`1-19`|`short_stem1d`|66.09±0.67%|68.95±2.33%|+2.86pp|68.60%|99.82±0.01%|-2.9007|0.0208/0.0307/2.4653/2.952|未命中|
+|6|`8-8,14-7`→`1-19`|`imagenet1d`|75.48±1.21%|66.03±2.89%|-9.45pp|65.67%|99.86±0.02%|-2.9522|0.0106/0.0120/2.4810/5.038|未命中|
+|6|`8-8,14-7`→`1-19`|`short_stem1d`|75.48±1.21%|72.28±1.12%|-3.20pp|72.67%|99.87±0.01%|-2.8491|0.0234/0.0304/2.4242/3.224|未命中|
+|10|`1-19,7-7`→`14-7`|`imagenet1d`|73.52±3.15%|63.59±1.16%|-9.93pp|64.04%|99.76±0.02%|-2.9525|0.0113/0.0111/2.4809/5.254|未命中|
+|10|`1-19,7-7`→`14-7`|`short_stem1d`|73.52±3.15%|70.11±1.51%|-3.41pp|68.79%|99.74±0.02%|-2.9180|0.0198/0.0237/2.4719/3.929|命中|
+|12|`7-7,8-8`→`14-7`|`imagenet1d`|73.46±2.00%|69.14±1.83%|-4.32pp|66.98%|99.86±0.01%|-2.9529|0.0114/0.0105/2.4807/5.172|未命中|
+|12|`7-7,8-8`→`14-7`|`short_stem1d`|73.46±2.00%|66.84±1.14%|-6.62pp|69.04%|99.83±0.02%|-2.9245|0.0196/0.0235/2.4769/3.736|未命中|
+
+### 预注册门槛判定
+
+|variant|四行均值|有符号偏差|MAE|RMSE|论文±2SD命中|
+|---|---:|---:|---:|---:|---:|
+|`imagenet1d`|68.20%|-3.93pp|7.91pp|8.21pp|0/4|
+|`short_stem1d`|69.54%|-2.59pp|4.02pp|4.30pp|1/4|
+
+- `short_stem1d`在row3、6、10分别把绝对误差降低`5.10pp`、`6.25pp`和`6.52pp`，仅row12恶化`2.30pp`。因此它同时满足“四行MAE低于imagenet1d”和“至少3/4行降低绝对误差”两个预注册条件，架构筛选结果为`PASS_TO_FULL_TABLE3_CONFIRMATION`。
+- 该结果只支持进入完整12行确认，不能单独宣称RIEI复现成功。row12的反向变化说明short stem不是逐行单调改善；最终仍须用同一short-stem配置完成Table III全部12行，并达到`MAE≤3pp且至少10/12进入论文±2SD`。
+
+## 2026-07-15 04:30short-stem完整12行确认设计
+
+- 新launcher：`code/scripts/launch_riei_table3_shortstem_confirm_20260715.sh`；预定run ID：`paper_repro_riei_table3_shortstem_confirm_seed1337_20260715_043000`。
+- 12行receiver组合、论文均值/SD、稳定全局partition、seed1337、SGD momentum0、CE/MI/IE mean、no-RMS、no-feature-norm、200epoch和论文last10全部固定；唯一相对现有完整mean矩阵的变量为`RIEI_FED_VARIANT=short_stem1d`。
+- GPU0–3各排2个顺序job，GPU4–7各1个job，planned peak为每GPU 1个训练。launcher保持唯一run/log根保护及每GPU训练总数不超过2的容量门。
+- 本地`bash -n`通过；dry-run完整展开12个job、8个capacity gate、12条short-stem命令和12条mean命令，sum命令0条。启动前还必须执行直接N607预检、实时process/CWD/cmdline与GPU容量检查、同步后hash核对、远端`bash -n`和12-job dry-run。
