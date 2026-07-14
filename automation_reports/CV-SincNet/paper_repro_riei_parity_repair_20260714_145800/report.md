@@ -314,3 +314,12 @@
 - 完整扫描当前run全部已写日志，硬错误0；未见Traceback、RuntimeError、CUDA OOM、Killed、AssertionError、FileNotFound、NaN/Inf或参数错误。已完成row1–8的数值不脱离完整12行单独选型或宣称。
 - GPU0–3各仅1个本任务compute，GPU4–7无compute；任何GPU训练数均不超过1。SSH短连接已退出，本地`ssh.exe=0`、N607 TCP22已建立连接`=0`。
 - 当前判定：`RUNNING_HEALTHY_8_OF_12_COMPLETE_THROUGH_EPOCH_16_17`。完整Table III sum结论等待row9–12自然完成。
+
+## 2026-07-15 02:21心跳监控
+
+- 直接N607只读预检通过。row1–8保持完整200epoch、`final`字段及8个成功`QUEUE-JOB-END`；GPU0–3的4个queue与row9–12原trainer PID持续运行，无重启或进程替换。
+- 完整读取全部12份训练日志：row9–12最新完整epoch为`105,108,103,104/200`；对应日志为`382–398`行、`29.2–30.3KiB`，持续增长并保留sum/partition marker。
+- 12份`metrics.json`均可解析且epoch连续：row1–8各200epoch并有`final`；row9–12分别完整写入epoch`104,107,102,103`且无`final`。当前`PAPER-EVAL-SUMMARY=8/12`、含`FINAL-TEST`日志=`8/12`、成功完成job=`8/12`。
+- 完整扫描当前run全部已写日志，硬错误0；未见Traceback、RuntimeError、CUDA OOM、Killed、AssertionError、FileNotFound、NaN/Inf或参数错误。
+- GPU0–3各仅1个本任务compute，SM占用约14%–16%；GPU4–7无compute，容量合规。SSH短连接已退出，本地`ssh.exe=0`、N607 TCP22已建立连接`=0`。
+- 当前判定：`RUNNING_HEALTHY_8_OF_12_COMPLETE_THROUGH_EPOCH_103_108`。剩余4行尚未进入论文last10正式窗口。
