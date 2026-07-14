@@ -30,6 +30,16 @@ from baselines.riei_fd.train import alternating_training_step
 from baselines.riei_fd.model import RIEIModel
 
 
+def build_riei_optimizer(name: str, parameters, *, lr: float, weight_decay: float = 0.0, momentum: float = 0.0):
+    optimizer_name = str(name).strip().lower()
+    params = list(parameters)
+    if optimizer_name == "sgd":
+        return torch.optim.SGD(params, lr=lr, momentum=momentum, weight_decay=weight_decay)
+    if optimizer_name == "adam":
+        return torch.optim.Adam(params, lr=lr, weight_decay=weight_decay)
+    raise ValueError(f"Unsupported RIEI optimizer: {name}")
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description="RIEI-FD CVS-RFFI training")
     add_cvs_data_args(parser)
@@ -54,6 +64,8 @@ def main() -> None:
     parser.add_argument("--disentangle_steps", type=int, default=1)
     parser.add_argument("--weight_decay_all", type=float, default=0.0)
     parser.add_argument("--weight_decay_fed", type=float, default=0.0)
+    parser.add_argument("--optimizer", type=str, default="adam", choices=["adam", "sgd"])
+    parser.add_argument("--sgd_momentum", type=float, default=0.0)
     parser.add_argument("--grad_clip_norm", type=float, default=0.0)
     parser.add_argument("--lambda_feature_norm", type=float, default=0.0)
     parser.add_argument("--seed", type=int, default=1337)
@@ -92,6 +104,7 @@ def main() -> None:
         f"ie_temperature={args.ie_temperature:.6g} ce_reduction={args.ce_reduction} "
         f"mi_reduction={args.mi_reduction} ie_reduction={args.ie_reduction} "
         f"disentangle_steps={args.disentangle_steps} "
+        f"optimizer={args.optimizer} sgd_momentum={args.sgd_momentum:.6g} "
         f"weight_decay_all={args.weight_decay_all:.6g} weight_decay_fed={args.weight_decay_fed:.6g} "
         f"grad_clip_norm={args.grad_clip_norm:.6g} lambda_feature_norm={args.lambda_feature_norm:.6g} "
         f"use_resnet_projection={int(bool(args.use_resnet_projection))}",
@@ -116,8 +129,20 @@ def main() -> None:
         encoder_use_projection=args.use_resnet_projection,
     ).to(device)
     classifier_parameters = list(model.ec.parameters()) + list(model.rc.parameters())
-    opt_all = torch.optim.Adam(classifier_parameters, lr=args.lr_all, weight_decay=args.weight_decay_all)
-    opt_fed = torch.optim.Adam(model.fed.parameters(), lr=args.lr_fed, weight_decay=args.weight_decay_fed)
+    opt_all = build_riei_optimizer(
+        args.optimizer,
+        classifier_parameters,
+        lr=args.lr_all,
+        weight_decay=args.weight_decay_all,
+        momentum=args.sgd_momentum,
+    )
+    opt_fed = build_riei_optimizer(
+        args.optimizer,
+        model.fed.parameters(),
+        lr=args.lr_fed,
+        weight_decay=args.weight_decay_fed,
+        momentum=args.sgd_momentum,
+    )
 
     def train_step(model, batch, device, epoch, step):
         batch = supervised_sat_view_batch(batch, device, sat_view_aug)

@@ -315,7 +315,7 @@ def build_cvs_split(
             equalized=eq,
             out_len=int(args.wisig_out_len),
             domain=str(args.wisig_domain),
-            normalize=True,
+            normalize=bool(getattr(args, "wisig_rms_normalize", True)),
             crop_mode="center",
             transform_train=None,
             transform_eval=None,

@@ -42,6 +42,13 @@ CEN_EPOCHS="${CEN_EPOCHS:-170}"
 RIEI_PAPER_EVAL_LAST_N="${RIEI_PAPER_EVAL_LAST_N:-}"
 DRIFT_PAPER_EVAL_LAST_N="${DRIFT_PAPER_EVAL_LAST_N:-5}"
 RIEI_LAMBDA_FEATURE_NORM="${RIEI_LAMBDA_FEATURE_NORM:-0}"
+RIEI_OPTIMIZER="${RIEI_OPTIMIZER:-adam}"
+RIEI_SGD_MOMENTUM="${RIEI_SGD_MOMENTUM:-0}"
+RIEI_CE_REDUCTION="${RIEI_CE_REDUCTION:-sum}"
+RIEI_MI_REDUCTION="${RIEI_MI_REDUCTION:-sum}"
+RIEI_IE_REDUCTION="${RIEI_IE_REDUCTION:-sum}"
+RIEI_WISIG_RMS_NORMALIZE="${RIEI_WISIG_RMS_NORMALIZE:-0}"
+RIEI_TEST_EVAL_INTERVAL="${RIEI_TEST_EVAL_INTERVAL:-0}"
 DRIFT_MSE_CAP="${DRIFT_MSE_CAP:-0}"
 DRIFT_LAMBDA_MSE="${DRIFT_LAMBDA_MSE:-0.02}"
 DRIFT_LAMBDA_FEATURE_NORM="${DRIFT_LAMBDA_FEATURE_NORM:-0}"
@@ -111,11 +118,7 @@ case "${WISIG_PROTOCOL}" in
     ;;
 esac
 if [ -z "${RIEI_PAPER_EVAL_LAST_N}" ]; then
-  if [ "${WISIG_PROTOCOL}" = "drift_day1" ]; then
-    RIEI_PAPER_EVAL_LAST_N=5
-  else
-    RIEI_PAPER_EVAL_LAST_N=10
-  fi
+  RIEI_PAPER_EVAL_LAST_N=5
 fi
 if [ -z "${RUN_ROOT_USER_SET}" ]; then
   RUN_ROOT="${WORKSPACE_ROOT}/runs/wisig_paper_scope_${WISIG_PROTOCOL}_seed${SEED}"
@@ -322,8 +325,15 @@ run_one() {
     CMD+=(--output_dir "${out_dir}" --epochs "${BASELINE_EPOCHS}")
     if [ "${method}" = "riei_fd" ]; then
       CMD+=(--batch_size 64 --lr_all 0.0001 --lr_fed 0.0001 --lambda_mi 1.2 --lambda_ie 1.2)
-      CMD+=(--ce_reduction sum --mi_reduction sum --ie_reduction sum)
+      CMD+=(--optimizer "${RIEI_OPTIMIZER}" --sgd_momentum "${RIEI_SGD_MOMENTUM}")
+      CMD+=(--ce_reduction "${RIEI_CE_REDUCTION}" --mi_reduction "${RIEI_MI_REDUCTION}" --ie_reduction "${RIEI_IE_REDUCTION}")
       CMD+=(--lambda_feature_norm "${RIEI_LAMBDA_FEATURE_NORM}")
+      CMD+=(--test_eval_interval "${RIEI_TEST_EVAL_INTERVAL}")
+      if [ "${RIEI_WISIG_RMS_NORMALIZE}" = "1" ]; then
+        CMD+=(--wisig_rms_normalize)
+      else
+        CMD+=(--no-wisig_rms_normalize)
+      fi
       CMD+=(--paper_eval_last_n "${RIEI_PAPER_EVAL_LAST_N}" --paper_eval_name "riei_last${RIEI_PAPER_EVAL_LAST_N}")
     else
       CMD+=(
