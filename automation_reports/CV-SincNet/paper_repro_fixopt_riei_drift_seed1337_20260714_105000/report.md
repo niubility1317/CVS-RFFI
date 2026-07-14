@@ -5,7 +5,7 @@
 - 实验ID：`paper_repro_fixopt_riei_drift_seed1337_20260714_105000`
 - 时间：2026-07-14 10:50+08:00
 - 操作者：Codex
-- 状态：`DEFERRED_LAUNCH_ACTIVE`
+- 状态：`RUNNING_HEALTHY`
 - 目标：在2026-07-14论文语义修复基础上恢复历史`fix_optimized`稳定性保护，使DRIFT Table I达到或接近论文`75.62%`，并完整还原RIEI论文Table III的12个receiver组合，而不是只复用DRIFT Table I中的RIEI单行结果。
 
 ## 假设与对照
@@ -110,6 +110,15 @@
 - 前序修复版已完成9/13个训练artifact，剩余4个RIEI到epoch159-161；训练硬错误为0，既有wrapper异常没有扩展为训练失败。
 - fixopt run目录尚不存在，说明20-job矩阵尚未实际启动；全机当前12个GPU compute process均属于Phase1或前序修复版，没有额外占用。
 - 容量门继续等待前序所有目标进程退出，本检查点未干预任何远端进程或产物。
+
+### 2026-07-14 12:58–13:12+08:00正式启动与健康检查
+
+- 前序修复版13/13个训练artifact均完成200epoch且目标进程全部退出后，deferred launcher重新执行容量门并于12:58:11自动提交20-job矩阵；deferred PID随后正常退出。
+- 8个per-GPU queue PID=`334756,334759,334761,334766,334772,334778,334787,334797`均存活；每张GPU当前恰有1个Phase1训练＋1个fixopt训练，共16个compute process，未超过每卡2个上限。
+- 首批8个DRIFT候选全部启动，13:12完整读取当前日志后进度为epoch114–119；queue已开始job=8、完成job=0，12个RIEI Table III job仍在各GPU顺序队列等待。
+- 8份DRIFT日志完整扫描未发现`Traceback`、`RuntimeError`、CUDA OOM、`Killed`、参数错误或loss/metric NaN/Inf；metrics持续写入，GPU显存约4084–4154MiB/GPU。
+- 前序修复版最终结果已确认：DRIFT last5=39.99±3.13%，低于论文75.62%且较修复前下降9.38pp；RIEI Table III 12行平均53.99%、MAE=20.26pp、±2SD命中1/12。两者均未复现，fixopt继续运行具有明确诊断依据。
+- 本检查点仅只读核验，没有干预、重启、覆盖fixopt或Phase1。
 
 ## 完成后必须检查
 
