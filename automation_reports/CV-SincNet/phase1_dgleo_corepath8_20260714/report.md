@@ -130,6 +130,105 @@
 
 R3-R7出现明确的几何伪改善：source p95/p99下降，但overflow不动、known core覆盖继续坍缩、radius/inter显著恶化，旧proxy/bridge也未同步下降。说明当前18度半径合同与smooth-min/reference gate共同收缩了动态局部尺度，却没有学到跨receiver/day/channel稳定交集。R1单独使用`feat_cls`可将overflow降至约0.819，但core覆盖仍低且U_s direct完全失活；R0保留较高core和U_s路由，却以p99扩张和高legacy风险为代价。最终结论仍需E120、final-only测试和endpoint artifact。
 
+## 最终状态与证据完整性
+
+- 8/8候选均完成120epoch；每个`metrics_epoch.csv`恰好120行，final held-out evaluation、terminal、tail safety和diagnostic prototype均完整，最终选择权重均为E120`final_ssdg.pth`。
+- 全量CSV无非有限值；stdout未发现fatal、Traceback、CUDA OOM、Killed或RuntimeError。`scheduler_summary.json`记录8个终态、0缺失，整组墙钟6.84小时。
+- 8/8终态均为`NON_PROMOTABLE_GUARD_BLOCKED`、return code 5；这是科学/安全门阻断，不是运行崩溃。
+- 每个候选的endpoint export均为false，prototype均为`DIAGNOSTIC_COMPLETE`且`diagnostic_only=true`。fusion component字段已真实导出，但没有正式硬拒识边界。
+- best source-val epoch均为E112；final相对best的val gap仅0.03-0.10pp。tail reference均为E112-E118，p99 reference-to-final delta绝对值不超过0.44度，说明“final自注册reference”和训练后期tail扩张假阴性已修复。
+- 本轮final测试不再冻结为相同行：overall跨度89.746-90.347、strict UDU跨度85.968-86.823、sat strict mean跨度71.973-72.444，证明此前测试结果不变的问题已修复。
+
+## Final泛化与星地主表
+
+|候选|overall|strict UDU|clean RX floor|sat mean/floor|sat strict mean/floor|sat RX floor|相对C6结论|
+|---|---:|---:|---:|---:|---:|---:|---|
+|C6基线|89.953|86.183|74.633|-|- /72.575|56.550|前序联合最优|
+|R0 replay|89.746|85.968|75.650|77.859/76.750|72.336/71.165|57.267|DG回落，sat未升|
+|R1 ID core|90.270|86.623|75.608|77.718/76.517|72.352/71.058|56.450|clean DG提升，sat弱点恶化|
+|R2 frozen gate|90.308|86.693|75.642|77.656/76.469|72.174/70.882|56.833|DG提升，sat回落|
+|R3 overflow aligned|90.347|86.823|75.608|77.603/76.375|72.217/70.905|56.842|overall/strict最佳，sat未升|
+|R4 U epoch bank|90.148|86.595|75.692|77.427/76.202|71.973/70.685|56.583|U机制未带来泛化收益|
+|R5 concat dedup|90.046|86.610|75.858|77.617/76.383|72.246/70.823|56.092|clean floor最佳，sat floor下降|
+|R6 full stable|90.054|86.617|75.358|77.785/76.537|72.444/71.052|56.250|sat strict最佳但仍低于C6|
+|R7 aggressive|90.071|86.597|75.492|77.572/76.362|72.228/70.873|55.833|激进版最弱sat floor|
+
+相对C6，R3把overall/strict提高0.394/0.640pp，R5把clean receiver floor提高1.225pp；但最佳sat strict mean仍比C6低0.131pp，最佳sat receiver×scenario floor仅57.267%，距离阶段目标73%仍差15.733pp。当前提升只发生在clean overall/strict和部分clean receiver，不发生在satellite mean/floor，也没有修复最弱receiver。
+
+## Final拒识潜力主表
+
+|候选|fixed p95/p99°|fixed proxy/bridge|tail/overflow accept|clean hard core TPR|fixed min-inter/ratio|legacy overflow|legacy proxy/bridge|
+|---|---:|---:|---:|---:|---:|---:|---:|
+|C6基线|28.41/57.29|0.360/0.260|0.640/0.624|约0.503 core accept|-/4.38|0.956|-|
+|R0 replay|42.55/69.19|0.181/0.000|0.490/0.191|0.000|25.12/1.66|0.670|0.620/1.000|
+|R1 ID core|16.20/24.90|0.080/0.086|0.199/0.213|0.010|2.78/4.67|0.731|0.590/1.000|
+|R2 frozen gate|16.22/25.94|0.182/0.255|0.288/0.276|0.111|2.45/5.59|0.717|0.613/1.000|
+|R3 overflow aligned|13.48/21.99|0.165/0.241|0.262/0.268|0.061|1.94/5.51|1.000|0.613/1.000|
+|R4 U epoch bank|13.40/21.84|0.162/0.237|0.257/0.267|0.058|1.78/5.65|1.000|0.612/1.000|
+|R5 concat dedup|12.43/20.57|0.153/0.230|0.245/0.252|0.013|1.40/5.68|1.000|0.612/1.000|
+|R6 full stable|13.18/21.13|0.164/0.237|0.265/0.249|0.051|1.81/5.55|1.000|0.608/1.000|
+|R7 aggressive|11.87/19.22|0.145/0.214|0.238/0.247|0.034|1.81/5.95|1.000|0.609/1.000|
+
+R1-R7的fixed p99显著下降不是有效open-set改善。clean hard core TPR只有0.010-0.111，远低于0.85；异类local component最小间隔坍缩到1.4-2.8度，radius/inter恶化到4.67-5.95。模型通过缩小/重叠局部接收组件拒绝绝大多数known，得到低p99和低proxy，而不是提取稳定RFF不变量。旧proxy仍约0.59-0.62、旧bridge仍为1.0，确认最终风险代理没有同步改善。
+
+R1/R2的legacy source overflow从C6的0.956降至0.731/0.717，是本轮唯一真实方向性信号；但它与hard core TPR坍缩、min-inter坍缩和U_s失活同时发生，属于“压缩known但不可接收”的诊断改善。R3加入18度同口径后overflow重新变为1.0，证明简单收紧半径合同不能解决跨receiver/day/channel结构。
+
+## U_s、梯度与泄漏
+
+- R4-R7的epoch bank把temporal pass从约0.008提高到约0.114，但final trusted core仅0.014%-0.028%、outside为99.8%以上，U direct active只有0%-1.6%。因此“跨epoch记忆生效”没有转化为无标签open-set梯度。
+- Source unlabeled本质上是known样本；当前三态把几乎全部U_s划为`outside_reject`，导致已知无标签样本被错误隔离。outside不能继续作为repulsive unknown负样本，应改为stop-gradient quarantine。
+- R6/R7已证明`z_id`路径预算统计生效，但final原始open norm仅约0.90，对应closed norm约157-161；8倍缩放后`B_os_eff`仍仅0.047-0.049，低于0.16。控制器不能从饱和/reject-all损失中恢复有效梯度。
+- leakage probe全部完整，但receiver/day/channel excess仍为0.609-0.682/0.166-0.233/0.405-0.451。`feat_cls`没有成为域不变身份核，说明移除显式DAC/PA拼接不足以完成身份/域解耦。
+- R0保留较高U direct和`B_os_eff=0.175`，但fixed clean hard core TPR仍为0、legacy proxy/bridge仍高；单纯增加open梯度也会沿错误边界方向优化。
+
+## 机制归因
+
+|机制|是否生效|结论|
+|---|---|---|
+|ungated`feat_cls`|部分|overall/strict提升，但leakage未降，未形成invariant core|
+|冻结reference+smooth-min+TPR loss|失败|reference存在且不漂移，但hard core TPR仍坍缩，loss与fixed endpoint不一致|
+|18/16度overflow同口径|负例|把legacy overflow推回1.0，证明阈值收紧不能替代结构学习|
+|跨epoch U bank|执行生效、目标失败|temporal pass提高，但三态边界把known U_s几乎全部判为outside|
+|concat_sa监督去重|无明显收益|clean floor单点提高，sat strict/floor没有改善|
+|`z_id`路径预算|统计生效、优化失败|真实open梯度随饱和损失衰减，预算控制器无法维持下限|
+|tail reference排除final|成功|reference epoch<120，p99 delta非构造性0且无晚期扩张|
+|final-only测试|成功|8个候选产生可区分final测试结果，不再复用冻结测试行|
+|fusion/local component导出|字段完整但仅诊断|component字段存在，endpoint boundary仍未导出|
+
+## 四象限与候选决策
+
+|candidate|泛化结论|拒识潜力|主要风险|可否Stage2真实unknown评估|下一步动作|
+|---|---|---|---|---|---|
+|R0|overall/strict回落|legacy overflow下降但p99扩张|clean hard TPR=0、legacy风险高|否|仅保留旧路径和U梯度对照|
+|R1|clean DG明显提升|overflow降至0.731、fixed proxy最低|hard TPR=0.010、U完全失活、min-inter坍缩|否|保留`feat_cls`诊断，不单独推进|
+|R2|clean DG提升|overflow最低0.717|hard TPR仅0.111、ratio=5.59、旧proxy未降|否|作为下一轮正覆盖修复底座|
+|R3|overall/strict最佳|无有效改善|overflow=1、hard TPR=0.061|否|18度合同负例，不继续单扫半径|
+|R4|无额外泛化收益|temporal执行改善|U仍99.8% outside、direct idle|否|重写U三态语义后再验证|
+|R5|clean floor最佳|fixed tail较短|hard TPR=0.013、sat floor下降|否|保留concat去重，不作为主候选|
+|R6|sat strict组内最佳|无联合改善|sat仍低、hard TPR=0.051、梯度预算失效|否|保留z_id预算观测，改梯度归一化|
+|R7|无稳定提升|fixed p99最低|ratio最差5.95、hard TPR=0.034|否|激进负例，停止加权路线|
+
+本轮没有第一象限候选。R2是下一轮最有价值的机制底座，但只因它同时保留clean DG并把legacy overflow降到0.717；它不是可promotion候选。
+
+## 下一轮P0/P1方案
+
+### P0
+
+1. 将open预算改为“known正覆盖优先”：从E1启用高权重open几何，但当任一clean/sat hard core TPR<0.85时，至少70% open预算只分配给invariant-core alignment、hard known coverage和异类component margin；proxy/bridge/outside排斥梯度暂停，杜绝reject-all。
+2. 直接对冻结`endpoint_accept_v1`训练同口径surrogate：reference/threshold按前一epoch source-train episodic bank版本化并detach，loss读取与final artifact相同的component、radius、density和hard reason code；禁止当前batch动态门作为promotion代理。
+3. 把`feat_cls`升级为真正invariant core：新增TX条件下receiver/day/channel adversarial confusion、leave-one-source-receiver class-center alignment和clean-sat同样本一致性；local component只表示残差/尾部，不得作为宽接收域并集。
+4. 对最危险异类component直接施加angular margin/CVaR，目标min-inter>=20度且radius/inter<=3；禁止仅压半径而不推开异类中心。
+5. 重写U_s三态：`trusted_core`使用teacher置信度+冻结component一致性+class-conditioned top quota；`ambiguous_tail`只做一致性/密度；`outside_quarantine`stop-gradient，不作为unknown负样本。成功标准为trusted>=10%、ambiguous>=5%、direct active>=80%。
+6. 用梯度归一化而非单纯loss放大：按`z_id`路径把positive-core/inter/proxy/U四组梯度归一到目标预算，再做冲突投影；硬限制单组scale并监控实际post-projection open/closed ratio>=0.12。
+
+### P1
+
+1. 增加source leave-one-receiver episodic TX CE和worst receiver×`leo_weak` CVaR，直接优化弱receiver而不是只看sat平均值。
+2. 保留`concat_sa`、clean/sat各一次TX CE、clean-only teacher和三类`leo_weak`评估；同时明确它仍是同增强族压力测试，不声称跨信道族泛化。
+3. endpoint artifact只有在hard core TPR、legacy风险、leakage和DG/sat联合达标后导出；继续保持final-only checkpoint和三入口parity。
+
+下一轮8候选应依次验证：R2 replay、positive-first hard coverage、invariant-core confusion、hard inter-component margin、U known-quarantine、normalized z_id gradient、worst-receiver satellite episodic、全机制稳定版。第一阶段成功标准：overall>=90%、strict>=86.5%、clean floor>=75.5%、sat strict mean>=73%、sat RX floor>=60%、clean/sat hard TPR>=0.85、legacy overflow<=0.90、legacy proxy<=0.55、legacy bridge<0.90、fixed p99<=57.29度、ratio<=3、U direct active>=80%、receiver/day/channel excess<=0.45/0.15/0.25。任一低known覆盖换低proxy、低min-inter换短p99或sat平均换弱receiver均判失败。
+
 ## 声明边界
 
-本轮只能评价Phase1 DG、星地压力、known几何、source-only proxy风险、U_s执行和diagnostic prototype。不得声明真实unknown FAR/FPR95、Stage2成功或endpoint部署成功。
+本轮只能评价Phase1 DG、同`leo_weak`增强族压力、known几何、source-only proxy风险、U_s执行和diagnostic prototype。不得声明真实unknown FAR/FPR95、Stage2 old/new性能、endpoint部署成功或真实星地跨信道泛化。
