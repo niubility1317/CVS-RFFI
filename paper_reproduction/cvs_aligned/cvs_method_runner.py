@@ -204,7 +204,7 @@ def _apply_diag_whiten_fisher(rows: np.ndarray, center: np.ndarray, scale: np.nd
 
 
 def _fit_qknnv42_state(
-    support_x: np.ndarray, support_y: np.ndarray,
+    support_x: np.ndarray, support_y: np.ndarray, *, support_representation: str = "all_support",
 ) -> tuple[dict[str, Any], dict[str, Any]]:
     """Enroll support once into the exact persistent state needed by onboard scoring."""
     labels = support_y.astype(str)
@@ -213,16 +213,41 @@ def _fit_qknnv42_state(
     class_indices = np.asarray([class_to_i[label] for label in labels.tolist()], dtype=np.int32)
     center, scale, transform_info = _fit_diag_whiten_fisher(support_x, labels, strength=0.1)
     support = _apply_diag_whiten_fisher(support_x, center, scale)
-    quantized = np.clip(np.rint(127.0 * support), -127, 127).astype(np.int8)
-    restored = _norm(quantized.astype(np.float64) / 127.0)
+    quantized_all = np.clip(np.rint(127.0 * support), -127, 127).astype(np.int8)
+    restored_all = _norm(quantized_all.astype(np.float64) / 127.0)
     prototypes = np.vstack([
-        _norm(restored[class_indices == index].mean(axis=0, keepdims=True))[0]
+        _norm(restored_all[class_indices == index].mean(axis=0, keepdims=True))[0]
         for index in range(len(classes))
     ])
+    representation = str(support_representation).strip().lower()
+    if representation == "all_support":
+        quantized = quantized_all
+        stored_class_indices = class_indices
+    elif representation in {"class_medoid", "class_diverse2", "class_diverse4"}:
+        budget = {"class_medoid": 1, "class_diverse2": 2, "class_diverse4": 4}[representation]
+        selected: list[int] = []
+        for index in range(len(classes)):
+            positions = np.flatnonzero(class_indices == index)
+            class_rows = restored_all[positions]
+            local_selected = [int(np.argmax(class_rows @ prototypes[index]))]
+            while len(local_selected) < min(int(budget), len(positions)):
+                similarity_to_selected = class_rows @ class_rows[local_selected].T
+                min_distance = 1.0 - np.max(similarity_to_selected, axis=1)
+                min_distance[local_selected] = -np.inf
+                local_selected.append(int(np.argmax(min_distance)))
+            selected.extend(int(positions[local]) for local in local_selected)
+        quantized = quantized_all[selected]
+        stored_class_indices = class_indices[selected].astype(np.int32, copy=False)
+    elif representation == "prototype_only":
+        quantized = np.empty((0, quantized_all.shape[1]), dtype=np.int8)
+        stored_class_indices = np.empty((0,), dtype=np.int32)
+    else:
+        raise ValueError(f"unsupported qKNNV42 support representation: {support_representation}")
+    compactness = 1.0 - np.max(restored_all @ prototypes.T, axis=1)
     class_label_table_bytes = sum(len(label.encode("utf-8")) + 1 for label in classes)
     state = {
         "quantized_support": quantized,
-        "class_indices": class_indices,
+        "class_indices": stored_class_indices,
         "classes": classes,
         "prototypes": prototypes,
         "center": center,
@@ -230,15 +255,18 @@ def _fit_qknnv42_state(
     }
     state_info = {
         **transform_info,
+        "support_representation": representation,
+        "enrollment_support_count": int(len(quantized_all)),
         "stored_quantized_support_code_count": int(len(quantized)),
         "stored_raw_support_count": 0,
         "stored_class_prototype_count": len(classes),
         "feature_dim": int(quantized.shape[1]),
         "support_code_bytes": int(quantized.nbytes),
-        "class_index_bytes": int(class_indices.nbytes),
+        "class_index_bytes": int(stored_class_indices.nbytes),
         "class_label_table_bytes": int(class_label_table_bytes),
         "prototype_bytes_float64": int(prototypes.nbytes),
         "transform_state_bytes_float64": int(center.nbytes + scale.nbytes),
+        "enrollment_compactness_loss": float(np.mean(compactness)),
     }
     state_info["persistent_state_bytes"] = int(
         state_info["support_code_bytes"]
@@ -254,20 +282,31 @@ def _qknnv42_score_matrix(
     support_x: np.ndarray, support_y: np.ndarray, query_x: np.ndarray, *, old_labels: set[str],
     labelprop_mode: str = "dense_transductive",
     old_anchor_bias: float = 0.001,
+    support_representation: str = "all_support",
 ) -> tuple[list[str], np.ndarray, dict[str, Any]]:
-    state, state_info = _fit_qknnv42_state(support_x, support_y)
+    enrollment_started = time.perf_counter()
+    state, state_info = _fit_qknnv42_state(
+        support_x, support_y, support_representation=support_representation
+    )
+    enrollment_elapsed = time.perf_counter() - enrollment_started
+    scoring_started = time.perf_counter()
     query = _apply_diag_whiten_fisher(query_x, state["center"], state["scale"])
     restored = _norm(state["quantized_support"].astype(np.float64) / 127.0)
     class_indices = state["class_indices"]
     classes = state["classes"]
     prototype_matrix = state["prototypes"]
+    representation = str(state_info["support_representation"])
     score_columns: list[np.ndarray] = []
     for class_index, label in enumerate(classes):
-        class_support = restored[class_indices == class_index]
-        similarity = query @ class_support.T
-        knn = np.max(similarity, axis=1)
         prototype = prototype_matrix[class_index]
-        score = 0.55 * knn + 0.45 * (query @ prototype)
+        prototype_score = query @ prototype
+        if representation == "prototype_only":
+            score = prototype_score
+        else:
+            class_support = restored[class_indices == class_index]
+            similarity = query @ class_support.T
+            knn = np.max(similarity, axis=1)
+            score = 0.55 * knn + 0.45 * prototype_score
         if label in old_labels:
             score = score + float(old_anchor_bias)
         score_columns.append(score)
@@ -277,6 +316,8 @@ def _qknnv42_score_matrix(
     dense_graph_bytes = 0
     labelprop_macs = 0
     if lp_mode == "dense_transductive":
+        if representation != "all_support":
+            raise ValueError("dense_transductive label propagation requires all_support representation")
         labels = np.asarray(classes, dtype=object)[class_indices]
         scores += 0.025 * _labelprop(restored, labels, query, classes)
         # _labelprop materializes both similarity and transition matrices as float64.
@@ -299,15 +340,19 @@ def _qknnv42_score_matrix(
         pass
     else:
         raise ValueError(f"unsupported qKNNV42 labelprop mode: {labelprop_mode}")
-    compactness = 1.0 - np.max(restored @ prototype_matrix.T, axis=1)
-    support_score_macs = int(len(query) * len(restored) * restored.shape[1])
-    prototype_score_macs = int(len(query) * len(classes) * restored.shape[1])
+    feature_dim = int(prototype_matrix.shape[1])
+    support_score_macs = int(len(query) * len(restored) * feature_dim)
+    prototype_score_macs = int(len(query) * len(classes) * feature_dim)
+    objective = (
+        "qknnv42_int8_top1_proto45_old_anchor_labelprop"
+        if lp_mode == "dense_transductive" and representation == "all_support"
+        else f"qknnv42_int8_top1_proto45_old_anchor_{lp_mode}"
+    )
+    if representation != "all_support":
+        objective = f"{objective}_{representation}"
+    score_matrix_elapsed = time.perf_counter() - scoring_started
     return classes, scores, {
-        "adaptation_objective": (
-            "qknnv42_int8_top1_proto45_old_anchor_labelprop"
-            if lp_mode == "dense_transductive"
-            else f"qknnv42_int8_top1_proto45_old_anchor_{lp_mode}"
-        ),
+        "adaptation_objective": objective,
         "transform_mode": "diag_whiten_fisher",
         "transform_strength": 0.1,
         **state_info,
@@ -324,10 +369,12 @@ def _qknnv42_score_matrix(
         "estimated_prototype_score_macs": prototype_score_macs,
         "estimated_labelprop_macs": labelprop_macs,
         "estimated_head_macs": support_score_macs + prototype_score_macs + labelprop_macs,
+        "enrollment_latency_sec": enrollment_elapsed,
+        "score_matrix_latency_sec": score_matrix_elapsed,
         "scenario_residual_weight": 0.5,
         "scenario_residual_applied": False,
         "scenario_residual_note": "zero_by_full_same_scenario_support_for_every_registered_class",
-        "loss": float(np.mean(compactness)),
+        "loss": float(state_info["enrollment_compactness_loss"]),
     }
 
 
@@ -345,6 +392,7 @@ def _qknnv42_predict(
     query_per_class: int | None = None,
     labelprop_mode: str = "dense_transductive",
     old_anchor_bias: float = 0.001,
+    support_representation: str = "all_support",
 ) -> tuple[np.ndarray, dict[str, Any]]:
     decision = str(decision_mode).strip().lower()
     lp_mode = str(labelprop_mode).strip().lower()
@@ -357,6 +405,7 @@ def _qknnv42_predict(
         old_labels=old_labels,
         labelprop_mode=labelprop_mode,
         old_anchor_bias=old_anchor_bias,
+        support_representation=support_representation,
     )
     weight = float(aux_score_weight)
     if not 0.0 <= weight <= 1.0:
@@ -373,6 +422,7 @@ def _qknnv42_predict(
             old_labels=old_labels,
             labelprop_mode=labelprop_mode,
             old_anchor_bias=old_anchor_bias,
+            support_representation=support_representation,
         )
         if aux_classes != classes:
             raise ValueError("qKNNV42 primary and auxiliary class orders differ")
@@ -395,6 +445,14 @@ def _qknnv42_predict(
                 "aux_prototype_bytes_float64": int(aux_info["prototype_bytes_float64"]),
                 "aux_transform_state_bytes_float64": int(aux_info["transform_state_bytes_float64"]),
                 "aux_persistent_state_bytes": int(aux_info["persistent_state_bytes"]),
+                "aux_enrollment_support_count": int(aux_info["enrollment_support_count"]),
+                "aux_stored_quantized_support_code_count": int(
+                    aux_info["stored_quantized_support_code_count"]
+                ),
+                "aux_estimated_support_score_macs": int(aux_info["estimated_support_score_macs"]),
+                "aux_estimated_prototype_score_macs": int(aux_info["estimated_prototype_score_macs"]),
+                "aux_enrollment_latency_sec": float(aux_info["enrollment_latency_sec"]),
+                "aux_score_matrix_latency_sec": float(aux_info["score_matrix_latency_sec"]),
             }
         )
         primary_graph_bytes = int(info["dense_graph_bytes_lower_bound"])
@@ -411,9 +469,38 @@ def _qknnv42_predict(
             "persistent_state_bytes",
         ):
             info[key] = int(info[key] + aux_info[key])
+        info["stored_quantized_support_code_count_total"] = int(
+            info["stored_quantized_support_code_count"]
+            + aux_info["stored_quantized_support_code_count"]
+        )
+        info["estimated_support_score_macs"] = int(
+            info["estimated_support_score_macs"] + aux_info["estimated_support_score_macs"]
+        )
+        info["estimated_prototype_score_macs"] = int(
+            info["estimated_prototype_score_macs"] + aux_info["estimated_prototype_score_macs"]
+        )
+        info["estimated_labelprop_macs"] = int(
+            info["estimated_labelprop_macs"] + aux_info["estimated_labelprop_macs"]
+        )
+        info["enrollment_latency_sec"] = float(
+            info["enrollment_latency_sec"] + aux_info["enrollment_latency_sec"]
+        )
+        info["score_matrix_latency_sec"] = float(
+            info["score_matrix_latency_sec"] + aux_info["score_matrix_latency_sec"]
+        )
         info["estimated_head_macs"] = int(info["estimated_head_macs"] + aux_info["estimated_head_macs"])
     else:
-        info.update({"aux_feature_enabled": False, "aux_feature_dim": 0, "aux_score_weight": 0.0})
+        info.update(
+            {
+                "aux_feature_enabled": False,
+                "aux_feature_dim": 0,
+                "aux_score_weight": 0.0,
+                "stored_quantized_support_code_count_total": int(
+                    info["stored_quantized_support_code_count"]
+                ),
+            }
+        )
+    decision_started = time.perf_counter()
     if decision == "per_sample_argmax":
         predicted = np.asarray(classes, dtype=object)[np.argmax(scores, axis=1)]
     elif decision == "legacy_role_quota_oracle":
@@ -443,6 +530,7 @@ def _qknnv42_predict(
         )
     else:
         raise ValueError(f"unsupported qKNNV42 decision mode: {decision_mode}")
+    decision_elapsed = time.perf_counter() - decision_started
     info.update(
         {
             "decision_mode": decision,
@@ -450,6 +538,11 @@ def _qknnv42_predict(
             "equal_class_quota_used": decision == "legacy_role_quota_oracle",
             "scenario_hard_filter_effective": False,
             "scenario_hard_filter_note": "all registered classes have support in every formal scenario",
+            "decision_latency_sec": decision_elapsed,
+            "onboard_scoring_latency_sec": float(info["score_matrix_latency_sec"] + decision_elapsed),
+            "onboard_scoring_latency_per_query_ms": float(
+                (info["score_matrix_latency_sec"] + decision_elapsed) * 1000.0 / max(1, len(query_x))
+            ),
         }
     )
     return predicted, info
@@ -537,6 +630,15 @@ def validate_config(config: dict[str, Any]) -> None:
     labelprop_mode = str(config.get("qknnv42_labelprop_mode", "dense_transductive")).strip().lower()
     if labelprop_mode not in {"dense_transductive", "support_prototype", "disabled"}:
         raise ValueError(f"unsupported qknnv42_labelprop_mode: {labelprop_mode}")
+    support_representation = str(
+        config.get("qknnv42_support_representation", "all_support")
+    ).strip().lower()
+    if support_representation not in {
+        "all_support", "class_medoid", "class_diverse2", "class_diverse4", "prototype_only"
+    }:
+        raise ValueError(f"unsupported qknnv42_support_representation: {support_representation}")
+    if labelprop_mode == "dense_transductive" and support_representation != "all_support":
+        raise ValueError("dense_transductive label propagation requires all_support representation")
     if labelprop_mode != "dense_transductive" and decision_mode != "per_sample_argmax":
         raise ValueError("lightweight qKNNV42 modes require per_sample_argmax deployment inference")
     old_anchor_bias = float(config.get("qknnv42_old_anchor_bias", 0.001))
@@ -564,6 +666,9 @@ def run(config: dict[str, Any], run_dir: Path) -> dict[str, Any]:
     aux_dim = int(config.get("qknnv42_aux_feature_dim", 0))
     decision_mode = str(config.get("qknnv42_decision_mode", "per_sample_argmax")).strip().lower()
     labelprop_mode = str(config.get("qknnv42_labelprop_mode", "dense_transductive")).strip().lower()
+    support_representation = str(
+        config.get("qknnv42_support_representation", "all_support")
+    ).strip().lower()
     old_anchor_bias = float(config.get("qknnv42_old_anchor_bias", 0.001))
     expected_tta_views = int(config.get("qknnv42_expected_tta_view_count", 1))
     for scenario in SCENARIOS:
@@ -637,6 +742,7 @@ def run(config: dict[str, Any], run_dir: Path) -> dict[str, Any]:
                 query_per_class=int(config["query_per_tx"]),
                 labelprop_mode=labelprop_mode,
                 old_anchor_bias=old_anchor_bias,
+                support_representation=support_representation,
             )
             diagnostic_elapsed = time.perf_counter() - diagnostic_started
             deploy_started = time.perf_counter()
@@ -653,6 +759,7 @@ def run(config: dict[str, Any], run_dir: Path) -> dict[str, Any]:
                 query_per_class=int(config["query_per_tx"]),
                 labelprop_mode=labelprop_mode,
                 old_anchor_bias=old_anchor_bias,
+                support_representation=support_representation,
             )
             elapsed = time.perf_counter() - deploy_started
             old_count = len(old_query)
@@ -701,6 +808,7 @@ def run(config: dict[str, Any], run_dir: Path) -> dict[str, Any]:
                 "qknnv42_aux_score_weight": aux_weight,
                 "qknnv42_decision_mode": decision_mode,
                 "qknnv42_labelprop_mode": labelprop_mode,
+                "qknnv42_support_representation": support_representation,
                 "qknnv42_old_anchor_bias": old_anchor_bias,
                 "non_deployment_oracle_diagnostic": decision_mode == "legacy_role_quota_oracle"}
     result = {"experiment_id": config.get("experiment_id", f"{method}_{seed}"), "method": method,

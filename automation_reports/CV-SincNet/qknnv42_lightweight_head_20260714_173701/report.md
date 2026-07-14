@@ -202,3 +202,35 @@ N607只读预检发现8个RIEI训练进程正在运行。按项目规则切换�
 - `code/scripts/train_apply_phase1_iq_preadapter_20260703.py`：`3E65431A121833D7C550CA6DD89AC876104F124FBF2E41A0056257D044487AA3`。
 - `paper_reproduction/scripts/benchmark_qknnv42_tta_policies.py`：`70DDFD9D9B017C9C7BAB880C779C40101734BDF19E3475D4411E28FE2CFEE529`。
 - `paper_reproduction/scripts/run_cvs_qknnv42_tta_ablation_20260714.sh`：`2052E25507BCF78E7272DAD737BACF1BC6EB9B68D6031CF2F5775FA0E5EA3DE6`。
+
+## 14.第三轮head压缩：support-memory从全K样本压缩为每类2个多样代表
+
+N607在2026-07-14 18:20仍有8个RIEI GPU训练进程，因此继续保持monitor-only，不同步、不启动、不干预。等待期间，本地继续处理qKNN head中仅次于dense LP的`Q×S×D`support-memory top-1相似度开销。
+
+新增`qknnv42_support_representation`：
+
+- `all_support`：原始做法，保留每类全部K条int8 support。
+- `class_medoid`：每类只保留最接近prototype的一条support。
+- `class_diverse2/class_diverse4`：先选类medoid，再以余弦距离farthest-first补到每类2/4条，兼顾中心与类内多样性。
+- `prototype_only`：support enrollment后只保留类prototype，不保留support code。
+
+Fisher/whitening和prototype仍由全部K-shot support拟合；代表选择完成后，raw support和未入选int8 code均可丢弃。dense label propagation只允许`all_support`，压缩表示强制走`disabled LP+per_sample_argmax`部署路径。
+
+在seed713101-713105诊断集上，`class_medoid`和`prototype_only`未通过；`class_diverse2`相对原始dense的`old/new/H`变化为`-1.909/-2.227/-2.120pp`，`class_diverse4`为`-0.731/-1.053/-0.882pp`，二者均通过。按照“满足≤3pp后选择计算最轻方案”的预定规则，选择`class_diverse2`，再使用完全未参与选择的seed713111-713115做125-run确认。
+
+|确认集head|old_acc|seen_new_acc|H_old_new|Δold|Δnew|ΔH|head MAC|持久状态|平均support code数（主分支+FFT）|
+|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+|原始FFT96+dense LP+all support|75.5000%|65.8333%|69.5704%|0|0|0|22.725 M|36,617.2 B|121.6|
+|FFT96+无LP+每类2个多样support|73.2844%|63.1933%|67.1001%|-2.216pp|-2.640pp|-2.470pp|0.918 M|24,367.6 B|28.8|
+
+确认集三个矩阵均值指标均满足下降不超过3pp。资源变化：
+
+- head MAC相对原始dense下降95.96%；相对上一版无LP全support轻量head继续下降67.44%。
+- support code存储从15,564.8 B降至3,686.4 B，下降76.32%；完整持久状态下降33.45%。
+- dense query graph仍为0。
+- 将support enrollment与重复query scoring分开计时后，纯星上scoring从`0.03286`降至`0.00552 ms/query`，下降83.21%；包含一次enrollment摊销的整次预测从`0.04849`降至`0.02209 ms/query`，下降54.45%。
+- enrollment由`2.435`增至`2.601 ms/support set`，增加6.83%，原因是farthest-first代表选择；该步骤只在注册或support更新时执行，不随每条query重复。
+
+严格逐run口径仍未全部满足：125行中old/new/H分别有44/54/55行相对dense下降超过3pp。因此晋升结论仍限定为用户目标采用的矩阵均值≤3pp，不得写成所有receiver/seed/K行的最坏情况保证。
+
+本地artifact：`E:\type10-7\automation_reports\CV-SincNet\qknnv42_lightweight_head_20260714_173701\artifacts\fft96_support_diverse2_confirmation_v2_seed713111_713115`。实现新增独立benchmark`paper_reproduction/scripts/benchmark_qknnv42_support_compression.py`，并将测试扩展为`9 passed`。TTA端到端500行矩阵仍是整个目标的剩余验证项。

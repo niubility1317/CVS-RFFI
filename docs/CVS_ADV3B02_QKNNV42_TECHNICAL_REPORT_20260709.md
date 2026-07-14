@@ -2070,6 +2070,8 @@ $$
 
 端到端第二轮已实现固定adapter的1/3/5-view对照。`none`、`rx_shift3`、`rx_cfo3`和`rx_light5`分别执行1、3、3、5次backbone前向及同数量FFT sketch；60 epoch`id_norm_late_feature`只训练一次，之后用相同样本、相同LEO随机观测依次导出四种策略。评估head固定为`FFT96+disabled LP+per_sample_argmax+bias=-0.001`，以5-view为配对基线，在5 receiver×5 seed×5 K×4 policy=500行矩阵中选择视图最少且三个均值指标下降均不超过3pp的策略。若3-view通过，可直接把前端backbone/FFT计算相对5-view降低40%；若1-view通过，则降低80%。当前N607有其他训练任务，尚未启动该矩阵，因此这里只能声明实现与验证就绪，不能提前声明1-view或3-view已晋升。
 
+在等待TTA矩阵期间，support-memory进一步由每类全部K条int8 code压缩为每类2条多样代表。选择过程先取最接近类prototype的medoid，再以余弦距离farthest-first选取第二条；Fisher变换和prototype仍由全部K-shot support拟合，未入选support在enrollment后丢弃。seed713101-713105用于选择，未参与选择的seed713111-713115用于125-run确认。确认集相对原始FFT96 dense head的`old_acc/seen_new_acc/H`变化为`-2.216/-2.640/-2.470pp`，均满足矩阵均值下降不超过3pp。head MAC从22.725 M降至0.918 M，下降95.96%；support code字节下降76.32%，完整持久状态下降33.45%，纯query scoring延迟下降83.21%。逐run仍有44/54/55行的old/new/H降幅超过3pp，因此该结论不构成逐行最坏情况保证。
+
 ## 10.证据索引
 
 |证据|路径|用途|

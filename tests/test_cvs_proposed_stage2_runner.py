@@ -156,3 +156,59 @@ def test_cvs_qknnv42_lightweight_mode_rejects_legacy_oracle(tmp_path: Path) -> N
     config["qknnv42_decision_mode"] = "legacy_role_quota_oracle"
     with pytest.raises(ValueError, match="per_sample_argmax"):
         validate_config(config)
+
+
+def test_cvs_qknnv42_class_medoid_compresses_support_state(tmp_path: Path) -> None:
+    all_config = _config(tmp_path, "cvs_qknnv42")
+    all_config["qknnv42_labelprop_mode"] = "disabled"
+    all_result = run(all_config, tmp_path / "qknn_all_support")
+    all_info = all_result["metrics_by_scenario"][SCENARIOS[0]]
+
+    medoid_config = _config(tmp_path, "cvs_qknnv42")
+    medoid_config["qknnv42_labelprop_mode"] = "disabled"
+    medoid_config["qknnv42_support_representation"] = "class_medoid"
+    medoid_result = run(medoid_config, tmp_path / "qknn_class_medoid")
+    medoid = medoid_result["metrics_by_scenario"][SCENARIOS[0]]
+
+    assert medoid_result["metrics"]["H_old_new_mean"] == 1.0
+    assert medoid["support_representation"] == "class_medoid"
+    assert medoid["enrollment_support_count"] == 6
+    assert medoid["stored_quantized_support_code_count"] == 3
+    assert medoid["persistent_state_bytes"] < all_info["persistent_state_bytes"]
+    assert medoid["estimated_support_score_macs"] < all_info["estimated_support_score_macs"]
+    assert medoid["enrollment_latency_sec"] >= 0.0
+    assert medoid["onboard_scoring_latency_per_query_ms"] >= 0.0
+    manifest = json.loads((tmp_path / "qknn_class_medoid" / "split_manifest.json").read_text(encoding="utf-8"))
+    assert manifest["qknnv42_support_representation"] == "class_medoid"
+
+
+def test_cvs_qknnv42_prototype_only_stores_no_support_codes(tmp_path: Path) -> None:
+    config = _config(tmp_path, "cvs_qknnv42")
+    config["qknnv42_labelprop_mode"] = "disabled"
+    config["qknnv42_support_representation"] = "prototype_only"
+    result = run(config, tmp_path / "qknn_prototype_only")
+    info = result["metrics_by_scenario"][SCENARIOS[0]]
+    assert result["metrics"]["H_old_new_mean"] == 1.0
+    assert info["stored_quantized_support_code_count"] == 0
+    assert info["support_code_bytes"] == 0
+    assert info["class_index_bytes"] == 0
+    assert info["estimated_support_score_macs"] == 0
+
+
+def test_cvs_qknnv42_diverse2_caps_each_class_at_two_codes(tmp_path: Path) -> None:
+    config = _config(tmp_path, "cvs_qknnv42")
+    config["k_shot"] = 4
+    config["qknnv42_labelprop_mode"] = "disabled"
+    config["qknnv42_support_representation"] = "class_diverse2"
+    result = run(config, tmp_path / "qknn_diverse2")
+    info = result["metrics_by_scenario"][SCENARIOS[0]]
+    assert result["metrics"]["H_old_new_mean"] == 1.0
+    assert info["enrollment_support_count"] == 12
+    assert info["stored_quantized_support_code_count"] == 6
+
+
+def test_cvs_qknnv42_dense_labelprop_rejects_compressed_support(tmp_path: Path) -> None:
+    config = _config(tmp_path, "cvs_qknnv42")
+    config["qknnv42_support_representation"] = "class_medoid"
+    with pytest.raises(ValueError, match="requires all_support"):
+        validate_config(config)
