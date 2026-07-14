@@ -15,6 +15,7 @@ GPU_IDS_CSV="${GPU_IDS:-0,1,2,3,4,5,6,7}"
 MAX_TRAIN_PER_GPU="${MAX_TRAIN_PER_GPU:-2}"
 SEED="${SEED:-1337}"
 DRY_RUN="${DRY_RUN:-1}"
+RIEI_REDUCTION="${RIEI_REDUCTION:-mean}"
 
 while [[ "$#" -gt 0 ]]; do
   case "$1" in
@@ -32,6 +33,10 @@ done
 
 IFS=',' read -r -a GPU_IDS <<< "${GPU_IDS_CSV}"
 [[ "${#GPU_IDS[@]}" -eq 8 ]] || { echo "ERROR: exactly eight GPU ids are required" >&2; exit 2; }
+[[ "${RIEI_REDUCTION}" == "mean" || "${RIEI_REDUCTION}" == "sum" ]] || {
+  echo "ERROR: RIEI_REDUCTION must be mean or sum" >&2
+  exit 2
+}
 
 # row|id|train receivers|test receiver|paper mean|paper SD
 ROWS=(
@@ -59,7 +64,7 @@ for gpu in "${GPU_IDS[@]}"; do QUEUED["${gpu}"]=0; done
 for i in "${!ROWS[@]}"; do gpu="${GPU_IDS[$((i % 8))]}"; QUEUED["${gpu}"]=$((QUEUED["${gpu}"] + 1)); done
 
 echo "[RIEI-TABLE3-PARTITION-REPAIR] run_id=${RUN_ID} seed=${SEED} dry_run=${DRY_RUN} rows=${#ROWS[@]}"
-echo "[RIEI-TABLE3-PARTITION-REPAIR] split=stable_group_seed_shared_train_test_holdout metric=paper_last10"
+echo "[RIEI-TABLE3-PARTITION-REPAIR] split=stable_group_seed_shared_train_test_holdout metric=paper_last10 reduction=${RIEI_REDUCTION}"
 for gpu in "${GPU_IDS[@]}"; do
   current=0
   [[ "${DRY_RUN}" == 1 ]] || current="$(gpu_process_count "${gpu}")"
@@ -87,7 +92,7 @@ for i in "${!ROWS[@]}"; do
     "TRAIN_RXS=${train_rxs}" "TEST_RXS=${test_rxs}" "RUN_ROOT=${run_dir}" "LOG_ROOT=${log_dir}"
     "PYTHON_BIN=${PYTHON_BIN}" "WISIG_PKL=${WISIG_PKL}" "BASELINE_EPOCHS=200" "SEED=${SEED}" "SAT_EVAL=0"
     "RIEI_PAPER_EVAL_LAST_N=10" "RIEI_TEST_EVAL_INTERVAL=10" "RIEI_OPTIMIZER=sgd" "RIEI_SGD_MOMENTUM=0"
-    "RIEI_CE_REDUCTION=mean" "RIEI_MI_REDUCTION=mean" "RIEI_IE_REDUCTION=mean"
+    "RIEI_CE_REDUCTION=${RIEI_REDUCTION}" "RIEI_MI_REDUCTION=${RIEI_REDUCTION}" "RIEI_IE_REDUCTION=${RIEI_REDUCTION}"
     "RIEI_WISIG_RMS_NORMALIZE=0" "RIEI_LAMBDA_FEATURE_NORM=0"
     bash "${ROOT}/run_wisig_paper_scope_queue.sh" --no-skip-done)
   echo "[JOB] row=${row} id=${job_id} gpu=${gpu} train=${train_rxs} test=${test_rxs} paper=${paper_mean}+/-${paper_sd}"

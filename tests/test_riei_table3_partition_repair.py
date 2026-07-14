@@ -13,7 +13,11 @@ def test_partition_repair_covers_table3_and_paper_metric() -> None:
     assert '"RIEI_PAPER_EVAL_LAST_N=10"' in text
     assert "stable_group_seed_shared_train_test_holdout" in text
     assert '"RIEI_OPTIMIZER=sgd"' in text
-    assert '"RIEI_CE_REDUCTION=mean"' in text
+    assert 'RIEI_REDUCTION="${RIEI_REDUCTION:-mean}"' in text
+    assert '"RIEI_CE_REDUCTION=${RIEI_REDUCTION}"' in text
+    assert '"RIEI_MI_REDUCTION=${RIEI_REDUCTION}"' in text
+    assert '"RIEI_IE_REDUCTION=${RIEI_REDUCTION}"' in text
+    assert 'RIEI_REDUCTION must be mean or sum' in text
 
 
 def test_partition_repair_uses_capacity_gated_sequential_queues() -> None:
