@@ -115,6 +115,21 @@
 
 该快照只用于训练机制诊断。R2-R7的p95/p99虽下降，但known core accept仅0.109-0.121，旧proxy仍约0.609-0.614且bridge=1，不能解释为安全接收域收紧。R3的18度同口径使overflow暴露为1.0，说明结构性local component仍未把跨receiver/day/channel样本纳入稳定核心。R4虽将temporal pass提高到约0.110，但U_s direct仍为0，表明epoch bank没有闭环到direct loss路由。表中sat为source-val增强族内结果，不是strict UDU或最终satellite test。
 
+### E51-E73中期诊断
+
+|候选|epoch|DM core accept|legacy proxy/bridge|source overflow|source p95/p99|radius/inter|U_s direct active|
+|---|---:|---:|---:|---:|---:|---:|---:|
+|R0 replay|59|0.586|0.597/1.000|0.709|64.31/78.61|1.163|0.746|
+|R1 ID core|73|0.219|0.589/1.000|0.819|42.26/46.26|1.314|0.000|
+|R2 frozen gate|52|0.108|0.606/1.000|0.841|44.28/49.30|1.751|0.000|
+|R3 overflow aligned|52|0.104|0.607/1.000|1.000|43.11/47.65|1.695|0.000|
+|R4 U epoch bank|51|0.103|0.609/1.000|1.000|43.31/47.24|1.708|0.016|
+|R5 concat dedup|58|0.095|0.607/1.000|1.000|41.82/45.90|1.714|0.048|
+|R6 full stable|58|0.094|0.607/1.000|1.000|42.83/47.23|1.765|0.016|
+|R7 aggressive|59|0.092|0.608/1.000|1.000|41.87/45.57|1.687|0.032|
+
+R3-R7出现明确的几何伪改善：source p95/p99下降，但overflow不动、known core覆盖继续坍缩、radius/inter显著恶化，旧proxy/bridge也未同步下降。说明当前18度半径合同与smooth-min/reference gate共同收缩了动态局部尺度，却没有学到跨receiver/day/channel稳定交集。R1单独使用`feat_cls`可将overflow降至约0.819，但core覆盖仍低且U_s direct完全失活；R0保留较高core和U_s路由，却以p99扩张和高legacy风险为代价。最终结论仍需E120、final-only测试和endpoint artifact。
+
 ## 声明边界
 
 本轮只能评价Phase1 DG、星地压力、known几何、source-only proxy风险、U_s执行和diagnostic prototype。不得声明真实unknown FAR/FPR95、Stage2成功或endpoint部署成功。
