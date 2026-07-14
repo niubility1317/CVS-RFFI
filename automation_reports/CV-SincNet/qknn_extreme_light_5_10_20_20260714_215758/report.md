@@ -137,3 +137,18 @@ run ID=`qknn_extreme_light_lowrank_k30_20260714_2340_v1`；Git commit=`0ac6917`�
 ### K10/K5 feasibility计划
 
 run ID=`qknn_extreme_light_k10k5_feasibility_20260715_0032_v1`，`rx8-8×2开发seed×5/10/20新类×K5/K10×2arms=24 rows`。比较logit0.25对角头与轻source-anchor0.05；固定3-view support、query 1-view、20epoch、冻结ADV3B02和无adapter60。Git commit=`a0fe369`，计划绑定空闲GPU0/1/2。
+
+### K10/K5 feasibility结果
+
+24/24 rows完成，0执行失败、0协议违规。36个matched receiver×seed×scenario×新类规模单元均满足K5 support严格嵌套K10、每类恰为5/10个物理ID、query ID列表完全相同，嵌套与query一致性违规为0；但K10为0/24 row联合通过，36个matched场景单元中0个同时满足K10绝对门槛与K5四指标drop门槛。
+
+|arm|新类|K5 old/floor/new/H|K10 old/floor/new/H|全局通过|
+|---|---:|---|---|---:|
+|logit0.25对角头|5|80.28/57.50/75.33/77.59%|83.75/65.83/84.17/83.83%|否|
+|logit0.25对角头|10|76.67/55.83/76.58/76.61%|81.11/62.50/83.42/82.22%|否|
+|logit0.25对角头|20|77.92/53.33/85.17/81.37%|80.00/56.67/90.17/84.76%|否|
+|logit0.25+source anchor0.05|5|79.72/55.83/74.00/76.55%|83.89/65.00/84.00/83.83%|否|
+|logit0.25+source anchor0.05|10|77.08/56.67/76.33/76.69%|80.97/62.50/83.33/82.12%|否|
+|logit0.25+source anchor0.05|20|78.75/53.33/84.83/81.66%|80.28/57.50/90.17/84.92%|否|
+
+当前瓶颈是K10冻结表示在LEO弱域下的旧类整体与逐类可分性，source anchor没有实质收益。下一步继续封存确认seed并限制在单开发receiver，探索同一物理view上的低成本RF统计特征；不增加query权限、不使用角色/配额Oracle、不启用adapter60。
