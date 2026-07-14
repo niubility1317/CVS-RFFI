@@ -164,3 +164,9 @@ run ID=`qknn_extreme_light_k10k5_feasibility_20260715_0032_v1`，`rx8-8×2开发
 三场景各导出9,800行`z_id160+FFT96+RF-stat32`，完整日志错误扫描PASS。K10 screen 24/24 rows完成、0失败、0权限违规、0联合通过。权重0.5/1/2/4下，5类`old/floor/new/H`依次为`80.28/60.83/79.33/79.70%`、`80.69/62.50/82.50/81.47%`、`82.78/65.83/84.00/83.27%`、`84.31/68.33/84.17/84.18%`；10类最佳为`80.00/61.67/82.75/81.31%`，20类最佳为`78.06/54.17/90.83/83.95%`。RF统计不能修复旧类可分性。
 
 下一run=`qknn_extreme_light_multiproto_k10_screen_20260715_0054_v1`，比较每类2/3个确定性球面prototype以及FFT/FFT+RF，24个K10开发rows。该头0epoch、0参数、support-only、无query图；20新类三prototype状态分别79,872B/89,856B，MAC/query分别19,968/22,464。K5与确认seed继续封存。
+
+### Multi-prototype结果与repair-canonical1计划
+
+24/24 rows完成、0失败、0权限违规、0联合通过。最佳3prototype+FFT+RF在5/10/20类的`old/floor/new/H`仅为`70.14/41.67/73.83/71.82%`、`68.33/40.83/69.08/68.56%`、`68.19/40.83/79.92/73.51%`，显著弱于对角头；该路线终止。
+
+下一轮使用1-view逐样本`repair_canonical1`：盲DC/CFO残差校正、RMS归一化和限幅后执行同一次冻结backbone前向，0参数、0epoch、无query batch。预注册特征根=`cvs_qknnv42_extreme_light_20new_features_repair1_20260715_v1`，K10 screen=`qknn_extreme_light_repair1_k10_screen_20260715_0100_v1`，比较FFT/FFT+RF与权重2/4共24 rows。35项相关pytest、编译、launcher语法和dry-run PASS；K5与确认seed继续封存。

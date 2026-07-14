@@ -238,6 +238,24 @@ def test_multiprototype_arm_is_closed_form_and_selects_registered_feature_block(
     assert len(config["extreme_light_support_aug_scenarios"]) == 3
 
 
+def test_diag_feature_block_arm_can_select_fft_without_rf():
+    row = build_rows(
+        arms=("el_diag_aug3_fft_w4p0_e20",),
+        new_class_counts=(10,),
+        receivers=("8-8",),
+        seeds=(713101,),
+        k_grid=(10,),
+        output_root=Path("runs"),
+        log_root=Path("logs"),
+    )[0]
+    config = row_config(_base_config(), row, device="cpu")
+    assert config["qknnv42_head_mode"] == "extreme_light_diag_cosine"
+    assert config["qknnv42_aux_feature_key"] == "fft_logmag_features"
+    assert config["qknnv42_aux_feature_dim"] == 96
+    assert config["extreme_light_aux_weight"] == 4.0
+    assert config["extreme_light_epochs"] == 20
+
+
 def test_k10_primary_config_locks_k5_sensitivity_and_new_thresholds():
     path = Path("paper_reproduction/configs/cvs_qknnv42_extreme_light_20new_stage2c_k10_20260715_n607.json")
     config = json.loads(path.read_text(encoding="utf-8"))

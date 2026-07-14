@@ -48,6 +48,7 @@ from training_controls import parse_sat_scenarios, sat_channel_config_for_scenar
 SIMPLIFIED_LEO_RESIDUAL_SCENARIOS = {"leo_clear_weak", "leo_low_elev_weak", "leo_rain_weak"}
 SATELLITE_TTA_POLICIES = (
     "none",
+    "repair_canonical1",
     "rx_shift3",
     "rx_cfo3",
     "rx_light5",
@@ -437,6 +438,9 @@ def _satellite_tta_views(x_sat: torch.Tensor, policy: str) -> list[tuple[str, to
         phase = 2.0 * torch.pi * float(delta) * n
         return _from_complex_iq(z * torch.exp(1j * phase), x_sat)
 
+    if mode == "repair_canonical1":
+        return [("repair_canonical", _leo_repair_canonical_iq(x_sat))]
+
     if mode == "rx_shift3":
         return [
             ("rx_base", x_sat),
@@ -532,7 +536,7 @@ def _satellite_tta_views(x_sat: torch.Tensor, policy: str) -> list[tuple[str, to
 
 def _satellite_tta_view_count(policy: str) -> int:
     mode = str(policy or "none").strip().lower()
-    if mode in {"", "none", "off", "0"}:
+    if mode in {"", "none", "off", "0", "repair_canonical1"}:
         return 1
     if mode in {"rx_shift3", "rx_cfo3"}:
         return 3

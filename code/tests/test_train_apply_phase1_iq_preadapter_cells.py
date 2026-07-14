@@ -91,7 +91,7 @@ class TrainApplyPhase1IqPreadapterCellTest(unittest.TestCase):
         from export_spaceborne_features import _satellite_tta_view_count, _satellite_tta_views
 
         x = torch.zeros((2, 2, 16), dtype=torch.float32)
-        for policy, expected in (("none", 1), ("rx_shift3", 3), ("rx_cfo3", 3), ("rx_light5", 5)):
+        for policy, expected in (("none", 1), ("repair_canonical1", 1), ("rx_shift3", 3), ("rx_cfo3", 3), ("rx_light5", 5)):
             views = _satellite_tta_views(x, policy)
             self.assertEqual(len(views), expected)
             self.assertEqual(_satellite_tta_view_count(policy), expected)

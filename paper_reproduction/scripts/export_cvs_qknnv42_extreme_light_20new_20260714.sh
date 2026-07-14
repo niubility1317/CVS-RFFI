@@ -13,6 +13,7 @@ NEW_TX_IDS="${NEW_TX_IDS:-1-16,1-18,18-10,14-11,8-3,18-8,10-10,16-19,20-12,4-10,
 SEED="${SEED:-713101}"
 GPUS="${GPUS:-0,1,2}"
 AUX_RF_STAT_DIM="${AUX_RF_STAT_DIM:-0}"
+SATELLITE_TTA_POLICY="${SATELLITE_TTA_POLICY:-none}"
 DRY_RUN="${DRY_RUN:-0}"
 
 for arg in "$@"; do
@@ -68,7 +69,7 @@ run_one() {
     --target_new_channel_view satellite
     --target_new_sat_scenarios "$scenario"
     --target_new_sat_seed "$((SEED + 911))"
-    --satellite_tta_policy none
+    --satellite_tta_policy "$SATELLITE_TTA_POLICY"
     --star_ground_channel_impl simplified_leo_residual
     --sat_fs_hz 25e6
     --sat_fc_hz 2.462e9
