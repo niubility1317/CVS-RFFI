@@ -568,6 +568,7 @@ def extract_features_with_metadata(
     satellite_tta_policy: str = "none",
     aux_fft_logmag_dim: int = 0,
     aux_rf_stat_dim: int = 0,
+    include_raw_iq: bool = False,
 ):
     feature_buf: list[np.ndarray] = []
     aux_fft_buf: list[np.ndarray] = []
@@ -583,6 +584,7 @@ def extract_features_with_metadata(
     sat_scenario_buf: list[str] = []
     label_buf: list[int] = []
     domain_buf: list[int] = []
+    raw_iq_buf: list[np.ndarray] = []
     model.eval()
     view = str(channel_view or "clean").lower()
     scenarios = list(sat_scenarios or [])
@@ -609,6 +611,8 @@ def extract_features_with_metadata(
         meta_sig = _meta_to_list(meta, "sig_i", n)
         tta_views = _satellite_tta_views(x, satellite_tta_policy if view == "satellite" else "none")
         for tta_name, x_view in tta_views:
+            if bool(include_raw_iq):
+                raw_iq_buf.append(x_view.detach().cpu().float().numpy())
             if int(aux_fft_logmag_dim) > 0:
                 aux_fft_buf.append(
                     _spectral_logmag_sketch_batch(
@@ -669,6 +673,8 @@ def extract_features_with_metadata(
     }
     if int(aux_fft_logmag_dim) > 0:
         payload["fft_logmag_features"] = np.concatenate(aux_fft_buf, axis=0).astype(np.float32)
+    if bool(include_raw_iq):
+        payload["raw_iq"] = np.concatenate(raw_iq_buf, axis=0).astype(np.float32)
     if int(aux_rf_stat_dim) > 0:
         payload["rf_stat_features"] = np.concatenate(aux_rf_buf, axis=0).astype(np.float32)
     if int(aux_fft_logmag_dim) > 0 and int(aux_rf_stat_dim) > 0:
@@ -724,6 +730,12 @@ def parse_args() -> argparse.Namespace:
         choices=(0, 32),
         default=0,
         help="Also export a same-view 32-D gain-normalized IQ statistics descriptor.",
+    )
+    parser.add_argument(
+        "--include_raw_iq",
+        action=argparse.BooleanOptionalAction,
+        default=False,
+        help="Persist the exact post-channel IQ view for support-only front-end adaptation.",
     )
     parser.add_argument("--dataset", default="wisig")
     parser.add_argument("--num_classes", type=int, default=None)
@@ -942,6 +954,7 @@ def main() -> int:
         satellite_tta_policy=str(args.satellite_tta_policy),
         aux_fft_logmag_dim=int(args.aux_fft_logmag_dim),
         aux_rf_stat_dim=int(args.aux_rf_stat_dim),
+        include_raw_iq=bool(args.include_raw_iq),
     )
     source_channel_profile = {
         "view": source_view,
@@ -986,6 +999,7 @@ def main() -> int:
             satellite_tta_policy=str(args.satellite_tta_policy),
             aux_fft_logmag_dim=int(args.aux_fft_logmag_dim),
             aux_rf_stat_dim=int(args.aux_rf_stat_dim),
+            include_raw_iq=bool(args.include_raw_iq),
         )
         proxy_unknown_channel_profile = {
             "view": proxy_unknown_view,
@@ -1039,6 +1053,7 @@ def main() -> int:
             satellite_tta_policy=str(args.satellite_tta_policy),
             aux_fft_logmag_dim=int(args.aux_fft_logmag_dim),
             aux_rf_stat_dim=int(args.aux_rf_stat_dim),
+            include_raw_iq=bool(args.include_raw_iq),
         )
         target_old_channel_profile = {
             "view": target_old_view,
@@ -1067,6 +1082,7 @@ def main() -> int:
             satellite_tta_policy=str(args.satellite_tta_policy),
             aux_fft_logmag_dim=int(args.aux_fft_logmag_dim),
             aux_rf_stat_dim=int(args.aux_rf_stat_dim),
+            include_raw_iq=bool(args.include_raw_iq),
         )
     unknown_payload = None
     target_unknown_view = target_new_view
@@ -1090,6 +1106,7 @@ def main() -> int:
             satellite_tta_policy=str(args.satellite_tta_policy),
             aux_fft_logmag_dim=int(args.aux_fft_logmag_dim),
             aux_rf_stat_dim=int(args.aux_rf_stat_dim),
+            include_raw_iq=bool(args.include_raw_iq),
         )
     payload_parts = [source_payload]
     if proxy_unknown_payload is not None:
@@ -1151,6 +1168,12 @@ def main() -> int:
         "satellite_tta_policy": str(args.satellite_tta_policy),
         "satellite_tta_view_count": _satellite_tta_view_count(str(args.satellite_tta_policy)),
         "aux_fft_logmag_dim": int(args.aux_fft_logmag_dim),
+        "raw_iq_included": bool(args.include_raw_iq),
+        "raw_iq_contract": (
+            "exact_post_channel_single_view_for_support_only_adaptation"
+            if bool(args.include_raw_iq)
+            else "not_persisted"
+        ),
         "aux_fft_feature_key": "fft_logmag_features" if int(args.aux_fft_logmag_dim) > 0 else "",
         "aux_fft_view_alignment": "same_post_channel_view_as_backbone",
         "aux_rf_stat_dim": int(args.aux_rf_stat_dim),

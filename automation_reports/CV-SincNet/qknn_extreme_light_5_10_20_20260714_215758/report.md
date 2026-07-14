@@ -176,3 +176,13 @@ run ID=`qknn_extreme_light_k10k5_feasibility_20260715_0032_v1`，`rx8-8×2开发
 三场景各导出9,800行且view count=1；K10 screen 24/24 rows完成、0失败、0权限违规、0联合通过。最佳FFT+RF权重4在5/10/20类的`old/floor/new/H`仅为`38.06/11.67/29.50/32.53%`、`34.03/5.83/30.75/31.98%`、`24.58/3.33/34.29/28.14%`。盲平均相位步破坏了判别结构，该路线终止。
 
 全部RF、multi-prototype、repair1 artifact/日志/summary已拉回`local_artifacts/*20260715*`对应目录。当前仍无统一K10候选，不运行K5、不扩receiver、不解封确认seed。下一合法方向限制为冻结backbone前极少参数support-only可学习接收校正；仍须≤20epoch、≤50k参数、1-view、逐样本推理。
+
+## 2026-07-15 01:20 support-only微型IQ前端预注册
+
+现有`train_target_adapt.py`的logit/LoRA/feature residual适配器只面向冻结6类source分类头，无法合法表示5/10/20个新增TX；历史`IQResidualPreAdapter`又是source-only训练语义，不能直接冒充Stage2-C target support适配。因此本周期新增独立的`support_only_micro_iq_residual_v1`：冻结ADV3B02全部参数，只训练`Conv(2→8,k5)+depthwise Conv(8,k5)+Conv(8→2,k1)`的恒等初始化残差前端。其可训练参数仅154个，FP16参数状态308B，单query新增34,816MAC；持续推理仍为单物理IQ view、逐样本argmax，不建立query图，也不读取old/new角色或类别配额。
+
+训练只使用合法K10 support物理ID及其预注册`leo_clear_weak/leo_low_elev_weak/leo_rain_weak`三个support view，优化目标为全注册类对称的support prototype交叉熵，加冻结基础特征anchor和输入残差约束；query IQ、query标签和query统计不进入优化。适配20epoch，学习率`5e-4`，batch size128，temperature18，feature anchor0.05，input residual0.02。每轮保存完整loss/CE/anchor/residual/support accuracy轨迹、adapter状态、support/query物理ID哈希、峰值显存、适配时长与逐scenario导出哈希。
+
+第一步仅运行开发receiver`8-8`、seed`713101`、20新类、K10的单cell机制烟测，与同一物理切分的identity-only单qKNN和当前原始单view对角头比较。若该cell没有明显提高old/floor，先检查完整loss与逐类混淆，再决定是否使用seed`713102`和嵌套5/10类；不得直接扩5 receiver或解封`713106–713110`确认seed。性能判定仍使用K10绝对门槛`old≥95%`、旧类floor`≥88%`、5/10/20新类分别`≥92/90/86%`；只有锁定统一K10候选后才补matched K5四项≤3pp下降审计。
+
+原始IQ缓存通过既有特征导出器新增显式`--include_raw_iq`生成，保存的是与冻结backbone和FFT完全相同的单个后信道view。目标特征根预注册为`runs/cvs_qknnv42_extreme_light_20new_features_rawiq_20260715_v1`，微型适配输出根预注册为`runs/qknn_extreme_light_micro_iq_20260715_v1`，日志根为`logs/qknn_extreme_light_micro_iq_20260715_v1`。实现文件为`code/export_spaceborne_features.py`、`paper_reproduction/scripts/train_export_cvs_micro_iq_adapter.py`和对应测试；本地`ssr-gpu`下34项相关pytest已PASS。远端同步、命令、PID、GPU和输出哈希将在launch前后补录。

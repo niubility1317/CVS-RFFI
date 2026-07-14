@@ -14,6 +14,7 @@ SEED="${SEED:-713101}"
 GPUS="${GPUS:-0,1,2}"
 AUX_RF_STAT_DIM="${AUX_RF_STAT_DIM:-0}"
 SATELLITE_TTA_POLICY="${SATELLITE_TTA_POLICY:-none}"
+INCLUDE_RAW_IQ="${INCLUDE_RAW_IQ:-0}"
 DRY_RUN="${DRY_RUN:-0}"
 
 for arg in "$@"; do
@@ -76,6 +77,9 @@ run_one() {
     --device cuda:0
     --seed "$SEED"
   )
+  if [[ "$INCLUDE_RAW_IQ" == "1" ]]; then
+    cmd+=(--include_raw_iq)
+  fi
   printf '[EXTREME-LIGHT-20NEW-EXPORT] scenario=%s gpu=%s out=%s\n' "$scenario" "$gpu" "$out_npz"
   if [[ "$DRY_RUN" == "1" ]]; then
     printf 'CUDA_VISIBLE_DEVICES=%q ' "$gpu"
