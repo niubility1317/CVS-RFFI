@@ -68,4 +68,20 @@
 
 ## 启动与完成状态
 
-待同步、远端dry-run和启动后补充PID、实际命令、GPU快照、日志健康及最终逐候选结果。
+- 18:53 N607直接SSH preflight通过；启动前8张GPU均无compute client，空闲显存约24249 MiB/卡。
+- 远端hash验证：launcher=`15a210eb...`、trainer=`08c34f56...`、losses=`6c7a86a5...`，与本地一致；远端`py_compile`和matrix dry-run通过。
+- 实际命令：`nohup env PYTHONPATH=<root>/code:<root> <CVS-RFFI python> -u code/scripts/launch_phase1_dgleo_p0factorial8_20260714.py --allow-unrelated-compute --max-total-compute-per-gpu 2 --min-free-memory-mib 10000 --wall-hours 10 > logs/phase1_dgleo_p0factorial8_20260714_launcher.out 2>&1 < /dev/null &`
+- launcher PID：`549363`。
+
+| candidate | GPU | PID | 18:55状态 |
+|---|---:|---:|---|
+| P0F_A0B0C0 | 1 | 549385 | RUNNING |
+| P0F_A0B0C1 | 0 | 549460 | RUNNING |
+| P0F_A0B1C0 | 2 | 549925 | RUNNING |
+| P0F_A0B1C1 | 6 | 550392 | RUNNING |
+| P0F_A1B0C0 | 5 | 550859 | RUNNING |
+| P0F_A1B0C1 | 4 | 551328 | RUNNING |
+| P0F_A1B1C0 | 7 | 551794 | RUNNING |
+| P0F_A1B1C1 | 3 | 552673 | RUNNING |
+
+启动后每卡只有一个本run CUDA compute client，显存占用约1.94-3.20 GiB、空闲约21.0-22.3 GiB，未发现Traceback、RuntimeError、OOM或参数解析错误。待4-5分钟健康检查及实验完成后补充最终逐候选结果。
