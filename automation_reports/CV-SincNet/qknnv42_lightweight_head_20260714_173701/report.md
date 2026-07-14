@@ -234,3 +234,7 @@ Fisher/whitening和prototype仍由全部K-shot support拟合；代表选择完�
 严格逐run口径仍未全部满足：125行中old/new/H分别有44/54/55行相对dense下降超过3pp。因此晋升结论仍限定为用户目标采用的矩阵均值≤3pp，不得写成所有receiver/seed/K行的最坏情况保证。
 
 本地artifact：`E:\type10-7\automation_reports\CV-SincNet\qknnv42_lightweight_head_20260714_173701\artifacts\fft96_support_diverse2_confirmation_v2_seed713111_713115`。实现新增独立benchmark`paper_reproduction/scripts/benchmark_qknnv42_support_compression.py`，并将测试扩展为`9 passed`。TTA端到端500行矩阵仍是整个目标的剩余验证项。
+
+## 15.N607最新占用边界
+
+2026-07-14 18:40再次执行只读训练清单。N607上仍有8个RIEI训练进程，另有一个已由外部流程启动的`run_cvs_qknnv42_full_legacy_oracle_125_20260714.sh`任务，正在GPU3训练60 epoch、5-view、FFT96的历史strict legacy adapter，输出根为`runs/cvs_qknnv42_full_adapter5_fft96_strict_20260714_183556`。该任务不是本轮support-memory压缩或固定adapter TTA矩阵，不能作为1/3/5-view轻量化结论。按活动任务monitor-only规则，本轮未同步、未启动、未修改或干预任何远端任务；本地SSH客户端和到N607/桥接机的TCP22连接均已归零。
