@@ -1,15 +1,19 @@
 # RIEI期刊Table III论文—代码一致性追踪
 
-| ID | 要求 | 实现 | 状态 |
-|---|---|---|---|
-| RIEI-P01 | WiSig信道均衡；逐包RMS未由数据集专段明确规定 | RMS开关及no-RMS严格候选 | verified |
-| RIEI-P02 | Eq.20–21交替梯度下降与中间FED更新 | SGD/Adam可控，交替顺序保持 | verified |
-| RIEI-P03 | 期刊最终5个epoch均值/SD | Table III默认last5 | verified |
-| RIEI-P04 | 两source到一target、14400/4800样本、完整12行 | 现有receiver holdout split保持 | verified |
-| RIEI-P05 | ResNet1D-18、三层EC/RC、lambda均1.2 | 现有架构与损失保持 | verified |
-| RIEI-P06 | 用同row受控实验定位优化器与loss reduction | 8候选完整1600epoch比较，P02 last5=`80.12±0.58%` | verified |
-| RIEI-P07 | 胜出配置必须确认Table III全部12个receiver组合 | 固定SGD+mean+no-RMS+no-FN的12行last5确认launcher；本地/远端hash、语法、dry-run通过，8个顺序queue已健康启动 | verified |
+| ID | 论文依据 | 修复前实现 | 目标实现 | 状态 | 验证 |
+|---|---|---|---|---|---|
+| RIEI-P01 | WiSig信号先去除无信号段并做信道均衡；期刊正文泛化描述含归一化，但数据集专段未规定逐包RMS归一化 | `riei_original`硬编码`normalize=True` | 暴露RMS开关；严格候选关闭，保留开启对照 | verified | `cvs_data.py`接线；launcher dry-run |
+| RIEI-P02 | Eq.20a–20c和Eq.21使用交替梯度下降及中间FED更新，步长均为`1e-4` | 固定Adam；FED在同一mini-batch中连续执行两个Adam step | 支持无momentum SGD严格候选，并保留Adam消融；保持CE中间更新与固定分类器的MI/IE更新顺序 | verified | optimizer类型单测；既有交替更新单测 |
+| RIEI-P03 | IEEE SPAWC 2023正文明确Table III统计最终10个epoch准确率均值与标准差 | 误称“期刊版”并固定last5 | 论文Table III正式口径改为last10；保留既有last5历史证据 | verified | 原PDF第4页实验段；新launcher dry-run |
+| RIEI-P04 | Table I：6个发射机；每接收机14400个训练样本、4800个测试样本；数据随机划分后在Table III复用receiver组合 | 同一receiver的样本选择随source组合和RNG循环顺序变化；target另用独立随机流 | 每`(tx,rx,eq)`稳定分组seed，source取2400、validation/target复用同一后续800 | verified | synthetic split测试验证跨组合一致性及source-val/target-test一致性 |
+| RIEI-P05 | ResNet1D-18 FED、三层FC EC/RC、`lambda_1=lambda_2=1.2` | 已实现 | 保持不变 | verified | 既有架构/损失单测 |
+| RIEI-P06 | 优化器与loss reduction未完全公开，必须用同row受控实验定位 | 固定Adam+sum导致Table III第1行明显低于论文 | 8候选完整200epoch比较，以预定last5选型 | verified | 8份metrics共1600epoch、24份日志共6100行；P02=`80.12±0.58%` |
+| RIEI-P07 | Table III最终证据必须覆盖论文全部12个receiver组合 | 发现阶段仅覆盖第1行 | 固定P02的SGD+mean+no-RMS+no-FN配置，运行12行确认 | verified | 12×200epoch自然完成、硬错误0；均值72.26%，MAE4.82pp，命中5/12，`NOT_REPRODUCED` |
+| RIEI-P08 | Table III各receiver组合应建立在同一随机数据partition上 | 组合内顺序RNG导致同一receiver跨行样本漂移 | 完整12行以稳定全局partition和论文last10重新确认 | implemented | 本地`py_compile`、6项聚焦测试、`bash -n`和12-job dry-run均通过；待N607执行 |
 
-论文未明确优化器名称和总epoch数，因此SGD仍与Adam做同row消融；正式分数固定200epoch last5，不用目标域峰值选配置。
+## 声明边界
 
-当前反向审计：`verified=7`、`implemented=0`、`pending=0`、`deferred=0`、`rejected=0`、`blocked=0`。最高风险是完整12行训练尚未完成，未知P02提升是否能跨全部receiver组合保持。
+- 论文未明确给出优化器名称和总epoch数；SGD由Eq.20–21的显式梯度下降式及正文SGD讨论支持，但仍必须与Adam做同数据同row消融。
+- 发现阶段只在Table III第1行比较训练动力学；最终论文结论必须用胜出配置重跑完整12行，不能用单row或目标域峰值代替。
+- 目标域逐epoch曲线仅用于诊断；下一轮正式分数采用论文明确的最终10个epoch，禁止target-oracle选epoch。
+- 当前反向审计：`verified=7`、`implemented=1`、`pending=0`、`deferred=0`、`rejected=0`、`blocked=0`；最高风险为论文未公开ResNet1D-18具体结构、优化器和随机seed，稳定全局partition修复仍需N607完整12行验证。

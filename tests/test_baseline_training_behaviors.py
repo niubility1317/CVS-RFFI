@@ -379,8 +379,41 @@ class BaselineWiSigPaperProtocolTest(unittest.TestCase):
         self.assertEqual(len(val), 2 * 2 * 3)
         self.assertEqual(len(test), 2 * 1 * 4)
         self.assertEqual(info["aggregate_test_keys"], ["test_seen_day_unseen_rx"])
+        self.assertEqual(info["partition_strategy"], "stable_group_seed_shared_train_test_holdout")
         self.assertIn("test_seen_day_unseen_rx", named)
         self.assertEqual(meta["test_seen_day_unseen_rx"]["paper_protocol_alias"], "riei_two_source_receiver_holdout")
+
+        def signature(subset, rx_i):
+            return sorted(
+                (int(item.tx_i), int(item.rx_i), int(item.day_i), int(item.eq_i), int(item.sig_i))
+                for item in subset.index
+                if int(item.rx_i) == int(rx_i)
+            )
+
+        train_other, val_other, _, _, _, _ = make_wisig_riei_receiver_holdout_split(
+            ds,
+            out_len=16,
+            train_rxs=["1-19", "7-7"],
+            test_rxs=["1-1"],
+            train_samples_per_combo=6,
+            val_samples_per_combo=3,
+            test_samples_per_combo=3,
+            seed=7,
+        )
+        self.assertEqual(signature(train, 2), signature(train_other, 2))
+        self.assertEqual(signature(val, 2), signature(val_other, 2))
+
+        _, _, test_same_receiver, _, _, _ = make_wisig_riei_receiver_holdout_split(
+            ds,
+            out_len=16,
+            train_rxs=["1-1", "1-19"],
+            test_rxs=["7-7"],
+            train_samples_per_combo=6,
+            val_samples_per_combo=3,
+            test_samples_per_combo=3,
+            seed=7,
+        )
+        self.assertEqual(signature(val, 2), signature(test_same_receiver, 2))
 
     def test_trainer_records_paper_eval_window_summary(self):
         from baselines.common.cvs_trainer import run_validation_gated_training

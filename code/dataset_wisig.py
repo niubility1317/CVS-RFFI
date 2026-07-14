@@ -375,6 +375,29 @@ def _build_grouped_indices_by_tx_rx_eq_sorted(
     return out
 
 
+def _wisig_group_permutation(
+    idxs_sorted: Sequence[int],
+    *,
+    seed: int,
+    group_key: Tuple[int, int, int],
+) -> List[int]:
+    """Return a receiver-combination invariant permutation for one WiSig group.
+
+    Paper tables reuse one random train/test partition while changing the pair
+    of source receivers. Seeding a single RNG outside the group loop makes a
+    receiver's selected samples depend on which other receiver is present and
+    on loop order. A SeedSequence keyed by the immutable tx/rx/eq identity
+    preserves the same partition for that receiver in every table row.
+    """
+
+    idxs = list(idxs_sorted)
+    if len(idxs) <= 1:
+        return idxs
+    tx_i, rx_i, eq_i = (int(value) for value in group_key)
+    rng = np.random.default_rng(np.random.SeedSequence([int(seed), tx_i, rx_i, eq_i]))
+    return [idxs[int(i)] for i in rng.permutation(len(idxs)).tolist()]
+
+
 def _contiguous_train_val_split(
     idxs_sorted: Sequence[int],
     train_ratio: float,
@@ -1493,15 +1516,12 @@ def make_wisig_riei_receiver_holdout_split(
         build_index=True,
     )
     groups = _build_grouped_indices_by_tx_rx_eq_sorted(base_trainval)
-    rng = np.random.default_rng(int(seed))
     train_n = max(1, int(train_samples_per_combo))
     val_n = max(0, int(val_samples_per_combo))
     train_sel: List[int] = []
     val_sel: List[int] = []
-    for _, idxs_sorted in sorted(groups.items()):
-        idxs = list(idxs_sorted)
-        if len(idxs) > 1:
-            idxs = [idxs[int(i)] for i in rng.permutation(len(idxs)).tolist()]
+    for group_key, idxs_sorted in sorted(groups.items()):
+        idxs = _wisig_group_permutation(idxs_sorted, seed=seed, group_key=group_key)
         train_sel.extend(idxs[:train_n])
         if val_n > 0:
             val_sel.extend(idxs[train_n:train_n + val_n])
@@ -1546,14 +1566,11 @@ def make_wisig_riei_receiver_holdout_split(
         build_index=True,
     )
     test_groups = _build_grouped_indices_by_tx_rx_eq_sorted(base_test)
-    rng_test = np.random.default_rng(int(seed) + 7919)
     test_sel: List[int] = []
     test_n = max(1, int(test_samples_per_combo))
-    for _, idxs_sorted in sorted(test_groups.items()):
-        idxs = list(idxs_sorted)
-        if len(idxs) > 1:
-            idxs = [idxs[int(i)] for i in rng_test.permutation(len(idxs)).tolist()]
-        test_sel.extend(idxs[:test_n])
+    for group_key, idxs_sorted in sorted(test_groups.items()):
+        idxs = _wisig_group_permutation(idxs_sorted, seed=seed, group_key=group_key)
+        test_sel.extend(idxs[train_n:train_n + test_n])
     if not test_sel:
         raise ValueError("RIEI split produced an empty test set.")
     test_ds = WiSigSubsetDataset(
@@ -1625,6 +1642,7 @@ def make_wisig_riei_receiver_holdout_split(
         "train_samples_per_combo": int(train_samples_per_combo),
         "val_samples_per_combo": int(val_samples_per_combo),
         "test_samples_per_combo": int(test_samples_per_combo),
+        "partition_strategy": "stable_group_seed_shared_train_test_holdout",
         "train_samples_per_receiver": int(train_samples_per_combo) * int(len(ds.get("tx_list", []))),
         "test_samples_per_receiver": int(test_samples_per_combo) * int(len(ds.get("tx_list", []))),
         "train_size": len(train_ds),

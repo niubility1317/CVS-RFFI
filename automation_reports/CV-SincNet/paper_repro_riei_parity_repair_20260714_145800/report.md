@@ -1,26 +1,46 @@
 # RIEI Table III论文一致性修复与优化报告
 
+## 基本信息
+
 - 实验ID：`paper_repro_riei_parity_repair_20260714_145800`
-- 目标：修复RIEI期刊Table III的预处理、优化器和评估窗口偏差，先做Table III第1行8候选受控消融，再以固定配置确认完整12行。
-- 论文目标：12行均值`73.30%`；第1行`77.88±2.23%`。
+- 时间：2026-07-14
+- 操作者：Codex
+- 目标：修复RIEI期刊Table III的预处理、优化器和评估窗口偏差，先完成单row受控消融，再以固定配置重跑完整12行。
+- 对照：RIEI Table III论文12行均值`73.30%`；逐行论文均值/标准差以当前fixopt报告中的表格为准。
 
-## 已确认问题
+## 当前诊断
 
-| 问题 | 修复前 | 当前修复 |
-|---|---|---|
-| 信号预处理 | `riei_original`硬编码逐包RMS归一化 | 严格候选仅信道均衡并关闭RMS；保留RMS control |
-| 优化器 | 固定Adam，FED同一批次连续两个Adam step | 增加无momentum SGD及Adam消融，保持Eq.20–21交替顺序 |
-| 评价窗口 | Table III使用last10 | 2025期刊版默认last5；旧会议版last10只作历史口径 |
+1. 当前`riei_original`强制逐包RMS归一化；论文数据集专段只明确无信号段去除和信道均衡，因此该额外预处理可能削弱跨接收机幅相指纹。
+2. 当前训练器固定Adam。论文Eq.20–21给出交替梯度下降，并强调中间FED更新；Adam在一个mini-batch内对FED连续推进两次内部时间步，属于未披露实现假设。
+3. 当前Table III启动器使用last10。2025期刊扩展版明确报告最终5个epoch；旧会议版才写last10。
+4. 当前fixopt前8行均值`60.34%`，论文前8行均值`73.37%`，平均差`-13.03pp`；仅第4行进入论文`±2SD`范围。feature-norm guard改善不均匀，未解决主因。
+5. 现行日志的source validation接近`100%`，而target receiver显著偏低，表现为跨接收机泛化不足，不是NaN/OOM或训练未收敛。
 
-当前fixopt前8行均值`60.34%`，论文前8行均值`73.37%`，平均差`-13.03pp`；source validation接近`100%`而target receiver偏低，主因是跨接收机泛化，不是NaN/OOM。
+## 计划矩阵
 
-## 本地验证
+发现矩阵固定Table III第1行`Rx(1-1),Rx(7-7)→Rx(1-19)`、seed1337、batch64、lr1e-4、`lambda_mi=lambda_ie=1.2`，只改变以下变量：SGD/Adam、sum/mean、RMS开关、feature-norm guard。所有正式候选使用预先固定的200epoch和last5；任何目标域中间峰值只作诊断。
 
-- 修改：`baselines/common/cvs_data.py`、`baselines/riei_fd/train_cvs.py`、`run_wisig_paper_scope_queue.sh`、`code/scripts/launch_riei_parity_repair_matrix_20260714.sh`、`tests/test_riei_parity_repair.py`。
-- 根目录聚焦测试`15 passed`；Git镜像聚焦测试`3 passed`。
-- `py_compile`、`bash -n`和8-job dry-run通过。
-- 发现矩阵固定第1行、seed1337、200epoch、last5；目标域间隔曲线只作诊断，禁止target-oracle选epoch。
-- 当前N607 fixopt仍有4个RIEI训练；未同步、未启动、未影响Phase1。后续先完成DRIFT v2，再在容量门通过后启动本RIEI矩阵。
+## N607安全边界
+
+- 当前`paper_repro_fixopt_riei_drift_seed1337_20260714_105000`仍有4个RIEI训练，GPU0–3各有1个本任务训练和1个Phase1训练；GPU4–7仅有Phase1。
+- 当前queue未完全退出前不修改远端共享入口、不启动DRIFT v2或RIEI新矩阵。
+- 后续启动前重新执行直接预检，并验证`existing_compute+planned_peak<=2`。
+
+## 预期产物
+
+- 发现矩阵：8个同row候选完整200epoch日志、`metrics.json`及loss/feature norm轨迹。
+- 确认矩阵：胜出配置的Table III完整12行；若达到逐行/整体阈值，再做多seed稳定性确认。
+- 所有结论回写本报告和Git镜像报告，并保持DRIFT v2独立论文口径。
+
+## 本地实现与验证
+
+- 根目录`E:\type10-7`不是有效Git仓库；版本化承载面为`E:\type10-7\github_publish\CVS-RFFI-repo`。
+- 修改：`baselines/common/cvs_data.py`、`baselines/riei_fd/train_cvs.py`、`run_wisig_paper_scope_queue.sh`、`code/scripts/launch_riei_parity_repair_matrix_20260714.sh`、相关测试。
+- `ssr-gpu`环境`py_compile`通过。
+- 根目录聚焦测试：`15 passed`；唯一警告为根目录`.pytest_cache`访问权限，不影响项目验证。
+- Git镜像聚焦测试：`3 passed`。
+- `bash -n`通过；8-job dry-run输出8个候选、8个容量门、last5、SGD/Adam、RMS开关和fixopt control均正确。
+- 当前未同步或启动N607新任务；共享入口保持远端现行版本，等待fixopt及随后DRIFT v2按队列顺序完成。
 
 ## 2026-07-14 17:20启动前门控
 
@@ -136,3 +156,39 @@
 - 对当前run全部已写入训练及queue日志做完整硬错误扫描，计数0；未见Traceback、RuntimeError、OOM、Killed、NaN、Inf或参数错误。
 - GPU0–3各仅1个本任务trainer，GPU4–7无compute；当前每GPU训练数为`1,1,1,1,0,0,0,0`，容量合规。
 - 当前判定：`RUNNING_HEALTHY_8_OF_12_COMPLETE_THROUGH_EPOCH_117_127`。这是在途分析，不构成剩余4行last5或完整Table III复现结论。SSH短连接已退出，本地`ssh.exe=0`、N607 TCP22已建立连接`=0`。
+
+## 2026-07-14 21:51完整Table III确认结果
+
+- 完成性：12/12训练均自然完成epoch200，12个`QUEUE-JOB-END status=0`、12个`PAPER-EVAL-SUMMARY`和12个`FINAL-TEST`齐全；8个queue和全部trainer均已退出，8块GPU空闲，硬错误0。
+- 小型证据包：仅打包日志、`metrics.json`、manifest和TSV，不含dataset/checkpoint。远端与本地SHA256均为`92b6abc91a451b748de1947f3fe00432f23aa6da82e73b5b9fc96de3f5909519`；本地路径为`analysis_tmp/paper_repro_riei_table3_confirm_sgd_mean_seed1337_20260714_190100/final_2151`。
+- 完整分析：12份`metrics.json`均严格包含epoch1–200，共2400个epoch；扫描32份日志共11020行、802910字节，未见Traceback、RuntimeError、OOM、Killed、NaN、Inf或参数错误。正式分数仍按本轮预注册epoch196–200的last5计算；目标域中间曲线只作诊断。
+
+|行|训练接收机→测试接收机|论文均值±SD|本轮last5均值±SD|差值|较fixopt提升|final|source val last5|last5 CE/MI/IE/FN|论文±2SD|
+|---:|---|---:|---:|---:|---:|---:|---:|---|---|
+|1|`1-1,7-7`→`1-19`|77.88±2.23%|79.85±0.51%|+1.97pp|+10.84pp|79.02%|99.90±0.01%|0.0125/0.0116/2.481/5.207|命中|
+|2|`1-1,8-8`→`1-19`|79.43±1.66%|81.17±1.86%|+1.74pp|+12.64pp|79.77%|99.84±0.01%|0.0114/0.0108/2.481/5.203|命中|
+|3|`1-1,14-7`→`1-19`|66.09±0.67%|75.73±2.08%|+9.64pp|+23.66pp|78.00%|99.89±0.01%|0.0127/0.0138/2.481/5.002|未命中|
+|4|`7-7,8-8`→`1-19`|70.51±3.53%|79.02±2.38%|+8.51pp|+6.60pp|81.52%|99.85±0.02%|0.0114/0.0104/2.481/5.178|未命中|
+|5|`7-7,14-7`→`1-19`|77.35±1.53%|73.56±2.98%|-3.79pp|+7.40pp|75.10%|99.91±0.01%|0.0120/0.0143/2.481/5.007|未命中|
+|6|`8-8,14-7`→`1-19`|75.48±1.21%|65.88±1.59%|-9.60pp|+7.63pp|63.60%|99.90±0.00%|0.0108/0.0117/2.481/5.045|未命中|
+|7|`1-1,1-19`→`14-7`|71.91±2.08%|71.37±1.73%|-0.54pp|+17.72pp|72.48%|99.81±0.02%|0.0123/0.0098/2.481/5.124|命中|
+|8|`1-1,7-7`→`14-7`|68.33±2.37%|69.20±1.92%|+0.87pp|+23.43pp|70.50%|99.90±0.01%|0.0125/0.0116/2.481/5.207|命中|
+|9|`1-1,8-8`→`14-7`|73.54±1.27%|70.58±1.45%|-2.96pp|+20.11pp|68.50%|99.86±0.01%|0.0114/0.0107/2.481/5.203|未命中|
+|10|`1-19,7-7`→`14-7`|73.52±3.15%|62.19±0.61%|-11.33pp|+24.95pp|62.10%|99.90±0.01%|0.0114/0.0107/2.481/5.274|未命中|
+|11|`1-19,8-8`→`14-7`|72.05±2.71%|70.75±1.35%|-1.30pp|+20.35pp|68.58%|99.82±0.01%|0.0105/0.0089/2.481/5.239|命中|
+|12|`7-7,8-8`→`14-7`|73.46±2.00%|67.88±1.01%|-5.58pp|+18.98pp|69.10%|99.84±0.01%|0.0112/0.0104/2.481/5.178|未命中|
+
+### 聚合判定与动力学
+
+- 本轮12行均值`72.26%`，论文12行均值`73.30%`，整体偏差仅`-1.03pp`；但逐行MAE=`4.82pp`、RMSE=`6.12pp`、论文`±2SD`命中仅`5/12`，未达到预注册阈值`MAE≤3pp且命中≥10/12`，正式结论为`NOT_REPRODUCED`。
+- 相比fixopt，12行均值从`56.07%`升至`72.26%`，提升`16.19pp`，且12行全部提升；说明SGD+mean联合修复有效，但不能据聚合均值接近就宣称逐行复现。
+- 所有行source validation后段均为`99.81%–99.91%`，CE/MI/IE和feature norm稳定，无数值崩溃。剩余差异是receiver组合相关的跨域泛化差异，不是未收敛。row10的target诊断峰值`77.17%@43`而正式last5仅`62.19%`，显示source继续拟合可损害target，但禁止用该target峰值选epoch。
+
+## 2026-07-14 22:02剩余协议问题与最小修复
+
+- 原论文实际是IEEE SPAWC 2023会议论文（DOI`10.1109/SPAWC53906.2023.10304544`），正文明确Table III统计“last 10 epochs”；现有报告把它误称为期刊版并固定last5，属于证据口径错误。下一轮改为论文原始last10，但本轮last5结果仍完整保留，不回写或覆盖。
+- 更关键的数据协议问题：旧`make_wisig_riei_receiver_holdout_split`在每个Table III组合内部共用一个顺序RNG。某接收机的2400训练/800保留样本会随“另一个source receiver是谁”和循环顺序而变化；target的800样本又来自独立`seed+7919`流。因此12行没有复用论文所述的一次随机train/test partition。
+- 本地修复：`code/dataset_wisig.py`对每个`(tx_i,rx_i,eq_i)`使用由`seed+group identity`构造的稳定排列；source取前2400，source validation和该接收机作为target时均复用后续800。这样同一接收机在所有Table III行保持完全相同的全局partition，且不接触target标签进行选型。
+- 新增`code/scripts/launch_riei_table3_partition_repair_20260714.sh`，run ID为`paper_repro_riei_table3_partition_repair_seed1337_20260714_220200`；保持P02的SGD、mean、no-RMS、no-feature-norm、200epoch不变，只修复全局partition并改为论文last10。
+- 本地验证：`ssr-gpu`解释器下`py_compile`通过；聚焦测试`6 passed`，新增测试验证同一receiver跨source组合的train/validation集合一致，并验证该receiver作为target时test集合等于全局保留集合；`bash -n`通过，dry-run完整展开12个job、8个capacity gate和12条last10命令。
+- 下一步：镜像并提交上述最小变更；重新执行N607直接预检，确认每GPU`existing_compute+planned_peak≤2`后，仅同步`code/dataset_wisig.py`和新launcher，核对hash、远端`bash -n`与12-job dry-run，再启动。若逐行仍失败，将优先检查未公开的ResNet1D-18具体结构/随机种子不确定性，不使用target-oracle调参。
