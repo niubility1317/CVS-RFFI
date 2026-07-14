@@ -968,6 +968,17 @@ def validate_config(config: dict[str, Any]) -> None:
             raise ValueError(f"feature_npz_by_receiver_scenario is incomplete for receivers={missing}")
     if int(config.get("k_shot", 0)) <= 0 or int(config.get("support_pool_max_k", 0)) < int(config["k_shot"]):
         raise ValueError("invalid nested K-shot settings")
+    primary_k = config.get("primary_k_shot")
+    sensitivity_k = config.get("sensitivity_k_shot")
+    if primary_k is not None or sensitivity_k is not None:
+        if int(primary_k or 0) != 10 or int(sensitivity_k or 0) != 5:
+            raise ValueError("formal extreme-light protocol requires primary K10 and sensitivity K5")
+        if int(config.get("support_pool_max_k", 0)) != 10:
+            raise ValueError("formal K10/K5 protocol requires support_pool_max_k=10")
+        if int(config["k_shot"]) not in {5, 10}:
+            raise ValueError("formal K10/K5 protocol permits only k_shot in {5,10}")
+        if abs(float(config.get("k5_max_drop_pp", 0.0)) - 3.0) > 1.0e-12:
+            raise ValueError("formal K5 sensitivity requires k5_max_drop_pp=3.0")
     if bool(config.get("unknown_rejection_enabled", False)) or config.get("target_unknown_tx_labels"):
         raise ValueError("Phase2 publication mainline excludes unknown rejection")
     aux_key = str(config.get("qknnv42_aux_feature_key", "")).strip()

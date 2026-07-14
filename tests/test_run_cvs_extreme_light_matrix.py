@@ -1,3 +1,4 @@
+import json
 from pathlib import Path
 
 from paper_reproduction.scripts.run_cvs_extreme_light_matrix import (
@@ -215,3 +216,19 @@ def test_frozen_source_bank_anchor_arm_has_no_query_role_gate():
     assert config["extreme_light_source_bank_anchor_strength"] == 0.1
     assert config["extreme_light_source_bank_anchor_blend"] == 0.25
     assert config["qknnv42_labelprop_mode"] == "disabled"
+
+
+def test_k10_primary_config_locks_k5_sensitivity_and_new_thresholds():
+    path = Path("paper_reproduction/configs/cvs_qknnv42_extreme_light_20new_stage2c_k10_20260715_n607.json")
+    config = json.loads(path.read_text(encoding="utf-8"))
+    assert config["primary_k_shot"] == 10
+    assert config["sensitivity_k_shot"] == 5
+    assert config["support_pool_max_k"] == 10
+    assert config["k5_max_drop_pp"] == 3.0
+    assert config["success_thresholds"] == {
+        "old_acc": 0.95,
+        "min_old_class_acc": 0.88,
+        "seen_new_acc_5": 0.92,
+        "seen_new_acc_10": 0.90,
+        "seen_new_acc_20": 0.86,
+    }

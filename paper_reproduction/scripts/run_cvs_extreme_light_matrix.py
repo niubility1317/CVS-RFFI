@@ -492,13 +492,13 @@ def main() -> int:
             "arms": CORE_ARMS,
             "receivers": DEFAULT_RECEIVERS,
             "seeds": DEV_SEEDS,
-            "k_grid": (10, 15, 20),
+            "k_grid": (5, 10),
         },
         "confirm": {
             "arms": ("el_diag_aux2p0",),
             "receivers": DEFAULT_RECEIVERS,
             "seeds": CONFIRM_SEEDS,
-            "k_grid": (20,),
+            "k_grid": (5, 10),
         },
     }[args.mode]
     arms = _strings(args.arms) if args.arms else defaults["arms"]
@@ -529,6 +529,10 @@ def main() -> int:
         "row_count": len(rows),
         "rows": [asdict(row) for row in rows],
         "success_thresholds": base.get("success_thresholds", {}),
+        "primary_k_shot": base.get("primary_k_shot"),
+        "sensitivity_k_shot": base.get("sensitivity_k_shot"),
+        "k5_max_drop_pp": base.get("k5_max_drop_pp"),
+        "support_pool_max_k": base.get("support_pool_max_k"),
         "query_labels_used_for_training": False,
         "query_role_or_quota_oracle": False,
     }

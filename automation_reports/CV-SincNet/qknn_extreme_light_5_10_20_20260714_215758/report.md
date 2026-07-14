@@ -129,3 +129,7 @@ run ID=`qknn_extreme_light_lowrank_k30_20260714_2340_v1`；Git commit=`0ac6917`�
 24/24 rows完成，0失败、0协议违规、1,440条loss trace。strength0.05的5/10/20类`old/floor/new/H`均值为`91.11/80.00/89.83/90.31%`、`86.81/57.50/85.92/86.32%`、`89.58/78.33/92.17/90.80%`，无统一通过组合；更强source anchor反而损害10/20类old/floor。
 
 用户随后把正式门槛提高为K10下`old>=95%`、floor`>=88%`、5/10/20新类`>=92/90/86%`，且matched K5四项指标相对K10均不得下降超过3个百分点。该K30结果仅作目标变更前历史诊断，不作为新目标成功或选模证据。
+
+## K10/K5审计实现
+
+新增K10主协议配置，固定`support_pool_max_k=10`和新门槛；新增matched K5/K10审计器，逐场景核验K5 support是K10子集、query完全相同，以及`old/floor/new/H`四项drop均不超过3pp。K10绝对门槛与K5稳健性必须同时通过。22项相关pytest和编译PASS。
