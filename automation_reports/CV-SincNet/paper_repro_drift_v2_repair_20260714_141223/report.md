@@ -6,7 +6,7 @@
 - 建立时间：2026-07-14 14:12:23+08:00
 - 操作者：Codex
 - 目标：定位DRIFT复现性能偏低的剩余原因，在不干预N607现有任务的前提下完成本地协议修复和下一轮8候选矩阵设计，使最终五随机种子结果与当前DRIFT论文v2同协议结果一致。
-- 当前状态：`DISCOVERY_COMPLETE_V206_CONFIRM_READY`
+- 当前状态：`DISCOVERY_COMPLETE_V206_CONFIRM_PRELAUNCH_PASS`
 - 远端边界：DRIFT v2发现矩阵已完整退出；Phase1仍可能运行。五seed确认仅在实时容量门通过后启动，不终止、不覆盖或影响Phase1产物。
 
 ## 论文版本与成功口径
@@ -147,3 +147,9 @@ Git承载面实现提交：`f302b1f repair DRIFT v2 reproduction protocol`。提
 - V206仍呈receiver异质性（57.58%–95.58%），单seed不能宣称复现。确认矩阵固定V206全部协议参数，只改变seed=`1337,2024,3407,4242,7777`，正式指标为五个epoch200 final的均值与SD；成功阈值为均值相对73.54%绝对差不超过2pp且无训练崩溃。
 - 本地新增`code/scripts/launch_drift_v2_confirm_v206_20260714.sh`；独立run为`paper_repro_drift_v2_confirm_v206_20260714_164900`，计划GPU=`1,6,7,0,2`各1个job，启动前必须重新执行实时容量门。
 - 本地验证：`bash -n code/scripts/launch_drift_v2_confirm_v206_20260714.sh`通过；5-job dry-run完整展开且每个job严格复用V206参数，仅seed与GPU不同。
+
+## 2026-07-14 16:54五seed确认启动前门控
+
+- Git承载提交：`9ee5c71`；确认launcher SHA256=`4d5601a61b2b2c40c947bdf8fc3034702c467e3ffba539fd2f79ec2a3833d266`。计划同步到N607的`/home/szu2070436088/2510044040/CV-SincNet/code/scripts/launch_drift_v2_confirm_v206_20260714.sh`。
+- 直接N607预检通过。实时GPU compute PID仅GPU2=`262967`、GPU3=`263429`、GPU4=`263892`，均属于既有Phase1；GPU0、1、5、6、7为空。本任务计划GPU1、6、7、0、2各新增1个，峰值分别为1、1、1、1、2，满足每GPU不超过2。
+- 发现矩阵8个训练与queue已全部退出；未干预、终止或覆盖Phase1。下一步仅同步新launcher，核对远端hash、`bash -n`和5-job dry-run后启动独立确认run。
