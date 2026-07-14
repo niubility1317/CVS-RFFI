@@ -209,3 +209,10 @@
 - 完整扫描当前已写日志的硬错误计数0；GPU0–7各仅1个本任务compute，显存约`485MiB`，利用率`8%–28%`且epoch持续推进。监控SSH退出后本地`ssh.exe=0`、N607 TCP22已建立连接`=0`。
 - 术语边界：RIEI的`SGD+mean`表示无momentum SGD优化器，以及CE/MI/IE在mini-batch内按均值约简；DRIFT并非`SGD+mean`，其固定复现配置是Adam加negative-MSE的mean reduction/no-cap。
 - 当前声明：DRIFT五seed final均值`72.75±5.93%`与论文`73.54%`差`-0.79pp`，可写作“聚合均值复现”，但大seed波动必须披露，不能写成稳定逐seed复现。RIEI旧12行虽均值`72.26%`接近论文`73.30%`，但MAE=`4.82pp`且论文`±2SD`仅命中`5/12`，仍为`NOT_REPRODUCED`；新分区修复run尚未完成，不能提前改判。
+
+## 2026-07-14 22:20心跳监控
+
+- N607直接预检通过；8/8原queue与8/8首批trainer持续运行，无PID重启迹象。row1–8最新完整epoch为`39,39,39,38,38,38,38,40/200`，对应日志均持续增长至`219–267`行、`15.7–18.0KiB`。
+- 当前`metrics.json=8`、`PAPER-EVAL-SUMMARY=0`、`FINAL-TEST=0`、成功完成job=`0/12`，符合首批训练阶段；8份训练日志均确认`partition_strategy=stable_group_seed_shared_train_test_holdout`。
+- 完整扫描当前run全部已写日志，硬错误0；未见Traceback、RuntimeError、CUDA OOM、Killed、NaN或参数错误。GPU0–7各仅1个本任务compute，显存约`485MiB`，利用率`10%–26%`且epoch持续推进，容量合规。
+- 当前判定：`RUNNING_HEALTHY_THROUGH_EPOCH_38_40`，不是last10或复现成功证据。SSH短连接均已退出，本地`ssh.exe=0`、N607 TCP22已建立连接`=0`。
