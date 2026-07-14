@@ -39,6 +39,7 @@ from eval_feature_diagnosis import (  # noqa: E402
     strip_module_prefix,
 )
 from export_spaceborne_features import (  # noqa: E402
+    SATELLITE_TTA_POLICIES,
     _build_wisig_dataset,
     _leo_repair_canonical_iq,
     _meta_to_list,
@@ -855,6 +856,41 @@ def _parse_export_cell(cell: str) -> dict[str, str]:
     }
 
 
+def _resolve_export_tta_policies(args: argparse.Namespace) -> list[str]:
+    raw = str(getattr(args, "export_tta_policies", "") or "").strip()
+    policies = [str(args.satellite_tta_policy)] if not raw else [item.strip().lower() for item in raw.split(",")]
+    if any(not item for item in policies):
+        raise ValueError("export_tta_policies contains an empty policy")
+    unknown = [item for item in policies if item not in SATELLITE_TTA_POLICIES]
+    if unknown:
+        raise ValueError(f"unknown export TTA policies: {unknown}")
+    if len(set(policies)) != len(policies):
+        raise ValueError("export_tta_policies must not contain duplicates")
+    return policies
+
+
+def _tta_export_subdir(base: str, policy: str, template: str) -> str:
+    rendered = str(template).format(
+        base=str(base), policy=str(policy), view_count=_satellite_tta_view_count(str(policy))
+    ).strip()
+    if not rendered or Path(rendered).is_absolute() or ".." in Path(rendered).parts:
+        raise ValueError(f"unsafe export TTA subdirectory: {rendered!r}")
+    return rendered
+
+
+def _resolve_tta_export_subdirs(args: argparse.Namespace, policies: Sequence[str]) -> list[str]:
+    base = str(args.out_subdir)
+    if not str(getattr(args, "export_tta_policies", "") or "").strip():
+        return [base]
+    subdirs = [
+        _tta_export_subdir(base, policy, str(args.export_tta_subdir_template))
+        for policy in policies
+    ]
+    if len(set(subdirs)) != len(subdirs):
+        raise ValueError("export_tta_subdir_template must render a unique directory per policy")
+    return subdirs
+
+
 def export_cell(
     args: argparse.Namespace,
     model: nn.Module,
@@ -1036,8 +1072,18 @@ def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
     p.add_argument(
         "--satellite_tta_policy",
         default="none",
-        choices=["none", "rx_light5", "sat_rx_phys11", "sat_rx_blind15", "sat_rx_repair9", "sat_rx_repair_anchor7"],
+        choices=SATELLITE_TTA_POLICIES,
         help="receive-side LEO repair/TTA views averaged into one exported feature row per physical sample",
+    )
+    p.add_argument(
+        "--export_tta_policies",
+        default="",
+        help="optional comma-separated policies exported after one adapter training; overrides satellite_tta_policy",
+    )
+    p.add_argument(
+        "--export_tta_subdir_template",
+        default="{base}_{policy}",
+        help="subdirectory template used only when export_tta_policies is set",
     )
     p.add_argument("--star_ground_channel_impl", default="simplified_leo_residual", choices=["legacy_satellite", "simplified_leo_residual"])
     p.add_argument("--sat_fs_hz", type=float, default=25e6)
@@ -1090,20 +1136,30 @@ def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
 
 def main(argv: Sequence[str] | None = None) -> int:
     args = parse_args(argv)
+    policies = _resolve_export_tta_policies(args)
+    export_subdirs = _resolve_tta_export_subdirs(args, policies)
+    base_subdir = str(args.out_subdir)
+    original_policy = str(args.satellite_tta_policy)
     device = torch.device(str(args.device) if torch.cuda.is_available() else "cpu")
     source_loader, source_ds, _source_info = _make_source_loader(args)
     teacher_model = _build_model(args, source_ds, device, freeze=True)
     model = _build_model(args, source_ds, device, freeze=True)
     adapter, train_info = train_adapter(args, model, teacher_model, source_loader, device)
     exported = []
-    for raw_cell in str(args.cells).split(";"):
-        cell = raw_cell.strip()
-        if not cell:
-            continue
-        exported.append(str(export_cell(args, model, adapter, teacher_model, device, cell, train_info)))
+    for policy, export_subdir in zip(policies, export_subdirs):
+        args.satellite_tta_policy = policy
+        args.out_subdir = export_subdir
+        for raw_cell in str(args.cells).split(";"):
+            cell = raw_cell.strip()
+            if not cell:
+                continue
+            exported.append(str(export_cell(args, model, adapter, teacher_model, device, cell, train_info)))
+    args.out_subdir = base_subdir
+    args.satellite_tta_policy = original_policy
     summary = {
         "phase": "phase1_iq_preadapter_v11",
         "exported": exported,
+        "export_tta_policies": policies,
         "train_info": train_info,
         "uses_target_clean": False,
         "uses_target_labels_for_training": False,

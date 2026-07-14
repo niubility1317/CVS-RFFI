@@ -48,6 +48,16 @@ from eval_feature_diagnosis import (
 from training_controls import parse_sat_scenarios, sat_channel_config_for_scenario
 
 SIMPLIFIED_LEO_RESIDUAL_SCENARIOS = {"leo_clear_weak", "leo_low_elev_weak", "leo_rain_weak"}
+SATELLITE_TTA_POLICIES = (
+    "none",
+    "rx_shift3",
+    "rx_cfo3",
+    "rx_light5",
+    "sat_rx_phys11",
+    "sat_rx_blind15",
+    "sat_rx_repair9",
+    "sat_rx_repair_anchor7",
+)
 
 
 def _validate_star_ground_impl(impl: str, scenarios: Sequence[str], *, field: str) -> None:
@@ -338,7 +348,7 @@ def _satellite_tta_views(x_sat: torch.Tensor, policy: str) -> list[tuple[str, to
     mode = str(policy or "none").strip().lower()
     if mode in {"", "none", "off", "0"}:
         return [("single", x_sat)]
-    if mode not in {"rx_light5", "sat_rx_phys11", "sat_rx_blind15", "sat_rx_repair9", "sat_rx_repair_anchor7"}:
+    if mode not in set(SATELLITE_TTA_POLICIES) - {"none"}:
         raise ValueError(f"unknown satellite_tta_policy={policy!r}")
     z = _to_complex_iq(x_sat)
     steps = int(z.shape[-1])
@@ -348,6 +358,18 @@ def _satellite_tta_views(x_sat: torch.Tensor, policy: str) -> list[tuple[str, to
         phase = 2.0 * torch.pi * float(delta) * n
         return _from_complex_iq(z * torch.exp(1j * phase), x_sat)
 
+    if mode == "rx_shift3":
+        return [
+            ("rx_base", x_sat),
+            ("rx_shift_m2", torch.roll(x_sat, shifts=-2, dims=-1)),
+            ("rx_shift_p2", torch.roll(x_sat, shifts=2, dims=-1)),
+        ]
+    if mode == "rx_cfo3":
+        return [
+            ("rx_base", x_sat),
+            ("rx_cfo_m1e4", cfo_view(-1.0e-4)),
+            ("rx_cfo_p1e4", cfo_view(1.0e-4)),
+        ]
     if mode == "rx_light5":
         return [
             ("rx_base", x_sat),
@@ -433,6 +455,8 @@ def _satellite_tta_view_count(policy: str) -> int:
     mode = str(policy or "none").strip().lower()
     if mode in {"", "none", "off", "0"}:
         return 1
+    if mode in {"rx_shift3", "rx_cfo3"}:
+        return 3
     if mode == "rx_light5":
         return 5
     if mode == "sat_rx_phys11":
@@ -631,14 +655,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--satellite_tta_policy",
         default="none",
-        choices=[
-            "none",
-            "rx_light5",
-            "sat_rx_phys11",
-            "sat_rx_blind15",
-            "sat_rx_repair9",
-            "sat_rx_repair_anchor7",
-        ],
+        choices=SATELLITE_TTA_POLICIES,
         help="Receive-side repair/TTA views generated after one satellite channel observation; default keeps one view.",
     )
     parser.add_argument(

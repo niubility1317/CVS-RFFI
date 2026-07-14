@@ -2061,12 +2061,14 @@ $$
 
 |head|old_acc|seen-new acc|H_old,new|head MAC|dense graph下界|延迟/query|
 |---|---:|---:|---:|---:|---:|---:|
-|FFT96+dense LP|74.4133%|65.2133%|68.6486%|22.725 M|1,658,880 B|0.10824 ms|
-|FFT96+无LP轻量head|74.3711%|65.7867%|68.9109%|2.818 M|0 B|0.06053 ms|
+|FFT96+dense LP|74.4133%|65.2133%|68.6486%|22.725 M|829,440 B峰值；1,658,880 B累计|0.06582 ms|
+|FFT96+无LP轻量head|74.3711%|65.7867%|68.9109%|2.818 M|0 B|0.02353 ms|
 
-轻量head的估算MAC下降87.60%，实测head延迟下降44.08%；`old_acc`变化`-0.042pp`，`seen_new_acc`变化`+0.573pp`，`H_old_new`变化`+0.262pp`，三个矩阵均值均满足相对原head下降不超过3pp。它不依赖query-query图、query batch状态、old/new角色Oracle或类别配额，可执行逐样本流式推理。逐run层面仍有7行seen-new和2行H下降超过3pp，因此该版本证明的是矩阵均值资源-性能门槛，不是每一行的最坏情况保证。
+轻量head的估算MAC下降87.60%，按只计正式部署预测的修正口径，实测head延迟下降64.25%；`old_acc`变化`-0.042pp`，`seen_new_acc`变化`+0.573pp`，`H_old_new`变化`+0.262pp`，三个矩阵均值均满足相对原head下降不超过3pp。它不依赖query-query图、query batch状态、old/new角色Oracle或类别配额，可执行逐样本流式推理。完整持久状态均值为35.76 KiB，已计入int8 support、类别索引/标签表、float64原型和Fisher center/scale。逐run层面仍有7行seen-new和2行H下降超过3pp，因此该版本证明的是矩阵均值资源-性能门槛，不是每一行的最坏情况保证。
 
 该head压缩不能与历史5-view完整栈混为一谈。完整栈同时包含60 epoch feature adapter、5-view、FFT96和非部署Hungarian Oracle；其高准确率无法单独归因于TTA，而且Oracle使用普通在线部署不可获得的query角色与类别配额。下一轮端到端压缩必须固定adapter与逐样本决策后单独比较1/2/3/5-view。
+
+端到端第二轮已实现固定adapter的1/3/5-view对照。`none`、`rx_shift3`、`rx_cfo3`和`rx_light5`分别执行1、3、3、5次backbone前向及同数量FFT sketch；60 epoch`id_norm_late_feature`只训练一次，之后用相同样本、相同LEO随机观测依次导出四种策略。评估head固定为`FFT96+disabled LP+per_sample_argmax+bias=-0.001`，以5-view为配对基线，在5 receiver×5 seed×5 K×4 policy=500行矩阵中选择视图最少且三个均值指标下降均不超过3pp的策略。若3-view通过，可直接把前端backbone/FFT计算相对5-view降低40%；若1-view通过，则降低80%。当前N607有其他训练任务，尚未启动该矩阵，因此这里只能声明实现与验证就绪，不能提前声明1-view或3-view已晋升。
 
 ## 10.证据索引
 

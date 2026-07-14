@@ -93,7 +93,7 @@ N607上的完整60 epoch adapter+5-view+FFT96+legacy Oracle分支仍在运行；
 |命令|结果|
 |---|---|
 |`conda run -n ssr-gpu python -m py_compile ...`|PASS|
-|`conda run -n ssr-gpu python -m pytest -p no:cacheprovider -q tests/test_cvs_proposed_stage2_runner.py`|PASS，4 tests|
+|`conda run -n ssr-gpu python -m pytest -p no:cacheprovider -q tests/test_cvs_proposed_stage2_runner.py`|PASS，5 tests|
 |本地125-run诊断+125-run独立确认|全部完成，无失败|
 
 待同步文件及SHA256：
@@ -115,15 +115,16 @@ N607使用既有单视图FFT96缓存，在全新seed 713106-713110上完成125�
 
 |head|old_acc|seen_new_acc|H_old_new|Δold|Δnew|ΔH|平均head MAC|dense graph下界|平均延迟/query|
 |---|---:|---:|---:|---:|---:|---:|---:|---:|---:|
-|FFT96+dense LP，bias=+0.001|74.4133%|65.2133%|68.6486%|0|0|0|22.725 M|1,658,880 B|0.10824 ms|
-|FFT96+无LP，bias=-0.001|74.3711%|65.7867%|68.9109%|-0.042pp|+0.573pp|+0.262pp|2.818 M|0 B|0.06053 ms|
+|FFT96+dense LP，bias=+0.001|74.4133%|65.2133%|68.6486%|0|0|0|22.725 M|829,440 B峰值；1,658,880 B累计|0.06582 ms|
+|FFT96+无LP，bias=-0.001|74.3711%|65.7867%|68.9109%|-0.042pp|+0.573pp|+0.262pp|2.818 M|0 B|0.02353 ms|
 
-相对同缓存dense基线，轻量head的估算MAC下降87.60%，dense query-query graph完全移除，实测head延迟下降44.08%。三个矩阵均值指标均未下降3pp，且`seen_new_acc`和`H_old_new`略升。逐run约束更严格：125行中old没有一行下降超过3pp，new有7行、H有2行下降超过3pp；因此当前版本满足“总体性能下降≤3pp”，尚未满足“每个receiver/seed/K行都下降≤3pp”。
+相对同缓存dense基线，轻量head的估算MAC下降87.60%，dense query-query graph完全移除，修正口径后的正式预测延迟下降64.25%。两个分支的完整持久状态相同，均值为36,617.2 B（35.76 KiB），按K变化范围为22,678–62,806 B；该数字包含int8 support、类别索引/标签表、float64原型和Fisher center/scale，不再把raw support误报为0后遗漏其他状态。三个矩阵均值指标均未下降3pp，且`seen_new_acc`和`H_old_new`略升。逐run约束更严格：125行中old没有一行下降超过3pp，new有7行、H有2行下降超过3pp；因此当前版本满足“总体性能下降≤3pp”，尚未满足“每个receiver/seed/K行都下降≤3pp”。
 
 本地结果：
 
 - `E:\type10-7\automation_reports\CV-SincNet\qknnv42_lightweight_head_20260714_173701\artifacts\fft96_confirmation_seed713106_713110\summary.json`
 - `E:\type10-7\automation_reports\CV-SincNet\qknnv42_lightweight_head_20260714_173701\artifacts\fft96_confirmation_seed713106_713110\paired_runs.csv`
+- 复核修正版：`E:\type10-7\automation_reports\CV-SincNet\qknnv42_lightweight_head_20260714_173701\artifacts\fft96_confirmation_v2_truefft_seed713106_713110`
 
 N607结果：
 
@@ -171,4 +172,33 @@ N607上的完整分支也已完成125/125：60 epoch`id_norm_late_feature`+5-vie
 - runner：`7B2C0004EAF9467F8B706B04003F0E44A7D732D221A9CB877E3F618FEF963A62`。
 - benchmark：`69658B6326E74F5C85C426F438ECEAF92CA56C0A74D5D899BC89884F7767CEC9`。
 
-为保留首版artifact，N607重验将写入新目录`runs/cvs_qknnv42_fft96_lighthead_confirmation_v2_20260714`和新日志目录，不覆盖既有250-run。仍使用冻结FFT96缓存、seed713106-713110、125行dense+125行disabled，GPU不占用。重验成功条件不变：矩阵均值`old_acc/seen_new_acc/H_old_new`相对dense下降均不超过3pp；同时以修正后的正式预测延迟、graph峰值和完整持久状态字节作为资源结论。
+N607只读预检发现8个RIEI训练进程正在运行。按项目规则切换为monitor-only，不同步代码、不启动远端重验。为不阻塞资源口径修正，已从N607只读复制原FFT96特征缓存和125个baseline配置到本地，在`ssr-gpu`环境完成125行dense+125行disabled复核。预测指标与首版完全一致；正式预测延迟修正为`0.06582→0.02353 ms/query`，graph峰值修正为`829,440→0 B`，持久状态均值为35.76 KiB。远端v2目录保持不存在，没有覆盖既有artifact。
+
+## 13.第二轮端到端最大项：TTA压缩实现
+
+5-view需要每个物理样本执行5次ADV3B02+adapter前向和5次FFT sketch，是当前端到端最大星上算力项。为避免重新训练adapter造成混杂，已实现“一次60 epoch训练、并列导出多种TTA策略”的固定adapter实验：
+
+该变化涉及satellite/LEO接收侧视图口径，因此在任何N607同步或启动前，已在`E:\type10-7\项目.md`补充TTA协议，并镜像到Git承载面的`docs/source_controls/PROJECT_PROTOCOL.full.md`和`docs/PROJECT_PROTOCOL.md`：TTA只允许在同一物理LEO观测、同一seed、同一split、同一checkpoint和同一adapter下比较，不得把不同LEO随机扰动或不同adapter的差异归因于view数量。
+
+|策略|视图|每样本backbone前向|每样本FFT|相对5-view前端计算|设计目的|
+|---|---:|---:|---:|---:|---|
+|`none`|1|1|1|20%|最大压缩，验证单视图是否在同adapter上通过≤3pp|
+|`rx_shift3`|3|3|3|60%|保留±2 sample时移稳健性，前端计算下降40%|
+|`rx_cfo3`|3|3|3|60%|保留±1e-4残余CFO稳健性，前端计算下降40%|
+|`rx_light5`|5|5|5|100%|严格同adapter性能基线|
+
+实现文件：
+
+- `code/export_spaceborne_features.py`：新增`rx_shift3/rx_cfo3`并统一TTA策略清单和view count。
+- `code/scripts/train_apply_phase1_iq_preadapter_20260703.py`：新增`--export_tta_policies`，同一adapter依次导出1/3/3/5-view，不重复60 epoch训练。
+- `paper_reproduction/scripts/benchmark_qknnv42_tta_policies.py`：固定`FFT96+disabled LP+per_sample_argmax+bias=-0.001`，对500个policy/receiver/seed/K行做5-view配对门槛验证。
+- `paper_reproduction/scripts/run_cvs_qknnv42_tta_ablation_20260714.sh`：精确复用历史60 epoch adapter超参数，先导出四套同样本特征，再运行500行轻量head矩阵。
+
+本地组合验证为`11 passed`，其中TTA/多策略导出测试文件为`6 passed`；两个Python CLI的`--help`、`py_compile`与Bash`-n`均通过。benchmark还会对每个run计算support/query split manifest的SHA256并与5-view基线逐行核对，输出根非空时拒绝覆盖。独立只读代码复核确认同一adapter、相同LEO role seed、500行矩阵和Oracle禁用均正确；复核指出自定义subdir模板可能把多个policy渲染到同一路径，现已在训练前强制检查所有policy输出目录唯一，避免完成60 epoch后才发现覆盖风险。由于N607当前有8个训练进程，本轮没有同步或启动；待GPU/训练lane空闲后，按报告中的固定脚本执行。晋升规则是先选视图最少且`old_acc/seen_new_acc/H_old_new`三个矩阵均值相对`rx_light5`下降均不超过3pp的策略；若1-view失败而3-view通过，则采用3-view，直接获得40%前端算力压缩。
+
+待后续lane空闲时同步的SHA256：
+
+- `code/export_spaceborne_features.py`：`E853732BA97F524E110C0890CE2D175AECDBE04A5B43C4DA8A291D1361D5036D`。
+- `code/scripts/train_apply_phase1_iq_preadapter_20260703.py`：`3E65431A121833D7C550CA6DD89AC876104F124FBF2E41A0056257D044487AA3`。
+- `paper_reproduction/scripts/benchmark_qknnv42_tta_policies.py`：`70DDFD9D9B017C9C7BAB880C779C40101734BDF19E3475D4411E28FE2CFEE529`。
+- `paper_reproduction/scripts/run_cvs_qknnv42_tta_ablation_20260714.sh`：`2052E25507BCF78E7272DAD737BACF1BC6EB9B68D6031CF2F5775FA0E5EA3DE6`。

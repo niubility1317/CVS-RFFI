@@ -61,6 +61,8 @@ raw IQ -> CV-SincNet/CVS -> z_id, z_dom
 
 在轨部署阶段面对目标接收机域`R_t`。Stage2-B/C必须记录正整数`K`、support/query划分、receiver/TX split、threshold scope和satellite/LEO target view。Phase2主线row必须包含target-old和target-new目标域样本，并按简化LEO目标视图构造；unknown/open-set字段只作为Phase3备用或diagnostic metadata。
 
+TTA轻量化必须固定同一物理LEO观测、support/query、checkpoint和adapter后比较1/3/5-view；不得用不同adapter或不同LEO随机扰动制造view数量差异。正式结果使用逐样本可部署决策，并报告backbone前向数、FFT数以及相对5-view的`old_acc`、`seen_new_acc`和`H_old_new`变化；角色/类别配额Oracle不属于可部署TTA基线。
+
 推荐`K`锚点为`{1,2,5,10,15,20,50}`。`K<=20`可称few-shot/low-shot；`K>20`应称higher-shot、medium-shot或saturation point。
 
 ## 可声明与禁止声明
