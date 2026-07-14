@@ -1,4 +1,4 @@
-"""Compare 1/3/5-view TTA with one fixed adapter and deployable qKNNV42 head."""
+"""Compare frozen-ADV3B02 1/3/5-view features with qKNN-side adaptation."""
 
 from __future__ import annotations
 
@@ -49,7 +49,61 @@ def _feature_mapping(args: argparse.Namespace, policy: str, receivers: list[str]
     return mapping
 
 
-def _aggregate(rows: list[dict[str, Any]], baseline: dict[str, dict[str, Any]]) -> dict[str, Any]:
+def _load_historical_reference(root: Path) -> dict[str, dict[str, Any]]:
+    reference: dict[str, dict[str, Any]] = {}
+    for path in sorted(root.rglob("metrics.json")):
+        payload = json.loads(path.read_text(encoding="utf-8"))
+        receiver = str(payload["target_receiver_label"])
+        seed = int(payload["seed"])
+        k_shot = int(path.parents[1].name.removeprefix("k_"))
+        run_key = f"rx_{receiver}/seed_{seed}/k_{k_shot}"
+        split_path = path.with_name("split_manifest.json")
+        split = json.loads(split_path.read_text(encoding="utf-8"))
+        split_payload = json.dumps(
+            split["splits_by_scenario"],
+            ensure_ascii=False,
+            sort_keys=True,
+            separators=(",", ":"),
+        ).encode("utf-8")
+        reference[run_key] = {
+            **{metric: float(payload["metrics"][metric]) for metric in METRICS},
+            "split_manifest_sha256": hashlib.sha256(split_payload).hexdigest(),
+        }
+    return reference
+
+
+def _apply_head_profile(
+    config: dict[str, Any], *, profile: str, old_anchor_bias: float
+) -> None:
+    config["qknnv42_feature_adapter_mode"] = "support_diag_whiten_fisher"
+    if profile == "deployable_light":
+        config.update({
+            "qknnv42_decision_mode": "per_sample_argmax",
+            "qknnv42_labelprop_mode": "disabled",
+            "qknnv42_old_anchor_bias": float(old_anchor_bias),
+            "non_deployment_oracle_diagnostic": False,
+            "publication_protocol": "fixed_adapter_paired_tta_policy_deployment_ablation",
+        })
+    elif profile == "full_legacy_oracle":
+        config.update({
+            "qknnv42_decision_mode": "legacy_role_quota_oracle",
+            "qknnv42_labelprop_mode": "dense_transductive",
+            "qknnv42_support_representation": "all_support",
+            "qknnv42_old_anchor_bias": 0.001,
+            "non_deployment_oracle_diagnostic": True,
+            "publication_protocol": (
+                "frozen_adv3b02_qknn_feature_adapter_full_history_tta_ablation"
+            ),
+        })
+    else:
+        raise ValueError(f"unsupported head profile: {profile}")
+
+
+def _aggregate(
+    rows: list[dict[str, Any]],
+    baseline: dict[str, dict[str, Any]],
+    historical: dict[str, dict[str, Any]] | None,
+) -> dict[str, Any]:
     result: dict[str, Any] = {"run_count": len(rows)}
     for metric in METRICS:
         values = [float(row[metric]) for row in rows]
@@ -59,6 +113,20 @@ def _aggregate(rows: list[dict[str, Any]], baseline: dict[str, dict[str, Any]]) 
         result[f"{metric}_delta_vs_5view_pp"] = 100.0 * _mean(deltas)
         result[f"{metric}_worst_paired_delta_vs_5view_pp"] = 100.0 * min(deltas)
         result[f"{metric}_paired_drop_gt_3pp_count"] = sum(delta < -0.03 for delta in deltas)
+        if historical is not None:
+            historical_deltas = [
+                float(row[metric]) - float(historical[str(row["run_key"])][metric])
+                for row in rows
+            ]
+            result[f"{metric}_delta_vs_historical_pp"] = 100.0 * _mean(
+                historical_deltas
+            )
+            result[f"{metric}_worst_paired_delta_vs_historical_pp"] = 100.0 * min(
+                historical_deltas
+            )
+            result[f"{metric}_historical_drop_gt_3pp_count"] = sum(
+                delta < -0.03 for delta in historical_deltas
+            )
     for key in ("latency_per_query_ms", "estimated_head_macs", "persistent_state_bytes"):
         result[key] = _mean([float(row[key]) for row in rows])
     view_count = int(rows[0]["tta_view_count"])
@@ -71,8 +139,11 @@ def _aggregate(rows: list[dict[str, Any]], baseline: dict[str, dict[str, Any]]) 
             "front_end_compute_reduction_vs_5view_pct": 100.0 * (1.0 - view_count / 5.0),
         }
     )
+    gate_suffix = "historical" if historical is not None else "5view"
+    result["performance_gate_reference"] = gate_suffix
     result["performance_gate_pass"] = all(
-        float(result[f"{metric}_delta_vs_5view_pp"]) >= -3.0 for metric in METRICS
+        float(result[f"{metric}_delta_vs_{gate_suffix}_pp"]) >= -3.0 - 1e-9
+        for metric in METRICS
     )
     return result
 
@@ -96,6 +167,14 @@ def benchmark(args: argparse.Namespace) -> dict[str, Any]:
     feature_mappings = {
         policy: _feature_mapping(args, policy, receivers) for policy in policies
     }
+    historical = None
+    if args.historical_reference_root is not None:
+        historical = _load_historical_reference(args.historical_reference_root)
+        expected_reference = len(receivers) * len(args.seed_grid) * len(args.k_grid)
+        if len(historical) != expected_reference:
+            raise ValueError(
+                f"historical reference has {len(historical)} rows; expected {expected_reference}"
+            )
     args.out_root.mkdir(parents=True, exist_ok=True)
     rows: list[dict[str, Any]] = []
     baseline: dict[str, dict[str, Any]] = {}
@@ -105,24 +184,28 @@ def benchmark(args: argparse.Namespace) -> dict[str, Any]:
             for seed in args.seed_grid:
                 for k_shot in args.k_grid:
                     config = dict(template)
-                    config.update(
-                        {
-                            "experiment_id": f"cvs_qknnv42_tta_{policy}_rx{receiver}_k{k_shot}_seed{seed}",
-                            "feature_npz_by_receiver_scenario": feature_mappings[policy],
-                            "target_receiver_labels": [receiver],
-                            "seed": int(seed),
-                            "split_seed": int(seed),
-                            "k_shot": int(k_shot),
-                            "qknnv42_expected_tta_view_count": int(view_count),
-                            "qknnv42_decision_mode": "per_sample_argmax",
-                            "qknnv42_labelprop_mode": "disabled",
-                            "qknnv42_old_anchor_bias": float(args.old_anchor_bias),
-                            "non_deployment_oracle_diagnostic": False,
-                            "publication_protocol": "fixed_adapter_paired_tta_policy_deployment_ablation",
-                        }
+                    config.update({
+                        "experiment_id": f"cvs_qknnv42_tta_{policy}_rx{receiver}_k{k_shot}_seed{seed}",
+                        "feature_npz_by_receiver_scenario": feature_mappings[policy],
+                        "target_receiver_labels": [receiver],
+                        "seed": int(seed),
+                        "split_seed": int(seed),
+                        "k_shot": int(k_shot),
+                        "qknnv42_expected_tta_view_count": int(view_count),
+                    })
+                    _apply_head_profile(
+                        config,
+                        profile=str(args.head_profile),
+                        old_anchor_bias=float(args.old_anchor_bias),
                     )
                     relative = Path(f"rx_{receiver}") / f"seed_{seed}" / f"k_{k_shot}" / "cvs_qknnv42"
                     result = run(config, args.out_root / policy / relative)
+                    manifest = result["split_manifest"]
+                    if args.head_profile == "full_legacy_oracle":
+                        if manifest["qknnv42_decision_mode"] != "legacy_role_quota_oracle":
+                            raise AssertionError("full-history profile lost the role/quota oracle")
+                        if manifest["qknnv42_labelprop_mode"] != "dense_transductive":
+                            raise AssertionError("full-history profile lost dense label propagation")
                     scenario_rows = list(result["metrics_by_scenario"].values())
                     run_key = "/".join(relative.parts[:-1])
                     split_payload = json.dumps(
@@ -139,6 +222,11 @@ def benchmark(args: argparse.Namespace) -> dict[str, Any]:
                         "seed": int(seed),
                         "k_shot": int(k_shot),
                         "split_manifest_sha256": hashlib.sha256(split_payload).hexdigest(),
+                        "feature_adapter_mode": str(
+                            scenario_rows[0]["feature_adapter_mode"]
+                        ),
+                        "decision_mode": str(scenario_rows[0]["decision_mode"]),
+                        "labelprop_mode": str(scenario_rows[0]["labelprop_mode"]),
                         **{metric: float(result["metrics"][metric]) for metric in METRICS},
                         "latency_per_query_ms": _mean(
                             [float(item["latency_per_query_ms"]) for item in scenario_rows]
@@ -164,8 +252,22 @@ def benchmark(args: argparse.Namespace) -> dict[str, Any]:
     ]
     if split_mismatches:
         raise ValueError(f"TTA policies do not share identical support/query splits: {split_mismatches[:5]}")
+    if historical is not None:
+        historical_split_mismatches = [
+            str(row["run_key"])
+            for row in rows
+            if str(row["split_manifest_sha256"])
+            != str(historical[str(row["run_key"])]["split_manifest_sha256"])
+        ]
+        if historical_split_mismatches:
+            raise ValueError(
+                "candidate and historical runs do not share identical support/query splits: "
+                f"{historical_split_mismatches[:5]}"
+            )
     summaries = {
-        policy: _aggregate([row for row in rows if row["policy"] == policy], baseline)
+        policy: _aggregate(
+            [row for row in rows if row["policy"] == policy], baseline, historical
+        )
         for policy in policies
     }
     passing = sorted(
@@ -173,11 +275,28 @@ def benchmark(args: argparse.Namespace) -> dict[str, Any]:
         key=lambda value: int(value["tta_view_count"]),
     )
     summary = {
-        "schema": "cvs_qknnv42_fixed_adapter_tta_ablation_v1",
+        "schema": "cvs_qknnv42_frozen_adv3b02_qknn_adapter_tta_ablation_v2",
         "baseline_policy": "rx_light5",
-        "head": "fft96+labelprop_disabled+per_sample_argmax",
+        "historical_reference_root": (
+            str(args.historical_reference_root)
+            if args.historical_reference_root is not None
+            else ""
+        ),
+        "head_profile": str(args.head_profile),
+        "head": (
+            "fft96+dense_transductive+legacy_role_quota_oracle"
+            if args.head_profile == "full_legacy_oracle"
+            else "fft96+labelprop_disabled+per_sample_argmax"
+        ),
+        "adv3b02_gradient_updates": 0,
+        "qknn_feature_adapter": "support_diag_whiten_fisher",
         "old_anchor_bias": float(args.old_anchor_bias),
-        "performance_gate": "matrix-mean old_acc, seen_new_acc, H_old_new drop vs 5-view <= 3 pp",
+        "performance_gate": (
+            "matrix-mean old_acc, seen_new_acc, H_old_new drop vs full historical "
+            "60epoch+5view reference <= 3 pp"
+            if historical is not None
+            else "matrix-mean old_acc, seen_new_acc, H_old_new drop vs candidate 5-view <= 3 pp"
+        ),
         "policies": summaries,
         "lightest_passing_view_count": int(passing[0]["tta_view_count"]) if passing else None,
     }
@@ -196,6 +315,17 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--template-config", type=Path, required=True)
     parser.add_argument("--feature-root", type=Path, required=True)
     parser.add_argument("--out-root", type=Path, required=True)
+    parser.add_argument(
+        "--historical-reference-root",
+        type=Path,
+        default=None,
+        help="optional completed full historical 60epoch+5-view run used for the <=3pp gate",
+    )
+    parser.add_argument(
+        "--head-profile",
+        choices=("deployable_light", "full_legacy_oracle"),
+        default="deployable_light",
+    )
     parser.add_argument(
         "--policies", nargs="+", default=["none", "rx_shift3", "rx_cfo3", "rx_light5"]
     )

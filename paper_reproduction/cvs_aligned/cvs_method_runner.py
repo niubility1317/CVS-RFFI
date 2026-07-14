@@ -204,9 +204,16 @@ def _apply_diag_whiten_fisher(rows: np.ndarray, center: np.ndarray, scale: np.nd
 
 
 def _fit_qknnv42_state(
-    support_x: np.ndarray, support_y: np.ndarray, *, support_representation: str = "all_support",
+    support_x: np.ndarray,
+    support_y: np.ndarray,
+    *,
+    support_representation: str = "all_support",
+    feature_adapter_mode: str = "support_diag_whiten_fisher",
 ) -> tuple[dict[str, Any], dict[str, Any]]:
     """Enroll support once into the exact persistent state needed by onboard scoring."""
+    adapter_mode = str(feature_adapter_mode).strip().lower()
+    if adapter_mode != "support_diag_whiten_fisher":
+        raise ValueError(f"unsupported qKNNV42 feature adapter mode: {feature_adapter_mode}")
     labels = support_y.astype(str)
     classes = sorted(set(labels.tolist()))
     class_to_i = {label: index for index, label in enumerate(classes)}
@@ -255,6 +262,10 @@ def _fit_qknnv42_state(
     }
     state_info = {
         **transform_info,
+        "feature_adapter_mode": adapter_mode,
+        "feature_adapter_gradient_updates": 0,
+        "feature_adapter_uses_query": False,
+        "feature_adapter_updates_adv3b02": False,
         "support_representation": representation,
         "enrollment_support_count": int(len(quantized_all)),
         "stored_quantized_support_code_count": int(len(quantized)),
@@ -283,10 +294,14 @@ def _qknnv42_score_matrix(
     labelprop_mode: str = "dense_transductive",
     old_anchor_bias: float = 0.001,
     support_representation: str = "all_support",
+    feature_adapter_mode: str = "support_diag_whiten_fisher",
 ) -> tuple[list[str], np.ndarray, dict[str, Any]]:
     enrollment_started = time.perf_counter()
     state, state_info = _fit_qknnv42_state(
-        support_x, support_y, support_representation=support_representation
+        support_x,
+        support_y,
+        support_representation=support_representation,
+        feature_adapter_mode=feature_adapter_mode,
     )
     enrollment_elapsed = time.perf_counter() - enrollment_started
     scoring_started = time.perf_counter()
@@ -393,6 +408,7 @@ def _qknnv42_predict(
     labelprop_mode: str = "dense_transductive",
     old_anchor_bias: float = 0.001,
     support_representation: str = "all_support",
+    feature_adapter_mode: str = "support_diag_whiten_fisher",
 ) -> tuple[np.ndarray, dict[str, Any]]:
     decision = str(decision_mode).strip().lower()
     lp_mode = str(labelprop_mode).strip().lower()
@@ -406,6 +422,7 @@ def _qknnv42_predict(
         labelprop_mode=labelprop_mode,
         old_anchor_bias=old_anchor_bias,
         support_representation=support_representation,
+        feature_adapter_mode=feature_adapter_mode,
     )
     weight = float(aux_score_weight)
     if not 0.0 <= weight <= 1.0:
@@ -423,6 +440,7 @@ def _qknnv42_predict(
             labelprop_mode=labelprop_mode,
             old_anchor_bias=old_anchor_bias,
             support_representation=support_representation,
+            feature_adapter_mode=feature_adapter_mode,
         )
         if aux_classes != classes:
             raise ValueError("qKNNV42 primary and auxiliary class orders differ")
@@ -640,6 +658,11 @@ def validate_config(config: dict[str, Any]) -> None:
         raise ValueError(f"unsupported qknnv42_support_representation: {support_representation}")
     if labelprop_mode == "dense_transductive" and support_representation != "all_support":
         raise ValueError("dense_transductive label propagation requires all_support representation")
+    feature_adapter_mode = str(
+        config.get("qknnv42_feature_adapter_mode", "support_diag_whiten_fisher")
+    ).strip().lower()
+    if feature_adapter_mode != "support_diag_whiten_fisher":
+        raise ValueError(f"unsupported qknnv42_feature_adapter_mode: {feature_adapter_mode}")
     if labelprop_mode != "dense_transductive" and decision_mode != "per_sample_argmax":
         raise ValueError("lightweight qKNNV42 modes require per_sample_argmax deployment inference")
     old_anchor_bias = float(config.get("qknnv42_old_anchor_bias", 0.001))
@@ -669,6 +692,9 @@ def run(config: dict[str, Any], run_dir: Path) -> dict[str, Any]:
     labelprop_mode = str(config.get("qknnv42_labelprop_mode", "dense_transductive")).strip().lower()
     support_representation = str(
         config.get("qknnv42_support_representation", "all_support")
+    ).strip().lower()
+    feature_adapter_mode = str(
+        config.get("qknnv42_feature_adapter_mode", "support_diag_whiten_fisher")
     ).strip().lower()
     old_anchor_bias = float(config.get("qknnv42_old_anchor_bias", 0.001))
     expected_tta_views = int(config.get("qknnv42_expected_tta_view_count", 1))
@@ -744,6 +770,7 @@ def run(config: dict[str, Any], run_dir: Path) -> dict[str, Any]:
                 labelprop_mode=labelprop_mode,
                 old_anchor_bias=old_anchor_bias,
                 support_representation=support_representation,
+                feature_adapter_mode=feature_adapter_mode,
             )
             diagnostic_elapsed = time.perf_counter() - diagnostic_started
             deploy_started = time.perf_counter()
@@ -761,6 +788,7 @@ def run(config: dict[str, Any], run_dir: Path) -> dict[str, Any]:
                 labelprop_mode=labelprop_mode,
                 old_anchor_bias=old_anchor_bias,
                 support_representation=support_representation,
+                feature_adapter_mode=feature_adapter_mode,
             )
             elapsed = time.perf_counter() - deploy_started
             old_count = len(old_query)
@@ -810,6 +838,7 @@ def run(config: dict[str, Any], run_dir: Path) -> dict[str, Any]:
                 "qknnv42_decision_mode": decision_mode,
                 "qknnv42_labelprop_mode": labelprop_mode,
                 "qknnv42_support_representation": support_representation,
+                "qknnv42_feature_adapter_mode": feature_adapter_mode,
                 "qknnv42_old_anchor_bias": old_anchor_bias,
                 "non_deployment_oracle_diagnostic": decision_mode == "legacy_role_quota_oracle"}
     result = {"experiment_id": config.get("experiment_id", f"{method}_{seed}"), "method": method,

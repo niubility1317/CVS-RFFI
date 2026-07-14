@@ -4,10 +4,11 @@ set -euo pipefail
 ROOT="${ROOT:-/home/szu2070436088/2510044040/CV-SincNet}"
 PYTHON="${PYTHON:-/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python}"
 GPU="${GPU:-3}"
-RUN_ID="${RUN_ID:-cvs_qknnv42_fixed_adapter_tta_ablation_20260714}"
-FEATURE_ROOT="${FEATURE_ROOT:-${ROOT}/runs/cvs_qknnv42_fixed_adapter_tta_features_20260714}"
+RUN_ID="${RUN_ID:-cvs_qknnv42_frozen_adv3b02_full_history_tta_20260714}"
+FEATURE_ROOT="${FEATURE_ROOT:-${ROOT}/runs/cvs_qknnv42_frozen_adv3b02_tta_features_20260714}"
 OUT_ROOT="${OUT_ROOT:-${ROOT}/runs/${RUN_ID}}"
 LOG_ROOT="${LOG_ROOT:-${ROOT}/paper_reproduction/logs/${RUN_ID}}"
+HISTORICAL_REFERENCE_ROOT="${HISTORICAL_REFERENCE_ROOT:-${ROOT}/runs/cvs_qknnv42_full_legacy_oracle_strict125_20260714_183556}"
 
 OLD_TX="14-10,14-7,20-15,20-19,6-15,8-20"
 NEW_TX="1-16,1-18"
@@ -33,8 +34,8 @@ CUDA_VISIBLE_DEVICES="$GPU" "$PYTHON" -u code/scripts/train_apply_phase1_iq_prea
   --wisig_pkl "${ROOT}/Dataset_WigSig/ManySig.pkl" \
   --new_wisig_pkl "${ROOT}/Dataset_WigSig/ManyTx.pkl" \
   --runs_root "$FEATURE_ROOT" \
-  --out_subdir ADV3B02_ADAPTER60_FFT96 \
-  --out_name features_adapter60_fft96.npz \
+  --out_subdir ADV3B02_FROZEN_QKNN_FFT96 \
+  --out_name features_frozen_adv3b02_fft96.npz \
   --no-export_clean_control \
   --no-export_identity \
   --cells "$CELLS" \
@@ -61,57 +62,27 @@ CUDA_VISIBLE_DEVICES="$GPU" "$PYTHON" -u code/scripts/train_apply_phase1_iq_prea
   --export_tta_subdir_template '{base}_{policy}' \
   --star_ground_channel_impl simplified_leo_residual \
   --batch_size 384 \
-  --epochs 60 \
+  --epochs 0 \
+  --skip_adapter_training \
   --no-input_adapter_enabled \
-  --model_adapter_mode id_norm_late_feature \
+  --model_adapter_mode none \
   --input_repair raw \
   --clean_input_repair_mode raw \
-  --lr 8e-4 \
-  --weight_decay 1e-4 \
-  --mse_weight 1.0 \
-  --cos_weight 2.0 \
-  --proto_ce_weight 0.2 \
-  --logit_ce_weight 0.0 \
-  --clean_identity_weight 22.0 \
-  --clean_cos_weight 1.0 \
-  --feature_margin_weight 4.5 \
-  --clean_feature_margin_weight 7.5 \
-  --feature_margin_tolerance 0.01 \
-  --proxy_unknown_separation_weight 0.1 \
-  --proxy_unknown_max_cos 0.05 \
-  --proxy_unknown_supcon_weight 0.16 \
-  --proxy_unknown_supcon_temperature 0.07 \
-  --proxy_unknown_proto_ce_weight 0.12 \
-  --proxy_unknown_proto_temperature 0.07 \
-  --proxy_unknown_pair_margin_weight 0.14 \
-  --proxy_unknown_pair_margin 0.07 \
-  --proxy_unknown_old_margin_weight 0.12 \
-  --proxy_unknown_old_margin 0.05 \
-  --proxy_unknown_hard_pair_ids "$HARD_PAIRS" \
-  --proxy_unknown_hard_pair_margin_weight 0.08 \
-  --proxy_unknown_hard_pair_margin 0.08 \
-  --proxy_unknown_hard_old_margin_weight 0.04 \
-  --proxy_unknown_hard_old_margin 0.05 \
-  --teacher_logit_distill_weight 0.16 \
-  --distill_temperature 2.0 \
-  --residual_weight 0.0 \
-  --proto_temperature 0.07 \
-  --grad_clip 5.0 \
-  --log_every 5 \
   --device cuda:0 \
-  --seed 4070391 2>&1 | tee "$LOG_ROOT/adapter_and_export.out"
+  --seed 4070391 2>&1 | tee "$LOG_ROOT/frozen_adv3b02_export.out"
 
 "$PYTHON" -u -m paper_reproduction.scripts.benchmark_qknnv42_tta_policies \
-  --template-config "${ROOT}/paper_reproduction/configs/cvs_qknnv42_full_legacy_oracle_stage2c_20260714_n607.json" \
+  --template-config "${ROOT}/paper_reproduction/configs/cvs_qknnv42_full_legacy_oracle_strict_stage2c_20260714_n607.json" \
+  --historical-reference-root "$HISTORICAL_REFERENCE_ROOT" \
+  --head-profile full_legacy_oracle \
   --feature-root "$FEATURE_ROOT" \
   --out-root "$OUT_ROOT" \
   --policies none rx_shift3 rx_cfo3 rx_light5 \
-  --feature-subdir-base ADV3B02_ADAPTER60_FFT96 \
+  --feature-subdir-base ADV3B02_FROZEN_QKNN_FFT96 \
   --feature-subdir-template '{base}_{policy}' \
-  --feature-name features_adapter60_fft96.npz \
+  --feature-name features_frozen_adv3b02_fft96.npz \
   --seed-grid 713101 713102 713103 713104 713105 \
   --k-grid 1 2 5 10 20 \
-  --old-anchor-bias -0.001 \
   --expected-runs 500 2>&1 | tee "$LOG_ROOT/tta_benchmark.out"
 
-echo "[QKNN-TTA-ABLATION-DONE] run_root=${OUT_ROOT} feature_root=${FEATURE_ROOT}"
+echo "[QKNN-FROZEN-ADV3B02-TTA-DONE] run_root=${OUT_ROOT} feature_root=${FEATURE_ROOT} historical_root=${HISTORICAL_REFERENCE_ROOT}"

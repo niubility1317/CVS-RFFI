@@ -97,6 +97,33 @@ class TrainApplyPhase1IqPreadapterCellTest(unittest.TestCase):
             self.assertEqual(_satellite_tta_view_count(policy), expected)
             self.assertEqual(len({name for name, _ in views}), expected)
 
+    def test_frozen_export_skips_all_adv3b02_adapter_updates(self):
+        import torch
+        from train_apply_phase1_iq_preadapter_20260703 import (
+            build_frozen_backbone_export_adapter,
+        )
+
+        args = Namespace(
+            input_adapter_enabled=False,
+            model_adapter_mode="none",
+            sat_scenarios="leo_clear_weak,leo_low_elev_weak,leo_rain_weak",
+            star_ground_channel_impl="simplified_leo_residual",
+            input_repair="raw",
+            clean_input_repair_mode="raw",
+        )
+        adapter, info = build_frozen_backbone_export_adapter(args, torch.device("cpu"))
+        self.assertEqual(sum(p.numel() for p in adapter.parameters()), 0)
+        self.assertEqual(info["epochs"], 0)
+        self.assertEqual(info["adv3b02_gradient_updates"], 0)
+        self.assertEqual(
+            info["downstream_feature_adapter"],
+            "qknnv42_support_diag_whiten_fisher",
+        )
+
+        args.model_adapter_mode = "id_norm_late_feature"
+        with self.assertRaisesRegex(ValueError, "model_adapter_mode none"):
+            build_frozen_backbone_export_adapter(args, torch.device("cpu"))
+
 
 if __name__ == "__main__":
     unittest.main()

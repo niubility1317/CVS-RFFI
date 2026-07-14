@@ -35,6 +35,10 @@ for path in (str(REPO_ROOT), str(CODE_ROOT)):
 
 from cvsrffi.wisig_fewshot_payload import assert_disjoint_tx_sets, canonical_tx_id, parse_tx_id_list
 from cvsrffi.checkpoint_loading import build_exact_ssdg_model_from_checkpoint
+from cvsrffi.identity_only_forward import (
+    can_use_identity_only_forward,
+    identity_only_feature_forward,
+)
 from cvsrffi.eval import apply_sat_channel_for_scenario
 from cvsrffi.tensors import make_torch_generator
 from dataset_wisig import WiSigCompactDataset, WiSigSubsetDataset, load_wisig_compact_pkl
@@ -525,15 +529,25 @@ def extract_features_with_metadata(
                         dim=int(aux_fft_logmag_dim),
                     )
                 )
-            out = model(x_view, y_tx=None, grl_lambda=1.0, return_aux=True)
-            feats = collect_feature_dict(out)
-            if feature_name not in feats:
-                raise KeyError(f"feature {feature_name!r} not found; available={sorted(feats.keys())}")
-            z = feats[feature_name].detach().cpu().float().numpy()
-            logits_obj = out.get("tx_logits", out.get("logits")) if isinstance(out, dict) else None
-            if logits_obj is None:
-                raise KeyError("model output does not include tx_logits/logits for Phase1 classifier audit")
-            tx_logits = logits_obj.detach().cpu().float().numpy()
+            identity_only = identity_only_feature_forward(model, x_view, feature_name)
+            if identity_only is not None:
+                z_tensor, logits_tensor = identity_only
+            else:
+                out = model(x_view, y_tx=None, grl_lambda=1.0, return_aux=True)
+                feats = collect_feature_dict(out)
+                if feature_name not in feats:
+                    raise KeyError(
+                        f"feature {feature_name!r} not found; available={sorted(feats.keys())}"
+                    )
+                z_tensor = feats[feature_name].float()
+                logits_obj = out.get("tx_logits", out.get("logits")) if isinstance(out, dict) else None
+                if logits_obj is None:
+                    raise KeyError(
+                        "model output does not include tx_logits/logits for Phase1 classifier audit"
+                    )
+                logits_tensor = logits_obj.float()
+            z = z_tensor.detach().cpu().numpy()
+            tx_logits = logits_tensor.detach().cpu().numpy()
             feature_buf.append(z)
             tx_logit_buf.append(tx_logits)
             label_buf.extend([int(v) for v in y.detach().cpu().reshape(-1).tolist()])
@@ -1015,6 +1029,10 @@ def main() -> int:
         "logit_class_order": list(range(len(source_info["tx_labels"]))),
         "classification_head_contract": "dual_cvsincnet_tx_logits_v1",
         "checkpoint_load_strict": True,
+        "identity_only_forward": can_use_identity_only_forward(model, str(args.feature_name)),
+        "domain_branch_executed_for_qknn": not can_use_identity_only_forward(
+            model, str(args.feature_name)
+        ),
         "checkpoint_load_audit": checkpoint_load_audit,
         "target_new_channel_view": "disabled" if old_unknown_only else target_new_view,
         "target_unknown_channel_view": target_unknown_view,

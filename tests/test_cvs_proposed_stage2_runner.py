@@ -183,6 +183,10 @@ def test_cvs_qknnv42_class_medoid_compresses_support_state(tmp_path: Path) -> No
 
     assert medoid_result["metrics"]["H_old_new_mean"] == 1.0
     assert medoid["support_representation"] == "class_medoid"
+    assert medoid["feature_adapter_mode"] == "support_diag_whiten_fisher"
+    assert medoid["feature_adapter_gradient_updates"] == 0
+    assert medoid["feature_adapter_uses_query"] is False
+    assert medoid["feature_adapter_updates_adv3b02"] is False
     assert medoid["enrollment_support_count"] == 6
     assert medoid["stored_quantized_support_code_count"] == 3
     assert medoid["persistent_state_bytes"] < all_info["persistent_state_bytes"]
@@ -222,6 +226,13 @@ def test_cvs_qknnv42_dense_labelprop_rejects_compressed_support(tmp_path: Path) 
     config = _config(tmp_path, "cvs_qknnv42")
     config["qknnv42_support_representation"] = "class_medoid"
     with pytest.raises(ValueError, match="requires all_support"):
+        validate_config(config)
+
+
+def test_cvs_qknnv42_rejects_unknown_feature_adapter(tmp_path: Path) -> None:
+    config = _config(tmp_path, "cvs_qknnv42")
+    config["qknnv42_feature_adapter_mode"] = "train_adv3b02_again"
+    with pytest.raises(ValueError, match="qknnv42_feature_adapter_mode"):
         validate_config(config)
 
 

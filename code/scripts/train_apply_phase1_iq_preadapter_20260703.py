@@ -29,6 +29,10 @@ for path in (str(REPO_ROOT), str(CODE_ROOT)):
 
 from cvsrffi.eval import apply_sat_channel_for_scenario  # noqa: E402
 from cvsrffi.checkpoint_loading import build_exact_ssdg_model_from_checkpoint  # noqa: E402
+from cvsrffi.identity_only_forward import (  # noqa: E402
+    can_use_identity_only_forward,
+    identity_only_feature_forward,
+)
 from cvsrffi.tensors import make_torch_generator  # noqa: E402
 from cvsrffi.wisig_fewshot_payload import canonical_tx_id, parse_tx_id_list  # noqa: E402
 from dataset_wisig import WiSigSubsetDataset  # noqa: E402
@@ -89,6 +93,9 @@ def _apply_input_repair(x: torch.Tensor, mode: str) -> torch.Tensor:
 
 
 def _feature_forward(model: nn.Module, x: torch.Tensor, feature_name: str) -> tuple[torch.Tensor, torch.Tensor]:
+    identity_only = identity_only_feature_forward(model, x, feature_name)
+    if identity_only is not None:
+        return identity_only
     out = model(x, y_tx=None, grl_lambda=1.0, return_aux=True)
     feats = collect_feature_dict(out)
     if feature_name not in feats:
@@ -637,6 +644,48 @@ def train_adapter(
     }
 
 
+def build_frozen_backbone_export_adapter(
+    args: argparse.Namespace, device: torch.device
+) -> tuple[nn.Module, dict[str, Any]]:
+    """Return an identity IQ adapter while keeping ADV3B02 fully frozen.
+
+    The exported z_id/FFT features are adapted later by the qKNN enrollment
+    transform.  This path deliberately performs no gradient update on the
+    checkpoint and therefore cannot be mistaken for another ADV3B02 training
+    run.
+    """
+    if bool(args.input_adapter_enabled):
+        raise ValueError("skip_adapter_training requires --no-input_adapter_enabled")
+    if str(args.model_adapter_mode).strip().lower() != "none":
+        raise ValueError("skip_adapter_training requires --model_adapter_mode none")
+    scenarios = parse_sat_scenarios(str(args.sat_scenarios))
+    _validate_star_ground_impl(
+        str(args.star_ground_channel_impl), scenarios, field="sat_scenarios"
+    )
+    return IdentityPreAdapter().to(device), {
+        "epochs": 0,
+        "history_first": {},
+        "history_last": {},
+        "scenarios": scenarios,
+        "scenario_configs": {
+            name: sat_channel_config_for_scenario(name) for name in scenarios
+        },
+        "input_repair": str(args.input_repair),
+        "input_adapter_enabled": False,
+        "clean_input_repair_mode": str(args.clean_input_repair_mode),
+        "model_adapter": {
+            "mode": "none",
+            "trainable_parameters": 0,
+            "trainable_tensors": [],
+        },
+        "skip_adapter_training": True,
+        "adv3b02_gradient_updates": 0,
+        "downstream_feature_adapter": "qknnv42_support_diag_whiten_fisher",
+        "uses_target_labels_for_training": False,
+        "uses_unknown_query_for_threshold": False,
+    }
+
+
 def _dataset_for_role(args: argparse.Namespace, *, role: str, pkl: str, tx_ids: str, rxs: str | None, seed_offset: int):
     max_samples_per_tx = 0 if str(getattr(args, "export_reference_npz", "")).strip() else int(args.max_export_samples_per_tx)
     ds, info = _build_wisig_dataset(
@@ -955,6 +1004,10 @@ def export_cell(
             else "phase1_iq_frontend_satonly_features_v28"
         ),
         "feature_name": str(args.feature_name),
+        "identity_only_forward": can_use_identity_only_forward(model, str(args.feature_name)),
+        "domain_branch_executed_for_qknn": not can_use_identity_only_forward(
+            model, str(args.feature_name)
+        ),
         "checkpoint": str(args.ckpt),
         "checkpoint_load_strict": True,
         "checkpoint_load_audit": dict(
@@ -1087,6 +1140,15 @@ def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
     p.add_argument("--sat_fc_hz", type=float, default=2.462e9)
     p.add_argument("--batch_size", type=int, default=384)
     p.add_argument("--epochs", type=int, default=45)
+    p.add_argument(
+        "--skip_adapter_training",
+        action=argparse.BooleanOptionalAction,
+        default=False,
+        help=(
+            "export from the strictly loaded frozen ADV3B02 checkpoint without IQ/model "
+            "adapter training; qKNN performs support-conditioned feature adaptation later"
+        ),
+    )
     p.add_argument("--hidden_dim", type=int, default=32)
     p.add_argument("--alpha", type=float, default=0.25)
     p.add_argument("--input_adapter_enabled", action=argparse.BooleanOptionalAction, default=True)
@@ -1139,9 +1201,13 @@ def main(argv: Sequence[str] | None = None) -> int:
     original_policy = str(args.satellite_tta_policy)
     device = torch.device(str(args.device) if torch.cuda.is_available() else "cpu")
     source_loader, source_ds, _source_info = _make_source_loader(args)
-    teacher_model = _build_model(args, source_ds, device, freeze=True)
     model = _build_model(args, source_ds, device, freeze=True)
-    adapter, train_info = train_adapter(args, model, teacher_model, source_loader, device)
+    if bool(args.skip_adapter_training):
+        teacher_model = model
+        adapter, train_info = build_frozen_backbone_export_adapter(args, device)
+    else:
+        teacher_model = _build_model(args, source_ds, device, freeze=True)
+        adapter, train_info = train_adapter(args, model, teacher_model, source_loader, device)
     exported = []
     for policy, export_subdir in zip(policies, export_subdirs):
         args.satellite_tta_policy = policy
@@ -1154,7 +1220,11 @@ def main(argv: Sequence[str] | None = None) -> int:
     args.out_subdir = base_subdir
     args.satellite_tta_policy = original_policy
     summary = {
-        "phase": "phase1_iq_preadapter_v11",
+        "phase": (
+            "qknnv42_frozen_adv3b02_feature_export_v1"
+            if bool(args.skip_adapter_training)
+            else "phase1_iq_preadapter_v11"
+        ),
         "exported": exported,
         "export_tta_policies": policies,
         "train_info": train_info,
