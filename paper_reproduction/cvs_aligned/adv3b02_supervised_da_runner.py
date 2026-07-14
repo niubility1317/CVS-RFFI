@@ -89,7 +89,7 @@ def _exact_adv3b02(checkpoint_path: Path, *, device: torch.device) -> tuple[nn.M
         "checkpoint_load_strict": True,
         "checkpoint_load_audit": {"missing_keys": 0, "unexpected_keys": 0, "shape_mismatch": 0},
         "num_domains": int(num_domains),
-        "checkpoint_args": checkpoint_args,
+        "checkpoint_args": json.loads(json.dumps(checkpoint_args, default=str)),
     }
 
 
