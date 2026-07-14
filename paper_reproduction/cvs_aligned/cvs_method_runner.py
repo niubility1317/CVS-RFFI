@@ -1044,6 +1044,9 @@ def validate_config(config: dict[str, Any]) -> None:
             raise ValueError("extreme_light_aux_weight must be finite and nonnegative")
         if extreme_aux_weight > 0.0 and not aux_key:
             raise ValueError("positive extreme_light_aux_weight requires qknnv42_aux_feature_key")
+        source_logit_weight = float(config.get("extreme_light_source_logit_weight", 0.0))
+        if source_logit_weight < 0.0 or not math.isfinite(source_logit_weight):
+            raise ValueError("extreme_light_source_logit_weight must be finite and nonnegative")
         support_aug_scenarios = tuple(
             str(value) for value in config.get("extreme_light_support_aug_scenarios", [])
         )
@@ -1085,6 +1088,7 @@ def run(config: dict[str, Any], run_dir: Path) -> dict[str, Any]:
     old_anchor_bias = float(config.get("qknnv42_old_anchor_bias", 0.001))
     head_mode = str(config.get("qknnv42_head_mode", "qknn")).strip().lower()
     extreme_aux_weight = float(config.get("extreme_light_aux_weight", 0.0))
+    source_logit_weight = float(config.get("extreme_light_source_logit_weight", 0.0))
     aux_required = aux_weight > 0.0 or (
         head_mode in {"extreme_light_diag_cosine", "extreme_light_prototype_cosine", "extreme_light_support_ridge", "extreme_light_low_rank_cosine"}
         and extreme_aux_weight > 0.0
@@ -1111,6 +1115,13 @@ def run(config: dict[str, Any], run_dir: Path) -> dict[str, Any]:
                 )
             if str(cache_manifest.get("aux_fft_view_alignment", "")) != "same_post_channel_view_as_backbone":
                 raise ValueError(f"FFT feature is not certified as same-view aligned for {scenario}")
+        if source_logit_weight > 0.0:
+            if "tx_logits" not in arrays:
+                raise ValueError(f"feature NPZ for {scenario} is missing frozen source logits")
+            if arrays["tx_logits"].ndim != 2 or int(arrays["tx_logits"].shape[0]) != int(arrays["features"].shape[0]):
+                raise ValueError(f"misaligned frozen source logits for {scenario}")
+            if not np.all(np.isfinite(arrays["tx_logits"])):
+                raise ValueError(f"non-finite frozen source logits for {scenario}")
         roles = arrays["dataset_role"].astype(str)
         scenario_values = arrays["sat_scenarios"].astype(str)
         target_mask = np.isin(roles, ["target_old", "target_new"])
@@ -1157,11 +1168,15 @@ def run(config: dict[str, Any], run_dir: Path) -> dict[str, Any]:
                     arrays["features"][old_support],
                     arrays[aux_key][old_support] if aux_required else None,
                     auxiliary_weight=extreme_aux_weight,
+                    source_logits=arrays["tx_logits"][old_support] if source_logit_weight > 0.0 else None,
+                    source_logit_weight=source_logit_weight,
                 )
                 old_joint_query = concatenate_registered_features(
                     arrays["features"][old_query],
                     arrays[aux_key][old_query] if aux_required else None,
                     auxiliary_weight=extreme_aux_weight,
+                    source_logits=arrays["tx_logits"][old_query] if source_logit_weight > 0.0 else None,
+                    source_logit_weight=source_logit_weight,
                 )
                 old_classes, old_scores = _class_scores(
                     old_joint_support,
@@ -1174,6 +1189,8 @@ def run(config: dict[str, Any], run_dir: Path) -> dict[str, Any]:
                     support_x,
                     aux_support_x,
                     auxiliary_weight=extreme_aux_weight,
+                    source_logits=arrays["tx_logits"][support_idx] if source_logit_weight > 0.0 else None,
+                    source_logit_weight=source_logit_weight,
                 )
                 fit_support_y = support_y
                 support_aug_ids_by_view: dict[str, list[str]] = {}
@@ -1220,6 +1237,12 @@ def run(config: dict[str, Any], run_dir: Path) -> dict[str, Any]:
                                 aug_arrays["features"][aug_idx],
                                 aug_arrays[aux_key][aug_idx] if aux_required else None,
                                 auxiliary_weight=extreme_aux_weight,
+                                source_logits=(
+                                    aug_arrays["tx_logits"][aug_idx]
+                                    if source_logit_weight > 0.0
+                                    else None
+                                ),
+                                source_logit_weight=source_logit_weight,
                             )
                         )
                         augmented_labels.append(aug_arrays["tx_ids"][aug_idx].astype(str))
@@ -1229,6 +1252,8 @@ def run(config: dict[str, Any], run_dir: Path) -> dict[str, Any]:
                     query_x,
                     aux_query_x,
                     auxiliary_weight=extreme_aux_weight,
+                    source_logits=arrays["tx_logits"][query_idx] if source_logit_weight > 0.0 else None,
+                    source_logit_weight=source_logit_weight,
                 )
                 if head_mode == "extreme_light_prototype_cosine":
                     predicted, info, extreme_trace = predict_support_prototype_cosine(
@@ -1299,6 +1324,11 @@ def run(config: dict[str, Any], run_dir: Path) -> dict[str, Any]:
                         "aux_score_weight": 0.0,
                         "aux_feature_concat_weight": extreme_aux_weight,
                         "aux_fusion_mode": "per_sample_feature_concat",
+                        "frozen_source_logit_feature_enabled": source_logit_weight > 0.0,
+                        "frozen_source_logit_feature_dim": int(arrays["tx_logits"].shape[1]) if source_logit_weight > 0.0 else 0,
+                        "frozen_source_logit_feature_weight": source_logit_weight,
+                        "frozen_source_classifier_updated": False,
+                        "source_logit_query_batch_statistics_used": False,
                         "labelprop_mode": "disabled",
                         "decision_mode": "per_sample_argmax",
                         "old_anchor_bias": 0.0,

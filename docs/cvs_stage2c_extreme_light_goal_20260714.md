@@ -23,6 +23,7 @@
 - 默认冻结`ADV3B02` backbone，不执行backbone梯度更新。
 - 极轻型首选档：1-view、adapter可训练参数不超过50,000、适配不超过20epoch、无dense query图、持久化适配状态不超过128KB。
 - 允许对K个互不重复的物理support样本在同一`leo_weak`族内生成至多3个预注册增强view，只用于一次性support-only enrollment；增强view不得重复计入K，query仍按1-view逐样本推理且不得参与拟合。必须报告support增强清单、每个物理support的backbone/FFT前向次数和一次性enrollment计算量；该结果不能外推为跨场景或真实在轨泛化。
+- 可以把冻结ADV3B02自带source classifier对同一物理样本产生的6维logits作为逐样本特征输入；source classifier必须保持冻结，logits不能经过query-batch归一化、角色门控或类别配额重排，也不能使用query标签选择融合权重。该机制属于冻结source classifier bank的复用，不是old/new query角色Oracle。
 - 报告逐类、逐receiver、同row old/new/H、完整loss trace或闭式求解诊断，以及MAC、时延、峰值显存、状态大小和相对identity-only单qKNN的Pareto变化。
 
 ## 声明边界

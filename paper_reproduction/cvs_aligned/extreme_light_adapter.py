@@ -27,22 +27,41 @@ def concatenate_registered_features(
     auxiliary: np.ndarray | None,
     *,
     auxiliary_weight: float,
+    source_logits: np.ndarray | None = None,
+    source_logit_weight: float = 0.0,
 ) -> np.ndarray:
-    """Build a per-sample feature without using other query rows."""
+    """Build one deployable sample feature from frozen ADV3B02 outputs.
+
+    ``source_logits`` are the frozen source-classifier outputs for the same
+    physical row. They are consumed only as per-sample inference features and
+    never expose the row's old/new role or any query-batch statistic.
+    """
     primary_norm = _numpy_norm(primary)
     weight = float(auxiliary_weight)
+    logit_weight = float(source_logit_weight)
     if not math.isfinite(weight) or weight < 0.0:
         raise ValueError("auxiliary_weight must be finite and nonnegative")
-    if auxiliary is None:
-        if weight > 0.0:
+    if not math.isfinite(logit_weight) or logit_weight < 0.0:
+        raise ValueError("source_logit_weight must be finite and nonnegative")
+    blocks = [primary_norm]
+    if weight > 0.0:
+        if auxiliary is None:
             raise ValueError("positive auxiliary_weight requires auxiliary features")
+        if len(primary_norm) != len(auxiliary):
+            raise ValueError("primary and auxiliary rows must align")
+        blocks.append(weight * _numpy_norm(auxiliary))
+    if logit_weight > 0.0:
+        if source_logits is None:
+            raise ValueError("positive source_logit_weight requires source logits")
+        if len(primary_norm) != len(source_logits):
+            raise ValueError("primary and source-logit rows must align")
+        logits = np.asarray(source_logits, dtype=np.float32)
+        if logits.ndim != 2 or not np.all(np.isfinite(logits)):
+            raise ValueError("source logits must be a finite rank-2 matrix")
+        blocks.append(logit_weight * _numpy_norm(logits))
+    if len(blocks) == 1:
         return primary_norm
-    if weight == 0.0:
-        return primary_norm
-    if len(primary_norm) != len(auxiliary):
-        raise ValueError("primary and auxiliary rows must align")
-    auxiliary_norm = _numpy_norm(auxiliary)
-    return _numpy_norm(np.concatenate([primary_norm, weight * auxiliary_norm], axis=1))
+    return _numpy_norm(np.concatenate(blocks, axis=1))
 
 
 def fit_predict_extreme_light_diag_cosine(

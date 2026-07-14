@@ -179,3 +179,21 @@ def test_support_augmented_arm_keeps_physical_k_and_one_view_query():
         "leo_rain_weak",
     ]
     assert config["extreme_light_epochs"] == 10
+
+
+def test_frozen_source_logit_arm_is_per_sample_and_support_augmented():
+    row = build_rows(
+        arms=("el_diag_aug3_logit0p5_e20",),
+        new_class_counts=(20,),
+        receivers=("8-8",),
+        seeds=(713101,),
+        k_grid=(30,),
+        output_root=Path("runs"),
+        log_root=Path("logs"),
+    )[0]
+    config = row_config(_base_config(), row, device="cpu")
+    assert config["qknnv42_decision_mode"] == "per_sample_argmax"
+    assert config["qknnv42_labelprop_mode"] == "disabled"
+    assert config["extreme_light_source_logit_weight"] == 0.5
+    assert config["extreme_light_epochs"] == 20
+    assert len(config["extreme_light_support_aug_scenarios"]) == 3

@@ -135,6 +135,39 @@ def test_feature_concatenation_is_per_sample_and_validates_alignment():
         concatenate_registered_features(primary, auxiliary[:2], auxiliary_weight=1.0)
 
 
+def test_frozen_source_logits_are_same_row_features_only():
+    primary = np.eye(3, dtype=np.float32)
+    auxiliary = np.flip(primary, axis=1).copy()
+    source_logits = np.asarray([[4.0, -1.0], [-2.0, 3.0], [1.0, 1.0]], dtype=np.float32)
+    combined = concatenate_registered_features(
+        primary,
+        auxiliary,
+        auxiliary_weight=2.0,
+        source_logits=source_logits,
+        source_logit_weight=0.5,
+    )
+    assert combined.shape == (3, 8)
+    assert np.allclose(np.linalg.norm(combined, axis=1), 1.0)
+    changed_tail = source_logits.copy()
+    changed_tail[-1] *= -10.0
+    extended = concatenate_registered_features(
+        primary,
+        auxiliary,
+        auxiliary_weight=2.0,
+        source_logits=changed_tail,
+        source_logit_weight=0.5,
+    )
+    assert np.allclose(combined[:2], extended[:2])
+    with pytest.raises(ValueError, match="source-logit rows must align"):
+        concatenate_registered_features(
+            primary,
+            auxiliary,
+            auxiliary_weight=2.0,
+            source_logits=source_logits[:2],
+            source_logit_weight=0.5,
+        )
+
+
 def test_resource_and_epoch_caps_fail_closed():
     support, support_y, query, _ = _separable()
     with pytest.raises(ValueError, match="epochs"):
