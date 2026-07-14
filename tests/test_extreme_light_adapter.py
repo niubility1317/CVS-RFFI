@@ -6,6 +6,7 @@ import pytest
 from paper_reproduction.cvs_aligned.extreme_light_adapter import (
     concatenate_registered_features,
     fit_predict_extreme_light_diag_cosine,
+    predict_support_prototype_cosine,
 )
 
 
@@ -51,6 +52,22 @@ def test_query_batch_extension_does_not_change_existing_predictions():
         support, support_y, extended_query, seed=23, epochs=3, device="cpu"
     )
     assert np.array_equal(first, extended[: len(first)])
+
+
+def test_closed_form_prototype_head_is_zero_train_and_query_independent():
+    support, support_y, query, query_y = _separable()
+    predicted, info, trace = predict_support_prototype_cosine(support, support_y, query)
+    extended, _, _ = predict_support_prototype_cosine(
+        support,
+        support_y,
+        np.vstack([query, np.full((7, query.shape[1]), 9.0, dtype=np.float32)]),
+    )
+    assert np.mean(predicted.astype(str) == query_y.astype(str)) == 1.0
+    assert np.array_equal(predicted, extended[: len(predicted)])
+    assert info["trainable_parameters"] == 0
+    assert info["feature_adapter_gradient_updates"] == 0
+    assert info["query_features_used_for_adaptation"] is False
+    assert len(trace) == 1
 
 
 def test_feature_concatenation_is_per_sample_and_validates_alignment():

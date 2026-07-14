@@ -109,3 +109,19 @@ def test_twenty_epoch_noise_regularized_arm_is_explicit():
     assert config["extreme_light_epochs"] == 20
     assert config["extreme_light_prototype_anchor_weight"] == 20.0
     assert config["extreme_light_feature_noise_std"] == 0.05
+
+
+def test_closed_form_prototype_arm_has_zero_epochs():
+    row = build_rows(
+        arms=("el_proto_aux2p0",),
+        new_class_counts=(20,),
+        receivers=("8-8",),
+        seeds=(713101,),
+        k_grid=(30,),
+        output_root=Path("runs"),
+        log_root=Path("logs"),
+    )[0]
+    config = row_config(_base_config(), row, device="cpu")
+    assert config["qknnv42_head_mode"] == "extreme_light_prototype_cosine"
+    assert config["extreme_light_epochs"] == 0
+    assert config["extreme_light_aux_weight"] == 2.0

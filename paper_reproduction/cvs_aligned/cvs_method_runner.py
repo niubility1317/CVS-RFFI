@@ -22,6 +22,7 @@ from paper_reproduction.common.config import load_json_config
 from paper_reproduction.cvs_aligned.extreme_light_adapter import (
     concatenate_registered_features,
     fit_predict_extreme_light_diag_cosine,
+    predict_support_prototype_cosine,
 )
 
 
@@ -1006,9 +1007,9 @@ def validate_config(config: dict[str, Any]) -> None:
     if not math.isfinite(old_anchor_bias) or abs(old_anchor_bias) > 0.1:
         raise ValueError("qknnv42_old_anchor_bias must be finite and within [-0.1,0.1]")
     head_mode = str(config.get("qknnv42_head_mode", "qknn")).strip().lower()
-    if head_mode not in {"qknn", "extreme_light_diag_cosine"}:
+    if head_mode not in {"qknn", "extreme_light_diag_cosine", "extreme_light_prototype_cosine"}:
         raise ValueError(f"unsupported qknnv42_head_mode: {head_mode}")
-    if head_mode == "extreme_light_diag_cosine":
+    if head_mode in {"extreme_light_diag_cosine", "extreme_light_prototype_cosine"}:
         if method != "cvs_qknnv42":
             raise ValueError("extreme-light head is defined only for cvs_qknnv42")
         if decision_mode != "per_sample_argmax":
@@ -1016,8 +1017,10 @@ def validate_config(config: dict[str, Any]) -> None:
         if labelprop_mode != "disabled":
             raise ValueError("extreme-light head forbids query label propagation")
         epochs = int(config.get("extreme_light_epochs", 20))
-        if epochs <= 0 or epochs > 20:
+        if head_mode == "extreme_light_diag_cosine" and (epochs <= 0 or epochs > 20):
             raise ValueError("extreme_light_epochs must be in [1,20]")
+        if head_mode == "extreme_light_prototype_cosine" and epochs != 0:
+            raise ValueError("prototype cosine head requires extreme_light_epochs=0")
         if int(config.get("extreme_light_max_trainable_parameters", 50_000)) > 50_000:
             raise ValueError("extreme-light parameter cap cannot exceed 50000")
         if int(config.get("extreme_light_max_persistent_state_bytes", 128 * 1024)) > 128 * 1024:
@@ -1059,7 +1062,8 @@ def run(config: dict[str, Any], run_dir: Path) -> dict[str, Any]:
     head_mode = str(config.get("qknnv42_head_mode", "qknn")).strip().lower()
     extreme_aux_weight = float(config.get("extreme_light_aux_weight", 0.0))
     aux_required = aux_weight > 0.0 or (
-        head_mode == "extreme_light_diag_cosine" and extreme_aux_weight > 0.0
+        head_mode in {"extreme_light_diag_cosine", "extreme_light_prototype_cosine"}
+        and extreme_aux_weight > 0.0
     )
     runtime_device = str(config.get("_runtime_device", "cpu"))
     expected_tta_views = int(config.get("qknnv42_expected_tta_view_count", 1))
@@ -1121,7 +1125,7 @@ def run(config: dict[str, Any], run_dir: Path) -> dict[str, Any]:
             elapsed = time.perf_counter() - started
         else:
             extreme_trace: list[dict[str, Any]] = []
-            if head_mode == "extreme_light_diag_cosine":
+            if head_mode in {"extreme_light_diag_cosine", "extreme_light_prototype_cosine"}:
                 old_joint_support = concatenate_registered_features(
                     arrays["features"][old_support],
                     arrays[aux_key][old_support] if aux_required else None,
@@ -1149,28 +1153,38 @@ def run(config: dict[str, Any], run_dir: Path) -> dict[str, Any]:
                     aux_query_x,
                     auxiliary_weight=extreme_aux_weight,
                 )
-                predicted, info, extreme_trace = fit_predict_extreme_light_diag_cosine(
-                    joint_support,
-                    support_y,
-                    joint_query,
-                    seed=int(config["seed"]),
-                    epochs=int(config.get("extreme_light_epochs", 20)),
-                    learning_rate=float(config.get("extreme_light_learning_rate", 0.01)),
-                    batch_size=int(config.get("extreme_light_batch_size", 32)),
-                    temperature=float(config.get("extreme_light_temperature", 18.0)),
-                    prototype_anchor_weight=float(
-                        config.get("extreme_light_prototype_anchor_weight", 0.05)
-                    ),
-                    feature_noise_std=float(config.get("extreme_light_feature_noise_std", 0.01)),
-                    weight_decay=float(config.get("extreme_light_weight_decay", 0.002)),
-                    max_trainable_parameters=int(
-                        config.get("extreme_light_max_trainable_parameters", 50_000)
-                    ),
-                    max_persistent_state_bytes=int(
-                        config.get("extreme_light_max_persistent_state_bytes", 128 * 1024)
-                    ),
-                    device=runtime_device,
-                )
+                if head_mode == "extreme_light_prototype_cosine":
+                    predicted, info, extreme_trace = predict_support_prototype_cosine(
+                        joint_support,
+                        support_y,
+                        joint_query,
+                        max_persistent_state_bytes=int(
+                            config.get("extreme_light_max_persistent_state_bytes", 128 * 1024)
+                        ),
+                    )
+                else:
+                    predicted, info, extreme_trace = fit_predict_extreme_light_diag_cosine(
+                        joint_support,
+                        support_y,
+                        joint_query,
+                        seed=int(config["seed"]),
+                        epochs=int(config.get("extreme_light_epochs", 20)),
+                        learning_rate=float(config.get("extreme_light_learning_rate", 0.01)),
+                        batch_size=int(config.get("extreme_light_batch_size", 32)),
+                        temperature=float(config.get("extreme_light_temperature", 18.0)),
+                        prototype_anchor_weight=float(
+                            config.get("extreme_light_prototype_anchor_weight", 0.05)
+                        ),
+                        feature_noise_std=float(config.get("extreme_light_feature_noise_std", 0.01)),
+                        weight_decay=float(config.get("extreme_light_weight_decay", 0.002)),
+                        max_trainable_parameters=int(
+                            config.get("extreme_light_max_trainable_parameters", 50_000)
+                        ),
+                        max_persistent_state_bytes=int(
+                            config.get("extreme_light_max_persistent_state_bytes", 128 * 1024)
+                        ),
+                        device=runtime_device,
+                    )
                 elapsed = float(info["adaptation_latency_sec"])
                 info.update(
                     {
@@ -1241,7 +1255,7 @@ def run(config: dict[str, Any], run_dir: Path) -> dict[str, Any]:
         metrics.update({"adaptation_latency_sec": elapsed,
                         "latency_per_query_ms": elapsed * 1000.0 / len(query_idx), **info})
         metrics_by_scenario[scenario] = metrics
-        if method == "cvs_qknnv42" and head_mode == "extreme_light_diag_cosine":
+        if method == "cvs_qknnv42" and head_mode in {"extreme_light_diag_cosine", "extreme_light_prototype_cosine"}:
             trace.extend(
                 {"method": method, "scenario": scenario, **row}
                 for row in extreme_trace
@@ -1289,9 +1303,9 @@ def run(config: dict[str, Any], run_dir: Path) -> dict[str, Any]:
                 "seed": int(config["seed"]), "split_seed": seed, "k_shot": int(config["k_shot"]),
                 "support_pool_max_k": int(config["support_pool_max_k"]), "target_sample_strategy": "seeded_nested",
                 "splits_by_scenario": manifest_splits, "unknown_rejection_enabled": False,
-                "satellite_tta_view_count": expected_tta_views if aux_weight > 0.0 else None,
+                "satellite_tta_view_count": expected_tta_views if aux_required else None,
                 "qknnv42_aux_feature_key": aux_key,
-                "qknnv42_aux_feature_dim": aux_dim if aux_weight > 0.0 else 0,
+                "qknnv42_aux_feature_dim": aux_dim if aux_required else 0,
                 "qknnv42_aux_score_weight": aux_weight,
                 "qknnv42_decision_mode": decision_mode,
                 "qknnv42_labelprop_mode": labelprop_mode,

@@ -45,3 +45,7 @@ smoke首次执行完成12个基线row；24个极轻型row在训练前统一因`r
 ## 2026-07-14 23:02 K30结果
 
 K30 12/12 rows完成但联合通过0。FFT2.0在`8-8`的5/10/20类old均值为89.86/85.97/85.42%，new为87.50/85.58/92.71%；平均值与seed稳定性改善，但最低旧类仍仅约69%–78%。下一轮固定K30、20epoch和FFT2.0，测试prototype anchor5/20与feature noise0.01/0.05，仍不使用adapter60或角色Oracle。
+
+## 2026-07-14 23:09正则结果与零训练prototype路线
+
+K30正则化24/24完成但联合通过0；anchor5/20近似无效，noise0.05明显伤害old/floor。下一步实现零训练support prototype余弦头：0epoch、0参数、最大26类状态26,624B、6,656MAC/query，不依赖adapter60，并扫描FFT权重以判断去掉可训练头后能否改善逐类floor。
