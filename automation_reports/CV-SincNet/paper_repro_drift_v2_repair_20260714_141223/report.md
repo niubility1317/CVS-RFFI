@@ -6,7 +6,7 @@
 - 建立时间：2026-07-14 14:12:23+08:00
 - 操作者：Codex
 - 目标：定位DRIFT复现性能偏低的剩余原因，在不干预N607现有任务的前提下完成本地协议修复和下一轮8候选矩阵设计，使最终五随机种子结果与当前DRIFT论文v2同协议结果一致。
-- 当前状态：`DISCOVERY_COMPLETE_V206_CONFIRM_PRELAUNCH_PASS`
+- 当前状态：`V206_FIVE_SEED_CONFIRM_RUNNING_HEALTHY`
 - 远端边界：DRIFT v2发现矩阵已完整退出；Phase1仍可能运行。五seed确认仅在实时容量门通过后启动，不终止、不覆盖或影响Phase1产物。
 
 ## 论文版本与成功口径
@@ -153,3 +153,10 @@ Git承载面实现提交：`f302b1f repair DRIFT v2 reproduction protocol`。提
 - Git承载提交：`9ee5c71`；确认launcher SHA256=`4d5601a61b2b2c40c947bdf8fc3034702c467e3ffba539fd2f79ec2a3833d266`。计划同步到N607的`/home/szu2070436088/2510044040/CV-SincNet/code/scripts/launch_drift_v2_confirm_v206_20260714.sh`。
 - 直接N607预检通过。实时GPU compute PID仅GPU2=`262967`、GPU3=`263429`、GPU4=`263892`，均属于既有Phase1；GPU0、1、5、6、7为空。本任务计划GPU1、6、7、0、2各新增1个，峰值分别为1、1、1、1、2，满足每GPU不超过2。
 - 发现矩阵8个训练与queue已全部退出；未干预、终止或覆盖Phase1。下一步仅同步新launcher，核对远端hash、`bash -n`和5-job dry-run后启动独立确认run。
+
+## 2026-07-14 16:55五seed确认启动与健康检查
+
+- SCP后远端SHA256与本地一致，远端`bash -n`通过，5-job dry-run完整展开。正式命令：`bash code/scripts/launch_drift_v2_confirm_v206_20260714.sh --launch --gpu-ids 1,6,7,0,2 --max-train-per-gpu 2`。
+- 实际容量门：GPU1、6、7、0均`current=0+planned=1=1`，GPU2为`1+1=2`，未超过2/GPU。launcher PID依seed为1337=`445180`、2024=`445183`、3407=`445188`、4242=`445193`、7777=`445200`；训练PID分别为`445317,445305,445319,445332,445333`。
+- 健康检查时5个训练均存活，已到epoch15–16附近，5份`metrics.json`均持续写入；完整配置确认batch256、random、RMS off、MSE mean、无cap、lambda_mse0.020、final last1均正确生效。
+- 日志未见Traceback、RuntimeError、OOM、Killed或NaN。GPU2为Phase1＋本任务，其余本任务GPU各1个训练；未影响Phase1。当前仅为`RUNNING_HEALTHY`，尚未形成五seed复现结论。
