@@ -1,0 +1,9 @@
+family,method,input,methodology,output,effect,boundary
+域适应,CVS-OPGAC,冻结特征+target-old K-shot support,support-only旧类原型与高斯收缩校准,旧类后验/预测,完整矩阵中K=1→20为72.52%→78.21%,旧类-only；历史特征缓存非严格
+域适应,ProtoNet CDA,source IQ+target-old support,源侧ProtoNet训练后以目标support类原型最近邻适应,旧类预测,K=1→20为20.54%→27.42%,方法管线基座不同，不能归因为ADV3B02 adapter
+域适应,MRIOR-SDA,source IQ+target-old support,ReceiverImpactGADNet，Adam下源训练与目标有监督适应,旧类logits,K=1→20为20.77%→24.00%,方法管线基座不同
+域适应,DADDA-SDA,source IQ+target-old support,DADDANet，SGD+逆衰减完成源训练与目标有监督适应,旧类logits,K=1→20为16.98%→17.22%,方法管线基座不同
+类增量,CVS-qKNNV42,冻结z_id160+old/new K-shot support,Fisher对角白化、int8类内top-1、prototype、old anchor、标签传播,8类old/new分数与预测,H从K=1的41.04%升至K=20的62.22%,历史缓存兼容加载；严格无FFT尚未重跑
+类增量,CSIL,source IQ+old/new support,零偏置余弦头、通道分离、旧块梯度mask、KD/EWC,8类logits,H在K=1/2/5/10/20为16.23/19.34/18.05/17.69/9.45%,CVS extension，不是原论文原生数据结果
+类增量,MoPC-HR,source IQ+old/new support,原型增强、层次正则、动量原型修正,8类logits,H从14.70%升至37.30%,CVS extension
+类增量,Orthogonal Incremental,source IQ+old/new support,正交simplex伪目标、冻结编码器、新类增量校准,余弦分类预测,K=20 old=71.11%，但new=3.47%、H=6.00%,旧类保持不能替代old/new联合结论

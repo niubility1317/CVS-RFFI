@@ -1,0 +1,1316 @@
+{
+  "surface": "report",
+  "manifest": {
+    "version": 1,
+    "surface": "report",
+    "title": "ADV3B02、qKNN、域适应与类增量方法完整对比",
+    "description": "严格结果、历史兼容诊断和不同协议方法分层汇报",
+    "generatedAt": "2026-07-14T19:21:29+08:00",
+    "cards": [
+      {
+        "id": "card_direct_old",
+        "dataset": "headline",
+        "filter": {
+          "key": "direct_old"
+        },
+        "metrics": [
+          {
+            "label": "直接地面old_acc",
+            "field": "value_pct",
+            "format": "number"
+          }
+        ],
+        "sourceId": "direct_ground"
+      },
+      {
+        "id": "card_light_h",
+        "dataset": "headline",
+        "filter": {
+          "key": "light_h"
+        },
+        "metrics": [
+          {
+            "label": "严格单视图FFT96 H",
+            "field": "value_pct",
+            "format": "number"
+          }
+        ],
+        "sourceId": "strict_qknn"
+      },
+      {
+        "id": "card_full_h",
+        "dataset": "headline",
+        "filter": {
+          "key": "full_h"
+        },
+        "metrics": [
+          {
+            "label": "严格完整Oracle H",
+            "field": "value_pct",
+            "format": "number"
+          }
+        ],
+        "sourceId": "strict_qknn"
+      },
+      {
+        "id": "card_legacy_h",
+        "dataset": "headline",
+        "filter": {
+          "key": "legacy_h"
+        },
+        "metrics": [
+          {
+            "label": "历史单qKNN H",
+            "field": "value_pct",
+            "format": "number"
+          }
+        ],
+        "sourceId": "publication_matrix"
+      }
+    ],
+    "charts": [
+      {
+        "id": "core_chart",
+        "title": "四条主路径old/new/H对比",
+        "subtitle": "百分比；缺失值表示指标不适用",
+        "type": "bar",
+        "dataset": "core_chart",
+        "encodings": {
+          "x": {
+            "field": "method",
+            "type": "nominal",
+            "label": "方法"
+          },
+          "y": {
+            "fields": [
+              "old_pct",
+              "new_pct",
+              "H_pct"
+            ],
+            "type": "quantitative",
+            "label": "准确率/H",
+            "unit": "%"
+          },
+          "tooltip": [
+            {
+              "field": "strictness",
+              "type": "text"
+            },
+            {
+              "field": "runs",
+              "type": "quantitative"
+            }
+          ]
+        },
+        "valueFormat": "number",
+        "unit": "%",
+        "layout": "full",
+        "sourceId": "core_synthesis"
+      },
+      {
+        "id": "k_chart",
+        "title": "qKNN路径随K-shot变化的H",
+        "subtitle": "每个点为5接收机×5seed的25行均值",
+        "type": "line",
+        "dataset": "k_compare",
+        "encodings": {
+          "x": {
+            "field": "k_shot",
+            "type": "ordinal",
+            "label": "K-shot"
+          },
+          "y": {
+            "field": "H_pct",
+            "type": "quantitative",
+            "label": "H",
+            "unit": "%"
+          },
+          "color": {
+            "field": "method",
+            "type": "nominal",
+            "label": "方法"
+          },
+          "tooltip": [
+            {
+              "field": "old_pct",
+              "type": "quantitative",
+              "unit": "%"
+            },
+            {
+              "field": "new_pct",
+              "type": "quantitative",
+              "unit": "%"
+            },
+            {
+              "field": "strictness",
+              "type": "text"
+            }
+          ]
+        },
+        "valueFormat": "number",
+        "unit": "%",
+        "layout": "full",
+        "sourceId": "k_synthesis"
+      },
+      {
+        "id": "stage2b_chart",
+        "title": "Stage2-B域适应方法target-old accuracy",
+        "subtitle": "20260713完整矩阵；各点25个receiver-seed运行",
+        "type": "line",
+        "dataset": "stage2b",
+        "encodings": {
+          "x": {
+            "field": "k_shot",
+            "type": "ordinal",
+            "label": "K-shot"
+          },
+          "y": {
+            "field": "target_old_pct",
+            "type": "quantitative",
+            "label": "target-old accuracy",
+            "unit": "%"
+          },
+          "color": {
+            "field": "method",
+            "type": "nominal",
+            "label": "方法"
+          },
+          "tooltip": [
+            {
+              "field": "before_pct",
+              "type": "quantitative",
+              "unit": "%"
+            },
+            {
+              "field": "delta_pp",
+              "type": "quantitative",
+              "unit": "pp"
+            }
+          ]
+        },
+        "valueFormat": "number",
+        "unit": "%",
+        "layout": "full",
+        "sourceId": "publication_matrix"
+      },
+      {
+        "id": "stage2c_chart",
+        "title": "Stage2-C类增量方法old/new harmonic mean",
+        "subtitle": "20260713完整矩阵；各点25个receiver-seed运行",
+        "type": "line",
+        "dataset": "stage2c",
+        "encodings": {
+          "x": {
+            "field": "k_shot",
+            "type": "ordinal",
+            "label": "K-shot"
+          },
+          "y": {
+            "field": "H_pct",
+            "type": "quantitative",
+            "label": "H",
+            "unit": "%"
+          },
+          "color": {
+            "field": "method",
+            "type": "nominal",
+            "label": "方法"
+          },
+          "tooltip": [
+            {
+              "field": "old_pct",
+              "type": "quantitative",
+              "unit": "%"
+            },
+            {
+              "field": "new_pct",
+              "type": "quantitative",
+              "unit": "%"
+            }
+          ]
+        },
+        "valueFormat": "number",
+        "unit": "%",
+        "layout": "full",
+        "sourceId": "publication_matrix"
+      }
+    ],
+    "tables": [
+      {
+        "id": "core_table",
+        "title": "主路径完整对比与证据边界",
+        "dataset": "core_table",
+        "columns": [
+          {
+            "field": "method",
+            "label": "方法",
+            "type": "text"
+          },
+          {
+            "field": "old_pct",
+            "label": "old_acc(%)",
+            "type": "number"
+          },
+          {
+            "field": "new_pct",
+            "label": "new_acc(%)",
+            "type": "number"
+          },
+          {
+            "field": "H_pct",
+            "label": "H(%)",
+            "type": "number"
+          },
+          {
+            "field": "runs",
+            "label": "运行数",
+            "type": "number"
+          },
+          {
+            "field": "strictness",
+            "label": "加载/证据",
+            "type": "text"
+          },
+          {
+            "field": "verdict",
+            "label": "结论",
+            "type": "text"
+          }
+        ],
+        "density": "dense",
+        "layout": "full",
+        "sourceId": "core_synthesis"
+      },
+      {
+        "id": "method_table",
+        "title": "方法、输入、输出与效果",
+        "dataset": "method_notes",
+        "columns": [
+          {
+            "field": "family",
+            "label": "类别",
+            "type": "text"
+          },
+          {
+            "field": "method",
+            "label": "方法",
+            "type": "text"
+          },
+          {
+            "field": "input",
+            "label": "输入",
+            "type": "text"
+          },
+          {
+            "field": "methodology",
+            "label": "主要机制",
+            "type": "text"
+          },
+          {
+            "field": "output",
+            "label": "输出",
+            "type": "text"
+          },
+          {
+            "field": "effect",
+            "label": "达到效果",
+            "type": "text"
+          },
+          {
+            "field": "boundary",
+            "label": "边界",
+            "type": "text"
+          }
+        ],
+        "density": "dense",
+        "layout": "full",
+        "sourceId": "publication_matrix"
+      }
+    ],
+    "sources": [
+      {
+        "id": "strict_qknn",
+        "label": "qKNNV42严格双125重跑",
+        "path": "local_artifacts/qknnv42_strict_dual125_20260714_183556/analysis/summary.json",
+        "query": {
+          "engine": "DuckDB",
+          "language": "sql",
+          "sql": "SELECT * FROM read_csv_auto('local_artifacts/qknnv42_strict_dual125_20260714_183556/analysis/summary_by_arm.csv', header=true);",
+          "description": "读取严格双125的arm与K-shot汇总；保留同一run内old/new/H联合指标。",
+          "tables_used": [
+            "summary_by_arm.csv",
+            "summary_by_k.csv"
+          ],
+          "metric_definitions": [
+            "old_acc=旧类query准确率",
+            "new_acc=seen-new query准确率",
+            "H=每个run的old/new harmonic mean后求宏平均"
+          ]
+        }
+      },
+      {
+        "id": "direct_ground",
+        "label": "ADV3B02严格直接地面模型评测",
+        "path": "local_artifacts/adv3b02_direct_old_strict_20260714_181100/query125_metrics.json",
+        "query": {
+          "engine": "DuckDB",
+          "language": "sql",
+          "sql": "SELECT * FROM read_csv_auto('local_artifacts/adv3b02_direct_old_strict_20260714_181100/query125_summary.csv', header=true) WHERE level='overall';",
+          "description": "读取与125任务old-query对齐的严格地面分类头汇总。",
+          "tables_used": [
+            "query125_summary.csv"
+          ],
+          "metric_definitions": [
+            "old_acc=严格ADV3B02六旧类分类头在对齐query上的准确率",
+            "new_acc与H不适用"
+          ]
+        }
+      },
+      {
+        "id": "publication_matrix",
+        "label": "CVS论文级Stage2-B/C完整矩阵汇总",
+        "path": "local_artifacts/cvs_publication_stage2_summary_20260713/final_audit.json",
+        "query": {
+          "engine": "DuckDB",
+          "language": "sql",
+          "sql": "SELECT * FROM read_csv_auto('local_artifacts/cvs_publication_stage2_summary_20260713/method_k_summary.csv', header=true);",
+          "description": "读取20260713 Stage2-B/C各500行完整矩阵的method×K汇总及125行历史qKNN。",
+          "tables_used": [
+            "method_k_summary.csv",
+            "per_run_results.csv",
+            "final_audit.json"
+          ],
+          "metric_definitions": [
+            "Stage2-B=target-old accuracy",
+            "Stage2-C=old/new harmonic mean",
+            "统计单位=receiver-seed run的三场景均值"
+          ]
+        }
+      },
+      {
+        "id": "compat_cache",
+        "label": "20260713 ADV3B02历史特征缓存与manifest",
+        "path": "local_artifacts/cvs_publication_adv3b02_feature_cache_20260713/validation.json",
+        "query": {
+          "engine": "DuckDB",
+          "language": "sql",
+          "sql": "SELECT * FROM read_json_auto('local_artifacts/cvs_publication_adv3b02_feature_cache_20260713/validation.json');",
+          "description": "读取历史特征缓存验证文件；严格性字段另从NPZ内嵌manifest解析。",
+          "tables_used": [
+            "leo_clear_weak.npz",
+            "validation.json"
+          ],
+          "metric_definitions": [
+            "strictness由missing_keys、unexpected_keys、skipped_mismatch共同判定"
+          ]
+        }
+      },
+      {
+        "id": "protocol",
+        "label": "CVS-RFFI项目科学协议",
+        "path": "docs/CVS_PUBLICATION_COMPARISON_PROTOCOL_20260713.md",
+        "query": {
+          "language": "text",
+          "query": "read_text('docs/CVS_PUBLICATION_COMPARISON_PROTOCOL_20260713.md', encoding='utf-8')",
+          "description": "读取Stage2-B/C、receiver、K-shot和场景定义。",
+          "tables_used": [
+            "CVS_PUBLICATION_COMPARISON_PROTOCOL_20260713.md"
+          ]
+        }
+      },
+      {
+        "id": "core_synthesis",
+        "label": "四条主路径证据分层汇总",
+        "path": "local_artifacts/adv3b02_full_comparison_20260714_191356/core_comparison.csv",
+        "query": {
+          "engine": "DuckDB",
+          "language": "sql",
+          "sql": "SELECT * FROM read_csv_auto('local_artifacts/adv3b02_full_comparison_20260714_191356/core_comparison.csv', header=true);",
+          "description": "由严格双125、严格直接地面评测和历史完整矩阵合并生成；每行保留严格性与结论边界。",
+          "tables_used": [
+            "summary_by_arm.csv",
+            "query125_summary.csv",
+            "per_run_results.csv",
+            "leo_clear_weak.npz"
+          ],
+          "metric_definitions": [
+            "跨证据层差值仅为诊断，不解释为因果消融"
+          ]
+        }
+      },
+      {
+        "id": "k_synthesis",
+        "label": "qKNN三路径K-shot汇总",
+        "path": "local_artifacts/adv3b02_full_comparison_20260714_191356/kshot_comparison.csv",
+        "query": {
+          "engine": "DuckDB",
+          "language": "sql",
+          "sql": "SELECT * FROM read_csv_auto('local_artifacts/adv3b02_full_comparison_20260714_191356/kshot_comparison.csv', header=true);",
+          "description": "合并历史无FFT qKNN与两条严格qKNN路径的逐K汇总。",
+          "tables_used": [
+            "method_k_summary.csv",
+            "summary_by_k.csv"
+          ],
+          "metric_definitions": [
+            "每个K点为5接收机×5seed的25行均值"
+          ]
+        }
+      }
+    ],
+    "blocks": [
+      {
+        "id": "title",
+        "type": "markdown",
+        "body": "# ADV3B02、qKNN、域适应与类增量方法完整对比"
+      },
+      {
+        "id": "summary",
+        "type": "markdown",
+        "body": "## 技术摘要\n严格可比的核心结论是：直接地面ADV3B02在对齐125任务的旧类query上为73.87%；加入单视图FFT96后的严格qKNN达到old 75.12%、new 64.64%、H 68.56%；完整体达到84.07%、93.24%、88.23%，但它同时使用60epoch特征适配、5-view TTA和Oracle角色/类别配额，因此只能作为非部署上限。历史单qKNN为65.59%、47.94%、53.26%，其缓存manifest存在7个missing key、31个unexpected key和3个shape mismatch，不能当作严格ADV3B02结果。"
+      },
+      {
+        "id": "metric_strip",
+        "type": "metric-strip",
+        "cardIds": [
+          "card_direct_old",
+          "card_light_h",
+          "card_full_h",
+          "card_legacy_h"
+        ]
+      },
+      {
+        "id": "core_chart_block",
+        "type": "chart",
+        "chartId": "core_chart"
+      },
+      {
+        "id": "core_interpret",
+        "type": "markdown",
+        "body": "## 核心判断\nFFT96使严格轻量qKNN相对历史单qKNN提高old约9.53pp、new约16.70pp、H约15.31pp，但由于历史单qKNN不是严格加载，这一差值只能作为跨证据层诊断，不能作为纯FFT因果消融。严格完整体相对严格单视图FFT96提高old 8.94pp、new 28.60pp、H 19.66pp；这项差值混合了adapter、TTA与Oracle约束。"
+      },
+      {
+        "id": "core_table_block",
+        "type": "table",
+        "tableId": "core_table"
+      },
+      {
+        "id": "k_heading",
+        "type": "markdown",
+        "body": "## K-shot敏感性\n三条qKNN路径均随K增加而改善。严格单视图FFT96的H由K=1的52.70%升至K=20的79.89%；完整Oracle由81.10%升至92.81%。低K和困难接收机仍是轻量路径的主要瓶颈。"
+      },
+      {
+        "id": "k_chart_block",
+        "type": "chart",
+        "chartId": "k_chart"
+      },
+      {
+        "id": "da_heading",
+        "type": "markdown",
+        "body": "## Stage2-B域适应方法\n该组比较只评估target-old。CVS-OPGAC在完整矩阵中显著高于ProtoNet CDA、MRIOR-SDA和DADDA-SDA，但这些行比较的是完整管线而非同一严格ADV3B02特征上的适配模块消融；不同方法继承的表示与训练入口不同。"
+      },
+      {
+        "id": "stage2b_chart_block",
+        "type": "chart",
+        "chartId": "stage2b_chart"
+      },
+      {
+        "id": "cil_heading",
+        "type": "markdown",
+        "body": "## Stage2-C类增量方法\n历史CVS-qKNNV42在五档K上均高于CSIL、MoPC-HR和Orthogonal Incremental。Orthogonal在K=20保留71.11%的旧类，却只有3.47%的新类，说明不能用old_acc单独替代old/new联合指标。该历史CVS-qKNNV42仍受兼容加载问题约束；严格无FFT单qKNN尚未重跑。"
+      },
+      {
+        "id": "stage2c_chart_block",
+        "type": "chart",
+        "chartId": "stage2c_chart"
+      },
+      {
+        "id": "method_table_block",
+        "type": "table",
+        "tableId": "method_table"
+      },
+      {
+        "id": "quality",
+        "type": "markdown",
+        "body": "## 数据质量与可比性\n证据分三层：A层为20260714严格checkpoint重建后的直接地面、单视图FFT96和完整Oracle；B层为20260713 artifact完整但ADV3B02缓存兼容加载的历史qKNN/OPGAC；C层为各自训练管线的DA/CIL对比。只能在同层、同阶段、同指标内排序。直接地面模型没有新类头，因此new_acc与H必须留空；完整Oracle使用角色和类别配额真值约束，因此不得作为自主卫星部署性能。"
+      },
+      {
+        "id": "next",
+        "type": "markdown",
+        "body": "## 建议\n下一项最有价值的实验是用已修复的严格ADV3B02导出器重跑无FFT单qKNN 125矩阵，并在完全相同的strict cache上做FFT96开/关配对；随后分别做adapter、TTA和Oracle约束的逐项消融。只有这样才能把15.31pp和19.66pp拆解为可归因的增益。"
+      },
+      {
+        "id": "limitations",
+        "type": "markdown",
+        "body": "## 限制\n所有LEO场景均为简化星地信道仿真，不是真实在轨测量；125行由5接收机×5seed×5K构成，但直接地面分支不读取K，实际只有25个独立receiver-seed query集合。历史94.52/90.14/92.28属于不同切分、20新类、单seed legacy diagnostic，不进入本报告数值排名。"
+      }
+    ]
+  },
+  "snapshot": {
+    "version": 1,
+    "generatedAt": "2026-07-14T19:21:29+08:00",
+    "status": "ready",
+    "datasets": {
+      "headline": [
+        {
+          "key": "direct_old",
+          "value_pct": 73.86666666666667
+        },
+        {
+          "key": "light_h",
+          "value_pct": 68.56467579198244
+        },
+        {
+          "key": "full_h",
+          "value_pct": 88.22702369170554
+        },
+        {
+          "key": "legacy_h",
+          "value_pct": 53.25617192566791
+        }
+      ],
+      "core_chart": [
+        {
+          "method": "直接地面ADV3B02分类头",
+          "old_pct": 73.86666666666667,
+          "new_pct": null,
+          "H_pct": null,
+          "runs": 125,
+          "input": "单LEO视图raw IQ→严格ADV3B02 tx_logits",
+          "adaptation": "无support、无域适应、无新类头",
+          "decision": "六旧类分类头argmax",
+          "strictness": "严格加载；old-query与125矩阵对齐",
+          "evidence_tier": "A-严格旧类基线",
+          "verdict": "只回答旧类；new/H不可定义"
+        },
+        {
+          "method": "单qKNNV42（历史无FFT）",
+          "old_pct": 65.59333333333333,
+          "new_pct": 47.94,
+          "H_pct": 53.25617192566791,
+          "runs": 125,
+          "input": "单LEO视图z_id160",
+          "adaptation": "support-only Fisher对角白化、int8类内top-1、prototype与标签传播",
+          "decision": "逐样本argmax",
+          "strictness": "兼容加载诊断；missing=7,unexpected=31,mismatch=3",
+          "evidence_tier": "B-完整但非严格",
+          "verdict": "保留为历史基线，不能写作严格ADV3B02结果"
+        },
+        {
+          "method": "qKNNV42+单视图FFT96",
+          "old_pct": 75.12444444444438,
+          "new_pct": 64.64000000000001,
+          "H_pct": 68.56467579198244,
+          "runs": 125,
+          "input": "单LEO视图z_id160+FFT96",
+          "adaptation": "无训练adapter；qKNN support-only拟合；主/辅分数融合",
+          "decision": "逐样本argmax",
+          "strictness": "严格加载0/0/0",
+          "evidence_tier": "A-严格125矩阵",
+          "verdict": "当前最接近轻量卫星侧路径的严格诊断"
+        },
+        {
+          "method": "完整qKNN legacy Oracle",
+          "old_pct": 84.0666666666667,
+          "new_pct": 93.24000000000005,
+          "H_pct": 88.22702369170554,
+          "runs": 125,
+          "input": "严格ADV3B02+60epoch adapter+5-view TTA+FFT96",
+          "adaptation": "id_norm_late_feature适配、TTA融合、support-only qKNN",
+          "decision": "角色Oracle+类别配额Hungarian",
+          "strictness": "严格加载0/0/0；但含Oracle约束",
+          "evidence_tier": "A-严格Oracle上限",
+          "verdict": "NON_DEPLOYMENT_ORACLE_DIAGNOSTIC"
+        }
+      ],
+      "core_table": [
+        {
+          "method": "直接地面ADV3B02分类头",
+          "old_pct": 73.86666666666667,
+          "new_pct": null,
+          "H_pct": null,
+          "runs": 125,
+          "input": "单LEO视图raw IQ→严格ADV3B02 tx_logits",
+          "adaptation": "无support、无域适应、无新类头",
+          "decision": "六旧类分类头argmax",
+          "strictness": "严格加载；old-query与125矩阵对齐",
+          "evidence_tier": "A-严格旧类基线",
+          "verdict": "只回答旧类；new/H不可定义"
+        },
+        {
+          "method": "单qKNNV42（历史无FFT）",
+          "old_pct": 65.59333333333333,
+          "new_pct": 47.94,
+          "H_pct": 53.25617192566791,
+          "runs": 125,
+          "input": "单LEO视图z_id160",
+          "adaptation": "support-only Fisher对角白化、int8类内top-1、prototype与标签传播",
+          "decision": "逐样本argmax",
+          "strictness": "兼容加载诊断；missing=7,unexpected=31,mismatch=3",
+          "evidence_tier": "B-完整但非严格",
+          "verdict": "保留为历史基线，不能写作严格ADV3B02结果"
+        },
+        {
+          "method": "qKNNV42+单视图FFT96",
+          "old_pct": 75.12444444444438,
+          "new_pct": 64.64000000000001,
+          "H_pct": 68.56467579198244,
+          "runs": 125,
+          "input": "单LEO视图z_id160+FFT96",
+          "adaptation": "无训练adapter；qKNN support-only拟合；主/辅分数融合",
+          "decision": "逐样本argmax",
+          "strictness": "严格加载0/0/0",
+          "evidence_tier": "A-严格125矩阵",
+          "verdict": "当前最接近轻量卫星侧路径的严格诊断"
+        },
+        {
+          "method": "完整qKNN legacy Oracle",
+          "old_pct": 84.0666666666667,
+          "new_pct": 93.24000000000005,
+          "H_pct": 88.22702369170554,
+          "runs": 125,
+          "input": "严格ADV3B02+60epoch adapter+5-view TTA+FFT96",
+          "adaptation": "id_norm_late_feature适配、TTA融合、support-only qKNN",
+          "decision": "角色Oracle+类别配额Hungarian",
+          "strictness": "严格加载0/0/0；但含Oracle约束",
+          "evidence_tier": "A-严格Oracle上限",
+          "verdict": "NON_DEPLOYMENT_ORACLE_DIAGNOSTIC"
+        }
+      ],
+      "k_compare": [
+        {
+          "method": "单qKNNV42（历史无FFT）",
+          "k_shot": 1,
+          "old_pct": 57.86666666666667,
+          "new_pct": 36.5,
+          "H_pct": 41.03507598585982,
+          "strictness": "兼容加载诊断",
+          "run_count": 25
+        },
+        {
+          "method": "单qKNNV42（历史无FFT）",
+          "k_shot": 2,
+          "old_pct": 61.84444444444445,
+          "new_pct": 42.733333333333334,
+          "H_pct": 48.06698795901801,
+          "strictness": "兼容加载诊断",
+          "run_count": 25
+        },
+        {
+          "method": "单qKNNV42（历史无FFT）",
+          "k_shot": 5,
+          "old_pct": 67.41111111111111,
+          "new_pct": 50.366666666666674,
+          "H_pct": 55.86593588954331,
+          "strictness": "兼容加载诊断",
+          "run_count": 25
+        },
+        {
+          "method": "单qKNNV42（历史无FFT）",
+          "k_shot": 10,
+          "old_pct": 69.67777777777778,
+          "new_pct": 53.36666666666666,
+          "H_pct": 59.09596169780901,
+          "strictness": "兼容加载诊断",
+          "run_count": 25
+        },
+        {
+          "method": "单qKNNV42（历史无FFT）",
+          "k_shot": 20,
+          "old_pct": 71.16666666666667,
+          "new_pct": 56.733333333333334,
+          "H_pct": 62.21689809610938,
+          "strictness": "兼容加载诊断",
+          "run_count": 25
+        },
+        {
+          "method": "完整qKNN legacy Oracle",
+          "k_shot": 1,
+          "old_pct": 76.5888888888889,
+          "new_pct": 87.26666666666667,
+          "H_pct": 81.10337373974079,
+          "strictness": "严格ADV3B02+Oracle",
+          "run_count": 25
+        },
+        {
+          "method": "完整qKNN legacy Oracle",
+          "k_shot": 2,
+          "old_pct": 81.54444444444447,
+          "new_pct": 91.93333333333332,
+          "H_pct": 86.22501323950019,
+          "strictness": "严格ADV3B02+Oracle",
+          "run_count": 25
+        },
+        {
+          "method": "完整qKNN legacy Oracle",
+          "k_shot": 5,
+          "old_pct": 85.46666666666668,
+          "new_pct": 94.39999999999999,
+          "H_pct": 89.59160857615385,
+          "strictness": "严格ADV3B02+Oracle",
+          "run_count": 25
+        },
+        {
+          "method": "完整qKNN legacy Oracle",
+          "k_shot": 10,
+          "old_pct": 87.34444444444445,
+          "new_pct": 96.0,
+          "H_pct": 91.40128030998221,
+          "strictness": "严格ADV3B02+Oracle",
+          "run_count": 25
+        },
+        {
+          "method": "完整qKNN legacy Oracle",
+          "k_shot": 20,
+          "old_pct": 89.3888888888889,
+          "new_pct": 96.60000000000001,
+          "H_pct": 92.8138425931509,
+          "strictness": "严格ADV3B02+Oracle",
+          "run_count": 25
+        },
+        {
+          "method": "qKNNV42+单视图FFT96",
+          "k_shot": 1,
+          "old_pct": 62.8,
+          "new_pct": 48.13333333333333,
+          "H_pct": 52.69795768726724,
+          "strictness": "严格ADV3B02",
+          "run_count": 25
+        },
+        {
+          "method": "qKNNV42+单视图FFT96",
+          "k_shot": 2,
+          "old_pct": 70.0,
+          "new_pct": 57.2,
+          "H_pct": 62.013832298469694,
+          "strictness": "严格ADV3B02",
+          "run_count": 25
+        },
+        {
+          "method": "qKNNV42+单视图FFT96",
+          "k_shot": 5,
+          "old_pct": 78.03333333333333,
+          "new_pct": 66.8,
+          "H_pct": 71.33475320330803,
+          "strictness": "严格ADV3B02",
+          "run_count": 25
+        },
+        {
+          "method": "qKNNV42+单视图FFT96",
+          "k_shot": 10,
+          "old_pct": 81.35555555555555,
+          "new_pct": 73.66666666666666,
+          "H_pct": 76.88513788693221,
+          "strictness": "严格ADV3B02",
+          "run_count": 25
+        },
+        {
+          "method": "qKNNV42+单视图FFT96",
+          "k_shot": 20,
+          "old_pct": 83.43333333333337,
+          "new_pct": 77.39999999999999,
+          "H_pct": 79.89169788393511,
+          "strictness": "严格ADV3B02",
+          "run_count": 25
+        }
+      ],
+      "stage2b": [
+        {
+          "method": "CVS-OPGAC",
+          "k_shot": 1,
+          "target_old_pct": 72.52222222222223,
+          "before_pct": 74.1,
+          "delta_pp": -1.5777777777777786,
+          "run_count": 25,
+          "protocol": "Stage2-B target-old support/query",
+          "evidence_boundary": "20260713完整矩阵；不等同严格ADV3B02适配器消融"
+        },
+        {
+          "method": "CVS-OPGAC",
+          "k_shot": 10,
+          "target_old_pct": 77.77777777777777,
+          "before_pct": 74.1,
+          "delta_pp": 3.6777777777777763,
+          "run_count": 25,
+          "protocol": "Stage2-B target-old support/query",
+          "evidence_boundary": "20260713完整矩阵；不等同严格ADV3B02适配器消融"
+        },
+        {
+          "method": "CVS-OPGAC",
+          "k_shot": 2,
+          "target_old_pct": 74.23333333333333,
+          "before_pct": 74.1,
+          "delta_pp": 0.13333333333333283,
+          "run_count": 25,
+          "protocol": "Stage2-B target-old support/query",
+          "evidence_boundary": "20260713完整矩阵；不等同严格ADV3B02适配器消融"
+        },
+        {
+          "method": "CVS-OPGAC",
+          "k_shot": 20,
+          "target_old_pct": 78.21111111111111,
+          "before_pct": 74.1,
+          "delta_pp": 4.111111111111111,
+          "run_count": 25,
+          "protocol": "Stage2-B target-old support/query",
+          "evidence_boundary": "20260713完整矩阵；不等同严格ADV3B02适配器消融"
+        },
+        {
+          "method": "CVS-OPGAC",
+          "k_shot": 5,
+          "target_old_pct": 76.66666666666667,
+          "before_pct": 74.1,
+          "delta_pp": 2.566666666666667,
+          "run_count": 25,
+          "protocol": "Stage2-B target-old support/query",
+          "evidence_boundary": "20260713完整矩阵；不等同严格ADV3B02适配器消融"
+        },
+        {
+          "method": "DADDA-SDA",
+          "k_shot": 1,
+          "target_old_pct": 16.97777810692787,
+          "before_pct": 17.04444467027982,
+          "delta_pp": -0.06666656335194907,
+          "run_count": 25,
+          "protocol": "Stage2-B target-old support/query",
+          "evidence_boundary": "20260713完整矩阵；不等同严格ADV3B02适配器消融"
+        },
+        {
+          "method": "DADDA-SDA",
+          "k_shot": 10,
+          "target_old_pct": 17.188889145851135,
+          "before_pct": 17.06666691104571,
+          "delta_pp": 0.12222223480542502,
+          "run_count": 25,
+          "protocol": "Stage2-B target-old support/query",
+          "evidence_boundary": "20260713完整矩阵；不等同严格ADV3B02适配器消融"
+        },
+        {
+          "method": "DADDA-SDA",
+          "k_shot": 2,
+          "target_old_pct": 17.06666698058446,
+          "before_pct": 17.044444690148037,
+          "delta_pp": 0.022222290436426796,
+          "run_count": 25,
+          "protocol": "Stage2-B target-old support/query",
+          "evidence_boundary": "20260713完整矩阵；不等同严格ADV3B02适配器消融"
+        },
+        {
+          "method": "DADDA-SDA",
+          "k_shot": 20,
+          "target_old_pct": 17.22222246726354,
+          "before_pct": 17.04444467027982,
+          "delta_pp": 0.17777779698371884,
+          "run_count": 25,
+          "protocol": "Stage2-B target-old support/query",
+          "evidence_boundary": "20260713完整矩阵；不等同严格ADV3B02适配器消融"
+        },
+        {
+          "method": "DADDA-SDA",
+          "k_shot": 5,
+          "target_old_pct": 17.077778041362762,
+          "before_pct": 17.04444467027982,
+          "delta_pp": 0.03333337108294169,
+          "run_count": 25,
+          "protocol": "Stage2-B target-old support/query",
+          "evidence_boundary": "20260713完整矩阵；不等同严格ADV3B02适配器消融"
+        },
+        {
+          "method": "MRIOR-SDA",
+          "k_shot": 1,
+          "target_old_pct": 20.766666531562805,
+          "before_pct": 22.833333323399227,
+          "delta_pp": -2.0666667918364205,
+          "run_count": 25,
+          "protocol": "Stage2-B target-old support/query",
+          "evidence_boundary": "20260713完整矩阵；不等同严格ADV3B02适配器消融"
+        },
+        {
+          "method": "MRIOR-SDA",
+          "k_shot": 10,
+          "target_old_pct": 24.211111068725586,
+          "before_pct": 22.89999995628993,
+          "delta_pp": 1.3111111124356587,
+          "run_count": 25,
+          "protocol": "Stage2-B target-old support/query",
+          "evidence_boundary": "20260713完整矩阵；不等同严格ADV3B02适配器消融"
+        },
+        {
+          "method": "MRIOR-SDA",
+          "k_shot": 2,
+          "target_old_pct": 21.977777640024822,
+          "before_pct": 21.588888823986053,
+          "delta_pp": 0.3888888160387675,
+          "run_count": 25,
+          "protocol": "Stage2-B target-old support/query",
+          "evidence_boundary": "20260713完整矩阵；不等同严格ADV3B02适配器消融"
+        },
+        {
+          "method": "MRIOR-SDA",
+          "k_shot": 20,
+          "target_old_pct": 23.999999980131786,
+          "before_pct": 21.611111044883728,
+          "delta_pp": 2.388888935248057,
+          "run_count": 25,
+          "protocol": "Stage2-B target-old support/query",
+          "evidence_boundary": "20260713完整矩阵；不等同严格ADV3B02适配器消融"
+        },
+        {
+          "method": "MRIOR-SDA",
+          "k_shot": 5,
+          "target_old_pct": 22.655555685361225,
+          "before_pct": 21.78888890147209,
+          "delta_pp": 0.8666667838891349,
+          "run_count": 25,
+          "protocol": "Stage2-B target-old support/query",
+          "evidence_boundary": "20260713完整矩阵；不等同严格ADV3B02适配器消融"
+        },
+        {
+          "method": "ProtoNet CDA",
+          "k_shot": 1,
+          "target_old_pct": 20.544444421927135,
+          "before_pct": 18.633333270748455,
+          "delta_pp": 1.911111151178678,
+          "run_count": 25,
+          "protocol": "Stage2-B target-old support/query",
+          "evidence_boundary": "20260713完整矩阵；不等同严格ADV3B02适配器消融"
+        },
+        {
+          "method": "ProtoNet CDA",
+          "k_shot": 10,
+          "target_old_pct": 26.577777882417042,
+          "before_pct": 18.633333270748455,
+          "delta_pp": 7.944444611668587,
+          "run_count": 25,
+          "protocol": "Stage2-B target-old support/query",
+          "evidence_boundary": "20260713完整矩阵；不等同严格ADV3B02适配器消融"
+        },
+        {
+          "method": "ProtoNet CDA",
+          "k_shot": 2,
+          "target_old_pct": 24.333333273728687,
+          "before_pct": 18.633333270748455,
+          "delta_pp": 5.700000002980232,
+          "run_count": 25,
+          "protocol": "Stage2-B target-old support/query",
+          "evidence_boundary": "20260713完整矩阵；不等同严格ADV3B02适配器消融"
+        },
+        {
+          "method": "ProtoNet CDA",
+          "k_shot": 20,
+          "target_old_pct": 27.42222225666046,
+          "before_pct": 18.633333270748455,
+          "delta_pp": 8.788888985912005,
+          "run_count": 25,
+          "protocol": "Stage2-B target-old support/query",
+          "evidence_boundary": "20260713完整矩阵；不等同严格ADV3B02适配器消融"
+        },
+        {
+          "method": "ProtoNet CDA",
+          "k_shot": 5,
+          "target_old_pct": 22.933333317438763,
+          "before_pct": 18.633333270748455,
+          "delta_pp": 4.300000046690305,
+          "run_count": 25,
+          "protocol": "Stage2-B target-old support/query",
+          "evidence_boundary": "20260713完整矩阵；不等同严格ADV3B02适配器消融"
+        }
+      ],
+      "stage2c": [
+        {
+          "method": "CSIL",
+          "k_shot": 1,
+          "old_pct": 17.333333397905033,
+          "new_pct": 20.133333461980026,
+          "H_pct": 16.234138450870464,
+          "forgetting_pct": 7.266666506727535,
+          "run_count": 25,
+          "protocol": "Stage2-C old+seen-new support/query",
+          "evidence_boundary": "20260713完整矩阵；CVS-qKNN缓存为兼容加载，其他方法为各自训练管线"
+        },
+        {
+          "method": "CSIL",
+          "k_shot": 10,
+          "old_pct": 14.077777907252312,
+          "new_pct": 30.79999995231628,
+          "H_pct": 17.692152312339577,
+          "forgetting_pct": 21.444444254040718,
+          "run_count": 25,
+          "protocol": "Stage2-C old+seen-new support/query",
+          "evidence_boundary": "20260713完整矩阵；CVS-qKNN缓存为兼容加载，其他方法为各自训练管线"
+        },
+        {
+          "method": "CSIL",
+          "k_shot": 2,
+          "old_pct": 17.822222272555035,
+          "new_pct": 28.666666746139523,
+          "H_pct": 19.336815587983544,
+          "forgetting_pct": 12.533333082993824,
+          "run_count": 25,
+          "protocol": "Stage2-C old+seen-new support/query",
+          "evidence_boundary": "20260713完整矩阵；CVS-qKNN缓存为兼容加载，其他方法为各自训练管线"
+        },
+        {
+          "method": "CSIL",
+          "k_shot": 20,
+          "old_pct": 6.00000012293458,
+          "new_pct": 39.93333307902018,
+          "H_pct": 9.451484609916154,
+          "forgetting_pct": 25.499999797592558,
+          "run_count": 25,
+          "protocol": "Stage2-C old+seen-new support/query",
+          "evidence_boundary": "20260713完整矩阵；CVS-qKNN缓存为兼容加载，其他方法为各自训练管线"
+        },
+        {
+          "method": "CSIL",
+          "k_shot": 5,
+          "old_pct": 18.4333333671093,
+          "new_pct": 23.500000089406967,
+          "H_pct": 18.050267498559755,
+          "forgetting_pct": 16.144444435834885,
+          "run_count": 25,
+          "protocol": "Stage2-C old+seen-new support/query",
+          "evidence_boundary": "20260713完整矩阵；CVS-qKNN缓存为兼容加载，其他方法为各自训练管线"
+        },
+        {
+          "method": "CVS-qKNNV42",
+          "k_shot": 1,
+          "old_pct": 57.86666666666667,
+          "new_pct": 36.5,
+          "H_pct": 41.03507598585982,
+          "forgetting_pct": 8.28888888888889,
+          "run_count": 25,
+          "protocol": "Stage2-C old+seen-new support/query",
+          "evidence_boundary": "20260713完整矩阵；CVS-qKNN缓存为兼容加载，其他方法为各自训练管线"
+        },
+        {
+          "method": "CVS-qKNNV42",
+          "k_shot": 10,
+          "old_pct": 69.67777777777778,
+          "new_pct": 53.36666666666666,
+          "H_pct": 59.09596169780901,
+          "forgetting_pct": 8.188888888888888,
+          "run_count": 25,
+          "protocol": "Stage2-C old+seen-new support/query",
+          "evidence_boundary": "20260713完整矩阵；CVS-qKNN缓存为兼容加载，其他方法为各自训练管线"
+        },
+        {
+          "method": "CVS-qKNNV42",
+          "k_shot": 2,
+          "old_pct": 61.84444444444445,
+          "new_pct": 42.733333333333334,
+          "H_pct": 48.06698795901801,
+          "forgetting_pct": 8.633333333333333,
+          "run_count": 25,
+          "protocol": "Stage2-C old+seen-new support/query",
+          "evidence_boundary": "20260713完整矩阵；CVS-qKNN缓存为兼容加载，其他方法为各自训练管线"
+        },
+        {
+          "method": "CVS-qKNNV42",
+          "k_shot": 20,
+          "old_pct": 71.16666666666667,
+          "new_pct": 56.733333333333334,
+          "H_pct": 62.21689809610938,
+          "forgetting_pct": 7.5777777777777775,
+          "run_count": 25,
+          "protocol": "Stage2-C old+seen-new support/query",
+          "evidence_boundary": "20260713完整矩阵；CVS-qKNN缓存为兼容加载，其他方法为各自训练管线"
+        },
+        {
+          "method": "CVS-qKNNV42",
+          "k_shot": 5,
+          "old_pct": 67.41111111111111,
+          "new_pct": 50.366666666666674,
+          "H_pct": 55.86593588954331,
+          "forgetting_pct": 8.622222222222224,
+          "run_count": 25,
+          "protocol": "Stage2-C old+seen-new support/query",
+          "evidence_boundary": "20260713完整矩阵；CVS-qKNN缓存为兼容加载，其他方法为各自训练管线"
+        },
+        {
+          "method": "MoPC-HR",
+          "k_shot": 1,
+          "old_pct": 17.64444448550542,
+          "new_pct": 15.100000138084093,
+          "H_pct": 14.698878295860816,
+          "forgetting_pct": 5.833333204189937,
+          "run_count": 25,
+          "protocol": "Stage2-C old+seen-new support/query",
+          "evidence_boundary": "20260713完整矩阵；CVS-qKNN缓存为兼容加载，其他方法为各自训练管线"
+        },
+        {
+          "method": "MoPC-HR",
+          "k_shot": 10,
+          "old_pct": 23.30000013113022,
+          "new_pct": 51.93333327770233,
+          "H_pct": 30.931586431972498,
+          "forgetting_pct": 31.444444239139557,
+          "run_count": 25,
+          "protocol": "Stage2-C old+seen-new support/query",
+          "evidence_boundary": "20260713完整矩阵；CVS-qKNN缓存为兼容加载，其他方法为各自训练管线"
+        },
+        {
+          "method": "MoPC-HR",
+          "k_shot": 2,
+          "old_pct": 16.400000055631,
+          "new_pct": 24.86666676402092,
+          "H_pct": 18.449390264388438,
+          "forgetting_pct": 10.744444370269775,
+          "run_count": 25,
+          "protocol": "Stage2-C old+seen-new support/query",
+          "evidence_boundary": "20260713完整矩阵；CVS-qKNN缓存为兼容加载，其他方法为各自训练管线"
+        },
+        {
+          "method": "MoPC-HR",
+          "k_shot": 20,
+          "old_pct": 29.177777876456577,
+          "new_pct": 57.833333253860474,
+          "H_pct": 37.30005946286459,
+          "forgetting_pct": 38.71111087997755,
+          "run_count": 25,
+          "protocol": "Stage2-C old+seen-new support/query",
+          "evidence_boundary": "20260713完整矩阵；CVS-qKNN缓存为兼容加载，其他方法为各自训练管线"
+        },
+        {
+          "method": "MoPC-HR",
+          "k_shot": 5,
+          "old_pct": 18.46666669845581,
+          "new_pct": 42.29999993244807,
+          "H_pct": 24.169967874516754,
+          "forgetting_pct": 19.022222260634106,
+          "run_count": 25,
+          "protocol": "Stage2-C old+seen-new support/query",
+          "evidence_boundary": "20260713完整矩阵；CVS-qKNN缓存为兼容加载，其他方法为各自训练管线"
+        },
+        {
+          "method": "Orthogonal Incremental",
+          "k_shot": 1,
+          "old_pct": 25.73333324988683,
+          "new_pct": 7.100000110765298,
+          "H_pct": 9.88242774419783,
+          "forgetting_pct": 2.1000001033147178,
+          "run_count": 25,
+          "protocol": "Stage2-C old+seen-new support/query",
+          "evidence_boundary": "20260713完整矩阵；CVS-qKNN缓存为兼容加载，其他方法为各自训练管线"
+        },
+        {
+          "method": "Orthogonal Incremental",
+          "k_shot": 10,
+          "old_pct": 56.577777783075966,
+          "new_pct": 4.566666757067044,
+          "H_pct": 7.733866574526598,
+          "forgetting_pct": 2.7777777115503945,
+          "run_count": 25,
+          "protocol": "Stage2-C old+seen-new support/query",
+          "evidence_boundary": "20260713完整矩阵；CVS-qKNN缓存为兼容加载，其他方法为各自训练管线"
+        },
+        {
+          "method": "Orthogonal Incremental",
+          "k_shot": 2,
+          "old_pct": 30.422222216924034,
+          "new_pct": 5.100000100831191,
+          "H_pct": 8.15576305925414,
+          "forgetting_pct": 2.166666646798452,
+          "run_count": 25,
+          "protocol": "Stage2-C old+seen-new support/query",
+          "evidence_boundary": "20260713完整矩阵；CVS-qKNN缓存为兼容加载，其他方法为各自训练管线"
+        },
+        {
+          "method": "Orthogonal Incremental",
+          "k_shot": 20,
+          "old_pct": 71.11111164093018,
+          "new_pct": 3.466666733225187,
+          "H_pct": 6.004541354265421,
+          "forgetting_pct": 1.9222218195597334,
+          "run_count": 25,
+          "protocol": "Stage2-C old+seen-new support/query",
+          "evidence_boundary": "20260713完整矩阵；CVS-qKNN缓存为兼容加载，其他方法为各自训练管线"
+        },
+        {
+          "method": "Orthogonal Incremental",
+          "k_shot": 5,
+          "old_pct": 39.644444505373635,
+          "new_pct": 4.133333422243595,
+          "H_pct": 6.844499566007315,
+          "forgetting_pct": 1.9222220182418825,
+          "run_count": 25,
+          "protocol": "Stage2-C old+seen-new support/query",
+          "evidence_boundary": "20260713完整矩阵；CVS-qKNN缓存为兼容加载，其他方法为各自训练管线"
+        }
+      ],
+      "method_notes": [
+        {
+          "family": "域适应",
+          "method": "CVS-OPGAC",
+          "input": "冻结特征+target-old K-shot support",
+          "methodology": "support-only旧类原型与高斯收缩校准",
+          "output": "旧类后验/预测",
+          "effect": "完整矩阵中K=1→20为72.52%→78.21%",
+          "boundary": "旧类-only；历史特征缓存非严格"
+        },
+        {
+          "family": "域适应",
+          "method": "ProtoNet CDA",
+          "input": "source IQ+target-old support",
+          "methodology": "源侧ProtoNet训练后以目标support类原型最近邻适应",
+          "output": "旧类预测",
+          "effect": "K=1→20为20.54%→27.42%",
+          "boundary": "方法管线基座不同，不能归因为ADV3B02 adapter"
+        },
+        {
+          "family": "域适应",
+          "method": "MRIOR-SDA",
+          "input": "source IQ+target-old support",
+          "methodology": "ReceiverImpactGADNet，Adam下源训练与目标有监督适应",
+          "output": "旧类logits",
+          "effect": "K=1→20为20.77%→24.00%",
+          "boundary": "方法管线基座不同"
+        },
+        {
+          "family": "域适应",
+          "method": "DADDA-SDA",
+          "input": "source IQ+target-old support",
+          "methodology": "DADDANet，SGD+逆衰减完成源训练与目标有监督适应",
+          "output": "旧类logits",
+          "effect": "K=1→20为16.98%→17.22%",
+          "boundary": "方法管线基座不同"
+        },
+        {
+          "family": "类增量",
+          "method": "CVS-qKNNV42",
+          "input": "冻结z_id160+old/new K-shot support",
+          "methodology": "Fisher对角白化、int8类内top-1、prototype、old anchor、标签传播",
+          "output": "8类old/new分数与预测",
+          "effect": "H从K=1的41.04%升至K=20的62.22%",
+          "boundary": "历史缓存兼容加载；严格无FFT尚未重跑"
+        },
+        {
+          "family": "类增量",
+          "method": "CSIL",
+          "input": "source IQ+old/new support",
+          "methodology": "零偏置余弦头、通道分离、旧块梯度mask、KD/EWC",
+          "output": "8类logits",
+          "effect": "H在K=1/2/5/10/20为16.23/19.34/18.05/17.69/9.45%",
+          "boundary": "CVS extension，不是原论文原生数据结果"
+        },
+        {
+          "family": "类增量",
+          "method": "MoPC-HR",
+          "input": "source IQ+old/new support",
+          "methodology": "原型增强、层次正则、动量原型修正",
+          "output": "8类logits",
+          "effect": "H从14.70%升至37.30%",
+          "boundary": "CVS extension"
+        },
+        {
+          "family": "类增量",
+          "method": "Orthogonal Incremental",
+          "input": "source IQ+old/new support",
+          "methodology": "正交simplex伪目标、冻结编码器、新类增量校准",
+          "output": "余弦分类预测",
+          "effect": "K=20 old=71.11%，但new=3.47%、H=6.00%",
+          "boundary": "旧类保持不能替代old/new联合结论"
+        }
+      ]
+    }
+  }
+}

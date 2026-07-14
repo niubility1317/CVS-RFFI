@@ -1,0 +1,13 @@
+{
+  "ok": true,
+  "validation": "passed",
+  "package": "passed",
+  "verification": "structural_only",
+  "counts": {
+    "blocks": 19,
+    "charts": 4,
+    "metrics": 4,
+    "tables": 2
+  },
+  "browser_warning": "Installed desktop Chrome did not accept the portable headless extraction environment; semantic and structural verification passed, but viewport/source-dialog interactions were not browser-verified."
+}

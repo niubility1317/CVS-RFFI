@@ -1,0 +1,45 @@
+{
+  "run_id": "adv3b02_full_comparison_20260714_191356",
+  "generated_at": "2026-07-14T19:21:29+08:00",
+  "source_row_counts": {
+    "strict_arm_rows": 2,
+    "strict_k_rows": 10,
+    "direct_summary_rows": 44,
+    "publication_run_rows": 1000,
+    "publication_k_rows": 40,
+    "historical_qknn_rows": 125
+  },
+  "completeness": {
+    "strict_qknn_arms": [
+      "full_legacy_oracle_strict",
+      "singleview_fft96_strict"
+    ],
+    "stage2b_methods": [
+      "CVS-OPGAC",
+      "DADDA-SDA",
+      "MRIOR-SDA",
+      "ProtoNet CDA"
+    ],
+    "stage2c_methods": [
+      "CSIL",
+      "CVS-qKNNV42",
+      "MoPC-HR",
+      "Orthogonal Incremental"
+    ],
+    "k_grid": [
+      1,
+      2,
+      5,
+      10,
+      20
+    ],
+    "cache_validation_status": "PASS"
+  },
+  "cache_checkpoint_load_audit": "missing=7,unexpected=31,mismatch=3",
+  "metric_rules": {
+    "H": "per-run harmonic mean aggregated as supplied; not recomputed from marginal means",
+    "direct_ground_new_and_H": "not applicable",
+    "cross_tier_deltas": "diagnostic only, not causal"
+  },
+  "status": "PASS_WITH_COMPARABILITY_TIERS"
+}
