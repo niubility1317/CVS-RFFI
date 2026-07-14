@@ -98,7 +98,7 @@
 |真实dual bit-exact缺少持续回归|新增真实dual逐元素等价与domain调用计数测试|纳入`29 passed`|
 |零训练顶层manifest仍称`phase1_iq_frontend`|改为`qknnv42_frozen_adv3b02_identity_only_features_v1`和`frozen_adv3b02_identity_only_z_id`|来源口径与执行路径一致|
 
-第二轮复审另发现1项Critical和2项Important，均已闭合：`full_legacy_oracle`现在强制提供历史目录且固定三指标不可由CLI覆盖；feature cache额外强制`checkpoint_load_strict=true`且load audit三类异常计数均为0；identity独立导出目录也在任何计算前拒绝覆盖。复审修复后的针对性测试为`15 passed`。
+第二轮复审另发现1项Critical和2项Important，均已闭合：`full_legacy_oracle`现在强制提供历史目录且固定三指标不可由CLI覆盖；feature cache额外强制`checkpoint_load_strict=true`且load audit三类异常计数均为0；identity独立导出目录也在任何计算前拒绝覆盖。最终独立复审结论为通过，未发现剩余Critical或Important；针对性测试为`15 passed`。
 
 待同步文件SHA256：
 
