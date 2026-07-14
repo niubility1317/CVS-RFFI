@@ -435,3 +435,10 @@
 - 8个queue PID为`928971,928973,928977,928982,928988,928994,929003,929013`；首批row1–8 trainer PID为`929140,929141,929170,929178,929198,929199,929200,929203`。GPU0–3各排2个顺序job，GPU4–7各1个。
 - 04:36:47健康检查：8/8 queue与8/8 trainer均持续运行；row1–8最新完整epoch为`13,13,13,13,12,12,13,14/200`，8份`metrics.json`已建立。完整命令行与日志marker均确认`short_stem1d`、SGD momentum0、CE/MI/IE mean、no-RMS、no-feature-norm、稳定全局partition和paper last10。
 - 全量扫描当前已写日志，硬错误0；`PAPER-EVAL-SUMMARY=0`、`FINAL-TEST=0`、完成job=0符合训练早期。GPU0–7各1个本任务compute，SM约21%–33%，每GPU训练总数1。当前判定为`RUNNING_STARTUP_HEALTHY_THROUGH_EPOCH_12_14`，不构成RIEI复现结论。所有SSH/SCP短连接已退出，本地`ssh.exe=0`、N607 TCP22已建立连接`=0`。
+
+### 04:51只读心跳监控
+
+- 直接N607预检通过；8个原queue PID与8个原trainer PID均持续运行约1148秒，无重启或进程替换。完整命令行继续固定`short_stem1d`、稳定全局partition、SGD momentum0、CE/MI/IE mean、no-RMS、no-feature-norm、200epoch及paper last10。
+- 8份`metrics.json`均可完整解析，epoch序列连续且无重复或缺口；row1–8分别完整写入epoch`53,52,52,51,50,50,52,53/200`，尚无`final`字段。当前`PAPER-EVAL-SUMMARY=0`、`FINAL-TEST=0`、成功完成job=`0/12`，符合首批训练阶段。
+- 完整读取当前run的24份日志，共2423行/197300字节；8份训练日志均含稳定partition和short-stem marker。全量硬错误扫描计数0，未见Traceback、RuntimeError、CUDA OOM、Killed、AssertionError、FileNotFound、NaN、Inf或参数错误。
+- `nvidia-smi pmon`确认GPU0–7各仅1个本任务compute，SM占用约28%–29%，没有其他compute；任何GPU训练总数均为1。当前判定为`RUNNING_HEALTHY_THROUGH_EPOCH_50_53`，仍不是Table III正式结果。SSH短连接已退出，本地`ssh.exe=0`、N607 TCP22已建立连接`=0`。
