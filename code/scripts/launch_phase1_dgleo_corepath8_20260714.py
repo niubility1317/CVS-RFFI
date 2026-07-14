@@ -3,7 +3,9 @@ from __future__ import annotations
 import argparse
 import json
 import shlex
+import subprocess
 import sys
+import time
 from collections import Counter
 from copy import deepcopy
 from pathlib import Path
@@ -23,6 +25,10 @@ DEFAULT_PYTHON = previous.DEFAULT_PYTHON
 WALL_HOURS = 10.0
 SEED = previous.SEED
 LEO_WEAK = previous.LEO_WEAK
+GPU_COUNT = 8
+MAX_TOTAL_COMPUTE_PER_GPU = 2
+RESOURCE_WAIT_TIMEOUT_SECONDS = 3 * 3600
+RESOURCE_POLL_SECONDS = 60.0
 
 
 BASE: Dict[str, Any] = deepcopy(previous.BASE)
@@ -270,11 +276,79 @@ def matrix_payload(rows: Sequence[Mapping[str, Any]], run_id: str, wall_hours: f
             "mechanism": "invariant_identity_core_plus_frozen_reference_acceptance",
             "same_seed_as_hiercore8_r3": True,
             "one_candidate_per_gpu": True,
+            "resource_gate": {
+                "gpu_count": GPU_COUNT,
+                "max_total_compute_per_gpu": MAX_TOTAL_COMPUTE_PER_GPU,
+                "required_free_slots_per_gpu": 1,
+                "counts_all_nvidia_compute_clients": True,
+            },
             "final_checkpoint_only": True,
             "claim_boundary": "PHASE1_SOURCE_ONLY_PROXY_DIAGNOSTIC_NO_TRUE_UNKNOWN_CLAIM",
         }
     )
     return payload
+
+
+def gpu_compute_occupancy() -> Dict[int, int]:
+    gpu_output = subprocess.check_output(
+        ["nvidia-smi", "--query-gpu=index,uuid", "--format=csv,noheader,nounits"],
+        text=True,
+    )
+    uuid_to_index: Dict[str, int] = {}
+    for raw_line in gpu_output.splitlines():
+        parts = [part.strip() for part in raw_line.split(",", 1)]
+        if len(parts) != 2:
+            raise RuntimeError(f"invalid nvidia-smi GPU row: {raw_line!r}")
+        uuid_to_index[parts[1]] = int(parts[0])
+
+    occupancy = {gpu: 0 for gpu in range(GPU_COUNT)}
+    app_output = subprocess.check_output(
+        ["nvidia-smi", "--query-compute-apps=gpu_uuid,pid", "--format=csv,noheader,nounits"],
+        text=True,
+    )
+    for raw_line in app_output.splitlines():
+        parts = [part.strip() for part in raw_line.split(",", 1)]
+        if len(parts) != 2 or parts[0] not in uuid_to_index:
+            raise RuntimeError(f"invalid nvidia-smi compute row: {raw_line!r}")
+        occupancy[uuid_to_index[parts[0]]] += 1
+    return occupancy
+
+
+def wait_for_gpu_slots(
+    *,
+    max_total_compute_per_gpu: int,
+    timeout_seconds: float,
+    poll_seconds: float,
+) -> Dict[int, int]:
+    if max_total_compute_per_gpu < 1:
+        raise ValueError("max_total_compute_per_gpu must be >= 1")
+    if timeout_seconds < 0 or poll_seconds <= 0:
+        raise ValueError("invalid GPU resource wait timing")
+    deadline = time.monotonic() + timeout_seconds
+    while True:
+        occupancy = gpu_compute_occupancy()
+        blocked = {
+            gpu: count
+            for gpu, count in occupancy.items()
+            if count + 1 > max_total_compute_per_gpu
+        }
+        print(
+            json.dumps(
+                {
+                    "event": "GPU_SLOT_CHECK",
+                    "occupancy": occupancy,
+                    "max_total_compute_per_gpu": max_total_compute_per_gpu,
+                    "blocked": blocked,
+                },
+                sort_keys=True,
+            ),
+            flush=True,
+        )
+        if not blocked:
+            return occupancy
+        if time.monotonic() >= deadline:
+            raise TimeoutError(f"GPU_SLOT_WAIT_TIMEOUT blocked={blocked}")
+        time.sleep(min(poll_seconds, max(0.0, deadline - time.monotonic())))
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -289,6 +363,9 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--launch-settle-seconds", type=float, default=3.0)
     parser.add_argument("--emit-matrix", default="")
     parser.add_argument("--dry-run", action="store_true")
+    parser.add_argument("--max-total-compute-per-gpu", type=int, default=MAX_TOTAL_COMPUTE_PER_GPU)
+    parser.add_argument("--resource-wait-timeout-seconds", type=float, default=RESOURCE_WAIT_TIMEOUT_SECONDS)
+    parser.add_argument("--resource-poll-seconds", type=float, default=RESOURCE_POLL_SECONDS)
     return parser
 
 
@@ -327,6 +404,22 @@ def main() -> int:
             )
         )
         return 0
+    launch_occupancy = wait_for_gpu_slots(
+        max_total_compute_per_gpu=int(args.max_total_compute_per_gpu),
+        timeout_seconds=float(args.resource_wait_timeout_seconds),
+        poll_seconds=float(args.resource_poll_seconds),
+    )
+    print(
+        json.dumps(
+            {
+                "event": "GPU_SLOT_READY",
+                "occupancy_before_phase1_launch": launch_occupancy,
+                "phase1_candidates": len(rows),
+            },
+            sort_keys=True,
+        ),
+        flush=True,
+    )
     original_build = dual.build_command
     original_payload = dual.matrix_payload
     try:

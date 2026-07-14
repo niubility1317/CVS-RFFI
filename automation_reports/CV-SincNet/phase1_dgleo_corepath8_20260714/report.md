@@ -54,7 +54,7 @@
 - train_ssdg.py SHA256：68F11ADFE5A680717DABF79B3233522629CF7B431FF823395F0F78A104E3FB96。
 - losses.py SHA256：C74BB63DC0BE820C832D84D17874B862D4111231B136F6426FE14B38D74599A2。
 - model.py SHA256：AFC6E6266A09FD5F5BE967FED85254C6C92FA0241A0336FD5FFA3EB12AA1C417。
-- launcher SHA256：0DF4D2FE1C42297074912F194A7D9D015B71ED7C494E2000AC099487539E0B28。
+- launcher SHA256（资源门控补丁后）：9878130DEA9026F69F16E3690CDCACC4DCCAC0EF838FDF53E1CF6FBB1D9728A7。
 - py_compile通过。
 - focused Phase1/模型/launcher测试80项通过；扩展集合中95项通过，另有5个既有federated fixture因缺少fed_fishr_bank属性失败，与本批未修改模块无关。
 - dry-run生成8条唯一命令，GPU0-7各1条，checkpoint_selection=final_only。
@@ -65,10 +65,18 @@
 - Python：/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python。
 - run：runs/phase1_dgleo_corepath8_20260714/<candidate>。
 - logs：logs/phase1_dgleo_corepath8_20260714/<candidate>.out。
-- N607在2026-07-14 08:47 CST实时核验为0个训练进程、0个GPU计算进程。
+- 2026-07-14 09:12 CST重新按PID、完整命令行、CWD、输出目录和GPU核验：CorePath8正式实验为0个；服务器另有13个`paper_reproduction` RIEI/DRIFT训练，GPU0-4每卡2个、GPU5-7每卡1个。此前“服务器无训练”的结论是过滤范围错误，已撤销。
+- 正式launcher新增全量NVIDIA compute-client资源门控：只有GPU0-7均满足“现有compute进程数+1<=2”才整体启动8个Phase1候选；等待期间每60秒写入逐卡occupancy，不把RIEI/DRIFT进程记作Phase1。
 - 预计单候选训练约5.1-5.5小时，final评估/probe/diagnostic导出约0.5-1小时；8卡并行总墙钟预计6-7小时，硬上限10小时。
+
+## 运行冒烟验证
+
+- 2026-07-14 09:20 CST在GPU7第二个允许槽位启动`CP_R7_FULL_AGGRESSIVE_SMOKE_E2D`，PID 229198；同卡原PID 221959属于RIEI复现，二者通过命令行和输出目录隔离。
+- 两个epoch完整执行，`metrics_epoch.csv`共2行，无Traceback、RuntimeError或非有限训练指标；final-only权重写入成功。终态exit code 5来自两轮诊断不满足promotion合同，不是运行时错误。
+- E2冻结reference bank生效：version=1、active_epoch=2、anchor_count=672，U_s reference anchor=336；`zid_path`梯度预算标志为1；跨epoch temporal pass从0升至0.116，pseudo CE selected从0升至3/7056。
+- E2仍暴露核心科学风险：dynamic DM proxy_vaccept=0.139、bridge=0.044，但known hard core accept仅0.149，legacy proxy_vaccept约0.589、bridge=1.000，source-episode overflow=1.000。因此不能把DM下降解释成拒识改善；正式120epoch必须同时检查known TPR、旧proxy与fixed endpoint。
+- 前三次冒烟仅在参数预检阶段失败，依次为关闭sat评估却保留sat best metric、非法best metric名称、heavy-eval interval设为0；均未进入训练，也未占用持续GPU资源。
 
 ## 声明边界
 
 本轮只能评价Phase1 DG、星地压力、known几何、source-only proxy风险、U_s执行和diagnostic prototype。不得声明真实unknown FAR/FPR95、Stage2成功或endpoint部署成功。
-

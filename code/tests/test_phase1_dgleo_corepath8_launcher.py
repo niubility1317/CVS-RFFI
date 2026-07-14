@@ -3,6 +3,8 @@ from __future__ import annotations
 import sys
 from pathlib import Path
 
+import pytest
+
 
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
 CODE_ROOT = PROJECT_ROOT / "code"
@@ -61,3 +63,34 @@ def test_corepath_stable_enables_complete_p0_closed_loop():
     assert args.direct_metric_zid_p99_target_deg == 70.0
     assert args.tail_safety_p99_target_deg == 70.0
     assert args.eval_sat_scenarios == "leo_clear_weak,leo_low_elev_weak,leo_rain_weak"
+
+
+def test_resource_gate_waits_until_every_gpu_has_one_free_slot(monkeypatch):
+    snapshots = [
+        {0: 2, 1: 1, 2: 1, 3: 1, 4: 1, 5: 1, 6: 1, 7: 1},
+        {gpu: 1 for gpu in range(8)},
+    ]
+    monkeypatch.setattr(launcher, "gpu_compute_occupancy", lambda: snapshots.pop(0))
+    monkeypatch.setattr(launcher.time, "sleep", lambda _: None)
+    assert launcher.wait_for_gpu_slots(
+        max_total_compute_per_gpu=2,
+        timeout_seconds=10,
+        poll_seconds=1,
+    ) == {gpu: 1 for gpu in range(8)}
+
+
+def test_resource_gate_fails_closed_when_gpu_stays_full(monkeypatch):
+    monkeypatch.setattr(
+        launcher,
+        "gpu_compute_occupancy",
+        lambda: {gpu: (2 if gpu == 3 else 1) for gpu in range(8)},
+    )
+    monkeypatch.setattr(launcher.time, "sleep", lambda _: None)
+    monotonic = iter([0.0, 1.0])
+    monkeypatch.setattr(launcher.time, "monotonic", lambda: next(monotonic))
+    with pytest.raises(TimeoutError, match="GPU_SLOT_WAIT_TIMEOUT"):
+        launcher.wait_for_gpu_slots(
+            max_total_compute_per_gpu=2,
+            timeout_seconds=1,
+            poll_seconds=1,
+        )
