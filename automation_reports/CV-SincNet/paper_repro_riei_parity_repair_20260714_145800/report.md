@@ -517,3 +517,9 @@
 - 直接N607预检通过；4个原queue与4个原trainer PID均持续运行，无重启或进程替换。row3、4、11、12分别完整写入epoch`33,31,33,31/200`，4份`metrics.json`均连续且无`final`字段。
 - 完整读取12份当前日志，共748行/69845字节；4份训练日志均确认稳定partition、`short_stem1d`和`sgd_momentum=0.9`。`PAPER-EVAL-SUMMARY=0`、`FINAL-TEST=0`、成功完成job=0；全量硬错误扫描计数0。
 - GPU0–3各仅1个本任务compute，SM占用约29%–30%；GPU4–7无compute。当前判定为`RUNNING_HEALTHY_THROUGH_EPOCH_31_33`，不是momentum正式选型结果。SSH短连接已退出，本地`ssh.exe=0`、N607 TCP22已建立连接`=0`。
+
+### 07:51只读心跳监控
+
+- 直接N607预检通过；4个原queue与4个原trainer PID持续运行，无重启或进程替换。row3、4、11、12分别完整写入epoch`119,116,124,117/200`，4份`metrics.json`均连续且无`final`字段。
+- 完整读取12份当前日志，共1968行/158138字节；4份训练日志均确认稳定partition、`short_stem1d`和`sgd_momentum=0.9`。`PAPER-EVAL-SUMMARY=0`、`FINAL-TEST=0`、成功完成job=0；全量硬错误扫描计数0。
+- GPU0–3各仅1个本任务compute，SM占用约22%–31%；GPU4–7无compute。当前判定为`RUNNING_HEALTHY_THROUGH_EPOCH_116_124`，不是momentum正式选型结果。SSH短连接已退出，本地`ssh.exe=0`、N607 TCP22已建立连接`=0`。
