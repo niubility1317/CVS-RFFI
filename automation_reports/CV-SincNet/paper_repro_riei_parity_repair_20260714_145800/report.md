@@ -449,3 +449,10 @@
 - 8份`metrics.json`全部可解析，epoch序列连续且无缺口；row1–8分别完整写入epoch`133,133,134,132,133,132,135,136/200`，均无`final`字段。`PAPER-EVAL-SUMMARY=0`、`FINAL-TEST=0`、成功完成job=`0/12`，与训练阶段一致。
 - 完整读取当前run的24份日志，共5600行/404130字节；8份训练日志均确认稳定partition和`short_stem1d`。全量硬错误扫描计数0，未见Traceback、RuntimeError、CUDA OOM、Killed、AssertionError、FileNotFound、NaN、Inf或参数错误。
 - GPU0–7各仅1个本任务compute；SM占用约26%–48%，其余GPU进程仅Xorg。容量门持续合规。当前判定为`RUNNING_HEALTHY_THROUGH_EPOCH_132_136`，正式last10仍须等待epoch191–200及完整12行。SSH短连接已退出，本地`ssh.exe=0`、N607 TCP22已建立连接`=0`。
+
+### 05:51只读心跳监控
+
+- 直接N607预检通过。row1–8均自然完成epoch200，8个`QUEUE-JOB-END status=0`、8个`PAPER-EVAL-SUMMARY`和8份含`FINAL-TEST`的训练日志齐全；GPU4–7的单job queue已自然退出。
+- GPU0–3的queue PID=`928971,928973,928977,928982`继续第二批；row9–12 trainer PID依次为`967912,967672,967560,968564`。12份`metrics.json`均可解析且epoch连续：row1–8各200epoch并有`final`字段，row9–12分别完整写入epoch`16,17,17,13/200`且无`final`。
+- 当前完整读取32份日志，共8009行/598087字节；12份训练日志均确认稳定partition和`short_stem1d`。`PAPER-EVAL-SUMMARY=8/12`、`FINAL-TEST=8/12`、成功完成job=`8/12`；全量硬错误扫描计数0。
+- GPU0–3各仅1个本任务compute，SM占用约28%–36%；GPU4–7无compute，容量合规。当前判定为`RUNNING_HEALTHY_8_OF_12_COMPLETE_THROUGH_EPOCH_13_17`。已完成前8行不脱离完整12行进行目标域选型或复现声明。SSH短连接已退出，本地`ssh.exe=0`、N607 TCP22已建立连接`=0`。
