@@ -196,3 +196,9 @@ cap成功阻止修复版中`loss_mse=-247240`、feature norm=967.22的无界放�
 - GPU0–3各为1个Phase1＋1个本任务训练，GPU4–7仅Phase1，容量未超过2/GPU。
 - 未见Traceback、RuntimeError、OOM、NaN或Killed；本次SSH后无本地连接残留。
 - 下一轮RIEI论文一致性修复已提交`9a9f7b8`，当前queue退出前不做远端同步。
+
+## 2026-07-14 15:15 heartbeat只读复核
+
+- 完成16/20，4个queue存活；最后4个RIEI到epoch110–112/200，无排队job。
+- GPU0–3各为Phase1＋本任务，GPU4–7仅Phase1；硬错误扫描为0。
+- 未同步、未启动、未重启、未修改远端状态。
