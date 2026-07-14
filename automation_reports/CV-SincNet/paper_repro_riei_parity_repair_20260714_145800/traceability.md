@@ -10,11 +10,11 @@
 | RIEI-P06 | 优化器与loss reduction未完全公开，必须用同row受控实验定位 | 固定Adam+sum导致Table III第1行明显低于论文 | 8候选完整200epoch比较，以预定last5选型 | verified | 8份metrics共1600epoch、24份日志共6100行；P02=`80.12±0.58%` |
 | RIEI-P07 | Table III最终证据必须覆盖论文全部12个receiver组合 | 发现阶段仅覆盖第1行 | 固定P02的SGD+mean+no-RMS+no-FN配置，运行12行确认 | verified | 12×200epoch自然完成、硬错误0；均值72.26%，MAE4.82pp，命中5/12，`NOT_REPRODUCED` |
 | RIEI-P08 | Table III各receiver组合应建立在同一随机数据partition上 | 组合内顺序RNG导致同一receiver跨行样本漂移 | 完整12行以稳定全局partition和论文last10重新确认 | verified | 12×200epoch完成；均值72.72%，MAE4.34pp，命中6/12，`NOT_REPRODUCED` |
-| RIEI-P09 | Eq.(5)、Eq.(7)和Eq.(8)把MI/IE写为样本与receiver求和 | 完整12行采用单row消融胜出的mean | 保持其余协议不变，以`RIEI_REDUCTION=sum`运行完整12行论文字面尺度确认 | implemented | launcher参数化、本地测试、`bash -n`与12-job dry-run；待N607结果 |
+| RIEI-P09 | Eq.(5)、Eq.(7)和Eq.(8)把MI/IE写为样本与receiver求和 | 完整12行采用单row消融胜出的mean | 保持其余协议不变，以`RIEI_REDUCTION=sum`运行完整12行论文字面尺度确认 | running | launcher参数化、本地测试、远端hash/`bash -n`/12-job dry-run；8个queue健康运行至epoch14–15 |
 
 ## 声明边界
 
 - 论文未明确给出优化器名称和总epoch数；Eq.(10)–(11)描述的是梯度更新顺序，不能据此断言作者使用了PyTorch SGD。
 - 发现阶段只在Table III第1行比较训练动力学；最终论文结论必须用胜出配置重跑完整12行，不能用单row或目标域峰值代替。
 - 目标域逐epoch曲线仅用于诊断；下一轮正式分数采用论文明确的最终10个epoch，禁止target-oracle选epoch。
-- 当前反向审计：`verified=8`、`implemented=1`、`pending=0`、`deferred=0`、`rejected=0`、`blocked=0`；最高风险为论文未公开ResNet1D-18具体结构、优化器和随机seed。全局partition修复仍未达到逐行阈值，下一轮先验证公式字面sum尺度。
+- 当前反向审计：`verified=8`、`running=1`、`pending=0`、`deferred=0`、`rejected=0`、`blocked=0`；最高风险为论文未公开ResNet1D-18具体结构、优化器和随机seed。全局partition修复仍未达到逐行阈值，当前先验证公式字面sum尺度。

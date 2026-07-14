@@ -279,3 +279,11 @@
 - 直接N607预检通过。实时进程/CWD/cmdline检查没有训练进程，`nvidia-smi`的compute process计数为0；计划每GPU新增1个训练，所以`existing_compute+planned_peak=1≤2`。目标run/log目录均不存在。
 - 同步前远端launcher SHA256=`dd2896436ff00d24237b022961647a307a1d35954e639f12a412a7cea5414511`，等于上一轮启动时记录的已知版本；本地新launcher SHA256=`6c90bb827f0682c286fe93e69f46a4d67ea46b916de4442782f2fff5f7801374`。`code/dataset_wisig.py`远端SHA256仍为已验证的`bb2ccb83a57505066c2d156e8923a77d0c2dff7f40013b45e9ed952c25aa62ff`，本轮无需重传。
 - 唯一同步映射：本地`code/scripts/launch_riei_table3_partition_repair_20260714.sh`→N607同路径。同步后必须复核hash、远端`bash -n`和sum dry-run，再执行：`RUN_ID=paper_repro_riei_table3_sum_literal_seed1337_20260715_003000 RIEI_REDUCTION=sum bash code/scripts/launch_riei_table3_partition_repair_20260714.sh --launch --gpu-ids 0,1,2,3,4,5,6,7 --max-train-per-gpu 2`。
+
+## 2026-07-15 00:36 sum矩阵启动与健康检查
+
+- 仅同步已验证launcher；远端SHA256复核为`6c90bb827f0682c286fe93e69f46a4d67ea46b916de4442782f2fff5f7801374`。远端`bash -n`通过，显式Bash前缀dry-run确认12个job、8个capacity gate、CE/MI/IE sum各12条、mean 0条，目标run/log目录在启动前不存在。
+- 正式命令与00:35记录一致。launcher再次执行容量门，GPU0–7的`current=0`、`planned_peak=1`、`total_peak=1≤2`；8个queue PID依次为`784884,784886,784889,784893,784898,784903,784911,784918`。GPU0–3各排2个顺序job，GPU4–7各1个job。
+- 启动约5分钟后，8/8 queue和8/8本任务Python进程持续运行；首批row1–8最新完整epoch为`15,14,15,14,15,15,14,15/200`。8份`metrics.json`已建立，所有训练日志均确认`ce/mi/ie_reduction=sum`及`stable_group_seed_shared_train_test_holdout`。
+- 完整扫描当前已写日志，硬错误0；`PAPER-EVAL-SUMMARY=0`、完成job=0符合训练早期。`nvidia-smi pmon`显示GPU0–7各1个本任务compute，SM占用约13%–18%，没有其他compute；每GPU总训练数1，容量合规。
+- 当前判定：`RUNNING_HEALTHY_THROUGH_EPOCH_14_15`。本次所有SSH/SCP短连接均已退出，本地`ssh.exe=0`、N607 TCP22已建立连接`=0`；不得干预、重启或覆盖产物。
