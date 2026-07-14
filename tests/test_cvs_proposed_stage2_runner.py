@@ -5,8 +5,9 @@ import json
 from pathlib import Path
 
 import numpy as np
+import pytest
 
-from paper_reproduction.cvs_aligned.cvs_method_runner import SCENARIOS, run
+from paper_reproduction.cvs_aligned.cvs_method_runner import SCENARIOS, run, validate_config
 
 
 OLD = ["old0", "old1"]
@@ -128,6 +129,9 @@ def test_cvs_qknnv42_support_prototype_removes_dense_query_graph(tmp_path: Path)
     assert dense["labelprop_mode"] == "dense_transductive"
     assert dense["query_query_graph_used"] is True
     assert dense["dense_graph_bytes_lower_bound"] > 0
+    assert dense["adaptation_objective"] == "qknnv42_int8_top1_proto45_old_anchor_labelprop"
+    assert dense["persistent_state_bytes"] > dense["support_code_bytes"]
+    assert dense["stored_raw_support_count"] == 0
 
     light_config = _config(tmp_path, "cvs_qknnv42")
     light_config["qknnv42_labelprop_mode"] = "support_prototype"
@@ -144,3 +148,11 @@ def test_cvs_qknnv42_support_prototype_removes_dense_query_graph(tmp_path: Path)
     )
     assert manifest["query_used_for_transductive_inference"] is False
     assert manifest["qknnv42_labelprop_mode"] == "support_prototype"
+
+
+def test_cvs_qknnv42_lightweight_mode_rejects_legacy_oracle(tmp_path: Path) -> None:
+    config = _config(tmp_path, "cvs_qknnv42")
+    config["qknnv42_labelprop_mode"] = "disabled"
+    config["qknnv42_decision_mode"] = "legacy_role_quota_oracle"
+    with pytest.raises(ValueError, match="per_sample_argmax"):
+        validate_config(config)

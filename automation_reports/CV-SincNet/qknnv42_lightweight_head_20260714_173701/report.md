@@ -153,3 +153,22 @@ N607上的完整分支也已完成125/125：60 epoch`id_norm_late_feature`+5-vie
 |QK-L06|`verified`|远端保留250个完整run；本地保存250行同row资源/性能CSV与summary|
 
 首轮head压缩已完成严格实现与矩阵均值门槛验证。整个“qKNN端到端星上轻型化”目标仍未结束：5-view是最大端到端算力项，下一轮必须在控制adapter和决策模式后继续压缩，并再次执行≤3pp门槛。
+
+## 12.代码复核修正与FFT96重验计划
+
+独立代码复核发现首版资源元数据和benchmark约束有四处需要收紧：轻量模式仍可被配置为legacy角色/类别配额Oracle；持久化状态没有计入Fisher变换参数、类别索引和原型；FFT双分支的dense graph按累计分配量而非顺序执行峰值上报；延迟把`old_acc_before_increment`诊断调用与正式部署预测相加。上述问题不改变既有预测值和MAC公式，但会影响部署边界、内存与延迟口径。
+
+本地已完成以下修正：
+
+- `support_prototype/disabled`强制`per_sample_argmax`，benchmark也覆盖并断言该决策模式。
+- 将support enrollment与query scoring拆分；support被转换并量化后即可丢弃raw support，持久状态显式统计int8 support code、类别索引、类别标签表、float64原型以及Fisher center/scale。
+- FFT双分支的`dense_graph_bytes_lower_bound`改为顺序执行峰值`max(primary,aux)`，另以`dense_graph_cumulative_bytes`记录累计分配量。
+- `adaptation_latency_sec`仅计正式部署预测；旧类增量前诊断另记`old_before_increment_diagnostic_latency_sec`。
+- dense默认路径恢复原`adaptation_objective=qknnv42_int8_top1_proto45_old_anchor_labelprop`，保持artifact兼容。
+
+本地验证：`py_compile`通过，`tests/test_cvs_proposed_stage2_runner.py`为`5 passed`。待同步SHA256为：
+
+- runner：`7B2C0004EAF9467F8B706B04003F0E44A7D732D221A9CB877E3F618FEF963A62`。
+- benchmark：`69658B6326E74F5C85C426F438ECEAF92CA56C0A74D5D899BC89884F7767CEC9`。
+
+为保留首版artifact，N607重验将写入新目录`runs/cvs_qknnv42_fft96_lighthead_confirmation_v2_20260714`和新日志目录，不覆盖既有250-run。仍使用冻结FFT96缓存、seed713106-713110、125行dense+125行disabled，GPU不占用。重验成功条件不变：矩阵均值`old_acc/seen_new_acc/H_old_new`相对dense下降均不超过3pp；同时以修正后的正式预测延迟、graph峰值和完整持久状态字节作为资源结论。

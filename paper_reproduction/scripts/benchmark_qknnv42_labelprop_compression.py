@@ -41,6 +41,8 @@ def _aggregate_mode(rows: list[dict[str, Any]], *, baseline: dict[str, dict[str,
 
 
 def benchmark(args: argparse.Namespace) -> dict[str, Any]:
+    if "dense_transductive" not in args.modes:
+        raise ValueError("benchmark modes must include dense_transductive as the paired baseline")
     config_paths = sorted(args.baseline_root.glob("rx_*/seed_*/k_*/cvs_qknnv42/resolved_config.json"))
     specs: list[tuple[Path, int | None]]
     if args.seed_grid:
@@ -70,6 +72,7 @@ def benchmark(args: argparse.Namespace) -> dict[str, Any]:
                 config["split_seed"] = int(seed_override)
             config["feature_npz_by_scenario"] = feature_paths
             config["qknnv42_labelprop_mode"] = mode
+            config["qknnv42_decision_mode"] = "per_sample_argmax"
             config["qknnv42_old_anchor_bias"] = (
                 0.001 if mode == "dense_transductive" else float(args.light_old_anchor_bias)
             )
@@ -79,6 +82,8 @@ def benchmark(args: argparse.Namespace) -> dict[str, Any]:
             config["experiment_id"] = f"cvs_qknnv42_stage2c_rx{receiver}_k{k_shot}_seed{seed}_{mode}"
             relative_run = Path(f"rx_{receiver}") / f"seed_{seed}" / f"k_{k_shot}" / "cvs_qknnv42"
             result = run(config, args.out_root / mode / relative_run)
+            if result["split_manifest"]["qknnv42_decision_mode"] != "per_sample_argmax":
+                raise AssertionError("compression benchmark must not use the legacy role/quota oracle")
             metrics = result["metrics"]
             scenario_rows = list(result["metrics_by_scenario"].values())
             run_key = "/".join(relative_run.parts[:-1])

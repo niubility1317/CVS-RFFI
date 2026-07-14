@@ -170,8 +170,8 @@ def _labelprop(
     return np.clip((q - q.mean(axis=1, keepdims=True)) / np.maximum(q.std(axis=1, keepdims=True), 1.0e-6), -2.0, 2.0)
 
 
-def _diag_whiten_fisher(
-    support: np.ndarray, labels: np.ndarray, query: np.ndarray, *, strength: float = 0.1,
+def _fit_diag_whiten_fisher(
+    support: np.ndarray, labels: np.ndarray, *, strength: float = 0.1,
 ) -> tuple[np.ndarray, np.ndarray, dict[str, float]]:
     support = _norm(support)
     labels = labels.astype(str)
@@ -192,12 +192,62 @@ def _diag_whiten_fisher(
     scale = np.power(np.clip(fisher, 0.05, 20.0), float(strength))
     scale *= np.power(whiten / max(float(np.median(whiten)), 1.0e-6), 0.5)
     scale = np.clip(scale, 0.05, 20.0)
-    return (
-        _norm((support - center[None, :]) * scale[None, :]),
-        _norm((_norm(query) - center[None, :]) * scale[None, :]),
-        {"transform_scale_min": float(scale.min()), "transform_scale_max": float(scale.max()),
-         "transform_scale_mean": float(scale.mean())},
+    return center, scale, {
+        "transform_scale_min": float(scale.min()),
+        "transform_scale_max": float(scale.max()),
+        "transform_scale_mean": float(scale.mean()),
+    }
+
+
+def _apply_diag_whiten_fisher(rows: np.ndarray, center: np.ndarray, scale: np.ndarray) -> np.ndarray:
+    return _norm((_norm(rows) - center[None, :]) * scale[None, :])
+
+
+def _fit_qknnv42_state(
+    support_x: np.ndarray, support_y: np.ndarray,
+) -> tuple[dict[str, Any], dict[str, Any]]:
+    """Enroll support once into the exact persistent state needed by onboard scoring."""
+    labels = support_y.astype(str)
+    classes = sorted(set(labels.tolist()))
+    class_to_i = {label: index for index, label in enumerate(classes)}
+    class_indices = np.asarray([class_to_i[label] for label in labels.tolist()], dtype=np.int32)
+    center, scale, transform_info = _fit_diag_whiten_fisher(support_x, labels, strength=0.1)
+    support = _apply_diag_whiten_fisher(support_x, center, scale)
+    quantized = np.clip(np.rint(127.0 * support), -127, 127).astype(np.int8)
+    restored = _norm(quantized.astype(np.float64) / 127.0)
+    prototypes = np.vstack([
+        _norm(restored[class_indices == index].mean(axis=0, keepdims=True))[0]
+        for index in range(len(classes))
+    ])
+    class_label_table_bytes = sum(len(label.encode("utf-8")) + 1 for label in classes)
+    state = {
+        "quantized_support": quantized,
+        "class_indices": class_indices,
+        "classes": classes,
+        "prototypes": prototypes,
+        "center": center,
+        "scale": scale,
+    }
+    state_info = {
+        **transform_info,
+        "stored_quantized_support_code_count": int(len(quantized)),
+        "stored_raw_support_count": 0,
+        "stored_class_prototype_count": len(classes),
+        "feature_dim": int(quantized.shape[1]),
+        "support_code_bytes": int(quantized.nbytes),
+        "class_index_bytes": int(class_indices.nbytes),
+        "class_label_table_bytes": int(class_label_table_bytes),
+        "prototype_bytes_float64": int(prototypes.nbytes),
+        "transform_state_bytes_float64": int(center.nbytes + scale.nbytes),
+    }
+    state_info["persistent_state_bytes"] = int(
+        state_info["support_code_bytes"]
+        + state_info["class_index_bytes"]
+        + state_info["class_label_table_bytes"]
+        + state_info["prototype_bytes_float64"]
+        + state_info["transform_state_bytes_float64"]
     )
+    return state, state_info
 
 
 def _qknnv42_score_matrix(
@@ -205,30 +255,29 @@ def _qknnv42_score_matrix(
     labelprop_mode: str = "dense_transductive",
     old_anchor_bias: float = 0.001,
 ) -> tuple[list[str], np.ndarray, dict[str, Any]]:
-    support, query, transform_info = _diag_whiten_fisher(support_x, support_y, query_x, strength=0.1)
-    quantized = np.clip(np.rint(127.0 * support), -127, 127).astype(np.int8)
-    restored = _norm(quantized.astype(np.float64) / 127.0)
-    labels = support_y.astype(str)
-    classes = sorted(set(labels.tolist()))
+    state, state_info = _fit_qknnv42_state(support_x, support_y)
+    query = _apply_diag_whiten_fisher(query_x, state["center"], state["scale"])
+    restored = _norm(state["quantized_support"].astype(np.float64) / 127.0)
+    class_indices = state["class_indices"]
+    classes = state["classes"]
+    prototype_matrix = state["prototypes"]
     score_columns: list[np.ndarray] = []
-    prototype_rows: list[np.ndarray] = []
-    for label in classes:
-        class_support = restored[labels == label]
+    for class_index, label in enumerate(classes):
+        class_support = restored[class_indices == class_index]
         similarity = query @ class_support.T
         knn = np.max(similarity, axis=1)
-        prototype = _norm(class_support.mean(axis=0, keepdims=True))[0]
-        prototype_rows.append(prototype)
+        prototype = prototype_matrix[class_index]
         score = 0.55 * knn + 0.45 * (query @ prototype)
         if label in old_labels:
             score = score + float(old_anchor_bias)
         score_columns.append(score)
     scores = np.stack(score_columns, axis=1)
-    prototype_matrix = np.vstack(prototype_rows)
     lp_mode = str(labelprop_mode).strip().lower()
     graph_nodes = int(len(restored) + len(query))
     dense_graph_bytes = 0
     labelprop_macs = 0
     if lp_mode == "dense_transductive":
+        labels = np.asarray(classes, dtype=object)[class_indices]
         scores += 0.025 * _labelprop(restored, labels, query, classes)
         # _labelprop materializes both similarity and transition matrices as float64.
         dense_graph_bytes = int(2 * graph_nodes * graph_nodes * np.dtype(np.float64).itemsize)
@@ -254,14 +303,14 @@ def _qknnv42_score_matrix(
     support_score_macs = int(len(query) * len(restored) * restored.shape[1])
     prototype_score_macs = int(len(query) * len(classes) * restored.shape[1])
     return classes, scores, {
-        "adaptation_objective": f"qknnv42_int8_top1_proto45_old_anchor_{lp_mode}",
+        "adaptation_objective": (
+            "qknnv42_int8_top1_proto45_old_anchor_labelprop"
+            if lp_mode == "dense_transductive"
+            else f"qknnv42_int8_top1_proto45_old_anchor_{lp_mode}"
+        ),
         "transform_mode": "diag_whiten_fisher",
         "transform_strength": 0.1,
-        **transform_info,
-        "stored_quantized_support_code_count": int(len(restored)),
-        "stored_raw_support_count": 0,
-        "stored_class_prototype_count": len(classes),
-        "feature_dim": int(restored.shape[1]),
+        **state_info,
         "query_labels_used_for_adaptation": False,
         "labelprop_mode": lp_mode,
         "old_anchor_bias": float(old_anchor_bias),
@@ -269,8 +318,8 @@ def _qknnv42_score_matrix(
         "query_batch_state_required": lp_mode == "dense_transductive",
         "dense_graph_node_count": graph_nodes if lp_mode == "dense_transductive" else 0,
         "dense_graph_bytes_lower_bound": dense_graph_bytes,
-        "support_code_bytes": int(restored.size * np.dtype(np.int8).itemsize),
-        "prototype_bytes_float64": int(prototype_matrix.nbytes),
+        "dense_graph_peak_bytes_lower_bound": dense_graph_bytes,
+        "dense_graph_cumulative_bytes": dense_graph_bytes,
         "estimated_support_score_macs": support_score_macs,
         "estimated_prototype_score_macs": prototype_score_macs,
         "estimated_labelprop_macs": labelprop_macs,
@@ -297,6 +346,10 @@ def _qknnv42_predict(
     labelprop_mode: str = "dense_transductive",
     old_anchor_bias: float = 0.001,
 ) -> tuple[np.ndarray, dict[str, Any]]:
+    decision = str(decision_mode).strip().lower()
+    lp_mode = str(labelprop_mode).strip().lower()
+    if decision == "legacy_role_quota_oracle" and lp_mode != "dense_transductive":
+        raise ValueError("lightweight qKNNV42 modes require per_sample_argmax deployment inference")
     classes, scores, info = _qknnv42_score_matrix(
         support_x,
         support_y,
@@ -336,15 +389,31 @@ def _qknnv42_predict(
                 "aux_loss": float(aux_info["loss"]),
                 "aux_dense_graph_bytes_lower_bound": int(aux_info["dense_graph_bytes_lower_bound"]),
                 "aux_estimated_head_macs": int(aux_info["estimated_head_macs"]),
+                "aux_support_code_bytes": int(aux_info["support_code_bytes"]),
+                "aux_class_index_bytes": int(aux_info["class_index_bytes"]),
+                "aux_class_label_table_bytes": int(aux_info["class_label_table_bytes"]),
+                "aux_prototype_bytes_float64": int(aux_info["prototype_bytes_float64"]),
+                "aux_transform_state_bytes_float64": int(aux_info["transform_state_bytes_float64"]),
+                "aux_persistent_state_bytes": int(aux_info["persistent_state_bytes"]),
             }
         )
-        info["dense_graph_bytes_lower_bound"] = int(
-            info["dense_graph_bytes_lower_bound"] + aux_info["dense_graph_bytes_lower_bound"]
-        )
+        primary_graph_bytes = int(info["dense_graph_bytes_lower_bound"])
+        aux_graph_bytes = int(aux_info["dense_graph_bytes_lower_bound"])
+        info["dense_graph_bytes_lower_bound"] = max(primary_graph_bytes, aux_graph_bytes)
+        info["dense_graph_peak_bytes_lower_bound"] = max(primary_graph_bytes, aux_graph_bytes)
+        info["dense_graph_cumulative_bytes"] = primary_graph_bytes + aux_graph_bytes
+        for key in (
+            "support_code_bytes",
+            "class_index_bytes",
+            "class_label_table_bytes",
+            "prototype_bytes_float64",
+            "transform_state_bytes_float64",
+            "persistent_state_bytes",
+        ):
+            info[key] = int(info[key] + aux_info[key])
         info["estimated_head_macs"] = int(info["estimated_head_macs"] + aux_info["estimated_head_macs"])
     else:
         info.update({"aux_feature_enabled": False, "aux_feature_dim": 0, "aux_score_weight": 0.0})
-    decision = str(decision_mode).strip().lower()
     if decision == "per_sample_argmax":
         predicted = np.asarray(classes, dtype=object)[np.argmax(scores, axis=1)]
     elif decision == "legacy_role_quota_oracle":
@@ -468,6 +537,8 @@ def validate_config(config: dict[str, Any]) -> None:
     labelprop_mode = str(config.get("qknnv42_labelprop_mode", "dense_transductive")).strip().lower()
     if labelprop_mode not in {"dense_transductive", "support_prototype", "disabled"}:
         raise ValueError(f"unsupported qknnv42_labelprop_mode: {labelprop_mode}")
+    if labelprop_mode != "dense_transductive" and decision_mode != "per_sample_argmax":
+        raise ValueError("lightweight qKNNV42 modes require per_sample_argmax deployment inference")
     old_anchor_bias = float(config.get("qknnv42_old_anchor_bias", 0.001))
     if not math.isfinite(old_anchor_bias) or abs(old_anchor_bias) > 0.1:
         raise ValueError("qknnv42_old_anchor_bias must be finite and within [-0.1,0.1]")
@@ -540,8 +611,8 @@ def run(config: dict[str, Any], run_dir: Path) -> dict[str, Any]:
         aux_support_x = arrays[aux_key][support_idx] if aux_weight > 0.0 else None
         aux_query_x = arrays[aux_key][query_idx] if aux_weight > 0.0 else None
         truth = arrays["tx_ids"][query_idx].astype(str)
-        started = time.perf_counter()
         if method == "cvs_opgac":
+            started = time.perf_counter()
             source_mask = (roles == "source") & np.isin(arrays["tx_ids"].astype(str), old_labels)
             predicted, before, info = _opgac_predict(
                 arrays["features"][source_mask], arrays["tx_ids"][source_mask].astype(str),
@@ -550,7 +621,9 @@ def run(config: dict[str, Any], run_dir: Path) -> dict[str, Any]:
             metrics = {"target_old_accuracy": _accuracy(predicted, truth),
                        "target_old_accuracy_before_adaptation": _accuracy(before, truth)}
             metrics["target_old_accuracy_delta"] = metrics["target_old_accuracy"] - metrics["target_old_accuracy_before_adaptation"]
+            elapsed = time.perf_counter() - started
         else:
+            diagnostic_started = time.perf_counter()
             old_pred, _ = _qknnv42_predict(
                 arrays["features"][old_support],
                 arrays["tx_ids"][old_support],
@@ -565,6 +638,8 @@ def run(config: dict[str, Any], run_dir: Path) -> dict[str, Any]:
                 labelprop_mode=labelprop_mode,
                 old_anchor_bias=old_anchor_bias,
             )
+            diagnostic_elapsed = time.perf_counter() - diagnostic_started
+            deploy_started = time.perf_counter()
             predicted, info = _qknnv42_predict(
                 support_x,
                 support_y,
@@ -579,6 +654,7 @@ def run(config: dict[str, Any], run_dir: Path) -> dict[str, Any]:
                 labelprop_mode=labelprop_mode,
                 old_anchor_bias=old_anchor_bias,
             )
+            elapsed = time.perf_counter() - deploy_started
             old_count = len(old_query)
             old_acc = _accuracy(predicted[:old_count], truth[:old_count])
             new_acc = _accuracy(predicted[old_count:], truth[old_count:])
@@ -586,9 +662,9 @@ def run(config: dict[str, Any], run_dir: Path) -> dict[str, Any]:
             old_before = _accuracy(old_pred, arrays["tx_ids"][old_query].astype(str))
             metrics = {"old_acc": old_acc, "seen_new_acc": new_acc, "H_old_new": harmonic,
                        "old_acc_before_increment": old_before, "average_forgetting": old_before - old_acc,
+                       "old_before_increment_diagnostic_latency_sec": diagnostic_elapsed,
                        "old_to_seen_new_rate": float(np.mean(np.isin(predicted[:old_count], new_labels))),
                        "seen_new_to_old_rate": float(np.mean(np.isin(predicted[old_count:], old_labels)))}
-        elapsed = time.perf_counter() - started
         metrics.update({"adaptation_latency_sec": elapsed,
                         "latency_per_query_ms": elapsed * 1000.0 / len(query_idx), **info})
         metrics_by_scenario[scenario] = metrics
