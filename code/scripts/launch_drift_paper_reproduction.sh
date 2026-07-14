@@ -1,24 +1,29 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# Five-seed final-epoch confirmation for the best DRIFT v2 discovery row (V206).
+# Canonical and only supported DRIFT paper-reproduction launcher.
+# Protocol: DRIFT v2 Day1, mean negative-MSE, five-seed epoch-200 final.
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 ROOT="${ROOT:-$(cd "${SCRIPT_DIR}/../.." && pwd)}"
 PYTHON_BIN="${PYTHON_BIN:-/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python}"
 WISIG_PKL="${WISIG_PKL:-${ROOT}/Dataset_WigSig/ManySig.pkl}"
-RUN_ID="${RUN_ID:-paper_repro_drift_v2_confirm_v206_20260714_164900}"
+RUN_ID="${RUN_ID:-paper_repro_drift_canonical_$(date +%Y%m%d_%H%M%S)}"
 RUN_ROOT="${RUN_ROOT:-${ROOT}/paper_reproduction/runs/${RUN_ID}}"
 LOG_ROOT="${LOG_ROOT:-${ROOT}/paper_reproduction/logs/${RUN_ID}}"
-GPU_IDS_CSV="${GPU_IDS:-1,6,7,0,2}"
+GPU_IDS_CSV="${GPU_IDS:-0,1,2,3,4}"
+SEEDS_CSV="${SEEDS:-1337,2024,3407,4242,7777}"
 MAX_TRAIN_PER_GPU="${MAX_TRAIN_PER_GPU:-2}"
 DRY_RUN="${DRY_RUN:-1}"
-SEEDS_CSV="${SEEDS:-1337,2024,3407,4242,7777}"
 
 usage() {
   cat <<'EOF'
-Usage: launch_drift_v2_confirm_v206_20260714.sh [--dry-run|--launch]
-       [--gpu-ids 1,6,7,0,2] [--max-train-per-gpu 2]
-       [--seeds 1337,2024,3407,4242,7777] [--run-id RUN_ID]
+Usage: launch_drift_paper_reproduction.sh [--dry-run|--launch]
+       [--gpu-ids 0,1,2,3,4] [--seeds 1337,2024,3407,4242,7777]
+       [--max-train-per-gpu 2] [--run-id RUN_ID]
+
+This is the only supported DRIFT paper-reproduction entrypoint.
+It fixes batch=256, random 800/200/200 sampling, RMS=off,
+MSE reduction=mean, cap=0, lambda_mse=0.020, 200 epochs and final-epoch scoring.
 EOF
 }
 
@@ -27,9 +32,11 @@ while [[ $# -gt 0 ]]; do
     --dry-run) DRY_RUN=1; shift ;;
     --launch) DRY_RUN=0; shift ;;
     --gpu-ids) GPU_IDS_CSV="$2"; shift 2 ;;
-    --max-train-per-gpu) MAX_TRAIN_PER_GPU="$2"; shift 2 ;;
     --seeds) SEEDS_CSV="$2"; shift 2 ;;
+    --max-train-per-gpu) MAX_TRAIN_PER_GPU="$2"; shift 2 ;;
     --run-id) RUN_ID="$2"; RUN_ROOT="${ROOT}/paper_reproduction/runs/${RUN_ID}"; LOG_ROOT="${ROOT}/paper_reproduction/logs/${RUN_ID}"; shift 2 ;;
+    --python) PYTHON_BIN="$2"; shift 2 ;;
+    --wisig-pkl) WISIG_PKL="$2"; shift 2 ;;
     -h|--help) usage; exit 0 ;;
     *) echo "ERROR: unknown argument: $1" >&2; usage >&2; exit 2 ;;
   esac
@@ -38,7 +45,7 @@ done
 IFS=',' read -r -a GPU_IDS <<< "${GPU_IDS_CSV}"
 IFS=',' read -r -a SEEDS <<< "${SEEDS_CSV}"
 if [[ "${#GPU_IDS[@]}" -ne 5 || "${#SEEDS[@]}" -ne 5 ]]; then
-  echo "ERROR: confirmation requires exactly five GPU ids and five seeds" >&2
+  echo "ERROR: canonical reproduction requires exactly five GPU ids and five seeds" >&2
   exit 2
 fi
 
@@ -48,8 +55,8 @@ gpu_process_count() {
     | sed '/^$/d' | wc -l | tr -d ' '
 }
 
-echo "[DRIFT-V2-CONFIRM] run_id=${RUN_ID} dry_run=${DRY_RUN} jobs=5"
-echo "[DRIFT-V2-CONFIRM] candidate=V206_mean_impl paper_target=73.54 aggregation=five_seed_final_epoch"
+echo "[DRIFT-CANONICAL] version=mean_v1 run_id=${RUN_ID} dry_run=${DRY_RUN} jobs=5"
+echo "[DRIFT-CANONICAL] paper_target=73.54 aggregation=five_seed_final_epoch"
 for gpu in "${GPU_IDS[@]}"; do
   current=0
   if [[ "${DRY_RUN}" != "1" ]]; then current="$(gpu_process_count "${gpu}")"; fi
@@ -69,14 +76,14 @@ if [[ "${DRY_RUN}" != "1" ]]; then
   [[ -x "${PYTHON_BIN}" ]] || { echo "ERROR: Python is not executable: ${PYTHON_BIN}" >&2; exit 5; }
   [[ -f "${WISIG_PKL}" ]] || { echo "ERROR: dataset not found: ${WISIG_PKL}" >&2; exit 6; }
   mkdir -p "${RUN_ROOT}" "${LOG_ROOT}"
-  printf 'job_id\tgpu\tseed\tbatch\tsample_strategy\trms_normalize\tmse_reduction\tmse_cap\tlambda_mse\trun_dir\tcommand\n' > "${RUN_ROOT}/scheduler_manifest.tsv"
+  printf 'job_id\tgpu\tseed\tversion\trun_dir\tcommand\n' > "${RUN_ROOT}/scheduler_manifest.tsv"
   printf 'job_id\tgpu\tpid\tlog\n' > "${RUN_ROOT}/scheduler_pids.tsv"
 fi
 
 for i in "${!SEEDS[@]}"; do
   seed="${SEEDS[$i]}"
   gpu="${GPU_IDS[$i]}"
-  job_id="drift_V206_mean_impl_seed${seed}"
+  job_id="drift_canonical_mean_v1_seed${seed}"
   run_dir="${RUN_ROOT}/${job_id}"
   log_dir="${LOG_ROOT}/${job_id}"
   cmd=(env
@@ -92,11 +99,11 @@ for i in "${!SEEDS[@]}"; do
     "DRIFT_GRAD_CLIP_NORM=0"
     bash "${ROOT}/run_wisig_paper_scope_queue.sh" --no-skip-done)
 
-  echo "[JOB] id=${job_id} gpu=${gpu} seed=${seed} batch=256 strategy=random rms=0 reduction=mean cap=0 lambda_mse=0.020"
+  echo "[JOB] id=${job_id} gpu=${gpu} seed=${seed} version=mean_v1 batch=256 strategy=random rms=0 reduction=mean cap=0 lambda_mse=0.020"
   echo "[CMD] $(format_cmd "${cmd[@]}")"
   if [[ "${DRY_RUN}" == "1" ]]; then continue; fi
 
-  printf '%s\t%s\t%s\t256\trandom\t0\tmean\t0\t0.020\t%s\t%s\n' \
+  printf '%s\t%s\t%s\tmean_v1\t%s\t%s\n' \
     "${job_id}" "${gpu}" "${seed}" "${run_dir}" "$(format_cmd "${cmd[@]}")" \
     >> "${RUN_ROOT}/scheduler_manifest.tsv"
   log_file="${LOG_ROOT}/${job_id}.launcher.log"
@@ -106,4 +113,4 @@ for i in "${!SEEDS[@]}"; do
   echo "[LAUNCHED] id=${job_id} gpu=${gpu} pid=${pid} log=${log_file}"
 done
 
-echo "[DRIFT-V2-CONFIRM] submitted dry_run=${DRY_RUN}"
+echo "[DRIFT-CANONICAL] submitted dry_run=${DRY_RUN}"

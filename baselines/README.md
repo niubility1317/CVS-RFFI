@@ -63,7 +63,7 @@ evidence.
 ```bash
 METHODS=cvcnn_ce,riei_fd,drift,ra_collab \
 GPU_IDS=0,1,2,3 \
-nohup bash scripts/launchers/run_cvs_baseline_queue.sh > logs/wisig_baselines_seed1337_ratio010_satview/nohup_$(date +%Y%m%d_%H%M%S).out 2>&1 &
+nohup bash run_cvs_baseline_queue.sh > logs/wisig_baselines_seed1337_ratio010_satview/nohup_$(date +%Y%m%d_%H%M%S).out 2>&1 &
 ```
 
 The launcher enables CVS-RFFI-style satellite-channel OOD evaluation by
@@ -81,23 +81,59 @@ This reports the three main named dimensions:
 `test_unseen_day_unseen_rx`, plus satellite-channel aggregates for the same
 dimensions.
 
-## CVS-Aligned Baseline Protocol
+## Paper-Audit Experiment Protocols
 
-RIEI/DRIFT are kept in the GitHub release only as CVS comparison baselines.
-Use the default `cvs_day_rx` protocol for CVS-aligned comparison across the
-published baseline set:
+### Canonical DRIFT reproduction
+
+DRIFT has exactly one supported paper-reproduction entrypoint:
+`code/scripts/launch_drift_paper_reproduction.sh`. It fixes the paper-v2
+Day1 protocol to batch 256, random 800/200/200 samples per TX/RX, channel
+equalization without per-packet RMS normalization, mean negative-MSE without
+clipping, `lambda_mse=0.020`, 200 epochs, and five-seed final-epoch scoring.
+Historical discovery launchers, cap/sum variants, logs, metrics, reports and
+snapshots remain audit evidence but are not supported executable versions.
+
+```bash
+bash code/scripts/launch_drift_paper_reproduction.sh --dry-run
+```
+
+`baselines/PAPER_CODE_AUDIT.md` identifies two formal paper-alignment checks
+that require real WiSig/ManySig data and long training rather than synthetic
+smoke tests. Dry-run them first to inspect the exact commands:
+
+```bash
+bash run_cvs_baseline_queue.sh \
+  --methods riei_fd \
+  --wisig-protocol riei_original \
+  --gpu-ids 0 \
+  --dry-run
+
+bash run_cvs_baseline_queue.sh \
+  --methods drift \
+  --wisig-protocol drift_day1 \
+  --gpu-ids 1 \
+  --dry-run
+```
+
+When the dataset path and GPU allocation are verified, remove `--dry-run`.
+The RIEI journal protocol uses receiver-holdout settings and writes
+`paper_eval_window.name=riei_last5` under `metrics.json["final"]`; the canonical
+DRIFT v2 protocol uses source/test receivers from Day 1 and writes
+`paper_eval_window.name=drift_last1`. Both commands also preserve the
+same-row named-test context under `metrics.json["final"]["test_named"]`.
+
+For a CVS-aligned comparison across all four baselines, keep the default
+`cvs_day_rx` protocol:
 
 ```bash
 METHODS=cvcnn_ce,riei_fd,drift,ra_collab \
 GPU_IDS=0,1,2,3 \
-bash scripts/launchers/run_cvs_baseline_queue.sh --wisig-protocol cvs_day_rx --dry-run
+bash run_cvs_baseline_queue.sh --wisig-protocol cvs_day_rx --dry-run
 ```
 
-This command sets up experiments; it does not by itself constitute deployment
-success. Any reported result must name the run directory, CVS split, protocol,
-seed, satellite/stress view, and full metric row. Paper-only RIEI/DRIFT
-Table-style launchers and rerun templates are outside this CVS-only GitHub
-release scope.
+These commands set up experiments; they do not by themselves constitute
+deployment success. Any reported result must name the run directory, split,
+protocol, seed, satellite/stress view, and full metric row.
 
 ## LEO Satellite-Channel View Augmentation
 
@@ -127,14 +163,14 @@ Supported training-view switches:
 Paper-specific defaults used by the CVS entrypoints:
 
 - `riei_fd`: FED feature split, EC/RC classifiers, signed cosine MI loss, information-entropy confusion loss, alternating classifier/FED updates.
-- DRIFT: 1D ResNet-18-style encoder, transmitter/receiver feature split, GRL receiver discriminator, receiver style center regularization, negative MSE feature separation, Adam `lr=1e-4`, `lambda_grl=1`, `lambda_center=0.01`, `lambda_mse=0.02`, `batch_size=64`.
+- DRIFT canonical paper reproduction: 1D ResNet-18-style encoder, transmitter/receiver feature split, GRL receiver discriminator, receiver style center regularization, mean negative-MSE feature separation, Adam `lr=1e-4`, `lambda_grl=1`, `lambda_center=0.01`, `lambda_mse=0.02`, `batch_size=256`.
 - `ra_collab`: spectrogram/CNN adversarial receiver training with GRL, SGD momentum `0.9`, `lr=1e-3`, `batch_size=64`, validation-loss LR decay factor `0.2` after 10 stagnant epochs, early stop after 20 stagnant epochs; formal CVS tests use receiver collaborative fusion. Few-shot target receiver fine-tuning uses `lr=1e-5`, `batch_size=32`, `epochs=20`.
 - `cvcnn_ce`: `epochs=200`; no paper auxiliary loss; only cross entropy on CVS-RFFI training data.
 
 | Method | Paper-aligned structure | Default optimizer / schedule | Paper-window metric |
 |---|---|---|---|
-| `riei_fd` | ResNet1D-18 FED, EC/RC 3-layer classifiers, `z_e/z_r` split, CE + MI - IE alternating updates | Adam for all parameters and FED-only step, `lr_all=1e-4`, `lr_fed=1e-4`, `lambda_mi=1.2`, `lambda_ie=1.2`, `epochs=200` | `riei_last10` for `riei_original` |
-| `drift` | ResNet18-1D encoder, TX/RX split, GRL, receiver center loss, raw negative MSE separation | Adam `lr=1e-4`, `lambda_grl=1.0`, `lambda_center=0.01`, `lambda_mse=0.02`, constant GRL by default, `epochs=200` | `drift_last5` for `drift_day1` |
+| `riei_fd` | ResNet1D-18 FED, EC/RC 3-layer classifiers, `z_e/z_r` split, CE + MI - IE alternating updates | parity matrix compares Adam/SGD, sum/mean and RMS preprocessing; `lr_all=1e-4`, `lr_fed=1e-4`, `lambda_mi=1.2`, `lambda_ie=1.2`, `epochs=200` | `riei_last5` for the journal Table III reproduction |
+| `drift` | ResNet18-1D encoder, TX/RX split, GRL, receiver center loss, mean negative MSE separation | canonical launcher: Adam `lr=1e-4`, batch 256, `lambda_grl=1.0`, `lambda_center=0.01`, `lambda_mse=0.02`, no MSE cap, `epochs=200` | `drift_last1`; five-seed final mean |
 | `ra_collab` | Spectrogram CNN, GRL receiver adversary, OBS and collaborative fusion evaluation | SGD `lr=1e-3`, momentum `0.9`, validation-loss plateau factor `0.2`, patience `10`, early stop `20`, fine-tune `lr=1e-5` | `aligned_wisig_last5` for CVS comparisons |
 | `cvcnn_ce` | Complex CNN or optional Sinc stem with CE-only objective | AdamW `lr=2e-4`, cosine annealing to `1e-6`, weight decay `1e-4`, `epochs=200` | `aligned_wisig_last5` for CVS comparisons |
 
@@ -159,11 +195,10 @@ unchanged.
 
 ## Smoke Commands
 
-The command below remains a synthetic smoke test for CVS-aligned API checks.
-Use an environment that has PyTorch installed:
+The older commands below remain synthetic smoke tests for API checks. Use an environment that has PyTorch installed:
 
 ```bash
-python -m pytest tests/test_paper_reproduction_cvs_aligned.py -q
+python -m unittest tests.test_cvs_paper_baselines -v
 python -m baselines.riei_fd.train --help
 python -m baselines.drift.train --help
 python -m baselines.ra_collab.train --help
