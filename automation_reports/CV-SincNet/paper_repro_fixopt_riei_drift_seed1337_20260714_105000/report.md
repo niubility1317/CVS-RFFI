@@ -189,3 +189,10 @@ cap成功阻止修复版中`loss_mse=-247240`、feature norm=967.22的无界放�
 - `mse_cap`和feature-norm是工程稳定性保护，属于`fix_optimized`，不能标为严格paper-literal。
 - 单seed与论文多次运行可能存在方差；达到阈值后仍需补多seed确认。
 - 当前修复版尚在运行，本报告中的联合修复收益仍是假设，不是已完成结果。
+
+## 2026-07-14 15:13只读监控
+
+- 20个job中16个完成，最后4个RIEI在GPU0–3运行至约epoch103–105/200；4个queue仍存活。
+- GPU0–3各为1个Phase1＋1个本任务训练，GPU4–7仅Phase1，容量未超过2/GPU。
+- 未见Traceback、RuntimeError、OOM、NaN或Killed；本次SSH后无本地连接残留。
+- 下一轮RIEI论文一致性修复已提交`9a9f7b8`，当前queue退出前不做远端同步。
