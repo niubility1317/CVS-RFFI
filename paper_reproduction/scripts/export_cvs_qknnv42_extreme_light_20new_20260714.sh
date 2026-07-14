@@ -12,6 +12,7 @@ TARGET_RXS="${TARGET_RXS:-20-1,3-19,7-14,7-7,8-8}"
 NEW_TX_IDS="${NEW_TX_IDS:-1-16,1-18,18-10,14-11,8-3,18-8,10-10,16-19,20-12,4-10,13-14,2-5,1-8,19-13,19-9,3-8,19-8,11-19,2-16,19-6}"
 SEED="${SEED:-713101}"
 GPUS="${GPUS:-0,1,2}"
+AUX_RF_STAT_DIM="${AUX_RF_STAT_DIM:-0}"
 DRY_RUN="${DRY_RUN:-0}"
 
 for arg in "$@"; do
@@ -44,6 +45,7 @@ run_one() {
     --out_npz "$out_npz"
     --feature_name z_id
     --aux_fft_logmag_dim 96
+    --aux_rf_stat_dim "$AUX_RF_STAT_DIM"
     --source_tx_ids 0,1,2,3,4,5
     --target_old_tx_ids 0,1,2,3,4,5
     --new_tx_ids "$NEW_TX_IDS"

@@ -299,6 +299,21 @@ ARMS: dict[str, dict[str, Any]] = {
         }
         for label, value in (("0p05", 0.05), ("0p1", 0.1), ("0p25", 0.25), ("0p5", 0.5))
     },
+    **{
+        f"el_diag_aug3_fftrf_w{label}_e20": {
+            "qknnv42_head_mode": "extreme_light_diag_cosine",
+            "qknnv42_aux_score_weight": 0.0,
+            "qknnv42_labelprop_mode": "disabled",
+            "qknnv42_support_representation": "prototype_only",
+            "qknnv42_feature_adapter_mode": "none",
+            "qknnv42_decision_mode": "per_sample_argmax",
+            "extreme_light_aux_weight": value,
+            "extreme_light_source_logit_weight": 0.0,
+            "extreme_light_epochs": 20,
+            "extreme_light_support_aug_scenarios": list(SCENARIOS),
+        }
+        for label, value in (("0p5", 0.5), ("1p0", 1.0), ("2p0", 2.0), ("4p0", 4.0))
+    },
     "el_lowrank_r8_m0p05_aug3_e10": {
         "qknnv42_head_mode": "extreme_light_low_rank_cosine",
         "qknnv42_aux_score_weight": 0.0,

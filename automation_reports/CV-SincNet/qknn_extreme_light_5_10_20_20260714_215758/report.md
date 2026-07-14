@@ -152,3 +152,9 @@ run ID=`qknn_extreme_light_k10k5_feasibility_20260715_0032_v1`，`rx8-8×2开发
 |logit0.25+source anchor0.05|20|78.75/53.33/84.83/81.66%|80.28/57.50/90.17/84.92%|否|
 
 当前瓶颈是K10冻结表示在LEO弱域下的旧类整体与逐类可分性，source anchor没有实质收益。下一步继续封存确认seed并限制在单开发receiver，探索同一物理view上的低成本RF统计特征；不增加query权限、不使用角色/配额Oracle、不启用adapter60。
+
+## 同view RF-stat32开发计划
+
+新增32维增益归一化RF统计描述子，输入与冻结backbone和FFT96使用同一个后信道单物理view，逐样本提取IQ/幅度统计、高阶复矩和短时自相关；不使用query batch、标签、角色或配额。它与FFT96组成128维`fft_rf_features`，query仍为1-view，只新增`O(T)`统计计算；20新类预计head状态约32KB、约7.5k MAC/query。
+
+本地编译、24项相关pytest、launcher语法和24-row dry-run PASS。预注册特征根=`cvs_qknnv42_extreme_light_20new_features_rf32_20260715_v1`，K10 screen=`qknn_extreme_light_rf32_k10_screen_20260715_0045_v1`：`rx8-8×2开发seed×5/10/20新类×K10×4个aux权重=24 rows`。只按K10选统一权重，再对锁定候选补matched K5；确认seed继续封存。

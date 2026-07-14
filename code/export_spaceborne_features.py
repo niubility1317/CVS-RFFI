@@ -97,6 +97,80 @@ def _spectral_logmag_sketch_batch(raw_rows: np.ndarray, *, dim: int) -> np.ndarr
     return np.stack(rows, axis=0).astype(np.float32)
 
 
+def _rf_statistics_batch(raw_rows: np.ndarray) -> np.ndarray:
+    """Build a 32-D gain-normalized IQ fingerprint from one physical view."""
+    raw = np.asarray(raw_rows, dtype=np.float32)
+    if raw.ndim != 3 or raw.shape[1] != 2:
+        raise ValueError(f"expected IQ batch shaped [N,2,T], got {raw.shape}")
+    rows: list[np.ndarray] = []
+    eps = 1.0e-8
+    for row in raw:
+        z = row[0].astype(np.float64) + 1j * row[1].astype(np.float64)
+        rms = float(np.sqrt(np.mean(np.abs(z) ** 2)))
+        if rms > eps:
+            z = z / rms
+        centered = z - np.mean(z)
+        centered_rms = float(np.sqrt(np.mean(np.abs(centered) ** 2)))
+        if centered_rms > eps:
+            centered = centered / centered_rms
+
+        i = z.real
+        q = z.imag
+        std_i = float(np.std(i))
+        std_q = float(np.std(q))
+        iq_corr = (
+            float(np.mean((i - np.mean(i)) * (q - np.mean(q))) / (std_i * std_q))
+            if std_i > eps and std_q > eps
+            else 0.0
+        )
+        amp = np.abs(z)
+        amp_mean = float(np.mean(amp))
+        amp_std = float(np.std(amp))
+        amp_centered = amp - amp_mean
+        amp_skew = float(np.mean(amp_centered**3) / max(amp_std**3, eps))
+        amp_kurt = float(np.mean(amp_centered**4) / max(amp_std**4, eps))
+
+        values: list[float] = [
+            float(np.mean(i)),
+            float(np.mean(q)),
+            std_i,
+            std_q,
+            iq_corr,
+            amp_mean,
+            amp_std,
+            *[float(v) for v in np.quantile(amp, [0.10, 0.25, 0.50, 0.75, 0.90])],
+            float(np.max(amp)),
+            amp_skew,
+            amp_kurt,
+        ]
+        for order, include_abs in ((2, True), (3, False), (4, True)):
+            moment = complex(np.mean(centered**order))
+            values.extend([float(moment.real), float(moment.imag)])
+            if include_abs:
+                values.append(float(abs(moment)))
+        for lag in (1, 2, 4, 8):
+            if centered.size <= lag:
+                corr = 0.0j
+            else:
+                corr = complex(np.mean(centered[lag:] * np.conj(centered[:-lag])))
+            values.extend([float(corr.real), float(corr.imag)])
+        if amp.size > 1 and amp_std > eps:
+            amp_corr1 = float(
+                np.mean(amp_centered[1:] * amp_centered[:-1]) / max(amp_std**2, eps)
+            )
+        else:
+            amp_corr1 = 0.0
+        values.append(amp_corr1)
+        descriptor = np.asarray(values, dtype=np.float32)
+        if descriptor.shape != (32,):
+            raise AssertionError(f"RF descriptor dimension drifted: {descriptor.shape}")
+        if not np.isfinite(descriptor).all():
+            raise ValueError("RF descriptor contains non-finite values")
+        descriptor /= np.maximum(float(np.linalg.norm(descriptor)), eps)
+        rows.append(descriptor)
+    return np.stack(rows, axis=0).astype(np.float32)
+
+
 def _resolve_tx_indices(tx_list: Sequence[Any], spec: str | None, *, field: str) -> tuple[list[int], list[str]]:
     requested = parse_tx_id_list(spec)
     if not requested:
@@ -489,9 +563,11 @@ def extract_features_with_metadata(
     sat_seed: int = 0,
     satellite_tta_policy: str = "none",
     aux_fft_logmag_dim: int = 0,
+    aux_rf_stat_dim: int = 0,
 ):
     feature_buf: list[np.ndarray] = []
     aux_fft_buf: list[np.ndarray] = []
+    aux_rf_buf: list[np.ndarray] = []
     tx_logit_buf: list[np.ndarray] = []
     tx_buf: list[str] = []
     rx_buf: list[str] = []
@@ -536,6 +612,10 @@ def extract_features_with_metadata(
                         dim=int(aux_fft_logmag_dim),
                     )
                 )
+            if int(aux_rf_stat_dim) > 0:
+                if int(aux_rf_stat_dim) != 32:
+                    raise ValueError("aux_rf_stat_dim currently supports only 0 or 32")
+                aux_rf_buf.append(_rf_statistics_batch(x_view.detach().cpu().float().numpy()))
             identity_only = identity_only_feature_forward(model, x_view, feature_name)
             if identity_only is not None:
                 z_tensor, logits_tensor = identity_only
@@ -585,6 +665,12 @@ def extract_features_with_metadata(
     }
     if int(aux_fft_logmag_dim) > 0:
         payload["fft_logmag_features"] = np.concatenate(aux_fft_buf, axis=0).astype(np.float32)
+    if int(aux_rf_stat_dim) > 0:
+        payload["rf_stat_features"] = np.concatenate(aux_rf_buf, axis=0).astype(np.float32)
+    if int(aux_fft_logmag_dim) > 0 and int(aux_rf_stat_dim) > 0:
+        payload["fft_rf_features"] = np.concatenate(
+            [payload["fft_logmag_features"], payload["rf_stat_features"]], axis=1
+        ).astype(np.float32)
     return payload
 
 
@@ -627,6 +713,13 @@ def parse_args() -> argparse.Namespace:
         type=int,
         default=0,
         help="Also export same-view FFT log-magnitude descriptors; 0 disables the auxiliary feature.",
+    )
+    parser.add_argument(
+        "--aux_rf_stat_dim",
+        type=int,
+        choices=(0, 32),
+        default=0,
+        help="Also export a same-view 32-D gain-normalized IQ statistics descriptor.",
     )
     parser.add_argument("--dataset", default="wisig")
     parser.add_argument("--num_classes", type=int, default=None)
@@ -844,6 +937,7 @@ def main() -> int:
         sat_seed=source_seed,
         satellite_tta_policy=str(args.satellite_tta_policy),
         aux_fft_logmag_dim=int(args.aux_fft_logmag_dim),
+        aux_rf_stat_dim=int(args.aux_rf_stat_dim),
     )
     source_channel_profile = {
         "view": source_view,
@@ -887,6 +981,7 @@ def main() -> int:
             sat_seed=proxy_unknown_seed,
             satellite_tta_policy=str(args.satellite_tta_policy),
             aux_fft_logmag_dim=int(args.aux_fft_logmag_dim),
+            aux_rf_stat_dim=int(args.aux_rf_stat_dim),
         )
         proxy_unknown_channel_profile = {
             "view": proxy_unknown_view,
@@ -939,6 +1034,7 @@ def main() -> int:
             sat_seed=target_old_seed,
             satellite_tta_policy=str(args.satellite_tta_policy),
             aux_fft_logmag_dim=int(args.aux_fft_logmag_dim),
+            aux_rf_stat_dim=int(args.aux_rf_stat_dim),
         )
         target_old_channel_profile = {
             "view": target_old_view,
@@ -966,6 +1062,7 @@ def main() -> int:
             sat_seed=int(args.target_new_sat_seed if args.target_new_sat_seed is not None else int(args.seed) + 911),
             satellite_tta_policy=str(args.satellite_tta_policy),
             aux_fft_logmag_dim=int(args.aux_fft_logmag_dim),
+            aux_rf_stat_dim=int(args.aux_rf_stat_dim),
         )
     unknown_payload = None
     target_unknown_view = target_new_view
@@ -988,6 +1085,7 @@ def main() -> int:
             sat_seed=target_unknown_seed,
             satellite_tta_policy=str(args.satellite_tta_policy),
             aux_fft_logmag_dim=int(args.aux_fft_logmag_dim),
+            aux_rf_stat_dim=int(args.aux_rf_stat_dim),
         )
     payload_parts = [source_payload]
     if proxy_unknown_payload is not None:
@@ -1051,6 +1149,14 @@ def main() -> int:
         "aux_fft_logmag_dim": int(args.aux_fft_logmag_dim),
         "aux_fft_feature_key": "fft_logmag_features" if int(args.aux_fft_logmag_dim) > 0 else "",
         "aux_fft_view_alignment": "same_post_channel_view_as_backbone",
+        "aux_rf_stat_dim": int(args.aux_rf_stat_dim),
+        "aux_rf_feature_key": "rf_stat_features" if int(args.aux_rf_stat_dim) > 0 else "",
+        "aux_fft_rf_feature_key": (
+            "fft_rf_features"
+            if int(args.aux_fft_logmag_dim) > 0 and int(args.aux_rf_stat_dim) > 0
+            else ""
+        ),
+        "aux_rf_view_alignment": "same_post_channel_view_as_backbone",
         "deployment_primary_view": (
             "satellite/LEO target view" if target_unknown_view == "satellite" else "clean control/source reference"
         ),
