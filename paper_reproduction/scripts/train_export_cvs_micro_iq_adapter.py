@@ -78,6 +78,11 @@ def _numpy_to_tensor_compat(
     ).reshape(array.shape).clone()
 
 
+def _tensor_to_numpy_compat(value: torch.Tensor, *, dtype: np.dtype) -> np.ndarray:
+    """Avoid PyTorch 2.1 tensor.numpy objects that conflict with NumPy 2.x."""
+    return np.asarray(value.detach().cpu().tolist(), dtype=dtype)
+
+
 class MicroIQResidualAdapter(nn.Module):
     """Identity-initialized depthwise IQ residual with a sub-kilobyte state."""
 
@@ -476,9 +481,9 @@ def export_adapted_cache(
             continue
         if value.ndim >= 1 and int(value.shape[0]) == total_rows:
             payload[key] = value[keep]
-    payload["features"] = features.detach().cpu().numpy().astype(np.float32)
-    payload["tx_logits"] = logits.detach().cpu().numpy().astype(np.float32)
-    adapted_np = adapted_iq.detach().cpu().numpy().astype(np.float32)
+    payload["features"] = _tensor_to_numpy_compat(features, dtype=np.dtype(np.float32))
+    payload["tx_logits"] = _tensor_to_numpy_compat(logits, dtype=np.dtype(np.float32))
+    adapted_np = _tensor_to_numpy_compat(adapted_iq, dtype=np.dtype(np.float32))
     if "fft_logmag_features" in arrays:
         dim = int(arrays["fft_logmag_features"].shape[1])
         payload["fft_logmag_features"] = _spectral_logmag_sketch_batch(adapted_np, dim=dim)

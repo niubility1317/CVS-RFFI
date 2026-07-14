@@ -8,6 +8,7 @@ from paper_reproduction.cvs_aligned.cvs_method_runner import SCENARIOS
 from paper_reproduction.scripts.train_export_cvs_micro_iq_adapter import (
     MicroIQResidualAdapter,
     _numpy_to_tensor_compat,
+    _tensor_to_numpy_compat,
     adapter_resource_audit,
     assemble_support_views,
 )
@@ -33,6 +34,8 @@ def test_numpy_buffer_bridge_preserves_shape_dtype_and_values() -> None:
     assert tensor.shape == (2, 2, 3)
     assert tensor.dtype == torch.float32
     torch.testing.assert_close(tensor, torch.arange(12, dtype=torch.float32).reshape(2, 2, 3))
+    restored = _tensor_to_numpy_compat(tensor, dtype=np.dtype(np.float32))
+    np.testing.assert_array_equal(restored, array)
 
 
 def _scenario_cache(scenario: str) -> dict[str, np.ndarray]:
