@@ -73,3 +73,41 @@ run ID=`qknn_extreme_light_lowrank_k30_20260714_2340_v1`；Git commit=`0ac6917`�
 ## 2026-07-14 23:46低秩margin结果
 
 36/36 rows完成，0失败、0协议违规、2,160条loss trace。最佳统一rank8/margin0.05在5/10/20类上的`old/floor/new/H`为`88.75/70.83/89.00/88.82%`、`84.17/65.00/86.33/85.15%`、`85.56/57.50/92.33/88.80%`，联合通过0。失败集中在`6-15↔1-18`和`14-7↔14-11`相邻边界。下一步先更新`项目.md`，再测试只增加一次性support enrollment前向、而query保持1-view的三场景support增强。
+
+### Support增强诊断launch记录
+
+`项目.md`已先更新，Git镜像和实现提交=`90fab8c`。run ID=`qknn_extreme_light_support_aug_k30_20260714_2355_v1`，共24 rows；N607直接preflight、远端SHA256、`py_compile`和dry-run PASS。8张GPU各有1个RIEI任务，三个shard绑定GPU4/5/6，未超过每卡2任务。每row物理K=30、support view=3、query view=1。
+
+## 2026-07-14 23:51 Support增强诊断结果
+
+24/24 rows完成，0失败、0协议违规、0 support/query重叠、0 query训练/选模、1,080条loss trace无非有限值。完整artifact、日志和汇总已拉回`local_artifacts/qknn_extreme_light_support_aug_k30_20260714_2355_v1*`。仅`el_diag_aug3_e20/new20/seed713102/rx8-8/K30`单row通过：`old=93.06%`、`最低旧类=86.67%`、`new=91.25%`、`H=92.14%`；同一arm在两个开发seed上的联合统计如下。
+
+|arm|新类|old均值|最低旧类均值|new均值|H均值|联合通过|
+|---|---:|---:|---:|---:|---:|---:|
+|el_diag_aug3_e20|5|90.56%|79.17%|89.33%|89.74%|0/2|
+|el_diag_aug3_e20|10|86.53%|60.83%|85.92%|86.19%|0/2|
+|el_diag_aug3_e20|20|89.17%|75.83%|92.67%|90.80%|1/2|
+|el_lowrank_r8_m0p05_aug3_e20|5|90.14%|76.67%|92.50%|91.23%|0/2|
+|el_lowrank_r8_m0p05_aug3_e20|10|89.03%|75.83%|87.00%|87.85%|0/2|
+|el_lowrank_r8_m0p05_aug3_e20|20|87.64%|64.17%|94.17%|90.72%|0/2|
+
+三场景support enrollment能显著提高部分row，但没有形成跨5/10/20规模、跨开发seed的统一候选。对角头最大6,938参数、27,752B状态、6,912MAC/query；三support view只增加一次性enrollment成本，持续query保持1-view。
+
+为补齐同切分基线，将另跑`baseline_single_qknn`的6-row配对诊断：`rx8-8×seed713101/713102×5/10/20×K30`。输出根预注册为`runs/qknn_extreme_light_baseline_k30_20260715_0000_v1`；本地`ssr-gpu`下6-row dry-run PASS。完成后若仍不存在统一候选，则按gate停止扩大到5 receiver和独立确认seed。
+
+## 2026-07-15 00:04单qKNN基线结果与开发gate
+
+`baseline_single_qknn`6/6 rows完成，0失败、0协议违规、0 support/query重叠、0 query训练/选模；artifact、日志和汇总已拉回`local_artifacts/qknn_extreme_light_baseline_k30_20260715_0000_v1*`。
+
+|方法|新类|old均值|最低旧类均值|new均值|H均值|状态上限|MAC/query|联合通过|
+|---|---:|---:|---:|---:|---:|---:|---:|---:|
+|单qKNN基线|5|83.47%|60.83%|80.83%|82.10%|113,862B|90,112|0/2|
+|单qKNN基线|10|81.67%|55.83%|76.75%|79.08%|163,758B|131,072|0/2|
+|单qKNN基线|20|80.28%|55.00%|79.96%|80.07%|263,538B|212,992|0/2|
+|对角头+3-view support、20epoch|5|90.56%|79.17%|89.33%|89.74%|12,332B|3,072|0/2|
+|对角头+3-view support、20epoch|10|86.53%|60.83%|85.92%|86.19%|17,472B|4,352|0/2|
+|对角头+3-view support、20epoch|20|89.17%|75.83%|92.67%|90.80%|27,752B|6,912|1/2|
+
+相对单qKNN，support增强对角头的20类状态减少89.47%，head MAC减少96.75%，old/new/H显著提高；但5/10/20规模和两个seed没有一个统一通过组合，旧类floor仍是主要硬失败。
+
+按预注册gate，不运行`713106–713110`确认seed，不扩大到5 receiver，也不放宽query、角色、配额、dense graph、query TTA或adapter60权限。当前结论为diagnostic-negative：资源目标达成，性能目标未达，不能晋升。
