@@ -230,3 +230,10 @@
 - GPU0–3的4个queue继续第二批row9–12，最新完整epoch分别为`10,13,13,11/200`；当前`metrics.json=12`，12份训练日志均确认稳定全局partition marker。
 - 完整扫描当前run全部已写日志，硬错误0；仅GPU0–3各1个本任务compute，GPU4–7空闲，任何GPU总训练均未超过1。
 - 当前判定：`RUNNING_HEALTHY_8_OF_12_COMPLETE_THROUGH_EPOCH_10_13`。row1–8的last10暂不脱离完整12行单独宣称，待row9–12完成后统一逐行计算。SSH短连接均已退出，本地`ssh.exe=0`、N607 TCP22已建立连接`=0`。
+
+## 2026-07-14 23:50心跳监控
+
+- N607直接预检通过；row1–8保持完整完成，GPU0–3的4个queue与row9–12 trainer持续运行。row9–12最新完整epoch为`103,103,104,98/200`，日志持续增长至`519–560`行、`35.5–37.0KiB`。
+- 当前`metrics.json=12`、`PAPER-EVAL-SUMMARY=8`、`FINAL-TEST=8`、成功完成job=`8/12`；12份训练日志均保留稳定全局partition marker，硬错误0。
+- GPU0–3各有1个本任务trainer及1个不属于本任务的并行trainer，总compute为2；GPU4–7各1个其他任务compute。所有GPU均未超过上限2，本任务未干预其他运行。
+- 当前判定：`RUNNING_HEALTHY_8_OF_12_COMPLETE_THROUGH_EPOCH_98_104`，仍不是完整Table III复现结论。SSH短连接均已退出，本地`ssh.exe=0`、N607 TCP22已建立连接`=0`。
