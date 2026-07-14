@@ -12,11 +12,11 @@
 | RIEI-P08 | Table III各receiver组合应建立在同一随机数据partition上 | 组合内顺序RNG导致同一receiver跨行样本漂移 | 完整12行以稳定全局partition和论文last10重新确认 | verified | 12×200epoch完成；均值72.72%，MAE4.34pp，命中6/12，`NOT_REPRODUCED` |
 | RIEI-P09 | Eq.(2)–(8)把CE/MI/IE写为样本与receiver求和 | 完整12行采用单row消融胜出的mean | 保持其余协议不变，以`RIEI_REDUCTION=sum`运行完整12行论文字面尺度确认 | verified-rejected | 12×200epoch完成、硬错误0；均值68.75%，MAE7.92pp，命中1/12，显著劣于mean，拒绝sum作为支持尺度 |
 | RIEI-P10 | 论文仅说明WiSig FED为ResNet 1D-18，未公开stem卷积核/stride/max-pool | 当前固定ImageNet式`kernel7/stride2+maxpool` | 在row3/6/10/12上受控比较现有`imagenet1d`与`short_stem1d`；其余协议固定mean最优配置 | verified | 8×200epoch、硬错误0；short四行MAE4.02pp低于image的7.91pp，且3/4行降低绝对误差，预注册门槛通过 |
-| RIEI-P11 | Table III最终证据必须覆盖全部12个receiver组合；架构筛选不能替代正式矩阵 | short stem仅在4个诊断行验证 | 用`short_stem1d`和固定paper last10协议运行完整12行 | ready-to-launch | `launch_riei_table3_shortstem_confirm_20260715.sh`；本地bash-n及12-job dry-run通过 |
+| RIEI-P11 | Table III最终证据必须覆盖全部12个receiver组合；架构筛选不能替代正式矩阵 | short stem仅在4个诊断行验证 | 用`short_stem1d`和固定paper last10协议运行完整12行 | running | run`paper_repro_riei_table3_shortstem_confirm_seed1337_20260715_043000`；8个trainer健康运行至epoch12–14，硬错误0 |
 
 ## 声明边界
 
 - 论文未明确给出优化器名称和总epoch数；Eq.(10)–(11)描述的是梯度更新顺序，不能据此断言作者使用了PyTorch SGD。
 - 发现阶段只在Table III第1行比较训练动力学；最终论文结论必须用胜出配置重跑完整12行，不能用单row或目标域峰值代替。
 - 目标域逐epoch曲线仅用于诊断；下一轮正式分数采用论文明确的最终10个epoch，禁止target-oracle选epoch。
-- 当前反向审计：`verified=9`、`verified-rejected=1`、`ready-to-launch=1`、`pending=0`、`deferred=0`、`blocked=0`。short stem通过预注册的四行架构门槛，但完整12行尚未完成，因此RIEI正式结论仍为`NOT_REPRODUCED`。只有完整矩阵达到`MAE≤3pp且至少10/12进入论文±2SD`才能改变声明。
+- 当前反向审计：`verified=9`、`verified-rejected=1`、`running=1`、`pending=0`、`deferred=0`、`blocked=0`。short stem通过预注册的四行架构门槛，完整12行已启动但尚未完成，因此RIEI正式结论仍为`NOT_REPRODUCED`。只有完整矩阵达到`MAE≤3pp且至少10/12进入论文±2SD`才能改变声明。

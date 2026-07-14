@@ -427,3 +427,11 @@
 - 根目录仍不是Git仓库；新launcher已镜像到Git承载面，并与本报告及traceability一起以提交`1a649bc Confirm RIEI short-stem Table III`版本化。根目录launcher、本地快照和Git镜像SHA256均为`ce25286443d34648047dcbe6afd2537aac43162fb0f3c6487c1ae0aafe0205bb`；快照位于`code/snapshots/paper_repro_riei_table3_shortstem_confirm_seed1337_20260715_043000/`。
 - 直接N607预检通过；服务器时间、项目根和8块GPU可见。实时process/CWD/cmdline检查没有训练或RIEI/DRIFT launcher，GPU0–7的compute process均为0；计划每GPU峰值1个训练，因此`existing_compute+planned_peak=1≤2`。
 - 目标run/log目录在同步前均不存在。唯一待同步文件为本地`code/scripts/launch_riei_table3_shortstem_confirm_20260715.sh`→N607同路径；同步后必须复核SHA256、远端`bash -n`和12-job dry-run，再执行正式命令。所有预检SSH短连接已退出，本地`ssh.exe=0`、N607 TCP22已建立连接`=0`。
+
+### 04:32正式启动与4分钟健康检查
+
+- 远端launcher SHA256复核为`ce25286443d34648047dcbe6afd2537aac43162fb0f3c6487c1ae0aafe0205bb`，与本地、快照及Git镜像一致；远端`bash -n`通过，dry-run确认12个job、8个capacity gate、short stem/mean各12条、sum 0条。
+- 正式命令：`bash code/scripts/launch_riei_table3_shortstem_confirm_20260715.sh --launch --gpu-ids 0,1,2,3,4,5,6,7 --max-train-per-gpu 2`。launcher再次确认GPU0–7的`current=0`、`planned_peak=1`、`total_peak=1≤2`。
+- 8个queue PID为`928971,928973,928977,928982,928988,928994,929003,929013`；首批row1–8 trainer PID为`929140,929141,929170,929178,929198,929199,929200,929203`。GPU0–3各排2个顺序job，GPU4–7各1个。
+- 04:36:47健康检查：8/8 queue与8/8 trainer均持续运行；row1–8最新完整epoch为`13,13,13,13,12,12,13,14/200`，8份`metrics.json`已建立。完整命令行与日志marker均确认`short_stem1d`、SGD momentum0、CE/MI/IE mean、no-RMS、no-feature-norm、稳定全局partition和paper last10。
+- 全量扫描当前已写日志，硬错误0；`PAPER-EVAL-SUMMARY=0`、`FINAL-TEST=0`、完成job=0符合训练早期。GPU0–7各1个本任务compute，SM约21%–33%，每GPU训练总数1。当前判定为`RUNNING_STARTUP_HEALTHY_THROUGH_EPOCH_12_14`，不构成RIEI复现结论。所有SSH/SCP短连接已退出，本地`ssh.exe=0`、N607 TCP22已建立连接`=0`。
