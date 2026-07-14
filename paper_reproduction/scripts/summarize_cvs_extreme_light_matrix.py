@@ -222,17 +222,20 @@ def main() -> int:
         if row["arm"] == "baseline_single_qknn"
     }
     paired: list[dict[str, Any]] = []
-    for row in per_run:
-        if row["arm"] == "baseline_single_qknn":
-            continue
-        key = (row["new_class_count"], row["receiver"], row["seed"], row["k_shot"])
-        reference = baseline[key]
-        item = {field: row[field] for field in ("arm", "new_class_count", "receiver", "seed", "k_shot")}
-        for metric in METRICS:
-            item[f"baseline_{metric}"] = reference[metric]
-            item[f"candidate_{metric}"] = row[metric]
-            item[f"delta_{metric}"] = float(row[metric]) - float(reference[metric])
-        paired.append(item)
+    if baseline:
+        for row in per_run:
+            if row["arm"] == "baseline_single_qknn":
+                continue
+            key = (row["new_class_count"], row["receiver"], row["seed"], row["k_shot"])
+            if key not in baseline:
+                raise RuntimeError(f"missing paired baseline cell: {key}")
+            reference = baseline[key]
+            item = {field: row[field] for field in ("arm", "new_class_count", "receiver", "seed", "k_shot")}
+            for metric in METRICS:
+                item[f"baseline_{metric}"] = reference[metric]
+                item[f"candidate_{metric}"] = row[metric]
+                item[f"delta_{metric}"] = float(row[metric]) - float(reference[metric])
+            paired.append(item)
 
     group_fields = ("arm", "new_class_count", "k_shot")
     group_summary: list[dict[str, Any]] = []
@@ -289,6 +292,8 @@ def main() -> int:
         "loss_trace_markers": trace_markers,
         "permission_violation_count": len(permission_violations),
         "joint_pass_count": sum(bool(row["joint_pass"]) for row in per_run),
+        "paired_baseline_present": bool(baseline),
+        "paired_delta_rows": len(paired),
         "loss_nonfinite_count": 0,
         "support_query_overlap_count": 0,
         "query_training_or_model_selection_count": 0,
