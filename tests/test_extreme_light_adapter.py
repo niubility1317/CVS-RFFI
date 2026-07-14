@@ -8,6 +8,7 @@ from paper_reproduction.cvs_aligned.extreme_light_adapter import (
     fit_predict_extreme_light_diag_cosine,
     fit_predict_extreme_light_low_rank_cosine,
     fit_predict_support_ridge,
+    predict_support_diag_gaussian,
     predict_support_multiprototype_cosine,
     predict_support_prototype_cosine,
 )
@@ -94,6 +95,28 @@ def test_closed_form_prototype_head_is_zero_train_and_query_independent():
     assert info["trainable_parameters"] == 0
     assert info["feature_adapter_gradient_updates"] == 0
     assert info["query_features_used_for_adaptation"] is False
+    assert len(trace) == 1
+
+
+def test_closed_form_diag_gaussian_is_bounded_and_query_independent():
+    support, support_y, query, query_y = _separable()
+    predicted, info, trace = predict_support_diag_gaussian(
+        support, support_y, query, variance_shrinkage=0.9, logdet_weight=0.25
+    )
+    extended, _, _ = predict_support_diag_gaussian(
+        support,
+        support_y,
+        np.vstack([query, np.full((7, query.shape[1]), 9.0, dtype=np.float32)]),
+        variance_shrinkage=0.9,
+        logdet_weight=0.25,
+    )
+    assert np.mean(predicted.astype(str) == query_y.astype(str)) == 1.0
+    assert np.array_equal(predicted, extended[: len(predicted)])
+    assert info["trainable_parameters"] == 0
+    assert info["feature_adapter_gradient_updates"] == 0
+    assert info["persistent_state_bytes"] <= 128 * 1024
+    assert info["query_features_used_for_adaptation"] is False
+    assert info["estimated_macs_per_query"] > 0
     assert len(trace) == 1
 
 
@@ -230,4 +253,8 @@ def test_resource_and_epoch_caps_fail_closed():
             epochs=1,
             max_trainable_parameters=10_000,
             device="cpu",
+        )
+    with pytest.raises(ValueError, match="variance_shrinkage"):
+        predict_support_diag_gaussian(
+            support, support_y, query, variance_shrinkage=1.1
         )

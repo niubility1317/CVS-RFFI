@@ -338,6 +338,27 @@ ARMS: dict[str, dict[str, Any]] = {
         )
     },
     **{
+        f"el_gauss_aug3_fft_w2p0_s{shrink_label}_l{logdet_label}": {
+            "qknnv42_head_mode": "extreme_light_diag_gaussian",
+            "qknnv42_aux_feature_key": "fft_logmag_features",
+            "qknnv42_aux_feature_dim": 96,
+            "qknnv42_aux_score_weight": 0.0,
+            "qknnv42_labelprop_mode": "disabled",
+            "qknnv42_support_representation": "prototype_only",
+            "qknnv42_feature_adapter_mode": "none",
+            "qknnv42_decision_mode": "per_sample_argmax",
+            "extreme_light_aux_weight": 2.0,
+            "extreme_light_source_logit_weight": 0.0,
+            "extreme_light_epochs": 0,
+            "extreme_light_variance_shrinkage": shrinkage,
+            "extreme_light_logdet_weight": logdet_weight,
+            "extreme_light_variance_floor_ratio": 0.01,
+            "extreme_light_support_aug_scenarios": list(SCENARIOS),
+        }
+        for shrink_label, shrinkage in (("0p75", 0.75), ("0p9", 0.9), ("0p97", 0.97))
+        for logdet_label, logdet_weight in (("0", 0.0), ("0p25", 0.25), ("0p5", 0.5))
+    },
+    **{
         f"el_diag_aug3_{feature_label}_w{weight_label}_e20": {
             "qknnv42_head_mode": "extreme_light_diag_cosine",
             "qknnv42_aux_feature_key": feature_key,

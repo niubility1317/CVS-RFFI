@@ -282,3 +282,11 @@ PID=`852229`完成20epoch。DRO loss由`11.46986`降至`4.66735`，但普通prot
 该cell仍满足资源与权限约束：12,800参数、25,600B LoRA FP16状态，含26类prototype后的持久状态52,224B、逐query总MAC19,456，适配4.11s、峰值CUDA约172.6MB。完整93行训练日志含20条epoch、错误/非有限值为0，三个NPZ哈希全部匹配manifest；本地证据位于`E:\type10-7\local_artifacts\qknn_extreme_light_support_lora_dro_20260715_v5*`。
 
 结论是support上的最难类并不稳定对应query最弱类；尖锐DRO放大了support小样本噪声并损害整体几何。当前不继续盲扫DRO temperature/margin，也不扩矩阵。到此同一合法cell已经覆盖微型IQ前端、feat-joint LoRA、late LoRA、10+10epoch组合和hard-class DRO：同一v4组合row达到`old=76.94%/floor=48.33%/new20=92.42%/H=83.96%`；floor最高的v1 row为`old=73.06%/floor=51.67%/new20=83.33%/H=77.80%`。两者与95/88%目标均存在结构性差距。确认seed、K5、5/10类和5receiver继续封存；下一步若保持现有资源与协议，应转向改善冻结ADV3B02的source-only域不变表示，再回到本极轻量adapter验证，而不是继续在K10 support上增加选模自由度。
+
+## 2026-07-15 02:40闭式对角高斯head预注册
+
+在申请扩大到source-only基座训练之前，补做一个仍属于当前冻结表示权限内、机制上与余弦prototype不同的闭式诊断：每类只从合法support估计256维均值和对角方差，类方差向全类pooled within-class方差收缩，再以逐样本对角高斯似然分类。该head为0epoch、0可训练参数，不读取query特征进行拟合，不使用query标签、old/new角色、类别配额或query图；query持续为1个物理view。20新类26个注册类时，部署状态保存26组均值、逆方差和log-determinant偏置，约53,352B；保守估算每query约26,906个标量MAC/操作，均低于128KB并远低于单qKNN的212,992MAC/query。
+
+首轮只在既定开发cell`receiver=8-8`、`seed=713101`、`new20`、`K10`上比较9个预注册组合：variance shrinkage=`0.75/0.90/0.97`，logdet weight=`0/0.25/0.5`；统一使用原始冻结`z_id160+FFT96`和三场景support enrollment，aux权重2.0。输出根=`runs/qknn_extreme_light_gaussian_k10_screen_20260715_v6`，日志根=`logs/qknn_extreme_light_gaussian_k10_screen_20260715_v6`。只有old和floor相对当前v4或v1形成明确联合改善，才考虑第二开发seed与嵌套5/10类；K5、其它receiver和确认seed继续封存。
+
+本地实现涉及`extreme_light_adapter.py`、`cvs_method_runner.py`和matrix runner，新增参数范围校验、query batch扩展不变性与资源上限测试。`ssr-gpu`下47项相关pytest和`git diff --check`均PASS。

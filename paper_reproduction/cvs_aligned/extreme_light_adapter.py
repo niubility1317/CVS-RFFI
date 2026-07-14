@@ -432,6 +432,172 @@ def predict_support_prototype_cosine(
     return predicted, info, trace
 
 
+def predict_support_diag_gaussian(
+    support_x: np.ndarray,
+    support_y: np.ndarray,
+    query_x: np.ndarray,
+    *,
+    variance_shrinkage: float = 0.9,
+    logdet_weight: float = 0.25,
+    variance_floor_ratio: float = 0.01,
+    max_persistent_state_bytes: int = 128 * 1024,
+) -> tuple[np.ndarray, dict[str, Any], list[dict[str, Any]]]:
+    """Closed-form class-diagonal Gaussian fitted from registered support only.
+
+    Each class variance is shrunk toward the pooled within-class diagonal
+    variance. The frozen means, inverse variances, and log-determinant offsets
+    are sufficient to score every query row independently.
+    """
+    shrinkage = float(variance_shrinkage)
+    determinant_weight = float(logdet_weight)
+    floor_ratio = float(variance_floor_ratio)
+    if not math.isfinite(shrinkage) or not 0.0 <= shrinkage <= 1.0:
+        raise ValueError("variance_shrinkage must be finite and in [0,1]")
+    if not math.isfinite(determinant_weight) or determinant_weight < 0.0:
+        raise ValueError("logdet_weight must be finite and nonnegative")
+    if not math.isfinite(floor_ratio) or floor_ratio <= 0.0:
+        raise ValueError("variance_floor_ratio must be finite and positive")
+
+    support = np.asarray(support_x, dtype=np.float32)
+    query = np.asarray(query_x, dtype=np.float32)
+    labels = np.asarray(support_y).astype(str)
+    if support.ndim != 2 or query.ndim != 2 or support.shape[1] != query.shape[1]:
+        raise ValueError("support/query features must be aligned rank-2 matrices")
+    if len(support) != len(labels) or len(support) == 0:
+        raise ValueError("support features and labels must be non-empty and aligned")
+    if not np.all(np.isfinite(support)) or not np.all(np.isfinite(query)):
+        raise ValueError("support/query features must be finite")
+    classes = sorted(set(labels.tolist()))
+    if len(classes) < 2:
+        raise ValueError("diagonal Gaussian classifier requires at least two registered classes")
+
+    started = time.perf_counter()
+    means = np.stack([support[labels == label].mean(axis=0) for label in classes]).astype(
+        np.float32
+    )
+    assigned = np.asarray([classes.index(label) for label in labels], dtype=np.int64)
+    residuals = support - means[assigned]
+    class_variances = np.stack(
+        [np.mean(np.square(residuals[labels == label]), axis=0) for label in classes]
+    ).astype(np.float32)
+    pooled_variance = np.mean(np.square(residuals), axis=0).astype(np.float32)
+    variance_floor = np.maximum(
+        pooled_variance * np.float32(floor_ratio), np.float32(1.0e-6)
+    )
+    variances = (
+        (1.0 - shrinkage) * class_variances + shrinkage * pooled_variance[None, :]
+    ).astype(np.float32)
+    variances = np.maximum(variances, variance_floor[None, :]).astype(np.float32)
+    inverse_variances = np.reciprocal(variances).astype(np.float32)
+    logdet_offsets = (
+        determinant_weight * np.sum(np.log(variances), axis=1)
+    ).astype(np.float32)
+    enrollment_elapsed = time.perf_counter() - started
+
+    persistent_state_bytes = int(
+        means.nbytes + inverse_variances.nbytes + logdet_offsets.nbytes
+    )
+    if persistent_state_bytes > int(max_persistent_state_bytes):
+        raise ValueError(
+            "extreme-light persistent-state cap exceeded: "
+            f"{persistent_state_bytes}>{max_persistent_state_bytes}"
+        )
+
+    scoring_started = time.perf_counter()
+    weighted_means = means * inverse_variances
+    quadratic_offsets = np.sum(means * weighted_means, axis=1)
+    quadratic = (
+        np.square(query) @ inverse_variances.T
+        - 2.0 * (query @ weighted_means.T)
+        + quadratic_offsets[None, :]
+    )
+    scores = -0.5 * (quadratic + logdet_offsets[None, :])
+    predicted_indices = np.argmax(scores, axis=1)
+    scoring_elapsed = time.perf_counter() - scoring_started
+
+    support_quadratic = np.sum(
+        np.square(support - means[assigned]) * inverse_variances[assigned], axis=1
+    )
+    compactness_loss = float(np.mean(support_quadratic))
+    feature_dim = int(support.shape[1])
+    class_count = int(len(classes))
+    macs_per_query = int(4 * feature_dim * class_count + feature_dim + class_count)
+    support_scores = -0.5 * (
+        np.square(support) @ inverse_variances.T
+        - 2.0 * (support @ weighted_means.T)
+        + quadratic_offsets[None, :]
+        + logdet_offsets[None, :]
+    )
+    info = {
+        "adaptation_objective": "closed_form_support_diag_gaussian",
+        "head_mode": "extreme_light_diag_gaussian",
+        "support_only": True,
+        "query_labels_used_for_adaptation": False,
+        "query_features_used_for_adaptation": False,
+        "query_query_graph_used": False,
+        "query_batch_state_required": False,
+        "decision_batch_state_required": False,
+        "role_oracle_used": False,
+        "equal_class_quota_used": False,
+        "feature_adapter_updates_adv3b02": False,
+        "feature_adapter_gradient_updates": 0,
+        "feature_adapter_mode": "closed_form_support_diag_gaussian",
+        "trainable_parameters": 0,
+        "persistent_state_bytes": persistent_state_bytes,
+        "persistent_state_bytes_with_post_adapter": persistent_state_bytes,
+        "stored_raw_support_count": 0,
+        "stored_quantized_support_code_count": 0,
+        "stored_class_prototype_count": class_count,
+        "stored_class_variance_count": class_count,
+        "feature_dim": feature_dim,
+        "class_count": class_count,
+        "adaptation_epochs": 0,
+        "adaptation_batch_size": 0,
+        "variance_shrinkage": shrinkage,
+        "logdet_weight": determinant_weight,
+        "variance_floor_ratio": floor_ratio,
+        "estimated_adaptation_macs": int(5 * len(support) * feature_dim),
+        "estimated_head_macs": int(len(query) * macs_per_query),
+        "estimated_head_macs_with_post_adapter": int(len(query) * macs_per_query),
+        "estimated_macs_per_query": macs_per_query,
+        "dense_graph_bytes_lower_bound": 0,
+        "dense_graph_peak_bytes_lower_bound": 0,
+        "dense_graph_cumulative_bytes": 0,
+        "decision_workspace_bytes_lower_bound": int(class_count * np.dtype(np.float32).itemsize),
+        "adaptation_latency_sec": float(enrollment_elapsed),
+        "score_matrix_latency_sec": float(scoring_elapsed),
+        "onboard_scoring_latency_sec": float(scoring_elapsed),
+        "onboard_scoring_latency_per_query_ms": float(
+            scoring_elapsed * 1000.0 / max(1, len(query))
+        ),
+        "peak_device_memory_bytes": 0,
+        "loss": compactness_loss,
+        "loss_initial": compactness_loss,
+        "loss_final": compactness_loss,
+        "support_accuracy_final": float(
+            np.mean(np.argmax(support_scores, axis=1) == assigned)
+        ),
+        "runtime_device": "cpu_closed_form",
+    }
+    trace = [
+        {
+            "phase": "closed_form_support_diag_gaussian_fit",
+            "epoch": 0,
+            "step": 1,
+            "total_steps": 1,
+            "loss": compactness_loss,
+            "total_loss": compactness_loss,
+            "ce_loss": 0.0,
+            "source_anchor_loss": compactness_loss,
+            "learning_rate": 0.0,
+            "gradient_norm": 0.0,
+            "support_accuracy": info["support_accuracy_final"],
+        }
+    ]
+    predicted = np.asarray(classes, dtype=object)[predicted_indices]
+    return predicted, info, trace
+
+
 def predict_support_multiprototype_cosine(
     support_x: np.ndarray,
     support_y: np.ndarray,

@@ -238,6 +238,25 @@ def test_multiprototype_arm_is_closed_form_and_selects_registered_feature_block(
     assert len(config["extreme_light_support_aug_scenarios"]) == 3
 
 
+def test_diag_gaussian_arm_is_closed_form_and_support_augmented():
+    row = build_rows(
+        arms=("el_gauss_aug3_fft_w2p0_s0p9_l0p25",),
+        new_class_counts=(20,),
+        receivers=("8-8",),
+        seeds=(713101,),
+        k_grid=(10,),
+        output_root=Path("runs"),
+        log_root=Path("logs"),
+    )[0]
+    config = row_config(_base_config(), row, device="cpu")
+    assert config["qknnv42_head_mode"] == "extreme_light_diag_gaussian"
+    assert config["qknnv42_aux_feature_key"] == "fft_logmag_features"
+    assert config["extreme_light_epochs"] == 0
+    assert config["extreme_light_variance_shrinkage"] == 0.9
+    assert config["extreme_light_logdet_weight"] == 0.25
+    assert len(config["extreme_light_support_aug_scenarios"]) == 3
+
+
 def test_diag_feature_block_arm_can_select_fft_without_rf():
     row = build_rows(
         arms=("el_diag_aug3_fft_w4p0_e20",),

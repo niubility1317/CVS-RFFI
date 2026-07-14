@@ -24,6 +24,7 @@ from paper_reproduction.cvs_aligned.extreme_light_adapter import (
     fit_predict_extreme_light_diag_cosine,
     fit_predict_extreme_light_low_rank_cosine,
     fit_predict_support_ridge,
+    predict_support_diag_gaussian,
     predict_support_multiprototype_cosine,
     predict_support_prototype_cosine,
 )
@@ -34,6 +35,7 @@ SCENARIOS = ("leo_clear_weak", "leo_low_elev_weak", "leo_rain_weak")
 EXTREME_HEAD_MODES = {
     "extreme_light_diag_cosine",
     "extreme_light_prototype_cosine",
+    "extreme_light_diag_gaussian",
     "extreme_light_multiprototype_cosine",
     "extreme_light_support_ridge",
     "extreme_light_low_rank_cosine",
@@ -1088,8 +1090,18 @@ def validate_config(config: dict[str, Any]) -> None:
             raise ValueError("extreme_light_epochs must be in [1,20]")
         if head_mode == "extreme_light_low_rank_cosine" and (epochs <= 0 or epochs > 20):
             raise ValueError("extreme_light_epochs must be in [1,20]")
-        if head_mode in {"extreme_light_prototype_cosine", "extreme_light_multiprototype_cosine", "extreme_light_support_ridge"} and epochs != 0:
+        if head_mode in {"extreme_light_prototype_cosine", "extreme_light_diag_gaussian", "extreme_light_multiprototype_cosine", "extreme_light_support_ridge"} and epochs != 0:
             raise ValueError("closed-form extreme-light head requires extreme_light_epochs=0")
+        if head_mode == "extreme_light_diag_gaussian":
+            variance_shrinkage = float(config.get("extreme_light_variance_shrinkage", 0.9))
+            logdet_weight = float(config.get("extreme_light_logdet_weight", 0.25))
+            variance_floor_ratio = float(config.get("extreme_light_variance_floor_ratio", 0.01))
+            if not math.isfinite(variance_shrinkage) or not 0.0 <= variance_shrinkage <= 1.0:
+                raise ValueError("extreme_light_variance_shrinkage must be in [0,1]")
+            if not math.isfinite(logdet_weight) or logdet_weight < 0.0:
+                raise ValueError("extreme_light_logdet_weight must be finite and nonnegative")
+            if not math.isfinite(variance_floor_ratio) or variance_floor_ratio <= 0.0:
+                raise ValueError("extreme_light_variance_floor_ratio must be finite and positive")
         if head_mode == "extreme_light_multiprototype_cosine":
             prototypes_per_class = int(config.get("extreme_light_prototypes_per_class", 2))
             kmeans_steps = int(config.get("extreme_light_kmeans_steps", 5))
@@ -1336,6 +1348,22 @@ def run(config: dict[str, Any], run_dir: Path) -> dict[str, Any]:
                         joint_support,
                         fit_support_y,
                         joint_query,
+                        max_persistent_state_bytes=int(
+                            config.get("extreme_light_max_persistent_state_bytes", 128 * 1024)
+                        ),
+                    )
+                elif head_mode == "extreme_light_diag_gaussian":
+                    predicted, info, extreme_trace = predict_support_diag_gaussian(
+                        joint_support,
+                        fit_support_y,
+                        joint_query,
+                        variance_shrinkage=float(
+                            config.get("extreme_light_variance_shrinkage", 0.9)
+                        ),
+                        logdet_weight=float(config.get("extreme_light_logdet_weight", 0.25)),
+                        variance_floor_ratio=float(
+                            config.get("extreme_light_variance_floor_ratio", 0.01)
+                        ),
                         max_persistent_state_bytes=int(
                             config.get("extreme_light_max_persistent_state_bytes", 128 * 1024)
                         ),
