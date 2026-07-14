@@ -95,6 +95,8 @@ def main() -> None:
         f"center_momentum={args.center_momentum:.4f} "
         f"lambda_mse={args.lambda_mse:.4f} grl_schedule={args.grl_schedule} "
         f"normalize_features_for_mse={int(bool(args.normalize_features_for_mse))} "
+        f"wisig_paper_sample_strategy={args.wisig_paper_sample_strategy} "
+        f"wisig_rms_normalize={int(bool(args.wisig_rms_normalize))} "
         f"paper_eval_last_n={args.paper_eval_last_n} paper_eval_name={args.paper_eval_name} "
         f"test_eval_interval={args.test_eval_interval} test_eval_start_epoch={args.test_eval_start_epoch} "
         f"test_on_val_improve={int(bool(args.test_on_val_improve))}",

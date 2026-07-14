@@ -1252,6 +1252,7 @@ def make_wisig_drift_day1_split(
     val_samples_per_combo: int = 200,
     test_samples_per_combo: int = 200,
     seed: int = 0,
+    sample_strategy: str = "front",
 ):
     """DRIFT paper WiSig Day1 receiver-disjoint protocol.
 
@@ -1292,15 +1293,24 @@ def make_wisig_drift_day1_split(
         seed=seed,
         build_index=True,
     )
+    sample_strategy = _normalize_strategy(
+        sample_strategy,
+        name="wisig_paper_sample_strategy",
+        allowed=("front", "random"),
+    )
     groups = _build_grouped_indices_sorted_by_sig(base_trainval)
+    rng = np.random.default_rng(int(seed))
     train_n = max(1, int(train_samples_per_combo))
     val_n = max(0, int(val_samples_per_combo))
     train_sel: List[int] = []
     val_sel: List[int] = []
     for _, idxs_sorted in groups.items():
-        train_sel.extend(idxs_sorted[:train_n])
+        selected = list(idxs_sorted)
+        if sample_strategy == "random":
+            selected = [selected[int(i)] for i in rng.permutation(len(selected))]
+        train_sel.extend(selected[:train_n])
         if val_n > 0:
-            val_sel.extend(idxs_sorted[train_n:train_n + val_n])
+            val_sel.extend(selected[train_n:train_n + val_n])
 
     if not train_sel:
         raise ValueError("DRIFT split produced an empty train set.")
@@ -1319,13 +1329,13 @@ def make_wisig_drift_day1_split(
     train_ds = WiSigSubsetDataset(
         base_trainval,
         sorted(train_sel),
-        split_source="drift_day1_first_800_train_rx",
+        split_source=f"drift_day1_{sample_strategy}_800_train_rx",
         transform=transform_train,
     )
     val_ds = WiSigSubsetDataset(
         base_trainval,
         sorted(val_sel),
-        split_source="drift_day1_tail_train_rx_validation",
+        split_source=f"drift_day1_{sample_strategy}_train_rx_validation",
         transform=transform_eval,
     )
 
@@ -1341,7 +1351,8 @@ def make_wisig_drift_day1_split(
         transform_eval=transform_eval,
         max_samples_per_combo_test=max(1, int(test_samples_per_combo)),
         seed=seed,
-        split_source="drift_day1_first_200_test_rx",
+        split_source=f"drift_day1_{sample_strategy}_200_test_rx",
+        sample_strategy=sample_strategy,
     )
     if test_ds is None or len(test_ds) == 0:
         raise ValueError("DRIFT split produced an empty test set.")
@@ -1369,21 +1380,18 @@ def make_wisig_drift_day1_split(
         },
     }
     for r_idx in test_rx_idx:
-        ds_one = _build_full_subset(
-            ds,
-            out_len=out_len,
-            crop_mode=crop_mode,
-            normalize=normalize,
-            equalized=equalized,
-            day_keep=day_idx,
-            rx_keep=[r_idx],
-            domain=domain,
-            transform_eval=transform_eval,
-            max_samples_per_combo_test=max(1, int(test_samples_per_combo)),
-            seed=seed,
-            split_source=f"drift_day1_first_200_test_rx_{r_idx}",
-        )
-        if ds_one is not None and len(ds_one) > 0:
+        one_selected = [
+            int(test_ds.selected[pos])
+            for pos, item in enumerate(test_ds.index)
+            if int(item.rx_i) == int(r_idx)
+        ]
+        if one_selected:
+            ds_one = WiSigSubsetDataset(
+                test_ds.base,
+                one_selected,
+                split_source=f"drift_day1_{sample_strategy}_200_test_rx_{r_idx}",
+                transform=transform_eval,
+            )
             key = f"test_rx_{r_idx}"
             named_tests[key] = ds_one
             named_test_meta[key] = {
@@ -1411,6 +1419,8 @@ def make_wisig_drift_day1_split(
         "train_samples_per_combo": int(train_samples_per_combo),
         "val_samples_per_combo": int(val_samples_per_combo),
         "test_samples_per_combo": int(test_samples_per_combo),
+        "sample_strategy": sample_strategy,
+        "rms_normalize": bool(normalize),
         "train_size": len(train_ds),
         "val_size": len(val_ds),
         "test_size": len(test_ds),

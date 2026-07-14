@@ -96,6 +96,19 @@ def add_cvs_data_args(parser: argparse.ArgumentParser) -> argparse.ArgumentParse
     parser.add_argument("--wisig_paper_train_samples_per_combo", type=int, default=800)
     parser.add_argument("--wisig_paper_val_samples_per_combo", type=int, default=200)
     parser.add_argument("--wisig_paper_test_samples_per_combo", type=int, default=200)
+    parser.add_argument(
+        "--wisig_paper_sample_strategy",
+        type=str,
+        default="front",
+        choices=["front", "random"],
+        help="Paper-protocol per-TX/RX sample selection. DRIFT v2 requires random.",
+    )
+    parser.add_argument(
+        "--wisig_rms_normalize",
+        action=argparse.BooleanOptionalAction,
+        default=True,
+        help="Apply per-packet RMS normalization. DRIFT v2 disables this because equalization is its only signal preprocessing.",
+    )
     parser.add_argument("--paper_eval_last_n", type=int, default=0)
     parser.add_argument("--paper_eval_name", type=str, default="")
     parser.add_argument("--test_eval_interval", type=int, default=0)
@@ -283,7 +296,7 @@ def build_cvs_split(
             equalized=eq,
             out_len=int(args.wisig_out_len),
             domain=str(args.wisig_domain),
-            normalize=True,
+            normalize=bool(getattr(args, "wisig_rms_normalize", True)),
             crop_mode="center",
             transform_train=None,
             transform_eval=None,
@@ -294,6 +307,7 @@ def build_cvs_split(
             val_samples_per_combo=int(args.wisig_paper_val_samples_per_combo),
             test_samples_per_combo=int(args.wisig_paper_test_samples_per_combo),
             seed=int(getattr(args, "seed", 1337)),
+            sample_strategy=str(getattr(args, "wisig_paper_sample_strategy", "front")),
         )
     elif protocol == "riei_original":
         train_ds, val_ds, test_ds, named_tests, named_test_meta, split_info = make_wisig_riei_receiver_holdout_split(

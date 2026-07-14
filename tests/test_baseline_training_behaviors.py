@@ -272,6 +272,71 @@ class BaselineWiSigPaperProtocolTest(unittest.TestCase):
         self.assertIn("test_seen_day_unseen_rx", named)
         self.assertEqual(meta["test_seen_day_unseen_rx"]["paper_protocol_alias"], "drift_day1_unseen_receiver")
 
+    def test_drift_v2_random_sampling_is_seeded_and_can_disable_rms_normalization(self):
+        from dataset_wisig import make_wisig_drift_day1_split
+
+        rx_labels = [
+            "1-1", "1-19", "14-7", "19-2", "2-1", "2-19",
+            "20-1", "7-14", "7-7", "8-8",
+        ]
+        data = []
+        for tx in range(2):
+            tx_rows = []
+            for rx in range(len(rx_labels)):
+                samples = torch.zeros(20, 16, 2, dtype=torch.float32).numpy()
+                for sig in range(20):
+                    samples[sig, :, 0] = float(sig + 1)
+                    samples[sig, :, 1] = float(rx + tx + 1)
+                tx_rows.append([[samples]])
+            data.append(tx_rows)
+        ds = {
+            "data": data,
+            "tx_list": ["tx0", "tx1"],
+            "rx_list": rx_labels,
+            "capture_date_list": ["2021_03_01"],
+            "equalized_list": [1],
+        }
+
+        def build(seed):
+            return make_wisig_drift_day1_split(
+                ds,
+                out_len=16,
+                train_samples_per_combo=8,
+                val_samples_per_combo=4,
+                test_samples_per_combo=4,
+                seed=seed,
+                sample_strategy="random",
+                normalize=False,
+            )
+
+        train_a, val_a, test_a, _, _, info_a = build(1337)
+        train_b, val_b, test_b, _, _, info_b = build(1337)
+        train_c, _, test_c, _, _, _ = build(2026)
+
+        index_a = [(x.tx_i, x.rx_i, x.sig_i) for x in train_a.index]
+        index_b = [(x.tx_i, x.rx_i, x.sig_i) for x in train_b.index]
+        index_c = [(x.tx_i, x.rx_i, x.sig_i) for x in train_c.index]
+        self.assertEqual(index_a, index_b)
+        self.assertNotEqual(index_a, index_c)
+        self.assertEqual(
+            [(x.tx_i, x.rx_i, x.sig_i) for x in test_a.index],
+            [(x.tx_i, x.rx_i, x.sig_i) for x in test_b.index],
+        )
+        self.assertNotEqual(
+            [(x.tx_i, x.rx_i, x.sig_i) for x in test_a.index],
+            [(x.tx_i, x.rx_i, x.sig_i) for x in test_c.index],
+        )
+        named_union = []
+        for key, ds_one in build(1337)[3].items():
+            if key.startswith("test_rx_"):
+                named_union.extend((x.tx_i, x.rx_i, x.sig_i) for x in ds_one.index)
+        self.assertEqual(sorted(named_union), sorted((x.tx_i, x.rx_i, x.sig_i) for x in test_a.index))
+        self.assertTrue(set(train_a.selected.tolist()).isdisjoint(set(val_a.selected.tolist())))
+        self.assertFalse(train_a.base.normalize)
+        self.assertEqual(info_a["sample_strategy"], "random")
+        self.assertFalse(info_a["rms_normalize"])
+        self.assertEqual(info_a, info_b)
+
     def test_riei_original_split_uses_two_source_receiver_holdout_counts(self):
         from dataset_wisig import make_wisig_riei_receiver_holdout_split
 
