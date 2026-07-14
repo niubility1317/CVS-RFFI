@@ -202,6 +202,8 @@ def _diag_whiten_fisher(
 
 def _qknnv42_score_matrix(
     support_x: np.ndarray, support_y: np.ndarray, query_x: np.ndarray, *, old_labels: set[str],
+    labelprop_mode: str = "dense_transductive",
+    old_anchor_bias: float = 0.001,
 ) -> tuple[list[str], np.ndarray, dict[str, Any]]:
     support, query, transform_info = _diag_whiten_fisher(support_x, support_y, query_x, strength=0.1)
     quantized = np.clip(np.rint(127.0 * support), -127, 127).astype(np.int8)
@@ -209,22 +211,50 @@ def _qknnv42_score_matrix(
     labels = support_y.astype(str)
     classes = sorted(set(labels.tolist()))
     score_columns: list[np.ndarray] = []
+    prototype_rows: list[np.ndarray] = []
     for label in classes:
         class_support = restored[labels == label]
         similarity = query @ class_support.T
         knn = np.max(similarity, axis=1)
         prototype = _norm(class_support.mean(axis=0, keepdims=True))[0]
+        prototype_rows.append(prototype)
         score = 0.55 * knn + 0.45 * (query @ prototype)
         if label in old_labels:
-            score = score + 0.001
+            score = score + float(old_anchor_bias)
         score_columns.append(score)
     scores = np.stack(score_columns, axis=1)
-    scores += 0.025 * _labelprop(restored, labels, query, classes)
-    compactness = 1.0 - np.max(restored @ np.vstack([
-        _norm(restored[labels == label].mean(axis=0, keepdims=True))[0] for label in classes
-    ]).T, axis=1)
+    prototype_matrix = np.vstack(prototype_rows)
+    lp_mode = str(labelprop_mode).strip().lower()
+    graph_nodes = int(len(restored) + len(query))
+    dense_graph_bytes = 0
+    labelprop_macs = 0
+    if lp_mode == "dense_transductive":
+        scores += 0.025 * _labelprop(restored, labels, query, classes)
+        # _labelprop materializes both similarity and transition matrices as float64.
+        dense_graph_bytes = int(2 * graph_nodes * graph_nodes * np.dtype(np.float64).itemsize)
+        labelprop_macs = int(
+            graph_nodes * graph_nodes * restored.shape[1]
+            + 8 * graph_nodes * graph_nodes * len(classes)
+        )
+    elif lp_mode == "support_prototype":
+        # Streaming substitute: retain the small V42 residual correction, but
+        # derive it from registered support prototypes only. No query-query
+        # affinity matrix or query-batch state is created.
+        residual = query @ prototype_matrix.T
+        residual = (residual - residual.mean(axis=1, keepdims=True)) / np.maximum(
+            residual.std(axis=1, keepdims=True), 1.0e-6
+        )
+        scores += 0.025 * np.clip(residual, -2.0, 2.0)
+        labelprop_macs = int(len(query) * len(classes) * restored.shape[1])
+    elif lp_mode == "disabled":
+        pass
+    else:
+        raise ValueError(f"unsupported qKNNV42 labelprop mode: {labelprop_mode}")
+    compactness = 1.0 - np.max(restored @ prototype_matrix.T, axis=1)
+    support_score_macs = int(len(query) * len(restored) * restored.shape[1])
+    prototype_score_macs = int(len(query) * len(classes) * restored.shape[1])
     return classes, scores, {
-        "adaptation_objective": "qknnv42_int8_top1_proto45_old_anchor_labelprop",
+        "adaptation_objective": f"qknnv42_int8_top1_proto45_old_anchor_{lp_mode}",
         "transform_mode": "diag_whiten_fisher",
         "transform_strength": 0.1,
         **transform_info,
@@ -233,6 +263,18 @@ def _qknnv42_score_matrix(
         "stored_class_prototype_count": len(classes),
         "feature_dim": int(restored.shape[1]),
         "query_labels_used_for_adaptation": False,
+        "labelprop_mode": lp_mode,
+        "old_anchor_bias": float(old_anchor_bias),
+        "query_query_graph_used": lp_mode == "dense_transductive",
+        "query_batch_state_required": lp_mode == "dense_transductive",
+        "dense_graph_node_count": graph_nodes if lp_mode == "dense_transductive" else 0,
+        "dense_graph_bytes_lower_bound": dense_graph_bytes,
+        "support_code_bytes": int(restored.size * np.dtype(np.int8).itemsize),
+        "prototype_bytes_float64": int(prototype_matrix.nbytes),
+        "estimated_support_score_macs": support_score_macs,
+        "estimated_prototype_score_macs": prototype_score_macs,
+        "estimated_labelprop_macs": labelprop_macs,
+        "estimated_head_macs": support_score_macs + prototype_score_macs + labelprop_macs,
         "scenario_residual_weight": 0.5,
         "scenario_residual_applied": False,
         "scenario_residual_note": "zero_by_full_same_scenario_support_for_every_registered_class",
@@ -252,9 +294,16 @@ def _qknnv42_predict(
     decision_mode: str = "per_sample_argmax",
     old_query_count: int | None = None,
     query_per_class: int | None = None,
+    labelprop_mode: str = "dense_transductive",
+    old_anchor_bias: float = 0.001,
 ) -> tuple[np.ndarray, dict[str, Any]]:
     classes, scores, info = _qknnv42_score_matrix(
-        support_x, support_y, query_x, old_labels=old_labels
+        support_x,
+        support_y,
+        query_x,
+        old_labels=old_labels,
+        labelprop_mode=labelprop_mode,
+        old_anchor_bias=old_anchor_bias,
     )
     weight = float(aux_score_weight)
     if not 0.0 <= weight <= 1.0:
@@ -265,7 +314,12 @@ def _qknnv42_predict(
         if aux_support_x is None or aux_query_x is None:
             raise ValueError("qKNNV42 positive auxiliary score weight requires auxiliary features")
         aux_classes, aux_scores, aux_info = _qknnv42_score_matrix(
-            aux_support_x, support_y, aux_query_x, old_labels=old_labels
+            aux_support_x,
+            support_y,
+            aux_query_x,
+            old_labels=old_labels,
+            labelprop_mode=labelprop_mode,
+            old_anchor_bias=old_anchor_bias,
         )
         if aux_classes != classes:
             raise ValueError("qKNNV42 primary and auxiliary class orders differ")
@@ -280,8 +334,14 @@ def _qknnv42_predict(
                 "aux_transform_scale_max": float(aux_info["transform_scale_max"]),
                 "aux_transform_scale_mean": float(aux_info["transform_scale_mean"]),
                 "aux_loss": float(aux_info["loss"]),
+                "aux_dense_graph_bytes_lower_bound": int(aux_info["dense_graph_bytes_lower_bound"]),
+                "aux_estimated_head_macs": int(aux_info["estimated_head_macs"]),
             }
         )
+        info["dense_graph_bytes_lower_bound"] = int(
+            info["dense_graph_bytes_lower_bound"] + aux_info["dense_graph_bytes_lower_bound"]
+        )
+        info["estimated_head_macs"] = int(info["estimated_head_macs"] + aux_info["estimated_head_macs"])
     else:
         info.update({"aux_feature_enabled": False, "aux_feature_dim": 0, "aux_score_weight": 0.0})
     decision = str(decision_mode).strip().lower()
@@ -405,6 +465,12 @@ def validate_config(config: dict[str, Any]) -> None:
         raise ValueError(f"unsupported qknnv42_decision_mode: {decision_mode}")
     if decision_mode == "legacy_role_quota_oracle" and method != "cvs_qknnv42":
         raise ValueError("legacy role/quota oracle is defined only for cvs_qknnv42")
+    labelprop_mode = str(config.get("qknnv42_labelprop_mode", "dense_transductive")).strip().lower()
+    if labelprop_mode not in {"dense_transductive", "support_prototype", "disabled"}:
+        raise ValueError(f"unsupported qknnv42_labelprop_mode: {labelprop_mode}")
+    old_anchor_bias = float(config.get("qknnv42_old_anchor_bias", 0.001))
+    if not math.isfinite(old_anchor_bias) or abs(old_anchor_bias) > 0.1:
+        raise ValueError("qknnv42_old_anchor_bias must be finite and within [-0.1,0.1]")
 
 
 def run(config: dict[str, Any], run_dir: Path) -> dict[str, Any]:
@@ -426,6 +492,8 @@ def run(config: dict[str, Any], run_dir: Path) -> dict[str, Any]:
     aux_weight = float(config.get("qknnv42_aux_score_weight", 0.0))
     aux_dim = int(config.get("qknnv42_aux_feature_dim", 0))
     decision_mode = str(config.get("qknnv42_decision_mode", "per_sample_argmax")).strip().lower()
+    labelprop_mode = str(config.get("qknnv42_labelprop_mode", "dense_transductive")).strip().lower()
+    old_anchor_bias = float(config.get("qknnv42_old_anchor_bias", 0.001))
     expected_tta_views = int(config.get("qknnv42_expected_tta_view_count", 1))
     for scenario in SCENARIOS:
         arrays, cache_manifest = _load_npz(_feature_path(config, receiver, scenario))
@@ -494,6 +562,8 @@ def run(config: dict[str, Any], run_dir: Path) -> dict[str, Any]:
                 decision_mode=decision_mode,
                 old_query_count=len(old_query),
                 query_per_class=int(config["query_per_tx"]),
+                labelprop_mode=labelprop_mode,
+                old_anchor_bias=old_anchor_bias,
             )
             predicted, info = _qknnv42_predict(
                 support_x,
@@ -506,6 +576,8 @@ def run(config: dict[str, Any], run_dir: Path) -> dict[str, Any]:
                 decision_mode=decision_mode,
                 old_query_count=len(old_query),
                 query_per_class=int(config["query_per_tx"]),
+                labelprop_mode=labelprop_mode,
+                old_anchor_bias=old_anchor_bias,
             )
             old_count = len(old_query)
             old_acc = _accuracy(predicted[:old_count], truth[:old_count])
@@ -541,7 +613,8 @@ def run(config: dict[str, Any], run_dir: Path) -> dict[str, Any]:
                 "target_receiver_labels": [receiver], "target_old_tx_labels": old_labels,
                 "target_new_tx_labels": new_labels, "target_labels_scope": "registered_support_only",
                 "target_query_used_for_training": False, "target_query_used_for_model_selection": False,
-                "query_used_for_transductive_inference": method == "cvs_qknnv42",
+                "query_used_for_transductive_inference": method == "cvs_qknnv42"
+                and labelprop_mode == "dense_transductive",
                 "support_query_overlap": False, "all_tests_satellite_augmented": True,
                 "seed": int(config["seed"]), "split_seed": seed, "k_shot": int(config["k_shot"]),
                 "support_pool_max_k": int(config["support_pool_max_k"]), "target_sample_strategy": "seeded_nested",
@@ -551,6 +624,8 @@ def run(config: dict[str, Any], run_dir: Path) -> dict[str, Any]:
                 "qknnv42_aux_feature_dim": aux_dim if aux_weight > 0.0 else 0,
                 "qknnv42_aux_score_weight": aux_weight,
                 "qknnv42_decision_mode": decision_mode,
+                "qknnv42_labelprop_mode": labelprop_mode,
+                "qknnv42_old_anchor_bias": old_anchor_bias,
                 "non_deployment_oracle_diagnostic": decision_mode == "legacy_role_quota_oracle"}
     result = {"experiment_id": config.get("experiment_id", f"{method}_{seed}"), "method": method,
               "stage": stage, "seed": int(config["seed"]), "target_receiver_label": receiver,

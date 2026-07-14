@@ -2053,6 +2053,21 @@ $$
 - V88在V87基础上同时提高辅视图融合权重和压缩效率：旧类5码/类、seen-new默认5码/类、`radius_proto_sim protect10`，不再使用额外新类support预算，最终保存180个support code。正式40seed复验达到`old=96.40%`、`min_old=90.07%`、`seen_new=95.92%`、`min_new=85.50%`、`min_new p10=77.14%`、`min_new>=75=39/40`、`min_new>=80=34/40`、worst seed 72.86%。相对V87，support code减少22个，old均值+0.34pp、min old均值+0.64pp、seen-new均值+0.14pp、min new均值+0.43pp，并保持floor80。因此`stable_dualview_v88`取代V87，成为当前K10默认最佳优化版本。
 - V89把K5从V77的support选择最佳推进到正式打分策略：在`K=5,pool=10`下仍使用`--policies scenario_diverse`，不再压缩support code，保持130个support code；`stable_dualview_v89`只注入`aux_score_weight=0.64`、`local_competition_weight=0.02`和`scenario_residual_weight=0.25,scope=new`，并显式关闭K5 labelprop。正式40seed复验达到`old=96.35%`、`min_old=89.89%`、`seen_new=94.96%`、`min_new=83.25%`、`min_new p10=75.71%`、`min_new>=75=37/40`、`min_new>=80=30/40`、worst seed 72.86%。相对V77 K5 `scenario_diverse`同40seed，old均值+1.32pp、min old均值+3.11pp、seen-new均值+3.29pp、min new均值+6.61pp，floor75从24/40升到37/40，floor80从14/40升到30/40。因此当前推荐口径为K5使用`scenario_diverse + stable_dualview_v89`，K10仍使用V88的180码结构；V89的K10入口仅作为继承V88机制的兼容策略，不替代V88作为K10命名基线。
 
+### 9.8星上轻量head：移除dense query graph
+
+2026-07-14在当前正式8类Stage2-C协议上追加了独立轻量化确认。原publication runner的label propagation会为每个query batch构造`(S+Q)×(S+Q)`float64相似度矩阵和转移矩阵；启用160维主特征+96维FFT辅助时，该dense链执行两次，既要求整批query同时到达，也使内存随batch平方增长。
+
+轻量路径固定单视图FFT96、逐样本argmax和原support-memory qKNN，只移除dense label propagation，并把旧类常数偏置从`+0.001`调整为`-0.001`。偏置在seed 713101-713105诊断集选择，最终证据来自未参与选择的seed 713106-713110，覆盖5个target receiver×5个seed×5档K-shot，共125个paired run。
+
+|head|old_acc|seen-new acc|H_old,new|head MAC|dense graph下界|延迟/query|
+|---|---:|---:|---:|---:|---:|---:|
+|FFT96+dense LP|74.4133%|65.2133%|68.6486%|22.725 M|1,658,880 B|0.10824 ms|
+|FFT96+无LP轻量head|74.3711%|65.7867%|68.9109%|2.818 M|0 B|0.06053 ms|
+
+轻量head的估算MAC下降87.60%，实测head延迟下降44.08%；`old_acc`变化`-0.042pp`，`seen_new_acc`变化`+0.573pp`，`H_old_new`变化`+0.262pp`，三个矩阵均值均满足相对原head下降不超过3pp。它不依赖query-query图、query batch状态、old/new角色Oracle或类别配额，可执行逐样本流式推理。逐run层面仍有7行seen-new和2行H下降超过3pp，因此该版本证明的是矩阵均值资源-性能门槛，不是每一行的最坏情况保证。
+
+该head压缩不能与历史5-view完整栈混为一谈。完整栈同时包含60 epoch feature adapter、5-view、FFT96和非部署Hungarian Oracle；其高准确率无法单独归因于TTA，而且Oracle使用普通在线部署不可获得的query角色与类别配额。下一轮端到端压缩必须固定adapter与逐样本决策后单独比较1/2/3/5-view。
+
 ## 10.证据索引
 
 |证据|路径|用途|
@@ -2091,6 +2106,7 @@ $$
 |qKNNV88 180码正式策略证据|`E:\type10-7\automation_reports\CV-SincNet\phase2_qknn_hardpair_n20_20260706\artifacts\v88_policy_20260709\k10_v88_policy_seed421038_40.csv`|`stable_dualview_v88` 180码当前K10默认最佳分支40seed复验|
 |qKNNV89 K5轻残差正式策略证据|`E:\type10-7\automation_reports\CV-SincNet\phase2_qknn_hardpair_n20_20260706\artifacts\v89_policy_20260709\k5_v89_policy_seed421038_40.csv`|`scenario_diverse + stable_dualview_v89` 130码当前K5默认最佳分支40seed复验|
 |qKNNV89 K10继承复验证据|`E:\type10-7\automation_reports\CV-SincNet\phase2_qknn_hardpair_n20_20260706\artifacts\v89_policy_20260709\k10_v89_policy_seed421038_40.csv`|`stable_dualview_v89` K10继承V88 180码结构的兼容复验|
+|qKNNV42星上轻量head报告|`E:\type10-7\automation_reports\CV-SincNet\qknnv42_lightweight_head_20260714_173701\report.md`|FFT96独立125-run的dense LP移除、MAC/内存/延迟和≤3pp门槛证据|
 
 ## 11.下一步
 

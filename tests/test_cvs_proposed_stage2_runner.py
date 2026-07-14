@@ -119,3 +119,28 @@ def test_cvs_qknnv42_fft_aux_and_legacy_oracle_are_explicit(tmp_path: Path) -> N
     assert first["decision_mode"] == "legacy_role_quota_oracle"
     manifest = json.loads((run_dir / "split_manifest.json").read_text(encoding="utf-8"))
     assert manifest["non_deployment_oracle_diagnostic"] is True
+
+
+def test_cvs_qknnv42_support_prototype_removes_dense_query_graph(tmp_path: Path) -> None:
+    dense_config = _config(tmp_path, "cvs_qknnv42")
+    dense_result = run(dense_config, tmp_path / "qknn_dense")
+    dense = dense_result["metrics_by_scenario"][SCENARIOS[0]]
+    assert dense["labelprop_mode"] == "dense_transductive"
+    assert dense["query_query_graph_used"] is True
+    assert dense["dense_graph_bytes_lower_bound"] > 0
+
+    light_config = _config(tmp_path, "cvs_qknnv42")
+    light_config["qknnv42_labelprop_mode"] = "support_prototype"
+    light_result = run(light_config, tmp_path / "qknn_support_prototype")
+    light = light_result["metrics_by_scenario"][SCENARIOS[0]]
+    assert light_result["metrics"]["H_old_new_mean"] == 1.0
+    assert light["labelprop_mode"] == "support_prototype"
+    assert light["query_query_graph_used"] is False
+    assert light["query_batch_state_required"] is False
+    assert light["dense_graph_bytes_lower_bound"] == 0
+    assert light["estimated_head_macs"] < dense["estimated_head_macs"]
+    manifest = json.loads(
+        (tmp_path / "qknn_support_prototype" / "split_manifest.json").read_text(encoding="utf-8")
+    )
+    assert manifest["query_used_for_transductive_inference"] is False
+    assert manifest["qknnv42_labelprop_mode"] == "support_prototype"
