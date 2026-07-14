@@ -170,3 +170,9 @@ run ID=`qknn_extreme_light_k10k5_feasibility_20260715_0032_v1`，`rx8-8×2开发
 24/24 rows完成、0失败、0权限违规、0联合通过。最佳3prototype+FFT+RF在5/10/20类的`old/floor/new/H`仅为`70.14/41.67/73.83/71.82%`、`68.33/40.83/69.08/68.56%`、`68.19/40.83/79.92/73.51%`，显著弱于对角头；该路线终止。
 
 下一轮使用1-view逐样本`repair_canonical1`：盲DC/CFO残差校正、RMS归一化和限幅后执行同一次冻结backbone前向，0参数、0epoch、无query batch。预注册特征根=`cvs_qknnv42_extreme_light_20new_features_repair1_20260715_v1`，K10 screen=`qknn_extreme_light_repair1_k10_screen_20260715_0100_v1`，比较FFT/FFT+RF与权重2/4共24 rows。35项相关pytest、编译、launcher语法和dry-run PASS；K5与确认seed继续封存。
+
+### repair-canonical1结果
+
+三场景各导出9,800行且view count=1；K10 screen 24/24 rows完成、0失败、0权限违规、0联合通过。最佳FFT+RF权重4在5/10/20类的`old/floor/new/H`仅为`38.06/11.67/29.50/32.53%`、`34.03/5.83/30.75/31.98%`、`24.58/3.33/34.29/28.14%`。盲平均相位步破坏了判别结构，该路线终止。
+
+全部RF、multi-prototype、repair1 artifact/日志/summary已拉回`local_artifacts/*20260715*`对应目录。当前仍无统一K10候选，不运行K5、不扩receiver、不解封确认seed。下一合法方向限制为冻结backbone前极少参数support-only可学习接收校正；仍须≤20epoch、≤50k参数、1-view、逐样本推理。
