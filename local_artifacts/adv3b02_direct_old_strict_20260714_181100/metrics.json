@@ -1,0 +1,31 @@
+{
+  "checkpoint_epoch": 194,
+  "checkpoint_load_strict": true,
+  "checkpoint_sha256": "2699eedcafe8cec880828592d2d65ba3781a9948939da5cf5c82b47143d59c98",
+  "fft_auxiliary": false,
+  "method": "ground_classifier_tx_logits",
+  "overall_accuracy": 0.7356944444444444,
+  "qknn": false,
+  "scenario_metrics": {
+    "leo_clear_weak": {
+      "accuracy": 0.76125,
+      "correct": 1827,
+      "total": 2400
+    },
+    "leo_low_elev_weak": {
+      "accuracy": 0.7083333333333334,
+      "correct": 1700,
+      "total": 2400
+    },
+    "leo_rain_weak": {
+      "accuracy": 0.7375,
+      "correct": 1770,
+      "total": 2400
+    }
+  },
+  "schema": "adv3b02_ground_direct_old_v1",
+  "score_row_count": 7200,
+  "support_labels_used": false,
+  "target_adaptation": false,
+  "tta": false
+}
