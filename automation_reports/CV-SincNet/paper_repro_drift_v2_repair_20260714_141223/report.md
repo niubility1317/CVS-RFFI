@@ -81,6 +81,8 @@
 
 版本说明：根目录`.git`缺少`HEAD`，不能作为有效Git仓库；Git承载面为`E:\type10-7\github_publish\CVS-RFFI-repo`。镜像时发现承载面已有较新的IQ中心化、Meta-SSL抽样和interval checkpoint测试，已保留这些不相关改动并把合并后的文件反向同步回根目录，没有以根目录旧副本覆盖它们。
 
+Git承载面实现提交：`f302b1f repair DRIFT v2 reproduction protocol`。提交仅包含本任务8个文件；承载面中既有的`mitigating_da_rootcause`改动和`local_artifacts`未纳入提交。
+
 ## 远端启动条件与预期产物
 
 仅当现有fixopt队列完全退出后才允许：运行`tools/n607_ssh_preflight.ps1`；用实时进程/CWD/cmdline和`nvidia-smi`确认每GPU`existing_compute+planned_peak<=2`；本地验证完成；SCP后hash一致；远端`bash -n`与dry-run均通过；最后启动唯一新run。14:19检查显示当前8个RIEI训练仍到epoch156–157、4个仍排队，硬错误为0，因此继续延期。预期产物包括每候选完整200epoch日志、`metrics_epoch.csv`、`metrics.json`、最终checkpoint、scheduler manifest和PID表。
