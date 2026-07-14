@@ -14,6 +14,10 @@ from paper_reproduction.scripts.benchmark_qknnv42_tta_policies import (
     _validate_frozen_feature_caches,
     _validate_historical_reference_metrics,
 )
+from paper_reproduction.scripts.benchmark_qknnv42_feature_adapter_sweep import (
+    _apply_head_profile as _apply_sweep_head_profile,
+    _validate_feature_caches as _validate_sweep_feature_caches,
+)
 
 
 def _row(value: float) -> dict[str, float | int | str]:
@@ -107,6 +111,10 @@ def test_frozen_cache_manifest_is_required(tmp_path) -> None:
         "payload_source": "qknnv42_frozen_adv3b02_identity_only_features_v1",
         "source_checkpoint_sha256": checkpoint_hash,
         "feature_name": "z_id",
+        "satellite_tta_policy": "none",
+        "satellite_tta_view_count": 1,
+        "export_role_scope": "qknn_registered_only",
+        "omitted_unused_qknn_roles": ["source", "proxy_unknown", "target_unknown"],
         "identity_only_forward": True,
         "domain_branch_executed_for_qknn": False,
         "checkpoint_load_strict": True,
@@ -117,15 +125,91 @@ def test_frozen_cache_manifest_is_required(tmp_path) -> None:
         },
         "adapter": {"skip_adapter_training": True, "adv3b02_gradient_updates": 0},
     }
-    np.savez(path, manifest_json=np.asarray(json.dumps(manifest)))
+    np.savez(
+        path,
+        features=np.zeros((2, 4), dtype=np.float32),
+        fft_logmag_features=np.zeros((2, 3), dtype=np.float32),
+        manifest_json=np.asarray(json.dumps(manifest)),
+    )
     evidence = _validate_frozen_feature_caches(
         {"target": {"leo_clear_weak": str(path)}}, checkpoint_hash
     )
     assert evidence["validated_cache_count"] == 1
 
     manifest["adapter"]["adv3b02_gradient_updates"] = 60
-    np.savez(path, manifest_json=np.asarray(json.dumps(manifest)))
+    np.savez(
+        path,
+        features=np.zeros((2, 4), dtype=np.float32),
+        fft_logmag_features=np.zeros((2, 3), dtype=np.float32),
+        manifest_json=np.asarray(json.dumps(manifest)),
+    )
     with pytest.raises(ValueError, match="not a frozen qKNN export"):
         _validate_frozen_feature_caches(
             {"target": {"leo_clear_weak": str(path)}}, checkpoint_hash
         )
+
+    manifest["adapter"]["adv3b02_gradient_updates"] = 0
+    manifest["parent_payload_source"] = manifest["payload_source"]
+    manifest["parent_feature_name"] = "z_id"
+    manifest["parent_identity_only_forward"] = True
+    manifest["payload_source"] = "qknnv42_post_feature_adapter_v1"
+    manifest["feature_name"] = "qknn_post_adapter_z_id"
+    manifest["identity_only_forward"] = False
+    manifest["post_feature_adapter_applied"] = True
+    manifest["qknn_post_feature_adapter"] = {
+        "mode": "source_teacher_residual_mlp",
+        "uses_target_rows_for_fit": False,
+        "uses_target_labels_for_fit": False,
+        "uses_target_query_for_fit": False,
+        "updates_adv3b02": False,
+        "gradient_updates_adv3b02": 0,
+        "parameter_count": 100,
+        "estimated_macs_per_sample": 80,
+    }
+    manifest["qknn_post_feature_adapter"]["policy"] = "none"
+    np.savez(
+        path,
+        features=np.zeros((2, 4), dtype=np.float32),
+        fft_logmag_features=np.zeros((2, 3), dtype=np.float32),
+        manifest_json=np.asarray(json.dumps(manifest)),
+    )
+    with pytest.raises(ValueError, match="not a frozen qKNN export"):
+        _validate_frozen_feature_caches(
+            {"target": {"leo_clear_weak": str(path)}}, checkpoint_hash
+        )
+    evidence = _validate_sweep_feature_caches(
+        {"target": {"leo_clear_weak": str(path)}},
+        checkpoint_hash,
+        expected_policy="none",
+        expected_tta_view_count=1,
+    )
+    assert evidence["post_adapter_cache_count"] == 1
+
+    manifest["qknn_post_feature_adapter"]["policy"] = "rx_light5"
+    np.savez(
+        path,
+        features=np.zeros((2, 4), dtype=np.float32),
+        fft_logmag_features=np.zeros((2, 3), dtype=np.float32),
+        manifest_json=np.asarray(json.dumps(manifest)),
+    )
+    with pytest.raises(ValueError, match="strict qKNN validation"):
+        _validate_sweep_feature_caches(
+            {"target": {"leo_clear_weak": str(path)}},
+            checkpoint_hash,
+            expected_policy="none",
+            expected_tta_view_count=1,
+        )
+
+
+def test_feature_sweep_keeps_single_qknn_separate_from_oracle() -> None:
+    single: dict[str, object] = {}
+    _apply_sweep_head_profile(single, "deployable_single_qknn")
+    assert single["qknnv42_decision_mode"] == "per_sample_argmax"
+    assert single["qknnv42_labelprop_mode"] == "disabled"
+    assert single["non_deployment_oracle_diagnostic"] is False
+
+    oracle: dict[str, object] = {}
+    _apply_sweep_head_profile(oracle, "legacy_oracle_dense")
+    assert oracle["qknnv42_decision_mode"] == "legacy_role_quota_oracle"
+    assert oracle["qknnv42_labelprop_mode"] == "dense_transductive"
+    assert oracle["non_deployment_oracle_diagnostic"] is True

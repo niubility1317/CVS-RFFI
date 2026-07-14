@@ -203,6 +203,17 @@ def _apply_diag_whiten_fisher(rows: np.ndarray, center: np.ndarray, scale: np.nd
     return _norm((_norm(rows) - center[None, :]) * scale[None, :])
 
 
+def _apply_qknnv42_transform(rows: np.ndarray, state: dict[str, Any]) -> np.ndarray:
+    base = (_norm(rows) - state["center"][None, :]) * state["scale"][None, :]
+    projection = state.get("projection")
+    if projection is not None:
+        projected = base @ projection
+        base = np.concatenate(
+            [base, float(state.get("projection_weight", 1.0)) * projected], axis=1
+        )
+    return _norm(base)
+
+
 def _fit_qknnv42_state(
     support_x: np.ndarray,
     support_y: np.ndarray,
@@ -212,14 +223,64 @@ def _fit_qknnv42_state(
 ) -> tuple[dict[str, Any], dict[str, Any]]:
     """Enroll support once into the exact persistent state needed by onboard scoring."""
     adapter_mode = str(feature_adapter_mode).strip().lower()
-    if adapter_mode != "support_diag_whiten_fisher":
+    if adapter_mode not in {
+        "none",
+        "support_center",
+        "support_diag_whiten",
+        "support_diag_whiten_fisher",
+        "support_mean_subspace1",
+        "support_mean_subspace2",
+        "support_mean_subspace4",
+    }:
         raise ValueError(f"unsupported qKNNV42 feature adapter mode: {feature_adapter_mode}")
     labels = support_y.astype(str)
     classes = sorted(set(labels.tolist()))
     class_to_i = {label: index for index, label in enumerate(classes)}
     class_indices = np.asarray([class_to_i[label] for label in labels.tolist()], dtype=np.int32)
-    center, scale, transform_info = _fit_diag_whiten_fisher(support_x, labels, strength=0.1)
-    support = _apply_diag_whiten_fisher(support_x, center, scale)
+    normalized_support = _norm(support_x)
+    if adapter_mode == "none":
+        center = np.zeros(normalized_support.shape[1], dtype=np.float64)
+        scale = np.ones(normalized_support.shape[1], dtype=np.float64)
+    elif adapter_mode == "support_center":
+        center = normalized_support.mean(axis=0)
+        scale = np.ones(normalized_support.shape[1], dtype=np.float64)
+    elif adapter_mode == "support_diag_whiten":
+        center = normalized_support.mean(axis=0)
+        whiten = 1.0 / np.sqrt(
+            np.maximum((normalized_support - center).var(axis=0), 1.0e-5)
+        )
+        scale = np.clip(
+            np.power(whiten / max(float(np.median(whiten)), 1.0e-6), 0.5),
+            0.05,
+            20.0,
+        )
+    elif adapter_mode == "support_diag_whiten_fisher":
+        center, scale, _ = _fit_diag_whiten_fisher(support_x, labels, strength=0.1)
+    else:
+        center = normalized_support.mean(axis=0)
+        scale = np.ones(normalized_support.shape[1], dtype=np.float64)
+    projection = None
+    projection_weight = 0.0
+    if adapter_mode.startswith("support_mean_subspace"):
+        class_means = np.vstack(
+            [normalized_support[labels == label].mean(axis=0) - center for label in classes]
+        )
+        _u, singular, vh = np.linalg.svd(class_means, full_matrices=False)
+        rank = min(max(1, len(classes) - 1), int(np.sum(singular > 1.0e-8)))
+        projection = vh[:rank].T.astype(np.float64, copy=False)
+        projection_weight = float(adapter_mode.removeprefix("support_mean_subspace"))
+    transform_info = {
+        "transform_scale_min": float(scale.min()),
+        "transform_scale_max": float(scale.max()),
+        "transform_scale_mean": float(scale.mean()),
+    }
+    transform_state = {
+        "center": center,
+        "scale": scale,
+        "projection": projection,
+        "projection_weight": projection_weight,
+    }
+    support = _apply_qknnv42_transform(support_x, transform_state)
     quantized_all = np.clip(np.rint(127.0 * support), -127, 127).astype(np.int8)
     restored_all = _norm(quantized_all.astype(np.float64) / 127.0)
     prototypes = np.vstack([
@@ -259,6 +320,8 @@ def _fit_qknnv42_state(
         "prototypes": prototypes,
         "center": center,
         "scale": scale,
+        "projection": projection,
+        "projection_weight": projection_weight,
     }
     state_info = {
         **transform_info,
@@ -276,7 +339,12 @@ def _fit_qknnv42_state(
         "class_index_bytes": int(stored_class_indices.nbytes),
         "class_label_table_bytes": int(class_label_table_bytes),
         "prototype_bytes_float64": int(prototypes.nbytes),
-        "transform_state_bytes_float64": int(center.nbytes + scale.nbytes),
+        "transform_projection_rank": 0 if projection is None else int(projection.shape[1]),
+        "transform_projection_weight": float(projection_weight),
+        "transform_projection_bytes_float64": 0 if projection is None else int(projection.nbytes),
+        "transform_state_bytes_float64": int(
+            center.nbytes + scale.nbytes + (0 if projection is None else projection.nbytes)
+        ),
         "enrollment_compactness_loss": float(np.mean(compactness)),
     }
     state_info["persistent_state_bytes"] = int(
@@ -305,7 +373,7 @@ def _qknnv42_score_matrix(
     )
     enrollment_elapsed = time.perf_counter() - enrollment_started
     scoring_started = time.perf_counter()
-    query = _apply_diag_whiten_fisher(query_x, state["center"], state["scale"])
+    query = _apply_qknnv42_transform(query_x, state)
     restored = _norm(state["quantized_support"].astype(np.float64) / 127.0)
     class_indices = state["class_indices"]
     classes = state["classes"]
@@ -393,6 +461,124 @@ def _qknnv42_score_matrix(
     }
 
 
+ROLE_PARTITION_ADAPTERS = {
+    "support_role_center": "support_center",
+    "support_role_diag_whiten": "support_diag_whiten",
+    "support_role_diag_whiten_fisher": "support_diag_whiten_fisher",
+}
+
+
+def _merge_role_partition_info(
+    old_info: dict[str, Any],
+    new_info: dict[str, Any],
+    *,
+    feature_adapter_mode: str,
+    query_count: int,
+) -> dict[str, Any]:
+    """Merge two disjoint Oracle role branches without hiding their resource cost."""
+    merged = dict(old_info)
+    sum_fields = {
+        "support_code_bytes",
+        "class_index_bytes",
+        "class_label_table_bytes",
+        "prototype_bytes_float64",
+        "transform_state_bytes_float64",
+        "persistent_state_bytes",
+        "enrollment_support_count",
+        "stored_quantized_support_code_count",
+        "stored_quantized_support_code_count_total",
+        "estimated_support_score_macs",
+        "estimated_prototype_score_macs",
+        "estimated_labelprop_macs",
+        "estimated_head_macs",
+        "enrollment_latency_sec",
+        "score_matrix_latency_sec",
+        "decision_latency_sec",
+        "onboard_scoring_latency_sec",
+        "dense_graph_cumulative_bytes",
+        "estimated_decision_cubic_work_units",
+    }
+    sum_fields.update(
+        key
+        for key in old_info
+        if key.startswith("aux_")
+        and key
+        not in {
+            "aux_feature_enabled",
+            "aux_feature_dim",
+            "aux_score_weight",
+            "aux_transform_mode",
+            "aux_transform_scale_min",
+            "aux_transform_scale_max",
+            "aux_transform_scale_mean",
+        }
+        and isinstance(old_info[key], (int, float))
+        and isinstance(new_info.get(key), (int, float))
+    )
+    for key in sum_fields:
+        if key in old_info and key in new_info:
+            merged[key] = old_info[key] + new_info[key]
+    for key in (
+        "dense_graph_bytes_lower_bound",
+        "dense_graph_peak_bytes_lower_bound",
+        "decision_workspace_bytes_lower_bound",
+    ):
+        merged[key] = max(int(old_info.get(key, 0)), int(new_info.get(key, 0)))
+    merged["dense_graph_node_count"] = int(old_info.get("dense_graph_node_count", 0)) + int(
+        new_info.get("dense_graph_node_count", 0)
+    )
+    merged["transform_scale_min"] = min(
+        float(old_info["transform_scale_min"]), float(new_info["transform_scale_min"])
+    )
+    merged["transform_scale_max"] = max(
+        float(old_info["transform_scale_max"]), float(new_info["transform_scale_max"])
+    )
+    old_support = max(1, int(old_info["enrollment_support_count"]))
+    new_support = max(1, int(new_info["enrollment_support_count"]))
+    merged["transform_scale_mean"] = (
+        old_support * float(old_info["transform_scale_mean"])
+        + new_support * float(new_info["transform_scale_mean"])
+    ) / (old_support + new_support)
+    merged["loss"] = (
+        old_support * float(old_info["loss"]) + new_support * float(new_info["loss"])
+    ) / (old_support + new_support)
+    merged.update(
+        {
+            "adaptation_objective": f"qknnv42_role_partition_{feature_adapter_mode}",
+            "transform_mode": feature_adapter_mode,
+            "feature_adapter_mode": feature_adapter_mode,
+            "feature_adapter_gradient_updates": 0,
+            "feature_adapter_uses_query": False,
+            "feature_adapter_updates_adv3b02": False,
+            "role_partition_scoring": True,
+            "role_partition_query_routing": "legacy_role_oracle",
+            "query_labels_used_for_adaptation": False,
+            "query_query_graph_used": bool(old_info["query_query_graph_used"])
+            or bool(new_info["query_query_graph_used"]),
+            "query_batch_state_required": True,
+            "decision_batch_state_required": True,
+            "role_oracle_used": True,
+            "equal_class_quota_used": True,
+            "onboard_scoring_latency_per_query_ms": 1000.0
+            * float(merged["onboard_scoring_latency_sec"])
+            / max(1, int(query_count)),
+            "role_partition_state": {
+                "old": {
+                    "support_count": int(old_info["enrollment_support_count"]),
+                    "persistent_state_bytes": int(old_info["persistent_state_bytes"]),
+                    "estimated_head_macs": int(old_info["estimated_head_macs"]),
+                },
+                "new": {
+                    "support_count": int(new_info["enrollment_support_count"]),
+                    "persistent_state_bytes": int(new_info["persistent_state_bytes"]),
+                    "estimated_head_macs": int(new_info["estimated_head_macs"]),
+                },
+            },
+        }
+    )
+    return merged
+
+
 def _qknnv42_predict(
     support_x: np.ndarray,
     support_y: np.ndarray,
@@ -412,6 +598,71 @@ def _qknnv42_predict(
 ) -> tuple[np.ndarray, dict[str, Any]]:
     decision = str(decision_mode).strip().lower()
     lp_mode = str(labelprop_mode).strip().lower()
+    role_base_mode = ROLE_PARTITION_ADAPTERS.get(str(feature_adapter_mode).strip().lower())
+    if role_base_mode is not None:
+        if decision != "legacy_role_quota_oracle":
+            raise ValueError("role-partition qKNN feature adaptation requires legacy role oracle")
+        if old_query_count is None:
+            raise ValueError("role-partition qKNN feature adaptation requires old_query_count")
+        support_labels = support_y.astype(str)
+        old_mask = np.isin(support_labels, sorted(old_labels))
+        if not np.any(old_mask) or np.all(old_mask):
+            return _qknnv42_predict(
+                support_x,
+                support_y,
+                query_x,
+                old_labels=old_labels,
+                aux_support_x=aux_support_x,
+                aux_query_x=aux_query_x,
+                aux_score_weight=aux_score_weight,
+                decision_mode=decision,
+                old_query_count=old_query_count,
+                query_per_class=query_per_class,
+                labelprop_mode=lp_mode,
+                old_anchor_bias=old_anchor_bias,
+                support_representation=support_representation,
+                feature_adapter_mode=role_base_mode,
+            )
+        old_count = int(old_query_count)
+        old_pred, old_info = _qknnv42_predict(
+            support_x[old_mask],
+            support_y[old_mask],
+            query_x[:old_count],
+            old_labels=set(old_labels),
+            aux_support_x=None if aux_support_x is None else aux_support_x[old_mask],
+            aux_query_x=None if aux_query_x is None else aux_query_x[:old_count],
+            aux_score_weight=aux_score_weight,
+            decision_mode=decision,
+            old_query_count=old_count,
+            query_per_class=query_per_class,
+            labelprop_mode=lp_mode,
+            old_anchor_bias=old_anchor_bias,
+            support_representation=support_representation,
+            feature_adapter_mode=role_base_mode,
+        )
+        new_pred, new_info = _qknnv42_predict(
+            support_x[~old_mask],
+            support_y[~old_mask],
+            query_x[old_count:],
+            old_labels=set(),
+            aux_support_x=None if aux_support_x is None else aux_support_x[~old_mask],
+            aux_query_x=None if aux_query_x is None else aux_query_x[old_count:],
+            aux_score_weight=aux_score_weight,
+            decision_mode=decision,
+            old_query_count=0,
+            query_per_class=query_per_class,
+            labelprop_mode=lp_mode,
+            old_anchor_bias=old_anchor_bias,
+            support_representation=support_representation,
+            feature_adapter_mode=role_base_mode,
+        )
+        info = _merge_role_partition_info(
+            old_info,
+            new_info,
+            feature_adapter_mode=str(feature_adapter_mode).strip().lower(),
+            query_count=len(query_x),
+        )
+        return np.concatenate([old_pred, new_pred]), info
     classes, scores, info = _qknnv42_score_matrix(
         support_x,
         support_y,
@@ -582,6 +833,62 @@ def _accuracy(pred: np.ndarray, truth: np.ndarray) -> float:
     return float(np.mean(pred.astype(str) == truth.astype(str)))
 
 
+def _attach_post_adapter_resources(
+    info: dict[str, Any], cache_manifest: dict[str, Any], *, support_count: int,
+    query_count: int,
+) -> None:
+    post = dict(cache_manifest.get("qknn_post_feature_adapter", {}))
+    if not post:
+        params = 0
+        macs_per_sample = 0
+        state_bytes = 0
+        mode = "none"
+    else:
+        checks = {
+            "payload_source": cache_manifest.get("payload_source")
+            == "qknnv42_post_feature_adapter_v1",
+            "post_applied": cache_manifest.get("post_feature_adapter_applied") is True,
+            "parent_frozen": cache_manifest.get("parent_payload_source")
+            == "qknnv42_frozen_adv3b02_identity_only_features_v1",
+            "no_target_rows_for_fit": post.get("uses_target_rows_for_fit") is False,
+            "no_target_labels_for_fit": post.get("uses_target_labels_for_fit") is False,
+            "no_target_query_for_fit": post.get("uses_target_query_for_fit") is False,
+            "adv3b02_frozen": post.get("updates_adv3b02") is False
+            and int(post.get("gradient_updates_adv3b02", -1)) == 0,
+        }
+        failed = [name for name, passed in checks.items() if not passed]
+        if failed:
+            raise ValueError(f"invalid qKNN post-feature adapter provenance: {failed}")
+        params = int(post.get("parameter_count", -1))
+        macs_per_sample = int(post.get("estimated_macs_per_sample", -1))
+        state_bytes = int(post.get("parameter_bytes_fp32", params * 4))
+        if params < 0 or macs_per_sample < 0 or state_bytes < 0:
+            raise ValueError("qKNN post-feature adapter resources must be nonnegative")
+        mode = str(post.get("mode", "unknown"))
+    info.update(
+        {
+            "post_feature_adapter_mode": mode,
+            "post_feature_adapter_parameter_count": params,
+            "post_feature_adapter_macs_per_sample": macs_per_sample,
+            "post_feature_adapter_support_macs": int(
+                macs_per_sample * int(support_count)
+            ),
+            "post_feature_adapter_query_macs": int(macs_per_sample * int(query_count)),
+            "post_feature_adapter_total_macs": int(
+                macs_per_sample * (int(support_count) + int(query_count))
+            ),
+            "post_feature_adapter_state_bytes": state_bytes,
+            "estimated_head_macs_with_post_adapter": int(
+                info["estimated_head_macs"]
+                + macs_per_sample * (int(support_count) + int(query_count))
+            ),
+            "persistent_state_bytes_with_post_adapter": int(
+                info["persistent_state_bytes"] + state_bytes
+            ),
+        }
+    )
+
+
 def _detail_rows(pred: np.ndarray, truth: np.ndarray, meta: list[dict[str, str]], scenario: str) -> list[dict[str, Any]]:
     groups: dict[tuple[str, str, str, str, str], list[int]] = {}
     for i, row in enumerate(meta):
@@ -672,8 +979,19 @@ def validate_config(config: dict[str, Any]) -> None:
     feature_adapter_mode = str(
         config.get("qknnv42_feature_adapter_mode", "support_diag_whiten_fisher")
     ).strip().lower()
-    if feature_adapter_mode != "support_diag_whiten_fisher":
+    if feature_adapter_mode not in {
+        "none",
+        "support_center",
+        "support_diag_whiten",
+        "support_diag_whiten_fisher",
+        "support_mean_subspace1",
+        "support_mean_subspace2",
+        "support_mean_subspace4",
+        *ROLE_PARTITION_ADAPTERS,
+    }:
         raise ValueError(f"unsupported qknnv42_feature_adapter_mode: {feature_adapter_mode}")
+    if feature_adapter_mode in ROLE_PARTITION_ADAPTERS and decision_mode != "legacy_role_quota_oracle":
+        raise ValueError("role-partition qKNN feature adaptation requires legacy role oracle")
     old_anchor_bias = float(config.get("qknnv42_old_anchor_bias", 0.001))
     if not math.isfinite(old_anchor_bias) or abs(old_anchor_bias) > 0.1:
         raise ValueError("qknnv42_old_anchor_bias must be finite and within [-0.1,0.1]")
@@ -810,6 +1128,13 @@ def run(config: dict[str, Any], run_dir: Path) -> dict[str, Any]:
                        "old_before_increment_diagnostic_latency_sec": diagnostic_elapsed,
                        "old_to_seen_new_rate": float(np.mean(np.isin(predicted[:old_count], new_labels))),
                        "seen_new_to_old_rate": float(np.mean(np.isin(predicted[old_count:], old_labels)))}
+        if method == "cvs_qknnv42":
+            _attach_post_adapter_resources(
+                info,
+                cache_manifest,
+                support_count=len(support_idx),
+                query_count=len(query_idx),
+            )
         metrics.update({"adaptation_latency_sec": elapsed,
                         "latency_per_query_ms": elapsed * 1000.0 / len(query_idx), **info})
         metrics_by_scenario[scenario] = metrics
@@ -863,7 +1188,10 @@ def run(config: dict[str, Any], run_dir: Path) -> dict[str, Any]:
     for name, payload in (("metrics.json", result), ("split_manifest.json", manifest),
                           ("resolved_config.json", config), ("detailed_metrics.json", detailed),
                           ("loss_trace.json", trace)):
-        (run_dir / name).write_text(json.dumps(payload, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+        (run_dir / name).write_text(
+            json.dumps(payload, ensure_ascii=False, indent=2, allow_nan=False) + "\n",
+            encoding="utf-8",
+        )
     _write_csv(run_dir / "score_table.csv", score_rows)
     _write_csv(run_dir / "detailed_metrics.csv", detailed)
     _write_csv(run_dir / "loss_trace.csv", trace)
@@ -894,11 +1222,12 @@ def main() -> int:
         config["stage"] = METHOD_STAGE[args.method]
     validate_config(config)
     if args.dry_run:
-        print(json.dumps(config, ensure_ascii=False, sort_keys=True))
+        print(json.dumps(config, ensure_ascii=False, sort_keys=True, allow_nan=False))
         return 0
     result = run(config, args.run_dir)
     print(json.dumps({"experiment_id": result["experiment_id"], "method": result["method"],
-                      "metrics": result["metrics"], "run_dir": str(args.run_dir)}, ensure_ascii=False, sort_keys=True))
+                      "metrics": result["metrics"], "run_dir": str(args.run_dir)},
+                     ensure_ascii=False, sort_keys=True, allow_nan=False))
     return 0
 
 

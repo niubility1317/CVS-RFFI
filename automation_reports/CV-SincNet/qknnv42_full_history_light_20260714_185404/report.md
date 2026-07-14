@@ -145,3 +145,38 @@ N607仍有活动训练时，本轮只读拉取既有严格历史5-view+adapter60
 - 最终选择view数最少且三个矩阵均值相对历史完整体均下降不超过3pp的候选；
 - 若冻结ADV3B02的5-view候选已经下降超过3pp，则先优化qKNN feature adapter，不得用重新训练ADV3B02绕过要求；
 - 角色/配额Oracle未移除前，结论始终保持`NON_DEPLOYMENT_ORACLE_DIAGNOSTIC`。
+
+## 10.冻结ADV3B02后的qKNN侧特征适配搜索
+
+本轮在严格冻结、单视图target cache上完成三组support-only搜索。所有候选均不更新ADV3B02，不读取query标签，且逐行校验与严格历史125行split一致。
+
+|搜索族|候选数/运行数|最佳候选|old/new/H|相对严格历史下降pp|结论|
+|---|---:|---|---|---|---|
+|基础中心/对角白化/Fisher×FFT权重|16/2000|`support_center+FFT w=0.70`|81.80%/83.45%/82.23%|-2.26/-9.79/-5.99|失败；new和H未过3pp|
+|old/new角色分支适配×FFT权重|15/1875|`support_role_center+FFT w=0.70`|81.84%/85.05%/83.00%|-2.22/-8.19/-5.23|当前最佳冻结qKNN替代，但仍失败|
+|类均值子空间×FFT权重|12/1500|`support_mean_subspace1+FFT w=0.65`|81.74%/83.41%/82.19%|-2.32/-9.83/-6.04|失败|
+|源域教师线性ridge|4 policy/500|最佳H约81.94%|未达到门槛|源域holdout cosine约0.90仍不能恢复target几何|
+
+结论：仅靠support中心化、对角Fisher、role拆分或低秩类均值子空间，能够把old差距压进3pp，但无法恢复adapter60对seen-new几何的贡献。当前最佳`81.84/85.05/83.00`不能晋升为“完整历史≤3pp轻量替代”。问题不在qKNN评分MAC，而在移除60epoch identity内部适配后，冻结`z_id`对两类seen-new的类间结构不足。
+
+## 11.单qKNN性能标签与独立确认
+
+单qKNN路径与完整历史Oracle严格分开：单视图、逐样本argmax、dense LP关闭、无角色Oracle、无类别配额、无decision workspace。seed713101-713105用于adapter/FFT权重/old-bias选择；seed713106-713110用于独立125行确认。
+
+|性能标签|输入与配置|选择集old/new/H|独立确认old/new/H|head MAC|持久状态|判定|
+|---|---|---|---|---:|---:|---|
+|`STRICT_SINGLE_QKNN_NOFFT_CONFIRMED`|`z_id160`；Fisher；FFT关闭；bias=-0.10|56.23%/56.83%/55.44%|56.47%/58.74%/56.83%|1.761M|22.81KB|严格单qKNN无FFT确认结果|
+|`STRICT_SINGLE_QKNN_FFT96_CONFIRMED`|`z_id160+FFT96`；Fisher；w=0.70；bias=-0.08|70.50%/72.83%/71.18%|70.98%/74.69%/72.33%|2.818M|36.62KB|当前最佳可部署单qKNN标签|
+
+`STRICT_SINGLE_QKNN_FFT96_CONFIRMED`相对无FFT确认行提高old 14.51pp、new 15.95pp、H 15.51pp；两行使用同一确认seed网格和同一严格冻结cache，但bias分别由各自选择集确定，因此该差值表示完整配置差异，不应写成纯FFT单因素效应。两行均没有Oracle和batch决策状态，计算量远低于完整历史链路，但都不满足相对88.23%H下降不超过3pp的完整历史门槛。
+
+对应artifact：
+
+- `local_artifacts/qknnv42_single_qknn_fft_holdout_20260714_2200/`；
+- `local_artifacts/qknnv42_single_qknn_nofft_holdout_20260714_2200/`；
+- `local_artifacts/qknnv42_single_qknn_adapter_sweep_none_20260714_2120/`；
+- `local_artifacts/qknnv42_single_qknn_bias_ext_sweep_none_20260714_2140/`。
+
+## 12.下一步qKNN轻量学习适配
+
+为避免重新训练ADV3B02，新增`LayerNorm+160→rank→160`的qKNN后置低秩残差MLP。它只使用1440个源域冻结/adapter60教师特征对进行蒸馏，target row和target query均不参与拟合；计划在N607物理GPU6搜索`rank={32,64,128}`、`alpha={0.25,0.5,1.0}`并训练200epoch。独立实验报告为`automation_reports/CV-SincNet/qknnv42_source_mlp_n607_20260714_2045/report.md`。该路线只有在映射cache回到严格125行并同时满足old/new/H三项3pp门槛后才能晋升。

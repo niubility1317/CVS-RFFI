@@ -135,6 +135,12 @@ def _validate_frozen_feature_caches(
                 "domain_branch_not_executed": manifest.get("domain_branch_executed_for_qknn")
                 is False,
                 "feature_name": str(manifest.get("feature_name", "")) == "z_id",
+                "no_post_feature_adapter": "qknn_post_feature_adapter" not in manifest
+                and manifest.get("post_feature_adapter_applied") is not True,
+                "qknn_registered_roles_only": manifest.get("export_role_scope")
+                == "qknn_registered_only"
+                and set(manifest.get("omitted_unused_qknn_roles", []))
+                == {"source", "proxy_unknown", "target_unknown"},
                 "checkpoint_load_strict": manifest.get("checkpoint_load_strict") is True,
                 "checkpoint_load_audit": all(
                     int(load_audit.get(key, -1)) == 0

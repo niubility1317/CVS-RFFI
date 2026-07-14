@@ -176,8 +176,15 @@ def _build_wisig_dataset(
     max_samples_per_combo: int,
     max_samples_per_tx: int,
     seed: int,
+    dataset_cache: dict[str, dict[str, Any]] | None = None,
 ):
-    ds = load_wisig_compact_pkl(pkl_path)
+    cache_key = str(Path(pkl_path).resolve())
+    if dataset_cache is not None and cache_key in dataset_cache:
+        ds = dataset_cache[cache_key]
+    else:
+        ds = load_wisig_compact_pkl(pkl_path)
+        if dataset_cache is not None:
+            dataset_cache[cache_key] = ds
     tx_idx, tx_labels = _resolve_tx_indices(ds.get("tx_list", []), tx_spec, field=f"{role}_tx_ids")
     day_keep = _resolve_indices(ds.get("capture_date_list", []), days)
     rx_keep = _resolve_indices(ds.get("rx_list", []), rxs)

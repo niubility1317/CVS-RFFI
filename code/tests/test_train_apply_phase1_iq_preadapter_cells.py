@@ -124,6 +124,19 @@ class TrainApplyPhase1IqPreadapterCellTest(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "model_adapter_mode none"):
             build_frozen_backbone_export_adapter(args, torch.device("cpu"))
 
+    def test_registered_only_optional_unknown_filter_accepts_none(self):
+        from train_apply_phase1_iq_preadapter_20260703 import (
+            _filter_optional_dataset_to_reference,
+        )
+
+        self.assertIsNone(
+            _filter_optional_dataset_to_reference(
+                None,
+                role="target_unknown",
+                reference_keys={"target_unknown": [("a", "b", "c", "d", "e")]},
+            )
+        )
+
 
 if __name__ == "__main__":
     unittest.main()

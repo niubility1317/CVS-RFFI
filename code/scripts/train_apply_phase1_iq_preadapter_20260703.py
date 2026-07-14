@@ -116,7 +116,12 @@ def _feature_forward(model: nn.Module, x: torch.Tensor, feature_name: str) -> tu
 
 
 def _build_model(args: argparse.Namespace, source_ds, device: torch.device, *, freeze: bool = True) -> nn.Module:
-    ckpt = torch.load(args.ckpt, map_location="cpu")
+    try:
+        # Project checkpoints include trusted local training metadata classes;
+        # PyTorch 2.6 changed the default to weights_only=True.
+        ckpt = torch.load(args.ckpt, map_location="cpu", weights_only=False)
+    except TypeError:
+        ckpt = torch.load(args.ckpt, map_location="cpu")
     model, checkpoint_load_audit = build_exact_ssdg_model_from_checkpoint(
         ckpt,
         input_len=int(args.wisig_out_len),
@@ -709,6 +714,7 @@ def _dataset_for_role(args: argparse.Namespace, *, role: str, pkl: str, tx_ids: 
         max_samples_per_combo=int(args.max_samples_per_combo),
         max_samples_per_tx=int(max_samples_per_tx),
         seed=int(args.seed) + int(seed_offset),
+        dataset_cache=getattr(args, "_dataset_payload_cache", None),
     )
     return ds, info
 
@@ -760,6 +766,14 @@ def _filter_dataset_to_reference(ds, *, role: str, reference_keys: dict[str, lis
         raise ValueError(f"reference samples missing for role={role}: count={len(missing)} preview={preview}")
     selected = [index_by_key[key] for key in desired]
     return WiSigSubsetDataset(ds, selected, split_source=f"{role}_reference_npz")
+
+
+def _filter_optional_dataset_to_reference(
+    ds, *, role: str, reference_keys: dict[str, list[tuple[str, str, str, str, str]]]
+):
+    if ds is None:
+        return None
+    return _filter_dataset_to_reference(ds, role=role, reference_keys=reference_keys)
 
 
 @torch.no_grad()
@@ -969,20 +983,36 @@ def export_cell(
     unknown_tx = cell_spec["target_unknown_tx"]
     scenarios = parse_sat_scenarios(str(args.sat_scenarios))
     reference_keys = _reference_keys_by_role(args.export_reference_npz)
-    source_ds, source_info = _dataset_for_role(args, role="source", pkl=str(args.wisig_pkl), tx_ids=str(args.source_tx_ids), rxs=str(args.source_rxs), seed_offset=101)
-    proxy_ds, proxy_info = _dataset_for_role(args, role="proxy_unknown", pkl=str(args.new_wisig_pkl), tx_ids=str(args.proxy_unknown_tx_ids), rxs=str(args.proxy_unknown_rxs), seed_offset=211)
+    role_scope = str(args.export_role_scope).strip().lower()
+    registered_only = role_scope == "qknn_registered_only"
+    source_ds = None
+    source_info = None
+    proxy_ds = None
+    proxy_info = None
+    if not registered_only:
+        source_ds, source_info = _dataset_for_role(args, role="source", pkl=str(args.wisig_pkl), tx_ids=str(args.source_tx_ids), rxs=str(args.source_rxs), seed_offset=101)
+        proxy_ds, proxy_info = _dataset_for_role(args, role="proxy_unknown", pkl=str(args.new_wisig_pkl), tx_ids=str(args.proxy_unknown_tx_ids), rxs=str(args.proxy_unknown_rxs), seed_offset=211)
     target_old_ds, target_old_info = _dataset_for_role(args, role="target_old", pkl=str(args.wisig_pkl), tx_ids=str(args.target_old_tx_ids), rxs=target_rx, seed_offset=307)
     target_new_ds = None
     target_new_info = None
     if parse_tx_id_list(target_new_tx):
         target_new_ds, target_new_info = _dataset_for_role(args, role="target_new", pkl=str(args.new_wisig_pkl), tx_ids=target_new_tx, rxs=target_rx, seed_offset=353)
-    unknown_ds, unknown_info = _dataset_for_role(args, role="target_unknown", pkl=str(args.new_wisig_pkl), tx_ids=unknown_tx, rxs=target_rx, seed_offset=409)
-    source_ds = _filter_dataset_to_reference(source_ds, role="source", reference_keys=reference_keys)
-    proxy_ds = _filter_dataset_to_reference(proxy_ds, role="proxy_unknown", reference_keys=reference_keys)
+    if registered_only and target_new_ds is None:
+        raise ValueError("qknn_registered_only requires explicit target_new TX IDs")
+    unknown_ds = None
+    unknown_info = None
+    if not registered_only:
+        unknown_ds, unknown_info = _dataset_for_role(args, role="target_unknown", pkl=str(args.new_wisig_pkl), tx_ids=unknown_tx, rxs=target_rx, seed_offset=409)
+    if source_ds is not None:
+        source_ds = _filter_dataset_to_reference(source_ds, role="source", reference_keys=reference_keys)
+    if proxy_ds is not None:
+        proxy_ds = _filter_dataset_to_reference(proxy_ds, role="proxy_unknown", reference_keys=reference_keys)
     target_old_ds = _filter_dataset_to_reference(target_old_ds, role="target_old", reference_keys=reference_keys)
     if target_new_ds is not None:
         target_new_ds = _filter_dataset_to_reference(target_new_ds, role="target_new", reference_keys=reference_keys)
-    unknown_ds = _filter_dataset_to_reference(unknown_ds, role="target_unknown", reference_keys=reference_keys)
+    unknown_ds = _filter_optional_dataset_to_reference(
+        unknown_ds, role="target_unknown", reference_keys=reference_keys
+    )
     for info, ds in (
         (source_info, source_ds),
         (proxy_info, proxy_ds),
@@ -995,14 +1025,16 @@ def export_cell(
         if reference_keys:
             info["reference_filtered"] = True
             info["size"] = int(len(ds))
-    role_items = [
-        ("source", source_ds, 2001),
-        ("proxy_unknown", proxy_ds, 2011),
-        ("target_old", target_old_ds, 2021),
-    ]
+    role_items = [("target_old", target_old_ds, 2021)]
+    if not registered_only:
+        role_items[0:0] = [
+            ("source", source_ds, 2001),
+            ("proxy_unknown", proxy_ds, 2011),
+        ]
     if target_new_ds is not None:
         role_items.append(("target_new", target_new_ds, 2027))
-    role_items.append(("target_unknown", unknown_ds, 2031))
+    if not registered_only:
+        role_items.append(("target_unknown", unknown_ds, 2031))
     parts = []
     clean_parts = []
     identity_parts = []
@@ -1040,6 +1072,10 @@ def export_cell(
             getattr(model, "_checkpoint_load_audit", {})
         ),
         "target_channel_view": "satellite/LEO",
+        "export_role_scope": role_scope,
+        "omitted_unused_qknn_roles": (
+            ["source", "proxy_unknown", "target_unknown"] if registered_only else []
+        ),
         "channel_views": [
             "frozen_adv3b02_identity_only_z_id"
             if frozen_qknn_export
@@ -1110,6 +1146,12 @@ def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
     p.add_argument("--out_name", default="features_iqpre_v11.npz")
     p.add_argument("--clean_out_name", default="features_clean_repaired.npz")
     p.add_argument("--identity_subdir", default="LEOIQ28_IDENTITY")
+    p.add_argument(
+        "--export_role_scope",
+        choices=("all", "qknn_registered_only"),
+        default="all",
+        help="qknn_registered_only exports only target_old/target_new rows consumed by Stage2-C qKNN",
+    )
     p.add_argument("--export_clean_control", action=argparse.BooleanOptionalAction, default=True)
     p.add_argument("--export_identity", action=argparse.BooleanOptionalAction, default=False)
     p.add_argument(
@@ -1232,12 +1274,15 @@ def main(argv: Sequence[str] | None = None) -> int:
     base_subdir = str(args.out_subdir)
     original_policy = str(args.satellite_tta_policy)
     device = torch.device(str(args.device) if torch.cuda.is_available() else "cpu")
-    source_loader, source_ds, _source_info = _make_source_loader(args)
-    model = _build_model(args, source_ds, device, freeze=True)
     if bool(args.skip_adapter_training):
+        args._dataset_payload_cache = {}
+        source_loader = None
+        model = _build_model(args, None, device, freeze=True)
         teacher_model = model
         adapter, train_info = build_frozen_backbone_export_adapter(args, device)
     else:
+        source_loader, source_ds, _source_info = _make_source_loader(args)
+        model = _build_model(args, source_ds, device, freeze=True)
         teacher_model = _build_model(args, source_ds, device, freeze=True)
         adapter, train_info = train_adapter(args, model, teacher_model, source_loader, device)
     exported = []

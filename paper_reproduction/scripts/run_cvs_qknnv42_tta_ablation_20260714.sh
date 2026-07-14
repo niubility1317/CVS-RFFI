@@ -40,6 +40,7 @@ CUDA_VISIBLE_DEVICES="$GPU" "$PYTHON" -u code/scripts/train_apply_phase1_iq_prea
   --out_name features_frozen_adv3b02_fft96.npz \
   --no-export_clean_control \
   --no-export_identity \
+  --export_role_scope qknn_registered_only \
   --cells "$CELLS" \
   --feature_name z_id \
   --aux_fft_logmag_dim 96 \

@@ -10,6 +10,7 @@ import pytest
 from paper_reproduction.cvs_aligned.cvs_method_runner import (
     SCENARIOS,
     _fit_qknnv42_state,
+    _attach_post_adapter_resources,
     run,
     validate_config,
 )
@@ -251,6 +252,34 @@ def test_cvs_qknnv42_rejects_unknown_feature_adapter(tmp_path: Path) -> None:
         validate_config(config)
 
 
+def test_cvs_qknnv42_role_partition_adapter_is_oracle_only(tmp_path: Path) -> None:
+    config = _config(tmp_path, "cvs_qknnv42")
+    config["qknnv42_feature_adapter_mode"] = "support_role_center"
+    with pytest.raises(ValueError, match="requires legacy role oracle"):
+        validate_config(config)
+
+
+def test_cvs_qknnv42_role_partition_adapter_keeps_separate_state(tmp_path: Path) -> None:
+    config = _config(tmp_path, "cvs_qknnv42")
+    config["qknnv42_feature_adapter_mode"] = "support_role_center"
+    config["qknnv42_decision_mode"] = "legacy_role_quota_oracle"
+    config["non_deployment_oracle_diagnostic"] = True
+    result = run(config, tmp_path / "qknn_role_partition")
+    info = result["metrics_by_scenario"][SCENARIOS[0]]
+
+    assert info["feature_adapter_mode"] == "support_role_center"
+    assert info["role_partition_scoring"] is True
+    assert info["role_partition_query_routing"] == "legacy_role_oracle"
+    assert info["feature_adapter_gradient_updates"] == 0
+    assert info["feature_adapter_uses_query"] is False
+    assert info["role_partition_state"]["old"]["support_count"] == 4
+    assert info["role_partition_state"]["new"]["support_count"] == 2
+    assert info["persistent_state_bytes"] == (
+        info["role_partition_state"]["old"]["persistent_state_bytes"]
+        + info["role_partition_state"]["new"]["persistent_state_bytes"]
+    )
+
+
 def test_qknnv42_support_representation_keeps_full_enrollment_fit() -> None:
     rng = np.random.default_rng(713115)
     support_x = rng.normal(size=(8, 6))
@@ -269,3 +298,68 @@ def test_qknnv42_support_representation_keeps_full_enrollment_fit() -> None:
         np.testing.assert_allclose(diverse_state[key], all_state[key])
     assert diverse_info["enrollment_support_count"] == 8
     assert np.all(np.bincount(diverse_state["class_indices"], minlength=2) <= 2)
+
+
+@pytest.mark.parametrize(
+    "mode",
+    [
+        "none",
+        "support_center",
+        "support_diag_whiten",
+        "support_diag_whiten_fisher",
+        "support_mean_subspace1",
+        "support_mean_subspace2",
+        "support_mean_subspace4",
+    ],
+)
+def test_qknnv42_feature_adapter_modes_are_support_only(mode: str) -> None:
+    rng = np.random.default_rng(713116)
+    support_x = rng.normal(size=(8, 6))
+    support_y = np.asarray(["a"] * 4 + ["b"] * 4)
+    state, info = _fit_qknnv42_state(
+        support_x,
+        support_y,
+        feature_adapter_mode=mode,
+    )
+
+    assert info["feature_adapter_mode"] == mode
+    assert info["feature_adapter_gradient_updates"] == 0
+    assert info["feature_adapter_uses_query"] is False
+    assert info["feature_adapter_updates_adv3b02"] is False
+    assert state["center"].shape == (6,)
+    assert state["scale"].shape == (6,)
+    assert np.all(np.isfinite(state["center"]))
+    assert np.all(np.isfinite(state["scale"]))
+    if mode == "none":
+        np.testing.assert_array_equal(state["center"], np.zeros(6))
+        np.testing.assert_array_equal(state["scale"], np.ones(6))
+    if mode.startswith("support_mean_subspace"):
+        assert state["projection"].shape == (6, 1)
+        assert info["transform_projection_rank"] == 1
+        assert info["transform_projection_bytes_float64"] > 0
+
+
+def test_qknnv42_post_adapter_resources_are_not_hidden() -> None:
+    info = {"estimated_head_macs": 1000, "persistent_state_bytes": 200}
+    manifest = {
+        "payload_source": "qknnv42_post_feature_adapter_v1",
+        "parent_payload_source": "qknnv42_frozen_adv3b02_identity_only_features_v1",
+        "post_feature_adapter_applied": True,
+        "qknn_post_feature_adapter": {
+            "mode": "source_teacher_residual_mlp",
+            "uses_target_rows_for_fit": False,
+            "uses_target_labels_for_fit": False,
+            "uses_target_query_for_fit": False,
+            "updates_adv3b02": False,
+            "gradient_updates_adv3b02": 0,
+            "parameter_count": 10,
+            "estimated_macs_per_sample": 20,
+            "parameter_bytes_fp32": 40,
+        },
+    }
+    _attach_post_adapter_resources(info, manifest, support_count=3, query_count=8)
+    assert info["post_feature_adapter_support_macs"] == 60
+    assert info["post_feature_adapter_query_macs"] == 160
+    assert info["post_feature_adapter_total_macs"] == 220
+    assert info["estimated_head_macs_with_post_adapter"] == 1220
+    assert info["persistent_state_bytes_with_post_adapter"] == 240
