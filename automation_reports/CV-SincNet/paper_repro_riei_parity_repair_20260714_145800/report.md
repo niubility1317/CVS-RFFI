@@ -505,3 +505,9 @@
 - 本地`bash -n`通过；dry-run完整展开4个job、4个capacity gate、4条momentum0.9、4条short-stem和4条mean命令。launcher根目录、Git镜像及非Git快照SHA256均为`ee692628dd8725f923f9aa7ba1edd8ddfa98a86cb700fdeca4e8a32c2f9455d5`；快照位于`code/snapshots/paper_repro_riei_momentum09_probe_seed1337_20260715_071500/`。
 - Git提交为`23ca1c2 Probe RIEI SGD momentum parity`。07:07直接N607预检与实时process/CWD/cmdline检查通过：GPU0–7均无compute，目标run/log目录不存在；计划GPU0–3各新增1个训练，满足`existing_compute+planned_peak=1≤2`。
 - 仅同步新launcher；远端SHA256与本地一致，远端`bash -n`及4-job dry-run通过。正式命令为`bash code/scripts/launch_riei_momentum09_probe_20260715.sh --launch --gpu-ids 0,1,2,3 --max-train-per-gpu 2`。
+
+### 正式启动与4分钟健康检查
+
+- 正式命令按上述记录执行；launcher再次确认GPU0–3的`current=0`、`planned_peak=1`、`total_peak=1≤2`。4个queue PID为`1012674,1012676,1012678,1012684`，4个trainer PID为`1012778,1012785,1012786,1012792`。
+- 健康检查时row3、4、11、12分别完整写入epoch`11,10,10,10/200`，4份`metrics.json`均连续。12份当前日志共359行/43841字节，4份训练日志均确认稳定partition、`short_stem1d`和`sgd_momentum=0.9`。
+- 全量硬错误扫描计数0；GPU0–3各仅1个本任务compute，SM占用约19%–31%，GPU4–7无compute。当前判定为`RUNNING_STARTUP_HEALTHY_THROUGH_EPOCH_10_11`，该诊断尚未产生paper last10结果。SSH/SCP短连接全部退出，本地`ssh.exe=0`、N607 TCP22已建立连接`=0`。

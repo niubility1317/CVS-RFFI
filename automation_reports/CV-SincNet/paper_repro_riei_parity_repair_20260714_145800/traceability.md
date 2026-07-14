@@ -13,11 +13,11 @@
 | RIEI-P09 | Eq.(2)–(8)把CE/MI/IE写为样本与receiver求和 | 完整12行采用单row消融胜出的mean | 保持其余协议不变，以`RIEI_REDUCTION=sum`运行完整12行论文字面尺度确认 | verified-rejected | 12×200epoch完成、硬错误0；均值68.75%，MAE7.92pp，命中1/12，显著劣于mean，拒绝sum作为支持尺度 |
 | RIEI-P10 | 论文仅说明WiSig FED为ResNet 1D-18，未公开stem卷积核/stride/max-pool | 当前固定ImageNet式`kernel7/stride2+maxpool` | 在row3/6/10/12上受控比较现有`imagenet1d`与`short_stem1d`；其余协议固定mean最优配置 | verified | 8×200epoch、硬错误0；short四行MAE4.02pp低于image的7.91pp，且3/4行降低绝对误差，预注册门槛通过 |
 | RIEI-P11 | Table III最终证据必须覆盖全部12个receiver组合；架构筛选不能替代正式矩阵 | short stem仅在4个诊断行验证 | 用`short_stem1d`和固定paper last10协议运行完整12行 | verified-rejected | 12×200epoch、硬错误0；均值72.76%，MAE3.14pp，命中7/12，未达到3pp与10/12门槛 |
-| RIEI-P12 | 论文未公开SGD是否包含momentum | 当前固定momentum0 | 在row3/4/11/12上受控测试常用momentum0.9；其余协议固定 | ready-to-launch | launcher bash-n及4-job dry-run通过；预注册门槛为四行MAE降低且至少3/4行绝对误差下降 |
+| RIEI-P12 | 论文未公开SGD是否包含momentum | 当前固定momentum0 | 在row3/4/11/12上受控测试常用momentum0.9；其余协议固定 | running | run`paper_repro_riei_momentum09_probe_seed1337_20260715_071500`健康运行至epoch10–11，硬错误0 |
 
 ## 声明边界
 
 - 论文未明确给出优化器名称和总epoch数；Eq.(10)–(11)描述的是梯度更新顺序，不能据此断言作者使用了PyTorch SGD。
 - 发现阶段只在Table III第1行比较训练动力学；最终论文结论必须用胜出配置重跑完整12行，不能用单row或目标域峰值代替。
 - 目标域逐epoch曲线仅用于诊断；下一轮正式分数采用论文明确的最终10个epoch，禁止target-oracle选epoch。
-- 当前反向审计：`verified=9`、`verified-rejected=2`、`ready-to-launch=1`、`deferred=0`、`blocked=0`。short stem把完整12行MAE降至3.14pp但命中仅7/12，正式结论仍为`NOT_REPRODUCED`。最高风险项转为未公开优化器momentum；若momentum诊断失败，再隔离固定partition下的模型seed敏感性。
+- 当前反向审计：`verified=9`、`verified-rejected=2`、`running=1`、`deferred=0`、`blocked=0`。short stem把完整12行MAE降至3.14pp但命中仅7/12，正式结论仍为`NOT_REPRODUCED`。最高风险项转为未公开优化器momentum；若momentum诊断失败，再隔离固定partition下的模型seed敏感性。
