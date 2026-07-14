@@ -60,3 +60,13 @@ DRIFT的raw negative-MSE、RIEI的CE/MI/IE sum reduction以及两篇论文的模
 - heartbeat`riei-drift`已更新为每30分钟监控本修复后run；运行中只读，不干预本run或已有Phase1。
 
 当前状态为`RUNNING_STARTUP_HEALTHY`，不是artifact-complete或论文复现成功结论。
+
+### 2026-07-14 10:39+08:00只读监控检查点
+
+- 状态：`RUNNING_HEALTHY`；已完成job=`0/13`，8个per-GPU queue PID均存活，当前本任务训练进程=`8`。
+- 进度：DRIFT到epoch26；首批7个RIEI均到epoch12；当前共8份训练日志，第二批5个RIEI尚在各自GPU顺序队列中等待，符合设计。
+- 队列：GPU0-7各出现1个`QUEUE-JOB-START`且尚无`QUEUE-JOB-END`；无非零退出状态。
+- 健康性：8份当前训练日志均完整扫描，未发现`Traceback`、`RuntimeError`、OOM、CUDA error、`NaN`或`Killed`。
+- GPU occupancy：GPU0-7均为`compute=2`；每GPU由1个既有Phase1训练和1个本任务训练组成，本任务未超过新增1个/GPU的边界；显存约`4022-4102MiB/GPU`。
+- Phase1保持运行，本检查点未启动、终止、重启、覆盖或修改任何远端任务与产物。
+- SSH/SCP均为短连接；检查完成后未保留交互式shell或转发。
