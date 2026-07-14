@@ -187,8 +187,15 @@ def _artifact_status(row: MatrixRow, *, scenarios: int = 3, query_per_tx: int = 
     }
 
 
-def _command(row: MatrixRow, *, python: str, config: Path, cvs_config: Path | None = None) -> list[str]:
-    module = (
+def _command(
+    row: MatrixRow,
+    *,
+    python: str,
+    config: Path,
+    cvs_config: Path | None = None,
+    module_override: str | None = None,
+) -> list[str]:
+    module = module_override or (
         "paper_reproduction.cvs_aligned.cvs_method_runner"
         if row.method in {"cvs_opgac", "cvs_qknnv42"}
         else MODULES[row.phase]
@@ -241,6 +248,11 @@ def main() -> int:
     parser.add_argument("--k-grid", default=",".join(str(value) for value in DEFAULT_K))
     parser.add_argument("--seeds", default=",".join(str(value) for value in DEFAULT_SEEDS))
     parser.add_argument("--python", default=sys.executable)
+    parser.add_argument(
+        "--module-override",
+        default=None,
+        help="Run every selected row through this module; used for shared-backbone controlled extensions.",
+    )
     parser.add_argument("--shard-count", type=int, default=1)
     parser.add_argument("--shard-index", type=int, default=0)
     parser.add_argument("--max-rows", type=int, default=0)
@@ -318,7 +330,13 @@ def main() -> int:
             continue
         Path(row.run_dir).mkdir(parents=True, exist_ok=True)
         Path(row.log_path).parent.mkdir(parents=True, exist_ok=True)
-        command = _command(row, python=args.python, config=args.config, cvs_config=args.cvs_config)
+        command = _command(
+            row,
+            python=args.python,
+            config=args.config,
+            cvs_config=args.cvs_config,
+            module_override=args.module_override,
+        )
         started = time.time()
         _append_event(event_path, {"event": "start", "row": asdict(row), "command": command, "time": started})
         with Path(row.log_path).open("w", encoding="utf-8") as log_handle:

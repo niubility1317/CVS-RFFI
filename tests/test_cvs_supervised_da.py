@@ -6,9 +6,26 @@ import torch.nn.functional as F
 
 from paper_reproduction.cvs_aligned.supervised_da import (
     dadda_sda_objective,
+    mrior_sda_batch_step,
     mrior_sda_objective,
     validate_supervised_da_manifest,
 )
+
+
+class _TinyMRIOR(torch.nn.Module):
+    def __init__(self) -> None:
+        super().__init__()
+        self.feature_extractor = torch.nn.Linear(2, 2)
+        self.classifier = torch.nn.Linear(2, 2)
+        self.estimate_network = torch.nn.Linear(2, 1)
+
+    def forward(self, x: torch.Tensor) -> dict[str, torch.Tensor]:
+        features = self.feature_extractor(x)
+        return {
+            "features": features,
+            "tx_logits": self.classifier(features),
+            "estimate_logits": self.estimate_network(features),
+        }
 
 
 def test_mrior_sda_uses_true_target_support_labels_and_backpropagates() -> None:
@@ -33,6 +50,31 @@ def test_mrior_sda_uses_true_target_support_labels_and_backpropagates() -> None:
     assert target_logits.grad is not None
     assert source_est.grad is not None
     assert target_est.grad is not None
+
+
+def test_mrior_sda_batch_step_uses_minimax_optimizer_split() -> None:
+    model = _TinyMRIOR()
+    optimizer_t = torch.optim.Adam(model.estimate_network.parameters(), lr=1.0e-3)
+    optimizer_ec = torch.optim.Adam(
+        list(model.feature_extractor.parameters()) + list(model.classifier.parameters()),
+        lr=1.0e-3,
+    )
+    before_t = model.estimate_network.weight.detach().clone()
+    before_e = model.feature_extractor.weight.detach().clone()
+    result = mrior_sda_batch_step(
+        model,
+        torch.tensor([[1.0, 0.0], [0.0, 1.0]]),
+        torch.tensor([0, 1]),
+        torch.tensor([[0.8, 0.2], [0.2, 0.8]]),
+        torch.tensor([0, 1]),
+        optimizer_t=optimizer_t,
+        optimizer_ec=optimizer_ec,
+        estimate_steps=2,
+    )
+    assert int(result["estimate_steps"]) == 2
+    assert torch.isfinite(result["loss"])
+    assert not torch.equal(before_t, model.estimate_network.weight)
+    assert not torch.equal(before_e, model.feature_extractor.weight)
 
 
 def test_dadda_sda_uses_true_labels_for_target_ce_and_lmmd() -> None:

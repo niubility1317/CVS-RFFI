@@ -12,6 +12,7 @@ from paper_reproduction.DADDA.losses import (
 )
 from paper_reproduction.mitigating_receiver_impact_da.losses import (
     class_balance_weights,
+    dv_kl_domain_alignment,
     gada_minimax_objective,
 )
 
@@ -87,6 +88,80 @@ def mrior_sda_objective(
         "target_ce_weight": torch.as_tensor(float(target_ce_weight), device=total.device),
         "dvkl_weight": torch.as_tensor(float(dvkl_weight), device=total.device),
         "mu": torch.as_tensor(float(mu), device=total.device),
+    }
+
+
+def mrior_sda_batch_step(
+    model: torch.nn.Module,
+    source_x: torch.Tensor,
+    source_labels: torch.Tensor,
+    target_support_x: torch.Tensor,
+    target_support_labels: torch.Tensor,
+    *,
+    optimizer_t: torch.optim.Optimizer,
+    optimizer_ec: torch.optim.Optimizer,
+    estimate_steps: int = 7,
+    target_ce_weight: float = 1.0,
+    dvkl_weight: float = 0.005,
+    mu: float = 0.5,
+    class_balance_smoothing: float = 0.0,
+) -> dict[str, torch.Tensor]:
+    """MRIOR Algorithm-1 update with true labels restricted to target support.
+
+    The estimate network T first maximizes the DV-KL estimate on detached E
+    features. T is then frozen while E/C minimize classification plus DV-KL.
+    This preserves the reproduced minimax update order and prevents T from
+    collapsing the objective through joint minimization.
+    """
+
+    if int(estimate_steps) <= 0:
+        raise ValueError("estimate_steps must be positive")
+    model.train()
+    source_outputs = model(source_x)
+    target_outputs = model(target_support_x)
+    source_features = source_outputs["features"]
+    target_features = target_outputs["features"]
+    estimate_loss = source_features.sum() * 0.0
+    estimate_zeta = source_features.sum() * 0.0
+    for _ in range(int(estimate_steps)):
+        optimizer_t.zero_grad(set_to_none=True)
+        estimate_zeta = dv_kl_domain_alignment(
+            model.estimate_network(source_features.detach()),
+            model.estimate_network(target_features.detach()),
+        )
+        estimate_loss = -estimate_zeta
+        estimate_loss.backward()
+        optimizer_t.step()
+
+    previous = [parameter.requires_grad for parameter in model.estimate_network.parameters()]
+    for parameter in model.estimate_network.parameters():
+        parameter.requires_grad_(False)
+    try:
+        source_outputs = dict(source_outputs)
+        target_outputs = dict(target_outputs)
+        source_outputs["estimate_logits"] = model.estimate_network(source_features)
+        target_outputs["estimate_logits"] = model.estimate_network(target_features)
+        losses = mrior_sda_objective(
+            source_outputs,
+            target_outputs,
+            source_labels=source_labels,
+            target_support_labels=target_support_labels,
+            target_ce_weight=target_ce_weight,
+            dvkl_weight=dvkl_weight,
+            mu=mu,
+            class_balance_smoothing=class_balance_smoothing,
+        )
+        optimizer_ec.zero_grad(set_to_none=True)
+        losses["loss"].backward()
+        optimizer_ec.step()
+    finally:
+        for parameter, requires_grad in zip(model.estimate_network.parameters(), previous):
+            parameter.requires_grad_(requires_grad)
+    return {
+        **{key: value.detach() for key, value in losses.items()},
+        "estimate_loss": estimate_loss.detach(),
+        "estimate_zeta": estimate_zeta.detach(),
+        "estimate_steps": torch.as_tensor(int(estimate_steps), device=source_x.device),
     }
 
 
@@ -201,7 +276,7 @@ def validate_supervised_da_manifest(payload: dict[str, Any]) -> dict[str, Any]:
             "supervised_target_support": True,
             "target_query_used_for_training": False,
             "target_query_used_for_model_selection": False,
-            "paper_faithful_claim_allowed": method == "protonet_cda",
+            "paper_faithful_claim_allowed": False,
         }
     )
     return checked

@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from pathlib import Path
+
 import torch
 
 from paper_reproduction.cvs_aligned.supervised_da_runner import (
@@ -8,6 +10,7 @@ from paper_reproduction.cvs_aligned.supervised_da_runner import (
     _set_method_learning_rate,
     _validate_config,
 )
+from paper_reproduction.scripts.run_cvs_publication_matrix import MatrixRow, _command
 
 
 def _config() -> dict:
@@ -81,3 +84,16 @@ def test_dadda_uses_paper_sgd_inverse_schedule() -> None:
     assert _set_method_learning_rate(optimizer, profile, step=1, total_steps=11) == 0.0001
     final_lr = _set_method_learning_rate(optimizer, profile, step=11, total_steps=11)
     assert final_lr < 0.0001
+
+
+def test_publication_matrix_can_route_shared_adv3b02_runner() -> None:
+    row = MatrixRow(
+        index=0, phase="stage2b", method="mrior_sda", receiver="20-1",
+        k_shot=5, seed=713101, split_seed=713101, experiment_id="example",
+        run_dir="runs/example", log_path="logs/example.log",
+    )
+    command = _command(
+        row, python="python", config=Path("config.json"),
+        module_override="paper_reproduction.cvs_aligned.adv3b02_supervised_da_runner",
+    )
+    assert command[3] == "paper_reproduction.cvs_aligned.adv3b02_supervised_da_runner"

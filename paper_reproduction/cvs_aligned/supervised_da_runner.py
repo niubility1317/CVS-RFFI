@@ -30,6 +30,7 @@ from paper_reproduction.cvs_aligned.evaluate import (
 )
 from paper_reproduction.cvs_aligned.supervised_da import (
     dadda_sda_objective,
+    mrior_sda_batch_step,
     mrior_sda_objective,
     validate_supervised_da_manifest,
 )
@@ -243,31 +244,54 @@ def _adapt_parametric(
     )
     source_batches = _cycle_batches(loader, int(config["adapt_steps"]))
     target_batches = _cycle_batches(target_loader, int(config["adapt_steps"]))
-    optimizer, optimizer_profile = _parametric_optimizer(
-        config, model, method=method, phase="adapt"
-    )
+    if method == "mrior_sda":
+        optimizer_ec, optimizer_profile = _parametric_optimizer(
+            config,
+            nn.ModuleList([model.feature_extractor, model.classifier]),
+            method=method,
+            phase="adapt",
+        )
+        optimizer_t, optimizer_t_profile = _parametric_optimizer(
+            config, model.estimate_network, method=method, phase="adapt"
+        )
+        optimizer_profile = {
+            **optimizer_profile,
+            "minimax_update": "T_ascent_then_EC_descent",
+            "estimate_steps": int(config.get("mrior_estimate_steps", 7)),
+            "estimate_optimizer": optimizer_t_profile,
+        }
+    else:
+        optimizer, optimizer_profile = _parametric_optimizer(
+            config, model, method=method, phase="adapt"
+        )
     last: dict[str, float] = {}
     loss_trace: list[dict[str, Any]] = []
     model.train()
     for step, (source_batch, (target_x, target_y)) in enumerate(
         zip(source_batches, target_batches), start=1
     ):
+        active_optimizer = optimizer_ec if method == "mrior_sda" else optimizer
         learning_rate = _set_method_learning_rate(
-            optimizer,
-            optimizer_profile,
-            step=step,
-            total_steps=int(config["adapt_steps"]),
+            active_optimizer, optimizer_profile, step=step, total_steps=int(config["adapt_steps"])
         )
+        if method == "mrior_sda":
+            _set_method_learning_rate(
+                optimizer_t, optimizer_t_profile, step=step, total_steps=int(config["adapt_steps"])
+            )
         source_x = source_batch["iq"].to(device)
         source_y = _compact_source_labels(source_batch["label"], source_ids, device)
         target_x = target_x.to(device)
         target_y = target_y.to(device)
         if method == "mrior_sda":
-            losses = mrior_sda_objective(
-                model(source_x),
-                model(target_x),
-                source_labels=source_y,
-                target_support_labels=target_y,
+            losses = mrior_sda_batch_step(
+                model,
+                source_x,
+                source_y,
+                target_x,
+                target_y,
+                optimizer_t=optimizer_t,
+                optimizer_ec=optimizer_ec,
+                estimate_steps=int(config.get("mrior_estimate_steps", 7)),
                 target_ce_weight=float(config.get("target_ce_weight", 1.0)),
                 dvkl_weight=float(config.get("dvkl_weight", 0.005)),
                 mu=float(config.get("mrior_mu", 0.5)),
@@ -283,9 +307,10 @@ def _adapt_parametric(
                 alignment_weight=float(config.get("alignment_weight", 1.0)),
                 bandwidth=config.get("bandwidth"),
             )
-        optimizer.zero_grad(set_to_none=True)
-        losses["loss"].backward()
-        optimizer.step()
+        if method != "mrior_sda":
+            optimizer.zero_grad(set_to_none=True)
+            losses["loss"].backward()
+            optimizer.step()
         last = {
             key: float(value.detach().cpu())
             for key, value in losses.items()
