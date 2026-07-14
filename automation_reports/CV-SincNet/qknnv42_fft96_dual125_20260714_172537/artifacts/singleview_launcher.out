@@ -1,0 +1,6 @@
+[FFT96-SINGLEVIEW-EXPORT] scenario=leo_clear_weak gpu=0 out=/home/szu2070436088/2510044040/CV-SincNet/runs/cvs_publication_adv3b02_fft96_singleview_20260714/leo_clear_weak.npz
+[FFT96-SINGLEVIEW-EXPORT] scenario=leo_low_elev_weak gpu=1 out=/home/szu2070436088/2510044040/CV-SincNet/runs/cvs_publication_adv3b02_fft96_singleview_20260714/leo_low_elev_weak.npz
+[FFT96-SINGLEVIEW-EXPORT] scenario=leo_rain_weak gpu=2 out=/home/szu2070436088/2510044040/CV-SincNet/runs/cvs_publication_adv3b02_fft96_singleview_20260714/leo_rain_weak.npz
+[FFT96-SINGLEVIEW-EXPORT-DONE] out_root=/home/szu2070436088/2510044040/CV-SincNet/runs/cvs_publication_adv3b02_fft96_singleview_20260714
+{"assigned_rows": 125, "completed": 125, "failed": 0, "phase": "stage2c", "schema": "cvs_publication_stage2_worker_summary_v1", "shard_count": 1, "shard_index": 0, "skipped": 0}
+[FFT96-SINGLEVIEW-125-DONE] run_root=/home/szu2070436088/2510044040/CV-SincNet/runs/cvs_qknnv42_fft96_singleview_125_20260714
