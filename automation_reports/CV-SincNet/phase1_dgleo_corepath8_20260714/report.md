@@ -100,6 +100,21 @@
 - 当前不能判定open-set改善：dynamic DM proxy/bridge约0.141/0.043，但known core accept仅0.131；旧口径proxy_vaccept约0.600、bridge_accept=1.000，source_episode_overflow=1.000。动态门低值仍主要由known拒收形成，必须等待known core TPR恢复并验证旧代理同步下降。
 - 早期几何中source-episode p95/p99/CVaR约58.73/66.22/63.18度，U_s temporal pass约0.121；source-val DG health best约98.63且当前回落仅0.054pp。E10前heavy evaluation尚未开始，不能外推strict UDU、satellite floor或最终拒识质量。
 
+### E18联合快照
+
+|候选|epoch|DM core accept|DM proxy|legacy proxy|legacy bridge|source overflow|source p95/p99|U_s direct active|source-val sat mean/floor|
+|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+|R0 replay|19|0.586|0.220|0.625|1.000|0.666|58.66/75.32|0.968|91.53/90.20|
+|R1 ID core|25|0.282|0.168|0.578|1.000|0.972|49.59/56.11|0.000|90.44/88.99|
+|R2 frozen gate|18|0.113|0.150|0.609|1.000|0.953|48.96/55.20|0.016|90.92/89.45|
+|R3 overflow aligned|18|0.109|0.151|0.612|1.000|1.000|48.11/54.08|0.000|90.85/89.30|
+|R4 U epoch bank|18|0.110|0.153|0.612|1.000|1.000|48.17/54.14|0.000|90.90/89.43|
+|R5 concat dedup|18|0.112|0.155|0.611|1.000|1.000|48.13/54.01|0.000|90.85/89.35|
+|R6 full stable|18|0.121|0.158|0.611|1.000|1.000|49.47/55.69|0.000|91.00/89.58|
+|R7 aggressive|18|0.115|0.162|0.614|1.000|1.000|48.67/54.47|0.000|90.90/89.49|
+
+该快照只用于训练机制诊断。R2-R7的p95/p99虽下降，但known core accept仅0.109-0.121，旧proxy仍约0.609-0.614且bridge=1，不能解释为安全接收域收紧。R3的18度同口径使overflow暴露为1.0，说明结构性local component仍未把跨receiver/day/channel样本纳入稳定核心。R4虽将temporal pass提高到约0.110，但U_s direct仍为0，表明epoch bank没有闭环到direct loss路由。表中sat为source-val增强族内结果，不是strict UDU或最终satellite test。
+
 ## 声明边界
 
 本轮只能评价Phase1 DG、星地压力、known几何、source-only proxy风险、U_s执行和diagnostic prototype。不得声明真实unknown FAR/FPR95、Stage2成功或endpoint部署成功。
