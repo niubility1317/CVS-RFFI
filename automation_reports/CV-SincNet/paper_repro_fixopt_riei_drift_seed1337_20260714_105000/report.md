@@ -74,6 +74,7 @@
 - launcher dry-run：展开20个job；8个DRIFT候选完整；RIEI Table III目标RX=`1-19`六行、目标RX=`14-7`六行完整；GPU0-3各3个顺序job，GPU4-7各2个顺序job；新增峰值均为1。
 - `conda run -n ssr-gpu python -m pytest tests/test_paper_repro_fixopt_launcher.py tests/test_riei_alternating_paper_parity.py tests/test_drift_eq25_paper_parity.py -q`：`5 passed`。
 - 已建立根目录快照：`E:\type10-7\code\snapshots\paper_repro_fixopt_riei_drift_seed1337_20260714_105000\`。
+- Git承载面提交：`109945b add RIEI Table III and DRIFT fixopt matrix`。
 - 当前未同步或启动N607任务，原因是每GPU已有2个compute process；不会修改仍会被修复版后续队列读取的远端入口。
 
 ## 完成后必须检查
