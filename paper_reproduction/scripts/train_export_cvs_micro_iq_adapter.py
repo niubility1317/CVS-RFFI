@@ -550,7 +550,11 @@ def main(argv: Sequence[str] | None = None) -> int:
         path = Path(mapping[scenario])
         caches[scenario], source_manifests[scenario] = _load_npz(path)
         cache_hashes[scenario] = _sha256_file(path)
-        observed = set(caches[scenario]["sat_scenarios"].astype(str).tolist())
+        roles = caches[scenario]["dataset_role"].astype(str)
+        target_mask = np.isin(roles, ["target_old", "target_new"])
+        observed = set(
+            caches[scenario]["sat_scenarios"][target_mask].astype(str).tolist()
+        )
         if observed != {scenario}:
             raise ValueError(f"cache scenario mismatch for {scenario}: {sorted(observed)}")
     support_rows, support_labels, split_manifest = assemble_support_views(
