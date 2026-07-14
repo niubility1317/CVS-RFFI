@@ -20,6 +20,8 @@
 
 ## 本地版本与验证
 
+代码与首版实验报告已提交至Git提交`f0ac9b6`（`Add strict lightweight qKNN adapter evaluation`）；提交后工作树仅保留与本实验无关的既有修改。
+
 |文件|用途|SHA256|
 |---|---|---|
 |`paper_reproduction/scripts/fit_apply_qknnv42_source_teacher_mlp.py`|源域教师蒸馏、MLP选择、目标cache离线映射|`D0987630507B05B3026FE08ADB2050CFE89165588D5EACBE1A4F32229A86A224`|
