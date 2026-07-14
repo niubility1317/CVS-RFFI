@@ -77,8 +77,10 @@
 - 根据后续审查，空卡不是必要条件。新门控按GPU主compute PID逐个读取`/proc/<pid>/cmdline`：同run_id目标实验已存在则阻断；PID身份不可读则fail-closed；每卡总compute client最多2个；已有1个无关实验时，仅在free memory>=10000MiB时允许再启动本矩阵的1个候选。启动前和每个候选`Popen`前均重新检查，并导出`prelaunch_gpu_snapshot.json`。
 - 门控容量单位进一步由“CUDA PID数”修正为“实验身份组数”：优先按`run_id+candidate_id`或`output_dir`归组，缺少结构化参数时按Linux process group归组。同一实验的多个CUDA子进程只占1个槽位；身份不可读仍fail-closed。每卡已有1个无关实验且free memory>=10000MiB时允许启动1个目标实验；已有2个实验、已有同run目标或显存不足时阻断。
 - 同步映射：`E:\type10-7\github_publish\CVS-RFFI-repo\code\scripts\launch_phase1_dgleo_dualguard16_20260712.py`→`/home/szu2070436088/2510044040/CV-SincNet/code/scripts/launch_phase1_dgleo_dualguard16_20260712.py`；`E:\type10-7\github_publish\CVS-RFFI-repo\code\scripts\launch_phase1_dgleo_corepath8_20260714.py`→`/home/szu2070436088/2510044040/CV-SincNet/code/scripts/launch_phase1_dgleo_corepath8_20260714.py`。
+- Git提交：`a304d60`（实验身份分组门控）和`9fc4396`（同步映射记录）。两份launcher已通过direct SCP同步；远端SHA256与本地一致，远端`py_compile`通过。
 - 本地focused测试15项通过，覆盖“1个无关实验可共享”“同一实验多个CUDA PID只计1组”“第3个实验阻断”“同run重复和低显存阻断”；`py_compile`通过。
 - 10:30 CST另一个独立的`paper_repro_repaired_riei_drift_seed1337_20260714_103000`批次在CorePath8启动后落地，每卡新增1个RIEI/DRIFT实验。10:42 CST现场为每卡2个真实compute实验（CorePath8 1个+RIEI/DRIFT 1个），free memory约20GB，未发现Traceback、RuntimeError或CUDA OOM。新门控会正确阻断假设中的第3个实验；这不代表CorePath8进程混淆，也不需要停止任一现有任务。
+- 远端实测快照中每卡均正确识别为2个实验身份组；以当前run_id检查时为`target=1,unrelated=1`并阻断重复，以新run_id检查时为`target=0,unrelated=2`并阻断第3个实验。SSH/SCP结束后本地`ssh.exe=0`且N607:22无残留连接。
 - 10:42 CST CorePath8八候选均持续训练，`metrics_epoch.csv`已有4-6个epoch行；正式科学结论仍等待final-only训练和最终评估完成。
 - 当前已运行的CorePath8是在8卡空闲时启动，不受门控代码更新影响，也不会重启或中断。新行为用于后续矩阵。
 - 预计单候选训练约5.1-5.5小时，final评估/probe/diagnostic导出约0.5-1小时；8卡并行总墙钟预计6-7小时，硬上限10小时。
