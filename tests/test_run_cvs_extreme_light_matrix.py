@@ -23,7 +23,7 @@ def _base_config():
         "target_new_tx_labels": [f"n{i}" for i in range(20)],
         "target_unknown_tx_labels": [],
         "k_shot": 20,
-        "support_pool_max_k": 20,
+        "support_pool_max_k": 30,
         "query_per_tx": 20,
         "seed": 1,
         "split_seed": 1,
@@ -92,3 +92,20 @@ def test_five_epoch_zid_only_arm_compresses_adaptation():
     assert config["extreme_light_aux_weight"] == 0.0
     assert config["extreme_light_epochs"] == 5
     assert config["extreme_light_prototype_anchor_weight"] == 5.0
+
+
+def test_twenty_epoch_noise_regularized_arm_is_explicit():
+    row = build_rows(
+        arms=("el_aux2p0_anchor20_noise5_e20",),
+        new_class_counts=(20,),
+        receivers=("8-8",),
+        seeds=(713101,),
+        k_grid=(30,),
+        output_root=Path("runs"),
+        log_root=Path("logs"),
+    )[0]
+    config = row_config(_base_config(), row, device="cpu")
+    assert config["extreme_light_aux_weight"] == 2.0
+    assert config["extreme_light_epochs"] == 20
+    assert config["extreme_light_prototype_anchor_weight"] == 20.0
+    assert config["extreme_light_feature_noise_std"] == 0.05
