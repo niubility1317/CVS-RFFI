@@ -439,6 +439,49 @@ def _is_target_run(tokens: Sequence[str], run_id: str) -> bool:
     return any(run_path_token in token or token.endswith(f"/{run_id}") for token in tokens)
 
 
+def _command_arg(tokens: Sequence[str], names: Sequence[str]) -> str:
+    accepted = set(names)
+    for index, token in enumerate(tokens[:-1]):
+        if token in accepted:
+            return str(tokens[index + 1])
+    return ""
+
+
+def _process_group_id(pid: int) -> int | None:
+    getpgid = getattr(os, "getpgid", None)
+    if getpgid is None:
+        return None
+    try:
+        return int(getpgid(int(pid)))
+    except OSError:
+        return None
+
+
+def _experiment_identity(pid: int, tokens: Sequence[str]) -> Dict[str, Any]:
+    run_id = _command_arg(tokens, ("--run_id", "--run-id"))
+    candidate_id = _command_arg(tokens, ("--candidate_id", "--candidate-id"))
+    output_dir = _command_arg(
+        tokens,
+        ("--output_dir", "--output-dir", "--run_dir", "--run-dir", "--save_path", "--save-path"),
+    )
+    pgid = _process_group_id(pid)
+    if run_id and candidate_id:
+        key = f"run:{run_id}|candidate:{candidate_id}"
+    elif output_dir:
+        key = f"output:{output_dir.rstrip('/')}"
+    elif pgid is not None:
+        key = f"pgid:{pgid}|run:{run_id}"
+    else:
+        key = f"pid:{int(pid)}|run:{run_id}"
+    return {
+        "key": key,
+        "run_id": run_id,
+        "candidate_id": candidate_id,
+        "output_dir": output_dir,
+        "pgid": pgid,
+    }
+
+
 def gpu_launch_snapshot(
     *,
     run_id: str,
@@ -459,23 +502,40 @@ def gpu_launch_snapshot(
         target_pids: List[int] = []
         unrelated_pids: List[int] = []
         unknown_pids: List[int] = []
+        experiments: Dict[str, Dict[str, Any]] = {}
         for pid in pids:
             tokens = _pid_command_tokens(pid)
             if tokens is None:
                 unknown_pids.append(pid)
-            elif _is_target_run(tokens, run_id):
+                continue
+            identity = _experiment_identity(pid, tokens)
+            is_target = _is_target_run(tokens, run_id)
+            group = experiments.setdefault(
+                str(identity["key"]),
+                {
+                    **identity,
+                    "pids": [],
+                    "is_target": is_target,
+                },
+            )
+            group["pids"].append(pid)
+            group["is_target"] = bool(group["is_target"] or is_target)
+            if is_target:
                 target_pids.append(pid)
             else:
                 unrelated_pids.append(pid)
+        experiment_rows = sorted(experiments.values(), key=lambda item: str(item["key"]))
+        target_experiments = [item for item in experiment_rows if item["is_target"]]
+        unrelated_experiments = [item for item in experiment_rows if not item["is_target"]]
         reasons: List[str] = []
-        if target_pids and block_target_run:
+        if target_experiments and block_target_run:
             reasons.append("target_run_already_active")
-        if unrelated_pids and not allow_unrelated_compute:
+        if unrelated_experiments and not allow_unrelated_compute:
             reasons.append("unrelated_compute_not_allowed")
         if unknown_pids:
             reasons.append("compute_pid_identity_unknown")
-        if len(pids) + 1 > max_total_compute_per_gpu:
-            reasons.append("compute_process_capacity")
+        if len(experiment_rows) + 1 > max_total_compute_per_gpu:
+            reasons.append("compute_experiment_capacity")
         available_mib = int(free_memory.get(gpu, -1))
         if available_mib < min_free_memory_mib:
             reasons.append("insufficient_free_memory")
@@ -484,6 +544,10 @@ def gpu_launch_snapshot(
             "target_pids": target_pids,
             "unrelated_pids": unrelated_pids,
             "unknown_pids": unknown_pids,
+            "compute_experiment_count": len(experiment_rows),
+            "compute_experiments": experiment_rows,
+            "target_experiment_count": len(target_experiments),
+            "unrelated_experiment_count": len(unrelated_experiments),
             "free_memory_mib": available_mib,
         }
         if reasons:

@@ -148,6 +148,60 @@ def test_gpu_capacity_allows_one_unrelated_process_when_memory_is_sufficient(mon
 
     assert snapshot["blocked"] == {}
     assert snapshot["gpus"]["0"]["unrelated_pids"] == [101]
+    assert snapshot["gpus"]["0"]["compute_experiment_count"] == 1
+
+
+def test_gpu_capacity_groups_multiple_cuda_pids_from_one_experiment(monkeypatch):
+    module = _module()
+    monkeypatch.setattr(module.p1base, "_pmon_pids", lambda: {0: {301, 302, 303}})
+    monkeypatch.setattr(module, "_gpu_free_memory_mib", lambda: {0: 18000})
+    monkeypatch.setattr(
+        module,
+        "_pid_command_tokens",
+        lambda pid: [
+            "python",
+            "other_train.py",
+            "--run_id",
+            "other_run",
+            "--candidate_id",
+            "other_candidate",
+        ],
+    )
+
+    snapshot = module.gpu_launch_snapshot(
+        run_id="target_run",
+        gpus=[0],
+        max_total_compute_per_gpu=2,
+        min_free_memory_mib=10000,
+        allow_unrelated_compute=True,
+    )
+
+    assert snapshot["blocked"] == {}
+    assert snapshot["gpus"]["0"]["compute_experiment_count"] == 1
+    assert snapshot["gpus"]["0"]["compute_experiments"][0]["pids"] == [301, 302, 303]
+
+
+def test_gpu_capacity_blocks_a_third_experiment_even_when_memory_is_sufficient(monkeypatch):
+    module = _module()
+    monkeypatch.setattr(module.p1base, "_pmon_pids", lambda: {0: {401, 402}})
+    monkeypatch.setattr(module, "_gpu_free_memory_mib", lambda: {0: 18000})
+    monkeypatch.setattr(
+        module,
+        "_pid_command_tokens",
+        lambda pid: ["python", "other_train.py", "--run_id", f"other_run_{pid}"],
+    )
+    monkeypatch.setattr(module, "_process_group_id", lambda pid: pid)
+
+    snapshot = module.gpu_launch_snapshot(
+        run_id="target_run",
+        gpus=[0],
+        max_total_compute_per_gpu=2,
+        min_free_memory_mib=10000,
+        allow_unrelated_compute=True,
+    )
+
+    assert snapshot["gpus"]["0"]["compute_experiment_count"] == 2
+    assert snapshot["blocked"]["0"] == ["compute_experiment_capacity"]
 
 
 def test_gpu_capacity_blocks_duplicate_target_and_low_memory(monkeypatch):
