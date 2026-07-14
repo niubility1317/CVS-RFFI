@@ -399,12 +399,14 @@ def main() -> int:
     parser.add_argument("--seed", type=int, default=None)
     parser.add_argument("--split-seed", type=int, default=None)
     parser.add_argument("--k-shot", type=int, default=None)
+    parser.add_argument("--adapt-steps", type=int, default=None)
     parser.add_argument("--dry-run", action="store_true")
     args = parser.parse_args()
     config = load_json_config(args.config)
     for key, value in (
         ("experiment_id", args.experiment_id), ("method_id", args.method),
         ("seed", args.seed), ("split_seed", args.split_seed), ("k_shot", args.k_shot),
+        ("adapt_steps", args.adapt_steps),
     ):
         if value is not None:
             config[key] = value
