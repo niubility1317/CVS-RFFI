@@ -192,3 +192,13 @@
 - 新增`code/scripts/launch_riei_table3_partition_repair_20260714.sh`，run ID为`paper_repro_riei_table3_partition_repair_seed1337_20260714_220200`；保持P02的SGD、mean、no-RMS、no-feature-norm、200epoch不变，只修复全局partition并改为论文last10。
 - 本地验证：`ssr-gpu`解释器下`py_compile`通过；聚焦测试`6 passed`，新增测试验证同一receiver跨source组合的train/validation集合一致，并验证该receiver作为target时test集合等于全局保留集合；`bash -n`通过，dry-run完整展开12个job、8个capacity gate和12条last10命令。
 - 下一步：镜像并提交上述最小变更；重新执行N607直接预检，确认每GPU`existing_compute+planned_peak≤2`后，仅同步`code/dataset_wisig.py`和新launcher，核对hash、远端`bash -n`与12-job dry-run，再启动。若逐行仍失败，将优先检查未公开的ResNet1D-18具体结构/随机种子不确定性，不使用target-oracle调参。
+
+## 2026-07-14 22:07分区修复矩阵启动
+
+- Git版本：`ee54a31 Repair RIEI Table III global partition`。根目录不是Git仓库，变更已镜像到`github_publish/CVS-RFFI-repo`并只提交本任务7个文件；本地快照位于`code/snapshots/paper_repro_riei_table3_partition_repair_seed1337_20260714_220200/`。
+- 同步映射：`code/dataset_wisig.py`→N607同路径，SHA256=`bb2ccb83a57505066c2d156e8923a77d0c2dff7f40013b45e9ed952c25aa62ff`；`code/scripts/launch_riei_table3_partition_repair_20260714.sh`→N607同路径，SHA256=`dd2896436ff00d24237b022961647a307a1d35954e639f12a412a7cea5414511`。同步前远端`dataset_wisig.py`哈希为`8bf22bd8...`，与本地修复前文件完全一致，未覆盖未归属变更。
+- N607直接预检通过；启动前8块GPU均无compute或trainer，目标run/log目录均不存在。远端hash复核、`bash -n`及dry-run均通过：12个job、8个capacity gate、12条last10命令。
+- 正式命令：`bash code/scripts/launch_riei_table3_partition_repair_20260714.sh --launch --gpu-ids 0,1,2,3,4,5,6,7 --max-train-per-gpu 2`。8个queue PID为`640456,640458,640461,640464,640469,640476,640481,640487`；GPU0–3各排2个job，GPU4–7各排1个job，计划峰值每GPU仅1个本任务训练。
+- 约5分钟健康检查：8/8 queue、8/8 trainer运行；row1–8分别到epoch`12,13,13,12,12,13,12,13/200`，8份`metrics.json`均已创建，`PAPER-EVAL-SUMMARY=0`符合训练早期。硬错误0。
+- GPU occupancy：GPU0–7均只有1个本任务compute，显存各约`485MiB`，利用率`16%–22%`；每GPU总训练数1，低于上限2。日志中的`split_info.partition_strategy`均为`stable_group_seed_shared_train_test_holdout`，命令均为`paper_eval_last_n=10`。
+- 当前判定：`RUNNING_HEALTHY_THROUGH_EPOCH_12_13`。不得干预、重启、覆盖或删除产物；完成后必须按12×200epoch完整日志及论文last10逐行重新计算MAE和`±2SD`命中数。

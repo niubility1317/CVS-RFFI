@@ -9,11 +9,11 @@
 | RIEI-P05 | ResNet1D-18 FED、三层FC EC/RC、`lambda_1=lambda_2=1.2` | 已实现 | 保持不变 | verified | 既有架构/损失单测 |
 | RIEI-P06 | 优化器与loss reduction未完全公开，必须用同row受控实验定位 | 固定Adam+sum导致Table III第1行明显低于论文 | 8候选完整200epoch比较，以预定last5选型 | verified | 8份metrics共1600epoch、24份日志共6100行；P02=`80.12±0.58%` |
 | RIEI-P07 | Table III最终证据必须覆盖论文全部12个receiver组合 | 发现阶段仅覆盖第1行 | 固定P02的SGD+mean+no-RMS+no-FN配置，运行12行确认 | verified | 12×200epoch自然完成、硬错误0；均值72.26%，MAE4.82pp，命中5/12，`NOT_REPRODUCED` |
-| RIEI-P08 | Table III各receiver组合应建立在同一随机数据partition上 | 组合内顺序RNG导致同一receiver跨行样本漂移 | 完整12行以稳定全局partition和论文last10重新确认 | implemented | 本地`py_compile`、6项聚焦测试、`bash -n`和12-job dry-run均通过；待N607执行 |
+| RIEI-P08 | Table III各receiver组合应建立在同一随机数据partition上 | 组合内顺序RNG导致同一receiver跨行样本漂移 | 完整12行以稳定全局partition和论文last10重新确认 | verified | 本地6项测试；远端hash/`bash -n`/dry-run通过；8个queue健康启动，首批row1–8到epoch12–13，硬错误0 |
 
 ## 声明边界
 
 - 论文未明确给出优化器名称和总epoch数；SGD由Eq.20–21的显式梯度下降式及正文SGD讨论支持，但仍必须与Adam做同数据同row消融。
 - 发现阶段只在Table III第1行比较训练动力学；最终论文结论必须用胜出配置重跑完整12行，不能用单row或目标域峰值代替。
 - 目标域逐epoch曲线仅用于诊断；下一轮正式分数采用论文明确的最终10个epoch，禁止target-oracle选epoch。
-- 当前反向审计：`verified=7`、`implemented=1`、`pending=0`、`deferred=0`、`rejected=0`、`blocked=0`；最高风险为论文未公开ResNet1D-18具体结构、优化器和随机seed，稳定全局partition修复仍需N607完整12行验证。
+- 当前反向审计：`verified=8`、`implemented=0`、`pending=0`、`deferred=0`、`rejected=0`、`blocked=0`；最高风险为论文未公开ResNet1D-18具体结构、优化器和随机seed，当前启动通过只证明执行链健康，仍需完整12行结果验证。
