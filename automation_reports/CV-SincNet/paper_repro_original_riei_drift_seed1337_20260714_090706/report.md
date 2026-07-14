@@ -119,12 +119,13 @@ DRIFT的best-val触发测试最高曾到`62.88%`，仍低于论文`75.62%`，且
 |`DRIFT-GRL-01`|DRIFT Algorithm 1、实现细节，PDF第8页|two-layer domain discriminator；GRL符号与`lambda_1=1`|model/loss/launcher|`verified`|结构与梯度单测|当前实现一致|
 |`DRIFT-PROTO-01`|DRIFT Table I与实现细节，PDF第8-9页|Day1、指定3个source receiver/7个target receiver、Adam`1e-4`、batch64、200epoch、last5|split/launcher/evaluator|`verified`|dry-run+当前run配置/计数|当前run协议与计数一致|
 |`RIEI-ALT-01`|RIEI Eq.(10a-c)、Eq.(11)，PDF第3页|第一步用CE更新FED/EC/RC；第二步冻结EC/RC，仅用`lambda_MI L_MI-lambda_IE L_IE`更新FED|`alternating_training_step`|`verified`|训练步骤代码审计+参数差分单测|改变MI/IE只改变FED第二步结果，不改变已冻结EC/RC；同时修复`receiver_target`存在时仍急切求值fallback的批字段错误|
+|`RIEI-OPT-01`|RIEI Eq.(10c)、Eq.(11)，PDF第3页|同一组FED参数`theta_F`先执行CE中间更新，再执行MI/IE更新|FED optimizer|`verified`|Adam state-step单测：FED同一optimizer每iteration连续step两次，EC/RC optimizer一次|当前正式run错误地让FED分别进入两个独立Adam状态；已改为EC/RC专用optimizer+单一FED optimizer|
 |`RIEI-LOSS-01`|RIEI Eq.(2-9)，PDF第3页|CE/MI/IE按论文求和，`lambda_MI=lambda_IE=1.2`|loss/launcher|`verified`|精确数值单测+当前run配置|当前paper launcher已显式使用`sum` reductions|
 |`RIEI-ARCH-01`|RIEI模型与实现细节，PDF第2-4页|WiSig使用ResNet1D-18 FED、512维拆成两个256维特征、EC/RC为三层FC|architecture/model|`verified`|结构代码审计|当前实现一致|
 |`RIEI-DATA-01`|RIEI实验设置，PDF第4页|WiSig去除无信号段并使用equalized数据；每receiver train/test计数与Table I一致|dataset/split/launcher|`verified`|`wisig_equalized=1`、split计数和当前run日志|`ManySig.pkl`按equalized键读取；train=14400、test=4800/receiver，额外val只用于监控，不改变paper last10|
 |`LOG-DRIFT-01`|训练日志分析硬门禁|完整读取200epoch曲线及所有组件|本地日志/metrics分析|`verified`|200/200 epoch与异常扫描|完整日志801行；无硬错误；见下节发散证据|
-|`LOG-RIEI-01`|训练日志分析硬门禁|完整读取12个200epoch日志及metrics|本地日志/metrics分析|`blocked`|12个job完成后分析|当前12个训练仍在运行，禁止干预|
-|`REMOTE-REPAIR-01`|AGENTS.md/N607安全规则|本地修复、测试、快照、Git提交后才同步；活动job期间不覆盖|local/Git/N607|`blocked`|hash+SCP+远端dry-run|等待当前12个RIEI自然结束|
+|`LOG-RIEI-01`|训练日志分析硬门禁|完整读取12个200epoch日志及metrics|本地日志/metrics分析|`verified`|12/12各200epoch、完整日志、硬错误扫描|见下节逐行结果与loss收敛诊断|
+|`REMOTE-REPAIR-01`|AGENTS.md/N607安全规则|本地修复、测试、快照、Git提交后才同步；活动job期间不覆盖|local/Git/N607|`pending`|hash+SCP+远端dry-run|原矩阵已全部自然结束，允许进入同步验证|
 
 ## DRIFT完整训练日志诊断与本地修复
 
@@ -142,3 +143,28 @@ DRIFT的best-val触发测试最高曾到`62.88%`，仍低于论文`75.62%`，且
 本地验证：Git承载面`pytest tests/test_drift_eq25_paper_parity.py`为`2 passed`；根目录`python -m unittest tests.test_drift_table1_paper_parity`为`13/13 OK`；两个launcher均通过`bash -n`，paper-scope dry-run明确展开`--center_mode batch`且不再传`--center_momentum`。
 
 RIEI参数差分单测进一步确认Eq.(10)-(11)的交替训练边界：CE阶段更新FED/EC/RC；disentanglement阶段冻结EC/RC，仅FED随MI/IE变化。审计时同时发现`batch.get("receiver_target", batch["receiver"])`会急切读取fallback字段，现已改为显式条件分支；当前N607数据批同时含两个字段，故该错误不是本轮低性能原因，但修复后paper训练函数可正确接受仅提供compact `receiver_target`的批。
+
+## RIEI Table III最终结果与完整日志诊断
+
+12个RIEI job均自然完成200/200epoch；完整训练日志合计读取12份、每份632-660行，未发现`Traceback`、`RuntimeError`、OOM、CUDA error、`NaN`或`Killed`。同一receiver组合结果如下；`K-shot`、unknown、rollback和defer在原论文closed-set协议中均不适用。
+
+|candidate|train RX→test RX|seed|last10|论文Table III|差值|final|best-val epoch/test|epoch200 CE/MI/IE|判定|
+|---|---|---:|---:|---:|---:|---:|---:|---|---|
+|`rx1_1_rx7_7_to_rx1_19`|`1-1,7-7`→`1-19`|1337|65.27±0.45%|77.88±2.23%|-12.61pp|64.46%|44/64.42%|0.031/0.0003/159.026|未复现|
+|`rx1_1_rx8_8_to_rx1_19`|`1-1,8-8`→`1-19`|1337|63.56±3.35%|79.43±1.66%|-15.87pp|68.40%|147/62.02%|0.004/0.0021/159.012|未复现|
+|`rx1_1_rx14_7_to_rx1_19`|`1-1,14-7`→`1-19`|1337|56.91±1.26%|66.09±0.67%|-9.18pp|53.42%|56/70.73%|0.117/0.0095/158.862|未复现|
+|`rx7_7_rx8_8_to_rx1_19`|`7-7,8-8`→`1-19`|1337|66.43±3.03%|70.51±3.53%|-4.08pp|64.31%|156/59.85%|0.104/0.0008/159.014|未复现|
+|`rx7_7_rx14_7_to_rx1_19`|`7-7,14-7`→`1-19`|1337|74.12±6.55%|77.35±1.53%|-3.23pp|67.58%|12/63.50%|0.005/0.0014/159.031|唯一落入论文±2SD，但波动明显更大|
+|`rx8_8_rx14_7_to_rx1_19`|`8-8,14-7`→`1-19`|1337|59.76±0.87%|75.48±1.21%|-15.72pp|59.00%|30/65.08%|0.002/0.0010/159.021|未复现|
+|`rx1_1_rx1_19_to_rx14_7`|`1-1,1-19`→`14-7`|1337|39.44±3.90%|71.91±2.08%|-32.47pp|41.69%|16/52.48%|0.003/0.0021/158.293|未复现|
+|`rx1_1_rx7_7_to_rx14_7`|`1-1,7-7`→`14-7`|1337|44.81±3.29%|68.33±2.37%|-23.52pp|37.69%|172/43.40%|0.342/0.0026/158.904|未复现|
+|`rx1_1_rx8_8_to_rx14_7`|`1-1,8-8`→`14-7`|1337|51.41±6.32%|73.54±1.27%|-22.13pp|53.85%|74/43.38%|0.041/0.0014/158.587|未复现|
+|`rx1_19_rx7_7_to_rx14_7`|`1-19,7-7`→`14-7`|1337|31.51±6.72%|73.52±3.15%|-42.01pp|32.23%|176/41.81%|0.020/0.0003/159.029|未复现|
+|`rx1_19_rx8_8_to_rx14_7`|`1-19,8-8`→`14-7`|1337|47.87±2.78%|72.05±2.71%|-24.18pp|48.83%|73/51.62%|0.044/0.0031/158.274|未复现|
+|`rx7_7_rx8_8_to_rx14_7`|`7-7,8-8`→`14-7`|1337|47.58±2.85%|73.46±2.00%|-25.88pp|48.92%|90/54.21%|0.000/0.0030/158.614|未复现|
+
+联合结论：12行last10平均`54.06%`，论文平均`73.30%`；MAE=`19.24pp`；仅`1/12`行落入论文均值±2SD，未达到预设`10/12`与MAE≤3pp，因此RIEI原论文结果明确`NOT_REPRODUCED`。
+
+损失曲线并未报错或数值爆炸，而是快速进入几乎完美的训练目标：12个run的平均CE由epoch1的`10.365`降至epoch200的`0.059`，MI由`1.478`降至`0.0023`，IE由`158.303`升至`158.806`，接近batch64下`64*(ln6+ln2)=159.03`的理论最大值；feature norm由`6.603`降至`0.447`。这说明当前优化器实现把论文代理目标优化到了“低范数特征+大classifier权重”的退化解，但跨receiver泛化没有同步改善。
+
+根因审计发现，当前正式run把FED同时放入`opt_all`和`opt_fed`两个独立Adam实例：Eq.(10c)的CE中间更新使用一套Adam状态，Eq.(11)的MI/IE更新使用另一套状态。论文只定义同一`theta_F`依次更新，未定义两套独立的FED动量/二阶矩。修复后EC/RC使用classifier optimizer；FED只属于一个optimizer，同一iteration先用CE step一次，再在冻结classifier后用MI/IE连续step一次。Adam state单测确认classifier step=`1`、同一FED optimizer step=`2`。该修复是对论文更新序列的最小一致性修复；性能仍需新矩阵验证。

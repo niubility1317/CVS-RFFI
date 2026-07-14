@@ -115,7 +115,8 @@ def main() -> None:
         dropout=args.dropout,
         encoder_use_projection=args.use_resnet_projection,
     ).to(device)
-    opt_all = torch.optim.Adam(model.parameters(), lr=args.lr_all, weight_decay=args.weight_decay_all)
+    classifier_parameters = list(model.ec.parameters()) + list(model.rc.parameters())
+    opt_all = torch.optim.Adam(classifier_parameters, lr=args.lr_all, weight_decay=args.weight_decay_all)
     opt_fed = torch.optim.Adam(model.fed.parameters(), lr=args.lr_fed, weight_decay=args.weight_decay_fed)
 
     def train_step(model, batch, device, epoch, step):

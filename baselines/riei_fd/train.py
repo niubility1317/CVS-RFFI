@@ -64,9 +64,11 @@ def alternating_training_step(
     if float(lambda_feature_norm) > 0.0:
         loss_all = loss_all + float(lambda_feature_norm) * loss_feature_norm
     optimizer_all.zero_grad()
+    optimizer_fed.zero_grad()
     loss_all.backward()
     grad_norm_all = _clip_grad(model.parameters(), grad_clip_norm)
     optimizer_all.step()
+    optimizer_fed.step()
 
     set_requires_grad(model.ec, False)
     set_requires_grad(model.rc, False)

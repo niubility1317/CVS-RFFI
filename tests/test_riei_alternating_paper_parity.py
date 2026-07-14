@@ -37,8 +37,8 @@ def test_riei_disentanglement_step_updates_fed_but_not_frozen_classifiers():
     }
 
     def run(model, lambda_mi, lambda_ie):
-        optimizer_all = torch.optim.SGD(model.parameters(), lr=0.01)
-        optimizer_fed = torch.optim.SGD(model.fed.parameters(), lr=0.01)
+        optimizer_all = torch.optim.Adam(list(model.ec.parameters()) + list(model.rc.parameters()), lr=0.01)
+        optimizer_fed = torch.optim.Adam(model.fed.parameters(), lr=0.01)
         alternating_training_step(
             model,
             batch,
@@ -50,10 +50,13 @@ def test_riei_disentanglement_step_updates_fed_but_not_frozen_classifiers():
             mi_reduction="sum",
             ie_reduction="sum",
         )
+        return optimizer_all, optimizer_fed
 
-    run(model_with_dis, 1.2, 1.2)
+    optimizer_classifiers, optimizer_fed = run(model_with_dis, 1.2, 1.2)
     run(model_ce_only, 0.0, 0.0)
 
     assert torch.equal(model_with_dis.ec.weight, model_ce_only.ec.weight)
     assert torch.equal(model_with_dis.rc.weight, model_ce_only.rc.weight)
     assert not torch.equal(model_with_dis.fed.weight, model_ce_only.fed.weight)
+    assert int(optimizer_classifiers.state[model_with_dis.ec.weight]["step"]) == 1
+    assert int(optimizer_fed.state[model_with_dis.fed.weight]["step"]) == 2

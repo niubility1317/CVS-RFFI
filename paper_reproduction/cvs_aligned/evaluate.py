@@ -380,8 +380,9 @@ def _train_model(config: dict[str, Any], manysig: dict[str, Any], device: torch.
                 "source_train_ratio": float(config.get("rho_label", config.get("source_train_ratio", 0.0))),
                 **checkpoint_info,
             }
+        classifier_parameters = list(model.ec.parameters()) + list(model.rc.parameters())
         opt_all = torch.optim.Adam(
-            model.parameters(),
+            classifier_parameters,
             lr=float(config.get("lr_all", config.get("learning_rate", 1.0e-4))),
             weight_decay=float(config.get("weight_decay_all", 0.0)),
         )
