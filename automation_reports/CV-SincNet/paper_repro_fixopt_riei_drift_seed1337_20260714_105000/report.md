@@ -98,6 +98,12 @@
 - 前序修复版尚有8个训练进程，所有GPU仍为2个compute process，因此fixopt尚未实际启动，符合容量门设计。
 - 前序run无硬错误，预计首批剩余RIEI即将完成；deferred launcher继续等待全部13个job及queue退出。
 
+### 2026-07-14 12:12+08:00等待与前序wrapper异常
+
+- deferred PID=`289073`仍健康等待；前序run剩余4个RIEI训练到epoch72-74，fixopt尚未启动。
+- 11:10同步共享paper-scope launcher时，前序长时间shell在训练返回后受到原位文件替换影响，8个已完整训练的RIEI出现wrapper status=2；训练日志、last10、final和metrics均完整，未重启或覆盖。
+- 该异常不会改变deferred条件：只有前序所有训练与queue进程退出后才进入fixopt容量门。当前远端共享launcher已通过hash及`bash -n`验证，后续fixopt将从完整新文件启动。
+
 ## 完成后必须检查
 
 - 完整读取20份200epoch日志、metrics及scheduler/queue日志，不使用tail抽样代替完整分析。

@@ -86,3 +86,12 @@ DRIFT的raw negative-MSE、RIEI的CE/MI/IE sum reduction以及两篇论文的模
 - GPU0-7均为2个compute process：1个Phase1＋1个本任务；显存约4056-4154MiB/GPU，未超并发上限。
 - 完整日志精确硬错误扫描仍为0：无Traceback、RuntimeError、OOM、Killed、NaN或参数错误。
 - deferred fixopt PID=`289073`保持存活，日志显示`active_target_processes=16`，仍处于等待阶段，没有新增GPU训练。
+
+### 2026-07-14 12:12+08:00只读监控与wrapper异常诊断
+
+- 训练artifact进度：DRIFT及首批8个RIEI均已完整到epoch200并写出`PAPER-EVAL-SUMMARY`和`FINAL-TEST`；剩余4个RIEI正在epoch72-74，当前训练进程=`4`。
+- queue记录为已结束job=`9/13`，其中DRIFT status=0，8个已完成RIEI被记录为status=2。完整尾部诊断确认RIEI训练本身正常完成，例如`rx1_1_rx7_7_to_rx1_19` last10=`66.41±0.49%`且final=`66.00%`；status=2来自训练完成后wrapper继续读取脚本时出现`line 394: riei_fd: command not found`及`line 395: syntax error`。
+- 根因：11:10为满足后续fixopt直接排队请求，同步了`run_wisig_paper_scope_queue.sh`；当时已有长时间运行的shell实例在Python训练返回后继续从同一路径读取脚本，远端文件原位替换导致这些既有shell在旧文件偏移处解析到新内容。同步前后的脚本分别通过`bash -n`，新启动的后续4个RIEI使用完整新文件并正常运行。
+- 影响边界：8个RIEI的200epoch训练、last10、final和metrics均已完整落盘；queue脚本未启用`set -e`，因此第二批job继续顺序启动，没有训练artifact丢失。不得把status=2误报为模型训练失败，但最终报告必须记录wrapper异常。
+- 处置：遵守“不自动重启”，不重跑已完整落盘的8个RIEI，不修改当前远端文件，不干预剩余4个RIEI或Phase1。后续不再在活动queue读取期间同步共享launcher。
+- GPU occupancy：GPU0-4各2个compute process或正在切换；GPU5-7仅剩Phase1，总GPU compute=`12`，未超每卡2个上限。deferred fixopt仍等待所有旧run queue退出。
