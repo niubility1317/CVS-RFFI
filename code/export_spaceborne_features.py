@@ -34,17 +34,11 @@ for path in (str(REPO_ROOT), str(CODE_ROOT)):
     sys.path.insert(0, path)
 
 from cvsrffi.wisig_fewshot_payload import assert_disjoint_tx_sets, canonical_tx_id, parse_tx_id_list
+from cvsrffi.checkpoint_loading import build_exact_ssdg_model_from_checkpoint
 from cvsrffi.eval import apply_sat_channel_for_scenario
 from cvsrffi.tensors import make_torch_generator
 from dataset_wisig import WiSigCompactDataset, WiSigSubsetDataset, load_wisig_compact_pkl
-from eval_feature_diagnosis import (
-    build_model_from_ckpt,
-    collect_feature_dict,
-    infer_num_domains,
-    load_state_dict_safely,
-    parse_items,
-    strip_module_prefix,
-)
+from eval_feature_diagnosis import collect_feature_dict, parse_items
 from training_controls import parse_sat_scenarios, sat_channel_config_for_scenario
 
 SIMPLIFIED_LEO_RESIDUAL_SCENARIOS = {"leo_clear_weak", "leo_low_elev_weak", "leo_rain_weak"}
@@ -788,12 +782,15 @@ def main() -> int:
     ckpt = torch.load(args.ckpt, map_location="cpu")
     if "args" not in ckpt or "model" not in ckpt:
         raise KeyError("checkpoint must contain 'args' and 'model'")
-    ckpt_args = ckpt["args"]
-    state = strip_module_prefix(ckpt["model"])
-    num_domains = infer_num_domains(source_ds, state=state, split_info={}, ckpt_args=ckpt_args, cli_num_domains=None)
     device = torch.device(str(args.device) if torch.cuda.is_available() else "cpu")
-    model = build_model_from_ckpt(ckpt_args, args, num_domains=num_domains, input_len=int(args.wisig_out_len), device=device)
-    missing, unexpected, skipped_mismatch = load_state_dict_safely(model, state)
+    model, checkpoint_load_audit = build_exact_ssdg_model_from_checkpoint(
+        ckpt,
+        input_len=int(args.wisig_out_len),
+        device=device,
+    )
+    missing: list[str] = []
+    unexpected: list[str] = []
+    skipped_mismatch: list[str] = []
 
     source_loader = DataLoader(source_ds, batch_size=int(args.batch_size), shuffle=False, num_workers=0, drop_last=False)
     new_loader = (
@@ -1017,7 +1014,8 @@ def main() -> int:
         "class_id_to_tx": list(source_info["tx_labels"]),
         "logit_class_order": list(range(len(source_info["tx_labels"]))),
         "classification_head_contract": "dual_cvsincnet_tx_logits_v1",
-        "checkpoint_load_strict": not missing and not unexpected and not skipped_mismatch,
+        "checkpoint_load_strict": True,
+        "checkpoint_load_audit": checkpoint_load_audit,
         "target_new_channel_view": "disabled" if old_unknown_only else target_new_view,
         "target_unknown_channel_view": target_unknown_view,
         "target_channel_view": "satellite/LEO" if target_unknown_view == "satellite" else "clean",

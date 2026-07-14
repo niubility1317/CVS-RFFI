@@ -8,6 +8,7 @@ RUN_ID="${RUN_ID:-cvs_qknnv42_full_legacy_oracle_125_20260714}"
 FEATURE_ROOT="${FEATURE_ROOT:-${ROOT}/runs/cvs_qknnv42_full_adapter5_fft96_20260714}"
 OUT_ROOT="${OUT_ROOT:-${ROOT}/runs/${RUN_ID}}"
 LOG_ROOT="${LOG_ROOT:-${ROOT}/paper_reproduction/logs/${RUN_ID}}"
+CVS_CONFIG="${CVS_CONFIG:-${ROOT}/paper_reproduction/configs/cvs_qknnv42_full_legacy_oracle_stage2c_20260714_n607.json}"
 
 OLD_TX="14-10,14-7,20-15,20-19,6-15,8-20"
 NEW_TX="1-16,1-18"
@@ -96,7 +97,7 @@ CUDA_VISIBLE_DEVICES="$GPU" "$PYTHON" -u code/scripts/train_apply_phase1_iq_prea
 "$PYTHON" -u -m paper_reproduction.scripts.run_cvs_publication_matrix \
   --phase stage2c \
   --config "${ROOT}/paper_reproduction/configs/cvs_stage2c_publication_base_n607.json" \
-  --cvs-config "${ROOT}/paper_reproduction/configs/cvs_qknnv42_full_legacy_oracle_stage2c_20260714_n607.json" \
+  --cvs-config "$CVS_CONFIG" \
   --output-root "$OUT_ROOT" \
   --log-root "$LOG_ROOT" \
   --methods cvs_qknnv42 \

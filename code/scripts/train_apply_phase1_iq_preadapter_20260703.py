@@ -28,16 +28,11 @@ for path in (str(REPO_ROOT), str(CODE_ROOT)):
         sys.path.insert(0, path)
 
 from cvsrffi.eval import apply_sat_channel_for_scenario  # noqa: E402
+from cvsrffi.checkpoint_loading import build_exact_ssdg_model_from_checkpoint  # noqa: E402
 from cvsrffi.tensors import make_torch_generator  # noqa: E402
 from cvsrffi.wisig_fewshot_payload import canonical_tx_id, parse_tx_id_list  # noqa: E402
 from dataset_wisig import WiSigSubsetDataset  # noqa: E402
-from eval_feature_diagnosis import (  # noqa: E402
-    build_model_from_ckpt,
-    collect_feature_dict,
-    infer_num_domains,
-    load_state_dict_safely,
-    strip_module_prefix,
-)
+from eval_feature_diagnosis import collect_feature_dict  # noqa: E402
 from export_spaceborne_features import (  # noqa: E402
     SATELLITE_TTA_POLICIES,
     _build_wisig_dataset,
@@ -106,14 +101,12 @@ def _feature_forward(model: nn.Module, x: torch.Tensor, feature_name: str) -> tu
 
 def _build_model(args: argparse.Namespace, source_ds, device: torch.device, *, freeze: bool = True) -> nn.Module:
     ckpt = torch.load(args.ckpt, map_location="cpu")
-    if "args" not in ckpt or "model" not in ckpt:
-        raise KeyError("checkpoint must contain 'args' and 'model'")
-    state = strip_module_prefix(ckpt["model"])
-    num_domains = infer_num_domains(source_ds, state=state, split_info={}, ckpt_args=ckpt["args"], cli_num_domains=None)
-    model = build_model_from_ckpt(ckpt["args"], args, num_domains=num_domains, input_len=int(args.wisig_out_len), device=device)
-    missing, unexpected, skipped = load_state_dict_safely(model, state)
-    if missing or unexpected or skipped:
-        print(json.dumps({"load_state": {"missing": missing, "unexpected": unexpected, "skipped": skipped}}, ensure_ascii=False))
+    model, checkpoint_load_audit = build_exact_ssdg_model_from_checkpoint(
+        ckpt,
+        input_len=int(args.wisig_out_len),
+        device=device,
+    )
+    model._checkpoint_load_audit = checkpoint_load_audit
     model.eval()
     for p in model.parameters():
         p.requires_grad_(not bool(freeze))
@@ -963,6 +956,10 @@ def export_cell(
         ),
         "feature_name": str(args.feature_name),
         "checkpoint": str(args.ckpt),
+        "checkpoint_load_strict": True,
+        "checkpoint_load_audit": dict(
+            getattr(model, "_checkpoint_load_audit", {})
+        ),
         "target_channel_view": "satellite/LEO",
         "channel_views": ["model_feature_adapter" if str(args.model_adapter_mode).lower() != "none" else "iq_frontend"],
         "satellite_tta_policy": str(args.satellite_tta_policy),
