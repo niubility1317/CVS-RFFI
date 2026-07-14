@@ -29,7 +29,7 @@ CODE_ROOT = REPO_ROOT / "code"
 for candidate in (str(REPO_ROOT), str(CODE_ROOT)):
     while candidate in sys.path:
         sys.path.remove(candidate)
-for candidate in (str(CODE_ROOT), str(REPO_ROOT)):
+for candidate in (str(REPO_ROOT), str(CODE_ROOT)):
     sys.path.insert(0, candidate)
 
 from cvsrffi.checkpoint_loading import build_exact_ssdg_model_from_checkpoint
