@@ -118,3 +118,12 @@
 - 对当前run全部已写入训练、queue日志做完整硬错误扫描，计数0；未见Traceback、RuntimeError、OOM、Killed、NaN、Inf或参数错误。
 - GPU进程证据：GPU0、6各1个本任务trainer；GPU1–5、7各1个本任务trainer加1个既有Phase1 trainer，总训练数分别为`1,2,2,2,2,2,1,2`，未超过容量上限2。Phase1 PID`549385,549925,552673,551328,550859,551794`仍运行，未被干预。
 - 当前判定：`RUNNING_HEALTHY_THROUGH_EPOCH_150_156`。这是截至最新完整epoch的在途分析，不是last5或Table III复现结论。监控SSH完成后本地`ssh.exe=0`、N607 TCP22已建立连接`=0`。
+
+## 2026-07-14 20:51心跳监控
+
+- 直连N607只读预检通过。Table III第1–8行均自然完成epoch200，8份日志各有1个`PAPER-EVAL-SUMMARY`和1个`FINAL-TEST`；queue日志中的8个`QUEUE-JOB-END status=0`与之对应，没有异常退出。
+- GPU4–7的单job queue已自然退出；GPU0–3的queue PID`569608,569610,569613,569618`继续运行第二批。当前4个trainer分别为row9 PID`600349`、row10 PID`599644`、row11 PID`600201`、row12 PID`601314`，进度为epoch`36,39,37,33/200`。
+- 12份`metrics.json`均可解析：row1–8各完整200epoch且有`final`字段；row9–12分别完整写入epoch`35,38,36,32`且尚无`final`。当前汇总为`PAPER-EVAL-SUMMARY=8/12`、`FINAL-TEST=8/12`、成功完成job=`8/12`。
+- 完整扫描当前run全部已写入训练及queue日志，硬错误0；未见Traceback、RuntimeError、OOM、Killed、NaN、Inf或参数错误。row1–8的正式数值暂不脱离完整12行单独下结论，待全矩阵完成后按同row口径统一计算MAE和论文`±2SD`命中数。
+- GPU进程证据：仅GPU0–3各有1个本任务trainer，GPU4–7无compute；此前Phase1训练均已自然退出。当前每GPU训练数为`1,1,1,1,0,0,0,0`，容量合规且未发生干预。
+- 当前判定：`RUNNING_HEALTHY_8_OF_12_COMPLETE`。SSH短连接均已退出，本地`ssh.exe=0`、N607 TCP22已建立连接`=0`。
