@@ -287,3 +287,12 @@
 - 启动约5分钟后，8/8 queue和8/8本任务Python进程持续运行；首批row1–8最新完整epoch为`15,14,15,14,15,15,14,15/200`。8份`metrics.json`已建立，所有训练日志均确认`ce/mi/ie_reduction=sum`及`stable_group_seed_shared_train_test_holdout`。
 - 完整扫描当前已写日志，硬错误0；`PAPER-EVAL-SUMMARY=0`、完成job=0符合训练早期。`nvidia-smi pmon`显示GPU0–7各1个本任务compute，SM占用约13%–18%，没有其他compute；每GPU总训练数1，容量合规。
 - 当前判定：`RUNNING_HEALTHY_THROUGH_EPOCH_14_15`。本次所有SSH/SCP短连接均已退出，本地`ssh.exe=0`、N607 TCP22已建立连接`=0`；不得干预、重启或覆盖产物。
+
+## 2026-07-15 00:51心跳监控
+
+- 直接N607只读预检通过。8个原queue PID均存活并运行约869–870秒；8个本任务Python trainer持续运行，命令行逐一确认SGD momentum0、CE/MI/IE sum、no-RMS、no-feature-norm、200epoch和last10，没有参数回退。
+- 完整读取当前8份训练日志至最新记录：row1–8分别到epoch`43,43,43,43,44,44,42,42/200`；日志为`164–190`行、`13.5–14.9KiB`，全部持续增长。8份日志均含1个sum配置marker和1个稳定全局partition marker。
+- 8份`metrics.json`均可完整解析，epoch序列连续且无重复/缺口；已完整写入epoch`42,42,42,42,43,43,41,41`，尚无`final`字段。当前`PAPER-EVAL-SUMMARY=0`、含`FINAL-TEST`日志=0、成功完成job=0，符合首批训练阶段。
+- 对当前run全部已写日志做完整硬错误扫描，计数0；未见Traceback、RuntimeError、CUDA OOM、Killed、AssertionError、FileNotFound、NaN/Inf或参数错误。
+- `nvidia-smi pmon`确认GPU0–7各仅1个本任务compute，SM占用约16%–27%，无其他compute；每GPU训练数1，未超过容量上限2。本次短连接已退出，本地`ssh.exe=0`、N607 TCP22已建立连接`=0`。
+- 当前判定：`RUNNING_HEALTHY_THROUGH_EPOCH_42_44`。这是在途证据，不构成sum last10或Table III复现结论。
