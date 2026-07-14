@@ -70,3 +70,30 @@ def test_late_feat_joint_rank4_compresses_full_late_scope() -> None:
     assert audit["adapter_macs_per_query"] == 11_012
     assert audit["scope"] == "late_feat_joint"
     assert len(audit["target_modules"]) == 8
+
+
+def test_cli_accepts_class_symmetric_dro_controls() -> None:
+    from paper_reproduction.scripts.train_export_cvs_support_lora_adapter import parse_args
+
+    args = parse_args(
+        [
+            "--config",
+            "config.json",
+            "--ckpt",
+            "model.pth",
+            "--out_root",
+            "out",
+            "--receiver",
+            "8-8",
+            "--new_count",
+            "20",
+            "--seed",
+            "713101",
+            "--cosine_margin",
+            "0.1",
+            "--class_dro_temperature",
+            "5",
+        ]
+    )
+    assert args.cosine_margin == 0.1
+    assert args.class_dro_temperature == 5.0

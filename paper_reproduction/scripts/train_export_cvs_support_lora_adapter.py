@@ -174,6 +174,8 @@ def train_support_only_lora(
     temperature: float,
     feature_anchor_weight: float,
     view_consistency_weight: float,
+    cosine_margin: float,
+    class_dro_temperature: float,
     support_view_count: int,
     batch_size: int,
     seed: int,
@@ -181,6 +183,10 @@ def train_support_only_lora(
 ) -> tuple[list[dict[str, Any]], dict[str, Any]]:
     if int(epochs) <= 0 or int(epochs) > 20:
         raise ValueError("formal extreme-light adaptation epochs must be in [1,20]")
+    if not 0.0 <= float(cosine_margin) <= 0.5:
+        raise ValueError("cosine_margin must be in [0,0.5]")
+    if float(class_dro_temperature) < 0.0:
+        raise ValueError("class_dro_temperature must be nonnegative")
     rows = _numpy_to_tensor_compat(
         support_rows, numpy_dtype=np.dtype(np.float32), torch_dtype=torch.float32
     ).to(device)
@@ -248,6 +254,7 @@ def train_support_only_lora(
         totals = {
             "loss": 0.0,
             "ce": 0.0,
+            "dro": 0.0,
             "anchor": 0.0,
             "consistency": 0.0,
             "correct": 0.0,
@@ -263,7 +270,29 @@ def train_support_only_lora(
             z, _ = _feature_forward(model, rows[positions])
             z = _norm_rows(z)
             scores = float(temperature) * (z @ prototypes.T)
-            ce = F.cross_entropy(scores, labels[positions])
+            targets = labels[positions]
+            margin_scores = scores.clone()
+            if float(cosine_margin) > 0.0:
+                margin_scores[
+                    torch.arange(len(positions), device=device), targets
+                ] -= float(temperature) * float(cosine_margin)
+            per_sample_ce = F.cross_entropy(
+                margin_scores, targets, reduction="none"
+            )
+            ce = per_sample_ce.mean()
+            if float(class_dro_temperature) > 0.0:
+                class_losses = []
+                for class_index in range(class_count):
+                    class_mask = targets == class_index
+                    if bool(class_mask.any()):
+                        class_losses.append(per_sample_ce[class_mask].mean())
+                stacked_class_losses = torch.stack(class_losses)
+                dro_weights = torch.softmax(
+                    float(class_dro_temperature) * stacked_class_losses.detach(), dim=0
+                )
+                dro = torch.sum(dro_weights * stacked_class_losses)
+            else:
+                dro = ce
             anchor = (1.0 - torch.sum(z * base_features[positions], dim=1)).mean()
             if use_view_groups:
                 per_view = z.reshape(view_count, -1, z.shape[-1])
@@ -274,7 +303,7 @@ def train_support_only_lora(
             else:
                 consistency = z.new_zeros(())
             loss = (
-                ce
+                dro
                 + float(feature_anchor_weight) * anchor
                 + float(view_consistency_weight) * consistency
             )
@@ -286,14 +315,16 @@ def train_support_only_lora(
             batches += 1
             totals["loss"] += float(loss.detach()) * count
             totals["ce"] += float(ce.detach()) * count
+            totals["dro"] += float(dro.detach()) * count
             totals["anchor"] += float(anchor.detach()) * count
             totals["consistency"] += float(consistency.detach()) * count
-            totals["correct"] += float((scores.argmax(dim=1) == labels[positions]).sum().detach())
+            totals["correct"] += float((scores.argmax(dim=1) == targets).sum().detach())
             totals["grad"] += float(grad_norm.detach())
         row = {
             "epoch": epoch,
             "loss": totals["loss"] / max(1, seen),
             "prototype_ce": totals["ce"] / max(1, seen),
+            "class_dro_loss": totals["dro"] / max(1, seen),
             "feature_anchor": totals["anchor"] / max(1, seen),
             "view_consistency": totals["consistency"] / max(1, seen),
             "support_train_acc": totals["correct"] / max(1, seen),
@@ -335,6 +366,8 @@ def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
     parser.add_argument("--temperature", type=float, default=18.0)
     parser.add_argument("--feature_anchor_weight", type=float, default=0.05)
     parser.add_argument("--view_consistency_weight", type=float, default=0.0)
+    parser.add_argument("--cosine_margin", type=float, default=0.0)
+    parser.add_argument("--class_dro_temperature", type=float, default=0.0)
     parser.add_argument("--batch_size", type=int, default=128)
     parser.add_argument("--device", default="cuda:0")
     return parser.parse_args(argv)
@@ -395,6 +428,8 @@ def main(argv: Sequence[str] | None = None) -> int:
         temperature=float(args.temperature),
         feature_anchor_weight=float(args.feature_anchor_weight),
         view_consistency_weight=float(args.view_consistency_weight),
+        cosine_margin=float(args.cosine_margin),
+        class_dro_temperature=float(args.class_dro_temperature),
         support_view_count=int(split_manifest["support_view_count"]),
         batch_size=int(args.batch_size),
         seed=int(args.seed),
@@ -439,6 +474,8 @@ def main(argv: Sequence[str] | None = None) -> int:
             "temperature": float(args.temperature),
             "feature_anchor_weight": float(args.feature_anchor_weight),
             "view_consistency_weight": float(args.view_consistency_weight),
+            "cosine_margin": float(args.cosine_margin),
+            "class_dro_temperature": float(args.class_dro_temperature),
             "batch_size": int(args.batch_size),
         },
         "resources": resources,

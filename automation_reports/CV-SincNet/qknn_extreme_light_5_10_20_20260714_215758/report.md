@@ -258,3 +258,19 @@ feature-head-only LoRA已经把同头基线floor从18.33%提升到51.67%，说�
 10epoch LoRA最终loss=`1.53279`、support accuracy=`53.72%`。叠加10epoch对角头后得到`old=76.94%`、floor`=48.33%`、`new20=92.42%`、`H=83.96%`、最低新类`=63.33%`。组合路线把new20推到目标以上并把old提高3.88pp，但floor相对20epoch LoRA+prototype反而下降3.34pp，离old/floor门槛仍差18.06/39.67pp；按预注册gate暂不扩seed/5/10类。
 
 首次组合评估暴露资源审计缺口：head metrics只记录6,938个head参数和6,912MAC/query，未把cache manifest中的12,800个LoRA参数、25,600B FP16状态和12,800MAC/query相加。已在本地严格增加Stage2-C support-adapter provenance分支，只有support-only、无query更新/标签、无角色/配额Oracle、query1-view、≤20epoch且原始checkpoint零参数/零更新的cache才能计入；38项相关测试PASS。同步后将只重跑同一现有cache的评估生成审计修正版，不重新训练或覆盖v4。
+
+### v4资源审计修正版与当前gate
+
+Git提交=`5e3996e`；远端runner/test SHA256与本地一致，`py_compile`和直接support-adapter资源审计PASS。使用既有v4 cache重跑到独立根`runs/qknn_extreme_light_support_lora10_head10_20260715_v4_audit`，性能逐位保持`76.94/48.33/92.42/83.96%`，证明审计修复没有改变算法结果。修正后的每scenario资源为head6,938参数+LoRA12,800参数=`19,738`参数，持久状态=`53,352B`，逐query总MAC=`19,712`；LoRA适配1.58s、head每scenario适配0.65–1.81s，训练峰值CUDA约172.9MB，head峰值约21.8MB，逐query实测上限0.030ms。相对单qKNN的20类263,538B状态和212,992MAC/query，状态减少79.76%，决策MAC减少90.75%。
+
+v2/v4训练日志、三个NPZ、head结果、审计修正版和原始同头基线均已完整拉回`E:\type10-7\local_artifacts\qknn_extreme_light_support_lora_late_20260715_v2*`、`qknn_extreme_light_support_lora10_20260715_v4*`及`qknn_extreme_light_raw_proto_head_20260715_v1*`。全量日志扫描：late LoRA132行含20条epoch、LoRA10共82行含10条epoch、两个head各33行，错误和非有限值均为0；所有训练manifest声明的三场景NPZ SHA256逐一匹配。
+
+当前开发结论仍为性能gate失败：LoRA压缩与分段预算已经证明极轻量、快速且能显著提高new20，但无法把old整体和最弱旧类同时拉到95%/88%。因此不扩第二seed、5/10类、K5、其它receiver或确认seed。下一合法研发方向应是全类对称的support hard-class/DRO联合LoRA-head训练，在同一20epoch内直接优化最弱类margin；仍不得引入old/new角色、类别配额、query拟合、query TTA或dense query图。
+
+## class-symmetric hard-class DRO LoRA预注册
+
+为直接处理旧类floor但不读取old/new角色，LoRA prototype CE新增两个全类对称项：CosFace support margin`0.1`，以及按当前support class-average CE经softmax动态加权的hard-class DRO，temperature=`5`。每个注册类无论旧/新均以同一公式竞争权重；权重只来自合法support loss，query和角色标签均不可见。继续使用rank8 feat-joint LoRA12,800参数，不增加部署参数或MAC。
+
+首个DRO cell固定`8-8/new20/seed713101/K10`，20epoch、alpha8、学习率`1e-3`、feature anchor0.1、匹配三support-view一致性0.2、batch126、query1-view。输出根=`runs/qknn_extreme_light_support_lora_dro_20260715_v5`，日志=`logs/qknn_extreme_light_support_lora_dro_20260715_v5/rx8-8_new20_seed713101_k10.log`；随后仍用0epoch prototype头，避免超过20epoch。只有floor相对v1的51.67%和old相对73.06%同时改善才扩开发矩阵。
+
+本地脚本/测试SHA256分别为`5b7cc08aad709626145f8efb9a5f5fc6a0ac879c91812ccd753ce524fed65b98`和`4e3008a35e0e5d15e0eb0d808c5f31f290aa45159160d1082d3abb2dd9aa816e`；`py_compile`、8项focused测试、35项runner/resource测试和`git diff --check`均PASS。
