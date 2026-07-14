@@ -24,8 +24,8 @@
 
 |文件|用途|SHA256|
 |---|---|---|
-|`paper_reproduction/scripts/fit_apply_qknnv42_source_teacher_mlp.py`|源域教师蒸馏、MLP选择、目标cache离线映射|`D0987630507B05B3026FE08ADB2050CFE89165588D5EACBE1A4F32229A86A224`|
-|`paper_reproduction/scripts/fit_apply_qknnv42_source_teacher_adapter.py`|严格源域键对齐、教师/源与目标冻结cache哈希和TTA策略校验|`E4336BAE9727ABA5F243D9717237F48016E7FA750A50B095F792E7F56FCCD574`|
+|`paper_reproduction/scripts/fit_apply_qknnv42_source_teacher_mlp.py`|源域教师蒸馏、MLP选择、目标cache离线映射；兼容Torch2.1+NumPy2.x状态持久化|`822A61B54B0A66896074C08F48B327FF0CC944C30E122320FB1148BA8C1F2FA0`|
+|`paper_reproduction/scripts/fit_apply_qknnv42_source_teacher_adapter.py`|严格源域键对齐、教师/源与目标冻结cache哈希和TTA策略校验|`827122377EE012E59B6D8281F56119C8E0C65865AE13D9C34FDE39A9264743DA`|
 |`paper_reproduction/cvs_aligned/cvs_method_runner.py`|把后置适配器参数、support/query MAC和状态量计入qKNN资源账|`3446213E5736A8762179FA12CCA8EC518186A45130707DB3CBB42EEF62E01D1A`|
 |`paper_reproduction/scripts/benchmark_qknnv42_feature_adapter_sweep.py`|严格校验映射cache来源、TTA策略、有限值和运行网格并执行125行评估|`EB16D17C425EC352183A93FF27449272A87D74890246692F1EF762AF74819819`|
 
@@ -41,8 +41,8 @@
 |Conda/Python|`/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python`|
 |GPU|物理GPU6；`CUDA_VISIBLE_DEVICES=6`，进程内`cuda:0`|
 |输入根|`runs/qknnv42_source_mlp_20260714/input/`|
-|输出根|`runs/qknnv42_source_mlp_20260714/output/`|
-|日志|`logs/qknnv42_source_mlp_20260714.out`|
+|输出根|`runs/qknnv42_source_mlp_20260714/output_v2/`|
+|日志|`logs/qknnv42_source_mlp_20260714_v2.out`|
 |预期输出|`adapter_summary.json`、MLP权重NPZ、5个映射后的target feature cache|
 
 ## 同步记录
@@ -60,7 +60,7 @@
 精确服务器命令：
 
 ```bash
-cd /home/szu2070436088/2510044040/CV-SincNet && CUDA_VISIBLE_DEVICES=6 nohup /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m paper_reproduction.scripts.fit_apply_qknnv42_source_teacher_mlp --frozen-source-root runs/qknnv42_source_mlp_20260714/input/frozen_source --frozen-target-root runs/qknnv42_source_mlp_20260714/input/frozen_target --teacher-cache runs/qknnv42_source_mlp_20260714/input/teacher/FULL_RX_20-1/ADV3B02_FULL_ADAPTER5_FFT96/features_full_adapter5_fft96.npz --expected-teacher-sha256 DEAC6F96D68E788050579819B43392BDC98C2281C4F5BDAAE49A59CECE5AC727 --expected-checkpoint-sha256 2699EEDCAFE8CEC880828592D2D65BA3781A9948939DA5CF5C82B47143D59C98 --out-root runs/qknnv42_source_mlp_20260714/output --policies none --rank-grid 32 64 128 --alpha-grid 0.25 0.5 1.0 --epochs 200 --device cuda:0 > logs/qknnv42_source_mlp_20260714.out 2>&1 &
+cd /home/szu2070436088/2510044040/CV-SincNet && CUDA_VISIBLE_DEVICES=6 nohup /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m paper_reproduction.scripts.fit_apply_qknnv42_source_teacher_mlp --frozen-source-root runs/qknnv42_source_mlp_20260714/input/frozen_source --frozen-target-root runs/qknnv42_source_mlp_20260714/input/frozen_target --teacher-cache runs/qknnv42_source_mlp_20260714/input/teacher/FULL_RX_20-1/ADV3B02_FULL_ADAPTER5_FFT96/features_full_adapter5_fft96.npz --expected-teacher-sha256 DEAC6F96D68E788050579819B43392BDC98C2281C4F5BDAAE49A59CECE5AC727 --expected-checkpoint-sha256 2699EEDCAFE8CEC880828592D2D65BA3781A9948939DA5CF5C82B47143D59C98 --out-root runs/qknnv42_source_mlp_20260714/output_v2 --policies none --rank-grid 32 64 128 --alpha-grid 0.25 0.5 1.0 --epochs 200 --device cuda:0 > logs/qknnv42_source_mlp_20260714_v2.out 2>&1 &
 ```
 
 ## 完成后检查
@@ -72,4 +72,4 @@ cd /home/szu2070436088/2510044040/CV-SincNet && CUDA_VISIBLE_DEVICES=6 nohup /ho
 
 ## 当前状态
 
-`SYNC_VERIFIED_READY_TO_LAUNCH`。
+首次启动已landed但在训练完成后的权重持久化阶段失败：N607为Torch2.1.0+NumPy2.2.5，Torch零拷贝数组触发`np.savez`的`__array_function__`兼容错误；无GPU进程残留，GPU6恢复0%/10MiB，失败输出根保留且不覆盖。已在本地改为通过Python值重新物化为当前NumPy拥有的float32数组，`ssr-gpu`下重新通过`py_compile`、36项定向测试和真实CPU cache smoke。当前状态：`LOCAL_COMPAT_FIX_VERIFIED_PENDING_COMMIT_RESYNC_RELAUNCH_V2`。

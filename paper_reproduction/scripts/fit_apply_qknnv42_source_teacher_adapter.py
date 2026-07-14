@@ -407,7 +407,11 @@ def parse_args() -> argparse.Namespace:
 
 
 def main() -> int:
-    print(json.dumps(fit_apply(parse_args()), ensure_ascii=False, indent=2))
+    print(
+        json.dumps(
+            fit_apply(parse_args()), ensure_ascii=False, indent=2, allow_nan=False
+        )
+    )
     return 0
 
 

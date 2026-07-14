@@ -114,7 +114,13 @@ def _apply(model: nn.Module, rows: np.ndarray, device: torch.device) -> np.ndarr
 
 
 def _save_state(path: Path, model: ResidualQKNNAdapter) -> None:
-    state = {key: value.detach().cpu().numpy() for key, value in model.state_dict().items()}
+    # Torch 2.1 + NumPy 2.x can expose zero-copy arrays whose array-function
+    # dispatch is rejected by np.savez.  Re-materialize through Python values
+    # so the persisted payload is owned by the active NumPy runtime.
+    state = {
+        key: np.asarray(value.detach().cpu().tolist(), dtype=np.float32)
+        for key, value in model.state_dict().items()
+    }
     np.savez(
         path,
         **state,
@@ -336,7 +342,11 @@ def parse_args() -> argparse.Namespace:
 
 
 def main() -> int:
-    print(json.dumps(fit_apply(parse_args()), ensure_ascii=False, indent=2))
+    print(
+        json.dumps(
+            fit_apply(parse_args()), ensure_ascii=False, indent=2, allow_nan=False
+        )
+    )
     return 0
 
 
