@@ -30,6 +30,12 @@ from paper_reproduction.cvs_aligned.extreme_light_adapter import (
 
 METHOD_STAGE = {"cvs_opgac": "Stage2-B", "cvs_qknnv42": "Stage2-C"}
 SCENARIOS = ("leo_clear_weak", "leo_low_elev_weak", "leo_rain_weak")
+EXTREME_HEAD_MODES = {
+    "extreme_light_diag_cosine",
+    "extreme_light_prototype_cosine",
+    "extreme_light_support_ridge",
+    "extreme_light_low_rank_cosine",
+}
 EPS = 1.0e-8
 
 
@@ -1009,15 +1015,9 @@ def validate_config(config: dict[str, Any]) -> None:
     if not math.isfinite(old_anchor_bias) or abs(old_anchor_bias) > 0.1:
         raise ValueError("qknnv42_old_anchor_bias must be finite and within [-0.1,0.1]")
     head_mode = str(config.get("qknnv42_head_mode", "qknn")).strip().lower()
-    extreme_modes = {
-        "extreme_light_diag_cosine",
-        "extreme_light_prototype_cosine",
-        "extreme_light_support_ridge",
-        "extreme_light_low_rank_cosine",
-    }
-    if head_mode not in {"qknn", *extreme_modes}:
+    if head_mode not in {"qknn", *EXTREME_HEAD_MODES}:
         raise ValueError(f"unsupported qknnv42_head_mode: {head_mode}")
-    if head_mode in extreme_modes:
+    if head_mode in EXTREME_HEAD_MODES:
         if method != "cvs_qknnv42":
             raise ValueError("extreme-light head is defined only for cvs_qknnv42")
         if decision_mode != "per_sample_argmax":
@@ -1044,6 +1044,16 @@ def validate_config(config: dict[str, Any]) -> None:
             raise ValueError("extreme_light_aux_weight must be finite and nonnegative")
         if extreme_aux_weight > 0.0 and not aux_key:
             raise ValueError("positive extreme_light_aux_weight requires qknnv42_aux_feature_key")
+        support_aug_scenarios = tuple(
+            str(value) for value in config.get("extreme_light_support_aug_scenarios", [])
+        )
+        if support_aug_scenarios:
+            if len(support_aug_scenarios) > 3 or len(set(support_aug_scenarios)) != len(support_aug_scenarios):
+                raise ValueError("support augmentation requires at most three unique scenarios")
+            if not set(support_aug_scenarios) <= set(SCENARIOS):
+                raise ValueError("support augmentation scenarios must stay inside the formal leo_weak family")
+            if int(config.get("qknnv42_expected_tta_view_count", 1)) != 1:
+                raise ValueError("support-only augmentation requires 1-view query inference")
 
 
 def run(config: dict[str, Any], run_dir: Path) -> dict[str, Any]:
@@ -1081,6 +1091,9 @@ def run(config: dict[str, Any], run_dir: Path) -> dict[str, Any]:
     )
     runtime_device = str(config.get("_runtime_device", "cpu"))
     expected_tta_views = int(config.get("qknnv42_expected_tta_view_count", 1))
+    support_aug_scenarios = tuple(
+        str(value) for value in config.get("extreme_light_support_aug_scenarios", [])
+    )
     for scenario in SCENARIOS:
         arrays, cache_manifest = _load_npz(_feature_path(config, receiver, scenario))
         if aux_required:
@@ -1162,6 +1175,56 @@ def run(config: dict[str, Any], run_dir: Path) -> dict[str, Any]:
                     aux_support_x,
                     auxiliary_weight=extreme_aux_weight,
                 )
+                fit_support_y = support_y
+                support_aug_ids_by_view: dict[str, list[str]] = {}
+                if support_aug_scenarios:
+                    physical_support_ids = [_sample_id(arrays, index) for index in support_idx]
+                    augmented_features: list[np.ndarray] = []
+                    augmented_labels: list[np.ndarray] = []
+                    for aug_scenario in support_aug_scenarios:
+                        if aug_scenario == scenario:
+                            aug_arrays = arrays
+                        else:
+                            aug_arrays, _ = _load_npz(_feature_path(config, receiver, aug_scenario))
+                        aug_old_support, _ = _select_split(
+                            aug_arrays,
+                            role="target_old",
+                            tx_labels=old_labels,
+                            receiver=receiver,
+                            seed=seed,
+                            k_shot=int(config["k_shot"]),
+                            support_pool_max_k=int(config["support_pool_max_k"]),
+                            query_per_tx=int(config["query_per_tx"]),
+                            scenario=aug_scenario,
+                        )
+                        aug_new_support, _ = _select_split(
+                            aug_arrays,
+                            role="target_new",
+                            tx_labels=new_labels,
+                            receiver=receiver,
+                            seed=seed,
+                            k_shot=int(config["k_shot"]),
+                            support_pool_max_k=int(config["support_pool_max_k"]),
+                            query_per_tx=int(config["query_per_tx"]),
+                            scenario=aug_scenario,
+                        )
+                        aug_idx = aug_old_support + aug_new_support
+                        aug_ids = [_sample_id(aug_arrays, index) for index in aug_idx]
+                        if sorted(aug_ids) != sorted(physical_support_ids):
+                            raise ValueError(
+                                f"support augmentation physical-ID mismatch for {aug_scenario}"
+                            )
+                        support_aug_ids_by_view[aug_scenario] = aug_ids
+                        augmented_features.append(
+                            concatenate_registered_features(
+                                aug_arrays["features"][aug_idx],
+                                aug_arrays[aux_key][aug_idx] if aux_required else None,
+                                auxiliary_weight=extreme_aux_weight,
+                            )
+                        )
+                        augmented_labels.append(aug_arrays["tx_ids"][aug_idx].astype(str))
+                    joint_support = np.concatenate(augmented_features, axis=0)
+                    fit_support_y = np.concatenate(augmented_labels, axis=0)
                 joint_query = concatenate_registered_features(
                     query_x,
                     aux_query_x,
@@ -1170,7 +1233,7 @@ def run(config: dict[str, Any], run_dir: Path) -> dict[str, Any]:
                 if head_mode == "extreme_light_prototype_cosine":
                     predicted, info, extreme_trace = predict_support_prototype_cosine(
                         joint_support,
-                        support_y,
+                        fit_support_y,
                         joint_query,
                         max_persistent_state_bytes=int(
                             config.get("extreme_light_max_persistent_state_bytes", 128 * 1024)
@@ -1179,7 +1242,7 @@ def run(config: dict[str, Any], run_dir: Path) -> dict[str, Any]:
                 elif head_mode == "extreme_light_support_ridge":
                     predicted, info, extreme_trace = fit_predict_support_ridge(
                         joint_support,
-                        support_y,
+                        fit_support_y,
                         joint_query,
                         ridge_lambda=float(config.get("extreme_light_ridge_lambda", 0.1)),
                         max_persistent_state_bytes=int(
@@ -1189,7 +1252,7 @@ def run(config: dict[str, Any], run_dir: Path) -> dict[str, Any]:
                 elif head_mode == "extreme_light_low_rank_cosine":
                     predicted, info, extreme_trace = fit_predict_extreme_light_low_rank_cosine(
                         joint_support,
-                        support_y,
+                        fit_support_y,
                         joint_query,
                         seed=int(config["seed"]),
                         rank=int(config.get("extreme_light_low_rank_width", 8)),
@@ -1208,7 +1271,7 @@ def run(config: dict[str, Any], run_dir: Path) -> dict[str, Any]:
                 else:
                     predicted, info, extreme_trace = fit_predict_extreme_light_diag_cosine(
                         joint_support,
-                        support_y,
+                        fit_support_y,
                         joint_query,
                         seed=int(config["seed"]),
                         epochs=int(config.get("extreme_light_epochs", 20)),
@@ -1239,6 +1302,18 @@ def run(config: dict[str, Any], run_dir: Path) -> dict[str, Any]:
                         "labelprop_mode": "disabled",
                         "decision_mode": "per_sample_argmax",
                         "old_anchor_bias": 0.0,
+                        "physical_support_count": int(len(support_idx)),
+                        "support_enrollment_feature_rows": int(len(joint_support)),
+                        "support_augmented_view_count": int(
+                            len(support_aug_scenarios) if support_aug_scenarios else 1
+                        ),
+                        "support_augmented_scenarios": list(
+                            support_aug_scenarios if support_aug_scenarios else (scenario,)
+                        ),
+                        "support_backbone_forwards_per_physical_sample": int(
+                            len(support_aug_scenarios) if support_aug_scenarios else 1
+                        ),
+                        "query_backbone_forwards_per_physical_sample": 1,
                     }
                 )
             else:
@@ -1292,7 +1367,7 @@ def run(config: dict[str, Any], run_dir: Path) -> dict[str, Any]:
             _attach_post_adapter_resources(
                 info,
                 cache_manifest,
-                support_count=len(support_idx),
+                support_count=int(info.get("support_enrollment_feature_rows", len(support_idx))),
                 query_count=len(query_idx),
             )
         metrics.update({"adaptation_latency_sec": elapsed,
@@ -1316,7 +1391,14 @@ def run(config: dict[str, Any], run_dir: Path) -> dict[str, Any]:
         if set(support_ids) & set(query_ids):
             raise ValueError("support/query overlap")
         manifest_splits[scenario] = {"support_sample_ids": support_ids, "query_sample_ids": query_ids,
-                                     "support_count": len(support_ids), "query_count": len(query_ids)}
+                                     "support_count": len(support_ids), "query_count": len(query_ids),
+                                     "support_augmentation_sample_ids_by_view": (
+                                         support_aug_ids_by_view
+                                         if method == "cvs_qknnv42"
+                                         and head_mode in EXTREME_HEAD_MODES
+                                         and support_aug_scenarios
+                                         else {}
+                                     )}
     aggregate_keys = ["target_old_accuracy", "target_old_accuracy_before_adaptation", "target_old_accuracy_delta"] \
         if stage == "Stage2-B" else ["old_acc", "seen_new_acc", "H_old_new", "average_forgetting"]
     aggregate = {key + "_mean": float(np.mean([row[key] for row in metrics_by_scenario.values()])) for key in aggregate_keys}
@@ -1357,6 +1439,8 @@ def run(config: dict[str, Any], run_dir: Path) -> dict[str, Any]:
                 "qknnv42_head_mode": head_mode,
                 "extreme_light_aux_weight": extreme_aux_weight,
                 "extreme_light_epochs": int(config.get("extreme_light_epochs", 20)),
+                "extreme_light_support_aug_scenarios": list(support_aug_scenarios),
+                "support_physical_k_unchanged_by_augmentation": True,
                 "qknnv42_old_anchor_bias": old_anchor_bias,
                 "non_deployment_oracle_diagnostic": decision_mode == "legacy_role_quota_oracle"}
     result = {"experiment_id": config.get("experiment_id", f"{method}_{seed}"), "method": method,

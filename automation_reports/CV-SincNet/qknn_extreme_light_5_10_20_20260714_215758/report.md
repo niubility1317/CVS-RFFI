@@ -65,3 +65,11 @@ run ID=`qknn_extreme_light_ridge_k30_20260714_2325_v1`；Git commit=`6cf54b5`。
 36/36 rows完成，0失败、0协议违规、108条闭式trace。最佳5/10/20类同机制row的`old/floor/new/H`分别为`85.83/72.50/88.17/86.95%`、`83.89/61.67/82.33/83.07%`、`81.11/56.67/89.54/85.09%`，联合通过0。ridge虽把适配压到毫秒级，但性能弱于20epoch对角头。
 
 下一机制加入rank8/16低秩残差度量与对所有类对称的CosFace margin`0.05/0.1/0.2`，仍为20epoch、无query适配/图、无角色/配额Oracle。最大rank16、26类为15,130参数、60,520B状态、约15,130MAC/query。本地35项相关pytest及36-row dry-run PASS。
+
+### 低秩margin诊断launch记录
+
+run ID=`qknn_extreme_light_lowrank_k30_20260714_2340_v1`；Git commit=`0ac6917`。N607直接preflight、远端SHA256、`py_compile`和36-row dry-run均PASS；三个shard分别绑定空闲物理GPU4/5/6，每个12 rows。输出根`runs/qknn_extreme_light_lowrank_k30_20260714_2340_v1`，日志根`logs/qknn_extreme_light_lowrank_k30_20260714_2340_v1`。
+
+## 2026-07-14 23:46低秩margin结果
+
+36/36 rows完成，0失败、0协议违规、2,160条loss trace。最佳统一rank8/margin0.05在5/10/20类上的`old/floor/new/H`为`88.75/70.83/89.00/88.82%`、`84.17/65.00/86.33/85.15%`、`85.56/57.50/92.33/88.80%`，联合通过0。失败集中在`6-15↔1-18`和`14-7↔14-11`相邻边界。下一步先更新`项目.md`，再测试只增加一次性support enrollment前向、而query保持1-view的三场景support增强。

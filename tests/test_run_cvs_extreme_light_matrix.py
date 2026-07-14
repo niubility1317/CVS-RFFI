@@ -158,3 +158,24 @@ def test_low_rank_margin_arm_is_explicit_and_twenty_epoch():
     assert config["extreme_light_epochs"] == 20
     assert config["extreme_light_low_rank_width"] == 16
     assert config["extreme_light_cosine_margin"] == 0.1
+
+
+def test_support_augmented_arm_keeps_physical_k_and_one_view_query():
+    row = build_rows(
+        arms=("el_lowrank_r8_m0p05_aug3_e10",),
+        new_class_counts=(20,),
+        receivers=("8-8",),
+        seeds=(713101,),
+        k_grid=(30,),
+        output_root=Path("runs"),
+        log_root=Path("logs"),
+    )[0]
+    config = row_config(_base_config(), row, device="cpu")
+    assert config["k_shot"] == 30
+    assert config.get("qknnv42_expected_tta_view_count", 1) == 1
+    assert config["extreme_light_support_aug_scenarios"] == [
+        "leo_clear_weak",
+        "leo_low_elev_weak",
+        "leo_rain_weak",
+    ]
+    assert config["extreme_light_epochs"] == 10
