@@ -180,3 +180,19 @@ N607仍有活动训练时，本轮只读拉取既有严格历史5-view+adapter60
 ## 12.下一步qKNN轻量学习适配
 
 为避免重新训练ADV3B02，新增`LayerNorm+160→rank→160`的qKNN后置低秩残差MLP。它只使用1440个源域冻结/adapter60教师特征对进行蒸馏，target row和target query均不参与拟合；计划在N607物理GPU6搜索`rank={32,64,128}`、`alpha={0.25,0.5,1.0}`并训练200epoch。独立实验报告为`automation_reports/CV-SincNet/qknnv42_source_mlp_n607_20260714_2045/report.md`。该路线只有在映射cache回到严格125行并同时满足old/new/H三项3pp门槛后才能晋升。
+
+## 13.源域教师MLP最终结果
+
+N607物理GPU6完成200epoch搜索，选中`rank32/alpha0.25`：源域physical-key holdout cosine=0.918858、MSE=0.001014。适配器为10,560参数、10,240MAC/sample和42,244B状态；ADV3B02梯度更新为0，target row不参与拟合。v2实测显存约355MiB，完整日志无Traceback、NaN或OOM；日志未写逐epoch loss，因此该实验没有可重建的epoch收敛曲线。
+
+严格历史Oracle下，最佳为`support_role_center+FFT0.65`：old=82.19%、new=85.23%、H=83.25%，相对84.07/93.24/88.23为-1.87/-8.01/-4.97pp。它相对无MLP最佳角色分支只提高约0.35/0.17/0.25pp，仍因seen-new和H未通过3pp门槛而失败。该路径含MLP后的head计算为15.220M MAC/场景、状态81.01KB，并继续依赖角色/类别配额Oracle，属于`NON_DEPLOYMENT_ORACLE_DIAGNOSTIC`。
+
+独立seed713106-713110单qKNN确认得到71.06/74.00/72.01，head+MLP为5.079M MAC/场景、状态77.01KB、decision workspace=0。相同确认网格的无MLP结果为70.98/74.69/72.33，MLP使H下降0.32pp。最终判定：`NEGATIVE_DIAGNOSTIC_NOT_PROMOTABLE`。计算瓶颈已不在这个后置MLP，而在冻结`z_id`缺少能泛化到target seen-new的几何结构；仅提高源域教师特征相似度不足以恢复历史adapter60。
+
+完整训练、20个Oracle候选、单qKNN确认和逐候选资源表见`automation_reports/CV-SincNet/qknnv42_source_mlp_n607_20260714_2045/report.md`。对应本地artifact为：
+
+- `local_artifacts/qknnv42_source_mlp_n607_20260714_v2/`；
+- `local_artifacts/qknnv42_source_mlp_oracle_sweep_none_20260714_2135/`；
+- `local_artifacts/qknnv42_source_mlp_role_oracle_sweep_none_20260714_2140/`；
+- `local_artifacts/qknnv42_source_mlp_single_sweep_none_20260714_2145/`；
+- `local_artifacts/qknnv42_source_mlp_single_holdout_none_20260714_2150/`。

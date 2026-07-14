@@ -72,4 +72,64 @@ cd /home/szu2070436088/2510044040/CV-SincNet && CUDA_VISIBLE_DEVICES=6 nohup /ho
 
 ## 当前状态
 
-首次启动已landed但在训练完成后的权重持久化阶段失败：N607为Torch2.1.0+NumPy2.2.5，Torch零拷贝数组触发`np.savez`的`__array_function__`兼容错误；无GPU进程残留，GPU6恢复0%/10MiB，失败输出根保留且不覆盖。已在本地改为通过Python值重新物化为当前NumPy拥有的float32数组，`ssr-gpu`下重新通过`py_compile`、36项定向测试和真实CPU cache smoke。当前状态：`LOCAL_COMPAT_FIX_VERIFIED_PENDING_COMMIT_RESYNC_RELAUNCH_V2`。
+`COMPLETED_NEGATIVE_DIAGNOSTIC`。首次启动已landed但在训练完成后的权重持久化阶段失败：N607为Torch2.1.0+NumPy2.2.5，Torch零拷贝数组触发`np.savez`的`__array_function__`兼容错误；无GPU进程残留，GPU6恢复0%/10MiB，失败输出根保留且不覆盖。兼容修复提交为`9b6e92a`，修复后脚本SHA256为`822A61B5...F2FA0`，再次直接SCP并验证远端哈希一致。
+
+v2于N607物理GPU6成功完成，PID=`622549`；观察到显存约355MiB，任务退出后GPU6恢复0%/10MiB。完整v2日志已拉回`E:\type10-7\automation_reports\CV-SincNet\qknnv42_source_mlp_n607_20260714_2045\qknnv42_source_mlp_20260714_v2.out`，无Traceback、NaN或OOM。输出包括`adapter_summary.json`、43,516B适配器NPZ和5个target cache；最终适配器为`local_artifacts/qknnv42_source_mlp_n607_20260714_v2/adapters/source_teacher_residual_mlp_none.npz`，SHA256=`DCB7ACA5BBE38CE5BB6AB26C14245199AE13A44E70A3407A5002338A208F565E`。日志只写最终候选摘要，没有逐epoch loss；因此本报告能确认完成状态、holdout指标和最终artifact，但不能从日志重建200个epoch的收敛曲线，这是本次训练可观测性的明确限制。
+
+## 方法、输入与输出
+
+MLP为`LayerNorm+160→rank→GELU→160`残差映射：
+
+`z'=normalize(normalize(z)+alpha·W_up·GELU(W_down·LayerNorm(normalize(z))))`。
+
+每个minibatch优化`L=(1-cos(z',z_teacher))+0.2·MSE(z',z_teacher)+0.01·MSE(z',normalize(z))`，使用AdamW、学习率`1e-3`、权重衰减`1e-4`、batch size≤256、梯度裁剪5.0和200epoch。候选为`rank={32,64,128}`与`alpha={0.25,0.5,1.0}`。输入是1440个源域严格键对齐的冻结ADV3B02`z_id160`与adapter60教师`z_id160`；1140行用于候选训练，300行physical-key holdout用于选择。target cache只在模型选择和全源域重训后执行映射，未参与拟合。
+
+输出保持FFT96和split元数据不变，只把主特征替换为`qknn_post_adapter_z_id160`。所有输出manifest均记录父cache、基础checkpoint、TTA policy、target不参与拟合、ADV3B02梯度更新为0、参数量、MAC和状态量。
+
+## N607训练结果
+
+9个候选中，`rank32/alpha0.25`取得最高源域holdout cosine=`0.918858`、MSE=`0.001014`，随后用全部1440个源域样本重训。最终适配器含10,560个参数，推理为10,240MAC/sample，FP32持久状态42,244B；相比历史adapter60的289,685个可训练参数减少96.35%。全搜索加最终重训的前向计算约51.98G MAC；反向计算未用硬件计数器测量，不能与MAC精确相加。该训练直接消费预计算160维cache，不执行ADV3B02前向或反向。
+
+## 严格历史Oracle矩阵
+
+以下每行均为同一候选的5个接收机×5个seed×5个K-shot=125行联合均值；差值顺序为old/new/H相对严格历史84.07/93.24/88.23的百分点。所有候选split与历史逐行一致。
+
+|候选|old|new|H|差值pp|含MLP的head MAC/场景|状态|门槛|
+|---|---:|---:|---:|---|---:|---:|---|
+|`support_center+FFT0.70`|82.00|83.07|82.06|-2.06/-10.17/-6.17|24.986M|77.01KB|FAIL|
+|`support_diag_whiten_fisher+FFT0.70`|82.00|82.73|81.92|-2.07/-10.51/-6.31|24.986M|77.01KB|FAIL|
+|`none+FFT0.70`|79.56|84.68|81.60|-4.51/-8.56/-6.62|24.986M|77.01KB|FAIL|
+|`support_diag_whiten+FFT0.70`|81.36|82.16|81.33|-2.70/-11.08/-6.90|24.986M|77.01KB|FAIL|
+|`support_center+FFT0.34`|78.48|84.09|80.78|-5.58/-9.15/-7.45|24.986M|77.01KB|FAIL|
+|`support_diag_whiten_fisher+FFT0.34`|78.53|83.87|80.66|-5.53/-9.37/-7.57|24.986M|77.01KB|FAIL|
+|`support_diag_whiten+FFT0.34`|78.14|83.37|80.21|-5.92/-9.87/-8.02|24.986M|77.01KB|FAIL|
+|`none+FFT0.34`|75.02|84.31|78.72|-9.04/-8.93/-9.51|24.986M|77.01KB|FAIL|
+
+## 角色分支Oracle矩阵
+
+|候选|old|new|H|差值pp|含MLP的head MAC/场景|状态|门槛|
+|---|---:|---:|---:|---|---:|---:|---|
+|`support_role_center+FFT0.65`|82.19|85.23|83.25|-1.87/-8.01/-4.97|15.220M|81.01KB|FAIL|
+|`support_role_center+FFT0.70`|82.18|85.03|83.16|-1.89/-8.21/-5.07|15.220M|81.01KB|FAIL|
+|`support_role_diag_whiten_fisher+FFT0.65`|82.13|84.84|83.01|-1.94/-8.40/-5.22|15.220M|81.01KB|FAIL|
+|`support_role_diag_whiten_fisher+FFT0.70`|82.11|84.71|82.95|-1.95/-8.53/-5.27|15.220M|81.01KB|FAIL|
+|`support_role_center+FFT0.75`|81.79|84.83|82.84|-2.28/-8.41/-5.39|15.220M|81.01KB|FAIL|
+|`support_role_diag_whiten_fisher+FFT0.75`|81.59|84.43|82.53|-2.48/-8.81/-5.70|15.220M|81.01KB|FAIL|
+|`support_role_diag_whiten+FFT0.65`|81.47|84.32|82.39|-2.60/-8.92/-5.84|15.220M|81.01KB|FAIL|
+|`support_role_diag_whiten+FFT0.70`|81.47|84.24|82.36|-2.60/-9.00/-5.86|15.220M|81.01KB|FAIL|
+|`support_role_center+FFT0.80`|80.84|84.41|82.13|-3.23/-8.83/-6.10|15.220M|81.01KB|FAIL|
+|`support_role_diag_whiten+FFT0.75`|80.79|83.91|81.88|-3.27/-9.33/-6.35|15.220M|81.01KB|FAIL|
+|`support_role_diag_whiten_fisher+FFT0.80`|80.50|83.99|81.76|-3.56/-9.25/-6.47|15.220M|81.01KB|FAIL|
+|`support_role_diag_whiten+FFT0.80`|79.82|83.73|81.27|-4.25/-9.51/-6.96|15.220M|81.01KB|FAIL|
+
+最佳角色分支候选为`support_role_center+FFT0.65`，old=82.19%、new=85.23%、H=83.25%。old差距已压到1.87pp，但new仍低8.01pp、H低4.97pp，未通过三指标均不低于历史3pp的门槛。相对此前无MLP的最佳角色分支81.84/85.05/83.00，本次只提高约0.35/0.17/0.25pp，源域教师holdout的0.9189 cosine没有转化为足够的target seen-new恢复。
+
+## 单qKNN确认
+
+可部署单qKNN使用单视图、逐样本argmax、dense LP关闭、无角色/配额Oracle和零decision workspace。在独立seed713106-713110的125行确认中，`Fisher+FFT0.70+bias-0.08`得到old=71.06%、new=74.00%、H=72.01%，head与MLP合计5.079M MAC/场景、状态77.01KB。相同确认网格的无MLP结果为70.98/74.69/72.33；MLP变化为+0.08/-0.69/-0.32pp，没有改善H。
+
+## 结论与后续边界
+
+该MLP在计算上属于轻量后置适配：单样本10,240MAC仅为identity-only ADV3B02单视图8.912M MAC的0.115%，状态约41.25KB；N607实测显存约355MiB。它在性能上未替代历史adapter60。最好的Oracle诊断仍依赖old/new角色与类别配额，不能作为星上可部署算法；最好的单qKNN虽然可部署，但H仅72.01%。因此本路线最终标记为`NEGATIVE_DIAGNOSTIC_NOT_PROMOTABLE`，不进入部署主线。
+
+后续若继续追求历史≤3pp，不能再只拟合源域教师特征。需要引入不使用query标签的target support条件化映射、类原型对齐或更强的源域跨接收机训练目标，并在独立seed上预注册选择规则；任何使用角色真值、类别配额或完整query batch的方案仍只能列为Oracle诊断。
