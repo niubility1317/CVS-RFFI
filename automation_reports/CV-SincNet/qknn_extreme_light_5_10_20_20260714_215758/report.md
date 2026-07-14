@@ -186,3 +186,9 @@ run ID=`qknn_extreme_light_k10k5_feasibility_20260715_0032_v1`，`rx8-8×2开发
 第一步仅运行开发receiver`8-8`、seed`713101`、20新类、K10的单cell机制烟测，与同一物理切分的identity-only单qKNN和当前原始单view对角头比较。若该cell没有明显提高old/floor，先检查完整loss与逐类混淆，再决定是否使用seed`713102`和嵌套5/10类；不得直接扩5 receiver或解封`713106–713110`确认seed。性能判定仍使用K10绝对门槛`old≥95%`、旧类floor`≥88%`、5/10/20新类分别`≥92/90/86%`；只有锁定统一K10候选后才补matched K5四项≤3pp下降审计。
 
 原始IQ缓存通过既有特征导出器新增显式`--include_raw_iq`生成，保存的是与冻结backbone和FFT完全相同的单个后信道view。目标特征根预注册为`runs/cvs_qknnv42_extreme_light_20new_features_rawiq_20260715_v1`，微型适配输出根预注册为`runs/qknn_extreme_light_micro_iq_20260715_v1`，日志根为`logs/qknn_extreme_light_micro_iq_20260715_v1`。实现文件为`code/export_spaceborne_features.py`、`paper_reproduction/scripts/train_export_cvs_micro_iq_adapter.py`和对应测试；本地`ssr-gpu`下34项相关pytest已PASS。远端同步、命令、PID、GPU和输出哈希将在launch前后补录。
+
+### 原始IQ缓存launch记录
+
+2026-07-15 01:24直接N607 preflight PASS；8张GPU各有1个约470MiB的RIEI训练进程，项目盘剩余7.6TB。依据每GPU至多2个训练实验的规则，本次三场景短导出绑定物理GPU0/1/2，各卡增加1个进程且不干预现有任务。三个预注册输出根启动前均不存在。同步前远端文件哈希等于上一轮已知版本，无远端独有改动；同步后远端`sha256sum`与本地一致，远端`py_compile`和`bash -n`PASS。
+
+精确命令为`cd /home/szu2070436088/2510044040/CV-SincNet; mkdir -p logs/cvs_qknnv42_extreme_light_20new_features_rawiq_20260715_v1; nohup env OUT_ROOT=/home/szu2070436088/2510044040/CV-SincNet/runs/cvs_qknnv42_extreme_light_20new_features_rawiq_20260715_v1 LOG_ROOT=/home/szu2070436088/2510044040/CV-SincNet/logs/cvs_qknnv42_extreme_light_20new_features_rawiq_20260715_v1 INCLUDE_RAW_IQ=1 GPUS=0,1,2 bash paper_reproduction/scripts/export_cvs_qknnv42_extreme_light_20new_20260714.sh > logs/cvs_qknnv42_extreme_light_20new_features_rawiq_20260715_v1/driver.out 2>&1 < /dev/null &`。Python环境由launcher固定为`/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python`；checkpoint为`runs/phase1_adv3_mechanism32_queue_20260701/ADV3B02_CORE90_SOFT_E200/best_joint_safe_ssdg.pth`。预期每个scenario输出一个含9,800行`raw_iq[*,2,256]`、`z_id160`和`FFT96`的NPZ，并保留完整scenario日志。
