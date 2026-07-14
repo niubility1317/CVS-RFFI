@@ -1,0 +1,1589 @@
+{
+  "surface": "report",
+  "manifest": {
+    "version": 1,
+    "surface": "report",
+    "title": "qKNNV42技术汇报：方法、输入输出与当前效果",
+    "description": "基于当前Stage2-C正式矩阵、实现代码与完整结构化artifact审计的技术汇报",
+    "generatedAt": "2026-07-14T16:01:59+08:00",
+    "cards": [
+      {
+        "id": "card_k20",
+        "description": "正式矩阵K=20的25个receiver×seed联合均值",
+        "dataset": "headline",
+        "sourceId": "src_method_summary",
+        "metrics": [
+          {
+            "label": "K=20 old_acc",
+            "field": "k20_old_acc",
+            "format": "percent"
+          },
+          {
+            "label": "K=20 seen_new_acc",
+            "field": "k20_seen_new_acc",
+            "format": "percent"
+          },
+          {
+            "label": "K=20 H",
+            "field": "k20_H_old_new",
+            "format": "percent"
+          }
+        ]
+      },
+      {
+        "id": "card_matrix",
+        "description": "完整正式矩阵与paired比较",
+        "dataset": "headline",
+        "sourceId": "src_per_run",
+        "metrics": [
+          {
+            "label": "全K总体H",
+            "field": "overall_H_old_new",
+            "format": "percent"
+          },
+          {
+            "label": "paired H胜率",
+            "field": "paired_H_win_rate",
+            "format": "percent"
+          },
+          {
+            "label": "正式qKNNV42运行",
+            "field": "formal_runs",
+            "format": "number"
+          }
+        ]
+      }
+    ],
+    "charts": [
+      {
+        "id": "chart_k_curve",
+        "title": "K-shot增加时，old/new/H均稳步改善",
+        "subtitle": "每个K点为5个receiver×5个seed=25个运行的均值；三种LEO场景先在运行内聚合",
+        "intent": "comparison",
+        "question": "支持样本数K如何影响旧类保持、新类学习与联合H？",
+        "rationale": "K只有5个离散档位，采用分组柱状图表达组间比较，避免暗示连续趋势或外推。",
+        "comparisonContext": {
+          "baseline": "同一方法在不同K-shot下比较",
+          "grain": "K-shot",
+          "normalization": "25个receiver×seed运行均值",
+          "unit": "accuracy"
+        },
+        "type": "bar",
+        "dataset": "k_curve",
+        "sourceId": "src_method_summary",
+        "encodings": {
+          "x": {
+            "field": "k_label",
+            "type": "ordinal",
+            "label": "K-shot"
+          },
+          "y": {
+            "fields": [
+              "old_acc",
+              "seen_new_acc",
+              "H_old_new"
+            ],
+            "type": "quantitative",
+            "format": "percent",
+            "label": "准确率/调和均值"
+          },
+          "tooltip": [
+            {
+              "field": "runs",
+              "type": "quantitative",
+              "label": "运行数"
+            },
+            {
+              "field": "average_forgetting",
+              "type": "quantitative",
+              "format": "percent",
+              "label": "平均遗忘"
+            }
+          ]
+        },
+        "valueFormat": "percent",
+        "layout": "full",
+        "maxRows": 5,
+        "palette": {
+          "kind": "categorical"
+        },
+        "settings": {
+          "groupMode": "grouped",
+          "orientation": "vertical",
+          "showValues": true
+        },
+        "surface": {
+          "surface": "explorer",
+          "viewMode": "both",
+          "interactiveLegend": true
+        }
+      },
+      {
+        "id": "chart_method_h",
+        "title": "完整正式矩阵中，qKNNV42的联合H居首",
+        "subtitle": "每种方法125个Stage2-C运行，覆盖5个receiver、5个seed和5档K-shot",
+        "intent": "comparison",
+        "question": "同一paired matrix下，哪种方法最能兼顾旧类保持与新类学习？",
+        "rationale": "仅4个类别且目标是排名，采用水平条形图并按H降序排列。",
+        "comparisonContext": {
+          "denominator": "每种方法125个运行",
+          "grain": "method",
+          "normalization": "全K、receiver和seed均值",
+          "unit": "H old-new"
+        },
+        "type": "horizontalBar",
+        "dataset": "method_overall",
+        "sourceId": "src_per_run",
+        "encodings": {
+          "x": {
+            "field": "method",
+            "type": "nominal",
+            "label": "方法"
+          },
+          "y": {
+            "field": "H_old_new",
+            "type": "quantitative",
+            "format": "percent",
+            "label": "H old-new"
+          },
+          "tooltip": [
+            {
+              "field": "old_acc",
+              "type": "quantitative",
+              "format": "percent",
+              "label": "old_acc"
+            },
+            {
+              "field": "seen_new_acc",
+              "type": "quantitative",
+              "format": "percent",
+              "label": "seen_new_acc"
+            },
+            {
+              "field": "average_forgetting",
+              "type": "quantitative",
+              "format": "percent",
+              "label": "平均遗忘"
+            }
+          ]
+        },
+        "valueFormat": "percent",
+        "layout": "full",
+        "maxRows": 4,
+        "palette": {
+          "kind": "sequential",
+          "name": "blue"
+        },
+        "settings": {
+          "orientation": "horizontal",
+          "sort": "descending",
+          "showValues": true
+        },
+        "surface": {
+          "surface": "explorer",
+          "viewMode": "both"
+        }
+      }
+    ],
+    "tables": [
+      {
+        "id": "table_input_output",
+        "title": "qKNNV42端到端输入输出契约",
+        "subtitle": "qKNNV42本体接收160维特征；raw IQ由冻结ADV3B02主干先转换",
+        "dataset": "input_output",
+        "defaultSort": {
+          "field": "step",
+          "direction": "asc"
+        },
+        "density": "spacious",
+        "sourceId": "src_runner",
+        "layout": "full",
+        "columns": [
+          {
+            "field": "step",
+            "label": "步骤",
+            "format": "number"
+          },
+          {
+            "field": "stage",
+            "label": "阶段",
+            "type": "text"
+          },
+          {
+            "field": "input",
+            "label": "输入",
+            "type": "text"
+          },
+          {
+            "field": "operation",
+            "label": "处理",
+            "type": "text"
+          },
+          {
+            "field": "output",
+            "label": "输出",
+            "type": "text"
+          },
+          {
+            "field": "uses_label",
+            "label": "标签边界",
+            "type": "text"
+          }
+        ]
+      },
+      {
+        "id": "table_k_curve",
+        "title": "正式矩阵K-shot结果明细",
+        "subtitle": "95%CI为当前summary manifest中的1.96×标准误正态近似，并非bootstrap CI",
+        "dataset": "k_curve",
+        "defaultSort": {
+          "field": "k_shot",
+          "direction": "asc"
+        },
+        "density": "dense",
+        "sourceId": "src_method_summary",
+        "layout": "full",
+        "columns": [
+          {
+            "field": "k_shot",
+            "label": "K",
+            "format": "number"
+          },
+          {
+            "field": "runs",
+            "label": "运行",
+            "format": "number"
+          },
+          {
+            "field": "old_acc_before_increment",
+            "label": "old before",
+            "format": "percent"
+          },
+          {
+            "field": "old_acc",
+            "label": "old_acc",
+            "format": "percent"
+          },
+          {
+            "field": "seen_new_acc",
+            "label": "seen_new_acc",
+            "format": "percent"
+          },
+          {
+            "field": "H_old_new",
+            "label": "H",
+            "format": "percent"
+          },
+          {
+            "field": "average_forgetting",
+            "label": "forgetting",
+            "format": "percent"
+          },
+          {
+            "field": "old80_rows",
+            "label": "old≥80%行",
+            "format": "number"
+          }
+        ]
+      },
+      {
+        "id": "table_method_overall",
+        "title": "4种方法全矩阵联合结果",
+        "subtitle": "同一5 receiver×5 seed×5 K-shot网格；每种方法125个运行",
+        "dataset": "method_overall",
+        "defaultSort": {
+          "field": "H_old_new",
+          "direction": "desc"
+        },
+        "density": "dense",
+        "sourceId": "src_per_run",
+        "layout": "full",
+        "columns": [
+          {
+            "field": "method",
+            "label": "方法",
+            "type": "text"
+          },
+          {
+            "field": "runs",
+            "label": "运行",
+            "format": "number"
+          },
+          {
+            "field": "old_acc",
+            "label": "old_acc",
+            "format": "percent"
+          },
+          {
+            "field": "seen_new_acc",
+            "label": "seen_new_acc",
+            "format": "percent"
+          },
+          {
+            "field": "H_old_new",
+            "label": "H",
+            "format": "percent"
+          },
+          {
+            "field": "average_forgetting",
+            "label": "forgetting",
+            "format": "percent"
+          }
+        ]
+      },
+      {
+        "id": "table_pairwise",
+        "title": "qKNNV42相对3种方法的paired H优势",
+        "subtitle": "每行25个完全匹配的receiver×seed对；delta为qKNNV42减候选方法",
+        "dataset": "pairwise",
+        "defaultSort": {
+          "field": "k_shot",
+          "direction": "asc"
+        },
+        "density": "dense",
+        "sourceId": "src_per_run",
+        "layout": "full",
+        "columns": [
+          {
+            "field": "candidate",
+            "label": "对比方法",
+            "type": "text"
+          },
+          {
+            "field": "k_shot",
+            "label": "K",
+            "format": "number"
+          },
+          {
+            "field": "pairs",
+            "label": "paired行",
+            "format": "number"
+          },
+          {
+            "field": "qknnv42_wins",
+            "label": "qKNNV42胜",
+            "format": "number"
+          },
+          {
+            "field": "delta_H_old_new",
+            "label": "ΔH",
+            "format": "percent",
+            "movement": true
+          }
+        ]
+      },
+      {
+        "id": "table_receiver",
+        "title": "receiver差异揭示跨接收域瓶颈",
+        "subtitle": "每个receiver汇总25个seed×K运行",
+        "dataset": "receiver_summary",
+        "defaultSort": {
+          "field": "H_old_new",
+          "direction": "desc"
+        },
+        "density": "dense",
+        "sourceId": "src_per_run",
+        "layout": "half",
+        "columns": [
+          {
+            "field": "receiver",
+            "label": "receiver",
+            "type": "text"
+          },
+          {
+            "field": "old_acc",
+            "label": "old",
+            "format": "percent"
+          },
+          {
+            "field": "seen_new_acc",
+            "label": "new",
+            "format": "percent"
+          },
+          {
+            "field": "H_old_new",
+            "label": "H",
+            "format": "percent"
+          }
+        ]
+      },
+      {
+        "id": "table_scenario",
+        "title": "LEO弱场景差异",
+        "subtitle": "每个场景汇总125个receiver×seed×K行",
+        "dataset": "scenario_summary",
+        "defaultSort": {
+          "field": "H_old_new",
+          "direction": "desc"
+        },
+        "density": "dense",
+        "sourceId": "src_per_scenario",
+        "layout": "half",
+        "columns": [
+          {
+            "field": "scenario",
+            "label": "场景",
+            "type": "text"
+          },
+          {
+            "field": "old_acc",
+            "label": "old",
+            "format": "percent"
+          },
+          {
+            "field": "seen_new_acc",
+            "label": "new",
+            "format": "percent"
+          },
+          {
+            "field": "H_old_new",
+            "label": "H",
+            "format": "percent"
+          }
+        ]
+      },
+      {
+        "id": "table_extremes",
+        "title": "最高与最低H必须按同一运行行解释",
+        "subtitle": "避免把来自不同候选的单项最大值拼接成不存在的“最佳实验”",
+        "dataset": "extremes",
+        "defaultSort": {
+          "field": "H_old_new",
+          "direction": "desc"
+        },
+        "density": "dense",
+        "sourceId": "src_per_run",
+        "layout": "full",
+        "columns": [
+          {
+            "field": "position",
+            "label": "位置",
+            "type": "text"
+          },
+          {
+            "field": "experiment_id",
+            "label": "实验ID",
+            "type": "text"
+          },
+          {
+            "field": "receiver",
+            "label": "receiver",
+            "type": "text"
+          },
+          {
+            "field": "seed",
+            "label": "seed",
+            "format": "number"
+          },
+          {
+            "field": "k_shot",
+            "label": "K",
+            "format": "number"
+          },
+          {
+            "field": "old_acc_before_increment",
+            "label": "old before",
+            "format": "percent"
+          },
+          {
+            "field": "old_acc",
+            "label": "old",
+            "format": "percent"
+          },
+          {
+            "field": "seen_new_acc",
+            "label": "new",
+            "format": "percent"
+          },
+          {
+            "field": "H_old_new",
+            "label": "H",
+            "format": "percent"
+          },
+          {
+            "field": "average_forgetting",
+            "label": "forgetting",
+            "format": "percent"
+          }
+        ]
+      },
+      {
+        "id": "table_storage",
+        "title": "int8 support code的可核算存储量",
+        "subtitle": "当前正式矩阵固定8个已注册类，每条code为160个int8值",
+        "dataset": "storage",
+        "defaultSort": {
+          "field": "k_shot",
+          "direction": "asc"
+        },
+        "density": "dense",
+        "sourceId": "src_runner",
+        "layout": "full",
+        "columns": [
+          {
+            "field": "k_shot",
+            "label": "K",
+            "format": "number"
+          },
+          {
+            "field": "registered_classes",
+            "label": "类数",
+            "format": "number"
+          },
+          {
+            "field": "stored_int8_codes",
+            "label": "code数",
+            "format": "number"
+          },
+          {
+            "field": "code_bytes",
+            "label": "code字节",
+            "format": "number"
+          },
+          {
+            "field": "code_kib",
+            "label": "code KiB",
+            "format": "number"
+          },
+          {
+            "field": "note",
+            "label": "口径",
+            "type": "text"
+          }
+        ]
+      },
+      {
+        "id": "table_audit",
+        "title": "125个qKNNV42运行的结构化证据审计",
+        "subtitle": "逐目录扫描，不以单个summary文件代替artifact检查",
+        "dataset": "audit_rows",
+        "defaultSort": {
+          "field": "check",
+          "direction": "asc"
+        },
+        "density": "dense",
+        "sourceId": "src_audit",
+        "layout": "full",
+        "columns": [
+          {
+            "field": "check",
+            "label": "检查项",
+            "type": "text"
+          },
+          {
+            "field": "observed",
+            "label": "实测",
+            "type": "text"
+          },
+          {
+            "field": "expected",
+            "label": "期望",
+            "type": "text"
+          },
+          {
+            "field": "verdict",
+            "label": "结论",
+            "type": "text"
+          }
+        ]
+      },
+      {
+        "id": "table_historical",
+        "title": "历史高分单行与当前正式矩阵不可混用",
+        "subtitle": "历史行用于说明机制潜力；当前主结论只能来自2026-07-13正式矩阵",
+        "dataset": "historical_vs_current",
+        "defaultSort": {
+          "field": "seed_count",
+          "direction": "desc"
+        },
+        "density": "dense",
+        "sourceId": "src_historical",
+        "layout": "full",
+        "columns": [
+          {
+            "field": "evidence",
+            "label": "证据",
+            "type": "text"
+          },
+          {
+            "field": "protocol_status",
+            "label": "协议地位",
+            "type": "text"
+          },
+          {
+            "field": "receiver_count",
+            "label": "receiver",
+            "type": "text"
+          },
+          {
+            "field": "seed_count",
+            "label": "seed数",
+            "format": "number"
+          },
+          {
+            "field": "k_shot",
+            "label": "K",
+            "type": "text"
+          },
+          {
+            "field": "old_classes",
+            "label": "old类",
+            "format": "number"
+          },
+          {
+            "field": "new_classes",
+            "label": "new类",
+            "format": "number"
+          },
+          {
+            "field": "old_acc",
+            "label": "old",
+            "format": "percent"
+          },
+          {
+            "field": "seen_new_acc",
+            "label": "new",
+            "format": "percent"
+          },
+          {
+            "field": "H_old_new",
+            "label": "H",
+            "format": "percent"
+          },
+          {
+            "field": "new_role",
+            "label": "new role",
+            "type": "text"
+          }
+        ]
+      }
+    ],
+    "sources": [
+      {
+        "id": "src_protocol",
+        "label": "CVS-RFFI当前项目协议",
+        "path": "docs/PROJECT_PROTOCOL.md",
+        "query": {
+          "engine": "local_markdown",
+          "sql": "SELECT * FROM project_protocol WHERE section IN ('Stage2-C','metrics','LEO scenarios')",
+          "description": "Stage2-C、receiver/TX划分、LEO场景与成功边界",
+          "executed_at": "2026-07-14",
+          "metric_definitions": [
+            "old_acc=增量学习后旧类准确率",
+            "seen_new_acc=已注册新类准确率",
+            "H_old_new=old_acc与seen_new_acc的调和平均"
+          ]
+        }
+      },
+      {
+        "id": "src_runner",
+        "label": "qKNNV42当前正式实现",
+        "path": "paper_reproduction/cvs_aligned/cvs_method_runner.py",
+        "query": {
+          "engine": "local_python",
+          "sql": "SELECT * FROM qknnv42_input_output_contract ORDER BY step",
+          "description": "qKNNV42特征变换、int8量化、评分、label propagation与产物写出",
+          "executed_at": "2026-07-14"
+        }
+      },
+      {
+        "id": "src_method_summary",
+        "label": "Stage2-C方法×K汇总",
+        "path": "local_artifacts/cvs_publication_stage2_summary_20260713/method_k_summary.csv",
+        "query": {
+          "engine": "local_csv",
+          "sql": "SELECT * FROM method_k_summary WHERE phase = 'stage2c' AND method = 'cvs_qknnv42' ORDER BY k_shot",
+          "description": "筛选phase=stage2c且method=cvs_qknnv42",
+          "executed_at": "2026-07-14",
+          "filters": [
+            "phase=stage2c",
+            "method=cvs_qknnv42"
+          ]
+        }
+      },
+      {
+        "id": "src_per_run",
+        "label": "Stage2-C逐运行结果",
+        "path": "local_artifacts/cvs_publication_stage2_summary_20260713/per_run_results.csv",
+        "query": {
+          "engine": "local_csv",
+          "sql": "SELECT * FROM per_run_results WHERE phase = 'stage2c'",
+          "description": "当前4方法、5个receiver、5个seed、5档K-shot的paired结果",
+          "executed_at": "2026-07-14"
+        }
+      },
+      {
+        "id": "src_per_scenario",
+        "label": "Stage2-C逐场景结果",
+        "path": "local_artifacts/cvs_publication_stage2_summary_20260713/per_scenario_results.csv",
+        "query": {
+          "engine": "local_csv",
+          "sql": "SELECT * FROM per_scenario_results WHERE phase = 'stage2c' AND method = 'cvs_qknnv42'",
+          "description": "qKNNV42在三种LEO弱场景下的375行结果",
+          "executed_at": "2026-07-14",
+          "filters": [
+            "phase=stage2c",
+            "method=cvs_qknnv42"
+          ]
+        }
+      },
+      {
+        "id": "src_audit",
+        "label": "结构化artifact完整性审计",
+        "path": "docs/qknnv42_report_20260714/build_report_artifact.py",
+        "query": {
+          "engine": "local_filesystem",
+          "sql": "SELECT * FROM qknnv42_structured_artifact_audit ORDER BY check",
+          "description": "逐目录检查125个qKNNV42运行的必需文件、JSON、数值有限性、切分和loss trace",
+          "executed_at": "2026-07-14"
+        }
+      },
+      {
+        "id": "src_final_audit",
+        "label": "正式矩阵最终审计",
+        "path": "local_artifacts/cvs_publication_stage2_summary_20260713/final_audit.json",
+        "query": {
+          "engine": "local_json",
+          "sql": "SELECT * FROM final_audit WHERE phase = 'stage2c'",
+          "description": "500个Stage2-C方法运行的artifact完成状态",
+          "executed_at": "2026-07-14"
+        }
+      },
+      {
+        "id": "src_historical",
+        "label": "历史qKNNV42单行诊断",
+        "path": "automation_reports/CV-SincNet/phase2_qknn_hardpair_n20_20260706/artifacts/v53_fftlogmag_20260706/local_v55_diagnostics_20260706/k5_strict_seed421070_floor_param_best_predictions_20260707.json",
+        "query": {
+          "engine": "local_json",
+          "sql": "SELECT * FROM historical_qknnv42_diagnostic WHERE seed = 421070 UNION ALL SELECT * FROM current_qknnv42_reference",
+          "description": "2026-07-07 K=5、6 old+20 new、seed421070的legacy diagnostic",
+          "executed_at": "2026-07-14"
+        }
+      }
+    ],
+    "blocks": [
+      {
+        "id": "title",
+        "type": "markdown",
+        "layout": "full",
+        "body": "# qKNNV42技术汇报：方法、输入输出与当前效果\n\n面向CVS-RFFI Stage2-C增量注册场景。结论基于2026-07-13正式全矩阵、当前实现代码与125个qKNNV42运行目录的完整结构化artifact审计。"
+      },
+      {
+        "id": "technical_summary",
+        "type": "markdown",
+        "layout": "full",
+        "body": "## 技术摘要\n\nqKNNV42不是从raw IQ端到端训练的新主干，而是接在冻结ADV3B02身份表征之后的轻量Stage2-C分类头。它以同一target receiver上的K-shot已标注support为记忆，用support-only对角Fisher/whitening尺度改善特征几何，把每条160维support特征量化为int8，再融合top-1余弦邻居、类prototype、微弱旧类锚与10-NN标签传播得到已注册类预测。整个适配过程没有梯度更新，也不保存raw support。\n\n正式矩阵覆盖5个receiver、5个seed、K∈{1,2,5,10,20}和3种LEO弱场景，共125个qKNNV42运行、375个场景结果。K从1增至20时，H由41.04%升至62.22%；全K总体H为53.26%。相对CSIL、MoPC-HR和Orthogonal Incremental，qKNNV42在375/375个完全配对的H比较中获胜。\n\n但这仍不是部署成功：各K仅有1, 3, 3, 4, 5/25个运行达到old_acc≥80%，125个运行中H≥80%的数量为0，同时old_acc与seen_new_acc均≥80%的数量为0。当前证据只能支持“正式矩阵内联合性能最强的候选头”，不能支持“已达到通用OLD80”或“已完成真实卫星部署”。",
+        "sourceId": "src_per_run"
+      },
+      {
+        "id": "headline_metrics",
+        "type": "metric-strip",
+        "layout": "full",
+        "cardIds": [
+          "card_k20",
+          "card_matrix"
+        ]
+      },
+      {
+        "id": "scope_heading",
+        "type": "markdown",
+        "layout": "full",
+        "body": "## 1.问题定义与方法位置\n\n当前正式任务是Stage2-C：在同一未见target receiver域内，先用6个target-old TX维持旧类识别，再用2个与旧类互斥的target-seen-new TX进行K-shot注册。query与support按样本互斥；unknown/open-set不属于本轮成功口径。三个主场景为`leo_clear_weak`、`leo_low_elev_weak`和`leo_rain_weak`。",
+        "sourceId": "src_protocol"
+      },
+      {
+        "id": "pipeline_markdown",
+        "type": "markdown",
+        "layout": "full",
+        "body": "### 方法在系统中的位置\n\n`raw IQ → 冻结ADV3B02 → 160维z_id → qKNNV42轻量头 → 8个已注册类中的预测标签`\n\n因此，问“qKNNV42的输入是什么”时必须分两层回答：系统入口是raw IQ；qKNNV42本体入口是冻结主干生成的160维L2归一化身份特征、support标签以及同批query特征。qKNNV42本体不直接学习IQ卷积滤波器。",
+        "sourceId": "src_runner"
+      },
+      {
+        "id": "io_table",
+        "type": "table",
+        "layout": "full",
+        "tableId": "table_input_output",
+        "sourceId": "src_runner"
+      },
+      {
+        "id": "method_heading",
+        "type": "markdown",
+        "layout": "full",
+        "body": "## 2.qKNNV42使用了什么方法\n\n### 2.1 support-only对角Fisher/whitening变换\n\n对support特征先L2归一化并求中心，再逐维计算类间方差与类内方差。当前实现把Fisher尺度与全局方差白化项组合为对角缩放，并将缩放范围裁剪到[0.05,20]。变换强度为0.1。所有统计只从support及其标签计算，query标签不进入变换。\n\n```text\nfisher_j = between_j / (within_j + 1e-5)\nwhiten_j = 1 / sqrt(var_j + 1e-5)\nscale_j = clip(fisher_norm_j^0.1 × whiten_norm_j^0.5, 0.05, 20)\nz'_j = normalize((z_j - center_j) × scale_j)\n```",
+        "sourceId": "src_runner"
+      },
+      {
+        "id": "method_quant",
+        "type": "markdown",
+        "layout": "full",
+        "body": "### 2.2 int8压缩support记忆\n\n每条变换后的160维support向量按固定幅值127量化为有符号int8：\n\n```text\nq_i = clip(round(127 × z'_i), -127, 127)\nẑ_i = normalize(q_i / 127)\n```\n\n当前正式矩阵有8个已注册类，因此每个场景保存8K条量化support code；K=20时为160条。该压缩只针对support code，8个浮点prototype、变换参数和元数据仍需额外存储。",
+        "sourceId": "src_runner"
+      },
+      {
+        "id": "storage_table",
+        "type": "table",
+        "layout": "full",
+        "tableId": "table_storage",
+        "sourceId": "src_runner"
+      },
+      {
+        "id": "method_score",
+        "type": "markdown",
+        "layout": "full",
+        "body": "### 2.3 top-1邻居、prototype、旧类锚与标签传播融合\n\n对每个候选类c，局部项取query与该类量化support中最大的余弦相似度；全局项取query与该类prototype的余弦相似度。旧类统一增加0.001的微弱锚定项。随后在support+query联合10-NN图上进行8轮标签传播，温度0.05、传播系数0.76、融合权重0.025；support标签被clamp，query真值不使用。\n\n```text\nKNN_c(q)   = max_{i:y_i=c} cos(q, ẑ_i)\nProto_c(q) = cos(q, μ_c)\nBase_c(q)  = 0.55 × KNN_c(q) + 0.45 × Proto_c(q) + 0.001 × I[c∈Y_old]\nScore_c(q) = Base_c(q) + 0.025 × LP_c(q)\nŷ(q)       = argmax_c Score_c(q)\n```\n\n这使当前实现属于transductive inference：query特征参与联合图，但query标签不参与训练、参数拟合或模型选择。当前正式runner记录的`scenario_residual_applied=False`，所以历史版本中的场景残差项没有实际改变当前正式分数。",
+        "sourceId": "src_runner"
+      },
+      {
+        "id": "output_heading",
+        "type": "markdown",
+        "layout": "full",
+        "body": "## 3.输出是什么\n\n在线语义输出是8个已注册TX类中的一个argmax标签。当前runner没有unknown/reject分支，也没有把“置信不足”作为正式输出，因此不能直接宣称具备开放集拒识。离线artifact输出包括`metrics.json`、`score_table.csv`、`detailed_metrics.csv/json`、`split_manifest.json`、`resolved_config.json`和`loss_trace.csv/json`，用于恢复old_acc、seen_new_acc、H、平均遗忘、按类/场景/receiver统计、混淆、延迟和存储量。当前`score_table.csv`保存真值、预测、正确性与场景元数据，但未保存逐类数值分数或校准置信度。",
+        "sourceId": "src_runner"
+      },
+      {
+        "id": "effect_heading",
+        "type": "markdown",
+        "layout": "full",
+        "body": "## 4.达到了什么效果\n\n### 4.1 K-shot越多，旧类保持、新类学习和联合H均改善\n\n从K=1到K=20，old_acc由57.87%提升至71.17%，seen_new_acc由36.50%提升至56.73%，H由41.04%提升至62.22%。平均遗忘从8.29%降至7.58%，但中间K并非严格单调。这里的结果是25个receiver×seed运行均值，不是单个幸运seed。",
+        "sourceId": "src_method_summary"
+      },
+      {
+        "id": "k_chart",
+        "type": "chart",
+        "layout": "full",
+        "chartId": "chart_k_curve",
+        "sourceId": "src_method_summary"
+      },
+      {
+        "id": "k_table",
+        "type": "table",
+        "layout": "full",
+        "tableId": "table_k_curve",
+        "sourceId": "src_method_summary"
+      },
+      {
+        "id": "comparison_heading",
+        "type": "markdown",
+        "layout": "full",
+        "body": "### 4.2 在同一正式paired matrix中，qKNNV42的联合H最好\n\n全K汇总时，qKNNV42的old_acc、seen_new_acc、H分别为65.59%、47.94%、53.26%，高于3个对比方法的联合H。Orthogonal Incremental的遗忘最低，但seen_new_acc仅4.87%，说明其低遗忘主要来自几乎没有学会新类，不能替代old/new联合指标。MoPC-HR在K=20的seen_new_acc均值比qKNNV42高1.10个百分点，但qKNNV42仍以更高old_acc获得更高H。",
+        "sourceId": "src_per_run"
+      },
+      {
+        "id": "method_chart",
+        "type": "chart",
+        "layout": "full",
+        "chartId": "chart_method_h",
+        "sourceId": "src_per_run"
+      },
+      {
+        "id": "method_table",
+        "type": "table",
+        "layout": "full",
+        "tableId": "table_method_overall",
+        "sourceId": "src_per_run"
+      },
+      {
+        "id": "pairwise_table",
+        "type": "table",
+        "layout": "full",
+        "tableId": "table_pairwise",
+        "sourceId": "src_per_run"
+      },
+      {
+        "id": "robustness_heading",
+        "type": "markdown",
+        "layout": "full",
+        "body": "### 4.3 receiver与场景差异仍然显著\n\nreceiver`20-1`的全K平均H最高，为59.57%；receiver`3-19`最低，仅42.73%。场景方面，LEO降雨弱扰动的seen_new_acc为41.76%，明显低于清晰弱扰动的50.84%和低仰角弱扰动的51.22%，说明当前最明确的场景瓶颈是降雨条件下的新类注册。receiver`7-14`呈现旧类80.59%但新类42.23%的不平衡，也提示不能只看old_acc。",
+        "sourceId": "src_per_scenario"
+      },
+      {
+        "id": "receiver_table",
+        "type": "table",
+        "layout": "half",
+        "tableId": "table_receiver",
+        "sourceId": "src_per_run"
+      },
+      {
+        "id": "scenario_table",
+        "type": "table",
+        "layout": "half",
+        "tableId": "table_scenario",
+        "sourceId": "src_per_scenario"
+      },
+      {
+        "id": "row_context_heading",
+        "type": "markdown",
+        "layout": "full",
+        "body": "### 4.4 最强与最弱结果必须保留同一行上下文\n\n当前正式矩阵中最高H运行是`cvs_qknnv42_stage2c_rx20-1_k20_seed713103`，old_acc=68.61%、seen_new_acc=75.83%、H=72.02%；这不是old_acc最高行。最低H运行是`cvs_qknnv42_stage2c_rx3-19_k1_seed713104`，H=23.63%。报告不把来自不同运行的单项最大值拼成虚构的“最强配置”。",
+        "sourceId": "src_per_run"
+      },
+      {
+        "id": "extremes_table",
+        "type": "table",
+        "layout": "full",
+        "tableId": "table_extremes",
+        "sourceId": "src_per_run"
+      },
+      {
+        "id": "audit_heading",
+        "type": "markdown",
+        "layout": "full",
+        "body": "## 5.证据完整性\n\n逐目录审计了125个qKNNV42运行、375个场景结果和1000个必需文件槽位。必需文件缺失、JSON解析失败、NaN/Inf、support/query重叠均为0；375条loss trace均记录0次gradient update。125/125个split manifest标记query特征用于transductive inference，0个用于training或model selection，unknown均关闭。\n\nartifact记录的本地runner单query延迟中位数为0.1083ms、P95为0.5523ms、均值为0.2167ms、最大值为1.1444ms。该值没有统一硬件基准认证，只能作为当前运行环境内的实现测量。矩阵目录没有stdout日志文件，因此本报告对结构化artifact做了全量分析，但不能声称完成了stdout全文审计。",
+        "sourceId": "src_audit"
+      },
+      {
+        "id": "audit_table",
+        "type": "table",
+        "layout": "full",
+        "tableId": "table_audit",
+        "sourceId": "src_audit"
+      },
+      {
+        "id": "historical_heading",
+        "type": "markdown",
+        "layout": "full",
+        "body": "## 6.为什么历史94.52%不能当作当前正式结论\n\n2026-07-07曾出现K=5、6 old+20 new、seed421070的单行机制验证：old_acc=94.52%、seen_new_acc=90.14%、H=92.28%，类最小准确率也较高。但该JSON仍使用`new_role=target_unknown`历史别名，只有1个seed，支持选择为`stable_first`，new类数量、query规模和切分路径均不同于2026-07-13正式5 receiver×5 seed×5 K矩阵。它证明的是某个历史协议下的机制潜力，不是当前Stage2-C的正式可重复效果。",
+        "sourceId": "src_historical"
+      },
+      {
+        "id": "historical_table",
+        "type": "table",
+        "layout": "full",
+        "tableId": "table_historical",
+        "sourceId": "src_historical"
+      },
+      {
+        "id": "limitations",
+        "type": "markdown",
+        "layout": "full",
+        "body": "## 7.局限性与稳健性边界\n\n- **尚未达到通用OLD80。**K=20也只有5/25个运行达到old_acc≥80%，且没有运行达到H≥80%。80%只是阶段性进展门槛，不等于部署成功。\n\n- **当前是transductive，不是严格inductive。**query特征参与support+query图传播；query标签不使用。若部署要求单样本独立到达，必须追加关闭label propagation的inductive消融。\n\n- **没有unknown/reject输出。**当前只在8个已注册类中argmax，不能将错误分类当作未知检测。\n\n- **场景残差在正式runner中未生效。**元数据保留`scenario_residual_weight=0.5`，但`scenario_residual_applied=False`；正式结果应按未应用解释。\n\n- **统计实现与协议文档有差异。**比较协议写明bootstrap CI、overall test、Holm校正和K轴AUC；当前summary manifest实际采用1.96×标准误的正态近似CI，现有summary artifact也没有overall test、Holm或AUC产物。\n\n- **artifact完整不等于已发布。**正式矩阵结构化产物完整，但截至本报告生成时仍位于Git未跟踪的`local_artifacts`目录，因此不能称为已版本化、已发布或已部署证据。\n\n- **不是实星验证。**LEO场景来自简化物理增强；本报告不把它表述为真实卫星链路或在轨部署结果。"
+      },
+      {
+        "id": "next_steps",
+        "type": "markdown",
+        "layout": "full",
+        "body": "## 8.建议的下一步\n\n1. 做严格inductive消融：保持同一split，分别关闭label propagation、old anchor、Fisher尺度和int8量化，量化每个模块对old/new/H的净贡献。\n\n2. 优先攻克receiver`3-19`和`leo_rain_weak`的新类瓶颈；所有改动仍需在同一5 receiver×5 seed×5 K正式矩阵复验。\n\n3. 给`score_table.csv`增加逐类分数、top-2 margin和校准置信度，同时保存stdout日志，补齐错误案例与完整训练/推理轨迹审计。\n\n4. 按比较协议补做bootstrap CI、overall paired test、Holm多重校正与K轴AUC，并把统计口径写入summary manifest。\n\n5. 将正式矩阵与summary artifact纳入Git承载面后，再使用“已发布证据”措辞；在达到预注册成功标准前继续使用“候选头”而非“部署方案”。"
+      },
+      {
+        "id": "further_questions",
+        "type": "markdown",
+        "layout": "full",
+        "body": "## 9.进一步需要回答的问题\n\n- 目标部署允许批量query共同传导，还是必须逐样本inductive推理？\n\n- 当前2个seen-new类的正式设置是否足以代表未来一次注册20个新TX的容量需求？\n\n- 端侧真正可接受的总内存、P95延迟和功耗阈值是什么？只有明确预算后，int8 code的轻量优势才能转化为部署判据。\n\n- 是否需要unknown/reject作为Phase3独立任务？若需要，应新增拒识指标与校准流程，不能从当前closed-set结果外推。"
+      }
+    ]
+  },
+  "snapshot": {
+    "version": 1,
+    "generatedAt": "2026-07-14T16:01:59+08:00",
+    "status": "ready",
+    "datasets": {
+      "headline": [
+        {
+          "k20_old_acc": 0.7116666666666667,
+          "k20_seen_new_acc": 0.5673333333333334,
+          "k20_H_old_new": 0.6221689809610939,
+          "overall_H_old_new": 0.5325617192566792,
+          "paired_H_win_rate": 1.0,
+          "formal_runs": 125
+        }
+      ],
+      "input_output": [
+        {
+          "step": 1,
+          "stage": "特征入口",
+          "input": "同一target receiver下的raw IQ样本",
+          "operation": "冻结ADV3B02主干提取身份特征",
+          "output": "每个样本1个160维L2归一化z_id",
+          "uses_label": "否"
+        },
+        {
+          "step": 2,
+          "stage": "support构建",
+          "input": "6个old TX与2个seen-new TX，每类K个已标注support",
+          "operation": "确定性nested K-shot切分；support/query互斥",
+          "output": "8K条带类标的160维support特征",
+          "uses_label": "仅support标签"
+        },
+        {
+          "step": 3,
+          "stage": "轻量适配",
+          "input": "support特征与support标签",
+          "operation": "对角whitening+Fisher尺度；无反向传播",
+          "output": "变换后的support/query特征与8个prototype",
+          "uses_label": "仅support标签"
+        },
+        {
+          "step": 4,
+          "stage": "压缩记忆与分类",
+          "input": "int8 support codes、prototype、query特征",
+          "operation": "top-1邻居+prototype+old anchor+label propagation",
+          "output": "8个已注册类的argmax预测标签",
+          "uses_label": "query标签不使用；query特征参与传导图"
+        },
+        {
+          "step": 5,
+          "stage": "评估产物",
+          "input": "预测标签与仅用于离线评估的query真值",
+          "operation": "按样本、类、receiver、场景聚合",
+          "output": "old_acc、seen_new_acc、H、forgetting、混淆、延迟、存储统计",
+          "uses_label": "query标签仅用于评估"
+        }
+      ],
+      "k_curve": [
+        {
+          "k_shot": 1,
+          "k_label": "K=1",
+          "runs": 25,
+          "old_acc_before_increment": 0.6615555555555556,
+          "old_acc": 0.5786666666666667,
+          "old_acc_ci95_low": 0.5173546152999219,
+          "old_acc_ci95_high": 0.6399787180334114,
+          "seen_new_acc": 0.365,
+          "seen_new_acc_ci95_low": 0.3228169728708598,
+          "seen_new_acc_ci95_high": 0.4071830271291402,
+          "H_old_new": 0.4103507598585982,
+          "H_old_new_ci95_low": 0.37560698069930765,
+          "H_old_new_ci95_high": 0.44509453901788876,
+          "average_forgetting": 0.0828888888888889,
+          "old80_rows": 1
+        },
+        {
+          "k_shot": 2,
+          "k_label": "K=2",
+          "runs": 25,
+          "old_acc_before_increment": 0.7047777777777777,
+          "old_acc": 0.6184444444444445,
+          "old_acc_ci95_low": 0.5643834779153709,
+          "old_acc_ci95_high": 0.672505410973518,
+          "seen_new_acc": 0.42733333333333334,
+          "seen_new_acc_ci95_low": 0.3838269416360377,
+          "seen_new_acc_ci95_high": 0.470839725030629,
+          "H_old_new": 0.4806698795901801,
+          "H_old_new_ci95_low": 0.4454205346157454,
+          "H_old_new_ci95_high": 0.5159192245646148,
+          "average_forgetting": 0.08633333333333333,
+          "old80_rows": 3
+        },
+        {
+          "k_shot": 5,
+          "k_label": "K=5",
+          "runs": 25,
+          "old_acc_before_increment": 0.7603333333333333,
+          "old_acc": 0.6741111111111111,
+          "old_acc_ci95_low": 0.6346226590199026,
+          "old_acc_ci95_high": 0.7135995632023197,
+          "seen_new_acc": 0.5036666666666667,
+          "seen_new_acc_ci95_low": 0.4649680396453713,
+          "seen_new_acc_ci95_high": 0.542365293687962,
+          "H_old_new": 0.5586593588954331,
+          "H_old_new_ci95_low": 0.5290142431050668,
+          "H_old_new_ci95_high": 0.5883044746857993,
+          "average_forgetting": 0.08622222222222224,
+          "old80_rows": 3
+        },
+        {
+          "k_shot": 10,
+          "k_label": "K=10",
+          "runs": 25,
+          "old_acc_before_increment": 0.7786666666666666,
+          "old_acc": 0.6967777777777777,
+          "old_acc_ci95_low": 0.6565727519469489,
+          "old_acc_ci95_high": 0.7369828036086066,
+          "seen_new_acc": 0.5336666666666666,
+          "seen_new_acc_ci95_low": 0.49813800593573937,
+          "seen_new_acc_ci95_high": 0.5691953273975939,
+          "H_old_new": 0.5909596169780901,
+          "H_old_new_ci95_low": 0.5641278820832066,
+          "H_old_new_ci95_high": 0.6177913518729735,
+          "average_forgetting": 0.08188888888888889,
+          "old80_rows": 4
+        },
+        {
+          "k_shot": 20,
+          "k_label": "K=20",
+          "runs": 25,
+          "old_acc_before_increment": 0.7874444444444444,
+          "old_acc": 0.7116666666666667,
+          "old_acc_ci95_low": 0.6749042339274511,
+          "old_acc_ci95_high": 0.7484290994058822,
+          "seen_new_acc": 0.5673333333333334,
+          "seen_new_acc_ci95_low": 0.5332163400656137,
+          "seen_new_acc_ci95_high": 0.601450326601053,
+          "H_old_new": 0.6221689809610939,
+          "H_old_new_ci95_low": 0.5960095350454474,
+          "H_old_new_ci95_high": 0.6483284268767403,
+          "average_forgetting": 0.07577777777777778,
+          "old80_rows": 5
+        }
+      ],
+      "method_overall": [
+        {
+          "method": "CVS qKNNV42",
+          "method_id": "cvs_qknnv42",
+          "runs": 125,
+          "old_acc": 0.6559333333333333,
+          "seen_new_acc": 0.4794,
+          "H_old_new": 0.5325617192566792,
+          "average_forgetting": 0.08262222222222222
+        },
+        {
+          "method": "MoPC-HR",
+          "method_id": "mopc_hr",
+          "runs": 125,
+          "old_acc": 0.20997777849435806,
+          "seen_new_acc": 0.3840666667322318,
+          "H_old_new": 0.2510997646592062,
+          "average_forgetting": 0.21151110990842184
+        },
+        {
+          "method": "CSIL",
+          "method_id": "csil",
+          "runs": 125,
+          "old_acc": 0.1473333341355125,
+          "seen_new_acc": 0.286066666657726,
+          "H_old_new": 0.16152971691933898,
+          "average_forgetting": 0.16577777615437905
+        },
+        {
+          "method": "Orthogonal Incremental",
+          "method_id": "orthogonal_incremental",
+          "runs": 125,
+          "old_acc": 0.44697777879238126,
+          "seen_new_acc": 0.048733334248264634,
+          "H_old_new": 0.07724219659650261,
+          "average_forgetting": 0.02177777659893036
+        }
+      ],
+      "pairwise": [
+        {
+          "candidate": "CSIL",
+          "k_shot": 1,
+          "pairs": 25,
+          "qknnv42_wins": 25,
+          "delta_H_old_new": 0.24800937534989356
+        },
+        {
+          "candidate": "CSIL",
+          "k_shot": 2,
+          "pairs": 25,
+          "qknnv42_wins": 25,
+          "delta_H_old_new": 0.2873017237103446
+        },
+        {
+          "candidate": "CSIL",
+          "k_shot": 5,
+          "pairs": 25,
+          "qknnv42_wins": 25,
+          "delta_H_old_new": 0.37815668390983553
+        },
+        {
+          "candidate": "CSIL",
+          "k_shot": 10,
+          "pairs": 25,
+          "qknnv42_wins": 25,
+          "delta_H_old_new": 0.41403809385469437
+        },
+        {
+          "candidate": "CSIL",
+          "k_shot": 20,
+          "pairs": 25,
+          "qknnv42_wins": 25,
+          "delta_H_old_new": 0.5276541348619324
+        },
+        {
+          "candidate": "MoPC-HR",
+          "k_shot": 1,
+          "pairs": 25,
+          "qknnv42_wins": 25,
+          "delta_H_old_new": 0.2633619768999901
+        },
+        {
+          "candidate": "MoPC-HR",
+          "k_shot": 2,
+          "pairs": 25,
+          "qknnv42_wins": 25,
+          "delta_H_old_new": 0.29617597694629566
+        },
+        {
+          "candidate": "MoPC-HR",
+          "k_shot": 5,
+          "pairs": 25,
+          "qknnv42_wins": 25,
+          "delta_H_old_new": 0.3169596801502655
+        },
+        {
+          "candidate": "MoPC-HR",
+          "k_shot": 10,
+          "pairs": 25,
+          "qknnv42_wins": 25,
+          "delta_H_old_new": 0.28164375265836517
+        },
+        {
+          "candidate": "MoPC-HR",
+          "k_shot": 20,
+          "pairs": 25,
+          "qknnv42_wins": 25,
+          "delta_H_old_new": 0.24916838633244798
+        },
+        {
+          "candidate": "Orthogonal Incremental",
+          "k_shot": 1,
+          "pairs": 25,
+          "qknnv42_wins": 25,
+          "delta_H_old_new": 0.3115264824166199
+        },
+        {
+          "candidate": "Orthogonal Incremental",
+          "k_shot": 2,
+          "pairs": 25,
+          "qknnv42_wins": 25,
+          "delta_H_old_new": 0.39911224899763864
+        },
+        {
+          "candidate": "Orthogonal Incremental",
+          "k_shot": 5,
+          "pairs": 25,
+          "qknnv42_wins": 25,
+          "delta_H_old_new": 0.49021436323535994
+        },
+        {
+          "candidate": "Orthogonal Incremental",
+          "k_shot": 10,
+          "pairs": 25,
+          "qknnv42_wins": 25,
+          "delta_H_old_new": 0.5136209512328241
+        },
+        {
+          "candidate": "Orthogonal Incremental",
+          "k_shot": 20,
+          "pairs": 25,
+          "qknnv42_wins": 25,
+          "delta_H_old_new": 0.5621235674184397
+        }
+      ],
+      "receiver_summary": [
+        {
+          "receiver": "20-1",
+          "runs": 25,
+          "old_acc": 0.6041111111111112,
+          "seen_new_acc": 0.6073333333333334,
+          "H_old_new": 0.5956628297291009,
+          "average_forgetting": 0.08788888888888889
+        },
+        {
+          "receiver": "3-19",
+          "runs": 25,
+          "old_acc": 0.4908888888888889,
+          "seen_new_acc": 0.4036666666666667,
+          "H_old_new": 0.4273161534872117,
+          "average_forgetting": 0.07344444444444444
+        },
+        {
+          "receiver": "7-14",
+          "runs": 25,
+          "old_acc": 0.8058888888888889,
+          "seen_new_acc": 0.42233333333333334,
+          "H_old_new": 0.5380158628943086,
+          "average_forgetting": 0.07311111111111111
+        },
+        {
+          "receiver": "7-7",
+          "runs": 25,
+          "old_acc": 0.7146666666666667,
+          "seen_new_acc": 0.49566666666666664,
+          "H_old_new": 0.576740138285856,
+          "average_forgetting": 0.09088888888888888
+        },
+        {
+          "receiver": "8-8",
+          "runs": 25,
+          "old_acc": 0.6641111111111111,
+          "seen_new_acc": 0.468,
+          "H_old_new": 0.5250736118869181,
+          "average_forgetting": 0.08777777777777777
+        }
+      ],
+      "scenario_summary": [
+        {
+          "scenario": "LEO清晰弱扰动",
+          "scenario_id": "leo_clear_weak",
+          "rows": 125,
+          "old_acc": 0.6793333333333333,
+          "seen_new_acc": 0.5084,
+          "H_old_new": 0.5644928705097783
+        },
+        {
+          "scenario": "LEO低仰角弱扰动",
+          "scenario_id": "leo_low_elev_weak",
+          "rows": 125,
+          "old_acc": 0.6292666666666666,
+          "seen_new_acc": 0.5122000000000001,
+          "H_old_new": 0.5444565089601321
+        },
+        {
+          "scenario": "LEO降雨弱扰动",
+          "scenario_id": "leo_rain_weak",
+          "rows": 125,
+          "old_acc": 0.6592,
+          "seen_new_acc": 0.4176,
+          "H_old_new": 0.4887357783001268
+        }
+      ],
+      "extremes": [
+        {
+          "position": "最低H行",
+          "experiment_id": "cvs_qknnv42_stage2c_rx3-19_k1_seed713104",
+          "receiver": "3-19",
+          "seed": 713104,
+          "k_shot": 1,
+          "old_acc_before_increment": 0.44166666666666665,
+          "old_acc": 0.34722222222222227,
+          "seen_new_acc": 0.3,
+          "H_old_new": 0.23630735759493673,
+          "average_forgetting": 0.09444444444444446
+        },
+        {
+          "position": "最高H行",
+          "experiment_id": "cvs_qknnv42_stage2c_rx20-1_k20_seed713103",
+          "receiver": "20-1",
+          "seed": 713103,
+          "k_shot": 20,
+          "old_acc_before_increment": 0.7722222222222221,
+          "old_acc": 0.6861111111111112,
+          "seen_new_acc": 0.7583333333333333,
+          "H_old_new": 0.7201886720895126,
+          "average_forgetting": 0.0861111111111111
+        }
+      ],
+      "storage": [
+        {
+          "k_shot": 1,
+          "registered_classes": 8,
+          "stored_int8_codes": 8,
+          "code_bytes": 1280,
+          "code_kib": 1.25,
+          "note": "仅support code字节，不含8个prototype、变换参数及元数据"
+        },
+        {
+          "k_shot": 2,
+          "registered_classes": 8,
+          "stored_int8_codes": 16,
+          "code_bytes": 2560,
+          "code_kib": 2.5,
+          "note": "仅support code字节，不含8个prototype、变换参数及元数据"
+        },
+        {
+          "k_shot": 5,
+          "registered_classes": 8,
+          "stored_int8_codes": 40,
+          "code_bytes": 6400,
+          "code_kib": 6.25,
+          "note": "仅support code字节，不含8个prototype、变换参数及元数据"
+        },
+        {
+          "k_shot": 10,
+          "registered_classes": 8,
+          "stored_int8_codes": 80,
+          "code_bytes": 12800,
+          "code_kib": 12.5,
+          "note": "仅support code字节，不含8个prototype、变换参数及元数据"
+        },
+        {
+          "k_shot": 20,
+          "registered_classes": 8,
+          "stored_int8_codes": 160,
+          "code_bytes": 25600,
+          "code_kib": 25.0,
+          "note": "仅support code字节，不含8个prototype、变换参数及元数据"
+        }
+      ],
+      "audit_rows": [
+        {
+          "check": "正式qKNNV42运行目录",
+          "observed": 125,
+          "expected": 125,
+          "verdict": "PASS"
+        },
+        {
+          "check": "三种LEO场景结果",
+          "observed": 375,
+          "expected": 375,
+          "verdict": "PASS"
+        },
+        {
+          "check": "必需结构化文件缺失",
+          "observed": 0,
+          "expected": 0,
+          "verdict": "PASS"
+        },
+        {
+          "check": "JSON解析失败",
+          "observed": 0,
+          "expected": 0,
+          "verdict": "PASS"
+        },
+        {
+          "check": "NaN或Inf",
+          "observed": 0,
+          "expected": 0,
+          "verdict": "PASS"
+        },
+        {
+          "check": "support/query重叠",
+          "observed": 0,
+          "expected": 0,
+          "verdict": "PASS"
+        },
+        {
+          "check": "梯度更新次数最大值",
+          "observed": 0,
+          "expected": 0,
+          "verdict": "PASS"
+        },
+        {
+          "check": "stdout日志文件",
+          "observed": 0,
+          "expected": "未规定",
+          "verdict": "LIMITATION"
+        }
+      ],
+      "historical_vs_current": [
+        {
+          "evidence": "2026-07-13正式Stage2-C矩阵",
+          "protocol_status": "当前主证据",
+          "receiver_count": "5个target receiver",
+          "seed_count": 5,
+          "k_shot": "1/2/5/10/20",
+          "old_classes": 6,
+          "new_classes": 2,
+          "old_acc": 0.6559333333333333,
+          "seen_new_acc": 0.4794,
+          "H_old_new": 0.5325617192566792,
+          "min_old_class_acc": null,
+          "min_seen_new_class_acc": null,
+          "new_role": "target_seen_new",
+          "stored_codes": "8K"
+        },
+        {
+          "evidence": "2026-07-07历史单行机制验证",
+          "protocol_status": "legacy diagnostic，不属于2026-07-13正式矩阵",
+          "receiver_count": "未按当前5个target receiver矩阵汇总",
+          "seed_count": 1,
+          "k_shot": 5,
+          "old_classes": 6,
+          "new_classes": 20,
+          "old_acc": 0.9452380952380952,
+          "seen_new_acc": 0.9014285714285715,
+          "H_old_new": 0.9228136742061446,
+          "min_old_class_acc": 0.8571428571428571,
+          "min_seen_new_class_acc": 0.8142857142857143,
+          "new_role": "target_unknown",
+          "stored_codes": 130
+        }
+      ]
+    }
+  },
+  "sources": [
+    {
+      "id": "src_protocol",
+      "label": "CVS-RFFI当前项目协议",
+      "path": "docs/PROJECT_PROTOCOL.md",
+      "query": {
+        "engine": "local_markdown",
+        "sql": "SELECT * FROM project_protocol WHERE section IN ('Stage2-C','metrics','LEO scenarios')",
+        "description": "Stage2-C、receiver/TX划分、LEO场景与成功边界",
+        "executed_at": "2026-07-14",
+        "metric_definitions": [
+          "old_acc=增量学习后旧类准确率",
+          "seen_new_acc=已注册新类准确率",
+          "H_old_new=old_acc与seen_new_acc的调和平均"
+        ]
+      }
+    },
+    {
+      "id": "src_runner",
+      "label": "qKNNV42当前正式实现",
+      "path": "paper_reproduction/cvs_aligned/cvs_method_runner.py",
+      "query": {
+        "engine": "local_python",
+        "sql": "SELECT * FROM qknnv42_input_output_contract ORDER BY step",
+        "description": "qKNNV42特征变换、int8量化、评分、label propagation与产物写出",
+        "executed_at": "2026-07-14"
+      }
+    },
+    {
+      "id": "src_method_summary",
+      "label": "Stage2-C方法×K汇总",
+      "path": "local_artifacts/cvs_publication_stage2_summary_20260713/method_k_summary.csv",
+      "query": {
+        "engine": "local_csv",
+        "sql": "SELECT * FROM method_k_summary WHERE phase = 'stage2c' AND method = 'cvs_qknnv42' ORDER BY k_shot",
+        "description": "筛选phase=stage2c且method=cvs_qknnv42",
+        "executed_at": "2026-07-14",
+        "filters": [
+          "phase=stage2c",
+          "method=cvs_qknnv42"
+        ]
+      }
+    },
+    {
+      "id": "src_per_run",
+      "label": "Stage2-C逐运行结果",
+      "path": "local_artifacts/cvs_publication_stage2_summary_20260713/per_run_results.csv",
+      "query": {
+        "engine": "local_csv",
+        "sql": "SELECT * FROM per_run_results WHERE phase = 'stage2c'",
+        "description": "当前4方法、5个receiver、5个seed、5档K-shot的paired结果",
+        "executed_at": "2026-07-14"
+      }
+    },
+    {
+      "id": "src_per_scenario",
+      "label": "Stage2-C逐场景结果",
+      "path": "local_artifacts/cvs_publication_stage2_summary_20260713/per_scenario_results.csv",
+      "query": {
+        "engine": "local_csv",
+        "sql": "SELECT * FROM per_scenario_results WHERE phase = 'stage2c' AND method = 'cvs_qknnv42'",
+        "description": "qKNNV42在三种LEO弱场景下的375行结果",
+        "executed_at": "2026-07-14",
+        "filters": [
+          "phase=stage2c",
+          "method=cvs_qknnv42"
+        ]
+      }
+    },
+    {
+      "id": "src_audit",
+      "label": "结构化artifact完整性审计",
+      "path": "docs/qknnv42_report_20260714/build_report_artifact.py",
+      "query": {
+        "engine": "local_filesystem",
+        "sql": "SELECT * FROM qknnv42_structured_artifact_audit ORDER BY check",
+        "description": "逐目录检查125个qKNNV42运行的必需文件、JSON、数值有限性、切分和loss trace",
+        "executed_at": "2026-07-14"
+      }
+    },
+    {
+      "id": "src_final_audit",
+      "label": "正式矩阵最终审计",
+      "path": "local_artifacts/cvs_publication_stage2_summary_20260713/final_audit.json",
+      "query": {
+        "engine": "local_json",
+        "sql": "SELECT * FROM final_audit WHERE phase = 'stage2c'",
+        "description": "500个Stage2-C方法运行的artifact完成状态",
+        "executed_at": "2026-07-14"
+      }
+    },
+    {
+      "id": "src_historical",
+      "label": "历史qKNNV42单行诊断",
+      "path": "automation_reports/CV-SincNet/phase2_qknn_hardpair_n20_20260706/artifacts/v53_fftlogmag_20260706/local_v55_diagnostics_20260706/k5_strict_seed421070_floor_param_best_predictions_20260707.json",
+      "query": {
+        "engine": "local_json",
+        "sql": "SELECT * FROM historical_qknnv42_diagnostic WHERE seed = 421070 UNION ALL SELECT * FROM current_qknnv42_reference",
+        "description": "2026-07-07 K=5、6 old+20 new、seed421070的legacy diagnostic",
+        "executed_at": "2026-07-14"
+      }
+    }
+  ]
+}
