@@ -1,0 +1,47 @@
+# DRIFT/RIEI论文一致性修复后正式复现实验
+
+## 基本信息
+
+- 实验ID：`paper_repro_repaired_riei_drift_seed1337_20260714_103000`
+- 时间：2026-07-14
+- 操作者：Codex
+- 目标：在修复DRIFT Eq.(25)与RIEI Eq.(10c)/(11)更新语义后，重跑DRIFT Table I及RIEI Table III全部12行。
+- 对照：`paper_repro_original_riei_drift_seed1337_20260714_090706`；DRIFT last5=`49.37±3.04%`，RIEI 12行last10平均=`54.06%`、MAE=`19.24pp`。
+- 声明边界：仅为原论文closed-set cross-receiver复现，不是CVSStage2、卫星/LEO或部署证据。
+
+## 修复假设
+
+|方法|论文要求|旧实现偏差|修复|
+|---|---|---|---|
+|DRIFT|Eq.(25)在每个mini-batch按receiver计算center，并对receiver domain loss求和|跨batch EMA center；domain mean使中心约束缩小`1/D`|`center_mode=batch`；domain sum|
+|RIEI|Eq.(10c)与Eq.(11)对同一`theta_F`依次更新|FED同时属于两个独立Adam实例，两步使用不同动量/二阶矩状态|EC/RC专用optimizer；FED只属于一个optimizer，每iteration连续执行CE step与MI/IE step|
+
+DRIFT的raw negative-MSE、RIEI的CE/MI/IE sum reduction以及两篇论文的模型、数据计数、超参数和last-N评估保持不变。
+
+## 实验矩阵与判定
+
+- DRIFT：Day1；train RX=`1-1,14-7,7-7`；7个held-out RX；200epoch；last5；论文目标`75.62%`，单seed差值绝对值≤3pp初判通过。
+- RIEI：Table III全部12个“两source receiver→一held-out receiver”组合；200epoch；last10；论文12行均值逐行比较；要求至少10/12落入论文±2SD且MAE≤3pp。
+- seed=`1337`；batch64；Adam；输入equalized WiSig I/Q `2x256`；无satellite augmentation、无target support、无无标签路线。
+
+## 本地版本、验证与快照
+
+- 根目录`E:\type10-7`不是Git仓库；Git承载面`E:\type10-7\github_publish\CVS-RFFI-repo`，关键提交：`73f694a`、`90f81e8`、`50b7ab1`。
+- 测试：`pytest tests/test_riei_alternating_paper_parity.py tests/test_drift_eq25_paper_parity.py`为`3 passed`；相关Python文件`py_compile`通过；根目录DRIFT parity unittest为`13/13 OK`。
+- launcher：`code/scripts/launch_paper_repro_repaired_matrix_20260714.sh`；`bash -n`通过；dry-run展开13个job。
+- 快照：`E:\type10-7\code\snapshots\paper_repro_repaired_riei_drift_seed1337_20260714_103000\`。
+
+## N607资源与队列计划
+
+2026-07-14 10:31+08:00只读inventory显示另一个已存在的`phase1_dgleo_corepath8_20260714`任务在8张GPU各占1个compute process。按每GPU最多2个训练的规则，本矩阵只允许每GPU新增1个峰值训练。新launcher把13个job分配成8个per-GPU顺序队列：GPU0-4各排2个，GPU5-7各排1个；因此每GPU`current=1+planned_peak=1`，总峰值为2，不会并发启动同一GPU上的第二个本矩阵job。
+
+- N607工作目录：`/home/szu2070436088/2510044040/CV-SincNet`。
+- run根：`paper_reproduction/runs/paper_repro_repaired_riei_drift_seed1337_20260714_103000`。
+- log根：`paper_reproduction/logs/paper_repro_repaired_riei_drift_seed1337_20260714_103000`。
+- Python：`/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python`。
+- 同步文件：`baselines/drift/losses.py`、`baselines/drift/train_cvs.py`、`baselines/riei_fd/train.py`、`baselines/riei_fd/train_cvs.py`、`run_wisig_paper_scope_queue.sh`、新launcher。
+- 安全边界：不修改、终止或重启已有Phase1任务；只同步RIEI/DRIFT专用文件和独立launcher；启动前再次执行capacity gate。
+
+## 完成后检查
+
+完整读取13份200epoch训练日志与metrics；报告DRIFT同一run七receiver结果、RIEI Table III 12行结果、loss/feature norm曲线、硬错误、与旧run及论文逐行差值。best-val仅作诊断，不能替代论文last5/last10。
