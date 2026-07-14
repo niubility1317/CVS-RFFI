@@ -148,6 +148,15 @@ cap成功阻止修复版中`loss_mse=-247240`、feature norm=967.22的无界放�
 - 现有fixopt实际为batch=64、固定最前800/200、额外per-packet RMS归一化、单seed最后5轮。这四处均与v2不一致；因此D02的66.06%不能继续只解释为cap超参数不足。
 - 已在独立报告`paper_repro_drift_v2_repair_20260714_141223`建立v1/v2分离口径和8候选协议消融。本地修改及测试已完成，但现有queue仍运行，本检查点未同步或启动新矩阵。
 
+### 2026-07-14 14:25+08:00只读监控检查点
+
+- 8个queue PID=`334756,334759,334761,334766,334772,334778,334787,334797`全部存活；本矩阵完成8/20、运行8/20、排队4/20。
+- 当前8个RIEI Table III job分别到epoch172–174；8个DRIFT仍保持200epoch、`FINAL-TEST`和`PAPER-EVAL-SUMMARY`完整。16个已建立job均持续产生metrics，但只把含最终marker的8个DRIFT计为完成，不把训练中metrics误报为完成artifact。
+- 完整读取当前32份job日志后，硬错误日志数为0；未发现`Traceback`、`RuntimeError`、CUDA OOM、`Killed`、segmentation fault或参数不识别。
+- `nvidia-smi pmon`确认GPU0-7各有1个Phase1训练进程，显存约3538–3636MiB；各有1个本任务RIEI进程，显存500MiB。每GPU训练进程总数=2，符合容量上限。
+- N607预检通过，GPU利用率约23%–77%、总显存约4056–4154MiB；本次SSH命令结束后本地`ssh.exe`和TCP22残留均为0。
+- `paper_repro_drift_v2_repair_20260714_141223`仍未同步或启动；继续等待当前8个RIEI完成并由队列运行剩余4个RIEI，期间不干预fixopt或Phase1。
+
 ## 完成后必须检查
 
 - 完整读取20份200epoch日志、metrics及scheduler/queue日志，不使用tail抽样代替完整分析。
