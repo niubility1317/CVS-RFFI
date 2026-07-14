@@ -36,7 +36,7 @@ def _stable_rank(seed: int, *parts: object) -> int:
     return int(hashlib.sha256(raw.encode("utf-8")).hexdigest()[:16], 16)
 
 
-def _load_npz(path: Path) -> dict[str, np.ndarray]:
+def _load_npz(path: Path) -> tuple[dict[str, np.ndarray], dict[str, Any]]:
     with np.load(path, allow_pickle=False) as data:
         required = {
             "features", "tx_ids", "rx_ids", "day_ids", "eq_ids", "sig_ids",
@@ -45,7 +45,9 @@ def _load_npz(path: Path) -> dict[str, np.ndarray]:
         missing = sorted(required - set(data.files))
         if missing:
             raise ValueError(f"feature NPZ is missing keys: {missing}")
-        return {key: np.asarray(data[key]) for key in data.files if key != "manifest_json"}
+        arrays = {key: np.asarray(data[key]) for key in data.files if key != "manifest_json"}
+        manifest = json.loads(str(data["manifest_json"].item())) if "manifest_json" in data.files else {}
+        return arrays, manifest
 
 
 def _sample_id(arrays: dict[str, np.ndarray], index: int) -> str:
@@ -55,9 +57,22 @@ def _sample_id(arrays: dict[str, np.ndarray], index: int) -> str:
     )
 
 
+def _feature_path(config: dict[str, Any], receiver: str, scenario: str) -> Path:
+    nested = config.get("feature_npz_by_receiver_scenario", {})
+    if nested:
+        if receiver not in nested or scenario not in nested[receiver]:
+            raise ValueError(f"missing feature cache for receiver={receiver}, scenario={scenario}")
+        return Path(nested[receiver][scenario])
+    mapping = config.get("feature_npz_by_scenario", {})
+    if scenario not in mapping:
+        raise ValueError(f"missing feature cache for scenario={scenario}")
+    return Path(mapping[scenario])
+
+
 def _select_split(
     arrays: dict[str, np.ndarray], *, role: str, tx_labels: list[str], receiver: str,
     seed: int, k_shot: int, support_pool_max_k: int, query_per_tx: int,
+    scenario: str | None = None,
 ) -> tuple[list[int], list[int]]:
     roles = arrays["dataset_role"].astype(str)
     tx = arrays["tx_ids"].astype(str)
@@ -65,7 +80,10 @@ def _select_split(
     support: list[int] = []
     query: list[int] = []
     for label in tx_labels:
-        candidates = np.where((roles == role) & (tx == label) & (rx == receiver))[0].tolist()
+        mask = (roles == role) & (tx == label) & (rx == receiver)
+        if scenario is not None:
+            mask &= arrays["sat_scenarios"].astype(str) == str(scenario)
+        candidates = np.where(mask)[0].tolist()
         ordered = sorted(
             (int(i) for i in candidates),
             key=lambda i: _stable_rank(
@@ -182,9 +200,9 @@ def _diag_whiten_fisher(
     )
 
 
-def _qknnv42_predict(
+def _qknnv42_score_matrix(
     support_x: np.ndarray, support_y: np.ndarray, query_x: np.ndarray, *, old_labels: set[str],
-) -> tuple[np.ndarray, dict[str, Any]]:
+) -> tuple[list[str], np.ndarray, dict[str, Any]]:
     support, query, transform_info = _diag_whiten_fisher(support_x, support_y, query_x, strength=0.1)
     quantized = np.clip(np.rint(127.0 * support), -127, 127).astype(np.int8)
     restored = _norm(quantized.astype(np.float64) / 127.0)
@@ -202,11 +220,10 @@ def _qknnv42_predict(
         score_columns.append(score)
     scores = np.stack(score_columns, axis=1)
     scores += 0.025 * _labelprop(restored, labels, query, classes)
-    predicted = np.asarray(classes, dtype=object)[np.argmax(scores, axis=1)]
     compactness = 1.0 - np.max(restored @ np.vstack([
         _norm(restored[labels == label].mean(axis=0, keepdims=True))[0] for label in classes
     ]).T, axis=1)
-    return predicted, {
+    return classes, scores, {
         "adaptation_objective": "qknnv42_int8_top1_proto45_old_anchor_labelprop",
         "transform_mode": "diag_whiten_fisher",
         "transform_strength": 0.1,
@@ -221,6 +238,92 @@ def _qknnv42_predict(
         "scenario_residual_note": "zero_by_full_same_scenario_support_for_every_registered_class",
         "loss": float(np.mean(compactness)),
     }
+
+
+def _qknnv42_predict(
+    support_x: np.ndarray,
+    support_y: np.ndarray,
+    query_x: np.ndarray,
+    *,
+    old_labels: set[str],
+    aux_support_x: np.ndarray | None = None,
+    aux_query_x: np.ndarray | None = None,
+    aux_score_weight: float = 0.0,
+    decision_mode: str = "per_sample_argmax",
+    old_query_count: int | None = None,
+    query_per_class: int | None = None,
+) -> tuple[np.ndarray, dict[str, Any]]:
+    classes, scores, info = _qknnv42_score_matrix(
+        support_x, support_y, query_x, old_labels=old_labels
+    )
+    weight = float(aux_score_weight)
+    if not 0.0 <= weight <= 1.0:
+        raise ValueError("qKNNV42 auxiliary score weight must be in [0,1]")
+    if (aux_support_x is None) != (aux_query_x is None):
+        raise ValueError("qKNNV42 auxiliary support/query features must be provided together")
+    if weight > 0.0:
+        if aux_support_x is None or aux_query_x is None:
+            raise ValueError("qKNNV42 positive auxiliary score weight requires auxiliary features")
+        aux_classes, aux_scores, aux_info = _qknnv42_score_matrix(
+            aux_support_x, support_y, aux_query_x, old_labels=old_labels
+        )
+        if aux_classes != classes:
+            raise ValueError("qKNNV42 primary and auxiliary class orders differ")
+        scores = (1.0 - weight) * scores + weight * aux_scores
+        info.update(
+            {
+                "aux_feature_enabled": True,
+                "aux_feature_dim": int(aux_support_x.shape[1]),
+                "aux_score_weight": weight,
+                "aux_transform_mode": str(aux_info["transform_mode"]),
+                "aux_transform_scale_min": float(aux_info["transform_scale_min"]),
+                "aux_transform_scale_max": float(aux_info["transform_scale_max"]),
+                "aux_transform_scale_mean": float(aux_info["transform_scale_mean"]),
+                "aux_loss": float(aux_info["loss"]),
+            }
+        )
+    else:
+        info.update({"aux_feature_enabled": False, "aux_feature_dim": 0, "aux_score_weight": 0.0})
+    decision = str(decision_mode).strip().lower()
+    if decision == "per_sample_argmax":
+        predicted = np.asarray(classes, dtype=object)[np.argmax(scores, axis=1)]
+    elif decision == "legacy_role_quota_oracle":
+        from scipy.optimize import linear_sum_assignment
+
+        if old_query_count is None or query_per_class is None:
+            raise ValueError("legacy role/quota oracle requires old_query_count and query_per_class")
+        old_positions = [i for i, label in enumerate(classes) if label in old_labels]
+        new_positions = [i for i, label in enumerate(classes) if label not in old_labels]
+
+        def assign(block: np.ndarray, positions: list[int]) -> np.ndarray:
+            if block.shape[0] == 0:
+                return np.asarray([], dtype=object)
+            expected = len(positions) * int(query_per_class)
+            if block.shape[0] != expected:
+                raise ValueError(f"role/quota block has {block.shape[0]} rows; expected {expected}")
+            slot_scores = np.repeat(block[:, positions], int(query_per_class), axis=1)
+            row_ind, col_ind = linear_sum_assignment(-slot_scores)
+            if not np.array_equal(row_ind, np.arange(block.shape[0])):
+                raise ValueError("Hungarian assignment did not cover every query row")
+            class_pos = np.asarray(positions, dtype=np.int64)[col_ind // int(query_per_class)]
+            return np.asarray(classes, dtype=object)[class_pos]
+
+        old_count = int(old_query_count)
+        predicted = np.concatenate(
+            [assign(scores[:old_count], old_positions), assign(scores[old_count:], new_positions)]
+        )
+    else:
+        raise ValueError(f"unsupported qKNNV42 decision mode: {decision_mode}")
+    info.update(
+        {
+            "decision_mode": decision,
+            "role_oracle_used": decision == "legacy_role_quota_oracle",
+            "equal_class_quota_used": decision == "legacy_role_quota_oracle",
+            "scenario_hard_filter_effective": False,
+            "scenario_hard_filter_note": "all registered classes have support in every formal scenario",
+        }
+    )
+    return predicted, info
 
 
 def _accuracy(pred: np.ndarray, truth: np.ndarray) -> float:
@@ -275,12 +378,33 @@ def validate_config(config: dict[str, Any]) -> None:
     if list(config.get("target_channel_scenarios", [])) != list(SCENARIOS):
         raise ValueError(f"formal tests must be exactly {list(SCENARIOS)}")
     mapping = config.get("feature_npz_by_scenario", {})
-    if set(mapping) != set(SCENARIOS):
+    nested_mapping = config.get("feature_npz_by_receiver_scenario", {})
+    if not nested_mapping and set(mapping) != set(SCENARIOS):
         raise ValueError("feature_npz_by_scenario must contain all formal LEO scenarios")
+    if nested_mapping:
+        receivers = [str(value) for value in config.get("publication_target_receiver_grid", [])]
+        if not receivers:
+            receivers = [str(value) for value in config.get("target_receiver_labels", [])]
+        missing = [rx for rx in receivers if rx not in nested_mapping or set(nested_mapping[rx]) != set(SCENARIOS)]
+        if missing:
+            raise ValueError(f"feature_npz_by_receiver_scenario is incomplete for receivers={missing}")
     if int(config.get("k_shot", 0)) <= 0 or int(config.get("support_pool_max_k", 0)) < int(config["k_shot"]):
         raise ValueError("invalid nested K-shot settings")
     if bool(config.get("unknown_rejection_enabled", False)) or config.get("target_unknown_tx_labels"):
         raise ValueError("Phase2 publication mainline excludes unknown rejection")
+    aux_key = str(config.get("qknnv42_aux_feature_key", "")).strip()
+    aux_weight = float(config.get("qknnv42_aux_score_weight", 0.0))
+    if not 0.0 <= aux_weight <= 1.0:
+        raise ValueError("qknnv42_aux_score_weight must be in [0,1]")
+    if aux_weight > 0.0 and method != "cvs_qknnv42":
+        raise ValueError("FFT auxiliary fusion is defined only for cvs_qknnv42")
+    if aux_weight > 0.0 and not aux_key:
+        raise ValueError("positive qknnv42_aux_score_weight requires qknnv42_aux_feature_key")
+    decision_mode = str(config.get("qknnv42_decision_mode", "per_sample_argmax")).strip().lower()
+    if decision_mode not in {"per_sample_argmax", "legacy_role_quota_oracle"}:
+        raise ValueError(f"unsupported qknnv42_decision_mode: {decision_mode}")
+    if decision_mode == "legacy_role_quota_oracle" and method != "cvs_qknnv42":
+        raise ValueError("legacy role/quota oracle is defined only for cvs_qknnv42")
 
 
 def run(config: dict[str, Any], run_dir: Path) -> dict[str, Any]:
@@ -298,17 +422,38 @@ def run(config: dict[str, Any], run_dir: Path) -> dict[str, Any]:
     detailed: list[dict[str, Any]] = []
     trace: list[dict[str, Any]] = []
     manifest_splits: dict[str, Any] = {}
+    aux_key = str(config.get("qknnv42_aux_feature_key", "")).strip()
+    aux_weight = float(config.get("qknnv42_aux_score_weight", 0.0))
+    aux_dim = int(config.get("qknnv42_aux_feature_dim", 0))
+    decision_mode = str(config.get("qknnv42_decision_mode", "per_sample_argmax")).strip().lower()
+    expected_tta_views = int(config.get("qknnv42_expected_tta_view_count", 1))
     for scenario in SCENARIOS:
-        arrays = _load_npz(Path(config["feature_npz_by_scenario"][scenario]))
+        arrays, cache_manifest = _load_npz(_feature_path(config, receiver, scenario))
+        if aux_weight > 0.0:
+            if aux_key not in arrays:
+                raise ValueError(f"feature NPZ for {scenario} is missing auxiliary key {aux_key!r}")
+            if arrays[aux_key].ndim != 2 or int(arrays[aux_key].shape[0]) != int(arrays["features"].shape[0]):
+                raise ValueError(f"misaligned auxiliary feature matrix for {scenario}: {arrays[aux_key].shape}")
+            if aux_dim > 0 and int(arrays[aux_key].shape[1]) != aux_dim:
+                raise ValueError(
+                    f"auxiliary feature dimension mismatch for {scenario}: {arrays[aux_key].shape[1]} != {aux_dim}"
+                )
+            if int(cache_manifest.get("satellite_tta_view_count", 0)) != expected_tta_views:
+                raise ValueError(
+                    f"FFT experiment requires satellite_tta_view_count={expected_tta_views} for {scenario}"
+                )
+            if str(cache_manifest.get("aux_fft_view_alignment", "")) != "same_post_channel_view_as_backbone":
+                raise ValueError(f"FFT feature is not certified as same-view aligned for {scenario}")
         roles = arrays["dataset_role"].astype(str)
         scenario_values = arrays["sat_scenarios"].astype(str)
         target_mask = np.isin(roles, ["target_old", "target_new"])
-        if not np.all(scenario_values[target_mask] == scenario):
-            raise ValueError(f"target rows in {scenario} cache are not all satellite-augmented with that scenario")
+        if str(scenario) not in set(scenario_values[target_mask].tolist()):
+            raise ValueError(f"feature cache has no target rows for required scenario {scenario}")
         old_support, old_query = _select_split(
             arrays, role="target_old", tx_labels=old_labels, receiver=receiver, seed=seed,
             k_shot=int(config["k_shot"]), support_pool_max_k=int(config["support_pool_max_k"]),
             query_per_tx=int(config["query_per_tx"]),
+            scenario=scenario,
         )
         new_support: list[int] = []
         new_query: list[int] = []
@@ -317,12 +462,15 @@ def run(config: dict[str, Any], run_dir: Path) -> dict[str, Any]:
                 arrays, role="target_new", tx_labels=new_labels, receiver=receiver, seed=seed,
                 k_shot=int(config["k_shot"]), support_pool_max_k=int(config["support_pool_max_k"]),
                 query_per_tx=int(config["query_per_tx"]),
+                scenario=scenario,
             )
         support_idx = old_support + new_support
         query_idx = old_query + new_query
         support_x = arrays["features"][support_idx]
         support_y = arrays["tx_ids"][support_idx].astype(str)
         query_x = arrays["features"][query_idx]
+        aux_support_x = arrays[aux_key][support_idx] if aux_weight > 0.0 else None
+        aux_query_x = arrays[aux_key][query_idx] if aux_weight > 0.0 else None
         truth = arrays["tx_ids"][query_idx].astype(str)
         started = time.perf_counter()
         if method == "cvs_opgac":
@@ -335,9 +483,30 @@ def run(config: dict[str, Any], run_dir: Path) -> dict[str, Any]:
                        "target_old_accuracy_before_adaptation": _accuracy(before, truth)}
             metrics["target_old_accuracy_delta"] = metrics["target_old_accuracy"] - metrics["target_old_accuracy_before_adaptation"]
         else:
-            old_pred, _ = _qknnv42_predict(arrays["features"][old_support], arrays["tx_ids"][old_support],
-                                            arrays["features"][old_query], old_labels=set(old_labels))
-            predicted, info = _qknnv42_predict(support_x, support_y, query_x, old_labels=set(old_labels))
+            old_pred, _ = _qknnv42_predict(
+                arrays["features"][old_support],
+                arrays["tx_ids"][old_support],
+                arrays["features"][old_query],
+                old_labels=set(old_labels),
+                aux_support_x=arrays[aux_key][old_support] if aux_weight > 0.0 else None,
+                aux_query_x=arrays[aux_key][old_query] if aux_weight > 0.0 else None,
+                aux_score_weight=aux_weight,
+                decision_mode=decision_mode,
+                old_query_count=len(old_query),
+                query_per_class=int(config["query_per_tx"]),
+            )
+            predicted, info = _qknnv42_predict(
+                support_x,
+                support_y,
+                query_x,
+                old_labels=set(old_labels),
+                aux_support_x=aux_support_x,
+                aux_query_x=aux_query_x,
+                aux_score_weight=aux_weight,
+                decision_mode=decision_mode,
+                old_query_count=len(old_query),
+                query_per_class=int(config["query_per_tx"]),
+            )
             old_count = len(old_query)
             old_acc = _accuracy(predicted[:old_count], truth[:old_count])
             new_acc = _accuracy(predicted[old_count:], truth[old_count:])
@@ -376,7 +545,13 @@ def run(config: dict[str, Any], run_dir: Path) -> dict[str, Any]:
                 "support_query_overlap": False, "all_tests_satellite_augmented": True,
                 "seed": int(config["seed"]), "split_seed": seed, "k_shot": int(config["k_shot"]),
                 "support_pool_max_k": int(config["support_pool_max_k"]), "target_sample_strategy": "seeded_nested",
-                "splits_by_scenario": manifest_splits, "unknown_rejection_enabled": False}
+                "splits_by_scenario": manifest_splits, "unknown_rejection_enabled": False,
+                "satellite_tta_view_count": expected_tta_views if aux_weight > 0.0 else None,
+                "qknnv42_aux_feature_key": aux_key,
+                "qknnv42_aux_feature_dim": aux_dim if aux_weight > 0.0 else 0,
+                "qknnv42_aux_score_weight": aux_weight,
+                "qknnv42_decision_mode": decision_mode,
+                "non_deployment_oracle_diagnostic": decision_mode == "legacy_role_quota_oracle"}
     result = {"experiment_id": config.get("experiment_id", f"{method}_{seed}"), "method": method,
               "stage": stage, "seed": int(config["seed"]), "target_receiver_label": receiver,
               "metrics": aggregate, "metrics_by_scenario": metrics_by_scenario,

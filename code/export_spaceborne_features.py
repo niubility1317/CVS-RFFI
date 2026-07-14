@@ -63,6 +63,32 @@ def _validate_star_ground_impl(impl: str, scenarios: Sequence[str], *, field: st
         )
 
 
+def _spectral_logmag_sketch_batch(raw_rows: np.ndarray, *, dim: int) -> np.ndarray:
+    """Build deterministic FFT log-magnitude descriptors from one IQ view."""
+    raw = np.asarray(raw_rows, dtype=np.float32)
+    if raw.ndim != 3 or raw.shape[1] != 2:
+        raise ValueError(f"expected IQ batch shaped [N,2,T], got {raw.shape}")
+    target_x = np.linspace(0.0, 1.0, int(dim), dtype=np.float64)
+    rows: list[np.ndarray] = []
+    for row in raw:
+        complex_iq = row[0].astype(np.float64) + 1j * row[1].astype(np.float64)
+        complex_iq = complex_iq - np.mean(complex_iq)
+        rms = float(np.sqrt(np.mean(np.abs(complex_iq) ** 2)))
+        if rms > 1.0e-8:
+            complex_iq = complex_iq / rms
+        window = np.hanning(int(complex_iq.size))
+        if float(np.max(window)) <= 0.0:
+            window = np.ones(int(complex_iq.size), dtype=np.float64)
+        spectrum = np.fft.fftshift(np.fft.fft(complex_iq * window))
+        logmag = np.log1p(np.abs(spectrum)).astype(np.float64)
+        source_x = np.linspace(0.0, 1.0, int(logmag.size), dtype=np.float64)
+        sketch = np.interp(target_x, source_x, logmag).astype(np.float32)
+        sketch -= np.mean(sketch, dtype=np.float64).astype(np.float32)
+        sketch /= np.maximum(float(np.linalg.norm(sketch)), 1.0e-8)
+        rows.append(sketch.astype(np.float32))
+    return np.stack(rows, axis=0).astype(np.float32)
+
+
 def _resolve_tx_indices(tx_list: Sequence[Any], spec: str | None, *, field: str) -> tuple[list[int], list[str]]:
     requested = parse_tx_id_list(spec)
     if not requested:
@@ -433,8 +459,10 @@ def extract_features_with_metadata(
     sat_args: argparse.Namespace | None = None,
     sat_seed: int = 0,
     satellite_tta_policy: str = "none",
+    aux_fft_logmag_dim: int = 0,
 ):
     feature_buf: list[np.ndarray] = []
+    aux_fft_buf: list[np.ndarray] = []
     tx_logit_buf: list[np.ndarray] = []
     tx_buf: list[str] = []
     rx_buf: list[str] = []
@@ -472,6 +500,13 @@ def extract_features_with_metadata(
         meta_sig = _meta_to_list(meta, "sig_i", n)
         tta_views = _satellite_tta_views(x, satellite_tta_policy if view == "satellite" else "none")
         for tta_name, x_view in tta_views:
+            if int(aux_fft_logmag_dim) > 0:
+                aux_fft_buf.append(
+                    _spectral_logmag_sketch_batch(
+                        x_view.detach().cpu().float().numpy(),
+                        dim=int(aux_fft_logmag_dim),
+                    )
+                )
             out = model(x_view, y_tx=None, grl_lambda=1.0, return_aux=True)
             feats = collect_feature_dict(out)
             if feature_name not in feats:
@@ -495,7 +530,7 @@ def extract_features_with_metadata(
             sat_scenario_buf.extend([scenario] * n)
     if not feature_buf:
         raise ValueError(f"dataset role={role} produced no features")
-    return {
+    payload = {
         "features": np.concatenate(feature_buf, axis=0).astype(np.float32),
         "tx_logits": np.concatenate(tx_logit_buf, axis=0).astype(np.float32),
         "raw_labels": np.asarray(label_buf, dtype=np.int64),
@@ -509,6 +544,9 @@ def extract_features_with_metadata(
         "channel_views": np.asarray(channel_view_buf),
         "sat_scenarios": np.asarray(sat_scenario_buf),
     }
+    if int(aux_fft_logmag_dim) > 0:
+        payload["fft_logmag_features"] = np.concatenate(aux_fft_buf, axis=0).astype(np.float32)
+    return payload
 
 
 def _concat_payloads(payloads: Sequence[dict[str, np.ndarray]]) -> dict[str, np.ndarray]:
@@ -545,6 +583,12 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--new_wisig_pkl", type=str, default=None)
     parser.add_argument("--out_npz", type=Path, required=True)
     parser.add_argument("--feature_name", default="z_id")
+    parser.add_argument(
+        "--aux_fft_logmag_dim",
+        type=int,
+        default=0,
+        help="Also export same-view FFT log-magnitude descriptors; 0 disables the auxiliary feature.",
+    )
     parser.add_argument("--dataset", default="wisig")
     parser.add_argument("--num_classes", type=int, default=None)
     parser.add_argument("--model_size", default=None)
@@ -764,6 +808,7 @@ def main() -> int:
         sat_args=args,
         sat_seed=source_seed,
         satellite_tta_policy=str(args.satellite_tta_policy),
+        aux_fft_logmag_dim=int(args.aux_fft_logmag_dim),
     )
     source_channel_profile = {
         "view": source_view,
@@ -806,6 +851,7 @@ def main() -> int:
             sat_args=args,
             sat_seed=proxy_unknown_seed,
             satellite_tta_policy=str(args.satellite_tta_policy),
+            aux_fft_logmag_dim=int(args.aux_fft_logmag_dim),
         )
         proxy_unknown_channel_profile = {
             "view": proxy_unknown_view,
@@ -857,6 +903,7 @@ def main() -> int:
             sat_args=args,
             sat_seed=target_old_seed,
             satellite_tta_policy=str(args.satellite_tta_policy),
+            aux_fft_logmag_dim=int(args.aux_fft_logmag_dim),
         )
         target_old_channel_profile = {
             "view": target_old_view,
@@ -883,6 +930,7 @@ def main() -> int:
             sat_args=args,
             sat_seed=int(args.target_new_sat_seed if args.target_new_sat_seed is not None else int(args.seed) + 911),
             satellite_tta_policy=str(args.satellite_tta_policy),
+            aux_fft_logmag_dim=int(args.aux_fft_logmag_dim),
         )
     unknown_payload = None
     target_unknown_view = target_new_view
@@ -904,6 +952,7 @@ def main() -> int:
             sat_args=args,
             sat_seed=target_unknown_seed,
             satellite_tta_policy=str(args.satellite_tta_policy),
+            aux_fft_logmag_dim=int(args.aux_fft_logmag_dim),
         )
     payload_parts = [source_payload]
     if proxy_unknown_payload is not None:
@@ -959,6 +1008,9 @@ def main() -> int:
         "target_channel_scenarios": target_unknown_scenarios,
         "satellite_tta_policy": str(args.satellite_tta_policy),
         "satellite_tta_view_count": _satellite_tta_view_count(str(args.satellite_tta_policy)),
+        "aux_fft_logmag_dim": int(args.aux_fft_logmag_dim),
+        "aux_fft_feature_key": "fft_logmag_features" if int(args.aux_fft_logmag_dim) > 0 else "",
+        "aux_fft_view_alignment": "same_post_channel_view_as_backbone",
         "deployment_primary_view": (
             "satellite/LEO target view" if target_unknown_view == "satellite" else "clean control/source reference"
         ),

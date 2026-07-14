@@ -46,6 +46,7 @@ from export_spaceborne_features import (  # noqa: E402
     _resolve_tx_indices,
     _satellite_tta_view_count,
     _satellite_tta_views,
+    _spectral_logmag_sketch_batch,
     _validate_star_ground_impl,
 )
 from training_controls import parse_sat_scenarios, sat_channel_config_for_scenario  # noqa: E402
@@ -725,6 +726,7 @@ def _export_role(
 ) -> dict[str, np.ndarray]:
     gen = make_torch_generator(device, int(seed))
     feature_buf: list[np.ndarray] = []
+    aux_fft_buf: list[np.ndarray] = []
     logit_buf: list[np.ndarray] = []
     labels: list[int] = []
     domains: list[int] = []
@@ -740,51 +742,70 @@ def _export_role(
     for bi, batch in enumerate(loader):
         x, y, d, meta = batch
         x = x.to(device, non_blocking=True)
-        scenario = ""
-        x_eval = x
-        if mode == "satellite":
-            scenario = _scenario_for_step(scenarios, bi)
-            x_eval, _ = apply_sat_channel_for_scenario(x, scenario, args, gen=gen, return_meta=False)
-        elif mode != "clean":
+        if mode not in {"satellite", "clean"}:
             raise ValueError(f"unknown channel_mode={channel_mode!r}")
-        tta_policy = str(getattr(args, "satellite_tta_policy", "none")) if mode == "satellite" else "none"
-        tta_views = _satellite_tta_views(x_eval, tta_policy)
-        z_views: list[torch.Tensor] = []
-        logit_views: list[torch.Tensor] = []
-        for _tta_name, x_view in tta_views:
-            x_forward = x_view
-            if use_adapter:
-                repair_mode = str(args.input_repair)
-                if mode == "clean" and str(args.clean_input_repair_mode).lower() != "same":
-                    repair_mode = "raw"
-                x_forward = adapter(_apply_input_repair(x_forward, repair_mode))
-            z_view, logits_view = _feature_forward(model, x_forward, str(args.feature_name))
-            z_views.append(z_view.float())
-            logit_views.append(logits_view.float())
-        if len(z_views) == 1:
-            z = z_views[0]
-            logits = logit_views[0]
+        if mode == "satellite" and bool(getattr(args, "export_all_scenarios_per_sample", False)):
+            batch_scenarios = [str(value) for value in scenarios]
+        elif mode == "satellite":
+            batch_scenarios = [_scenario_for_step(scenarios, bi)]
         else:
-            z = torch.stack(z_views, dim=0).mean(dim=0)
-            logits = torch.stack(logit_views, dim=0).mean(dim=0)
+            batch_scenarios = [""]
         n = int(x.shape[0])
-        feature_buf.append(z.detach().cpu().float().numpy())
-        logit_buf.append(logits.detach().cpu().float().numpy())
-        labels.extend([int(v) for v in y.detach().cpu().reshape(-1).tolist()])
-        domains.extend([int(v) for v in d.detach().cpu().reshape(-1).tolist()])
-        txs.extend(_meta_to_list(meta, "tx", n))
-        rxs.extend(_meta_to_list(meta, "rx", n))
-        days.extend(_meta_to_list(meta, "day", n))
-        eqs.extend(_meta_to_list(meta, "equalized", n))
-        sigs.extend(_meta_to_list(meta, "sig_i", n))
-        roles.extend([role] * n)
-        adapted_view = "model_feature_adapter" if str(args.model_adapter_mode).lower() != "none" else "iq_frontend"
-        view_name = adapted_view if use_adapter else ("identity_satellite" if mode == "satellite" else "clean")
-        if mode == "satellite" and str(tta_policy).strip().lower() not in {"", "none", "off", "0"}:
-            view_name = f"{view_name}|tta_mean={tta_policy}"
-        views.extend([view_name] * n)
-        scenario_buf.extend([scenario] * n)
-    return {
+        meta_tx = _meta_to_list(meta, "tx", n)
+        meta_rx = _meta_to_list(meta, "rx", n)
+        meta_day = _meta_to_list(meta, "day", n)
+        meta_eq = _meta_to_list(meta, "equalized", n)
+        meta_sig = _meta_to_list(meta, "sig_i", n)
+        for scenario in batch_scenarios:
+            x_eval = x
+            if mode == "satellite":
+                x_eval, _ = apply_sat_channel_for_scenario(x, scenario, args, gen=gen, return_meta=False)
+            tta_policy = str(getattr(args, "satellite_tta_policy", "none")) if mode == "satellite" else "none"
+            tta_views = _satellite_tta_views(x_eval, tta_policy)
+            z_views: list[torch.Tensor] = []
+            logit_views: list[torch.Tensor] = []
+            fft_views: list[np.ndarray] = []
+            for _tta_name, x_view in tta_views:
+                if int(getattr(args, "aux_fft_logmag_dim", 0)) > 0:
+                    fft_views.append(
+                        _spectral_logmag_sketch_batch(
+                            x_view.detach().cpu().float().numpy(),
+                            dim=int(args.aux_fft_logmag_dim),
+                        )
+                    )
+                x_forward = x_view
+                if use_adapter:
+                    repair_mode = str(args.input_repair)
+                    if mode == "clean" and str(args.clean_input_repair_mode).lower() != "same":
+                        repair_mode = "raw"
+                    x_forward = adapter(_apply_input_repair(x_forward, repair_mode))
+                z_view, logits_view = _feature_forward(model, x_forward, str(args.feature_name))
+                z_views.append(z_view.float())
+                logit_views.append(logits_view.float())
+            z = z_views[0] if len(z_views) == 1 else torch.stack(z_views, dim=0).mean(dim=0)
+            logits = logit_views[0] if len(logit_views) == 1 else torch.stack(logit_views, dim=0).mean(dim=0)
+            feature_buf.append(z.detach().cpu().float().numpy())
+            logit_buf.append(logits.detach().cpu().float().numpy())
+            if fft_views:
+                fft = fft_views[0] if len(fft_views) == 1 else np.mean(np.stack(fft_views, axis=0), axis=0)
+                fft -= fft.mean(axis=1, keepdims=True)
+                fft /= np.maximum(np.linalg.norm(fft, axis=1, keepdims=True), 1.0e-8)
+                aux_fft_buf.append(fft.astype(np.float32))
+            labels.extend([int(v) for v in y.detach().cpu().reshape(-1).tolist()])
+            domains.extend([int(v) for v in d.detach().cpu().reshape(-1).tolist()])
+            txs.extend(meta_tx)
+            rxs.extend(meta_rx)
+            days.extend(meta_day)
+            eqs.extend(meta_eq)
+            sigs.extend(meta_sig)
+            roles.extend([role] * n)
+            adapted_view = "model_feature_adapter" if str(args.model_adapter_mode).lower() != "none" else "iq_frontend"
+            view_name = adapted_view if use_adapter else ("identity_satellite" if mode == "satellite" else "clean")
+            if mode == "satellite" and str(tta_policy).strip().lower() not in {"", "none", "off", "0"}:
+                view_name = f"{view_name}|tta_mean={tta_policy}"
+            views.extend([view_name] * n)
+            scenario_buf.extend([scenario] * n)
+    payload = {
         "features": np.concatenate(feature_buf, axis=0).astype(np.float32),
         "tx_logits": np.concatenate(logit_buf, axis=0).astype(np.float32),
         "raw_labels": np.asarray(labels, dtype=np.int64),
@@ -798,6 +819,9 @@ def _export_role(
         "channel_views": np.asarray(views),
         "sat_scenarios": np.asarray(scenario_buf),
     }
+    if int(getattr(args, "aux_fft_logmag_dim", 0)) > 0:
+        payload["fft_logmag_features"] = np.concatenate(aux_fft_buf, axis=0).astype(np.float32)
+    return payload
 
 
 def _concat(parts: Sequence[dict[str, np.ndarray]]) -> dict[str, np.ndarray]:
@@ -908,6 +932,10 @@ def export_cell(
         "satellite_tta_policy": str(args.satellite_tta_policy),
         "satellite_tta_view_count": _satellite_tta_view_count(str(args.satellite_tta_policy)),
         "satellite_tta_aggregation": "feature_logit_mean_per_physical_sample",
+        "export_all_scenarios_per_sample": bool(args.export_all_scenarios_per_sample),
+        "aux_fft_logmag_dim": int(args.aux_fft_logmag_dim),
+        "aux_fft_feature_key": "fft_logmag_features" if int(args.aux_fft_logmag_dim) > 0 else "",
+        "aux_fft_view_alignment": "same_post_channel_view_as_backbone",
         "star_ground_channel_impl": str(args.star_ground_channel_impl),
         "sat_scenarios": scenarios,
         "source": source_info,
@@ -975,6 +1003,13 @@ def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
         ),
     )
     p.add_argument("--feature_name", default="z_id")
+    p.add_argument("--aux_fft_logmag_dim", type=int, default=0)
+    p.add_argument(
+        "--export_all_scenarios_per_sample",
+        action=argparse.BooleanOptionalAction,
+        default=False,
+        help="Export every physical sample under every requested LEO scenario.",
+    )
     p.add_argument("--export_reference_npz", default="", help="optional feature NPZ whose tx/rx/day/eq/sig/role order defines export samples")
     p.add_argument("--dataset", default="wisig")
     p.add_argument("--num_classes", type=int, default=None)

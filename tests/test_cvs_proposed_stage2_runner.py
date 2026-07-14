@@ -28,6 +28,7 @@ def _cache(path: Path, scenario: str) -> None:
     np.savez(
         path,
         features=np.asarray([row[0] for row in rows], dtype=np.float32),
+        fft_logmag_features=np.asarray([row[0] for row in rows], dtype=np.float32),
         tx_ids=np.asarray([row[1] for row in rows]),
         rx_ids=np.asarray([row[3] for row in rows]),
         day_ids=np.asarray([0] * len(rows)),
@@ -35,6 +36,14 @@ def _cache(path: Path, scenario: str) -> None:
         sig_ids=np.asarray([row[4] for row in rows]),
         dataset_role=np.asarray([row[2] for row in rows]),
         sat_scenarios=np.asarray([row[5] for row in rows]),
+        manifest_json=np.asarray(
+            json.dumps(
+                {
+                    "satellite_tta_view_count": 1,
+                    "aux_fft_view_alignment": "same_post_channel_view_as_backbone",
+                }
+            )
+        ),
     )
 
 
@@ -88,3 +97,25 @@ def test_cvs_qknnv42_uses_nested_disjoint_split_and_four_detail_levels(tmp_path:
     assert groups == {
         "per_receiver", "per_transmitter", "per_receiver_transmitter", "per_receiver_transmitter_day"
     }
+
+
+def test_cvs_qknnv42_fft_aux_and_legacy_oracle_are_explicit(tmp_path: Path) -> None:
+    config = _config(tmp_path, "cvs_qknnv42")
+    config.update(
+        {
+            "qknnv42_aux_feature_key": "fft_logmag_features",
+            "qknnv42_aux_feature_dim": 4,
+            "qknnv42_aux_score_weight": 0.34,
+            "qknnv42_expected_tta_view_count": 1,
+            "qknnv42_decision_mode": "legacy_role_quota_oracle",
+        }
+    )
+    run_dir = tmp_path / "qknn_fft_oracle"
+    result = run(config, run_dir)
+    assert result["metrics"]["H_old_new_mean"] == 1.0
+    first = result["metrics_by_scenario"][SCENARIOS[0]]
+    assert first["aux_feature_enabled"] is True
+    assert first["aux_score_weight"] == 0.34
+    assert first["decision_mode"] == "legacy_role_quota_oracle"
+    manifest = json.loads((run_dir / "split_manifest.json").read_text(encoding="utf-8"))
+    assert manifest["non_deployment_oracle_diagnostic"] is True
