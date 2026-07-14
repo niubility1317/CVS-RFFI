@@ -14,17 +14,17 @@
 |ID|来源|要求|目标文件|状态|验证|备注|
 |---|---|---|---|---|---|---|
 |D-01|用户要求|建立唯一DRIFT论文复现入口并固定V206 mean配置|`code/scripts/launch_drift_paper_reproduction.sh`、`baselines/README.md`|verified|`bash -n`、5-job dry-run、聚焦pytest通过|不改变CVS扩展协议入口|
-|D-02|用户要求|删除旧DRIFT论文复现launcher|`code/scripts/*paper_repro*20260714.sh`、旧v2 discovery/confirm launcher|implemented|本地文件清单与引用审计通过|保留报告、日志、metrics与snapshot；待Git镜像和远端精确删除|
+|D-02|用户要求|删除旧DRIFT论文复现launcher|`code/scripts/*paper_repro*20260714.sh`、旧v2 discovery/confirm launcher|verified|本地、Git镜像和N607精确文件清单反向审计通过|保留报告、日志、metrics、checkpoint、run与snapshot作为审计证据|
 |D-03|论文v2口径|完整分析五seed epoch200 final并判断稳定性|DRIFT v2报告、本报告|verified|1000条epoch、3495行日志、5份metrics完整解析|final=72.75±5.93%，均值差-0.79pp；SD偏高|
 |R-01|RIEI论文Table III|修复last5、RMS、优化器和reduction偏差|RIEI parity代码、wrapper、launcher|verified|`ssr-gpu`聚焦测试15 passed；bash-n/dry-run通过|启动前重新验证远端hash|
-|R-02|用户要求|DRIFT结束后启动RIEI 8候选同row消融|N607独立run/log根|pending|待容量门、hash、远端bash-n/dry-run|不影响Phase1|
+|R-02|用户要求|DRIFT结束后启动RIEI 8候选同row消融|N607独立run/log根|verified|容量门、hash、远程bash-n/dry-run及5分钟健康检查均通过|8 trainer分布于GPU0–7，当前硬错误0|
 |R-03|RIEI论文Table III|胜出配置重跑完整12行并逐行比较|后续12行确认launcher及RIEI报告|deferred|等待R-02完整200epoch结果|成功阈值MAE≤3pp且≥10/12进入±2SD|
 
 ## 当前证据
 
 - DRIFT五seed确认run`paper_repro_drift_v2_confirm_v206_20260714_164900`已5/5完成，训练与queue均退出，远端硬错误0。
 - 已拉取并完整解析5×200=1000条epoch记录及15个日志/调度文件共3495行；未见Traceback、RuntimeError、OOM、Killed、NaN或Inf。
-- RIEI parity发现矩阵本地已实现，尚未在N607启动。
+- RIEI parity发现矩阵已于17:37在N607启动；17:42时8/8 trainer健康运行，进度epoch13–15/200，硬错误0。
 
 ## 本地收敛验证
 
@@ -35,4 +35,10 @@
 ## RIEI启动前状态
 
 - DRIFT确认run已完全退出；N607仅GPU3保留1个Phase1 compute，RIEI每GPU1个job的容量门可通过。
-- RIEI本地代码、launcher、hash和8-job dry-run已重新验证；正式同步与启动将在Git报告提交后执行。
+- RIEI本地代码、launcher、hash和8-job dry-run已重新验证；同步、远程校验、正式启动和5分钟健康检查已完成。
+
+## 反向审计与剩余风险
+
+- 状态计数：`verified=5`、`implemented=0`、`deferred=1`、`blocked=0`、`rejected=0`。
+- 唯一延后项是R-03：当前8候选只在Table III第1行选型，必须等完整200epoch last5结果后才能固定配置并执行12行确认。
+- 最高风险：DRIFT五seed聚合均值达标但seed标准差`5.93pp`；RIEI尚未产生本轮正式last5结果。二者都不得用target peak或单epoch极值替代论文口径。
