@@ -421,3 +421,9 @@
 - 12行receiver组合、论文均值/SD、稳定全局partition、seed1337、SGD momentum0、CE/MI/IE mean、no-RMS、no-feature-norm、200epoch和论文last10全部固定；唯一相对现有完整mean矩阵的变量为`RIEI_FED_VARIANT=short_stem1d`。
 - GPU0–3各排2个顺序job，GPU4–7各1个job，planned peak为每GPU 1个训练。launcher保持唯一run/log根保护及每GPU训练总数不超过2的容量门。
 - 本地`bash -n`通过；dry-run完整展开12个job、8个capacity gate、12条short-stem命令和12条mean命令，sum命令0条。启动前还必须执行直接N607预检、实时process/CWD/cmdline与GPU容量检查、同步后hash核对、远端`bash -n`和12-job dry-run。
+
+### 04:31同步前版本与容量门
+
+- 根目录仍不是Git仓库；新launcher已镜像到Git承载面，并与本报告及traceability一起以提交`1a649bc Confirm RIEI short-stem Table III`版本化。根目录launcher、本地快照和Git镜像SHA256均为`ce25286443d34648047dcbe6afd2537aac43162fb0f3c6487c1ae0aafe0205bb`；快照位于`code/snapshots/paper_repro_riei_table3_shortstem_confirm_seed1337_20260715_043000/`。
+- 直接N607预检通过；服务器时间、项目根和8块GPU可见。实时process/CWD/cmdline检查没有训练或RIEI/DRIFT launcher，GPU0–7的compute process均为0；计划每GPU峰值1个训练，因此`existing_compute+planned_peak=1≤2`。
+- 目标run/log目录在同步前均不存在。唯一待同步文件为本地`code/scripts/launch_riei_table3_shortstem_confirm_20260715.sh`→N607同路径；同步后必须复核SHA256、远端`bash -n`和12-job dry-run，再执行正式命令。所有预检SSH短连接已退出，本地`ssh.exe=0`、N607 TCP22已建立连接`=0`。
