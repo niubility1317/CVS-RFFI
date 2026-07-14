@@ -130,3 +130,39 @@ def test_dualguard16_scheduler_reports_missing_terminal_and_timeout_distinctly()
     assert missing["missing_terminal_count"] == 1
     assert timeout_exit == 124
     assert timed_out["status"] == "WALL_CLOCK_TIMEOUT"
+
+
+def test_gpu_capacity_allows_one_unrelated_process_when_memory_is_sufficient(monkeypatch):
+    module = _module()
+    monkeypatch.setattr(module.p1base, "_pmon_pids", lambda: {0: {101}})
+    monkeypatch.setattr(module, "_gpu_free_memory_mib", lambda: {0: 18000})
+    monkeypatch.setattr(module, "_pid_command_tokens", lambda pid: ["python", "other_train.py", "--run_id", "other_run"])
+
+    snapshot = module.gpu_launch_snapshot(
+        run_id="target_run",
+        gpus=[0],
+        max_total_compute_per_gpu=2,
+        min_free_memory_mib=10000,
+        allow_unrelated_compute=True,
+    )
+
+    assert snapshot["blocked"] == {}
+    assert snapshot["gpus"]["0"]["unrelated_pids"] == [101]
+
+
+def test_gpu_capacity_blocks_duplicate_target_and_low_memory(monkeypatch):
+    module = _module()
+    monkeypatch.setattr(module.p1base, "_pmon_pids", lambda: {0: {202}})
+    monkeypatch.setattr(module, "_gpu_free_memory_mib", lambda: {0: 8000})
+    monkeypatch.setattr(module, "_pid_command_tokens", lambda pid: ["python", "train.py", "--run_id", "target_run"])
+
+    snapshot = module.gpu_launch_snapshot(
+        run_id="target_run",
+        gpus=[0],
+        max_total_compute_per_gpu=2,
+        min_free_memory_mib=10000,
+        allow_unrelated_compute=True,
+    )
+
+    assert snapshot["gpus"]["0"]["target_pids"] == [202]
+    assert snapshot["blocked"]["0"] == ["target_run_already_active", "insufficient_free_memory"]

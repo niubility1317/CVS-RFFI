@@ -67,30 +67,34 @@ def test_corepath_stable_enables_complete_p0_closed_loop():
 
 def test_resource_gate_waits_until_every_gpu_has_one_free_slot(monkeypatch):
     snapshots = [
-        {0: 1, 1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0, 7: 0},
-        {gpu: 0 for gpu in range(8)},
+        {"blocked": {"0": ["insufficient_free_memory"]}},
+        {"blocked": {}, "gpus": {str(gpu): {"unrelated_pids": [100 + gpu]} for gpu in range(8)}},
     ]
-    monkeypatch.setattr(launcher, "gpu_compute_occupancy", lambda: snapshots.pop(0))
+    monkeypatch.setattr(launcher.dual, "gpu_launch_snapshot", lambda **_: snapshots.pop(0))
     monkeypatch.setattr(launcher.time, "sleep", lambda _: None)
-    assert launcher.wait_for_gpu_slots(
-        max_total_compute_per_gpu=1,
+    result = launcher.wait_for_gpu_slots(
+        run_id="unit_corepath",
+        max_total_compute_per_gpu=2,
+        min_free_memory_mib=10000,
+        allow_unrelated_compute=True,
         timeout_seconds=10,
         poll_seconds=1,
-    ) == {gpu: 0 for gpu in range(8)}
+    )
+    assert result["blocked"] == {}
+    assert result["gpus"]["0"]["unrelated_pids"] == [100]
 
 
 def test_resource_gate_fails_closed_when_gpu_stays_full(monkeypatch):
-    monkeypatch.setattr(
-        launcher,
-        "gpu_compute_occupancy",
-        lambda: {gpu: (1 if gpu == 3 else 0) for gpu in range(8)},
-    )
+    monkeypatch.setattr(launcher.dual, "gpu_launch_snapshot", lambda **_: {"blocked": {"3": ["target_run_already_active"]}})
     monkeypatch.setattr(launcher.time, "sleep", lambda _: None)
     monotonic = iter([0.0, 1.0])
     monkeypatch.setattr(launcher.time, "monotonic", lambda: next(monotonic))
     with pytest.raises(TimeoutError, match="GPU_SLOT_WAIT_TIMEOUT"):
         launcher.wait_for_gpu_slots(
-            max_total_compute_per_gpu=1,
+            run_id="unit_corepath",
+            max_total_compute_per_gpu=2,
+            min_free_memory_mib=10000,
+            allow_unrelated_compute=True,
             timeout_seconds=1,
             poll_seconds=1,
         )

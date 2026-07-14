@@ -407,6 +407,98 @@ def _terminate_process_groups(active: Mapping[int, Mapping[str, Any]], grace_sec
                 pass
 
 
+def _gpu_free_memory_mib() -> Dict[int, int]:
+    proc = subprocess.run(
+        ["nvidia-smi", "--query-gpu=index,memory.free", "--format=csv,noheader,nounits"],
+        check=True,
+        capture_output=True,
+        text=True,
+    )
+    result: Dict[int, int] = {}
+    for raw_line in proc.stdout.splitlines():
+        parts = [part.strip() for part in raw_line.split(",", 1)]
+        if len(parts) != 2:
+            raise RuntimeError(f"invalid nvidia-smi memory row: {raw_line!r}")
+        result[int(parts[0])] = int(parts[1])
+    return result
+
+
+def _pid_command_tokens(pid: int) -> List[str] | None:
+    try:
+        raw = Path(f"/proc/{int(pid)}/cmdline").read_bytes()
+    except OSError:
+        return None
+    return [part.decode("utf-8", "replace") for part in raw.split(b"\0") if part]
+
+
+def _is_target_run(tokens: Sequence[str], run_id: str) -> bool:
+    for index, token in enumerate(tokens[:-1]):
+        if token in {"--run_id", "--run-id"} and tokens[index + 1] == run_id:
+            return True
+    run_path_token = f"/{run_id}/"
+    return any(run_path_token in token or token.endswith(f"/{run_id}") for token in tokens)
+
+
+def gpu_launch_snapshot(
+    *,
+    run_id: str,
+    gpus: Sequence[int],
+    max_total_compute_per_gpu: int,
+    min_free_memory_mib: int,
+    allow_unrelated_compute: bool,
+    block_target_run: bool = True,
+) -> Dict[str, Any]:
+    if max_total_compute_per_gpu < 1 or min_free_memory_mib < 0:
+        raise ValueError("invalid GPU launch capacity")
+    observed = p1base._pmon_pids()
+    free_memory = _gpu_free_memory_mib()
+    gpu_state: Dict[str, Any] = {}
+    blocked: Dict[str, List[str]] = {}
+    for gpu in sorted({int(value) for value in gpus}):
+        pids = sorted(observed.get(gpu, set()))
+        target_pids: List[int] = []
+        unrelated_pids: List[int] = []
+        unknown_pids: List[int] = []
+        for pid in pids:
+            tokens = _pid_command_tokens(pid)
+            if tokens is None:
+                unknown_pids.append(pid)
+            elif _is_target_run(tokens, run_id):
+                target_pids.append(pid)
+            else:
+                unrelated_pids.append(pid)
+        reasons: List[str] = []
+        if target_pids and block_target_run:
+            reasons.append("target_run_already_active")
+        if unrelated_pids and not allow_unrelated_compute:
+            reasons.append("unrelated_compute_not_allowed")
+        if unknown_pids:
+            reasons.append("compute_pid_identity_unknown")
+        if len(pids) + 1 > max_total_compute_per_gpu:
+            reasons.append("compute_process_capacity")
+        available_mib = int(free_memory.get(gpu, -1))
+        if available_mib < min_free_memory_mib:
+            reasons.append("insufficient_free_memory")
+        gpu_state[str(gpu)] = {
+            "compute_pids": pids,
+            "target_pids": target_pids,
+            "unrelated_pids": unrelated_pids,
+            "unknown_pids": unknown_pids,
+            "free_memory_mib": available_mib,
+        }
+        if reasons:
+            blocked[str(gpu)] = reasons
+    return {
+        "run_id": run_id,
+        "max_total_compute_per_gpu": int(max_total_compute_per_gpu),
+        "min_free_memory_mib": int(min_free_memory_mib),
+        "allow_unrelated_compute": bool(allow_unrelated_compute),
+        "block_target_run": bool(block_target_run),
+        "gpus": gpu_state,
+        "blocked": blocked,
+    }
+
+
 def run_matrix(args: argparse.Namespace, rows: Sequence[Mapping[str, Any]]) -> int:
     root = Path(args.root)
     python = Path(args.python)
@@ -423,10 +515,18 @@ def run_matrix(args: argparse.Namespace, rows: Sequence[Mapping[str, Any]]) -> i
     for required in (python, wisig, teacher, root / "code" / "SSDG" / "train_ssdg.py"):
         if not required.is_file():
             raise FileNotFoundError(required)
-    observed = p1base._pmon_pids()
-    occupied = {gpu: sorted(pids) for gpu, pids in observed.items() if pids}
-    if occupied:
-        raise RuntimeError(f"dualguard16 requires empty GPUs before launch, found: {occupied}")
+    target_gpus = sorted({int(row["gpu"]) for row in rows})
+    planned_per_gpu = Counter(int(row["gpu"]) for row in rows)
+    default_max_total = max(planned_per_gpu.values(), default=1)
+    capacity_snapshot = gpu_launch_snapshot(
+        run_id=str(args.run_id),
+        gpus=target_gpus,
+        max_total_compute_per_gpu=int(getattr(args, "max_total_compute_per_gpu", default_max_total)),
+        min_free_memory_mib=int(getattr(args, "min_free_memory_mib", 0)),
+        allow_unrelated_compute=bool(getattr(args, "allow_unrelated_compute", False)),
+    )
+    if capacity_snapshot["blocked"]:
+        raise RuntimeError(f"dualguard16 GPU capacity blocked: {capacity_snapshot['blocked']}")
 
     log_root = root / "logs" / args.run_id
     run_root = root / "runs" / args.run_id
@@ -434,6 +534,10 @@ def run_matrix(args: argparse.Namespace, rows: Sequence[Mapping[str, Any]]) -> i
     run_root.mkdir(parents=True, exist_ok=False)
     (log_root / "candidate_matrix.json").write_text(
         json.dumps(matrix_payload(rows, args.run_id, args.wall_hours), indent=2, sort_keys=True),
+        encoding="utf-8",
+    )
+    (log_root / "prelaunch_gpu_snapshot.json").write_text(
+        json.dumps(capacity_snapshot, indent=2, sort_keys=True),
         encoding="utf-8",
     )
 
@@ -448,6 +552,19 @@ def run_matrix(args: argparse.Namespace, rows: Sequence[Mapping[str, Any]]) -> i
         writer.writerow(["timestamp", "event", "candidate_id", "gpu", "seed", "pid", "returncode", "status", "log"])
         for row in rows:
             gpu = int(row["gpu"])
+            row_snapshot = gpu_launch_snapshot(
+                run_id=str(args.run_id),
+                gpus=[gpu],
+                max_total_compute_per_gpu=int(getattr(args, "max_total_compute_per_gpu", default_max_total)),
+                min_free_memory_mib=int(getattr(args, "min_free_memory_mib", 0)),
+                allow_unrelated_compute=bool(getattr(args, "allow_unrelated_compute", False)),
+                block_target_run=False,
+            )
+            if row_snapshot["blocked"]:
+                raise RuntimeError(
+                    f"dualguard16 GPU capacity changed before {row['candidate_id']}: "
+                    f"{row_snapshot['blocked']}"
+                )
             out_dir = run_root / str(row["candidate_id"])
             log_path = log_root / f"{row['candidate_id']}.out"
             out_dir.mkdir()

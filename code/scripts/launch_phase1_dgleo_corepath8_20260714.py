@@ -3,7 +3,6 @@ from __future__ import annotations
 import argparse
 import json
 import shlex
-import subprocess
 import sys
 import time
 from collections import Counter
@@ -26,7 +25,8 @@ WALL_HOURS = 10.0
 SEED = previous.SEED
 LEO_WEAK = previous.LEO_WEAK
 GPU_COUNT = 8
-MAX_TOTAL_COMPUTE_PER_GPU = 1
+MAX_TOTAL_COMPUTE_PER_GPU = 2
+MIN_FREE_MEMORY_MIB = 10000
 RESOURCE_WAIT_TIMEOUT_SECONDS = 3 * 3600
 RESOURCE_POLL_SECONDS = 60.0
 
@@ -279,8 +279,11 @@ def matrix_payload(rows: Sequence[Mapping[str, Any]], run_id: str, wall_hours: f
             "resource_gate": {
                 "gpu_count": GPU_COUNT,
                 "max_total_compute_per_gpu": MAX_TOTAL_COMPUTE_PER_GPU,
+                "min_free_memory_mib": MIN_FREE_MEMORY_MIB,
                 "required_free_slots_per_gpu": 1,
                 "counts_all_nvidia_compute_clients": True,
+                "blocks_same_run_id": True,
+                "allows_one_unrelated_compute_client": True,
             },
             "final_checkpoint_only": True,
             "claim_boundary": "PHASE1_SOURCE_ONLY_PROXY_DIAGNOSTIC_NO_TRUE_UNKNOWN_CLAIM",
@@ -289,63 +292,41 @@ def matrix_payload(rows: Sequence[Mapping[str, Any]], run_id: str, wall_hours: f
     return payload
 
 
-def gpu_compute_occupancy() -> Dict[int, int]:
-    gpu_output = subprocess.check_output(
-        ["nvidia-smi", "--query-gpu=index,uuid", "--format=csv,noheader,nounits"],
-        text=True,
-    )
-    uuid_to_index: Dict[str, int] = {}
-    for raw_line in gpu_output.splitlines():
-        parts = [part.strip() for part in raw_line.split(",", 1)]
-        if len(parts) != 2:
-            raise RuntimeError(f"invalid nvidia-smi GPU row: {raw_line!r}")
-        uuid_to_index[parts[1]] = int(parts[0])
-
-    occupancy = {gpu: 0 for gpu in range(GPU_COUNT)}
-    app_output = subprocess.check_output(
-        ["nvidia-smi", "--query-compute-apps=gpu_uuid,pid", "--format=csv,noheader,nounits"],
-        text=True,
-    )
-    for raw_line in app_output.splitlines():
-        parts = [part.strip() for part in raw_line.split(",", 1)]
-        if len(parts) != 2 or parts[0] not in uuid_to_index:
-            raise RuntimeError(f"invalid nvidia-smi compute row: {raw_line!r}")
-        occupancy[uuid_to_index[parts[0]]] += 1
-    return occupancy
-
-
 def wait_for_gpu_slots(
     *,
+    run_id: str,
     max_total_compute_per_gpu: int,
+    min_free_memory_mib: int,
+    allow_unrelated_compute: bool,
     timeout_seconds: float,
     poll_seconds: float,
-) -> Dict[int, int]:
+) -> Dict[str, Any]:
     if max_total_compute_per_gpu < 1:
         raise ValueError("max_total_compute_per_gpu must be >= 1")
     if timeout_seconds < 0 or poll_seconds <= 0:
         raise ValueError("invalid GPU resource wait timing")
     deadline = time.monotonic() + timeout_seconds
     while True:
-        occupancy = gpu_compute_occupancy()
-        blocked = {
-            gpu: count
-            for gpu, count in occupancy.items()
-            if count + 1 > max_total_compute_per_gpu
-        }
+        snapshot = dual.gpu_launch_snapshot(
+            run_id=run_id,
+            gpus=list(range(GPU_COUNT)),
+            max_total_compute_per_gpu=max_total_compute_per_gpu,
+            min_free_memory_mib=min_free_memory_mib,
+            allow_unrelated_compute=allow_unrelated_compute,
+        )
+        blocked = snapshot["blocked"]
         print(
             json.dumps(
                 {
                     "event": "GPU_SLOT_CHECK",
-                    "occupancy": occupancy,
-                    "max_total_compute_per_gpu": max_total_compute_per_gpu,
-                    "blocked": blocked,
+                    "snapshot": snapshot,
                 },
                 sort_keys=True,
             ),
             flush=True,
         )
         if not blocked:
-            return occupancy
+            return snapshot
         if time.monotonic() >= deadline:
             raise TimeoutError(f"GPU_SLOT_WAIT_TIMEOUT blocked={blocked}")
         time.sleep(min(poll_seconds, max(0.0, deadline - time.monotonic())))
@@ -364,6 +345,12 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--emit-matrix", default="")
     parser.add_argument("--dry-run", action="store_true")
     parser.add_argument("--max-total-compute-per-gpu", type=int, default=MAX_TOTAL_COMPUTE_PER_GPU)
+    parser.add_argument("--min-free-memory-mib", type=int, default=MIN_FREE_MEMORY_MIB)
+    parser.add_argument(
+        "--allow-unrelated-compute",
+        action=argparse.BooleanOptionalAction,
+        default=True,
+    )
     parser.add_argument("--resource-wait-timeout-seconds", type=float, default=RESOURCE_WAIT_TIMEOUT_SECONDS)
     parser.add_argument("--resource-poll-seconds", type=float, default=RESOURCE_POLL_SECONDS)
     return parser
@@ -405,7 +392,10 @@ def main() -> int:
         )
         return 0
     launch_occupancy = wait_for_gpu_slots(
+        run_id=str(args.run_id),
         max_total_compute_per_gpu=int(args.max_total_compute_per_gpu),
+        min_free_memory_mib=int(args.min_free_memory_mib),
+        allow_unrelated_compute=bool(args.allow_unrelated_compute),
         timeout_seconds=float(args.resource_wait_timeout_seconds),
         poll_seconds=float(args.resource_poll_seconds),
     )
@@ -413,7 +403,7 @@ def main() -> int:
         json.dumps(
             {
                 "event": "GPU_SLOT_READY",
-                "occupancy_before_phase1_launch": launch_occupancy,
+                "gpu_snapshot_before_phase1_launch": launch_occupancy,
                 "phase1_candidates": len(rows),
             },
             sort_keys=True,
