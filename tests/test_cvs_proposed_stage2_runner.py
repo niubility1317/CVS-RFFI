@@ -118,6 +118,12 @@ def test_cvs_qknnv42_fft_aux_and_legacy_oracle_are_explicit(tmp_path: Path) -> N
     assert first["aux_feature_enabled"] is True
     assert first["aux_score_weight"] == 0.34
     assert first["decision_mode"] == "legacy_role_quota_oracle"
+    assert first["stored_quantized_support_code_count_total"] == 12
+    assert first["support_code_bytes"] == 2 * first["aux_support_code_bytes"]
+    assert first["persistent_state_bytes"] == 2 * first["aux_persistent_state_bytes"]
+    assert first["estimated_support_score_macs"] == 2 * first["aux_estimated_support_score_macs"]
+    assert first["estimated_prototype_score_macs"] == 2 * first["aux_estimated_prototype_score_macs"]
+    assert first["estimated_labelprop_macs"] == 2 * first["aux_estimated_labelprop_macs"]
     manifest = json.loads((run_dir / "split_manifest.json").read_text(encoding="utf-8"))
     assert manifest["non_deployment_oracle_diagnostic"] is True
 

@@ -451,6 +451,7 @@ def _qknnv42_predict(
                 ),
                 "aux_estimated_support_score_macs": int(aux_info["estimated_support_score_macs"]),
                 "aux_estimated_prototype_score_macs": int(aux_info["estimated_prototype_score_macs"]),
+                "aux_estimated_labelprop_macs": int(aux_info["estimated_labelprop_macs"]),
                 "aux_enrollment_latency_sec": float(aux_info["enrollment_latency_sec"]),
                 "aux_score_matrix_latency_sec": float(aux_info["score_matrix_latency_sec"]),
             }
