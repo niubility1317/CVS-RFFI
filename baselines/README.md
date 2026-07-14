@@ -162,14 +162,14 @@ Supported training-view switches:
 
 Paper-specific defaults used by the CVS entrypoints:
 
-- `riei_fd`: FED feature split, EC/RC classifiers, signed cosine MI loss, information-entropy confusion loss, alternating classifier/FED updates.
+- `riei_fd`: FED feature split, EC/RC classifiers, signed cosine MI loss, information-entropy confusion loss, alternating classifier/FED updates. The current Table III confirmation launcher fixes the row-1 winner: no-momentum SGD, mean CE/MI/IE, no per-packet RMS, and no feature-norm guard.
 - DRIFT canonical paper reproduction: 1D ResNet-18-style encoder, transmitter/receiver feature split, GRL receiver discriminator, receiver style center regularization, mean negative-MSE feature separation, Adam `lr=1e-4`, `lambda_grl=1`, `lambda_center=0.01`, `lambda_mse=0.02`, `batch_size=256`.
 - `ra_collab`: spectrogram/CNN adversarial receiver training with GRL, SGD momentum `0.9`, `lr=1e-3`, `batch_size=64`, validation-loss LR decay factor `0.2` after 10 stagnant epochs, early stop after 20 stagnant epochs; formal CVS tests use receiver collaborative fusion. Few-shot target receiver fine-tuning uses `lr=1e-5`, `batch_size=32`, `epochs=20`.
 - `cvcnn_ce`: `epochs=200`; no paper auxiliary loss; only cross entropy on CVS-RFFI training data.
 
 | Method | Paper-aligned structure | Default optimizer / schedule | Paper-window metric |
 |---|---|---|---|
-| `riei_fd` | ResNet1D-18 FED, EC/RC 3-layer classifiers, `z_e/z_r` split, CE + MI - IE alternating updates | parity matrix compares Adam/SGD, sum/mean and RMS preprocessing; `lr_all=1e-4`, `lr_fed=1e-4`, `lambda_mi=1.2`, `lambda_ie=1.2`, `epochs=200` | `riei_last5` for the journal Table III reproduction |
+| `riei_fd` | ResNet1D-18 FED, EC/RC 3-layer classifiers, `z_e/z_r` split, CE + MI - IE alternating updates | Table III confirmation: SGD momentum `0`, mean CE/MI/IE, RMS off, feature norm off; `lr_all=1e-4`, `lr_fed=1e-4`, `lambda_mi=1.2`, `lambda_ie=1.2`, `epochs=200` | `riei_last5` for all 12 journal Table III rows |
 | `drift` | ResNet18-1D encoder, TX/RX split, GRL, receiver center loss, mean negative MSE separation | canonical launcher: Adam `lr=1e-4`, batch 256, `lambda_grl=1.0`, `lambda_center=0.01`, `lambda_mse=0.02`, no MSE cap, `epochs=200` | `drift_last1`; five-seed final mean |
 | `ra_collab` | Spectrogram CNN, GRL receiver adversary, OBS and collaborative fusion evaluation | SGD `lr=1e-3`, momentum `0.9`, validation-loss plateau factor `0.2`, patience `10`, early stop `20`, fine-tune `lr=1e-5` | `aligned_wisig_last5` for CVS comparisons |
 | `cvcnn_ce` | Complex CNN or optional Sinc stem with CE-only objective | AdamW `lr=2e-4`, cosine annealing to `1e-6`, weight decay `1e-4`, `epochs=200` | `aligned_wisig_last5` for CVS comparisons |

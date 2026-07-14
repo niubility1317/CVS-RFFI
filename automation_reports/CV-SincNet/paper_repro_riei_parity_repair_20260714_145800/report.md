@@ -57,3 +57,35 @@
 - 完整扫描截至18:21已写入的所有训练与launcher日志，硬错误计数0；未见Traceback、RuntimeError、OOM、Killed、NaN、Inf或参数错误。`metrics_epoch.csv=0/8`、`PAPER-EVAL-SUMMARY=0/8`，仍属训练中正常状态。
 - 当前证据只覆盖最新epoch114–127，判定为`RUNNING_HEALTHY_THROUGH_LATEST_PARSED_EPOCH`，不构成last5结果或论文复现结论。
 - 短连接已退出：本地`ssh.exe=0`、N607 TCP22已建立连接`=0`；未修改任何N607文件、进程或产物。
+
+## 2026-07-14 18:57发现矩阵完成与全日志分析
+
+- 完成性：8/8 trainer和8/8 launcher自然退出，8/8`PAPER-EVAL-SUMMARY`和8/8`FINAL-TEST`完整，硬错误0。实际结构化产物名为`metrics.json`，非运行中监控预期的`metrics_epoch.csv`；8份`metrics.json`均包含严格epoch1–200。
+- 证据集：本地`analysis_tmp/paper_repro_riei_parity_repair_20260714_145800/final_1857`中仅拉取了8份metrics、8份manifest、2份调度TSV和24份日志；未拉取checkpoint。完整解析8×200=1600个epoch、24份日志共6100行/476599字节，未见Traceback、RuntimeError、OOM、Killed、NaN、Inf或argparse错误。
+
+|ID|优化器|reduction|RMS|feature norm|last5|final|best-val target诊断|last5 CE/MI/IE/FN|较论文77.88%|
+|---|---|---|---:|---:|---:|---:|---:|---|---:|
+|P01|SGD|sum|0|0|74.52±0.59%|74.62%|80.42%@29|0.0048/0.0056/159.012/5.804|-3.36pp|
+|P02|SGD|mean|0|0|**80.12±0.58%**|79.02%|79.88%@193|0.0125/0.0117/2.480/5.205|**+2.24pp**|
+|P03|Adam|sum|0|0|65.84±0.50%|65.44%|63.71%@58|0.1189/0.0060/158.045/0.691|-12.04pp|
+|P04|Adam|mean|0|0|61.79±1.40%|59.15%|65.38%@22|0.0029/0.0001/2.457/0.672|-16.09pp|
+|P05|Adam|sum|0|`1e-4`|63.76±0.72%|64.15%|65.02%@128|0.1399/0.0093/157.777/0.801|-14.12pp|
+|P06|SGD|sum|1|0|74.43±1.00%|73.46%|77.62%@21|0.0036/0.0050/159.013/5.418|-3.45pp|
+|P07|SGD|sum|0|`1e-4`|72.79±1.48%|73.81%|79.54%@33|0.0054/0.0059/159.011/5.751|-5.09pp|
+|P08|Adam|sum|1|`1e-4`|63.75±2.02%|64.00%|57.52%@17|0.1105/0.0458/157.313/0.710|-14.13pp|
+
+### 选型结论
+
+- 胜出配置为P02：无momentum SGD、CE/MI/IE全部mean reduction、关闭逐包RMS、关闭feature-norm guard。正式last5=`80.12±0.58%`，较论文`77.88±2.23%`高`2.24pp`，约为论文`+1.00SD`，进入论文均值`±2SD`区间；last5自身波动仅`0.58pp`。
+- 动力学证据：P02的source validation从epoch1的`32.71%`逐步升至epoch42首次达`99%`，target诊断在epoch20首次超过`77.88%`；训练后段仍依照预先固定的epoch196–200计分，未使用target-oracle选epoch。
+- 机制归因：同为SGD时，mean比sum提高`5.60pp`；同为sum/no-RMS时，SGD比Adam提高`8.68pp`。RMS对SGD-sum仅影响`-0.09pp`，feature-norm对SGD-sum影响`-1.73pp`。因此主要修复是优化器与loss尺度的联合语义，不是RMS或feature-norm。
+- 声明边界：论文未公开优化器名称和所有reduction细节；P02是受Eq.20–21显式梯度下降式与同row消融支持的最接近实现，不将未公开细节写成已证实事实。
+- 下一步：本地实现`code/scripts/launch_riei_table3_confirm_sgd_mean_20260714.sh`，固定P02配置并运行Table III完整12行。预定run ID为`paper_repro_riei_table3_confirm_sgd_mean_seed1337_20260714_190100`；只有12行逐行与整体达到MAE≤3pp且至少10/12进入论文±2SD，才能判定Table III初步复现。
+
+## 2026-07-14 19:01完整12行launcher本地落地
+
+- 新增：`code/scripts/launch_riei_table3_confirm_sgd_mean_20260714.sh`、`tests/test_riei_table3_confirmation.py`，并更新`baselines/README.md`、本报告和`traceability.md`；根目录与Git镜像同步。
+- launcher SHA256：`22e844e0eb0eb401fb018752472e9cefd38b28711ec05cdfa227fd32347d3d70`，根目录与Git镜像完全一致。
+- `bash -n`通过；12-job dry-run完整覆盖Table III行1–12、8个capacity gate、GPU0–3各2个顺序job、GPU4–7各1个job，所有12条命令均固定SGD+mean+no-RMS+no-FN、200epoch和last5。
+- 测试：首次`conda run -n ssr-gpu`再次触发本机已知GBK Unicode包装器错误；按`AGENTS.md`用同一`ssr-gpu`解释器串行重跑，根目录聚焦测试`5 passed`，Git镜像`5 passed`。根目录唯一warning为`.pytest_cache`无写权，不影响测试结果。
+- 当前边界：本地已实现并验证，但尚未同步或启动N607；必须先提交Git任务变更，再重新执行实时容量门。
