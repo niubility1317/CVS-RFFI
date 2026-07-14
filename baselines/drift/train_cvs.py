@@ -39,7 +39,7 @@ def add_drift_method_args(parser: argparse.ArgumentParser) -> argparse.ArgumentP
     parser.add_argument("--lambda_grl", type=float, default=1.0)
     parser.add_argument("--grl_coeff", type=float, default=1.0)
     parser.add_argument("--lambda_center", type=float, default=0.01)
-    parser.add_argument("--center_mode", type=str, default="ema", choices=["batch", "ema"])
+    parser.add_argument("--center_mode", type=str, default="batch", choices=["batch", "ema"])
     parser.add_argument("--center_momentum", type=float, default=0.95)
     parser.add_argument("--lambda_mse", type=float, default=0.02)
     parser.add_argument("--normalize_features_for_mse", action=argparse.BooleanOptionalAction, default=False)

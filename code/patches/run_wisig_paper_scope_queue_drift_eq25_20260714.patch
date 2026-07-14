@@ -1,0 +1,10 @@
+--- a/run_wisig_paper_scope_queue.sh
++++ b/run_wisig_paper_scope_queue.sh
+@@
+-        --center_mode ema
+-        --center_momentum 0.95
++        --center_mode batch
+
+This patch mirrors the active non-Git root launcher change required by DRIFT Eq. (25).
+The full launcher remains at `E:\type10-7\run_wisig_paper_scope_queue.sh`; the N607
+sync must use that verified root file after the currently active RIEI jobs finish.

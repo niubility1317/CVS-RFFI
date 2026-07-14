@@ -106,3 +106,37 @@ DRIFT已得到正式paper-window结果，但整个13-job矩阵尚未完成：
 |`drift_table1_seed1337`|DRIFT；ResNet18-1D；TX/RX拆分；GRL；EMA center；raw negative-MSE|Day1；train RX=`1-1,14-7,7-7`；test RX=`1-19,19-2,2-1,2-19,20-1,7-14,8-8`；6 TX；每TX/RX train=800、test=200|1337|`49.37±3.04%`，last5|`75.62%`|`-26.25pp`|`51.71%`|`1-19=52.67%`；`19-2=59.58%`；`2-1=59.17%`；`2-19=43.08%`；`20-1=36.42%`；`7-14=60.75%`；`8-8=50.33%`|`NOT_REPRODUCED`；单seed严格paper-window明显未达到论文Table I|
 
 DRIFT的best-val触发测试最高曾到`62.88%`，仍低于论文`75.62%`，且不能替代论文规定的last5结果。最终总矩阵结论仍等待12个RIEI Table III行完成。
+
+## 论文一致性修复追踪表
+
+本表在代码修改前建立。来源页码按PDF页序记录；“验证”同时要求公式/算法映射、代码单测和后续N607重跑证据。
+
+|ID|来源|论文要求|实现目标|状态|验证|备注|
+|---|---|---|---|---|---|---|
+|`DRIFT-CTR-01`|DRIFT Eq.(25)、Algorithm 1，PDF第7-8页|每个mini-batch按receiver domain即时计算中心|`baselines/drift/losses.py`、`train_cvs.py`、paper launcher|`implemented`|精确数值单测+dry-run已通过；待N607重跑|当前正式run误用了跨batch EMA center；本地默认与paper launcher已改为`batch`|
+|`DRIFT-CTR-02`|DRIFT Eq.(25)，PDF第7页|各receiver domain的域内均值再对domain求和|`receiver_style_transfer_center_loss`|`verified`|两domain手算单测通过|已由domain mean改为domain sum；手算期望`1+4=5`|
+|`DRIFT-MSE-01`|DRIFT Eq.(26)，PDF第7页|逐样本对特征维求平方和，再对batch求均值并取负|`negative_mse_separation(reduction="sum")`|`verified`|现有精确数值单测|raw negative-MSE本身与论文一致，不改为feature mean或归一化MSE|
+|`DRIFT-GRL-01`|DRIFT Algorithm 1、实现细节，PDF第8页|two-layer domain discriminator；GRL符号与`lambda_1=1`|model/loss/launcher|`verified`|结构与梯度单测|当前实现一致|
+|`DRIFT-PROTO-01`|DRIFT Table I与实现细节，PDF第8-9页|Day1、指定3个source receiver/7个target receiver、Adam`1e-4`、batch64、200epoch、last5|split/launcher/evaluator|`verified`|dry-run+当前run配置/计数|当前run协议与计数一致|
+|`RIEI-ALT-01`|RIEI Eq.(10a-c)、Eq.(11)，PDF第3页|第一步用CE更新FED/EC/RC；第二步冻结EC/RC，仅用`lambda_MI L_MI-lambda_IE L_IE`更新FED|`alternating_training_step`|`verified`|训练步骤代码审计+单测|当前实现未在第一步重复加入MI/IE|
+|`RIEI-LOSS-01`|RIEI Eq.(2-9)，PDF第3页|CE/MI/IE按论文求和，`lambda_MI=lambda_IE=1.2`|loss/launcher|`verified`|精确数值单测+当前run配置|当前paper launcher已显式使用`sum` reductions|
+|`RIEI-ARCH-01`|RIEI模型与实现细节，PDF第2-4页|WiSig使用ResNet1D-18 FED、512维拆成两个256维特征、EC/RC为三层FC|architecture/model|`verified`|结构代码审计|当前实现一致|
+|`RIEI-DATA-01`|RIEI实验设置，PDF第4页|WiSig去除无信号段并使用equalized数据；每receiver train/test计数与Table I一致|dataset/split/launcher|`verified`|`wisig_equalized=1`、split计数和当前run日志|`ManySig.pkl`按equalized键读取；train=14400、test=4800/receiver，额外val只用于监控，不改变paper last10|
+|`LOG-DRIFT-01`|训练日志分析硬门禁|完整读取200epoch曲线及所有组件|本地日志/metrics分析|`verified`|200/200 epoch与异常扫描|完整日志801行；无硬错误；见下节发散证据|
+|`LOG-RIEI-01`|训练日志分析硬门禁|完整读取12个200epoch日志及metrics|本地日志/metrics分析|`blocked`|12个job完成后分析|当前12个训练仍在运行，禁止干预|
+|`REMOTE-REPAIR-01`|AGENTS.md/N607安全规则|本地修复、测试、快照、Git提交后才同步；活动job期间不覆盖|local/Git/N607|`blocked`|hash+SCP+远端dry-run|等待当前12个RIEI自然结束|
+
+## DRIFT完整训练日志诊断与本地修复
+
+已拉取并完整读取DRIFT训练日志801行及`metrics.json`的200/200个epoch。日志没有`Traceback`、`RuntimeError`、OOM、CUDA error、`NaN`或`Killed`。训练不是进程故障，而是paper-faithful目标实现偏差叠加raw negative-MSE的无界尺度增长：
+
+|epoch|train loss|val TX|TX CE|RX CE|center loss|negative-MSE|TX feature norm|RX feature norm|
+|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+|1|-54.66|37.03%|1.2910|0.9811|1490.37|-3642.32|21.64|21.21|
+|20|-212.79|99.36%|0.0646|0.0005|440.58|-10895.38|34.69|57.75|
+|100|-1545.33|99.33%|0.0438|0.0007|3107.06|-78849.08|158.25|166.38|
+|200|-4858.97|96.89%|0.1052|0.0245|10762.28|-248361.60|310.56|311.32|
+
+当前run的`center_mode=ema`不符合DRIFT Algorithm 1按mini-batch计算`c_d`的要求；同时中心项对3个receiver domain取均值，使Eq.(25)的中心约束再缩小3倍。修复后使用当前mini-batch receiver center并对domain求和。Eq.(26)仍严格保留“特征维平方和、batch均值、取负”的raw negative-MSE；不把论文复现偷偷改成归一化、cap或feature-norm正则。由于原公式的negative-MSE存在无界尺度风险，是否仅靠修正后的Eq.(25)足以恢复论文结果必须通过新的隔离run验证，不能用本地单测宣称性能已修复。
+
+本地验证：Git承载面`pytest tests/test_drift_eq25_paper_parity.py`为`2 passed`；根目录`python -m unittest tests.test_drift_table1_paper_parity`为`13/13 OK`；两个launcher均通过`bash -n`，paper-scope dry-run明确展开`--center_mode batch`且不再传`--center_momentum`。

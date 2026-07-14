@@ -79,7 +79,7 @@ def receiver_center_loss(
 
 
 def receiver_style_transfer_center_loss(z_rx: torch.Tensor, rx_label: torch.Tensor) -> torch.Tensor:
-    """DRIFT receiver-specific style regularizer.
+    """DRIFT Eq. (25) receiver-specific batch-center regularizer.
 
     The paper describes the receiver-specific branch as a communication-style
     representation: samples captured by the same receiver should cluster around
@@ -95,7 +95,7 @@ def receiver_style_transfer_center_loss(z_rx: torch.Tensor, rx_label: torch.Tens
         losses.append((feat - center).square().sum(dim=1).mean())
     if not losses:
         return z_rx.new_zeros(())
-    return torch.stack(losses).mean()
+    return torch.stack(losses).sum()
 
 
 def negative_mse_separation(
