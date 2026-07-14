@@ -89,3 +89,14 @@
 - `bash -n`通过；12-job dry-run完整覆盖Table III行1–12、8个capacity gate、GPU0–3各2个顺序job、GPU4–7各1个job，所有12条命令均固定SGD+mean+no-RMS+no-FN、200epoch和last5。
 - 测试：首次`conda run -n ssr-gpu`再次触发本机已知GBK Unicode包装器错误；按`AGENTS.md`用同一`ssr-gpu`解释器串行重跑，根目录聚焦测试`5 passed`，Git镜像`5 passed`。根目录唯一warning为`.pytest_cache`无写权，不影响测试结果。
 - 当前边界：本地已实现并验证，但尚未同步或启动N607；必须先提交Git任务变更，再重新执行实时容量门。
+
+## 2026-07-14 19:29完整Table III确认矩阵启动
+
+- Git版本：`0c47f42 confirm RIEI Table III with SGD mean scaling`。N607同步文件仅为`code/scripts/launch_riei_table3_confirm_sgd_mean_20260714.sh`；本地与远端SHA256均为`22e844e0eb0eb401fb018752472e9cefd38b28711ec05cdfa227fd32347d3d70`。
+- 远端依赖复核：`cvs_data.py=a2093e0a...`、`riei_fd/train_cvs.py=950b6008...`、paper queue=`2ba90874...`；远端`bash -n`通过，dry-run计数为12个job、8个capacity gate、12条SGD+mean固定配置。
+- 启动前直接预检通过；实时既有compute为GPU1–5、7各1个Phase1，GPU0、6为空。确认矩阵计划每GPU新增1个训练，启动器复核峰值为GPU0、6各1个，GPU1–5、7各2个，全部满足每GPU不超过2。
+- 正式命令：`bash code/scripts/launch_riei_table3_confirm_sgd_mean_20260714.sh --launch --gpu-ids 0,1,2,3,4,5,6,7 --max-train-per-gpu 2`。run/log ID为`paper_repro_riei_table3_confirm_sgd_mean_seed1337_20260714_190100`，不存在旧目录且未覆盖任何产物。
+- 8个顺序queue PID：GPU0–7依次为`569608,569610,569613,569618,569624,569627,569635,569642`；GPU0–3各排2行，GPU4–7各排1行。首批Table III第1–8行训练PID为`569767,569783,569811,569815,569827,569828,569830,569831`。
+- 约4分钟健康检查：8/8 queue与8/8 trainer运行；第1–8行分别进入epoch`11,11,10,11,11,11,10,11/200`，全部日志持续增长；硬错误0，`PAPER-EVAL-SUMMARY=0`、完成job=0，符合训练早期状态。8份`metrics.json`已创建但尚未完成，不能据此给出结果。
+- GPU occupancy：GPU0、6各1个本任务compute；GPU1–5、7各1个本任务加1个Phase1，总数均未超过2。既有Phase1 PID`549385,549925,552673,551328,550859,551794`均继续运行，未被干预。
+- 当前判定：`RUNNING_HEALTHY_THROUGH_EPOCH_10_11`。正式结论仍固定epoch196–200 last5；12行全部完成后计算逐行差值、MAE和论文`±2SD`命中数。短连接退出后本地`ssh.exe=0`、N607 TCP22已建立连接`=0`。
