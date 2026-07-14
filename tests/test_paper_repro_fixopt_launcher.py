@@ -26,3 +26,12 @@ def test_paper_scope_patch_defaults_are_backward_compatible_and_exposes_guards()
     assert 'DRIFT_LAMBDA_MSE="${DRIFT_LAMBDA_MSE:-0.02}"' in text
     assert '--lambda_feature_norm "${RIEI_LAMBDA_FEATURE_NORM}"' in text
     assert '--mse_cap "${DRIFT_MSE_CAP}"' in text
+
+
+def test_deferred_launcher_waits_for_repaired_run_and_keeps_capacity_gate():
+    text = (ROOT / "code/scripts/defer_launch_paper_repro_fixopt_20260714.sh").read_text(encoding="utf-8")
+
+    assert "paper_repro_repaired_riei_drift_seed1337_20260714_103000" in text
+    assert "--max-train-per-gpu 2" in text
+    assert "active_target_processes" in text
+    assert "no launch performed" in text
