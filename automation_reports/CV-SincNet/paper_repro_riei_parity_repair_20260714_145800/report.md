@@ -379,3 +379,11 @@
 - 03:14:57健康检查时，8个queue与8个trainer均存活，8份`metrics.json`已创建；row3/6/10/12的两种variant分别进入epoch12–14/200。所有日志持续增长至39–85行、6.3–7.2KiB，并保留正确`fed_variant`marker。
 - 全量扫描当前已写日志，硬错误0；尚无`PAPER-EVAL-SUMMARY`符合训练早期状态。GPU0–7各仅1个本任务compute：ImageNet式stem约485MiB、short stem约639MiB，利用率9%–38%，任何GPU总训练数均为1。
 - 当前判定：`RUNNING_STARTUP_HEALTHY_THROUGH_EPOCH_12_14`。不得干预、重启、覆盖或删除产物；正式选择只能使用各job epoch191–200的last10。SSH短连接全部退出，本地`ssh.exe=0`、N607 TCP22已建立连接`=0`。
+
+## 2026-07-15 03:51架构诊断心跳监控
+
+- 直接N607只读预检通过。8个原queue PID与8个原trainer PID均持续运行约2438秒，无重启或进程替换；完整命令行仍保持4个`imagenet1d`、4个`short_stem1d`及相同的SGD+mean协议。
+- 完整读取8份训练日志至最新记录：row3/6/10/12两种variant分别到epoch`113,113,116,113,114,116,114,113/200`；日志为580–641行、39.3–42.1KiB，全部持续增长。
+- 8份`metrics.json`均可完整解析，epoch序列分别写入`112,112,115,112,113,115,113,112`且均无`final`字段；与日志最新epoch只差1。当前`PAPER-EVAL-SUMMARY=0`、`FINAL-TEST=0`符合尚未进入epoch191–200正式窗口。
+- 对当前run全部已写训练日志做完整硬错误扫描，计数0；未见Traceback、RuntimeError、CUDA OOM、Killed、AssertionError、FileNotFound、NaN或参数错误。
+- GPU0–7各仅1个本任务compute，ImageNet式stem约485MiB、short stem约639MiB，利用率16%–33%；任何GPU总训练数均为1。当前判定：`RUNNING_HEALTHY_THROUGH_EPOCH_113_116`，不是正式架构选型结果。SSH短连接全部退出，本地`ssh.exe=0`、N607 TCP22已建立连接`=0`。
