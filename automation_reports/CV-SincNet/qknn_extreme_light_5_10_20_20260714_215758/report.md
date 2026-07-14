@@ -123,3 +123,9 @@ run ID=`qknn_extreme_light_lowrank_k30_20260714_2340_v1`；Git commit=`0ac6917`�
 24/24 rows完成，0失败、0协议违规、1,440条loss trace。权重0.25的5/10/20类`old/floor/new/H`均值为`90.97/80.00/89.50/90.04%`、`86.81/57.50/86.42/86.58%`、`89.44/77.50/91.92/90.60%`；仅三个20类单seed row通过，仍无统一候选。20类资源为7,100参数、28,400B状态、7,074MAC/query，不增加backbone前向。
 
 下一轮固定logit0.25和source/target prototype blend0.25，扫描冻结source prototype余弦anchor strength`0.05/0.1/0.25/0.5`。run ID=`qknn_extreme_light_source_anchor_k30_20260715_0020_v1`，24 rows；19项pytest、编译和dry-run PASS。推理仍为全部注册类统一逐样本argmax，无query角色门控。
+
+### K30 source-bank anchor结果与新目标边界
+
+24/24 rows完成，0失败、0协议违规、1,440条loss trace。strength0.05的5/10/20类`old/floor/new/H`均值为`91.11/80.00/89.83/90.31%`、`86.81/57.50/85.92/86.32%`、`89.58/78.33/92.17/90.80%`，无统一通过组合；更强source anchor反而损害10/20类old/floor。
+
+用户随后把正式门槛提高为K10下`old>=95%`、floor`>=88%`、5/10/20新类`>=92/90/86%`，且matched K5四项指标相对K10均不得下降超过3个百分点。该K30结果仅作目标变更前历史诊断，不作为新目标成功或选模证据。

@@ -8,13 +8,15 @@
 
 |指标|独立确认门槛|
 |---|---:|
-|target-old总体准确率|`old_acc>=0.88`|
-|旧类逐类下限|`min_old_class_acc>=0.85`|
-|5个真实target-new TX|`seen_new_acc>=0.90`|
-|10个真实target-new TX|`seen_new_acc>=0.88`|
-|20个真实target-new TX|`seen_new_acc>=0.83`|
+|target-old总体准确率|`old_acc>=0.95`|
+|旧类逐类下限|`min_old_class_acc>=0.88`|
+|5个真实target-new TX|`seen_new_acc>=0.92`|
+|10个真实target-new TX|`seen_new_acc>=0.90`|
+|20个真实target-new TX|`seen_new_acc>=0.86`|
 
-确认矩阵固定覆盖5个target receiver、至少5个独立确认seed和3个正式`leo_weak`场景。5/10/20类使用按数据覆盖预先确定的嵌套真实TX集合。开发seed只用于选择统一K-shot工作点和超参数；锁定后不得跨K、跨seed或跨新类规模拼接结果。
+以上绝对门槛默认在统一`K=10`达到。开发阶段仅允许在K10选择一套candidate与超参数；锁定后以相同candidate评估嵌套K5。K5复用K10前5个物理support和完全相同query，matched row的`old_acc`、`min_old_class_acc`、`seen_new_acc`和`H_old_new`相对K10均不得下降超过3个百分点。
+
+确认矩阵固定覆盖5个target receiver、至少5个独立确认seed、3个正式`leo_weak`场景以及matched K10/K5。5/10/20类使用按数据覆盖预先确定的嵌套真实TX集合。锁定后不得跨K、跨seed或跨新类规模拼接结果。
 
 ## 部署与资源边界
 
