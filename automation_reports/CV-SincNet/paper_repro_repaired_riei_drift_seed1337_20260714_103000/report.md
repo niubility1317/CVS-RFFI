@@ -70,3 +70,11 @@ DRIFT的raw negative-MSE、RIEI的CE/MI/IE sum reduction以及两篇论文的模
 - GPU occupancy：GPU0-7均为`compute=2`；每GPU由1个既有Phase1训练和1个本任务训练组成，本任务未超过新增1个/GPU的边界；显存约`4022-4102MiB/GPU`。
 - Phase1保持运行，本检查点未启动、终止、重启、覆盖或修改任何远端任务与产物。
 - SSH/SCP均为短连接；检查完成后未保留交互式shell或转发。
+
+### 2026-07-14 11:12+08:00只读监控检查点
+
+- 8个本任务训练仍在运行；每GPU同时有1个Phase1训练，合计2个compute process/GPU，未超限。
+- DRIFT已完成epoch200且queue status=`0`；GPU0已顺序进入第二个RIEI job，未并发叠加。
+- 其余当前RIEI进度为epoch117-120，GPU0第二批RIEI到epoch45；已完成queue job数=`1/13`。
+- 完整扫描当前26份`.log`，精确硬错误模式下Traceback、RuntimeError、OOM、Killed、NaN和unrecognized arguments均为0；宽泛`Inf`命中均来自`split_info`字段，不是数值Inf。
+- 按用户要求，后续fix_optimized联合矩阵已通过独立deferred launcher提交；它仍只读等待本run全部退出，不影响本run或Phase1。

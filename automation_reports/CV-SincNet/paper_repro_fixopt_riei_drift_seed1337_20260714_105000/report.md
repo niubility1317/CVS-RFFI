@@ -5,7 +5,7 @@
 - 实验ID：`paper_repro_fixopt_riei_drift_seed1337_20260714_105000`
 - 时间：2026-07-14 10:50+08:00
 - 操作者：Codex
-- 状态：`LOCAL_VERIFIED_DEFERRED_CAPACITY`
+- 状态：`DEFERRED_LAUNCH_ACTIVE`
 - 目标：在2026-07-14论文语义修复基础上恢复历史`fix_optimized`稳定性保护，使DRIFT Table I达到或接近论文`75.62%`，并完整还原RIEI论文Table III的12个receiver组合，而不是只复用DRIFT Table I中的RIEI单行结果。
 
 ## 假设与对照
@@ -76,6 +76,21 @@
 - 已建立根目录快照：`E:\type10-7\code\snapshots\paper_repro_fixopt_riei_drift_seed1337_20260714_105000\`。
 - Git承载面提交：`109945b add RIEI Table III and DRIFT fixopt matrix`。
 - 当前未同步或启动N607任务，原因是每GPU已有2个compute process；不会修改仍会被修复版后续队列读取的远端入口。
+
+## 直接启动请求与安全排队
+
+- 2026-07-14 11:07再次执行N607预检：GPU0-7仍各有2个compute process，分别来自Phase1和修复版复现；直接新增训练会达到3/GPU，违反默认硬上限。
+- 根据用户“直接启动”要求，新增本地验证的`code/scripts/defer_launch_paper_repro_fixopt_20260714.sh`：它只等待指定修复版run的训练及queue进程全部退出，最长等待21600秒；随后调用原20-job launcher。真正启动前仍由launcher重新执行每GPU`current+planned_peak<=2`容量门，超限则失败关闭，不会强行启动。
+- deferred launcher的`bash -n`和dry-run通过；Git提交：`20d5590 queue fixopt matrix behind repaired reproduction`。
+
+## N607同步与安全启动提交
+
+- 2026-07-14 11:10同步前核对：N607现有`run_wisig_paper_scope_queue.sh` SHA256=`5f93bc7c...`，与修复版启动时本地快照完全一致，未覆盖未知远端改动。
+- 已同步并核对本地/远端SHA256：paper-scope queue=`26414994...`、20-job launcher=`73c41afe...`、deferred launcher=`9245f60d...`。
+- 远端三个脚本均通过`bash -n`；20-job dry-run确认8个DRIFT候选、RIEI Table III完整12行及8张GPU顺序队列。
+- 当前每GPU仍有Phase1和修复版复现各1个compute process，不能直接新增训练。已提交容量受控的deferred launcher：PID=`289073`，父包装PID=`289071`；日志=`paper_reproduction/logs/deferred_launchers/paper_repro_fixopt_riei_drift_seed1337_20260714_105000.out`。
+- deferred launcher每30秒只读检查指定修复版进程；修复版完全退出后才调用20-job launcher，并再次执行`current+planned_peak<=2`硬容量门。11:12日志显示仍在等待，尚未占用额外GPU。
+- 首次SSH提交因远端后台父shell保持channel导致本地命令超时；已立即终止残留本地`ssh.exe`并确认TCP22连接为0，随后通过只读远端证据确认deferred launcher已经landed，未重复提交。
 
 ## 完成后必须检查
 
