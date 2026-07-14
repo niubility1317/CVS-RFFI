@@ -137,4 +137,4 @@ bash scripts/launchers/run_cvs_baseline_queue.sh --methods drift --wisig-protoco
 
 项目相关改动必须进入Git流程。改动前检查`git status -sb`，改动后检查`git diff`/`git status -sb`并运行必要验证；完成后提交到明确分支，除非用户明确要求不要提交。每次代码、配置、脚本或协议变更都要同步检查`AGENTS.md`、`docs/PROJECT_PROTOCOL.md`、README、docs和报告类Markdown是否需要更新。
 
-协作输出规则：DO NOT send optional commentary。
+协作输出规则：对于使用工具或长时间运行的任务，首次工具调用前、关键阶段切换时、重连或上下文压缩恢复后、出现阻塞时，以及持续工作期间至少每60秒，必须发送简洁、基于证据的进度更新；只报告可观察操作、发现和下一步，不披露私有思维链，不倾倒原始日志。仅无工具的简短问答可以省略过程更新。
