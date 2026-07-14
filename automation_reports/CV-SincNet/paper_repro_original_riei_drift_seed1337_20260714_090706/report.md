@@ -90,3 +90,19 @@ N607只读preflight于2026-07-14 09:03+08:00通过；8张RTX3090均空闲，训�
 - 所有job均记录`SAT_EVAL=0`，`[CONFIG-UNLABELED] route=none`；日志中出现的labeled/unlabeled默认比例字段未启用无标签训练路线。
 - 本轮只确认提交落地与启动健康；是否复现论文结果必须等待200epoch及paper-window汇总后按同一receiver行比较。
 - 已创建当前任务heartbeat`riei-drift`，每30分钟只读检查进度；运行期间不干预。全部完成后将拉取小型日志与metrics、分析完整训练日志、更新逐行结果表与复现结论，并停用heartbeat。
+
+### 2026-07-14 09:48+08:00监控检查点
+
+- 总体状态：`PARTIAL_RUNNING`。13个训练日志和13个增量`metrics.json`均存在；DRIFT已完成，12个RIEI仍在运行。
+- 进程：N607当前有12个本矩阵GPU Python训练进程，对应12个RIEI job；DRIFT训练进程已随正常完成退出。
+- RIEI进度：12个job完成epoch范围为98-102，最新已开始epoch范围为99-103，约完成一半。
+- 健康性：13个训练日志均未发现`Traceback`、`RuntimeError`、OOM、未知参数、`NaN`或`Killed`；RIEI日志持续增长，无停滞证据。
+- 本检查点未启动、终止、重启或修改任何远端训练。
+
+DRIFT已得到正式paper-window结果，但整个13-job矩阵尚未完成：
+
+|candidate|机制|receiver/TX split|seed|paper-window|论文目标|差值|final overall|逐receiver final accuracy|当前判定|
+|---|---|---|---:|---:|---:|---:|---:|---|---|
+|`drift_table1_seed1337`|DRIFT；ResNet18-1D；TX/RX拆分；GRL；EMA center；raw negative-MSE|Day1；train RX=`1-1,14-7,7-7`；test RX=`1-19,19-2,2-1,2-19,20-1,7-14,8-8`；6 TX；每TX/RX train=800、test=200|1337|`49.37±3.04%`，last5|`75.62%`|`-26.25pp`|`51.71%`|`1-19=52.67%`；`19-2=59.58%`；`2-1=59.17%`；`2-19=43.08%`；`20-1=36.42%`；`7-14=60.75%`；`8-8=50.33%`|`NOT_REPRODUCED`；单seed严格paper-window明显未达到论文Table I|
+
+DRIFT的best-val触发测试最高曾到`62.88%`，仍低于论文`75.62%`，且不能替代论文规定的last5结果。最终总矩阵结论仍等待12个RIEI Table III行完成。
