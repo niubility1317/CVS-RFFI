@@ -8,6 +8,7 @@ from paper_reproduction.cvs_aligned.extreme_light_adapter import (
     fit_predict_extreme_light_diag_cosine,
     fit_predict_extreme_light_low_rank_cosine,
     fit_predict_support_ridge,
+    predict_support_multiprototype_cosine,
     predict_support_prototype_cosine,
 )
 
@@ -92,6 +93,26 @@ def test_closed_form_prototype_head_is_zero_train_and_query_independent():
     assert np.array_equal(predicted, extended[: len(predicted)])
     assert info["trainable_parameters"] == 0
     assert info["feature_adapter_gradient_updates"] == 0
+    assert info["query_features_used_for_adaptation"] is False
+    assert len(trace) == 1
+
+
+def test_closed_form_multiprototype_head_is_bounded_and_query_independent():
+    support, support_y, query, query_y = _separable()
+    predicted, info, trace = predict_support_multiprototype_cosine(
+        support, support_y, query, prototypes_per_class=2
+    )
+    extended, _, _ = predict_support_multiprototype_cosine(
+        support,
+        support_y,
+        np.vstack([query, np.full((7, query.shape[1]), 9.0, dtype=np.float32)]),
+        prototypes_per_class=2,
+    )
+    assert np.mean(predicted.astype(str) == query_y.astype(str)) == 1.0
+    assert np.array_equal(predicted, extended[: len(predicted)])
+    assert info["trainable_parameters"] == 0
+    assert info["stored_class_prototype_count"] == 8
+    assert info["persistent_state_bytes"] <= 128 * 1024
     assert info["query_features_used_for_adaptation"] is False
     assert len(trace) == 1
 

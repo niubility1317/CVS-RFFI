@@ -158,3 +158,9 @@ run ID=`qknn_extreme_light_k10k5_feasibility_20260715_0032_v1`，`rx8-8×2开发
 新增32维增益归一化RF统计描述子，输入与冻结backbone和FFT96使用同一个后信道单物理view，逐样本提取IQ/幅度统计、高阶复矩和短时自相关；不使用query batch、标签、角色或配额。它与FFT96组成128维`fft_rf_features`，query仍为1-view，只新增`O(T)`统计计算；20新类预计head状态约32KB、约7.5k MAC/query。
 
 本地编译、24项相关pytest、launcher语法和24-row dry-run PASS。预注册特征根=`cvs_qknnv42_extreme_light_20new_features_rf32_20260715_v1`，K10 screen=`qknn_extreme_light_rf32_k10_screen_20260715_0045_v1`：`rx8-8×2开发seed×5/10/20新类×K10×4个aux权重=24 rows`。只按K10选统一权重，再对锁定候选补matched K5；确认seed继续封存。
+
+### RF-stat32结果与multi-prototype计划
+
+三场景各导出9,800行`z_id160+FFT96+RF-stat32`，完整日志错误扫描PASS。K10 screen 24/24 rows完成、0失败、0权限违规、0联合通过。权重0.5/1/2/4下，5类`old/floor/new/H`依次为`80.28/60.83/79.33/79.70%`、`80.69/62.50/82.50/81.47%`、`82.78/65.83/84.00/83.27%`、`84.31/68.33/84.17/84.18%`；10类最佳为`80.00/61.67/82.75/81.31%`，20类最佳为`78.06/54.17/90.83/83.95%`。RF统计不能修复旧类可分性。
+
+下一run=`qknn_extreme_light_multiproto_k10_screen_20260715_0054_v1`，比较每类2/3个确定性球面prototype以及FFT/FFT+RF，24个K10开发rows。该头0epoch、0参数、support-only、无query图；20新类三prototype状态分别79,872B/89,856B，MAC/query分别19,968/22,464。K5与确认seed继续封存。

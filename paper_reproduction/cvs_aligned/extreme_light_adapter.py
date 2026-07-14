@@ -432,6 +432,150 @@ def predict_support_prototype_cosine(
     return predicted, info, trace
 
 
+def predict_support_multiprototype_cosine(
+    support_x: np.ndarray,
+    support_y: np.ndarray,
+    query_x: np.ndarray,
+    *,
+    prototypes_per_class: int,
+    kmeans_steps: int = 5,
+    max_persistent_state_bytes: int = 128 * 1024,
+) -> tuple[np.ndarray, dict[str, Any], list[dict[str, Any]]]:
+    """Closed-form deterministic spherical multi-prototypes from support only."""
+    support = _numpy_norm(np.asarray(support_x, dtype=np.float32))
+    query = _numpy_norm(np.asarray(query_x, dtype=np.float32))
+    labels = np.asarray(support_y).astype(str)
+    proto_count = int(prototypes_per_class)
+    steps = int(kmeans_steps)
+    if support.ndim != 2 or query.ndim != 2 or support.shape[1] != query.shape[1]:
+        raise ValueError("support/query features must be aligned rank-2 matrices")
+    if len(support) != len(labels) or len(support) == 0:
+        raise ValueError("support features and labels must be non-empty and aligned")
+    if proto_count < 2 or proto_count > 4:
+        raise ValueError("prototypes_per_class must be in [2,4]")
+    if steps < 1 or steps > 10:
+        raise ValueError("kmeans_steps must be in [1,10]")
+    classes = sorted(set(labels.tolist()))
+    if len(classes) < 2:
+        raise ValueError("multi-prototype classifier requires at least two registered classes")
+
+    started = time.perf_counter()
+    class_prototypes: list[np.ndarray] = []
+    for label in classes:
+        points = support[labels == label]
+        class_k = min(proto_count, len(points))
+        mean_center = _numpy_norm(points.mean(axis=0, keepdims=True))[0]
+        centers = [mean_center]
+        while len(centers) < class_k:
+            current = np.stack(centers, axis=0)
+            nearest_similarity = np.max(points @ current.T, axis=1)
+            centers.append(points[int(np.argmin(nearest_similarity))].copy())
+        centers_array = np.stack(centers, axis=0).astype(np.float32)
+        for _ in range(steps):
+            assigned = np.argmax(points @ centers_array.T, axis=1)
+            updated = centers_array.copy()
+            for cluster in range(class_k):
+                members = points[assigned == cluster]
+                if len(members):
+                    updated[cluster] = _numpy_norm(members.mean(axis=0, keepdims=True))[0]
+            if np.allclose(updated, centers_array, atol=1.0e-6):
+                centers_array = updated
+                break
+            centers_array = updated
+        if class_k < proto_count:
+            centers_array = np.concatenate(
+                [centers_array, np.repeat(centers_array[-1:], proto_count - class_k, axis=0)], axis=0
+            )
+        class_prototypes.append(centers_array.astype(np.float32))
+    prototypes = np.stack(class_prototypes, axis=0).astype(np.float32)
+    enrollment_elapsed = time.perf_counter() - started
+    persistent_state_bytes = int(prototypes.nbytes)
+    if persistent_state_bytes > int(max_persistent_state_bytes):
+        raise ValueError(
+            "extreme-light persistent-state cap exceeded: "
+            f"{persistent_state_bytes}>{max_persistent_state_bytes}"
+        )
+
+    scoring_started = time.perf_counter()
+    flat_scores = query @ prototypes.reshape(-1, support.shape[1]).T
+    scores = flat_scores.reshape(len(query), len(classes), proto_count).max(axis=2)
+    predicted_indices = np.argmax(scores, axis=1)
+    scoring_elapsed = time.perf_counter() - scoring_started
+    support_scores = (support @ prototypes.reshape(-1, support.shape[1]).T).reshape(
+        len(support), len(classes), proto_count
+    ).max(axis=2)
+    support_pred = np.argmax(support_scores, axis=1)
+    class_to_index = {label: index for index, label in enumerate(classes)}
+    targets = np.asarray([class_to_index[label] for label in labels], dtype=np.int64)
+    compactness_loss = float(np.mean(1.0 - support_scores[np.arange(len(support)), targets]))
+    feature_dim = int(support.shape[1])
+    class_count = int(len(classes))
+    macs_per_query = int(feature_dim * class_count * proto_count)
+    info = {
+        "adaptation_objective": "closed_form_support_spherical_multiprototype_cosine",
+        "head_mode": "extreme_light_multiprototype_cosine",
+        "support_only": True,
+        "query_labels_used_for_adaptation": False,
+        "query_features_used_for_adaptation": False,
+        "query_query_graph_used": False,
+        "query_batch_state_required": False,
+        "decision_batch_state_required": False,
+        "role_oracle_used": False,
+        "equal_class_quota_used": False,
+        "feature_adapter_updates_adv3b02": False,
+        "feature_adapter_gradient_updates": 0,
+        "feature_adapter_mode": "closed_form_support_spherical_multiprototype_cosine",
+        "trainable_parameters": 0,
+        "persistent_state_bytes": persistent_state_bytes,
+        "persistent_state_bytes_with_post_adapter": persistent_state_bytes,
+        "stored_raw_support_count": 0,
+        "stored_quantized_support_code_count": 0,
+        "stored_class_prototype_count": class_count * proto_count,
+        "prototypes_per_class": proto_count,
+        "kmeans_steps": steps,
+        "feature_dim": feature_dim,
+        "class_count": class_count,
+        "adaptation_epochs": 0,
+        "adaptation_batch_size": 0,
+        "estimated_adaptation_macs": int(steps * len(support) * feature_dim * proto_count),
+        "estimated_head_macs": int(len(query) * macs_per_query),
+        "estimated_head_macs_with_post_adapter": int(len(query) * macs_per_query),
+        "estimated_macs_per_query": macs_per_query,
+        "dense_graph_bytes_lower_bound": 0,
+        "dense_graph_peak_bytes_lower_bound": 0,
+        "dense_graph_cumulative_bytes": 0,
+        "decision_workspace_bytes_lower_bound": 0,
+        "adaptation_latency_sec": float(enrollment_elapsed),
+        "score_matrix_latency_sec": float(scoring_elapsed),
+        "onboard_scoring_latency_sec": float(scoring_elapsed),
+        "onboard_scoring_latency_per_query_ms": float(
+            scoring_elapsed * 1000.0 / max(1, len(query))
+        ),
+        "peak_device_memory_bytes": 0,
+        "loss": compactness_loss,
+        "loss_initial": compactness_loss,
+        "loss_final": compactness_loss,
+        "support_accuracy_final": float(np.mean(support_pred == targets)),
+        "runtime_device": "cpu",
+    }
+    trace = [
+        {
+            "phase": "closed_form_support_fit",
+            "step": 1,
+            "total_steps": 1,
+            "loss": compactness_loss,
+            "total_loss": compactness_loss,
+            "ce_loss": 0.0,
+            "source_anchor_loss": compactness_loss,
+            "learning_rate": 0.0,
+            "gradient_norm": 0.0,
+            "support_accuracy": info["support_accuracy_final"],
+        }
+    ]
+    predicted = np.asarray(classes, dtype=object)[predicted_indices]
+    return predicted, info, trace
+
+
 def fit_predict_support_ridge(
     support_x: np.ndarray,
     support_y: np.ndarray,

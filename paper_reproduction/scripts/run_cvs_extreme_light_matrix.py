@@ -314,6 +314,29 @@ ARMS: dict[str, dict[str, Any]] = {
         }
         for label, value in (("0p5", 0.5), ("1p0", 1.0), ("2p0", 2.0), ("4p0", 4.0))
     },
+    **{
+        f"el_mp{prototype_count}_{feature_label}_w{weight_label}": {
+            "qknnv42_head_mode": "extreme_light_multiprototype_cosine",
+            "qknnv42_aux_feature_key": feature_key,
+            "qknnv42_aux_feature_dim": feature_dim,
+            "qknnv42_aux_score_weight": 0.0,
+            "qknnv42_labelprop_mode": "disabled",
+            "qknnv42_support_representation": "prototype_only",
+            "qknnv42_feature_adapter_mode": "none",
+            "qknnv42_decision_mode": "per_sample_argmax",
+            "extreme_light_aux_weight": weight,
+            "extreme_light_source_logit_weight": 0.0,
+            "extreme_light_epochs": 0,
+            "extreme_light_prototypes_per_class": prototype_count,
+            "extreme_light_kmeans_steps": 5,
+            "extreme_light_support_aug_scenarios": list(SCENARIOS),
+        }
+        for prototype_count in (2, 3)
+        for feature_label, feature_key, feature_dim, weight_label, weight in (
+            ("fft", "fft_logmag_features", 96, "2p0", 2.0),
+            ("fftrf", "fft_rf_features", 128, "4p0", 4.0),
+        )
+    },
     "el_lowrank_r8_m0p05_aug3_e10": {
         "qknnv42_head_mode": "extreme_light_low_rank_cosine",
         "qknnv42_aux_score_weight": 0.0,

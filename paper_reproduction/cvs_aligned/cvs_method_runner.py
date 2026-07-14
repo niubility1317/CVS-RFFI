@@ -24,6 +24,7 @@ from paper_reproduction.cvs_aligned.extreme_light_adapter import (
     fit_predict_extreme_light_diag_cosine,
     fit_predict_extreme_light_low_rank_cosine,
     fit_predict_support_ridge,
+    predict_support_multiprototype_cosine,
     predict_support_prototype_cosine,
 )
 
@@ -33,6 +34,7 @@ SCENARIOS = ("leo_clear_weak", "leo_low_elev_weak", "leo_rain_weak")
 EXTREME_HEAD_MODES = {
     "extreme_light_diag_cosine",
     "extreme_light_prototype_cosine",
+    "extreme_light_multiprototype_cosine",
     "extreme_light_support_ridge",
     "extreme_light_low_rank_cosine",
 }
@@ -1040,8 +1042,15 @@ def validate_config(config: dict[str, Any]) -> None:
             raise ValueError("extreme_light_epochs must be in [1,20]")
         if head_mode == "extreme_light_low_rank_cosine" and (epochs <= 0 or epochs > 20):
             raise ValueError("extreme_light_epochs must be in [1,20]")
-        if head_mode in {"extreme_light_prototype_cosine", "extreme_light_support_ridge"} and epochs != 0:
+        if head_mode in {"extreme_light_prototype_cosine", "extreme_light_multiprototype_cosine", "extreme_light_support_ridge"} and epochs != 0:
             raise ValueError("closed-form extreme-light head requires extreme_light_epochs=0")
+        if head_mode == "extreme_light_multiprototype_cosine":
+            prototypes_per_class = int(config.get("extreme_light_prototypes_per_class", 2))
+            kmeans_steps = int(config.get("extreme_light_kmeans_steps", 5))
+            if not 2 <= prototypes_per_class <= 4:
+                raise ValueError("extreme_light_prototypes_per_class must be in [2,4]")
+            if not 1 <= kmeans_steps <= 10:
+                raise ValueError("extreme_light_kmeans_steps must be in [1,10]")
         if head_mode == "extreme_light_support_ridge":
             ridge_lambda = float(config.get("extreme_light_ridge_lambda", 0.1))
             if not math.isfinite(ridge_lambda) or ridge_lambda <= 0.0:
@@ -1111,7 +1120,7 @@ def run(config: dict[str, Any], run_dir: Path) -> dict[str, Any]:
     source_anchor_strength = float(config.get("extreme_light_source_bank_anchor_strength", 0.0))
     source_anchor_blend = float(config.get("extreme_light_source_bank_anchor_blend", 0.25))
     aux_required = aux_weight > 0.0 or (
-        head_mode in {"extreme_light_diag_cosine", "extreme_light_prototype_cosine", "extreme_light_support_ridge", "extreme_light_low_rank_cosine"}
+        head_mode in EXTREME_HEAD_MODES
         and extreme_aux_weight > 0.0
     )
     runtime_device = str(config.get("_runtime_device", "cpu"))
@@ -1184,7 +1193,7 @@ def run(config: dict[str, Any], run_dir: Path) -> dict[str, Any]:
             elapsed = time.perf_counter() - started
         else:
             extreme_trace: list[dict[str, Any]] = []
-            if head_mode in {"extreme_light_diag_cosine", "extreme_light_prototype_cosine", "extreme_light_support_ridge", "extreme_light_low_rank_cosine"}:
+            if head_mode in EXTREME_HEAD_MODES:
                 old_joint_support = concatenate_registered_features(
                     arrays["features"][old_support],
                     arrays[aux_key][old_support] if aux_required else None,
@@ -1281,6 +1290,19 @@ def run(config: dict[str, Any], run_dir: Path) -> dict[str, Any]:
                         joint_support,
                         fit_support_y,
                         joint_query,
+                        max_persistent_state_bytes=int(
+                            config.get("extreme_light_max_persistent_state_bytes", 128 * 1024)
+                        ),
+                    )
+                elif head_mode == "extreme_light_multiprototype_cosine":
+                    predicted, info, extreme_trace = predict_support_multiprototype_cosine(
+                        joint_support,
+                        fit_support_y,
+                        joint_query,
+                        prototypes_per_class=int(
+                            config.get("extreme_light_prototypes_per_class", 2)
+                        ),
+                        kmeans_steps=int(config.get("extreme_light_kmeans_steps", 5)),
                         max_persistent_state_bytes=int(
                             config.get("extreme_light_max_persistent_state_bytes", 128 * 1024)
                         ),
@@ -1448,7 +1470,7 @@ def run(config: dict[str, Any], run_dir: Path) -> dict[str, Any]:
         metrics.update({"adaptation_latency_sec": elapsed,
                         "latency_per_query_ms": elapsed * 1000.0 / len(query_idx), **info})
         metrics_by_scenario[scenario] = metrics
-        if method == "cvs_qknnv42" and head_mode in {"extreme_light_diag_cosine", "extreme_light_prototype_cosine", "extreme_light_support_ridge", "extreme_light_low_rank_cosine"}:
+        if method == "cvs_qknnv42" and head_mode in EXTREME_HEAD_MODES:
             trace.extend(
                 {"method": method, "scenario": scenario, **row}
                 for row in extreme_trace
