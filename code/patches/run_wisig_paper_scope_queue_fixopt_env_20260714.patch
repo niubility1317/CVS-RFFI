@@ -1,0 +1,34 @@
+diff --git "a/code\\snapshots\\paper_repro_repaired_riei_drift_seed1337_20260714_103000\\run_wisig_paper_scope_queue.sh" b/run_wisig_paper_scope_queue.sh
+index 1da2ed0..c32d5e3 100644
+--- "a/code\\snapshots\\paper_repro_repaired_riei_drift_seed1337_20260714_103000\\run_wisig_paper_scope_queue.sh"
++++ b/run_wisig_paper_scope_queue.sh
+@@ -41,6 +41,10 @@ BASELINE_EPOCHS="${BASELINE_EPOCHS:-200}"
+ CEN_EPOCHS="${CEN_EPOCHS:-170}"
+ RIEI_PAPER_EVAL_LAST_N="${RIEI_PAPER_EVAL_LAST_N:-}"
+ DRIFT_PAPER_EVAL_LAST_N="${DRIFT_PAPER_EVAL_LAST_N:-5}"
++RIEI_LAMBDA_FEATURE_NORM="${RIEI_LAMBDA_FEATURE_NORM:-0}"
++DRIFT_MSE_CAP="${DRIFT_MSE_CAP:-0}"
++DRIFT_LAMBDA_MSE="${DRIFT_LAMBDA_MSE:-0.02}"
++DRIFT_LAMBDA_FEATURE_NORM="${DRIFT_LAMBDA_FEATURE_NORM:-0}"
+ SAT_EVAL="${SAT_EVAL:-0}"
+ SAT_EVAL_ON="${SAT_EVAL_ON:-test_seen_day_unseen_rx}"
+ SAT_SCENARIOS="${SAT_SCENARIOS:-clear_leo,low_elev_leo,rain_leo}"
+@@ -314,6 +318,7 @@ run_one() {
+     if [ "${method}" = "riei_fd" ]; then
+       CMD+=(--batch_size 64 --lr_all 0.0001 --lr_fed 0.0001 --lambda_mi 1.2 --lambda_ie 1.2)
+       CMD+=(--ce_reduction sum --mi_reduction sum --ie_reduction sum)
++      CMD+=(--lambda_feature_norm "${RIEI_LAMBDA_FEATURE_NORM}")
+       CMD+=(--paper_eval_last_n "${RIEI_PAPER_EVAL_LAST_N}" --paper_eval_name "riei_last${RIEI_PAPER_EVAL_LAST_N}")
+     else
+       CMD+=(
+@@ -323,7 +328,9 @@ run_one() {
+         --grl_coeff 1.0
+         --lambda_center 0.01
+         --center_mode batch
+-        --lambda_mse 0.02
++        --lambda_mse "${DRIFT_LAMBDA_MSE}"
++        --mse_cap "${DRIFT_MSE_CAP}"
++        --lambda_feature_norm "${DRIFT_LAMBDA_FEATURE_NORM}"
+         --no-normalize_features_for_mse
+         --domain_discriminator_layers 2
+         --grl_schedule constant
