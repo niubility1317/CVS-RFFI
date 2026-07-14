@@ -244,3 +244,13 @@ PID=`837133`完成。20epoch loss由`3.02877`降至`1.26051`，support accuracy�
 第二机制cell仍固定`8-8/new20/seed713101/K10`，20epoch、学习率`5e-4`、anchor0.2，并加入仅在三份匹配support view之间计算的cosine一致性权重0.5；query不参与一致性且持续1-view。输出根预注册为`runs/qknn_extreme_light_support_lora_late_20260715_v2`，日志为`logs/qknn_extreme_light_support_lora_late_20260715_v2/rx8-8_new20_seed713101_k10.log`。先配同一0epoch prototype头与v1及原始表示比较；只有old/floor继续明显改善才进入第二开发seed和5/10类。新增scope本地7项focused测试、25项其余极轻型测试和`py_compile`均PASS。
 
 Git提交=`00e66cb`；2026-07-15 02:01直接N607 preflight PASS，GPU4为空闲10MiB。远端同步后脚本SHA256=`e0578a634860478a1db0a663cd12e9e7817f0b6cad3f66ad4daa938fdd7ec9e1`、测试SHA256=`b51f0277e5be13032b060c8751d5dd9f7757b474a9e04f6718e8f9780fc4c2c0`，`py_compile`和checkpoint直接11,012参数审计PASS。精确命令为`CUDA_VISIBLE_DEVICES=4 PYTHONPATH=/home/szu2070436088/2510044040/CV-SincNet/code:/home/szu2070436088/2510044040/CV-SincNet /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u paper_reproduction/scripts/train_export_cvs_support_lora_adapter.py --config paper_reproduction/configs/cvs_qknnv42_extreme_light_20new_stage2c_k10_rawiq_20260715_n607.json --ckpt runs/phase1_adv3_mechanism32_queue_20260701/ADV3B02_CORE90_SOFT_E200/best_joint_safe_ssdg.pth --out_root runs/qknn_extreme_light_support_lora_late_20260715_v2 --receiver 8-8 --new_count 20 --seed 713101 --k_shot 10 --epochs 20 --scope late_feat_joint --rank 4 --alpha 4 --learning_rate 5e-4 --weight_decay 1e-4 --temperature 18 --feature_anchor_weight 0.2 --view_consistency_weight 0.5 --batch_size 126 --device cuda:0`。
+
+### late+feat-joint LoRA结果
+
+PID=`843203`完成，20epoch最终loss=`1.43997`、support accuracy=`58.46%`、feature anchor漂移=`0.40782`、三view一致性loss=`0.03095`。资源为11,012参数、22,024B FP16 tensor状态、27,778B状态文件和11,012MAC/query。0epoch prototype头得到`old=72.22%`、floor`=48.33%`、`new20=83.25%`、`H=77.32%`、最低新类`=46.67%`；相对feature-head-only v1的`73.06/51.67/83.33/77.80%`没有联合增益，因此更宽late scope按gate终止，不扩seed或类别规模。
+
+## 10epoch LoRA+10epoch对角头组合预注册
+
+feature-head-only LoRA已经把同头基线floor从18.33%提升到51.67%，说明adapter方向有效，但0epoch单prototype头仍是明显容量瓶颈。下一候选把20epoch总预算等分：先用同一rank8 feat-joint LoRA适配10epoch，再用现有全类对称`el_diag_aug3_e10`对角度量+余弦头训练10epoch。两阶段都只读相同合法support，query不进入任何训练或选模；总适配严格等于20epoch。20新类预计总可训练参数约19.9k、LoRA FP16加head FP32状态约54.0KB、持续query新增约19.9kMAC，仍低于50k/128KB并远低于单qKNN。
+
+首个组合cell固定`8-8/new20/seed713101/K10`。LoRA参数为scope=`feat_joint`、rank8、alpha8、学习率`1e-3`、anchor0.05、10epoch；输出根=`runs/qknn_extreme_light_support_lora10_20260715_v4`、日志根=`logs/qknn_extreme_light_support_lora10_20260715_v4`。随后`el_diag_aug3_e10`输出根=`runs/qknn_extreme_light_support_lora10_head10_20260715_v4`。只有该组合相对20epoch LoRA+0epoch prototype在old/floor上继续明显提高，才进入第二开发seed和5/10类；确认seed继续封存。
