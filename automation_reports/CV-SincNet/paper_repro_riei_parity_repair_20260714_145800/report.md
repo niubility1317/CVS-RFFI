@@ -39,3 +39,12 @@
 - run根：`paper_reproduction/runs/paper_repro_riei_parity_repair_20260714_145800`；log根：`paper_reproduction/logs/paper_repro_riei_parity_repair_20260714_145800`。预期每候选产生200epoch训练日志、`metrics_epoch.csv`、`riei_last5`汇总和checkpoint。
 - 17:42健康检查：8/8 launcher与8/8 trainer均运行；P01–P08分别进入epoch `14,15,14,14,14,14,13,13/200`；8块GPU各1个本任务compute；硬错误0，未见Traceback、RuntimeError、OOM、Killed、NaN或Inf；本地SSH连接已完全退出。
 - 当前判定：`RUNNING_HEALTHY`。中间target曲线仅作诊断；正式选型仍固定为epoch196–200的last5，禁止按target peak选epoch。完成后将对8份完整200epoch日志做同row联合比较，再固定胜出配置执行Table III完整12行确认。
+
+## 2026-07-14 17:51心跳监控
+
+- 直连N607只读预检通过：身份、项目根目录、服务器时间与8块GPU可见。
+- 8/8 launcher与8/8 trainer仍在运行；训练PID与启动记录一致。P01–P08最新完整日志进度为epoch `39,39,40,40,39,39,39,37/200`，对应日志行数`171,247,150,158,155,159,175,141`。
+- GPU0–7各有且仅有1个本任务compute，显存约`470–500MiB`，GPU利用率`7%–24%`，每GPU训练数未超过2。
+- 完整扫描当前已写入日志，未见Traceback、RuntimeError、OOM、Killed、NaN、Inf或未识别参数；硬错误计数0。`metrics_epoch.csv=0/8`、`PAPER-EVAL-SUMMARY=0/8`，符合产物在训练完成时落盘的当前阶段。
+- 证据边界：本次只能判定为`RUNNING_HEALTHY_THROUGH_LATEST_PARSED_EPOCH`，不是完整训练分析或结果达标。全部8个候选完成后再读取8×200epoch完整日志和正式last5产物。
+- 本次SSH命令完成后，本地`ssh.exe=0`、N607 TCP22已建立连接`=0`；未干预、重启、覆盖或删除任何远程状态。
