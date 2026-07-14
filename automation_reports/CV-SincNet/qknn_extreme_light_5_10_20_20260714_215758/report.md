@@ -33,3 +33,7 @@ v2清单改为按实际slice逐receiver至少40个样本预筛；111个TX合格�
 ## 2026-07-14 22:40 CUDA遥测启动修复
 
 smoke首次执行完成12个基线row；24个极轻型row在训练前统一因`reset_peak_memory_stats`早于CUDA context初始化而失败，无性能指标生成。已在本地加入目标device零长度tensor初始化，随后再重置峰值显存计数器；`ssr-gpu`下`py_compile`和15项相关pytest PASS。resume-safe重跑会保留已完成基线row，仅重跑24个极轻型row。
+
+## 2026-07-14 22:43 smoke完成
+
+36/36 rows和36个完成日志均通过审计，0协议违规、0非有限loss。极轻型对角头相对单qKNN显著提升old/new/H，同时将20类状态压至27,752B、head评分压至6,912MAC/query；但成功只集中于`20-1`，`8-8`的旧类floor及5/10类new仍未过门槛，不能进入正式确认。下一轮先在`8-8`测试5epoch强prototype anchor和FFT权重`0/0.5/1.0/1.5/2.0`，以同时改善跨seed稳定性并进一步压缩适配成本。

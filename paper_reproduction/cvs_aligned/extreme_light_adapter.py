@@ -37,6 +37,8 @@ def concatenate_registered_features(
         if weight > 0.0:
             raise ValueError("positive auxiliary_weight requires auxiliary features")
         return primary_norm
+    if weight == 0.0:
+        return primary_norm
     if len(primary_norm) != len(auxiliary):
         raise ValueError("primary and auxiliary rows must align")
     auxiliary_norm = _numpy_norm(auxiliary)

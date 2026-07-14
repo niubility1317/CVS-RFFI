@@ -2,6 +2,7 @@ from pathlib import Path
 
 from paper_reproduction.scripts.run_cvs_extreme_light_matrix import (
     ARMS,
+    CORE_ARMS,
     build_rows,
     row_config,
 )
@@ -44,7 +45,7 @@ def _base_config():
 
 def test_smoke_shape_and_nested_new_class_configuration():
     rows = build_rows(
-        arms=tuple(ARMS),
+        arms=CORE_ARMS,
         new_class_counts=(5, 10, 20),
         receivers=("20-1", "8-8"),
         seeds=(713101, 713102),
@@ -75,3 +76,19 @@ def test_baseline_remains_non_oracle_and_non_transductive():
     assert config["qknnv42_decision_mode"] == "per_sample_argmax"
     assert config["qknnv42_labelprop_mode"] == "support_prototype"
     assert config["qknnv42_head_mode"] == "qknn"
+
+
+def test_five_epoch_zid_only_arm_compresses_adaptation():
+    row = build_rows(
+        arms=("el_zid_anchor5_e5",),
+        new_class_counts=(20,),
+        receivers=("8-8",),
+        seeds=(713101,),
+        k_grid=(20,),
+        output_root=Path("runs"),
+        log_root=Path("logs"),
+    )[0]
+    config = row_config(_base_config(), row, device="cpu")
+    assert config["extreme_light_aux_weight"] == 0.0
+    assert config["extreme_light_epochs"] == 5
+    assert config["extreme_light_prototype_anchor_weight"] == 5.0

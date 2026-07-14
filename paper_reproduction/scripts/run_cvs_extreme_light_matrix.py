@@ -45,7 +45,75 @@ ARMS: dict[str, dict[str, Any]] = {
         "qknnv42_decision_mode": "per_sample_argmax",
         "extreme_light_aux_weight": 2.0,
     },
+    "el_zid_anchor5_e5": {
+        "qknnv42_head_mode": "extreme_light_diag_cosine",
+        "qknnv42_aux_score_weight": 0.0,
+        "qknnv42_labelprop_mode": "disabled",
+        "qknnv42_support_representation": "prototype_only",
+        "qknnv42_feature_adapter_mode": "none",
+        "qknnv42_decision_mode": "per_sample_argmax",
+        "extreme_light_aux_weight": 0.0,
+        "extreme_light_prototype_anchor_weight": 5.0,
+        "extreme_light_epochs": 5,
+    },
+    "el_aux0p5_anchor5_e5": {
+        "qknnv42_head_mode": "extreme_light_diag_cosine",
+        "qknnv42_aux_score_weight": 0.0,
+        "qknnv42_labelprop_mode": "disabled",
+        "qknnv42_support_representation": "prototype_only",
+        "qknnv42_feature_adapter_mode": "none",
+        "qknnv42_decision_mode": "per_sample_argmax",
+        "extreme_light_aux_weight": 0.5,
+        "extreme_light_prototype_anchor_weight": 5.0,
+        "extreme_light_epochs": 5,
+    },
+    "el_aux1p0_anchor5_e5": {
+        "qknnv42_head_mode": "extreme_light_diag_cosine",
+        "qknnv42_aux_score_weight": 0.0,
+        "qknnv42_labelprop_mode": "disabled",
+        "qknnv42_support_representation": "prototype_only",
+        "qknnv42_feature_adapter_mode": "none",
+        "qknnv42_decision_mode": "per_sample_argmax",
+        "extreme_light_aux_weight": 1.0,
+        "extreme_light_prototype_anchor_weight": 5.0,
+        "extreme_light_epochs": 5,
+    },
+    "el_aux1p5_anchor5_e5": {
+        "qknnv42_head_mode": "extreme_light_diag_cosine",
+        "qknnv42_aux_score_weight": 0.0,
+        "qknnv42_labelprop_mode": "disabled",
+        "qknnv42_support_representation": "prototype_only",
+        "qknnv42_feature_adapter_mode": "none",
+        "qknnv42_decision_mode": "per_sample_argmax",
+        "extreme_light_aux_weight": 1.5,
+        "extreme_light_prototype_anchor_weight": 5.0,
+        "extreme_light_epochs": 5,
+    },
+    "el_aux2p0_anchor5_e5": {
+        "qknnv42_head_mode": "extreme_light_diag_cosine",
+        "qknnv42_aux_score_weight": 0.0,
+        "qknnv42_labelprop_mode": "disabled",
+        "qknnv42_support_representation": "prototype_only",
+        "qknnv42_feature_adapter_mode": "none",
+        "qknnv42_decision_mode": "per_sample_argmax",
+        "extreme_light_aux_weight": 2.0,
+        "extreme_light_prototype_anchor_weight": 5.0,
+        "extreme_light_epochs": 5,
+    },
+    "el_aux1p5_anchor20_e5": {
+        "qknnv42_head_mode": "extreme_light_diag_cosine",
+        "qknnv42_aux_score_weight": 0.0,
+        "qknnv42_labelprop_mode": "disabled",
+        "qknnv42_support_representation": "prototype_only",
+        "qknnv42_feature_adapter_mode": "none",
+        "qknnv42_decision_mode": "per_sample_argmax",
+        "extreme_light_aux_weight": 1.5,
+        "extreme_light_prototype_anchor_weight": 20.0,
+        "extreme_light_epochs": 5,
+    },
 }
+
+CORE_ARMS = ("baseline_single_qknn", "el_diag_aux1p5", "el_diag_aux2p0")
 
 
 @dataclass(frozen=True)
@@ -199,13 +267,13 @@ def main() -> int:
         raise ValueError("shard index must be in [0,shard_count)")
     defaults = {
         "smoke": {
-            "arms": tuple(ARMS),
+            "arms": CORE_ARMS,
             "receivers": ("20-1", "8-8"),
             "seeds": DEV_SEEDS[:2],
             "k_grid": (20,),
         },
         "dev": {
-            "arms": tuple(ARMS),
+            "arms": CORE_ARMS,
             "receivers": DEFAULT_RECEIVERS,
             "seeds": DEV_SEEDS,
             "k_grid": (10, 15, 20),

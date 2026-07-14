@@ -59,6 +59,9 @@ def test_feature_concatenation_is_per_sample_and_validates_alignment():
     combined = concatenate_registered_features(primary, auxiliary, auxiliary_weight=2.0)
     assert combined.shape == (3, 6)
     assert np.allclose(np.linalg.norm(combined, axis=1), 1.0)
+    primary_only = concatenate_registered_features(primary, auxiliary, auxiliary_weight=0.0)
+    assert primary_only.shape == (3, 3)
+    assert np.allclose(primary_only, primary)
     with pytest.raises(ValueError, match="align"):
         concatenate_registered_features(primary, auxiliary[:2], auxiliary_weight=1.0)
 
