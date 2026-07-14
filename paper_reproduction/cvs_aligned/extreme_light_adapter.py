@@ -352,3 +352,136 @@ def predict_support_prototype_cosine(
     ]
     predicted = np.asarray(classes, dtype=object)[predicted_indices]
     return predicted, info, trace
+
+
+def fit_predict_support_ridge(
+    support_x: np.ndarray,
+    support_y: np.ndarray,
+    query_x: np.ndarray,
+    *,
+    ridge_lambda: float,
+    max_persistent_state_bytes: int = 128 * 1024,
+) -> tuple[np.ndarray, dict[str, Any], list[dict[str, Any]]]:
+    """Closed-form support-only multiclass ridge head with an explicit bias.
+
+    Hyperparameters are preregistered from development runs. The fit consumes
+    only labeled support rows and stores the resulting linear head; query rows
+    are scored independently after enrollment.
+    """
+    support = np.asarray(support_x, dtype=np.float32)
+    query = np.asarray(query_x, dtype=np.float32)
+    labels = np.asarray(support_y).astype(str)
+    lam = float(ridge_lambda)
+    if support.ndim != 2 or query.ndim != 2 or support.shape[1] != query.shape[1]:
+        raise ValueError("support/query features must be aligned rank-2 matrices")
+    if len(support) != len(labels) or len(support) == 0:
+        raise ValueError("support features and labels must be non-empty and aligned")
+    if not math.isfinite(lam) or lam <= 0.0:
+        raise ValueError("ridge_lambda must be finite and positive")
+    classes = sorted(set(labels.tolist()))
+    if len(classes) < 2:
+        raise ValueError("ridge classifier requires at least two registered classes")
+    class_to_index = {label: index for index, label in enumerate(classes)}
+    targets = np.asarray([class_to_index[label] for label in labels], dtype=np.int64)
+    class_count = len(classes)
+    feature_dim = int(support.shape[1])
+    design_dim = feature_dim + 1
+    persistent_state_bytes = int(design_dim * class_count * np.dtype(np.float32).itemsize)
+    if persistent_state_bytes > int(max_persistent_state_bytes):
+        raise ValueError(
+            "extreme-light persistent-state cap exceeded: "
+            f"{persistent_state_bytes}>{max_persistent_state_bytes}"
+        )
+
+    started = time.perf_counter()
+    design = np.concatenate(
+        [support.astype(np.float64), np.ones((len(support), 1), dtype=np.float64)], axis=1
+    )
+    one_hot = np.eye(class_count, dtype=np.float64)[targets]
+    gram = design.T @ design
+    penalty = np.eye(design_dim, dtype=np.float64) * lam
+    penalty[-1, -1] = 0.0
+    weights = np.linalg.solve(gram + penalty, design.T @ one_hot).astype(np.float32)
+    adaptation_elapsed = time.perf_counter() - started
+
+    scoring_started = time.perf_counter()
+    query_design = np.concatenate(
+        [query, np.ones((len(query), 1), dtype=np.float32)], axis=1
+    )
+    query_scores = query_design @ weights
+    predicted_indices = np.argmax(query_scores, axis=1)
+    scoring_elapsed = time.perf_counter() - scoring_started
+    support_scores = design.astype(np.float32) @ weights
+    support_pred = np.argmax(support_scores, axis=1)
+    mse_loss = float(np.mean((support_scores - one_hot.astype(np.float32)) ** 2))
+    estimated_adaptation_macs = int(
+        len(support) * design_dim * design_dim
+        + (design_dim**3) / 3
+        + len(support) * design_dim * class_count
+    )
+    macs_per_query = int(design_dim * class_count)
+    info = {
+        "adaptation_objective": "closed_form_support_multiclass_ridge",
+        "head_mode": "extreme_light_support_ridge",
+        "support_only": True,
+        "query_labels_used_for_adaptation": False,
+        "query_features_used_for_adaptation": False,
+        "query_query_graph_used": False,
+        "query_batch_state_required": False,
+        "decision_batch_state_required": False,
+        "role_oracle_used": False,
+        "equal_class_quota_used": False,
+        "feature_adapter_updates_adv3b02": False,
+        "feature_adapter_gradient_updates": 0,
+        "feature_adapter_mode": "closed_form_support_multiclass_ridge",
+        "trainable_parameters": 0,
+        "persistent_state_bytes": persistent_state_bytes,
+        "persistent_state_bytes_with_post_adapter": persistent_state_bytes,
+        "stored_raw_support_count": 0,
+        "stored_quantized_support_code_count": 0,
+        "stored_class_prototype_count": 0,
+        "feature_dim": feature_dim,
+        "class_count": class_count,
+        "adaptation_epochs": 0,
+        "adaptation_batch_size": 0,
+        "ridge_lambda": lam,
+        "estimated_adaptation_macs": estimated_adaptation_macs,
+        "estimated_head_macs": int(len(query) * macs_per_query),
+        "estimated_head_macs_with_post_adapter": int(len(query) * macs_per_query),
+        "estimated_macs_per_query": macs_per_query,
+        "dense_graph_bytes_lower_bound": 0,
+        "dense_graph_peak_bytes_lower_bound": 0,
+        "dense_graph_cumulative_bytes": 0,
+        "decision_workspace_bytes_lower_bound": int(
+            gram.nbytes + penalty.nbytes + design.nbytes + one_hot.nbytes
+        ),
+        "adaptation_latency_sec": float(adaptation_elapsed),
+        "score_matrix_latency_sec": float(scoring_elapsed),
+        "onboard_scoring_latency_sec": float(scoring_elapsed),
+        "onboard_scoring_latency_per_query_ms": float(
+            scoring_elapsed * 1000.0 / max(1, len(query))
+        ),
+        "peak_device_memory_bytes": 0,
+        "loss": mse_loss,
+        "loss_initial": mse_loss,
+        "loss_final": mse_loss,
+        "support_accuracy_final": float(np.mean(support_pred == targets)),
+        "runtime_device": "cpu_closed_form",
+    }
+    trace = [
+        {
+            "phase": "closed_form_support_ridge_fit",
+            "epoch": 0,
+            "step": 1,
+            "total_steps": 1,
+            "loss": mse_loss,
+            "total_loss": mse_loss,
+            "ce_loss": mse_loss,
+            "source_anchor_loss": 0.0,
+            "learning_rate": 0.0,
+            "gradient_norm": 0.0,
+            "support_accuracy": info["support_accuracy_final"],
+        }
+    ]
+    predicted = np.asarray(classes, dtype=object)[predicted_indices]
+    return predicted, info, trace

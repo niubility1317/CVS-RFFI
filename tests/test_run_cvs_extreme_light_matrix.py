@@ -125,3 +125,19 @@ def test_closed_form_prototype_arm_has_zero_epochs():
     assert config["qknnv42_head_mode"] == "extreme_light_prototype_cosine"
     assert config["extreme_light_epochs"] == 0
     assert config["extreme_light_aux_weight"] == 2.0
+
+
+def test_closed_form_ridge_arm_has_explicit_lambda_and_zero_epochs():
+    row = build_rows(
+        arms=("el_ridge_aux2p0_lam1em1",),
+        new_class_counts=(20,),
+        receivers=("8-8",),
+        seeds=(713101,),
+        k_grid=(30,),
+        output_root=Path("runs"),
+        log_root=Path("logs"),
+    )[0]
+    config = row_config(_base_config(), row, device="cpu")
+    assert config["qknnv42_head_mode"] == "extreme_light_support_ridge"
+    assert config["extreme_light_epochs"] == 0
+    assert config["extreme_light_ridge_lambda"] == 0.1

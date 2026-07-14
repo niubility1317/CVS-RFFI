@@ -6,6 +6,7 @@ import pytest
 from paper_reproduction.cvs_aligned.extreme_light_adapter import (
     concatenate_registered_features,
     fit_predict_extreme_light_diag_cosine,
+    fit_predict_support_ridge,
     predict_support_prototype_cosine,
 )
 
@@ -67,6 +68,26 @@ def test_closed_form_prototype_head_is_zero_train_and_query_independent():
     assert info["trainable_parameters"] == 0
     assert info["feature_adapter_gradient_updates"] == 0
     assert info["query_features_used_for_adaptation"] is False
+    assert len(trace) == 1
+
+
+def test_closed_form_ridge_head_is_zero_train_and_query_independent():
+    support, support_y, query, query_y = _separable()
+    predicted, info, trace = fit_predict_support_ridge(
+        support, support_y, query, ridge_lambda=0.1
+    )
+    extended, _, _ = fit_predict_support_ridge(
+        support,
+        support_y,
+        np.vstack([query, np.full((7, query.shape[1]), 9.0, dtype=np.float32)]),
+        ridge_lambda=0.1,
+    )
+    assert np.mean(predicted.astype(str) == query_y.astype(str)) == 1.0
+    assert np.array_equal(predicted, extended[: len(predicted)])
+    assert info["trainable_parameters"] == 0
+    assert info["feature_adapter_gradient_updates"] == 0
+    assert info["query_features_used_for_adaptation"] is False
+    assert info["persistent_state_bytes"] <= 128 * 1024
     assert len(trace) == 1
 
 

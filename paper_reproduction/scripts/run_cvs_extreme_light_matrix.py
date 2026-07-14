@@ -207,6 +207,27 @@ ARMS: dict[str, dict[str, Any]] = {
         "extreme_light_aux_weight": 2.0,
         "extreme_light_epochs": 0,
     },
+    **{
+        f"el_ridge_aux2p0_lam{label}": {
+            "qknnv42_head_mode": "extreme_light_support_ridge",
+            "qknnv42_aux_score_weight": 0.0,
+            "qknnv42_labelprop_mode": "disabled",
+            "qknnv42_support_representation": "prototype_only",
+            "qknnv42_feature_adapter_mode": "none",
+            "qknnv42_decision_mode": "per_sample_argmax",
+            "extreme_light_aux_weight": 2.0,
+            "extreme_light_epochs": 0,
+            "extreme_light_ridge_lambda": value,
+        }
+        for label, value in (
+            ("1em4", 1.0e-4),
+            ("1em3", 1.0e-3),
+            ("1em2", 1.0e-2),
+            ("1em1", 1.0e-1),
+            ("1", 1.0),
+            ("10", 10.0),
+        )
+    },
 }
 
 CORE_ARMS = ("baseline_single_qknn", "el_diag_aux1p5", "el_diag_aux2p0")
