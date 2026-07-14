@@ -87,3 +87,14 @@
 启动后每卡只有一个本run CUDA compute client，显存占用约1.94-3.20 GiB、空闲约21.0-22.3 GiB，未发现Traceback、RuntimeError、OOM或参数解析错误。
 
 18:59完成4-5分钟启动健康复查：8个候选均仍为RUNNING，均已打印配置/增强/epoch marker；轻机制候选进入E004，重机制候选进入E001-E002。GPU利用率17%-25%，显存占用约2.08-3.64 GiB，未出现Traceback、RuntimeError、OOM、参数错误或NaN。当前速度差异来自A/B/C额外reference、local component和直接风险计算，预计7-9小时仍合理。待实验完成后补充最终逐候选结果。
+
+## 人工停止记录
+
+- 停止时间：2026-07-14 20:47 CST。
+- 原因：用户明确要求释放GPU运行其他任务。
+- 操作边界：只向本run仍存活的候选process group发送`SIGTERM`，随后终止launcher PID `549363`；未使用`pkill`或模糊进程匹配，未删除日志、checkpoint、metrics或run目录。
+- 已停止的候选主PID/PGID：`549385`、`549925`、`550859`、`551328`、`551794`、`552673`。
+- `549460`与`550392`在停止前已经失败退出，scheduler记录为`PROCESS_FAILED_NO_TERMINAL`，均停在E009。
+- 停止时最后完整epoch：A0B0C0=E103、A0B0C1=E009、A0B1C0=E093、A0B1C1=E009、A1B0C0=E028、A1B0C1=E027、A1B1C0=E026、A1B1C1=E025。
+- 停止后验证：`phase1_dgleo_p0factorial8_20260714`相关launcher、trainer及DataLoader子进程均为0；GPU4-7已无compute client，GPU0-3剩余各一个约470 MiB的其他任务进程，不属于本run，未做干预。
+- 结论：本批实验为人工中止/部分失败状态，不得作为完整120 epoch候选比较或promotion证据；现有中间metrics仅可用于诊断。
