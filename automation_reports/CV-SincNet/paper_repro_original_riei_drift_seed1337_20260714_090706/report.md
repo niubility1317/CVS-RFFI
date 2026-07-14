@@ -55,4 +55,37 @@ N607只读preflight于2026-07-14 09:03+08:00通过；8张RTX3090均空闲，训�
 
 ## 启动状态
 
-尚未启动；报告先于远端状态变更创建。
+### 正式提交
+
+- 启动时间：2026-07-14 09:12:09+08:00。
+- 远端工作目录：`/home/szu2070436088/2510044040/CV-SincNet`。
+- Python环境：`/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python`，PyTorch`2.1.0+cu121`，CUDA可用。
+- 精确提交命令：`ssh -F tools\n607_ssh_config -o BatchMode=yes N607 'cd /home/szu2070436088/2510044040/CV-SincNet && bash code/scripts/launch_paper_repro_original_matrix_20260714.sh --launch --gpu-ids 0,1,2,3,4,5,6,7 --max-train-per-gpu 2'`。
+- scheduler PID与GPU：
+
+|job|GPU|scheduler PID|
+|---|---:|---:|
+|`drift_table1_seed1337`|0|221630|
+|`riei_rx1_1_rx7_7_to_rx1_19_seed1337`|1|221633|
+|`riei_rx1_1_rx8_8_to_rx1_19_seed1337`|2|221639|
+|`riei_rx1_1_rx14_7_to_rx1_19_seed1337`|3|221644|
+|`riei_rx7_7_rx8_8_to_rx1_19_seed1337`|4|221652|
+|`riei_rx7_7_rx14_7_to_rx1_19_seed1337`|5|221665|
+|`riei_rx8_8_rx14_7_to_rx1_19_seed1337`|6|221674|
+|`riei_rx1_1_rx1_19_to_rx14_7_seed1337`|7|221692|
+|`riei_rx1_1_rx7_7_to_rx14_7_seed1337`|0|221707|
+|`riei_rx1_1_rx8_8_to_rx14_7_seed1337`|1|221731|
+|`riei_rx1_19_rx7_7_to_rx14_7_seed1337`|2|221755|
+|`riei_rx1_19_rx8_8_to_rx14_7_seed1337`|3|221787|
+|`riei_rx7_7_rx8_8_to_rx14_7_seed1337`|4|221818|
+
+### 约4分钟启动健康检查
+
+- 状态：`RUNNING_STARTUP_HEALTHY`，不是完成或论文结果复现结论。
+- N607存在13个对应GPU Python训练进程；GPU0-4各2个，GPU5-7各1个，显存约`543-1074MiB/GPU`，未超过并发门禁。
+- 13个训练日志均已进入epoch：DRIFT到epoch22；12个RIEI到epoch8-10。
+- 未发现`Traceback`、`RuntimeError`、OOM、未知参数、`NaN`或`Killed`。
+- DRIFT配置证据：`protocol=drift_day1`、train receiver`1-1,14-7,7-7`、7个held-out receiver、`domain_discriminator_layers=2`、`center_mode=ema`、raw negative-MSE、`paper_eval_last_n=5`。
+- RIEI配置证据：12个不同Table III receiver组合、`ce_reduction=sum`、`mi_reduction=sum`、`ie_reduction=sum`、`paper_eval_last_n=10`。
+- 所有job均记录`SAT_EVAL=0`，`[CONFIG-UNLABELED] route=none`；日志中出现的labeled/unlabeled默认比例字段未启用无标签训练路线。
+- 本轮只确认提交落地与启动健康；是否复现论文结果必须等待200epoch及paper-window汇总后按同一receiver行比较。
