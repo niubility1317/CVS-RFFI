@@ -67,6 +67,8 @@
 - logs：logs/phase1_dgleo_corepath8_20260714/<candidate>.out。
 - 2026-07-14 09:12 CST重新按PID、完整命令行、CWD、输出目录和GPU核验：CorePath8正式实验为0个；服务器另有13个`paper_reproduction` RIEI/DRIFT训练，GPU0-4每卡2个、GPU5-7每卡1个。此前“服务器无训练”的结论是过滤范围错误，已撤销。
 - 正式launcher新增全量NVIDIA compute-client资源门控：只有GPU0-7均满足“现有compute进程数+1<=2”才整体启动8个Phase1候选；等待期间每60秒写入逐卡occupancy，不把RIEI/DRIFT进程记作Phase1。
+- 2026-07-14 09:29 CST已启动资源等待launcher，PID 235974；命令为`python -u code/scripts/launch_phase1_dgleo_corepath8_20260714.py --run-id phase1_dgleo_corepath8_20260714 --wall-hours 10 --poll-seconds 30 --launch-settle-seconds 3 --max-total-compute-per-gpu 2 --resource-wait-timeout-seconds 10800 --resource-poll-seconds 60`。首个slot快照为GPU0-4各2个、GPU5-7各1个，因此正式Phase1训练保持0个，未抢占资源。
+- launcher日志：`logs/phase1_dgleo_corepath8_20260714_launcher.out`；资源满足后才创建8个候选训练进程，训练墙钟10小时从实际候选启动后计时。
 - 预计单候选训练约5.1-5.5小时，final评估/probe/diagnostic导出约0.5-1小时；8卡并行总墙钟预计6-7小时，硬上限10小时。
 
 ## 运行冒烟验证
