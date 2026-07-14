@@ -45,6 +45,18 @@
 |日志|`logs/qknnv42_source_mlp_20260714.out`|
 |预期输出|`adapter_summary.json`、MLP权重NPZ、5个映射后的target feature cache|
 
+## 同步记录
+
+2026-07-14 21:18 CST完成直接SCP；同步后远端SHA256与本地一致，GPU6仍为0%/10MiB，且无同名MLP进程。
+
+|本地来源|N607目的地|验证|
+|---|---|---|
+|`paper_reproduction/scripts/fit_apply_qknnv42_source_teacher_adapter.py`|`paper_reproduction/scripts/`|SHA256=`E4336BAE...CCD574`|
+|`paper_reproduction/scripts/fit_apply_qknnv42_source_teacher_mlp.py`|`paper_reproduction/scripts/`|SHA256=`D0987630...6A224`|
+|`local_artifacts/qknnv42_frozen_source_pair_local_20260714_2008/FULL_RX_20-1`|`runs/qknnv42_source_mlp_20260714/input/frozen_source/`|4个文件|
+|`local_artifacts/qknnv42_frozen_features_local_20260714_1958/FULL_RX_*`|`runs/qknnv42_source_mlp_20260714/input/frozen_target/`|20个文件|
+|历史adapter60教师NPZ|`runs/qknnv42_source_mlp_20260714/input/teacher/FULL_RX_20-1/ADV3B02_FULL_ADAPTER5_FFT96/`|SHA256=`DEAC6F96...C727`|
+
 精确服务器命令：
 
 ```bash
@@ -60,4 +72,4 @@ cd /home/szu2070436088/2510044040/CV-SincNet && CUDA_VISIBLE_DEVICES=6 nohup /ho
 
 ## 当前状态
 
-`PREPARED_LOCAL_VERIFIED_PENDING_SYNC_LAUNCH`。
+`SYNC_VERIFIED_READY_TO_LAUNCH`。
