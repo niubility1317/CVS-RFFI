@@ -23,6 +23,10 @@ class _Head(torch.nn.Module):
 class _Backbone(torch.nn.Module):
     def __init__(self) -> None:
         super().__init__()
+        self.t_proj = torch.nn.Linear(96, 160)
+        self.f_proj = torch.nn.Linear(32, 160)
+        self.pa_proj = torch.nn.Sequential(torch.nn.Linear(64, 160))
+        self.fuse = torch.nn.Sequential(torch.nn.Linear(321, 160))
         self.cls_head = _Head()
 
 
@@ -54,3 +58,15 @@ def test_feat_joint_lora_is_under_caps_and_freezes_original_checkpoint() -> None
     assert all(".lora_" in name for name in trainable)
     assert not model.id_backbone.cls_head.head.weight.requires_grad
     assert not model.id_backbone.cls_head.imp_merge[0].weight.requires_grad
+
+
+def test_late_feat_joint_rank4_compresses_full_late_scope() -> None:
+    model = _Model()
+    audit = inject_feat_joint_lora(
+        model, rank=4, alpha=4.0, scope="late_feat_joint"
+    )
+    assert audit["trainable_parameters"] == 11_012
+    assert audit["adapter_state_bytes_fp16"] == 22_024
+    assert audit["adapter_macs_per_query"] == 11_012
+    assert audit["scope"] == "late_feat_joint"
+    assert len(audit["target_modules"]) == 8

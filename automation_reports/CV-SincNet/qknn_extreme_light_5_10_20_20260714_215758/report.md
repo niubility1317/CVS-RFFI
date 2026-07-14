@@ -228,3 +228,17 @@ retry4实际资源为154参数、FP16 tensor状态308B、状态文件2,806B、34
 Git提交=`c0a3499`。2026-07-15 01:45直接N607 preflight PASS；GPU4显存占用10MiB且无本路线进程，项目盘在本轮前次检查剩余7.6TB。同步前新LoRA脚本和测试在远端不存在，micro exporter为本路线自有旧版本；同步后两份脚本及测试SHA256与本地一致。远端`py_compile`和checkpoint直接LoRA结构审计PASS；CVS-RFFI环境未安装pytest，因此没有把`No module named pytest`误判为实现失败。
 
 精确启动命令为`cd /home/szu2070436088/2510044040/CV-SincNet && mkdir -p logs/qknn_extreme_light_support_lora_20260715_v1 && nohup env CUDA_VISIBLE_DEVICES=4 PYTHONPATH=/home/szu2070436088/2510044040/CV-SincNet/code:/home/szu2070436088/2510044040/CV-SincNet /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u paper_reproduction/scripts/train_export_cvs_support_lora_adapter.py --config paper_reproduction/configs/cvs_qknnv42_extreme_light_20new_stage2c_k10_rawiq_20260715_n607.json --ckpt runs/phase1_adv3_mechanism32_queue_20260701/ADV3B02_CORE90_SOFT_E200/best_joint_safe_ssdg.pth --out_root runs/qknn_extreme_light_support_lora_20260715_v1 --receiver 8-8 --new_count 20 --seed 713101 --k_shot 10 --epochs 20 --rank 8 --alpha 8 --learning_rate 1e-3 --weight_decay 1e-4 --temperature 18 --feature_anchor_weight 0.05 --batch_size 128 --device cuda:0 > logs/qknn_extreme_light_support_lora_20260715_v1/rx8-8_new20_seed713101_k10.log 2>&1 < /dev/null &`。预期输出为20epoch完整loss trace、仅LoRA权重的FP16状态、training manifest、三场景适配特征、资源审计和resolved qKNN配置。
+
+### feat-joint LoRA结果与同头基线
+
+PID=`837133`完成。20epoch loss由`3.02877`降至`1.26051`，support accuracy由35.77%升至61.03%，适配耗时2.67s、峰值CUDA分配172,918,784B；12,800参数、FP16 tensor状态25,600B、实际状态文件29,060B、12,800MAC/query均通过资源gate，全部原始checkpoint参数保持冻结。三场景各导出1,506行，artifact哈希与training manifest逐一一致；完整90行训练日志包含20条epoch记录且无非有限值、Traceback、RuntimeError、CUDA OOM或Killed。
+
+使用相同0epoch`el_proto_aux2p0`头时，原始冻结表示同cell为`old=64.17%`、floor`=18.33%`、`new20=64.75%`、`H=64.42%`、最低新类`=15.00%`；feat-joint LoRA提高到`old=73.06%`、floor`=51.67%`、`new20=83.33%`、`H=77.80%`、最低新类`=38.33%`。因此LoRA确实修复了一部分support/query几何，而不是无效适配；但离正式`95/88/86%`门槛仍差21.94/36.33/2.67pp，不能扩确认矩阵。
+
+完整本地证据已拉回`E:\type10-7\local_artifacts\qknn_extreme_light_support_lora_20260715_v1*`和`qknn_extreme_light_support_lora_head_20260715_v1*`；微型IQ的v1失败轨迹、v2/v3完整20epoch日志及artifact也已拉回对应`qknn_extreme_light_micro_iq_20260715_*`目录。全日志审计区分了训练前import/scenario错误、训练后NumPy2导出错误与两个真正完成候选，没有把环境失败计为性能结果。
+
+## late+feat-joint压缩LoRA预注册
+
+为把历史`id_norm_late_feature`的有效调整位置压缩到当前上限内，新增`late_feat_joint`scope：在现有四个feature-head LoRA之外，再覆盖`id_backbone.t_proj(96→160)`、`f_proj(32→160)`、`pa_proj(64→160)`和`fuse(321→160)`，仍不改任何原始权重。rank4、alpha4总计11,012参数、FP16状态22,024B、11,012MAC/query，比首个rank8 feature-head LoRA还少13.97%；相对289,685参数全量`id_norm_late_feature`压缩96.20%。
+
+第二机制cell仍固定`8-8/new20/seed713101/K10`，20epoch、学习率`5e-4`、anchor0.2，并加入仅在三份匹配support view之间计算的cosine一致性权重0.5；query不参与一致性且持续1-view。输出根预注册为`runs/qknn_extreme_light_support_lora_late_20260715_v2`，日志为`logs/qknn_extreme_light_support_lora_late_20260715_v2/rx8-8_new20_seed713101_k10.log`。先配同一0epoch prototype头与v1及原始表示比较；只有old/floor继续明显改善才进入第二开发seed和5/10类。新增scope本地7项focused测试、25项其余极轻型测试和`py_compile`均PASS。

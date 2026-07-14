@@ -55,6 +55,14 @@ LORA_TARGETS = (
     "id_backbone.cls_head.joint_proj.0",
 )
 
+LATE_LORA_TARGETS = (
+    "id_backbone.t_proj",
+    "id_backbone.f_proj",
+    "id_backbone.pa_proj.0",
+    "id_backbone.fuse.0",
+    *LORA_TARGETS,
+)
+
 
 class LoRALinear(nn.Module):
     """Frozen Linear plus an identity-initialized low-rank residual branch."""
@@ -95,13 +103,20 @@ def _resolve_parent(root: nn.Module, dotted_name: str) -> tuple[nn.Module, str]:
 
 
 def inject_feat_joint_lora(
-    model: nn.Module, *, rank: int, alpha: float
+    model: nn.Module, *, rank: int, alpha: float, scope: str = "feat_joint"
 ) -> dict[str, Any]:
+    scope_norm = str(scope).strip().lower()
+    if scope_norm == "feat_joint":
+        target_names = LORA_TARGETS
+    elif scope_norm == "late_feat_joint":
+        target_names = LATE_LORA_TARGETS
+    else:
+        raise ValueError(f"unsupported LoRA scope: {scope}")
     for parameter in model.parameters():
         parameter.requires_grad_(False)
     modules = dict(model.named_modules())
     injected: list[dict[str, Any]] = []
-    for name in LORA_TARGETS:
+    for name in target_names:
         original = modules.get(name)
         if not isinstance(original, nn.Linear):
             raise TypeError(f"required feat_joint Linear is missing: {name}")
@@ -129,7 +144,8 @@ def inject_feat_joint_lora(
     fp16_bytes = int(parameter_count * 2)
     macs = int(sum(row["added_macs_per_query"] for row in injected))
     audit = {
-        "adapter_type": "feat_joint_lora",
+        "adapter_type": f"{scope_norm}_lora",
+        "scope": scope_norm,
         "target_modules": injected,
         "trainable_parameter_names": [name for name, _ in trainable],
         "trainable_parameters": parameter_count,
@@ -157,6 +173,8 @@ def train_support_only_lora(
     weight_decay: float,
     temperature: float,
     feature_anchor_weight: float,
+    view_consistency_weight: float,
+    support_view_count: int,
     batch_size: int,
     seed: int,
     device: torch.device,
@@ -199,13 +217,47 @@ def train_support_only_lora(
             class_count=class_count,
             batch_size=int(batch_size),
         )
-        order = rng.permutation(int(rows.shape[0]))
-        totals = {"loss": 0.0, "ce": 0.0, "anchor": 0.0, "correct": 0.0, "grad": 0.0}
+        view_count = int(support_view_count)
+        use_view_groups = float(view_consistency_weight) > 0.0
+        if use_view_groups:
+            if view_count <= 1 or int(rows.shape[0]) % view_count != 0:
+                raise ValueError("support rows cannot be grouped into matched views")
+            physical_count = int(rows.shape[0]) // view_count
+            for view_index in range(1, view_count):
+                if not torch.equal(
+                    labels[:physical_count],
+                    labels[view_index * physical_count : (view_index + 1) * physical_count],
+                ):
+                    raise ValueError("support labels are not matched across views")
+            physical_order = rng.permutation(physical_count)
+            physical_batch_size = max(1, int(batch_size) // view_count)
+            batches_index = []
+            for offset in range(0, physical_count, physical_batch_size):
+                physical = physical_order[offset : offset + physical_batch_size]
+                batches_index.append(
+                    np.concatenate(
+                        [physical + view_index * physical_count for view_index in range(view_count)]
+                    )
+                )
+        else:
+            order = rng.permutation(int(rows.shape[0]))
+            batches_index = [
+                order[offset : offset + int(batch_size)]
+                for offset in range(0, len(order), int(batch_size))
+            ]
+        totals = {
+            "loss": 0.0,
+            "ce": 0.0,
+            "anchor": 0.0,
+            "consistency": 0.0,
+            "correct": 0.0,
+            "grad": 0.0,
+        }
         seen = 0
         batches = 0
-        for start in range(0, len(order), int(batch_size)):
+        for batch_positions in batches_index:
             positions = torch.as_tensor(
-                order[start : start + int(batch_size)], device=device, dtype=torch.long
+                batch_positions, device=device, dtype=torch.long
             )
             optimizer.zero_grad(set_to_none=True)
             z, _ = _feature_forward(model, rows[positions])
@@ -213,7 +265,19 @@ def train_support_only_lora(
             scores = float(temperature) * (z @ prototypes.T)
             ce = F.cross_entropy(scores, labels[positions])
             anchor = (1.0 - torch.sum(z * base_features[positions], dim=1)).mean()
-            loss = ce + float(feature_anchor_weight) * anchor
+            if use_view_groups:
+                per_view = z.reshape(view_count, -1, z.shape[-1])
+                view_center = _norm_rows(per_view.mean(dim=0))
+                consistency = (
+                    1.0 - torch.sum(per_view * view_center.unsqueeze(0), dim=-1)
+                ).mean()
+            else:
+                consistency = z.new_zeros(())
+            loss = (
+                ce
+                + float(feature_anchor_weight) * anchor
+                + float(view_consistency_weight) * consistency
+            )
             loss.backward()
             grad_norm = torch.nn.utils.clip_grad_norm_(parameters, 5.0)
             optimizer.step()
@@ -223,6 +287,7 @@ def train_support_only_lora(
             totals["loss"] += float(loss.detach()) * count
             totals["ce"] += float(ce.detach()) * count
             totals["anchor"] += float(anchor.detach()) * count
+            totals["consistency"] += float(consistency.detach()) * count
             totals["correct"] += float((scores.argmax(dim=1) == labels[positions]).sum().detach())
             totals["grad"] += float(grad_norm.detach())
         row = {
@@ -230,6 +295,7 @@ def train_support_only_lora(
             "loss": totals["loss"] / max(1, seen),
             "prototype_ce": totals["ce"] / max(1, seen),
             "feature_anchor": totals["anchor"] / max(1, seen),
+            "view_consistency": totals["consistency"] / max(1, seen),
             "support_train_acc": totals["correct"] / max(1, seen),
             "gradient_norm": totals["grad"] / max(1, batches),
             "learning_rate": float(optimizer.param_groups[0]["lr"]),
@@ -261,10 +327,14 @@ def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
     parser.add_argument("--epochs", type=int, default=20)
     parser.add_argument("--rank", type=int, choices=(2, 4, 8, 16), default=8)
     parser.add_argument("--alpha", type=float, default=8.0)
+    parser.add_argument(
+        "--scope", choices=("feat_joint", "late_feat_joint"), default="feat_joint"
+    )
     parser.add_argument("--learning_rate", type=float, default=1.0e-3)
     parser.add_argument("--weight_decay", type=float, default=1.0e-4)
     parser.add_argument("--temperature", type=float, default=18.0)
     parser.add_argument("--feature_anchor_weight", type=float, default=0.05)
+    parser.add_argument("--view_consistency_weight", type=float, default=0.0)
     parser.add_argument("--batch_size", type=int, default=128)
     parser.add_argument("--device", default="cuda:0")
     return parser.parse_args(argv)
@@ -312,7 +382,7 @@ def main(argv: Sequence[str] | None = None) -> int:
             f"LoRA targets are preregistered for feat_joint, got {getattr(model, 'id_feature_key', None)!r}"
         )
     resources = inject_feat_joint_lora(
-        model, rank=int(args.rank), alpha=float(args.alpha)
+        model, rank=int(args.rank), alpha=float(args.alpha), scope=str(args.scope)
     )
     model.to(device).eval()
     trace, runtime = train_support_only_lora(
@@ -324,11 +394,16 @@ def main(argv: Sequence[str] | None = None) -> int:
         weight_decay=float(args.weight_decay),
         temperature=float(args.temperature),
         feature_anchor_weight=float(args.feature_anchor_weight),
+        view_consistency_weight=float(args.view_consistency_weight),
+        support_view_count=int(split_manifest["support_view_count"]),
         batch_size=int(args.batch_size),
         seed=int(args.seed),
         device=device,
     )
-    run_id = f"support_lora_rx_{args.receiver}_new_{args.new_count}_seed_{args.seed}_k_{args.k_shot}"
+    run_id = (
+        f"support_lora_{args.scope}_rx_{args.receiver}_new_{args.new_count}"
+        f"_seed_{args.seed}_k_{args.k_shot}"
+    )
     run_dir = args.out_root / run_id
     run_dir.mkdir(parents=True, exist_ok=True)
     _write_trace(run_dir / "loss_trace.json", trace)
@@ -342,7 +417,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         (run_dir / "adapter_state_fp16.pt").stat().st_size
     )
     adaptation_manifest = {
-        "method": "support_only_feat_joint_lora_v1",
+        "method": f"support_only_{args.scope}_lora_v1",
         "receiver": str(args.receiver),
         "new_count": int(args.new_count),
         "seed": int(args.seed),
@@ -358,10 +433,12 @@ def main(argv: Sequence[str] | None = None) -> int:
         "hyperparameters": {
             "rank": int(args.rank),
             "alpha": float(args.alpha),
+            "scope": str(args.scope),
             "learning_rate": float(args.learning_rate),
             "weight_decay": float(args.weight_decay),
             "temperature": float(args.temperature),
             "feature_anchor_weight": float(args.feature_anchor_weight),
+            "view_consistency_weight": float(args.view_consistency_weight),
             "batch_size": int(args.batch_size),
         },
         "resources": resources,
@@ -390,7 +467,7 @@ def main(argv: Sequence[str] | None = None) -> int:
             device=device,
             out_path=out_path,
             adaptation_manifest=adaptation_manifest,
-            payload_source="cvs_stage2c_support_only_feat_joint_lora_v1",
+            payload_source=f"cvs_stage2c_support_only_{args.scope}_lora_v1",
         )
         output_mapping[scenario] = str(out_path)
     resolved = dict(config)
@@ -404,7 +481,7 @@ def main(argv: Sequence[str] | None = None) -> int:
             "seed": int(args.seed),
             "k_shot": int(args.k_shot),
             "qknnv42_expected_tta_view_count": 1,
-            "input_adapter_method": "support_only_feat_joint_lora_v1",
+            "input_adapter_method": f"support_only_{args.scope}_lora_v1",
             "input_adapter_manifest": str(run_dir / "training_manifest.json"),
         }
     )
