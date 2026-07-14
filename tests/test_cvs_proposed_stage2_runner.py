@@ -7,7 +7,12 @@ from pathlib import Path
 import numpy as np
 import pytest
 
-from paper_reproduction.cvs_aligned.cvs_method_runner import SCENARIOS, run, validate_config
+from paper_reproduction.cvs_aligned.cvs_method_runner import (
+    SCENARIOS,
+    _fit_qknnv42_state,
+    run,
+    validate_config,
+)
 
 
 OLD = ["old0", "old1"]
@@ -218,3 +223,23 @@ def test_cvs_qknnv42_dense_labelprop_rejects_compressed_support(tmp_path: Path) 
     config["qknnv42_support_representation"] = "class_medoid"
     with pytest.raises(ValueError, match="requires all_support"):
         validate_config(config)
+
+
+def test_qknnv42_support_representation_keeps_full_enrollment_fit() -> None:
+    rng = np.random.default_rng(713115)
+    support_x = rng.normal(size=(8, 6))
+    support_y = np.asarray(["a"] * 4 + ["b"] * 4)
+    default_state, _ = _fit_qknnv42_state(support_x, support_y)
+    all_state, _ = _fit_qknnv42_state(
+        support_x, support_y, support_representation="all_support"
+    )
+    diverse_state, diverse_info = _fit_qknnv42_state(
+        support_x, support_y, support_representation="class_diverse2"
+    )
+
+    for key in ("quantized_support", "class_indices", "prototypes", "center", "scale"):
+        np.testing.assert_array_equal(default_state[key], all_state[key])
+    for key in ("prototypes", "center", "scale"):
+        np.testing.assert_allclose(diverse_state[key], all_state[key])
+    assert diverse_info["enrollment_support_count"] == 8
+    assert np.all(np.bincount(diverse_state["class_indices"], minlength=2) <= 2)

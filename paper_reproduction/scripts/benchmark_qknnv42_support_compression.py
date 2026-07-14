@@ -88,7 +88,7 @@ def _aggregate(
         1.0 - float(result["persistent_state_bytes"]) / dense_state
     )
     result["performance_gate_pass"] = all(
-        float(result[f"{metric}_delta_vs_dense_pp"]) >= -3.0 for metric in METRICS
+        float(result[f"{metric}_delta_vs_dense_pp"]) >= -3.0 - 1e-9 for metric in METRICS
     )
     return result
 
