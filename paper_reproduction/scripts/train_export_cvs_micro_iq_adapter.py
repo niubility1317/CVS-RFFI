@@ -454,6 +454,7 @@ def export_adapted_cache(
     device: torch.device,
     out_path: Path,
     adaptation_manifest: dict[str, Any],
+    payload_source: str = "cvs_stage2c_support_only_micro_iq_adapter_v1",
 ) -> dict[str, Any]:
     keep = _filter_export_rows(
         arrays, receiver=receiver, old_labels=old_labels, new_labels=new_labels
@@ -496,7 +497,7 @@ def export_adapted_cache(
     manifest = dict(source_manifest)
     manifest.update(
         {
-            "payload_source": "cvs_stage2c_support_only_micro_iq_adapter_v1",
+            "payload_source": str(payload_source),
             "target_receiver": receiver,
             "target_old_tx_ids": old_labels,
             "new_tx_ids": new_labels,

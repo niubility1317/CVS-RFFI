@@ -208,3 +208,17 @@ retry4实际资源为154参数、FP16 tensor状态308B、状态文件2,806B、34
 首个微型IQ候选的0epoch头结果为`old=65.00%`、旧类floor`=18.33%`、new20`=65.17%`、H`=65.06%`，显著低于原始冻结特征；最弱旧类为`14-10=18.33%`，最弱新类为`10-10=11.67%`。当前adapter仅产生`4.22e-5`输入MSE且support accuracy停在35%，属于适配幅度不足的欠拟合。该超参数组合终止，不扩第二seed、5/10类或K5。
 
 在不改变权限、架构和资源的前提下，预注册一个更强但仍154参数的优化候选：`alpha=0.5`、学习率`5e-3`、feature anchor`0`、residual weight`0.001`，其它receiver`8-8`、seed`713101`、new20、K10、3support-view、20epoch、query1-view不变。输出新根=`runs/qknn_extreme_light_micro_iq_20260715_v3`，避免覆盖既有v1/v2证据；日志=`logs/qknn_extreme_light_micro_iq_20260715_v1/rx8-8_new20_seed713101_k10_strong.log`。仍只配0epoch`el_proto_aux2p0`头，总适配不超过20epoch。若support accuracy仍未明显上升或同cell old/floor不优于原始冻结特征，则终止154参数输入前端，而不继续盲扫学习率。
+
+### 154参数微型IQ前端强候选结果
+
+强候选PID=`827378`完成20epoch，最终loss=`2.84467`、support prototype accuracy=`38.33%`、输入残差MSE=`0.001306`。随后使用0epoch`el_proto_aux2p0`头在同一`8-8/new20/seed713101/K10`cell评估，结果为`old=64.44%`、旧类floor`=23.33%`、`new20=63.58%`、`H=63.99%`，最弱新类准确率为`10.00%`。该结果不优于弱候选，更远低于同切分原始冻结表示；说明154参数共享前端即使加大更新幅度，也无法修复类别条件相互冲突的LEO表征重叠。
+
+因此`support_only_micro_iq_residual_v1`路线按预注册gate终止：不补第二开发seed、不补5/10类、不运行K5、不扩receiver、不解封确认seed。对当前正式checkpoint的只读结构审计显示`id_feature_key='feat_joint'`；直接开放`id_feature_head`实际需要180,000参数，`id_late_feature`为288,480参数，`id_norm_late_feature`为289,685参数，均超过50k上限。历史报告中的49,536/67,008/67,485来自旧架构自检，不能套用到当前checkpoint。下一合法机制改为在`feat_joint`路径的既有Linear层旁挂恒等初始化低秩LoRA，只训练LoRA参数，冻结包括CosFace/source分类器在内的全部原始ADV3B02参数；仍限制20epoch、FP16状态≤128KB、query1-view和逐样本推理。这不是历史60epoch全量`id_norm_late_feature`复现，而是面向当前checkpoint的结构化压缩adapter候选。
+
+## 2026-07-15 01:50 support-only feat-joint LoRA预注册
+
+新机制`support_only_feat_joint_lora_v1`只旁挂于`id_proj(160→160)`、`pa_proj(320→160)`、`id_gate(160→160)`和`joint_proj(320→160)`四个实际参与`feat_joint`的Linear层。rank8、alpha8时共12,800个可训练LoRA参数、FP16 tensor状态25,600B、每query新增12,800MAC；原始checkpoint参数全部`requires_grad=False`，不修改CosFace/source分类器，不新增query batch状态或第二物理view。相对直接开放180,000参数的`id_feature_head`，参数压缩92.89%；相对289,685参数的历史同checkpoint`id_norm_late_feature`，参数压缩95.58%，epoch由60压至20。
+
+首个机制cell固定`receiver=8-8`、`new20`、开发seed`713101`、K10、3个预注册support view和query1-view；训练20epoch，rank8、alpha8、学习率`1e-3`、weight decay`1e-4`、temperature18、冻结特征anchor0.05。输出根预注册为`runs/qknn_extreme_light_support_lora_20260715_v1`，日志为`logs/qknn_extreme_light_support_lora_20260715_v1/rx8-8_new20_seed713101_k10.log`。适配后只配0epoch`el_proto_aux2p0`评估，保证总适配仍为20epoch。若同cell old/floor没有明显优于原始冻结表示，则不扩第二seed、5/10类、K5、其它receiver或确认seed；若明显改善，再在开发范围内锁定统一rank/alpha后逐级扩展。
+
+本地实现文件为`paper_reproduction/scripts/train_export_cvs_support_lora_adapter.py`，复用原始IQ缓存但query持续只做一次ADV3B02+LoRA前向。本地`ssr-gpu`下`py_compile`、6项LoRA/micro单元测试和31项极轻型相关测试均PASS。
