@@ -956,6 +956,14 @@ def export_cell(
     out_dir = Path(args.runs_root) / name / str(args.out_subdir)
     if out_dir.exists() and any(out_dir.iterdir()):
         raise FileExistsError(f"refusing to overwrite non-empty export directory: {out_dir}")
+    identity_out_dir = Path(args.runs_root) / name / str(args.identity_subdir)
+    if bool(args.export_identity):
+        if identity_out_dir == out_dir:
+            raise ValueError("identity_subdir must differ from out_subdir")
+        if identity_out_dir.exists() and any(identity_out_dir.iterdir()):
+            raise FileExistsError(
+                f"refusing to overwrite non-empty identity export directory: {identity_out_dir}"
+            )
     target_rx = cell_spec["target_rx"]
     target_new_tx = cell_spec["target_new_tx"]
     unknown_tx = cell_spec["target_unknown_tx"]
@@ -1079,7 +1087,6 @@ def export_cell(
         identity_manifest = dict(manifest)
         identity_manifest["adapter"] = {"identity_baseline": True, "scenarios": scenarios}
         identity_manifest["channel_views"] = ["identity_satellite"]
-        identity_out_dir = Path(args.runs_root) / name / str(args.identity_subdir)
         identity_out_dir.mkdir(parents=True, exist_ok=True)
         identity_payload["manifest_json"] = np.asarray(json.dumps(identity_manifest, ensure_ascii=False, sort_keys=True))
         np.savez(identity_out_dir / str(args.out_name), **identity_payload)

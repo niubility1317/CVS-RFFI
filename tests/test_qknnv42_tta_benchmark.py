@@ -94,6 +94,12 @@ def test_frozen_cache_manifest_is_required(tmp_path) -> None:
         "feature_name": "z_id",
         "identity_only_forward": True,
         "domain_branch_executed_for_qknn": False,
+        "checkpoint_load_strict": True,
+        "checkpoint_load_audit": {
+            "missing_keys": 0,
+            "unexpected_keys": 0,
+            "skipped_mismatch": 0,
+        },
         "adapter": {"skip_adapter_training": True, "adv3b02_gradient_updates": 0},
     }
     np.savez(path, manifest_json=np.asarray(json.dumps(manifest)))

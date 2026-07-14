@@ -123,6 +123,7 @@ def _validate_frozen_feature_caches(
                 continue
             manifest = _load_feature_manifest(path)
             adapter = dict(manifest.get("adapter", {}))
+            load_audit = dict(manifest.get("checkpoint_load_audit", {}))
             checks = {
                 "payload_source": manifest.get("payload_source")
                 == "qknnv42_frozen_adv3b02_identity_only_features_v1",
@@ -134,6 +135,11 @@ def _validate_frozen_feature_caches(
                 "domain_branch_not_executed": manifest.get("domain_branch_executed_for_qknn")
                 is False,
                 "feature_name": str(manifest.get("feature_name", "")) == "z_id",
+                "checkpoint_load_strict": manifest.get("checkpoint_load_strict") is True,
+                "checkpoint_load_audit": all(
+                    int(load_audit.get(key, -1)) == 0
+                    for key in ("missing_keys", "unexpected_keys", "skipped_mismatch")
+                ),
             }
             failed = [name for name, passed in checks.items() if not passed]
             if failed:
@@ -247,6 +253,11 @@ def benchmark(args: argparse.Namespace) -> dict[str, Any]:
         for policy, mapping in feature_mappings.items()
     }
     historical = None
+    if args.head_profile == "full_legacy_oracle" and args.historical_reference_root is None:
+        raise ValueError(
+            "full_legacy_oracle requires --historical-reference-root with the locked "
+            "84.07/93.24/88.23 baseline"
+        )
     if args.historical_reference_root is not None:
         historical = _load_historical_reference(args.historical_reference_root)
         expected_reference = len(receivers) * len(args.seed_grid) * len(args.k_grid)
@@ -256,11 +267,7 @@ def benchmark(args: argparse.Namespace) -> dict[str, Any]:
             )
         historical_metrics_pp = _validate_historical_reference_metrics(
             historical,
-            {
-                "old_acc_mean": float(args.expected_historical_old_acc_pp),
-                "seen_new_acc_mean": float(args.expected_historical_seen_new_acc_pp),
-                "H_old_new_mean": float(args.expected_historical_h_pp),
-            },
+            HISTORICAL_METRIC_DEFAULTS_PP,
         )
     else:
         historical_metrics_pp = None
@@ -428,21 +435,6 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--feature-subdir-template", default="{base}_{policy}")
     parser.add_argument("--feature-name", default="features_adapter60_fft96.npz")
     parser.add_argument("--expected-checkpoint-sha256", required=True)
-    parser.add_argument(
-        "--expected-historical-old-acc-pp",
-        type=float,
-        default=HISTORICAL_METRIC_DEFAULTS_PP["old_acc_mean"],
-    )
-    parser.add_argument(
-        "--expected-historical-seen-new-acc-pp",
-        type=float,
-        default=HISTORICAL_METRIC_DEFAULTS_PP["seen_new_acc_mean"],
-    )
-    parser.add_argument(
-        "--expected-historical-h-pp",
-        type=float,
-        default=HISTORICAL_METRIC_DEFAULTS_PP["H_old_new_mean"],
-    )
     parser.add_argument("--seed-grid", nargs="+", type=int, default=[713101, 713102, 713103, 713104, 713105])
     parser.add_argument("--k-grid", nargs="+", type=int, default=[1, 2, 5, 10, 20])
     parser.add_argument("--old-anchor-bias", type=float, default=-0.001)

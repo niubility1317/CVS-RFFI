@@ -98,15 +98,17 @@
 |真实dual bit-exact缺少持续回归|新增真实dual逐元素等价与domain调用计数测试|纳入`29 passed`|
 |零训练顶层manifest仍称`phase1_iq_frontend`|改为`qknnv42_frozen_adv3b02_identity_only_features_v1`和`frozen_adv3b02_identity_only_z_id`|来源口径与执行路径一致|
 
+第二轮复审另发现1项Critical和2项Important，均已闭合：`full_legacy_oracle`现在强制提供历史目录且固定三指标不可由CLI覆盖；feature cache额外强制`checkpoint_load_strict=true`且load audit三类异常计数均为0；identity独立导出目录也在任何计算前拒绝覆盖。复审修复后的针对性测试为`15 passed`。
+
 待同步文件SHA256：
 
 |文件|SHA256|
 |---|---|
 |`code/cvsrffi/identity_only_forward.py`|`8E262522BCFDC956A68835BCDD7AF1E33345B3F88CACDC1AE4BAC0D9F3DCB247`|
 |`code/export_spaceborne_features.py`|`70941AED6C9FE90F398096162613A1C613A88F57FBFBDECA80C82624A95D04B2`|
-|`code/scripts/train_apply_phase1_iq_preadapter_20260703.py`|`02833D5860C27AB37EE40C93A29B26F58709FA049DB025F4F5BB12CD528CAC44`|
+|`code/scripts/train_apply_phase1_iq_preadapter_20260703.py`|`DA2092D0A5FECCBD1481EA023F8AB0E9941E38840BDD15C7285F09DA154F1CFC`|
 |`paper_reproduction/cvs_aligned/cvs_method_runner.py`|`89ED64745AEEF4CDA53584FC9F67AF2FB98A3EC9C2AEA7B54452B2B1BE033C80`|
-|`paper_reproduction/scripts/benchmark_qknnv42_tta_policies.py`|`16A730A774B94E6DAADD2511793FA4AB93C02EFC11A5EA70ABDA955D96E02145`|
+|`paper_reproduction/scripts/benchmark_qknnv42_tta_policies.py`|`7B46EC735F359309A38A67D849D28C978FFE54C86A0614367F211DEEE6E668FF`|
 |`paper_reproduction/scripts/run_cvs_qknnv42_tta_ablation_20260714.sh`|`2026F46863C27B2F00C53B8E7001FB8F59BB6739120B726630327A2ADD5354B8`|
 
 ## 8.完成判据
