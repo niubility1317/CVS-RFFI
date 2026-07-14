@@ -23,3 +23,9 @@
 ManyTx覆盖审计、嵌套5/10/20真实TX清单、开发/确认seed、K候选和资源上限已预注册。新增support-only对角度量余弦头：最大26类6,938参数、约27.1KB FP32状态、20epoch、1-view、无backbone梯度、无query图、无role/quota Oracle。新增20类exporter和resume-safe smoke/dev/confirm matrix runner。本地`py_compile`、6项pytest、exporter语法/dry-run、36-row matrix dry-run和端到端runner smoke均PASS。
 
 N607 22:17新鲜inventory显示8张GPU各有1个约470MiB的RIEI训练进程。本任务按每GPU最多2个训练实验的许可，只计划在GPU0/1/2各增加1个20新类feature export，不干预现有任务。首次远端输出根为`runs/cvs_qknnv42_extreme_light_20new_features_20260714`，日志根为`logs/cvs_qknnv42_extreme_light_20new_features_20260714`。
+
+## 2026-07-14 22:29覆盖审计与v2修复
+
+首次三场景feature export本身完成，但逐receiver×TX审计发现旧清单按所有day合计覆盖筛选，而launch实际只读取`day_index=0,equalized_index=1`。其中`18-1`在`20-1`只有11个样本，`10-1`在两个receiver为0，不能满足20-shot+20-query，故首次artifact降级为`NON_LAUNCH_DIAGNOSTIC`，未启动smoke。
+
+v2清单改为按实际slice逐receiver至少40个样本预筛；111个TX合格，嵌套20类为`1-16,1-18,18-10,14-11,8-3,18-8,10-10,16-19,20-12,4-10,13-14,2-5,1-8,19-13,19-9,3-8,19-8,11-19,2-16,19-6`，每类每receiver实际均为50个样本。新输出使用独立`v2_day0_eq1`根，保留旧artifact不覆盖。修复后15项相关pytest、JSON解析、exporter语法/dry-run和36-row matrix dry-run均PASS。
