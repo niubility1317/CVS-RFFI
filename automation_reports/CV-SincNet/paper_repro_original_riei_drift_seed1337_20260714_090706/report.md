@@ -89,3 +89,4 @@ N607只读preflight于2026-07-14 09:03+08:00通过；8张RTX3090均空闲，训�
 - RIEI配置证据：12个不同Table III receiver组合、`ce_reduction=sum`、`mi_reduction=sum`、`ie_reduction=sum`、`paper_eval_last_n=10`。
 - 所有job均记录`SAT_EVAL=0`，`[CONFIG-UNLABELED] route=none`；日志中出现的labeled/unlabeled默认比例字段未启用无标签训练路线。
 - 本轮只确认提交落地与启动健康；是否复现论文结果必须等待200epoch及paper-window汇总后按同一receiver行比较。
+- 已创建当前任务heartbeat`riei-drift`，每30分钟只读检查进度；运行期间不干预。全部完成后将拉取小型日志与metrics、分析完整训练日志、更新逐行结果表与复现结论，并停用heartbeat。
