@@ -326,3 +326,9 @@ PID=`852229`完成20epoch。DRO loss由`11.46986`降至`4.66735`，但普通prot
 cross-view LoRA完成20epoch：leave-one-view-out CE由3.24263降至1.31834，support accuracy由32.44%升至59.10%，view consistency loss由0.09225降至0.02951。资源为12,800参数、25,600B FP16 tensor状态、29,060B状态文件、12,800MAC/query；适配4.998s、峰值CUDA分配175,296,512B，原始checkpoint参数与梯度更新仍为0。完整94行日志含20条epoch、错误和非有限值为0，三场景各1,506行NPZ哈希均与manifest匹配。
 
 下一步只运行预注册的0epoch prototype head，输出根=`runs/qknn_extreme_light_support_lora_crossview_head_20260715_v7`。精确命令为`cd /home/szu2070436088/2510044040/CV-SincNet && PYTHONPATH=. /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u paper_reproduction/scripts/run_cvs_extreme_light_matrix.py --config runs/qknn_extreme_light_support_lora_crossview_20260715_v7/support_lora_feat_joint_rx_8-8_new_20_seed_713101_k_10/resolved_qknn_config.json --output-root runs/qknn_extreme_light_support_lora_crossview_head_20260715_v7 --log-root logs/qknn_extreme_light_support_lora_crossview_head_20260715_v7 --mode smoke --arms el_proto_aux2p0 --receivers 8-8 --seeds 713101 --k-grid 10 --new-class-counts 20 --device cpu`。
+
+### cross-view LoRA机制gate结果
+
+0epoch head完成，结果为`old=72.50%`、floor`=51.67%`、`new20=83.50%`、`H=77.57%`、最低新类`=46.67%`。对比普通LoRA v1的`73.06/51.67/83.33/77.80%`，cross-view目标只使new20提高0.17pp，floor持平，old下降0.56pp，未达到预注册的old/floor联合改善gate。其组合部署资源为12,800个LoRA参数、52,224B总状态、19,456MAC/query，LoRA适配4.998s、head闭式适配约1.04ms、query1-view；完整head日志6行、3条有限trace，错误扫描为0，权限审计仍为support-only、无query拟合、无角色/配额Oracle。
+
+该路线不扩第二seed、5/10类、K5、其它receiver或确认seed。冻结ADV3B02范围内的合法开发空间已经覆盖不同输入位置、不同adapter位置、不同训练损失、不同head几何和同view统计，但old/floor始终存在两位数缺口；继续在同一K10 cell调权重会形成不受控的query选模。当前必须在改变“冻结ADV3B02原始参数”默认边界前停止，并取得用户对source-only基座改进的明确授权。
