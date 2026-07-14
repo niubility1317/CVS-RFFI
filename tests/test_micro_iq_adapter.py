@@ -7,6 +7,7 @@ from torch.utils.data import DataLoader, Dataset
 from paper_reproduction.cvs_aligned.cvs_method_runner import SCENARIOS
 from paper_reproduction.scripts.train_export_cvs_micro_iq_adapter import (
     MicroIQResidualAdapter,
+    _numpy_to_tensor_compat,
     adapter_resource_audit,
     assemble_support_views,
 )
@@ -22,6 +23,16 @@ def test_micro_iq_adapter_starts_as_exact_identity_and_is_extreme_light() -> Non
     assert audit["adapter_state_bytes_fp16"] == 308
     assert audit["adapter_macs_per_query"] == 34816
     assert audit["query_view_count"] == 1
+
+
+def test_numpy_buffer_bridge_preserves_shape_dtype_and_values() -> None:
+    array = np.arange(12, dtype=np.float32).reshape(2, 2, 3)
+    tensor = _numpy_to_tensor_compat(
+        array, numpy_dtype=np.dtype(np.float32), torch_dtype=torch.float32
+    )
+    assert tensor.shape == (2, 2, 3)
+    assert tensor.dtype == torch.float32
+    torch.testing.assert_close(tensor, torch.arange(12, dtype=torch.float32).reshape(2, 2, 3))
 
 
 def _scenario_cache(scenario: str) -> dict[str, np.ndarray]:

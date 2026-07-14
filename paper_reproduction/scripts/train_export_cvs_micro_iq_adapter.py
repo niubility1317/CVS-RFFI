@@ -68,6 +68,16 @@ def _norm_rows(x: torch.Tensor) -> torch.Tensor:
     return F.normalize(x.float(), dim=-1, eps=EPS)
 
 
+def _numpy_to_tensor_compat(
+    value: np.ndarray, *, numpy_dtype: np.dtype, torch_dtype: torch.dtype
+) -> torch.Tensor:
+    """Bridge NumPy 2.x to older PyTorch builds without torch.from_numpy."""
+    array = np.ascontiguousarray(value, dtype=numpy_dtype)
+    return torch.frombuffer(
+        memoryview(array), dtype=torch_dtype, count=int(array.size)
+    ).reshape(array.shape).clone()
+
+
 class MicroIQResidualAdapter(nn.Module):
     """Identity-initialized depthwise IQ residual with a sub-kilobyte state."""
 
@@ -324,8 +334,12 @@ def train_support_only_adapter(
 ) -> tuple[list[dict[str, Any]], dict[str, Any]]:
     if int(epochs) > 20:
         raise ValueError("formal extreme-light adaptation is capped at 20 epochs")
-    rows = torch.from_numpy(np.asarray(support_rows, dtype=np.float32)).to(device)
-    labels = torch.from_numpy(np.asarray(support_labels, dtype=np.int64)).to(device)
+    rows = _numpy_to_tensor_compat(
+        support_rows, numpy_dtype=np.dtype(np.float32), torch_dtype=torch.float32
+    ).to(device)
+    labels = _numpy_to_tensor_compat(
+        support_labels, numpy_dtype=np.dtype(np.int64), torch_dtype=torch.int64
+    ).to(device)
     class_count = int(labels.max().item()) + 1
     with torch.no_grad():
         base_features, _, _ = _batched_feature_forward(
@@ -439,7 +453,11 @@ def export_adapted_cache(
     keep = _filter_export_rows(
         arrays, receiver=receiver, old_labels=old_labels, new_labels=new_labels
     )
-    raw = torch.from_numpy(arrays["raw_iq"][keep].astype(np.float32, copy=False)).to(device)
+    raw = _numpy_to_tensor_compat(
+        arrays["raw_iq"][keep],
+        numpy_dtype=np.dtype(np.float32),
+        torch_dtype=torch.float32,
+    ).to(device)
     adapter.eval()
     model.eval()
     if device.type == "cuda":
