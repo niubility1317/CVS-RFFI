@@ -88,3 +88,10 @@ Git承载面实现提交：`f302b1f repair DRIFT v2 reproduction protocol`。提
 仅当现有fixopt队列完全退出后才允许：运行`tools/n607_ssh_preflight.ps1`；用实时进程/CWD/cmdline和`nvidia-smi`确认每GPU`existing_compute+planned_peak<=2`；本地验证完成；SCP后hash一致；远端`bash -n`与dry-run均通过；最后启动唯一新run。14:19检查显示当前8个RIEI训练仍到epoch156–157、4个仍排队，硬错误为0，因此继续延期。预期产物包括每候选完整200epoch日志、`metrics_epoch.csv`、`metrics.json`、最终checkpoint、scheduler manifest和PID表。
 
 完成后必须完整分析全部200epoch日志，不得只读tail；主表保持同一候选的七接收机结果、aggregate final、loss/feature norm、异常和裁决在同一行。
+
+## 2026-07-14 16:02远端同步与启动前门控
+
+- fixopt已全部完成；N607直接预检通过。GPU0、2–7现有1个Phase1训练，GPU1为0；每GPU新增1个后的峰值不超过2。
+- 同步5个本地已验证文件，远端hash与本地一致；`bash -n`及8-job dry-run通过。
+- 计划命令：`bash code/scripts/launch_drift_v2_repair_matrix_20260714.sh --launch --gpu-ids 0,1,2,3,4,5,6,7 --max-train-per-gpu 2`。
+- run/log根独立为`paper_repro_drift_v2_repair_20260714_141223`，不覆盖fixopt或Phase1。
