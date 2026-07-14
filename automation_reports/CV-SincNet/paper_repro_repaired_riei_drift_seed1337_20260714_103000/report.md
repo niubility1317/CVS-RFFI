@@ -95,3 +95,11 @@ DRIFT的raw negative-MSE、RIEI的CE/MI/IE sum reduction以及两篇论文的模
 - 影响边界：8个RIEI的200epoch训练、last10、final和metrics均已完整落盘；queue脚本未启用`set -e`，因此第二批job继续顺序启动，没有训练artifact丢失。不得把status=2误报为模型训练失败，但最终报告必须记录wrapper异常。
 - 处置：遵守“不自动重启”，不重跑已完整落盘的8个RIEI，不修改当前远端文件，不干预剩余4个RIEI或Phase1。后续不再在活动queue读取期间同步共享launcher。
 - GPU occupancy：GPU0-4各2个compute process或正在切换；GPU5-7仅剩Phase1，总GPU compute=`12`，未超每卡2个上限。deferred fixopt仍等待所有旧run queue退出。
+
+### 2026-07-14 12:42+08:00只读监控检查点
+
+- 训练artifact已完成=`9/13`：DRIFT与8个RIEI均到epoch200；剩余4个RIEI分别到epoch161、159、160、159，训练日志持续增长。
+- 当前本任务训练进程=`4`，全机GPU compute process=`12`；GPU0仅有Phase1，GPU1-4各为Phase1＋1个本任务，GPU5-7仅有Phase1，每卡均未超过2个训练进程。
+- 完整日志精确硬错误扫描仍为0；既有8个RIEI的16条wrapper错误记录仅对应已确认的训练完成后脚本偏移异常，没有新增训练硬错误。
+- deferred fixopt PID=`289073`及父包装PID=`289071`均存活，最新等待状态`active_target_processes=8`；fixopt run目录尚不存在，未新增GPU占用。
+- 本检查点保持只读，未干预、重启、覆盖修复版或Phase1产物与进程。
