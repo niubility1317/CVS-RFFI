@@ -323,3 +323,45 @@
 - 完整扫描当前run全部已写日志，硬错误0；未见Traceback、RuntimeError、CUDA OOM、Killed、AssertionError、FileNotFound、NaN/Inf或参数错误。
 - GPU0–3各仅1个本任务compute，SM占用约14%–16%；GPU4–7无compute，容量合规。SSH短连接已退出，本地`ssh.exe=0`、N607 TCP22已建立连接`=0`。
 - 当前判定：`RUNNING_HEALTHY_8_OF_12_COMPLETE_THROUGH_EPOCH_103_108`。剩余4行尚未进入论文last10正式窗口。
+
+## 2026-07-15 02:55论文字面sum矩阵完整结果
+
+- 完成性：12/12训练均自然完成epoch200，12个`QUEUE-JOB-END status=0`、12份含`PAPER-EVAL-SUMMARY`的训练日志和12份含`FINAL-TEST`的训练日志齐全；8个queue与全部trainer均已退出，硬错误0。
+- 小型证据包仅含32份完整日志、12份`metrics.json`、manifest和scheduler TSV，不含dataset/checkpoint。远端与本地SHA256均为`610158161ec926b5ca998fee2a45acbd6d901e5338163abc5bef9536204e13ff`；本地路径为`analysis_tmp/paper_repro_riei_table3_sum_literal_seed1337_20260715_003000/final_0255`。
+- 完整分析覆盖12份`metrics.json`的epoch1–200，共2400个epoch；扫描32份日志共8952行、711816字节。12份日志均确认`stable_group_seed_shared_train_test_holdout`，且配置均为CE/MI/IE=`sum`；未见Traceback、RuntimeError、CUDA OOM、Killed、NaN、Inf或参数错误。
+
+|行|训练接收机→测试接收机|论文均值±SD|sum last10均值±SD|差值|相对mean变化|final|source val last10|last10 CE/MI/IE/FN|论文±2SD|
+|---:|---|---:|---:|---:|---:|---:|---:|---|---|
+|1|`1-1,7-7`→`1-19`|77.88±2.23%|73.22±1.02%|-4.66pp|-6.30pp|72.71%|99.88±0.02%|0.0044/0.0052/159.012/5.816|未命中|
+|2|`1-1,8-8`→`1-19`|79.43±1.66%|69.07±1.07%|-10.36pp|-13.01pp|69.15%|99.89±0.01%|0.0046/0.0047/159.015/5.606|未命中|
+|3|`1-1,14-7`→`1-19`|66.09±0.67%|70.38±4.16%|+4.28pp|-3.70pp|70.58%|99.89±0.02%|0.0044/0.0053/159.013/5.545|未命中|
+|4|`7-7,8-8`→`1-19`|70.51±3.53%|78.72±2.33%|+8.21pp|+0.11pp|77.35%|99.89±0.01%|0.0053/0.0047/159.013/5.571|未命中|
+|5|`7-7,14-7`→`1-19`|77.35±1.53%|72.51±3.46%|-4.84pp|-2.75pp|67.21%|99.91±0.01%|0.0046/0.0063/159.014/5.539|未命中|
+|6|`8-8,14-7`→`1-19`|75.48±1.21%|64.79±0.38%|-10.69pp|-1.02pp|64.56%|99.92±0.01%|0.0044/0.0050/159.016/5.518|未命中|
+|7|`1-1,1-19`→`14-7`|71.91±2.08%|72.18±2.74%|+0.27pp|+0.41pp|73.52%|99.83±0.01%|0.0045/0.0055/159.014/5.733|命中|
+|8|`1-1,7-7`→`14-7`|68.33±2.37%|63.59±2.57%|-4.74pp|-6.90pp|64.85%|99.87±0.01%|0.0042/0.0053/159.013/5.805|未命中|
+|9|`1-1,8-8`→`14-7`|73.54±1.27%|61.66±2.06%|-11.88pp|-9.12pp|59.94%|99.89±0.01%|0.0043/0.0046/159.014/5.716|未命中|
+|10|`1-19,7-7`→`14-7`|73.52±3.15%|56.91±3.89%|-16.61pp|-6.71pp|60.44%|99.89±0.01%|0.0592/0.0074/159.004/5.851|未命中|
+|11|`1-19,8-8`→`14-7`|72.05±2.71%|79.54±3.78%|+7.49pp|+7.49pp|82.67%|99.91±0.01%|0.0044/0.0061/159.017/5.876|未命中|
+|12|`7-7,8-8`→`14-7`|73.46±2.00%|62.46±1.89%|-11.00pp|-6.08pp|62.96%|99.89±0.01%|0.0055/0.0047/159.014/5.552|未命中|
+
+### sum判定与动力学诊断
+
+- 论文12行均值为`73.30%`，sum复现均值为`68.75%`，有符号偏差`-4.54pp`；逐行MAE=`7.92pp`、RMSE=`8.99pp`、论文`±2SD`仅命中`1/12`。未达到`MAE≤3pp且命中≥10/12`，正式结论为`NOT_REPRODUCED`。
+- 相对稳定partition的mean run，sum仅row4、7、11提高，另外9行降低，平均由`72.72%`降至`68.75%`。因此Eq.(2)–(8)的论文字面求和不能作为当前batch64实现的正确数值尺度；mean仍是后续唯一保留的训练尺度。
+- sum后段IE约为`159.01`，使last10总训练loss约为`-190.8`；source validation仍达到`99.83%–99.92%`，但大多数target诊断峰值出现在epoch1–25，随后跨receiver泛化明显退化。这是loss尺度导致的目标域过拟合，不是训练未收敛或数值崩溃；诊断峰值不用于选epoch。
+- 三轮完整Table III的正式边界依次为：旧组合内随机split的mean/last5=`MAE4.82pp,5/12`；稳定全局partition的mean/last10=`MAE4.34pp,6/12`；稳定partition的sum/last10=`MAE7.92pp,1/12`。协议与loss尺度已排除，剩余首要不确定性是论文未公开的ResNet1D-18具体stem/下采样结构，其次是优化器细节与随机seed。
+
+## 2026-07-15 03:00下一轮最小受控架构诊断设计
+
+- 论文只给出“ResNet 1D-18”，未公开stem卷积核、首层stride和是否使用max-pool。当前FED是ImageNet式`kernel7/stride2 + maxpool3/stride2`；对长度256的I/Q输入在进入残差stage前即压缩到64点。短序列RFFI常见的另一种合理解释是CIFAR式`kernel3/stride1、无max-pool`，保留256点后再由残差stage下采样。
+- 下一轮只改变FED stem，保持已验证较优的SGD、mean、no-RMS、no-feature-norm、稳定全局partition、200epoch和论文last10不变。预注册诊断行固定为partition-mean中绝对误差最大的row3、6、10、12；每行对照`imagenet1d`和候选`short_stem1d`，共8个job，禁止target峰值选epoch。
+- 预注册筛选分数为四行last10的MAE，且候选至少在3/4行降低绝对误差，才允许进入完整12行确认；否则拒绝该架构，不通过事后挑行或挑epoch保留。该诊断只能缩小未公开实现空间，不能单独形成Table III复现成功声明。
+
+### 本地实现与验证
+
+- `baselines/riei_fd/architecture.py`新增fail-closed的FED`variant`：`imagenet1d`保持既有结构，`short_stem1d`仅把stem改为`kernel3/stride1`且取消max-pool；四个残差stage、512维输出和EC/RC均不变。`model.py`、`train_cvs.py`与paper queue完成显式参数接线和日志marker。
+- 新launcher：`code/scripts/launch_riei_table3_architecture_probe_20260715.sh`，run ID为`paper_repro_riei_archprobe_seed1337_20260715_030500`。8个job恰好覆盖4行×2个variant，每GPU计划峰值1个训练，并保留唯一run/log根保护。
+- `ssr-gpu`下`py_compile`通过；根目录聚焦测试`7 passed`，Git镜像同组测试`7 passed`。根目录仅有既知`.pytest_cache`无写权warning，不影响测试。`bash -n`通过，8-job dry-run计数为8个job、8个capacity gate、`imagenet1d=4`、`short_stem1d=4`。
+- 根目录不是Git仓库；本地代码快照为`code/snapshots/paper_repro_riei_archprobe_seed1337_20260715_030500/`。关键SHA256：paper queue=`5a1fe1f1...`、architecture=`bf1d8e1f...`、model=`c936c09b...`、root train=`98e974aa...`、launcher=`0760d3cc...`、test=`6cf13d3b...`。
+- Git镜像的`train_cvs.py`已有不属于本任务的augmentation-consistency接线；镜像时保留该既有逻辑，只叠加本任务3处`fed_variant`接线，未用根目录旧副本覆盖这些并行变更。当前尚未同步或启动N607；下一步必须先提交仅本任务文件，再重新执行实时容量门。

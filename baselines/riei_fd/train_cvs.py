@@ -56,6 +56,7 @@ def main() -> None:
     parser.add_argument("--feature_dim", type=int, default=512)
     parser.add_argument("--dropout", type=float, default=0.0)
     parser.add_argument("--use_resnet_projection", action=argparse.BooleanOptionalAction, default=False)
+    parser.add_argument("--fed_variant", type=str, default="imagenet1d", choices=["imagenet1d", "short_stem1d"])
     parser.add_argument("--mi_mode", type=str, default="cosine_abs", choices=["cosine_abs", "cosine_square", "cross_cov"])
     parser.add_argument("--ie_temperature", type=float, default=1.0)
     parser.add_argument("--ce_reduction", type=str, default="mean", choices=["mean", "sum"])
@@ -107,7 +108,7 @@ def main() -> None:
         f"optimizer={args.optimizer} sgd_momentum={args.sgd_momentum:.6g} "
         f"weight_decay_all={args.weight_decay_all:.6g} weight_decay_fed={args.weight_decay_fed:.6g} "
         f"grad_clip_norm={args.grad_clip_norm:.6g} lambda_feature_norm={args.lambda_feature_norm:.6g} "
-        f"use_resnet_projection={int(bool(args.use_resnet_projection))}",
+        f"use_resnet_projection={int(bool(args.use_resnet_projection))} fed_variant={args.fed_variant}",
         flush=True,
     )
     print(
@@ -127,6 +128,7 @@ def main() -> None:
         feature_dim=args.feature_dim,
         dropout=args.dropout,
         encoder_use_projection=args.use_resnet_projection,
+        fed_variant=args.fed_variant,
     ).to(device)
     classifier_parameters = list(model.ec.parameters()) + list(model.rc.parameters())
     opt_all = build_riei_optimizer(

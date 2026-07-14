@@ -49,6 +49,7 @@ RIEI_MI_REDUCTION="${RIEI_MI_REDUCTION:-sum}"
 RIEI_IE_REDUCTION="${RIEI_IE_REDUCTION:-sum}"
 RIEI_WISIG_RMS_NORMALIZE="${RIEI_WISIG_RMS_NORMALIZE:-0}"
 RIEI_TEST_EVAL_INTERVAL="${RIEI_TEST_EVAL_INTERVAL:-0}"
+RIEI_FED_VARIANT="${RIEI_FED_VARIANT:-imagenet1d}"
 DRIFT_MSE_CAP="${DRIFT_MSE_CAP:-0}"
 DRIFT_LAMBDA_MSE="${DRIFT_LAMBDA_MSE:-0.02}"
 DRIFT_LAMBDA_FEATURE_NORM="${DRIFT_LAMBDA_FEATURE_NORM:-0}"
@@ -329,6 +330,7 @@ run_one() {
       CMD+=(--ce_reduction "${RIEI_CE_REDUCTION}" --mi_reduction "${RIEI_MI_REDUCTION}" --ie_reduction "${RIEI_IE_REDUCTION}")
       CMD+=(--lambda_feature_norm "${RIEI_LAMBDA_FEATURE_NORM}")
       CMD+=(--test_eval_interval "${RIEI_TEST_EVAL_INTERVAL}")
+      CMD+=(--fed_variant "${RIEI_FED_VARIANT}")
       if [ "${RIEI_WISIG_RMS_NORMALIZE}" = "1" ]; then
         CMD+=(--wisig_rms_normalize)
       else

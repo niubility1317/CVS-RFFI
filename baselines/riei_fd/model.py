@@ -20,6 +20,7 @@ class RIEIModel(nn.Module):
         classifier_hidden_dim: int = 256,
         dropout: float = 0.0,
         encoder_use_projection: bool = False,
+        fed_variant: str = "imagenet1d",
     ):
         super().__init__()
         feature_dim = int(feature_dim)
@@ -34,6 +35,7 @@ class RIEIModel(nn.Module):
             embedding_dim=feature_dim,
             dropout=dropout,
             use_projection=encoder_use_projection,
+            variant=fed_variant,
         )
         self.ec = RIEIThreeLayerClassifier(emitter_feature_dim, int(num_emitters), classifier_hidden_dim, dropout)
         self.rc = RIEIThreeLayerClassifier(receiver_feature_dim, int(num_receivers), classifier_hidden_dim, dropout)

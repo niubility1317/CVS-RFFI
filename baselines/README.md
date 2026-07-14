@@ -116,8 +116,8 @@ bash run_cvs_baseline_queue.sh \
 ```
 
 When the dataset path and GPU allocation are verified, remove `--dry-run`.
-The RIEI journal protocol uses receiver-holdout settings and writes
-`paper_eval_window.name=riei_last5` under `metrics.json["final"]`; the canonical
+The RIEI SPAWC 2023 protocol uses receiver-holdout settings and writes
+`paper_eval_window.name=riei_last10` under `metrics.json["final"]`; the canonical
 DRIFT v2 protocol uses source/test receivers from Day 1 and writes
 `paper_eval_window.name=drift_last1`. Both commands also preserve the
 same-row named-test context under `metrics.json["final"]["test_named"]`.
@@ -169,7 +169,7 @@ Paper-specific defaults used by the CVS entrypoints:
 
 | Method | Paper-aligned structure | Default optimizer / schedule | Paper-window metric |
 |---|---|---|---|
-| `riei_fd` | ResNet1D-18 FED, EC/RC 3-layer classifiers, `z_e/z_r` split, CE + MI - IE alternating updates | Table III confirmation: stable receiver-combination invariant WiSig partition, SGD momentum `0`, RMS off, feature norm off; `lr_all=1e-4`, `lr_fed=1e-4`, `lambda_mi=1.2`, `lambda_ie=1.2`, `epochs=200`. The launcher defaults to mean CE/MI/IE and accepts `RIEI_REDUCTION=sum` for the paper-literal summation diagnostic. | `riei_last10` for all 12 SPAWC 2023 Table III rows |
+| `riei_fd` | ResNet1D-18 FED, EC/RC 3-layer classifiers, `z_e/z_r` split, CE + MI - IE alternating updates. `--fed_variant imagenet1d` preserves the existing ImageNet-style stem; `short_stem1d` is an explicitly diagnostic short-sequence interpretation, not a paper-confirmed default. | Table III confirmation: stable receiver-combination invariant WiSig partition, SGD momentum `0`, RMS off, feature norm off; `lr_all=1e-4`, `lr_fed=1e-4`, `lambda_mi=1.2`, `lambda_ie=1.2`, `epochs=200`. The supported training scale is mean CE/MI/IE; the completed paper-literal sum diagnostic degraded to MAE `7.92pp` and is retained only as negative evidence. | `riei_last10` for all 12 SPAWC 2023 Table III rows |
 | `drift` | ResNet18-1D encoder, TX/RX split, GRL, receiver center loss, mean negative MSE separation | canonical launcher: Adam `lr=1e-4`, batch 256, `lambda_grl=1.0`, `lambda_center=0.01`, `lambda_mse=0.02`, no MSE cap, `epochs=200` | `drift_last1`; five-seed final mean |
 | `ra_collab` | Spectrogram CNN, GRL receiver adversary, OBS and collaborative fusion evaluation | SGD `lr=1e-3`, momentum `0.9`, validation-loss plateau factor `0.2`, patience `10`, early stop `20`, fine-tune `lr=1e-5` | `aligned_wisig_last5` for CVS comparisons |
 | `cvcnn_ce` | Complex CNN or optional Sinc stem with CE-only objective | AdamW `lr=2e-4`, cosine annealing to `1e-6`, weight decay `1e-4`, `epochs=200` | `aligned_wisig_last5` for CVS comparisons |

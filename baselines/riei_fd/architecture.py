@@ -42,15 +42,26 @@ class RIEIResNet1D18FED(nn.Module):
         blocks_per_stage: Sequence[int] = (2, 2, 2, 2),
         dropout: float = 0.0,
         use_projection: bool = True,
+        variant: str = "imagenet1d",
     ):
         super().__init__()
         self.embedding_dim = int(embedding_dim)
-        self.stem = nn.Sequential(
-            nn.Conv1d(input_channels, channels[0], kernel_size=7, stride=2, padding=3, bias=False),
-            nn.BatchNorm1d(channels[0]),
-            nn.ReLU(inplace=True),
-            nn.MaxPool1d(kernel_size=3, stride=2, padding=1),
-        )
+        self.variant = str(variant).strip().lower()
+        if self.variant == "imagenet1d":
+            self.stem = nn.Sequential(
+                nn.Conv1d(input_channels, channels[0], kernel_size=7, stride=2, padding=3, bias=False),
+                nn.BatchNorm1d(channels[0]),
+                nn.ReLU(inplace=True),
+                nn.MaxPool1d(kernel_size=3, stride=2, padding=1),
+            )
+        elif self.variant == "short_stem1d":
+            self.stem = nn.Sequential(
+                nn.Conv1d(input_channels, channels[0], kernel_size=3, stride=1, padding=1, bias=False),
+                nn.BatchNorm1d(channels[0]),
+                nn.ReLU(inplace=True),
+            )
+        else:
+            raise ValueError(f"Unsupported RIEI FED variant: {variant}")
         in_ch = channels[0]
         stages = []
         for stage_i, (out_ch, n_blocks) in enumerate(zip(channels, blocks_per_stage)):
