@@ -24,6 +24,8 @@ def _row(value: float) -> dict[str, float | int | str]:
         "latency_per_query_ms": 1.0,
         "estimated_head_macs": 2.0,
         "persistent_state_bytes": 3.0,
+        "decision_workspace_bytes_lower_bound": 4.0,
+        "estimated_decision_cubic_work_units": 5.0,
     }
 
 
@@ -34,6 +36,19 @@ def test_full_history_profile_keeps_oracle_but_moves_adaptation_to_qknn() -> Non
     assert config["qknnv42_decision_mode"] == "legacy_role_quota_oracle"
     assert config["qknnv42_labelprop_mode"] == "dense_transductive"
     assert config["qknnv42_support_representation"] == "all_support"
+    assert config["non_deployment_oracle_diagnostic"] is True
+
+
+def test_full_history_prototype_profile_keeps_oracle_without_dense_graph() -> None:
+    config: dict[str, object] = {}
+    _apply_head_profile(
+        config,
+        profile="full_legacy_oracle_prototype",
+        old_anchor_bias=-0.001,
+    )
+    assert config["qknnv42_decision_mode"] == "legacy_role_quota_oracle"
+    assert config["qknnv42_labelprop_mode"] == "support_prototype"
+    assert config["qknnv42_support_representation"] == "prototype_only"
     assert config["non_deployment_oracle_diagnostic"] is True
 
 

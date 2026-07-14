@@ -6,6 +6,7 @@ from paper_reproduction.scripts.benchmark_qknnv42_support_compression import (
     METRICS,
     RESOURCE_KEYS,
     _aggregate,
+    _validate_mode_counts,
 )
 
 
@@ -26,3 +27,29 @@ def test_matrix_mean_gate_includes_exact_three_pp_boundary() -> None:
     below_boundary[METRICS[0]] = 0.469999
     failed = _aggregate([below_boundary], baseline=baseline)
     assert failed["performance_gate_pass"] is False
+
+
+def test_full_matrix_requires_every_mode_row() -> None:
+    rows = [
+        {"mode": "dense_all_support"},
+        {"mode": "oracle_stream_prototype_only"},
+    ]
+    counts = _validate_mode_counts(
+        rows,
+        ["dense_all_support", "oracle_stream_prototype_only"],
+        1,
+    )
+    assert counts == {
+        "dense_all_support": 1,
+        "oracle_stream_prototype_only": 1,
+    }
+
+    rows.pop()
+    import pytest
+
+    with pytest.raises(ValueError, match="matrix is incomplete"):
+        _validate_mode_counts(
+            rows,
+            ["dense_all_support", "oracle_stream_prototype_only"],
+            1,
+        )

@@ -163,15 +163,25 @@ def _apply_head_profile(
             "non_deployment_oracle_diagnostic": False,
             "publication_protocol": "fixed_adapter_paired_tta_policy_deployment_ablation",
         })
-    elif profile == "full_legacy_oracle":
+    elif profile in {"full_legacy_oracle", "full_legacy_oracle_prototype"}:
         config.update({
             "qknnv42_decision_mode": "legacy_role_quota_oracle",
-            "qknnv42_labelprop_mode": "dense_transductive",
-            "qknnv42_support_representation": "all_support",
+            "qknnv42_labelprop_mode": (
+                "dense_transductive"
+                if profile == "full_legacy_oracle"
+                else "support_prototype"
+            ),
+            "qknnv42_support_representation": (
+                "all_support"
+                if profile == "full_legacy_oracle"
+                else "prototype_only"
+            ),
             "qknnv42_old_anchor_bias": 0.001,
             "non_deployment_oracle_diagnostic": True,
             "publication_protocol": (
                 "frozen_adv3b02_qknn_feature_adapter_full_history_tta_ablation"
+                if profile == "full_legacy_oracle"
+                else "frozen_adv3b02_qknn_prototype_full_history_tta_ablation"
             ),
         })
     else:
@@ -206,7 +216,13 @@ def _aggregate(
             result[f"{metric}_historical_drop_gt_3pp_count"] = sum(
                 delta < -0.03 for delta in historical_deltas
             )
-    for key in ("latency_per_query_ms", "estimated_head_macs", "persistent_state_bytes"):
+    for key in (
+        "latency_per_query_ms",
+        "estimated_head_macs",
+        "persistent_state_bytes",
+        "decision_workspace_bytes_lower_bound",
+        "estimated_decision_cubic_work_units",
+    ):
         result[key] = _mean([float(row[key]) for row in rows])
     view_count = int(rows[0]["tta_view_count"])
     result.update(
@@ -253,7 +269,10 @@ def benchmark(args: argparse.Namespace) -> dict[str, Any]:
         for policy, mapping in feature_mappings.items()
     }
     historical = None
-    if args.head_profile == "full_legacy_oracle" and args.historical_reference_root is None:
+    if args.head_profile in {
+        "full_legacy_oracle",
+        "full_legacy_oracle_prototype",
+    } and args.historical_reference_root is None:
         raise ValueError(
             "full_legacy_oracle requires --historical-reference-root with the locked "
             "84.07/93.24/88.23 baseline"
@@ -306,6 +325,13 @@ def benchmark(args: argparse.Namespace) -> dict[str, Any]:
                             raise AssertionError("full-history profile lost the role/quota oracle")
                         if manifest["qknnv42_labelprop_mode"] != "dense_transductive":
                             raise AssertionError("full-history profile lost dense label propagation")
+                    elif args.head_profile == "full_legacy_oracle_prototype":
+                        if manifest["qknnv42_decision_mode"] != "legacy_role_quota_oracle":
+                            raise AssertionError("prototype profile lost the role/quota oracle")
+                        if manifest["qknnv42_labelprop_mode"] != "support_prototype":
+                            raise AssertionError("prototype profile lost streaming residual scoring")
+                        if manifest["qknnv42_support_representation"] != "prototype_only":
+                            raise AssertionError("prototype profile retained support codes")
                     scenario_rows = list(result["metrics_by_scenario"].values())
                     run_key = "/".join(relative.parts[:-1])
                     split_payload = json.dumps(
@@ -336,6 +362,18 @@ def benchmark(args: argparse.Namespace) -> dict[str, Any]:
                         ),
                         "persistent_state_bytes": _mean(
                             [float(item["persistent_state_bytes"]) for item in scenario_rows]
+                        ),
+                        "decision_workspace_bytes_lower_bound": _mean(
+                            [
+                                float(item["decision_workspace_bytes_lower_bound"])
+                                for item in scenario_rows
+                            ]
+                        ),
+                        "estimated_decision_cubic_work_units": _mean(
+                            [
+                                float(item["estimated_decision_cubic_work_units"])
+                                for item in scenario_rows
+                            ]
                         ),
                     }
                     rows.append(row)
@@ -388,11 +426,22 @@ def benchmark(args: argparse.Namespace) -> dict[str, Any]:
         "head": (
             "fft96+dense_transductive+legacy_role_quota_oracle"
             if args.head_profile == "full_legacy_oracle"
-            else "fft96+labelprop_disabled+per_sample_argmax"
+            else (
+                "fft96+support_prototype+prototype_only+legacy_role_quota_oracle"
+                if args.head_profile == "full_legacy_oracle_prototype"
+                else "fft96+labelprop_disabled+per_sample_argmax"
+            )
         ),
         "adv3b02_gradient_updates": 0,
         "qknn_feature_adapter": "support_diag_whiten_fisher",
-        "old_anchor_bias": float(args.old_anchor_bias),
+        "old_anchor_bias": (
+            0.001
+            if args.head_profile in {
+                "full_legacy_oracle",
+                "full_legacy_oracle_prototype",
+            }
+            else float(args.old_anchor_bias)
+        ),
         "performance_gate": (
             "matrix-mean old_acc, seen_new_acc, H_old_new drop vs full historical "
             "60epoch+5view reference <= 3 pp"
@@ -425,7 +474,11 @@ def parse_args() -> argparse.Namespace:
     )
     parser.add_argument(
         "--head-profile",
-        choices=("deployable_light", "full_legacy_oracle"),
+        choices=(
+            "deployable_light",
+            "full_legacy_oracle",
+            "full_legacy_oracle_prototype",
+        ),
         default="deployable_light",
     )
     parser.add_argument(

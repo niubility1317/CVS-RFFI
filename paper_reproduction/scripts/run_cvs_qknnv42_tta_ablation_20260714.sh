@@ -78,7 +78,7 @@ CUDA_VISIBLE_DEVICES="$GPU" "$PYTHON" -u code/scripts/train_apply_phase1_iq_prea
   --historical-reference-root "$HISTORICAL_REFERENCE_ROOT" \
   --head-profile full_legacy_oracle \
   --feature-root "$FEATURE_ROOT" \
-  --out-root "$OUT_ROOT" \
+  --out-root "$OUT_ROOT/dense" \
   --policies none rx_shift3 rx_cfo3 rx_light5 \
   --feature-subdir-base ADV3B02_FROZEN_QKNN_FFT96 \
   --feature-subdir-template '{base}_{policy}' \
@@ -87,5 +87,20 @@ CUDA_VISIBLE_DEVICES="$GPU" "$PYTHON" -u code/scripts/train_apply_phase1_iq_prea
   --seed-grid 713101 713102 713103 713104 713105 \
   --k-grid 1 2 5 10 20 \
   --expected-runs 500 2>&1 | tee "$LOG_ROOT/tta_benchmark.out"
+
+"$PYTHON" -u -m paper_reproduction.scripts.benchmark_qknnv42_tta_policies \
+  --template-config "${ROOT}/paper_reproduction/configs/cvs_qknnv42_full_legacy_oracle_strict_stage2c_20260714_n607.json" \
+  --historical-reference-root "$HISTORICAL_REFERENCE_ROOT" \
+  --head-profile full_legacy_oracle_prototype \
+  --feature-root "$FEATURE_ROOT" \
+  --out-root "$OUT_ROOT/prototype" \
+  --policies none rx_shift3 rx_cfo3 rx_light5 \
+  --feature-subdir-base ADV3B02_FROZEN_QKNN_FFT96 \
+  --feature-subdir-template '{base}_{policy}' \
+  --feature-name features_frozen_adv3b02_fft96.npz \
+  --expected-checkpoint-sha256 "$EXPECTED_CHECKPOINT_SHA256" \
+  --seed-grid 713101 713102 713103 713104 713105 \
+  --k-grid 1 2 5 10 20 \
+  --expected-runs 500 2>&1 | tee "$LOG_ROOT/tta_benchmark_prototype.out"
 
 echo "[QKNN-FROZEN-ADV3B02-TTA-DONE] run_root=${OUT_ROOT} feature_root=${FEATURE_ROOT} historical_root=${HISTORICAL_REFERENCE_ROOT}"

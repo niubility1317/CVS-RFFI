@@ -161,12 +161,27 @@ def test_cvs_qknnv42_support_prototype_removes_dense_query_graph(tmp_path: Path)
     assert manifest["qknnv42_labelprop_mode"] == "support_prototype"
 
 
-def test_cvs_qknnv42_lightweight_mode_rejects_legacy_oracle(tmp_path: Path) -> None:
+def test_cvs_qknnv42_streaming_scores_can_preserve_historical_oracle(tmp_path: Path) -> None:
     config = _config(tmp_path, "cvs_qknnv42")
-    config["qknnv42_labelprop_mode"] = "disabled"
+    config["qknnv42_labelprop_mode"] = "support_prototype"
+    config["qknnv42_support_representation"] = "class_diverse2"
     config["qknnv42_decision_mode"] = "legacy_role_quota_oracle"
-    with pytest.raises(ValueError, match="per_sample_argmax"):
-        validate_config(config)
+    validate_config(config)
+    result = run(config, tmp_path / "qknn_streaming_oracle")
+    first = result["metrics_by_scenario"][SCENARIOS[0]]
+    assert first["decision_mode"] == "legacy_role_quota_oracle"
+    assert first["labelprop_mode"] == "support_prototype"
+    assert first["support_representation"] == "class_diverse2"
+    assert first["query_query_graph_used"] is False
+    assert first["dense_graph_bytes_lower_bound"] == 0
+    assert first["decision_batch_state_required"] is True
+    assert first["query_batch_state_required"] is True
+    assert first["decision_workspace_bytes_lower_bound"] > 0
+    assert first["estimated_decision_cubic_work_units"] > 0
+    manifest = result["split_manifest"]
+    assert manifest["non_deployment_oracle_diagnostic"] is True
+    assert manifest["query_used_for_transductive_inference"] is True
+    assert manifest["query_used_for_joint_decision"] is True
 
 
 def test_cvs_qknnv42_class_medoid_compresses_support_state(tmp_path: Path) -> None:

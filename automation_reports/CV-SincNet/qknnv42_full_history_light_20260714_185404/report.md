@@ -21,7 +21,7 @@
 |---:|---|---:|---|---|
 |1|5-view下的完整dual ADV3B02辅助前向|`37.014M MAC/view×5=185.070M MAC/physical sample`|每条support/query重复5次|最大推理项；其中qKNN只消费`z_id`，domain分支结果未使用|
 |2|qKNN dense LP+support/prototype+FFT双head|均值`22.725M MAC/query`，最大`46.203M`|每批query执行|移除前端冗余后成为下一重项|
-|3|dense query graph|均值`1.659MB`，最大`3.277MB`|随query batch临时分配|不是最大算力，但影响峰值内存和逐样本流式部署|
+|3|dense query graph|主特征与FFT顺序执行时峰值均值`0.829MB`，两路累计分配均值`1.659MB`|随query batch临时分配|不是最大算力，但影响峰值内存和逐样本流式部署|
 |4|96维FFT sketch|每个TTA view执行一次256点FFT并压缩到96维|历史为5次/sample|明显轻于ADV3B02卷积主干，但随view数线性重复|
 |5|场景选择、old/new角色筛选、类别配额Hungarian|类别数8、query数160量级|每批一次|计算量小；主要问题是使用Oracle，而不是资源占用|
 
@@ -61,14 +61,15 @@
 
 ## 5.待执行完整历史对照矩阵
 
-候选保持FFT96、三个`leo_*_weak`场景、dense LP、old/new角色和类别配额Oracle不变，只改变：
+候选保持FFT96、三个`leo_*_weak`场景、old/new角色和类别配额Oracle不变。前端矩阵同时用两种head复核：严格历史dense LP/all-support，以及本地875行筛选出的streaming residual/prototype-only。改变项为：
 
 1. ADV3B02始终严格加载、冻结、identity-only；
 2. 不进行60epoch模型适配；
 3. 特征适配由qKNN support完成；
-4. 比较`none/rx_shift3/rx_cfo3/rx_light5`的1/3/3/5-view。
+4. 比较`none/rx_shift3/rx_cfo3/rx_light5`的1/3/3/5-view；
+5. 对每个view策略分别运行dense历史head和prototype-only推荐head。
 
-矩阵为`4 policy×5 receiver×5 seed×5 K=500`行。每个candidate row必须与严格历史125行相同receiver/seed/K的support/query split SHA256一致。晋升条件是候选的`old_acc`、`seen_new_acc`和`H_old_new`三个矩阵均值相对严格历史完整体分别下降均不超过3pp；不是只与候选自身5-view比较。
+矩阵为`2 head×4 policy×5 receiver×5 seed×5 K=1000`行。每个candidate row必须与严格历史125行相同receiver/seed/K的support/query split SHA256一致。晋升条件是候选的`old_acc`、`seen_new_acc`和`H_old_new`三个矩阵均值相对严格历史完整体分别下降均不超过3pp；不是只与候选自身5-view比较。
 
 ## 6.实现、验证与远端边界
 
@@ -81,7 +82,7 @@
 - `paper_reproduction/scripts/benchmark_qknnv42_tta_policies.py`：增加完整历史profile和严格历史≤3pp门槛；
 - `paper_reproduction/scripts/run_cvs_qknnv42_tta_ablation_20260714.sh`：改为冻结ADV3B02、零epoch、完整历史head的500行启动器。
 
-本地验证：Python编译通过；首轮相关测试为`26 passed`；审查修复后为`29 passed`；两个CLI`--help`和Bash`-n`通过；真实strict checkpoint的identity-only等价性为`z_id/logits max_abs_diff=0/0`。新增真实`DualCVSincNetDisentangle`回归测试同时验证完整`return_aux=True`与identity-only的`z_id/TX logits`逐元素一致，并确认轻型路径不调用`dom_backbone`。
+本地验证：Python编译通过；完整相关测试最新为`31 passed`；两个CLI`--help`和Bash`-n`通过；真实strict checkpoint的identity-only等价性为`z_id/logits max_abs_diff=0/0`。新增真实`DualCVSincNetDisentangle`回归测试同时验证完整`return_aux=True`与identity-only的`z_id/TX logits`逐元素一致，并确认轻型路径不调用`dom_backbone`。
 
 2026-07-14 19:13直连N607预检再次PASS。19:15只读进程/GPU审计显示6个活动GPU训练进程及其调度器仍在运行，属于`phase1_dgleo_p0factorial8_20260714`。按活动任务monitor-only规则，本轮尚未同步或启动500行矩阵；没有干预现有任务，SSH/TCP22连接已在每次检查后归零。
 
@@ -100,6 +101,8 @@
 
 第二轮复审另发现1项Critical和2项Important，均已闭合：`full_legacy_oracle`现在强制提供历史目录且固定三指标不可由CLI覆盖；feature cache额外强制`checkpoint_load_strict=true`且load audit三类异常计数均为0；identity独立导出目录也在任何计算前拒绝覆盖。最终独立复审结论为通过，未发现剩余Critical或Important；针对性测试为`15 passed`。
 
+head压缩与双head矩阵扩展再次独立复审：首轮指出历史split配对、Oracle transductive标记和Hungarian资源边界三项问题；修复后最终复审通过，当前diff无剩余Critical或Important，复审针对性测试`19 passed`。
+
 待同步文件SHA256：
 
 |文件|SHA256|
@@ -107,14 +110,37 @@
 |`code/cvsrffi/identity_only_forward.py`|`8E262522BCFDC956A68835BCDD7AF1E33345B3F88CACDC1AE4BAC0D9F3DCB247`|
 |`code/export_spaceborne_features.py`|`70941AED6C9FE90F398096162613A1C613A88F57FBFBDECA80C82624A95D04B2`|
 |`code/scripts/train_apply_phase1_iq_preadapter_20260703.py`|`DA2092D0A5FECCBD1481EA023F8AB0E9941E38840BDD15C7285F09DA154F1CFC`|
-|`paper_reproduction/cvs_aligned/cvs_method_runner.py`|`89ED64745AEEF4CDA53584FC9F67AF2FB98A3EC9C2AEA7B54452B2B1BE033C80`|
-|`paper_reproduction/scripts/benchmark_qknnv42_tta_policies.py`|`7B46EC735F359309A38A67D849D28C978FFE54C86A0614367F211DEEE6E668FF`|
-|`paper_reproduction/scripts/run_cvs_qknnv42_tta_ablation_20260714.sh`|`2026F46863C27B2F00C53B8E7001FB8F59BB6739120B726630327A2ADD5354B8`|
+|`paper_reproduction/cvs_aligned/cvs_method_runner.py`|`DBEC74464BC09F1845B12F7BB9C131E314C68EBE2F93850C12310700B0EB7A98`|
+|`paper_reproduction/scripts/benchmark_qknnv42_support_compression.py`|`848B9C543663BDA47B4A947D38E84543A84FF9B1C9B2699446FE0FCF661CBE97`|
+|`paper_reproduction/scripts/benchmark_qknnv42_tta_policies.py`|`49D13FE2EB9EEDD58D6670DE5504A12D047BCB1431B429FB174580C639549F59`|
+|`paper_reproduction/scripts/run_cvs_qknnv42_tta_ablation_20260714.sh`|`55A91CC0A66A08AB1CB650446F0F451A89EED33AA73628C11EBB7059A8A82976`|
 
-## 8.完成判据
+## 8.第二大热点压缩：qKNN head
+
+N607仍有活动训练时，本轮只读拉取既有严格历史5-view+adapter60+FFT96特征cache到本地，不改变服务器状态。5个接收机cache共约225MB，SHA256已逐文件核验，SSH进程与TCP22连接随后均归零。基于这些严格历史特征执行`7模式×5 receiver×5 seed×5 K=875`行本地Oracle head矩阵，全部完成；代码同时校验模式间split和候选对严格历史125行split逐行一致。结果artifact位于`local_artifacts/qknnv42_full_history_head_compression_20260714_1941/`。
+
+所有模式均保留old/new角色Oracle与类别配额Hungarian，因此仍为`NON_DEPLOYMENT_ORACLE_DIAGNOSTIC`。变化仅限dense LP、support表示和流式prototype residual：
+
+|模式|old/new/H|相对严格历史下降pp|评分MAC/query|评分MAC下降|持久状态|状态下降|dense graph峰值|判定|
+|---|---|---|---:|---:|---:|---:|---:|---|
+|dense all-support|84.07/93.24/88.23|0/0/0|22.725M|0%|36.62KB|0%|0.829MB|历史基线|
+|stream all-support|84.05/92.81/88.02|0.02/0.43/0.21|3.146M|86.16%|36.62KB|0%|0|通过|
+|disabled all-support|83.89/92.89/87.96|0.18/0.35/0.27|2.818M|87.60%|36.62KB|0%|0|通过|
+|stream diverse-4|83.71/92.85/87.84|0.35/0.39/0.38|1.638M|92.79%|26.90KB|26.53%|0|通过|
+|stream diverse-2|83.25/92.76/87.55|0.81/0.48/0.68|1.245M|94.52%|24.37KB|33.45%|0|通过|
+|stream medoid|82.58/92.11/86.87|1.49/1.13/1.36|0.983M|95.67%|22.68KB|38.07%|0|通过|
+|stream prototype-only|83.59/92.76/87.74|0.47/0.48/0.49|0.655M|97.12%|20.57KB|43.84%|0|通过，推荐|
+
+推荐`stream prototype-only`：它不保存support code、不构建query-query图，只保存每类prototype与qKNN support拟合的中心/scale；相对严格历史三个矩阵均值下降均小于0.5pp，明显低于3pp门槛。它在精度上也优于medoid，同时评分MAC和持久状态更低。若保持5-view identity-only前端，ADV3B02前端与qKNN评分合计由约207.794M降至`44.561M+0.655M=45.216M MAC/sample`，该MAC路径下降约78.24%，FFT96小项未计入；FFT仍随view线性变化，但远小于前端卷积。
+
+必须保留一个重要边界：角色/类别配额Hungarian没有被压缩。每个场景仍需完整old/new query block，`query_used_for_transductive_inference=true`、`decision_batch_state_required=true`；同row下所有模式的assignment下界均为`1.792M cubic work units`，score-slot工作区下界为`115,200B`。这类work unit不能直接等同于MAC，因此97.12%和78.24%均明确只表示神经前端与qKNN评分MAC，不把Hungarian复杂度藏入MAC。prototype-only移除了dense graph，但完整历史Oracle仍不是逐样本星上部署算法。
+
+已将500行冻结前端矩阵扩展为双head复核：同一组导出cache分别运行完整dense Oracle和推荐prototype-only Oracle，总计1000个qKNN row。这样最终结果可同时分离“前端压缩损失”和“联合轻量化损失”。
+
+## 9.完成判据
 
 - 新导出manifest必须为`checkpoint_load_strict=true`、`identity_only_forward=true`、`domain_branch_executed_for_qknn=false`、`adv3b02_gradient_updates=0`；
-- 4组policy均为125/125完成，无support/query重叠、无错误日志；
+- 2种head下的4组policy均为125/125完成，总计1000/1000，无support/query重叠、无错误日志；
 - 所有candidate split hash与严格历史reference逐行一致；
 - 最终选择view数最少且三个矩阵均值相对历史完整体均下降不超过3pp的候选；
 - 若冻结ADV3B02的5-view候选已经下降超过3pp，则先优化qKNN feature adapter，不得用重新训练ADV3B02绕过要求；

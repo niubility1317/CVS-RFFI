@@ -412,8 +412,6 @@ def _qknnv42_predict(
 ) -> tuple[np.ndarray, dict[str, Any]]:
     decision = str(decision_mode).strip().lower()
     lp_mode = str(labelprop_mode).strip().lower()
-    if decision == "legacy_role_quota_oracle" and lp_mode != "dense_transductive":
-        raise ValueError("lightweight qKNNV42 modes require per_sample_argmax deployment inference")
     classes, scores, info = _qknnv42_score_matrix(
         support_x,
         support_y,
@@ -520,6 +518,8 @@ def _qknnv42_predict(
             }
         )
     decision_started = time.perf_counter()
+    decision_workspace_bytes = 0
+    decision_cubic_work_units = 0
     if decision == "per_sample_argmax":
         predicted = np.asarray(classes, dtype=object)[np.argmax(scores, axis=1)]
     elif decision == "legacy_role_quota_oracle":
@@ -544,6 +544,12 @@ def _qknnv42_predict(
             return np.asarray(classes, dtype=object)[class_pos]
 
         old_count = int(old_query_count)
+        new_count = int(len(query_x) - old_count)
+        decision_workspace_bytes = int(
+            max(old_count * old_count, new_count * new_count)
+            * np.dtype(np.float64).itemsize
+        )
+        decision_cubic_work_units = int(old_count ** 3 + new_count ** 3)
         predicted = np.concatenate(
             [assign(scores[:old_count], old_positions), assign(scores[old_count:], new_positions)]
         )
@@ -555,6 +561,11 @@ def _qknnv42_predict(
             "decision_mode": decision,
             "role_oracle_used": decision == "legacy_role_quota_oracle",
             "equal_class_quota_used": decision == "legacy_role_quota_oracle",
+            "decision_batch_state_required": decision == "legacy_role_quota_oracle",
+            "decision_workspace_bytes_lower_bound": decision_workspace_bytes,
+            "estimated_decision_cubic_work_units": decision_cubic_work_units,
+            "query_batch_state_required": bool(info["query_batch_state_required"])
+            or decision == "legacy_role_quota_oracle",
             "scenario_hard_filter_effective": False,
             "scenario_hard_filter_note": "all registered classes have support in every formal scenario",
             "decision_latency_sec": decision_elapsed,
@@ -663,8 +674,6 @@ def validate_config(config: dict[str, Any]) -> None:
     ).strip().lower()
     if feature_adapter_mode != "support_diag_whiten_fisher":
         raise ValueError(f"unsupported qknnv42_feature_adapter_mode: {feature_adapter_mode}")
-    if labelprop_mode != "dense_transductive" and decision_mode != "per_sample_argmax":
-        raise ValueError("lightweight qKNNV42 modes require per_sample_argmax deployment inference")
     old_anchor_bias = float(config.get("qknnv42_old_anchor_bias", 0.001))
     if not math.isfinite(old_anchor_bias) or abs(old_anchor_bias) > 0.1:
         raise ValueError("qknnv42_old_anchor_bias must be finite and within [-0.1,0.1]")
@@ -826,7 +835,12 @@ def run(config: dict[str, Any], run_dir: Path) -> dict[str, Any]:
                 "target_new_tx_labels": new_labels, "target_labels_scope": "registered_support_only",
                 "target_query_used_for_training": False, "target_query_used_for_model_selection": False,
                 "query_used_for_transductive_inference": method == "cvs_qknnv42"
-                and labelprop_mode == "dense_transductive",
+                and (
+                    labelprop_mode == "dense_transductive"
+                    or decision_mode == "legacy_role_quota_oracle"
+                ),
+                "query_used_for_joint_decision": method == "cvs_qknnv42"
+                and decision_mode == "legacy_role_quota_oracle",
                 "support_query_overlap": False, "all_tests_satellite_augmented": True,
                 "seed": int(config["seed"]), "split_seed": seed, "k_shot": int(config["k_shot"]),
                 "support_pool_max_k": int(config["support_pool_max_k"]), "target_sample_strategy": "seeded_nested",
