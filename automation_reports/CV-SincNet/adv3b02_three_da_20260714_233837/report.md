@@ -74,3 +74,39 @@ dry-run通过。正式checkpoint和数据仅位于N607，因此本地只完成�
 - ProtoNet目标阶段无梯度是方法定义，不代表实验忘记解冻。
 - MRIOR/DADDA保留方法目标，但特征网络替换为ADV3B02，因此结果只能解释为共享ADV3B02上的方法比较。
 - 不允许用target query选择epoch或超参数；固定200步属于预注册预算。
+- 不允许用target query选择epoch或超参数；固定200步属于预注册预算。
+
+## 7.N607预检与烟测结果
+
+预检时间2026-07-14 23:39 HKT。GPU0–3各有一条既有RIEI任务；GPU4–7空闲。本任务未干预既有进程。N607未安装名为ssr-gpu的环境，正式远端运行使用服务器现有且已验证的CVS-RFFI环境（Python路径/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python，torch2.1.0+cu121，CUDA可用）；本地代码测试仍使用ssr-gpu。
+
+同步文件及SHA256：
+
+|远端相对路径|SHA256|
+|---|---|
+|paper_reproduction/cvs_aligned/adv3b02_supervised_da_runner.py|1270dbdb40285393519796a65a4f9bce3a0a89debdfce0e9a3ca1521a930a9db|
+|paper_reproduction/cvs_aligned/supervised_da.py|e1c36c7e52bc2e5b34dc4953254c371c20a29b97b8e1670691ffc28c5e770419|
+|paper_reproduction/scripts/run_cvs_publication_matrix.py|97b983fae3d19420baa4bfa525be8b61f5b31e06447c2f081d894a38ea966b81|
+|paper_reproduction/configs/adv3b02_stage2b_three_da_20260714_n607.json|734eb583d55b4cb5fd1b0fb849fe76a876f20e2dc7f1cbcdfb5f64477858a4d1|
+
+三条烟测均使用receiver=20-1、K=1、seed=713101、每场景2个适应步；输出位于runs/adv3b02_three_da_20260714_233837/smoke。
+
+|方法|GPU|最终状态|适应前old_acc|2步后old_acc|变化|损失检查|
+|---|---:|---|---:|---:|---:|---|
+|ProtoNet CDA|4|artifact-complete|69.72%|49.72%|-20.00pp|原型注册无梯度|
+|MRIOR-SDA|5|artifact-complete|69.72%|53.61%|-16.11pp|DV-KL=0.52–1.02，全部有限|
+|DADDA-SDA|6|artifact-complete|69.72%|68.33%|-1.39pp|MMD、LMMD、alpha、总loss全部有限|
+
+烟测只验证接口、严格加载、梯度更新、损失稳定性与artifact契约，不用于正式方法排名。
+
+## 8.正式矩阵启动设计
+
+|worker|GPU|方法|shard|预计行数|
+|---|---:|---|---|---:|
+|proto|4|ProtoNet CDA|1/1|125|
+|mrior0|5|MRIOR-SDA|0/2|约63|
+|mrior1|6|MRIOR-SDA|1/2|约62|
+|dadda0|7|DADDA-SDA|0/2|约63|
+|dadda1|4|DADDA-SDA|1/2|约62|
+
+每个worker通过paper_reproduction/scripts/run_cvs_publication_matrix.py启动，并使用--module-override paper_reproduction.cvs_aligned.adv3b02_supervised_da_runner。输出根为runs/adv3b02_three_da_20260714_233837/formal，日志根按方法/分片隔离；每个子任务完成后立即退出Python进程，不保留SSH连接。
