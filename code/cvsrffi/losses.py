@@ -345,7 +345,12 @@ def _safe_angle_from_cos(cos: torch.Tensor, *, eps: float = 1e-6) -> torch.Tenso
 
 def _bounded_softplus(value: torch.Tensor, *, clip: float = 20.0) -> torch.Tensor:
     value_f = torch.nan_to_num(value.float(), nan=0.0, posinf=float(clip), neginf=-float(clip))
-    return F.softplus(torch.clamp(value_f, -float(clip), float(clip)))
+    clip_f = float(clip)
+    clamped = torch.clamp(value_f, -clip_f, clip_f)
+    # Preserve the linear positive-tail gradient. A hard upper clamp makes
+    # badly violated geometry targets report a large loss while providing no
+    # corrective gradient, exactly the failure mode this helper must avoid.
+    return F.softplus(clamped) + F.relu(value_f - clip_f)
 
 
 def _bounded_positive_scalar_loss(value: torch.Tensor, *, cap: float) -> torch.Tensor:
@@ -1580,6 +1585,34 @@ def _make_interclass_bridge_outliers(
     return safe_l2_normalize(torch.stack(out, dim=0), dim=1)
 
 
+def _make_query_interclass_bridge_outliers(
+    z_known: torch.Tensor,
+    y_known: torch.Tensor,
+    class_ids: torch.Tensor,
+    proto: torch.Tensor,
+    *,
+    count: int,
+) -> torch.Tensor:
+    """Create differentiable bridges from current queries to another class."""
+
+    if count <= 0 or z_known.numel() == 0 or proto.size(0) < 2:
+        feat_dim = z_known.size(1) if z_known.dim() == 2 else proto.size(1)
+        return z_known.new_zeros((0, feat_dim))
+    out = []
+    for i in range(int(count)):
+        query_idx = i % int(z_known.size(0))
+        query = z_known[query_idx]
+        other = class_ids.ne(y_known[query_idx])
+        if not bool(other.any()):
+            continue
+        other_proto = proto[other]
+        nearest_other = other_proto[(query.detach() @ other_proto.detach().t()).argmax()]
+        out.append(query + nearest_other.detach())
+    if not out:
+        return z_known.new_zeros((0, z_known.size(1)))
+    return safe_l2_normalize(torch.stack(out, dim=0), dim=1)
+
+
 def _make_tail_outward_outliers(z_known: torch.Tensor, proto: torch.Tensor, *, count: int) -> torch.Tensor:
     if count <= 0 or z_known.numel() == 0 or proto.numel() == 0:
         return z_known.new_zeros((0, z_known.size(1)))
@@ -1767,6 +1800,8 @@ def direct_metric_acceptance_loss(
     radius_inter_ratio_target: float = 0.85,
     core_accept_target: float = 0.82,
     core_tpr_target: float = 0.85,
+    known_accept_target: float = 0.65,
+    known_tpr_target: float = 0.85,
     sat_pair_target_rad: float = math.radians(10.0),
     zid_quantile_weight: float = 1.0,
     source_overflow_weight: float = 1.0,
@@ -1781,6 +1816,7 @@ def direct_metric_acceptance_loss(
     component_overlap_weight: float = 0.0,
     core_accept_weight: float = 0.25,
     core_tpr_weight: float = 0.0,
+    known_coverage_weight: float = 0.0,
     sat_pair_weight: float = 0.0,
     quantile_temperature_rad: float = math.radians(3.0),
     accept_temperature: float = 0.04,
@@ -1793,6 +1829,10 @@ def direct_metric_acceptance_loss(
     source_radius_cap_rad: float = 0.0,
     shell_width_rad: float = math.radians(4.0),
     accept_cvar_alpha: float = 0.25,
+    positive_first: bool = False,
+    negative_start_tpr: float = 0.75,
+    negative_full_tpr: float = 0.85,
+    require_effective_negative_grad: bool = False,
     virtual_detach: bool = True,
     gate_reference_detach: bool = True,
     min_classes: int = 2,
@@ -1846,6 +1886,19 @@ def direct_metric_acceptance_loss(
         "core_hard_tpr": float("nan"),
         "core_soft_tpr": float("nan"),
         "core_tpr_loss": 0.0,
+        "known_accept_rate": float("nan"),
+        "known_hard_tpr": float("nan"),
+        "known_soft_tpr": float("nan"),
+        "known_coverage_loss": 0.0,
+        "known_probability_loss": 0.0,
+        "known_radius_loss": 0.0,
+        "known_margin_loss": 0.0,
+        "known_density_loss": 0.0,
+        "known_tpr_loss": 0.0,
+        "negative_risk_scale": 1.0,
+        "proxy_gradient_active": 0.0,
+        "query_inter_margin_loss": 0.0,
+        "query_overlap_loss": 0.0,
         "sat_pair_angle_p95_deg": float("nan"),
         "sat_pair_loss": 0.0,
         "zid_quantile_loss": 0.0,
@@ -2128,7 +2181,12 @@ def direct_metric_acceptance_loss(
         q99 = torch.quantile(pos_det, 0.99) if pos_det.numel() > 1 else pos_det.mean()
         tail_cvar_metric = _top_angle_mean(0.05).detach()
 
-    def _geometry_accept_prob(feat: torch.Tensor) -> Tuple[torch.Tensor, torch.Tensor]:
+    def _geometry_accept_prob(
+        feat: torch.Tensor,
+        *,
+        expected_labels: Optional[torch.Tensor] = None,
+        core_radius: bool = False,
+    ) -> Tuple[torch.Tensor, torch.Tensor]:
         if feat is None or feat.numel() == 0:
             return sample_z.new_zeros((0,)), sample_z.new_zeros((0,))
         feat_norm = safe_l2_normalize(feat, dim=1)
@@ -2136,15 +2194,16 @@ def direct_metric_acceptance_loss(
             (feat_norm @ gate_proto_ref.t()).clamp(-1.0 + angle_eps, 1.0 - angle_eps),
             eps=angle_eps,
         )
+        radius_source = gate_shell_radius if bool(core_radius) else gate_radius
         radius_gate = torch.sigmoid(
-            (gate_radius.detach().view(1, -1) - feat_angles) / max(1e-4, float(component_temperature_rad))
+            (radius_source.detach().view(1, -1) - feat_angles) / max(1e-4, float(component_temperature_rad))
         )
         margin_columns = []
         density_columns = []
         for component_idx in range(gate_proto_ref.size(0)):
             other_class = gate_labels.ne(gate_labels[component_idx])
             if bool(other_class.any()):
-                other_nearest = feat_angles[:, other_class].min(dim=1).values.detach()
+                other_nearest = feat_angles[:, other_class].min(dim=1).values
                 class_gap = other_nearest - feat_angles[:, component_idx]
                 margin_columns.append(
                     torch.sigmoid(
@@ -2194,7 +2253,7 @@ def direct_metric_acceptance_loss(
             for class_idx in range(class_gate_proto_ref.size(0)):
                 other_class = class_gate_labels.ne(class_gate_labels[class_idx])
                 if bool(other_class.any()):
-                    other_nearest = class_angles[:, other_class].min(dim=1).values.detach()
+                    other_nearest = class_angles[:, other_class].min(dim=1).values
                     class_gap = other_nearest - class_angles[:, class_idx]
                     class_margin_columns.append(
                         torch.sigmoid(
@@ -2258,6 +2317,13 @@ def direct_metric_acceptance_loss(
             else:
                 component_accept = component_accept * class_component_accept
                 effective_density = effective_density * class_component_density
+        if expected_labels is not None:
+            expected = expected_labels.view(-1).long().to(device=gate_labels.device)
+            if expected.numel() != component_accept.size(0):
+                raise ValueError("expected_labels must align with direct metric query features")
+            expected_component = expected.view(-1, 1).eq(gate_labels.view(1, -1))
+            component_accept = component_accept.masked_fill(~expected_component, 0.0)
+            effective_density = effective_density.masked_fill(~expected_component, 0.0)
         low_density_prob = 1.0 - effective_density.max(dim=1).values
         return component_accept.max(dim=1).values, low_density_prob
 
@@ -2266,7 +2332,11 @@ def direct_metric_acceptance_loss(
             return sample_z.new_tensor(0.0)
         return _top_cvar_mean(_bounded_softplus((prob - float(target)) / tau_a, clip=softplus_clip), cvar_frac)
 
-    core_prob, _ = _geometry_accept_prob(sample_z[core_mask])
+    core_prob, _ = _geometry_accept_prob(
+        sample_z[core_mask],
+        expected_labels=sample_labels[core_mask],
+        core_radius=True,
+    )
     core_accept_loss = (
         _top_cvar_mean(_bounded_softplus((float(core_accept_target) - core_prob) / tau_a, clip=softplus_clip), cvar_frac)
         if core_prob.numel()
@@ -2278,15 +2348,135 @@ def direct_metric_acceptance_loss(
         else sample_z.new_tensor(0.0)
     )
     core_tpr_loss = F.relu(float(core_tpr_target) - core_soft_tpr_tensor).pow(2)
+    known_prob, _ = _geometry_accept_prob(
+        sample_z[sample_query_mask],
+        expected_labels=sample_labels[sample_query_mask],
+        core_radius=True,
+    )
+    known_probability_loss = (
+        _top_cvar_mean(
+            _bounded_softplus(
+                (float(known_accept_target) - known_prob) / tau_a,
+                clip=softplus_clip,
+            ),
+            cvar_frac,
+        )
+        if known_prob.numel()
+        else sample_z.new_tensor(0.0)
+    )
+    known_radius_loss = sample_z.new_tensor(0.0)
+    known_margin_loss = sample_z.new_tensor(0.0)
+    known_density_loss = sample_z.new_tensor(0.0)
+    known_query_z = sample_z[sample_query_mask]
+    known_query_labels = sample_labels[sample_query_mask]
+    if known_query_z.numel():
+        known_angles = _safe_angle_from_cos(
+            (known_query_z @ gate_proto_ref.t()).clamp(
+                -1.0 + angle_eps, 1.0 - angle_eps
+            ),
+            eps=angle_eps,
+        )
+        known_own_component = known_query_labels.view(-1, 1).eq(
+            gate_labels.view(1, -1)
+        )
+        known_own_angles = known_angles.masked_fill(
+            ~known_own_component, float("inf")
+        )
+        known_own_angle, known_own_index = known_own_angles.min(dim=1)
+        known_radius_loss = _top_cvar_mean(
+            _bounded_softplus(
+                (
+                    known_own_angle
+                    - gate_shell_radius.detach()[known_own_index]
+                )
+                / tau_q,
+                clip=softplus_clip,
+            ),
+            cvar_frac,
+        )
+        known_other_angle = known_angles.masked_fill(
+            known_own_component, float("inf")
+        ).min(dim=1).values
+        known_margin_loss = _top_cvar_mean(
+            _bounded_softplus(
+                (
+                    float(component_margin_rad)
+                    - (known_other_angle - known_own_angle)
+                )
+                / tau_q,
+                clip=softplus_clip,
+            ),
+            cvar_frac,
+        )
+        known_density_angles = []
+        known_density_radii = []
+        for row_idx, component_idx in enumerate(known_own_index):
+            component_i = int(component_idx.detach().item())
+            component_core = sample_z[gate_core_masks[component_i]]
+            if component_core.numel():
+                nearest_density_angle = _safe_angle_from_cos(
+                    (
+                        known_query_z[row_idx : row_idx + 1]
+                        @ component_core.detach().t()
+                    )
+                    .clamp(-1.0 + angle_eps, 1.0 - angle_eps)
+                    .max(dim=1)
+                    .values,
+                    eps=angle_eps,
+                ).squeeze(0)
+                known_density_angles.append(nearest_density_angle)
+                known_density_radii.append(
+                    gate_density_radius[component_i].detach()
+                )
+        if known_density_angles:
+            known_density_angle_t = torch.stack(known_density_angles)
+            known_density_radius_t = torch.stack(known_density_radii)
+            known_density_loss = _top_cvar_mean(
+                _bounded_softplus(
+                    (known_density_angle_t - known_density_radius_t) / tau_q,
+                    clip=softplus_clip,
+                ),
+                cvar_frac,
+            )
+    known_coverage_loss = (
+        known_probability_loss
+        + known_radius_loss
+        + known_margin_loss
+        + known_density_loss
+    )
+    known_soft_tpr_tensor = (
+        torch.sigmoid((known_prob - 0.5) / tau_a).mean()
+        if known_prob.numel()
+        else sample_z.new_tensor(0.0)
+    )
+    known_hard_tpr_tensor = (
+        (known_prob.detach() >= 0.5).float().mean()
+        if known_prob.numel()
+        else sample_z.new_tensor(0.0)
+    )
+    known_tpr_loss = F.relu(float(known_tpr_target) - known_soft_tpr_tensor).pow(2)
+    negative_risk_scale = sample_z.new_tensor(1.0)
+    if bool(positive_first):
+        start_tpr = min(float(negative_start_tpr), float(negative_full_tpr) - 1e-4)
+        full_tpr = max(float(negative_full_tpr), start_tpr + 1e-4)
+        coverage_control_tpr = torch.minimum(
+            known_soft_tpr_tensor.detach(), known_hard_tpr_tensor.detach()
+        )
+        negative_risk_scale = (
+            (coverage_control_tpr - start_tpr) / (full_tpr - start_tpr)
+        ).clamp(0.0, 1.0)
     tail_prob, tail_low_density_prob = _geometry_accept_prob(sample_z[tail_mask])
     overflow_prob, overflow_low_density_prob = _geometry_accept_prob(sample_z[overflow_mask])
     tail_accept_loss = _accept_loss(tail_prob, float(tail_accept_target))
     overflow_accept_loss = _accept_loss(overflow_prob, float(overflow_accept_target))
 
     virtual_geometry_basis = gate_proto.detach() if bool(virtual_detach) else gate_proto
+    virtual_source_mask = sample_fit_mask
+    if not bool(virtual_detach) and bool(sample_query_mask.any()):
+        virtual_source_mask = sample_query_mask
     virtual_parts = _make_proxy_virtual_unknown_pool(
-        sample_z[sample_fit_mask],
-        sample_labels[sample_fit_mask],
+        sample_z[virtual_source_mask],
+        sample_labels[virtual_source_mask],
         gate_labels,
         virtual_geometry_basis,
         gate_shell_radius,
@@ -2294,6 +2484,14 @@ def direct_metric_acceptance_loss(
         mode=str(virtual_mode or "hard"),
         shell_width_rad=float(shell_width_rad),
     )
+    if not bool(virtual_detach) and "bridge" in virtual_parts:
+        virtual_parts["bridge"] = _make_query_interclass_bridge_outliers(
+            sample_z[virtual_source_mask],
+            sample_labels[virtual_source_mask],
+            gate_labels,
+            gate_proto_ref,
+            count=int(virtual_parts["bridge"].size(0)),
+        )
     if bool(virtual_detach):
         virtual_parts = {name: part.detach() for name, part in virtual_parts.items()}
     virtual_tensors = [part for part in virtual_parts.values() if part.numel() > 0]
@@ -2325,6 +2523,8 @@ def direct_metric_acceptance_loss(
     radius_inter_ratio_loss = sample_z.new_tensor(0.0)
     component_inter_margin_loss = sample_z.new_tensor(0.0)
     component_overlap_loss = sample_z.new_tensor(0.0)
+    query_inter_margin_loss = sample_z.new_tensor(0.0)
+    query_overlap_loss = sample_z.new_tensor(0.0)
     radius_inter_ratio_metric = sample_z.new_tensor(float("nan"))
     component_min_inter = sample_z.new_tensor(float("nan"))
     if gate_proto.size(0) > 1:
@@ -2344,6 +2544,13 @@ def direct_metric_acceptance_loss(
         own_angles = sample_gate_angles.masked_fill(~own_component, float("inf"))
         own_index = own_angles.argmin(dim=1)
         nearest_own_angle = own_angles.gather(1, own_index.view(-1, 1)).squeeze(1)
+        other_angles = sample_gate_angles.masked_fill(own_component, float("inf"))
+        nearest_other_angle = other_angles.min(dim=1).values
+        query_class_gap = nearest_other_angle - nearest_own_angle
+        query_inter_margin_loss = _top_cvar_mean(
+            F.relu(float(component_inter_margin_rad) - query_class_gap).pow(2),
+            cvar_frac,
+        )
         sample_inter = nearest_inter[own_index]
         ratio = nearest_own_angle / sample_inter
         sample_ratio_loss = _top_cvar_mean(
@@ -2364,19 +2571,28 @@ def direct_metric_acceptance_loss(
             cvar_frac,
         )
         radius_inter_ratio_loss = sample_ratio_loss + component_ratio_loss
-        component_inter_margin_loss = _top_cvar_mean(
+        reference_inter_margin_loss = _top_cvar_mean(
             F.relu(float(component_inter_margin_rad) - nearest_inter).pow(2),
             cvar_frac,
         )
+        component_inter_margin_loss = reference_inter_margin_loss + query_inter_margin_loss
         pair_radius = gate_radius.detach().view(-1, 1) + gate_radius.detach().view(1, -1)
         overlap = F.relu(
             pair_radius + float(component_overlap_margin_rad) - inter_angles
         ).masked_select(other_class)
-        component_overlap_loss = (
+        reference_overlap_loss = (
             _top_cvar_mean(overlap.pow(2), cvar_frac)
             if overlap.numel()
             else sample_z.new_tensor(0.0)
         )
+        query_overlap = F.relu(
+            nearest_own_angle
+            + gate_radius.detach()[own_index]
+            + float(component_overlap_margin_rad)
+            - nearest_other_angle
+        )
+        query_overlap_loss = _top_cvar_mean(query_overlap.pow(2), cvar_frac)
+        component_overlap_loss = reference_overlap_loss + query_overlap_loss
 
     source_probs = []
     source_hard_overflow = []
@@ -2426,19 +2642,36 @@ def direct_metric_acceptance_loss(
         )
         sat_pair_p95 = torch.quantile(pair_angles.detach(), 0.95) if pair_angles.numel() > 1 else pair_angles.detach().mean()
 
-    loss = (
-        max(0.0, float(zid_quantile_weight)) * zid_quantile_loss
-        + max(0.0, float(source_overflow_weight)) * source_overflow_loss
-        + max(0.0, float(proxy_vaccept_weight)) * proxy_vaccept_loss
+    if (
+        bool(require_effective_negative_grad)
+        and float(negative_risk_scale.detach().item()) > 0.0
+        and virtual_all.numel() > 0
+        and (float(proxy_vaccept_weight) > 0.0 or float(bridge_accept_weight) > 0.0)
+        and not bool(proxy_vaccept_loss.requires_grad or bridge_accept_loss.requires_grad)
+    ):
+        raise RuntimeError(
+            "direct metric proxy/bridge risk has no gradient; set "
+            "--direct_metric_virtual_detach false or enable a trainable gate reference"
+        )
+
+    negative_risk_loss = negative_risk_scale * (
+        max(0.0, float(proxy_vaccept_weight)) * proxy_vaccept_loss
         + max(0.0, float(bridge_accept_weight)) * bridge_accept_loss
         + max(0.0, float(low_density_accept_weight)) * low_density_accept_loss
         + max(0.0, float(tail_accept_weight)) * tail_accept_loss
         + max(0.0, float(overflow_accept_weight)) * overflow_accept_loss
+    )
+    loss = (
+        max(0.0, float(zid_quantile_weight)) * zid_quantile_loss
+        + max(0.0, float(source_overflow_weight)) * source_overflow_loss
+        + negative_risk_loss
         + max(0.0, float(radius_inter_ratio_weight)) * radius_inter_ratio_loss
         + max(0.0, float(component_inter_margin_weight)) * component_inter_margin_loss
         + max(0.0, float(component_overlap_weight)) * component_overlap_loss
         + max(0.0, float(core_accept_weight)) * core_accept_loss
         + max(0.0, float(core_tpr_weight)) * core_tpr_loss
+        + max(0.0, float(known_coverage_weight))
+        * (known_coverage_loss + known_tpr_loss)
         + max(0.0, float(sat_pair_weight)) * sat_pair_loss
     )
 
@@ -2470,6 +2703,8 @@ def direct_metric_acceptance_loss(
         "radius_inter_ratio_loss": _scalar_metric(radius_inter_ratio_loss),
         "component_inter_margin_loss": _scalar_metric(component_inter_margin_loss),
         "component_overlap_loss": _scalar_metric(component_overlap_loss),
+        "query_inter_margin_loss": _scalar_metric(query_inter_margin_loss),
+        "query_overlap_loss": _scalar_metric(query_overlap_loss),
         "component_min_inter_deg": math.degrees(_scalar_metric(component_min_inter)),
         "hierarchical_class_gate": 1.0 if bool(hierarchical_class_gate) else 0.0,
         "global_zid_quantile_loss": _scalar_metric(global_zid_quantile_loss),
@@ -2482,6 +2717,23 @@ def direct_metric_acceptance_loss(
         ),
         "core_soft_tpr": _scalar_metric(core_soft_tpr_tensor.detach()),
         "core_tpr_loss": _scalar_metric(core_tpr_loss),
+        "known_accept_rate": _mean_prob(known_prob),
+        "known_hard_tpr": (
+            _scalar_metric(known_hard_tpr_tensor)
+            if known_prob.numel()
+            else float("nan")
+        ),
+        "known_soft_tpr": _scalar_metric(known_soft_tpr_tensor.detach()),
+        "known_coverage_loss": _scalar_metric(known_coverage_loss),
+        "known_probability_loss": _scalar_metric(known_probability_loss),
+        "known_radius_loss": _scalar_metric(known_radius_loss),
+        "known_margin_loss": _scalar_metric(known_margin_loss),
+        "known_density_loss": _scalar_metric(known_density_loss),
+        "known_tpr_loss": _scalar_metric(known_tpr_loss),
+        "negative_risk_scale": _scalar_metric(negative_risk_scale),
+        "proxy_gradient_active": 1.0
+        if bool(proxy_vaccept_loss.requires_grad or bridge_accept_loss.requires_grad)
+        else 0.0,
         "source_overflow_hard": (
             _scalar_metric(torch.cat(source_hard_overflow).float().mean())
             if source_hard_overflow
@@ -2677,6 +2929,26 @@ def multiview_direct_metric_acceptance_loss(
             float(clean_metrics.get("query_count", 0.0)),
             float(sat_metrics.get("query_count", 0.0)),
         ),
+        "known_accept_rate": min(
+            float(clean_metrics.get("known_accept_rate", float("nan"))),
+            float(sat_metrics.get("known_accept_rate", float("nan"))),
+        ),
+        "known_hard_tpr": min(
+            float(clean_metrics.get("known_hard_tpr", float("nan"))),
+            float(sat_metrics.get("known_hard_tpr", float("nan"))),
+        ),
+        "known_soft_tpr": min(
+            float(clean_metrics.get("known_soft_tpr", float("nan"))),
+            float(sat_metrics.get("known_soft_tpr", float("nan"))),
+        ),
+        "negative_risk_scale": min(
+            float(clean_metrics.get("negative_risk_scale", 1.0)),
+            float(sat_metrics.get("negative_risk_scale", 1.0)),
+        ),
+        "proxy_gradient_active": min(
+            float(clean_metrics.get("proxy_gradient_active", 0.0)),
+            float(sat_metrics.get("proxy_gradient_active", 0.0)),
+        ),
     }
     conservative_keys = (
         "zid_p50_deg",
@@ -2718,6 +2990,14 @@ def multiview_direct_metric_acceptance_loss(
         "component_overlap_loss",
         "global_zid_quantile_loss",
         "core_accept_loss",
+        "known_coverage_loss",
+        "known_probability_loss",
+        "known_radius_loss",
+        "known_margin_loss",
+        "known_density_loss",
+        "known_tpr_loss",
+        "query_inter_margin_loss",
+        "query_overlap_loss",
     )
     for key in weighted_loss_keys:
         metrics[key] = _weighted_view_sum(key)
@@ -3040,6 +3320,8 @@ def unlabeled_known_acceptance_quarantine_loss(
         metrics["_tri_trusted_core_mask"] = tri_trusted_core.detach()
         metrics["_tri_ambiguous_tail_mask"] = tri_ambiguous_tail.detach()
         metrics["_tri_outside_reject_mask"] = tri_outside_reject.detach()
+        metrics["_tri_accept_prob"] = accept_prob.detach()
+        metrics["_tri_label_match_mask"] = tri_label_match.detach()
     return accept_loss, metrics
 
 

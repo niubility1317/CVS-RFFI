@@ -552,6 +552,201 @@ def test_sparse_unlabeled_queries_reuse_detached_labeled_component_reference():
     assert float(query.grad.norm().item()) > 0.0
 
 
+def test_positive_first_prioritizes_all_known_coverage_before_negative_rejection():
+    reference = torch.tensor(
+        [[1.0, 0.0], [0.99, 0.03], [0.0, 1.0], [0.03, 0.99]],
+        dtype=torch.float32,
+    )
+    labels = torch.tensor([0, 0, 1, 1])
+    query = torch.tensor(
+        [[0.72, 0.69], [0.69, 0.72], [0.65, 0.76], [0.76, 0.65]],
+        dtype=torch.float32,
+        requires_grad=True,
+    )
+
+    loss, metrics = direct_metric_acceptance_loss(
+        query,
+        labels,
+        reference_z=reference,
+        reference_y=labels,
+        virtual_count=8,
+        virtual_detach=False,
+        positive_first=True,
+        negative_start_tpr=0.75,
+        negative_full_tpr=0.85,
+        known_coverage_weight=2.0,
+        known_accept_target=0.65,
+        known_tpr_target=0.85,
+        zid_quantile_weight=0.0,
+        source_overflow_weight=0.0,
+        radius_inter_ratio_weight=0.0,
+        component_inter_margin_weight=0.0,
+        component_overlap_weight=0.0,
+        core_accept_weight=0.0,
+        core_tpr_weight=0.0,
+    )
+    loss.backward()
+
+    assert metrics["known_hard_tpr"] < 0.85
+    assert metrics["known_coverage_loss"] > 0.0
+    assert metrics["negative_risk_scale"] == 0.0
+    assert query.grad is not None
+    assert float(query.grad.norm().item()) > 0.0
+
+
+def test_query_inter_margin_backpropagates_with_detached_reference_components():
+    reference = torch.tensor(
+        [[1.0, 0.0], [0.98, 0.06], [0.0, 1.0], [0.06, 0.98]],
+        dtype=torch.float32,
+    )
+    labels = torch.tensor([0, 0, 1, 1])
+    query = torch.tensor(
+        [[0.74, 0.67], [0.70, 0.71], [0.67, 0.74], [0.71, 0.70]],
+        dtype=torch.float32,
+        requires_grad=True,
+    )
+
+    loss, metrics = direct_metric_acceptance_loss(
+        query,
+        labels,
+        reference_z=reference,
+        reference_y=labels,
+        virtual_count=0,
+        gate_reference_detach=True,
+        zid_quantile_weight=0.0,
+        source_overflow_weight=0.0,
+        proxy_vaccept_weight=0.0,
+        bridge_accept_weight=0.0,
+        low_density_accept_weight=0.0,
+        tail_accept_weight=0.0,
+        overflow_accept_weight=0.0,
+        radius_inter_ratio_weight=0.0,
+        component_inter_margin_weight=1.0,
+        component_inter_margin_rad=math.radians(35.0),
+        component_overlap_weight=0.0,
+        core_accept_weight=0.0,
+        core_tpr_weight=0.0,
+    )
+    loss.backward()
+
+    assert metrics["query_inter_margin_loss"] > 0.0
+    assert metrics["gate_reference_detached"] == 1.0
+    assert query.grad is not None
+    assert float(query.grad.norm().item()) > 0.0
+
+
+def test_effective_negative_gradient_guard_rejects_fully_detached_proxy_path():
+    features = torch.tensor(
+        [[1.0, 0.0], [0.98, 0.10], [0.0, 1.0], [0.10, 0.98]],
+        dtype=torch.float32,
+        requires_grad=True,
+    )
+    labels = torch.tensor([0, 0, 1, 1])
+
+    with pytest.raises(RuntimeError, match="proxy/bridge risk has no gradient"):
+        direct_metric_acceptance_loss(
+            features,
+            labels,
+            virtual_count=6,
+            virtual_detach=True,
+            gate_reference_detach=True,
+            require_effective_negative_grad=True,
+            zid_quantile_weight=0.0,
+            source_overflow_weight=0.0,
+            proxy_vaccept_weight=1.0,
+            bridge_accept_weight=1.0,
+            low_density_accept_weight=0.0,
+            tail_accept_weight=0.0,
+            overflow_accept_weight=0.0,
+            radius_inter_ratio_weight=0.0,
+            component_inter_margin_weight=0.0,
+            component_overlap_weight=0.0,
+            core_accept_weight=0.0,
+            core_tpr_weight=0.0,
+        )
+
+
+def test_known_geometry_coverage_requires_own_class_core_not_any_component():
+    reference = torch.tensor(
+        [[1.0, 0.0], [0.999, 0.02], [0.0, 1.0], [0.02, 0.999]],
+        dtype=torch.float32,
+    )
+    reference_y = torch.tensor([0, 0, 1, 1])
+    wrong_class_near = torch.tensor(
+        [[0.02, 0.999], [0.04, 0.998]], dtype=torch.float32, requires_grad=True
+    )
+
+    loss, metrics = direct_metric_acceptance_loss(
+        wrong_class_near,
+        torch.tensor([0, 0]),
+        reference_z=reference,
+        reference_y=reference_y,
+        virtual_count=0,
+        known_coverage_weight=1.0,
+        zid_quantile_weight=0.0,
+        source_overflow_weight=0.0,
+        proxy_vaccept_weight=0.0,
+        bridge_accept_weight=0.0,
+        low_density_accept_weight=0.0,
+        tail_accept_weight=0.0,
+        overflow_accept_weight=0.0,
+        radius_inter_ratio_weight=0.0,
+        component_inter_margin_weight=0.0,
+        component_overlap_weight=0.0,
+        core_accept_weight=0.0,
+        core_tpr_weight=0.0,
+    )
+    loss.backward()
+
+    assert metrics["known_hard_tpr"] == 0.0
+    assert metrics["known_accept_rate"] < 0.5
+    assert wrong_class_near.grad is not None
+    assert float(wrong_class_near.grad.norm().item()) > 0.0
+
+
+def test_trainable_query_virtuals_keep_proxy_gradient_with_frozen_reference_bank():
+    reference = torch.tensor(
+        [[1.0, 0.0], [0.99, 0.03], [0.0, 1.0], [0.03, 0.99]],
+        dtype=torch.float32,
+    )
+    labels = torch.tensor([0, 0, 1, 1])
+    query = torch.tensor(
+        [[0.98, 0.12], [0.95, 0.25], [0.12, 0.98], [0.25, 0.95]],
+        dtype=torch.float32,
+        requires_grad=True,
+    )
+
+    loss, metrics = direct_metric_acceptance_loss(
+        query,
+        labels,
+        reference_z=reference,
+        reference_y=labels,
+        virtual_count=9,
+        virtual_detach=False,
+        gate_reference_detach=True,
+        require_effective_negative_grad=True,
+        proxy_vaccept_weight=1.0,
+        bridge_accept_weight=1.0,
+        zid_quantile_weight=0.0,
+        source_overflow_weight=0.0,
+        low_density_accept_weight=0.0,
+        tail_accept_weight=0.0,
+        overflow_accept_weight=0.0,
+        radius_inter_ratio_weight=0.0,
+        component_inter_margin_weight=0.0,
+        component_overlap_weight=0.0,
+        core_accept_weight=0.0,
+        core_tpr_weight=0.0,
+    )
+    loss.backward()
+
+    assert metrics["reference_anchor_count"] == 4.0
+    assert metrics["gate_reference_detached"] == 1.0
+    assert metrics["proxy_gradient_active"] == 1.0
+    assert query.grad is not None
+    assert float(query.grad.norm().item()) > 0.0
+
+
 def test_tx_conditional_invariance_aligns_nuisance_groups_without_cross_tx_collapse():
     features = torch.tensor(
         [

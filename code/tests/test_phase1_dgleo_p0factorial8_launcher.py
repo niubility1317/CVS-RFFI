@@ -12,7 +12,7 @@ CODE_ROOT = PROJECT_ROOT / "code"
 if str(CODE_ROOT) not in sys.path:
     sys.path.insert(0, str(CODE_ROOT))
 
-from SSDG.train_ssdg import build_arg_parser  # noqa: E402
+from SSDG.train_ssdg import build_arg_parser, train  # noqa: E402
 from scripts import launch_phase1_dgleo_p0factorial8_20260714 as launcher  # noqa: E402
 
 
@@ -66,6 +66,10 @@ def test_factor_a_changes_positive_first_own_class_core_only():
     assert off.direct_metric_reference_bank is False
     assert on.direct_metric_reference_bank is True
     assert on.direct_metric_core_tpr_weight > 0.0
+    assert on.lambda_direct_metric_accept > 0.0
+    assert on.lambda_u_direct_metric_accept > 0.0
+    assert on.u_tri_quota_routing is True
+    assert on.u_route_use_reference_bank is True
     assert off.lambda_zid_receiver_invariance == on.lambda_zid_receiver_invariance == 0.0
     assert off.direct_metric_component_inter_margin_weight == on.direct_metric_component_inter_margin_weight == 0.0
 
@@ -83,8 +87,8 @@ def test_factor_b_changes_tx_conditioned_invariance_local_component_and_worst_vi
     assert off.source_episode_local_compact_weight == 0.0
     assert on.source_episode_local_compact_weight > 0.0
     assert on.source_episode_local_invariant_weight > 0.0
-    assert on.source_episode_local_inter_weight > 0.0
-    assert on.source_episode_local_overlap_weight > 0.0
+    assert on.source_episode_local_inter_weight == 0.0
+    assert on.source_episode_local_overlap_weight == 0.0
     assert on.source_episode_local_accept_weight > 0.0
     assert on.source_episode_local_density_weight > 0.0
     assert off.group_ce_mode == "smooth_dro_capped"
@@ -116,6 +120,12 @@ def test_factor_c_changes_query_geometry_zid_budget_and_risk_only():
     assert on.unlabeled_risk_buffer is True
     assert off.lambda_risk_energy_out == 0.0
     assert on.lambda_risk_energy_out > 0.0
+    assert on.direct_metric_virtual_detach is False
+    assert on.direct_metric_require_effective_negative_grad is True
+    assert on.direct_metric_proxy_vaccept_weight > 0.0
+    assert on.direct_metric_bridge_accept_weight > 0.0
+    assert on.source_episode_local_inter_weight > 0.0
+    assert on.source_episode_local_overlap_weight > 0.0
     assert off.lambda_zid_receiver_invariance == on.lambda_zid_receiver_invariance == 0.0
     assert off.direct_metric_positive_first is on.direct_metric_positive_first is False
 
@@ -139,6 +149,10 @@ def test_all_candidates_share_internal_p0_source_only_final_protocol(factors):
     assert args.concat_sat_teacher_clean_only is True
     assert args.eval_sat_channel is True
     assert args.eval_sat_scenarios == "leo_clear_weak,leo_low_elev_weak,leo_rain_weak"
+    assert args.sat_train_scenarios == "clear_leo,low_elev_leo,rain_leo"
+    assert "leo_clear_weak" not in args.sat_view_schedule
+    assert args.sat_protocol_disjoint_required is True
+    assert args.lambda_proxy_unknown == 0.0
     assert args.test_eval_start_epoch > args.epochs
     assert args.test_eval_interval == 0
     assert args.test_eval_final_window == 0
@@ -148,6 +162,8 @@ def test_all_candidates_share_internal_p0_source_only_final_protocol(factors):
     assert args.source_val_heavy_eval_final_interval == 2
     assert args.u_direct_include_outside_known is False
     assert args.u_outside_stop_gradient is True
+    assert args.u_route_use_teacher_weak is True
+    assert args.u_quarantine_include_sat_view is False
 
 
 def test_one_process_per_gpu_matrix_and_inherited_resource_gate(monkeypatch):
@@ -190,3 +206,10 @@ def test_matrix_validation_rejects_two_processes_on_one_gpu():
     rows[1]["gpu"] = rows[0]["gpu"]
     with pytest.raises(ValueError, match="exactly one candidate process per GPU"):
         launcher.validate_matrix(rows)
+
+
+def test_disjoint_satellite_protocol_passes_trainer_dry_run():
+    args = _parsed(_row(True, True, True))
+    args.dry_run = True
+    assert train(args) == 0
+    assert args.sat_protocol_manifest["disjoint"] is True

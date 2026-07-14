@@ -248,3 +248,58 @@ def test_unlabeled_router_uses_separate_clean_sat_local_components_without_fallb
     assert info["global_component_fallback"] == 0.0
     assert info["clean_local_component_count"] == 4.0
     assert info["sat_local_component_count"] == 4.0
+
+
+def test_unlabeled_quota_routes_all_high_confidence_source_known_into_direct_geometry():
+    args = build_arg_parser().parse_args(["--output_dir", "runs/tmp"])
+    args.u_geometry_all_valid_queries = True
+    args.u_quarantine_valid_domain_only = True
+    args.u_quarantine_min_count = 1
+    args.u_quarantine_include_sat_view = False
+    args.direct_metric_require_domain_local_components = False
+    args.direct_metric_min_samples_per_component = 2
+    args.direct_metric_positive_first = True
+    args.u_tri_quota_routing = True
+    args.u_tri_core_quota = 0.25
+    args.u_tri_ambiguous_quota = 0.25
+    args.u_tri_quota_require_pseudo_mask = True
+    args.u_direct_include_ambiguous = True
+    args.u_direct_include_outside_known = True
+    anchors = torch.tensor(
+        [
+            [1.00, 0.00], [0.99, 0.03], [0.98, 0.06], [0.97, 0.08],
+            [0.00, 1.00], [0.03, 0.99], [0.06, 0.98], [0.08, 0.97],
+        ],
+        dtype=torch.float32,
+    )
+    labels = torch.tensor([0, 0, 0, 0, 1, 1, 1, 1])
+    queries = torch.tensor(
+        [[0.99, 0.02], [0.90, 0.43], [0.02, 0.99], [0.43, 0.90]],
+        dtype=torch.float32,
+    )
+    pseudo = torch.tensor([0, 0, 1, 1])
+    pseudo_mask = torch.tensor([True, True, True, True])
+
+    _loss, info, core_mask, direct_mask = _route_unlabeled_known_geometry(
+        args=args,
+        z_id_l=anchors,
+        y_l=labels,
+        d_l=None,
+        out_s={"z_id": queries},
+        out_u_sat=None,
+        pseudo=pseudo,
+        d_u=None,
+        pseudo_mask=pseudo_mask,
+        valid_u_mask=torch.ones(4, dtype=torch.bool),
+        labeled_view_count=8,
+        labeled_sat_applied=False,
+    )
+
+    assert info["tri_quota_routing"] == 1.0
+    assert info["tri_direct_eligible_count"] == 4.0
+    assert info["tri_direct_count"] == 4.0
+    assert info["tri_route_core_count"] == 2.0
+    assert info["tri_route_ambiguous_count"] == 2.0
+    assert info["tri_route_outside_count"] == 0.0
+    assert int(direct_mask.sum().item()) == 4
+    assert int(core_mask.sum().item()) <= int(direct_mask.sum().item())

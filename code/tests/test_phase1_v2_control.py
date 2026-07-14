@@ -1054,12 +1054,12 @@ def test_u_tri_state_route_defers_tail_reference_and_promotion_until_pseudo_stag
     assert 'phase1_v2_reasons.append("US_STAGE_NOT_READY")' in source
 
 
-def test_u_geometry_route_separates_confident_ce_core_direct_and_all_valid_invariance():
+def test_u_geometry_route_separates_confident_ce_direct_and_core_only_pseudo_invariance():
     source = (CODE_ROOT / "SSDG" / "train_ssdg.py").read_text(encoding="utf-8")
 
     assert "ce_mask = pseudo_mask & geometry_core_mask" in source
     assert "direct_mask = geometry_direct_mask.clone()" in source
-    assert "invariance_mask = valid_domain_mask.clone()" in source
+    assert "invariance_mask = geometry_core_mask & valid_domain_mask" in source
     assert "entropy_per_sample[u_geometry_core_mask].mean()" in source
     assert "dm_mask = u_direct_geometry_mask" in source
     assert "invariance_mask = u_invariance_mask" in source

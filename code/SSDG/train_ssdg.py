@@ -231,6 +231,14 @@ def build_arg_parser() -> argparse.ArgumentParser:
     parser.add_argument("--u_quarantine_core_accept_target", type=float, default=0.82)
     parser.add_argument("--u_geometry_all_valid_queries", type=str2bool, default=False)
     parser.add_argument("--u_direct_include_ambiguous", type=str2bool, default=False)
+    parser.add_argument("--u_tri_quota_routing", type=str2bool, default=False)
+    parser.add_argument("--u_tri_core_quota", type=float, default=0.20)
+    parser.add_argument("--u_tri_ambiguous_quota", type=float, default=0.30)
+    parser.add_argument("--u_tri_quota_require_pseudo_mask", type=str2bool, default=True)
+    parser.add_argument("--u_direct_include_outside_known", type=str2bool, default=False)
+    parser.add_argument("--u_outside_stop_gradient", type=str2bool, default=False)
+    parser.add_argument("--u_route_use_teacher_weak", type=str2bool, default=False)
+    parser.add_argument("--u_route_use_reference_bank", type=str2bool, default=False)
     parser.add_argument("--u_tri_tail_pair_weight", type=float, default=0.0)
     parser.add_argument("--u_tri_outside_pair_weight", type=float, default=0.0)
     parser.add_argument("--u_tri_tail_pair_target_deg", type=float, default=12.0)
@@ -668,6 +676,8 @@ def build_arg_parser() -> argparse.ArgumentParser:
     parser.add_argument("--direct_metric_radius_inter_ratio_target", type=float, default=0.85)
     parser.add_argument("--direct_metric_core_accept_target", type=float, default=0.82)
     parser.add_argument("--direct_metric_core_tpr_target", type=float, default=0.85)
+    parser.add_argument("--direct_metric_known_accept_target", type=float, default=0.65)
+    parser.add_argument("--direct_metric_known_tpr_target", type=float, default=0.85)
     parser.add_argument("--direct_metric_sat_pair_target_deg", type=float, default=10.0)
     parser.add_argument("--direct_metric_zid_quantile_weight", type=float, default=1.0)
     parser.add_argument("--direct_metric_source_overflow_weight", type=float, default=1.0)
@@ -682,6 +692,7 @@ def build_arg_parser() -> argparse.ArgumentParser:
     parser.add_argument("--direct_metric_component_overlap_weight", type=float, default=0.0)
     parser.add_argument("--direct_metric_core_accept_weight", type=float, default=0.25)
     parser.add_argument("--direct_metric_core_tpr_weight", type=float, default=0.0)
+    parser.add_argument("--direct_metric_known_coverage_weight", type=float, default=0.0)
     parser.add_argument("--direct_metric_sat_pair_weight", type=float, default=0.0)
     parser.add_argument("--direct_metric_quantile_temperature_deg", type=float, default=3.0)
     parser.add_argument("--direct_metric_accept_temperature", type=float, default=0.04)
@@ -694,6 +705,10 @@ def build_arg_parser() -> argparse.ArgumentParser:
     parser.add_argument("--direct_metric_source_radius_cap_deg", type=float, default=0.0)
     parser.add_argument("--direct_metric_shell_width_deg", type=float, default=4.0)
     parser.add_argument("--direct_metric_accept_cvar_alpha", type=float, default=0.25)
+    parser.add_argument("--direct_metric_positive_first", type=str2bool, default=False)
+    parser.add_argument("--direct_metric_negative_start_tpr", type=float, default=0.75)
+    parser.add_argument("--direct_metric_negative_full_tpr", type=float, default=0.85)
+    parser.add_argument("--direct_metric_require_effective_negative_grad", type=str2bool, default=False)
     parser.add_argument("--run_id", type=str, default="")
     parser.add_argument("--candidate_id", type=str, default="")
     parser.add_argument("--base_candidate", type=str, default="")
@@ -2513,6 +2528,8 @@ def _direct_metric_kwargs(args) -> Dict[str, Any]:
         "radius_inter_ratio_target": float(args.direct_metric_radius_inter_ratio_target),
         "core_accept_target": float(args.direct_metric_core_accept_target),
         "core_tpr_target": float(args.direct_metric_core_tpr_target),
+        "known_accept_target": float(args.direct_metric_known_accept_target),
+        "known_tpr_target": float(args.direct_metric_known_tpr_target),
         "zid_quantile_weight": float(args.direct_metric_zid_quantile_weight),
         "source_overflow_weight": float(args.direct_metric_source_overflow_weight),
         "proxy_vaccept_weight": float(args.direct_metric_proxy_vaccept_weight),
@@ -2528,6 +2545,7 @@ def _direct_metric_kwargs(args) -> Dict[str, Any]:
         "component_overlap_weight": float(args.direct_metric_component_overlap_weight),
         "core_accept_weight": float(args.direct_metric_core_accept_weight),
         "core_tpr_weight": float(args.direct_metric_core_tpr_weight),
+        "known_coverage_weight": float(args.direct_metric_known_coverage_weight),
         "quantile_temperature_rad": math.radians(float(args.direct_metric_quantile_temperature_deg)),
         "accept_temperature": float(args.direct_metric_accept_temperature),
         "component_temperature_rad": math.radians(float(args.direct_metric_component_temperature_deg)),
@@ -2543,6 +2561,12 @@ def _direct_metric_kwargs(args) -> Dict[str, Any]:
         "source_radius_cap_rad": math.radians(float(args.direct_metric_source_radius_cap_deg)),
         "shell_width_rad": math.radians(float(args.direct_metric_shell_width_deg)),
         "accept_cvar_alpha": float(args.direct_metric_accept_cvar_alpha),
+        "positive_first": bool(args.direct_metric_positive_first),
+        "negative_start_tpr": float(args.direct_metric_negative_start_tpr),
+        "negative_full_tpr": float(args.direct_metric_negative_full_tpr),
+        "require_effective_negative_grad": bool(
+            args.direct_metric_require_effective_negative_grad
+        ),
         "virtual_detach": bool(args.direct_metric_virtual_detach),
         "gate_reference_detach": bool(args.direct_metric_gate_reference_detach),
         "use_domain_local_components": bool(args.direct_metric_domain_local_components),
@@ -2654,16 +2678,76 @@ def _route_unlabeled_known_geometry(
         core = view_info.pop("_tri_trusted_core_mask", None)
         ambiguous = view_info.pop("_tri_ambiguous_tail_mask", None)
         outside = view_info.pop("_tri_outside_reject_mask", None)
+        accept_prob = view_info.pop("_tri_accept_prob", None)
+        label_match = view_info.pop("_tri_label_match_mask", None)
         if not all(torch.is_tensor(value) and int(value.numel()) == quarantine_count for value in (core, ambiguous, outside)):
             return zero, {**info, "reason": f"{view_name}_tri_state_missing"}, geometry_core_mask, geometry_direct_mask
-        state_rows.append((core.bool(), ambiguous.bool(), outside.bool()))
+        if not all(
+            torch.is_tensor(value) and int(value.numel()) == quarantine_count
+            for value in (accept_prob, label_match)
+        ):
+            return zero, {**info, "reason": f"{view_name}_tri_score_missing"}, geometry_core_mask, geometry_direct_mask
+        state_rows.append(
+            (
+                core.bool(),
+                ambiguous.bool(),
+                outside.bool(),
+                accept_prob.float(),
+                label_match.bool(),
+            )
+        )
     combined_core = torch.stack([row[0] for row in state_rows], dim=0).all(dim=0)
     combined_outside = torch.stack([row[2] for row in state_rows], dim=0).any(dim=0)
     combined_ambiguous = (~combined_core) & (~combined_outside)
+    combined_accept_prob = torch.stack([row[3] for row in state_rows], dim=0).min(dim=0).values
+    combined_label_match = torch.stack([row[4] for row in state_rows], dim=0).all(dim=0)
     geometry_core_mask[quarantine_mask] = combined_core.to(device=pseudo_mask.device)
-    direct_local = combined_core | (
-        combined_ambiguous & bool(getattr(args, "u_direct_include_ambiguous", False))
+
+    pseudo_eligible = pseudo_mask[quarantine_mask].bool()
+    if not bool(getattr(args, "u_tri_quota_require_pseudo_mask", True)):
+        pseudo_eligible = torch.ones_like(pseudo_eligible)
+    direct_eligible = pseudo_eligible & combined_label_match
+    route_core = combined_core.clone()
+    route_ambiguous = combined_ambiguous.clone()
+    route_outside = combined_outside.clone()
+    quota_active = bool(getattr(args, "u_tri_quota_routing", False))
+    if quota_active:
+        route_core = torch.zeros_like(combined_core)
+        route_ambiguous = torch.zeros_like(combined_ambiguous)
+        route_outside = torch.ones_like(combined_outside)
+        core_quota = max(0.0, min(1.0, float(getattr(args, "u_tri_core_quota", 0.20))))
+        ambiguous_quota = max(
+            0.0,
+            min(1.0 - core_quota, float(getattr(args, "u_tri_ambiguous_quota", 0.30))),
+        )
+        for cls in torch.unique(query_y[direct_eligible]):
+            class_idx = torch.nonzero(
+                direct_eligible & query_y.eq(cls), as_tuple=False
+            ).flatten()
+            if class_idx.numel() == 0:
+                continue
+            ranked = class_idx[
+                torch.argsort(combined_accept_prob[class_idx], descending=True)
+            ]
+            core_n = min(int(ranked.numel()), int(math.ceil(core_quota * int(ranked.numel()))))
+            ambiguous_n = min(
+                int(ranked.numel()) - core_n,
+                int(math.ceil(ambiguous_quota * int(ranked.numel()))),
+            )
+            if core_n > 0:
+                route_core[ranked[:core_n]] = True
+                route_outside[ranked[:core_n]] = False
+            if ambiguous_n > 0:
+                tail_idx = ranked[core_n : core_n + ambiguous_n]
+                route_ambiguous[tail_idx] = True
+                route_outside[tail_idx] = False
+
+    direct_local = route_core | (
+        route_ambiguous & bool(getattr(args, "u_direct_include_ambiguous", False))
     )
+    if bool(getattr(args, "u_direct_include_outside_known", False)):
+        direct_local = direct_local | route_outside
+    direct_local = direct_local & direct_eligible
     geometry_direct_mask[quarantine_mask] = direct_local.to(device=pseudo_mask.device)
 
     tail_pair_loss = zero
@@ -2686,10 +2770,12 @@ def _route_unlabeled_known_geometry(
             combined_ambiguous,
             float(getattr(args, "u_tri_tail_pair_target_deg", 12.0)),
         )
-        outside_pair_loss = _pair_state_loss(
-            combined_outside,
-            float(getattr(args, "u_tri_outside_pair_target_deg", 20.0)),
-        )
+        outside_pair_loss = pair_angles.sum() * 0.0
+        if not bool(getattr(args, "u_outside_stop_gradient", False)):
+            outside_pair_loss = _pair_state_loss(
+                combined_outside,
+                float(getattr(args, "u_tri_outside_pair_target_deg", 20.0)),
+            )
         loss = (
             loss
             + max(0.0, float(getattr(args, "u_tri_tail_pair_weight", 0.0)))
@@ -2720,6 +2806,20 @@ def _route_unlabeled_known_geometry(
             "tri_outside_reject_rate": float(combined_outside.float().mean().item()),
             "tri_direct_count": float(int(direct_local.sum().item())),
             "tri_direct_rate": float(direct_local.float().mean().item()),
+            "tri_direct_eligible_count": float(int(direct_eligible.sum().item())),
+            "tri_direct_eligible_rate": float(direct_eligible.float().mean().item()),
+            "tri_quota_routing": 1.0 if quota_active else 0.0,
+            "tri_route_core_count": float(int(route_core.sum().item())),
+            "tri_route_ambiguous_count": float(int(route_ambiguous.sum().item())),
+            "tri_route_outside_count": float(int(route_outside.sum().item())),
+            "tri_route_core_rate": float(route_core.float().mean().item()),
+            "tri_route_ambiguous_rate": float(route_ambiguous.float().mean().item()),
+            "tri_route_outside_rate": float(route_outside.float().mean().item()),
+            "tri_route_accept_score_mean": float(combined_accept_prob.mean().item()),
+            "tri_route_label_match_rate": float(combined_label_match.float().mean().item()),
+            "tri_direct_includes_outside_known": 1.0
+            if bool(getattr(args, "u_direct_include_outside_known", False))
+            else 0.0,
             "tri_tail_pair_loss": float(tail_pair_loss.detach().item()),
             "tri_outside_pair_loss": float(outside_pair_loss.detach().item()),
             "tri_pair_disagreement_rate": (
@@ -2741,6 +2841,9 @@ def _route_unlabeled_known_geometry(
         float(info.get("tri_ambiguous_tail_count", 0.0)) + float(info.get("tri_outside_reject_count", 0.0))
     ) / float(max(1, quarantine_count))
     info["valid_domain_rate"] = float(int(valid_u_mask.sum().detach().item())) / float(max(1, int(pseudo.numel())))
+    outside_full_mask = torch.zeros_like(pseudo_mask, dtype=torch.bool)
+    outside_full_mask[quarantine_mask] = combined_outside.to(device=pseudo_mask.device)
+    info["_tri_outside_full_mask"] = outside_full_mask.detach()
     info["routing_precomputed"] = 1.0
     return loss, info, geometry_core_mask, geometry_direct_mask
 
@@ -2759,7 +2862,7 @@ def _select_unlabeled_geometry_masks(
     if all_valid_queries:
         ce_mask = pseudo_mask & geometry_core_mask
         direct_mask = geometry_direct_mask.clone()
-        invariance_mask = valid_domain_mask.clone()
+        invariance_mask = geometry_core_mask & valid_domain_mask
     else:
         ce_mask = pseudo_mask.clone()
         direct_mask = pseudo_mask.clone()
@@ -3698,6 +3801,9 @@ def format_ssdg_epoch_block(
         f"overflow_accept={_log_value(train_logs, 'train/dm_accept_overflow_accept_rate'):.4f} "
         f"radius_inter={_log_value(train_logs, 'train/dm_accept_radius_to_inter_ratio'):.4f} "
         f"core_accept={_log_value(train_logs, 'train/dm_accept_core_accept_rate'):.4f} "
+        f"known_tpr={_log_value(train_logs, 'train/dm_accept_known_hard_tpr'):.4f} "
+        f"neg_scale={_log_value(train_logs, 'train/dm_accept_negative_risk_scale'):.3f} "
+        f"proxy_grad={_log_value(train_logs, 'train/dm_accept_proxy_gradient_active'):.0f} "
         f"sat_pair_p95={_log_value(train_logs, 'train/dm_accept_sat_pair_angle_p95_deg'):.2f}deg"
     )
     lines.append(
@@ -4124,6 +4230,22 @@ def train(args) -> int:
         raise ValueError(
             "--u_tri_state_required true requires --u_geometry_all_valid_queries true; "
             "selected U_s samples cannot bypass geometry-first routing."
+        )
+    if bool(getattr(args, "u_direct_include_outside_known", False)) and not bool(
+        getattr(args, "direct_metric_positive_first", False)
+    ):
+        raise ValueError(
+            "--u_direct_include_outside_known true requires "
+            "--direct_metric_positive_first true so source-known U_s cannot be repelled as unknown"
+        )
+    if (
+        bool(getattr(args, "direct_metric_require_effective_negative_grad", False))
+        and bool(getattr(args, "direct_metric_virtual_detach", True))
+        and bool(getattr(args, "direct_metric_gate_reference_detach", True))
+    ):
+        raise ValueError(
+            "--direct_metric_require_effective_negative_grad true requires either "
+            "--direct_metric_virtual_detach false or --direct_metric_gate_reference_detach false"
         )
     if args.dry_run:
         print(
@@ -5563,11 +5685,69 @@ def train(args) -> int:
                     strict_pseudo_mask = mask.clone()
                     u_geometry_core_mask = torch.ones_like(mask, dtype=torch.bool)
                     u_geometry_direct_mask = torch.ones_like(mask, dtype=torch.bool)
+                    route_start_epochs = []
+                    if float(args.lambda_u_quarantine_accept) > 0.0 or bool(
+                        getattr(args, "u_tri_state_required", False)
+                    ):
+                        route_start_epochs.append(int(args.u_quarantine_start_epoch))
+                    if float(args.lambda_u_direct_metric_accept) > 0.0:
+                        route_start_epochs.append(int(args.u_direct_metric_start_epoch))
+                    if any(
+                        float(value) > 0.0
+                        for value in (
+                            args.lambda_u_zid_receiver_invariance,
+                            args.lambda_u_zid_day_invariance,
+                            args.lambda_u_zid_channel_invariance,
+                        )
+                    ):
+                        route_start_epochs.append(int(args.u_domain_start_epoch))
+                    route_requested = bool(route_start_epochs)
+                    route_start_epoch = min(route_start_epochs) if route_start_epochs else 10**9
                     if (
-                        float(args.lambda_u_quarantine_accept) > 0.0
-                        and epoch >= int(args.u_quarantine_start_epoch)
+                        route_requested
+                        and epoch >= route_start_epoch
                         and unlabeled_known_acceptance_quarantine_loss is not None
                     ):
+                        route_z_id_l = z_id_l
+                        route_y_l = y_l
+                        route_d_l = d_l
+                        route_labeled_view_count = (
+                            concat_sat_clean_bsz
+                            if concat_sat_full_batch
+                            else int(y_l.numel())
+                        )
+                        route_labeled_sat_applied = (
+                            concat_sat_full_batch
+                            and float(concat_sat_info.get("applied", 0.0)) > 0.0
+                            and u_sat_applied
+                        )
+                        if (
+                            bool(getattr(args, "u_route_use_reference_bank", False))
+                            and dm_bank_clean is not None
+                        ):
+                            route_z_id_l = dm_bank_clean
+                            route_y_l = dm_bank_clean_y
+                            route_d_l = dm_bank_clean_d
+                            route_labeled_view_count = int(dm_bank_clean_y.numel())
+                            route_labeled_sat_applied = False
+                            if (
+                                bool(args.u_quarantine_include_sat_view)
+                                and dm_bank_sat is not None
+                            ):
+                                route_z_id_l = torch.cat(
+                                    [dm_bank_clean, dm_bank_sat], dim=0
+                                )
+                                route_y_l = torch.cat(
+                                    [dm_bank_clean_y, dm_bank_clean_y], dim=0
+                                )
+                                if dm_bank_clean_d is not None:
+                                    route_d_l = torch.cat(
+                                        [dm_bank_clean_d, dm_bank_clean_d], dim=0
+                                    )
+                                route_labeled_sat_applied = True
+                        route_out_s = out_s
+                        if bool(getattr(args, "u_route_use_teacher_weak", False)):
+                            route_out_s = {"z_id": out_w["z_id"].detach()}
                         (
                             loss_u_quarantine,
                             u_quarantine_info,
@@ -5575,22 +5755,30 @@ def train(args) -> int:
                             u_geometry_direct_mask,
                         ) = _route_unlabeled_known_geometry(
                             args=args,
-                            z_id_l=z_id_l,
-                            y_l=y_l,
-                            d_l=d_l,
-                            out_s=out_s,
+                            z_id_l=route_z_id_l,
+                            y_l=route_y_l,
+                            d_l=route_d_l,
+                            out_s=route_out_s,
                             out_u_sat=out_u_sat,
                             pseudo=pseudo,
                             d_u=d_u,
                             pseudo_mask=mask,
                             valid_u_mask=valid_u_mask,
-                            labeled_view_count=(concat_sat_clean_bsz if concat_sat_full_batch else int(y_l.numel())),
-                            labeled_sat_applied=(
-                                concat_sat_full_batch
-                                and float(concat_sat_info.get("applied", 0.0)) > 0.0
-                                and u_sat_applied
-                            ),
+                            labeled_view_count=route_labeled_view_count,
+                            labeled_sat_applied=route_labeled_sat_applied,
                         )
+                    u_outside_mask = u_quarantine_info.pop(
+                        "_tri_outside_full_mask", torch.zeros_like(mask, dtype=torch.bool)
+                    )
+                    u_quarantine_info["route_teacher_weak"] = (
+                        1.0 if bool(getattr(args, "u_route_use_teacher_weak", False)) else 0.0
+                    )
+                    u_quarantine_info["route_reference_bank"] = (
+                        1.0
+                        if bool(getattr(args, "u_route_use_reference_bank", False))
+                        and dm_bank_clean is not None
+                        else 0.0
+                    )
                     routed_pseudo_mask, u_direct_geometry_mask, u_invariance_mask = _select_unlabeled_geometry_masks(
                         strict_pseudo_mask,
                         u_geometry_core_mask,
@@ -5599,6 +5787,29 @@ def train(args) -> int:
                         all_valid_queries=bool(getattr(args, "u_geometry_all_valid_queries", False)),
                         direct_valid_domain_only=bool(getattr(args, "u_direct_metric_valid_domain_only", True)),
                     )
+                    if (
+                        bool(getattr(args, "u_outside_stop_gradient", False))
+                        and out_u_sat is not None
+                        and float(args.lambda_u_sat_cons) > 0.0
+                        and epoch >= int(args.u_sat_cons_start_epoch)
+                    ):
+                        pair_mask = ~u_outside_mask.bool()
+                        if bool(pair_mask.any()):
+                            loss_u_sat_kl = F.kl_div(
+                                F.log_softmax(out_u_sat["tx_logits"][pair_mask], dim=1),
+                                prob_s[pair_mask].detach(),
+                                reduction="batchmean",
+                            )
+                            loss_u_sat_zid = F.mse_loss(
+                                F.normalize(out_u_sat["z_id"][pair_mask].float(), dim=1),
+                                F.normalize(out_s["z_id"][pair_mask].detach().float(), dim=1),
+                            )
+                            loss_u_sat_cons = (
+                                loss_u_sat_kl
+                                + float(args.u_sat_zid_cons_weight) * loss_u_sat_zid
+                            )
+                        else:
+                            loss_u_sat_cons = zero_u
                     if bool(getattr(args, "u_geometry_all_valid_queries", False)):
                         if bool(routed_pseudo_mask.any()):
                             loss_u = F.cross_entropy(
@@ -6272,6 +6483,12 @@ def train(args) -> int:
                     "train/u_quarantine_global_component_fallback": u_quarantine_info.get(
                         "global_component_fallback", 1.0
                     ),
+                    "train/u_quarantine_route_teacher_weak": u_quarantine_info.get(
+                        "route_teacher_weak", 0.0
+                    ),
+                    "train/u_quarantine_route_reference_bank": u_quarantine_info.get(
+                        "route_reference_bank", 0.0
+                    ),
                     "train/u_quarantine_accept_rate": u_quarantine_info.get("accept_rate", float("nan")),
                     "train/u_quarantine_accept_loss": u_quarantine_info.get("accept_loss", float("nan")),
                     "train/u_quarantine_core_keep_loss": u_quarantine_info.get("core_keep_loss", float("nan")),
@@ -6300,6 +6517,30 @@ def train(args) -> int:
                     ),
                     "train/u_tri_direct_count": u_quarantine_info.get("tri_direct_count", float("nan")),
                     "train/u_tri_direct_rate": u_quarantine_info.get("tri_direct_rate", float("nan")),
+                    "train/u_tri_direct_eligible_count": u_quarantine_info.get(
+                        "tri_direct_eligible_count", float("nan")
+                    ),
+                    "train/u_tri_direct_eligible_rate": u_quarantine_info.get(
+                        "tri_direct_eligible_rate", float("nan")
+                    ),
+                    "train/u_tri_quota_routing": u_quarantine_info.get(
+                        "tri_quota_routing", 0.0
+                    ),
+                    "train/u_tri_route_core_rate": u_quarantine_info.get(
+                        "tri_route_core_rate", float("nan")
+                    ),
+                    "train/u_tri_route_ambiguous_rate": u_quarantine_info.get(
+                        "tri_route_ambiguous_rate", float("nan")
+                    ),
+                    "train/u_tri_route_outside_rate": u_quarantine_info.get(
+                        "tri_route_outside_rate", float("nan")
+                    ),
+                    "train/u_tri_route_accept_score_mean": u_quarantine_info.get(
+                        "tri_route_accept_score_mean", float("nan")
+                    ),
+                    "train/u_tri_route_label_match_rate": u_quarantine_info.get(
+                        "tri_route_label_match_rate", float("nan")
+                    ),
                     "train/u_tri_tail_pair_loss": u_quarantine_info.get("tri_tail_pair_loss", float("nan")),
                     "train/u_tri_outside_pair_loss": u_quarantine_info.get(
                         "tri_outside_pair_loss", float("nan")
@@ -6591,6 +6832,12 @@ def train(args) -> int:
                     "train/dm_accept_component_overlap_loss": direct_metric_info.get(
                         "component_overlap_loss", float("nan")
                     ),
+                    "train/dm_accept_query_inter_margin_loss": direct_metric_info.get(
+                        "query_inter_margin_loss", float("nan")
+                    ),
+                    "train/dm_accept_query_overlap_loss": direct_metric_info.get(
+                        "query_overlap_loss", float("nan")
+                    ),
                     "train/dm_accept_component_min_inter_deg": direct_metric_info.get(
                         "component_min_inter_deg", float("nan")
                     ),
@@ -6605,6 +6852,39 @@ def train(args) -> int:
                     "train/dm_accept_core_hard_tpr": direct_metric_info.get("core_hard_tpr", float("nan")),
                     "train/dm_accept_core_soft_tpr": direct_metric_info.get("core_soft_tpr", float("nan")),
                     "train/dm_accept_core_tpr_loss": direct_metric_info.get("core_tpr_loss", float("nan")),
+                    "train/dm_accept_known_accept_rate": direct_metric_info.get(
+                        "known_accept_rate", float("nan")
+                    ),
+                    "train/dm_accept_known_hard_tpr": direct_metric_info.get(
+                        "known_hard_tpr", float("nan")
+                    ),
+                    "train/dm_accept_known_soft_tpr": direct_metric_info.get(
+                        "known_soft_tpr", float("nan")
+                    ),
+                    "train/dm_accept_known_coverage_loss": direct_metric_info.get(
+                        "known_coverage_loss", float("nan")
+                    ),
+                    "train/dm_accept_known_probability_loss": direct_metric_info.get(
+                        "known_probability_loss", float("nan")
+                    ),
+                    "train/dm_accept_known_radius_loss": direct_metric_info.get(
+                        "known_radius_loss", float("nan")
+                    ),
+                    "train/dm_accept_known_margin_loss": direct_metric_info.get(
+                        "known_margin_loss", float("nan")
+                    ),
+                    "train/dm_accept_known_density_loss": direct_metric_info.get(
+                        "known_density_loss", float("nan")
+                    ),
+                    "train/dm_accept_known_tpr_loss": direct_metric_info.get(
+                        "known_tpr_loss", float("nan")
+                    ),
+                    "train/dm_accept_negative_risk_scale": direct_metric_info.get(
+                        "negative_risk_scale", float("nan")
+                    ),
+                    "train/dm_accept_proxy_gradient_active": direct_metric_info.get(
+                        "proxy_gradient_active", float("nan")
+                    ),
                     "train/dm_reference_bank_anchor_count": float(
                         direct_metric_reference_bank.anchor_count
                         if direct_metric_reference_bank is not None
