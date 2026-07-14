@@ -105,6 +105,10 @@ def fit_predict_extreme_light_diag_cosine(
     torch.manual_seed(int(seed))
     if runtime_device.type == "cuda":
         torch.cuda.manual_seed_all(int(seed))
+        # ``reset_peak_memory_stats`` requires an initialized CUDA context.
+        # A zero-sized allocation initializes the selected visible device
+        # without contributing persistent model state.
+        torch.empty(0, device=runtime_device)
         torch.cuda.reset_peak_memory_stats(runtime_device)
     x = torch.as_tensor(support, dtype=torch.float32, device=runtime_device)
     q = torch.as_tensor(query, dtype=torch.float32, device=runtime_device)

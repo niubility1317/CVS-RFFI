@@ -29,3 +29,7 @@ N607 22:17新鲜inventory显示8张GPU各有1个约470MiB的RIEI训练进程。�
 首次三场景feature export本身完成，但逐receiver×TX审计发现旧清单按所有day合计覆盖筛选，而launch实际只读取`day_index=0,equalized_index=1`。其中`18-1`在`20-1`只有11个样本，`10-1`在两个receiver为0，不能满足20-shot+20-query，故首次artifact降级为`NON_LAUNCH_DIAGNOSTIC`，未启动smoke。
 
 v2清单改为按实际slice逐receiver至少40个样本预筛；111个TX合格，嵌套20类为`1-16,1-18,18-10,14-11,8-3,18-8,10-10,16-19,20-12,4-10,13-14,2-5,1-8,19-13,19-9,3-8,19-8,11-19,2-16,19-6`，每类每receiver实际均为50个样本。新输出使用独立`v2_day0_eq1`根，保留旧artifact不覆盖。修复后15项相关pytest、JSON解析、exporter语法/dry-run和36-row matrix dry-run均PASS。
+
+## 2026-07-14 22:40 CUDA遥测启动修复
+
+smoke首次执行完成12个基线row；24个极轻型row在训练前统一因`reset_peak_memory_stats`早于CUDA context初始化而失败，无性能指标生成。已在本地加入目标device零长度tensor初始化，随后再重置峰值显存计数器；`ssr-gpu`下`py_compile`和15项相关pytest PASS。resume-safe重跑会保留已完成基线row，仅重跑24个极轻型row。
