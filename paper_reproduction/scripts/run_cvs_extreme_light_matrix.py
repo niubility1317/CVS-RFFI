@@ -228,6 +228,23 @@ ARMS: dict[str, dict[str, Any]] = {
             ("10", 10.0),
         )
     },
+    **{
+        f"el_lowrank_r{rank}_m{margin_label}": {
+            "qknnv42_head_mode": "extreme_light_low_rank_cosine",
+            "qknnv42_aux_score_weight": 0.0,
+            "qknnv42_labelprop_mode": "disabled",
+            "qknnv42_support_representation": "prototype_only",
+            "qknnv42_feature_adapter_mode": "none",
+            "qknnv42_decision_mode": "per_sample_argmax",
+            "extreme_light_aux_weight": 2.0,
+            "extreme_light_epochs": 20,
+            "extreme_light_low_rank_width": rank,
+            "extreme_light_cosine_margin": margin,
+            "extreme_light_residual_alpha": 0.5,
+        }
+        for rank in (8, 16)
+        for margin_label, margin in (("0p05", 0.05), ("0p1", 0.1), ("0p2", 0.2))
+    },
 }
 
 CORE_ARMS = ("baseline_single_qknn", "el_diag_aux1p5", "el_diag_aux2p0")

@@ -22,6 +22,7 @@ from paper_reproduction.common.config import load_json_config
 from paper_reproduction.cvs_aligned.extreme_light_adapter import (
     concatenate_registered_features,
     fit_predict_extreme_light_diag_cosine,
+    fit_predict_extreme_light_low_rank_cosine,
     fit_predict_support_ridge,
     predict_support_prototype_cosine,
 )
@@ -1012,6 +1013,7 @@ def validate_config(config: dict[str, Any]) -> None:
         "extreme_light_diag_cosine",
         "extreme_light_prototype_cosine",
         "extreme_light_support_ridge",
+        "extreme_light_low_rank_cosine",
     }
     if head_mode not in {"qknn", *extreme_modes}:
         raise ValueError(f"unsupported qknnv42_head_mode: {head_mode}")
@@ -1024,6 +1026,8 @@ def validate_config(config: dict[str, Any]) -> None:
             raise ValueError("extreme-light head forbids query label propagation")
         epochs = int(config.get("extreme_light_epochs", 20))
         if head_mode == "extreme_light_diag_cosine" and (epochs <= 0 or epochs > 20):
+            raise ValueError("extreme_light_epochs must be in [1,20]")
+        if head_mode == "extreme_light_low_rank_cosine" and (epochs <= 0 or epochs > 20):
             raise ValueError("extreme_light_epochs must be in [1,20]")
         if head_mode in {"extreme_light_prototype_cosine", "extreme_light_support_ridge"} and epochs != 0:
             raise ValueError("closed-form extreme-light head requires extreme_light_epochs=0")
@@ -1072,7 +1076,7 @@ def run(config: dict[str, Any], run_dir: Path) -> dict[str, Any]:
     head_mode = str(config.get("qknnv42_head_mode", "qknn")).strip().lower()
     extreme_aux_weight = float(config.get("extreme_light_aux_weight", 0.0))
     aux_required = aux_weight > 0.0 or (
-        head_mode in {"extreme_light_diag_cosine", "extreme_light_prototype_cosine", "extreme_light_support_ridge"}
+        head_mode in {"extreme_light_diag_cosine", "extreme_light_prototype_cosine", "extreme_light_support_ridge", "extreme_light_low_rank_cosine"}
         and extreme_aux_weight > 0.0
     )
     runtime_device = str(config.get("_runtime_device", "cpu"))
@@ -1135,7 +1139,7 @@ def run(config: dict[str, Any], run_dir: Path) -> dict[str, Any]:
             elapsed = time.perf_counter() - started
         else:
             extreme_trace: list[dict[str, Any]] = []
-            if head_mode in {"extreme_light_diag_cosine", "extreme_light_prototype_cosine", "extreme_light_support_ridge"}:
+            if head_mode in {"extreme_light_diag_cosine", "extreme_light_prototype_cosine", "extreme_light_support_ridge", "extreme_light_low_rank_cosine"}:
                 old_joint_support = concatenate_registered_features(
                     arrays["features"][old_support],
                     arrays[aux_key][old_support] if aux_required else None,
@@ -1181,6 +1185,25 @@ def run(config: dict[str, Any], run_dir: Path) -> dict[str, Any]:
                         max_persistent_state_bytes=int(
                             config.get("extreme_light_max_persistent_state_bytes", 128 * 1024)
                         ),
+                    )
+                elif head_mode == "extreme_light_low_rank_cosine":
+                    predicted, info, extreme_trace = fit_predict_extreme_light_low_rank_cosine(
+                        joint_support,
+                        support_y,
+                        joint_query,
+                        seed=int(config["seed"]),
+                        rank=int(config.get("extreme_light_low_rank_width", 8)),
+                        cosine_margin=float(config.get("extreme_light_cosine_margin", 0.1)),
+                        residual_alpha=float(config.get("extreme_light_residual_alpha", 0.5)),
+                        epochs=int(config.get("extreme_light_epochs", 20)),
+                        learning_rate=float(config.get("extreme_light_learning_rate", 0.01)),
+                        batch_size=int(config.get("extreme_light_batch_size", 32)),
+                        temperature=float(config.get("extreme_light_temperature", 18.0)),
+                        feature_noise_std=float(config.get("extreme_light_feature_noise_std", 0.01)),
+                        weight_decay=float(config.get("extreme_light_weight_decay", 0.002)),
+                        max_trainable_parameters=int(config.get("extreme_light_max_trainable_parameters", 50_000)),
+                        max_persistent_state_bytes=int(config.get("extreme_light_max_persistent_state_bytes", 128 * 1024)),
+                        device=runtime_device,
                     )
                 else:
                     predicted, info, extreme_trace = fit_predict_extreme_light_diag_cosine(
@@ -1275,7 +1298,7 @@ def run(config: dict[str, Any], run_dir: Path) -> dict[str, Any]:
         metrics.update({"adaptation_latency_sec": elapsed,
                         "latency_per_query_ms": elapsed * 1000.0 / len(query_idx), **info})
         metrics_by_scenario[scenario] = metrics
-        if method == "cvs_qknnv42" and head_mode in {"extreme_light_diag_cosine", "extreme_light_prototype_cosine", "extreme_light_support_ridge"}:
+        if method == "cvs_qknnv42" and head_mode in {"extreme_light_diag_cosine", "extreme_light_prototype_cosine", "extreme_light_support_ridge", "extreme_light_low_rank_cosine"}:
             trace.extend(
                 {"method": method, "scenario": scenario, **row}
                 for row in extreme_trace

@@ -141,3 +141,20 @@ def test_closed_form_ridge_arm_has_explicit_lambda_and_zero_epochs():
     assert config["qknnv42_head_mode"] == "extreme_light_support_ridge"
     assert config["extreme_light_epochs"] == 0
     assert config["extreme_light_ridge_lambda"] == 0.1
+
+
+def test_low_rank_margin_arm_is_explicit_and_twenty_epoch():
+    row = build_rows(
+        arms=("el_lowrank_r16_m0p1",),
+        new_class_counts=(20,),
+        receivers=("8-8",),
+        seeds=(713101,),
+        k_grid=(30,),
+        output_root=Path("runs"),
+        log_root=Path("logs"),
+    )[0]
+    config = row_config(_base_config(), row, device="cpu")
+    assert config["qknnv42_head_mode"] == "extreme_light_low_rank_cosine"
+    assert config["extreme_light_epochs"] == 20
+    assert config["extreme_light_low_rank_width"] == 16
+    assert config["extreme_light_cosine_margin"] == 0.1

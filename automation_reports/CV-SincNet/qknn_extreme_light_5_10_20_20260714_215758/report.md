@@ -55,3 +55,13 @@ K30正则化24/24完成但联合通过0；anchor5/20近似无效，noise0.05明�
 prototype sweep 30/30 rows完成但联合通过0。FFT2.0在5/10/20类的`old/new/H`均值仅为`70.69/71.50/70.85%`、`63.89/68.25/65.79%`、`63.61/70.88/66.86%`，最低旧类均值均为24.17%；单prototype不具备足够判别能力。
 
 下一机制为闭式support-only多类ridge线性头：0epoch、0梯度、不更新ADV3B02，不使用query适配、query图、old/new角色或类别配额。最大26类状态26,728B、逐query约6,682MAC。先固定`8-8`、K30、两开发seed、5/10/20类，扫描`λ∈{1e-4,1e-3,1e-2,1e-1,1,10}`；确认seed仍隔离。本地`ssr-gpu`下33项相关pytest PASS。
+
+### Ridge诊断launch记录
+
+run ID=`qknn_extreme_light_ridge_k30_20260714_2325_v1`；Git commit=`6cf54b5`。三个同步文件远端SHA256与本地一致；N607直接preflight PASS。当前GPU0–3各有1个RIEI进程、GPU4–7空闲，本轮用`--device cpu`执行，不占用GPU。输出根`runs/qknn_extreme_light_ridge_k30_20260714_2325_v1`，日志根`logs/qknn_extreme_light_ridge_k30_20260714_2325_v1`；36-row dry-run PASS，后续以3个shard执行。
+
+## 2026-07-14 23:34闭式ridge结果与低秩margin路线
+
+36/36 rows完成，0失败、0协议违规、108条闭式trace。最佳5/10/20类同机制row的`old/floor/new/H`分别为`85.83/72.50/88.17/86.95%`、`83.89/61.67/82.33/83.07%`、`81.11/56.67/89.54/85.09%`，联合通过0。ridge虽把适配压到毫秒级，但性能弱于20epoch对角头。
+
+下一机制加入rank8/16低秩残差度量与对所有类对称的CosFace margin`0.05/0.1/0.2`，仍为20epoch、无query适配/图、无角色/配额Oracle。最大rank16、26类为15,130参数、60,520B状态、约15,130MAC/query。本地35项相关pytest及36-row dry-run PASS。

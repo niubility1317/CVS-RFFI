@@ -485,3 +485,198 @@ def fit_predict_support_ridge(
     ]
     predicted = np.asarray(classes, dtype=object)[predicted_indices]
     return predicted, info, trace
+
+
+def fit_predict_extreme_light_low_rank_cosine(
+    support_x: np.ndarray,
+    support_y: np.ndarray,
+    query_x: np.ndarray,
+    *,
+    seed: int,
+    rank: int,
+    cosine_margin: float,
+    residual_alpha: float = 0.5,
+    epochs: int = 20,
+    learning_rate: float = 0.01,
+    batch_size: int = 32,
+    temperature: float = 18.0,
+    feature_noise_std: float = 0.01,
+    weight_decay: float = 0.002,
+    max_trainable_parameters: int = 50_000,
+    max_persistent_state_bytes: int = 128 * 1024,
+    device: str = "cpu",
+) -> tuple[np.ndarray, dict[str, Any], list[dict[str, Any]]]:
+    """Support-only low-rank residual metric with class-symmetric CosFace loss."""
+    import torch
+    import torch.nn.functional as F
+
+    support = np.asarray(support_x, dtype=np.float32)
+    query = np.asarray(query_x, dtype=np.float32)
+    labels = np.asarray(support_y).astype(str)
+    if support.ndim != 2 or query.ndim != 2 or support.shape[1] != query.shape[1]:
+        raise ValueError("support/query features must be aligned rank-2 matrices")
+    if len(support) != len(labels) or len(support) == 0:
+        raise ValueError("support features and labels must be non-empty and aligned")
+    if int(epochs) <= 0 or int(epochs) > 20:
+        raise ValueError("extreme-light adaptation epochs must be in [1,20]")
+    if int(rank) <= 0 or int(rank) > 32:
+        raise ValueError("extreme-light low-rank width must be in [1,32]")
+    if not math.isfinite(float(cosine_margin)) or not 0.0 <= float(cosine_margin) <= 0.5:
+        raise ValueError("cosine_margin must be finite and in [0,0.5]")
+    if not math.isfinite(float(residual_alpha)) or not 0.0 < float(residual_alpha) <= 1.0:
+        raise ValueError("residual_alpha must be finite and in (0,1]")
+    classes = sorted(set(labels.tolist()))
+    class_to_index = {label: index for index, label in enumerate(classes)}
+    targets_np = np.asarray([class_to_index[label] for label in labels], dtype=np.int64)
+    feature_dim = int(support.shape[1])
+    class_count = len(classes)
+    trainable_parameters = int(
+        feature_dim + 2 * feature_dim * int(rank) + class_count * feature_dim + class_count
+    )
+    persistent_state_bytes = int(trainable_parameters * np.dtype(np.float32).itemsize)
+    if trainable_parameters > int(max_trainable_parameters):
+        raise ValueError(
+            f"extreme-light parameter cap exceeded: {trainable_parameters}>{max_trainable_parameters}"
+        )
+    if persistent_state_bytes > int(max_persistent_state_bytes):
+        raise ValueError(
+            "extreme-light persistent-state cap exceeded: "
+            f"{persistent_state_bytes}>{max_persistent_state_bytes}"
+        )
+    requested_device = str(device)
+    if requested_device.startswith("cuda") and not torch.cuda.is_available():
+        raise ValueError(f"CUDA device requested but unavailable: {requested_device}")
+    runtime_device = torch.device(requested_device)
+    torch.manual_seed(int(seed))
+    if runtime_device.type == "cuda":
+        torch.cuda.manual_seed_all(int(seed))
+        torch.empty(0, device=runtime_device)
+        torch.cuda.reset_peak_memory_stats(runtime_device)
+    x = torch.as_tensor(support, dtype=torch.float32, device=runtime_device)
+    q = torch.as_tensor(query, dtype=torch.float32, device=runtime_device)
+    targets = torch.as_tensor(targets_np, dtype=torch.long, device=runtime_device)
+    prototypes = torch.stack(
+        [F.normalize(x[targets == index].mean(dim=0), dim=0) for index in range(class_count)]
+    )
+    log_scale = torch.nn.Parameter(torch.zeros(feature_dim, device=runtime_device))
+    down = torch.nn.Parameter(
+        torch.randn(feature_dim, int(rank), device=runtime_device) / math.sqrt(feature_dim)
+    )
+    up = torch.nn.Parameter(torch.zeros(int(rank), feature_dim, device=runtime_device))
+    weights = torch.nn.Parameter(prototypes.detach().clone())
+    bias = torch.nn.Parameter(torch.zeros(class_count, device=runtime_device))
+    parameters = [log_scale, down, up, weights, bias]
+    optimizer = torch.optim.AdamW(parameters, lr=float(learning_rate), weight_decay=float(weight_decay))
+    generator = torch.Generator(device=runtime_device).manual_seed(int(seed))
+
+    def transform(rows: Any) -> Any:
+        scaled = rows * torch.exp(torch.clamp(log_scale, -1.5, 1.5))
+        residual = F.gelu(rows @ down) @ up
+        return F.normalize(scaled + float(residual_alpha) * residual, dim=1)
+
+    trace: list[dict[str, Any]] = []
+    started = time.perf_counter()
+    for epoch in range(1, int(epochs) + 1):
+        permutation = torch.randperm(len(x), generator=generator, device=runtime_device)
+        total_loss_sum = 0.0
+        correct = 0
+        seen = 0
+        grad_norm_sum = 0.0
+        batches = 0
+        for positions in permutation.split(min(int(batch_size), len(x))):
+            optimizer.zero_grad(set_to_none=True)
+            rows = x[positions]
+            if float(feature_noise_std) > 0.0:
+                rows = rows + float(feature_noise_std) * torch.randn(
+                    rows.shape, generator=generator, device=runtime_device, dtype=rows.dtype
+                )
+            logits = float(temperature) * (transform(rows) @ F.normalize(weights, dim=1).T) + bias
+            margin_logits = logits.clone()
+            margin_logits[
+                torch.arange(len(positions), device=runtime_device), targets[positions]
+            ] -= float(temperature) * float(cosine_margin)
+            loss = F.cross_entropy(margin_logits, targets[positions])
+            loss.backward()
+            grad_norm = torch.nn.utils.clip_grad_norm_(parameters, max_norm=5.0)
+            optimizer.step()
+            count = len(positions)
+            total_loss_sum += float(loss.detach()) * count
+            correct += int((logits.argmax(dim=1) == targets[positions]).sum().item())
+            seen += count
+            grad_norm_sum += float(grad_norm.detach())
+            batches += 1
+        row = {
+            "phase": "support_only_extreme_light_low_rank_fit",
+            "epoch": epoch,
+            "step": epoch,
+            "total_steps": int(epochs),
+            "loss": total_loss_sum / max(1, seen),
+            "total_loss": total_loss_sum / max(1, seen),
+            "ce_loss": total_loss_sum / max(1, seen),
+            "source_anchor_loss": 0.0,
+            "learning_rate": float(optimizer.param_groups[0]["lr"]),
+            "gradient_norm": grad_norm_sum / max(1, batches),
+            "support_accuracy": correct / max(1, seen),
+        }
+        if not all(math.isfinite(float(value)) for key, value in row.items() if key != "phase"):
+            raise FloatingPointError(f"non-finite extreme-light loss trace: {row}")
+        trace.append(row)
+    adaptation_elapsed = time.perf_counter() - started
+    scoring_started = time.perf_counter()
+    with torch.no_grad():
+        logits = float(temperature) * (transform(q) @ F.normalize(weights, dim=1).T) + bias
+        predicted_indices = logits.argmax(dim=1).cpu().numpy()
+    scoring_elapsed = time.perf_counter() - scoring_started
+    peak_device_memory = (
+        int(torch.cuda.max_memory_allocated(runtime_device)) if runtime_device.type == "cuda" else 0
+    )
+    transform_macs = int(feature_dim + 2 * feature_dim * int(rank))
+    macs_per_query = int(transform_macs + class_count * feature_dim)
+    info = {
+        "adaptation_objective": "support_only_low_rank_residual_cosface_ce",
+        "head_mode": "extreme_light_low_rank_cosine",
+        "support_only": True,
+        "query_labels_used_for_adaptation": False,
+        "query_features_used_for_adaptation": False,
+        "query_query_graph_used": False,
+        "query_batch_state_required": False,
+        "decision_batch_state_required": False,
+        "role_oracle_used": False,
+        "equal_class_quota_used": False,
+        "feature_adapter_updates_adv3b02": False,
+        "feature_adapter_gradient_updates": int(epochs),
+        "feature_adapter_mode": "support_low_rank_residual_cosine",
+        "trainable_parameters": trainable_parameters,
+        "persistent_state_bytes": persistent_state_bytes,
+        "persistent_state_bytes_with_post_adapter": persistent_state_bytes,
+        "stored_raw_support_count": 0,
+        "stored_quantized_support_code_count": 0,
+        "stored_class_prototype_count": class_count,
+        "feature_dim": feature_dim,
+        "class_count": class_count,
+        "adaptation_epochs": int(epochs),
+        "adaptation_batch_size": int(batch_size),
+        "low_rank_width": int(rank),
+        "cosine_margin": float(cosine_margin),
+        "residual_alpha": float(residual_alpha),
+        "estimated_adaptation_macs": int(int(epochs) * len(support) * macs_per_query * 3),
+        "estimated_head_macs": int(len(query) * macs_per_query),
+        "estimated_head_macs_with_post_adapter": int(len(query) * macs_per_query),
+        "estimated_macs_per_query": macs_per_query,
+        "dense_graph_bytes_lower_bound": 0,
+        "dense_graph_peak_bytes_lower_bound": 0,
+        "dense_graph_cumulative_bytes": 0,
+        "decision_workspace_bytes_lower_bound": 0,
+        "adaptation_latency_sec": float(adaptation_elapsed),
+        "score_matrix_latency_sec": float(scoring_elapsed),
+        "onboard_scoring_latency_sec": float(scoring_elapsed),
+        "onboard_scoring_latency_per_query_ms": float(scoring_elapsed * 1000.0 / max(1, len(query))),
+        "peak_device_memory_bytes": peak_device_memory,
+        "loss": float(trace[-1]["loss"]),
+        "loss_initial": float(trace[0]["loss"]),
+        "loss_final": float(trace[-1]["loss"]),
+        "support_accuracy_final": float(trace[-1]["support_accuracy"]),
+        "runtime_device": str(runtime_device),
+    }
+    predicted = np.asarray(classes, dtype=object)[predicted_indices]
+    return predicted, info, trace
