@@ -117,3 +117,9 @@ run ID=`qknn_extreme_light_lowrank_k30_20260714_2340_v1`；Git commit=`0ac6917`�
 新周期复用`项目.md`允许冻结的source classifier bank：把每个物理样本同一次ADV3B02前向产生的6维`tx_logits`作为逐样本特征，与160维`z_id`和96维FFT拼接。source classifier/backbone均冻结，不使用query角色、query-batch统计、query标签或配额，不增加backbone前向。
 
 预注册`rx8-8×K30×seed713101/713102×5/10/20`，扫描统一logit权重`0.25/0.5/1.0/2.0`，三场景support enrollment、FFT2.0、20epoch和query 1-view保持不变。run ID=`qknn_extreme_light_source_logits_k30_20260715_0012_v1`，共24 rows；本地编译、17项pytest和dry-run PASS。只有统一权重在全部规模和两个seed通过，才扩大receiver；确认seed继续封存。
+
+### 冻结source-logit结果与source-bank anchor计划
+
+24/24 rows完成，0失败、0协议违规、1,440条loss trace。权重0.25的5/10/20类`old/floor/new/H`均值为`90.97/80.00/89.50/90.04%`、`86.81/57.50/86.42/86.58%`、`89.44/77.50/91.92/90.60%`；仅三个20类单seed row通过，仍无统一候选。20类资源为7,100参数、28,400B状态、7,074MAC/query，不增加backbone前向。
+
+下一轮固定logit0.25和source/target prototype blend0.25，扫描冻结source prototype余弦anchor strength`0.05/0.1/0.25/0.5`。run ID=`qknn_extreme_light_source_anchor_k30_20260715_0020_v1`，24 rows；19项pytest、编译和dry-run PASS。推理仍为全部注册类统一逐样本argmax，无query角色门控。

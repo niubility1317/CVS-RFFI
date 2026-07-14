@@ -1047,6 +1047,14 @@ def validate_config(config: dict[str, Any]) -> None:
         source_logit_weight = float(config.get("extreme_light_source_logit_weight", 0.0))
         if source_logit_weight < 0.0 or not math.isfinite(source_logit_weight):
             raise ValueError("extreme_light_source_logit_weight must be finite and nonnegative")
+        source_anchor_strength = float(config.get("extreme_light_source_bank_anchor_strength", 0.0))
+        source_anchor_blend = float(config.get("extreme_light_source_bank_anchor_blend", 0.25))
+        if source_anchor_strength < 0.0 or not math.isfinite(source_anchor_strength):
+            raise ValueError("extreme_light_source_bank_anchor_strength must be finite and nonnegative")
+        if not math.isfinite(source_anchor_blend) or not 0.0 <= source_anchor_blend <= 1.0:
+            raise ValueError("extreme_light_source_bank_anchor_blend must be in [0,1]")
+        if source_anchor_strength > 0.0 and head_mode != "extreme_light_diag_cosine":
+            raise ValueError("frozen source-bank anchoring is currently defined for the diagonal head")
         support_aug_scenarios = tuple(
             str(value) for value in config.get("extreme_light_support_aug_scenarios", [])
         )
@@ -1089,6 +1097,8 @@ def run(config: dict[str, Any], run_dir: Path) -> dict[str, Any]:
     head_mode = str(config.get("qknnv42_head_mode", "qknn")).strip().lower()
     extreme_aux_weight = float(config.get("extreme_light_aux_weight", 0.0))
     source_logit_weight = float(config.get("extreme_light_source_logit_weight", 0.0))
+    source_anchor_strength = float(config.get("extreme_light_source_bank_anchor_strength", 0.0))
+    source_anchor_blend = float(config.get("extreme_light_source_bank_anchor_blend", 0.25))
     aux_required = aux_weight > 0.0 or (
         head_mode in {"extreme_light_diag_cosine", "extreme_light_prototype_cosine", "extreme_light_support_ridge", "extreme_light_low_rank_cosine"}
         and extreme_aux_weight > 0.0
@@ -1294,6 +1304,26 @@ def run(config: dict[str, Any], run_dir: Path) -> dict[str, Any]:
                         device=runtime_device,
                     )
                 else:
+                    source_anchor_x = None
+                    source_anchor_y = None
+                    if source_anchor_strength > 0.0:
+                        source_mask = (roles == "source") & np.isin(
+                            arrays["tx_ids"].astype(str), old_labels
+                        )
+                        if not np.any(source_mask):
+                            raise ValueError("frozen source bank has no registered old-class rows")
+                        source_anchor_x = concatenate_registered_features(
+                            arrays["features"][source_mask],
+                            arrays[aux_key][source_mask] if aux_required else None,
+                            auxiliary_weight=extreme_aux_weight,
+                            source_logits=(
+                                arrays["tx_logits"][source_mask]
+                                if source_logit_weight > 0.0
+                                else None
+                            ),
+                            source_logit_weight=source_logit_weight,
+                        )
+                        source_anchor_y = arrays["tx_ids"][source_mask].astype(str)
                     predicted, info, extreme_trace = fit_predict_extreme_light_diag_cosine(
                         joint_support,
                         fit_support_y,
@@ -1314,6 +1344,10 @@ def run(config: dict[str, Any], run_dir: Path) -> dict[str, Any]:
                         max_persistent_state_bytes=int(
                             config.get("extreme_light_max_persistent_state_bytes", 128 * 1024)
                         ),
+                        source_anchor_x=source_anchor_x,
+                        source_anchor_y=source_anchor_y,
+                        source_anchor_strength=source_anchor_strength,
+                        source_anchor_blend=source_anchor_blend,
                         device=runtime_device,
                     )
                 elapsed = float(info["adaptation_latency_sec"])

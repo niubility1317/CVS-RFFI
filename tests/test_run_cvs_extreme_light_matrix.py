@@ -197,3 +197,21 @@ def test_frozen_source_logit_arm_is_per_sample_and_support_augmented():
     assert config["extreme_light_source_logit_weight"] == 0.5
     assert config["extreme_light_epochs"] == 20
     assert len(config["extreme_light_support_aug_scenarios"]) == 3
+
+
+def test_frozen_source_bank_anchor_arm_has_no_query_role_gate():
+    row = build_rows(
+        arms=("el_diag_aug3_logit0p25_srca0p1_e20",),
+        new_class_counts=(10,),
+        receivers=("8-8",),
+        seeds=(713101,),
+        k_grid=(30,),
+        output_root=Path("runs"),
+        log_root=Path("logs"),
+    )[0]
+    config = row_config(_base_config(), row, device="cpu")
+    assert config["qknnv42_decision_mode"] == "per_sample_argmax"
+    assert config["extreme_light_source_logit_weight"] == 0.25
+    assert config["extreme_light_source_bank_anchor_strength"] == 0.1
+    assert config["extreme_light_source_bank_anchor_blend"] == 0.25
+    assert config["qknnv42_labelprop_mode"] == "disabled"

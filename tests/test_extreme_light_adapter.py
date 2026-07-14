@@ -44,6 +44,30 @@ def test_extreme_light_adapter_is_support_only_and_resource_bounded():
     assert {"total_loss", "ce_loss", "source_anchor_loss", "learning_rate", "gradient_norm", "support_accuracy"} <= set(trace[0])
 
 
+def test_frozen_source_bank_anchor_does_not_create_query_oracle():
+    support, support_y, query, query_y = _separable()
+    source_mask = np.isin(support_y, ["old-a", "old-b"])
+    predicted, info, trace = fit_predict_extreme_light_diag_cosine(
+        support,
+        support_y,
+        query,
+        seed=17,
+        epochs=3,
+        source_anchor_x=support[source_mask],
+        source_anchor_y=support_y[source_mask],
+        source_anchor_strength=0.1,
+        source_anchor_blend=0.25,
+        device="cpu",
+    )
+    assert np.mean(predicted.astype(str) == query_y.astype(str)) == 1.0
+    assert info["frozen_source_bank_used"] is True
+    assert info["frozen_source_bank_class_count"] == 2
+    assert info["frozen_source_bank_updated"] is False
+    assert info["role_oracle_used"] is False
+    assert info["query_features_used_for_adaptation"] is False
+    assert "frozen_source_bank_anchor_loss" in trace[0]
+
+
 def test_query_batch_extension_does_not_change_existing_predictions():
     support, support_y, query, _ = _separable()
     first, _, _ = fit_predict_extreme_light_diag_cosine(

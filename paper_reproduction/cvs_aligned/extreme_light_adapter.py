@@ -79,6 +79,10 @@ def fit_predict_extreme_light_diag_cosine(
     weight_decay: float = 0.002,
     max_trainable_parameters: int = 50_000,
     max_persistent_state_bytes: int = 128 * 1024,
+    source_anchor_x: np.ndarray | None = None,
+    source_anchor_y: np.ndarray | None = None,
+    source_anchor_strength: float = 0.0,
+    source_anchor_blend: float = 0.25,
     device: str = "cpu",
 ) -> tuple[np.ndarray, dict[str, Any], list[dict[str, Any]]]:
     """Fit the support-only diagonal metric and return independent query predictions."""
@@ -93,6 +97,10 @@ def fit_predict_extreme_light_diag_cosine(
         raise ValueError("learning_rate must be finite and positive")
     if not math.isfinite(float(temperature)) or float(temperature) <= 0.0:
         raise ValueError("temperature must be finite and positive")
+    if not math.isfinite(float(source_anchor_strength)) or float(source_anchor_strength) < 0.0:
+        raise ValueError("source_anchor_strength must be finite and nonnegative")
+    if not math.isfinite(float(source_anchor_blend)) or not 0.0 <= float(source_anchor_blend) <= 1.0:
+        raise ValueError("source_anchor_blend must be in [0,1]")
     support = np.asarray(support_x, dtype=np.float32)
     query = np.asarray(query_x, dtype=np.float32)
     labels = np.asarray(support_y).astype(str)
@@ -137,6 +145,36 @@ def fit_predict_extreme_light_diag_cosine(
     prototypes = torch.stack(
         [F.normalize(x[targets == index].mean(dim=0), dim=0) for index in range(class_count)]
     )
+    source_anchor_rows = 0
+    source_anchor_class_indices: list[int] = []
+    source_anchor_prototypes: list[torch.Tensor] = []
+    if float(source_anchor_strength) > 0.0:
+        if source_anchor_x is None or source_anchor_y is None:
+            raise ValueError("positive source_anchor_strength requires a frozen source bank")
+        source_values = np.asarray(source_anchor_x, dtype=np.float32)
+        source_labels = np.asarray(source_anchor_y).astype(str)
+        if source_values.ndim != 2 or source_values.shape[1] != feature_dim:
+            raise ValueError("source anchor features must align with support feature dimension")
+        if len(source_values) != len(source_labels) or len(source_values) == 0:
+            raise ValueError("source anchor features and labels must be non-empty and aligned")
+        if not np.all(np.isfinite(source_values)):
+            raise ValueError("source anchor features must be finite")
+        unknown_source_labels = sorted(set(source_labels.tolist()) - set(classes))
+        if unknown_source_labels:
+            raise ValueError(f"source anchor labels are not registered: {unknown_source_labels}")
+        source_tensor = torch.as_tensor(source_values, dtype=torch.float32, device=runtime_device)
+        for label in sorted(set(source_labels.tolist())):
+            index = class_to_index[label]
+            mask = torch.as_tensor(source_labels == label, dtype=torch.bool, device=runtime_device)
+            source_prototype = F.normalize(source_tensor[mask].mean(dim=0), dim=0)
+            blended = F.normalize(
+                (1.0 - float(source_anchor_blend)) * prototypes[index]
+                + float(source_anchor_blend) * source_prototype,
+                dim=0,
+            )
+            source_anchor_class_indices.append(index)
+            source_anchor_prototypes.append(blended)
+        source_anchor_rows = int(len(source_values))
     log_scale = torch.nn.Parameter(torch.zeros(feature_dim, device=runtime_device))
     weights = torch.nn.Parameter(prototypes.detach().clone())
     bias = torch.nn.Parameter(torch.zeros(class_count, device=runtime_device))
@@ -153,6 +191,7 @@ def fit_predict_extreme_light_diag_cosine(
         permutation = torch.randperm(len(x), generator=generator, device=runtime_device)
         epoch_ce = 0.0
         epoch_anchor = 0.0
+        epoch_frozen_source_anchor = 0.0
         epoch_total = 0.0
         epoch_correct = 0
         epoch_seen = 0
@@ -174,13 +213,25 @@ def fit_predict_extreme_light_diag_cosine(
             ) + bias
             ce_loss = F.cross_entropy(logits, targets[positions])
             anchor_loss = torch.mean((F.normalize(weights, dim=1) - prototypes) ** 2)
-            total_loss = ce_loss + float(prototype_anchor_weight) * anchor_loss
+            frozen_source_anchor_loss = torch.zeros((), dtype=weights.dtype, device=runtime_device)
+            if source_anchor_prototypes:
+                selected_weights = F.normalize(weights[source_anchor_class_indices], dim=1)
+                selected_anchors = torch.stack(source_anchor_prototypes)
+                frozen_source_anchor_loss = torch.mean(
+                    1.0 - torch.sum(selected_weights * selected_anchors, dim=1)
+                )
+            total_loss = (
+                ce_loss
+                + float(prototype_anchor_weight) * anchor_loss
+                + float(source_anchor_strength) * frozen_source_anchor_loss
+            )
             total_loss.backward()
             grad_norm = torch.nn.utils.clip_grad_norm_(parameters, max_norm=5.0)
             optimizer.step()
             count = int(len(positions))
             epoch_ce += float(ce_loss.detach()) * count
             epoch_anchor += float(anchor_loss.detach()) * count
+            epoch_frozen_source_anchor += float(frozen_source_anchor_loss.detach()) * count
             epoch_total += float(total_loss.detach()) * count
             epoch_correct += int((logits.argmax(dim=1) == targets[positions]).sum().item())
             epoch_seen += count
@@ -195,6 +246,7 @@ def fit_predict_extreme_light_diag_cosine(
             "total_loss": epoch_total / max(1, epoch_seen),
             "ce_loss": epoch_ce / max(1, epoch_seen),
             "source_anchor_loss": epoch_anchor / max(1, epoch_seen),
+            "frozen_source_bank_anchor_loss": epoch_frozen_source_anchor / max(1, epoch_seen),
             "learning_rate": float(optimizer.param_groups[0]["lr"]),
             "gradient_norm": epoch_grad_norm / max(1, batch_count),
             "support_accuracy": epoch_correct / max(1, epoch_seen),
@@ -219,11 +271,18 @@ def fit_predict_extreme_light_diag_cosine(
     forward_macs_per_support = int(feature_dim + class_count * feature_dim)
     estimated_adaptation_macs = int(
         int(epochs) * len(support) * forward_macs_per_support * 3
+        + source_anchor_rows * feature_dim
     )
     info = {
         "adaptation_objective": "support_only_extreme_light_diag_metric_cosine_ce",
         "head_mode": "extreme_light_diag_cosine",
         "support_only": True,
+        "frozen_source_bank_used": bool(source_anchor_prototypes),
+        "frozen_source_bank_rows": source_anchor_rows,
+        "frozen_source_bank_class_count": int(len(source_anchor_prototypes)),
+        "frozen_source_bank_anchor_strength": float(source_anchor_strength),
+        "frozen_source_bank_anchor_blend": float(source_anchor_blend),
+        "frozen_source_bank_updated": False,
         "query_labels_used_for_adaptation": False,
         "query_features_used_for_adaptation": False,
         "query_query_graph_used": False,
