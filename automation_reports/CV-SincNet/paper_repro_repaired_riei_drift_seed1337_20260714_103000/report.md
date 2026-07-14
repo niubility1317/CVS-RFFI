@@ -78,3 +78,11 @@ DRIFT的raw negative-MSE、RIEI的CE/MI/IE sum reduction以及两篇论文的模
 - 其余当前RIEI进度为epoch117-120，GPU0第二批RIEI到epoch45；已完成queue job数=`1/13`。
 - 完整扫描当前26份`.log`，精确硬错误模式下Traceback、RuntimeError、OOM、Killed、NaN和unrecognized arguments均为0；宽泛`Inf`命中均来自`split_info`字段，不是数值Inf。
 - 按用户要求，后续fix_optimized联合矩阵已通过独立deferred launcher提交；它仍只读等待本run全部退出，不影响本run或Phase1。
+
+### 2026-07-14 11:42+08:00只读监控检查点
+
+- 状态保持`RUNNING_HEALTHY`：已完成queue job=`1/13`（DRIFT，status=0），当前本任务训练=`8`。
+- 首批剩余7个RIEI到epoch188-193；GPU0第二批RIEI到epoch117。所有训练日志均持续增长。
+- GPU0-7均为2个compute process：1个Phase1＋1个本任务；显存约4056-4154MiB/GPU，未超并发上限。
+- 完整日志精确硬错误扫描仍为0：无Traceback、RuntimeError、OOM、Killed、NaN或参数错误。
+- deferred fixopt PID=`289073`保持存活，日志显示`active_target_processes=16`，仍处于等待阶段，没有新增GPU训练。

@@ -92,6 +92,12 @@
 - deferred launcher每30秒只读检查指定修复版进程；修复版完全退出后才调用20-job launcher，并再次执行`current+planned_peak<=2`硬容量门。11:12日志显示仍在等待，尚未占用额外GPU。
 - 首次SSH提交因远端后台父shell保持channel导致本地命令超时；已立即终止残留本地`ssh.exe`并确认TCP22连接为0，随后通过只读远端证据确认deferred launcher已经landed，未重复提交。
 
+### 2026-07-14 11:42+08:00等待检查点
+
+- deferred PID=`289073`及父包装PID=`289071`均存活；等待日志持续更新，最新`active_target_processes=16`。
+- 前序修复版尚有8个训练进程，所有GPU仍为2个compute process，因此fixopt尚未实际启动，符合容量门设计。
+- 前序run无硬错误，预计首批剩余RIEI即将完成；deferred launcher继续等待全部13个job及queue退出。
+
 ## 完成后必须检查
 
 - 完整读取20份200epoch日志、metrics及scheduler/queue日志，不使用tail抽样代替完整分析。
