@@ -67,30 +67,30 @@ def test_corepath_stable_enables_complete_p0_closed_loop():
 
 def test_resource_gate_waits_until_every_gpu_has_one_free_slot(monkeypatch):
     snapshots = [
-        {0: 2, 1: 1, 2: 1, 3: 1, 4: 1, 5: 1, 6: 1, 7: 1},
-        {gpu: 1 for gpu in range(8)},
+        {0: 1, 1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0, 7: 0},
+        {gpu: 0 for gpu in range(8)},
     ]
     monkeypatch.setattr(launcher, "gpu_compute_occupancy", lambda: snapshots.pop(0))
     monkeypatch.setattr(launcher.time, "sleep", lambda _: None)
     assert launcher.wait_for_gpu_slots(
-        max_total_compute_per_gpu=2,
+        max_total_compute_per_gpu=1,
         timeout_seconds=10,
         poll_seconds=1,
-    ) == {gpu: 1 for gpu in range(8)}
+    ) == {gpu: 0 for gpu in range(8)}
 
 
 def test_resource_gate_fails_closed_when_gpu_stays_full(monkeypatch):
     monkeypatch.setattr(
         launcher,
         "gpu_compute_occupancy",
-        lambda: {gpu: (2 if gpu == 3 else 1) for gpu in range(8)},
+        lambda: {gpu: (1 if gpu == 3 else 0) for gpu in range(8)},
     )
     monkeypatch.setattr(launcher.time, "sleep", lambda _: None)
     monotonic = iter([0.0, 1.0])
     monkeypatch.setattr(launcher.time, "monotonic", lambda: next(monotonic))
     with pytest.raises(TimeoutError, match="GPU_SLOT_WAIT_TIMEOUT"):
         launcher.wait_for_gpu_slots(
-            max_total_compute_per_gpu=2,
+            max_total_compute_per_gpu=1,
             timeout_seconds=1,
             poll_seconds=1,
         )
