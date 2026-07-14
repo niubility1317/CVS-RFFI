@@ -19,6 +19,10 @@ from typing import Any
 import numpy as np
 
 from paper_reproduction.common.config import load_json_config
+from paper_reproduction.cvs_aligned.extreme_light_adapter import (
+    concatenate_registered_features,
+    fit_predict_extreme_light_diag_cosine,
+)
 
 
 METHOD_STAGE = {"cvs_opgac": "Stage2-B", "cvs_qknnv42": "Stage2-C"}
@@ -837,7 +841,13 @@ def _attach_post_adapter_resources(
     info: dict[str, Any], cache_manifest: dict[str, Any], *, support_count: int,
     query_count: int,
 ) -> None:
-    post = dict(cache_manifest.get("qknn_post_feature_adapter", {}))
+    post_applied = cache_manifest.get("post_feature_adapter_applied") is True
+    if (
+        not post_applied
+        and cache_manifest.get("payload_source") == "qknnv42_post_feature_adapter_v1"
+    ):
+        raise ValueError("post-adapter payload declares that the adapter was not applied")
+    post = dict(cache_manifest.get("qknn_post_feature_adapter", {})) if post_applied else {}
     if not post:
         params = 0
         macs_per_sample = 0
@@ -995,6 +1005,28 @@ def validate_config(config: dict[str, Any]) -> None:
     old_anchor_bias = float(config.get("qknnv42_old_anchor_bias", 0.001))
     if not math.isfinite(old_anchor_bias) or abs(old_anchor_bias) > 0.1:
         raise ValueError("qknnv42_old_anchor_bias must be finite and within [-0.1,0.1]")
+    head_mode = str(config.get("qknnv42_head_mode", "qknn")).strip().lower()
+    if head_mode not in {"qknn", "extreme_light_diag_cosine"}:
+        raise ValueError(f"unsupported qknnv42_head_mode: {head_mode}")
+    if head_mode == "extreme_light_diag_cosine":
+        if method != "cvs_qknnv42":
+            raise ValueError("extreme-light head is defined only for cvs_qknnv42")
+        if decision_mode != "per_sample_argmax":
+            raise ValueError("extreme-light head requires per_sample_argmax")
+        if labelprop_mode != "disabled":
+            raise ValueError("extreme-light head forbids query label propagation")
+        epochs = int(config.get("extreme_light_epochs", 20))
+        if epochs <= 0 or epochs > 20:
+            raise ValueError("extreme_light_epochs must be in [1,20]")
+        if int(config.get("extreme_light_max_trainable_parameters", 50_000)) > 50_000:
+            raise ValueError("extreme-light parameter cap cannot exceed 50000")
+        if int(config.get("extreme_light_max_persistent_state_bytes", 128 * 1024)) > 128 * 1024:
+            raise ValueError("extreme-light persistent-state cap cannot exceed 128KB")
+        extreme_aux_weight = float(config.get("extreme_light_aux_weight", 0.0))
+        if extreme_aux_weight < 0.0 or not math.isfinite(extreme_aux_weight):
+            raise ValueError("extreme_light_aux_weight must be finite and nonnegative")
+        if extreme_aux_weight > 0.0 and not aux_key:
+            raise ValueError("positive extreme_light_aux_weight requires qknnv42_aux_feature_key")
 
 
 def run(config: dict[str, Any], run_dir: Path) -> dict[str, Any]:
@@ -1024,10 +1056,16 @@ def run(config: dict[str, Any], run_dir: Path) -> dict[str, Any]:
         config.get("qknnv42_feature_adapter_mode", "support_diag_whiten_fisher")
     ).strip().lower()
     old_anchor_bias = float(config.get("qknnv42_old_anchor_bias", 0.001))
+    head_mode = str(config.get("qknnv42_head_mode", "qknn")).strip().lower()
+    extreme_aux_weight = float(config.get("extreme_light_aux_weight", 0.0))
+    aux_required = aux_weight > 0.0 or (
+        head_mode == "extreme_light_diag_cosine" and extreme_aux_weight > 0.0
+    )
+    runtime_device = str(config.get("_runtime_device", "cpu"))
     expected_tta_views = int(config.get("qknnv42_expected_tta_view_count", 1))
     for scenario in SCENARIOS:
         arrays, cache_manifest = _load_npz(_feature_path(config, receiver, scenario))
-        if aux_weight > 0.0:
+        if aux_required:
             if aux_key not in arrays:
                 raise ValueError(f"feature NPZ for {scenario} is missing auxiliary key {aux_key!r}")
             if arrays[aux_key].ndim != 2 or int(arrays[aux_key].shape[0]) != int(arrays["features"].shape[0]):
@@ -1067,8 +1105,8 @@ def run(config: dict[str, Any], run_dir: Path) -> dict[str, Any]:
         support_x = arrays["features"][support_idx]
         support_y = arrays["tx_ids"][support_idx].astype(str)
         query_x = arrays["features"][query_idx]
-        aux_support_x = arrays[aux_key][support_idx] if aux_weight > 0.0 else None
-        aux_query_x = arrays[aux_key][query_idx] if aux_weight > 0.0 else None
+        aux_support_x = arrays[aux_key][support_idx] if aux_required else None
+        aux_query_x = arrays[aux_key][query_idx] if aux_required else None
         truth = arrays["tx_ids"][query_idx].astype(str)
         if method == "cvs_opgac":
             started = time.perf_counter()
@@ -1082,42 +1120,107 @@ def run(config: dict[str, Any], run_dir: Path) -> dict[str, Any]:
             metrics["target_old_accuracy_delta"] = metrics["target_old_accuracy"] - metrics["target_old_accuracy_before_adaptation"]
             elapsed = time.perf_counter() - started
         else:
-            diagnostic_started = time.perf_counter()
-            old_pred, _ = _qknnv42_predict(
-                arrays["features"][old_support],
-                arrays["tx_ids"][old_support],
-                arrays["features"][old_query],
-                old_labels=set(old_labels),
-                aux_support_x=arrays[aux_key][old_support] if aux_weight > 0.0 else None,
-                aux_query_x=arrays[aux_key][old_query] if aux_weight > 0.0 else None,
-                aux_score_weight=aux_weight,
-                decision_mode=decision_mode,
-                old_query_count=len(old_query),
-                query_per_class=int(config["query_per_tx"]),
-                labelprop_mode=labelprop_mode,
-                old_anchor_bias=old_anchor_bias,
-                support_representation=support_representation,
-                feature_adapter_mode=feature_adapter_mode,
-            )
-            diagnostic_elapsed = time.perf_counter() - diagnostic_started
-            deploy_started = time.perf_counter()
-            predicted, info = _qknnv42_predict(
-                support_x,
-                support_y,
-                query_x,
-                old_labels=set(old_labels),
-                aux_support_x=aux_support_x,
-                aux_query_x=aux_query_x,
-                aux_score_weight=aux_weight,
-                decision_mode=decision_mode,
-                old_query_count=len(old_query),
-                query_per_class=int(config["query_per_tx"]),
-                labelprop_mode=labelprop_mode,
-                old_anchor_bias=old_anchor_bias,
-                support_representation=support_representation,
-                feature_adapter_mode=feature_adapter_mode,
-            )
-            elapsed = time.perf_counter() - deploy_started
+            extreme_trace: list[dict[str, Any]] = []
+            if head_mode == "extreme_light_diag_cosine":
+                old_joint_support = concatenate_registered_features(
+                    arrays["features"][old_support],
+                    arrays[aux_key][old_support] if aux_required else None,
+                    auxiliary_weight=extreme_aux_weight,
+                )
+                old_joint_query = concatenate_registered_features(
+                    arrays["features"][old_query],
+                    arrays[aux_key][old_query] if aux_required else None,
+                    auxiliary_weight=extreme_aux_weight,
+                )
+                old_classes, old_scores = _class_scores(
+                    old_joint_support,
+                    arrays["tx_ids"][old_support].astype(str),
+                    old_joint_query,
+                )
+                old_pred = np.asarray(old_classes, dtype=object)[np.argmax(old_scores, axis=1)]
+                diagnostic_elapsed = 0.0
+                joint_support = concatenate_registered_features(
+                    support_x,
+                    aux_support_x,
+                    auxiliary_weight=extreme_aux_weight,
+                )
+                joint_query = concatenate_registered_features(
+                    query_x,
+                    aux_query_x,
+                    auxiliary_weight=extreme_aux_weight,
+                )
+                predicted, info, extreme_trace = fit_predict_extreme_light_diag_cosine(
+                    joint_support,
+                    support_y,
+                    joint_query,
+                    seed=int(config["seed"]),
+                    epochs=int(config.get("extreme_light_epochs", 20)),
+                    learning_rate=float(config.get("extreme_light_learning_rate", 0.01)),
+                    batch_size=int(config.get("extreme_light_batch_size", 32)),
+                    temperature=float(config.get("extreme_light_temperature", 18.0)),
+                    prototype_anchor_weight=float(
+                        config.get("extreme_light_prototype_anchor_weight", 0.05)
+                    ),
+                    feature_noise_std=float(config.get("extreme_light_feature_noise_std", 0.01)),
+                    weight_decay=float(config.get("extreme_light_weight_decay", 0.002)),
+                    max_trainable_parameters=int(
+                        config.get("extreme_light_max_trainable_parameters", 50_000)
+                    ),
+                    max_persistent_state_bytes=int(
+                        config.get("extreme_light_max_persistent_state_bytes", 128 * 1024)
+                    ),
+                    device=runtime_device,
+                )
+                elapsed = float(info["adaptation_latency_sec"])
+                info.update(
+                    {
+                        "aux_feature_enabled": aux_required,
+                        "aux_feature_dim": int(aux_support_x.shape[1]) if aux_required else 0,
+                        "aux_score_weight": 0.0,
+                        "aux_feature_concat_weight": extreme_aux_weight,
+                        "aux_fusion_mode": "per_sample_feature_concat",
+                        "labelprop_mode": "disabled",
+                        "decision_mode": "per_sample_argmax",
+                        "old_anchor_bias": 0.0,
+                    }
+                )
+            else:
+                diagnostic_started = time.perf_counter()
+                old_pred, _ = _qknnv42_predict(
+                    arrays["features"][old_support],
+                    arrays["tx_ids"][old_support],
+                    arrays["features"][old_query],
+                    old_labels=set(old_labels),
+                    aux_support_x=arrays[aux_key][old_support] if aux_weight > 0.0 else None,
+                    aux_query_x=arrays[aux_key][old_query] if aux_weight > 0.0 else None,
+                    aux_score_weight=aux_weight,
+                    decision_mode=decision_mode,
+                    old_query_count=len(old_query),
+                    query_per_class=int(config["query_per_tx"]),
+                    labelprop_mode=labelprop_mode,
+                    old_anchor_bias=old_anchor_bias,
+                    support_representation=support_representation,
+                    feature_adapter_mode=feature_adapter_mode,
+                )
+                diagnostic_elapsed = time.perf_counter() - diagnostic_started
+                deploy_started = time.perf_counter()
+                predicted, info = _qknnv42_predict(
+                    support_x,
+                    support_y,
+                    query_x,
+                    old_labels=set(old_labels),
+                    aux_support_x=aux_support_x,
+                    aux_query_x=aux_query_x,
+                    aux_score_weight=aux_weight,
+                    decision_mode=decision_mode,
+                    old_query_count=len(old_query),
+                    query_per_class=int(config["query_per_tx"]),
+                    labelprop_mode=labelprop_mode,
+                    old_anchor_bias=old_anchor_bias,
+                    support_representation=support_representation,
+                    feature_adapter_mode=feature_adapter_mode,
+                )
+                elapsed = time.perf_counter() - deploy_started
             old_count = len(old_query)
             old_acc = _accuracy(predicted[:old_count], truth[:old_count])
             new_acc = _accuracy(predicted[old_count:], truth[old_count:])
@@ -1138,8 +1241,14 @@ def run(config: dict[str, Any], run_dir: Path) -> dict[str, Any]:
         metrics.update({"adaptation_latency_sec": elapsed,
                         "latency_per_query_ms": elapsed * 1000.0 / len(query_idx), **info})
         metrics_by_scenario[scenario] = metrics
-        trace.append({"method": method, "scenario": scenario, "phase": "support_only_fit", "step": 1,
-                      "total_steps": 1, "loss": float(info["loss"]), "gradient_updates": 0})
+        if method == "cvs_qknnv42" and head_mode == "extreme_light_diag_cosine":
+            trace.extend(
+                {"method": method, "scenario": scenario, **row}
+                for row in extreme_trace
+            )
+        else:
+            trace.append({"method": method, "scenario": scenario, "phase": "support_only_fit", "step": 1,
+                          "total_steps": 1, "loss": float(info["loss"]), "gradient_updates": 0})
         meta = _meta(arrays, query_idx)
         detailed.extend(_detail_rows(predicted, truth, meta, scenario))
         for row, true, pred in zip(meta, truth.tolist(), predicted.tolist()):
@@ -1154,6 +1263,16 @@ def run(config: dict[str, Any], run_dir: Path) -> dict[str, Any]:
     aggregate_keys = ["target_old_accuracy", "target_old_accuracy_before_adaptation", "target_old_accuracy_delta"] \
         if stage == "Stage2-B" else ["old_acc", "seen_new_acc", "H_old_new", "average_forgetting"]
     aggregate = {key + "_mean": float(np.mean([row[key] for row in metrics_by_scenario.values()])) for key in aggregate_keys}
+    if stage == "Stage2-C":
+        per_class_accuracy: dict[str, float] = {}
+        for label in old_labels + new_labels:
+            rows = [row for row in score_rows if str(row["true_label"]) == str(label)]
+            if not rows:
+                raise ValueError(f"missing score rows for registered class {label}")
+            per_class_accuracy[label] = float(np.mean([int(row["correct"]) for row in rows]))
+        aggregate["per_class_accuracy_across_scenarios"] = per_class_accuracy
+        aggregate["min_old_class_acc"] = float(min(per_class_accuracy[label] for label in old_labels))
+        aggregate["min_seen_new_class_acc"] = float(min(per_class_accuracy[label] for label in new_labels))
     manifest = {"stage": stage, "method": method, "cvs_proposed_method": True,
                 "backbone": str(config.get("backbone_id", "ADV3B02_CORE90_SOFT_E200")),
                 "target_receiver_labels": [receiver], "target_old_tx_labels": old_labels,
@@ -1178,6 +1297,9 @@ def run(config: dict[str, Any], run_dir: Path) -> dict[str, Any]:
                 "qknnv42_labelprop_mode": labelprop_mode,
                 "qknnv42_support_representation": support_representation,
                 "qknnv42_feature_adapter_mode": feature_adapter_mode,
+                "qknnv42_head_mode": head_mode,
+                "extreme_light_aux_weight": extreme_aux_weight,
+                "extreme_light_epochs": int(config.get("extreme_light_epochs", 20)),
                 "qknnv42_old_anchor_bias": old_anchor_bias,
                 "non_deployment_oracle_diagnostic": decision_mode == "legacy_role_quota_oracle"}
     result = {"experiment_id": config.get("experiment_id", f"{method}_{seed}"), "method": method,
@@ -1220,6 +1342,7 @@ def main() -> int:
         config["target_receiver_labels"] = [args.target_receiver]
     if args.method is not None:
         config["stage"] = METHOD_STAGE[args.method]
+    config["_runtime_device"] = str(args.device)
     validate_config(config)
     if args.dry_run:
         print(json.dumps(config, ensure_ascii=False, sort_keys=True, allow_nan=False))
