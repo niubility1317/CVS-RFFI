@@ -163,6 +163,47 @@ def inject_feat_joint_lora(
     return audit
 
 
+def _prototype_banks_from_matched_views(
+    features: torch.Tensor,
+    labels: torch.Tensor,
+    *,
+    class_count: int,
+    view_count: int,
+) -> tuple[torch.Tensor, torch.Tensor]:
+    """Return all-view and leave-one-view-out class prototypes."""
+    if int(view_count) <= 1 or int(features.shape[0]) % int(view_count) != 0:
+        raise ValueError("support features cannot be grouped into matched views")
+    physical_count = int(features.shape[0]) // int(view_count)
+    for view_index in range(1, int(view_count)):
+        if not torch.equal(
+            labels[:physical_count],
+            labels[view_index * physical_count : (view_index + 1) * physical_count],
+        ):
+            raise ValueError("support labels are not matched across views")
+    normalized = _norm_rows(features)
+    view_ids = torch.arange(len(labels), device=labels.device) // physical_count
+    all_view: list[torch.Tensor] = []
+    leave_one_out: list[torch.Tensor] = []
+    for class_index in range(int(class_count)):
+        class_mask = labels == class_index
+        if not bool(class_mask.any()):
+            raise ValueError(f"support class {class_index} is empty")
+        all_view.append(_norm_rows(normalized[class_mask].mean(dim=0, keepdim=True))[0])
+    for held_out_view in range(int(view_count)):
+        per_class: list[torch.Tensor] = []
+        for class_index in range(int(class_count)):
+            mask = (labels == class_index) & (view_ids != held_out_view)
+            if not bool(mask.any()):
+                raise ValueError(
+                    f"support class {class_index} is empty outside view {held_out_view}"
+                )
+            per_class.append(
+                _norm_rows(normalized[mask].mean(dim=0, keepdim=True))[0]
+            )
+        leave_one_out.append(torch.stack(per_class, dim=0))
+    return torch.stack(all_view, dim=0).detach(), torch.stack(leave_one_out, dim=0).detach()
+
+
 def train_support_only_lora(
     model: nn.Module,
     support_rows: np.ndarray,
@@ -174,6 +215,7 @@ def train_support_only_lora(
     temperature: float,
     feature_anchor_weight: float,
     view_consistency_weight: float,
+    cross_view_prototype_weight: float,
     cosine_margin: float,
     class_dro_temperature: float,
     support_view_count: int,
@@ -187,6 +229,8 @@ def train_support_only_lora(
         raise ValueError("cosine_margin must be in [0,0.5]")
     if float(class_dro_temperature) < 0.0:
         raise ValueError("class_dro_temperature must be nonnegative")
+    if not 0.0 <= float(cross_view_prototype_weight) <= 1.0:
+        raise ValueError("cross_view_prototype_weight must be in [0,1]")
     rows = _numpy_to_tensor_compat(
         support_rows, numpy_dtype=np.dtype(np.float32), torch_dtype=torch.float32
     ).to(device)
@@ -215,16 +259,36 @@ def train_support_only_lora(
         torch.cuda.reset_peak_memory_stats(device)
     for epoch in range(1, int(epochs) + 1):
         epoch_started = time.perf_counter()
-        prototypes = _class_prototypes(
-            model,
-            identity,
-            rows,
-            labels,
-            class_count=class_count,
-            batch_size=int(batch_size),
-        )
         view_count = int(support_view_count)
-        use_view_groups = float(view_consistency_weight) > 0.0
+        cross_view_prototypes = None
+        if float(cross_view_prototype_weight) > 0.0:
+            with torch.no_grad():
+                prototype_features, _, _ = _batched_feature_forward(
+                    model,
+                    identity,
+                    rows,
+                    batch_size=int(batch_size),
+                    require_grad=False,
+                )
+            prototypes, cross_view_prototypes = _prototype_banks_from_matched_views(
+                prototype_features,
+                labels,
+                class_count=class_count,
+                view_count=view_count,
+            )
+        else:
+            prototypes = _class_prototypes(
+                model,
+                identity,
+                rows,
+                labels,
+                class_count=class_count,
+                batch_size=int(batch_size),
+            )
+        use_view_groups = (
+            float(view_consistency_weight) > 0.0
+            or float(cross_view_prototype_weight) > 0.0
+        )
         if use_view_groups:
             if view_count <= 1 or int(rows.shape[0]) % view_count != 0:
                 raise ValueError("support rows cannot be grouped into matched views")
@@ -254,6 +318,7 @@ def train_support_only_lora(
         totals = {
             "loss": 0.0,
             "ce": 0.0,
+            "cross_view_ce": 0.0,
             "dro": 0.0,
             "anchor": 0.0,
             "consistency": 0.0,
@@ -276,9 +341,36 @@ def train_support_only_lora(
                 margin_scores[
                     torch.arange(len(positions), device=device), targets
                 ] -= float(temperature) * float(cosine_margin)
-            per_sample_ce = F.cross_entropy(
+            per_sample_all_view_ce = F.cross_entropy(
                 margin_scores, targets, reduction="none"
             )
+            cross_view_ce = z.new_zeros(())
+            decision_scores = scores
+            if cross_view_prototypes is not None:
+                sample_view_ids = torch.div(
+                    positions, physical_count, rounding_mode="floor"
+                )
+                sample_prototypes = cross_view_prototypes[sample_view_ids]
+                cross_scores = float(temperature) * torch.einsum(
+                    "bd,bcd->bc", z, sample_prototypes
+                )
+                cross_margin_scores = cross_scores.clone()
+                if float(cosine_margin) > 0.0:
+                    cross_margin_scores[
+                        torch.arange(len(positions), device=device), targets
+                    ] -= float(temperature) * float(cosine_margin)
+                per_sample_cross_view_ce = F.cross_entropy(
+                    cross_margin_scores, targets, reduction="none"
+                )
+                cross_view_ce = per_sample_cross_view_ce.mean()
+                blend = float(cross_view_prototype_weight)
+                per_sample_ce = (
+                    (1.0 - blend) * per_sample_all_view_ce
+                    + blend * per_sample_cross_view_ce
+                )
+                decision_scores = (1.0 - blend) * scores + blend * cross_scores
+            else:
+                per_sample_ce = per_sample_all_view_ce
             ce = per_sample_ce.mean()
             if float(class_dro_temperature) > 0.0:
                 class_losses = []
@@ -315,15 +407,19 @@ def train_support_only_lora(
             batches += 1
             totals["loss"] += float(loss.detach()) * count
             totals["ce"] += float(ce.detach()) * count
+            totals["cross_view_ce"] += float(cross_view_ce.detach()) * count
             totals["dro"] += float(dro.detach()) * count
             totals["anchor"] += float(anchor.detach()) * count
             totals["consistency"] += float(consistency.detach()) * count
-            totals["correct"] += float((scores.argmax(dim=1) == targets).sum().detach())
+            totals["correct"] += float(
+                (decision_scores.argmax(dim=1) == targets).sum().detach()
+            )
             totals["grad"] += float(grad_norm.detach())
         row = {
             "epoch": epoch,
             "loss": totals["loss"] / max(1, seen),
             "prototype_ce": totals["ce"] / max(1, seen),
+            "leave_one_view_out_ce": totals["cross_view_ce"] / max(1, seen),
             "class_dro_loss": totals["dro"] / max(1, seen),
             "feature_anchor": totals["anchor"] / max(1, seen),
             "view_consistency": totals["consistency"] / max(1, seen),
@@ -366,6 +462,7 @@ def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
     parser.add_argument("--temperature", type=float, default=18.0)
     parser.add_argument("--feature_anchor_weight", type=float, default=0.05)
     parser.add_argument("--view_consistency_weight", type=float, default=0.0)
+    parser.add_argument("--cross_view_prototype_weight", type=float, default=0.0)
     parser.add_argument("--cosine_margin", type=float, default=0.0)
     parser.add_argument("--class_dro_temperature", type=float, default=0.0)
     parser.add_argument("--batch_size", type=int, default=128)
@@ -428,6 +525,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         temperature=float(args.temperature),
         feature_anchor_weight=float(args.feature_anchor_weight),
         view_consistency_weight=float(args.view_consistency_weight),
+        cross_view_prototype_weight=float(args.cross_view_prototype_weight),
         cosine_margin=float(args.cosine_margin),
         class_dro_temperature=float(args.class_dro_temperature),
         support_view_count=int(split_manifest["support_view_count"]),
@@ -474,6 +572,7 @@ def main(argv: Sequence[str] | None = None) -> int:
             "temperature": float(args.temperature),
             "feature_anchor_weight": float(args.feature_anchor_weight),
             "view_consistency_weight": float(args.view_consistency_weight),
+            "cross_view_prototype_weight": float(args.cross_view_prototype_weight),
             "cosine_margin": float(args.cosine_margin),
             "class_dro_temperature": float(args.class_dro_temperature),
             "batch_size": int(args.batch_size),

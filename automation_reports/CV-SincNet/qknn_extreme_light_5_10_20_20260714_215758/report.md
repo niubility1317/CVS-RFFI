@@ -312,3 +312,11 @@ PID=`852229`完成20epoch。DRO loss由`11.46986`降至`4.66735`，但普通prot
 该机制没有通过扩展gate。最佳floor50.00%仍低于v1 LoRA+prototype的51.67%；最佳old73.06%对应floor43.33%、new20仅70.75%，也明显弱于v4的76.94/48.33/92.42%。增加pooled收缩或logdet权重持续损害floor，说明问题不是prototype忽略类内尺度，而是冻结表示中的跨类均值重叠和support/query类条件漂移。该路线终止，不补第二seed、5/10类、K5、其它receiver或确认seed。
 
 至此在冻结ADV3B02约束内，轻量head、同viewRF统计、多prototype、闭式高斯、微型IQ、LoRA、late LoRA、分段20epoch和全类DRO都未能接近95% old/88% floor。下一步若要继续提升性能，必须按`项目.md`先设计并验证source-only域不变基座改进，再用本套严格Stage2-C极轻量适配协议复验；不能继续在同一个K10 query cell上扩大超参数自由度。
+
+## 2026-07-15 leave-one-view-out跨场景LoRA预注册
+
+冻结基座范围内仍有一个此前未覆盖、直接针对support/query场景漂移而不是继续换head的机制：三场景leave-one-view-out prototype训练。对每个support view，仅用另外两个LEO support view计算该类prototype，再训练当前view靠近跨场景prototype；三个view在每个batch按相同物理support ID严格配对。该目标完全使用合法support及其场景增强，不读取query、old/new角色或类别配额；部署侧仍是原rank8 feat-joint LoRA的12,800参数、25,600B FP16状态和12,800MAC/query，不增加持续推理资源。
+
+单机制gate继续固定`receiver=8-8/new20/seed713101/K10`，20epoch、rank8、alpha8、学习率`1e-3`、anchor0.05、leave-one-view-out prototype权重1.0、matched-view consistency0.1、batch126、query1-view。输出根预注册为`runs/qknn_extreme_light_support_lora_crossview_20260715_v7`，日志=`logs/qknn_extreme_light_support_lora_crossview_20260715_v7/rx8-8_new20_seed713101_k10.log`；训练后只配0epoch`el_proto_aux2p0`head。只有old/floor同时超过v1的73.06/51.67%，且不明显损害new20，才进入第二开发seed和5/10类；否则终止冻结基座support-adapter开发并停止在该query cell继续调参。
+
+本地新增leave-one-view-out prototype bank、cross-view CE及参数范围审计；56项相关pytest、`py_compile`和`git diff --check`均PASS。

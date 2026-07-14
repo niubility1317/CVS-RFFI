@@ -5,6 +5,7 @@ import torch
 from paper_reproduction.scripts.train_export_cvs_support_lora_adapter import (
     LORA_TARGETS,
     LoRALinear,
+    _prototype_banks_from_matched_views,
     inject_feat_joint_lora,
 )
 
@@ -72,6 +73,32 @@ def test_late_feat_joint_rank4_compresses_full_late_scope() -> None:
     assert len(audit["target_modules"]) == 8
 
 
+def test_leave_one_view_out_prototypes_exclude_current_view() -> None:
+    features = torch.tensor(
+        [
+            [1.0, 0.0],
+            [0.0, 1.0],
+            [0.8, 0.2],
+            [0.2, 0.8],
+            [0.6, 0.4],
+            [0.4, 0.6],
+        ]
+    )
+    labels = torch.tensor([0, 1, 0, 1, 0, 1])
+    all_view, leave_one_out = _prototype_banks_from_matched_views(
+        features, labels, class_count=2, view_count=3
+    )
+    assert all_view.shape == (2, 2)
+    assert leave_one_out.shape == (3, 2, 2)
+    expected_class0_without_view0 = torch.nn.functional.normalize(
+        torch.nn.functional.normalize(features[[2, 4]], dim=1).mean(dim=0), dim=0
+    )
+    torch.testing.assert_close(
+        leave_one_out[0, 0], expected_class0_without_view0
+    )
+    assert torch.allclose(torch.linalg.norm(leave_one_out, dim=-1), torch.ones(3, 2))
+
+
 def test_cli_accepts_class_symmetric_dro_controls() -> None:
     from paper_reproduction.scripts.train_export_cvs_support_lora_adapter import parse_args
 
@@ -93,7 +120,10 @@ def test_cli_accepts_class_symmetric_dro_controls() -> None:
             "0.1",
             "--class_dro_temperature",
             "5",
+            "--cross_view_prototype_weight",
+            "1",
         ]
     )
     assert args.cosine_margin == 0.1
     assert args.class_dro_temperature == 5.0
+    assert args.cross_view_prototype_weight == 1.0
