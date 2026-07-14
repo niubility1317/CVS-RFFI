@@ -202,3 +202,10 @@
 - 约5分钟健康检查：8/8 queue、8/8 trainer运行；row1–8分别到epoch`12,13,13,12,12,13,12,13/200`，8份`metrics.json`均已创建，`PAPER-EVAL-SUMMARY=0`符合训练早期。硬错误0。
 - GPU occupancy：GPU0–7均只有1个本任务compute，显存各约`485MiB`，利用率`16%–22%`；每GPU总训练数1，低于上限2。日志中的`split_info.partition_strategy`均为`stable_group_seed_shared_train_test_holdout`，命令均为`paper_eval_last_n=10`。
 - 当前判定：`RUNNING_HEALTHY_THROUGH_EPOCH_12_13`。不得干预、重启、覆盖或删除产物；完成后必须按12×200epoch完整日志及论文last10逐行重新计算MAE和`±2SD`命中数。
+
+## 2026-07-14 22:17状态复核与声明边界
+
+- N607直接只读预检通过。8个queue与8个首批trainer持续运行，row1–8分别到epoch`28,28,28,27,28,27,27,28/200`；8份`metrics.json`持续写入，`PAPER-EVAL-SUMMARY=0`符合尚未进入最终last10窗口。
+- 完整扫描当前已写日志的硬错误计数0；GPU0–7各仅1个本任务compute，显存约`485MiB`，利用率`8%–28%`且epoch持续推进。监控SSH退出后本地`ssh.exe=0`、N607 TCP22已建立连接`=0`。
+- 术语边界：RIEI的`SGD+mean`表示无momentum SGD优化器，以及CE/MI/IE在mini-batch内按均值约简；DRIFT并非`SGD+mean`，其固定复现配置是Adam加negative-MSE的mean reduction/no-cap。
+- 当前声明：DRIFT五seed final均值`72.75±5.93%`与论文`73.54%`差`-0.79pp`，可写作“聚合均值复现”，但大seed波动必须披露，不能写成稳定逐seed复现。RIEI旧12行虽均值`72.26%`接近论文`73.30%`，但MAE=`4.82pp`且论文`±2SD`仅命中`5/12`，仍为`NOT_REPRODUCED`；新分区修复run尚未完成，不能提前改判。
