@@ -93,6 +93,13 @@
 - E2仍暴露核心科学风险：dynamic DM proxy_vaccept=0.139、bridge=0.044，但known hard core accept仅0.149，legacy proxy_vaccept约0.589、bridge=1.000，source-episode overflow=1.000。因此不能把DM下降解释成拒识改善；正式120epoch必须同时检查known TPR、旧proxy与fixed endpoint。
 - 前三次冒烟仅在参数预检阶段失败，依次为关闭sat评估却保留sat best metric、非法best metric名称、heavy-eval interval设为0；均未进入训练，也未占用持续GPU资源。
 
+## 正式运行早期遥测
+
+- 10:46 CST八候选均存活且无Traceback、RuntimeError或CUDA OOM，已完成5-7个epoch；R6 E5单epoch约219秒。按当前并行负载估算训练主体约7-8小时，final评估另需约0.5-1小时，仍受10小时硬墙钟保护。
+- R6 E5固定reference bank已激活：anchor_count=672、active_epoch=2；`zid_path`预算标志=1，open/closed平衡梯度范数约13.16/54.10，梯度冲突率约0.460，冲突投影后cosine由0.049升至0.097。
+- 当前不能判定open-set改善：dynamic DM proxy/bridge约0.141/0.043，但known core accept仅0.131；旧口径proxy_vaccept约0.600、bridge_accept=1.000，source_episode_overflow=1.000。动态门低值仍主要由known拒收形成，必须等待known core TPR恢复并验证旧代理同步下降。
+- 早期几何中source-episode p95/p99/CVaR约58.73/66.22/63.18度，U_s temporal pass约0.121；source-val DG health best约98.63且当前回落仅0.054pp。E10前heavy evaluation尚未开始，不能外推strict UDU、satellite floor或最终拒识质量。
+
 ## 声明边界
 
 本轮只能评价Phase1 DG、星地压力、known几何、source-only proxy风险、U_s执行和diagnostic prototype。不得声明真实unknown FAR/FPR95、Stage2成功或endpoint部署成功。
