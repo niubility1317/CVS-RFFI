@@ -365,3 +365,10 @@
 - `ssr-gpu`下`py_compile`通过；根目录聚焦测试`7 passed`，Git镜像同组测试`7 passed`。根目录仅有既知`.pytest_cache`无写权warning，不影响测试。`bash -n`通过，8-job dry-run计数为8个job、8个capacity gate、`imagenet1d=4`、`short_stem1d=4`。
 - 根目录不是Git仓库；本地代码快照为`code/snapshots/paper_repro_riei_archprobe_seed1337_20260715_030500/`。关键SHA256：paper queue=`5a1fe1f1...`、architecture=`bf1d8e1f...`、model=`c936c09b...`、root train=`98e974aa...`、launcher=`0760d3cc...`、test=`6cf13d3b...`。
 - Git镜像的`train_cvs.py`已有不属于本任务的augmentation-consistency接线；镜像时保留该既有逻辑，只叠加本任务3处`fed_variant`接线，未用根目录旧副本覆盖这些并行变更。当前尚未同步或启动N607；下一步必须先提交仅本任务文件，再重新执行实时容量门。
+
+### 03:09同步与启动前容量门
+
+- Git提交：`a53e259 Probe RIEI ResNet1D stem parity`，仅包含本任务9个文件。N607同步前所有GPU无compute、无训练或launcher进程；目标run/log目录不存在，计划每GPU新增1个训练，满足`existing_compute+planned_peak=1≤2`。
+- 同步前远端SHA256：architecture=`899f66df...`、model=`99b1194a...`、train=`950b6008...`、paper queue=`2ba90874...`，均为本任务既有远端版本；新launcher不存在。同步目标依次为N607同路径的`baselines/riei_fd/{architecture.py,model.py,train_cvs.py}`、`run_wisig_paper_scope_queue.sh`和`code/scripts/launch_riei_table3_architecture_probe_20260715.sh`。
+- 同步后远端SHA256与根目录本地文件一致：architecture=`bf1d8e1f...`、model=`c936c09b...`、train=`98e974aa...`、paper queue=`5a1fe1f1...`、launcher=`0760d3cc...`。远端`bash -n`、8-job dry-run和两种FED的`[2,2,256]→[2,512]`前向smoke均通过。
+- 计划正式命令：`bash code/scripts/launch_riei_table3_architecture_probe_20260715.sh --launch --gpu-ids 0,1,2,3,4,5,6,7 --max-train-per-gpu 2`。Python为`/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python`，工作目录为`/home/szu2070436088/2510044040/CV-SincNet`；预期产物为每job的完整日志、200epoch`metrics.json`、final last10、manifest及queue PID/状态。

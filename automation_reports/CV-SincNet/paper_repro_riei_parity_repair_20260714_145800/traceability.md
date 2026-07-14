@@ -11,11 +11,11 @@
 | RIEI-P07 | Table III最终证据必须覆盖论文全部12个receiver组合 | 发现阶段仅覆盖第1行 | 固定P02的SGD+mean+no-RMS+no-FN配置，运行12行确认 | verified | 12×200epoch自然完成、硬错误0；均值72.26%，MAE4.82pp，命中5/12，`NOT_REPRODUCED` |
 | RIEI-P08 | Table III各receiver组合应建立在同一随机数据partition上 | 组合内顺序RNG导致同一receiver跨行样本漂移 | 完整12行以稳定全局partition和论文last10重新确认 | verified | 12×200epoch完成；均值72.72%，MAE4.34pp，命中6/12，`NOT_REPRODUCED` |
 | RIEI-P09 | Eq.(2)–(8)把CE/MI/IE写为样本与receiver求和 | 完整12行采用单row消融胜出的mean | 保持其余协议不变，以`RIEI_REDUCTION=sum`运行完整12行论文字面尺度确认 | verified-rejected | 12×200epoch完成、硬错误0；均值68.75%，MAE7.92pp，命中1/12，显著劣于mean，拒绝sum作为支持尺度 |
-| RIEI-P10 | 论文仅说明WiSig FED为ResNet 1D-18，未公开stem卷积核/stride/max-pool | 当前固定ImageNet式`kernel7/stride2+maxpool` | 在row3/6/10/12上受控比较现有`imagenet1d`与`short_stem1d`；其余协议固定mean最优配置 | locally-verified | 两种FED输出均为512维；聚焦测试7 passed；`bash -n`及8-job dry-run通过，待Git版本化和N607容量门 |
+| RIEI-P10 | 论文仅说明WiSig FED为ResNet 1D-18，未公开stem卷积核/stride/max-pool | 当前固定ImageNet式`kernel7/stride2+maxpool` | 在row3/6/10/12上受控比较现有`imagenet1d`与`short_stem1d`；其余协议固定mean最优配置 | launch-ready | Git`a53e259`；本地/远端hash、两种FED前向smoke、`bash -n`及8-job dry-run通过；N607全GPU空闲且容量门通过 |
 
 ## 声明边界
 
 - 论文未明确给出优化器名称和总epoch数；Eq.(10)–(11)描述的是梯度更新顺序，不能据此断言作者使用了PyTorch SGD。
 - 发现阶段只在Table III第1行比较训练动力学；最终论文结论必须用胜出配置重跑完整12行，不能用单row或目标域峰值代替。
 - 目标域逐epoch曲线仅用于诊断；下一轮正式分数采用论文明确的最终10个epoch，禁止target-oracle选epoch。
-- 当前反向审计：`verified=8`、`verified-rejected=1`、`locally-verified=1`、`running=0`、`pending=0`、`deferred=0`、`blocked=0`。sum尺度已经完整否定；最高风险转为论文未公开ResNet1D-18具体结构，其次为优化器细节和随机seed。架构诊断尚未产生N607结果，不能据此改变`NOT_REPRODUCED`结论。
+- 当前反向审计：`verified=8`、`verified-rejected=1`、`launch-ready=1`、`running=0`、`pending=0`、`deferred=0`、`blocked=0`。sum尺度已经完整否定；最高风险转为论文未公开ResNet1D-18具体结构，其次为优化器细节和随机seed。架构诊断尚未产生N607结果，不能据此改变`NOT_REPRODUCED`结论。
