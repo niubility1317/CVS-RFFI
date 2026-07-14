@@ -84,4 +84,6 @@
 | P0F_A1B1C0 | 7 | 551794 | RUNNING |
 | P0F_A1B1C1 | 3 | 552673 | RUNNING |
 
-启动后每卡只有一个本run CUDA compute client，显存占用约1.94-3.20 GiB、空闲约21.0-22.3 GiB，未发现Traceback、RuntimeError、OOM或参数解析错误。待4-5分钟健康检查及实验完成后补充最终逐候选结果。
+启动后每卡只有一个本run CUDA compute client，显存占用约1.94-3.20 GiB、空闲约21.0-22.3 GiB，未发现Traceback、RuntimeError、OOM或参数解析错误。
+
+18:59完成4-5分钟启动健康复查：8个候选均仍为RUNNING，均已打印配置/增强/epoch marker；轻机制候选进入E004，重机制候选进入E001-E002。GPU利用率17%-25%，显存占用约2.08-3.64 GiB，未出现Traceback、RuntimeError、OOM、参数错误或NaN。当前速度差异来自A/B/C额外reference、local component和直接风险计算，预计7-9小时仍合理。待实验完成后补充最终逐候选结果。
