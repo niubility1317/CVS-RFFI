@@ -372,3 +372,10 @@
 - 同步前远端SHA256：architecture=`899f66df...`、model=`99b1194a...`、train=`950b6008...`、paper queue=`2ba90874...`，均为本任务既有远端版本；新launcher不存在。同步目标依次为N607同路径的`baselines/riei_fd/{architecture.py,model.py,train_cvs.py}`、`run_wisig_paper_scope_queue.sh`和`code/scripts/launch_riei_table3_architecture_probe_20260715.sh`。
 - 同步后远端SHA256与根目录本地文件一致：architecture=`bf1d8e1f...`、model=`c936c09b...`、train=`98e974aa...`、paper queue=`5a1fe1f1...`、launcher=`0760d3cc...`。远端`bash -n`、8-job dry-run和两种FED的`[2,2,256]→[2,512]`前向smoke均通过。
 - 计划正式命令：`bash code/scripts/launch_riei_table3_architecture_probe_20260715.sh --launch --gpu-ids 0,1,2,3,4,5,6,7 --max-train-per-gpu 2`。Python为`/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python`，工作目录为`/home/szu2070436088/2510044040/CV-SincNet`；预期产物为每job的完整日志、200epoch`metrics.json`、final last10、manifest及queue PID/状态。
+
+### 03:10正式启动与4.5分钟健康检查
+
+- 正式命令按上述预注册内容执行成功。8个queue PID依次为`885107,885109,885112,885117,885122,885130,885137,885147`；8个trainer PID为`885263,885278,885314,885316,885317,885329,885335,885334`，GPU0–7各1个。完整命令行确认4个`imagenet1d`与4个`short_stem1d`，其余训练配置一致。
+- 03:14:57健康检查时，8个queue与8个trainer均存活，8份`metrics.json`已创建；row3/6/10/12的两种variant分别进入epoch12–14/200。所有日志持续增长至39–85行、6.3–7.2KiB，并保留正确`fed_variant`marker。
+- 全量扫描当前已写日志，硬错误0；尚无`PAPER-EVAL-SUMMARY`符合训练早期状态。GPU0–7各仅1个本任务compute：ImageNet式stem约485MiB、short stem约639MiB，利用率9%–38%，任何GPU总训练数均为1。
+- 当前判定：`RUNNING_STARTUP_HEALTHY_THROUGH_EPOCH_12_14`。不得干预、重启、覆盖或删除产物；正式选择只能使用各job epoch191–200的last10。SSH短连接全部退出，本地`ssh.exe=0`、N607 TCP22已建立连接`=0`。
