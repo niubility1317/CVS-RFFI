@@ -274,3 +274,11 @@ v2/v4训练日志、三个NPZ、head结果、审计修正版和原始同头基�
 首个DRO cell固定`8-8/new20/seed713101/K10`，20epoch、alpha8、学习率`1e-3`、feature anchor0.1、匹配三support-view一致性0.2、batch126、query1-view。输出根=`runs/qknn_extreme_light_support_lora_dro_20260715_v5`，日志=`logs/qknn_extreme_light_support_lora_dro_20260715_v5/rx8-8_new20_seed713101_k10.log`；随后仍用0epoch prototype头，避免超过20epoch。只有floor相对v1的51.67%和old相对73.06%同时改善才扩开发矩阵。
 
 本地脚本/测试SHA256分别为`5b7cc08aad709626145f8efb9a5f5fc6a0ac879c91812ccd753ce524fed65b98`和`4e3008a35e0e5d15e0eb0d808c5f31f290aa45159160d1082d3abb2dd9aa816e`；`py_compile`、8项focused测试、35项runner/resource测试和`git diff --check`均PASS。
+
+### hard-class DRO结果
+
+PID=`852229`完成20epoch。DRO loss由`11.46986`降至`4.66735`，但普通prototype CE仅由`4.48536`降至`3.29195`，support accuracy只由35.77%升至48.59%，低于无DRO v1的61.03%；feature anchor漂移达到0.50532，说明temperature5把更新过度集中到少数support难类。0epoch prototype头结果为`old=71.94%`、floor`=41.67%`、`new20=83.83%`、`H=77.40%`、最低新类`=38.33%`，old/floor均低于v1，未通过机制gate。
+
+该cell仍满足资源与权限约束：12,800参数、25,600B LoRA FP16状态，含26类prototype后的持久状态52,224B、逐query总MAC19,456，适配4.11s、峰值CUDA约172.6MB。完整93行训练日志含20条epoch、错误/非有限值为0，三个NPZ哈希全部匹配manifest；本地证据位于`E:\type10-7\local_artifacts\qknn_extreme_light_support_lora_dro_20260715_v5*`。
+
+结论是support上的最难类并不稳定对应query最弱类；尖锐DRO放大了support小样本噪声并损害整体几何。当前不继续盲扫DRO temperature/margin，也不扩矩阵。到此同一合法cell已经覆盖微型IQ前端、feat-joint LoRA、late LoRA、10+10epoch组合和hard-class DRO：同一v4组合row达到`old=76.94%/floor=48.33%/new20=92.42%/H=83.96%`；floor最高的v1 row为`old=73.06%/floor=51.67%/new20=83.33%/H=77.80%`。两者与95/88%目标均存在结构性差距。确认seed、K5、5/10类和5receiver继续封存；下一步若保持现有资源与协议，应转向改善冻结ADV3B02的source-only域不变表示，再回到本极轻量adapter验证，而不是继续在K10 support上增加选模自由度。
