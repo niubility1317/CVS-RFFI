@@ -497,3 +497,9 @@
 - short-stem复现均值为`72.76%`，论文均值为`73.30%`，聚合偏差仅`-0.53pp`；逐行MAE=`3.14pp`、RMSE=`4.03pp`、论文`±2SD`命中`7/12`。相对ImageNet式stem完整mean矩阵，MAE从`4.34pp`降至`3.14pp`，命中从`6/12`升至`7/12`，但仍未达到`MAE≤3pp且命中≥10/12`，正式结论保持`NOT_REPRODUCED`。
 - short stem显著修复row3、6、10，却在row4、11、12保留方向相反的大误差；12行平均变化仅`+0.05pp`，说明它主要重分配receiver组合误差，而非简单抬高整体准确率。所有行source validation为`99.73%–99.87%`，训练loss与数值状态稳定，剩余问题不是欠拟合、崩溃或数据partition漂移。
 - 论文未公开SGD是否使用momentum。当前实现为momentum0，Eq.(20)–(21)只能证明梯度更新顺序，不能排除常用的momentum SGD。下一轮先在误差最大的row3、4、11、12比较固定`momentum=0.9`与既有momentum0同row结果；其余配置保持short stem、mean及稳定partition不变。预注册门槛为四行MAE降低且至少3/4行绝对误差下降；未通过则拒绝momentum并转向固定partition的模型seed敏感性诊断。
+
+## 2026-07-15 07:15 momentum0.9最小受控诊断设计
+
+- 新launcher：`code/scripts/launch_riei_momentum09_probe_20260715.sh`；预定run ID为`paper_repro_riei_momentum09_probe_seed1337_20260715_071500`。只覆盖row3、4、11、12，各使用一个GPU，共4个job。
+- 相对short-stem完整矩阵，唯一训练变量为`RIEI_SGD_MOMENTUM=0.9`；seed1337、稳定partition、short stem、CE/MI/IE mean、no-RMS、no-feature-norm、学习率`1e-4`、200epoch和paper last10均保持不变。既有momentum0同row last10写入scheduler manifest作为预注册control。
+- 本地`bash -n`通过；dry-run完整展开4个job、4个capacity gate、4条momentum0.9、4条short-stem和4条mean命令。launcher根目录、Git镜像及非Git快照SHA256均为`ee692628dd8725f923f9aa7ba1edd8ddfa98a86cb700fdeca4e8a32c2f9455d5`；快照位于`code/snapshots/paper_repro_riei_momentum09_probe_seed1337_20260715_071500/`。
