@@ -235,6 +235,8 @@ Fisher/whitening和prototype仍由全部K-shot support拟合；代表选择完�
 
 本地artifact：`E:\type10-7\automation_reports\CV-SincNet\qknnv42_lightweight_head_20260714_173701\artifacts\fft96_support_diverse2_confirmation_v2_seed713111_713115`。实现新增独立benchmark`paper_reproduction/scripts/benchmark_qknnv42_support_compression.py`。独立代码复核未发现Critical或Important问题；随后补充了3pp浮点边界容差、逐类代表上限、全K-shot拟合不变性、默认`all_support`等价性以及primary+FFT资源组件测试，本地验证为`11 passed`。TTA端到端500行矩阵仍是整个目标的剩余验证项。
 
+Git提交链为`c9b3397`（support压缩）、`8a5539d`（FFT辅助资源核验）、`31e8c8d`（远端monitor-only边界）和`13444de`（审查修正与测试加固）。当前SHA256：runner为`63304AF4D8B407AE306D57C9BC1C5CEF9586F3277DB534518757A99127C725FE`，support benchmark为`5EE6796CCB67A9B25CA42BD159A17C02919264A62B9F3CDC85D8B5A6033913C1`，两组测试分别为`8F1EA1A441BC1DA6922BF7AE25EDF3E4CC1E8C3BCB166F0D1717B4B1BF69FF33`和`016097E5662218BF4A4920A38949C41E1942FF21A4B61843CDA69F844C9D90C3`。
+
 ## 15.N607最新占用边界
 
 2026-07-14 18:40再次执行只读训练清单。N607上仍有8个RIEI训练进程，另有一个已由外部流程启动的`run_cvs_qknnv42_full_legacy_oracle_125_20260714.sh`任务，正在GPU3训练60 epoch、5-view、FFT96的历史strict legacy adapter，输出根为`runs/cvs_qknnv42_full_adapter5_fft96_strict_20260714_183556`。该任务不是本轮support-memory压缩或固定adapter TTA矩阵，不能作为1/3/5-view轻量化结论。按活动任务monitor-only规则，本轮未同步、未启动、未修改或干预任何远端任务；本地SSH客户端和到N607/桥接机的TCP22连接均已归零。
