@@ -2,6 +2,8 @@
 
 > 2026-07-14 18:20校正：本报告两个分支使用的特征导出manifest实际为`checkpoint_load_strict=false`，含7个missing key、31个unexpected key和3个shape mismatch。因此原数值只能保留为兼容加载诊断，不能声明为严格ADV3B02底座结果，也不能用于正式方法排名。严格地面模型复核见`automation_reports/CV-SincNet/adv3b02_direct_old_strict_20260714_181100/report.md`；qKNN两个分支须在修复严格checkpoint重建后重跑。
 
+> 2026-07-14 18:55后续：严格双125重跑已完成。新结果为轻量组`75.12/64.64/68.56`、完整Oracle组`84.07/93.24/88.23`，证据与逐行结果见`automation_reports/CV-SincNet/qknnv42_strict_dual125_20260714_183556/report.md`。
+
 ## 1.实验信息
 
 | 字段 | 内容 |
