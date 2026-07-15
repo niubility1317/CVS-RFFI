@@ -177,6 +177,8 @@ v4 attempt1以PID`1885770`运行，成功推进到sealed memfd snapshot创建，
 
 完整读取4,302字节v4 driver日志并核对cell目录后确认：prediction/scoring/cell/smoke receipt全部不存在，故该次仍无性能指标。由于`phase2_memfd_snapshot.py`属于9文件密封predictor closure，新引入的`ctypes/platform`必须同时进入runtime closure精确外部导入与成员导入白名单；否则闭包构建应fail closed。白名单已同步更新，`py_compile`及39项memfd/runtime-closure/bwrap/pre-run/isolated-runner/strict-package测试通过。下一次必须基于该提交新建runtime artifact和全新v5运行根，不能让旧strict_v8/v11继续执行。
 
+N607独立memfd smoke确认libc后备可创建memfd且`seals=15/required=15`。strict_v9因远端尚未同步closure白名单而在构建时fail closed并保留；随后同步提交`5d87bdd`中的`phase2_runtime_closure.py`后，strict_v10完整构建通过，12项复用artifact逐字节一致，新闭包SHA=`81bbf141901043b2e0b0386f296d2873d628011c17225b7e7f1b722c7e2b2c50`。v12清单绑定strict_v10与全新`..._landlock_strict300_v5`根，25/75/300/900、`launch_authority=false`，SHA=`e13b72266aee7e3058a921438517861f631ea17b58a9d7af06c356f02c627b48`。
+
 并行构建留下`runtime_artifacts_strict_v9`部分目录：12项不可变模型/config文件存在，`05_runtime_closure.json`为0字节且closure目录不存在，符合旧closure白名单拒绝新增`ctypes/platform`导入的fail-closed行为。strict_v9完整保留且不补写。下一次使用全新`runtime_artifacts_strict_v10`：先同步提交`764c11c`的memfd实现与提交`5d87bdd`的closure白名单，逐文件核验SHA；再在N607直接调用`_sealed_memfd`执行临时seal smoke并验证`REQUIRED_SEALS`，通过后才复制strict_v8的12项不可变artifact并新建closure。后续计划/运行根使用全新版本，不复用v4/v11。
 
 ## 完成后结果表
