@@ -144,7 +144,9 @@ FORBIDDEN_PREDICTOR_VALUE_TOKENS = (
 
 # The adaptive TTA runtime requires this guard in its config.  It may cross the
 # predictor boundary only as a literal negative declaration.
-NEGATIVE_ONLY_PREDICTOR_GUARD_KEYS = frozenset({"uses_class_quota"})
+NEGATIVE_ONLY_PREDICTOR_GUARD_KEYS = frozenset(
+    {"uses_class_quota", "uses_query_role"}
+)
 
 
 class Phase2ContractError(ValueError):

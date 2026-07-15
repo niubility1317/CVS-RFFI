@@ -85,7 +85,11 @@ def _fixture(tmp_path: Path):
         (
             "tta_policy",
             "tta.json",
-            b'{"base_views":1,"max_views":5,"uses_class_quota":false}',
+            (
+                b'{"base_views":1,"max_views":5,'
+                b'"uses_query_labels":false,"uses_query_role":false,'
+                b'"uses_class_quota":false}'
+            ),
         ),
     ):
         path = root / filename
@@ -183,15 +187,18 @@ def test_request_refuses_overwrite(tmp_path: Path) -> None:
         request_builder.build_request(args)
 
 
-def test_request_allows_only_negative_nested_class_quota_guard(tmp_path: Path) -> None:
+@pytest.mark.parametrize("field", ("uses_query_role", "uses_class_quota"))
+def test_request_allows_only_negative_nested_forbidden_guard(
+    tmp_path: Path, field: str
+) -> None:
     args, _evidence = _fixture(tmp_path)
     result = request_builder.build_request(args)
     request = json.loads(Path(result["request_json"]).read_text(encoding="utf-8"))
-    assert request["tta_policy"]["uses_class_quota"] is False
+    assert request["tta_policy"][field] is False
 
-    request["tta_policy"]["uses_class_quota"] = True
+    request["tta_policy"][field] = True
     with pytest.raises(
         ValueError,
-        match="forbidden_predictor_key:request.tta_policy.uses_class_quota",
+        match=rf"forbidden_predictor_key:request.tta_policy.{field}",
     ):
         validate_predictor_request(request)

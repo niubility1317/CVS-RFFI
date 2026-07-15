@@ -153,6 +153,8 @@ strict_v7构建完成：12项复用artifact与strict_v6逐字节`cmp=PASS`，can
 
 23:51直连预检及实时训练清单再次通过：8张GPU利用率为0，`gpu_compute=[]`、`active_training_processes=[]`。v9已同步到新根`protocol_plan/strict_plan_manifest_v9.json`并核验相同SHA。v2第一次smoke只运行receiver=`20-1`、seed=`713101`、new-count=`20`、K=`1`、`cuda:0`；PID写入`smoke_driver_v2_attempt1.pid`，driver日志写入`logs/smoke_driver_v2_attempt1.out`，阶段日志目录为`logs/smoke_v2_attempt1`，最终receipt为新根下`smoke_receipt.json`。仅当这些路径均不存在时启动。
 
+v2 attempt1以PID`1880017`运行，pre-run evidence再次成功封印，但请求契约随后因`tta_policy.uses_query_role=false`命中`query_role`禁词而fail closed；没有prediction/scoring/smoke receipt。契约allowlist现覆盖adaptive TTA要求的完整否定guard：仅允许`uses_query_role=false`与`uses_class_quota=false`，任一为`true`仍拒绝；包含完整3项TTA访问guard的13项request/runtime测试通过。由于v2 cell已有不可变pre-run evidence，下一次使用全新`..._landlock_strict300_v3`输出根，并基于修复代码构建全新runtime closure；v2根不修改。
+
 ## 完成后结果表
 
 实验完成后在本节追加逐单元同一行结果，至少包含candidate ID、机制、receiver/TX split、K-shot、seed、old/seen-new/unknown指标、coverage/rollback/defer、loss/adapter摘要和最终判定。不得用来自不同单元的独立极值替代联合行。
