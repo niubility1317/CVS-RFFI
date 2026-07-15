@@ -10,8 +10,8 @@
 |基底模型|`ADV3B02_CORE90_SOFT_E200`|
 |checkpoint|`/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3_mechanism32_queue_20260701/ADV3B02_CORE90_SOFT_E200/best_joint_safe_ssdg.pth`|
 |checkpoint SHA256|`2699eedcafe8cec880828592d2d65ba3781a9948939da5cf5c82b47143d59c98`|
-|当前状态|`SOURCE_FFT_ABLATION_COMPLETE_WEIGHT2_ONLY_PASS_TARGET_MATRIX_UNRUN`|
-|远端动作|N607 source-only FFT消融4/4完成；进程与GPU已释放；未启动target矩阵|
+|当前状态|`SOURCE_ADAPT_LAYER_ABLATION_COMPLETE_P4_SELECTED_TARGET_BPJG_UNRUN`|
+|远端动作|N607关键层/损失消融8/8完成；进程与GPU已释放；未启动target BP-JG矩阵|
 
 本任务使用同一份严格加载的ADV3B02 checkpoint构建candidate、identity-only和strict direct三条配对预测流。CEN51、JREF、OPGAC和OA-MSE不再拥有当前基底或默认路线权限，仅保留为历史对照。
 
@@ -366,3 +366,112 @@ bash paper_reproduction/scripts/launch_cvs_ground_lora_fft_ablation_v15.sh
   cd /home/szu2070436088/2510044040/CV-SincNet
   bash paper_reproduction/scripts/launch_cvs_ground_lora_adapt_ablation_v16.sh
   ```
+
+## 十三、v16层组消融完成与高效域适应设计锁定
+
+### 13.1实验完成状态与日志审计
+
+实验`qknn_ground_adapt_layer_loss_ablation_20260715_v16`已完成8/8。8份完整日志共7,696行，其中4份`effective_feature`日志各1,002行，2份`feat_joint`和2份`projection_feature`日志各922行；逐文件扫描`Traceback/RuntimeError/OOM/Killed/Segmentation fault/NaN/Inf`均为0命中。8个source validation均`PASS`，远端训练进程和GPU已释放。
+
+本地完整artifact位于`E:\type10-7\automation_reports\CV-SincNet\qknnv42_extreme_light_optimization_20260715\remote_artifacts_adapt_v16\`。该实验只使用source `leo_weak` receiver holdout，是关键层选择证据，不是target receiver、target-new或MRIOR胜出证据。
+
+### 13.2八路同row结果
+
+总体表中的`base1`、`LoRA1`和`adaptive`来自同一candidate的source holdout；floor是同row最低类准确率。所有candidate固定FFT96权重2.0和8epoch。
+
+|candidate|层组/损失|参数|base1 acc/floor|LoRA1 acc/floor|adaptive acc/floor|adaptive相对base1|平均forward|source gate|结论|
+|---|---|---:|---:|---:|---:|---:|---:|---|---|
+|`p4_r16_e8_k1`|`projection_feature`/K1保护|18,448|86.678%/70.498%|87.140%/69.732%|**87.803%/71.839%**|**+1.125pp**|1.364|PASS|综合首选；最少参数且最高adaptive均值|
+|`p4_r16_e8_std`|`projection_feature`/保守|18,448|86.678%/70.498%|86.563%/69.732%|87.486%/71.839%|+0.808pp|1.332|PASS|计算最稳，但单View负迁移|
+|`h4_r16_e8_k1`|`feat_joint`/K1保护|25,600|86.678%/70.498%|86.736%/70.115%|87.644%/71.743%|+0.966pp|2.850|PASS|额外View过多，K20 floor退化|
+|`h4_r16_e8_std`|`feat_joint`/保守|25,600|86.678%/70.498%|86.678%/70.498%|87.529%/72.222%|+0.851pp|1.339|PASS|稳定但不优于P4|
+|`e8_r8_e8_k1`|`effective_feature`/K1保护|22,024|86.678%/70.498%|86.736%/69.349%|87.673%/71.264%|+0.995pp|1.352|PASS|K1 nested adaptive出现-0.058pp|
+|`e8_r8_e8_std`|`effective_feature`/保守|22,024|86.678%/70.498%|86.736%/70.498%|87.529%/72.222%|+0.851pp|1.361|PASS|floor较好但均值无优势|
+|`e8_r16_e8_k1`|`effective_feature`/K1保护|44,048|86.678%/70.498%|86.794%/69.349%|87.529%/72.031%|+0.851pp|1.356|PASS|参数增加2.39倍，无性能回报|
+|`e8_r16_e8_std`|`effective_feature`/保守|44,048|86.678%/70.498%|86.794%/69.349%|87.572%/71.743%|+0.894pp|1.338|PASS|参数增加2.39倍，无性能回报|
+
+嵌套K表中的单元格为`adaptive acc/floor/ΔA`；`ΔA`只表示adaptive View相对同一适应特征上的identity mean head，不是相对strict direct ADV3B02的增益。
+
+|candidate|K1|K5|K10|K20|关键异常|
+|---|---:|---:|---:|---:|---|
+|`p4_r16_e8_k1`|87.543%/72.797%/+0.173pp|87.947%/72.414%/+0.461pp|87.889%/72.414%/+0.231pp|87.832%/69.732%/+0.000pp|K20无adaptive增益，但未出现均值负增益|
+|`p4_r16_e8_std`|87.082%/71.429%/+0.000pp|87.601%/72.797%/+0.519pp|87.659%/72.031%/+0.634pp|87.601%/70.115%/+0.231pp|K1无增益|
+|`h4_r16_e8_k1`|87.659%/72.797%/+0.346pp|87.716%/72.414%/+0.519pp|87.543%/72.797%/+0.288pp|87.659%/68.966%/+0.231pp|平均forward从K1的2.721升至K20的3.031|
+|`h4_r16_e8_std`|87.140%/69.728%/+0.115pp|87.601%/72.797%/+0.750pp|87.716%/72.797%/+0.692pp|87.659%/69.732%/+0.231pp|K1 floor低于identity|
+|`e8_r8_e8_k1`|87.370%/71.648%/**-0.058pp**|87.716%/72.031%/+0.346pp|87.832%/72.031%/+0.404pp|87.774%/69.349%/+0.173pp|K1 adaptive负增益|
+|`e8_r8_e8_std`|87.082%/71.429%/+0.058pp|87.486%/72.797%/+0.461pp|87.659%/72.797%/+0.461pp|87.889%/70.498%/+0.519pp|均值稳定但不优于P4|
+|`e8_r16_e8_k1`|87.024%/70.748%/+0.173pp|87.601%/72.414%/+0.461pp|87.716%/73.180%/+0.346pp|87.774%/70.115%/+0.231pp|参数最大|
+|`e8_r16_e8_std`|87.197%/71.769%/+0.115pp|87.543%/72.414%/+0.519pp|87.716%/72.031%/+0.634pp|87.832%/70.115%/+0.461pp|参数最大|
+
+最终epoch8的`p4_r16_e8_k1`训练损失为1.930，其中CE为1.182、worst-K为1.376、nested K1/K5/K10/K20分别为1.448/1.148/1.170/1.196，所有项有限。winner adapter含18,448个FP16元素，tensor payload 36,896B，真实序列化文件40,124B，SHA256为`95f9a8bac7880d42f705db7f16523c37cf4ce5ff8438ac2c500c7550a38de446`。
+
+### 13.3从底层决定“更新哪些层”
+
+|位置|是否更新|理由|资源/风险判断|
+|---|---|---|---|
+|Sinc滤波器、time/frequency/PA卷积块|冻结|负责提取发射机硬件纹理；K1 support不足以重新估计时域/频域滤波器，更新会同时移动所有旧类边界|反向需保存长序列中间激活，是显存和时延主要来源；灾难性遗忘风险最高|
+|GroupNorm/全局归一化统计|冻结|少shot与三View高度相关，统计量方差大；直接改norm容易把View差异误当成域统计|参数虽少，但K1不稳定，历史`id_norm_late_feature`仍有明显遗忘|
+|`t_proj(96→160)`、`f_proj(32→160)`、局部`pa_proj.0(64→160)`、`fuse.0(321→160)`|地面更新，主选|都位于分支池化之后、最终身份头之前；能修正时域/频域/PA分支尺度和融合方向，同时不重写底层指纹滤波器|rank16共18,448参数；v16实测Pareto最优；合并后query零额外LoRA MAC|
+|`id_proj.0`、classifier `pa_proj.0`|target侧冻结|直接重塑身份核和PA缺陷特征；少shot下自由度过大，容易用新类support拉坏旧类几何|v16后4层整体更新没有优于P4，故不进入星上首选|
+|`id_gate.0(160→160)`、`joint_proj.0(320→160)`|target侧仅低秩更新|前者只调节PA缺陷特征对身份核的门控幅度，后者只做最终joint embedding的小旋转；它们最靠近qKNN使用的`feat_joint`，可用极少参数完成receiver-specific对齐|rank8分别2,560/3,840参数，共6,400；合并后零额外LoRA MAC|
+|CosFace旧类head|冻结且不用于新类决策|checkpoint的CosFace只含source旧类权重，更新会天然偏向旧类且无法公平容纳target-new|新旧类统一交给support原型qKNN，避免扩头和旧/新角色分支|
+|domain backbone/`z_dom`|冻结|正式qKNN读取身份`feat_joint`，更新domain branch不直接改善分类空间|纯额外计算和状态，不进入候选|
+
+结论是“先投影、后门控”，不是“越靠后越好”或“更新层越多越好”：地面用P4修正通道/receiver共性偏移；星上只用JG做目标receiver的最后一小步几何校准。
+
+### 13.4提出的算法：P4-BPJG-qKNN
+
+算法分成两个不同时训练的阶段。
+
+1. **地面P4-LoRA**：在固定ADV3B02上，只对4个池化后投影层注入rank16 LoRA，使用source `leo_weak`多View训练8epoch；训练完成后合并进Linear权重并作为预装candidate。其作用是学习跨receiver、跨LEO弱信道的共性修正。
+2. **星上BP-JG-LoRA**：收到目标receiver的带标签注册support后，只对`id_gate.0`和`joint_proj.0`注入rank8 LoRA。每个物理shot对应3个`leo_*_weak`View，但仍只计1-shot；按shot index构造episode，每个episode同时包含全部注册类并对所有身份使用同一规则。统一训练5epoch；K1共5个optimizer step，K10共50个step。默认SGD、无momentum、`lr=5e-3`、`weight_decay=1e-4`、`grad_clip=1.0`、`LoRA alpha=8`、prototype temperature 18。
+3. **qKNN注册与推理**：适应完成后合并JG LoRA，使用全部old＋new support建立同一球面原型头。query默认1-view；只有当前样本margin低、top1绝对相似度低或跨View不稳定时追加3/5-view，不使用query批次统计、角色或类别配额。
+
+星上输入是固定SHA的ADV3B02＋已合并P4 candidate、目标receiver的old/new注册support标签、物理sample ID和3个弱信道View。训练阶段不接收query。输出是JG delta、全部注册类原型、对称qKNN head及自适应View门限；独立query推理输出所有注册类上的逐样本预测和实际View数。
+
+对归一化support特征`z_i`、留一View类原型`p_c^{-v}`和适应前特征/原型`z_i^0,p_c^0`，目标函数固定为：
+
+`L=L_xproto+2L_boundary+0.5L_anchor+0.5L_gram+0.25L_sep+0.1L_view`。
+
+- `L_xproto`：跨View留一prototype CE。当前View只由其他View形成的prototype监督，直接优化新旧类统一的qKNN决策。
+- `L_boundary`：若`m_i=cos(z_i,p_y^{-v})-max_{j≠y}cos(z_i,p_j^{-v})`，则惩罚`[m_i^0+0.02-m_i]_+`，要求每个注册类的support边界相对base不下降。
+- `L_anchor=1-cos(z_i,z_i^0)`：限制K1特征漂移。
+- `L_gram`：保持`C×C`support prototype Gram关系，防止旧类整体几何被新类support扭曲。
+- `L_sep`：对全部注册类对称地压低过高的prototype互相似度，不使用hard-class quota或DRO类配额。
+- `L_view`：约束同一物理shot的三View特征一致；不把三View伪装成3-shot。
+
+该损失同时面向旧类保持和新类可分性。它不使用target CosFace logit蒸馏，因为CosFace没有新类权重；改用base feature/boundary/Gram作为角色对称教师。
+
+### 13.5资源预算与MRIOR比较口径
+
+|资源项|P4地面阶段|BP-JG星上阶段|部署合计/门槛|
+|---|---:|---:|---:|
+|可训练参数|18,448|6,400|两个阶段不同时训练；星上仅6,400|
+|FP16 tensor payload|36,896B|12,800B|加26类head 15,688B和TTA 24B后理论65,408B|
+|真实序列化文件|P4实测40,124B|待实现后实测|最终必须≤256KB|
+|optimizer step|离线8epoch|K1 5步；K10 50步|MRIOR为600步/row，分别少120倍和12倍|
+|持续query额外LoRA MAC|合并后0|合并后0|只保留qKNN小头和自适应View|
+|多View计算|source winner平均1.364次forward|目标侧待测|相对固定5-view已实测减少72.7%|
+|适配时延/峰值显存|离线记录|目标侧待测|时延目标≤MRIOR的25%，显存≤50%|
+
+历史合法MRIOR-SDA证据只有Stage2-B旧类：125个receiver×seed×K任务总体old_acc 82.58%，K1/K5/K10/K20分别77.22%/82.59%/85.82%/87.74%，平均适配时延17.90s；每row对三个场景各更新200步，共600次full-backbone梯度更新。它没有target-new输出，因此不能据此声称“加入新类后优于MRIOR”。
+
+正式比较分两条：
+
+- Stage2-B使用MRIOR-SDA native旧类结果；
+- Stage2-C构建披露为CVS extension的`MRIOR-SDA＋同一对称qKNN enrollment`：MRIOR和P4-BPJG使用相同old/new support、相同query、相同原型头和相同自适应View，唯一区别是full-backbone MRIOR适应与6,400参数JG适应。这样才能比较加入5/10/20个新类后的`old_acc/seen_new_acc/H_old_new`。
+
+“显著高于且更轻”锁定为硬门槛：每个K的Stage2-B `old_acc`以及Stage2-C `old_acc/seen_new_acc/H_old_new`配对均值至少高于matched MRIOR 2pp且paired 95%CI下界>0，逐receiver不得低于MRIOR；参数≤MRIOR的5%、step≤10%、平均时延≤25%、峰值显存≤50%、持久状态≤256KB。当前v16只证明P4层选择，尚未满足target、新类或MRIOR显著胜出门槛。
+
+### 13.6下一轮最小target开发矩阵
+
+固定P4 ground candidate、K10开发数据和全部损失/优化器，只比较target可写层容量：
+
+|arm|target更新层|rank|target参数|epoch|用途|
+|---|---|---:|---:|---:|---|
+|`P4_IDENTITY`|无梯度|0|0|0|判断target反向本身是否必要|
+|`P4_JP_R8`|`joint_proj.0`|8|3,840|5|最小最终嵌入旋转|
+|`P4_JG_R8`|`id_gate.0＋joint_proj.0`|8|6,400|5|主候选|
+|`P4_JG_R16`|`id_gate.0＋joint_proj.0`|16|12,800|5|用户允许的性能放宽对照|
+
+只用K10开发row选定一个arm；排序先检查`old_acc/min_old_class_acc/seen_new_acc/H_old_new`和相对MRIOR配对差，再检查时延、显存、状态与平均forward。锁定后K1/K5/K20只做确认，不在其query上继续调层、rank、损失权重或View门限。

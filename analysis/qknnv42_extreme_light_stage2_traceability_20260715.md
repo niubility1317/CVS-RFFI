@@ -13,10 +13,11 @@
 |QEL-05|用户目标与`项目.md`10.3.1|K10 old≥92%、旧类floor≥88%、new5/10/20≥92/90/86%；K5下降≤3pp|5receiver×≥5confirm seed×3场景结果|blocked|300个prediction cell、900个同row场景结果和逐类表|
 |QEL-06|用户目标|K1适应相对identity非负，且相对strict direct ADV3B02总体及逐receiver≥+2pp，paired CI下界>0|同样本paired统计与receiver分层CI|blocked|固定confirm seed独立scorer统计|
 |QEL-07|用户目标|不同K值遗忘不劣于identity-only|K1/5/10/20 matched forgetting ledger|blocked|候选与identity使用相同query token配对|
-|QEL-08|用户目标|≤50k训练参数、≤20epoch、≤256KB、无dense query graph|effective8 44,048参数/12epoch capsule；strict runtime硬上限已收紧为50k/20epoch/256KiB|implemented_local_partial_runtime|真实adapter序列化字节、持久状态、MAC、时延、显存审计|
+|QEL-08|用户目标|≤50k训练参数、≤20epoch、≤256KB、无dense query graph|source已选P4 18,448参数/8epoch；target设计JG rank8 6,400参数/5epoch；strict runtime上限为50k/20epoch/256KiB|source_verified_target_designed|target adapter真实序列化字节、持久状态、MAC、时延、显存审计|
 |QEL-09|用户目标|默认1-view，低置信度逐样本触发3/5-view|margin/entropy/view disagreement自适应策略|partial|阈值仅来自source validation或support；记录每样本view count|
 |QEL-10|`AGENTS.md`|每GPU最多2个训练任务、local-first、报告与Git证据|控制状态修复、快照、报告、commit|in_progress|state current view、diff、测试、commit|
 |QEL-11|严格运行时审计|adapter/head/TTA外部provenance、固定输入快照、N607等价隔离|candidate capsule与双TorchScript parity已本地实现；package v3、immutable snapshot、Landlock smoke待完成|partial|全部pre-run blocker关闭前`formal_launch_authority=false`|
+|QEL-12|用户目标与`项目.md`10.3.1|适应后Stage2-B及加入新类后的Stage2-C均显著优于matched MRIOR-SDA，同时参数、step、时延、显存和状态更轻|P4 ground LoRA＋BP-JG target LoRA；同receiver/seed/K/support/query/new-set/scenario配对矩阵|designed_unverified|各K关键指标均值≥MRIOR+2pp且paired CI下界>0；参数≤5%、step≤10%、时延≤25%、显存≤50%、状态≤256KB|
 
 ## 2026-07-15 candidate capsule实现增量
 
@@ -46,6 +47,12 @@
 FFT权重诊断已否定“降低FFT即可显著改善K1”的假设。当前性能顺序调整为：ground adapt层组/损失/epoch消融→锁定关键层→6,400参数BP-JG-LoRA target support快速适配→再恢复head与自适应View优化。formal ground LoRA新增`projection_feature`、`feat_joint`和`effective_feature`三种层组；nested worst-K已按physical ID排除support同源场景副本。预注册8路source-only矩阵统一8epoch、≤44,048参数，比较保守loss与K1边界增强loss，不读取target/query/clean、role或quota。该实现仅进入source诊断，target K1与正式准确率仍为blocked。
 
 完整定向回归为85/85通过；该数字覆盖算法与最低运行时合同，不构成真实性能结论。
+
+### 8路层组/损失消融完成后的设计锁定
+
+`qknn_ground_adapt_layer_loss_ablation_20260715_v16`已完成8/8，8份完整日志共7,696行，未发现Traceback、RuntimeError、OOM、Killed、NaN或Inf。`projection_feature` rank16＋K1边界增强profile以18,448参数得到最高source holdout adaptive accuracy 87.803%，相对同row strict base1提高1.125pp；最低类由70.498%提高到71.839%，平均backbone forward为1.364。44,048参数的`effective_feature`没有形成性能优势，`feat_joint` K1 profile的平均forward升至2.850且K20最低类恶化，因此不把扩大更新层数作为下一步。
+
+下一target-support候选锁定为两级但不同时训练：地面只训练`projection_feature`中的`t_proj/f_proj/pa_proj.0/fuse.0` rank16 LoRA，共18,448参数、8epoch并预先合并；星上只训练`id_gate.0`与`joint_proj.0` rank8 LoRA，共6,400参数、5epoch，按shot-index episode执行K1 5步至K10 50步。星上损失由跨View留一prototype CE、全注册类boundary margin不下降、base feature anchor、prototype Gram保持、对称去混淆和View一致性组成；不更新Sinc/卷积、CosFace、domain backbone或全局normalization，不使用query、old/new角色、类别quota或global assignment。该路线是待实现假设，尚未证明target性能或MRIOR胜出。
 
 ## 当前证据边界
 
