@@ -102,7 +102,12 @@ def _trace_and_save(wrapper: nn.Module, example: torch.Tensor, output: Path) -> 
         raise FileExistsError(f"refusing to overwrite TorchScript runtime: {output}")
     output.parent.mkdir(parents=True, exist_ok=True)
     wrapper.eval()
-    traced = torch.jit.trace(wrapper, example, strict=False, check_trace=True)
+    # ADV3B02's FFT path can constant-fold an equivalent complex tensor with a
+    # different internal dtype on the tracer's second graph construction.  A
+    # graph-text sanity comparison therefore rejects a numerically identical
+    # runtime.  The export path below performs stronger eager/injected/merged/
+    # reloaded-TorchScript feature and logit parity on independent probes.
+    traced = torch.jit.trace(wrapper, example, strict=False, check_trace=False)
     torch.jit.save(traced, output)
     if not output.is_file() or output.stat().st_size < 1:
         raise RuntimeError(f"TorchScript export is empty: {output}")

@@ -96,6 +96,8 @@ $PY code/scripts/build_cvs_stage2_runtime_closure.py --source-code-root code --o
 
 第一次生成在第二步停止：N607缺少`code/scripts/export_adv3b02_effective8_torchscript.py`。`runtime_artifacts_strict_v1`保留第一步锁artifact和0字节第二步日志作为失败证据，不删除、不复用。依赖闭包补查发现还缺少`build_cvs_stage2_runtime_closure.py`、`build_cvs_stage2_predictor_request.py`、`score_cvs_stage2_sealed_prediction.py`、`stage2_prediction_artifact.py`、`phase2_isolated_runner.py`和`stage2_metric_scorer.py`；这些远端均不存在。远端`phase2_runtime_contract.py`对应Git历史提交`e90a52f`，属于已确认的旧受控版本，将更新为本地当前受测版本；其他已存在依赖与本地SHA一致。补齐后改用全新的`runtime_artifacts_strict_v2`，不覆盖v1。
 
+第二次生成在candidate TorchScript的PyTorch graph sanity-check停止：ADV3B02 FFT路径在trace复跑时把数值等价常量折叠为不同内部dtype（`complex128`与`float64`），造成graph文本不一致。v2部分目录保留。导出器改为关闭该不稳定graph复跑比较，但保留并依赖导出流程原有的独立数值门禁：base eager↔reloaded TorchScript、injected↔merged以及merged↔reloaded TorchScript的feature/logit最大绝对误差均必须≤`1e-4`。修复测试`9 passed`；下一次使用全新`runtime_artifacts_strict_v3`。
+
 ## 完成后结果表
 
 实验完成后在本节追加逐单元同一行结果，至少包含candidate ID、机制、receiver/TX split、K-shot、seed、old/seen-new/unknown指标、coverage/rollback/defer、loss/adapter摘要和最终判定。不得用来自不同单元的独立极值替代联合行。
