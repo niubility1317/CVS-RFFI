@@ -157,6 +157,8 @@ v2 attempt1以PID`1880017`运行，pre-run evidence再次成功封印，但请�
 
 strict_v8已从修复提交构建：12项模型/capsule/config复用artifact逐字节一致，新闭包SHA=`e04ebc9eb907f6eb144bbbd888f3d4447b9914ca94c688d41134717ea086fd1e`，闭包内契约成员SHA=`be2a7daf3b192ad7a9d26450d44eec41f76c55ff47286e4859b931515f13f119`。新v10清单绑定strict_v8与全新`..._landlock_strict300_v3`输出根，仍为25/75/300/900、`launch_authority=false`，SHA=`d748b0b558448ddf9e961023f1fb21766a6e72ae505a4bde955cab1d6597d50b`。
 
+23:55预检/实时清单再次确认8张GPU空闲、无训练进程。v10已同步至v3新根`protocol_plan/strict_plan_manifest_v10.json`并核验SHA。v3 smoke仍只获`cuda:0`单单元权限，使用`smoke_driver_v3_attempt1.pid`、`logs/smoke_driver_v3_attempt1.out`、`logs/smoke_v3_attempt1`和新根`smoke_receipt.json`，路径不存在时才启动。
+
 ## 完成后结果表
 
 实验完成后在本节追加逐单元同一行结果，至少包含candidate ID、机制、receiver/TX split、K-shot、seed、old/seen-new/unknown指标、coverage/rollback/defer、loss/adapter摘要和最终判定。不得用来自不同单元的独立极值替代联合行。
