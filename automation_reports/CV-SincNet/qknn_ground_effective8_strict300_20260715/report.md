@@ -98,6 +98,8 @@ $PY code/scripts/build_cvs_stage2_runtime_closure.py --source-code-root code --o
 
 第二次生成在candidate TorchScript的PyTorch graph sanity-check停止：ADV3B02 FFT路径在trace复跑时把数值等价常量折叠为不同内部dtype（`complex128`与`float64`），造成graph文本不一致。v2部分目录保留。导出器改为关闭该不稳定graph复跑比较，但保留并依赖导出流程原有的独立数值门禁：base eager↔reloaded TorchScript、injected↔merged以及merged↔reloaded TorchScript的feature/logit最大绝对误差均必须≤`1e-4`。修复测试`9 passed`；下一次使用全新`runtime_artifacts_strict_v3`。
 
+第三次生成通过trace但在reloaded runtime数值检查前暴露batch冻结：ADV3B02内部把trace时batch维转为Python整数，旧wrapper固定在trace batch=2，无法处理8行parity probes。v3保留。正式wrapper改为内部固定256行部署batch、输入不足时零填充、输出按真实动态行数切回；predictor本身按≤256行分批，因此末批可变而底层ADV3B02始终看到固定batch。跨trace batch=2、实际batch=4的回归测试`2 passed`；下一次使用全新`runtime_artifacts_strict_v4`。
+
 ## 完成后结果表
 
 实验完成后在本节追加逐单元同一行结果，至少包含candidate ID、机制、receiver/TX split、K-shot、seed、old/seen-new/unknown指标、coverage/rollback/defer、loss/adapter摘要和最终判定。不得用来自不同单元的独立极值替代联合行。

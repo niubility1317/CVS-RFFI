@@ -43,16 +43,26 @@ PARITY_SCHEMA = "cvs.adv3b02_effective8_torchscript_parity.v1"
 class ADV3B02IdentityRuntime(nn.Module):
     """Expose only the z_id feature and old-class logits used by strict qKNN."""
 
-    def __init__(self, model: nn.Module) -> None:
+    def __init__(self, model: nn.Module, *, runtime_batch_size: int = 256) -> None:
         super().__init__()
         self.model = model
+        self.runtime_batch_size = int(runtime_batch_size)
 
     def forward(self, rows: torch.Tensor) -> tuple[torch.Tensor, torch.Tensor]:
-        result = identity_only_feature_forward(self.model, rows, "z_id")
+        # ADV3B02 converts the batch dimension to a Python integer internally,
+        # which would otherwise freeze the traced runtime to the example batch.
+        # Present the model with one fixed deployment batch and slice the public
+        # result back to the request size; the traced outer slices remain dynamic.
+        count = rows.size(0)
+        padded = rows.new_zeros(
+            (self.runtime_batch_size, rows.size(1), rows.size(2))
+        )
+        padded[:count].copy_(rows)
+        result = identity_only_feature_forward(self.model, padded, "z_id")
         if result is None:
             raise RuntimeError("ADV3B02 checkpoint does not support identity-only z_id export")
         features, logits = result
-        return features, logits
+        return features[:count], logits[:count]
 
 
 def _load_checkpoint(path: Path) -> Any:
