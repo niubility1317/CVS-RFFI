@@ -633,3 +633,9 @@
 - 直接N607预检通过；8个原queue与首批8个trainer PID均持续运行，无重启或进程替换。row1–8的metrics分别连续写入epoch`67,65,64,67,64,66,67,65/200`，均无`final`字段，row9–12尚未启动。
 - 完整读取32份当前日志，共3435行/270783字节；稳定partition、split seed1337、model seed42及short-stem marker齐全。`PAPER-EVAL-SUMMARY=0`、`FINAL-TEST=0`、成功完成job=0；全量硬错误扫描计数0。
 - GPU0–7各仅1个本任务compute，SM约28%–36%，容量持续合规。当前判定为`RUNNING_HEALTHY_THROUGH_EPOCH_64_67`，未进入正式last10窗口。
+
+### 10:51只读心跳监控
+
+- 直接N607预检通过；8个原queue与首批8个trainer PID继续运行，无重启或进程替换。row1–8的metrics连续写入epoch`151,148,146,151,148,152,151,147/200`，均无`final`字段。
+- 完整读取32份当前日志，共6274行/462603字节；所有协议marker齐全，`PAPER-EVAL-SUMMARY=0`、`FINAL-TEST=0`、完成job=0，硬错误0。
+- GPU0–7各1个本任务compute，SM约22%–35%，容量合规。当前判定为`RUNNING_HEALTHY_THROUGH_EPOCH_146_152`，尚未进入epoch191–200正式窗口。
