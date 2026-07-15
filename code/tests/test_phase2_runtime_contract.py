@@ -45,7 +45,11 @@ def _request():
         "row_id": "row-1",
         "stage": "stage2c",
         "receiver": "20-1",
-        "scenario": "leo_clear_weak",
+        "scenarios": [
+            "leo_clear_weak",
+            "leo_low_elev_weak",
+            "leo_rain_weak",
+        ],
         "k_shot": 1,
         "satellite_seed": 713101,
         "candidate_lock_sha256": "1" * 64,
@@ -56,8 +60,22 @@ def _request():
             {"class_index": 0, "class_handle": "cls_" + "0" * 32},
             {"class_index": 1, "class_handle": "cls_" + "1" * 32},
         ],
-        "support_artifact": _descriptor("support", "support.npz"),
-        "query_artifact": _descriptor("query", "query.npz"),
+        "support_artifacts": [
+            _descriptor(f"support:{scenario}", f"support_{scenario}.npz")
+            for scenario in (
+                "leo_clear_weak",
+                "leo_low_elev_weak",
+                "leo_rain_weak",
+            )
+        ],
+        "query_artifacts": [
+            _descriptor(f"query:{scenario}", f"query_{scenario}.npz")
+            for scenario in (
+                "leo_clear_weak",
+                "leo_low_elev_weak",
+                "leo_rain_weak",
+            )
+        ],
         "checkpoint_artifact": _descriptor("checkpoint", "checkpoint.bin"),
         "adapter_artifact": _descriptor("adapter", "adapter.bin"),
         "head_artifact": _descriptor("head", "head.npz"),
@@ -101,7 +119,7 @@ def test_predictor_request_rejects_truth_role_count_quota_and_build_signals(key,
 
 def test_predictor_request_requires_every_declared_key():
     request = _request()
-    request.pop("scenario")
+    request.pop("scenarios")
     with pytest.raises(Phase2ContractError, match="predictor_request_schema"):
         validate_predictor_request(request)
 
@@ -109,7 +127,7 @@ def test_predictor_request_requires_every_declared_key():
 @pytest.mark.parametrize("bad_path", ["/absolute/query.npz", "../query.npz", "a\\b.npz"])
 def test_predictor_request_rejects_unsafe_artifact_paths(bad_path):
     request = _request()
-    request["query_artifact"]["relative_path"] = bad_path
+    request["query_artifacts"][0]["relative_path"] = bad_path
     with pytest.raises(Phase2ContractError, match="artifact_relative_path_invalid"):
         validate_predictor_request(request)
 

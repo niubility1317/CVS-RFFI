@@ -90,7 +90,7 @@ PREDICTOR_REQUEST_REQUIRED_KEYS = {
     "row_id",
     "stage",
     "receiver",
-    "scenario",
+    "scenarios",
     "k_shot",
     "satellite_seed",
     "candidate_lock_sha256",
@@ -98,8 +98,8 @@ PREDICTOR_REQUEST_REQUIRED_KEYS = {
     "runtime_code_sha256",
     "registered_class_count",
     "registered_classes",
-    "support_artifact",
-    "query_artifact",
+    "support_artifacts",
+    "query_artifacts",
     "checkpoint_artifact",
     "adapter_artifact",
     "head_artifact",
@@ -273,12 +273,13 @@ def validate_predictor_request(request: Mapping[str, Any]) -> None:
         raise Phase2ContractError("predictor_request_schema_version")
     if request.get("stage") not in {"stage2b", "stage2c"}:
         raise Phase2ContractError("predictor_request_stage")
-    if request.get("scenario") not in {
+    formal_scenarios = [
         "leo_clear_weak",
         "leo_low_elev_weak",
         "leo_rain_weak",
-    }:
-        raise Phase2ContractError("predictor_request_scenario")
+    ]
+    if request.get("scenarios") != formal_scenarios:
+        raise Phase2ContractError("predictor_request_scenarios")
     if not isinstance(request.get("k_shot"), int) or request["k_shot"] < 1:
         raise Phase2ContractError("k_shot_must_be_positive_int")
     for field in (
@@ -314,14 +315,21 @@ def validate_predictor_request(request: Mapping[str, Any]) -> None:
             raise Phase2ContractError("registered_class_handle_duplicate")
         seen_handles.add(handle)
 
-    for field in (
-        "support_artifact",
-        "query_artifact",
-        "checkpoint_artifact",
-        "adapter_artifact",
-        "head_artifact",
-    ):
+    for field in ("checkpoint_artifact", "adapter_artifact", "head_artifact"):
         _validate_artifact_descriptor(request[field], path=f"request.{field}")
+    for field, prefix in (
+        ("support_artifacts", "support:"),
+        ("query_artifacts", "query:"),
+    ):
+        descriptors = request[field]
+        if not isinstance(descriptors, list) or len(descriptors) != len(formal_scenarios):
+            raise Phase2ContractError(f"artifact_descriptor_list:{field}")
+        for index, descriptor in enumerate(descriptors):
+            _validate_artifact_descriptor(
+                descriptor, path=f"request.{field}[{index}]"
+            )
+            if descriptor["artifact_role"] != prefix + formal_scenarios[index]:
+                raise Phase2ContractError(f"artifact_descriptor_role_order:{field}")
     output = request["output_contract"]
     if not isinstance(output, Mapping) or set(output) != {
         "schema",
