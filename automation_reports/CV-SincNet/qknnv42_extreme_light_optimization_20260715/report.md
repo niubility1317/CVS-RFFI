@@ -10,8 +10,8 @@
 |基底模型|`ADV3B02_CORE90_SOFT_E200`|
 |checkpoint|`/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3_mechanism32_queue_20260701/ADV3B02_CORE90_SOFT_E200/best_joint_safe_ssdg.pth`|
 |checkpoint SHA256|`2699eedcafe8cec880828592d2d65ba3781a9948939da5cf5c82b47143d59c98`|
-|当前状态|`LOCAL_PROTOCOL_REPAIR_REQUIRED_FORMAL_LAUNCH_AUTHORITY_FALSE`|
-|远端动作|无SSH、无SCP、无N607启动|
+|当前状态|`SOURCE_FFT_ABLATION_COMPLETE_WEIGHT2_ONLY_PASS_TARGET_MATRIX_UNRUN`|
+|远端动作|N607 source-only FFT消融4/4完成；进程与GPU已释放；未启动target矩阵|
 
 本任务使用同一份严格加载的ADV3B02 checkpoint构建candidate、identity-only和strict direct三条配对预测流。CEN51、JREF、OPGAC和OA-MSE不再拥有当前基底或默认路线权限，仅保留为历史对照。
 
@@ -262,3 +262,51 @@ bash paper_reproduction/scripts/launch_cvs_ground_lora_fft_ablation_v15.sh
 5. 6个TTA float32门限应统一按24B统计；candidate capsule与本报告已修正，但旧training/benchmark资源字段仍有12B残留，需要在下一性能提交顺手统一。
 
 这些项都直接影响qKNN性能结论或K1可信度，优先级高于新增数据协议握手。
+
+## 十一、FFT权重消融完成结果
+
+四个验证进程均于2026-07-15 20:13:40+08:00前结束。完整日志各523—526行，均已逐文件扫描；无Traceback、OOM或Killed。weight0.5/0.7/1.0的`conda run`返回非零是验证器对`locked_head_each_k_not_worse_than_identity`判负后的预期退出，不是运行崩溃。weight2.0正常返回且全部gate通过。
+
+本地拉取证据位于`E:\type10-7\automation_reports\CV-SincNet\qknnv42_extreme_light_optimization_20260715\remote_artifacts_fft_v15\`，包含4份完整日志、4份`source_validation.json`、4份`promotion_manifest.json`、source feature stats及launch manifest。
+
+### 11.1同权重总体结果
+
+下表所有指标来自同一权重行；`base1`是未合并LoRA的ADV3B02 frozen feature head，`LoRA1`是同权重单View，`LoRA adaptive`使用对应source锁定TTA。这里只是6个source旧类receiver holdout，不是target 5/10/20新类结论。
+
+|FFT权重|FFT能量占比|source gate|base1 acc/floor|LoRA1 acc/floor|LoRA adaptive acc/floor|平均forward|source选中head|判定|
+|---:|---:|---|---:|---:|---:|---:|---|---|
+|0.5|20.0%|FAIL|86.563%/70.498%|86.678%/69.349%|87.024%/69.828%|1.293|alignment＋uncertainty0.25|K1及多K稳定性不足|
+|0.7|32.9%|FAIL|86.621%/70.498%|86.621%/69.349%|86.995%/70.881%|1.222|uncertainty0.25|K5/K20轻微低于identity|
+|1.0|50.0%|FAIL|86.563%/70.498%|86.621%/69.349%|87.140%/71.456%|1.263|ridge0.03＋mix0.25＋uncertainty0.25|K20 fixed1低于identity0.058pp|
+|2.0|80.0%|PASS|86.678%/70.498%|86.794%/69.349%|87.630%/71.552%|1.339|identity mean head|当前source winner；未证明target|
+
+### 11.2同row nested-K结果
+
+`Δfixed1`和`Δadaptive`均相对同权重、同K的identity mean fixed1；floor差异同样保持在该行内。由于本实验只有source旧类，表中的差值是source nested-K非退化诊断，不等同于正式target遗忘率。
+
+|FFT权重|K|locked fixed1 acc/floor|identity fixed1 acc/floor|Δfixed1 acc/floor|adaptive acc/floor|Δadaptive acc|平均forward|判定|
+|---:|---:|---:|---:|---:|---:|---:|---:|---|
+|0.5|1|86.390%/68.582%|86.448%/69.732%|-0.058/-1.149pp|86.275%/69.732%|-0.173pp|1.300|FAIL|
+|0.5|5|86.505%/69.349%|86.678%/70.498%|-0.173/-1.149pp|87.024%/70.498%|+0.346pp|1.291|fixed1 FAIL|
+|0.5|10|86.563%/69.349%|86.678%/70.115%|-0.115/-0.766pp|87.313%/70.115%|+0.634pp|1.288|fixed1 FAIL|
+|0.5|20|87.082%/69.349%|86.967%/69.732%|+0.115/-0.383pp|87.486%/68.966%|+0.519pp|1.293|floor FAIL|
+|0.7|1|86.505%/70.115%|86.448%/69.732%|+0.058/+0.383pp|86.448%/70.068%|+0.000pp|1.213|K1无明确增益|
+|0.7|5|86.678%/70.498%|86.736%/70.881%|-0.058/-0.383pp|87.082%/71.264%|+0.346pp|1.216|fixed1 FAIL|
+|0.7|10|86.621%/70.115%|86.621%/70.115%|+0.000/+0.000pp|87.024%/71.264%|+0.404pp|1.221|PASS row|
+|0.7|20|86.851%/69.732%|86.967%/69.349%|-0.115/+0.383pp|87.428%/70.115%|+0.461pp|1.236|fixed1 FAIL|
+|1.0|1|86.505%/69.732%|86.448%/69.732%|+0.058/+0.000pp|86.505%/70.408%|+0.058pp|1.257|正增益过小|
+|1.0|5|86.736%/70.881%|86.736%/70.881%|+0.000/+0.000pp|87.255%/72.031%|+0.519pp|1.260|PASS row|
+|1.0|10|86.736%/70.498%|86.736%/70.498%|+0.000/+0.000pp|87.255%/72.031%|+0.519pp|1.258|PASS row|
+|1.0|20|87.082%/70.115%|87.140%/69.349%|-0.058/+0.766pp|87.543%/70.498%|+0.404pp|1.278|fixed1 FAIL|
+|2.0|1|87.197%/69.732%|87.197%/69.732%|+0.000/+0.000pp|87.255%/72.031%|+0.058pp|1.317|PASS，但远低于+2pp|
+|2.0|5|87.428%/71.264%|87.428%/71.264%|+0.000/+0.000pp|87.716%/72.414%|+0.288pp|1.325|PASS|
+|2.0|10|87.140%/70.498%|87.140%/70.498%|+0.000/+0.000pp|87.716%/72.031%|+0.577pp|1.330|PASS|
+|2.0|20|87.313%/69.732%|87.313%/69.732%|+0.000/+0.000pp|87.832%/69.732%|+0.519pp|1.384|PASS|
+
+### 11.3结论与下一轮决策
+
+1. “FFT占80%稀释LoRA，所以降低FFT权重会直接提升K1”的假设在当前source holdout上被否定。weight2.0同时给出最高总体adaptive accuracy、最高总体floor和唯一完整source PASS；不能把0.5/0.7/1.0推进candidate lock。
+2. weight2.0的K1 adaptive为87.255%、floor72.031%、平均1.317次forward。它相对同权重identity fixed1只增加0.058pp；相对source base1增加0.577pp，仍明显低于用户要求的+2pp及paired CI下界>0。
+3. source选择最终退回identity mean head，说明当前`consensus67/partial Gram/uncertainty`组合没有形成稳健正收益。低权重分支选中的复杂head反而在某些K破坏identity非退化。
+4. 自适应View本身有持续小幅正收益，且平均forward仅1.21—1.38，证明“默认1-view＋低置信度追加View”方向成立；但当前TTA排序仍需显式加入K1 accuracy/floor约束。
+5. 下一轮不再继续扩大FFT权重网格。优先修复：完整3-view建头＋episode外query选择`consensus67`、按physical ID构建无泄漏multi-scenario训练episode、K1/floor受约束TTA。FFT权重暂锁2.0作为source基线，待新的head/loss独立消融后再判断target适用性。
