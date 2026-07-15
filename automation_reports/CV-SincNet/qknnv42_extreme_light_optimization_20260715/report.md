@@ -548,3 +548,18 @@ bash paper_reproduction/scripts/launch_cvs_p4_bpjg_dev20_k10_v17.sh
 |`test_support_lora_adapter.py`|`698202c5fa53e4ea7bddd471ae1e99bcdbcdf67b7fac2a6922898b2bb8345649`|
 
 `E:\type10-7`根目录仍不是Git仓库；实现、config、launcher、测试和本报告均落在Git承载面`E:\type10-7\github_publish\CVS-RFFI-repo`。本轮开发config显式`resource_diagnostic_only=true`且`formal_claim_authority=false`：其输入是历史post-channel raw-IQ诊断cache，因此可用于层/rank性能筛选，但不能替代`项目.md`要求的正式sealed LEO-only Stage2-C结果，也不能据此声称显著优于MRIOR。正式结论仍需5receiver×至少5seed、5/10/20新类、K1/5/10/20和matched MRIOR配对置信区间。
+
+
+### 14.5N607同步与启动授权证据
+
+- Git提交：`3c4f178 feat: add lightweight P4 BPJG target adaptation`；分支`codex/cvs-rffi-release-20260626`。
+- 2026-07-15 21:34+08:00 direct N607 preflight通过；项目根、服务器时间和8张RTX3090可见。
+- live inventory为`active_training_processes=[]`、`gpu_compute=[]`，不存在centralized/federated/unknown训练占用。
+- local-first同步映射：
+  - `E:\type10-7\github_publish\CVS-RFFI-repo\paper_reproduction\scripts\train_export_cvs_micro_iq_adapter.py`→`/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/scripts/train_export_cvs_micro_iq_adapter.py`；
+  - `E:\type10-7\github_publish\CVS-RFFI-repo\paper_reproduction\scripts\train_export_cvs_support_lora_adapter.py`→`/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/scripts/train_export_cvs_support_lora_adapter.py`；
+  - `E:\type10-7\github_publish\CVS-RFFI-repo\paper_reproduction\configs\cvs_qknnv42_p4_bpjg_dev20_k10_20260715_n607.json`→`/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/configs/cvs_qknnv42_p4_bpjg_dev20_k10_20260715_n607.json`；
+  - `E:\type10-7\github_publish\CVS-RFFI-repo\paper_reproduction\scripts\launch_cvs_p4_bpjg_dev20_k10_v17.sh`→`/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/scripts/launch_cvs_p4_bpjg_dev20_k10_v17.sh`。
+- 4个同步文件远端SHA256与14.4本地值逐项一致；ADV3B02 checkpoint和P4 artifact的远端SHA也分别匹配`2699eedc...`与`95f9a8ba...`。
+- 远端CVS-RFFI Python `py_compile`、launcher `bash -n`、专用config类对称qKNN锁和3个input cache存在性均通过；run/log目标根均不存在。
+- 每个GPU只安排1个训练进程，低于项目允许的每卡2个上限。launcher完成有界启动后退出，不保留SSH或monitor会话。
