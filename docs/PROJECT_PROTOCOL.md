@@ -61,9 +61,13 @@ raw IQ -> CV-SincNet/CVS -> z_id, z_dom
 
 在轨部署阶段面对目标接收机域`R_t`。Stage2-B/C必须记录正整数`K`、support/query划分、receiver/TX split、threshold scope和satellite/LEO target view。Phase2主线row必须包含target-old和target-new目标域样本，并按简化LEO目标视图构造；unknown/open-set字段只作为Phase3备用或diagnostic metadata。
 
-Phase2的全部Stage2-A/B/C target-old、target-new及可选Phase3-backup unknown support/query、适配集、校准集、注册集、模型选择信号、回滚/排序信号和正式评估输入，都必须已经实际叠加`leo_clear_weak`、`leo_low_elev_weak`或`leo_rain_weak`之一。Phase2禁止读取、缓存、恢复、重新构造clean样本，也禁止接收由clean样本派生的feature、logit、prototype、阈值、TTA触发、回滚或晋升信号。clean control只允许存在于Phase1或与Phase2完全隔离的离线参考流程中。
+> **最高优先级强约束：整个Phase2链路必须对clean物理不可达。该要求不是“最终指标不使用clean”，而是从输入校验、数据加载、support/query构造、缓存导入、特征提取、适配、注册、分类、校准、选择、回滚、排名到正式评估的每一个可执行节点，都不得打开、读取、接收、恢复、重构或受控于任何clean样本及clean-derived signal。只要clean能够影响任一参数、状态、分数、候选或决策，该run即协议无效。**
 
-每个launchable Phase2 row必须记录`phase2_sample_view_policy=leo_weak_only_no_clean_access`、`clean_sample_access=false`、实际`leo_*_weak`scenario、satellite seed或等价sample-level overlay provenance。缺字段、目标视图含clean、场景超出三个允许的`leo_*_weak`视图或无法证明实际叠加时，必须标为`LOCAL_PROTOCOL_REPAIR_REQUIRED`并阻断matrix、runner、promotion与正式声明。历史clean-access artifact只可封存为`PROTOCOL_INVALID_FOR_PHASE2`，不得生成新的clean诊断候选。
+Phase2的全部Stage2-A/B/C target-old、target-new及可选Phase3-backup unknown support/query、适配集、校准集、注册集、模型选择信号、回滚/排序信号和正式评估输入，都必须在进入Phase2边界之前实际叠加`leo_clear_weak`、`leo_low_elev_weak`或`leo_rain_weak`之一。Phase2不得先接收clean IQ再在内部临时叠加信道。Phase2禁止读取、缓存、恢复、重新构造clean样本，也禁止接收由clean样本派生的feature、logit、prototype、teacher、anchor、loss target、normalization statistics、adapter/head参数、阈值、bias、temperature、support选择分数、cache、sidecar、TTA触发、回滚或晋升信号。仅声明`uses_target_clean=false`不能证明全链路合规，因为它不能排除source clean及其他clean-derived signal。clean control只允许存在于Phase1或与Phase2完全隔离的离线参考流程中。
+
+Phase2只允许加载在Phase2开始前已经训练、冻结、登记并作为部署包主体交付的不可变Phase1 checkpoint；不得回读其clean训练数据或加载clean prototype/teacher/cache/normalization sidecar，也不得为了Phase2重新运行clean分支。任何会在Phase2期间参与计算或改变决策的辅助artifact都必须自身满足`LEO_weak-only`约束。
+
+每个launchable Phase2 row必须记录`phase2_sample_view_policy=leo_weak_only_no_clean_access`、`clean_sample_access=false`、`clean_derived_signal_access=false`、`phase2_clean_dataset_reachable=false`、`phase2_clean_cache_reachable=false`、`phase2_clean_control_flow_reachable=false`、`phase2_pretrained_artifact_policy=sealed_phase1_checkpoint_only`，以及实际`leo_*_weak`scenario、satellite seed或等价sample-level overlay provenance。验证器必须在打开任何Phase2 dataset、cache或feature artifact之前执行fail-closed可达性检查，并核对artifact provenance、生成配置、loader入口和运行命令，不能只相信manifest自声明。缺字段、任一clean可达字段不为false、目标视图含clean、存在clean-derived signal、场景超出三个允许的`leo_*_weak`视图或无法证明实际叠加时，必须标为`LOCAL_PROTOCOL_REPAIR_REQUIRED`并阻断matrix、runner、promotion与正式声明。历史clean-access artifact只可封存为`PROTOCOL_INVALID_FOR_PHASE2`，不得参与当前方法排名、超参数选择、性能门槛或结论，也不得生成新的clean诊断候选。
 
 TTA轻量化必须固定同一物理LEO观测、support/query、checkpoint和adapter后比较1/3/5-view；不得用不同adapter或不同LEO随机扰动制造view数量差异。正式结果使用逐样本可部署决策，并报告backbone前向数、FFT数以及相对5-view的`old_acc`、`seen_new_acc`和`H_old_new`变化。
 
