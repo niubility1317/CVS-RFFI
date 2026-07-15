@@ -437,6 +437,18 @@ class SpaceborneFewShotDaMatrixTest(unittest.TestCase):
         self.assertEqual(payload["phase1_rows_expected"], 0)
         self.assertEqual(payload["phase2_rows_expected"], 64)
         self.assertEqual(payload["stage2_sample_protocol"]["source_receiver_labels"], "1-1,1-19,14-7,18-2,19-2,2-1,2-19")
+        self.assertEqual(
+            payload["stage2_sample_protocol"]["phase2_query_decision_policy"],
+            "per_sample_all_registered_classes",
+        )
+        for field in (
+            "phase2_query_role_oracle_access",
+            "phase2_query_class_count_access",
+            "phase2_query_class_quota_access",
+            "phase2_query_batch_global_assignment",
+        ):
+            self.assertFalse(payload["stage2_sample_protocol"][field])
+            self.assertTrue(all(item[field] is False for item in rows))
         self.assertIn('STAGE2_MAX_ACTIVE_PER_GPU="${STAGE2_MAX_ACTIVE_PER_GPU:-4}"', launcher)
         self.assertIn("OA_MSE_BALANCE64", json.dumps(rows))
         self.assertEqual(

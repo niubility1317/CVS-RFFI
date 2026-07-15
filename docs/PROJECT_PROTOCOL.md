@@ -69,6 +69,8 @@ TTA轻量化必须固定同一物理LEO观测、support/query、checkpoint和ada
 
 对任一target query，推理前不得假定其属于旧类、新类或未知类。Phase2/Phase3正式候选必须让每个query面对全部已注册类别及允许的reject/defer机制；禁止使用真实old/new/unknown角色、整批类别数量、每类quota、query排序/分块以及Hungarian或等价配额重排。历史role/quota Oracle artifact仅可标记为`PROTOCOL_INVALID_FOR_DEPLOYMENT`后封存，不得新生成、调参、排名、进入论文主表或形成部署声明。本禁令不影响Phase1源域半监督训练中的伪标签quota审计与采样平衡。
 
+每个launchable Phase2 row必须记录`phase2_query_decision_policy=per_sample_all_registered_classes`，并令`phase2_query_role_oracle_access=false`、`phase2_query_class_count_access=false`、`phase2_query_class_quota_access=false`、`phase2_query_batch_global_assignment=false`。缺字段、任一guard不为false，或命令启用role Oracle、真实query class count/quota、Hungarian、optimal transport、global quota matching或batch reassignment时，必须标为`LOCAL_PROTOCOL_REPAIR_REQUIRED`并阻断matrix、runner、promotion与正式声明。support标签、support enrollment身份、预声明的每类`K-shot`构造及预测完成后的metric-only标签读取仍合法，但不得反向影响决策。
+
 多View压缩允许在地面使用严格`rx_light5`逐View监督训练不超过50k参数、最终状态不超过256KB的小模块，也允许星上逐样本置信度门控的1→3→5-view自适应TTA。门限只能由source validation或注册support确定，禁止用query标签、query真实角色、整批类别比例、每类quota或Hungarian分配；正式结果必须报告平均/P95 backbone前向数和1/3/5-view触发率。仅蒸馏5-view均值或仍对所有query固定执行5次backbone前向，不能单独证明多View计算已经压缩。
 
 经用户明确授权，可另设`performance-relaxed`档，在不放宽无角色Oracle、无类别配额、无query拟合、无dense query图和逐样本决策的前提下，把首选档的参数、适配轮数/步数、持久状态或平均View计算提高50%–100%；绝对上限为100k参数、40epoch、512KB和5次backbone前向。放宽档必须逐项报告实际增幅，并与首选档及identity-only单qKNN做同row Pareto比较。
@@ -98,6 +100,7 @@ TTA轻量化必须固定同一物理LEO观测、support/query、checkpoint和ada
 - 缺少target-old或target-new样本覆盖时仍声称完整Stage2-C。
 - 使用target query真实角色、类别配额或跨query批量决策后仍报告为Phase2/Phase3正式性能。
 - Phase2读取clean样本或clean派生信号，或先用clean适配/选参再只报告`LEO_weak`结果。
+- Phase2使用query真实角色、真实批次类别数量、每类query quota或跨query全局配额重排后仍报告正式性能。
 
 ## Git与Markdown同步
 

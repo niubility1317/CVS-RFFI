@@ -563,6 +563,17 @@ launchable Stage2 row:
   `LOCAL_PROTOCOL_REPAIR_REQUIRED`; replace or repair the row, never generate a
   new clean-access diagnostic. Historical artifacts are
   `PROTOCOL_INVALID_FOR_PHASE2` only.
+- Enforce `phase2_query_decision_policy=per_sample_all_registered_classes`,
+  `phase2_query_role_oracle_access=false`,
+  `phase2_query_class_count_access=false`,
+  `phase2_query_class_quota_access=false`, and
+  `phase2_query_batch_global_assignment=false`. A Phase2 decision path must not
+  receive the query's true old/new/unknown role, true batch class counts,
+  per-class query quotas, query ordering/block membership, or Hungarian,
+  optimal-transport, quota-matching, or other batch-global reassignment. Any
+  missing/enabled guard is `LOCAL_PROTOCOL_REPAIR_REQUIRED`, not a diagnostic
+  route. Pre-registered K-shot support labels/enrollment identities remain
+  legal; query ground truth is metric-only after predictions are frozen.
 - Current Phase2 OPGAC inference uses `JREF_C9_MULTICOMP_M2_E220` as the base
   model. This is a user-specified Stage2 base because it is the strongest
   local-mode/receiver-floor diagnostic among recent JREF rows; it is not a
@@ -774,6 +785,9 @@ Write reports under `E:\type10-7\automation_reports\CV-SincNet\<run-id>\report.m
 - Do not let any Phase2 path access clean samples or clean-derived signals;
   launchable rows must prove `leo_weak_only_no_clean_access` and
   `clean_sample_access=false`.
+- Do not use query true-role Oracle, batch class-count Oracle, per-class query
+  quota, or Hungarian/optimal-transport/global reassignment in Phase2. K-shot
+  support composition is not query quota.
 - Do not call Stage2-A/B rejection a new identity recognition result.
 - Do not use target labels for Stage2-A threshold fitting.
 - Do not use missing current-run matrix, `NO_CURRENT_MATRIX_VALIDATION`, or

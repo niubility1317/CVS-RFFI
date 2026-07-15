@@ -560,6 +560,34 @@ Phase2 launchable rows must obey the corrected 2026-07-07 sample boundary: targe
   clean-access artifacts may only be sealed as
   `PROTOCOL_INVALID_FOR_PHASE2`; do not generate new clean-access diagnostics.
 
+### Query Role And Class-Quota Oracle Ban
+
+- Every Phase2 query must be decided independently against the same registered
+  class set plus the allowed reject/uncertain/defer outputs. The decision path
+  must not receive the query's true old/new/unknown role, the true class count
+  of a query batch, any per-class query quota, query ordering/block membership,
+  or a batch-level Hungarian, optimal-transport, quota-matching, or reassignment
+  result.
+- Every launchable Phase2 row must declare
+  `phase2_query_decision_policy=per_sample_all_registered_classes`,
+  `phase2_query_role_oracle_access=false`,
+  `phase2_query_class_count_access=false`,
+  `phase2_query_class_quota_access=false`, and
+  `phase2_query_batch_global_assignment=false`.
+- Missing fields, a true-valued guard, a semantic alias that enables the same
+  information, or an exact command/config that enables role Oracle, class-count
+  Oracle, class quota, Hungarian/optimal-transport assignment, or global batch
+  reassignment is `LOCAL_PROTOCOL_REPAIR_REQUIRED`. Such a row must not launch,
+  pass validation, enter promotion/ranking, or support a formal claim.
+- This ban does not prohibit Stage2-B/C support labels, enrollment identities,
+  or a pre-registered positive integer K-shot support count per class. It also
+  does not change Phase1 source-side pseudo-label quota audits. Ground-truth
+  query labels may be read only after predictions are frozen, solely to compute
+  evaluation metrics.
+- Historical role/quota Oracle artifacts may only be sealed as
+  `PROTOCOL_INVALID_FOR_DEPLOYMENT` with subtype
+  `ROLE_OR_CLASS_QUOTA_ORACLE`; do not generate new Oracle diagnostics.
+
 ### Base Model
 
 - Current Phase2 OPGAC rows use `JREF_C9_MULTICOMP_M2_E220` for on-orbit
@@ -828,6 +856,9 @@ defined by `项目.md`.
   legacy control/diagnostic.
 - Do not let Phase2 read or receive any signal derived from clean samples, and
   do not promote clean-view success into deployment claims.
+- Do not let Phase2 receive query true-role, query class-count, per-class query
+  quota, or batch-global assignment signals. Vectorized batching must preserve
+  the same per-sample decision permission.
 
 ## Evidence Sweep
 

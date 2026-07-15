@@ -58,6 +58,15 @@ Rule ownership is separate from load order:
   launchable Phase2 row; the matrix generator emits those fields; and the state
   file owns the current machine-readable default. Missing evidence or any clean
   access is `LOCAL_PROTOCOL_REPAIR_REQUIRED`, not a launchable diagnostic.
+- Phase2 query-role/class-quota Oracle prevention is split the same way:
+  `项目.md` owns the rule that each query is decided independently against all
+  registered classes without its true old/new/unknown role, batch class counts,
+  per-class query quota, or global assignment; the active prompt owns the
+  orchestration check; the contract and validator require the canonical
+  per-sample decision policy plus four false-valued Oracle guard fields; the
+  generator emits them; and the state file owns the current machine-readable
+  default. Missing or enabled guards are `LOCAL_PROTOCOL_REPAIR_REQUIRED`.
+  Pre-registered K-shot support labels remain legal and are not query quota.
 - Phase2/Phase3 boundary is split the same way: `项目.md` owns the rule that
   Phase2 mainline is target-old adaptation plus target-new learning under
   simplified LEO target view, while open-set / unknown rejection is Phase3

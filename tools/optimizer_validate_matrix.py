@@ -65,6 +65,44 @@ DEFAULT_STAGE2_SAMPLE_PROTOCOL = {
 }
 PHASE2_LEO_WEAK_ONLY_POLICY = "leo_weak_only_no_clean_access"
 PHASE2_LEO_WEAK_TARGET_VIEW = "leo_weak_only"
+PHASE2_QUERY_DECISION_POLICY = "per_sample_all_registered_classes"
+PHASE2_QUERY_ORACLE_GUARD_FIELDS = (
+    "phase2_query_role_oracle_access",
+    "phase2_query_class_count_access",
+    "phase2_query_class_quota_access",
+    "phase2_query_batch_global_assignment",
+)
+PHASE2_QUERY_ORACLE_ALIAS_FIELDS = (
+    "query_role_oracle",
+    "role_oracle",
+    "oracle_role",
+    "query_role_known",
+    "query_true_role_access",
+    "query_class_count_access",
+    "query_class_quota",
+    "class_quota",
+    "batch_class_quota",
+    "query_quota_known",
+    "hungarian_assignment",
+    "optimal_transport_assignment",
+    "global_quota_matching",
+    "batch_reassignment",
+)
+PHASE2_QUERY_ORACLE_CLI_FLAGS = (
+    "--query_role_oracle",
+    "--role_oracle",
+    "--oracle_role",
+    "--query_role_known",
+    "--query_class_count_access",
+    "--query_class_quota",
+    "--class_quota",
+    "--batch_class_quota",
+    "--hungarian",
+    "--hungarian_assignment",
+    "--optimal_transport",
+    "--global_quota_matching",
+    "--batch_reassignment",
+)
 ALLOWED_PHASE2_LEO_WEAK_SCENARIOS = {
     "leo_clear_weak",
     "leo_low_elev_weak",
@@ -898,6 +936,18 @@ def is_true_like(value: Any) -> bool:
     return normalized_status(value) in {"true", "1", "yes", "y", "on"}
 
 
+def enabled_cli_flag(command: str, flag: str) -> bool:
+    """Return true when a CLI flag is present without an explicit false-like value."""
+    pattern = rf"(?:^|\s){re.escape(flag)}(?:=([^\s]+)|\s+((?!--)[^\s]+))?(?=\s|$)"
+    for match in re.finditer(pattern, command.lower()):
+        value = match.group(1) or match.group(2)
+        if value is None or (
+            not is_false_like(value) and normalized_status(value) not in {"disabled", "none"}
+        ):
+            return True
+    return False
+
+
 def is_opgac_row(item: Mapping[str, Any]) -> bool:
     text = candidate_value_text(item)
     return (
@@ -1317,6 +1367,55 @@ def stage2_sample_protocol_issues(item: Mapping[str, Any], sample_protocol: Opti
     old80_head_bundle_allowed = old80_phase_allowed and is_old80_first_head_row(item)
     issues: List[Dict[str, Any]] = []
 
+    query_decision_policy = normalized_status(item.get("phase2_query_decision_policy"))
+    if query_decision_policy != PHASE2_QUERY_DECISION_POLICY:
+        issues.append(
+            {
+                "candidate_id": cid,
+                "issue": "stage2_query_decision_policy_must_be_per_sample_all_registered_classes",
+                "phase2_query_decision_policy": item.get("phase2_query_decision_policy"),
+            }
+        )
+    missing_query_oracle_guards = [
+        field for field in PHASE2_QUERY_ORACLE_GUARD_FIELDS if item.get(field) in (None, "", [])
+    ]
+    if missing_query_oracle_guards:
+        issues.append(
+            {
+                "candidate_id": cid,
+                "issue": "stage2_query_oracle_guard_fields_missing",
+                "missing_fields": missing_query_oracle_guards,
+            }
+        )
+    enabled_query_oracle_guards = [
+        field
+        for field in PHASE2_QUERY_ORACLE_GUARD_FIELDS
+        if item.get(field) not in (None, "", []) and not is_false_like(item.get(field))
+    ]
+    if enabled_query_oracle_guards:
+        issues.append(
+            {
+                "candidate_id": cid,
+                "issue": "stage2_query_oracle_guard_must_be_false",
+                "enabled_fields": enabled_query_oracle_guards,
+            }
+        )
+    parameter_values = item.get("parameters") if isinstance(item.get("parameters"), Mapping) else {}
+    enabled_query_oracle_aliases = []
+    for field in PHASE2_QUERY_ORACLE_ALIAS_FIELDS:
+        for scope, values in (("row", item), ("parameters", parameter_values)):
+            value = values.get(field)
+            if value not in (None, "", []) and not is_false_like(value):
+                enabled_query_oracle_aliases.append(f"{scope}.{field}")
+    if enabled_query_oracle_aliases:
+        issues.append(
+            {
+                "candidate_id": cid,
+                "issue": "stage2_forbidden_role_or_class_quota_oracle_field_enabled",
+                "enabled_fields": enabled_query_oracle_aliases,
+            }
+        )
+
     sample_view_policy = normalized_status(item.get("phase2_sample_view_policy"))
     if sample_view_policy != PHASE2_LEO_WEAK_ONLY_POLICY:
         issues.append(
@@ -1387,6 +1486,17 @@ def stage2_sample_protocol_issues(item: Mapping[str, Any], sample_protocol: Opti
     if overlay_provenance in (None, "", []):
         issues.append({"candidate_id": cid, "issue": "stage2_leo_weak_overlay_provenance_missing"})
     exact_command_text = command_text(item).lower()
+    enabled_query_oracle_flags = [
+        flag for flag in PHASE2_QUERY_ORACLE_CLI_FLAGS if enabled_cli_flag(exact_command_text, flag)
+    ]
+    if enabled_query_oracle_flags:
+        issues.append(
+            {
+                "candidate_id": cid,
+                "issue": "stage2_exact_command_enables_role_or_class_quota_oracle",
+                "matched_flags": enabled_query_oracle_flags,
+            }
+        )
     forbidden_command_tokens = (
         "--target_channel_view clean",
         "clear_leo",

@@ -249,6 +249,11 @@ def _stage2_item(gpu_idx, slot_letter, idx):
         "target_receiver_ids": "rx7",
         "phase2_sample_view_policy": "leo_weak_only_no_clean_access",
         "clean_sample_access": False,
+        "phase2_query_decision_policy": "per_sample_all_registered_classes",
+        "phase2_query_role_oracle_access": False,
+        "phase2_query_class_count_access": False,
+        "phase2_query_class_quota_access": False,
+        "phase2_query_batch_global_assignment": False,
         "target_channel_view": "leo_weak_only",
         "target_channel_scenarios": "leo_clear_weak,leo_low_elev_weak,leo_rain_weak",
         "satellite_seed": 713101,
@@ -1110,6 +1115,60 @@ def test_stage2_sample_protocol_requires_no_clean_policy_and_overlay_provenance(
     assert "stage2_sample_view_policy_must_be_leo_weak_only_no_clean_access" in issue_names
     assert "stage2_clean_sample_access_guard_missing" in issue_names
     assert "stage2_leo_weak_overlay_provenance_missing" in issue_names
+
+
+def test_stage2_sample_protocol_rejects_role_and_class_quota_oracles():
+    item = _stage2_item(0, "B", 0)
+    item["phase2_query_decision_policy"] = "oracle_partition_then_classify"
+    item["phase2_query_role_oracle_access"] = True
+    item["phase2_query_class_count_access"] = True
+    item["phase2_query_class_quota_access"] = True
+    item["phase2_query_batch_global_assignment"] = True
+    item["role_oracle"] = True
+    item["batch_class_quota"] = 2
+    item["hungarian_assignment"] = "enabled"
+    item["parameters"]["optimal_transport_assignment"] = True
+    item["exact_command"] = (
+        "python run.py --role_oracle true --query_class_quota=2 "
+        "--hungarian --global_quota_matching on"
+    )
+
+    issues = ovm.stage2_sample_protocol_issues(item, ovm.DEFAULT_STAGE2_SAMPLE_PROTOCOL)
+    issue_names = {issue["issue"] for issue in issues}
+
+    assert "stage2_query_decision_policy_must_be_per_sample_all_registered_classes" in issue_names
+    assert "stage2_query_oracle_guard_must_be_false" in issue_names
+    assert "stage2_forbidden_role_or_class_quota_oracle_field_enabled" in issue_names
+    assert "stage2_exact_command_enables_role_or_class_quota_oracle" in issue_names
+
+
+def test_stage2_sample_protocol_requires_query_oracle_guard_fields():
+    item = _stage2_item(0, "B", 0)
+    item.pop("phase2_query_decision_policy")
+    for field in ovm.PHASE2_QUERY_ORACLE_GUARD_FIELDS:
+        item.pop(field)
+
+    issues = ovm.stage2_sample_protocol_issues(item, ovm.DEFAULT_STAGE2_SAMPLE_PROTOCOL)
+    issue_names = {issue["issue"] for issue in issues}
+
+    assert "stage2_query_decision_policy_must_be_per_sample_all_registered_classes" in issue_names
+    assert "stage2_query_oracle_guard_fields_missing" in issue_names
+
+
+def test_stage2_sample_protocol_allows_explicit_false_oracle_cli_flags_and_support_k():
+    item = _stage2_item(0, "B", 0)
+    item["target_old_support_per_tx"] = 5
+    item["target_old_k"] = 5
+    item["exact_command"] = (
+        "python run.py --role_oracle false --query_class_quota=0 "
+        "--hungarian off --global_quota_matching disabled"
+    )
+
+    issues = ovm.stage2_sample_protocol_issues(item, ovm.DEFAULT_STAGE2_SAMPLE_PROTOCOL)
+    issue_names = {issue["issue"] for issue in issues}
+
+    assert "stage2_exact_command_enables_role_or_class_quota_oracle" not in issue_names
+    assert "stage2_forbidden_role_or_class_quota_oracle_field_enabled" not in issue_names
 
 
 def test_validate_matrix_rejects_incomplete_onboard_adaptation_bundle():
