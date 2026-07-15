@@ -48,9 +48,11 @@ def _artifacts(tmp_path):
     np.savez(stats, mean=np.zeros(8), std=np.ones(8))
     source_train_cache = tmp_path / "source_train_cache_set.json"
     source_validation_cache = tmp_path / "source_validation_cache_set.json"
-    source_train_cache.write_text('{"scope":"source_train"}', encoding="utf-8")
+    source_train_cache.write_text(
+        '{"cache_scope":"source_train"}', encoding="utf-8"
+    )
     source_validation_cache.write_text(
-        '{"scope":"source_validation"}', encoding="utf-8"
+        '{"cache_scope":"source_validation"}', encoding="utf-8"
     )
     validation = tmp_path / "source_validation.json"
     validation_payload = {
@@ -113,10 +115,9 @@ def _artifacts(tmp_path):
         },
     }
     validation.write_text(json.dumps(validation_payload), encoding="utf-8")
-    promotion = tmp_path / "promotion.json"
-    promotion_payload = {
+    training = tmp_path / "training.json"
+    training_payload = {
         "method": "ground_source_effective_feature_lora_v1",
-        "source_validation_pass": True,
         "source_only": True,
         "target_receiver_data_used_for_training": False,
         "clean_samples_used_for_training": False,
@@ -131,8 +132,35 @@ def _artifacts(tmp_path):
         "source_leo_weak_cache_set_manifest_sha256": _sha(source_train_cache),
         "checkpoint_sha256": _sha(checkpoint),
         "adapter_state_sha256": _sha(adapter),
+    }
+    training.write_text(json.dumps(training_payload), encoding="utf-8")
+    validation_payload["training_manifest_sha256"] = _sha(training)
+    validation.write_text(json.dumps(validation_payload), encoding="utf-8")
+    promotion = tmp_path / "promotion.json"
+    promotion_payload = {
+        **training_payload,
+        "source_validation_pass": True,
+        "training_manifest": str(training.resolve()),
+        "training_manifest_sha256": _sha(training),
+        "source_train_leo_weak_cache_set_manifest": str(source_train_cache),
+        "source_train_leo_weak_cache_set_manifest_sha256": _sha(
+            source_train_cache
+        ),
+        # Reproduce the legacy promotion bug: validation overwrote the generic
+        # cache fields.  Candidate-lock v2 must recover source-train only from
+        # the explicitly hash-bound training manifest.
+        "source_leo_weak_cache_set_manifest": str(source_validation_cache),
+        "source_leo_weak_cache_set_manifest_sha256": _sha(
+            source_validation_cache
+        ),
         "source_validation_manifest": str(validation),
         "source_validation_manifest_sha256": _sha(validation),
+        "source_validation_leo_weak_cache_set_manifest": str(
+            source_validation_cache
+        ),
+        "source_validation_leo_weak_cache_set_manifest_sha256": _sha(
+            source_validation_cache
+        ),
     }
     promotion.write_text(json.dumps(promotion_payload), encoding="utf-8")
     direct_mapping = tmp_path / "direct_mapping.json"
@@ -169,7 +197,15 @@ def _artifacts(tmp_path):
         runtime_project_root=str(runtime_root).replace("\\", "/"),
     )
     execution_plan = generated_dir / "plan_manifest.json"
-    return checkpoint, adapter, promotion, split, direct_mapping, execution_plan
+    return (
+        checkpoint,
+        adapter,
+        training,
+        promotion,
+        split,
+        direct_mapping,
+        execution_plan,
+    )
 
 
 def _formal_config(
@@ -194,11 +230,12 @@ def _formal_config(
 
 
 def test_source_candidate_lock_pins_code_and_all_formal_k(tmp_path) -> None:
-    checkpoint, adapter, promotion, split, direct_mapping, execution_plan = _artifacts(tmp_path)
+    checkpoint, adapter, training, promotion, split, direct_mapping, execution_plan = _artifacts(tmp_path)
     lock = build_candidate_lock(
         candidate_id="effective8-r16-e12",
         checkpoint=checkpoint,
         adapter_state=adapter,
+        training_manifest=training,
         promotion_manifest=promotion,
         class_split_manifest=split,
         execution_plan_manifest=execution_plan,
@@ -226,14 +263,38 @@ def test_source_candidate_lock_pins_code_and_all_formal_k(tmp_path) -> None:
         20,
     ]
     assert verified["locked_candidate"]["head"]["mode"] == "symmetric_locked"
+    assert verified["schema"] == "cvs_stage2c_source_candidate_lock_v2"
+    caches = verified["locked_candidate"]["source_leo_weak_cache_sets"]
+    assert caches["source_train"]["path"] != caches["source_validation"]["path"]
+    assert json.loads(Path(caches["source_train"]["path"]).read_text())[
+        "cache_scope"
+    ] == "source_train"
+
+
+def test_candidate_lock_rejects_unbound_training_manifest(tmp_path) -> None:
+    checkpoint, adapter, training, promotion, split, _mapping, execution_plan = (
+        _artifacts(tmp_path)
+    )
+    training.write_text("{}", encoding="utf-8")
+    with pytest.raises(ValueError, match="does not bind"):
+        build_candidate_lock(
+            candidate_id="candidate",
+            checkpoint=checkpoint,
+            adapter_state=adapter,
+            training_manifest=training,
+            promotion_manifest=promotion,
+            class_split_manifest=split,
+            execution_plan_manifest=execution_plan,
+        )
 
 
 def test_candidate_lock_rejects_support_pool_drift(tmp_path) -> None:
-    checkpoint, adapter, promotion, split, direct_mapping, execution_plan = _artifacts(tmp_path)
+    checkpoint, adapter, training, promotion, split, direct_mapping, execution_plan = _artifacts(tmp_path)
     lock = build_candidate_lock(
         candidate_id="candidate",
         checkpoint=checkpoint,
         adapter_state=adapter,
+        training_manifest=training,
         promotion_manifest=promotion,
         class_split_manifest=split,
         execution_plan_manifest=execution_plan,
@@ -259,11 +320,12 @@ def test_candidate_lock_rejects_support_pool_drift(tmp_path) -> None:
 
 
 def test_candidate_lock_rejects_same_count_with_different_tx(tmp_path) -> None:
-    checkpoint, adapter, promotion, split, direct_mapping, execution_plan = _artifacts(tmp_path)
+    checkpoint, adapter, training, promotion, split, direct_mapping, execution_plan = _artifacts(tmp_path)
     lock = build_candidate_lock(
         candidate_id="candidate",
         checkpoint=checkpoint,
         adapter_state=adapter,
+        training_manifest=training,
         promotion_manifest=promotion,
         class_split_manifest=split,
         execution_plan_manifest=execution_plan,
@@ -295,11 +357,12 @@ def test_candidate_lock_rejects_same_count_with_different_tx(tmp_path) -> None:
 
 
 def test_candidate_lock_rejects_mutated_class_split_artifact(tmp_path) -> None:
-    checkpoint, adapter, promotion, split, direct_mapping, execution_plan = _artifacts(tmp_path)
+    checkpoint, adapter, training, promotion, split, direct_mapping, execution_plan = _artifacts(tmp_path)
     lock = build_candidate_lock(
         candidate_id="candidate",
         checkpoint=checkpoint,
         adapter_state=adapter,
+        training_manifest=training,
         promotion_manifest=promotion,
         class_split_manifest=split,
         execution_plan_manifest=execution_plan,
@@ -335,13 +398,14 @@ def test_candidate_lock_rejects_mutated_class_split_artifact(tmp_path) -> None:
 
 
 def test_candidate_lock_rejects_query_count_drift(tmp_path) -> None:
-    checkpoint, adapter, promotion, split, _mapping, execution_plan = _artifacts(
+    checkpoint, adapter, training, promotion, split, _mapping, execution_plan = _artifacts(
         tmp_path
     )
     lock = build_candidate_lock(
         candidate_id="candidate",
         checkpoint=checkpoint,
         adapter_state=adapter,
+        training_manifest=training,
         promotion_manifest=promotion,
         class_split_manifest=split,
         execution_plan_manifest=execution_plan,
@@ -367,13 +431,14 @@ def test_candidate_lock_rejects_query_count_drift(tmp_path) -> None:
 
 
 def test_candidate_lock_rechecks_target_cache_spec_after_lock(tmp_path) -> None:
-    checkpoint, adapter, promotion, split, _mapping, execution_plan = _artifacts(
+    checkpoint, adapter, training, promotion, split, _mapping, execution_plan = _artifacts(
         tmp_path
     )
     lock = build_candidate_lock(
         candidate_id="candidate",
         checkpoint=checkpoint,
         adapter_state=adapter,
+        training_manifest=training,
         promotion_manifest=promotion,
         class_split_manifest=split,
         execution_plan_manifest=execution_plan,

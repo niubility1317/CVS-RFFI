@@ -5,7 +5,7 @@
 |实验ID|`qknn_ground_effective8_r16_e12_leoonly_20260715_v14`|
 |时间|2026-07-15 13:44 CST|
 |operator|Codex`/root`|
-|当前状态|`SOURCE_VALIDATION_PASS_REMOTE_REPAIR5_VERIFIED`；candidate lock恢复待启动，target matrix未启动|
+|当前状态|`CANDIDATE_LOCK_V1_INVALID_SOURCE_CACHE_PROVENANCE`；repair6候选锁v2已完成本地验证，待同步并重新执行source validation/candidate lock；target matrix未启动|
 |基座模型|同一ADV3B02 checkpoint：`ADV3B02_CORE90_SOFT_E200/best_joint_safe_ssdg.pth`|
 |目标|在新版`LEO_weak-only`边界下，以≤50k参数、≤20epoch、≤256KB持久状态的极轻型适配器和逐样本1→3→5-view推理，完成5receiver×5seed×3场景×新类5/10/20×K=1/5/10/20正式确认|
 
@@ -121,7 +121,7 @@ git diff --check
 |step日志|`logs/qknn_ground_effective8_r16_e12_leoonly_20260715_v14/source_pipeline_steps/`|
 |state|`runs/qknn_ground_effective8_r16_e12_leoonly_20260715_v14/source_pipeline_state.json`|
 |PID文件|`logs/qknn_ground_effective8_r16_e12_leoonly_20260715_v14/source_pipeline_runner.pid`|
-|预期产物|2个source cache-set、`effective8_adapter_fp16.pt`、`training_manifest.json`、source validation/promotion manifest、`candidate_lock.json`|
+|预期产物|2个source cache-set、`effective8_adapter_fp16.pt`、`training_manifest.json`、`source_validation_v2/`、`candidate_lock_v2.json`；旧`candidate_lock.json`仅保留为无效证据|
 
 精确plan生成命令：
 
@@ -227,3 +227,13 @@ repair5让未来validator同时显式写`clean_samples_used_for_validation=false
 最新用户目标把target-old门槛从95%调整为92%，并把Stage2-B纳入正式目标。按AGENTS规则先更新根`项目.md`10.3.1，再更新Git协议镜像`docs/cvs_stage2c_extreme_light_goal_20260714.md`，Git提交`f4dc1aa1fbdc`；根目录仍非Git，故该镜像是版本承载面。正式config、plan validator和summarizer现统一锁定`K10_OLD_TARGET=0.92`，其余最低类、新类、K5、K1和遗忘门槛不变。当前v14 plan必须在candidate lock恢复前重新生成并同步，旧0.95 plan不得继续用于正式汇总。
 
 repair5代码/门槛提交为`92513ba312eb`。远端覆盖前快照为`/home/szu2070436088/2510044040/CV-SincNet/code/snapshots/qknn_ground_effective8_r16_e12_leoonly_20260715_v14_repair5_before_sync_20260715_152451`，包含旧`项目.md`、Git协议镜像、config、validator/lock/plan/summarizer、report、旧protocol plan和candidate-lock失败证据。9个同步文件本地/远端SHA256逐项一致，远端4个脚本`py_compile`通过。repair5 plan仍精确覆盖2个source cache、25个target cache、300次benchmark和900条场景row；两份source规范化spec SHA与现有cache完全相等。runner state核对显示步骤0–3均为complete且命令逐项相同，步骤4为failed且命令相同，因此恢复只会重跑candidate lock。远端config与summarizer均读出K10 old target=`0.92`；target matrix仍未启动。
+
+## 2026-07-15 candidate source-cache provenance失败关闭与repair6
+
+repair5 candidate lock随后实际生成，但锁内`source_leo_weak_cache_sets.source_train.path`与`source_validation.path`都指向`phase1_caches/source_validation/cache_set.json`。训练manifest本身仍正确绑定`phase1_caches/source_train/cache_set.json`；错误发生在validator构造promotion时：先复制training manifest，再用source-validation缓存的同名`source_leo_weak_cache_set_*`字段覆盖了source-train字段。旧候选锁仅逐项校验文件SHA，没有校验两个缓存必须不同或`cache_scope`必须分别为`source_train`/`source_validation`，因此错误锁通过。该锁统一标记为`INVALID_SOURCE_CACHE_PROVENANCE`，保留原文件和SHA作为失败证据，不得进入target matrix、方法排名或成功声明。已完成的12epoch adapter训练及两个原始cache未被覆盖，且target matrix从未启动。
+
+repair6把candidate lock升级为schema`cvs_stage2c_source_candidate_lock_v2`并强制显式输入原始`training_manifest.json`。锁生成器要求promotion、source validation和实际training manifest三方训练清单SHA一致；promotion必须分别记录`source_train_leo_weak_*`与`source_validation_leo_weak_*`；锁分别从training与validation artifact读取缓存，重新校验文件SHA、`cache_scope`，并拒绝同路径或同SHA。锁内新增绑定training manifest路径/SHA，运行时verifier会重新打开并校验。validator不再用validation字段覆盖training通用字段。为避免覆盖无效证据，repair6改用新目录`source_validation_v2/`和新锁`candidate_lock_v2.json`，全部300个benchmark只引用v2锁；v1 schema会被当前verifier拒绝。
+
+本地`ssr-gpu`验证结果：6个修改脚本/测试文件`py_compile`通过；candidate/plan/validator聚焦测试20项通过；13个正式相关测试文件共110项通过；`git diff --check`待提交前复核。repair6 plan仍精确生成2个source cache-set、25个target cache-set、300次benchmark、900条场景row、1次collection和1次summary。与repair5逐项比较：2个source cache命令完全相同，12epoch训练命令完全相同，两份source cache spec字节相同，300份Stage2 config字节相同；source validation唯一变化是输出目录切换为`source_validation_v2`，candidate命令新增`--training_manifest`并输出`candidate_lock_v2.json`。因此恢复时应跳过已完成cache与训练，只重新执行source validation和candidate lock；正确v2锁生成前matrix继续阻断。
+
+Stage2-B只读边界审计同时确认：当前v14 Stage2-C cache的scope为`stage2_registered`且包含target-old与target-new，不能原样作为Stage2-B的`stage2_target_old`输入；Stage2-C的`old_acc_before_increment`也不能冒充Stage2-B正式结果。后续Stage2-B需要从同一密封LEO_weak缓存生成绑定父SHA的target-old只读projection，派生专属candidate lock，并运行5receiver×5seed×3场景×K=1/5/10/20共300条old-only场景row。该矩阵可复用同一checkpoint、source-only adapter、source statistics、head/TTA超参和物理old样本，但必须独立报告old-only head状态、逐样本before/after/direct/identity预测和资源门禁；Stage2-B通过不能替代Stage2-C的新类与H门槛。

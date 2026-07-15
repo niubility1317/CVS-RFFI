@@ -80,9 +80,21 @@ def test_training_command_uses_sealed_cache_and_same_leo_reference_names(
         "1-1,1-19,14-7,18-2,19-2,2-1"
     )
     validation_command = manifest["commands"]["source_validation"][0]
+    assert validation_command[validation_command.index("--out_dir") + 1].endswith(
+        "/source_validation_v2"
+    )
     assert validation_command[validation_command.index("--source_train_rxs") + 1] == (
         "1-1,1-19,14-7,18-2,19-2,2-1"
     )
     assert validation_command[validation_command.index("--source_val_rxs") + 1] == (
         "2-19"
     )
+    candidate_command = manifest["commands"]["candidate_lock"][0]
+    assert "--training_manifest" in candidate_command
+    assert candidate_command[candidate_command.index("--out_json") + 1].endswith(
+        "/candidate_lock_v2.json"
+    )
+    for benchmark_command in manifest["commands"]["benchmark"]:
+        assert benchmark_command[
+            benchmark_command.index("--candidate_lock") + 1
+        ].endswith("/candidate_lock_v2.json")

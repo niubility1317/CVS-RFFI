@@ -73,11 +73,35 @@ def build_candidate_lock(
     candidate_id: str,
     checkpoint: Path,
     adapter_state: Path,
+    training_manifest: Path,
     promotion_manifest: Path,
     class_split_manifest: Path,
     execution_plan_manifest: Path,
 ) -> dict[str, Any]:
     manifest = json.loads(promotion_manifest.read_text(encoding="utf-8-sig"))
+    training = json.loads(training_manifest.read_text(encoding="utf-8-sig"))
+    training_manifest_sha256 = _sha256_file(training_manifest)
+    if str(manifest.get("training_manifest_sha256", "")) != training_manifest_sha256:
+        raise ValueError("promotion does not bind the supplied training manifest")
+    if Path(str(manifest.get("training_manifest", ""))).resolve() != training_manifest.resolve():
+        raise ValueError("promotion training-manifest path mismatch")
+    immutable_training_fields = (
+        "method",
+        "source_only",
+        "target_receiver_data_used_for_training",
+        "clean_samples_used_for_training",
+        "formal_training_view",
+        "proxy_data_used_for_training",
+        "stage",
+        "training_input_stage",
+        "phase2_sample_view_policy",
+        "clean_sample_access",
+        "clean_derived_signal_access",
+        "checkpoint_sha256",
+        "adapter_state_sha256",
+    )
+    if any(training.get(key) != manifest.get(key) for key in immutable_training_fields):
+        raise ValueError("promotion mutated immutable training-manifest fields")
     if manifest.get("method") != "ground_source_effective_feature_lora_v1":
         raise ValueError("formal candidate lock requires the effective8 ground LoRA")
     if (
@@ -94,9 +118,28 @@ def build_candidate_lock(
         != PHASE2_SAMPLE_VIEW_POLICY
         or manifest.get("clean_sample_access") is not False
         or manifest.get("clean_derived_signal_access") is not False
-        or not manifest.get("source_leo_weak_cache_set_manifest_sha256")
     ):
         raise ValueError("ground-source candidate is not validated leo_weak-only")
+    if (
+        training.get("source_only") is not True
+        or training.get("target_receiver_data_used_for_training") is not False
+        or training.get("clean_samples_used_for_training") is not False
+        or training.get("formal_training_view") != "leo_weak_only"
+        or training.get("phase2_sample_view_policy") != PHASE2_SAMPLE_VIEW_POLICY
+        or training.get("clean_sample_access") is not False
+        or training.get("clean_derived_signal_access") is not False
+        or not training.get("source_leo_weak_cache_set_manifest_sha256")
+    ):
+        raise ValueError("training manifest is not a sealed source LEO_weak artifact")
+    if (
+        str(manifest.get("source_train_leo_weak_cache_set_manifest", ""))
+        != str(training.get("source_leo_weak_cache_set_manifest", ""))
+        or str(
+            manifest.get("source_train_leo_weak_cache_set_manifest_sha256", "")
+        )
+        != str(training.get("source_leo_weak_cache_set_manifest_sha256", ""))
+    ):
+        raise ValueError("promotion source-train cache binding mismatch")
     if str(manifest.get("checkpoint_sha256", "")) != _sha256_file(checkpoint):
         raise ValueError("candidate checkpoint hash mismatch")
     if str(manifest.get("adapter_state_sha256", "")) != _sha256_file(adapter_state):
@@ -109,6 +152,8 @@ def build_candidate_lock(
     ):
         raise ValueError("source validation path/hash is invalid")
     validation = json.loads(validation_path.read_text(encoding="utf-8-sig"))
+    if str(validation.get("training_manifest_sha256", "")) != training_manifest_sha256:
+        raise ValueError("validation does not bind the supplied training manifest")
     permissions = dict(validation.get("permissions", {}))
     head_lock = dict(validation.get("symmetric_head_lock", {}))
     nested_k_lock = dict(validation.get("nested_k_source_lock", {}))
@@ -167,7 +212,7 @@ def build_candidate_lock(
     ):
         raise ValueError("source feature statistics are not immutable/source-only")
     source_train_cache_path = Path(
-        str(manifest.get("source_leo_weak_cache_set_manifest", ""))
+        str(training.get("source_leo_weak_cache_set_manifest", ""))
     )
     source_validation_cache_path = Path(
         str(validation.get("source_leo_weak_cache_set_manifest", ""))
@@ -176,7 +221,7 @@ def build_candidate_lock(
         (
             "source_train",
             source_train_cache_path,
-            str(manifest.get("source_leo_weak_cache_set_manifest_sha256", "")),
+            str(training.get("source_leo_weak_cache_set_manifest_sha256", "")),
         ),
         (
             "source_validation",
@@ -191,6 +236,15 @@ def build_candidate_lock(
             or _sha256_file(cache_path) != expected_hash
         ):
             raise ValueError(f"immutable {cache_name} LEO_weak cache-set drift")
+        cache_payload = json.loads(cache_path.read_text(encoding="utf-8-sig"))
+        if str(cache_payload.get("cache_scope", "")) != cache_name:
+            raise ValueError(f"immutable {cache_name} cache_scope drift")
+    if (
+        source_train_cache_path.resolve() == source_validation_cache_path.resolve()
+        or _sha256_file(source_train_cache_path)
+        == _sha256_file(source_validation_cache_path)
+    ):
+        raise ValueError("source-train and source-validation caches are not distinct")
     split = json.loads(class_split_manifest.read_text(encoding="utf-8-sig"))
     old_labels = [str(value) for value in split.get("target_old_tx_labels", [])]
     nested_raw = dict(split.get("nested_target_new_tx_labels", {}))
@@ -278,6 +332,10 @@ def build_candidate_lock(
         "promotion_manifest": {
             "path": str(promotion_manifest),
             "sha256": _sha256_file(promotion_manifest),
+        },
+        "training_manifest": {
+            "path": str(training_manifest),
+            "sha256": training_manifest_sha256,
         },
         "source_validation": {
             "path": str(validation_path),
@@ -367,7 +425,7 @@ def build_candidate_lock(
         "code_artifacts_sha256": code_hashes,
     }
     return {
-        "schema": "cvs_stage2c_source_candidate_lock_v1",
+        "schema": "cvs_stage2c_source_candidate_lock_v2",
         "locked_candidate": locked_candidate,
         "locked_candidate_sha256": _canonical_sha256(locked_candidate),
     }
@@ -382,7 +440,7 @@ def verify_candidate_lock(
     config: dict[str, Any],
 ) -> dict[str, Any]:
     lock = json.loads(lock_path.read_text(encoding="utf-8-sig"))
-    if lock.get("schema") != "cvs_stage2c_source_candidate_lock_v1":
+    if lock.get("schema") != "cvs_stage2c_source_candidate_lock_v2":
         raise ValueError("candidate lock schema mismatch")
     candidate = dict(lock.get("locked_candidate", {}))
     if _canonical_sha256(candidate) != str(lock.get("locked_candidate_sha256", "")):
@@ -397,6 +455,7 @@ def verify_candidate_lock(
         if _sha256_file(path) != str(entry.get("sha256", "")):
             raise ValueError(f"candidate lock {field} hash mismatch")
     for field in (
+        "training_manifest",
         "source_validation",
         "source_feature_statistics",
         "class_split",
@@ -544,6 +603,7 @@ def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
     parser.add_argument("--candidate_id", required=True)
     parser.add_argument("--checkpoint", type=Path, required=True)
     parser.add_argument("--adapter_state", type=Path, required=True)
+    parser.add_argument("--training_manifest", type=Path, required=True)
     parser.add_argument("--promotion_manifest", type=Path, required=True)
     parser.add_argument("--class_split_manifest", type=Path, required=True)
     parser.add_argument("--execution_plan_manifest", type=Path, required=True)
@@ -559,6 +619,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         candidate_id=str(args.candidate_id),
         checkpoint=args.checkpoint,
         adapter_state=args.adapter_state,
+        training_manifest=args.training_manifest,
         promotion_manifest=args.promotion_manifest,
         class_split_manifest=args.class_split_manifest,
         execution_plan_manifest=args.execution_plan_manifest,

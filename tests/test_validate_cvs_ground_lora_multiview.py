@@ -62,6 +62,9 @@ def test_formal_validator_source_has_no_runtime_raw_or_channel_entrypoint() -> N
         '"clean_derived_signal_access": False',
         '"validation_input_stage": LEO_WEAK_CACHE_STAGE',
         '"source_leo_weak_cache_set_manifest_sha256"',
+        '"source_validation_leo_weak_cache_set_manifest_sha256"',
+        '"source_train_leo_weak_cache_set_manifest_sha256"',
+        '"training_manifest":',
         '"source_leo_weak_cache_set_audit"',
         "numpy_to_tensor_compat",
     ):

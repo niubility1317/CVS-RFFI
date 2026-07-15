@@ -324,9 +324,9 @@ def generate_plan(
 
     adapter_state = str(PurePosixPath(runtime_run_root) / "effective8_adapter_fp16.pt")
     training_manifest = str(PurePosixPath(runtime_run_root) / "training_manifest.json")
-    source_validation_out = str(PurePosixPath(runtime_run_root) / "source_validation")
+    source_validation_out = str(PurePosixPath(runtime_run_root) / "source_validation_v2")
     promotion_manifest = str(PurePosixPath(source_validation_out) / "promotion_manifest.json")
-    candidate_lock = str(PurePosixPath(runtime_run_root) / "candidate_lock.json")
+    candidate_lock = str(PurePosixPath(runtime_run_root) / "candidate_lock_v2.json")
     adapter = dict(plan["adapter"])
     commands["train"].append(
         [
@@ -462,6 +462,8 @@ def generate_plan(
             checkpoint,
             "--adapter_state",
             adapter_state,
+            "--training_manifest",
+            training_manifest,
             "--promotion_manifest",
             promotion_manifest,
             "--class_split_manifest",

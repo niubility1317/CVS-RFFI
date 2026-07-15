@@ -1030,6 +1030,15 @@ def main(argv: Sequence[str] | None = None) -> int:
         ),
         "source_leo_weak_cache_set_audit": cache_set_audit,
     }
+    source_validation_cache_contract = {
+        "source_validation_leo_weak_cache_set_manifest": str(
+            args.source_cache_set.resolve()
+        ),
+        "source_validation_leo_weak_cache_set_manifest_sha256": str(
+            cache_set_audit["sha256"]
+        ),
+        "source_validation_leo_weak_cache_set_audit": cache_set_audit,
+    }
     result = _serializable({
         "schema": "cvs_ground_source_lora_multiview_validation_v1",
         "phase2_sample_view_policy": PHASE2_SAMPLE_VIEW_POLICY,
@@ -1105,13 +1114,23 @@ def main(argv: Sequence[str] | None = None) -> int:
             "source_validation_pass": source_validation_pass,
             "source_validation_manifest": str(validation_path),
             "source_validation_manifest_sha256": sha256_file(validation_path),
+            "training_manifest": str(args.training_manifest.resolve()),
             "training_manifest_sha256": sha256_file(args.training_manifest),
             "phase2_sample_view_policy": PHASE2_SAMPLE_VIEW_POLICY,
             "clean_samples_used_for_validation": False,
             "clean_sample_access": False,
             "clean_derived_signal_access": False,
             "validation_input_stage": LEO_WEAK_CACHE_STAGE,
-            **source_cache_contract,
+            "source_train_leo_weak_cache_set_manifest": str(
+                manifest["source_leo_weak_cache_set_manifest"]
+            ),
+            "source_train_leo_weak_cache_set_manifest_sha256": str(
+                manifest["source_leo_weak_cache_set_manifest_sha256"]
+            ),
+            "source_train_leo_weak_cache_set_audit": manifest[
+                "source_leo_weak_cache_set_audit"
+            ],
+            **source_validation_cache_contract,
             "source_validation_failed_gates": failed,
             "source_validation_receiver_scope": str(args.source_val_rxs),
             "source_validation_permissions": result["permissions"],
