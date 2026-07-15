@@ -685,3 +685,9 @@ v12相对历史减少71.89%可训参数、83.33%epoch和95.31%的`参数×epoch`
 按用户补充要求，部署默认已明确改为base 1-view，不再先计算5-view再事后模拟门控。新`apply_adaptive_rxlight_tta_lazy`只对base margin低于support标定阈值的行调用shift provider并补算±2 shift；只对3-view margin仍低或三View分歧超过阈值的行调用CFO provider并补算±1e-4 CFO。已在1/3/5三种退出样例上核验provider实际请求行分别为全部base、低置信度子集和二次低置信度子集；高置信度样例不会调用任何额外View provider。
 
 联合评估仍额外计算一次固定5-view作为离线性能上界，但manifest明确记录`fixed5_is_offline_upper_bound_only=true`，该部分不计入部署资源。部署统计直接由实际provider请求量计算：`N+2×N_shift+2×N_cfo`个backbone forward row，并与逐样本budget均值严格一致；同时要求真正惰性路径与全5-view分数模拟路径的prediction和1/3/5 budget逐行一致。更新后相关54项pytest PASS、编译和`git diff --check` PASS。adaptive模块SHA=`bb3f0f3f...bca5`，benchmark SHA=`525ecc3e...7c32`，config SHA=`54ce7af1...2af0`。
+
+### v12 N607同步前审计
+
+实现提交=`3c3c79c`，真正惰性自适应追加提交=`af4865e`。2026-07-15 10:42 CST直连只读preflight PASS，项目根和8张RTX3090可见；8张GPU各有1个RIEI训练进程，单进程约624MiB。GPU7现有PID=`1116076`，v12作为GPU7第2个短作业，符合每卡最多2个训练实验的项目规则，不干预既有进程。项目盘余量7.6TB；正式checkpoint和3个raw-IQ缓存存在，目标train/log/eval根均不存在。
+
+远端trainer/benchmark先只读回收到`E:\type10-7\code\snapshots\qknn_v12_remote_before_sync_20260715_1042`并与本地比较，确认本地改动是在现有远端版本上的增量；SCP后只覆盖本实验需要的4个代码/配置文件，不同步runner或其它并发工作树内容。映射为：trainer→`paper_reproduction/scripts/train_export_cvs_support_lora_adapter.py`，benchmark→`paper_reproduction/scripts/benchmark_cvs_adaptive_rxlight_tta.py`，adaptive gate→`paper_reproduction/cvs_aligned/adaptive_rxlight_tta.py`，config→`paper_reproduction/configs/cvs_qknnv42_multiview_relaxed_rank24_stage2c_k10_20260715_n607.json`。对应SHA256依次为`33da85c0...7080b`、`525ecc3e...7c32`、`bb3f0f3f...bca5`、`54ce7af1...2af0`。同步后必须复核远端哈希、`py_compile`、真实checkpoint注入和GPU7实时占用，满足后才启动。
