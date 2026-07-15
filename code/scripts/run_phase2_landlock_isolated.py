@@ -48,7 +48,9 @@ SECCOMP_RET_ERRNO = 0x00050000
 BPF_LD_W_ABS = 0x20
 BPF_JMP_JEQ_K = 0x15
 BPF_RET_K = 0x06
-X86_64_NETWORK_SYSCALLS = (41, 42, 43, 44, 45, 49, 50, 53, 288)
+SECCOMP_DATA_ARG0_OFFSET = 16
+AF_UNIX = 1
+X86_64_SOCKET_CREATION_SYSCALLS = (41, 53)
 
 
 class RulesetAttr(ctypes.Structure):
@@ -72,18 +74,26 @@ class SockFprog(ctypes.Structure):
     _fields_ = [("len", ctypes.c_ushort), ("filter", ctypes.POINTER(SockFilter))]
 
 
-def _deny_network_syscalls(libc) -> None:
-    if platform.machine().lower() not in {"x86_64", "amd64"}:
-        raise RuntimeError("formal network-deny seccomp is reviewed only for x86_64")
+def _network_filter_instructions() -> list[SockFilter]:
     instructions = [SockFilter(BPF_LD_W_ABS, 0, 0, 0)]
-    for syscall_number in X86_64_NETWORK_SYSCALLS:
+    for syscall_number in X86_64_SOCKET_CREATION_SYSCALLS:
         instructions.extend(
             [
-                SockFilter(BPF_JMP_JEQ_K, 0, 1, syscall_number),
+                SockFilter(BPF_JMP_JEQ_K, 0, 4, syscall_number),
+                SockFilter(BPF_LD_W_ABS, 0, 0, SECCOMP_DATA_ARG0_OFFSET),
+                SockFilter(BPF_JMP_JEQ_K, 1, 0, AF_UNIX),
                 SockFilter(BPF_RET_K, 0, 0, SECCOMP_RET_ERRNO | errno.EPERM),
+                SockFilter(BPF_RET_K, 0, 0, SECCOMP_RET_ALLOW),
             ]
         )
     instructions.append(SockFilter(BPF_RET_K, 0, 0, SECCOMP_RET_ALLOW))
+    return instructions
+
+
+def _deny_network_syscalls(libc) -> None:
+    if platform.machine().lower() not in {"x86_64", "amd64"}:
+        raise RuntimeError("formal network-deny seccomp is reviewed only for x86_64")
+    instructions = _network_filter_instructions()
     program_array = (SockFilter * len(instructions))(*instructions)
     program = SockFprog(len(instructions), program_array)
     if libc.prctl(PR_SET_SECCOMP, SECCOMP_MODE_FILTER, ctypes.byref(program), 0, 0) != 0:
@@ -183,7 +193,9 @@ def main() -> int:
             "status": "PASS",
             "landlock_enforced": True,
             "no_new_privs": True,
-            "network_syscalls_seccomp_denied": True,
+            "network_access_allowed": False,
+            "ip_network_socket_creation_seccomp_denied": True,
+            "unix_domain_ipc_allowed": True,
             "pinned_memfd_inputs_required": bool(args.require_pinned_inputs),
             "write_root": str(args.write_dir.resolve(strict=True)),
         }

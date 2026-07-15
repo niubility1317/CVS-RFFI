@@ -307,7 +307,9 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
     if (
         runtime_attestation_payload.get("status") != "PASS"
         or runtime_attestation_payload.get("landlock_enforced") is not True
-        or runtime_attestation_payload.get("network_syscalls_seccomp_denied") is not True
+        or runtime_attestation_payload.get("network_access_allowed") is not False
+        or runtime_attestation_payload.get("ip_network_socket_creation_seccomp_denied") is not True
+        or runtime_attestation_payload.get("unix_domain_ipc_allowed") is not True
         or runtime_attestation_payload.get("pinned_memfd_inputs_required") is not True
     ):
         raise ValueError("runtime Landlock/seccomp attestation failed")

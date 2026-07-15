@@ -181,6 +181,8 @@ N607独立memfd smoke确认libc后备可创建memfd且`seals=15/required=15`。s
 
 00:07直连预检/实时清单再次确认8张GPU空闲，`gpu_compute=[]`、`active_training_processes=[]`。v12已同步至v5新根并核验SHA。v5 smoke使用独立`smoke_driver_v5_attempt1.pid`、`logs/smoke_driver_v5_attempt1.out`、`logs/smoke_v5_attempt1`及新根`smoke_receipt.json`；矩阵仍未授权。
 
+v5 attempt1以PID`1890476`运行：memfd snapshot、Landlock、no_new_privs和seccomp attestation均已生效，但旧seccomp把CUDA所需`AF_UNIX/SOCK_SEQPACKET`本机IPC一并拒绝，子进程返回1；无prediction/scoring/smoke receipt。完整666,665字节strace与281,640字节audit已回传`evidence/smoke_v5_failure/`。新策略只允许`socket/socketpair`的domain=`AF_UNIX`，继续以EPERM拒绝所有其他socket domain；子进程不继承网络socket，runtime attestation精确声明`network_access_allowed=false`、`ip_network_socket_creation_seccomp_denied=true`和`unix_domain_ipc_allowed=true`。同时修复audit对`expressionrawdomain/graph_drawer`的`raw`子串误报，并让失败消息保留有界stderr tail。22项Landlock/pinned/audit/isolated/strict-package测试通过。v5不复用，后续使用全新v6根。
+
 v5 attempt1以PID`1890476`首次完整进入Landlock predictor：12个package成员均由memfd封印且每项`memfd_seals=15`，Landlock/no-new-privs/network-seccomp/pinned-input attestation均为PASS；随后predictor返回1，未生成prediction/scoring/cell/smoke receipt。完整3,939字节driver日志只包含外层`return code 1`，结构化receipt证明内层stderr为2,243字节但旧runner只保存SHA，无法定位Python异常。666,665字节完整trace的审计另暴露两项标准库文件名假阳性：`expressionrawdomain.pyc`与`graph_drawer.pyc`因子串`raw`被误判；这不是clean/raw数据访问。
 
 外层Landlock runner修复为按路径词元精确匹配`truth/scoring/scorer/clean/raw/manysig/manytx`，仍会拒绝`clean_cache`、`truth_sidecar`等真实敏感路径，但不再命中英文单词内部的`raw`。predictor失败时最多4,000字符的truth-free stderr tail写入外层异常和driver日志，便于下一次定位；receipt中的完整stderr SHA/size不变。`py_compile`和26项Landlock/memfd/runtime-closure/isolated-runner/strict-package测试通过。该修改不改变sealed predictor closure；下一次复用strict_v10，但必须生成全新v13清单和v6运行根，v5证据不覆盖。
