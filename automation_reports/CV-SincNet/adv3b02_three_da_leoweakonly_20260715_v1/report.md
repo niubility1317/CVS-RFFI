@@ -124,6 +124,10 @@ phase2_query_batch_global_assignment=false
 
 第四次offline准备PID `1615166`在首个bundle完成密封后，由末尾字符串泄漏扫描误把固定Phase1 checkpoint内部合法的旧类标签映射识别为query truth泄漏而fail-closed退出；首个predictor manifest、scoring manifest和detached seal各1个已落盘，正式行仍为0。修复只豁免已预注册且受hash密封的`checkpoint.bin`、`adapter.bin`和`head.bin`无结构字节扫描；新生成support/query/package manifest仍执行成员白名单、同fd hash审计和泄漏扫描。修复后相关pytest仍为`33 passed`，首个已密封bundle不删除，由续跑时严格verifier决定复用或阻断。
 
+第五次offline准备PID `1616795`已完成并正常退出：`expected=52`、`verified=52`、`cache_verified=26`、`predictor_bundle_verified=25`、`runtime_seal_verified=true`、`phase2_started=false`。其中27项严格校验后跳过复用，25项新建；全局inventory root SHA256为`8c33405898992adaa812975b2fd42c371302c88a60734cc335d5653c90a4c5c2`，runtime code SHA256为`199a16fe9bd09110e4d1793402aefbac2d5cc9a81c535d90a407eabb304c3fe2`。
+
+下一步smoke固定`receiver=20-1`、`seed=713101`、`K=5`，三方法各1行，输出到`runs/adv3b02_three_da_leoweakonly_20260715_v1/smoke_runs/`，使用与正式worker相同的Landlock launcher、artifact allowlist、runtime evidence和独立scorer；smoke成功后才允许启动8个正式shard。
+
 ## 七、成功条件与风险
 
 成功条件：
