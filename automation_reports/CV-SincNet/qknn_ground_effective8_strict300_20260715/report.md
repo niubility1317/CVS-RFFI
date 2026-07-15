@@ -383,6 +383,7 @@ K10使注册前adapt由K1的64.44%提高到76.94%，并从低于direct 5.83pp转
 | TR-2 | Phase2 sealed input package与pre-open验证 | 避免把数值IQ/ZIP随机字节中对短TX标签的偶然命中误判为结构化真值泄漏，同时保持JSON/字符串/token门禁 | 同上 | verified | 4个实际失败NPZ的raw命中仅位于`float32`IQ成员，字符串字段0命中；修复后实际文件回归PASS | 数值成员仍受NPZ allowlist、member/package SHA、detached seal和runtime audit约束 |
 | TR-3 | 本地优先、Git、SCP和不可覆盖 | 修复必须本地提交、验证后同步；v12 partial evidence不得覆盖或原地续跑 | 代码、测试、报告、新运行根/计划 | verified | `git diff --check`、26项pytest、目标脚本/计划远端SHA、v13根预先不存在、8分片落地 | v12保持失败证据；v13为唯一新正式根 |
 | TR-4 | 125任务诉求与当前严格25/75/300/900计划 | 只有全部300 cells/900 rows完成并通过protocol receipts才可聚合性能 | 新run states、receipts、本报告 | blocked | 8/8 shard complete、300 cell receipts、900同row formal rows、完整driver日志 | 等待TR-3同步与全新运行根完成 |
+| TR-5 | Experiment Reporting同row联合解释 | 汇总器必须校验receipt/formal row/resource绑定，输出300-cell明细、K×new-count联合汇总、receiver分组和审计SHA，不得拼接不同cell极值 | `paper_reproduction/scripts/summarize_cvs_stage2c_effective8_strict_matrix.py`、测试、v13 summary artifacts | pending | synthetic绑定/篡改测试；v13 300/900计数；完整driver读取；输出SHA复算 | 汇总通过前不下最终性能结论 |
 
 结构化审计定位的4个raw命中分别为：shard2的`query_leo_weak_iq.npy`中`2-5`、shard3/4的同一数值成员中`1-8`、shard6的`support_pool_leo_weak_iq.npy`中`8-3`；相应NPZ全部字符串数组均无任何old/new role或TX标签。修复仅把`.npz`扫描从整包随机字节改为`S/U`文本成员扫描；其他文件仍逐字节扫描。`py_compile`通过，`ssr-gpu`下26项build/bundle/sealed pipeline/strict package/plan authority/CLI测试通过，4个实际失败NPZ回传后由修复代码复扫为PASS。TR-3仍须在Git提交、远端SHA核验和全新运行根落地后才能验证。
 
@@ -395,3 +396,13 @@ K10使注册前adapt由K1的64.44%提高到76.94%，并从低于direct 5.83pp转
 v13唯一计划同步目标预登记为`/home/szu2070436088/2510044040/CV-SincNet/runs/qknn_ground_effective8_r16_e12_leoonly_20260715_v14_landlock_strict300_v13/protocol_plan/strict_plan_manifest_v22_authorized_f0576cf4.json`。启动工作目录为`/home/szu2070436088/2510044040/CV-SincNet`，Python为`/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python`；每个shard使用独立原子锁、PID、driver、log目录和state文件，设置`CUDA_VISIBLE_DEVICES=<shard>`并执行`paper_reproduction/scripts/run_cvs_stage2c_effective8_strict_plan.py --stage matrix_shard --device cuda:0 --shard-index <shard> --shard-count 8`。只有再次预检确认旧runner为0、GPU空闲、新v13根不存在后才创建、SCP、核验SHA并启动。
 
 01:16最终预检与实时inventory确认`gpu_compute=[]`、`active_training_processes=[]`，8张GPU空闲，v13根不存在。新根与`protocol_plan`原子创建后，授权计划远端SHA复算为`f0576cf4731b5e832af7af4f03b34babe30495d36f3b71cf0acac07e63c1954c`。8个独立分片依次落地：shard0–7的PID为`1960790`、`1960797`、`1960809`、`1960884`、`1960960`、`1961041`、`1961122`、`1961208`；物理GPU分别为0–7，逻辑device统一`cuda:0`，启动1秒后全部LIVE。SSH/SCP结束后`ssh.exe=0`且无TCP22残留。TR-3转为`verified`；TR-4仍等待300/300 cells和900/900 rows完成。
+
+### 新一组三轮算法探索与Round1追踪（2026-07-16 01:20 CST）
+
+当前N607只读清单确认v13的8个matrix shard正在运行，因此不启动、不同步、不覆盖远端文件。严格链修复、协议握手修复、K1/K10基线和v11/v12/v13基线矩阵不计入新的算法探索轮；新计数从真正改变算法机制的候选开始：Round1=`EvidenceNorm`零梯度类对称注册头，Round2=`JP-R4` support-only稀疏更新，Round3=`JG-R8-LOPO` support-only稀疏更新。Round3结果完成后，第4轮启动前必须执行目标、`项目.md`、conversation index、完整日志和既有路线的强制复盘。
+
+逐项需求、公式、输入输出、资源口径和验证门记录于`analysis/qknnv42_round1_evidence_head_traceability_20260716.md`。Round1输入仅为`[3K,C,D]`密封LEO weak注册support，输出为类原型以及每类2个FP16负证据/尺度校准量；26类新增状态104B，可训练参数、epoch、optimizer step和额外backbone forward均为0，标记为`EVAL_ONLY_CLOSED_FORM_ADAPTATION`。所有类使用同一leave-one-physical/view-out、负证据分位数、support-count收缩和评分公式，不读取query真值/角色/批次类数/类别配额。
+
+机制归因同时更正：当前锁定head为`use_alignment=false`，所以注册前后的旧类原型由相同旧类support独立计算且数值一致；遗忘来自新增类进入argmax后的竞争/hubness，而不是全局alignment坐标被重拟合。Round1直接抑制支持证据不足或对其他类support产生高相似度的prototype hub，但不会预先宣称突破ADV3B02表征上限。
+
+实现审查后增加三个fail-closed约束：Q95固定使用NumPy`method=higher`；类gap先向全类中位数收缩再执行正下限；另用source-locked`inverse_scale_cap`限制最大逆尺度，避免小gap制造新hub。EvidenceNorm启用时禁止alignment、非恒等Gram变换和非零uncertainty penalty。TTA的1→3→5触发继续使用EvidenceNorm前的raw cosine流，EvidenceNorm只改变最终融合/分类分数，从而保持Round1与v14的View预算可比。
