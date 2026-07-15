@@ -351,3 +351,22 @@ K10使注册前adapt由K1的64.44%提高到76.94%，并从低于direct 5.83pp转
 | effective8-v14-strict-v11-k10 | ADV3B02+effective8+support-only注册+adaptive view | rx20-1；6 old+20真实new；3个LEO_weak | 10 | 713101 | 76.94% | 59.44% | 35.50% | 44.45% | 20.00% | 17.50pp | 44,048参数；12 epoch；109,818B；2.726 view | adapt注册前正收益；联合注册仍严重负例，不晋升 |
 
 后续每个完成cell继续追加同一行，不得用来自不同单元的独立极值替代联合行。
+
+### v12完整矩阵落地（2026-07-16 01:00 CST）
+
+直连预检确认N607可达；v12创建前远端运行根不存在。已把授权v21清单同步至`/home/szu2070436088/2510044040/CV-SincNet/runs/qknn_ground_effective8_r16_e12_leoonly_20260715_v14_landlock_strict300_v12/protocol_plan/strict_plan_manifest_v21_authorized_1c972769.json`，远端复算SHA=`1c972769f2e248ae46d893df46193bea02a499430d648a67230a91b7aeba2c99`，与本地一致。首次哈希核验因PowerShell提前展开远端`$(...)`而产生本地包装错误；未重复SCP，清理审计确认`ssh.exe=0`且无N607 TCP22残留后，使用单条短命令完成只读复核。
+
+8个v12 shard均以原子独立锁启动，物理GPU通过`CUDA_VISIBLE_DEVICES=0..7`隔离，runner一律传逻辑`--device cuda:0`。PID与映射如下：
+
+| shard | 物理GPU | 逻辑device | PID | state/log前缀 | 启动后验证 |
+|---:|---:|---|---:|---|---|
+| 0 | 0 | `cuda:0` | 1929789 | `matrix_shard_0_logical0` | LIVE；首个new5 package完成，new10运行中 |
+| 1 | 1 | `cuda:0` | 1929796 | `matrix_shard_1_logical0` | LIVE；首个new5 package完成，new10运行中 |
+| 2 | 2 | `cuda:0` | 1929808 | `matrix_shard_2_logical0` | LIVE；首个new5 package完成，new10运行中 |
+| 3 | 3 | `cuda:0` | 1929883 | `matrix_shard_3_logical0` | LIVE；首个new5 package完成，new10运行中 |
+| 4 | 4 | `cuda:0` | 1929958 | `matrix_shard_4_logical0` | LIVE；首个new5 package完成，new10运行中 |
+| 5 | 5 | `cuda:0` | 1930036 | `matrix_shard_5_logical0` | LIVE；首个new5 package完成，new10运行中 |
+| 6 | 6 | `cuda:0` | 1930114 | `matrix_shard_6_logical0` | LIVE；首个new5 package完成，new10运行中 |
+| 7 | 7 | `cuda:0` | 1930192 | `matrix_shard_7_logical0` | LIVE；首个new5 package完成，new10运行中 |
+
+`/proc/<pid>/environ`逐项确认上述物理映射，`/proc/<pid>/cmdline`逐项确认`--device cuda:0 --shard-count 8`及对应`--shard-index`。GPU0同时存在保留运行的v11 shard0与v12 shard0，共2个实验进程，未超过每GPU最多2个的默认上限；其他GPU最多1个v12实验。此次状态是“已落地并在运行”，不是矩阵完成或性能成功；后续必须等待8个state全部完成、完整读取driver日志并聚合300 prediction cells/900 formal rows后才能形成最终版本判定。
