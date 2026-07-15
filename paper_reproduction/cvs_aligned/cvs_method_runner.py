@@ -869,13 +869,17 @@ def _attach_post_adapter_resources(
             "support_only_late_key_ft_source_init_v1",
         }
         is_full_feature_lora = adapter_method == "support_only_full_feature_lora_v1"
+        is_large_idnorm_tta5 = (
+            adapter_method == "support_only_id_norm_late_feature_tta5_v1"
+        )
         checks = {
             "support_only": support_adapter.get("support_only") is True,
             "no_query_update": support_adapter.get("query_update_forbidden") is True,
             "no_query_labels": support_adapter.get("query_labels_used_for_training") is False,
             "no_role_oracle": support_adapter.get("old_new_role_used_by_optimizer") is False,
             "no_class_quota": support_adapter.get("class_quota_used_at_inference") is False,
-            "single_query_view": int(support_adapter.get("query_view_count", -1)) == 1,
+            "query_view_contract": int(support_adapter.get("query_view_count", -1))
+            == (5 if is_large_idnorm_tta5 else 1),
             "epoch_cap": 0
             <= int(support_adapter.get("epochs", -1))
             <= (
@@ -887,12 +891,22 @@ def _attach_post_adapter_resources(
                     else (
                         60
                         if resource_tier == "non_extreme_light_resource_control"
-                        else (40 if resource_tier == "performance_relaxed" else 20)
+                        else (
+                            60
+                            if resource_tier
+                            == "non_extreme_light_large_adapter_diagnostic"
+                            else (40 if resource_tier == "performance_relaxed" else 20)
+                        )
                     )
                 )
             ),
             "resource_tier_declared": resource_tier
-            in {"preferred", "performance_relaxed", "non_extreme_light_resource_control"},
+            in {
+                "preferred",
+                "performance_relaxed",
+                "non_extreme_light_resource_control",
+                "non_extreme_light_large_adapter_diagnostic",
+            },
         }
         checkpoint_trainable = int(
             resources.get(
@@ -952,6 +966,34 @@ def _attach_post_adapter_resources(
                     "fp16_state_matches_parameters": state_bytes == params * 2,
                     "no_full_model_finetune": resources.get("full_model_finetune")
                     is False,
+                }
+            )
+        elif is_large_idnorm_tta5:
+            params = int(resources.get("trainable_parameters", -1))
+            state_bytes = int(resources.get("adapter_state_bytes_fp16", -1))
+            checks.update(
+                {
+                    "exact_idnorm_parameter_count": params == 289_685,
+                    "exact_checkpoint_trainable_count": checkpoint_trainable == 289_685,
+                    "checkpoint_was_updated": checkpoint_updates > 0,
+                    "large_diagnostic_resource_tier": resource_tier
+                    == "non_extreme_light_large_adapter_diagnostic",
+                    "diagnostic_only": support_adapter.get("diagnostic_only") is True,
+                    "leo_weak_only": support_adapter.get("phase2_sample_view_policy")
+                    == "leo_weak_only_no_clean_access",
+                    "no_clean_access": support_adapter.get("clean_sample_access") is False,
+                    "fp16_state_matches_parameters": state_bytes == 289_685 * 2,
+                    "delta_state_format": support_adapter.get("adapter_state_format")
+                    == "fp16_delta_from_strict_checkpoint",
+                    "no_full_model_finetune": resources.get("full_model_finetune") is False,
+                    "five_backbone_forwards": int(
+                        resources.get("backbone_forward_count_per_query", -1)
+                    )
+                    == 5,
+                    "merged_inference_no_added_macs": int(
+                        resources.get("deployment_added_macs_per_query_after_merge", -1)
+                    )
+                    == 0,
                 }
             )
         else:
@@ -1107,6 +1149,13 @@ def validate_config(config: dict[str, Any]) -> None:
             raise ValueError("formal K5 sensitivity requires k5_max_drop_pp=3.0")
     if bool(config.get("unknown_rejection_enabled", False)) or config.get("target_unknown_tx_labels"):
         raise ValueError("Phase2 publication mainline excludes unknown rejection")
+    if config.get("input_adapter_method") == "support_only_id_norm_late_feature_tta5_v1":
+        if config.get("phase2_sample_view_policy") != "leo_weak_only_no_clean_access":
+            raise ValueError("large id_norm adapter requires leo_weak_only_no_clean_access")
+        if config.get("clean_sample_access") is not False:
+            raise ValueError("large id_norm adapter requires clean_sample_access=false")
+        if config.get("resource_diagnostic_only") is not True:
+            raise ValueError("large id_norm TTA5 rows must be resource_diagnostic_only")
     aux_key = str(config.get("qknnv42_aux_feature_key", "")).strip()
     aux_weight = float(config.get("qknnv42_aux_score_weight", 0.0))
     if not 0.0 <= aux_weight <= 1.0:
@@ -1304,7 +1353,12 @@ def run(config: dict[str, Any], run_dir: Path) -> dict[str, Any]:
                 raise ValueError(
                     f"FFT experiment requires satellite_tta_view_count={expected_tta_views} for {scenario}"
                 )
-            if str(cache_manifest.get("aux_fft_view_alignment", "")) != "same_post_channel_view_as_backbone":
+            expected_alignment = (
+                "same_five_post_channel_views_as_backbone"
+                if expected_tta_views == 5
+                else "same_post_channel_view_as_backbone"
+            )
+            if str(cache_manifest.get("aux_fft_view_alignment", "")) != expected_alignment:
                 raise ValueError(f"FFT feature is not certified as same-view aligned for {scenario}")
         if source_logit_weight > 0.0:
             if "tx_logits" not in arrays:
@@ -1716,7 +1770,10 @@ def run(config: dict[str, Any], run_dir: Path) -> dict[str, Any]:
                 "extreme_light_support_aug_scenarios": list(support_aug_scenarios),
                 "support_physical_k_unchanged_by_augmentation": True,
                 "qknnv42_old_anchor_bias": old_anchor_bias,
-                "non_deployment_oracle_diagnostic": decision_mode == "legacy_role_quota_oracle"}
+                "non_deployment_oracle_diagnostic": decision_mode == "legacy_role_quota_oracle",
+                "resource_diagnostic_only": bool(config.get("resource_diagnostic_only", False)),
+                "phase2_sample_view_policy": config.get("phase2_sample_view_policy"),
+                "clean_sample_access": config.get("clean_sample_access")}
     result = {"experiment_id": config.get("experiment_id", f"{method}_{seed}"), "method": method,
               "stage": stage, "seed": int(config["seed"]), "target_receiver_label": receiver,
               "metrics": aggregate, "metrics_by_scenario": metrics_by_scenario,
