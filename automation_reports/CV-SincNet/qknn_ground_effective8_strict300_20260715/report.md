@@ -205,6 +205,8 @@ v8 attempt1以PID`1899303`运行，CUDA初始化、密封memfd、Landlock/seccom
 
 本地计划目录v16因先创建out-dir触发生成器防覆盖门禁，v17因误把generated base plan作为source plan触发schema门禁，二者均未生成strict manifest且不发布。随后从原始受控配置生成v18清单，绑定strict_v12与全新`..._landlock_strict300_v9`运行根；覆盖25 cache、75 package、300 cell、900 formal row，继续保持`launch_authority=false`、`authority_state=N607_LANDLOCK_SMOKE_REQUIRED`，清单SHA=`fe323f56087a840e7f8b9cf8102224f09b40decbcb6cf7d93108b94f9926b8e4`。只有该v18清单可进入下一次单单元smoke。
 
+00:31再次预检并确认`gpu_compute=[]`、`active_training_processes=[]`。远端v9根在创建前不存在；v18清单已同步到`/home/szu2070436088/2510044040/CV-SincNet/runs/qknn_ground_effective8_r16_e12_leoonly_20260715_v14_landlock_strict300_v9/protocol_plan/strict_plan_manifest_v18.json`并核验相同SHA。smoke工作目录为`/home/szu2070436088/2510044040/CV-SincNet`，Python为`/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python`，GPU为`cuda:0`；PID、driver日志、阶段日志和receipt分别写入`smoke_driver_v9_attempt1.pid`、`logs/smoke_driver_v9_attempt1.out`、`logs/smoke_v9_attempt1/`和`smoke_receipt.json`。确切入口为`paper_reproduction/scripts/run_cvs_stage2c_effective8_strict_plan.py --plan-manifest <v18远端清单> --project-root <项目根> --stage smoke --device cuda:0 --log-dir <smoke_v9_attempt1> --smoke-receipt <v9根/smoke_receipt.json>`；仅当上述输出均不存在时以`nohup env PYTHONPATH=code:.`启动。正式matrix shard仍未获授权。
+
 并行构建留下`runtime_artifacts_strict_v9`部分目录：12项不可变模型/config文件存在，`05_runtime_closure.json`为0字节且closure目录不存在，符合旧closure白名单拒绝新增`ctypes/platform`导入的fail-closed行为。strict_v9完整保留且不补写。下一次使用全新`runtime_artifacts_strict_v10`：先同步提交`764c11c`的memfd实现与提交`5d87bdd`的closure白名单，逐文件核验SHA；再在N607直接调用`_sealed_memfd`执行临时seal smoke并验证`REQUIRED_SEALS`，通过后才复制strict_v8的12项不可变artifact并新建closure。后续计划/运行根使用全新版本，不复用v4/v11。
 
 ### v8失败、注册前后指标补全与第1次三轮回顾
