@@ -165,6 +165,8 @@ strict_v8已从修复提交构建：12项模型/capsule/config复用artifact逐�
 
 v3 attempt1以PID`1882465`运行，成功生成pre-run evidence与truth-free request，首次进入Landlock pinned runner前因N607工作区缺少其外层依赖`code/cvsrffi/phase2_bwrap_policy.py`而fail closed；尚未产生prediction/scoring/smoke receipt。由于空`predictor_output`目录已创建，v3不复用。下一步先同步该本地已受控依赖并在N607执行只读完整import smoke；只有import闭包通过后才生成全新v4计划/输出根。
 
+依赖核验显示`phase2_isolated_runner.py`与`phase2_bwrap_policy.py`已存在且SHA与本地一致，实际唯一缺失项为`phase2_pre_run_evidence.py`。补齐后远端SHA=`60bdc81b3c579ba5a0d05b797dea5f686d57b3e5a0959277e5e771356f492c06`，以实际直接脚本入口执行`run_cvs_stage2_landlock_pinned.py --help`的无写入import smoke为`PASS`。v11清单继续绑定strict_v8，但输出改到全新`..._landlock_strict300_v4`根；25/75/300/900、`launch_authority=false`，SHA=`17a6de5501700b204047e1bb663af30a374c4f50e2af4914869c9f5e21c9aa96`。
+
 ## 完成后结果表
 
 实验完成后在本节追加逐单元同一行结果，至少包含candidate ID、机制、receiver/TX split、K-shot、seed、old/seen-new/unknown指标、coverage/rollback/defer、loss/adapter摘要和最终判定。不得用来自不同单元的独立极值替代联合行。
