@@ -970,3 +970,29 @@ v23只做K1最小判别实验：`joint_projection,rank8`的lr=0.005/0.01/0.02，
 |`test_support_lora_adapter.py`|真实ADV3B02＋P4下锁定joint projection为3840参数并验证FP16合并|`b8a8209dc6d18d968ae12e36be652c054c01a0de769cecf6e7fd1864847354ad`|
 
 本地使用真实checkpoint/P4 artifact验证`61 passed`，确认joint projection精确为3840参数，非目标层不变、FP16 roundtrip/merge parity及最终全冻结均通过；`py_compile`和v23 `bash -n`通过。
+
+### 18.4v23完成结果与K1决策
+
+2026-07-15 23:36+08:00重新确认N607无活动训练/GPU进程、v23目标路径不存在；同步后远端screen/launcher SHA、`py_compile`和`bash -n`均通过。四臂PID为`JP8_LR005=1871986`、`JP8_LR010=1871987`、`JP8_LR020=1871989`、`JG8_LR005=1871990`，均完成5epoch/5step，无Traceback、OOM或Killed。
+
+共同strict direct为87.3917%/71.0227%，共同P4 identity为88.0334%/73.5484%。
+
+|candidate|层/lr|参数|adapted acc/floor|相对identity acc/floor|适应时延|patch文件|持久状态|判定|
+|---|---|---:|---:|---:|---:|---:|---:|---|
+|`JG8_LR005`|`id_gate＋joint_proj`/0.005|6,400|88.0013%/73.5484%|-0.0321/0.0000pp|0.664s|15,016B|57,084B|negative|
+|`JP8_LR005`|`joint_proj`/0.005|3,840|88.0013%/73.5484%|-0.0321/0.0000pp|**0.626s**|9,306B|51,374B|negative|
+|`JP8_LR010`|`joint_proj`/0.010|3,840|87.9692%/73.5484%|-0.0642/0.0000pp|0.631s|9,306B|51,374B|negative|
+|`JP8_LR020`|`joint_proj`/0.020|3,840|87.9050%/73.3333%|-0.1283/-0.2151pp|0.646s|9,306B|51,374B|negative|
+
+最小的JP005与JG005都仍高于strict direct：accuracy +0.6096pp、floor +2.5257pp；但这主要来自ground P4与support prototype，target梯度本身没有带来正收益。四臂训练loss和support mean margin均改善，query却轻微下降，说明K1下仅靠support平均交叉View目标无法可靠估计target权重更新方向。降低学习率只能把负效应压近0，不能反转为正；因此不再继续扫lr或增加层。
+
+|candidate|result SHA256|target adapter SHA256|
+|---|---|---|
+|`JG8_LR005`|`a7e5d2468e9d9e795ea958aa14aad1f337994afa6215670250eb0f9be6de3aea`|`ef2a6fb44c867091e984f88659fd5e7b0106386522a2d73ce4aff8459d576a02`|
+|`JP8_LR005`|`64404518264b092ff35d908f5d3b5b374a3bdc9b5c2be85d8054fbe01327b621`|`67579db86d2f623fdce08276e3bb6b758bf04adb343516b80e410bac47917e1b`|
+|`JP8_LR010`|`acf5cb607cf9a6661f4726441d72100ddbf3c6dabddc274bcd3fc88e7b588ac6`|`38d4dab2bf2847381ae2249fab0301f1fc89aa64e720aa4f942d77d2d744afc8`|
+|`JP8_LR020`|`be0bf44b541537b6fe587733b00807138deb729f2cb03bd6a7da4b16dd943141`|`01d67c920782843453077b934078a9de103c0c191e9ca1478739dbcad5675380`|
+
+完整artifact位于`E:\type10-7\automation_reports\CV-SincNet\qknnv42_extreme_light_optimization_20260715\remote_artifacts_lopo_source_v23`。最终live状态无v23进程/GPU占用，本地SSH与TCP22均为0。
+
+K1适应策略据此调整为：冻结P4作为安全基线，target梯度候选只更新3840参数joint projection；训练后必须经过support-only最差View×类margin信赖域。若无法证明最差组不退化，delta缩放到0并回到P4 identity。为了争取“明显优于direct”而非仅无损，下一项是在同一1-shot上增加接收侧support augmentation，再与逐样本自适应TTA结合；不允许用query标签、角色、配额或整批统计选择delta。
