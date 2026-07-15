@@ -516,3 +516,24 @@ Git提交=`57528108015e49a48c35738c4b1af5d4ad0ac4ac`。2026-07-15 09:19 CST按�
 同步只覆盖上述本轮已提交文件；不覆盖远端数据、checkpoint、既有run/log或其它并发修改。同步后必须复核远端SHA256、`py_compile`、实体checkpoint严格加载、31,200参数精确白名单和目标目录仍为空，满足后才启动地面run。
 
 09:21 CST完成直接SCP，3个远端SHA256与表中本地值逐项一致，远端`py_compile` PASS。首次实体审计因Python的空路径把项目根同名`cvsrffi`放在`code/cvsrffi`之前而在import阶段退出，未进入模型加载；显式将`code`放入`sys.path[0]`后重跑PASS。真实checkpoint审计为`exact_ssdg_training_architecture_v1`、195个state tensor、`missing=0/unexpected=0/skipped_mismatch=0`。可训练参数精确为31,200，且仅有`t_proj/f_proj/pa_proj.0`的6个weight/bias tensor；FP16 delta62,400B、合并推理新增MAC=0、`fuse.0`与其它层冻结。目标run/log根复核仍为空。本轮SSH/SCP结束后本地SSH进程与端口22连接均为0。
+
+### v10地面多View训练结果与source场景重复审计
+
+N607 PID=`1087844`完成20epoch、320个AdamW optimizer step，训练wall time12.358s，峰值CUDA分配280,593,920B，约267.6MiB；既有GPU7 RIEI进程未受干预。完整日志156行、20条连续epoch记录，Traceback、Error、Exception、OOM、NaN/Inf扫描为0。状态包含白名单6个tensor、31,200个有限元素，FP16 tensor口径62,400B，`.pt`文件65,252B，SHA256=`d3d7a9598dcfa5f13261bc0ab8be97ed6946fb8c3d757a538ef04afa168b849c`；地面optimizer状态未导出。
+
+|source receiver`2-19`留出|最低View准确率|平均View准确率|结论|
+|---|---:|---:|---|
+|严格ADV3B02基线|98.6111%|99.0556%|5个独立`rx_light5`接收View|
+|选中关键层state|98.8889%|99.2778%|+0.2778/+0.2222pp，地面gate PASS|
+
+独立数据审计发现3份raw-IQ缓存中的2,400条source行逐元素完全相同，而7,400条非source行在clear/low/rain间不同。因此manifest中的15个命名View实际只有5个独立source接收View，另外两组是相同source IQ的重复；不能声称获得15个独立View或3个source LEO场景的额外多样性。该事实不使5-view地面gate失效，但把地面结论严格收窄为“关键层student改善严格`rx_light5`稳健性”；三种真实不同的LEO场景只在后续target support与query阶段出现。
+
+本地回收目录为`E:\type10-7\local_artifacts\qknn_ground_source_rxlight5_keyft20_20260715_v10`，包含完整日志、manifest、JSON/CSV loss trace和状态文件，哈希均已本地重算。manifest确认`target_rows_used=false`、`target_query_rows_used=false`、`old_new_role_used_by_optimizer=false`、`class_quota_used=false`。
+
+地面gate通过后，唯一允许的target-support run预注册为`qknn_extreme_light_sourceinit_keyft5_20260715_v10`。固定参数：`8-8/new20/seed713101/K10`、`late_key_ft`、加载上述地面state、SGD无momentum、5epoch、lr=`3e-4`、wd=`1e-4`、temperature18、feature anchor0.2、matched-view teacher0.25、batch126、clip1、max step50、三场景`rotating_single`；预期15次更新。精确命令为：
+
+```bash
+CUDA_VISIBLE_DEVICES=7 PYTHONPATH=/home/szu2070436088/2510044040/CV-SincNet/code:/home/szu2070436088/2510044040/CV-SincNet /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u paper_reproduction/scripts/train_export_cvs_support_lora_adapter.py --config paper_reproduction/configs/cvs_qknnv42_extreme_light_20new_stage2c_k10_rawiq_20260715_n607.json --ckpt runs/phase1_adv3_mechanism32_queue_20260701/ADV3B02_CORE90_SOFT_E200/best_joint_safe_ssdg.pth --out_root runs/qknn_extreme_light_sourceinit_keyft5_20260715_v10 --receiver 8-8 --new_count 20 --seed 713101 --k_shot 10 --adapter_type late_key_ft --init_adapter_state runs/qknn_ground_source_rxlight5_keyft20_20260715_v10/ground_source_rxlight5_late_key_ft_seed_713101_valrx_2-19/ground_late_key_ft_state_fp16.pt --epochs 5 --optimizer sgd --max_optimizer_steps 50 --grad_clip 1 --view_sampling_mode rotating_single --matched_view_teacher_weight 0.25 --learning_rate 3e-4 --weight_decay 1e-4 --temperature 18 --feature_anchor_weight 0.2 --batch_size 126 --device cuda:0
+```
+
+训练完成后先运行固定1-view、0epoch prototype head。只有`old>73.06%`、floor`>51.67%`且`new20≥83.33%`才扩展；若固定1-view失败，只允许用source validation或注册support校准的1→3→5逐样本门控做一次预注册恢复检查，不得用query标签选择阈值。
