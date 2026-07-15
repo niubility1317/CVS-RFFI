@@ -187,6 +187,8 @@ v5 attempt1以PID`1890476`首次完整进入Landlock predictor：12个package成
 
 外层Landlock runner修复为按路径词元精确匹配`truth/scoring/scorer/clean/raw/manysig/manytx`，仍会拒绝`clean_cache`、`truth_sidecar`等真实敏感路径，但不再命中英文单词内部的`raw`。predictor失败时最多4,000字符的truth-free stderr tail写入外层异常和driver日志，便于下一次定位；receipt中的完整stderr SHA/size不变。`py_compile`和26项Landlock/memfd/runtime-closure/isolated-runner/strict-package测试通过。该修改不改变sealed predictor closure；下一次复用strict_v10，但必须生成全新v13清单和v6运行根，v5证据不覆盖。
 
+v13清单已在本地生成并验证：绑定strict_v10和全新`..._landlock_strict300_v6`根，25 cache/75 package/300 cell/900 row，`launch_authority=false`、`authority_state=N607_LANDLOCK_SMOKE_REQUIRED`，SHA=`fbd1fbae9107d1c2beee7edd24c1d2fe7e4ca9a849cb001b6b944e9cc2fbe2fc`。同步前N607 v6根不存在、GPU无任务；只同步提交`2af8df8`的外层runner与该清单，远端核验SHA后仍仅允许`cuda:0`的receiver=`20-1`、seed=`713101`、20新类、K1 smoke，使用独立`smoke_driver_v6_attempt1.pid/out`和`logs/smoke_v6_attempt1`。
+
 并行构建留下`runtime_artifacts_strict_v9`部分目录：12项不可变模型/config文件存在，`05_runtime_closure.json`为0字节且closure目录不存在，符合旧closure白名单拒绝新增`ctypes/platform`导入的fail-closed行为。strict_v9完整保留且不补写。下一次使用全新`runtime_artifacts_strict_v10`：先同步提交`764c11c`的memfd实现与提交`5d87bdd`的closure白名单，逐文件核验SHA；再在N607直接调用`_sealed_memfd`执行临时seal smoke并验证`REQUIRED_SEALS`，通过后才复制strict_v8的12项不可变artifact并新建closure。后续计划/运行根使用全新版本，不复用v4/v11。
 
 ## 完成后结果表
