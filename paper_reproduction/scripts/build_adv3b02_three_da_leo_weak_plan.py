@@ -73,13 +73,16 @@ def build_plan(args: argparse.Namespace) -> dict[str, Any]:
     plan_root = PurePosixPath(args.runtime_plan_dir)
     source_root = run_root / "phase1_caches/source"
     target_root = run_root / "phase1_caches/target"
-    predictor_root = run_root / "phase1_caches/predictor_bundles"
+    predictor_root = run_root / "phase2_predictor_packages"
+    scorer_root = run_root / "phase2_scoring_sidecars"
+    predictor_seal_root = run_root / "phase2_predictor_seals"
     seal_root = run_root / "runtime_seal"
     phase2_config = dict(base)
     phase2_config.pop("adv3b02_checkpoint", None)
     phase2_config.update({
         "source_leo_weak_cache_set_manifest": str(source_root / "cache_set.json"),
         "target_predictor_bundle_root": str(predictor_root),
+        "target_predictor_seal_root": str(predictor_seal_root),
         "phase2_runtime_isolation_evidence_root": str(seal_root),
     })
     forbidden = {
@@ -91,6 +94,38 @@ def build_plan(args: argparse.Namespace) -> dict[str, Any]:
         raise ValueError(f"Phase2 config exposes raw/clean inputs: {leaked}")
     phase2_config_rel = "phase2_config.json"
     _write_json(output_dir / phase2_config_rel, phase2_config)
+
+    package_artifacts = {
+        "candidate_lock.json": {
+            "schema": "adv3b02_three_da_stage2b_candidate_lock_v1",
+            "experiment_id": str(base["experiment_id"]),
+            "stage": "Stage2-B",
+            "methods": list(METHODS),
+            "receiver_grid": list(RECEIVERS),
+            "seed_grid": list(SEEDS),
+            "k_grid": list(K_VALUES),
+            "phase2_sample_view_policy": POLICY,
+            "query_decision_policy": "per_sample_all_registered_classes",
+        },
+        "adapter.json": {
+            "schema": "adv3b02_online_da_runtime_adapter_v1",
+            "pretrained_adapter_loaded": False,
+            "support_only_online_optimization": True,
+            "methods": list(METHODS),
+        },
+        "head.json": {
+            "schema": "adv3b02_native_or_support_prototype_head_v1",
+            "query_truth_access": False,
+            "query_role_access": False,
+            "query_batch_quota_access": False,
+        },
+        "tta_policy.json": {"mode": "single_view", "views": 1},
+    }
+    package_artifact_rel: dict[str, str] = {}
+    for filename, payload in package_artifacts.items():
+        rel = f"package_artifacts/{filename}"
+        _write_json(output_dir / rel, payload)
+        package_artifact_rel[filename] = rel
 
     cache_specs: list[dict[str, Any]] = []
     cache_commands: list[list[str]] = []
@@ -155,16 +190,33 @@ def build_plan(args: argparse.Namespace) -> dict[str, Any]:
                 "satellite_seed_by_scenario": satellite_seeds,
             })
             bundle_root = predictor_root / f"rx_{_safe(receiver)}" / f"seed_{seed}"
+            scoring_root = scorer_root / f"rx_{_safe(receiver)}" / f"seed_{seed}"
+            detached_seal = (
+                predictor_seal_root / f"rx_{_safe(receiver)}" / f"seed_{seed}" / "seal.json"
+            )
             bundle_commands.append([
                 "python", "code/scripts/build_cvs_stage2_predictor_bundle.py",
                 "--target-cache-set", str(receiver_root / "cache_set.json"),
-                "--checkpoint", str(base["adv3b02_checkpoint"]),
-                "--out-root", str(bundle_root),
+                "--expected-cache-scope", "stage2_target_old",
+                "--predictor-out-root", str(bundle_root),
+                "--scorer-out-root", str(scoring_root),
+                "--detached-seal-path", str(detached_seal),
+                "--stage", "stage2b",
                 "--receiver", receiver,
                 "--seed", str(seed),
-                "--class-labels", ",".join(old_labels),
+                "--old-class-labels", ",".join(old_labels),
+                "--new-class-count", "0",
                 "--support-pool-max-k", str(base["support_pool_max_k"]),
                 "--query-per-tx", str(base["query_per_tx"]),
+                "--candidate-lock", str(
+                    plan_root / package_artifact_rel["candidate_lock.json"]
+                ),
+                "--checkpoint", str(base["adv3b02_checkpoint"]),
+                "--adapter", str(plan_root / package_artifact_rel["adapter.json"]),
+                "--head-artifact", str(plan_root / package_artifact_rel["head.json"]),
+                "--tta-policy-json", str(
+                    plan_root / package_artifact_rel["tta_policy.json"]
+                ),
             ])
 
     project_root = PurePosixPath(args.runtime_project_root)
@@ -194,7 +246,7 @@ def build_plan(args: argparse.Namespace) -> dict[str, Any]:
             "--device", device,
             "--post-prediction-scorer",
             "paper_reproduction/scripts/score_adv3b02_three_da_predictions.py",
-            "--scoring-root", str(predictor_root),
+            "--scoring-root", str(scorer_root),
             "--isolation-launcher", "code/scripts/run_phase2_landlock_isolated.py",
             "--runtime-allowlist", str(seal_root / "artifact_member_allowlist.json"),
             "--runtime-evidence-root", str(seal_root),
@@ -225,6 +277,7 @@ def build_plan(args: argparse.Namespace) -> dict[str, Any]:
         "phase2_config_sha256": _sha256(output_dir / phase2_config_rel),
         "phase2_config_exposes_dataset_path": False,
         "cache_specs": cache_specs,
+        "package_artifacts": package_artifact_rel,
         "target_cache_contracts": target_contracts,
         "commands": {
             "phase1_offline_cache_build": cache_commands,

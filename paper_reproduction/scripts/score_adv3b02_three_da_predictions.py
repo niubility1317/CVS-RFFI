@@ -90,7 +90,7 @@ def score(run_dir: Path, scoring_manifest_path: Path, runtime_evidence_path: Pat
         predicted = np.asarray(archive["predicted_labels"], dtype=np.int64)
     if not (len(sample_ids) == len(scenarios) == len(before) == len(predicted)):
         raise ValueError("prediction arrays have inconsistent lengths")
-    truth_by_id = {str(row["sample_id"]): dict(row) for row in truth["rows"]}
+    truth_by_id = {str(row["query_token"]): dict(row) for row in truth["rows"]}
     if len(truth_by_id) != len(truth["rows"]):
         raise ValueError("truth sidecar contains duplicate opaque query IDs")
 
@@ -103,7 +103,9 @@ def score(run_dir: Path, scoring_manifest_path: Path, runtime_evidence_path: Pat
         ids = sample_ids[indices].tolist()
         if set(ids) != set(truth_by_id):
             raise ValueError(f"prediction/truth opaque ID join mismatch for {scenario}")
-        truth_values = np.asarray([int(truth_by_id[value]["true_label"]) for value in ids])
+        truth_values = np.asarray(
+            [int(truth_by_id[value]["true_class_index"]) for value in ids]
+        )
         before_values = before[indices]
         after_values = predicted[indices]
         before_acc = float(np.mean(before_values == truth_values))
@@ -119,6 +121,9 @@ def score(run_dir: Path, scoring_manifest_path: Path, runtime_evidence_path: Pat
                 **truth_by_id[value],
                 "rx_label": truth_by_id[value]["receiver_label"],
                 "tx_label": truth_by_id[value]["transmitter_label"],
+                "day_i": truth_by_id[value]["day_label"],
+                "sig_i": truth_by_id[value]["signal_label"],
+                "role": truth_by_id[value]["evaluation_role"],
             }
             for value in ids
         ]
@@ -138,9 +143,9 @@ def score(run_dir: Path, scoring_manifest_path: Path, runtime_evidence_path: Pat
                 "sample_id": opaque_id,
                 "receiver_label": meta["receiver_label"],
                 "transmitter_label": meta["transmitter_label"],
-                "day_i": meta["day_i"],
-                "sig_i": meta["sig_i"],
-                "role": meta["role"],
+                "day_i": meta["day_label"],
+                "sig_i": meta["signal_label"],
+                "role": meta["evaluation_role"],
                 "true_label": truth_value,
                 "before_predicted_label": before_value,
                 "predicted_label": predicted_value,

@@ -101,11 +101,14 @@ def _target_predictor_bundle_path(config: dict[str, Any]) -> Path:
     root = Path(str(config["target_predictor_bundle_root"]))
     receiver = _safe_receiver(str(config["target_receiver_labels"][0]))
     seed = int(config["split_seed"])
-    return root / f"rx_{receiver}" / f"seed_{seed}" / "predictor_package"
+    return root / f"rx_{receiver}" / f"seed_{seed}"
 
 
 def _target_predictor_seal_path(config: dict[str, Any]) -> Path:
-    return _target_predictor_bundle_path(config).parent / "predictor_package_seal.json"
+    root = Path(str(config["target_predictor_seal_root"]))
+    receiver = _safe_receiver(str(config["target_receiver_labels"][0]))
+    seed = int(config["split_seed"])
+    return root / f"rx_{receiver}" / f"seed_{seed}" / "seal.json"
 
 
 def _runtime_evidence_path(config: dict[str, Any]) -> Path:
@@ -241,7 +244,10 @@ def _validate_config(config: dict[str, Any]) -> None:
             "LOCAL_PROTOCOL_REPAIR_REQUIRED: Phase2 config exposes raw/clean inputs: "
             f"{present_forbidden}"
         )
-    for key in ("source_leo_weak_cache_set_manifest", "target_predictor_bundle_root"):
+    for key in (
+        "source_leo_weak_cache_set_manifest", "target_predictor_bundle_root",
+        "target_predictor_seal_root",
+    ):
         if not str(config.get(key, "")).strip():
             raise ValueError(f"LOCAL_PROTOCOL_REPAIR_REQUIRED: missing sealed cache field={key}")
     if not config.get("target_old_tx_labels"):
@@ -419,9 +425,7 @@ def run(config: dict[str, Any], *, run_dir: Path, device: torch.device) -> dict[
 
     predictor_bundle_path = _target_predictor_bundle_path(config)
     predictor_seal_path = _target_predictor_seal_path(config)
-    predictor_seal_sha = (
-        predictor_seal_path.parent / "predictor_package_seal.sha256"
-    ).read_text(encoding="ascii").strip()
+    predictor_seal_sha = _sha256(predictor_seal_path)
     if predictor_seal_sha != config[
         "_verified_phase2_runtime_isolation_evidence"
     ]["sealed_inference_package_sha256"]:

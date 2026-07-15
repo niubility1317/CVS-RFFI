@@ -19,6 +19,7 @@ for value in (str(REPO_ROOT), str(CODE_ROOT)):
     sys.path.insert(0, value)
 
 from cvsrffi.leo_weak_cache import load_verified_leo_weak_cache_set  # noqa: E402
+from cvsrffi.leo_weak_cache import sha256_file  # noqa: E402
 from cvsrffi.phase2_runtime_contract import validate_phase2_contract  # noqa: E402
 from cvsrffi.stage2_predictor_bundle import (  # noqa: E402
     load_verified_stage2_predictor_bundle,
@@ -49,16 +50,17 @@ def _argument(command: list[str], flag: str) -> Path:
 
 
 def _verify_bundle(command: list[str]) -> dict[str, Any]:
-    root = _argument(command, "--out-root")
-    seal = root / "predictor_package_seal.json"
-    seal_sha = (root / "predictor_package_seal.sha256").read_text(encoding="ascii").strip()
+    root = _argument(command, "--predictor-out-root")
+    scorer_root = _argument(command, "--scorer-out-root")
+    seal = _argument(command, "--detached-seal-path")
+    seal_sha = sha256_file(seal)
     _support, _query, _manifest, predictor_audit = load_verified_stage2_predictor_bundle(
-        root / "predictor_package",
+        root,
         detached_seal_path=seal,
         expected_seal_sha256=seal_sha,
     )
     _truth, _scoring, scorer_audit = load_verified_scoring_sidecar(
-        root / "scoring_manifest.json"
+        scorer_root / "scoring_manifest.json"
     )
     return {"predictor": predictor_audit, "scoring": scorer_audit}
 

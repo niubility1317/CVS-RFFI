@@ -285,7 +285,9 @@ def build(args: argparse.Namespace, *, token_secret: bytes | None = None) -> dic
     if support_pool_max_k < 1 or query_per_tx < 1:
         raise ValueError("support_pool_max_k and query_per_tx must be positive")
 
-    allowed_roles = {"target_old", "target_new"}
+    allowed_roles = {"target_old"}
+    if stage == "stage2c" or reference_new_labels:
+        allowed_roles.add("target_new")
     expected_scope = str(getattr(args, "expected_cache_scope", "stage2_registered"))
     arrays_by_scenario, cache_manifest, cache_audit = load_verified_leo_weak_cache_set(
         Path(args.target_cache_set),
@@ -345,9 +347,14 @@ def build(args: argparse.Namespace, *, token_secret: bytes | None = None) -> dic
     scorer_root.mkdir(parents=True, exist_ok=False)
     members: list[dict[str, Any]] = []
     artifact_specs = (
-        ("checkpoint", Path(args.checkpoint), "checkpoint.bin", "adv3b02.checkpoint.v1"),
-        ("adapter", Path(args.adapter), "adapter.bin", "cvs.light_adapter.v1"),
-        ("head", Path(args.head_artifact), "head.bin", "cvs.registered_head.v1"),
+        (
+            "checkpoint",
+            Path(args.checkpoint),
+            "checkpoint.bin",
+            "adv3b02.torchscript_identity_runtime.v1",
+        ),
+        ("adapter", Path(args.adapter), "adapter.bin", "cvs.feature_adapter.v1"),
+        ("head", Path(args.head_artifact), "head.bin", "cvs.prototype_head.v1"),
         ("tta_policy", Path(args.tta_policy_json), "tta_policy.json", "cvs.adaptive_tta.v1"),
     )
     for role, source, filename, schema in artifact_specs:
@@ -503,6 +510,11 @@ def build(args: argparse.Namespace, *, token_secret: bytes | None = None) -> dic
             {
                 "query_token": token,
                 "true_class_index": record["registered_class_index"],
+                "true_class_handle": (
+                    class_registry[int(record["registered_class_index"])]["class_handle"]
+                    if record["registered_class_index"] is not None
+                    else None
+                ),
                 "transmitter_label": str(tx_ids[array_index]),
                 "evaluation_role": str(record["evaluation_role"]),
                 "receiver_label": str(rx_ids[array_index]),

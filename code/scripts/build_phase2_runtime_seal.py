@@ -79,16 +79,24 @@ def build(args: argparse.Namespace) -> dict[str, Any]:
         path = Path(str(raw))
         artifact_files.append(_regular(path if path.is_absolute() else source_manifest.parent / path))
     predictor_root = Path(str(config["target_predictor_bundle_root"])).resolve(strict=True)
-    for path in sorted(predictor_root.rglob("*")):
-        relative_parts = path.relative_to(predictor_root).parts
-        inside_package = "predictor_package" in relative_parts
-        detached_public_seal = path.name in {
-            "predictor_package_seal.json", "predictor_package_seal.sha256"
-        }
-        if path.is_file() and (inside_package or detached_public_seal):
-            artifact_files.append(_regular(path))
-    if not any(path.name == "package_manifest.json" for path in artifact_files):
-        raise ValueError("no v2 predictor packages were found for sealing")
+    predictor_seal_root = Path(str(config["target_predictor_seal_root"])).resolve(
+        strict=True
+    )
+    out = args.out_root.resolve()
+    package_records: list[tuple[Path, Path, Path, dict[str, Any]]] = []
+    for manifest_path in sorted(predictor_root.rglob("package_manifest.json")):
+        bundle_root = manifest_path.parent
+        relative_bundle = bundle_root.relative_to(predictor_root)
+        evidence_path = out / relative_bundle / "runtime_isolation_evidence.json"
+        seal_path = predictor_seal_root / relative_bundle / "seal.json"
+        package_manifest = json.loads(manifest_path.read_text(encoding="utf-8-sig"))
+        package_records.append((manifest_path, seal_path, evidence_path, package_manifest))
+        for path in sorted(bundle_root.rglob("*")):
+            if path.is_file():
+                artifact_files.append(_regular(path))
+        artifact_files.append(_regular(seal_path))
+    if len(package_records) != 25:
+        raise ValueError(f"runtime seal requires 25 predictor packages, found={len(package_records)}")
     code_roots = [path.resolve(strict=True) for path in args.runtime_code_root]
     code_files = [path for root in code_roots for path in _tree_files(root)]
     code_files.extend(_regular(path) for path in args.runtime_code_file)
@@ -112,17 +120,6 @@ def build(args: argparse.Namespace) -> dict[str, Any]:
     runtime_code_digest = hashlib.sha256(
         "\n".join(f"{row['path']}\0{row['sha256']}" for row in code_entries).encode("utf-8")
     ).hexdigest()
-    out = args.out_root.resolve()
-    package_records: list[tuple[Path, Path, Path, dict[str, Any]]] = []
-    for manifest_path in sorted(predictor_root.rglob("predictor_package/package_manifest.json")):
-        bundle_root = manifest_path.parent.parent
-        relative_bundle = bundle_root.relative_to(predictor_root)
-        evidence_path = out / relative_bundle / "runtime_isolation_evidence.json"
-        seal_path = bundle_root / "predictor_package_seal.json"
-        package_manifest = json.loads(manifest_path.read_text(encoding="utf-8-sig"))
-        package_records.append((manifest_path, seal_path, evidence_path, package_manifest))
-    if len(package_records) != 25:
-        raise ValueError(f"runtime seal requires 25 predictor packages, found={len(package_records)}")
     allowlist_path = out / "artifact_member_allowlist.json"
     package_path = out / "sealed_inference_package.json"
     access_audit_path = out / "preopen_filesystem_access_audit.json"

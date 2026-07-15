@@ -49,12 +49,27 @@ def test_three_da_plan_has_375_phase2_rows_and_no_dataset_path(tmp_path: Path) -
         "/phase1_caches/source/cache_set.json"
     )
     assert phase2_config["target_predictor_bundle_root"].endswith(
-        "/phase1_caches/predictor_bundles"
+        "/phase2_predictor_packages"
+    )
+    assert phase2_config["target_predictor_seal_root"].endswith(
+        "/phase2_predictor_seals"
     )
     assert "target_leo_weak_cache_root" not in phase2_config
     worker = manifest["commands"]["phase2_workers"][0]
     assert "--post-prediction-scorer" in worker
     assert "--runtime-allowlist" in worker
+    assert worker[worker.index("--scoring-root") + 1].endswith(
+        "/phase2_scoring_sidecars"
+    )
+    bundle = manifest["commands"]["phase1_offline_predictor_bundle_build"][0]
+    assert "--expected-cache-scope" in bundle
+    assert "--predictor-out-root" in bundle
+    assert "--scorer-out-root" in bundle
+    assert "--detached-seal-path" in bundle
+    assert "--old-class-labels" in bundle
+    assert "--out-root" not in bundle
+    assert (output / "package_artifacts/candidate_lock.json").is_file()
+    assert (output / "package_artifacts/tta_policy.json").is_file()
     target_spec = json.loads(
         (output / "cache_specs/target/rx_20_1/seed_713101.json").read_text(encoding="utf-8")
     )

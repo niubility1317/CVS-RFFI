@@ -50,6 +50,7 @@ def _config(tmp_path: Path) -> dict:
         "phase2_query_batch_global_assignment": False,
         "source_leo_weak_cache_set_manifest": "source/cache_set.json",
         "target_predictor_bundle_root": "target",
+        "target_predictor_seal_root": "seals",
         "phase2_runtime_isolation_evidence_root": str(tmp_path),
     }
 
@@ -89,7 +90,7 @@ def test_adv3b02_da_protocol_rejects_raw_dataset_path(tmp_path: Path) -> None:
 
 def test_target_bundle_path_is_receiver_and_seed_specific(tmp_path: Path) -> None:
     path = _target_predictor_bundle_path(_config(tmp_path))
-    assert path.as_posix().endswith("target/rx_20_1/seed_713101/predictor_package")
+    assert path.as_posix().endswith("target/rx_20_1/seed_713101")
 
 
 def test_registered_support_selector_uses_first_k_per_class(tmp_path: Path) -> None:
