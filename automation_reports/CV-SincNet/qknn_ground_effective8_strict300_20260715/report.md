@@ -139,6 +139,8 @@ PYTHONPATH=code:. "$PY" paper_reproduction/scripts/run_cvs_stage2c_effective8_st
 
 第一次smoke attempt（PID`1867324`）完成了receiver=`20-1`、seed=`713101`的3个LEO_weak缓存文件，然后在封包前失败：v6严格清单误把`candidate_lock_v2.json`放在runtime artifact子目录。未创建package、prediction或scorer输出；原PID/日志和v6清单保留。生成器修复为指向真实v14 run根，回归测试`5 passed`；新v7清单SHA=`cf6c4572130245653e753031ff20f2d42b0511fb9b3635cc147c02e359c0ecbf`，仍为`launch_authority=false`。第二次attempt复用已验证缓存，但使用独立`smoke_driver_attempt2.pid/out`，不覆盖首次证据。
 
+2026-07-15 23:34 CST重新执行直连只读预检：项目根可见，8张RTX3090利用率均为0、显存均约10 MiB。提交`e75df2c`中的生成器和v7清单已同步并逐项核验：生成器SHA=`88dee562ff5163db30b4603dc12dfe7563c6224cca65861b7977f8f5ac11f2c3`，远端清单`protocol_plan/strict_plan_manifest_v7.json`SHA=`cf6c4572130245653e753031ff20f2d42b0511fb9b3635cc147c02e359c0ecbf`。同步完成后本地`ssh.exe=0`、N607/桥接机TCP22连接数为0。attempt2仅运行`--stage smoke --device cuda:0`，driver日志写入`logs/smoke_driver_attempt2.out`，阶段日志目录为`logs/smoke_attempt2`，PID写入`smoke_driver_attempt2.pid`；最终receipt仍为尚不存在的`smoke_receipt.json`，不存在时才允许启动。
+
 ## 完成后结果表
 
 实验完成后在本节追加逐单元同一行结果，至少包含candidate ID、机制、receiver/TX split、K-shot、seed、old/seen-new/unknown指标、coverage/rollback/defer、loss/adapter摘要和最终判定。不得用来自不同单元的独立极值替代联合行。
