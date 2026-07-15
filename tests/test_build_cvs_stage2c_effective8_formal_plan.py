@@ -25,6 +25,8 @@ def test_generated_plan_has_exact_locked_matrix_and_no_legacy_phase2_inputs(
         out_dir=out_dir,
         runtime_project_root="/srv/CV-SincNet",
     )
+    source_plan = json.loads(PLAN.read_text(encoding="utf-8"))
+    assert source_plan["success_thresholds"]["k10_old_acc"] == 0.92
     assert manifest["expected_counts"] == {
         "source_cache_sets": 2,
         "target_cache_sets": 25,

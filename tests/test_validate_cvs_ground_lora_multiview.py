@@ -57,6 +57,7 @@ def test_formal_validator_source_has_no_runtime_raw_or_channel_entrypoint() -> N
         assert forbidden not in source
     for required in (
         '"phase2_sample_view_policy": PHASE2_SAMPLE_VIEW_POLICY',
+        '"clean_samples_used_for_validation": False',
         '"clean_sample_access": False',
         '"clean_derived_signal_access": False',
         '"validation_input_stage": LEO_WEAK_CACHE_STAGE',

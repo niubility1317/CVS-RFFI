@@ -93,6 +93,20 @@ def validate_plan(plan: Mapping[str, Any]) -> dict[str, Any]:
         or tta.get("class_quota_used") is not False
     ):
         raise ValueError("formal matrix adaptive TTA contract drift")
+    thresholds = dict(plan.get("success_thresholds", {}))
+    expected_thresholds = {
+        "k10_old_acc": 0.92,
+        "k10_min_old_class_acc": 0.88,
+        "k10_seen_new_acc_5": 0.92,
+        "k10_seen_new_acc_10": 0.90,
+        "k10_seen_new_acc_20": 0.86,
+        "k5_max_matched_drop": 0.03,
+    }
+    if any(
+        abs(float(thresholds.get(key, -1.0)) - expected) > 1.0e-12
+        for key, expected in expected_thresholds.items()
+    ):
+        raise ValueError("formal matrix success-threshold contract drift")
     source_train = dict(plan.get("source_train", {}))
     source_validation = dict(plan.get("source_validation", {}))
     resolved_train = tuple(

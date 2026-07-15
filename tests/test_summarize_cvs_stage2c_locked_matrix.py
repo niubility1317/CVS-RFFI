@@ -8,6 +8,7 @@ import numpy as np
 import pytest
 
 from paper_reproduction.scripts.summarize_cvs_stage2c_locked_matrix import (
+    K10_OLD_TARGET,
     _formal_row_content_sha256,
     clustered_paired_bootstrap,
     matched_k5_drop_summary,
@@ -22,6 +23,10 @@ SCENARIOS = ("leo_clear_weak", "leo_rain_weak")
 NEW_COUNTS = (1, 2)
 K_VALUES = (1, 2)
 OLD_LABELS = ("old0", "old1")
+
+
+def test_locked_old_accuracy_target_matches_current_project_protocol() -> None:
+    assert K10_OLD_TARGET == 0.92
 
 
 def _hash(value: str) -> str:

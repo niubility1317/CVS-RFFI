@@ -55,7 +55,6 @@ def _artifacts(tmp_path):
     validation = tmp_path / "source_validation.json"
     validation_payload = {
         "source_validation_pass": True,
-        "clean_samples_used_for_validation": False,
         "validation_input_stage": "phase1_offline_prechannel_export",
         "phase2_sample_view_policy": "leo_weak_only_no_clean_access",
         "clean_sample_access": False,

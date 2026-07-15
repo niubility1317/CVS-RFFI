@@ -5,7 +5,7 @@
 |实验ID|`qknn_ground_effective8_r16_e12_leoonly_20260715_v14`|
 |时间|2026-07-15 13:44 CST|
 |operator|Codex`/root`|
-|当前状态|`SOURCE_TRAIN_COMPLETE_REMOTE_REPAIR4_VERIFIED`；validation恢复待启动，target matrix未启动|
+|当前状态|`SOURCE_VALIDATION_PASS_CANDIDATE_LOCK_REPAIR5_LOCAL_VERIFIED`；target matrix未启动|
 |基座模型|同一ADV3B02 checkpoint：`ADV3B02_CORE90_SOFT_E200/best_joint_safe_ssdg.pth`|
 |目标|在新版`LEO_weak-only`边界下，以≤50k参数、≤20epoch、≤256KB持久状态的极轻型适配器和逐样本1→3→5-view推理，完成5receiver×5seed×3场景×新类5/10/20×K=1/5/10/20正式确认|
 
@@ -23,8 +23,9 @@
 |P2-LW-08|`项目.md`8.5、9|报告参数、epoch、MAC、延迟、峰值显存、状态、平均/P95 View|benchmark formal rows|implemented|逐row资源字段已落地；MAC明确标注FFT/View变换未计入的边界|
 |P2-LW-09|`项目.md`9|完成5×5×3×3×4正式确认及逐类、逐receiver证据|formal plan、N607 artifacts|pending|本地计划精确生成25个target cache-set、300次评估、900条场景row；尚未运行|
 |P2-LW-10|`项目.md`7.1|旧v13 raw/clean命令不得启动|v13报告、v14 runner|rejected|v13目标run/log不存在；v14不复用旧命令|
+|P2-LW-11|`项目.md`10.3.1|同一极轻型候选需补充Stage2-B target-old-only独立确认|Stage2-B formal plan/artifacts|pending|当前v14是Stage2-C source锁定与old/new矩阵；尚无Stage2-B正式row，不得以Stage2-C旧类边际统计替代|
 
-追踪状态计数：implemented=8，pending=1，rejected=1。当前最高风险是P2-LW-09：协议与执行面已修复，但尚无新版正式性能结果，因此不得声明达到准确率或遗忘目标。
+追踪状态计数：implemented=8，pending=2，rejected=1。当前最高风险是P2-LW-09与P2-LW-11：Stage2-C尚无新版target矩阵结果，Stage2-B尚未生成正式独立确认row，因此不得声明达到准确率或遗忘目标。
 
 ## 方法、输入与输出
 
@@ -68,7 +69,7 @@ base-only路径直接复用输入张量，不调用5-view构造器；shift和CFO
 
 计划生成2个source cache-set、25个target cache-set、300次benchmark调用和900条场景级formal row。8个GPU shard合计覆盖全部命令且无重复。每个target cache只构建一次，再执行该receiver×seed下12个新类规模×K组合。所有shard完成后，`finalize`阶段先收集300个输出目录并逐文件绑定SHA，再汇总900行正式证据；缺任一cell、重复cell或CSV schema漂移都会失败关闭。
 
-成功门槛遵循当前`项目.md`：K10 old_acc≥0.95、聚合min_old_class_acc≥0.88；新类5/10/20分别≥0.92/0.90/0.86；K5相对matched K10四项指标drop≤3pp；K1总体及逐receiver old_adaptation_gain≥0；K1相对严格direct ADV3B02总体增益≥2pp且matched 95%CI下界>0、逐receiver增益≥0。K5/K10/K20遗忘不得高于同row identity-only单qKNN。
+成功门槛遵循2026-07-15更新后的`项目.md`：Stage2-B与Stage2-C的K10 old_acc≥0.92、聚合min_old_class_acc≥0.88；Stage2-C新类5/10/20分别≥0.92/0.90/0.86；K5相对matched K10四项指标drop≤3pp；K1总体及逐receiver old_adaptation_gain≥0；K1相对严格direct ADV3B02总体增益≥2pp且matched 95%CI下界>0、逐receiver增益≥0。K5/K10/K20遗忘不得高于同row identity-only单qKNN。Stage2-B通过不能替代Stage2-C的新类与H门槛。
 
 ## 资源口径
 
@@ -203,3 +204,24 @@ repair3训练步骤在59.87s内完成12/12epoch并返回0，生成94,054B的`eff
 训练完成后source validation仅运行2.89s便在首个prototype batch失败，完整validation日志10行的唯一错误仍是NumPy2.2.5/Torch2.1.0的`torch.from_numpy`不兼容，尚未计算任何source准确率或promotion gate。repair4新增共享`cvsrffi.tensors.numpy_to_tensor_compat`，validator的float32 IQ、int64 label和拼接feature三类入口全部改用buffer bridge；正式benchmark原有三个NumPy入口已使用兼容helper，micro helper现委托同一实现。静态测试要求validator源码不再含`torch.from_numpy`。candidate lock新增绑定共享tensor bridge、micro helper和LoRA实现，补齐此前间接依赖未进入代码哈希的问题。已产出adapter的trainer与LoRA实现保持不变，runner恢复时会跳过complete的`0002_train`，只重跑validation。4个相关文件`py_compile`通过，聚焦23项通过，12组完整正式回归为`107 passed`。
 
 repair4远端覆盖前快照为`/home/szu2070436088/2510044040/CV-SincNet/code/snapshots/qknn_ground_effective8_r16_e12_leoonly_20260715_v14_repair4_before_sync_20260715_150657`，封存旧tensor/micro/validator/candidate-lock代码、旧report、首次validation完整日志和state。Git提交为`c6a1fb8d9864`；5个同步文件本地/远端SHA256逐项一致，远端4个Python文件`py_compile`通过。N607 GPU0实际探针对float32 IQ与int64 label分别完成buffer bridge和CPU→CUDA移动，shape、dtype、值均一致。此次未覆盖trainer、LoRA、adapter或training manifest，已完成训练证据保持原样。恢复前仍需live inventory；恢复只能从`0003_source_validation`继续。
+
+## 2026-07-15 source validation PASS与candidate-lock repair5
+
+repair4恢复后source validation完整执行并返回0，日志523行已逐行解析，`source_validation_pass=true`、`failed_gates=[]`，12项source门禁全部通过。主要同row结果如下；它们来自source receiver`2-19`holdout，只用于锁定head/TTA与安全promotion，不是5个target receiver的正式性能：
+
+|候选/推理|accuracy|min class|平均backbone forward|结论|
+|---|---:|---:|---:|---|
+|base checkpoint fixed1|86.678%|70.498%|1|source参考|
+|ground LoRA fixed1|86.794%|69.349%|1|总体较base+0.115pp，最低类下降|
+|ground LoRA fixed5|86.505%|68.199%|5|source上不优于fixed1|
+|ground LoRA adaptive|87.341%|71.169%|1.124|93.815% query停在1-view，6.156%到3-view，0.029%到5-view；P95=3|
+|locked head K1 adaptive|87.082%|71.264%|1.112|K1 source压力门禁通过|
+|locked head K5 adaptive|87.370%|71.648%|1.125|source-only锁定|
+|locked head K10 adaptive|87.370%|71.264%|1.125|source-only锁定|
+|locked head K20 adaptive|87.543%|70.498%|1.136|source-only锁定|
+
+source holdout明显低于正式target-old 92%/最低类88%门槛，但source promotion gate设计为相对稳定性、无明显退化和资源/权限门禁，不是target绝对性能替代品；因此source PASS只允许生成candidate lock，不能声明目标达成。candidate lock随后8行日志失败关闭，根因不是性能：`source_validation.json`已经显式包含权威字段`clean_sample_access=false`、`clean_derived_signal_access=false`和密封cache审计，但旧lock还强制要求已被新字段取代的冗余`clean_samples_used_for_validation`，而validator未写该旧字段。
+
+repair5让未来validator同时显式写`clean_samples_used_for_validation=false`；candidate lock不再依赖该旧冗余字段，仍硬性要求两个权威clean不可达字段、密封cache SHA/audit、全部validation gates、权限、receiver holdout、无角色Oracle、无类别quota和source-only head/nested-K锁，因此没有放宽`LEO_weak-only`协议。现有已签名validation无需篡改或覆盖即可由权威字段进入lock。聚焦validator/candidate-lock测试17项通过，12组完整正式回归保持`107 passed`。
+
+最新用户目标把target-old门槛从95%调整为92%，并把Stage2-B纳入正式目标。按AGENTS规则先更新根`项目.md`10.3.1，再更新Git协议镜像`docs/cvs_stage2c_extreme_light_goal_20260714.md`，Git提交`f4dc1aa1fbdc`；根目录仍非Git，故该镜像是版本承载面。正式config、plan validator和summarizer现统一锁定`K10_OLD_TARGET=0.92`，其余最低类、新类、K5、K1和遗忘门槛不变。当前v14 plan必须在candidate lock恢复前重新生成并同步，旧0.95 plan不得继续用于正式汇总。

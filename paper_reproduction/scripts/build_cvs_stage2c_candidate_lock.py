@@ -115,7 +115,6 @@ def build_candidate_lock(
     validation_gates = dict(validation.get("gates", {}))
     if (
         validation.get("source_validation_pass") is not True
-        or validation.get("clean_samples_used_for_validation") is not False
         or validation.get("validation_input_stage")
         != "phase1_offline_prechannel_export"
         or validation.get("phase2_sample_view_policy")

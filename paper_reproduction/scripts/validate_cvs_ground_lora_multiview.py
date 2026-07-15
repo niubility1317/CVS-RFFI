@@ -1033,6 +1033,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     result = _serializable({
         "schema": "cvs_ground_source_lora_multiview_validation_v1",
         "phase2_sample_view_policy": PHASE2_SAMPLE_VIEW_POLICY,
+        "clean_samples_used_for_validation": False,
         "clean_sample_access": False,
         "clean_derived_signal_access": False,
         "validation_input_stage": LEO_WEAK_CACHE_STAGE,
@@ -1106,6 +1107,7 @@ def main(argv: Sequence[str] | None = None) -> int:
             "source_validation_manifest_sha256": sha256_file(validation_path),
             "training_manifest_sha256": sha256_file(args.training_manifest),
             "phase2_sample_view_policy": PHASE2_SAMPLE_VIEW_POLICY,
+            "clean_samples_used_for_validation": False,
             "clean_sample_access": False,
             "clean_derived_signal_access": False,
             "validation_input_stage": LEO_WEAK_CACHE_STAGE,
