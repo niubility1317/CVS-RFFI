@@ -11,6 +11,8 @@ from paper_reproduction.scripts.train_export_cvs_micro_iq_adapter import (
     _tensor_to_numpy_compat,
     adapter_resource_audit,
     assemble_support_views,
+    parse_args,
+    resource_tier_for_epochs,
 )
 from export_spaceborne_features import extract_features_with_metadata
 
@@ -24,6 +26,25 @@ def test_micro_iq_adapter_starts_as_exact_identity_and_is_extreme_light() -> Non
     assert audit["adapter_state_bytes_fp16"] == 308
     assert audit["adapter_macs_per_query"] == 34816
     assert audit["query_view_count"] == 1
+
+
+def test_task_specific_protocol_accepts_all_five_k_and_six_epoch_values() -> None:
+    required = [
+        "--config", "base.json", "--ckpt", "model.pth", "--out_root", "out",
+        "--receiver", "20-1", "--new_count", "2", "--seed", "713101",
+    ]
+    for k_shot in (1, 2, 5, 10, 20):
+        for epochs in (2, 5, 10, 20, 30, 60):
+            args = parse_args(required + ["--k_shot", str(k_shot), "--epochs", str(epochs)])
+            assert args.k_shot == k_shot
+            assert args.epochs == epochs
+
+
+def test_epoch_resource_tiers_keep_sixty_epoch_as_nonpromotable_control() -> None:
+    assert resource_tier_for_epochs(2) == "preferred"
+    assert resource_tier_for_epochs(20) == "preferred"
+    assert resource_tier_for_epochs(30) == "performance_relaxed"
+    assert resource_tier_for_epochs(60) == "non_extreme_light_resource_control"
 
 
 def test_numpy_buffer_bridge_preserves_shape_dtype_and_values() -> None:

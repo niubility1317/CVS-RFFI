@@ -863,6 +863,7 @@ def _attach_post_adapter_resources(
     if support_adapter:
         resources = dict(support_adapter.get("resources", {}))
         adapter_method = str(support_adapter.get("method", ""))
+        resource_tier = str(support_adapter.get("resource_tier", "preferred"))
         is_sparse_key_delta = adapter_method in {
             "support_only_late_key_ft_v1",
             "support_only_late_key_ft_source_init_v1",
@@ -877,7 +878,21 @@ def _attach_post_adapter_resources(
             "single_query_view": int(support_adapter.get("query_view_count", -1)) == 1,
             "epoch_cap": 0
             <= int(support_adapter.get("epochs", -1))
-            <= (5 if is_sparse_key_delta else (40 if is_full_feature_lora else 20)),
+            <= (
+                5
+                if is_sparse_key_delta
+                else (
+                    40
+                    if is_full_feature_lora
+                    else (
+                        60
+                        if resource_tier == "non_extreme_light_resource_control"
+                        else (40 if resource_tier == "performance_relaxed" else 20)
+                    )
+                )
+            ),
+            "resource_tier_declared": resource_tier
+            in {"preferred", "performance_relaxed", "non_extreme_light_resource_control"},
         }
         checkpoint_trainable = int(
             resources.get(

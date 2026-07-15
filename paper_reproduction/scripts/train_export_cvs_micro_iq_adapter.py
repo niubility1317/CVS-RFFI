@@ -40,6 +40,19 @@ from paper_reproduction.cvs_aligned.cvs_method_runner import SCENARIOS, _sample_
 
 
 EPS = 1.0e-8
+SUPPORTED_EPOCHS = (2, 5, 10, 20, 30, 60)
+SUPPORTED_K_SHOTS = (1, 2, 5, 10, 20)
+
+
+def resource_tier_for_epochs(epochs: int) -> str:
+    value = int(epochs)
+    if value not in SUPPORTED_EPOCHS:
+        raise ValueError(f"epochs must be one of {SUPPORTED_EPOCHS}, got {value}")
+    if value <= 20:
+        return "preferred"
+    if value <= 40:
+        return "performance_relaxed"
+    return "non_extreme_light_resource_control"
 
 
 def _json_safe(value: Any) -> Any:
@@ -337,8 +350,7 @@ def train_support_only_adapter(
     seed: int,
     device: torch.device,
 ) -> tuple[list[dict[str, Any]], dict[str, Any]]:
-    if int(epochs) > 20:
-        raise ValueError("formal extreme-light adaptation is capped at 20 epochs")
+    resource_tier_for_epochs(int(epochs))
     rows = _numpy_to_tensor_compat(
         support_rows, numpy_dtype=np.dtype(np.float32), torch_dtype=torch.float32
     ).to(device)
@@ -541,10 +553,10 @@ def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
     parser.add_argument("--ckpt", type=Path, required=True)
     parser.add_argument("--out_root", type=Path, required=True)
     parser.add_argument("--receiver", required=True)
-    parser.add_argument("--new_count", type=int, choices=(5, 10, 20), required=True)
+    parser.add_argument("--new_count", type=int, choices=(2, 5, 10, 20), required=True)
     parser.add_argument("--seed", type=int, required=True)
-    parser.add_argument("--k_shot", type=int, choices=(5, 10), default=10)
-    parser.add_argument("--epochs", type=int, default=20)
+    parser.add_argument("--k_shot", type=int, choices=SUPPORTED_K_SHOTS, default=10)
+    parser.add_argument("--epochs", type=int, choices=SUPPORTED_EPOCHS, default=20)
     parser.add_argument("--hidden", type=int, default=8)
     parser.add_argument("--kernel_size", type=int, default=5)
     parser.add_argument("--alpha", type=float, default=0.20)
@@ -560,9 +572,14 @@ def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
 
 def main(argv: Sequence[str] | None = None) -> int:
     args = parse_args(argv)
+    resource_tier = resource_tier_for_epochs(int(args.epochs))
     config = json.loads(args.config.read_text(encoding="utf-8-sig"))
     old_labels = [str(value) for value in config["target_old_tx_labels"]]
     all_new = [str(value) for value in config["target_new_tx_labels"]]
+    if int(args.new_count) > len(all_new):
+        raise ValueError(
+            f"requested new_count={args.new_count}, but config provides only {len(all_new)} labels"
+        )
     new_labels = all_new[: int(args.new_count)]
     mapping = config.get("feature_npz_by_scenario", {})
     if set(mapping) != set(SCENARIOS):
@@ -581,6 +598,17 @@ def main(argv: Sequence[str] | None = None) -> int:
         )
         if observed != {scenario}:
             raise ValueError(f"cache scenario mismatch for {scenario}: {sorted(observed)}")
+        manifest = source_manifests[scenario]
+        if manifest.get("raw_iq_included") is not True:
+            raise ValueError(f"raw IQ provenance is not explicit for {scenario}")
+        if int(manifest.get("satellite_tta_view_count", -1)) != 1:
+            raise ValueError(f"support cache must contain one physical LEO view: {scenario}")
+        target_mask = np.isin(
+            caches[scenario]["dataset_role"].astype(str), ["target_old", "target_new"]
+        )
+        target_views = set(caches[scenario]["channel_views"][target_mask].astype(str).tolist())
+        if not target_views or any("clean" in value.lower() for value in target_views):
+            raise ValueError(f"clean or missing target support view in {scenario}: {sorted(target_views)}")
     support_rows, support_labels, split_manifest = assemble_support_views(
         caches,
         receiver=str(args.receiver),
@@ -625,9 +653,12 @@ def main(argv: Sequence[str] | None = None) -> int:
         device=device,
     )
     run_id = (
-        f"micro_iq_rx_{args.receiver}_new_{args.new_count}_seed_{args.seed}_k_{args.k_shot}"
+        f"micro_iq_rx_{args.receiver}_new_{args.new_count}_seed_{args.seed}_"
+        f"k_{args.k_shot}_e_{args.epochs}"
     )
     run_dir = args.out_root / run_id
+    if run_dir.exists() and any(run_dir.iterdir()):
+        raise FileExistsError(f"refusing to overwrite non-empty task directory: {run_dir}")
     run_dir.mkdir(parents=True, exist_ok=True)
     _write_trace(run_dir / "loss_trace.json", trace)
     fp16_state = {key: value.detach().cpu().half() for key, value in adapter.state_dict().items()}
@@ -650,6 +681,17 @@ def main(argv: Sequence[str] | None = None) -> int:
         "old_new_role_used_by_optimizer": False,
         "class_quota_used_at_inference": False,
         "epochs": int(args.epochs),
+        "resource_tier": resource_tier,
+        "optimizer_sample_contract": {
+            "roles": ["target_old_support", "target_new_support"],
+            "channel_view": "satellite/LEO",
+            "clean_samples_used": False,
+            "source_samples_used": False,
+            "proxy_samples_used": False,
+            "query_samples_used": False,
+            "physical_support_count": len(split_manifest["physical_support_ids"]),
+            "support_view_count": int(split_manifest["support_view_count"]),
+        },
         "hyperparameters": {
             "hidden": int(args.hidden),
             "kernel_size": int(args.kernel_size),
@@ -701,6 +743,8 @@ def main(argv: Sequence[str] | None = None) -> int:
             "qknnv42_expected_tta_view_count": 1,
             "input_adapter_method": "support_only_micro_iq_residual_v1",
             "input_adapter_manifest": str(run_dir / "training_manifest.json"),
+            "adapter_training_epochs": int(args.epochs),
+            "adapter_resource_tier": resource_tier,
         }
     )
     resolved_path = run_dir / "resolved_qknn_config.json"
