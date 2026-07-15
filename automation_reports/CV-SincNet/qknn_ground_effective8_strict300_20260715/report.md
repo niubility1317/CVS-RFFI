@@ -343,6 +343,8 @@ K10使注册前adapt由K1的64.44%提高到76.94%，并从低于direct 5.83pp转
 
 并发审计：另一个控制流在00:52:06启动了`matrix_shard 0/8`，超出本轮“只跑K10”的主动范围。它先处理new5/new10包，K10 receipt在00:52:12落盘，而该shard直到00:54:26才把new20包标为complete；strict package runner对已有`PROTOCOL_VALID` receipt只读复用，因此没有并发写坏K10 cell。当前只发现该单一shard，按安全规则不杀停、不重启、不再启动其他shard，转为只读监控。该shard产生的额外cell必须单独审计后才能进入性能分析。
 
+该v11 shard0随后自然完成，driver完整3,198字节、状态`complete`，覆盖4组receiver-seed、3种新类数、K=1/5/10/20，共48个`PROTOCOL_VALID` cell。完整同cell联合行保存在`evidence/shard0_v11_diagnostic/cell_metrics.tsv`。聚合结果显示：K10/20的注册前adapt普遍比direct高约6.7–7.9pp，但注册后仍低8.3–14.6pp；20新类下K1/5/10/20平均遗忘分别为19.58/21.94/21.32/20.00pp，seen-new仅33.27/40.94/42.27/44.04%。所有K×新类数组合的跨cell旧类floor均为0，证明注册塌缩不是rx20-1单点异常。K20是当前相对较好的K值，但远未达到目标；不能靠继续增大K解决。
+
 ## 完成后结果表
 
 | candidate ID | 机制 | receiver/TX split | K | seed | 注册前old | 注册后old | seen-new | H | 最低旧类 | 平均遗忘 | adapter/资源 | 判定 |
