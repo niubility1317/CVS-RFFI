@@ -397,3 +397,22 @@ FFT96暂不降维。在20新类K10中，注册类总数为26，物理support为2
 ### 开发决策
 
 下一轮不直接复制adapter60，也不将已失败的20epoch LoRA简单改为5epoch。先实现身份初始化的2k–4k后段FiLM/IA3，在地面用5-view teacher做预训练/蒸馏，再使用合法target support执行最多5epoch、50次更新的快速适配；单cell仍固定`8-8/new20/seed713101/K10`，query保持1-view。只有old和floor同时超过当前最强合法轻量row，才允许增加至rank2/4 LoRA或扩展开发矩阵。
+
+## 2026-07-15 1,280参数late-FiLM实现与单cell预注册
+
+已在Git承载面扩展`train_export_cvs_support_lora_adapter.py`，新增`late_film`路线。严格ADV3B02的`t_proj/f_proj/pa_proj.0/fuse.0`四个后段pooled/projection线性层各附加160维通道scale与bias，总参数精确为`4×2×160=1,280`，FP16 tensor状态2,560B，新增1,280个逐样本MAC/标量操作。scale/bias全零初始化，注入后的初始前向与checkpoint原输出严格一致；所有原checkpoint参数均`requires_grad=false`。
+
+训练实现不在每个step堆叠三场景view。它先对合法三view support执行一次冻结teacher前向，缓存每个物理support的多view均值特征；随后5个epoch按`clear→low-elevation→rain→clear→low-elevation`轮换单view，对当前view做全类对称prototype CE与matched-view teacher约束。该teacher只读取support，不读取query特征/标签、old/new角色或类别配额。SGD不保存momentum，Adam的两组FP32状态被去除；实现也硬性拒绝late-FiLM的`epoch>5`、`optimizer step>50`、AdamW、stacked-view或teacher关闭配置。
+
+20新类K10共260个物理support、batch126，因此预期每epoch3次更新、总计15次，低于50次硬上限。support前向样本等效量为`3×260+5×(260+260)=3,380`；相对5epoch每轮都用三view计算prototype和反向的`3×260+5×(780+780)=8,580`减少60.6%。持续query仍只有1次物理view前向。与0epoch 26类prototype head组合时，预计总持久状态29,184B，新增决策计算7,936MAC/query；均低于36KiB/12k首选档。
+
+| 本地验证 | 结果 |
+|---|---|
+|Python编译|PASS|
+|FiLM初始严格等价、参数/状态/MAC、冻结checkpoint、轮换view、teacher、step cap和CLI控制|9/9 PASS|
+|Stage2-C runner资源/provenance、raw-IQ导出与上述focused回归|33/33 PASS|
+|`git diff --check`|PASS|
+|trainer SHA256|`74b258f27f9cef2fcea64eeb0be96da042d9c1ab1f1b3e5b5ae00b9d3b70834f`|
+|test SHA256|`6891646a4ccbdc2232a54b239d9d3e89c7afa6a3efb90119464a8880ec443ba9`|
+
+首个机制gate预注册为`receiver=8-8/new20/seed713101/K10`，run ID=`qknn_extreme_light_support_film5_20260715_v8`。训练固定5epoch、SGD、lr=`3e-3`、weight decay=`1e-4`、gradient clip=`1.0`、max optimizer steps=`50`、matched-view teacher weight=`0.25`、feature anchor=`0.05`、temperature=`18`、batch=`126`，query1-view。训练后先配已0epoch prototype head；只有同一row同时超过普通LoRA+prototype的`old=73.06%/floor=51.67%`，且new20不低于83.33%，才进入5epoch对角head或第二开发seed。该gate只用于判断表示修复是否有信号，正式目标仍是K10的`95/88/86%`及matched K5不下降3pp。

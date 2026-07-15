@@ -1,10 +1,10 @@
 #!/usr/bin/env python
-"""Train a support-only LoRA adapter on the ADV3B02 identity feature head.
+"""Train a support-only lightweight adapter on the ADV3B02 identity path.
 
-All original checkpoint parameters remain frozen.  Identity-initialized LoRA
-branches are attached only to the four Linear modules that produce ``feat_joint``.
-Training consumes registered target support labels and three preregistered LEO
-support views; target query rows never enter fitting or model selection.
+All original checkpoint parameters remain frozen.  The trainer supports either
+identity-initialized LoRA branches or a 1,280-parameter late channel-wise FiLM
+adapter.  Training consumes registered target support labels and preregistered
+LEO support views; target query rows never enter fitting or model selection.
 """
 
 from __future__ import annotations
@@ -63,6 +63,13 @@ LATE_LORA_TARGETS = (
     *LORA_TARGETS,
 )
 
+LATE_FILM_TARGETS = (
+    "id_backbone.t_proj",
+    "id_backbone.f_proj",
+    "id_backbone.pa_proj.0",
+    "id_backbone.fuse.0",
+)
+
 
 class LoRALinear(nn.Module):
     """Frozen Linear plus an identity-initialized low-rank residual branch."""
@@ -88,6 +95,30 @@ class LoRALinear(nn.Module):
     @property
     def trainable_parameter_count(self) -> int:
         return int(self.lora_a.weight.numel() + self.lora_b.weight.numel())
+
+    @property
+    def added_macs_per_sample(self) -> int:
+        return self.trainable_parameter_count
+
+
+class ChannelAffineLinear(nn.Module):
+    """Frozen Linear followed by identity-initialized channel-wise FiLM."""
+
+    def __init__(self, base: nn.Linear) -> None:
+        super().__init__()
+        self.base = base
+        for parameter in self.base.parameters():
+            parameter.requires_grad_(False)
+        self.film_scale = nn.Parameter(torch.zeros(base.out_features))
+        self.film_bias = nn.Parameter(torch.zeros(base.out_features))
+
+    def forward(self, rows: torch.Tensor) -> torch.Tensor:
+        base_rows = self.base(rows)
+        return base_rows * (1.0 + self.film_scale) + self.film_bias
+
+    @property
+    def trainable_parameter_count(self) -> int:
+        return int(self.film_scale.numel() + self.film_bias.numel())
 
     @property
     def added_macs_per_sample(self) -> int:
@@ -163,6 +194,69 @@ def inject_feat_joint_lora(
     return audit
 
 
+def inject_late_channel_film(model: nn.Module) -> dict[str, Any]:
+    """Attach four late pooled/projection FiLM blocks and freeze the checkpoint."""
+
+    for parameter in model.parameters():
+        parameter.requires_grad_(False)
+    modules = dict(model.named_modules())
+    injected: list[dict[str, Any]] = []
+    for name in LATE_FILM_TARGETS:
+        original = modules.get(name)
+        if not isinstance(original, nn.Linear):
+            raise TypeError(f"required late FiLM Linear is missing: {name}")
+        replacement = ChannelAffineLinear(original)
+        parent, leaf = _resolve_parent(model, name)
+        if leaf.isdigit():
+            parent[int(leaf)] = replacement
+        else:
+            setattr(parent, leaf, replacement)
+        injected.append(
+            {
+                "module": name,
+                "in_features": int(original.in_features),
+                "out_features": int(original.out_features),
+                "trainable_parameters": replacement.trainable_parameter_count,
+                "added_macs_per_query": replacement.added_macs_per_sample,
+            }
+        )
+    trainable = [
+        (name, parameter)
+        for name, parameter in model.named_parameters()
+        if parameter.requires_grad
+    ]
+    unexpected = [
+        name
+        for name, _ in trainable
+        if not (name.endswith(".film_scale") or name.endswith(".film_bias"))
+    ]
+    if unexpected:
+        raise RuntimeError(
+            f"non-FiLM checkpoint parameters became trainable: {unexpected}"
+        )
+    parameter_count = int(sum(parameter.numel() for _, parameter in trainable))
+    fp16_bytes = int(parameter_count * 2)
+    macs = int(sum(row["added_macs_per_query"] for row in injected))
+    audit = {
+        "adapter_type": "late_channel_film",
+        "scope": "late_pooled_projection",
+        "target_modules": injected,
+        "trainable_parameter_names": [name for name, _ in trainable],
+        "trainable_parameters": parameter_count,
+        "adapter_state_bytes_fp16": fp16_bytes,
+        "adapter_state_bytes_fp32": int(parameter_count * 4),
+        "adapter_macs_per_query": macs,
+        "query_view_count": 1,
+        "original_checkpoint_trainable_parameters": 0,
+        "original_checkpoint_gradient_updates": 0,
+    }
+    if parameter_count > 4_096:
+        raise ValueError(f"late FiLM exceeds 4,096-parameter preferred cap: {audit}")
+    if fp16_bytes > 64 * 1024:
+        raise ValueError(f"late FiLM exceeds 64KiB preferred state cap: {audit}")
+    return audit
+
+
 def _prototype_banks_from_matched_views(
     features: torch.Tensor,
     labels: torch.Tensor,
@@ -220,6 +314,11 @@ def train_support_only_lora(
     class_dro_temperature: float,
     support_view_count: int,
     batch_size: int,
+    optimizer_name: str = "adamw",
+    max_optimizer_steps: int = 0,
+    grad_clip: float = 5.0,
+    view_sampling_mode: str = "stacked",
+    matched_view_teacher_weight: float = 0.0,
     seed: int,
     device: torch.device,
 ) -> tuple[list[dict[str, Any]], dict[str, Any]]:
@@ -231,6 +330,26 @@ def train_support_only_lora(
         raise ValueError("class_dro_temperature must be nonnegative")
     if not 0.0 <= float(cross_view_prototype_weight) <= 1.0:
         raise ValueError("cross_view_prototype_weight must be in [0,1]")
+    if float(matched_view_teacher_weight) < 0.0:
+        raise ValueError("matched_view_teacher_weight must be nonnegative")
+    if float(grad_clip) <= 0.0:
+        raise ValueError("grad_clip must be positive")
+    optimizer_name_norm = str(optimizer_name).strip().lower()
+    if optimizer_name_norm not in {"adamw", "sgd"}:
+        raise ValueError("optimizer_name must be adamw or sgd")
+    view_sampling_mode_norm = str(view_sampling_mode).strip().lower()
+    if view_sampling_mode_norm not in {"stacked", "rotating_single"}:
+        raise ValueError("view_sampling_mode must be stacked or rotating_single")
+    if int(max_optimizer_steps) < 0:
+        raise ValueError("max_optimizer_steps must be nonnegative")
+    if view_sampling_mode_norm == "rotating_single" and (
+        float(view_consistency_weight) > 0.0
+        or float(cross_view_prototype_weight) > 0.0
+    ):
+        raise ValueError(
+            "rotating_single uses cached matched-view teacher targets; "
+            "stacked view losses must be disabled"
+        )
     rows = _numpy_to_tensor_compat(
         support_rows, numpy_dtype=np.dtype(np.float32), torch_dtype=torch.float32
     ).to(device)
@@ -245,23 +364,78 @@ def train_support_only_lora(
             model, identity, rows, batch_size=int(batch_size), require_grad=False
         )
         base_features = _norm_rows(base_features).detach()
+    view_count = int(support_view_count)
+    physical_count = 0
+    matched_view_teacher = None
+    if view_sampling_mode_norm == "rotating_single" or float(
+        matched_view_teacher_weight
+    ) > 0.0:
+        if view_count <= 1 or int(rows.shape[0]) % view_count != 0:
+            raise ValueError("support rows cannot be grouped into matched views")
+        physical_count = int(rows.shape[0]) // view_count
+        for view_index in range(1, view_count):
+            if not torch.equal(
+                labels[:physical_count],
+                labels[
+                    view_index * physical_count : (view_index + 1) * physical_count
+                ],
+            ):
+                raise ValueError("support labels are not matched across views")
+        matched_view_teacher = _norm_rows(
+            base_features.reshape(view_count, physical_count, -1).mean(dim=0)
+        ).detach()
     parameters = [parameter for parameter in model.parameters() if parameter.requires_grad]
     if not parameters:
-        raise ValueError("LoRA injection selected no trainable parameters")
-    optimizer = torch.optim.AdamW(
-        parameters, lr=float(learning_rate), weight_decay=float(weight_decay)
-    )
+        raise ValueError("adapter injection selected no trainable parameters")
+    if optimizer_name_norm == "sgd":
+        optimizer = torch.optim.SGD(
+            parameters,
+            lr=float(learning_rate),
+            momentum=0.0,
+            weight_decay=float(weight_decay),
+        )
+        optimizer_training_state_bytes = 0
+    else:
+        optimizer = torch.optim.AdamW(
+            parameters, lr=float(learning_rate), weight_decay=float(weight_decay)
+        )
+        optimizer_training_state_bytes = int(
+            2 * sum(parameter.numel() for parameter in parameters) * 4
+        )
     rng = np.random.default_rng(int(seed))
     trace: list[dict[str, Any]] = []
     started = time.perf_counter()
     if device.type == "cuda":
         torch.empty(0, device=device)
         torch.cuda.reset_peak_memory_stats(device)
+    optimizer_steps = 0
+    forward_sample_equivalents = int(rows.shape[0])
+    terminated_by_step_cap = False
     for epoch in range(1, int(epochs) + 1):
+        if int(max_optimizer_steps) > 0 and optimizer_steps >= int(
+            max_optimizer_steps
+        ):
+            terminated_by_step_cap = True
+            break
         epoch_started = time.perf_counter()
-        view_count = int(support_view_count)
         cross_view_prototypes = None
-        if float(cross_view_prototype_weight) > 0.0:
+        train_view_index = None
+        if view_sampling_mode_norm == "rotating_single":
+            train_view_index = int((epoch - 1) % view_count)
+            epoch_start = train_view_index * physical_count
+            epoch_stop = epoch_start + physical_count
+            prototype_rows = rows[epoch_start:epoch_stop]
+            prototype_labels = labels[epoch_start:epoch_stop]
+            prototypes = _class_prototypes(
+                model,
+                identity,
+                prototype_rows,
+                prototype_labels,
+                class_count=class_count,
+                batch_size=int(batch_size),
+            )
+            forward_sample_equivalents += physical_count
+        elif float(cross_view_prototype_weight) > 0.0:
             with torch.no_grad():
                 prototype_features, _, _ = _batched_feature_forward(
                     model,
@@ -276,6 +450,7 @@ def train_support_only_lora(
                 class_count=class_count,
                 view_count=view_count,
             )
+            forward_sample_equivalents += int(rows.shape[0])
         else:
             prototypes = _class_prototypes(
                 model,
@@ -285,11 +460,19 @@ def train_support_only_lora(
                 class_count=class_count,
                 batch_size=int(batch_size),
             )
+            forward_sample_equivalents += int(rows.shape[0])
         use_view_groups = (
             float(view_consistency_weight) > 0.0
             or float(cross_view_prototype_weight) > 0.0
         )
-        if use_view_groups:
+        if view_sampling_mode_norm == "rotating_single":
+            physical_order = rng.permutation(physical_count)
+            batches_index = [
+                physical_order[offset : offset + int(batch_size)]
+                + train_view_index * physical_count
+                for offset in range(0, physical_count, int(batch_size))
+            ]
+        elif use_view_groups:
             if view_count <= 1 or int(rows.shape[0]) % view_count != 0:
                 raise ValueError("support rows cannot be grouped into matched views")
             physical_count = int(rows.shape[0]) // view_count
@@ -321,6 +504,7 @@ def train_support_only_lora(
             "cross_view_ce": 0.0,
             "dro": 0.0,
             "anchor": 0.0,
+            "matched_view_teacher": 0.0,
             "consistency": 0.0,
             "correct": 0.0,
             "grad": 0.0,
@@ -328,6 +512,11 @@ def train_support_only_lora(
         seen = 0
         batches = 0
         for batch_positions in batches_index:
+            if int(max_optimizer_steps) > 0 and optimizer_steps >= int(
+                max_optimizer_steps
+            ):
+                terminated_by_step_cap = True
+                break
             positions = torch.as_tensor(
                 batch_positions, device=device, dtype=torch.long
             )
@@ -386,6 +575,16 @@ def train_support_only_lora(
             else:
                 dro = ce
             anchor = (1.0 - torch.sum(z * base_features[positions], dim=1)).mean()
+            if matched_view_teacher is not None:
+                teacher_positions = torch.remainder(positions, physical_count)
+                matched_teacher = (
+                    1.0
+                    - torch.sum(
+                        z * matched_view_teacher[teacher_positions], dim=1
+                    )
+                ).mean()
+            else:
+                matched_teacher = z.new_zeros(())
             if use_view_groups:
                 per_view = z.reshape(view_count, -1, z.shape[-1])
                 view_center = _norm_rows(per_view.mean(dim=0))
@@ -397,12 +596,15 @@ def train_support_only_lora(
             loss = (
                 dro
                 + float(feature_anchor_weight) * anchor
+                + float(matched_view_teacher_weight) * matched_teacher
                 + float(view_consistency_weight) * consistency
             )
             loss.backward()
-            grad_norm = torch.nn.utils.clip_grad_norm_(parameters, 5.0)
+            grad_norm = torch.nn.utils.clip_grad_norm_(parameters, float(grad_clip))
             optimizer.step()
+            optimizer_steps += 1
             count = int(positions.numel())
+            forward_sample_equivalents += count
             seen += count
             batches += 1
             totals["loss"] += float(loss.detach()) * count
@@ -410,6 +612,7 @@ def train_support_only_lora(
             totals["cross_view_ce"] += float(cross_view_ce.detach()) * count
             totals["dro"] += float(dro.detach()) * count
             totals["anchor"] += float(anchor.detach()) * count
+            totals["matched_view_teacher"] += float(matched_teacher.detach()) * count
             totals["consistency"] += float(consistency.detach()) * count
             totals["correct"] += float(
                 (decision_scores.argmax(dim=1) == targets).sum().detach()
@@ -422,22 +625,48 @@ def train_support_only_lora(
             "leave_one_view_out_ce": totals["cross_view_ce"] / max(1, seen),
             "class_dro_loss": totals["dro"] / max(1, seen),
             "feature_anchor": totals["anchor"] / max(1, seen),
+            "matched_view_teacher_loss": totals["matched_view_teacher"]
+            / max(1, seen),
             "view_consistency": totals["consistency"] / max(1, seen),
             "support_train_acc": totals["correct"] / max(1, seen),
             "gradient_norm": totals["grad"] / max(1, batches),
             "learning_rate": float(optimizer.param_groups[0]["lr"]),
+            "optimizer_steps": int(optimizer_steps),
+            "train_view_index": (
+                int(train_view_index) if train_view_index is not None else -1
+            ),
+            "train_views_per_physical_sample": (
+                1 if view_sampling_mode_norm == "rotating_single" else view_count
+            ),
             "epoch_seconds": time.perf_counter() - epoch_started,
         }
         if not all(math.isfinite(float(value)) for value in row.values()):
-            raise FloatingPointError(f"non-finite LoRA trace: {row}")
+            raise FloatingPointError(f"non-finite support-adapter trace: {row}")
         trace.append(row)
-        print("[SUPPORT-LORA-EPOCH] " + json.dumps(row, sort_keys=True), flush=True)
+        print("[SUPPORT-ADAPTER-EPOCH] " + json.dumps(row, sort_keys=True), flush=True)
+        if terminated_by_step_cap:
+            break
     runtime = {
         "adaptation_wall_seconds": time.perf_counter() - started,
         "peak_cuda_memory_bytes": (
             int(torch.cuda.max_memory_allocated(device)) if device.type == "cuda" else 0
         ),
         "optimizer_state_deployment_required": False,
+        "optimizer": optimizer_name_norm,
+        "optimizer_steps": int(optimizer_steps),
+        "max_optimizer_steps": int(max_optimizer_steps),
+        "optimizer_training_state_bytes_estimate": int(
+            optimizer_training_state_bytes
+        ),
+        "view_sampling_mode": view_sampling_mode_norm,
+        "teacher_precompute_view_count": (
+            view_count if matched_view_teacher is not None else 0
+        ),
+        "train_views_per_physical_sample_per_epoch": (
+            1 if view_sampling_mode_norm == "rotating_single" else view_count
+        ),
+        "support_forward_sample_equivalents": int(forward_sample_equivalents),
+        "terminated_by_step_cap": bool(terminated_by_step_cap),
     }
     return trace, runtime
 
@@ -452,6 +681,9 @@ def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
     parser.add_argument("--seed", type=int, required=True)
     parser.add_argument("--k_shot", type=int, choices=(5, 10), default=10)
     parser.add_argument("--epochs", type=int, default=20)
+    parser.add_argument(
+        "--adapter_type", choices=("lora", "late_film"), default="lora"
+    )
     parser.add_argument("--rank", type=int, choices=(2, 4, 8, 16), default=8)
     parser.add_argument("--alpha", type=float, default=8.0)
     parser.add_argument(
@@ -466,12 +698,44 @@ def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
     parser.add_argument("--cosine_margin", type=float, default=0.0)
     parser.add_argument("--class_dro_temperature", type=float, default=0.0)
     parser.add_argument("--batch_size", type=int, default=128)
+    parser.add_argument("--optimizer", choices=("adamw", "sgd"), default="adamw")
+    parser.add_argument("--max_optimizer_steps", type=int, default=0)
+    parser.add_argument("--grad_clip", type=float, default=5.0)
+    parser.add_argument(
+        "--view_sampling_mode",
+        choices=("stacked", "rotating_single"),
+        default="stacked",
+    )
+    parser.add_argument("--matched_view_teacher_weight", type=float, default=0.0)
     parser.add_argument("--device", default="cuda:0")
     return parser.parse_args(argv)
 
 
+def _validate_deployment_controls(args: argparse.Namespace) -> None:
+    if str(args.adapter_type) != "late_film":
+        return
+    checks = {
+        "epochs_1_to_5": 1 <= int(args.epochs) <= 5,
+        "sgd_without_moment_state": str(args.optimizer) == "sgd",
+        "optimizer_steps_1_to_50": 1 <= int(args.max_optimizer_steps) <= 50,
+        "rotating_single_view": str(args.view_sampling_mode)
+        == "rotating_single",
+        "matched_view_teacher_enabled": float(args.matched_view_teacher_weight)
+        > 0.0,
+        "no_stacked_view_consistency": float(args.view_consistency_weight) == 0.0,
+        "no_stacked_cross_view_prototype": float(
+            args.cross_view_prototype_weight
+        )
+        == 0.0,
+    }
+    failed = [name for name, passed in checks.items() if not passed]
+    if failed:
+        raise ValueError(f"invalid extreme-light late FiLM controls: {failed}")
+
+
 def main(argv: Sequence[str] | None = None) -> int:
     args = parse_args(argv)
+    _validate_deployment_controls(args)
     config = json.loads(args.config.read_text(encoding="utf-8-sig"))
     old_labels = [str(value) for value in config["target_old_tx_labels"]]
     new_labels = [str(value) for value in config["target_new_tx_labels"]][: int(args.new_count)]
@@ -509,11 +773,17 @@ def main(argv: Sequence[str] | None = None) -> int:
     )
     if str(getattr(model, "id_feature_key", "")) != "feat_joint":
         raise ValueError(
-            f"LoRA targets are preregistered for feat_joint, got {getattr(model, 'id_feature_key', None)!r}"
+            "lightweight adapter targets are preregistered for feat_joint, got "
+            f"{getattr(model, 'id_feature_key', None)!r}"
         )
-    resources = inject_feat_joint_lora(
-        model, rank=int(args.rank), alpha=float(args.alpha), scope=str(args.scope)
-    )
+    if str(args.adapter_type) == "late_film":
+        resources = inject_late_channel_film(model)
+        method = "support_only_late_channel_film_v1"
+    else:
+        resources = inject_feat_joint_lora(
+            model, rank=int(args.rank), alpha=float(args.alpha), scope=str(args.scope)
+        )
+        method = f"support_only_{args.scope}_lora_v1"
     model.to(device).eval()
     trace, runtime = train_support_only_lora(
         model,
@@ -530,11 +800,21 @@ def main(argv: Sequence[str] | None = None) -> int:
         class_dro_temperature=float(args.class_dro_temperature),
         support_view_count=int(split_manifest["support_view_count"]),
         batch_size=int(args.batch_size),
+        optimizer_name=str(args.optimizer),
+        max_optimizer_steps=int(args.max_optimizer_steps),
+        grad_clip=float(args.grad_clip),
+        view_sampling_mode=str(args.view_sampling_mode),
+        matched_view_teacher_weight=float(args.matched_view_teacher_weight),
         seed=int(args.seed),
         device=device,
     )
+    run_prefix = (
+        "support_late_film"
+        if str(args.adapter_type) == "late_film"
+        else f"support_lora_{args.scope}"
+    )
     run_id = (
-        f"support_lora_{args.scope}_rx_{args.receiver}_new_{args.new_count}"
+        f"{run_prefix}_rx_{args.receiver}_new_{args.new_count}"
         f"_seed_{args.seed}_k_{args.k_shot}"
     )
     run_dir = args.out_root / run_id
@@ -550,12 +830,12 @@ def main(argv: Sequence[str] | None = None) -> int:
         (run_dir / "adapter_state_fp16.pt").stat().st_size
     )
     adaptation_manifest = {
-        "method": f"support_only_{args.scope}_lora_v1",
+        "method": method,
         "receiver": str(args.receiver),
         "new_count": int(args.new_count),
         "seed": int(args.seed),
         "k_shot": int(args.k_shot),
-        "support_view_count": 3,
+        "support_view_count": int(split_manifest["support_view_count"]),
         "query_view_count": 1,
         "support_only": True,
         "query_update_forbidden": True,
@@ -576,6 +856,14 @@ def main(argv: Sequence[str] | None = None) -> int:
             "cosine_margin": float(args.cosine_margin),
             "class_dro_temperature": float(args.class_dro_temperature),
             "batch_size": int(args.batch_size),
+            "adapter_type": str(args.adapter_type),
+            "optimizer": str(args.optimizer),
+            "max_optimizer_steps": int(args.max_optimizer_steps),
+            "grad_clip": float(args.grad_clip),
+            "view_sampling_mode": str(args.view_sampling_mode),
+            "matched_view_teacher_weight": float(
+                args.matched_view_teacher_weight
+            ),
         },
         "resources": resources,
         "runtime": runtime,
@@ -603,7 +891,7 @@ def main(argv: Sequence[str] | None = None) -> int:
             device=device,
             out_path=out_path,
             adaptation_manifest=adaptation_manifest,
-            payload_source=f"cvs_stage2c_support_only_{args.scope}_lora_v1",
+            payload_source=f"cvs_stage2c_{method}",
         )
         output_mapping[scenario] = str(out_path)
     resolved = dict(config)
@@ -617,7 +905,7 @@ def main(argv: Sequence[str] | None = None) -> int:
             "seed": int(args.seed),
             "k_shot": int(args.k_shot),
             "qknnv42_expected_tta_view_count": 1,
-            "input_adapter_method": f"support_only_{args.scope}_lora_v1",
+            "input_adapter_method": method,
             "input_adapter_manifest": str(run_dir / "training_manifest.json"),
         }
     )
