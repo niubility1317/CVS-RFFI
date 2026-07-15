@@ -1,5 +1,9 @@
 from __future__ import annotations
 
+import json
+import os
+from pathlib import Path
+
 import torch
 import pytest
 
@@ -16,6 +20,7 @@ from paper_reproduction.scripts.train_export_cvs_support_lora_adapter import (
     ChannelAffineLinear,
     LATE_KEY_FT_TARGETS,
     LoRALinear,
+    _leave_one_physical_prototype_banks,
     _prototype_banks_from_matched_views,
     _validate_deployment_controls,
     bp_jg_episode_loss,
@@ -247,6 +252,86 @@ def test_ground_p4_is_loaded_merged_then_target_jg_is_injected(tmp_path) -> None
         and ".lora_" in name
         for name in trainable
     )
+
+
+@pytest.mark.parametrize(
+    ("scope", "targets", "expected_parameters"),
+    [
+        ("joint_gate", JOINT_GATE_LORA_TARGETS, 6_400),
+        ("identity_joint", IDENTITY_JOINT_LORA_TARGETS, 6_400),
+        ("fusion_joint", FUSION_JOINT_LORA_TARGETS, 7_688),
+    ],
+)
+def test_real_adv3b02_p4_target_scopes_fp16_roundtrip_and_freeze(
+    tmp_path: Path,
+    scope: str,
+    targets: tuple[str, ...],
+    expected_parameters: int,
+) -> None:
+    checkpoint_path = os.environ.get("CVS_ADV3B02_TEST_CHECKPOINT")
+    ground_path = os.environ.get("CVS_P4_TEST_ADAPTER")
+    ground_sha = os.environ.get("CVS_P4_TEST_ADAPTER_SHA256")
+    if not checkpoint_path or not ground_path or not ground_sha:
+        pytest.skip("real ADV3B02/P4 integration artifacts were not provided")
+
+    from cvsrffi.checkpoint_loading import build_exact_ssdg_model_from_checkpoint
+    from paper_reproduction.scripts.train_export_cvs_micro_iq_adapter import (
+        _feature_forward,
+    )
+
+    checkpoint = torch.load(
+        checkpoint_path, map_location="cpu", weights_only=False
+    )
+    model, checkpoint_audit = build_exact_ssdg_model_from_checkpoint(
+        checkpoint, input_len=256, device=torch.device("cpu")
+    )
+    assert checkpoint_audit["checkpoint_load_strict"] is True
+    load_and_merge_ground_lora(
+        model,
+        Path(ground_path),
+        scope="projection_feature",
+        rank=16,
+        alpha=16.0,
+        expected_sha256=ground_sha,
+    )
+    pre_target_state = {
+        name: tensor.detach().clone() for name, tensor in model.state_dict().items()
+    }
+    resources = inject_feat_joint_lora(
+        model, rank=8, alpha=8.0, scope=scope
+    )
+    assert resources["trainable_parameters"] == expected_parameters
+    assert [row["module"] for row in resources["target_modules"]] == list(
+        targets
+    )
+
+    torch.manual_seed(713101)
+    with torch.no_grad():
+        for name, parameter in model.named_parameters():
+            if name.endswith(".lora_b.weight"):
+                parameter.normal_(mean=0.0, std=1.0e-3)
+    fp16_state = {
+        name: parameter.detach().cpu().half()
+        for name, parameter in model.named_parameters()
+        if parameter.requires_grad
+    }
+    state_path = tmp_path / f"{scope}_fp16.pt"
+    torch.save(fp16_state, state_path)
+    audit = roundtrip_fp16_target_lora_and_merge(model, state_path)
+    assert audit["merge"]["remaining_lora_wrappers"] == []
+    assert audit["merge"]["post_merge_trainable_parameters"] == 0
+    assert audit["merge"]["algebraic_probe_parity_pass"] is True
+    assert audit["merge"]["max_absolute_difference"] <= 1.0e-5
+
+    post_target_state = model.state_dict()
+    for name, expected in pre_target_state.items():
+        if not any(name.startswith(f"{target}.") for target in targets):
+            torch.testing.assert_close(post_target_state[name], expected)
+    model.eval()
+    with torch.no_grad():
+        features, _ = _feature_forward(model, torch.randn(3, 2, 256))
+    assert tuple(features.shape) == (3, 160)
+    assert bool(torch.isfinite(features).all())
 
 
 def test_lora_merge_removes_wrappers_and_preserves_outputs() -> None:
@@ -752,6 +837,91 @@ def test_bp_jg_lopo_loss_is_class_symmetric_and_differentiable() -> None:
     assert bool(torch.isfinite(features.grad).all())
 
 
+def test_lopo_vectorization_matches_explicit_physical_exclusion_and_gradient() -> None:
+    torch.manual_seed(29)
+    view_count = 3
+    physical_labels = torch.tensor([0, 0, 1, 1, 2, 2])
+    labels = physical_labels.repeat(view_count)
+    base = torch.randn(18, 9)
+    actual_features = (base + 0.05 * torch.randn_like(base)).requires_grad_(True)
+    reference_features = actual_features.detach().clone().requires_grad_(True)
+
+    z = torch.nn.functional.normalize(actual_features, dim=1).reshape(
+        view_count, len(physical_labels), -1
+    )
+    banks = _leave_one_physical_prototype_banks(
+        z, physical_labels, class_count=3
+    )
+    explicit_banks = []
+    physical_indices = torch.arange(len(physical_labels))
+    for held_index in range(len(physical_labels)):
+        class_prototypes = []
+        for class_index in range(3):
+            mask = (physical_labels == class_index) & (
+                physical_indices != held_index
+            )
+            rows = z[:, mask].reshape(-1, z.shape[-1])
+            class_prototypes.append(
+                torch.nn.functional.normalize(rows.mean(dim=0), dim=0)
+            )
+        explicit_banks.append(torch.stack(class_prototypes))
+    explicit_banks_tensor = torch.stack(explicit_banks)
+    torch.testing.assert_close(banks, explicit_banks_tensor)
+
+    # The held sample's true-class prototype must be built only from the
+    # other physical shot across all three views.
+    expected_held0_true = torch.nn.functional.normalize(
+        z[:, 1].mean(dim=0), dim=0
+    )
+    torch.testing.assert_close(banks[0, 0], expected_held0_true)
+
+    actual = bp_jg_episode_loss(
+        actual_features,
+        base,
+        labels,
+        view_count=view_count,
+        temperature=18.0,
+        leave_one_physical_shot=True,
+    )["xview_prototype_ce"]
+
+    def explicit_lopo_ce(rows: torch.Tensor) -> torch.Tensor:
+        normalized = torch.nn.functional.normalize(rows, dim=1).reshape(
+            view_count, len(physical_labels), -1
+        )
+        per_view_scores = []
+        for view_index in range(view_count):
+            held_scores = []
+            for held_index in range(len(physical_labels)):
+                prototypes = []
+                for class_index in range(3):
+                    mask = (physical_labels == class_index) & (
+                        physical_indices != held_index
+                    )
+                    prototype_rows = normalized[:, mask].reshape(
+                        -1, normalized.shape[-1]
+                    )
+                    prototypes.append(
+                        torch.nn.functional.normalize(
+                            prototype_rows.mean(dim=0), dim=0
+                        )
+                    )
+                prototype_bank = torch.stack(prototypes)
+                held_scores.append(
+                    normalized[view_index, held_index] @ prototype_bank.T
+                )
+            per_view_scores.append(torch.stack(held_scores))
+        scores = torch.cat(per_view_scores)
+        return torch.nn.functional.cross_entropy(18.0 * scores, labels)
+
+    reference = explicit_lopo_ce(reference_features)
+    torch.testing.assert_close(actual, reference, rtol=1.0e-6, atol=1.0e-7)
+    actual_gradient = torch.autograd.grad(actual, actual_features)[0]
+    reference_gradient = torch.autograd.grad(reference, reference_features)[0]
+    torch.testing.assert_close(
+        actual_gradient, reference_gradient, rtol=1.0e-5, atol=1.0e-6
+    )
+
+
 def test_bp_jg_lopo_k1_falls_back_to_five_leave_one_view_steps(monkeypatch) -> None:
     import numpy as np
     import paper_reproduction.scripts.train_export_cvs_micro_iq_adapter as micro_trainer
@@ -862,11 +1032,29 @@ def test_bp_jg_lopo_k1_falls_back_to_five_leave_one_view_steps(monkeypatch) -> N
 
 
 @pytest.mark.parametrize(
-    ("k_shot", "expected_steps", "expected_episodes"),
-    [(5, 25, 5), (10, 50, 10), (20, 50, 10)],
+    (
+        "k_shot",
+        "expected_steps",
+        "expected_episodes",
+        "expected_occurrences",
+        "expected_forwards",
+        "expected_exclusion",
+    ),
+    [
+        (1, 5, 1, 1, 36, "leave_one_view_k1_fallback"),
+        (5, 25, 5, 10, 330, "leave_one_physical_shot"),
+        (10, 50, 10, 20, 660, "leave_one_physical_shot"),
+        (20, 50, 10, 20, 720, "leave_one_physical_shot"),
+    ],
 )
-def test_bp_jg_k_grid_executes_locked_step_budget(
-    monkeypatch, k_shot: int, expected_steps: int, expected_episodes: int
+def test_bp_jg_lopo_k_grid_executes_locked_step_and_compute_budget(
+    monkeypatch,
+    k_shot: int,
+    expected_steps: int,
+    expected_episodes: int,
+    expected_occurrences: int,
+    expected_forwards: int,
+    expected_exclusion: str,
 ) -> None:
     import numpy as np
     import paper_reproduction.scripts.train_export_cvs_micro_iq_adapter as micro_trainer
@@ -910,12 +1098,15 @@ def test_bp_jg_k_grid_executes_locked_step_budget(
         batch_size=256,
         max_optimizer_steps=50,
         grad_clip=1.0,
+        leave_one_physical_shot=True,
         seed=713101,
         device=torch.device("cpu"),
     )
     assert runtime["optimizer_steps"] == expected_steps
     assert runtime["episodes_per_epoch"] == expected_episodes
-    assert runtime["support_forward_sample_equivalents"] == 36 * k_shot
+    assert runtime["shot_occurrences_per_class_per_epoch"] == expected_occurrences
+    assert runtime["prototype_exclusion_mode"] == expected_exclusion
+    assert runtime["support_forward_sample_equivalents"] == expected_forwards
 
 
 def test_bp_jg_lopo_k10_uses_paired_shots_with_bounded_compute(
@@ -1148,6 +1339,41 @@ def test_cli_locks_lopo_key_layers_rank8_and_learning_rate_grid(
     args.alpha = 16.0
     with pytest.raises(ValueError, match="bp_jg_rank"):
         _validate_deployment_controls(args)
+
+
+def test_v18_legacy_rawiq_plan_is_fail_closed_before_cache_open() -> None:
+    repo_root = Path(__file__).resolve().parents[1]
+    config_path = (
+        repo_root
+        / "paper_reproduction"
+        / "configs"
+        / "cvs_qknnv42_p4_bpjg_lopo_dev20_k10_20260715_n607.json"
+    )
+    launcher_path = (
+        repo_root
+        / "paper_reproduction"
+        / "scripts"
+        / "launch_cvs_p4_bpjg_lopo_dev20_k10_v18.sh"
+    )
+    config = json.loads(config_path.read_text(encoding="utf-8-sig"))
+    assert config["launch_authority"] is False
+    assert config["phase2_runtime_isolation_status"] == (
+        "LOCAL_PROTOCOL_REPAIR_REQUIRED"
+    )
+    assert config["phase2_query_decision_policy"] == (
+        "per_sample_all_registered_classes"
+    )
+    for key in (
+        "phase2_query_role_oracle_access",
+        "phase2_query_true_batch_class_count_access",
+        "phase2_query_class_quota_access",
+        "phase2_query_batch_global_assignment",
+    ):
+        assert config[key] is False
+    launcher = launcher_path.read_text(encoding="utf-8")
+    protocol_gate = launcher.index("LOCAL_PROTOCOL_REPAIR_REQUIRED: v18")
+    cache_open = launcher.index('for path in config["feature_npz_by_scenario"]')
+    assert protocol_gate < cache_open
 
 
 def test_bp_jg_qknn_config_forbids_legacy_head_and_old_bias() -> None:

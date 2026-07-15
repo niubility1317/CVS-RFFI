@@ -671,9 +671,35 @@ K10、26类、3View时，v17为base预计算780次样本前向＋50×78次episod
 
 - `train_export_cvs_support_lora_adapter.py`已增加`bp_jg_lopo`目标、`identity_joint/fusion_joint`层组、K10环形双shot episode、K20无遗漏单覆盖、K1安全回退、向量化LOPO prototype bank，以及包含objective/scope/rank/lr/P4 SHA的防碰撞run ID。
 - 真实ADV3B02＋P4集成验证通过：`joint_gate/identity_joint/fusion_joint`分别严格为6,400/6,400/7,688个可训练参数；三者LoRA恒等注入的最大特征误差均为0；P4合并最大绝对误差为4.17e-7。
-- 专用support测试46/46通过；support、micro-IQ、adaptive View、candidate lock、class-incremental和Stage2 runner相邻回归共134/134通过；Python `py_compile`、v18 launcher `bash -n`、四臂CLI部署锁、config类对称qKNN锁和`git diff --check`均通过。
-- Git承载面本轮待提交文件SHA256：
-  - `train_export_cvs_support_lora_adapter.py`：`914fae539a74426d326fdd9c1fff4b863b98684d8e87a488a194535583e0d774`；
-  - `cvs_qknnv42_p4_bpjg_lopo_dev20_k10_20260715_n607.json`：`96470803c7a1c6f039b2ad673aa21e119622d52517c117054e817ecef791dc04`；
-  - `launch_cvs_p4_bpjg_lopo_dev20_k10_v18.sh`：`0289062ea6d73df81058049d71473807767866878f63782c873275ced83c0be0`；
-  - `test_support_lora_adapter.py`：`19aa01471427c69b4a71bd77415056858d231976a4d278c4c2ae86aba8e73bb1`。
+- 专用support测试52/52通过；support、micro-IQ、adaptive View、candidate lock、class-incremental和Stage2 runner相邻回归共140/140通过；Python `py_compile`、v18 launcher `bash -n`、四臂CLI部署锁、config类对称qKNN锁和`git diff --check`均通过。
+- Git承载面本轮意图文件SHA256：
+  - `train_export_cvs_support_lora_adapter.py`：`f985f5e5f718f1c60ab75e6b41684bf4962edce454c1612a7d2f7c0e14406f7e`；
+  - `cvs_qknnv42_p4_bpjg_lopo_dev20_k10_20260715_n607.json`：`9dd8867174cd7896a8c5d57783015917b3497d369c2ccf4136744f6267c4c96f`；
+  - `launch_cvs_p4_bpjg_lopo_dev20_k10_v18.sh`：`93afd895e0bbbb165bc9a8e6bec5c56ff066f1518f2ea291a512c444a2016fb5`；
+  - `test_support_lora_adapter.py`：`1c414f36153c22965d12172d4500e20d27304b06197c0ae2f0ffe9a5f590ba07`。
+
+
+### 16.6独立审查、协议边界与N607决策
+
+提交前独立代码审查确认LOPO向量化数学正确：每个held physical sample只从其真实类prototype中减去该样本的全部View，其他类保持完整support；K1 fallback和v17旧run ID兼容也正确。审查要求补强的算法证据已完成：
+
+- 新增逐physical、逐class慢速reference，与向量化LOPO的prototype、CE及输入梯度逐项对齐；显式断言held sample全部View不会进入其真实类教师原型。
+- 新增K1/K5/K10/K20真实LOPO trainer参数化回归，分别锁定5/25/50/50步、1/5/10/10个episode、每shot出现次数、exclusion mode与36/330/660/720个toy前向等价。
+- 新增环境artifact驱动的真实ADV3B02＋P4三层组集成回归，覆盖严格checkpoint load、精确层名/参数、非目标参数完全冻结、非零FP16 patch roundtrip、合并parity、最终160维有限特征和合并后0可训练参数。
+- 独立增量复核结论为`Ready to merge: Yes`，原Critical与三项Important均已关闭；唯一非阻塞提示是持续在CI/N607验证记录中注明真实artifact环境变量与SHA，避免将缺少artifact时的skip误读为真实集成通过。
+
+审查同时指出v18原config引用历史未密封post-channel raw-IQ cache。根据当前`项目.md`第7.1节，该输入不能因为`diagnostic-only`而继续生成新的可运行调参候选。因此本轮采取最小fail-closed处理，而不把工作重心转移到协议工程：
+
+- config明确`phase2_runtime_isolation_status=LOCAL_PROTOCOL_REPAIR_REQUIRED`、`launch_authority=false`并记录3个实际blocker；
+- 补齐逐样本统一决策及四个query访问禁令字段；
+- launcher在检查或打开任何feature/raw-IQ cache之前硬拒绝启动，只有绑定`PROTOCOL_VALID`的密封LEO package后才允许复用该adapt矩阵；
+- 2026-07-15 22:11本地direct N607 preflight通过，8张RTX3090均空闲，live inventory无训练进程；但没有SCP、没有创建远端v18输出目录、没有启动实验。该决定是协议阻断，不是性能失败。
+
+最终本地回归为专用support测试52/52、相关路径140/140通过；唯一告警为既有`torch.cuda.amp.autocast`弃用提示。最终文件SHA256：
+
+|文件|SHA256|
+|---|---|
+|`train_export_cvs_support_lora_adapter.py`|`f985f5e5f718f1c60ab75e6b41684bf4962edce454c1612a7d2f7c0e14406f7e`|
+|`cvs_qknnv42_p4_bpjg_lopo_dev20_k10_20260715_n607.json`|`9dd8867174cd7896a8c5d57783015917b3497d369c2ccf4136744f6267c4c96f`|
+|`launch_cvs_p4_bpjg_lopo_dev20_k10_v18.sh`|`93afd895e0bbbb165bc9a8e6bec5c56ff066f1518f2ea291a512c444a2016fb5`|
+|`test_support_lora_adapter.py`|`1c414f36153c22965d12172d4500e20d27304b06197c0ae2f0ffe9a5f590ba07`|

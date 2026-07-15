@@ -839,6 +839,37 @@ def build_shot_index_episode_positions(
     return episodes
 
 
+def _leave_one_physical_prototype_banks(
+    rows: torch.Tensor,
+    physical_labels: torch.Tensor,
+    *,
+    class_count: int,
+) -> torch.Tensor:
+    """Return one class prototype bank per excluded physical support sample."""
+
+    if rows.ndim != 3:
+        raise ValueError("LOPO rows must have [V,P,D] shape")
+    if int(rows.shape[1]) != int(physical_labels.numel()):
+        raise ValueError("LOPO physical label count does not match rows")
+    class_one_hot = F.one_hot(
+        physical_labels, num_classes=int(class_count)
+    ).to(dtype=rows.dtype)
+    class_row_counts = class_one_hot.sum(dim=0) * float(rows.shape[0])
+    class_sums = torch.einsum("pc,vpd->cd", class_one_hot, rows)
+    prototype_sums = class_sums.unsqueeze(0).expand(
+        int(rows.shape[1]), -1, -1
+    ).clone()
+    prototype_counts = class_row_counts.unsqueeze(0).expand(
+        int(rows.shape[1]), -1
+    ).clone()
+    held_indices = torch.arange(int(rows.shape[1]), device=rows.device)
+    prototype_sums[held_indices, physical_labels] -= rows.sum(dim=0)
+    prototype_counts[held_indices, physical_labels] -= float(rows.shape[0])
+    return F.normalize(
+        prototype_sums / prototype_counts.unsqueeze(-1), dim=-1
+    )
+
+
 def bp_jg_episode_loss(
     features: torch.Tensor,
     base_features: torch.Tensor,
@@ -893,37 +924,11 @@ def bp_jg_episode_loss(
         # prototypes retain every registered support row.  This removes the
         # same-shot multi-view shortcut without Python/GPU synchronization in
         # the physical-sample loop.
-        class_one_hot = F.one_hot(
-            physical_labels, num_classes=class_count
-        ).to(dtype=z.dtype)
-        class_row_counts = class_one_hot.sum(dim=0) * float(view_count)
-        if bool((class_row_counts <= float(view_count)).any()):
-            raise ValueError(
-                "leave-one-physical prototype requires another shot per class"
-            )
-
-        class_sums = torch.einsum("pc,vpd->cd", class_one_hot, z)
-        base_class_sums = torch.einsum("pc,vpd->cd", class_one_hot, z0)
-        prototype_sums = class_sums.unsqueeze(0).expand(
-            physical_count, -1, -1
-        ).clone()
-        base_prototype_sums = base_class_sums.unsqueeze(0).expand(
-            physical_count, -1, -1
-        ).clone()
-        prototype_counts = class_row_counts.unsqueeze(0).expand(
-            physical_count, -1
-        ).clone()
-        held_indices = torch.arange(physical_count, device=labels.device)
-        held_view_sums = z.sum(dim=0)
-        base_held_view_sums = z0.sum(dim=0)
-        prototype_sums[held_indices, physical_labels] -= held_view_sums
-        base_prototype_sums[held_indices, physical_labels] -= base_held_view_sums
-        prototype_counts[held_indices, physical_labels] -= float(view_count)
-        prototype_banks = F.normalize(
-            prototype_sums / prototype_counts.unsqueeze(-1), dim=-1
+        prototype_banks = _leave_one_physical_prototype_banks(
+            z, physical_labels, class_count=class_count
         )
-        base_prototype_banks = F.normalize(
-            base_prototype_sums / prototype_counts.unsqueeze(-1), dim=-1
+        base_prototype_banks = _leave_one_physical_prototype_banks(
+            z0, physical_labels, class_count=class_count
         )
         cross_scores = [
             torch.einsum("pd,pcd->pc", z[view_index], prototype_banks)

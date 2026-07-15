@@ -39,9 +39,21 @@
   "class_quota_used": false,
   "query_fit_used": false,
   "query_batch_state_required": false,
+  "phase2_query_decision_policy": "per_sample_all_registered_classes",
+  "phase2_query_role_oracle_access": false,
+  "phase2_query_true_batch_class_count_access": false,
+  "phase2_query_class_quota_access": false,
+  "phase2_query_batch_global_assignment": false,
   "extreme_light_max_persistent_state_bytes": 262144,
   "resource_diagnostic_only": true,
   "formal_claim_authority": false,
+  "phase2_runtime_isolation_status": "LOCAL_PROTOCOL_REPAIR_REQUIRED",
+  "launch_authority": false,
+  "protocol_blockers": [
+    "legacy_unsealed_post_channel_rawiq_cache",
+    "sealed_truth_free_inference_package_not_bound",
+    "preopen_allowlist_and_runtime_access_audit_not_bound"
+  ],
   "phase2_sample_view_policy": "legacy_post_channel_rawiq_diagnostic_only",
-  "claim_boundary": "K10 single-receiver single-seed BP-JG-LOPO key-layer and LR development diagnostic; no formal Stage2-C or MRIOR superiority claim"
+  "claim_boundary": "NON_LAUNCH_DIAGNOSTIC design only; current protocol forbids opening these legacy raw-IQ caches for new Phase2 tuning or ranking"
 }

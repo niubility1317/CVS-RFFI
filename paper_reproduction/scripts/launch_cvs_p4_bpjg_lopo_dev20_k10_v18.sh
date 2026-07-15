@@ -48,6 +48,14 @@ if config.get("resource_diagnostic_only") is not True:
     raise SystemExit("development config must remain diagnostic-only")
 if config.get("formal_claim_authority") is not False:
     raise SystemExit("development config must not carry formal claim authority")
+if (
+    config.get("launch_authority") is not True
+    or config.get("phase2_runtime_isolation_status") != "PROTOCOL_VALID"
+):
+    raise SystemExit(
+        "LOCAL_PROTOCOL_REPAIR_REQUIRED: v18 legacy raw-IQ config is design-only; "
+        "bind a protocol-valid sealed LEO package before N607 launch"
+    )
 if len(config.get("target_new_tx_labels", [])) != 20 or int(config.get("k_shot", 0)) != 10:
     raise SystemExit("v18 requires the registered 20-new K10 development cell")
 for path in config["feature_npz_by_scenario"].values():
