@@ -553,3 +553,9 @@
 - 8-job dry-run确认8个job、8个capacity gate、model seed0与42各4行、所有命令`WISIG_SPLIT_SEED=1337`、momentum0和short stem。新增测试同时验证负值split seed回退旧`--seed`语义，以及split/model seed均写入`split_info`。
 - 根目录不是Git仓库；快照为`code/snapshots/paper_repro_riei_modelseed_probe_split1337_20260715_083000/`。SHA256：`cvs_data.py=e3b80d1d...`、paper queue=`d2ad5621...`、launcher=`24208548...`、test=`5daaa78f...`。
 - 下一步仅在提交本任务文件、重新执行直接N607预检并确认每GPU`existing_compute+planned_peak≤2`后，才同步这3个运行文件并启动；不得根据已结束momentum run的空闲GPU假设当前容量。
+
+### 08:32同步前容量门
+
+- Git镜像仅提交本任务6个文件，提交为`e1e869a Probe fixed-partition RIEI model seeds`；根目录报告、traceability及运行文件与Git镜像内容一致，未纳入工作树中其他任务的修改或未跟踪artifact。
+- 直接N607预检通过；实时process/CWD/cmdline检查训练进程0，GPU0–7 compute均为0，目标run/log目录不存在。计划每GPU新增1个训练，因此`existing_compute+planned_peak=1≤2`。
+- 同步前远端SHA256：`cvs_data.py=a2093e0a...`、paper queue=`5a1fe1f1...`；新launcher不存在。计划同步本地`baselines/common/cvs_data.py`、`run_wisig_paper_scope_queue.sh`及`code/scripts/launch_riei_modelseed_probe_20260715.sh`到N607同路径，随后核对SHA256、远端`py_compile`、`bash -n`和8-job dry-run。
