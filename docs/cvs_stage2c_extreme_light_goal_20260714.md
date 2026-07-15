@@ -24,6 +24,7 @@
 - query不得参与adapter拟合、阈值拟合、模型选择或早停。
 - 默认冻结`ADV3B02` backbone，不执行backbone梯度更新。
 - 极轻型首选档：1-view或逐样本1→3→5-view门控、adapter可训练参数不超过50,000、适配不超过20epoch、无dense query图、持久化适配状态不超过256KB。
+- 用户授权的`performance-relaxed`档允许把首选参数、适配轮数/步数、持久状态或平均View计算提高50%–100%，绝对上限为100,000参数、40epoch、512KB和5次backbone前向。角色/类别配额Oracle、query拟合、dense query图和跨query决策仍禁止；报告必须给出实际增幅和同row Pareto对照。
 - 允许对K个互不重复的物理support样本在同一`leo_weak`族内生成至多3个预注册增强view，只用于一次性support-only enrollment；增强view不得重复计入K，query仍按1-view逐样本推理且不得参与拟合。必须报告support增强清单、每个物理support的backbone/FFT前向次数和一次性enrollment计算量；该结果不能外推为跨场景或真实在轨泛化。
 - 可以把冻结ADV3B02自带source classifier对同一物理样本产生的6维logits作为逐样本特征输入；source classifier必须保持冻结，logits不能经过query-batch归一化、角色门控或类别配额重排，也不能使用query标签选择融合权重。该机制属于冻结source classifier bank的复用，不是old/new query角色Oracle。
 - 可以用冻结source prototype bank对历史已注册类执行小权重prototype shrinkage；source bank只能来自`R_s`和source checkpoint既有类别，不能包含`R_t` query、target-new或unknown样本，推理时仍必须在全部注册类上执行同一个逐样本argmax。

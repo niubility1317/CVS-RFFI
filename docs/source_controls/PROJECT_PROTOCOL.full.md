@@ -306,6 +306,8 @@ eval_sat_scenarios = leo_clear_weak,leo_low_elev_weak,leo_rain_weak
 
 自2026-07-15起，允许把`rx_light5`作为地面多View教师或星上逐样本自适应TTA候选进行压缩。地面蒸馏必须保留5个View的逐View特征、logit或一致性监督，不能只用5-view均值证明等价；可导出不超过50k参数、最终持久状态不超过256KB的FiLM、低秩或稀疏关键层补丁。星上自适应TTA必须先执行base view，并只依据当前单个query的margin、entropy、View分歧等部署时可得量决定是否追加`rx_shift3`或完整`rx_light5`；门限只能由source validation或注册support确定，禁止使用query标签、真实old/new/unknown角色、整批类别比例、每类quota、query排序或Hungarian分配。正式结果必须同时报告平均与P95 backbone forward count、1/3/5-view触发率、最坏5-view上界和相同row的性能指标；若默认路径仍固定执行5次backbone前向，则不得声称已完成多View计算压缩。
 
+经用户明确授权，可另设`performance-relaxed`档，在不放宽无角色Oracle、无类别配额、无query拟合、无dense query图和逐样本决策的前提下，把首选档的参数、适配轮数/步数、持久状态或平均View计算提高50%–100%；绝对上限为100k参数、40epoch、512KB和5次backbone前向。放宽档必须逐项报告实际增幅，并与首选档及identity-only单qKNN做同row Pareto比较。
+
 自2026-07-13起，CVS与外部方法的正式对比实验中，所有进入论文主表、主图、统计检验或方法排序的测试样本都必须实际叠加上述简化LEO星地信道之一；不得把未叠加星地信道的clean测试混入正式主结果。clean只允许作为单独control/reference，必须与deployment-primary结果分表。若测试入口没有记录scenario、satellite seed或增强是否实际启用，该测试结果视为artifact-incomplete，不得形成论文结论。
 
 每个正式实验的最终测试artifact必须同时保留sample-level score table和分组详细统计。分组至少包含逐receiver、逐transmitter、receiver x transmitter以及receiver x transmitter x day四个层级；每组必须记录sample count、correct count、accuracy和稀疏confusion明细。Phase2还必须保留target-old/target-new角色、support/query sample ID和support/query overlap检查。只有overall accuracy而没有逐接收机/逐发射机详细结果的实验，不满足CVS发表证据要求。
