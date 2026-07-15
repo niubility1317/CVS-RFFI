@@ -4,6 +4,7 @@ import torch
 import pytest
 
 from paper_reproduction.scripts.train_export_cvs_support_lora_adapter import (
+    EFFECTIVE_FEATURE_LORA_TARGETS,
     LATE_FILM_TARGETS,
     FULL_FEATURE_LORA_TARGETS,
     LORA_TARGETS,
@@ -14,6 +15,7 @@ from paper_reproduction.scripts.train_export_cvs_support_lora_adapter import (
     _validate_deployment_controls,
     build_rx_shift_pair_cycle,
     inject_feat_joint_lora,
+    merge_feat_joint_lora,
     inject_late_channel_film,
     enable_late_key_layer_finetune,
     load_trainable_adapter_state,
@@ -109,6 +111,37 @@ def test_full_feature_rank24_uses_relaxed_tier_but_stays_under_100k() -> None:
     assert audit["resource_tier"] == "performance_relaxed"
     assert audit["trainable_parameter_cap"] == 100_000
     assert len(audit["target_modules"]) == len(FULL_FEATURE_LORA_TARGETS) == 10
+
+
+def test_effective_feature_rank16_removes_dead_branches_and_stays_preferred() -> None:
+    model = _Model()
+    audit = inject_feat_joint_lora(
+        model, rank=16, alpha=16.0, scope="effective_feature"
+    )
+    assert audit["trainable_parameters"] == 44_048
+    assert audit["adapter_state_bytes_fp16"] == 88_096
+    assert audit["adapter_macs_per_query"] == 44_048
+    assert audit["scope"] == "effective_feature"
+    assert audit["resource_tier"] == "preferred"
+    assert audit["trainable_parameter_cap"] == 50_000
+    modules = [row["module"] for row in audit["target_modules"]]
+    assert modules == list(EFFECTIVE_FEATURE_LORA_TARGETS)
+    assert "id_backbone.con_proj.0" not in modules
+    assert "id_backbone.cls_head.imp_merge.0" not in modules
+
+
+def test_lora_merge_removes_wrappers_and_preserves_outputs() -> None:
+    model = _Model()
+    inject_feat_joint_lora(model, rank=4, alpha=4.0, scope="effective_feature")
+    with torch.no_grad():
+        for module in model.modules():
+            if isinstance(module, LoRALinear):
+                module.lora_b.weight.normal_(0.0, 0.01)
+    audit = merge_feat_joint_lora(model)
+    assert audit["merged_module_count"] == 8
+    assert audit["remaining_lora_wrappers"] == []
+    assert audit["algebraic_probe_parity_pass"] is True
+    assert not any(isinstance(module, LoRALinear) for module in model.modules())
 
 
 def test_late_channel_film_is_1280_params_and_freezes_checkpoint() -> None:

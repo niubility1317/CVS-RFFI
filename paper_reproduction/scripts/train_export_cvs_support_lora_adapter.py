@@ -75,6 +75,12 @@ FULL_FEATURE_LORA_TARGETS = (
     "id_backbone.cls_head.imp_merge.0",
 )
 
+# The two extra modules in FULL_FEATURE_LORA_TARGETS are kept for exact
+# compatibility with historical states.  Neither contributes to the deployed
+# qKNN feature (feat_joint), so new extreme-light ground adapters use this
+# effective eight-layer path instead.
+EFFECTIVE_FEATURE_LORA_TARGETS = LATE_LORA_TARGETS
+
 LATE_FILM_TARGETS = (
     "id_backbone.t_proj",
     "id_backbone.f_proj",
@@ -250,6 +256,8 @@ def inject_feat_joint_lora(
         target_names = LATE_LORA_TARGETS
     elif scope_norm == "full_feature":
         target_names = FULL_FEATURE_LORA_TARGETS
+    elif scope_norm == "effective_feature":
+        target_names = EFFECTIVE_FEATURE_LORA_TARGETS
     else:
         raise ValueError(f"unsupported LoRA scope: {scope}")
     for parameter in model.parameters():
@@ -310,6 +318,65 @@ def inject_feat_joint_lora(
     if fp16_bytes > 256 * 1024:
         raise ValueError(f"LoRA exceeds 256KB state cap: {audit}")
     return audit
+
+
+@torch.no_grad()
+def merge_feat_joint_lora(model: nn.Module) -> dict[str, Any]:
+    """Merge every LoRA residual into its frozen Linear and remove wrappers."""
+
+    targets = [
+        (name, module)
+        for name, module in model.named_modules()
+        if isinstance(module, LoRALinear)
+    ]
+    if not targets:
+        raise ValueError("model contains no LoRALinear modules to merge")
+    parity: list[dict[str, Any]] = []
+    for name, module in targets:
+        base = module.base
+        probe = torch.linspace(
+            -0.5,
+            0.5,
+            steps=max(2, 3 * int(base.in_features)),
+            device=base.weight.device,
+            dtype=base.weight.dtype,
+        ).reshape(3, int(base.in_features))
+        expected = module(probe)
+        merged = nn.Linear(
+            base.in_features,
+            base.out_features,
+            bias=base.bias is not None,
+            device=base.weight.device,
+            dtype=base.weight.dtype,
+        )
+        delta = module.scaling * (module.lora_b.weight @ module.lora_a.weight)
+        merged.weight.copy_(base.weight + delta.to(base.weight.dtype))
+        if base.bias is not None:
+            merged.bias.copy_(base.bias)
+        parent, leaf = _resolve_parent(model, name)
+        if leaf.isdigit():
+            parent[int(leaf)] = merged
+        else:
+            setattr(parent, leaf, merged)
+        actual = merged(probe)
+        max_abs = float(torch.max(torch.abs(expected - actual)).item())
+        parity.append({"module": name, "max_absolute_difference": max_abs})
+    remaining = [
+        name for name, module in model.named_modules() if isinstance(module, LoRALinear)
+    ]
+    max_difference = max(row["max_absolute_difference"] for row in parity)
+    if remaining or max_difference > 1.0e-5:
+        raise RuntimeError(
+            f"LoRA merge parity failed: remaining={remaining}, max_diff={max_difference}"
+        )
+    return {
+        "merged_module_count": int(len(parity)),
+        "merged_modules": parity,
+        "remaining_lora_wrappers": remaining,
+        "max_absolute_difference": max_difference,
+        "algebraic_probe_parity_pass": True,
+        "deployment_added_macs_per_view_after_merge": 0,
+    }
 
 
 def inject_late_channel_film(model: nn.Module) -> dict[str, Any]:

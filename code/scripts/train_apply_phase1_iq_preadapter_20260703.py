@@ -259,6 +259,39 @@ def _proto_from_loader(model: nn.Module, loader: DataLoader, args: argparse.Name
     return torch.stack(protos, dim=0)
 
 
+def _leo_proto_from_loader(
+    model: nn.Module,
+    loader: DataLoader,
+    args: argparse.Namespace,
+    device: torch.device,
+    scenarios: Sequence[str],
+) -> torch.Tensor:
+    """Build source prototypes from rotating formal leo_weak views only."""
+
+    feat_parts: list[torch.Tensor] = []
+    label_parts: list[torch.Tensor] = []
+    generator = make_torch_generator(device, int(args.seed) + 1601)
+    with torch.no_grad():
+        for batch_index, (x, y, _d, _meta) in enumerate(loader):
+            x = x.to(device, non_blocking=True)
+            scenario = _scenario_for_step(scenarios, batch_index)
+            x_sat, _ = apply_sat_channel_for_scenario(
+                x, scenario, args, gen=generator, return_meta=False
+            )
+            z, _ = _feature_forward(model, x_sat, str(args.feature_name))
+            feat_parts.append(z.detach())
+            label_parts.append(y.to(device).long())
+    feats = torch.cat(feat_parts, dim=0)
+    labels = torch.cat(label_parts, dim=0)
+    protos = []
+    for class_id in range(int(args.num_old_classes)):
+        positions = torch.where(labels == class_id)[0]
+        if positions.numel() == 0:
+            raise ValueError(f"missing source class {class_id} for leo_weak prototype")
+        protos.append(feats.index_select(0, positions).mean(dim=0))
+    return torch.stack(protos, dim=0)
+
+
 def _scenario_for_step(scenarios: Sequence[str], step: int) -> str:
     if not scenarios:
         raise ValueError("at least one satellite scenario is required")
@@ -285,6 +318,110 @@ def _weighted_mean(values: torch.Tensor, weights: torch.Tensor | None) -> torch.
         return values.mean()
     w = weights.to(device=values.device, dtype=values.dtype).view(-1)
     return (values.view(-1) * w).sum() / w.sum().clamp_min(1e-8)
+
+
+def relation_gram_preservation_loss(
+    adapted: torch.Tensor, reference: torch.Tensor
+) -> torch.Tensor:
+    """Preserve pairwise identity geometry of the frozen ADV3B02 teacher."""
+
+    if adapted.ndim != 2 or reference.shape != adapted.shape:
+        raise ValueError("relation loss requires matching [N,D] features")
+    if adapted.shape[0] < 2:
+        return adapted.sum() * 0.0
+    student = F.normalize(adapted.float(), dim=1)
+    teacher = F.normalize(reference.detach().float(), dim=1)
+    mask = ~torch.eye(student.shape[0], dtype=torch.bool, device=student.device)
+    return F.smooth_l1_loss(
+        (student @ student.t())[mask], (teacher @ teacher.t())[mask]
+    )
+
+
+def prototype_gram_deconfusion_loss(
+    features: torch.Tensor,
+    labels: torch.Tensor,
+    *,
+    max_cosine: float = 0.65,
+) -> torch.Tensor:
+    """Penalize correlated class prototypes without old/new role information."""
+
+    normalized = F.normalize(features.float(), dim=1)
+    prototypes = []
+    for class_id in torch.unique(labels, sorted=True):
+        mask = labels == class_id
+        prototypes.append(F.normalize(normalized[mask].mean(dim=0), dim=0))
+    if len(prototypes) < 2:
+        return normalized.sum() * 0.0
+    banks = torch.stack(prototypes)
+    gram = banks @ banks.t()
+    mask = ~torch.eye(len(prototypes), dtype=torch.bool, device=gram.device)
+    return F.relu(gram[mask] - float(max_cosine)).square().mean()
+
+
+def nested_k_worst_prototype_risk(
+    features: torch.Tensor,
+    labels: torch.Tensor,
+    *,
+    k_values: Sequence[int] = (1, 2, 5, 10, 20),
+    temperature: float = 0.07,
+    risk_tau: float = 0.2,
+) -> tuple[torch.Tensor, dict[int, torch.Tensor]]:
+    """Source-only nested-K episode risk with log-sum-exp worst-K pooling."""
+
+    if features.ndim != 2 or labels.ndim != 1 or len(features) != len(labels):
+        raise ValueError("nested-K risk requires features [N,D] and labels [N]")
+    normalized = F.normalize(features.float(), dim=1)
+    class_ids = torch.unique(labels, sorted=True)
+    losses: dict[int, torch.Tensor] = {}
+    for raw_k in k_values:
+        k = int(raw_k)
+        if k < 1:
+            raise ValueError("nested-K values must be positive")
+        if any(
+            int(torch.sum(labels == class_id).item()) <= k
+            for class_id in class_ids
+        ):
+            continue
+        support_prototypes = []
+        query_rows = []
+        query_targets = []
+        for local_class, class_id in enumerate(class_ids):
+            positions = torch.nonzero(labels == class_id, as_tuple=False).reshape(-1)
+            support_count = k
+            support_prototypes.append(
+                F.normalize(
+                    normalized[positions[:support_count]].mean(dim=0), dim=0
+                )
+            )
+            remaining = positions[support_count:]
+            if len(remaining):
+                query_rows.append(normalized[remaining])
+                query_targets.append(
+                    torch.full(
+                        (len(remaining),),
+                        int(local_class),
+                        dtype=torch.long,
+                        device=labels.device,
+                    )
+                )
+        if len(support_prototypes) != len(class_ids) or not query_rows:
+            continue
+        prototypes = torch.stack(support_prototypes)
+        queries = torch.cat(query_rows)
+        targets = torch.cat(query_targets)
+        losses[k] = F.cross_entropy(
+            queries @ prototypes.t() / max(float(temperature), 1.0e-6),
+            targets,
+        )
+    if not losses:
+        return normalized.sum() * 0.0, losses
+    tau = max(float(risk_tau), 1.0e-6)
+    stacked = torch.stack(list(losses.values()))
+    pooled = tau * (
+        torch.logsumexp(stacked / tau, dim=0)
+        - np.log(float(len(losses)))
+    )
+    return pooled, losses
 
 
 def _parse_class_loss_weights(args: argparse.Namespace, device: torch.device) -> torch.Tensor | None:
@@ -458,8 +595,15 @@ def train_adapter(
 ) -> tuple[nn.Module, dict[str, Any]]:
     scenarios = parse_sat_scenarios(str(args.sat_scenarios))
     _validate_star_ground_impl(str(args.star_ground_channel_impl), scenarios, field="sat_scenarios")
+    model_adapter_mode = str(args.model_adapter_mode).strip().lower()
     proto_loader = DataLoader(source_loader.dataset, batch_size=int(args.batch_size), shuffle=False, num_workers=0, drop_last=False)
-    clean_protos = _proto_from_loader(teacher_model, proto_loader, args, device)
+    clean_protos = (
+        _leo_proto_from_loader(
+            teacher_model, proto_loader, args, device, scenarios
+        )
+        if model_adapter_mode == "lora_effective_feature"
+        else _proto_from_loader(teacher_model, proto_loader, args, device)
+    )
     class_loss_weights = _parse_class_loss_weights(args, device)
     proxy_loader, proxy_info = _make_proxy_unknown_train_loader(args)
     hard_pairs = _parse_hard_pair_ids(
@@ -474,13 +618,67 @@ def train_adapter(
         adapter = IQResidualPreAdapter(hidden=int(args.hidden_dim), alpha=float(args.alpha)).to(device)
     else:
         adapter = IdentityPreAdapter().to(device)
-    model_adapter = _configure_model_adapter(model, str(args.model_adapter_mode))
+    lora_scope_by_mode = {
+        "lora_full_feature": "full_feature",
+        "lora_effective_feature": "effective_feature",
+    }
+    if model_adapter_mode in lora_scope_by_mode:
+        from paper_reproduction.scripts.train_export_cvs_support_lora_adapter import (
+            inject_feat_joint_lora,
+        )
+
+        epoch_cap = 20 if model_adapter_mode == "lora_effective_feature" else 40
+        if not 1 <= int(args.epochs) <= epoch_cap:
+            raise ValueError(
+                f"ground source {model_adapter_mode} epochs must be in [1,{epoch_cap}]"
+            )
+        model_adapter = inject_feat_joint_lora(
+            model,
+            rank=int(args.lora_rank),
+            alpha=float(args.lora_alpha),
+            scope=lora_scope_by_mode[model_adapter_mode],
+        )
+        model_adapter["mode"] = model_adapter_mode
+        model_adapter["ground_training_only"] = True
+        if model_adapter_mode == "lora_effective_feature" and (
+            bool(args.input_adapter_enabled)
+            or str(args.input_repair).strip().lower() != "raw"
+        ):
+            raise ValueError(
+                "formal lora_effective_feature requires no IQ input adapter and raw leo_weak input"
+            )
+        if model_adapter_mode == "lora_effective_feature" and proxy_loader is not None:
+            raise ValueError(
+                "formal lora_effective_feature forbids proxy-receiver training; "
+                "all proxy_unknown_* weights must be zero"
+            )
+        if model_adapter_mode == "lora_effective_feature" and any(
+            float(value) <= 0.0
+            for value in (
+                args.relation_preservation_weight,
+                args.prototype_gram_weight,
+                args.worst_k_risk_weight,
+            )
+        ):
+            raise ValueError(
+                "lora_effective_feature requires positive relation, prototype-Gram, "
+                "and worst-K risk weights"
+            )
+    else:
+        model_adapter = _configure_model_adapter(model, model_adapter_mode)
     opt_params = list(adapter.parameters()) + [p for p in model.parameters() if p.requires_grad]
     if not opt_params:
         raise ValueError("no trainable adapter/model parameters selected")
     opt = torch.optim.AdamW(opt_params, lr=float(args.lr), weight_decay=float(args.weight_decay))
     gen = make_torch_generator(device, int(args.seed) + 1701)
     history: list[dict[str, float]] = []
+    nested_k_values = tuple(
+        int(value)
+        for value in str(args.worst_k_values).split(",")
+        if str(value).strip()
+    )
+    if not nested_k_values or any(value < 1 for value in nested_k_values):
+        raise ValueError("worst_k_values must be a nonempty positive integer list")
     step = 0
     for epoch in range(int(args.epochs)):
         sums = {
@@ -498,8 +696,14 @@ def train_adapter(
             "proxy_unknown_old_margin": 0.0,
             "proxy_unknown_hard_pair": 0.0,
             "proxy_unknown_hard_old": 0.0,
+            "view_consistency": 0.0,
+            "relation": 0.0,
+            "prototype_gram": 0.0,
+            "worst_k": 0.0,
             "resid": 0.0,
         }
+        for k_value in nested_k_values:
+            sums[f"nested_k_{k_value}"] = 0.0
         count = 0
         for x, y, _d, _meta in source_loader:
             x = x.to(device, non_blocking=True)
@@ -509,10 +713,43 @@ def train_adapter(
             step += 1
             with torch.no_grad():
                 x_sat, _ = apply_sat_channel_for_scenario(x, scenario, args, gen=gen, return_meta=False)
-                z_clean, logits_clean_teacher = _feature_forward(teacher_model, x, str(args.feature_name))
             x_sat_in = _apply_input_repair(x_sat, str(args.input_repair))
-            x_rep = adapter(x_sat_in)
-            z_rep, logits_rep = _feature_forward(model, x_rep, str(args.feature_name))
+            with torch.no_grad():
+                teacher_input = (
+                    x_sat_in
+                    if model_adapter_mode == "lora_effective_feature"
+                    else x
+                )
+                z_clean, logits_clean_teacher = _feature_forward(
+                    teacher_model, teacher_input, str(args.feature_name)
+                )
+            if model_adapter_mode in lora_scope_by_mode:
+                rx_views = _satellite_tta_views(x_sat_in, "rx_light5")
+                if len(rx_views) != 5:
+                    raise RuntimeError("rx_light5 must provide exactly five receive views")
+                extra_index = 1 + int((step - 1) % 4)
+                selected_views = (rx_views[0], rx_views[extra_index])
+                z_selected: list[torch.Tensor] = []
+                logits_selected: list[torch.Tensor] = []
+                for _view_name, x_view in selected_views:
+                    z_view, logits_view = _feature_forward(
+                        model, adapter(x_view), str(args.feature_name)
+                    )
+                    z_selected.append(z_view)
+                    logits_selected.append(logits_view)
+                z_rep = torch.stack(z_selected, dim=0).mean(dim=0)
+                logits_rep = torch.stack(logits_selected, dim=0).mean(dim=0)
+                view_consistency = (
+                    1.0
+                    - F.cosine_similarity(z_selected[0], z_selected[1], dim=1)
+                ).mean()
+                x_rep = x_sat_in
+            else:
+                x_rep = adapter(x_sat_in)
+                z_rep, logits_rep = _feature_forward(
+                    model, x_rep, str(args.feature_name)
+                )
+                view_consistency = z_rep.sum() * 0.0
             mse_per = F.smooth_l1_loss(z_rep, z_clean, reduction="none").mean(dim=1)
             mse = _weighted_mean(mse_per, sample_weights)
             cos_per = 1.0 - F.cosine_similarity(z_rep, z_clean, dim=1)
@@ -524,9 +761,14 @@ def train_adapter(
                 ce = _weighted_mean(proto_ce, sample_weights) + float(args.logit_ce_weight) * _weighted_mean(logit_ce, sample_weights)
             else:
                 ce = z_rep.sum() * 0.0 + logits_rep.sum() * 0.0
-            clean_mode = str(args.input_repair if str(args.clean_input_repair_mode).lower() == "same" else "raw")
-            x_clean_rep = adapter(_apply_input_repair(x, clean_mode))
-            z_clean_rep, _ = _feature_forward(model, x_clean_rep, str(args.feature_name))
+            if model_adapter_mode == "lora_effective_feature":
+                # The preservation anchor is the same leo_weak base view; no
+                # clean source waveform enters the formal effective route.
+                z_clean_rep = z_selected[0]
+            else:
+                clean_mode = str(args.input_repair if str(args.clean_input_repair_mode).lower() == "same" else "raw")
+                x_clean_rep = adapter(_apply_input_repair(x, clean_mode))
+                z_clean_rep, _ = _feature_forward(model, x_clean_rep, str(args.feature_name))
             clean_mse = _weighted_mean(F.smooth_l1_loss(z_clean_rep, z_clean, reduction="none").mean(dim=1), sample_weights)
             clean_cos = _weighted_mean(1.0 - F.cosine_similarity(z_clean_rep, z_clean, dim=1), sample_weights)
             clean_kl = F.kl_div(
@@ -537,6 +779,17 @@ def train_adapter(
             clean_loss = clean_mse + float(args.clean_cos_weight) * clean_cos
             feat_margin = _proto_margin_loss_weighted(z_clean, z_rep, y, clean_protos, float(args.feature_margin_tolerance), sample_weights)
             clean_margin = _proto_margin_loss_weighted(z_clean, z_clean_rep, y, clean_protos, float(args.feature_margin_tolerance), sample_weights)
+            relation = relation_gram_preservation_loss(z_rep, z_clean)
+            prototype_gram = prototype_gram_deconfusion_loss(
+                z_rep, y, max_cosine=float(args.prototype_gram_max_cosine)
+            )
+            worst_k, nested_k_losses = nested_k_worst_prototype_risk(
+                z_rep,
+                y,
+                k_values=nested_k_values,
+                temperature=float(args.worst_k_proto_temperature),
+                risk_tau=float(args.worst_k_tau),
+            )
             if proxy_iter is not None:
                 x_u, y_u, _d_u, _meta_u = next(proxy_iter)
                 x_u = x_u.to(device, non_blocking=True)
@@ -588,12 +841,16 @@ def train_adapter(
                 + float(args.proxy_unknown_hard_pair_margin_weight) * proxy_unknown_hard_pair
                 + float(args.proxy_unknown_hard_old_margin_weight) * proxy_unknown_hard_old
                 + float(args.teacher_logit_distill_weight) * clean_kl
+                + float(args.multiview_consistency_weight) * view_consistency
+                + float(args.relation_preservation_weight) * relation
+                + float(args.prototype_gram_weight) * prototype_gram
+                + float(args.worst_k_risk_weight) * worst_k
                 + float(args.residual_weight) * resid
             )
             opt.zero_grad(set_to_none=True)
             loss.backward()
             if float(args.grad_clip) > 0:
-                torch.nn.utils.clip_grad_norm_(adapter.parameters(), float(args.grad_clip))
+                torch.nn.utils.clip_grad_norm_(opt_params, float(args.grad_clip))
             opt.step()
             bs = int(x.shape[0])
             count += bs
@@ -611,6 +868,15 @@ def train_adapter(
             sums["proxy_unknown_old_margin"] += float(proxy_unknown_old_margin.detach().item()) * bs
             sums["proxy_unknown_hard_pair"] += float(proxy_unknown_hard_pair.detach().item()) * bs
             sums["proxy_unknown_hard_old"] += float(proxy_unknown_hard_old.detach().item()) * bs
+            sums["view_consistency"] += float(view_consistency.detach().item()) * bs
+            sums["relation"] += float(relation.detach().item()) * bs
+            sums["prototype_gram"] += float(prototype_gram.detach().item()) * bs
+            sums["worst_k"] += float(worst_k.detach().item()) * bs
+            for k_value in nested_k_values:
+                nested_loss = nested_k_losses.get(int(k_value))
+                sums[f"nested_k_{k_value}"] += (
+                    0.0 if nested_loss is None else float(nested_loss.detach().item()) * bs
+                )
             sums["resid"] += float(resid.detach().item()) * bs
         row = {k: v / max(1, count) for k, v in sums.items()}
         row["epoch"] = float(epoch + 1)
@@ -652,9 +918,192 @@ def train_adapter(
             "proxy_unknown_hard_old_margin": float(args.proxy_unknown_hard_old_margin),
             "proxy_unknown_hard_old_margin_weight": float(args.proxy_unknown_hard_old_margin_weight),
             "teacher_logit_distill": float(args.teacher_logit_distill_weight),
+            "multiview_consistency": float(args.multiview_consistency_weight),
+            "relation_preservation": float(args.relation_preservation_weight),
+            "prototype_gram": float(args.prototype_gram_weight),
+            "prototype_gram_max_cosine": float(args.prototype_gram_max_cosine),
+            "worst_k_risk": float(args.worst_k_risk_weight),
+            "worst_k_values": list(nested_k_values),
+            "worst_k_tau": float(args.worst_k_tau),
+            "worst_k_proto_temperature": float(args.worst_k_proto_temperature),
             "residual": float(args.residual_weight),
             "class_loss_weights": str(args.class_loss_weights or ""),
         },
+    }
+
+
+def _write_ground_lora_state_and_manifest(
+    args: argparse.Namespace,
+    model: nn.Module,
+    train_info: dict[str, Any],
+) -> dict[str, Any]:
+    """Persist a source-only LoRA state with fail-closed provenance metadata."""
+
+    model_adapter_mode = str(args.model_adapter_mode).strip().lower()
+    scope_by_mode = {
+        "lora_full_feature": "full_feature",
+        "lora_effective_feature": "effective_feature",
+    }
+    if model_adapter_mode not in scope_by_mode:
+        return {}
+    state_path_raw = str(args.adapter_state_out or "").strip()
+    manifest_path_raw = str(args.adapter_manifest_out or "").strip()
+    if not state_path_raw or not manifest_path_raw:
+        raise ValueError(
+            f"{model_adapter_mode} requires --adapter_state_out and --adapter_manifest_out"
+        )
+    state_path = Path(state_path_raw)
+    manifest_path = Path(manifest_path_raw)
+    for path in (state_path, manifest_path):
+        if path.exists():
+            raise FileExistsError(f"refusing to overwrite ground LoRA artifact: {path}")
+        path.parent.mkdir(parents=True, exist_ok=True)
+
+    trainable = {
+        name: parameter.detach().cpu().to(dtype=torch.float16).contiguous()
+        for name, parameter in model.named_parameters()
+        if parameter.requires_grad
+    }
+    if not trainable or any(".lora_" not in name for name in trainable):
+        raise RuntimeError(
+            "ground LoRA state must contain only injected lora_a/lora_b tensors"
+        )
+    if any(not bool(torch.isfinite(value).all()) for value in trainable.values()):
+        raise FloatingPointError("ground LoRA state contains non-finite tensors")
+    torch.save(trainable, state_path)
+
+    resources = dict(train_info["model_adapter"])
+    parameter_count = int(sum(value.numel() for value in trainable.values()))
+    tensor_bytes = int(parameter_count * 2)
+    if parameter_count != int(resources.get("trainable_parameters", -1)):
+        raise RuntimeError(
+            "ground LoRA parameter count drift: "
+            f"{parameter_count}!={resources.get('trainable_parameters')}"
+        )
+    max_class_count = 26
+    # The effective route deploys one shared symmetric head for all query
+    # views.  Historical full_feature runs retain their five-bank accounting.
+    prototype_bytes = int(
+        15_688
+        if model_adapter_mode == "lora_effective_feature"
+        else 5 * max_class_count * 256 * 2
+    )
+    threshold_bytes = 12
+    combined_bytes = int(tensor_bytes + prototype_bytes + threshold_bytes)
+    state_cap = int(256 * 1024)
+    resources.update(
+        {
+            "adapter_state_bytes_fp16": tensor_bytes,
+            "max_registered_class_count": max_class_count,
+            "deployment_head_state_upper_bound_bytes_fp16": prototype_bytes,
+            "adaptive_threshold_state_bytes_fp32": threshold_bytes,
+            "combined_persistent_state_bytes": combined_bytes,
+            "combined_persistent_state_cap_bytes": state_cap,
+            "combined_persistent_state_within_cap": combined_bytes <= state_cap,
+            "mergeable_into_base_linear_weights": True,
+            "deployment_added_macs_per_query_after_merge": 0,
+        }
+    )
+    if not bool(resources["combined_persistent_state_within_cap"]):
+        raise ValueError(
+            "ground LoRA plus deployment head exceeds the 256KiB state cap"
+        )
+    state_sha256 = _sha256_file(state_path)
+    source_dataset_path = Path(str(args.wisig_pkl)).resolve()
+    if not source_dataset_path.is_file():
+        raise FileNotFoundError(f"source dataset is missing: {source_dataset_path}")
+    proxy_info = dict(train_info.get("proxy_unknown_train") or {})
+    proxy_weight_sum = float(
+        args.proxy_unknown_separation_weight
+        + args.proxy_unknown_supcon_weight
+        + args.proxy_unknown_proto_ce_weight
+        + args.proxy_unknown_pair_margin_weight
+        + args.proxy_unknown_old_margin_weight
+        + args.proxy_unknown_hard_pair_margin_weight
+        + args.proxy_unknown_hard_old_margin_weight
+    )
+    manifest = {
+        "method": (
+            "ground_source_effective_feature_lora_v1"
+            if model_adapter_mode == "lora_effective_feature"
+            else "ground_source_full_feature_lora_v1"
+        ),
+        "stage": "Stage2-C_prequery_source_training",
+        "source_only": True,
+        "support_only": False,
+        "query_update_forbidden": True,
+        "query_features_used_for_training": False,
+        "query_labels_used_for_training": False,
+        "old_new_role_used_by_optimizer": False,
+        "class_quota_used_at_inference": False,
+        "target_receiver_data_used_for_training": False,
+        "clean_samples_used_for_training": (
+            model_adapter_mode != "lora_effective_feature"
+        ),
+        "formal_training_view": (
+            "leo_weak_only"
+            if model_adapter_mode == "lora_effective_feature"
+            else "historical_clean_paired_diagnostic"
+        ),
+        "teacher_reference_view": (
+            "same_leo_weak_base_view"
+            if model_adapter_mode == "lora_effective_feature"
+            else "clean_source_view"
+        ),
+        "proxy_data_used_for_training": bool(proxy_info),
+        "proxy_training_rows": 0 if not proxy_info else int(proxy_info.get("sample_count", -1)),
+        "proxy_loss_weight_sum": proxy_weight_sum,
+        "source_receiver_scope": str(args.source_rxs),
+        "source_tx_scope": str(args.source_tx_ids),
+        "source_dataset": str(source_dataset_path),
+        "source_dataset_sha256": _sha256_file(source_dataset_path),
+        "source_dataset_size_bytes": int(source_dataset_path.stat().st_size),
+        "proxy_receiver_scope": str(args.proxy_unknown_rxs),
+        "proxy_tx_scope": str(args.proxy_unknown_tx_ids),
+        "epochs": int(args.epochs),
+        "resource_tier": (
+            "preferred" if parameter_count <= 50_000 else "performance_relaxed"
+        ),
+        "adapter_state_format": "fp16_trainable_state",
+        "adapter_state": str(state_path),
+        "adapter_state_sha256": state_sha256,
+        "checkpoint": str(args.ckpt),
+        "checkpoint_sha256": _sha256_file(args.ckpt),
+        "hyperparameters": {
+            "scope": scope_by_mode[model_adapter_mode],
+            "rank": int(args.lora_rank),
+            "alpha": float(args.lora_alpha),
+            "learning_rate": float(args.lr),
+            "weight_decay": float(args.weight_decay),
+            "batch_size": int(args.batch_size),
+            "sat_scenarios": parse_sat_scenarios(str(args.sat_scenarios)),
+            "ground_receive_view_policy": "rx_light5_pair_cycle",
+            "ground_receive_views_per_source_sample_per_step": 2,
+            "ground_unique_receive_view_count": 5,
+            "target_support_receive_view_count": 3,
+            "target_support_receive_view_policy": "three_leo_weak_scenario_base_views",
+            "multiview_consistency_weight": float(
+                args.multiview_consistency_weight
+            ),
+        },
+        "resources": resources,
+        "training_trace_summary": {
+            "history_first": train_info.get("history_first", {}),
+            "history_last": train_info.get("history_last", {}),
+            "loss_weights": train_info.get("loss_weights", {}),
+        },
+        "source_validation_required_before_target_query": True,
+        "source_validation_pass": False,
+    }
+    manifest_path.write_text(
+        json.dumps(manifest, ensure_ascii=False, indent=2, sort_keys=True) + "\n",
+        encoding="utf-8",
+    )
+    return {
+        "adapter_state": str(state_path),
+        "adapter_state_sha256": state_sha256,
+        "adapter_manifest": str(manifest_path),
+        "resources": resources,
     }
 
 
@@ -1226,7 +1675,40 @@ def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
     p.add_argument("--hidden_dim", type=int, default=32)
     p.add_argument("--alpha", type=float, default=0.25)
     p.add_argument("--input_adapter_enabled", action=argparse.BooleanOptionalAction, default=True)
-    p.add_argument("--model_adapter_mode", default="none", choices=["none", "id_feature_head", "id_late_feature", "id_norm_late_feature", "id_full_feature"])
+    p.add_argument(
+        "--model_adapter_mode",
+        default="none",
+        choices=[
+            "none",
+            "id_feature_head",
+            "id_late_feature",
+            "id_norm_late_feature",
+            "id_full_feature",
+            "lora_full_feature",
+            "lora_effective_feature",
+        ],
+    )
+    p.add_argument("--lora_rank", type=int, default=12)
+    p.add_argument("--lora_alpha", type=float, default=12.0)
+    p.add_argument(
+        "--adapter_state_out",
+        default="",
+        help="required FP16 state path for a ground-source LoRA mode",
+    )
+    p.add_argument(
+        "--adapter_manifest_out",
+        default="",
+        help="required training manifest path for a ground-source LoRA mode",
+    )
+    p.add_argument(
+        "--source_only_ground_lora",
+        action=argparse.BooleanOptionalAction,
+        default=False,
+        help=(
+            "train and persist the formal effective8 ground LoRA, then stop "
+            "before constructing any target support/query export dataset"
+        ),
+    )
     p.add_argument("--input_repair", default="raw", choices=["raw", "rms", "canonical", "canonical_m1e4", "canonical_p1e4"])
     p.add_argument("--clean_input_repair_mode", default="same", choices=["raw", "same"])
     p.add_argument("--lr", type=float, default=8e-4)
@@ -1257,6 +1739,22 @@ def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
     p.add_argument("--proxy_unknown_hard_old_margin_weight", type=float, default=0.0)
     p.add_argument("--proxy_unknown_hard_old_margin", type=float, default=0.05)
     p.add_argument("--teacher_logit_distill_weight", type=float, default=0.0)
+    p.add_argument(
+        "--multiview_consistency_weight",
+        type=float,
+        default=0.0,
+        help=(
+            "used by ground LoRA modes to align the base view with one rotating "
+            "rx_light5 view per source step"
+        ),
+    )
+    p.add_argument("--relation_preservation_weight", type=float, default=0.0)
+    p.add_argument("--prototype_gram_weight", type=float, default=0.0)
+    p.add_argument("--prototype_gram_max_cosine", type=float, default=0.65)
+    p.add_argument("--worst_k_risk_weight", type=float, default=0.0)
+    p.add_argument("--worst_k_values", default="1,2,5,10,20")
+    p.add_argument("--worst_k_tau", type=float, default=0.2)
+    p.add_argument("--worst_k_proto_temperature", type=float, default=0.07)
     p.add_argument("--distill_temperature", type=float, default=2.0)
     p.add_argument("--residual_weight", type=float, default=0.03)
     p.add_argument("--proto_temperature", type=float, default=0.07)
@@ -1267,8 +1765,25 @@ def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
     return p.parse_args(argv)
 
 
+def _validate_source_only_ground_lora_mode(args: argparse.Namespace) -> None:
+    effective_ground_lora = (
+        str(args.model_adapter_mode).strip().lower() == "lora_effective_feature"
+    )
+    if effective_ground_lora and not bool(args.source_only_ground_lora):
+        raise ValueError(
+            "formal lora_effective_feature requires --source_only_ground_lora; "
+            "target support/query export is forbidden before source validation "
+            "and candidate lock"
+        )
+    if bool(args.source_only_ground_lora) and not effective_ground_lora:
+        raise ValueError(
+            "--source_only_ground_lora is reserved for lora_effective_feature"
+        )
+
+
 def main(argv: Sequence[str] | None = None) -> int:
     args = parse_args(argv)
+    _validate_source_only_ground_lora_mode(args)
     policies = _resolve_export_tta_policies(args)
     export_subdirs = _resolve_tta_export_subdirs(args, policies)
     base_subdir = str(args.out_subdir)
@@ -1284,7 +1799,23 @@ def main(argv: Sequence[str] | None = None) -> int:
         source_loader, source_ds, _source_info = _make_source_loader(args)
         model = _build_model(args, source_ds, device, freeze=True)
         teacher_model = _build_model(args, source_ds, device, freeze=True)
-        adapter, train_info = train_adapter(args, model, teacher_model, source_loader, device)
+    adapter, train_info = train_adapter(args, model, teacher_model, source_loader, device)
+    ground_lora_artifacts = _write_ground_lora_state_and_manifest(
+        args, model, train_info
+    )
+    if bool(args.source_only_ground_lora):
+        summary = {
+            "phase": "stage2c_effective8_ground_lora_source_only_v1",
+            "exported": [],
+            "target_dataset_constructed": False,
+            "target_support_features_used": False,
+            "target_query_features_used": False,
+            "train_info": train_info,
+            "ground_lora_artifacts": ground_lora_artifacts,
+            "uses_clean": False,
+        }
+        print(json.dumps(summary, ensure_ascii=False, indent=2, sort_keys=True))
+        return 0
     exported = []
     for policy, export_subdir in zip(policies, export_subdirs):
         args.satellite_tta_policy = policy
@@ -1305,6 +1836,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         "exported": exported,
         "export_tta_policies": policies,
         "train_info": train_info,
+        "ground_lora_artifacts": ground_lora_artifacts,
         "uses_target_clean": False,
         "uses_target_labels_for_training": False,
         "uses_unknown_query_for_threshold": False,

@@ -4,15 +4,24 @@ import numpy as np
 import pytest
 import torch
 
+import paper_reproduction.scripts.benchmark_cvs_adaptive_rxlight_tta as benchmark
+
 from paper_reproduction.scripts.benchmark_cvs_adaptive_rxlight_tta import (
     _reference_parity,
     apply_fp16_checkpoint_delta,
     apply_fp16_lora_state,
     audit_adapter_manifest,
     build_view_prototypes,
+    build_single_view_prototypes,
     leave_one_out_support_scores,
+    load_trusted_class_id_to_tx,
+    order_k_support_observations,
+    order_k1_support_views,
+    predict_direct_adv3b02_base_view,
+    score_symmetric_named_views,
     score_views,
 )
+from paper_reproduction.cvs_aligned.k1_symmetric_head import fit_symmetric_k1_head
 
 
 def test_matching_view_prototypes_preserve_shape_and_class_order() -> None:
@@ -28,6 +37,15 @@ def test_matching_view_prototypes_preserve_shape_and_class_order() -> None:
     assert np.isfinite(scores).all()
 
 
+def test_identity_single_qknn_supports_k1_without_role_rules() -> None:
+    features = np.asarray([[1.0, 0.0], [0.0, 1.0]], dtype=np.float32)
+    prototypes = build_single_view_prototypes(
+        features, np.asarray(["old", "new"]), ["new", "old"]
+    )
+    assert prototypes.shape == (2, 2)
+    np.testing.assert_array_equal(np.argmax(features @ prototypes.T, axis=1), [1, 0])
+
+
 def test_leave_one_out_scores_do_not_use_the_sample_in_its_class_mean() -> None:
     support = np.zeros((5, 4, 2), dtype=np.float32)
     support[:, 0] = [1.0, 0.0]
@@ -39,6 +57,115 @@ def test_leave_one_out_scores_do_not_use_the_sample_in_its_class_mean() -> None:
     # Row 0's class-a LOO prototype is row 1, hence orthogonal rather than self-aligned.
     assert scores.shape == (4, 5, 2)
     assert scores[0, 0, 0] == pytest.approx(0.0, abs=1e-6)
+
+
+def test_k1_support_order_and_symmetric_scoring() -> None:
+    rng = np.random.default_rng(17)
+    support = rng.normal(size=(5, 3, 6)).astype(np.float32)
+    labels = np.asarray(["b", "c", "a"])
+    ordered = order_k1_support_views(support, labels, ["a", "b", "c"])
+    np.testing.assert_array_equal(ordered[:, 0], support[:, 2])
+    all_views = np.concatenate([ordered, ordered + 0.01, ordered - 0.01], axis=0)
+    head = fit_symmetric_k1_head(
+        all_views,
+        prototype_rules=("mean",),
+        ridges=(None,),
+        allow_alignment=False,
+    )
+    scores = score_symmetric_named_views(support, head)
+    assert scores.shape == (3, 5, 3)
+
+
+def test_k1_support_order_rejects_more_than_one_physical_shot() -> None:
+    support = np.ones((5, 3, 4), dtype=np.float32)
+    with pytest.raises(ValueError, match="exactly one physical support"):
+        order_k1_support_views(support, np.asarray(["a", "a", "b"]), ["a", "b"])
+
+
+def test_k5_support_observations_preserve_every_physical_shot() -> None:
+    features = np.arange(2 * 10 * 4, dtype=np.float32).reshape(2, 10, 4)
+    labels = np.asarray(["a"] * 5 + ["b"] * 5)
+    ordered = order_k_support_observations(
+        features, labels, ["b", "a"], k_shot=5
+    )
+    assert ordered.shape == (10, 2, 4)
+    np.testing.assert_array_equal(ordered[:5, 0], features[0, 5:10])
+    np.testing.assert_array_equal(ordered[5:, 1], features[1, 0:5])
+
+
+def test_direct_adv3b02_baseline_uses_one_base_view_without_fft(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    raw = np.asarray(
+        [
+            [[2.0, 0.0], [0.0, 0.0]],
+            [[-2.0, 0.0], [0.0, 0.0]],
+        ],
+        dtype=np.float32,
+    )
+
+    def fake_views(rows: torch.Tensor, _policy: str):
+        return tuple((name, rows) for name in benchmark.RX_LIGHT5_ORDER)
+
+    def fake_feature(_model: torch.nn.Module, rows: torch.Tensor):
+        logits = torch.stack([rows[:, 0, 0], -rows[:, 0, 0]], dim=1)
+        return rows.flatten(1), logits
+
+    monkeypatch.setattr(benchmark, "_satellite_tta_views", fake_views)
+    monkeypatch.setattr(benchmark, "_feature_forward", fake_feature)
+    labels, audit = predict_direct_adv3b02_base_view(
+        torch.nn.Identity(),
+        raw,
+        class_labels=["a", "b"],
+        batch_size=2,
+        device=torch.device("cpu"),
+    )
+    np.testing.assert_array_equal(labels, np.asarray(["a", "b"]))
+    assert audit["support_rows_used"] == 0
+    assert audit["fft_used"] is False
+    assert audit["tta_view_count"] == 1
+
+
+def test_trusted_direct_mapping_is_explicit_and_ordered(tmp_path) -> None:
+    path = tmp_path / "split_manifest.json"
+    path.write_text(
+        '{"class_id_to_tx":["tx-b","tx-a"]}\n', encoding="utf-8"
+    )
+    assert load_trusted_class_id_to_tx(path) == ["tx-b", "tx-a"]
+
+
+def test_split_fails_when_support_pool_is_smaller_than_k() -> None:
+    arrays = {"tx_ids": np.asarray(["a", "a"])}
+    config = {
+        "target_receiver_labels": ["r"],
+        "seed": 1,
+        "k_shot": 20,
+        "support_pool_max_k": 10,
+        "query_per_tx": 1,
+        "target_old_tx_labels": ["a"],
+        "target_new_tx_labels": ["b"],
+    }
+    with pytest.raises(ValueError, match="support_pool_max_k must cover K"):
+        benchmark._split_indices(arrays, config, "leo_clear_weak")
+
+
+def test_split_fails_closed_on_support_query_overlap(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    arrays = {"tx_ids": np.asarray(["a", "a", "b", "b"])}
+    calls = iter([([0], [0]), ([2], [3])])
+    monkeypatch.setattr(benchmark, "_select_split", lambda *_args, **_kwargs: next(calls))
+    config = {
+        "target_receiver_labels": ["r"],
+        "seed": 1,
+        "k_shot": 1,
+        "support_pool_max_k": 1,
+        "query_per_tx": 1,
+        "target_old_tx_labels": ["a"],
+        "target_new_tx_labels": ["b"],
+    }
+    with pytest.raises(ValueError, match="support/query overlap"):
+        benchmark._split_indices(arrays, config, "leo_clear_weak")
 
 
 class _TinyLateKey(torch.nn.Module):
@@ -186,3 +313,178 @@ def test_relaxed_lora_manifest_keeps_permission_gates(tmp_path) -> None:
     manifest["query_labels_used_for_training"] = True
     with pytest.raises(ValueError, match="no_query_labels"):
         audit_adapter_manifest(manifest, adapter_state=state)
+
+
+def test_ground_source_lora_requires_passed_source_validation(tmp_path) -> None:
+    state = tmp_path / "ground_lora.pt"
+    state.write_bytes(b"ground-lora")
+    validation = tmp_path / "source_validation.json"
+    stats = tmp_path / "source_stats.npz"
+    np.savez(stats, mean=np.zeros(256), std=np.ones(256))
+    import hashlib
+    import json
+
+    validation_payload = {
+        "schema": "cvs_ground_source_lora_multiview_validation_v1",
+        "source_validation_pass": True,
+        "adapter_state_sha256": hashlib.sha256(b"ground-lora").hexdigest(),
+        "checkpoint_sha256": "checkpoint-hash",
+        "training_manifest_sha256": "training-manifest-hash",
+        "failed_gates": [],
+        "gates": {"all_source_checks": True},
+        "receiver_holdout": {"disjoint": True, "overlap": []},
+        "symmetric_head_lock": {
+            "selection_source": "disjoint_source_receiver_holdout_k1_episodes",
+            "support_view_policy": "three_leo_weak_scenario_base_views",
+            "support_receive_views_per_physical_sample": 3,
+            "target_support_used_for_selection": False,
+            "target_query_features_used": False,
+            "old_new_role_oracle_used": False,
+            "class_quota_used": False,
+        },
+        "source_feature_statistics": {
+            "path": str(stats),
+            "sha256": hashlib.sha256(stats.read_bytes()).hexdigest(),
+            "feature_kind": "normalized_z_id_plus_fft96_weight2",
+            "feature_dim": 256,
+            "fft_dim": 96,
+            "fft_weight": 2.0,
+            "target_rows_used": False,
+        },
+        "permissions": {
+            "target_support_used": False,
+            "target_query_features_used": False,
+            "target_query_labels_used": False,
+            "old_new_role_oracle_used": False,
+            "class_quota_used": False,
+        },
+    }
+    validation.write_text(json.dumps(validation_payload), encoding="utf-8")
+
+    manifest = {
+        "method": "ground_source_full_feature_lora_v1",
+        "resource_tier": "preferred",
+        "source_only": True,
+        "support_only": False,
+        "query_update_forbidden": True,
+        "query_labels_used_for_training": False,
+        "old_new_role_used_by_optimizer": False,
+        "class_quota_used_at_inference": False,
+        "target_receiver_data_used_for_training": False,
+        "source_validation_pass": True,
+        "checkpoint_sha256": "checkpoint-hash",
+        "training_manifest_sha256": "training-manifest-hash",
+        "source_validation_manifest": str(validation),
+        "source_validation_manifest_sha256": hashlib.sha256(
+            validation.read_bytes()
+        ).hexdigest(),
+        "source_validation_permissions": {
+            "target_support_used": False,
+            "target_query_features_used": False,
+            "target_query_labels_used": False,
+        },
+        "epochs": 20,
+        "adapter_state_format": "fp16_trainable_state",
+        "adapter_state_sha256": hashlib.sha256(b"ground-lora").hexdigest(),
+        "hyperparameters": {"scope": "full_feature", "rank": 12, "alpha": 12.0},
+        "resources": {
+            "trainable_parameters": 40_716,
+            "adapter_state_bytes_fp16": 81_432,
+            "combined_persistent_state_within_cap": True,
+        },
+    }
+    audit = audit_adapter_manifest(manifest, adapter_state=state)
+    assert audit["method"] == "ground_source_full_feature_lora_v1"
+    assert audit["source_validation_pass"] is True
+    manifest["source_validation_pass"] = False
+    with pytest.raises(ValueError, match="source_validation_pass"):
+        audit_adapter_manifest(manifest, adapter_state=state)
+
+
+def test_effective_ground_lora_audit_branch_accepts_leo_only_preferred_state(
+    tmp_path,
+) -> None:
+    state = tmp_path / "ground_lora.pt"
+    state.write_bytes(b"ground-lora")
+    stats = tmp_path / "source_stats.npz"
+    np.savez(stats, mean=np.zeros(256), std=np.ones(256))
+    import hashlib
+    import json
+
+    validation = tmp_path / "source_validation.json"
+    payload = {
+        "schema": "cvs_ground_source_lora_multiview_validation_v1",
+        "source_validation_pass": True,
+        "clean_samples_used_for_validation": False,
+        "adapter_state_sha256": hashlib.sha256(b"ground-lora").hexdigest(),
+        "checkpoint_sha256": "checkpoint-hash",
+        "training_manifest_sha256": "training-manifest-hash",
+        "failed_gates": [],
+        "gates": {"leo_only": True},
+        "receiver_holdout": {"disjoint": True, "overlap": []},
+        "permissions": {
+            "target_support_used": False,
+            "target_query_features_used": False,
+            "target_query_labels_used": False,
+            "old_new_role_oracle_used": False,
+            "class_quota_used": False,
+        },
+        "symmetric_head_lock": {
+            "selection_source": "disjoint_source_receiver_holdout_k1_episodes",
+            "support_view_policy": "three_leo_weak_scenario_base_views",
+            "support_receive_views_per_physical_sample": 3,
+            "target_support_used_for_selection": False,
+            "target_query_features_used": False,
+            "old_new_role_oracle_used": False,
+            "class_quota_used": False,
+        },
+        "source_feature_statistics": {
+            "path": str(stats),
+            "sha256": hashlib.sha256(stats.read_bytes()).hexdigest(),
+            "feature_kind": "normalized_z_id_plus_fft96_weight2",
+            "feature_dim": 256,
+            "fft_dim": 96,
+            "fft_weight": 2.0,
+            "target_rows_used": False,
+        },
+    }
+    validation.write_text(json.dumps(payload), encoding="utf-8")
+    digest = hashlib.sha256(b"ground-lora").hexdigest()
+    manifest = {
+        "method": "ground_source_effective_feature_lora_v1",
+        "resource_tier": "preferred",
+        "source_only": True,
+        "support_only": False,
+        "query_update_forbidden": True,
+        "query_labels_used_for_training": False,
+        "old_new_role_used_by_optimizer": False,
+        "class_quota_used_at_inference": False,
+        "target_receiver_data_used_for_training": False,
+        "clean_samples_used_for_training": False,
+        "formal_training_view": "leo_weak_only",
+        "proxy_data_used_for_training": False,
+        "proxy_training_rows": 0,
+        "source_validation_pass": True,
+        "source_validation_manifest": str(validation),
+        "source_validation_manifest_sha256": hashlib.sha256(
+            validation.read_bytes()
+        ).hexdigest(),
+        "source_validation_permissions": payload["permissions"],
+        "checkpoint_sha256": "checkpoint-hash",
+        "training_manifest_sha256": "training-manifest-hash",
+        "epochs": 12,
+        "adapter_state_format": "fp16_trainable_state",
+        "adapter_state_sha256": digest,
+        "hyperparameters": {
+            "scope": "effective_feature",
+            "rank": 16,
+            "alpha": 16.0,
+        },
+        "resources": {
+            "trainable_parameters": 44_048,
+            "adapter_state_bytes_fp16": 88_096,
+            "combined_persistent_state_within_cap": True,
+        },
+    }
+    audit = audit_adapter_manifest(manifest, adapter_state=state)
+    assert audit["method"] == "ground_source_effective_feature_lora_v1"

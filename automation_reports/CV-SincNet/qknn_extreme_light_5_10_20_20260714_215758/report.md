@@ -724,3 +724,108 @@ support leave-one-out的完整5-view准确率为75.2564%，在105个合法门限
 最差旧类为TX`20-19=33.33%`、`14-7=40.00%`、`6-15=43.33%`；最差新类为TX`10-10=31.67%`、`4-10=45.00%`、`14-11=48.33%`。相对正式目标，adaptive还差old32.50pp、floor54.67pp和new20 3.83pp。固定5-view同样未过gate，证明失败位于全后段LoRA产生的类判别几何，而不是1→3→5门控漏掉低置信度样本。
 
 因此v12判定`MECHANISM_FAIL_NO_EXPANSION`：不在本query上调整rank、学习率、anchor、DRO、蒸馏权重或门限，不扩其它receiver、seed、5/10类和K5。下一独立机制必须先在source receiver validation和support leave-one-view-out证据上锁定“强trust-region+support-only best-state”，限制特征漂移并只更新少数关键层；在未锁定前不得再读新的target query。summary SHA=`2967abea...33d`，manifest SHA=`b6599e90...7c13`，predictions SHA=`79831d23...d672`。
+
+## 2026-07-15正式重构：effective8源域LoRA、统一K头与跨K遗忘门禁
+
+### 结论先行
+
+历史92.28%H不是可直接复现的正式部署结果。它来自不同切分、20个新类、单seed的legacy diagnostic，并叠加60epoch`id_norm_late_feature`、固定5-view TTA、FFT96、场景筛选以及old/new角色与类别配额约束。后续125个无Oracle正式运行去掉了这些额外信息与计算，同时使用了更严格切分，所以性能差距主要是协议和机制差异，不是同一方法的随机波动。
+
+875个严格配对运行进一步表明：增加adapter epoch确实能降低K5/K10/K20遗忘，但K1始终没有取得正适应收益；20epoch甚至把K1遗忘从baseline的7.13pp推高到7.70pp。这说明主要瓶颈不是“训练不够久”，而是K1下新原型加入后破坏旧类决策边界。继续单独增加epoch不能解决旧新类竞争。
+
+|adapter epoch|K1遗忘|K5遗忘|K10遗忘|K20遗忘|
+|---:|---:|---:|---:|---:|
+|0/identity|7.13pp|4.93pp|3.06pp|2.27pp|
+|2|7.06pp|4.46pp|3.34pp|2.64pp|
+|5|7.06pp|4.30pp|3.23pp|2.48pp|
+|10|7.53pp|4.70pp|3.41pp|2.58pp|
+|20|7.70pp|4.70pp|3.06pp|2.33pp|
+|30|7.19pp|4.06pp|2.71pp|2.31pp|
+|60|6.87pp|3.40pp|2.20pp|1.52pp|
+
+因此正式路线不再把目标写成“压缩历史60epoch并保持旧head不变”，而是同时改表示与注册头：地面只在source receiver上训练44,048参数的effective8 LoRA；source holdout锁定统一K头、FFT统计和1→3→5门限；星上target support仅做闭式全局对齐、稳健原型和类间Gram校正，不做梯度训练；query始终逐样本独立推理。
+
+### 基座模型与输入输出
+
+基座仍是同一严格checkpoint`ADV3B02_CORE90_SOFT_E200/best_joint_safe_ssdg.pth`，SHA256=`2699eedcafe8cec880828592d2d65ba3781a9948939da5cf5c82b47143d59c98`。加载器按checkpoint训练参数重建完整`DualCVSincNetDisentangle`，195个state tensor必须`missing=0/unexpected=0/skipped=0`。模型包含identity/domain双CV-SincNet分支；正式qKNN只执行identity backbone快路径。identity branch由Sinc/时域、频域、DAC widely-linear、PA memory-polynomial等物理分支形成融合表示，再由`PhysicalAwareClassifier`产生160维`feat_joint`，该表示以`z_id`名导出。
+
+每个物理样本的输入为对应场景的`leo_weak`后信道IQ，形状为`[2,256]`。每个请求View输出160维`z_id`和同一View计算的96维归一化FFT log-magnitude，拼接为256维逐样本特征。clean waveform、clean feature和clean prototype禁止进入本次新增adapter训练、source validation、target support、target query、门限选择和promotion。历史基座checkpoint的既有训练来源单独保留，不据此改写。
+
+|阶段|输入|输出|是否使用target query|
+|---|---|---|---|
+|地面effective8训练|source receiver的3个预注册`leo_weak`场景；每step为base View+1个轮换receive View|FP16 LoRA state、训练manifest、完整epoch/loss trace|否|
+|source holdout验证|与训练receiver不重叠且不属于5个正式target receiver的`leo_weak`样本|source feature mean/std、统一头超参数、adaptive TTA门限、promotion manifest|否|
+|候选锁|checkpoint、adapter、source验证、统计、真实old/new TX嵌套清单及源码SHA|不可变candidate lock|否|
+|target enrollment|每类K个不同物理support ID，每个ID只取3个预注册LEO base View|一个所有类别共享的对角对齐、稳健原型、Gram校正头|否；只用support|
+|query推理|单个`leo_weak` query先跑base View，低置信度才追加2个shift View，再低置信度才追加2个CFO View|逐样本类别预测、1/3/5-view budget|否；不做batch拟合|
+
+### 为什么选择这8个层
+
+本轮只在真正影响`feat_joint`且处于池化后/低分辨率位置的8个Linear上注入rank16 LoRA：
+
+|位置|作用|选择理由|
+|---|---|---|
+|`id_backbone.t_proj`|时域分支投影|直接修正LEO时间扰动后的高层身份坐标，避开早期长序列反向|
+|`id_backbone.f_proj`|频域分支投影|修正频偏、衰落造成的频域统计偏移|
+|`id_backbone.pa_proj.0`|PA局部分支投影|保留功放非线性指纹，同时允许小幅域校准|
+|`id_backbone.fuse.0`|时频融合|在进入分类物理头前调整分支相对尺度|
+|`id_backbone.cls_head.id_proj.0`|基础identity投影|直接控制类内紧致度|
+|`id_backbone.cls_head.pa_proj.0`|PA身份嵌入|修正PA分支与identity空间的对齐|
+|`id_backbone.cls_head.id_gate.0`|物理缺陷门控|抑制LEO域下错误放大的DAC/PA线索|
+|`id_backbone.cls_head.joint_proj.0`|最终`feat_joint`投影|直接改变qKNN使用的类间角度与旧新类竞争|
+
+早期Sinc、卷积和高分辨率时序层不更新：其参数/激活/反向成本更大，且K1下梯度方差高，容易抹掉硬件指纹。CosFace旧类分类头不更新：它没有新类权重，更新会把已知old/new身份写进决策。`con_proj.0`只产生`feat_con`，`imp_merge.0`只产生`feat_imp`，都不进入当前`feat_joint` qKNN路径，已从历史full-feature白名单移除。该层级选择比只改输入IQ更接近域偏移出口，又比更新完整backbone轻。
+
+### 训练目标与损失设计
+
+推荐的唯一source候选为rank16、alpha16、12epoch、AdamW、`lr=5e-4`、`weight_decay=1e-4`、`grad_clip=1`。所有proxy/unknown权重为0，`input_adapter=false`，`input_repair=raw`。建议固定以下损失，不在target query上扫描：
+
+|损失|权重|底层目标|
+|---|---:|---|
+|同LEO teacher SmoothL1|1.0|限制特征绝对漂移|
+|同LEO teacher cosine|2.0|限制方向漂移，保护旧类|
+|source prototype CE|0.2|维持source类判别性|
+|同LEO base identity anchor|22.0|强trust-region；代码沿用历史`clean_identity_weight`参数名，但输入是同一LEO base View，不是clean样本|
+|feature margin|4.5|避免适配后正确类margin下降|
+|同LEO base margin preservation|7.5|保护最脆弱旧类边界|
+|冻结teacher logit蒸馏|0.16|维持基座分类语义，不更新CosFace|
+|base/轮换View一致性|0.25|用每step2个View近似覆盖历史5-view教师，避免每step固定5倍计算|
+|pairwise relation Gram preservation|0.50|保护样本间身份几何，抑制旧类坍缩|
+|prototype Gram deconfusion|0.25|只惩罚过度相似的类原型，扩大旧新竞争边界|
+|nested worst-K risk|0.50|同时优化K=1/2/5/10/20，log-sum-exp强调最差K|
+
+这里最关键的是`nested worst-K risk`和统一头。前者防止训练只对K10/K20有效、K1变差；后者让K1/K5/K10/K20使用完全相同的对齐、原型和Gram规则，杜绝为不同K偷偷选择不同算法。old-before只作为“增量前只有旧类注册”的遗忘诊断，不参与增量后逐query决策，也不计入部署状态。
+
+### 星上部署资源
+
+正式首选档仍低于用户允许的50%–100%放宽，不需要启用100k/40epoch/512KB relaxed上限。
+
+|资源项|精确/保守上界|解释|
+|---|---:|---|
+|effective8 LoRA可训参数|44,048|比历史289,685参数少6.58倍|
+|地面训练epoch|12|比历史60epoch少5倍；`参数×epoch`少32.88倍|
+|LoRA FP16状态|88,096B|可合并进原Linear，部署新增adapter MAC为0|
+|26类、256维统一头FP16状态|≤15,688B|含26个原型、26×26 Gram变换和全局对角affine|
+|3个FP32门限|12B|base margin、3-view margin、View分歧|
+|总持久状态|≤103,796B=101.36KiB|低于256KiB上限，余量158,348B|
+|统一头每View计算|≤7,588MAC|prototype cosine6,656+Gram676+alignment256|
+|固定5-view头计算上界|37,940MAC/query|不含共同的5次ADV3B02与FFT；仅作离线上界|
+|自适应头计算|`7,588×实际View数`|必须报告mean/P95及1/3/5触发率|
+
+target端不执行12epoch训练。地面完成LoRA后，星上只做一次support enrollment：26类时K1/K5/K10/K20分别需78/390/780/1,560个backbone+FFT行，即`3×类数×K`；闭式头的prototype累计上界为`3×26×K×256`MAC，Gram求解保守上界为`26³=17,576`标量操作。该流程无optimizer、无梯度、无Adam状态，因而比“星上60epoch adapter训练”轻得多。是否满足某一具体卫星载荷的功耗和实时性仍需在目标硬件实测；当前结论是算法状态和增量计算属于极轻型，不把RTX3090时间冒充星载时延。
+
+### 正式矩阵和门禁
+
+正式确认矩阵固定为5个target receiver×至少5个独立确认seed×3个LEO场景×新类数5/10/20×K=1/5/10/20，即至少900个formal row。真实new TX必须满足new5是new10前缀、new10是new20前缀；同receiver/seed/new-count下K1⊂K5⊂K10⊂K20，三个场景的物理support/query ID必须一致。候选锁同时绑定真实old/new TX清单、严格ADV3B02 class mapping、source统计、代码和artifact SHA，禁止只按“新类个数相同”替换更容易的TX。
+
+K10门槛为old≥95%、最低旧类≥88%、new5/10/20分别≥92/90/86%。K5的old、最低旧类、seen-new和H必须相对同receiver、同seed、同场景、同新类集合的matched K10 row下降不超过3pp，并取所有cell的最坏下降；不再只比较总体均值。K1要求`average_forgetting≤0`且每个receiver≤0；相对严格直接ADV3B02的target-old准确率总体至少+2pp、receiver×seed cluster bootstrap 10,000次的配对95%CI下界>0、每个receiver聚合差值≥0。K5/K10/K20遗忘还必须不劣于同row identity-only单qKNN。
+
+### 当前实现和证据边界
+
+已实现effective8 LoRA注入与合并等价性、LEO-only source训练、source holdout锁、统一K闭式头、FP16真实保存/重载、严格直接ADV3B02和identity-only同row基线、自适应惰性1→3→5、真实TX候选锁、formal row/prediction输出、跨K嵌套审计、遗忘汇总与K1 cluster bootstrap。正式effective8 trainer现在必须显式使用`--source_only_ground_lora`，保存adapter后立即退出，在source validation与candidate lock之前不会构造target support/query数据。
+
+source holdout门限现由实际部署的对角对齐+稳健原型+Gram头产生，并把同一锁定头规则应用于嵌套K=1/5/10/20 source episode后联合标定；不再用简单prototype margin代替部署头margin。每个K还必须在独立source evaluation物理样本上不劣于同support的identity mean head。
+
+本地`ssr-gpu`静态编译PASS，63项定向pytest全部PASS，`git diff --check` PASS。根目录不是Git仓库；代码、Git镜像报告和协议镜像位于Git承载面，根`项目.md`及本报告保留为控制面源文件。
+
+当前只完成实现与本地验证，尚未运行新的N607 source-only effective8训练，尚未产生source validation PASS、candidate lock或正式target矩阵。因此本节不能声称已达到95/88/92/90/86%性能目标，也不能把历史92.28%H迁移为新路线结果。下一硬门槛是先在N607运行唯一LEO-only source候选并完整分析训练日志；只有source receiver holdout全部PASS，才允许锁定候选并读取正式target support/query。
