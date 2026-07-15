@@ -73,6 +73,27 @@ python -m pytest tests/test_stage2_predictor_runtime.py tests/test_stage2_predic
 
 兼容导出修复验证：`18 passed`，覆盖历史三阈值导出、胶囊和effective8 runtime/head。
 
+### 严格runtime artifact生成命令
+
+生成前复核：2026-07-15 23:07 CST无训练进程，8张GPU约10MiB显存；目标`runtime_artifacts_strict_v1`不存在；`/home`剩余7.6TiB。
+
+```bash
+cd /home/szu2070436088/2510044040/CV-SincNet
+PY=/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python
+RUN=/home/szu2070436088/2510044040/CV-SincNet/runs/qknn_ground_effective8_r16_e12_leoonly_20260715_v14
+ART=$RUN/runtime_artifacts_strict_v1
+CKPT=/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3_mechanism32_queue_20260701/ADV3B02_CORE90_SOFT_E200/best_joint_safe_ssdg.pth
+mkdir "$ART"
+$PY code/scripts/export_cvs_phase2_effective8_lock_artifacts.py --candidate-lock "$RUN/candidate_lock_v2.json" --out-dir "$ART/lock_artifacts"
+$PY code/scripts/export_adv3b02_effective8_torchscript.py --checkpoint "$CKPT" --adapter-state "$RUN/effective8_adapter_fp16.pt" --input-len 256 --base-runtime-out "$ART/base_runtime.ts" --candidate-runtime-out "$ART/candidate_runtime.ts" --parity-receipt-out "$ART/parity_receipt.json" --device cuda:0
+$PY code/scripts/build_cvs_phase2_effective8_candidate_capsule.py --candidate-id effective8-r16-e12-leoweak-v14 --candidate-lock "$RUN/candidate_lock_v2.json" --base-runtime "$ART/base_runtime.ts" --candidate-runtime "$ART/candidate_runtime.ts" --adapter-state "$RUN/effective8_adapter_fp16.pt" --adapter-manifest "$RUN/training_manifest.json" --source-feature-stats "$RUN/source_validation_v2/source_joint_feature_stats_fp32.npz" --head-lock "$ART/lock_artifacts/symmetric_head_lock.json" --tta-policy "$ART/lock_artifacts/adaptive_tta_policy.json" --parity-receipt "$ART/parity_receipt.json" --out-json "$ART/candidate_capsule.json"
+CAPSULE_SHA=$(sha256sum "$ART/candidate_capsule.json" | awk '{print $1}')
+$PY code/scripts/build_cvs_phase2_effective8_runtime_configs.py --candidate-capsule "$ART/candidate_capsule.json" --expected-candidate-capsule-sha256 "$CAPSULE_SHA" --candidate-lock "$RUN/candidate_lock_v2.json" --source-feature-stats "$RUN/source_validation_v2/source_joint_feature_stats_fp32.npz" --tta-policy "$ART/lock_artifacts/adaptive_tta_policy.json" --out-dir "$ART/runtime_configs"
+$PY code/scripts/build_cvs_stage2_runtime_closure.py --source-code-root code --output-root "$ART/runtime_closure"
+```
+
+每步stdout写入`$ART/01...05_*.json`，最终把`candidate_capsule.json`外部SHA和所有artifact SHA写入`$ART/artifact_sha256s.txt`。任一步失败即停止，不覆盖或删除部分输出。
+
 ## 完成后结果表
 
 实验完成后在本节追加逐单元同一行结果，至少包含candidate ID、机制、receiver/TX split、K-shot、seed、old/seen-new/unknown指标、coverage/rollback/defer、loss/adapter摘要和最终判定。不得用来自不同单元的独立极值替代联合行。
