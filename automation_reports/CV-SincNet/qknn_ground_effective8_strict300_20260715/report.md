@@ -385,3 +385,5 @@ K10使注册前adapt由K1的64.44%提高到76.94%，并从低于direct 5.83pp转
 | TR-4 | 125任务诉求与当前严格25/75/300/900计划 | 只有全部300 cells/900 rows完成并通过protocol receipts才可聚合性能 | 新run states、receipts、本报告 | blocked | 8/8 shard complete、300 cell receipts、900同row formal rows、完整driver日志 | 等待TR-3同步与全新运行根完成 |
 
 结构化审计定位的4个raw命中分别为：shard2的`query_leo_weak_iq.npy`中`2-5`、shard3/4的同一数值成员中`1-8`、shard6的`support_pool_leo_weak_iq.npy`中`8-3`；相应NPZ全部字符串数组均无任何old/new role或TX标签。修复仅把`.npz`扫描从整包随机字节改为`S/U`文本成员扫描；其他文件仍逐字节扫描。`py_compile`通过，`ssr-gpu`下26项build/bundle/sealed pipeline/strict package/plan authority/CLI测试通过，4个实际失败NPZ回传后由修复代码复扫为PASS。TR-3仍须在Git提交、远端SHA核验和全新运行根落地后才能验证。
+
+本地版本状态已在远端变更前冻结：Git提交=`29d0c3d43b604db05771dd8c15d841663858b5ec`；修改文件为`code/scripts/build_cvs_stage2_predictor_bundle.py`（NPZ语义文本扫描）和`tests/test_build_cvs_stage2_predictor_bundle.py`（数值短标签碰撞正例、结构化query token泄漏负例），报告同步记录证据。目标脚本本地SHA=`81efd50c9c01b4e1b8c7c8252c58731e0c603bb918131e85b615341387f7f1de`，唯一同步目标为`/home/szu2070436088/2510044040/CV-SincNet/code/scripts/build_cvs_stage2_predictor_bundle.py`。同步后必须复算同一SHA；v12根、packages、cells、logs和states均只读保留。
