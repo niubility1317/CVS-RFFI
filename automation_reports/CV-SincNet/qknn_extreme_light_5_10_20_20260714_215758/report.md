@@ -424,3 +424,20 @@ FFT96暂不降维。在20新类K10中，注册类总数为26，物理support为2
 上线前占用于08:43:49 CST复核：8张GPU各有1个既有RIEI训练进程，GPU7的既有PID=`1058292`、显存624MiB，卡总显存24,576MiB；本实验作为GPU7上的第2个短作业，不超过项目默认的每卡2个训练实验上限。项目盘剩余7.6TB，目标run/log根均不存在。同步后trainer SHA256与本地一致，远端`py_compile`PASS；远端`CVS-RFFI`环境未安装pytest，因此远端pytest未启动，本地33/33回归和上述实体checkpoint审计作为上线验证。
 
 预注册服务器命令为`cd /home/szu2070436088/2510044040/CV-SincNet && mkdir -p logs/qknn_extreme_light_support_film5_20260715_v8 && CUDA_VISIBLE_DEVICES=7 PYTHONPATH=/home/szu2070436088/2510044040/CV-SincNet/code:/home/szu2070436088/2510044040/CV-SincNet /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u paper_reproduction/scripts/train_export_cvs_support_lora_adapter.py --config paper_reproduction/configs/cvs_qknnv42_extreme_light_20new_stage2c_k10_rawiq_20260715_n607.json --ckpt runs/phase1_adv3_mechanism32_queue_20260701/ADV3B02_CORE90_SOFT_E200/best_joint_safe_ssdg.pth --out_root runs/qknn_extreme_light_support_film5_20260715_v8 --receiver 8-8 --new_count 20 --seed 713101 --k_shot 10 --adapter_type late_film --epochs 5 --optimizer sgd --max_optimizer_steps 50 --grad_clip 1 --view_sampling_mode rotating_single --matched_view_teacher_weight 0.25 --learning_rate 3e-3 --weight_decay 1e-4 --temperature 18 --feature_anchor_weight 0.05 --batch_size 126 --device cuda:0 > logs/qknn_extreme_light_support_film5_20260715_v8/rx8-8_new20_seed713101_k10.log 2>&1`。预期仅15个optimizer step；完成后必须扫描全量训练日志、核验manifest/NPZ哈希并再运行独立0epoch prototype head，否则不作性能结论。
+
+### 1,280参数late-FiLM机制gate结果
+
+N607 PID=`1066435`完成5epoch，实际15个SGD optimizer step，未触发50-step cap。五个epoch按预注册view序列`0,1,2,0,1`运行，训练阶段累计0.7409s，support前向样本等效3,380，峰值CUDA分配172,684,800B，约164.7MiB。完整79行日志含5条epoch记录，错误、Traceback与非有限数都为0；最终support train accuracy=36.15%，loss=3.13951，matched-view teacher loss=0.15076。训练出的scale/bias绝对值仅约`1e-4–3.7e-3`，表明它实际保持在近identity区域。
+
+三场景NPZ各含1,506行，本地重算SHA256与training manifest逐一一致：`clear=dca1b7d9...206b`、`low=421a7426...9a5`、`rain=2deb3d1f...e4d8`。adapter FP16 tensor状态2,560B，`.pt`文件5,828B，原checkpoint参数更新为0，SGD optimizer持久状态为0。与26类0epoch prototype head组合后，总持久状态29,184B，新增决算计算7,936MAC/query，query仍为1-view。
+
+| 同一`8-8/new20/seed713101/K10`row | old | 最低旧类 | new20 | H | 最低新类 |
+|---|---:|---:|---:|---:|---:|
+|原始冻结ADV3B02+0epoch prototype|64.17%|18.33%|64.75%|64.42%|15.00%|
+|1,280参数late-FiLM 5epoch+0epoch prototype|63.06%|16.67%|65.00%|63.99%|16.67%|
+|12,800参数feat-joint LoRA 20epoch+0epoch prototype|73.06%|51.67%|83.33%|77.80%|38.33%|
+|正式目标|95.00%|88.00%|86.00%|—|—|
+
+late-FiLM相对原始同头基线为`-1.11/-1.66/+0.25/-0.43pp`，对old和floor无机制增益；相对20epoch LoRA则少`10.00/35.00/18.33/13.81pp`。因此不能把该结果解释为“压缩后轻微掉点”：实际是1,280个通道scale/bias在15次更新内没有产生LoRA所需的类条件几何变化。该机制gate失败，不运行5epoch可训head，不扩第二开发seed、5/10类、K5、其它receiver或确认seed。
+
+下一合法方向不能根据该query row继续扫学习率，而应把地面与星上阶段分开：仅在source receiver/day和合法信道view上地面预训小模块，使单view student在上星前已具有多view域不变几何；星上阶段仍只用target support执行3–5epoch、最多50步校准。地面预训的选模只读source validation，不读当前target query，以避免在同一query cell上继续超参拟合。
