@@ -1,0 +1,3 @@
+reference_arm,count,delta_old_acc_mean,delta_old_acc_ci95,old_acc_wins,old_acc_ties,old_acc_losses,delta_seen_new_acc_mean,delta_seen_new_acc_ci95,seen_new_acc_wins,seen_new_acc_ties,seen_new_acc_losses,delta_H_old_new_mean,delta_H_old_new_ci95,H_old_new_wins,H_old_new_ties,H_old_new_losses
+full_legacy_oracle_strict,125,-0.05980000000000007,0.007672380913025107,4,0,121,-0.19413333333333335,0.018691153917099076,1,1,123,-0.13215398305097156,0.012022729713969905,0,0,125
+singleview_fft96_strict,125,0.029622222222222213,0.010652015890116644,87,2,36,0.09186666666666665,0.019452324243654968,100,3,22,0.06446949594625966,0.012524423892583552,108,0,17

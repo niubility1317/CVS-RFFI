@@ -1,0 +1,80 @@
+{
+  "artifact_complete": true,
+  "errors": [],
+  "metrics_files": 125,
+  "expected_files_per_run": 8,
+  "file_set_failure_count": 0,
+  "file_set_failure_examples": [],
+  "receiver_counts": {
+    "20-1": 25,
+    "3-19": 25,
+    "7-14": 25,
+    "7-7": 25,
+    "8-8": 25
+  },
+  "seed_counts": {
+    "713101": 25,
+    "713102": 25,
+    "713103": 25,
+    "713104": 25,
+    "713105": 25
+  },
+  "k_counts": {
+    "1": 25,
+    "2": 25,
+    "5": 25,
+    "10": 25,
+    "20": 25
+  },
+  "scenario_metric_rows": 375,
+  "role_oracle_values": [
+    false
+  ],
+  "equal_class_quota_values": [
+    false
+  ],
+  "decision_modes": [
+    "per_sample_argmax"
+  ],
+  "feature_adapter_modes": [
+    "support_diag_whiten_fisher"
+  ],
+  "labelprop_modes": [
+    "dense_transductive"
+  ],
+  "protocol_mechanism_failure_count": 0,
+  "protocol_mechanism_failure_examples": [],
+  "query_identity_groups": 75,
+  "support_nesting_groups": 75,
+  "support_nesting_failure_count": 0,
+  "support_nesting_failure_examples": [],
+  "loss_rows": 375,
+  "nonfinite_loss_rows": 0,
+  "score_rows": 60000,
+  "log_audit": {
+    "file_count": 140,
+    "total_bytes": 281885,
+    "total_lines": 430,
+    "error_hit_counts": {
+      "traceback": 0,
+      "runtime_error": 0,
+      "value_error": 0,
+      "oom": 0,
+      "killed": 0,
+      "nan_or_inf": 0
+    },
+    "error_hit_examples": {
+      "traceback": [],
+      "runtime_error": [],
+      "value_error": [],
+      "oom": [],
+      "killed": [],
+      "nan_or_inf": []
+    },
+    "worker_summary_count": 5,
+    "assigned": 0,
+    "completed": 125,
+    "failed": 0,
+    "skipped": 0
+  }
+}
