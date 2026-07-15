@@ -381,7 +381,7 @@ cross-view LoRA完成20epoch：leave-one-view-out CE由3.24263降至1.31834，su
 
 ### 5-view与FFT96的压缩方式
 
-5-view不应直接删掉其中的鲁棒性信息，而应改成“地面teacher、星上student”：地面使用历史5-view完整体生成软label或中间特征目标，只训练上述2k–4k的FiLM/IA3 student；上星后只携带student参数，query固定1-view。这一设计将历史5-view的计算留在地面，同时保留将其知识迁移给单view模型的可能性。
+5-view不应直接删掉其中的鲁棒性信息，而应改成“地面teacher、星上student”：地面teacher只使用合法地面数据或注册support的5-view前向特征/软logit，并在role/quota Oracle之前截断；不得使用query标签、query角色或Hungarian分配输出作蒸馏目标。teacher只训练上述2k–4k的FiLM/IA3 student；上星后只携带student参数，query固定1-view。这一设计将历史5-view的计算留在地面，同时保留将其多视图鲁棒性迁移给单view模型的可能性。
 
 FFT96暂不降维。在20新类K10中，注册类总数为26，物理support为260条。`z_id160+FFT96`的单view support cache为`260×256×2=133,120B`，约130KiB FP16；转为逐维INT8后约65KiB。因此星上不应常驻三个FP16 support view，而应采用单view INT8 cache或streaming读入。FFT32只作后续独立消融，在证明不损害old/floor前不作默认。
 
