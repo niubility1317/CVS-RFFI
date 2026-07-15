@@ -170,11 +170,36 @@ def parse_matrix(run_root: Path) -> tuple[list[dict[str, Any]], dict[str, Any]]:
             for key, expected in required_training.items():
                 if training.get(key) != expected:
                     errors.append(f"training_flag:{task_id}:{key}={training.get(key)!r}")
+            checkpoint_audit = training.get("checkpoint_load_audit", {})
+            for key in ("missing_keys", "unexpected_keys", "skipped_mismatch"):
+                if int(checkpoint_audit.get(key, -1)) != 0:
+                    errors.append(
+                        f"checkpoint_load:{task_id}:{key}={checkpoint_audit.get(key)!r}"
+                    )
+            expected_tier = (
+                "preferred"
+                if epochs <= 20
+                else (
+                    "performance_relaxed"
+                    if epochs <= 40
+                    else "non_extreme_light_resource_control"
+                )
+            )
+            if training.get("resource_tier") != expected_tier:
+                errors.append(
+                    f"resource_tier:{task_id}:{training.get('resource_tier')!r}!={expected_tier!r}"
+                )
+            if int(training.get("support_view_count", -1)) != 3:
+                errors.append(f"support_view_count:{task_id}")
             if contract.get("roles") != ["target_old_support", "target_new_support"]:
                 errors.append(f"training_roles:{task_id}:{contract.get('roles')!r}")
             for key in ("clean_samples_used", "source_samples_used", "proxy_samples_used", "query_samples_used"):
                 if contract.get(key) is not False:
                     errors.append(f"forbidden_training_sample:{task_id}:{key}")
+            if int(contract.get("physical_support_count", -1)) != 8 * k_shot:
+                errors.append(
+                    f"physical_support_count:{task_id}:{contract.get('physical_support_count')}"
+                )
             if len(trace) != epochs:
                 errors.append(f"trace_length:{task_id}:{len(trace)}!={epochs}")
             for index, item in enumerate(trace, 1):
@@ -192,6 +217,18 @@ def parse_matrix(run_root: Path) -> tuple[list[dict[str, Any]], dict[str, Any]]:
                     errors.append(f"train_eval_support_mismatch:{task_id}:{scenario}")
             raw_resources = training["resources"]
             runtime = training["runtime"]
+            expected_resources = {
+                "trainable_parameters": 154,
+                "adapter_state_bytes_fp16": 308,
+                "adapter_macs_per_query": 34816,
+                "backbone_trainable_parameters": 0,
+                "backbone_gradient_updates": 0,
+            }
+            for key, expected in expected_resources.items():
+                if int(raw_resources.get(key, -1)) != expected:
+                    errors.append(
+                        f"adapter_resource:{task_id}:{key}={raw_resources.get(key)!r}!={expected}"
+                    )
             resources = {
                 "adapter_parameters": int(raw_resources["trainable_parameters"]),
                 "adapter_state_bytes_fp16": int(raw_resources["adapter_state_bytes_fp16"]),
