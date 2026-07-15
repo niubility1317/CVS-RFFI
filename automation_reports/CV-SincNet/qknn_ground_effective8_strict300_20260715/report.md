@@ -261,6 +261,8 @@ v9 attempt1以PID=`1906162`运行，首次完整执行了ADV3B02 support/query f
 
 strict plan v19绑定strict_v13与全新`..._landlock_strict300_v10`运行根，25 cache/75 package/300 cell/900 formal row，继续保持`launch_authority=false`、`authority_state=N607_LANDLOCK_SMOKE_REQUIRED`，清单SHA=`7868eccb4cf6b639ad6c46b046a656c5ce74c9ee54760fcfe50e0549c28e91e4`。生成后只读摘要脚本曾因误用旧字段名`cache_count`返回1，但清单已完整生成并按实际`cache_steps/package_steps/cells`重新核验通过；该摘要错误不属于计划或实验失败。
 
+00:39再次核验8张GPU空闲且无严格runner。v10根原先不存在，现仅创建`protocol_plan/`并同步`strict_plan_manifest_v19.json`；smoke将使用新路径`smoke_driver_v10_attempt1.pid`、`logs/smoke_driver_v10_attempt1.out`、`logs/smoke_v10_attempt1`和`smoke_receipt.json`。权限仍严格锁定K1/new20单cell，K10与矩阵未授权。
+
 ## 完成后结果表
 
 实验完成后在本节追加逐单元同一行结果，至少包含candidate ID、机制、receiver/TX split、K-shot、seed、old/seen-new/unknown指标、coverage/rollback/defer、loss/adapter摘要和最终判定。不得用来自不同单元的独立极值替代联合行。
