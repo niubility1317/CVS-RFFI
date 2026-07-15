@@ -48,12 +48,12 @@
   },
   "stage2_opgac_priority_policy": {
     "schema": "stage2_opgac_priority_policy_v1",
-    "status": "ACTIVE_OPGAC_FIRST_OLD80_FIRST_AFTER_PHASE1_FLOORREPAIR_AUDIT",
-    "effective_from": "2026-07-01T00:00:00+08:00",
+    "status": "HISTORICAL_COMPARATOR_NO_CURRENT_LAUNCH_AUTHORITY",
+    "effective_from": "2026-07-15T19:05:00+08:00",
     "user_directive": "尤其是阶段二OPGAC；阶段二使用的模型基底为JREF_C9_MULTICOMP_M2_E220；增加必要的指标分析和指标优化。",
-    "current_phase2_boundary": "Do not enter Phase2 launch until the state-required Phase1 FLOORREPAIR completion audit and full training-log/loss analysis boundary clears.",
-    "route_family_default": "OPGAC_NET",
-    "stage2_base_model_id": "JREF_C9_MULTICOMP_M2_E220",
+    "current_phase2_boundary": "Superseded by project.md section 10.3.1 and the 2026-07-15 qKNNv42 strict ADV3B02 objective.",
+    "route_family_default": "QKNNV42_EXTREME_LIGHT_STRICT_ADV3B02",
+    "stage2_base_model_id": "ADV3B02_CORE90_SOFT_E200",
     "stage2_base_model_role": "receiver_floor_local_mode_diagnostic_base_not_phase1_mainline_or_deployment_success",
     "local_code_hooks": [
       "code/cvsrffi/opgac_net.py",
@@ -102,8 +102,8 @@
       ]
     },
     "matrix_policy": {
-      "include_opgac_rows_when_phase2_lane_idle_and_phase1_boundary_clears": true,
-      "oa_mse_role": "comparator_or_diagnostic_not_default_primary",
+      "include_opgac_rows_when_phase2_lane_idle_and_phase1_boundary_clears": false,
+      "oa_mse_role": "historical_comparator_only",
       "non_opgac_replacement_requires_reported_validator_or_protocol_blocker": true
     }
   },
@@ -113,20 +113,20 @@
       "DEFERRED_RETRY_RUNTIME_BUDGET",
       "MONITOR_ONLY_CONTINUE"
     ],
-    "combined_max_active_per_gpu": 4,
-    "effective_from": "2026-06-22T11:52:04+08:00",
+    "combined_max_active_per_gpu": 2,
+    "effective_from": "2026-07-15T19:05:00+08:00",
     "legacy_meta_learning_candidate_quota_per_matrix": 0,
     "meta_learning_candidate_quota_per_matrix": 0,
     "phase1_ground_dg_candidate_quota_per_matrix": 8,
     "phase1_ground_dg_route_family_default": "SAFE_SSDG_CVS_R01",
     "phase1_default_candidates_per_gpu": 1,
     "phase1_max_active_per_gpu": 1,
-    "phase2_default_candidates_per_gpu": 7,
-    "phase2_max_active_per_gpu": 3,
+    "phase2_default_candidates_per_gpu": 1,
+    "phase2_max_active_per_gpu": 2,
     "server_landed_required_for_idle_lanes": true,
     "slot_borrowing_policy": "Do not borrow the other lane's reserved active capacity by default; defer extra rows unless the user explicitly overrides.",
-    "stage2_candidate_quota_per_matrix": 56,
-    "user_directive": "Phase2 keeps three active experiments per GPU, Phase1 keeps one active experiment per GPU, so both lanes together run at most four experiments per GPU. The eight Phase1 slots are now Safe-SSDG-CVS-R01 or matched CEN51_R04 source-only DG non-regression rows, not previous meta-learning DG rows. CEN51_R04 is the hard floor; Safe-SSDG candidates should target stronger-than-CEN51 performance, especially positive lift on star-ground satellite/LEO metrics."
+    "stage2_candidate_quota_per_matrix": 300,
+    "user_directive": "Current AGENTS.md permits at most two concurrent training experiments per GPU in total; use one qKNN strict smoke per GPU by default and never infer capacity without a fresh live inventory."
   },
   "lane_monitor_policy": {
     "active_lane_evidence_boundary": "Do not read active-lane logs, metrics, checkpoints, final markers, handoff, registry rows, or historical reports to decide that lane's optimizer entry or to make effect conclusions for another lane.",
@@ -319,7 +319,7 @@
     },
     "claim_boundary": "Startup PASS, protocol PASS, high pseudo-label coverage, and single-seed partial evidence are not Phase1 DG completion, CEN51 no-worse proof, or Stage2 deployment success."
   },
-  "last_updated_local": "2026-06-28T22:48:14+08:00",
+  "last_updated_local": "2026-07-15T19:05:00+08:00",
   "latest_controller_review_result": {
     "schema": "controller_multi_role_review_v1",
     "timestamp_local": "2026-06-28T22:48:14+08:00",
@@ -565,144 +565,200 @@
     "schema": "two_lane_monitor_gate_v1",
     "automation_id": "cv-sincnet-n607-monitor-optimizer-v4-2",
     "run_id": "stage2_spaceborne_h06_phase1_floorrepair_20260628_221940",
-    "raw_inventory_artifact": "automation_reports/CV-SincNet/stage2_spaceborne_h06_phase1_floorrepair_20260628_221940/raw_training_inventory_startup.json",
-    "collected_at_remote": "2026-06-28T22:31:47+0800",
+    "raw_inventory_artifact": "E:\\type10-7\\automation_reports\\CV-SincNet\\stage2_spaceborne_h06_phase1_floorrepair_20260628_221940\\raw_training_inventory_20260701_012102.json",
+    "collected_at_remote": "2026-07-01T01:24:52+0800",
     "route_used": "direct",
     "host": "dell-DSS8440",
-    "gpu_compute_count": 8,
+    "gpu_compute_count": 16,
     "phase1_monitor_state": 0,
     "phase2_monitor_state": 1,
     "unsafe_ambiguous_cross_lane": 0,
-    "phase1_active_training_processes": 8,
+    "phase1_active_training_processes": 16,
     "phase2_active_processes": 0,
-    "launcher_context_count": 9,
-    "candidate_processes": [
+    "launcher_context_count": 0,
+    "phase1_process_summary": [
       {
-        "candidate_id": "PHASE1_FLOOR_REPAIR_MIXSTYLE_STRICTUDU_FLOOR_TUNE_GPU0_A",
-        "gpu": 0,
-        "pid": "585803",
-        "used_memory_mib": "2338",
-        "category": "oldrecov_proto_bridge",
-        "route_family": "SAFE_SSDG_CVS_R01",
-        "command_hash": "644058e0b3838b07",
-        "remote_run_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/stage2_spaceborne_h06_phase1_floorrepair_20260628_221940/PHASE1_FLOOR_REPAIR_MIXSTYLE_STRICTUDU_FLOOR_TUNE_GPU0_A",
-        "remote_log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/stage2_spaceborne_h06_phase1_floorrepair_20260628_221940/PHASE1_FLOOR_REPAIR_MIXSTYLE_STRICTUDU_FLOOR_TUNE_GPU0_A.out",
-        "startup_epoch_seen": "E007/200",
-        "startup_metrics_epoch_files_seen": true
+        "pid": "2145922",
+        "lane_classifier": "centralized",
+        "confidence": "high",
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet",
+        "cmdline_excerpt": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/code/SSDG/train_ssdg.py --wisig_pkl /home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl --split_mode tx_rx_day_1_7_2 --labeled_ratio 0.10 --unlabeled_ratio 0.70 --source_val_ratio 0.20 -",
+        "gpu_compute_pids": [
+          "2145922"
+        ],
+        "descendant_gpu_pids": []
       },
       {
-        "candidate_id": "PHASE1_FLOOR_REPAIR_SATLATE_STRICTUDU_RECEIVER_TUNE_GPU1_A",
-        "gpu": 1,
-        "pid": "585808",
-        "used_memory_mib": "2326",
-        "category": "oldrecov_ridge_head",
-        "route_family": "SAFE_SSDG_CVS_R01",
-        "command_hash": "54baf77400156aef",
-        "remote_run_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/stage2_spaceborne_h06_phase1_floorrepair_20260628_221940/PHASE1_FLOOR_REPAIR_SATLATE_STRICTUDU_RECEIVER_TUNE_GPU1_A",
-        "remote_log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/stage2_spaceborne_h06_phase1_floorrepair_20260628_221940/PHASE1_FLOOR_REPAIR_SATLATE_STRICTUDU_RECEIVER_TUNE_GPU1_A.out",
-        "startup_epoch_seen": "E007/200",
-        "startup_metrics_epoch_files_seen": true
+        "pid": "2146865",
+        "lane_classifier": "centralized",
+        "confidence": "high",
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet",
+        "cmdline_excerpt": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/code/SSDG/train_ssdg.py --wisig_pkl /home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl --split_mode tx_rx_day_1_7_2 --labeled_ratio 0.10 --unlabeled_ratio 0.70 --source_val_ratio 0.20 -",
+        "gpu_compute_pids": [
+          "2146865"
+        ],
+        "descendant_gpu_pids": []
       },
       {
-        "candidate_id": "PHASE1_FLOOR_REPAIR_PSEUDOLOW_GROUPFLOOR_CONTROL_GPU2_A",
-        "gpu": 2,
-        "pid": "585817",
-        "used_memory_mib": "2276",
-        "category": "oldrecov_proto_bridge",
-        "route_family": "SAFE_SSDG_CVS_R01",
-        "command_hash": "972243d14eaf829b",
-        "remote_run_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/stage2_spaceborne_h06_phase1_floorrepair_20260628_221940/PHASE1_FLOOR_REPAIR_PSEUDOLOW_GROUPFLOOR_CONTROL_GPU2_A",
-        "remote_log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/stage2_spaceborne_h06_phase1_floorrepair_20260628_221940/PHASE1_FLOOR_REPAIR_PSEUDOLOW_GROUPFLOOR_CONTROL_GPU2_A.out",
-        "startup_epoch_seen": "E006/200",
-        "startup_metrics_epoch_files_seen": true
+        "pid": "2147517",
+        "lane_classifier": "centralized",
+        "confidence": "high",
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet",
+        "cmdline_excerpt": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/code/SSDG/train_ssdg.py --wisig_pkl /home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl --split_mode tx_rx_day_1_7_2 --labeled_ratio 0.10 --unlabeled_ratio 0.70 --source_val_ratio 0.20 -",
+        "gpu_compute_pids": [
+          "2147517"
+        ],
+        "descendant_gpu_pids": []
       },
       {
-        "candidate_id": "PHASE1_FLOOR_REPAIR_FISHR_ORTH_RECEIVER_LIFT_GPU3_A",
-        "gpu": 3,
-        "pid": "585829",
-        "used_memory_mib": "2170",
-        "category": "oldrecov_ridge_head",
-        "route_family": "SAFE_SSDG_CVS_R01",
-        "command_hash": "a9fa5376c6895159",
-        "remote_run_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/stage2_spaceborne_h06_phase1_floorrepair_20260628_221940/PHASE1_FLOOR_REPAIR_FISHR_ORTH_RECEIVER_LIFT_GPU3_A",
-        "remote_log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/stage2_spaceborne_h06_phase1_floorrepair_20260628_221940/PHASE1_FLOOR_REPAIR_FISHR_ORTH_RECEIVER_LIFT_GPU3_A.out",
-        "startup_epoch_seen": "E007/200",
-        "startup_metrics_epoch_files_seen": true
+        "pid": "2148505",
+        "lane_classifier": "centralized",
+        "confidence": "high",
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet",
+        "cmdline_excerpt": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/code/SSDG/train_ssdg.py --wisig_pkl /home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl --split_mode tx_rx_day_1_7_2 --labeled_ratio 0.10 --unlabeled_ratio 0.70 --source_val_ratio 0.20 -",
+        "gpu_compute_pids": [
+          "2148505"
+        ],
+        "descendant_gpu_pids": []
       },
       {
-        "candidate_id": "PHASE1_FLOOR_REPAIR_PAIC_LOWCLS_RECEIVER_BALANCE_GPU4_A",
-        "gpu": 4,
-        "pid": "585841",
-        "used_memory_mib": "2120",
-        "category": "oldrecov_proto_bridge",
-        "route_family": "SAFE_SSDG_CVS_R01",
-        "command_hash": "a692fe64bb3b23d5",
-        "remote_run_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/stage2_spaceborne_h06_phase1_floorrepair_20260628_221940/PHASE1_FLOOR_REPAIR_PAIC_LOWCLS_RECEIVER_BALANCE_GPU4_A",
-        "remote_log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/stage2_spaceborne_h06_phase1_floorrepair_20260628_221940/PHASE1_FLOOR_REPAIR_PAIC_LOWCLS_RECEIVER_BALANCE_GPU4_A.out",
-        "startup_epoch_seen": "E007/200",
-        "startup_metrics_epoch_files_seen": true
+        "pid": "2149209",
+        "lane_classifier": "centralized",
+        "confidence": "high",
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet",
+        "cmdline_excerpt": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/code/SSDG/train_ssdg.py --wisig_pkl /home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl --split_mode tx_rx_day_1_7_2 --labeled_ratio 0.10 --unlabeled_ratio 0.70 --source_val_ratio 0.20 -",
+        "gpu_compute_pids": [
+          "2149209"
+        ],
+        "descendant_gpu_pids": []
       },
       {
-        "candidate_id": "PHASE1_FLOOR_REPAIR_STRICTUDU_SATRETENTION_GUARD_GPU5_A",
-        "gpu": 5,
-        "pid": "585849",
-        "used_memory_mib": "2154",
-        "category": "oldrecov_ridge_head",
-        "route_family": "SAFE_SSDG_CVS_R01",
-        "command_hash": "6e08fe13f73f712f",
-        "remote_run_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/stage2_spaceborne_h06_phase1_floorrepair_20260628_221940/PHASE1_FLOOR_REPAIR_STRICTUDU_SATRETENTION_GUARD_GPU5_A",
-        "remote_log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/stage2_spaceborne_h06_phase1_floorrepair_20260628_221940/PHASE1_FLOOR_REPAIR_STRICTUDU_SATRETENTION_GUARD_GPU5_A.out",
-        "startup_epoch_seen": "E007/200",
-        "startup_metrics_epoch_files_seen": true
+        "pid": "2150382",
+        "lane_classifier": "centralized",
+        "confidence": "high",
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet",
+        "cmdline_excerpt": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/code/SSDG/train_ssdg.py --wisig_pkl /home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl --split_mode tx_rx_day_1_7_2 --labeled_ratio 0.10 --unlabeled_ratio 0.70 --source_val_ratio 0.20 -",
+        "gpu_compute_pids": [
+          "2150382"
+        ],
+        "descendant_gpu_pids": []
       },
       {
-        "candidate_id": "PHASE1_FLOOR_REPAIR_PSEUDOOOFF_FISHR_FLOOR_GUARD_GPU6_A",
-        "gpu": 6,
-        "pid": "585862",
-        "used_memory_mib": "2272",
-        "category": "oldrecov_proto_bridge",
-        "route_family": "SAFE_SSDG_CVS_R01",
-        "command_hash": "f6f341f740b93493",
-        "remote_run_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/stage2_spaceborne_h06_phase1_floorrepair_20260628_221940/PHASE1_FLOOR_REPAIR_PSEUDOOOFF_FISHR_FLOOR_GUARD_GPU6_A",
-        "remote_log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/stage2_spaceborne_h06_phase1_floorrepair_20260628_221940/PHASE1_FLOOR_REPAIR_PSEUDOOOFF_FISHR_FLOOR_GUARD_GPU6_A.out",
-        "startup_epoch_seen": "E007/200",
-        "startup_metrics_epoch_files_seen": true
+        "pid": "2151082",
+        "lane_classifier": "centralized",
+        "confidence": "high",
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet",
+        "cmdline_excerpt": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/code/SSDG/train_ssdg.py --wisig_pkl /home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl --split_mode tx_rx_day_1_7_2 --labeled_ratio 0.10 --unlabeled_ratio 0.70 --source_val_ratio 0.20 -",
+        "gpu_compute_pids": [
+          "2151082"
+        ],
+        "descendant_gpu_pids": []
       },
       {
-        "candidate_id": "PHASE1_FLOOR_REPAIR_CEN51_REFRESH_CONTROL_SEED3_GPU7_A",
-        "gpu": 7,
-        "pid": "585869",
-        "used_memory_mib": "2350",
-        "category": "oldrecov_ridge_head",
-        "route_family": "CEN51_REFRESH_CONTROL",
-        "command_hash": "06abd9840c36169e",
-        "remote_run_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/stage2_spaceborne_h06_phase1_floorrepair_20260628_221940/PHASE1_FLOOR_REPAIR_CEN51_REFRESH_CONTROL_SEED3_GPU7_A",
-        "remote_log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/stage2_spaceborne_h06_phase1_floorrepair_20260628_221940/PHASE1_FLOOR_REPAIR_CEN51_REFRESH_CONTROL_SEED3_GPU7_A.out",
-        "startup_epoch_seen": "E007/200",
-        "startup_metrics_epoch_files_seen": true
+        "pid": "2152279",
+        "lane_classifier": "centralized",
+        "confidence": "high",
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet",
+        "cmdline_excerpt": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/code/SSDG/train_ssdg.py --wisig_pkl /home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl --split_mode tx_rx_day_1_7_2 --labeled_ratio 0.10 --unlabeled_ratio 0.70 --source_val_ratio 0.20 -",
+        "gpu_compute_pids": [
+          "2152279"
+        ],
+        "descendant_gpu_pids": []
+      },
+      {
+        "pid": "2153231",
+        "lane_classifier": "centralized",
+        "confidence": "high",
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet",
+        "cmdline_excerpt": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/code/SSDG/train_ssdg.py --wisig_pkl /home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl --split_mode tx_rx_day_1_7_2 --labeled_ratio 0.10 --unlabeled_ratio 0.70 --source_val_ratio 0.20 -",
+        "gpu_compute_pids": [
+          "2153231"
+        ],
+        "descendant_gpu_pids": []
+      },
+      {
+        "pid": "2154450",
+        "lane_classifier": "centralized",
+        "confidence": "high",
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet",
+        "cmdline_excerpt": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/code/SSDG/train_ssdg.py --wisig_pkl /home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl --split_mode tx_rx_day_1_7_2 --labeled_ratio 0.10 --unlabeled_ratio 0.70 --source_val_ratio 0.20 -",
+        "gpu_compute_pids": [
+          "2154450"
+        ],
+        "descendant_gpu_pids": []
+      },
+      {
+        "pid": "2155167",
+        "lane_classifier": "centralized",
+        "confidence": "high",
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet",
+        "cmdline_excerpt": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/code/SSDG/train_ssdg.py --wisig_pkl /home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl --split_mode tx_rx_day_1_7_2 --labeled_ratio 0.10 --unlabeled_ratio 0.70 --source_val_ratio 0.20 -",
+        "gpu_compute_pids": [
+          "2155167"
+        ],
+        "descendant_gpu_pids": []
+      },
+      {
+        "pid": "2156294",
+        "lane_classifier": "centralized",
+        "confidence": "high",
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet",
+        "cmdline_excerpt": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/code/SSDG/train_ssdg.py --wisig_pkl /home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl --split_mode tx_rx_day_1_7_2 --labeled_ratio 0.10 --unlabeled_ratio 0.70 --source_val_ratio 0.20 -",
+        "gpu_compute_pids": [
+          "2156294"
+        ],
+        "descendant_gpu_pids": []
+      },
+      {
+        "pid": "2157022",
+        "lane_classifier": "centralized",
+        "confidence": "high",
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet",
+        "cmdline_excerpt": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/code/SSDG/train_ssdg.py --wisig_pkl /home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl --split_mode tx_rx_day_1_7_2 --labeled_ratio 0.10 --unlabeled_ratio 0.70 --source_val_ratio 0.20 -",
+        "gpu_compute_pids": [
+          "2157022"
+        ],
+        "descendant_gpu_pids": []
+      },
+      {
+        "pid": "2158117",
+        "lane_classifier": "centralized",
+        "confidence": "high",
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet",
+        "cmdline_excerpt": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/code/SSDG/train_ssdg.py --wisig_pkl /home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl --split_mode tx_rx_day_1_7_2 --labeled_ratio 0.10 --unlabeled_ratio 0.70 --source_val_ratio 0.20 -",
+        "gpu_compute_pids": [
+          "2158117"
+        ],
+        "descendant_gpu_pids": []
+      },
+      {
+        "pid": "2158702",
+        "lane_classifier": "centralized",
+        "confidence": "high",
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet",
+        "cmdline_excerpt": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/code/SSDG/train_ssdg.py --wisig_pkl /home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl --split_mode tx_rx_day_1_7_2 --labeled_ratio 0.10 --unlabeled_ratio 0.70 --source_val_ratio 0.20 -",
+        "gpu_compute_pids": [
+          "2158702"
+        ],
+        "descendant_gpu_pids": []
+      },
+      {
+        "pid": "2159584",
+        "lane_classifier": "centralized",
+        "confidence": "high",
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet",
+        "cmdline_excerpt": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/code/SSDG/train_ssdg.py --wisig_pkl /home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl --split_mode tx_rx_day_1_7_2 --labeled_ratio 0.10 --unlabeled_ratio 0.70 --source_val_ratio 0.20 -",
+        "gpu_compute_pids": [
+          "2159584"
+        ],
+        "descendant_gpu_pids": []
       }
     ],
-    "phase2_entrypoints": [],
-    "classification_basis": "Fresh direct N607 inventory shows the current run launcher and 8 GPU Python roots under code/SSDG/train_ssdg.py with run/log paths for this run_id. The inventory helper labels the launcher lane as unknown, but controller classification assigns it to Phase1 because no Phase2 eval/export/adapt entrypoint or Stage2 run path is present.",
-    "status": "PHASE1_FLOORREPAIR_ACTIVE_STARTUP_HEALTH_PASS_PHASE2_IDLE_CORRECTED_ENCODING",
-    "entered_optimizer": true,
-    "entered_runner": true,
-    "timestamp_local": "2026-06-28T22:48:14+08:00",
-    "current_state": "PHASE1_FLOORREPAIR_RUNNING_STARTUP_HEALTH_PASS",
-    "startup_health_summary": "automation_reports/CV-SincNet/stage2_spaceborne_h06_phase1_floorrepair_20260628_221940/startup_health_summary_corrected_encoding_20260628_224814.json",
-    "ssh_cleanup_artifact": "automation_reports/CV-SincNet/stage2_spaceborne_h06_phase1_floorrepair_20260628_221940/ssh_cleanup_final_startup.json",
-    "subagent_review": {
-      "status": "SUBAGENT_RUNTIME_UNAVAILABLE",
-      "roles_requested": [
-        "Protocol",
-        "Evidence",
-        "Runner/Validation/SSH",
-        "Supervision"
-      ],
-      "fallback": "controller_written_reviews"
-    },
-    "claim_boundary": "Startup health pass only; not Phase1 DG completion, not CEN51 no-worse proof, not base promotion, not Stage2-C/seen-new evidence, not deployment evidence, and not optimization success.",
-    "next_action": "MONITOR_PHASE1_FLOORREPAIR_TO_COMPLETION_AND_ANALYZE_FULL_TRAINING_LOGS"
+    "phase2_process_summary": [],
+    "ambiguous_process_summary": [],
+    "state_boundary_before_monitor": "PHASE1_FLOORREPAIR_COMPLETION_AUDIT_REQUIRED",
+    "controller_decision": "NO_OPTIMIZER_OR_RUNNER_THIS_TURN_COMPLETION_AUDIT_AND_STATE_RECONCILIATION_ONLY",
+    "next_action": "RECONCILE_CURRENT_ACTIVE_PHASE1_FSP_VACUUM_AND_RUN_FRESH_READ_ONLY_LANE_CAPACITY_PREFLIGHT_BEFORE_OPGAC_PHASE2"
   },
   "non_blocking_labels": [
     "PARETO_NO_NEW_ANCHOR",
@@ -3382,56 +3438,45 @@
   "source_audit": "automation_reports/CV-SincNet/audit_ground_to_space_fsl_20260614_165927/AUDIT_CVS_RFFI_GROUND_TO_SPACE_FSL.md",
   "stage2_sample_protocol": {
     "base_model_policy": {
-      "candidate_field_required": "cen51_base_checkpoint_or_config",
-      "required_base": "CEN51 strongest-generalization checkpoint",
-      "selection_rule": "Prefer the CEN51 checkpoint selected by strict cross-receiver/day generalization evidence, receiver floor, and satellite/LEO validation-control evidence; do not use latest/newest by default.",
-      "verification_required_before_completion_claim": true
+      "candidate_field_required": "adv3b02_checkpoint_and_sha256",
+      "required_base": "ADV3B02_CORE90_SOFT_E200 strict checkpoint",
+      "checkpoint_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3_mechanism32_queue_20260701/ADV3B02_CORE90_SOFT_E200/best_joint_safe_ssdg.pth",
+      "checkpoint_sha256": "2699eedcafe8cec880828592d2d65ba3781a9948939da5cf5c82b47143d59c98",
+      "strict_load_required": true,
+      "missing_unexpected_shape_mismatch_required": [
+        0,
+        0,
+        0
+      ],
+      "selection_rule": "The same sealed ADV3B02 checkpoint is used by candidate, identity-only, and strict-direct paired streams."
     },
-    "effective_from": "next_optimizer_turn",
+    "effective_from": "2026-07-15T19:05:00+08:00",
     "launchable_stage2_required_fields": [
-      "cen51_base_checkpoint_or_config",
-      "cen51_train_rxs",
-      "target_receiver_ids",
-      "target_old_tx_ids",
-      "target_new_tx_ids",
-      "unknown_tx_ids",
-      "target_old_leo_support",
-      "target_old_leo_query",
-      "target_new_leo_support",
-      "target_new_leo_query",
-      "unknown_leo_query",
-      "old_support_query_split",
-      "new_support_query_split",
+      "adv3b02_checkpoint_and_sha256",
+      "target_receiver_label",
+      "target_old_tx_labels",
+      "target_new_tx_labels_real_nested_5_10_20",
+      "k_shot in [1,5,10,20]",
+      "development_k_shot=10",
+      "target_channel_scenarios=leo_clear_weak,leo_low_elev_weak,leo_rain_weak",
       "phase2_sample_view_policy=leo_weak_only_no_clean_access",
       "clean_sample_access=false",
+      "clean_derived_signal_access=false",
+      "clean_raw_path_runtime_reachability=false",
+      "clean_cache_build_spec_runtime_reachability=false",
       "phase2_query_decision_policy=per_sample_all_registered_classes",
       "phase2_query_role_oracle_access=false",
-      "phase2_query_class_count_access=false",
+      "phase2_query_true_batch_class_count_access=false",
       "phase2_query_class_quota_access=false",
       "phase2_query_batch_global_assignment=false",
-      "target_channel_view=leo_weak_only",
-      "target_channel_scenarios=leo_clear_weak,leo_low_elev_weak,leo_rain_weak",
-      "satellite_seed_or_sample_overlay_provenance",
-      "threshold_selection_label_scope",
-      "unknown_query_eval_only=true",
-      "target_new_query_not_threshold_fit=true",
-      "unknown_FAR_target<=0.05",
-      "FPR95_target",
-      "uncertain_policy",
-      "onboard_low_compute_training=true",
-      "compute_budget_profile",
-      "adapter_trainable_params_cap",
-      "max_adapt_steps",
-      "old_acc_target>=0.90",
-      "seen_new_acc_target>=0.75",
-      "weibull_evt_required=true",
-      "target_adapter_required=true",
-      "pseudo_unknown_energy_required=true",
-      "seen_new_evidence_gate_required=true",
-      "seen_new_anchor_gate_required=true",
-      "siamese_verifier_required=true",
-      "accepted_only_online_update_required=true",
-      "oa_mse_onboard_adaptation_bundle=weibull_evt+target_adapter+pseudo_unknown_energy+seen_new_evidence_gate+seen_new_anchor_gate+siamese_verifier+accepted_only_online_update+stage2_receiver_domain"
+      "query_label_fit=false",
+      "dense_query_graph=false",
+      "predict_then_seal_then_independent_score=true",
+      "adapter_trainable_params<=50000",
+      "adapt_epochs<=20",
+      "persistent_state_bytes<=262144",
+      "adaptive_tta_views=1_to_3_to_5_per_sample",
+      "formal_launch_authority=true_only_after_all_runtime_and_data_evidence_pass"
     ],
     "receiver_split_policy": {
       "audit_required": "Verify actual CEN51 train/test receiver IDs from the CEN51 config, manifest, or logs before treating the split as final.",
@@ -3523,10 +3568,9 @@
       "new_clean_access_diagnostics_forbidden": true
     },
     "phase2_query_oracle_policy": {
-      "status": "ACTIVE_HARD_GATE",
+      "status": "ACTIVE_HARD_GATE_12_FIELD_RUNTIME_CONTRACT",
       "phase2_query_decision_policy": "per_sample_all_registered_classes",
       "phase2_query_role_oracle_access": false,
-      "phase2_query_class_count_access": false,
       "phase2_query_class_quota_access": false,
       "phase2_query_batch_global_assignment": false,
       "support_k_shot_allowed": true,
@@ -3545,11 +3589,16 @@
       "missing_or_conflicting_outcome": "LOCAL_PROTOCOL_REPAIR_REQUIRED",
       "historical_artifact_label": "PROTOCOL_INVALID_FOR_DEPLOYMENT",
       "historical_artifact_subtype": "ROLE_OR_CLASS_QUOTA_ORACLE",
-      "new_oracle_diagnostics_forbidden": true
+      "new_oracle_diagnostics_forbidden": true,
+      "phase2_query_true_batch_class_count_access": false,
+      "registered_class_count_access": true,
+      "query_label_fit": false,
+      "dense_query_graph": false,
+      "predictor_scorer_feedback": false
     },
-    "stage2_a": "Zero-target-label deploy: classify target_old query samples and reject target_new/unknown query samples using CEN51 base weights and preset gates; no new identity recognition and no target-label threshold fitting.",
-    "stage2_b": "Use only a small labeled target_old support set for old-class target calibration, then evaluate target_old query and target_new/unknown rejection under the same target receivers.",
-    "stage2_c": "If new labels are unavailable, remain rejection-only. If a small labeled target_new support set is explicitly allowed, treat it as seen-new enrollment and reserve separate unseen-new/unknown rejection queries.",
+    "stage2_a": "Frozen strict ADV3B02 direct/identity control on sealed leo_*_weak query artifacts; no target labels or query fitting.",
+    "stage2_b": "Use only sealed leo_*_weak target-old K-shot support for lightweight receiver adaptation; independently predict all registered old classes and seal before scoring.",
+    "stage2_c": "Use sealed leo_*_weak target-old plus real nested target-new K-shot support for seen-new enrollment; independently classify every query across all registered classes without role or quota Oracle.",
     "status": "ACTIVE",
     "tx_split_policy": {
       "legacy_split_invalid_without_new_audit": "source_tx_ids=0,1,2,3 with new_tx_ids=4,5 is no longer valid for launchable Stage2 rows.",
@@ -3573,28 +3622,28 @@
         "8-20"
       ]
     },
-    "user_directive_local": "2026-06-18 user corrected Phase2 sample boundary: CEN51 base, old classes are ManySig six TX on target receivers, new/unknown are non-ManySig TX on same target receivers. 2026-06-22 user corrected single-rsat interpretation: R_t may contain one or more receivers; launchability depends on R_t/R_s disjointness and target-old/target-new coverage. 2026-06-22 confirmed Phase2 candidate pool in project.md 8.4 should be preferred before inventing new dataset routes. 2026-07-15 user established Phase2 LEO_weak-only data reachability: every used sample and decision signal must come from an allowed leo_*_weak overlay, and Phase2 cannot access clean samples or clean-derived signals. 2026-07-15 user prohibited Phase2 query-role Oracle and class-count/class-quota/global-assignment Oracle; K-shot support composition remains legal.",
+    "user_directive_local": "2026-06-18 user corrected Phase2 sample boundary: CEN51 base, old classes are ManySig six TX on target receivers, new/unknown are non-ManySig TX on same target receivers. 2026-06-22 user corrected single-rsat interpretation: R_t may contain one or more receivers; launchability depends on R_t/R_s disjointness and target-old/target-new coverage. 2026-06-22 confirmed Phase2 candidate pool in project.md 8.4 should be preferred before inventing new dataset routes. 2026-07-15 user established Phase2 LEO_weak-only data reachability: every used sample and decision signal must come from an allowed leo_*_weak overlay, and Phase2 cannot access clean samples or clean-derived signals. 2026-07-15 user prohibited Phase2 query-role Oracle and class-count/class-quota/global-assignment Oracle; K-shot support composition remains legal. 2026-07-15 user selected strict ADV3B02 plus extreme-light qKNNv42, K10-only development, K1/5/20 locked confirmation, <=50k params, <=20 epochs, <=256KB state, adaptive 1-to-3-to-5 views, and explicit K1/forgetting gates.",
     "validator": {
       "policy": "Launchable Phase2 rows missing required fields, violating old/new/unknown TX disjointness or receiver split, lacking allowed leo_*_weak overlay provenance, or allowing any clean-sample/clean-derived access fail validation.",
       "tool": "tools/optimizer_validate_matrix.py"
     },
     "k_shot_policy": {
-      "status": "ACTIVE",
-      "k_must_be_positive_integer": true,
-      "recommended_k_shot_anchors": [
+      "status": "ACTIVE_K10_DEVELOPMENT_LOCKED_CONFIRMATION",
+      "development_k_shot": 10,
+      "confirmation_k_shots": [
         1,
-        2,
         5,
         10,
-        15,
-        20,
-        50
+        20
       ],
-      "recommended_not_exhaustive": true,
-      "few_shot_upper_bound": 20,
-      "high_k_label_required": "K>20 must be labeled higher-shot, medium-shot, or saturation",
-      "intermediate_values_allowed": true,
-      "user_directive_local": "2026-06-22 user requested K grid not be rigidly fixed."
+      "selection_feedback_forbidden_from": [
+        1,
+        5,
+        20
+      ],
+      "k1_requirement": "nonnegative_vs_identity_and_at_least_plus_2pp_vs_strict_direct_overall_and_per_receiver_with_paired_95ci_lower_gt_0",
+      "k5_requirement": "matched_metric_drop_vs_k10_le_3pp",
+      "forgetting_requirement": "no_worse_than_matched_identity_at_each_k"
     },
     "confirmed_phase2_candidate_pool": {
       "source": "project.md section 8.4 confirmed Phase2 WiSig candidate pool",
@@ -3703,7 +3752,8 @@
         }
       ],
       "selection_rule": "Generate Phase2 rows from this pool first; align pkl subsets by receiver label, not subset-local index."
-    }
+    },
+    "current_policy_status": "QKNNV42_EXTREME_LIGHT_PROTOCOL_REPAIR_REQUIRED"
   },
   "target_changelog": [
     {
@@ -4374,11 +4424,11 @@
   },
   "idle_lane_execution_policy": {
     "schema": "idle_lane_execution_policy_v1",
-    "status": "MONITOR_ONLY_PHASE1_ACTIVE_PHASE2_IDLE",
-    "effective_from": "2026-06-23T08:05:00+08:00",
+    "status": "REPAIR_UNTIL_RUNNER_EXECUTES",
+    "effective_from": "2026-07-15T19:05:00+08:00",
     "user_directive": "?????lane????????????????????????????",
     "idle_lane_must_execute_experiment": true,
-    "repair_until_runner_executes": false,
+    "repair_until_runner_executes": true,
     "repair_until_launch_phrase": "idle lane must execute / repair-until-launch; missing current-run matrix is repair work, not a terminal outcome",
     "disallowed_terminal_outcomes_for_idle_lane": [
       "analysis_only",
@@ -4442,9 +4492,11 @@
     "last_monitor_reconciled_result": "DUAL_IDLE_H06_ALREADY_COMPLETE_NEGATIVE_DIAGNOSTIC_NO_RELAUNCH",
     "latest_monitor_timestamp_local": "2026-06-28T10:28:55+08:00",
     "latest_monitor_result": "DUAL_IDLE_AFTER_PHASE1_CEN51_REPAIR_COMPLETION_AUDIT",
-    "latest_completion_audit_run_id": "stage2_spaceborne_h06_phase1_cen51repair_20260627_223448",
-    "latest_completion_audit_result": "COMPLETED_NEGATIVE_DIAGNOSTIC_CEN51_NO_WORSE_NOT_MET",
-    "required_next_action": "MONITOR_PHASE1_FLOORREPAIR_TO_COMPLETION_AND_ANALYZE_FULL_TRAINING_LOGS"
+    "latest_completion_audit_run_id": "stage2_spaceborne_h06_phase1_floorrepair_20260628_221940",
+    "latest_completion_audit_result": "PHASE1_FLOORREPAIR_COMPLETED_NEGATIVE_DIAGNOSTIC_CEN51_NO_WORSE_NOT_MET",
+    "required_next_action": "CLOSE_STRICT_RUNTIME_AND_TARGET_PACKAGE_BLOCKERS_THEN_FRESH_PREFLIGHT",
+    "latest_completion_audit_timestamp_local": "2026-07-01T01:24:52+08:00",
+    "current_policy_status": "ACTIVE_STRICT_QKNN_REPAIR_OR_HARD_PROTOCOL_BLOCKER"
   },
   "last_updated": "2026-06-28T22:48:14+08:00",
   "phase2_gpu_utilization_policy": {
@@ -4469,7 +4521,7 @@
     "protocol_authority": "项目.md first; revise 项目.md before any non-simplified future star-ground channel change",
     "latest_confirming_run": "stage2_spaceborne_next48ew_20260624_softtarget48"
   },
-  "current_run_id": "stage2_spaceborne_h06_phase1_floorrepair_20260628_221940",
+  "current_run_id": "qknnv42_extreme_light_control_repair_20260715",
   "previous_runner_result": {
     "schema": "optimizer_execution_registry_record_v1",
     "timestamp": "2026-06-26T23:55:52+08:00",
@@ -4917,7 +4969,7 @@
     "next_action": "MONITOR_PHASE1_FLOORREPAIR_TO_COMPLETION_AND_ANALYZE_FULL_TRAINING_LOGS",
     "correction_note": "Corrects the prior local UTF-16 Tee-Object parsing artifact that wrote scheduler/log/metrics counts as zero."
   },
-  "current_launcher": "code/scripts/launch_stage2_spaceborne_h06_phase1_floorrepair_20260628_221940.sh",
+  "current_launcher": "NOT_YET_LAUNCHABLE_STRICT_RUNTIME_REPAIR",
   "paper_corpus_phase2_guidance": {
     "status": "USED_AS_INSPIRATION_NOT_COPIED",
     "corpus_root": "E:/type10-7/RFFI?????",
@@ -4930,9 +4982,9 @@
     "landed_route": "CVS-specific identity-consensus arbitration before background reject",
     "updated_at": "2026-06-24T18:46:00+08:00"
   },
-  "current_matrix": "automation_reports/CV-SincNet/stage2_spaceborne_h06_phase1_floorrepair_20260628_221940/matrix.json",
-  "current_report": "automation_reports/CV-SincNet/stage2_spaceborne_h06_phase1_floorrepair_20260628_221940/report.md",
-  "current_validation": "automation_reports/CV-SincNet/stage2_spaceborne_h06_phase1_floorrepair_20260628_221940/matrix_validation_with_launcher.json",
+  "current_matrix": "paper_reproduction/configs/cvs_stage2c_effective8_formal_matrix_20260715.json",
+  "current_report": "automation_reports/CV-SincNet/qknnv42_extreme_light_optimization_20260715/report.md",
+  "current_validation": "LOCAL_DIAGNOSTIC_PIPELINE_117_TESTS_PASS_FORMAL_FALSE",
   "latest_optimizer_local_validation": {
     "schema": "optimizer_local_validation_v1",
     "timestamp_local": "2026-06-28T22:48:14+08:00",
@@ -5141,193 +5193,25 @@
   },
   "latest_optimizer_runner_result": {
     "schema": "optimizer_execution_registry_record_v1",
-    "timestamp": "2026-06-28T22:48:14+08:00",
+    "timestamp": "2026-07-01T01:24:52+08:00",
     "automation_id": "cv-sincnet-n607-monitor-optimizer-v4-2",
     "run_id": "stage2_spaceborne_h06_phase1_floorrepair_20260628_221940",
-    "plan": "OA_MSE_H06_PHASE1_FLOORREPAIR8",
-    "event": "phase1_floorrepair_submitted_startup_health_corrected_encoding",
-    "status": "SUBMITTED_RUNNING_STARTUP_HEALTH_PASS",
+    "plan": "PHASE1_FLOORREPAIR_COMPLETION_AUDIT_ONLY",
+    "event": "phase1_floorrepair_completion_training_log_audit",
+    "status": "PHASE1_FLOORREPAIR_COMPLETED_NEGATIVE_DIAGNOSTIC_CEN51_NO_WORSE_NOT_MET",
     "candidate_count": 8,
     "phase1_rows": 8,
     "phase2_rows": 0,
-    "categories": {
-      "oldrecov_proto_bridge": 4,
-      "oldrecov_ridge_head": 4
-    },
-    "route_families": {
-      "SAFE_SSDG_CVS_R01": 7,
-      "CEN51_REFRESH_CONTROL": 1
-    },
-    "launcher_pid": "585799",
-    "active_training_processes_count": 8,
-    "gpu_compute_count": 8,
-    "candidate_log_count": 8,
-    "metrics_file_count": 16,
-    "metrics_csv_count": 8,
-    "metrics_jsonl_count": 8,
-    "fatal_like_count_startup": 0,
-    "scheduler_launched_count": 8,
-    "candidate_status": [
-      {
-        "candidate_id": "PHASE1_FLOOR_REPAIR_MIXSTYLE_STRICTUDU_FLOOR_TUNE_GPU0_A",
-        "gpu": 0,
-        "pid": "585803",
-        "used_memory_mib": "2338",
-        "category": "oldrecov_proto_bridge",
-        "route_family": "SAFE_SSDG_CVS_R01",
-        "command_hash": "644058e0b3838b07",
-        "remote_run_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/stage2_spaceborne_h06_phase1_floorrepair_20260628_221940/PHASE1_FLOOR_REPAIR_MIXSTYLE_STRICTUDU_FLOOR_TUNE_GPU0_A",
-        "remote_log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/stage2_spaceborne_h06_phase1_floorrepair_20260628_221940/PHASE1_FLOOR_REPAIR_MIXSTYLE_STRICTUDU_FLOOR_TUNE_GPU0_A.out",
-        "startup_epoch_seen": "E007/200",
-        "startup_metrics_epoch_files_seen": true
-      },
-      {
-        "candidate_id": "PHASE1_FLOOR_REPAIR_SATLATE_STRICTUDU_RECEIVER_TUNE_GPU1_A",
-        "gpu": 1,
-        "pid": "585808",
-        "used_memory_mib": "2326",
-        "category": "oldrecov_ridge_head",
-        "route_family": "SAFE_SSDG_CVS_R01",
-        "command_hash": "54baf77400156aef",
-        "remote_run_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/stage2_spaceborne_h06_phase1_floorrepair_20260628_221940/PHASE1_FLOOR_REPAIR_SATLATE_STRICTUDU_RECEIVER_TUNE_GPU1_A",
-        "remote_log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/stage2_spaceborne_h06_phase1_floorrepair_20260628_221940/PHASE1_FLOOR_REPAIR_SATLATE_STRICTUDU_RECEIVER_TUNE_GPU1_A.out",
-        "startup_epoch_seen": "E007/200",
-        "startup_metrics_epoch_files_seen": true
-      },
-      {
-        "candidate_id": "PHASE1_FLOOR_REPAIR_PSEUDOLOW_GROUPFLOOR_CONTROL_GPU2_A",
-        "gpu": 2,
-        "pid": "585817",
-        "used_memory_mib": "2276",
-        "category": "oldrecov_proto_bridge",
-        "route_family": "SAFE_SSDG_CVS_R01",
-        "command_hash": "972243d14eaf829b",
-        "remote_run_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/stage2_spaceborne_h06_phase1_floorrepair_20260628_221940/PHASE1_FLOOR_REPAIR_PSEUDOLOW_GROUPFLOOR_CONTROL_GPU2_A",
-        "remote_log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/stage2_spaceborne_h06_phase1_floorrepair_20260628_221940/PHASE1_FLOOR_REPAIR_PSEUDOLOW_GROUPFLOOR_CONTROL_GPU2_A.out",
-        "startup_epoch_seen": "E006/200",
-        "startup_metrics_epoch_files_seen": true
-      },
-      {
-        "candidate_id": "PHASE1_FLOOR_REPAIR_FISHR_ORTH_RECEIVER_LIFT_GPU3_A",
-        "gpu": 3,
-        "pid": "585829",
-        "used_memory_mib": "2170",
-        "category": "oldrecov_ridge_head",
-        "route_family": "SAFE_SSDG_CVS_R01",
-        "command_hash": "a9fa5376c6895159",
-        "remote_run_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/stage2_spaceborne_h06_phase1_floorrepair_20260628_221940/PHASE1_FLOOR_REPAIR_FISHR_ORTH_RECEIVER_LIFT_GPU3_A",
-        "remote_log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/stage2_spaceborne_h06_phase1_floorrepair_20260628_221940/PHASE1_FLOOR_REPAIR_FISHR_ORTH_RECEIVER_LIFT_GPU3_A.out",
-        "startup_epoch_seen": "E007/200",
-        "startup_metrics_epoch_files_seen": true
-      },
-      {
-        "candidate_id": "PHASE1_FLOOR_REPAIR_PAIC_LOWCLS_RECEIVER_BALANCE_GPU4_A",
-        "gpu": 4,
-        "pid": "585841",
-        "used_memory_mib": "2120",
-        "category": "oldrecov_proto_bridge",
-        "route_family": "SAFE_SSDG_CVS_R01",
-        "command_hash": "a692fe64bb3b23d5",
-        "remote_run_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/stage2_spaceborne_h06_phase1_floorrepair_20260628_221940/PHASE1_FLOOR_REPAIR_PAIC_LOWCLS_RECEIVER_BALANCE_GPU4_A",
-        "remote_log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/stage2_spaceborne_h06_phase1_floorrepair_20260628_221940/PHASE1_FLOOR_REPAIR_PAIC_LOWCLS_RECEIVER_BALANCE_GPU4_A.out",
-        "startup_epoch_seen": "E007/200",
-        "startup_metrics_epoch_files_seen": true
-      },
-      {
-        "candidate_id": "PHASE1_FLOOR_REPAIR_STRICTUDU_SATRETENTION_GUARD_GPU5_A",
-        "gpu": 5,
-        "pid": "585849",
-        "used_memory_mib": "2154",
-        "category": "oldrecov_ridge_head",
-        "route_family": "SAFE_SSDG_CVS_R01",
-        "command_hash": "6e08fe13f73f712f",
-        "remote_run_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/stage2_spaceborne_h06_phase1_floorrepair_20260628_221940/PHASE1_FLOOR_REPAIR_STRICTUDU_SATRETENTION_GUARD_GPU5_A",
-        "remote_log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/stage2_spaceborne_h06_phase1_floorrepair_20260628_221940/PHASE1_FLOOR_REPAIR_STRICTUDU_SATRETENTION_GUARD_GPU5_A.out",
-        "startup_epoch_seen": "E007/200",
-        "startup_metrics_epoch_files_seen": true
-      },
-      {
-        "candidate_id": "PHASE1_FLOOR_REPAIR_PSEUDOOOFF_FISHR_FLOOR_GUARD_GPU6_A",
-        "gpu": 6,
-        "pid": "585862",
-        "used_memory_mib": "2272",
-        "category": "oldrecov_proto_bridge",
-        "route_family": "SAFE_SSDG_CVS_R01",
-        "command_hash": "f6f341f740b93493",
-        "remote_run_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/stage2_spaceborne_h06_phase1_floorrepair_20260628_221940/PHASE1_FLOOR_REPAIR_PSEUDOOOFF_FISHR_FLOOR_GUARD_GPU6_A",
-        "remote_log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/stage2_spaceborne_h06_phase1_floorrepair_20260628_221940/PHASE1_FLOOR_REPAIR_PSEUDOOOFF_FISHR_FLOOR_GUARD_GPU6_A.out",
-        "startup_epoch_seen": "E007/200",
-        "startup_metrics_epoch_files_seen": true
-      },
-      {
-        "candidate_id": "PHASE1_FLOOR_REPAIR_CEN51_REFRESH_CONTROL_SEED3_GPU7_A",
-        "gpu": 7,
-        "pid": "585869",
-        "used_memory_mib": "2350",
-        "category": "oldrecov_ridge_head",
-        "route_family": "CEN51_REFRESH_CONTROL",
-        "command_hash": "06abd9840c36169e",
-        "remote_run_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/stage2_spaceborne_h06_phase1_floorrepair_20260628_221940/PHASE1_FLOOR_REPAIR_CEN51_REFRESH_CONTROL_SEED3_GPU7_A",
-        "remote_log_path": "/home/szu2070436088/2510044040/CV-SincNet/logs/stage2_spaceborne_h06_phase1_floorrepair_20260628_221940/PHASE1_FLOOR_REPAIR_CEN51_REFRESH_CONTROL_SEED3_GPU7_A.out",
-        "startup_epoch_seen": "E007/200",
-        "startup_metrics_epoch_files_seen": true
-      }
-    ],
-    "local_artifacts": {
-      "matrix": "automation_reports/CV-SincNet/stage2_spaceborne_h06_phase1_floorrepair_20260628_221940/matrix.json",
-      "launcher": "code/scripts/launch_stage2_spaceborne_h06_phase1_floorrepair_20260628_221940.sh",
-      "report": "automation_reports/CV-SincNet/stage2_spaceborne_h06_phase1_floorrepair_20260628_221940/report.md",
-      "validation": "automation_reports/CV-SincNet/stage2_spaceborne_h06_phase1_floorrepair_20260628_221940/matrix_validation_with_launcher.json",
-      "preflight": "automation_reports/CV-SincNet/stage2_spaceborne_h06_phase1_floorrepair_20260628_221940/preflight_decision.json",
-      "local_dry_run": "automation_reports/CV-SincNet/stage2_spaceborne_h06_phase1_floorrepair_20260628_221940/local_dry_run.log",
-      "argparse_probe": "automation_reports/CV-SincNet/stage2_spaceborne_h06_phase1_floorrepair_20260628_221940/argparse_probe.log",
-      "remote_dry_run": "automation_reports/CV-SincNet/stage2_spaceborne_h06_phase1_floorrepair_20260628_221940/remote_dry_run.log",
-      "remote_sha256": "automation_reports/CV-SincNet/stage2_spaceborne_h06_phase1_floorrepair_20260628_221940/remote_sha256.txt",
-      "prelaunch_inventory": "automation_reports/CV-SincNet/stage2_spaceborne_h06_phase1_floorrepair_20260628_221940/raw_training_inventory_prelaunch.json",
-      "post_submit_inventory": "automation_reports/CV-SincNet/stage2_spaceborne_h06_phase1_floorrepair_20260628_221940/raw_training_inventory_post_submit.json",
-      "startup_inventory": "automation_reports/CV-SincNet/stage2_spaceborne_h06_phase1_floorrepair_20260628_221940/raw_training_inventory_startup.json",
-      "startup_health": "automation_reports/CV-SincNet/stage2_spaceborne_h06_phase1_floorrepair_20260628_221940/startup_health_constant_time.txt",
-      "startup_log_tails": "automation_reports/CV-SincNet/stage2_spaceborne_h06_phase1_floorrepair_20260628_221940/startup_candidate_log_tails.txt",
-      "startup_health_summary": "automation_reports/CV-SincNet/stage2_spaceborne_h06_phase1_floorrepair_20260628_221940/startup_health_summary_corrected_encoding_20260628_224814.json",
-      "monitor_gate": "automation_reports/CV-SincNet/stage2_spaceborne_h06_phase1_floorrepair_20260628_221940/monitor_gate_startup_corrected_encoding_20260628_224814.json",
-      "ssh_cleanup_final": "automation_reports/CV-SincNet/stage2_spaceborne_h06_phase1_floorrepair_20260628_221940/ssh_cleanup_final_startup.json",
-      "snapshot_manifest": "code/snapshots/stage2_spaceborne_h06_phase1_floorrepair_20260628_221940/snapshot_manifest.json"
-    },
-    "remote_artifacts": {
-      "remote_root": "/home/szu2070436088/2510044040/CV-SincNet",
-      "remote_launcher": "/home/szu2070436088/2510044040/CV-SincNet/code/scripts/launch_stage2_spaceborne_h06_phase1_floorrepair_20260628_221940.sh",
-      "remote_matrix": "/home/szu2070436088/2510044040/CV-SincNet/automation_reports/CV-SincNet/stage2_spaceborne_h06_phase1_floorrepair_20260628_221940/matrix.json",
-      "remote_report": "/home/szu2070436088/2510044040/CV-SincNet/automation_reports/CV-SincNet/stage2_spaceborne_h06_phase1_floorrepair_20260628_221940/report.md",
-      "remote_runs_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/stage2_spaceborne_h06_phase1_floorrepair_20260628_221940",
-      "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/logs/stage2_spaceborne_h06_phase1_floorrepair_20260628_221940",
-      "scheduler_out": "/home/szu2070436088/2510044040/CV-SincNet/logs/stage2_spaceborne_h06_phase1_floorrepair_20260628_221940/scheduler.out"
-    },
-    "launch_command_boundary": {
-      "ssh_launch_command_timed_out_locally": false,
-      "startup_health_recursive_probe_timed_out_locally": true,
-      "startup_health_bounded_probe_timed_out_locally": true,
-      "relaunch_performed": false,
-      "post_timeout_remote_evidence_used": true,
-      "stale_local_ssh_pids_cleaned": [
-        31280,
-        26636
-      ],
-      "constant_time_health_probe_used": true,
-      "remote_regex_probe_discarded": true
-    },
-    "subagent_runtime": {
-      "status": "SUBAGENT_RUNTIME_UNAVAILABLE",
-      "roles_requested": [
-        "Protocol",
-        "Evidence",
-        "Runner/Validation/SSH",
-        "Supervision"
-      ],
-      "fallback": "controller_written_reviews"
-    },
-    "claim_boundary": "Startup health pass only; not Phase1 DG completion, not CEN51 no-worse proof, not base promotion, not Stage2-C/seen-new evidence, not deployment evidence, and not optimization success.",
-    "next_action": "MONITOR_PHASE1_FLOORREPAIR_TO_COMPLETION_AND_ANALYZE_FULL_TRAINING_LOGS",
-    "correction_note": "Corrects the prior local UTF-16 Tee-Object parsing artifact that wrote scheduler/log/metrics counts as zero."
+    "scheduler_status0_count": 8,
+    "final_all_floor_pass_count": 0,
+    "any_epoch_all_floor_pass_candidate_count": 0,
+    "loss_verdict": "LOSS_ANOMALY",
+    "claim_boundary": "Completion audit over copied logs/metrics only. No deployment evidence, no Stage2-C evidence, no base promotion, and no loss-normal claim when loss verdict is LOSS_ANOMALY.",
+    "runner_entered": false,
+    "optimizer_entered": false,
+    "remote_write_performed": false,
+    "launch_performed": false,
+    "next_action": "RECONCILE_CURRENT_ACTIVE_PHASE1_FSP_VACUUM_AND_RUN_FRESH_READ_ONLY_LANE_CAPACITY_PREFLIGHT_BEFORE_OPGAC_PHASE2"
   },
   "latest_phase2_metric_audit": {
     "schema": "stage2_phase2_metric_audit_v1",
@@ -5346,9 +5230,9 @@
     "result_summary": "automation_reports/CV-SincNet/stage2_spaceborne_h06_oldhead_repair_samplecap_20260626_214710/result_summary.json",
     "result_table_csv": "automation_reports/CV-SincNet/stage2_spaceborne_h06_oldhead_repair_samplecap_20260626_214710/result_table.csv"
   },
-  "phase2_current_instruction": "Phase2 is process-idle. This turn did not enter Phase2 optimizer/runner because the state-required Phase1 completion/training-log audit was the active boundary. No Stage2-C, seen-new, or deployment claim.",
-  "required_next_action": "MONITOR_PHASE1_FLOORREPAIR_TO_COMPLETION_AND_ANALYZE_FULL_TRAINING_LOGS",
-  "required_next_turn": "MONITOR_PHASE1_FLOORREPAIR_TO_COMPLETION_AND_ANALYZE_FULL_TRAINING_LOGS",
+  "phase2_current_instruction": "Phase2/OPGAC remains OPGAC-first after the Phase1 FLOORREPAIR audit, but this turn did not authorize or launch Phase2 because fresh inventory showed active unrelated/current Phase1 phase1_fsp_vacuum_20260701 jobs. Next turn must run fresh read-only lane/capacity preflight before any OPGAC runner action.",
+  "required_next_action": "BIND_EFFECTIVE8_PROVENANCE_BUILD_SEALED_TARGET_PACKAGES_CLOSE_IMMUTABLE_SNAPSHOT_AND_RUN_LOCAL_STRICT_INTEGRATION_BEFORE_N607_PREFLIGHT",
+  "required_next_turn": "BIND_EFFECTIVE8_PROVENANCE_BUILD_SEALED_TARGET_PACKAGES_CLOSE_IMMUTABLE_SNAPSHOT_AND_RUN_LOCAL_STRICT_INTEGRATION_BEFORE_N607_PREFLIGHT",
   "latest_old80_first_result": {
     "schema": "stage2_old80_first_result_v1",
     "timestamp": "2026-06-26T23:55:52+08:00",
@@ -5375,7 +5259,7 @@
     "remote_log_root": "logs/stage2_spaceborne_h06_oldheadfar_repair_20260626_233310",
     "claim_boundary": "completed negative diagnostic; Stage2-B old/unknown-only; target-new excluded; OLD80 not reached; no old>=0.80 and unknown_FAR<=0.05 candidate; not Stage2 success, not deployment evidence, not Stage2-C seen-new success"
   },
-  "updated_at": "2026-06-28T22:48:14+08:00",
+  "updated_at": "2026-07-01T01:24:52+08:00",
   "previous_run_id_before_next48fj": "stage2_spaceborne_next48fi_20260625_riskret48",
   "latest_phase2_completed_analysis": {
     "schema": "optimizer_execution_registry_record_v1",
@@ -5719,7 +5603,7 @@
     "subagent_summary": "All roles were read-only. Lookup confirmed active versioned stage2_prompt.md is the right execution prompt; supervision preserved AGENTS/project protocol boundaries; optimization/check roles recommended H06-specific required-action text and avoiding duplicate generic rules.",
     "claim_boundary": "Prompt/tooling optimization only; no CVS scientific protocol change and no Stage2 metric-success claim."
   },
-  "current_state": "PHASE1_FLOORREPAIR_RUNNING_STARTUP_HEALTH_PASS",
+  "current_state": "LOCAL_PROTOCOL_REPAIR_REQUIRED_FORMAL_LAUNCH_AUTHORITY_FALSE",
   "phase2_negative_diagnostic_history": [
     {
       "schema": "optimizer_runner_result_v1",
@@ -7037,55 +6921,31 @@
     "next_action": "DESIGN_NEXT_H06_TARGET_OLD_RECOVERABILITY_REPAIR_FROM_OLDHEADFAR_NEGATIVE_DIAGNOSTIC"
   },
   "latest_phase1_completion_audit": {
-    "schema": "phase1_completion_audit_v1",
-    "timestamp_local": "2026-06-28T20:27:33+08:00",
-    "run_id": "stage2_spaceborne_h06_phase1_cen51select_20260628_121456",
-    "status": "COMPLETED_CEN51_REFRESH_CONTROL_FINAL_FLOOR_PASS_LOSS_ANOMALY_SAFE_SSDG_NOT_PROMOTED",
-    "candidate_count": 8,
-    "scheduler_status0_count": 8,
-    "e200_completed_count": 8,
-    "training_log_analysis_label": "LOSS_ANOMALY",
-    "loss_telemetry_present_count": 8,
-    "loss_claim_allowed": false,
-    "fatal_runtime_marker": false,
-    "final_cen51_no_worse_pass_count": 1,
-    "safe_ssdg_final_cen51_no_worse_pass_count": 0,
-    "cen51_refresh_control_final_pass_count": 1,
-    "best_checkpoint_cen51_no_worse_pass_count": null,
-    "best_checkpoint_context_boundary": "Checkpoint files were not copied. Best-epoch context is reconstructed from metrics_epoch telemetry and must not be described as verified checkpoint promotion evidence.",
-    "any_epoch_cen51_no_worse_pass_count": 1,
-    "best_final_same_row": {
-      "candidate_id": "PHASE1_CEN51_REPAIR_CEN51_REFRESH_CONTROL_SEED2_GPU7_A",
-      "route_family": "CEN51_REFRESH_CONTROL",
-      "final_overall": 88.64362745098039,
-      "final_strict_udu": 84.94333333333333,
-      "final_receiver_floor": 83.49166666666666,
-      "final_sat_mean3_agg": 62.85261437908497,
-      "final_sat_floor3_agg": 60.85490196078431,
-      "final_all_floor_pass": true
+    "schema": "phase1_completion_audit_handoff_v1",
+    "run_id": "stage2_spaceborne_h06_phase1_floorrepair_20260628_221940",
+    "audit_timestamp_local": "2026-07-01T01:24:52+08:00",
+    "audit_root": "E:\\type10-7\\automation_reports\\CV-SincNet\\stage2_spaceborne_h06_phase1_floorrepair_20260628_221940\\artifacts\\completion_audit_20260701_012102",
+    "training_log_analysis": "E:\\type10-7\\automation_reports\\CV-SincNet\\stage2_spaceborne_h06_phase1_floorrepair_20260628_221940\\artifacts\\completion_audit_20260701_012102\\training_log_analysis_20260701_012102.json",
+    "candidate_result_table": "E:\\type10-7\\automation_reports\\CV-SincNet\\stage2_spaceborne_h06_phase1_floorrepair_20260628_221940\\artifacts\\completion_audit_20260701_012102\\candidate_result_table_20260701_012102.csv",
+    "raw_inventory_artifact": "E:\\type10-7\\automation_reports\\CV-SincNet\\stage2_spaceborne_h06_phase1_floorrepair_20260628_221940\\raw_training_inventory_20260701_012102.json",
+    "completion_verdict": "PHASE1_FLOORREPAIR_COMPLETED_NEGATIVE_DIAGNOSTIC_CEN51_NO_WORSE_NOT_MET",
+    "loss_verdict": "LOSS_ANOMALY",
+    "scheduler_complete_status0": 8,
+    "final_all_floor_pass_count": 0,
+    "any_epoch_all_floor_pass_candidate_count": 0,
+    "fatal_marker_candidate_count": 0,
+    "loss_anomaly_candidate_count": 8,
+    "best_joint_any_epoch_candidate": "PHASE1_FLOOR_REPAIR_FISHR_ORTH_RECEIVER_LIFT_GPU3_A",
+    "best_joint_any_epoch": {
+      "best_epoch_by_joint_floor": 192,
+      "best_overall": 88.76029411764706,
+      "best_strict_udu": 83.57166666666667,
+      "best_receiver_floor": 76.41666666666667,
+      "best_sat_mean3_agg": 71.32450980392157,
+      "best_sat_floor3_agg": 69.91029411764706,
+      "best_all_floor_pass": false
     },
-    "best_any_epoch_same_row": {
-      "best_epoch_by_joint_floor": 144,
-      "best_overall": 89.47647058823529,
-      "best_strict_udu": 86.04333333333334,
-      "best_receiver_floor": 82.4,
-      "best_sat_mean3_agg": 58.675,
-      "best_sat_floor3_agg": 56.72450980392157,
-      "best_all_floor_pass": true,
-      "candidate_id": "PHASE1_CEN51_REPAIR_CEN51_REFRESH_CONTROL_SEED2_GPU7_A"
-    },
-    "audit_json": "automation_reports\\CV-SincNet\\stage2_spaceborne_h06_phase1_cen51select_20260628_121456\\artifacts\\completion_audit_20260628_201458\\training_log_analysis_20260628_201458.json",
-    "result_table_csv": "automation_reports\\CV-SincNet\\stage2_spaceborne_h06_phase1_cen51select_20260628_121456\\artifacts\\completion_audit_20260628_201458\\candidate_result_table_20260628_201458.csv",
-    "training_log_analysis": "automation_reports\\CV-SincNet\\stage2_spaceborne_h06_phase1_cen51select_20260628_121456\\artifacts\\completion_audit_20260628_201458\\training_log_analysis_20260628_201458.md",
-    "best_checkpoint_context_csv": "automation_reports\\CV-SincNet\\stage2_spaceborne_h06_phase1_cen51select_20260628_121456\\artifacts\\completion_audit_20260628_201458\\best_checkpoint_context_20260628_201458.csv",
-    "fresh_inventory_artifact": "automation_reports/CV-SincNet/stage2_spaceborne_h06_phase1_cen51select_20260628_121456/raw_training_inventory_20260628_201458.json",
-    "monitor_gate_artifact": "automation_reports\\CV-SincNet\\stage2_spaceborne_h06_phase1_cen51select_20260628_121456\\monitor_gate_20260628_201458.json",
-    "ssh_cleanup_artifact": "automation_reports/CV-SincNet/stage2_spaceborne_h06_phase1_cen51select_20260628_121456/ssh_cleanup_final_20260628_201458.json",
-    "registry_record_event": "phase1_cen51select_completion_training_log_audit",
-    "registry_summary": "automation_reports\\CV-SincNet\\stage2_spaceborne_h06_phase1_cen51select_20260628_121456\\artifacts\\completion_audit_20260628_201458\\registry_append_completion_20260628_201458.json",
-    "satellite_boundary": "Actual run evaluated simplified LEO 3 views (leo_clear_weak, leo_low_elev_weak, leo_rain_weak). sat_mean3/sat_floor3 are reported against the declared numeric CEN51 satellite floors but are not renamed as legacy sat_mean_5/sat_floor_5.",
-    "claim_boundary": "8 Phase1 CEN51SELECT rows completed status0/E200. Only the CEN51_REFRESH_CONTROL GPU7 row passed final same-row numeric floors; no SAFE_SSDG_CVS_R01 repair row passed. This is completion/control evidence, not automatic Phase1 base promotion, not Stage2-C/seen-new evidence, and not deployment evidence. LOSS_ANOMALY blocks normal-loss and optimization-effect claims.",
-    "next_action": "DESIGN_NEXT_PHASE1_SAFE_SSDG_REPAIR_OR_CEN51_COMPARABLE_SELECTION_FROM_COMPLETION_AUDIT_THEN_VALIDATE_CURRENT_RUN_MATRIX_IF_AUTHORIZED"
+    "claim_boundary": "Completion audit over copied logs/metrics only. No deployment evidence, no Stage2-C evidence, no base promotion, and no loss-normal claim when loss verdict is LOSS_ANOMALY."
   },
   "phase1_current_instruction": "PHASE1_FLOORREPAIR is running after startup health pass. Monitor to E200/status0 and perform complete training-log/loss telemetry audit before any CEN51 no-worse, Safe-SSDG success, base promotion, Stage2, deployment, loss-normal, or optimization-effect claim.",
   "last_updated_by": "codex_automation_monitor_optimizer_v4_2",
@@ -7123,5 +6983,111 @@
     },
     "correction_note": "Corrects the prior local UTF-16 Tee-Object parsing artifact that wrote scheduler/log/metrics counts as zero.",
     "claim_boundary": "Startup health pass only; not Phase1 DG completion, not CEN51 no-worse proof, not base promotion, not Stage2-C/seen-new evidence, not deployment evidence, and not optimization success."
+  },
+  "qknnv42_extreme_light_stage2_policy": {
+    "schema": "qknnv42_extreme_light_stage2_policy_v1",
+    "status": "ACTIVE_LOCAL_PROTOCOL_REPAIR_REQUIRED",
+    "effective_from": "2026-07-15T19:05:00+08:00",
+    "authority": [
+      "AGENTS.md",
+      "项目.md section 10.3.1",
+      "live user objective"
+    ],
+    "base_model_id": "ADV3B02_CORE90_SOFT_E200",
+    "base_checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3_mechanism32_queue_20260701/ADV3B02_CORE90_SOFT_E200/best_joint_safe_ssdg.pth",
+    "base_checkpoint_sha256": "2699eedcafe8cec880828592d2d65ba3781a9948939da5cf5c82b47143d59c98",
+    "target_receivers": [
+      "20-1",
+      "3-19",
+      "7-14",
+      "7-7",
+      "8-8"
+    ],
+    "old_tx_labels": [
+      "14-10",
+      "14-7",
+      "20-15",
+      "20-19",
+      "6-15",
+      "8-20"
+    ],
+    "new_class_counts": [
+      5,
+      10,
+      20
+    ],
+    "development_k": 10,
+    "confirmation_k": [
+      1,
+      5,
+      10,
+      20
+    ],
+    "confirmation_seed_count_min": 5,
+    "scenarios": [
+      "leo_clear_weak",
+      "leo_low_elev_weak",
+      "leo_rain_weak"
+    ],
+    "performance_targets": {
+      "k10_old_acc_min": 0.92,
+      "k10_min_old_class_acc_min": 0.88,
+      "k10_seen_new_acc_min_by_count": {
+        "5": 0.92,
+        "10": 0.9,
+        "20": 0.86
+      },
+      "k5_max_drop_pp": 3.0,
+      "k1_identity_adaptation_gain_min_pp": 0.0,
+      "k1_strict_direct_gain_min_pp": 2.0,
+      "k1_paired_95ci_lower_bound_gt_pp": 0.0,
+      "forgetting_no_worse_than_identity_each_k": true
+    },
+    "resource_caps": {
+      "trainable_params_max": 50000,
+      "adapt_epochs_max": 20,
+      "persistent_state_bytes_max": 262144,
+      "dense_query_graph": false,
+      "adaptive_tta": "per_sample_1_to_3_to_5"
+    },
+    "formal_confirmation_shape": {
+      "prediction_cells": 300,
+      "joint_scenario_rows": 900,
+      "formula": "5 receivers x 5 seeds x 4 K x 3 new-count cells; each prediction cell emits 3 scenarios"
+    },
+    "forbidden": [
+      "clean_or_clean_derived_runtime_access",
+      "query_role_oracle",
+      "query_true_batch_class_count",
+      "class_quota",
+      "global_assignment",
+      "query_label_fit",
+      "dense_query_graph",
+      "scorer_feedback"
+    ],
+    "current_candidate": {
+      "id": "qknn_ground_effective8_v14",
+      "trainable_params": 44048,
+      "adapt_epochs": 12,
+      "status": "RESOURCE_SHAPE_PASS_BUT_NOT_STRICT_RUNTIME_INTEGRATED",
+      "formal_launch_authority": false
+    },
+    "formal_blockers": [
+      "adapter_head_tta_external_provenance_not_bound",
+      "immutable_input_snapshot_or_different_uid_toctou_not_closed",
+      "real_n607_landlock_equivalent_strict_smoke_not_passed",
+      "sealed_real_target_packages_and_tx_coverage_not_built",
+      "effective8_not_integrated_with_unique_strict_request_builder"
+    ]
+  },
+  "latest_qknnv42_control_repair_result": {
+    "schema": "qknnv42_control_repair_result_v1",
+    "timestamp": "2026-07-15T19:05:00+08:00",
+    "run_id": "qknnv42_extreme_light_control_repair_20260715",
+    "result": "CONTROL_STATE_RECONCILED_LOCAL_ONLY",
+    "formal_launch_authority": false,
+    "remote_action_performed": false,
+    "historical_opgac_authority_revoked": true,
+    "fresh_live_monitor_required_before_any_remote_action": true
   }
 }

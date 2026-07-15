@@ -7,6 +7,49 @@ The loop is:
 
 `load rules -> lane monitor -> lane optimizer -> N607 runner -> startup health -> report/state update -> cleanup -> next monitor`.
 
+## 2026-07-15 Active Stage2 Override
+
+The live user objective and `项目.md` section 10.3.1 supersede older OPGAC,
+JREF, OA-MSE, unknown-rejection, old80-first, CEN51-default, and fixed matrix
+language in this versioned prompt. Those older clauses remain historical
+comparator context only and have no current launch authority.
+
+The current Phase2 mainline is the strict ADV3B02 checkpoint
+`ADV3B02_CORE90_SOFT_E200` with SHA256
+`2699eedcafe8cec880828592d2d65ba3781a9948939da5cf5c82b47143d59c98`
+plus a qKNNv42 extreme-light adapter/head and adaptive per-sample 1→3→5-view
+policy. Phase2 support, query, adaptation, calibration, reference, prototype,
+threshold, rollback, and TTA decisions must use sealed `leo_*_weak` artifacts;
+clean samples and clean-derived signals are physically unreachable.
+
+Current hard requirements are:
+
+- K=10 is the only development/model-selection point; K=1/5/20 are locked
+  confirmation evaluations and must not feed hyperparameter selection.
+- Evaluate the five confirmed target receivers, at least five independent
+  confirmation seeds, all three `leo_*_weak` scenarios, and real nested
+  5/10/20 seen-new TX sets.
+- K=10 targets are old accuracy ≥92%, minimum old-class accuracy ≥88%, and
+  seen-new accuracy ≥92%/90%/86% for 5/10/20 new classes. K=5 may drop by no
+  more than 3 percentage points.
+- K=1 adaptation must be non-negative versus matched identity-only and exceed
+  strict direct ADV3B02 by at least 2 percentage points overall and per
+  receiver, with paired 95% CI lower bound >0. Forgetting at K=1/5/10/20 must
+  be no worse than matched identity-only.
+- Preferred resource caps are ≤50,000 trainable parameters, ≤20 adaptation
+  epochs, ≤256KB persistent state, no dense query-query graph, default one
+  view, and only low-confidence samples escalating to 3/5 views.
+- Query-time role, true batch class count, class quota, query label fitting,
+  global assignment, and scorer feedback are forbidden.
+- The explicit query guards include
+  `phase2_query_true_batch_class_count_access=false`.
+
+The current strict pipeline is `LOCAL_PROTOCOL_REPAIR_REQUIRED` and
+`formal_launch_authority=false`. Do not SSH/SCP or launch the target matrix
+until adapter/head/TTA provenance is bound to an external trust root, immutable
+input snapshot/TOCTOU evidence is closed, a real N607 Landlock-equivalent
+strict smoke passes, and a fresh live lane-capacity preflight is recorded.
+
 ## Rule Loading
 
 Before doing any project action, read these files in UTF-8:
@@ -122,7 +165,8 @@ execute that bounded diagnostic before any new Phase2 module stack or H06-family
 gate sweep. The diagnostic must measure raw old nearest-prototype accuracy,
 per-TX support/query separation, unknown-to-old margins, class-envelope overlap,
 simplified-LEO target-old label consistency, and loss/metric alignment on target
-receiver `20-1`, with target-new still excluded. It must not regenerate or
+receiver `20-1`, with target-new still excluded only because this is an old-class
+upper-bound diagnostic. It is not the Phase2 mainline. It must not regenerate or
 relaunch an already completed H06 matrix; completed H06 evidence is input to the
 diagnostic, not launch authority.
 
@@ -305,8 +349,9 @@ a Stage2 target-support shortcut. The optimizer must design around both
 domain-generalization metrics and the geometry of the learned feature space:
 source TX prototypes / class centers in `z_id`, source receiver or domain
 prototypes for `z_dom` diagnostics, TX-RX geometry audits, feature-mask
-stability, class/receiver-balanced prototype updates, and open-world readiness
-for later Stage2 heads. `z_dom` or receiver/domain centers may inform leakage,
+stability, class/receiver-balanced prototype updates, and target-old/target-new
+readiness for later Stage2 heads. Phase3 open-set readiness is backup only.
+`z_dom` or receiver/domain centers may inform leakage,
 domain shift, adapter-gate, or geometry diagnostics, but must not become the
 TX prototype distance used for identity decisions.
 
@@ -432,34 +477,39 @@ Minimum creativity requirements for a fresh Phase2 optimizer turn:
   `tools/evaluate_opgac_stage2.py`. The default `route_family` is
   `OPGAC_NET`, with `opgac_memory_policy=support_only`,
   `opgac_query_update_forbidden=true`, and output semantics distinguishing old
-  label, seen-new label when Stage2-C is legal, reject, ambiguous, and defer.
+  label, seen-new label when Stage2-C is legal, ambiguous, and defer. Reject is
+  a Phase3-backup output, not a Phase2 mainline requirement.
 - OPGAC memory may use target-old support for Stage2-B old calibration and
   target-old plus target-new support for Stage2-C seen-new enrollment.
-  Unknown query remains eval-only and must never update memory, fit thresholds,
-  or tune overlap/rollback decisions. Query samples are not registration data.
-- The active Phase2 optimization phase is `stage2_priority_phase=OLD80_FIRST`.
+  Unknown query, when present, remains eval-only Phase3-backup metadata and
+  must never update memory, fit thresholds, or tune overlap/rollback decisions.
+  Query samples are not registration data.
+- The active Phase2 optimization phase is
+  `stage2_priority_phase=PHASE2_ADAPT_NEWCLASS_FIRST`.
   OPGAC rows may use `old_acc_target>=0.80` only as an intermediate
   old-class-recovery gate with `deployment_success_claim_allowed=false`.
   After OLD80 is reached, continue to constrained Stage2-C optimization of
-  `seen_new_acc`, `H_old_new`, and `unknown_FAR<=0.05`. The later deployable
-  success target still requires the full Stage2-C constraints, including
+  `seen_new_acc` and `H_old_new`. Open-set / unknown FAR optimization is
+  Phase3 backup. The later deployable success target still requires the full
+  Stage2-C constraints, including
   `old_acc>=0.90`, `seen_new_acc>=0.75`, rollback safety, and legal target-new
   support/query separation.
 - OPGAC metric analysis must rank same-row candidates, not separate marginal
   maxima. Require an OPGAC metric bundle with `old_acc`, `old80_gap`,
-  `unknown_FAR`, `old_unknown_hmean`, `coverage`, `old_FRR`, `AUROC`, `FPR95`,
-  rollback rate, defer rate, confusion counts, and score-table diagnostics.
-  For Stage2-C rows also require `seen_new_acc`, `H_old_new`, and
-  unknown-to-seen-new confusion. Use these as deficit vectors for optimizer
-  actions, following the recent controller-analysis lesson that metrics should
-  drive constrained repairs rather than decorative reporting.
+  `seen_new_acc` when Stage2-C is active, `H_old_new` when Stage2-C is active,
+  coverage, `old_FRR`, rollback rate, defer rate, old/new confusion counts,
+  and score-table diagnostics. Unknown/FAR metrics are Phase3-backup
+  diagnostics only. Use these as deficit vectors for optimizer actions,
+  following the recent controller-analysis lesson that metrics should drive
+  constrained repairs rather than decorative reporting.
 - OA-MSE is now a comparison/ablation/diagnostic route unless a higher-priority
   state or user directive restores it as primary. If OPGAC is blocked by local
   hook, protocol, or validator issues, OA-MSE may fill bounded diagnostic rows:
   `MSE-lite` (class-conditioned mask, masked cosine, class margin/OpenMax,
   source-target old fusion), `MSE-Subspace` (`U_orbit`, class low-rank
   residual, diagonal Mahalanobis), then full `OA-MSE-Head` (quality-aware
-  defer, cascade, old/seen-new/reject/uncertain output semantics). If a stage
+  defer, cascade, old/seen-new/uncertain/defer output semantics; reject only
+  for Phase3 backup). If a stage
   is not launchable, downgrade it to `NON_LAUNCH_DIAGNOSTIC` and state the
   missing code hook or protocol field.
 - Treat Phase2 OPGAC and OA-MSE rows as low-compute on-orbit few-shot
@@ -493,39 +543,40 @@ Rigor requirements for launchable creative rows:
   `opgac_stage`, `opgac_memory_policy=support_only`,
   `opgac_local_code_hook=code/cvsrffi/opgac_net.py`,
   `opgac_eval_tool=tools/evaluate_opgac_stage2.py`,
-  `opgac_query_update_forbidden=true`, `unknown_query_eval_only=true`,
+  `opgac_query_update_forbidden=true`,
   `target_new_query_not_threshold_fit=true`, `opgac_overlap_policy`,
   `opgac_rollback_policy`, `opgac_same_row_ranking_required=true`,
   `opgac_primary_selection_metric`, `opgac_metric_bundle`,
-  `opgac_score_table_required_columns`, `stage2_priority_phase=OLD80_FIRST`,
+  `opgac_score_table_required_columns`,
+  `stage2_priority_phase=PHASE2_ADAPT_NEWCLASS_FIRST`,
   `old_acc_target>=0.80`, and
   `deployment_success_claim_allowed=false`.
 - OPGAC `opgac_metric_bundle` must include `old_acc`, `old80_gap`,
-  `unknown_FAR`, `old_unknown_hmean`, `coverage`, `old_FRR`, `AUROC`, `FPR95`,
-  rollback rate, defer rate, same-row rank, and confusion counts. Stage2-C
-  OPGAC rows must add `seen_new_acc`, `H_old_new`, and unknown-to-seen-new
-  confusion. `opgac_score_table_required_columns` must include candidate label,
-  best old score, best seen-new score, best reject score, top-2 margin,
+  `seen_new_acc` when Stage2-C is active, `H_old_new` when Stage2-C is active,
+  coverage, `old_FRR`, rollback rate, defer rate, same-row rank, and old/new
+  confusion counts. Unknown/FAR metrics are Phase3-backup only.
+  `opgac_score_table_required_columns` must include candidate label,
+  best old score, best seen-new score, top-2 margin,
   threshold delta, `opgac_old_score`, and `opgac_new_score`.
 - OA-MSE rows must name `route_family=OA_MSE_HEAD`, `oa_mse_stage`,
   `source_target_fusion_policy`, `fusion_inputs`,
-  `unknown_query_eval_only=true`, `target_new_query_not_threshold_fit=true`,
-  `unknown_FAR_target<=0.05`, `uncertain_policy`, and output semantics that
-  distinguish old label, seen-new label, reject, uncertain, and defer.
+  `target_new_query_not_threshold_fit=true`, `uncertain_policy`, and output
+  semantics that distinguish old label, seen-new label, uncertain, and defer.
+  `unknown_query_eval_only=true` and `unknown_FAR_target<=0.05` are required
+  only for Phase3-backup rows.
 - OA-MSE rows must also name `onboard_low_compute_training=true`,
   `compute_budget_profile`, `adapter_trainable_params_cap`,
   `max_adapt_steps`, `old_acc_target>=0.90`, `seen_new_acc_target>=0.75`,
-  `weibull_evt_required=true`, `target_adapter_required=true`,
-  `pseudo_unknown_energy_required=true`,
+  `target_adapter_required=true`,
   `seen_new_evidence_gate_required=true`, `seen_new_anchor_gate_required=true`,
-  `siamese_verifier_required=true`,
   `accepted_only_online_update_required=true`, and
-  `oa_mse_onboard_adaptation_bundle=weibull_evt+target_adapter+`
-  `pseudo_unknown_energy+seen_new_evidence_gate+seen_new_anchor_gate+siamese_verifier+`
-  `accepted_only_online_update+stage2_receiver_domain`.
-- The row must predict at least one failure signal, including unknown FAR,
-  old-class forgetting, rollback trigger, scenario-floor harm, or deployment
-  cost blow-up.
+  `oa_mse_onboard_adaptation_bundle=target_adapter+`
+  `seen_new_evidence_gate+seen_new_anchor_gate+`
+  `accepted_only_online_update+stage2_receiver_domain`. Weibull EVT,
+  pseudo-unknown energy, and Siamese verifier are Phase3-backup components.
+- The row must predict at least one failure signal, including old-class
+  forgetting, seen-new collapse, rollback trigger, scenario-floor harm, or
+  deployment cost blow-up. Unknown FAR may be added only as Phase3-backup risk.
 - The row must stay base-anchored to the required matched CEN51 / Safe-SSDG
   evidence when claiming deployment relevance.
 

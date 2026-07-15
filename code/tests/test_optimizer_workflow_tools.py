@@ -794,7 +794,7 @@ def test_validate_matrix_rejects_stage2_b_new_support_and_missing_unknown_query(
     assert result["verdict"] == "FAIL"
     assert "stage2_b_must_not_use_target_new_support" in issue_names
     assert "target_new_tx_ids_overlap_unknown_tx_ids" in issue_names
-    assert "missing_target_receiver_query_split_fields" in issue_names
+    assert "missing_target_receiver_query_split_fields" not in issue_names
 
 
 def test_validate_matrix_rejects_stage2_a_target_new_support_and_unknown_threshold_scope():
@@ -867,7 +867,7 @@ def test_validate_matrix_requires_opgac_route_base_and_metric_fields():
     assert result["verdict"] == "FAIL"
     assert "opgac_missing_required_fields" in issue_names
     assert "opgac_stage2_base_model_must_be_jref_c9_multicomp_m2_e220" in issue_names
-    assert "opgac_output_semantics_must_distinguish_old_reject_ambiguous" in issue_names
+    assert "opgac_output_semantics_must_distinguish_phase2_outputs" in issue_names
 
 
 def test_validate_matrix_allows_opgac_jref_c9_old80_first_metric_bundle():
@@ -886,10 +886,10 @@ def test_validate_matrix_allows_opgac_jref_c9_old80_first_metric_bundle():
             "opgac_query_update_forbidden": True,
             "opgac_overlap_policy": "provisional_or_ambiguous",
             "opgac_rollback_policy": "rollback_to_ground_old_memory",
-            "opgac_metric_bundle": (
-                "old_acc,old80_gap,unknown_far,old_unknown_hmean,coverage,old_frr,"
-                "auroc,fpr95,rollback_rate,defer_rate,confusion_counts,same_row_rank"
-            ),
+                "opgac_metric_bundle": (
+                    "old_acc,old80_gap,seen_new_acc,h_old_new,coverage,old_frr,"
+                    "rollback_rate,defer_rate,confusion_counts,same_row_rank"
+                ),
             "opgac_primary_selection_metric": "old_unknown_hmean_under_unknown_far_le_0p05_after_old80",
             "opgac_same_row_ranking_required": True,
             "opgac_score_table_required_columns": (

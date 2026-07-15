@@ -5,6 +5,51 @@ automation. `AGENTS.md` remains the highest project rule. If this contract
 conflicts with `AGENTS.md`, follow `AGENTS.md` and record the conflict in the
 run report.
 
+## 2026-07-15 Current qKNNv42 Stage2 Contract
+
+This section is the current Stage2-B/C scalar policy. It supersedes older
+OPGAC/JREF/OA-MSE/unknown-rejection/old80-first route defaults elsewhere in
+this contract; those clauses are retained only as historical comparator and
+audit context.
+
+- Base: the sealed `ADV3B02_CORE90_SOFT_E200` checkpoint with SHA256
+  `2699eedcafe8cec880828592d2d65ba3781a9948939da5cf5c82b47143d59c98`.
+- Data: every Phase2 sample and every adaptation, calibration, reference,
+  prototype, threshold, rollback, and TTA signal is from a sealed
+  `leo_*_weak` artifact. Raw/clean data and clean-derived signals are
+  physically unreachable after Phase2 starts.
+- Decision: each query sample faces all registered classes independently.
+  Query role, true batch class count, class quota, label/order hints, global
+  assignment, query fitting, dense query-query graphs, and scorer feedback are
+  forbidden. Prediction is sealed before an independent scorer reads truth.
+- Development: only K=10 development evidence may select the adapter, head,
+  thresholds, TTA policy, epoch, or hyperparameters. K=1/5/20 are locked
+  confirmation slices.
+- Matrix: five confirmed target receivers × at least five independent
+  confirmation seeds × three fixed `leo_*_weak` scenarios, using real nested
+  5/10/20 seen-new TX sets. One prediction cell emits the three scenario
+  predictions before scoring, so 300 cells produce 900 joint scenario rows.
+  launchable Phase2 rows must expose target-old and target-new sample coverage;
+  the target receiver domain may contain one or more receivers, must be
+  disjoint from CEN51 train receivers, and validators must not require exactly
+  one r_sat.
+- Performance: at K=10, old accuracy ≥92%, minimum old-class accuracy ≥88%,
+  and seen-new accuracy ≥92%/90%/86% for 5/10/20 new classes. K=5 matched drop
+  is ≤3pp. K=1 is non-negative versus identity-only and ≥+2pp versus strict
+  direct ADV3B02 overall and per receiver with paired 95% CI lower bound >0.
+  Forgetting at K=1/5/10/20 is no worse than matched identity-only.
+- Resources: preferred caps are ≤50,000 trainable parameters, ≤20 adaptation
+  epochs, ≤256KB persistent state, no dense query graph, and adaptive
+  per-sample 1→3→5-view inference with one view by default.
+- Formal boundary: field declarations alone never grant launch authority.
+  Candidate provenance, immutable input snapshot/TOCTOU closure, real Linux
+  isolation, post-run access ledger, target TX coverage, and independent
+  sealed prediction/scoring must all pass. Until then the outcome is
+  `LOCAL_PROTOCOL_REPAIR_REQUIRED` with `formal_launch_authority=false`.
+- Capacity: the current `AGENTS.md` total limit is at most two concurrent
+  training experiments per GPU. Any older four-per-GPU or three-Phase2-per-GPU
+  scalar is historical and must not drive Runner.
+
 ## Source-Of-Truth Map
 
 - `AGENTS.md`: safety, environment, SSH/SCP, local-first edits, reporting, and
