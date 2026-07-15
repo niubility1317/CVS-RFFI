@@ -553,3 +553,5 @@ PYTHONPATH=/home/szu2070436088/2510044040/CV-SincNet /home/szu2070436088/.conda/
 ```
 
 该head必须由Stage2-C runner再次验证delta provenance、31,200参数/15步/精确白名单、1-view、无角色/配额Oracle；只有完整artifact contract通过后才能读取old/floor/new/H。
+
+主工作树中的`cvs_method_runner.py`在本轮提交后出现其它并发未提交修改，因此不得直接同步。已从Git提交`5752810`创建detached只读快照`E:\type10-7\code\snapshots\qknn_rxlight5_v10_sync_5752810`，快照工作树clean。head运行前只从该快照SCP`paper_reproduction/cvs_aligned/cvs_method_runner.py`到N607同相对路径；SHA256=`9c661fa01bbde4726627672d89a2967c9c7d97bdfac93c912653199a60c28191`。同步后必须复核远端哈希、`py_compile`和`source_init`方法命中稀疏关键层gate，不能携带主工作树并发修改。
