@@ -147,6 +147,8 @@ attempt2于PID`1871127`落地后fail closed。它完整生成并封印predictor/
 
 attempt3以PID`1874959`运行，成功生成并封印pre-run runtime evidence，随后请求契约因`tta_policy.uses_class_quota=false`包含禁词`class_quota`而fail closed；没有prediction、scoring receipt或smoke receipt。修复仅允许该精确TTA guard以布尔`false`穿过predictor边界，`true`、字符串或其他quota键仍拒绝；同时严格计划生成器新增安全单路径suffix，使后续输出落在全新run根。18项request/runtime/strict-plan/package/CLI测试通过。v8清单使用experiment ID=`qknn_ground_effective8_r16_e12_leoonly_20260715_v14_landlock_strict300_v2`，仍覆盖25 cache、75 package、300 cell、900 formal rows，`launch_authority=false`，SHA=`1f33237f8f3a0c869f2c1d61d324893fe2678656336c4210f924a81a57962f0a`。原strict300根及attempt1/2/3全部保持不动。
 
+同步前闭包审计确认strict_v6的9文件runtime closure内含旧`phase2_runtime_contract.py`（成员SHA=`8a8e372b1cc5534b3f3926c350acd403d5ad2b7cf9759fe31f80eded03f5e8c3`）。因此v8清单不发布、不启动，标记为本地superseded fail-closed计划。下一步在全新`runtime_artifacts_strict_v7`中逐项复制v6已验证且字节不变的base/candidate runtime、capsule、parity、lock/runtime config，再从提交`710f80c`的当前代码重新构建独立runtime closure并核验全部SHA；不修改strict_v6。只有随后重生成且绑定strict_v7的新清单才可进入烟测。
+
 ## 完成后结果表
 
 实验完成后在本节追加逐单元同一行结果，至少包含candidate ID、机制、receiver/TX split、K-shot、seed、old/seen-new/unknown指标、coverage/rollback/defer、loss/adapter摘要和最终判定。不得用来自不同单元的独立极值替代联合行。
