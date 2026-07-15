@@ -277,6 +277,10 @@ v11 smoke首次完整通过，status=`PASS`、cell status=`PROTOCOL_VALID`、`ma
 
 00:50实时清单再次确认8张GPU空闲且无训练进程。授权清单已同步到v11根`protocol_plan/strict_plan_manifest_v20_authorized_62d78cb9.json`并核验相同SHA。每个shard确切入口统一为`PYTHONPATH=code:. <CVS-RFFI python> paper_reproduction/scripts/run_cvs_stage2c_effective8_strict_plan.py --plan-manifest <authorized manifest> --project-root <CV-SincNet root> --stage matrix_shard --device cuda:<i> --shard-index <i> --shard-count 8 --log-dir <v11/logs/matrix_shard_<i>> --state-json <v11/matrix_shard_<i>_state.json>`；driver输出及PID分别为`logs/matrix_shard_<i>_driver.out`和`matrix_shard_<i>.pid`。启动前对每个shard用原子lock目录防止重复启动，全部启动后只用短SSH检查PID/cmdline/GPU/log/state并断开。
 
+v11矩阵8个shard均落地：shard0 PID=`1918624`正常运行；shard1–7在首cell一致失败并退出。完整日志显示导出的TorchScript内部参数固定在逻辑`cuda:0`，直接传`cuda:1..7`导致输入位于`cuda:i`而卷积权重仍位于`cuda:0`。7次失败均无cell receipt且保留partial evidence，v11不清理、不原地续跑；shard0继续运行且不干预。该问题属于物理GPU映射，不改变candidate/runtime artifact：正确多GPU方式是每进程设置`CUDA_VISIBLE_DEVICES=<物理i>`，再统一传逻辑`--device cuda:0`。
+
+为保持单一完整矩阵输出，生成全新v21计划绑定同一strict_v14与全新`..._landlock_strict300_v12`根；未授权清单SHA=`7e5358e511e52c8d2b0ec421cc3228d55237d63a26b368c1b3e1c6d6c4c1f47d`。官方授权器复用v11相同candidate/closure的PASS receipt，生成授权清单SHA=`1c972769f2e248ae46d893df46193bea02a499430d648a67230a91b7aeba2c99`，仍覆盖25 cache、75 package、300 cell、900 formal row。v12的8个shard将设置`CUDA_VISIBLE_DEVICES=0..7`且全部传逻辑`cuda:0`；GPU0因此暂时有v11 shard0+v12 shard0共2个实验进程，未超过每GPU最多2个的默认上限，其他GPU各1个。
+
 v10 attempt1以PID=`1910063`运行，再次生成2,658,628字节密封prediction，并成功生成1,779字节predictor资源收据，证明首次密封读取SHA修复生效；随后execution audit和最终stdout返回中的两处遗留`sha256_file(request_path)`仍触发Landlock拒绝。scorer/cell/smoke receipt依然不存在，v10不原地续跑。完整driver日志6,042字节，SHA=`54bb8c51…5c78`。
 
 提交`ec86075`把execution audit与最终返回统一绑定首次密封读取所得`request_sha256`，新增源码级门禁保证严格predictor中不再出现任何`sha256_file(request_path)`。41项相关测试通过；全新strict_v14 closure在N607与本地均为SHA=`3f8a577de614666cf33eb2cdc50244045c0898cabc22d545571d229c4b87805b`，12项模型/capsule/config复用artifact逐项一致。v20清单绑定strict_v14和全新v11运行根，仍为25/75/300/900、`launch_authority=false`，清单SHA=`717bcd08dadd0dccaf2f24ae4407d64aea4cd44b32f63b423451ee8f3884a0a4`。
