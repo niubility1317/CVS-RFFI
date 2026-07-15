@@ -145,6 +145,8 @@ attempt2于PID`1871127`落地后fail closed。它完整生成并封印predictor/
 
 提交`6f8bd42`中的strict package runner已同步到N607，local/remote SHA均为`241b3a4b908a9d5c34978c78af1ae47cc406ef9014376c63d4eaa8761c5a5d14`。23:42实时清单再次确认`gpu_compute=[]`、`active_training_processes=[]`，同步与清单连接结束后无本地SSH/TCP22残留。attempt3仍仅获smoke权限，完整矩阵未授权。
 
+attempt3以PID`1874959`运行，成功生成并封印pre-run runtime evidence，随后请求契约因`tta_policy.uses_class_quota=false`包含禁词`class_quota`而fail closed；没有prediction、scoring receipt或smoke receipt。修复仅允许该精确TTA guard以布尔`false`穿过predictor边界，`true`、字符串或其他quota键仍拒绝；同时严格计划生成器新增安全单路径suffix，使后续输出落在全新run根。18项request/runtime/strict-plan/package/CLI测试通过。v8清单使用experiment ID=`qknn_ground_effective8_r16_e12_leoonly_20260715_v14_landlock_strict300_v2`，仍覆盖25 cache、75 package、300 cell、900 formal rows，`launch_authority=false`，SHA=`1f33237f8f3a0c869f2c1d61d324893fe2678656336c4210f924a81a57962f0a`。原strict300根及attempt1/2/3全部保持不动。
+
 ## 完成后结果表
 
 实验完成后在本节追加逐单元同一行结果，至少包含candidate ID、机制、receiver/TX split、K-shot、seed、old/seen-new/unknown指标、coverage/rollback/defer、loss/adapter摘要和最终判定。不得用来自不同单元的独立极值替代联合行。

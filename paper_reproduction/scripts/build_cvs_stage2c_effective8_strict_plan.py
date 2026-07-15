@@ -131,11 +131,14 @@ def generate_strict_plan(
     runtime_project_root: str,
     runtime_artifact_root: str,
     expected_candidate_capsule_sha256: str,
+    strict_run_suffix: str = "landlock_strict300",
 ) -> dict[str, Any]:
     if out_dir.exists():
         raise FileExistsError(f"refusing to overwrite strict plan directory: {out_dir}")
     if SHA256_RE.fullmatch(expected_candidate_capsule_sha256.lower()) is None:
         raise ValueError("candidate capsule SHA256 must be an external 64-hex trust root")
+    if re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9._-]*", strict_run_suffix) is None:
+        raise ValueError("strict run suffix must be one safe path component")
     base_dir = out_dir / "base_plan"
     base = generate_base_plan(
         plan_path,
@@ -150,7 +153,7 @@ def generate_strict_plan(
         int(key): [str(value) for value in values]
         for key, values in split["nested_target_new_tx_labels"].items()
     }
-    experiment_id = f"{source['experiment_id']}_landlock_strict300"
+    experiment_id = f"{source['experiment_id']}_{strict_run_suffix}"
     run_root = _runtime_path(runtime_project_root, f"runs/{experiment_id}")
     source_run_root = _runtime_path(
         runtime_project_root, f"runs/{source['experiment_id']}"
@@ -291,6 +294,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     parser.add_argument("--runtime-project-root", required=True)
     parser.add_argument("--runtime-artifact-root", required=True)
     parser.add_argument("--expected-candidate-capsule-sha256", required=True)
+    parser.add_argument("--strict-run-suffix", default="landlock_strict300")
     args = parser.parse_args(argv)
     result = generate_strict_plan(
         args.plan,
@@ -298,6 +302,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         runtime_project_root=args.runtime_project_root,
         runtime_artifact_root=args.runtime_artifact_root,
         expected_candidate_capsule_sha256=args.expected_candidate_capsule_sha256,
+        strict_run_suffix=args.strict_run_suffix,
     )
     print(json.dumps(result["expected_counts"], ensure_ascii=False, sort_keys=True))
     return 0

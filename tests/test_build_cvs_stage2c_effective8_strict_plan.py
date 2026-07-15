@@ -45,3 +45,23 @@ def test_strict_plan_packages_share_one_sealed_pool_across_all_k(tmp_path: Path)
     assert len({cell["cell_id"] for cell in first["cells"]}) == 4
     assert first["target_cache_set"].endswith("cache_set.json")
     assert manifest["phase2_query_decision_policy"] == "per_sample_all_registered_classes"
+
+
+def test_strict_plan_supports_new_run_root_without_rebinding_source_lock(tmp_path: Path) -> None:
+    manifest = generate_strict_plan(
+        PLAN,
+        out_dir=tmp_path / "strict-rerun",
+        runtime_project_root="/srv/CV-SincNet",
+        runtime_artifact_root="/srv/CV-SincNet/runs/v14/runtime_artifacts",
+        expected_candidate_capsule_sha256="d" * 64,
+        strict_run_suffix="landlock_strict300_v2",
+    )
+
+    assert manifest["experiment_id"].endswith("_landlock_strict300_v2")
+    assert (
+        "/runs/qknn_ground_effective8_r16_e12_leoonly_20260715_v14_landlock_strict300_v2/"
+        in manifest["package_steps"][0]["predictor_package_root"]
+    )
+    assert manifest["runtime_artifacts"]["candidate_lock"].endswith(
+        "/runs/qknn_ground_effective8_r16_e12_leoonly_20260715_v14/candidate_lock_v2.json"
+    )
