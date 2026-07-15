@@ -155,6 +155,10 @@ strict_v7构建完成：12项复用artifact与strict_v6逐字节`cmp=PASS`，can
 
 v2 attempt1以PID`1880017`运行，pre-run evidence再次成功封印，但请求契约随后因`tta_policy.uses_query_role=false`命中`query_role`禁词而fail closed；没有prediction/scoring/smoke receipt。契约allowlist现覆盖adaptive TTA要求的完整否定guard：仅允许`uses_query_role=false`与`uses_class_quota=false`，任一为`true`仍拒绝；包含完整3项TTA访问guard的13项request/runtime测试通过。由于v2 cell已有不可变pre-run evidence，下一次使用全新`..._landlock_strict300_v3`输出根，并基于修复代码构建全新runtime closure；v2根不修改。
 
+v3修复计划只更新隔离闭包，不重导出模型：先确认GPU无任务、`runtime_artifacts_strict_v8`与v3运行根均不存在；从strict_v7逐文件复制已验证的双TorchScript、candidate capsule、parity、lock artifacts、runtime configs和步骤收据，以`cmp`逐项确认字节一致；再使用提交`af2e939`的当前`code/`在strict_v8中新建9文件runtime closure，生成全量SHA清单。旧strict_v7、v2运行根及其失败证据保持只读不变。预期新闭包唯一相关变化是`phase2_runtime_contract.py`从SHA=`dae574f6…a6e4`更新为`be2a7daf…f119`。
+
+完成strict_v8核验并回传证据后，才允许从同一源计划生成绑定strict_v8、suffix=`landlock_strict300_v3`的新strict清单；新清单必须继续保持`launch_authority=false`并覆盖25 cache、75 package、300 cell、900 row。随后在报告记录新清单SHA和确切路径，SCP至全新v3根，并仅启动一个receiver=`20-1`、seed=`713101`、20个真实target-new、K=`1`、3个LEO_weak场景的`cuda:0` smoke。
+
 strict_v8已从修复提交构建：12项模型/capsule/config复用artifact逐字节一致，新闭包SHA=`e04ebc9eb907f6eb144bbbd888f3d4447b9914ca94c688d41134717ea086fd1e`，闭包内契约成员SHA=`be2a7daf3b192ad7a9d26450d44eec41f76c55ff47286e4859b931515f13f119`。新v10清单绑定strict_v8与全新`..._landlock_strict300_v3`输出根，仍为25/75/300/900、`launch_authority=false`，SHA=`d748b0b558448ddf9e961023f1fb21766a6e72ae505a4bde955cab1d6597d50b`。
 
 23:55预检/实时清单再次确认8张GPU空闲、无训练进程。v10已同步至v3新根`protocol_plan/strict_plan_manifest_v10.json`并核验SHA。v3 smoke仍只获`cuda:0`单单元权限，使用`smoke_driver_v3_attempt1.pid`、`logs/smoke_driver_v3_attempt1.out`、`logs/smoke_v3_attempt1`和新根`smoke_receipt.json`，路径不存在时才启动。
