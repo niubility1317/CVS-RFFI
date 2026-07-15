@@ -6,6 +6,7 @@
 - For tool-using or long-running tasks, send concise, evidence-based progress commentary before the first tool call, at meaningful phase changes, after reconnect or context-compaction recovery, whenever a blocker appears, and at least once every 60 seconds while work is active. Report observable actions, findings, and next steps; do not expose private chain-of-thought or dump raw logs. Commentary may be omitted only for short answer-only turns with no tools.
 - Do not commit datasets, trained weights, checkpoints, private runtime details, logs, generated experiment outputs, or local machine state. Keep `.gitignore` aligned with this boundary.
 - Do not claim deployment success from clean-view or diagnostic-only evidence. Any reported result must be tied to a concrete run, split, K-shot setting, satellite/LEO view, and same-row metric context.
+- Phase2 has a hard `LEO_weak-only` data-reachability boundary: every Stage2-A/B/C sample and every adaptation, calibration, enrollment, model-selection, rollback, ranking, or formal-evaluation signal must come from an actual `leo_clear_weak`, `leo_low_elev_weak`, or `leo_rain_weak` overlay. Phase2 must not access clean samples or clean-derived features/logits/prototypes/decision signals. Launchable rows must declare `phase2_sample_view_policy=leo_weak_only_no_clean_access` and `clean_sample_access=false`; violations are `LOCAL_PROTOCOL_REPAIR_REQUIRED`, and historical clean-access artifacts may only be sealed as `PROTOCOL_INVALID_FOR_PHASE2`.
 
 ## Windows Shell and Command Hygiene
 

@@ -2,7 +2,7 @@
 
 ## 场景定义
 
-CVS的主场景是天基RFFI中的弱标注跨接收机域泛化与在轨跨域少样本适应。模型在地面训练，部署到目标卫星接收机域后只允许推理、prototype更新、轻量校准、阈值微调或小adapter更新。自2026-07-07起，Phase2主线是使用叠加简化LEO星地信道的少量目标域旧类样本和新类样本，完成目标域适应、旧类校准和新类学习；open-set/unknown拒识下沉为Phase3备用项。
+CVS的主场景是天基RFFI中的弱标注跨接收机域泛化与在轨跨域少样本适应。模型在地面训练，部署到目标卫星接收机域后只允许推理、prototype更新、轻量校准、阈值微调或小adapter更新。自2026-07-07起，Phase2主线是使用叠加简化LEO星地信道的少量目标域旧类样本和新类样本，完成目标域适应、旧类校准和新类学习；open-set/unknown拒识下沉为Phase3备用项。自2026-07-15起，Phase2数据入口严格为`LEO_weak-only`，Phase2接触不到clean样本。
 
 项目需要处理四个约束：
 
@@ -61,6 +61,10 @@ raw IQ -> CV-SincNet/CVS -> z_id, z_dom
 
 在轨部署阶段面对目标接收机域`R_t`。Stage2-B/C必须记录正整数`K`、support/query划分、receiver/TX split、threshold scope和satellite/LEO target view。Phase2主线row必须包含target-old和target-new目标域样本，并按简化LEO目标视图构造；unknown/open-set字段只作为Phase3备用或diagnostic metadata。
 
+Phase2的全部Stage2-A/B/C target-old、target-new及可选Phase3-backup unknown support/query、适配集、校准集、注册集、模型选择信号、回滚/排序信号和正式评估输入，都必须已经实际叠加`leo_clear_weak`、`leo_low_elev_weak`或`leo_rain_weak`之一。Phase2禁止读取、缓存、恢复、重新构造clean样本，也禁止接收由clean样本派生的feature、logit、prototype、阈值、TTA触发、回滚或晋升信号。clean control只允许存在于Phase1或与Phase2完全隔离的离线参考流程中。
+
+每个launchable Phase2 row必须记录`phase2_sample_view_policy=leo_weak_only_no_clean_access`、`clean_sample_access=false`、实际`leo_*_weak`scenario、satellite seed或等价sample-level overlay provenance。缺字段、目标视图含clean、场景超出三个允许的`leo_*_weak`视图或无法证明实际叠加时，必须标为`LOCAL_PROTOCOL_REPAIR_REQUIRED`并阻断matrix、runner、promotion与正式声明。历史clean-access artifact只可封存为`PROTOCOL_INVALID_FOR_PHASE2`，不得生成新的clean诊断候选。
+
 TTA轻量化必须固定同一物理LEO观测、support/query、checkpoint和adapter后比较1/3/5-view；不得用不同adapter或不同LEO随机扰动制造view数量差异。正式结果使用逐样本可部署决策，并报告backbone前向数、FFT数以及相对5-view的`old_acc`、`seen_new_acc`和`H_old_new`变化。
 
 对任一target query，推理前不得假定其属于旧类、新类或未知类。Phase2/Phase3正式候选必须让每个query面对全部已注册类别及允许的reject/defer机制；禁止使用真实old/new/unknown角色、整批类别数量、每类quota、query排序/分块以及Hungarian或等价配额重排。历史role/quota Oracle artifact仅可标记为`PROTOCOL_INVALID_FOR_DEPLOYMENT`后封存，不得新生成、调参、排名、进入论文主表或形成部署声明。本禁令不影响Phase1源域半监督训练中的伪标签quota审计与采样平衡。
@@ -93,6 +97,7 @@ TTA轻量化必须固定同一物理LEO观测、support/query、checkpoint和ada
 - `R_t`与`R_s`重叠后仍称部署泛化。
 - 缺少target-old或target-new样本覆盖时仍声称完整Stage2-C。
 - 使用target query真实角色、类别配额或跨query批量决策后仍报告为Phase2/Phase3正式性能。
+- Phase2读取clean样本或clean派生信号，或先用clean适配/选参再只报告`LEO_weak`结果。
 
 ## Git与Markdown同步
 

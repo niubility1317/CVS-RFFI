@@ -49,6 +49,15 @@ Rule ownership is separate from load order:
   deployment-primary simplified channel metadata; and the state file owns the
   current machine-readable default. Legacy five-scenario satellite views are
   controls/diagnostics only unless `项目.md` is explicitly revised.
+- Phase2 `LEO_weak-only` data reachability is split the same way: `项目.md`
+  owns the rule that Phase2 cannot access clean samples or any clean-derived
+  feature/logit/prototype/decision signal; the active prompt owns the
+  orchestration check; the contract and validator require
+  `phase2_sample_view_policy=leo_weak_only_no_clean_access`,
+  `clean_sample_access=false`, and explicit `leo_*_weak` scenarios for every
+  launchable Phase2 row; the matrix generator emits those fields; and the state
+  file owns the current machine-readable default. Missing evidence or any clean
+  access is `LOCAL_PROTOCOL_REPAIR_REQUIRED`, not a launchable diagnostic.
 - Phase2/Phase3 boundary is split the same way: `项目.md` owns the rule that
   Phase2 mainline is target-old adaptation plus target-new learning under
   simplified LEO target view, while open-set / unknown rejection is Phase3

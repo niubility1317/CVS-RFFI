@@ -160,6 +160,7 @@
       "train_target_adapt.py",
       "export_spaceborne_features.py",
       "target_channel_view=satellite/LEO",
+      "phase2_sample_view_policy=leo_weak_only_no_clean_access",
       "Stage2 score-table/manifest/rollback queue"
     ],
     "user_directive": "Treat Phase1 and Phase2 separately. Every monitor run must classify Phase1 processes and Phase2 processes separately, then enter each idle lane's optimizer."
@@ -3401,7 +3402,11 @@
       "unknown_leo_query",
       "old_support_query_split",
       "new_support_query_split",
-      "target_channel_view=satellite/LEO",
+      "phase2_sample_view_policy=leo_weak_only_no_clean_access",
+      "clean_sample_access=false",
+      "target_channel_view=leo_weak_only",
+      "target_channel_scenarios=leo_clear_weak,leo_low_elev_weak,leo_rain_weak",
+      "satellite_seed_or_sample_overlay_provenance",
       "threshold_selection_label_scope",
       "unknown_query_eval_only=true",
       "target_new_query_not_threshold_fit=true",
@@ -3497,6 +3502,21 @@
       ]
     },
     "sample_grain": "receiver_x_transmitter",
+    "phase2_input_view_policy": {
+      "status": "ACTIVE_HARD_GATE",
+      "phase2_sample_view_policy": "leo_weak_only_no_clean_access",
+      "clean_sample_access": false,
+      "allowed_target_channel_scenarios": [
+        "leo_clear_weak",
+        "leo_low_elev_weak",
+        "leo_rain_weak"
+      ],
+      "scope": "all Stage2-A/B/C target-old, target-new, and optional Phase3-backup unknown support/query plus adaptation, calibration, enrollment, model-selection, rollback, ranking, and formal-evaluation signals",
+      "clean_derived_signal_forbidden": true,
+      "missing_or_conflicting_outcome": "LOCAL_PROTOCOL_REPAIR_REQUIRED",
+      "historical_artifact_label": "PROTOCOL_INVALID_FOR_PHASE2",
+      "new_clean_access_diagnostics_forbidden": true
+    },
     "stage2_a": "Zero-target-label deploy: classify target_old query samples and reject target_new/unknown query samples using CEN51 base weights and preset gates; no new identity recognition and no target-label threshold fitting.",
     "stage2_b": "Use only a small labeled target_old support set for old-class target calibration, then evaluate target_old query and target_new/unknown rejection under the same target receivers.",
     "stage2_c": "If new labels are unavailable, remain rejection-only. If a small labeled target_new support set is explicitly allowed, treat it as seen-new enrollment and reserve separate unseen-new/unknown rejection queries.",
@@ -3523,9 +3543,9 @@
         "8-20"
       ]
     },
-    "user_directive_local": "2026-06-18 user corrected Phase2 sample boundary: CEN51 base, old classes are ManySig six TX on target receivers, new/unknown are non-ManySig TX on same target receivers. 2026-06-22 user corrected single-rsat interpretation: R_t may contain one or more receivers; launchability depends on R_t/R_s disjointness and target-old/target-new coverage. 2026-06-22 confirmed Phase2 candidate pool in project.md 8.4 should be preferred before inventing new dataset routes.",
+    "user_directive_local": "2026-06-18 user corrected Phase2 sample boundary: CEN51 base, old classes are ManySig six TX on target receivers, new/unknown are non-ManySig TX on same target receivers. 2026-06-22 user corrected single-rsat interpretation: R_t may contain one or more receivers; launchability depends on R_t/R_s disjointness and target-old/target-new coverage. 2026-06-22 confirmed Phase2 candidate pool in project.md 8.4 should be preferred before inventing new dataset routes. 2026-07-15 user established Phase2 LEO_weak-only data reachability: every used sample and decision signal must come from an allowed leo_*_weak overlay, and Phase2 cannot access clean samples or clean-derived signals.",
     "validator": {
-      "policy": "Launchable Phase2 rows missing these fields or violating old/new/unknown TX disjointness and receiver split fail validation.",
+      "policy": "Launchable Phase2 rows missing required fields, violating old/new/unknown TX disjointness or receiver split, lacking allowed leo_*_weak overlay provenance, or allowing any clean-sample/clean-derived access fail validation.",
       "tool": "tools/optimizer_validate_matrix.py"
     },
     "k_shot_policy": {

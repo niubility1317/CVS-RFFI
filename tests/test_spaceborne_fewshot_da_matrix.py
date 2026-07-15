@@ -60,7 +60,8 @@ class SpaceborneFewShotDaMatrixTest(unittest.TestCase):
         self.assertIn("--target_label_mode labeled", launcher)
         self.assertIn("--target_samples_per_rx_tx 2", launcher)
         self.assertIn("--target_channel_view satellite", launcher)
-        self.assertIn("--target_train_scenarios clear_leo,low_elev_leo,rain_leo,storm_mp,mixed_orbit", launcher)
+        self.assertIn("--target_train_scenarios leo_clear_weak,leo_low_elev_weak,leo_rain_weak", launcher)
+        self.assertNotIn("--target_train_scenarios clear_leo,low_elev_leo,rain_leo,storm_mp,mixed_orbit", launcher)
         self.assertNotIn("provided_satellite", launcher)
         self.assertIn("H_sg", report)
         self.assertIn("target_visibility", report)
@@ -254,7 +255,18 @@ class SpaceborneFewShotDaMatrixTest(unittest.TestCase):
             self.assertIn(token, stage2c["score_table_required_columns"])
         self.assertIn("pseudo_unknown_only", stage2c["seen_new_evidence_gate_calibration_scope"])
         self.assertTrue(all("defer" in item["model_output_semantics"] for item in decoded))
-        self.assertTrue(all(item["clean_view_role"] == "control_only" for item in decoded))
+        self.assertTrue(all(item["phase2_sample_view_policy"] == "leo_weak_only_no_clean_access" for item in decoded))
+        self.assertTrue(all(item["clean_sample_access"] is False for item in decoded))
+        self.assertTrue(all(item["target_channel_view"] == "leo_weak_only" for item in decoded))
+        self.assertTrue(all(item["clean_view_role"] == "not_accessible_in_phase2" for item in decoded))
+        self.assertTrue(all(item["satellite_seed"] is not None for item in decoded))
+        self.assertTrue(
+            all(
+                set(item["target_channel_scenarios"].split(","))
+                <= {"leo_clear_weak", "leo_low_elev_weak", "leo_rain_weak"}
+                for item in decoded
+            )
+        )
         self.assertTrue(all(item["deployment_success_claim_allowed"] is False for item in decoded))
         self.assertTrue(all(item["evidence_level"] == "receiver_x_transmitter_proxy_stress" for item in decoded))
         self.assertTrue(all(item["support_query_split_verified"] is True for item in decoded))

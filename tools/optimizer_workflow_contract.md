@@ -537,6 +537,29 @@ For Phase2 sample selection, target receiver domain may contain one or more rece
 
 Phase2 launchable rows must obey the corrected 2026-07-07 sample boundary: target-old adaptation plus target-new learning on the same target receiver domain and simplified LEO target view is the Phase2 mainline; open-set rejection and unknown FAR are Phase3 backup.
 
+### LEO_weak-only Data Reachability
+
+- Phase2 receives only samples after one of `leo_clear_weak`,
+  `leo_low_elev_weak`, or `leo_rain_weak` has actually been applied. This covers
+  every Stage2-A/B/C target-old/target-new and optional Phase3-backup unknown
+  support/query sample, adaptation/calibration/enrollment input, model-selection
+  signal, rollback/ranking signal, and formal-evaluation input.
+- Phase2 must not read, cache, reconstruct, or derive features, logits,
+  prototypes, thresholds, TTA decisions, or any other decision signal from clean
+  samples. Clean controls may run only in Phase1 or in a fully isolated offline
+  reference workflow whose outputs do not enter Phase2.
+- Every launchable Phase2 row must declare
+  `phase2_sample_view_policy=leo_weak_only_no_clean_access`,
+  `clean_sample_access=false`, `target_channel_view=leo_weak_only`, explicit
+  `target_channel_scenarios` drawn only from the three allowed `leo_*_weak`
+  scenarios, and a satellite seed or equivalent per-sample overlay provenance.
+- Missing fields, a clean token in the target view/scenario, a scenario outside
+  the allowed `leo_*_weak` family, or inability to prove that overlay was
+  applied is `LOCAL_PROTOCOL_REPAIR_REQUIRED`. Such a row must not enter matrix
+  launchability, runner execution, promotion, or formal claims. Historical
+  clean-access artifacts may only be sealed as
+  `PROTOCOL_INVALID_FOR_PHASE2`; do not generate new clean-access diagnostics.
+
 ### Base Model
 
 - Current Phase2 OPGAC rows use `JREF_C9_MULTICOMP_M2_E220` for on-orbit
@@ -696,7 +719,12 @@ Launchable Phase2 rows and reports must expose:
   saturation, not strict few-shot.
 - `old_support_query_split`
 - `new_support_query_split`, with empty target-new support for Stage2-A/B
-- `target_channel_view=satellite/LEO`
+- `phase2_sample_view_policy=leo_weak_only_no_clean_access`
+- `clean_sample_access=false`
+- `target_channel_view=leo_weak_only`
+- `target_channel_scenarios` containing only `leo_clear_weak`,
+  `leo_low_elev_weak`, and/or `leo_rain_weak`
+- `satellite_seed` or an equivalent sample-level overlay provenance field
 - `threshold_selection_label_scope`
 - `unknown_query_eval_only=true` when unknown query is present
 - `target_new_query_not_threshold_fit=true`
@@ -789,13 +817,17 @@ enhancement, sample overlay, satellite stress, and PAIC rows, the
 deployment-primary implementation is the simplified LEO residual channel
 defined by `项目.md`.
 
-- Clean view is a control/reference only.
+- Phase2 is stricter than a deployment-primary preference: it is
+  `LEO_weak-only` and has no clean-sample access. Clean view is a
+  control/reference only for Phase1 or a fully isolated offline workflow whose
+  outputs cannot affect Phase2.
 - Report simplified-channel per-view results for `leo_clear_weak`,
   `leo_low_elev_weak`, and `leo_rain_weak` when those views exist.
 - Report legacy results for `clear_leo`, `low_elev_leo`, `rain_leo`,
   `storm_mp`, and `mixed_orbit` only when the row is explicitly marked as a
   legacy control/diagnostic.
-- Do not promote clean-view success into deployment claims.
+- Do not let Phase2 read or receive any signal derived from clean samples, and
+  do not promote clean-view success into deployment claims.
 
 ## Evidence Sweep
 

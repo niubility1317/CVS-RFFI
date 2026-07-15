@@ -135,6 +135,9 @@ class MonitorOptimizerClosedLoopPromptTest(unittest.TestCase):
             "target_old_tx_ids=0,1,2,3,4,5",
             "satellite/LEO",
             "clean-view",
+            "phase2_sample_view_policy=leo_weak_only_no_clean_access",
+            "clean_sample_access=false",
+            "PROTOCOL_INVALID_FOR_PHASE2",
             "Subagent Review",
             "Validation Agent",
             "Runner Agent",
@@ -177,9 +180,12 @@ class MonitorOptimizerClosedLoopPromptTest(unittest.TestCase):
             "target_new_query_not_threshold_fit=true",
             "old_acc_target>=0.90",
             "seen_new_acc_target>=0.75",
-            "target_channel_view=satellite/LEO",
+            "phase2_sample_view_policy=leo_weak_only_no_clean_access",
+            "clean_sample_access=false",
+            "target_channel_view=leo_weak_only",
             "Satellite/LEO target view is deployment-primary",
-            "Clean view is a control/reference only",
+            "LEO_weak-only",
+            "PROTOCOL_INVALID_FOR_PHASE2",
             "Candidate-level retired-route gates",
             "tools is not a launch blocker by itself",
         ]
@@ -235,6 +241,10 @@ class MonitorOptimizerClosedLoopPromptTest(unittest.TestCase):
             "`R_t` and `R_s` must be disjoint",
             "single `r_sat` is allowed but not mandatory",
             "must include target-old samples from `Y_old` and target-new samples from `Y_new`",
+            "Phase2 LEO_weak-only数据可达性硬约束",
+            "phase2_sample_view_policy=leo_weak_only_no_clean_access",
+            "clean_sample_access=false",
+            "PROTOCOL_INVALID_FOR_PHASE2",
         ]
         self.assertEqual([], [token for token in required_tokens if token not in project_doc])
 

@@ -552,6 +552,17 @@ Phase1 Safe-SSDG runner.
 The Phase2 sample boundary is mandatory and must be checked before any
 launchable Stage2 row:
 
+- Enforce `phase2_sample_view_policy=leo_weak_only_no_clean_access` and
+  `clean_sample_access=false`. Every Stage2-A/B/C target-old/target-new and
+  optional Phase3-backup unknown support/query sample, plus every adaptation,
+  calibration, enrollment, model-selection, rollback, ranking, and formal
+  evaluation signal, must come from an actual `leo_clear_weak`,
+  `leo_low_elev_weak`, or `leo_rain_weak` overlay. Phase2 must not read, cache,
+  reconstruct, or receive features/logits/prototypes/decisions derived from
+  clean samples. Missing overlay provenance or any clean access is
+  `LOCAL_PROTOCOL_REPAIR_REQUIRED`; replace or repair the row, never generate a
+  new clean-access diagnostic. Historical artifacts are
+  `PROTOCOL_INVALID_FOR_PHASE2` only.
 - Current Phase2 OPGAC inference uses `JREF_C9_MULTICOMP_M2_E220` as the base
   model. This is a user-specified Stage2 base because it is the strongest
   local-mode/receiver-floor diagnostic among recent JREF rows; it is not a
@@ -760,6 +771,9 @@ Write reports under `E:\type10-7\automation_reports\CV-SincNet\<run-id>\report.m
 - Do not claim Phase1 DG completion from protocol PASS or a single incomplete
   evidence slice.
 - Do not promote clean-view success into satellite/LEO deployment success.
+- Do not let any Phase2 path access clean samples or clean-derived signals;
+  launchable rows must prove `leo_weak_only_no_clean_access` and
+  `clean_sample_access=false`.
 - Do not call Stage2-A/B rejection a new identity recognition result.
 - Do not use target labels for Stage2-A threshold fitting.
 - Do not use missing current-run matrix, `NO_CURRENT_MATRIX_VALIDATION`, or

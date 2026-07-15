@@ -63,6 +63,13 @@ DEFAULT_STAGE2_SAMPLE_PROTOCOL = {
     "recommended_k_shot_anchors": [1, 2, 5, 10, 15, 20, 50],
     "few_shot_upper_bound": 20,
 }
+PHASE2_LEO_WEAK_ONLY_POLICY = "leo_weak_only_no_clean_access"
+PHASE2_LEO_WEAK_TARGET_VIEW = "leo_weak_only"
+ALLOWED_PHASE2_LEO_WEAK_SCENARIOS = {
+    "leo_clear_weak",
+    "leo_low_elev_weak",
+    "leo_rain_weak",
+}
 
 STAGE2_NON_LAUNCHABLE_STATUSES = {
     "local_patch_required",
@@ -1310,13 +1317,94 @@ def stage2_sample_protocol_issues(item: Mapping[str, Any], sample_protocol: Opti
     old80_head_bundle_allowed = old80_phase_allowed and is_old80_first_head_row(item)
     issues: List[Dict[str, Any]] = []
 
-    clean_view_role = normalized_status(item.get("clean_view_role"))
-    if clean_view_role != "control_only":
+    sample_view_policy = normalized_status(item.get("phase2_sample_view_policy"))
+    if sample_view_policy != PHASE2_LEO_WEAK_ONLY_POLICY:
         issues.append(
             {
                 "candidate_id": cid,
-                "issue": "stage2_clean_view_role_must_be_control_only",
+                "issue": "stage2_sample_view_policy_must_be_leo_weak_only_no_clean_access",
+                "phase2_sample_view_policy": item.get("phase2_sample_view_policy"),
+            }
+        )
+    if item.get("clean_sample_access") in (None, "", []):
+        issues.append({"candidate_id": cid, "issue": "stage2_clean_sample_access_guard_missing"})
+    elif not is_false_like(item.get("clean_sample_access")):
+        issues.append(
+            {
+                "candidate_id": cid,
+                "issue": "stage2_clean_sample_access_must_be_false",
+                "clean_sample_access": item.get("clean_sample_access"),
+            }
+        )
+    clean_view_role = normalized_status(item.get("clean_view_role"))
+    if clean_view_role != "not_accessible_in_phase2":
+        issues.append(
+            {
+                "candidate_id": cid,
+                "issue": "stage2_clean_view_role_must_be_not_accessible",
                 "clean_view_role": item.get("clean_view_role"),
+            }
+        )
+
+    target_view = normalized_status(item.get("target_channel_view"))
+    if target_view != PHASE2_LEO_WEAK_TARGET_VIEW:
+        issues.append(
+            {
+                "candidate_id": cid,
+                "issue": "stage2_target_channel_view_must_be_leo_weak_only",
+                "target_channel_view": item.get("target_channel_view"),
+            }
+        )
+    scenario_value = item.get("target_channel_scenarios")
+    scenario_tokens = set(re.findall(r"[a-z0-9_]+", normalized_status(scenario_value)))
+    if not scenario_tokens:
+        issues.append({"candidate_id": cid, "issue": "stage2_target_channel_scenarios_missing"})
+    else:
+        disallowed_scenarios = sorted(scenario_tokens - ALLOWED_PHASE2_LEO_WEAK_SCENARIOS)
+        if disallowed_scenarios:
+            issues.append(
+                {
+                    "candidate_id": cid,
+                    "issue": "stage2_target_channel_scenarios_must_be_leo_weak_only",
+                    "target_channel_scenarios": scenario_value,
+                    "disallowed_scenarios": disallowed_scenarios,
+                }
+            )
+    target_view_tokens = set(re.findall(r"[a-z0-9_]+", target_view))
+    if "clean" in target_view_tokens or "clean" in scenario_tokens:
+        issues.append(
+            {
+                "candidate_id": cid,
+                "issue": "stage2_clean_token_forbidden_in_sample_view_fields",
+                "target_channel_view": item.get("target_channel_view"),
+                "target_channel_scenarios": scenario_value,
+            }
+        )
+    overlay_provenance = first_present(
+        item,
+        ["satellite_seed", "phase2_sample_overlay_provenance", "sample_overlay_provenance"],
+    )
+    if overlay_provenance in (None, "", []):
+        issues.append({"candidate_id": cid, "issue": "stage2_leo_weak_overlay_provenance_missing"})
+    exact_command_text = command_text(item).lower()
+    forbidden_command_tokens = (
+        "--target_channel_view clean",
+        "clear_leo",
+        "low_elev_leo",
+        "rain_leo",
+        "storm_mp",
+        "mixed_orbit",
+        "legacy_full",
+    )
+    matched_forbidden_command_tokens = [
+        token for token in forbidden_command_tokens if token in exact_command_text
+    ]
+    if matched_forbidden_command_tokens:
+        issues.append(
+            {
+                "candidate_id": cid,
+                "issue": "stage2_exact_command_accesses_non_leo_weak_or_clean_view",
+                "matched_tokens": matched_forbidden_command_tokens,
             }
         )
     if item.get("evidence_level") in (None, "", []):
@@ -1736,10 +1824,6 @@ def stage2_sample_protocol_issues(item: Mapping[str, Any], sample_protocol: Opti
             issues.append({"candidate_id": cid, "issue": "phase2_seen_new_acc_target_must_be_at_least_0p75", "seen_new_acc_target": item.get("seen_new_acc_target")})
     issues.extend(opgac_required_field_issues(item))
     issues.extend(oa_mse_required_field_issues(item))
-
-    target_view = normalized_status(item.get("target_channel_view"))
-    if "satellite" not in target_view and "leo" not in target_view:
-        issues.append({"candidate_id": cid, "issue": "target_channel_view_must_be_satellite_leo", "target_channel_view": item.get("target_channel_view")})
 
     base_weight = first_present(item, ["cen51_base_checkpoint_or_config", "cen51_base_weight", "cen51_base_weight_policy"])
     if base_weight in (None, "", []):

@@ -8457,7 +8457,7 @@ def _candidate_command(candidate: Candidate) -> str:
             "--target_channel_view satellite "
             "--target_label_mode labeled "
             f"--target_samples_per_rx_tx {candidate.k} "
-            "--target_train_scenarios clear_leo,low_elev_leo,rain_leo,storm_mp,mixed_orbit "
+            f"--target_train_scenarios {SIMPLIFIED_LEO_SCENARIOS} "
             f"--epochs {epochs} --adapt_steps_per_epoch {adapt_steps} --target_batch_size 32 "
             "--lr_adapt 1e-4 --entropy_weight 0 --consistency_weight 0 --pseudo_weight 0 "
             "--anchor_weight 0.05 --eval_detail_every 5 "
@@ -8469,7 +8469,7 @@ def _candidate_command(candidate: Candidate) -> str:
             f"--update_classifier {'false' if candidate.target_adapter_type != 'logit_calibration' else 'false'} "
             "--rollback_enabled true "
             "--eval_sat_channel true --eval_sat_on test_unseen_day_unseen_rx "
-            "--eval_sat_scenarios clear_leo,low_elev_leo,rain_leo,storm_mp,mixed_orbit "
+            f"--eval_sat_scenarios {SIMPLIFIED_LEO_SCENARIOS} "
             f"--sat_eval_max_batches {sat_eval_max_batches} --eval_max_batches {eval_max_batches}"
         )
     if candidate.command_kind == "feature_sfe_wisig_nonoverlap":
@@ -10003,10 +10003,17 @@ def _optimizer_matrix_item(run_id: str, candidate: Candidate, idx: int) -> dict:
             "target_receiver_labels": target_receiver_label,
             "manysig_target_rx_index": manysig_target_rx_index,
             "manytx_target_rx_index": manytx_target_rx_index,
-            "target_channel_view": "satellite/LEO",
+            "phase2_sample_view_policy": "leo_weak_only_no_clean_access",
+            "clean_sample_access": False,
+            "target_channel_view": "leo_weak_only",
             "star_ground_channel_impl": candidate.star_ground_channel_impl,
             "target_channel_scenarios": candidate.target_channel_scenarios,
-            "clean_view_role": "control_only",
+            "satellite_seed": candidate.seed,
+            "phase2_sample_overlay_provenance": (
+                f"generator_seed={candidate.seed};impl={candidate.star_ground_channel_impl};"
+                f"scenarios={candidate.target_channel_scenarios}"
+            ),
+            "clean_view_role": "not_accessible_in_phase2",
             "dataset_role": "terrestrial_proxy",
             "evidence_level": "receiver_x_transmitter_proxy_stress",
             "deployment_success_claim_allowed": False,
@@ -10164,7 +10171,9 @@ def matrix_payload(run_id: str, candidates: Sequence[Candidate]) -> dict:
         },
         "star_ground_channel_policy": {
             "default_impl": policy_candidate.star_ground_channel_impl if policy_candidate else STAR_GROUND_CHANNEL_IMPL,
-            "target_channel_view": "satellite/LEO",
+            "phase2_sample_view_policy": "leo_weak_only_no_clean_access",
+            "clean_sample_access": False,
+            "target_channel_view": "leo_weak_only",
             "target_channel_scenarios": policy_candidate.target_channel_scenarios if policy_candidate else SIMPLIFIED_LEO_SCENARIOS,
             "legacy_scenarios": LEGACY_LEO_SCENARIOS,
         },
@@ -10181,6 +10190,9 @@ def matrix_payload(run_id: str, candidates: Sequence[Candidate]) -> dict:
         },
         "stage2_sample_protocol": {
             "status": "active",
+            "phase2_sample_view_policy": "leo_weak_only_no_clean_access",
+            "clean_sample_access": False,
+            "allowed_target_channel_scenarios": SIMPLIFIED_LEO_SCENARIOS,
             "old_tx_ids": [0, 1, 2, 3, 4, 5],
             "cen51_train_receiver_ids": "rx0,rx1,rx2,rx3,rx4,rx5,rx6",
             "source_receiver_ids": "rx0,rx1,rx2,rx3,rx4,rx5,rx6",

@@ -247,8 +247,12 @@ def _stage2_item(gpu_idx, slot_letter, idx):
         "target_new_tx_ids": "6,7",
         "cen51_train_rxs": "rx0,rx1,rx2,rx3,rx4,rx5,rx6",
         "target_receiver_ids": "rx7",
-        "target_channel_view": "satellite/LEO",
-        "clean_view_role": "control_only",
+        "phase2_sample_view_policy": "leo_weak_only_no_clean_access",
+        "clean_sample_access": False,
+        "target_channel_view": "leo_weak_only",
+        "target_channel_scenarios": "leo_clear_weak,leo_low_elev_weak,leo_rain_weak",
+        "satellite_seed": 713101,
+        "clean_view_role": "not_accessible_in_phase2",
         "dataset_role": "terrestrial_proxy",
         "evidence_level": "receiver_x_transmitter_proxy_stress",
         "deployment_success_claim_allowed": False,
@@ -291,6 +295,7 @@ def _phase1_training_item(gpu_idx, idx):
             "candidate_id": f"S2N99_GPU{gpu_idx}_A_SAFE_SSDG_TRAIN_{idx:02d}",
             "category": "conservative" if idx < 32 else "aggressive",
             "lane": "phase1_ground_dg",
+            "clean_view_role": "control_only",
             "phase_axis": "Phase1-GroundDG",
             "stage2_mode": "NOT_APPLICABLE",
             "protocol": "Safe-SSDG-CVS-R01",
@@ -1072,6 +1077,39 @@ def test_stage2_b_false_target_new_support_does_not_count_as_support():
     issue_names = {issue["issue"] for issue in issues}
 
     assert "stage2_b_must_not_use_target_new_support" not in issue_names
+
+
+def test_stage2_sample_protocol_rejects_clean_access_and_non_leo_weak_views():
+    item = _stage2_item(0, "B", 0)
+    item["clean_sample_access"] = True
+    item["clean_view_role"] = "control_only"
+    item["target_channel_view"] = "clean+satellite/LEO"
+    item["target_channel_scenarios"] = "leo_clear_weak,clean,storm_mp"
+    item["exact_command"] = "python run.py --target_channel_view clean --target_train_scenarios clear_leo,storm_mp"
+
+    issues = ovm.stage2_sample_protocol_issues(item, ovm.DEFAULT_STAGE2_SAMPLE_PROTOCOL)
+    issue_names = {issue["issue"] for issue in issues}
+
+    assert "stage2_clean_sample_access_must_be_false" in issue_names
+    assert "stage2_clean_view_role_must_be_not_accessible" in issue_names
+    assert "stage2_target_channel_view_must_be_leo_weak_only" in issue_names
+    assert "stage2_target_channel_scenarios_must_be_leo_weak_only" in issue_names
+    assert "stage2_clean_token_forbidden_in_sample_view_fields" in issue_names
+    assert "stage2_exact_command_accesses_non_leo_weak_or_clean_view" in issue_names
+
+
+def test_stage2_sample_protocol_requires_no_clean_policy_and_overlay_provenance():
+    item = _stage2_item(0, "B", 0)
+    item.pop("phase2_sample_view_policy")
+    item.pop("clean_sample_access")
+    item.pop("satellite_seed")
+
+    issues = ovm.stage2_sample_protocol_issues(item, ovm.DEFAULT_STAGE2_SAMPLE_PROTOCOL)
+    issue_names = {issue["issue"] for issue in issues}
+
+    assert "stage2_sample_view_policy_must_be_leo_weak_only_no_clean_access" in issue_names
+    assert "stage2_clean_sample_access_guard_missing" in issue_names
+    assert "stage2_leo_weak_overlay_provenance_missing" in issue_names
 
 
 def test_validate_matrix_rejects_incomplete_onboard_adaptation_bundle():
