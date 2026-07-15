@@ -6,4 +6,11 @@ Stage2-B,old_acc,ProtoNet CDA,strict ADV3B02 feature extractor and support proto
 Stage2-C,H_old_new,CSIL,method-native historical pipeline,16.23,19.34,18.05,17.69,9.45,not a strict shared-ADV3B02 head-only ablation
 Stage2-C,H_old_new,MoPC-HR,method-native historical pipeline,14.70,18.45,24.17,30.93,37.30,not a strict shared-ADV3B02 head-only ablation
 Stage2-C,H_old_new,Orthogonal Incremental,method-native historical pipeline,9.88,8.16,6.84,7.73,6.00,not a strict shared-ADV3B02 head-only ablation
-Stage2-C,H_old_new,Full qKNN non-Oracle,strict ADV3B02 plus 60epoch adapter plus 5-view TTA plus FFT96,61.10,69.91,76.93,82.07,85.04,dense-transductive non-Oracle result
+Stage2-C,H_old_new,Single qKNN head plus FFT96,strict ADV3B02 plus one-view FFT96,49.49,57.83,66.02,71.70,74.59,per-sample non-Oracle non-dense formal result
+Stage2-C,H_old_new,qKNN E2,strict ADV3B02 plus E2 adapter plus 5-view TTA plus FFT96,54.27,62.77,71.90,77.34,80.44,per-sample non-Oracle non-dense extreme-light
+Stage2-C,H_old_new,qKNN E5,strict ADV3B02 plus E5 adapter plus 5-view TTA plus FFT96,55.41,63.80,72.82,78.20,81.54,per-sample non-Oracle non-dense extreme-light
+Stage2-C,H_old_new,qKNN E10,strict ADV3B02 plus E10 adapter plus 5-view TTA plus FFT96,56.67,64.72,73.88,79.40,82.48,per-sample non-Oracle non-dense extreme-light
+Stage2-C,H_old_new,qKNN E20,strict ADV3B02 plus E20 adapter plus 5-view TTA plus FFT96,58.03,65.77,74.29,79.97,82.76,per-sample non-Oracle non-dense extreme-light upper bound
+Stage2-C,H_old_new,qKNN E30,strict ADV3B02 plus E30 adapter plus 5-view TTA plus FFT96,59.01,67.87,75.99,81.16,83.96,per-sample non-Oracle non-dense performance-relaxed
+Stage2-C,H_old_new,qKNN E60,strict ADV3B02 plus E60 adapter plus 5-view TTA plus FFT96,60.13,68.84,76.72,81.74,84.61,per-sample non-Oracle non-dense resource control above epoch cap
+Stage2-C,H_old_new,Legacy dense qKNN diagnostic,strict ADV3B02 plus E60 adapter plus 5-view TTA plus FFT96,61.10,69.91,76.93,82.07,85.04,dense-transductive historical diagnostic only

@@ -1,0 +1,45 @@
+{
+  "status": "PASS",
+  "task_count": 875,
+  "count_by_arm": {
+    "singlehead_fft96_paired": 125,
+    "E2": 125,
+    "E5": 125,
+    "E10": 125,
+    "E20": 125,
+    "E30": 125,
+    "E60": 125
+  },
+  "scenario_count": 2625,
+  "score_count": 420000,
+  "loss_count": 2625,
+  "detailed_count": 131040,
+  "split_group_count": 2625,
+  "split_error_count": 0,
+  "feature_count": 35,
+  "feature_error_count": 0,
+  "adapter_trace_count": 127,
+  "log_audit": {
+    "file_count": 903,
+    "byte_count": 2467216,
+    "line_count": 6115,
+    "error_hit_counts": {
+      "traceback": 0,
+      "runtime_error": 0,
+      "oom": 0,
+      "killed": 0,
+      "nan": 0,
+      "inf": 0
+    },
+    "error_hit_examples": {
+      "traceback": [],
+      "runtime_error": [],
+      "oom": [],
+      "killed": [],
+      "nan": [],
+      "inf": []
+    }
+  },
+  "errors": [],
+  "error_count": 0
+}
