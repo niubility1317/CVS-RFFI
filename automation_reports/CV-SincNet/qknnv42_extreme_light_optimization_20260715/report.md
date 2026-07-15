@@ -832,3 +832,52 @@ v21同步范围：
 v21根目录为`runs/qknnv42_p4_bpjg_lopo_source_k10_20260715_v21/`与`logs/qknnv42_p4_bpjg_lopo_source_k10_20260715_v21/`。第一阶段命令为`ARM_INDEXES=0 bash paper_reproduction/scripts/launch_cvs_p4_bpjg_lopo_source_v21.sh`；端到端烟测通过后的第二阶段命令为`ARM_INDEXES='1 2 3' bash paper_reproduction/scripts/launch_cvs_p4_bpjg_lopo_source_v21.sh`。
 
 独立增量复核结论为`Ready，可提交并进行单臂远端烟测`，无剩余Critical或Important。
+
+
+### 17.8v21完成结果与适应层结论
+
+v21单臂烟测`JG_R8_LR005`的launcher PID为1852992；端到端PASS后补启动其余三臂，PID为1853807、1853808、1853810。四臂状态均为`exit_code=0,PASS`，4份`result.json`、loss trace、FP16 target patch和状态回执齐全。完整日志逐文件读取：每份恰有5个`[BP-JG-EPOCH]`记录，均无Traceback、OOM或Killed。
+
+以下每行的准确率、最低类、训练和资源来自同一candidate，不拼接单项极值。共同strict direct ADV3B02为87.3917%/71.0227%，共同P4 identity qKNN为88.3221%/73.7634%。
+
+|candidate|目标层/lr|参数|adapted acc|adapted floor|相对P4 identity acc/floor|50步适配时延|峰值显存|持久状态估算|source判定|
+|---|---|---:|---:|---:|---:|---:|---:|---:|---|
+|`JG_R8_LR005`|`id_gate＋joint_proj`/0.005|6,400|88.4504%|74.1935%|+0.1283/+0.4301pp|1.550s|154.08MiB|57,084B|PASS|
+|`JG_R8_LR020`|`id_gate＋joint_proj`/0.020|6,400|**88.8354%**|**75.9140%**|**+0.5133/+2.1505pp**|**1.293s**|154.08MiB|57,084B|**source winner**|
+|`IJ_R8_LR010`|`id_proj＋joint_proj`/0.010|6,400|88.7071%|74.8387%|+0.3850/+1.0753pp|1.693s|154.08MiB|57,084B|PASS|
+|`FJ_R8_LR010`|`fuse＋joint_proj`/0.010|7,688|88.6429%|75.0538%|+0.3208/+1.2903pp|1.778s|154.09MiB|59,644B|PASS|
+
+共同资源与权限事实：每臂5epoch、50 optimizer step、1,980个support forward sample-equivalents、query训练行数0、old/new角色使用false、类别配额使用false、target访问false；target LoRA合并后额外query MAC为0。JG/IJ target patch真实文件为15,016B，FJ为17,576B，持久状态均远低于256KB。
+
+winner `JG_R8_LR020`相对同row strict direct ADV3B02提高+1.4437pp accuracy和+4.8913pp floor；但这是source receiver、K10、6个source类筛选，不是项目要求的target K1 direct门槛。其loss从1.3511降到1.1636，下降13.88%；mean margin从0.5761升到0.5945，增加0.0184。高lr的同层组明显优于低lr，说明v17中`id_gate`变化过小主要是更新幅度不足，而不是该层绝对无效；`identity_joint/fusion_joint`均有正收益，但没有超过`joint_gate,lr=0.02`。
+
+winner分场景结果全部正向：
+
+|scenario|direct acc/floor|P4 identity acc/floor|JG_R8_LR020 acc/floor|相对identity acc/floor|
+|---|---:|---:|---:|---:|
+|`leo_clear_weak`|90.6641%/77.4194%|91.4341%/76.7742%|92.0115%/78.7097%|+0.5775/+1.9355pp|
+|`leo_low_elev_weak`|86.5255%/69.3182%|87.6805%/72.9032%|88.1617%/75.4839%|+0.4812/+2.5806pp|
+|`leo_rain_weak`|84.9856%/65.9091%|85.8518%/71.6129%|86.3330%/73.5484%|+0.4812/+1.9355pp|
+
+rain场景和class0仍是source floor瓶颈；尽管LOPO显著抬高floor，75.9140%仍说明“旧类最低类≥88%”不能仅靠这一adapter完成，后续正式target必须继续结合类对称qKNN head与自适应多View，而不能扩大role/quota信息。
+
+winner的50步只占历史MRIOR 600步的8.33%，1.293s只占历史MRIOR 17.90s的7.22%；这只证明source诊断上的计算压缩潜力，不是matched Stage2-C MRIOR资源/性能结论。正式声明仍要求同checkpoint、同support/query ID、同新类集合和同View策略的matched MRIOR。
+
+关键artifact：
+
+|candidate|result SHA256|adapter SHA256|
+|---|---|---|
+|`JG_R8_LR005`|`c45036604e5230a3cd85e8454c9ab02905c94730cb18fa5dbe127a7f66fbfd49`|`d04e0b7b29cdb8487995af435271e850c3709d85590bac5502683d887ac6e43f`|
+|`JG_R8_LR020`|`fa4265d3c2a61d24aeca0efbe594a92339627fce8c3f284dd69aa2d9133b42e4`|`15d00c3ffac69fcacdccf826301d2419c7eee43959e8ca1f59edabc7736dad4d`|
+|`IJ_R8_LR010`|`d999ec20ac925e537748a0de045112ca527e8000ad661dfa28b11aea5dafdbe7`|`1b0fc437e970ca8d649198fe14751d476a7c844657f0ea3396398c020ccdc234`|
+|`FJ_R8_LR010`|`431201c54a1de6bf552c63d294c0e4cdc19ce4a3755b27ab7d38004edf3cf630`|`24849026517dc189dadb99e0182f86f3edc8e4410d9200a493c05e7e940afb05`|
+
+完整回收证据位于：
+
+- `E:\type10-7\automation_reports\CV-SincNet\qknnv42_extreme_light_optimization_20260715\remote_artifacts_lopo_source_v19`；
+- `E:\type10-7\automation_reports\CV-SincNet\qknnv42_extreme_light_optimization_20260715\remote_artifacts_lopo_source_v20`；
+- `E:\type10-7\automation_reports\CV-SincNet\qknnv42_extreme_light_optimization_20260715\remote_artifacts_lopo_source_v21`。
+
+因此source锁定候选更新为`P4＋BPJG-LOPO joint_gate rank8,lr=0.02,5epoch,50step`。下一步不是继续扫层，而是把该唯一候选抽成support-only enrollment kernel，接入已验证Landlock sealed package链，并在query文件对适配进程物理不可达的前提下运行正式Stage2-C K10开发row。
+
+2026-07-15 23:10+08:00最终live inventory确认`active_training_processes=[]`、`gpu_compute=[]`；本地`ssh.exe`与N607/bridge TCP22连接数均为0。
