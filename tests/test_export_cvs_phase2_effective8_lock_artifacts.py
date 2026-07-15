@@ -10,6 +10,9 @@ if str(SCRIPT_DIR) not in sys.path:
     sys.path.insert(0, str(SCRIPT_DIR))
 
 from export_cvs_phase2_effective8_lock_artifacts import build  # noqa: E402
+from build_cvs_phase2_effective8_candidate_capsule import (  # noqa: E402
+    _audit_head_and_tta_policy,
+)
 
 
 def test_v14_three_threshold_lock_exports_six_slots_with_noop_defaults(
@@ -51,3 +54,8 @@ def test_v14_three_threshold_lock_exports_six_slots_with_noop_defaults(
         "shift3_stop_min_score": -1.0e9,
         "fusion_std_penalty": 0.0,
     }
+    _audit_head_and_tta_policy(
+        json.loads(lock.read_text(encoding="utf-8")),
+        head_lock=Path(result["head_lock"]),
+        tta_policy=Path(result["tta_policy"]),
+    )

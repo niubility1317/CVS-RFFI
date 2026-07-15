@@ -100,6 +100,8 @@ $PY code/scripts/build_cvs_stage2_runtime_closure.py --source-code-root code --o
 
 第三次生成通过trace但在reloaded runtime数值检查前暴露batch冻结：ADV3B02内部把trace时batch维转为Python整数，旧wrapper固定在trace batch=2，无法处理8行parity probes。v3保留。正式wrapper改为内部固定256行部署batch、输入不足时零填充、输出按真实动态行数切回；predictor本身按≤256行分批，因此末批可变而底层ADV3B02始终看到固定batch。跨trace batch=2、实际batch=4的回归测试`2 passed`；下一次使用全新`runtime_artifacts_strict_v4`。
 
+第四次生成的双TorchScript和实际数值parity通过，胶囊审计因仍把历史缺失阈值读成`null`而拒绝无操作槽位。v4保留。审计器现要求历史3个有效阈值逐值一致，并仅允许缺失3项精确编码为`-1e9/-1e9/0.0`；兼容审计测试`8 passed`。下一次使用全新`runtime_artifacts_strict_v5`。
+
 ## 完成后结果表
 
 实验完成后在本节追加逐单元同一行结果，至少包含candidate ID、机制、receiver/TX split、K-shot、seed、old/seen-new/unknown指标、coverage/rollback/defer、loss/adapter摘要和最终判定。不得用来自不同单元的独立极值替代联合行。
