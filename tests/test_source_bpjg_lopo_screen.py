@@ -130,3 +130,32 @@ def test_v21_launcher_locks_screen_and_supports_staged_arms() -> None:
     )
     assert 'ARM_INDEXES_RAW="${ARM_INDEXES:-0 1 2 3}"' in launcher
     assert 'refusing to overwrite existing v21 arm' in launcher
+
+
+def test_v22_launcher_confirms_locked_joint_gate_across_k_grid() -> None:
+    root = Path(__file__).resolve().parents[1]
+    launcher = (
+        root
+        / "paper_reproduction"
+        / "scripts"
+        / "launch_cvs_p4_bpjg_lopo_source_v22.sh"
+    ).read_text(encoding="utf-8")
+    screen = (
+        root
+        / "paper_reproduction"
+        / "scripts"
+        / "screen_cvs_p4_bpjg_lopo_source.py"
+    ).read_text(encoding="utf-8")
+    assert "qknnv42_p4_bpjg_lopo_source_kgrid_20260715_v22" in launcher
+    assert "labels=(JG020_K1 JG020_K5 JG020_K20)" in launcher
+    assert "ks=(1 5 20)" in launcher
+    assert "--scope joint_gate" in launcher
+    assert "--learning_rate 0.02" in launcher
+    assert (
+        "SCREEN_SHA256="
+        "ff061f84ea279bdee50299c1f2a7da83e7dd6abb9f75410771e7c420b07a25bc"
+        in launcher
+    )
+    assert 'ARM_INDEXES_RAW="${ARM_INDEXES:-0 1 2}"' in launcher
+    assert 'refusing to overwrite existing v22 arm' in launcher
+    assert 'f"source LEO_weak K{int(args.k_shot)} method screen only"' in screen

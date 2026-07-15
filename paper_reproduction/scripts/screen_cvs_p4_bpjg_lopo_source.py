@@ -557,7 +557,9 @@ def main(argv: Sequence[str] | None = None) -> int:
         "phase2_target_artifact_access": False,
         "target_query_access": False,
         "mrior_matched_comparison_available": False,
-        "claim_boundary": "source LEO_weak K10 method screen only",
+        "claim_boundary": (
+            f"source LEO_weak K{int(args.k_shot)} method screen only"
+        ),
         "source_screen_pass": source_screen_pass,
         "source_screen_rule": "adapted accuracy > P4 identity and floor not lower",
         "metrics": {

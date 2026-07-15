@@ -881,3 +881,50 @@ winner的50步只占历史MRIOR 600步的8.33%，1.293s只占历史MRIOR 17.90s�
 因此source锁定候选更新为`P4＋BPJG-LOPO joint_gate rank8,lr=0.02,5epoch,50step`。下一步不是继续扫层，而是把该唯一候选抽成support-only enrollment kernel，接入已验证Landlock sealed package链，并在query文件对适配进程物理不可达的前提下运行正式Stage2-C K10开发row。
 
 2026-07-15 23:10+08:00最终live inventory确认`active_training_processes=[]`、`gpu_compute=[]`；本地`ssh.exe`与N607/bridge TCP22连接数均为0。
+
+## 18.v22锁定适应器的K-shot确认实验
+
+### 18.1实验设计与启动前状态
+
+- 实验ID：`qknnv42_p4_bpjg_lopo_source_kgrid_20260715_v22`。
+- 时间：2026-07-15 23:20+08:00；操作者：Codex。
+- 目标：不再继续扩大层/学习率搜索，只用v21锁定的`joint_gate,rank8,lr=0.02,5epoch,max50step`验证K=1/5/20；其中K=10沿用v21已完成同split结果。
+- 假设：`id_gate＋joint_proj`是ADV3B02中最短的接收机域校准路径；K≥2使用leave-one-physical-shot prototype，K=1使用leave-one-view回退，均不读取query参与训练。
+- 对照：每个K使用同一ADV3B02 checkpoint、同一ground P4、同一source receiver `2-19`、同一20-shot嵌套support pool以及位于整个K20池外的固定query；比较strict direct、P4 identity qKNN与P4-BPJG-LOPO qKNN。
+- 声明边界：这是密封`source_validation`上的算法确认，不是target Stage2-C，不产生目标域新类/MRIOR胜出声明。
+
+固定配置：
+
+|字段|值|
+|---|---|
+|checkpoint|ADV3B02，SHA256 `2699eedcafe8cec880828592d2d65ba3781a9948939da5cf5c82b47143d59c98`|
+|ground P4|projection_feature rank16/e8，SHA256 `95f9a8bac7880d42f705db7f16523c37cf4ce5ff8438ac2c500c7550a38de446`|
+|target scope|`id_gate.0＋joint_proj.0`，rank8，6400参数|
+|优化器|SGD，lr=0.02，weight_decay=1e-4，clip=1.0|
+|训练预算|5epoch，最多50 optimizer step|
+|损失|`Lxview＋2Lboundary＋0.5Lanchor＋0.5Lgram＋0.25Lsep＋0.1Lview`|
+|View|3个已登记LEO_weak support场景；query评估固定1-view|
+|权限|target/query训练访问false；role/quota/global assignment均false|
+
+本地变更与验证：
+
+|文件|用途|SHA256|
+|---|---|---|
+|`paper_reproduction/scripts/screen_cvs_p4_bpjg_lopo_source.py`|把claim boundary改为实际K值，避免K1/5/20被误写为K10|`ff061f84ea279bdee50299c1f2a7da83e7dd6abb9f75410771e7c420b07a25bc`|
+|`paper_reproduction/scripts/launch_cvs_p4_bpjg_lopo_source_v22.sh`|只启动JG020的K1/K5/K20三臂|`ef92d999d0f5a7c7b63b2ff6b973113de002f08667b83b828238cd3aad7301bb`|
+|`tests/test_source_bpjg_lopo_screen.py`|锁定K网格、层、lr、SHA与拒绝覆盖|`e3360d6ada3e673196f40f079fd6b27df67696af36c7fb6aee221bc3ac03ddb0`|
+
+验证结果：在`ssr-gpu`中实际提供ADV3B02与P4 artifact，`59 passed`；`py_compile`和`bash -n`通过。第一次Conda命令因错误调用hook脚本而在测试开始前停止，改用`conda.exe shell.powershell hook`后通过，属于本地包装噪声。
+
+N607计划：
+
+- 本地先提交上述3个文件与本报告，再同步screen和v22 launcher到`/home/szu2070436088/2510044040/CV-SincNet/`对应路径；
+- 启动前执行N607直连预检、实时训练进程/GPU清单、目标run/log不存在检查以及trainer/screen/launcher/checkpoint/P4 SHA核验；
+- 工作目录：`/home/szu2070436088/2510044040/CV-SincNet`；
+- Python环境：远端`CVS-RFFI` Conda环境；
+- 命令：`bash paper_reproduction/scripts/launch_cvs_p4_bpjg_lopo_source_v22.sh`；
+- GPU：计划GPU0/1/2各一臂，以实时占用为准；
+- 日志：`logs/qknnv42_p4_bpjg_lopo_source_kgrid_20260715_v22/<arm>.log`；
+- 输出：`runs/qknnv42_p4_bpjg_lopo_source_kgrid_20260715_v22/<arm>/result.json`、`loss_trace.json/csv`、`adapter_state_fp16.pt`、状态回执；
+- 成功规则：每臂adapted accuracy严格高于P4 identity且最低类不降低；任何SHA漂移、support/query重叠、非LEO_weak输入或基础artifact缺失均立即停止；
+- 已知风险：K=1只能leave-one-view，无法像K≥2那样真正留一物理shot；若K=1为负，不扩大参数量，优先调整K1专用support增强/先验正则。
