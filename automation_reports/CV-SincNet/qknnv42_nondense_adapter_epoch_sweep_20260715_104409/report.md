@@ -121,4 +121,13 @@ nohup env ADAPTER_EPOCH=<epoch> GPU=<gpu> SWEEP_ID=qknnv42_nondense_adapter_epoc
 
 ## 七、当前状态
 
+## 八、首轮审计发现与成对基线修复
+
+首轮本地全量审计已确认六档adapter之间完全同任务：抽样及全局检查均显示E2/E5/E10/E20/E30/E60在同一receiver×seed×scenario×K下support与query物理sample ID一致，K内support严格嵌套，query固定。
+
+旧的`singlehead_fft96`分支复用了2026-07-14特征池。以receiver `20-1`、seed `713101`、`leo_clear_weak`、K=5为例，它与E2仅共享4/40个support和2/160个query。因此该125行结果保留为“非成对旧池诊断”，不进入adapter epoch主比较。
+
+修复方案是不覆盖原结果，新增`singlehead_fft96_paired`：使用严格ADV3B02、无训练型adapter、1-view、z_id160+FFT96，并复用本次adapter扫描相同的export seed=4070391、每TX最多80个物理样本、receiver/角色范围和LEO场景生成规则。新feature另存于`runs/qknnv42_singlehead_fft96_paired_features_20260715`，新125任务另存于同一sweep根的`singlehead_fft96_paired`。只有修复后的基线进入最终875行正式比较。
+
+
 启动前设计、配置、fail-closed验证和875行dry-run已完成；N607直连预检通过，严格单视图feature已确认FFT96、1-view及ADV3B02严格加载0/0/0。同步、正式启动、完整日志解析与最终逐K主表待执行。
