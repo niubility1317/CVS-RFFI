@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+from pathlib import Path
 
 import numpy as np
 import pytest
@@ -9,6 +10,16 @@ import pytest
 from paper_reproduction.scripts.build_cvs_stage2c_candidate_lock import (
     build_candidate_lock,
     verify_candidate_lock,
+)
+from paper_reproduction.scripts.build_cvs_stage2c_effective8_formal_plan import (
+    generate_plan,
+)
+
+
+REPO_ROOT = Path(__file__).resolve().parents[1]
+BASE_PLAN = (
+    REPO_ROOT
+    / "paper_reproduction/configs/cvs_stage2c_effective8_formal_matrix_20260715.json"
 )
 
 
@@ -23,10 +34,22 @@ def _artifacts(tmp_path):
     checkpoint.write_bytes(b"checkpoint")
     adapter.write_bytes(b"adapter")
     np.savez(stats, mean=np.zeros(8), std=np.ones(8))
+    source_train_cache = tmp_path / "source_train_cache_set.json"
+    source_validation_cache = tmp_path / "source_validation_cache_set.json"
+    source_train_cache.write_text('{"scope":"source_train"}', encoding="utf-8")
+    source_validation_cache.write_text(
+        '{"scope":"source_validation"}', encoding="utf-8"
+    )
     validation = tmp_path / "source_validation.json"
     validation_payload = {
         "source_validation_pass": True,
         "clean_samples_used_for_validation": False,
+        "validation_input_stage": "phase1_offline_prechannel_export",
+        "phase2_sample_view_policy": "leo_weak_only_no_clean_access",
+        "clean_sample_access": False,
+        "clean_derived_signal_access": False,
+        "source_leo_weak_cache_set_manifest": str(source_validation_cache),
+        "source_leo_weak_cache_set_manifest_sha256": _sha(source_validation_cache),
         "failed_gates": [],
         "gates": {"all_source_checks": True},
         "scenarios": [
@@ -88,6 +111,13 @@ def _artifacts(tmp_path):
         "clean_samples_used_for_training": False,
         "formal_training_view": "leo_weak_only",
         "proxy_data_used_for_training": False,
+        "stage": "Phase1_offline_ground_adapter_training",
+        "training_input_stage": "phase1_offline_prechannel_export",
+        "phase2_sample_view_policy": "leo_weak_only_no_clean_access",
+        "clean_sample_access": False,
+        "clean_derived_signal_access": False,
+        "source_leo_weak_cache_set_manifest": str(source_train_cache),
+        "source_leo_weak_cache_set_manifest_sha256": _sha(source_train_cache),
         "checkpoint_sha256": _sha(checkpoint),
         "adapter_state_sha256": _sha(adapter),
         "source_validation_manifest": str(validation),
@@ -115,30 +145,62 @@ def _artifacts(tmp_path):
         ),
         encoding="utf-8",
     )
-    return checkpoint, adapter, promotion, split, direct_mapping
+    matrix_plan = json.loads(BASE_PLAN.read_text(encoding="utf-8-sig"))
+    matrix_plan["experiment_id"] = "candidate_lock_test"
+    matrix_plan["class_split_manifest"] = str(split)
+    matrix_plan_path = tmp_path / "matrix_plan.json"
+    matrix_plan_path.write_text(json.dumps(matrix_plan), encoding="utf-8")
+    runtime_root = tmp_path / "runtime"
+    generated_dir = runtime_root / "runs/candidate_lock_test/protocol_plan"
+    generate_plan(
+        matrix_plan_path,
+        out_dir=generated_dir,
+        runtime_project_root=str(runtime_root).replace("\\", "/"),
+    )
+    execution_plan = generated_dir / "plan_manifest.json"
+    return checkpoint, adapter, promotion, split, direct_mapping, execution_plan
+
+
+def _formal_config(
+    execution_plan: Path,
+    *,
+    receiver: str,
+    seed: int,
+    new_count: int,
+    k_shot: int,
+) -> dict[str, object]:
+    manifest = json.loads(execution_plan.read_text(encoding="utf-8-sig"))
+    matches = [
+        value
+        for value in manifest["stage2_config_contracts"]
+        if value["receiver"] == receiver
+        and int(value["seed"]) == seed
+        and int(value["new_class_count"]) == new_count
+        and int(value["k_shot"]) == k_shot
+    ]
+    assert len(matches) == 1
+    return json.loads(Path(matches[0]["config"]).read_text(encoding="utf-8-sig"))
 
 
 def test_source_candidate_lock_pins_code_and_all_formal_k(tmp_path) -> None:
-    checkpoint, adapter, promotion, split, direct_mapping = _artifacts(tmp_path)
+    checkpoint, adapter, promotion, split, direct_mapping, execution_plan = _artifacts(tmp_path)
     lock = build_candidate_lock(
         candidate_id="effective8-r16-e12",
         checkpoint=checkpoint,
         adapter_state=adapter,
         promotion_manifest=promotion,
         class_split_manifest=split,
+        execution_plan_manifest=execution_plan,
     )
     lock_path = tmp_path / "candidate_lock.json"
     lock_path.write_text(json.dumps(lock), encoding="utf-8")
-    config = {
-        "target_receiver_labels": ["20-1"],
-        "k_shot": 5,
-        "support_pool_max_k": 20,
-        "target_new_tx_labels": [f"n{i}" for i in range(10)],
-        "target_old_tx_labels": ["o0", "o1"],
-        "direct_adv3b02_class_mapping_source": str(direct_mapping),
-        "direct_adv3b02_class_mapping_sha256": _sha(direct_mapping),
-        "direct_adv3b02_class_id_to_tx": ["o0", "o1"],
-    }
+    config = _formal_config(
+        execution_plan,
+        receiver="20-1",
+        seed=713101,
+        new_count=10,
+        k_shot=5,
+    )
     verified = verify_candidate_lock(
         lock_path,
         checkpoint=checkpoint,
@@ -156,73 +218,80 @@ def test_source_candidate_lock_pins_code_and_all_formal_k(tmp_path) -> None:
 
 
 def test_candidate_lock_rejects_support_pool_drift(tmp_path) -> None:
-    checkpoint, adapter, promotion, split, direct_mapping = _artifacts(tmp_path)
+    checkpoint, adapter, promotion, split, direct_mapping, execution_plan = _artifacts(tmp_path)
     lock = build_candidate_lock(
         candidate_id="candidate",
         checkpoint=checkpoint,
         adapter_state=adapter,
         promotion_manifest=promotion,
         class_split_manifest=split,
+        execution_plan_manifest=execution_plan,
     )
     lock_path = tmp_path / "candidate_lock.json"
     lock_path.write_text(json.dumps(lock), encoding="utf-8")
+    config = _formal_config(
+        execution_plan,
+        receiver="8-8",
+        seed=713101,
+        new_count=5,
+        k_shot=1,
+    )
+    config["support_pool_max_k"] = 10
     with pytest.raises(ValueError, match="support_pool_max_k"):
         verify_candidate_lock(
             lock_path,
             checkpoint=checkpoint,
             adapter_state=adapter,
             promotion_manifest=promotion,
-            config={
-                "target_receiver_labels": ["8-8"],
-                "k_shot": 1,
-                "support_pool_max_k": 10,
-                "target_new_tx_labels": [f"n{i}" for i in range(5)],
-                "target_old_tx_labels": ["o0", "o1"],
-                "direct_adv3b02_class_mapping_source": str(direct_mapping),
-                "direct_adv3b02_class_mapping_sha256": _sha(direct_mapping),
-                "direct_adv3b02_class_id_to_tx": ["o0", "o1"],
-            },
+            config=config,
         )
 
 
 def test_candidate_lock_rejects_same_count_with_different_tx(tmp_path) -> None:
-    checkpoint, adapter, promotion, split, direct_mapping = _artifacts(tmp_path)
+    checkpoint, adapter, promotion, split, direct_mapping, execution_plan = _artifacts(tmp_path)
     lock = build_candidate_lock(
         candidate_id="candidate",
         checkpoint=checkpoint,
         adapter_state=adapter,
         promotion_manifest=promotion,
         class_split_manifest=split,
+        execution_plan_manifest=execution_plan,
     )
     lock_path = tmp_path / "candidate_lock.json"
     lock_path.write_text(json.dumps(lock), encoding="utf-8")
-    with pytest.raises(ValueError, match="target-new labels"):
+    config = _formal_config(
+        execution_plan,
+        receiver="8-8",
+        seed=713101,
+        new_count=5,
+        k_shot=1,
+    )
+    config["target_new_tx_labels"] = [
+        "easy0",
+        "easy1",
+        "easy2",
+        "easy3",
+        "easy4",
+    ]
+    with pytest.raises(ValueError, match="Stage2 row config"):
         verify_candidate_lock(
             lock_path,
             checkpoint=checkpoint,
             adapter_state=adapter,
             promotion_manifest=promotion,
-            config={
-                "target_receiver_labels": ["8-8"],
-                "k_shot": 1,
-                "support_pool_max_k": 20,
-                "target_old_tx_labels": ["o0", "o1"],
-                "target_new_tx_labels": ["easy0", "easy1", "easy2", "easy3", "easy4"],
-                "direct_adv3b02_class_mapping_source": str(direct_mapping),
-                "direct_adv3b02_class_mapping_sha256": _sha(direct_mapping),
-                "direct_adv3b02_class_id_to_tx": ["o0", "o1"],
-            },
+            config=config,
         )
 
 
 def test_candidate_lock_rejects_mutated_class_split_artifact(tmp_path) -> None:
-    checkpoint, adapter, promotion, split, direct_mapping = _artifacts(tmp_path)
+    checkpoint, adapter, promotion, split, direct_mapping, execution_plan = _artifacts(tmp_path)
     lock = build_candidate_lock(
         candidate_id="candidate",
         checkpoint=checkpoint,
         adapter_state=adapter,
         promotion_manifest=promotion,
         class_split_manifest=split,
+        execution_plan_manifest=execution_plan,
     )
     lock_path = tmp_path / "candidate_lock.json"
     lock_path.write_text(json.dumps(lock), encoding="utf-8")
@@ -235,6 +304,14 @@ def test_candidate_lock_rejects_mutated_class_split_artifact(tmp_path) -> None:
             promotion_manifest=promotion,
             config={
                 "target_receiver_labels": ["8-8"],
+                "seed": 713101,
+                "phase2_sample_view_policy": "leo_weak_only_no_clean_access",
+                "clean_sample_access": False,
+                "clean_derived_signal_access": False,
+                "target_channel_view": "leo_weak_only",
+                "old_new_role_oracle_used": False,
+                "class_quota_used": False,
+                "query_fit_used": False,
                 "k_shot": 1,
                 "support_pool_max_k": 20,
                 "target_old_tx_labels": ["o0", "o1"],
@@ -243,4 +320,77 @@ def test_candidate_lock_rejects_mutated_class_split_artifact(tmp_path) -> None:
                 "direct_adv3b02_class_mapping_sha256": _sha(direct_mapping),
                 "direct_adv3b02_class_id_to_tx": ["o0", "o1"],
             },
+        )
+
+
+def test_candidate_lock_rejects_query_count_drift(tmp_path) -> None:
+    checkpoint, adapter, promotion, split, _mapping, execution_plan = _artifacts(
+        tmp_path
+    )
+    lock = build_candidate_lock(
+        candidate_id="candidate",
+        checkpoint=checkpoint,
+        adapter_state=adapter,
+        promotion_manifest=promotion,
+        class_split_manifest=split,
+        execution_plan_manifest=execution_plan,
+    )
+    lock_path = tmp_path / "candidate_lock.json"
+    lock_path.write_text(json.dumps(lock), encoding="utf-8")
+    config = _formal_config(
+        execution_plan,
+        receiver="8-8",
+        seed=713101,
+        new_count=5,
+        k_shot=1,
+    )
+    config["query_per_tx"] = 19
+    with pytest.raises(ValueError, match="query_per_tx"):
+        verify_candidate_lock(
+            lock_path,
+            checkpoint=checkpoint,
+            adapter_state=adapter,
+            promotion_manifest=promotion,
+            config=config,
+        )
+
+
+def test_candidate_lock_rechecks_target_cache_spec_after_lock(tmp_path) -> None:
+    checkpoint, adapter, promotion, split, _mapping, execution_plan = _artifacts(
+        tmp_path
+    )
+    lock = build_candidate_lock(
+        candidate_id="candidate",
+        checkpoint=checkpoint,
+        adapter_state=adapter,
+        promotion_manifest=promotion,
+        class_split_manifest=split,
+        execution_plan_manifest=execution_plan,
+    )
+    lock_path = tmp_path / "candidate_lock.json"
+    lock_path.write_text(json.dumps(lock), encoding="utf-8")
+    config = _formal_config(
+        execution_plan,
+        receiver="8-8",
+        seed=713101,
+        new_count=5,
+        k_shot=1,
+    )
+    spec = Path(
+        next(
+            value["cache_build_spec"]
+            for value in lock["locked_candidate"]["execution_plan"][
+                "target_cache_contracts"
+            ]
+            if value["receiver"] == "8-8" and int(value["seed"]) == 713101
+        )
+    )
+    spec.write_text("{}", encoding="utf-8")
+    with pytest.raises(ValueError, match="build-spec drift"):
+        verify_candidate_lock(
+            lock_path,
+            checkpoint=checkpoint,
+            adapter_state=adapter,
+            promotion_manifest=promotion,
+            config=config,
         )

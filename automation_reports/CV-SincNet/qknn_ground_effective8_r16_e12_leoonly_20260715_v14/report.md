@@ -1,0 +1,95 @@
+# qKNN Stage2-C effective8 LEO_weak-only正式实验报告
+
+|字段|内容|
+|---|---|
+|实验ID|`qknn_ground_effective8_r16_e12_leoonly_20260715_v14`|
+|时间|2026-07-15 13:44 CST|
+|operator|Codex`/root`|
+|当前状态|`LOCAL_PROTOCOL_REPAIR_COMPLETE_PRELAUNCH`；尚未启动N607训练或评估|
+|基座模型|同一ADV3B02 checkpoint：`ADV3B02_CORE90_SOFT_E200/best_joint_safe_ssdg.pth`|
+|目标|在新版`LEO_weak-only`边界下，以≤50k参数、≤20epoch、≤256KB持久状态的极轻型适配器和逐样本1→3→5-view推理，完成5receiver×5seed×3场景×新类5/10/20×K=1/5/10/20正式确认|
+
+## 协议追踪表
+
+|ID|Source section|Requirement|实现文件|状态|本地证据|
+|---|---|---|---|---|---|
+|P2-LW-01|`项目.md`7.1、9|Phase2只读取已叠加允许场景的post-channel IQ|`leo_weak_cache.py`、cache builder、trainer、validator、benchmark|implemented|cache成员列表先审计，禁止`raw_iq`、clean和派生feature/logit/prototype|
+|P2-LW-02|`项目.md`7.1、9|训练、验证、门限和promotion不得使用clean派生信号|trainer、validator、candidate lock|implemented|formal训练使用same-LEO teacher/reference；source holdout只读密封cache-set|
+|P2-LW-03|`项目.md`7.1|逐样本保留场景、satellite seed、overlay和waveform摘要|cache schema、formal rows、formal predictions|implemented|sample ID、逐query overlay ID/post-channel IQ SHA及support/query root均进入正式证据|
+|P2-LW-04|`项目.md`5、7.1|Phase1离线叠加信道，Phase2禁止重新读取ManySig/ManyTx|builder、strict loader、formal CLI|implemented|训练与验证CLI只接收cache-set；benchmark拒绝legacy raw/feature字段|
+|P2-LW-05|`项目.md`8.5|query默认1-view，低置信度才请求3/5-view|benchmark、adaptive TTA|implemented|base-only路径不会预构造其余4个View；逐query记录view budget|
+|P2-LW-06|`项目.md`7.3、8.5、9|禁角色Oracle、类别quota、query fit和batch图|config、candidate lock、benchmark、summarizer|implemented|所有注册类统一head和门限；正式字段全部为false|
+|P2-LW-07|`项目.md`9|锁定candidate/head/TTA及K=1/5/10/20有序嵌套|plan、runner、candidate lock、summarizer|implemented|固定seed`713101–713105`、`query_per_tx=20`、25份cache spec和300份row config；逐样本prediction支持独立重算|
+|P2-LW-08|`项目.md`8.5、9|报告参数、epoch、MAC、延迟、峰值显存、状态、平均/P95 View|benchmark formal rows|implemented|逐row资源字段已落地；MAC明确标注FFT/View变换未计入的边界|
+|P2-LW-09|`项目.md`9|完成5×5×3×3×4正式确认及逐类、逐receiver证据|formal plan、N607 artifacts|pending|本地计划精确生成25个target cache-set、300次评估、900条场景row；尚未运行|
+|P2-LW-10|`项目.md`7.1|旧v13 raw/clean命令不得启动|v13报告、v14 runner|rejected|v13目标run/log不存在；v14不复用旧命令|
+
+追踪状态计数：implemented=8，pending=1，rejected=1。当前最高风险是P2-LW-09：协议与执行面已修复，但尚无新版正式性能结果，因此不得声明达到准确率或遗忘目标。
+
+## 方法、输入与输出
+
+### Phase1离线cache构建
+
+输入为ManySig/ManyTx物理IQ、预注册TX/receiver/day集合、三个允许场景和satellite seed。该阶段在Phase2边界外实际叠加`simplified_leo_residual`，输出每场景一个只含`leo_weak_iq`和sample-level provenance的NPZ，以及一个cache-set manifest。输出不含raw/clean IQ、feature、logit、FFT或prototype。
+
+source训练cache使用ManySig TX index`0–5`和receiver index`0–5`；source validation cache覆盖receiver index`0–6`，其中`0–5`作为source参考，`6`完整holdout。target cache以5个receiver和5个确认seed分别构建，每个cache预先包含6个target-old TX和有序嵌套的20个target-new TX，K和query切分发生在密封cache内部。
+
+### 极轻型ADV3B02适配
+
+ADV3B02主体冻结，只注入rank16 effective-feature LoRA到8个进入`feat_joint/z_id`的关键Linear：`t_proj`、`f_proj`、`pa_proj.0`、`fuse.0`、`cls_head.id_proj.0`、`cls_head.pa_proj.0`、`cls_head.id_gate.0`、`cls_head.joint_proj.0`。可训练参数44,048，训练12epoch，FP16 LoRA状态88,096B；部署前可合并到原Linear，新增持久动态LoRA MAC为0。
+
+formal训练不再使用clean teacher。对同一密封LEO_weak base observation，teacher为冻结ADV3B02，student为LoRA后的base加一个轮换`rx_light5`接收侧View。训练每步只延迟构造base和一个轮换额外View，不再预构造全部5个View；CFO轮次的底层`rx_cfo3`仍同时生成正负两个CFO变换但只做2次backbone前向，这是剩余的非阻断压缩空间。损失为：SmoothL1特征保持1、cos保持2、prototype CE 0.2、same-LEO reference 22、feature margin 4.5、same-LEO margin 7.5、teacher-logit KL 0.16、双View一致性0.25、relation Gram 0.5、prototype Gram去混淆0.25、nested worst-K风险0.5。训练命令使用`leo_reference_*`参数名，不再把formal anchor写成`clean_*`。
+
+输出为`effective8_adapter_fp16.pt`、完整epoch loss trace和训练manifest。manifest绑定checkpoint、adapter state、source cache-set及代码哈希，并明确`clean_sample_access=false`、`clean_derived_signal_access=false`。
+
+### source holdout与candidate lock
+
+validator唯一数据入口为`--source_cache_set`，固定调用`load_verified_leo_weak_cache_set(expected_scope="source_validation", allowed_roles={"source"})`。它以receiver 0–5构造source prototype/statistics，以receiver 6完成物理样本不重叠的校准和评估，统一锁定symmetric head、K=1/5/10/20规则和自适应TTA门限。任何gate失败返回非0并阻断candidate lock。
+
+candidate lock固定checkpoint、adapter、promotion manifest、source validation、source statistics、source train/validation cache-set、类别切分、direct ADV3B02类映射、head、TTA门限、5个receiver、5个seed和所有相关代码哈希。执行前由runner重新推导阶段、命令数和300个cell身份；lock逐个绑定25份target cache build spec和300份Stage2 config的文件/内容SHA，benchmark前再次检查spec未漂移，并要求实际cache-set的`build_spec_sha256`与lock一致。K1/K5/K20不能重新选参。
+
+### 自适应多View推理
+
+每个query先执行`rx_base`一次backbone+FFT96。当source锁定门限判定低置信度时，才对同一post-channel物理观测生成`rx_shift_m2/p2`并提升到3-view；仍低置信度才生成`rx_cfo_m1e4/p1e4`并提升到5-view。决策只使用当前query分数的margin和View分歧，不使用真实old/new角色、类别数量、quota、query标签、query排序或跨query图。
+
+base-only路径直接复用输入张量，不调用5-view构造器；shift和CFO View按需物化。跨场景ALL资源统计由全部query的`view_budget`直接重算平均、真实全局P95和1/3/5触发率，不再平均场景P95。每条正式prediction同时保存direct预测标签、逐query overlay/IQ哈希、实际locked-head状态SHA和对应formal-row内容摘要；汇总器从逐样本truth/prediction重新计算准确率、逐类最差值、遗忘率、K1 direct增益和View资源，不信任row中预填的汇总指标。
+
+## 正式矩阵与成功门槛
+
+执行计划由`cvs_stage2c_effective8_formal_matrix_20260715.json`生成：
+
+|维度|取值|数量|
+|---|---|---:|
+|target receiver|`20-1,3-19,7-14,7-7,8-8`|5|
+|确认seed|`713101–713105`|5|
+|场景|`leo_clear_weak,leo_low_elev_weak,leo_rain_weak`|3|
+|真实新类规模|5、10、20有序嵌套TX|3|
+|K|1、5、10、20有序嵌套support|4|
+
+计划生成2个source cache-set、25个target cache-set、300次benchmark调用和900条场景级formal row。8个GPU shard合计覆盖全部命令且无重复。每个target cache只构建一次，再执行该receiver×seed下12个新类规模×K组合。所有shard完成后，`finalize`阶段先收集300个输出目录并逐文件绑定SHA，再汇总900行正式证据；缺任一cell、重复cell或CSV schema漂移都会失败关闭。
+
+成功门槛遵循当前`项目.md`：K10 old_acc≥0.95、聚合min_old_class_acc≥0.88；新类5/10/20分别≥0.92/0.90/0.86；K5相对matched K10四项指标drop≤3pp；K1总体及逐receiver old_adaptation_gain≥0；K1相对严格direct ADV3B02总体增益≥2pp且matched 95%CI下界>0、逐receiver增益≥0。K5/K10/K20遗忘不得高于同row identity-only单qKNN。
+
+## 资源口径
+
+正式row记录adapter参数、epoch、optimizer step、FP16状态、统一head状态、门限状态、平均/P95/worst-case backbone forward、1/3/5触发率、部署query时延、含enrollment摊销时延、峰值CUDA显存和host working set。rank16 LoRA为44,048个训练参数、88,096B FP16状态；加统一head和3个门限后的候选增量持久状态约103,796B，低于256KiB门槛。该数字不含ADV3B02基座、类别字符串或运行时缓存，不能称为卫星总模型占用。模型MAC通过实际执行的Conv1d/Linear/SincConv1d hook计数，另加support head MAC；FFT96和接收View变换运算目前只计入端到端时延，不并入该MAC数字。延迟来自服务器GPU，不等价于真实星载硬件时延；因此当前可声称“地面极轻型参数适配、星上轻量推理”，不能据此声称已经证明星上在线训练可行。
+
+## 本地验证
+
+根目录`E:\type10-7`不是Git仓库；Git承载面为`E:\type10-7\github_publish\CVS-RFFI-repo`。本轮本地验证均使用`ssr-gpu`解释器：
+
+```text
+python -m py_compile <trainer/validator/cache/benchmark/lock/plan/runner>
+python -m pytest -q <10组聚焦测试>
+结果：79 passed
+git diff --check
+结果：PASS
+```
+
+正式计划生成测试确认：source cache-set=2，target cache-set=25，benchmark invocation=300，formal scenario row=900，collection=1，summary=1；8个shard合计25次cache构建和300次benchmark，无重复命令。
+
+## N607启动与结束条件
+
+启动前必须重新执行本地只读direct preflight和live GPU/process inventory。先只启动`source_pipeline`：构建2个source cache-set→训练12epoch→source validation→candidate lock；只有state为complete且source validation PASS，才允许启动8个matrix shard。任何Traceback、OOM、nan/inf、cache/hash/receiver/class/protocol gate失败都会停止后续阶段。
+
+当前没有新版run/log、adapter、validation、candidate lock或formal metrics。下一阶段必须先做Git提交、N607预检、受控同步和远端哈希/py_compile验证，再启动source pipeline。

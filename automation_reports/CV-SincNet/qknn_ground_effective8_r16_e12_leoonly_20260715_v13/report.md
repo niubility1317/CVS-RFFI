@@ -5,9 +5,26 @@
 |实验ID|`qknn_ground_effective8_r16_e12_leoonly_20260715_v13`|
 |预注册时间|2026-07-15 12:45 CST|
 |operator|Codex`/root`|
-|当前状态|`PRELAUNCH_SOURCE_ONLY`|
+|当前状态|`LOCAL_PROTOCOL_REPAIR_REQUIRED`；2026-07-15新版`LEO_weak-only`硬门生效后，旧命令禁止启动|
 |目标|在不读取任何target support/query、clean或proxy数据的前提下，训练并验证一个≤50k参数、≤20epoch的ADV3B02 effective-feature LoRA；只有source receiver holdout全部PASS后才允许构建candidate lock|
 |比较对象|同一ADV3B02 checkpoint的无adapter source holdout；source nested-K identity mean head|
+
+## 2026-07-15新版协议追踪表
+
+|ID|Source section|Requirement|Target files|Status|Verification|Notes|
+|---|---|---|---|---|---|---|
+|P2-LW-01|`项目.md`7.1、8.5、9|Phase2全部support/query、适配、选择与评估输入在进入Phase2前已经叠加三个允许的`leo_*_weak`场景之一|训练入口、target cache loader、benchmark|pending|待补负例与manifest审计|不得在Phase2读取raw/clean IQ后现场生成LEO|
+|P2-LW-02|`项目.md`7.1、9|禁止clean派生feature、logit、prototype、loss anchor、TTA门限或promotion信号|训练损失、source validator、candidate lock|pending|待做clean可达性反向搜索和运行时硬门|当前命令中的`clean_*`与teacher分支必须删除、替换或严格隔离|
+|P2-LW-03|`项目.md`7.1|每个launchable row/artifact记录policy、`clean_sample_access=false`、scenario、satellite seed和sample-level provenance|cache manifest、training manifest、candidate lock、metrics|pending|待schema正负例测试|缺字段必须fail closed|
+|P2-LW-04|`项目.md`5、7.1、9|Phase1地面artifact生成与Phase2部署运行分离，Phase2不重新读取ManySig/ManyTx clean/raw入口|地面cache builder、adapter trainer、Phase2 loader|pending|待入口级测试|Phase2只允许加载锁定adapter和预叠加LEO缓存|
+|P2-LW-05|`项目.md`8.5|自适应1→3→5-view来自同一物理LEO观测后的接收侧View，不重新采样信道|benchmark、TTA manifest|pending|待physical sample ID与overlay ID一致性测试|报告平均/P95前向数及1/3/5触发率|
+|P2-LW-06|`项目.md`7.3、8.5、9|禁止old/new角色Oracle、类别quota、query标签拟合、排序/分块和Hungarian|统一head、benchmark、summarizer|implemented|现有定向测试已覆盖部分路径，待新版全链路反审|所有注册类同规则|
+|P2-LW-07|`项目.md`9|开发seed仅在K10选统一candidate；锁定后K1/K5/K10/K20嵌套sample ID、真实TX集合、head和TTA门限|candidate lock、cross-K summarizer|pending|待跨K/跨场景锁定测试|K1还需比较直接ADV3B02并报告配对CI|
+|P2-LW-08|`项目.md`7.2、9|adapter≤50k、适配≤20epoch、状态≤256KB、无dense query图，报告MAC/延迟/显存/状态Pareto|adapter manifest、resource audit|implemented|44,048参数与88,096B已实体审计；待端到端MAC/延迟/显存|参数结构可保留，运行入口仍不合规|
+|P2-LW-09|`项目.md`9；`AGENTS.md`实验报告|完成5receiver×≥5确认seed×3场景×5/10/20真实新类及逐类、逐receiver、完整日志、独立矩阵证据|matrix、metrics、report|pending|尚未启动合法确认实验|不得以旧875诊断替代|
+|P2-LW-10|`项目.md`7.1|封存当前读取`ManySig.pkl --input_repair raw`且携带`clean_*`损失的旧预启动命令|本报告、旧远端同步文件|rejected|目标run/log目录不存在，无训练启动|代码可作为待修草稿，但禁止runner执行|
+
+当前最高风险是P2-LW-01至P2-LW-04：输入路径若只在字段上声明`LEO_weak-only`，实际仍从clean/raw构造特征，则所有后续性能与资源结果均不具备Phase2资格。本报告在这些项目验证前保持`LOCAL_PROTOCOL_REPAIR_REQUIRED`。
 
 ## 假设与方法
 
@@ -69,3 +86,9 @@ CUDA_VISIBLE_DEVICES=4 PYTHONPATH=/home/szu2070436088/2510044040/CV-SincNet/code
 |promotion manifest|`source_validation/promotion_manifest.json`|
 
 风险包括既有875任务动态占用GPU、远端import路径遮蔽、ManySig大文件I/O、source holdout未通过以及多View不触发。启动前重新核验GPU和目标路径；任务只新增自己的run/log，不覆盖数据、checkpoint或其它实验输出。
+
+## 12:48上线审计
+
+7个远端文件SHA256与本报告逐项一致，远端`py_compile` PASS。真实checkpoint实体审计为195个tensor、`missing=0/unexpected=0/skipped=0`、`num_domains=14`；rank16 effective8注入精确44,048参数、88,096B、8个白名单Linear，原checkpoint可训参数和梯度更新均为0。首次实体审计因远端同名顶层`cvsrffi`包遮蔽而在import前退出；把项目`code`固定在`sys.path[0]`后审计PASS，该异常未读取数据、未创建run且不是模型失败。
+
+12:47:59实时inventory显示875任务已自然结束，`active_training_processes=[]`、`gpu_compute=[]`，8张GPU均为10MiB空闲状态；目标run/log根再次确认不存在。本run固定使用物理GPU4，启动后只允许该卡出现1个新增训练进程。

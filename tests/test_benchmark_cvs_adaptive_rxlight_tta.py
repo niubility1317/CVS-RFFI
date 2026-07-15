@@ -7,6 +7,7 @@ import torch
 import paper_reproduction.scripts.benchmark_cvs_adaptive_rxlight_tta as benchmark
 
 from paper_reproduction.scripts.benchmark_cvs_adaptive_rxlight_tta import (
+    _requested_rxlight_views,
     _reference_parity,
     apply_fp16_checkpoint_delta,
     apply_fp16_lora_state,
@@ -20,7 +21,9 @@ from paper_reproduction.scripts.benchmark_cvs_adaptive_rxlight_tta import (
     predict_direct_adv3b02_base_view,
     score_symmetric_named_views,
     score_views,
+    validate_formal_phase2_config,
 )
+from cvsrffi.leo_weak_cache import PHASE2_SAMPLE_VIEW_POLICY
 from paper_reproduction.cvs_aligned.k1_symmetric_head import fit_symmetric_k1_head
 
 
@@ -124,6 +127,38 @@ def test_direct_adv3b02_baseline_uses_one_base_view_without_fft(
     assert audit["support_rows_used"] == 0
     assert audit["fft_used"] is False
     assert audit["tta_view_count"] == 1
+
+
+def test_base_view_does_not_materialize_the_other_four_views(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    rows = torch.zeros((2, 2, 16), dtype=torch.float32)
+
+    def forbidden(*_args, **_kwargs):
+        raise AssertionError("full/cfo view builder must not run for base-only inference")
+
+    monkeypatch.setattr(benchmark, "_satellite_tta_views", forbidden)
+    generated = _requested_rxlight_views(rows, ("rx_base",))
+    assert [name for name, _value in generated] == ["rx_base"]
+    assert generated[0][1] is rows
+
+
+def test_formal_config_rejects_legacy_raw_or_feature_paths() -> None:
+    config = {
+        "phase2_sample_view_policy": PHASE2_SAMPLE_VIEW_POLICY,
+        "clean_sample_access": False,
+        "clean_derived_signal_access": False,
+        "target_channel_view": "leo_weak_only",
+        "old_new_role_oracle_used": False,
+        "class_quota_used": False,
+        "query_fit_used": False,
+        "target_channel_scenarios": list(benchmark.FORMAL_LEO_WEAK_SCENARIOS),
+        "leo_weak_cache_set_manifest": "sealed.json",
+        "leo_weak_iq_input_len": 256,
+        "raw_iq_input_len": 256,
+    }
+    with pytest.raises(ValueError, match="legacy feature_npz/raw_iq"):
+        validate_formal_phase2_config(config)
 
 
 def test_trusted_direct_mapping_is_explicit_and_ordered(tmp_path) -> None:
@@ -416,6 +451,11 @@ def test_effective_ground_lora_audit_branch_accepts_leo_only_preferred_state(
         "schema": "cvs_ground_source_lora_multiview_validation_v1",
         "source_validation_pass": True,
         "clean_samples_used_for_validation": False,
+        "phase2_sample_view_policy": PHASE2_SAMPLE_VIEW_POLICY,
+        "clean_sample_access": False,
+        "clean_derived_signal_access": False,
+        "validation_input_stage": "phase1_offline_prechannel_export",
+        "source_leo_weak_cache_set_manifest_sha256": "a" * 64,
         "adapter_state_sha256": hashlib.sha256(b"ground-lora").hexdigest(),
         "checkpoint_sha256": "checkpoint-hash",
         "training_manifest_sha256": "training-manifest-hash",
@@ -462,6 +502,11 @@ def test_effective_ground_lora_audit_branch_accepts_leo_only_preferred_state(
         "target_receiver_data_used_for_training": False,
         "clean_samples_used_for_training": False,
         "formal_training_view": "leo_weak_only",
+        "phase2_sample_view_policy": PHASE2_SAMPLE_VIEW_POLICY,
+        "clean_sample_access": False,
+        "clean_derived_signal_access": False,
+        "training_input_stage": "phase1_offline_prechannel_export",
+        "source_leo_weak_cache_set_manifest_sha256": "b" * 64,
         "proxy_data_used_for_training": False,
         "proxy_training_rows": 0,
         "source_validation_pass": True,

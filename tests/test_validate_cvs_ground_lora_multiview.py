@@ -1,17 +1,132 @@
 from __future__ import annotations
 
+from pathlib import Path
+
 import numpy as np
 import pytest
 
+import paper_reproduction.scripts.validate_cvs_ground_lora_multiview as validator
 from paper_reproduction.scripts.validate_cvs_ground_lora_multiview import (
     _expanded_indices,
     _fixed_metrics,
     build_locked_nested_k_source_scores,
     build_source_symmetric_head_lock,
+    load_source_validation_cache_set,
+    parse_args,
+    split_source_cache_receivers,
     stratified_physical_split,
     validate_formal_scenarios,
     validate_receiver_holdout,
 )
+
+
+def test_formal_validator_loads_only_the_sealed_source_validation_cache_set(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    captured = {}
+
+    def fake_loader(path, *, expected_scope, allowed_roles):
+        captured.update(
+            {
+                "path": path,
+                "expected_scope": expected_scope,
+                "allowed_roles": allowed_roles,
+            }
+        )
+        return {"cache": {}}, {"manifest": True}, {"audit": True}
+
+    monkeypatch.setattr(validator, "load_verified_leo_weak_cache_set", fake_loader)
+    result = load_source_validation_cache_set("sealed.json")
+    assert result == ({"cache": {}}, {"manifest": True}, {"audit": True})
+    assert captured == {
+        "path": "sealed.json",
+        "expected_scope": "source_validation",
+        "allowed_roles": {"source"},
+    }
+
+
+def test_formal_validator_source_has_no_runtime_raw_or_channel_entrypoint() -> None:
+    source = Path(validator.__file__).read_text(encoding="utf-8")
+    for forbidden in (
+        "apply_sat_channel_for_scenario",
+        "_build_wisig_dataset",
+        "raw_iq",
+        "--wisig_pkl",
+    ):
+        assert forbidden not in source
+    for required in (
+        '"phase2_sample_view_policy": PHASE2_SAMPLE_VIEW_POLICY',
+        '"clean_sample_access": False',
+        '"clean_derived_signal_access": False',
+        '"validation_input_stage": LEO_WEAK_CACHE_STAGE',
+        '"source_leo_weak_cache_set_manifest_sha256"',
+        '"source_leo_weak_cache_set_audit"',
+    ):
+        assert required in source
+
+
+def test_cli_requires_source_cache_set_and_exposes_no_dataset_path() -> None:
+    args = parse_args(
+        [
+            "--ckpt",
+            "checkpoint.pt",
+            "--adapter_state",
+            "adapter.pt",
+            "--training_manifest",
+            "training.json",
+            "--source_cache_set",
+            "source_validation.json",
+            "--out_dir",
+            "validation",
+        ]
+    )
+    assert args.source_cache_set == Path("source_validation.json")
+    assert not hasattr(args, "wisig_pkl")
+    assert not hasattr(args, "sat_scenarios")
+
+
+def test_source_cache_receiver_split_is_exact_and_class_complete() -> None:
+    reference = {
+        "rx_ids": np.asarray(["0", "0", "1", "1"]),
+        "raw_labels": np.asarray([0, 1, 0, 1], dtype=np.int64),
+        "sample_ids": np.asarray(["a", "b", "c", "d"]),
+    }
+    arrays = {
+        scenario: dict(reference)
+        for scenario in (
+            "leo_clear_weak",
+            "leo_low_elev_weak",
+            "leo_rain_weak",
+        )
+    }
+    train, validation, train_info, validation_info = split_source_cache_receivers(
+        arrays,
+        train_receivers="0",
+        validation_receivers="1",
+        class_count=2,
+    )
+    assert train.tolist() == [0, 1]
+    assert validation.tolist() == [2, 3]
+    assert train_info["receiver_scope"] == ["0"]
+    assert validation_info["receiver_scope"] == ["1"]
+    with pytest.raises(ValueError, match="receiver scope drift"):
+        split_source_cache_receivers(
+            arrays,
+            train_receivers="0",
+            validation_receivers="1,2",
+            class_count=2,
+        )
+    tampered = {scenario: dict(values) for scenario, values in arrays.items()}
+    tampered["leo_rain_weak"]["raw_labels"] = np.asarray(
+        [1, 0, 0, 1], dtype=np.int64
+    )
+    with pytest.raises(ValueError, match="label ordering drift"):
+        split_source_cache_receivers(
+            tampered,
+            train_receivers="0",
+            validation_receivers="1",
+            class_count=2,
+        )
 
 
 def test_source_receiver_holdout_must_be_disjoint() -> None:

@@ -33,6 +33,13 @@ for candidate in (str(REPO_ROOT), str(CODE_ROOT)):
     sys.path.insert(0, candidate)
 
 from cvsrffi.checkpoint_loading import build_exact_ssdg_model_from_checkpoint
+from cvsrffi.leo_weak_cache import (
+    FORMAL_LEO_WEAK_SCENARIOS,
+    PHASE2_SAMPLE_VIEW_POLICY,
+    canonical_json_sha256,
+    ids_sha256,
+    load_verified_leo_weak_cache_set,
+)
 from export_spaceborne_features import (
     _satellite_tta_views,
     _spectral_logmag_sketch_batch,
@@ -102,6 +109,122 @@ def _sample_id(arrays: dict[str, np.ndarray], index: int) -> str:
 def _ids_sha256(values: Sequence[str]) -> str:
     payload = "\n".join(str(value) for value in values).encode("utf-8")
     return hashlib.sha256(payload).hexdigest()
+
+
+def _formal_row_content_sha256(row: dict[str, Any]) -> str:
+    """Bind a CSV-stable formal row without hashing its own digest field."""
+
+    payload = {
+        str(key): str(value)
+        for key, value in row.items()
+        if str(key) != "formal_row_content_sha256"
+    }
+    encoded = json.dumps(
+        payload, ensure_ascii=False, sort_keys=True, separators=(",", ":")
+    ).encode("utf-8")
+    return hashlib.sha256(encoded).hexdigest()
+
+
+def _process_memory_audit() -> dict[str, int | None]:
+    """Return host working-set evidence without making psutil a hard dependency."""
+
+    resident: int | None = None
+    peak: int | None = None
+    try:
+        import psutil  # type: ignore
+
+        info = psutil.Process().memory_info()
+        resident = int(info.rss)
+        raw_peak = getattr(info, "peak_wset", None)
+        peak = int(raw_peak) if raw_peak is not None else None
+    except (ImportError, OSError, AttributeError):
+        pass
+    if peak is None:
+        try:
+            import resource
+
+            # Linux ru_maxrss is KiB; N607 is Linux.  Windows uses psutil's
+            # peak_wset branch above.
+            peak = int(resource.getrusage(resource.RUSAGE_SELF).ru_maxrss) * 1024
+        except (ImportError, OSError, AttributeError):
+            peak = resident
+    return {
+        "resident_set_bytes": resident,
+        "peak_working_set_bytes": peak,
+    }
+
+
+@torch.no_grad()
+def profile_feature_forward_macs(
+    model: torch.nn.Module,
+    leo_weak_iq_row: np.ndarray,
+    *,
+    device: torch.device,
+) -> dict[str, Any]:
+    """Profile executed Conv1d/Linear/SincConv1d MACs for one base-view row."""
+
+    total_macs = 0
+    handles: list[Any] = []
+
+    def conv_hook(module: torch.nn.Conv1d, _inputs: Any, output: Any) -> None:
+        nonlocal total_macs
+        if not torch.is_tensor(output):
+            return
+        out_ch = int(output.shape[1])
+        out_len = int(output.shape[2])
+        kernel = int(module.kernel_size[0])
+        in_per_group = int(module.in_channels // module.groups)
+        total_macs += out_ch * out_len * in_per_group * kernel
+        if module.bias is not None:
+            total_macs += out_ch * out_len
+
+    def linear_hook(module: torch.nn.Linear, _inputs: Any, output: Any) -> None:
+        nonlocal total_macs
+        if not torch.is_tensor(output):
+            return
+        total_macs += int(output.numel()) * int(module.in_features)
+        if module.bias is not None:
+            total_macs += int(output.numel())
+
+    def sinc_hook(module: torch.nn.Module, _inputs: Any, output: Any) -> None:
+        nonlocal total_macs
+        if not torch.is_tensor(output):
+            return
+        total_macs += (
+            int(output.shape[1])
+            * int(output.shape[2])
+            * int(getattr(module, "kernel_size", 1))
+        )
+
+    for module in model.modules():
+        if module.__class__.__name__ == "SincConv1d":
+            handles.append(module.register_forward_hook(sinc_hook))
+        elif isinstance(module, torch.nn.Conv1d):
+            handles.append(module.register_forward_hook(conv_hook))
+        elif isinstance(module, torch.nn.Linear):
+            handles.append(module.register_forward_hook(linear_hook))
+    try:
+        row = _numpy_to_tensor_compat(
+            np.asarray(leo_weak_iq_row)[None, ...],
+            numpy_dtype=np.dtype(np.float32),
+            torch_dtype=torch.float32,
+        ).to(device)
+        started = time.perf_counter()
+        _feature_forward(model, row)
+        if device.type == "cuda":
+            torch.cuda.synchronize(device)
+        elapsed = float(time.perf_counter() - started)
+    finally:
+        for handle in handles:
+            handle.remove()
+    return {
+        "conv_linear_sinc_macs_per_base_forward": int(total_macs),
+        "profile_batch_rows": 1,
+        "profile_elapsed_seconds": elapsed,
+        "coverage": "executed_Conv1d_Linear_SincConv1d_only",
+        "fft96_descriptor_macs_included": False,
+        "receive_transform_macs_included": False,
+    }
 
 
 def load_trusted_class_id_to_tx(path: Path) -> list[str]:
@@ -343,13 +466,30 @@ def audit_adapter_manifest(
                 and manifest.get("formal_training_view") == "leo_weak_only"
                 and manifest.get("proxy_data_used_for_training") is False
                 and int(manifest.get("proxy_training_rows", -1)) == 0
+                and manifest.get("phase2_sample_view_policy")
+                == PHASE2_SAMPLE_VIEW_POLICY
+                and manifest.get("clean_sample_access") is False
+                and manifest.get("clean_derived_signal_access") is False
+                and manifest.get("training_input_stage")
+                == "phase1_offline_prechannel_export"
+                and bool(manifest.get("source_leo_weak_cache_set_manifest_sha256"))
             )
             if method == "ground_source_effective_feature_lora_v1"
             else True,
-            "leo_weak_only_source_validation": validation_payload.get(
-                "clean_samples_used_for_validation"
+            "leo_weak_only_source_validation": (
+                validation_payload.get("clean_samples_used_for_validation") is False
+                and validation_payload.get("phase2_sample_view_policy")
+                == PHASE2_SAMPLE_VIEW_POLICY
+                and validation_payload.get("clean_sample_access") is False
+                and validation_payload.get("clean_derived_signal_access") is False
+                and validation_payload.get("validation_input_stage")
+                == "phase1_offline_prechannel_export"
+                and bool(
+                    validation_payload.get(
+                        "source_leo_weak_cache_set_manifest_sha256"
+                    )
+                )
             )
-            is False
             if method == "ground_source_effective_feature_lora_v1"
             else True,
             "source_validation_adapter_hash": str(
@@ -557,10 +697,42 @@ def leave_one_out_support_scores(
     return scores
 
 
+def _requested_rxlight_views(
+    rows: torch.Tensor, view_names: Sequence[str]
+) -> list[tuple[str, torch.Tensor]]:
+    """Materialize only the requested rx_light5 tensors.
+
+    The formal lazy path must not allocate all five receive transforms before
+    confidence gating.  Base and shift views are constructed directly; the CFO
+    pair is generated only when the 3->5 gate requests it.
+    """
+
+    requested = tuple(str(value) for value in view_names)
+    if not requested or len(set(requested)) != len(requested):
+        raise ValueError("view_names must be nonempty and unique")
+    if any(name not in RX_LIGHT5_ORDER for name in requested):
+        raise ValueError(f"view_names are outside rx_light5: {requested}")
+    materialized: dict[str, torch.Tensor] = {}
+    if "rx_base" in requested:
+        materialized["rx_base"] = rows
+    if "rx_shift_m2" in requested:
+        materialized["rx_shift_m2"] = torch.roll(rows, shifts=-2, dims=-1)
+    if "rx_shift_p2" in requested:
+        materialized["rx_shift_p2"] = torch.roll(rows, shifts=2, dims=-1)
+    if {"rx_cfo_m1e4", "rx_cfo_p1e4"} & set(requested):
+        cfo_views = dict(_satellite_tta_views(rows, "rx_cfo3"))
+        if tuple(cfo_views) != ("rx_base", "rx_cfo_m1e4", "rx_cfo_p1e4"):
+            raise ValueError("rx_cfo3 definition drift")
+        for name in ("rx_cfo_m1e4", "rx_cfo_p1e4"):
+            if name in requested:
+                materialized[name] = cfo_views[name]
+    return [(name, materialized[name]) for name in requested]
+
+
 @torch.no_grad()
 def extract_joint_rxlight_views(
     model: torch.nn.Module,
-    raw_iq: np.ndarray,
+    leo_weak_iq: np.ndarray,
     *,
     view_names: Sequence[str],
     batch_size: int,
@@ -571,20 +743,12 @@ def extract_joint_rxlight_views(
     """Extract only the requested same-view ADV3B02+FFT receive features."""
 
     rows = _numpy_to_tensor_compat(
-        raw_iq,
+        leo_weak_iq,
         numpy_dtype=np.dtype(np.float32),
         torch_dtype=torch.float32,
     )
-    generated = _satellite_tta_views(rows, "rx_light5")
-    names = tuple(name for name, _ in generated)
-    if names != RX_LIGHT5_ORDER:
-        raise ValueError(f"rx_light5 definition drift: {names} != {RX_LIGHT5_ORDER}")
     requested = tuple(str(value) for value in view_names)
-    if not requested or len(set(requested)) != len(requested):
-        raise ValueError("view_names must be nonempty and unique")
-    if any(name not in RX_LIGHT5_ORDER for name in requested):
-        raise ValueError(f"view_names are outside rx_light5: {requested}")
-    generated_by_name = {name: value for name, value in generated}
+    generated_by_name = dict(_requested_rxlight_views(rows, requested))
     outputs: list[np.ndarray] = []
     timings: dict[str, float] = {}
     model.eval()
@@ -611,8 +775,10 @@ def extract_joint_rxlight_views(
         timings[name] = float(time.perf_counter() - started)
     return np.stack(outputs).astype(np.float32), {
         "view_names": list(requested),
-        "physical_rows": int(len(raw_iq)),
+        "physical_rows": int(len(leo_weak_iq)),
         "joint_feature_dim": int(outputs[0].shape[1]),
+        "all_five_views_materialized_before_gate": False,
+        "materialized_view_count": int(len(requested)),
         "seconds_by_view": timings,
         "total_seconds": float(sum(timings.values())),
     }
@@ -620,7 +786,7 @@ def extract_joint_rxlight_views(
 
 def extract_joint_rxlight5(
     model: torch.nn.Module,
-    raw_iq: np.ndarray,
+    leo_weak_iq: np.ndarray,
     *,
     batch_size: int,
     device: torch.device,
@@ -631,7 +797,7 @@ def extract_joint_rxlight5(
 
     return extract_joint_rxlight_views(
         model,
-        raw_iq,
+        leo_weak_iq,
         view_names=RX_LIGHT5_ORDER,
         batch_size=int(batch_size),
         device=device,
@@ -643,7 +809,7 @@ def extract_joint_rxlight5(
 @torch.no_grad()
 def predict_direct_adv3b02_base_view(
     model: torch.nn.Module,
-    raw_iq: np.ndarray,
+    leo_weak_iq: np.ndarray,
     *,
     class_labels: Sequence[str],
     batch_size: int,
@@ -652,14 +818,11 @@ def predict_direct_adv3b02_base_view(
     """Strict old-head baseline: no support, adapter, FFT, or extra view."""
 
     rows = _numpy_to_tensor_compat(
-        raw_iq,
+        leo_weak_iq,
         numpy_dtype=np.dtype(np.float32),
         torch_dtype=torch.float32,
     )
-    generated = _satellite_tta_views(rows, "rx_light5")
-    if tuple(name for name, _value in generated) != RX_LIGHT5_ORDER:
-        raise ValueError("rx_light5 definition drift for direct ADV3B02")
-    base_rows = generated[0][1]
+    base_rows = rows
     predictions: list[np.ndarray] = []
     logit_width: int | None = None
     started = time.perf_counter()
@@ -920,20 +1083,49 @@ def _reference_parity(
     }
 
 
+def validate_formal_phase2_config(config: dict[str, Any]) -> None:
+    required = {
+        "phase2_sample_view_policy": PHASE2_SAMPLE_VIEW_POLICY,
+        "clean_sample_access": False,
+        "clean_derived_signal_access": False,
+        "target_channel_view": "leo_weak_only",
+        "old_new_role_oracle_used": False,
+        "class_quota_used": False,
+        "query_fit_used": False,
+    }
+    failed = [
+        key for key, expected in required.items() if config.get(key) != expected
+    ]
+    if failed:
+        raise ValueError(f"formal Phase2 config protocol contract failed: {failed}")
+    scenarios = tuple(str(value) for value in config.get("target_channel_scenarios", []))
+    if scenarios != FORMAL_LEO_WEAK_SCENARIOS:
+        raise ValueError("formal Phase2 config must use the exact ordered LEO_weak scenarios")
+    if not str(config.get("leo_weak_cache_set_manifest", "")).strip():
+        raise ValueError("formal Phase2 config requires leo_weak_cache_set_manifest")
+    if "feature_npz_by_scenario" in config or "raw_iq_input_len" in config:
+        raise ValueError(
+            "formal Phase2 config must not expose legacy feature_npz/raw_iq fields"
+        )
+    if int(config.get("leo_weak_iq_input_len", 0)) <= 0:
+        raise ValueError("formal Phase2 config requires leo_weak_iq_input_len")
+
+
 def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--config", type=Path, required=True, help="Raw-IQ protocol config")
+    parser.add_argument(
+        "--config", type=Path, required=True, help="sealed LEO_weak protocol config"
+    )
     parser.add_argument("--ckpt", type=Path, required=True)
     parser.add_argument("--adapter_state", type=Path, required=True)
     parser.add_argument("--adapter_manifest", type=Path, default=None)
     parser.add_argument("--candidate_lock", type=Path, required=True)
     parser.add_argument("--out_dir", type=Path, required=True)
-    parser.add_argument("--reference_config", type=Path, default=None)
     parser.add_argument("--batch_size", type=int, default=256)
     parser.add_argument("--max_accuracy_drop_pp", type=float, default=1.0)
     parser.add_argument(
         "--head_mode",
-        choices=("matching_view", "k1_symmetric", "symmetric_locked"),
+        choices=("symmetric_locked",),
         default="symmetric_locked",
     )
     parser.add_argument("--device", default="cuda:0")
@@ -948,20 +1140,62 @@ def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
 def main(argv: Sequence[str] | None = None) -> int:
     args = parse_args(argv)
     config = json.loads(args.config.read_text(encoding="utf-8-sig"))
+    validate_formal_phase2_config(config)
+    if args.adapter_manifest is None:
+        raise ValueError("formal candidate lock requires an adapter promotion manifest")
+    candidate_lock = verify_candidate_lock(
+        args.candidate_lock,
+        checkpoint=args.ckpt,
+        adapter_state=args.adapter_state,
+        promotion_manifest=args.adapter_manifest,
+        config=config,
+    )
+    locked_plan = dict(candidate_lock["locked_candidate"]["execution_plan"])
+    receiver_label = str(config["target_receiver_labels"][0])
+    row_seed = int(config["seed"])
+    matching_cache_contracts = [
+        dict(value)
+        for value in locked_plan["target_cache_contracts"]
+        if str(value["receiver"]) == receiver_label
+        and int(value["seed"]) == row_seed
+    ]
+    if len(matching_cache_contracts) != 1:
+        raise ValueError("candidate lock lacks the target receiver/seed cache contract")
+    target_cache_contract = matching_cache_contracts[0]
+    matching_config_contracts = [
+        dict(value)
+        for value in locked_plan["stage2_config_contracts"]
+        if str(value["receiver"]) == receiver_label
+        and int(value["seed"]) == row_seed
+        and int(value["new_class_count"]) == len(config["target_new_tx_labels"])
+        and int(value["k_shot"]) == int(config["k_shot"])
+    ]
+    if len(matching_config_contracts) != 1:
+        raise ValueError("candidate lock lacks the exact Stage2 row-config contract")
+    target_config_contract = matching_config_contracts[0]
     k_shot = int(config["k_shot"])
     if k_shot not in (1, 5, 10, 20):
         raise ValueError("formal Stage2-C requires K in {1,5,10,20}")
-    if str(args.head_mode) == "k1_symmetric" and k_shot != 1:
-        raise ValueError("legacy k1_symmetric diagnostic is restricted to K1")
-    reference_config = None
-    if args.reference_config is not None:
-        reference_config = json.loads(args.reference_config.read_text(encoding="utf-8-sig"))
+    cache_set_path = Path(str(config["leo_weak_cache_set_manifest"]))
+    if not cache_set_path.is_absolute():
+        cache_set_path = args.config.resolve().parent / cache_set_path
+    arrays_by_scenario, cache_set_manifest, cache_set_audit = (
+        load_verified_leo_weak_cache_set(
+            cache_set_path,
+            expected_scope="stage2_registered",
+            allowed_roles={"target_old", "target_new"},
+        )
+    )
+    if str(cache_set_manifest.get("build_spec_sha256", "")) != str(
+        target_cache_contract.get("cache_build_spec_content_sha256", "")
+    ):
+        raise ValueError("target cache-set build spec differs from the candidate lock")
     device = torch.device(str(args.device) if torch.cuda.is_available() else "cpu")
     # Project checkpoints contain the trusted SatViewStage enum in addition to tensors.
     checkpoint = torch.load(args.ckpt, map_location="cpu", weights_only=False)
     model, checkpoint_audit = build_exact_ssdg_model_from_checkpoint(
         checkpoint,
-        input_len=int(config.get("raw_iq_input_len", 4800)),
+        input_len=int(config["leo_weak_iq_input_len"]),
         device=device,
     )
     direct_model = copy.deepcopy(model).to(device).eval()
@@ -971,6 +1205,8 @@ def main(argv: Sequence[str] | None = None) -> int:
     adapter_manifest = None
     adapter_manifest_audit = None
     source_validation_result = None
+    source_validation_path: Path | None = None
+    source_stats_path: Path | None = None
     source_feature_mean: np.ndarray | None = None
     source_feature_std: np.ndarray | None = None
     if args.adapter_manifest is not None:
@@ -1019,15 +1255,7 @@ def main(argv: Sequence[str] | None = None) -> int:
                 or not np.isfinite(source_feature_std).all()
             ):
                 raise ValueError("source feature statistics are malformed")
-    if args.adapter_manifest is None:
-        raise ValueError("formal candidate lock requires an adapter promotion manifest")
-    candidate_lock = verify_candidate_lock(
-        args.candidate_lock,
-        checkpoint=args.ckpt,
-        adapter_state=args.adapter_state,
-        promotion_manifest=args.adapter_manifest,
-        config=config,
-    )
+            source_stats_path = stats_path
     merge_audit: dict[str, Any] | None = None
     if (
         adapter_manifest is not None
@@ -1050,13 +1278,21 @@ def main(argv: Sequence[str] | None = None) -> int:
     else:
         delta_audit = apply_fp16_checkpoint_delta(model, adapter_state)
     model.to(device).eval()
-    if (
-        str(args.head_mode) in {"k1_symmetric", "symmetric_locked"}
-        and source_validation_result is None
-    ):
+    if source_validation_result is None:
         raise ValueError(
             "symmetric deployment requires a source-validated ground LoRA and head lock"
         )
+    if device.type == "cuda":
+        torch.cuda.reset_peak_memory_stats(device)
+    host_memory_before = _process_memory_audit()
+    profile_scenario = str(SCENARIOS[0])
+    if len(arrays_by_scenario[profile_scenario]["leo_weak_iq"]) < 1:
+        raise ValueError("formal LEO_weak cache contains no rows for MAC profiling")
+    model_mac_audit = profile_feature_forward_macs(
+        model,
+        arrays_by_scenario[profile_scenario]["leo_weak_iq"][0],
+        device=device,
+    )
 
     old_labels = [str(value) for value in config["target_old_tx_labels"]]
     new_labels = [str(value) for value in config["target_new_tx_labels"]]
@@ -1106,10 +1342,11 @@ def main(argv: Sequence[str] | None = None) -> int:
     extraction_audit: dict[str, Any] = {}
     parity_audit: dict[str, Any] = {}
     for scenario in SCENARIOS:
-        raw_path = Path(config["feature_npz_by_scenario"][scenario])
-        arrays, raw_manifest = _load_npz(raw_path)
-        if "raw_iq" not in arrays:
-            raise ValueError(f"raw-IQ cache is missing raw_iq: {raw_path}")
+        if str(scenario) not in arrays_by_scenario:
+            raise ValueError(f"sealed cache set is missing scenario={scenario}")
+        arrays = arrays_by_scenario[str(scenario)]
+        cache_audit = dict(cache_set_audit["cache_audits"][str(scenario)])
+        cache_path = Path(str(cache_audit["path"]))
         support_idx, query_idx = _split_indices(arrays, config, scenario)
         selected_idx = support_idx + query_idx
         if "sat_scenarios" not in arrays or "channel_views" not in arrays:
@@ -1120,21 +1357,18 @@ def main(argv: Sequence[str] | None = None) -> int:
             raise ValueError("support/query rows are not from the configured leo_weak scenario")
         if any("clean" in value.lower() for value in selected_channel_views):
             raise ValueError("clean support/query rows are forbidden in formal Stage2-C")
-        if str(args.head_mode) in {"k1_symmetric", "symmetric_locked"}:
-            support_features, support_extract = extract_joint_rxlight_views(
-                model,
-                arrays["raw_iq"][support_idx],
-                view_names=(RX_LIGHT5_ORDER[0],),
-                batch_size=int(args.batch_size),
-                device=device,
-            )
-        else:
-            support_features, support_extract = extract_joint_rxlight5(
-                model,
-                arrays["raw_iq"][support_idx],
-                batch_size=int(args.batch_size),
-                device=device,
-            )
+        selected_seeds = arrays["satellite_seeds"][selected_idx].astype(np.int64)
+        support_overlay_ids = arrays["overlay_ids"][support_idx].astype(str)
+        query_overlay_ids = arrays["overlay_ids"][query_idx].astype(str)
+        support_iq_hashes = arrays["post_channel_iq_sha256"][support_idx].astype(str)
+        query_iq_hashes = arrays["post_channel_iq_sha256"][query_idx].astype(str)
+        support_features, support_extract = extract_joint_rxlight_views(
+            model,
+            arrays["leo_weak_iq"][support_idx],
+            view_names=(RX_LIGHT5_ORDER[0],),
+            batch_size=int(args.batch_size),
+            device=device,
+        )
         support_y = arrays["tx_ids"][support_idx].astype(str)
         truth = arrays["tx_ids"][query_idx].astype(str)
         roles = arrays["dataset_role"][query_idx].astype(str)
@@ -1142,7 +1376,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         query_ids = [_sample_id(arrays, i) for i in query_idx]
         identity_support_features, identity_support_extract = extract_joint_rxlight_views(
             direct_model,
-            arrays["raw_iq"][support_idx],
+            arrays["leo_weak_iq"][support_idx],
             view_names=(RX_LIGHT5_ORDER[0],),
             batch_size=int(args.batch_size),
             device=device,
@@ -1156,61 +1390,49 @@ def main(argv: Sequence[str] | None = None) -> int:
             support_y[identity_old_mask],
             old_classes,
         )
-        if str(args.head_mode) == "matching_view":
-            prototypes = build_view_prototypes(support_features, support_y, classes)
-            loo_scores = leave_one_out_support_scores(
-                support_features, support_y, classes
-            )
-            calibration_scores.append(loo_scores)
-            calibration_labels.append(
-                np.asarray(
-                    [class_to_index[label] for label in support_y], dtype=np.int64
-                )
-            )
-            old_support_mask = np.isin(support_y, np.asarray(old_classes))
-            old_prototypes = build_view_prototypes(
-                support_features[:, old_support_mask],
-                support_y[old_support_mask],
-                old_classes,
-            )
-            old_loo_scores = leave_one_out_support_scores(
-                support_features[:, old_support_mask],
-                support_y[old_support_mask],
-                old_classes,
-            )
-            old_class_to_index = {
-                label: index for index, label in enumerate(old_classes)
-            }
-            old_calibration_scores.append(old_loo_scores)
-            old_calibration_labels.append(
-                np.asarray(
-                    [old_class_to_index[label] for label in support_y[old_support_mask]],
-                    dtype=np.int64,
-                )
-            )
-        else:
-            prototypes = None
-            old_prototypes = None
-            ordered_support = order_k_support_observations(
-                support_features, support_y, classes, k_shot=k_shot
-            )
-            # One base receive view from each of the three formal leo_weak
-            # scenarios: exactly three enrollment observations per physical K1
-            # sample, within the project support-view cap.
-            symmetric_support_blocks.append(ordered_support)
+        prototypes = None
+        old_prototypes = None
+        ordered_support = order_k_support_observations(
+            support_features, support_y, classes, k_shot=k_shot
+        )
+        # One base receive view from each of the three formal leo_weak
+        # scenarios: exactly three enrollment observations per physical K-shot
+        # sample, within the project support-view cap.
+        symmetric_support_blocks.append(ordered_support)
         protocol_audit[scenario] = {
-            "raw_cache": str(raw_path),
-            "raw_cache_sha256": _sha256_file(raw_path),
-            "raw_cache_manifest": raw_manifest,
+            "leo_weak_cache": str(cache_path),
+            "leo_weak_cache_sha256": str(cache_audit["sha256"]),
+            "leo_weak_cache_manifest_sha256": str(cache_audit["manifest_sha256"]),
+            "cache_set_manifest": str(cache_set_path),
+            "cache_set_manifest_sha256": str(cache_set_audit["sha256"]),
+            "cache_build_spec_sha256": str(
+                target_cache_contract["cache_build_spec_content_sha256"]
+            ),
             "support_count": int(len(support_idx)),
             "query_count": int(len(query_idx)),
             "support_ids": support_ids,
             "query_ids": query_ids,
             "support_ids_sha256": _ids_sha256(support_ids),
             "query_ids_sha256": _ids_sha256(query_ids),
+            "support_overlay_ids_sha256": ids_sha256(support_overlay_ids.tolist()),
+            "query_overlay_ids_sha256": ids_sha256(query_overlay_ids.tolist()),
+            "support_overlay_ids": support_overlay_ids.tolist(),
+            "support_post_channel_iq_sha256": support_iq_hashes.tolist(),
+            "support_post_channel_iq_sha256_root": ids_sha256(
+                support_iq_hashes.tolist()
+            ),
+            "query_post_channel_iq_sha256_root": ids_sha256(
+                query_iq_hashes.tolist()
+            ),
+            "selected_satellite_seeds": sorted(
+                set(int(value) for value in selected_seeds.tolist())
+            ),
             "support_query_overlap": int(len(set(support_idx) & set(query_idx))),
             "clean_support_query_rows": 0,
             "support_query_view": "leo_weak_only",
+            "phase2_sample_view_policy": PHASE2_SAMPLE_VIEW_POLICY,
+            "clean_sample_access": False,
+            "clean_derived_signal_access": False,
             "sat_scenario_values": sorted(set(selected_scenarios.tolist())),
             "channel_view_values": sorted(set(selected_channel_views.tolist())),
             "support_roles": sorted(set(arrays["dataset_role"][support_idx].astype(str).tolist())),
@@ -1226,15 +1448,13 @@ def main(argv: Sequence[str] | None = None) -> int:
             "identity_old_prototypes": identity_old_prototypes,
             "prototypes": prototypes,
             "old_prototypes": old_prototypes,
-            "query_raw_iq": arrays["raw_iq"][query_idx],
+            "query_leo_weak_iq": arrays["leo_weak_iq"][query_idx],
             "truth": truth,
             "roles": roles,
             "query_ids": query_ids,
-            "reference_path": (
-                Path(reference_config["feature_npz_by_scenario"][scenario])
-                if reference_config is not None
-                else None
-            ),
+            "query_overlay_ids": query_overlay_ids.tolist(),
+            "query_post_channel_iq_sha256": query_iq_hashes.tolist(),
+            "reference_path": None,
         }
 
     reference_scenario = str(SCENARIOS[0])
@@ -1251,91 +1471,83 @@ def main(argv: Sequence[str] | None = None) -> int:
     head_state_path: Path | None = None
     head_state_reload_audit: dict[str, Any] | None = None
     old_calibration: dict[str, Any] | None = None
-    if str(args.head_mode) in {"k1_symmetric", "symmetric_locked"}:
-        if len(symmetric_support_blocks) != len(SCENARIOS):
-            raise RuntimeError("symmetric support-view scenario count drift")
-        all_support_views = np.concatenate(symmetric_support_blocks, axis=0)
-        head_lock = dict(source_validation_result.get("symmetric_head_lock", {}))
-        if (
-            head_lock.get("selection_source")
-            != "disjoint_source_receiver_holdout_k1_episodes"
-            or k_shot not in [int(value) for value in head_lock.get("allowed_k", [])]
-            or head_lock.get("target_support_used_for_selection") is not False
-            or head_lock.get("target_query_features_used") is not False
-        ):
-            raise ValueError("source symmetric-head lock is missing or invalid")
-        locked_selected = dict(head_lock["selected"])
-        k1_head = quantize_symmetric_head_fp16(
-            fit_locked_symmetric_support_head(
-                all_support_views,
-                physical_shots_per_class=k_shot,
-                selected=locked_selected,
-                source_mean=source_feature_mean,
-                source_std=source_feature_std,
-            )
+    if len(symmetric_support_blocks) != len(SCENARIOS):
+        raise RuntimeError("symmetric support-view scenario count drift")
+    all_support_views = np.concatenate(symmetric_support_blocks, axis=0)
+    head_lock = dict(source_validation_result.get("symmetric_head_lock", {}))
+    if (
+        head_lock.get("selection_source")
+        != "disjoint_source_receiver_holdout_k1_episodes"
+        or k_shot not in [int(value) for value in head_lock.get("allowed_k", [])]
+        or head_lock.get("target_support_used_for_selection") is not False
+        or head_lock.get("target_query_features_used") is not False
+    ):
+        raise ValueError("source symmetric-head lock is missing or invalid")
+    locked_selected = dict(head_lock["selected"])
+    k1_head = quantize_symmetric_head_fp16(
+        fit_locked_symmetric_support_head(
+            all_support_views,
+            physical_shots_per_class=k_shot,
+            selected=locked_selected,
+            source_mean=source_feature_mean,
+            source_std=source_feature_std,
         )
-        old_positions = np.asarray(
-            [class_to_index[str(label)] for label in old_labels], dtype=np.int64
+    )
+    old_positions = np.asarray(
+        [class_to_index[str(label)] for label in old_labels], dtype=np.int64
+    )
+    old_support_views = all_support_views[:, old_positions, :]
+    k1_old_head = quantize_symmetric_head_fp16(
+        fit_locked_symmetric_support_head(
+            old_support_views,
+            physical_shots_per_class=k_shot,
+            selected=locked_selected,
+            source_mean=source_feature_mean,
+            source_std=source_feature_std,
         )
-        old_support_views = all_support_views[:, old_positions, :]
-        k1_old_head = quantize_symmetric_head_fp16(
-            fit_locked_symmetric_support_head(
-                old_support_views,
-                physical_shots_per_class=k_shot,
-                selected=locked_selected,
-                source_mean=source_feature_mean,
-                source_std=source_feature_std,
-            )
-        )
-        head_state_path = args.out_dir / "symmetric_locked_head_state_fp16.npz"
-        k1_head, head_state_reload_audit = persist_and_reload_symmetric_head_fp16(
-            k1_head, head_state_path
-        )
-        calibration = dict(source_validation_result["calibration"])
-        old_calibration = calibration
-    else:
-        if source_validation_result is not None:
-            calibration = dict(source_validation_result["calibration"])
-            old_calibration = calibration
-        else:
-            calibration = calibrate_adaptive_rxlight_tta(
-                np.concatenate(calibration_scores, axis=0),
-                np.concatenate(calibration_labels, axis=0),
-                base_margin_grid=BASE_MARGIN_GRID,
-                shift3_margin_grid=SHIFT3_MARGIN_GRID,
-                disagreement_grid=DISAGREEMENT_GRID,
-                max_accuracy_drop_pp=float(args.max_accuracy_drop_pp),
-            )
-            # Legacy support-adapter diagnostic only.  Formal ground-source
-            # candidates above always reuse one source-locked threshold tuple
-            # before and after class registration.
-            old_calibration = calibration
+    )
+    head_state_path = args.out_dir / "symmetric_locked_head_state_fp16.npz"
+    k1_head, head_state_reload_audit = persist_and_reload_symmetric_head_fp16(
+        k1_head, head_state_path
+    )
+    symmetric_locked_head_state_sha256 = _sha256_file(head_state_path)
+    calibration = dict(source_validation_result["calibration"])
+    old_calibration = calibration
     thresholds = calibration["selected"]["thresholds"]
+    if source_validation_path is None or source_stats_path is None:
+        raise RuntimeError("formal source validation provenance was not resolved")
+    locked_head_sha256 = canonical_json_sha256(locked_selected)
+    tta_thresholds_sha256 = canonical_json_sha256(thresholds)
+    source_validation_sha256 = _sha256_file(source_validation_path)
+    source_feature_statistics_sha256 = _sha256_file(source_stats_path)
     for scenario, payload in scenario_payloads.items():
         prototypes = payload["prototypes"]
-        raw_query = payload["query_raw_iq"]
+        leo_query = payload["query_leo_weak_iq"]
         direct_old_mask = payload["roles"] == "target_old"
         direct_old_prediction, direct_audit = predict_direct_adv3b02_base_view(
             direct_model,
-            raw_query[direct_old_mask],
+            leo_query[direct_old_mask],
             class_labels=direct_class_labels,
             batch_size=int(args.batch_size),
             device=device,
         )
-        direct_full_prediction = np.full(len(raw_query), "", dtype=object)
+        direct_full_prediction = np.full(len(leo_query), "", dtype=object)
         direct_full_prediction[direct_old_mask] = direct_old_prediction
         payload["direct_adv3b02_prediction"] = direct_full_prediction.astype(str)
         payload["direct_adv3b02_audit"] = direct_audit
+        if device.type == "cuda":
+            torch.cuda.reset_peak_memory_stats(device)
+        deployment_query_started = time.perf_counter()
         base_features, base_extract = extract_joint_rxlight_views(
             model,
-            raw_query,
+            leo_query,
             view_names=(RX_LIGHT5_ORDER[0],),
             batch_size=int(args.batch_size),
             device=device,
         )
         identity_query_features, identity_query_extract = extract_joint_rxlight_views(
             direct_model,
-            raw_query,
+            leo_query,
             view_names=(RX_LIGHT5_ORDER[0],),
             batch_size=int(args.batch_size),
             device=device,
@@ -1370,7 +1582,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         def shift_provider(indices: np.ndarray) -> np.ndarray:
             features, audit = extract_joint_rxlight_views(
                 model,
-                raw_query[indices],
+                leo_query[indices],
                 view_names=RX_LIGHT5_ORDER[1:3],
                 batch_size=int(args.batch_size),
                 device=device,
@@ -1385,7 +1597,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         def cfo_provider(indices: np.ndarray) -> np.ndarray:
             features, audit = extract_joint_rxlight_views(
                 model,
-                raw_query[indices],
+                leo_query[indices],
                 view_names=RX_LIGHT5_ORDER[3:5],
                 batch_size=int(args.batch_size),
                 device=device,
@@ -1400,9 +1612,19 @@ def main(argv: Sequence[str] | None = None) -> int:
         adaptive = apply_adaptive_rxlight_tta_lazy(
             base_scores, shift_provider, cfo_provider, thresholds
         )
+        if device.type == "cuda":
+            torch.cuda.synchronize(device)
+        deployment_query_elapsed_seconds = float(
+            time.perf_counter() - deployment_query_started
+        )
+        deployment_query_peak_cuda_memory_bytes = (
+            int(torch.cuda.max_memory_allocated(device))
+            if device.type == "cuda"
+            else 0
+        )
         full_query_features, full_extract = extract_joint_rxlight5(
             model,
-            raw_query,
+            leo_query,
             batch_size=int(args.batch_size),
             device=device,
         )
@@ -1436,7 +1658,7 @@ def main(argv: Sequence[str] | None = None) -> int:
                 f"the registered adapted cache for {scenario}: "
                 f"{parity_audit[scenario]}"
             )
-        query_count = int(len(raw_query))
+        query_count = int(len(leo_query))
         shift_count = int(adaptive["shift_rows_requested"])
         cfo_count = int(adaptive["cfo_rows_requested"])
         support_forward_rows = int(
@@ -1471,11 +1693,30 @@ def main(argv: Sequence[str] | None = None) -> int:
                 "mean_backbone_forwards": float(
                     adaptive["mean_backbone_forwards"]
                 ),
+                "deployment_query_elapsed_seconds": deployment_query_elapsed_seconds,
+                "deployment_query_latency_ms_per_sample": float(
+                    1000.0 * deployment_query_elapsed_seconds / max(query_count, 1)
+                ),
+                "deployment_query_peak_cuda_memory_bytes": (
+                    deployment_query_peak_cuda_memory_bytes
+                ),
             },
             "offline_fixed5_upper_bound_only": full_extract,
             "resource_accounting": {
                 "deployment_one_time_support_forward_rows": support_forward_rows,
                 "deployment_query_forward_rows": deployed_query_forward_rows,
+                "deployment_end_to_end_elapsed_seconds": float(
+                    payload["support_extract"]["total_seconds"]
+                    + deployment_query_elapsed_seconds
+                ),
+                "deployment_end_to_end_latency_ms_per_query_including_enrollment": float(
+                    1000.0
+                    * (
+                        payload["support_extract"]["total_seconds"]
+                        + deployment_query_elapsed_seconds
+                    )
+                    / max(query_count, 1)
+                ),
                 "benchmark_offline_fixed5_forward_rows": offline_fixed5_forward_rows,
                 "benchmark_direct_baseline_forward_rows": direct_baseline_forward_rows,
                 "benchmark_identity_support_forward_rows": identity_support_forward_rows,
@@ -1530,6 +1771,7 @@ def main(argv: Sequence[str] | None = None) -> int:
             "direct_old": [],
             "identity_after": [],
             "identity_before": [],
+            "view_budgets": [],
         }
         for name in ("fixed1", "fixed3", "fixed5", "adaptive1to3to5")
     }
@@ -1583,6 +1825,13 @@ def main(argv: Sequence[str] | None = None) -> int:
                 metrics["average_forgetting"] = float(
                     old_before_accuracy - metrics["old_accuracy"]
                 )
+            old_before_full = np.full(len(truth), "", dtype=object)
+            identity_before_full = np.full(len(truth), "", dtype=object)
+            identity_after_full = np.full(len(truth), "", dtype=object)
+            if "old_before_predictions" in payload:
+                old_before_full[old_mask] = old_before
+            identity_before_full[old_mask] = identity_before
+            identity_after_full[old_mask] = identity_after
             if method_name == "fixed1":
                 resources = {"mean_backbone_forwards": 1.0, "p95_backbone_forwards": 1.0,
                              "view1_rate": 1.0, "view3_rate": 0.0, "view5_rate": 0.0}
@@ -1616,6 +1865,9 @@ def main(argv: Sequence[str] | None = None) -> int:
                 if method_name == "adaptive1to3to5"
                 else np.full(len(truth), int(method_name[-1]), dtype=np.int64)
             )
+            aggregate[method_name]["view_budgets"].append(
+                np.asarray(budgets, dtype=np.int64)
+            )
             prediction_rows.extend(
                 {
                     "scenario": scenario,
@@ -1626,8 +1878,32 @@ def main(argv: Sequence[str] | None = None) -> int:
                     "evaluation_role": str(roles[index]),
                     "view_budget": int(budgets[index]),
                     "correct": int(predicted[index] == truth[index]),
+                    "old_before_prediction": str(old_before_full[index]),
+                    "old_before_correct": (
+                        int(old_before_full[index] == truth[index])
+                        if str(roles[index]) == "target_old"
+                        else ""
+                    ),
+                    "identity_before_prediction": str(
+                        identity_before_full[index]
+                    ),
+                    "identity_before_correct": (
+                        int(identity_before_full[index] == truth[index])
+                        if str(roles[index]) == "target_old"
+                        else ""
+                    ),
+                    "identity_after_prediction": str(identity_after_full[index]),
+                    "identity_after_correct": (
+                        int(identity_after_full[index] == truth[index])
+                        if str(roles[index]) == "target_old"
+                        else ""
+                    ),
                     "direct_adv3b02_prediction": str(
                         payload["direct_adv3b02_prediction"][index]
+                    ),
+                    "overlay_id": str(payload["query_overlay_ids"][index]),
+                    "post_channel_iq_sha256": str(
+                        payload["query_post_channel_iq_sha256"][index]
                     ),
                     "direct_adv3b02_correct": (
                         int(
@@ -1671,10 +1947,17 @@ def main(argv: Sequence[str] | None = None) -> int:
             metrics["average_forgetting"] = float(
                 old_before_accuracy - metrics["old_accuracy"]
             )
-        method_scenario_rows = [row for row in rows if row["method"] == method_name]
+        global_view_budgets = np.concatenate(blocks["view_budgets"])
+        if not np.isin(global_view_budgets, np.asarray([1, 3, 5])).all():
+            raise ValueError("view budget outside the formal adaptive set {1,3,5}")
         resources = {
-            key: float(np.mean([row[key] for row in method_scenario_rows]))
-            for key in ("mean_backbone_forwards", "p95_backbone_forwards", "view1_rate", "view3_rate", "view5_rate")
+            "mean_backbone_forwards": float(np.mean(global_view_budgets)),
+            "p95_backbone_forwards": float(
+                np.percentile(global_view_budgets, 95, method="higher")
+            ),
+            "view1_rate": float(np.mean(global_view_budgets == 1)),
+            "view3_rate": float(np.mean(global_view_budgets == 3)),
+            "view5_rate": float(np.mean(global_view_budgets == 5)),
         }
         rows.append({"scenario": "ALL", "method": method_name, **metrics, **resources})
         per_class_rows.extend(
@@ -1682,11 +1965,36 @@ def main(argv: Sequence[str] | None = None) -> int:
             for row in class_rows
         )
 
+    host_memory_after = _process_memory_audit()
+    peak_cuda_memory_bytes = (
+        int(torch.cuda.max_memory_allocated(device)) if device.type == "cuda" else 0
+    )
     fixed1_parity = [row for row in rows if row["scenario"] == "ALL" and row["method"] == "fixed1"][0]
     candidate_id = str(
         candidate_lock["locked_candidate"].get("candidate_id", "")
     )
     candidate_lock_file_sha256 = _sha256_file(args.candidate_lock)
+    adapter_manifest_sha256 = _sha256_file(args.adapter_manifest)
+    checkpoint_sha256 = _sha256_file(args.ckpt)
+    adapter_state_sha256 = _sha256_file(args.adapter_state)
+    formal_adapter_tensor_bytes = int(delta_audit["tensor_bytes_fp16"])
+    formal_prototype_tensor_bytes = int(k1_head.prototypes.size * 2)
+    formal_head_tensor_bytes = int(k1_head.persistent_state_bytes_fp16)
+    formal_total_state_bytes = int(
+        formal_adapter_tensor_bytes + formal_head_tensor_bytes + 12
+    )
+    formal_head_macs_per_view = int(
+        k1_head.class_count * k1_head.feature_dim + k1_head.extra_macs_per_query
+    )
+    profiled_backbone_macs = int(
+        model_mac_audit["conv_linear_sinc_macs_per_base_forward"]
+    )
+    trainable_parameters = int(
+        adapter_manifest.get("resources", {}).get("trainable_parameters", -1)
+    )
+    preferred_parameter_ratio = float(trainable_parameters / 50_000.0)
+    preferred_epoch_ratio = float(int(adapter_manifest["epochs"]) / 20.0)
+    preferred_state_ratio = float(formal_total_state_bytes / (256 * 1024))
     formal_rows: list[dict[str, Any]] = []
     for scenario in SCENARIOS:
         metric = next(
@@ -1700,6 +2008,19 @@ def main(argv: Sequence[str] | None = None) -> int:
             {
                 "candidate_id": candidate_id,
                 "candidate_lock_sha256": candidate_lock_file_sha256,
+                "locked_candidate_sha256": str(
+                    candidate_lock["locked_candidate_sha256"]
+                ),
+                "checkpoint_sha256": checkpoint_sha256,
+                "adapter_state_sha256": adapter_state_sha256,
+                "adapter_manifest_sha256": adapter_manifest_sha256,
+                "source_validation_manifest_sha256": source_validation_sha256,
+                "source_feature_statistics_sha256": source_feature_statistics_sha256,
+                "locked_head_selected_sha256": locked_head_sha256,
+                "symmetric_locked_head_state_sha256": (
+                    symmetric_locked_head_state_sha256
+                ),
+                "tta_thresholds_sha256": tta_thresholds_sha256,
                 "receiver": str(config["target_receiver_labels"][0]),
                 "seed": int(config["seed"]),
                 "scenario": str(scenario),
@@ -1709,10 +2030,54 @@ def main(argv: Sequence[str] | None = None) -> int:
                 "query_per_tx": int(config["query_per_tx"]),
                 "support_ids_json": json.dumps(audit["support_ids"]),
                 "query_ids_json": json.dumps(audit["query_ids"]),
+                "support_ids_sha256": str(audit["support_ids_sha256"]),
+                "query_ids_sha256": str(audit["query_ids_sha256"]),
+                "support_overlay_ids_sha256": str(
+                    audit["support_overlay_ids_sha256"]
+                ),
+                "query_overlay_ids_sha256": str(
+                    audit["query_overlay_ids_sha256"]
+                ),
+                "support_post_channel_iq_sha256_root": str(
+                    audit["support_post_channel_iq_sha256_root"]
+                ),
+                "query_post_channel_iq_sha256_root": str(
+                    audit["query_post_channel_iq_sha256_root"]
+                ),
+                "support_overlay_ids_json": json.dumps(
+                    audit["support_overlay_ids"]
+                ),
+                "support_post_channel_iq_sha256_json": json.dumps(
+                    audit["support_post_channel_iq_sha256"]
+                ),
+                "satellite_seeds_json": json.dumps(
+                    audit["selected_satellite_seeds"]
+                ),
+                "leo_weak_cache_sha256": str(audit["leo_weak_cache_sha256"]),
+                "leo_weak_cache_manifest_sha256": str(
+                    audit["leo_weak_cache_manifest_sha256"]
+                ),
+                "leo_weak_cache_set_manifest_sha256": str(
+                    audit["cache_set_manifest_sha256"]
+                ),
+                "leo_weak_cache_build_spec_sha256": str(
+                    audit["cache_build_spec_sha256"]
+                ),
+                "stage2_config_content_sha256": str(
+                    target_config_contract["config_content_sha256"]
+                ),
                 "old_tx_labels_json": json.dumps(old_labels),
                 "new_tx_labels_json": json.dumps(new_labels),
+                "phase2_sample_view_policy": PHASE2_SAMPLE_VIEW_POLICY,
+                "clean_sample_access": False,
+                "clean_derived_signal_access": False,
                 "support_query_view": "leo_weak_only",
                 "clean_support_query_rows": 0,
+                "head_mode": "symmetric_locked",
+                "old_new_role_oracle_used": False,
+                "class_quota_used": False,
+                "query_fit_used": False,
+                "query_batch_state_required": False,
                 "old_acc_before_increment": float(
                     metric["old_accuracy_before_increment"]
                 ),
@@ -1721,19 +2086,90 @@ def main(argv: Sequence[str] | None = None) -> int:
                 "old_adaptation_gain": float(metric["old_adaptation_gain"]),
                 "min_old_class_acc": float(metric["min_old_class_accuracy"]),
                 "seen_new_acc": float(metric["new_accuracy"]),
+                "min_new_class_acc": float(metric["min_new_class_accuracy"]),
                 "h_old_new": float(metric["harmonic_mean"]),
                 "identity_average_forgetting": float(
                     metric["identity_average_forgetting"]
                 ),
+                "identity_old_acc_before_increment": float(
+                    metric["identity_old_acc_before_increment"]
+                ),
+                "identity_old_acc_after_increment": float(
+                    metric["identity_old_acc_after_increment"]
+                ),
                 "direct_adv3b02_old_acc": float(
                     metric["direct_adv3b02_old_accuracy"]
                 ),
+                "delta_vs_direct_adv3b02": float(
+                    metric["delta_vs_direct_adv3b02"]
+                ),
+                "mean_backbone_forward_count": float(
+                    metric["mean_backbone_forwards"]
+                ),
+                "p95_backbone_forward_count": float(
+                    metric["p95_backbone_forwards"]
+                ),
+                "view1_trigger_rate": float(metric["view1_rate"]),
+                "view3_trigger_rate": float(metric["view3_rate"]),
+                "view5_trigger_rate": float(metric["view5_rate"]),
+                "worst_case_backbone_forward_count": 5,
+                "all_five_views_materialized_before_gate": False,
+                "profiled_backbone_macs_per_forward": profiled_backbone_macs,
+                "support_head_macs_per_view": formal_head_macs_per_view,
+                "mean_profiled_macs_per_query_excluding_fft_and_view_transform": int(
+                    round(
+                        (profiled_backbone_macs + formal_head_macs_per_view)
+                        * float(metric["mean_backbone_forwards"])
+                    )
+                ),
+                "mac_coverage": "executed_Conv1d_Linear_SincConv1d_plus_support_head",
+                "fft96_and_receive_transform_macs_included": False,
+                "deployment_query_latency_ms_per_sample": float(
+                    extraction_audit[str(scenario)]["deployed_adaptive_lazy"][
+                        "deployment_query_latency_ms_per_sample"
+                    ]
+                ),
+                "deployment_end_to_end_latency_ms_per_query_including_enrollment": float(
+                    extraction_audit[str(scenario)]["resource_accounting"][
+                        "deployment_end_to_end_latency_ms_per_query_including_enrollment"
+                    ]
+                ),
+                "peak_cuda_memory_bytes": int(
+                    extraction_audit[str(scenario)]["deployed_adaptive_lazy"][
+                        "deployment_query_peak_cuda_memory_bytes"
+                    ]
+                ),
+                "host_peak_working_set_bytes": host_memory_after[
+                    "peak_working_set_bytes"
+                ],
+                "persistent_state_bytes": formal_total_state_bytes,
+                "adapter_trainable_parameters": trainable_parameters,
+                "adapter_epochs": int(adapter_manifest["epochs"]),
+                "adapter_optimizer_steps": int(
+                    adapter_manifest.get("runtime", {}).get("optimizer_steps", -1)
+                ),
+                "resource_tier": str(adapter_manifest.get("resource_tier", "")),
+                "preferred_parameter_ratio": preferred_parameter_ratio,
+                "preferred_epoch_ratio": preferred_epoch_ratio,
+                "preferred_state_ratio": preferred_state_ratio,
             }
+        )
+    for formal_row in formal_rows:
+        formal_row["formal_row_content_sha256"] = _formal_row_content_sha256(
+            formal_row
         )
     formal_prediction_rows = [
         {
             "candidate_id": candidate_id,
             "candidate_lock_sha256": candidate_lock_file_sha256,
+            "formal_row_content_sha256": next(
+                formal_row["formal_row_content_sha256"]
+                for formal_row in formal_rows
+                if str(formal_row["scenario"]) == str(row["scenario"])
+            ),
+            "symmetric_locked_head_state_sha256": (
+                symmetric_locked_head_state_sha256
+            ),
             "receiver": str(config["target_receiver_labels"][0]),
             "seed": int(config["seed"]),
             "scenario": str(row["scenario"]),
@@ -1741,8 +2177,22 @@ def main(argv: Sequence[str] | None = None) -> int:
             "k_shot": int(k_shot),
             "query_id": str(row["query_id"]),
             "evaluation_role": str(row["evaluation_role"]),
+            "truth": str(row["truth"]),
+            "prediction": str(row["prediction"]),
+            "view_budget": int(row["view_budget"]),
             "candidate_correct": int(row["correct"]),
+            "old_before_prediction": str(row["old_before_prediction"]),
+            "old_before_correct": row["old_before_correct"],
+            "identity_before_prediction": str(
+                row["identity_before_prediction"]
+            ),
+            "identity_before_correct": row["identity_before_correct"],
+            "identity_after_prediction": str(row["identity_after_prediction"]),
+            "identity_after_correct": row["identity_after_correct"],
+            "direct_prediction": str(row["direct_adv3b02_prediction"]),
             "direct_correct": row["direct_adv3b02_correct"],
+            "overlay_id": str(row["overlay_id"]),
+            "post_channel_iq_sha256": str(row["post_channel_iq_sha256"]),
         }
         for row in prediction_rows
         if row["method"] == "adaptive1to3to5"
@@ -1805,41 +2255,34 @@ def main(argv: Sequence[str] | None = None) -> int:
         )
     )
     manifest = {
-        "method": (
-            "support_symmetric_locked_adaptive_rxlight5_v1"
-            if k1_head is not None
-            else "support_prototype_adaptive_rxlight5_v1"
-        ),
-        "stage": "Stage2-C_recovery_diagnostic",
+        "method": "support_symmetric_locked_adaptive_rxlight5_v1",
+        "stage": "Stage2-C_formal_LEO_weak_only_evaluation",
+        "phase2_sample_view_policy": PHASE2_SAMPLE_VIEW_POLICY,
+        "clean_sample_access": False,
+        "clean_derived_signal_access": False,
+        "target_channel_view": "leo_weak_only",
+        "target_channel_scenarios": list(FORMAL_LEO_WEAK_SCENARIOS),
+        "leo_weak_cache_set_manifest": str(cache_set_path),
+        "leo_weak_cache_set_manifest_sha256": str(cache_set_audit["sha256"]),
+        "leo_weak_cache_set_audit": cache_set_audit,
         "deployment_default": "lazy_adaptive_1to3to5",
         "base_view_is_default": True,
         "extra_views_requested_only_after_low_confidence": True,
         "fixed5_is_offline_upper_bound_only": True,
         "decision_rule": "per_sample_argmax_view_score_mean",
-        "view_prototype_rule": (
-            "three_leo_base_views_robust_spherical_plus_support_gram"
-            if k1_head is not None
-            else "matching_view_support_prototype"
-        ),
-        "support_head_calibration": (
-            k1_head.calibration if k1_head is not None else None
-        ),
+        "view_prototype_rule": "three_leo_base_views_robust_spherical_plus_support_gram",
+        "support_head_calibration": k1_head.calibration,
+        "locked_head_selected_sha256": locked_head_sha256,
+        "symmetric_locked_head_state_sha256": symmetric_locked_head_state_sha256,
+        "tta_thresholds_sha256": tta_thresholds_sha256,
         "calibration": calibration,
-        "calibration_scope": (
-            "disjoint_source_receiver_holdout_only"
-            if source_validation_result is not None
-            else "registered_support_leave_one_out_across_three_scenarios_only"
-        ),
+        "calibration_scope": "disjoint_source_receiver_holdout_only",
         "support_enrollment": {
             "physical_shots_per_class": int(k_shot),
-            "augmented_view_count_per_physical_sample": (
-                3 if k1_head is not None else 5
-            ),
-            "registered_support_views": (
-                [f"{scenario}:rx_base" for scenario in SCENARIOS]
-                if k1_head is not None
-                else None
-            ),
+            "augmented_view_count_per_physical_sample": 3,
+            "registered_support_views": [
+                f"{scenario}:rx_base" for scenario in SCENARIOS
+            ],
             "same_physical_id_augmented_views_not_counted_as_extra_shots": True,
             "clean_samples_used": False,
             "unique_physical_rows": support_unique_rows,
@@ -1852,7 +2295,9 @@ def main(argv: Sequence[str] | None = None) -> int:
         "query_labels_used_for_calibration": False,
         "query_features_used_for_calibration": False,
         "old_new_role_used_for_decision": False,
+        "old_new_role_oracle_used": False,
         "class_quota_used": False,
+        "query_fit_used": False,
         "query_batch_state_required": False,
         "threshold_grid": {
             "base_margin": list(BASE_MARGIN_GRID),
@@ -1864,6 +2309,18 @@ def main(argv: Sequence[str] | None = None) -> int:
             "path": str(args.candidate_lock),
             "sha256": _sha256_file(args.candidate_lock),
             "locked_candidate_sha256": candidate_lock["locked_candidate_sha256"],
+        },
+        "formal_lock_hashes": {
+            "checkpoint_sha256": checkpoint_sha256,
+            "adapter_state_sha256": adapter_state_sha256,
+            "adapter_manifest_sha256": adapter_manifest_sha256,
+            "source_validation_manifest_sha256": source_validation_sha256,
+            "source_feature_statistics_sha256": source_feature_statistics_sha256,
+            "locked_head_selected_sha256": locked_head_sha256,
+            "symmetric_locked_head_state_sha256": (
+                symmetric_locked_head_state_sha256
+            ),
+            "tta_thresholds_sha256": tta_thresholds_sha256,
         },
         "protocol_audit": protocol_audit,
         "extraction_audit": extraction_audit,
@@ -1943,11 +2400,35 @@ def main(argv: Sequence[str] | None = None) -> int:
             ),
             "adaptive_mean_view_count": adaptive_mean_views,
             "adaptive_p95_view_count": adaptive_p95_views,
+            "profiled_feature_forward": model_mac_audit,
+            "mean_profiled_macs_per_query_excluding_fft_and_view_transform": int(
+                round(
+                    (
+                        int(
+                            model_mac_audit[
+                                "conv_linear_sinc_macs_per_base_forward"
+                            ]
+                        )
+                        + head_total_macs_per_view
+                    )
+                    * adaptive_mean_views
+                )
+            ),
+            "mac_scope_limitation": (
+                "FFT96 descriptor and receive-transform arithmetic are timed but "
+                "not included in the Conv1d/Linear/SincConv1d MAC count"
+            ),
         },
         "old_before_increment_diagnostic": {
             "uses_separate_old_only_head": True,
             "old_only_head_state_is_not_deployed_or_counted_in_persistent_state": True,
             "adaptive_thresholds": old_calibration,
+        },
+        "runtime_memory": {
+            "host_before": host_memory_before,
+            "host_after": host_memory_after,
+            "peak_cuda_memory_bytes": peak_cuda_memory_bytes,
+            "peak_cuda_memory_scope": "full_formal_benchmark_process_after_adapter_merge",
         },
         "results": rows,
     }

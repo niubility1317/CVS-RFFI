@@ -22,7 +22,6 @@ from typing import Any, Sequence
 import numpy as np
 import torch
 import torch.nn.functional as F
-from torch.utils.data import DataLoader
 
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
@@ -34,13 +33,23 @@ for candidate in (str(REPO_ROOT), str(CODE_ROOT), str(CODE_SCRIPTS_ROOT)):
 for candidate in (str(REPO_ROOT), str(CODE_ROOT), str(CODE_SCRIPTS_ROOT)):
     sys.path.insert(0, candidate)
 
-from cvsrffi.eval import apply_sat_channel_for_scenario  # noqa: E402
-from cvsrffi.tensors import make_torch_generator  # noqa: E402
+from cvsrffi.checkpoint_loading import (  # noqa: E402
+    build_exact_ssdg_model_from_checkpoint,
+)
+from cvsrffi.identity_only_forward import identity_only_feature_forward  # noqa: E402
+from cvsrffi.leo_weak_cache import (  # noqa: E402
+    FORMAL_LEO_WEAK_SCENARIOS,
+    LEO_WEAK_CACHE_STAGE,
+    PHASE2_SAMPLE_VIEW_POLICY,
+    ids_sha256,
+    load_verified_leo_weak_cache_set,
+    sha256_file,
+)
 from export_spaceborne_features import (  # noqa: E402
-    _build_wisig_dataset,
     _satellite_tta_views,
     _spectral_logmag_sketch_batch,
 )
+from eval_feature_diagnosis import collect_feature_dict  # noqa: E402
 from paper_reproduction.cvs_aligned.adaptive_rxlight_tta import (  # noqa: E402
     AdaptiveTTAThresholds,
     apply_adaptive_rxlight_tta,
@@ -60,18 +69,6 @@ from paper_reproduction.scripts.benchmark_cvs_adaptive_rxlight_tta import (  # n
     SHIFT3_MARGIN_GRID,
     apply_fp16_lora_state,
 )
-from train_apply_phase1_iq_preadapter_20260703 import (  # noqa: E402
-    _build_model,
-    _feature_forward,
-)
-from training_controls import parse_sat_scenarios  # noqa: E402
-
-
-FORMAL_LEO_WEAK_SCENARIOS = (
-    "leo_clear_weak",
-    "leo_low_elev_weak",
-    "leo_rain_weak",
-)
 FORMAL_TARGET_MANYSIG_RX_INDICES = {"7", "8", "9", "10", "11"}
 FORMAL_K = (1, 5, 10, 20)
 
@@ -81,14 +78,6 @@ def validate_formal_scenarios(scenarios: Sequence[str]) -> tuple[str, ...]:
     if values != FORMAL_LEO_WEAK_SCENARIOS:
         raise ValueError("source validation must use the exact formal leo_weak scenarios")
     return values
-
-
-def _sha256_file(path: str | Path) -> str:
-    digest = hashlib.sha256()
-    with Path(path).open("rb") as handle:
-        for chunk in iter(lambda: handle.read(1024 * 1024), b""):
-            digest.update(chunk)
-    return digest.hexdigest()
 
 
 def _serializable(value: Any) -> Any:
@@ -174,34 +163,125 @@ def _fixed_metrics(view_scores: np.ndarray, labels: np.ndarray) -> dict[str, Any
     }
 
 
-def _dataset(
-    args: argparse.Namespace, *, receivers: str, role: str, max_samples_per_tx: int, seed: int
-):
-    return _build_wisig_dataset(
-        pkl_path=str(args.wisig_pkl),
-        tx_spec=str(args.source_tx_ids),
-        role=role,
-        equalized=str(args.wisig_equalized),
-        out_len=int(args.wisig_out_len),
-        domain=str(args.wisig_domain),
-        days=None,
-        rxs=str(receivers),
-        max_samples_per_combo=0,
-        max_samples_per_tx=int(max_samples_per_tx),
-        seed=int(seed),
+def _feature_forward(
+    model: torch.nn.Module, x: torch.Tensor, feature_name: str
+) -> tuple[torch.Tensor, torch.Tensor]:
+    identity_only = identity_only_feature_forward(model, x, feature_name)
+    if identity_only is not None:
+        return identity_only
+    out = model(x, y_tx=None, grl_lambda=1.0, return_aux=True)
+    features = collect_feature_dict(out)
+    if feature_name not in features:
+        raise KeyError(
+            f"feature {feature_name!r} not found; available={sorted(features)}"
+        )
+    logits = out.get("tx_logits", out.get("logits")) if isinstance(out, dict) else None
+    if not torch.is_tensor(logits):
+        raise KeyError("model output does not expose tx_logits/logits")
+    return features[feature_name].float(), logits.float()
+
+
+def _build_frozen_model(
+    checkpoint_path: Path, *, input_len: int, device: torch.device
+) -> torch.nn.Module:
+    try:
+        checkpoint = torch.load(
+            checkpoint_path, map_location="cpu", weights_only=False
+        )
+    except TypeError:
+        checkpoint = torch.load(checkpoint_path, map_location="cpu")
+    model, checkpoint_load_audit = build_exact_ssdg_model_from_checkpoint(
+        checkpoint, input_len=int(input_len), device=device
     )
+    model._checkpoint_load_audit = checkpoint_load_audit
+    model.eval()
+    for parameter in model.parameters():
+        parameter.requires_grad_(False)
+    return model
+
+
+def load_source_validation_cache_set(path: str | Path):
+    """Load the only data artifact reachable by formal source validation."""
+
+    return load_verified_leo_weak_cache_set(
+        path,
+        expected_scope="source_validation",
+        allowed_roles={"source"},
+    )
+
+
+def split_source_cache_receivers(
+    arrays_by_scenario: dict[str, dict[str, np.ndarray]],
+    *,
+    train_receivers: str,
+    validation_receivers: str,
+    class_count: int,
+) -> tuple[np.ndarray, np.ndarray, dict[str, Any], dict[str, Any]]:
+    """Return disjoint physical rows from a verified source cache-set."""
+
+    train = _receiver_tokens(train_receivers)
+    validation = _receiver_tokens(validation_receivers)
+    reference = arrays_by_scenario[FORMAL_LEO_WEAK_SCENARIOS[0]]
+    receivers = np.asarray(reference["rx_ids"]).astype(str)
+    labels = np.asarray(reference["raw_labels"], dtype=np.int64)
+    for scenario in FORMAL_LEO_WEAK_SCENARIOS[1:]:
+        scenario_labels = np.asarray(
+            arrays_by_scenario[scenario]["raw_labels"], dtype=np.int64
+        )
+        if not np.array_equal(labels, scenario_labels):
+            raise ValueError(
+                f"source cache label ordering drift across scenarios: {scenario}"
+            )
+    observed_receivers = set(receivers.tolist())
+    expected_receivers = train | validation
+    if observed_receivers != expected_receivers:
+        raise ValueError(
+            "source validation cache receiver scope drift: "
+            f"observed={sorted(observed_receivers)}, "
+            f"expected={sorted(expected_receivers)}"
+        )
+    train_indices = np.flatnonzero(np.isin(receivers, sorted(train))).astype(np.int64)
+    validation_indices = np.flatnonzero(
+        np.isin(receivers, sorted(validation))
+    ).astype(np.int64)
+    if not len(train_indices) or not len(validation_indices):
+        raise ValueError("source cache receiver split produced an empty partition")
+    expected_classes = set(range(int(class_count)))
+    for split_name, indices in (
+        ("source_train", train_indices),
+        ("source_validation", validation_indices),
+    ):
+        observed_classes = set(int(value) for value in labels[indices].tolist())
+        if observed_classes != expected_classes:
+            raise ValueError(
+                f"{split_name} class coverage drift: "
+                f"observed={sorted(observed_classes)}, "
+                f"expected={sorted(expected_classes)}"
+            )
+    sample_ids = np.asarray(reference["sample_ids"]).astype(str)
+    train_info = {
+        "receiver_scope": sorted(train),
+        "physical_sample_count": int(len(train_indices)),
+        "sample_ids_sha256": ids_sha256(sample_ids[train_indices].tolist()),
+    }
+    validation_info = {
+        "receiver_scope": sorted(validation),
+        "physical_sample_count": int(len(validation_indices)),
+        "sample_ids_sha256": ids_sha256(sample_ids[validation_indices].tolist()),
+    }
+    return train_indices, validation_indices, train_info, validation_info
 
 
 def _joint_feature_tensor(
     primary: torch.Tensor,
-    raw_iq: torch.Tensor,
+    leo_weak_iq: torch.Tensor,
     *,
     fft_dim: int = 96,
     fft_weight: float = 2.0,
 ) -> torch.Tensor:
     primary_np = primary.detach().cpu().numpy().astype(np.float32)
-    raw_np = raw_iq.detach().cpu().numpy().astype(np.float32)
-    fft = _spectral_logmag_sketch_batch(raw_np, dim=int(fft_dim))
+    leo_np = leo_weak_iq.detach().cpu().numpy().astype(np.float32)
+    fft = _spectral_logmag_sketch_batch(leo_np, dim=int(fft_dim))
     joint = concatenate_registered_features(
         primary_np, fft, auxiliary_weight=float(fft_weight)
     )
@@ -211,28 +291,30 @@ def _joint_feature_tensor(
 @torch.no_grad()
 def _leo_source_prototypes(
     model: torch.nn.Module,
-    loader: DataLoader,
+    arrays_by_scenario: dict[str, dict[str, np.ndarray]],
+    row_indices: np.ndarray,
     *,
     class_count: int,
-    scenarios: Sequence[str],
-    args: argparse.Namespace,
+    batch_size: int,
     device: torch.device,
 ) -> torch.Tensor:
-    """Build source prototypes without exposing any clean waveform to scoring."""
+    """Build prototypes from sealed Phase1 LEO_weak rows only."""
 
     features: list[torch.Tensor] = []
     labels: list[torch.Tensor] = []
-    generator = make_torch_generator(device, int(args.seed) + 40_000)
-    for batch_index, (x, y, _domain, _meta) in enumerate(loader):
-        x_device = x.to(device)
-        scenario = str(scenarios[int(batch_index) % len(scenarios)])
-        x_sat, _ = apply_sat_channel_for_scenario(
-            x_device, scenario, args, gen=generator, return_meta=False
-        )
-        z, _ = _feature_forward(model, x_sat, "z_id")
-        joint = _joint_feature_tensor(z, x_sat)
-        features.append(F.normalize(joint.float(), dim=1))
-        labels.append(y.to(device).long())
+    indices = np.asarray(row_indices, dtype=np.int64)
+    for scenario in FORMAL_LEO_WEAK_SCENARIOS:
+        arrays = arrays_by_scenario[scenario]
+        scenario_iq = np.asarray(arrays["leo_weak_iq"], dtype=np.float32)[indices]
+        scenario_labels = np.asarray(arrays["raw_labels"], dtype=np.int64)[indices]
+        for start in range(0, len(indices), int(batch_size)):
+            stop = min(start + int(batch_size), len(indices))
+            x_leo = torch.from_numpy(scenario_iq[start:stop]).to(device)
+            y = torch.from_numpy(scenario_labels[start:stop]).to(device)
+            z, _ = _feature_forward(model, x_leo, "z_id")
+            joint = _joint_feature_tensor(z, x_leo)
+            features.append(F.normalize(joint.float(), dim=1))
+            labels.append(y.long())
     all_features = torch.cat(features, dim=0)
     all_labels = torch.cat(labels, dim=0)
     prototypes = []
@@ -248,33 +330,32 @@ def _leo_source_prototypes(
 def _heldout_scores(
     base_model: torch.nn.Module,
     adapted_model: torch.nn.Module,
-    loader: DataLoader,
+    arrays_by_scenario: dict[str, dict[str, np.ndarray]],
+    row_indices: np.ndarray,
     prototypes: torch.Tensor,
     *,
-    scenarios: Sequence[str],
-    args: argparse.Namespace,
+    batch_size: int,
     device: torch.device,
 ) -> tuple[dict[str, np.ndarray], np.ndarray, dict[str, Any], np.ndarray]:
     by_model: dict[str, list[np.ndarray]] = {"base": [], "ground_lora": []}
     label_parts: list[np.ndarray] = []
     adapted_feature_blocks: list[np.ndarray] = []
     view_names: tuple[str, ...] | None = None
-    for scenario_index, scenario in enumerate(scenarios):
-        generator = make_torch_generator(
-            device, int(args.seed) + 50_000 + int(scenario_index)
-        )
+    indices = np.asarray(row_indices, dtype=np.int64)
+    for scenario_index, scenario in enumerate(FORMAL_LEO_WEAK_SCENARIOS):
+        arrays = arrays_by_scenario[scenario]
+        scenario_iq = np.asarray(arrays["leo_weak_iq"], dtype=np.float32)[indices]
+        scenario_truth = np.asarray(arrays["raw_labels"], dtype=np.int64)[indices]
         scenario_labels: list[np.ndarray] = []
         scenario_scores: dict[str, list[np.ndarray]] = {
             "base": [],
             "ground_lora": [],
         }
         scenario_adapted_features: list[np.ndarray] = []
-        for x, y, _domain, _meta in loader:
-            x = x.to(device)
-            x_sat, _ = apply_sat_channel_for_scenario(
-                x, str(scenario), args, gen=generator, return_meta=False
-            )
-            views = _satellite_tta_views(x_sat, "rx_light5")
+        for start in range(0, len(indices), int(batch_size)):
+            stop = min(start + int(batch_size), len(indices))
+            x_leo = torch.from_numpy(scenario_iq[start:stop]).to(device)
+            views = _satellite_tta_views(x_leo, "rx_light5")
             names = tuple(name for name, _value in views)
             if view_names is None:
                 view_names = names
@@ -302,7 +383,7 @@ def _heldout_scores(
                     scenario_adapted_features.append(
                         np.stack(view_features, axis=1).astype(np.float32)
                     )
-            scenario_labels.append(y.detach().cpu().numpy().astype(np.int64))
+            scenario_labels.append(scenario_truth[start:stop])
         labels = np.concatenate(scenario_labels)
         if scenario_index == 0:
             label_parts.append(labels)
@@ -318,11 +399,13 @@ def _heldout_scores(
         name: np.concatenate(blocks, axis=0).astype(np.float32)
         for name, blocks in by_model.items()
     }
-    repeated_labels = np.tile(physical_labels, len(scenarios)).astype(np.int64)
+    repeated_labels = np.tile(
+        physical_labels, len(FORMAL_LEO_WEAK_SCENARIOS)
+    ).astype(np.int64)
     return flattened, repeated_labels, {
         "view_names": list(view_names or ()),
         "physical_validation_samples": int(len(physical_labels)),
-        "scenario_count": int(len(scenarios)),
+        "scenario_count": int(len(FORMAL_LEO_WEAK_SCENARIOS)),
         "scored_rows": int(len(repeated_labels)),
     }, np.concatenate(adapted_feature_blocks).astype(np.float32)
 
@@ -616,31 +699,17 @@ def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
     parser.add_argument("--ckpt", type=Path, required=True)
     parser.add_argument("--adapter_state", type=Path, required=True)
     parser.add_argument("--training_manifest", type=Path, required=True)
+    parser.add_argument("--source_cache_set", type=Path, required=True)
     parser.add_argument("--out_dir", type=Path, required=True)
-    parser.add_argument("--wisig_pkl", type=Path, required=True)
-    parser.add_argument("--source_tx_ids", required=True)
     parser.add_argument("--source_train_rxs", default="0,1,2,3,4,5")
     parser.add_argument("--source_val_rxs", default="6")
-    parser.add_argument("--wisig_equalized", default="1")
-    parser.add_argument("--wisig_domain", default="rx_day")
-    parser.add_argument("--wisig_out_len", type=int, default=256)
     parser.add_argument("--num_old_classes", type=int, default=6)
-    parser.add_argument("--max_train_samples_per_tx", type=int, default=400)
-    parser.add_argument("--max_val_samples_per_tx", type=int, default=120)
-    parser.add_argument(
-        "--sat_scenarios",
-        default="leo_clear_weak,leo_low_elev_weak,leo_rain_weak",
-    )
-    parser.add_argument("--star_ground_channel_impl", default="simplified_leo_residual")
-    parser.add_argument("--sat_fs_hz", type=float, default=25e6)
-    parser.add_argument("--sat_fc_hz", type=float, default=2.462e9)
     parser.add_argument("--batch_size", type=int, default=256)
     parser.add_argument("--max_accuracy_drop_pp", type=float, default=0.5)
     parser.add_argument("--max_fixed1_drop_pp", type=float, default=1.0)
     parser.add_argument("--max_floor_drop_pp", type=float, default=2.0)
     parser.add_argument("--max_mean_backbone_forwards", type=float, default=3.0)
     parser.add_argument("--min_extra_view_rate", type=float, default=0.05)
-    parser.add_argument("--seed", type=int, default=4070391)
     parser.add_argument("--device", default="cuda:0")
     args = parser.parse_args(argv)
     if not 1 <= int(args.batch_size) <= 4096:
@@ -656,11 +725,8 @@ def main(argv: Sequence[str] | None = None) -> int:
         args.source_train_rxs, args.source_val_rxs
     )
     manifest = json.loads(args.training_manifest.read_text(encoding="utf-8-sig"))
-    if manifest.get("method") not in {
-        "ground_source_full_feature_lora_v1",
-        "ground_source_effective_feature_lora_v1",
-    }:
-        raise ValueError("training manifest is not a ground source LoRA")
+    if manifest.get("method") != "ground_source_effective_feature_lora_v1":
+        raise ValueError("formal source validation requires effective-feature LoRA")
     if manifest.get("source_only") is not True:
         raise ValueError("ground LoRA manifest must be source-only")
     if manifest.get("source_validation_pass") is not False:
@@ -669,36 +735,28 @@ def main(argv: Sequence[str] | None = None) -> int:
         args.source_train_rxs
     ):
         raise ValueError("source receiver scope does not match training manifest")
-    if str(manifest.get("source_tx_scope", "")) != str(args.source_tx_ids):
-        raise ValueError("source TX scope does not match training manifest")
-    source_dataset_path = Path(str(manifest.get("source_dataset", "")))
     if (
-        not source_dataset_path.is_file()
-        or source_dataset_path.resolve() != args.wisig_pkl.resolve()
-        or str(manifest.get("source_dataset_sha256", ""))
-        != _sha256_file(source_dataset_path)
-    ):
-        raise ValueError("source dataset path/fingerprint mismatch")
-    if manifest.get("method") == "ground_source_effective_feature_lora_v1" and (
         manifest.get("proxy_data_used_for_training") is not False
         or int(manifest.get("proxy_training_rows", -1)) != 0
         or float(manifest.get("proxy_loss_weight_sum", -1.0)) != 0.0
         or manifest.get("clean_samples_used_for_training") is not False
         or manifest.get("formal_training_view") != "leo_weak_only"
-        or manifest.get("teacher_reference_view") != "same_leo_weak_base_view"
+        or manifest.get("training_input_stage") != LEO_WEAK_CACHE_STAGE
+        or manifest.get("phase2_sample_view_policy")
+        != PHASE2_SAMPLE_VIEW_POLICY
+        or manifest.get("clean_sample_access") is not False
+        or manifest.get("clean_derived_signal_access") is not False
     ):
         raise ValueError(
-            "effective ground LoRA must be leo_weak-only without clean/proxy rows"
+            "effective ground LoRA manifest is not sealed leo_weak-only"
         )
-    if str(manifest.get("adapter_state_sha256", "")) != _sha256_file(
+    if str(manifest.get("adapter_state_sha256", "")) != sha256_file(
         args.adapter_state
     ):
         raise ValueError("ground LoRA state hash mismatch")
-    if str(manifest.get("checkpoint_sha256", "")) != _sha256_file(args.ckpt):
+    if str(manifest.get("checkpoint_sha256", "")) != sha256_file(args.ckpt):
         raise ValueError("checkpoint hash mismatch")
 
-    scenarios = parse_sat_scenarios(str(args.sat_scenarios))
-    validate_formal_scenarios(scenarios)
     training_scenarios = tuple(
         str(value)
         for value in dict(manifest.get("hyperparameters", {})).get(
@@ -707,29 +765,34 @@ def main(argv: Sequence[str] | None = None) -> int:
     )
     if training_scenarios != FORMAL_LEO_WEAK_SCENARIOS:
         raise ValueError("ground training scenario tuple differs from formal leo_weak")
+    arrays_by_scenario, cache_set_manifest, cache_set_audit = (
+        load_source_validation_cache_set(args.source_cache_set)
+    )
+    train_indices, validation_indices, train_info, val_info = (
+        split_source_cache_receivers(
+            arrays_by_scenario,
+            train_receivers=str(args.source_train_rxs),
+            validation_receivers=str(args.source_val_rxs),
+            class_count=int(args.num_old_classes),
+        )
+    )
+    reference_arrays = arrays_by_scenario[FORMAL_LEO_WEAK_SCENARIOS[0]]
+    observed_source_txs = set(
+        np.asarray(reference_arrays["tx_ids"]).astype(str).tolist()
+    )
+    declared_source_txs = _receiver_tokens(str(manifest.get("source_tx_scope", "")))
+    if observed_source_txs != declared_source_txs:
+        raise ValueError(
+            "source cache TX scope differs from training manifest: "
+            f"observed={sorted(observed_source_txs)}, "
+            f"declared={sorted(declared_source_txs)}"
+        )
     device = torch.device(str(args.device) if torch.cuda.is_available() else "cpu")
-    train_ds, train_info = _dataset(
-        args,
-        receivers=str(args.source_train_rxs),
-        role="source_train_for_prototypes",
-        max_samples_per_tx=int(args.max_train_samples_per_tx),
-        seed=int(args.seed) + 101,
+    input_len = int(np.asarray(reference_arrays["leo_weak_iq"]).shape[-1])
+    base_model = _build_frozen_model(args.ckpt, input_len=input_len, device=device)
+    adapted_model = _build_frozen_model(
+        args.ckpt, input_len=input_len, device=device
     )
-    val_ds, val_info = _dataset(
-        args,
-        receivers=str(args.source_val_rxs),
-        role="source_receiver_holdout",
-        max_samples_per_tx=int(args.max_val_samples_per_tx),
-        seed=int(args.seed) + 211,
-    )
-    train_loader = DataLoader(
-        train_ds, batch_size=int(args.batch_size), shuffle=False, num_workers=0
-    )
-    val_loader = DataLoader(
-        val_ds, batch_size=int(args.batch_size), shuffle=False, num_workers=0
-    )
-    base_model = _build_model(args, train_ds, device, freeze=True)
-    adapted_model = _build_model(args, train_ds, device, freeze=True)
     state = torch.load(args.adapter_state, map_location="cpu")
     if not isinstance(state, dict):
         raise TypeError("ground LoRA state must be a tensor dictionary")
@@ -745,34 +808,35 @@ def main(argv: Sequence[str] | None = None) -> int:
     adapted_model.to(device).eval()
     prototypes = _leo_source_prototypes(
         base_model,
-        train_loader,
+        arrays_by_scenario,
+        train_indices,
         class_count=int(args.num_old_classes),
-        scenarios=scenarios,
-        args=args,
+        batch_size=int(args.batch_size),
         device=device,
     )
     scores, repeated_labels, extraction_audit, adapted_features = _heldout_scores(
         base_model,
         adapted_model,
-        val_loader,
+        arrays_by_scenario,
+        validation_indices,
         prototypes,
-        scenarios=scenarios,
-        args=args,
+        batch_size=int(args.batch_size),
         device=device,
     )
-    physical_labels = repeated_labels[: int(len(val_ds))]
+    physical_count = int(len(validation_indices))
+    physical_labels = repeated_labels[:physical_count]
     calibration_physical, evaluation_physical = stratified_physical_split(
         physical_labels
     )
     calibration_indices = _expanded_indices(
         calibration_physical,
-        physical_count=int(len(val_ds)),
-        scenario_count=len(scenarios),
+        physical_count=physical_count,
+        scenario_count=len(FORMAL_LEO_WEAK_SCENARIOS),
     )
     evaluation_indices = _expanded_indices(
         evaluation_physical,
-        physical_count=int(len(val_ds)),
-        scenario_count=len(scenarios),
+        physical_count=physical_count,
+        scenario_count=len(FORMAL_LEO_WEAK_SCENARIOS),
     )
     calibration_feature_rows = adapted_features[calibration_indices].reshape(
         -1, adapted_features.shape[-1]
@@ -785,8 +849,8 @@ def main(argv: Sequence[str] | None = None) -> int:
         adapted_features,
         physical_labels,
         calibration_physical,
-        physical_count=int(len(val_ds)),
-        scenario_count=len(scenarios),
+        physical_count=physical_count,
+        scenario_count=len(FORMAL_LEO_WEAK_SCENARIOS),
         source_mean=source_feature_mean,
         source_std=source_feature_std,
     )
@@ -795,8 +859,8 @@ def main(argv: Sequence[str] | None = None) -> int:
         physical_labels,
         calibration_physical,
         evaluation_physical,
-        physical_count=int(len(val_ds)),
-        scenario_count=len(scenarios),
+        physical_count=physical_count,
+        scenario_count=len(FORMAL_LEO_WEAK_SCENARIOS),
         selected=dict(symmetric_head_lock["selected"]),
         source_mean=source_feature_mean,
         source_std=source_feature_std,
@@ -882,6 +946,13 @@ def main(argv: Sequence[str] | None = None) -> int:
     )
     gates = {
         "receiver_holdout_disjoint": receiver_audit["disjoint"] is True,
+        "sealed_source_cache_verified": (
+            cache_set_audit.get("phase2_sample_view_policy")
+            == PHASE2_SAMPLE_VIEW_POLICY
+            and cache_set_audit.get("clean_sample_access") is False
+            and cache_set_manifest.get("clean_derived_signal_access") is False
+            and cache_set_manifest.get("artifact_stage") == LEO_WEAK_CACHE_STAGE
+        ),
         "no_target_data_in_training": manifest.get(
             "target_receiver_data_used_for_training"
         )
@@ -931,14 +1002,26 @@ def main(argv: Sequence[str] | None = None) -> int:
         fft_dim=np.asarray([96], dtype=np.int64),
         fft_weight=np.asarray([2.0], dtype=np.float32),
     )
+    source_cache_contract = {
+        "source_leo_weak_cache_set_manifest": str(args.source_cache_set.resolve()),
+        "source_leo_weak_cache_set_manifest_sha256": str(
+            cache_set_audit["sha256"]
+        ),
+        "source_leo_weak_cache_set_audit": cache_set_audit,
+    }
     result = _serializable({
         "schema": "cvs_ground_source_lora_multiview_validation_v1",
-        "checkpoint_sha256": _sha256_file(args.ckpt),
-        "adapter_state_sha256": _sha256_file(args.adapter_state),
-        "training_manifest_sha256": _sha256_file(args.training_manifest),
+        "phase2_sample_view_policy": PHASE2_SAMPLE_VIEW_POLICY,
+        "clean_sample_access": False,
+        "clean_derived_signal_access": False,
+        "validation_input_stage": LEO_WEAK_CACHE_STAGE,
+        **source_cache_contract,
+        "checkpoint_sha256": sha256_file(args.ckpt),
+        "adapter_state_sha256": sha256_file(args.adapter_state),
+        "training_manifest_sha256": sha256_file(args.training_manifest),
         "source_feature_statistics": {
             "path": str(source_stats_path),
-            "sha256": _sha256_file(source_stats_path),
+            "sha256": sha256_file(source_stats_path),
             "feature_kind": "normalized_z_id_plus_fft96_weight2",
             "feature_dim": int(source_feature_mean.size),
             "fft_dim": 96,
@@ -950,16 +1033,15 @@ def main(argv: Sequence[str] | None = None) -> int:
         "failed_gates": failed,
         "gates": gates,
         "receiver_holdout": receiver_audit,
-        "source_train_dataset": train_info,
-        "source_validation_dataset": val_info,
+        "source_train_cache_slice": train_info,
+        "source_validation_cache_slice": val_info,
         "physical_split": {
             "calibration_physical_count": int(len(calibration_physical)),
             "evaluation_physical_count": int(len(evaluation_physical)),
             "same_physical_sample_cross_split": False,
         },
-        "scenarios": scenarios,
-        "clean_samples_used_for_validation": False,
-        "prototype_reference_view": "rotating_formal_leo_weak_only",
+        "scenarios": list(FORMAL_LEO_WEAK_SCENARIOS),
+        "prototype_reference_view": "sealed_formal_leo_weak_only",
         "metrics": metrics,
         "calibration": calibration,
         "symmetric_head_lock": symmetric_head_lock,
@@ -979,6 +1061,9 @@ def main(argv: Sequence[str] | None = None) -> int:
         "extraction_audit": extraction_audit,
         "permissions": {
             "source_validation_labels_used": True,
+            "phase1_sealed_leo_weak_cache_only": True,
+            "clean_sample_access": False,
+            "clean_derived_signal_access": False,
             "target_support_used": False,
             "target_query_features_used": False,
             "target_query_labels_used": False,
@@ -997,8 +1082,13 @@ def main(argv: Sequence[str] | None = None) -> int:
         {
             "source_validation_pass": source_validation_pass,
             "source_validation_manifest": str(validation_path),
-            "source_validation_manifest_sha256": _sha256_file(validation_path),
-            "training_manifest_sha256": _sha256_file(args.training_manifest),
+            "source_validation_manifest_sha256": sha256_file(validation_path),
+            "training_manifest_sha256": sha256_file(args.training_manifest),
+            "phase2_sample_view_policy": PHASE2_SAMPLE_VIEW_POLICY,
+            "clean_sample_access": False,
+            "clean_derived_signal_access": False,
+            "validation_input_stage": LEO_WEAK_CACHE_STAGE,
+            **source_cache_contract,
             "source_validation_failed_gates": failed,
             "source_validation_receiver_scope": str(args.source_val_rxs),
             "source_validation_permissions": result["permissions"],

@@ -1,9 +1,9 @@
 #!/usr/bin/env python
-"""Train a source-only IQ pre-adapter before a frozen Phase1 backbone.
+"""Train source-only lightweight adapters around a frozen Phase1 backbone.
 
-The adapter is trained with source old clean/LEO pairs only. Target receiver
-old/unknown rows are exported for evaluation, but are not used in training or
-threshold calibration.
+The formal effective-feature route consumes only sealed post-channel LEO_weak
+source caches.  Legacy paired diagnostics remain separate and cannot enter the
+formal source-only promotion path.
 """
 
 from __future__ import annotations
@@ -20,7 +20,7 @@ import numpy as np
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-from torch.utils.data import DataLoader
+from torch.utils.data import DataLoader, Dataset
 
 CODE_ROOT = Path(__file__).resolve().parents[1]
 REPO_ROOT = CODE_ROOT.parent
@@ -33,6 +33,11 @@ from cvsrffi.checkpoint_loading import build_exact_ssdg_model_from_checkpoint  #
 from cvsrffi.identity_only_forward import (  # noqa: E402
     can_use_identity_only_forward,
     identity_only_feature_forward,
+)
+from cvsrffi.leo_weak_cache import (  # noqa: E402
+    FORMAL_LEO_WEAK_SCENARIOS,
+    PHASE2_SAMPLE_VIEW_POLICY,
+    load_verified_leo_weak_cache_set,
 )
 from cvsrffi.tensors import make_torch_generator  # noqa: E402
 from cvsrffi.wisig_fewshot_payload import canonical_tx_id, parse_tx_id_list  # noqa: E402
@@ -61,6 +66,35 @@ def _sha256_file(path: str | Path) -> str:
     return digest.hexdigest()
 
 
+FORMAL_RX_LIGHT5_ORDER = (
+    "rx_base",
+    "rx_shift_m2",
+    "rx_shift_p2",
+    "rx_cfo_m1e4",
+    "rx_cfo_p1e4",
+)
+
+
+def _lazy_formal_training_view_pair(
+    rows: torch.Tensor, extra_index: int
+) -> tuple[tuple[str, torch.Tensor], tuple[str, torch.Tensor]]:
+    """Build base plus one rotating view without pre-materializing rx_light5."""
+
+    if int(extra_index) not in (1, 2, 3, 4):
+        raise ValueError("formal extra receive-view index must be in [1,4]")
+    name = FORMAL_RX_LIGHT5_ORDER[int(extra_index)]
+    if name == "rx_shift_m2":
+        extra = torch.roll(rows, shifts=-2, dims=-1)
+    elif name == "rx_shift_p2":
+        extra = torch.roll(rows, shifts=2, dims=-1)
+    else:
+        cfo_views = dict(_satellite_tta_views(rows, "rx_cfo3"))
+        if tuple(cfo_views) != ("rx_base", "rx_cfo_m1e4", "rx_cfo_p1e4"):
+            raise ValueError("rx_cfo3 definition drift")
+        extra = cfo_views[name]
+    return (("rx_base", rows), (name, extra))
+
+
 class IQResidualPreAdapter(nn.Module):
     def __init__(self, hidden: int = 32, alpha: float = 0.25) -> None:
         super().__init__()
@@ -84,6 +118,59 @@ class IQResidualPreAdapter(nn.Module):
 class IdentityPreAdapter(nn.Module):
     def forward(self, x: torch.Tensor) -> torch.Tensor:
         return x
+
+
+class SealedLeoWeakSourceDataset(Dataset):
+    """Source rows from a verified Phase1 post-channel cache set."""
+
+    def __init__(
+        self,
+        arrays_by_scenario: dict[str, dict[str, np.ndarray]],
+        *,
+        tx_labels: Sequence[str],
+    ) -> None:
+        labels = tuple(str(value) for value in tx_labels)
+        if not labels or len(labels) != len(set(labels)):
+            raise ValueError("source tx_labels must be nonempty and unique")
+        class_by_tx = {label: index for index, label in enumerate(labels)}
+        iq_parts: list[np.ndarray] = []
+        class_parts: list[np.ndarray] = []
+        scenario_parts: list[np.ndarray] = []
+        sample_id_parts: list[np.ndarray] = []
+        for scenario in FORMAL_LEO_WEAK_SCENARIOS:
+            arrays = arrays_by_scenario[str(scenario)]
+            observed = np.asarray(arrays["tx_ids"]).astype(str)
+            if set(observed.tolist()) != set(labels):
+                raise ValueError(
+                    f"source TX set drift for {scenario}: "
+                    f"{sorted(set(observed.tolist()))}!={sorted(labels)}"
+                )
+            iq_parts.append(np.asarray(arrays["leo_weak_iq"], dtype=np.float32))
+            class_parts.append(
+                np.asarray([class_by_tx[value] for value in observed], dtype=np.int64)
+            )
+            scenario_parts.append(np.asarray(arrays["sat_scenarios"]).astype(str))
+            sample_id_parts.append(np.asarray(arrays["sample_ids"]).astype(str))
+        self.iq = np.concatenate(iq_parts, axis=0)
+        self.class_ids = np.concatenate(class_parts, axis=0)
+        self.scenarios = np.concatenate(scenario_parts, axis=0)
+        self.sample_ids = np.concatenate(sample_id_parts, axis=0)
+        self.tx_labels = labels
+
+    def __len__(self) -> int:
+        return int(len(self.iq))
+
+    def __getitem__(self, index: int):
+        return (
+            torch.from_numpy(self.iq[int(index)]),
+            torch.tensor(int(self.class_ids[int(index)]), dtype=torch.long),
+            torch.tensor(0, dtype=torch.long),
+            {
+                "sat_scenario": str(self.scenarios[int(index)]),
+                "sample_id": str(self.sample_ids[int(index)]),
+                "phase2_sample_view_policy": PHASE2_SAMPLE_VIEW_POLICY,
+            },
+        )
 
 
 def _apply_input_repair(x: torch.Tensor, mode: str) -> torch.Tensor:
@@ -194,6 +281,66 @@ def _configure_model_adapter(model: nn.Module, mode: str) -> dict[str, Any]:
 
 
 def _make_source_loader(args: argparse.Namespace):
+    if str(args.model_adapter_mode).strip().lower() == "lora_effective_feature":
+        cache_set_path = Path(str(args.source_leo_weak_cache_set_manifest))
+        arrays_by_scenario, cache_set_manifest, cache_set_audit = (
+            load_verified_leo_weak_cache_set(
+                cache_set_path,
+                expected_scope="source_train",
+                allowed_roles={"source"},
+            )
+        )
+        source_tx_labels = parse_tx_id_list(str(args.source_tx_ids))
+        if len(source_tx_labels) != int(args.num_old_classes):
+            raise ValueError(
+                "source TX label count must equal num_old_classes for sealed training"
+            )
+        source_ds = SealedLeoWeakSourceDataset(
+            arrays_by_scenario,
+            tx_labels=source_tx_labels,
+        )
+        expected_rxs = set(parse_tx_id_list(str(args.source_rxs)))
+        observed_rxs = set(
+            np.asarray(
+                arrays_by_scenario[FORMAL_LEO_WEAK_SCENARIOS[0]]["rx_ids"]
+            )
+            .astype(str)
+            .tolist()
+        )
+        if observed_rxs != expected_rxs:
+            raise ValueError(
+                "sealed source receiver scope does not match --source_rxs: "
+                f"{sorted(observed_rxs)}!={sorted(expected_rxs)}"
+            )
+        if int(source_ds.iq.shape[-1]) != int(args.wisig_out_len):
+            raise ValueError(
+                "sealed source LEO_weak input length does not match wisig_out_len"
+            )
+        source_info = {
+            "role": "source",
+            "input_stage": "phase1_offline_prechannel_export",
+            "phase2_sample_view_policy": PHASE2_SAMPLE_VIEW_POLICY,
+            "clean_sample_access": False,
+            "clean_derived_signal_access": False,
+            "cache_set_manifest": str(cache_set_path),
+            "cache_set_manifest_sha256": str(cache_set_audit["sha256"]),
+            "cache_set_manifest_payload": cache_set_manifest,
+            "cache_set_audit": cache_set_audit,
+            "tx_labels": source_tx_labels,
+            "size": len(source_ds),
+        }
+        args._source_leo_weak_cache_info = source_info
+        return (
+            DataLoader(
+                source_ds,
+                batch_size=int(args.batch_size),
+                shuffle=True,
+                num_workers=0,
+                drop_last=False,
+            ),
+            source_ds,
+            source_info,
+        )
     source_ds, source_info = _build_wisig_dataset(
         pkl_path=str(args.wisig_pkl),
         tx_spec=str(args.source_tx_ids),
@@ -264,21 +411,18 @@ def _leo_proto_from_loader(
     loader: DataLoader,
     args: argparse.Namespace,
     device: torch.device,
-    scenarios: Sequence[str],
 ) -> torch.Tensor:
-    """Build source prototypes from rotating formal leo_weak views only."""
+    """Build source prototypes directly from sealed post-channel LEO_weak rows."""
 
     feat_parts: list[torch.Tensor] = []
     label_parts: list[torch.Tensor] = []
-    generator = make_torch_generator(device, int(args.seed) + 1601)
     with torch.no_grad():
-        for batch_index, (x, y, _d, _meta) in enumerate(loader):
+        for x, y, _d, meta in loader:
             x = x.to(device, non_blocking=True)
-            scenario = _scenario_for_step(scenarios, batch_index)
-            x_sat, _ = apply_sat_channel_for_scenario(
-                x, scenario, args, gen=generator, return_meta=False
-            )
-            z, _ = _feature_forward(model, x_sat, str(args.feature_name))
+            policy_values = meta.get("phase2_sample_view_policy", [])
+            if any(str(value) != PHASE2_SAMPLE_VIEW_POLICY for value in policy_values):
+                raise ValueError("source loader exposed a non-LEO_weak-only row")
+            z, _ = _feature_forward(model, x, str(args.feature_name))
             feat_parts.append(z.detach())
             label_parts.append(y.to(device).long())
     feats = torch.cat(feat_parts, dim=0)
@@ -596,16 +740,57 @@ def train_adapter(
     scenarios = parse_sat_scenarios(str(args.sat_scenarios))
     _validate_star_ground_impl(str(args.star_ground_channel_impl), scenarios, field="sat_scenarios")
     model_adapter_mode = str(args.model_adapter_mode).strip().lower()
+    formal_effective = model_adapter_mode == "lora_effective_feature"
+    reference_identity_weight = float(
+        args.leo_reference_identity_weight
+        if formal_effective
+        else args.clean_identity_weight
+    )
+    reference_cos_weight = float(
+        args.leo_reference_cos_weight if formal_effective else args.clean_cos_weight
+    )
+    reference_margin_weight = float(
+        args.leo_reference_margin_weight
+        if formal_effective
+        else args.clean_feature_margin_weight
+    )
+    if (
+        model_adapter_mode == "lora_effective_feature"
+        and tuple(str(value) for value in scenarios) != FORMAL_LEO_WEAK_SCENARIOS
+    ):
+        raise ValueError(
+            "formal effective-feature training requires the exact ordered LEO_weak scenarios"
+        )
     proto_loader = DataLoader(source_loader.dataset, batch_size=int(args.batch_size), shuffle=False, num_workers=0, drop_last=False)
     clean_protos = (
         _leo_proto_from_loader(
-            teacher_model, proto_loader, args, device, scenarios
+            teacher_model, proto_loader, args, device
         )
         if model_adapter_mode == "lora_effective_feature"
         else _proto_from_loader(teacher_model, proto_loader, args, device)
     )
     class_loss_weights = _parse_class_loss_weights(args, device)
-    proxy_loader, proxy_info = _make_proxy_unknown_train_loader(args)
+    proxy_weight_values = (
+        float(args.proxy_unknown_separation_weight),
+        float(args.proxy_unknown_supcon_weight),
+        float(args.proxy_unknown_proto_ce_weight),
+        float(args.proxy_unknown_pair_margin_weight),
+        float(args.proxy_unknown_old_margin_weight),
+        float(args.proxy_unknown_hard_pair_margin_weight),
+        float(args.proxy_unknown_hard_old_margin_weight),
+    )
+    if formal_effective:
+        # Fail before the legacy ManyTx loader is even called.  The formal
+        # effective-feature route is source LEO_weak only, so raw proxy data
+        # must be unreachable rather than loaded and rejected afterwards.
+        if any(value != 0.0 for value in proxy_weight_values):
+            raise ValueError(
+                "formal lora_effective_feature forbids proxy-receiver training; "
+                "all proxy_unknown_* weights must be zero"
+            )
+        proxy_loader, proxy_info = None, {}
+    else:
+        proxy_loader, proxy_info = _make_proxy_unknown_train_loader(args)
     hard_pairs = _parse_hard_pair_ids(
         str(args.proxy_unknown_hard_pair_ids),
         device,
@@ -648,10 +833,7 @@ def train_adapter(
                 "formal lora_effective_feature requires no IQ input adapter and raw leo_weak input"
             )
         if model_adapter_mode == "lora_effective_feature" and proxy_loader is not None:
-            raise ValueError(
-                "formal lora_effective_feature forbids proxy-receiver training; "
-                "all proxy_unknown_* weights must be zero"
-            )
+            raise RuntimeError("formal proxy-loader reachability guard failed")
         if model_adapter_mode == "lora_effective_feature" and any(
             float(value) <= 0.0
             for value in (
@@ -705,14 +887,32 @@ def train_adapter(
         for k_value in nested_k_values:
             sums[f"nested_k_{k_value}"] = 0.0
         count = 0
-        for x, y, _d, _meta in source_loader:
+        for x, y, _d, meta in source_loader:
             x = x.to(device, non_blocking=True)
             y = y.to(device).long()
             sample_weights = class_loss_weights.index_select(0, y) if class_loss_weights is not None else None
             scenario = _scenario_for_step(scenarios, step)
             step += 1
-            with torch.no_grad():
-                x_sat, _ = apply_sat_channel_for_scenario(x, scenario, args, gen=gen, return_meta=False)
+            if model_adapter_mode == "lora_effective_feature":
+                policy_values = meta.get("phase2_sample_view_policy", [])
+                if any(
+                    str(value) != PHASE2_SAMPLE_VIEW_POLICY
+                    for value in policy_values
+                ):
+                    raise ValueError(
+                        "formal effective-feature training received a nonsealed row"
+                    )
+                observed_scenarios = {
+                    str(value) for value in meta.get("sat_scenario", [])
+                }
+                if not observed_scenarios.issubset(set(FORMAL_LEO_WEAK_SCENARIOS)):
+                    raise ValueError("formal source batch contains an invalid scenario")
+                x_sat = x
+            else:
+                with torch.no_grad():
+                    x_sat, _ = apply_sat_channel_for_scenario(
+                        x, scenario, args, gen=gen, return_meta=False
+                    )
             x_sat_in = _apply_input_repair(x_sat, str(args.input_repair))
             with torch.no_grad():
                 teacher_input = (
@@ -724,11 +924,10 @@ def train_adapter(
                     teacher_model, teacher_input, str(args.feature_name)
                 )
             if model_adapter_mode in lora_scope_by_mode:
-                rx_views = _satellite_tta_views(x_sat_in, "rx_light5")
-                if len(rx_views) != 5:
-                    raise RuntimeError("rx_light5 must provide exactly five receive views")
                 extra_index = 1 + int((step - 1) % 4)
-                selected_views = (rx_views[0], rx_views[extra_index])
+                selected_views = _lazy_formal_training_view_pair(
+                    x_sat_in, extra_index
+                )
                 z_selected: list[torch.Tensor] = []
                 logits_selected: list[torch.Tensor] = []
                 for _view_name, x_view in selected_views:
@@ -776,7 +975,7 @@ def train_adapter(
                 F.softmax(logits_clean_teacher / max(float(args.distill_temperature), 1e-6), dim=1),
                 reduction="batchmean",
             ) * (float(args.distill_temperature) ** 2)
-            clean_loss = clean_mse + float(args.clean_cos_weight) * clean_cos
+            clean_loss = clean_mse + reference_cos_weight * clean_cos
             feat_margin = _proto_margin_loss_weighted(z_clean, z_rep, y, clean_protos, float(args.feature_margin_tolerance), sample_weights)
             clean_margin = _proto_margin_loss_weighted(z_clean, z_clean_rep, y, clean_protos, float(args.feature_margin_tolerance), sample_weights)
             relation = relation_gram_preservation_loss(z_rep, z_clean)
@@ -830,9 +1029,9 @@ def train_adapter(
                 float(args.mse_weight) * mse
                 + float(args.cos_weight) * cos
                 + float(args.proto_ce_weight) * ce
-                + float(args.clean_identity_weight) * clean_loss
+                + reference_identity_weight * clean_loss
                 + float(args.feature_margin_weight) * feat_margin
-                + float(args.clean_feature_margin_weight) * clean_margin
+                + reference_margin_weight * clean_margin
                 + float(args.proxy_unknown_separation_weight) * proxy_unknown_sep
                 + float(args.proxy_unknown_supcon_weight) * proxy_unknown_supcon
                 + float(args.proxy_unknown_proto_ce_weight) * proxy_unknown_proto_ce
@@ -899,9 +1098,19 @@ def train_adapter(
             "cos": float(args.cos_weight),
             "proto_ce": float(args.proto_ce_weight),
             "logit_ce": float(args.logit_ce_weight),
-            "clean_identity": float(args.clean_identity_weight),
+            "leo_reference_identity": (
+                reference_identity_weight if formal_effective else None
+            ),
+            "legacy_clean_identity": (
+                None if formal_effective else reference_identity_weight
+            ),
             "feature_margin": float(args.feature_margin_weight),
-            "clean_feature_margin": float(args.clean_feature_margin_weight),
+            "leo_reference_feature_margin": (
+                reference_margin_weight if formal_effective else None
+            ),
+            "legacy_clean_feature_margin": (
+                None if formal_effective else reference_margin_weight
+            ),
             "proxy_unknown_separation": float(args.proxy_unknown_separation_weight),
             "proxy_unknown_max_cos": float(args.proxy_unknown_max_cos),
             "proxy_unknown_supcon": float(args.proxy_unknown_supcon_weight),
@@ -1009,9 +1218,21 @@ def _write_ground_lora_state_and_manifest(
             "ground LoRA plus deployment head exceeds the 256KiB state cap"
         )
     state_sha256 = _sha256_file(state_path)
-    source_dataset_path = Path(str(args.wisig_pkl)).resolve()
-    if not source_dataset_path.is_file():
-        raise FileNotFoundError(f"source dataset is missing: {source_dataset_path}")
+    source_cache_info = dict(getattr(args, "_source_leo_weak_cache_info", {}) or {})
+    source_dataset_path: Path | None = None
+    if model_adapter_mode == "lora_effective_feature":
+        if (
+            source_cache_info.get("phase2_sample_view_policy")
+            != PHASE2_SAMPLE_VIEW_POLICY
+            or source_cache_info.get("clean_sample_access") is not False
+            or source_cache_info.get("clean_derived_signal_access") is not False
+            or not source_cache_info.get("cache_set_manifest_sha256")
+        ):
+            raise ValueError("formal ground LoRA lacks verified source LEO_weak cache proof")
+    else:
+        source_dataset_path = Path(str(args.wisig_pkl)).resolve()
+        if not source_dataset_path.is_file():
+            raise FileNotFoundError(f"source dataset is missing: {source_dataset_path}")
     proxy_info = dict(train_info.get("proxy_unknown_train") or {})
     proxy_weight_sum = float(
         args.proxy_unknown_separation_weight
@@ -1028,7 +1249,27 @@ def _write_ground_lora_state_and_manifest(
             if model_adapter_mode == "lora_effective_feature"
             else "ground_source_full_feature_lora_v1"
         ),
-        "stage": "Stage2-C_prequery_source_training",
+        "stage": (
+            "Phase1_offline_ground_adapter_training"
+            if model_adapter_mode == "lora_effective_feature"
+            else "Stage2-C_prequery_source_training_diagnostic"
+        ),
+        "training_input_stage": (
+            "phase1_offline_prechannel_export"
+            if model_adapter_mode == "lora_effective_feature"
+            else "legacy_runtime_dataset"
+        ),
+        "phase2_sample_view_policy": (
+            PHASE2_SAMPLE_VIEW_POLICY
+            if model_adapter_mode == "lora_effective_feature"
+            else None
+        ),
+        "clean_sample_access": (
+            False if model_adapter_mode == "lora_effective_feature" else None
+        ),
+        "clean_derived_signal_access": (
+            False if model_adapter_mode == "lora_effective_feature" else None
+        ),
         "source_only": True,
         "support_only": False,
         "query_update_forbidden": True,
@@ -1055,9 +1296,24 @@ def _write_ground_lora_state_and_manifest(
         "proxy_loss_weight_sum": proxy_weight_sum,
         "source_receiver_scope": str(args.source_rxs),
         "source_tx_scope": str(args.source_tx_ids),
-        "source_dataset": str(source_dataset_path),
-        "source_dataset_sha256": _sha256_file(source_dataset_path),
-        "source_dataset_size_bytes": int(source_dataset_path.stat().st_size),
+        "source_dataset": (
+            None if source_dataset_path is None else str(source_dataset_path)
+        ),
+        "source_dataset_sha256": (
+            None if source_dataset_path is None else _sha256_file(source_dataset_path)
+        ),
+        "source_dataset_size_bytes": (
+            None if source_dataset_path is None else int(source_dataset_path.stat().st_size)
+        ),
+        "source_leo_weak_cache_set_manifest": source_cache_info.get(
+            "cache_set_manifest"
+        ),
+        "source_leo_weak_cache_set_manifest_sha256": source_cache_info.get(
+            "cache_set_manifest_sha256"
+        ),
+        "source_leo_weak_cache_set_audit": source_cache_info.get(
+            "cache_set_audit"
+        ),
         "proxy_receiver_scope": str(args.proxy_unknown_rxs),
         "proxy_tx_scope": str(args.proxy_unknown_tx_ids),
         "epochs": int(args.epochs),
@@ -1630,6 +1886,15 @@ def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
     p.add_argument("--target_old_tx_ids", default="0,1,2,3,4,5")
     p.add_argument("--source_rxs", default="0,1,2,3,4,5,6")
     p.add_argument("--source_days", default=None)
+    p.add_argument(
+        "--source_leo_weak_cache_set_manifest",
+        type=Path,
+        default=None,
+        help=(
+            "required sealed Phase1 source_train LEO_weak cache-set manifest for "
+            "formal lora_effective_feature training"
+        ),
+    )
     p.add_argument("--proxy_unknown_tx_ids", default="9-1,8-3,8-18,8-13,8-1,7-11,7-10,6-6,6-1,5-5,4-11,4-1,3-8,3-18,3-13,20-8")
     p.add_argument("--proxy_unknown_rxs", default="1-1,1-19,14-7,18-2,19-2,2-1")
     p.add_argument("--wisig_equalized", default="1")
@@ -1720,8 +1985,26 @@ def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
     p.add_argument("--class_loss_weights", default="")
     p.add_argument("--clean_identity_weight", type=float, default=8.0)
     p.add_argument("--clean_cos_weight", type=float, default=1.0)
+    p.add_argument(
+        "--leo_reference_identity_weight",
+        type=float,
+        default=None,
+        help="same sealed LEO_weak teacher-feature anchor weight for the formal route",
+    )
+    p.add_argument(
+        "--leo_reference_cos_weight",
+        type=float,
+        default=None,
+        help="cosine term inside the same-LEO reference anchor",
+    )
     p.add_argument("--feature_margin_weight", type=float, default=2.0)
     p.add_argument("--clean_feature_margin_weight", type=float, default=2.0)
+    p.add_argument(
+        "--leo_reference_margin_weight",
+        type=float,
+        default=None,
+        help="same sealed LEO_weak prototype-margin preservation weight",
+    )
     p.add_argument("--feature_margin_tolerance", type=float, default=0.01)
     p.add_argument("--proxy_unknown_separation_weight", type=float, default=0.0)
     p.add_argument("--proxy_unknown_max_cos", type=float, default=0.18)
@@ -1775,6 +2058,27 @@ def _validate_source_only_ground_lora_mode(args: argparse.Namespace) -> None:
             "target support/query export is forbidden before source validation "
             "and candidate lock"
         )
+    if effective_ground_lora:
+        cache_path = getattr(args, "source_leo_weak_cache_set_manifest", None)
+        if cache_path is None or not Path(cache_path).is_file():
+            raise ValueError(
+                "formal lora_effective_feature requires an existing "
+                "--source_leo_weak_cache_set_manifest"
+            )
+        missing_reference_weights = [
+            name
+            for name in (
+                "leo_reference_identity_weight",
+                "leo_reference_cos_weight",
+                "leo_reference_margin_weight",
+            )
+            if getattr(args, name, None) is None
+        ]
+        if missing_reference_weights:
+            raise ValueError(
+                "formal lora_effective_feature requires explicit same-LEO "
+                f"reference weights: {missing_reference_weights}"
+            )
     if bool(args.source_only_ground_lora) and not effective_ground_lora:
         raise ValueError(
             "--source_only_ground_lora is reserved for lora_effective_feature"
@@ -1801,7 +2105,9 @@ def main(argv: Sequence[str] | None = None) -> int:
         source_loader, source_ds, _source_info = _make_source_loader(args)
         model = _build_model(args, source_ds, device, freeze=True)
         teacher_model = _build_model(args, source_ds, device, freeze=True)
-    adapter, train_info = train_adapter(args, model, teacher_model, source_loader, device)
+        adapter, train_info = train_adapter(
+            args, model, teacher_model, source_loader, device
+        )
     ground_lora_artifacts = _write_ground_lora_state_and_manifest(
         args, model, train_info
     )
