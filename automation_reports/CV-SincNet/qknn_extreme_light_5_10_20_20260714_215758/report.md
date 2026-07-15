@@ -332,3 +332,68 @@ cross-view LoRA完成20epoch：leave-one-view-out CE由3.24263降至1.31834，su
 0epoch head完成，结果为`old=72.50%`、floor`=51.67%`、`new20=83.50%`、`H=77.57%`、最低新类`=46.67%`。对比普通LoRA v1的`73.06/51.67/83.33/77.80%`，cross-view目标只使new20提高0.17pp，floor持平，old下降0.56pp，未达到预注册的old/floor联合改善gate。其组合部署资源为12,800个LoRA参数、52,224B总状态、19,456MAC/query，LoRA适配4.998s、head闭式适配约1.04ms、query1-view；完整head日志6行、3条有限trace，错误扫描为0，权限审计仍为support-only、无query拟合、无角色/配额Oracle。
 
 该路线不扩第二seed、5/10类、K5、其它receiver或确认seed。冻结ADV3B02范围内的合法开发空间已经覆盖不同输入位置、不同adapter位置、不同训练损失、不同head几何和同view统计，但old/floor始终存在两位数缺口；继续在同一K10 cell调权重会形成不受控的query选模。当前必须在改变“冻结ADV3B02原始参数”默认边界前停止，并取得用户对source-only基座改进的明确授权。
+
+## 2026-07-15星上训练/部署资源预算与adapter60压缩结论
+
+用户已明确允许合法support参与backbone侧适配，但要求新增模块参数小、可在地面预训练、上星后可快速适配。本节只定义资源口径和下一轮实验优先级，不宣称已达成性能目标。
+
+### 历史完整体的资源问题
+
+| 组件 | 已核实规模 | 星上问题 | 处置 |
+|---|---:|---|---|
+|`id_norm_late_feature`|289,685个更新参数；FP16权重579,370B，约565.8KiB|60epoch训练时还需梯度、优化器状态和backbone激活，不属于极轻型星上适配|不直接上星训练|
+|60epoch|289,685参数连续更新60轮|快速适应延迟过高；epoch还会随support规模改变|改为最多5–10epoch并同时限制optimizer step|
+|5-view TTA|每个query执行5次ADV3B02与FFT前向|持续推理延迟、能耗和激活读写近似放大5倍|上星query固定1-view；5-view只允许作地面teacher|
+|FFT96|长度256的同view FFT后保留96维；FP16为192B/样本|计算和状态远小于backbone与5-view，现有消融又表明它对冻结特征有用|第一轮保留，不把它当作首要压缩对象|
+|场景筛选|当前正式矩阵中每类覆盖三场景，实际筛选次数为0|无性能收益，却增加分支与发布风险|删除|
+|角色/类别配额Hungarian|使用query的old/new角色与整批类别数量先验|核心问题不是算力，而是单星逐样本部署不可获得该Oracle|正式路线禁用|
+
+### 三档资源门槛
+
+| 口径 | 首选档 | 可接受上限 | 超限即不再称为极轻型 |
+|---|---:|---:|---:|
+|ADV3B02原参数更新|0|0|>0|
+|backbone侧新增adapter|1,280–4,096|12,800|50,000|
+|包含分类head的总可训练参数|≤11,034|≤20,000|>50,000|
+|部署持久状态|≤36KiB|≤64KiB|>128KiB|
+|target-support适配|3–5epoch且≤50 optimizer step|≤10epoch且≤100 step|>20epoch|
+|query物理view|1|1|>1|
+|新增决策MAC/query|≤12k|≤20k|>50k|
+|峰值训练显存|≤128MiB|≤256MiB|>512MiB|
+
+其中“总可训练参数≤11,034”由最多4,096个backbone侧adapter参数和已有对角余弦head的6,938个参数组成。该组合的adapter FP16权重为8,192B，head FP32状态为27,752B，合计35,944B，约35.1KiB。训练时建议使用SGD或无动量SGD，避免Adam的两组FP32一阶/二阶状态成为星上内存主项。
+
+### 建议的具体更新参数
+
+| 参数 | 首轮固定值 | 理由 |
+|---|---:|---|
+|模块|ADV3B02后段pooled/projection位置的identity-init FiLM/IA3|在backbone内改变特征分布，但不更新原权重；避免在高分辨率时序特征图上增加MAC|
+|插入点|4个后段位置|若单点通道不超过256，scale+bias总参数不超过`4×2×256=2,048`|
+|adapter硬上限|4,096|允许加入极少量gate，仍比历史289,685个更新参数少70.7倍|
+|adapter初始化|scale=0,bias=0|使初始前向与严格ADV3B02逐点一致|
+|target适配epoch|5|相对60epoch减少91.7%；如第3epoch后support-only监控无改善可提前停止|
+|optimizer step|上限50|使用梯度累积将一个全类均衡support pass合并为1次更新，不再只用epoch描述资源|
+|optimizer|SGD，lr=`3e-3`，weight decay=`1e-4`，gradient clip=`1.0`|首轮避免Adam状态；学习率只由开发support协议预注册|
+|support view|每个epoch对每个物理support只采样1个预注册view|三场景轮换或确定性采样，不在每次step同时堆叠3–5个view|
+|cross-view正则|每4个optimizer step启用1次|将平均support前向开销控制在约1.25-view等效，而不是3–5-view|
+|query|1-view+1次FFT96|消除持续5-view TTA|
+|head|先用0epoch prototype作资源下界；性能不足时才启用5epoch对角余弦head|不在第一次就同时打开两个可训练模块|
+
+### 5-view与FFT96的压缩方式
+
+5-view不应直接删掉其中的鲁棒性信息，而应改成“地面teacher、星上student”：地面使用历史5-view完整体生成软label或中间特征目标，只训练上述2k–4k的FiLM/IA3 student；上星后只携带student参数，query固定1-view。这一设计将历史5-view的计算留在地面，同时保留将其知识迁移给单view模型的可能性。
+
+FFT96暂不降维。在20新类K10中，注册类总数为26，物理support为260条。`z_id160+FFT96`的单view support cache为`260×256×2=133,120B`，约130KiB FP16；转为逐维INT8后约65KiB。因此星上不应常驻三个FP16 support view，而应采用单view INT8 cache或streaming读入。FFT32只作后续独立消融，在证明不损害old/floor前不作默认。
+
+### 预计压缩比
+
+| 对比 | 参数压缩 | epoch压缩 | 持续view压缩 | 参数更新量压缩 |
+|---|---:|---:|---:|---:|
+|历史289,685参数×60epoch×5-view→FiLM4,096×5epoch×1-view|70.7倍|12倍|5倍|848.7倍|
+|历史→已有rank8 LoRA12,800×10epoch×1-view|22.6倍|6倍|5倍|135.8倍|
+
+“参数更新量压缩”按`trainable_params×epoch`计算，不等于端到端wall-clock加速，因为冻结backbone的前向/反向激活仍占主要计算。实际星上合格性必须在目标载荷上补测功耗、延迟和峰值RAM；以上数字是本项目的工程准入门槛，不是所有卫星平台的通用标准。
+
+### 开发决策
+
+下一轮不直接复制adapter60，也不将已失败的20epoch LoRA简单改为5epoch。先实现身份初始化的2k–4k后段FiLM/IA3，在地面用5-view teacher做预训练/蒸馏，再使用合法target support执行最多5epoch、50次更新的快速适配；单cell仍固定`8-8/new20/seed713101/K10`，query保持1-view。只有old和floor同时超过当前最强合法轻量row，才允许增加至rank2/4 LoRA或扩展开发矩阵。
