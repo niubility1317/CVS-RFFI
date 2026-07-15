@@ -252,8 +252,10 @@ def calibrate_adaptive_rxlight_tta(
     shift3_min_score_grid: Sequence[float] | None = None,
     fusion_std_penalty_grid: Sequence[float] = (0.0, 0.1, 0.25),
     max_accuracy_drop_pp: float = 1.0,
+    max_mean_backbone_forwards: float | None = None,
+    min_extra_view_rate: float = 0.0,
 ) -> dict[str, object]:
-    """Select the cheapest source/support-calibrated gate within a 5-view loss cap."""
+    """Select the most accurate gate inside accuracy and compute constraints."""
 
     scores = _validate_scores(view_scores)
     truth = np.asarray(labels, dtype=np.int64)
@@ -264,6 +266,14 @@ def calibrate_adaptive_rxlight_tta(
     full5_predictions = np.argmax(scores.mean(axis=1), axis=1)
     full5_accuracy = float(np.mean(full5_predictions == truth))
     floor = full5_accuracy - float(max_accuracy_drop_pp) / 100.0
+    max_forwards = (
+        5.0
+        if max_mean_backbone_forwards is None
+        else float(max_mean_backbone_forwards)
+    )
+    min_extra = float(min_extra_view_rate)
+    if not 1.0 <= max_forwards <= 5.0 or not 0.0 <= min_extra <= 1.0:
+        raise ValueError("invalid adaptive TTA compute constraints")
     if base_min_score_grid is None:
         base_top1 = _top1_score(scores[:, 0])
         base_min_score_grid = (
@@ -297,6 +307,14 @@ def calibrate_adaptive_rxlight_tta(
                             )
                             result = apply_adaptive_rxlight_tta(scores, thresholds)
                             accuracy = float(np.mean(result["predictions"] == truth))
+                            extra_view_rate = float(
+                                1.0 - result["trigger_rates"]["view1_rate"]
+                            )
+                            passes_compute = bool(
+                                float(result["mean_backbone_forwards"])
+                                <= max_forwards + 1.0e-12
+                                and extra_view_rate + 1.0e-12 >= min_extra
+                            )
                             row: dict[str, object] = {
                                 "thresholds": thresholds,
                                 "accuracy": accuracy,
@@ -306,10 +324,15 @@ def calibrate_adaptive_rxlight_tta(
                                 "mean_backbone_forwards": result["mean_backbone_forwards"],
                                 "p95_backbone_forwards": result["p95_backbone_forwards"],
                                 "trigger_rates": result["trigger_rates"],
+                                "extra_view_rate": extra_view_rate,
                                 "passes_accuracy_cap": bool(accuracy + 1.0e-12 >= floor),
+                                "passes_compute_constraints": passes_compute,
                             }
                             candidates.append(row)
-                            if not row["passes_accuracy_cap"]:
+                            if not (
+                                row["passes_accuracy_cap"]
+                                and row["passes_compute_constraints"]
+                            ):
                                 continue
                             key = (
                                 -accuracy,
@@ -320,7 +343,9 @@ def calibrate_adaptive_rxlight_tta(
                             if best is None or key < best[0]:
                                 best = (key, row)
     if best is None:
-        raise ValueError("no adaptive TTA threshold passes the accuracy-drop cap")
+        raise ValueError(
+            "no adaptive TTA threshold passes accuracy and compute constraints"
+        )
     return {
         "calibration_scope_required": "source_validation_or_registered_support_only",
         "uses_query_labels": False,
@@ -328,6 +353,8 @@ def calibrate_adaptive_rxlight_tta(
         "uses_class_quota": False,
         "full5_accuracy": full5_accuracy,
         "max_accuracy_drop_pp": float(max_accuracy_drop_pp),
+        "max_mean_backbone_forwards": max_forwards,
+        "min_extra_view_rate": min_extra,
         "selection_policy": "accuracy_first_then_minimum_forwards",
         "selected": best[1],
         "candidate_count": len(candidates),

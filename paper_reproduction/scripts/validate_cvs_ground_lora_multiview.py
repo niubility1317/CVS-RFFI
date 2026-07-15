@@ -941,7 +941,11 @@ def main(argv: Sequence[str] | None = None) -> int:
         base_margin_grid=BASE_MARGIN_GRID,
         shift3_margin_grid=SHIFT3_MARGIN_GRID,
         disagreement_grid=DISAGREEMENT_GRID,
+        base_min_score_grid=(-1.0e9,),
+        shift3_min_score_grid=(-1.0e9,),
         max_accuracy_drop_pp=float(args.max_accuracy_drop_pp),
+        max_mean_backbone_forwards=float(args.max_mean_backbone_forwards),
+        min_extra_view_rate=float(args.min_extra_view_rate),
     )
     threshold_payload = calibration["selected"]["thresholds"]
     if isinstance(threshold_payload, AdaptiveTTAThresholds):

@@ -110,6 +110,26 @@ def test_calibration_uses_labels_only_on_allowed_calibration_rows() -> None:
     assert result["selection_policy"] == "accuracy_first_then_minimum_forwards"
 
 
+def test_calibration_filters_compute_infeasible_candidates_before_ranking() -> None:
+    scores, labels = _scores()
+    result = calibrate_adaptive_rxlight_tta(
+        scores,
+        labels,
+        base_margin_grid=[0.5, 1.0, 6.0],
+        shift3_margin_grid=[0.0, 0.5, 6.0],
+        disagreement_grid=[0.0, 1.0 / 3.0, 2.0 / 3.0],
+        base_min_score_grid=[-1.0e9],
+        shift3_min_score_grid=[-1.0e9],
+        max_accuracy_drop_pp=100.0,
+        max_mean_backbone_forwards=3.0,
+        min_extra_view_rate=0.25,
+    )
+    selected = result["selected"]
+    assert selected["passes_compute_constraints"] is True
+    assert selected["mean_backbone_forwards"] <= 3.0
+    assert selected["extra_view_rate"] >= 0.25
+
+
 def test_low_absolute_similarity_triggers_more_views_despite_large_margin() -> None:
     scores = np.asarray(
         [[[0.20, 0.00], [1.0, 0.0], [0.9, 0.1], [1.0, 0.0], [0.9, 0.1]]],
