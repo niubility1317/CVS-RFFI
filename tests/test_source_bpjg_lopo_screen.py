@@ -100,3 +100,33 @@ def test_v20_launcher_binds_exact_lopo_trainer_dependency() -> None:
         in launcher
     )
     assert 'sha256sum "$TRAINER"' in launcher
+
+
+def test_source_screen_uses_numpy2_torch21_compat_bridge() -> None:
+    root = Path(__file__).resolve().parents[1]
+    screen = (
+        root
+        / "paper_reproduction"
+        / "scripts"
+        / "screen_cvs_p4_bpjg_lopo_source.py"
+    ).read_text(encoding="utf-8")
+    assert "torch.from_numpy" not in screen
+    assert screen.count("numpy_to_tensor_compat(") >= 4
+
+
+def test_v21_launcher_locks_screen_and_supports_staged_arms() -> None:
+    root = Path(__file__).resolve().parents[1]
+    launcher = (
+        root
+        / "paper_reproduction"
+        / "scripts"
+        / "launch_cvs_p4_bpjg_lopo_source_v21.sh"
+    ).read_text(encoding="utf-8")
+    assert "qknnv42_p4_bpjg_lopo_source_k10_20260715_v21" in launcher
+    assert (
+        "SCREEN_SHA256="
+        "3c4ad69ee148831f0d401a9f5fb73287400bc3a8cc994c6c85dd166c058b194f"
+        in launcher
+    )
+    assert 'ARM_INDEXES_RAW="${ARM_INDEXES:-0 1 2 3}"' in launcher
+    assert 'refusing to overwrite existing v21 arm' in launcher

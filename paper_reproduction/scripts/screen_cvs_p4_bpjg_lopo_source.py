@@ -273,9 +273,20 @@ def evaluate_source_qknn(
                 np.asarray(arrays["raw_labels"], dtype=np.int64)[support_indices]
             )
         feature_tensor = F.normalize(
-            torch.from_numpy(np.concatenate(support_features)).float(), dim=1
+            numpy_to_tensor_compat(
+                np.concatenate(support_features),
+                numpy_dtype=np.dtype(np.float32),
+                torch_dtype=torch.float32,
+                copy=False,
+            ).float(),
+            dim=1,
         )
-        label_tensor = torch.from_numpy(np.concatenate(support_labels)).long()
+        label_tensor = numpy_to_tensor_compat(
+            np.concatenate(support_labels),
+            numpy_dtype=np.dtype(np.int64),
+            torch_dtype=torch.int64,
+            copy=False,
+        ).long()
         prototypes = torch.stack(
             [
                 F.normalize(
@@ -303,7 +314,15 @@ def evaluate_source_qknn(
         else:
             if prototypes is None:
                 raise RuntimeError("qKNN prototype bank was not constructed")
-            normalized = F.normalize(torch.from_numpy(features).float(), dim=1)
+            normalized = F.normalize(
+                numpy_to_tensor_compat(
+                    features,
+                    numpy_dtype=np.dtype(np.float32),
+                    torch_dtype=torch.float32,
+                    copy=False,
+                ).float(),
+                dim=1,
+            )
             predictions = torch.argmax(normalized @ prototypes.t(), dim=1).numpy()
         per_scenario[scenario] = _metric_row(predictions, truth)
         all_predictions.append(np.asarray(predictions, dtype=np.int64))

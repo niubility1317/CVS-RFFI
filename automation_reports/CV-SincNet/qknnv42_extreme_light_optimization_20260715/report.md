@@ -803,3 +803,32 @@ v20需补充同步：
 |`paper_reproduction/scripts/launch_cvs_p4_bpjg_lopo_source_v20.sh`|`/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/scripts/launch_cvs_p4_bpjg_lopo_source_v20.sh`|
 
 v20远端输出根为`runs/qknnv42_p4_bpjg_lopo_source_k10_20260715_v20/`，日志根为`logs/qknnv42_p4_bpjg_lopo_source_k10_20260715_v20/`，唯一启动命令为`bash paper_reproduction/scripts/launch_cvs_p4_bpjg_lopo_source_v20.sh`。启动前必须重新确认无活动训练进程、GPU0–3可用、v20输出不存在，并对trainer、screen、launcher、checkpoint和P4五个SHA逐项复核。
+
+
+### 17.7v20评估桥接失败与v21单臂先行修复
+
+v20在5个远端SHA、Python语法和launcher语法全部通过后，于2026-07-15 22:57+08:00提交，launcher PID为1847140、1847141、1847143、1847145。四臂完成LOPO训练与FP16 target patch合并后，在source qKNN评估阶段统一写出`exit_code=1,INFRASTRUCTURE_FAILURE`：
+
+```text
+TypeError: expected np.ndarray (got numpy.ndarray)
+```
+
+异常来自`torch.from_numpy(np.concatenate(support_features))`。N607环境是PyTorch2.1＋NumPy2组合，项目已知必须使用`numpy_to_tensor_compat`桥接。该错误发生在identity/adapted qKNN prototype评估开始处，因此v20仍没有accuracy/floor结果，不能解释为适应算法负收益；v20 run/log/status及已经生成的训练trace/adapter继续保留。
+
+v21本地修复和防复发措施：
+
+- source screen中3处`torch.from_numpy`全部替换为`numpy_to_tensor_compat`，更新后SHA256为`3c4ad69ee148831f0d401a9f5fb73287400bc3a8cc994c6c85dd166c058b194f`；
+- v21 launcher同时硬锁trainer SHA和screen SHA，launcher SHA256为`095471de48c17ea310698292032641155ba59de455342c07fa4bd3225f67ffab`；
+- v21支持`ARM_INDEXES`分阶段启动且逐arm拒绝覆盖。先只运行index0的`JG_R8_LR005`完成端到端烟测；只有其状态为PASS或`SOURCE_SCREEN_NEGATIVE`且存在可验证`result.json`，才补启动index1/2/3；
+- 更新后的测试SHA256为`96e347b8a7fdafa8119dc8ffd916a761cc8b35164b69ded5493af651ceed6300`；source screen 6项＋support 52项合计58/58通过，真实ADV3B02＋P4 artifact测试实际执行；`py_compile`和v21 `bash -n`通过。
+
+v21同步范围：
+
+|本地文件|N607目标|
+|---|---|
+|`paper_reproduction/scripts/screen_cvs_p4_bpjg_lopo_source.py`|`/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/scripts/screen_cvs_p4_bpjg_lopo_source.py`|
+|`paper_reproduction/scripts/launch_cvs_p4_bpjg_lopo_source_v21.sh`|`/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/scripts/launch_cvs_p4_bpjg_lopo_source_v21.sh`|
+
+v21根目录为`runs/qknnv42_p4_bpjg_lopo_source_k10_20260715_v21/`与`logs/qknnv42_p4_bpjg_lopo_source_k10_20260715_v21/`。第一阶段命令为`ARM_INDEXES=0 bash paper_reproduction/scripts/launch_cvs_p4_bpjg_lopo_source_v21.sh`；端到端烟测通过后的第二阶段命令为`ARM_INDEXES='1 2 3' bash paper_reproduction/scripts/launch_cvs_p4_bpjg_lopo_source_v21.sh`。
+
+独立增量复核结论为`Ready，可提交并进行单臂远端烟测`，无剩余Critical或Important。
