@@ -5,7 +5,7 @@
 |实验ID|`qknn_ground_effective8_r16_e12_leoonly_20260715_v14`|
 |时间|2026-07-15 13:44 CST|
 |operator|Codex`/root`|
-|当前状态|`CANDIDATE_LOCK_V1_INVALID_SOURCE_CACHE_PROVENANCE`；repair6候选锁v2已完成本地验证，待同步并重新执行source validation/candidate lock；target matrix未启动|
+|当前状态|`LOCAL_PROTOCOL_REPAIR_REQUIRED`；旧candidate lock/benchmark边界经运行时隔离审计判定不满足新版Phase2协议；target matrix未启动且已在plan、runner和candidate-lock入口fail-closed|
 |基座模型|同一ADV3B02 checkpoint：`ADV3B02_CORE90_SOFT_E200/best_joint_safe_ssdg.pth`|
 |目标|在新版`LEO_weak-only`边界下，以≤50k参数、≤20epoch、≤256KB持久状态的极轻型适配器和逐样本1→3→5-view推理，完成5receiver×5seed×3场景×新类5/10/20×K=1/5/10/20正式确认|
 
@@ -13,19 +13,25 @@
 
 |ID|Source section|Requirement|实现文件|状态|本地证据|
 |---|---|---|---|---|---|
-|P2-LW-01|`项目.md`7.1、9|Phase2只读取已叠加允许场景的post-channel IQ|`leo_weak_cache.py`、cache builder、trainer、validator、benchmark|implemented|cache成员列表先审计，禁止`raw_iq`、clean和派生feature/logit/prototype|
+|P2-LW-01|`项目.md`7.1、9|Phase2只读取已叠加允许场景的post-channel IQ|`leo_weak_cache.py`、cache builder、trainer、validator、benchmark|partial|NPZ成员有前置检查，但现有cache仍携带`raw_labels`、`tx_ids`、`dataset_role`及raw来源路径；严格无真值推理包尚未落地|
 |P2-LW-02|`项目.md`7.1、9|训练、验证、门限和promotion不得使用clean派生信号|trainer、validator、candidate lock|implemented|formal训练使用same-LEO teacher/reference；source holdout只读密封cache-set|
-|P2-LW-03|`项目.md`7.1|逐样本保留场景、satellite seed、overlay和waveform摘要|cache schema、formal rows、formal predictions|implemented|sample ID、逐query overlay ID/post-channel IQ SHA及support/query root均进入正式证据|
-|P2-LW-04|`项目.md`5、7.1|Phase1离线叠加信道，Phase2禁止重新读取ManySig/ManyTx|builder、strict loader、formal CLI|implemented|训练与验证CLI只接收cache-set；benchmark拒绝legacy raw/feature字段|
+|P2-LW-03|`项目.md`7.1|逐样本保留场景、satellite seed、overlay和waveform摘要|cache schema、formal rows、formal predictions|partial|现有sample ID可反解析角色/TX；需改为opaque ID并由独立truth sidecar绑定|
+|P2-LW-04|`项目.md`5、7.1|Phase1离线叠加信道，Phase2禁止重新读取ManySig/ManyTx|builder、strict loader、formal CLI|blocked|candidate lock仍携带并重开含ManyTx路径的build spec；benchmark运行于完整项目根且可导入legacy loader，尚无OS级隔离和文件访问账本|
 |P2-LW-05|`项目.md`8.5|query默认1-view，低置信度才请求3/5-view|benchmark、adaptive TTA|implemented|base-only路径不会预构造其余4个View；逐query记录view budget|
-|P2-LW-06|`项目.md`7.3、8.5、9|禁角色Oracle、类别quota、query fit和batch图|config、candidate lock、benchmark、summarizer|implemented|所有注册类统一head和门限；正式字段全部为false|
-|P2-LW-07|`项目.md`9|锁定candidate/head/TTA及K=1/5/10/20有序嵌套|plan、runner、candidate lock、summarizer|implemented|固定seed`713101–713105`、`query_per_tx=20`、25份cache spec和300份row config；逐样本prediction支持独立重算|
+|P2-LW-06|`项目.md`7.3、8.5、9|禁角色Oracle、真实query batch类别数量、类别quota、query fit和batch图|config、candidate lock、benchmark、summarizer|blocked|旧字段已改名，但现有predictor仍接收`query_per_tx`并在预测前读取truth/role；必须拆为sealer→predictor→sealed prediction→scorer|
+|P2-LW-07|`项目.md`9|锁定candidate/head/TTA及K=1/5/10/20有序嵌套|plan、runner、candidate lock、summarizer|partial|矩阵维度已锁定，但predictor可见lock仍含build spec与`query_per_tx`，不能作为新版合规lock|
 |P2-LW-08|`项目.md`8.5、9|报告参数、epoch、MAC、延迟、峰值显存、状态、平均/P95 View|benchmark formal rows|implemented|逐row资源字段已落地；MAC明确标注FFT/View变换未计入的边界|
 |P2-LW-09|`项目.md`9|完成5×5×3×3×4正式确认及逐类、逐receiver证据|formal plan、N607 artifacts|pending|本地计划精确生成25个target cache-set、300次评估、900条场景row；尚未运行|
 |P2-LW-10|`项目.md`7.1|旧v13 raw/clean命令不得启动|v13报告、v14 runner|rejected|v13目标run/log不存在；v14不复用旧命令|
 |P2-LW-11|`项目.md`10.3.1|同一极轻型候选需补充Stage2-B target-old-only独立确认|Stage2-B formal plan/artifacts|pending|当前v14是Stage2-C source锁定与old/new矩阵；尚无Stage2-B正式row，不得以Stage2-C旧类边际统计替代|
 
-追踪状态计数：implemented=8，pending=2，rejected=1。当前最高风险是P2-LW-09与P2-LW-11：Stage2-C尚无新版target矩阵结果，Stage2-B尚未生成正式独立确认row，因此不得声明达到准确率或遗忘目标。
+追踪状态计数：implemented=3，partial=3，blocked=2，pending=2，rejected=1。当前P0阻断不是性能，而是运行时不可达和predict/score隔离证据缺失；在P2-LW-01/03/04/06/07修复前不得生成新candidate lock、启动target matrix或声明达到准确率/遗忘目标。
+
+### 2026-07-15运行时隔离复核
+
+复核确认，完整Phase2契约不是“9项全部字段”，而是3项基础边界、4项clean运行证据和5项query决策边界，共12项。`phase2_query_class_count_access`已弃用并改为`phase2_query_true_batch_class_count_access`，以明确禁止的是由评测真值构造的真实query batch类别组成或数量；合法的注册类别清单与`registered_class_count`不受影响。新增统一验证模块`code/cvsrffi/phase2_runtime_contract.py`，仅有旧字段的历史artifact不能自动晋升。
+
+当前v14只能证明部分逻辑防护，不能证明`phase2_clean_dataset_reachable=false`、`phase2_clean_cache_reachable=false`和`phase2_clean_control_flow_reachable=false`。正式修复必须提供密封无真值推理包、detached digest、文件/NPZ成员精确allowlist、路径与symlink检查、同一文件描述符pre-open审计、推理文件访问账本及容器/bwrap/独立UID只读挂载等OS级隔离证据。缺证据的历史run标为`PHASE2_RUNTIME_ISOLATION_UNVERIFIED`；只有已确认发生clean访问或clean-derived决策时才标为`PROTOCOL_INVALID_FOR_PHASE2`。
 
 ## 方法、输入与输出
 
@@ -81,11 +87,13 @@ base-only路径直接复用输入张量，不调用5-view构造器；shift和CFO
 
 ```text
 python -m py_compile <trainer/validator/cache/benchmark/lock/plan/runner>
-python -m pytest -q <10组聚焦测试>
-结果：79 passed
+python -m pytest -q <Phase2运行契约、validator、formal plan/runner/candidate-lock聚焦测试>
+结果：84 passed；另6项新增安全门定向复测全部通过
 git diff --check
 结果：PASS
 ```
+
+完整`code/tests/test_optimizer_workflow_tools.py`仍有3项既有OPGAC/unknown-query断言漂移；它们不由本轮Phase2隔离改动引入，也未被计入“84 passed”。本轮不修改这些无关基线断言，避免扩大变更范围。
 
 正式计划生成测试确认：source cache-set=2，target cache-set=25，benchmark invocation=300，formal scenario row=900，collection=1，summary=1；8个shard合计25次cache构建和300次benchmark，无重复命令。
 

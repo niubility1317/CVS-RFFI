@@ -41,7 +41,7 @@
   "phase2_pretrained_artifact_policy": "sealed_phase1_checkpoint_only",
   "phase2_query_decision_policy": "per_sample_all_registered_classes",
   "phase2_query_role_oracle_access": false,
-  "phase2_query_class_count_access": false,
+  "phase2_query_true_batch_class_count_access": false,
   "phase2_query_class_quota_access": false,
   "phase2_query_batch_global_assignment": false,
   "target_labels_scope": "registered_support_only",

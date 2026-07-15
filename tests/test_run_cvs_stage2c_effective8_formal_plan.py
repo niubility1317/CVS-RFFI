@@ -10,6 +10,7 @@ from paper_reproduction.scripts.build_cvs_stage2c_effective8_formal_plan import 
 )
 from paper_reproduction.scripts.run_cvs_stage2c_effective8_formal_plan import (
     build_stage_steps,
+    main,
 )
 
 
@@ -80,3 +81,30 @@ def test_runner_rejects_declared_counts_without_complete_commands(tmp_path: Path
     tampered["commands"]["benchmark"] = tampered["commands"]["benchmark"][:-1]
     with pytest.raises(ValueError, match="command count drift"):
         build_stage_steps(tampered, stage="matrix_shard")
+
+
+def test_formal_runner_blocks_unverified_runtime_isolation_before_execution(
+    tmp_path: Path,
+) -> None:
+    generated = tmp_path / "generated"
+    generate_plan(
+        PLAN,
+        out_dir=generated,
+        runtime_project_root="/srv/CV-SincNet",
+    )
+
+    with pytest.raises(RuntimeError, match="LOCAL_PROTOCOL_REPAIR_REQUIRED"):
+        main(
+            [
+                "--plan_manifest",
+                str(generated / "plan_manifest.json"),
+                "--project_root",
+                str(tmp_path),
+                "--stage",
+                "source_pipeline",
+                "--log_dir",
+                str(tmp_path / "logs"),
+                "--state_json",
+                str(tmp_path / "state.json"),
+            ]
+        )

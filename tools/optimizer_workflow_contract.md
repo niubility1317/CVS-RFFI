@@ -571,9 +571,12 @@ Phase2 launchable rows must obey the corrected 2026-07-07 sample boundary: targe
 - Every launchable Phase2 row must declare
   `phase2_query_decision_policy=per_sample_all_registered_classes`,
   `phase2_query_role_oracle_access=false`,
-  `phase2_query_class_count_access=false`,
+  `phase2_query_true_batch_class_count_access=false`,
   `phase2_query_class_quota_access=false`, and
   `phase2_query_batch_global_assignment=false`.
+- `phase2_query_class_count_access` is deprecated because it ambiguously mixes
+  the legal registered-class count with the forbidden truth-derived query-batch
+  class composition. It does not satisfy the current launchable schema.
 - Missing fields, a true-valued guard, a semantic alias that enables the same
   information, or an exact command/config that enables role Oracle, class-count
   Oracle, class quota, Hungarian/optimal-transport assignment, or global batch

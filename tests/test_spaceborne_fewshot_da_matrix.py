@@ -443,7 +443,7 @@ class SpaceborneFewShotDaMatrixTest(unittest.TestCase):
         )
         for field in (
             "phase2_query_role_oracle_access",
-            "phase2_query_class_count_access",
+            "phase2_query_true_batch_class_count_access",
             "phase2_query_class_quota_access",
             "phase2_query_batch_global_assignment",
         ):

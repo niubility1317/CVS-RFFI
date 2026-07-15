@@ -79,6 +79,13 @@ def validate_execution_manifest(manifest: Mapping[str, Any]) -> dict[str, Any]:
         or dict(manifest.get("expected_counts", {})) != EXPECTED_COUNTS
     ):
         raise ValueError("formal execution manifest contract drift")
+    isolation_status = manifest.get("phase2_runtime_isolation_status")
+    launch_authority = manifest.get("launch_authority")
+    if (isolation_status, launch_authority) not in {
+        ("LOCAL_PROTOCOL_REPAIR_REQUIRED", False),
+        ("PHASE2_RUNTIME_ISOLATION_VERIFIED", True),
+    }:
+        raise ValueError("formal runtime isolation status/authority drift")
     contract = dict(manifest.get("formal_matrix_contract", {}))
     expected_contract = {
         "target_receivers": list(FORMAL_RECEIVERS),
@@ -400,6 +407,12 @@ def main(argv: Sequence[str] | None = None) -> int:
     args = parse_args(argv)
     manifest = json.loads(args.plan_manifest.read_text(encoding="utf-8-sig"))
     manifest = validate_execution_manifest(manifest)
+    if manifest.get("launch_authority") is not True:
+        blockers = ",".join(str(value) for value in manifest.get("protocol_blockers", []))
+        raise RuntimeError(
+            "LOCAL_PROTOCOL_REPAIR_REQUIRED: formal runner is fail-closed until "
+            f"sealed runtime isolation and predict/score separation land; blockers={blockers}"
+        )
     steps = build_stage_steps(
         manifest,
         stage=str(args.stage),

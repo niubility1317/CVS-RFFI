@@ -140,7 +140,7 @@ class MonitorOptimizerClosedLoopPromptTest(unittest.TestCase):
             "PROTOCOL_INVALID_FOR_PHASE2",
             "phase2_query_decision_policy=per_sample_all_registered_classes",
             "phase2_query_role_oracle_access=false",
-            "phase2_query_class_count_access=false",
+            "phase2_query_true_batch_class_count_access=false",
             "phase2_query_class_quota_access=false",
             "phase2_query_batch_global_assignment=false",
             "ROLE_OR_CLASS_QUOTA_ORACLE",

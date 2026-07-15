@@ -68,10 +68,18 @@ PHASE2_LEO_WEAK_TARGET_VIEW = "leo_weak_only"
 PHASE2_QUERY_DECISION_POLICY = "per_sample_all_registered_classes"
 PHASE2_QUERY_ORACLE_GUARD_FIELDS = (
     "phase2_query_role_oracle_access",
-    "phase2_query_class_count_access",
+    "phase2_query_true_batch_class_count_access",
     "phase2_query_class_quota_access",
     "phase2_query_batch_global_assignment",
 )
+PHASE2_DEPRECATED_QUERY_CLASS_COUNT_FIELD = "phase2_query_class_count_access"
+PHASE2_CLEAN_REACHABILITY_GUARD_FIELDS = (
+    "clean_derived_signal_access",
+    "phase2_clean_dataset_reachable",
+    "phase2_clean_cache_reachable",
+    "phase2_clean_control_flow_reachable",
+)
+PHASE2_PRETRAINED_ARTIFACT_POLICY = "sealed_phase1_checkpoint_only"
 PHASE2_QUERY_ORACLE_ALIAS_FIELDS = (
     "query_role_oracle",
     "role_oracle",
@@ -1400,6 +1408,16 @@ def stage2_sample_protocol_issues(item: Mapping[str, Any], sample_protocol: Opti
                 "enabled_fields": enabled_query_oracle_guards,
             }
         )
+    deprecated_query_class_count = item.get(PHASE2_DEPRECATED_QUERY_CLASS_COUNT_FIELD)
+    if deprecated_query_class_count not in (None, "", []):
+        issues.append(
+            {
+                "candidate_id": cid,
+                "issue": "stage2_deprecated_ambiguous_query_class_count_field_present",
+                "field": PHASE2_DEPRECATED_QUERY_CLASS_COUNT_FIELD,
+                "replacement": "phase2_query_true_batch_class_count_access",
+            }
+        )
     parameter_values = item.get("parameters") if isinstance(item.get("parameters"), Mapping) else {}
     enabled_query_oracle_aliases = []
     for field in PHASE2_QUERY_ORACLE_ALIAS_FIELDS:
@@ -1433,6 +1451,40 @@ def stage2_sample_protocol_issues(item: Mapping[str, Any], sample_protocol: Opti
                 "candidate_id": cid,
                 "issue": "stage2_clean_sample_access_must_be_false",
                 "clean_sample_access": item.get("clean_sample_access"),
+            }
+        )
+    missing_clean_reachability_guards = [
+        field
+        for field in PHASE2_CLEAN_REACHABILITY_GUARD_FIELDS
+        if item.get(field) in (None, "", [])
+    ]
+    if missing_clean_reachability_guards:
+        issues.append(
+            {
+                "candidate_id": cid,
+                "issue": "stage2_clean_reachability_guard_fields_missing",
+                "missing_fields": missing_clean_reachability_guards,
+            }
+        )
+    enabled_clean_reachability_guards = [
+        field
+        for field in PHASE2_CLEAN_REACHABILITY_GUARD_FIELDS
+        if item.get(field) not in (None, "", []) and not is_false_like(item.get(field))
+    ]
+    if enabled_clean_reachability_guards:
+        issues.append(
+            {
+                "candidate_id": cid,
+                "issue": "stage2_clean_reachability_guard_must_be_false",
+                "enabled_fields": enabled_clean_reachability_guards,
+            }
+        )
+    if normalized_status(item.get("phase2_pretrained_artifact_policy")) != PHASE2_PRETRAINED_ARTIFACT_POLICY:
+        issues.append(
+            {
+                "candidate_id": cid,
+                "issue": "stage2_pretrained_artifact_policy_must_be_sealed_phase1_checkpoint_only",
+                "phase2_pretrained_artifact_policy": item.get("phase2_pretrained_artifact_policy"),
             }
         )
     clean_view_role = normalized_status(item.get("clean_view_role"))

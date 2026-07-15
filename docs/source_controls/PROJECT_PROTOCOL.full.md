@@ -164,17 +164,25 @@ update:
 
 Phase2 主线的优化目标是 target-old 域适应、target-new 新类学习和二者的同 row 平衡。open-set rejection、unknown FAR、FPR95、AUROC、Weibull/OpenMax类拒识门控和 unknown query 压力测试属于 Phase3 备用项；Phase2 可以保留相关字段作为 diagnostic/safety metadata，但不得把它们列为主线必达指标或用低 unknown FAR 掩盖旧类/新类学习不足。
 
-### 7.1 target query逐样本自主决策硬约束（2026-07-15）
+### 7.1 Phase2 LEO_weak-only运行时不可达约束（2026-07-15）
+
+整个Phase2链路必须对clean物理不可达，而不只是最终指标不使用clean。Phase2只接收边界外Phase1 packager生成的密封推理包；raw dataset、build spec、legacy dataset loader、clean cache、clean-derived feature/logit/prototype/normalization、truth sidecar及其路径不得进入推理包、candidate lock或predict plan。所有target-old、target-new及Phase3-backup样本必须在进入Phase2前已经叠加允许的`leo_*_weak`信道。
+
+每个launchable row必须记录`phase2_sample_view_policy=leo_weak_only_no_clean_access`、`clean_sample_access=false`、`clean_derived_signal_access=false`、`phase2_clean_dataset_reachable=false`、`phase2_clean_cache_reachable=false`、`phase2_clean_control_flow_reachable=false`和`phase2_pretrained_artifact_policy=sealed_phase1_checkpoint_only`。三个`*_reachable=false`不能靠manifest自声明证明，必须配套密封包detached digest、包内文件与NPZ成员精确allowlist、相对路径和symlink/非普通文件拒绝、同一文件描述符上的pre-open审计、推理进程文件访问账本，以及操作系统级只读挂载/容器/独立UID或等价隔离记录。若只能证明逻辑未使用而没有运行时隔离证据，必须标为`PHASE2_RUNTIME_ISOLATION_UNVERIFIED`或`LOCAL_PROTOCOL_REPAIR_REQUIRED`，不得填写三个false。历史artifact缺证据与已确认发生clean访问是两种状态；后者才标记为`PROTOCOL_INVALID_FOR_PHASE2`。
+
+### 7.2 target query逐样本自主决策硬约束（2026-07-15）
 
 对任一待识别target query，系统在决策前不知道它属于`Y_old`、已注册`Y_new`还是Phase3中的`Y_unknown`。因此，Phase2与Phase3的正式训练后评估、候选优化、消融、模型选择、晋升、论文主表和部署声明统一采用以下硬约束：
 
 - 每个query必须独立面对同一套当前已注册类别和允许的reject/defer机制；不得使用query真实old/new/unknown角色缩小候选类别集合。
-- 禁止读取或推断自评测构造的整批old/new数量、每类query数量、每类quota、query排列顺序或标签分块边界；禁止据此进行Hungarian、最优传输、批量重排或等价的全局配额分配。
-- query batch可以用于向量化计算，但不得利用评测构造提供的真实角色、类别数量、每类配额、排列顺序或标签分块边界改变任何单样本决策。
+- 禁止读取或推断自评测真值构造的整批old/new类别组成或数量、每类query数量、每类quota、query排列顺序或标签分块边界；禁止据此进行Hungarian、最优传输、批量重排或等价的全局配额分配。合法的当前注册类别清单及`registered_class_count`不属于真实query batch类别数量Oracle。
+- query batch可以用于向量化计算，但不得利用评测构造提供的真实角色、真实batch类别组成或数量、每类配额、排列顺序或标签分块边界改变任何单样本决策。
 - support标签和support中的old/new注册身份可以用于enrollment；该权限不意味着query角色已知。正式推理必须在所有已注册旧类与新类之间执行同一逐样本决策。
 - 历史role/quota Oracle artifact可以原样封存用于说明信息泄漏上界，但统一标记为`PROTOCOL_INVALID_FOR_DEPLOYMENT`。自本约束生效后不得生成新的role/quota Oracle候选，不得用于超参数选择、性能门槛、方法排名、统计检验、论文主表或部署声明。
 
 本禁令只针对部署阶段target query决策，不影响Phase1源域半监督训练中基于已定义源数据池进行的伪标签class/receiver quota审计或采样平衡。
+
+每个launchable row必须声明`phase2_query_decision_policy=per_sample_all_registered_classes`，并将`phase2_query_role_oracle_access`、`phase2_query_true_batch_class_count_access`、`phase2_query_class_quota_access`和`phase2_query_batch_global_assignment`设为`false`。旧字段`phase2_query_class_count_access`已弃用，不能替代新字段。正式流程必须拆为Phase2外sealer、无query真值predictor、密封预测artifact和独立scorer；query ID必须opaque，predictor不得接收truth sidecar路径，main及所有诊断head都必须先对全部query预测。预测artifact冻结并校验hash后，scorer才能按opaque ID连接真值并计算指标，评分信号不得回流预测或候选选择。
 
 ## 8. WiSig / ManySig 数据协议
 

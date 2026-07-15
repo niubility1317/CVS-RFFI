@@ -249,9 +249,14 @@ def _stage2_item(gpu_idx, slot_letter, idx):
         "target_receiver_ids": "rx7",
         "phase2_sample_view_policy": "leo_weak_only_no_clean_access",
         "clean_sample_access": False,
+        "clean_derived_signal_access": False,
+        "phase2_clean_dataset_reachable": False,
+        "phase2_clean_cache_reachable": False,
+        "phase2_clean_control_flow_reachable": False,
+        "phase2_pretrained_artifact_policy": "sealed_phase1_checkpoint_only",
         "phase2_query_decision_policy": "per_sample_all_registered_classes",
         "phase2_query_role_oracle_access": False,
-        "phase2_query_class_count_access": False,
+        "phase2_query_true_batch_class_count_access": False,
         "phase2_query_class_quota_access": False,
         "phase2_query_batch_global_assignment": False,
         "target_channel_view": "leo_weak_only",
@@ -1121,7 +1126,7 @@ def test_stage2_sample_protocol_rejects_role_and_class_quota_oracles():
     item = _stage2_item(0, "B", 0)
     item["phase2_query_decision_policy"] = "oracle_partition_then_classify"
     item["phase2_query_role_oracle_access"] = True
-    item["phase2_query_class_count_access"] = True
+    item["phase2_query_true_batch_class_count_access"] = True
     item["phase2_query_class_quota_access"] = True
     item["phase2_query_batch_global_assignment"] = True
     item["role_oracle"] = True
@@ -1153,6 +1158,40 @@ def test_stage2_sample_protocol_requires_query_oracle_guard_fields():
 
     assert "stage2_query_decision_policy_must_be_per_sample_all_registered_classes" in issue_names
     assert "stage2_query_oracle_guard_fields_missing" in issue_names
+
+
+def test_stage2_sample_protocol_rejects_deprecated_ambiguous_class_count_field():
+    item = _stage2_item(0, "B", 0)
+    item["phase2_query_class_count_access"] = False
+
+    issues = ovm.stage2_sample_protocol_issues(item, ovm.DEFAULT_STAGE2_SAMPLE_PROTOCOL)
+    issue_names = {issue["issue"] for issue in issues}
+
+    assert "stage2_deprecated_ambiguous_query_class_count_field_present" in issue_names
+
+
+def test_stage2_sample_protocol_allows_registered_class_count():
+    item = _stage2_item(0, "B", 0)
+    item["registered_class_count"] = 26
+
+    issues = ovm.stage2_sample_protocol_issues(item, ovm.DEFAULT_STAGE2_SAMPLE_PROTOCOL)
+    issue_names = {issue["issue"] for issue in issues}
+
+    assert "stage2_deprecated_ambiguous_query_class_count_field_present" not in issue_names
+    assert "stage2_query_oracle_guard_must_be_false" not in issue_names
+
+
+def test_stage2_sample_protocol_requires_clean_runtime_reachability_guards():
+    item = _stage2_item(0, "B", 0)
+    for field in ovm.PHASE2_CLEAN_REACHABILITY_GUARD_FIELDS:
+        item.pop(field)
+    item.pop("phase2_pretrained_artifact_policy")
+
+    issues = ovm.stage2_sample_protocol_issues(item, ovm.DEFAULT_STAGE2_SAMPLE_PROTOCOL)
+    issue_names = {issue["issue"] for issue in issues}
+
+    assert "stage2_clean_reachability_guard_fields_missing" in issue_names
+    assert "stage2_pretrained_artifact_policy_must_be_sealed_phase1_checkpoint_only" in issue_names
 
 
 def test_stage2_sample_protocol_allows_explicit_false_oracle_cli_flags_and_support_k():

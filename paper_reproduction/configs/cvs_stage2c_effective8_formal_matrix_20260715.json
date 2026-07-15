@@ -4,6 +4,15 @@
   "phase2_sample_view_policy": "leo_weak_only_no_clean_access",
   "clean_sample_access": false,
   "clean_derived_signal_access": false,
+  "phase2_runtime_isolation_status": "LOCAL_PROTOCOL_REPAIR_REQUIRED",
+  "launch_authority": false,
+  "protocol_blockers": [
+    "sealed_truth_free_inference_package_not_implemented",
+    "predict_score_process_isolation_not_implemented",
+    "runtime_filesystem_access_audit_not_available",
+    "os_level_clean_path_isolation_not_available",
+    "query_per_tx_and_build_spec_still_exposed_to_legacy_benchmark"
+  ],
   "checkpoint": "runs/phase1_adv3_mechanism32_queue_20260701/ADV3B02_CORE90_SOFT_E200/best_joint_safe_ssdg.pth",
   "class_split_manifest": "paper_reproduction/configs/cvs_stage2c_effective8_class_split_20260715.json",
   "datasets": {

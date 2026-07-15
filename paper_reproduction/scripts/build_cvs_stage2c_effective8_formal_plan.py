@@ -57,6 +57,8 @@ def validate_plan(plan: Mapping[str, Any]) -> dict[str, Any]:
         "phase2_sample_view_policy": POLICY,
         "clean_sample_access": False,
         "clean_derived_signal_access": False,
+        "phase2_runtime_isolation_status": "LOCAL_PROTOCOL_REPAIR_REQUIRED",
+        "launch_authority": False,
     }
     failed = [key for key, expected in required.items() if plan.get(key) != expected]
     if failed:
@@ -562,6 +564,13 @@ def generate_plan(
                         "phase2_sample_view_policy": POLICY,
                         "clean_sample_access": False,
                         "clean_derived_signal_access": False,
+                        "phase2_runtime_isolation_status": "LOCAL_PROTOCOL_REPAIR_REQUIRED",
+                        "launch_authority": False,
+                        "phase2_query_decision_policy": "per_sample_all_registered_classes",
+                        "phase2_query_role_oracle_access": False,
+                        "phase2_query_true_batch_class_count_access": False,
+                        "phase2_query_class_quota_access": False,
+                        "phase2_query_batch_global_assignment": False,
                         "target_channel_view": "leo_weak_only",
                         "target_channel_scenarios": list(SCENARIOS),
                         "leo_weak_cache_set_manifest": str(
@@ -670,6 +679,9 @@ def generate_plan(
         "phase2_sample_view_policy": POLICY,
         "clean_sample_access": False,
         "clean_derived_signal_access": False,
+        "phase2_runtime_isolation_status": "LOCAL_PROTOCOL_REPAIR_REQUIRED",
+        "launch_authority": False,
+        "protocol_blockers": list(plan["protocol_blockers"]),
         "formal_matrix_contract": {
             "target_receivers": list(RECEIVERS),
             "confirmation_seeds": list(SEEDS),

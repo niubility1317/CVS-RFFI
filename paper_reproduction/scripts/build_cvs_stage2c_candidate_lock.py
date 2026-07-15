@@ -615,6 +615,14 @@ def main(argv: Sequence[str] | None = None) -> int:
     args = parse_args(argv)
     if args.out_json.exists():
         raise FileExistsError(f"refusing to overwrite candidate lock: {args.out_json}")
+    execution_plan = validate_execution_manifest(
+        json.loads(args.execution_plan_manifest.read_text(encoding="utf-8-sig"))
+    )
+    if execution_plan.get("launch_authority") is not True:
+        raise RuntimeError(
+            "LOCAL_PROTOCOL_REPAIR_REQUIRED: formal candidate-lock publication is "
+            "blocked until sealed Phase2 package and predict/score isolation evidence exist"
+        )
     lock = build_candidate_lock(
         candidate_id=str(args.candidate_id),
         checkpoint=args.checkpoint,

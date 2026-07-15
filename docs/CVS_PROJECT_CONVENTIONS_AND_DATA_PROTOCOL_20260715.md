@@ -16,7 +16,9 @@
 - Stage2-A无target label support；Stage2-B只允许target-old support；Stage2-C允许target-old校准与target-new enrollment。unknown query只作Phase3-backup/evaluation-only。
 - Stage2-B/C必须显式记录正整数`K`；推荐锚点为`{1,2,5,10,15,20,50}`，`K>20`不得称为strict few-shot。
 - 每个query必须独立面对全部已注册类别；禁止query真实角色、类别quota、排序/分块和Hungarian/等价批量配额Oracle。
-- launchable Phase2 row必须声明`phase2_query_decision_policy=per_sample_all_registered_classes`，并将`phase2_query_role_oracle_access`、`phase2_query_class_count_access`、`phase2_query_class_quota_access`和`phase2_query_batch_global_assignment`设为`false`；缺失或启用即`LOCAL_PROTOCOL_REPAIR_REQUIRED`。
+- launchable Phase2 row必须声明`phase2_query_decision_policy=per_sample_all_registered_classes`，并将`phase2_query_role_oracle_access`、`phase2_query_true_batch_class_count_access`、`phase2_query_class_quota_access`和`phase2_query_batch_global_assignment`设为`false`；旧字段`phase2_query_class_count_access`已弃用，不能替代新字段。这里禁止的是评测真值构造的query batch类别组成或数量，不禁止合法的已注册类别清单及`registered_class_count`。
+- clean不可达声明必须由密封推理包、detached digest、文件/NPZ成员精确allowlist、路径约束、推理进程文件访问账本和操作系统级隔离记录共同支撑；只有逻辑未使用而没有运行时隔离证据时必须标为`PHASE2_RUNTIME_ISOLATION_UNVERIFIED`或`LOCAL_PROTOCOL_REPAIR_REQUIRED`，不得填写三个`*_reachable=false`。
+- 正式流程必须拆为Phase2外sealer、无query真值predictor、密封预测artifact和独立scorer；query ID必须opaque，predictor不得接收truth sidecar路径，所有诊断head先对全部query预测，预测冻结后才允许scorer读取真值计算指标。
 - Stage2-B/C合法support label、enrollment identity与预注册正整数K-shot support不属于query类别配额；Phase1 source-side quota audit不受影响，query真实标签只能在预测冻结后用于指标计算。
 - Phase2主指标是同row的`old_acc`、`seen_new_acc`与`H_old_new`；unknown FAR/FPR95/AUROC属于Phase3备用项。
 - 当前target-old优先使用`ManySig.pkl`，target-new优先使用同receiver label下`ManyTx.pkl`中的真实non-`Y_old` TX；跨pkl按receiver label对齐，并逐TX验证support/query样本覆盖。
