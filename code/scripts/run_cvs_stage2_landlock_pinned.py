@@ -8,6 +8,7 @@ import hashlib
 import json
 import os
 import posixpath
+import re
 import secrets
 import stat
 import subprocess
@@ -103,7 +104,7 @@ def _audit_ledger(
     allowed = [str(runtime_root), str(output_root), "/proc", "/dev", "/sys", "/run", "/tmp"]
     allowed.extend(str(path) for path in system_roots)
     forbidden = [str(path) for path in [*forbidden_roots, package_root]]
-    sensitive = ("truth", "scoring", "scorer", "clean", "raw", "manysig", "manytx")
+    sensitive = {"truth", "scoring", "scorer", "clean", "raw", "manysig", "manytx"}
     violations: list[dict[str, str]] = []
     paths = [str(row["path"]) for row in ledger]
     if not any(_inside(path, str(runtime_root)) for path in paths):
@@ -111,8 +112,13 @@ def _audit_ledger(
     if not any(_inside(path, str(output_root)) for path in paths):
         violations.append({"path": str(output_root), "reason": "output_root_not_observed"})
     for path in paths:
-        lower_parts = [part.lower() for part in PurePosixPath(path).parts]
-        if any(token in part for part in lower_parts for token in sensitive):
+        path_tokens = {
+            token
+            for part in PurePosixPath(path).parts
+            for token in re.split(r"[^a-z0-9]+", part.lower())
+            if token
+        }
+        if path_tokens & sensitive:
             violations.append({"path": path, "reason": "sensitive_path_opened"})
             continue
         if any(_inside(path, root) for root in forbidden):
@@ -131,6 +137,11 @@ def _audit_ledger(
         "successful_open_count": sum(int(row["successful_open_count"]) for row in ledger),
         "violations": violations,
     }
+
+
+def _predictor_failure_message(returncode: int, stderr: str) -> str:
+    tail = stderr[-4000:]
+    return f"Landlock predictor failed with return code {returncode}; stderr_tail={tail}"
 
 
 def run(args: argparse.Namespace) -> dict[str, Any]:
@@ -330,7 +341,7 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
         output / "predictor_stdout_receipt.json", stdout_receipt
     )
     if completed.returncode != 0:
-        raise RuntimeError(f"Landlock predictor failed with return code {completed.returncode}")
+        raise RuntimeError(_predictor_failure_message(int(completed.returncode), stderr))
     if audit["status"] != "PASS" or audit["package_source_path_opened_after_predictor_exec"]:
         raise RuntimeError("post-run open ledger violated the formal allowlist")
     assert predictor_result is not None
