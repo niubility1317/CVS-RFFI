@@ -113,3 +113,12 @@ def test_build_spec_rejects_target_cache_without_both_registered_roles() -> None
         assert "exact roles" in str(exc)
     else:
         raise AssertionError("invalid target cache spec was accepted")
+
+
+def test_build_spec_accepts_stage2b_target_old_only_scope() -> None:
+    spec = _spec(Path("."))
+    spec["cache_scope"] = "stage2_target_old"
+    spec["role_specs"][0]["role"] = "target_old"
+    checked = builder.validate_build_spec(spec)
+    assert checked["cache_scope"] == "stage2_target_old"
+    assert checked["role_specs"][0]["role"] == "target_old"

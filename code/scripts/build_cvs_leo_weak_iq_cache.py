@@ -56,6 +56,7 @@ BUILD_SPEC_SCHEMA = "cvs_leo_weak_iq_cache_build_spec_v1"
 SCOPE_ROLES = {
     "source_train": {"source"},
     "source_validation": {"source"},
+    "stage2_target_old": {"target_old"},
     "stage2_registered": {"target_old", "target_new"},
 }
 

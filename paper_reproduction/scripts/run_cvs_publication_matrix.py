@@ -175,6 +175,33 @@ def _artifact_status(row: MatrixRow, *, scenarios: int = 3, query_per_tx: int = 
         "per_receiver_transmitter_day",
     }
     errors: list[str] = []
+    required_protocol = {
+        "phase2_sample_view_policy": "leo_weak_only_no_clean_access",
+        "clean_sample_access": False,
+        "clean_derived_signal_access": False,
+        "phase2_clean_dataset_reachable": False,
+        "phase2_clean_cache_reachable": False,
+        "phase2_clean_control_flow_reachable": False,
+        "phase2_pretrained_artifact_policy": "sealed_phase1_checkpoint_only",
+        "target_channel_view": "leo_weak_only",
+        "phase2_query_decision_policy": "per_sample_all_registered_classes",
+        "phase2_query_role_oracle_access": False,
+        "phase2_query_true_batch_class_count_access": False,
+        "phase2_query_class_quota_access": False,
+        "phase2_query_batch_global_assignment": False,
+    }
+    for field, expected in required_protocol.items():
+        if manifest.get(field) != expected:
+            errors.append(f"protocol_guard:{field}")
+    if manifest.get("overlay_applied_before_phase2") is not True:
+        errors.append("overlay_not_proven_before_phase2")
+    forbidden_config = {
+        "manysig_pkl", "manytx_pkl", "dataset_path", "source_dataset",
+        "target_dataset", "source_train_channel_view", "train_channel_view",
+    }
+    leaked = sorted(forbidden_config & set(resolved))
+    if leaked:
+        errors.append(f"raw_or_clean_config_keys={leaked}")
     if bool(manifest.get("support_query_overlap", True)):
         errors.append("support_query_overlap")
     if manifest.get("all_tests_satellite_augmented") is not True:
@@ -238,6 +265,7 @@ def _command(
     config: Path,
     cvs_config: Path | None = None,
     module_override: str | None = None,
+    device: str = "cuda:0",
 ) -> list[str]:
     module = module_override or (
         "paper_reproduction.cvs_aligned.cvs_method_runner"
@@ -257,7 +285,7 @@ def _command(
         "--run-dir",
         row.run_dir,
         "--device",
-        "cuda:0",
+        str(device),
         "--experiment-id",
         row.experiment_id,
         "--method",
@@ -292,6 +320,7 @@ def main() -> int:
     parser.add_argument("--k-grid", default=",".join(str(value) for value in DEFAULT_K))
     parser.add_argument("--seeds", default=",".join(str(value) for value in DEFAULT_SEEDS))
     parser.add_argument("--python", default=sys.executable)
+    parser.add_argument("--device", default="cuda:0")
     parser.add_argument(
         "--module-override",
         default=None,
@@ -381,6 +410,7 @@ def main() -> int:
             config=args.config,
             cvs_config=args.cvs_config,
             module_override=args.module_override,
+            device=args.device,
         )
         started = time.time()
         _append_event(event_path, {"event": "start", "row": asdict(row), "command": command, "time": started})

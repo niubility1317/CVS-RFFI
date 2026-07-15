@@ -64,7 +64,7 @@ def main() -> int:
     for metrics_path in sorted(args.run_root.rglob("metrics.json")):
         run_dir = metrics_path.parent
         payload = json.loads(metrics_path.read_text(encoding="utf-8"))
-        if payload.get("schema") != "adv3b02_stage2b_supervised_da_v1":
+        if payload.get("schema") != "adv3b02_stage2b_supervised_da_v2":
             continue
         method = str(payload["method_id"])
         receiver = str(payload["target_receiver_label"])
@@ -91,7 +91,40 @@ def main() -> int:
             "score_count": len(scores) == 360,
             "trace_count": len(trace) == expected_trace,
             "scenarios": tuple(payload["metrics_by_scenario"]) == SCENARIOS,
+            "leo_weak_only": manifest.get("phase2_sample_view_policy")
+            == "leo_weak_only_no_clean_access",
+            "no_clean_sample": manifest.get("clean_sample_access") is False,
+            "no_clean_derived": manifest.get("clean_derived_signal_access") is False,
+            "no_clean_dataset_reachability": manifest.get("phase2_clean_dataset_reachable")
+            is False,
+            "no_clean_cache_reachability": manifest.get("phase2_clean_cache_reachable")
+            is False,
+            "no_clean_control_flow": manifest.get("phase2_clean_control_flow_reachable")
+            is False,
+            "sealed_phase1_checkpoint": manifest.get("phase2_pretrained_artifact_policy")
+            == "sealed_phase1_checkpoint_only",
+            "overlay_before_phase2": manifest.get("overlay_applied_before_phase2") is True,
+            "per_sample_query": manifest.get("phase2_query_decision_policy")
+            == "per_sample_all_registered_classes",
+            "no_role_oracle": manifest.get("phase2_query_role_oracle_access") is False,
+            "no_true_batch_class_count": manifest.get("phase2_query_true_batch_class_count_access") is False,
+            "no_class_quota": manifest.get("phase2_query_class_quota_access") is False,
+            "no_global_assignment": manifest.get("phase2_query_batch_global_assignment")
+            is False,
+            "target_cache_verified": isinstance(
+                manifest.get("target_leo_weak_cache_audit"), dict
+            ),
         }
+        if method == "protonet_cda":
+            checks["source_cache_not_opened"] = (
+                manifest.get("source_leo_weak_cache_used") is False
+                and manifest.get("source_cache_declared_but_not_opened") is True
+            )
+        else:
+            checks["source_cache_verified"] = (
+                manifest.get("source_leo_weak_cache_used") is True
+                and isinstance(manifest.get("source_leo_weak_cache_audit"), dict)
+            )
         failed = [name for name, passed in checks.items() if not passed]
         if failed:
             errors.append(f"{run_dir}:{failed}")

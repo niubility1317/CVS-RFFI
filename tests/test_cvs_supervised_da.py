@@ -103,8 +103,30 @@ def test_dadda_sda_uses_true_labels_for_target_ce_and_lmmd() -> None:
     assert target_logits.grad is not None
 
 
+def _phase2_protocol_fields() -> dict:
+    return {
+        "phase2_sample_view_policy": "leo_weak_only_no_clean_access",
+        "clean_sample_access": False,
+        "clean_derived_signal_access": False,
+        "phase2_clean_dataset_reachable": False,
+        "phase2_clean_cache_reachable": False,
+        "phase2_clean_control_flow_reachable": False,
+        "phase2_pretrained_artifact_policy": "sealed_phase1_checkpoint_only",
+        "target_channel_view": "leo_weak_only",
+        "target_channel_scenarios": [
+            "leo_clear_weak", "leo_low_elev_weak", "leo_rain_weak"
+        ],
+        "phase2_query_decision_policy": "per_sample_all_registered_classes",
+        "phase2_query_role_oracle_access": False,
+        "phase2_query_true_batch_class_count_access": False,
+        "phase2_query_class_quota_access": False,
+        "phase2_query_batch_global_assignment": False,
+    }
+
+
 def test_supervised_da_manifest_blocks_support_query_leakage() -> None:
     payload = {
+        **_phase2_protocol_fields(),
         "method_id": "mrior_sda",
         "cvs_extension": True,
         "stage": "Stage2-B",
@@ -127,6 +149,7 @@ def test_supervised_da_manifest_blocks_support_query_leakage() -> None:
 def test_supervised_da_manifest_accepts_only_registered_target_support(method_id: str) -> None:
     checked = validate_supervised_da_manifest(
         {
+            **_phase2_protocol_fields(),
             "method_id": method_id,
             "cvs_extension": True,
             "stage": "Stage2-B",
@@ -137,3 +160,19 @@ def test_supervised_da_manifest_accepts_only_registered_target_support(method_id
         }
     )
     assert checked["supervised_target_support"] is True
+
+
+def test_supervised_da_manifest_blocks_missing_clean_reachability_guards() -> None:
+    payload = {
+        **_phase2_protocol_fields(),
+        "method_id": "protonet_cda",
+        "cvs_extension": True,
+        "stage": "Stage2-B",
+        "k_shot": 1,
+        "target_labels_scope": "registered_support_only",
+        "target_old_support_sample_ids": ["support"],
+        "target_old_query_sample_ids": ["query"],
+    }
+    payload.pop("phase2_clean_dataset_reachable")
+    with pytest.raises(ValueError, match="LOCAL_PROTOCOL_REPAIR_REQUIRED"):
+        validate_supervised_da_manifest(payload)

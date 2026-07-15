@@ -95,5 +95,7 @@ def test_publication_matrix_can_route_shared_adv3b02_runner() -> None:
     command = _command(
         row, python="python", config=Path("config.json"),
         module_override="paper_reproduction.cvs_aligned.adv3b02_supervised_da_runner",
+        device="cuda:3",
     )
     assert command[3] == "paper_reproduction.cvs_aligned.adv3b02_supervised_da_runner"
+    assert command[command.index("--device") + 1] == "cuda:3"

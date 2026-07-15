@@ -242,7 +242,7 @@ def dadda_sda_objective(
 
 
 def validate_supervised_da_manifest(payload: dict[str, Any]) -> dict[str, Any]:
-    """Fail closed on support/query leakage and unequal supervised budgets."""
+    """Fail closed on clean reachability, query Oracle access, and leakage."""
 
     method = str(payload.get("method_id", "")).strip().lower()
     if method not in {"protonet_cda", "mrior_sda", "dadda_sda"}:
@@ -266,6 +266,33 @@ def validate_supervised_da_manifest(payload: dict[str, Any]) -> dict[str, Any]:
         raise ValueError("target query cannot be used for training")
     if payload.get("target_query_used_for_model_selection", False):
         raise ValueError("target query cannot be used for model selection")
+    protocol_fields = {
+        "phase2_sample_view_policy": "leo_weak_only_no_clean_access",
+        "clean_sample_access": False,
+        "clean_derived_signal_access": False,
+        "phase2_clean_dataset_reachable": False,
+        "phase2_clean_cache_reachable": False,
+        "phase2_clean_control_flow_reachable": False,
+        "phase2_pretrained_artifact_policy": "sealed_phase1_checkpoint_only",
+        "target_channel_view": "leo_weak_only",
+        "phase2_query_decision_policy": "per_sample_all_registered_classes",
+        "phase2_query_role_oracle_access": False,
+        "phase2_query_true_batch_class_count_access": False,
+        "phase2_query_class_quota_access": False,
+        "phase2_query_batch_global_assignment": False,
+    }
+    failed_protocol = [
+        key for key, expected in protocol_fields.items()
+        if payload.get(key) != expected
+    ]
+    if failed_protocol:
+        raise ValueError(
+            "LOCAL_PROTOCOL_REPAIR_REQUIRED: supervised DA protocol fields failed: "
+            f"{failed_protocol}"
+        )
+    scenarios = tuple(str(value) for value in payload.get("target_channel_scenarios", []))
+    if scenarios != ("leo_clear_weak", "leo_low_elev_weak", "leo_rain_weak"):
+        raise ValueError("formal supervised DA requires the ordered LEO_weak scenario tuple")
     checked = dict(payload)
     checked.update(
         {

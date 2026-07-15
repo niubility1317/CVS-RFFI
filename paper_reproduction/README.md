@@ -25,6 +25,8 @@ CVS extension scope:
 
 - `cvs_aligned/`: CVS Stage2-C protocol, metrics, and evaluation adapter.
 - `configs/*_cvs_stage2c_*.json`: sanitized CVS Stage2-C example configs.
+- `cvs_aligned/adv3b02_supervised_da_runner.py`: Stage2-B target-old comparison runner for ProtoNet CDA, MRIOR-SDA, and DADDA-SDA. The current runner accepts only sealed post-channel `leo_*_weak` cache sets, exposes no dataset path, uses per-sample predictions over all registered old classes, and emits the clean-reachability/query-Oracle guards required by `docs/PROJECT_PROTOCOL.md`.
+- `scripts/build_adv3b02_three_da_leo_weak_plan.py`: creates one offline source cache specification, 25 receiver-seed target-old cache specifications, and a 375-row Phase2 execution plan (`125` rows per method). Dataset paths remain confined to the offline cache-preparation specifications and are not copied into the Phase2 config.
 
 Boundary:
 
@@ -33,6 +35,7 @@ Boundary:
 - Receiver-Agnostic Two-stage UDA and DADDA retain their own method-specific boundaries. Mitigating Receiver Impact DA is a bounded paper-equation closed-set check, not an exact paper reproduction. None of these are CVS Stage2-A/B/C, satellite/LEO deployment, open-set, or new-class registration evidence.
 - DADDA currently supports source-only and proposed DADDA rows; the paper's DANN, DAN, DSAN, WD, DCORAL, CDAN baselines, SNR robustness, ablations, visualizations, kernel sweep, and timing table remain pending.
 - Orthogonal Incremental SEI is a paper-faithful closed-set FSCIL baseline. It does not define disjoint `R_s/R_t`, target-old support, target-new support under LEO view, or unknown-query rejection; any CVS use must live in `cvs_aligned/` with explicit `cvs_extension=true`.
+- The shared-ADV3B02 Stage2-B comparison is a CVS extension rather than an exact architecture reproduction. MRIOR-SDA and DADDA-SDA update the ADV3B02 identity backbone and must be reported as non-lightweight comparison methods; ProtoNet CDA keeps the backbone frozen. Historical rows that loaded raw/clean IQ inside Phase2 remain `PROTOCOL_INVALID_FOR_PHASE2` and must not be mixed with the sealed-cache rerun.
 
 Log separation:
 
