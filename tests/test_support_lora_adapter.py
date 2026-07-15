@@ -1004,6 +1004,7 @@ def test_p4_identity_control_is_zero_update_and_collision_safe() -> None:
         ]
     )
     _validate_deployment_controls(args)
+    assert args.adapt_objective == "p4_identity"
     run_id = build_support_run_id(args)
     assert "p4_aaaaaaaaaaaa_identity" in run_id
     assert "rx_8-8_new_20_seed_713101_k_10" in run_id

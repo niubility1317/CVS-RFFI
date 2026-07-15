@@ -1890,7 +1890,7 @@ def main(argv: Sequence[str] | None = None) -> int:
             "original_checkpoint_trainable_parameters": 0,
             "original_checkpoint_gradient_updates": 0,
             "full_model_finetune": False,
-            "resource_tier": "preferred_identity_control",
+            "resource_tier": "preferred",
             "trainable_parameter_cap": 50_000,
             "persistent_state_cap_bytes": 256 * 1024,
         }
