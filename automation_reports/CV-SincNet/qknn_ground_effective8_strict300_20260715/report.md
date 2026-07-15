@@ -143,6 +143,8 @@ PYTHONPATH=code:. "$PY" paper_reproduction/scripts/run_cvs_stage2c_effective8_st
 
 attempt2于PID`1871127`落地后fail closed。它完整生成并封印predictor/scorer package，但pre-run evidence拒绝`/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python`，因为该路径是指向常规文件`python3.10`的符号链接；未生成prediction、scoring receipt或smoke receipt。修复不改变“证据输入必须为非符号链接常规文件”规则，而是在严格package runner中把`sys.executable`解析为物理解释器，再同时传给pre-run evidence与Landlock pinned runner；相关测试`5 passed`。attempt3允许复用已经完整且会重新校验seal的package，不覆盖它，也不复用任何prediction/scorer输出；使用独立`smoke_driver_attempt3.pid`、`logs/smoke_driver_attempt3.out`和`logs/smoke_attempt3`。
 
+提交`6f8bd42`中的strict package runner已同步到N607，local/remote SHA均为`241b3a4b908a9d5c34978c78af1ae47cc406ef9014376c63d4eaa8761c5a5d14`。23:42实时清单再次确认`gpu_compute=[]`、`active_training_processes=[]`，同步与清单连接结束后无本地SSH/TCP22残留。attempt3仍仅获smoke权限，完整矩阵未授权。
+
 ## 完成后结果表
 
 实验完成后在本节追加逐单元同一行结果，至少包含candidate ID、机制、receiver/TX split、K-shot、seed、old/seen-new/unknown指标、coverage/rollback/defer、loss/adapter摘要和最终判定。不得用来自不同单元的独立极值替代联合行。
