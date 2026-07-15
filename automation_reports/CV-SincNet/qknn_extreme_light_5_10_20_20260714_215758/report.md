@@ -608,3 +608,5 @@ CUDA_VISIBLE_DEVICES=7 PYTHONPATH=/home/szu2070436088/2510044040/CV-SincNet/code
 ```
 
 训练完成后只运行一次同切分联合固定/自适应审计，并强制读取training manifest验证新方法、support-only、无角色/配额、31,200参数、62,400B和state哈希；不做超参或门限二次搜索。本地相关52项pytest、两脚本`py_compile`和`git diff --check`PASS。
+
+09:53 CST直连preflight PASS；此前8个RIEI进程均已自然结束，8张GPU当前均10MiB且无compute process，本次可独占GPU7，不涉及干预。目标run根不存在。提交=`98ff756`；target trainer本地/远端SHA256=`8397e765617d7e3b26e8b93ac53a16ef2bdfcffeb9e210e3066924ae3d6ee1c8`，benchmark=`d453197bb602e21a8b169d6e00c038d6a0916e78773eff04c1fe800e6dd43ae8`，远端编译PASS；SSH/SCP后连接清零，可以启动v11。
