@@ -639,3 +639,10 @@
 - 直接N607预检通过；8个原queue与首批8个trainer PID继续运行，无重启或进程替换。row1–8的metrics连续写入epoch`151,148,146,151,148,152,151,147/200`，均无`final`字段。
 - 完整读取32份当前日志，共6274行/462603字节；所有协议marker齐全，`PAPER-EVAL-SUMMARY=0`、`FINAL-TEST=0`、完成job=0，硬错误0。
 - GPU0–7各1个本任务compute，SM约22%–35%，容量合规。当前判定为`RUNNING_HEALTHY_THROUGH_EPOCH_146_152`，尚未进入epoch191–200正式窗口。
+## 2026-07-15 10:58用户终止与唯一版本固化决策
+
+- 用户明确要求停止当前RIEI实验，并将当前胜出配置固化为唯一支持的论文复现版本：model seed42、split seed1337、`short_stem1d`、SGD momentum0、CE/MI/IE mean、no-RMS、no-feature-norm、200epoch、论文last10。
+- 状态变更前直接N607预检通过。目标run`paper_repro_riei_table3_shortstem_modelseed42_split1337_20260715_100000`仍有8个queue和8个trainer；row1–8分别到epoch178、174、172、178、173、178、178、173，均无final，row9–12尚未启动。目标进程全部属于同一PGID/SID`1115749`，GPU0–7各1个目标trainer，未发现其他compute。
+- 终止范围严格限定为该run的queue、wrapper和trainer进程树；先阻止queue继续提交row9–12，再对目标树发送TERM并验证退出。不得删除或覆盖该run的partial日志、metrics、checkpoint、manifest和queue记录。
+- “删除其他版本”的执行范围限定为旧RIEI论文复现launcher入口；历史报告、日志、metrics、checkpoint、run、分析包、snapshot和回归证据全部保留。CVS/Stage2/ratio-sweep等非论文复现RIEI入口不在删除范围。
+- 固化唯一入口计划为`code/scripts/launch_riei_paper_reproduction.sh`。由于用户在完整12行确认结束前主动停止，当前科学结论仍为`NOT_REPRODUCED`；“最终唯一复现版本”仅表示唯一支持实现，不表示完整Table III已经确认达标。
