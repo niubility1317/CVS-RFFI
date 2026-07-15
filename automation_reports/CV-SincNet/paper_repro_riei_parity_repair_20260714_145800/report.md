@@ -585,3 +585,29 @@
 - 直接N607预检通过；8个原queue与8个原trainer PID保持存活，无重启或进程替换。8份metrics均连续：seed0的row3/4/11/12分别为epoch`129,128,129,128`；seed42对应为`126,129,130,127`，均无`final`字段。
 - 完整读取32份当前日志，共5578行/407343字节；稳定partition、split seed1337、model seed0/42、short stem和momentum0 marker齐全。`PAPER-EVAL-SUMMARY=0`、`FINAL-TEST=0`、成功完成job=0；全量硬错误扫描计数0。
 - GPU0–7各仅1个本任务compute，SM约23%–39%，容量持续合规。当前判定为`RUNNING_HEALTHY_THROUGH_EPOCH_126_130`；正式last10仍须等待epoch191–200。
+
+## 2026-07-15 09:51固定partition模型seed诊断结果
+
+- 完成性：8/8个job均自然完成epoch200；8个`QUEUE-JOB-END status=0`、8个`PAPER-EVAL-SUMMARY`和8份含`FINAL-TEST`的训练日志齐全，原queue与trainer均退出。完整分析覆盖1600个epoch及32份日志的7812行/567362字节，硬错误0。
+- 小型证据包只含日志、metrics、manifest和scheduler TSV，不含dataset/checkpoint。远端与本地SHA256均为`050a7d306a961ce5515ddb49760f06b88f1c4860aac5e6f34b43dbe6e73f010e`；本地路径为`analysis_tmp/paper_repro_riei_modelseed_probe_split1337_20260715_083000/final_0951`。
+
+|model seed|row3|row4|row11|row12|四行MAE|改善行数|论文±2SD命中|预注册门槛|
+|---:|---:|---:|---:|---:|---:|---:|---:|---|
+|1337对照|68.95%|79.32%|67.03%|66.83%|5.83pp|—|1/4|对照|
+|0|61.88%|80.39%|65.87%|60.05%|8.42pp|0/4|0/4|失败|
+|42|65.56%|75.33%|67.92%|64.58%|4.59pp|3/4|3/4|通过|
+
+- seed0在四行全部恶化，拒绝。seed42把四行MAE从`5.83pp`降至`4.59pp`，并在row3、4、11共3/4行降低绝对误差，满足预注册门槛；row12仍恶化至`-8.88pp`，因此诊断本身不能构成Table III复现成功。
+- seed42的逐行last10为row3`65.56±2.67%`、row4`75.33±1.59%`、row11`67.92±0.80%`、row12`64.58±0.77%`；对应final为`69.38,78.63,66.96,66.42%`。source validation均为`99.82%–99.83%`，训练稳定，无崩溃或欠拟合证据。
+
+## 2026-07-15 10:00 seed42完整Table III确认设计
+
+- 按预注册规则只允许model seed42进入完整12行；数据split seed继续固定1337，short stem、SGD momentum0、mean、no-RMS、no-feature-norm、200epoch和paper last10全部不变。
+- 新launcher预定为`code/scripts/launch_riei_table3_shortstem_modelseed42_20260715.sh`，run ID为`paper_repro_riei_table3_shortstem_modelseed42_split1337_20260715_100000`。GPU0–3各2个顺序job、GPU4–7各1个，planned peak仍为每GPU1个训练。
+- 最终声明门槛不变：完整12行MAE≤3pp且至少10/12进入论文±2SD。seed诊断通过只允许启动确认，不允许把四行结果外推为论文复现。
+
+### 本地验证与版本准备
+
+- launcher根目录与Git镜像内容一致；`bash -n`通过，dry-run确认12个job、8个capacity gate、12条`WISIG_SPLIT_SEED=1337`、12条mean命令，model seed固定42。
+- 根目录仍不是Git仓库；快照位于`code/snapshots/paper_repro_riei_table3_shortstem_modelseed42_split1337_20260715_100000/`。launcher SHA256为`1a10ece3a47ef6d64ef366a1d656d30d1e27a0857f9ec196b8af94929c45a9ce`。
+- 启动前仍须提交本任务文件、重新执行直接N607预检、确认目标目录不存在和实时容量，再同步launcher并核对远端hash/bash-n/12-job dry-run。
