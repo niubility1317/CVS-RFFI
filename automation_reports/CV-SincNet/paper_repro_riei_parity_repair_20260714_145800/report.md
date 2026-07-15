@@ -627,3 +627,9 @@
 - 正式命令执行成功；launcher再次确认GPU0–7均`current=0`、`planned_peak=1`、`total_peak=1≤2`。8个queue PID为`1115823,1115825,1115828,1115833,1115837,1115842,1115853,1115859`；首批row1–8 trainer PID为`1116006,1116023,1116045,1116040,1116057,1116061,1116071,1116076`。
 - 约4分钟健康检查时8个queue/trainer均存活，row1–8分别完整写入epoch`10,8,9,9,8,9,9,9/200`。32份当前日志共681行/101384字节，稳定partition、split seed1337、model seed42和short stem marker各8个，硬错误0。
 - GPU0–7各仅1个本任务compute，SM约28%–38%，容量合规。当前判定为`RUNNING_STARTUP_HEALTHY_THROUGH_EPOCH_8_10`；正式结论必须等待全部12行自然完成并按paper last10计算。
+
+### 10:21只读心跳监控
+
+- 直接N607预检通过；8个原queue与首批8个trainer PID均持续运行，无重启或进程替换。row1–8的metrics分别连续写入epoch`67,65,64,67,64,66,67,65/200`，均无`final`字段，row9–12尚未启动。
+- 完整读取32份当前日志，共3435行/270783字节；稳定partition、split seed1337、model seed42及short-stem marker齐全。`PAPER-EVAL-SUMMARY=0`、`FINAL-TEST=0`、成功完成job=0；全量硬错误扫描计数0。
+- GPU0–7各仅1个本任务compute，SM约28%–36%，容量持续合规。当前判定为`RUNNING_HEALTHY_THROUGH_EPOCH_64_67`，未进入正式last10窗口。
