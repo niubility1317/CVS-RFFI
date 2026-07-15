@@ -155,6 +155,8 @@ strict_v7构建完成：12项复用artifact与strict_v6逐字节`cmp=PASS`，can
 
 v2 attempt1以PID`1880017`运行，pre-run evidence再次成功封印，但请求契约随后因`tta_policy.uses_query_role=false`命中`query_role`禁词而fail closed；没有prediction/scoring/smoke receipt。契约allowlist现覆盖adaptive TTA要求的完整否定guard：仅允许`uses_query_role=false`与`uses_class_quota=false`，任一为`true`仍拒绝；包含完整3项TTA访问guard的13项request/runtime测试通过。由于v2 cell已有不可变pre-run evidence，下一次使用全新`..._landlock_strict300_v3`输出根，并基于修复代码构建全新runtime closure；v2根不修改。
 
+strict_v8已从修复提交构建：12项模型/capsule/config复用artifact逐字节一致，新闭包SHA=`e04ebc9eb907f6eb144bbbd888f3d4447b9914ca94c688d41134717ea086fd1e`，闭包内契约成员SHA=`be2a7daf3b192ad7a9d26450d44eec41f76c55ff47286e4859b931515f13f119`。新v10清单绑定strict_v8与全新`..._landlock_strict300_v3`输出根，仍为25/75/300/900、`launch_authority=false`，SHA=`d748b0b558448ddf9e961023f1fb21766a6e72ae505a4bde955cab1d6597d50b`。
+
 ## 完成后结果表
 
 实验完成后在本节追加逐单元同一行结果，至少包含candidate ID、机制、receiver/TX split、K-shot、seed、old/seen-new/unknown指标、coverage/rollback/defer、loss/adapter摘要和最终判定。不得用来自不同单元的独立极值替代联合行。

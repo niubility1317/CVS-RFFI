@@ -1,0 +1,165 @@
+{
+  "schema": "cvs_phase2_predictor_runtime_closure_v1",
+  "runtime_mount_path": "/runtime/code",
+  "python_path": "/runtime/code",
+  "entrypoint": "/runtime/code/scripts/run_cvs_stage2_predictor.py",
+  "member_allowlist": [
+    "cvsrffi/__init__.py",
+    "cvsrffi/phase2_memfd_snapshot.py",
+    "cvsrffi/phase2_runtime_contract.py",
+    "cvsrffi/phase2_symmetric_head.py",
+    "cvsrffi/stage2_predictor_bundle.py",
+    "cvsrffi/stage2_predictor_runtime.py",
+    "cvsrffi/stage2_predictor_entry.py",
+    "cvsrffi/stage2_prediction_artifact.py",
+    "scripts/run_cvs_stage2_predictor.py"
+  ],
+  "member_count": 9,
+  "members": [
+    {
+      "relative_path": "cvsrffi/__init__.py",
+      "sha256": "db0119aff842e1af0991535c9681b59ac404950dbbae3772487aa74ec0fc9c4d",
+      "size_bytes": 226,
+      "imports": []
+    },
+    {
+      "relative_path": "cvsrffi/phase2_memfd_snapshot.py",
+      "sha256": "60d4e1f53bc5813862465a6b3d145cd452aabfe5b81ba73070841dd1ad2a7057",
+      "size_bytes": 11919,
+      "imports": [
+        "__future__",
+        "contextlib",
+        "dataclasses",
+        "fcntl",
+        "hashlib",
+        "json",
+        "os",
+        "pathlib",
+        "stat",
+        "typing"
+      ]
+    },
+    {
+      "relative_path": "cvsrffi/phase2_runtime_contract.py",
+      "sha256": "be2a7daf3b192ad7a9d26450d44eec41f76c55ff47286e4859b931515f13f119",
+      "size_bytes": 15075,
+      "imports": [
+        "__future__",
+        "collections.abc",
+        "pathlib",
+        "re",
+        "typing"
+      ]
+    },
+    {
+      "relative_path": "cvsrffi/phase2_symmetric_head.py",
+      "sha256": "bc2072797924447b152e8fdf6bb2044d7807f058ca8879541e8dc6827105bade",
+      "size_bytes": 7330,
+      "imports": [
+        "__future__",
+        "numpy",
+        "typing"
+      ]
+    },
+    {
+      "relative_path": "cvsrffi/stage2_predictor_bundle.py",
+      "sha256": "80471219265134660a3ff3b878d5d9da245fda8a6a34502fdbef2509f6f93721",
+      "size_bytes": 28827,
+      "imports": [
+        "__future__",
+        "contextlib",
+        "cvsrffi.phase2_memfd_snapshot",
+        "cvsrffi.phase2_runtime_contract",
+        "hashlib",
+        "json",
+        "numpy",
+        "os",
+        "pathlib",
+        "re",
+        "stat",
+        "typing",
+        "zipfile"
+      ]
+    },
+    {
+      "relative_path": "cvsrffi/stage2_predictor_runtime.py",
+      "sha256": "8a71fd54d79ec2c7626c0ff207012821ac0170ef550631b2d4b91909d3795a8a",
+      "size_bytes": 36766,
+      "imports": [
+        "__future__",
+        "cvsrffi.phase2_symmetric_head",
+        "cvsrffi.stage2_predictor_bundle",
+        "hashlib",
+        "json",
+        "numpy",
+        "pathlib",
+        "time",
+        "torch",
+        "typing"
+      ]
+    },
+    {
+      "relative_path": "cvsrffi/stage2_predictor_entry.py",
+      "sha256": "7b80e37e4378fc83d284f35441581157d48dd429b026e2e68524160ec636d0f4",
+      "size_bytes": 10802,
+      "imports": [
+        "__future__",
+        "cvsrffi.phase2_runtime_contract",
+        "cvsrffi.stage2_predictor_bundle",
+        "cvsrffi.stage2_predictor_runtime",
+        "numpy",
+        "pathlib",
+        "torch",
+        "typing"
+      ]
+    },
+    {
+      "relative_path": "cvsrffi/stage2_prediction_artifact.py",
+      "sha256": "45464f0f08f46f40d3a72874b0c6c2f79668b5dcb946c29c1de19deb8d2bd6d1",
+      "size_bytes": 28399,
+      "imports": [
+        "__future__",
+        "ctypes",
+        "datetime",
+        "errno",
+        "hashlib",
+        "io",
+        "json",
+        "numpy",
+        "os",
+        "pathlib",
+        "re",
+        "secrets",
+        "stat",
+        "sys",
+        "typing",
+        "zipfile"
+      ]
+    },
+    {
+      "relative_path": "scripts/run_cvs_stage2_predictor.py",
+      "sha256": "e736d39afcc8d1611975d431283a9f44d5c7d54e30ab360a1db5d33da2bf8375",
+      "size_bytes": 8958,
+      "imports": [
+        "__future__",
+        "argparse",
+        "cvsrffi.phase2_memfd_snapshot",
+        "cvsrffi.phase2_runtime_contract",
+        "cvsrffi.stage2_prediction_artifact",
+        "cvsrffi.stage2_predictor_bundle",
+        "cvsrffi.stage2_predictor_entry",
+        "json",
+        "numpy",
+        "os",
+        "pathlib",
+        "stat",
+        "sys",
+        "torch",
+        "typing"
+      ]
+    }
+  ],
+  "root_sha256": "e04ebc9eb907f6eb144bbbd888f3d4447b9914ca94c688d41134717ea086fd1e",
+  "copy_policy": "O_EXCL_NO_OVERWRITE_READ_ONLY",
+  "import_closure_policy": "EXACT_NO_TRAIN_DATASET_LEGACY"
+}
