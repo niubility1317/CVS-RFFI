@@ -149,6 +149,8 @@ attempt3以PID`1874959`运行，成功生成并封印pre-run runtime evidence，
 
 同步前闭包审计确认strict_v6的9文件runtime closure内含旧`phase2_runtime_contract.py`（成员SHA=`8a8e372b1cc5534b3f3926c350acd403d5ad2b7cf9759fe31f80eded03f5e8c3`）。因此v8清单不发布、不启动，标记为本地superseded fail-closed计划。下一步在全新`runtime_artifacts_strict_v7`中逐项复制v6已验证且字节不变的base/candidate runtime、capsule、parity、lock/runtime config，再从提交`710f80c`的当前代码重新构建独立runtime closure并核验全部SHA；不修改strict_v6。只有随后重生成且绑定strict_v7的新清单才可进入烟测。
 
+strict_v7构建完成：12项复用artifact与strict_v6逐字节`cmp=PASS`，candidate capsule=`825312b0…efd6`、base runtime=`f7921a60…5001`、candidate runtime=`ce12b7c3…50c9`保持不变；新9文件runtime closure SHA=`f3cf3a694bb3613e7d1c47a66bf66fccbbbd0255d188932092508e69dfd0a6ab`，其中`phase2_runtime_contract.py`SHA=`dae574f63d1c93ba232a21059b1c1382322467320244c0e80cc6804b97ada6e4`。证据回传至`evidence/runtime_artifacts_strict_v7/`。新v9清单绑定strict_v7和全新`..._landlock_strict300_v2`输出根，覆盖25/75/300/900，仍为`launch_authority=false`，SHA=`9d8bcb47fb9f0541e80a763aff4c0977cd7f595068aac0d79b6f269c4cffebc3`。
+
 ## 完成后结果表
 
 实验完成后在本节追加逐单元同一行结果，至少包含candidate ID、机制、receiver/TX split、K-shot、seed、old/seen-new/unknown指标、coverage/rollback/defer、loss/adapter摘要和最终判定。不得用来自不同单元的独立极值替代联合行。
