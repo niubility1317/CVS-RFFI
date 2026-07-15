@@ -11,6 +11,7 @@ from paper_reproduction.scripts.train_export_cvs_support_lora_adapter import (
     LoRALinear,
     _prototype_banks_from_matched_views,
     _validate_deployment_controls,
+    build_rx_shift_pair_cycle,
     inject_feat_joint_lora,
     inject_late_channel_film,
     enable_late_key_layer_finetune,
@@ -175,6 +176,39 @@ def test_ground_late_key_state_load_is_strict_and_within_patch_budget(tmp_path) 
     assert load_audit["tensor_count"] == 6
     assert audit["delta_patch_state_bytes_fp16"] == 62_400
     assert audit["deployment_added_macs_per_query_after_merge"] == 0
+
+
+def test_rx_shift_pair_cycle_uses_two_views_per_epoch_and_three_unique_views() -> None:
+    import numpy as np
+
+    physical = np.arange(4 * 2 * 8, dtype=np.float32).reshape(4, 2, 8)
+    rows = np.concatenate([physical, physical + 100, physical + 200], axis=0)
+    labels = np.tile(np.asarray([0, 0, 1, 1]), 3)
+    expanded, expanded_labels, audit = build_rx_shift_pair_cycle(
+        rows, labels, input_view_count=3
+    )
+    assert expanded.shape == (5 * 2 * 4, 2, 8)
+    assert expanded_labels.shape == (5 * 2 * 4,)
+    assert audit["receive_views_per_physical_sample_per_epoch"] == 2
+    assert audit["unique_receive_view_names"] == [
+        "rx_base",
+        "rx_shift_m2",
+        "rx_shift_p2",
+    ]
+    assert [row["scenario"] for row in audit["schedule"]] == [
+        "leo_clear_weak",
+        "leo_low_elev_weak",
+        "leo_rain_weak",
+        "leo_clear_weak",
+        "leo_low_elev_weak",
+    ]
+    assert [row["receive_views"][1] for row in audit["schedule"]] == [
+        "rx_shift_m2",
+        "rx_shift_p2",
+        "rx_shift_m2",
+        "rx_shift_p2",
+        "rx_shift_m2",
+    ]
 
 
 def test_rotating_single_view_film_uses_cached_teacher_and_step_cap(
@@ -386,8 +420,11 @@ def test_cli_accepts_sparse_key_layer_fast_adaptation_controls() -> None:
             "0.25",
             "--init_adapter_state",
             "ground_late_key.pt",
+            "--support_view_policy",
+            "rx_shift_pair_cycle",
         ]
     )
     _validate_deployment_controls(args)
     assert args.adapter_type == "late_key_ft"
     assert args.init_adapter_state.name == "ground_late_key.pt"
+    assert args.support_view_policy == "rx_shift_pair_cycle"

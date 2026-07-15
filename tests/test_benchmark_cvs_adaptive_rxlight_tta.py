@@ -7,6 +7,7 @@ import torch
 from paper_reproduction.scripts.benchmark_cvs_adaptive_rxlight_tta import (
     _reference_parity,
     apply_fp16_checkpoint_delta,
+    audit_adapter_manifest,
     build_view_prototypes,
     leave_one_out_support_scores,
     score_views,
@@ -75,3 +76,34 @@ def test_reference_parity_accepts_feature_cache_without_raw_iq(tmp_path) -> None
     audit = _reference_parity(path, arrays, [0], generated)
     assert audit["checked"] is True
     assert audit["min_cosine"] == pytest.approx(1.0)
+
+
+def test_adapter_manifest_requires_support_only_pair_provenance(tmp_path) -> None:
+    state = tmp_path / "state.pt"
+    state.write_bytes(b"state")
+    import hashlib
+
+    digest = hashlib.sha256(b"state").hexdigest()
+    manifest = {
+        "method": "support_only_late_key_ft_source_init_rx_shift_pair_v1",
+        "support_only": True,
+        "query_update_forbidden": True,
+        "query_labels_used_for_training": False,
+        "old_new_role_used_by_optimizer": False,
+        "class_quota_used_at_inference": False,
+        "epochs": 5,
+        "adapter_state_format": "fp16_delta_from_strict_checkpoint",
+        "adapter_state_sha256": digest,
+        "support_view_policy": "rx_shift_pair_cycle",
+        "runtime": {"optimizer_steps": 20},
+        "resources": {
+            "trainable_parameters": 31_200,
+            "adapter_state_bytes_fp16": 62_400,
+            "deployment_added_macs_per_query_after_merge": 0,
+        },
+    }
+    audit = audit_adapter_manifest(manifest, adapter_state=state)
+    assert audit["method"].endswith("rx_shift_pair_v1")
+    manifest["class_quota_used_at_inference"] = True
+    with pytest.raises(ValueError, match="no_class_quota"):
+        audit_adapter_manifest(manifest, adapter_state=state)

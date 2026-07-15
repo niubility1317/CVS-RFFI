@@ -135,6 +135,48 @@ def apply_fp16_checkpoint_delta(
     }
 
 
+def audit_adapter_manifest(
+    manifest: dict[str, Any], *, adapter_state: Path
+) -> dict[str, Any]:
+    """Fail closed on support-only sparse-key provenance before query scoring."""
+
+    resources = dict(manifest.get("resources", {}))
+    allowed_methods = {
+        "support_only_late_key_ft_source_init_v1",
+        "support_only_late_key_ft_source_init_rx_shift_pair_v1",
+    }
+    checks = {
+        "known_method": str(manifest.get("method", "")) in allowed_methods,
+        "support_only": manifest.get("support_only") is True,
+        "query_update_forbidden": manifest.get("query_update_forbidden") is True,
+        "no_query_labels": manifest.get("query_labels_used_for_training") is False,
+        "no_role_oracle": manifest.get("old_new_role_used_by_optimizer") is False,
+        "no_class_quota": manifest.get("class_quota_used_at_inference") is False,
+        "epoch_cap": 1 <= int(manifest.get("epochs", -1)) <= 5,
+        "delta_format": manifest.get("adapter_state_format")
+        == "fp16_delta_from_strict_checkpoint",
+        "parameter_count": int(resources.get("trainable_parameters", -1)) == 31_200,
+        "delta_tensor_bytes": int(resources.get("adapter_state_bytes_fp16", -1))
+        == 62_400,
+        "merged_added_macs": int(
+            resources.get("deployment_added_macs_per_query_after_merge", -1)
+        )
+        == 0,
+        "state_hash": str(manifest.get("adapter_state_sha256", ""))
+        == _sha256_file(adapter_state),
+    }
+    failed = [name for name, passed in checks.items() if not passed]
+    if failed:
+        raise ValueError(f"invalid support adapter manifest: {failed}")
+    return {
+        "method": str(manifest["method"]),
+        "checks": checks,
+        "support_view_policy": str(manifest.get("support_view_policy", "")),
+        "epochs": int(manifest["epochs"]),
+        "optimizer_steps": int(manifest.get("runtime", {}).get("optimizer_steps", -1)),
+    }
+
+
 def build_view_prototypes(
     support_features: np.ndarray,
     support_labels: np.ndarray,
@@ -385,6 +427,7 @@ def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
     parser.add_argument("--config", type=Path, required=True, help="Raw-IQ protocol config")
     parser.add_argument("--ckpt", type=Path, required=True)
     parser.add_argument("--adapter_state", type=Path, required=True)
+    parser.add_argument("--adapter_manifest", type=Path, default=None)
     parser.add_argument("--out_dir", type=Path, required=True)
     parser.add_argument("--reference_config", type=Path, default=None)
     parser.add_argument("--batch_size", type=int, default=256)
@@ -419,6 +462,14 @@ def main(argv: Sequence[str] | None = None) -> int:
     if not isinstance(delta_state, dict):
         raise TypeError("adapter_state must be a tensor dictionary")
     delta_audit = apply_fp16_checkpoint_delta(model, delta_state)
+    adapter_manifest_audit = None
+    if args.adapter_manifest is not None:
+        adapter_manifest = json.loads(
+            args.adapter_manifest.read_text(encoding="utf-8-sig")
+        )
+        adapter_manifest_audit = audit_adapter_manifest(
+            adapter_manifest, adapter_state=args.adapter_state
+        )
     model.to(device).eval()
 
     old_labels = [str(value) for value in config["target_old_tx_labels"]]
@@ -611,6 +662,10 @@ def main(argv: Sequence[str] | None = None) -> int:
         "adapter_state": str(args.adapter_state),
         "adapter_state_sha256": _sha256_file(args.adapter_state),
         "adapter_delta_audit": delta_audit,
+        "adapter_manifest": (
+            str(args.adapter_manifest) if args.adapter_manifest is not None else None
+        ),
+        "adapter_manifest_audit": adapter_manifest_audit,
         "persistent_state": {
             "adapter_tensor_bytes_fp16": 62_400,
             "five_view_prototype_tensor_bytes_fp16": int(5 * 26 * 256 * 2),

@@ -582,3 +582,29 @@ CUDA_VISIBLE_DEVICES=7 PYTHONPATH=/home/szu2070436088/2510044040/CV-SincNet/code
 09:41 CST直连N607 preflight再次PASS；8张GPU各有1个约624MiB既有RIEI进程，GPU7 PID=`1058292`，本次为短时只读推理且不超过每卡2实验上限。目标输出根不存在，checkpoint和最终adapter state存在。提交=`de51b32`；新脚本本地/远端SHA256均为`d74ad1d55c6e0dabf33b26c1f543bbddfbb58acb9fb4b3e72291c0e02c66835a`，远端`py_compile`PASS。首次只读inventory命令中的`$(date ...)`被本地PowerShell提前解释而只丢失时间字段，远端GPU/路径检查仍返回成功；这不是实验错误。每次SSH/SCP后本地`ssh.exe=0`且端口22连接为0，可以执行上述预注册命令。
 
 首次恢复检查PID=`1099773`在读取reference feature cache时失败关闭，未生成结果。根因是脚本误用强制要求`raw_iq`的训练cache loader读取按设计只含适配features/FFT的reference NPZ；错误发生在base-view结构复现前，不是模型/数据/性能失败。修复仅新增无pickle的通用参考NPZ读取并改用现有NumPy兼容转换，不改变checkpoint、delta、切分、门限网格或评分规则；新增回归后7项直接测试PASS，原`run.log`保留，重跑写`run_v2.log`。
+
+### v10多View恢复结果与v11压缩support多View预注册
+
+修复后PID=`1101159`完成。base-view与既有适配cache在三场景各780行的平均cosine均为1.0、最小cosine=0.99999988，结构复现门PASS。三场景support/query分别为260/520，ID哈希均一致且overlap=0；support LOO从105个预注册组合中选择`base margin=0.01`、`shift3 margin=0.01`、`disagreement≤2/3`，support完整5-view准确率73.9744%，自适应73.0769%，下降0.8974pp。query标签和query特征未参与门限选择。
+
+|同一FP16 delta，三场景合并|old|最低旧类|new20|最低新类|H|平均/P95前向|1/3/5触发率|
+|---|---:|---:|---:|---:|---:|---:|---:|
+|固定1-view|71.1111%|43.3333%|71.4167%|20.0000%|71.2636%|1.000/1|100/0/0%|
+|固定3-view|72.7778%|35.0000%|72.9167%|30.0000%|72.8472%|3.000/3|0/100/0%|
+|固定5-view|73.8889%|41.6667%|75.1667%|38.3333%|74.5223%|5.000/5|0/0/100%|
+|support标定1→3→5|72.7778%|40.0000%|74.1667%|33.3333%|73.4657%|2.291/5|64.94/5.58/29.49%|
+|正式目标|95.0000%|88.0000%|86.0000%|—|—|—|—|
+
+固定5-view相对1-view为old`+2.78pp`、new20`+3.75pp`、H`+3.26pp`，证明多View有真实正贡献；但距目标仍差old21.11pp、floor46.33pp、new20 10.83pp，不能把历史高性能主要归因于5-view。自适应相对固定5-view以平均前向减少54.18%换取old`-1.11pp`、new20`-1.00pp`、H`-1.06pp`，属于有效计算压缩；P95仍为5，绝对性能失败，不能晋升。逻辑前向数来自逐样本门控轨迹；本次为公平比较一次性预计算全部5-view，未测真实条件执行wall latency，不能把54.18%直接宣称为实测延迟下降。
+
+artifact已回收至`E:\type10-7\local_artifacts\qknn_extreme_light_sourceinit_keyft5_adaptive_tta_20260715_v10`，共6文件682,646B；四个结果artifact的SHA256为manifest=`07780b11...60f`、summary=`639d9e6d...a90`、per-class=`384173fd...d0b`、predictions=`f3774839...1c0`。完整96行成功日志错误扫描为空；首次失败日志同时保留。部署状态为FP16 delta62,400B+5套FP16原型66,560B+门限12B=128,972B，低于128KiB 2,100B。
+
+v11不再调整query门限，而把多View前移至support快适应。遵守`项目.md`每个support最多3个接收View：唯一View集合为base、shift-2、shift+2；每个epoch只训练base+一个交替shift的2-view pair，场景按clear→low→rain→clear→low轮换。5epoch形成5个预注册slot，SGD无momentum、lr=`3e-4`、wd=`1e-4`、teacher0.25、batch130、clip1、最多50步，预计20步/7,800个support前向样本等效。相对三场景均堆满rx_shift3的估算25,740个前向等效减少69.70%；参数仍31,200、最终delta仍62,400B、query无新增adapter MAC。方法名固定为`support_only_late_key_ft_source_init_rx_shift_pair_v1`，角色/配额/query权限不变。
+
+训练run=`qknn_extreme_light_sourceinit_keyft5_rxshiftpair_20260715_v11`：
+
+```bash
+CUDA_VISIBLE_DEVICES=7 PYTHONPATH=/home/szu2070436088/2510044040/CV-SincNet/code:/home/szu2070436088/2510044040/CV-SincNet /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u paper_reproduction/scripts/train_export_cvs_support_lora_adapter.py --config paper_reproduction/configs/cvs_qknnv42_extreme_light_20new_stage2c_k10_rawiq_20260715_n607.json --ckpt runs/phase1_adv3_mechanism32_queue_20260701/ADV3B02_CORE90_SOFT_E200/best_joint_safe_ssdg.pth --out_root runs/qknn_extreme_light_sourceinit_keyft5_rxshiftpair_20260715_v11 --receiver 8-8 --new_count 20 --seed 713101 --k_shot 10 --adapter_type late_key_ft --init_adapter_state runs/qknn_ground_source_rxlight5_keyft20_20260715_v10/ground_source_rxlight5_late_key_ft_seed_713101_valrx_2-19/ground_late_key_ft_state_fp16.pt --epochs 5 --optimizer sgd --max_optimizer_steps 50 --grad_clip 1 --view_sampling_mode rotating_single --support_view_policy rx_shift_pair_cycle --matched_view_teacher_weight 0.25 --learning_rate 3e-4 --weight_decay 1e-4 --temperature 18 --feature_anchor_weight 0.2 --batch_size 130 --device cuda:0
+```
+
+训练完成后只运行一次同切分联合固定/自适应审计，并强制读取training manifest验证新方法、support-only、无角色/配额、31,200参数、62,400B和state哈希；不做超参或门限二次搜索。本地相关52项pytest、两脚本`py_compile`和`git diff --check`PASS。

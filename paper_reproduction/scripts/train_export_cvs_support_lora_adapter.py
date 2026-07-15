@@ -32,6 +32,7 @@ for candidate in (str(REPO_ROOT), str(CODE_ROOT)):
     sys.path.insert(0, candidate)
 
 from cvsrffi.checkpoint_loading import build_exact_ssdg_model_from_checkpoint
+from export_spaceborne_features import _satellite_tta_views
 from paper_reproduction.cvs_aligned.cvs_method_runner import SCENARIOS
 from paper_reproduction.scripts.train_export_cvs_micro_iq_adapter import (
     _batched_feature_forward,
@@ -42,6 +43,7 @@ from paper_reproduction.scripts.train_export_cvs_micro_iq_adapter import (
     _norm_rows,
     _numpy_to_tensor_compat,
     _sha256_file,
+    _tensor_to_numpy_compat,
     _write_trace,
     assemble_support_views,
     export_adapted_cache,
@@ -75,6 +77,95 @@ LATE_KEY_FT_TARGETS = (
     "id_backbone.f_proj",
     "id_backbone.pa_proj.0",
 )
+
+RX_SHIFT_PAIR_SLOT_COUNT = 5
+RX_SHIFT_PAIR_VIEW_NAMES = ("rx_base", "rx_shift_m2", "rx_shift_p2")
+
+
+def build_rx_shift_pair_cycle(
+    support_rows: np.ndarray,
+    support_labels: np.ndarray,
+    *,
+    input_view_count: int,
+) -> tuple[np.ndarray, np.ndarray, dict[str, Any]]:
+    """Build five two-view epoch slots from three legal support scenarios.
+
+    Each slot contains the base view plus exactly one +/-2 sample shift.  The
+    scenario rotates over the three formal LEO caches while the shift sign
+    alternates.  Across the whole adaptation there are only three registered
+    receive views (base, shift -2, shift +2), preserving the project cap.
+    """
+
+    rows = np.asarray(support_rows, dtype=np.float32)
+    labels = np.asarray(support_labels, dtype=np.int64)
+    if int(input_view_count) != len(SCENARIOS):
+        raise ValueError(
+            "rx_shift_pair_cycle requires exactly three formal scenario views"
+        )
+    if len(rows) == 0 or len(rows) % int(input_view_count) != 0:
+        raise ValueError("support rows cannot be grouped by formal scenario")
+    physical_count = int(len(rows) // int(input_view_count))
+    base_labels = labels[:physical_count]
+    scenario_views: list[dict[str, np.ndarray]] = []
+    for scenario_index, scenario in enumerate(SCENARIOS):
+        start = int(scenario_index * physical_count)
+        stop = int(start + physical_count)
+        if not np.array_equal(labels[start:stop], base_labels):
+            raise ValueError(f"support label alignment drift for {scenario}")
+        tensor = _numpy_to_tensor_compat(
+            rows[start:stop],
+            numpy_dtype=np.dtype(np.float32),
+            torch_dtype=torch.float32,
+        )
+        generated = _satellite_tta_views(tensor, "rx_shift3")
+        names = tuple(name for name, _ in generated)
+        if names != RX_SHIFT_PAIR_VIEW_NAMES:
+            raise ValueError(
+                f"rx_shift3 definition drift: {names} != {RX_SHIFT_PAIR_VIEW_NAMES}"
+            )
+        scenario_views.append(
+            {
+                name: _tensor_to_numpy_compat(
+                    value, dtype=np.dtype(np.float32)
+                )
+                for name, value in generated
+            }
+        )
+    slot_rows: list[np.ndarray] = []
+    slot_labels: list[np.ndarray] = []
+    schedule: list[dict[str, Any]] = []
+    for slot_index in range(RX_SHIFT_PAIR_SLOT_COUNT):
+        scenario_index = int(slot_index % len(SCENARIOS))
+        perturbation = RX_SHIFT_PAIR_VIEW_NAMES[1 + (slot_index % 2)]
+        views = scenario_views[scenario_index]
+        slot_rows.append(
+            np.concatenate([views["rx_base"], views[perturbation]], axis=0)
+        )
+        slot_labels.append(np.concatenate([base_labels, base_labels], axis=0))
+        schedule.append(
+            {
+                "epoch_slot": int(slot_index + 1),
+                "scenario": str(SCENARIOS[scenario_index]),
+                "receive_views": ["rx_base", perturbation],
+            }
+        )
+    expanded_rows = np.concatenate(slot_rows, axis=0).astype(np.float32)
+    expanded_labels = np.concatenate(slot_labels, axis=0).astype(np.int64)
+    expected = int(RX_SHIFT_PAIR_SLOT_COUNT * 2 * physical_count)
+    if int(len(expanded_rows)) != expected or int(len(expanded_labels)) != expected:
+        raise RuntimeError("rx_shift_pair_cycle expansion size mismatch")
+    return expanded_rows, expanded_labels, {
+        "policy": "rx_shift_pair_cycle_v1",
+        "input_formal_scenario_count": int(input_view_count),
+        "physical_support_count": int(physical_count),
+        "epoch_slot_count": int(RX_SHIFT_PAIR_SLOT_COUNT),
+        "receive_views_per_physical_sample_per_epoch": 2,
+        "unique_receive_view_names": list(RX_SHIFT_PAIR_VIEW_NAMES),
+        "unique_receive_view_count": len(RX_SHIFT_PAIR_VIEW_NAMES),
+        "support_receive_view_cap": 3,
+        "schedule": schedule,
+        "expanded_training_rows": int(expected),
+    }
 
 
 class LoRALinear(nn.Module):
@@ -838,6 +929,11 @@ def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
         default="stacked",
     )
     parser.add_argument("--matched_view_teacher_weight", type=float, default=0.0)
+    parser.add_argument(
+        "--support_view_policy",
+        choices=("formal_scenario_cycle", "rx_shift_pair_cycle"),
+        default="formal_scenario_cycle",
+    )
     parser.add_argument("--init_adapter_state", type=Path, default=None)
     parser.add_argument("--device", default="cuda:0")
     return parser.parse_args(argv)
@@ -861,6 +957,20 @@ def _validate_deployment_controls(args: argparse.Namespace) -> None:
         == 0.0,
     }
     failed = [name for name, passed in checks.items() if not passed]
+    if str(args.support_view_policy) == "rx_shift_pair_cycle":
+        pair_checks = {
+            "rx_pair_sparse_key_only": str(args.adapter_type) == "late_key_ft",
+            "rx_pair_ground_initialization_required": args.init_adapter_state
+            is not None,
+            "rx_pair_exactly_five_epochs": int(args.epochs) == 5,
+            "rx_pair_rotating_single_slots": str(args.view_sampling_mode)
+            == "rotating_single",
+            "rx_pair_teacher_enabled": float(args.matched_view_teacher_weight)
+            > 0.0,
+        }
+        failed.extend(
+            name for name, passed in pair_checks.items() if not passed
+        )
     if failed:
         raise ValueError(
             f"invalid extreme-light {args.adapter_type} controls: {failed}"
@@ -898,6 +1008,27 @@ def main(argv: Sequence[str] | None = None) -> int:
         support_pool_max_k=int(config.get("support_pool_max_k", 10)),
         query_per_tx=int(config.get("query_per_tx", 20)),
     )
+    support_view_policy_audit: dict[str, Any] = {
+        "policy": "formal_scenario_cycle",
+        "input_formal_scenario_count": int(split_manifest["support_view_count"]),
+        "physical_support_count": int(
+            len(support_rows) // int(split_manifest["support_view_count"])
+        ),
+        "receive_views_per_physical_sample_per_epoch": 1,
+        "unique_receive_view_count": 1,
+    }
+    training_support_view_count = int(split_manifest["support_view_count"])
+    if str(args.support_view_policy) == "rx_shift_pair_cycle":
+        support_rows, support_labels, support_view_policy_audit = (
+            build_rx_shift_pair_cycle(
+                support_rows,
+                support_labels,
+                input_view_count=int(split_manifest["support_view_count"]),
+            )
+        )
+        training_support_view_count = int(
+            support_view_policy_audit["epoch_slot_count"]
+        )
     device = torch.device(str(args.device) if torch.cuda.is_available() else "cpu")
     torch.manual_seed(int(args.seed))
     np.random.seed(int(args.seed) % (2**32))
@@ -920,7 +1051,11 @@ def main(argv: Sequence[str] | None = None) -> int:
     elif str(args.adapter_type) == "late_key_ft":
         resources = enable_late_key_layer_finetune(model)
         method = (
-            "support_only_late_key_ft_source_init_v1"
+            (
+                "support_only_late_key_ft_source_init_rx_shift_pair_v1"
+                if str(args.support_view_policy) == "rx_shift_pair_cycle"
+                else "support_only_late_key_ft_source_init_v1"
+            )
             if args.init_adapter_state is not None
             else "support_only_late_key_ft_v1"
         )
@@ -957,7 +1092,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         cross_view_prototype_weight=float(args.cross_view_prototype_weight),
         cosine_margin=float(args.cosine_margin),
         class_dro_temperature=float(args.class_dro_temperature),
-        support_view_count=int(split_manifest["support_view_count"]),
+        support_view_count=int(training_support_view_count),
         batch_size=int(args.batch_size),
         optimizer_name=str(args.optimizer),
         max_optimizer_steps=int(args.max_optimizer_steps),
@@ -971,6 +1106,11 @@ def main(argv: Sequence[str] | None = None) -> int:
         resources["original_checkpoint_gradient_updates"] = int(
             runtime["optimizer_steps"]
         )
+    runtime["support_view_policy"] = str(args.support_view_policy)
+    runtime["support_view_policy_audit"] = support_view_policy_audit
+    if str(args.support_view_policy) == "rx_shift_pair_cycle":
+        runtime["train_receive_views_per_physical_sample_per_epoch"] = 2
+        runtime["unique_receive_view_count"] = 3
     run_prefix = (
         "support_late_film"
         if str(args.adapter_type) == "late_film"
@@ -1014,6 +1154,9 @@ def main(argv: Sequence[str] | None = None) -> int:
         "seed": int(args.seed),
         "k_shot": int(args.k_shot),
         "support_view_count": int(split_manifest["support_view_count"]),
+        "training_epoch_slot_count": int(training_support_view_count),
+        "support_view_policy": str(args.support_view_policy),
+        "support_view_policy_audit": support_view_policy_audit,
         "query_view_count": 1,
         "support_only": True,
         "query_update_forbidden": True,
@@ -1042,6 +1185,7 @@ def main(argv: Sequence[str] | None = None) -> int:
             "matched_view_teacher_weight": float(
                 args.matched_view_teacher_weight
             ),
+            "support_view_policy": str(args.support_view_policy),
         },
         "resources": resources,
         "initialization": initialization_audit,
