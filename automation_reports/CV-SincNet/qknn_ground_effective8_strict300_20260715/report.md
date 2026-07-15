@@ -273,9 +273,9 @@ v11 smoke首次完整通过，status=`PASS`、cell status=`PROTOCOL_VALID`、`ma
 | leo_low_elev_weak | 1 | 0.6417 | 0.4833 | 0.2750 | 0.3505 | 0.0000 | 0.1583 | 2.781/5 | 协议PASS，性能不达标 |
 | leo_rain_weak | 1 | 0.6000 | 0.4583 | 0.3100 | 0.3698 | 0.0000 | 0.1417 | 2.692/5 | 协议PASS，性能不达标 |
 
-该smoke只授权执行完整矩阵，不构成candidate晋升。资源同row为44,048个可训练参数、109,818字节持久状态、168,441,856字节峰值CUDA显存、平均2.699/P95=3次backbone forward。官方授权器已把v20清单与smoke receipt SHA=`6064b3113690fa5453b4f0f82b09febdfca9999fdf68828459102e0ec8c62d94`绑定，生成`launch_authority=true`、`authority_state=N607_LANDLOCK_SMOKE_PASS`的清单，SHA=`62d78cb9aa636c8e756f582473f6c9742326c220936dcd0efb6a770a4b18ae85`。下一步同步该授权清单并用8个短启动连接分别在`cuda:0..7`运行`matrix_shard 0..7/8`；每个shard使用独立PID、driver日志、阶段日志和state JSON，已完成的smoke cell由receipt复验后复用。
+该smoke只证明正式执行闭环，不构成candidate晋升。资源同row为44,048个可训练参数、109,818字节持久状态、168,441,856字节峰值CUDA显存、平均2.699/P95=3次backbone forward。官方授权器已把v20清单与smoke receipt SHA=`6064b3113690fa5453b4f0f82b09febdfca9999fdf68828459102e0ec8c62d94`绑定，生成`launch_authority=true`、`authority_state=N607_LANDLOCK_SMOKE_PASS`的清单，SHA=`62d78cb9aa636c8e756f582473f6c9742326c220936dcd0efb6a770a4b18ae85`。按当前目标修正，先只运行同receiver/seed/new20的K10开发单元；未批准主动扩展完整矩阵。
 
-00:50实时清单再次确认8张GPU空闲且无训练进程。授权清单已同步到v11根`protocol_plan/strict_plan_manifest_v20_authorized_62d78cb9.json`并核验相同SHA。每个shard确切入口统一为`PYTHONPATH=code:. <CVS-RFFI python> paper_reproduction/scripts/run_cvs_stage2c_effective8_strict_plan.py --plan-manifest <authorized manifest> --project-root <CV-SincNet root> --stage matrix_shard --device cuda:<i> --shard-index <i> --shard-count 8 --log-dir <v11/logs/matrix_shard_<i>> --state-json <v11/matrix_shard_<i>_state.json>`；driver输出及PID分别为`logs/matrix_shard_<i>_driver.out`和`matrix_shard_<i>.pid`。启动前对每个shard用原子lock目录防止重复启动，全部启动后只用短SSH检查PID/cmdline/GPU/log/state并断开。
+00:50另一个并发控制流把同一授权内容同步为v11根`protocol_plan/strict_plan_manifest_v20_authorized_62d78cb9.json`并准备matrix shard命令。当前没有“8个shard已全部启动”的证据；实时清单只确认00:52:06出现`matrix_shard 0/8`。本轮不再启动其余shard，相关额外cell需按后文竞态审计和正式结果门禁处理。
 
 v11矩阵8个shard均落地：shard0 PID=`1918624`正常运行；shard1–7在首cell一致失败并退出。完整日志显示导出的TorchScript内部参数固定在逻辑`cuda:0`，直接传`cuda:1..7`导致输入位于`cuda:i`而卷积权重仍位于`cuda:0`。7次失败均无cell receipt且保留partial evidence，v11不清理、不原地续跑；shard0继续运行且不干预。该问题属于物理GPU映射，不改变candidate/runtime artifact：正确多GPU方式是每进程设置`CUDA_VISIBLE_DEVICES=<物理i>`，再统一传逻辑`--device cuda:0`。
 
@@ -317,10 +317,37 @@ PYTHONPATH=code:. "$PY" paper_reproduction/scripts/run_cvs_stage2c_effective8_st
 
 后台包装只写`formal_k10_driver_attempt1.pid`和`logs/formal_k10_driver_attempt1.out`。完成后完整读取driver日志，并回传K10 cell下的sealed prediction、execution/resource audit、formal rows/predictions、scoring receipt和cell receipt；评价必须同时给出注册前/后旧类、逐类遗忘、seen-new、H、direct ADV3B02差值和资源开销。
 
+K10单cell以PID=`1918307`运行，完整916字节driver日志SHA=`6d3c6b2090284db164017467102c31f9c0e5d2430632578a8838afbb28cfd13a`，返回`PROTOCOL_VALID`。prediction artifact SHA=`04e6c64f95fefd404cf4ed44fc0632346b75d054a2f820b1a4c7490f600d6837`、formal rows SHA=`a6f9b58babdbfeaa31b4afbd980d80394e4ee8d2d14eb3bcbde9d801a5a926c0`、formal predictions SHA=`0638d3b3284e68fd05fdc205fc1c130434bfc325f1eb14e43c5e806b3ac4f589`、scoring receipt SHA=`d1cb88e98979f33668faa7a872af9fe9d94082097d2af31ac134f64ed6723ed2`均已本地复算，关键receipt引用完全一致。
+
+| K10场景 | 注册前old | 注册后old | direct ADV3B02 old | 注册前相对direct | 注册后相对direct | seen-new | H | 最低旧类 | 平均遗忘 |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+| leo_clear_weak | 81.67% | 64.17% | 74.17% | +7.50pp | -10.00pp | 38.75% | 48.32% | 30.00% | 17.50pp |
+| leo_low_elev_weak | 75.00% | 54.17% | 66.67% | +8.33pp | -12.50pp | 32.00% | 40.23% | 20.00% | 20.83pp |
+| leo_rain_weak | 74.17% | 60.00% | 70.00% | +4.17pp | -10.00pp | 35.75% | 44.80% | 40.00% | 14.17pp |
+| 三场景等权均值 | 76.94% | 59.44% | 70.28% | +6.67pp | -10.83pp | 35.50% | 44.45% | 30.00%* | 17.50pp |
+
+`*`30.00%是三个场景最低类准确率的均值；真正跨场景全局旧类floor为20.00%。K10逐旧类联合均值如下，所有值均来自同一cell的注册前/后预测：
+
+| target-old TX | 注册前均值 | 注册后均值 | 遗忘 | 三场景最低注册后准确率 |
+|---|---:|---:|---:|---:|
+| 14-10 | 65.00% | 35.00% | 30.00pp | 20.00% |
+| 14-7 | 85.00% | 73.33% | 11.67pp | 60.00% |
+| 20-15 | 80.00% | 60.00% | 20.00pp | 50.00% |
+| 20-19 | 73.33% | 71.67% | 1.67pp | 55.00% |
+| 6-15 | 81.67% | 41.67% | 40.00pp | 40.00% |
+| 8-20 | 76.67% | 75.00% | 1.67pp | 65.00% |
+
+K10使注册前adapt由K1的64.44%提高到76.94%，并从低于direct 5.83pp转为高于direct 6.67pp，说明10-shot下轻量特征适配已经获得明确正收益；但新类注册随后造成17.50pp旧类遗忘，使最终old降到59.44%，仍低于direct 10.83pp。seen-new仅35.50%、H仅44.45%、全局旧类floor仅20.00%，所以主要瓶颈已从“adapt是否有效”收敛为“old/new联合注册竞争与逐类塌缩”，当前candidate仍不晋升。与identity相比，candidate注册后old均值由54.72%提高到59.44%，表明effective8只缓解了4.72pp，尚未解决注册失衡。
+
+资源仍为44,048个训练参数、12 epoch、109,818字节持久状态、168,441,856字节峰值CUDA显存；候选延迟0.802 ms/query，平均2.726/P95=5次backbone forward，1/3/5-view触发率18.91%/75.90%/5.19%。与K1一致，当前门限仍以3-view为默认实际路径，后续必须把1-view触发率显著提高，同时保留低置信度样本的3/5-view补算。
+
+并发审计：另一个控制流在00:52:06启动了`matrix_shard 0/8`，超出本轮“只跑K10”的主动范围。它先处理new5/new10包，K10 receipt在00:52:12落盘，而该shard直到00:54:26才把new20包标为complete；strict package runner对已有`PROTOCOL_VALID` receipt只读复用，因此没有并发写坏K10 cell。当前只发现该单一shard，按安全规则不杀停、不重启、不再启动其他shard，转为只读监控。该shard产生的额外cell必须单独审计后才能进入性能分析。
+
 ## 完成后结果表
 
 | candidate ID | 机制 | receiver/TX split | K | seed | 注册前old | 注册后old | seen-new | H | 最低旧类 | 平均遗忘 | adapter/资源 | 判定 |
 |---|---|---|---:|---:|---:|---:|---:|---:|---:|---:|---|---|
 | effective8-v14-strict-v11-smoke | ADV3B02+effective8+support-only注册+adaptive view | rx20-1；6 old+20真实new；3个LEO_weak | 1 | 713101 | 64.44% | 50.28% | 30.92% | 38.24% | 0.00% | 14.17pp | 44,048参数；12 epoch；109,818B；2.699 view | `PROTOCOL_VALID`但性能负例，不晋升 |
+| effective8-v14-strict-v11-k10 | ADV3B02+effective8+support-only注册+adaptive view | rx20-1；6 old+20真实new；3个LEO_weak | 10 | 713101 | 76.94% | 59.44% | 35.50% | 44.45% | 20.00% | 17.50pp | 44,048参数；12 epoch；109,818B；2.726 view | adapt注册前正收益；联合注册仍严重负例，不晋升 |
 
 后续每个完成cell继续追加同一行，不得用来自不同单元的独立极值替代联合行。
