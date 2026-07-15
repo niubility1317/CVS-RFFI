@@ -486,3 +486,5 @@ candidate的遗忘在12个K×new组中均低于identity对照，但仍全部为�
 自适应TTA触发逻辑使用EvidenceNorm前raw cosine流；与v11的1560行比较只有1行从1-view跨到3-view，定位为不同GPU数值阈值边界，不能声称逐行完全相同。整体仍为平均2.727、P95=5，1/3/5-view比例18.85%/75.96%/5.19%。
 
 最终artifact：prediction NPZ SHA=`1ab79ffcb279e9580d48c72f34d04f79f5e7f28987bc7a6140a1cb045b7f325c`，prediction manifest SHA=`a035633664d21b0cc0128583acb826801446637e6f5f66c8041a1b53696c3d06`，truth sidecar SHA=`5a70620a6b90a86ca47b8be1bad83c5e881826d976cd3885b47d0fe6ffde8470`。本地`ssr-gpu`验证：30项聚焦测试、61项更广runtime/closure/diagnostic测试及1项sealed v1 pipeline E2E均PASS；独立复审未发现P0/P1。Round1结论为“方向正收益但性能不合格”，下一轮固定进入JP-R4 support-only稀疏边界学习；Round3完成前不得启动第4轮，Round3后必须按用户新增规则回顾目标、`项目.md`、历史对话、三轮完整日志和已探索方法。
+
+Round1代码、诊断脚本、测试、追踪表和本报告已提交Git：`ecec63c`（`feat: add symmetric EvidenceNorm registration head`）。未纳入或覆盖`mitigating_da_rootcause_20260710_104628`下的用户既有修改及任何`local_artifacts`。
