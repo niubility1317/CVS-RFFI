@@ -87,8 +87,29 @@ def test_cli_requires_source_cache_set_and_exposes_no_dataset_path() -> None:
         ]
     )
     assert args.source_cache_set == Path("source_validation.json")
+    assert args.fft_weight == pytest.approx(2.0)
     assert not hasattr(args, "wisig_pkl")
     assert not hasattr(args, "sat_scenarios")
+
+
+def test_cli_accepts_source_only_fft_weight_ablation() -> None:
+    args = parse_args(
+        [
+            "--ckpt",
+            "checkpoint.pt",
+            "--adapter_state",
+            "adapter.pt",
+            "--training_manifest",
+            "training.json",
+            "--source_cache_set",
+            "source_validation.json",
+            "--out_dir",
+            "validation",
+            "--fft_weight",
+            "0.7",
+        ]
+    )
+    assert args.fft_weight == pytest.approx(0.7)
 
 
 def test_source_cache_receiver_split_is_exact_and_class_complete() -> None:
@@ -202,7 +223,17 @@ def test_source_head_lock_uses_three_base_views_and_no_target_rows() -> None:
     assert lock["support_receive_views_per_physical_sample"] == 3
     assert lock["target_support_used_for_selection"] is False
     assert lock["target_query_features_used"] is False
-    assert {"use_alignment", "prototype_rule", "ridge"}.issubset(
+    assert lock["selected"]["mean_accuracy"] >= lock["identity_reference"]["mean_accuracy"]
+    assert lock["selected"]["worst_episode_accuracy"] >= lock["identity_reference"]["worst_episode_accuracy"]
+    assert lock["selected"]["mean_min_class_accuracy"] >= lock["identity_reference"]["mean_min_class_accuracy"]
+    assert lock["selection_guard"]["eligible_candidate_count"] >= 1
+    assert {
+        "use_alignment",
+        "prototype_rule",
+        "ridge",
+        "gram_mix",
+        "uncertainty_penalty",
+    }.issubset(
         lock["selected"]
     )
 
@@ -231,6 +262,8 @@ def test_nested_k_source_scores_use_one_locked_head_rule_and_nested_support() ->
             "use_alignment": False,
             "prototype_rule": "mean",
             "ridge": None,
+            "gram_mix": 0.0,
+            "uncertainty_penalty": 0.0,
         },
         source_mean=features[:, 0, :].mean(axis=0),
         source_std=np.maximum(features[:, 0, :].std(axis=0), 0.05),

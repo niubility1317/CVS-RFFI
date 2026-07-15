@@ -111,8 +111,24 @@ def test_fft96_descriptor_is_deterministic_and_finite() -> None:
 def test_adapter_resource_cap_fails_closed() -> None:
     support, _query = _arrays()
     config = _adapter()
-    config["trainable_parameters"] = 100_001
+    config["trainable_parameters"] = 50_001
     with pytest.raises(Stage2PredictorRuntimeError, match="resource bound"):
+        apply_feature_adapter(
+            support["support_pool_leo_weak_iq"].mean(axis=2),
+            support["support_pool_leo_weak_iq"],
+            config,
+        )
+
+
+@pytest.mark.parametrize(
+    ("field", "value"),
+    (("adapt_epochs", 21), ("persistent_state_bytes", 256 * 1024 + 1)),
+)
+def test_adapter_epoch_and_state_caps_fail_closed(field: str, value: int) -> None:
+    support, _query = _arrays()
+    config = _adapter()
+    config[field] = value
+    with pytest.raises(Stage2PredictorRuntimeError, match=f"resource bound invalid: {field}"):
         apply_feature_adapter(
             support["support_pool_leo_weak_iq"].mean(axis=2),
             support["support_pool_leo_weak_iq"],

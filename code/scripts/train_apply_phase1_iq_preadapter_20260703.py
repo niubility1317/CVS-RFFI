@@ -529,11 +529,25 @@ def nested_k_worst_prototype_risk(
     temperature: float = 0.07,
     risk_tau: float = 0.2,
 ) -> tuple[torch.Tensor, dict[int, torch.Tensor]]:
-    """Source-only nested-K episode risk with log-sum-exp worst-K pooling."""
+    """Source-only deployment-matched multi-view nested-K risk.
 
-    if features.ndim != 2 or labels.ndim != 1 or len(features) != len(labels):
-        raise ValueError("nested-K risk requires features [N,D] and labels [N]")
-    normalized = F.normalize(features.float(), dim=1)
+    ``features`` may be ``[N,D]`` or ``[V,N,D]``.  In the multi-view form,
+    registered views of one physical support sample contribute to the same
+    class prototype, while held-out query views are supervised separately.
+    This matches the deployed qKNN observation model without treating receive
+    views as extra physical shots.
+    """
+
+    if labels.ndim != 1 or features.ndim not in (2, 3):
+        raise ValueError("nested-K risk requires features [N,D] or [V,N,D]")
+    if features.ndim == 2:
+        if features.shape[0] != len(labels):
+            raise ValueError("nested-K feature and label rows must align")
+        normalized = F.normalize(features.float(), dim=1).unsqueeze(0)
+    else:
+        if features.shape[1] != len(labels):
+            raise ValueError("nested-K multi-view sample and label rows must align")
+        normalized = F.normalize(features.float(), dim=2)
     class_ids = torch.unique(labels, sorted=True)
     losses: dict[int, torch.Tensor] = {}
     for raw_k in k_values:
@@ -553,15 +567,18 @@ def nested_k_worst_prototype_risk(
             support_count = k
             support_prototypes.append(
                 F.normalize(
-                    normalized[positions[:support_count]].mean(dim=0), dim=0
+                    normalized[:, positions[:support_count], :].mean(dim=(0, 1)),
+                    dim=0,
                 )
             )
             remaining = positions[support_count:]
             if len(remaining):
-                query_rows.append(normalized[remaining])
+                query_rows.append(
+                    normalized[:, remaining, :].reshape(-1, normalized.shape[-1])
+                )
                 query_targets.append(
                     torch.full(
-                        (len(remaining),),
+                        (normalized.shape[0] * len(remaining),),
                         int(local_class),
                         dtype=torch.long,
                         device=labels.device,
@@ -1001,8 +1018,11 @@ def train_adapter(
             prototype_gram = prototype_gram_deconfusion_loss(
                 z_rep, y, max_cosine=float(args.prototype_gram_max_cosine)
             )
+            nested_risk_features = (
+                torch.stack(z_selected, dim=0) if formal_effective else z_rep
+            )
             worst_k, nested_k_losses = nested_k_worst_prototype_risk(
-                z_rep,
+                nested_risk_features,
                 y,
                 k_values=nested_k_values,
                 temperature=float(args.worst_k_proto_temperature),
@@ -1152,6 +1172,11 @@ def train_adapter(
             "prototype_gram_max_cosine": float(args.prototype_gram_max_cosine),
             "worst_k_risk": float(args.worst_k_risk_weight),
             "worst_k_values": list(nested_k_values),
+            "worst_k_feature_layout": (
+                "registered_view_by_physical_sample"
+                if formal_effective
+                else "single_representative_view"
+            ),
             "worst_k_tau": float(args.worst_k_tau),
             "worst_k_proto_temperature": float(args.worst_k_proto_temperature),
             "residual": float(args.residual_weight),

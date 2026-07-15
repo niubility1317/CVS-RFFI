@@ -107,3 +107,67 @@ def test_calibration_uses_labels_only_on_allowed_calibration_rows() -> None:
     selected = result["selected"]
     assert selected["passes_accuracy_cap"]
     assert selected["mean_backbone_forwards"] < 5.0
+    assert result["selection_policy"] == "accuracy_first_then_minimum_forwards"
+
+
+def test_low_absolute_similarity_triggers_more_views_despite_large_margin() -> None:
+    scores = np.asarray(
+        [[[0.20, 0.00], [1.0, 0.0], [0.9, 0.1], [1.0, 0.0], [0.9, 0.1]]],
+        dtype=np.float32,
+    )
+    thresholds = AdaptiveTTAThresholds(
+        base_stop_margin=0.1,
+        shift3_stop_margin=0.1,
+        shift3_max_disagreement=0.0,
+        base_stop_min_score=0.5,
+        shift3_stop_min_score=0.5,
+    )
+    result = apply_adaptive_rxlight_tta(scores, thresholds)
+    assert result["base_margin"][0] >= thresholds.base_stop_margin
+    assert result["base_top1_score"][0] < thresholds.base_stop_min_score
+    assert result["view_budgets"].tolist() == [3]
+
+
+def test_stability_lcb_fusion_suppresses_one_class_view_oscillation() -> None:
+    scores = np.asarray(
+        [[[1.0, 1.4], [1.0, 0.6], [1.0, 1.4], [1.0, 0.6], [1.0, 1.4]]],
+        dtype=np.float32,
+    )
+    common = dict(
+        base_stop_margin=10.0,
+        shift3_stop_margin=10.0,
+        shift3_max_disagreement=0.0,
+    )
+    mean_result = apply_adaptive_rxlight_tta(
+        scores, AdaptiveTTAThresholds(**common, fusion_std_penalty=0.0)
+    )
+    stable_result = apply_adaptive_rxlight_tta(
+        scores, AdaptiveTTAThresholds(**common, fusion_std_penalty=0.25)
+    )
+    assert mean_result["view_budgets"].tolist() == [5]
+    assert mean_result["predictions"].tolist() == [1]
+    assert stable_result["predictions"].tolist() == [0]
+
+
+def test_lazy_and_eager_match_with_score_floor_and_stability_fusion() -> None:
+    scores, _ = _scores()
+
+    def shifts(indices: np.ndarray) -> np.ndarray:
+        return scores[indices, 1:3]
+
+    def cfo(indices: np.ndarray) -> np.ndarray:
+        return scores[indices, 3:5]
+
+    thresholds = AdaptiveTTAThresholds(
+        1.0,
+        0.5,
+        0.0,
+        base_stop_min_score=2.0,
+        shift3_stop_min_score=1.0,
+        fusion_std_penalty=0.1,
+    )
+    eager = apply_adaptive_rxlight_tta(scores, thresholds)
+    lazy = apply_adaptive_rxlight_tta_lazy(scores[:, 0], shifts, cfo, thresholds)
+    np.testing.assert_array_equal(lazy["view_budgets"], eager["view_budgets"])
+    np.testing.assert_array_equal(lazy["predictions"], eager["predictions"])
+    np.testing.assert_allclose(lazy["scores"], eager["scores"], atol=1.0e-7)

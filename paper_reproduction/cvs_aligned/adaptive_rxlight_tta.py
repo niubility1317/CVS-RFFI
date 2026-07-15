@@ -28,6 +28,9 @@ class AdaptiveTTAThresholds:
     base_stop_margin: float
     shift3_stop_margin: float
     shift3_max_disagreement: float
+    base_stop_min_score: float = -1.0e9
+    shift3_stop_min_score: float = -1.0e9
+    fusion_std_penalty: float = 0.0
 
 
 def _validate_scores(view_scores: np.ndarray) -> np.ndarray:
@@ -44,6 +47,22 @@ def _top2_margin(scores: np.ndarray) -> np.ndarray:
     return np.max(top2, axis=1) - np.min(top2, axis=1)
 
 
+def _top1_score(scores: np.ndarray) -> np.ndarray:
+    return np.max(np.asarray(scores, dtype=np.float32), axis=1).astype(np.float32)
+
+
+def _fuse_view_scores(view_scores: np.ndarray, *, std_penalty: float) -> np.ndarray:
+    """Fuse views with a lower-confidence bound on class-score stability."""
+
+    values = np.asarray(view_scores, dtype=np.float32)
+    penalty = float(std_penalty)
+    if values.ndim != 3 or not np.isfinite(values).all():
+        raise ValueError("view-score fusion requires finite [N,V,C] scores")
+    if penalty < 0.0 or not np.isfinite(penalty):
+        raise ValueError("view-score standard-deviation penalty must be nonnegative")
+    return (values.mean(axis=1) - penalty * values.std(axis=1)).astype(np.float32)
+
+
 def apply_adaptive_rxlight_tta(
     view_scores: np.ndarray,
     thresholds: AdaptiveTTAThresholds,
@@ -52,10 +71,16 @@ def apply_adaptive_rxlight_tta(
 
     scores = _validate_scores(view_scores)
     base = scores[:, 0]
-    shift3 = scores[:, :3].mean(axis=1)
-    full5 = scores.mean(axis=1)
+    shift3 = _fuse_view_scores(
+        scores[:, :3], std_penalty=thresholds.fusion_std_penalty
+    )
+    full5 = _fuse_view_scores(
+        scores, std_penalty=thresholds.fusion_std_penalty
+    )
     base_margin = _top2_margin(base)
+    base_top1_score = _top1_score(base)
     shift_margin = _top2_margin(shift3)
+    shift_top1_score = _top1_score(shift3)
     shift_predictions = np.argmax(scores[:, :3], axis=2)
     shift_consensus = np.argmax(shift3, axis=1)
     shift_disagreement = np.mean(
@@ -63,11 +88,15 @@ def apply_adaptive_rxlight_tta(
     ).astype(np.float32)
 
     budgets = np.full(scores.shape[0], 5, dtype=np.int64)
-    stop_at_one = base_margin >= float(thresholds.base_stop_margin)
+    stop_at_one = (
+        (base_margin >= float(thresholds.base_stop_margin))
+        & (base_top1_score >= float(thresholds.base_stop_min_score))
+    )
     budgets[stop_at_one] = 1
     stop_at_three = (
         ~stop_at_one
         & (shift_margin >= float(thresholds.shift3_stop_margin))
+        & (shift_top1_score >= float(thresholds.shift3_stop_min_score))
         & (
             shift_disagreement
             <= float(thresholds.shift3_max_disagreement)
@@ -88,7 +117,9 @@ def apply_adaptive_rxlight_tta(
         "predictions": predictions,
         "view_budgets": budgets,
         "base_margin": base_margin,
+        "base_top1_score": base_top1_score,
         "shift3_margin": shift_margin,
+        "shift3_top1_score": shift_top1_score,
         "shift3_disagreement": shift_disagreement,
         "mean_backbone_forwards": float(np.mean(budgets)),
         "p95_backbone_forwards": float(np.percentile(budgets, 95)),
@@ -120,11 +151,14 @@ def apply_adaptive_rxlight_tta_lazy(
     selected = base.copy()
     budgets = np.ones(row_count, dtype=np.int64)
     base_margin = _top2_margin(base)
+    base_top1_score = _top1_score(base)
     shift_margin = np.full(row_count, np.nan, dtype=np.float32)
+    shift_top1_score = np.full(row_count, np.nan, dtype=np.float32)
     shift_disagreement = np.full(row_count, np.nan, dtype=np.float32)
 
     shift_indices = np.flatnonzero(
-        base_margin < float(thresholds.base_stop_margin)
+        (base_margin < float(thresholds.base_stop_margin))
+        | (base_top1_score < float(thresholds.base_stop_min_score))
     ).astype(np.int64)
     shift_scores_by_row: dict[int, np.ndarray] = {}
     if len(shift_indices):
@@ -138,19 +172,25 @@ def apply_adaptive_rxlight_tta_lazy(
         shift_all = np.concatenate(
             [base[shift_indices, None, :], shift_extra], axis=1
         )
-        shift_mean = shift_all.mean(axis=1)
+        shift_mean = _fuse_view_scores(
+            shift_all, std_penalty=thresholds.fusion_std_penalty
+        )
         shift_predictions = np.argmax(shift_all, axis=2)
         shift_consensus = np.argmax(shift_mean, axis=1)
         local_margin = _top2_margin(shift_mean)
+        local_top1_score = _top1_score(shift_mean)
         local_disagreement = np.mean(
             shift_predictions != shift_consensus[:, None], axis=1
         ).astype(np.float32)
         shift_margin[shift_indices] = local_margin
+        shift_top1_score[shift_indices] = local_top1_score
         shift_disagreement[shift_indices] = local_disagreement
         selected[shift_indices] = shift_mean
         budgets[shift_indices] = 3
-        needs_cfo = (local_margin < float(thresholds.shift3_stop_margin)) | (
-            local_disagreement > float(thresholds.shift3_max_disagreement)
+        needs_cfo = (
+            (local_margin < float(thresholds.shift3_stop_margin))
+            | (local_top1_score < float(thresholds.shift3_stop_min_score))
+            | (local_disagreement > float(thresholds.shift3_max_disagreement))
         )
         cfo_indices = shift_indices[needs_cfo]
         for local_index, row_index in enumerate(shift_indices.tolist()):
@@ -172,7 +212,10 @@ def apply_adaptive_rxlight_tta_lazy(
                 [shift_scores_by_row[int(row_index)], cfo_extra[local_index]],
                 axis=0,
             )
-            selected[int(row_index)] = full_scores.mean(axis=0)
+            selected[int(row_index)] = _fuse_view_scores(
+                full_scores[None, :, :],
+                std_penalty=thresholds.fusion_std_penalty,
+            )[0]
         budgets[cfo_indices] = 5
 
     predictions = np.argmax(selected, axis=1).astype(np.int64)
@@ -186,7 +229,9 @@ def apply_adaptive_rxlight_tta_lazy(
         "predictions": predictions,
         "view_budgets": budgets,
         "base_margin": base_margin,
+        "base_top1_score": base_top1_score,
         "shift3_margin": shift_margin,
+        "shift3_top1_score": shift_top1_score,
         "shift3_disagreement": shift_disagreement,
         "mean_backbone_forwards": float(np.mean(budgets)),
         "p95_backbone_forwards": float(np.percentile(budgets, 95)),
@@ -203,6 +248,9 @@ def calibrate_adaptive_rxlight_tta(
     base_margin_grid: Sequence[float],
     shift3_margin_grid: Sequence[float],
     disagreement_grid: Sequence[float] = (0.0, 1.0 / 3.0, 2.0 / 3.0),
+    base_min_score_grid: Sequence[float] | None = None,
+    shift3_min_score_grid: Sequence[float] | None = None,
+    fusion_std_penalty_grid: Sequence[float] = (0.0, 0.1, 0.25),
     max_accuracy_drop_pp: float = 1.0,
 ) -> dict[str, object]:
     """Select the cheapest source/support-calibrated gate within a 5-view loss cap."""
@@ -216,42 +264,61 @@ def calibrate_adaptive_rxlight_tta(
     full5_predictions = np.argmax(scores.mean(axis=1), axis=1)
     full5_accuracy = float(np.mean(full5_predictions == truth))
     floor = full5_accuracy - float(max_accuracy_drop_pp) / 100.0
+    if base_min_score_grid is None:
+        base_top1 = _top1_score(scores[:, 0])
+        base_min_score_grid = (
+            -1.0e9,
+            float(np.quantile(base_top1, 0.10)),
+            float(np.quantile(base_top1, 0.25)),
+        )
+    if shift3_min_score_grid is None:
+        shift_top1 = _top1_score(scores[:, :3].mean(axis=1))
+        shift3_min_score_grid = (
+            -1.0e9,
+            float(np.quantile(shift_top1, 0.10)),
+        )
     candidates: list[dict[str, object]] = []
     best: tuple[tuple[float, float, float, float], dict[str, object]] | None = None
-    for base_margin in base_margin_grid:
-        for shift_margin in shift3_margin_grid:
-            if float(base_margin) < float(shift_margin):
-                continue
-            for disagreement in disagreement_grid:
-                thresholds = AdaptiveTTAThresholds(
-                    base_stop_margin=float(base_margin),
-                    shift3_stop_margin=float(shift_margin),
-                    shift3_max_disagreement=float(disagreement),
-                )
-                result = apply_adaptive_rxlight_tta(scores, thresholds)
-                accuracy = float(np.mean(result["predictions"] == truth))
-                row: dict[str, object] = {
-                    "thresholds": thresholds,
-                    "accuracy": accuracy,
-                    "accuracy_drop_pp_vs_full5": float(
-                        (full5_accuracy - accuracy) * 100.0
-                    ),
-                    "mean_backbone_forwards": result["mean_backbone_forwards"],
-                    "p95_backbone_forwards": result["p95_backbone_forwards"],
-                    "trigger_rates": result["trigger_rates"],
-                    "passes_accuracy_cap": bool(accuracy + 1.0e-12 >= floor),
-                }
-                candidates.append(row)
-                if not row["passes_accuracy_cap"]:
-                    continue
-                key = (
-                    float(row["mean_backbone_forwards"]),
-                    float(row["p95_backbone_forwards"]),
-                    -accuracy,
-                    float(base_margin) + float(shift_margin),
-                )
-                if best is None or key < best[0]:
-                    best = (key, row)
+    for fusion_penalty in fusion_std_penalty_grid:
+        for base_min_score in base_min_score_grid:
+            for shift_min_score in shift3_min_score_grid:
+                for base_margin in base_margin_grid:
+                    for shift_margin in shift3_margin_grid:
+                        if float(base_margin) < float(shift_margin):
+                            continue
+                        for disagreement in disagreement_grid:
+                            thresholds = AdaptiveTTAThresholds(
+                                base_stop_margin=float(base_margin),
+                                shift3_stop_margin=float(shift_margin),
+                                shift3_max_disagreement=float(disagreement),
+                                base_stop_min_score=float(base_min_score),
+                                shift3_stop_min_score=float(shift_min_score),
+                                fusion_std_penalty=float(fusion_penalty),
+                            )
+                            result = apply_adaptive_rxlight_tta(scores, thresholds)
+                            accuracy = float(np.mean(result["predictions"] == truth))
+                            row: dict[str, object] = {
+                                "thresholds": thresholds,
+                                "accuracy": accuracy,
+                                "accuracy_drop_pp_vs_full5": float(
+                                    (full5_accuracy - accuracy) * 100.0
+                                ),
+                                "mean_backbone_forwards": result["mean_backbone_forwards"],
+                                "p95_backbone_forwards": result["p95_backbone_forwards"],
+                                "trigger_rates": result["trigger_rates"],
+                                "passes_accuracy_cap": bool(accuracy + 1.0e-12 >= floor),
+                            }
+                            candidates.append(row)
+                            if not row["passes_accuracy_cap"]:
+                                continue
+                            key = (
+                                -accuracy,
+                                float(row["mean_backbone_forwards"]),
+                                float(row["p95_backbone_forwards"]),
+                                float(base_margin) + float(shift_margin),
+                            )
+                            if best is None or key < best[0]:
+                                best = (key, row)
     if best is None:
         raise ValueError("no adaptive TTA threshold passes the accuracy-drop cap")
     return {
@@ -261,6 +328,7 @@ def calibrate_adaptive_rxlight_tta(
         "uses_class_quota": False,
         "full5_accuracy": full5_accuracy,
         "max_accuracy_drop_pp": float(max_accuracy_drop_pp),
+        "selection_policy": "accuracy_first_then_minimum_forwards",
         "selected": best[1],
         "candidate_count": len(candidates),
         "candidates": candidates,

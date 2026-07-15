@@ -225,3 +225,26 @@ def test_nested_k_risk_is_query_free_differentiable_and_tracks_k() -> None:
     risk.backward()
     assert features.grad is not None
     assert torch.isfinite(features.grad).all()
+
+
+def test_nested_k_risk_consumes_registered_views_without_counting_extra_shots() -> None:
+    base = torch.tensor(
+        [
+            [1.0, 0.0],
+            [0.9, 0.1],
+            [1.0, -0.1],
+            [0.0, 1.0],
+            [0.1, 0.9],
+            [-0.1, 1.0],
+        ]
+    )
+    views = torch.stack([base, base + 0.02], dim=0).requires_grad_()
+    labels = torch.tensor([0, 0, 0, 1, 1, 1])
+    risk, by_k = nested_k_worst_prototype_risk(
+        views, labels, k_values=(1, 2, 5), risk_tau=0.2
+    )
+    assert set(by_k) == {1, 2}
+    assert torch.isfinite(risk)
+    risk.backward()
+    assert views.grad is not None
+    assert torch.isfinite(views.grad).all()

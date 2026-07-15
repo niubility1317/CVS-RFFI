@@ -65,6 +65,8 @@ def _selected_head(payload: dict[str, Any]) -> dict[str, Any]:
         "use_alignment": bool(payload["use_alignment"]),
         "prototype_rule": str(payload["prototype_rule"]),
         "ridge": None if payload["ridge"] is None else float(payload["ridge"]),
+        "gram_mix": float(payload["gram_mix"]),
+        "uncertainty_penalty": float(payload["uncertainty_penalty"]),
     }
 
 

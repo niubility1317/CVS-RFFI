@@ -16,8 +16,12 @@ import numpy as np
 
 
 EPS = 1.0e-8
-PROTOTYPE_RULES = ("mean", "trimmed20", "medoid")
+PROTOTYPE_RULES = ("mean", "trimmed20", "medoid", "consensus67")
 DEFAULT_RIDGES: tuple[float | None, ...] = (None, 0.03, 0.1, 0.3, 1.0)
+DEFAULT_GRAM_MIXES: tuple[float, ...] = (0.25, 0.5, 1.0)
+DEFAULT_UNCERTAINTY_PENALTIES: tuple[float, ...] = (0.0, 0.25, 0.5)
+GRAM_GAIN_MIN = 0.5
+GRAM_GAIN_MAX = 2.0
 
 
 def _normalize(rows: np.ndarray) -> np.ndarray:
@@ -77,9 +81,12 @@ class SymmetricK1Head:
 
     prototypes: np.ndarray
     score_transform: np.ndarray
+    class_bias: np.ndarray
     alignment: DiagonalAlignment | None
     prototype_rule: str
     ridge: float | None
+    gram_mix: float
+    uncertainty_penalty: float
     calibration: dict[str, Any]
 
     @property
@@ -98,7 +105,7 @@ class SymmetricK1Head:
             else self.alignment.persistent_state_bytes_fp16
         )
         return int(
-            2 * (self.prototypes.size + self.score_transform.size)
+            2 * (self.prototypes.size + self.score_transform.size + self.class_bias.size)
             + alignment_bytes
         )
 
@@ -107,7 +114,7 @@ class SymmetricK1Head:
         # The diagonal affine is counted separately from the frozen-backbone
         # cosine head; Gram correction is a tiny C-by-C matrix multiply.
         alignment_macs = self.feature_dim if self.alignment is not None else 0
-        return int(self.class_count * self.class_count + alignment_macs)
+        return int(self.class_count * self.class_count + self.class_count + alignment_macs)
 
 
 def fit_diagonal_alignment(
@@ -180,17 +187,33 @@ def build_robust_prototypes(
             keep_count = max(2, int(np.ceil(0.8 * len(observations))))
             keep = np.argsort(observations @ initial)[-keep_count:]
             center = observations[keep].mean(axis=0)
-        else:
+        elif rule == "medoid":
             similarities = observations @ observations.T
             center = observations[int(np.argmax(similarities.mean(axis=1)))]
+        else:
+            similarities = observations @ observations.T
+            keep_count = max(2, int(np.ceil((2.0 / 3.0) * len(observations))))
+            keep = np.argsort(similarities.mean(axis=1))[-keep_count:]
+            center = observations[keep].mean(axis=0)
         rows.append(_normalize(np.asarray(center)[None, :])[0])
     return np.stack(rows).astype(np.float32)
 
 
 def fit_gram_score_transform(
-    prototypes: np.ndarray, *, ridge: float | None
+    prototypes: np.ndarray,
+    *,
+    ridge: float | None,
+    mix: float = 1.0,
+    gain_min: float = GRAM_GAIN_MIN,
+    gain_max: float = GRAM_GAIN_MAX,
 ) -> np.ndarray:
-    """Return a small class-space transform that suppresses prototype overlap."""
+    """Return a bounded class-space whitening transform.
+
+    The inverse Gram correction is useful for correlated prototypes, but an
+    unconstrained inverse can amplify a weak class-space eigenmode by orders of
+    magnitude at K=1.  Clipping the spectral gain keeps the correction local
+    and lets ``mix`` interpolate safely from identity to bounded whitening.
+    """
 
     banks = _normalize(np.asarray(prototypes, dtype=np.float32))
     if banks.ndim != 2 or banks.shape[0] < 2:
@@ -198,14 +221,42 @@ def fit_gram_score_transform(
     if ridge is None:
         return np.eye(banks.shape[0], dtype=np.float32)
     value = float(ridge)
-    if value <= 0.0:
-        raise ValueError("ridge must be positive or None")
+    mix_value = float(mix)
+    lower = float(gain_min)
+    upper = float(gain_max)
+    if (
+        value <= 0.0
+        or not 0.0 <= mix_value <= 1.0
+        or not 0.0 < lower <= 1.0 <= upper
+    ):
+        raise ValueError("invalid ridge, mix, or spectral gain bounds")
     gram = banks @ banks.T
-    transform = np.linalg.solve(
-        gram + value * np.eye(len(gram), dtype=np.float32),
-        np.eye(len(gram), dtype=np.float32),
-    )
+    eigenvalues, eigenvectors = np.linalg.eigh(gram.astype(np.float64))
+    gains = np.clip(1.0 / (eigenvalues + value), lower, upper)
+    inverse = (eigenvectors * gains[None, :]) @ eigenvectors.T
+    identity = np.eye(len(gram), dtype=np.float32)
+    transform = (1.0 - mix_value) * identity + mix_value * inverse
     return transform.astype(np.float32)
+
+
+def fit_class_uncertainty_bias(
+    support_views: np.ndarray,
+    prototypes: np.ndarray,
+    *,
+    penalty: float,
+) -> np.ndarray:
+    """Penalize unreliable classes using only their registered support spread."""
+
+    values = _normalize(_validate_support_views(support_views, min_views=1))
+    banks = _normalize(np.asarray(prototypes, dtype=np.float32))
+    if banks.shape != (values.shape[1], values.shape[2]):
+        raise ValueError("prototype shape does not match support observations")
+    weight = float(penalty)
+    if weight < 0.0 or not np.isfinite(weight):
+        raise ValueError("uncertainty penalty must be finite and nonnegative")
+    within = np.sum(values * banks[None, :, :], axis=-1)
+    uncertainty = np.maximum(0.0, 1.0 - np.mean(within, axis=0))
+    return (weight * uncertainty).astype(np.float32)
 
 
 def score_symmetric_head(features: np.ndarray, head: SymmetricK1Head) -> np.ndarray:
@@ -217,6 +268,7 @@ def score_symmetric_head(features: np.ndarray, head: SymmetricK1Head) -> np.ndar
     flat = _normalize(rows.reshape(-1, rows.shape[-1]))
     raw = flat @ _normalize(head.prototypes).T
     corrected = raw @ np.asarray(head.score_transform, dtype=np.float32)
+    corrected -= np.asarray(head.class_bias, dtype=np.float32)[None, :]
     return corrected.reshape(*rows.shape[:-1], head.class_count).astype(np.float32)
 
 
@@ -226,6 +278,8 @@ def leave_one_support_view_out_scores(
     use_alignment: bool,
     prototype_rule: str,
     ridge: float | None,
+    gram_mix: float = 1.0,
+    uncertainty_penalty: float = 0.0,
     source_mean: np.ndarray | None = None,
     source_std: np.ndarray | None = None,
     variance_floor: float = 0.05,
@@ -251,13 +305,21 @@ def leave_one_support_view_out_scores(
         prototypes = build_robust_prototypes(
             train_aligned, rule=str(prototype_rule)
         )
-        transform = fit_gram_score_transform(prototypes, ridge=ridge)
+        transform = fit_gram_score_transform(
+            prototypes, ridge=ridge, mix=float(gram_mix)
+        )
+        class_bias = fit_class_uncertainty_bias(
+            train_aligned, prototypes, penalty=float(uncertainty_penalty)
+        )
         fold_head = SymmetricK1Head(
             prototypes=prototypes,
             score_transform=transform,
+            class_bias=class_bias,
             alignment=alignment,
             prototype_rule=str(prototype_rule),
             ridge=ridge,
+            gram_mix=float(gram_mix),
+            uncertainty_penalty=float(uncertainty_penalty),
             calibration={},
         )
         outputs.append(score_symmetric_head(validation, fold_head))
@@ -283,6 +345,8 @@ def calibrate_symmetric_k1_head(
     source_std: np.ndarray | None = None,
     prototype_rules: Iterable[str] = PROTOTYPE_RULES,
     ridges: Iterable[float | None] = DEFAULT_RIDGES,
+    gram_mixes: Iterable[float] = DEFAULT_GRAM_MIXES,
+    uncertainty_penalties: Iterable[float] = DEFAULT_UNCERTAINTY_PENALTIES,
     allow_alignment: bool = True,
     variance_floor: float = 0.05,
 ) -> dict[str, Any]:
@@ -291,7 +355,9 @@ def calibrate_symmetric_k1_head(
     values = _validate_support_views(support_views)
     rules = tuple(str(rule) for rule in prototype_rules)
     ridge_grid = tuple(ridges)
-    if not rules or not ridge_grid:
+    gram_mix_grid = tuple(float(value) for value in gram_mixes)
+    penalty_grid = tuple(float(value) for value in uncertainty_penalties)
+    if not rules or not ridge_grid or not gram_mix_grid or not penalty_grid:
         raise ValueError("prototype and ridge grids must be non-empty")
     candidates: list[dict[str, Any]] = []
     alignment_grid = (False, True) if allow_alignment else (False,)
@@ -300,69 +366,86 @@ def calibrate_symmetric_k1_head(
             if rule not in PROTOTYPE_RULES:
                 raise ValueError(f"unsupported prototype rule: {rule}")
             for ridge_index, ridge in enumerate(ridge_grid):
-                predictions: list[int] = []
-                truths: list[int] = []
-                true_ranks: list[int] = []
-                for heldout_view in range(values.shape[0]):
-                    train = np.delete(values, heldout_view, axis=0)
-                    validation = values[heldout_view]
-                    alignment = (
-                        fit_diagonal_alignment(
-                            train,
-                            source_mean=source_mean,
-                            source_std=source_std,
-                            variance_floor=variance_floor,
+                mixes = (0.0,) if ridge is None else gram_mix_grid
+                for mix_index, gram_mix in enumerate(mixes):
+                    for penalty_index, uncertainty_penalty in enumerate(penalty_grid):
+                        predictions: list[int] = []
+                        truths: list[int] = []
+                        true_ranks: list[int] = []
+                        for heldout_view in range(values.shape[0]):
+                            train = np.delete(values, heldout_view, axis=0)
+                            validation = values[heldout_view]
+                            alignment = (
+                                fit_diagonal_alignment(
+                                    train,
+                                    source_mean=source_mean,
+                                    source_std=source_std,
+                                    variance_floor=variance_floor,
+                                )
+                                if use_alignment
+                                else None
+                            )
+                            train_aligned = apply_diagonal_alignment(train, alignment)
+                            prototypes = build_robust_prototypes(train_aligned, rule=rule)
+                            transform = fit_gram_score_transform(
+                                prototypes, ridge=ridge, mix=gram_mix
+                            )
+                            class_bias = fit_class_uncertainty_bias(
+                                train_aligned,
+                                prototypes,
+                                penalty=uncertainty_penalty,
+                            )
+                            fold_head = SymmetricK1Head(
+                                prototypes=prototypes,
+                                score_transform=transform,
+                                class_bias=class_bias,
+                                alignment=alignment,
+                                prototype_rule=rule,
+                                ridge=ridge,
+                                gram_mix=gram_mix,
+                                uncertainty_penalty=uncertainty_penalty,
+                                calibration={},
+                            )
+                            scores = score_symmetric_head(validation, fold_head)
+                            fold_truth = np.arange(values.shape[1], dtype=np.int64)
+                            fold_prediction = np.argmax(scores, axis=1)
+                            predictions.extend(fold_prediction.tolist())
+                            truths.extend(fold_truth.tolist())
+                            ordering = np.argsort(-scores, axis=1)
+                            true_ranks.extend(
+                                (
+                                    np.argmax(ordering == fold_truth[:, None], axis=1) + 1
+                                ).tolist()
+                            )
+                        pred = np.asarray(predictions, dtype=np.int64)
+                        truth = np.asarray(truths, dtype=np.int64)
+                        class_acc = [
+                            float(np.mean(pred[truth == index] == index))
+                            for index in range(values.shape[1])
+                        ]
+                        candidates.append(
+                            {
+                                "use_alignment": bool(use_alignment),
+                                "prototype_rule": rule,
+                                "ridge": None if ridge is None else float(ridge),
+                                "gram_mix": float(gram_mix),
+                                "uncertainty_penalty": float(uncertainty_penalty),
+                                "accuracy": float(np.mean(pred == truth)),
+                                "min_class_accuracy": float(min(class_acc)),
+                                "mean_true_class_rank": float(np.mean(true_ranks)),
+                                "view_count": int(values.shape[0]),
+                                "class_count": int(values.shape[1]),
+                                "physical_shots_per_class": 1,
+                                "complexity_rank": int(
+                                    3 * int(use_alignment)
+                                    + int(ridge is not None)
+                                    + rule_index
+                                    + ridge_index
+                                    + mix_index
+                                    + penalty_index
+                                ),
+                            }
                         )
-                        if use_alignment
-                        else None
-                    )
-                    train_aligned = apply_diagonal_alignment(train, alignment)
-                    prototypes = build_robust_prototypes(train_aligned, rule=rule)
-                    transform = fit_gram_score_transform(prototypes, ridge=ridge)
-                    fold_head = SymmetricK1Head(
-                        prototypes=prototypes,
-                        score_transform=transform,
-                        alignment=alignment,
-                        prototype_rule=rule,
-                        ridge=ridge,
-                        calibration={},
-                    )
-                    scores = score_symmetric_head(validation, fold_head)
-                    fold_truth = np.arange(values.shape[1], dtype=np.int64)
-                    fold_prediction = np.argmax(scores, axis=1)
-                    predictions.extend(fold_prediction.tolist())
-                    truths.extend(fold_truth.tolist())
-                    ordering = np.argsort(-scores, axis=1)
-                    true_ranks.extend(
-                        (
-                            np.argmax(ordering == fold_truth[:, None], axis=1) + 1
-                        ).tolist()
-                    )
-                pred = np.asarray(predictions, dtype=np.int64)
-                truth = np.asarray(truths, dtype=np.int64)
-                class_acc = [
-                    float(np.mean(pred[truth == index] == index))
-                    for index in range(values.shape[1])
-                ]
-                candidates.append(
-                    {
-                        "use_alignment": bool(use_alignment),
-                        "prototype_rule": rule,
-                        "ridge": None if ridge is None else float(ridge),
-                        "accuracy": float(np.mean(pred == truth)),
-                        "min_class_accuracy": float(min(class_acc)),
-                        "mean_true_class_rank": float(np.mean(true_ranks)),
-                        "view_count": int(values.shape[0]),
-                        "class_count": int(values.shape[1]),
-                        "physical_shots_per_class": 1,
-                        "complexity_rank": int(
-                            2 * int(use_alignment)
-                            + int(ridge is not None)
-                            + rule_index
-                            + ridge_index
-                        ),
-                    }
-                )
     selected = max(candidates, key=_candidate_key)
     return {
         "selection_source": "support_view_leave_one_out_only",
@@ -382,6 +465,8 @@ def fit_symmetric_k1_head(
     source_std: np.ndarray | None = None,
     prototype_rules: Iterable[str] = PROTOTYPE_RULES,
     ridges: Iterable[float | None] = DEFAULT_RIDGES,
+    gram_mixes: Iterable[float] = DEFAULT_GRAM_MIXES,
+    uncertainty_penalties: Iterable[float] = DEFAULT_UNCERTAINTY_PENALTIES,
     allow_alignment: bool = True,
     variance_floor: float = 0.05,
 ) -> SymmetricK1Head:
@@ -394,6 +479,8 @@ def fit_symmetric_k1_head(
         source_std=source_std,
         prototype_rules=prototype_rules,
         ridges=ridges,
+        gram_mixes=gram_mixes,
+        uncertainty_penalties=uncertainty_penalties,
         allow_alignment=allow_alignment,
         variance_floor=variance_floor,
     )
@@ -412,13 +499,25 @@ def fit_symmetric_k1_head(
     prototypes = build_robust_prototypes(
         aligned, rule=str(selected["prototype_rule"])
     )
-    transform = fit_gram_score_transform(prototypes, ridge=selected["ridge"])
+    transform = fit_gram_score_transform(
+        prototypes,
+        ridge=selected["ridge"],
+        mix=float(selected["gram_mix"]),
+    )
+    class_bias = fit_class_uncertainty_bias(
+        aligned,
+        prototypes,
+        penalty=float(selected["uncertainty_penalty"]),
+    )
     return SymmetricK1Head(
         prototypes=prototypes,
         score_transform=transform,
+        class_bias=class_bias,
         alignment=alignment,
         prototype_rule=str(selected["prototype_rule"]),
         ridge=selected["ridge"],
+        gram_mix=float(selected["gram_mix"]),
+        uncertainty_penalty=float(selected["uncertainty_penalty"]),
         calibration=calibration,
     )
 
@@ -440,7 +539,13 @@ def fit_locked_symmetric_support_head(
         raise ValueError(
             "formal support observations must be exactly three leo_weak views per physical K"
         )
-    required = {"use_alignment", "prototype_rule", "ridge"}
+    required = {
+        "use_alignment",
+        "prototype_rule",
+        "ridge",
+        "gram_mix",
+        "uncertainty_penalty",
+    }
     if not required.issubset(selected):
         raise ValueError(f"locked head config is missing: {sorted(required - set(selected))}")
     use_alignment = bool(selected["use_alignment"])
@@ -459,13 +564,23 @@ def fit_locked_symmetric_support_head(
         aligned, rule=str(selected["prototype_rule"])
     )
     ridge = selected["ridge"]
-    transform = fit_gram_score_transform(prototypes, ridge=ridge)
+    gram_mix = float(selected["gram_mix"])
+    uncertainty_penalty = float(selected["uncertainty_penalty"])
+    transform = fit_gram_score_transform(
+        prototypes, ridge=ridge, mix=gram_mix
+    )
+    class_bias = fit_class_uncertainty_bias(
+        aligned, prototypes, penalty=uncertainty_penalty
+    )
     return SymmetricK1Head(
         prototypes=prototypes,
         score_transform=transform,
+        class_bias=class_bias,
         alignment=alignment,
         prototype_rule=str(selected["prototype_rule"]),
         ridge=ridge,
+        gram_mix=gram_mix,
+        uncertainty_penalty=uncertainty_penalty,
         calibration={
             "selection_source": "source_receiver_holdout_locked",
             "query_rows_used": 0,
@@ -496,9 +611,12 @@ def quantize_symmetric_head_fp16(head: SymmetricK1Head) -> SymmetricK1Head:
     return SymmetricK1Head(
         prototypes=head.prototypes.astype(np.float16).astype(np.float32),
         score_transform=head.score_transform.astype(np.float16).astype(np.float32),
+        class_bias=head.class_bias.astype(np.float16).astype(np.float32),
         alignment=alignment,
         prototype_rule=head.prototype_rule,
         ridge=head.ridge,
+        gram_mix=head.gram_mix,
+        uncertainty_penalty=head.uncertainty_penalty,
         calibration=head.calibration,
     )
 
@@ -512,6 +630,7 @@ def persist_and_reload_symmetric_head_fp16(
     state: dict[str, np.ndarray] = {
         "prototypes": quantized.prototypes.astype(np.float16),
         "score_transform": quantized.score_transform.astype(np.float16),
+        "class_bias": quantized.class_bias.astype(np.float16),
     }
     if quantized.alignment is not None:
         state["alignment_scale"] = quantized.alignment.scale.astype(np.float16)
@@ -522,6 +641,7 @@ def persist_and_reload_symmetric_head_fp16(
     with np.load(output, allow_pickle=False) as payload:
         prototypes = np.asarray(payload["prototypes"], dtype=np.float32)
         score_transform = np.asarray(payload["score_transform"], dtype=np.float32)
+        class_bias = np.asarray(payload["class_bias"], dtype=np.float32)
         if "alignment_scale" in payload.files:
             scale = np.asarray(payload["alignment_scale"], dtype=np.float32)
             bias = np.asarray(payload["alignment_bias"], dtype=np.float32)
@@ -541,9 +661,12 @@ def persist_and_reload_symmetric_head_fp16(
     reloaded = SymmetricK1Head(
         prototypes=prototypes,
         score_transform=score_transform,
+        class_bias=class_bias,
         alignment=alignment,
         prototype_rule=head.prototype_rule,
         ridge=head.ridge,
+        gram_mix=head.gram_mix,
+        uncertainty_penalty=head.uncertainty_penalty,
         calibration=head.calibration,
     )
     probe = head.prototypes[: min(8, head.class_count)]

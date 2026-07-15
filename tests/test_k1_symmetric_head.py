@@ -4,7 +4,9 @@ import numpy as np
 
 from paper_reproduction.cvs_aligned.k1_symmetric_head import (
     apply_diagonal_alignment,
+    build_robust_prototypes,
     calibrate_symmetric_k1_head,
+    fit_class_uncertainty_bias,
     fit_diagonal_alignment,
     fit_gram_score_transform,
     fit_locked_symmetric_support_head,
@@ -51,7 +53,7 @@ def test_calibration_is_query_free_and_role_free() -> None:
     assert result["role_labels_used"] is False
     assert result["class_quota_used"] is False
     assert result["physical_shots_per_class"] == 1
-    assert len(result["candidates"]) == 30
+    assert len(result["candidates"]) == 312
 
     selected = result["selected"]
     scores = leave_one_support_view_out_scores(
@@ -59,6 +61,8 @@ def test_calibration_is_query_free_and_role_free() -> None:
         use_alignment=selected["use_alignment"],
         prototype_rule=selected["prototype_rule"],
         ridge=selected["ridge"],
+        gram_mix=selected["gram_mix"],
+        uncertainty_penalty=selected["uncertainty_penalty"],
     )
     assert scores.shape == (15, 4, 4)
 
@@ -121,12 +125,16 @@ def test_locked_head_uses_same_source_selected_rule_for_k5() -> None:
             "use_alignment": False,
             "prototype_rule": "trimmed20",
             "ridge": 0.1,
+            "gram_mix": 0.5,
+            "uncertainty_penalty": 0.25,
         },
     )
     assert head.calibration["selection_source"] == "source_receiver_holdout_locked"
     assert head.calibration["physical_shots_per_class"] == 5
     assert head.prototype_rule == "trimmed20"
     assert head.ridge == 0.1
+    assert head.gram_mix == 0.5
+    assert head.uncertainty_penalty == 0.25
 
 
 def test_gram_transform_deconfuses_correlated_prototype_responses() -> None:
@@ -144,6 +152,56 @@ def test_gram_transform_deconfuses_correlated_prototype_responses() -> None:
     )
 
 
+def test_consensus67_rejects_one_of_three_support_view_outliers() -> None:
+    support = np.asarray(
+        [
+            [[1.0, 0.0], [0.0, 1.0]],
+            [[0.99, 0.01], [0.01, 0.99]],
+            [[0.0, 1.0], [1.0, 0.0]],
+        ],
+        dtype=np.float32,
+    )
+    mean = build_robust_prototypes(support, rule="mean")
+    consensus = build_robust_prototypes(support, rule="consensus67")
+    assert float(consensus[0, 0]) > float(mean[0, 0])
+    assert float(consensus[1, 1]) > float(mean[1, 1])
+
+
+def test_support_uncertainty_penalty_is_larger_for_unstable_class() -> None:
+    support = np.asarray(
+        [
+            [[1.0, 0.0], [0.0, 1.0]],
+            [[0.99, 0.01], [1.0, 0.0]],
+            [[1.0, -0.01], [-1.0, 0.0]],
+        ],
+        dtype=np.float32,
+    )
+    prototypes = build_robust_prototypes(support, rule="mean")
+    bias = fit_class_uncertainty_bias(support, prototypes, penalty=0.5)
+    assert bias.shape == (2,)
+    assert float(bias[1]) > float(bias[0])
+
+
+def test_partial_gram_mix_stays_between_identity_and_full_correction() -> None:
+    prototypes = np.asarray(
+        [[1.0, 0.0], [0.8, 0.6], [0.0, 1.0]], dtype=np.float32
+    )
+    identity = np.eye(3, dtype=np.float32)
+    half = fit_gram_score_transform(prototypes, ridge=0.1, mix=0.5)
+    full = fit_gram_score_transform(prototypes, ridge=0.1, mix=1.0)
+    np.testing.assert_allclose(half, 0.5 * (identity + full), atol=1.0e-6)
+
+
+def test_gram_correction_clips_ill_conditioned_spectral_gain() -> None:
+    prototypes = np.asarray(
+        [[1.0, 0.0], [1.0, 1.0e-5], [0.0, 1.0]], dtype=np.float32
+    )
+    transform = fit_gram_score_transform(prototypes, ridge=1.0e-6, mix=1.0)
+    gains = np.linalg.eigvalsh(transform)
+    assert float(gains.min()) >= 0.5 - 1.0e-6
+    assert float(gains.max()) <= 2.0 + 1.0e-6
+
+
 def test_state_and_compute_remain_extreme_light_for_26_classes() -> None:
     rng = np.random.default_rng(11)
     support = rng.normal(size=(15, 26, 256)).astype(np.float32)
@@ -155,7 +213,7 @@ def test_state_and_compute_remain_extreme_light_for_26_classes() -> None:
     )
     # Calibration may legally reject the affine.  These are upper bounds when
     # it is retained; the no-affine state is even smaller.
-    assert head.persistent_state_bytes_fp16 <= 15688
-    assert head.extra_macs_per_query <= 932
+    assert head.persistent_state_bytes_fp16 <= 15740
+    assert head.extra_macs_per_query <= 958
     assert head.persistent_state_bytes_fp16 < 32 * 1024
     assert head.extra_macs_per_query < 2_000

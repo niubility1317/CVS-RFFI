@@ -88,6 +88,8 @@ def _artifacts(tmp_path):
                 "use_alignment": True,
                 "prototype_rule": "mean",
                 "ridge": 0.1,
+                "gram_mix": 0.5,
+                "uncertainty_penalty": 0.25,
             },
         },
         "nested_k_source_lock": {

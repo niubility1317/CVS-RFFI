@@ -58,6 +58,7 @@ from paper_reproduction.cvs_aligned.adaptive_rxlight_tta import (  # noqa: E402
 )
 from paper_reproduction.cvs_aligned.extreme_light_adapter import (  # noqa: E402
     concatenate_registered_features,
+    normalized_auxiliary_energy_share,
 )
 from paper_reproduction.cvs_aligned.k1_symmetric_head import (  # noqa: E402
     calibrate_symmetric_k1_head,
@@ -303,6 +304,7 @@ def _leo_source_prototypes(
     class_count: int,
     batch_size: int,
     device: torch.device,
+    fft_weight: float = 2.0,
 ) -> torch.Tensor:
     """Build prototypes from sealed Phase1 LEO_weak rows only."""
 
@@ -328,7 +330,9 @@ def _leo_source_prototypes(
                 copy=False,
             ).to(device)
             z, _ = _feature_forward(model, x_leo, "z_id")
-            joint = _joint_feature_tensor(z, x_leo)
+            joint = _joint_feature_tensor(
+                z, x_leo, fft_weight=float(fft_weight)
+            )
             features.append(F.normalize(joint.float(), dim=1))
             labels.append(y.long())
     all_features = torch.cat(features, dim=0)
@@ -352,6 +356,7 @@ def _heldout_scores(
     *,
     batch_size: int,
     device: torch.device,
+    fft_weight: float = 2.0,
 ) -> tuple[dict[str, np.ndarray], np.ndarray, dict[str, Any], np.ndarray]:
     by_model: dict[str, list[np.ndarray]] = {"base": [], "ground_lora": []}
     label_parts: list[np.ndarray] = []
@@ -390,7 +395,9 @@ def _heldout_scores(
                 view_features = []
                 for _view_name, x_view in views:
                     z, _ = _feature_forward(model, x_view, "z_id")
-                    joint = _joint_feature_tensor(z, x_view)
+                    joint = _joint_feature_tensor(
+                        z, x_view, fft_weight=float(fft_weight)
+                    )
                     normalized_joint = F.normalize(joint.float(), dim=1)
                     score = normalized_joint @ prototypes.t()
                     view_scores.append(score.detach().cpu().numpy())
@@ -476,7 +483,9 @@ def build_source_symmetric_head_lock(
     if episode_count < 1:
         raise ValueError("source head lock has no valid K1 episodes")
 
-    aggregate: dict[tuple[bool, str, float | None], list[dict[str, Any]]] = {}
+    aggregate: dict[
+        tuple[bool, str, float | None, float, float], list[dict[str, Any]]
+    ] = {}
     episode_support_hashes: list[str] = []
     for episode_index in range(episode_count):
         selected_physical = np.asarray(
@@ -507,11 +516,19 @@ def build_source_symmetric_head_lock(
                 bool(row["use_alignment"]),
                 str(row["prototype_rule"]),
                 None if row["ridge"] is None else float(row["ridge"]),
+                float(row["gram_mix"]),
+                float(row["uncertainty_penalty"]),
             )
             aggregate.setdefault(key, []).append(dict(row))
 
     candidates: list[dict[str, Any]] = []
-    for (use_alignment, prototype_rule, ridge), rows in aggregate.items():
+    for (
+        use_alignment,
+        prototype_rule,
+        ridge,
+        gram_mix,
+        uncertainty_penalty,
+    ), rows in aggregate.items():
         if len(rows) != episode_count:
             raise RuntimeError("source head candidate coverage drift across episodes")
         candidates.append(
@@ -519,6 +536,8 @@ def build_source_symmetric_head_lock(
                 "use_alignment": use_alignment,
                 "prototype_rule": prototype_rule,
                 "ridge": ridge,
+                "gram_mix": gram_mix,
+                "uncertainty_penalty": uncertainty_penalty,
                 "mean_accuracy": float(np.mean([row["accuracy"] for row in rows])),
                 "worst_episode_accuracy": float(
                     np.min([row["accuracy"] for row in rows])
@@ -532,8 +551,27 @@ def build_source_symmetric_head_lock(
                 "complexity_rank": int(rows[0]["complexity_rank"]),
             }
         )
+    identity = next(
+        row
+        for row in candidates
+        if row["use_alignment"] is False
+        and row["prototype_rule"] == "mean"
+        and row["ridge"] is None
+        and float(row["gram_mix"]) == 0.0
+        and float(row["uncertainty_penalty"]) == 0.0
+    )
+    guarded_candidates = [
+        row
+        for row in candidates
+        if float(row["mean_accuracy"]) + 1.0e-12
+        >= float(identity["mean_accuracy"])
+        and float(row["worst_episode_accuracy"]) + 1.0e-12
+        >= float(identity["worst_episode_accuracy"])
+        and float(row["mean_min_class_accuracy"]) + 1.0e-12
+        >= float(identity["mean_min_class_accuracy"])
+    ]
     selected = max(
-        candidates,
+        guarded_candidates,
         key=lambda row: (
             float(row["mean_accuracy"]),
             float(row["worst_episode_accuracy"]),
@@ -541,13 +579,6 @@ def build_source_symmetric_head_lock(
             -float(row["mean_true_class_rank"]),
             -int(row["complexity_rank"]),
         ),
-    )
-    identity = next(
-        row
-        for row in candidates
-        if row["use_alignment"] is False
-        and row["prototype_rule"] == "mean"
-        and row["ridge"] is None
     )
     return {
         "selection_source": "disjoint_source_receiver_holdout_k1_episodes",
@@ -558,6 +589,12 @@ def build_source_symmetric_head_lock(
         "source_class_count": int(len(class_ids)),
         "selected": dict(selected),
         "identity_reference": dict(identity),
+        "selection_guard": {
+            "mean_accuracy_not_below_identity": True,
+            "worst_episode_accuracy_not_below_identity": True,
+            "mean_min_class_accuracy_not_below_identity": True,
+            "eligible_candidate_count": int(len(guarded_candidates)),
+        },
         "candidates": candidates,
         "episode_support_hashes": episode_support_hashes,
         "target_support_used_for_selection": False,
@@ -663,6 +700,8 @@ def build_locked_nested_k_source_scores(
         "use_alignment": False,
         "prototype_rule": "mean",
         "ridge": None,
+        "gram_mix": 0.0,
+        "uncertainty_penalty": 0.0,
     }
     calibration_score_parts: list[np.ndarray] = []
     evaluation_scores: dict[str, np.ndarray] = {}
@@ -731,12 +770,20 @@ def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
     parser.add_argument("--max_floor_drop_pp", type=float, default=2.0)
     parser.add_argument("--max_mean_backbone_forwards", type=float, default=3.0)
     parser.add_argument("--min_extra_view_rate", type=float, default=0.05)
+    parser.add_argument(
+        "--fft_weight",
+        type=float,
+        default=2.0,
+        help="Normalized FFT96 block weight; source-only ablation grid is 0.5,0.7,1.0,2.0.",
+    )
     parser.add_argument("--device", default="cuda:0")
     args = parser.parse_args(argv)
     if not 1 <= int(args.batch_size) <= 4096:
         raise ValueError("batch_size must be in [1,4096]")
     if int(args.num_old_classes) < 2:
         raise ValueError("source validation requires at least two classes")
+    if not 0.0 <= float(args.fft_weight) <= 2.0:
+        raise ValueError("fft_weight must be in [0,2]")
     return args
 
 
@@ -834,6 +881,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         class_count=int(args.num_old_classes),
         batch_size=int(args.batch_size),
         device=device,
+        fft_weight=float(args.fft_weight),
     )
     scores, repeated_labels, extraction_audit, adapted_features = _heldout_scores(
         base_model,
@@ -843,6 +891,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         prototypes,
         batch_size=int(args.batch_size),
         device=device,
+        fft_weight=float(args.fft_weight),
     )
     physical_count = int(len(validation_indices))
     physical_labels = repeated_labels[:physical_count]
@@ -1021,7 +1070,11 @@ def main(argv: Sequence[str] | None = None) -> int:
         std=source_feature_std,
         feature_dim=np.asarray([source_feature_mean.size], dtype=np.int64),
         fft_dim=np.asarray([96], dtype=np.int64),
-        fft_weight=np.asarray([2.0], dtype=np.float32),
+        fft_weight=np.asarray([float(args.fft_weight)], dtype=np.float32),
+        fft_energy_share=np.asarray(
+            [normalized_auxiliary_energy_share(float(args.fft_weight))],
+            dtype=np.float32,
+        ),
     )
     source_cache_contract = {
         "source_leo_weak_cache_set_manifest": str(args.source_cache_set.resolve()),
@@ -1053,10 +1106,13 @@ def main(argv: Sequence[str] | None = None) -> int:
         "source_feature_statistics": {
             "path": str(source_stats_path),
             "sha256": sha256_file(source_stats_path),
-            "feature_kind": "normalized_z_id_plus_fft96_weight2",
+            "feature_kind": "normalized_z_id_plus_fft96_source_locked_weight",
             "feature_dim": int(source_feature_mean.size),
             "fft_dim": 96,
-            "fft_weight": 2.0,
+            "fft_weight": float(args.fft_weight),
+            "fft_energy_share": normalized_auxiliary_energy_share(
+                float(args.fft_weight)
+            ),
             "row_count": int(len(calibration_feature_rows)),
             "target_rows_used": False,
         },

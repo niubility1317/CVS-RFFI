@@ -87,9 +87,9 @@ def load_torchscript_backbone_same_fd(
 
 def _validate_resource_bounds(config: Mapping[str, Any]) -> None:
     for key, upper in (
-        ("trainable_parameters", 100_000),
-        ("adapt_epochs", 40),
-        ("persistent_state_bytes", 512 * 1024),
+        ("trainable_parameters", 50_000),
+        ("adapt_epochs", 20),
+        ("persistent_state_bytes", 256 * 1024),
     ):
         value = config.get(key)
         if not isinstance(value, int) or value < 0 or value > upper:

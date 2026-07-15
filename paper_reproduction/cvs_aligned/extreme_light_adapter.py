@@ -17,6 +17,15 @@ import numpy as np
 EPS = 1.0e-8
 
 
+def normalized_auxiliary_energy_share(auxiliary_weight: float) -> float:
+    """Return the auxiliary block's energy share after normalized concatenation."""
+
+    weight = float(auxiliary_weight)
+    if not math.isfinite(weight) or weight < 0.0:
+        raise ValueError("auxiliary_weight must be finite and nonnegative")
+    return float(weight * weight / (1.0 + weight * weight))
+
+
 def _numpy_norm(rows: np.ndarray) -> np.ndarray:
     values = np.asarray(rows, dtype=np.float32)
     return values / np.maximum(np.linalg.norm(values, axis=1, keepdims=True), EPS)

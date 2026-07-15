@@ -100,14 +100,77 @@ K1的核心不是扩大adapter，而是收紧identity保持：adapter以identity
 
 修改前快照位于`E:\type10-7\code\snapshots\qknnv42_extreme_light_control_repair_20260715\`。根目录不是Git仓库，所有意图变更均镜像到`E:\type10-7\github_publish\CVS-RFFI-repo`承载。
 
-## 七、当前阻塞与下一步
+## 七、ADV3B02/effective8严格接入实现
+
+本轮把主候选明确为“地面effective8 LoRA＋星上零梯度support校准＋自适应1→3→5-view”。ADV3B02原checkpoint不在目标侧更新；地面只更新8个直接影响`z_id/feat_joint`的Linear层：`t_proj`、`f_proj`、`pa_proj.0`、`fuse.0`以及classifier中的`id_proj.0`、`pa_proj.0`、`id_gate.0`、`joint_proj.0`。rank16 LoRA共16个A/B张量、44,048个训练参数，训练12epoch。
+
+### 7.1输入、处理与输出
+
+|环节|输入|方法|输出|
+|---|---|---|---|
+|地面导出|固定SHA的ADV3B02 checkpoint、source LEO_weak训练得到的FP16 effective8 LoRA|严格重建两份同源模型；一份保持base，另一份注入LoRA后合并到8个Linear；对injected、merged和TorchScript逐张量比对|`base_runtime.ts`、`candidate_runtime.ts`、parity receipt|
+|candidate capsule|candidate lock、两份TorchScript、LoRA state、training manifest、source feature stats、head lock、TTA policy|重新核对candidate lock自哈希、不可变artifact/cache/code哈希、8层/16张量、参数/epoch/字节以及禁止权限|包外可指定SHA256的candidate capsule|
+|星上support登记|K-shot注册support的3个LEO_weak场景base view|不做target backbone反向传播；使用统一全局对角对齐、稳健原型和Gram score transform构建闭式head|每个注册类的FP16 prototype、`C×C`score transform及可选alignment状态|
+|逐query推理|单个truth-free LEO_weak query、全部注册类、source锁定TTA门限|先执行1-view；仅当top-2 margin或3-view disagreement未过门限时追加至3/5-view|candidate/identity/direct预测及每样本实际view count|
+
+### 7.2资源口径
+
+评测包总大小、评测峰值资源和星上持久增量是三个不同指标。双TorchScript与密封support/query使评测包必然大于256KiB；256KiB约束只用于“预装ADV3B02、由delta重建candidate、且不额外长期保存merged完整副本”的星上增量状态。
+
+|资源项|5个新类`C=11`|10个新类`C=16`|20个新类`C=26`|
+|---|---:|---:|---:|
+|LoRA FP16张量payload|88,096B|88,096B|88,096B|
+|闭式head FP16状态|6,920B|9,760B|15,740B|
+|6个TTA float32门限|24B|24B|24B|
+|理论张量payload合计|95,040B|97,880B|103,860B|
+
+candidate capsule同时记录`adapter_serialized_file_bytes`。正式资源判定使用“真实序列化delta文件＋head＋24B门限”，不能用88,096B理论tensor payload替代实际部署文件大小。真实v14 adapter尚未拉取到本地，因此当前只能确认理论payload小于256KiB；真实序列化增量仍是待验证项。
+
+### 7.3本地验证结果
+
+|检查|结果|含义|
+|---|---|---|
+|`py_compile`|3个新增实现文件通过|语法与导入路径可用|
+|candidate capsule测试|6/6通过|外部trust root、层集合、字节重算、candidate权限和merged副本错误均能fail closed|
+|TorchScript trace测试|1/1通过|测试模型的`z_id/logits`在eager与trace间逐值一致|
+|strict runtime测试|6/6通过|nested K、五路预测、FFT96确定性以及50k/20epoch/256KiB越界拒绝生效|
+|联合测试|13/13通过|仅证明本地实现合同；不代表真实ADV3B02/effective8 artifact parity或性能达标|
+
+TorchScript测试出现PyTorch对`torch.jit.trace`的弃用提示，但当前严格runtime使用`torch.jit.load`，该提示不改变测试通过结论。后续可以迁移到`torch.export`，迁移前必须保持相同的文件描述符加载、哈希和数值parity合同。
+
+### 7.4本轮qKNN性能机制增量
+
+本轮的工程重点已转到qKNN性能，不再继续扩展非必要协议握手。所有新机制均只使用source validation或注册support，不读取query批次统计、真实类别数、old/new角色或类别配额。
+
+|机制|底层问题|实现|额外星上状态/计算|预期作用|证据状态|
+|---|---|---|---|---|---|
+|`consensus67`稳健原型|K=1时单个物理support的某个接收View可能成为离群点|每类保留平均两两相似度最高的`ceil(2V/3)`个观测后求球面中心|不增加状态；support登记阶段增加小规模`V×V`相似度|降低单View异常对K1原型方向的牵引|本地机制测试通过；真实性能待测|
+|有界partial Gram|原始`(G+λI)^{-1}`在原型高度相关时会放大弱特征方向|Gram逆的谱增益限幅至`[0.5,2.0]`，再用`mix∈{0.25,0.5,1.0}`与identity插值|head仍为`C×C`；每query至多958 MAC|改善相邻类边界，同时避免K1数值放大导致最低类崩塌|本地机制测试通过；真实性能待测|
+|support不确定性偏置|不同类的注册View稳定性不同|用类内View到原型的余弦离散度生成小偏置；`β=0`始终保留|新增`C`个FP16标量|降低不稳定support对query的过度吸引|本地机制测试通过；源域三重identity保护已启用|
+|源域三重identity保护|只最大化平均准确率可能牺牲最差episode或最低类|候选必须同时满足平均准确率、最差episode准确率、平均最低类准确率均不低于identity|仅地面锁定开销|防止K1平均收益以旧类floor退化为代价|本地选择逻辑测试通过|
+|部署匹配multi-view worst-K损失|训练先平均两个View，部署却把多View作为相关support观测，目标不一致|地面LoRA训练直接输入`[V,N,D]`；support跨View/物理shot建原型，query逐View交叉熵，K间用log-sum-exp最坏风险|参数仍44,048、epoch仍12；仅地面每步约增加至原来1.5—2倍的轻量head运算|优先改善K1，同时约束K=5/10/20遗忘|36项定向测试通过；需要重训实测|
+|性能优先自适应View|仅靠margin可能让“高margin但全类绝对相似度很低”的样本错误停在1-view；简单均值会受振荡View影响|1-view同时检查margin和top1 score；3/5-view使用`mean(score)-β·std(score)`稳定性下置信界；源域选择先最大化准确率，再最小化forward|TTA状态由12B增至24B；默认仍1-view|让额外View集中到低置信度或跨View不稳定样本，避免固定5-view|85项联合回归通过；实际forward/准确率待测|
+|FFT能量重平衡|历史`[z_id,2·z_fft]`归一化后FFT能量占80%，`z_id`和LoRA收益被稀释|增加`fft_weight={0.5,0.7,1.0,2.0}`源域消融；对应FFT能量约20%、32.9%、50%、80%|不增加参数、状态或backbone forward|先恢复ADV3B02身份特征主导，再检验FFT是否提供互补增益|CLI与能量审计测试通过；N607消融待运行|
+
+这里的优先假设是：K=1正收益首先取决于“保住ADV3B02边界并让support原型更稳”，而不是继续扩大adapter。FFT权重和head规则均必须在source receiver holdout上锁定；target K1/K5/K20结果只能用于独立确认，不能反向选参。
+
+本轮完整定向回归为85/85通过，覆盖candidate capsule、TorchScript、strict runtime、FFT能量映射、K1 head、自适应TTA、source锁定、candidate lock、benchmark及地面遗忘损失。该结果仍只证明实现一致性，不等同于准确率达标。
+
+## 八、性能优先实验队列与最低合规边界
+
+### 8.1立即执行的性能实验
+
+1. 复用同一ADV3B02 checkpoint和同一v14 effective8 adapter，先在source receiver holdout运行`fft_weight={0.5,0.7,1.0,2.0}`。联合排序以K1平均准确率为第一目标，同时硬约束最差episode和最低类不低于identity；并记录K=5/10/20同头结果与平均forward。
+2. 用胜出的FFT权重对比三种训练目标：identity adapter、原`z_rep`均值worst-K、部署匹配multi-view worst-K。训练参数固定44,048，epoch优先采用8/12/16，不超过20。
+3. 在source锁定FFT、epoch、head和TTA门限后，只先跑5receiver的K10开发矩阵；达不到旧类floor时，优先调整identity/relation权重和Gram mix，不增加adapter层数。
+4. K10锁定后再一次性运行K=1/5/20确认。K1若不能稳定超过strict direct ADV3B02，则该候选直接判负，不以其他K值补偿。
+
+### 8.2最低必要合规工作
 
 当前launchable candidate数量仍为0，不能直接去N607启动300cell矩阵。必须依次关闭：
 
-1. 将effective8的44,048参数adapter、head和TTA policy绑定外部candidate/plan trust root并接入唯一strict request builder。
-2. 在Phase2外构建25份真实ManyTx target package，完成逐TX样本覆盖、固定query ID、`K1⊂K5⊂K10⊂K20`和`Y_new^5⊂Y_new^10⊂Y_new^20`密封证据。
-3. 从Phase2 config/request/runtime删除`query_per_tx`、truth、role和build spec；一次prediction cell同时输出3个场景。
-4. 关闭immutable snapshot/TOCTOU缺口，在N607通过真实Landlock等价strict smoke并生成post-run open ledger。
-5. 只运行K10开发证据并锁定candidate；随后执行300cell/900场景行独立确认矩阵。
+1. source-only FFT/训练损失消融属于性能诊断，可以先运行；结果不得写成target部署成功声明。
+2. 正式target K10运行前只关闭会影响输入、输出、资源和禁止Oracle结论的必要缺口；不再扩展与qKNN性能无关的握手机制。
+3. K10锁定后执行K=1/5/20独立确认；完整300cell/900场景行仍由独立scorer给出最终结论。
 
 本报告当前是设计、审计和控制修复记录，不是性能达标声明，也不是N607部署成功证据。
