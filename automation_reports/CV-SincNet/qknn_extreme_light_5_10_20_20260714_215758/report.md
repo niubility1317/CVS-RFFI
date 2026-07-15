@@ -705,3 +705,22 @@ v12相对历史减少71.89%可训参数、83.33%epoch和95.31%的`参数×epoch`
 权限审计为`support_only=true`、`query_update_forbidden=true`、`query_labels_used_for_training=false`、`old_new_role_used_by_optimizer=false`、`class_quota_used_at_inference=false`、原checkpoint可训参数/更新均为0。3个场景导出均为1,506行，`features[160]`、`FFT[96]`和数值有限；artifact已完整回收至`E:\type10-7\local_artifacts\qknn_multiview_relaxed_rank24_scorekd_20260715_v12`及对应`_logs`目录。
 
 实际生成的合法manifest文件名为`training_manifest.json`，不是预写的`adaptation_manifest.json`；联合评估命令据此仅修正`--adapter_manifest`路径，不改变方法或超参数。评估固定GPU7，输出=`runs/qknn_multiview_relaxed_rank24_scorekd_adaptive_tta_20260715_v12`，日志=`logs/qknn_multiview_relaxed_rank24_scorekd_adaptive_tta_20260715_v12/eval.log`。它先用support leave-one-out冻结门限，再以真正惰性1→3→5路径报告部署性能，同时另算fixed1/3/5离线上界；query不用于训练、校准或选模。
+
+### v12真正惰性自适应结果：计算PASS、性能FAIL
+
+评估PID=`1154719`自然完成且启动时GPU7已无其它compute process。完整`eval.log`为108行/3,939B，无错误、OOM或非有限值；13项adapter provenance/权限检查全部PASS。输出含16个场景/方法联合row、416个逐类row和6,240个逐样本预测row，artifact已回收至`E:\type10-7\local_artifacts\qknn_multiview_relaxed_rank24_scorekd_adaptive_tta_20260715_v12`及对应`_logs`目录。
+
+| 同一`8-8/new20/seed713103/K10`、三场景合并 | old | 最低旧类 | new20 | 最低新类 | H | 平均/P95前向 |
+|---|---:|---:|---:|---:|---:|---:|
+|fixed1|62.50%|33.33%|82.17%|31.67%|71.00%|1/1|
+|fixed3离线上界|61.67%|33.33%|82.00%|31.67%|70.39%|3/3|
+|fixed5离线上界|61.94%|33.33%|82.17%|31.67%|70.64%|5/5|
+|真正惰性adaptive1→3→5|62.50%|33.33%|82.17%|31.67%|71.00%|1/1|
+|机制gate|≥78%|≥55%|≥82%|—|≥80%|均值≤3.5，H下降≤1.5pp|
+|正式目标|≥95%|≥88%|≥86%|—|—|—|
+
+support leave-one-out的完整5-view准确率为75.2564%，在105个合法门限候选中选择`base_margin=0/shift_margin=0/disagreement=0`；base单View反而为75.5128%，所以门控合法地让100%样本在1-view退出。三个场景各520条query实际只执行520个backbone forward row，shift/CFO provider请求均为0，真正惰性路径与全分数模拟的prediction/budget逐行一致。计算压缩达到5倍且没有门控性能损失，但原因是额外View本身在该适配状态上无增益，不能表述为“自适应多View提升了性能”。
+
+最差旧类为TX`20-19=33.33%`、`14-7=40.00%`、`6-15=43.33%`；最差新类为TX`10-10=31.67%`、`4-10=45.00%`、`14-11=48.33%`。相对正式目标，adaptive还差old32.50pp、floor54.67pp和new20 3.83pp。固定5-view同样未过gate，证明失败位于全后段LoRA产生的类判别几何，而不是1→3→5门控漏掉低置信度样本。
+
+因此v12判定`MECHANISM_FAIL_NO_EXPANSION`：不在本query上调整rank、学习率、anchor、DRO、蒸馏权重或门限，不扩其它receiver、seed、5/10类和K5。下一独立机制必须先在source receiver validation和support leave-one-view-out证据上锁定“强trust-region+support-only best-state”，限制特征漂移并只更新少数关键层；在未锁定前不得再读新的target query。summary SHA=`2967abea...33d`，manifest SHA=`b6599e90...7c13`，predictions SHA=`79831d23...d672`。
