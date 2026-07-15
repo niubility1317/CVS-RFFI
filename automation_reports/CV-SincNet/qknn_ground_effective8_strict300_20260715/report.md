@@ -461,3 +461,28 @@ candidate的遗忘在12个K×new组中均低于identity对照，但仍全部为�
 最终判定：`effective8-v14-strict300-v13`为`PROTOCOL_VALID`、artifact-complete的正式负结果；它不是当前性能最佳版本，不满足Stage2-C晋升、部署或论文成功声明条件。后续应优先修复support-only全类注册竞争与prototype hubness，并以相同密封预测/独立评分闭环验证；不得通过query真值、role、quota或global assignment调参，也不建议仅扩展K或重复当前effective8矩阵。
 
 设计追踪最终计数：TR-1至TR-5均为`verified`，`deferred=0`、`rejected=0`、`blocked=0`。实现与当前严格协议完全对应，不是近似实现；剩余最高风险是算法层面的注册塌缩，以及MRIOR-SDA、MAC和端到端adapt latency证据缺口。
+
+## Round1 EvidenceNorm真实注册诊断（2026-07-16）
+
+本轮是新“三轮算法探索→强制回顾”周期的第1轮，计数为1/3。输入为v11同一ADV3B02/effective8密封package，仅使用三个`LEO_weak`场景的registered support；receiver=`20-1`、seed=`713101`、K=10、20个真实seen-new TX。预测侧先冻结1560行truth-free NPZ，scorer随后才加入标签；query truth、role、真实批次类数、类别配额和全局分配访问均为false。本地结果标记`NON_LAUNCH_DIAGNOSTIC`，不替代Landlock正式矩阵或独立确认。
+
+|场景|注册前old|注册后old|direct old|seen-new|H|最低旧类|遗忘|平均View|
+|---|---:|---:|---:|---:|---:|---:|---:|---:|
+|`leo_clear_weak`|80.83%|68.33%|74.17%|42.00%|52.02%|35.00%|12.50pp|2.654|
+|`leo_low_elev_weak`|77.50%|60.83%|66.67%|33.00%|42.79%|20.00%|16.67pp|2.758|
+|`leo_rain_weak`|77.50%|60.83%|70.00%|36.00%|45.23%|30.00%|16.67pp|2.769|
+|三场景等权|78.61%|63.33%|70.28%|37.00%|46.68%|20.00%|15.28pp|2.727|
+
+|同package对比|注册前old|注册后old|seen-new|H|遗忘|
+|---|---:|---:|---:|---:|---:|
+|v11原head|76.94%|59.44%|35.50%|44.45%|17.50pp|
+|Round1 EvidenceNorm|78.61%|63.33%|37.00%|46.68%|15.28pp|
+|变化|+1.67pp|+3.89pp|+1.50pp|+2.23pp|-2.22pp|
+
+逐样本审计给出明确机制：旧类360行中救回25行、损害11行，old→new从108降至88；新类1200行中救回69行、损害51行，wrong-new从605降至531，但new→old从169升至225。旧类`8-20`提升18.33pp、`20-15`提升8.33pp，而`14-10`下降6.67pp；新类`8-3`提升15.00pp，但`4-10`下降23.33pp。EvidenceNorm压低了新prototype hub，却对低证据新类产生过度惩罚，因此只能作为Round2边界学习的组成部分，不能单独晋升。
+
+资源按部署与formal评估分开记账：EvidenceNorm-only为104B deployment、24B before comparator、128B formal双流；计入原型/transform/bias后为14,820B、3,180B、18,000B FP16载荷，对应29,640B、6,360B、36,000B FP32实时数组。原adapter为109,818B，因此部署持久状态总计124,638B，formal双流诊断状态127,818B；0新增训练参数、0epoch、0optimizer step、0额外backbone forward。量化后最大逆尺度9.99634≤10。峰值CUDA显存72,591,360B，本地query延迟受RTX5070Ti与N607环境差异影响，不与v11远端延迟作严格归因。
+
+自适应TTA触发逻辑使用EvidenceNorm前raw cosine流；与v11的1560行比较只有1行从1-view跨到3-view，定位为不同GPU数值阈值边界，不能声称逐行完全相同。整体仍为平均2.727、P95=5，1/3/5-view比例18.85%/75.96%/5.19%。
+
+最终artifact：prediction NPZ SHA=`1ab79ffcb279e9580d48c72f34d04f79f5e7f28987bc7a6140a1cb045b7f325c`，prediction manifest SHA=`a035633664d21b0cc0128583acb826801446637e6f5f66c8041a1b53696c3d06`，truth sidecar SHA=`5a70620a6b90a86ca47b8be1bad83c5e881826d976cd3885b47d0fe6ffde8470`。本地`ssr-gpu`验证：30项聚焦测试、61项更广runtime/closure/diagnostic测试及1项sealed v1 pipeline E2E均PASS；独立复审未发现P0/P1。Round1结论为“方向正收益但性能不合格”，下一轮固定进入JP-R4 support-only稀疏边界学习；Round3完成前不得启动第4轮，Round3后必须按用户新增规则回顾目标、`项目.md`、历史对话、三轮完整日志和已探索方法。

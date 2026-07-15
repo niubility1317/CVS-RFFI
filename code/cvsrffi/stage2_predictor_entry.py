@@ -72,6 +72,70 @@ def _cross_check_request_manifest(
     return members
 
 
+def _add_formal_head_resource_accounting(
+    resource_receipt: dict[str, Any], support_state: Mapping[str, Any] | None
+) -> None:
+    """Add v2 head state without changing the historical v1 receipt schema."""
+
+    if support_state is None or "persistent_state_bytes_total" not in support_state:
+        return
+    adapter_persistent_state_bytes = int(resource_receipt["persistent_state_bytes"])
+    resource_receipt.update(
+        {
+            "adapter_persistent_state_bytes": adapter_persistent_state_bytes,
+            "candidate_head_deployment_state_bytes_fp16": int(
+                support_state["candidate_head_deployment_state_bytes_fp16"]
+            ),
+            "candidate_head_evaluation_comparator_state_bytes_fp16": int(
+                support_state[
+                    "candidate_head_evaluation_comparator_state_bytes_fp16"
+                ]
+            ),
+            "candidate_head_formal_dual_stream_state_bytes_fp16": int(
+                support_state["candidate_head_formal_dual_stream_state_bytes_fp16"]
+            ),
+            "candidate_head_deployment_live_array_bytes": int(
+                support_state["candidate_head_deployment_live_array_bytes"]
+            ),
+            "candidate_head_evaluation_comparator_live_array_bytes": int(
+                support_state[
+                    "candidate_head_evaluation_comparator_live_array_bytes"
+                ]
+            ),
+            "candidate_head_formal_dual_stream_live_array_bytes": int(
+                support_state[
+                    "candidate_head_formal_dual_stream_live_array_bytes"
+                ]
+            ),
+            "candidate_head_live_array_bytes": int(
+                support_state["candidate_head_live_array_bytes"]
+            ),
+            "candidate_head_evidence_deployment_state_bytes_fp16": int(
+                support_state[
+                    "candidate_head_evidence_deployment_state_bytes_fp16"
+                ]
+            ),
+            "candidate_head_evidence_evaluation_comparator_state_bytes_fp16": int(
+                support_state[
+                    "candidate_head_evidence_evaluation_comparator_state_bytes_fp16"
+                ]
+            ),
+            "candidate_head_evidence_formal_dual_stream_state_bytes_fp16": int(
+                support_state[
+                    "candidate_head_evidence_formal_dual_stream_state_bytes_fp16"
+                ]
+            ),
+            "persistent_state_bytes": int(support_state["persistent_state_bytes_total"]),
+            "persistent_state_bytes_total": int(
+                support_state["persistent_state_bytes_total"]
+            ),
+            "formal_dual_stream_persistent_state_bytes_total": int(
+                support_state["formal_dual_stream_persistent_state_bytes_total"]
+            ),
+        }
+    )
+
+
 def prepare_role_blind_prediction(
     request: Mapping[str, Any],
     *,
@@ -234,6 +298,7 @@ def prepare_role_blind_prediction(
         "direct_uses_base_view_only": True,
         "candidate_and_base_runtimes_distinct": dual_runtime,
     }
+    _add_formal_head_resource_accounting(resource_receipt, support_state)
     metadata = {
         "schema": "cvs.phase2.prediction_metadata.v2",
         "request_id": request["request_id"],

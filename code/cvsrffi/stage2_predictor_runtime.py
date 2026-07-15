@@ -15,11 +15,14 @@ from cvsrffi.stage2_predictor_bundle import open_regular_member_same_fd
 from cvsrffi.phase2_symmetric_head import (
     fit_locked_symmetric_head,
     score_locked_symmetric_head,
+    score_locked_symmetric_head_with_raw,
 )
 
 
 ADAPTER_SCHEMA = "cvs.phase2.feature_adapter.v1"
 HEAD_SCHEMA = "cvs.phase2.prototype_head.v1"
+SYMMETRIC_HEAD_SCHEMA_V1 = "cvs.phase2.symmetric_locked_head.v1"
+SYMMETRIC_HEAD_SCHEMA_V2 = "cvs.phase2.symmetric_evidence_head.v2"
 TTA_SCHEMA = "cvs.phase2.adaptive_rxlight_tta.v1"
 RX_LIGHT5_ORDER = (
     "rx_base",
@@ -27,6 +30,15 @@ RX_LIGHT5_ORDER = (
     "rx_shift_p2",
     "rx_cfo_m1e4",
     "rx_cfo_p1e4",
+)
+SYMMETRIC_HEAD_STATE_ARRAYS = (
+    "prototypes",
+    "score_transform",
+    "class_bias",
+    "alignment_scale",
+    "alignment_bias",
+    "evidence_bias",
+    "evidence_scale",
 )
 
 
@@ -186,21 +198,67 @@ def validate_symmetric_head_config(config: Mapping[str, Any], *, feature_dim: in
     }
     if set(config) != required:
         raise Stage2PredictorRuntimeError("symmetric head exact schema drift")
-    if (
-        config.get("schema") != "cvs.phase2.symmetric_locked_head.v1"
-        or config.get("mode") != "three_leo_support_symmetric_locked"
-        or config.get("storage_dtype") != "fp16"
-    ):
+    identity = (config.get("schema"), config.get("mode"))
+    if identity not in {
+        (SYMMETRIC_HEAD_SCHEMA_V1, "three_leo_support_symmetric_locked"),
+        (SYMMETRIC_HEAD_SCHEMA_V2, "three_leo_support_symmetric_evidence_locked"),
+    } or config.get("storage_dtype") != "fp16":
         raise Stage2PredictorRuntimeError("symmetric head identity drift")
     selected = config.get("selected")
-    if not isinstance(selected, Mapping) or set(selected) != {
+    base_selected = {
         "use_alignment",
         "prototype_rule",
         "ridge",
         "gram_mix",
         "uncertainty_penalty",
-    }:
+    }
+    if not isinstance(selected, Mapping):
         raise Stage2PredictorRuntimeError("symmetric head locked selection drift")
+    if identity[0] == SYMMETRIC_HEAD_SCHEMA_V1:
+        if set(selected) != base_selected:
+            raise Stage2PredictorRuntimeError("symmetric head locked selection drift")
+    else:
+        if set(selected) != base_selected | {"evidence_calibration"}:
+            raise Stage2PredictorRuntimeError("symmetric evidence-head selection drift")
+        evidence = selected.get("evidence_calibration")
+        if not isinstance(evidence, Mapping) or set(evidence) != {
+            "mode",
+            "negative_quantile",
+            "prior_physical_shots",
+            "scale_floor",
+            "inverse_scale_cap",
+        }:
+            raise Stage2PredictorRuntimeError("symmetric evidence-head calibration drift")
+        if evidence.get("mode") != "robust_lopo_class_symmetric":
+            raise Stage2PredictorRuntimeError("symmetric evidence-head mode drift")
+        numeric = {
+            key: evidence.get(key)
+            for key in (
+                "negative_quantile",
+                "prior_physical_shots",
+                "scale_floor",
+                "inverse_scale_cap",
+            )
+        }
+        if any(
+            not isinstance(value, (int, float)) or not np.isfinite(float(value))
+            for value in numeric.values()
+        ):
+            raise Stage2PredictorRuntimeError("symmetric evidence-head value drift")
+        if (
+            not 0.5 <= float(numeric["negative_quantile"]) < 1.0
+            or float(numeric["prior_physical_shots"]) <= 0.0
+            or not 0.0 < float(numeric["scale_floor"]) <= 2.0
+            or float(numeric["inverse_scale_cap"]) < 1.0
+        ):
+            raise Stage2PredictorRuntimeError("symmetric evidence-head bound drift")
+        if (
+            selected.get("use_alignment") is not False
+            or selected.get("ridge") is not None
+            or selected.get("gram_mix") != 0.0
+            or selected.get("uncertainty_penalty") != 0.0
+        ):
+            raise Stage2PredictorRuntimeError("symmetric evidence-head base transform drift")
     for field in ("source_feature_mean", "source_feature_std"):
         value = np.asarray(config[field], dtype=np.float32)
         if value.shape != (feature_dim,) or not np.isfinite(value).all():
@@ -488,16 +546,80 @@ def build_formal_support_state(
         "source_std": np.asarray(head_config["source_feature_std"], dtype=np.float32),
         "variance_floor": float(head_config["variance_floor"]),
     }
-    return {
-        "candidate_after": fit_locked_symmetric_head(observations, **head_kwargs),
-        "candidate_before": fit_locked_symmetric_head(
-            observations[:, :old_class_count, :], **head_kwargs
-        ),
+    candidate_after = fit_locked_symmetric_head(observations, **head_kwargs)
+    candidate_before = fit_locked_symmetric_head(
+        observations[:, :old_class_count, :], **head_kwargs
+    )
+    support_state = {
+        "candidate_after": candidate_after,
+        "candidate_before": candidate_before,
         "identity_by_scenario": identity_by_scenario,
         "support_enrollment_backbone_forwards": int(
             2 * len(scenarios) * int(registered_class_count) * int(k_shot)
         ),
     }
+    after_evidence = candidate_after.get("evidence_diagnostics")
+    before_evidence = candidate_before.get("evidence_diagnostics")
+    if after_evidence is not None or before_evidence is not None:
+        if after_evidence is None or before_evidence is None:
+            raise Stage2PredictorRuntimeError("formal evidence head state is asymmetric")
+
+        def payload_bytes(head: Mapping[str, Any], *, dtype: np.dtype) -> int:
+            itemsize = int(np.dtype(dtype).itemsize)
+            return int(
+                sum(
+                    np.asarray(head[name]).size * itemsize
+                    for name in SYMMETRIC_HEAD_STATE_ARRAYS
+                    if head.get(name) is not None
+                )
+            )
+
+        after_head_fp16 = payload_bytes(candidate_after, dtype=np.float16)
+        before_head_fp16 = payload_bytes(candidate_before, dtype=np.float16)
+        after_head_live = payload_bytes(candidate_after, dtype=np.float32)
+        before_head_live = payload_bytes(candidate_before, dtype=np.float32)
+        after_evidence_fp16 = int(after_evidence["state_bytes_fp16"])
+        before_evidence_fp16 = int(before_evidence["state_bytes_fp16"])
+        deployment_total = int(adapter_config["persistent_state_bytes"]) + after_head_fp16
+        if deployment_total > 256 * 1024:
+            raise Stage2PredictorRuntimeError(
+                "formal adapter plus deployment head exceeds persistent-state bound"
+            )
+        support_state.update(
+            {
+                "candidate_head_deployment_state_bytes_fp16": after_head_fp16,
+                "candidate_head_evaluation_comparator_state_bytes_fp16": before_head_fp16,
+                "candidate_head_formal_dual_stream_state_bytes_fp16": (
+                    after_head_fp16 + before_head_fp16
+                ),
+                "candidate_head_deployment_live_array_bytes": after_head_live,
+                "candidate_head_evaluation_comparator_live_array_bytes": (
+                    before_head_live
+                ),
+                "candidate_head_formal_dual_stream_live_array_bytes": (
+                    after_head_live + before_head_live
+                ),
+                # Compatibility alias. This is the formal dual-stream total,
+                # not the deployment-only live-array footprint.
+                "candidate_head_live_array_bytes": after_head_live + before_head_live,
+                "candidate_head_evidence_deployment_state_bytes_fp16": (
+                    after_evidence_fp16
+                ),
+                "candidate_head_evidence_evaluation_comparator_state_bytes_fp16": (
+                    before_evidence_fp16
+                ),
+                "candidate_head_evidence_formal_dual_stream_state_bytes_fp16": (
+                    after_evidence_fp16 + before_evidence_fp16
+                ),
+                "persistent_state_bytes_total": deployment_total,
+                "formal_dual_stream_persistent_state_bytes_total": int(
+                    adapter_config["persistent_state_bytes"]
+                )
+                + after_head_fp16
+                + before_head_fp16,
+            }
+        )
+    return support_state
 
 
 def predict_formal_scenario_streams(
@@ -536,15 +658,17 @@ def predict_formal_scenario_streams(
     identity_joint = apply_feature_adapter(base_raw, query_iq, adapter_config)
     after_head = support_state["candidate_after"]
     before_head = support_state["candidate_before"]
-    base_after = score_locked_symmetric_head(candidate_joint, after_head)
+    base_after, gate_base_after = score_locked_symmetric_head_with_raw(
+        candidate_joint, after_head
+    )
     base_before = score_locked_symmetric_head(candidate_joint, before_head)
     selected_after = base_after.copy()
     selected_before = base_before.copy()
     counts = np.ones(len(query_iq), dtype=np.int64)
     if tta_config["mode"] == "adaptive_1_3_5":
         shift_indices = np.flatnonzero(
-            (_margin(base_after) < float(tta_config["base_stop_margin"]))
-            | (_top1(base_after) < float(tta_config["base_stop_min_score"]))
+            (_margin(gate_base_after) < float(tta_config["base_stop_margin"]))
+            | (_top1(gate_base_after) < float(tta_config["base_stop_min_score"]))
         ).astype(np.int64)
         cfo_indices = np.empty(0, dtype=np.int64)
         shift_after_by_row: dict[int, np.ndarray] = {}
@@ -552,6 +676,7 @@ def predict_formal_scenario_streams(
         if len(shift_indices):
             view_rows = _receive_views(query_iq[shift_indices], ("rx_shift_m2", "rx_shift_p2"))
             after_parts = [base_after[shift_indices]]
+            gate_after_parts = [gate_base_after[shift_indices]]
             before_parts = [base_before[shift_indices]]
             for name in ("rx_shift_m2", "rx_shift_p2"):
                 rows = view_rows[name]
@@ -559,9 +684,14 @@ def predict_formal_scenario_streams(
                     candidate_model, rows, device=device, batch_size=int(batch_size)
                 )
                 joint = apply_feature_adapter(raw, rows, adapter_config)
-                after_parts.append(score_locked_symmetric_head(joint, after_head))
+                after_score, gate_after_score = score_locked_symmetric_head_with_raw(
+                    joint, after_head
+                )
+                after_parts.append(after_score)
+                gate_after_parts.append(gate_after_score)
                 before_parts.append(score_locked_symmetric_head(joint, before_head))
             shift_after = np.stack(after_parts, axis=1)
+            shift_gate_after = np.stack(gate_after_parts, axis=1)
             shift_before = np.stack(before_parts, axis=1)
             fused_after = _fuse_view_scores(
                 shift_after, std_penalty=float(tta_config["fusion_std_penalty"])
@@ -569,12 +699,15 @@ def predict_formal_scenario_streams(
             fused_before = _fuse_view_scores(
                 shift_before, std_penalty=float(tta_config["fusion_std_penalty"])
             )
-            predictions = np.argmax(shift_after, axis=2)
-            consensus = np.argmax(fused_after, axis=1)
+            fused_gate_after = _fuse_view_scores(
+                shift_gate_after, std_penalty=float(tta_config["fusion_std_penalty"])
+            )
+            predictions = np.argmax(shift_gate_after, axis=2)
+            consensus = np.argmax(fused_gate_after, axis=1)
             disagreement = np.mean(predictions != consensus[:, None], axis=1)
             needs_cfo = (
-                (_margin(fused_after) < float(tta_config["shift3_stop_margin"]))
-                | (_top1(fused_after) < float(tta_config["shift3_stop_min_score"]))
+                (_margin(fused_gate_after) < float(tta_config["shift3_stop_margin"]))
+                | (_top1(fused_gate_after) < float(tta_config["shift3_stop_min_score"]))
                 | (disagreement > float(tta_config["shift3_max_disagreement"]))
             )
             selected_after[shift_indices] = fused_after
@@ -622,7 +755,8 @@ def predict_formal_scenario_streams(
         "direct": np.argmax(direct_logits[:, : int(old_class_count)], axis=1).astype(np.int64),
         "shared_view_counts": counts,
     }
-    return outputs, {
+    evidence_diagnostics = after_head.get("evidence_diagnostics")
+    resources = {
         "candidate_query_latency_ms": float(
             1000.0 * (time.perf_counter() - started) / max(len(query_iq), 1)
         ),
@@ -632,8 +766,30 @@ def predict_formal_scenario_streams(
         "query_backbone_forwards": int(np.sum(counts) + len(query_iq)),
         "fft_descriptor_count": int(np.sum(counts) + len(query_iq)),
         "candidate_and_base_runtimes_distinct": True,
-        "candidate_head": "three_leo_support_symmetric_locked_fp16",
+        "candidate_head": (
+            "three_leo_support_symmetric_evidence_locked_fp16"
+            if evidence_diagnostics is not None
+            else "three_leo_support_symmetric_locked_fp16"
+        ),
     }
+    if evidence_diagnostics is not None:
+        resources["candidate_head_closed_form_diagnostics"] = evidence_diagnostics
+        for name in (
+            "candidate_head_deployment_state_bytes_fp16",
+            "candidate_head_evaluation_comparator_state_bytes_fp16",
+            "candidate_head_formal_dual_stream_state_bytes_fp16",
+            "candidate_head_deployment_live_array_bytes",
+            "candidate_head_evaluation_comparator_live_array_bytes",
+            "candidate_head_formal_dual_stream_live_array_bytes",
+            "candidate_head_live_array_bytes",
+            "candidate_head_evidence_deployment_state_bytes_fp16",
+            "candidate_head_evidence_evaluation_comparator_state_bytes_fp16",
+            "candidate_head_evidence_formal_dual_stream_state_bytes_fp16",
+            "persistent_state_bytes_total",
+            "formal_dual_stream_persistent_state_bytes_total",
+        ):
+            resources[name] = int(support_state[name])
+    return outputs, resources
 
 
 def _margin(scores: np.ndarray) -> np.ndarray:
