@@ -20,7 +20,7 @@
 
 ## 部署与资源边界
 
-- 逐样本推理；禁止query真实old/new角色、全批类别数量、每类quota、query标签和query集合图结构。
+- 逐样本推理；禁止query真实old/new/unknown角色、全批类别数量、每类quota、query标签、query排序/分块和query集合图结构。历史role/quota Oracle结果统一标记为`PROTOCOL_INVALID_FOR_DEPLOYMENT`，不得生成新候选或进入本目标的开发、确认、排名和完成判定。
 - query不得参与adapter拟合、阈值拟合、模型选择或早停。
 - 默认冻结`ADV3B02` backbone，不执行backbone梯度更新。
 - 极轻型首选档：1-view、adapter可训练参数不超过50,000、适配不超过20epoch、无dense query图、持久化适配状态不超过128KB。

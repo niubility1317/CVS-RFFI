@@ -862,6 +862,11 @@ def _attach_post_adapter_resources(
     )
     if support_adapter:
         resources = dict(support_adapter.get("resources", {}))
+        adapter_method = str(support_adapter.get("method", ""))
+        is_sparse_key_delta = adapter_method in {
+            "support_only_late_key_ft_v1",
+            "support_only_late_key_ft_source_init_v1",
+        }
         checks = {
             "support_only": support_adapter.get("support_only") is True,
             "no_query_update": support_adapter.get("query_update_forbidden") is True,
@@ -869,22 +874,56 @@ def _attach_post_adapter_resources(
             "no_role_oracle": support_adapter.get("old_new_role_used_by_optimizer") is False,
             "no_class_quota": support_adapter.get("class_quota_used_at_inference") is False,
             "single_query_view": int(support_adapter.get("query_view_count", -1)) == 1,
-            "epoch_cap": 0 <= int(support_adapter.get("epochs", -1)) <= 20,
-            "checkpoint_frozen": int(
-                resources.get(
-                    "original_checkpoint_trainable_parameters",
-                    resources.get("backbone_trainable_parameters", -1),
-                )
-            )
-            == 0,
-            "checkpoint_no_updates": int(
-                resources.get(
-                    "original_checkpoint_gradient_updates",
-                    resources.get("backbone_gradient_updates", -1),
-                )
-            )
-            == 0,
+            "epoch_cap": 0
+            <= int(support_adapter.get("epochs", -1))
+            <= (5 if is_sparse_key_delta else 20),
         }
+        checkpoint_trainable = int(
+            resources.get(
+                "original_checkpoint_trainable_parameters",
+                resources.get("backbone_trainable_parameters", -1),
+            )
+        )
+        checkpoint_updates = int(
+            resources.get(
+                "original_checkpoint_gradient_updates",
+                resources.get("backbone_gradient_updates", -1),
+            )
+        )
+        if is_sparse_key_delta:
+            checks.update(
+                {
+                    "sparse_checkpoint_parameter_cap": 0
+                    < checkpoint_trainable
+                    <= 50_000,
+                    "sparse_checkpoint_update_cap": 1 <= checkpoint_updates <= 50,
+                    "exact_layer_whitelist": resources.get(
+                        "checkpoint_update_target_modules"
+                    )
+                    == [
+                        "id_backbone.t_proj",
+                        "id_backbone.f_proj",
+                        "id_backbone.pa_proj.0",
+                    ],
+                    "no_full_model_finetune": resources.get("full_model_finetune")
+                    is False,
+                    "delta_state_format": support_adapter.get(
+                        "adapter_state_format"
+                    )
+                    == "fp16_delta_from_strict_checkpoint",
+                    "merged_inference_no_added_macs": int(
+                        resources.get("deployment_added_macs_per_query_after_merge", -1)
+                    )
+                    == 0,
+                }
+            )
+        else:
+            checks.update(
+                {
+                    "checkpoint_frozen": checkpoint_trainable == 0,
+                    "checkpoint_no_updates": checkpoint_updates == 0,
+                }
+            )
         failed = [name for name, passed in checks.items() if not passed]
         if failed:
             raise ValueError(f"invalid Stage2-C support adapter provenance: {failed}")
@@ -898,7 +937,7 @@ def _attach_post_adapter_resources(
         )
         if params < 0 or macs_per_sample < 0 or state_bytes < 0:
             raise ValueError("Stage2-C support adapter resources must be nonnegative")
-        mode = str(support_adapter.get("method", "unknown_support_adapter"))
+        mode = adapter_method or "unknown_support_adapter"
     else:
         params = macs_per_sample = state_bytes = 0
         mode = "none"
@@ -1040,10 +1079,11 @@ def validate_config(config: dict[str, Any]) -> None:
     if aux_weight > 0.0 and not aux_key:
         raise ValueError("positive qknnv42_aux_score_weight requires qknnv42_aux_feature_key")
     decision_mode = str(config.get("qknnv42_decision_mode", "per_sample_argmax")).strip().lower()
-    if decision_mode not in {"per_sample_argmax", "legacy_role_quota_oracle"}:
-        raise ValueError(f"unsupported qknnv42_decision_mode: {decision_mode}")
-    if decision_mode == "legacy_role_quota_oracle" and method != "cvs_qknnv42":
-        raise ValueError("legacy role/quota oracle is defined only for cvs_qknnv42")
+    if decision_mode != "per_sample_argmax":
+        raise ValueError(
+            "target-query inference requires per_sample_argmax; role Oracle and class quota "
+            "decisions are prohibited by the 2026-07-15 deployment protocol"
+        )
     labelprop_mode = str(config.get("qknnv42_labelprop_mode", "dense_transductive")).strip().lower()
     if labelprop_mode not in {"dense_transductive", "support_prototype", "disabled"}:
         raise ValueError(f"unsupported qknnv42_labelprop_mode: {labelprop_mode}")
@@ -1070,8 +1110,11 @@ def validate_config(config: dict[str, Any]) -> None:
         *ROLE_PARTITION_ADAPTERS,
     }:
         raise ValueError(f"unsupported qknnv42_feature_adapter_mode: {feature_adapter_mode}")
-    if feature_adapter_mode in ROLE_PARTITION_ADAPTERS and decision_mode != "legacy_role_quota_oracle":
-        raise ValueError("role-partition qKNN feature adaptation requires legacy role oracle")
+    if feature_adapter_mode in ROLE_PARTITION_ADAPTERS:
+        raise ValueError(
+            "role-partition qKNN feature adaptation is prohibited because target query old/new "
+            "roles are unavailable at inference"
+        )
     old_anchor_bias = float(config.get("qknnv42_old_anchor_bias", 0.001))
     if not math.isfinite(old_anchor_bias) or abs(old_anchor_bias) > 0.1:
         raise ValueError("qknnv42_old_anchor_bias must be finite and within [-0.1,0.1]")

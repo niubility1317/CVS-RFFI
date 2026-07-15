@@ -70,6 +70,12 @@ LATE_FILM_TARGETS = (
     "id_backbone.fuse.0",
 )
 
+LATE_KEY_FT_TARGETS = (
+    "id_backbone.t_proj",
+    "id_backbone.f_proj",
+    "id_backbone.pa_proj.0",
+)
+
 
 class LoRALinear(nn.Module):
     """Frozen Linear plus an identity-initialized low-rank residual branch."""
@@ -255,6 +261,129 @@ def inject_late_channel_film(model: nn.Module) -> dict[str, Any]:
     if fp16_bytes > 64 * 1024:
         raise ValueError(f"late FiLM exceeds 64KiB preferred state cap: {audit}")
     return audit
+
+
+def enable_late_key_layer_finetune(model: nn.Module) -> dict[str, Any]:
+    """Enable the exact <=50k ADV3B02 late-layer update whitelist."""
+
+    for parameter in model.parameters():
+        parameter.requires_grad_(False)
+    modules = dict(model.named_modules())
+    enabled: list[dict[str, Any]] = []
+    allowed_parameter_names: set[str] = set()
+    existing_macs = 0
+    for name in LATE_KEY_FT_TARGETS:
+        layer = modules.get(name)
+        if not isinstance(layer, nn.Linear):
+            raise TypeError(f"required late key Linear is missing: {name}")
+        layer.weight.requires_grad_(True)
+        allowed_parameter_names.add(f"{name}.weight")
+        parameter_count = int(layer.weight.numel())
+        if layer.bias is not None:
+            layer.bias.requires_grad_(True)
+            allowed_parameter_names.add(f"{name}.bias")
+            parameter_count += int(layer.bias.numel())
+        layer_macs = int(layer.in_features * layer.out_features)
+        existing_macs += layer_macs
+        enabled.append(
+            {
+                "module": name,
+                "in_features": int(layer.in_features),
+                "out_features": int(layer.out_features),
+                "updated_checkpoint_parameters": int(parameter_count),
+                "existing_layer_macs_per_query": int(layer_macs),
+                "added_macs_per_query_after_merge": 0,
+            }
+        )
+    trainable = {
+        name: parameter
+        for name, parameter in model.named_parameters()
+        if parameter.requires_grad
+    }
+    if set(trainable) != allowed_parameter_names:
+        raise RuntimeError(
+            "late key-layer trainable whitelist mismatch: "
+            f"observed={sorted(trainable)}, expected={sorted(allowed_parameter_names)}"
+        )
+    parameter_count = int(sum(parameter.numel() for parameter in trainable.values()))
+    if parameter_count != 31_200 or parameter_count > 50_000:
+        raise ValueError(f"late key-layer parameter budget mismatch: {parameter_count}")
+    fp16_bytes = int(parameter_count * 2)
+    return {
+        "adapter_type": "late_key_layer_delta",
+        "scope": "preregistered_sparse_checkpoint_delta",
+        "target_modules": enabled,
+        "checkpoint_update_target_modules": list(LATE_KEY_FT_TARGETS),
+        "trainable_parameter_names": sorted(trainable),
+        "trainable_parameters": int(parameter_count),
+        "updated_checkpoint_parameters": int(parameter_count),
+        "adapter_state_bytes_fp16": int(fp16_bytes),
+        "adapter_state_bytes_fp32": int(parameter_count * 4),
+        "delta_patch_state_bytes_fp16": int(fp16_bytes),
+        "adapter_macs_per_query": 0,
+        "updated_existing_layer_macs_per_query": int(existing_macs),
+        "deployment_added_macs_per_query_after_merge": 0,
+        "query_view_count": 1,
+        "original_checkpoint_trainable_parameters": int(parameter_count),
+        "original_checkpoint_gradient_updates": 0,
+        "full_model_finetune": False,
+        "exact_layer_whitelist_enforced": True,
+    }
+
+
+def load_trainable_adapter_state(
+    model: nn.Module, state_path: Path
+) -> dict[str, Any]:
+    """Strictly load a ground-trained state into the currently injected adapter."""
+
+    payload = torch.load(state_path, map_location="cpu")
+    if isinstance(payload, dict) and isinstance(payload.get("state_dict"), dict):
+        payload = payload["state_dict"]
+    if not isinstance(payload, dict):
+        raise TypeError("adapter state must be a tensor mapping")
+    expected = {
+        name: parameter
+        for name, parameter in model.named_parameters()
+        if parameter.requires_grad
+    }
+    observed = {str(name): value for name, value in payload.items()}
+    missing = sorted(set(expected) - set(observed))
+    unexpected = sorted(set(observed) - set(expected))
+    if missing or unexpected:
+        raise ValueError(
+            "adapter state key mismatch: "
+            f"missing={missing}, unexpected={unexpected}"
+        )
+    tensor_count = 0
+    element_count = 0
+    l2_sq = 0.0
+    with torch.no_grad():
+        for name, parameter in expected.items():
+            value = observed[name]
+            if not torch.is_tensor(value):
+                raise TypeError(f"adapter state value is not a tensor: {name}")
+            if tuple(value.shape) != tuple(parameter.shape):
+                raise ValueError(
+                    f"adapter state shape mismatch for {name}: "
+                    f"{tuple(value.shape)} != {tuple(parameter.shape)}"
+                )
+            value_float = value.detach().float()
+            if not bool(torch.isfinite(value_float).all()):
+                raise FloatingPointError(f"non-finite adapter state: {name}")
+            parameter.copy_(value.to(device=parameter.device, dtype=parameter.dtype))
+            tensor_count += 1
+            element_count += int(value.numel())
+            l2_sq += float(torch.sum(value_float.square()))
+    return {
+        "mode": "ground_source_pretrained",
+        "path": str(state_path),
+        "sha256": _sha256_file(state_path),
+        "tensor_count": int(tensor_count),
+        "element_count": int(element_count),
+        "l2_norm": float(math.sqrt(l2_sq)),
+        "strict_key_match": True,
+        "finite": True,
+    }
 
 
 def _prototype_banks_from_matched_views(
@@ -682,7 +811,9 @@ def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
     parser.add_argument("--k_shot", type=int, choices=(5, 10), default=10)
     parser.add_argument("--epochs", type=int, default=20)
     parser.add_argument(
-        "--adapter_type", choices=("lora", "late_film"), default="lora"
+        "--adapter_type",
+        choices=("lora", "late_film", "late_key_ft"),
+        default="lora",
     )
     parser.add_argument("--rank", type=int, choices=(2, 4, 8, 16), default=8)
     parser.add_argument("--alpha", type=float, default=8.0)
@@ -707,12 +838,13 @@ def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
         default="stacked",
     )
     parser.add_argument("--matched_view_teacher_weight", type=float, default=0.0)
+    parser.add_argument("--init_adapter_state", type=Path, default=None)
     parser.add_argument("--device", default="cuda:0")
     return parser.parse_args(argv)
 
 
 def _validate_deployment_controls(args: argparse.Namespace) -> None:
-    if str(args.adapter_type) != "late_film":
+    if str(args.adapter_type) not in {"late_film", "late_key_ft"}:
         return
     checks = {
         "epochs_1_to_5": 1 <= int(args.epochs) <= 5,
@@ -730,7 +862,9 @@ def _validate_deployment_controls(args: argparse.Namespace) -> None:
     }
     failed = [name for name, passed in checks.items() if not passed]
     if failed:
-        raise ValueError(f"invalid extreme-light late FiLM controls: {failed}")
+        raise ValueError(
+            f"invalid extreme-light {args.adapter_type} controls: {failed}"
+        )
 
 
 def main(argv: Sequence[str] | None = None) -> int:
@@ -778,12 +912,37 @@ def main(argv: Sequence[str] | None = None) -> int:
         )
     if str(args.adapter_type) == "late_film":
         resources = inject_late_channel_film(model)
-        method = "support_only_late_channel_film_v1"
+        method = (
+            "support_only_late_channel_film_source_init_v1"
+            if args.init_adapter_state is not None
+            else "support_only_late_channel_film_v1"
+        )
+    elif str(args.adapter_type) == "late_key_ft":
+        resources = enable_late_key_layer_finetune(model)
+        method = (
+            "support_only_late_key_ft_source_init_v1"
+            if args.init_adapter_state is not None
+            else "support_only_late_key_ft_v1"
+        )
     else:
         resources = inject_feat_joint_lora(
             model, rank=int(args.rank), alpha=float(args.alpha), scope=str(args.scope)
         )
         method = f"support_only_{args.scope}_lora_v1"
+    strict_checkpoint_trainable_state = {
+        name: parameter.detach().cpu().clone()
+        for name, parameter in model.named_parameters()
+        if parameter.requires_grad
+    }
+    initialization_audit = {"mode": "identity_zero", "strict_key_match": True}
+    if args.init_adapter_state is not None:
+        if str(args.adapter_type) not in {"late_film", "late_key_ft"}:
+            raise ValueError(
+                "ground initialization is restricted to late_film or late_key_ft"
+            )
+        initialization_audit = load_trainable_adapter_state(
+            model, Path(args.init_adapter_state)
+        )
     model.to(device).eval()
     trace, runtime = train_support_only_lora(
         model,
@@ -808,10 +967,18 @@ def main(argv: Sequence[str] | None = None) -> int:
         seed=int(args.seed),
         device=device,
     )
+    if str(args.adapter_type) == "late_key_ft":
+        resources["original_checkpoint_gradient_updates"] = int(
+            runtime["optimizer_steps"]
+        )
     run_prefix = (
         "support_late_film"
         if str(args.adapter_type) == "late_film"
-        else f"support_lora_{args.scope}"
+        else (
+            "support_late_key_ft"
+            if str(args.adapter_type) == "late_key_ft"
+            else f"support_lora_{args.scope}"
+        )
     )
     run_id = (
         f"{run_prefix}_rx_{args.receiver}_new_{args.new_count}"
@@ -820,11 +987,22 @@ def main(argv: Sequence[str] | None = None) -> int:
     run_dir = args.out_root / run_id
     run_dir.mkdir(parents=True, exist_ok=True)
     _write_trace(run_dir / "loss_trace.json", trace)
-    fp16_state = {
-        name: parameter.detach().cpu().half()
-        for name, parameter in model.named_parameters()
-        if parameter.requires_grad
-    }
+    if str(args.adapter_type) == "late_key_ft":
+        fp16_state = {
+            name: (
+                parameter.detach().cpu() - strict_checkpoint_trainable_state[name]
+            ).half()
+            for name, parameter in model.named_parameters()
+            if parameter.requires_grad
+        }
+        adapter_state_format = "fp16_delta_from_strict_checkpoint"
+    else:
+        fp16_state = {
+            name: parameter.detach().cpu().half()
+            for name, parameter in model.named_parameters()
+            if parameter.requires_grad
+        }
+        adapter_state_format = "fp16_trainable_state"
     torch.save(fp16_state, run_dir / "adapter_state_fp16.pt")
     resources["adapter_state_file_bytes_fp16_pt"] = int(
         (run_dir / "adapter_state_fp16.pt").stat().st_size
@@ -866,6 +1044,8 @@ def main(argv: Sequence[str] | None = None) -> int:
             ),
         },
         "resources": resources,
+        "initialization": initialization_audit,
+        "adapter_state_format": adapter_state_format,
         "runtime": runtime,
         "split": split_manifest,
         "input_cache_sha256": cache_hashes,

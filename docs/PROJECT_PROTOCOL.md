@@ -61,7 +61,11 @@ raw IQ -> CV-SincNet/CVS -> z_id, z_dom
 
 在轨部署阶段面对目标接收机域`R_t`。Stage2-B/C必须记录正整数`K`、support/query划分、receiver/TX split、threshold scope和satellite/LEO target view。Phase2主线row必须包含target-old和target-new目标域样本，并按简化LEO目标视图构造；unknown/open-set字段只作为Phase3备用或diagnostic metadata。
 
-TTA轻量化必须固定同一物理LEO观测、support/query、checkpoint和adapter后比较1/3/5-view；不得用不同adapter或不同LEO随机扰动制造view数量差异。正式结果使用逐样本可部署决策，并报告backbone前向数、FFT数以及相对5-view的`old_acc`、`seen_new_acc`和`H_old_new`变化；角色/类别配额Oracle不属于可部署TTA基线。
+TTA轻量化必须固定同一物理LEO观测、support/query、checkpoint和adapter后比较1/3/5-view；不得用不同adapter或不同LEO随机扰动制造view数量差异。正式结果使用逐样本可部署决策，并报告backbone前向数、FFT数以及相对5-view的`old_acc`、`seen_new_acc`和`H_old_new`变化。
+
+对任一target query，推理前不得假定其属于旧类、新类或未知类。Phase2/Phase3正式候选必须让每个query面对全部已注册类别及允许的reject/defer机制；禁止使用真实old/new/unknown角色、整批类别数量、每类quota、query排序/分块以及Hungarian或等价配额重排。历史role/quota Oracle artifact仅可标记为`PROTOCOL_INVALID_FOR_DEPLOYMENT`后封存，不得新生成、调参、排名、进入论文主表或形成部署声明。本禁令不影响Phase1源域半监督训练中的伪标签quota审计与采样平衡。
+
+多View压缩允许在地面使用严格`rx_light5`逐View监督训练不超过50k参数、最终状态不超过128KiB的小模块，也允许星上逐样本置信度门控的1→3→5-view自适应TTA。门限只能由source validation或注册support确定，禁止用query标签、query真实角色、整批类别比例、每类quota或Hungarian分配；正式结果必须报告平均/P95 backbone前向数和1/3/5-view触发率。仅蒸馏5-view均值或仍对所有query固定执行5次backbone前向，不能单独证明多View计算已经压缩。
 
 推荐`K`锚点为`{1,2,5,10,15,20,50}`。`K<=20`可称few-shot/low-shot；`K>20`应称higher-shot、medium-shot或saturation point。
 
@@ -86,6 +90,7 @@ TTA轻量化必须固定同一物理LEO观测、support/query、checkpoint和ada
 - open-set/unknown FAR结果就是Phase2主线成功。
 - `R_t`与`R_s`重叠后仍称部署泛化。
 - 缺少target-old或target-new样本覆盖时仍声称完整Stage2-C。
+- 使用target query真实角色、类别配额或跨query批量决策后仍报告为Phase2/Phase3正式性能。
 
 ## Git与Markdown同步
 

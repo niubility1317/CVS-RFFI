@@ -106,7 +106,7 @@ def test_cvs_qknnv42_uses_nested_disjoint_split_and_four_detail_levels(tmp_path:
     }
 
 
-def test_cvs_qknnv42_fft_aux_and_legacy_oracle_are_explicit(tmp_path: Path) -> None:
+def test_cvs_qknnv42_rejects_legacy_role_quota_oracle(tmp_path: Path) -> None:
     config = _config(tmp_path, "cvs_qknnv42")
     config.update(
         {
@@ -117,21 +117,8 @@ def test_cvs_qknnv42_fft_aux_and_legacy_oracle_are_explicit(tmp_path: Path) -> N
             "qknnv42_decision_mode": "legacy_role_quota_oracle",
         }
     )
-    run_dir = tmp_path / "qknn_fft_oracle"
-    result = run(config, run_dir)
-    assert result["metrics"]["H_old_new_mean"] == 1.0
-    first = result["metrics_by_scenario"][SCENARIOS[0]]
-    assert first["aux_feature_enabled"] is True
-    assert first["aux_score_weight"] == 0.34
-    assert first["decision_mode"] == "legacy_role_quota_oracle"
-    assert first["stored_quantized_support_code_count_total"] == 12
-    assert first["support_code_bytes"] == 2 * first["aux_support_code_bytes"]
-    assert first["persistent_state_bytes"] == 2 * first["aux_persistent_state_bytes"]
-    assert first["estimated_support_score_macs"] == 2 * first["aux_estimated_support_score_macs"]
-    assert first["estimated_prototype_score_macs"] == 2 * first["aux_estimated_prototype_score_macs"]
-    assert first["estimated_labelprop_macs"] == 2 * first["aux_estimated_labelprop_macs"]
-    manifest = json.loads((run_dir / "split_manifest.json").read_text(encoding="utf-8"))
-    assert manifest["non_deployment_oracle_diagnostic"] is True
+    with pytest.raises(ValueError, match="role Oracle and class quota"):
+        validate_config(config)
 
 
 def test_cvs_qknnv42_support_prototype_removes_dense_query_graph(tmp_path: Path) -> None:
@@ -162,27 +149,13 @@ def test_cvs_qknnv42_support_prototype_removes_dense_query_graph(tmp_path: Path)
     assert manifest["qknnv42_labelprop_mode"] == "support_prototype"
 
 
-def test_cvs_qknnv42_streaming_scores_can_preserve_historical_oracle(tmp_path: Path) -> None:
+def test_cvs_qknnv42_streaming_scores_cannot_enable_historical_oracle(tmp_path: Path) -> None:
     config = _config(tmp_path, "cvs_qknnv42")
     config["qknnv42_labelprop_mode"] = "support_prototype"
     config["qknnv42_support_representation"] = "class_diverse2"
     config["qknnv42_decision_mode"] = "legacy_role_quota_oracle"
-    validate_config(config)
-    result = run(config, tmp_path / "qknn_streaming_oracle")
-    first = result["metrics_by_scenario"][SCENARIOS[0]]
-    assert first["decision_mode"] == "legacy_role_quota_oracle"
-    assert first["labelprop_mode"] == "support_prototype"
-    assert first["support_representation"] == "class_diverse2"
-    assert first["query_query_graph_used"] is False
-    assert first["dense_graph_bytes_lower_bound"] == 0
-    assert first["decision_batch_state_required"] is True
-    assert first["query_batch_state_required"] is True
-    assert first["decision_workspace_bytes_lower_bound"] > 0
-    assert first["estimated_decision_cubic_work_units"] > 0
-    manifest = result["split_manifest"]
-    assert manifest["non_deployment_oracle_diagnostic"] is True
-    assert manifest["query_used_for_transductive_inference"] is True
-    assert manifest["query_used_for_joint_decision"] is True
+    with pytest.raises(ValueError, match="role Oracle and class quota"):
+        validate_config(config)
 
 
 def test_cvs_qknnv42_class_medoid_compresses_support_state(tmp_path: Path) -> None:
@@ -255,29 +228,17 @@ def test_cvs_qknnv42_rejects_unknown_feature_adapter(tmp_path: Path) -> None:
 def test_cvs_qknnv42_role_partition_adapter_is_oracle_only(tmp_path: Path) -> None:
     config = _config(tmp_path, "cvs_qknnv42")
     config["qknnv42_feature_adapter_mode"] = "support_role_center"
-    with pytest.raises(ValueError, match="requires legacy role oracle"):
+    with pytest.raises(ValueError, match="role-partition.*prohibited"):
         validate_config(config)
 
 
-def test_cvs_qknnv42_role_partition_adapter_keeps_separate_state(tmp_path: Path) -> None:
+def test_cvs_qknnv42_role_partition_adapter_remains_prohibited_with_oracle_flag(tmp_path: Path) -> None:
     config = _config(tmp_path, "cvs_qknnv42")
     config["qknnv42_feature_adapter_mode"] = "support_role_center"
     config["qknnv42_decision_mode"] = "legacy_role_quota_oracle"
     config["non_deployment_oracle_diagnostic"] = True
-    result = run(config, tmp_path / "qknn_role_partition")
-    info = result["metrics_by_scenario"][SCENARIOS[0]]
-
-    assert info["feature_adapter_mode"] == "support_role_center"
-    assert info["role_partition_scoring"] is True
-    assert info["role_partition_query_routing"] == "legacy_role_oracle"
-    assert info["feature_adapter_gradient_updates"] == 0
-    assert info["feature_adapter_uses_query"] is False
-    assert info["role_partition_state"]["old"]["support_count"] == 4
-    assert info["role_partition_state"]["new"]["support_count"] == 2
-    assert info["persistent_state_bytes"] == (
-        info["role_partition_state"]["old"]["persistent_state_bytes"]
-        + info["role_partition_state"]["new"]["persistent_state_bytes"]
-    )
+    with pytest.raises(ValueError, match="role Oracle and class quota"):
+        validate_config(config)
 
 
 def test_qknnv42_support_representation_keeps_full_enrollment_fit() -> None:
@@ -398,3 +359,126 @@ def test_stage2c_support_lora_resources_are_not_hidden() -> None:
     assert info["post_feature_adapter_state_bytes"] == 25600
     assert info["estimated_macs_per_query_with_post_adapter"] == 12830
     assert info["persistent_state_bytes_with_post_adapter"] == 25800
+
+
+def test_stage2c_sparse_key_delta_is_audited_without_added_inference_macs() -> None:
+    info = {
+        "estimated_head_macs": 1000,
+        "estimated_macs_per_query": 30,
+        "persistent_state_bytes": 26624,
+    }
+    manifest = {
+        "payload_source": "cvs_stage2c_support_only_late_key_ft_v1",
+        "adapter": {
+            "method": "support_only_late_key_ft_v1",
+            "support_only": True,
+            "query_update_forbidden": True,
+            "query_labels_used_for_training": False,
+            "old_new_role_used_by_optimizer": False,
+            "class_quota_used_at_inference": False,
+            "query_view_count": 1,
+            "epochs": 5,
+            "adapter_state_format": "fp16_delta_from_strict_checkpoint",
+            "resources": {
+                "trainable_parameters": 31200,
+                "adapter_state_bytes_fp16": 62400,
+                "adapter_macs_per_query": 0,
+                "original_checkpoint_trainable_parameters": 31200,
+                "original_checkpoint_gradient_updates": 15,
+                "checkpoint_update_target_modules": [
+                    "id_backbone.t_proj",
+                    "id_backbone.f_proj",
+                    "id_backbone.pa_proj.0",
+                ],
+                "full_model_finetune": False,
+                "deployment_added_macs_per_query_after_merge": 0,
+            },
+        },
+    }
+    _attach_post_adapter_resources(info, manifest, support_count=260, query_count=520)
+    assert info["post_feature_adapter_mode"] == "support_only_late_key_ft_v1"
+    assert info["post_feature_adapter_parameter_count"] == 31200
+    assert info["post_feature_adapter_query_macs"] == 0
+    assert info["post_feature_adapter_state_bytes"] == 62400
+    assert info["estimated_macs_per_query_with_post_adapter"] == 30
+    assert info["persistent_state_bytes_with_post_adapter"] == 89024
+
+
+def test_stage2c_source_initialized_sparse_key_delta_uses_same_resource_gate() -> None:
+    info = {
+        "estimated_head_macs": 1000,
+        "estimated_macs_per_query": 30,
+        "persistent_state_bytes": 26624,
+    }
+    manifest = {
+        "payload_source": "cvs_stage2c_support_only_late_key_ft_source_init_v1",
+        "adapter": {
+            "method": "support_only_late_key_ft_source_init_v1",
+            "support_only": True,
+            "query_update_forbidden": True,
+            "query_labels_used_for_training": False,
+            "old_new_role_used_by_optimizer": False,
+            "class_quota_used_at_inference": False,
+            "query_view_count": 1,
+            "epochs": 5,
+            "adapter_state_format": "fp16_delta_from_strict_checkpoint",
+            "resources": {
+                "trainable_parameters": 31200,
+                "adapter_state_bytes_fp16": 62400,
+                "adapter_macs_per_query": 0,
+                "original_checkpoint_trainable_parameters": 31200,
+                "original_checkpoint_gradient_updates": 15,
+                "checkpoint_update_target_modules": [
+                    "id_backbone.t_proj",
+                    "id_backbone.f_proj",
+                    "id_backbone.pa_proj.0",
+                ],
+                "full_model_finetune": False,
+                "deployment_added_macs_per_query_after_merge": 0,
+            },
+        },
+    }
+    _attach_post_adapter_resources(info, manifest, support_count=260, query_count=520)
+    assert info["post_feature_adapter_mode"] == "support_only_late_key_ft_source_init_v1"
+    assert info["post_feature_adapter_parameter_count"] == 31200
+    assert info["post_feature_adapter_query_macs"] == 0
+    assert info["persistent_state_bytes_with_post_adapter"] == 89024
+
+
+def test_stage2c_sparse_key_delta_rejects_role_or_quota_or_whitelist_drift() -> None:
+    info = {
+        "estimated_head_macs": 1000,
+        "estimated_macs_per_query": 30,
+        "persistent_state_bytes": 26624,
+    }
+    adapter = {
+        "method": "support_only_late_key_ft_v1",
+        "support_only": True,
+        "query_update_forbidden": True,
+        "query_labels_used_for_training": False,
+        "old_new_role_used_by_optimizer": True,
+        "class_quota_used_at_inference": True,
+        "query_view_count": 1,
+        "epochs": 5,
+        "adapter_state_format": "fp16_delta_from_strict_checkpoint",
+        "resources": {
+            "trainable_parameters": 31200,
+            "adapter_state_bytes_fp16": 62400,
+            "adapter_macs_per_query": 0,
+            "original_checkpoint_trainable_parameters": 31200,
+            "original_checkpoint_gradient_updates": 15,
+            "checkpoint_update_target_modules": ["id_backbone.fuse.0"],
+            "full_model_finetune": False,
+            "deployment_added_macs_per_query_after_merge": 0,
+        },
+    }
+    with pytest.raises(ValueError, match="no_role_oracle|no_class_quota|exact_layer_whitelist"):
+        _attach_post_adapter_resources(
+            info,
+            {
+                "payload_source": "cvs_stage2c_support_only_late_key_ft_v1",
+                "adapter": adapter,
+            },
+            support_count=260,
+            query_count=520,
+        )

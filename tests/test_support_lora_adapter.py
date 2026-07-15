@@ -7,11 +7,14 @@ from paper_reproduction.scripts.train_export_cvs_support_lora_adapter import (
     LATE_FILM_TARGETS,
     LORA_TARGETS,
     ChannelAffineLinear,
+    LATE_KEY_FT_TARGETS,
     LoRALinear,
     _prototype_banks_from_matched_views,
     _validate_deployment_controls,
     inject_feat_joint_lora,
     inject_late_channel_film,
+    enable_late_key_layer_finetune,
+    load_trainable_adapter_state,
     train_support_only_lora,
 )
 
@@ -107,6 +110,71 @@ def test_late_channel_film_is_1280_params_and_freezes_checkpoint() -> None:
         for name in trainable
     )
     assert not model.id_backbone.cls_head.head.weight.requires_grad
+
+
+def test_late_key_layer_finetune_is_exact_31200_parameter_whitelist() -> None:
+    model = _Model()
+    audit = enable_late_key_layer_finetune(model)
+    assert audit["trainable_parameters"] == 31_200
+    assert audit["delta_patch_state_bytes_fp16"] == 62_400
+    assert audit["adapter_macs_per_query"] == 0
+    assert audit["deployment_added_macs_per_query_after_merge"] == 0
+    assert audit["checkpoint_update_target_modules"] == list(LATE_KEY_FT_TARGETS)
+    assert audit["original_checkpoint_trainable_parameters"] == 31_200
+    trainable = {
+        name for name, parameter in model.named_parameters() if parameter.requires_grad
+    }
+    assert trainable == {
+        "id_backbone.t_proj.weight",
+        "id_backbone.t_proj.bias",
+        "id_backbone.f_proj.weight",
+        "id_backbone.f_proj.bias",
+        "id_backbone.pa_proj.0.weight",
+        "id_backbone.pa_proj.0.bias",
+    }
+    assert not model.id_backbone.fuse[0].weight.requires_grad
+    assert not model.id_backbone.cls_head.head.weight.requires_grad
+
+
+def test_ground_adapter_state_load_is_strict_and_finite(tmp_path) -> None:
+    model = _Model()
+    inject_late_channel_film(model)
+    expected = {
+        name: torch.full_like(parameter, 0.125).half()
+        for name, parameter in model.named_parameters()
+        if parameter.requires_grad
+    }
+    state_path = tmp_path / "ground_film.pt"
+    torch.save(expected, state_path)
+    audit = load_trainable_adapter_state(model, state_path)
+    assert audit["mode"] == "ground_source_pretrained"
+    assert audit["element_count"] == 1_280
+    assert audit["tensor_count"] == 8
+    assert audit["strict_key_match"]
+    for name, parameter in model.named_parameters():
+        if parameter.requires_grad:
+            torch.testing.assert_close(parameter, expected[name].float())
+
+    torch.save({**expected, "unexpected": torch.zeros(1)}, state_path)
+    with pytest.raises(ValueError, match="key mismatch"):
+        load_trainable_adapter_state(model, state_path)
+
+
+def test_ground_late_key_state_load_is_strict_and_within_patch_budget(tmp_path) -> None:
+    model = _Model()
+    audit = enable_late_key_layer_finetune(model)
+    expected = {
+        name: torch.full_like(parameter, 0.0625).half()
+        for name, parameter in model.named_parameters()
+        if parameter.requires_grad
+    }
+    state_path = tmp_path / "ground_late_key.pt"
+    torch.save(expected, state_path)
+    load_audit = load_trainable_adapter_state(model, state_path)
+    assert load_audit["element_count"] == 31_200
+    assert load_audit["tensor_count"] == 6
+    assert audit["delta_patch_state_bytes_fp16"] == 62_400
+    assert audit["deployment_added_macs_per_query_after_merge"] == 0
 
 
 def test_rotating_single_view_film_uses_cached_teacher_and_step_cap(
@@ -268,6 +336,8 @@ def test_cli_accepts_late_film_fast_adaptation_controls() -> None:
             "rotating_single",
             "--matched_view_teacher_weight",
             "0.25",
+            "--init_adapter_state",
+            "ground_film.pt",
         ]
     )
     assert args.adapter_type == "late_film"
@@ -277,8 +347,47 @@ def test_cli_accepts_late_film_fast_adaptation_controls() -> None:
     assert args.grad_clip == 1.0
     assert args.view_sampling_mode == "rotating_single"
     assert args.matched_view_teacher_weight == 0.25
+    assert args.init_adapter_state.name == "ground_film.pt"
     _validate_deployment_controls(args)
 
     args.optimizer = "adamw"
     with pytest.raises(ValueError, match="sgd_without_moment_state"):
         _validate_deployment_controls(args)
+
+
+def test_cli_accepts_sparse_key_layer_fast_adaptation_controls() -> None:
+    from paper_reproduction.scripts.train_export_cvs_support_lora_adapter import parse_args
+
+    args = parse_args(
+        [
+            "--config",
+            "config.json",
+            "--ckpt",
+            "model.pth",
+            "--out_root",
+            "out",
+            "--receiver",
+            "8-8",
+            "--new_count",
+            "20",
+            "--seed",
+            "713101",
+            "--adapter_type",
+            "late_key_ft",
+            "--epochs",
+            "5",
+            "--optimizer",
+            "sgd",
+            "--max_optimizer_steps",
+            "50",
+            "--view_sampling_mode",
+            "rotating_single",
+            "--matched_view_teacher_weight",
+            "0.25",
+            "--init_adapter_state",
+            "ground_late_key.pt",
+        ]
+    )
+    _validate_deployment_controls(args)
+    assert args.adapter_type == "late_key_ft"
+    assert args.init_adapter_state.name == "ground_late_key.pt"

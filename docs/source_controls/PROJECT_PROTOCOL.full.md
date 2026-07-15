@@ -1,6 +1,6 @@
 # CVS 项目场景与数据协议
 
-版本：2026-07-07  
+版本：2026-07-15
 适用范围：`E:\type10-7` 中 CVS-RFFI / CV-SincNet 的科研叙事、算法优化、实验矩阵、数据协议、自动化控制面、N607 运行设计、论文/汇报写作与结果解释。
 
 ## 1. 文件地位
@@ -164,6 +164,18 @@ update:
 
 Phase2 主线的优化目标是 target-old 域适应、target-new 新类学习和二者的同 row 平衡。open-set rejection、unknown FAR、FPR95、AUROC、Weibull/OpenMax类拒识门控和 unknown query 压力测试属于 Phase3 备用项；Phase2 可以保留相关字段作为 diagnostic/safety metadata，但不得把它们列为主线必达指标或用低 unknown FAR 掩盖旧类/新类学习不足。
 
+### 7.1 target query逐样本自主决策硬约束（2026-07-15）
+
+对任一待识别target query，系统在决策前不知道它属于`Y_old`、已注册`Y_new`还是Phase3中的`Y_unknown`。因此，Phase2与Phase3的正式训练后评估、候选优化、消融、模型选择、晋升、论文主表和部署声明统一采用以下硬约束：
+
+- 每个query必须独立面对同一套当前已注册类别和允许的reject/defer机制；不得使用query真实old/new/unknown角色缩小候选类别集合。
+- 禁止读取或推断自评测构造的整批old/new数量、每类query数量、每类quota、query排列顺序或标签分块边界；禁止据此进行Hungarian、最优传输、批量重排或等价的全局配额分配。
+- query batch可以用于向量化计算，但不得利用评测构造提供的真实角色、类别数量、每类配额、排列顺序或标签分块边界改变任何单样本决策。
+- support标签和support中的old/new注册身份可以用于enrollment；该权限不意味着query角色已知。正式推理必须在所有已注册旧类与新类之间执行同一逐样本决策。
+- 历史role/quota Oracle artifact可以原样封存用于说明信息泄漏上界，但统一标记为`PROTOCOL_INVALID_FOR_DEPLOYMENT`。自本约束生效后不得生成新的role/quota Oracle候选，不得用于超参数选择、性能门槛、方法排名、统计检验、论文主表或部署声明。
+
+本禁令只针对部署阶段target query决策，不影响Phase1源域半监督训练中基于已定义源数据池进行的伪标签class/receiver quota审计或采样平衡。
+
 ## 8. WiSig / ManySig 数据协议
 
 ### 8.1 数据集角色
@@ -290,7 +302,9 @@ target_channel_view in {
 eval_sat_scenarios = leo_clear_weak,leo_low_elev_weak,leo_rain_weak
 ```
 
-自2026-07-14起，星上轻量化中的TTA视图数量属于同一简化LEO物理观测之后的接收侧推理机制，不构成新的信道场景，也不要求正式协议固定为5-view。允许在完全相同的物理样本、scenario、satellite seed、support/query划分、checkpoint和adapter下比较`none`、`rx_shift3`、`rx_cfo3`与`rx_light5`；其中各策略分别执行1、3、3、5次backbone前向及同数量的FFT辅助提取。不同TTA策略不得重新训练不同adapter、重新采样不同LEO扰动或混入clean view后再归因于view数量。正式晋升必须使用逐样本可部署决策，显式报告view count、backbone forward count、FFT count以及相对5-view的`old_acc`、`seen_new_acc`、`H_old_new`变化；legacy角色/类别配额Oracle只能保留为non-deployment diagnostic。
+自2026-07-14起，星上轻量化中的TTA视图数量属于同一简化LEO物理观测之后的接收侧推理机制，不构成新的信道场景，也不要求正式协议固定为5-view。允许在完全相同的物理样本、scenario、satellite seed、support/query划分、checkpoint和adapter下比较`none`、`rx_shift3`、`rx_cfo3`与`rx_light5`；其中各策略分别执行1、3、3、5次backbone前向及同数量的FFT辅助提取。不同TTA策略不得重新训练不同adapter、重新采样不同LEO扰动或混入clean view后再归因于view数量。正式晋升必须使用逐样本可部署决策，显式报告view count、backbone forward count、FFT count以及相对5-view的`old_acc`、`seen_new_acc`、`H_old_new`变化。历史legacy角色/类别配额Oracle只允许作为`PROTOCOL_INVALID_FOR_DEPLOYMENT`封存artifact，不得生成新候选或参与任何正式比较。
+
+自2026-07-15起，允许把`rx_light5`作为地面多View教师或星上逐样本自适应TTA候选进行压缩。地面蒸馏必须保留5个View的逐View特征、logit或一致性监督，不能只用5-view均值证明等价；可导出不超过50k参数、最终持久状态不超过128KiB的FiLM或稀疏关键层补丁。星上自适应TTA必须先执行base view，并只依据当前单个query的margin、entropy、View分歧等部署时可得量决定是否追加`rx_shift3`或完整`rx_light5`；门限只能由source validation或注册support确定，禁止使用query标签、真实old/new/unknown角色、整批类别比例、每类quota、query排序或Hungarian分配。正式结果必须同时报告平均与P95 backbone forward count、1/3/5-view触发率、最坏5-view上界和相同row的性能指标；若默认路径仍固定执行5次backbone前向，则不得声称已完成多View计算压缩。
 
 自2026-07-13起，CVS与外部方法的正式对比实验中，所有进入论文主表、主图、统计检验或方法排序的测试样本都必须实际叠加上述简化LEO星地信道之一；不得把未叠加星地信道的clean测试混入正式主结果。clean只允许作为单独control/reference，必须与deployment-primary结果分表。若测试入口没有记录scenario、satellite seed或增强是否实际启用，该测试结果视为artifact-incomplete，不得形成论文结论。
 
@@ -529,6 +543,7 @@ CVS 自动化不只是工程调度层，也承担实验语义落地责任。任�
 - satellite/LEO view 是否按 deployment-primary 处理，clean view 只作为 control。
 - Phase2主线是否以 target-old适应、target-new新类学习、`old_acc`、`seen_new_acc`和`H_old_new`为核心；不得把open-set / unknown FAR设为Phase2主线必达门槛。
 - 若携带unknown query，是否被标为Phase3-backup / evaluation-only metadata，且未参与Phase2阈值拟合、adapter更新、主排序或成功声明。
+- target query是否在全部已注册类别上执行逐样本自主决策；只要使用真实old/new/unknown角色、批次类别数量、每类quota、query排序/分块或Hungarian/等价配额重排，该row必须直接阻断，不得降格后继续进入正式候选矩阵。
 - 指标、阈值和成功声明是否符合第 10 节和第 11 节。
 - Phase2 row 是否满足 target receiver domain、support/query、TX split、satellite/LEO view 和本地字段要求；只要某个 Phase2 row 已满足这些要求，自动化就应继续 Runner gates，而不能用旧的整 lane local-patch 状态掩盖该 launchable row。
 
@@ -538,6 +553,8 @@ CVS 自动化不只是工程调度层，也承担实验语义落地责任。任�
 - 不能写成 deployment success。
 - 不能作为论文主结论。
 - 只能标为 `NON_LAUNCH_DIAGNOSTIC`、`LOCAL_PROTOCOL_REPAIR_REQUIRED` 或先提交本文件修订。
+
+例外：第7.1节禁止的target query role/quota Oracle不得按上述通用规则新建为`NON_LAUNCH_DIAGNOSTIC`；只允许封存约束生效前已经存在的历史artifact，并统一标记为`PROTOCOL_INVALID_FOR_DEPLOYMENT`。
 
 自动化可以提出新路线，但新路线必须先被翻译为本文件允许的场景、数据集合、support/query 权限、指标和声明边界；翻译不清楚时，不得由 runner 或 launcher 通过默认参数补齐。
 
@@ -558,6 +575,8 @@ Phase3 open-set 备用路线可以作为单独实验矩阵、后续安全扩展�
 - 指标、成功判据或可声明结论。
 
 若某个新想法违反本文件，但仍有探索价值，必须标为 `NON_LAUNCH_DIAGNOSTIC` 或先提交协议修订；不得直接作为 launchable row、论文主结论或部署成功证据。
+
+第7.1节role/quota Oracle禁令优先于本段通用诊断规则：不得生成新的Oracle诊断候选。
 
 ## 14. Git与Markdown同步纪律
 

@@ -441,3 +441,62 @@ N607 PID=`1066435`完成5epoch，实际15个SGD optimizer step，未触发50-ste
 late-FiLM相对原始同头基线为`-1.11/-1.66/+0.25/-0.43pp`，对old和floor无机制增益；相对20epoch LoRA则少`10.00/35.00/18.33/13.81pp`。因此不能把该结果解释为“压缩后轻微掉点”：实际是1,280个通道scale/bias在15次更新内没有产生LoRA所需的类条件几何变化。该机制gate失败，不运行5epoch可训head，不扩第二开发seed、5/10类、K5、其它receiver或确认seed。
 
 下一合法方向不能根据该query row继续扫学习率，而应把地面与星上阶段分开：仅在source receiver/day和合法信道view上地面预训小模块，使单view student在上星前已具有多view域不变几何；星上阶段仍只用target support执行3–5epoch、最多50步校准。地面预训的选模只读source validation，不读当前target query，以避免在同一query cell上继续超参拟合。
+
+## 2026-07-15地面source预训+星上5epoch校准预注册
+
+新路线不增加部署参数，仍是四个ADV3B02后段投影点的1,280个FiLM scale/bias。差别是将学习分成地面与星上两个权限面：地面只读`dataset_role=source`的2,400条IQ，以`2-19`为完整留出source receiver（360条），其余6个source receiver共2,040条训练；target-old、target-new和target query行计数坚持为0。地面使用clean+`leo_clear_weak/leo_low_elev_weak/leo_rain_weak`四view teacher，但每个epoch只训一个轮换view，避免每step四view堆叠。
+
+`dataset_role=source`在这里只是地面数据协议边界，用于证明未消费任何target行；它不是target类别的old/new角色Oracle。星上optimizer只接收注册support的普通类别ID，不接收old/new bit；推理统一在26类上逐样本argmax，不读每类query数量、类别配额或Hungarian分配。`old_new_role_used_by_optimizer=true`或`class_quota_used_at_inference=true`任一出现都必须被Stage2-C runner拒绝。
+
+| 阶段 | 参数/状态 | 优化器与步数 | view | 选模权限 |
+|---|---:|---|---|---|
+|地面预训|1,280参数；输出FP16 2,560B|AdamW，lr=`1e-3`，wd=`1e-4`，20epoch，预期320步，硬上限400|clean+3个LEO teacher；每epoch仅1个student view|仅留出source receiver`2-19`的四view最低准确率→平均准确率|
+|星上support校准|加载同一1,280参数，不带地面optimizer状态|SGD无momentum，lr=`3e-3`，5epoch，预期15步，硬上限50|support三场景轮换，每epoch仅1-view|target support只参与训练；query不训练/不选模|
+|星上推理|FiLM2,560B+26类prototype26,624B=29,184B|0步|query1-view+FFT96|per-sample argmax，无角色/配额Oracle|
+
+地面loss固定为冻结6类source classifier CE+`0.25×`单view student到四view冻结teacher均值特征的cosine距离。每epoch在留出source receiver上同时评估clean和三个LEO view，按最低view准确率、平均准确率、teacher cosine依次选择best state。地面AdamW一阶/二阶状态不导出、不上星；星上只收到8个tensor的FP16文件，并严格验key、shape和有限性。
+
+地面首run预注册为`qknn_ground_source_film20_20260715_v9`，命令为`CUDA_VISIBLE_DEVICES=7 PYTHONPATH=/home/szu2070436088/2510044040/CV-SincNet/code:/home/szu2070436088/2510044040/CV-SincNet /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u paper_reproduction/scripts/pretrain_cvs_source_late_film.py --config paper_reproduction/configs/cvs_qknnv42_extreme_light_20new_stage2c_k10_rawiq_20260715_n607.json --ckpt runs/phase1_adv3_mechanism32_queue_20260701/ADV3B02_CORE90_SOFT_E200/best_joint_safe_ssdg.pth --out_root runs/qknn_ground_source_film20_20260715_v9 --val_receiver 2-19 --epochs 20 --learning_rate 1e-3 --weight_decay 1e-4 --teacher_weight 0.25 --batch_size 128 --grad_clip 1 --max_optimizer_steps 400 --seed 713101 --device cuda:0`。只有留出source的最低view准确率和平均准确率均不低于原checkpoint，且clean准确率下降不超过1pp，才运行下游target-support校准。
+
+下游run预注册为`qknn_extreme_light_sourceinit_film5_20260715_v9`，其余参数与v8一致，只新增`--init_adapter_state runs/qknn_ground_source_film20_20260715_v9/ground_source_late_film_seed_713101_valrx_2-19/ground_film_state_fp16.pt`。target query只评估这一个完整预注册管线；仍以超过LoRA v1的`old=73.06%/floor=51.67%`且`new20>=83.33%`为扩展gate。
+
+本地`ssr-gpu`验证为四文件`py_compile` PASS、38项adapter/source-split/runner/raw-IQ回归PASS和`git diff --check` PASS。SHA256：地面pretrainer=`b7b9df0315795435d2e6fb0b3fea0e55257217413adcd0ad104afedd6ea83da7`，target trainer=`17c68d22b71396e1f1a684b27f5a4fe3719a8e65c3ae1db9c9581a6851cbd3da`，source test=`f26b3078b0637d1cf22fbe932ed6f93e870771f435c1db1227a80c78d28550ed`，target test=`f95deccf5aa1f9eb9d4a8f7c73aa6a80727dcff163a33c675b9aa1248444f7c5`。
+
+## 2026-07-15严格`rx_light5`压缩与关键层快适应v10预注册
+
+上一节`clean+3个场景均值teacher`的v9预注册在启动前作废，未同步、未启动、无性能结果。原因是历史已完成的source-teacher残差MLP表明“把adapter60+5-view平均特征拟合成单个向量”不足以保留目标域收益：该MLP有10,560参数、10,240MAC/sample，source holdout cosine达到0.918858，但无Oracle独立确认只有`old=71.06%/new=74.00%/H=72.01%`，相对无MLP的`70.98/74.69/72.33%`没有改善。该证据说明多View压缩必须保留逐View结构、一致性和分歧，不能继续只优化5-view均值。
+
+### 新方法
+
+地面端对3个正式LEO后信道缓存分别严格调用历史`rx_light5`：`rx_base`、`rx_shift_m2`、`rx_shift_p2`、`rx_cfo_m1e4`、`rx_cfo_p1e4`，共15个可审计View。每个optimizer step只选择一个正式LEO场景，但同一物理样本的5个接收侧View同时前向；loss为5-view source classifier CE、`0.25×`冻结ADV3B02的15-view平均特征teacher距离和`0.5×`当前5-view特征一致性。训练和选模只使用2,400条`dataset_role=source`，其中`2-19`完整source receiver留出；target行、target query、query标签均为0。
+
+首选student改为严格白名单的`late_key_ft`：只更新`id_backbone.t_proj`、`id_backbone.f_proj`和`id_backbone.pa_proj.0`的weight/bias，共31,200个原checkpoint参数；`fuse.0`因单层会使总量超过50k而禁止。地面输出6个FP16 tensor；星上加载后仍只用注册support执行5epoch、最多50次无momentum SGD更新。最终保存“当前权重减严格checkpoint”的单个FP16 delta补丁，而不是同时保存地面补丁与星上补丁，因此关键层状态固定62,400B。该补丁合并回backbone后持续推理新增MAC为0；与26类prototype状态26,624B合计89,024B，约86.9KiB，低于128KiB硬上限。
+
+|阶段|可训练参数|epoch/step|每步View|持久状态|query额外MAC|
+|---|---:|---:|---:|---:|---:|
+|历史adapter60|289,685|60epoch|训练口径不同；推理固定5-view|约565.8KiB仅权重|固定5次backbone|
+|v10地面多View关键层|31,200|20epoch，≤400step|1个场景×严格5-view|只导出FP16关键层状态|不上星执行|
+|v10星上快适应|31,200|5epoch，预计15step，≤50step|每epoch轮换1个support场景|最终delta62,400B|合并后0|
+|v10星上默认推理|0|0|先执行1-view|delta+prototype=89,024B|1次backbone|
+
+相对历史adapter60，更新参数减少`289,685/31,200=9.28`倍，星上epoch减少12倍，按`参数×epoch`计算的星上更新量减少111.4倍；地面15-view监督不计入星上训练预算，但必须报告其训练成本。
+
+### 逐样本1→3→5自适应TTA
+
+新增`adaptive_rxlight_tta.py`保留真实多View作为性能保险，而不是用角色或配额挑样本。每个query先执行base view；若当前样本top2 margin达到门限则在1-view停止，否则追加±2 shift形成3-view；仅当3-view margin仍低或三视图预测分歧超限时，再追加±1e-4 CFO形成完整5-view。每个样本独立决策，增加、删除或重排其它query不得改变它的view budget或预测。
+
+门限只允许在source validation或注册support上按“相对完整5-view准确率下降≤1pp时平均backbone forward最小”选择；不得读取query标签、真实old/new/unknown角色、全批类别比例、每类quota或Hungarian分配。正式评估同时报告平均/P95 backbone forward、1/3/5-view触发率、最坏5-view上界和同一row的old/floor/new/H。自适应TTA当前已完成独立纯函数及3项测试；在v10学生完成前不使用target query搜索门限。
+
+### v10固定超参数与晋升门
+
+地面run预注册为`qknn_ground_source_rxlight5_keyft20_20260715_v10`：`adapter_type=late_key_ft`、20epoch、AdamW、lr=`1e-3`、wd=`1e-4`、teacher weight=`0.25`、multiview consistency=`0.5`、batch128、gradient clip1、max step400、seed713101、source validation receiver=`2-19`。地面gate要求留出source的15-view最低准确率与平均准确率均不低于严格checkpoint；若失败，不运行target-support阶段。
+
+地面精确命令预注册为：
+
+```bash
+CUDA_VISIBLE_DEVICES=7 PYTHONPATH=/home/szu2070436088/2510044040/CV-SincNet/code:/home/szu2070436088/2510044040/CV-SincNet /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u paper_reproduction/scripts/pretrain_cvs_source_late_film.py --config paper_reproduction/configs/cvs_qknnv42_extreme_light_20new_stage2c_k10_rawiq_20260715_n607.json --ckpt runs/phase1_adv3_mechanism32_queue_20260701/ADV3B02_CORE90_SOFT_E200/best_joint_safe_ssdg.pth --out_root runs/qknn_ground_source_rxlight5_keyft20_20260715_v10 --val_receiver 2-19 --adapter_type late_key_ft --epochs 20 --learning_rate 1e-3 --weight_decay 1e-4 --teacher_weight 0.25 --multiview_consistency_weight 0.5 --batch_size 128 --grad_clip 1 --max_optimizer_steps 400 --seed 713101 --device cuda:0
+```
+
+若地面gate通过，星上run为`qknn_extreme_light_sourceinit_keyft5_20260715_v10`，固定`receiver=8-8/new20/seed713101/K10`、5epoch、SGD无momentum、lr=`3e-4`、wd=`1e-4`、gradient clip1、max step50、support三场景轮换、matched teacher weight0.25、query先做固定1-view机制审计。target-support阶段只有在同一row超过当前合法LoRA的`old=73.06%/floor=51.67%`且`new20≥83.33%`时才扩展；正式目标仍为`95/88/86%`。若1-view低于机制gate但source/support校准的自适应TTA能在平均≤3次backbone前向下通过，则单独标记为`ADAPTIVE_TTA_CANDIDATE`，不能把5-view最坏路径冒充1-view性能。
+
+本地`ssr-gpu`验证：三个实现文件`py_compile` PASS；adaptive TTA、source split/严格15-view、FiLM/关键层状态、Stage2-C runner共46项pytest PASS；`git diff --check` PASS。根目录`E:\type10-7`不是Git仓库，`项目.md`的协议更新已镜像至本Git承载面的`docs/PROJECT_PROTOCOL.md`和`docs/source_controls/PROJECT_PROTOCOL.full.md`；N607同步前仍需完成提交、直接SSH preflight、实时GPU/进程占用与实体checkpoint31,200参数审计。
