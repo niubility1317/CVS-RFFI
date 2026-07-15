@@ -703,3 +703,63 @@ K10、26类、3View时，v17为base预计算780次样本前向＋50×78次episod
 |`cvs_qknnv42_p4_bpjg_lopo_dev20_k10_20260715_n607.json`|`9dd8867174cd7896a8c5d57783015917b3497d369c2ccf4136744f6267c4c96f`|
 |`launch_cvs_p4_bpjg_lopo_dev20_k10_v18.sh`|`93afd895e0bbbb165bc9a8e6bec5c56ff066f1518f2ea291a512c444a2016fb5`|
 |`test_support_lora_adapter.py`|`1c414f36153c22965d12172d4500e20d27304b06197c0ae2f0ffe9a5f590ba07`|
++
+
+## 十七、v19合法source LEO_weak层组筛选计划
+
+### 17.1目的与证据边界
+
+实验ID为`qknnv42_p4_bpjg_lopo_source_k10_20260715_v19`。v18的P4-BPJG-LOPO数学与资源合同已经完成，但当前target开发config仍引用历史未密封cache，不能打开。为继续把精力放在adapt性能，本轮只使用Phase1离线生成并严格验证的`source_validation` LEO_weak cache set，在receiver `2-19`上比较四个关键层组/学习率；不读取任何Phase2 target artifact，不生成target性能或matched MRIOR胜出声明。
+
+假设为：v17中`id_gate`实际相对变化仅0.00483%，说明门控层梯度几乎不起作用；在相同P4初始化、K10、5epoch、50步和LOPO目标下，直接更新`id_proj＋joint_proj`或`fuse＋joint_proj`应比`id_gate＋joint_proj`产生更大的source receiver holdout正收益，同时不降低最低类准确率。
+
+### 17.2输入、处理与输出
+
+|环节|输入|处理|输出|
+|---|---|---|---|
+|输入审计|ADV3B02固定checkpoint、P4 adapter固定SHA、sealed `source_validation/cache_set.json`|调用`load_verified_leo_weak_cache_set`，要求`source_validation`、role仅为source、3个正式LEO_weak场景、sample-level overlay和physical ID逐行一致|cache/receiver/checkpoint/P4审计|
+|物理划分|source validation receiver `2-19`的6类物理样本|每类按固定seed排列；前20个构成嵌套support池，K10取其前10个；query固定为K20池外全部物理样本|K1⊂K5⊂K10⊂K20且四个K共享query|
+|support适配|每类K10×6类×3个预注册LEO场景View|P4先合并；目标LoRA rank8；K10环形双shot episode；LOPO排除held physical sample的全部View；SGD、5epoch、50步|FP16 target delta、完整loss trace、时延/显存/forward审计|
+|source评估|与support pool物理不相交的固定source query|同一全注册类cosine prototype qKNN逐样本argmax；分别评估P4 identity和adapted；strict direct ADV3B02只走原分类头|3场景逐row及aggregate accuracy、最低类、逐类准确率和delta|
+
+四臂固定为：
+
+|candidate|目标层|lr|参数|epoch/step|选择用途|
+|---|---|---:|---:|---:|---|
+|`JG_R8_LR005`|`id_gate＋joint_proj`|0.005|6,400|5/50|与v17同层同lr的LOPO对照|
+|`JG_R8_LR020`|`id_gate＋joint_proj`|0.020|6,400|5/50|检验原更新幅度过小|
+|`IJ_R8_LR010`|`id_proj＋joint_proj`|0.010|6,400|5/50|身份映射主候选|
+|`FJ_R8_LR010`|`fuse＋joint_proj`|0.010|7,688|5/50|融合边界主候选|
+
+source screen仅在`adapted accuracy>P4 identity accuracy`且`adapted min-class accuracy≥P4 identity floor`时标为PASS。若多臂PASS，按accuracy delta→floor delta→适配时间排序；该排序只决定哪一臂值得接入正式sealed Stage2-C，不替代target K10开发或matched MRIOR门槛。
+
+### 17.3资源与服务器计划
+
+- 训练参数6,400–7,688，仅为50k上限的12.8%–15.4%；adapter合并后每query新增MAC为0。
+- optimizer最多50步、5epoch，不保存optimizer state；持久状态按P4真实文件＋target FP16文件＋6×160×FP16 prototype＋24B门限估算并要求≤256KB。
+- support训练只前向3个已密封LEO场景View；query不参与梯度、门限或候选内部更新。
+- N607计划GPU0–3各运行一臂，每GPU一个进程；预计输出`result.json`、`loss_trace.json/csv`、`adapter_state_fp16.pt`、`process_status.tsv`。launcher是异步提交器，manifest显式记录`launch_only=true`；每个后台子进程通过`EXIT trap`无条件写独立状态回执，区分PASS、source screen判负和基础设施失败。
+- 远端工作目录：`/home/szu2070436088/2510044040/CV-SincNet`。
+- 远端输出根：`runs/qknnv42_p4_bpjg_lopo_source_k10_20260715_v19/`。
+- 远端日志根：`logs/qknnv42_p4_bpjg_lopo_source_k10_20260715_v19/`。
+- Conda环境：`CVS-RFFI`。
+- 唯一启动命令：`bash paper_reproduction/scripts/launch_cvs_p4_bpjg_lopo_source_v19.sh`。
+- 启动前必须重新执行direct SSH preflight和live GPU/process inventory；若有活动任务，按每GPU最多2个训练进程规则重新分配或仅监控。
+
+### 17.4本地实现和验证
+
+新增文件及SHA256：
+
+|文件|SHA256|用途|
+|---|---|---|
+|`screen_cvs_p4_bpjg_lopo_source.py`|`6f93e71469477c26bd46e6ce306524f91ba2856be9da3b830411a54b8bbe8031`|sealed source cache加载、nested physical split、P4/LOPO训练和同row评估|
+|`launch_cvs_p4_bpjg_lopo_source_v19.sh`|`3814bda5ba90a65fa8e3e86defb56552491b2bc02b0f39743a4b531b28dd5f45`|四GPU四臂启动与独立状态回执|
+|`test_source_bpjg_lopo_screen.py`|`3168e588346ee5a3fa44871202ff48d2f33e86e3be58633f2b260e48954c4dc3`|K1/5/10/20完整嵌套/固定query、View-major physical对齐和漂移拒绝|
+
+`ssr-gpu`本地验证：新增3项测试与原support 52项合计55/55通过，真实ADV3B02＋P4三层组artifact测试实际执行而非skip；Python `py_compile`和launcher `bash -n`通过。实现同时锁定checkpoint SHA并在加载前后复验，strict direct不执行support enrollment，适配峰值显存只在单个ADV3B02实例驻留时测量。唯一告警仍是既有`torch.cuda.amp.autocast`弃用提示。
+
+独立增量复核结论为`Ready，可启动source-only v19筛选`，无剩余Critical或Important；该Ready只覆盖source-only筛选，不改变正式Stage2-C的fail-closed状态。
+
+### 17.5正式target接入边界
+
+只读审计确认现成已提交且在N607完成375/375行的严格基底是`sealed package→Landlock allowlist＋strace→immutable prediction→isolated scorer`，但当前正式predictor仍只支持Stage2-B，v18 trainer也仍让legacy query cache在进程文件边界可达。因此v19 source筛选可独立运行；正式P4-BPJG-LOPO Stage2-C必须另设support-only enrollment进程，使Landlock allowlist不包含任何query文件，再密封target delta并由第二个truth-free predictor消费。当前工作树中的memfd/symmetric-head增量属于未提交他人改动，本轮不依赖、不覆盖。
