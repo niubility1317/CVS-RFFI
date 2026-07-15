@@ -64,6 +64,24 @@ python -m paper_reproduction.scripts.run_cvs_publication_matrix ... # 六档配�
 
 单qKNN头FFT96基线复用已审计的严格单视图feature NPZ，run/log子目录为`singlehead_fft96`；不重新训练backbone或adapter。
 
+## 五点一、启动前N607证据
+
+2026-07-15 10:47–10:50直连预检通过：身份、项目根、8张RTX3090和服务器时间可见；远端Python为3.10.19，`/home`剩余7.6TB。进程盘点确认GPU0–7各有1个RIEI训练进程，PID分别为`1116006,1116023,1116045,1116040,1116057,1116061,1116071,1116076`，每进程显存624MiB。用户已明确要求启动本实验；按每GPU最多两个训练进程规则，计划把六个adapter任务放在GPU0–5，把单qKNN头FFT96矩阵放在GPU6，不干预RIEI，不使用GPU7。
+
+同步前远端`cvs_method_runner.py`、matrix worker和adapter导出器hash均与本地已验证版本不同，因此必须先同步本地版本。同步映射如下，均为同相对路径覆盖：
+
+|本地/远端相对路径|本地SHA256|
+|---|---|
+|`paper_reproduction/cvs_aligned/cvs_method_runner.py`|`8f526c7821d9ebb0342a3de325d8442e0397ef3b98bb0b60a89815c4f0ec9420`|
+|`paper_reproduction/scripts/run_cvs_publication_matrix.py`|`e014297a2167bfe7633010a78ab9bcc0c2ce21f711a14817ed421531493ee8a7`|
+|`code/scripts/train_apply_phase1_iq_preadapter_20260703.py`|`553410ebe4f1337aa4017bae69587a14f6b8b57e746de5c67d81e8a8e8ccc979`|
+|`code/cvsrffi/checkpoint_loading.py`|`c0cfda856ce707d83ecf9547c6a3bf74995a2eaa430c9da19c63c3e211115229`|
+|`paper_reproduction/scripts/run_cvs_qknnv42_nondense_adapter_epoch_125_20260715.sh`|`b91d5b7b7ea7256b7c5fe85d7c52d30369e20b4bc8c2080a301de3bef2882da1`|
+|`paper_reproduction/scripts/run_cvs_qknnv42_singlehead_fft96_nondense_125_20260715.sh`|`751bd58a811f1a15a6efde7445c33bca895fa3443b9eaea3ed98be9037a76fc9`|
+|`paper_reproduction/configs/cvs_qknnv42_nondense_adapter_e{2,5,10,20,30,60}_stage2c_20260715_n607.json`|逐文件hash保存在Git提交与同步后远端`sha256sum`证据中|
+|`paper_reproduction/configs/cvs_qknnv42_singlehead_fft96_nondense_stage2c_20260715_n607.json`|`a2ed811823333bcf77cdd49bb81cabea74a95669436fcedac618206a53b9db6b`|
+
+
 单档启动命令模板：
 
 ```bash
