@@ -10,7 +10,7 @@
 |阶段|Stage2-B target-old few-shot domain adaptation|
 |目标|按最新项目协议重跑ProtoNet CDA、MRIOR-SDA、DADDA-SDA；每方法5个target receiver×5个seed×5个K，共125次，合计375次正式方法运行|
 |历史比较|替代2026-07-14批次中Phase2直接读取raw/clean IQ并在runner内部生成LEO视图的375行历史artifact|
-|当前状态|LOCAL_VERIFIED_PROTOCOL_REPAIR_COMPLETE_PENDING_REMOTE_SYNC_AND_PREP；未启动正式任务|
+|当前状态|N607_OFFLINE_PREPARATION_RUNNING；PID 1604043；正式375行尚未启动|
 
 ## 二、假设与声明边界
 
@@ -110,13 +110,15 @@ phase2_query_batch_global_assignment=false
 |远端Python/Conda环境|`/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python`|
 |远端run root|`/home/szu2070436088/2510044040/CV-SincNet/runs/adv3b02_three_da_leoweakonly_20260715_v1`|
 |远端log root|`.../stage2_logs/`|
-|GPU/PID|未启动；最近一次只读审计8张GPU均空闲|
+|GPU/PID|offline准备PID `1604043`，单进程使用`cuda:0`串行执行；正式worker未启动|
 |代码版本|Git commit `e90a52f`；远端13个运行文件与新plan已同步，远端`py_compile` PASS|
 |offline准备命令|`/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u paper_reproduction/scripts/run_adv3b02_three_da_cache_plan.py --plan-manifest runs/adv3b02_three_da_leoweakonly_20260715_v1/plan/plan_manifest.json --execute`|
 |正式worker命令|由`plan_manifest.json.commands.phase2_workers`给出8个shard；必须在52/52离线准备和三方法smoke通过后才允许启动|
 |期望输出|每行`metrics.json`、`split_manifest.json`、`resolved_config.json`、`score_table.csv`、详细分组统计和完整loss trace|
 
 同步映射：本地commit `e90a52f`中的`code/cvsrffi/{phase2_runtime_contract,stage2_predictor_bundle,stage2_scoring_sidecar}.py`、三个`code/scripts/`隔离/构包脚本、ADV3B02 runner、独立scorer、matrix/cache-plan/summary脚本同步至N607同相对路径；本地`local_artifacts/adv3b02_three_da_leoweakonly_20260715_v1_plan/{phase2_config.json,plan_manifest.json,cache_specs/}`同步至远端run root的`plan/`。
+
+启动诊断记录：初次后台命令已landed但PID文件写入受shell后台优先级影响；只读复核确认该进程因远端根目录旧`cvsrffi`包遮蔽`code/cvsrffi`而退出。已在commit `e325503`修复`sys.path`优先级并同步。第二次在构建前因offline spec误写`/CV-SincNet/ManySig.pkl`而退出；服务器实际路径为`/CV-SincNet/Dataset_WigSig/ManySig.pkl`。已本地重生成并同步plan，当前PID 1604043正常运行。两次失败均未产生正式Phase2行。
 
 ## 七、成功条件与风险
 
