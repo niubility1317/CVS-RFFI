@@ -156,7 +156,7 @@ def generate_strict_plan(
         runtime_project_root, f"runs/{source['experiment_id']}"
     )
     artifact = {
-        "candidate_lock": _runtime_path(runtime_artifact_root, "candidate_lock_v2.json"),
+        "candidate_lock": _runtime_path(source_run_root, "candidate_lock_v2.json"),
         "base_runtime": _runtime_path(runtime_artifact_root, "base_runtime.ts"),
         "candidate_runtime": _runtime_path(runtime_artifact_root, "candidate_runtime.ts"),
         "candidate_capsule": _runtime_path(runtime_artifact_root, "candidate_capsule.json"),

@@ -27,6 +27,9 @@ def test_strict_plan_covers_75_packages_300_cells_and_900_rows(tmp_path: Path) -
     assert manifest["expected_counts"]["formal_scenario_rows"] == 900
     assert manifest["launch_authority"] is False
     assert manifest["smoke_authority"] is True
+    assert manifest["runtime_artifacts"]["candidate_lock"].endswith(
+        "/runs/qknn_ground_effective8_r16_e12_leoonly_20260715_v14/candidate_lock_v2.json"
+    )
 
 
 def test_strict_plan_packages_share_one_sealed_pool_across_all_k(tmp_path: Path) -> None:

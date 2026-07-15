@@ -137,6 +137,8 @@ PYTHONPATH=code:. "$PY" paper_reproduction/scripts/run_cvs_stage2c_effective8_st
 
 为避免长驻SSH，实际启动采用等价后台包装：先`mkdir -p "$STRICT/logs/smoke"`，再执行`nohup env PYTHONPATH=code:. "$PY" paper_reproduction/scripts/run_cvs_stage2c_effective8_strict_plan.py ... > "$STRICT/logs/smoke_driver.out" 2>&1 &`，PID写入`$STRICT/smoke_driver.pid`。后台只运行上述单一smoke stage；使用短连接检查PID、日志、GPU和`smoke_receipt.json`，不会启动matrix shard。
 
+第一次smoke attempt（PID`1867324`）完成了receiver=`20-1`、seed=`713101`的3个LEO_weak缓存文件，然后在封包前失败：v6严格清单误把`candidate_lock_v2.json`放在runtime artifact子目录。未创建package、prediction或scorer输出；原PID/日志和v6清单保留。生成器修复为指向真实v14 run根，回归测试`5 passed`；新v7清单SHA=`cf6c4572130245653e753031ff20f2d42b0511fb9b3635cc147c02e359c0ecbf`，仍为`launch_authority=false`。第二次attempt复用已验证缓存，但使用独立`smoke_driver_attempt2.pid/out`，不覆盖首次证据。
+
 ## 完成后结果表
 
 实验完成后在本节追加逐单元同一行结果，至少包含candidate ID、机制、receiver/TX split、K-shot、seed、old/seen-new/unknown指标、coverage/rollback/defer、loss/adapter摘要和最终判定。不得用来自不同单元的独立极值替代联合行。
