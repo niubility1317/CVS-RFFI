@@ -189,6 +189,8 @@ v5 attempt1以PID`1890476`首次完整进入Landlock predictor：12个package成
 
 v13清单已在本地生成并验证：绑定strict_v10和全新`..._landlock_strict300_v6`根，25 cache/75 package/300 cell/900 row，`launch_authority=false`、`authority_state=N607_LANDLOCK_SMOKE_REQUIRED`，SHA=`fbd1fbae9107d1c2beee7edd24c1d2fe7e4ca9a849cb001b6b944e9cc2fbe2fc`。同步前N607 v6根不存在、GPU无任务；只同步提交`2af8df8`的外层runner与该清单，远端核验SHA后仍仅允许`cuda:0`的receiver=`20-1`、seed=`713101`、20新类、K1 smoke，使用独立`smoke_driver_v6_attempt1.pid/out`和`logs/smoke_v6_attempt1`。
 
+v6 attempt1 PID=`1894028`在两份外层脚本串行SCP期间被并发启动，形成新pinned校验+旧Landlock attestation的混合版本：旧385字节attestation缺少新字段，故在`runtime Landlock/seccomp attestation failed`处停止；无prediction/scoring/smoke receipt。这是同步竞态，不是策略测试结果。两份远端脚本随后稳定核验为pinned SHA=`378decb111f1bda7ac198d27d4f31f75bcbefd514661a26ba4be7a38f5aa8b6f`、launcher SHA=`f20c071a9d4a45f60c1f389962e347a4d70edcffca316bfa81c345ddcd443173`。新v14清单绑定strict_v10与全新`..._landlock_strict300_v7`根，仍为25/75/300/900、`launch_authority=false`，SHA=`59992f970ad157b2e6465704041a0469e5c4219f55af9fbac575836926a87f9f`。
+
 并行构建留下`runtime_artifacts_strict_v9`部分目录：12项不可变模型/config文件存在，`05_runtime_closure.json`为0字节且closure目录不存在，符合旧closure白名单拒绝新增`ctypes/platform`导入的fail-closed行为。strict_v9完整保留且不补写。下一次使用全新`runtime_artifacts_strict_v10`：先同步提交`764c11c`的memfd实现与提交`5d87bdd`的closure白名单，逐文件核验SHA；再在N607直接调用`_sealed_memfd`执行临时seal smoke并验证`REQUIRED_SEALS`，通过后才复制strict_v8的12项不可变artifact并新建closure。后续计划/运行根使用全新版本，不复用v4/v11。
 
 ## 完成后结果表
