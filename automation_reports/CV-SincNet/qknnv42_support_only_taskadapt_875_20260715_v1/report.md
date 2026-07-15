@@ -22,3 +22,5 @@
 - prepare PID`1231463`已正常退出；三份LEO raw IQ+FFT96母缓存生成并通过审计。
 - 每场景5,600行、目标行3,200；每个receiver×类别最少65行；三场景物理ID一致；无clean视图；严格ADV3B02加载为0/0/0。
 - 正式manifest为875任务，125基线+750逐任务适应，clean=false、query-fit=false。
+- 8个shard已启动，PID为`1233044–1233051`，GPU0–7各一个worker；首批显存506–686MiB。
+- 启动约15秒时125个基线已完成，E2完成8项，无失败；子进程任务键包含独立receiver/seed/K/epoch。
