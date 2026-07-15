@@ -537,3 +537,19 @@ CUDA_VISIBLE_DEVICES=7 PYTHONPATH=/home/szu2070436088/2510044040/CV-SincNet/code
 ```
 
 训练完成后先运行固定1-view、0epoch prototype head。只有`old>73.06%`、floor`>51.67%`且`new20≥83.33%`才扩展；若固定1-view失败，只允许用source validation或注册support校准的1→3→5逐样本门控做一次预注册恢复检查，不得用query标签选择阈值。
+
+### v10 target-support关键层快适应结果与1-view head预注册
+
+N607 PID=`1089923`完成5epoch、15个SGD optimizer step，适配wall time0.7284s，峰值CUDA分配172,595,712B，约164.6MiB；support前向样本等效量3,380，SGD momentum/持久optimizer状态为0。5个epoch按View槽`0→1→2→0→1`轮换，每个物理support每epoch只训练1个正式场景。完整日志84行、5条连续epoch记录，错误、OOM、NaN/Inf扫描为0；最后support accuracy45.00%，该值只描述support训练，不作为query性能。
+
+地面state以严格6-key/31,200元素方式载入，SHA256=`d3d7a959...b849c`、有限性PASS。最终state是“当前权重减严格checkpoint”的单个FP16 delta，31,200元素、tensor口径62,400B、文件65,078B、SHA256=`5bf5f0a749c3f130ddc5beeda91451ac8bfe558cafad266dfcf3a08b0967a5d1`；delta绝对值最大0.02504、L2=1.06084。与26类prototype状态合计89,024B，补丁合并推理新增MAC=0。
+
+三场景输出各1,506行，全部feature有限且本地重算哈希与manifest一致：clear=`d318a4ef...1219`、low=`b6b59fdf...8f17`、rain=`df718687...2878`。权限审计为`support_only=true`、`query_update_forbidden=true`、`query_labels_used=false`、`old_new_role_used=false`、`class_quota_used=false`。完整artifact回收至`E:\type10-7\local_artifacts\qknn_extreme_light_sourceinit_keyft5_20260715_v10`。
+
+下一步只运行预注册的固定1-view、0epoch prototype head，不训练新参数、不做query选模。输出根=`runs/qknn_extreme_light_sourceinit_keyft5_head_20260715_v10`，日志根=`logs/qknn_extreme_light_sourceinit_keyft5_head_20260715_v10`；精确命令为：
+
+```bash
+PYTHONPATH=/home/szu2070436088/2510044040/CV-SincNet /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u paper_reproduction/scripts/run_cvs_extreme_light_matrix.py --config runs/qknn_extreme_light_sourceinit_keyft5_20260715_v10/support_late_key_ft_rx_8-8_new_20_seed_713101_k_10/resolved_qknn_config.json --output-root runs/qknn_extreme_light_sourceinit_keyft5_head_20260715_v10 --log-root logs/qknn_extreme_light_sourceinit_keyft5_head_20260715_v10 --mode smoke --arms el_proto_aux2p0 --receivers 8-8 --seeds 713101 --k-grid 10 --new-class-counts 20 --device cpu
+```
+
+该head必须由Stage2-C runner再次验证delta provenance、31,200参数/15步/精确白名单、1-view、无角色/配额Oracle；只有完整artifact contract通过后才能读取old/floor/new/H。
