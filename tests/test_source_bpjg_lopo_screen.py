@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from pathlib import Path
+
 import numpy as np
 import pytest
 
@@ -81,3 +83,20 @@ def test_view_major_support_rejects_cross_scenario_id_drift() -> None:
     arrays[FORMAL_LEO_WEAK_SCENARIOS[1]]["sample_ids"][0] = "drift"
     with pytest.raises(ValueError, match="alignment drift"):
         build_view_major_support(arrays, np.asarray([0, 25, 50], dtype=np.int64))
+
+
+def test_v20_launcher_binds_exact_lopo_trainer_dependency() -> None:
+    root = Path(__file__).resolve().parents[1]
+    launcher = (
+        root
+        / "paper_reproduction"
+        / "scripts"
+        / "launch_cvs_p4_bpjg_lopo_source_v20.sh"
+    ).read_text(encoding="utf-8")
+    assert "qknnv42_p4_bpjg_lopo_source_k10_20260715_v20" in launcher
+    assert (
+        "TRAINER_SHA256="
+        "f985f5e5f718f1c60ab75e6b41684bf4962edce454c1612a7d2f7c0e14406f7e"
+        in launcher
+    )
+    assert 'sha256sum "$TRAINER"' in launcher

@@ -746,6 +746,15 @@ source screen仅在`adapted accuracy>P4 identity accuracy`且`adapted min-class 
 - 唯一启动命令：`bash paper_reproduction/scripts/launch_cvs_p4_bpjg_lopo_source_v19.sh`。
 - 启动前必须重新执行direct SSH preflight和live GPU/process inventory；若有活动任务，按每GPU最多2个训练进程规则重新分配或仅监控。
 
+启动前版本与同步登记：Git commit为`37e8f7d`；2026-07-15 22:50+08:00 direct SSH preflight通过，8张RTX3090均为0%利用率/10MiB显存，live inventory显示`active_training_processes=[]`。仅同步以下两个运行文件：
+
+|本地文件|N607目标|
+|---|---|
+|`paper_reproduction/scripts/screen_cvs_p4_bpjg_lopo_source.py`|`/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/scripts/screen_cvs_p4_bpjg_lopo_source.py`|
+|`paper_reproduction/scripts/launch_cvs_p4_bpjg_lopo_source_v19.sh`|`/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/scripts/launch_cvs_p4_bpjg_lopo_source_v19.sh`|
+
+正式target v18 config、legacy cache和当前工作树其他未认领Phase2文件不在本次同步范围。
+
 ### 17.4本地实现和验证
 
 新增文件及SHA256：
@@ -763,3 +772,34 @@ source screen仅在`adapted accuracy>P4 identity accuracy`且`adapted min-class 
 ### 17.5正式target接入边界
 
 只读审计确认现成已提交且在N607完成375/375行的严格基底是`sealed package→Landlock allowlist＋strace→immutable prediction→isolated scorer`，但当前正式predictor仍只支持Stage2-B，v18 trainer也仍让legacy query cache在进程文件边界可达。因此v19 source筛选可独立运行；正式P4-BPJG-LOPO Stage2-C必须另设support-only enrollment进程，使Landlock allowlist不包含任何query文件，再密封target delta并由第二个truth-free predictor消费。当前工作树中的memfd/symmetric-head增量属于未提交他人改动，本轮不依赖、不覆盖。
++
+
+### 17.6v19启动失败与v20依赖闭包修复
+
+v19于2026-07-15 22:50+08:00按计划异步提交，launcher PID为1843427、1843428、1843430、1843432。四个状态回执均为`exit_code=1,INFRASTRUCTURE_FAILURE`，进程和GPU随后全部释放。完整日志给出两个共同根因：
+
+|candidate|v19结果|完整错误|判定|
+|---|---|---|---|
+|`JG_R8_LR005`|`INFRASTRUCTURE_FAILURE`|`train_support_only_bp_jg() got an unexpected keyword argument 'leave_one_physical_shot'`|远端trainer版本旧，不含LOPO参数|
+|`JG_R8_LR020`|`INFRASTRUCTURE_FAILURE`|同上|远端trainer版本旧，不含LOPO参数|
+|`IJ_R8_LR010`|`INFRASTRUCTURE_FAILURE`|`unsupported LoRA scope: identity_joint`|远端trainer版本旧，不含新层组|
+|`FJ_R8_LR010`|`INFRASTRUCTURE_FAILURE`|`unsupported LoRA scope: fusion_joint`|远端trainer版本旧，不含新层组|
+
+v19没有生成任何accuracy/floor/资源结果，不能当作算法负收益。根因是启动前只同步了source screen与launcher，没有同步其导入依赖`train_export_cvs_support_lora_adapter.py`；远端该文件不是commit `847d139`后的LOPO版本。v19的run/log/status目录全部保留，不覆盖。
+
+本地已新增v20修复：
+
+- 新launcher为`launch_cvs_p4_bpjg_lopo_source_v20.sh`，实验ID为`qknnv42_p4_bpjg_lopo_source_k10_20260715_v20`；
+- 将trainer作为显式必需artifact，并在创建任何v20输出目录之前硬核对SHA256=`f985f5e5f718f1c60ab75e6b41684bf4962edce454c1612a7d2f7c0e14406f7e`；
+- v20 launcher SHA256为`34df6781c3326dd4d2368ec701ba5cfa1c30e93d9784ac76334705811673d1fd`；
+- 更新后的source screen测试SHA256为`d70b49af39b82c9134cbf94c1d84e081d4bdb55f3f6e9fd5fa5b04a502c8e935`；
+- 新增依赖SHA锁测试后，source screen 4项＋support 52项合计56/56通过，真实ADV3B02＋P4三层组测试实际执行；v19/v20 launcher均通过`bash -n`。
+
+v20需补充同步：
+
+|本地文件|N607目标|
+|---|---|
+|`paper_reproduction/scripts/train_export_cvs_support_lora_adapter.py`|`/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/scripts/train_export_cvs_support_lora_adapter.py`|
+|`paper_reproduction/scripts/launch_cvs_p4_bpjg_lopo_source_v20.sh`|`/home/szu2070436088/2510044040/CV-SincNet/paper_reproduction/scripts/launch_cvs_p4_bpjg_lopo_source_v20.sh`|
+
+v20远端输出根为`runs/qknnv42_p4_bpjg_lopo_source_k10_20260715_v20/`，日志根为`logs/qknnv42_p4_bpjg_lopo_source_k10_20260715_v20/`，唯一启动命令为`bash paper_reproduction/scripts/launch_cvs_p4_bpjg_lopo_source_v20.sh`。启动前必须重新确认无活动训练进程、GPU0–3可用、v20输出不存在，并对trainer、screen、launcher、checkpoint和P4五个SHA逐项复核。
