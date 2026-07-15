@@ -275,6 +275,8 @@ v11 smoke首次完整通过，status=`PASS`、cell status=`PROTOCOL_VALID`、`ma
 
 该smoke只授权执行完整矩阵，不构成candidate晋升。资源同row为44,048个可训练参数、109,818字节持久状态、168,441,856字节峰值CUDA显存、平均2.699/P95=3次backbone forward。官方授权器已把v20清单与smoke receipt SHA=`6064b3113690fa5453b4f0f82b09febdfca9999fdf68828459102e0ec8c62d94`绑定，生成`launch_authority=true`、`authority_state=N607_LANDLOCK_SMOKE_PASS`的清单，SHA=`62d78cb9aa636c8e756f582473f6c9742326c220936dcd0efb6a770a4b18ae85`。下一步同步该授权清单并用8个短启动连接分别在`cuda:0..7`运行`matrix_shard 0..7/8`；每个shard使用独立PID、driver日志、阶段日志和state JSON，已完成的smoke cell由receipt复验后复用。
 
+00:50实时清单再次确认8张GPU空闲且无训练进程。授权清单已同步到v11根`protocol_plan/strict_plan_manifest_v20_authorized_62d78cb9.json`并核验相同SHA。每个shard确切入口统一为`PYTHONPATH=code:. <CVS-RFFI python> paper_reproduction/scripts/run_cvs_stage2c_effective8_strict_plan.py --plan-manifest <authorized manifest> --project-root <CV-SincNet root> --stage matrix_shard --device cuda:<i> --shard-index <i> --shard-count 8 --log-dir <v11/logs/matrix_shard_<i>> --state-json <v11/matrix_shard_<i>_state.json>`；driver输出及PID分别为`logs/matrix_shard_<i>_driver.out`和`matrix_shard_<i>.pid`。启动前对每个shard用原子lock目录防止重复启动，全部启动后只用短SSH检查PID/cmdline/GPU/log/state并断开。
+
 v10 attempt1以PID=`1910063`运行，再次生成2,658,628字节密封prediction，并成功生成1,779字节predictor资源收据，证明首次密封读取SHA修复生效；随后execution audit和最终stdout返回中的两处遗留`sha256_file(request_path)`仍触发Landlock拒绝。scorer/cell/smoke receipt依然不存在，v10不原地续跑。完整driver日志6,042字节，SHA=`54bb8c51…5c78`。
 
 提交`ec86075`把execution audit与最终返回统一绑定首次密封读取所得`request_sha256`，新增源码级门禁保证严格predictor中不再出现任何`sha256_file(request_path)`。41项相关测试通过；全新strict_v14 closure在N607与本地均为SHA=`3f8a577de614666cf33eb2cdc50244045c0898cabc22d545571d229c4b87805b`，12项模型/capsule/config复用artifact逐项一致。v20清单绑定strict_v14和全新v11运行根，仍为25/75/300/900、`launch_authority=false`，清单SHA=`717bcd08dadd0dccaf2f24ae4407d64aea4cd44b32f63b423451ee8f3884a0a4`。
@@ -291,6 +293,25 @@ v11 attempt1以PID=`1913259`完整通过严格闭环：密封prediction、execut
 K1结论为明确负例：未满足“适应后明显优于direct ADV3B02”，注册使旧类平均下降14.17pp，TX=`14-7`三场景均为0%，且20新类seen-new只有30.92%。它只用于证明严格评测闭环，不得晋升为算法候选。资源侧满足参数/状态/epoch硬上限：44,048 trainable parameters、109,818字节持久状态、12 adapt epochs、峰值CUDA显存168,441,856字节、候选query延迟0.679ms；但自适应view平均2.699次backbone forward，1/3/5-view触发率19.81%/75.45%/4.74%，说明当前门限大多触发3-view，尚未达到“默认1-view”的理想计算分布。
 
 完整证据已回传`evidence/smoke_v11_success/`。官方授权器以smoke receipt SHA=`6064b311…2d94`生成`authorized_strict_plan_manifest.json`：`launch_authority=true`、`authority_state=N607_LANDLOCK_SMOKE_PASS`，授权清单SHA=`62d78cb9aa636c8e756f582473f6c9742326c220936dcd0efb6a770a4b18ae85`。下一步只执行同receiver/seed/new20的K10单cell，优先评估联合域适应+新类注册目标点，不启动完整矩阵。
+
+### K10/new20单cell正式开发运行
+
+2026-07-16 00:49 CST只读预检确认N607的8张RTX3090均约10 MiB显存、0%利用率，无其他严格runner，项目盘剩余7.6 TiB；目标K10 cell和远端授权清单均不存在。授权清单本地SHA=`62d78cb9aa636c8e756f582473f6c9742326c220936dcd0efb6a770a4b18ae85`。先SCP至`/home/szu2070436088/2510044040/CV-SincNet/runs/qknn_ground_effective8_r16_e12_leoonly_20260715_v14_landlock_strict300_v11/protocol_plan/authorized_strict_plan_manifest.json`并逐字节SHA核验；随后只允许以下一个正式cell，不启动matrix shard：
+
+```bash
+cd /home/szu2070436088/2510044040/CV-SincNet
+PY=/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python
+V11=/home/szu2070436088/2510044040/CV-SincNet/runs/qknn_ground_effective8_r16_e12_leoonly_20260715_v14_landlock_strict300_v11
+PYTHONPATH=code:. "$PY" paper_reproduction/scripts/run_cvs_stage2c_effective8_strict_package.py \
+  --plan-manifest "$V11/protocol_plan/authorized_strict_plan_manifest.json" \
+  --package-id rx_20_1__seed_713101__new_20 \
+  --project-root /home/szu2070436088/2510044040/CV-SincNet \
+  --device cuda:0 \
+  --k-shot 10 \
+  --execution-mode formal
+```
+
+后台包装只写`formal_k10_driver_attempt1.pid`和`logs/formal_k10_driver_attempt1.out`。完成后完整读取driver日志，并回传K10 cell下的sealed prediction、execution/resource audit、formal rows/predictions、scoring receipt和cell receipt；评价必须同时给出注册前/后旧类、逐类遗忘、seen-new、H、direct ADV3B02差值和资源开销。
 
 ## 完成后结果表
 
