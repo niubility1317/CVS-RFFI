@@ -113,14 +113,19 @@ def _write_readonly_json_new(path: Path, payload: Mapping[str, Any]) -> str:
     return sha256_file(path)
 
 
+def _prepare_device(requested: str) -> torch.device:
+    if torch.cuda.is_available() and requested.startswith("cuda"):
+        device = torch.device(requested)
+        torch.cuda.init()
+        torch.cuda.reset_peak_memory_stats(device)
+        return device
+    return torch.device("cpu")
+
+
 def run(args: argparse.Namespace) -> dict[str, Any]:
     request_path = Path(args.request_json)
     request = _read_request(request_path)
-    if torch.cuda.is_available() and str(args.device).startswith("cuda"):
-        device = torch.device(str(args.device))
-        torch.cuda.reset_peak_memory_stats(device)
-    else:
-        device = torch.device("cpu")
+    device = _prepare_device(str(args.device))
     payload, metadata, audit = prepare_role_blind_prediction(
         request,
         predictor_package_root=args.predictor_package_root,
