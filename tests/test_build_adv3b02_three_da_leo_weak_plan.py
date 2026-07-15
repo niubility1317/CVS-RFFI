@@ -76,10 +76,15 @@ def test_three_da_plan_has_375_phase2_rows_and_no_dataset_path(tmp_path: Path) -
         for index, value in enumerate(seal_command)
         if value == "--runtime-code-root"
     ]
-    assert roots == [
-        "/remote/project/code", "/remote/project/paper_reproduction",
-        "/remote/project/baselines",
+    assert roots == []
+    files = [
+        seal_command[index + 1]
+        for index, value in enumerate(seal_command)
+        if value == "--runtime-code-file"
     ]
+    assert "/remote/project/code/model_dual_cvsincnet.py" in files
+    assert "/remote/project/paper_reproduction/cvs_aligned/supervised_da.py" in files
+    assert all("manytx" not in value.lower() and "manysig" not in value.lower() for value in files)
     target_spec = json.loads(
         (output / "cache_specs/target/rx_20_1/seed_713101.json").read_text(encoding="utf-8")
     )

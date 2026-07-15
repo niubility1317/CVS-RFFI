@@ -115,6 +115,18 @@ def build(args: argparse.Namespace) -> dict[str, Any]:
     artifact_entries = [entry(path) for path in artifact_files]
     code_entries = [entry(path) for path in code_files]
     runtime_code_list_dirs = {path.parent for path in code_files}
+    common_code_root = Path(os.path.commonpath([str(path) for path in code_files]))
+    if common_code_root.is_file():
+        common_code_root = common_code_root.parent
+    for path in code_files:
+        parent = path.parent
+        while True:
+            runtime_code_list_dirs.add(parent)
+            if parent == common_code_root:
+                break
+            if common_code_root not in parent.parents:
+                raise ValueError(f"runtime code member escapes common project root: {path}")
+            parent = parent.parent
     for root in code_roots:
         runtime_code_list_dirs.add(root)
         runtime_code_list_dirs.add(root.parent)

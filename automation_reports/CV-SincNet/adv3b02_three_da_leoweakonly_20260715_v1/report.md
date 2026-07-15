@@ -134,6 +134,8 @@ phase2_query_batch_global_assignment=false
 
 第三次smoke PID `1620292`已通过所有导入、包审计并进入support张量构造，但远端NumPy 2.2.5与PyTorch 2.1.0的`torch.from_numpy`桥接最小复现同样报`TypeError: expected np.ndarray (got numpy.ndarray)`。已将runner与独立scorer共6处转换改为`torch.frombuffer(memoryview(...)).reshape(...).clone()`的显式ABI安全拷贝；远端float32/int64最小复现通过，本地编译与34项相关pytest通过。数据值、样本、损失、优化步数和决策规则均未改变；同步后必须重建runtime code digest，复测使用`smoke_runs_v4/`。
 
+第四次smoke PID `1622232`的predictor已返回0，但post-run访问审计发现整棵`code/`白名单包含历史`phase2_frozen_manytx_unknown_diagnostic.py`等未使用文件，Landlock构建规则时的`O_PATH`访问触发禁止路径，故指标未评分。已进一步移除runner对`train_ssdg`、`eval_feature_diagnosis`、`class_incremental`和`wisig_runtime`的宽导入链，以runner内最小等价函数重建严格ADV3B02并记录loss；runtime seal从3棵目录改为22个显式Python文件白名单，不包含dataset loader、ManySig/ManyTx/clean诊断或独立scorer。重生成plan后仍为52项离线准备和375行，编译与34项pytest通过；复测使用`smoke_runs_v5/`。
+
 ## 七、成功条件与风险
 
 成功条件：

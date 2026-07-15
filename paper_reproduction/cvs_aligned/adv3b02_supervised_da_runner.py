@@ -14,6 +14,7 @@ import csv
 import hashlib
 import json
 import math
+import random
 import re
 import sys
 import time
@@ -33,7 +34,6 @@ for value in (str(CODE_ROOT), str(PROJECT_ROOT)):
 for value in (str(PROJECT_ROOT), str(CODE_ROOT)):
     sys.path.insert(0, value)
 
-from SSDG import train_ssdg as ssdg_mod  # noqa: E402
 from cvsrffi.leo_weak_cache import (  # noqa: E402
     FORMAL_LEO_WEAK_SCENARIOS,
     PHASE2_SAMPLE_VIEW_POLICY,
@@ -49,14 +49,8 @@ from cvsrffi.phase2_runtime_contract import (  # noqa: E402
     validate_phase2_contract,
     validate_predictor_request,
 )
-from model_dual_cvsincnet import backbone_forward_compat  # noqa: E402
-from eval_feature_diagnosis import infer_num_domains, strip_module_prefix  # noqa: E402
+from model_dual_cvsincnet import backbone_forward_compat, build_dual_model  # noqa: E402
 from paper_reproduction.common.config import load_json_config  # noqa: E402
-from paper_reproduction.common.wisig_runtime import set_seed, write_json  # noqa: E402
-from paper_reproduction.cvs_aligned.class_incremental import (  # noqa: E402
-    _cycle_batches,
-    _trace_loss,
-)
 from paper_reproduction.cvs_aligned.supervised_da import (  # noqa: E402
     dadda_sda_objective,
     mrior_sda_batch_step,
@@ -93,6 +87,78 @@ def _sha256(path: Path) -> str:
     return digest.hexdigest()
 
 
+def set_seed(seed: int) -> None:
+    random.seed(int(seed))
+    np.random.seed(int(seed))
+    torch.manual_seed(int(seed))
+    if torch.cuda.is_available():
+        torch.cuda.manual_seed_all(int(seed))
+
+
+def write_json(path: Path, payload: Any) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(
+        json.dumps(payload, ensure_ascii=False, indent=2, default=str) + "\n",
+        encoding="utf-8",
+    )
+
+
+def _cycle_batches(loader: DataLoader, steps: int):
+    iterator = iter(loader)
+    for _ in range(int(steps)):
+        try:
+            yield next(iterator)
+        except StopIteration:
+            iterator = iter(loader)
+            yield next(iterator)
+
+
+def _trace_loss(
+    trace: list[dict[str, Any]], config: dict[str, Any], *, phase: str,
+    step: int, total_steps: int, losses: dict[str, torch.Tensor | float],
+) -> None:
+    every = max(1, int(config.get("loss_trace_every", 20)))
+    if int(step) not in {1, int(total_steps)} and int(step) % every != 0:
+        return
+    row: dict[str, Any] = {
+        "method": str(config.get("method", "")),
+        "scenario": str(config.get("_active_scenario", "")),
+        "phase": str(phase), "step": int(step), "total_steps": int(total_steps),
+    }
+    for key, value in losses.items():
+        row[str(key)] = (
+            float(value.detach().cpu()) if isinstance(value, torch.Tensor) else float(value)
+        )
+    if "loss" not in row and "total" in row:
+        row["loss"] = row["total"]
+    numeric = [
+        float(value) for key, value in row.items()
+        if key not in {"method", "scenario", "phase"}
+    ]
+    if not all(math.isfinite(value) for value in numeric):
+        raise FloatingPointError(f"non-finite loss trace row: {row}")
+    trace.append(row)
+    print("[LOSS-TRACE] " + json.dumps(row, ensure_ascii=False, sort_keys=True), flush=True)
+
+
+def _strip_module_prefix(state: dict[str, torch.Tensor]) -> dict[str, torch.Tensor]:
+    return {
+        (key[7:] if key.startswith("module.") else key): value
+        for key, value in state.items()
+    }
+
+
+def _infer_num_domains(state: dict[str, torch.Tensor]) -> int:
+    for key in (
+        "dom_head.net.3.bias", "dom_head.net.3.weight",
+        "adv_head.net.3.bias", "adv_head.net.3.weight",
+    ):
+        value = state.get(key)
+        if torch.is_tensor(value) and value.ndim >= 1:
+            return int(value.shape[0])
+    raise ValueError("strict ADV3B02 reconstruction cannot infer num_domains from checkpoint")
+
+
 def _safe_receiver(value: str) -> str:
     return re.sub(r"[^A-Za-z0-9]+", "_", str(value)).strip("_")
 
@@ -125,21 +191,55 @@ def _runtime_evidence_path(config: dict[str, Any]) -> Path:
 
 def _exact_adv3b02(checkpoint_path: Path, *, device: torch.device) -> tuple[nn.Module, dict[str, Any]]:
     checkpoint = torch.load(checkpoint_path, map_location="cpu", weights_only=False)
-    state = strip_module_prefix(checkpoint["model"])
+    state = _strip_module_prefix(checkpoint["model"])
     checkpoint_args = dict(checkpoint.get("args") or {})
-    num_domains = infer_num_domains(
-        None, state=state, split_info={}, ckpt_args=checkpoint_args, cli_num_domains=None
-    )
-    parser = ssdg_mod.build_arg_parser()
-    model_args = parser.parse_args(["--output_dir", str(PROJECT_ROOT / ".tmp_adv3b02_da")])
-    for key, value in checkpoint_args.items():
-        setattr(model_args, key, value)
-    model_args.device = str(device)
-    merged = ssdg_mod.merge_checkpoint_args(
-        checkpoint, model_args, input_len=256, num_domains=int(num_domains)
-    )
-    merged = ssdg_mod._apply_model_cli_args(merged, model_args)
-    model = ssdg_mod.build_baseline_model(merged, device)
+    num_domains = _infer_num_domains(state)
+    sample_rate_hz = float(checkpoint_args.get("sample_rate_hz", 0.0))
+    if sample_rate_hz <= 0.0:
+        sample_rate_hz = 25e6
+    model = build_dual_model(
+        int(checkpoint_args["num_classes"]), int(num_domains),
+        model_size=str(checkpoint_args.get("model_size", "M")),
+        dataset=str(checkpoint_args.get("dataset", "wisig")),
+        input_len=256,
+        sample_rate_hz=sample_rate_hz,
+        id_feature_key=str(checkpoint_args.get("id_feature_key", "feat_joint")),
+        dom_feature_key=str(checkpoint_args.get("dom_feature_key", "feat_imp")),
+        model_variant=str(checkpoint_args.get("model_variant", "lite_c")),
+        branch_ablation=str(checkpoint_args.get("branch_ablation", "none")),
+        mixstyle_on=bool(checkpoint_args.get("use_mixstyle", False)),
+        mixstyle_p=float(checkpoint_args.get("mixstyle_p", 0.3)),
+        mixstyle_alpha=float(checkpoint_args.get("mixstyle_alpha", 0.1)),
+        mixstyle_eps=float(checkpoint_args.get("mixstyle_eps", 1e-6)),
+        mixstyle_layers=str(checkpoint_args.get("mixstyle_layers", "time_down,t1")),
+        mixstyle_use_domain_label=bool(
+            checkpoint_args.get("mixstyle_use_domain_label", True)
+        ),
+        mixstyle_mix=str(checkpoint_args.get("mixstyle_mix", "crossdomain")),
+        mixstyle_strength=float(checkpoint_args.get("mixstyle_strength", 1.0)),
+        mixstyle_fallback=str(checkpoint_args.get("mixstyle_fallback", "random")),
+        domain_branch_ablation=str(
+            checkpoint_args.get("domain_branch_ablation", "same")
+        ),
+        domain_enhancer=str(checkpoint_args.get("domain_enhancer", "rcn_stats")),
+        domain_enhancer_strength=float(
+            checkpoint_args.get("domain_enhancer_strength", 0.35)
+        ),
+        id_time_stability_mode=str(checkpoint_args.get("id_time_stability_mode", "off")),
+        id_freq_stability_mode=str(checkpoint_args.get("id_freq_stability_mode", "off")),
+        domain_time_stability_mode=str(
+            checkpoint_args.get("domain_time_stability_mode", "off")
+        ),
+        domain_freq_stability_mode=str(
+            checkpoint_args.get("domain_freq_stability_mode", "off")
+        ),
+        time_stability_channels=int(checkpoint_args.get("time_stability_channels", 8)),
+        freq_stability_channels=int(checkpoint_args.get("freq_stability_channels", 4)),
+        fast_infer_when_no_aux=bool(
+            checkpoint_args.get("fast_infer_when_no_aux", True)
+        ),
+        arch_family=str(checkpoint_args.get("arch_family", "cvsincnet")),
+    ).to(device)
     missing, unexpected = model.load_state_dict(state, strict=False)
     if missing or unexpected:
         raise ValueError(

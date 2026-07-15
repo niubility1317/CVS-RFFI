@@ -220,14 +220,39 @@ def build_plan(args: argparse.Namespace) -> dict[str, Any]:
             ])
 
     project_root = PurePosixPath(args.runtime_project_root)
+    runtime_code_files = (
+        "code/scripts/run_phase2_landlock_isolated.py",
+        "code/cvsrffi/__init__.py",
+        "code/cvsrffi/leo_weak_cache.py",
+        "code/cvsrffi/phase2_runtime_contract.py",
+        "code/cvsrffi/stage2_predictor_bundle.py",
+        "code/model.py",
+        "code/model_dual_cvsincnet.py",
+        "baselines/__init__.py",
+        "baselines/common/__init__.py",
+        "baselines/common/resnet1d.py",
+        "baselines/cvcnn_ce/__init__.py",
+        "baselines/cvcnn_ce/model.py",
+        "paper_reproduction/__init__.py",
+        "paper_reproduction/common/__init__.py",
+        "paper_reproduction/common/config.py",
+        "paper_reproduction/cvs_aligned/__init__.py",
+        "paper_reproduction/cvs_aligned/adv3b02_supervised_da_runner.py",
+        "paper_reproduction/cvs_aligned/supervised_da.py",
+        "paper_reproduction/DADDA/__init__.py",
+        "paper_reproduction/DADDA/losses.py",
+        "paper_reproduction/mitigating_receiver_impact_da/__init__.py",
+        "paper_reproduction/mitigating_receiver_impact_da/losses.py",
+    )
     runtime_seal_command = [
         "python", "code/scripts/build_phase2_runtime_seal.py",
         "--config", str(plan_root / phase2_config_rel),
         "--out-root", str(seal_root),
-        "--runtime-code-root", str(project_root / "code"),
-        "--runtime-code-root", str(project_root / "paper_reproduction"),
-        "--runtime-code-root", str(project_root / "baselines"),
     ]
+    for relative_path in runtime_code_files:
+        runtime_seal_command.extend([
+            "--runtime-code-file", str(project_root / relative_path)
+        ])
 
     output_root = run_root / "stage2_runs"
     log_root = run_root / "stage2_logs"
