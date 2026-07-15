@@ -500,3 +500,17 @@ CUDA_VISIBLE_DEVICES=7 PYTHONPATH=/home/szu2070436088/2510044040/CV-SincNet/code
 若地面gate通过，星上run为`qknn_extreme_light_sourceinit_keyft5_20260715_v10`，固定`receiver=8-8/new20/seed713101/K10`、5epoch、SGD无momentum、lr=`3e-4`、wd=`1e-4`、gradient clip1、max step50、support三场景轮换、matched teacher weight0.25、query先做固定1-view机制审计。target-support阶段只有在同一row超过当前合法LoRA的`old=73.06%/floor=51.67%`且`new20≥83.33%`时才扩展；正式目标仍为`95/88/86%`。若1-view低于机制gate但source/support校准的自适应TTA能在平均≤3次backbone前向下通过，则单独标记为`ADAPTIVE_TTA_CANDIDATE`，不能把5-view最坏路径冒充1-view性能。
 
 本地`ssr-gpu`验证：三个实现文件`py_compile` PASS；adaptive TTA、source split/严格15-view、FiLM/关键层状态、Stage2-C runner共46项pytest PASS；`git diff --check` PASS。根目录`E:\type10-7`不是Git仓库，`项目.md`的协议更新已镜像至本Git承载面的`docs/PROJECT_PROTOCOL.md`和`docs/source_controls/PROJECT_PROTOCOL.full.md`；N607同步前仍需完成提交、直接SSH preflight、实时GPU/进程占用与实体checkpoint31,200参数审计。
+
+### v10 N607上线前审计
+
+Git提交=`57528108015e49a48c35738c4b1af5d4ad0ac4ac`。2026-07-15 09:19 CST按规定执行直连只读preflight，直连身份、服务器时间、项目根和8张RTX3090可见性均PASS。实时inventory确认8张GPU各有1个RIEI训练进程，每进程约624MiB；物理GPU7现有PID=`1058292`。v10若绑定GPU7，将成为该卡第2个训练实验，不超过项目默认每卡2个实验上限，不干预既有任务。
+
+项目盘剩余7.6TB。严格checkpoint和3个9,800行raw-IQ缓存均存在，大小分别为8,582,116B、32,602,986B、32,720,734B和32,563,774B；目标run/log根均不存在。检查后本地`ssh.exe=0`、到端口22的`ESTABLISHED=0`。
+
+|本地文件|本地SHA256|N607目的地|
+|---|---|---|
+|`paper_reproduction/scripts/pretrain_cvs_source_late_film.py`|`615d51786a72226ae72f822724022f20ecc373ae2dd56f8319eadd9048451978`|同相对路径|
+|`paper_reproduction/scripts/train_export_cvs_support_lora_adapter.py`|`a6f61704ddbdba926ea2264726a8ccd7d278e224cd8ab5a058295ac7d5fad08d`|同相对路径|
+|`paper_reproduction/cvs_aligned/adaptive_rxlight_tta.py`|`ced44529eb97e1c29cad20f2939d3578c9c5d23be6772dca8fa8062df67a3b78`|同相对路径；仅在后续自适应TTA评估使用|
+
+同步只覆盖上述本轮已提交文件；不覆盖远端数据、checkpoint、既有run/log或其它并发修改。同步后必须复核远端SHA256、`py_compile`、实体checkpoint严格加载、31,200参数精确白名单和目标目录仍为空，满足后才启动地面run。
