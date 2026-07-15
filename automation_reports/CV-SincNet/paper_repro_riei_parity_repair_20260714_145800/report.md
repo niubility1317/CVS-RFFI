@@ -572,3 +572,10 @@
 - GPU0–7的trainer PID依次为`1058241,1058250,1058260,1058249,1058275,1058282,1058288,1058292`；前4个对应model seed0的row3/4/11/12，后4个对应model seed42的同四行。完整命令行确认所有job均使用split seed1337、short stem、momentum0、mean、no-RMS、no-feature-norm和paper last10。
 - 约4分钟健康检查时8个queue/trainer均存活，8份metrics均连续：seed0四行到epoch`13,13,12,12`，seed42四行到`11,13,12,12`。32份当前日志共770行/100060字节，稳定partition marker8个、split seed1337 marker8个、model seed0/42各4个，硬错误0。
 - GPU0–7各仅1个本任务compute，SM约21%–32%，每GPU显存约11%–12%；容量合规。当前判定为`RUNNING_STARTUP_HEALTHY_THROUGH_EPOCH_11_13`，不是seed选型结果。自动心跳已更新为当前run；不得干预、重启、覆盖或删除产物。
+
+### 08:51只读心跳监控
+
+- 直接N607预检通过；8个原queue与8个原trainer PID均持续运行约1022秒，无重启或进程替换。完整命令行继续固定split seed1337、model seed0/42、short stem、momentum0、mean、no-RMS、no-feature-norm及paper last10。
+- 8份metrics均可完整解析且epoch序列连续：seed0的row3/4/11/12分别为epoch`45,46,45,46`；seed42对应为`44,46,46,45`，均无`final`字段。`PAPER-EVAL-SUMMARY=0`、`FINAL-TEST=0`、成功完成job=0符合训练阶段。
+- 完整读取32份当前日志，共2345行/197302字节；稳定partition、split seed1337及model seed0/42 marker齐全。全量硬错误扫描计数0，未见Traceback、RuntimeError、CUDA OOM、Killed、NaN、Inf或参数错误。
+- GPU0–7各仅1个本任务compute，SM约17%–36%，容量门持续合规。当前判定为`RUNNING_HEALTHY_THROUGH_EPOCH_44_46`；未进入论文epoch191–200正式窗口，不做seed选型。
