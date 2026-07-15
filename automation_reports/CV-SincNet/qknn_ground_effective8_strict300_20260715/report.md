@@ -49,7 +49,26 @@ python -m pytest tests/test_stage2_predictor_runtime.py tests/test_stage2_predic
 
 ## 当前状态
 
-本地严格运行链和矩阵门禁已完成，尚未连接N607。下一步依次执行直接SSH预检、实时进程/GPU清单、现有v14来源artifact核验、文件同步、N607单单元烟测；只有烟测收据回传并形成Git授权清单后才启动300单元矩阵。
+### N607只读预检
+
+- 预检时间：2026-07-15 22:58 CST。
+- 直接目标：`N607`，主机`dell-DSS8440`，项目根`/home/szu2070436088/2510044040/CV-SincNet`。
+- GPU：8张RTX3090，预检时每张约10MiB显存、0%利用率。
+- 实时训练清单：`gpu_compute=[]`、`active_training_processes=[]`、`unknown_training_active=false`。
+- 依赖：`/usr/bin/strace`存在，Landlock ABI=4。
+- 本地测试环境：`ssr-gpu`。N607没有同名环境；现有实验解释器为`/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python`，PyTorch`2.1.0+cu121`、NumPy`2.2.5`。
+- v14来源artifact：`candidate_lock_v2.json`、`effective8_adapter_fp16.pt`、`training_manifest.json`、`source_validation_v2/promotion_manifest.json`、`source_validation_v2/source_joint_feature_stats_fp32.npz`和原300单元`protocol_plan/plan_manifest.json`均存在。
+- 每次SSH检查后：本地`ssh.exe=0`，到`172.31.111.215:22`和bridge的ESTABLISHED连接数为0。
+
+### 版本与同步边界
+
+- 本地Git提交：`654d2f7 feat: add strict effective8 phase2 runtime`。
+- N607项目根不是Git仓库。
+- 远端已有且将覆盖的3个文件均与提交父版本SHA一致：`stage2_predictor_bundle.py=08efc4...`、`build_cvs_stage2_predictor_bundle.py=9b9567...`、`run_phase2_landlock_isolated.py=c127d7...`；其余同步目标远端均不存在，因此未发现需保留的远端冲突。
+- 同步命令模板：`scp -F E:\type10-7\tools\n607_ssh_config <local-file> N607:/home/szu2070436088/2510044040/CV-SincNet/<relative-file>`。
+- 同步范围：本提交中的`code/cvsrffi`严格runtime文件、`code/scripts`胶囊/闭包/包构建与Landlock执行文件、`paper_reproduction/scripts`严格计划/分包/授权执行文件；不传输tests、数据集、checkpoint、现有run输出或无关工作树改动。
+
+当前完整矩阵仍未获启动权限。下一步串行SCP并逐文件远端SHA核验，然后只生成v14严格runtime artifact；在报告记录确切命令后执行一个K=1烟测。
 
 ## 完成后结果表
 
