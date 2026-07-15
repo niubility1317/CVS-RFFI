@@ -695,3 +695,13 @@ v12相对历史减少71.89%可训参数、83.33%epoch和95.31%的`参数×epoch`
 10:45 CST同步和上线审计PASS：4个远端SHA256与本地逐字节一致，3个Python实现远端编译PASS。首次实体审计被远端同名顶层`cvsrffi`包在import阶段遮蔽，未读checkpoint；显式将项目`code`置于`sys.path[0]`后重跑PASS。真实checkpoint严格重建195个tensor，missing/unexpected/skipped均为0，rank24全后段LoRA精确81,432参数、162,864B和81,432动态MAC/forward。GPU7仍只有既有PID=`1116076`、624MiB，目标train/log根仍不存在，SSH/SCP连接清零。
 
 实际训练GPU固定为7，Conda/Python环境=`/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python`，工作目录=`/home/szu2070436088/2510044040/CV-SincNet`，日志=`logs/qknn_multiview_relaxed_rank24_scorekd_20260715_v12/train.log`，PID文件=`logs/qknn_multiview_relaxed_rank24_scorekd_20260715_v12/train.pid`。启动命令是在前述预注册trainer命令前设置`CUDA_VISIBLE_DEVICES=7`，并以`nohup env ... > train.log 2>&1 &`短连接提交。预期run目录=`runs/qknn_multiview_relaxed_rank24_scorekd_20260715_v12/support_lora_full_feature_rx_8-8_new_20_seed_713103_k_10`，至少生成`loss_trace.json`、`adapter_state_fp16.pt`、`adaptation_manifest.json`和3个场景导出NPZ。完成后先全量分析train.log和manifest，任何权限、参数、状态、step或非有限值异常都阻止联合query评估。
+
+### v12训练完成与联合评估授权
+
+训练PID=`1147455`自然完成。完整`train.log`为159行/10,832B，含连续epoch1–10和step10→100，无Traceback、Error、Exception、OOM、nan、inf或non-finite。loss由58.8585降至3.53757且最低值在epoch10，逐View分数蒸馏由99.2236降至0.56211，support train accuracy由39.35%升至63.31%。epoch1/2未裁剪梯度范数为84.04/85.59，但`clip=1`生效，随后收敛至约0.52–1.08；所有记录值有限，无发散证据。
+
+实际适配4.8433s、峰值CUDA分配225,612,800B、100个AdamW step、54,600个support forward sample equivalents，未被step cap提前截断。20个LoRA tensor共81,432个有限元素，FP16 tensor口径162,864B，文件169,826B，SHA256=`baf070b5f81e36734f37a8edd2e61c37a55736014a771861c405ac25685a0f78`且与manifest一致。AdamW训练暂态651,456B，不部署；LoRA+5套原型+门限总计229,436B≤262,144B。
+
+权限审计为`support_only=true`、`query_update_forbidden=true`、`query_labels_used_for_training=false`、`old_new_role_used_by_optimizer=false`、`class_quota_used_at_inference=false`、原checkpoint可训参数/更新均为0。3个场景导出均为1,506行，`features[160]`、`FFT[96]`和数值有限；artifact已完整回收至`E:\type10-7\local_artifacts\qknn_multiview_relaxed_rank24_scorekd_20260715_v12`及对应`_logs`目录。
+
+实际生成的合法manifest文件名为`training_manifest.json`，不是预写的`adaptation_manifest.json`；联合评估命令据此仅修正`--adapter_manifest`路径，不改变方法或超参数。评估固定GPU7，输出=`runs/qknn_multiview_relaxed_rank24_scorekd_adaptive_tta_20260715_v12`，日志=`logs/qknn_multiview_relaxed_rank24_scorekd_adaptive_tta_20260715_v12/eval.log`。它先用support leave-one-out冻结门限，再以真正惰性1→3→5路径报告部署性能，同时另算fixed1/3/5离线上界；query不用于训练、校准或选模。
