@@ -136,6 +136,8 @@ phase2_query_batch_global_assignment=false
 
 第四次smoke PID `1622232`的predictor已返回0，但post-run访问审计发现整棵`code/`白名单包含历史`phase2_frozen_manytx_unknown_diagnostic.py`等未使用文件，Landlock构建规则时的`O_PATH`访问触发禁止路径，故指标未评分。已进一步移除runner对`train_ssdg`、`eval_feature_diagnosis`、`class_incremental`和`wisig_runtime`的宽导入链，以runner内最小等价函数重建严格ADV3B02并记录loss；runtime seal从3棵目录改为22个显式Python文件白名单，不包含dataset loader、ManySig/ManyTx/clean诊断或独立scorer。重生成plan后仍为52项离线准备和375行，编译与34项pytest通过；复测使用`smoke_runs_v5/`。
 
+第五次smoke PID `1626556`在最小代码闭包下到达checkpoint反序列化，但checkpoint `args`包含`baseline_origin_sat_view.SatViewStage`，因此`torch.load(weights_only=False)`需要该类定义；`weights_only=True`最小测试确认因该类不在PyTorch 2.1内置安全集合而失败。`baseline_origin_sat_view.py`仅定义dataclass/数学/torch辅助，不导入dataset或信道数据入口，故把该单文件加入显式代码白名单；仍不允许任何dataset loader或clean/ManySig/ManyTx路径。复测使用`smoke_runs_v6/`。
+
 ## 七、成功条件与风险
 
 成功条件：

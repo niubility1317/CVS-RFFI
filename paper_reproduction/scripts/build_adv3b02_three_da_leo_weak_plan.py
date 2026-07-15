@@ -226,6 +226,7 @@ def build_plan(args: argparse.Namespace) -> dict[str, Any]:
         "code/cvsrffi/leo_weak_cache.py",
         "code/cvsrffi/phase2_runtime_contract.py",
         "code/cvsrffi/stage2_predictor_bundle.py",
+        "code/baseline_origin_sat_view.py",
         "code/model.py",
         "code/model_dual_cvsincnet.py",
         "baselines/__init__.py",

@@ -83,6 +83,7 @@ def test_three_da_plan_has_375_phase2_rows_and_no_dataset_path(tmp_path: Path) -
         if value == "--runtime-code-file"
     ]
     assert "/remote/project/code/model_dual_cvsincnet.py" in files
+    assert "/remote/project/code/baseline_origin_sat_view.py" in files
     assert "/remote/project/paper_reproduction/cvs_aligned/supervised_da.py" in files
     assert all("manytx" not in value.lower() and "manysig" not in value.lower() for value in files)
     target_spec = json.loads(
