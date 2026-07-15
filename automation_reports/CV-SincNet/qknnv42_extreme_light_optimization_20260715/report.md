@@ -220,3 +220,45 @@ bash paper_reproduction/scripts/launch_cvs_ground_lora_fft_ablation_v15.sh
 ```
 
 成功启动必须记录4个独立PID、GPU、日志和输出目录；启动后仅作短连接只读监控，不保留SSH会话。
+
+### 9.3实际启动结果
+
+2026-07-15 20:13:07+08:00启动成功。launcher与GPU worker是父子进程，因此PID分别记录：
+
+|FFT权重|GPU|launcher PID|GPU worker PID|启动显存|日志|
+|---:|---:|---:|---:|---:|---|
+|0.5|0|1773278|1773312|582MiB|`logs/qknn_ground_effective8_fft_source_ablation_20260715_v15/w0p5.log`|
+|0.7|1|1773279|1773313|582MiB|`logs/qknn_ground_effective8_fft_source_ablation_20260715_v15/w0p7.log`|
+|1.0|2|1773280|1773314|582MiB|`logs/qknn_ground_effective8_fft_source_ablation_20260715_v15/w1p0.log`|
+|2.0|3|1773281|1773315|582MiB|`logs/qknn_ground_effective8_fft_source_ablation_20260715_v15/w2p0.log`|
+
+四份日志均已创建。启动初期只有`numpy.core._internal`弃用告警，没有Traceback、OOM或artifact缺失。启动复核后本地到N607及bridge的`ESTABLISHED`连接数为0。
+
+## 十、启动后历史对话复盘
+
+对话索引已于2026-07-15重新构建，共收录977条`E:\type10-7`相关记录。本轮重点复核了qKNNv42报告、V42 K×新类矩阵、V92 support anchor和Oracle硬化历史，并与当前对话逐条对照。
+
+### 10.1用户引导与当前落实状态
+
+|用户持续要求|历史含义|当前落实|仍需完成|
+|---|---|---|---|
+|以汇报形式讲清方法、输入、输出和效果|qKNN是ADV3B02之上的Stage2-C注册头，不是新backbone|本报告已分开方法、I/O、资源、历史结果和证据边界|实验完成后补同row结果表，不以单项最大值代替候选|
+|解释历史94.52/90.14/92.28与后续125运行差距|历史行叠加60epoch adapter、固定5-view、FFT96、场景/角色/配额信息，且切分、类数和seed不同|已降级为legacy diagnostic，禁止作为当前目标基线|新实验必须与strict direct/identity在同support/query上配对|
+|固定ADV3B02作为基底|不能切回CEN51、JREF、OPGAC等旧路线|checkpoint和SHA已固定；本次消融复用同一v14 adapter|真实性能表继续记录同一checkpoint SHA|
+|压缩60epoch adapt，只更新关键层|允许地面训练小模块，星上不做重backbone训练|effective8 rank16仅44,048参数、12epoch；目标层集中在`z_id/feat_joint`路径|修复physical-ID episode后重训8/12/16epoch对比|
+|多View是性能关键，改为低置信度自适应1→3→5|不能简单删除5-view，也不能固定5次forward|已实现margin＋std-LCB，forward≤3作为候选可行域；本轮禁用C=6绝对score门限|加入K1与最低类非退化约束后再锁TTA|
+|重点提升1-shot旧类适应，K=1明显优于direct ADV3B02|其他DA在1-shot常为负收益，qKNN必须给出正贡献|加入稳健原型、bounded Gram、identity三重保护；K1仍是第一排序目标|当前source旧证据仅约+0.404pp，离+2pp目标仍远；需FFT实测和无泄漏重训|
+|同时优化不同K的遗忘率|不能只报K10或平均H|source锁定同一head并输出K=1/5/10/20 identity对照|target确认矩阵尚未运行；需同rowforgetting ledger|
+|禁止角色Oracle与类别配额|逐样本面对全部注册类|runtime、报告和历史结果分级均已禁止|不得为提升性能重新引入old/new bias或query类别数|
+|理论分析ADV3B02哪些层最适合、损失如何设计|应从模型结构和旧类边界解释，不只扫epoch|effective8选择8个直接影响`z_id/feat_joint`的Linear；loss含identity/cosine/margin/relation/Gram/worst-K/view consistency|multi-view worst-K当前只是multi-rx surrogate，未完成三场景physical配组|
+|把重点放在qKNN性能，而非协议握手|满足项目底线即可|已先启动零新增参数的FFT性能消融；formal仍保持false|后续开发时间优先用于K1/floor/TTA/loss，不扩展非必要合同|
+
+### 10.2复盘发现的未闭合技术项
+
+1. 新增multi-view worst-K loss尚未接收physical ID。同一物理样本的不同场景副本在全局shuffle后可能分落support/query，形成虚假近邻；因此本次没有用新loss重训。下一版必须按physical ID分组并排除同源query，且报告措辞改为`multi-rx-view surrogate`，直到真实三场景配组完成。
+2. `consensus67`在3-view leave-one-out时每折只剩2-view，与mean等价，现有source锁参无法真正选择它。应改为完整3-view建头、episode外独立source physical query评分。
+3. TTA虽已把forward上限纳入可行域，但尚未把K1准确率、K1最低类以及其余K非退化作为候选硬约束。仅拼接四个K最大化总体准确率仍可能牺牲K1。
+4. FFT权重目前只贯通source validator。若0.5/0.7/1.0胜出，还需把权重封存进candidate lock，并由正式benchmark从lock读取，不能直接改一个全局常量后声称promotion。
+5. 6个TTA float32门限应统一按24B统计；candidate capsule与本报告已修正，但旧training/benchmark资源字段仍有12B残留，需要在下一性能提交顺手统一。
+
+这些项都直接影响qKNN性能结论或K1可信度，优先级高于新增数据协议握手。
