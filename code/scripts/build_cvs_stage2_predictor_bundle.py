@@ -225,6 +225,30 @@ def _reject_predictor_truth_leaks(root: Path, forbidden_values: Iterable[str]) -
             # A byte substring match is not evidence of query-truth reachability; the
             # generated support/query members are audited structurally and scanned below.
             continue
+        if path.suffix == ".npz":
+            # Scan only semantic text surfaces.  Raw byte scanning of numeric IQ is
+            # unsound for short transmitter labels such as ``1-8``: arbitrary
+            # float32 payload bytes can contain those three ASCII bytes by chance.
+            # The numeric members remain constrained by the NPZ member allowlist,
+            # per-member/package hashes, the detached seal, and runtime access audit.
+            with np.load(path, allow_pickle=False) as archive:
+                for member_name in archive.files:
+                    member = np.asarray(archive[member_name])
+                    if member.dtype.kind not in {"S", "U"}:
+                        continue
+                    for value in member.reshape(-1).tolist():
+                        payload = (
+                            bytes(value)
+                            if isinstance(value, bytes)
+                            else str(value).encode("utf-8")
+                        )
+                        for needle in needles:
+                            if needle in payload:
+                                raise ValueError(
+                                    "predictor package contains forbidden truth/role "
+                                    f"token in {path.name}:{member_name}"
+                                )
+            continue
         payload = path.read_bytes()
         for needle in needles:
             if needle in payload:

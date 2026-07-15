@@ -379,7 +379,9 @@ K10使注册前adapt由K1的64.44%提高到76.94%，并从低于direct 5.83pp转
 
 | ID | Source section | Requirement | Target files | Status | Verification | Notes |
 |---|---|---|---|---|---|---|
-| TR-1 | `项目.md`与根`AGENTS.md`的no-query-truth/no-role-Oracle边界 | predictor的query包不得包含真实TX、old/new/unknown role、query quota或可回流真值 | `code/scripts/build_cvs_stage2_predictor_bundle.py`、predictor bundle测试 | pending | 结构化枚举NPZ成员、字符串数组、manifest和opaque token；构造真泄漏负例 | 不得以“完成矩阵”为由放宽协议 |
-| TR-2 | Phase2 sealed input package与pre-open验证 | 避免把数值IQ/ZIP随机字节中对短TX标签的偶然命中误判为结构化真值泄漏，同时保持JSON/字符串/token门禁 | 同上 | pending | 复现new20失败；新增数值payload短标签碰撞正例与结构化字符串泄漏负例；本地`ssr-gpu`测试 | 先证明是二进制误报后才修改 |
+| TR-1 | `项目.md`与根`AGENTS.md`的no-query-truth/no-role-Oracle边界 | predictor的query包不得包含真实TX、old/new/unknown role、query quota或可回流真值 | `code/scripts/build_cvs_stage2_predictor_bundle.py`、predictor bundle测试 | verified | 结构化枚举NPZ字符串数组、manifest和opaque token；真实`query_tokens`泄漏负例继续被拒绝；26项密封/package/authority测试通过 | 未放宽结构化文本、JSON、seal或成员白名单门禁 |
+| TR-2 | Phase2 sealed input package与pre-open验证 | 避免把数值IQ/ZIP随机字节中对短TX标签的偶然命中误判为结构化真值泄漏，同时保持JSON/字符串/token门禁 | 同上 | verified | 4个实际失败NPZ的raw命中仅位于`float32`IQ成员，字符串字段0命中；修复后实际文件回归PASS | 数值成员仍受NPZ allowlist、member/package SHA、detached seal和runtime audit约束 |
 | TR-3 | 本地优先、Git、SCP和不可覆盖 | 修复必须本地提交、验证后同步；v12 partial evidence不得覆盖或原地续跑 | 代码、测试、报告、新运行根/计划 | pending | `git diff --check`、focused pytest、远端SHA、全新根存在性检查 | v12保持失败证据 |
-| TR-4 | 125任务诉求与当前严格25/75/300/900计划 | 只有全部300 cells/900 rows完成并通过protocol receipts才可聚合性能 | 新run states、receipts、本报告 | blocked | 8/8 shard complete、300 cell receipts、900同row formal rows、完整driver日志 | 当前被TR-1/TR-2阻塞 |
+| TR-4 | 125任务诉求与当前严格25/75/300/900计划 | 只有全部300 cells/900 rows完成并通过protocol receipts才可聚合性能 | 新run states、receipts、本报告 | blocked | 8/8 shard complete、300 cell receipts、900同row formal rows、完整driver日志 | 等待TR-3同步与全新运行根完成 |
+
+结构化审计定位的4个raw命中分别为：shard2的`query_leo_weak_iq.npy`中`2-5`、shard3/4的同一数值成员中`1-8`、shard6的`support_pool_leo_weak_iq.npy`中`8-3`；相应NPZ全部字符串数组均无任何old/new role或TX标签。修复仅把`.npz`扫描从整包随机字节改为`S/U`文本成员扫描；其他文件仍逐字节扫描。`py_compile`通过，`ssr-gpu`下26项build/bundle/sealed pipeline/strict package/plan authority/CLI测试通过，4个实际失败NPZ回传后由修复代码复扫为PASS。TR-3仍须在Git提交、远端SHA核验和全新运行根落地后才能验证。
