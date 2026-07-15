@@ -56,6 +56,6 @@
   "raw_iq_contract": "exact_post_channel_single_view_support_only_multiview_score_distillation",
   "raw_iq_input_len": 4800,
   "support_adapter_view_policy": "rx_shift_pair_cycle_5slots_3unique_receive_views",
-  "query_tta_policy": "adaptive_rx_light5_1to3to5",
+  "query_tta_policy": "lazy_adaptive_rx_light5_base_default_1to3to5",
   "query_tta_max_backbone_forwards": 5
 }

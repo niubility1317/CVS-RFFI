@@ -5,6 +5,7 @@ import numpy as np
 from paper_reproduction.cvs_aligned.adaptive_rxlight_tta import (
     AdaptiveTTAThresholds,
     apply_adaptive_rxlight_tta,
+    apply_adaptive_rxlight_tta_lazy,
     calibrate_adaptive_rxlight_tta,
 )
 
@@ -53,6 +54,41 @@ def test_gate_is_invariant_to_other_query_rows() -> None:
     np.testing.assert_array_equal(
         original["view_budgets"], augmented["view_budgets"][: len(scores)]
     )
+
+
+def test_lazy_gate_requests_extra_views_only_for_low_confidence_rows() -> None:
+    scores, _ = _scores()
+    requested: dict[str, list[int]] = {}
+
+    def shifts(indices: np.ndarray) -> np.ndarray:
+        requested["shift"] = indices.tolist()
+        return scores[indices, 1:3]
+
+    def cfo(indices: np.ndarray) -> np.ndarray:
+        requested["cfo"] = indices.tolist()
+        return scores[indices, 3:5]
+
+    thresholds = AdaptiveTTAThresholds(1.0, 0.5, 0.0)
+    eager = apply_adaptive_rxlight_tta(scores, thresholds)
+    lazy = apply_adaptive_rxlight_tta_lazy(scores[:, 0], shifts, cfo, thresholds)
+    assert requested == {"shift": [1, 2], "cfo": [2]}
+    assert lazy["shift_rows_requested"] == 2
+    assert lazy["cfo_rows_requested"] == 1
+    np.testing.assert_array_equal(lazy["view_budgets"], [1, 3, 5])
+    np.testing.assert_array_equal(lazy["predictions"], eager["predictions"])
+    np.testing.assert_allclose(lazy["scores"], eager["scores"], atol=1.0e-7)
+
+
+def test_lazy_gate_does_not_call_providers_when_base_is_confident() -> None:
+    scores, _ = _scores()
+
+    def forbidden(_: np.ndarray) -> np.ndarray:
+        raise AssertionError("extra-view provider must not run")
+
+    result = apply_adaptive_rxlight_tta_lazy(
+        scores[:1, 0], forbidden, forbidden, AdaptiveTTAThresholds(1.0, 0.5, 0.0)
+    )
+    assert result["view_budgets"].tolist() == [1]
 
 
 def test_calibration_uses_labels_only_on_allowed_calibration_rows() -> None:

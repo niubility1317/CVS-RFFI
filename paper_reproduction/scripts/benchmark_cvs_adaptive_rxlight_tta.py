@@ -39,6 +39,7 @@ from export_spaceborne_features import (
 from paper_reproduction.cvs_aligned.adaptive_rxlight_tta import (
     RX_LIGHT5_ORDER,
     apply_adaptive_rxlight_tta,
+    apply_adaptive_rxlight_tta_lazy,
     calibrate_adaptive_rxlight_tta,
 )
 from paper_reproduction.cvs_aligned.cvs_method_runner import SCENARIOS, _select_split
@@ -349,16 +350,17 @@ def leave_one_out_support_scores(
 
 
 @torch.no_grad()
-def extract_joint_rxlight5(
+def extract_joint_rxlight_views(
     model: torch.nn.Module,
     raw_iq: np.ndarray,
     *,
+    view_names: Sequence[str],
     batch_size: int,
     device: torch.device,
     fft_dim: int = 96,
     fft_weight: float = 2.0,
 ) -> tuple[np.ndarray, dict[str, Any]]:
-    """Extract same-view ADV3B02+FFT features for exact rx_light5."""
+    """Extract only the requested same-view ADV3B02+FFT receive features."""
 
     rows = _numpy_to_tensor_compat(
         raw_iq,
@@ -369,10 +371,17 @@ def extract_joint_rxlight5(
     names = tuple(name for name, _ in generated)
     if names != RX_LIGHT5_ORDER:
         raise ValueError(f"rx_light5 definition drift: {names} != {RX_LIGHT5_ORDER}")
+    requested = tuple(str(value) for value in view_names)
+    if not requested or len(set(requested)) != len(requested):
+        raise ValueError("view_names must be nonempty and unique")
+    if any(name not in RX_LIGHT5_ORDER for name in requested):
+        raise ValueError(f"view_names are outside rx_light5: {requested}")
+    generated_by_name = {name: value for name, value in generated}
     outputs: list[np.ndarray] = []
     timings: dict[str, float] = {}
     model.eval()
-    for name, view_rows in generated:
+    for name in requested:
+        view_rows = generated_by_name[name]
         started = time.perf_counter()
         primary_parts: list[np.ndarray] = []
         for start in range(0, int(view_rows.shape[0]), int(batch_size)):
@@ -393,12 +402,55 @@ def extract_joint_rxlight5(
         )
         timings[name] = float(time.perf_counter() - started)
     return np.stack(outputs).astype(np.float32), {
-        "view_names": list(names),
+        "view_names": list(requested),
         "physical_rows": int(len(raw_iq)),
         "joint_feature_dim": int(outputs[0].shape[1]),
         "seconds_by_view": timings,
         "total_seconds": float(sum(timings.values())),
     }
+
+
+def extract_joint_rxlight5(
+    model: torch.nn.Module,
+    raw_iq: np.ndarray,
+    *,
+    batch_size: int,
+    device: torch.device,
+    fft_dim: int = 96,
+    fft_weight: float = 2.0,
+) -> tuple[np.ndarray, dict[str, Any]]:
+    """Extract all five views for support calibration or offline upper bounds."""
+
+    return extract_joint_rxlight_views(
+        model,
+        raw_iq,
+        view_names=RX_LIGHT5_ORDER,
+        batch_size=int(batch_size),
+        device=device,
+        fft_dim=int(fft_dim),
+        fft_weight=float(fft_weight),
+    )
+
+
+def score_named_views(
+    features: np.ndarray,
+    prototypes: np.ndarray,
+    *,
+    view_indices: Sequence[int],
+) -> np.ndarray:
+    """Score an explicitly requested subset of matching prototype banks."""
+
+    rows = np.asarray(features, dtype=np.float32)
+    banks = np.asarray(prototypes, dtype=np.float32)
+    indices = tuple(int(value) for value in view_indices)
+    if rows.ndim != 3 or len(rows) != len(indices):
+        raise ValueError("features must have shape [requested_views,N,D]")
+    if banks.ndim != 3 or banks.shape[0] != 5:
+        raise ValueError("prototypes must have shape [5,C,D]")
+    return np.stack(
+        [_norm(rows[local]) @ _norm(banks[view]).T for local, view in enumerate(indices)],
+        axis=1,
+    ).astype(np.float32)
 
 
 def _split_indices(
@@ -599,41 +651,21 @@ def main(argv: Sequence[str] | None = None) -> int:
             raise ValueError(f"raw-IQ cache is missing raw_iq: {raw_path}")
         support_idx, query_idx = _split_indices(arrays, config, scenario)
         selected_idx = support_idx + query_idx
-        selected_features, extract = extract_joint_rxlight5(
+        support_features, support_extract = extract_joint_rxlight5(
             model,
-            arrays["raw_iq"][selected_idx],
+            arrays["raw_iq"][support_idx],
             batch_size=int(args.batch_size),
             device=device,
         )
-        support_count = len(support_idx)
-        support_features = selected_features[:, :support_count]
-        query_features = selected_features[:, support_count:]
         support_y = arrays["tx_ids"][support_idx].astype(str)
         truth = arrays["tx_ids"][query_idx].astype(str)
         roles = arrays["dataset_role"][query_idx].astype(str)
         prototypes = build_view_prototypes(support_features, support_y, classes)
-        query_scores = score_views(query_features, prototypes)
         loo_scores = leave_one_out_support_scores(support_features, support_y, classes)
         calibration_scores.append(loo_scores)
         calibration_labels.append(
             np.asarray([class_to_index[label] for label in support_y], dtype=np.int64)
         )
-        reference_path = None
-        if reference_config is not None:
-            reference_path = Path(reference_config["feature_npz_by_scenario"][scenario])
-        parity_audit[scenario] = _reference_parity(
-            reference_path, arrays, selected_idx, selected_features[0]
-        )
-        if parity_audit[scenario]["checked"]:
-            if (
-                float(parity_audit[scenario]["mean_cosine"]) < 0.9999
-                or float(parity_audit[scenario]["min_cosine"]) < 0.999
-            ):
-                raise ValueError(
-                    "deployed FP16 delta base-view extraction does not reproduce "
-                    f"the registered adapted cache for {scenario}: "
-                    f"{parity_audit[scenario]}"
-                )
         protocol_audit[scenario] = {
             "raw_cache": str(raw_path),
             "raw_cache_sha256": _sha256_file(raw_path),
@@ -646,12 +678,21 @@ def main(argv: Sequence[str] | None = None) -> int:
             "support_roles": sorted(set(arrays["dataset_role"][support_idx].astype(str).tolist())),
             "query_roles": sorted(set(roles.tolist())),
         }
-        extraction_audit[scenario] = extract
         scenario_payloads[scenario] = {
-            "scores": query_scores,
+            "arrays": arrays,
+            "selected_idx": selected_idx,
+            "support_features": support_features,
+            "support_extract": support_extract,
+            "prototypes": prototypes,
+            "query_raw_iq": arrays["raw_iq"][query_idx],
             "truth": truth,
             "roles": roles,
             "query_ids": [_sample_id(arrays, i) for i in query_idx],
+            "reference_path": (
+                Path(reference_config["feature_npz_by_scenario"][scenario])
+                if reference_config is not None
+                else None
+            ),
         }
 
     calibration = calibrate_adaptive_rxlight_tta(
@@ -663,6 +704,101 @@ def main(argv: Sequence[str] | None = None) -> int:
         max_accuracy_drop_pp=float(args.max_accuracy_drop_pp),
     )
     thresholds = calibration["selected"]["thresholds"]
+    for scenario, payload in scenario_payloads.items():
+        prototypes = payload["prototypes"]
+        raw_query = payload["query_raw_iq"]
+        base_features, base_extract = extract_joint_rxlight_views(
+            model,
+            raw_query,
+            view_names=(RX_LIGHT5_ORDER[0],),
+            batch_size=int(args.batch_size),
+            device=device,
+        )
+        base_scores = score_named_views(
+            base_features, prototypes, view_indices=(0,)
+        )[:, 0, :]
+        lazy_extract: dict[str, Any] = {"base": base_extract}
+
+        def shift_provider(indices: np.ndarray) -> np.ndarray:
+            features, audit = extract_joint_rxlight_views(
+                model,
+                raw_query[indices],
+                view_names=RX_LIGHT5_ORDER[1:3],
+                batch_size=int(args.batch_size),
+                device=device,
+            )
+            lazy_extract["shift_pair"] = audit
+            return score_named_views(features, prototypes, view_indices=(1, 2))
+
+        def cfo_provider(indices: np.ndarray) -> np.ndarray:
+            features, audit = extract_joint_rxlight_views(
+                model,
+                raw_query[indices],
+                view_names=RX_LIGHT5_ORDER[3:5],
+                batch_size=int(args.batch_size),
+                device=device,
+            )
+            lazy_extract["cfo_pair"] = audit
+            return score_named_views(features, prototypes, view_indices=(3, 4))
+
+        adaptive = apply_adaptive_rxlight_tta_lazy(
+            base_scores, shift_provider, cfo_provider, thresholds
+        )
+        full_query_features, full_extract = extract_joint_rxlight5(
+            model,
+            raw_query,
+            batch_size=int(args.batch_size),
+            device=device,
+        )
+        query_scores = score_views(full_query_features, prototypes)
+        eager_check = apply_adaptive_rxlight_tta(query_scores, thresholds)
+        if not np.array_equal(
+            adaptive["view_budgets"], eager_check["view_budgets"]
+        ) or not np.array_equal(adaptive["predictions"], eager_check["predictions"]):
+            raise ValueError(
+                f"lazy/eager adaptive TTA parity failed for {scenario}"
+            )
+        generated_base = np.concatenate(
+            [payload["support_features"][0], full_query_features[0]], axis=0
+        )
+        parity_audit[scenario] = _reference_parity(
+            payload["reference_path"],
+            payload["arrays"],
+            payload["selected_idx"],
+            generated_base,
+        )
+        if parity_audit[scenario]["checked"] and (
+            float(parity_audit[scenario]["mean_cosine"]) < 0.9999
+            or float(parity_audit[scenario]["min_cosine"]) < 0.999
+        ):
+            raise ValueError(
+                "deployed adapter base-view extraction does not reproduce "
+                f"the registered adapted cache for {scenario}: "
+                f"{parity_audit[scenario]}"
+            )
+        query_count = int(len(raw_query))
+        shift_count = int(adaptive["shift_rows_requested"])
+        cfo_count = int(adaptive["cfo_rows_requested"])
+        extraction_audit[scenario] = {
+            "support_full5_calibration": payload["support_extract"],
+            "deployed_adaptive_lazy": {
+                **lazy_extract,
+                "query_rows": query_count,
+                "shift_rows_requested": shift_count,
+                "cfo_rows_requested": cfo_count,
+                "actual_backbone_forward_rows": int(
+                    query_count + 2 * shift_count + 2 * cfo_count
+                ),
+                "mean_backbone_forwards": float(
+                    adaptive["mean_backbone_forwards"]
+                ),
+            },
+            "offline_fixed5_upper_bound_only": full_extract,
+            "lazy_eager_prediction_parity": True,
+        }
+        payload["scores"] = query_scores
+        payload["adaptive"] = adaptive
+
     rows: list[dict[str, Any]] = []
     per_class_rows: list[dict[str, Any]] = []
     prediction_rows: list[dict[str, Any]] = []
@@ -679,7 +815,7 @@ def main(argv: Sequence[str] | None = None) -> int:
             "fixed3": np.argmax(scores[:, :3].mean(axis=1), axis=1),
             "fixed5": np.argmax(scores.mean(axis=1), axis=1),
         }
-        adaptive = apply_adaptive_rxlight_tta(scores, thresholds)
+        adaptive = payload["adaptive"]
         fixed_indices["adaptive1to3to5"] = adaptive["predictions"]
         for method_name, indices in fixed_indices.items():
             predicted = np.asarray(classes, dtype=object)[indices].astype(str)
@@ -761,6 +897,10 @@ def main(argv: Sequence[str] | None = None) -> int:
     manifest = {
         "method": "support_prototype_adaptive_rxlight5_v1",
         "stage": "Stage2-C_recovery_diagnostic",
+        "deployment_default": "lazy_adaptive_1to3to5",
+        "base_view_is_default": True,
+        "extra_views_requested_only_after_low_confidence": True,
+        "fixed5_is_offline_upper_bound_only": True,
         "decision_rule": "per_sample_argmax_view_score_mean",
         "view_prototype_rule": "matching_view_support_prototype",
         "calibration": calibration,
