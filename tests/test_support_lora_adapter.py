@@ -7,6 +7,7 @@ from paper_reproduction.scripts.train_export_cvs_support_lora_adapter import (
     EFFECTIVE_FEATURE_LORA_TARGETS,
     LATE_FILM_TARGETS,
     FULL_FEATURE_LORA_TARGETS,
+    PROJECTION_LORA_TARGETS,
     LORA_TARGETS,
     ChannelAffineLinear,
     LATE_KEY_FT_TARGETS,
@@ -140,6 +141,20 @@ def test_effective_feature_rank16_removes_dead_branches_and_stays_preferred() ->
     assert modules == list(EFFECTIVE_FEATURE_LORA_TARGETS)
     assert "id_backbone.con_proj.0" not in modules
     assert "id_backbone.cls_head.imp_merge.0" not in modules
+
+
+def test_projection_feature_rank16_updates_only_four_pooled_projection_layers() -> None:
+    model = _Model()
+    audit = inject_feat_joint_lora(
+        model, rank=16, alpha=16.0, scope="projection_feature"
+    )
+    assert audit["trainable_parameters"] == 18_448
+    assert audit["adapter_state_bytes_fp16"] == 36_896
+    assert audit["adapter_macs_per_query"] == 18_448
+    assert audit["scope"] == "projection_feature"
+    assert [row["module"] for row in audit["target_modules"]] == list(
+        PROJECTION_LORA_TARGETS
+    )
 
 
 def test_lora_merge_removes_wrappers_and_preserves_outputs() -> None:

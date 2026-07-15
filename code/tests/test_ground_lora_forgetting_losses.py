@@ -22,6 +22,7 @@ from train_apply_phase1_iq_preadapter_20260703 import (
     _make_source_loader,
     _validate_source_only_ground_lora_mode,
     nested_k_worst_prototype_risk,
+    parse_args,
     prototype_gram_deconfusion_loss,
     relation_gram_preservation_loss,
 )
@@ -248,3 +249,49 @@ def test_nested_k_risk_consumes_registered_views_without_counting_extra_shots() 
     risk.backward()
     assert views.grad is not None
     assert torch.isfinite(views.grad).all()
+
+
+def test_nested_k_risk_excludes_all_scenario_replicas_of_support_physical_id() -> None:
+    features = torch.tensor(
+        [
+            [1.0, 0.0],
+            [1.0, 0.0],
+            [0.0, 1.0],
+            [0.0, 1.0],
+            [0.0, 1.0],
+            [1.0, 0.0],
+        ],
+        requires_grad=True,
+    )
+    labels = torch.tensor([0, 0, 0, 1, 1, 1])
+    physical_ids = ["c0-a", "c0-a", "c0-b", "c1-a", "c1-a", "c1-b"]
+    guarded, by_k = nested_k_worst_prototype_risk(
+        features,
+        labels,
+        physical_ids=physical_ids,
+        k_values=(1,),
+    )
+    leaky, _ = nested_k_worst_prototype_risk(
+        features,
+        labels,
+        k_values=(1,),
+    )
+    assert set(by_k) == {1}
+    assert float(guarded.detach()) > float(leaky.detach())
+    guarded.backward()
+    assert features.grad is not None
+    assert torch.isfinite(features.grad).all()
+
+
+def test_formal_ground_lora_parser_exposes_layer_group_ablation() -> None:
+    args = parse_args(
+        [
+            "--ckpt",
+            "checkpoint.pth",
+            "--runs_root",
+            "runs",
+            "--lora_effective_scope",
+            "projection_feature",
+        ]
+    )
+    assert args.lora_effective_scope == "projection_feature"

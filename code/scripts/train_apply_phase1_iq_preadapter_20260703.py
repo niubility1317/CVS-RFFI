@@ -525,17 +525,20 @@ def nested_k_worst_prototype_risk(
     features: torch.Tensor,
     labels: torch.Tensor,
     *,
+    physical_ids: Sequence[Any] | None = None,
     k_values: Sequence[int] = (1, 2, 5, 10, 20),
     temperature: float = 0.07,
     risk_tau: float = 0.2,
 ) -> tuple[torch.Tensor, dict[int, torch.Tensor]]:
-    """Source-only deployment-matched multi-view nested-K risk.
+    """Source-only multi-RX-view surrogate nested-K risk.
 
     ``features`` may be ``[N,D]`` or ``[V,N,D]``.  In the multi-view form,
     registered views of one physical support sample contribute to the same
     class prototype, while held-out query views are supervised separately.
-    This matches the deployed qKNN observation model without treating receive
-    views as extra physical shots.
+    Receive views are not counted as extra physical shots.  When the shuffled
+    source cache contains multiple LEO-scenario rows for one physical sample,
+    ``physical_ids`` makes support selection unique by physical sample and
+    removes every matching scenario replica from the query set.
     """
 
     if labels.ndim != 1 or features.ndim not in (2, 3):
@@ -548,30 +551,71 @@ def nested_k_worst_prototype_risk(
         if features.shape[1] != len(labels):
             raise ValueError("nested-K multi-view sample and label rows must align")
         normalized = F.normalize(features.float(), dim=2)
+    if physical_ids is None:
+        physical_tokens = tuple(str(index) for index in range(len(labels)))
+    else:
+        physical_tokens = tuple(str(value) for value in physical_ids)
+        if len(physical_tokens) != len(labels):
+            raise ValueError("physical_ids must align with the sample axis")
     class_ids = torch.unique(labels, sorted=True)
     losses: dict[int, torch.Tensor] = {}
     for raw_k in k_values:
         k = int(raw_k)
         if k < 1:
             raise ValueError("nested-K values must be positive")
-        if any(
-            int(torch.sum(labels == class_id).item()) <= k
+        positions_by_class = {
+            int(class_id.item()): torch.nonzero(
+                labels == class_id, as_tuple=False
+            ).reshape(-1)
             for class_id in class_ids
-        ):
+        }
+        unique_count_by_class = {
+            class_id: len(
+                {
+                    physical_tokens[int(position)]
+                    for position in positions.detach().cpu().tolist()
+                }
+            )
+            for class_id, positions in positions_by_class.items()
+        }
+        if any(count <= k for count in unique_count_by_class.values()):
             continue
         support_prototypes = []
         query_rows = []
         query_targets = []
         for local_class, class_id in enumerate(class_ids):
-            positions = torch.nonzero(labels == class_id, as_tuple=False).reshape(-1)
-            support_count = k
+            positions = positions_by_class[int(class_id.item())]
+            support_position_values: list[int] = []
+            support_physical_ids: set[str] = set()
+            for position in positions.detach().cpu().tolist():
+                token = physical_tokens[int(position)]
+                if token in support_physical_ids:
+                    continue
+                support_position_values.append(int(position))
+                support_physical_ids.add(token)
+                if len(support_position_values) == k:
+                    break
+            support_positions = torch.as_tensor(
+                support_position_values,
+                dtype=torch.long,
+                device=labels.device,
+            )
             support_prototypes.append(
                 F.normalize(
-                    normalized[:, positions[:support_count], :].mean(dim=(0, 1)),
+                    normalized[:, support_positions, :].mean(dim=(0, 1)),
                     dim=0,
                 )
             )
-            remaining = positions[support_count:]
+            remaining_values = [
+                int(position)
+                for position in positions.detach().cpu().tolist()
+                if physical_tokens[int(position)] not in support_physical_ids
+            ]
+            remaining = torch.as_tensor(
+                remaining_values,
+                dtype=torch.long,
+                device=labels.device,
+            )
             if len(remaining):
                 query_rows.append(
                     normalized[:, remaining, :].reshape(-1, normalized.shape[-1])
@@ -853,11 +897,16 @@ def train_adapter(
             raise ValueError(
                 f"ground source {model_adapter_mode} epochs must be in [1,{epoch_cap}]"
             )
+        lora_scope = (
+            str(args.lora_effective_scope)
+            if model_adapter_mode == "lora_effective_feature"
+            else lora_scope_by_mode[model_adapter_mode]
+        )
         model_adapter = inject_feat_joint_lora(
             model,
             rank=int(args.lora_rank),
             alpha=float(args.lora_alpha),
-            scope=lora_scope_by_mode[model_adapter_mode],
+            scope=lora_scope,
         )
         model_adapter["mode"] = model_adapter_mode
         model_adapter["ground_training_only"] = True
@@ -1024,6 +1073,9 @@ def train_adapter(
             worst_k, nested_k_losses = nested_k_worst_prototype_risk(
                 nested_risk_features,
                 y,
+                physical_ids=(
+                    meta.get("sample_id") if formal_effective else None
+                ),
                 k_values=nested_k_values,
                 temperature=float(args.worst_k_proto_temperature),
                 risk_tau=float(args.worst_k_tau),
@@ -1173,10 +1225,11 @@ def train_adapter(
             "worst_k_risk": float(args.worst_k_risk_weight),
             "worst_k_values": list(nested_k_values),
             "worst_k_feature_layout": (
-                "registered_view_by_physical_sample"
+                "multi_rx_view_surrogate_with_physical_id_exclusion"
                 if formal_effective
                 else "single_representative_view"
             ),
+            "worst_k_cross_scenario_registered_pairing": False,
             "worst_k_tau": float(args.worst_k_tau),
             "worst_k_proto_temperature": float(args.worst_k_proto_temperature),
             "residual": float(args.residual_weight),
@@ -1195,7 +1248,7 @@ def _write_ground_lora_state_and_manifest(
     model_adapter_mode = str(args.model_adapter_mode).strip().lower()
     scope_by_mode = {
         "lora_full_feature": "full_feature",
-        "lora_effective_feature": "effective_feature",
+        "lora_effective_feature": str(args.lora_effective_scope),
     }
     if model_adapter_mode not in scope_by_mode:
         return {}
@@ -1999,6 +2052,17 @@ def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
     )
     p.add_argument("--lora_rank", type=int, default=12)
     p.add_argument("--lora_alpha", type=float, default=12.0)
+    p.add_argument(
+        "--lora_effective_scope",
+        choices=("projection_feature", "feat_joint", "effective_feature"),
+        default="effective_feature",
+        help=(
+            "source-only ADV3B02 layer group for formal lora_effective_feature "
+            "adaptation; projection_feature updates the four pooled projection "
+            "layers, feat_joint updates the four final identity feature-head "
+            "layers, and effective_feature updates both groups"
+        ),
+    )
     p.add_argument(
         "--adapter_state_out",
         default="",

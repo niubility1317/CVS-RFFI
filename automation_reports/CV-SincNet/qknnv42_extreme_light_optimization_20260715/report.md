@@ -310,3 +310,41 @@ bash paper_reproduction/scripts/launch_cvs_ground_lora_fft_ablation_v15.sh
 3. source选择最终退回identity mean head，说明当前`consensus67/partial Gram/uncertainty`组合没有形成稳健正收益。低权重分支选中的复杂head反而在某些K破坏identity非退化。
 4. 自适应View本身有持续小幅正收益，且平均forward仅1.21—1.38，证明“默认1-view＋低置信度追加View”方向成立；但当前TTA排序仍需显式加入K1 accuracy/floor约束。
 5. 下一轮不再继续扩大FFT权重网格。优先修复：完整3-view建头＋episode外query选择`consensus67`、按physical ID构建无泄漏multi-scenario训练episode、K1/floor受约束TTA。FFT权重暂锁2.0作为source基线，待新的head/loss独立消融后再判断target适用性。
+
+
+## 十二、当前优先级切换：ADV3B02 adapt关键层/损失消融
+
+用户已明确要求先把重点放在adapt，因此暂停继续扩大qKNN head、Gram和TTA门限搜索。现有证据表明，target support侧20epoch四层feature-head LoRA能显著改善单cell，但旧类floor仍仅约51.67%；扩大到late＋head、hard-class DRO和cross-view CE均无联合收益。下一轮先在source receiver holdout上回答“哪些层最值得更新、8epoch能否替代12/60epoch、K1保护损失是否有效”，再决定是否进入target support快速适配。
+
+### 12.1实现变化
+
+- formal ground LoRA新增三种可比较层组：
+  - `projection_feature`：`t_proj/f_proj/pa_proj.0/fuse.0`，rank16为18,448参数；
+  - `feat_joint`：`id_proj.0/pa_proj.0/id_gate.0/joint_proj.0`，rank16为25,600参数；
+  - `effective_feature`：上述8层，rank8为22,024参数、rank16为44,048参数。
+- 所有配置仍冻结ADV3B02原始参数与CosFace；LoRA恒等初始化，训练后可合并，星上持续query不增加MAC。
+- `nested_k_worst_prototype_risk`现按`sample_id`选择唯一物理support，并从query排除该物理样本的所有场景副本，消除同物理样本泄漏；当前仍准确表述为`multi_rx_view_surrogate`，不冒充完整三场景registered pairing。
+- 训练统一压到8epoch；相对历史60epoch减少86.7%，相对v14 12epoch再减少33.3%。
+
+本地`ssr-gpu`验证：两个脚本`py_compile`通过，support LoRA与ground forgetting定向测试34/34通过，`bash -n`及`git diff --check`通过。
+
+### 12.2预注册8路矩阵
+
+|候选|层组|rank|参数|epoch|损失profile|GPU|
+|---|---|---:|---:|---:|---|---:|
+|`p4_r16_e8_std`|前4投影层|16|18,448|8|v14保守权重|0|
+|`h4_r16_e8_std`|后4 feature-head层|16|25,600|8|v14保守权重|1|
+|`e8_r8_e8_std`|全部8层|8|22,024|8|v14保守权重|2|
+|`e8_r16_e8_std`|全部8层|16|44,048|8|v14保守权重|3|
+|`p4_r16_e8_k1`|前4投影层|16|18,448|8|K1边界保护增强|4|
+|`h4_r16_e8_k1`|后4 feature-head层|16|25,600|8|K1边界保护增强|5|
+|`e8_r8_e8_k1`|全部8层|8|22,024|8|K1边界保护增强|6|
+|`e8_r16_e8_k1`|全部8层|16|44,048|8|K1边界保护增强|7|
+
+保守profile沿用v14的relation/prototype-Gram/worst-K/multiview权重`0.5/0.25/0.5/0.25`。K1增强profile为`1.0/0.5/1.0/0.5`，同LEO teacher anchor仍保持22，reference margin由7.5提高到10，避免以放松旧边界换取表面K1收益。两种profile均固定FFT96权重2.0，不读target、query、clean、old/new角色或类别配额。
+
+实验ID：`qknn_ground_adapt_layer_loss_ablation_20260715_v16`。远端输出根为`runs/qknn_ground_adapt_layer_loss_ablation_20260715_v16/`，日志根为`logs/qknn_ground_adapt_layer_loss_ablation_20260715_v16/`。启动脚本为`paper_reproduction/scripts/launch_cvs_ground_lora_adapt_ablation_v16.sh`。每路依次执行source-only训练与同一receiver holdout验证；主排序先看K1 fixed1/adaptive准确率和最低类，再检查K=5/10/20不退化与平均forward。该矩阵是source诊断，不是target达标声明。
+
+### 12.3下一target adapt候选
+
+若source层组消融证明final feature-head仍是有效位置，下一唯一target快速适配候选为`BP-JG-LoRA`：仅对合并后的ground model之`id_gate.0`和`joint_proj.0`注入rank8 LoRA，共6,400参数、FP16 delta 12,800B；统一5epoch，SGD无momentum，K1自然5步、K10自然50步。损失使用跨View prototype CE、全注册类margin不下降、feature anchor、prototype Gram保持/去混淆和轻量View一致性；所有项对全部注册类对称，不使用query、role或quota。该机制当前仅为待实现/待验证假设，不写成性能结论。

@@ -65,6 +65,13 @@ LATE_LORA_TARGETS = (
     *LORA_TARGETS,
 )
 
+PROJECTION_LORA_TARGETS = (
+    "id_backbone.t_proj",
+    "id_backbone.f_proj",
+    "id_backbone.pa_proj.0",
+    "id_backbone.fuse.0",
+)
+
 FULL_FEATURE_LORA_TARGETS = (
     "id_backbone.t_proj",
     "id_backbone.f_proj",
@@ -262,6 +269,8 @@ def inject_feat_joint_lora(
         target_names = FULL_FEATURE_LORA_TARGETS
     elif scope_norm == "effective_feature":
         target_names = EFFECTIVE_FEATURE_LORA_TARGETS
+    elif scope_norm == "projection_feature":
+        target_names = PROJECTION_LORA_TARGETS
     else:
         raise ValueError(f"unsupported LoRA scope: {scope}")
     for parameter in model.parameters():

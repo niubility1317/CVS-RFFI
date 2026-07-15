@@ -41,6 +41,10 @@
 
 当前性能实验顺序改为：FFT权重源域消融→部署匹配loss重训对比→K10 target开发→锁定后的K1/K5/K20确认。协议工作只维持正式结论所需的最低边界，不再占用主要优化周期。
 
+## 2026-07-15 adapt优先级增量
+
+FFT权重诊断已否定“降低FFT即可显著改善K1”的假设。当前性能顺序调整为：ground adapt层组/损失/epoch消融→锁定关键层→6,400参数BP-JG-LoRA target support快速适配→再恢复head与自适应View优化。formal ground LoRA新增`projection_feature`、`feat_joint`和`effective_feature`三种层组；nested worst-K已按physical ID排除support同源场景副本。预注册8路source-only矩阵统一8epoch、≤44,048参数，比较保守loss与K1边界增强loss，不读取target/query/clean、role或quota。该实现仅进入source诊断，target K1与正式准确率仍为blocked。
+
 完整定向回归为85/85通过；该数字覆盖算法与最低运行时合同，不构成真实性能结论。
 
 ## 当前证据边界
