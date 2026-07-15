@@ -65,7 +65,7 @@ TTA轻量化必须固定同一物理LEO观测、support/query、checkpoint和ada
 
 对任一target query，推理前不得假定其属于旧类、新类或未知类。Phase2/Phase3正式候选必须让每个query面对全部已注册类别及允许的reject/defer机制；禁止使用真实old/new/unknown角色、整批类别数量、每类quota、query排序/分块以及Hungarian或等价配额重排。历史role/quota Oracle artifact仅可标记为`PROTOCOL_INVALID_FOR_DEPLOYMENT`后封存，不得新生成、调参、排名、进入论文主表或形成部署声明。本禁令不影响Phase1源域半监督训练中的伪标签quota审计与采样平衡。
 
-多View压缩允许在地面使用严格`rx_light5`逐View监督训练不超过50k参数、最终状态不超过128KiB的小模块，也允许星上逐样本置信度门控的1→3→5-view自适应TTA。门限只能由source validation或注册support确定，禁止用query标签、query真实角色、整批类别比例、每类quota或Hungarian分配；正式结果必须报告平均/P95 backbone前向数和1/3/5-view触发率。仅蒸馏5-view均值或仍对所有query固定执行5次backbone前向，不能单独证明多View计算已经压缩。
+多View压缩允许在地面使用严格`rx_light5`逐View监督训练不超过50k参数、最终状态不超过256KB的小模块，也允许星上逐样本置信度门控的1→3→5-view自适应TTA。门限只能由source validation或注册support确定，禁止用query标签、query真实角色、整批类别比例、每类quota或Hungarian分配；正式结果必须报告平均/P95 backbone前向数和1/3/5-view触发率。仅蒸馏5-view均值或仍对所有query固定执行5次backbone前向，不能单独证明多View计算已经压缩。
 
 推荐`K`锚点为`{1,2,5,10,15,20,50}`。`K<=20`可称few-shot/low-shot；`K>20`应称higher-shot、medium-shot或saturation point。
 

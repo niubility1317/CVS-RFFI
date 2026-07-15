@@ -304,7 +304,7 @@ eval_sat_scenarios = leo_clear_weak,leo_low_elev_weak,leo_rain_weak
 
 自2026-07-14起，星上轻量化中的TTA视图数量属于同一简化LEO物理观测之后的接收侧推理机制，不构成新的信道场景，也不要求正式协议固定为5-view。允许在完全相同的物理样本、scenario、satellite seed、support/query划分、checkpoint和adapter下比较`none`、`rx_shift3`、`rx_cfo3`与`rx_light5`；其中各策略分别执行1、3、3、5次backbone前向及同数量的FFT辅助提取。不同TTA策略不得重新训练不同adapter、重新采样不同LEO扰动或混入clean view后再归因于view数量。正式晋升必须使用逐样本可部署决策，显式报告view count、backbone forward count、FFT count以及相对5-view的`old_acc`、`seen_new_acc`、`H_old_new`变化。历史legacy角色/类别配额Oracle只允许作为`PROTOCOL_INVALID_FOR_DEPLOYMENT`封存artifact，不得生成新候选或参与任何正式比较。
 
-自2026-07-15起，允许把`rx_light5`作为地面多View教师或星上逐样本自适应TTA候选进行压缩。地面蒸馏必须保留5个View的逐View特征、logit或一致性监督，不能只用5-view均值证明等价；可导出不超过50k参数、最终持久状态不超过128KiB的FiLM或稀疏关键层补丁。星上自适应TTA必须先执行base view，并只依据当前单个query的margin、entropy、View分歧等部署时可得量决定是否追加`rx_shift3`或完整`rx_light5`；门限只能由source validation或注册support确定，禁止使用query标签、真实old/new/unknown角色、整批类别比例、每类quota、query排序或Hungarian分配。正式结果必须同时报告平均与P95 backbone forward count、1/3/5-view触发率、最坏5-view上界和相同row的性能指标；若默认路径仍固定执行5次backbone前向，则不得声称已完成多View计算压缩。
+自2026-07-15起，允许把`rx_light5`作为地面多View教师或星上逐样本自适应TTA候选进行压缩。地面蒸馏必须保留5个View的逐View特征、logit或一致性监督，不能只用5-view均值证明等价；可导出不超过50k参数、最终持久状态不超过256KB的FiLM、低秩或稀疏关键层补丁。星上自适应TTA必须先执行base view，并只依据当前单个query的margin、entropy、View分歧等部署时可得量决定是否追加`rx_shift3`或完整`rx_light5`；门限只能由source validation或注册support确定，禁止使用query标签、真实old/new/unknown角色、整批类别比例、每类quota、query排序或Hungarian分配。正式结果必须同时报告平均与P95 backbone forward count、1/3/5-view触发率、最坏5-view上界和相同row的性能指标；若默认路径仍固定执行5次backbone前向，则不得声称已完成多View计算压缩。
 
 自2026-07-13起，CVS与外部方法的正式对比实验中，所有进入论文主表、主图、统计检验或方法排序的测试样本都必须实际叠加上述简化LEO星地信道之一；不得把未叠加星地信道的clean测试混入正式主结果。clean只允许作为单独control/reference，必须与deployment-primary结果分表。若测试入口没有记录scenario、satellite seed或增强是否实际启用，该测试结果视为artifact-incomplete，不得形成论文结论。
 
