@@ -133,6 +133,13 @@ CLI：
 python -m pytest code/tests/test_phase2_runtime_contract.py tests/test_stage2_predictor_bundle.py tests/test_build_cvs_stage2_predictor_bundle.py tests/test_build_cvs_stage2_predictor_request.py tests/test_stage2_predictor_runtime.py tests/test_stage2_predictor_entry.py tests/test_stage2_prediction_artifact.py tests/test_run_cvs_stage2_predictor.py tests/test_stage2_metric_scorer.py tests/test_stage2_sealed_pipeline_integration.py tests/test_phase2_bwrap_policy.py tests/test_phase2_runtime_closure.py tests/test_phase2_isolated_runner.py tests/test_phase2_pre_run_evidence.py -q
 ```
 
+本轮Git实现状态：
+
+|commit|内容|
+|---|---|
+|`d244971`|落地blocked strict Phase2诊断流水线、密封预测产物、独立scorer、运行时闭包和117项测试|
+|`6c3383b`|关闭诊断证据误判、trace FD跨bwrap、外层strace setup噪声等审查问题；最终独立复核无Critical/Important|
+
 ## 七、矩阵边界与服务器状态
 
 按更新后的`项目.md`，一个formal cell同时绑定3个场景：
