@@ -5,7 +5,7 @@
 |实验ID|`qknn_ground_effective8_r16_e12_leoonly_20260715_v14`|
 |时间|2026-07-15 13:44 CST|
 |operator|Codex`/root`|
-|当前状态|`SOURCE_VALIDATION_PASS_CANDIDATE_LOCK_REPAIR5_LOCAL_VERIFIED`；target matrix未启动|
+|当前状态|`SOURCE_VALIDATION_PASS_REMOTE_REPAIR5_VERIFIED`；candidate lock恢复待启动，target matrix未启动|
 |基座模型|同一ADV3B02 checkpoint：`ADV3B02_CORE90_SOFT_E200/best_joint_safe_ssdg.pth`|
 |目标|在新版`LEO_weak-only`边界下，以≤50k参数、≤20epoch、≤256KB持久状态的极轻型适配器和逐样本1→3→5-view推理，完成5receiver×5seed×3场景×新类5/10/20×K=1/5/10/20正式确认|
 
@@ -225,3 +225,5 @@ source holdout明显低于正式target-old 92%/最低类88%门槛，但source pr
 repair5让未来validator同时显式写`clean_samples_used_for_validation=false`；candidate lock不再依赖该旧冗余字段，仍硬性要求两个权威clean不可达字段、密封cache SHA/audit、全部validation gates、权限、receiver holdout、无角色Oracle、无类别quota和source-only head/nested-K锁，因此没有放宽`LEO_weak-only`协议。现有已签名validation无需篡改或覆盖即可由权威字段进入lock。聚焦validator/candidate-lock测试17项通过，12组完整正式回归保持`107 passed`。
 
 最新用户目标把target-old门槛从95%调整为92%，并把Stage2-B纳入正式目标。按AGENTS规则先更新根`项目.md`10.3.1，再更新Git协议镜像`docs/cvs_stage2c_extreme_light_goal_20260714.md`，Git提交`f4dc1aa1fbdc`；根目录仍非Git，故该镜像是版本承载面。正式config、plan validator和summarizer现统一锁定`K10_OLD_TARGET=0.92`，其余最低类、新类、K5、K1和遗忘门槛不变。当前v14 plan必须在candidate lock恢复前重新生成并同步，旧0.95 plan不得继续用于正式汇总。
+
+repair5代码/门槛提交为`92513ba312eb`。远端覆盖前快照为`/home/szu2070436088/2510044040/CV-SincNet/code/snapshots/qknn_ground_effective8_r16_e12_leoonly_20260715_v14_repair5_before_sync_20260715_152451`，包含旧`项目.md`、Git协议镜像、config、validator/lock/plan/summarizer、report、旧protocol plan和candidate-lock失败证据。9个同步文件本地/远端SHA256逐项一致，远端4个脚本`py_compile`通过。repair5 plan仍精确覆盖2个source cache、25个target cache、300次benchmark和900条场景row；两份source规范化spec SHA与现有cache完全相等。runner state核对显示步骤0–3均为complete且命令逐项相同，步骤4为failed且命令相同，因此恢复只会重跑candidate lock。远端config与summarizer均读出K10 old target=`0.92`；target matrix仍未启动。
