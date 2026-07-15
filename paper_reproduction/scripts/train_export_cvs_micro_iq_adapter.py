@@ -34,6 +34,7 @@ for candidate in (str(REPO_ROOT), str(CODE_ROOT)):
 
 from cvsrffi.checkpoint_loading import build_exact_ssdg_model_from_checkpoint
 from cvsrffi.identity_only_forward import identity_only_feature_forward
+from cvsrffi.tensors import numpy_to_tensor_compat
 from eval_feature_diagnosis import collect_feature_dict
 from export_spaceborne_features import _rf_statistics_batch, _spectral_logmag_sketch_batch
 from paper_reproduction.cvs_aligned.cvs_method_runner import SCENARIOS, _sample_id, _select_split
@@ -85,10 +86,12 @@ def _numpy_to_tensor_compat(
     value: np.ndarray, *, numpy_dtype: np.dtype, torch_dtype: torch.dtype
 ) -> torch.Tensor:
     """Bridge NumPy 2.x to older PyTorch builds without torch.from_numpy."""
-    array = np.ascontiguousarray(value, dtype=numpy_dtype)
-    return torch.frombuffer(
-        memoryview(array), dtype=torch_dtype, count=int(array.size)
-    ).reshape(array.shape).clone()
+    return numpy_to_tensor_compat(
+        value,
+        numpy_dtype=numpy_dtype,
+        torch_dtype=torch_dtype,
+        copy=True,
+    )
 
 
 def _tensor_to_numpy_compat(value: torch.Tensor, *, dtype: np.dtype) -> np.ndarray:

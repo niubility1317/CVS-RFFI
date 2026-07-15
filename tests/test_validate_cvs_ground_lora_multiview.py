@@ -52,6 +52,7 @@ def test_formal_validator_source_has_no_runtime_raw_or_channel_entrypoint() -> N
         "_build_wisig_dataset",
         "raw_iq",
         "--wisig_pkl",
+        "torch.from_numpy",
     ):
         assert forbidden not in source
     for required in (
@@ -61,6 +62,7 @@ def test_formal_validator_source_has_no_runtime_raw_or_channel_entrypoint() -> N
         '"validation_input_stage": LEO_WEAK_CACHE_STAGE',
         '"source_leo_weak_cache_set_manifest_sha256"',
         '"source_leo_weak_cache_set_audit"',
+        "numpy_to_tensor_compat",
     ):
         assert required in source
 

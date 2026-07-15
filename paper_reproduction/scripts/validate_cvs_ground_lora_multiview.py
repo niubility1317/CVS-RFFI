@@ -45,6 +45,7 @@ from cvsrffi.leo_weak_cache import (  # noqa: E402
     load_verified_leo_weak_cache_set,
     sha256_file,
 )
+from cvsrffi.tensors import numpy_to_tensor_compat  # noqa: E402
 from export_spaceborne_features import (  # noqa: E402
     _satellite_tta_views,
     _spectral_logmag_sketch_batch,
@@ -285,7 +286,12 @@ def _joint_feature_tensor(
     joint = concatenate_registered_features(
         primary_np, fft, auxiliary_weight=float(fft_weight)
     )
-    return torch.from_numpy(joint).to(primary.device, dtype=torch.float32)
+    return numpy_to_tensor_compat(
+        joint,
+        numpy_dtype=np.dtype(np.float32),
+        torch_dtype=torch.float32,
+        copy=False,
+    ).to(primary.device, dtype=torch.float32)
 
 
 @torch.no_grad()
@@ -309,8 +315,18 @@ def _leo_source_prototypes(
         scenario_labels = np.asarray(arrays["raw_labels"], dtype=np.int64)[indices]
         for start in range(0, len(indices), int(batch_size)):
             stop = min(start + int(batch_size), len(indices))
-            x_leo = torch.from_numpy(scenario_iq[start:stop]).to(device)
-            y = torch.from_numpy(scenario_labels[start:stop]).to(device)
+            x_leo = numpy_to_tensor_compat(
+                scenario_iq[start:stop],
+                numpy_dtype=np.dtype(np.float32),
+                torch_dtype=torch.float32,
+                copy=False,
+            ).to(device)
+            y = numpy_to_tensor_compat(
+                scenario_labels[start:stop],
+                numpy_dtype=np.dtype(np.int64),
+                torch_dtype=torch.int64,
+                copy=False,
+            ).to(device)
             z, _ = _feature_forward(model, x_leo, "z_id")
             joint = _joint_feature_tensor(z, x_leo)
             features.append(F.normalize(joint.float(), dim=1))
@@ -354,7 +370,12 @@ def _heldout_scores(
         scenario_adapted_features: list[np.ndarray] = []
         for start in range(0, len(indices), int(batch_size)):
             stop = min(start + int(batch_size), len(indices))
-            x_leo = torch.from_numpy(scenario_iq[start:stop]).to(device)
+            x_leo = numpy_to_tensor_compat(
+                scenario_iq[start:stop],
+                numpy_dtype=np.dtype(np.float32),
+                torch_dtype=torch.float32,
+                copy=False,
+            ).to(device)
             views = _satellite_tta_views(x_leo, "rx_light5")
             names = tuple(name for name, _value in views)
             if view_names is None:

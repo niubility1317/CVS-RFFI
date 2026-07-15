@@ -5,7 +5,7 @@
 |实验ID|`qknn_ground_effective8_r16_e12_leoonly_20260715_v14`|
 |时间|2026-07-15 13:44 CST|
 |operator|Codex`/root`|
-|当前状态|`SOURCE_PIPELINE_RUNNING_REPAIR3`；target matrix未启动|
+|当前状态|`SOURCE_TRAIN_COMPLETE_VALIDATION_BRIDGE_REPAIR4_LOCAL_VERIFIED`；target matrix未启动|
 |基座模型|同一ADV3B02 checkpoint：`ADV3B02_CORE90_SOFT_E200/best_joint_safe_ssdg.pth`|
 |目标|在新版`LEO_weak-only`边界下，以≤50k参数、≤20epoch、≤256KB持久状态的极轻型适配器和逐样本1→3→5-view推理，完成5receiver×5seed×3场景×新类5/10/20×K=1/5/10/20正式确认|
 
@@ -40,7 +40,7 @@ ADV3B02主体冻结，只注入rank16 effective-feature LoRA到8个进入`feat_j
 
 formal训练不再使用clean teacher。对同一密封LEO_weak base observation，teacher为冻结ADV3B02，student为LoRA后的base加一个轮换`rx_light5`接收侧View。训练每步只延迟构造base和一个轮换额外View，不再预构造全部5个View；CFO轮次的底层`rx_cfo3`仍同时生成正负两个CFO变换但只做2次backbone前向，这是剩余的非阻断压缩空间。损失为：SmoothL1特征保持1、cos保持2、prototype CE 0.2、same-LEO reference 22、feature margin 4.5、same-LEO margin 7.5、teacher-logit KL 0.16、双View一致性0.25、relation Gram 0.5、prototype Gram去混淆0.25、nested worst-K风险0.5。训练命令使用`leo_reference_*`参数名，不再把formal anchor写成`clean_*`。
 
-输出为`effective8_adapter_fp16.pt`、完整epoch loss trace和训练manifest。manifest绑定checkpoint、adapter state、source cache-set及代码哈希，并明确`clean_sample_access=false`、`clean_derived_signal_access=false`。
+输出为`effective8_adapter_fp16.pt`、完整epoch loss trace和训练manifest。训练manifest绑定checkpoint、adapter state和source cache-set，并明确`clean_sample_access=false`、`clean_derived_signal_access=false`；trainer、LoRA、validator、共享tensor bridge和benchmark等代码哈希由后续candidate lock统一绑定，不能误称训练manifest自身包含代码哈希。
 
 ### source holdout与candidate lock
 
@@ -183,3 +183,21 @@ repair3在`LoRALinear`构造时让`lora_a/lora_b`显式继承`base.weight.device
 repair3远端覆盖前快照为`/home/szu2070436088/2510044040/CV-SincNet/code/snapshots/qknn_ground_effective8_r16_e12_leoonly_20260715_v14_repair3_before_sync_20260715_145448`，封存旧LoRA实现、旧report、repair2 runner/train完整日志和state。Git提交为`dfd0541c4c48`；LoRA脚本与report本地/远端SHA256一致，分别为`7877bcfd243dce0d6739a2b574e0db6fd401c8bf5ae86253bc52a4f17c0fc07b`和`4e2e9ade2e64f140fb8f0bef7fd27d18b5398d18d968bddcfc7c1748309d6565`，远端`py_compile`通过。GPU0微型CUDA探针确认base、`lora_a`、`lora_b`均位于`cuda:0`、dtype一致，identity初始化前向`max_abs_diff=0.0`。这修复了已知device阻断点，但仍不把smoke视为12epoch训练或promotion成功。
 
 14:56 CST再次确认8张GPU均无既有任务后，repair3 source pipeline以runner PID`1553723`恢复，训练子进程PID`1553733`已实际占用GPU0约580MiB。启动后13s runner与训练子进程均存活，表明已越过selector、NumPy bridge和LoRA device三个已知阻断点；当时尚无epoch行，状态只可记为running，不能记为训练完成或source PASS。训练活动期间保持monitor-only，不再覆盖远端代码、配置或产物。
+
+## 2026-07-15正式12epoch训练完成与validation bridge repair4
+
+repair3训练步骤在59.87s内完成12/12epoch并返回0，生成94,054B的`effective8_adapter_fp16.pt`，SHA256=`9e43d6decc3b05dcc526c0897127d959a768573a674236de657a12f619c6931b`；`training_manifest.json`为13,603B，SHA256=`15bafc5dc2ac369bb230461bc2fef23e3232d3df767e3dbd22f7da33eb77d8bc`。完整训练日志481行已逐行解析，无NaN/Inf、OOM、Killed或缺失epoch。关键曲线如下：
+
+|指标|epoch1|epoch12|相对变化|全程解释|
+|---|---:|---:|---:|---|
+|total loss|1.20458|1.10122|-8.58%|非单调；最低epoch8为1.08844|
+|prototype CE|1.24269|1.15447|-7.10%|整体下降|
+|worst-K risk|1.39363|1.21614|-12.74%|最低epoch8为1.17478，后期有波动|
+|nested K1|1.49032|1.28784|-13.59%|极少shot目标明显改善，但尚非准确率|
+|nested K5/K10/K20|1.12039/1.13958/1.13071|1.02775/1.03624/1.04733|-8.27%/-9.07%/-7.38%|三档均下降|
+|View consistency|0.06453|0.06090|-5.62%|缓慢下降|
+|feature margin|0.03299|0.02752|-16.60%|下降|
+
+日志中历史字段`clean`/`clean_margin`是沿用旧键名的same-LEO reference损失记录，不代表读取clean样本；同一manifest明确`clean_sample_access=false`、`clean_derived_signal_access=false`、`target_receiver_data_used_for_training=false`。可确认训练数值稳定、worst-K surrogate总体改善；不能从这些loss直接推出old/new准确率达标。
+
+训练完成后source validation仅运行2.89s便在首个prototype batch失败，完整validation日志10行的唯一错误仍是NumPy2.2.5/Torch2.1.0的`torch.from_numpy`不兼容，尚未计算任何source准确率或promotion gate。repair4新增共享`cvsrffi.tensors.numpy_to_tensor_compat`，validator的float32 IQ、int64 label和拼接feature三类入口全部改用buffer bridge；正式benchmark原有三个NumPy入口已使用兼容helper，micro helper现委托同一实现。静态测试要求validator源码不再含`torch.from_numpy`。candidate lock新增绑定共享tensor bridge、micro helper和LoRA实现，补齐此前间接依赖未进入代码哈希的问题。已产出adapter的trainer与LoRA实现保持不变，runner恢复时会跳过complete的`0002_train`，只重跑validation。4个相关文件`py_compile`通过，聚焦23项通过，12组完整正式回归为`107 passed`。

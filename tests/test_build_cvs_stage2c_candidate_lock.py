@@ -8,6 +8,7 @@ import numpy as np
 import pytest
 
 from paper_reproduction.scripts.build_cvs_stage2c_candidate_lock import (
+    CODE_ARTIFACTS,
     build_candidate_lock,
     verify_candidate_lock,
 )
@@ -21,6 +22,17 @@ BASE_PLAN = (
     REPO_ROOT
     / "paper_reproduction/configs/cvs_stage2c_effective8_formal_matrix_20260715.json"
 )
+
+
+def test_candidate_lock_binds_all_numpy_bridge_and_lora_code() -> None:
+    assert {
+        "code/cvsrffi/tensors.py",
+        "code/scripts/train_apply_phase1_iq_preadapter_20260703.py",
+        "paper_reproduction/scripts/train_export_cvs_micro_iq_adapter.py",
+        "paper_reproduction/scripts/train_export_cvs_support_lora_adapter.py",
+        "paper_reproduction/scripts/validate_cvs_ground_lora_multiview.py",
+        "paper_reproduction/scripts/benchmark_cvs_adaptive_rxlight_tta.py",
+    } <= set(CODE_ARTIFACTS)
 
 
 def _sha(path) -> str:

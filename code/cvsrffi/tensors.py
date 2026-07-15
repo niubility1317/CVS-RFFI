@@ -8,6 +8,22 @@ import numpy as np
 import torch
 
 
+def numpy_to_tensor_compat(
+    value: np.ndarray,
+    *,
+    numpy_dtype: np.dtype,
+    torch_dtype: torch.dtype,
+    copy: bool = True,
+) -> torch.Tensor:
+    """Bridge contiguous NumPy storage into Torch 2.1 under NumPy 2.x."""
+
+    array = np.ascontiguousarray(value, dtype=numpy_dtype)
+    tensor = torch.frombuffer(
+        memoryview(array), dtype=torch_dtype, count=int(array.size)
+    ).reshape(array.shape)
+    return tensor.clone() if bool(copy) else tensor
+
+
 def set_seed(seed: int = 1337):
     random.seed(seed)
     np.random.seed(seed)
