@@ -37,10 +37,11 @@ from .stage2_prediction_artifact import verify_prediction_artifact
 TRACE_NAME = "filesystem_access_trace.log"
 AUDIT_NAME = "filesystem_access_audit.json"
 STDOUT_RECEIPT_NAME = "predictor_stdout_receipt.json"
-POST_EVIDENCE_NAME = "phase2_post_run_runtime_evidence.json"
+POST_EVIDENCE_NAME = "phase2_diagnostic_post_run_runtime_evidence.json"
 
 _SHA256_RE = re.compile(r"[0-9a-f]{64}")
 _SYSCALL_RE = re.compile(r"\b(open|openat|openat2)\(")
+_EXECVE_RE = re.compile(r"\bexecve\(")
 _RESULT_RE = re.compile(r"\)\s+=\s+(-?\d+)(?:<([^>]*)>)?(?:\s|$)")
 _QUOTED_RE = re.compile(r'"(?:\\.|[^"\\])*"')
 _BRACKET_PID_RE = re.compile(r"^\[pid\s+(\d+)\]\s+")
@@ -188,6 +189,30 @@ def _trace_pid_and_body(line: str) -> tuple[str, str]:
         if match is not None:
             return match.group(1), line[match.end() :]
     return "main", line
+
+
+def _predictor_trace_suffix(text: str, *, expected_executable: str | Path) -> str:
+    """Drop outer strace/bwrap setup calls and retain the predictor phase."""
+
+    expected = posixpath.normpath(str(expected_executable).replace("\\", "/"))
+    lines = text.splitlines()
+    for index, raw_line in enumerate(lines):
+        _pid, body = _trace_pid_and_body(raw_line)
+        exec_match = _EXECVE_RE.search(body)
+        if exec_match is None:
+            continue
+        result_match = _RESULT_RE.search(body)
+        if result_match is None or int(result_match.group(1)) < 0:
+            continue
+        quoted = _QUOTED_RE.findall(body[exec_match.start() : result_match.start() + 1])
+        if not quoted:
+            raise Phase2IsolatedRunnerError("successful execve has no parseable executable path")
+        executable = posixpath.normpath(
+            _decode_strace_string(quoted[0]).replace("\\", "/")
+        )
+        if executable == expected:
+            return "\n".join(lines[index + 1 :]) + ("\n" if index + 1 < len(lines) else "")
+    raise Phase2IsolatedRunnerError("strace did not observe the bound predictor Python execve")
 
 
 def _complete_trace_lines(text: str) -> list[tuple[int, str]]:
@@ -416,17 +441,14 @@ def execute_phase2_isolated(
 
     temp_trace_name = f".phase2_open_trace.{os.getpid()}.{secrets.token_hex(12)}.tmp"
     temp_trace = output.parent / temp_trace_name
-    trace_descriptor = os.open(
-        temp_trace, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o600
-    )
-    os.set_inheritable(trace_descriptor, True)
+    strace_path = Path(strace_executable).resolve(strict=True)
     predictor_argv = build_production_predictor_argv(
         expected_seal_sha256=package_seal_sha256,
         device=device,
         batch_size=batch_size,
     )
     try:
-        command = build_phase2_bwrap_command(
+        bwrap_command = build_phase2_bwrap_command(
             bwrap=str(Path(bwrap).resolve(strict=True)),
             runtime_root=runtime_root,
             package_root=package_root,
@@ -439,23 +461,35 @@ def execute_phase2_isolated(
             trusted_system_read_roots=verified_pre_run["trusted_system_read_roots"],
             gpu_devices=gpu_devices,
             forbidden_roots=forbidden_roots,
-            strace_executable=strace_executable,
-            strace_output_fd=trace_descriptor,
         )
+        # Run strace outside bubblewrap.  The tracer owns the only writable
+        # handle to this parent-side path; bubblewrap closes any inherited
+        # non-stdio descriptor before the predictor is exec'd, and the trace
+        # path is not mounted into the sandbox.
+        command = [
+            str(strace_path),
+            "-f",
+            "-qq",
+            "-yy",
+            "-s",
+            "4096",
+            "-e",
+            "trace=execve,open,openat,openat2",
+            "-o",
+            str(temp_trace),
+            *bwrap_command,
+        ]
         completed = command_runner(
             command,
             capture_output=True,
             text=True,
             check=False,
             timeout=timeout_seconds,
-            pass_fds=(trace_descriptor,),
         )
     except Exception:
-        os.close(trace_descriptor)
         if temp_trace.exists():
             os.chmod(temp_trace, 0o444)
         raise
-    os.close(trace_descriptor)
 
     trace_bytes = _read_regular_nofollow(temp_trace)
     trace_sha256 = _write_exclusive_readonly(output / TRACE_NAME, trace_bytes)
@@ -465,7 +499,10 @@ def execute_phase2_isolated(
         trace_text = trace_bytes.decode("utf-8")
     except UnicodeDecodeError as exc:
         raise Phase2IsolatedRunnerError("strace output is not UTF-8") from exc
-    ledger = parse_successful_open_trace(trace_text)
+    predictor_trace_text = _predictor_trace_suffix(
+        trace_text, expected_executable=Path(python_executable).resolve(strict=True)
+    )
+    ledger = parse_successful_open_trace(predictor_trace_text)
     audit_core = audit_open_ledger(
         ledger,
         system_read_roots=system_read_roots,
@@ -528,6 +565,8 @@ def execute_phase2_isolated(
         "predictor_stdout_receipt_sha256": stdout_receipt_sha256,
         "prediction_artifact_sha256": prediction_artifact_sha256,
         "prediction_seal_sha256": prediction_seal_sha256,
+        "trace_scope": "after_bound_predictor_python_execve",
+        "predictor_python_executable": str(Path(python_executable).resolve(strict=True)),
         **{key: value for key, value in audit_core.items() if key != "status"},
     }
     filesystem_audit_sha256 = _write_json_exclusive_readonly(
@@ -570,8 +609,18 @@ def execute_phase2_isolated(
         {**request, "phase2_runtime_isolation_evidence": post_evidence},
         evidence_phase="post_run",
     )
-    post_evidence_sha256 = _write_json_exclusive_readonly(
-        output / POST_EVIDENCE_NAME, post_evidence
+    post_contract_sha256 = _sha256_bytes(_canonical_json(post_evidence))
+    diagnostic_post_evidence = {
+        "schema": "cvs.phase2.diagnostic_post_run_runtime_evidence.v1",
+        "status": "LOCAL_DIAGNOSTIC_PASS",
+        "formal_launch_authority": False,
+        "formal_launch_blockers": list(FORMAL_LAUNCH_BLOCKERS),
+        "protocol_valid_claim_allowed": False,
+        "formal_post_run_contract_evidence": post_evidence,
+        "formal_post_run_contract_sha256": post_contract_sha256,
+    }
+    diagnostic_post_evidence_sha256 = _write_json_exclusive_readonly(
+        output / POST_EVIDENCE_NAME, diagnostic_post_evidence
     )
     return {
         "schema": "cvs.phase2.isolated_runner_result.v1",
@@ -586,8 +635,8 @@ def execute_phase2_isolated(
         "filesystem_access_audit_sha256": filesystem_audit_sha256,
         "predictor_stdout_receipt": str(output / STDOUT_RECEIPT_NAME),
         "predictor_stdout_receipt_sha256": stdout_receipt_sha256,
-        "post_run_runtime_evidence": str(output / POST_EVIDENCE_NAME),
-        "post_run_runtime_evidence_sha256": post_evidence_sha256,
+        "diagnostic_post_run_runtime_evidence": str(output / POST_EVIDENCE_NAME),
+        "diagnostic_post_run_runtime_evidence_sha256": diagnostic_post_evidence_sha256,
         "prediction_artifact_sha256": prediction_artifact_sha256,
         "prediction_seal_sha256": prediction_seal_sha256,
     }

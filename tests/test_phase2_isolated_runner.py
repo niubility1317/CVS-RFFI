@@ -2,7 +2,6 @@ from __future__ import annotations
 
 import hashlib
 import json
-import os
 import stat
 from pathlib import Path
 from types import SimpleNamespace
@@ -192,20 +191,28 @@ def test_fake_isolated_run_emits_immutable_bound_post_run_evidence(
     def fake_run(command, **kwargs):
         assert kwargs["capture_output"] is True
         assert kwargs["text"] is True
-        trace_descriptor = kwargs["pass_fds"][0]
-        with os.fdopen(os.dup(trace_descriptor), "w", encoding="utf-8") as trace_handle:
-            trace_handle.write(
-                "\n".join(
-                    [
-                        '201 openat(AT_FDCWD, "/sealed/request.json", O_RDONLY) = 3</sealed/request.json>',
-                        '201 openat(AT_FDCWD, "/sealed/package.seal.json", O_RDONLY) = 3</sealed/package.seal.json>',
-                        '201 openat(AT_FDCWD, "/sealed/package/manifest.json", O_RDONLY) = 4</sealed/package/manifest.json>',
-                        '201 openat(AT_FDCWD, "/runtime/code/scripts/run_cvs_stage2_predictor.py", O_RDONLY) = 5</runtime/code/scripts/run_cvs_stage2_predictor.py>',
-                        '201 openat(AT_FDCWD, "/output/prediction_artifact.cvspred", O_WRONLY|O_CREAT|O_EXCL) = 6</output/prediction_artifact.cvspred>',
-                    ]
-                )
-                + "\n",
+        assert "pass_fds" not in kwargs
+        assert command[0] == str(Path(paths["strace"]).resolve())
+        trace_target = Path(command[command.index("-o") + 1])
+        assert trace_target.parent == output.parent
+        assert output not in trace_target.parents
+        assert "/proc/self/fd/" not in " ".join(command)
+        assert command.index(str(Path(paths["bwrap"]).resolve())) > command.index("-o")
+        trace_target.write_text(
+            "\n".join(
+                [
+                    '199 openat(AT_FDCWD, "/host/bwrap/setup-source", O_RDONLY) = 2</host/bwrap/setup-source>',
+                    f'201 execve({json.dumps(str(Path(paths["python"]).resolve()))}, ["python"], 0x0) = 0',
+                    '201 openat(AT_FDCWD, "/sealed/request.json", O_RDONLY) = 3</sealed/request.json>',
+                    '201 openat(AT_FDCWD, "/sealed/package.seal.json", O_RDONLY) = 3</sealed/package.seal.json>',
+                    '201 openat(AT_FDCWD, "/sealed/package/manifest.json", O_RDONLY) = 4</sealed/package/manifest.json>',
+                    '201 openat(AT_FDCWD, "/runtime/code/scripts/run_cvs_stage2_predictor.py", O_RDONLY) = 5</runtime/code/scripts/run_cvs_stage2_predictor.py>',
+                    '201 openat(AT_FDCWD, "/output/prediction_artifact.cvspred", O_WRONLY|O_CREAT|O_EXCL) = 6</output/prediction_artifact.cvspred>',
+                ]
             )
+            + "\n",
+            encoding="utf-8",
+        )
         scenarios = np.asarray(request["scenarios"])
         published = publish_prediction_artifact(
             output / request["output_contract"]["relative_path"],
@@ -263,7 +270,11 @@ def test_fake_isolated_run_emits_immutable_bound_post_run_evidence(
         path = output / name
         assert path.is_file()
         assert stat.S_IMODE(path.stat().st_mode) & 0o222 == 0
-    post = json.loads((output / POST_EVIDENCE_NAME).read_text(encoding="utf-8"))
+    diagnostic_post = json.loads((output / POST_EVIDENCE_NAME).read_text(encoding="utf-8"))
+    assert diagnostic_post["status"] == "LOCAL_DIAGNOSTIC_PASS"
+    assert diagnostic_post["formal_launch_authority"] is False
+    assert diagnostic_post["protocol_valid_claim_allowed"] is False
+    post = diagnostic_post["formal_post_run_contract_evidence"]
     assert set(post) == set(POST_RUN_RUNTIME_EVIDENCE_REQUIRED_FIELDS)
     assert post["filesystem_access_audit_status"] == "PASS"
     assert post["prediction_artifact_sha256"] == result["prediction_artifact_sha256"]
@@ -271,6 +282,10 @@ def test_fake_isolated_run_emits_immutable_bound_post_run_evidence(
     assert audit["trace_sha256"] == result["trace_sha256"]
     assert audit["request_sha256"] == result["request_sha256"]
     assert audit["unique_opened_path_count"] == 5
+    assert audit["trace_scope"] == "after_bound_predictor_python_execve"
+    assert "/host/bwrap/setup-source" not in {
+        row["path"] for row in audit["opened_file_ledger"]
+    }
 
 
 def test_production_runner_rejects_nonempty_output_before_subprocess(tmp_path: Path) -> None:

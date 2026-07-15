@@ -2,7 +2,6 @@ from __future__ import annotations
 
 import argparse
 import json
-import os
 import sys
 from pathlib import Path
 from types import SimpleNamespace
@@ -210,20 +209,24 @@ def test_end_to_end_truth_free_predictor_produces_sealed_artifact(
     isolated_output.mkdir()
 
     def fake_bwrap_run(command, **kwargs):
-        trace_descriptor = kwargs["pass_fds"][0]
-        with os.fdopen(os.dup(trace_descriptor), "w", encoding="utf-8") as trace_handle:
-            trace_handle.write(
-                "\n".join(
-                    [
-                        '301 openat(AT_FDCWD, "/sealed/request.json", O_RDONLY) = 3</sealed/request.json>',
-                        '301 openat(AT_FDCWD, "/sealed/package.seal.json", O_RDONLY) = 4</sealed/package.seal.json>',
-                        '301 openat(AT_FDCWD, "/sealed/package/manifest.json", O_RDONLY) = 5</sealed/package/manifest.json>',
-                        '301 openat(AT_FDCWD, "/runtime/code/scripts/run_cvs_stage2_predictor.py", O_RDONLY) = 6</runtime/code/scripts/run_cvs_stage2_predictor.py>',
-                        '301 openat(AT_FDCWD, "/output/prediction.cvspred", O_WRONLY|O_CREAT|O_EXCL) = 7</output/prediction.cvspred>',
-                    ]
-                )
-                + "\n",
+        assert "pass_fds" not in kwargs
+        trace_target = Path(command[command.index("-o") + 1])
+        assert trace_target.parent == isolated_output.parent
+        assert isolated_output not in trace_target.parents
+        trace_target.write_text(
+            "\n".join(
+                [
+                    f'301 execve({json.dumps(str(executables[2].resolve()))}, ["python"], 0x0) = 0',
+                    '301 openat(AT_FDCWD, "/sealed/request.json", O_RDONLY) = 3</sealed/request.json>',
+                    '301 openat(AT_FDCWD, "/sealed/package.seal.json", O_RDONLY) = 4</sealed/package.seal.json>',
+                    '301 openat(AT_FDCWD, "/sealed/package/manifest.json", O_RDONLY) = 5</sealed/package/manifest.json>',
+                    '301 openat(AT_FDCWD, "/runtime/code/scripts/run_cvs_stage2_predictor.py", O_RDONLY) = 6</runtime/code/scripts/run_cvs_stage2_predictor.py>',
+                    '301 openat(AT_FDCWD, "/output/prediction.cvspred", O_WRONLY|O_CREAT|O_EXCL) = 7</output/prediction.cvspred>',
+                ]
             )
+            + "\n",
+            encoding="utf-8",
+        )
         inner = predictor_cli.run(argparse.Namespace(
             request_json=request_path, predictor_package_root=predictor_root,
             detached_seal_path=seal_path, expected_seal_sha256=sha256_file(seal_path),
@@ -257,7 +260,13 @@ def test_end_to_end_truth_free_predictor_produces_sealed_artifact(
         expected_seal_sha256=isolated_result["prediction_seal_sha256"],
     )
     assert isolated_verified["manifest"]["row_count"] == 9
-    post_run_evidence = json.loads(
-        Path(isolated_result["post_run_runtime_evidence"]).read_text(encoding="utf-8")
+    diagnostic_post_run_evidence = json.loads(
+        Path(isolated_result["diagnostic_post_run_runtime_evidence"]).read_text(encoding="utf-8")
     )
-    assert post_run_evidence["filesystem_access_audit_status"] == "PASS"
+    assert diagnostic_post_run_evidence["formal_launch_authority"] is False
+    assert diagnostic_post_run_evidence["protocol_valid_claim_allowed"] is False
+    assert (
+        diagnostic_post_run_evidence["formal_post_run_contract_evidence"]
+        ["filesystem_access_audit_status"]
+        == "PASS"
+    )

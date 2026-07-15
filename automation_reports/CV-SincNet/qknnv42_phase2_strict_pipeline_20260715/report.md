@@ -69,7 +69,7 @@
 - payload→manifest→seal哈希链；
 - 5路预测流：candidate after/before、identity after/before、strict direct；
 - 每样本实际view count；
-- 后验filesystem access audit、predictor stdout receipt和13字段post-run evidence；
+- 后验filesystem access audit、predictor stdout receipt和带formal=false blocker的diagnostic wrapper；13字段post-run contract仅嵌套为诊断证据，不单独发布正式PASS文件；
 - 独立scorer产生的3个正式场景行、逐样本预测、old/new/H、最低类、forgetting、adaptation和K=1 direct delta。
 
 ### 4.2关键方法
@@ -80,7 +80,7 @@
 |strict request|先校验3基础+4clean+5query共12字段和exact schema|在打开Phase2 payload前fail closed|
 |minimal runtime closure|仅7个生产文件，AST exact import closure，拒绝dataset/training/legacy/dynamic import|切断旧loader和clean控制流|
 |pre-run evidence bundle|外部seal锚、closure、package同fd预审、controller hash、实际bwrap/strace/python、固定system root allowlist和scorer/truth物理分根交叉绑定|拒绝孤立SHA、任意runtime目录和调用方自定义data root|
-|OS策略|`/runtime/code`和package只读、仅`/output`可写、无网络、drop all caps、clearenv；strace写入sandbox外父进程持有的继承FD|为Linux物理隔离提供诊断执行合同，尚未取得真实Linux证据|
+|OS策略|`/runtime/code`和package只读、仅`/output`可写、无网络、drop all caps、clearenv；strace在bwrap外层运行并写入未挂载的父级临时路径，predictor不继承trace FD；账本从已绑定Python成功`execve`后开始|为Linux物理隔离提供诊断执行合同，尚未取得真实Linux证据|
 |sealed prediction|`O_EXCL`临时文件、fsync、atomic no-replace、只读权限、exact 8 NPZ字段|提供sealed/tamper-evident和防API覆盖属性，不宣称宿主同UID下绝对不可变|
 |independent scorer|先验证外部artifact SHA和seal SHA，再按`(scenario,query_token)`精确连接truth|scorer无法反馈adapter、门限、回滚或候选选择|
 |双重复验|isolated runner在预测前后复验同一bundle、closure、package、controller和实际参数|检测持续漂移；不能证明同UID“替换→执行→恢复”的瞬时TOCTOU已消除|
@@ -151,7 +151,7 @@ python -m pytest code/tests/test_phase2_runtime_contract.py tests/test_stage2_pr
 
 在该问题解决前，严格qKNN Stage2-C保持`launch_authority=false`。
 
-提交前独立代码审查还确认两个不能由当前Windows本地测试消除的Critical blocker：adapter/head/TTA生成provenance尚未绑定到外部candidate/plan trust root；普通宿主目录只读bind无法抵御同UID瞬时替换后恢复。代码已把二者写入`formal_launch_blockers`并将isolated runner总体状态降为`LOCAL_DIAGNOSTIC_PASS`，因此任何post-run字段都不得被解释为`PROTOCOL_VALID`或正式启动授权。
+提交前独立代码审查还确认两个不能由当前Windows本地测试消除的Critical blocker：adapter/head/TTA生成provenance尚未绑定到外部candidate/plan trust root；普通宿主目录只读bind无法抵御同UID瞬时替换后恢复。代码已把二者写入`formal_launch_blockers`并将isolated runner总体状态降为`LOCAL_DIAGNOSTIC_PASS`；仅发布`phase2_diagnostic_post_run_runtime_evidence.json`，其中`protocol_valid_claim_allowed=false`，13字段合同只作为嵌套诊断材料，因此不得被解释为`PROTOCOL_VALID`或正式启动授权。
 
 ## 八、结果与下一步
 

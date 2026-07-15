@@ -77,10 +77,8 @@ def test_bwrap_policy_rejects_python_outside_readonly_runtime(tmp_path: Path) ->
         )
 
 
-def test_bwrap_policy_uses_inherited_trace_fd_outside_output_mount(tmp_path: Path) -> None:
+def test_bwrap_policy_contains_no_inner_tracer_or_inherited_trace_fd(tmp_path: Path) -> None:
     paths = _tree(tmp_path)
-    strace = paths["system"] / "strace"
-    strace.write_bytes(b"strace")
     command = build_phase2_bwrap_command(
         bwrap="bwrap", runtime_root=paths["runtime"], package_root=paths["package"],
         detached_seal=paths["seal"], request_json=paths["request"],
@@ -88,12 +86,11 @@ def test_bwrap_policy_uses_inherited_trace_fd_outside_output_mount(tmp_path: Pat
         predictor_argv=["/runtime/code/scripts/run.py"],
         system_read_roots=[paths["system"]], trusted_system_read_roots=[paths["system"]],
         forbidden_roots=[paths["scorer"]],
-        strace_executable=strace, strace_output_fd=17,
     )
-    assert command.index(str(strace.resolve())) < command.index(str(paths["python"].resolve()))
-    assert command[command.index("-o") + 1] == "/proc/self/fd/17"
-    assert not any("trace" in value and value.startswith("/output/") for value in command)
-    assert "trace=open,openat,openat2" in command
+    assert command[0] == "bwrap"
+    assert str(paths["python"].resolve()) in command
+    assert "-o" not in command
+    assert not any("strace" in value or "/proc/self/fd/" in value for value in command)
 
 
 def test_bwrap_policy_rejects_system_root_that_exposes_project_parent(tmp_path: Path) -> None:
