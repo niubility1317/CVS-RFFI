@@ -138,6 +138,19 @@ def test_publication_preflight_rejects_role_oracle_and_role_partition(tmp_path: 
     with pytest.raises(ValueError, match="query-role partition"):
         _assert_cvs_config_uses_independent_query_decisions(config_path)
 
+    config_path.write_text(
+        json.dumps(
+            {
+                "qknnv42_decision_mode": "per_sample_argmax",
+                "qknnv42_labelprop_mode": "dense_transductive",
+                "qknnv42_feature_adapter_mode": "support_diag_whiten_fisher",
+            }
+        ),
+        encoding="utf-8",
+    )
+    with pytest.raises(ValueError, match="dense query-query graph"):
+        _assert_cvs_config_uses_independent_query_decisions(config_path)
+
 def test_publication_artifact_contract_rejects_oracle_metadata(tmp_path: Path) -> None:
     row = build_rows(
         phase="stage2c",

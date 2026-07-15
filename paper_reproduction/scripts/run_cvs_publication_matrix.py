@@ -55,6 +55,8 @@ def _assert_cvs_config_uses_independent_query_decisions(path: Path | None) -> No
         raise ValueError(f"CVS config is not launchable: {payload.get('protocol_status', path)}")
     if str(payload.get("qknnv42_decision_mode", "per_sample_argmax")) != "per_sample_argmax":
         raise ValueError("publication matrix prohibits role Oracle and class-quota decisions")
+    if str(payload.get("qknnv42_labelprop_mode", "disabled")) == "dense_transductive":
+        raise ValueError("publication matrix prohibits dense query-query graph inference")
     adapter = str(payload.get("qknnv42_feature_adapter_mode", ""))
     if adapter.startswith("support_role_"):
         raise ValueError("publication matrix prohibits query-role partition adapters")
@@ -184,6 +186,10 @@ def _artifact_status(row: MatrixRow, *, scenarios: int = 3, query_per_tx: int = 
             errors.append("oracle_diagnostic_status_missing_or_true")
         if manifest.get("query_used_for_joint_decision") is not False:
             errors.append("query_used_for_joint_decision_missing_or_true")
+        if manifest.get("qknnv42_labelprop_mode") == "dense_transductive":
+            errors.append("dense_query_graph_inference")
+        if manifest.get("query_used_for_transductive_inference") is not False:
+            errors.append("query_used_for_transductive_inference_missing_or_true")
         adapter = resolved.get("qknnv42_feature_adapter_mode")
         if adapter is None:
             errors.append("feature_adapter_mode_missing")
@@ -195,6 +201,9 @@ def _artifact_status(row: MatrixRow, *, scenarios: int = 3, query_per_tx: int = 
         else:
             required_false = ("role_oracle_used", "equal_class_quota_used")
             for field in required_false:
+                if any(item.get(field) is not False for item in scenario_metrics.values()):
+                    errors.append(f"{field}_missing_or_true")
+            for field in ("query_query_graph_used", "query_batch_state_required"):
                 if any(item.get(field) is not False for item in scenario_metrics.values()):
                     errors.append(f"{field}_missing_or_true")
     if score_count != expected_scores:

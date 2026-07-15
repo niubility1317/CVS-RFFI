@@ -1,0 +1,90 @@
+{
+  "experiment_id": "cvs_qknnv42_nondense_adapter_e5_stage2c_20260715",
+  "launchable": true,
+  "protocol_status": "LAUNCHABLE_NONDENSE_STAGE2C",
+  "method": "cvs_qknnv42",
+  "stage": "Stage2-C",
+  "cvs_proposed_method": true,
+  "backbone_id": "ADV3B02_CORE90_SOFT_E200_STRICT_LOAD_ID_NORM_LATE_FEATURE_E5",
+  "adapter_training_epochs": 5,
+  "adapter_resource_tier": "EXTREME_LIGHT_PREFERRED",
+  "feature_npz_by_receiver_scenario": {
+    "20-1": {
+      "leo_clear_weak": "/home/szu2070436088/2510044040/CV-SincNet/runs/qknnv42_nondense_adapter_epoch_features_20260715/E5/FULL_RX_20-1/ADV3B02_FULL_ADAPTER5_FFT96_E5/features_full_adapter5_fft96_e5.npz",
+      "leo_low_elev_weak": "/home/szu2070436088/2510044040/CV-SincNet/runs/qknnv42_nondense_adapter_epoch_features_20260715/E5/FULL_RX_20-1/ADV3B02_FULL_ADAPTER5_FFT96_E5/features_full_adapter5_fft96_e5.npz",
+      "leo_rain_weak": "/home/szu2070436088/2510044040/CV-SincNet/runs/qknnv42_nondense_adapter_epoch_features_20260715/E5/FULL_RX_20-1/ADV3B02_FULL_ADAPTER5_FFT96_E5/features_full_adapter5_fft96_e5.npz"
+    },
+    "3-19": {
+      "leo_clear_weak": "/home/szu2070436088/2510044040/CV-SincNet/runs/qknnv42_nondense_adapter_epoch_features_20260715/E5/FULL_RX_3-19/ADV3B02_FULL_ADAPTER5_FFT96_E5/features_full_adapter5_fft96_e5.npz",
+      "leo_low_elev_weak": "/home/szu2070436088/2510044040/CV-SincNet/runs/qknnv42_nondense_adapter_epoch_features_20260715/E5/FULL_RX_3-19/ADV3B02_FULL_ADAPTER5_FFT96_E5/features_full_adapter5_fft96_e5.npz",
+      "leo_rain_weak": "/home/szu2070436088/2510044040/CV-SincNet/runs/qknnv42_nondense_adapter_epoch_features_20260715/E5/FULL_RX_3-19/ADV3B02_FULL_ADAPTER5_FFT96_E5/features_full_adapter5_fft96_e5.npz"
+    },
+    "7-14": {
+      "leo_clear_weak": "/home/szu2070436088/2510044040/CV-SincNet/runs/qknnv42_nondense_adapter_epoch_features_20260715/E5/FULL_RX_7-14/ADV3B02_FULL_ADAPTER5_FFT96_E5/features_full_adapter5_fft96_e5.npz",
+      "leo_low_elev_weak": "/home/szu2070436088/2510044040/CV-SincNet/runs/qknnv42_nondense_adapter_epoch_features_20260715/E5/FULL_RX_7-14/ADV3B02_FULL_ADAPTER5_FFT96_E5/features_full_adapter5_fft96_e5.npz",
+      "leo_rain_weak": "/home/szu2070436088/2510044040/CV-SincNet/runs/qknnv42_nondense_adapter_epoch_features_20260715/E5/FULL_RX_7-14/ADV3B02_FULL_ADAPTER5_FFT96_E5/features_full_adapter5_fft96_e5.npz"
+    },
+    "7-7": {
+      "leo_clear_weak": "/home/szu2070436088/2510044040/CV-SincNet/runs/qknnv42_nondense_adapter_epoch_features_20260715/E5/FULL_RX_7-7/ADV3B02_FULL_ADAPTER5_FFT96_E5/features_full_adapter5_fft96_e5.npz",
+      "leo_low_elev_weak": "/home/szu2070436088/2510044040/CV-SincNet/runs/qknnv42_nondense_adapter_epoch_features_20260715/E5/FULL_RX_7-7/ADV3B02_FULL_ADAPTER5_FFT96_E5/features_full_adapter5_fft96_e5.npz",
+      "leo_rain_weak": "/home/szu2070436088/2510044040/CV-SincNet/runs/qknnv42_nondense_adapter_epoch_features_20260715/E5/FULL_RX_7-7/ADV3B02_FULL_ADAPTER5_FFT96_E5/features_full_adapter5_fft96_e5.npz"
+    },
+    "8-8": {
+      "leo_clear_weak": "/home/szu2070436088/2510044040/CV-SincNet/runs/qknnv42_nondense_adapter_epoch_features_20260715/E5/FULL_RX_8-8/ADV3B02_FULL_ADAPTER5_FFT96_E5/features_full_adapter5_fft96_e5.npz",
+      "leo_low_elev_weak": "/home/szu2070436088/2510044040/CV-SincNet/runs/qknnv42_nondense_adapter_epoch_features_20260715/E5/FULL_RX_8-8/ADV3B02_FULL_ADAPTER5_FFT96_E5/features_full_adapter5_fft96_e5.npz",
+      "leo_rain_weak": "/home/szu2070436088/2510044040/CV-SincNet/runs/qknnv42_nondense_adapter_epoch_features_20260715/E5/FULL_RX_8-8/ADV3B02_FULL_ADAPTER5_FFT96_E5/features_full_adapter5_fft96_e5.npz"
+    }
+  },
+  "target_receiver_labels": [
+    "20-1"
+  ],
+  "publication_target_receiver_grid": [
+    "20-1",
+    "3-19",
+    "7-14",
+    "7-7",
+    "8-8"
+  ],
+  "target_old_tx_labels": [
+    "14-10",
+    "14-7",
+    "20-15",
+    "20-19",
+    "6-15",
+    "8-20"
+  ],
+  "target_new_tx_labels": [
+    "1-16",
+    "1-18"
+  ],
+  "target_unknown_tx_labels": [],
+  "k_shot": 5,
+  "query_per_tx": 20,
+  "support_pool_max_k": 20,
+  "target_sample_strategy": "seeded_nested",
+  "split_seed": 713101,
+  "seed": 713101,
+  "target_channel_view": "satellite/LEO",
+  "target_channel_scenarios": [
+    "leo_clear_weak",
+    "leo_low_elev_weak",
+    "leo_rain_weak"
+  ],
+  "target_labels_scope": "registered_support_only",
+  "target_query_used_for_training": false,
+  "target_query_used_for_model_selection": false,
+  "unknown_rejection_enabled": false,
+  "qknnv42_aux_feature_key": "fft_logmag_features",
+  "qknnv42_aux_feature_dim": 96,
+  "qknnv42_aux_score_weight": 0.34,
+  "qknnv42_expected_tta_view_count": 5,
+  "qknnv42_head_mode": "qknn",
+  "qknnv42_decision_mode": "per_sample_argmax",
+  "qknnv42_labelprop_mode": "disabled",
+  "qknnv42_support_representation": "all_support",
+  "qknnv42_feature_adapter_mode": "support_diag_whiten_fisher",
+  "qknnv42_old_anchor_bias": 0.001,
+  "non_deployment_oracle_diagnostic": false,
+  "publication_protocol": "same_125_tasks_full_qknn_no_dense_query_no_role_or_class_quota_oracle_strict_checkpoint_load",
+  "claim_boundary": "Stage2-C old-domain adaptation plus two-real-new-TX enrollment; per-sample inference; no dense query graph; no role/quota Oracle"
+}
