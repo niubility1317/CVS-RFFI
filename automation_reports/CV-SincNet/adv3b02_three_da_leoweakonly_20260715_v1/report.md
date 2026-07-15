@@ -122,6 +122,8 @@ phase2_query_batch_global_assignment=false
 
 启动诊断记录：初次后台命令因远端根目录旧`cvsrffi`包遮蔽`code/cvsrffi`而退出；commit `e325503`已修复`sys.path`优先级。第二次因offline spec误写`/CV-SincNet/ManySig.pkl`而退出；服务器实际路径为`/CV-SincNet/Dataset_WigSig/ManySig.pkl`，已修正。第三次PID `1604043`完成26/26缓存后，旧plan在第1个bundle调用已升级打包器时因CLI不兼容退出。三次均未启动正式Phase2行；第三次产生的26个LEO_weak cache保留并将在续跑时逐项hash复核后跳过。
 
+第四次offline准备PID `1615166`在首个bundle完成密封后，由末尾字符串泄漏扫描误把固定Phase1 checkpoint内部合法的旧类标签映射识别为query truth泄漏而fail-closed退出；首个predictor manifest、scoring manifest和detached seal各1个已落盘，正式行仍为0。修复只豁免已预注册且受hash密封的`checkpoint.bin`、`adapter.bin`和`head.bin`无结构字节扫描；新生成support/query/package manifest仍执行成员白名单、同fd hash审计和泄漏扫描。修复后相关pytest仍为`33 passed`，首个已密封bundle不删除，由续跑时严格verifier决定复用或阻断。
+
 ## 七、成功条件与风险
 
 成功条件：

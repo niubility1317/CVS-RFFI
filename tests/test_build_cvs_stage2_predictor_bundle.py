@@ -56,7 +56,10 @@ def _args(tmp_path: Path, suffix: str, *, stage: str):
     files = {}
     for name in ("candidate", "checkpoint", "adapter", "head"):
         path = artifacts / f"{name}.bin"
-        path.write_bytes(name.encode("ascii"))
+        payload = name.encode("ascii")
+        if name == "checkpoint":
+            payload += b" target_old old-a"
+        path.write_bytes(payload)
         files[name] = path
     tta = artifacts / "tta.json"
     tta.write_text(json.dumps({"base_views": 1, "max_views": 5}), encoding="utf-8")
@@ -107,7 +110,9 @@ def test_stage2c_sealer_physically_separates_truth_and_uses_opaque_tokens(
     assert result["support_pool_count"] == 3
     assert result["query_count"] == 3
     predictor_bytes = b"".join(
-        path.read_bytes() for path in sorted(args.predictor_out_root.iterdir()) if path.is_file()
+        path.read_bytes()
+        for path in sorted(args.predictor_out_root.iterdir())
+        if path.is_file() and path.name not in {"checkpoint.bin", "adapter.bin", "head.bin"}
     )
     assert b"target_old" not in predictor_bytes
     assert b"target_new" not in predictor_bytes
