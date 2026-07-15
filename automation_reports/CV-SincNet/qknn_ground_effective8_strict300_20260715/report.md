@@ -263,10 +263,29 @@ strict plan v19绑定strict_v13与全新`..._landlock_strict300_v10`运行根，
 
 00:39再次核验8张GPU空闲且无严格runner。v10根原先不存在，现仅创建`protocol_plan/`并同步`strict_plan_manifest_v19.json`；smoke将使用新路径`smoke_driver_v10_attempt1.pid`、`logs/smoke_driver_v10_attempt1.out`、`logs/smoke_v10_attempt1`和`smoke_receipt.json`。权限仍严格锁定K1/new20单cell，K10与矩阵未授权。
 
+v10 attempt1已由并发控制流以PID文件落地并退出，driver日志6,042字节，未生成smoke receipt。完整stderr确认strict_v13密封入口仍在predictor execution audit和返回payload两处调用`sha256_file(request_path)`；因此它虽然包含`9cb6e84`的首次pinned read摘要，但仍在资源收据之后重开Landlock禁止路径，重复触发`PermissionError`。这不是算法性能证据。提交`ec86075`移除剩余两处重开并新增源码级不回读回归；30项predictor/runtime/closure测试通过，当前新本地closure SHA=`3f8a577de614666cf33eb2cdc50244045c0898cabc22d545571d229c4b87805b`。strict_v13/v10保持不动；下一次必须同步`ec86075`入口，构建全新strict_v14并使用全新v11运行根。
+
 v10 attempt1以PID=`1910063`运行，再次生成2,658,628字节密封prediction，并成功生成1,779字节predictor资源收据，证明首次密封读取SHA修复生效；随后execution audit和最终stdout返回中的两处遗留`sha256_file(request_path)`仍触发Landlock拒绝。scorer/cell/smoke receipt依然不存在，v10不原地续跑。完整driver日志6,042字节，SHA=`54bb8c51…5c78`。
 
 提交`ec86075`把execution audit与最终返回统一绑定首次密封读取所得`request_sha256`，新增源码级门禁保证严格predictor中不再出现任何`sha256_file(request_path)`。41项相关测试通过；全新strict_v14 closure在N607与本地均为SHA=`3f8a577de614666cf33eb2cdc50244045c0898cabc22d545571d229c4b87805b`，12项模型/capsule/config复用artifact逐项一致。v20清单绑定strict_v14和全新v11运行根，仍为25/75/300/900、`launch_authority=false`，清单SHA=`717bcd08dadd0dccaf2f24ae4407d64aea4cd44b32f63b423451ee8f3884a0a4`。
 
+v11 attempt1以PID=`1913259`完整通过严格闭环：密封prediction、execution/resource audit、3场景formal rows、1,560条逐样本formal predictions、scoring receipt、cell receipt和smoke receipt全部生成；`status=PROTOCOL_VALID`、smoke=`PASS`。K1/new20实测如下，所有数值来自同一cell、同一场景行：
+
+| 场景 | 注册前old | 注册后old | direct ADV3B02 old | 注册后相对direct | 注册后seen-new | H_old_new | 最低旧类 | 平均遗忘 |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|
+| leo_clear_weak | 69.17% | 56.67% | 74.17% | -17.50pp | 34.25% | 42.69% | 0.00% | 12.50pp |
+| leo_low_elev_weak | 64.17% | 48.33% | 66.67% | -18.33pp | 27.50% | 35.05% | 0.00% | 15.83pp |
+| leo_rain_weak | 60.00% | 45.83% | 70.00% | -24.17pp | 31.00% | 36.98% | 0.00% | 14.17pp |
+| 三场景等权均值 | 64.44% | 50.28% | 70.28% | -20.00pp | 30.92% | 38.24% | 0.00% | 14.17pp |
+
+K1结论为明确负例：未满足“适应后明显优于direct ADV3B02”，注册使旧类平均下降14.17pp，TX=`14-7`三场景均为0%，且20新类seen-new只有30.92%。它只用于证明严格评测闭环，不得晋升为算法候选。资源侧满足参数/状态/epoch硬上限：44,048 trainable parameters、109,818字节持久状态、12 adapt epochs、峰值CUDA显存168,441,856字节、候选query延迟0.679ms；但自适应view平均2.699次backbone forward，1/3/5-view触发率19.81%/75.45%/4.74%，说明当前门限大多触发3-view，尚未达到“默认1-view”的理想计算分布。
+
+完整证据已回传`evidence/smoke_v11_success/`。官方授权器以smoke receipt SHA=`6064b311…2d94`生成`authorized_strict_plan_manifest.json`：`launch_authority=true`、`authority_state=N607_LANDLOCK_SMOKE_PASS`，授权清单SHA=`62d78cb9aa636c8e756f582473f6c9742326c220936dcd0efb6a770a4b18ae85`。下一步只执行同receiver/seed/new20的K10单cell，优先评估联合域适应+新类注册目标点，不启动完整矩阵。
+
 ## 完成后结果表
 
-实验完成后在本节追加逐单元同一行结果，至少包含candidate ID、机制、receiver/TX split、K-shot、seed、old/seen-new/unknown指标、coverage/rollback/defer、loss/adapter摘要和最终判定。不得用来自不同单元的独立极值替代联合行。
+| candidate ID | 机制 | receiver/TX split | K | seed | 注册前old | 注册后old | seen-new | H | 最低旧类 | 平均遗忘 | adapter/资源 | 判定 |
+|---|---|---|---:|---:|---:|---:|---:|---:|---:|---:|---|---|
+| effective8-v14-strict-v11-smoke | ADV3B02+effective8+support-only注册+adaptive view | rx20-1；6 old+20真实new；3个LEO_weak | 1 | 713101 | 64.44% | 50.28% | 30.92% | 38.24% | 0.00% | 14.17pp | 44,048参数；12 epoch；109,818B；2.699 view | `PROTOCOL_VALID`但性能负例，不晋升 |
+
+后续每个完成cell继续追加同一行，不得用来自不同单元的独立极值替代联合行。
