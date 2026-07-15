@@ -28,11 +28,11 @@ from cvsrffi.stage2_prediction_artifact import (  # noqa: E402
     publish_prediction_artifact,
     verify_prediction_artifact,
 )
-from cvsrffi.stage2_predictor_bundle import sha256_file  # noqa: E402
+from cvsrffi.stage2_predictor_bundle import sha256_bytes, sha256_file  # noqa: E402
 from cvsrffi.stage2_predictor_entry import prepare_role_blind_prediction  # noqa: E402
 
 
-def _read_request(path: Path) -> dict[str, Any]:
+def _read_request(path: Path) -> tuple[dict[str, Any], str]:
     if pinned_input_mode_active():
         with open_pinned_special("request") as handle:
             raw = handle.read()
@@ -40,7 +40,7 @@ def _read_request(path: Path) -> dict[str, Any]:
         if not isinstance(payload, dict):
             raise ValueError("predictor request root must be an object")
         validate_predictor_request(payload)
-        return payload
+        return payload, sha256_bytes(raw)
     before = path.lstat()
     if stat.S_ISLNK(before.st_mode) or not stat.S_ISREG(before.st_mode):
         raise ValueError("predictor request must be a regular non-symlink file")
@@ -68,7 +68,7 @@ def _read_request(path: Path) -> dict[str, Any]:
     # The request is the only file read before this validation.  Package/seal,
     # runtime artifacts and IQ remain untouched until it passes.
     validate_predictor_request(payload)
-    return payload
+    return payload, sha256_bytes(raw)
 
 
 def _class_handle_predictions(
@@ -131,7 +131,7 @@ def _prepare_device(requested: str) -> torch.device:
 
 def run(args: argparse.Namespace) -> dict[str, Any]:
     request_path = Path(args.request_json)
-    request = _read_request(request_path)
+    request, request_sha256 = _read_request(request_path)
     device = _prepare_device(str(args.device))
     payload, metadata, audit = prepare_role_blind_prediction(
         request,
@@ -179,7 +179,7 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
             "peak_cuda_memory_bytes": (
                 int(torch.cuda.max_memory_allocated(device)) if device.type == "cuda" else 0
             ),
-            "request_sha256": sha256_file(request_path),
+            "request_sha256": request_sha256,
             "prediction_artifact_sha256": published["artifact_sha256"],
             "prediction_seal_sha256": published["seal_sha256"],
         }

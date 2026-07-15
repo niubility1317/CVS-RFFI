@@ -15,6 +15,7 @@ if str(SCRIPT_ROOT) not in sys.path:
 from run_cvs_stage2_predictor import (  # noqa: E402
     _class_handle_predictions,
     _prepare_device,
+    _read_request,
 )
 
 
@@ -46,6 +47,49 @@ def test_prediction_indices_outside_registry_fail_closed() -> None:
     streams["candidate_after"] = np.asarray([1])
     with pytest.raises(ValueError, match="outside registry"):
         _class_handle_predictions(streams, registry)
+
+
+def test_regular_request_sha_is_captured_during_the_validated_read(
+    monkeypatch, tmp_path: Path,
+) -> None:
+    import hashlib
+    import json
+
+    raw = b'{"schema":"unit-test"}\n'
+    request = tmp_path / "request.json"
+    request.write_bytes(raw)
+    monkeypatch.setattr(
+        "run_cvs_stage2_predictor.validate_predictor_request", lambda payload: None
+    )
+
+    payload, digest = _read_request(request)
+
+    assert payload == json.loads(raw)
+    assert digest == hashlib.sha256(raw).hexdigest()
+
+
+def test_pinned_request_sha_does_not_reopen_the_forbidden_path(
+    monkeypatch, tmp_path: Path,
+) -> None:
+    import hashlib
+    import io
+
+    raw = b'{"schema":"pinned-unit-test"}\n'
+    monkeypatch.setattr(
+        "run_cvs_stage2_predictor.pinned_input_mode_active", lambda: True
+    )
+    monkeypatch.setattr(
+        "run_cvs_stage2_predictor.open_pinned_special",
+        lambda name: io.BytesIO(raw) if name == "request" else None,
+    )
+    monkeypatch.setattr(
+        "run_cvs_stage2_predictor.validate_predictor_request", lambda payload: None
+    )
+
+    payload, digest = _read_request(tmp_path / "physically-unreachable-request.json")
+
+    assert payload == {"schema": "pinned-unit-test"}
+    assert digest == hashlib.sha256(raw).hexdigest()
 
 
 def test_cuda_is_initialized_before_peak_memory_reset(monkeypatch) -> None:
