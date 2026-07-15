@@ -555,3 +555,26 @@ PYTHONPATH=/home/szu2070436088/2510044040/CV-SincNet /home/szu2070436088/.conda/
 该head必须由Stage2-C runner再次验证delta provenance、31,200参数/15步/精确白名单、1-view、无角色/配额Oracle；只有完整artifact contract通过后才能读取old/floor/new/H。
 
 主工作树中的`cvs_method_runner.py`在本轮提交后出现其它并发未提交修改，因此不得直接同步。已从Git提交`5752810`创建detached只读快照`E:\type10-7\code\snapshots\qknn_rxlight5_v10_sync_5752810`，快照工作树clean。head运行前只从该快照SCP`paper_reproduction/cvs_aligned/cvs_method_runner.py`到N607同相对路径；SHA256=`9c661fa01bbde4726627672d89a2967c9c7d97bdfac93c912653199a60c28191`。同步后必须复核远端哈希、`py_compile`和`source_init`方法命中稀疏关键层gate，不能携带主工作树并发修改。
+
+### v10固定1-view失败与多View压缩恢复检查
+
+固定1-view head已完成，artifact contract验证`post_feature_adapter_mode=support_only_late_key_ft_source_init_v1`、31,200个关键层参数、15步更新、delta62,400B、补丁合并新增MAC=0、逐样本argmax、`role_oracle_used=false`、`equal_class_quota_used=false`、`query_joint/transductive=false`和`satellite_tta_view_count=1`全部PASS。
+
+|方法|old|最低旧类|new20|最低新类|H|结论|
+|---|---:|---:|---:|---:|---:|---|
+|v10 source-init late-key+固定1-view|71.1111%|43.3333%（TX20-19）|71.4167%|20.0000%（TX14-11）|71.2357%|低于LoRA机制门，禁止扩展矩阵|
+|此前合法LoRA v1|73.06%|51.67%|83.33%|未作为本row报告|77.80%|当前机制比较线|
+
+固定1-view不仅未达到正式`95/88/86%`目标，也没有超过LoRA机制门；因此不运行其它receiver、seed、5/10类或K5。旧类最低5类依次为TX20-19=43.33%、TX14-7=55.00%、TX6-15=63.33%、TX14-10=70.00%、TX20-15=95.00%；新类最低5类依次为TX14-11=20.00%、TX10-10=38.33%、TX4-10=40.00%、TX1-18=45.00%、TX2-16=61.67%。这组同状态结果支持“多View是历史高性能的重要组成”这一判断，但尚不能证明多View单独足以恢复目标性能。
+
+按预注册边界，只允许同一checkpoint、同一FP16最终delta、同一`8-8/new20/seed713101/K10`切分做一次多View恢复检查，不再改训练学习率或读取query选择超参数。新增`benchmark_cvs_adaptive_rxlight_tta.py`，对每个严格`rx_light5`视角分别构建support原型和query分数，再对1/3/5个视角分数求均值；这避免把5个特征先平均成一个向量而丢失视角分歧。固定1/3/5用于真实上界对照；自适应门限只用三场景注册support的leave-one-out分数，在预注册网格上选择相对support完整5-view下降不超过1pp且平均前向最小的组合。query标签只在门限冻结后用于报告，query特征不进入校准；角色、类别quota、query顺序和跨query状态均不进入决策。
+
+部署状态按一个当前场景计算：5套FP16原型=`5×26×256×2=66,560B`，FP16关键层delta=62,400B，3个FP32门限=12B，总计128,972B，约125.95KiB，低于128KiB上限且余量2,100B。三种LEO场景是三个独立部署评估，不要求同时常驻三套原型。固定5-view最坏计算为5次backbone；自适应必须报告平均/P95前向和1/3/5触发率，不能只报最好准确率。新增脚本会用既有适配feature cache做base-view结构复现，预注册门槛为平均cosine≥0.9999且最小cosine≥0.999；这只验证实现一致性，不用于调门限。
+
+本地`ssr-gpu`下新脚本及模块`py_compile`PASS，adaptive门控、view-wise prototype、support LOO、source预训练、关键层delta和Stage2-C runner共49项pytest PASS，`git diff --check`PASS。N607运行预注册为`qknn_extreme_light_sourceinit_keyft5_adaptive_tta_20260715_v10`，精确命令为：
+
+```bash
+CUDA_VISIBLE_DEVICES=7 PYTHONPATH=/home/szu2070436088/2510044040/CV-SincNet/code:/home/szu2070436088/2510044040/CV-SincNet /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u paper_reproduction/scripts/benchmark_cvs_adaptive_rxlight_tta.py --config paper_reproduction/configs/cvs_qknnv42_extreme_light_20new_stage2c_k10_rawiq_20260715_n607.json --ckpt runs/phase1_adv3_mechanism32_queue_20260701/ADV3B02_CORE90_SOFT_E200/best_joint_safe_ssdg.pth --adapter_state runs/qknn_extreme_light_sourceinit_keyft5_20260715_v10/support_late_key_ft_rx_8-8_new_20_seed_713101_k_10/adapter_state_fp16.pt --reference_config runs/qknn_extreme_light_sourceinit_keyft5_20260715_v10/support_late_key_ft_rx_8-8_new_20_seed_713101_k_10/resolved_qknn_config.json --out_dir runs/qknn_extreme_light_sourceinit_keyft5_adaptive_tta_20260715_v10 --batch_size 256 --max_accuracy_drop_pp 1.0 --device cuda:0
+```
+
+仅当固定5-view显著恢复性能，且support校准的自适应路线在不看query门限的前提下获得有意义的准确率/平均前向Pareto改善，才继续设计压缩View；否则结论为当前适配/特征本身不足，不能通过增加View掩盖机制失败。
