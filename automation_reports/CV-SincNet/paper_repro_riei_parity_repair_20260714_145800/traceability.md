@@ -16,7 +16,7 @@
 | RIEI-P12 | 论文未公开SGD是否包含momentum | 当前固定momentum0 | 在row3/4/11/12上受控测试常用momentum0.9；其余协议固定 | verified-rejected | 4×200epoch、硬错误0；momentum0.9 MAE6.75pp高于对照5.83pp且仅2/4行改善，拒绝完整矩阵 |
 | RIEI-P13 | 论文未公开模型初始化seed；现有`--seed`同时控制模型与partition | 直接换seed会改变模型与样本，无法归因 | 新增独立`wisig_split_seed`；固定partition1337比较model seed0/42 | verified | 8×200epoch、硬错误0；seed42 MAE4.59pp且3/4行改善，通过门槛；seed0拒绝 |
 | RIEI-P14 | 诊断seed不能替代Table III完整证据 | seed42仅在4行通过 | 固定model seed42与split seed1337运行完整12行 | user-stopped | 用户在首批row1–8到epoch172–178时明确停止；8个queue及其24个后代均按精确进程树TERM退出，row9–12未启动，partial证据保留；不能形成完整Table III结论 |
-| RIEI-P15 | 支持入口必须与最终选定协议一一对应，避免旧诊断launcher继续被误用 | 8个历史发现/确认launcher与1个根目录旧入口并存 | 只保留`code/scripts/launch_riei_paper_reproduction.sh`，硬编码seed42/split1337/short-stem/SGD0/mean/no-RMS/no-FN/200epoch/last10 | verified | `bash -n`通过；12-job dry-run与8个capacity marker通过；聚焦测试`8 passed`；旧入口从根目录和Git承载面删除 |
+| RIEI-P15 | 支持入口必须与最终选定协议一一对应，避免旧诊断launcher继续被误用 | 8个历史发现/确认launcher与1个根目录旧入口并存 | 只保留`code/scripts/launch_riei_paper_reproduction.sh`，硬编码seed42/split1337/short-stem/SGD0/mean/no-RMS/no-FN/200epoch/last10 | verified | 本地、Git镜像和N607的SHA256均为`ff06e5f2...c46fc4`；三侧旧入口删除；远端`bash -n`、12-job dry-run和8个capacity marker通过；聚焦测试`8 passed` |
 
 ## 声明边界
 

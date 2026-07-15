@@ -653,3 +653,10 @@
 - 根目录不是Git仓库；代码、测试、报告与追踪表同步镜像到`github_publish/CVS-RFFI-repo`。新增唯一入口`code/scripts/launch_riei_paper_reproduction.sh`，删除8个版本化旧论文复现launcher及根目录旧`run_riei_original_table3_queue.sh`；保留所有非论文复现RIEI/CVS/Stage2入口及历史证据。
 - 唯一入口取消model/split seed覆盖参数，将最终科学配置硬编码。root与Git镜像launcher SHA256一致；两侧`bash -n`通过，dry-run生成12个Table III job和8个capacity marker，所有job固定seed42、split1337与short stem。
 - `ssr-gpu`下聚焦测试结果为`8 passed`；唯一warning是既知`.pytest_cache`写权限，不影响测试结论。下一步只同步唯一入口并从N607精确删除同名旧launcher文件，随后复核远端hash、`bash -n`与dry-run；不启动新实验。
+
+### 11:11远端唯一入口固化完成
+
+- 重新执行直接N607预检：目标run进程0，GPU0–7 compute均为0。将本地唯一入口同步到`/home/szu2070436088/2510044040/CV-SincNet/code/scripts/launch_riei_paper_reproduction.sh`，远端SHA256=`ff06e5f29395040e0439a079bf451f41be93726db84efc93af2ab8d8d5c46fc4`，与根目录及Git镜像一致。
+- 远端`bash -n`通过；dry-run确认12个Table III job、8个capacity marker、12个split1337 marker和12个short-stem marker。按已验证绝对路径精确删除8个旧`code/scripts`论文复现launcher及根目录旧`run_riei_original_table3_queue.sh`，未使用通配删除，未触碰非论文复现RIEI/CVS/Stage2入口。
+- 反向内容审计确认本地根目录、Git镜像和N607中仅`launch_riei_paper_reproduction.sh`匹配RIEI Table III论文复现入口。目标run与log证据目录保留，文件数仍为26和32；目标进程与全机compute均为0。
+- Git承载面提交：`4d79b6c`记录终止决策，`867add2`完成唯一入口与旧版本删除。本次停止的seed42完整矩阵没有正式last10结果，因此最终结论保持`NOT_REPRODUCED`，不以partial epoch或四行seed诊断替代12行论文证据。
