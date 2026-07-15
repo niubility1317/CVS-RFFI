@@ -42,6 +42,11 @@ def _write_csv(path: Path, rows: list[dict[str, Any]]) -> None:
         writer.writerows(rows)
 
 
+def _int64_tensor(value: np.ndarray) -> torch.Tensor:
+    array = np.ascontiguousarray(value, dtype=np.int64)
+    return torch.frombuffer(memoryview(array), dtype=torch.int64).reshape(array.shape).clone()
+
+
 def score(run_dir: Path, scoring_manifest_path: Path, runtime_evidence_path: Path) -> dict[str, Any]:
     prediction_manifest_path = run_dir / "prediction_manifest.json"
     prediction_manifest = json.loads(prediction_manifest_path.read_text(encoding="utf-8-sig"))
@@ -129,8 +134,8 @@ def score(run_dir: Path, scoring_manifest_path: Path, runtime_evidence_path: Pat
         ]
         detailed.extend(
             _detailed_breakdown(
-                torch.from_numpy(after_values),
-                torch.from_numpy(truth_values),
+                _int64_tensor(after_values),
+                _int64_tensor(truth_values),
                 metadata,
                 scenario=scenario,
             )

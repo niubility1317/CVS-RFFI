@@ -132,6 +132,8 @@ phase2_query_batch_global_assignment=false
 
 第二次smoke PID `1619013`已能导入`paper_reproduction`，但随后在读取`baselines/__init__.py`时被Landlock阻断，仍为`completed=0`、`failed=1`且未加载模型。`model_dual_cvsincnet`和复现辅助模块确实依赖`baselines`代码；因此将`baselines/`作为第三个`runtime_code_root`纳入逐文件SHA256、目录遍历白名单和runtime code digest，不开放任何数据目录或未登记文件。plan生成测试通过并重新生成52项/375行plan；下一次复测使用`smoke_runs_v3/`。
 
+第三次smoke PID `1620292`已通过所有导入、包审计并进入support张量构造，但远端NumPy 2.2.5与PyTorch 2.1.0的`torch.from_numpy`桥接最小复现同样报`TypeError: expected np.ndarray (got numpy.ndarray)`。已将runner与独立scorer共6处转换改为`torch.frombuffer(memoryview(...)).reshape(...).clone()`的显式ABI安全拷贝；远端float32/int64最小复现通过，本地编译与34项相关pytest通过。数据值、样本、损失、优化步数和决策规则均未改变；同步后必须重建runtime code digest，复测使用`smoke_runs_v4/`。
+
 ## 七、成功条件与风险
 
 成功条件：

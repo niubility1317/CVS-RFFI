@@ -7,6 +7,7 @@ from pathlib import Path
 from paper_reproduction.cvs_aligned.adv3b02_supervised_da_runner import (
     _nearest_prototype,
     _select_registered_support,
+    _tensor_from_array,
     _target_predictor_bundle_path,
     _validate_config,
 )
@@ -75,6 +76,16 @@ def test_adv3b02_protonet_support_prediction() -> None:
     labels = torch.tensor([0, 0, 1, 1])
     query = torch.tensor([[0.0, 0.1], [3.0, 3.1]])
     assert _nearest_prototype(support, labels, query).tolist() == [0, 1]
+
+
+def test_numpy_abi_safe_tensor_copy() -> None:
+    source = np.arange(8, dtype=np.float32).reshape(2, 4)
+    tensor = _tensor_from_array(
+        source, numpy_dtype=np.float32, torch_dtype=torch.float32
+    )
+    assert tensor.tolist() == source.tolist()
+    source[:] = -1
+    assert tensor.tolist() != source.tolist()
 
 
 def test_adv3b02_da_protocol_rejects_raw_dataset_path(tmp_path: Path) -> None:

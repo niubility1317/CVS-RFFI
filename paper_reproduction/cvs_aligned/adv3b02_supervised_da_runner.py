@@ -97,6 +97,11 @@ def _safe_receiver(value: str) -> str:
     return re.sub(r"[^A-Za-z0-9]+", "_", str(value)).strip("_")
 
 
+def _tensor_from_array(value: Any, *, numpy_dtype: Any, torch_dtype: torch.dtype) -> torch.Tensor:
+    array = np.ascontiguousarray(value, dtype=numpy_dtype)
+    return torch.frombuffer(memoryview(array), dtype=torch_dtype).reshape(array.shape).clone()
+
+
 def _target_predictor_bundle_path(config: dict[str, Any]) -> Path:
     root = Path(str(config["target_predictor_bundle_root"]))
     receiver = _safe_receiver(str(config["target_receiver_labels"][0]))
@@ -294,7 +299,9 @@ def _source_loader_from_cache(
         )
     class_labels = [str(value) for value in config["target_old_tx_labels"]]
     labels = _compact_labels(arrays["tx_ids"], class_labels)
-    iq = torch.from_numpy(np.asarray(arrays["leo_weak_iq"], dtype=np.float32))
+    iq = _tensor_from_array(
+        arrays["leo_weak_iq"], numpy_dtype=np.float32, torch_dtype=torch.float32
+    )
     return DataLoader(
         TensorDataset(iq, labels),
         batch_size=int(config.get("batch_size", 128)),
@@ -315,10 +322,14 @@ def _select_registered_support(arrays: dict[str, np.ndarray], config: dict[str, 
             raise ValueError(f"support pool has fewer than K rows for registered class={class_index}")
         indices.extend(candidates[:k_shot])
     selected = np.asarray(indices, dtype=np.int64)
-    iq = torch.from_numpy(
-        np.asarray(arrays["support_pool_leo_weak_iq"], dtype=np.float32)[selected]
+    iq = _tensor_from_array(
+        np.asarray(arrays["support_pool_leo_weak_iq"])[selected],
+        numpy_dtype=np.float32,
+        torch_dtype=torch.float32,
     )
-    y = torch.from_numpy(labels[selected]).long()
+    y = _tensor_from_array(
+        labels[selected], numpy_dtype=np.int64, torch_dtype=torch.int64
+    ).long()
     ids = np.asarray(arrays["support_pool_tokens"]).astype(str)[selected].tolist()
     return iq, y, ids
 
@@ -517,7 +528,11 @@ def run(config: dict[str, Any], *, run_dir: Path, device: torch.device) -> dict[
             support_arrays[scenario], config
         )
         query_input = query_arrays[scenario]
-        query_x = torch.from_numpy(np.asarray(query_input["query_leo_weak_iq"], dtype=np.float32))
+        query_x = _tensor_from_array(
+            query_input["query_leo_weak_iq"],
+            numpy_dtype=np.float32,
+            torch_dtype=torch.float32,
+        )
         query_ids = np.asarray(query_input["query_tokens"]).astype(str).tolist()
         if reference_support_ids is None:
             reference_support_ids, reference_query_ids = support_ids, query_ids
